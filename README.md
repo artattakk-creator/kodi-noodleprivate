@@ -38,3 +38,45 @@ Der zentral verwaltete Repository-Installer liegt zusätzlich unter [`repository
 ## External provider catalogs (GS Media Repository 1.1.0)
 
 In addition to its own add-ons, GS Media Kodi Repository exposes upstream indexes maintained by [Cumination / Dobbelina](https://github.com/dobbelina/repository.dobbelina) and [Gujal00 / SMR](https://github.com/Gujal00/smrzips). Kodi downloads their packages directly from the original projects. This does not bundle their code inside Noodle Private. The upstream authors control compatibility and updates, and individual video sites may be unavailable. Cumination's own code is distributed under GPL. All private favorites and settings remain on the Kodi device.
+
+## Noodle Private v0.3.0 – selected Cumination providers
+
+Noodle Private now supports **NoodleMagazine** directly and six optional
+external Kodi sources routed through an already-installed **Cumination** add-on:
+
+- EPorner, xHamster, Pornhub, XNXX, SpankBang and Tnaflix.
+- Unified Kodi-directory search with independent per-provider error handling.
+- Named cross-provider favorites using the **same** Kodi add-on profile and `state.json`.
+- Provider enable/disable toggles in **Filter, Qualität & Anbieter**.
+- Each external provider delegates playback to Cumination's original resolver;
+  no scraping engine or resolver is copied into this project.
+
+### Direct Titan BINGIE MOD widget paths
+
+```text
+plugin://plugin.video.noodleprivate/?action=providers
+plugin://plugin.video.noodleprivate/?action=provider_browse&provider=eporner
+plugin://plugin.video.noodleprivate/?action=provider_browse&provider=xhamster
+plugin://plugin.video.noodleprivate/?action=provider_browse&provider=pornhub
+plugin://plugin.video.noodleprivate/?action=provider_browse&provider=xnxx
+plugin://plugin.video.noodleprivate/?action=provider_browse&provider=spankbang
+plugin://plugin.video.noodleprivate/?action=provider_browse&provider=tnaflix
+plugin://plugin.video.noodleprivate/?action=favorites
+plugin://plugin.video.noodleprivate/?action=collection_view&collection_id=default
+```
+
+Use the in-app **Anbieterübergreifende Suche** for an interactive search, or
+`?action=global_search&query=...` for an explicitly requested term.
+
+### Upgrade and limits
+
+Update Noodle Private via the installed GS Media Kodi Repository. Do **not**
+uninstall the add-on or delete its userdata, because those contain your private
+favorites and preferences. Existing favorites remain as they were.
+
+All providers depend on Kodi's `Files.GetDirectory` JSON-RPC behavior and
+upstream site availability; these functions have passed local regression tests,
+but not an end-to-end test on your device. Some sources may require updates in
+the upstream Cumination add-on. A provider failure is isolated from the other
+results and does not overwrite saved favorites.
+
