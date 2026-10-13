@@ -86,7 +86,9 @@
     <setting id="clear_cache"     type="action" label="32254"
              action="RunPlugin(plugin://plugin.video.xtreammate/?action=clear_cache)"/>
     <setting id="favourites_file"   type="text" label="32255" default=""/>
-    <setting id="recordings_folder" type="text" label="32256" default=""/>
+    <!-- Kodi folder picker: press OK to save the path in add-on settings. -->
+    <setting id="recordings_folder" type="folder" label="32256"
+             source="auto" option="writeable" default=""/>
   </category>
   <category label="32290">
     <setting id="dropbox_token"       type="text" label="32299" default="" option="hidden"/>

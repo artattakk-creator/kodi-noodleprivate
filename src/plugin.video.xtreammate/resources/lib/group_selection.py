@@ -109,17 +109,54 @@ def filter_entries(entries, portal_id, kind):
     return [e for e in entries if str(e.get('category_id', '')) in chosen]
 
 
-def _categories(portal, kind, force=True):
+def _categories(portal, kind, force=False):
+    """Keep the cached Xtream category catalog unless explicit refresh is requested."""
     from xtream import XtreamClient
     xc = XtreamClient(portal['xc_host'], portal['xc_user'], portal['xc_pass'])
-    method = getattr(xc, {'live': 'get_live_categories', 'vod': 'get_vod_categories',
+    method = getattr(xc, {'live': 'get_live_categories',
+                          'vod': 'get_vod_categories',
                           'series': 'get_series_categories'}[kind])
-    return [c for c in method(force_refresh=force) if isinstance(c, dict)
+    categories = method(force_refresh=force) or []
+    if not isinstance(categories, list):
+        return []
+    return [c for c in categories if isinstance(c, dict)
             and c.get('category_id') is not None]
 
 
+def _menu_items(kind, current, ids, old_known, auto_new):
+    """Group management shortcuts; individual toggling uses Kodi native checkboxes."""
+    newly_found = set(ids) - old_known
+    return [
+        '[B]☑ Gruppen mit Checkboxen auswählen ({} / {})[/B]'.format(len(current), len(ids)),
+        'Alle aktivieren',
+        'Alle deaktivieren',
+        'Neue aktivieren ({})'.format(len(newly_found)),
+        'Neue Gruppen künftig automatisch: [B]{}[/B]'.format('AN' if auto_new else 'AUS'),
+        'Kategorien vom Anbieter neu laden',
+        '[COLOR lime][B]✓ Auswahl speichern ({} / {})[/B][/COLOR]'.format(len(current), len(ids)),
+        'Abbrechen – Änderungen verwerfen',
+    ]
+
+
+def _checkbox_selection(dialog, kind, categories, ids, current, new_ids):
+    """The list never closes on checkbox toggles; Kodi itself retains cursor focus."""
+    labels = []
+    for category, cid in zip(categories, ids):
+        name = str(category.get('category_name') or cid)
+        suffix = ' [COLOR yellow](NEU)[/COLOR]' if cid in new_ids else ''
+        labels.append(name + suffix)
+    initial = [index for index, cid in enumerate(ids) if cid in current]
+    selected = dialog.multiselect(
+        'XtreamMate – {} (Haken setzen, unten OK = speichern)'.format(LABELS[kind]),
+        labels, preselect=initial)
+    if selected is None:
+        return None
+    return {ids[index] for index in selected if isinstance(index, int)
+            and 0 <= index < len(ids)}
+
+
 def choose_groups(portal, kind='live'):
-    """Kodi remote-friendly one-at-a-time toggles with Save/Cancel and bulk ops."""
+    """Persist changes once on Save; Back discards temporary checkbox selections."""
     import xbmcgui
     if kind not in KINDS or portal.get('type') != 'xtream':
         return False
@@ -135,45 +172,55 @@ def choose_groups(portal, kind='live'):
                else state['enabled']) if state else set(ids)
     current &= set(ids)
     auto_new = state['auto_new'] if state else False
-    first_index = 5
+
+    def commit():
+        save(portal['id'], [cid for cid in ids if cid in current],
+             kind=kind, known=ids, auto_new=auto_new)
+        dlg.notification('XtreamMate', '{}: {} von {} aktiv'.format(
+            LABELS[kind], len(current), len(ids)))
+        return True
+
     while True:
-        newly_found = set(ids) - old_known
-        options = [
-            '[B]✔ Auswahl speichern  ({} / {})[/B]'.format(len(current), len(ids)),
-            '[B]Alle aktivieren[/B]',
-            '[B]Alle deaktivieren[/B]',
-            '[B]Neue aktivieren ({})[/B]'.format(len(newly_found)),
-            'Zukünftig neue automatisch aktivieren: [B]{}[/B]'.format('AN' if auto_new else 'AUS'),
-        ]
-        for cat, cid in zip(cats, ids):
-            label = str(cat.get('category_name') or cid)
-            marker = '[COLOR lime]● AN[/COLOR]' if cid in current else '[COLOR orange]○ AUS[/COLOR]'
-            suffix = ' [NEU]' if cid in newly_found else ''
-            options.append('{}  {}{}'.format(marker, label, suffix))
-        options.append('[Abbrechen – ohne Änderungen]')
-        choice = dlg.select('XtreamMate – {} (OK umschalten)'.format(LABELS[kind]), options)
-        if choice in (-1, len(options) - 1):
+        options = _menu_items(kind, current, ids, old_known, auto_new)
+        try:
+            choice = dlg.select('XtreamMate – {}'.format(LABELS[kind]),
+                                options, preselect=0)
+        except TypeError:
+            choice = dlg.select('XtreamMate – {}'.format(LABELS[kind]), options)
+        if choice in (-1, 7):
             return False
         if choice == 0:
-            save(portal['id'], [i for i in ids if i in current], kind=kind,
-                 known=ids, auto_new=auto_new)
-            dlg.notification('XtreamMate', '{}: {} von {} aktiv'.format(
-                LABELS[kind], len(current), len(ids)))
-            return True
-        if choice == 1:
+            checked = _checkbox_selection(dlg, kind, cats, ids, current,
+                                          set(ids) - old_known)
+            if checked is not None:
+                current = checked
+                return commit()
+        elif choice == 1:
             current = set(ids)
         elif choice == 2:
             current.clear()
         elif choice == 3:
-            current |= newly_found
+            current |= set(ids) - old_known
         elif choice == 4:
             auto_new = not auto_new
+        elif choice == 5:
+            try:
+                updated = _categories(portal, kind, force=True)
+                if updated:
+                    cats = updated
+                    ids = [str(c['category_id']) for c in cats]
+                    if auto_new:
+                        current |= set(ids) - old_known
+                    current &= set(ids)
+                else:
+                    dlg.notification('XtreamMate', 'Keine neuen Gruppen vom Server erhalten.')
+            except Exception:
+                dlg.ok('XtreamMate', 'Kategorien konnten nicht aktualisiert werden. '
+                       'Die bisherige Auswahl bleibt erhalten.')
+        elif choice == 6:
+            return commit()
         else:
-            key = ids[choice - first_index]
-            if key in current:
-                current.remove(key)
-            else:
-                current.add(key)
+            return False
 
 
 def manage_groups(portal):

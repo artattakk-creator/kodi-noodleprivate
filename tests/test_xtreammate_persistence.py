@@ -64,11 +64,12 @@ class XtreamMateV011Tests(unittest.TestCase):
         self.assertEqual(self.groups.load('portal-1', 'vod'), {'21'})
 
     def test_manual_bulk_ops_and_save(self):
-        dialog = types.SimpleNamespace(selections=[2,6,0], messages=[])
-        def select(title, rows):
+        dialog = types.SimpleNamespace(selections=[2,0], messages=[])
+        def select(title, rows, **kwargs):
             dialog.messages.append(rows)
             return dialog.selections.pop(0)
         dialog.select=select
+        dialog.multiselect=lambda title, rows, preselect=None: [1]
         dialog.notification=lambda *args,**kw:None
         dialog.ok=lambda *args,**kw:None
         xtream = types.ModuleType('xtream')
@@ -83,10 +84,10 @@ class XtreamMateV011Tests(unittest.TestCase):
         with mock.patch.dict(sys.modules,{'xbmcgui':gui,'xtream':xtream}):
             result=self.groups.choose_groups({'id':'p','type':'xtream', 'xc_host':'h', 'xc_user':'u','xc_pass':'pw'})
         self.assertTrue(result)
-        # 2 -> all disabled, 6 -> second category toggled, 0 -> saved.
+        # 2 -> all disabled, checkbox dialog checks the second category and saves.
         self.assertEqual(self.groups.load('p','live'),{'11'})
         self.assertTrue(any('Alle deaktivieren' in row for row in dialog.messages[0]))
-        self.assertEqual(len(dialog.messages),3)
+        self.assertEqual(len(dialog.messages),2)
 
     def test_new_groups_opt_in_and_disabled_stay_disabled(self):
         self.groups.save('p',['10'],'live',known=['10','11'],auto_new=True)

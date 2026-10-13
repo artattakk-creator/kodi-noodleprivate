@@ -1,4 +1,4 @@
-# XtreamMate 0.1.3 – Kodi test version
+# XtreamMate 0.1.4 – Kodi test version
 
 This is an independent Kodi add-on based on mr-evil1 TiViMate Kodi 2026.06.12.1 (GPL v2), with an original GS Media visual identity and new add-on ID `plugin.video.xtreammate`.
 
@@ -60,3 +60,14 @@ exists. Xtream cache keys include the provider URL to avoid collisions across
 servers with identical credentials. The overlay holds its active channel group
 in memory for immediate repeated Back/Left navigation. Stream links are not
 downloaded as video files; artwork remains managed by Kodi's image cache.
+
+## 0.1.4: checkbox group editor and recordings folder browser
+
+Choose individual Live-TV, film or series categories using Kodi's native
+checkbox multiselect; the list stays open and preserves position as you
+toggle. Press OK to save, Back to discard. Separate bulk actions permit
+All On, All Off, enable newly discovered groups, and automatic new groups.
+In Kodi settings, Recordings Folder now opens the native file manager
+folder picker; the confirmed path is saved/displayed automatically.
+FFmpeg requires a writable local or mounted folder, not necessarily a
+Kodi SMB URL.
