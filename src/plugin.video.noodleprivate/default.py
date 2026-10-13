@@ -17,6 +17,8 @@ import xbmcvfs
 
 from resources.lib.site import ROOT, UA, SiteError, fetch_html, listing_path, parse_detail, parse_listing, watch_url
 from resources.lib.storage import Storage
+from resources.lib.providers import (BridgeError, PROVIDERS, ORDER, cumination_uri,
+    enabled_sources, source_name, kodi_directory, source_for_url, validated_cumination_url)
 
 ADDON = xbmcaddon.Addon()
 HANDLE = int(sys.argv[1])
@@ -128,14 +130,23 @@ def video(item, collection_id=None):
     if not url:
         return
     label = item.get('title') or 'Video'
-    li = xbmcgui.ListItem(label=label, path=build_url('play', url=url, title=label, image=item.get('image', ''), duration=item.get('duration', 0)))
+    provider = item.get('provider') or source_for_url(url)
+    if provider and provider != 'noodlemagazine':
+        try:
+            validated_cumination_url(url, provider)
+        except BridgeError:
+            return
+        playback_url = url  # Delegate playback to installed Cumination itself.
+    else:
+        playback_url = build_url('play', url=url, title=label, image=item.get('image', ''), duration=item.get('duration', 0))
+    li = xbmcgui.ListItem(label=label, path=playback_url)
     artwork = item.get('image') or ICON
     li.setArt({'thumb': artwork, 'poster': artwork, 'icon': artwork, 'fanart': artwork if item.get('image') else FANART, 'landscape': artwork})
-    li.setInfo('video', {'title': label, 'plot': label,
+    li.setInfo('video', {'title': label, 'plot': item.get('description') or label,
                          'duration': int(item.get('duration') or 0), 'mediatype': 'video'})
     li.setProperty('IsPlayable', 'true')
     context_params = dict(url=url, title=label, image=item.get('image', ''),
-                          duration=item.get('duration', 0))
+                          duration=item.get('duration', 0), provider=provider)
     ctx = [
         ('Zu Favoritenliste hinzufügen ...', 'RunPlugin({})'.format(
             build_url('collection_add', **context_params))),
@@ -143,7 +154,8 @@ def video(item, collection_id=None):
     if collection_id:
         ctx.append(('Aus dieser Liste entfernen', 'RunPlugin({})'.format(
             build_url('collection_remove', collection_id=collection_id, url=url))))
-    ctx.append(('Ähnliche Videos', 'Container.Update({})'.format(build_url('related', url=url))))
+    if provider in ('', 'noodlemagazine'):
+        ctx.append(('Ähnliche Videos', 'Container.Update({})'.format(build_url('related', url=url))))
     li.addContextMenuItems(ctx)
     xbmcplugin.addDirectoryItem(HANDLE, li.getPath(), li, isFolder=False)
 
@@ -157,13 +169,15 @@ def root():
         ('Beliebt', 'popular'), ('Neu hinzugefügt', 'recent'), ('Trending', 'trending'),
         ('Gerade angesehen', 'now'), ('Nur HD', 'hd'), ('Kurzvideos', 'short'), ('Lange Videos', 'long')
     ]
-    folder('Suche', 'search_prompt')
+    folder('Anbieterübergreifende Suche', 'global_search_prompt')
+    folder('Videoanbieter', 'providers')
+    folder('Suche nur NoodleMagazine', 'search_prompt')
     for label, key in choices:
         folder(label, 'list', section=key)
     folder('Meine Favoritenlisten', 'favorites')
     folder('Zuletzt gestartet', 'recently_played')
     folder('Letzte Suchen', 'past_searches')
-    folder('Filter & Qualität', 'settings')
+    folder('Filter, Qualität & Anbieter', 'settings')
     folder('Widget-Hilfe / BINGIE MOD', 'help')
     end('files')
 
@@ -253,9 +267,12 @@ def saved_searches():
 
 
 def _video_args(args):
-    url = watch_url(args.get('url', ''))
+    raw = args.get('url', '')
+    provider = args.get('provider') or source_for_url(raw)
+    url = validated_cumination_url(raw, provider) if provider in PROVIDERS else watch_url(raw)
     return {'url': url, 'title': args.get('title', 'Video'),
-            'image': args.get('image', ''), 'duration': int(args.get('duration') or 0)}
+            'image': args.get('image', ''), 'duration': int(args.get('duration') or 0),
+            'provider': provider or 'noodlemagazine'}
 
 
 def fav_toggle(args):
@@ -309,7 +326,8 @@ def collection_add(args):
 
 def collection_remove(args):
     try:
-        url = watch_url(args.get('url', ''))
+        raw = args.get('url', '')
+        url = validated_cumination_url(raw) if source_for_url(raw) in PROVIDERS else watch_url(raw)
         ident = args.get('collection_id', '')
         if STORE.remove_from_collection(ident, url):
             inform('Video aus Liste entfernt')
@@ -409,9 +427,169 @@ def related(url):
     end()
 
 
+
+def cumination_installed():
+    return xbmc.getCondVisibility('System.HasAddon(plugin.video.cumination)')
+
+
+def provider_directory():
+    if 'noodlemagazine' in enabled_sources(STORE.prefs()):
+        folder('NoodleMagazine (direkt)', 'list', section='popular')
+    for provider in ORDER:
+        if provider in enabled_sources(STORE.prefs()):
+            folder(source_name(provider), 'provider_browse', provider=provider)
+    folder('Aktive Anbieter festlegen', 'provider_settings')
+    end('files')
+
+
+def provider_settings():
+    prefs = STORE.prefs()
+    enabled = dict(prefs.get('provider_enabled', {}))
+    choices = ['noodlemagazine'] + list(ORDER)
+    labels = [('[x] ' if enabled.get(p, True) else '[ ] ') + source_name(p) for p in choices]
+    choice = xbmcgui.Dialog().select('Anbieter (einzeln umschalten)', labels)
+    if choice >= 0:
+        key = choices[choice]
+        enabled[key] = not enabled.get(key, True)
+        STORE.update_prefs(provider_enabled=enabled)
+        inform('{}: {}'.format(source_name(key), 'aktiv' if enabled[key] else 'deaktiviert'))
+        xbmc.executebuiltin('Container.Refresh')
+
+
+def _bridge_items(provider, path):
+    if not cumination_installed():
+        raise BridgeError('Cumination muss als Video-Add-on installiert und aktiviert sein')
+    return kodi_directory(xbmc.executeJSONRPC, path, provider)
+
+
+def _show_bridge_items(items, provider):
+    count = 0
+    for item in items:
+        if item.get('is_folder'):
+            folder(item['title'], 'provider_browse', icon=item.get('image'),
+                   provider=provider, target=item['url'])
+        else:
+            video(item)
+        count += 1
+    return count
+
+
+def provider_browse(provider, target=''):
+    if provider not in ORDER or provider not in enabled_sources(STORE.prefs()):
+        folder('Anbieter nicht aktiviert', 'providers')
+        end('files')
+        return
+    folder('Bei {} suchen'.format(source_name(provider)), 'provider_search_prompt', provider=provider)
+    try:
+        path = validated_cumination_url(target, provider) if target else cumination_uri(provider)
+        items = _bridge_items(provider, path)
+        if not _show_bridge_items(items, provider):
+            folder('Keine Einträge gefunden', 'help')
+    except (BridgeError, ValueError) as exc:
+        fail(exc)
+        folder('Quelle nicht verfügbar', 'help')
+    end('videos')
+
+
+def provider_search_prompt(provider):
+    if provider not in ORDER:
+        end('files')
+        return
+    term = xbmcgui.Dialog().input('{} durchsuchen'.format(source_name(provider)), type=xbmcgui.INPUT_ALPHANUM)
+    if term and term.strip():
+        STORE.remember_search(term.strip())
+        provider_search(provider, term.strip())
+    else:
+        folder('Neue Suche', 'provider_search_prompt', provider=provider)
+        end('files')
+
+
+def provider_search(provider, query):
+    if not query.strip() or provider not in ORDER or provider not in enabled_sources(STORE.prefs()):
+        end('files')
+        return
+    try:
+        items = _bridge_items(provider, cumination_uri(provider, 'Search', query))
+        if not _show_bridge_items(items, provider):
+            folder('Keine Treffer bei {}'.format(source_name(provider)), 'help')
+    except (BridgeError, ValueError) as exc:
+        fail(exc)
+        folder('{} nicht erreichbar'.format(source_name(provider)), 'help')
+    end('videos')
+
+
+def global_search_prompt():
+    term = xbmcgui.Dialog().input('Alle Anbieter durchsuchen', type=xbmcgui.INPUT_ALPHANUM)
+    if term and term.strip():
+        term = term.strip()
+        STORE.remember_search(term)
+        global_search(term)
+    else:
+        folder('Neue Suche starten', 'global_search_prompt')
+        end('files')
+
+
+def global_search(query):
+    """One Kodi directory with all results; failed sources remain isolated.
+
+    Cumination serves external sources via Kodi JSON-RPC. There is no forced
+    download, login bypass, or copying of upstream resolver implementations.
+    """
+    query = (query or '').strip()[:120]
+    if not query:
+        end('files')
+        return
+    enabled = enabled_sources(STORE.prefs())
+    rows, errors = [], []
+    progress = xbmcgui.DialogProgress()
+    try:
+        progress.create('Noodle Private', 'Anbieterübergreifende Suche')
+        if 'noodlemagazine' in enabled:
+            try:
+                path = listing_path('search', query, 0)
+                parsed, _next = parse_listing(_read_page(path))
+                for item in parsed:
+                    item['provider'] = 'noodlemagazine'
+                rows.extend(parsed[:60])
+            except (SiteError, ValueError, OSError) as exc:
+                errors.append('NoodleMagazine: {}'.format(exc))
+        active = [p for p in ORDER if p in enabled]
+        for n, provider in enumerate(active):
+            progress.update(int(100 * (n + 1) / max(1, len(active))), source_name(provider))
+            if progress.iscanceled():
+                break
+            try:
+                rows.extend(_bridge_items(provider, cumination_uri(provider, 'Search', query))[:60])
+            except (BridgeError, ValueError) as exc:
+                errors.append('{}: {}'.format(source_name(provider), exc))
+    finally:
+        progress.close()
+    folder('Neue Suche starten', 'global_search_prompt')
+    for provider in enabled:
+        folder('Nur {} durchsuchen'.format(source_name(provider)),
+               'list' if provider == 'noodlemagazine' else 'provider_search',
+               **({'section': 'search', 'query': query} if provider == 'noodlemagazine'
+                  else {'provider': provider, 'query': query}))
+    unique = set()
+    for item in rows:
+        url = item.get('url', '')
+        if item.get('is_folder') or url in unique:
+            continue
+        unique.add(url)
+        shown = dict(item)
+        shown['title'] = '[{}] {}'.format(source_name(item.get('provider', 'noodlemagazine')), item.get('title', 'Video'))
+        video(shown)
+    if errors:
+        xbmc.log('[Noodle Private] Einige Quellen nicht verfügbar: {}'.format('; '.join(errors)), xbmc.LOGWARNING)
+        folder('{} Anbieter nicht verfügbar (Details im Kodi-Protokoll)'.format(len(errors)), 'help')
+    if not unique:
+        folder('Keine Treffer aus den verfügbaren Quellen', 'help')
+    end('videos')
+
 def settings():
     labels = ['Wiedergabequalität', 'Sortierung', 'Laufzeitfilter',
-              'Bildvorschauen lokal zwischenspeichern', 'Seiten-Cache leeren']
+              'Bildvorschauen lokal zwischenspeichern', 'Seiten-Cache leeren',
+              'Videoanbieter aktivieren / deaktivieren']
     sel = xbmcgui.Dialog().select('Noodle Private – Einstellungen', labels)
     prefs = STORE.prefs()
     if sel == 0:
@@ -437,6 +615,8 @@ def settings():
     elif sel == 4:
         STORE.clear_cache()
         inform('Seiten-Cache geleert')
+    elif sel == 5:
+        provider_settings()
 
 
 def help_page():
@@ -447,6 +627,10 @@ def help_page():
         'Neu: plugin://plugin.video.noodleprivate/?action=list&section=recent',
         'Trending: plugin://plugin.video.noodleprivate/?action=list&section=trending',
         'HD: plugin://plugin.video.noodleprivate/?action=list&section=hd',
+        'Alle Anbieter: plugin://plugin.video.noodleprivate/?action=providers',
+        'Alle durchsuchen: plugin://plugin.video.noodleprivate/?action=global_search_prompt',
+        'Anbietervideos: plugin://plugin.video.noodleprivate/?action=provider_browse&provider=eporner',
+        'Anbieter im Pfad: eporner / xhamster / pornhub / xnxx / spankbang / tnaflix',
         'Favoritenlisten: plugin://plugin.video.noodleprivate/?action=favorites',
         'Einzelne Liste: plugin://plugin.video.noodleprivate/?action=collection_view&collection_id=default',
         '',
@@ -454,6 +638,9 @@ def help_page():
         'Video lange drücken / rechte Maustaste: Zu Favoritenliste hinzufügen.',
         'Liste lange drücken: Umbenennen / Löschen.',
         'TMDb Helper ist nicht notwendig.',
+        'Weitere Anbieter benötigen das installierte Cumination-Add-on.',
+        'Suche erfordert eine aktive Kodi JSON-RPC Files.GetDirectory-Schnittstelle.',
+        'Die Verfügbarkeit einzelner Anbieter wird nicht garantiert.',
         'Für HLS wird InputStream Adaptive empfohlen.',
         'Bei HTTP 403 lässt sich der Zugriff nicht durch das Add-on erzwingen.'
     ]
@@ -479,6 +666,18 @@ def run():
                 int(ARGS.get('page', '0')), ARGS.get('refresh') == '1')
     elif action == 'search_prompt':
         prompt_search()
+    elif action == 'global_search_prompt':
+        global_search_prompt()
+    elif action == 'global_search':
+        global_search(ARGS.get('query', ''))
+    elif action == 'providers':
+        provider_directory()
+    elif action == 'provider_browse':
+        provider_browse(ARGS.get('provider', ''), ARGS.get('target', ''))
+    elif action == 'provider_search_prompt':
+        provider_search_prompt(ARGS.get('provider', ''))
+    elif action == 'provider_search':
+        provider_search(ARGS.get('provider', ''), ARGS.get('query', ''))
     elif action == 'favorites':
         saved_list('favorites')
     elif action == 'collection_view':
@@ -493,6 +692,9 @@ def run():
         collection_rename(ARGS)
     elif action == 'collection_delete':
         collection_delete(ARGS)
+    elif action == 'provider_settings':
+        provider_settings()
+        end('files')
     elif action == 'recently_played':
         saved_list('recent')
     elif action == 'past_searches':
