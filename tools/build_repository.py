@@ -11,9 +11,14 @@ IDS = ("plugin.video.noodleprivate", "repository.noodleprivate")
 def seed():
     archive = ROOT / "bootstrap.xz.b64"
     if not (SRC / "plugin.video.noodleprivate" / "default.py").exists():
-        if not archive.is_file():
-            raise RuntimeError("Missing initial source archive")
-        payload = lzma.decompress(base64.b64decode(archive.read_text(encoding="ascii")))
+        if archive.is_file():
+            packed_text = archive.read_text(encoding="ascii").strip()
+        else:
+            packed_text = "".join((ROOT/"seed"/f"part-{i:02d}.txt").read_text(encoding="ascii").strip() for i in range(1,5))
+        packed = base64.b64decode(packed_text, validate=True)
+        if hashlib.sha256(packed).hexdigest() != "1a9db4855bced9f9576584364ee248aeb5b3fc30fb037dd32949a076f26a14df":
+            raise ValueError("Source archive checksum mismatch")
+        payload = lzma.decompress(packed)
         with tarfile.open(fileobj=io.BytesIO(payload), mode="r:") as tf:
             for member in tf:
                 if not member.isfile():
