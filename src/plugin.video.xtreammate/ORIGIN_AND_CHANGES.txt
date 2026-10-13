@@ -1,0 +1,12 @@
+XtreamMate 0.1.0 — independent Kodi fork, GS Media
+
+Upstream: mr-evil1 / TiViMate Kodi 2026.06.12.1, https://github.com/mr-evil1/kodi-media-repo
+Original addon declares GPL-2.0-only. Full GPL v2 license accompanies this fork.
+Changes: renamed addon ID, first-run installation wizard, content toggles, scan counters,
+Xtream category multiselect, separate userdata and redaction of sensitive log data.
+
+This is an early test build for Kodi 21+. Device-specific remote overlays, 2-stage
+Back/Left remote navigation, and full poster file prefetch are NOT yet implemented.
+The VOD and series response data and image URLs are cached by the upstream client;
+posters are fetched by Kodi as needed and are not predownloaded en masse.
+There is no video source or login embedded in this package. Use authorized services.

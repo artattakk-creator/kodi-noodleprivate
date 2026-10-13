@@ -1,0 +1,740 @@
+# Kodi Media Center language file
+# Addon Name: XtreamMate
+# Addon id: plugin.video.xtreammate
+# Addon Provider: MrNobody
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# ════════════════════════════════════════════════════════════════════════════
+# NAVIGATION / HAUPTMENÜ
+# ════════════════════════════════════════════════════════════════════════════
+
+msgctxt "#32000"
+msgid "IPTV Master"
+msgstr "XtreamMate"
+
+msgctxt "#32001"
+msgid "Live TV"
+msgstr "Live TV"
+
+msgctxt "#32002"
+msgid "Movies"
+msgstr "Filme"
+
+msgctxt "#32003"
+msgid "Series"
+msgstr "Serien"
+
+msgctxt "#32004"
+msgid "Favourites"
+msgstr "Favoriten"
+
+msgctxt "#32005"
+msgid "Search"
+msgstr "Suche"
+
+msgctxt "#32006"
+msgid "EPG / Guide"
+msgstr "EPG / Programm"
+
+msgctxt "#32007"
+msgid "Settings"
+msgstr "Einstellungen"
+
+msgctxt "#32008"
+msgid "Refresh Playlist"
+msgstr "Playlist neu laden"
+
+msgctxt "#32009"
+msgid "Catch-up"
+msgstr "Nachträglich ansehen"
+
+msgctxt "#32010"
+msgid "Search All"
+msgstr "Überall suchen"
+
+msgctxt "#32011"
+msgid "All Favourites"
+msgstr "Alle Favoriten"
+
+msgctxt "#32012"
+msgid "Portal Manager"
+msgstr "Portal-Verwaltung"
+
+msgctxt "#32013"
+msgid "Account Info"
+msgstr "Kontoinformationen"
+
+msgctxt "#32014"
+msgid "Now on TV"
+msgstr "Jetzt im TV"
+
+msgctxt "#32015"
+msgid "All Channels"
+msgstr "Alle Sender"
+
+msgctxt "#32016"
+msgid "All Movies"
+msgstr "Alle Filme"
+
+msgctxt "#32017"
+msgid "All Series"
+msgstr "Alle Serien"
+
+msgctxt "#32018"
+msgid "Next page ({0} more)"
+msgstr "Nächste Seite ({0} weitere)"
+
+msgctxt "#32019"
+msgid "Previous page ({0})"
+msgstr "Vorherige Seite ({0})"
+
+# ════════════════════════════════════════════════════════════════════════════
+# KONTEXTMENÜ
+# ════════════════════════════════════════════════════════════════════════════
+
+msgctxt "#32030"
+msgid "Add to Favourites"
+msgstr "Zu Favoriten hinzufügen"
+
+msgctxt "#32031"
+msgid "Remove from Favourites"
+msgstr "Aus Favoriten entfernen"
+
+msgctxt "#32032"
+msgid "Now Playing"
+msgstr "Läuft gerade"
+
+msgctxt "#32033"
+msgid "Refresh cache"
+msgstr "Cache aktualisieren"
+
+# ════════════════════════════════════════════════════════════════════════════
+# MELDUNGEN & FEHLER
+# ════════════════════════════════════════════════════════════════════════════
+
+msgctxt "#32040"
+msgid "No channels found"
+msgstr "Keine Sender gefunden"
+
+msgctxt "#32041"
+msgid "Playlist refreshed"
+msgstr "Playlist aktualisiert"
+
+msgctxt "#32042"
+msgid "EPG refreshed"
+msgstr "EPG aktualisiert"
+
+msgctxt "#32043"
+msgid "Cache cleared"
+msgstr "Cache geleert"
+
+msgctxt "#32044"
+msgid "No EPG data available"
+msgstr "Keine EPG-Daten verfügbar"
+
+msgctxt "#32045"
+msgid "No favourites saved yet"
+msgstr "Noch keine Favoriten gespeichert"
+
+msgctxt "#32046"
+msgid "No results for \"{0}\""
+msgstr "Keine Ergebnisse für \"{0}\""
+
+msgctxt "#32047"
+msgid "No catch-up data available"
+msgstr "Keine Catch-up-Daten verfügbar"
+
+msgctxt "#32048"
+msgid "No catch-up URL available"
+msgstr "Keine Catch-up-URL verfügbar"
+
+msgctxt "#32049"
+msgid "No M3U URL configured for this portal"
+msgstr "Keine M3U-URL für dieses Portal hinterlegt"
+
+msgctxt "#32050"
+msgid "Portal not found. Open Portal Manager."
+msgstr "Portal nicht gefunden. Portal-Verwaltung öffnen."
+
+msgctxt "#32051"
+msgid "Xtream host not set. Open Portal Manager."
+msgstr "Xtream-Host nicht gesetzt. Portal-Verwaltung öffnen."
+
+msgctxt "#32052"
+msgid "Authentication failed – check Portal URL and MAC"
+msgstr "Anmeldung fehlgeschlagen – Portal-URL und MAC prüfen"
+
+msgctxt "#32053"
+msgid "Refreshing {0}…"
+msgstr "{0} wird aktualisiert…"
+
+msgctxt "#32054"
+msgid "Refresh failed: {0}"
+msgstr "Aktualisierung fehlgeschlagen: {0}"
+
+msgctxt "#32055"
+msgid "No {0} found in this M3U playlist"
+msgstr "Keine {0} in dieser M3U-Playlist gefunden"
+
+msgctxt "#32056"
+msgid "Searching for \"{0}\"…"
+msgstr "Suche nach \"{0}\"…"
+
+msgctxt "#32057"
+msgid "No channels found for \"{0}\". Check URL / credentials."
+msgstr "Keine Sender für \"{0}\" gefunden. URL / Zugangsdaten prüfen."
+
+# ════════════════════════════════════════════════════════════════════════════
+# PORTAL-VERWALTUNG
+# ════════════════════════════════════════════════════════════════════════════
+
+msgctxt "#32060"
+msgid "Add new Portal"
+msgstr "Neues Portal hinzufügen"
+
+msgctxt "#32061"
+msgid "Portal name"
+msgstr "Portalname"
+
+msgctxt "#32062"
+msgid "Portal type"
+msgstr "Portaltyp"
+
+msgctxt "#32063"
+msgid "M3U Playlist"
+msgstr "M3U-Playlist"
+
+msgctxt "#32064"
+msgid "Xtream Codes"
+msgstr "Xtream Codes"
+
+msgctxt "#32065"
+msgid "STB / Stalker Portal"
+msgstr "STB / Stalker-Portal"
+
+msgctxt "#32066"
+msgid "M3U URL or local path"
+msgstr "M3U-URL oder lokaler Pfad"
+
+msgctxt "#32067"
+msgid "Xtream Codes host (e.g. http://provider.tv:8080)"
+msgstr "Xtream-Codes-Host (z. B. http://anbieter.tv:8080)"
+
+msgctxt "#32068"
+msgid "Username"
+msgstr "Benutzername"
+
+msgctxt "#32069"
+msgid "Password"
+msgstr "Passwort"
+
+msgctxt "#32070"
+msgid "Portal URL (e.g. http://provider.tv/c/)"
+msgstr "Portal-URL (z. B. http://anbieter.tv/c/)"
+
+msgctxt "#32071"
+msgid "MAC Address"
+msgstr "MAC-Adresse"
+
+msgctxt "#32072"
+msgid "EPG URL (XMLTV) – optional, leave blank to skip"
+msgstr "EPG-URL (XMLTV) – optional, leer lassen zum Überspringen"
+
+msgctxt "#32073"
+msgid "Add this portal?"
+msgstr "Dieses Portal hinzufügen?"
+
+msgctxt "#32074"
+msgid "Edit \"{0}\""
+msgstr "\"{0}\" bearbeiten"
+
+msgctxt "#32075"
+msgid "Really delete \"{0}\"? All cached data will be removed."
+msgstr "\"{0}\" wirklich löschen? Alle zwischengespeicherten Daten werden entfernt."
+
+msgctxt "#32076"
+msgid "Delete Portal"
+msgstr "Portal löschen"
+
+msgctxt "#32077"
+msgid "Enable"
+msgstr "Aktivieren"
+
+msgctxt "#32078"
+msgid "Disable"
+msgstr "Deaktivieren"
+
+msgctxt "#32079"
+msgid "Move up"
+msgstr "Nach oben"
+
+msgctxt "#32080"
+msgid "Move down"
+msgstr "Nach unten"
+
+msgctxt "#32081"
+msgid "Save & Close"
+msgstr "Speichern & Schließen"
+
+msgctxt "#32082"
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgctxt "#32083"
+msgid "Added: {0}"
+msgstr "Hinzugefügt: {0}"
+
+msgctxt "#32084"
+msgid "Deleted: {0}"
+msgstr "Gelöscht: {0}"
+
+msgctxt "#32085"
+msgid "Saved: {0}"
+msgstr "Gespeichert: {0}"
+
+msgctxt "#32086"
+msgid "Moved up: {0}"
+msgstr "Nach oben verschoben: {0}"
+
+msgctxt "#32087"
+msgid "Moved down: {0}"
+msgstr "Nach unten verschoben: {0}"
+
+msgctxt "#32088"
+msgid "Enabled: {0}"
+msgstr "Aktiviert: {0}"
+
+msgctxt "#32089"
+msgid "Disabled: {0}"
+msgstr "Deaktiviert: {0}"
+
+msgctxt "#32090"
+msgid "My IPTV"
+msgstr "Mein IPTV"
+
+msgctxt "#32091"
+msgid "Enabled"
+msgstr "Aktiviert"
+
+msgctxt "#32092"
+msgid "Type"
+msgstr "Typ"
+
+msgctxt "#32093"
+msgid "Show EPG for this portal"
+msgstr "EPG für dieses Portal anzeigen"
+
+msgctxt "#32094"
+msgid "Display programme guide for channels in this portal?"
+msgstr "Programmführer für Sender dieses Portals anzeigen?"
+
+msgctxt "#32095"
+msgid "Yes"
+msgstr "Ja"
+
+msgctxt "#32096"
+msgid "No"
+msgstr "Nein"
+
+# ════════════════════════════════════════════════════════════════════════════
+# XTREAM-ERKENNUNG
+# ════════════════════════════════════════════════════════════════════════════
+
+msgctxt "#32100"
+msgid "Xtream Codes detected"
+msgstr "Xtream Codes erkannt"
+
+msgctxt "#32101"
+msgid "This URL looks like an Xtream Codes server.\nSwitch to Xtream mode for Live TV / Movies / Series split?\n\nHost: {0}\nUser: {1}"
+msgstr "Diese URL sieht nach einem Xtream-Codes-Server aus.\nIn Xtream-Modus wechseln für Live TV / Filme / Serien-Trennung?\n\nHost: {0}\nBenutzer: {1}"
+
+msgctxt "#32102"
+msgid "Keep as M3U"
+msgstr "Als M3U behalten"
+
+msgctxt "#32103"
+msgid "Use Xtream"
+msgstr "Xtream verwenden"
+
+# ════════════════════════════════════════════════════════════════════════════
+# EINSTELLUNGEN – PORTALE
+# ════════════════════════════════════════════════════════════════════════════
+
+msgctxt "#32200"
+msgid "Portals"
+msgstr "Portale"
+
+msgctxt "#32201"
+msgid "Open Portal Manager"
+msgstr "Portal-Verwaltung öffnen"
+
+# ════════════════════════════════════════════════════════════════════════════
+# EINSTELLUNGEN – SPRACHFILTER
+# ════════════════════════════════════════════════════════════════════════════
+
+msgctxt "#32210"
+msgid "Language Filter"
+msgstr "Sprachfilter"
+
+msgctxt "#32211"
+msgid "Language priority (e.g. de,at,ch,en)"
+msgstr "Sprachpriorität (z. B. de,at,ch,en)"
+
+msgctxt "#32212"
+msgid "Comma-separated language/country codes. Matching channels appear first, in the order listed. Leave blank to disable."
+msgstr "Kommagetrennte Sprach-/Länderkürzel. Passende Sender erscheinen zuerst, in der angegebenen Reihenfolge. Leer lassen zum Deaktivieren."
+
+msgctxt "#32213"
+msgid "Match against channel name"
+msgstr "Sendernamen abgleichen"
+
+msgctxt "#32214"
+msgid "Match against group name"
+msgstr "Gruppenname abgleichen"
+
+# ════════════════════════════════════════════════════════════════════════════
+# EINSTELLUNGEN – WIEDERGABE
+# ════════════════════════════════════════════════════════════════════════════
+
+msgctxt "#32220"
+msgid "Player"
+msgstr "Wiedergabe"
+
+msgctxt "#32221"
+msgid "Default player"
+msgstr "Standard-Player"
+
+msgctxt "#32222"
+msgid "Auto|InputStream Adaptive|Kodi built-in"
+msgstr "Automatisch|InputStream Adaptive|Kodi integriert"
+
+msgctxt "#32223"
+msgid "User-Agent"
+msgstr "User-Agent"
+
+msgctxt "#32224"
+msgid "HTTP timeout (s)"
+msgstr "HTTP-Timeout (s)"
+
+msgctxt "#32225"
+msgid "Retry attempts"
+msgstr "Wiederholungsversuche"
+
+msgctxt "#32226"
+msgid "Use ISA for HLS"
+msgstr "ISA für HLS verwenden"
+
+msgctxt "#32227"
+msgid "Use ISA for DASH"
+msgstr "ISA für DASH verwenden"
+
+msgctxt "#32228"
+msgid "Preferred quality"
+msgstr "Bevorzugte Qualität"
+
+msgctxt "#32229"
+msgid "Best|1080p|720p|480p|360p|Worst"
+msgstr "Beste|1080p|720p|480p|360p|Niedrigste"
+
+# ════════════════════════════════════════════════════════════════════════════
+# EINSTELLUNGEN – EPG
+# ════════════════════════════════════════════════════════════════════════════
+
+msgctxt "#32230"
+msgid "EPG / Guide"
+msgstr "EPG / Programm"
+
+msgctxt "#32236"
+msgid "Show EPG / programme guide"
+msgstr "EPG / Programmführer anzeigen"
+
+msgctxt "#32237"
+msgid "Upcoming programmes to show"
+msgstr "Anzahl kommender Sendungen"
+
+msgctxt "#32231"
+msgid "Auto-refresh EPG"
+msgstr "EPG automatisch aktualisieren"
+
+msgctxt "#32232"
+msgid "Refresh interval (h)"
+msgstr "Aktualisierungsintervall (h)"
+
+msgctxt "#32233"
+msgid "Hours ahead"
+msgstr "Stunden voraus"
+
+msgctxt "#32234"
+msgid "Hours back (catch-up)"
+msgstr "Stunden zurück (Catch-up)"
+
+msgctxt "#32235"
+msgid "Show programme images"
+msgstr "Programmbilder anzeigen"
+
+# ════════════════════════════════════════════════════════════════════════════
+# EINSTELLUNGEN – DARSTELLUNG
+# ════════════════════════════════════════════════════════════════════════════
+
+msgctxt "#32240"
+msgid "Appearance"
+msgstr "Darstellung"
+
+msgctxt "#32241"
+msgid "Show channel logos"
+msgstr "Senderlogos anzeigen"
+
+msgctxt "#32242"
+msgid "Items per page"
+msgstr "Einträge pro Seite"
+
+msgctxt "#32243"
+msgid "Sort channels"
+msgstr "Sender sortieren"
+
+msgctxt "#32244"
+msgid "Playlist order|Name A-Z|Name Z-A"
+msgstr "Playlist-Reihenfolge|Name A-Z|Name Z-A"
+
+msgctxt "#32245"
+msgid "Sort groups"
+msgstr "Gruppen sortieren"
+
+msgctxt "#32246"
+msgid "Playlist order|Name A-Z"
+msgstr "Playlist-Reihenfolge|Name A-Z"
+
+msgctxt "#32247"
+msgid "View mode"
+msgstr "Ansichtsmodus"
+
+msgctxt "#32248"
+msgid "List|Wide list|Thumbnails"
+msgstr "Liste|Breite Liste|Vorschaubilder"
+
+# ════════════════════════════════════════════════════════════════════════════
+# EINSTELLUNGEN – CACHE & DATEN
+# ════════════════════════════════════════════════════════════════════════════
+
+msgctxt "#32250"
+msgid "Cache & Data"
+msgstr "Cache & Daten"
+
+msgctxt "#32251"
+msgid "Cache playlists"
+msgstr "Playlists zwischenspeichern"
+
+msgctxt "#32252"
+msgid "Cache EPG"
+msgstr "EPG zwischenspeichern"
+
+msgctxt "#32253"
+msgid "Cache directory"
+msgstr "Cache-Verzeichnis"
+
+msgctxt "#32254"
+msgid "Clear cache now"
+msgstr "Cache jetzt leeren"
+
+msgctxt "#32255"
+msgid "Favourites backup file"
+msgstr "Favoriten-Sicherungsdatei"
+
+msgctxt "#32256"
+msgid "Recordings folder"
+msgstr "Aufnahmeordner"
+
+# ════════════════════════════════════════════════════════════════════════════
+# EINSTELLUNGEN – ERWEITERT
+# ════════════════════════════════════════════════════════════════════════════
+
+msgctxt "#32260"
+msgid "Advanced"
+msgstr "Erweitert"
+
+msgctxt "#32261"
+msgid "HTTP Proxy URL"
+msgstr "HTTP-Proxy-URL"
+
+msgctxt "#32262"
+msgid "Proxy Username"
+msgstr "Proxy-Benutzername"
+
+msgctxt "#32263"
+msgid "Proxy Password"
+msgstr "Proxy-Passwort"
+
+msgctxt "#32264"
+msgid "Verify SSL certs"
+msgstr "SSL-Zertifikate prüfen"
+
+msgctxt "#32265"
+msgid "Debug logging"
+msgstr "Debug-Protokollierung"
+
+msgctxt "#32266"
+msgid "Catch-up URL template"
+msgstr "Catch-up URL-Vorlage"
+
+# ════════════════════════════════════════════════════════════════════════════
+# EINSTELLUNGEN – NEUES PORTAL HINZUFÜGEN
+# ════════════════════════════════════════════════════════════════════════════
+
+msgctxt "#32270"
+msgid "Add New Portal"
+msgstr "Neues Portal hinzufügen"
+
+msgctxt "#32271"
+msgid "Name"
+msgstr "Name"
+
+msgctxt "#32272"
+msgid "Type"
+msgstr "Typ"
+
+msgctxt "#32273"
+msgid "M3U URL|M3U File|Xtream Codes|STB / Stalker"
+msgstr "M3U URL|M3U Datei|Xtream Codes|STB / Stalker"
+
+msgctxt "#32274"
+msgid "M3U URL / Path"
+msgstr "M3U URL / Pfad"
+
+msgctxt "#32275"
+msgid "XC Host"
+msgstr "XC Host"
+
+msgctxt "#32276"
+msgid "XC Username"
+msgstr "XC Benutzername"
+
+msgctxt "#32277"
+msgid "XC Password"
+msgstr "XC Passwort"
+
+msgctxt "#32278"
+msgid "STB Portal URL"
+msgstr "STB Portal URL"
+
+msgctxt "#32279"
+msgid "STB MAC Address"
+msgstr "STB MAC-Adresse"
+
+msgctxt "#32280"
+msgid "EPG URL (XMLTV)"
+msgstr "EPG URL (XMLTV)"
+
+msgctxt "#32281"
+msgid "Show EPG for this portal"
+msgstr "EPG für dieses Portal anzeigen"
+
+msgctxt "#32282"
+msgid ">> Portal hinzufügen <<"
+msgstr ">> Portal hinzufügen <<"
+
+msgctxt "#32283"
+msgid "Please enter an M3U URL or file path."
+msgstr "Bitte M3U URL oder Dateipfad eingeben."
+
+msgctxt "#32284"
+msgid "Please enter XC Host and Username."
+msgstr "Bitte XC Host und Benutzername eingeben."
+
+msgctxt "#32285"
+msgid "Please enter STB Portal URL and MAC Address."
+msgstr "Bitte STB Portal URL und MAC-Adresse eingeben."
+
+msgctxt "#32290"
+msgid "Export / Import"
+msgstr "Export / Import"
+
+msgctxt "#32291"
+msgid "Export Portals (JSON)"
+msgstr "Portale exportieren (JSON)"
+
+msgctxt "#32292"
+msgid "Import Portals (JSON)"
+msgstr "Portale importieren (JSON)"
+
+msgctxt "#32295"
+msgid "Export to Dropbox"
+msgstr "Zu Dropbox exportieren"
+
+msgctxt "#32296"
+msgid "Import from Dropbox"
+msgstr "Von Dropbox importieren"
+
+msgctxt "#32299"
+msgid "Dropbox API Token"
+msgstr "Dropbox API-Token"
+
+msgctxt "#32300"
+msgid "Dropbox backup path (e.g. /portals.json)"
+msgstr "Dropbox-Sicherungspfad (z.B. /portals.json)"
+
+msgctxt "#32301"
+msgid "No portals to export"
+msgstr "Keine Portale zum Exportieren"
+
+msgctxt "#32302"
+msgid "Export path"
+msgstr "Exportpfad"
+
+msgctxt "#32303"
+msgid "Import path"
+msgstr "Importpfad"
+
+msgctxt "#32304"
+msgid "File not found"
+msgstr "Datei nicht gefunden"
+
+msgctxt "#32305"
+msgid "Export failed"
+msgstr "Export fehlgeschlagen"
+
+msgctxt "#32307"
+msgid "Invalid JSON file"
+msgstr "Ungültige JSON-Datei"
+
+msgctxt "#32308"
+msgid "Import mode"
+msgstr "Importmodus"
+
+msgctxt "#32309"
+msgid "Merge with existing portals"
+msgstr "Mit bestehenden Portalen zusammenführen"
+
+msgctxt "#32310"
+msgid "Replace all portals"
+msgstr "Alle Portale ersetzen"
+
+msgctxt "#32311"
+msgid "No Dropbox token configured. Please create an app at dropbox.com/developers, copy the access token and enter it here."
+msgstr "Kein Dropbox-Token hinterlegt. Bitte unter dropbox.com/developers eine App erstellen, den Access Token kopieren und hier eintragen."
+
+msgctxt "#32312"
+msgid "Dropbox upload failed"
+msgstr "Dropbox-Upload fehlgeschlagen"
+
+msgctxt "#32313"
+msgid "Dropbox download failed"
+msgstr "Dropbox-Download fehlgeschlagen"
+
+msgctxt "#32314"
+msgid "Enter path directly"
+msgstr "Pfad direkt eingeben"
+
+msgctxt "#32315"
+msgid "Browse with Kodi"
+msgstr "Mit Kodi durchsuchen"
+
+msgctxt "#32316"
+msgid "{} portals imported"
+msgstr "{} Portale importiert"
+
+msgctxt "#32317"
+msgid "{} portals exported"
+msgstr "{} Portale exportiert"

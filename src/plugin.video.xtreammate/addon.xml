@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="plugin.video.xtreammate"
+       name="XtreamMate"
+       version="0.1.0"
+       provider-name="GS Media (Fork of mr-evil1)">
+
+  <requires>
+    <import addon="xbmc.python" version="3.0.0"/>
+    <import addon="script.module.requests" version="2.27.0" optional="true"/>
+
+</requires>
+
+  <extension point="xbmc.python.pluginsource" library="default.py">
+    <provides>video audio</provides>
+  </extension>
+
+  <extension point="xbmc.service" library="service.py" start="startup"/>
+
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en_GB">XtreamMate – TV setup wizard for Xtream, M3U and Stalker</summary>
+    <summary lang="de_DE">XtreamMate – IPTV-Einrichtungsassistent mit Xtream, M3U und Stalker</summary>
+    <description lang="en_GB">
+      Independent GPL-licensed derivative of mr-evil1 TiViMate Kodi, featuring a guided IPTV import process and on-video remote-control live channel and category navigation.
+      Features: Multiple M3U playlists, Xtream Codes API (Live/VOD/Series),
+      XMLTV EPG, channel groups, favourites, search, catch-up, recordings,
+      reminders, sleep timer.
+    </description>
+    <description lang="de_DE">
+      Eigenständiger GPL-Fork von mr-evil1 TiViMate Kodi mit geführter IPTV-Einrichtung und Fernbedienungssteuerung über laufendem Live-TV.
+      Funktionen: Mehrere M3U-Playlists, Xtream-Codes-API (Live/VOD/Serien),
+      XMLTV-EPG, Sendergruppen, Favoriten, Suche, Catch-up, Aufnahmen,
+      Erinnerungen, Sleep-Timer.
+    </description>
+    <platform>all</platform>
+    <license>GPL-2.0-only</license>
+    <defaultlanguage>resource.language.de_de</defaultlanguage>
+    <forum>https://forum.kodi.tv</forum>
+    <website>https://kodi.tv</website>
+    <source>https://github.com/mr-evil1/kodi-media-repo</source>
+    <news>German and English language support; Language filter; Xtream auto-detection; Parallel search</news>
+    <assets>
+      <icon>icon.png</icon>
+      <fanart>fanart.png</fanart>
+    </assets>
+  </extension>
+
+</addon>
