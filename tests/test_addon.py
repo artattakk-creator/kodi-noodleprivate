@@ -171,11 +171,12 @@ class KodiTest(unittest.TestCase):
         self.mod.collection_remove({'url': entry, 'collection_id': ident})
         self.assertNotIn(entry, self.mod.STORE.get_collection(ident)['items'])
 
-    def test_disabled_provider_hidden_from_directory(self):
+    def test_disabled_provider_visible_in_catalogue_but_not_enabled(self):
         self.mod.STORE.update_prefs(provider_enabled={'xhamster': False})
         self.mod.provider_directory()
         urls=[x[1] for x in self.log if x[0]=='item']
-        self.assertFalse(any('provider=xhamster' in u for u in urls))
+        self.assertTrue(any('provider=xhamster' in u and 'provider_admin_detail' in u for u in urls))
+        self.assertFalse(any('provider=xhamster' in u and 'provider_browse' in u for u in urls))
         self.assertTrue(any('provider=eporner' in u for u in urls))
 
     def test_cumination_items_forward_playback_to_original_plugin(self):

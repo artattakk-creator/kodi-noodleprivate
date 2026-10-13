@@ -4,6 +4,7 @@ No copied provider scrapers and no attempt to defeat site access controls.
 The installed Cumination add-on owns parsing and stream resolution.
 """
 import json
+import re
 import urllib.parse
 
 CUMINATION_ID = 'plugin.video.cumination'
@@ -15,7 +16,35 @@ PROVIDERS = {
     'spankbang': {'name': 'SpankBang', 'search': 'https://spankbang.party/s/'},
     'tnaflix': {'name': 'Tnaflix', 'search': 'https://www.tnaflix.com/search.php?what='},
 }
-ORDER = ('eporner', 'xhamster', 'pornhub', 'xnxx', 'spankbang', 'tnaflix')
+ORDER = ['eporner', 'xhamster', 'pornhub', 'xnxx', 'spankbang', 'tnaflix']
+LEGACY = frozenset(ORDER)
+SITE_ID = re.compile(r'^[A-Za-z0-9_]{1,64}$')
+MODE = re.compile(r'^[A-Za-z0-9_]{1,64}\.[A-Za-z0-9_]{1,64}$')
+
+
+def register_catalog(catalog):
+    """Extend the original six with validated sites exposed by installed Cumination."""
+    for key, data in (catalog or {}).items():
+        if not SITE_ID.fullmatch(key) or not isinstance(data, dict):
+            continue
+        label = str(data.get('name') or key)[:110]
+        uri = data.get('uri') or ''
+        try:
+            parsed = urllib.parse.urlsplit(uri)
+            mode = urllib.parse.parse_qs(parsed.query).get('mode', [''])[0]
+            if parsed.scheme != 'plugin' or parsed.netloc != CUMINATION_ID or not MODE.fullmatch(mode) or mode.split('.')[0] != key:
+                continue
+        except (ValueError, TypeError):
+            continue
+        if key not in PROVIDERS:
+            PROVIDERS[key] = {'name': label, 'uri': uri, 'image': str(data.get('image') or '')}
+            ORDER.append(key)
+        else:
+            PROVIDERS[key]['uri'] = uri
+            PROVIDERS[key]['image'] = str(data.get('image') or ''}
+
+
+
 
 
 class BridgeError(Exception):
@@ -27,7 +56,7 @@ def enabled_sources(prefs):
     if not isinstance(configured, dict):
         configured = {}
     return ['noodlemagazine'] * (configured.get('noodlemagazine', True) is not False) + [
-        key for key in ORDER if configured.get(key, True) is not False]
+        key for key in ORDER if configured.get(key, key in LEGACY) is not False]
 
 
 def source_name(source):
@@ -37,8 +66,12 @@ def source_name(source):
 def cumination_uri(provider, route='Main', keyword=None):
     if provider not in PROVIDERS or route not in ('Main', 'Search'):
         raise BridgeError('Nicht unterstützter Anbieter')
-    params = {'mode': '{}.{}'.format(provider, route), 'widget': 'true'}
+    params = {'mode': '{}.{}'.format(provider, route)}
+    if route == 'Main' and PROVIDERS[provider].get('uri'):
+        return validated_cumination_url(PROVIDERS[provider]['uri'], provider)
     if route == 'Search':
+        if not PROVIDERS[provider].get('search'):
+            raise BridgeError('Für diesen Anbieter ist kein Suchpfad bekannt')
         params['url'] = PROVIDERS[provider]['search']
         params['keyword'] = (keyword or '').strip()
     return 'plugin://{}/?{}'.format(CUMINATION_ID, urllib.parse.urlencode(params))
@@ -51,7 +84,7 @@ def validated_cumination_url(path, provider=None):
         raise BridgeError('Unerwarteter Kodi-Pluginpfad')
     mode = urllib.parse.parse_qs(parsed.query).get('mode', [''])[0]
     token = mode.split('.', 1)[0]
-    if token not in PROVIDERS or '.' not in mode or (provider and token != provider):
+    if token not in PROVIDERS or not MODE.fullmatch(mode) or (provider and token != provider):
         raise BridgeError('Nicht freigegebener Cumination-Aufruf')
     return path
 

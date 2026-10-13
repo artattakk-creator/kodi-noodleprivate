@@ -80,3 +80,15 @@ but not an end-to-end test on your device. Some sources may require updates in
 the upstream Cumination add-on. A provider failure is isolated from the other
 results and does not overwrite saved favorites.
 
+
+## Noodle Private v0.4.0 – Dynamischer Cumination-Katalog
+
+- Alle Anbieter, die Cumination auf dem Kodi-Gerät registriert, werden dynamisch über Kodi-JSON-RPC gelesen. Kein Kopieren externer Scraper-Dateien.
+- Anbieter-Einzelseiten: native Kategorien und Unterverzeichnisse; eigene Suche, falls vorhanden.
+- Anbieterverwaltung (Admin): Aktivieren/deaktivieren, Katalog aktualisieren, Quellenzugriff einzeln prüfen.
+- Bisherige sieben Quellen bleiben aktiv; neu entdeckte Anbieter starten deaktiviert.
+- Globale Suche: bis zu zwölf aktive Cumination-Quellen gleichzeitig; jeder Ausfall isoliert.
+- Bestehende Favoritenlisten, Verlauf und Einstellungen bleiben unverändert in state.json. Der neue Katalog liegt separat in cumination_catalog.json.
+- Widgets: plugin://plugin.video.noodleprivate/?action=providers ; ?action=provider_admin ; ?action=provider_browse&provider=eporner ; ?action=favorites
+- Quellencheck prueft Kodi-Verzeichnisauflistung, nicht erfolgreiche Video-Wiedergabe.
+- Neue Box: Installiere GS Media Repository, Noodle Private und Cumination. Abhaengigkeiten automatisch bestaetigen. SMR Link Tester / Dobbelina Repository sind optional.

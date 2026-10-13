@@ -6,6 +6,7 @@ import ipaddress
 import os
 import re
 import sys
+import time
 import urllib.parse
 import urllib.request
 
@@ -18,7 +19,10 @@ import xbmcvfs
 from resources.lib.site import ROOT, UA, SiteError, fetch_html, listing_path, parse_detail, parse_listing, watch_url
 from resources.lib.storage import Storage
 from resources.lib.providers import (BridgeError, PROVIDERS, ORDER, cumination_uri,
-    enabled_sources, source_name, kodi_directory, source_for_url, validated_cumination_url)
+    enabled_sources, source_name, kodi_directory, source_for_url, validated_cumination_url,
+    register_catalog, LEGACY)
+from resources.lib.catalogue import (load_catalog, read_cache, write_cache,
+    _read_directory, search_link, search_with_keyword)
 
 ADDON = xbmcaddon.Addon()
 HANDLE = int(sys.argv[1])
@@ -26,6 +30,8 @@ BASE = sys.argv[0]
 ARGS = {key: values[-1] for key, values in urllib.parse.parse_qs(sys.argv[2].lstrip('?')).items()}
 PROFILE = xbmcvfs.translatePath(ADDON.getAddonInfo('profile'))
 STORE = Storage(PROFILE)
+# Resolve dynamic provider IDs used by saved playlists/widgets without network calls.
+register_catalog(read_cache(PROFILE).get('sites', {}))
 ICON = os.path.join(ADDON.getAddonInfo('path'), 'resources', 'icon.png')
 FANART = os.path.join(ADDON.getAddonInfo('path'), 'resources', 'fanart.png')
 
@@ -170,7 +176,8 @@ def root():
         ('Gerade angesehen', 'now'), ('Nur HD', 'hd'), ('Kurzvideos', 'short'), ('Lange Videos', 'long')
     ]
     folder('Anbieterübergreifende Suche', 'global_search_prompt')
-    folder('Videoanbieter', 'providers')
+    folder('Videoanbieter (Cumination-Katalog)', 'providers')
+    folder('Anbieterverwaltung (Admin)', 'provider_admin')
     folder('Suche nur NoodleMagazine', 'search_prompt')
     for label, key in choices:
         folder(label, 'list', section=key)
@@ -432,28 +439,149 @@ def cumination_installed():
     return xbmc.getCondVisibility('System.HasAddon(plugin.video.cumination)')
 
 
+def _ensure_catalog(refresh=False):
+    # Provider metadata comes from installed Cumination, not bundled scrapers.
+    cache = read_cache(PROFILE)
+    register_catalog(cache.get('sites', {}))
+    if not cumination_installed():
+        raise BridgeError('Cumination muss als Video-Add-on aktiviert sein')
+    cache = load_catalog(PROFILE, xbmc.executeJSONRPC, refresh=refresh)
+    register_catalog(cache.get('sites', {}))
+    return cache
+
+
+def _catalog_or_fallback(refresh=False):
+    try:
+        return _ensure_catalog(refresh)
+    except (BridgeError, OSError, ValueError) as error:
+        xbmc.log('[Noodle Private] Katalog: {}'.format(error), xbmc.LOGWARNING)
+        inform('Cumination-Katalog derzeit nicht erreichbar; gespeicherte Anbieter bleiben verfügbar')
+        return read_cache(PROFILE)
+
+
+def _provider_ids():
+    return sorted(ORDER, key=lambda provider: (provider not in enabled_sources(STORE.prefs()), source_name(provider).casefold()))
+
+
 def provider_directory():
-    if 'noodlemagazine' in enabled_sources(STORE.prefs()):
+    _catalog_or_fallback()
+    active = set(enabled_sources(STORE.prefs()))
+    folder('Anbieterverwaltung (Admin)', 'provider_admin')
+    folder('Katalog neu laden', 'providers_refresh')
+    if 'noodlemagazine' in active:
         folder('NoodleMagazine (direkt)', 'list', section='popular')
-    for provider in ORDER:
-        if provider in enabled_sources(STORE.prefs()):
-            folder(source_name(provider), 'provider_browse', provider=provider)
-    folder('Aktive Anbieter festlegen', 'provider_settings')
+    for provider in _provider_ids():
+        label = ('[AN] ' if provider in active else '[AUS] ') + source_name(provider)
+        context = [('Anbieter verwalten', 'Container.Update({})'.format(
+            build_url('provider_admin_detail', provider=provider)))]
+        folder(label, 'provider_browse' if provider in active else 'provider_admin_detail',
+               icon=PROVIDERS.get(provider, {}).get('image'), context=context,
+               provider=provider)
     end('files')
 
 
 def provider_settings():
+    provider_admin()
+
+
+def provider_admin():
+    _catalog_or_fallback()
+    active = set(enabled_sources(STORE.prefs()))
+    folder('Katalog neu von Cumination einlesen', 'providers_refresh')
+    folder('NoodleMagazine: {}'.format('AKTIV' if 'noodlemagazine' in active else 'AUS'),
+           'provider_admin_detail', provider='noodlemagazine')
+    for provider in _provider_ids():
+        folder(('✓ ' if provider in active else '○ ') + source_name(provider),
+               'provider_admin_detail', provider=provider,
+               icon=PROVIDERS.get(provider, {}).get('image'))
+    end('files')
+
+
+def provider_admin_detail(provider):
+    _catalog_or_fallback()
+    if provider not in PROVIDERS and provider != 'noodlemagazine':
+        folder('Unbekannter Anbieter', 'provider_admin')
+        end('files')
+        return
+    active = provider in enabled_sources(STORE.prefs())
+    folder(('Deaktivieren: ' if active else 'Aktivieren: ') + source_name(provider),
+           'provider_toggle', provider=provider)
+    folder('Quelle auf Listenzugriff prüfen', 'provider_check', provider=provider)
+    folder('Anbieter öffnen', 'list' if provider == 'noodlemagazine' else 'provider_browse',
+           **({'section':'popular'} if provider == 'noodlemagazine' else {'provider':provider}))
+    folder('Anbieter durchsuchen', 'search_prompt' if provider == 'noodlemagazine' else 'provider_search_prompt',
+           **({} if provider == 'noodlemagazine' else {'provider':provider}))
+    cache = read_cache(PROFILE)
+    health = cache.get('health', {}).get(provider) or {}
+    if health:
+        folder('Letzter Check: {}'.format(str(health.get('details', 'unbekannt'))[:75]), 'provider_check', provider=provider)
+    end('files')
+
+
+def provider_toggle(provider):
+    _catalog_or_fallback()
+    if provider not in PROVIDERS and provider != 'noodlemagazine':
+        return
     prefs = STORE.prefs()
-    enabled = dict(prefs.get('provider_enabled', {}))
-    choices = ['noodlemagazine'] + list(ORDER)
-    labels = [('[x] ' if enabled.get(p, True) else '[ ] ') + source_name(p) for p in choices]
-    choice = xbmcgui.Dialog().select('Anbieter (einzeln umschalten)', labels)
-    if choice >= 0:
-        key = choices[choice]
-        enabled[key] = not enabled.get(key, True)
-        STORE.update_prefs(provider_enabled=enabled)
-        inform('{}: {}'.format(source_name(key), 'aktiv' if enabled[key] else 'deaktiviert'))
-        xbmc.executebuiltin('Container.Refresh')
+    enabled = dict(prefs.get('provider_enabled') or {})
+    active = provider in enabled_sources(prefs)
+    enabled[provider] = not active
+    STORE.update_prefs(provider_enabled=enabled)
+    inform('{}: {}'.format(source_name(provider), 'aktiviert' if not active else 'deaktiviert'))
+
+
+def provider_check(provider):
+    _catalog_or_fallback()
+    if provider != 'noodlemagazine' and provider not in PROVIDERS:
+        inform('Anbieter unbekannt')
+        return
+    try:
+        if provider == 'noodlemagazine':
+            parsed, _next = parse_listing(_read_page(listing_path('popular'), refresh=True))
+            count = len(parsed)
+        else:
+            count = len(_read_directory(xbmc.executeJSONRPC, cumination_uri(provider)))
+        # Successful directory response does not guarantee video playback.
+        status = 'list_ok' if count else 'empty'
+        message = '{} Einträge (Kodi-Verzeichnis)'.format(count)
+    except (BridgeError, SiteError, ValueError, OSError) as error:
+        status = 'error'
+        message = str(error)[:220]
+    cache = read_cache(PROFILE)
+    if not isinstance(cache.get('health'), dict):
+        cache['health'] = {}
+    cache['health'][provider] = {'at': int(time.time()), 'status': status, 'details': message}
+    try:
+        write_cache(PROFILE, cache)
+    except OSError:
+        pass
+    xbmcgui.Dialog().textviewer('Quellenprüfung – {}'.format(source_name(provider)),
+        '{}\n\nDies testet die Navigation des Anbieter-Moduls, nicht die Wiedergabe aller Videos.'.format(message))
+
+
+def providers_refresh():
+    try:
+        cache = _ensure_catalog(refresh=True)
+        inform('{} Anbieter aus Cumination geladen'.format(len(cache.get('sites', {}))))
+    except (BridgeError, OSError, ValueError) as error:
+        fail(error)
+
+
+def _provider_search_path(provider, term):
+    if provider not in PROVIDERS:
+        raise BridgeError('Anbieter nicht im Katalog')
+    # Original six retain known search routes as fallback.
+    try:
+        rows = _read_directory(xbmc.executeJSONRPC, cumination_uri(provider))
+        native = search_link(rows, provider)
+        if native:
+            return validated_cumination_url(search_with_keyword(native, term), provider)
+    except (ValueError, OSError):
+        if provider not in LEGACY:
+            raise
+    if provider in LEGACY:
+        return cumination_uri(provider, 'Search', term)
+    raise BridgeError('Dieses Cumination-Modul bietet keine erkennbare Suchfunktion')
 
 
 def _bridge_items(provider, path):
@@ -475,11 +603,13 @@ def _show_bridge_items(items, provider):
 
 
 def provider_browse(provider, target=''):
-    if provider not in ORDER or provider not in enabled_sources(STORE.prefs()):
-        folder('Anbieter nicht aktiviert', 'providers')
+    _catalog_or_fallback()
+    if provider not in PROVIDERS or provider not in enabled_sources(STORE.prefs()):
+        folder('Anbieter nicht aktiviert (in der Verwaltung einschalten)', 'provider_admin_detail', provider=provider)
         end('files')
         return
     folder('Bei {} suchen'.format(source_name(provider)), 'provider_search_prompt', provider=provider)
+    folder('Quelle prüfen / Einstellungen', 'provider_admin_detail', provider=provider)
     try:
         path = validated_cumination_url(target, provider) if target else cumination_uri(provider)
         items = _bridge_items(provider, path)
@@ -492,7 +622,8 @@ def provider_browse(provider, target=''):
 
 
 def provider_search_prompt(provider):
-    if provider not in ORDER:
+    _catalog_or_fallback()
+    if provider not in PROVIDERS:
         end('files')
         return
     term = xbmcgui.Dialog().input('{} durchsuchen'.format(source_name(provider)), type=xbmcgui.INPUT_ALPHANUM)
@@ -505,14 +636,15 @@ def provider_search_prompt(provider):
 
 
 def provider_search(provider, query):
-    if not query.strip() or provider not in ORDER or provider not in enabled_sources(STORE.prefs()):
+    _catalog_or_fallback()
+    if not query.strip() or provider not in PROVIDERS or provider not in enabled_sources(STORE.prefs()):
         end('files')
         return
     try:
-        items = _bridge_items(provider, cumination_uri(provider, 'Search', query))
+        items = _bridge_items(provider, _provider_search_path(provider, query))
         if not _show_bridge_items(items, provider):
             folder('Keine Treffer bei {}'.format(source_name(provider)), 'help')
-    except (BridgeError, ValueError) as exc:
+    except (BridgeError, ValueError, OSError) as exc:
         fail(exc)
         folder('{} nicht erreichbar'.format(source_name(provider)), 'help')
     end('videos')
@@ -539,6 +671,7 @@ def global_search(query):
     if not query:
         end('files')
         return
+    _catalog_or_fallback()
     enabled = enabled_sources(STORE.prefs())
     rows, errors = [], []
     progress = xbmcgui.DialogProgress()
@@ -554,12 +687,15 @@ def global_search(query):
             except (SiteError, ValueError, OSError) as exc:
                 errors.append('NoodleMagazine: {}'.format(exc))
         active = [p for p in ORDER if p in enabled]
+        if len(active) > 12:
+            errors.append('Nur die ersten 12 aktiven Anbieter wurden durchsucht; bitte Auswahl in der Verwaltung reduzieren')
+            active = active[:12]
         for n, provider in enumerate(active):
             progress.update(int(100 * (n + 1) / max(1, len(active))), source_name(provider))
             if progress.iscanceled():
                 break
             try:
-                rows.extend(_bridge_items(provider, cumination_uri(provider, 'Search', query))[:60])
+                rows.extend(_bridge_items(provider, _provider_search_path(provider, query))[:60])
             except (BridgeError, ValueError) as exc:
                 errors.append('{}: {}'.format(source_name(provider), exc))
     finally:
@@ -589,7 +725,7 @@ def global_search(query):
 def settings():
     labels = ['Wiedergabequalität', 'Sortierung', 'Laufzeitfilter',
               'Bildvorschauen lokal zwischenspeichern', 'Seiten-Cache leeren',
-              'Videoanbieter aktivieren / deaktivieren']
+              'Anbieterverwaltung (Admin)']
     sel = xbmcgui.Dialog().select('Noodle Private – Einstellungen', labels)
     prefs = STORE.prefs()
     if sel == 0:
@@ -616,7 +752,7 @@ def settings():
         STORE.clear_cache()
         inform('Seiten-Cache geleert')
     elif sel == 5:
-        provider_settings()
+        xbmc.executebuiltin('Container.Update({})'.format(build_url('provider_admin')))
 
 
 def help_page():
@@ -630,7 +766,10 @@ def help_page():
         'Alle Anbieter: plugin://plugin.video.noodleprivate/?action=providers',
         'Alle durchsuchen: plugin://plugin.video.noodleprivate/?action=global_search_prompt',
         'Anbietervideos: plugin://plugin.video.noodleprivate/?action=provider_browse&provider=eporner',
-        'Anbieter im Pfad: eporner / xhamster / pornhub / xnxx / spankbang / tnaflix',
+        'Alle installierten Cumination-Quellen stehen im Anbieter-Katalog.',
+        'Pro Anbieter: Eigene Kategorien, Suche (falls vorhanden) und Quellenprüfung.',
+        'Admin: Anbieter aktivieren/deaktivieren, Katalog aktualisieren.',
+        'Neue Anbieter starten deaktiviert; höchstens 12 gleichzeitig in globaler Suche.',
         'Favoritenlisten: plugin://plugin.video.noodleprivate/?action=favorites',
         'Einzelne Liste: plugin://plugin.video.noodleprivate/?action=collection_view&collection_id=default',
         '',
@@ -672,6 +811,19 @@ def run():
         global_search(ARGS.get('query', ''))
     elif action == 'providers':
         provider_directory()
+    elif action == 'providers_refresh':
+        providers_refresh()
+        provider_directory()
+    elif action == 'provider_admin':
+        provider_admin()
+    elif action == 'provider_admin_detail':
+        provider_admin_detail(ARGS.get('provider', ''))
+    elif action == 'provider_toggle':
+        provider_toggle(ARGS.get('provider', ''))
+        provider_admin_detail(ARGS.get('provider', ''))
+    elif action == 'provider_check':
+        provider_check(ARGS.get('provider', ''))
+        provider_admin_detail(ARGS.get('provider', ''))
     elif action == 'provider_browse':
         provider_browse(ARGS.get('provider', ''), ARGS.get('target', ''))
     elif action == 'provider_search_prompt':
@@ -694,7 +846,6 @@ def run():
         collection_delete(ARGS)
     elif action == 'provider_settings':
         provider_settings()
-        end('files')
     elif action == 'recently_played':
         saved_list('recent')
     elif action == 'past_searches':
