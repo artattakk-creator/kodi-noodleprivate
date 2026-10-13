@@ -3,7 +3,6 @@ on:
   push:
     branches: [main]
     paths:
-      - "bootstrap.xz.b64"
       - "src/**"
       - "tools/build_repository.py"
   workflow_dispatch:
