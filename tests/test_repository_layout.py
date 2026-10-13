@@ -43,7 +43,7 @@ class RepositoryLayoutTests(unittest.TestCase):
         addon_dir = SRC / "plugin.video.xtreammate"
         addon = ET.parse(addon_dir / "addon.xml").getroot()
         self.assertEqual(addon.get("id"), "plugin.video.xtreammate")
-        self.assertEqual(addon.get("version"), "0.1.3")
+        self.assertEqual(addon.get("version"), "0.1.4")
         self.assertIsNotNone(addon.find("./extension[@point='xbmc.service']"))
         self.assertTrue((addon_dir / "resources/lib/live_overlay.py").is_file())
         self.assertTrue((addon_dir / "resources/lib/setup_wizard.py").is_file())
