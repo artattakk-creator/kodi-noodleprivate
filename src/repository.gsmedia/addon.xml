@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="repository.gsmedia" name="GS Media Kodi Repository" version="1.2.0" provider-name="GS Media">
+<addon id="repository.gsmedia" name="GS Media Kodi Repository" version="1.3.0" provider-name="GS Media">
   <extension point="xbmc.addon.repository">
     <dir>
       <info compressed="false">https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/addons.xml</info>
@@ -28,10 +28,10 @@
     </dir>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="de_DE">Zentrale Add-on-Verwaltung von GS Media</summary>
-    <description lang="de_DE">GS Media Kodi-Erweiterungen sowie die separat gepflegten Cumination-, SMR- und xVAULT-Kataloge installieren und aktualisieren. Noodle Private bleibt eigenständig.</description>
+    <summary lang="de_DE">Zentrales GS Media Kodi Repository (einzige Update-Quelle fuer Noodle Private)</summary>
+    <description lang="de_DE">Einziges GS Media Repository fuer Noodle Private, Cumination, SMR und xVAULT. Das fruehere Noodle Private Repository ist eingestellt.</description>
     <summary lang="en_GB">GS Media's Kodi add-on repository</summary>
-    <description lang="en_GB">Install GS Media add-ons, including Noodle Private, plus upstream Cumination, SMR resolvers and xVAULT (including its optional repository).</description>
+    <description lang="en_GB">Single GS Media update source for Noodle Private, plus upstream Cumination, SMR and xVAULT catalogs.</description>
     <disclaimer lang="de_DE">Eigenständiges Drittanbieter-Repository. Externe Projekte (Cumination, SMR, xVAULT) werden unverändert von ihren Urhebern gepflegt; xVAULT-Support nur ueber das offizielle Repository. Nicht mit Team Kodi verbunden.</disclaimer>
     <platform>all</platform>
     <license>MIT</license>

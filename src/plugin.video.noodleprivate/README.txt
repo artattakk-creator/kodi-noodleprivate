@@ -1,4 +1,4 @@
-Noodle Private 0.4.1
+Noodle Private 0.4.2
 ====================
 Kodi 19+ video plugin for adult users. The installed Cumination add-on is
 required for EPorner, xHamster, Pornhub, XNXX, SpankBang and Tnaflix.
@@ -44,3 +44,10 @@ UPGRADE FROM 0.2.0
 Install from the same GS Media Kodi repository. Keep the existing add-on ID
 plugin.video.noodleprivate, and do not uninstall/clear the add-on profile.
 The files state.json and preferences.json are left unchanged by this update.
+
+CENTRAL REPOSITORY MIGRATION (0.4.2)
+- All new versions are released exclusively via repository.gsmedia.
+- The former repository.noodleprivate is retired and not published in addons.xml.
+- Do not uninstall Noodle Private; all user favorites remain under the same add-on ID.
+- One-time Kodi action: update via GS Media, then uninstall the obsolete repository
+  add-on repository.noodleprivate (never remove Noodle Private itself).

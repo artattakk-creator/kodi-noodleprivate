@@ -3,12 +3,12 @@
 Public Kodi repository for GS Media's own add-ons, plugins, scripts and services.
 
 **Repository add-on ID:** `repository.gsmedia`  
-**Repository version:** `1.2.0`  
+**Repository version:** `1.3.0`  
 **GitHub host:** `artattakk-creator/kodi-noodleprivate`
 
 ## Installation
 
-1. Download the [GS Media Kodi Repository installer ZIP](https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/repository.gsmedia-1.2.0.zip).
+1. Download the [GS Media Kodi Repository installer ZIP](https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/repository.gsmedia-1.3.0.zip).
 2. In Kodi: **Add-ons → Install from zip file** and select that ZIP (not the GitHub 'RAW' source viewer).
 3. **Install from repository → GS Media Kodi Repository**, then install the desired video add-on.
 4. Updates are then managed by Kodi from the repository.
@@ -24,7 +24,7 @@ If GitHub Pages is enabled (main/(root)), Kodi's optional HTTPS source is `https
 Every directory `src/<addon.id>/` containing an `addon.xml` becomes its own Kodi package. The automated builder creates:
 - `addons.xml` and `addons.xml.md5`
 - `<addon.id>/<addon.id>-<version>.zip`
-- a root-level repository-installer ZIP for `repository.*` entries.
+- a root-level repository-installer ZIP for the central `repository.gsmedia`.
 
 Increase an add-on's version number in its `addon.xml` when publishing an update. GitHub Actions then generates and publishes the packages.
 
@@ -33,7 +33,7 @@ Increase an add-on's version number in its `addon.xml` when publishing an update
 The repository code and downloadable packages are public. Each user's favorites and history stay on their own Kodi device. External services are independent of GS Media. This repository is not affiliated with Team Kodi.
 ## Repository-Programme: direkte Kodi-Installation
 
-Der zentral verwaltete Repository-Installer liegt zusätzlich unter [`repository-programme/repository.gsmedia-1.2.0.zip`](repository-programme/repository.gsmedia-1.2.0.zip). Der Build-Prozess spiegelt zukünftige Installer in dieses Verzeichnis. Kodi installiert die ZIP über **Add-ons → Aus ZIP-Datei installieren**. Danach erscheinen die enthaltenen Plugins unter **GS Media Kodi Repository**.
+Der zentral verwaltete Repository-Installer liegt zusätzlich unter [`repository-programme/repository.gsmedia-1.3.0.zip`](repository-programme/repository.gsmedia-1.3.0.zip). Der Build-Prozess spiegelt zukünftige Installer in dieses Verzeichnis. Kodi installiert die ZIP über **Add-ons → Aus ZIP-Datei installieren**. Danach erscheinen die enthaltenen Plugins unter **GS Media Kodi Repository**.
 
 ## External provider catalogs (GS Media Repository 1.1.0)
 
@@ -96,3 +96,20 @@ results and does not overwrite saved favorites.
 ## xVAULT upstream catalog (GS Media Repository 1.2.0)
 
 Kodi can install both `plugin.video.xvault` and the optional `repository.xvault` directly from the official maintainer's index at [mojomedia1812/xVAULT](https://github.com/mojomedia1812/xVAULT). Package and index downloads are referenced through the official GitHub-hosted `docs/` directory over HTTPS, rather than the original repository's plain-HTTP custom domain. GS Media does not mirror or modify upstream ZIP archives. xVAULT's official documentation limits maintainer support to installations made from the official xVAULT repository; GS Media cannot guarantee upstream support, runtime availability or compatibility. Installing `repository.xvault` separately is optional if xVAULT was installed through GS Media.
+
+## Single-repository migration (GS Media 1.3.0 / Noodle Private 0.4.2)
+
+The duplicate `repository.noodleprivate` was retired. The repository's own
+`addons.xml` now contains exactly one repository add-on: `repository.gsmedia`.
+GS Media indexes and delivers `plugin.video.noodleprivate`; Cumination, SMR and
+xVAULT remain separate upstream package catalogs accessed from the **single
+installed GS Media repository**. Upstream repository installer entries are
+optional and do not need to be installed.
+
+For Kodi devices that previously installed Noodle Private from
+`repository.noodleprivate`: update GS Media to 1.3.0 (install the ZIP manually
+if Kodi caches old metadata), use **Noodle Private → Information → Versions** to
+select the **GS Media Kodi Repository** build 0.4.2, and finally **uninstall
+only the old repository.noodleprivate add-on** under Add-on repositories.
+Do not uninstall Noodle Private itself or delete userdata. New installations
+should install GS Media 1.3.0, then Noodle Private 0.4.2 directly from it.

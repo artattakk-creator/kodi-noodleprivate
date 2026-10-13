@@ -7,6 +7,12 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "src"
 IDS = tuple(d.name for d in sorted(SRC.iterdir()) if d.is_dir() and (d / "addon.xml").is_file())
+# The former repository.noodleprivate is retired. Refuse to republish competing
+# Kodi repositories, so Noodle Private has exactly one managed update source.
+if "repository.gsmedia" not in IDS:
+    raise RuntimeError("Missing central GS Media repository")
+if any(name.startswith("repository.") and name != "repository.gsmedia" for name in IDS):
+    raise RuntimeError("Only repository.gsmedia may be published (legacy repo must be removed)")
 
 def apply_pending_release():
     """One-time, path-checked import of v0.3.0 sources; keeps Kodi user data untouched."""
