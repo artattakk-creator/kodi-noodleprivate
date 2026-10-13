@@ -1,0 +1,36 @@
+name: Build Kodi repository
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "tools/build_repository.py"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify add-on source
+        run: |
+          test -f src/plugin.video.noodleprivate/default.py
+          test -f src/plugin.video.noodleprivate/addon.xml
+          test -f src/repository.noodleprivate/addon.xml
+      - name: Build index and packages
+        run: python tools/build_repository.py
+      - name: Commit generated packages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add addons.xml addons.xml.md5 repository.noodleprivate-0.1.0.zip plugin.video.noodleprivate/ repository.noodleprivate/ src/
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish Kodi add-on packages"
+            git push
+          fi
