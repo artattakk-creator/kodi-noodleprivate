@@ -20,3 +20,8 @@ Die GitHub-Actions-Pipeline erstellt und veröffentlicht die Kodi-ZIPs automatis
 Dies ist ein eigenständiges Open-Source-Projekt ohne Verbindung zum Betreiber der externen Videoplattform. Es richtet sich an Erwachsene. Favoriten, eigene Sammlungen, Verlauf und Einstellungen werden ausschließlich lokal in Kodi gespeichert; sie sind nicht Teil dieses GitHub-Repositories. Externe Streams sind nicht garantiert verfügbar. Keine Umgehung von Zugangskontrollen.
 
 © GS Media – Kodi-Repository-Projekt.
+## Kodi installieren (einmalig)
+
+Direkte Installer-ZIP: https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/repository.noodleprivate-0.1.0.zip
+
+Für eine direkt in Kodi durchsuchbare HTTPS-Quelle GitHub Pages unter **Settings → Pages → Deploy from a branch → main / (root)** aktivieren. Danach ist https://artattakk-creator.github.io/kodi-noodleprivate/ die Kodi-Netzwerkquelle.
