@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Build Kodi repository metadata and installable ZIPs; seed initial source once."""
-import base64, hashlib, io, lzma, re, struct, tarfile, zipfile, zlib
+import hashlib, re, struct, zipfile, zlib
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
@@ -9,25 +9,8 @@ SRC = ROOT / "src"
 IDS = ("plugin.video.noodleprivate", "repository.noodleprivate")
 
 def seed():
-    archive = ROOT / "bootstrap.xz.b64"
     if not (SRC / "plugin.video.noodleprivate" / "default.py").exists():
-        if archive.is_file():
-            packed_text = archive.read_text(encoding="ascii").strip()
-        else:
-            packed_text = "".join((ROOT/"seed"/f"part-{i:02d}.txt").read_text(encoding="ascii").strip() for i in range(1,5))
-        packed = base64.b64decode(packed_text, validate=True)
-        if hashlib.sha256(packed).hexdigest() != "1a9db4855bced9f9576584364ee248aeb5b3fc30fb037dd32949a076f26a14df":
-            raise ValueError("Source archive checksum mismatch")
-        payload = lzma.decompress(packed)
-        with tarfile.open(fileobj=io.BytesIO(payload), mode="r:") as tf:
-            for member in tf:
-                if not member.isfile():
-                    continue
-                path = (SRC / member.name).resolve()
-                if not path.is_relative_to(SRC.resolve()):
-                    raise ValueError("Invalid archive path")
-                path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_bytes(tf.extractfile(member).read())
+        raise RuntimeError("Missing Kodi add-on sources under src/")
     # Original add-on assets refer to jpg, initial repository provides PNG placeholders.
     for addon in IDS:
         xml = SRC / addon / "addon.xml"
