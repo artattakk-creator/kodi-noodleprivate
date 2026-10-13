@@ -13,10 +13,17 @@ class RepositoryLayoutTests(unittest.TestCase):
     def test_gs_media_only_update_origin(self):
         manifest = ET.parse(SRC / "repository.gsmedia" / "addon.xml").getroot()
         self.assertEqual(manifest.get("id"), "repository.gsmedia")
-        self.assertEqual(manifest.get("version"), "1.3.0")
+        self.assertEqual(manifest.get("version"), "1.4.0")
         dirs = manifest.findall("./extension[@point='xbmc.addon.repository']/dir")
-        self.assertEqual(len(dirs), 4)
+        self.assertEqual(len(dirs), 6)
         self.assertIn("/kodi-noodleprivate/main/addons.xml", dirs[0].findtext("info"))
+        self.assertEqual(dirs[4].get("minversion"), "20.0.0")
+        self.assertEqual(dirs[4].get("maxversion"), "20.9.0")
+        self.assertIn("/nexus/addons.xml", dirs[4].findtext("info"))
+        self.assertEqual(dirs[5].get("minversion"), "20.9.1")
+        self.assertIn("/omega/addons.xml", dirs[5].findtext("info"))
+        self.assertEqual(dirs[5].findtext("checksum"), dirs[5].findtext("info"))
+        self.assertEqual(dirs[5].findtext("hashes"), "false")
     def test_no_legacy_repository_in_generated_index(self):
         xml = ET.parse(ROOT / "addons.xml").getroot()
         ids = [entry.get("id") for entry in xml.findall("addon")]

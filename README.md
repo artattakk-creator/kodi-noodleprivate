@@ -3,12 +3,12 @@
 Public Kodi repository for GS Media's own add-ons, plugins, scripts and services.
 
 **Repository add-on ID:** `repository.gsmedia`  
-**Repository version:** `1.3.0`  
+**Repository version:** `1.4.0`  
 **GitHub host:** `artattakk-creator/kodi-noodleprivate`
 
 ## Installation
 
-1. Download the [GS Media Kodi Repository installer ZIP](https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/repository.gsmedia-1.3.0.zip).
+1. Download the [GS Media Kodi Repository installer ZIP](https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/repository.gsmedia-1.4.0.zip).
 2. In Kodi: **Add-ons → Install from zip file** and select that ZIP (not the GitHub 'RAW' source viewer).
 3. **Install from repository → GS Media Kodi Repository**, then install the desired video add-on.
 4. Updates are then managed by Kodi from the repository.
@@ -33,7 +33,7 @@ Increase an add-on's version number in its `addon.xml` when publishing an update
 The repository code and downloadable packages are public. Each user's favorites and history stay on their own Kodi device. External services are independent of GS Media. This repository is not affiliated with Team Kodi.
 ## Repository-Programme: direkte Kodi-Installation
 
-Der zentral verwaltete Repository-Installer liegt zusätzlich unter [`repository-programme/repository.gsmedia-1.3.0.zip`](repository-programme/repository.gsmedia-1.3.0.zip). Der Build-Prozess spiegelt zukünftige Installer in dieses Verzeichnis. Kodi installiert die ZIP über **Add-ons → Aus ZIP-Datei installieren**. Danach erscheinen die enthaltenen Plugins unter **GS Media Kodi Repository**.
+Der zentral verwaltete Repository-Installer liegt zusätzlich unter [`repository-programme/repository.gsmedia-1.4.0.zip`](repository-programme/repository.gsmedia-1.4.0.zip). Der Build-Prozess spiegelt zukünftige Installer in dieses Verzeichnis. Kodi installiert die ZIP über **Add-ons → Aus ZIP-Datei installieren**. Danach erscheinen die enthaltenen Plugins unter **GS Media Kodi Repository**.
 
 ## External provider catalogs (GS Media Repository 1.1.0)
 
@@ -113,3 +113,11 @@ select the **GS Media Kodi Repository** build 0.4.2, and finally **uninstall
 only the old repository.noodleprivate add-on** under Add-on repositories.
 Do not uninstall Noodle Private itself or delete userdata. New installations
 should install GS Media 1.3.0, then Noodle Private 0.4.2 directly from it.
+
+## Titan BINGIE MOD added in GS Media 1.4.0
+
+The central GS Media repository indexes the original AchillesPunks Titan BINGIE MOD skin and all its upstream dependency add-ons over HTTPS. Kodi 20 (Nexus) uses the upstream `nexus` index; Kodi 21 (Omega) and later use the upstream `omega` index. The Omega skin index currently advertises skin 2.2.3, Nexus 2.1.1. Compatibility with future versions is not guaranteed. No separate BINGIE MOD repository installation is required. BINGIE MOD itself can be installed via `Install from repository > GS Media Kodi Repository > Look and feel > Skins`.
+
+The upstream `omega/addons.xml.md5` currently contains the empty-file MD5, so it would not change on a skin-catalog update. GS Media uses the original `omega/addons.xml` as its Kodi checksum/change-marker body, which Kodi's documentation explicitly permits. No third-party binaries are mirrored or modified.
+
+Kodi's built-in official repository remains installed; optional upstream repository add-ons may appear in the catalog but need not be installed.
