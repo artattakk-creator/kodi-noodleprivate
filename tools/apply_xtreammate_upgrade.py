@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Apply the one-time XtreamMate v0.1.1 source fix before the normal Kodi build."""
+"""Apply the one-time XtreamMate v0.1.1 source fix before the normal Kodi build.
+
+This step is repeatable: it exits immediately after the pending patch is consumed.
+"""
 import base64
 import lzma
 import subprocess
