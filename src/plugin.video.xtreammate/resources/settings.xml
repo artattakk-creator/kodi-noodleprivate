@@ -32,6 +32,9 @@
     <setting id="open_portal_manager" type="action"
              label="32201"
              action="RunPlugin(plugin://plugin.video.xtreammate/?action=portal_manager)"/>
+    <setting id="manage_xtream_groups" type="action"
+             label="XtreamMate: Live-TV-, Film- und Seriengruppen verwalten"
+             action="RunPlugin(plugin://plugin.video.xtreammate/?action=groups_manager)"/>
     <setting id="portal_count_info" type="lsep" label=""/>
   </category>
   <category label="32210">

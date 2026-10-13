@@ -110,10 +110,16 @@ class Router:
             'add_portal_from_settings': self._add_portal_from_settings,
             'setup_wizard': self._setup_wizard,
             'group_settings': self._group_settings,
+            'groups_manager': self._groups_manager,
         }
         if action == 'root' and not _portals_mod.load_all():
             from setup_wizard import setup
-            setup()
+            created = setup()
+            if created:
+                # The same request renders the new portal home directly.
+                self._params['pid'] = created['id']
+                self._portal_home()
+                return
         R.get(action, self._root)()
 
 
@@ -373,10 +379,11 @@ class Router:
                           self.url(action='live_groups', pid=pid),
                           icon=_ICON_TV,
                           plot=_pp('Live-TV Sendergruppen anzeigen.'))
-        if ptype == 'xtream' and p.get('include_live', True):
-            self._add_dir('Sendergruppen auswählen / aktivieren',
-                          self.url(action='group_settings', pid=pid),
-                          icon=_ICON_SETTINGS, plot='Mehrere Sendergruppen gleichzeitig aktivieren.')
+        if ptype == 'xtream':
+            self._add_dir('Gruppen verwalten: Live-TV, Filme und Serien',
+                          self.url(action='groups_manager', pid=pid),
+                          icon=_ICON_SETTINGS,
+                          plot='Gruppen einzeln aktivieren/deaktivieren; alle oder neue Gruppen auswählen.')
         if ptype in ('xtream', 'stb'):
             if p.get('include_vod', True):
                 self._add_dir(_L(32002),
@@ -441,7 +448,33 @@ class Router:
 
     def _setup_wizard(self):
         from setup_wizard import setup
-        setup()
+        portal = setup()
+        xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
+        if portal:
+            # Replace the setup container with the newly created portal home.
+            xbmc.executebuiltin('Container.Update({},replace)'.format(
+                self.url(action='portal_home', pid=portal['id'])))
+        else:
+            xbmc.executebuiltin('Container.Refresh')
+
+    def _groups_manager(self):
+        import portals
+        pid = self._params.get('pid', '')
+        p = portals.get_by_id(pid) if pid else None
+        if not p:
+            options = [item for item in portals.load_all() if item.get('type') == 'xtream']
+            if not options:
+                xbmcgui.Dialog().ok('XtreamMate', 'Zuerst einen Xtream-Codes-Zugang einrichten.')
+                xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
+                return
+            idx = xbmcgui.Dialog().select('XtreamMate – Portal auswählen',
+                                         [item['name'] for item in options])
+            if idx < 0:
+                xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
+                return
+            p = options[idx]
+        from group_selection import manage_groups
+        manage_groups(p)
         xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
         xbmc.executebuiltin('Container.Refresh')
 
@@ -451,15 +484,19 @@ class Router:
             xbmcplugin.endOfDirectory(self._handle, False)
             return
         from group_selection import choose_groups
-        choose_groups(p)
+        choose_groups(p, self._params.get('kind', 'live'))
         xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
         xbmc.executebuiltin('Container.Refresh')
 
     def _portal_manager(self):
         import portal_manager
-        portal_manager.show()
-        xbmc.executebuiltin('Container.Refresh')
-        xbmcplugin.endOfDirectory(self._handle, updateListing=True)
+        created = portal_manager.show()
+        xbmcplugin.endOfDirectory(self._handle, updateListing=True, cacheToDisc=False)
+        if created:
+            xbmc.executebuiltin('Container.Update({},replace)'.format(
+                self.url(action='portal_home', pid=created['id'])))
+        else:
+            xbmc.executebuiltin('Container.Refresh')
 
 
 
@@ -578,6 +615,10 @@ class Router:
                 msg = 'Xtream host not set. Open Portal Manager.'
             else:
                 msg = f'No channels found for "{p["name"]}". Check URL/credentials.'
+            if ptype == 'xtream':
+                from group_selection import load
+                if load(p['id'], 'live') == set():
+                    msg = 'Alle Sendergruppen sind deaktiviert. Bitte Gruppen verwalten.'
             notify(_L(32000), msg, duration=5000)
             xbmcplugin.endOfDirectory(self._handle, False)
             return
@@ -697,6 +738,9 @@ class Router:
             xbmcplugin.endOfDirectory(self._handle, False)
             return
         cats = xc.get_vod_categories()
+        from group_selection import enabled_ids
+        selected = enabled_ids(p['id'], 'vod', cats)
+        cats = [c for c in cats if str(c.get('category_id', '')) in selected]
         cats = apply_lang_sort(cats,
                                name_fn=lambda c: c.get('category_name', ''),
                                group_fn=lambda c: c.get('category_name', ''))
@@ -721,7 +765,13 @@ class Router:
             xbmcplugin.endOfDirectory(self._handle, False)
             return
         from player import vod_list_item
-        all_v = xc.get_vod_streams(None if cat_id == 'all' else cat_id)
+        from group_selection import enabled_ids, filter_entries
+        allowed = enabled_ids(p['id'], 'vod', xc.get_vod_categories())
+        if cat_id not in (None, 'all') and str(cat_id) not in allowed:
+            all_v = []
+        else:
+            all_v = xc.get_vod_streams(None if cat_id in (None, 'all') else cat_id)
+            all_v = filter_entries(all_v, p['id'], 'vod')
         all_v = apply_lang_sort(all_v, name_fn=lambda v: v.get('name', ''), group_fn=lambda v: v.get('category_name', ''))
         chunk = all_v[page * psize:(page + 1) * psize]
         xbmcplugin.setContent(self._handle, 'movies')
@@ -757,6 +807,9 @@ class Router:
             xbmcplugin.endOfDirectory(self._handle, False)
             return
         cats = xc.get_series_categories()
+        from group_selection import enabled_ids
+        selected = enabled_ids(p['id'], 'series', cats)
+        cats = [c for c in cats if str(c.get('category_id', '')) in selected]
         cats = apply_lang_sort(cats,
                                name_fn=lambda c: c.get('category_name', ''),
                                group_fn=lambda c: c.get('category_name', ''))
@@ -781,7 +834,13 @@ class Router:
             xbmcplugin.endOfDirectory(self._handle, False)
             return
         from player import series_list_item
-        all_s = xc.get_series(None if cat_id == 'all' else cat_id)
+        from group_selection import enabled_ids, filter_entries
+        allowed = enabled_ids(p['id'], 'series', xc.get_series_categories())
+        if cat_id not in (None, 'all') and str(cat_id) not in allowed:
+            all_s = []
+        else:
+            all_s = xc.get_series(None if cat_id in (None, 'all') else cat_id)
+            all_s = filter_entries(all_s, p['id'], 'series')
         all_s = apply_lang_sort(all_s, name_fn=lambda s: s.get('name', ''), group_fn=lambda s: s.get('category_name', ''))
         chunk = all_s[page * psize:(page + 1) * psize]
         xbmcplugin.setContent(self._handle, 'tvshows')
@@ -1762,6 +1821,11 @@ class Router:
             return
         notify('XtreamMate', f'Refreshing {p["name"]}…', duration=1500)
         self._load_channels(p, force=True)
+        if p.get('type') == 'xtream':
+            from xtream import XtreamClient
+            xc = XtreamClient(p['xc_host'], p['xc_user'], p['xc_pass'])
+            xc.get_vod_categories(force_refresh=True)
+            xc.get_series_categories(force_refresh=True)
         notify('XtreamMate', f'{p["name"]} refreshed')
         xbmc.executebuiltin('Container.Refresh')
 

@@ -30,7 +30,9 @@ def show():
             break
         elif choice == add_idx:
             from setup_wizard import setup
-            setup()
+            created = setup()
+            if created:
+                return created
         elif choice == export_idx:
             import export_import
             export_import.show_menu()
@@ -48,6 +50,7 @@ def _portal_menu(p: dict):
             _L(32078) if enabled else _L(32077),
             f'EPG: [B]{"EINGESCHALTET" if epg_show else "AUSGESCHALTET"}[/B]',
             'Inhaltsbereiche (TV / Filme / Serien) ändern',
+            'Sender-/Film-/Seriengruppen verwalten',
             _L(32079),
             _L(32080),
             'Refresh cache',
@@ -79,16 +82,19 @@ def _portal_menu(p: dict):
                 update(p['id'], {key: i in choice for i, (key, _) in enumerate(options)})
                 p = portals.get_by_id(p['id']) or p
         elif idx == 4:
+            from group_selection import manage_groups
+            manage_groups(p)
+        elif idx == 5:
             move_up(p['id'])
             notify(_L(32012), _L(32086, name), duration=1500)
             break
-        elif idx == 5:
+        elif idx == 6:
             move_down(p['id'])
             notify(_L(32012), _L(32087, name), duration=1500)
             break
-        elif idx == 6:
-            _refresh_portal(p)
         elif idx == 7:
+            _refresh_portal(p)
+        elif idx == 8:
             if xbmcgui.Dialog().yesno(_L(32076),
                          f'Really delete "{name}"?\nAll cached data will be removed.'):
                 delete(p['id'])

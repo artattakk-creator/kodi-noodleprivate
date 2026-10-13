@@ -22,23 +22,50 @@ def _db_path():
 
 
 def load_all() -> list:
-    p = _db_path()
+    """Read the stored portals. Do not silently treat unreadable data as empty."""
+    path = _db_path()
+    if not xbmcvfs.exists(path):
+        return []
     try:
-        if xbmcvfs.exists(p):
-            with xbmcvfs.File(p) as f:
-                data = json.loads(f.read() or '[]')
-            return data if isinstance(data, list) else []
-    except Exception as e:
-        error(f'portals.load_all: {e}')
-    return []
+        # addon_data_dir() returns a translated LOCAL path. Native Python IO
+        # supports atomic os.replace writes and avoids incompatible Kodi VFS
+        # File context-manager behaviour on some installations.
+        with open(path, 'r', encoding='utf-8') as stream:
+            value = json.load(stream)
+        if not isinstance(value, list):
+            raise ValueError('Portal-Datenbank enthält keine Liste')
+        return value
+    except Exception as exc:
+        error('portals.load_all failed: {}'.format(type(exc).__name__))
+        raise RuntimeError('Portalliste kann nicht gelesen werden. Daten wurden nicht verändert.') from exc
 
 
-def save_all(portals: list):
+def save_all(portal_list: list):
+    """Write atomically to Kodi's local profile, then verify it was persisted.
+
+    v0.1.0 swallowed write errors and reported a successful installation even
+    when portals.json did not exist. Never acknowledge an unverified save.
+    """
+    import tempfile
+    path = _db_path()
+    folder = os.path.dirname(path)
+    os.makedirs(folder, exist_ok=True)
+    fd, temp_path = tempfile.mkstemp(prefix='.xtreammate-portals-', dir=folder)
     try:
-        with xbmcvfs.File(_db_path(), 'w') as f:
-            f.write(json.dumps(portals, indent=2, ensure_ascii=False))
-    except Exception as e:
-        error(f'portals.save_all: {e}')
+        with os.fdopen(fd, 'w', encoding='utf-8') as stream:
+            json.dump(portal_list, stream, indent=2, ensure_ascii=False)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temp_path, path)
+    except Exception as exc:
+        error('portals.save_all failed: {}'.format(type(exc).__name__))
+        raise OSError('Portal konnte nicht gespeichert werden. Bitte Speicherplatz/Zugriff prüfen.') from exc
+    finally:
+        if os.path.exists(temp_path):
+            os.unlink(temp_path)
+    actual = load_all()
+    if actual != portal_list:
+        raise OSError('Portal wurde geschrieben, konnte aber nicht verifiziert werden.')
 
 
 def get_by_id(portal_id: str) -> Optional[dict]:

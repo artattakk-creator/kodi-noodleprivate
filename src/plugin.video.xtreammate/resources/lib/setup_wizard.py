@@ -189,15 +189,21 @@ def setup():
         if not dlg.yesno('XtreamMate – Speichern',
                          '„{}“ speichern und verfügbare Zusatzdaten laden?'.format(title)):
             return None
+        # Persist and immediately read back the portal before announcing success.
         portal = portals.add(data)
-        if portal.get('type') == 'xtream' and portal.get('include_live', True):
-            if dlg.yesno('XtreamMate – Sendergruppen',
-                         'Möchtest du jetzt mehrere Sendergruppen aktivieren oder deaktivieren?'):
+        if not portals.get_by_id(portal['id']):
+            raise OSError('Portaldaten konnten nach dem Speichern nicht gelesen werden.')
+        if portal.get('type') == 'xtream':
+            if dlg.yesno('XtreamMate – Kategorien',
+                         'Jetzt Sender-, Film- und Seriengruppen aktivieren oder deaktivieren? '
+                         'Die Gruppenverwaltung ist später jederzeit erreichbar.'):
                 try:
-                    from group_selection import choose_groups
-                    choose_groups(portal)
+                    from group_selection import manage_groups
+                    manage_groups(portal)
                 except Exception as exc:
-                    warn('XtreamMate group selector unavailable: {}'.format(type(exc).__name__))
+                    warn('XtreamMate group manager unavailable: {}'.format(type(exc).__name__))
+                    dlg.ok('XtreamMate', 'Das Portal wurde gespeichert. Die Gruppenverwaltung '
+                           'konnte nicht geöffnet werden; über die Startseite erneut versuchen.')
         post = xbmcgui.DialogProgress()
         post.create('XtreamMate – EPG und Metadaten', 'EPG laden …')
         try:
@@ -205,10 +211,17 @@ def setup():
         finally:
             post.close()
         dlg.ok('XtreamMate – Bereit',
-               '„{}“ wurde gespeichert.\n\n'.format(title)+fmt_report(report)+
-               '\n\nCover werden beim Durchblättern nachgeladen.')
+               '„{}“ wurde dauerhaft gespeichert.\n\n'.format(title) + fmt_report(report) +
+               '\n\nDie Startseite mit „Live-TV“ wird jetzt geöffnet. '
+               'Die Kategorien kannst du später über „Gruppen verwalten“ ändern.')
         return portal
     except Cancelled:
+        return None
+    except OSError as exc:
+        dlg.ok('XtreamMate – Speicherfehler',
+               'Die Einrichtung wurde NICHT gespeichert.\n\n' + str(exc) +
+               '\n\nBitte freien Speicher und Kodi-Profilrechte prüfen. '
+               'Keine vorhandenen Portale wurden gelöscht.')
         return None
     except ValueError as exc:
         dlg.ok('XtreamMate – Einrichtung nicht abgeschlossen', str(exc))
