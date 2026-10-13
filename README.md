@@ -1,27 +1,33 @@
-# Noodle Private – Kodi Repository
+# GS Media Kodi Repository
 
-Kodi 19+ Video-Add-on mit Suche, Wiedergabe, Vorschaubildern, frei benennbaren Favoritenlisten und Titan BINGIE MOD Widgets.
+Public Kodi repository for GS Media's own add-ons, plugins, scripts and services.
+
+**Repository add-on ID:** `repository.gsmedia`  
+**Repository version:** `1.0.0`  
+**GitHub host:** `artattakk-creator/kodi-noodleprivate`
 
 ## Installation
 
-1. ZIP `repository.noodleprivate-0.1.0.zip` aus diesem Repository in Kodi installieren.
-2. Kodi → Add-ons → Aus Repository installieren → Noodle Private Repository → Video-Add-ons → Noodle Private.
-3. Für die Installation als Netzwerkquelle GitHub Pages für `main` /`(root)` aktivieren. Die Adresse lautet dann:
-   `https://artattakk-creator.github.io/kodi-noodleprivate/`
+1. Download the [GS Media Kodi Repository installer ZIP](https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/repository.gsmedia-1.0.0.zip).
+2. In Kodi: **Add-ons → Install from zip file** and select that ZIP (not the GitHub 'RAW' source viewer).
+3. **Install from repository → GS Media Kodi Repository**, then install the desired video add-on.
+4. Updates are then managed by Kodi from the repository.
 
-## Automatische Updates
+If GitHub Pages is enabled (main/(root)), Kodi's optional HTTPS source is `https://artattakk-creator.github.io/kodi-noodleprivate/`.
 
-Das Repository stellt `addons.xml`, `addons.xml.md5` sowie die versionierten ZIP-Pakete bereit. Kodi prüft damit Updates selbstständig. Neue Versionen erhalten eine höhere Versionsnummer in `src/plugin.video.noodleprivate/addon.xml`.
+## Available add-ons
 
-Die GitHub-Actions-Pipeline erstellt und veröffentlicht die Kodi-ZIPs automatisch nach Änderungen am Hauptbranch.
+- `plugin.video.noodleprivate` – video lists, search, playback, named favorites, home screen widgets.
 
-## Datenschutz und Hinweise
+## Maintaining multiple add-ons
 
-Dies ist ein eigenständiges Open-Source-Projekt ohne Verbindung zum Betreiber der externen Videoplattform. Es richtet sich an Erwachsene. Favoriten, eigene Sammlungen, Verlauf und Einstellungen werden ausschließlich lokal in Kodi gespeichert; sie sind nicht Teil dieses GitHub-Repositories. Externe Streams sind nicht garantiert verfügbar. Keine Umgehung von Zugangskontrollen.
+Every directory `src/<addon.id>/` containing an `addon.xml` becomes its own Kodi package. The automated builder creates:
+- `addons.xml` and `addons.xml.md5`
+- `<addon.id>/<addon.id>-<version>.zip`
+- a root-level repository-installer ZIP for `repository.*` entries.
 
-© GS Media – Kodi-Repository-Projekt.
-## Kodi installieren (einmalig)
+Increase an add-on's version number in its `addon.xml` when publishing an update. GitHub Actions then generates and publishes the packages.
 
-Direkte Installer-ZIP: https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/repository.noodleprivate-0.1.0.zip
+## Privacy and security
 
-Für eine direkt in Kodi durchsuchbare HTTPS-Quelle GitHub Pages unter **Settings → Pages → Deploy from a branch → main / (root)** aktivieren. Danach ist https://artattakk-creator.github.io/kodi-noodleprivate/ die Kodi-Netzwerkquelle.
+The repository code and downloadable packages are public. Each user's favorites and history stay on their own Kodi device. External services are independent of GS Media. This repository is not affiliated with Team Kodi.
