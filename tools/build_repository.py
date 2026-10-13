@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "src"
-IDS = ("plugin.video.noodleprivate", "repository.noodleprivate")
+IDS = tuple(d.name for d in sorted(SRC.iterdir()) if d.is_dir() and (d / "addon.xml").is_file())
 
 def seed():
     if not (SRC / "plugin.video.noodleprivate" / "default.py").exists():
@@ -36,8 +36,10 @@ def main():
     seed()
     image(SRC/"plugin.video.noodleprivate/resources/icon.png",256,256)
     image(SRC/"plugin.video.noodleprivate/resources/fanart.png",1280,720)
-    image(SRC/"repository.noodleprivate/icon.png",256,256)
-    image(SRC/"repository.noodleprivate/fanart.png",1280,720)
+    for addon in IDS:
+        if addon.startswith("repository."):
+            image(SRC/addon/"icon.png",256,256)
+            image(SRC/addon/"fanart.png",1280,720)
     entries = []
     for addon in IDS:
         xmlfile = SRC/addon/"addon.xml"
