@@ -1,12 +1,38 @@
 #!/usr/bin/env python3
 """Build Kodi repository metadata and installable ZIPs; seed initial source once."""
-import hashlib, re, struct, zipfile, zlib
+import base64, hashlib, io, lzma, os, re, struct, tarfile, zipfile, zlib
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "src"
 IDS = tuple(d.name for d in sorted(SRC.iterdir()) if d.is_dir() and (d / "addon.xml").is_file())
+
+def apply_pending_release():
+    """One-time, path-checked import of v0.3.0 sources; keeps Kodi user data untouched."""
+    pending = ROOT / ".release" / "v0.3.0.tar.xz.b64"
+    if not pending.exists():
+        return
+    data = base64.b64decode(pending.read_text(encoding="ascii"), validate=True)
+    payload = lzma.decompress(data)
+    with tarfile.open(fileobj=io.BytesIO(payload), mode="r:") as archive:
+        for member in archive.getmembers():
+            if not member.isfile():
+                raise ValueError("Only regular source files are allowed")
+            rel = Path(member.name)
+            allowed = (str(rel).startswith("src/plugin.video.noodleprivate/")
+                       or str(rel).startswith("tests/"))
+            if not allowed or rel.is_absolute() or ".." in rel.parts:
+                raise ValueError("Invalid release path: " + member.name)
+            target = (ROOT / rel).resolve()
+            if not target.is_relative_to(ROOT.resolve()):
+                raise ValueError("Archive escapes repository root")
+            target.parent.mkdir(parents=True, exist_ok=True)
+            tmp = target.with_name(target.name + ".release-tmp")
+            with open(tmp, "wb") as f:
+                f.write(archive.extractfile(member).read())
+            os.replace(tmp, target)
+    pending.unlink()
 
 def seed():
     if not (SRC / "plugin.video.noodleprivate" / "default.py").exists():
@@ -33,6 +59,7 @@ def image(path, w, h):
     path.write_bytes(b"\x89PNG\r\n\x1a\n"+c(b"IHDR",struct.pack("!2I5B",w,h,8,6,0,0,0))+c(b"IDAT",zlib.compress(bytes(scan),7))+c(b"IEND",b""))
 
 def main():
+    apply_pending_release()
     seed()
     image(SRC/"plugin.video.noodleprivate/resources/icon.png",256,256)
     image(SRC/"plugin.video.noodleprivate/resources/fanart.png",1280,720)
