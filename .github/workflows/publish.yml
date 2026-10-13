@@ -25,8 +25,9 @@ jobs:
         run: python -m compileall -q src
       - name: Run Noodle Private regression tests
         run: |
-          ln -s src/plugin.video.noodleprivate plugin.video.noodleprivate
-          trap 'rm -f plugin.video.noodleprivate' EXIT
+          for f in tests/test_addon.py tests/test_site.py tests/test_providers.py; do
+            sed -i "s@'..', 'plugin.video.noodleprivate'@'..', 'src', 'plugin.video.noodleprivate'@g" "$f"
+          done
           python -m unittest discover -s tests -v
       - name: Commit and publish generated archives
         run: |
