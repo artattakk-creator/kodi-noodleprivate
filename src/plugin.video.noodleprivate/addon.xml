@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.noodleprivate" name="Noodle Private" version="0.2.0" provider-name="Private Kodi Project">
+  <requires>
+    <import addon="xbmc.python" version="3.0.0" />
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="de_DE">Privates Video-Plugin mit BINGIE-MOD-Widgets</summary>
+    <description lang="de_DE">Videolisten, Suche, Filter, benennbare Favoritenlisten und Wiedergabe von NoodleMagazine. Private Testversion; keine Verbindung zum Website-Betreiber.</description>
+    <summary lang="en_GB">Private video plugin with Kodi widgets</summary>
+    <description lang="en_GB">Browse, search, save named favourite collections and play supported sources from NoodleMagazine. Independent personal test build.</description>
+    <disclaimer lang="de_DE">Für volljährige Nutzer. Keine Gewähr für Verfügbarkeit, Zugriff oder Nutzungsrechte externer Inhalte. Kein Umgehen von Zugriffssperren.</disclaimer>
+    <platform>all</platform>
+    <license>MIT</license>
+    <assets><icon>resources/icon.png</icon><fanart>resources/fanart.png</fanart></assets>
+  </extension>
+</addon>
