@@ -13,9 +13,9 @@ class RepositoryLayoutTests(unittest.TestCase):
     def test_gs_media_only_update_origin(self):
         manifest = ET.parse(SRC / "repository.gsmedia" / "addon.xml").getroot()
         self.assertEqual(manifest.get("id"), "repository.gsmedia")
-        self.assertEqual(manifest.get("version"), "1.4.0")
+        self.assertEqual(manifest.get("version"), "1.5.0")
         dirs = manifest.findall("./extension[@point='xbmc.addon.repository']/dir")
-        self.assertEqual(len(dirs), 6)
+        self.assertEqual(len(dirs), 7)
         self.assertIn("/kodi-noodleprivate/main/addons.xml", dirs[0].findtext("info"))
         self.assertEqual(dirs[4].get("minversion"), "20.0.0")
         self.assertEqual(dirs[4].get("maxversion"), "20.9.0")
@@ -24,6 +24,10 @@ class RepositoryLayoutTests(unittest.TestCase):
         self.assertIn("/omega/addons.xml", dirs[5].findtext("info"))
         self.assertEqual(dirs[5].findtext("checksum"), dirs[5].findtext("info"))
         self.assertEqual(dirs[5].findtext("hashes"), "false")
+        self.assertIn("peno64/repository.peno64", dirs[6].findtext("info"))
+        self.assertTrue(dirs[6].findtext("checksum").endswith("/repo/zips/addons.xml.md5"))
+        self.assertTrue(dirs[6].findtext("datadir").endswith("/repo/zips/"))
+        self.assertEqual(dirs[6].findtext("hashes"), "false")
     def test_no_legacy_repository_in_generated_index(self):
         xml = ET.parse(ROOT / "addons.xml").getroot()
         ids = [entry.get("id") for entry in xml.findall("addon")]

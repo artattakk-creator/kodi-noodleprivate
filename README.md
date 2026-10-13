@@ -3,12 +3,12 @@
 Public Kodi repository for GS Media's own add-ons, plugins, scripts and services.
 
 **Repository add-on ID:** `repository.gsmedia`  
-**Repository version:** `1.4.0`  
+**Repository version:** `1.5.0`  
 **GitHub host:** `artattakk-creator/kodi-noodleprivate`
 
 ## Installation
 
-1. Download the [GS Media Kodi Repository installer ZIP](https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/repository.gsmedia-1.4.0.zip).
+1. Download the [GS Media Kodi Repository installer ZIP](https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/repository.gsmedia-1.5.0.zip).
 2. In Kodi: **Add-ons → Install from zip file** and select that ZIP (not the GitHub 'RAW' source viewer).
 3. **Install from repository → GS Media Kodi Repository**, then install the desired video add-on.
 4. Updates are then managed by Kodi from the repository.
@@ -33,7 +33,7 @@ Increase an add-on's version number in its `addon.xml` when publishing an update
 The repository code and downloadable packages are public. Each user's favorites and history stay on their own Kodi device. External services are independent of GS Media. This repository is not affiliated with Team Kodi.
 ## Repository-Programme: direkte Kodi-Installation
 
-Der zentral verwaltete Repository-Installer liegt zusätzlich unter [`repository-programme/repository.gsmedia-1.4.0.zip`](repository-programme/repository.gsmedia-1.4.0.zip). Der Build-Prozess spiegelt zukünftige Installer in dieses Verzeichnis. Kodi installiert die ZIP über **Add-ons → Aus ZIP-Datei installieren**. Danach erscheinen die enthaltenen Plugins unter **GS Media Kodi Repository**.
+Der zentral verwaltete Repository-Installer liegt zusätzlich unter [`repository-programme/repository.gsmedia-1.5.0.zip`](repository-programme/repository.gsmedia-1.5.0.zip). Der Build-Prozess spiegelt zukünftige Installer in dieses Verzeichnis. Kodi installiert die ZIP über **Add-ons → Aus ZIP-Datei installieren**. Danach erscheinen die enthaltenen Plugins unter **GS Media Kodi Repository**.
 
 ## External provider catalogs (GS Media Repository 1.1.0)
 
@@ -121,3 +121,20 @@ The central GS Media repository indexes the original AchillesPunks Titan BINGIE 
 The upstream `omega/addons.xml.md5` currently contains the empty-file MD5, so it would not change on a skin-catalog update. GS Media uses the original `omega/addons.xml` as its Kodi checksum/change-marker body, which Kodi's documentation explicitly permits. No third-party binaries are mirrored or modified.
 
 Kodi's built-in official repository remains installed; optional upstream repository add-ons may appear in the catalog but need not be installed.
+
+## EZ Maintenance+ (GS Media Repository 1.5.0)
+
+Added the official [peno64 repository](https://github.com/peno64/repository.peno64)
+as a seventh upstream source via HTTPS `repo/zips/addons.xml`. The catalog
+includes `script.ezmaintenanceplus` version `2026.04.05.0` at integration time.
+Install from **GS Media Kodi Repository -> Program add-ons -> EZ Maintenance+**.
+The add-on requires `script.module.requests >= 1.0.0`, which Kodi can install
+from normal dependency sources. No additional peno64 repository installer is
+required. Kodi userdata backups are device-local; this repository integration
+neither imports nor restores backups. Restoring a full backup can overwrite
+current skin settings and other Kodi configuration, so back up the destination
+box first. Third-party packages remain maintained and hosted by their owners.
+
+The requested 'TV Mate by Mr. Evil' was not added: no identifiable verifiable
+Kodi upstream repository for that precise name/author combination was found.
+A source URL or the exact Kodi add-on ID is required before adding it safely.
