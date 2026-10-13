@@ -59,6 +59,10 @@ def main():
             assert zf.testzip() is None and f"{addon}/addon.xml" in zf.namelist()
         if addon.startswith("repository."):
             (ROOT/dest.name).write_bytes(dest.read_bytes())
+            if addon == "repository.gsmedia":
+                direct = ROOT / "repository-programme" / dest.name
+                direct.parent.mkdir(parents=True, exist_ok=True)
+                direct.write_bytes(dest.read_bytes())
     idx='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<addons>\n'+"\n".join(entries)+"\n</addons>\n"
     ET.fromstring(idx)
     (ROOT/"addons.xml").write_text(idx,encoding="utf-8")

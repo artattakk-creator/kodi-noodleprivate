@@ -31,3 +31,6 @@ Increase an add-on's version number in its `addon.xml` when publishing an update
 ## Privacy and security
 
 The repository code and downloadable packages are public. Each user's favorites and history stay on their own Kodi device. External services are independent of GS Media. This repository is not affiliated with Team Kodi.
+## Repository-Programme: direkte Kodi-Installation
+
+Der zentral verwaltete Repository-Installer liegt zusätzlich unter [`repository-programme/repository.gsmedia-1.0.0.zip`](repository-programme/repository.gsmedia-1.0.0.zip). Der Build-Prozess spiegelt zukünftige Installer in dieses Verzeichnis. Kodi installiert die ZIP über **Add-ons → Aus ZIP-Datei installieren**. Danach erscheinen die enthaltenen Plugins unter **GS Media Kodi Repository**.
