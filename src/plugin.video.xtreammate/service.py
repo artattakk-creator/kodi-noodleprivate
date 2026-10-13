@@ -20,6 +20,9 @@ class IPTVMasterService(xbmc.Monitor):
         self._overlay = None
         self._last_session_nonce = ''
         self._last_command_nonce = ''
+        self._catalog_worker = None
+        self._next_catalog_scan = 0
+        self._next_overlay_check = 0
         self._start_reminders()
 
     def _start_reminders(self):
@@ -52,9 +55,38 @@ class IPTVMasterService(xbmc.Monitor):
         self._epg_worker = threading.Thread(target=refresh, name='XtreamMateEPG', daemon=True)
         self._epg_worker.start()
 
+    def _maybe_warm_catalogs(self):
+        """Never fetch Xtream metadata on the Kodi service/remote-control thread."""
+        now = time.monotonic()
+        if now < self._next_catalog_scan:
+            return
+        if self._catalog_worker and self._catalog_worker.is_alive():
+            return
+        self._next_catalog_scan = now + 1800
+        def warm():
+            try:
+                import portals as portal_store
+                from xtream import XtreamClient
+                for portal in portal_store.get_active():
+                    if self.abortRequested():
+                        return
+                    if portal.get('type') != 'xtream':
+                        continue
+                    xc = XtreamClient(portal['xc_host'], portal['xc_user'], portal['xc_pass'])
+                    xc.warm_catalogs(
+                        include_live=portal.get('include_live', True),
+                        include_vod=portal.get('include_vod', True),
+                        include_series=portal.get('include_series', True))
+            except Exception as exc:
+                error('XtreamMate background catalog: {}'.format(type(exc).__name__))
+        self._catalog_worker = threading.Thread(
+            target=warm, name='XtreamMateCatalogCache', daemon=True)
+        self._catalog_worker.start()
+
     def run(self):
         while not self.abortRequested():
             self._maybe_refresh_epg()
+            self._maybe_warm_catalogs()
             try:
                 from live_overlay import start_if_eligible, session_from_property, SESSION_KEY
                 from remote_control import parse_command, COMMAND_KEY
@@ -97,6 +129,9 @@ class IPTVMasterService(xbmc.Monitor):
                             self._last_session_nonce = session['nonce'] if session else ''
                             self._overlay.show()
                 if self._overlay is not None and player.isPlayingVideo():
+                    if time.monotonic() >= self._next_overlay_check:
+                        self._next_overlay_check = time.monotonic() + 1.0
+                        self._overlay.refresh_from_cache()
                     cmd = parse_command(xbmcgui.Window(10000).getProperty(COMMAND_KEY))
                     if cmd and cmd['nonce'] != self._last_command_nonce:
                         self._last_command_nonce = cmd['nonce']

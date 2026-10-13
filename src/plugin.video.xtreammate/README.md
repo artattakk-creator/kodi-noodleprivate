@@ -1,9 +1,9 @@
-# XtreamMate 0.1.2 – Kodi test version
+# XtreamMate 0.1.3 – Kodi test version
 
 This is an independent Kodi add-on based on mr-evil1 TiViMate Kodi 2026.06.12.1 (GPL v2), with an original GS Media visual identity and new add-on ID `plugin.video.xtreammate`.
 
 ## Installation
-In Kodi choose Add-ons -> Install from ZIP file -> `plugin.video.xtreammate-0.1.2.zip`. This version is published by the GS Media repository. Keep the original TiViMate Kodi installed while evaluating XtreamMate.
+In Kodi choose Add-ons -> Install from ZIP file -> `plugin.video.xtreammate-0.1.3.zip`. This version is published by the GS Media repository. Keep the original TiViMate Kodi installed while evaluating XtreamMate.
 
 ## First launch
 Select Stalker Portal, local M3U file, M3U link, or Xtream Codes. For Xtream enter full server URL (including port), username and password. Choose which of TV, movies, series to import. Start the scan; review counts, name the list, save; optionally fetch EPG. On Xtream live accounts you can also choose multiple category IDs and change them later under Sendergruppen auswählen.
@@ -26,7 +26,7 @@ This is an offline-code-tested alpha and still needs an on-device Kodi integrati
 - Der Portal-Cache kann weiter über die vorhandene Aktualisierungsfunktion neu geladen werden; die Gruppenverwaltung liest die Gruppenkataloge beim Öffnen frisch ein.
 - Alle Zugangsdaten bleiben ausschließlich in Kodi. Die portable Testversion wurde per Python/Stub-Tests verifiziert; Fernbedienung und Netzwerk müssen weiterhin auf dem Kodi-Gerät getestet werden.
 
-## 0.1.2: TV-Fernbedienung und Startsender (Gerätetest ausstehend)
+## 0.1.3: TV-Fernbedienung und Startsender (Gerätetest ausstehend)
 
 - XtreamMate-Einstellungen → „TV-Fernbedienung aktivieren“: optional eine eigene
   FullscreenVideo-Keymap anlegen. Ein eventuell vorhandenes fremdes
@@ -46,3 +46,17 @@ This is an offline-code-tested alpha and still needs an on-device Kodi integrati
 
 XtreamMate speichert Xtream-Codes-Passwörter weiterhin lokal unverschlüsselt;
 Kodi-Profile/Backups sicher aufbewahren. Keine Streams/Zugangsdaten in Logs veröffentlichen.
+
+ 
+## 0.1.3 – Cache-first catalog loading
+
+The IPTV overlay always opens from the local catalog index, without network
+roundtrips from the remote-control thread. On Kodi start, a background worker
+warms Live/Movies/Series indexes as selected for each portal and refreshes them
+when expired. Existing cached indexes remain readable up to 30 days if the
+server is temporarily unresponsive; manually selecting refresh still forces a
+network request. A loading row is displayed on first use when no local list
+exists. Xtream cache keys include the provider URL to avoid collisions across
+servers with identical credentials. The overlay holds its active channel group
+in memory for immediate repeated Back/Left navigation. Stream links are not
+downloaded as video files; artwork remains managed by Kodi's image cache.

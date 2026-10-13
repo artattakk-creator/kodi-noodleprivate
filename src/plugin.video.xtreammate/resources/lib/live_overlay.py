@@ -104,18 +104,13 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self.portal = portal
         self.xc = XtreamClient(portal['xc_host'], portal['xc_user'], portal['xc_pass'])
         self.sid = str(initial_sid)
-        self.groups = [c for c in self.xc.get_live_categories() if isinstance(c, dict)]
+        self.groups = []
         self.enabled = load(portal['id'])
-        names = {str(c.get('category_id')): c.get('category_name', '') for c in self.groups}
         self.channels = []
-        for s in self.xc.get_live_streams():
-            if not isinstance(s, dict) or not s.get('stream_id'):
-                continue
-            cid = str(s.get('category_id', ''))
-            self.channels.append(Channel(name=s.get('name', ''),
-                url=self.xc.live_stream_url(s['stream_id'], 'ts'),
-                logo=s.get('stream_icon', ''), group=str(names.get(cid, cid)),
-                extra={'category_id': cid, 'stream_id': str(s['stream_id'])}))
+        self._catalog_ready = False
+        # Cache-only, no network. The background service warms missing data;
+        # list presentation is fast even when the provider stalls.
+        self._load_catalog_from_disk()
         self.mode = 'hidden'
         self._focus_main = 0
         self._focus_extra = 0
@@ -132,6 +127,44 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self._drawn = False
         self._closed = False
         self._highlight = {'channels': 0, 'groups': 0}
+
+    def _load_catalog_from_disk(self):
+        from iptv import Channel
+        categories = self.xc.get_cached_catalog('get_live_categories')
+        streams = self.xc.get_cached_catalog('get_live_streams')
+        if categories is None or streams is None:
+            return False
+        groups = [c for c in categories if isinstance(c, dict)]
+        names = {str(c.get('category_id')): c.get('category_name', '')
+                 for c in groups}
+        channels = []
+        for stream in streams:
+            if not isinstance(stream, dict) or not stream.get('stream_id'):
+                continue
+            cid = str(stream.get('category_id', ''))
+            channels.append(Channel(
+                name=stream.get('name', ''),
+                url=self.xc.live_stream_url(stream['stream_id'], 'ts'),
+                logo=stream.get('stream_icon', ''),
+                group=str(names.get(cid, cid)),
+                extra={'category_id': cid,
+                       'stream_id': str(stream['stream_id'])}))
+        self.groups, self.channels = groups, channels
+        self._catalog_ready = True
+        return True
+
+    def refresh_from_cache(self):
+        """Service polls only until initial background warming has completed."""
+        if self._catalog_ready or not self._load_catalog_from_disk():
+            return False
+        self.rows = category_rows(self.groups, self.enabled)
+        selected_stream = next((c for c in self.channels
+                                if str(c.extra.get('stream_id')) == self.sid), None)
+        if selected_stream:
+            self.category_id = str(selected_stream.extra.get('category_id'))
+        if self.mode in ('channels', 'groups'):
+            self._render()
+        return True
 
     def onInit(self):
         import xbmcaddon
@@ -206,7 +239,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 next((x[1] for x in self.rows if x[0] == self.category_id), 'Aktivierte Gruppen')))
             self.footer.setLabel('◀/Zurück: Sendergruppen   OK: Umschalten')
         if not labels:
-            labels = ['Keine Sender in dieser Auswahl']
+            labels = ['Senderliste wird im Hintergrund geladen …' if not self._catalog_ready
+                      else 'Keine Sender in dieser Auswahl']
         self.control.addItems(labels)
         pos = self._highlight[self.mode]
         if self.mode == 'channels' and self._scroll_to_current and self.sid:
