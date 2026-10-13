@@ -3,12 +3,12 @@
 Public Kodi repository for GS Media's own add-ons, plugins, scripts and services.
 
 **Repository add-on ID:** `repository.gsmedia`  
-**Repository version:** `1.6.0`  
+**Repository version:** `1.7.0`  
 **GitHub host:** `artattakk-creator/kodi-noodleprivate`
 
 ## Installation
 
-1. Download the [GS Media Kodi Repository installer ZIP](https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/repository.gsmedia-1.6.0.zip).
+1. Download the [GS Media Kodi Repository installer ZIP](https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/repository.gsmedia-1.7.0.zip).
 2. In Kodi: **Add-ons → Install from zip file** and select that ZIP (not the GitHub 'RAW' source viewer).
 3. **Install from repository → GS Media Kodi Repository**, then install the desired video add-on.
 4. Updates are then managed by Kodi from the repository.
@@ -18,6 +18,7 @@ If GitHub Pages is enabled (main/(root)), Kodi's optional HTTPS source is `https
 ## Available add-ons
 
 - `plugin.video.noodleprivate` – video lists, search, playback, named favorites, home screen widgets.
+- `plugin.video.xtreammate` – XtreamMate 0.1.0, setup wizard, Xtream group multiselect and on-video TV remote navigator.
 
 ## Maintaining multiple add-ons
 
@@ -33,7 +34,7 @@ Increase an add-on's version number in its `addon.xml` when publishing an update
 The repository code and downloadable packages are public. Each user's favorites and history stay on their own Kodi device. External services are independent of GS Media. This repository is not affiliated with Team Kodi.
 ## Repository-Programme: direkte Kodi-Installation
 
-Der zentral verwaltete Repository-Installer liegt zusätzlich unter [`repository-programme/repository.gsmedia-1.6.0.zip`](repository-programme/repository.gsmedia-1.6.0.zip). Der Build-Prozess spiegelt zukünftige Installer in dieses Verzeichnis. Kodi installiert die ZIP über **Add-ons → Aus ZIP-Datei installieren**. Danach erscheinen die enthaltenen Plugins unter **GS Media Kodi Repository**.
+Der zentral verwaltete Repository-Installer liegt zusätzlich unter [`repository-programme/repository.gsmedia-1.7.0.zip`](repository-programme/repository.gsmedia-1.7.0.zip). Der Build-Prozess spiegelt zukünftige Installer in dieses Verzeichnis. Kodi installiert die ZIP über **Add-ons → Aus ZIP-Datei installieren**. Danach erscheinen die enthaltenen Plugins unter **GS Media Kodi Repository**.
 
 ## External provider catalogs (GS Media Repository 1.1.0)
 
@@ -146,3 +147,11 @@ The entire independently maintained [Kodi Media repository](https://github.com/m
 The requested **TiViMate Kodi** is `plugin.video.iptvmaster` version `2026.06.12.1` at integration, and requires `repository.kodi.media >= 1.0.0` **as a mandatory dependency in the upstream XML**. Consequently, while only GS Media needs to be *manually* installed, Kodi can also automatically install the original mr-evil1 repository for TiViMate. We cannot guarantee a single installed repository without upstream maintainer changes. We deliberately leave the original program and dependency metadata untouched to preserve automatic upstream updates.
 
 All third-party Kodi Media add-ons, including other IPTV and video packages, become selectable under GS Media (category determined by the upstream add-on). Only install addons you trust and use legally authorized streams. The upstream catalog contains multiple versions of some add-on IDs and overlaps existing resolver/dependency IDs; Kodi is responsible for resolving compatibility and origins. Direct external updates carry normal third-party supply-chain risks.
+
+## XtreamMate 0.1.0 (GS Media 1.7.0)
+
+Independent GPL-2.0 modified derivative of mr-evil1 TiViMate Kodi 2026.06.12.1. Package ID `plugin.video.xtreammate`. The existing original TiViMate is neither modified nor overwritten; all Kodi user data are kept in a separate add-on profile. Reproducible source patch is in `.release/xtreammate_0.1.0.patch.xz.b64`; script `tools/bootstrap_xtreammate.py` verifies the original upstream ZIP SHA256 and reconstructs the GPL source at first build. Full modified Python sources are committed by GitHub Actions.
+
+First-run IPTV installation supports Xtream Codes, M3U files/links, and Stalker. Scan TV, movies and series separately, name lists, select multiple Xtream category IDs and import available EPG. During Xtream live playback from XtreamMate channel lists, the add-on service uses a transparent Kodi WindowDialog: Back/Left opens channels, a second Back/Left opens groups, Up/Down selects, OK tunes/selects, context/menu toggles category enablement, Right returns to channels. TV remote action maps and Kodi skin behavior require device testing. Streams launched from an external favorite without portal/session metadata may not trigger the overlay.
+
+The original GPL-2.0 attribution and license are preserved. Account credentials remain in the local Kodi profile (plaintext) and are only sent to the IPTV provider; GS Media does not receive them. Restrict Kodi backups to trusted storage. This is a first on-device-test alpha, not a claim to clone the Android TiViMate app.

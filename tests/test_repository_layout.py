@@ -13,7 +13,7 @@ class RepositoryLayoutTests(unittest.TestCase):
     def test_gs_media_only_update_origin(self):
         manifest = ET.parse(SRC / "repository.gsmedia" / "addon.xml").getroot()
         self.assertEqual(manifest.get("id"), "repository.gsmedia")
-        self.assertEqual(manifest.get("version"), "1.6.0")
+        self.assertEqual(manifest.get("version"), "1.7.0")
         dirs = manifest.findall("./extension[@point='xbmc.addon.repository']/dir")
         self.assertEqual(len(dirs), 8)
         self.assertIn("/kodi-noodleprivate/main/addons.xml", dirs[0].findtext("info"))
@@ -38,6 +38,16 @@ class RepositoryLayoutTests(unittest.TestCase):
         self.assertNotIn("repository.noodleprivate", ids)
         self.assertEqual([x for x in ids if x.startswith("repository.")], ["repository.gsmedia"])
         self.assertIn("plugin.video.noodleprivate", ids)
+        self.assertIn("plugin.video.xtreammate", ids)
+    def test_xtreammate_manifest_and_remote_service(self):
+        addon_dir = SRC / "plugin.video.xtreammate"
+        addon = ET.parse(addon_dir / "addon.xml").getroot()
+        self.assertEqual(addon.get("id"), "plugin.video.xtreammate")
+        self.assertEqual(addon.get("version"), "0.1.0")
+        self.assertIsNotNone(addon.find("./extension[@point='xbmc.service']"))
+        self.assertTrue((addon_dir / "resources/lib/live_overlay.py").is_file())
+        self.assertTrue((addon_dir / "resources/lib/setup_wizard.py").is_file())
+        self.assertTrue((addon_dir / "resources/lib/group_selection.py").is_file())
     def test_plugin_migration_version(self):
         manifest = ET.parse(SRC / "plugin.video.noodleprivate" / "addon.xml").getroot()
         self.assertEqual(manifest.get("version"), "0.4.2")
