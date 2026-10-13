@@ -41,7 +41,7 @@ def register_catalog(catalog):
             ORDER.append(key)
         else:
             PROVIDERS[key]['uri'] = uri
-            PROVIDERS[key]['image'] = str(data.get('image') or ''}
+            PROVIDERS[key]['image'] = str(data.get('image') or '')
 
 
 
