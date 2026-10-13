@@ -3,6 +3,7 @@ on:
   push:
     branches: [main]
     paths:
+      - "tests/**"
       - "src/**"
       - "tools/build_repository.py"
       - "tools/apply_xtreammate_upgrade.py"
