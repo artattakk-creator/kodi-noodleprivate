@@ -18,7 +18,7 @@ If GitHub Pages is enabled (main/(root)), Kodi's optional HTTPS source is `https
 ## Available add-ons
 
 - `plugin.video.noodleprivate` – video lists, search, playback, named favorites, home screen widgets.
-- `plugin.video.xtreammate` – XtreamMate 0.1.0, setup wizard, Xtream group multiselect and on-video TV remote navigator.
+- `plugin.video.xtreammate` – XtreamMate 0.1.2, setup wizard, persistent Xtream groups, reversible fullscreen TV remote mapping, startup channel and group, and up/down channel zapping.
 
 ## Maintaining multiple add-ons
 
@@ -155,3 +155,9 @@ Independent GPL-2.0 modified derivative of mr-evil1 TiViMate Kodi 2026.06.12.1. 
 First-run IPTV installation supports Xtream Codes, M3U files/links, and Stalker. Scan TV, movies and series separately, name lists, select multiple Xtream category IDs and import available EPG. During Xtream live playback from XtreamMate channel lists, the add-on service uses a transparent Kodi WindowDialog: Back/Left opens channels, a second Back/Left opens groups, Up/Down selects, OK tunes/selects, context/menu toggles category enablement, Right returns to channels. TV remote action maps and Kodi skin behavior require device testing. Streams launched from an external favorite without portal/session metadata may not trigger the overlay.
 
 The original GPL-2.0 attribution and license are preserved. Account credentials remain in the local Kodi profile (plaintext) and are only sent to the IPTV provider; GS Media does not receive them. Restrict Kodi backups to trusted storage. This is a first on-device-test alpha, not a claim to clone the Android TiViMate app.
+
+## XtreamMate 0.1.2 – TV-Fernbedienung und Startkanal
+
+This version implements optional, reversible Kodi FullscreenVideo key mapping (left, up, down, OK and long OK when supported), a two-stage live channel/group sidebar, and basic pause/seek/stop and secondary audio/video/EPG/settings controls. Left opens channels; left again opens groups. Up/down in hidden-overlay mode zaps to the adjacent channel within the active enabled Xtream category (wrapping at ends). When a list is visible, up/down navigate instead. **Enable the device-specific mapping manually under XtreamMate → TV-Fernbedienung aktivieren**, then restart Kodi if mappings do not take effect. Kodi device/skin compatibility must be verified on the target device; no device-level test is claimed.
+
+An Xtream portal can store a startup group and startup station, with optional autoplay on opening XtreamMate. No existing portal or playlist data is overwritten. The service refreshes EPG asynchronously so remote commands are not stalled by an EPG import. The independent upstream TiViMate add-on remains untouched. Auto-updates use the existing GS Media Kodi Repository version 1.7.0; an additional repository installer is not required.

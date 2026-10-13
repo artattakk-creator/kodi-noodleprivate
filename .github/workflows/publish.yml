@@ -6,6 +6,8 @@ on:
       - "src/**"
       - "tools/build_repository.py"
       - "tools/apply_xtreammate_upgrade.py"
+      - "tools/apply_xtreammate_012.py"
+      - ".release/xtreammate_0.1.2.patch.xz.b64"
       - ".release/xtreammate_0.1.1.patch.xz.b64"
       - "tools/bootstrap_xtreammate.py"
       - ".release/xtreammate_0.1.0.patch.xz.b64"
@@ -29,6 +31,8 @@ jobs:
         run: python tools/bootstrap_xtreammate.py
       - name: Apply XtreamMate 0.1.1 fix
         run: python tools/apply_xtreammate_upgrade.py
+      - name: Apply XtreamMate 0.1.2 remote and startup functions
+        run: python tools/apply_xtreammate_012.py
       - name: Build all Kodi addon packages and index
         run: python tools/build_repository.py
       - name: Check Python syntax
