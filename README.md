@@ -3,12 +3,12 @@
 Public Kodi repository for GS Media's own add-ons, plugins, scripts and services.
 
 **Repository add-on ID:** `repository.gsmedia`  
-**Repository version:** `1.5.0`  
+**Repository version:** `1.6.0`  
 **GitHub host:** `artattakk-creator/kodi-noodleprivate`
 
 ## Installation
 
-1. Download the [GS Media Kodi Repository installer ZIP](https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/repository.gsmedia-1.5.0.zip).
+1. Download the [GS Media Kodi Repository installer ZIP](https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/repository.gsmedia-1.6.0.zip).
 2. In Kodi: **Add-ons → Install from zip file** and select that ZIP (not the GitHub 'RAW' source viewer).
 3. **Install from repository → GS Media Kodi Repository**, then install the desired video add-on.
 4. Updates are then managed by Kodi from the repository.
@@ -33,7 +33,7 @@ Increase an add-on's version number in its `addon.xml` when publishing an update
 The repository code and downloadable packages are public. Each user's favorites and history stay on their own Kodi device. External services are independent of GS Media. This repository is not affiliated with Team Kodi.
 ## Repository-Programme: direkte Kodi-Installation
 
-Der zentral verwaltete Repository-Installer liegt zusätzlich unter [`repository-programme/repository.gsmedia-1.5.0.zip`](repository-programme/repository.gsmedia-1.5.0.zip). Der Build-Prozess spiegelt zukünftige Installer in dieses Verzeichnis. Kodi installiert die ZIP über **Add-ons → Aus ZIP-Datei installieren**. Danach erscheinen die enthaltenen Plugins unter **GS Media Kodi Repository**.
+Der zentral verwaltete Repository-Installer liegt zusätzlich unter [`repository-programme/repository.gsmedia-1.6.0.zip`](repository-programme/repository.gsmedia-1.6.0.zip). Der Build-Prozess spiegelt zukünftige Installer in dieses Verzeichnis. Kodi installiert die ZIP über **Add-ons → Aus ZIP-Datei installieren**. Danach erscheinen die enthaltenen Plugins unter **GS Media Kodi Repository**.
 
 ## External provider catalogs (GS Media Repository 1.1.0)
 
@@ -138,3 +138,11 @@ box first. Third-party packages remain maintained and hosted by their owners.
 The requested 'TV Mate by Mr. Evil' was not added: no identifiable verifiable
 Kodi upstream repository for that precise name/author combination was found.
 A source URL or the exact Kodi add-on ID is required before adding it safely.
+
+## mr-evil1 Kodi Media catalog (GS Media 1.6.0)
+
+The entire independently maintained [Kodi Media repository](https://github.com/mr-evil1/kodi-media-repo) is included as a **live upstream index**, alongside Cumination, SMR, xVAULT, Titan BINGIE MOD and peno64. The `<dir>` configuration reads upstream `main/addons.xml`, `addons.xml.md5`, and the original ZIP directories directly over HTTPS. All future and updated upstream packages become available automatically whenever Kodi refreshes the catalog; there is no need to rebuild the GS Media ZIP for each upstream change. GS Media does not mirror, bundle, audit or guarantee those third-party packages. Kodi controls when refreshes occur and can cache the index; updates are not instantaneous.
+
+The requested **TiViMate Kodi** is `plugin.video.iptvmaster` version `2026.06.12.1` at integration, and requires `repository.kodi.media >= 1.0.0` **as a mandatory dependency in the upstream XML**. Consequently, while only GS Media needs to be *manually* installed, Kodi can also automatically install the original mr-evil1 repository for TiViMate. We cannot guarantee a single installed repository without upstream maintainer changes. We deliberately leave the original program and dependency metadata untouched to preserve automatic upstream updates.
+
+All third-party Kodi Media add-ons, including other IPTV and video packages, become selectable under GS Media (category determined by the upstream add-on). Only install addons you trust and use legally authorized streams. The upstream catalog contains multiple versions of some add-on IDs and overlaps existing resolver/dependency IDs; Kodi is responsible for resolving compatibility and origins. Direct external updates carry normal third-party supply-chain risks.
