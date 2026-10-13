@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="repository.gsmedia" name="GS Media Kodi Repository" version="1.0.0" provider-name="GS Media">
+<addon id="repository.gsmedia" name="GS Media Kodi Repository" version="1.1.0" provider-name="GS Media">
   <extension point="xbmc.addon.repository">
     <dir>
       <info compressed="false">https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/addons.xml</info>
@@ -7,13 +7,25 @@
       <datadir zip="true">https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/</datadir>
       <hashes>false</hashes>
     </dir>
+    <!-- Original Cumination add-on repository; Kodi resolves and updates it upstream. -->
+    <dir>
+      <info compressed="false">https://raw.githubusercontent.com/dobbelina/repository.dobbelina/master/addons.xml</info>
+      <checksum>https://raw.githubusercontent.com/dobbelina/repository.dobbelina/master/addons.xml.md5</checksum>
+      <datadir zip="true">https://raw.githubusercontent.com/dobbelina/repository.dobbelina/master/</datadir>
+    </dir>
+    <!-- Dependencies, including ResolveURL provider packages, as listed by upstream. -->
+    <dir>
+      <info compressed="false">https://raw.githubusercontent.com/Gujal00/smrzips/master/addons.xml</info>
+      <checksum>https://raw.githubusercontent.com/Gujal00/smrzips/master/addons.xml.md5</checksum>
+      <datadir zip="true">https://raw.githubusercontent.com/Gujal00/smrzips/master/zips/</datadir>
+    </dir>
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary lang="de_DE">Zentrale Add-on-Verwaltung von GS Media</summary>
-    <description lang="de_DE">Installieren und aktualisieren eigener Kodi-Erweiterungen von GS Media, darunter Noodle Private und künftige Plugins, Skripte und Dienste.</description>
+    <description lang="de_DE">GS Media Kodi-Erweiterungen sowie den separat gepflegten Cumination-Katalog installieren und aktualisieren. Noodle Private bleibt eigenständig.</description>
     <summary lang="en_GB">GS Media's Kodi add-on repository</summary>
-    <description lang="en_GB">Install and update GS Media Kodi add-ons, including Noodle Private and future plugins, scripts and services.</description>
-    <disclaimer lang="de_DE">Eigenständiges Drittanbieter-Repository, nicht mit Team Kodi verbunden.</disclaimer>
+    <description lang="en_GB">Install and update GS Media add-ons, including Noodle Private, plus upstream Cumination and resolver dependencies.</description>
+    <disclaimer lang="de_DE">Eigenständiges Drittanbieter-Repository; Cumination wird extern von seinen Entwicklern gepflegt. Nicht mit Team Kodi verbunden.</disclaimer>
     <platform>all</platform>
     <license>MIT</license>
     <assets><icon>icon.png</icon><fanart>fanart.png</fanart></assets>
