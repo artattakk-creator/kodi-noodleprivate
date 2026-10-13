@@ -1,5 +1,6 @@
 """Minimal Kodi stub integration checks, without access to NoodleMagazine."""
 import importlib.util
+import json
 import os
 import sys
 import tempfile
@@ -47,6 +48,7 @@ class KodiTest(unittest.TestCase):
             def textviewer(self, *args): pass
         mkmod('xbmc', LOGWARNING=2, LOGERROR=3, log=lambda *x:None,
               getCondVisibility=lambda x:True,
+              executeJSONRPC=lambda req: json.dumps({'jsonrpc':'2.0','id':144,'result':{'files':[]}}),
               executebuiltin=lambda x:this.log.append(('builtin',x)))
         mkmod('xbmcaddon', Addon=DummyAddon)
         class DummyProgress:
