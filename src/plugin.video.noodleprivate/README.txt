@@ -1,8 +1,16 @@
-Noodle Private 0.3.0
+Noodle Private 0.4.1
 ====================
 Kodi 19+ video plugin for adult users. The installed Cumination add-on is
 required for EPorner, xHamster, Pornhub, XNXX, SpankBang and Tnaflix.
 NoodleMagazine remains a separate direct site adapter.
+
+GRAPHICS / VISUAL UPDATE 0.4.1
+- Kodi metadata icon: resources/icon.png (600x600)
+- Kodi background fanart: resources/fanart.png (1920x1080)
+- The home menu uses original category images in resources/media/*.png.
+- Cinematic dark-magenta GS Media design; portrait is an original illustration
+  of an adult woman in a jacket. No third-party photographs or licensed assets.
+- Visual-only update; preferences, collections and watched history are preserved.
 
 HOW TO USE
 - Choose 'Anbieteruebergreifende Suche' to search the active providers.

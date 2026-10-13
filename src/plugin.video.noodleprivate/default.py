@@ -51,9 +51,34 @@ def fail(error):
     inform(str(error))
 
 
+
+MENU_ART = {
+    'global_search_prompt': 'global', 'global_search': 'global',
+    'search_prompt': 'search', 'provider_search_prompt': 'search',
+    'providers': 'providers', 'providers_refresh': 'providers',
+    'provider_browse': 'providers', 'provider_admin': 'admin',
+    'provider_admin_detail': 'admin', 'provider_check': 'admin',
+    'provider_toggle': 'admin', 'favorites': 'favorites',
+    'collection_view': 'favorites', 'collection_create': 'favorites',
+    'recently_played': 'history', 'past_searches': 'history',
+    'settings': 'settings', 'provider_settings': 'settings',
+    'help': 'settings', 'list': 'new', 'related': 'new',
+}
+SECTION_ART = {
+    'popular': 'trending', 'recent': 'new', 'trending': 'trending',
+    'now': 'history', 'hd': 'quality', 'short': 'new',
+    'long': 'new',
+}
+
+def menu_art(action, params):
+    key = SECTION_ART.get(params.get('section', ''), 'new') if action == 'list' else MENU_ART.get(action, 'new')
+    image_path = os.path.join(ADDON.getAddonInfo('path'), 'resources', 'media', key + '.png')
+    return image_path if os.path.isfile(image_path) else ICON
+
 def folder(label, action, icon=None, context=None, **params):
     item = xbmcgui.ListItem(label=label)
-    item.setArt({'thumb': icon or ICON, 'icon': icon or ICON, 'fanart': FANART})
+    artwork = icon or menu_art(action, params)
+    item.setArt({'thumb': artwork, 'icon': artwork, 'fanart': FANART, 'poster': artwork, 'landscape': FANART})
     if context:
         item.addContextMenuItems(context)
     xbmcplugin.addDirectoryItem(HANDLE, build_url(action, **params), item, isFolder=True)

@@ -48,6 +48,17 @@ def seed():
     if "resources', 'fanart.jpg'" in content:
         entry.write_text(content.replace("resources', 'fanart.jpg'", "resources', 'fanart.png'"), encoding="utf-8")
 
+
+def render_noodle_artwork():
+    """Generate self-contained branded Kodi PNG assets from versioned renderer."""
+    path = ROOT / ".artwork" / "noodle_0.4.1_renderer.py.xz.b64"
+    if not path.exists():
+        raise FileNotFoundError("Missing Noodle Private 0.4.1 artwork renderer")
+    src = lzma.decompress(base64.b64decode(path.read_text(encoding="ascii"), validate=True))
+    script_name = SRC / "plugin.video.noodleprivate" / "artwork-renderer.py"
+    namespace = {"__file__": str(script_name), "__name__": "__main__"}
+    exec(compile(src, str(script_name), "exec"), namespace)
+
 def image(path, w, h):
     if path.exists(): return
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -61,6 +72,7 @@ def image(path, w, h):
 def main():
     apply_pending_release()
     seed()
+    render_noodle_artwork()
     image(SRC/"plugin.video.noodleprivate/resources/icon.png",256,256)
     image(SRC/"plugin.video.noodleprivate/resources/fanart.png",1280,720)
     for addon in IDS:
