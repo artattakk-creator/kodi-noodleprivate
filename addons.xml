@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="plugin.video.noodleprivate" name="Noodle Private" version="0.4.1" provider-name="Private Kodi Project">
+<addon id="plugin.video.noodleprivate" name="Noodle Private" version="0.4.2" provider-name="Private Kodi Project">
   <requires>
     <import addon="xbmc.python" version="3.0.0" />
   </requires>
@@ -8,7 +8,7 @@
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="de_DE">Privates Video-Plugin mit neuer Kodi-Grafikoberfläche und BINGIE-MOD-Widgets</summary>
+    <summary lang="de_DE">Privates Video-Plugin mit Grafiken, zentralem GS-Media-Update und BINGIE-MOD-Widgets</summary>
     <description lang="de_DE">Videolisten, Suche, Filter, anbieterübergreifende Favoritenlisten, dynamischem Cumination-Anbieterkatalog, Admin-Oberfläche, Quellenprüfung und Wiedergabe von NoodleMagazine. Private Testversion; keine Verbindung zum Website-Betreiber.</description>
     <summary lang="en_GB">Private video plugin with Kodi artwork and widgets</summary>
     <description lang="en_GB">Browse, search, save cross-provider collections and play supported sources with Cumination. Independent personal test build.</description>
@@ -18,7 +18,7 @@
     <assets><icon>resources/icon.png</icon><fanart>resources/fanart.png</fanart></assets>
   </extension>
 </addon>
-<addon id="repository.gsmedia" name="GS Media Kodi Repository" version="1.2.0" provider-name="GS Media">
+<addon id="repository.gsmedia" name="GS Media Kodi Repository" version="1.3.0" provider-name="GS Media">
   <extension point="xbmc.addon.repository">
     <dir>
       <info compressed="false">https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/addons.xml</info>
@@ -47,30 +47,11 @@
     </dir>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="de_DE">Zentrale Add-on-Verwaltung von GS Media</summary>
-    <description lang="de_DE">GS Media Kodi-Erweiterungen sowie die separat gepflegten Cumination-, SMR- und xVAULT-Kataloge installieren und aktualisieren. Noodle Private bleibt eigenständig.</description>
+    <summary lang="de_DE">Zentrales GS Media Kodi Repository (einzige Update-Quelle fuer Noodle Private)</summary>
+    <description lang="de_DE">Einziges GS Media Repository fuer Noodle Private, Cumination, SMR und xVAULT. Das fruehere Noodle Private Repository ist eingestellt.</description>
     <summary lang="en_GB">GS Media's Kodi add-on repository</summary>
-    <description lang="en_GB">Install GS Media add-ons, including Noodle Private, plus upstream Cumination, SMR resolvers and xVAULT (including its optional repository).</description>
+    <description lang="en_GB">Single GS Media update source for Noodle Private, plus upstream Cumination, SMR and xVAULT catalogs.</description>
     <disclaimer lang="de_DE">Eigenständiges Drittanbieter-Repository. Externe Projekte (Cumination, SMR, xVAULT) werden unverändert von ihren Urhebern gepflegt; xVAULT-Support nur ueber das offizielle Repository. Nicht mit Team Kodi verbunden.</disclaimer>
-    <platform>all</platform>
-    <license>MIT</license>
-    <assets><icon>icon.png</icon><fanart>fanart.png</fanart></assets>
-  </extension>
-</addon>
-<addon id="repository.noodleprivate" name="Noodle Private Repository" version="0.1.0" provider-name="GS Media">
-  <extension point="xbmc.addon.repository">
-    <dir>
-      <info compressed="false">https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/addons.xml</info>
-      <checksum>https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/addons.xml.md5</checksum>
-      <datadir zip="true">https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/</datadir>
-      <hashes>false</hashes>
-    </dir>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="de_DE">Kodi-Repository für Noodle Private</summary>
-    <description lang="de_DE">Enthält die private Entwicklungsreihe von Noodle Private. Nur Add-on-Code, keine Favoriten oder lokalen Daten.</description>
-    <summary lang="en_GB">Kodi repository for Noodle Private</summary>
-    <description lang="en_GB">Install and update the Noodle Private Kodi video add-on. Local preferences remain local.</description>
     <platform>all</platform>
     <license>MIT</license>
     <assets><icon>icon.png</icon><fanart>fanart.png</fanart></assets>
