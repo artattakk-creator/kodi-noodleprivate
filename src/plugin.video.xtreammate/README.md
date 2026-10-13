@@ -1,9 +1,9 @@
-# XtreamMate 0.1.1 – Kodi test version
+# XtreamMate 0.1.2 – Kodi test version
 
 This is an independent Kodi add-on based on mr-evil1 TiViMate Kodi 2026.06.12.1 (GPL v2), with an original GS Media visual identity and new add-on ID `plugin.video.xtreammate`.
 
 ## Installation
-In Kodi choose Add-ons -> Install from ZIP file -> `plugin.video.xtreammate-0.1.1.zip`. This version is published by the GS Media repository. Keep the original TiViMate Kodi installed while evaluating XtreamMate.
+In Kodi choose Add-ons -> Install from ZIP file -> `plugin.video.xtreammate-0.1.2.zip`. This version is published by the GS Media repository. Keep the original TiViMate Kodi installed while evaluating XtreamMate.
 
 ## First launch
 Select Stalker Portal, local M3U file, M3U link, or Xtream Codes. For Xtream enter full server URL (including port), username and password. Choose which of TV, movies, series to import. Start the scan; review counts, name the list, save; optionally fetch EPG. On Xtream live accounts you can also choose multiple category IDs and change them later under Sendergruppen auswählen.
@@ -25,3 +25,24 @@ This is an offline-code-tested alpha and still needs an on-device Kodi integrati
 - Sender-, Film- und Seriengruppenauswahl wird getrennt pro Portal und anhand der Kategorie-ID gespeichert. Die alte Live-TV-Auswahl aus v0.1.0 bleibt kompatibel, deaktivierte Gruppen werden bei Aktualisierungen nicht ungefragt reaktiviert.
 - Der Portal-Cache kann weiter über die vorhandene Aktualisierungsfunktion neu geladen werden; die Gruppenverwaltung liest die Gruppenkataloge beim Öffnen frisch ein.
 - Alle Zugangsdaten bleiben ausschließlich in Kodi. Die portable Testversion wurde per Python/Stub-Tests verifiziert; Fernbedienung und Netzwerk müssen weiterhin auf dem Kodi-Gerät getestet werden.
+
+## 0.1.2: TV-Fernbedienung und Startsender (Gerätetest ausstehend)
+
+- XtreamMate-Einstellungen → „TV-Fernbedienung aktivieren“: optional eine eigene
+  FullscreenVideo-Keymap anlegen. Ein eventuell vorhandenes fremdes
+  `xtreammate.xml` wird niemals überschrieben; die Keymap ist reversibel.
+- Während XtreamMate Live-TV läuft: **Hoch/Runter** schaltet einen Sender
+  rückwärts/vorwärts innerhalb der aktiven Xtream-Gruppe; zyklische Navigation
+  am Gruppenende. Deaktivierte Gruppen werden nicht durchgezappt.
+- **Links** blendet Senderliste ein; erneut **Links** wählt die Gruppe.
+- **OK** öffnet Player-Leiste, nochmal OK Zusatzfunktionen, langes OK (falls
+  von der Fernbedienung unterstützt) springt zu Zusatzfunktionen.
+- Start-Sendergruppe und Startsender lassen sich über das Portal-Menü wählen.
+  Optional kann der Startsender beim Öffnen des Add-ons abgespielt werden.
+- EPG-Autoaktualisierung läuft in einem separaten Thread, damit sie die
+  Fernbedienung während des Streams nicht blockiert.
+- **Achtung:** Kodi-Geräte und Skins unterscheiden sich bei Taste/OSD/Overlay.
+  Die Kodi-Praxisprüfung insbesondere mit Titan BINGIE MOD steht aus.
+
+XtreamMate speichert Xtream-Codes-Passwörter weiterhin lokal unverschlüsselt;
+Kodi-Profile/Backups sicher aufbewahren. Keine Streams/Zugangsdaten in Logs veröffentlichen.

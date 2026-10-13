@@ -94,6 +94,9 @@ def add(portal: dict) -> dict:
         'include_live': portal.get('include_live', True),
         'include_vod': portal.get('include_vod', True),
         'include_series': portal.get('include_series', True),
+        'start_group_id': portal.get('start_group_id', '*'),
+        'start_stream_id': portal.get('start_stream_id', ''),
+        'autoplay_start': portal.get('autoplay_start', False),
         'created' : now,
         'updated' : now,
     }

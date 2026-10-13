@@ -1,4 +1,4 @@
-import time, sys, os
+import time, sys, os, threading
 import xbmc, xbmcaddon
 
 ADDON    = xbmcaddon.Addon()
@@ -14,9 +14,12 @@ class IPTVMasterService(xbmc.Monitor):
     def __init__(self):
         super().__init__()
         self._last_epg = 0
+        self._epg_worker = None
+        self._stopped_since = None
         info('XtreamMate service started')
         self._overlay = None
         self._last_session_nonce = ''
+        self._last_command_nonce = ''
         self._start_reminders()
 
     def _start_reminders(self):
@@ -33,37 +36,75 @@ class IPTVMasterService(xbmc.Monitor):
         if time.time() - self._last_epg < interval:
             return
         self._last_epg = time.time()
-        info('Service: auto-refreshing EPG for all active portals')
-        try:
-            import portals as P
-            from epg import ensure_epg_loaded_for_portal
-            for p in P.get_active():
-                ensure_epg_loaded_for_portal(p, force=True)
-        except Exception as e:
-            error(f'Service EPG refresh: {e}')
+        info('Service: scheduling background EPG refresh')
+        if self._epg_worker and self._epg_worker.is_alive():
+            return
+        def refresh():
+            try:
+                import portals as P
+                from epg import ensure_epg_loaded_for_portal
+                for portal in P.get_active():
+                    if self.abortRequested():
+                        return
+                    ensure_epg_loaded_for_portal(portal, force=True)
+            except Exception as exc:
+                error('Service EPG refresh: {}'.format(type(exc).__name__))
+        self._epg_worker = threading.Thread(target=refresh, name='XtreamMateEPG', daemon=True)
+        self._epg_worker.start()
 
     def run(self):
         while not self.abortRequested():
             self._maybe_refresh_epg()
             try:
                 from live_overlay import start_if_eligible, session_from_property, SESSION_KEY
+                from remote_control import parse_command, COMMAND_KEY
                 import xbmcgui
                 player = xbmc.Player()
                 if not player.isPlayingVideo():
+                    # Brief playback gaps are normal when switching IPTV channels.
+                    # Keep the session marker intact until the gap is prolonged.
+                    if self._stopped_since is None:
+                        self._stopped_since = time.monotonic()
+                    if time.monotonic() - self._stopped_since > 8:
+                        if self._overlay is not None:
+                            self._overlay.close()
+                            self._overlay = None
+                        self._last_session_nonce = ''
+                        xbmcgui.Window(10000).clearProperty(SESSION_KEY)
+                else:
+                    self._stopped_since = None
                     if self._overlay is not None:
-                        self._overlay.close()
-                        self._overlay = None
-                    self._last_session_nonce = ''
-                elif self._overlay is None:
-                    session = session_from_property(xbmcgui.Window(10000).getProperty(SESSION_KEY))
-                    candidate = start_if_eligible(self._last_session_nonce)
-                    if candidate is not None:
-                        self._overlay = candidate
-                        self._last_session_nonce = session['nonce'] if session else ''
-                        self._overlay.show()
+                        active_session = session_from_property(
+                            xbmcgui.Window(10000).getProperty(SESSION_KEY))
+                        if active_session and active_session['nonce'] != self._last_session_nonce:
+                            if active_session['pid'] != str(self._overlay.portal['id']):
+                                self._overlay.close()
+                                self._overlay = None
+                            else:
+                                self._overlay.sid = active_session['sid']
+                                current_channel = next((ch for ch in self._overlay.channels
+                                    if str(ch.extra.get('stream_id')) == active_session['sid']), None)
+                                if current_channel:
+                                    self._overlay.category_id = str(
+                                        current_channel.extra.get('category_id') or '*')
+                                self._overlay._scroll_to_current = True
+                                self._last_session_nonce = active_session['nonce']
+                    if self._overlay is None:
+                        session = session_from_property(xbmcgui.Window(10000).getProperty(SESSION_KEY))
+                        candidate = start_if_eligible(self._last_session_nonce)
+                        if candidate is not None:
+                            self._overlay = candidate
+                            self._last_session_nonce = session['nonce'] if session else ''
+                            self._overlay.show()
+                if self._overlay is not None and player.isPlayingVideo():
+                    cmd = parse_command(xbmcgui.Window(10000).getProperty(COMMAND_KEY))
+                    if cmd and cmd['nonce'] != self._last_command_nonce:
+                        self._last_command_nonce = cmd['nonce']
+                        xbmcgui.Window(10000).clearProperty(COMMAND_KEY)
+                        self._overlay.handle_command(cmd['action'])
             except Exception as exc:
                 error('XtreamMate TV navigation unavailable: {}'.format(type(exc).__name__))
-            self.waitForAbort(1)
+            self.waitForAbort(0.2)
         if self._overlay is not None:
             self._overlay.close()
         info('XtreamMate service stopped')

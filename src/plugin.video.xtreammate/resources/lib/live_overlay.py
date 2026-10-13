@@ -1,7 +1,7 @@
 """XtreamMate remote-control TV navigation, displayed over active Xtream live TV.
 
 Back/Left: closed -> channels -> category groups; Right: return to channels.
-Up/Down: highlight items; OK: tune channel or open highlighted group.
+Up/Down: zap one station in the active group when hidden, otherwise highlight items.
 Context/Menu (or 0): toggle a group in the saved multi-selection.
 Back on groups: close overlay. Stop: stop playback and close overlay.
 
@@ -49,7 +49,7 @@ def session_from_property(raw, now=None):
         if (not isinstance(obj, dict) or not obj.get('pid') or not obj.get('sid')
                 or not obj.get('nonce')):
             return None
-        if abs((time.time() if now is None else now) - float(obj.get('at', 0))) > 120:
+        if abs((time.time() if now is None else now) - float(obj.get('at', 0))) > 86400:
             return None
         return obj
     except (TypeError, ValueError, KeyError):
@@ -76,6 +76,23 @@ def channels_for_category(channels, category_id, enabled):
             and (category_id == '*' or str(ch.extra.get('category_id', '')) == category_id)]
 
 
+def adjacent_channel(channels, category_id, enabled, current_sid, step):
+    """Next/previous channel in provider order; wrap at group boundaries.
+
+    Categories are identified by provider IDs, never translated display names.
+    Disabled categories are excluded. Unknown station: select first/last.
+    """
+    choices = channels_for_category(channels, category_id, enabled)
+    if not choices:
+        return None
+    current = str(current_sid)
+    idx = next((i for i, channel in enumerate(choices)
+                if str(channel.extra.get('stream_id', '')) == current), None)
+    if idx is None:
+        return choices[0 if step > 0 else -1]
+    return choices[(idx + (1 if step > 0 else -1)) % len(choices)]
+
+
 class LiveNavigator(xbmcgui.WindowDialog):
     """Nonblocking WindowDialog; service.py owns and closes its lifecycle."""
 
@@ -100,7 +117,16 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 logo=s.get('stream_icon', ''), group=str(names.get(cid, cid)),
                 extra={'category_id': cid, 'stream_id': str(s['stream_id'])}))
         self.mode = 'hidden'
-        self.category_id = '*'
+        self._focus_main = 0
+        self._focus_extra = 0
+        self._last_select = 0
+        selected_stream = next((c for c in self.channels
+                                if str(c.extra.get('stream_id')) == self.sid), None)
+        # Normally zap within the playing station's own category. Selecting
+        # "all enabled" explicitly allows zapping across all active groups.
+        self.category_id = (str(selected_stream.extra.get('category_id'))
+                            if selected_stream else str(portal.get('start_group_id') or '*'))
+        self._scroll_to_current = True
         self.visible_channels = []
         self.rows = category_rows(self.groups, self.enabled)
         self._drawn = False
@@ -108,54 +134,87 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self._highlight = {'channels': 0, 'groups': 0}
 
     def onInit(self):
-        # Transparent native Kodi dialog; background video stays visible.
         import xbmcaddon
-        image = os.path.join(xbmcaddon.Addon().getAddonInfo('path'), 'resources', 'media', 'tv_overlay_bg.png')
-        self.bg = xbmcgui.ControlImage(0, 0, 820, 1080, image)
-        self.heading = xbmcgui.ControlLabel(38, 42, 750, 60, 'XtreamMate', 'font16', '0xFFFFFFFF')
-        self.sub = xbmcgui.ControlLabel(38, 111, 750, 45, '', 'font13', '0xFFE3C5FF')
-        self.control = xbmcgui.ControlList(36, 176, 736, 755, font='font13',
-                                         textColor='0xFFFFFFFF',
-                                         selectedColor='0xFFFFC46E',
-                                         _itemHeight=48, _space=4)
-        self.footer = xbmcgui.ControlLabel(38, 958, 745, 72, '', 'font12', '0xFFD3D7E2')
-        for c in (self.bg, self.heading, self.sub, self.control, self.footer):
-            self.addControl(c)
+        try:
+            width = max(840, self.getWidth())
+            height = max(560, self.getHeight())
+        except Exception:
+            width, height = 1280, 720
+        image = os.path.join(xbmcaddon.Addon().getAddonInfo('path'),
+                             'resources', 'media', 'tv_overlay_bg.png')
+        sidebar = min(600, max(440, int(width * 0.47)))
+        self.bg = xbmcgui.ControlImage(0, 0, sidebar, height, image)
+        self.heading = xbmcgui.ControlLabel(32, 25, sidebar-48, 55, 'XtreamMate', 'font16', '0xFFFFFFFF')
+        self.sub = xbmcgui.ControlLabel(32, 82, sidebar-48, 40, '', 'font13', '0xFFE3C5FF')
+        self.control = xbmcgui.ControlList(32, 135, sidebar-58, height-205,
+            font='font13', textColor='0xFFFFFFFF', selectedColor='0xFFFFC46E',
+            _itemHeight=46, _space=3)
+        self.footer = xbmcgui.ControlLabel(32, height-65, sidebar-40, 48, '', 'font12', '0xFFD3D7E2')
+        self.osd_bg = xbmcgui.ControlImage(0, height-165, width, 165, image)
+        self.osd_title = xbmcgui.ControlLabel(26, height-155, width-50, 38, '', 'font13', '0xFFFFFFFF')
+        self.main_buttons = []
+        self.extra_buttons = []
+        main = ['⏯ Pause / Weiter', '◀◀ −10 s', '▶▶ +30 s', '■ Stop']
+        extra = ['Ton', 'Bild', 'EPG', 'Einstellungen', 'Sendergruppen']
+        space = max(125, int((width-40)/len(main)))
+        for idx, label in enumerate(main):
+            self.main_buttons.append(xbmcgui.ControlButton(
+                20+idx*space, height-111, space-8, 40, label))
+        space2 = max(110, int((width-40)/len(extra)))
+        for idx, label in enumerate(extra):
+            self.extra_buttons.append(xbmcgui.ControlButton(
+                20+idx*space2, height-59, space2-8, 40, label))
+        for control in (self.bg, self.heading, self.sub, self.control, self.footer,
+                        self.osd_bg, self.osd_title, *self.main_buttons, *self.extra_buttons):
+            self.addControl(control)
         self._drawn = True
         self._render()
 
     def _render(self):
         if not self._drawn:
             return
-        visible = self.mode != 'hidden'
+        listing = self.mode in ('groups','channels')
+        osd = self.mode in ('controls','extras')
         for c in (self.bg, self.heading, self.sub, self.control, self.footer):
-            c.setVisible(visible)
-        if not visible:
+            c.setVisible(listing)
+        for c in (self.osd_bg, self.osd_title, *self.main_buttons):
+            c.setVisible(osd)
+        for c in self.extra_buttons:
+            c.setVisible(self.mode == 'extras')
+        if osd:
+            self.osd_title.setLabel('XtreamMate  ·  {}  |  {}'.format(
+                self.portal.get('name','Live TV'),
+                'OK: Weitere Funktionen' if self.mode == 'controls' else 'OK: Ausführen'))
+            focus = (self.main_buttons[self._focus_main] if self.mode == 'controls'
+                     else self.extra_buttons[self._focus_extra])
+            self.setFocus(focus)
+            return
+        if not listing:
             return
         self.control.reset()
         if self.mode == 'groups':
             self.rows = category_rows(self.groups, self.enabled)
             labels = [('✔  ' if enabled else '○  ') + label for _, label, enabled in self.rows]
-            self.heading.setLabel('XtreamMate  ·  SENDERGRUPPEN')
-            self.sub.setLabel('OK: Gruppe öffnen  ·  Menü: An/Aus')
+            self.heading.setLabel('XtreamMate · SENDERGRUPPEN')
+            self.sub.setLabel('OK: Gruppe öffnen · Menü: Ein/Aus')
             self.footer.setLabel('◀/Zurück: schließen   ▶: Senderliste   ▲▼: navigieren')
         else:
             self.visible_channels = channels_for_category(self.channels, self.category_id, self.enabled)
             labels = [c.name for c in self.visible_channels]
-            self.heading.setLabel('XtreamMate  ·  LIVE-TV')
-            self.sub.setLabel('{} Sender  ·  {}'.format(len(labels),
-                               next((x[1] for x in self.rows if x[0] == self.category_id), 'Aktivierte Gruppen')))
-            self.footer.setLabel('◀/Zurück: Sendergruppen   OK: Sender starten   ▲▼: navigieren')
+            self.heading.setLabel('XtreamMate · LIVE-TV')
+            self.sub.setLabel('{} Sender · {}'.format(len(labels),
+                next((x[1] for x in self.rows if x[0] == self.category_id), 'Aktivierte Gruppen')))
+            self.footer.setLabel('◀/Zurück: Sendergruppen   OK: Umschalten')
         if not labels:
             labels = ['Keine Sender in dieser Auswahl']
         self.control.addItems(labels)
         pos = self._highlight[self.mode]
-        if self.mode == 'channels' and self.sid:
+        if self.mode == 'channels' and self._scroll_to_current and self.sid:
             found = next((i for i,c in enumerate(self.visible_channels)
                           if c.extra.get('stream_id') == self.sid), None)
             if found is not None:
                 pos = found
-                self.sid = ''
+            self._scroll_to_current = False
         self.control.selectItem(min(pos, len(labels)-1))
         self.setFocus(self.control)
 
@@ -201,20 +260,114 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 if cid != '*' and not active:
                     self._toggle()
                 self.category_id = cid
+                self._scroll_to_current = False
                 self._highlight['channels'] = 0
                 self._switch('channels')
         elif self.mode == 'channels':
             i = self.control.getSelectedPosition()
             if 0 <= i < len(self.visible_channels):
                 c = self.visible_channels[i]
-                from player import build_playable_item
                 self._highlight['channels'] = i
-                # Keep this dialog open while the player changes channels.
-                sid = c.extra.get('stream_id', '')
-                self.sid = str(sid)
-                announce(self.portal['id'], sid, c.name)
-                xbmc.Player().play(c.url, build_playable_item(c.url, title=c.name, logo=c.logo))
-                self._switch('hidden')
+                self._tune(c)
+
+    def _tune(self, channel):
+        from player import build_playable_item
+        sid = str(channel.extra.get('stream_id', ''))
+        if not sid:
+            return
+        self.sid = sid
+        self._scroll_to_current = True
+        announce(self.portal['id'], sid, channel.name)
+        self._switch('hidden')
+        xbmc.Player().play(channel.url, build_playable_item(
+            channel.url, title=channel.name, logo=channel.logo))
+
+    def _zap(self, step):
+        channel = adjacent_channel(self.channels, self.category_id,
+                                   self.enabled, self.sid, step)
+        if channel is None:
+            xbmcgui.Dialog().notification('XtreamMate',
+                'Keine aktiven Sender in dieser Gruppe.')
+            return
+        self._tune(channel)
+
+    def _seek(self, seconds):
+        player = xbmc.Player()
+        try:
+            duration = float(player.getTotalTime())
+            position = float(player.getTime())
+            if duration < 5:
+                raise ValueError('live stream without timeshift')
+            player.seekTime(min(max(position+seconds, 0), duration))
+        except Exception:
+            xbmcgui.Dialog().notification('XtreamMate',
+                'Spulen ist bei diesem Live-Sender nicht verfügbar (kein Timeshift).')
+
+    def _epg(self):
+        try:
+            data = self.xc.get_short_epg(self.sid, limit=6)
+            rows = data.get('epg_listings', []) if isinstance(data,dict) else []
+            import base64
+            lines=[]
+            for item in rows:
+                val=item.get('title','')
+                try:
+                    val=base64.b64decode(val).decode('utf-8')
+                except Exception:
+                    pass
+                lines.append('{} – {}'.format(item.get('start',''), val))
+            xbmcgui.Dialog().textviewer('XtreamMate – EPG',
+                '\n'.join(lines) if lines else 'Keine EPG-Daten für diesen Sender verfügbar.')
+        except Exception:
+            xbmcgui.Dialog().ok('XtreamMate – EPG', 'EPG konnte nicht geladen werden.')
+
+    def _execute(self, section, index):
+        if section == 'controls':
+            if index == 0:
+                try: xbmc.Player().pause()
+                except Exception: pass
+            elif index == 1: self._seek(-10)
+            elif index == 2: self._seek(30)
+            elif index == 3:
+                xbmc.Player().stop()
+                self.close()
+        else:
+            if index == 0:
+                xbmc.executebuiltin('ActivateWindow(osdaudiosettings)')
+            elif index == 1:
+                xbmc.executebuiltin('ActivateWindow(osdvideosettings)')
+            elif index == 2: self._epg()
+            elif index == 3:
+                import xbmcaddon
+                xbmcaddon.Addon().openSettings()
+            elif index == 4:
+                from group_selection import manage_groups
+                manage_groups(self.portal)
+                from group_selection import load
+                self.enabled = load(self.portal['id'])
+                self._switch('groups')
+                return
+        self._switch('hidden')
+
+    def handle_command(self, command):
+        """Commands arrive from remote keymap or native WindowDialog.onAction."""
+        if command == 'left':
+            if self.mode == 'channels': self._switch('groups')
+            elif self.mode == 'groups': self._switch('hidden')
+            else: self._switch('channels')
+        elif command == 'more':
+            self._switch('extras')
+        elif command == 'up':
+            if self.mode == 'hidden': self._zap(-1)
+            elif self.mode in ('groups','channels'): self._position(-1)
+        elif command == 'down':
+            if self.mode == 'hidden': self._zap(1)
+            elif self.mode in ('groups','channels'): self._position(1)
+        elif command == 'ok':
+            if self.mode == 'hidden': self._switch('controls')
+            elif self.mode == 'controls': self._switch('extras')
+            elif self.mode == 'extras': self._execute('extras', self._focus_extra)
+            else: self._select()
 
     def onAction(self, action):
         key = action.getId()
@@ -225,38 +378,48 @@ class LiveNavigator(xbmcgui.WindowDialog):
         if key == ACTION_PAUSE and self.mode == 'hidden':
             xbmc.Player().pause()
             return
-        if key in BACK_ACTIONS or key == ACTION_LEFT:
-            if self.mode == 'hidden':
-                self._switch('channels')
-            elif self.mode == 'channels':
-                self._switch('groups')
-            else:
-                self._switch('hidden')
-        elif key == ACTION_RIGHT:
-            if self.mode == 'groups':
-                self._switch('channels')
-            elif self.mode == 'hidden':
-                self._switch('channels')
-            else:
-                self._switch('hidden')
-        elif key in (ACTION_UP, ACTION_DOWN, ACTION_PAGE_UP, ACTION_PAGE_DOWN):
-            if self.mode == 'hidden':
-                self._switch('channels')
-            else:
-                self._position({ACTION_UP:-1,ACTION_DOWN:1,ACTION_PAGE_UP:-10,ACTION_PAGE_DOWN:10}[key])
+        if key == ACTION_LEFT or key in BACK_ACTIONS:
+            self.handle_command('left')
         elif key == ACTION_SELECT:
-            if self.mode == 'hidden':
-                self._switch('channels')
-            else:
-                self._select()
+            self._last_select = time.time()
+            self.handle_command('ok')
         elif key == ACTION_CONTEXT_MENU and self.mode == 'groups':
             self._toggle()
-        elif key in (ACTION_PREVIOUS_MENU, ACTION_NAV_BACK):
-            self._switch('hidden')
+        elif key in (ACTION_UP, ACTION_DOWN, ACTION_PAGE_UP, ACTION_PAGE_DOWN):
+            step = {ACTION_UP:-1,ACTION_DOWN:1,ACTION_PAGE_UP:-10,ACTION_PAGE_DOWN:10}[key]
+            if self.mode == 'hidden': self._zap(step)
+            elif self.mode in ('groups','channels'): self._position(step)
+            elif self.mode == 'controls':
+                self._focus_main = (self._focus_main + step) % len(self.main_buttons)
+                self._render()
+            elif self.mode == 'extras':
+                self._focus_extra = (self._focus_extra + step) % len(self.extra_buttons)
+                self._render()
+        elif key == ACTION_RIGHT:
+            if self.mode == 'groups': self._switch('channels')
+            elif self.mode == 'channels': self._switch('hidden')
+            elif self.mode == 'controls':
+                self._focus_main = (self._focus_main+1)%len(self.main_buttons)
+                self._render()
+            elif self.mode == 'extras':
+                self._focus_extra = (self._focus_extra+1)%len(self.extra_buttons)
+                self._render()
+        elif key == ACTION_PAUSE:
+            xbmc.Player().pause()
 
     def onClick(self, control_id):
-        if self._drawn and control_id == self.control.getId() and self.mode != 'hidden':
+        # Kodi may invoke onAction(SELECT) and onClick for one press.
+        if time.time()-self._last_select < 0.3:
+            return
+        if self._drawn and control_id == self.control.getId() and self.mode in ('groups','channels'):
             self._select()
+            return
+        if self.mode == 'controls':
+            for i,button in enumerate(self.main_buttons):
+                if button.getId() == control_id: self._execute('controls',i);return
+        elif self.mode == 'extras':
+            for i,button in enumerate(self.extra_buttons):
+                if button.getId() == control_id: self._execute('extras',i);return
 
 
 def start_if_eligible(last_nonce):

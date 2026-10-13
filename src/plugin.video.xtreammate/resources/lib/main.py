@@ -111,6 +111,9 @@ class Router:
             'setup_wizard': self._setup_wizard,
             'group_settings': self._group_settings,
             'groups_manager': self._groups_manager,
+            'startup_settings': self._startup_settings,
+            'play_start': self._play_start,
+            'remote_setup': self._remote_setup,
         }
         if action == 'root' and not _portals_mod.load_all():
             from setup_wizard import setup
@@ -322,6 +325,7 @@ class Router:
 
         if len(active) == 1:
             self._show_portal_home(active[0])
+            self._maybe_autoplay_start(active[0])
             return
 
         from concurrent.futures import ThreadPoolExecutor, as_completed as _asc
@@ -353,6 +357,29 @@ class Router:
                       plot='Addon-Einstellungen öffnen.')
         xbmcplugin.endOfDirectory(self._handle)
 
+    def _maybe_autoplay_start(self, portal):
+        """Start the configured channel once on app entry, not on every refresh.
+
+        The portal home is still built as the navigation fallback. A short
+        cooldown protects against overlapping Kodi directory refreshes.
+        """
+        if (portal.get('type') != 'xtream' or not portal.get('autoplay_start')
+                or not portal.get('start_stream_id') or xbmc.Player().isPlayingVideo()):
+            return
+        import time
+        marker = xbmcgui.Window(10000)
+        previous = marker.getProperty('XtreamMate.LastAutoplay')
+        try:
+            portal_id, timestamp = previous.rsplit(':', 1)
+            if portal_id == str(portal['id']) and time.time()-float(timestamp) < 30:
+                return
+        except (ValueError, TypeError):
+            pass
+        marker.setProperty('XtreamMate.LastAutoplay',
+                           '{}:{}'.format(portal['id'], time.time()))
+        xbmc.executebuiltin('PlayMedia({})'.format(
+            self.url(action='play_start', pid=portal['id'])))
+
     def _portal_home(self):
         import portals as P
         pid = self._params.get('pid', '')
@@ -380,6 +407,14 @@ class Router:
                           icon=_ICON_TV,
                           plot=_pp('Live-TV Sendergruppen anzeigen.'))
         if ptype == 'xtream':
+            self._add_dir('Startsender und Start-Sendergruppe einstellen',
+                          self.url(action='startup_settings', pid=pid),
+                          icon=_ICON_SETTINGS)
+            if p.get('start_stream_id'):
+                self._add_dir('▶ Startsender abspielen',
+                              self.url(action='play_start', pid=pid), icon=_ICON_TV)
+            self._add_dir('TV-Fernbedienung aktivieren / deaktivieren',
+                          self.url(action='remote_setup'), icon=_ICON_SETTINGS)
             self._add_dir('Gruppen verwalten: Live-TV, Filme und Serien',
                           self.url(action='groups_manager', pid=pid),
                           icon=_ICON_SETTINGS,
@@ -456,6 +491,49 @@ class Router:
                 self.url(action='portal_home', pid=portal['id'])))
         else:
             xbmc.executebuiltin('Container.Refresh')
+
+    def _remote_setup(self):
+        from remote_control import configure
+        configure()
+        xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
+
+    def _startup_settings(self):
+        import portals
+        from startup_preferences import configure_startup
+        p=self._portal()
+        if not p:
+            candidates=[x for x in portals.get_active() if x.get('type')=='xtream']
+            if not candidates:
+                xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
+                return
+            idx=xbmcgui.Dialog().select('XtreamMate – Portal', [x['name'] for x in candidates])
+            if idx<0:
+                xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
+                return
+            p=candidates[idx]
+        configure_startup(p)
+        xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
+        xbmc.executebuiltin('Container.Refresh')
+
+    def _play_start(self):
+        p=self._portal()
+        if not p or p.get('type')!='xtream' or not p.get('start_stream_id'):
+            xbmcplugin.setResolvedUrl(self._handle, False, xbmcgui.ListItem())
+            return
+        from xtream import XtreamClient
+        sid=str(p['start_stream_id'])
+        xc=XtreamClient(p['xc_host'],p['xc_user'],p['xc_pass'])
+        streams=xc.get_live_streams()
+        channel=next((c for c in streams if str(c.get('stream_id'))==sid),None)
+        if not channel:
+            xbmcgui.Dialog().notification('XtreamMate', 'Startsender nicht mehr verfügbar. Bitte neu wählen.')
+            xbmcplugin.setResolvedUrl(self._handle, False, xbmcgui.ListItem())
+            return
+        from live_overlay import announce
+        announce(p['id'],sid,channel.get('name',''))
+        from player import play_stream
+        play_stream(self._handle,xc.live_stream_url(sid,'ts'),
+                    title=channel.get('name',''),logo=channel.get('stream_icon',''))
 
     def _groups_manager(self):
         import portals

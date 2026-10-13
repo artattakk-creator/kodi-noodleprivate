@@ -32,6 +32,12 @@
     <setting id="open_portal_manager" type="action"
              label="32201"
              action="RunPlugin(plugin://plugin.video.xtreammate/?action=portal_manager)"/>
+    <setting id="startup_xtream" type="action"
+             label="XtreamMate: Startsender / Startgruppe"
+             action="RunPlugin(plugin://plugin.video.xtreammate/?action=startup_settings)"/>
+    <setting id="remote_xtream" type="action"
+             label="XtreamMate: Links / OK Fernbedienung aktivieren"
+             action="RunPlugin(plugin://plugin.video.xtreammate/?action=remote_setup)"/>
     <setting id="manage_xtream_groups" type="action"
              label="XtreamMate: Live-TV-, Film- und Seriengruppen verwalten"
              action="RunPlugin(plugin://plugin.video.xtreammate/?action=groups_manager)"/>
