@@ -27,6 +27,8 @@ class TiviMatePhotoContractTests(unittest.TestCase):
             'record': 'toggle_recording',
             'back_key': 'guide_overlay',
             'info': 'show_info', 'guide': 'guide_overlay',
+            'red': 'guide_overlay', 'green': 'guide_overlay',
+            'yellow': 'show_info', 'blue': 'settings',
             'volume_up': 'volume_up', 'volume_down': 'volume_down',
             'mute': 'mute',
         }
