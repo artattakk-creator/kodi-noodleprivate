@@ -73,6 +73,9 @@ class TiviMatePhotoContractTests(unittest.TestCase):
         self.assertEqual(reference.resolve('epg','play_pause',True),'open_external')
         self.assertNotEqual(reference.resolve('player','stop'),
                             reference.resolve('epg','stop'))
+        for key in ('red', 'green', 'yellow'):
+            self.assertNotEqual(reference.resolve('player', key),
+                                reference.resolve('epg', key))
 
     def test_unphotographed_bindings_do_not_get_invented(self):
         self.assertIsNone(reference.resolve('epg','up'))
