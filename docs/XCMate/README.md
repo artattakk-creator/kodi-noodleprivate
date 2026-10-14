@@ -1,6 +1,6 @@
 # XCMate – zentraler Projekteinstieg
 
-**Status:** 14.10.2026, Projektübergabe nach Release 0.1.10 (Android-Test noch offen)  
+**Status:** 14.10.2026, Projektübergabe nach Release 0.1.11 (Android-Test noch offen)  
 **Repository:** https://github.com/artattakk-creator/kodi-noodleprivate  
 **Kodi-Repository:** GS Media Kodi Repository 1.7.0  
 **Angezeigter Add-on-Name:** XCMate  
