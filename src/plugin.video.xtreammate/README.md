@@ -1,4 +1,4 @@
-# XtreamMate 0.1.7 – Kodi test version
+# XtreamMate 0.1.8 – Kodi test version
 
 This is an independent Kodi add-on based on mr-evil1 TiViMate Kodi 2026.06.12.1 (GPL v2), with an original GS Media visual identity and new add-on ID `plugin.video.xtreammate`.
 
@@ -119,3 +119,19 @@ must be tested on the actual Kodi box.
   add-on profile. Avoid sharing this profile or its backups publicly.
 - The 0.1.6 playback and remote-control fixes are retained. Custom Android
   remote-key capture/configuration requires a separate on-device test.
+
+ 
+## 0.1.8 – Startsender and Android native TV control
+- Startsender is started with xbmc.Player().play() rather than trying to
+  resolve a plugin URL from a RunPlugin context. Autoplay invokes RunPlugin
+  rather than PlayMedia(plugin://...), which Android Kodi can treat as a folder.
+- While an XtreamMate live stream is active, the WindowDialog keeps a tiny
+  focusable control even if its TV sidebar is hidden. Kodi Android remote
+  keys are received via native WindowDialog.onAction, independently of the
+  FullscreenVideo keymap. Keymap remains an optional fallback.
+- Kodi remote action IDs can be learned for channels, up/down zapping,
+  playback OSD, EPG and extra settings; mappings are stored atomically
+  under addon_data/plugin.video.xtreammate and can be reset to defaults.
+- Playback/remote diagnostics include the direct-play attempt and the most
+  recent native Kodi action. This is a device-tested-pending release:
+  real remotes and BINGIE skin behavior still require Android validation.

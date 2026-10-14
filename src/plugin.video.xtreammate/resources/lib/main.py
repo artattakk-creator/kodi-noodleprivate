@@ -121,6 +121,7 @@ class Router:
             'startup_settings': self._startup_settings,
             'play_start': self._play_start,
             'remote_setup': self._remote_setup,
+            'remote_learn': self._remote_learn,
             'remote_diagnostics': self._remote_diagnostics,
         }
         if action == 'root' and not _portals_mod.load_all():
@@ -385,7 +386,9 @@ class Router:
             pass
         marker.setProperty('XtreamMate.LastAutoplay',
                            '{}:{}'.format(portal['id'], time.time()))
-        xbmc.executebuiltin('PlayMedia({})'.format(
+        # PlayMedia(plugin://...) is interpreted as a folder by Kodi on some
+        # Android builds. Use RunPlugin and then direct xbmc.Player().play().
+        xbmc.executebuiltin('RunPlugin({})'.format(
             self.url(action='play_start', pid=portal['id'])))
 
     def _portal_home(self):
@@ -423,6 +426,10 @@ class Router:
                               self.url(action='play_start', pid=pid), icon=_ICON_TV, is_folder=False)
             self._add_dir('TV-Fernbedienung aktivieren / deaktivieren',
                           self.url(action='remote_setup'), icon=_ICON_SETTINGS)
+            self._add_dir('Fernbedienungstasten anlernen (Android)',
+                          self.url(action='remote_learn'), icon=_ICON_SETTINGS,
+                          plot='Tasten direkt auf der Android-Fernbedienung erfassen '
+                               'und einzelnen XtreamMate-Funktionen zuweisen.')
             self._add_dir('TV-Fernbedienung: Diagnose',
                           self.url(action='remote_diagnostics'), icon=_ICON_SETTINGS)
             self._add_dir('BINGIE MOD Widgets – aktive Sendergruppen',
@@ -533,16 +540,21 @@ class Router:
             'XtreamMate-Stream erkannt: ' + ('JA' if session else 'NEIN'),
             'Video läuft: ' + ('JA' if xbmc.Player().isPlayingVideo() else 'NEIN'),
             'TV-Einblendung: ' + (marker.getProperty('XtreamMate.OverlayStatus') or 'nicht gestartet'),
+            'Startsender: ' + (marker.getProperty('XtreamMate.StartupStatus') or 'noch nicht gestartet'),
             'Letzte Kodi-Taste: ' + (marker.getProperty('XtreamMate.LastRemoteKey') or 'noch keine'),
             'Zuletzt verarbeitet: ' + (marker.getProperty('XtreamMate.LastHandledKey') or 'noch keine'),
         ]
         if not is_enabled():
             rows.append('')
-            rows.append('Bitte erst TV-Fernbedienung aktivieren und Kodi neu starten.')
+            rows.append('Die neue TV-Steuerung erfasst die Android-Tasten auch ohne Keymap.')
         else:
             rows.append('')
             rows.append('Test bei laufendem XtreamMate-TV: Links / OK / Guide.')
         xbmcgui.Dialog().textviewer('XtreamMate – Fernbedienungsdiagnose', '\n'.join(rows))
+
+    def _remote_learn(self):
+        from remote_profiles import configure
+        configure()
 
     def _remote_setup(self):
         from remote_control import configure
@@ -568,22 +580,38 @@ class Router:
         xbmc.executebuiltin('Container.Refresh')
 
     def _play_start(self):
-        p=self._portal()
-        if not p or p.get('type')!='xtream' or not p.get('start_stream_id'):
-            xbmcplugin.setResolvedUrl(self._handle, False, xbmcgui.ListItem())
+        """Start the saved Xtream stream directly, never as a Kodi directory.
+
+        The same handler works for a selected home item and for RunPlugin
+        autoplay. Do not call Kodi's setResolvedUrl() from a RunPlugin call:
+        there is no pending playback request to resolve in that context.
+        """
+        from portals import get_by_id
+        p = get_by_id(self._params.get('pid', ''))
+        if not p or p.get('type') != 'xtream' or not p.get('start_stream_id'):
+            notify('XtreamMate', 'Bitte zuerst eine Startgruppe und einen Startsender wählen.')
             return
         from xtream import XtreamClient
-        sid=str(p['start_stream_id'])
-        xc=XtreamClient(p['xc_host'],p['xc_user'],p['xc_pass'])
-        # Stream ID is already saved. Do not block on another API catalog request.
-        streams=xc.get_cached_catalog('get_live_streams') or []
-        channel=next((c for c in streams if str(c.get('stream_id'))==sid), {})
+        from player import build_playable_item
         from live_overlay import announce
-        announce(p['id'],sid,channel.get('name','Startsender'))
-        from player import play_stream
-        play_stream(self._handle,xc.live_stream_url(sid,'ts'),
-                    title=channel.get('name','Startsender'),
-                    logo=channel.get('stream_icon',''))
+        sid = str(p['start_stream_id'])
+        xc = XtreamClient(p['xc_host'], p['xc_user'], p['xc_pass'])
+        cached = xc.get_cached_catalog('get_live_streams') or []
+        channel = next((c for c in cached if str(c.get('stream_id')) == sid), {})
+        url = xc.live_stream_url(sid, 'ts')
+        title = channel.get('name') or 'Startsender'
+        item = build_playable_item(url, title=title,
+                                   logo=channel.get('stream_icon',''))
+        try:
+            announce(p['id'], sid, title)
+            xbmcgui.Window(10000).setProperty(
+                'XtreamMate.StartupStatus', 'Direktwiedergabe: ' + title[:64])
+            xbmc.Player().play(item.getPath(), item)
+        except Exception as exc:
+            error('XtreamMate direct startup failed: {}'.format(type(exc).__name__))
+            notify('XtreamMate', 'Startsender konnte nicht gestartet werden.')
+            xbmcgui.Window(10000).setProperty(
+                'XtreamMate.StartupStatus', 'Fehler: ' + type(exc).__name__)
 
     def _groups_manager(self):
         import portals

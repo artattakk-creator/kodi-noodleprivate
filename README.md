@@ -174,3 +174,7 @@ mapping, and asynchronous EPG refresh. Use the portal home "EPG verwalten"
 entry or the EPG action in Kodi add-on settings. Native Xtream XMLTV remains
 the baseline, while custom sources can override matching IDs. Android uses
 Kodi's platform file picker and Kodi VFS permissions.
+
+
+## XtreamMate 0.1.8 – direct start and Android native TV remote
+Startsender direct xbmc.Player playback, RunPlugin autoplay, focused TV overlay and learnable Kodi remote action IDs. Existing portal, EPG and sender group data are untouched. On-device validation of remote model still required.

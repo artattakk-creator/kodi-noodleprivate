@@ -185,6 +185,9 @@ class LiveNavigator(xbmcgui.WindowDialog):
             font='font13', textColor='0xFFFFFFFF', selectedColor='0xFFFFC46E')
         self.control.setItemHeight(46)
         self.control.setSpace(3)
+        # Keep a real, focusable Kodi control while the sidebar is hidden.
+        # Otherwise WindowDialog receives no Android remote key events.
+        self.capture = xbmcgui.ControlButton(0, 0, 1, 1, '')
         self.footer = xbmcgui.ControlLabel(32, height-65, sidebar-40, 48, '', 'font12', '0xFFD3D7E2')
         self.osd_bg = xbmcgui.ControlImage(0, height-165, width, 165, image)
         self.osd_title = xbmcgui.ControlLabel(26, height-155, width-50, 38, '', 'font13', '0xFFFFFFFF')
@@ -201,7 +204,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             self.extra_buttons.append(xbmcgui.ControlButton(
                 20+idx*space2, height-59, space2-8, 40, label))
         for control in (self.bg, self.heading, self.sub, self.control, self.footer,
-                        self.osd_bg, self.osd_title, *self.main_buttons, *self.extra_buttons):
+                        self.capture, self.osd_bg, self.osd_title, *self.main_buttons, *self.extra_buttons):
             self.addControl(control)
         self._drawn = True
         xbmcgui.Window(10000).setProperty('XtreamMate.OverlayStatus', 'bereit')
@@ -227,6 +230,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             self.setFocus(focus)
             return
         if not listing:
+            self.setFocus(self.capture)
             return
         self.control.reset()
         if self.mode == 'groups':
@@ -451,32 +455,40 @@ class LiveNavigator(xbmcgui.WindowDialog):
             else: self._select()
 
     def onAction(self, action):
+        # WindowDialog is the active Kodi window while playback runs. Native
+        # onAction sees Android remotes even when FullscreenVideo XML keymaps
+        # are inactive (this was the v0.1.7 navigation dead end).
         key = action.getId()
+        try:
+            raw = action.getButtonCode()
+        except Exception:
+            raw = 0
+        xbmcgui.Window(10000).setProperty(
+            'XtreamMate.LastRemoteKey', '{} / {}'.format(key, raw))
+        from remote_profiles import mapped_action
+        mapped = mapped_action(key)
         if key == ACTION_STOP:
             xbmc.Player().stop()
             self.close()
             return
-        if key == ACTION_PAUSE and self.mode == 'hidden':
+        if key == ACTION_PAUSE:
             xbmc.Player().pause()
             return
-        if key == ACTION_LEFT or key in BACK_ACTIONS:
-            self.handle_command('left')
-        elif key == ACTION_SELECT:
-            self._last_select = time.time()
-            self.handle_command('ok')
-        elif key == ACTION_CONTEXT_MENU and self.mode == 'groups':
-            self._toggle()
-        elif key in (ACTION_UP, ACTION_DOWN, ACTION_PAGE_UP, ACTION_PAGE_DOWN):
-            step = {ACTION_UP:-1,ACTION_DOWN:1,ACTION_PAGE_UP:-10,ACTION_PAGE_DOWN:10}[key]
-            if self.mode == 'hidden': self._zap(step)
-            elif self.mode in ('groups','channels'): self._position(step)
-            elif self.mode == 'controls':
-                self._focus_main = (self._focus_main + step) % len(self.main_buttons)
+        if mapped:
+            if mapped == 'ok':
+                self._last_select = time.time()
+            xbmcgui.Window(10000).setProperty('XtreamMate.LastHandledKey', mapped)
+            if mapped in ('up','down') and self.mode in ('controls','extras'):
+                step = -1 if mapped == 'up' else 1
+                if self.mode == 'controls':
+                    self._focus_main = (self._focus_main + step) % len(self.main_buttons)
+                else:
+                    self._focus_extra = (self._focus_extra + step) % len(self.extra_buttons)
                 self._render()
-            elif self.mode == 'extras':
-                self._focus_extra = (self._focus_extra + step) % len(self.extra_buttons)
-                self._render()
-        elif key == ACTION_RIGHT:
+            else:
+                self.handle_command(mapped)
+            return
+        if key == ACTION_RIGHT:
             if self.mode == 'groups': self._switch('channels')
             elif self.mode == 'channels': self._switch('hidden')
             elif self.mode == 'controls':
@@ -485,10 +497,18 @@ class LiveNavigator(xbmcgui.WindowDialog):
             elif self.mode == 'extras':
                 self._focus_extra = (self._focus_extra+1)%len(self.extra_buttons)
                 self._render()
-        elif key == ACTION_PAUSE:
-            xbmc.Player().pause()
+        elif key in (ACTION_PAGE_UP, ACTION_PAGE_DOWN):
+            step = -10 if key == ACTION_PAGE_UP else 10
+            if self.mode in ('channels','groups'):
+                self._position(step)
 
     def onClick(self, control_id):
+        # The transparent focus button is the native Android OK receiver.
+        if self._drawn and control_id == self.capture.getId():
+            if time.time() - self._last_select >= 0.3:
+                self._last_select = time.time()
+                self.handle_command('ok')
+            return
         # Kodi may invoke onAction(SELECT) and onClick for one press.
         if time.time()-self._last_select < 0.3:
             return
