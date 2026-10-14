@@ -1,6 +1,6 @@
 # XCMate – zentraler Projekteinstieg
 
-**Status:** 14.10.2026, Release 0.1.13 mit Offline-Dienstdiagnose (Android-Fernbedienungstest weiterhin offen)  
+**Status:** 14.10.2026, Release 0.1.14 mit Live-Session-Wiederherstellung (Android-Fernbedienungstest weiterhin offen)  
 **Repository:** https://github.com/artattakk-creator/kodi-noodleprivate  
 **Kodi-Repository:** GS Media Kodi Repository 1.7.0  
 **Angezeigter Add-on-Name:** XCMate  
