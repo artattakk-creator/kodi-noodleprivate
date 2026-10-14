@@ -125,6 +125,7 @@ class Router:
             'remote_learn': self._remote_learn,
             'remote_diagnostics': self._remote_diagnostics,
             'service_recover': self._service_recover,
+            'popup_probe': self._popup_probe,
         }
         if action == 'root' and not _portals_mod.load_all():
             from setup_wizard import setup
@@ -434,6 +435,10 @@ class Router:
                                'und einzelnen XCMate-Funktionen zuweisen.')
             self._add_dir('TV-Fernbedienung: Diagnose',
                           self.url(action='remote_diagnostics'), icon=_ICON_SETTINGS)
+            self._add_dir('XCMate Popup- und Fernbedienungstest',
+                          self.url(action='popup_probe'), icon=_ICON_SETTINGS,
+                          plot='Eigenes Kodi-Popup öffnen, auch OHNE TV-Wiedergabe. '
+                               'Hoch/Runter/Links/Rechts/OK prüfen; Zurück schließt.')
             self._add_dir('XCMate-Hintergrunddienst prüfen / manuell starten',
                           self.url(action='service_recover'), icon=_ICON_SETTINGS,
                           plot='Auch ohne laufenden Stream: Dienst-Lebenszeichen prüfen '
@@ -536,6 +541,10 @@ class Router:
         else:
             xbmc.executebuiltin('Container.Refresh')
 
+    def _popup_probe(self):
+        from popup_probe import run_popup_test
+        run_popup_test()
+
     def _remote_diagnostics(self):
         from service_health import inspect
         from remote_control import is_enabled, SESSION_KEY
@@ -557,6 +566,18 @@ class Router:
             (marker.getProperty('XtreamMate.SessionRecovery') or 'noch keine Prüfung'),
             'Letzte TV-Einblendung: ' + health['overlay'],
             'Letzte Diensteingabe: ' + health['input'],
+            '',
+            '=== Eigener XCMate-Popup-Test ===',
+            'Popup-Status: ' +
+            (marker.getProperty('XtreamMate.PopupProbe.Status') or 'noch nicht geöffnet'),
+            'Popup-Ereignisse: ' +
+            (marker.getProperty('XtreamMate.PopupProbe.KeyCount') or '0'),
+            'Popup-Letzte Taste: ' +
+            (marker.getProperty('XtreamMate.PopupProbe.LastKey') or 'noch keine'),
+            'Popup-Fokus: ' +
+            (marker.getProperty('XtreamMate.PopupProbe.Focus') or 'noch nicht geprüft'),
+            'Auto-TV-Popup: ' +
+            (marker.getProperty('XtreamMate.AutoPopupStatus') or 'nicht gestartet'),
             '',
             '=== Aktuelle Player-/Tastenlage ===',
             'Kodi-Tastenbelegung: ' + ('AKTIV' if is_enabled() else 'INAKTIV'),

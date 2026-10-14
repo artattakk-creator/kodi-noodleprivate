@@ -215,6 +215,8 @@ class IPTVMasterService(xbmc.Monitor):
                                     self._remote_keymap_checked = True
                                 xbmcgui.Window(10000).setProperty(
                                     'XtreamMate.OverlayStatus', 'wird gestartet')
+                                marker.setProperty('XtreamMate.AutoPopupStatus',
+                                                   'TV-Popup wird angefordert')
                                 self._overlay = candidate
                                 self._overlay.show()
                                 note(marker, LAST_OVERLAY, 'TV-Dialog gestartet')
@@ -226,6 +228,8 @@ class IPTVMasterService(xbmc.Monitor):
                                     'XtreamMate.OverlayStatus', 'Fehler: ' + type(exc).__name__)
                                 note(marker, LAST_OVERLAY,
                                      'TV-Dialog-Fehler: ' + type(exc).__name__)
+                                marker.setProperty('XtreamMate.AutoPopupStatus',
+                                                   'Fehler: ' + type(exc).__name__)
                                 error('XCMate WindowDialog startup failed: {} {}'.format(
                                     type(exc).__name__, str(exc)[:240]))
                                 if not self._overlay_failure_reported:
@@ -233,6 +237,7 @@ class IPTVMasterService(xbmc.Monitor):
                                          'TV-Navigation konnte nicht geöffnet werden')
                                     self._overlay_failure_reported = True
                 if self._overlay is not None and player.isPlayingVideo():
+                    self._overlay.expire_intro()
                     if time.monotonic() >= self._next_overlay_check:
                         self._next_overlay_check = time.monotonic() + 1.0
                         self._overlay.refresh_from_cache()
