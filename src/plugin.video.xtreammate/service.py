@@ -46,6 +46,7 @@ class IPTVMasterService(xbmc.Monitor):
         self._next_overlay_check = 0
         self._overlay_failure_reported = False
         self._remote_keymap_checked = False
+        self._next_recovery_probe = 0
         self._start_reminders()
 
     def _start_reminders(self):
@@ -128,8 +129,37 @@ class IPTVMasterService(xbmc.Monitor):
                 from remote_control import parse_command, COMMAND_KEY
                 player = xbmc.Player()
                 if player.isPlayingVideo():
-                    announced_health = session_from_property(
-                        xbmcgui.Window(10000).getProperty(SESSION_KEY))
+                    announced_health = session_from_property(marker.getProperty(SESSION_KEY))
+                    if (not announced_health and
+                            time.monotonic() >= self._next_recovery_probe):
+                        self._next_recovery_probe = time.monotonic() + 3
+                        # Only an exact match with an enabled Xtream portal
+                        # can restore a missing XCMate marker. No URL logging,
+                        # no network/API work and no modification of profiles.
+                        try:
+                            from live_recovery import recover_from_player_path
+                            from portals import get_active
+                            from xtream import XtreamClient
+                            playing_file = player.getPlayingFile()
+                            recovered = recover_from_player_path(
+                                playing_file, get_active(), XtreamClient)
+                            if recovered:
+                                from live_overlay import announce
+                                announce(recovered[0], recovered[1])
+                                announced_health = session_from_property(
+                                    marker.getProperty(SESSION_KEY))
+                                marker.setProperty(
+                                    'XtreamMate.SessionRecovery', 'XCMate-Live-Stream erkannt')
+                            else:
+                                marker.setProperty(
+                                    'XtreamMate.SessionRecovery',
+                                    'keine eindeutige XCMate-Live-Adresse')
+                        except Exception as exc:
+                            # User-visible error TYPE only; never write the
+                            # playing file or the provider credentials.
+                            marker.setProperty(
+                                'XtreamMate.SessionRecovery',
+                                'Prüfung fehlgeschlagen: ' + type(exc).__name__)
                     note(marker, LAST_LIVE,
                          'Video JA / XCMate-Sitzung ' +
                          ('JA' if announced_health else 'NEIN'))
