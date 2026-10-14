@@ -37,6 +37,10 @@ PLAYER = {
     'back_key': 'guide_overlay',
     'info': 'show_info',
     'guide': 'guide_overlay',
+    'red': 'guide_overlay',
+    'green': 'guide_overlay',
+    'yellow': 'show_info',
+    'blue': 'settings',
 }
 
 EPG = {
