@@ -45,3 +45,16 @@ eine private XMLTV-URL: nur redigierte Platzhalter öffentlich verwenden.
 Android-Boot/Wake/Home-PiP sind Host-abhängig; XCMate Default bleibt Slate-Grau.
 Die Menüoberflächen sind **noch nicht implementiert**, Add-on-Release bleibt
 0.1.10; P0 Android-Startsender/Remote-Test ist weiterhin offen.
+
+**Vierte TiviMate-Fotoserie (14.10.2026):** 10 Screenshots mit `Wiedergabe`,
+`Sonstiges` (Suchen, Erinnerungen, Aufnahme, VOD), `Kindersicherung`
+und `Über` vollständig erfasst:
+`docs/XCMate/TIVIMATE_SETTINGS_FOURTH_SERIES_2026-10-14_DE.md`.
+Felder als anonymisierte Struktur nach
+`docs/XCMate/TIVIMATE_SETTINGS_CONTRACT_2026-10-14.json` übertragen.
+Einige dunkel markierte Schalter sind nicht eindeutig als ein/aus zu erkennen
+(Sprachsuche, Autoplay nächste Folge, Telemetrie); Werte explizit unbestimmt.
+Kein privates Nutzerkonto, kein Gerätebezeichner, kein Android-Aufnahmepfad
+auf GitHub. P0 Android-Startsender/Remote offen; weder die neuen Menüs noch
+Serien-Autoplay bereits produktiv. Erst CI, Build/Katalog und echter Gerätetest,
+bevor neue Kodi-Funktionen als fertig gelten.
