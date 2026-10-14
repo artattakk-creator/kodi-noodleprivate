@@ -541,13 +541,16 @@ class Router:
             'XCMate-Stream erkannt: ' + ('JA' if session else 'NEIN'),
             'Video läuft: ' + ('JA' if xbmc.Player().isPlayingVideo() else 'NEIN'),
             'TV-Einblendung: ' + (marker.getProperty('XtreamMate.OverlayStatus') or 'nicht gestartet'),
+            'Tastenübernahme: ' + (marker.getProperty('XtreamMate.KeymapStatus') or 'nicht überprüft'),
+            'Eingabepfad: ' + (marker.getProperty('XtreamMate.InputMode') or 'nicht aktiv'),
+            'Native Tastenereignisse: ' + (marker.getProperty('XtreamMate.NativeActionCount') or '0'),
             'Startsender: ' + (marker.getProperty('XtreamMate.StartupStatus') or 'noch nicht gestartet'),
             'Letzte Kodi-Taste: ' + (marker.getProperty('XtreamMate.LastRemoteKey') or 'noch keine'),
             'Zuletzt verarbeitet: ' + (marker.getProperty('XtreamMate.LastHandledKey') or 'noch keine'),
         ]
         if not is_enabled():
             rows.append('')
-            rows.append('Die neue TV-Steuerung erfasst die Android-Tasten auch ohne Keymap.')
+            rows.append('XCMate richtet bei Live-TV seine Keymap ein, sofern nicht deaktiviert.')
         else:
             rows.append('')
             rows.append('Test bei laufendem XCMate-TV: Links / OK / Guide.')
