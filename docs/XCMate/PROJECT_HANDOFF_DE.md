@@ -1,6 +1,6 @@
 # XCMate – vollständiges technisches Übergabedokument
 
-**Stand:** 14.10.2026 · Bezug: XCMate **0.1.11** · GS Media Repository **1.7.0**  
+**Stand:** 14.10.2026 · Bezug: XCMate **0.1.15** · GS Media Repository **1.7.0**  
 **Repo:** https://github.com/artattakk-creator/kodi-noodleprivate  
 **Branch:** `main` · **Display-Name:** XCMate · **Add-on-ID unverändert:** `plugin.video.xtreammate`.
 
@@ -212,3 +212,43 @@ Nur wenn Kodi wirklich einen passenden Player-Pfad meldet und der
 Dialog über der Android-Skin gerendert wird, ist die Fernbedienung
 auch auf dem Gerät funktionsfähig. Keine funktionale Gerätetestfreigabe
 ohne Nutzerbestätigung.
+
+## 15. XCMate 0.1.15 – eigene Kodi-Popups und isolierter Remote-Test (14.10.2026)
+
+**Aktueller veröffentlichter Stand:** `plugin.video.xtreammate-0.1.15.zip`
+(219453 Bytes), GS Media Repository 1.7.0, unveränderte
+`plugin.video.xtreammate`-Add-on-ID. PR
+[#8](https://github.com/artattakk-creator/kodi-noodleprivate/pull/8)
+mit erfolgreichen Python-/Kodi-API-Mocktests, erfolgreicher
+[PR-CI 38592365190](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/38592365190)
+und [Publish-CI 38592489957](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/38592489957).
+`addons.xml` deklariert 0.1.15; vorherige ZIP bleibt erhalten.
+
+**Neuer Menüpunkt im Xtream-Portal:**
+„XCMate Popup- und Fernbedienungstest“, ohne gestartetes TV und ohne
+laufenden Service-/LiveSession-Marker erreichbar. Er öffnet
+`resources/lib/popup_probe.py` als eigenen fokussierbaren Kodi-`WindowDialog.doModal()`,
+erfasst native Kodi-Action-IDs und Richtungstasten/OK/Zurück. Die zuletzt
+empfangenen Ereignisse, der Fokus und der Popup-Status stehen anschließend
+in „TV-Fernbedienung: Diagnose“. Keine Stream-Adressen oder Zugangsdaten.
+
+**Auto-Live-Popup:** `LiveNavigator` beginnt im sichtbaren Zustand
+`channels` statt unsichtbar `hidden`. Es zeigt sofort die Senderliste und
+EPG-Kurzzeilen als linke Sidebar vor laufendem TV; nach 16s ohne
+empfangene Taste verschwindet nur die Sidebar, nicht die Wiedergabe.
+Der Dienst protokolliert `Auto-TV-Popup` und das Ergebnis von
+`WindowDialog.onInit`. Das **unverkleinerte Live-Bild bleibt in der
+nicht überlagerten Fläche sichtbar**, dies ist noch keine echte
+skalierte Mini-TV-Vorschau.
+
+**Verbindlicher Stufenplan:** `docs/XCMate/POPUP_UI_IMPLEMENTATION_PLAN_DE.md`.
+Nach gesichertem Android-Gerätebeleg: 0.1.16 Sender/Gruppen,
+0.1.17 EPG-Raster/Video-Machbarkeit, 0.1.18 Komfort,
+0.1.19 Optik. **Noch kein Android-PASS.**
+
+**Bitte Nutzer zuerst:** Kodi vollständig neu starten; im XCMate-Portal
+ohne Video das neue Popup aufrufen, Links/Hoch/Runter/OK/Zurück prüfen und
+Popup-Status danach über Diagnose fotografieren. Anschließend Startsender
+testen: 16s sichtbare Senderliste? Meldung „Auto-TV-Popup“ und Session/
+Overlay-Zeilen nachher kontrollieren. So den Kodi-Popup-Fokus unabhängig
+vom TV-Laufzeitproblem isolieren.
