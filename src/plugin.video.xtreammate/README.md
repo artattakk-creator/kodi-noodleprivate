@@ -154,3 +154,48 @@ Die angezeigte Bezeichnung wurde von XtreamMate in **XCMate** geändert. Kodi-Ad
 - **NOT Android-verified:** Test on the actual Android box with Titan BINGIE
   MOD before marking startup, remote, EPG or overlay issues resolved.
 - No portal/credentials/cache/EPG/userdata migration or deletion.
+
+## 0.1.11 – native Android Fernbedienung (P0, Gerätetest erforderlich)
+
+- **Erster XCMate-Live-TV-Start:** Der Kodi-Service installiert bzw. aktualisiert
+  automatisch ausschließlich die selbst verwaltete `xtreammate.xml`-Keymap.
+  Fremde Keymap-Dateien werden nicht überschrieben. Über
+  „TV-Fernbedienung aktivieren/deaktivieren“ kann der Nutzer die Installation
+  jederzeit widerrufen; die Abwahl wird persistent respektiert.
+- **Nur im XCMate-Live-TV:** Links zeigt Senderliste, erneut Links Gruppen;
+  Hoch nächster / Runter vorheriger Sender; Rechts letzter Sender;
+  OK XCMate-Steuerleiste; Menü XCMate-Zusatzleiste; Zurück EPG/Zurück.
+  Kodi-Lautstärkeregelung wird nicht ersetzt. Außerhalb aktiver XCMate-Sessions
+  leitet die Keymap Tasten an Kodi zurück.
+- Kodi-Dialog fängt Android-`onAction` direkt ab. Eine Namespaced-Keymap mit
+  kurz-/lang-gedrückten Einträgen leitet alternativ Aktionen über
+  `remote_bridge.py` weiter. Unterschiedliche Android-Fernbedienungen
+  liefern ggf. keine separate Langdruck-Aktion.
+- TV-Guide-Schnelleinstieg nutzt zunächst eine eigenständige fokussierbare
+  Senderliste mit zwischengespeicherten EPG-Zeilen; der vollständige
+  TiviMate-ähnliche horizontale EPG-Zeitraster bleibt ein separates P1-Ziel.
+- Remote-Diagnose zeigt native Kodi-Action-IDs, Tastenereignis-Zähler,
+  Keymap-Status und den Status der TV-Overlay-Initialisierung.
+- Für den **ersten Test nach dem Update bitte Kodi vollständig neu starten**
+  (nicht nur das Add-on erneut öffnen), damit der Kodi-Service aktualisiert ist.
+- Regressionstests inkl. Kodi-/Android-API-Stubs sind **kein Nachweis eines
+  erfolgreichen Gerätetests**. Der unveränderte interne Add-on-Bezeichner
+  `plugin.video.xtreammate` und alle persönlichen Portal-, EPG- und
+  Tastenprofil-Dateien bleiben erhalten.
+
+### Android-Gerätetest (Titan BINGIE MOD)
+
+1. Kodi neu starten, XCMate öffnen, XTREAM-Live-TV-Sender starten.
+2. Bei laufendem Vollbild **OK** drücken: XCMate-Leiste statt Kodi-OSD?
+3. **Links, Links, Rechts, Hoch, Runter, Rechts**:
+   Senderliste, Gruppen, zurück, Senderwechsel in beide Richtungen und
+   letzter Sender.
+4. **Menü, Zurück, Guide/Zurück, OK, Pause** testen; EPG/Senderliste darf nicht
+   zu einer leeren Kodi-Verzeichnisansicht wechseln.
+5. Unter „TV-Fernbedienung: Diagnose“ Kodi-Tastenwerte, `NativeActionCount`,
+   `KeymapStatus`, `OverlayStatus`, `LastHandledKey` ablesen;
+   bei Fehlverhalten anonymisierte `kodi.log`-Zeilen sichern.
+6. Fernbedienung bei **fremdem Kodi-Video** gegenprüfen: Kodi-Standardbefehle
+   dürfen dort nicht vom XCMate-Player ersetzt werden.
+
+**Kein Android-PASS** ohne protokolliertes tatsächliches Ergebnis.
