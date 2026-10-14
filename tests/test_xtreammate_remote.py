@@ -29,6 +29,7 @@ class RemoteTest(unittest.TestCase):
         vfs.translatePath=lambda *_:self.directory.name
         utils=types.ModuleType("utils")
         utils.info=utils.warn=lambda *_:None
+        utils.addon_data_dir=lambda:self.directory.name
         patch=mock.patch.dict(sys.modules,{"xbmc":xbmc,"xbmcgui":gui,"xbmcvfs":vfs,"utils":utils})
         patch.start()
         self.addCleanup(patch.stop)

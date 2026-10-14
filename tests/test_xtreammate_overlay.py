@@ -41,6 +41,7 @@ class KodiOverlayTests(unittest.TestCase):
         props={}
         class Property:
             def setProperty(self,k,v):props[k]=v
+            def getProperty(self,k):return props.get(k,'')
         fakegui.Window=lambda id: Property()
         addon=types.ModuleType('xbmcaddon')
         addon.Addon=lambda: types.SimpleNamespace(getAddonInfo=lambda name:'/tmp/xtreammate')
@@ -69,9 +70,10 @@ class KodiOverlayTests(unittest.TestCase):
             overlay.mode='hidden'
             overlay._focus_main=0
             overlay._focus_extra=0
+            overlay._recent_sid=''
             overlay._last_select=0
             overlay._drawn=False
-            overlay._highlight={'groups':0,'channels':0}
+            overlay._highlight={'groups':0,'channels':0,'guide':0}
             overlay.groups=[]
             overlay.channels=[]
             overlay.enabled=set()
@@ -100,6 +102,7 @@ class KodiOverlayTests(unittest.TestCase):
             self.assertEqual(props['XtreamMate.LastHandledKey'],'ok')
             # "Weitere" is an explicit focused OSD control.
             overlay.handle_command('ok')
+            self.assertEqual(overlay.mode, 'controls')
             overlay._focus_main=4
             overlay.handle_command('ok')
             self.assertEqual(overlay.mode,'extras')

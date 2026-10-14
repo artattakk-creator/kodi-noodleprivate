@@ -104,6 +104,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self.portal = portal
         self.xc = XtreamClient(portal['xc_host'], portal['xc_user'], portal['xc_pass'])
         self.sid = str(initial_sid)
+        self._recent_sid = ''
         self.groups = []
         self.enabled = load(portal['id'])
         self.channels = []
@@ -127,7 +128,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self._drawn = False
         self._closed = False
         self._epg_fetching = False
-        self._highlight = {'channels': 0, 'groups': 0}
+        self._highlight = {'channels': 0, 'groups': 0, 'guide': 0}
 
     def _load_catalog_from_disk(self):
         from iptv import Channel
@@ -187,7 +188,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self.control.setSpace(3)
         # Keep a real, focusable Kodi control while the sidebar is hidden.
         # Otherwise WindowDialog receives no Android remote key events.
-        self.capture = xbmcgui.ControlButton(0, 0, 1, 1, '')
+        self.capture = xbmcgui.ControlButton(0, 0, 8, 8, '')
         self.footer = xbmcgui.ControlLabel(32, height-65, sidebar-40, 48, '', 'font12', '0xFFD3D7E2')
         self.osd_bg = xbmcgui.ControlImage(0, height-165, width, 165, image)
         self.osd_title = xbmcgui.ControlLabel(26, height-155, width-50, 38, '', 'font13', '0xFFFFFFFF')
@@ -207,13 +208,15 @@ class LiveNavigator(xbmcgui.WindowDialog):
                         self.capture, self.osd_bg, self.osd_title, *self.main_buttons, *self.extra_buttons):
             self.addControl(control)
         self._drawn = True
-        xbmcgui.Window(10000).setProperty('XtreamMate.OverlayStatus', 'bereit')
+        marker = xbmcgui.Window(10000)
+        marker.setProperty('XtreamMate.OverlayStatus', 'bereit')
+        marker.setProperty('XtreamMate.InputMode', 'native WindowDialog + XCMate keymap')
         self._render()
 
     def _render(self):
         if not self._drawn:
             return
-        listing = self.mode in ('groups','channels')
+        listing = self.mode in ('groups','channels','guide')
         osd = self.mode in ('controls','extras')
         for c in (self.bg, self.heading, self.sub, self.control, self.footer):
             c.setVisible(listing)
@@ -248,16 +251,18 @@ class LiveNavigator(xbmcgui.WindowDialog):
             labels = [row_title(c.name, guide_for_channel(
                 guide, c.tvg_id, c.extra.get('stream_id', ''), now_ts))
                 for c in self.visible_channels]
-            self.heading.setLabel('XCMate · LIVE-TV')
+            self.heading.setLabel('XCMate · EPG' if self.mode == 'guide' else 'XCMate · LIVE-TV')
             self.sub.setLabel('{} Sender · {}'.format(len(labels),
                 next((x[1] for x in self.rows if x[0] == self.category_id), 'Aktivierte Gruppen')))
-            self.footer.setLabel('◀/Zurück: Sendergruppen   OK: Umschalten')
+            self.footer.setLabel('◀: Gruppen · OK: Sender starten · Zurück: TV'
+                if self.mode == 'guide' else
+                '◀: Sendergruppen · OK: Sender starten · Zurück: TV')
         if not labels:
             labels = ['Senderliste wird im Hintergrund geladen …' if not self._catalog_ready
                       else 'Keine Sender in dieser Auswahl']
         self.control.addItems(labels)
         pos = self._highlight[self.mode]
-        if self.mode == 'channels' and self._scroll_to_current and self.sid:
+        if self.mode in ('channels','guide') and self._scroll_to_current and self.sid:
             found = next((i for i,c in enumerate(self.visible_channels)
                           if c.extra.get('stream_id') == self.sid), None)
             if found is not None:
@@ -311,7 +316,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 self._scroll_to_current = False
                 self._highlight['channels'] = 0
                 self._switch('channels')
-        elif self.mode == 'channels':
+        elif self.mode in ('channels','guide'):
             i = self.control.getSelectedPosition()
             if 0 <= i < len(self.visible_channels):
                 c = self.visible_channels[i]
@@ -323,6 +328,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
         sid = str(channel.extra.get('stream_id', ''))
         if not sid:
             return
+        if self.sid != sid:
+            self._recent_sid = self.sid
         self.sid = sid
         self._scroll_to_current = True
         announce(self.portal['id'], sid, channel.name)
@@ -436,75 +443,164 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 return
         self._switch('hidden')
 
+    def _recent(self):
+        channel = next((c for c in self.channels
+                        if str(c.extra.get('stream_id', '')) == self._recent_sid), None)
+        if channel is not None:
+            self._tune(channel)
+        else:
+            xbmcgui.Dialog().notification('XCMate', 'Noch kein vorheriger Sender.')
+
+    def _search_channels(self):
+        """Only cached channel names; no portal access or network requests."""
+        query = xbmcgui.Dialog().input('XCMate – Sender suchen')
+        if not query:
+            return
+        choices = channels_for_category(self.channels, '*', self.enabled)
+        result = next((ch for ch in choices if query.casefold() in ch.name.casefold()), None)
+        if result is None:
+            xbmcgui.Dialog().notification('XCMate', 'Kein passender Sender gefunden.')
+            return
+        self.category_id = str(result.extra.get('category_id') or '*')
+        self._scroll_to_current = False
+        self._highlight['channels'] = next((i for i,c in enumerate(
+            channels_for_category(self.channels, self.category_id, self.enabled))
+            if str(c.extra.get('stream_id')) == str(result.extra.get('stream_id'))), 0)
+        self._switch('channels')
+
     def handle_command(self, command):
-        """Commands arrive from remote keymap or native WindowDialog.onAction."""
-        if command == 'left':
-            if self.mode == 'channels': self._switch('groups')
-            elif self.mode == 'groups': self._switch('hidden')
-            else: self._switch('channels')
-        elif command == 'more':
-            self._switch('extras')
-        elif command == 'epg':
+        """XCMate-local TV commands; never open Kodi's own player OSD."""
+        if command in ('left', 'long_left'):
+            if self.mode in ('controls', 'extras'):
+                if self.mode == 'controls':
+                    self._focus_main = (self._focus_main - 1) % len(self.main_buttons)
+                else:
+                    self._focus_extra = (self._focus_extra - 1) % len(self.extra_buttons)
+                self._render()
+            elif self.mode in ('channels','guide'):
+                self._switch('groups')
+            elif self.mode == 'groups':
+                self._switch('hidden')
+            else:
+                self._switch('channels')
+        elif command == 'right':
+            if self.mode == 'hidden':
+                self._recent()
+            elif self.mode == 'groups':
+                self._switch('channels')
+            elif self.mode in ('channels','guide'):
+                self._switch('hidden')
+            elif self.mode in ('controls','extras'):
+                if self.mode == 'controls':
+                    self._focus_main = (self._focus_main + 1) % len(self.main_buttons)
+                else:
+                    self._focus_extra = (self._focus_extra + 1) % len(self.extra_buttons)
+                self._render()
+        elif command in ('more', 'long_ok', 'menu', 'long_menu'):
+            if command == 'long_menu':
+                self._switch('guide')
+            else:
+                self._switch('extras')
+        elif command in ('epg', 'guide'):
+            self._switch('guide')
+        elif command in ('info', 'long_right'):
             self._epg()
-        elif command == 'up':
-            if self.mode == 'hidden': self._zap(-1)
-            elif self.mode in ('groups','channels'): self._position(-1)
-        elif command == 'down':
-            if self.mode == 'hidden': self._zap(1)
-            elif self.mode in ('groups','channels'): self._position(1)
+        elif command in ('back',):
+            if self.mode == 'hidden':
+                self._switch('guide')
+            elif self.mode == 'channels':
+                self._switch('groups')
+            elif self.mode == 'guide':
+                self._switch('hidden')
+            elif self.mode == 'groups':
+                self._switch('hidden')
+            elif self.mode == 'extras':
+                self._switch('controls')
+            else:
+                self._switch('hidden')
+        elif command == 'long_back':
+            xbmc.Player().stop()
+            self.close()
+        elif command == 'long_up':
+            self._recent()
+        elif command == 'long_down':
+            self._search_channels()
+        elif command == 'long_play_pause':
+            # Only attempt a live edge jump when Kodi has a seekable stream.
+            try:
+                p = xbmc.Player()
+                duration = p.getTotalTime()
+                if duration > 5:
+                    p.seekTime(duration)
+            except Exception:
+                pass
+        elif command == 'play_pause':
+            xbmc.Player().pause()
+        elif command in ('up', 'down'):
+            if self.mode == 'hidden':
+                self._zap(1 if command == 'up' else -1)
+            elif self.mode in ('channels', 'groups', 'guide'):
+                self._position(-1 if command == 'up' else 1)
+            elif self.mode in ('controls','extras'):
+                # D-pad vertical movement stays inside our focusable OSD.
+                index = '_focus_main' if self.mode == 'controls' else '_focus_extra'
+                count = len(self.main_buttons) if self.mode == 'controls' else len(self.extra_buttons)
+                setattr(self, index, (getattr(self, index) + (-1 if command == 'up' else 1)) % count)
+                self._render()
         elif command == 'ok':
-            if self.mode == 'hidden': self._switch('controls')
-            elif self.mode == 'controls': self._execute('controls', self._focus_main)
-            elif self.mode == 'extras': self._execute('extras', self._focus_extra)
-            else: self._select()
+            if self.mode == 'hidden':
+                self._switch('controls')
+            elif self.mode == 'controls':
+                self._execute('controls', self._focus_main)
+            elif self.mode == 'extras':
+                self._execute('extras', self._focus_extra)
+            else:
+                self._select()
 
     def onAction(self, action):
-        # WindowDialog is the active Kodi window while playback runs. Native
-        # onAction sees Android remotes even when FullscreenVideo XML keymaps
-        # are inactive (this was the v0.1.7 navigation dead end).
-        key = action.getId()
+        """Native Kodi Android actions take priority while our dialog owns focus.
+
+        Log numeric action/buttoncode only; never include stream URLs.
+        The keymap bridge is a fallback, not the sole remote input path.
+        """
+        key = int(action.getId())
         try:
-            raw = action.getButtonCode()
+            raw = int(action.getButtonCode())
         except Exception:
             raw = 0
-        xbmcgui.Window(10000).setProperty(
-            'XtreamMate.LastRemoteKey', '{} / {}'.format(key, raw))
-        from remote_profiles import mapped_action
-        mapped = mapped_action(key)
-        if key == ACTION_STOP:
+        marker = xbmcgui.Window(10000)
+        marker.setProperty('XtreamMate.LastRemoteKey', '{} / {} (native)'.format(key, raw))
+        try:
+            count = int(marker.getProperty('XtreamMate.NativeActionCount') or '0')
+        except (ValueError, TypeError):
+            count = 0
+        marker.setProperty('XtreamMate.NativeActionCount', str(count+1))
+        # Back and Context are *not* Kodi player OSD commands in XCMate.
+        # Must override learned Back->left and default Menu->epg from old profiles.
+        if key in BACK_ACTIONS:
+            mapped = 'back'
+        elif key == ACTION_CONTEXT_MENU:
+            mapped = 'menu'
+        elif key == ACTION_STOP:
             xbmc.Player().stop()
             self.close()
             return
-        if key == ACTION_PAUSE:
-            xbmc.Player().pause()
+        elif key == ACTION_PAUSE:
+            mapped = 'play_pause'
+        elif key == ACTION_RIGHT:
+            mapped = 'right'
+        elif key in (ACTION_PAGE_UP, ACTION_PAGE_DOWN):
+            if self.mode in ('channels', 'guide', 'groups'):
+                self._position(-10 if key == ACTION_PAGE_UP else 10)
             return
+        else:
+            from remote_profiles import mapped_action
+            mapped = mapped_action(key)
         if mapped:
             if mapped == 'ok':
                 self._last_select = time.time()
-            xbmcgui.Window(10000).setProperty('XtreamMate.LastHandledKey', mapped)
-            if mapped in ('up','down') and self.mode in ('controls','extras'):
-                step = -1 if mapped == 'up' else 1
-                if self.mode == 'controls':
-                    self._focus_main = (self._focus_main + step) % len(self.main_buttons)
-                else:
-                    self._focus_extra = (self._focus_extra + step) % len(self.extra_buttons)
-                self._render()
-            else:
-                self.handle_command(mapped)
-            return
-        if key == ACTION_RIGHT:
-            if self.mode == 'groups': self._switch('channels')
-            elif self.mode == 'channels': self._switch('hidden')
-            elif self.mode == 'controls':
-                self._focus_main = (self._focus_main+1)%len(self.main_buttons)
-                self._render()
-            elif self.mode == 'extras':
-                self._focus_extra = (self._focus_extra+1)%len(self.extra_buttons)
-                self._render()
-        elif key in (ACTION_PAGE_UP, ACTION_PAGE_DOWN):
-            step = -10 if key == ACTION_PAGE_UP else 10
-            if self.mode in ('channels','groups'):
-                self._position(step)
+            marker.setProperty('XtreamMate.LastHandledKey', mapped)
+            self.handle_command(mapped)
 
     def onClick(self, control_id):
         # The transparent focus button is the native Android OK receiver.
@@ -516,7 +612,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         # Kodi may invoke onAction(SELECT) and onClick for one press.
         if time.time()-self._last_select < 0.3:
             return
-        if self._drawn and control_id == self.control.getId() and self.mode in ('groups','channels'):
+        if self._drawn and control_id == self.control.getId() and self.mode in ('groups','channels','guide'):
             self._select()
             return
         if self.mode == 'controls':
