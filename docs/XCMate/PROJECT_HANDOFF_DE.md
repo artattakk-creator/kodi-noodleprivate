@@ -170,3 +170,45 @@ P0-Implementierung in PR [#6](https://github.com/artattakk-creator/kodi-noodlepr
 - Tests: `tests/test_xcmate_service_health_p0.py` prüft Offlinestatus, Heartbeat/Timeout, Beobachtungsspeicher, Start-/Doppelstart-Schutz und UI-Anbindung. Insgesamt 116 GitHub-Unittests erfolgreich.
 - P0 **Android-Gerätetest noch offen**. Bisherige 0.1.12 Session-Grace-Fixes bleiben integriert. Die UI-Referenzfotos/Optik bleiben P1; auch 0.1.13 beweist noch keine aktive eigene Fernbedienung.
 - Test: 0.1.13 installieren, Kodi vollständig neu starten, im Portalmenü zunächst Hintergrunddienst prüfen. Bei „LÄUFT“ Testsender starten, bei unverändert defekter Fernbedienung Wiedergabe beenden und im normalen Menü erneut Diagnose öffnen (letzte Beobachtungen). Wenn kein aktuelles Lebenszeichen: Button betätigen, bestätigten Startversuch abwarten, Diagnose erneut prüfen und ggf. anonymisierte `kodi.log` prüfen. Keine sensiblen Portale, EPG-URLs oder Passwörter teilen.
+
+## 14. XCMate 0.1.14: Wiederherstellung fehlender Live-Session während aktivem Video (14.10.2026)
+
+**Vorliegender Android-Nachweis (realer Nutzer-Foto-Dialog):** Service `LÄUFT`,
+`Dienstschleifen: 2134`, `Letzte Live-Beobachtung: Video JA / XCMate-Sitzung NEIN`.
+Somit ist der Kodi-Dienst aktiv, aber es fehlt beim laufenden Video
+die XCMate-Sitzung. Der eigene XCMate-`WindowDialog` benötigt diesen Marker;
+ohne ihn startet das TV-Overlay nicht. Die genaue ursprüngliche Ursache
+für den Verlust des Markers ist anhand dieses Fotos nicht abschließend geklärt.
+
+**PR #7:** https://github.com/artattakk-creator/kodi-noodleprivate/pull/7
+**CI PR:** https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/38587564991
+**Release-CI:** https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/38587667244
+
+**XCMate 0.1.14 veröffentlicht:** `plugin.video.xtreammate/plugin.video.xtreammate-0.1.14.zip` 215793 Bytes.
+`addons.xml` deklariert 0.1.14, `addons.xml.md5` vorhanden.
+Altes 0.1.13-Paket bleibt erhalten; Repository-Add-on weiterhin 1.7.0.
+
+**Implementierung:** `resources/lib/live_recovery.py` gleicht den aktuellen
+Kodi-`Player.getPlayingFile()`-Pfad ausschließlich lokal (ohne Netzwerk)
+mit konfigurierten aktiven Xtream-Live-Sendern ab. Die exakte URL muss
+inklusive Portaladresse, Nutzername, Passwort und Sender-ID passen,
+oder eine eindeutige XCMate-`plugin://`-Live-Route sein.
+Nur die daraus gewonnenen IDs, niemals Stream-URL, Credentials oder
+private Portalmetadaten, gehen an `live_overlay.announce()`.
+Der Hintergrunddienst probiert höchstens alle drei Sekunden, wenn
+`Player.isPlayingVideo()` wahr ist, aber kein gültiger Sitzungsmarker
+vorliegt. Fremde Kodi-Videos, unbekannte Portale, VOD und Serien
+dürfen den XCMate-Player nicht übernehmen.
+`TV-Fernbedienung: Diagnose` zeigt neu
+`Live-Sitzungswiederherstellung`: Erfolg, kein exakter Match oder Fehlerklasse.
+
+**P0 auf Android weiterhin offen:** Nach Update Kodi neu starten,
+XCMate-WELT-Startsender laufen lassen; OK und Links prüfen; dann
+Diagnose öffnen. Erwartung: `Dienststatus LÄUFT`,
+`Letzte Live-Beobachtung Video JA / XCMate-Sitzung JA`,
+`Live-Sitzungswiederherstellung XCMate-Live-Stream erkannt`,
+`Letzte TV-Einblendung TV-Dialog gestartet`.
+Nur wenn Kodi wirklich einen passenden Player-Pfad meldet und der
+Dialog über der Android-Skin gerendert wird, ist die Fernbedienung
+auch auf dem Gerät funktionsfähig. Keine funktionale Gerätetestfreigabe
+ohne Nutzerbestätigung.
