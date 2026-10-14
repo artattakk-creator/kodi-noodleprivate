@@ -1,0 +1,429 @@
+{
+  "schema": "xcmate.tivimate_photo_settings_reference.v1",
+  "observed_at": "2026-10-14",
+  "evidence": "user-supplied photos; TiviMate 5.3.3 configuration; not a claim of factory defaults or Kodi implementation",
+  "privacy": "All dynamic playlist names, hosts, XMLTV URLs, credentials, tokens and private identifying values redacted. Do not overwrite existing XCMate profile settings.",
+  "implementation_status": "specification_only",
+  "release_at_observation": "0.1.10",
+  "addon_id": "plugin.video.xtreammate",
+  "default_xcmate_theme": "dark_slate",
+  "root": [
+    {
+      "id": "general",
+      "label": "Allgemein"
+    },
+    {
+      "id": "playlists",
+      "label": "Wiedergabelisten"
+    },
+    {
+      "id": "epg",
+      "label": "EPG"
+    },
+    {
+      "id": "appearance",
+      "label": "Optik"
+    },
+    {
+      "id": "playback",
+      "label": "Wiedergabe"
+    },
+    {
+      "id": "remote",
+      "label": "Fernbedienung"
+    },
+    {
+      "id": "parental",
+      "label": "Kindersicherung"
+    },
+    {
+      "id": "misc",
+      "label": "Sonstiges"
+    },
+    {
+      "id": "about",
+      "label": "Über"
+    }
+  ],
+  "general": [
+    {
+      "id": "android_auto_start_on_boot",
+      "label": "Automatisch nach dem booten starten",
+      "observed_value": false,
+      "kind": "toggle",
+      "capability": "android_host_required",
+      "source_photo": "1000118375.jpg"
+    },
+    {
+      "id": "android_resume_from_sleep",
+      "label": "Automatisch aus dem Sleep Mode starten",
+      "observed_value": false,
+      "kind": "toggle",
+      "capability": "android_host_required",
+      "source_photo": "1000118375.jpg"
+    },
+    {
+      "id": "startup_last_channel",
+      "label": "Zuletzt angesehenen Sender beim Start anzeigen",
+      "observed_value": true,
+      "kind": "toggle",
+      "capability": "planned",
+      "source_photo": "1000118375.jpg"
+    },
+    {
+      "id": "android_home_pip",
+      "label": "Wechsele in den Bild-in-Bild Modus beim drücken des Home Menüs",
+      "observed_value": false,
+      "kind": "toggle",
+      "capability": "android_host_required",
+      "source_photo": "1000118375.jpg"
+    },
+    {
+      "id": "double_back_to_exit",
+      "label": "Doppelt bestätigen, zum verlassen mit der Zurück-Taste",
+      "observed_value": false,
+      "kind": "toggle",
+      "capability": "planned",
+      "source_photo": "1000118375.jpg"
+    },
+    {
+      "id": "user_agent_global_override",
+      "label": "User-Agent",
+      "observed_value": null,
+      "kind": "text",
+      "capability": "planned",
+      "source_photo": "1000118375.jpg"
+    },
+    {
+      "id": "udp_proxy_override",
+      "label": "UDP Proxy (Adresse:Port)",
+      "observed_value": null,
+      "kind": "text",
+      "capability": "planned",
+      "source_photo": "1000118375.jpg"
+    },
+    {
+      "id": "backup",
+      "label": "Daten sichern",
+      "observed_value": null,
+      "kind": "action",
+      "capability": "planned",
+      "source_photo": "1000118376.jpg"
+    },
+    {
+      "id": "restore",
+      "label": "Daten wiederherstellen",
+      "observed_value": null,
+      "kind": "action",
+      "capability": "planned",
+      "source_photo": "1000118376.jpg"
+    }
+  ],
+  "playlists": {
+    "listing": [
+      {
+        "id": "playlist_items",
+        "label": "Wiedergabelisten",
+        "observed_value": null,
+        "kind": "dynamic_list",
+        "capability": "planned",
+        "source_photo": "1000118377.jpg"
+      },
+      {
+        "id": "add_playlist",
+        "label": "Hinzufügen",
+        "observed_value": null,
+        "kind": "action",
+        "capability": "planned",
+        "source_photo": "1000118377.jpg"
+      },
+      {
+        "id": "update_all_playlists",
+        "label": "Aktualisiere alle Wiedergabelisten",
+        "observed_value": null,
+        "kind": "action",
+        "capability": "planned",
+        "source_photo": "1000118377.jpg"
+      }
+    ],
+    "detail": [
+      {
+        "id": "enabled",
+        "label": "Aktivieren",
+        "observed_value": null,
+        "kind": "toggle",
+        "capability": "planned",
+        "source_photo": "1000118378.jpg"
+      },
+      {
+        "id": "playlist_name",
+        "label": "Playlist Name",
+        "observed_value": null,
+        "kind": "text",
+        "capability": "planned",
+        "source_photo": "1000118378.jpg"
+      },
+      {
+        "id": "epg_assigned_sources",
+        "label": "EPG Quellen",
+        "observed_value": null,
+        "kind": "submenu",
+        "capability": "planned",
+        "source_photo": "1000118378.jpg"
+      },
+      {
+        "id": "logo_priority",
+        "label": "Logo Priorität",
+        "observed_value": "Logos aus der Playlist bevorzugen",
+        "kind": "choice",
+        "capability": "planned",
+        "source_photo": "1000118378.jpg"
+      },
+      {
+        "id": "archive_provider",
+        "label": "Archiv",
+        "observed_value": "Xtream Codes",
+        "kind": "choice",
+        "capability": "planned",
+        "source_photo": "1000118378.jpg"
+      },
+      {
+        "id": "user_agent_portal_override",
+        "label": "User-Agent",
+        "observed_value": null,
+        "kind": "text",
+        "capability": "planned",
+        "source_photo": "1000118378.jpg"
+      },
+      {
+        "id": "xtream_parameters",
+        "label": "Xtream Codes Parameter",
+        "observed_value": null,
+        "kind": "submenu",
+        "capability": "planned",
+        "source_photo": "1000118378.jpg"
+      },
+      {
+        "id": "groups_manager",
+        "label": "Gruppen verwalten",
+        "observed_value": null,
+        "kind": "submenu",
+        "capability": "planned",
+        "source_photo": "1000118378.jpg"
+      },
+      {
+        "id": "playlist_update_interval_hours",
+        "label": "Aktualisierungsintervall (Stunden)",
+        "observed_value": 24,
+        "kind": "integer",
+        "capability": "planned",
+        "source_photo": "1000118379.jpg"
+      },
+      {
+        "id": "playlist_update_on_start",
+        "label": "Aktualisieren beim starten der App",
+        "observed_value": false,
+        "kind": "toggle",
+        "capability": "planned",
+        "source_photo": "1000118379.jpg"
+      },
+      {
+        "id": "playlist_update",
+        "label": "Aktualisieren",
+        "observed_value": null,
+        "kind": "action",
+        "capability": "planned",
+        "source_photo": "1000118379.jpg"
+      },
+      {
+        "id": "playlist_delete",
+        "label": "Löschen",
+        "observed_value": null,
+        "kind": "destructive_action",
+        "capability": "planned",
+        "source_photo": "1000118379.jpg"
+      }
+    ]
+  },
+  "epg": [
+    {
+      "id": "epg_sources",
+      "label": "EPG Quellen",
+      "observed_value": null,
+      "kind": "submenu",
+      "capability": "planned",
+      "source_photo": "1000118380.jpg"
+    },
+    {
+      "id": "epg_retention_past_days",
+      "label": "Vergangene Tage, um EPG zu behalten",
+      "observed_value": 7,
+      "kind": "integer",
+      "capability": "planned",
+      "source_photo": "1000118380.jpg"
+    },
+    {
+      "id": "store_program_descriptions",
+      "label": "Programmbeschreibungen speichern",
+      "observed_value": true,
+      "kind": "toggle",
+      "capability": "planned",
+      "source_photo": "1000118380.jpg"
+    },
+    {
+      "id": "epg_update_interval_hours",
+      "label": "Aktualisierungsintervall (Stunden)",
+      "observed_value": 24,
+      "kind": "integer",
+      "capability": "planned",
+      "source_photo": "1000118380.jpg"
+    },
+    {
+      "id": "epg_update_on_start",
+      "label": "Aktualisieren beim starten der App",
+      "observed_value": false,
+      "kind": "toggle",
+      "capability": "planned",
+      "source_photo": "1000118380.jpg"
+    },
+    {
+      "id": "epg_update_on_playlist_change",
+      "label": "Aktualisieren bei Playlisten-Änderung",
+      "observed_value": false,
+      "kind": "toggle",
+      "capability": "planned",
+      "source_photo": "1000118380.jpg"
+    },
+    {
+      "id": "epg_update",
+      "label": "Aktualisieren",
+      "observed_value": null,
+      "kind": "action",
+      "capability": "planned",
+      "source_photo": "1000118380.jpg"
+    },
+    {
+      "id": "epg_delete",
+      "label": "Löschen",
+      "observed_value": null,
+      "kind": "destructive_action",
+      "capability": "planned",
+      "source_photo": "1000118380.jpg"
+    },
+    {
+      "id": "last_epg_update",
+      "label": "Letzter Aktualisierungsstatus",
+      "observed_value": null,
+      "kind": "dynamic_status",
+      "capability": "planned",
+      "source_photo": "1000118381.jpg"
+    }
+  ],
+  "epg_sources": [
+    {
+      "id": "source_list",
+      "label": "EPG Quellen",
+      "observed_value": null,
+      "kind": "redacted_dynamic_list",
+      "capability": "planned",
+      "source_photo": "1000118382.jpg"
+    },
+    {
+      "id": "source_add",
+      "label": "Quelle hinzufügen",
+      "observed_value": null,
+      "kind": "action",
+      "capability": "planned",
+      "source_photo": "1000118382.jpg"
+    },
+    {
+      "id": "playlist_source_assignment_hint",
+      "label": "EPG-Quellen sollten in den Playlist-Einstellungen zugewiesen werden",
+      "observed_value": null,
+      "kind": "help_text",
+      "capability": "planned",
+      "source_photo": "1000118382.jpg"
+    }
+  ],
+  "appearance": [
+    {
+      "id": "epg_appearance",
+      "label": "EPG",
+      "observed_value": null,
+      "kind": "submenu",
+      "capability": "planned",
+      "source_photo": "1000118383.jpg"
+    },
+    {
+      "id": "player_appearance",
+      "label": "Player",
+      "observed_value": null,
+      "kind": "submenu",
+      "capability": "planned",
+      "source_photo": "1000118383.jpg"
+    },
+    {
+      "id": "group_appearance",
+      "label": "Gruppen",
+      "observed_value": null,
+      "kind": "submenu",
+      "capability": "planned",
+      "source_photo": "1000118383.jpg"
+    },
+    {
+      "id": "logo_appearance",
+      "label": "Logos",
+      "observed_value": null,
+      "kind": "submenu",
+      "capability": "planned",
+      "source_photo": "1000118383.jpg"
+    },
+    {
+      "id": "interface_language",
+      "label": "Sprache",
+      "observed_value": "System",
+      "kind": "choice",
+      "capability": "planned",
+      "source_photo": "1000118383.jpg"
+    },
+    {
+      "id": "font_size",
+      "label": "Schriftgröße",
+      "observed_value": "Mittel",
+      "kind": "choice",
+      "capability": "planned",
+      "source_photo": "1000118383.jpg"
+    },
+    {
+      "id": "theme_tivimate_observed",
+      "label": "Farbthema",
+      "observed_value": "Dunkel · Blau",
+      "kind": "reference_value",
+      "capability": "planned",
+      "source_photo": "1000118383.jpg"
+    },
+    {
+      "id": "ui_transparency_percent",
+      "label": "Transparenz der Benutzeroberfläche (%)",
+      "observed_value": 50,
+      "kind": "percentage",
+      "capability": "planned",
+      "source_photo": "1000118383.jpg"
+    }
+  ],
+  "unseen_sections": [
+    "playback",
+    "remote_additional",
+    "parental",
+    "misc",
+    "about",
+    "appearance_submenus"
+  ],
+  "compatibility_notes": [
+    "Photo values are observed configuration, not new defaults for existing Kodi profiles.",
+    "Never persist/redact-delete existing portal, credentials, EPG mappings or remote key files.",
+    "TiviMate Android boot, sleep and Home PiP capabilities cannot be promised from a Kodi add-on.",
+    "Playlist source assignment is per portal. Existing source ordering remains unchanged.",
+    "Android P0 start-channel/remote verification is still pending."
+  ]
+}
