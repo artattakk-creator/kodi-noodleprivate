@@ -180,9 +180,9 @@ class LiveNavigator(xbmcgui.WindowDialog):
         sidebar = min(600, max(440, int(width * 0.47)))
         self.bg = xbmcgui.ControlImage(0, 0, sidebar, height, image)
         self.heading = xbmcgui.ControlLabel(32, 25, sidebar-48, 55, 'XCMate', 'font16', '0xFFFFFFFF')
-        self.sub = xbmcgui.ControlLabel(32, 82, sidebar-48, 40, '', 'font13', '0xFFE3C5FF')
+        self.sub = xbmcgui.ControlLabel(32, 82, sidebar-48, 40, '', 'font13', '0xFFB6BCC6')
         self.control = xbmcgui.ControlList(32, 135, sidebar-58, height-205,
-            font='font13', textColor='0xFFFFFFFF', selectedColor='0xFFFFC46E')
+            font='font13', textColor='0xFFFFFFFF', selectedColor='0xFFD2D8E0')
         self.control.setItemHeight(46)
         self.control.setSpace(3)
         # Keep a real, focusable Kodi control while the sidebar is hidden.
@@ -193,7 +193,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self.osd_title = xbmcgui.ControlLabel(26, height-155, width-50, 38, '', 'font13', '0xFFFFFFFF')
         self.main_buttons = []
         self.extra_buttons = []
-        main = ['⏯ Pause / Weiter', '◀◀ −10 s', '▶▶ +30 s', '■ Stop']
+        main = ['⏯ Pause / Weiter', '◀◀ −10 s', '▶▶ +30 s', '■ Stop', '⋯ Weitere']
         extra = ['Ton', 'Bild', 'EPG', 'Einstellungen', 'Sendergruppen']
         space = max(125, int((width-40)/len(main)))
         for idx, label in enumerate(main):
@@ -224,7 +224,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         if osd:
             self.osd_title.setLabel('XCMate  ·  {}  |  {}'.format(
                 self.portal.get('name','Live TV'),
-                'OK: Weitere Funktionen' if self.mode == 'controls' else 'OK: Ausführen'))
+                'OK: Ausführen · Weitere: Zusatzmenü' if self.mode == 'controls' else 'OK: Ausführen'))
             focus = (self.main_buttons[self._focus_main] if self.mode == 'controls'
                      else self.extra_buttons[self._focus_extra])
             self.setFocus(focus)
@@ -327,8 +327,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self._scroll_to_current = True
         announce(self.portal['id'], sid, channel.name)
         self._switch('hidden')
-        xbmc.Player().play(channel.url, build_playable_item(
-            channel.url, title=channel.name, logo=channel.logo))
+        item = build_playable_item(channel.url, title=channel.name, logo=channel.logo)
+        xbmc.Player().play(item.getPath(), item)
 
     def _zap(self, step):
         channel = adjacent_channel(self.channels, self.category_id,
@@ -414,6 +414,10 @@ class LiveNavigator(xbmcgui.WindowDialog):
             elif index == 3:
                 xbmc.Player().stop()
                 self.close()
+                return
+            elif index == 4:
+                self._switch('extras')
+                return
         else:
             if index == 0:
                 xbmc.executebuiltin('ActivateWindow(osdaudiosettings)')
@@ -450,7 +454,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             elif self.mode in ('groups','channels'): self._position(1)
         elif command == 'ok':
             if self.mode == 'hidden': self._switch('controls')
-            elif self.mode == 'controls': self._switch('extras')
+            elif self.mode == 'controls': self._execute('controls', self._focus_main)
             elif self.mode == 'extras': self._execute('extras', self._focus_extra)
             else: self._select()
 
