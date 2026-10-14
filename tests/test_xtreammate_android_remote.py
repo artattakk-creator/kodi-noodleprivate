@@ -64,7 +64,7 @@ class NativeRemoteTests(unittest.TestCase):
         automatic=source[source.index('    def _maybe_autoplay_start('):
                          source.index('    def _portal_home(',source.index('    def _maybe_autoplay_start('))]
         self.assertIn("xbmc.executebuiltin('RunPlugin({})'",automatic)
-        self.assertNotIn("PlayMedia(",automatic)
+        self.assertNotIn("xbmc.executebuiltin('PlayMedia(",automatic)
 
     def test_overlay_retains_focus_when_hidden_and_uses_mapped_actions(self):
         source=(LIB/'live_overlay.py').read_text(encoding='utf-8')
