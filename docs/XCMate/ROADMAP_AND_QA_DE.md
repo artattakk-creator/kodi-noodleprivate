@@ -77,3 +77,13 @@ Kein Device-Pass ohne protokollierten Nutzergerätetest.
 - Repository-Add-on 1.7.0 unverändert; vorhandene 0.1.9-ZIP bleibt verfügbar.
 - **Android-Status: weiterhin offen**. Kein erfolgreicher Startsender-,
   Navigation-/OSD- oder BINGIE-MOD-Gerätetest vorliegend.
+
+## P1 – Fotoverifizierte TiviMate-5.3.3-Fernbedienung (14.10.2026)
+
+- 10 Nutzerfotos der Einstellungen ausgewertet. Exakte, fotografierte Zuordnung in [`TIVIMATE_REMOTE_REFERENCE_2026-10-14_DE.md`](TIVIMATE_REMOTE_REFERENCE_2026-10-14_DE.md).
+- Zwei **verschiedene Kontexte**: Player vs. EPG; z. B. Stop = Wiedergabe stoppen (Player), Favoritstatus wechseln (EPG).
+- Kurz-/Langdruck-Bindings und sechs Seek-Optionen im Entwurfs-Branch `feat/xcmate-tivimate-remote-profile` als getestete Konstanten hinterlegt.
+- Draft-PR [#3](https://github.com/artattakk-creator/kodi-noodleprivate/pull/3), CI erfolgreich: [38557640506](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/38557640506).
+- **Noch nicht als Funktion veröffentlicht:** Android-Keyevent-Decoder, Langdruck, EPG-Raster, Vorschaumodus, kontextabhängige Kodi-UI/Fokuswechsel, Speicherung einer vom Benutzer änderbaren Tastenmatrix.
+- Keine APK, geschützte Originalgrafik oder Live-Sender-Screenshots in das öffentliche Repository geladen. Gespeicherte Portale, Schlüssel, EPG und bestehende Tastenbelegung unverändert lassen.
+- Nächster Schritt: weitere TiviMate-Einstellungsseiten entgegennehmen, Matrix fortführen, XCMate-Controller unabhängig implementieren, Mock-/CI-Test, Gerätetest und eigener Versions-Release.
