@@ -73,6 +73,16 @@ Kodi's on-device keymap needs enabling and restart; remote/skin behaviour
 must be tested on the actual Kodi box.
 """
     readme.write_text(text, encoding="utf-8")
+    # Kodi CI stores addon sources under src/, while local release testing
+    # stages the addon at the root. Keep the same tests valid in both layouts.
+    for testname in ("test_xtreammate_latest.py",
+                     "test_xtreammate_overlay.py",
+                     "test_xtreammate_widgets.py"):
+        path = ROOT / "tests" / testname
+        data = path.read_text(encoding="utf-8")
+        data = data.replace("'plugin.video.xtreammate",
+                            "'src/plugin.video.xtreammate")
+        path.write_text(data, encoding="utf-8")
     PENDING.unlink()
     print("Applied XtreamMate 0.1.5 EPG, movie details, YouTube trailers and widgets")
 
