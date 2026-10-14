@@ -24,6 +24,7 @@ class IPTVMasterService(xbmc.Monitor):
         self._next_catalog_scan = 0
         self._next_overlay_check = 0
         self._overlay_failure_reported = False
+        self._remote_keymap_checked = False
         self._start_reminders()
 
     def _start_reminders(self):
@@ -128,6 +129,14 @@ class IPTVMasterService(xbmc.Monitor):
                         candidate = start_if_eligible(self._last_session_nonce)
                         if candidate is not None:
                             try:
+                                if not self._remote_keymap_checked:
+                                    from remote_control import ensure_for_live_tv
+                                    status = ensure_for_live_tv()
+                                    xbmcgui.Window(10000).setProperty(
+                                        'XtreamMate.KeymapStatus', status)
+                                    self._remote_keymap_checked = True
+                                xbmcgui.Window(10000).setProperty(
+                                    'XtreamMate.OverlayStatus', 'wird gestartet')
                                 self._overlay = candidate
                                 self._overlay.show()
                                 self._last_session_nonce = session['nonce'] if session else ''
