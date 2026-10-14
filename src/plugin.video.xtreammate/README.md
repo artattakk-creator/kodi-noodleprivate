@@ -221,3 +221,28 @@ zurück ins Menü → Diagnose öffnen. Nur wenn der Dienststatus tatsächlich
 „LÄUFT“ anzeigt, ist sein Hintergrundloop bestätigt. Die praktische
 Fernbedienungsfunktion ist damit noch nicht nachgewiesen.
 
+## 0.1.14 – laufenden XCMate-Live-TV-Stream nach Verlust des Session-Markers wiedererkennen
+
+Auf einem realen Android-Screenshot zeigte die Dienstdiagnose:
+`LÄUFT` mit über 2000 Heartbeats, `Video JA` aber `XCMate-Sitzung NEIN`.
+Der laufende Kodi-Player konnte deshalb die XCMate-eigene Oberfläche nicht
+aktivieren, obwohl die Taste-Keymap geladen war.
+
+Der Kodi-Dienst prüft jetzt bei fehlender XCMate-LiveSession höchstens
+alle 3 Sekunden `xbmc.Player().getPlayingFile()`, ohne die Adresse zu loggen,
+zu persistieren oder zu zeigen. Nur eine **exakte Übereinstimmung**
+mit einem aktiven, vom Benutzer konfigurierten Xtream-Live-Portal und dessen
+bekannter Sender-ID stellt den XCMate-Session-Marker wieder her.
+Erlaubt sind Xtream-`.ts`/`.m3u8`-Live-URLs sowie explizite
+XCMate-`plugin://`-Live-Aktionen. Keine Netzwerkzugriffe oder
+unsichere „ähnliche URL“-/Hostnamen-Heuristik. Externe Medien, Filme,
+andere Plugins und unbekannte Sender werden nie übernommen.
+
+**Wichtig:** Ein URL-Match beseitigt die fehlende Session, beweist aber noch
+nicht, dass Kodi den eigenen `WindowDialog` über der Skin-Oberfläche zeigt.
+Die Diagnose ergänzt `Live-Sitzungswiederherstellung` mit einem
+nicht-sensiblen Ergebnis. Falls Kodi auf dieser Box keine passende
+`getPlayingFile()`-Adresse liefert, bitte nach einem Test das Diagnosefenster
+fotografieren; Zugangsdaten und Kodi-Log-Passwörter vorher verdecken.
+Die Android-Geräteabnahme bleibt zwingend.
+

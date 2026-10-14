@@ -553,6 +553,8 @@ class Router:
             'Dienstphase: ' + health['phase'],
             'Letzter Dienstfehler: ' + health['error'],
             'Letzte Live-Beobachtung: ' + health['live'],
+            'Live-Sitzungswiederherstellung: ' +
+            (marker.getProperty('XtreamMate.SessionRecovery') or 'noch keine Prüfung'),
             'Letzte TV-Einblendung: ' + health['overlay'],
             'Letzte Diensteingabe: ' + health['input'],
             '',
