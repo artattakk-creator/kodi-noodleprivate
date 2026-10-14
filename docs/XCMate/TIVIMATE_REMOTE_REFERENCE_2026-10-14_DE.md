@@ -36,6 +36,12 @@
 | Rücktaste | EPG im Overlay-Modus anzeigen | `guide_overlay` |
 | Info | Infofenster anzeigen | `show_info` |
 | Guide | EPG im Overlay-Modus anzeigen | `guide_overlay` |
+| Rot | EPG im Overlay-Modus anzeigen | `guide_overlay` |
+| Grün | EPG im Overlay-Modus anzeigen | `guide_overlay` |
+| Gelb | Infofenster zeigen | `show_info` |
+| Blau | Einstellungen | `settings` |
+
+**Ergänzung aus der zweiten Nutzer-Fotoserie:** Die vier Player-Farbtasten sind direkt auf `1000118364.jpg` sichtbar; im EPG gelten abweichende Zuordnungen (unten). Weitere zehn Fotoansichten und die Screen-Zustände sind in [`TIVIMATE_UI_SCREEN_REFERENCE_2026-10-14_DE.md`](TIVIMATE_UI_SCREEN_REFERENCE_2026-10-14_DE.md) dokumentiert.
 
 **Wichtig:** „Nächsten/vorherigen Sender anzeigen“ und „Infofenster für nächsten/vorherigen Sender anzeigen“ sind laut TiviMate **verschiedene** Aktionen. Ohne Gerätevergleich nicht pauschal beides als sofortiges Umschalten behandeln. „Zurück“ und „Rücktaste“ sind als separate in der UI benannte Auslöser erhalten; die Android-/Kodi-Scancodes muss die Geräte-Diagnose klären.
 
