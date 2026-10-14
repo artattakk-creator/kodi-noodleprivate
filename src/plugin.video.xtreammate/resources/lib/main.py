@@ -107,6 +107,7 @@ class Router:
             'search_results'     : self._search_results,
             'epg_now'            : self._epg_now,
             'epg_channel'        : self._epg_channel,
+            'epg_sources'        : self._epg_sources,
             'catchup_list'       : self._catchup_list,
             'toggle_favourite'   : self._toggle_favourite,
             'refresh_portal'     : self._refresh_portal,
@@ -491,6 +492,11 @@ class Router:
                       self.url(action='epg_now', pid=pid),
                       icon=_ICON_EPG,
                       plot=_pp('Aktuelle Sendungen im Programmführer anzeigen.'))
+        self._add_dir('EPG verwalten – XMLTV-Quellen & Senderzuordnung',
+                      self.url(action='epg_sources', pid=pid),
+                      icon=_ICON_EPG,
+                      plot='Eigene oder externe XMLTV-Dateien, mehrere URLs, '
+                           'Prioritäten und Sender-Zuordnungen verwalten.')
         self._add_dir(_L(32008),
                       self.url(action='refresh_portal', pid=pid),
                       icon=_ICON_SETTINGS,
@@ -2183,6 +2189,12 @@ class Router:
             xc.get_series_categories(force_refresh=True)
         notify('XtreamMate', f'{p["name"]} refreshed')
         xbmc.executebuiltin('Container.Refresh')
+
+    def _epg_sources(self):
+        import portals as P
+        from epg_sources import manage
+        portal = P.get_by_id(self._params.get('pid', ''))
+        manage(portal)
 
     def _refresh_epg(self):
         import portals as P
