@@ -75,7 +75,7 @@ class NativeRemoteTests(unittest.TestCase):
         source=(LIB/'live_overlay.py').read_text(encoding='utf-8')
         self.assertIn('self.setFocus(self.capture)',source)
         self.assertIn('mapped_action(key)',source)
-        self.assertIn("self.handle_command(mapped)",source)
+        self.assertIn('self.handle_command(mapped)',source)
         self.assertIn("self.capture.getId()",source)
         self.assertIn("self._last_select = time.time()",source)
 
