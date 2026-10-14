@@ -112,7 +112,11 @@ class LiveNavigator(xbmcgui.WindowDialog):
         # Cache-only, no network. The background service warms missing data;
         # list presentation is fast even when the provider stalls.
         self._load_catalog_from_disk()
-        self.mode = 'hidden'
+        # v0.1.15: visual proof of an overlay. The original invisible
+        # capture mode made a successful WindowDialog.show() impossible to
+        # distinguish from a player that never displayed our UI.
+        self.mode = 'channels'
+        self._intro_deadline = None
         self._focus_main = 0
         self._focus_extra = 0
         self._last_select = 0
@@ -211,7 +215,10 @@ class LiveNavigator(xbmcgui.WindowDialog):
         marker = xbmcgui.Window(10000)
         marker.setProperty('XtreamMate.OverlayStatus', 'bereit')
         marker.setProperty('XtreamMate.InputMode', 'native WindowDialog + XCMate keymap')
+        self._intro_deadline = time.monotonic() + 16.0
         self._render()
+        marker.setProperty('XtreamMate.AutoPopupStatus',
+                           'onInit abgeschlossen – Senderliste sichtbar (16s)')
 
     def _render(self):
         if not self._drawn:
@@ -270,6 +277,21 @@ class LiveNavigator(xbmcgui.WindowDialog):
             self._scroll_to_current = False
         self.control.selectItem(min(pos, len(labels)-1))
         self.setFocus(self.control)
+
+    def expire_intro(self):
+        """Hide the initial proof overlay after 16 seconds without key input.
+
+        This does not stop the stream and does not close the active Kodi
+        WindowDialog; an actual native remote action may still reach it.
+        """
+        if (self._drawn and self.mode == 'channels'
+                and self._intro_deadline is not None
+                and time.monotonic() >= self._intro_deadline):
+            self._intro_deadline = None
+            self._switch('hidden')
+            xbmcgui.Window(10000).setProperty(
+                'XtreamMate.AutoPopupStatus',
+                'nach 16s automatisch verborgen (keine Tastenaktion)')
 
     def _position(self, step):
         count = self.control.size()
@@ -470,6 +492,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
 
     def handle_command(self, command):
         """XCMate-local TV commands; never open Kodi's own player OSD."""
+        self._intro_deadline = None
         if command in ('left', 'long_left'):
             if self.mode in ('controls', 'extras'):
                 if self.mode == 'controls':
@@ -570,6 +593,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
             raw = 0
         marker = xbmcgui.Window(10000)
         marker.setProperty('XtreamMate.LastRemoteKey', '{} / {} (native)'.format(key, raw))
+        marker.setProperty('XtreamMate.AutoPopupStatus',
+                           'natives Action-Event empfangen')
         try:
             count = int(marker.getProperty('XtreamMate.NativeActionCount') or '0')
         except (ValueError, TypeError):
