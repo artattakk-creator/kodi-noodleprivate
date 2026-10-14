@@ -112,3 +112,27 @@ System, Schrift Mittel, beobachtet Dunkel/Blau und 50 % Transparenz.
 Benutzerkennung; diese, Playlistname und Zugangsdaten sind **nicht** in GitHub
 übernommen. Keine Fotos veröffentlichen. XCMate-Vorgabe bleibt **Slate-Grau**
 und unveränderte bestehende Portal-/EPG-Daten. **Noch kein Kodi-Feature-Release**.
+
+## 11. Vierte TiviMate-Fotoserie – Wiedergabe / Kindersicherung / Sonstiges / Über (14.10.2026)
+
+Weitere zehn Fotos dokumentieren die nun sichtbaren Menüs `Wiedergabe`,
+`Kindersicherung`, `Sonstiges` mit `Suchen`, `Erinnerungen`, `Aufnahme`
+und `VOD`, sowie `Über`. Bindende Detailreferenz:
+[`TIVIMATE_SETTINGS_FOURTH_SERIES_2026-10-14_DE.md`](TIVIMATE_SETTINGS_FOURTH_SERIES_2026-10-14_DE.md).
+Das maschinenlesbare Feldinventar
+[`TIVIMATE_SETTINGS_CONTRACT_2026-10-14.json`](TIVIMATE_SETTINGS_CONTRACT_2026-10-14.json)
+ist entsprechend erweitert und anonymisiert.
+
+Sichtbar: Wiedergabepuffer klein, Hardware-Audio-/Video-Decoder,
+AFR aus, Surround-Spur/Passthrough aus, externer Player nein;
+Suche Verlauf/Favoriten zuerst ein, vergangene Sendungen aus;
+Erinnerungen 0 Minuten/10 Sekunden/„Anschauen“; Aufnahme-Vor-/Nachlauf je 0;
+Kindersicherung aus mit gesonderten PIN-Gates; VOD-Auto-Next-Funktion vorhanden.
+Einige dunkle Schalter (Sprachsuche, Auto-Next, anonyme Statistiken)
+sind fotografisch **nicht eindeutig ein/aus**, daher `null` statt Vermutung.
+Private Kontodaten, Gerätename und Aufnahmepfad **nicht** ins GitHub übernommen.
+
+**Status:** Erweiterung der Spezifikation – keine aktive Laufzeitintegration.
+Kodi-Hardware-/Systemeinstellungen (Decoder, AFR, Passthrough) nicht ungefragt
+global ändern. Eltern-PIN nur sicher implementieren, nicht kosmetisch. P0
+Startsender/Android-Remote und Release-Version 0.1.10 bleiben unverändert.
