@@ -9,7 +9,7 @@ import xbmcgui
 # A legacy keymap can remain even when the IPTV add-on's playback has ended.
 # In that case, forward the key to the ordinary Kodi player controls.
 ACTION = sys.argv[1] if len(sys.argv) > 1 else 'left'
-FALLBACK = {'left':'left', 'ok':'select', 'more':'select', 'up':'up', 'down':'down'}
+FALLBACK = {'left':'left', 'ok':'select', 'more':'select', 'up':'up', 'down':'down', 'epg':'osd'}
 window = xbmcgui.Window(10000)
 try:
     session = json.loads(window.getProperty('XtreamMate.LiveSession') or '{}')

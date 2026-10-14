@@ -126,6 +126,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self.rows = category_rows(self.groups, self.enabled)
         self._drawn = False
         self._closed = False
+        self._epg_fetching = False
         self._highlight = {'channels': 0, 'groups': 0}
 
     def _load_catalog_from_disk(self):
@@ -147,6 +148,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 url=self.xc.live_stream_url(stream['stream_id'], 'ts'),
                 logo=stream.get('stream_icon', ''),
                 group=str(names.get(cid, cid)),
+                tvg_id=str(stream.get('epg_channel_id') or ''),
                 extra={'category_id': cid,
                        'stream_id': str(stream['stream_id'])}))
         self.groups, self.channels = groups, channels
@@ -181,7 +183,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self.sub = xbmcgui.ControlLabel(32, 82, sidebar-48, 40, '', 'font13', '0xFFE3C5FF')
         self.control = xbmcgui.ControlList(32, 135, sidebar-58, height-205,
             font='font13', textColor='0xFFFFFFFF', selectedColor='0xFFFFC46E',
-            _itemHeight=46, _space=3)
+            itemHeight=46, space=3)
         self.footer = xbmcgui.ControlLabel(32, height-65, sidebar-40, 48, '', 'font12', '0xFFD3D7E2')
         self.osd_bg = xbmcgui.ControlImage(0, height-165, width, 165, image)
         self.osd_title = xbmcgui.ControlLabel(26, height-155, width-50, 38, '', 'font13', '0xFFFFFFFF')
@@ -201,6 +203,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
                         self.osd_bg, self.osd_title, *self.main_buttons, *self.extra_buttons):
             self.addControl(control)
         self._drawn = True
+        xbmcgui.Window(10000).setProperty('XtreamMate.OverlayStatus', 'bereit')
         self._render()
 
     def _render(self):
@@ -233,7 +236,13 @@ class LiveNavigator(xbmcgui.WindowDialog):
             self.footer.setLabel('◀/Zurück: schließen   ▶: Senderliste   ▲▼: navigieren')
         else:
             self.visible_channels = channels_for_category(self.channels, self.category_id, self.enabled)
-            labels = [c.name for c in self.visible_channels]
+            from epg import load_cache
+            from epg_views import guide_for_channel, row_title
+            guide = load_cache(self.portal['id'])
+            now_ts = time.time()
+            labels = [row_title(c.name, guide_for_channel(
+                guide, c.tvg_id, c.extra.get('stream_id', ''), now_ts))
+                for c in self.visible_channels]
             self.heading.setLabel('XtreamMate · LIVE-TV')
             self.sub.setLabel('{} Sender · {}'.format(len(labels),
                 next((x[1] for x in self.rows if x[0] == self.category_id), 'Aktivierte Gruppen')))
@@ -338,22 +347,57 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 'Spulen ist bei diesem Live-Sender nicht verfügbar (kein Timeshift).')
 
     def _epg(self):
-        try:
-            data = self.xc.get_short_epg(self.sid, limit=6)
-            rows = data.get('epg_listings', []) if isinstance(data,dict) else []
-            import base64
-            lines=[]
-            for item in rows:
-                val=item.get('title','')
+        """Show cached EPG instantly. Missing short guide refreshes asynchronously.
+
+        Never block a Kodi GUI action on the remote Xtream server.
+        """
+        import base64
+        import threading
+        from epg import load_cache
+        import xbmcgui
+        data = self.xc._get_json('get_short_epg',
+                        extra={'stream_id': self.sid, 'limit': 6},
+                        cached_only=True) or {}
+        rows = data.get('epg_listings', []) if isinstance(data, dict) else []
+        lines = []
+        for item in rows:
+            if not isinstance(item, dict):
+                continue
+            title = str(item.get('title', ''))
+            try:
+                decoded = base64.b64decode(title, validate=True).decode('utf-8')
+                if decoded.strip(): title = decoded
+            except (ValueError, TypeError, UnicodeError):
+                pass
+            lines.append('{}  {}'.format(item.get('start', ''), title))
+        if not lines:
+            channel = next((c for c in self.channels
+                            if str(c.extra.get('stream_id')) == self.sid), None)
+            guide = load_cache(self.portal['id'])
+            tvg_id = channel.tvg_id if channel else ''
+            cached = guide.get(tvg_id, []) if isinstance(guide, dict) else []
+            for item in cached[:10]:
+                if isinstance(item, dict):
+                    lines.append('{}  {}'.format(item.get('start',
+                        item.get('start_timestamp', '')), item.get('name',
+                        item.get('title', ''))))
+        if lines:
+            xbmcgui.Dialog().textviewer('XtreamMate – EPG', '\n'.join(lines))
+            return
+        if not self._epg_fetching and self.sid:
+            self._epg_fetching = True
+            sid = str(self.sid)
+            def warm():
                 try:
-                    val=base64.b64decode(val).decode('utf-8')
-                except Exception:
-                    pass
-                lines.append('{} – {}'.format(item.get('start',''), val))
-            xbmcgui.Dialog().textviewer('XtreamMate – EPG',
-                '\n'.join(lines) if lines else 'Keine EPG-Daten für diesen Sender verfügbar.')
-        except Exception:
-            xbmcgui.Dialog().ok('XtreamMate – EPG', 'EPG konnte nicht geladen werden.')
+                    self.xc.get_short_epg(sid, limit=6, force_refresh=True)
+                except Exception as exc:
+                    warn('XtreamMate short EPG: {}'.format(type(exc).__name__))
+                finally:
+                    self._epg_fetching = False
+            threading.Thread(target=warm, daemon=True,
+                             name='XtreamMateShortEPG').start()
+        xbmcgui.Dialog().notification('XtreamMate – EPG',
+            'EPG wird im Hintergrund geladen. Gleich erneut öffnen.')
 
     def _execute(self, section, index):
         if section == 'controls':
@@ -391,6 +435,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
             else: self._switch('channels')
         elif command == 'more':
             self._switch('extras')
+        elif command == 'epg':
+            self._epg()
         elif command == 'up':
             if self.mode == 'hidden': self._zap(-1)
             elif self.mode in ('groups','channels'): self._position(-1)

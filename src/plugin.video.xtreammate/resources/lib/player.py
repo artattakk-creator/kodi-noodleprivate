@@ -164,6 +164,7 @@ def channel_list_item(channel, current_prog=None, progress: float = 0.0):
 
 def vod_list_item(vod: dict):
     from utils import safe_int, safe_float, safe_year
+    from metadata_views import provider_plot, youtube_kodi_url
     title = vod.get('name', '')
     year  = safe_year(vod.get('year'))
     li    = xbmcgui.ListItem(f'{title} ({year})' if year else title)
@@ -175,7 +176,8 @@ def vod_list_item(vod: dict):
     cast = vod.get('cast', '')
     li.setInfo('video', {
         'title'    : title,
-        'plot'     : vod.get('plot', ''),
+        'plot'     : provider_plot(vod),
+        'trailer'  : youtube_kodi_url(vod),
         'year'     : year,
         'rating'   : safe_float(vod.get('rating')),
         'genre'    : vod.get('genre', ''),
@@ -188,6 +190,7 @@ def vod_list_item(vod: dict):
     return li
 
 def series_list_item(series: dict):
+    from metadata_views import provider_plot, youtube_kodi_url
     from utils import safe_float
     title = series.get('name', '')
     li    = xbmcgui.ListItem(title)
@@ -198,7 +201,8 @@ def series_list_item(series: dict):
     li.setArt({'icon': cover, 'thumb': cover, 'poster': cover, 'fanart': fan})
     li.setInfo('video', {
         'title'    : title,
-        'plot'     : series.get('plot', ''),
+        'plot'     : provider_plot(series),
+        'trailer'  : youtube_kodi_url(series),
         'rating'   : safe_float(series.get('rating')),
         'genre'    : series.get('genre', ''),
         'mediatype': 'tvshow',

@@ -70,6 +70,12 @@ class Router:
             'm3u_movie_list'     : self._m3u_movie_list,
             'm3u_series_list'    : self._m3u_series_list,
             'live_channels'      : self._live_channels,
+            'recent_vod'         : self._recent_vod,
+            'recent_series'      : self._recent_series,
+            'widget_groups'      : self._widget_groups,
+            'widget_channels'    : self._widget_channels,
+            'media_details'      : self._media_details,
+            'trailer'            : self._trailer,
             'vod_categories'     : self._vod_categories,
             'vod_list'           : self._vod_list,
             'series_categories'  : self._series_categories,
@@ -114,6 +120,7 @@ class Router:
             'startup_settings': self._startup_settings,
             'play_start': self._play_start,
             'remote_setup': self._remote_setup,
+            'remote_diagnostics': self._remote_diagnostics,
         }
         if action == 'root' and not _portals_mod.load_all():
             from setup_wizard import setup
@@ -415,10 +422,28 @@ class Router:
                               self.url(action='play_start', pid=pid), icon=_ICON_TV)
             self._add_dir('TV-Fernbedienung aktivieren / deaktivieren',
                           self.url(action='remote_setup'), icon=_ICON_SETTINGS)
+            self._add_dir('TV-Fernbedienung: Diagnose',
+                          self.url(action='remote_diagnostics'), icon=_ICON_SETTINGS)
+            self._add_dir('BINGIE MOD Widgets – aktive Sendergruppen',
+                          self.url(action='widget_groups', pid=pid),
+                          icon=_ICON_TV,
+                          plot='Sendergruppen als Widget auf die BINGIE-MOD-Startseite legen. '
+                               'Senderlogos sowie Jetzt/Danach-Daten aus dem lokalen EPG.')
             self._add_dir('Gruppen verwalten: Live-TV, Filme und Serien',
                           self.url(action='groups_manager', pid=pid),
                           icon=_ICON_SETTINGS,
                           plot='Gruppen einzeln aktivieren/deaktivieren; alle oder neue Gruppen auswählen.')
+        if ptype == 'xtream':
+            if p.get('include_vod', True):
+                self._add_dir('Neueste Filme',
+                              self.url(action='recent_vod', pid=pid),
+                              icon=_ICON_VOD,
+                              plot=_pp('Zuletzt zum Xtream-Katalog hinzugefügte Filme.'))
+            if p.get('include_series', True):
+                self._add_dir('Neueste Serien',
+                              self.url(action='recent_series', pid=pid),
+                              icon=_ICON_SERIES,
+                              plot=_pp('Zuletzt zum Xtream-Katalog hinzugefügte Serien.'))
         if ptype in ('xtream', 'stb'):
             if p.get('include_vod', True):
                 self._add_dir(_L(32002),
@@ -491,6 +516,25 @@ class Router:
                 self.url(action='portal_home', pid=portal['id'])))
         else:
             xbmc.executebuiltin('Container.Refresh')
+
+    def _remote_diagnostics(self):
+        from remote_control import is_enabled, SESSION_KEY
+        from live_overlay import session_from_property
+        marker = xbmcgui.Window(10000)
+        session = session_from_property(marker.getProperty(SESSION_KEY))
+        rows = [
+            'Kodi-Tastenbelegung: ' + ('AKTIV' if is_enabled() else 'INAKTIV'),
+            'XtreamMate-Stream erkannt: ' + ('JA' if session else 'NEIN'),
+            'Video läuft: ' + ('JA' if xbmc.Player().isPlayingVideo() else 'NEIN'),
+            'TV-Einblendung: ' + (marker.getProperty('XtreamMate.OverlayStatus') or 'nicht gestartet'),
+        ]
+        if not is_enabled():
+            rows.append('')
+            rows.append('Bitte erst TV-Fernbedienung aktivieren und Kodi neu starten.')
+        else:
+            rows.append('')
+            rows.append('Test bei laufendem XtreamMate-TV: Links / OK / Guide.')
+        xbmcgui.Dialog().textviewer('XtreamMate – Fernbedienungsdiagnose', '\n'.join(rows))
 
     def _remote_setup(self):
         from remote_control import configure
@@ -687,6 +731,15 @@ class Router:
             channels = filter_channels(channels, p['id'])
         if not channels:
             ptype = p.get('type', 'm3u')
+            from xtream import XtreamClient
+            xc = self._xc(p) if ptype == 'xtream' else None
+            if (xc and (xc.get_cached_catalog('get_live_categories') is None
+                        or xc.get_cached_catalog('get_live_streams') is None)):
+                self._add_dir('Senderliste wird im Hintergrund geladen – erneut öffnen',
+                              self.url(action='live_groups', pid=p['id']),
+                              icon=_ICON_TV)
+                xbmcplugin.endOfDirectory(self._handle)
+                return
             if ptype == 'm3u' and not p.get('m3u_url', '').strip():
                 msg = 'M3U URL is empty. Open Portal Manager and set the URL.'
             elif ptype == 'xtream' and not p.get('xc_host', '').strip():
@@ -758,11 +811,22 @@ class Router:
         ptype   = p.get('type', 'm3u')
         epg_mgr = self._epg_mgr(p)
         from player import channel_list_item
+        from epg import load_cache
+        from epg_views import guide_for_channel
+        guide = load_cache(p['id'])
         now = time.time()
         for ch in chunk:
             prog = epg_mgr.get_current(ch.tvg_id) if epg_mgr else None
             prg  = prog.progress() if prog else 0.0
             li   = channel_list_item(ch, prog, prg)
+            epg = guide_for_channel(guide,ch.tvg_id,
+                                    ch.extra.get('stream_id',''),now)
+            from epg_views import programme_plot
+            li.setInfo('video', {'title':ch.name, 'plot':programme_plot(epg),
+                                 'mediatype':'video'})
+            if epg['now'] or epg['next']:
+                li.setLabel('{}  |  Jetzt: {}  |  Danach: {}'.format(
+                    ch.name,epg['now'] or '–',epg['next'] or '–'))
 
             if ptype == 'stb':
                 play_url  = self.url(action='play_stb_live', pid=p['id'],
@@ -803,6 +867,203 @@ class Router:
         xbmcplugin.addSortMethod(self._handle, xbmcplugin.SORT_METHOD_NONE)
         xbmcplugin.endOfDirectory(self._handle, succeeded=True, updateListing=False, cacheToDisc=False)
 
+
+    def _add_media_context(self, li, item, kind, sid, pid):
+        from metadata_views import trailer_id
+        menu = [('Beschreibung und Details',
+                 'RunPlugin({})'.format(self.url(action='media_details',pid=pid,
+                                                 kind=kind,sid=sid)))]
+        vid = trailer_id(item)
+        if vid:
+            menu.append(('YouTube-Trailer abspielen',
+                         'RunPlugin({})'.format(self.url(action='trailer',vid=vid))))
+        li.addContextMenuItems(menu)
+
+    def _widget_groups(self):
+        """Kodi skin-widget destinations; each folder path yields playable cards."""
+        p = self._portal()
+        if not p:
+            return
+        if p.get('type') != 'xtream':
+            xbmcplugin.endOfDirectory(self._handle, False)
+            return
+        from group_selection import enabled_ids
+        xc = self._xc(p)
+        groups = xc.get_cached_catalog('get_live_categories') if xc else None
+        if not isinstance(groups, list):
+            self._add_dir('Senderkatalog lädt im Hintergrund',
+                          self.url(action='widget_groups', pid=p['id']), icon=_ICON_TV)
+        else:
+            allowed = enabled_ids(p['id'], 'live', groups)
+            xbmcplugin.setContent(self._handle, 'files')
+            for group in groups:
+                cid = str(group.get('category_id') or '')
+                if cid and cid in allowed:
+                    self._add_dir(str(group.get('category_name') or cid),
+                        self.url(action='widget_channels', pid=p['id'], cat_id=cid),
+                        icon=_ICON_TV,
+                        plot='Kodi/BINGIE-MOD-Widget: aktiver Sender dieser Gruppe')
+        xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
+
+    def _widget_channels(self):
+        """Widget-friendly static directory. No network calls during Kodi hover."""
+        p = self._portal()
+        if not p:
+            return
+        if p.get('type') != 'xtream' or not p.get('include_live', True):
+            xbmcplugin.endOfDirectory(self._handle, False)
+            return
+        from group_selection import enabled_ids
+        from epg import load_cache
+        from epg_views import guide_for_channel, programme_plot
+        xc = self._xc(p)
+        groups = xc.get_cached_catalog('get_live_categories') if xc else None
+        streams = xc.get_cached_catalog('get_live_streams') if xc else None
+        if not isinstance(groups, list) or not isinstance(streams, list):
+            self._add_dir('Senderkatalog lädt im Hintergrund',
+                          self.url(action='widget_channels', pid=p['id'],
+                                   cat_id=self._params.get('cat_id','')), icon=_ICON_TV)
+            xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
+            return
+        allowed = enabled_ids(p['id'], 'live', groups)
+        cid = str(self._params.get('cat_id') or '')
+        if cid not in allowed:
+            xbmcplugin.endOfDirectory(self._handle, False)
+            return
+        names = {str(g.get('category_id')):str(g.get('category_name') or '')
+                 for g in groups if isinstance(g,dict)}
+        guide = load_cache(p['id'])
+        now_ts = time.time()
+        xbmcplugin.setContent(self._handle, 'videos')
+        xbmcplugin.setPluginCategory(self._handle, 'XtreamMate – ' + names.get(cid,'TV'))
+        for item in streams:
+            if not isinstance(item, dict) or str(item.get('category_id','')) != cid:
+                continue
+            sid = str(item.get('stream_id') or '')
+            if not sid:
+                continue
+            name = str(item.get('name') or 'Sender')
+            logo = str(item.get('stream_icon') or '')
+            epg = guide_for_channel(guide, item.get('epg_channel_id',''), sid, now_ts)
+            li = xbmcgui.ListItem(name)
+            img = epg.get('image') or logo
+            li.setArt({'icon':logo, 'thumb':logo, 'poster':img, 'landscape':img,
+                       'fanart':img or ADDON_FANART})
+            li.setInfo('video', {'title':name, 'plot':programme_plot(epg),
+                                 'mediatype':'video'})
+            li.setProperty('IsPlayable','true')
+            li.setProperty('XtreamMate.Now',epg.get('now',''))
+            li.setProperty('XtreamMate.Next',epg.get('next',''))
+            xbmcplugin.addDirectoryItem(self._handle,
+                self.url(action='play_live', pid=p['id'],sid=sid,name=name,logo=logo),
+                li,False)
+        xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
+
+    def _media_details(self):
+        """Fetch full description on user click, never while scrolling lists."""
+        p = self._portal()
+        if not p or p.get('type') != 'xtream':
+            return
+        kind = self._params.get('kind','vod')
+        sid = self._params.get('sid','')
+        xc = self._xc(p)
+        if not sid or kind not in ('vod','series'):
+            return
+        from metadata_views import enrich, provider_plot, trailer_id
+        details = (xc.get_vod_info(sid) if kind == 'vod' else xc.get_series_info(sid))
+        item = enrich({}, details)
+        plot = provider_plot(item) or 'Der Anbieter liefert keine Beschreibung.'
+        vid = trailer_id(item)
+        if vid:
+            plot += '\n\nYouTube-Trailer-ID: ' + vid
+        xbmcgui.Dialog().textviewer('XtreamMate – Filminfo', plot)
+        if vid and xbmcgui.Dialog().yesno('XtreamMate', 'YouTube-Trailer abspielen?'):
+            self._play_youtube_id(vid)
+
+    @staticmethod
+    def _play_youtube_id(vid):
+        from metadata_views import trailer_id
+        from urllib.parse import quote
+        if trailer_id({'youtube_trailer':vid}) != vid:
+            return
+        try:
+            xbmcaddon.Addon('plugin.video.youtube')
+        except RuntimeError:
+            xbmcgui.Dialog().ok('XtreamMate',
+                'Bitte das offizielle Kodi-YouTube-Add-on installieren, '
+                'um Trailer direkt wiederzugeben.')
+            return
+        xbmc.executebuiltin('PlayMedia(plugin://plugin.video.youtube/play/?video_id={})'.format(quote(vid)))
+
+    def _trailer(self):
+        self._play_youtube_id(self._params.get('vid',''))
+
+    def _recent_vod(self):
+        self._recent_media('get_vod_streams', 'vod')
+
+    def _recent_series(self):
+        self._recent_media('get_series', 'series')
+
+    def _recent_media(self, action, kind):
+        """Widget-ready Kodi directory populated from the cached Xtream index.
+
+        Neither the home screen nor the latest view blocks on Xtream requests.
+        The Kodi service warms the catalog in the background; refresh from
+        the portal home is available if the IPTV provider has added new titles.
+        """
+        p = self._portal()
+        if not p:
+            return
+        wanted = 'include_vod' if kind == 'vod' else 'include_series'
+        if p.get('type') != 'xtream' or not p.get(wanted, True):
+            xbmcplugin.endOfDirectory(self._handle, False)
+            return
+        from group_selection import filter_entries
+        from latest_media import first_seen, recent_entries
+        from player import vod_list_item, series_list_item
+        xc = self._xc(p)
+        title = 'Neueste Filme' if kind == 'vod' else 'Neueste Serien'
+        xbmcplugin.setPluginCategory(self._handle, '{} – {}'.format(p['name'], title))
+        xbmcplugin.setContent(self._handle, 'movies' if kind == 'vod' else 'tvshows')
+        all_items = xc.get_cached_catalog(action) if xc else None
+        if not isinstance(all_items, list):
+            self._add_dir('Katalog wird im Hintergrund geladen – später erneut öffnen',
+                          self.url(action='portal_home', pid=p['id']),
+                          icon=_ICON_SETTINGS,
+                          plot='Beim ersten Scan muss XtreamMate Daten vom Anbieter laden.')
+        else:
+            # Cache was present before 0.1.5: initialize its discovery baseline
+            # without falsely flagging all previously known items as 'new'.
+            seen = first_seen(xc._cache_key(action), action, all_items)
+            items = filter_entries(all_items, p['id'], kind)
+            recent = recent_entries(items, action, seen, limit=50)
+            for item in recent:
+                if kind == 'vod':
+                    sid = item.get('stream_id', '')
+                    li = vod_list_item(item)
+                    self._add_media_context(li, item, 'vod', sid, p['id'])
+                    url = self.url(action='play_vod', pid=p['id'],
+                                   stream_id=sid,
+                                   ext=item.get('container_extension', 'mkv'),
+                                   title=item.get('name', ''),
+                                   logo=item.get('stream_icon', ''))
+                    is_folder = False
+                else:
+                    sid = item.get('series_id', '')
+                    li = series_list_item(item)
+                    self._add_media_context(li, item, 'series', sid, p['id'])
+                    url = self.url(action='series_seasons', pid=p['id'],
+                                   series_id=sid, title=item.get('name', ''))
+                    is_folder = True
+                xbmcplugin.addDirectoryItem(self._handle, url, li, is_folder)
+            if not recent:
+                self._add_dir('Noch keine neu hinzugefügten Titel erkennbar',
+                              self.url(action='portal_home', pid=p['id']),
+                              icon=_ICON_SETTINGS,
+                              plot='Der Anbieter liefert eventuell kein Hinzufügedatum. '
+                                   'XtreamMate erkennt künftig beim Aktualisieren neue IDs.')
+        xbmcplugin.addSortMethod(self._handle, xbmcplugin.SORT_METHOD_NONE)
+        xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
 
     def _vod_categories(self):
         p = self._portal()
@@ -856,6 +1117,7 @@ class Router:
         for v in chunk:
             li  = vod_list_item(v)
             sid = v.get('stream_id', '')
+            self._add_media_context(li, v, 'vod', sid, p['id'])
             ext = v.get('container_extension', 'mkv')
             xbmcplugin.addDirectoryItem(
                 self._handle,
@@ -925,6 +1187,7 @@ class Router:
         for s in chunk:
             li  = series_list_item(s)
             sid = s.get('series_id', '')
+            self._add_media_context(li, s, 'series', sid, p['id'])
             xbmcplugin.addDirectoryItem(
                 self._handle,
                 self.url(action='series_seasons', pid=p['id'],
@@ -1719,6 +1982,13 @@ class Router:
         logo = self._params.get('logo', '')
         if url and '%25' in url:
             url = urllib.parse.unquote(url)
+        if not url and self._params.get('sid'):
+            # Widgets only store non-secret portal IDs and Xtream stream IDs.
+            import portals as _portal_store
+            p = _portal_store.get_by_id(self._params.get('pid',''))
+            if p and p.get('type') == 'xtream':
+                xc = self._xc(p)
+                url = xc.live_stream_url(self._params['sid'])
         if not url:
             error('play_live: no URL in params')
             notify('XtreamMate', 'Stream URL fehlt')
@@ -2013,11 +2283,9 @@ class Router:
 
     def _epg_cache(self, p: dict):
         try:
-            from epg import load_cache, cache_has_data, warmup_async, _refresh_portal_epg
+            from epg import load_cache, warmup_async
             portal_id = p.get('id', 'unknown')
             warmup_async(portal_id, p)
-            if not cache_has_data(portal_id):
-                _refresh_portal_epg(portal_id, p)
             return load_cache(portal_id)
         except Exception:
             return {}
@@ -2056,19 +2324,28 @@ class Router:
             from xtream import XtreamClient
             from iptv import Channel
             xc   = XtreamClient(p['xc_host'], p['xc_user'], p['xc_pass'])
-            cats = {str(c['category_id']): c['category_name']
-                    for c in xc.get_live_categories(force_refresh=force)}
+            # Never block back navigation with server requests. Kodi service
+            # preloads these two indexes independently of the interface.
+            cats_raw = (xc.get_live_categories(force_refresh=True) if force else
+                        xc.get_cached_catalog('get_live_categories'))
+            channels_raw = (xc.get_live_streams(force_refresh=True) if force else
+                            xc.get_cached_catalog('get_live_streams'))
+            if cats_raw is None or channels_raw is None:
+                return []
+            cats = {str(c['category_id']): c.get('category_name', '')
+                    for c in cats_raw if isinstance(c, dict) and 'category_id' in c}
             return [
                 Channel(
                     name    = s.get('name', ''),
                     url     = xc.live_stream_url(s.get('stream_id', ''), 'ts'),
                     logo    = s.get('stream_icon', ''),
                     group   = cats.get(str(s.get('category_id', '')), 'Uncategorised'),
-                    extra   = {'category_id': str(s.get('category_id', ''))},
+                    extra   = {'category_id': str(s.get('category_id', '')),
+                               'stream_id': str(s.get('stream_id', ''))},
                     tvg_id  = s.get('epg_channel_id', ''),
                     tvg_name= s.get('name', ''),
                 )
-                for s in xc.get_live_streams(force_refresh=force)
+                for s in channels_raw if isinstance(s, dict)
             ]
         else:
             from iptv import load_m3u

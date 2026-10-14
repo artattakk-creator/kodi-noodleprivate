@@ -32,9 +32,9 @@ def build_keymap():
     for device, entries in (
         ('keyboard', [('left','left',None),('up','up',None),('down','down',None),('return','ok',None),
                       ('enter','ok',None),('return','more','longpress'),
-                      ('enter','more','longpress')]),
+                      ('enter','more','longpress'),('e','epg',None)]),
         ('remote', [('left','left',None),('up','up',None),('down','down',None),('select','ok',None),
-                    ('select','more','longpress')]),
+                    ('select','more','longpress'),('guide','epg',None)]),
     ):
         dev = ET.SubElement(full, device)
         for key, action, modifier in entries:
@@ -94,7 +94,7 @@ def configure():
                'Hoch/Runter schaltet jeweils einen Sender in der aktiven Gruppe. '
                'OK öffnet die Player-Leiste, nochmal OK die Zusatzleiste. '
                'Langes OK öffnet direkt Zusatzfunktionen, soweit die Fernbedienung '
-               'Langes Drücken an Kodi übermittelt.\n\n'
+               'Langes Drücken an Kodi übermittelt. Guide oder E: EPG öffnen.\n\n'
                'Bei fremden Videos werden Standardbefehle weitergegeben. '
                'Kodi gegebenenfalls neu starten.')
         return
@@ -124,7 +124,7 @@ def emit(action):
 def parse_command(raw, now=None):
     try:
         data = json.loads(raw)
-        if not isinstance(data, dict) or data.get('action') not in ('left','ok','more','up','down'):
+        if not isinstance(data, dict) or data.get('action') not in ('left','ok','more','up','down','epg'):
             return None
         if not data.get('nonce') or abs((time.time() if now is None else now) - float(data['at'])) > 15:
             return None

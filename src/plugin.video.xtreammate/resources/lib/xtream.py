@@ -70,6 +70,12 @@ class XtreamClient:
             data = json.loads(raw)
             if data is not None:
                 cache_set(ck, data)
+                if action in ('get_vod_streams', 'get_series') and not extra and isinstance(data, list):
+                    try:
+                        from latest_media import observe
+                        observe(ck, action, data)
+                    except Exception as exc:
+                        warn('Xtream recent catalog update: {}'.format(type(exc).__name__))
             return data
         except Exception as exc:
             error('Xtream API {} request failed: {}'.format(action, type(exc).__name__))

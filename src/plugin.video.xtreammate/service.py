@@ -1,5 +1,5 @@
 import time, sys, os, threading
-import xbmc, xbmcaddon
+import xbmc, xbmcaddon, xbmcgui
 
 ADDON    = xbmcaddon.Addon()
 LIB_PATH = os.path.join(os.path.dirname(__file__), 'resources', 'lib')
@@ -23,6 +23,7 @@ class IPTVMasterService(xbmc.Monitor):
         self._catalog_worker = None
         self._next_catalog_scan = 0
         self._next_overlay_check = 0
+        self._overlay_failure_reported = False
         self._start_reminders()
 
     def _start_reminders(self):
@@ -103,6 +104,7 @@ class IPTVMasterService(xbmc.Monitor):
                             self._overlay = None
                         self._last_session_nonce = ''
                         xbmcgui.Window(10000).clearProperty(SESSION_KEY)
+                        xbmcgui.Window(10000).clearProperty('XtreamMate.OverlayStatus')
                 else:
                     self._stopped_since = None
                     if self._overlay is not None:
@@ -125,9 +127,21 @@ class IPTVMasterService(xbmc.Monitor):
                         session = session_from_property(xbmcgui.Window(10000).getProperty(SESSION_KEY))
                         candidate = start_if_eligible(self._last_session_nonce)
                         if candidate is not None:
-                            self._overlay = candidate
-                            self._last_session_nonce = session['nonce'] if session else ''
-                            self._overlay.show()
+                            try:
+                                self._overlay = candidate
+                                self._overlay.show()
+                                self._last_session_nonce = session['nonce'] if session else ''
+                                self._overlay_failure_reported = False
+                            except Exception as exc:
+                                self._overlay = None
+                                xbmcgui.Window(10000).setProperty(
+                                    'XtreamMate.OverlayStatus', 'Fehler: ' + type(exc).__name__)
+                                error('XtreamMate WindowDialog startup failed: {} {}'.format(
+                                    type(exc).__name__, str(exc)[:240]))
+                                if not self._overlay_failure_reported:
+                                    xbmcgui.Dialog().notification('XtreamMate',
+                                         'TV-Navigation konnte nicht geöffnet werden')
+                                    self._overlay_failure_reported = True
                 if self._overlay is not None and player.isPlayingVideo():
                     if time.monotonic() >= self._next_overlay_check:
                         self._next_overlay_check = time.monotonic() + 1.0

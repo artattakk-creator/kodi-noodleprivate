@@ -1,4 +1,4 @@
-# XtreamMate 0.1.4 – Kodi test version
+# XtreamMate 0.1.5 – Kodi test version
 
 This is an independent Kodi add-on based on mr-evil1 TiViMate Kodi 2026.06.12.1 (GPL v2), with an original GS Media visual identity and new add-on ID `plugin.video.xtreammate`.
 
@@ -71,3 +71,22 @@ In Kodi settings, Recordings Folder now opens the native file manager
 folder picker; the confirmed path is saved/displayed automatically.
 FFmpeg requires a writable local or mounted folder, not necessarily a
 Kodi SMB URL.
+
+
+## 0.1.5 – Player repair, newer titles, TV guide and BINGIE widgets
+
+- Fixed Kodi on-video control creation and nonblocking on-video EPG.
+- The Live-TV channel listing and overlay display cached 'Jetzt' and 'Danach'.
+- Added 'Neueste Filme' and 'Neueste Serien' based on provider's added dates
+  or locally observed genuinely new IDs (first scan sets baseline only).
+- VOD and series posters show provider-supplied descriptions via Kodi metadata;
+  use context menu 'Beschreibung und Details' for on-demand extended metadata.
+- Valid provider YouTube trailer IDs offer the YouTube Kodi add-on link.
+- Portal home -> BINGIE MOD Widgets -> choose an enabled channel category;
+  in your BINGIE MOD skin settings use that category's folder as a widget.
+  Widgets carry logos, possible EPG still images and now/next in ListItem.Plot.
+  Skin hover appearance depends on BINGIE MOD widget layout; no live preview.
+- Existing IPTV portal/userdata/settings are not reset or overwritten.
+
+Kodi's on-device keymap needs enabling and restart; remote/skin behaviour
+must be tested on the actual Kodi box.
