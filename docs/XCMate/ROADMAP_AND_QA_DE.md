@@ -61,3 +61,19 @@ Commit, CI-Run, ZIP/Index und Android-Ergebnis separat angeben.
 automatisch je zweimal; Links/Links, Hoch/Runter, OK/Pause, „Weitere“, EPG,
 Zurück, Stop, Wiedereinstieg; anonymisierte Kodi-Logzeilen und Diagnosewerte.
 Kein Device-Pass ohne protokollierten Nutzergerätetest.
+
+### Verifizierte GitHub-Veröffentlichung 0.1.10
+
+- PR: https://github.com/artattakk-creator/kodi-noodleprivate/pull/2
+- PR-CI erfolgreich: Run 38552786543 (Python, Tests, Build).
+- Merge-Commit: `77aec9be727182582b5e06a040490215c3df1e4d`.
+- Publish-CI erfolgreich: Run 38552874789.
+- Generierter Distributions-Commit: `d4174ca391198ad1319b0ddaa046cfd9f66e0a4f`.
+- ZIP: `plugin.video.xtreammate/plugin.video.xtreammate-0.1.10.zip`;
+  Kodi-Repository-Katalog trägt `id=plugin.video.xtreammate`,
+  `name=XCMate`, `version=0.1.10`.
+- `addons.xml.md5` unabhängig gegen `addons.xml` berechnet und
+  übereinstimmend: `a117cadb3f3ddb84deff45900bfbf69e`.
+- Repository-Add-on 1.7.0 unverändert; vorhandene 0.1.9-ZIP bleibt verfügbar.
+- **Android-Status: weiterhin offen**. Kein erfolgreicher Startsender-,
+  Navigation-/OSD- oder BINGIE-MOD-Gerätetest vorliegend.
