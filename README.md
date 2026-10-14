@@ -6,6 +6,12 @@ Public Kodi repository for GS Media's own add-ons, plugins, scripts and services
 **Repository version:** `1.7.0`  
 **GitHub host:** `artattakk-creator/kodi-noodleprivate`
 
+## XCMate – Entwicklungsdokumentation und Chat-Übergabe
+
+Die aktuellen Projektdokumente für XCMate 0.1.9 sind unter **[docs/XCMate/README.md](docs/XCMate/README.md)** verlinkt. Dort stehen vollständige technische Projektübergabe, gesicherte Entscheidungen, Design-Freeze, Android-Teststatus, Roadmap sowie die geplante Serienfunktion (Gesehen-Status, Wiedergabeposition, optional automatisch nächste Folge). Für einen neuen Chat den **[kopierbaren Übergabeblock](docs/XCMate/NEW_CHAT_COPY_BLOCK_DE.md)** verwenden.
+
+**Wichtig:** Die neue Serienfortschrittsfunktion und die konfigurierbaren Grauton-/Akzent-Themes sind am 14.10.2026 spezifiziert, nicht bereits veröffentlicht. Die Android-Gerätefehler beim Startsender und der Vollbild-Fernbedienung bleiben bis zum praktischen Gegenbeweis offen.
+
 ## Installation
 
 1. Download the [GS Media Kodi Repository installer ZIP](https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/repository.gsmedia-1.7.0.zip).

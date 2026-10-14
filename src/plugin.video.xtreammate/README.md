@@ -2,6 +2,8 @@
 
 This is an independent Kodi add-on based on mr-evil1 TiViMate Kodi 2026.06.12.1 (GPL v2), with an original GS Media visual identity and new add-on ID `plugin.video.xtreammate`.
 
+> **Projektübergabe (Stand 14.10.2026):** [Zentraler Einstieg](../../docs/XCMate/README.md) · [Technische Übergabe](../../docs/XCMate/PROJECT_HANDOFF_DE.md) · [Serien-Autoplay/Bookmarks – spezifiziert, noch nicht implementiert](../../docs/XCMate/SERIES_PROGRESS_SPEC_DE.md) · [Designsystem](../../docs/XCMate/DESIGN_SYSTEM_DE.md).
+
 ## Installation
 In Kodi choose Add-ons -> Install from ZIP file -> `plugin.video.xtreammate-0.1.3.zip`. This version is published by the GS Media repository. Keep the original TiViMate Kodi installed while evaluating XtreamMate.
 
