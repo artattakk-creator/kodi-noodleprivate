@@ -126,7 +126,6 @@ class IPTVMasterService(xbmc.Monitor):
             try:
                 from live_overlay import start_if_eligible, session_from_property, SESSION_KEY
                 from remote_control import parse_command, COMMAND_KEY
-                import xbmcgui
                 player = xbmc.Player()
                 if player.isPlayingVideo():
                     announced_health = session_from_property(
