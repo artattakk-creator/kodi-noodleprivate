@@ -9,7 +9,7 @@ Wir setzen mein Kodi-/IPTV-Projekt **XCMate** (GS Media) fort. Arbeite direkt im
 4. `docs/XCMate/SERIES_PROGRESS_SPEC_DE.md`
 5. `docs/XCMate/DESIGN_SYSTEM_DE.md`
 
-**Letzter geprüfter Projektstand am 14.10.2026:** XCMate 0.1.11, GS Media Kodi Repository 1.7.0. Der angezeigte Name lautet XCMate. Die technische Kodi-ID `plugin.video.xtreammate` bleibt bewusst unverändert, damit automatische Updates und Kodi-Profil/Zugangsdaten erhalten bleiben.
+**Letzter geprüfter Projektstand am 14.10.2026:** XCMate 0.1.12, GS Media Kodi Repository 1.7.0. Der angezeigte Name lautet XCMate. Die technische Kodi-ID `plugin.video.xtreammate` bleibt bewusst unverändert, damit automatische Updates und Kodi-Profil/Zugangsdaten erhalten bleiben.
 
 **Zielgerät:** Android-Kodi-Box mit Titan BINGIE MOD. **Dringend P0:** Startsender springt auf dem echten Gerät teils weiterhin in eine leere Kodi-Verzeichnisansicht; Links/Hoch/Runter/OK, Senderliste und Player-Zusatzleiste funktionieren auf dem Gerät bislang nicht zuverlässig. 0.1.10 trennt Kodi-Playable-`setResolvedUrl` und direkten `RunPlugin`-Autoplay-Start, korrigiert die OK-Funktion im Player-OSD und wurde in GitHub CI gebaut. Es gibt weiterhin keine bestätigte erfolgreiche Android-Gerätetest-Rückmeldung. Bitte die Diagnose und Kodi-Logs analysieren, nicht blind Erfolg behaupten.
 
@@ -72,3 +72,23 @@ Tasten prüfen und Diagnosestatus + anonymisierte Logs auswerten. Die auf Fotos
 basierende TiviMate-Spezifikation, Serienfortschritt und UI/Optik sind noch
 nicht als fertige Funktionen integriert. Bestehende Portale, EPG-Mappings,
 Benutzerdaten und Remoteprofile stets bewahren.
+
+
+**Neue Freigabe – XCMate 0.1.12 (14.10.2026):**
+Der Android-Test nach 0.1.11 meldete: DIE WELT HEVC startet, aber
+XCMate-Tasten/OSD werden nicht übernommen; Kodi-Lautstärke und normales
+Player-Menü funktionieren. Identifizierter Quellcode-Race in `service.py`:
+Nach langer Leerlaufphase räumte der 8-s-Idle-Cleanup neue
+`XtreamMate.LiveSession`-Marker während der Player-Startlatenz sofort ab.
+PR #5 (https://github.com/artattakk-creator/kodi-noodleprivate/pull/5)
+mit 60-s-Startschonfrist und vier Regressionstests wurde gemergt.
+GitHub CI nach Merge: https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/38570255156
+Ergebnis **success**; generiertes `plugin.video.xtreammate/plugin.video.xtreammate-0.1.12.zip`
+(209791 Bytes), `addons.xml` mit Version 0.1.12 und MD5 vorhanden.
+GitHub-Stand ist veröffentlicht, **echter Android-Gerätetest weiter offen**.
+Beim nächsten Test auf der Box Kodi vollständig neu starten, erst WELT
+starten und dann Links, Hoch/Runter, OK, Menü, Guide und Zurück testen.
+Bei erneutem Versagen eine anonymisierte Kodi-Logpassage zu
+`XCMate navigator cannot start`, `XCMate WindowDialog startup failed`,
+`XCMate TV navigation unavailable` und die Ferndiagnose auswerten.
+Niemals Portale, Anmeldedaten, Einstellungen oder Remoteprofile löschen.
