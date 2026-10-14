@@ -53,7 +53,13 @@ class KodiOverlayTests(unittest.TestCase):
         fakeviews=types.ModuleType('epg_views')
         fakeviews.guide_for_channel=lambda *args:{'now':'','next':''}
         fakeviews.row_title=lambda name, guide:name
-        with mock.patch.dict(sys.modules,{'xbmc':types.ModuleType('xbmc'),'xbmcgui':fakegui,'xbmcaddon':addon,'utils':fakeutils,'epg':fakeepg,'epg_views':fakeviews}):
+        paused = []
+        fakeplayer = types.SimpleNamespace(pause=lambda: paused.append('pause'))
+        fakexbmc = types.ModuleType('xbmc')
+        fakexbmc.Player = lambda: fakeplayer
+        fakeprofile = types.ModuleType('remote_profiles')
+        fakeprofile.mapped_action = lambda key: {1:'left',3:'up',4:'down',7:'ok'}.get(key)
+        with mock.patch.dict(sys.modules,{'xbmc':fakexbmc,'remote_profiles':fakeprofile,'xbmcgui':fakegui,'xbmcaddon':addon,'utils':fakeutils,'epg':fakeepg,'epg_views':fakeviews}):
             spec=importlib.util.spec_from_file_location('xtream_overlay_test',LIB/'live_overlay.py')
             mod=importlib.util.module_from_spec(spec)
             spec.loader.exec_module(mod)
@@ -63,6 +69,7 @@ class KodiOverlayTests(unittest.TestCase):
             overlay.mode='hidden'
             overlay._focus_main=0
             overlay._focus_extra=0
+            overlay._last_select=0
             overlay._drawn=False
             overlay._highlight={'groups':0,'channels':0}
             overlay.groups=[]
@@ -82,6 +89,20 @@ class KodiOverlayTests(unittest.TestCase):
             self.assertEqual(overlay.mode,'groups')
             overlay.handle_command('left')
             self.assertEqual(overlay.mode,'hidden')
+            # Native Android OK opens the controls, then executes the focused
+            # button; the second press must not just open a different menu.
+            action = types.SimpleNamespace(getId=lambda:7,getButtonCode=lambda:23)
+            overlay.onAction(action)
+            self.assertEqual(overlay.mode,'controls')
+            overlay.onAction(action)
+            self.assertEqual(paused,['pause'])
+            self.assertEqual(overlay.mode,'hidden')
+            self.assertEqual(props['XtreamMate.LastHandledKey'],'ok')
+            # "Weitere" is an explicit focused OSD control.
+            overlay.handle_command('ok')
+            overlay._focus_main=4
+            overlay.handle_command('ok')
+            self.assertEqual(overlay.mode,'extras')
 
     def test_channel_list_no_sync_epg_download(self):
         source=(LIB/'main.py').read_text(encoding='utf-8')
