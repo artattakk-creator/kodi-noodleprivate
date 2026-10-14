@@ -9,9 +9,9 @@ Wir setzen mein Kodi-/IPTV-Projekt **XCMate** (GS Media) fort. Arbeite direkt im
 4. `docs/XCMate/SERIES_PROGRESS_SPEC_DE.md`
 5. `docs/XCMate/DESIGN_SYSTEM_DE.md`
 
-**Letzter geprüfter Projektstand am 14.10.2026:** XCMate 0.1.9, GS Media Kodi Repository 1.7.0. Der angezeigte Name lautet XCMate. Die technische Kodi-ID `plugin.video.xtreammate` bleibt bewusst unverändert, damit automatische Updates und Kodi-Profil/Zugangsdaten erhalten bleiben.
+**Letzter geprüfter Projektstand am 14.10.2026:** XCMate 0.1.10, GS Media Kodi Repository 1.7.0. Der angezeigte Name lautet XCMate. Die technische Kodi-ID `plugin.video.xtreammate` bleibt bewusst unverändert, damit automatische Updates und Kodi-Profil/Zugangsdaten erhalten bleiben.
 
-**Zielgerät:** Android-Kodi-Box mit Titan BINGIE MOD. **Dringend P0:** Startsender springt auf dem echten Gerät teils weiterhin in eine leere Kodi-Verzeichnisansicht; Links/Hoch/Runter/OK, Senderliste und Player-Zusatzleiste funktionieren auf dem Gerät bislang nicht zuverlässig. 0.1.8 hat den direkten Player-Start und native Android-Fernbedienung samt Tastenlernmodus eingebaut, aber es gibt noch keine bestätigte erfolgreiche Gerätetest-Rückmeldung. Bitte die Diagnose und Kodi-Logs analysieren, nicht blind Erfolg behaupten.
+**Zielgerät:** Android-Kodi-Box mit Titan BINGIE MOD. **Dringend P0:** Startsender springt auf dem echten Gerät teils weiterhin in eine leere Kodi-Verzeichnisansicht; Links/Hoch/Runter/OK, Senderliste und Player-Zusatzleiste funktionieren auf dem Gerät bislang nicht zuverlässig. 0.1.10 trennt Kodi-Playable-`setResolvedUrl` und direkten `RunPlugin`-Autoplay-Start, korrigiert die OK-Funktion im Player-OSD und wurde in GitHub CI gebaut. Es gibt weiterhin keine bestätigte erfolgreiche Android-Gerätetest-Rückmeldung. Bitte die Diagnose und Kodi-Logs analysieren, nicht blind Erfolg behaupten.
 
 **Neue verbindliche Anforderung:** Bei Serien Gesehen-Status und Fortschritt pro Folge dauerhaft speichern; nach Abbruch an der letzten Position fortsetzen; optional automatisch nächste Folge in korrekter Staffel-/Folgenreihenfolge abspielen; „Weiterschauen“-Ansicht. **Noch nicht implementiert.** Details, Datenmodell und Akzeptanztests stehen in `SERIES_PROGRESS_SPEC_DE.md`.
 
