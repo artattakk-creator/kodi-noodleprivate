@@ -5,7 +5,7 @@ This is an independent Kodi add-on based on mr-evil1 TiViMate Kodi 2026.06.12.1 
 > **Projektübergabe (Stand 14.10.2026):** [Zentraler Einstieg](../../docs/XCMate/README.md) · [Technische Übergabe](../../docs/XCMate/PROJECT_HANDOFF_DE.md) · [Serien-Autoplay/Bookmarks – spezifiziert, noch nicht implementiert](../../docs/XCMate/SERIES_PROGRESS_SPEC_DE.md) · [Designsystem](../../docs/XCMate/DESIGN_SYSTEM_DE.md).
 
 ## Installation
-Install XCMate preferably via Kodi → Install from repository → GS Media Kodi Repository → XCMate. Current source build ZIP: `plugin.video.xtreammate-0.1.11.zip` (after release). Kodi ID `plugin.video.xtreammate` remains unchanged to preserve updates and the existing userdata profile. The original upstream TiViMate addon can stay installed separately.
+Install XCMate preferably via Kodi → Install from repository → GS Media Kodi Repository → XCMate. Current candidate ZIP: `plugin.video.xtreammate-0.1.15.zip` (after release). Kodi ID `plugin.video.xtreammate` remains unchanged to preserve updates and the existing userdata profile. The original upstream TiViMate addon can stay installed separately.
 
 ## First launch
 Select Stalker Portal, local M3U file, M3U link, or Xtream Codes. For Xtream enter full server URL (including port), username and password. Choose which of TV, movies, series to import. Start the scan; review counts, name the list, save; optionally fetch EPG. On Xtream live accounts you can also choose multiple category IDs and change them later under Sendergruppen auswählen.
@@ -245,4 +245,37 @@ nicht-sensiblen Ergebnis. Falls Kodi auf dieser Box keine passende
 `getPlayingFile()`-Adresse liefert, bitte nach einem Test das Diagnosefenster
 fotografieren; Zugangsdaten und Kodi-Log-Passwörter vorher verdecken.
 Die Android-Geräteabnahme bleibt zwingend.
+
+## 0.1.15 – eigener Kodi-Popup-Test und sichtbare TV-Senderliste
+
+Die vorherige Fernbedienung erhielt auf einer Android-Box weiterhin
+keine Events während Live-TV. Deshalb ist ein vollständig eigenständiger
+**Kodi-Dialogtest aus dem Xtream-Portalmenü** hinzugekommen:
+
+**XCMate Popup- und Fernbedienungstest**
+- Funktioniert **ohne aktiven TV-Stream** und ohne Service-Marker.
+- Ein eigener `WindowDialog.doModal()` wird in der Kodi-Addon-Anwendung
+  gezeigt, mit Fokus auf einem OK-Testfeld und einer Schließen-Schaltfläche.
+- Hoch/Runter/Links/Rechts verändern den Fokus, OK wird als Tastenevent
+  angezeigt und Zurück schließt den Dialog.
+- Der letzte Action-Code, Fokus und Empfangszähler bleiben im Kodi-Home-Window
+  erhalten und sind anschließend unter **TV-Fernbedienung: Diagnose** abrufbar.
+
+**Automatische Live-Einblendung:** Wenn Kodi eine gültige XCMate-Session
+besitzt und den vorhandenen `LiveNavigator` öffnet, startet dieser nun
+**sichtbar** mit der Sender-/EPG-Seitenleiste (bisher zunächst unsichtbar).
+Nach 16 Sekunden ohne Taste wird nur die Sidebar verborgen, während der
+Stream weiterläuft. Jede empfangene Taste bricht das automatische Ausblenden
+ab. Die freie Bildschirmfläche zeigt das laufende Hauptvideo, kein
+versprochenes separat skaliertes Mini-Video.
+
+Nach Aktualisierung Kodi vollständig neu starten. **Zuerst ohne Video**
+den neuen Popup-Test aufrufen, Tasten drücken, Zurück, dann Diagnose.
+Erst anschließend Testsender starten und prüfen, ob die Senderleiste
+automatisch über dem Livevideo erscheint. Wenn nicht, die gespeicherten
+Diagnosewerte auswerten. Diese Version ist nicht durch Android-Hardware
+bestätigt; Github-Mocktests können den tatsächlichen Dialogfokus nicht
+garantieren.
+
+**Roadmap:** `docs/XCMate/POPUP_UI_IMPLEMENTATION_PLAN_DE.md`.
 
