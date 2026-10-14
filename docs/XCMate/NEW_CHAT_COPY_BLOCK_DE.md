@@ -9,7 +9,7 @@ Wir setzen mein Kodi-/IPTV-Projekt **XCMate** (GS Media) fort. Arbeite direkt im
 4. `docs/XCMate/SERIES_PROGRESS_SPEC_DE.md`
 5. `docs/XCMate/DESIGN_SYSTEM_DE.md`
 
-**Letzter geprüfter Projektstand am 14.10.2026:** XCMate 0.1.12, GS Media Kodi Repository 1.7.0. Der angezeigte Name lautet XCMate. Die technische Kodi-ID `plugin.video.xtreammate` bleibt bewusst unverändert, damit automatische Updates und Kodi-Profil/Zugangsdaten erhalten bleiben.
+**Letzter geprüfter Projektstand am 14.10.2026:** XCMate 0.1.15, GS Media Kodi Repository 1.7.0. Der angezeigte Name lautet XCMate. Die technische Kodi-ID `plugin.video.xtreammate` bleibt bewusst unverändert, damit automatische Updates und Kodi-Profil/Zugangsdaten erhalten bleiben.
 
 **Zielgerät:** Android-Kodi-Box mit Titan BINGIE MOD. **Dringend P0:** Startsender springt auf dem echten Gerät teils weiterhin in eine leere Kodi-Verzeichnisansicht; Links/Hoch/Runter/OK, Senderliste und Player-Zusatzleiste funktionieren auf dem Gerät bislang nicht zuverlässig. 0.1.10 trennt Kodi-Playable-`setResolvedUrl` und direkten `RunPlugin`-Autoplay-Start, korrigiert die OK-Funktion im Player-OSD und wurde in GitHub CI gebaut. Es gibt weiterhin keine bestätigte erfolgreiche Android-Gerätetest-Rückmeldung. Bitte die Diagnose und Kodi-Logs analysieren, nicht blind Erfolg behaupten.
 
@@ -111,3 +111,22 @@ ZIP `plugin.video.xtreammate-0.1.14.zip` 215793 Bytes,
 testen, später Offline-Diagnose mit Live-Sitzung, Recovery-Ergebnis
 und TV-Overlay-Ergebnis anfordern. **Noch kein Erfolg auf Android bewiesen.**
 Optik und TiviMate-Fotoreferenz weiter nachrangig.
+
+**Aktueller Release: XCMate 0.1.15 (14.10.2026)**, über PR #8,
+GitHub CI #38592365190 / Publish #38592489957, ZIP
+`plugin.video.xtreammate-0.1.15.zip` (219453 Bytes), Katalog
+0.1.15, GS Media Repository 1.7.0. Nach 0.1.14 bleibt P0
+Android-Fernbedienung unbestätigt. Die neue `popup_probe.py` ist
+ein direkt aus dem Xtream-Portalmenü gestarteter, Kodi-eigener
+`WindowDialog.doModal()` mit 2 fokussierbaren Buttons und
+Richtung/OK/Zurück-Eventcounter – **kein Stream notwendig**.
+Die TV-`LiveNavigator`-Seitenleiste ist jetzt beim ersten aktiven
+Session-Start automatisch 16s sichtbar; bei keinen Tasten blendet sie
+sich aus, TV läuft weiter. Offline-Diagnose zeigt Popup-Test-Events,
+Auto-TV-Popup, Live-Session-Recovery und Service-Status.
+**Nutzertest zwingend:** ohne Stream Popup aufrufen/Tasten prüfen,
+danach TV und die automatische Sender-/EPG-Seitenleiste prüfen,
+anschließend Diagnose-Screenshot. Plan für 0.1.16–0.1.19 steht in
+`docs/XCMate/POPUP_UI_IMPLEMENTATION_PLAN_DE.md`.
+Keine bereits funktionierende TiviMate-EPG-/Mini-TV-Oberfläche behaupten;
+das verkleinerte Livevideo bleibt ein gesondertes Kodi-Rendering-Thema.
