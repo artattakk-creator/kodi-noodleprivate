@@ -124,6 +124,7 @@ class Router:
             'remote_setup': self._remote_setup,
             'remote_learn': self._remote_learn,
             'remote_diagnostics': self._remote_diagnostics,
+            'service_recover': self._service_recover,
         }
         if action == 'root' and not _portals_mod.load_all():
             from setup_wizard import setup
@@ -433,6 +434,10 @@ class Router:
                                'und einzelnen XCMate-Funktionen zuweisen.')
             self._add_dir('TV-Fernbedienung: Diagnose',
                           self.url(action='remote_diagnostics'), icon=_ICON_SETTINGS)
+            self._add_dir('XCMate-Hintergrunddienst prüfen / manuell starten',
+                          self.url(action='service_recover'), icon=_ICON_SETTINGS,
+                          plot='Auch ohne laufenden Stream: Dienst-Lebenszeichen prüfen '
+                               'und bei Bedarf einen einmaligen Start anfordern.')
             self._add_dir('BINGIE MOD Widgets – aktive Sendergruppen',
                           self.url(action='widget_groups', pid=pid),
                           icon=_ICON_TV,
@@ -532,11 +537,26 @@ class Router:
             xbmc.executebuiltin('Container.Refresh')
 
     def _remote_diagnostics(self):
+        from service_health import inspect
         from remote_control import is_enabled, SESSION_KEY
         from live_overlay import session_from_property
         marker = xbmcgui.Window(10000)
         session = session_from_property(marker.getProperty(SESSION_KEY))
+        health = inspect(marker)
+        last_seen = ('kein Lebenszeichen' if health['age'] is None
+                     else '{:.1f} Sekunden'.format(health['age']))
         rows = [
+            '=== Hintergrunddienst (OHNE Stream prüfbar) ===',
+            'Dienststatus: ' + health['state'],
+            'Letztes Lebenszeichen: ' + last_seen,
+            'Dienstschleifen: ' + health['loops'],
+            'Dienstphase: ' + health['phase'],
+            'Letzter Dienstfehler: ' + health['error'],
+            'Letzte Live-Beobachtung: ' + health['live'],
+            'Letzte TV-Einblendung: ' + health['overlay'],
+            'Letzte Diensteingabe: ' + health['input'],
+            '',
+            '=== Aktuelle Player-/Tastenlage ===',
             'Kodi-Tastenbelegung: ' + ('AKTIV' if is_enabled() else 'INAKTIV'),
             'XCMate-Stream erkannt: ' + ('JA' if session else 'NEIN'),
             'Video läuft: ' + ('JA' if xbmc.Player().isPlayingVideo() else 'NEIN'),
@@ -553,8 +573,36 @@ class Router:
             rows.append('XCMate richtet bei Live-TV seine Keymap ein, sofern nicht deaktiviert.')
         else:
             rows.append('')
-            rows.append('Test bei laufendem XCMate-TV: Links / OK / Guide.')
+            rows.append('Test: Nach dem Stream diese Diagnose erneut öffnen;')
+            rows.append('die letzte Live-Beobachtung bleibt erhalten.')
+        rows.append('')
+        rows.append('Bei NICHT BESTÄTIGT / KEIN AKTUELLES LEBENSZEICHEN:')
+        rows.append('XCMate-Hintergrunddienst prüfen / manuell starten wählen.')
         xbmcgui.Dialog().textviewer('XCMate – Fernbedienungsdiagnose', '\n'.join(rows))
+
+    def _service_recover(self):
+        """Test/start the existing add-on service without needing live TV."""
+        from service_health import inspect, request_manual_start
+        marker = xbmcgui.Window(10000)
+        health = inspect(marker)
+        if health['alive']:
+            xbmcgui.Dialog().ok('XCMate – Hintergrunddienst',
+                                'Dienststatus: LÄUFT.\n'
+                                'Dienstschleifen: {}\n'
+                                'Letzte Live-Beobachtung: {}\n'
+                                'Letzter Dienstfehler: {}'.format(
+                                    health['loops'], health['live'], health['error']))
+            return
+        if not xbmcgui.Dialog().yesno(
+                'XCMate – Hintergrunddienst',
+                'Dienststatus: {}.\n'
+                'Einmaligen manuellen Start anfordern?\n'
+                'Das ändert keine Portale, Tasten oder EPG-Daten.'.format(health['state'])):
+            return
+        outcome = request_manual_start(marker)
+        xbmcgui.Dialog().ok('XCMate – Hintergrunddienst',
+                            outcome + '\n\n'
+                            'Danach TV-Fernbedienung: Diagnose erneut öffnen.')
 
     def _remote_learn(self):
         from remote_profiles import configure
