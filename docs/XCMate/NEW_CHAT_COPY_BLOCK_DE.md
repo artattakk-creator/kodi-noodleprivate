@@ -9,7 +9,7 @@ Wir setzen mein Kodi-/IPTV-Projekt **XCMate** (GS Media) fort. Arbeite direkt im
 4. `docs/XCMate/SERIES_PROGRESS_SPEC_DE.md`
 5. `docs/XCMate/DESIGN_SYSTEM_DE.md`
 
-**Letzter geprüfter Projektstand am 14.10.2026:** XCMate 0.1.10, GS Media Kodi Repository 1.7.0. Der angezeigte Name lautet XCMate. Die technische Kodi-ID `plugin.video.xtreammate` bleibt bewusst unverändert, damit automatische Updates und Kodi-Profil/Zugangsdaten erhalten bleiben.
+**Letzter geprüfter Projektstand am 14.10.2026:** XCMate 0.1.11, GS Media Kodi Repository 1.7.0. Der angezeigte Name lautet XCMate. Die technische Kodi-ID `plugin.video.xtreammate` bleibt bewusst unverändert, damit automatische Updates und Kodi-Profil/Zugangsdaten erhalten bleiben.
 
 **Zielgerät:** Android-Kodi-Box mit Titan BINGIE MOD. **Dringend P0:** Startsender springt auf dem echten Gerät teils weiterhin in eine leere Kodi-Verzeichnisansicht; Links/Hoch/Runter/OK, Senderliste und Player-Zusatzleiste funktionieren auf dem Gerät bislang nicht zuverlässig. 0.1.10 trennt Kodi-Playable-`setResolvedUrl` und direkten `RunPlugin`-Autoplay-Start, korrigiert die OK-Funktion im Player-OSD und wurde in GitHub CI gebaut. Es gibt weiterhin keine bestätigte erfolgreiche Android-Gerätetest-Rückmeldung. Bitte die Diagnose und Kodi-Logs analysieren, nicht blind Erfolg behaupten.
 
@@ -58,3 +58,17 @@ Kein privates Nutzerkonto, kein Gerätebezeichner, kein Android-Aufnahmepfad
 auf GitHub. P0 Android-Startsender/Remote offen; weder die neuen Menüs noch
 Serien-Autoplay bereits produktiv. Erst CI, Build/Katalog und echter Gerätetest,
 bevor neue Kodi-Funktionen als fertig gelten.
+
+**Fernbedienung P0 Release (14.10.2026): XCMate 0.1.11** ist aus PR #4 nach
+erfolgreichen GitHub-Tests über den GS-Media-Katalog veröffentlicht. 0.1.11
+aktiviert bei gültigem XCMate-Xtream-Live-TV automatisch eine widerrufbare,
+XCMate-eigene Fullscreen-Bridge, erfasst native `WindowDialog.onAction`
+und steuert Links/OK/Hoch/Runter/Rechts/Menü/Zurück mit eigener TV-Leiste.
+Externes Kodi-Video wird an Kodi weitergereicht, keine fremde Keymap
+überschrieben. ZIP: `plugin.video.xtreammate/plugin.video.xtreammate-0.1.11.zip`.
+Katalog-/MD5 geprüft; 1.7.0 unverändert. **Android-Gerätetest steht aus.**
+Zum Test nach Update **Kodi komplett neu starten**, dann Sender starten,
+Tasten prüfen und Diagnosestatus + anonymisierte Logs auswerten. Die auf Fotos
+basierende TiviMate-Spezifikation, Serienfortschritt und UI/Optik sind noch
+nicht als fertige Funktionen integriert. Bestehende Portale, EPG-Mappings,
+Benutzerdaten und Remoteprofile stets bewahren.
