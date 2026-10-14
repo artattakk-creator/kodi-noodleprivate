@@ -107,3 +107,10 @@ Weitere Pfade:
 3. Keine Secrets oder originalen URL-Strings auf GitHub oder in CI ausgeben; persönliche Screenshotdaten auf Platzhalter begrenzen.
 4. Bei jeder tatsächlichen Implementierung automatisierte Tests, GitHub-Build, ZIP und `addons.xml`-Checksumme prüfen, danach Android mit Titan BINGIE MOD; erst dann **ON-DEVICE PASS**.
 5. Bei nächsten Fotos die fehlenden Unterseiten ergänzen und die bereits fotografierten Werte als Nutzerreferenz beibehalten. Alle Einstellungen müssen künftig **änderbar** sein; fotografierte Schalterzustände sind kein Vorschlag, bestehende Nutzereinstellungen zurückzusetzen.
+
+## Nachtrag: Folgeserie mit zuvor nicht sichtbaren Menüs
+
+Die vierte Nutzer-Fotoserie vom selben Tag ergänzt `Wiedergabe`, `Kindersicherung`, `Sonstiges` (inklusive Suche, Erinnerungen, Aufnahme, VOD) und `Über`:
+[`TIVIMATE_SETTINGS_FOURTH_SERIES_2026-10-14_DE.md`](TIVIMATE_SETTINGS_FOURTH_SERIES_2026-10-14_DE.md).
+Der JSON-Fotovertrag wurde um diese Felder ergänzt. Insbesondere hat die VOD-Option „Nächste Folge automatisch abspielen“ einen auf dem Foto nicht eindeutig als ein/aus interpretierbaren dunklen Schalter. Ihr beobachteter Wert bleibt deshalb `null`.
+Einzelne tieferliegende Untermenüs (z. B. Wiedergabe „Schritte überspringen“, Optik-Untermenüs) sind weiter offen.
