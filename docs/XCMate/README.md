@@ -1,6 +1,6 @@
 # XCMate – zentraler Projekteinstieg
 
-**Status:** 14.10.2026, Release 0.1.14 mit Live-Session-Wiederherstellung (Android-Fernbedienungstest weiterhin offen)  
+**Status:** 14.10.2026, Release 0.1.15 mit eigenständigem Kodi-Popup-Test und sichtbarer TV-Senderleiste (Android-Gerätetest offen)  
 **Repository:** https://github.com/artattakk-creator/kodi-noodleprivate  
 **Kodi-Repository:** GS Media Kodi Repository 1.7.0  
 **Angezeigter Add-on-Name:** XCMate  
@@ -20,6 +20,7 @@ Diese Dateien sind die verbindliche Arbeitsgrundlage für spätere Chats und Ent
 - [TiviMate 5.3.3: Wiedergabe, Kindersicherung, Sonstiges, Suche, Aufnahme, VOD und Über – 10 weitere Fotos](TIVIMATE_SETTINGS_FOURTH_SERIES_2026-10-14_DE.md)
 - [Fotoverifizierter Einstellungsvertrag als JSON (ohne persönliche Daten)](TIVIMATE_SETTINGS_CONTRACT_2026-10-14.json)
 - [Originalgrafiken: Namen, SHA-256, ZIP und GitHub-Uploadstatus](ARTWORK_ASSET_MANIFEST_DE.md)
+- [Popup-Entwicklungsplan 0.1.15–0.1.19 und Android-Abnahmekriterien](POPUP_UI_IMPLEMENTATION_PLAN_DE.md)
 - [Roadmap, offene Fehler, Release- und Android-Testplan](ROADMAP_AND_QA_DE.md)
 - [Kopierfertiger Einstiegstext für neuen Chat](NEW_CHAT_COPY_BLOCK_DE.md)
 
