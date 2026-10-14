@@ -87,3 +87,14 @@ Kein Device-Pass ohne protokollierten Nutzergerätetest.
 - **Noch nicht als Funktion veröffentlicht:** Android-Keyevent-Decoder, Langdruck, EPG-Raster, Vorschaumodus, kontextabhängige Kodi-UI/Fokuswechsel, Speicherung einer vom Benutzer änderbaren Tastenmatrix.
 - Keine APK, geschützte Originalgrafik oder Live-Sender-Screenshots in das öffentliche Repository geladen. Gespeicherte Portale, Schlüssel, EPG und bestehende Tastenbelegung unverändert lassen.
 - Nächster Schritt: weitere TiviMate-Einstellungsseiten entgegennehmen, Matrix fortführen, XCMate-Controller unabhängig implementieren, Mock-/CI-Test, Gerätetest und eigener Versions-Release.
+
+## P1 – Weitere TV-/EPG-/Film-Ansichten aus Fotos (14.10.2026)
+
+Die zweite TiviMate-5.3.3-Fotoserie ist in
+[`TIVIMATE_UI_SCREEN_REFERENCE_2026-10-14_DE.md`](TIVIMATE_UI_SCREEN_REFERENCE_2026-10-14_DE.md)
+als Zustands-/Bildschirmreferenz mit 10 Foto-IDs indexiert. Die Player-Farbtasten
+wurden im Draft-Branch #3 ergänzt. **Keine Behauptung einer identisch
+implementierten Kodi-Oberfläche**: EPG-Zeitraster, Preview, Hauptmenü,
+Karussell und Filmkatalog-Layout sind zunächst referenziert, nicht umgesetzt.
+Die QA muss die tatsächlichen Taste-zu-Zustand-Übergänge und Fokus-Führung
+auf Android belegen. P0 Startsender/Remote bleibt vorrangig.
