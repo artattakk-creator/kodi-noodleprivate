@@ -75,3 +75,11 @@ mit separater direkter Player-Routine gestartet. OSD-OK löst die jeweils
 markierte Funktion aus; „Weitere“ ist explizit erreichbar.
 Automatisierte Kodi-API-Simulation ergänzt. **Ein Android-Erfolg ist
 noch nicht nachgewiesen.** Einzelheiten: `ROADMAP_AND_QA_DE.md`.
+
+## 8. TiviMate-5.3.3-Fernbedienung als Nutzerreferenz (14.10.2026)
+
+Der Nutzer hat 10 Fotos seiner **tatsächlich eingestellten** TiviMate-Fernbedienung bereitgestellt. Die exakt sichtbaren Player- und EPG-Aktionen (kurzer/langer Tastendruck, Kontextwechsel) sowie sechs Suchoptionen stehen vollständig in
+[`TIVIMATE_REMOTE_REFERENCE_2026-10-14_DE.md`](TIVIMATE_REMOTE_REFERENCE_2026-10-14_DE.md). Alle künftigen Einstellungsfotos ebenfalls kontextgenau indexieren.
+
+Entwicklungsbranch: `feat/xcmate-tivimate-remote-profile` · Draft-PR [#3](https://github.com/artattakk-creator/kodi-noodleprivate/pull/3).
+CI-Run [38557640506](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/38557640506) erfolgreich. Im PR liegen `tivimate_keys.py` (reine unabhängige Semantiktabellen) und Regressionstests. **Noch keine Kodi-Laufzeitintegration und keine neue Release-Version**; Add-on 0.1.10 bleibt unverändert. Unterschiedliche Kodi-/Android-Keycodes und Langdruck sowie echte EPG-/Preview-Anzeige müssen am Gerät geprüft werden. Nicht ungeprüft auf das Android-Gerät ausrollen.
