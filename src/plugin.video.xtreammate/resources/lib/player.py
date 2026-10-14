@@ -103,7 +103,7 @@ def build_playable_item(url: str,
         return li
 
     final = f'{base_url}|{hdr_str}' if hdr_str else base_url
-    debug(f'direct playback: {final[:120]}')
+    debug('direct playback: stream URL redacted')
     li.setPath(final)
     return li
 
