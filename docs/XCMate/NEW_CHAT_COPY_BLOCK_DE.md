@@ -33,3 +33,15 @@ Die Bedienungsreferenz ist **kein** Kodi-Screenshot-Nachbau und wurde
 noch nicht aufs Android-Gerät ausgerollt. Weitere Bilder ergänzen;
 das XCMate-eigene Design-System und das profilwahrende Vorgehen bleiben
 verbindlich.
+
+**Dritte Fotoserie (14.10.2026), TiviMate Einstellungen:** Zehn weitere
+Fotos zu Einstellungsrubriken, Allgemein, Wiedergabelisten, EPG und Optik
+wurden als verbindliche UI-/Funktionsreferenz dokumentiert:
+`docs/XCMate/TIVIMATE_SETTINGS_SCREEN_REFERENCE_2026-10-14_DE.md`
+und `docs/XCMate/TIVIMATE_SETTINGS_CONTRACT_2026-10-14.json`.
+Gezeigte Schalterzustände sind eine individuelle TiviMate-Konfiguration,
+**nicht ungefragt auf bestehende Kodi-Daten übertragen**. Fotos zeigen
+eine private XMLTV-URL: nur redigierte Platzhalter öffentlich verwenden.
+Android-Boot/Wake/Home-PiP sind Host-abhängig; XCMate Default bleibt Slate-Grau.
+Die Menüoberflächen sind **noch nicht implementiert**, Add-on-Release bleibt
+0.1.10; P0 Android-Startsender/Remote-Test ist weiterhin offen.
