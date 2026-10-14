@@ -71,3 +71,78 @@ def row_title(name, info):
     if info.get('next'):
         title += '  |  Danach: ' + str(info['next'])
     return title
+
+# Bounded asynchronous Xtream short-guide fallback for missing XMLTV data.
+_SHORT_LOCK = None
+_SHORT_INFLIGHT = set()
+_SHORT_SEEN = {}
+
+def _short_guide(raw, now=None):
+    """Normalize cached get_short_epg events into XMLTV-compatible Now/Next."""
+    import base64
+    ts = int(time.time() if now is None else now)
+    entries = raw.get('epg_listings', []) if isinstance(raw, dict) else []
+    normalized = []
+    for item in entries:
+        if not isinstance(item, dict):
+            continue
+        title = str(item.get('title') or '').strip()
+        try:
+            decoded = base64.b64decode(title, validate=True).decode('utf-8')
+            if decoded.strip():
+                title = decoded
+        except (ValueError, TypeError, UnicodeError):
+            pass
+        start = _as_int(item.get('start_timestamp'))
+        stop = _as_int(item.get('stop_timestamp') or item.get('end_timestamp'))
+        if start and stop > start and title:
+            normalized.append({'name': title, 'start_timestamp': start,
+                               'stop_timestamp': stop})
+    return guide_for_channel({'_short': normalized}, '_short', now=ts)
+
+def cached_short_guide(client, stream_id, now=None):
+    if not stream_id:
+        return guide_for_channel({}, now=now)
+    data = client._get_json('get_short_epg',
+        extra={'stream_id': str(stream_id), 'limit': 4}, cached_only=True)
+    return _short_guide(data, now=now)
+
+def prefetch_short_guides(portal, channels, limit=24):
+    """Prefetch missing visible TV programmes without waiting in Kodi navigation."""
+    import threading
+    from concurrent.futures import ThreadPoolExecutor
+    from xtream import XtreamClient
+    global _SHORT_LOCK
+    if _SHORT_LOCK is None:
+        _SHORT_LOCK = threading.Lock()
+    if not isinstance(portal, dict) or portal.get('type') != 'xtream':
+        return
+    pid = str(portal['id'])
+    sids = [str(ch.extra.get('stream_id')) for ch in channels
+            if ch.extra.get('stream_id')][:limit]
+    current = time.time()
+    with _SHORT_LOCK:
+        if pid in _SHORT_INFLIGHT:
+            return
+        ids = [sid for sid in sids if current-_SHORT_SEEN.get((pid,sid),0)>1800]
+        if not ids:
+            return
+        _SHORT_INFLIGHT.add(pid)
+        for sid in ids:
+            _SHORT_SEEN[(pid,sid)] = current
+    def worker():
+        try:
+            xc = XtreamClient(portal['xc_host'],portal['xc_user'],portal['xc_pass'])
+            def fetch(sid):
+                if cached_short_guide(xc,sid)['now']:
+                    return
+                try:
+                    xc.get_short_epg(sid,limit=4,force_refresh=True)
+                except Exception:
+                    pass
+            with ThreadPoolExecutor(max_workers=3) as executor:
+                list(executor.map(fetch,ids))
+        finally:
+            with _SHORT_LOCK:
+                _SHORT_INFLIGHT.discard(pid)
+    threading.Thread(target=worker,daemon=True,name='XtreamMateShortGuide').start()

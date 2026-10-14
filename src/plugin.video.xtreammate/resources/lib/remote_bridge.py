@@ -18,6 +18,7 @@ try:
               0 <= time.time()-float(session.get('at', 0)) < 86400)
 except (TypeError, ValueError, KeyError):
     active = False
+window.setProperty('XtreamMate.LastRemoteKey', '{} ({})'.format(ACTION, 'XtreamMate' if active else 'Kodi'))
 if active and ACTION in FALLBACK:
     window.setProperty('XtreamMate.RemoteCommand', json.dumps({
         'action': ACTION, 'at': time.time(), 'nonce': uuid.uuid4().hex}))

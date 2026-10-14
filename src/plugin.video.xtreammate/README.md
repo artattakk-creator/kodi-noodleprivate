@@ -1,4 +1,4 @@
-# XtreamMate 0.1.5 – Kodi test version
+# XtreamMate 0.1.6 – Kodi test version
 
 This is an independent Kodi add-on based on mr-evil1 TiViMate Kodi 2026.06.12.1 (GPL v2), with an original GS Media visual identity and new add-on ID `plugin.video.xtreammate`.
 
@@ -90,3 +90,14 @@ Kodi SMB URL.
 
 Kodi's on-device keymap needs enabling and restart; remote/skin behaviour
 must be tested on the actual Kodi box.
+
+## 0.1.6 – Faster remote controls, playable start channel, guide fallback
+- Startsender abspielen is marked IsPlayable instead of a folder, and resolves
+  using the saved Xtream stream ID without another network catalog request.
+- Portal home uses saved account metadata without synchronous provider requests.
+- Fullscreen ControlList uses setItemHeight()/setSpace() for Kodi portability.
+- TV remote diagnostics shows the latest bridge input and last processed input.
+- Live TV listing shows XMLTV Now/Next or cached Xtream short EPG if available.
+  Missing short EPG entries are preloaded asynchronously for up to 24 visible
+  channels per page (maximum 3 concurrent requests). No synchronous wait.
+- Kodi profile, portal credentials and selected start channel are retained.

@@ -133,7 +133,7 @@ class Router:
         R.get(action, self._root)()
 
 
-    def _portal_plot(self, p: dict, extra: str = '') -> str:
+    def _portal_plot(self, p: dict, extra: str = '', cached_only=False) -> str:
         import datetime as _dt2
         ptype = p.get('type', 'm3u')
         type_map = {'m3u': 'M3U Playlist', 'xtream': 'Xtream Codes', 'stb': 'STB / Stalker Portal'}
@@ -146,7 +146,7 @@ class Router:
                 lines.append(f'[B]EPG:[/B]  {p["epg_url"]}')
             from portals import detect_xtream
             _xc_creds = detect_xtream(p.get('m3u_url', ''))
-            if _xc_creds:
+            if _xc_creds and not cached_only:
                 try:
                     from xtream import XtreamClient
                     _xc = XtreamClient(_xc_creds['xc_host'], _xc_creds['xc_user'], _xc_creds['xc_pass'])
@@ -199,7 +199,7 @@ class Router:
                 lines.append('[B]Passwort:[/B]  ••••••••')
             if p.get('epg_url'):
                 lines.append(f'[B]EPG:[/B]  {p["epg_url"]}')
-            if host and user:
+            if host and user and not cached_only:
                 try:
                     from xtream import XtreamClient
                     xc = XtreamClient(host, user, pwd)
@@ -248,7 +248,7 @@ class Router:
                 lines.append(f'[B]MAC:[/B]  {p["stb_mac"]}')
             if p.get('epg_url'):
                 lines.append(f'[B]EPG:[/B]  {p["epg_url"]}')
-            if p.get('stb_url') and p.get('stb_mac'):
+            if p.get('stb_url') and p.get('stb_mac') and not cached_only:
                 try:
                     from stalker import client_for_portal
                     stb = client_for_portal(p)
@@ -338,7 +338,7 @@ class Router:
         from concurrent.futures import ThreadPoolExecutor, as_completed as _asc
         plots = {}
         with ThreadPoolExecutor(max_workers=min(len(active), 4)) as _ex:
-            _futs = {_ex.submit(self._portal_plot, p): p['id'] for p in active}
+            _futs = {_ex.submit(self._portal_plot, p, cached_only=True): p['id'] for p in active}
             for _fut in _asc(_futs):
                 try:
                     plots[_futs[_fut]] = _fut.result()
@@ -403,7 +403,7 @@ class Router:
         xbmcplugin.setContent(self._handle, '')
         pid = p['id']
 
-        _base_plot = self._portal_plot(p)
+        _base_plot = self._portal_plot(p, cached_only=True)
 
         def _pp(extra=''):
             return (_base_plot + '\n' + extra) if extra else _base_plot
@@ -419,7 +419,7 @@ class Router:
                           icon=_ICON_SETTINGS)
             if p.get('start_stream_id'):
                 self._add_dir('▶ Startsender abspielen',
-                              self.url(action='play_start', pid=pid), icon=_ICON_TV)
+                              self.url(action='play_start', pid=pid), icon=_ICON_TV, is_folder=False)
             self._add_dir('TV-Fernbedienung aktivieren / deaktivieren',
                           self.url(action='remote_setup'), icon=_ICON_SETTINGS)
             self._add_dir('TV-Fernbedienung: Diagnose',
@@ -527,6 +527,8 @@ class Router:
             'XtreamMate-Stream erkannt: ' + ('JA' if session else 'NEIN'),
             'Video läuft: ' + ('JA' if xbmc.Player().isPlayingVideo() else 'NEIN'),
             'TV-Einblendung: ' + (marker.getProperty('XtreamMate.OverlayStatus') or 'nicht gestartet'),
+            'Letzte Kodi-Taste: ' + (marker.getProperty('XtreamMate.LastRemoteKey') or 'noch keine'),
+            'Zuletzt verarbeitet: ' + (marker.getProperty('XtreamMate.LastHandledKey') or 'noch keine'),
         ]
         if not is_enabled():
             rows.append('')
@@ -567,17 +569,15 @@ class Router:
         from xtream import XtreamClient
         sid=str(p['start_stream_id'])
         xc=XtreamClient(p['xc_host'],p['xc_user'],p['xc_pass'])
-        streams=xc.get_live_streams()
-        channel=next((c for c in streams if str(c.get('stream_id'))==sid),None)
-        if not channel:
-            xbmcgui.Dialog().notification('XtreamMate', 'Startsender nicht mehr verfügbar. Bitte neu wählen.')
-            xbmcplugin.setResolvedUrl(self._handle, False, xbmcgui.ListItem())
-            return
+        # Stream ID is already saved. Do not block on another API catalog request.
+        streams=xc.get_cached_catalog('get_live_streams') or []
+        channel=next((c for c in streams if str(c.get('stream_id'))==sid), {})
         from live_overlay import announce
-        announce(p['id'],sid,channel.get('name',''))
+        announce(p['id'],sid,channel.get('name','Startsender'))
         from player import play_stream
         play_stream(self._handle,xc.live_stream_url(sid,'ts'),
-                    title=channel.get('name',''),logo=channel.get('stream_icon',''))
+                    title=channel.get('name','Startsender'),
+                    logo=channel.get('stream_icon',''))
 
     def _groups_manager(self):
         import portals
@@ -809,18 +809,20 @@ class Router:
         xbmcplugin.setPluginCategory(self._handle, label)
 
         ptype   = p.get('type', 'm3u')
-        epg_mgr = self._epg_mgr(p)
         from player import channel_list_item
         from epg import load_cache
-        from epg_views import guide_for_channel
+        from epg_views import guide_for_channel, cached_short_guide, prefetch_short_guides
         guide = load_cache(p['id'])
+        xc_epg = self._xc(p) if ptype == 'xtream' else None
+        if xc_epg:
+            prefetch_short_guides(p, chunk)
         now = time.time()
         for ch in chunk:
-            prog = epg_mgr.get_current(ch.tvg_id) if epg_mgr else None
-            prg  = prog.progress() if prog else 0.0
-            li   = channel_list_item(ch, prog, prg)
-            epg = guide_for_channel(guide,ch.tvg_id,
-                                    ch.extra.get('stream_id',''),now)
+            li = channel_list_item(ch)
+            epg = guide_for_channel(guide, ch.tvg_id,
+                                    ch.extra.get('stream_id',''), now)
+            if not (epg['now'] or epg['next']) and xc_epg:
+                epg = cached_short_guide(xc_epg, ch.extra.get('stream_id',''), now)
             from epg_views import programme_plot
             li.setInfo('video', {'title':ch.name, 'plot':programme_plot(epg),
                                  'mediatype':'video'})
@@ -2368,4 +2370,6 @@ class Router:
             'fanart':    ADDON_FANART,
         })
         li.setInfo('video', {'title': label, 'plot': plot or label})
+        if not is_folder:
+            li.setProperty('IsPlayable', 'true')
         xbmcplugin.addDirectoryItem(self._handle, url, li, isFolder=is_folder)

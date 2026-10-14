@@ -182,8 +182,9 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self.heading = xbmcgui.ControlLabel(32, 25, sidebar-48, 55, 'XtreamMate', 'font16', '0xFFFFFFFF')
         self.sub = xbmcgui.ControlLabel(32, 82, sidebar-48, 40, '', 'font13', '0xFFE3C5FF')
         self.control = xbmcgui.ControlList(32, 135, sidebar-58, height-205,
-            font='font13', textColor='0xFFFFFFFF', selectedColor='0xFFFFC46E',
-            itemHeight=46, space=3)
+            font='font13', textColor='0xFFFFFFFF', selectedColor='0xFFFFC46E')
+        self.control.setItemHeight(46)
+        self.control.setSpace(3)
         self.footer = xbmcgui.ControlLabel(32, height-65, sidebar-40, 48, '', 'font12', '0xFFD3D7E2')
         self.osd_bg = xbmcgui.ControlImage(0, height-165, width, 165, image)
         self.osd_title = xbmcgui.ControlLabel(26, height-155, width-50, 38, '', 'font13', '0xFFFFFFFF')

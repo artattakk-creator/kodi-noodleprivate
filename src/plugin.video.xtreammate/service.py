@@ -151,6 +151,7 @@ class IPTVMasterService(xbmc.Monitor):
                         self._last_command_nonce = cmd['nonce']
                         xbmcgui.Window(10000).clearProperty(COMMAND_KEY)
                         self._overlay.handle_command(cmd['action'])
+                        xbmcgui.Window(10000).setProperty('XtreamMate.LastHandledKey', cmd['action'])
             except Exception as exc:
                 error('XtreamMate TV navigation unavailable: {}'.format(type(exc).__name__))
             self.waitForAbort(0.2)

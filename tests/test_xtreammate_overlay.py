@@ -14,6 +14,8 @@ class UIControl:
             if unexpected:raise TypeError('invalid Kodi ControlList kwargs '+str(unexpected))
         self.labels=[];self.selected=0;self.id=id(self)
     def setVisible(self,v):pass
+    def setItemHeight(self,v):self.itemHeight=v
+    def setSpace(self,v):self.space=v
     def setLabel(self,label):pass
     def reset(self):self.labels=[]
     def addItems(self,values):self.labels=list(values)
