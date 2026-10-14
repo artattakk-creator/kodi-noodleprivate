@@ -27,7 +27,8 @@ def guide_for_channel(cache, epg_id='', stream_id='', now=None):
     if not isinstance(cache, dict):
         return result
     ts = int(time.time() if now is None else now)
-    events = _find_events(cache, (epg_id, stream_id))
+    # A manually mapped Xtream stream ID must override the provider's guide ID.
+    events = _find_events(cache, (stream_id, epg_id))
     valid = []
     for e in events:
         if not isinstance(e, dict):

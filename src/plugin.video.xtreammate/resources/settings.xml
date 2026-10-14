@@ -64,6 +64,9 @@
              values="32229" default="0"/>
   </category>
   <category label="32230">
+    <setting id="epg_sources_manager" type="action"
+             label="XtreamMate: EPG-Quellen und Senderzuordnung"
+             action="RunPlugin(plugin://plugin.video.xtreammate/?action=epg_sources)"/>
     <setting id="epg_enabled"         type="bool"   label="32236" default="true"/>
     <setting id="epg_lines"           type="slider" label="32237" default="3"    range="0,1,5"/>
     <setting id="epg_auto_refresh"    type="bool"   label="32231" default="true"/>

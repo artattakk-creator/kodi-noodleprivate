@@ -1,4 +1,4 @@
-# XtreamMate 0.1.6 – Kodi test version
+# XtreamMate 0.1.7 – Kodi test version
 
 This is an independent Kodi add-on based on mr-evil1 TiViMate Kodi 2026.06.12.1 (GPL v2), with an original GS Media visual identity and new add-on ID `plugin.video.xtreammate`.
 
@@ -101,3 +101,21 @@ must be tested on the actual Kodi box.
   Missing short EPG entries are preloaded asynchronously for up to 24 visible
   channels per page (maximum 3 concurrent requests). No synchronous wait.
 - Kodi profile, portal credentials and selected start channel are retained.
+
+## 0.1.7 – XMLTV EPG source management (Android/Kodi)
+- New EPG-Verwaltung from the portal home page and from Kodi add-on EPG settings.
+- Add and name multiple HTTP(S) XMLTV feeds or pick a local XML/XML.GZ
+  file with Kodi's native file browser (including permitted NAS shares).
+- Enable/disable, remove, and reorder external feeds. Later enabled sources
+  take precedence when the same XMLTV channel ID appears more than once.
+- Built-in Xtream XMLTV remains the fallback. A failing custom feed does not
+  delete the working provider guide.
+- Map Xtream stream IDs to XMLTV channel IDs manually. Saved assignments
+  survive updates and the same cached EPG becomes available in Live-TV and
+  skin widgets. Fetch/update happens in a background thread.
+- Kodi file permissions and Android storage access are device dependent.
+  Use local files or accessible Kodi network shares where possible.
+- URLs and paths may contain private access tokens and remain in the local
+  add-on profile. Avoid sharing this profile or its backups publicly.
+- The 0.1.6 playback and remote-control fixes are retained. Custom Android
+  remote-key capture/configuration requires a separate on-device test.

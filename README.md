@@ -165,3 +165,12 @@ An Xtream portal can store a startup group and startup station, with optional au
 
 ## XtreamMate 0.1.3 catalog acceleration
 Live group overlays now rely on a locally stored catalog, while a Kodi background worker refreshes Xtream Live, VOD and Series indexes. Individual category views filter the cached full catalog instead of issuing new per-category requests. A first import still needs the provider server; no local media is downloaded. Old portal settings remain untouched.
+
+ 
+## XtreamMate 0.1.7 EPG source management
+XtreamMate now supports multiple user-defined XMLTV URL and file sources,
+live enable/disable and ordering, manual Xtream stream-ID to XMLTV channel-ID
+mapping, and asynchronous EPG refresh. Use the portal home "EPG verwalten"
+entry or the EPG action in Kodi add-on settings. Native Xtream XMLTV remains
+the baseline, while custom sources can override matching IDs. Android uses
+Kodi's platform file picker and Kodi VFS permissions.

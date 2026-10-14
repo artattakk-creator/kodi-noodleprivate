@@ -814,7 +814,10 @@ class Router:
         from epg_views import guide_for_channel, cached_short_guide, prefetch_short_guides
         guide = load_cache(p['id'])
         xc_epg = self._xc(p) if ptype == 'xtream' else None
+        manual_epg = {}
         if xc_epg:
+            from epg_sources import configuration
+            manual_epg = configuration(p['id'])['mappings']
             prefetch_short_guides(p, chunk)
         now = time.time()
         for ch in chunk:
@@ -840,12 +843,14 @@ class Router:
                                      url=ch.url, name=ch.name, logo=ch.logo)
                 cu_action = 'catchup_list'
 
+            sid = str(ch.extra.get('stream_id', ''))
+            epg_link_id = sid if sid in manual_epg else (ch.tvg_id or sid)
             cm = [
                 (('Remove from Favourites' if is_favourite(ch.url)
                   else 'Add to Favourites'),
                  f'RunPlugin({self.url(action="toggle_favourite", url=ch.url, name=ch.name, logo=ch.logo, group=ch.group)})'),
                 ('EPG',
-                 f'Container.Update({self.url(action="epg_channel", pid=p["id"], tvg_id=ch.tvg_id, name=ch.name)})'),
+                 f'Container.Update({self.url(action="epg_channel", pid=p["id"], tvg_id=epg_link_id, name=ch.name)})'),
             ]
             if ch.catchup or ch.catchup_days:
                 cm.append((_L(32009),

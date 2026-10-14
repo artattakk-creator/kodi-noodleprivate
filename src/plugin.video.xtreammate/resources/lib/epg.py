@@ -449,6 +449,17 @@ def _refresh_portal_epg(portal_id, p, force=False):
                          name=f'epg_short_{portal_id}').start()
         return {}
 
+    # Preserve native Xtream/M3U/STB EPG, then overlay configured XMLTV feeds.
+    # Each feed is optional: a failed remote URL never deletes working guide data.
+    try:
+        from epg_sources import merge_sources
+        programmes, loaded, failed = merge_sources(
+            portal_id, programmes, parse_xmltv)
+        if loaded or failed:
+            info('[EPG] external feeds loaded={} failed={}'.format(loaded, failed))
+    except Exception as exc:
+        error('[EPG] external source manager failed: {}'.format(type(exc).__name__))
+
     if programmes:
         _save_disk(portal_id, programmes)
         _mem_set(portal_id, programmes)
