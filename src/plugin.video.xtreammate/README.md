@@ -199,3 +199,25 @@ Die angezeigte Bezeichnung wurde von XtreamMate in **XCMate** geändert. Kodi-Ad
    dürfen dort nicht vom XCMate-Player ersetzt werden.
 
 **Kein Android-PASS** ohne protokolliertes tatsächliches Ergebnis.
+
+## 0.1.13 – Hintergrunddienst-Prüfung ohne Video
+
+Das Xtream-Portalmenü bietet nun **TV-Fernbedienung: Diagnose** und
+**XCMate-Hintergrunddienst prüfen / manuell starten**. Eine neue Dienst-
+Heartbeatmeldung (Status, Alter, Zähler, Fehlerklasse) wird auch bei
+gestopptem TV angezeigt. Die letzte Live-/Overlay-Beobachtung bleibt nach
+Ende des Streams abrufbar.
+
+Ist kein frisches Lebenszeichen vorhanden, kann Kodi gebeten werden, die
+bereits zum Add-on gehörende `service.py` über `RunScript` erneut zu
+starten. Bereits aktive Dienste und kurz nacheinander wiederholte Versuche
+werden abgefangen. Die Aktion verändert weder Portale, EPG noch die
+Fernbedienungsprofile. Ein akzeptierter Startauftrag bedeutet **nicht**,
+dass Kodi den Dienst tatsächlich ausführen konnte.
+
+**Android-Test:** Kodi nach Update vollständig neu starten; XCMate-Menü →
+Dienst prüfen (ohne Stream), Testsender starten, bei fehlender Steuerung
+zurück ins Menü → Diagnose öffnen. Nur wenn der Dienststatus tatsächlich
+„LÄUFT“ anzeigt, ist sein Hintergrundloop bestätigt. Die praktische
+Fernbedienungsfunktion ist damit noch nicht nachgewiesen.
+
