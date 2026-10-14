@@ -1,6 +1,6 @@
 # XCMate – vollständiges technisches Übergabedokument
 
-**Stand:** 14.10.2026 · Bezug: XCMate **0.1.10** · GS Media Repository **1.7.0**  
+**Stand:** 14.10.2026 · Bezug: XCMate **0.1.11** · GS Media Repository **1.7.0**  
 **Repo:** https://github.com/artattakk-creator/kodi-noodleprivate  
 **Branch:** `main` · **Display-Name:** XCMate · **Add-on-ID unverändert:** `plugin.video.xtreammate`.
 
@@ -25,7 +25,7 @@ Kodi bleibt Video-/Audio-Engine; kein neuer Decoder. XCMate implementiert Player
 - `src/plugin.video.xtreammate/resources/lib/metadata_views.py` und `latest_media.py`: Film-/Serieninformationen, Trailer und neue Inhalte.
 - `src/plugin.video.xtreammate/resources/settings.xml`: Einstellungen.
 - `.github/workflows/publish.yml`, `tools/build_repository.py`: CI-Tests, Paketgenerierung, addons.xml.
-- Distribution: `plugin.video.xtreammate/plugin.video.xtreammate-0.1.10.zip`; Katalog: `addons.xml`, Prüfsumme: `addons.xml.md5`.
+- Distribution: `plugin.video.xtreammate/plugin.video.xtreammate-0.1.11.zip`; Katalog: `addons.xml`, Prüfsumme: `addons.xml.md5`.
 
 **Release-Regel:** Quellcode → Tests → erfolgreicher GitHub Action Publish-Build → ZIP/Katalog prüfen → erst danach öffentlich als veröffentlicht melden. Repository-Version bleibt 1.7.0, solange das Repository-Add-on selbst nicht geändert werden muss.
 
@@ -136,3 +136,24 @@ Private Kontodaten, Gerätename und Aufnahmepfad **nicht** ins GitHub übernomme
 Kodi-Hardware-/Systemeinstellungen (Decoder, AFR, Passthrough) nicht ungefragt
 global ändern. Eltern-PIN nur sicher implementieren, nicht kosmetisch. P0
 Startsender/Android-Remote und Release-Version 0.1.10 bleiben unverändert.
+
+## 12. P0 XCMate 0.1.11 veröffentlicht – Android Fernbedienung priorisiert (14.10.2026)
+
+- Pull Request [#4](https://github.com/artattakk-creator/kodi-noodleprivate/pull/4) erfolgreich getestet und gemergt.
+- PR-CI erfolgreich: [Run 38565230410](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/38565230410).
+- Release-CI erfolgreich: [Run 38565339149](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/38565339149).
+- In `main` veröffentlicht: `plugin.video.xtreammate/plugin.video.xtreammate-0.1.11.zip`, Datei mit 209252 Bytes; `addons.xml` enthält XCMate 0.1.11. `addons.xml.md5` stimmt unabhängig berechnet mit dem Katalog überein (`f9aa9e4f7d8ae26a0f1af4a3ada46316`). GS Media Repository-Add-on unverändert 1.7.0, alte 0.1.10-ZIP vorhanden.
+- XCMate-verwaltete FullscreenVideo-Keymap wird beim ersten gültigen **XCMate-Xtream-Live-TV-Start** automatisch eingerichtet und bei Bedarf aktualisiert. Fremde Dateien werden nicht überschrieben, explizites Deaktivieren bleibt erhalten. Außerhalb aktiver XCMate-Live-Sessions routet die Bridge die Tasten zurück an Kodi.
+- Der Kodi-`WindowDialog` verarbeitet zusätzlich native Android-Actions. Links Sender, erneut Links Gruppen, Hoch/Runter Senderwechsel (Hoch nächster/Runter vorheriger), Rechts vorheriger Sender, OK eigene Player-Leiste, Menü eigene Zusatzleiste, Zurück EPG/Schließen. Alte Kodi-eigene OSD-Öffnung wird damit für die übernommenen Tasten innerhalb XCMate umgangen. Volumentasten und andere Add-ons sollen unbeeinflusst bleiben.
+- EPG in 0.1.11 zunächst cache-basierte Fokusliste; das vollständige horizontale TiviMate-EPG ist **nicht** implementiert. Langes Drücken hängt vom Android-KeyEvent-/Kodi-Keymap-Support ab.
+- Diagnostics: `XtreamMate.NativeActionCount`, `XtreamMate.KeymapStatus`, `XtreamMate.OverlayStatus`, `XtreamMate.LastRemoteKey`, `XtreamMate.LastHandledKey`.
+- **P0 noch nicht am Gerät bestätigt:** Alle API-/Mock-Tests und CI-Builds sind grün, echte Android-Box mit Titan BINGIE MOD steht aus. Vor dem Test **Kodi komplett neu starten**, damit der neue Kodi-Service geladen wird.
+- Verbindliche Datenschutz-/Profilregel: keine Portal-/EPG-/Remote-Zugangsdaten oder Zuordnungen gelöscht oder migriert. Add-on-ID bleibt `plugin.video.xtreammate`.
+
+### Prüfschritte auf der Android-Box
+
+1. Reguläres Update im GS Media Repository auf XCMate **0.1.11**; Kodi vollständig beenden und neu starten.
+2. Xtream-Live-TV starten (manuell und Auto-Startsender). **OK** muss die XCMate-Leiste zeigen, nicht Kodi-OSD.
+3. Links → Sender, Links → Gruppen, Rechts → Senderliste, Hoch → nächster Sender, Runter → vorheriger, Rechts → zuletzt geschalteter Sender; Menü → XCMate-Zusatzfunktionen.
+4. Zurück/Guide → EPG/Zurück, Stopp/Pause kontrollieren. Fremdes Kodi-Video starten und standardmäßige Fernbedienung dort prüfen.
+5. Diagnose anzeigen und anonymisierte `kodi.log`-Fehlermeldungen nachreichen. Keine Android-Pass-Aussage ohne Protokoll.
