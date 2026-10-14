@@ -36,3 +36,28 @@ Kodi-Version und Android-Version erfragen, aber keine Zugangsdaten. Menü `TV-Fe
 ## Pflege dieses Projekts
 
 Bei jeder Änderung: Bug und verifizierte Ursache, Dateien, Tests, GitHub Commit-SHA, Action-Run-ID, installierbares ZIP, noch offene Gerätetests und neues nächstes To-do hier nachtragen. Einen neuen Chat stets mit `NEW_CHAT_COPY_BLOCK_DE.md` beginnen.
+
+## 14.10.2026 – P0-Untersuchung / Kandidat 0.1.10
+
+**Quellcodebefund (Android-Log noch nicht verfügbar):** Das bisherige
+`play_start` stand als Kodi-`IsPlayable`-Verzeichniseintrag zur Verfügung,
+verwendete jedoch direkt `xbmc.Player().play()` statt
+`xbmcplugin.setResolvedUrl()`. Beim über `RunPlugin` gestarteten Autoplay
+ist dagegen direkte Wiedergabe erforderlich. Beide Kontexte sind im Kandidaten
+0.1.10 getrennt (`play_start` / `play_start_direct`). Damit wird eine
+plausible Ursache für leere Verzeichnisansichten behoben; der konkrete Fehler
+am Zielgerät muss noch durch anonymisierte Kodi-Logs nachgewiesen werden.
+
+**Fernbedienung:** OK führt in der geöffneten Player-Leiste nun die fokussierte
+Aktion aus. Ein expliziter Knopf „Weitere“ öffnet Zusatzoptionen. Zapping
+übergibt den von `build_playable_item` aufbereiteten Pfad an den Player.
+Player-Logmeldungen enthalten keine unmaskierte Stream-URL mehr.
+
+**Tests:** `tests/test_xcmate_p0_playback.py`, angepasste Android-/OSD-Tests;
+PR-Workflow ist auf Build/Test ohne Release-Push ausgelegt. Im Releasebericht
+Commit, CI-Run, ZIP/Index und Android-Ergebnis separat angeben.
+
+**Offen:** Echtes Android-Gerät mit Titan BINGIE MOD; Startsender manuell und
+automatisch je zweimal; Links/Links, Hoch/Runter, OK/Pause, „Weitere“, EPG,
+Zurück, Stop, Wiedereinstieg; anonymisierte Kodi-Logzeilen und Diagnosewerte.
+Kein Device-Pass ohne protokollierten Nutzergerätetest.

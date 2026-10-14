@@ -1,4 +1,4 @@
-# XCMate 0.1.9 – Kodi test version
+# XCMate 0.1.10 – Android P0 test candidate
 
 This is an independent Kodi add-on based on mr-evil1 TiViMate Kodi 2026.06.12.1 (GPL v2), with an original GS Media visual identity and new add-on ID `plugin.video.xtreammate`.
 
@@ -140,3 +140,17 @@ must be tested on the actual Kodi box.
 
 ## 0.1.9 – Rebranding zu XCMate
 Die angezeigte Bezeichnung wurde von XtreamMate in **XCMate** geändert. Kodi-Add-on-ID `plugin.video.xtreammate`, ZIP-Namen, Benutzerprofil und Kodi-Fenstereigenschaften behalten absichtlich die bisherigen technischen Schlüssel, damit Updates vorhandene Konfigurationen und Daten nicht verlieren.
+
+## 0.1.10 – Android P0 playback and OSD candidate (device verification pending)
+
+- Separate the Kodi *playable* Startsender menu entry (setResolvedUrl) from
+  autoplay launched through RunPlugin (direct xbmc.Player.play).
+  This avoids leaving Kodi's playable plugin request unresolved.
+- In the on-video TV control bar, OK now executes the focused command.
+  A dedicated "Weitere" control opens audio/video/EPG/setting options.
+- Channel changes pass the prepared ListItem path, including Kodi headers,
+  to the player. Direct stream URLs are no longer emitted by debug().
+- New mock-Kodi API tests and PR preflight builds verify the two paths.
+- **NOT Android-verified:** Test on the actual Android box with Titan BINGIE
+  MOD before marking startup, remote, EPG or overlay issues resolved.
+- No portal/credentials/cache/EPG/userdata migration or deletion.

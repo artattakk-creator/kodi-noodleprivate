@@ -62,3 +62,16 @@ Kodi bleibt Video-/Audio-Engine; kein neuer Decoder. XCMate implementiert Player
 ## 6. Übergabe-Workflow für einen neuen Chat
 
 Neuen Chat mit `NEW_CHAT_COPY_BLOCK_DE.md` beginnen. Zuerst aktuellen GitHub-`main`, `addon.xml`, ZIP, `addons.xml`, aktuellen Actions-Build und diese Dokumente lesen. Ein bereits besprochener Ansatz ist keine fertige Implementierung. Für jede neue Funktion erst Definition of Done + Tests, dann Code und Release. Neue Entscheidungen, Fehlerbefunde und Versionen hier nachtragen.
+
+## 7. Entwicklung am 14.10.2026 – Kandidat 0.1.10
+
+Ausgehend von `main` f74e647a4e15415f808d065790e88db45b473b21
+wurde der separate Entwicklungsbranch
+`fix/xcmate-0.1.10-android-p0` für die P0-Fehler angelegt.
+`main` / Repository 1.7.0 bleiben bis zur erfolgreichen Veröffentlichung
+die gültige Release-Quelle. Startsender-Menü wird über
+`xbmcplugin.setResolvedUrl` aufgelöst, Autoplay über `RunPlugin`
+mit separater direkter Player-Routine gestartet. OSD-OK löst die jeweils
+markierte Funktion aus; „Weitere“ ist explizit erreichbar.
+Automatisierte Kodi-API-Simulation ergänzt. **Ein Android-Erfolg ist
+noch nicht nachgewiesen.** Einzelheiten: `ROADMAP_AND_QA_DE.md`.

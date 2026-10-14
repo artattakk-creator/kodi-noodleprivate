@@ -54,16 +54,21 @@ class NativeRemoteTests(unittest.TestCase):
         Path(self.profile.path()).write_text('{"epg": "not a number"}',encoding='utf-8')
         self.assertEqual(self.profile.load()['epg'],117)
 
-    def test_startsender_uses_direct_player_not_plugin_url_resolution(self):
+    def test_startsender_uses_separate_kodi_playback_modes(self):
         source=(LIB/'main.py').read_text(encoding='utf-8')
-        start=source[source.index('    def _play_start(self):'):
-                     source.index('    def _groups_manager(self):')]
-        self.assertIn('xbmc.Player().play(item.getPath(), item)',start)
-        self.assertNotIn('xbmcplugin.setResolvedUrl(',start)
-        self.assertIn("xc.get_cached_catalog('get_live_streams')",start)
+        common=source[source.index('    def _startup_playable(self):'):
+                      source.index('    def _groups_manager(self):')]
+        manual=common[common.index('    def _play_start(self):'):
+                      common.index('    def _play_start_direct(self):')]
+        direct=common[common.index('    def _play_start_direct(self):'):]
+        self.assertIn('xbmcplugin.setResolvedUrl(self._handle, True, item)',manual)
+        self.assertNotIn('xbmc.Player().play(',manual)
+        self.assertIn('xbmc.Player().play(item.getPath(), item)',direct)
+        self.assertNotIn('xbmcplugin.setResolvedUrl(',direct)
+        self.assertIn("xc.get_cached_catalog('get_live_streams')",common)
         automatic=source[source.index('    def _maybe_autoplay_start('):
                          source.index('    def _portal_home(',source.index('    def _maybe_autoplay_start('))]
-        self.assertIn("xbmc.executebuiltin('RunPlugin({})'",automatic)
+        self.assertIn("self.url(action='play_start_direct'",automatic)
         self.assertNotIn("xbmc.executebuiltin('PlayMedia(",automatic)
 
     def test_overlay_retains_focus_when_hidden_and_uses_mapped_actions(self):
