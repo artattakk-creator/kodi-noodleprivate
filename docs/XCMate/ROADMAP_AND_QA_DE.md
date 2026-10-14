@@ -1,6 +1,6 @@
 # XCMate – Roadmap, Bugliste und Release-Checkliste
 
-**Statusdatum:** 14.10.2026 · letzter geprüfter veröffentlichter Stand: 0.1.9.  
+**Statusdatum:** 14.10.2026 · letzter geprüfter veröffentlichter Stand: 0.1.10.  
 Labels: [RELEASED] in GitHub gebaut; [ON-DEVICE OPEN] Nutzergerätetest fehlt/negativ; [PLANNED] nur spezifiziert.
 
 ## Priorisierung
