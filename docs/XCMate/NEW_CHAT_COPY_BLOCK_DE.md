@@ -24,3 +24,12 @@ Wir setzen mein Kodi-/IPTV-Projekt **XCMate** (GS Media) fort. Arbeite direkt im
 Bitte beginne mit einem kurzen GitHub-Statuscheck und schlage den nächsten klar abgegrenzten Schritt vor.
 
 **Neu – verifizierte TiviMate-Fernbedienung (14.10.2026):** 10 Nutzerfotos aus TiviMate 5.3.3 liegen vor (Player- und EPG-Zuordnungen inkl. Langdruck sowie Suchoptionen). **Verbindliche Referenz**: `docs/XCMate/TIVIMATE_REMOTE_REFERENCE_2026-10-14_DE.md`. Der Draft-PR #3 mit `tivimate_keys.py` und Tests hat grünes GitHub-CI, ist aber **noch nicht in Kodi aktiviert oder als Add-on-Version veröffentlicht**. Weitere Einstellungsfotos werden nach und nach geliefert und müssen ergänzt werden. Funktional TiviMate-ähnlich nachbauen, keine proprietären Assets/Quellen übernehmen. Die Stabilisierung von Startsender und Android-Fernbedienung (P0) bleibt offen.
+
+**Weitere zehn Bilder (14.10.2026):** TV-/EPG-/Film-Ansichten und die
+Player-Farbtasten (Rot/Grün EPG, Gelb Info, Blau Einstellungen) wurden
+bildgenau erfasst in
+`docs/XCMate/TIVIMATE_UI_SCREEN_REFERENCE_2026-10-14_DE.md`.
+Die Bedienungsreferenz ist **kein** Kodi-Screenshot-Nachbau und wurde
+noch nicht aufs Android-Gerät ausgerollt. Weitere Bilder ergänzen;
+das XCMate-eigene Design-System und das profilwahrende Vorgehen bleiben
+verbindlich.
