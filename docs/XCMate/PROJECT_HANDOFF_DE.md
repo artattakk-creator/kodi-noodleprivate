@@ -1,6 +1,6 @@
 # XCMate – vollständiges technisches Übergabedokument
 
-**Stand:** 14.10.2026 · Bezug: XCMate **0.1.9** · GS Media Repository **1.7.0**  
+**Stand:** 14.10.2026 · Bezug: XCMate **0.1.10** · GS Media Repository **1.7.0**  
 **Repo:** https://github.com/artattakk-creator/kodi-noodleprivate  
 **Branch:** `main` · **Display-Name:** XCMate · **Add-on-ID unverändert:** `plugin.video.xtreammate`.
 
@@ -25,7 +25,7 @@ Kodi bleibt Video-/Audio-Engine; kein neuer Decoder. XCMate implementiert Player
 - `src/plugin.video.xtreammate/resources/lib/metadata_views.py` und `latest_media.py`: Film-/Serieninformationen, Trailer und neue Inhalte.
 - `src/plugin.video.xtreammate/resources/settings.xml`: Einstellungen.
 - `.github/workflows/publish.yml`, `tools/build_repository.py`: CI-Tests, Paketgenerierung, addons.xml.
-- Distribution: `plugin.video.xtreammate/plugin.video.xtreammate-0.1.9.zip`; Katalog: `addons.xml`, Prüfsumme: `addons.xml.md5`.
+- Distribution: `plugin.video.xtreammate/plugin.video.xtreammate-0.1.10.zip`; Katalog: `addons.xml`, Prüfsumme: `addons.xml.md5`.
 
 **Release-Regel:** Quellcode → Tests → erfolgreicher GitHub Action Publish-Build → ZIP/Katalog prüfen → erst danach öffentlich als veröffentlicht melden. Repository-Version bleibt 1.7.0, solange das Repository-Add-on selbst nicht geändert werden muss.
 
