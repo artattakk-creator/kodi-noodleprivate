@@ -121,3 +121,24 @@ auf Android belegen. P0 Startsender/Remote bleibt vorrangig.
 - Auf einem Foto ist eine teilweise lesbare EPG-URL mit Zugangsdaten zu sehen:
   im öffentlichen GitHub niemals Domain, Benutzernamen, URL oder das
   Originalbild veröffentlichen. P0 Android-Fernbedienung bleibt Vorrang.
+
+## P1 – Vierte Foto-Serie: Wiedergabe, Kinder-PIN, Suche, Aufnahme, VOD, Über (14.10.2026)
+
+- Vollständiges Foto-Inventar:
+  [`TIVIMATE_SETTINGS_FOURTH_SERIES_2026-10-14_DE.md`](TIVIMATE_SETTINGS_FOURTH_SERIES_2026-10-14_DE.md);
+  maschinenlesbar in [`TIVIMATE_SETTINGS_CONTRACT_2026-10-14.json`](TIVIMATE_SETTINGS_CONTRACT_2026-10-14.json).
+- Untermenüs erfasst: Wiedergabe, Sonstiges → Suche/Erinnerungen/Aufnahme/VOD,
+  Kindersicherung und Über.
+- Systemabhängige Player-Punkte (Puffer/Decoder/AFR/Passthrough) dürfen
+  Kodi- oder Android-weite Einstellungen nicht unbemerkt ändern.
+- Kindersicherung benötigt sichere PIN-Prüfung, getrennte Zugriffsregeln
+  pro Untermenü, Throttling und nachvollziehbare Akzeptanztests.
+- Aufnahmen: zeitlicher Vor-/Nachlauf, Kodi-kompatibler Speicherpfad,
+  Rechte und Gerätesupport vor Release prüfen.
+- VOD: nächste Folge automatisch spielen ist durch Foto als Einstellung
+  bestätigt, der beobachtete Schalterwert bleibt **unklar**. Nicht mit bereits
+  implementierter Serien-Fortsetzung verwechseln.
+- Konto, Gerät und realer Aufnahmepfad wurden aus öffentlichen Artefakten entfernt.
+  Telemetrie nur nach freiwilliger Aktivierung; fremde AGB/Abos nicht kopieren.
+- **Unverändert offen**: P0 Startsender und Fernbedienungssteuerung auf Android,
+  danach eigenständige UI-Implementierung und differenzierte Kodi-/Geräte-QA.
