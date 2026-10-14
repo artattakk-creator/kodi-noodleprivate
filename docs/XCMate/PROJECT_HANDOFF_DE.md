@@ -90,3 +90,25 @@ Weitere zehn Nutzerfotos dokumentieren Player-Farbtasten und neun konkret sichtb
 [`TIVIMATE_UI_SCREEN_REFERENCE_2026-10-14_DE.md`](TIVIMATE_UI_SCREEN_REFERENCE_2026-10-14_DE.md).
 Player-Farbtasten: Rot/Grün = EPG-Overlay, Gelb = Info, Blau = Einstellungen; anders als im EPG.
 Die pure-Python-Mappingdatei und Tests im Draft-PR #3 wurden angepasst. Weder EPG-Raster noch Vorschau noch neue Tastensteuerung sind bereits produktiv in XCMate aktiviert; XCMate 0.1.10 bleibt der Release.
+
+## 10. Dritte Nutzer-Fotoserie: Einstellungen und Anbieter/EPG (14.10.2026)
+
+Weitere zehn Fotos zeigen den Einstellungsdialog mit den neun Rubriken Allgemein,
+Wiedergabelisten, EPG, Optik, Wiedergabe, Fernbedienung, Kindersicherung,
+Sonstiges, Über. Details, nummerierter Bildindex und beobachtete Zustände:
+[`TIVIMATE_SETTINGS_SCREEN_REFERENCE_2026-10-14_DE.md`](TIVIMATE_SETTINGS_SCREEN_REFERENCE_2026-10-14_DE.md).
+Datensparsamer, maschinenlesbarer Dialogvertrag:
+[`TIVIMATE_SETTINGS_CONTRACT_2026-10-14.json`](TIVIMATE_SETTINGS_CONTRACT_2026-10-14.json).
+
+Fotografiert: Allgemein Autostart aus, Wake aus, letzter Sender beim Start ein,
+Home-PiP aus, Exit-Doppelbestätigung aus; eigene Sicherungs-/Wiederherstellungsaktionen.
+Playlist-Verwaltung pro Portal mit Name, Logo-Priorität, EPG-Zuordnungen, Archiv,
+Xtream-Parametern, Gruppen, 24-h-Refresh. EPG: 7 Tage vergangenes Programm,
+Programmbeschreibung speichern ein, 24-h-Refresh, Start-/Playlist-Trigger aus,
+Quellenverwaltung/Status. Optik: Unterrubriken EPG/Player/Gruppen/Logos, Sprache
+System, Schrift Mittel, beobachtet Dunkel/Blau und 50 % Transparenz.
+
+**Datenschutz:** Die Fotos zeigen teilweise eine private XMLTV-URL mit
+Benutzerkennung; diese, Playlistname und Zugangsdaten sind **nicht** in GitHub
+übernommen. Keine Fotos veröffentlichen. XCMate-Vorgabe bleibt **Slate-Grau**
+und unveränderte bestehende Portal-/EPG-Daten. **Noch kein Kodi-Feature-Release**.
