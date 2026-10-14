@@ -211,3 +211,13 @@ und `XCMate TV navigation unavailable` anonymisiert auswerten.
 - ZIP: `plugin.video.xtreammate/plugin.video.xtreammate-0.1.12.zip`, Größe 209791 Bytes; `addons.xml` meldet 0.1.12, MD5-Datei vorhanden (`9dd6666e3daf6f8edfcee95ba161fdab`).
 - GS-Media-Repository 1.7.0, Add-on-ID und Benutzerdateien unverändert.
 - **P0 Android-Gerätetest weiterhin offen:** Senderstart bestätigt in 0.1.11, Fernbedienungsübernahme nicht. In 0.1.12 prüft ein Hardwaretest, ob die neue Schonfrist das Problem tatsächlich löst.
+
+## 14.10.2026 – P0 Offline-Diagnose des Hintergrunddienstes (0.1.13)
+
+Nach dem realen Android-Foto mit Keymap AKTIV, aber keinem Video und keinem XCMate-Overlay (Diagnoseaufnahme nach Wiedergabe) wurde **0.1.13** als Service-Heartbeat-Release gebaut. CI PR #6 und Hauptveröffentlichung waren grün; ZIP und Katalog-Version 0.1.13 sind vorhanden.
+
+**Neu zu testen:** Dienststatus LÄUFT auch ohne Videowiedergabe; letztes Lebenszeichen zeitlich aktuell; Loopzähler wächst beim Wiederöffnen der Diagnose; nach gestopptem Teststream ist die letzte Video-/Session-/Overlay-Beobachtung weiterhin sichtbar; Startbutton setzt nur bei nicht aktivem Dienst einen einmaligen `RunScript`-Auftrag ab und zeigt Erfolg nur bei frischem Heartbeat; wiederholtes Anklicken erzeugt keinen unnötigen Zweitstart. Keine Portaldaten verändern.
+
+**Offen:** Kodi/Android-Host-Support für `RunScript`-Recovery tatsächlich testen; ob das XCMate-`WindowDialog` den Fokus erhält und Android-Events ankommen; Startsender und Kodi-Player-OSD-Übernahme auf Gerät. Die TiviMate-Navigation als vollständige GUI bleibt nach P0.
+
+**Referenzen:** `src/plugin.video.xtreammate/resources/lib/service_health.py`, `tests/test_xcmate_service_health_p0.py`, PR #6, GitHub Release Actions 38579669527.
