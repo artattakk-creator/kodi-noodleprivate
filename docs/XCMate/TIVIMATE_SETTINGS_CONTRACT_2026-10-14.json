@@ -412,18 +412,405 @@
     }
   ],
   "unseen_sections": [
-    "playback",
     "remote_additional",
-    "parental",
-    "misc",
-    "about",
-    "appearance_submenus"
+    "appearance_submenus",
+    "playback_skip_steps_values",
+    "misc_additional_submenus"
   ],
   "compatibility_notes": [
     "Photo values are observed configuration, not new defaults for existing Kodi profiles.",
     "Never persist/redact-delete existing portal, credentials, EPG mappings or remote key files.",
     "TiviMate Android boot, sleep and Home PiP capabilities cannot be promised from a Kodi add-on.",
     "Playlist source assignment is per portal. Existing source ordering remains unchanged.",
-    "Android P0 start-channel/remote verification is still pending."
+    "Android P0 start-channel/remote verification is still pending.",
+    "Playback buffers/hardware decoders/AFR/passthrough are Kodi system/host settings and must not be silently changed by the addon.",
+    "Parental control is security-sensitive: never implement a cosmetic-only PIN gate or store PINs as plaintext.",
+    "Dark switches in voice search, VOD autoplay and anonymous telemetry are indeterminate and remain null.",
+    "No TiviMate account, device name or Android recording path is committed."
+  ],
+  "fourth_series_reference": "TIVIMATE_SETTINGS_FOURTH_SERIES_2026-10-14_DE.md",
+  "fourth_series_observation": "Photo state only; unknown dark-switch values remain null, not inferred off/on.",
+  "playback": [
+    {
+      "id": "buffer_size",
+      "label": "Puffergröße",
+      "observed_value": "Klein",
+      "kind": "choice",
+      "capability": "kodi_player_compatibility",
+      "source_photo": "1000118384.jpg"
+    },
+    {
+      "id": "audio_decoder",
+      "label": "Audio Decoder",
+      "observed_value": "Hardware",
+      "kind": "choice",
+      "capability": "kodi_system_dependent",
+      "source_photo": "1000118384.jpg"
+    },
+    {
+      "id": "video_decoder",
+      "label": "Video Decoder",
+      "observed_value": "Hardware",
+      "kind": "choice",
+      "capability": "kodi_system_dependent",
+      "source_photo": "1000118384.jpg"
+    },
+    {
+      "id": "auto_frame_rate",
+      "label": "Automatische Anpassung der Framerate (AFR)",
+      "observed_value": "Aus",
+      "kind": "choice",
+      "capability": "kodi_system_dependent",
+      "source_photo": "1000118384.jpg"
+    },
+    {
+      "id": "surround_audio_default",
+      "label": "Wähle standardmäßig die Surround-Audiospur aus",
+      "observed_value": false,
+      "kind": "toggle",
+      "capability": "planned",
+      "source_photo": "1000118384.jpg"
+    },
+    {
+      "id": "audio_passthrough",
+      "label": "Audio-Passthrough",
+      "observed_value": false,
+      "kind": "toggle",
+      "capability": "kodi_system_dependent",
+      "source_photo": "1000118384.jpg"
+    },
+    {
+      "id": "external_player",
+      "label": "Externen Player nutzen",
+      "observed_value": "Nein",
+      "kind": "choice",
+      "capability": "integration_required",
+      "source_photo": "1000118384.jpg"
+    },
+    {
+      "id": "skip_steps",
+      "label": "Schritte überspringen",
+      "observed_value": null,
+      "kind": "submenu",
+      "capability": "planned",
+      "source_photo": "1000118384.jpg"
+    }
+  ],
+  "misc": {
+    "root": [
+      {
+        "id": "search_settings",
+        "label": "Suchen",
+        "observed_value": null,
+        "kind": "submenu",
+        "capability": "planned",
+        "source_photo": "1000118387.jpg"
+      },
+      {
+        "id": "reminders_settings",
+        "label": "Erinnerungen",
+        "observed_value": null,
+        "kind": "submenu",
+        "capability": "planned",
+        "source_photo": "1000118387.jpg"
+      },
+      {
+        "id": "recording_settings",
+        "label": "Aufnahme",
+        "observed_value": null,
+        "kind": "submenu",
+        "capability": "planned",
+        "source_photo": "1000118387.jpg"
+      },
+      {
+        "id": "vod_settings",
+        "label": "VOD",
+        "observed_value": null,
+        "kind": "submenu",
+        "capability": "planned",
+        "source_photo": "1000118387.jpg"
+      }
+    ],
+    "search": [
+      {
+        "id": "prefer_voice_search",
+        "label": "Sprachsuche bevorzugen",
+        "observed_value": null,
+        "kind": "ambiguous_toggle",
+        "capability": "android_host_dependent",
+        "source_photo": "1000118388.jpg",
+        "observation": "Dunkler Schalterknopf rechts; Ein/Aus anhand des Fotos nicht zuverlässig bestimmbar"
+      },
+      {
+        "id": "show_search_history",
+        "label": "Suchverlauf anzeigen",
+        "observed_value": true,
+        "kind": "toggle",
+        "capability": "planned",
+        "source_photo": "1000118388.jpg"
+      },
+      {
+        "id": "favourite_channels_first",
+        "label": "Lieblingssender zuerst anzeigen",
+        "observed_value": true,
+        "kind": "toggle",
+        "capability": "planned",
+        "source_photo": "1000118388.jpg"
+      },
+      {
+        "id": "show_past_programs_in_search",
+        "label": "Vergangene Sendungen anzeigen",
+        "observed_value": false,
+        "kind": "toggle",
+        "capability": "planned",
+        "source_photo": "1000118388.jpg"
+      },
+      {
+        "id": "stay_on_search_after_channel_change",
+        "label": "Bleibe auf dem Suchbildschirm, wenn du den Kanal wechselst",
+        "observed_value": false,
+        "kind": "toggle",
+        "capability": "planned",
+        "source_photo": "1000118388.jpg"
+      }
+    ],
+    "reminders": [
+      {
+        "id": "reminder_before_program_minutes",
+        "label": "Vor Programmstart erinnern (Minuten)",
+        "observed_value": 0,
+        "kind": "integer",
+        "capability": "planned",
+        "source_photo": "1000118389.jpg"
+      },
+      {
+        "id": "reminder_popup_timeout_seconds",
+        "label": "Popup-Timeout (Sekunden)",
+        "observed_value": 10,
+        "kind": "integer",
+        "capability": "planned",
+        "source_photo": "1000118389.jpg"
+      },
+      {
+        "id": "reminder_default_action",
+        "label": "Standardaktion",
+        "observed_value": "Anschauen",
+        "kind": "choice",
+        "capability": "planned",
+        "source_photo": "1000118389.jpg"
+      },
+      {
+        "id": "reminder_wake_from_sleep",
+        "label": "Wache aus dem Schlafmodus auf",
+        "observed_value": false,
+        "kind": "toggle",
+        "capability": "android_host_required",
+        "source_photo": "1000118389.jpg"
+      }
+    ],
+    "recording": [
+      {
+        "id": "recordings_directory",
+        "label": "Aufnahmeverzeichnis",
+        "observed_value": null,
+        "kind": "redacted_path",
+        "capability": "kodi_storage_compatibility",
+        "source_photo": "1000118390.jpg",
+        "observation": "Der konkrete Android-Aufnahmepfad ist bewusst nicht im Repository gespeichert"
+      },
+      {
+        "id": "record_before_minutes",
+        "label": "Beginn der Aufnahme vorher (Minuten)",
+        "observed_value": 0,
+        "kind": "integer",
+        "capability": "planned",
+        "source_photo": "1000118390.jpg"
+      },
+      {
+        "id": "record_after_minutes",
+        "label": "Aufnahme stoppen nach (Minuten)",
+        "observed_value": 0,
+        "kind": "integer",
+        "capability": "planned",
+        "source_photo": "1000118390.jpg"
+      }
+    ],
+    "vod": [
+      {
+        "id": "auto_play_next_episode",
+        "label": "Nächste Folge automatisch abspielen",
+        "observed_value": null,
+        "kind": "ambiguous_toggle",
+        "capability": "planned",
+        "source_photo": "1000118391.jpg",
+        "observation": "Dunkler Schalterknopf rechts: Aktivierungszustand aus dem Foto nicht eindeutig"
+      }
+    ]
+  },
+  "parental": [
+    {
+      "id": "parental_enabled",
+      "label": "Kindersicherung",
+      "observed_value": false,
+      "kind": "toggle",
+      "capability": "security_implementation_required",
+      "source_photo": "1000118385.jpg"
+    },
+    {
+      "id": "parental_change_pin",
+      "label": "PIN ändern",
+      "observed_value": null,
+      "kind": "action",
+      "capability": "security_implementation_required",
+      "source_photo": "1000118385.jpg"
+    },
+    {
+      "id": "parental_pin_input_method",
+      "label": "PIN Eingabemethode",
+      "observed_value": "Sammler",
+      "kind": "choice",
+      "capability": "security_implementation_required",
+      "source_photo": "1000118385.jpg"
+    },
+    {
+      "id": "parental_after_unlock",
+      "label": "Nach dem Entsperren ist keine PIN erforderlich",
+      "observed_value": "Immer erforderlich",
+      "kind": "choice",
+      "capability": "security_implementation_required",
+      "source_photo": "1000118385.jpg",
+      "observation": "Wortlaut/gewählter Wert fotografiert; Semantik vor Umsetzung am Gerät prüfen"
+    },
+    {
+      "id": "parental_channels_pin_not_required",
+      "label": "Nur für Sender nicht erforderlich",
+      "observed_value": false,
+      "kind": "toggle",
+      "capability": "security_implementation_required",
+      "source_photo": "1000118385.jpg"
+    },
+    {
+      "id": "parental_gate_settings",
+      "label": "PIN benötigt für: Einstellungen",
+      "observed_value": false,
+      "kind": "toggle",
+      "capability": "security_implementation_required",
+      "source_photo": "1000118386.jpg"
+    },
+    {
+      "id": "parental_gate_playlists",
+      "label": "PIN benötigt für: Einstellungen | Playlists",
+      "observed_value": false,
+      "kind": "toggle",
+      "capability": "security_implementation_required",
+      "source_photo": "1000118386.jpg"
+    },
+    {
+      "id": "parental_gate_epg",
+      "label": "PIN benötigt für: Einstellungen | EPG",
+      "observed_value": false,
+      "kind": "toggle",
+      "capability": "security_implementation_required",
+      "source_photo": "1000118386.jpg"
+    },
+    {
+      "id": "parental_gate_channel_options",
+      "label": "PIN benötigt für: Kanaloptionen",
+      "observed_value": false,
+      "kind": "toggle",
+      "capability": "security_implementation_required",
+      "source_photo": "1000118386.jpg"
+    },
+    {
+      "id": "parental_gate_group_options",
+      "label": "PIN benötigt für: Gruppenoptionen",
+      "observed_value": false,
+      "kind": "toggle",
+      "capability": "security_implementation_required",
+      "source_photo": "1000118386.jpg"
+    }
+  ],
+  "about": [
+    {
+      "id": "anonymous_statistics",
+      "label": "Anonyme Statistiken senden",
+      "observed_value": null,
+      "kind": "ambiguous_toggle",
+      "capability": "privacy_opt_in_required",
+      "source_photo": "1000118392.jpg",
+      "observation": "Dunkler Schalterknopf rechts; Aktivierungszustand nicht belastbar"
+    },
+    {
+      "id": "automatic_updates",
+      "label": "Automatisch aktualisieren",
+      "observed_value": true,
+      "kind": "toggle",
+      "capability": "repository_update_system",
+      "source_photo": "1000118392.jpg"
+    },
+    {
+      "id": "beta_program",
+      "label": "Am Beta-Test teilnehmen",
+      "observed_value": false,
+      "kind": "toggle",
+      "capability": "future_optional",
+      "source_photo": "1000118392.jpg"
+    },
+    {
+      "id": "check_updates",
+      "label": "Nach Updates suchen",
+      "observed_value": null,
+      "kind": "action",
+      "capability": "repository_update_system",
+      "source_photo": "1000118392.jpg"
+    },
+    {
+      "id": "terms_of_use",
+      "label": "Nutzungsbedingungen",
+      "observed_value": null,
+      "kind": "link",
+      "capability": "gsmedia_documentation_required",
+      "source_photo": "1000118392.jpg"
+    },
+    {
+      "id": "privacy_policy",
+      "label": "Datenschutz-Bestimmungen",
+      "observed_value": null,
+      "kind": "link",
+      "capability": "gsmedia_documentation_required",
+      "source_photo": "1000118392.jpg"
+    },
+    {
+      "id": "account",
+      "label": "Account",
+      "observed_value": null,
+      "kind": "redacted_private_value",
+      "capability": "not_transferable",
+      "source_photo": "1000118392.jpg"
+    },
+    {
+      "id": "device_name",
+      "label": "Gerätename",
+      "observed_value": null,
+      "kind": "redacted_private_value",
+      "capability": "kodi_host_metadata",
+      "source_photo": "1000118392.jpg"
+    },
+    {
+      "id": "reference_app_version",
+      "label": "Version",
+      "observed_value": "5.3.3 (Premium)",
+      "kind": "reference_value",
+      "capability": "not_transferable",
+      "source_photo": "1000118392.jpg"
+    },
+    {
+      "id": "subscription_management",
+      "label": "Google-Play-Aboverwaltung",
+      "observed_value": null,
+      "kind": "external_reference_only",
+      "capability": "not_transferable",
+      "source_photo": "1000118393.jpg"
+    }
   ]
 }
