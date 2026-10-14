@@ -1,6 +1,6 @@
 # XCMate – Roadmap, Bugliste und Release-Checkliste
 
-**Statusdatum:** 14.10.2026 · letzter geprüfter veröffentlichter Stand: 0.1.10.  
+**Statusdatum:** 14.10.2026 · letzter geprüfter veröffentlichter Stand: 0.1.12.  
 Labels: [RELEASED] in GitHub gebaut; [ON-DEVICE OPEN] Nutzergerätetest fehlt/negativ; [PLANNED] nur spezifiziert.
 
 ## Priorisierung
@@ -201,3 +201,13 @@ Android-Box, DIE WELT HEVC starten, OK/Links/Hoch/Runter/Menü/Zurück/Guide
 prüfen; wenn immer noch defekt, Kodi-Log auf
 `XCMate navigator cannot start`, `XCMate WindowDialog startup failed`
 und `XCMate TV navigation unavailable` anonymisiert auswerten.
+
+### Verifizierte GitHub-Veröffentlichung 0.1.12
+
+- Ursache, Regressionstests und Abgrenzung: PR [#5](https://github.com/artattakk-creator/kodi-noodleprivate/pull/5) (squash-merge `26c03e6c94027ad4cd9fba18bf15f579e2980c49`).
+- PR-CI erfolgreich (letzter PR-Head): [38570173207](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/38570173207).
+- Publish-CI erfolgreich: [38570255156](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/38570255156).
+- Publizierter Commit: `0ea54335d52d7b62281c649b191ef021cdf77de8`.
+- ZIP: `plugin.video.xtreammate/plugin.video.xtreammate-0.1.12.zip`, Größe 209791 Bytes; `addons.xml` meldet 0.1.12, MD5-Datei vorhanden (`9dd6666e3daf6f8edfcee95ba161fdab`).
+- GS-Media-Repository 1.7.0, Add-on-ID und Benutzerdateien unverändert.
+- **P0 Android-Gerätetest weiterhin offen:** Senderstart bestätigt in 0.1.11, Fernbedienungsübernahme nicht. In 0.1.12 prüft ein Hardwaretest, ob die neue Schonfrist das Problem tatsächlich löst.
