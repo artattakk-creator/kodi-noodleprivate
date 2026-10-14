@@ -24,7 +24,10 @@ class V016Checks(unittest.TestCase):
     def test_start_channel_is_playable_and_without_server_query(self):
         source=(LIB/'main.py').read_text(encoding='utf-8')
         start=source[source.index('    def _play_start(self):'):source.index('    def _groups_manager(self):')]
-        self.assertIn("xc.get_cached_catalog('get_live_streams')",start)
+        self.assertIn("self._startup_playable()",start)
+        self.assertIn("xbmcplugin.setResolvedUrl(self._handle, True, item)",start)
+        common=source[source.index("    def _startup_playable(self):"):source.index("    def _play_start(self):")]
+        self.assertIn("xc.get_cached_catalog('get_live_streams')",common)
         self.assertNotIn("xc.get_live_streams()",start)
         self.assertIn("is_folder=False)",source)
         self.assertIn("li.setProperty('IsPlayable', 'true')",source)
