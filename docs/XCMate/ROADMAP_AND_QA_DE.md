@@ -221,3 +221,22 @@ Nach dem realen Android-Foto mit Keymap AKTIV, aber keinem Video und keinem XCMa
 **Offen:** Kodi/Android-Host-Support für `RunScript`-Recovery tatsächlich testen; ob das XCMate-`WindowDialog` den Fokus erhält und Android-Events ankommen; Startsender und Kodi-Player-OSD-Übernahme auf Gerät. Die TiviMate-Navigation als vollständige GUI bleibt nach P0.
 
 **Referenzen:** `src/plugin.video.xtreammate/resources/lib/service_health.py`, `tests/test_xcmate_service_health_p0.py`, PR #6, GitHub Release Actions 38579669527.
+
+## 14.10.2026 – P0 Kodi spielt XCMate-TV, aber Sitzungsmarker fehlt: 0.1.14
+
+Reales Foto: Dienst 2134 Schleifen, `LÄUFT`, Video JA, XCMate-Sitzung NEIN.
+PR #7 und GitHub PR-/Publish-CI erfolgreich. Release 0.1.14
+stellt verlorene Live-Marker durch einen streng gekoppelten Vergleich
+`getPlayingFile()` ↔ aktives Xtream-Portal + Sender-ID wieder her.
+Die Prüfung arbeitet nur lokal, gibt keine Stream-URLs preis,
+greift nie VOD oder fremde Kodi-Medien auf und ändert keine
+Benutzerdaten. Neue Diagnose: `Live-Sitzungswiederherstellung`.
+
+**Geräte-QA offen:** Erst Kodi neu starten, dann Startsender und
+native OK-/Links-Tasten testen. Danach Diagnose ohne Stream:
+letzte Live-/Overlay-Beobachtung und Session-Recovery-Status fotografieren.
+Kein aktueller Player-Pfad oder anderer URL-Typ kann weiterhin eine
+Wiederherstellung verhindern – nicht mit unsicherer Host-Namen-Erkennung
+umgehen. Falls Session JA und TV-Dialog gestartet aber keine Navigation,
+Focus/WindowDialog Android-Ereignisse und Kodi-Log prüfen.
+Die Freigabe der Fernbedienung ist noch **nicht** nachgewiesen.
