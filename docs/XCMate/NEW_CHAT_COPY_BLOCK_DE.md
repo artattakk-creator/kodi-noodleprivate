@@ -95,3 +95,19 @@ Niemals Portale, Anmeldedaten, Einstellungen oder Remoteprofile löschen.
 
 **NEU: aktueller Release 0.1.13 (14.10.2026) – Offline-Dienstdiagnose.**
 Android-Foto vom Nutzer: Keymap aktiv, kein Video, keine erkannte Session, kein TV-Overlay; der Hintergrunddienst war **zum Zeitpunkt des Fotos nicht überprüfbar**, nicht eindeutig als gestoppt bewiesen. XCMate 0.1.13 ergänzt die wiederkehrende Kodi-Home-Window-Heartbeat-/Loop-Zähler-Diagnose, speichert die letzte Stream-/Overlay-Beobachtung und bietet im Portalmenü „XCMate-Hintergrunddienst prüfen / manuell starten“ auch ohne laufendes Video. Manuelle Startanforderung per Kodi `RunScript` nur bei fehlendem frischem Heartbeat, mit Wiederholungssperre; tatsächliche Hostfunktion **noch nicht auf Android belegt**. PR #6 und GitHub CI/ZIP/Katalog bestanden, Dateiname `plugin.video.xtreammate-0.1.13.zip`. Keine bestehenden Portale, Passwörter, EPG oder Tastenprofile überschrieben. Nutzer soll nach Update Kodi vollständig neu starten, Dienststatus ohne Video prüfen, Testsender starten, später Diagnose aus dem Hauptmenü wieder öffnen und Status/letzte Beobachtungen zurückmelden. P0 Android-Remote weiterhin offen. Bilder/Optik erst danach.
+
+**Aktueller Stand (14.10.2026): XCMate 0.1.14 veröffentlicht.**
+Letztes reales Android-Foto: Hintergrunddienst LÄUFT, 2134 Schleifen;
+Video JA, aber XCMate-Sitzung NEIN. Es handelt sich damit um ein
+Session-/Overlay-Startproblem, nicht um einen nachweislich gestoppten
+Dienst. PR #7 ändert die Service-Laufzeit: bei Player-Video ohne
+Session wird `getPlayingFile()` mit den eigenen aktivierten Xtream-Portalen
+und bekannten Sender-IDs **exakt** lokal abgeglichen. Nur eindeutige
+Matches starten `LiveSession` neu, niemals fremde Kodi-/VOD-Videos.
+Neue Diagnose zeigt `Live-Sitzungswiederherstellung`, keine URLs.
+PR und Release erfolgreich (CI 38587564991 / 38587667244),
+ZIP `plugin.video.xtreammate-0.1.14.zip` 215793 Bytes,
+`addons.xml` 0.1.14. Nach Update Kodi neu starten, WELT-Startsender
+testen, später Offline-Diagnose mit Live-Sitzung, Recovery-Ergebnis
+und TV-Overlay-Ergebnis anfordern. **Noch kein Erfolg auf Android bewiesen.**
+Optik und TiviMate-Fotoreferenz weiter nachrangig.
