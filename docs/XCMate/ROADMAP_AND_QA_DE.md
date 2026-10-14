@@ -1,6 +1,6 @@
 # XCMate – Roadmap, Bugliste und Release-Checkliste
 
-**Statusdatum:** 14.10.2026 · letzter geprüfter veröffentlichter Stand: 0.1.12.  
+**Statusdatum:** 14.10.2026 · letzter geprüfter veröffentlichter Stand: 0.1.15.  
 Labels: [RELEASED] in GitHub gebaut; [ON-DEVICE OPEN] Nutzergerätetest fehlt/negativ; [PLANNED] nur spezifiziert.
 
 ## Priorisierung
@@ -240,3 +240,30 @@ Wiederherstellung verhindern – nicht mit unsicherer Host-Namen-Erkennung
 umgehen. Falls Session JA und TV-Dialog gestartet aber keine Navigation,
 Focus/WindowDialog Android-Ereignisse und Kodi-Log prüfen.
 Die Freigabe der Fernbedienung ist noch **nicht** nachgewiesen.
+
+## 14.10.2026 – neuer GUI-Ansatz: XCMate 0.1.15 veröffentlicht
+
+**P0**: Eigenes Kodi-Popup direkt über den Portalmenü-Eintrag
+„XCMate Popup- und Fernbedienungstest“ öffnet `WindowDialog.doModal()`
+ohne Player-/Service-Abhängigkeit. Native Aktion-ID / Count und Fokus
+werden gespeichert und in der Offline-Fernbedienungsdiagnose angezeigt.
+Vorhandener LiveNavigator zeigt beim TV-Start seine linksseitige
+Sender-/EPG-Liste für 16s sichtbar, um Fenster-Rendering unabhängig
+von Remote-Ereignissen zu prüfen; nach Ablauf verborgen.
+**Kein skaliertes Mini-TV** und noch keine vollwertige EPG-Zeitleiste.
+PR #8, CI-Pipeline 38592365190 und Release-Workflow
+38592489957 erfolgreich; ZIP 219453 Bytes, Katalog 0.1.15.
+Kodi Repository 1.7.0. Portale/EPG/Remoteprofile nicht angefasst.
+
+**Android-Abnahme offen:** 1. Kodi ganz neu starten. 2. Ohne TV
+Popup-Test öffnen, die Tasten-/Fokuszähler prüfen. 3. Zurück, Diagnose
+fotografieren. 4. Startsender starten, sofortige Senderliste 16s?
+5. Bei fehlerhafter Bedienung danach Offline-Diagnose fotografieren,
+insbesondere `Auto-TV-Popup`, `Live-Sitzungswiederherstellung`,
+`Letzte TV-Einblendung`, `Native Tastenereignisse`.
+Kein Android-PASS aus Kodi-Mocks ableiten.
+
+**Folgende Versionen:** 0.1.16 Sender/Gruppen, 0.1.17
+EPG-Vollraster/Video-Vorschau nach Kodi-Machbarkeit, 0.1.18
+Komfortfunktionen, 0.1.19 Optik; Details unter
+[`POPUP_UI_IMPLEMENTATION_PLAN_DE.md`](POPUP_UI_IMPLEMENTATION_PLAN_DE.md).
