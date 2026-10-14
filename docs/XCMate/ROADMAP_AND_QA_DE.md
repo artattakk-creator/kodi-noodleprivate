@@ -169,3 +169,35 @@ Tasten auf diesem Remote-Modell und Hardware-Eingabequellen bleiben
 geräteabhängige beziehungsweise folgende Arbeitsschritte.
 
 **Kein Android-Funktionserfolg behaupten**, bis das Box-Protokoll vorliegt.
+
+## 14.10.2026 – P0 Follow-up, Kandidat 0.1.12: Startsender-Sitzung wird zu früh gelöscht
+
+**Gemeldetes Android-Verhalten:** DIE WELT HEVC startet und läuft normal;
+die Lautstärkeregelung funktioniert, jedoch öffnet die Menu-Taste nur das
+Kodi-Player-Menü. XCMate-Senderliste, OK-Leiste und Fernbedienungszuordnung
+erscheinen nicht. Im Diagnosefoto nach Verlassen des Videos stand
+"XCMate-Stream erkannt: NEIN" und "Video läuft: NEIN"; der Screenshot allein
+belegt den Status *während* des Fernsehens nicht.
+
+**Belegbarer Quellcodefehler:** `service.py` entfernt `XtreamMate.LiveSession`
+nach >8 s anhand von `_stopped_since`, auch wenn der Timer vor dem
+gerade neu angekündigten `RunPlugin`-Autoplay-Start abgelaufen war.
+`announce()` läuft vor `xbmc.Player().play()`; Video-Startlatenz kann
+somit dazu führen, dass der Service den neuen Marker löscht, bevor Kodi
+überhaupt `isPlayingVideo()` meldet. Dann findet `start_if_eligible()`
+keine Sitzung und startet kein `LiveNavigator`-Fenster.
+
+**Fix (PR #5, noch kein Gerätetest):** Maximal 60 s Schonfrist für frisch
+angekündigte, noch nicht durch die Overlay-Nonce bestätigte Sitzungen.
+Normales 8-s-Cleanup für abgelaufene oder schon angezeigte Sitzungen
+bleibt unverändert. Status `warte auf Videostart` signalisiert das
+Übergangsstadium. Tests reproduzieren einen seit Minuten abgelaufenen
+Idle-Timer plus neuen Marker sowie den normalen Stopp und abgelaufene
+Ankündigungen. `addon.xml` wird auf 0.1.12 erhöht, Add-on-ID und
+Konfigurationsdaten bleiben unangetastet.
+
+**Nach CI/Veröffentlichung offen:** Vollständiger Kodi-Neustart auf der
+Android-Box, DIE WELT HEVC starten, OK/Links/Hoch/Runter/Menü/Zurück/Guide
+prüfen; wenn immer noch defekt, Kodi-Log auf
+`XCMate navigator cannot start`, `XCMate WindowDialog startup failed`
+und `XCMate TV navigation unavailable` anonymisiert auswerten.

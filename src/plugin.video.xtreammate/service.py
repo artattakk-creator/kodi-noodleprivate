@@ -9,6 +9,27 @@ if LIB_PATH not in sys.path:
 from utils import setting_bool, setting_int, info, error
 
 
+# A direct RunPlugin autoplay announces its session before Player.play() has
+# completed. Kodi may need several seconds to open the IPTV stream. An idle
+# service must not erase that fresh marker using its pre-existing idle timer.
+PENDING_LIVE_START_SECONDS = 60
+
+
+def pending_live_start(session, last_overlay_nonce, now=None):
+    """Protect a newly announced TV session until playback has actually begun.
+
+    Once the matching overlay was activated, a stopped video uses the normal
+    short cleanup timeout. Stale or malformed sessions receive no grace.
+    """
+    if not session or session.get('nonce') == last_overlay_nonce:
+        return False
+    try:
+        age = (time.time() if now is None else now) - float(session['at'])
+    except (KeyError, ValueError, TypeError):
+        return False
+    return 0 <= age < PENDING_LIVE_START_SECONDS
+
+
 class IPTVMasterService(xbmc.Monitor):
 
     def __init__(self):
@@ -99,13 +120,22 @@ class IPTVMasterService(xbmc.Monitor):
                     # Keep the session marker intact until the gap is prolonged.
                     if self._stopped_since is None:
                         self._stopped_since = time.monotonic()
-                    if time.monotonic() - self._stopped_since > 8:
+                    marker = xbmcgui.Window(10000)
+                    announced = session_from_property(marker.getProperty(SESSION_KEY))
+                    # Preserve a fresh announcement even when _stopped_since
+                    # started long before RunPlugin created this TV session.
+                    pending_start = pending_live_start(
+                        announced, self._last_session_nonce)
+                    if time.monotonic() - self._stopped_since > 8 and not pending_start:
                         if self._overlay is not None:
                             self._overlay.close()
                             self._overlay = None
                         self._last_session_nonce = ''
-                        xbmcgui.Window(10000).clearProperty(SESSION_KEY)
-                        xbmcgui.Window(10000).clearProperty('XtreamMate.OverlayStatus')
+                        marker.clearProperty(SESSION_KEY)
+                        marker.clearProperty('XtreamMate.OverlayStatus')
+                    elif pending_start:
+                        marker.setProperty('XtreamMate.OverlayStatus',
+                                           'warte auf Videostart')
                 else:
                     self._stopped_since = None
                     if self._overlay is not None:
