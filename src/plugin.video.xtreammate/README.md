@@ -5,7 +5,7 @@ This is an independent Kodi add-on based on mr-evil1 TiViMate Kodi 2026.06.12.1 
 > **Projektübergabe (Stand 14.10.2026):** [Zentraler Einstieg](../../docs/XCMate/README.md) · [Technische Übergabe](../../docs/XCMate/PROJECT_HANDOFF_DE.md) · [Serien-Autoplay/Bookmarks – spezifiziert, noch nicht implementiert](../../docs/XCMate/SERIES_PROGRESS_SPEC_DE.md) · [Designsystem](../../docs/XCMate/DESIGN_SYSTEM_DE.md).
 
 ## Installation
-In Kodi choose Add-ons -> Install from ZIP file -> `plugin.video.xtreammate-0.1.3.zip`. This version is published by the GS Media repository. Keep the original TiViMate Kodi installed while evaluating XtreamMate.
+Install XCMate preferably via Kodi → Install from repository → GS Media Kodi Repository → XCMate. Current published ZIP: `plugin.video.xtreammate-0.1.9.zip`. Kodi ID `plugin.video.xtreammate` remains unchanged to preserve updates and the existing userdata profile. The original upstream TiViMate addon can stay installed separately.
 
 ## First launch
 Select Stalker Portal, local M3U file, M3U link, or Xtream Codes. For Xtream enter full server URL (including port), username and password. Choose which of TV, movies, series to import. Start the scan; review counts, name the list, save; optionally fetch EPG. On Xtream live accounts you can also choose multiple category IDs and change them later under Sendergruppen auswählen.
