@@ -142,3 +142,30 @@ auf Android belegen. P0 Startsender/Remote bleibt vorrangig.
   Telemetrie nur nach freiwilliger Aktivierung; fremde AGB/Abos nicht kopieren.
 - **Unverändert offen**: P0 Startsender und Fernbedienungssteuerung auf Android,
   danach eigenständige UI-Implementierung und differenzierte Kodi-/Geräte-QA.
+
+## 14.10.2026: P0 – veröffentlichter XCMate-0.1.11-Fernbedienungskandidat
+
+Die Remote-Stabilisierung wurde als XCMate **0.1.11** über PR
+[#4](https://github.com/artattakk-creator/kodi-noodleprivate/pull/4) veröffentlicht
+(PR-CI 38565230410, Publish-CI 38565339149). ZIP 209252 Bytes ist auf
+`main` vorhanden, `addons.xml` weist Version 0.1.11 aus und der unabhängig
+überprüfte `addons.xml.md5`-Hash lautet
+`f9aa9e4f7d8ae26a0f1af4a3ada46316`.
+Kodi Repository 1.7.0, Add-on-ID und persönliche Benutzerdateien bleiben erhalten.
+
+**Behoben laut Code/automatisierten Tests:** die bisher nur optional installierte
+Fullscreen-Bridge wird bei XCMate-Live-TV automatisch und widerrufbar
+aktiviert; Native-`WindowDialog.onAction` und Keymap/Service-Bridge bilden zwei
+Eingabewege; Kodi-Player-OSD wird über die eigene XCMate-Buttonleiste umgangen;
+Fernbedienungs-Diagnose erfasst native Ereignisse und Keymap-Status.
+Die API-Tests behandeln Kodi-stub-basierte Navigation, nicht reale
+Android-Geräteeingaben.
+
+**P0 weiterhin offen:** zuverlässiger Startsender und echte Links/OK/Hoch/Runter/
+Menü/Zurück-Erfassung unter Titan BINGIE MOD. **Erster Test nach 0.1.11
+erfordert vollständigen Kodi-Neustart.** Am Zielgerät die Diagnosewerte und
+anonymisierten `kodi.log`-Abschnitt auswerten. Full-EPG-Raster, lang gedrückte
+Tasten auf diesem Remote-Modell und Hardware-Eingabequellen bleiben
+geräteabhängige beziehungsweise folgende Arbeitsschritte.
+
+**Kein Android-Funktionserfolg behaupten**, bis das Box-Protokoll vorliegt.
