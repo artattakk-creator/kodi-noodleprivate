@@ -1,4 +1,4 @@
-import time, sys, os, threading
+import time, sys, os, threading, uuid
 import xbmc, xbmcaddon, xbmcgui
 
 ADDON    = xbmcaddon.Addon()
@@ -107,7 +107,20 @@ class IPTVMasterService(xbmc.Monitor):
         self._catalog_worker.start()
 
     def run(self):
+        from service_health import (inspect, heartbeat, note, INSTANCE,
+                                    PHASE, LAST_ERROR, LAST_LIVE,
+                                    LAST_OVERLAY, LAST_INPUT)
+        marker = xbmcgui.Window(10000)
+        if inspect(marker)['alive']:
+            info('XCMate service: another worker already reports healthy; skipping duplicate')
+            return
+        instance = uuid.uuid4().hex
+        loops = 0
+        heartbeat(marker, instance, loops, phase='gestartet')
+        note(marker, LAST_ERROR, 'keine gemeldet')
         while not self.abortRequested():
+            loops += 1
+            heartbeat(marker, instance, loops, phase='läuft')
             self._maybe_refresh_epg()
             self._maybe_warm_catalogs()
             try:
@@ -115,6 +128,12 @@ class IPTVMasterService(xbmc.Monitor):
                 from remote_control import parse_command, COMMAND_KEY
                 import xbmcgui
                 player = xbmc.Player()
+                if player.isPlayingVideo():
+                    announced_health = session_from_property(
+                        xbmcgui.Window(10000).getProperty(SESSION_KEY))
+                    note(marker, LAST_LIVE,
+                         'Video JA / XCMate-Sitzung ' +
+                         ('JA' if announced_health else 'NEIN'))
                 if not player.isPlayingVideo():
                     # Brief playback gaps are normal when switching IPTV channels.
                     # Keep the session marker intact until the gap is prolonged.
@@ -169,12 +188,15 @@ class IPTVMasterService(xbmc.Monitor):
                                     'XtreamMate.OverlayStatus', 'wird gestartet')
                                 self._overlay = candidate
                                 self._overlay.show()
+                                note(marker, LAST_OVERLAY, 'TV-Dialog gestartet')
                                 self._last_session_nonce = session['nonce'] if session else ''
                                 self._overlay_failure_reported = False
                             except Exception as exc:
                                 self._overlay = None
                                 xbmcgui.Window(10000).setProperty(
                                     'XtreamMate.OverlayStatus', 'Fehler: ' + type(exc).__name__)
+                                note(marker, LAST_OVERLAY,
+                                     'TV-Dialog-Fehler: ' + type(exc).__name__)
                                 error('XCMate WindowDialog startup failed: {} {}'.format(
                                     type(exc).__name__, str(exc)[:240]))
                                 if not self._overlay_failure_reported:
@@ -191,11 +213,15 @@ class IPTVMasterService(xbmc.Monitor):
                         xbmcgui.Window(10000).clearProperty(COMMAND_KEY)
                         self._overlay.handle_command(cmd['action'])
                         xbmcgui.Window(10000).setProperty('XtreamMate.LastHandledKey', cmd['action'])
+                        note(marker, LAST_INPUT, 'Bridge: ' + cmd['action'])
             except Exception as exc:
+                note(marker, LAST_ERROR, 'TV-Loop: ' + type(exc).__name__)
                 error('XCMate TV navigation unavailable: {}'.format(type(exc).__name__))
             self.waitForAbort(0.2)
         if self._overlay is not None:
             self._overlay.close()
+        if marker.getProperty(INSTANCE) == instance:
+            marker.setProperty(PHASE, 'beendet')
         info('XCMate service stopped')
 
 
