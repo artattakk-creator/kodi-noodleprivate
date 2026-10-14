@@ -5,7 +5,6 @@ tokens, usernames, channel titles, account names or recording paths.
 An outdated heartbeat is not proof of a stopped Kodi process; show 'unresponsive'.
 """
 import time
-import uuid
 
 PREFIX = 'XtreamMate.Service.'
 HEARTBEAT = PREFIX + 'Heartbeat'
@@ -33,7 +32,9 @@ def inspect(window, now=None):
     now = time.time() if now is None else now
     heartbeat = _number(window.getProperty(HEARTBEAT))
     age = None if heartbeat is None else max(0, now-heartbeat)
-    if heartbeat is None:
+    if window.getProperty(PHASE) == 'beendet':
+        state = 'GESTOPPT'
+    elif heartbeat is None:
         state = 'NICHT BESTÄTIGT'
     elif age <= MAX_AGE_SECONDS:
         state = 'LÄUFT'
