@@ -83,3 +83,10 @@ Der Nutzer hat 10 Fotos seiner **tatsächlich eingestellten** TiviMate-Fernbedie
 
 Entwicklungsbranch: `feat/xcmate-tivimate-remote-profile` · Draft-PR [#3](https://github.com/artattakk-creator/kodi-noodleprivate/pull/3).
 CI-Run [38557640506](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/38557640506) erfolgreich. Im PR liegen `tivimate_keys.py` (reine unabhängige Semantiktabellen) und Regressionstests. **Noch keine Kodi-Laufzeitintegration und keine neue Release-Version**; Add-on 0.1.10 bleibt unverändert. Unterschiedliche Kodi-/Android-Keycodes und Langdruck sowie echte EPG-/Preview-Anzeige müssen am Gerät geprüft werden. Nicht ungeprüft auf das Android-Gerät ausrollen.
+
+## 9. Zweite Foto-Serie: TV-/EPG-/Film-Oberflächen (14.10.2026)
+
+Weitere zehn Nutzerfotos dokumentieren Player-Farbtasten und neun konkret sichtbare UI-Zustände (OSD-Senderkarussell, erweiterte Player-Leiste, Senderliste mit Programmen/Video, Gruppenliste, EPG-Vollraster/mit Gruppen, kompakte/ausgeklappte Hauptnavigation und Filmkatalog). Vollständige strukturierte Beschreibung:
+[`TIVIMATE_UI_SCREEN_REFERENCE_2026-10-14_DE.md`](TIVIMATE_UI_SCREEN_REFERENCE_2026-10-14_DE.md).
+Player-Farbtasten: Rot/Grün = EPG-Overlay, Gelb = Info, Blau = Einstellungen; anders als im EPG.
+Die pure-Python-Mappingdatei und Tests im Draft-PR #3 wurden angepasst. Weder EPG-Raster noch Vorschau noch neue Tastensteuerung sind bereits produktiv in XCMate aktiviert; XCMate 0.1.10 bleibt der Release.
