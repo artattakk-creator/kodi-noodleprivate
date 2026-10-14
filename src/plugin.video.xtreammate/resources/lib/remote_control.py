@@ -1,4 +1,4 @@
-"""Opt-in, Kodi-fullscreen-only XtreamMate keymap and remote command bridge.
+"""Opt-in, Kodi-fullscreen-only XCMate keymap and remote command bridge.
 
 No global Kodi settings or third-party keymaps are overwritten. Only the
 namespaced keymap file that this addon created can be removed again.
@@ -85,12 +85,12 @@ def disable():
 def configure():
     dlg = xbmcgui.Dialog()
     active = is_enabled()
-    title = 'XtreamMate – TV-Fernbedienung'
+    title = 'XCMate – TV-Fernbedienung'
     choices = (['Fernbedienung deaktivieren', 'Funktionsweise anzeigen'] if active
                else ['Fernbedienung aktivieren (Links / Hoch / Runter / OK)', 'Funktionsweise anzeigen'])
     selection = dlg.select(title, choices)
     if selection == 1:
-        dlg.ok(title, 'Nur bei XtreamMate-Vollbildvideo: Links öffnet Senderliste, nochmal Links Gruppen. '
+        dlg.ok(title, 'Nur bei XCMate-Vollbildvideo: Links öffnet Senderliste, nochmal Links Gruppen. '
                'Hoch/Runter schaltet jeweils einen Sender in der aktiven Gruppe. '
                'OK öffnet die Player-Leiste, nochmal OK die Zusatzleiste. '
                'Langes OK öffnet direkt Zusatzfunktionen, soweit die Fernbedienung '
@@ -105,7 +105,7 @@ def configure():
             disable()
         else:
             if not dlg.yesno(title, 'Die Tasten Links, Hoch/Runter und OK werden ausschließlich während '
-                             'der Vollbildwiedergabe von XtreamMate abgefangen. '
+                             'der Vollbildwiedergabe von XCMate abgefangen. '
                              'Eine eigene Keymap wird angelegt. Jetzt aktivieren?'):
                 return
             enable()

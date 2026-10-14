@@ -369,7 +369,7 @@ import xbmc as _xbmc
 _ADDON_INSTANCE = xbmcaddon.Addon()
 
 _FALLBACK: dict = {
-    32000: 'XtreamMate',     32001: 'Live TV',          32002: 'Movies',
+    32000: 'XCMate',     32001: 'Live TV',          32002: 'Movies',
     32003: 'Series',          32004: 'Favourites',        32005: 'Search',
     32006: 'EPG / Guide',     32007: 'Settings',          32008: 'Refresh Playlist',
     32009: 'Catch-up',        32010: 'Search All',        32011: 'All Favourites',

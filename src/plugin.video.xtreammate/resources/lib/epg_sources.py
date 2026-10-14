@@ -195,7 +195,7 @@ def _choose_portal():
     import xbmcgui
     active = portals.get_active()
     if not active:
-        xbmcgui.Dialog().ok('XtreamMate EPG', 'Bitte zuerst einen TV-Zugang einrichten.')
+        xbmcgui.Dialog().ok('XCMate EPG', 'Bitte zuerst einen TV-Zugang einrichten.')
         return None
     if len(active) == 1:
         return active[0]
@@ -213,7 +213,7 @@ def _manage_source(portal, source):
     operations = ('toggle', 'up', 'down', 'delete')
     if choice < 0 or choice >= len(operations):
         return False
-    if choice == 3 and not d.yesno('XtreamMate EPG', 'EPG-Quelle wirklich löschen?'):
+    if choice == 3 and not d.yesno('XCMate EPG', 'EPG-Quelle wirklich löschen?'):
         return False
     return edit_source(portal['id'], source['id'], operations[choice])
 
@@ -222,7 +222,7 @@ def _choose_mapping(portal):
     import xbmcgui
     d = xbmcgui.Dialog()
     if portal.get('type') != 'xtream':
-        d.ok('XtreamMate EPG', 'Manuelle Zuordnung wird derzeit für Xtream Codes unterstützt.')
+        d.ok('XCMate EPG', 'Manuelle Zuordnung wird derzeit für Xtream Codes unterstützt.')
         return
     from xtream import XtreamClient
     xc = XtreamClient(portal['xc_host'], portal['xc_user'], portal['xc_pass'])
@@ -231,10 +231,10 @@ def _choose_mapping(portal):
                      key=lambda x: str(x.get('name') or '').casefold())
     index = available_channels(portal['id'])
     if not streams:
-        d.ok('XtreamMate EPG', 'Senderkatalog wird noch geladen. Bitte später erneut versuchen.')
+        d.ok('XCMate EPG', 'Senderkatalog wird noch geladen. Bitte später erneut versuchen.')
         return
     if not index:
-        d.ok('XtreamMate EPG', 'Zuerst eine XMLTV-Quelle hinzufügen und EPG aktualisieren.')
+        d.ok('XCMate EPG', 'Zuerst eine XMLTV-Quelle hinzufügen und EPG aktualisieren.')
         return
     state = configuration(portal['id'])
     labels = []
@@ -255,7 +255,7 @@ def _choose_mapping(portal):
     j = d.select('XMLTV-Kanal wählen', options, preselect=preselect)
     if j >= 0:
         set_mapping(portal['id'], sid, channels[j - 1][0] if j else '')
-        d.notification('XtreamMate EPG', 'Zuordnung gespeichert – EPG bitte aktualisieren')
+        d.notification('XCMate EPG', 'Zuordnung gespeichert – EPG bitte aktualisieren')
 
 
 def manage(portal=None):
@@ -276,7 +276,7 @@ def manage(portal=None):
             '↻ EPG-Quellen jetzt aktualisieren',
             '↔ Xtream-Sender einem XMLTV-Kanal zuordnen',
         ] + source_labels + ['Zurück']
-        choice = d.select('XtreamMate – EPG-Verwaltung · ' + portal['name'], options)
+        choice = d.select('XCMate – EPG-Verwaltung · ' + portal['name'], options)
         if choice < 0 or choice == len(options) - 1:
             return
         try:
@@ -295,11 +295,11 @@ def manage(portal=None):
                     add_source(portal['id'], name, uri, local=True)
             elif choice == 2:
                 warmup_async(portal['id'], portal, force=True)
-                d.notification('XtreamMate EPG', 'Aktualisierung im Hintergrund gestartet')
+                d.notification('XCMate EPG', 'Aktualisierung im Hintergrund gestartet')
             elif choice == 3:
                 _choose_mapping(portal)
             else:
                 _manage_source(portal, state['sources'][choice - 4])
         except Exception as exc:
             error('EPG manager action failed: {}'.format(type(exc).__name__))
-            d.ok('XtreamMate EPG', 'Aktion fehlgeschlagen: ' + str(exc)[:160])
+            d.ok('XCMate EPG', 'Aktion fehlgeschlagen: ' + str(exc)[:160])

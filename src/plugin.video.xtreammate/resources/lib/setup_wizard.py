@@ -1,4 +1,4 @@
-"""First-run guided XtreamMate configuration: scan before save, enrich after save."""
+"""First-run guided XCMate configuration: scan before save, enrich after save."""
 import re
 from urllib.parse import urlsplit
 import xbmcgui
@@ -23,7 +23,7 @@ def valid_server(value):
 
 
 def get_choices(dlg):
-    indices = dlg.multiselect('XtreamMate – Welche Inhalte übernehmen?', CONTENTS,
+    indices = dlg.multiselect('XCMate – Welche Inhalte übernehmen?', CONTENTS,
                               preselect=[0, 1, 2])
     if indices is None:
         raise Cancelled()
@@ -157,7 +157,7 @@ def complete_metadata(portal, report, progress):
         loaded = _refresh_portal_epg(portal['id'], portal)
         report['epg'] = sum(len(x) for x in loaded.values()) if isinstance(loaded, dict) else 0
     except Exception as exc:
-        warn('XtreamMate EPG optional phase failed: {}'.format(type(exc).__name__))
+        warn('XCMate EPG optional phase failed: {}'.format(type(exc).__name__))
     progress.update(100, 'Import abgeschlossen.')
 
 
@@ -165,28 +165,28 @@ def setup():
     import portals
     dlg = xbmcgui.Dialog()
     try:
-        typ = dlg.select('XtreamMate – Verbindung hinzufügen', CHOICES)
+        typ = dlg.select('XCMate – Verbindung hinzufügen', CHOICES)
         if typ < 0:
             return None
         data = input_data(dlg, typ)
         data.update(get_choices(dlg))
         data['epg_show'] = bool(data['include_live'] and dlg.yesno(
-            'XtreamMate – EPG', 'Programmführer (EPG) nach dem Speichern laden?'))
-        if not dlg.yesno('XtreamMate – Import starten',
+            'XCMate – EPG', 'Programmführer (EPG) nach dem Speichern laden?'))
+        if not dlg.yesno('XCMate – Import starten',
                          'Ausgewählte Inhalte jetzt scannen? Zugangsdaten bleiben lokal.'):
             return None
         scan = xbmcgui.DialogProgress()
-        scan.create('XtreamMate – Senderlisten scannen', 'Verbindung wird hergestellt …')
+        scan.create('XCMate – Senderlisten scannen', 'Verbindung wird hergestellt …')
         try:
             report = scan_contents(data, scan)
         finally:
             scan.close()
-        dlg.ok('XtreamMate – Scanergebnis', fmt_report(report))
+        dlg.ok('XCMate – Scanergebnis', fmt_report(report))
         title = dlg.input('Name der Programmliste', defaultt='Meine TV-Liste').strip()
         if not title:
             return None
         data['name'] = title
-        if not dlg.yesno('XtreamMate – Speichern',
+        if not dlg.yesno('XCMate – Speichern',
                          '„{}“ speichern und verfügbare Zusatzdaten laden?'.format(title)):
             return None
         # Persist and immediately read back the portal before announcing success.
@@ -194,23 +194,23 @@ def setup():
         if not portals.get_by_id(portal['id']):
             raise OSError('Portaldaten konnten nach dem Speichern nicht gelesen werden.')
         if portal.get('type') == 'xtream':
-            if dlg.yesno('XtreamMate – Kategorien',
+            if dlg.yesno('XCMate – Kategorien',
                          'Jetzt Sender-, Film- und Seriengruppen aktivieren oder deaktivieren? '
                          'Die Gruppenverwaltung ist später jederzeit erreichbar.'):
                 try:
                     from group_selection import manage_groups
                     manage_groups(portal)
                 except Exception as exc:
-                    warn('XtreamMate group manager unavailable: {}'.format(type(exc).__name__))
-                    dlg.ok('XtreamMate', 'Das Portal wurde gespeichert. Die Gruppenverwaltung '
+                    warn('XCMate group manager unavailable: {}'.format(type(exc).__name__))
+                    dlg.ok('XCMate', 'Das Portal wurde gespeichert. Die Gruppenverwaltung '
                            'konnte nicht geöffnet werden; über die Startseite erneut versuchen.')
         post = xbmcgui.DialogProgress()
-        post.create('XtreamMate – EPG und Metadaten', 'EPG laden …')
+        post.create('XCMate – EPG und Metadaten', 'EPG laden …')
         try:
             complete_metadata(portal, report, post)
         finally:
             post.close()
-        dlg.ok('XtreamMate – Bereit',
+        dlg.ok('XCMate – Bereit',
                '„{}“ wurde dauerhaft gespeichert.\n\n'.format(title) + fmt_report(report) +
                '\n\nDie Startseite mit „Live-TV“ wird jetzt geöffnet. '
                'Die Kategorien kannst du später über „Gruppen verwalten“ ändern.')
@@ -218,17 +218,17 @@ def setup():
     except Cancelled:
         return None
     except OSError as exc:
-        dlg.ok('XtreamMate – Speicherfehler',
+        dlg.ok('XCMate – Speicherfehler',
                'Die Einrichtung wurde NICHT gespeichert.\n\n' + str(exc) +
                '\n\nBitte freien Speicher und Kodi-Profilrechte prüfen. '
                'Keine vorhandenen Portale wurden gelöscht.')
         return None
     except ValueError as exc:
-        dlg.ok('XtreamMate – Einrichtung nicht abgeschlossen', str(exc))
+        dlg.ok('XCMate – Einrichtung nicht abgeschlossen', str(exc))
         return None
     except Exception as exc:
-        warn('XtreamMate setup error: {}'.format(type(exc).__name__))
-        dlg.ok('XtreamMate – Einrichtung fehlgeschlagen',
+        warn('XCMate setup error: {}'.format(type(exc).__name__))
+        dlg.ok('XCMate – Einrichtung fehlgeschlagen',
                'Scan fehlgeschlagen. Bitte Verbindung und Erreichbarkeit prüfen. ' 
                'Die Zugangsdaten wurden nicht übertragen.')
         return None

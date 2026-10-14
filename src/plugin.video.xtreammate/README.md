@@ -1,4 +1,4 @@
-# XtreamMate 0.1.8 – Kodi test version
+# XCMate 0.1.9 – Kodi test version
 
 This is an independent Kodi add-on based on mr-evil1 TiViMate Kodi 2026.06.12.1 (GPL v2), with an original GS Media visual identity and new add-on ID `plugin.video.xtreammate`.
 
@@ -28,10 +28,10 @@ This is an offline-code-tested alpha and still needs an on-device Kodi integrati
 
 ## 0.1.3: TV-Fernbedienung und Startsender (Gerätetest ausstehend)
 
-- XtreamMate-Einstellungen → „TV-Fernbedienung aktivieren“: optional eine eigene
+- XCMate-Einstellungen → „TV-Fernbedienung aktivieren“: optional eine eigene
   FullscreenVideo-Keymap anlegen. Ein eventuell vorhandenes fremdes
   `xtreammate.xml` wird niemals überschrieben; die Keymap ist reversibel.
-- Während XtreamMate Live-TV läuft: **Hoch/Runter** schaltet einen Sender
+- Während XCMate Live-TV läuft: **Hoch/Runter** schaltet einen Sender
   rückwärts/vorwärts innerhalb der aktiven Xtream-Gruppe; zyklische Navigation
   am Gruppenende. Deaktivierte Gruppen werden nicht durchgezappt.
 - **Links** blendet Senderliste ein; erneut **Links** wählt die Gruppe.
@@ -44,7 +44,7 @@ This is an offline-code-tested alpha and still needs an on-device Kodi integrati
 - **Achtung:** Kodi-Geräte und Skins unterscheiden sich bei Taste/OSD/Overlay.
   Die Kodi-Praxisprüfung insbesondere mit Titan BINGIE MOD steht aus.
 
-XtreamMate speichert Xtream-Codes-Passwörter weiterhin lokal unverschlüsselt;
+XCMate speichert Xtream-Codes-Passwörter weiterhin lokal unverschlüsselt;
 Kodi-Profile/Backups sicher aufbewahren. Keine Streams/Zugangsdaten in Logs veröffentlichen.
 
  
@@ -125,7 +125,7 @@ must be tested on the actual Kodi box.
 - Startsender is started with xbmc.Player().play() rather than trying to
   resolve a plugin URL from a RunPlugin context. Autoplay invokes RunPlugin
   rather than PlayMedia(plugin://...), which Android Kodi can treat as a folder.
-- While an XtreamMate live stream is active, the WindowDialog keeps a tiny
+- While an XCMate live stream is active, the WindowDialog keeps a tiny
   focusable control even if its TV sidebar is hidden. Kodi Android remote
   keys are received via native WindowDialog.onAction, independently of the
   FullscreenVideo keymap. Keymap remains an optional fallback.
@@ -135,3 +135,6 @@ must be tested on the actual Kodi box.
 - Playback/remote diagnostics include the direct-play attempt and the most
   recent native Kodi action. This is a device-tested-pending release:
   real remotes and BINGIE skin behavior still require Android validation.
+
+## 0.1.9 – Rebranding zu XCMate
+Die angezeigte Bezeichnung wurde von XtreamMate in **XCMate** geändert. Kodi-Add-on-ID `plugin.video.xtreammate`, ZIP-Namen, Benutzerprofil und Kodi-Fenstereigenschaften behalten absichtlich die bisherigen technischen Schlüssel, damit Updates vorhandene Konfigurationen und Daten nicht verlieren.

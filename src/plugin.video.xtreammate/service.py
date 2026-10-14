@@ -16,7 +16,7 @@ class IPTVMasterService(xbmc.Monitor):
         self._last_epg = 0
         self._epg_worker = None
         self._stopped_since = None
-        info('XtreamMate service started')
+        info('XCMate service started')
         self._overlay = None
         self._last_session_nonce = ''
         self._last_command_nonce = ''
@@ -53,7 +53,7 @@ class IPTVMasterService(xbmc.Monitor):
                     ensure_epg_loaded_for_portal(portal, force=True)
             except Exception as exc:
                 error('Service EPG refresh: {}'.format(type(exc).__name__))
-        self._epg_worker = threading.Thread(target=refresh, name='XtreamMateEPG', daemon=True)
+        self._epg_worker = threading.Thread(target=refresh, name='XCMateEPG', daemon=True)
         self._epg_worker.start()
 
     def _maybe_warm_catalogs(self):
@@ -79,9 +79,9 @@ class IPTVMasterService(xbmc.Monitor):
                         include_vod=portal.get('include_vod', True),
                         include_series=portal.get('include_series', True))
             except Exception as exc:
-                error('XtreamMate background catalog: {}'.format(type(exc).__name__))
+                error('XCMate background catalog: {}'.format(type(exc).__name__))
         self._catalog_worker = threading.Thread(
-            target=warm, name='XtreamMateCatalogCache', daemon=True)
+            target=warm, name='XCMateCatalogCache', daemon=True)
         self._catalog_worker.start()
 
     def run(self):
@@ -136,10 +136,10 @@ class IPTVMasterService(xbmc.Monitor):
                                 self._overlay = None
                                 xbmcgui.Window(10000).setProperty(
                                     'XtreamMate.OverlayStatus', 'Fehler: ' + type(exc).__name__)
-                                error('XtreamMate WindowDialog startup failed: {} {}'.format(
+                                error('XCMate WindowDialog startup failed: {} {}'.format(
                                     type(exc).__name__, str(exc)[:240]))
                                 if not self._overlay_failure_reported:
-                                    xbmcgui.Dialog().notification('XtreamMate',
+                                    xbmcgui.Dialog().notification('XCMate',
                                          'TV-Navigation konnte nicht geöffnet werden')
                                     self._overlay_failure_reported = True
                 if self._overlay is not None and player.isPlayingVideo():
@@ -153,11 +153,11 @@ class IPTVMasterService(xbmc.Monitor):
                         self._overlay.handle_command(cmd['action'])
                         xbmcgui.Window(10000).setProperty('XtreamMate.LastHandledKey', cmd['action'])
             except Exception as exc:
-                error('XtreamMate TV navigation unavailable: {}'.format(type(exc).__name__))
+                error('XCMate TV navigation unavailable: {}'.format(type(exc).__name__))
             self.waitForAbort(0.2)
         if self._overlay is not None:
             self._overlay.close()
-        info('XtreamMate service stopped')
+        info('XCMate service stopped')
 
 
 if __name__ == '__main__':

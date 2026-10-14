@@ -429,7 +429,7 @@ class Router:
             self._add_dir('Fernbedienungstasten anlernen (Android)',
                           self.url(action='remote_learn'), icon=_ICON_SETTINGS,
                           plot='Tasten direkt auf der Android-Fernbedienung erfassen '
-                               'und einzelnen XtreamMate-Funktionen zuweisen.')
+                               'und einzelnen XCMate-Funktionen zuweisen.')
             self._add_dir('TV-Fernbedienung: Diagnose',
                           self.url(action='remote_diagnostics'), icon=_ICON_SETTINGS)
             self._add_dir('BINGIE MOD Widgets – aktive Sendergruppen',
@@ -537,7 +537,7 @@ class Router:
         session = session_from_property(marker.getProperty(SESSION_KEY))
         rows = [
             'Kodi-Tastenbelegung: ' + ('AKTIV' if is_enabled() else 'INAKTIV'),
-            'XtreamMate-Stream erkannt: ' + ('JA' if session else 'NEIN'),
+            'XCMate-Stream erkannt: ' + ('JA' if session else 'NEIN'),
             'Video läuft: ' + ('JA' if xbmc.Player().isPlayingVideo() else 'NEIN'),
             'TV-Einblendung: ' + (marker.getProperty('XtreamMate.OverlayStatus') or 'nicht gestartet'),
             'Startsender: ' + (marker.getProperty('XtreamMate.StartupStatus') or 'noch nicht gestartet'),
@@ -549,8 +549,8 @@ class Router:
             rows.append('Die neue TV-Steuerung erfasst die Android-Tasten auch ohne Keymap.')
         else:
             rows.append('')
-            rows.append('Test bei laufendem XtreamMate-TV: Links / OK / Guide.')
-        xbmcgui.Dialog().textviewer('XtreamMate – Fernbedienungsdiagnose', '\n'.join(rows))
+            rows.append('Test bei laufendem XCMate-TV: Links / OK / Guide.')
+        xbmcgui.Dialog().textviewer('XCMate – Fernbedienungsdiagnose', '\n'.join(rows))
 
     def _remote_learn(self):
         from remote_profiles import configure
@@ -570,7 +570,7 @@ class Router:
             if not candidates:
                 xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
                 return
-            idx=xbmcgui.Dialog().select('XtreamMate – Portal', [x['name'] for x in candidates])
+            idx=xbmcgui.Dialog().select('XCMate – Portal', [x['name'] for x in candidates])
             if idx<0:
                 xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
                 return
@@ -589,7 +589,7 @@ class Router:
         from portals import get_by_id
         p = get_by_id(self._params.get('pid', ''))
         if not p or p.get('type') != 'xtream' or not p.get('start_stream_id'):
-            notify('XtreamMate', 'Bitte zuerst eine Startgruppe und einen Startsender wählen.')
+            notify('XCMate', 'Bitte zuerst eine Startgruppe und einen Startsender wählen.')
             return
         from xtream import XtreamClient
         from player import build_playable_item
@@ -608,8 +608,8 @@ class Router:
                 'XtreamMate.StartupStatus', 'Direktwiedergabe: ' + title[:64])
             xbmc.Player().play(item.getPath(), item)
         except Exception as exc:
-            error('XtreamMate direct startup failed: {}'.format(type(exc).__name__))
-            notify('XtreamMate', 'Startsender konnte nicht gestartet werden.')
+            error('XCMate direct startup failed: {}'.format(type(exc).__name__))
+            notify('XCMate', 'Startsender konnte nicht gestartet werden.')
             xbmcgui.Window(10000).setProperty(
                 'XtreamMate.StartupStatus', 'Fehler: ' + type(exc).__name__)
 
@@ -620,10 +620,10 @@ class Router:
         if not p:
             options = [item for item in portals.load_all() if item.get('type') == 'xtream']
             if not options:
-                xbmcgui.Dialog().ok('XtreamMate', 'Zuerst einen Xtream-Codes-Zugang einrichten.')
+                xbmcgui.Dialog().ok('XCMate', 'Zuerst einen Xtream-Codes-Zugang einrichten.')
                 xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
                 return
-            idx = xbmcgui.Dialog().select('XtreamMate – Portal auswählen',
+            idx = xbmcgui.Dialog().select('XCMate – Portal auswählen',
                                          [item['name'] for item in options])
             if idx < 0:
                 xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
@@ -976,7 +976,7 @@ class Router:
         guide = load_cache(p['id'])
         now_ts = time.time()
         xbmcplugin.setContent(self._handle, 'videos')
-        xbmcplugin.setPluginCategory(self._handle, 'XtreamMate – ' + names.get(cid,'TV'))
+        xbmcplugin.setPluginCategory(self._handle, 'XCMate – ' + names.get(cid,'TV'))
         for item in streams:
             if not isinstance(item, dict) or str(item.get('category_id','')) != cid:
                 continue
@@ -1017,8 +1017,8 @@ class Router:
         vid = trailer_id(item)
         if vid:
             plot += '\n\nYouTube-Trailer-ID: ' + vid
-        xbmcgui.Dialog().textviewer('XtreamMate – Filminfo', plot)
-        if vid and xbmcgui.Dialog().yesno('XtreamMate', 'YouTube-Trailer abspielen?'):
+        xbmcgui.Dialog().textviewer('XCMate – Filminfo', plot)
+        if vid and xbmcgui.Dialog().yesno('XCMate', 'YouTube-Trailer abspielen?'):
             self._play_youtube_id(vid)
 
     @staticmethod
@@ -1030,7 +1030,7 @@ class Router:
         try:
             xbmcaddon.Addon('plugin.video.youtube')
         except RuntimeError:
-            xbmcgui.Dialog().ok('XtreamMate',
+            xbmcgui.Dialog().ok('XCMate',
                 'Bitte das offizielle Kodi-YouTube-Add-on installieren, '
                 'um Trailer direkt wiederzugeben.')
             return
@@ -1071,7 +1071,7 @@ class Router:
             self._add_dir('Katalog wird im Hintergrund geladen – später erneut öffnen',
                           self.url(action='portal_home', pid=p['id']),
                           icon=_ICON_SETTINGS,
-                          plot='Beim ersten Scan muss XtreamMate Daten vom Anbieter laden.')
+                          plot='Beim ersten Scan muss XCMate Daten vom Anbieter laden.')
         else:
             # Cache was present before 0.1.5: initialize its discovery baseline
             # without falsely flagging all previously known items as 'new'.
@@ -1102,7 +1102,7 @@ class Router:
                               self.url(action='portal_home', pid=p['id']),
                               icon=_ICON_SETTINGS,
                               plot='Der Anbieter liefert eventuell kein Hinzufügedatum. '
-                                   'XtreamMate erkennt künftig beim Aktualisieren neue IDs.')
+                                   'XCMate erkennt künftig beim Aktualisieren neue IDs.')
         xbmcplugin.addSortMethod(self._handle, xbmcplugin.SORT_METHOD_NONE)
         xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
 
@@ -2032,7 +2032,7 @@ class Router:
                 url = xc.live_stream_url(self._params['sid'])
         if not url:
             error('play_live: no URL in params')
-            notify('XtreamMate', 'Stream URL fehlt')
+            notify('XCMate', 'Stream URL fehlt')
             xbmcplugin.setResolvedUrl(self._handle, False, xbmcgui.ListItem())
             return
         # The service displays a transparent on-video TV remote panel. Never
@@ -2208,14 +2208,14 @@ class Router:
         p   = P.get_by_id(pid)
         if not p:
             return
-        notify('XtreamMate', f'Refreshing {p["name"]}…', duration=1500)
+        notify('XCMate', f'Refreshing {p["name"]}…', duration=1500)
         self._load_channels(p, force=True)
         if p.get('type') == 'xtream':
             from xtream import XtreamClient
             xc = XtreamClient(p['xc_host'], p['xc_user'], p['xc_pass'])
             xc.get_vod_categories(force_refresh=True)
             xc.get_series_categories(force_refresh=True)
-        notify('XtreamMate', f'{p["name"]} refreshed')
+        notify('XCMate', f'{p["name"]} refreshed')
         xbmc.executebuiltin('Container.Refresh')
 
     def _epg_sources(self):
@@ -2230,14 +2230,14 @@ class Router:
         p   = P.get_by_id(pid)
         if not p:
             return
-        notify('XtreamMate', 'Refreshing EPG…', duration=1500)
+        notify('XCMate', 'Refreshing EPG…', duration=1500)
         from epg import ensure_epg_loaded_for_portal
         ensure_epg_loaded_for_portal(p, force=True)
-        notify('XtreamMate', 'EPG refreshed')
+        notify('XCMate', 'EPG refreshed')
 
     def _do_clear_cache(self):
         cache_clear()
-        notify('XtreamMate', 'Cache cleared')
+        notify('XCMate', 'Cache cleared')
 
     def _open_settings(self):
         ADDON.openSettings()
@@ -2266,7 +2266,7 @@ class Router:
         if type_idx in (0, 1):
             url = setting('new_portal_m3u_url', '').strip()
             if not url:
-                notify('XtreamMate', _L(32283))
+                notify('XCMate', _L(32283))
                 return
             xc = portals.detect_xtream(url)
             if xc:
@@ -2280,7 +2280,7 @@ class Router:
             user = setting('new_portal_xc_user', '').strip()
             pwd  = setting('new_portal_xc_pass', '').strip()
             if not host or not user:
-                notify('XtreamMate', _L(32284))
+                notify('XCMate', _L(32284))
                 return
             data = dict(name=name, type='xtream', xc_host=host,
                         xc_user=user, xc_pass=pwd,
@@ -2289,7 +2289,7 @@ class Router:
             url = setting('new_portal_stb_url', '').strip()
             mac = setting('new_portal_stb_mac', '00:1A:79:00:00:00').strip()
             if not url or not mac:
-                notify('XtreamMate', _L(32285))
+                notify('XCMate', _L(32285))
                 return
             data = dict(name=name, type='stb', stb_url=url, stb_mac=mac,
                         epg_url=epg_url, epg_show=epg_show, enabled=enabled)
@@ -2297,7 +2297,7 @@ class Router:
             return
 
         portals.add(data)
-        notify('XtreamMate', _L(32083, name))
+        notify('XCMate', _L(32083, name))
         for key, val in DEFAULTS.items():
             ADDON.setSetting(key, val)
         ADDON.setSetting('new_portal_type',    '0')
@@ -2312,7 +2312,7 @@ class Router:
         pid = self._params.get('pid', '')
         p   = P.get_by_id(pid) if pid else None
         if not p:
-            notify('XtreamMate', 'Portal not found. Open Portal Manager.')
+            notify('XCMate', 'Portal not found. Open Portal Manager.')
             xbmcplugin.endOfDirectory(self._handle, False)
         return p
 

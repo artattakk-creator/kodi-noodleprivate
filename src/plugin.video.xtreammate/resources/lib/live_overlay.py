@@ -1,4 +1,4 @@
-"""XtreamMate remote-control TV navigation, displayed over active Xtream live TV.
+"""XCMate remote-control TV navigation, displayed over active Xtream live TV.
 
 Back/Left: closed -> channels -> category groups; Right: return to channels.
 Up/Down: zap one station in the active group when hidden, otherwise highlight items.
@@ -179,7 +179,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
                              'resources', 'media', 'tv_overlay_bg.png')
         sidebar = min(600, max(440, int(width * 0.47)))
         self.bg = xbmcgui.ControlImage(0, 0, sidebar, height, image)
-        self.heading = xbmcgui.ControlLabel(32, 25, sidebar-48, 55, 'XtreamMate', 'font16', '0xFFFFFFFF')
+        self.heading = xbmcgui.ControlLabel(32, 25, sidebar-48, 55, 'XCMate', 'font16', '0xFFFFFFFF')
         self.sub = xbmcgui.ControlLabel(32, 82, sidebar-48, 40, '', 'font13', '0xFFE3C5FF')
         self.control = xbmcgui.ControlList(32, 135, sidebar-58, height-205,
             font='font13', textColor='0xFFFFFFFF', selectedColor='0xFFFFC46E')
@@ -222,7 +222,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         for c in self.extra_buttons:
             c.setVisible(self.mode == 'extras')
         if osd:
-            self.osd_title.setLabel('XtreamMate  ·  {}  |  {}'.format(
+            self.osd_title.setLabel('XCMate  ·  {}  |  {}'.format(
                 self.portal.get('name','Live TV'),
                 'OK: Weitere Funktionen' if self.mode == 'controls' else 'OK: Ausführen'))
             focus = (self.main_buttons[self._focus_main] if self.mode == 'controls'
@@ -236,7 +236,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         if self.mode == 'groups':
             self.rows = category_rows(self.groups, self.enabled)
             labels = [('✔  ' if enabled else '○  ') + label for _, label, enabled in self.rows]
-            self.heading.setLabel('XtreamMate · SENDERGRUPPEN')
+            self.heading.setLabel('XCMate · SENDERGRUPPEN')
             self.sub.setLabel('OK: Gruppe öffnen · Menü: Ein/Aus')
             self.footer.setLabel('◀/Zurück: schließen   ▶: Senderliste   ▲▼: navigieren')
         else:
@@ -248,7 +248,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             labels = [row_title(c.name, guide_for_channel(
                 guide, c.tvg_id, c.extra.get('stream_id', ''), now_ts))
                 for c in self.visible_channels]
-            self.heading.setLabel('XtreamMate · LIVE-TV')
+            self.heading.setLabel('XCMate · LIVE-TV')
             self.sub.setLabel('{} Sender · {}'.format(len(labels),
                 next((x[1] for x in self.rows if x[0] == self.category_id), 'Aktivierte Gruppen')))
             self.footer.setLabel('◀/Zurück: Sendergruppen   OK: Umschalten')
@@ -334,7 +334,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         channel = adjacent_channel(self.channels, self.category_id,
                                    self.enabled, self.sid, step)
         if channel is None:
-            xbmcgui.Dialog().notification('XtreamMate',
+            xbmcgui.Dialog().notification('XCMate',
                 'Keine aktiven Sender in dieser Gruppe.')
             return
         self._tune(channel)
@@ -348,7 +348,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 raise ValueError('live stream without timeshift')
             player.seekTime(min(max(position+seconds, 0), duration))
         except Exception:
-            xbmcgui.Dialog().notification('XtreamMate',
+            xbmcgui.Dialog().notification('XCMate',
                 'Spulen ist bei diesem Live-Sender nicht verfügbar (kein Timeshift).')
 
     def _epg(self):
@@ -387,7 +387,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
                         item.get('start_timestamp', '')), item.get('name',
                         item.get('title', ''))))
         if lines:
-            xbmcgui.Dialog().textviewer('XtreamMate – EPG', '\n'.join(lines))
+            xbmcgui.Dialog().textviewer('XCMate – EPG', '\n'.join(lines))
             return
         if not self._epg_fetching and self.sid:
             self._epg_fetching = True
@@ -396,12 +396,12 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 try:
                     self.xc.get_short_epg(sid, limit=6, force_refresh=True)
                 except Exception as exc:
-                    warn('XtreamMate short EPG: {}'.format(type(exc).__name__))
+                    warn('XCMate short EPG: {}'.format(type(exc).__name__))
                 finally:
                     self._epg_fetching = False
             threading.Thread(target=warm, daemon=True,
-                             name='XtreamMateShortEPG').start()
-        xbmcgui.Dialog().notification('XtreamMate – EPG',
+                             name='XCMateShortEPG').start()
+        xbmcgui.Dialog().notification('XCMate – EPG',
             'EPG wird im Hintergrund geladen. Gleich erneut öffnen.')
 
     def _execute(self, section, index):
@@ -537,5 +537,5 @@ def start_if_eligible(last_nonce):
     try:
         return LiveNavigator(portal, session['sid'])
     except Exception as exc:
-        warn('XtreamMate navigator cannot start: {}'.format(type(exc).__name__))
+        warn('XCMate navigator cannot start: {}'.format(type(exc).__name__))
         return None

@@ -1,5 +1,5 @@
 # Kodi Media Center language file
-# Addon Name: XtreamMate
+# Addon Name: XCMate
 # Addon id: plugin.video.xtreammate
 # Addon Provider: MrNobody
 msgid ""
@@ -13,7 +13,7 @@ msgstr ""
 
 msgctxt "#32000"
 msgid "IPTV Master"
-msgstr "XtreamMate"
+msgstr "XCMate"
 
 msgctxt "#32001"
 msgid "Live TV"

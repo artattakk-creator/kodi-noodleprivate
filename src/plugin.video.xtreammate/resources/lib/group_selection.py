@@ -147,7 +147,7 @@ def _checkbox_selection(dialog, kind, categories, ids, current, new_ids):
         labels.append(name + suffix)
     initial = [index for index, cid in enumerate(ids) if cid in current]
     selected = dialog.multiselect(
-        'XtreamMate – {} (Haken setzen, unten OK = speichern)'.format(LABELS[kind]),
+        'XCMate – {} (Haken setzen, unten OK = speichern)'.format(LABELS[kind]),
         labels, preselect=initial)
     if selected is None:
         return None
@@ -163,7 +163,7 @@ def choose_groups(portal, kind='live'):
     dlg = xbmcgui.Dialog()
     cats = _categories(portal, kind)
     if not cats:
-        dlg.ok('XtreamMate', 'Keine {} vom Server erhalten.'.format(LABELS[kind]))
+        dlg.ok('XCMate', 'Keine {} vom Server erhalten.'.format(LABELS[kind]))
         return False
     ids = [str(c['category_id']) for c in cats]
     state = _state(_read(), portal['id'], kind)
@@ -176,17 +176,17 @@ def choose_groups(portal, kind='live'):
     def commit():
         save(portal['id'], [cid for cid in ids if cid in current],
              kind=kind, known=ids, auto_new=auto_new)
-        dlg.notification('XtreamMate', '{}: {} von {} aktiv'.format(
+        dlg.notification('XCMate', '{}: {} von {} aktiv'.format(
             LABELS[kind], len(current), len(ids)))
         return True
 
     while True:
         options = _menu_items(kind, current, ids, old_known, auto_new)
         try:
-            choice = dlg.select('XtreamMate – {}'.format(LABELS[kind]),
+            choice = dlg.select('XCMate – {}'.format(LABELS[kind]),
                                 options, preselect=0)
         except TypeError:
-            choice = dlg.select('XtreamMate – {}'.format(LABELS[kind]), options)
+            choice = dlg.select('XCMate – {}'.format(LABELS[kind]), options)
         if choice in (-1, 7):
             return False
         if choice == 0:
@@ -213,9 +213,9 @@ def choose_groups(portal, kind='live'):
                         current |= set(ids) - old_known
                     current &= set(ids)
                 else:
-                    dlg.notification('XtreamMate', 'Keine neuen Gruppen vom Server erhalten.')
+                    dlg.notification('XCMate', 'Keine neuen Gruppen vom Server erhalten.')
             except Exception:
-                dlg.ok('XtreamMate', 'Kategorien konnten nicht aktualisiert werden. '
+                dlg.ok('XCMate', 'Kategorien konnten nicht aktualisiert werden. '
                        'Die bisherige Auswahl bleibt erhalten.')
         elif choice == 6:
             return commit()
@@ -230,7 +230,7 @@ def manage_groups(portal):
         return
     dlg = xbmcgui.Dialog()
     while True:
-        choice = dlg.select('XtreamMate – Gruppen verwalten', [
+        choice = dlg.select('XCMate – Gruppen verwalten', [
             'Live-TV: Sendergruppen', 'Filme: Filmgruppen', 'Serien: Seriengruppen',
             'Zurück'])
         if choice < 0 or choice == 3:
@@ -239,6 +239,6 @@ def manage_groups(portal):
             choose_groups(portal, KINDS[choice])
         except Exception as exc:
             from utils import error
-            error('XtreamMate group manager failed: {}'.format(type(exc).__name__))
-            dlg.ok('XtreamMate', 'Die Gruppen konnten nicht geladen oder gespeichert werden. '
+            error('XCMate group manager failed: {}'.format(type(exc).__name__))
+            dlg.ok('XCMate', 'Die Gruppen konnten nicht geladen oder gespeichert werden. '
                     'Bitte Internetverbindung und lokalen Speicher prüfen.')

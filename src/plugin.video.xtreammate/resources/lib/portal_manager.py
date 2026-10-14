@@ -76,7 +76,7 @@ def _portal_menu(p: dict):
             options = [('include_live', 'Live-TV'), ('include_vod', 'Filme / VOD'),
                        ('include_series', 'Serien')]
             current = [i for i, (key, label) in enumerate(options) if p.get(key, True)]
-            choice = xbmcgui.Dialog().multiselect('XtreamMate – Inhaltsbereiche',
+            choice = xbmcgui.Dialog().multiselect('XCMate – Inhaltsbereiche',
                         [label for key, label in options], preselect=current)
             if choice is not None and choice:
                 update(p['id'], {key: i in choice for i, (key, _) in enumerate(options)})

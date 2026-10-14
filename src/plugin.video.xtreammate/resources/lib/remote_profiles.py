@@ -1,4 +1,4 @@
-"""Kodi/Android remote learning for XtreamMate's on-video WindowDialog.
+"""Kodi/Android remote learning for XCMate's on-video WindowDialog.
 
 Only numeric Kodi *action IDs* are mapped; no Android system permissions,
 third-party skin keymaps, or global keymaps are modified.
@@ -65,7 +65,7 @@ def mapped_action(kodi_action):
         if bound == code:
             return name
     # Android's Back key has several Kodi equivalents. Unless specifically
-    # assigned to another action, use it to display XtreamMate channels.
+    # assigned to another action, use it to display XCMate channels.
     if code in (9, 10, 92):
         return 'left'
     return None
@@ -81,7 +81,7 @@ def _capture():
             height = max(480, self.getHeight())
             self.title = xbmcgui.ControlLabel(
                 64, height // 2 - 90, width - 128, 70,
-                'XtreamMate: Gewünschte Fernbedienungstaste jetzt drücken',
+                'XCMate: Gewünschte Fernbedienungstaste jetzt drücken',
                 'font16', '0xFFFFFFFF')
             self.focus_button = xbmcgui.ControlButton(
                 width // 2 - 140, height // 2 + 5, 280, 56,
@@ -117,16 +117,16 @@ def configure():
         labels = ['{}  [Kodi-Aktion {}]'.format(NAMES[k], bindings[k])
                   for k in COMMANDS]
         items = labels + ['Alle Tasten zurücksetzen', 'Zurück']
-        choice = d.select('XtreamMate – Android-Fernbedienung anlernen', items)
+        choice = d.select('XCMate – Android-Fernbedienung anlernen', items)
         if choice < 0 or choice == len(items)-1:
             return
         if choice == len(COMMANDS):
-            if d.yesno('XtreamMate', 'Alle gelernten Tastencodes zurücksetzen?'):
+            if d.yesno('XCMate', 'Alle gelernten Tastencodes zurücksetzen?'):
                 save(DEFAULT)
-                d.notification('XtreamMate', 'Standardbelegung wiederhergestellt')
+                d.notification('XCMate', 'Standardbelegung wiederhergestellt')
             continue
         command = COMMANDS[choice]
-        if not d.yesno('XtreamMate', NAMES[command] + '\n'
+        if not d.yesno('XCMate', NAMES[command] + '\n'
                        'Im nächsten Fenster genau die gewünschte Taste drücken.'):
             continue
         result = _capture()
@@ -134,19 +134,19 @@ def configure():
             continue
         code, raw = result
         if code == 13:
-            d.ok('XtreamMate', 'Stop kann nicht als Navigationstaste verwendet werden.')
+            d.ok('XCMate', 'Stop kann nicht als Navigationstaste verwendet werden.')
             continue
         other = next((k for k,v in bindings.items()
                       if v == code and k != command), None)
         if other:
-            d.ok('XtreamMate',
+            d.ok('XCMate',
                  'Kodi-Aktion {} ist bereits für {} belegt. '
                  'Diese Taste kann nicht doppelt zugewiesen werden.'.format(
                     code, NAMES[other]))
             continue
-        if d.yesno('XtreamMate – Taste erkannt',
+        if d.yesno('XCMate – Taste erkannt',
                    '{}\nKodi-Aktion: {}\nAndroid-Tastencode: {}\n'
                    'Diese Belegung speichern?'.format(NAMES[command], code, raw)):
             bindings[command] = code
             save(bindings)
-            d.notification('XtreamMate', 'Fernbedienung gespeichert')
+            d.notification('XCMate', 'Fernbedienung gespeichert')

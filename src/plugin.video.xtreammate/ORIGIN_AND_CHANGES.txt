@@ -1,4 +1,4 @@
-XtreamMate 0.1.0 — independent Kodi fork, GS Media
+XCMate (ursprünglich XtreamMate 0.1.0) — independent Kodi fork, GS Media
 
 Upstream: mr-evil1 / TiViMate Kodi 2026.06.12.1, https://github.com/mr-evil1/kodi-media-repo
 Original addon declares GPL-2.0-only. Full GPL v2 license accompanies this fork.
@@ -10,3 +10,5 @@ Back/Left remote navigation, and full poster file prefetch are NOT yet implement
 The VOD and series response data and image URLs are cached by the upstream client;
 posters are fetched by Kodi as needed and are not predownloaded en masse.
 There is no video source or login embedded in this package. Use authorized services.
+
+2026-10-14: Visible product branding changed to XCMate at release 0.1.9. Internal Kodi addon ID `plugin.video.xtreammate` unchanged to preserve upgrades and user profiles. Upstream attribution and GPL remain unchanged.

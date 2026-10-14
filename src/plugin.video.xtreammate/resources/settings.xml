@@ -33,16 +33,16 @@
              label="32201"
              action="RunPlugin(plugin://plugin.video.xtreammate/?action=portal_manager)"/>
     <setting id="startup_xtream" type="action"
-             label="XtreamMate: Startsender / Startgruppe"
+             label="XCMate: Startsender / Startgruppe"
              action="RunPlugin(plugin://plugin.video.xtreammate/?action=startup_settings)"/>
     <setting id="remote_xtream" type="action"
-             label="XtreamMate: Links / OK Fernbedienung aktivieren"
+             label="XCMate: Links / OK Fernbedienung aktivieren"
              action="RunPlugin(plugin://plugin.video.xtreammate/?action=remote_setup)"/>
     <setting id="remote_learn" type="action"
-             label="XtreamMate: Android-Fernbedienung anlernen"
+             label="XCMate: Android-Fernbedienung anlernen"
              action="RunPlugin(plugin://plugin.video.xtreammate/?action=remote_learn)"/>
     <setting id="manage_xtream_groups" type="action"
-             label="XtreamMate: Live-TV-, Film- und Seriengruppen verwalten"
+             label="XCMate: Live-TV-, Film- und Seriengruppen verwalten"
              action="RunPlugin(plugin://plugin.video.xtreammate/?action=groups_manager)"/>
     <setting id="portal_count_info" type="lsep" label=""/>
   </category>
@@ -68,7 +68,7 @@
   </category>
   <category label="32230">
     <setting id="epg_sources_manager" type="action"
-             label="XtreamMate: EPG-Quellen und Senderzuordnung"
+             label="XCMate: EPG-Quellen und Senderzuordnung"
              action="RunPlugin(plugin://plugin.video.xtreammate/?action=epg_sources)"/>
     <setting id="epg_enabled"         type="bool"   label="32236" default="true"/>
     <setting id="epg_lines"           type="slider" label="32237" default="3"    range="0,1,5"/>

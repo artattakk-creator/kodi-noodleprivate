@@ -146,4 +146,4 @@ def prefetch_short_guides(portal, channels, limit=24):
         finally:
             with _SHORT_LOCK:
                 _SHORT_INFLIGHT.discard(pid)
-    threading.Thread(target=worker,daemon=True,name='XtreamMateShortGuide').start()
+    threading.Thread(target=worker,daemon=True,name='XCMateShortGuide').start()
