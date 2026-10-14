@@ -120,6 +120,7 @@ class Router:
             'groups_manager': self._groups_manager,
             'startup_settings': self._startup_settings,
             'play_start': self._play_start,
+            'play_start_direct': self._play_start_direct,
             'remote_setup': self._remote_setup,
             'remote_learn': self._remote_learn,
             'remote_diagnostics': self._remote_diagnostics,
@@ -386,10 +387,10 @@ class Router:
             pass
         marker.setProperty('XtreamMate.LastAutoplay',
                            '{}:{}'.format(portal['id'], time.time()))
-        # PlayMedia(plugin://...) is interpreted as a folder by Kodi on some
-        # Android builds. Use RunPlugin and then direct xbmc.Player().play().
+        # A RunPlugin request is not a playable-item resolution. Its handler
+        # must call xbmc.Player().play(), unlike the menu item's setResolvedUrl.
         xbmc.executebuiltin('RunPlugin({})'.format(
-            self.url(action='play_start', pid=portal['id'])))
+            self.url(action='play_start_direct', pid=portal['id'])))
 
     def _portal_home(self):
         import portals as P
@@ -579,33 +580,67 @@ class Router:
         xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
         xbmc.executebuiltin('Container.Refresh')
 
-    def _play_start(self):
-        """Start the saved Xtream stream directly, never as a Kodi directory.
+    def _startup_playable(self):
+        """Resolve only the configured stream, never refresh portal catalogs here.
 
-        The same handler works for a selected home item and for RunPlugin
-        autoplay. Do not call Kodi's setResolvedUrl() from a RunPlugin call:
-        there is no pending playback request to resolve in that context.
+        Return a Kodi ListItem with the provider URL in its path. The caller
+        decides whether Kodi expects a resolved playable item or a direct play.
         """
         from portals import get_by_id
         p = get_by_id(self._params.get('pid', ''))
         if not p or p.get('type') != 'xtream' or not p.get('start_stream_id'):
             notify('XCMate', 'Bitte zuerst eine Startgruppe und einen Startsender wählen.')
-            return
+            return None
         from xtream import XtreamClient
         from player import build_playable_item
-        from live_overlay import announce
         sid = str(p['start_stream_id'])
         xc = XtreamClient(p['xc_host'], p['xc_user'], p['xc_pass'])
         cached = xc.get_cached_catalog('get_live_streams') or []
         channel = next((c for c in cached if str(c.get('stream_id')) == sid), {})
         url = xc.live_stream_url(sid, 'ts')
+        if not url:
+            notify('XCMate', 'Die Startsender-Adresse konnte nicht ermittelt werden.')
+            return None
         title = channel.get('name') or 'Startsender'
         item = build_playable_item(url, title=title,
-                                   logo=channel.get('stream_icon',''))
+                                   logo=channel.get('stream_icon', ''))
+        return p, sid, title, item
+
+    def _play_start(self):
+        """Kodi playable menu entry: resolve, never open an empty directory.
+
+        A ListItem with IsPlayable=true invokes Kodi's playback handshake.
+        Calling Player.play() here leaves the pending plugin URL unresolved.
+        """
+        prepared = self._startup_playable()
+        if prepared is None:
+            xbmcplugin.setResolvedUrl(self._handle, False, xbmcgui.ListItem())
+            return
+        p, sid, title, item = prepared
+        from live_overlay import announce
         try:
             announce(p['id'], sid, title)
             xbmcgui.Window(10000).setProperty(
-                'XtreamMate.StartupStatus', 'Direktwiedergabe: ' + title[:64])
+                'XtreamMate.StartupStatus', 'Kodi-Auflösung: ' + title[:64])
+            xbmcplugin.setResolvedUrl(self._handle, True, item)
+        except Exception as exc:
+            error('XCMate startup resolver failed: {}'.format(type(exc).__name__))
+            notify('XCMate', 'Startsender konnte nicht gestartet werden.')
+            xbmcgui.Window(10000).setProperty(
+                'XtreamMate.StartupStatus', 'Fehler: ' + type(exc).__name__)
+            xbmcplugin.setResolvedUrl(self._handle, False, xbmcgui.ListItem())
+
+    def _play_start_direct(self):
+        """RunPlugin-only autoplay: direct playback without setResolvedUrl."""
+        prepared = self._startup_playable()
+        if prepared is None:
+            return
+        p, sid, title, item = prepared
+        from live_overlay import announce
+        try:
+            announce(p['id'], sid, title)
+            xbmcgui.Window(10000).setProperty(
+                'XtreamMate.StartupStatus', 'Autoplay-Direktstart: ' + title[:64])
             xbmc.Player().play(item.getPath(), item)
         except Exception as exc:
             error('XCMate direct startup failed: {}'.format(type(exc).__name__))
