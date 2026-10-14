@@ -98,3 +98,26 @@ implementierten Kodi-Oberfläche**: EPG-Zeitraster, Preview, Hauptmenü,
 Karussell und Filmkatalog-Layout sind zunächst referenziert, nicht umgesetzt.
 Die QA muss die tatsächlichen Taste-zu-Zustand-Übergänge und Fokus-Führung
 auf Android belegen. P0 Startsender/Remote bleibt vorrangig.
+
+## P1 – Einstellungsmenü anhand dritter Fotoserie (14.10.2026)
+
+- 10 weitere Fotos indexiert: [`TIVIMATE_SETTINGS_SCREEN_REFERENCE_2026-10-14_DE.md`](TIVIMATE_SETTINGS_SCREEN_REFERENCE_2026-10-14_DE.md).
+  Strukturierte Soll-Daten: [`TIVIMATE_SETTINGS_CONTRACT_2026-10-14.json`](TIVIMATE_SETTINGS_CONTRACT_2026-10-14.json).
+- Menüfolge: Allgemein, Wiedergabelisten, EPG, Optik, Wiedergabe, Fernbedienung, Kindersicherung, Sonstiges, Über.
+- Allgemein: fotografierte Schalterzustände einschließlich „letzter Sender ein“,
+  aber keine bestehende Kodi-Konfiguration ungefragt überschreiben.
+- Wiedergabelisten: aktivieren, Name, zugeordnete EPG-Quellen, Logo-Priorität,
+  Archiv, Xtream-Parameter, Gruppen, Aktualisierung, nur bestätigt löschen.
+- EPG: 7 Tage Vergangenheit, Beschreibungen ein, Intervall 24h, Update-Trigger
+  aus, Quelle hinzufügen/zuweisen und Status anzeigen.
+- Optik: EPG/Player/Gruppen/Logos; Sprache System, Schrift Mittel, 50 % UI-Transparenz;
+  TiviMate zeigt Blau, **XCMate bleibt Slate-Grau**.
+- Abhängigkeiten: Android-Boot/Wake und Home-PiP sind Kodi-Host-/Android-Themen;
+  bisherige `epg_hours_back`-Einstellung ist nicht automatisch siebentägige
+  Datenhaltung. Kodi braucht eigene Dialog-/Fokusnavigation.
+- **Status: fotoverifiziert, Umsetzung offen**, keine neue veröffentlichte
+  Add-on-Version. Vor Lösch-, Restore- und EPG-Refresh-Aktionen Bestätigung,
+  atomische Datensicherung sowie strikte Portaltrennung.
+- Auf einem Foto ist eine teilweise lesbare EPG-URL mit Zugangsdaten zu sehen:
+  im öffentlichen GitHub niemals Domain, Benutzernamen, URL oder das
+  Originalbild veröffentlichen. P0 Android-Fernbedienung bleibt Vorrang.
