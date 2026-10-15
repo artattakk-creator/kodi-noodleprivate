@@ -1,6 +1,6 @@
 # XCMate – zentraler Projekteinstieg
 
-**Status:** 15.10.2026, Release 0.1.16 mit standardmäßig pausiertem Autostart für Popup-Diagnose (Android-Gerätetest offen)  
+**Status:** 15.10.2026, Release 0.1.17 mit sichtbar bestätigbarem Kodi-Dialog und eigenem XML-Popup (Android-Darstellungstest offen)  
 **Repository:** https://github.com/artattakk-creator/kodi-noodleprivate  
 **Kodi-Repository:** GS Media Kodi Repository 1.7.0  
 **Angezeigter Add-on-Name:** XCMate  
