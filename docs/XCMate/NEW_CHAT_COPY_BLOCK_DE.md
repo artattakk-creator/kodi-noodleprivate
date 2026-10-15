@@ -9,7 +9,7 @@ Wir setzen mein Kodi-/IPTV-Projekt **XCMate** (GS Media) fort. Arbeite direkt im
 4. `docs/XCMate/SERIES_PROGRESS_SPEC_DE.md`
 5. `docs/XCMate/DESIGN_SYSTEM_DE.md`
 
-**Letzter geprüfter Projektstand am 15.10.2026:** XCMate 0.1.16, GS Media Kodi Repository 1.7.0. Der angezeigte Name lautet XCMate. Die technische Kodi-ID `plugin.video.xtreammate` bleibt bewusst unverändert, damit automatische Updates und Kodi-Profil/Zugangsdaten erhalten bleiben.
+**Letzter geprüfter Projektstand am 15.10.2026:** XCMate 0.1.17, GS Media Kodi Repository 1.7.0. Der angezeigte Name lautet XCMate. Die technische Kodi-ID `plugin.video.xtreammate` bleibt bewusst unverändert, damit automatische Updates und Kodi-Profil/Zugangsdaten erhalten bleiben.
 
 **Zielgerät:** Android-Kodi-Box mit Titan BINGIE MOD. **Dringend P0:** Startsender springt auf dem echten Gerät teils weiterhin in eine leere Kodi-Verzeichnisansicht; Links/Hoch/Runter/OK, Senderliste und Player-Zusatzleiste funktionieren auf dem Gerät bislang nicht zuverlässig. 0.1.10 trennt Kodi-Playable-`setResolvedUrl` und direkten `RunPlugin`-Autoplay-Start, korrigiert die OK-Funktion im Player-OSD und wurde in GitHub CI gebaut. Es gibt weiterhin keine bestätigte erfolgreiche Android-Gerätetest-Rückmeldung. Bitte die Diagnose und Kodi-Logs analysieren, nicht blind Erfolg behaupten.
 
@@ -152,3 +152,26 @@ ohne Video laden, ersten Eintrag Popup-Test, Richtungen/OK/Zurück
 prüfen; danach Diagnose-Screenshot. TV erst später manuell starten.
 P0 echtes Android Remote weiterhin offen. Geplante UI-Meilensteine
 nach Hotfix um eine Versionsnummer verschoben.
+
+**NEU am 15.10.2026: Release XCMate 0.1.17.**
+Auf Android 0.1.16 blieb Startsender aus (gewollt),
+Hintergrunddienst LÄUFT (497 Loops), aber der eigene
+`xbmcgui.WindowDialog` erschien unsichtbar. Trotzdem
+`Popup-Ereignisse: 16`, letzte Taste Kodi-ID 92 (Zurück)
+und `Popup-Status: PER ZURÜCK GESCHLOSSEN`.
+**Modal-Remote-Eingaben funktionieren grundsätzlich**, Problem
+ist UI-Rendering/Fokusvisualisierung; TV-Session nicht getestet.
+PR #10 mit Kodi-API-Tests grün und Publikation erfolgreich
+(CI 38731122534, Release 38731226443).
+ZIP `plugin.video.xtreammate-0.1.17.zip`, 223470 Bytes.
+Neu: Popup-Test beginnt mit **sichtbarem Kodi-Dialog.select()**,
+danach auf Auswahl **Kodi WindowXMLDialog** mit eigener
+`resources/skins/Default/720p/XCMatePopupTest.xml`,
+ausdrücklichen Controls und Focus-Buttons. Fehler beim Laden
+gehen an normalen sichtbaren Kodi-Dialog; Diagnose ergänzt
+`Popup-Darstellungsweg`. Standardmäßig pausierter
+Startsender 0.1.16 bleibt aktiv. **Nutzertest:** XML sichtbar?
+Foto des nativen Auswahldialogs, XML-Popups und der späteren
+Offline-Diagnose. Nicht behaupten, dass XML oder Live-TV-Remote
+bereits Android-getestet funktionieren. Sender/EPG feature-phase
+wegen zwei P0 Hotfixes in späteren Versionen.
