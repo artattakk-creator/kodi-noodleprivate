@@ -1,6 +1,6 @@
 # XCMate – Roadmap, Bugliste und Release-Checkliste
 
-**Statusdatum:** 14.10.2026 · letzter geprüfter veröffentlichter Stand: 0.1.15.  
+**Statusdatum:** 14.10.2026 · letzter geprüfter veröffentlichter Stand: 0.1.16.  
 Labels: [RELEASED] in GitHub gebaut; [ON-DEVICE OPEN] Nutzergerätetest fehlt/negativ; [PLANNED] nur spezifiziert.
 
 ## Priorisierung
@@ -267,3 +267,31 @@ Kein Android-PASS aus Kodi-Mocks ableiten.
 EPG-Vollraster/Video-Vorschau nach Kodi-Machbarkeit, 0.1.18
 Komfortfunktionen, 0.1.19 Optik; Details unter
 [`POPUP_UI_IMPLEMENTATION_PLAN_DE.md`](POPUP_UI_IMPLEMENTATION_PLAN_DE.md).
+
+## 15.10.2026 – Release 0.1.16: Diagnosetest wurde von Startsender überholt
+
+Reales Android-Testergebnis: 0.1.15 konnte den Popup-Test nicht sichtbar
+öffnen, weil bei Einzelportal-Aufruf das automatische Abspielen des
+Startsenders vor der Tastendiagnose ausgelöst wurde. Ursache
+`_root() → _show_portal_home() → _maybe_autoplay_start()` im Code
+gefunden. **0.1.16 behebt diese Kollision mittels
+standardmäßig aktivierter Autostart-Pause in den Kodi-Add-on-Einstellungen**.
+Die konfigurierte portalbezogene Autostart-Einstellung und Zugangsdaten
+werden nicht geändert. Im Hauptmenü Popup-Test als erste Zeile und
+expliziter Autostart-Schalter; alternatives Aufrufen per Kodi-Addon-
+Konfigurieren; manuelles Startsender-Abspielen möglich.
+
+PR #9, GitHub-PR-Build 38708867907 erfolgreich, Hauptrelease 38708940824
+erfolgreich; ZIP 221251 Bytes / `addons.xml` 0.1.16 /
+MD5 `97b9a4e353d3f13427c0c83eb39e2f12`.
+
+**Geräte-QA offen:** Nach vollständigem Kodi-Neustart XCMate öffnen
+und bestätigen, dass kein automatisches Live-TV mehr startet.
+Erste Menüzeile popup öffnen, D-Pad/OK/Zurück; danach Offline-Diagnose
+fotografieren. Im Erfolgsfall manuellen Startsender + Auto-Live-Sidebar
+testen. Erst nach bestätigtem Eingabepfad vollwertige Sender- und
+EPG-Popups umsetzen.
+
+Nächste geplante Featureversionen verschieben sich wegen der
+0.1.16-P0-Hotfix: Sendergruppen/Senderübersicht ab 0.1.17,
+vollständiges EPG ab 0.1.18, Komfort ab 0.1.19, Optik nach P0.
