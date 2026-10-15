@@ -1,6 +1,6 @@
 # XCMate – Implementierungsplan: eigene Kodi-Popup-Oberflächen ab 0.1.15
 
-**Stand:** 14.10.2026 · **Architekturentscheidung:** Kodi-eigene Python-`xbmcgui.WindowDialog`-Overlays und später erforderlichenfalls Skin/XML-Dialoge statt die Kodi-Standard-Player-OSD-Menüs global zu ändern. Die bestehenden XCMate-Portale, Add-on-ID `plugin.video.xtreammate`, EPG-Zuordnungen, gelernten Tasten und alle Benutzerdaten bleiben erhalten. Die TiviMate-Nutzerfotos sind nur Funktions-/Navigationsreferenz, keine kopierten TiviMate-Assets.
+**Stand:** 15.10.2026 · **Architekturentscheidung:** Kodi-eigene Python-`xbmcgui.WindowDialog`-Overlays und später erforderlichenfalls Skin/XML-Dialoge statt die Kodi-Standard-Player-OSD-Menüs global zu ändern. Die bestehenden XCMate-Portale, Add-on-ID `plugin.video.xtreammate`, EPG-Zuordnungen, gelernten Tasten und alle Benutzerdaten bleiben erhalten. Die TiviMate-Nutzerfotos sind nur Funktions-/Navigationsreferenz, keine kopierten TiviMate-Assets.
 
 ## Ausgangslage: durch echte Android-Aufnahmen belegt
 
@@ -65,3 +65,32 @@ Nach bestandener GUI-Eingabeabnahme:
 - Sichere, opt-in/fail-closed Keymap; Benutzerdaten und Anbieter-Credentials nie in UI-Diagnose oder CI.
 - Jede Stufe: Regressionstests, GitHub Actions, installierbares ZIP, `addons.xml` und Prüfsumme, danach echter Android-Gerätetest.
 - Versionen nach 0.1.15 sind **Planungsmeilensteine**, keine zugesagten fertigen Installationspakete und können nach Gerätetestergebnissen umpriorisiert werden.
+
+## 15.10.2026 – dringliche Korrektur der Release-Reihenfolge
+
+**XCMate 0.1.16 ist ein P0-Hotfix, nicht die ursprünglich geplante
+Senderübersicht.** Der Popup-Test 0.1.15 wurde auf Android von der
+konfigurierten Startsender-Automatik sofort überholt.
+`_root()` startete den Stream via `RunPlugin` vor der
+manuellen Popup-Auswahl. 0.1.16 pausiert Autoplay *standardmäßig*
+mittels globalem Add-on-Schalter `autoplay_diagnostics_safe`,
+ohne die gespeicherte Portalpräferenz `autoplay_start`
+zu verändern. Erste Menüzeile = Popup-Test, alternativer
+Direkteinstieg über Kodi-Add-on-Einstellungen.
+
+Die **ursprünglich angestrebten Features 0.1.16–0.1.19 sind
+hiermit nach hinten verschoben**, keine dieser Feature-Versionen
+gilt automatisch als implementiert:
+- **0.1.17:** Sender- und Gruppenübersicht als Popup,
+  vorausgesetzt isolierter Android-Fokustest erfolgreich.
+- **0.1.18:** EPG-Vollraster und separat validierte echte
+  Livebild-Vorschau.
+- **0.1.19:** Quick-Panel, Komfort, Suche, Favoriten.
+- **0.1.20+:** optische Feinarbeit mit genehmigten Assets.
+
+**Geräteabnahme für 0.1.16:** Kodi komplett neustarten;
+XCMate öffnen, kein Auto-TV darf starten; Popup-Test oben
+auswählen und D-Pad/OK/Zurück ausprobieren; Diagnosewerte
+aus dem Menü danach senden. Erst nach erfolgreichem eigenem
+Dialogfokus manuell den Startsender testen. Keine Android-
+Hardwarefunktionserfolgsmeldung vor realem Test.
