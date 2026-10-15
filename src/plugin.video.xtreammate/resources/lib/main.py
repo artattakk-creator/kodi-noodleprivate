@@ -126,6 +126,7 @@ class Router:
             'remote_diagnostics': self._remote_diagnostics,
             'service_recover': self._service_recover,
             'popup_probe': self._popup_probe,
+            'autoplay_diagnostic_mode': self._autoplay_diagnostic_mode,
         }
         if action == 'root' and not _portals_mod.load_all():
             from setup_wizard import setup
@@ -375,6 +376,15 @@ class Router:
         The portal home is still built as the navigation fallback. A short
         cooldown protects against overlapping Kodi directory refreshes.
         """
+        # Fail-safe for Android remote diagnosis: the existing per-portal
+        # autoplay preference is preserved, but 0.1.16 pauses execution by
+        # default. Otherwise entering a single-portal Kodi plugin always
+        # starts Live TV before the modal popup can be opened.
+        if setting_bool('autoplay_diagnostics_safe', True):
+            xbmcgui.Window(10000).setProperty(
+                'XtreamMate.AutoplayDiagnosticState',
+                'PAUSIERT – XCMate Popup-Test ohne Live-TV erreichbar')
+            return
         if (portal.get('type') != 'xtream' or not portal.get('autoplay_start')
                 or not portal.get('start_stream_id') or xbmc.Player().isPlayingVideo()):
             return
@@ -415,6 +425,23 @@ class Router:
         def _pp(extra=''):
             return (_base_plot + '\n' + extra) if extra else _base_plot
 
+        if ptype == 'xtream':
+            # First entry must be available BEFORE any manually launched
+            # channel and independently of the Kodi Player/LiveSession.
+            self._add_dir('▶ XCMate Popup- und Fernbedienungstest (OHNE TV)',
+                          self.url(action='popup_probe'), icon=_ICON_SETTINGS,
+                          plot='Öffnet ein fokussierbares Kodi-Testfenster '
+                               'ohne den Startsender zu laden.')
+            paused = setting_bool('autoplay_diagnostics_safe', True)
+            self._add_dir(
+                ('Startsender-Autostart PAUSIERT – wieder freigeben'
+                 if paused else
+                 'Startsender-Autostart AKTIV – für Diagnose pausieren'),
+                self.url(action='autoplay_diagnostic_mode'),
+                icon=_ICON_SETTINGS,
+                plot='Betrifft nur den automatischen Start beim Öffnen '
+                     'von XCMate. Startsender, Portale und EPG bleiben '
+                     'gespeichert. Manuelles Fernsehen funktioniert weiter.')
         if p.get('include_live', True):
             self._add_dir(_L(32001),
                           self.url(action='live_groups', pid=pid),
@@ -435,10 +462,6 @@ class Router:
                                'und einzelnen XCMate-Funktionen zuweisen.')
             self._add_dir('TV-Fernbedienung: Diagnose',
                           self.url(action='remote_diagnostics'), icon=_ICON_SETTINGS)
-            self._add_dir('XCMate Popup- und Fernbedienungstest',
-                          self.url(action='popup_probe'), icon=_ICON_SETTINGS,
-                          plot='Eigenes Kodi-Popup öffnen, auch OHNE TV-Wiedergabe. '
-                               'Hoch/Runter/Links/Rechts/OK prüfen; Zurück schließt.')
             self._add_dir('XCMate-Hintergrunddienst prüfen / manuell starten',
                           self.url(action='service_recover'), icon=_ICON_SETTINGS,
                           plot='Auch ohne laufenden Stream: Dienst-Lebenszeichen prüfen '
@@ -542,8 +565,36 @@ class Router:
             xbmc.executebuiltin('Container.Refresh')
 
     def _popup_probe(self):
+        """Safe direct action: never resolve, play or launch the start channel."""
+        marker = xbmcgui.Window(10000)
+        marker.setProperty('XtreamMate.AutoplayDiagnosticState',
+                           'Popup-Test angefordert – Startsender nicht starten')
         from popup_probe import run_popup_test
         run_popup_test()
+
+    def _autoplay_diagnostic_mode(self):
+        """Toggle only the add-on-wide safety switch, not portal settings."""
+        paused = setting_bool('autoplay_diagnostics_safe', True)
+        next_state = not paused
+        if paused:
+            if not xbmcgui.Dialog().yesno(
+                    'XCMate – Startsender',
+                    'Automatischen Senderstart wieder erlauben?\n'
+                    'Wenn die Fernbedienung noch blockiert, kann das '
+                    'den Popup-Test erneut verhindern.'):
+                return
+        ADDON.setSetting('autoplay_diagnostics_safe',
+                         'true' if next_state else 'false')
+        xbmcgui.Window(10000).setProperty(
+            'XtreamMate.AutoplayDiagnosticState',
+            'PAUSIERT' if next_state else 'FREIGEGEBEN')
+        xbmcgui.Dialog().ok(
+            'XCMate – Startsender',
+            ('Automatischer Start ist für den Popup-Test pausiert.\n'
+             'Manuelles Abspielen bleibt möglich.'
+             if next_state else
+             'Autostart freigegeben. Beim nächsten Öffnen von XCMate '
+             'wird die gespeicherte Startsender-Einstellung verwendet.'))
 
     def _remote_diagnostics(self):
         from service_health import inspect
@@ -567,6 +618,9 @@ class Router:
             'Letzte TV-Einblendung: ' + health['overlay'],
             'Letzte Diensteingabe: ' + health['input'],
             '',
+            'Autostart-Diagnosemodus: ' +
+            ('PAUSIERT' if setting_bool('autoplay_diagnostics_safe', True)
+             else 'FREIGEGEBEN'),
             '=== Eigener XCMate-Popup-Test ===',
             'Popup-Status: ' +
             (marker.getProperty('XtreamMate.PopupProbe.Status') or 'noch nicht geöffnet'),
