@@ -1,6 +1,6 @@
 # XCMate – Roadmap, Bugliste und Release-Checkliste
 
-**Statusdatum:** 14.10.2026 · letzter geprüfter veröffentlichter Stand: 0.1.16.  
+**Statusdatum:** 14.10.2026 · letzter geprüfter veröffentlichter Stand: 0.1.17.  
 Labels: [RELEASED] in GitHub gebaut; [ON-DEVICE OPEN] Nutzergerätetest fehlt/negativ; [PLANNED] nur spezifiziert.
 
 ## Priorisierung
@@ -295,3 +295,29 @@ EPG-Popups umsetzen.
 Nächste geplante Featureversionen verschieben sich wegen der
 0.1.16-P0-Hotfix: Sendergruppen/Senderübersicht ab 0.1.17,
 vollständiges EPG ab 0.1.18, Komfort ab 0.1.19, Optik nach P0.
+
+## 15.10.2026 – Android-Testergebnis: Tasten funktionieren im Popup, Rendering unsichtbar; Release 0.1.17
+
+Auf 0.1.16 kein Autostart, Dienst LÄUFT (497 Loops), keine Fehler.
+Eigenes `WindowDialog`-Popup nahm **16 Tastenereignisse** entgegen;
+Kodi-ID 92 schloss es auf Zurück, obwohl kein Control sichtbar war.
+**Das ist ein positiver Beleg für den Dialog-Input-Pfad, kein
+Beleg für das Fenster-Rendering und kein Live-TV-Test.**
+Release 0.1.17 ersetzt den Popup-Test durch einen Kodi-nativen
+`Dialog.select()` (auf Box zuvor sichtbar) und eine ausdrücklich
+in der ZIP gepackte `WindowXMLDialog`-Vorlage
+`resources/skins/Default/720p/XCMatePopupTest.xml`;
+XML wird nur nach Benutzerbestätigung geöffnet.
+Native Fallback-Meldung bei XML-Load-Fehler und diagnostischer
+Renderer-Status vorhanden. PR #10, CI #38731122534, Publish
+#38731226443 grün. ZIP 223470 Bytes, Katalog 0.1.17.
+
+**Abnahmefrage:** Wird das native Fenster sichtbar? Anschließend
+wird das eigene XML-Fenster sichtbar und fokussierbar?
+Dann erst manueller Test des Live-Senders und Service-Overlay.
+Noch keine Android-Endabnahme.
+
+**Roadmap-Verschiebung wegen P0:** Ursprünglich 0.1.17 geplante
+Sender-/Gruppenoberfläche wird frühestens 0.1.18;
+vollständiger EPG frühestens 0.1.19, Komfortmenüs danach.
+Optik weiterhin nachgeordnet.
