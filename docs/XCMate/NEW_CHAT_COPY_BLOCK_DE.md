@@ -9,7 +9,7 @@ Wir setzen mein Kodi-/IPTV-Projekt **XCMate** (GS Media) fort. Arbeite direkt im
 4. `docs/XCMate/SERIES_PROGRESS_SPEC_DE.md`
 5. `docs/XCMate/DESIGN_SYSTEM_DE.md`
 
-**Letzter geprüfter Projektstand am 14.10.2026:** XCMate 0.1.15, GS Media Kodi Repository 1.7.0. Der angezeigte Name lautet XCMate. Die technische Kodi-ID `plugin.video.xtreammate` bleibt bewusst unverändert, damit automatische Updates und Kodi-Profil/Zugangsdaten erhalten bleiben.
+**Letzter geprüfter Projektstand am 15.10.2026:** XCMate 0.1.16, GS Media Kodi Repository 1.7.0. Der angezeigte Name lautet XCMate. Die technische Kodi-ID `plugin.video.xtreammate` bleibt bewusst unverändert, damit automatische Updates und Kodi-Profil/Zugangsdaten erhalten bleiben.
 
 **Zielgerät:** Android-Kodi-Box mit Titan BINGIE MOD. **Dringend P0:** Startsender springt auf dem echten Gerät teils weiterhin in eine leere Kodi-Verzeichnisansicht; Links/Hoch/Runter/OK, Senderliste und Player-Zusatzleiste funktionieren auf dem Gerät bislang nicht zuverlässig. 0.1.10 trennt Kodi-Playable-`setResolvedUrl` und direkten `RunPlugin`-Autoplay-Start, korrigiert die OK-Funktion im Player-OSD und wurde in GitHub CI gebaut. Es gibt weiterhin keine bestätigte erfolgreiche Android-Gerätetest-Rückmeldung. Bitte die Diagnose und Kodi-Logs analysieren, nicht blind Erfolg behaupten.
 
@@ -130,3 +130,25 @@ anschließend Diagnose-Screenshot. Plan für 0.1.16–0.1.19 steht in
 `docs/XCMate/POPUP_UI_IMPLEMENTATION_PLAN_DE.md`.
 Keine bereits funktionierende TiviMate-EPG-/Mini-TV-Oberfläche behaupten;
 das verkleinerte Livevideo bleibt ein gesondertes Kodi-Rendering-Thema.
+
+**NEUER P0-Stand, 15.10.2026: XCMate 0.1.16 VERÖFFENTLICHT.**
+Nach 0.1.15 meldete Nutzer: Popup-Test konnte nicht gestartet
+werden, weil beim Betreten von XCMate sofort der gespeicherte
+Startsender lief und die Bedienung blockierte. Ursache im Code:
+`_root()` ruft bei Einzelportal automatisch
+`_maybe_autoplay_start()` auf und startet über `RunPlugin`
+das Live-TV noch bevor Popup anwählbar ist. PR #9 behebt das
+mit Add-on-Einstellung `autoplay_diagnostics_safe` (Standard
+`true`), blockiert *nur* automatischen Start, ändert keine
+Portal-/EPG-/Credential-/Remote-Konfiguration. Manuell Fernsehen
+bleibt möglich. Popup-Test erste Zeile im Portalmenü; zusätzlich
+separater Test-Aufruf über Kodi Add-on `Konfigurieren`.
+Autostart-Freigabe bewusst im Menü / Kodi-Einstellungen.
+GitHub CI und Release grün (38708867907 / 38708940824);
+ZIP `plugin.video.xtreammate-0.1.16.zip`, 221251 Bytes,
+`addons.xml` 0.1.16; checksum verifiziert.
+**Nächster Test:** Kodi komplett neu starten, XCMate-Menü
+ohne Video laden, ersten Eintrag Popup-Test, Richtungen/OK/Zurück
+prüfen; danach Diagnose-Screenshot. TV erst später manuell starten.
+P0 echtes Android Remote weiterhin offen. Geplante UI-Meilensteine
+nach Hotfix um eine Versionsnummer verschoben.
