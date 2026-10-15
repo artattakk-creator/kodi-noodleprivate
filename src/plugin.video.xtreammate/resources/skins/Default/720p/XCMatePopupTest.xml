@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- XCMate 0.1.17: Kodi XML-defined diagnostic window.
+     Explicit controls, non-Titan-default textures, fixed 720p coordinates.
+     Foreground modal is launched only after Kodi's visible native dialog. -->
+<window type="dialog">
+    <defaultcontrol always="true">100</defaultcontrol>
+    <allowoverlay>yes</allowoverlay>
+    <coordinates>
+        <system>1</system>
+        <posx>0</posx>
+        <posy>0</posy>
+    </coordinates>
+    <controls>
+        <control type="image">
+            <description>Full frame for verifiable visibility</description>
+            <left>0</left><top>0</top><width>1280</width><height>720</height>
+            <texture colordiffuse="FF0E121A">special://home/addons/plugin.video.xtreammate/resources/media/tv_overlay_bg.png</texture>
+        </control>
+        <control type="image">
+            <description>Solid diagnostic panel</description>
+            <left>90</left><top>94</top><width>1100</width><height>535</height>
+            <texture colordiffuse="FF333C48">special://home/addons/plugin.video.xtreammate/resources/media/tv_overlay_bg.png</texture>
+        </control>
+        <control type="label" id="50">
+            <left>150</left><top>125</top><width>960</width><height>55</height>
+            <font>font13</font><textcolor>FFFFFFFF</textcolor>
+            <label>XCMate - XML POPUP / FERnBEDIENUNGSTEST</label>
+        </control>
+        <control type="label" id="51">
+            <left>150</left><top>205</top><width>960</width><height>50</height>
+            <font>font13</font><textcolor>FFF1F5F9</textcolor>
+            <label>Kodi XML-Dialog; Live-TV ist fuer diesen Test nicht erforderlich.</label>
+        </control>
+        <control type="label" id="52">
+            <left>150</left><top>270</top><width>960</width><height>45</height>
+            <font>font13</font><textcolor>FFFFFFFF</textcolor>
+            <label>Empfangene Tasten: 0</label>
+        </control>
+        <control type="label" id="53">
+            <left>150</left><top>333</top><width>960</width><height>43</height>
+            <font>font13</font><textcolor>FFFFFFFF</textcolor>
+            <label>Letzte Taste: noch keine</label>
+        </control>
+        <control type="label" id="54">
+            <left>150</left><top>387</top><width>960</width><height>42</height>
+            <font>font13</font><textcolor>FFBFD8E9</textcolor>
+            <label>Hoch / Runter / Links / Rechts / OK testen. Zurueck schliesst.</label>
+        </control>
+        <control type="button" id="100">
+            <description>Focusable OK test button</description>
+            <left>150</left><top>476</top><width>445</width><height>84</height>
+            <label>OK / FOKUS TESTEN</label>
+            <font>font13</font>
+            <textcolor>FFF1F5F9</textcolor>
+            <focusedcolor>FF3ABBF7</focusedcolor>
+            <align>center</align><aligny>center</aligny>
+            <texturefocus colordiffuse="FF808A9A">special://home/addons/plugin.video.xtreammate/resources/media/tv_overlay_bg.png</texturefocus>
+            <texturenofocus colordiffuse="FF26313D">special://home/addons/plugin.video.xtreammate/resources/media/tv_overlay_bg.png</texturenofocus>
+            <onleft>101</onleft><onright>101</onright>
+            <onup>101</onup><ondown>101</ondown>
+        </control>
+        <control type="button" id="101">
+            <description>Focusable close button</description>
+            <left>680</left><top>476</top><width>445</width><height>84</height>
+            <label>SCHLIESSEN</label>
+            <font>font13</font>
+            <textcolor>FFF1F5F9</textcolor>
+            <focusedcolor>FF3ABBF7</focusedcolor>
+            <align>center</align><aligny>center</aligny>
+            <texturefocus colordiffuse="FF808A9A">special://home/addons/plugin.video.xtreammate/resources/media/tv_overlay_bg.png</texturefocus>
+            <texturenofocus colordiffuse="FF26313D">special://home/addons/plugin.video.xtreammate/resources/media/tv_overlay_bg.png</texturenofocus>
+            <onleft>100</onleft><onright>100</onright>
+            <onup>100</onup><ondown>100</ondown>
+        </control>
+    </controls>
+</window>

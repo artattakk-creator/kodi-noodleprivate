@@ -316,3 +316,49 @@ Wiederaufnahme des ursprünglichen Autostarts ist über das Menü oder
 Add-on-Einstellungen möglich, wenn die Tastenabnahme erfolgreich ist.
 **Android-Fernbedienungsfunktion weiterhin nicht als bestanden markieren.**
 
+## 0.1.17 – Kodi-native Sichtbarkeitsprüfung und echtes XML-Popup (Android P0)
+
+**Echter Gerätetest zu 0.1.16:** Autostart bleibt korrekt pausiert,
+Kodi-Dienst LÄUFT (497 Loops), das alte programmatisch gebaute
+`WindowDialog` blieb **vollständig unsichtbar**, verarbeitete jedoch
+**16 native Fernbedienungsereignisse**. Die letzte Taste war
+Zurück (Kodi Action-ID 92), und das Fenster wurde sauber geschlossen.
+Damit sind die Android-Tastenevents für ein Add-on-eigenes modales
+Fenster *nachgewiesen*. Die separate TV-Session-/Overlay-Steuerung
+ist weiterhin ungetestet und darf nicht als funktionsfähig gelten.
+
+0.1.17 ersetzt den bisherigen Popup-Test:
+1. **Sichtbarer Kodi-Standarddialog** (über `Dialog.select()`) wird
+   zuerst geöffnet. Dieser Fenstertyp ist auf dem Gerät bereits durch
+   die bisherige Diagnose sichtbar gewesen.
+2. Dort **„Eigenes XCMate-XML-Fenster jetzt öffnen“** auswählen:
+   XCMate verwendet `xbmcgui.WindowXMLDialog` mit eigener
+   Skin-unabhängiger Struktur unter
+   `resources/skins/Default/720p/XCMatePopupTest.xml`.
+   Beschriftungen, Fokusflächen und Buttons sind jetzt fest im
+   Kodi-Layout definiert, nicht mehr zur Laufzeit in `onInit`
+   dynamisch eingefügt. Das Fenster protokolliert Kodi-Action-ID,
+   letzte Taste, Ereigniszahl und fokussierte Schaltfläche.
+3. Alternativ **„Nur Kodi-Popup bestätigen“** auswählen, um den
+   sichtbaren nativen Dialog ohne XML zu testen.
+4. Wenn Kodi die XML-Windowklasse nicht unterstützt oder das XML
+   nicht laden kann, zeigt ein nativer Dialog nur die Fehlerklasse;
+   keine Portale oder Zugangsdaten werden dabei ausgegeben.
+5. Die Offline-Diagnose ergänzt **Popup-Darstellungsweg**
+   (Kodi-Standarddialog bzw. eigenes XML-Fenster).
+
+**Gerätetest:** Nach Update Kodi vollständig neu starten und
+XCMate öffnen – Autostart weiterhin pausiert. Popup-Test (erste
+Portalmenüzeile) öffnen. **Erstes native Dialogfenster fotografieren.**
+Erste Option für das XML-Fenster auswählen. Wird das dunkelgraue
+XCMate-Fenster mit zwei beschrifteten Buttons angezeigt?
+Richtungen/OK/Zurück drücken; danach Popup-Ereigniszahl,
+Popup-Darstellungsweg und Popup-Status aus der Offline-Diagnose
+fotografieren. Falls kein XML-Bild sichtbar ist, mit Zurück zum
+XCMate-Menü gehen und Diagnosetext prüfen.
+
+**Wichtig:** Kein Live-TV läuft beim Test. Startsenderkonfiguration,
+Kodi-Profile, EPG und gespeicherte Android-Keymaps bleiben unverändert.
+Version 0.1.17 ist ein gezielter **Darstellungs-Hotfix** und
+nicht die ursprünglich für 0.1.17 geplante fertige Senderlisten-UI.
+

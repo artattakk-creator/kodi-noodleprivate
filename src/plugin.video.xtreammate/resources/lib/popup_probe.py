@@ -1,13 +1,16 @@
-"""Standalone Kodi modal UI diagnostic for XCMate on Android.
+"""Kodi-visible remote debugging, using a native dialog then an XML modal.
 
-This dialog can be opened from the XCMate portal menu while NO video plays.
-Unlike the video overlay, it runs in the add-on's foreground plug-in invocation
-using WindowDialog.doModal(), and tests Kodi's native action delivery/focus.
-Only harmless action IDs and counts are stored in Kodi's home-window properties.
+Evidence from real Android 0.1.16: WindowDialog received 16 native actions
+and closed on Back, but its dynamically added controls were invisible under
+the user's active Kodi skin. Route now starts with a Kodi-native select dialog
+(which is already known to render), then opens a skin-independent XML dialog.
+
+No IPTV stream, service, credentials or autoplay needed.
 """
 import os
 import time
 
+import xbmcaddon
 import xbmcgui
 
 PREFIX = 'XtreamMate.PopupProbe.'
@@ -16,9 +19,12 @@ LAST_KEY = PREFIX + 'LastKey'
 KEY_COUNT = PREFIX + 'KeyCount'
 FOCUS = PREFIX + 'Focus'
 LAST_OPENED = PREFIX + 'LastOpened'
+RENDERER = PREFIX + 'Renderer'
 BACK = frozenset((9, 10, 92))
-MOVE = {1: -1, 2: 1, 3: -1, 4: 1}
+MOVE = frozenset((1, 2, 3, 4))
 SELECT = 7
+BUTTON_TEST = 100
+BUTTON_CLOSE = 101
 
 
 def describe_action(key):
@@ -29,84 +35,41 @@ def describe_action(key):
     }.get(int(key), 'Kodi-Aktion {}'.format(int(key)))
 
 
-class PopupInputProbe(xbmcgui.WindowDialog):
-    """Real focusable XCMate popup – no IPTV player, service or credentials."""
+def _home():
+    return xbmcgui.Window(10000)
 
-    def __init__(self):
-        super().__init__()
+
+class PopupXMLProbe(xbmcgui.WindowXMLDialog):
+    """XML-declared controls have their own explicit Kodi rendering layout."""
+
+    def onInit(self):
         self.count = 0
         self.last_key = 'noch keine'
         self.focus_index = 0
-        self._initialized = False
-        self._last_select_time = 0
+        self.last_ok = 0.0
+        self.getControl(52).setLabel('Empfangene Tasten: 0')
+        self.getControl(53).setLabel('Letzte Taste: noch keine')
+        self.setFocusId(BUTTON_TEST)
+        _home().setProperty(RENDERER, 'WindowXMLDialog – Default/720p')
+        _home().setProperty(LAST_OPENED, str(time.time()))
+        self._write('XML-FENSTER INITIALISIERT')
 
     def _write(self, status=None):
-        window = xbmcgui.Window(10000)
+        home = _home()
         if status is not None:
-            window.setProperty(STATUS, status)
-        window.setProperty(KEY_COUNT, str(self.count))
-        window.setProperty(LAST_KEY, self.last_key)
-        window.setProperty(FOCUS, 'Testfeld' if self.focus_index == 0 else 'Schließen')
-
-    def onInit(self):
-        import xbmcaddon
-        try:
-            w = max(960, self.getWidth())
-            h = max(540, self.getHeight())
-        except Exception:
-            w, h = 1280, 720
-        addon_path = xbmcaddon.Addon().getAddonInfo('path')
-        bg_image = os.path.join(addon_path, 'resources', 'media', 'tv_overlay_bg.png')
-        pad = max(36, w // 22)
-        panel_width = min(w-2*pad, 1080)
-        panel_left = (w-panel_width)//2
-        panel_top = max(48, (h-500)//2)
-        self.bg = xbmcgui.ControlImage(panel_left, panel_top, panel_width, 490, bg_image)
-        self.title = xbmcgui.ControlLabel(
-            panel_left+35, panel_top+25, panel_width-70, 58,
-            'XCMate · POPUP- UND FERNBEDIENUNGSTEST',
-            'font16', '0xFFFFFFFF')
-        self.description = xbmcgui.ControlLabel(
-            panel_left+35, panel_top+99, panel_width-70, 40,
-            'Eigener Kodi-Dialog – OHNE gestarteten TV-Stream',
-            'font13', '0xFFD3DAE1')
-        self.instructions = xbmcgui.ControlLabel(
-            panel_left+35, panel_top+158, panel_width-70, 37,
-            'Hoch / Runter / Links / Rechts / OK drücken. Zurück schließt.',
-            'font13', '0xFFFFFFFF')
-        self.count_label = xbmcgui.ControlLabel(
-            panel_left+35, panel_top+213, panel_width-70, 45,
-            'Empfangene Tasten: 0',
-            'font13', '0xFFFFFFFF')
-        self.last_label = xbmcgui.ControlLabel(
-            panel_left+35, panel_top+267, panel_width-70, 40,
-            'Letzte Taste: noch keine',
-            'font13', '0xFFD3DAE1')
-        self.test_button = xbmcgui.ControlButton(
-            panel_left+35, panel_top+355, (panel_width-115)//2, 60,
-            'OK / Fokus testen')
-        self.close_button = xbmcgui.ControlButton(
-            panel_left+80+(panel_width-115)//2, panel_top+355,
-            (panel_width-115)//2, 60, 'Schließen')
-        for ctl in (self.bg, self.title, self.description, self.instructions,
-                    self.count_label, self.last_label, self.test_button, self.close_button):
-            self.addControl(ctl)
-        self._initialized = True
-        self.setFocus(self.test_button)
-        xbmcgui.Window(10000).setProperty(LAST_OPENED, str(time.time()))
-        self._write('FENSTER SICHTBAR – warte auf Tastendruck')
+            home.setProperty(STATUS, status)
+        home.setProperty(KEY_COUNT, str(self.count))
+        home.setProperty(LAST_KEY, self.last_key)
+        home.setProperty(FOCUS, 'Testfeld' if self.focus_index == 0 else 'Schließen')
 
     def _render(self):
-        if not self._initialized:
-            return
-        self.count_label.setLabel('Empfangene Tasten: {}'.format(self.count))
-        self.last_label.setLabel('Letzte Taste: {}'.format(self.last_key))
-        self.setFocus(self.test_button if self.focus_index == 0 else self.close_button)
-        self._write('TASTEN ANGEKOMMEN' if self.count else 'FENSTER SICHTBAR')
+        self.getControl(52).setLabel('Empfangene Tasten: {}'.format(self.count))
+        self.getControl(53).setLabel('Letzte Taste: {}'.format(self.last_key))
+        self._write('XML-TASTEN EMPFANGEN' if self.count else 'XML-FENSTER INITIALISIERT')
 
-    def _record(self, key, raw=0):
+    def _record(self, name, key, raw=0):
         self.count += 1
-        self.last_key = '{} (Kodi-ID {}, Code {})'.format(describe_action(key), key, raw)
+        self.last_key = '{} (Kodi-ID {}, Code {})'.format(name, key, raw)
         self._render()
 
     def onAction(self, action):
@@ -115,39 +78,72 @@ class PopupInputProbe(xbmcgui.WindowDialog):
             raw = int(action.getButtonCode())
         except (TypeError, ValueError, AttributeError):
             return
-        self._record(key, raw)
+        self._record(describe_action(key), key, raw)
         if key in BACK:
-            self._write('PER ZURÜCK GESCHLOSSEN')
+            self._write('XML: PER ZURÜCK GESCHLOSSEN')
             self.close()
         elif key in MOVE:
-            self.focus_index = 1 if (self.focus_index + MOVE[key]) % 2 else 0
+            self.focus_index = 1 - self.focus_index
+            self.setFocusId(BUTTON_CLOSE if self.focus_index else BUTTON_TEST)
             self._render()
         elif key == SELECT:
-            self._last_select_time = time.monotonic()
+            self.last_ok = time.monotonic()
             if self.focus_index == 1:
-                self._write('PER OK GESCHLOSSEN')
+                self._write('XML: PER OK GESCHLOSSEN')
                 self.close()
 
+    def onFocus(self, control_id):
+        if control_id in (BUTTON_TEST, BUTTON_CLOSE):
+            self.focus_index = 0 if control_id == BUTTON_TEST else 1
+            self._write()
+
     def onClick(self, control_id):
-        # Some Android remotes report OK to onClick instead of onAction.
-        if not self._initialized:
+        if control_id not in (BUTTON_TEST, BUTTON_CLOSE):
             return
-        if control_id == self.close_button.getId():
-            self.count += 1
-            self.last_key = 'OK – Schließen (Kodi onClick)'
-            self._write('PER KLICK GESCHLOSSEN')
+        if time.monotonic() - getattr(self, 'last_ok', 0.0) >= 0.3:
+            self._record('OK / onClick', SELECT, 0)
+        if control_id == BUTTON_CLOSE:
+            self._write('XML: PER KLICK GESCHLOSSEN')
             self.close()
-        elif control_id == self.test_button.getId():
-            if time.monotonic() - self._last_select_time > 0.25:
-                self.count += 1
-                self.last_key = 'OK – Testfeld (Kodi onClick)'
-                self._render()
 
 
 def run_popup_test():
-    """Public entry point for Kodi's normal menu navigation."""
-    dialog = PopupInputProbe()
+    """Always show a known-visible native Kodi chooser before custom XML."""
+    home = _home()
+    home.setProperty(RENDERER, 'Kodi Dialog.select – Vortest')
+    home.setProperty(STATUS, 'NATIVER KODI-DIALOG AUFGERUFEN')
+    home.setProperty(LAST_OPENED, str(time.time()))
+    home.setProperty(KEY_COUNT, '0')
+    home.setProperty(LAST_KEY, 'noch keine')
+    home.setProperty(FOCUS, 'Kodi-Auswahlfenster')
+    selection = xbmcgui.Dialog().select(
+        'XCMate – SICHTBARER POPUP-TEST',
+        ['Eigenes XCMate-XML-Fenster jetzt öffnen',
+         'Nur Kodi-Popup bestätigen und zurück zum Menü'])
+    if selection < 0:
+        home.setProperty(STATUS, 'KODI-DIALOG MIT ZURÜCK GESCHLOSSEN')
+        return
+    if selection == 1:
+        home.setProperty(STATUS, 'KODI-DIALOG SICHTBAR – BESTÄTIGT')
+        home.setProperty(LAST_KEY, 'Kodi-Dialog: Auswahl bestätigt')
+        return
+    if selection != 0:
+        home.setProperty(STATUS, 'KODI-DIALOG OHNE XML BEENDET')
+        return
+    home.setProperty(STATUS, 'XML-LADEVERSUCH')
+    addon_path = xbmcaddon.Addon().getAddonInfo('path')
+    dialog = None
     try:
+        dialog = PopupXMLProbe(
+            'XCMatePopupTest.xml', addon_path, 'Default', '720p')
         dialog.doModal()
+    except Exception as exc:
+        # Do not log a path, a provider URL, stacktrace or credentials.
+        kind = type(exc).__name__
+        home.setProperty(STATUS, 'XML-FEHLER: ' + kind)
+        xbmcgui.Dialog().ok(
+            'XCMate – XML-Popup konnte nicht geladen werden',
+            'Fehlerklasse: {}. Die normale Kodi-Diagnose bleibt verfügbar.'.format(kind))
     finally:
-        del dialog
+        if dialog is not None:
+            del dialog

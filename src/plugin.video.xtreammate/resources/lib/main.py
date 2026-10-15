@@ -622,6 +622,8 @@ class Router:
             ('PAUSIERT' if setting_bool('autoplay_diagnostics_safe', True)
              else 'FREIGEGEBEN'),
             '=== Eigener XCMate-Popup-Test ===',
+            'Popup-Darstellungsweg: ' +
+            (marker.getProperty('XtreamMate.PopupProbe.Renderer') or 'nicht geprüft'),
             'Popup-Status: ' +
             (marker.getProperty('XtreamMate.PopupProbe.Status') or 'noch nicht geöffnet'),
             'Popup-Ereignisse: ' +
