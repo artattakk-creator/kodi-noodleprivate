@@ -94,3 +94,29 @@ auswählen und D-Pad/OK/Zurück ausprobieren; Diagnosewerte
 aus dem Menü danach senden. Erst nach erfolgreichem eigenem
 Dialogfokus manuell den Startsender testen. Keine Android-
 Hardwarefunktionserfolgsmeldung vor realem Test.
+
+## 15.10.2026 – 0.1.17 ebenfalls P0-Rendering-Hotfix
+
+Nutzerfotos von 0.1.16 zeigen **16 empfangene native
+Richtung-/OK-/Zurück-Ereignisse** im unsichtbaren WindowDialog,
+zuletzt Kodi-Action 92. Hintergrunddienst LÄUFT; Startsender
+bleibt korrekt pausiert. Die Ursache der unsichtbaren
+Steuerelemente ist nicht eindeutig bestätigt, weshalb das
+Release 0.1.17 **noch keine Senderlisten-Ausbaustufe** ist.
+
+In 0.1.17 ist die UI-Prüfung gestaffelt: zuerst sichtbarer
+Kodi-Nativdialog `Dialog.select()` und anschließend
+`WindowXMLDialog` mit festem XML-Skin unter
+`resources/skins/Default/720p/XCMatePopupTest.xml`.
+Kodi-API-Mock-Tests/CI bestanden, Android-Rendering offen.
+Für künftige Screens kein Laufzeit-Aufbau aller Controls
+als einzigen Zugriffspfad; sichtbare nativen Dialoge als
+Fallback verwenden. Noch keine separate verkleinerte
+Livevideo-Vorschau.
+
+**Neue tentative Versionen nach Android-Abnahme:**
+0.1.18 Sender/Gruppenoverlay; 0.1.19 EPG-Raster;
+0.1.20 Quick-Panel/Komfort; danach Design.
+Die früheren nummerischen Milestones sind dadurch
+überholt. **P0 zuerst**, kein Weiterbau bei unsichtbarer
+XML-GUI.
