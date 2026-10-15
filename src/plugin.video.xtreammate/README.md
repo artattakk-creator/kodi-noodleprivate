@@ -279,3 +279,40 @@ garantieren.
 
 **Roadmap:** `docs/XCMate/POPUP_UI_IMPLEMENTATION_PLAN_DE.md`.
 
+## 0.1.16 – P0: Startsender darf die Popup-Diagnose nicht mehr blockieren
+
+**Reale Android-Rückmeldung nach 0.1.15:** Beim Versuch, „XCMate Popup-
+und Fernbedienungstest“ zu öffnen, startet direkt der bisherige
+Startsender; eigene Popup-Steuerung und D-Pad bleiben blockiert.
+
+**Ursache im Code:** `Router._root()` rief bei genau einem aktiven Portal
+direkt nach `_show_portal_home()` den `_maybe_autoplay_start()`-Handler
+auf. Dessen `RunPlugin(...play_start_direct...)` lief, bevor der Nutzer
+auf das Diagnosefenster navigieren konnte.
+
+**Korrektur (Sicherheitsstandard in dieser Version):**
+- Der neue Add-on-Schalter `autoplay_diagnostics_safe` hat **Standard AN**.
+  Solange er aktiv ist, unterbleibt nur das **automatische** Abspielen
+  beim Öffnen des Add-ons. Der gespeicherte per-Portal-Wert
+  `autoplay_start` bleibt **unverändert**, ebenso EPG und Zugangsdaten.
+- „▶ Startsender abspielen“ sowie normale Senderlisten funktionieren
+  weiterhin **manuell**.
+- Der Portalbildschirm beginnt mit dem Menüpunkt
+  **„▶ XCMate Popup- und Fernbedienungstest (OHNE TV)“**.
+  Direkt darunter kann der Auto-Startsender nach dem Test bewusst wieder
+  freigegeben werden. Diese Freigabe wird erst beim nächsten Öffnen
+  des Add-ons wirksam.
+- Der Popup-Test ist auch aus Kodi → Add-ons → XCMate → **Konfigurieren**
+  unter **„XCMate: Popup- und Fernbedienungstest OHNE TV“** erreichbar.
+  So besteht ein **zweiter Diagnosezugang** ohne Portal-Navigation.
+- Die Diagnose zeigt zusätzlich „Autostart-Diagnosemodus: PAUSIERT/FREIGEGEBEN“.
+
+**Android-Test:** Kodi nach Update vollständig beenden/neustarten,
+XCMate aufrufen: Ein Sender darf diesmal **nicht automatisch starten**.
+Erste Menüzeile → Popup-Test öffnen, Tasten und Fokus testen.
+Mit Zurück schließen; anschließend Diagnose-Ereignisse prüfen.
+Erst danach über **„▶ Startsender abspielen“** manuell TV starten.
+Wiederaufnahme des ursprünglichen Autostarts ist über das Menü oder
+Add-on-Einstellungen möglich, wenn die Tastenabnahme erfolgreich ist.
+**Android-Fernbedienungsfunktion weiterhin nicht als bestanden markieren.**
+
