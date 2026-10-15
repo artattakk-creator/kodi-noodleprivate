@@ -1,6 +1,6 @@
 # XCMate – vollständiges technisches Übergabedokument
 
-**Stand:** 14.10.2026 · Bezug: XCMate **0.1.15** · GS Media Repository **1.7.0**  
+**Stand:** 14.10.2026 · Bezug: XCMate **0.1.16** · GS Media Repository **1.7.0**  
 **Repo:** https://github.com/artattakk-creator/kodi-noodleprivate  
 **Branch:** `main` · **Display-Name:** XCMate · **Add-on-ID unverändert:** `plugin.video.xtreammate`.
 
@@ -252,3 +252,50 @@ Popup-Status danach über Diagnose fotografieren. Anschließend Startsender
 testen: 16s sichtbare Senderliste? Meldung „Auto-TV-Popup“ und Session/
 Overlay-Zeilen nachher kontrollieren. So den Kodi-Popup-Fokus unabhängig
 vom TV-Laufzeitproblem isolieren.
+
+## 16. Android P0: Autoplay blockiert Popup-Test → XCMate 0.1.16 (15.10.2026)
+
+**Reale Nutzer-Rückmeldung zu 0.1.15:** Beim Aufruf des neuen
+„XCMate Popup- und Fernbedienungstests“ wird sofort der konfigurierte
+Startsender abgespielt. Die eigene GUI erscheint nicht; normale
+Kodi-Playersteuerung blockiert erneut die benötigten Fernbedienungstasten.
+
+**Bestätigter Codepfad:** `Router._root()` führt bei genau einem
+aktiven Portal direkt nach `_show_portal_home(active[0])` ein
+`_maybe_autoplay_start(active[0])` aus. Bei konfiguriertem
+`autoplay_start=True` triggert das `RunPlugin(...play_start_direct...)`,
+bevor eine Person auf dem Portalmenü den Popup-Test anwählen kann.
+
+**P0-Release 0.1.16:**
+- Pull Request [#9](https://github.com/artattakk-creator/kodi-noodleprivate/pull/9),
+  erfolgreiche PR-CI [38708867907](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/38708867907)
+  und Publish-CI [38708940824](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/38708940824).
+- ZIP `plugin.video.xtreammate/plugin.video.xtreammate-0.1.16.zip`,
+  221251 Bytes, Quellmanifest/Katalog beide 0.1.16;
+  `addons.xml.md5` geprüft: `97b9a4e353d3f13427c0c83eb39e2f12`.
+  Alte ZIP 0.1.15 erhalten.
+- Neuer Kodi-Add-on-Schalter `autoplay_diagnostics_safe` (Standard `true`):
+  unterbindet ausschließlich `_maybe_autoplay_start()` bei geöffnetem
+  Add-on. Die Benutzereinstellung `autoplay_start` **im Portal wird nicht
+  verändert**, Startsender-ID, Zugangsdaten, EPG, Tastenbelegung bleiben.
+  `▶ Startsender abspielen` bleibt ausdrücklich manuell verfügbar.
+- **Erste Portalmenüzeile:** `▶ XCMate Popup- und Fernbedienungstest (OHNE TV)`.
+  Direkt darunter die bewusste Freigabe/Pausierung des Autostarts.
+  Ein zweiter Einstieg liegt unter `Kodi → Add-ons → XCMate →
+  Konfigurieren → XCMate: Popup- und Fernbedienungstest OHNE TV`
+  und ist unabhängig von der Portalnavigation.
+- Diagnose ergänzt `Autostart-Diagnosemodus: PAUSIERT/FREIGEGEBEN`.
+  Die bestehenden Popup-/Service-/Sessiondiagnosen bleiben vorhanden.
+- Tests `test_xcmate_safe_popup_entry_016.py` und aktualisierter
+  `test_xcmate_p0_playback.py`: single portal root darf beim
+  Safe-Modus nicht autonom starten, manueller Senderstart weiterhin
+  möglich, explizite Autostart-Freigabe, Popup-Route und Einstellungen.
+
+**Nächster Android-Nachweis:** Nach Update Kodi wirklich komplett beenden
+und wieder öffnen. XCMate muss diesmal das Portalmenü anzeigen **ohne**
+den Startsender abzuspielen. Oben den Popup-Test ausführen, echte
+D-Pad-Tasten/OK/Zurück prüfen, dann Diagnosefoto.
+Nur wenn dieses isolierte Popup funktioniert, weitere Live-TV-Diagnose.
+Bei Nichtdarstellung den Kodi-Add-on-Einstellungs-Direkteinstieg testen;
+Fehler dann in `popup_probe.py` / Fokus/GUI-Thread suchen, nicht
+erneut Overlay-Layout vergrößern. Bis dahin bleibt P0 Android-Remote offen.
