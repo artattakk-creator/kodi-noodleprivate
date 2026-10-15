@@ -52,6 +52,7 @@ class StartupKodiContractTests(unittest.TestCase):
         self.notifications = []
         self.window = _Window()
         self.player = _Player()
+        self.settings = {}
         self.portal = {
             "id": "portal-1", "type": "xtream",
             "xc_host": "https://example.invalid", "xc_user": "test-user",
@@ -59,10 +60,11 @@ class StartupKodiContractTests(unittest.TestCase):
             "autoplay_start": True,
         }
         utils = types.ModuleType("utils")
-        for name in ("setting", "setting_bool", "setting_int",
+        for name in ("setting", "setting_int",
                      "load_favourites", "toggle_favourite", "is_favourite",
                      "cache_clear", "apply_lang_sort", "_L"):
             setattr(utils, name, lambda *args, **kw: "")
+        utils.setting_bool = lambda name, default=False: self.settings.get(name, default)
         for name in ("debug", "info", "warn", "error"):
             setattr(utils, name, lambda *args, **kw: None)
         utils.notify = lambda *args: self.notifications.append(args)
@@ -120,6 +122,8 @@ class StartupKodiContractTests(unittest.TestCase):
         self.assertEqual(self.announced[0][:2], ("portal-1", "27"))
 
     def test_runplugin_autoplay_uses_direct_player_only(self):
+        # This old playback contract applies when diagnostics guard is explicitly off.
+        self.settings["autoplay_diagnostics_safe"] = False
         self.router._maybe_autoplay_start(self.portal)
         self.assertEqual(len(self.builtins), 1)
         self.assertIn("action=play_start_direct", self.builtins[0])
@@ -129,6 +133,18 @@ class StartupKodiContractTests(unittest.TestCase):
         self.assertEqual(self.resolved, [])
         self.assertEqual(self.player.played[0][0],
                          "https://example.invalid/live/stream.ts")
+
+    def test_autoplay_diagnostic_safe_by_default_keeps_manual_play(self):
+        # Primary regression: initial single-portal entry must not autostart
+        # while the foreground popup test is about to open.
+        self.assertTrue(self.portal["autoplay_start"])
+        self.router._maybe_autoplay_start(self.portal)
+        self.assertEqual(self.builtins, [])
+        self.assertIn("PAUSIERT", self.window.getProperty(
+            "XtreamMate.AutoplayDiagnosticState"))
+        self.router._play_start_direct()
+        self.assertEqual(len(self.player.played), 1)
+        self.assertTrue(self.portal["autoplay_start"])
 
     def test_invalid_start_returns_failed_playable_not_empty_directory(self):
         self.router._params["pid"] = "missing"
