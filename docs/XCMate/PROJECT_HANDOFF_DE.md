@@ -1,6 +1,6 @@
 # XCMate – vollständiges technisches Übergabedokument
 
-**Stand:** 14.10.2026 · Bezug: XCMate **0.1.16** · GS Media Repository **1.7.0**  
+**Stand:** 14.10.2026 · Bezug: XCMate **0.1.17** · GS Media Repository **1.7.0**  
 **Repo:** https://github.com/artattakk-creator/kodi-noodleprivate  
 **Branch:** `main` · **Display-Name:** XCMate · **Add-on-ID unverändert:** `plugin.video.xtreammate`.
 
@@ -299,3 +299,60 @@ Nur wenn dieses isolierte Popup funktioniert, weitere Live-TV-Diagnose.
 Bei Nichtdarstellung den Kodi-Add-on-Einstellungs-Direkteinstieg testen;
 Fehler dann in `popup_probe.py` / Fokus/GUI-Thread suchen, nicht
 erneut Overlay-Layout vergrößern. Bis dahin bleibt P0 Android-Remote offen.
+
+## 17. Android P0: Dialog nimmt 16 Tastendrücke an, aber wird nicht sichtbar → XCMate 0.1.17 (15.10.2026)
+
+**Echte Android-Fotos 0.1.16:** Kodi-Hintergrunddienst `LÄUFT`,
+letztes Lebenszeichen 0,1 s, 497 Loops, kein Dienstfehler,
+`Autostart-Diagnosemodus: PAUSIERT`. Popup-Teststatus
+`PER ZURÜCK GESCHLOSSEN`, `Popup-Ereignisse: 16`,
+letzte Popup-Taste `Zurück (Navigation) (Kodi-ID 92, Code 61448)`,
+Popup-Fokus `Schließen`. Nutzer: Richtungstasten und
+Audio-/Fokusbewegung wahrnehmbar, aber **keine sichtbaren
+Steuerelemente/Schaltflächen**. **Damit ist D-Pad-Dispatch zum
+Addon-eigenen modalen Dialog nachgewiesen; die Darstellung nicht.**
+`Native Tastenereignisse: 0` in der **separaten TV-Einblendung**
+widerspricht dem nicht: bisher ohne laufendes Video getestet.
+Noch kein EPG-/Live-Remote-Geräte-PASS.
+
+**Technische Intervention 0.1.17:**
+- Der zuvor programmgesteuert mit `ControlImage/ControlLabel/
+  ControlButton` befüllte `xbmcgui.WindowDialog` wird im Testpfad
+  durch ein **zweistufiges Testverfahren** ersetzt.
+- Schritt 1: standardmäßiger, bereits auf dem Gerät sichtbarer
+  `xbmcgui.Dialog().select()`, Titel
+  „XCMate – SICHTBARER POPUP-TEST“, Optionen
+  „Eigenes XCMate-XML-Fenster jetzt öffnen“ und
+  „Nur Kodi-Popup bestätigen und zurück zum Menü“.
+- Schritt 2: `xbmcgui.WindowXMLDialog('XCMatePopupTest.xml', addon_path,
+  'Default', '720p')` mit Add-on-eigener Datei
+  `resources/skins/Default/720p/XCMatePopupTest.xml`. Kodi-Standard-
+  XML-Layout mit fest definierten Positionen/Labels,
+  eigenen Hintergrundtexturen, zwei fokussierbaren Buttons
+  (IDs 100/101), beschreibenden Labels (IDs 52/53) und
+  D-Pad/OK/Back-Ereignisprotokoll.
+- Bei XML-Load-Exception: nur Exception-Klasse, keine privaten
+  Anbieteradressen/Passwörter, über **nativen Kodi-Dialog** anzeigen.
+- Offline-„TV-Fernbedienung: Diagnose“ zeigt
+  `Popup-Darstellungsweg`, `Popup-Status`, `Popup-Ereignisse`,
+  `Popup-Letzte Taste`, `Popup-Fokus`.
+- Autostart-Pause 0.1.16 bleibt unverändert aktiv; manuelle
+  Senderwiedergabe verfügbar.
+
+**GitHub:** PR [#10](https://github.com/artattakk-creator/kodi-noodleprivate/pull/10),
+grüne PR-CI [38731122534](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/38731122534),
+grüne Publikation [38731226443](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/38731226443).
+ZIP `plugin.video.xtreammate/plugin.video.xtreammate-0.1.17.zip`
+223470 Bytes; Source/Katalog jeweils 0.1.17;
+`addons.xml.md5` vorhanden. Altes ZIP bleibt vorhanden.
+
+**Abnahme:** Nach Update Kodi ganz neu starten; XCMate
+öffnen, kein Autoplay. Popup-Test erste Zeile; **Kodi-nativen
+Auswahldialog sichtbar?** Foto. Darin erste Option für
+eigenes XML wählen; **XML-Dialog mit lesbaren Buttons?** Foto.
+Dann Richtungstasten/OK/Zurück; nachher Offline-Diagnose
+fotografieren. Wenn native Stufe sichtbar aber XML weiterhin
+unsichtbar, `WindowXMLDialog`/Kodi-Skin-Font, Layout und
+Kontrolltexturen untersuchen; auf keinen Fall zuerst Live-TV,
+EPG oder Tastenprofile ändern. Keine Android-GUI-PASS-Aussage,
+solange XML-Bild nicht real bestätigt ist.
