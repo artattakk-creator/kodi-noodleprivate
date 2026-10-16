@@ -14,7 +14,7 @@ import unicodedata
 import uuid
 from urllib.parse import urlsplit
 
-from utils import addon_data_dir, cache_key, cache_get, cache_set, http_get, error
+from utils import addon_data_dir, cache_key, cache_get, cache_set, http_get, error, info
 
 MAX_XML_BYTES = 80 * 1024 * 1024
 INDEX_TTL = 30 * 86400
@@ -198,14 +198,62 @@ def available_channels(portal_id):
 
 
 def _channel_name_key(value):
-    """Conservative exact-name comparison (not a fuzzy Sky channel guess)."""
+    """Conservative exact-name comparison; no uncertain title mapping."""
     value = unicodedata.normalize('NFKD', str(value or '')).casefold()
-    value = re.sub(r'^\\s*(?:de|ger|at|aut|ch|sui|nl)\\s*[|:–-]\\s*', '', value)
-    value = re.sub(r'\\s*(?:uhd|fhd|hd|sd|4k)\\s*
-    """Fetch enabled XMLTV feeds; provider data and earlier sources win.
+    value = re.sub(r'^\s*(?:de|ger|at|aut|ch|sui|nl)\s*[|:–-]\s*', '', value)
+    value = re.sub(r'\s*(?:uhd|fhd|hd|sd|4k)\s*$', '', value)
+    return re.sub(r'[^a-z0-9]+', '', value)
 
-    Later sources fill gaps, and manually mapped Xtream IDs override everything.
-    A failed feed never removes an existing guide.
+
+def _link_cached_xtream_channels(portal_id, programmes, channel_index):
+    """Map unambiguous channel names only; preserve provider and manual IDs.
+
+    This runs during EPG refresh, never on the remote control/UI thread.
+    Ambiguous station names from several countries require manual mapping.
+    """
+    try:
+        import portals
+        from xtream import XtreamClient
+        portal = portals.get_by_id(portal_id)
+        if not portal or portal.get('type') != 'xtream':
+            return 0
+        client = XtreamClient(portal['xc_host'], portal['xc_user'], portal['xc_pass'])
+        streams = client.get_cached_catalog('get_live_streams') or []
+    except Exception as exc:
+        error('EPG auto-link unavailable: {}'.format(type(exc).__name__))
+        return 0
+    names = {}
+    for channel_id, display_name in channel_index.items():
+        if not programmes.get(channel_id):
+            continue
+        key = _channel_name_key(display_name)
+        if not key:
+            continue
+        if key in names and names[key] != channel_id:
+            names[key] = None  # ambiguous: refuse to guess
+        elif key not in names:
+            names[key] = channel_id
+    count = 0
+    for channel in streams:
+        if not isinstance(channel, dict):
+            continue
+        stream_id = str(channel.get('stream_id') or '').strip()
+        provider_id = str(channel.get('epg_channel_id') or '').strip()
+        if not stream_id or programmes.get(stream_id) or (
+                provider_id and programmes.get(provider_id)):
+            continue
+        source_id = names.get(_channel_name_key(channel.get('name')))
+        if source_id and source_id in programmes:
+            programmes[stream_id] = programmes[source_id]
+            count += 1
+    return count
+
+
+def merge_sources(portal_id, builtin_programmes, parse_xmltv):
+    """Fetch enabled XMLTV feeds; retain built-in data when any feed fails.
+
+    Feed order is priority order: the last enabled feed wins for overlapping
+    channel IDs. Explicit sender-to-XMLTV mapping is applied last and wins.
     """
     state = configuration(portal_id)
     merged = dict(builtin_programmes or {})
@@ -232,7 +280,7 @@ def _channel_name_key(value):
         cache_set(_channels_cache_key(portal_id), index)
         linked = _link_cached_xtream_channels(portal_id, merged, index)
         if linked:
-            info('[EPG] automatically linked {} unique Xtream names'.format(linked))
+            info('[EPG] automatically linked {} Xtream channels'.format(linked))
     for stream_id, xmltv_id in state['mappings'].items():
         if xmltv_id in merged:
             merged[str(stream_id)] = merged[xmltv_id]
@@ -376,200 +424,6 @@ def manage(portal=None):
                 _choose_mapping(portal)
             else:
                 _manage_source(portal, state['sources'][choice - 5])
-        except Exception as exc:
-            error('EPG manager action failed: {}'.format(type(exc).__name__))
-            d.ok('XCMate EPG', 'Aktion fehlgeschlagen: ' + str(exc)[:160])
-, '', value)
-    return re.sub(r'[^a-z0-9]+', '', value)
-
-
-def _link_cached_xtream_channels(portal_id, programmes, channel_index):
-    """Map unambiguous channel names only; preserve provider and manual IDs.
-
-    This runs during EPG refresh, never on the remote control/UI thread.
-    Ambiguous station names from several countries require manual mapping.
-    """
-    try:
-        import portals
-        from xtream import XtreamClient
-        portal = portals.get_by_id(portal_id)
-        if not portal or portal.get('type') != 'xtream':
-            return 0
-        client = XtreamClient(portal['xc_host'], portal['xc_user'], portal['xc_pass'])
-        streams = client.get_cached_catalog('get_live_streams') or []
-    except Exception as exc:
-        error('EPG auto-link unavailable: {}'.format(type(exc).__name__))
-        return 0
-    names = {}
-    for channel_id, display_name in channel_index.items():
-        if not programmes.get(channel_id):
-            continue
-        key = _channel_name_key(display_name)
-        if not key:
-            continue
-        if key in names and names[key] != channel_id:
-            names[key] = None  # ambiguous: refuse to guess
-        elif key not in names:
-            names[key] = channel_id
-    count = 0
-    for channel in streams:
-        if not isinstance(channel, dict):
-            continue
-        stream_id = str(channel.get('stream_id') or '').strip()
-        provider_id = str(channel.get('epg_channel_id') or '').strip()
-        if not stream_id or programmes.get(stream_id) or (
-                provider_id and programmes.get(provider_id)):
-            continue
-        source_id = names.get(_channel_name_key(channel.get('name')))
-        if source_id and source_id in programmes:
-            programmes[stream_id] = programmes[source_id]
-            count += 1
-    return count
-
-
-def merge_sources(portal_id, builtin_programmes, parse_xmltv):
-    """Fetch enabled XMLTV feeds; retain built-in data when any feed fails.
-
-    Feed order is priority order: the last enabled feed wins for overlapping
-    channel IDs. Explicit sender-to-XMLTV mapping is applied last and wins.
-    """
-    state = configuration(portal_id)
-    merged = dict(builtin_programmes or {})
-    index = {}
-    successes, failures = 0, 0
-    for source in state['sources']:
-        if not source.get('enabled', True):
-            continue
-        try:
-            raw = _read_source(source)
-            channels, programmes = parse_xmltv(raw)
-            if not programmes:
-                raise ValueError('XMLTV enthält keine Sendungen')
-            index.update(channels)
-            merged.update(programmes)
-            successes += 1
-        except Exception as exc:
-            failures += 1
-            error('EPG source failed ({}): {}'.format(
-                source.get('id', '')[:8], type(exc).__name__))
-    if index:
-        cache_set(_channels_cache_key(portal_id), index)
-    for stream_id, xmltv_id in state['mappings'].items():
-        if xmltv_id in merged:
-            merged[str(stream_id)] = merged[xmltv_id]
-    return merged, successes, failures
-
-
-def _choose_portal():
-    import portals
-    import xbmcgui
-    active = portals.get_active()
-    if not active:
-        xbmcgui.Dialog().ok('XCMate EPG', 'Bitte zuerst einen TV-Zugang einrichten.')
-        return None
-    if len(active) == 1:
-        return active[0]
-    i = xbmcgui.Dialog().select('EPG: TV-Liste wählen', [p['name'] for p in active])
-    return active[i] if 0 <= i < len(active) else None
-
-
-def _manage_source(portal, source):
-    import xbmcgui
-    d = xbmcgui.Dialog()
-    choice = d.select(str(source.get('name') or 'XMLTV'), [
-        'Quelle ' + ('deaktivieren' if source.get('enabled', True) else 'aktivieren'),
-        'Priorität erhöhen', 'Priorität senken',
-        'Quelle löschen', 'Zurück'])
-    operations = ('toggle', 'up', 'down', 'delete')
-    if choice < 0 or choice >= len(operations):
-        return False
-    if choice == 3 and not d.yesno('XCMate EPG', 'EPG-Quelle wirklich löschen?'):
-        return False
-    return edit_source(portal['id'], source['id'], operations[choice])
-
-
-def _choose_mapping(portal):
-    import xbmcgui
-    d = xbmcgui.Dialog()
-    if portal.get('type') != 'xtream':
-        d.ok('XCMate EPG', 'Manuelle Zuordnung wird derzeit für Xtream Codes unterstützt.')
-        return
-    from xtream import XtreamClient
-    xc = XtreamClient(portal['xc_host'], portal['xc_user'], portal['xc_pass'])
-    streams = xc.get_cached_catalog('get_live_streams') or []
-    streams = sorted((x for x in streams if isinstance(x, dict) and x.get('stream_id')),
-                     key=lambda x: str(x.get('name') or '').casefold())
-    index = available_channels(portal['id'])
-    if not streams:
-        d.ok('XCMate EPG', 'Senderkatalog wird noch geladen. Bitte später erneut versuchen.')
-        return
-    if not index:
-        d.ok('XCMate EPG', 'Zuerst eine XMLTV-Quelle hinzufügen und EPG aktualisieren.')
-        return
-    state = configuration(portal['id'])
-    labels = []
-    for s in streams:
-        sid = str(s['stream_id'])
-        eid = state['mappings'].get(sid, '')
-        labels.append(str(s.get('name') or sid) + (('  →  ' + eid) if eid else ''))
-    i = d.select('Xtream-Sender zuordnen', labels)
-    if i < 0:
-        return
-    sid = str(streams[i]['stream_id'])
-    channels = sorted(index.items(), key=lambda x: str(x[1]).casefold())
-    options = ['Zuordnung entfernen'] + [
-        '{}  [{}]'.format(name, cid) for cid, name in channels]
-    selected = state['mappings'].get(sid, '')
-    preselect = next((j + 1 for j, (cid, _) in enumerate(channels)
-                      if cid == selected), 0)
-    j = d.select('XMLTV-Kanal wählen', options, preselect=preselect)
-    if j >= 0:
-        set_mapping(portal['id'], sid, channels[j - 1][0] if j else '')
-        d.notification('XCMate EPG', 'Zuordnung gespeichert – EPG bitte aktualisieren')
-
-
-def manage(portal=None):
-    """Kodi-native remote navigable EPG settings, including Android file picker."""
-    import xbmcgui
-    from epg import warmup_async
-    portal = portal or _choose_portal()
-    if not portal:
-        return
-    d = xbmcgui.Dialog()
-    while True:
-        state = configuration(portal['id'])
-        source_labels = [('✓  ' if s.get('enabled', True) else '○  ') +
-                         str(s.get('name') or 'XMLTV') for s in state['sources']]
-        options = [
-            '➕ XMLTV-Adresse (HTTP/HTTPS) hinzufügen',
-            '➕ XMLTV-Datei (.xml / .gz) auswählen',
-            '↻ EPG-Quellen jetzt aktualisieren',
-            '↔ Xtream-Sender einem XMLTV-Kanal zuordnen',
-        ] + source_labels + ['Zurück']
-        choice = d.select('XCMate – EPG-Verwaltung · ' + portal['name'], options)
-        if choice < 0 or choice == len(options) - 1:
-            return
-        try:
-            if choice == 0:
-                url = d.input('XMLTV-URL eingeben', type=xbmcgui.INPUT_ALPHANUM)
-                if url:
-                    name = d.input('Name dieser EPG-Quelle', defaultt='XMLTV URL',
-                                   type=xbmcgui.INPUT_ALPHANUM)
-                    add_source(portal['id'], name, url)
-            elif choice == 1:
-                uri = d.browse(1, 'XMLTV-Datei auswählen', 'files',
-                               '.xml|.gz|.xml.gz', False, False, '')
-                if uri:
-                    name = d.input('Name dieser EPG-Quelle', defaultt='Lokales XMLTV',
-                                   type=xbmcgui.INPUT_ALPHANUM)
-                    add_source(portal['id'], name, uri, local=True)
-            elif choice == 2:
-                warmup_async(portal['id'], portal, force=True)
-                d.notification('XCMate EPG', 'Aktualisierung im Hintergrund gestartet')
-            elif choice == 3:
-                _choose_mapping(portal)
-            else:
-                _manage_source(portal, state['sources'][choice - 4])
         except Exception as exc:
             error('EPG manager action failed: {}'.format(type(exc).__name__))
             d.ok('XCMate EPG', 'Aktion fehlgeschlagen: ' + str(exc)[:160])
