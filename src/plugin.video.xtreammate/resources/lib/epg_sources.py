@@ -1,7 +1,7 @@
 """Per-portal XMLTV source and channel mapping manager for Kodi/Android.
 
-External data overrides matching built-in programme IDs. A saved sender mapping
-is applied after merging, so IPTV provider IDs need not equal XMLTV channel IDs.
+Built-in programme IDs take precedence; external feeds fill missing IDs.
+Saved sender mappings take precedence for individual Xtream streams.
 Configuration is separate from Kodi caches and survives add-on upgrades.
 """
 import gzip
@@ -14,7 +14,7 @@ import unicodedata
 import uuid
 from urllib.parse import urlsplit
 
-from utils import addon_data_dir, cache_key, cache_get, cache_set, http_get, error, info
+from utils import addon_data_dir, cache_key, cache_get, cache_set, http_get, error
 
 MAX_XML_BYTES = 80 * 1024 * 1024
 INDEX_TTL = 30 * 86400
@@ -279,8 +279,6 @@ def merge_sources(portal_id, builtin_programmes, parse_xmltv):
     if index:
         cache_set(_channels_cache_key(portal_id), index)
         linked = _link_cached_xtream_channels(portal_id, merged, index)
-        if linked:
-            info('[EPG] automatically linked {} Xtream channels'.format(linked))
     for stream_id, xmltv_id in state['mappings'].items():
         if xmltv_id in merged:
             merged[str(stream_id)] = merged[xmltv_id]

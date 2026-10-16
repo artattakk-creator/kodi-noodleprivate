@@ -53,17 +53,33 @@ class EpgSourceTests(unittest.TestCase):
 
     def test_merge_keeps_built_in_and_overrides_when_mapping_exists(self):
         self.module.add_source('p', 'Extra', 'https://example.test/list.xml')
-        self.module.set_mapping('p', '1001', 'welt.de')
+        self.module.set_mapping('p', '1001', 'sky.de')
         own = {'zdf.de': [{'name': 'ZDF Heute'}],
                'welt.de': [{'name': 'veraltet'}]}
         def parse(raw):
-            return ({'welt.de': 'WELT HD'}, {'welt.de': [{'name':'WELT News'}]})
+            return ({'welt.de': 'WELT HD', 'sky.de': 'Sky Cinema'}, {'welt.de': [{'name':'WELT News'}], 'sky.de': [{'name': 'Sky News'}]})
         result, ok, fails = self.module.merge_sources('p', own, parse)
         self.assertEqual((ok, fails), (1, 0))
         self.assertEqual(result['zdf.de'][0]['name'], 'ZDF Heute')
-        self.assertEqual(result['welt.de'][0]['name'], 'WELT News')
-        self.assertEqual(result['1001'][0]['name'], 'WELT News')
-        self.assertEqual(self.module.available_channels('p'), {'welt.de': 'WELT HD'})
+        self.assertEqual(result['welt.de'][0]['name'], 'veraltet')
+        self.assertEqual(result['1001'][0]['name'], 'Sky News')
+        self.assertEqual(self.module.available_channels('p'), {'welt.de': 'WELT HD', 'sky.de':'Sky Cinema'})
+
+    def test_regional_presets_are_opt_in_and_idempotent(self):
+        self.assertEqual(self.module.configuration('p')['sources'], [])
+        first = self.module.add_presets('p', ['de_master', 'at_epgshare', 'ch_epgshare'])
+        self.assertEqual(len(first), 3)
+        self.assertEqual(self.module.add_presets('p', ['ch_epgshare']), [])
+        self.assertEqual(len(self.module.configuration('p')['sources']), 3)
+        self.assertEqual(self.module.configuration('q')['sources'], [])
+        with self.assertRaises(ValueError):
+            self.module.add_presets('p', ['unknown'])
+
+    def test_normalized_names_require_exact_station_identity(self):
+        self.assertEqual(self.module._channel_name_key('DE | Sky Cinema Action HD'),
+                         self.module._channel_name_key('Sky Cinema Action'))
+        self.assertNotEqual(self.module._channel_name_key('Sky Cinema Thriller HD'),
+                            self.module._channel_name_key('Sky Cinema Action HD'))
 
     def test_failed_external_url_preserves_provider_guide(self):
         self.module.add_source('p', 'invalid', 'https://example.test/missing.xml')
