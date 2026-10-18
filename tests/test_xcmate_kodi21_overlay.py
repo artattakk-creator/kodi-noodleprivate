@@ -14,17 +14,18 @@ LIB = Path(__file__).resolve().parents[1] / 'src/plugin.video.xtreammate/resourc
 
 
 class Control:
-    def __init__(self, *args, **kwargs):
+    def __init__(self, options=None):
         self.visible = True
-        self.options = kwargs
+        self.options = options or {}
         self.items = []
         self.selected = 0
     def getId(self): return id(self)
     def setVisible(self, value): self.visible = value
-    def setLabel(self, value): self.label = value
-    def setItemHeight(self, value): pass
-    def setSpace(self, value): pass
-    def setNavigation(self, *controls): self.navigation = controls
+    def setLabel(self, label='', font=None, textColor=None, disabledColor=None,
+                 shadowColor=None, focusedColor=None, label2=''): self.label = label
+    def setNavigation(self, up, down, left, right):
+        assert all(isinstance(c, Control) for c in (up, down, left, right))
+        self.navigation = (up, down, left, right)
     def controlLeft(self, control): pass
     def controlRight(self, control): pass
     def reset(self): self.items = []
@@ -35,7 +36,32 @@ class Control:
 
 
 class ControlList(Control):
-    pass
+    # Actual Omega legacy/Control.h binding parameter names, NOT the
+    # unprefixed names shown in some generated documentation examples.
+    def __init__(self, x, y, width, height, font=None, textColor=None,
+                 buttonTexture=None, buttonFocusTexture=None, selectedColor=None,
+                 _imageWidth=10, _imageHeight=10, _itemTextXOffset=10,
+                 _itemTextYOffset=2, _itemHeight=27, _space=2, _alignmentY=4):
+        super().__init__(locals().copy())
+
+
+class ControlButton(Control):
+    def __init__(self, x, y, width, height, label, focusTexture=None,
+                 noFocusTexture=None, textOffsetX=10, textOffsetY=2,
+                 alignment=4, font=None, textColor=None, disabledColor=None,
+                 angle=0, shadowColor=None, focusedColor=None):
+        super().__init__(locals().copy())
+
+
+class ControlLabel(Control):
+    def __init__(self, x, y, width, height, label, font=None, textColor=None,
+                 disabledColor=None, alignment=0, hasPath=False, angle=0):
+        super().__init__(locals().copy())
+
+
+class ControlImage(Control):
+    def __init__(self, x, y, width, height, filename, aspectRatio=0, colorDiffuse=None):
+        super().__init__(locals().copy())
 
 
 class OmegaDialog:
@@ -46,7 +72,11 @@ class OmegaDialog:
         self.shows = self.closes = 0
     def getWidth(self): return 1280
     def getHeight(self): return 720
-    def addControl(self, control): self.controls.append(control)
+    def addControl(self, control):
+        assert isinstance(control, Control)
+        self.controls.append(control)
+    def addControls(self, pControls):
+        for control in pControls: self.addControl(control)
     def setFocus(self, control):
         assert control in self.controls and control.visible
         self.focus = control
@@ -62,13 +92,16 @@ class OmegaDialog:
         if isinstance(self.focus, ControlList) and key in (3, 4, 5, 6):
             step = {3:-1, 4:1, 5:-10, 6:10}[key]
             self.focus.selected = min(max(self.focus.selected + step, 0), self.focus.size()-1)
-        if key == 7:
+        if key == 7 and hasattr(self, 'onControl'):
             self.onControl(self.focus)
         self.onAction(types.SimpleNamespace(getId=lambda:key, getButtonCode=lambda:0))
 
 
 class OverlayLifecycleTests(unittest.TestCase):
     def setUp(self):
+        path_patch = mock.patch.object(sys, 'path', [str(LIB)] + sys.path)
+        path_patch.start()
+        self.addCleanup(path_patch.stop)
         self.props = {}
         self.player = types.SimpleNamespace(
             isPlayingVideo=lambda:True, getPlayingFile=lambda:'https://example.invalid/live/u/p/1.ts',
@@ -84,7 +117,9 @@ class OverlayLifecycleTests(unittest.TestCase):
         gui = types.ModuleType('xbmcgui')
         gui.WindowDialog = OmegaDialog
         gui.ControlList = ControlList
-        gui.ControlButton = gui.ControlImage = gui.ControlLabel = Control
+        gui.ControlButton = ControlButton
+        gui.ControlImage = ControlImage
+        gui.ControlLabel = ControlLabel
         window = types.SimpleNamespace(setProperty=self.props.__setitem__,
             getProperty=lambda k:self.props.get(k,''),clearProperty=lambda k:self.props.pop(k,None))
         gui.Window = lambda *_:window
@@ -139,6 +174,74 @@ class OverlayLifecycleTests(unittest.TestCase):
         self.assertFalse(hasattr(o,'onInit'))
         self.assertFalse(hasattr(o,'onClick'))
         self.assertEqual(self.props['XtreamMate.OverlayStatus'],'bereit')
+        self.assertEqual(o.control.options['_itemHeight'],46)
+        self.assertEqual(o.control.options['_space'],3)
+
+    def test_native_binding_rejects_both_old_keyword_names(self):
+        for keyword in ('itemHeight', 'space'):
+            with self.subTest(keyword=keyword), self.assertRaises(TypeError):
+                ControlList(0, 0, 400, 500, **{keyword: 46})
+
+    def test_53664_channels_render_bounded_pages_and_tune_absolute_selection(self):
+        o = self.overlay
+        o.channels = [types.SimpleNamespace(name='Sender '+str(i), tvg_id='',
+            extra={'stream_id':str(i), 'category_id':'a'}) for i in range(1,53665)]
+        o.sid = '53664'
+        self.player.getPlayingFile = lambda:'https://example.invalid/live/u/p/53664.ts'
+        self.client.get_cached_catalog = lambda action: ([{'stream_id':'53664'}]
+            if action == 'get_live_streams' else [])
+        o._scroll_to_current = True
+        with mock.patch.object(sys.modules['epg_views'], 'guide_for_channel',
+                               return_value={}) as lookup:
+            o._render()
+            self.assertLessEqual(lookup.call_count,100)
+            self.assertLessEqual(o.control.size(),102)
+            self.assertEqual(o.control.items[o.control.selected],'Sender 53664')
+            o._tune = mock.Mock()
+            o.native(7)
+            self.assertEqual(o._tune.call_args.args[0].extra['stream_id'],'53664')
+            o._tune.reset_mock()
+            o.control.selectItem(0)  # previous-page link, not a station
+            o.native(7)
+            o._tune.assert_not_called()
+            self.assertEqual(o._page_start,53500)
+            self.assertEqual(o.control.items[o.control.selected],'Sender 53501')
+            o.control.selectItem(o.control.size()-1)  # next-page link
+            o.native(7)
+            self.assertEqual(o._page_start,53600)
+            o._tune.assert_not_called()
+            o.native(5)
+            self.assertEqual(o._page_start,53500)
+            o.native(6)
+            self.assertEqual(o._page_start,53600)
+            self.assertLessEqual(lookup.call_count,600)
+
+    def test_constructor_failure_preserves_stage_and_safe_exception_class(self):
+        o = self.module.LiveNavigator(self.portal, '1')
+        with mock.patch.object(sys.modules['xbmcgui'], 'ControlList',
+                               side_effect=TypeError('private://do-not-record')), \
+             mock.patch.object(self.module, 'trace') as trace:
+            with self.assertRaises(TypeError): o.show()
+        trace.assert_any_call('dialog', 'SHOW_FAILED', failure_stage='CONTROL_LIST',
+                              exception_class='TypeError')
+        self.assertFalse(any(call.args[:2] == ('dialog','SHOW_REQUESTED')
+                             for call in trace.call_args_list))
+        self.assertTrue(o._closed)
+
+    def test_remote_learning_builds_before_modal_without_oninit_or_onclick(self):
+        spec = importlib.util.spec_from_file_location('omega_learning_test', LIB/'remote_profiles.py')
+        learning = importlib.util.module_from_spec(spec)
+        with mock.patch.object(sys.modules['utils'], 'addon_data_dir', return_value='/unused', create=True):
+            spec.loader.exec_module(learning)
+        case = self
+        def native_modal(dialog):
+            case.assertEqual(len(dialog.controls), 2)
+            case.assertIs(dialog.focus, dialog.focus_button)
+            case.assertFalse(hasattr(dialog, 'onInit'))
+            case.assertFalse(hasattr(dialog, 'onClick'))
+            dialog.onAction(types.SimpleNamespace(getId=lambda:7, getButtonCode=lambda:615))
+        with mock.patch.object(OmegaDialog, 'doModal', native_modal, create=True):
+            self.assertEqual(learning._capture(), (7,615))
 
     def test_native_list_moves_exactly_once_and_bridge_moves_explicitly(self):
         o = self.overlay
@@ -150,6 +253,12 @@ class OverlayLifecycleTests(unittest.TestCase):
         self.assertEqual(o.control.selected,1)
         o.handle_command('down')
         self.assertEqual(o.control.selected,2)
+
+    def test_native_page_action_in_short_list_remembers_kodis_position(self):
+        o = self.overlay
+        o.native(6)
+        self.assertEqual(o._highlight['channels'],o.control.getSelectedPosition())
+        self.assertEqual(o._highlight['channels'],3)
 
     def test_select_callback_and_action_together_tune_only_once(self):
         o = self.overlay

@@ -8,9 +8,11 @@ Public Kodi repository for GS Media's own add-ons, plugins, scripts and services
 
 ## XCMate – Entwicklungsdokumentation und Chat-Übergabe
 
-Die aktuellen Projektdokumente für XCMate 0.1.9 sind unter **[docs/XCMate/README.md](docs/XCMate/README.md)** verlinkt. Dort stehen vollständige technische Projektübergabe, gesicherte Entscheidungen, Design-Freeze, Android-Teststatus, Roadmap sowie die geplante Serienfunktion (Gesehen-Status, Wiedergabeposition, optional automatisch nächste Folge). Für einen neuen Chat den **[kopierbaren Übergabeblock](docs/XCMate/NEW_CHAT_COPY_BLOCK_DE.md)** verwenden.
+Die aktuellen Projektdokumente für XCMate sind unter **[docs/XCMate/README.md](docs/XCMate/README.md)** verlinkt. Dort stehen vollständige technische Projektübergabe, gesicherte Entscheidungen, Design-Freeze, Android-Teststatus, Roadmap sowie die geplante Serienfunktion (Gesehen-Status, Wiedergabeposition, optional automatisch nächste Folge). Für einen neuen Chat den **[kopierbaren Übergabeblock](docs/XCMate/NEW_CHAT_COPY_BLOCK_DE.md)** verwenden.
 
 **Wichtig:** Die neue Serienfortschrittsfunktion und die konfigurierbaren Grauton-/Akzent-Themes sind am 14.10.2026 spezifiziert, nicht bereits veröffentlicht. Die Android-Gerätefehler beim Startsender und der Vollbild-Fernbedienung bleiben bis zum praktischen Gegenbeweis offen.
+
+**Aktueller XCMate-Fix:** [0.1.24-Testbericht und Android-Testplan](docs/XCMate/KODI21_FIX_024_DE.md): Kodi-21-`ControlList`-Fehler korrigiert, 213 Tests bestanden, EPG-Fehlerklassifikation ergänzt. Entwicklungs-/PR-Kandidat; produktiv bleibt 0.1.23, Android-Abnahme offen.
 
 ## Installation
 

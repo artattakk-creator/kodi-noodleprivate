@@ -7,6 +7,12 @@ MAX_HTTP_BYTES = 80 * 1024 * 1024
 
 
 class ResponseLimitError(ValueError):
+    def __init__(self, message, kind='input_bytes'):
+        super().__init__(message)
+        self.kind = kind
+
+
+class HTTPCompressionError(ValueError):
     pass
 
 
@@ -28,10 +34,10 @@ def read_http_chunks(chunks, headers, max_bytes, deadline):
             data = decoder.decompress(chunk, max_bytes-decoded+1) if decoder else chunk
             decoded += len(data)
             if decoded > max_bytes or (decoder and decoder.unconsumed_tail):
-                raise ResponseLimitError('Decoded HTTP response exceeds size limit')
+                raise ResponseLimitError('Decoded HTTP response exceeds size limit', 'decoded_bytes')
             output.write(data)
         if decoder and not decoder.eof:
-            raise ValueError('Truncated HTTP compressed response')
+            raise HTTPCompressionError('Truncated HTTP compressed response')
         if time.monotonic() > deadline:
             raise TimeoutError('HTTP response time budget exceeded')
         return output.getvalue()

@@ -176,7 +176,7 @@ def _read_source(source):
         raw, _ = http_get(uri, timeout=20, max_bytes=MAX_XML_BYTES, max_seconds=60)
     raw = bytes(raw) if not isinstance(raw, bytes) else raw
     if len(raw) > MAX_XML_BYTES:
-        raise XMLTVLimitError('XMLTV-Datei ist zu groß (max. 80 MB)')
+        raise XMLTVLimitError('XMLTV-Datei ist zu groß (max. 80 MB)', 'input_bytes')
     # GZIP is expanded incrementally by parse_xmltv, under the same size budget
     # as the provider guide. Never allocate the whole uncompressed feed here.
     if b'<!DOCTYPE' in raw[:4096].upper() or b'<!ENTITY' in raw[:4096].upper():
@@ -256,17 +256,20 @@ def merge_sources(portal_id, builtin_programmes, parse_xmltv):
     index = {}
     successes, failures = 0, 0
     programme_count = sum(len(entries) for entries in merged.values())
-    for source in state['sources']:
+    for source_index, source in enumerate(state['sources'], 1):
         if not source.get('enabled', True):
             continue
-        raw=None
+        raw, stage = None, 'DOWNLOAD'
         try:
             raw = _read_source(source)
             from live_diagnostics import record
-            record('epg_source','READ',bytes=len(raw),source_index=successes+failures+1)
+            record('epg_source','READ',bytes=len(raw),source_index=source_index)
+            stage = 'PARSE'
             channels, programmes = parse_xmltv(raw)
             if not programmes:
-                raise ValueError('XMLTV enthält keine Sendungen')
+                from epg_errors import EmptyGuideError
+                raise EmptyGuideError('XMLTV enthält keine gültigen Sendungen')
+            stage = 'MERGE'
             additions = {cid: entries for cid, entries in programmes.items()
                          if entries and not merged.get(cid)}
             added_count = sum(len(entries) for entries in additions.values())
@@ -279,14 +282,14 @@ def merge_sources(portal_id, builtin_programmes, parse_xmltv):
                     merged[channel_id] = entries
             successes += 1
             record('epg_source','READY',channels=len(channels),
-                   programmes=sum(len(v) for v in programmes.values()),loaded=successes,failed=failures,bytes=len(raw))
+                   programmes=sum(len(v) for v in programmes.values()),loaded=successes,
+                   failed=failures,bytes=len(raw),source_index=source_index)
         except Exception as exc:
             from live_diagnostics import record
-            code=('HTTP_BYTE_LIMIT' if isinstance(exc,ResponseLimitError) else
-                  'XMLTV_'+exc.kind.upper()+'_LIMIT' if isinstance(exc,XMLTVLimitError) else
-                  'INVALID_XMLTV' if isinstance(exc,ValueError) else 'DOWNLOAD_FAILED')
-            record('epg_source',code,source_index=successes+failures+1,
-                   failed=failures+1,limit_bytes=MAX_XML_BYTES,bytes=len(raw) if raw is not None else 0)
+            from epg_errors import failure_details
+            code, fields = failure_details(exc, stage)
+            record('epg_source',code,source_index=source_index,
+                   failed=failures+1,bytes=len(raw) if raw is not None else 0, **fields)
             failures += 1
             error('EPG source failed ({}): {}'.format(
                 source.get('id', '')[:8], type(exc).__name__))
@@ -402,7 +405,8 @@ def manage(portal=None):
     while True:
         state = configuration(portal['id'])
         source_labels = [('✓  ' if s.get('enabled', True) else '○  ') +
-                         str(s.get('name') or 'XMLTV') for s in state['sources']]
+                         '[{}] {}'.format(i, s.get('name') or 'XMLTV')
+                         for i, s in enumerate(state['sources'], 1)]
         options = [
             '➕ EPG-Paket Deutschland / Österreich / Schweiz / NL',
             '➕ XMLTV-Adresse (HTTP/HTTPS) hinzufügen',

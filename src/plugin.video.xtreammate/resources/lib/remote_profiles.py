@@ -76,7 +76,8 @@ def _capture():
         def __init__(self):
             super().__init__()
             self.result = None
-        def onInit(self):
+            # Programmatic Omega WindowDialog never dispatches onInit.
+            # Build before doModal and learn the raw action in onAction.
             width = max(720, self.getWidth())
             height = max(480, self.getHeight())
             self.title = xbmcgui.ControlLabel(
@@ -96,12 +97,6 @@ def _capture():
                 code, raw = 0, 0
             if code:
                 self.result = (code, raw)
-                self.close()
-        def onClick(self, control_id):
-            # Capture the OK action even if Kodi sends onClick instead of
-            # onAction for a focused dialog button.
-            if self.result is None:
-                self.result = (7, 0)
                 self.close()
     dialog = Capture()
     dialog.doModal()

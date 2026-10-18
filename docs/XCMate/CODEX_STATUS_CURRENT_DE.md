@@ -5,12 +5,31 @@
 **Technische Kodi-ID:** `plugin.video.xtreammate` – nicht ändern  
 **Repository:** https://github.com/artattakk-creator/kodi-noodleprivate  
 **Hauptbranch:** `main`  
-**Codex-Entwicklungsbranch:** `fix/issue-12-live-session-diagnostics` (0.1.23, via [PR #15](https://github.com/artattakk-creator/kodi-noodleprivate/pull/15) nach `main` übernommen); vorheriger Branch `fix/xcmate-kodi21-overlay-epg` ist historisch.
+**Codex-Entwicklungsbranch:** `fix/kodi21-strict-gui-epg-diagnostics` – Kandidat 0.1.24, kein Merge/Produktiv-Release. Vorheriger Branch `fix/issue-12-live-session-diagnostics` ist über PR #15 übernommen.
 **Übernahme 0.1.22:** [Pull Request #11](https://github.com/artattakk-creator/kodi-noodleprivate/pull/11), Merge-Commit `c14d7815bf0ca2e93dd3e1fa5225ca1df36c8f54`.
 **Veröffentlichung 0.1.22:** GitHub-Action [Publish GS Media Kodi updates](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39126897807) erfolgreich; `addons.xml` meldet XCMate `0.1.22`, ZIP `plugin.video.xtreammate/plugin.video.xtreammate-0.1.22.zip` vorhanden.
 **Letzter geprüfter Repository-Stand nach Auto-Publish (vor dieser Statusaktualisierung):** `9b590ea2dc0983fa75b084582431065211de1484`.
 
 **VERBINDLICHER CODEX-ARBEITSAUFTRAG:** [Vollständige Android-TV-Codex-Übergabe 0.1.23 / P0 TypeError und EPG](CODEX_HANDOFF_ANDROID_023_P0_EPG_DE.md). Der hier folgende Ablauf ist die detailreiche historische Diagnosedokumentation; die neue Datei enthält den konsolidierten P0/P1-Plan und den sicheren nächsten Branch-/PR-Ablauf.
+
+## Implementierung nach Android-Befund: Testkandidat 0.1.24 (18.10.2026)
+
+**Aktueller Test-/Änderungsbericht:** [KODI21_FIX_024_DE.md](KODI21_FIX_024_DE.md). P0-Codekorrektur lokal geprüft, Android-Abnahme offen. Die vollständige Ausgangsübergabe und Issues #12/#13 wurden gelesen.
+
+**GitHub:** [Entwurfs-PR #16](https://github.com/artattakk-creator/kodi-noodleprivate/pull/16), Code-/Paketcommit `1dc780f`; [CI-Run 39143315938 erfolgreich](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39143315938). Review-Artefakt `xcmate-review-16` erfolgreich hochgeladen; Produktions-Publish übersprungen. Prüfgrenzen des Cloud-Artefaktdownloads stehen im vollständigen Bericht. Kein Merge und keine Veröffentlichung auf `main`.
+
+- API-Fehler nachgewiesen: `ControlList(itemHeight, space)` wird von den strikten Omega-Signaturen mit `TypeError` abgewiesen. Korrigiert auf `_itemHeight`, `_space`; zuvor 18 Starttests rot, jetzt 23 strikte Dialog-/Callbacktests grün. Weitere direkte Kodi-GUI-Aufrufe und lokale Aliase werden mit einem repositoryweiten Signaturtest geprüft.
+- Navigator rendert höchstens 100 Sender je Seite statt bis zu 53.664 EPG-Zeilen. Seitenlinks, letzter Sender und absolute Tune-Zuordnung getestet. Derselbe `WindowDialog.onInit`-Fehler im Tastenanlerndialog ebenfalls korrigiert.
+- Persistente sichere Fehlerstufe/-klasse für Dialoge und EPG; EPG unterscheidet Download, Parse, Merge, HTTP/XMLTV-Eingangs- und Entpackgrenzen sowie Kanal-/Sendungslimits. `DOWNLOAD_FAILED` war bisher ein Catch-all nach bereits erfolgreichem Lesen; 3,59 MB belegen keine Größenüberschreitung. Reale externe Gerätefehler bleiben bis zum nächsten Abruf unbekannt.
+- **213 Tests bestanden**, vor und nach isoliertem Build; Syntaxprüfung und ZIP-/Indexprüfungen bestanden. **19 HTTP-/EPG-Tests** zusätzlich mit httpx 0.28.1 bestanden. XCMate-ZIP 0.1.24: **242152 Bytes**, SHA-256 `1100ea73a974dfe92d731d4384826a15c20c0be9cac5dc5d205f8ca03f267286`; alle 56 Paketdateien stimmen bytegenau mit den Quellen überein.
+- **Issue #13 nicht vollständig umgesetzt:** eigener EPG-Status-/Titelvorschau-Menüpunkt und dauerhafte Quell-/Portalübersicht bleiben offen. Keine Bestätigung funktionierenden Geräte-EPGs. Kein Skin-Neubau.
+- **Veröffentlicht bleibt 0.1.23.** Kandidat und SHA liegen im Entwicklungsbranch; PR-CI stellt ein zusätzliches Review-Artefakt bereit. `addons.xml`, produktive ZIPs, Noodle Private und fremde Add-ons unverändert. Keine globale Keymap aktiviert.
+
+**Nächste Freigabestufe:** PR prüfen; erst nach ausdrücklicher Merge-Freigabe den vorhandenen Publish-Workflow auf `main` ausführen lassen. Danach reguläres GS-Media-Repositoryupdate auf Android, Kodi-Neustart, Version 0.1.24 / Dienstbuild 24 kontrollieren und den verlinkten Android-Testplan durchführen. Issue #12 bleibt bis zur Geräteabnahme offen.
+
+## Historische Befunde und frühere Übergaben
+
+Die folgenden Abschnitte dokumentieren 0.1.23 und ältere Stände; für die aktuelle Implementierung und nächsten Schritte gilt der obige 0.1.24-Testbericht.
 
 ## P0 eingegrenzt durch FÜNF DIAGNOSEFOTOS von Android-TV / XCMate 0.1.23 (18.10.2026)
 
@@ -212,4 +231,4 @@ Die neue XMLTV-Obergrenze beträgt **80 MiB entpackte XMLTV-Daten pro Quelle**, 
 - **P3:** Cache-Sicherheit, Profilpersistenz, ressourcenschonende große XMLTV-Feeds.
 - **P4:** Freigegebenes grafisches Design, Farben und Komfortfunktionen.
 
-**Nächster Schritt:** Testkandidat 0.1.23 vom Issue-12-Entwicklungsbranch gezielt am Android-TV prüfen und anschließend die gespeicherte Diagnose auswerten. Issue #12 bis zum belegten Gerätetest offen halten; danach EPG-Status & Vorschau (#13), dann XCMate Skin (#14).
+**Aktueller nächster Schritt:** PR zum geprüften Kandidaten 0.1.24 prüfen; regulärer Repository-Updateweg erst nach ausdrücklicher Merge-Freigabe. Android-Testplan in [KODI21_FIX_024_DE.md](KODI21_FIX_024_DE.md). #12 und #13 bleiben offen.

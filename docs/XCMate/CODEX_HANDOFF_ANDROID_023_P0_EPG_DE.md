@@ -2,6 +2,8 @@
 
 **Erfasst:** 18.10.2026. **Status:** P0 Live-TV-Navigator am echten Android-TV **FEHLGESCHLAGEN**; P1 EPG-Aktualisierung/Anzeige **FEHLGESCHLAGEN bzw. NICHT BESTÄTIGT**. Diese Datei ist ein **Auftrag und Befund**, keine implementierte Fehlerbehebung und keine Freigabe für 0.1.24.
 
+**Bearbeitungsnachtrag 18.10.2026:** Die nachstehende Geräteaufnahme bleibt der Ausgangsbefund. Die umgesetzte P0-Korrektur, 213 bestandene Tests, getrennte EPG-Analyse und der vorbereitete Android-/Repository-Testweg stehen in [KODI21_FIX_024_DE.md](KODI21_FIX_024_DE.md). **0.1.24 ist ein Entwicklungs-/PR-Kandidat; nicht produktiv veröffentlicht und noch nicht am Android-TV abgenommen.**
+
 ## Sofortstart für Codex
 
 1. **Zuerst diese Datei vollständig lesen**, anschließend [aktuellen Projektstatus](CODEX_STATUS_CURRENT_DE.md), [Issue #12](https://github.com/artattakk-creator/kodi-noodleprivate/issues/12), [Issue #13](https://github.com/artattakk-creator/kodi-noodleprivate/issues/13) und [XCMate Skin #14](https://github.com/artattakk-creator/kodi-noodleprivate/issues/14).

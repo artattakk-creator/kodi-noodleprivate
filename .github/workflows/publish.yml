@@ -55,6 +55,31 @@ jobs:
             sed -i "s@'..', 'plugin.video.noodleprivate'@'..', 'src', 'plugin.video.noodleprivate'@g" "$f"
           done
           python -m unittest discover -s tests -v
+      - name: Prepare XCMate pull request test package
+        if: github.event_name == 'pull_request'
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          import shutil
+          import xml.etree.ElementTree as ET
+          addon = ET.parse('src/plugin.video.xtreammate/addon.xml').getroot()
+          filename = f"plugin.video.xtreammate-{addon.attrib['version']}.zip"
+          output = Path('xcmate-review')
+          output.mkdir()
+          target = output / filename
+          shutil.copyfile(Path('plugin.video.xtreammate') / filename, target)
+          (output / (filename + '.sha256')).write_text(
+              hashlib.sha256(target.read_bytes()).hexdigest() + '  ' + filename + '\n')
+          PY
+      - name: Upload XCMate pull request test package
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcmate-review-${{ github.event.pull_request.number }}
+          path: xcmate-review/
+          if-no-files-found: error
+          retention-days: 14
       - name: Commit and publish generated archives
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |

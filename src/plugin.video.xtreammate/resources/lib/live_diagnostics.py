@@ -16,7 +16,25 @@ FIELDS = frozenset(('video', 'marker', 'catalog', 'channels', 'programmes',
                     'matched', 'visible', 'now_count', 'next_count', 'loaded',
                     'failed', 'bytes', 'focus_id', 'dialog_id', 'focused',
                     'action_id', 'button_code', 'count', 'running', 'last_success',
-                    'source_index', 'enabled', 'requested', 'item_tag', 'fullscreen','limit_bytes','build'))
+                    'source_index', 'enabled', 'requested', 'item_tag', 'fullscreen',
+                    'limit_bytes', 'limit_value', 'http_status', 'build'))
+TEXT_FIELDS = {
+    'failure_stage': frozenset(('BUILD_CONTROLS', 'CONTROL_LIST', 'WINDOW_SHOW',
+                               'RENDER', 'FOCUS', 'DOWNLOAD', 'PARSE', 'MERGE')),
+    'exception_class': frozenset(('TypeError', 'RuntimeError', 'ValueError',
+        'ReferenceError', 'SystemError', 'MemoryError', 'TimeoutError', 'OSError',
+        'XMLTVLimitError', 'ResponseLimitError', 'ParseError', 'BadGzipFile',
+        'EOFError', 'error', 'HTTPError', 'HTTPStatusError', 'HTTPCompressionError', 'EmptyGuideError',
+        'ReadTimeout', 'ConnectTimeout', 'WriteTimeout', 'PoolTimeout',
+        'ConnectError', 'ReadError', 'PermissionError', 'FileNotFoundError', 'OTHER')),
+    'limit_kind': frozenset(('input_bytes', 'decoded_bytes', 'bytes',
+                             'programmes', 'channels')),
+    'failure_code': frozenset(('HTTP_INPUT_BYTES_LIMIT', 'HTTP_DECODED_BYTES_LIMIT',
+        'XMLTV_INPUT_BYTES_LIMIT', 'XMLTV_DECODED_BYTES_LIMIT', 'XMLTV_BYTES_LIMIT',
+        'XMLTV_PROGRAMMES_LIMIT', 'XMLTV_CHANNELS_LIMIT', 'GZIP_INVALID',
+        'HTTP_COMPRESSION_FAILED', 'INVALID_XMLTV', 'PARSE_TIMEOUT',
+        'DOWNLOAD_TIMEOUT', 'DOWNLOAD_FAILED', 'PARSE_FAILED', 'EMPTY_GUIDE')),
+}
 _WRITTEN = {}
 PREFIX = 'XtreamMate.Diagnostic.'
 EXPLANATIONS={
@@ -49,6 +67,9 @@ def _clean(value):
     for key in FIELDS:
         v = value.get(key)
         if isinstance(v, (int,float,bool)) and math.isfinite(v): result[key]=v
+    for key, allowed in TEXT_FIELDS.items():
+        v = value.get(key)
+        if isinstance(v, str): result[key] = v if v in allowed else 'OTHER'
     return result
 
 
@@ -133,7 +154,7 @@ def report():
         lines.append('{}: {} [{}]'.format(stage,entry['code'],
             time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(entry['at']))))
         if entry['code'] in EXPLANATIONS: lines.append('  '+EXPLANATIONS[entry['code']])
-        values=['{}={}'.format(k,entry[k]) for k in sorted(FIELDS) if k in entry]
+        values=['{}={}'.format(k,entry[k]) for k in sorted(FIELDS | TEXT_FIELDS.keys()) if k in entry]
         if values: lines.append('  '+', '.join(values))
         if stage=='epg_list':
             lines.append('  Jetzt/Danach-Treffer: {}/{} sichtbare Sender'.format(
@@ -144,4 +165,11 @@ def report():
         history=_disk(stage)
         if history:
             lines.append('  Verlauf: '+' → '.join(e['code'] for e in history[-8:]))
+            failure = next((e for e in reversed(history) if 'exception_class' in e), None)
+            if failure:
+                details = ['{}={}'.format(k, failure[k]) for k in sorted(FIELDS | TEXT_FIELDS.keys())
+                           if k in failure and k != 'last_success']
+                lines.append('  Letzter gespeicherter Fehler: {} [{}] {}'.format(
+                    failure['code'], time.strftime('%Y-%m-%d %H:%M:%S',
+                    time.localtime(failure['at'])), ', '.join(details)))
     return lines
