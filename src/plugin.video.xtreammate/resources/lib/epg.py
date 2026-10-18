@@ -208,7 +208,14 @@ def _load_disk(portal_id, max_age):
 
 
 def _save_disk(portal_id, data):
-    cache_set(_disk_ck(portal_id), data)
+    if cache_set(_disk_ck(portal_id), data) is False:
+        from epg_status import update
+        update(portal_id, 'cache', 'CACHE_WRITE_FAILED', exception_class='OSError')
+        raise OSError('EPG cache could not be persisted')
+    from epg_status import changed, update
+    changed(portal_id)
+    update(portal_id, 'cache', 'READY', channels=len(data),
+           programmes=sum(len(v) for v in data.values() if isinstance(v,list)))
 
 
 def load_cache(portal_id):
@@ -217,6 +224,10 @@ def load_cache(portal_id):
         return cached
     age_s   = setting_int('epg_refresh_hours', 12) * 3600
     on_disk = _load_disk(portal_id, max_age=age_s)
+    if not isinstance(on_disk, dict):
+        # A failed refresh must not hide still-current/future programmes from
+        # the previous successful import. Resolver rejects expired events.
+        on_disk = _load_disk(portal_id,max_age=7*86400)
     if isinstance(on_disk, dict):
         _mem_set(portal_id, on_disk)
         return on_disk
@@ -508,6 +519,8 @@ def _refresh_portal_epg_inner(portal_id, p, force=False):
     channels   = {}
 
     if epg_url:
+        from epg_status import update as source_status
+        source_status(portal_id, 'provider', 'RUNNING', running=True)
         info('[EPG] fetching XMLTV guide (URL redacted)')
         stage, raw = 'DOWNLOAD', None
         try:
@@ -517,9 +530,14 @@ def _refresh_portal_epg_inner(portal_id, p, force=False):
             if not programmes:
                 from epg_errors import EmptyGuideError
                 raise EmptyGuideError('XMLTV contains no valid programmes')
+            source_status(portal_id, 'provider', 'READY', running=False,
+                          channels=len(channels), programmes=sum(len(v) for v in programmes.values()),
+                          bytes=len(raw))
         except Exception as e:
             from epg_errors import failure_details
             _, fields = failure_details(e, stage)
+            source_status(portal_id, 'provider', fields['failure_code'], running=False,
+                          bytes=len(raw) if raw is not None else 0, **fields)
             diagnostic('PROVIDER_LIMIT' if isinstance(e,(XMLTVLimitError,ResponseLimitError))
                        else 'PROVIDER_FAILED',running=True,
                        bytes=len(raw) if raw is not None else 0, **fields)
@@ -547,6 +565,18 @@ def _refresh_portal_epg_inner(portal_id, p, force=False):
         error('[EPG] external source manager failed: {}'.format(type(exc).__name__))
 
     if programmes:
+        from epg_views import _as_int
+        now=time.time()
+        usable=sum(1 for entries in programmes.values() for e in entries if isinstance(e,dict)
+                   and _as_int(e.get('stop_timestamp'))>max(now,_as_int(e.get('start_timestamp')))
+                   and 0<_as_int(e.get('start_timestamp'))<now+7*86400)
+        if not usable:
+            # A syntactically valid but obsolete feed must not replace a good
+            # guide. Parsing success is distinct from usable cache publication.
+            from epg_status import update
+            update(portal_id,'cache','NO_CURRENT_WINDOW',running=False)
+            diagnostic('NO_CURRENT_WINDOW',running=True)
+            return {}
         _save_disk(portal_id, programmes)
         _mem_set(portal_id, programmes)
         info(f'[EPG] {portal_id}: {len(programmes)} channels saved')

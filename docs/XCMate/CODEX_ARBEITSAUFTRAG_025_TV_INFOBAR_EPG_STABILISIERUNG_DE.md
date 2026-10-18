@@ -3,7 +3,7 @@
 **Verbindliche Nutzerfreigabe für die ANFORDERUNGEN:** 18.10.2026  
 **Repository:** `artattakk-creator/kodi-noodleprivate`  
 **Ausgangsbasis:** aktuell `main` mit **XCMate 0.1.24**, technische Kodi-ID `plugin.video.xtreammate` unverändert lassen.  
-**Status:** **Entwicklungsauftrag, NICHT implementiert, NICHT als 0.1.25 veröffentlicht und NICHT auf Android-TV abgenommen.**  
+**Statusnachtrag 18.10.2026:** Anforderungen auf `fix/xcmate-infobar-epg-navigation` als **0.1.25-Testkandidat implementiert**; **237 lokale Tests bestanden**, CI/PR siehe [aktuellen Status](CODEX_STATUS_CURRENT_DE.md). **Nicht auf main veröffentlicht, nicht auf Android-TV abgenommen.** [Implementierungsbericht, Paket und vollständiger Geräteplan](IMPLEMENTIERUNG_025_TV_INFOBAR_EPG_DE.md). Der folgende Text bleibt die verbindliche Anforderung und historische Ausgangslage.
 **Arbeitszweig:** neuen `fix/xcmate-infobar-epg-navigation` oder vergleichbaren Branch von aktuellem `main` verwenden und PR erstellen; nicht direkt nach `main` mergen.
 
 ## 0. Was Codex zuerst lesen muss

@@ -162,8 +162,8 @@ class PopupTest(unittest.TestCase):
         service = (ROOT / 'src/plugin.video.xtreammate/service.py').read_text(
             encoding='utf-8')
         main = (LIB / 'main.py').read_text(encoding='utf-8')
-        self.assertIn("self.mode = 'channels'", source)
-        self.assertIn("self._intro_deadline = time.monotonic() + 16.0", source)
+        self.assertIn("self.mode = 'hidden'", source)
+        self.assertIn("self._info_timeout", source)
         self.assertIn("self._overlay.expire_intro()", service)
         self.assertIn("'popup_probe': self._popup_probe", main)
         self.assertIn("self.url(action='popup_probe')", main)

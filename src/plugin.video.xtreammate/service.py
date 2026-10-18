@@ -3,7 +3,7 @@ import xbmc, xbmcaddon, xbmcgui
 
 ADDON    = xbmcaddon.Addon()
 LIB_PATH = os.path.join(os.path.dirname(__file__), 'resources', 'lib')
-SERVICE_BUILD = 24
+SERVICE_BUILD = 25
 if LIB_PATH not in sys.path:
     sys.path.insert(0, LIB_PATH)
 
@@ -235,9 +235,9 @@ class IPTVMasterService(xbmc.Monitor):
                                 self._overlay = None
                             else:
                                 self._overlay.sid = active_session['sid']
-                                current_channel = next((ch for ch in self._overlay.channels
-                                    if str(ch.extra.get('stream_id')) == active_session['sid']), None)
+                                current_channel = self._overlay.index.by_sid.get(active_session['sid'])
                                 if current_channel:
+                                    self._overlay._guide.request([current_channel])
                                     self._overlay.category_id = str(
                                         current_channel.extra.get('category_id') or '*')
                                 self._overlay._scroll_to_current = True

@@ -11,13 +11,16 @@ import tempfile
 import time
 
 STAGES = ('session', 'ownership', 'service', 'dialog', 'focus', 'input',
-          'epg', 'epg_source', 'epg_list')
+          'epg', 'epg_source', 'epg_list', 'performance',
+          'catalog_performance', 'epg_performance')
 FIELDS = frozenset(('video', 'marker', 'catalog', 'channels', 'programmes',
                     'matched', 'visible', 'now_count', 'next_count', 'loaded',
                     'failed', 'bytes', 'focus_id', 'dialog_id', 'focused',
                     'action_id', 'button_code', 'count', 'running', 'last_success',
                     'source_index', 'enabled', 'requested', 'item_tag', 'fullscreen',
-                    'limit_bytes', 'limit_value', 'http_status', 'build'))
+                    'limit_bytes', 'limit_value', 'http_status', 'build',
+                    'index_ms', 'snapshot_ms', 'render_ms', 'focus_ms', 'items',
+                    'cache_ms', 'cache_hit', 'last_channels', 'last_programmes'))
 TEXT_FIELDS = {
     'failure_stage': frozenset(('BUILD_CONTROLS', 'CONTROL_LIST', 'WINDOW_SHOW',
                                'RENDER', 'FOCUS', 'DOWNLOAD', 'PARSE', 'MERGE')),
@@ -26,7 +29,8 @@ TEXT_FIELDS = {
         'XMLTVLimitError', 'ResponseLimitError', 'ParseError', 'BadGzipFile',
         'EOFError', 'error', 'HTTPError', 'HTTPStatusError', 'HTTPCompressionError', 'EmptyGuideError',
         'ReadTimeout', 'ConnectTimeout', 'WriteTimeout', 'PoolTimeout',
-        'ConnectError', 'ReadError', 'PermissionError', 'FileNotFoundError', 'OTHER')),
+        'ConnectError', 'ReadError', 'ProxyError', 'RemoteProtocolError',
+        'PermissionError', 'FileNotFoundError', 'OTHER')),
     'limit_kind': frozenset(('input_bytes', 'decoded_bytes', 'bytes',
                              'programmes', 'channels')),
     'failure_code': frozenset(('HTTP_INPUT_BYTES_LIMIT', 'HTTP_DECODED_BYTES_LIMIT',

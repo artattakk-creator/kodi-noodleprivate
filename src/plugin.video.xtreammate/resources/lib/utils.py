@@ -206,27 +206,31 @@ def cache_key(s):
     return hashlib.md5(s.encode()).hexdigest()
 
 def cache_get(key, max_age=3600):
-    path = os.path.join(cache_dir(), key + '.json')
-    if not xbmcvfs.exists(path):
-        return None
-    try:
-        with xbmcvfs.File(path) as f:
-            raw = f.read()
-        obj = json.loads(raw)
-        if time.time() - obj.get('ts', 0) > max_age:
-            return None
-        return obj['data']
-    except Exception:
-        return None
+    newest = None
+    for directory in dict.fromkeys((cache_dir(), _private_cache_dir())):
+        path = os.path.join(directory, key + '.json')
+        if not xbmcvfs.exists(path): continue
+        try:
+            with xbmcvfs.File(path) as f: obj = json.loads(f.read())
+            if time.time()-obj.get('ts',0)<=max_age and 'data' in obj:
+                if newest is None or obj['ts']>newest['ts']: newest=obj
+        except Exception: pass
+    return newest['data'] if newest else None
 
 def cache_set(key, data):
     obj = json.dumps({'ts': time.time(), 'data': data})
     directory = cache_dir()
     for attempt in range(2):
+        temp = os.path.join(directory,'.xcmate-cache-'+uuid.uuid4().hex)
         try:
-            with xbmcvfs.File(os.path.join(directory, key + '.json'), 'w') as f:
+            with xbmcvfs.File(temp, 'w') as f:
                 if not f.write(obj):
                     raise OSError('Cache write refused')
+            target = os.path.join(directory,key+'.json')
+            if '://' not in directory:
+                os.replace(temp,target)
+            elif not xbmcvfs.rename(temp,target):
+                raise OSError('Atomic cache rename refused')
             return True
         except Exception:
             _CACHE_WRITABLE.pop(directory, None)
@@ -236,17 +240,20 @@ def cache_set(key, data):
                 return False
             warn('XCMate cache permissions changed; retrying in private cache')
             directory = fallback
+        finally:
+            try:
+                if xbmcvfs.exists(temp): xbmcvfs.delete(temp)
+            except Exception: pass
 
 def cache_clear():
-    cd = cache_dir()
-    dirs, files = xbmcvfs.listdir(cd)
-    for fn in files:
-        # A user-selected folder may contain unrelated JSON. Only clear
-        # XCMate's hashed cache keys, never personal files or addon settings.
-        base, ext = os.path.splitext(fn)
-        if ext == '.json' and len(base) == 32 and all(
-                ch in '0123456789abcdef' for ch in base):
-            xbmcvfs.delete(os.path.join(cd, fn))
+    for cd in dict.fromkeys((cache_dir(),_private_cache_dir())):
+        dirs, files = xbmcvfs.listdir(cd)
+        for fn in files:
+            # Only XCMate hashed cache keys, never sources/mappings/accounts.
+            base, ext = os.path.splitext(fn)
+            if ext == '.json' and len(base) == 32 and all(
+                    ch in '0123456789abcdef' for ch in base):
+                xbmcvfs.delete(os.path.join(cd, fn))
     info('Cache cleared')
 
 def _favs_path():

@@ -1,9 +1,8 @@
 """XCMate remote-control TV navigation, displayed over active Xtream live TV.
 
-Back/Left: closed -> channels -> category groups; Right: return to channels.
-Up/Down: zap one station in the active group when hidden, otherwise highlight items.
-Context/Menu (or 0): toggle a group in the saved multi-selection.
-Back on groups: close overlay. Stop: stop playback and close overlay.
+First OK: compact programme info. Second OK/Down: player controls.
+Left opens indexed channels; Left again opens groups. Back returns one level.
+Up/Down zap only in full-screen mode. Stop releases playback and dialog.
 
 Kodi handles native list movement before Python callbacks. Bridge commands move
 the list explicitly; native events must not move it a second time. No network
@@ -121,6 +120,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
         from xtream import XtreamClient
         from iptv import Channel
         from group_selection import load
+        from tv_data import CatalogIndex, GuideSnapshot
+        from types import SimpleNamespace
         self.portal = portal
         self.xc = XtreamClient(portal['xc_host'], portal['xc_user'], portal['xc_pass'])
         self.sid = str(initial_sid)
@@ -131,14 +132,15 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self.groups = []
         self.enabled = load(portal['id'])
         self.channels = []
+        self.index = CatalogIndex(())
+        self._identity_client = SimpleNamespace(live_stream_url=self.xc.live_stream_url,
+            is_cached_live_id=lambda sid: sid in self.index.by_sid)
         self._catalog_ready = False
         # Cache-only, no network. The background service warms missing data;
         # list presentation is fast even when the provider stalls.
         self._load_catalog_from_disk()
-        # v0.1.15: visual proof of an overlay. The original invisible
-        # capture mode made a successful WindowDialog.show() impossible to
-        # distinguish from a player that never displayed our UI.
-        self.mode = 'channels'
+        # 0.1.25 starts with the video unobscured; first OK is information only.
+        self.mode = 'hidden'
         self._intro_deadline = None
         self._focus_main = 0
         self._focus_extra = 0
@@ -156,11 +158,24 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self._closed = False
         self._epg_fetching = False
         self._highlight = {'channels': 0, 'groups': 0, 'guide': 0}
+        self._list_key = None
+        self._info_deadline = None
+        self._guide_generation = -1
+        self._last_tick = 0
+        try:
+            from utils import setting_int
+            self._info_timeout = min(30,max(3,setting_int('tv_infobar_seconds',8)))
+        except Exception: self._info_timeout = 8
+        self._guide = GuideSnapshot(portal,self.xc)
+        self._guide.request([selected_stream] if selected_stream else [])
+        self._guide.start()
 
     def _load_catalog_from_disk(self):
         from iptv import Channel
+        started=time.perf_counter()
         categories = self.xc.get_cached_catalog('get_live_categories')
         streams = self.xc.get_cached_catalog('get_live_streams')
+        loaded=time.perf_counter()
         if categories is None or streams is None:
             return False
         groups = [c for c in categories if isinstance(c, dict)]
@@ -180,12 +195,18 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 extra={'category_id': cid,
                        'stream_id': str(stream['stream_id'])}))
         self.groups, self.channels = groups, channels
+        from tv_data import CatalogIndex
+        self.index = CatalogIndex(channels)
+        self.index.selection('*',self.enabled)
+        trace('catalog_performance','CATALOG_READY',cache_ms=(loaded-started)*1000,
+              index_ms=(time.perf_counter()-loaded)*1000,channels=len(channels))
         self._catalog_ready = True
         return True
 
     def refresh_from_cache(self):
         """Service polls only until initial background warming has completed."""
         if self._catalog_ready or not self._load_catalog_from_disk():
+            self.tick()
             return False
         self.rows = category_rows(self.groups, self.enabled)
         selected_stream = next((c for c in self.channels
@@ -242,6 +263,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         if self._closed:
             return
         self._closed = True
+        if hasattr(self, '_guide'): self._guide.close()
         self._intro_deadline = None
         super().close()
         marker = xbmcgui.Window(10000)
@@ -264,9 +286,9 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 return False
             from live_recovery import playback_match
             session=session_from_property(xbmcgui.Window(10000).getProperty(SESSION_KEY))
-            match,reason = playback_match(player,[self.portal],lambda *args:self.xc,session)
+            match,reason = playback_match(player,[self.portal],lambda *args:self._identity_client,session)
             if not match and self._previous_session and time.monotonic()<self._tune_deadline:
-                match,reason=playback_match(player,[self.portal],lambda *args:self.xc,self._previous_session)
+                match,reason=playback_match(player,[self.portal],lambda *args:self._identity_client,self._previous_session)
                 if match: reason='PREVIOUS_'+reason
             trace('ownership',reason,video=True,marker=bool(session),catalog=self._catalog_ready)
             if not match or match[0] != str(self.portal['id']):
@@ -290,148 +312,239 @@ class LiveNavigator(xbmcgui.WindowDialog):
 
     def _build_controls(self):
         import xbmcaddon
-        try:
-            width = max(840, self.getWidth())
-            height = max(560, self.getHeight())
-        except Exception:
-            width, height = 1280, 720
-        image = os.path.join(xbmcaddon.Addon().getAddonInfo('path'),
-                             'resources', 'media', 'tv_overlay_bg.png')
-        media = os.path.dirname(image)
-        normal = os.path.join(media, 'remote_normal.png')
-        focused = os.path.join(media, 'remote_focus.png')
-        sidebar = min(600, max(440, int(width * 0.47)))
-        self.bg = xbmcgui.ControlImage(0, 0, sidebar, height, image)
-        self.heading = xbmcgui.ControlLabel(32, 25, sidebar-48, 55, 'XCMate', 'font16', '0xFFFFFFFF')
-        self.sub = xbmcgui.ControlLabel(32, 82, sidebar-48, 40, '', 'font13', '0xFFB6BCC6')
+        width, height = max(960,self.getWidth()), max(640,self.getHeight())
+        self._width, self._height = width,height
+        self._media = os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media')
+        media = self._media
+        normal,focused,clear = [os.path.join(media,s+'.png') for s in ('tv_normal','tv_focus','remote_clear')]
+        panel = os.path.join(media,'tv_panel.png')
+        sidebar = min(800,int(width*.65))
+        self._sidebar = sidebar
+        self.bg = xbmcgui.ControlImage(24,24,sidebar,height-48,panel)
+        self.heading = xbmcgui.ControlLabel(48,38,sidebar-48,36,'XCMate','font16','0xFFF0F2F5')
+        self.sub = xbmcgui.ControlLabel(48,78,sidebar-48,28,'','font12','0xFFB6BCC6')
         self._startup_stage = 'CONTROL_LIST'
-        self.control = xbmcgui.ControlList(32, 135, sidebar-58, height-205,
-            font='font13', textColor='0xFFFFFFFF', selectedColor='0xFFFFFFFF',
-            buttonTexture=normal, buttonFocusTexture=focused,
-            _itemHeight=46, _space=3)
+        # Native list owns focus and movement. Its labels are drawn below as a
+        # bounded eight-row viewport, avoiding skin-specific label layouts.
+        self.control = xbmcgui.ControlList(44,116,sidebar-40,height-198,
+            font='font13',textColor='0x00000000',selectedColor='0x00000000',
+            buttonTexture=clear,buttonFocusTexture=clear,_itemHeight=46,_space=3)
         self._startup_stage = 'BUILD_CONTROLS'
-        # Keep a real, focusable Kodi control while the sidebar is hidden.
-        # Otherwise WindowDialog receives no Android remote key events.
-        transparent = os.path.join(media, 'remote_clear.png')
-        self.capture = xbmcgui.ControlButton(0, 0, 8, 8, '',
-            focusTexture=transparent, noFocusTexture=transparent)
-        self.footer = xbmcgui.ControlLabel(32, height-65, sidebar-40, 48, '', 'font12', '0xFFD3D7E2')
-        self.osd_bg = xbmcgui.ControlImage(0, height-165, width, 165, image)
-        self.osd_title = xbmcgui.ControlLabel(26, height-155, width-50, 38, '', 'font13', '0xFFFFFFFF')
-        self.main_buttons = []
-        self.extra_buttons = []
-        main = ['⏯ Pause / Weiter', '◀◀ −10 s', '▶▶ +30 s', '■ Stop', '⋯ Weitere']
-        extra = ['Ton', 'Bild', 'EPG', 'Einstellungen', 'Sendergruppen']
-        space = max(125, int((width-40)/len(main)))
-        for idx, label in enumerate(main):
-            self.main_buttons.append(xbmcgui.ControlButton(
-                20+idx*space, height-111, space-8, 40, label,
-                focusTexture=focused, noFocusTexture=normal))
-        space2 = max(110, int((width-40)/len(extra)))
-        for idx, label in enumerate(extra):
-            self.extra_buttons.append(xbmcgui.ControlButton(
-                20+idx*space2, height-59, space2-8, 40, label,
-                focusTexture=focused, noFocusTexture=normal))
-        for control in (self.bg, self.heading, self.sub, self.control, self.footer,
-                        self.capture, self.osd_bg, self.osd_title, *self.main_buttons, *self.extra_buttons):
-            self.addControl(control)
-        # Button navigation is handled by our command model, not twice by Kodi.
-        for control in (self.capture, *self.main_buttons, *self.extra_buttons):
-            control.setNavigation(control, control, control, control)
+        self.capture = xbmcgui.ControlButton(24,24,8,8,'',focusTexture=clear,noFocusTexture=clear)
+        self.footer = xbmcgui.ControlLabel(48,height-73,sidebar-48,30,'','font12','0xFFB6BCC6')
+        self._row_controls = []
+        row_height = (height-210)//8
+        for i in range(8):
+            y = 116+i*row_height
+            self._row_controls.append((
+                xbmcgui.ControlImage(44,y,sidebar-40,row_height-3,focused),
+                xbmcgui.ControlImage(52,y+7,42,42,os.path.join(media,'tv.png'),aspectRatio=2),
+                xbmcgui.ControlLabel(106,y+1,sidebar-128,27,'','font13','0xFFF0F2F5'),
+                xbmcgui.ControlLabel(106,y+28,sidebar-128,25,'','font12','0xFFB6BCC6')))
+        self.info_bg = xbmcgui.ControlImage(32,height-248,width-64,216,panel)
+        self.info_logo = xbmcgui.ControlImage(54,height-214,96,96,os.path.join(media,'tv.png'),aspectRatio=2)
+        self.info_name = xbmcgui.ControlLabel(174,height-234,width-220,32,'','font16','0xFFF0F2F5')
+        self.info_now = xbmcgui.ControlLabel(174,height-193,width-465,29,'','font13','0xFFF0F2F5')
+        self.info_times = xbmcgui.ControlLabel(width-280,height-193,230,29,'','font13','0xFFD2D8E0')
+        self._progress_width = width-460
+        self.info_track = xbmcgui.ControlImage(174,height-153,self._progress_width,8,normal)
+        self.info_progress = xbmcgui.ControlImage(174,height-153,self._progress_width,8,os.path.join(media,'tv_progress.png'))
+        self.info_duration = xbmcgui.ControlLabel(174,height-131,width-220,27,'','font12','0xFFB6BCC6')
+        self.info_next = xbmcgui.ControlLabel(174,height-99,width-220,29,'','font13','0xFFF0F2F5')
+        self.info_hint = xbmcgui.ControlLabel(174,height-61,width-220,24,'OK / Runter: Bedienung    Links: Sender    Zurück: TV','font12','0xFFB6BCC6')
+        self._info_controls = [self.info_bg,self.info_logo,self.info_name,self.info_now,self.info_times,
+                              self.info_track,self.info_progress,self.info_duration,self.info_next,self.info_hint]
+        self.osd_bg = xbmcgui.ControlImage(32,height-204,width-64,172,panel)
+        self.osd_title = xbmcgui.ControlLabel(52,height-194,width-104,30,'XCMate','font13','0xFFF0F2F5')
+        self.main_buttons,self.extra_buttons,self._button_icons = [],[],[]
+        main = [('Pause / Weiter','pause'),('-10 s','back'),('+30 s','forward'),('Stop','stop'),('Weitere','more')]
+        extra = [('Ton','audio'),('Bild','video'),('Untertitel','subtitle'),('EPG','epg'),('Einstellungen','settings'),('Gruppen','tv')]
+        for entries,buttons,y in ((main,self.main_buttons,height-150),(extra,self.extra_buttons,height-92)):
+            space = (width-104)//len(entries)
+            for i,(label,icon) in enumerate(entries):
+                buttons.append(xbmcgui.ControlButton(52+i*space,y,space-8,46,label,
+                    focusTexture=focused,noFocusTexture=normal,textOffsetX=36,font='font13'))
+                self._button_icons.append((buttons[-1],xbmcgui.ControlImage(60+i*space,y+12,22,22,
+                    os.path.join(media,'tv_'+icon+'.png'))))
+        all_controls = [self.bg,self.heading,self.sub,self.control,self.footer,self.capture,
+            *[c for row in self._row_controls for c in row],*self._info_controls,
+            self.osd_bg,self.osd_title,*self.main_buttons,*self.extra_buttons,
+            *[image for _,image in self._button_icons]]
+        for control in all_controls: self.addControl(control)
+        for control in (self.capture,*self.main_buttons,*self.extra_buttons):
+            control.setNavigation(control,control,control,control)
         self.control.controlLeft(self.control)
         self.control.controlRight(self.control)
         self._drawn = True
         marker = xbmcgui.Window(10000)
-        marker.setProperty('XtreamMate.OverlayStatus', 'bereit')
-        marker.setProperty('XtreamMate.InputMode', 'native WindowDialog / onControl')
-        self._intro_deadline = time.monotonic() + 16.0
-        marker.setProperty('XtreamMate.AutoPopupStatus',
-                           'Controls aufgebaut – Senderliste sichtbar (16s)')
+        marker.setProperty('XtreamMate.OverlayStatus','bereit')
+        marker.setProperty('XtreamMate.InputMode','native WindowDialog / onControl')
+        marker.setProperty('XtreamMate.AutoPopupStatus','LIVE_FULL - OK: Senderinformation')
 
-    def _render(self):
-        if not self._drawn:
-            return
+    def _can_seek(self):
+        try:
+            return bool(xbmc.getCondVisibility('Player.SeekEnabled') and xbmc.Player().getTotalTime()>5)
+        except Exception: return False
+
+    def _local_logo(self, channel):
+        from logo_cache import local_logo
+        return local_logo(getattr(channel,'logo','')) or os.path.join(self._media,'tv.png')
+
+    def _render_info(self):
+        channel = self.index.by_sid.get(self.sid)
+        self._guide.request([channel] if channel else [])
+        before=time.perf_counter()
+        info = self._guide.get(self.sid)
+        self._snapshot_ms=getattr(self,'_snapshot_ms',0)+(time.perf_counter()-before)*1000
+        self.info_logo.setImage(self._local_logo(channel))
+        self.info_name.setLabel(channel.name if channel else 'Live-TV')
+        self.info_now.setLabel('JETZT: '+info['now'] if info['now'] else 'Für diesen Sender keine EPG-Daten verfügbar')
+        self.info_times.setLabel('{} - {} Uhr'.format(info['now_time'],info['now_end_time']) if info['now'] else '')
+        for control in (self.info_track,self.info_progress,self.info_duration): control.setVisible(bool(info['now']))
+        if info['now']:
+            self.info_progress.setWidth(max(1,int(self._progress_width*info['progress'])))
+            self.info_progress.setVisible(info['progress']>0)
+            self.info_duration.setLabel('{} / {} Min. vergangen    Noch {} Minuten'.format(
+                int(info['elapsed']//60),max(1,int((info['stop']-info['start']+59)//60)),
+                max(1,int((info['remaining']+59)//60))))
+        self.info_next.setLabel('DANACH: {}    ab {} Uhr'.format(info['next'],info['next_time'])
+                                if info['next'] else 'DANACH: Keine Programmdaten verfügbar')
+
+    def _list_content(self):
+        if self.mode == 'groups':
+            self.rows = category_rows(self.groups,self.enabled)
+            return [('AN' if active else 'AUS')+'  '+name for _,name,active in self.rows]
+        if self.mode == 'guide':
+            info = self._guide.get(self._guide_sid)
+            self._programme_events = info['events']
+            return ['{} - {}  {}'.format(time.strftime('%H:%M',time.localtime(e['start'])),
+                    time.strftime('%H:%M',time.localtime(e['stop'])),e['title']) for e in self._programme_events] or [
+                    'Keine EPG-Daten - Quellenstatus im XCMate-Hauptmenü prüfen']
+        self.visible_channels, positions = self.index.selection(self.category_id,self.enabled)
+        pos = self._highlight['channels']
+        if self._scroll_to_current:
+            pos = positions.get(self.sid,pos)
+            self._scroll_to_current = False
+        pos = min(max(pos,0),max(len(self.visible_channels)-1,0))
+        self._highlight['channels'] = pos
+        self._page_start = pos//CHANNEL_PAGE_SIZE*CHANNEL_PAGE_SIZE
+        self._row_offset = int(self._page_start>0)
+        page = self.visible_channels[self._page_start:self._page_start+CHANNEL_PAGE_SIZE]
+        labels = [c.name for c in page]
+        if self._row_offset: labels.insert(0,'Vorherige Senderseite')
+        if self._page_start+len(page)<len(self.visible_channels): labels.append('Nächste Senderseite')
+        return labels or ['Senderkatalog wird vorbereitet' if not self._catalog_ready else 'Keine aktivierten Sender']
+
+    def _render_rows(self):
+        selected = max(0,self.control.getSelectedPosition())
+        first = selected//8*8
+        self.footer.setLabel('OK: auswählen    Links: Gruppen    Zurück: TV')
+        wanted = []
+        playing = self.index.by_sid.get(self.sid)
+        if playing: wanted.append(playing)
+        for row,(background,logo,title,detail) in enumerate(self._row_controls):
+            i = first+row
+            available = i<len(self._labels)
+            for c in (logo,title,detail): c.setVisible(available)
+            background.setVisible(available and i==selected)
+            if not available: continue
+            label,subtitle,channel = self._labels[i],'',None
+            if self.mode == 'channels':
+                absolute = self._page_start+i-self._row_offset
+                if self._row_offset<=i<self._row_offset+min(CHANNEL_PAGE_SIZE,len(self.visible_channels)-self._page_start):
+                    channel = self.visible_channels[absolute]
+                    wanted.append(channel)
+                    sid = str(channel.extra.get('stream_id',''))
+                    before=time.perf_counter()
+                    info = self._guide.get(sid)
+                    self._snapshot_ms=getattr(self,'_snapshot_ms',0)+(time.perf_counter()-before)*1000
+                    label = ('LIVE  ' if sid==self.sid else '')+channel.name
+                    subtitle = '{}-{}  {}'.format(info['now_time'],info['now_end_time'],info['now']) if info['now'] else 'Keine aktuellen EPG-Daten'
+                    if i==selected and info['next']:
+                        self.footer.setLabel('Danach {}: {}'.format(info['next_time'],info['next']))
+            elif self.mode == 'guide' and i<len(self._programme_events):
+                subtitle = self._programme_events[i].get('description','')[:100]
+            title.setLabel(label)
+            detail.setLabel(subtitle)
+            logo.setImage(self._local_logo(channel))
+        if self.mode == 'guide':
+            channel = self.index.by_sid.get(self._guide_sid)
+            if channel: wanted.append(channel)
+        self._guide.request(wanted)
+
+    def _render(self, focus=True):
+        if not self._drawn: return
+        begin = time.perf_counter()
+        self._snapshot_ms=0
+        index_ms=0
         listing = self.mode in ('groups','channels','guide')
         osd = self.mode in ('controls','extras')
-        for c in (self.bg, self.heading, self.sub, self.control, self.footer):
-            c.setVisible(listing)
-        for c in (self.osd_bg, self.osd_title, *self.main_buttons):
-            c.setVisible(osd)
-        for c in self.extra_buttons:
-            c.setVisible(self.mode == 'extras')
-        if osd:
-            self.osd_title.setLabel('XCMate  ·  {}  |  {}'.format(
-                self.portal.get('name','Live TV'),
-                'OK: Ausführen · Weitere: Zusatzmenü' if self.mode == 'controls' else 'OK: Ausführen'))
-            focus = (self.main_buttons[self._focus_main] if self.mode == 'controls'
-                     else self.extra_buttons[self._focus_extra])
-            self.setFocus(focus)
+        for c in (self.bg,self.heading,self.sub,self.control,self.footer): c.setVisible(listing)
+        for row in self._row_controls:
+            for c in row: c.setVisible(False)
+        for c in self._info_controls: c.setVisible(self.mode=='info')
+        for c in (self.osd_bg,self.osd_title): c.setVisible(osd)
+        seek = self._can_seek() if osd else False
+        self._main_indices = [0,1,2,3,4] if seek else [0,3,4]
+        for i,c in enumerate(self.main_buttons): c.setVisible(osd and i in self._main_indices)
+        for slot,i in enumerate(self._main_indices):
+            space=(self._width-104)//len(self._main_indices)
+            self.main_buttons[i].setPosition(52+slot*space,self._height-150)
+            self.main_buttons[i].setWidth(space-8)
+            self._button_icons[i][1].setPosition(60+slot*space,self._height-138)
+        for c in self.extra_buttons: c.setVisible(self.mode=='extras')
+        for button,image in self._button_icons: image.setVisible(button in self.main_buttons and osd and self.main_buttons.index(button) in self._main_indices or button in self.extra_buttons and self.mode=='extras')
+        target = self.capture
+        if self.mode=='info': self._render_info()
+        elif osd:
+            if self._focus_main not in self._main_indices: self._focus_main=0
+            self.osd_title.setLabel('XCMate - '+('Bedienung' if self.mode=='controls' else 'Weitere Einstellungen'))
+            target = self.main_buttons[self._focus_main] if self.mode=='controls' else self.extra_buttons[self._focus_extra]
+        elif listing:
+            index_begin=time.perf_counter()
+            labels = self._list_content()
+            index_ms=(time.perf_counter()-index_begin)*1000
+            key = (self.mode,self.category_id,self._page_start,tuple(labels))
+            if key != self._list_key:
+                self.control.reset()
+                self.control.addItems(labels)
+                self._labels,self._list_key = labels,key
+                pos = self._highlight[self.mode]
+                if self.mode=='channels': pos = pos-self._page_start+self._row_offset
+                self.control.selectItem(min(max(pos,0),len(labels)-1))
+            self.heading.setLabel('XCMate - '+{'channels':'LIVE-TV','groups':'SENDERGRUPPEN','guide':'PROGRAMM'}[self.mode])
+            if self.mode=='channels':
+                self.sub.setLabel('{} Sender - Seite {}/{}'.format(len(self.visible_channels),self._page_start//100+1,
+                    max(1,(len(self.visible_channels)+99)//100)))
+            elif self.mode=='guide':
+                ch=self.index.by_sid.get(self._guide_sid)
+                self.sub.setLabel(ch.name if ch else 'Programmübersicht')
+            else: self.sub.setLabel('OK: öffnen    Menü: Gruppe ein/aus')
+            self.footer.setLabel('OK: auswählen    Links: Gruppen    Zurück: TV')
+            self._render_rows()
+            target = self.control
+        render_end = time.perf_counter()
+        if focus: self.setFocus(target)
+        trace('performance',self.mode.upper(),index_ms=index_ms,snapshot_ms=self._snapshot_ms,
+              render_ms=max(0,(render_end-begin)*1000-index_ms-self._snapshot_ms),focus_ms=(time.perf_counter()-render_end)*1000,
+              items=len(getattr(self,'_labels',[])) if listing else 0)
+
+    def tick(self):
+        if self._closed or not self._drawn: return
+        now=time.monotonic()
+        if self.mode=='info' and self._info_deadline is not None and now>=self._info_deadline:
+            self._switch('hidden')
             return
-        if not listing:
-            self.setFocus(self.capture)
-            return
-        self.control.reset()
-        if self.mode == 'groups':
-            self.rows = category_rows(self.groups, self.enabled)
-            labels = [('✔  ' if enabled else '○  ') + label for _, label, enabled in self.rows]
-            self.heading.setLabel('XCMate · SENDERGRUPPEN')
-            self.sub.setLabel('OK: Gruppe öffnen · Menü: Ein/Aus')
-            self.footer.setLabel('◀/Zurück: schließen   ▶: Senderliste   ▲▼: navigieren')
-        else:
-            self.visible_channels = channels_for_category(self.channels, self.category_id, self.enabled)
-            pos = self._highlight[self.mode]
-            if self._scroll_to_current and self.sid:
-                pos = next((i for i,c in enumerate(self.visible_channels)
-                            if c.extra.get('stream_id') == self.sid), pos)
-                self._scroll_to_current = False
-            pos = min(max(pos, 0), max(len(self.visible_channels)-1, 0))
-            self._highlight[self.mode] = pos
-            self._page_start = (pos // CHANNEL_PAGE_SIZE) * CHANNEL_PAGE_SIZE
-            self._row_offset = int(self._page_start > 0)
-            page = self.visible_channels[self._page_start:self._page_start+CHANNEL_PAGE_SIZE]
-            from epg import load_cache
-            from epg_views import guide_for_channel, row_title
-            guide = load_cache(self.portal['id'])
-            now_ts = time.time()
-            labels = [row_title(c.name, guide_for_channel(
-                guide, c.tvg_id, c.extra.get('stream_id', ''), now_ts))
-                for c in page]
-            if self._row_offset:
-                labels.insert(0, '◀ Vorherige Senderseite')
-            if self._page_start + len(page) < len(self.visible_channels):
-                labels.append('▶ Nächste Senderseite')
-            self.heading.setLabel('XCMate · EPG' if self.mode == 'guide' else 'XCMate · LIVE-TV')
-            self.sub.setLabel('{} Sender · Seite {}/{} · {}'.format(len(self.visible_channels),
-                self._page_start // CHANNEL_PAGE_SIZE + 1,
-                max(1, (len(self.visible_channels)+CHANNEL_PAGE_SIZE-1)//CHANNEL_PAGE_SIZE),
-                next((x[1] for x in self.rows if x[0] == self.category_id), 'Aktivierte Gruppen')))
-            self.footer.setLabel('◀: Gruppen · OK: Sender starten · Zurück: TV'
-                if self.mode == 'guide' else
-                '◀: Sendergruppen · OK: Sender starten · Zurück: TV')
-        if not labels:
-            labels = ['Senderliste wird im Hintergrund geladen …' if not self._catalog_ready
-                      else 'Keine Sender in dieser Auswahl']
-        self.control.addItems(labels)
-        pos = self._highlight[self.mode]
-        if self.mode in ('channels','guide'):
-            pos = pos - self._page_start + self._row_offset
-        self.control.selectItem(min(pos, len(labels)-1))
-        self.setFocus(self.control)
+        if now-self._last_tick<1: return
+        self._last_tick=now
+        if self.mode=='info': self._render_info()
+        elif self.mode in ('channels','groups','guide') and self._guide.generation!=self._guide_generation:
+            self._guide_generation=self._guide.generation
+            self._render(focus=False)
 
     def expire_intro(self):
-        """Hide the initial proof overlay after 16 seconds without key input.
-
-        This does not stop the stream and does not close the active Kodi
-        WindowDialog; an actual native remote action may still reach it.
-        """
-        if (self._drawn and self.mode == 'channels'
-                and self._intro_deadline is not None
-                and time.monotonic() >= self._intro_deadline):
-            self._intro_deadline = None
-            self._switch('hidden')
-            xbmcgui.Window(10000).setProperty(
-                'XtreamMate.AutoPopupStatus',
-                'nach 16s automatisch verborgen (keine Tastenaktion)')
+        """Service timer: refresh local info and expire only the INFO_BAR."""
+        self.tick()
 
     def _position(self, step):
         count = self.control.size()
@@ -439,10 +552,11 @@ class LiveNavigator(xbmcgui.WindowDialog):
             i = min(max(self.control.getSelectedPosition() + step, 0), count - 1)
             self.control.selectItem(i)
             self._remember_position()
+            self._render_rows()
 
     def _remember_position(self):
         i = self.control.getSelectedPosition()
-        if self.mode in ('channels', 'guide'):
+        if self.mode == 'channels':
             i = self._page_start + i - self._row_offset
             # Page links are not channels and must never become tune targets.
             if not self._page_start <= i < min(self._page_start+CHANNEL_PAGE_SIZE,
@@ -461,6 +575,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
 
     def _switch(self, mode):
         self.mode = mode
+        self._info_deadline = time.monotonic()+self._info_timeout if mode=='info' else None
         self._render()
 
     def _toggle(self):
@@ -497,7 +612,12 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 self._scroll_to_current = False
                 self._highlight['channels'] = 0
                 self._switch('channels')
-        elif self.mode in ('channels','guide'):
+        elif self.mode == 'guide':
+            i = self.control.getSelectedPosition()
+            if 0<=i<len(self._programme_events):
+                event=self._programme_events[i]
+                xbmcgui.Dialog().textviewer('XCMate - '+event['title'],event.get('description') or 'Keine Beschreibung vorhanden.')
+        elif self.mode == 'channels':
             row = self.control.getSelectedPosition()
             if self._row_offset and row == 0:
                 self._page_channels(-1)
@@ -520,6 +640,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
             self._recent_sid = self.sid
             self._tune_deadline = time.monotonic() + 8
         self.sid = sid
+        current = self.index.by_sid.get(sid)
+        self._guide.request([current] if current else [])
         self._scroll_to_current = True
         self._previous_session=session_from_property(xbmcgui.Window(10000).getProperty(SESSION_KEY))
         session=announce(self.portal['id'], sid, channel.name)
@@ -530,8 +652,9 @@ class LiveNavigator(xbmcgui.WindowDialog):
         xbmc.Player().play(item.getPath(), item)
 
     def _zap(self, step):
-        channel = adjacent_channel(self.channels, self.category_id,
-                                   self.enabled, self.sid, step)
+        rows,positions = self.index.selection(self.category_id,self.enabled)
+        pos = (positions[self.sid]+step)%len(rows) if self.sid in positions else (0 if step>0 else -1)
+        channel = rows[pos] if rows else None
         if channel is None:
             xbmcgui.Dialog().notification('XCMate',
                 'Keine aktiven Sender in dieser Gruppe.')
@@ -551,91 +674,41 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 'Spulen ist bei diesem Live-Sender nicht verfügbar (kein Timeshift).')
 
     def _epg(self):
-        """Show cached EPG instantly. Missing short guide refreshes asynchronously.
-
-        Never block a Kodi GUI action on the remote Xtream server.
-        """
-        import base64
-        import threading
-        from epg import load_cache
-        import xbmcgui
-        data = self.xc._get_json('get_short_epg',
-                        extra={'stream_id': self.sid, 'limit': 6},
-                        cached_only=True) or {}
-        rows = data.get('epg_listings', []) if isinstance(data, dict) else []
-        lines = []
-        for item in rows:
-            if not isinstance(item, dict):
-                continue
-            title = str(item.get('title', ''))
-            try:
-                decoded = base64.b64decode(title, validate=True).decode('utf-8')
-                if decoded.strip(): title = decoded
-            except (ValueError, TypeError, UnicodeError):
-                pass
-            lines.append('{}  {}'.format(item.get('start', ''), title))
-        if not lines:
-            channel = next((c for c in self.channels
-                            if str(c.extra.get('stream_id')) == self.sid), None)
-            guide = load_cache(self.portal['id'])
-            tvg_id = channel.tvg_id if channel else ''
-            cached = guide.get(tvg_id, []) if isinstance(guide, dict) else []
-            for item in cached[:10]:
-                if isinstance(item, dict):
-                    lines.append('{}  {}'.format(item.get('start',
-                        item.get('start_timestamp', '')), item.get('name',
-                        item.get('title', ''))))
-        if lines:
-            xbmcgui.Dialog().textviewer('XCMate – EPG', '\n'.join(lines))
-            return
-        if not self._epg_fetching and self.sid:
-            self._epg_fetching = True
-            sid = str(self.sid)
-            def warm():
-                try:
-                    self.xc.get_short_epg(sid, limit=6, force_refresh=True)
-                except Exception as exc:
-                    warn('XCMate short EPG: {}'.format(type(exc).__name__))
-                finally:
-                    self._epg_fetching = False
-            threading.Thread(target=warm, daemon=True,
-                             name='XCMateShortEPG').start()
-        xbmcgui.Dialog().notification('XCMate – EPG',
-            'EPG wird im Hintergrund geladen. Gleich erneut öffnen.')
+        self._guide_return = self.mode if self.mode != 'guide' else getattr(self,'_guide_return','extras')
+        self._guide_sid = self.sid
+        self._highlight['guide'] = 0
+        self._switch('guide')
 
     def _execute(self, section, index):
         if section == 'controls':
-            if index == 0:
-                try: xbmc.Player().pause()
-                except Exception: pass
+            if index in (1,2) and not self._can_seek(): return
+            if index == 4:
+                self._switch('extras')
+                return
+            self._switch('hidden')
+            if index == 0: xbmc.Player().pause()
             elif index == 1: self._seek(-10)
             elif index == 2: self._seek(30)
             elif index == 3:
                 xbmc.Player().stop()
                 self.close()
-                return
-            elif index == 4:
-                self._switch('extras')
-                return
         else:
-            if index == 0:
-                xbmc.executebuiltin('ActivateWindow(osdaudiosettings)')
-            elif index == 1:
-                xbmc.executebuiltin('ActivateWindow(osdvideosettings)')
-            elif index == 2: self._epg()
-            elif index == 3:
-                import xbmcaddon
-                xbmcaddon.Addon().openSettings()
-            elif index == 4:
-                # The full manager can fetch uncached categories. Stay in our
-                # already loaded groups while handling a player input event.
+            if index == 3:
+                self._epg()
+                return
+            if index == 5:
                 self._switch('groups')
                 return
-        self._switch('hidden')
+            self._switch('hidden')
+            if index in (0,1,2):
+                window=('osdaudiosettings','osdvideosettings','osdsubtitlesettings')[index]
+                xbmc.executebuiltin('ActivateWindow('+window+')')
+            elif index == 4:
+                import xbmcaddon
+                xbmcaddon.Addon().openSettings()
 
     def _recent(self):
-        channel = next((c for c in self.channels
-                        if str(c.extra.get('stream_id', '')) == self._recent_sid), None)
+        channel = self.index.by_sid.get(self._recent_sid)
         if channel is not None:
             self._tune(channel)
         else:
@@ -663,14 +736,15 @@ class LiveNavigator(xbmcgui.WindowDialog):
         if not self._accept_input():
             return
         self._intro_deadline = None
+        if self.mode=='info': self._info_deadline=time.monotonic()+self._info_timeout
         if command in ('left', 'long_left'):
             if self.mode in ('controls', 'extras'):
                 if self.mode == 'controls':
-                    self._focus_main = (self._focus_main - 1) % len(self.main_buttons)
+                    self._focus_main = self._main_indices[(self._main_indices.index(self._focus_main)-1)%len(self._main_indices)]
                 else:
                     self._focus_extra = (self._focus_extra - 1) % len(self.extra_buttons)
                 self._render()
-            elif self.mode in ('channels','guide'):
+            elif self.mode == 'channels':
                 self._switch('groups')
             elif self.mode == 'groups':
                 self._switch('hidden')
@@ -685,7 +759,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 self._switch('hidden')
             elif self.mode in ('controls','extras'):
                 if self.mode == 'controls':
-                    self._focus_main = (self._focus_main + 1) % len(self.main_buttons)
+                    self._focus_main = self._main_indices[(self._main_indices.index(self._focus_main)+1)%len(self._main_indices)]
                 else:
                     self._focus_extra = (self._focus_extra + 1) % len(self.extra_buttons)
                 self._render()
@@ -693,24 +767,26 @@ class LiveNavigator(xbmcgui.WindowDialog):
             if command == 'menu' and self.mode == 'groups':
                 self._toggle()
             elif command == 'long_menu':
-                self._switch('guide')
+                self._epg()
             else:
                 self._switch('extras')
         elif command in ('epg', 'guide'):
-            self._switch('guide')
-        elif command in ('info', 'long_right'):
             self._epg()
+        elif command in ('info', 'long_right'):
+            self._switch('info')
         elif command in ('back',):
             if self.mode == 'hidden':
-                self._switch('guide')
+                self.close()
             elif self.mode == 'channels':
-                self._switch('groups')
+                self._switch('hidden')
             elif self.mode == 'guide':
-                self._switch('hidden')
+                self._switch(self._guide_return)
             elif self.mode == 'groups':
-                self._switch('hidden')
+                self._switch('channels')
             elif self.mode == 'extras':
                 self._switch('controls')
+            elif self.mode == 'controls':
+                self._switch('info')
             else:
                 self._switch('hidden')
         elif command == 'long_back':
@@ -734,16 +810,21 @@ class LiveNavigator(xbmcgui.WindowDialog):
         elif command in ('up', 'down'):
             if self.mode == 'hidden':
                 self._zap(1 if command == 'up' else -1)
+            elif self.mode=='info':
+                if command=='down': self._switch('controls')
             elif self.mode in ('channels', 'groups', 'guide'):
                 self._position(-1 if command == 'up' else 1)
             elif self.mode in ('controls','extras'):
                 # D-pad vertical movement stays inside our focusable OSD.
                 index = '_focus_main' if self.mode == 'controls' else '_focus_extra'
-                count = len(self.main_buttons) if self.mode == 'controls' else len(self.extra_buttons)
-                setattr(self, index, (getattr(self, index) + (-1 if command == 'up' else 1)) % count)
+                indices = self._main_indices if self.mode=='controls' else list(range(len(self.extra_buttons)))
+                setattr(self,index,indices[(indices.index(getattr(self,index))+(-1 if command=='up' else 1))%len(indices)])
                 self._render()
         elif command == 'ok':
             if self.mode == 'hidden':
+                self._switch('info')
+            elif self.mode=='info':
+                self._focus_main=0
                 self._switch('controls')
             elif self.mode == 'controls':
                 self._execute('controls', self._focus_main)
@@ -795,11 +876,12 @@ class LiveNavigator(xbmcgui.WindowDialog):
             mapped = 'right'
         elif key in (ACTION_UP, ACTION_DOWN, ACTION_PAGE_UP, ACTION_PAGE_DOWN) and self.mode in ('channels', 'guide', 'groups'):
             # CGUIControlList already applied this action before onAction.
-            if key in (ACTION_PAGE_UP, ACTION_PAGE_DOWN) and self.mode != 'groups':
+            if key in (ACTION_PAGE_UP, ACTION_PAGE_DOWN) and self.mode == 'channels':
                 if not self._page_channels(-1 if key == ACTION_PAGE_UP else 1):
                     self._remember_position()
             else:
                 self._remember_position()
+            self._render_rows()
             return
         elif key == ACTION_SELECT:
             # Omega dispatches onControl BEFORE onAction(SELECT). Handling
@@ -848,7 +930,9 @@ def start_if_eligible(last_nonce):
     try:
         candidate = LiveNavigator(portal, session['sid'])
         trace('dialog','CANDIDATE_CREATED',channels=len(candidate.channels),catalog=candidate._catalog_ready)
-        return candidate if candidate.owns_playback() else None
+        if candidate.owns_playback(): return candidate
+        candidate.close()
+        return None
     except Exception as exc:
         trace('dialog','CONSTRUCTION_FAILED')
         warn('XCMate navigator cannot start: {}'.format(type(exc).__name__))

@@ -106,6 +106,7 @@ class Router:
             'search'             : self._search,
             'search_results'     : self._search_results,
             'epg_now'            : self._epg_now,
+            'epg_status'         : self._epg_status,
             'epg_channel'        : self._epg_channel,
             'epg_sources'        : self._epg_sources,
             'catchup_list'       : self._catchup_list,
@@ -539,6 +540,8 @@ class Router:
                       icon=_ICON_EPG,
                       plot='Eigene oder externe XMLTV-Dateien, mehrere URLs, '
                            'Prioritäten und Sender-Zuordnungen verwalten.')
+        self._add_dir('EPG-Status & Vorschau', self.url(action='epg_status',pid=pid),
+                      icon=_ICON_EPG, plot='Quellen, Importfehler, Zuordnung und echte Programme aus dem lokalen Cache.')
         self._add_dir(_L(32008),
                       self.url(action='refresh_portal', pid=pid),
                       icon=_ICON_SETTINGS,
@@ -1018,7 +1021,7 @@ class Router:
         ptype   = p.get('type', 'm3u')
         from player import channel_list_item
         from epg import load_cache
-        from epg_views import guide_for_channel, cached_short_guide, prefetch_short_guides
+        from epg_views import resolve_guide, prefetch_short_guides
         guide = load_cache(p['id'])
         xc_epg = self._xc(p) if ptype == 'xtream' else None
         manual_epg = {}
@@ -1031,10 +1034,8 @@ class Router:
         matched=now_count=next_count=0
         for ch in chunk:
             li = channel_list_item(ch)
-            epg = guide_for_channel(guide, ch.tvg_id,
-                                    ch.extra.get('stream_id',''), now)
-            if not (epg['now'] or epg['next']) and xc_epg:
-                epg = cached_short_guide(xc_epg, ch.extra.get('stream_id',''), now)
+            epg = resolve_guide(guide, ch.tvg_id, ch.extra.get('stream_id',''),
+                                now, xc_epg, manual_epg)
             now_count+=bool(epg['now'])
             next_count+=bool(epg['next'])
             matched+=bool(epg['now'] or epg['next'])
@@ -1043,7 +1044,8 @@ class Router:
                                  'mediatype':'video'})
             if epg['now'] or epg['next']:
                 li.setLabel('{}  |  Jetzt: {}  |  Danach: {}'.format(
-                    ch.name,epg['now'] or '–',epg['next'] or '–'))
+                    ch.name, '{}-{} {}'.format(epg['now_time'],epg['now_end_time'],epg['now'])
+                    if epg['now'] else 'Keine EPG-Daten',epg['next'] or '–'))
 
             if ptype == 'stb':
                 play_url  = self.url(action='play_stb_live', pid=p['id'],
@@ -1056,13 +1058,13 @@ class Router:
                 cu_action = 'catchup_list'
 
             sid = str(ch.extra.get('stream_id', ''))
-            epg_link_id = sid if sid in manual_epg else (ch.tvg_id or sid)
+            epg_link_id = manual_epg.get(sid) or ch.tvg_id or sid
             cm = [
                 (('Remove from Favourites' if is_favourite(ch.url)
                   else 'Add to Favourites'),
                  f'RunPlugin({self.url(action="toggle_favourite", url=ch.url, name=ch.name, logo=ch.logo, group=ch.group)})'),
                 ('EPG',
-                 f'Container.Update({self.url(action="epg_channel", pid=p["id"], tvg_id=epg_link_id, name=ch.name)})'),
+                 f'Container.Update({self.url(action="epg_channel", pid=p["id"], sid=sid, tvg_id=epg_link_id, name=ch.name)})'),
                 ('EPG-/Live-Diagnose',f'RunPlugin({self.url(action="remote_diagnostics")})'),
             ]
             if ch.catchup or ch.catchup_days:
@@ -2115,26 +2117,17 @@ class Router:
 
 
     def _epg_now(self):
+        # The old manager iterated raw XMLTV IDs, bypassing sender mappings and
+        # short-EPG. Use the same actual-channel preview as the TV overlay.
+        self._epg_status(preview_first=True)
+
+    def _epg_status(self, preview_first=False):
+        if self._handle >= 0:
+            xbmcplugin.endOfDirectory(self._handle,succeeded=False,cacheToDisc=False)
         p = self._portal()
-        if not p:
-            return
-        xbmcplugin.setContent(self._handle, 'videos')
-        xbmcplugin.setPluginCategory(self._handle, _L(32014))
-        mgr = self._epg_mgr(p)
-        if not mgr or not mgr.has_data():
-            notify(_L(32006), _L(32044))
-            xbmcplugin.endOfDirectory(self._handle)
-            return
-        now = time.time()
-        for cid in list(mgr._programmes.keys())[:200]:
-            prog = mgr.get_current(cid, now)
-            if prog:
-                self._add_dir(
-                    f'{mgr.get_channel_name(cid)} – {prog.title}',
-                    self.url(action='epg_channel', pid=p['id'],
-                             tvg_id=cid, name=mgr.get_channel_name(cid))
-                )
-        xbmcplugin.endOfDirectory(self._handle)
+        if p:
+            from epg_preview import show
+            show(p,preview_first=preview_first)
 
     def _epg_channel(self):
         p = self._portal()
@@ -2142,6 +2135,20 @@ class Router:
             return
         tvg_id = self._params.get('tvg_id', '')
         name   = self._params.get('name', tvg_id)
+        sid = self._params.get('sid','')
+        if sid:
+            # A freshly edited mapping must not depend on a stale stream alias
+            # left by an earlier XMLTV import. Share TV/preview resolution.
+            xbmcplugin.endOfDirectory(self._handle,succeeded=False,cacheToDisc=False)
+            from epg import load_cache
+            from epg_sources import configuration
+            from epg_views import resolve_guide
+            from epg_preview import programme_lines
+            info=resolve_guide(load_cache(p['id']),tvg_id,sid,
+                client=self._xc(p) if p.get('type')=='xtream' else None,
+                mappings=configuration(p['id'])['mappings'])
+            xbmcgui.Dialog().textviewer('XCMate - '+name,'\n'.join(programme_lines(info)))
+            return
         xbmcplugin.setContent(self._handle, 'videos')
         xbmcplugin.setPluginCategory(self._handle, f'EPG – {name}')
         mgr = self._epg_mgr(p)
@@ -2527,9 +2534,8 @@ class Router:
 
     def _epg_cache(self, p: dict):
         try:
-            from epg import load_cache, warmup_async
+            from epg import load_cache
             portal_id = p.get('id', 'unknown')
-            warmup_async(portal_id, p)
             return load_cache(portal_id)
         except Exception:
             return {}

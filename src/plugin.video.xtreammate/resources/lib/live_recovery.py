@@ -74,6 +74,9 @@ def playback_match(player, portals, client_factory, session=None):
 def _eligible_stream_id(client, portal, sid):
     if sid == str(portal.get('start_stream_id') or ''):
         return True
+    indexed = getattr(client, 'is_cached_live_id', None)
+    if indexed is not None:
+        return bool(indexed(sid))
     streams = client.get_cached_catalog('get_live_streams')
     if not isinstance(streams, list):
         return False

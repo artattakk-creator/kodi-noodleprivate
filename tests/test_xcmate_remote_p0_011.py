@@ -132,10 +132,12 @@ class TestNativeOverlayKeyHandling(unittest.TestCase):
             mod = import_module("test_011_overlay", "live_overlay.py")
             overlay = mod.LiveNavigator.__new__(mod.LiveNavigator)
             overlay.mode = "hidden"
+            overlay._info_timeout = 8
             overlay._accept_input = lambda: True
             overlay._focus_main = 0
             overlay._focus_extra = 0
             overlay.main_buttons = [1, 2, 3, 4, 5]
+            overlay._main_indices = [0,1,2,3,4]
             overlay.extra_buttons = [1, 2, 3, 4, 5]
             overlay._recent = lambda: seen.append("recent")
             overlay._zap = lambda step: seen.append(("zap", step))
@@ -144,13 +146,12 @@ class TestNativeOverlayKeyHandling(unittest.TestCase):
             overlay._execute = lambda mode, idx: seen.append((mode, idx))
             overlay._select = lambda: seen.append("select")
             overlay._epg = lambda: seen.append("info")
+            overlay.close = lambda: seen.append('closed')
             seen = []
             action = lambda key: types.SimpleNamespace(
                 getId=lambda: key, getButtonCode=lambda: 0)
             overlay.onAction(action(1))
             self.assertEqual(overlay.mode, "channels")
-            overlay.onAction(action(92))
-            self.assertEqual(overlay.mode, "groups")
             overlay.onAction(action(92))
             self.assertEqual(overlay.mode, "hidden")
             overlay.onAction(action(3))
@@ -158,6 +159,8 @@ class TestNativeOverlayKeyHandling(unittest.TestCase):
             self.assertEqual(seen[:2], [("zap", 1), ("zap", -1)])
             overlay.onAction(action(2))
             self.assertIn("recent", seen)
+            overlay.handle_command("ok")
+            self.assertEqual(overlay.mode, "info")
             overlay.handle_command("ok")
             self.assertEqual(overlay.mode, "controls")
             overlay.onAction(action(2))
@@ -171,11 +174,11 @@ class TestNativeOverlayKeyHandling(unittest.TestCase):
             overlay.onAction(action(92))
             self.assertEqual(overlay.mode, "controls")
             overlay.onAction(action(92))
-            self.assertEqual(overlay.mode, "hidden")
-            overlay.onAction(action(92))
-            self.assertEqual(overlay.mode, "guide")
+            self.assertEqual(overlay.mode, "info")
             overlay.onAction(action(92))
             self.assertEqual(overlay.mode, "hidden")
+            overlay.onAction(action(92))
+            self.assertIn('closed',seen)
             overlay.onAction(action(12))
             self.assertEqual(paused, ["pause"])
             self.assertGreaterEqual(int(properties["XtreamMate.NativeActionCount"]), 10)

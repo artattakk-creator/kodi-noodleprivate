@@ -1,7 +1,7 @@
 # XCMate – verbindliche Live-TV-Bedienung, EPG-Infobar und performante Senderliste
 
 **Festgelegt durch Nutzer:** 18.10.2026, nach erfolgreichem erstmaligem Öffnen der TV-Overlay-Senderliste in XCMate 0.1.24.  
-**Status:** FUNKTIONALE ANFORDERUNG / CODEX-AUFTRAG, **noch nicht implementiert oder am Gerät abgenommen**.  
+**Statusnachtrag:** Auf dem 0.1.25-Entwicklungsbranch implementierter Testkandidat, 237 lokale Tests bestanden; **keine Android-Abnahme und keine Veröffentlichung auf main**. [Bericht/Abnahmeplan](IMPLEMENTIERUNG_025_TV_INFOBAR_EPG_DE.md). Die nachfolgenden 0.1.24-Befunde sind historisch.
 **Technischer Kodi-Addonname:** `plugin.video.xtreammate` (unverändert); geplanter separater Skin heißt **XCMate Skin**.  
 **Visuelle Orientierung:** Bedienablauf wie TiviMate, aber eigenständige XCMate-Optik / Icons / Assets und kein Kopieren proprietärer Medien.
 

@@ -336,7 +336,8 @@ class SenderListIntegrationTests(unittest.TestCase):
             self.m.poll_short_guides();self.jobs.pop()()
             self.assertEqual(self.commands,['Container.Refresh'])
             ns['_live_channels'](view)
-            self.assertIn('Jetzt: News',items[-1].label)
+            self.assertIn('News',items[-1].label)
+            self.assertIn('Jetzt:',items[-1].label)
             self.assertIn('Danach: Next',items[-1].label)
             self.assertEqual(diag.snapshots()['epg_list']['matched'],1)
 

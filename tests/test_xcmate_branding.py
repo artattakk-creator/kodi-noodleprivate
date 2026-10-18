@@ -9,7 +9,7 @@ class XCMateBrandingTests(unittest.TestCase):
     def test_display_name_and_version(self):
         addon=ET.parse(ROOT/"addon.xml").getroot()
         self.assertEqual(addon.get("name"),"XCMate")
-        self.assertEqual(addon.get("version"),"0.1.24")
+        self.assertEqual(addon.get("version"),"0.1.25")
         self.assertEqual(addon.get("id"),"plugin.video.xtreammate")
         self.assertTrue(all("XCMate" in (node.text or "")
                             for node in addon.findall(".//summary")))
@@ -34,7 +34,7 @@ class XCMateBrandingTests(unittest.TestCase):
     def test_internal_communication_and_saved_ids_unchanged(self):
         overlay=(ROOT/"resources/lib/live_overlay.py").read_text(encoding="utf-8")
         self.assertIn("SESSION_KEY = 'XtreamMate.LiveSession'",overlay)
-        self.assertIn("'XCMate · LIVE-TV'",overlay)
+        self.assertIn("'channels':'LIVE-TV'",overlay)
         remote=(ROOT/"resources/lib/remote_control.py").read_text(encoding="utf-8")
         self.assertIn("COMMAND_KEY = 'XtreamMate.RemoteCommand'",remote)
         data=(ROOT/"resources/lib/group_selection.py").read_text(encoding="utf-8")

@@ -29,6 +29,7 @@
              action="RunPlugin(plugin://plugin.video.xtreammate/?action=add_portal_from_settings)"/>
   </category>
   <category label="32200">
+    <setting id="tv_infobar_seconds" type="number" label="TV-Infoleiste: Ausblendzeit (3-30 Sekunden)" default="8"/>
     <setting id="open_portal_manager" type="action"
              label="32201"
              action="RunPlugin(plugin://plugin.video.xtreammate/?action=portal_manager)"/>
