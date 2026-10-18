@@ -10,6 +10,14 @@
 **Veröffentlichung 0.1.22:** GitHub-Action [Publish GS Media Kodi updates](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39126897807) erfolgreich; `addons.xml` meldet XCMate `0.1.22`, ZIP `plugin.video.xtreammate/plugin.video.xtreammate-0.1.22.zip` vorhanden.
 **Letzter geprüfter Repository-Stand nach Auto-Publish (vor dieser Statusaktualisierung):** `9b590ea2dc0983fa75b084582431065211de1484`.
 
+## Realgerät-Rückmeldung nach 0.1.23-Freigabe: TV-Navigation weiterhin nicht geöffnet (18.10.2026)
+
+Der Nutzer startete den gespeicherten Startsender manuell und drückte OK; daraufhin meldete Kodi/XCMate wieder **„TV-Navigation konnte nicht geöffnet werden“**. Der Bericht kam **nach** der Freigabe von 0.1.23, aber die tatsächlich installierte Add-on-Version wurde dabei **nicht explizit erneut überprüft**; zunächst als *mutmaßlicher 0.1.23-Test* kennzeichnen, bis die Version in der Diagnose/den Add-on-Informationen bestätigt ist. Der identische Fehler ist für 0.1.22 bereits gesichert.
+
+In 0.1.23 kommt diese Benachrichtigung aus dem `except` in `service.py` nach erfolgreicher Erstellung eines Navigator-Kandidaten, beim optionalen Keymap-Setup oder beim Anzeigen des Live-TV-Dialogs. Im Dialog-`show()`-Fehlerfall wird `dialog: SHOW_FAILED` persistiert; die genaue Python-Ausnahmeklasse kann in `TV-Fernbedienung: Diagnose` bzw. `kodi.log` stehen. **Ohne Geräte-Diagnose kein spezifischer Fix und keine weitere Versionsfreigabe behaupten.**
+
+**Verbindlich nächster Schritt:** installierte Add-on-Version 0.1.23 überprüfen; Stream stoppen; XCMate → `TV-Fernbedienung: Diagnose` öffnen; komplette Fotos inklusive `=== Gespeicherte Live-/EPG-Diagnose ===`, `Letzte TV-Einblendung`, `Auto-TV-Popup`, `service build=23`, `dialog`/`focus`/`ownership`/`input` sichern. Nach Neustart kann die persistente Diagnose weiterhin vorhanden sein. Fehlermeldung im Log `XCMate WindowDialog startup failed` suchen, sensible Provider-Daten vor Weitergabe entfernen. Siehe [Issue #12](https://github.com/artattakk-creator/kodi-noodleprivate/issues/12). 
+
 ## Veröffentlichungsnachtrag 0.1.23 – 18.10.2026 (aktuell maßgeblich)
 
 **XCMate 0.1.23 ist nach [PR #15](https://github.com/artattakk-creator/kodi-noodleprivate/pull/15) in `main` veröffentlicht.**
