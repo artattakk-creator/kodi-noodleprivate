@@ -107,7 +107,9 @@ class EpgIncrementalTests(unittest.TestCase):
         channels, programs = self.epg.parse_xmltv("".join(data).encode("utf-8"))
         self.assertEqual(channels["ch"], "CH")
         self.assertEqual(len(programs["ch"]), 2500)
-        self.assertEqual(self.epg.parse_xmltv(b"<tv><programme>"), ({}, {}))
+        from xml.etree import ElementTree as ET
+        with self.assertRaises(ET.ParseError):
+            self.epg.parse_xmltv(b"<tv><programme>")
 
 
 if __name__ == "__main__":

@@ -165,6 +165,86 @@ class CacheAndEPGTests(unittest.TestCase):
             self.epg._refresh_portal_epg('p',{'id':'p','type':'m3u','epg_url':'https://example.invalid/a'})
         self.assertEqual(self.epg.load_cache('p'),cached)
 
+    def test_external_failures_distinguish_download_gzip_xml_and_empty_guide(self):
+        first = self.sources.add_source('p','Disabled','https://example.invalid/disabled')
+        self.sources.edit_source('p',first['id'],'toggle')
+        self.sources.add_source('p','Active','https://private.invalid/token')
+        config = Path(self.sources._file_path()).read_bytes()
+        diagnostic = types.ModuleType('live_diagnostics')
+        diagnostic.record = mock.Mock()
+        payloads = [(gzip.compress(b'<tv/>')[:-5], 'GZIP_INVALID', 'EOFError'),
+                    (b'<tv><programme>', 'INVALID_XMLTV', 'ParseError'),
+                    (b'<tv/>', 'EMPTY_GUIDE', 'EmptyGuideError')]
+        with mock.patch.dict(sys.modules, {'live_diagnostics':diagnostic}):
+            for raw, code, exception in payloads:
+                with self.subTest(code=code), mock.patch.object(self.sources,'_read_source',return_value=raw):
+                    diagnostic.record.reset_mock()
+                    result,ok,failed = self.sources.merge_sources('p',{'old':[{'name':'Kept'}]},
+                                                                 self.epg.parse_xmltv)
+                    self.assertEqual((ok,failed),(0,1))
+                    self.assertIn('old',result)
+                    calls = diagnostic.record.call_args_list
+                    self.assertEqual(calls[0].args,('epg_source','READ'))
+                    self.assertEqual(calls[-1].args,('epg_source',code))
+                    self.assertEqual(calls[-1].kwargs['failure_stage'],'PARSE')
+                    self.assertEqual(calls[-1].kwargs['source_index'],2)
+                    self.assertEqual(calls[-1].kwargs['exception_class'],exception)
+                    self.assertEqual(calls[-1].kwargs['bytes'],len(raw))
+            with mock.patch.object(self.sources,'_read_source',side_effect=OSError('private://secret')):
+                self.sources.merge_sources('p',{},self.epg.parse_xmltv)
+            self.assertEqual(diagnostic.record.call_args.args,('epg_source','DOWNLOAD_FAILED'))
+            self.assertEqual(diagnostic.record.call_args.kwargs['failure_stage'],'DOWNLOAD')
+        self.assertEqual(Path(self.sources._file_path()).read_bytes(),config)
+        self.assertFalse(any('private://' in log or '/token' in log for log in self.logs))
+
+    def test_provider_limit_reason_and_no_new_guide_keep_old_cache(self):
+        old = {'old':[{'name':'Cached'}]}
+        self.epg._save_disk('p',old)
+        self.epg._mem_set('p',old)
+        diagnostic = types.ModuleType('live_diagnostics')
+        diagnostic.record = mock.Mock()
+        diagnostic.checkpoint = lambda:None
+        raw = ('<tv>'+self.programme()*2+'</tv>').encode()
+        with mock.patch.dict(sys.modules,{'live_diagnostics':diagnostic}), \
+             mock.patch.object(self.epg,'http_get',return_value=(raw,{})), \
+             mock.patch.object(self.epg,'MAX_PROGRAMMES',1):
+            self.epg._refresh_portal_epg('p',dict(id='p',type='m3u',epg_url='https://example.invalid'))
+        limit = next(c for c in diagnostic.record.call_args_list if c.args[1]=='PROVIDER_LIMIT')
+        self.assertEqual(limit.kwargs['failure_stage'],'PARSE')
+        self.assertEqual(limit.kwargs['limit_kind'],'programmes')
+        self.assertNotIn('limit_bytes',limit.kwargs)
+        self.assertEqual(diagnostic.record.call_args.args,('epg','NO_NEW_GUIDE'))
+        self.assertEqual(self.epg.load_cache('p'),old)
+
+    def test_http_and_xmltv_input_and_decoded_byte_limits_are_distinct(self):
+        from epg_errors import failure_details
+        cases = [('DOWNLOAD', lambda:read_http_chunks([b'x'*65],{},64,time.monotonic()+5),'input_bytes'),
+                 ('DOWNLOAD', lambda:read_http_chunks([gzip.compress(b'x'*1024)],
+                    {'content-encoding':'gzip'},64,time.monotonic()+5),'decoded_bytes'),
+                 ('PARSE', lambda:XMLTVReader(b'x'*65,max_bytes=64),'input_bytes'),
+                 ('PARSE', lambda:XMLTVReader(gzip.compress(b'x'*1024),max_bytes=64).read(),
+                    'decoded_bytes')]
+        for stage, action, kind in cases:
+            with self.subTest(stage=stage,kind=kind):
+                try: action()
+                except ValueError as exc:
+                    code,fields=failure_details(exc,stage)
+                    self.assertEqual(fields['limit_kind'],kind)
+                    self.assertIn(kind.upper(),code)
+                else: self.fail('Expected a bounded size failure')
+
+    def test_truncated_http_gzip_has_a_transport_compression_error(self):
+        from epg_errors import failure_details
+        from network_io import HTTPCompressionError
+        try:
+            read_http_chunks([gzip.compress(b'guide')[:-5]],{'content-encoding':'gzip'},
+                             1024,time.monotonic()+5)
+        except HTTPCompressionError as exc:
+            code,fields=failure_details(exc,'DOWNLOAD')
+            self.assertEqual(code,'HTTP_COMPRESSION_FAILED')
+            self.assertEqual(fields['exception_class'],'HTTPCompressionError')
+        else: self.fail('Truncated HTTP gzip accepted')
+
     def test_combined_sources_have_budget_and_keep_provider_and_mapping(self):
         self.sources.add_source('p','A','https://example.invalid/a')
         self.sources.add_source('p','B','https://example.invalid/b')

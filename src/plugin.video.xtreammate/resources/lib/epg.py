@@ -131,9 +131,6 @@ def parse_xmltv(content: bytes):
                 root_element.clear()
             if len(channels) > MAX_CHANNELS:
                 raise XMLTVLimitError('XMLTV channel limit exceeded','channels')
-    except ET.ParseError as exc:
-        error(f'XMLTV parse error: {exc}')
-        return {}, {}
     finally:
         stream.close()
     if skipped:
@@ -512,12 +509,20 @@ def _refresh_portal_epg_inner(portal_id, p, force=False):
 
     if epg_url:
         info('[EPG] fetching XMLTV guide (URL redacted)')
+        stage, raw = 'DOWNLOAD', None
         try:
             raw, _ = http_get(epg_url, max_bytes=MAX_XML_BYTES, max_seconds=60)
+            stage = 'PARSE'
             channels, programmes = parse_xmltv(raw)
+            if not programmes:
+                from epg_errors import EmptyGuideError
+                raise EmptyGuideError('XMLTV contains no valid programmes')
         except Exception as e:
+            from epg_errors import failure_details
+            _, fields = failure_details(e, stage)
             diagnostic('PROVIDER_LIMIT' if isinstance(e,(XMLTVLimitError,ResponseLimitError))
-                       else 'PROVIDER_FAILED',running=True,limit_bytes=MAX_XML_BYTES)
+                       else 'PROVIDER_FAILED',running=True,
+                       bytes=len(raw) if raw is not None else 0, **fields)
             error('[EPG] fetch failed: {}'.format(type(e).__name__))
 
     if not programmes and p.get('type') == 'stb':

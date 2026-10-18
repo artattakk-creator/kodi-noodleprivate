@@ -145,6 +145,25 @@ class DiagnosticTests(unittest.TestCase):
         self.props.clear()
         self.assertEqual(self.d.snapshots()['epg']['last_success'],1234)
 
+    def test_failure_stage_and_class_survive_close_and_restart_without_exception_text(self):
+        self.d.record('dialog','SHOW_FAILED',failure_stage='CONTROL_LIST',exception_class='TypeError',
+                      message='https://private.invalid/password')
+        self.d.record('dialog','CLOSED',video=False)
+        self.d.record('epg','PROVIDER_LIMIT',failure_stage='PARSE',exception_class='XMLTVLimitError',
+                      limit_kind='channels',limit_value=10000)
+        self.d.record('epg','NO_NEW_GUIDE',running=False)
+        self.props.clear()
+        restarted=module('issue12_failure_restart','live_diagnostics.py')
+        text='\n'.join(restarted.report())
+        self.assertIn('exception_class=TypeError',text)
+        self.assertIn('failure_stage=CONTROL_LIST',text)
+        self.assertIn('limit_kind=channels',text)
+        self.assertNotIn('private',text)
+        self.assertNotIn('password',text)
+        restarted.record('dialog','SHOW_FAILED',exception_class='https://private.invalid',
+                         failure_stage='password')
+        self.assertNotIn('private','\n'.join(restarted.report()))
+
     def test_history_is_bounded_and_invalid_external_values_are_ignored(self):
         for index in range(40): self.d.record('focus','STATE_'+str(index),focus_id=index)
         self.assertLessEqual(len(self.d._disk('focus')),16)

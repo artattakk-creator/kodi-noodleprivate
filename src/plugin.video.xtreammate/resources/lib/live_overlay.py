@@ -43,6 +43,7 @@ ACTION_NAV_BACK = 92
 ACTION_CONTEXT_MENU = 117
 ACTION_PARENT_DIR = 9
 BACK_ACTIONS = (ACTION_PREVIOUS_MENU, ACTION_NAV_BACK, ACTION_PARENT_DIR)
+CHANNEL_PAGE_SIZE = 100
 
 
 def announce(portal_id, stream_id, channel_name=''):
@@ -149,6 +150,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
                             if selected_stream else str(portal.get('start_group_id') or '*'))
         self._scroll_to_current = True
         self.visible_channels = []
+        self._page_start = self._row_offset = 0
         self.rows = category_rows(self.groups, self.enabled)
         self._drawn = False
         self._closed = False
@@ -198,6 +200,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         """Plain Omega WindowDialog does not dispatch Python onInit()."""
         if self._closed:
             return
+        self._startup_stage = 'BUILD_CONTROLS'
         try:
             if not self._drawn:
                 self._build_controls()
@@ -206,11 +209,15 @@ class LiveNavigator(xbmcgui.WindowDialog):
             try: self.setProperty('XtreamMate.NavigatorIdentity',self._window_nonce)
             except Exception: pass
             trace('dialog','SHOW_REQUESTED',channels=len(self.channels),catalog=self._catalog_ready)
+            self._startup_stage = 'WINDOW_SHOW'
             super().show()
+            self._startup_stage = 'RENDER'
             self._render()
+            self._startup_stage = 'FOCUS'
             self.observe_focus()
-        except Exception:
-            trace('dialog','SHOW_FAILED')
+        except Exception as exc:
+            trace('dialog','SHOW_FAILED',failure_stage=self._startup_stage,
+                  exception_class=type(exc).__name__)
             self.close()
             raise
 
@@ -297,10 +304,12 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self.bg = xbmcgui.ControlImage(0, 0, sidebar, height, image)
         self.heading = xbmcgui.ControlLabel(32, 25, sidebar-48, 55, 'XCMate', 'font16', '0xFFFFFFFF')
         self.sub = xbmcgui.ControlLabel(32, 82, sidebar-48, 40, '', 'font13', '0xFFB6BCC6')
+        self._startup_stage = 'CONTROL_LIST'
         self.control = xbmcgui.ControlList(32, 135, sidebar-58, height-205,
             font='font13', textColor='0xFFFFFFFF', selectedColor='0xFFFFFFFF',
             buttonTexture=normal, buttonFocusTexture=focused,
-            itemHeight=46, space=3)
+            _itemHeight=46, _space=3)
+        self._startup_stage = 'BUILD_CONTROLS'
         # Keep a real, focusable Kodi control while the sidebar is hidden.
         # Otherwise WindowDialog receives no Android remote key events.
         transparent = os.path.join(media, 'remote_clear.png')
@@ -370,15 +379,31 @@ class LiveNavigator(xbmcgui.WindowDialog):
             self.footer.setLabel('◀/Zurück: schließen   ▶: Senderliste   ▲▼: navigieren')
         else:
             self.visible_channels = channels_for_category(self.channels, self.category_id, self.enabled)
+            pos = self._highlight[self.mode]
+            if self._scroll_to_current and self.sid:
+                pos = next((i for i,c in enumerate(self.visible_channels)
+                            if c.extra.get('stream_id') == self.sid), pos)
+                self._scroll_to_current = False
+            pos = min(max(pos, 0), max(len(self.visible_channels)-1, 0))
+            self._highlight[self.mode] = pos
+            self._page_start = (pos // CHANNEL_PAGE_SIZE) * CHANNEL_PAGE_SIZE
+            self._row_offset = int(self._page_start > 0)
+            page = self.visible_channels[self._page_start:self._page_start+CHANNEL_PAGE_SIZE]
             from epg import load_cache
             from epg_views import guide_for_channel, row_title
             guide = load_cache(self.portal['id'])
             now_ts = time.time()
             labels = [row_title(c.name, guide_for_channel(
                 guide, c.tvg_id, c.extra.get('stream_id', ''), now_ts))
-                for c in self.visible_channels]
+                for c in page]
+            if self._row_offset:
+                labels.insert(0, '◀ Vorherige Senderseite')
+            if self._page_start + len(page) < len(self.visible_channels):
+                labels.append('▶ Nächste Senderseite')
             self.heading.setLabel('XCMate · EPG' if self.mode == 'guide' else 'XCMate · LIVE-TV')
-            self.sub.setLabel('{} Sender · {}'.format(len(labels),
+            self.sub.setLabel('{} Sender · Seite {}/{} · {}'.format(len(self.visible_channels),
+                self._page_start // CHANNEL_PAGE_SIZE + 1,
+                max(1, (len(self.visible_channels)+CHANNEL_PAGE_SIZE-1)//CHANNEL_PAGE_SIZE),
                 next((x[1] for x in self.rows if x[0] == self.category_id), 'Aktivierte Gruppen')))
             self.footer.setLabel('◀: Gruppen · OK: Sender starten · Zurück: TV'
                 if self.mode == 'guide' else
@@ -388,12 +413,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
                       else 'Keine Sender in dieser Auswahl']
         self.control.addItems(labels)
         pos = self._highlight[self.mode]
-        if self.mode in ('channels','guide') and self._scroll_to_current and self.sid:
-            found = next((i for i,c in enumerate(self.visible_channels)
-                          if c.extra.get('stream_id') == self.sid), None)
-            if found is not None:
-                pos = found
-            self._scroll_to_current = False
+        if self.mode in ('channels','guide'):
+            pos = pos - self._page_start + self._row_offset
         self.control.selectItem(min(pos, len(labels)-1))
         self.setFocus(self.control)
 
@@ -417,7 +438,26 @@ class LiveNavigator(xbmcgui.WindowDialog):
         if count > 0:
             i = min(max(self.control.getSelectedPosition() + step, 0), count - 1)
             self.control.selectItem(i)
-            self._highlight[self.mode] = i
+            self._remember_position()
+
+    def _remember_position(self):
+        i = self.control.getSelectedPosition()
+        if self.mode in ('channels', 'guide'):
+            i = self._page_start + i - self._row_offset
+            # Page links are not channels and must never become tune targets.
+            if not self._page_start <= i < min(self._page_start+CHANNEL_PAGE_SIZE,
+                                                len(self.visible_channels)):
+                return
+        self._highlight[self.mode] = i
+
+    def _page_channels(self, step):
+        target = self._page_start + step * CHANNEL_PAGE_SIZE
+        if 0 <= target < len(self.visible_channels):
+            self._highlight[self.mode] = target
+            self._scroll_to_current = False
+            self._render()
+            return True
+        return False
 
     def _switch(self, mode):
         self.mode = mode
@@ -458,10 +498,17 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 self._highlight['channels'] = 0
                 self._switch('channels')
         elif self.mode in ('channels','guide'):
-            i = self.control.getSelectedPosition()
+            row = self.control.getSelectedPosition()
+            if self._row_offset and row == 0:
+                self._page_channels(-1)
+                return
+            i = self._page_start + row - self._row_offset
+            if i == self._page_start + CHANNEL_PAGE_SIZE:
+                self._page_channels(1)
+                return
             if 0 <= i < len(self.visible_channels):
                 c = self.visible_channels[i]
-                self._highlight['channels'] = i
+                self._highlight[self.mode] = i
                 self._tune(c)
 
     def _tune(self, channel):
@@ -748,7 +795,11 @@ class LiveNavigator(xbmcgui.WindowDialog):
             mapped = 'right'
         elif key in (ACTION_UP, ACTION_DOWN, ACTION_PAGE_UP, ACTION_PAGE_DOWN) and self.mode in ('channels', 'guide', 'groups'):
             # CGUIControlList already applied this action before onAction.
-            self._highlight[self.mode] = self.control.getSelectedPosition()
+            if key in (ACTION_PAGE_UP, ACTION_PAGE_DOWN) and self.mode != 'groups':
+                if not self._page_channels(-1 if key == ACTION_PAGE_UP else 1):
+                    self._remember_position()
+            else:
+                self._remember_position()
             return
         elif key == ACTION_SELECT:
             # Omega dispatches onControl BEFORE onAction(SELECT). Handling
