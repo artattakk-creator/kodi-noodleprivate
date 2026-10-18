@@ -12,6 +12,17 @@
 
 **VERBINDLICHER CODEX-ARBEITSAUFTRAG:** [Vollständige Android-TV-Codex-Übergabe 0.1.23 / P0 TypeError und EPG](CODEX_HANDOFF_ANDROID_023_P0_EPG_DE.md). Der hier folgende Ablauf ist die detailreiche historische Diagnosedokumentation; die neue Datei enthält den konsolidierten P0/P1-Plan und den sicheren nächsten Branch-/PR-Ablauf.
 
+## Neue verbindliche Live-TV-UX-Spezifikation – 18.10.2026
+
+**Neue Nutzeranforderung, noch nicht umgesetzt:** [vollständiges Bedienkonzept für XCMate-TV-Infobar, Senderliste, EPG & Performance](TV_OSD_EPG_REMOTE_UX_SPEC_DE.md) und [Issue #17](https://github.com/artattakk-creator/kodi-noodleprivate/issues/17).
+
+- **1× OK bei laufendem TV** öffnet INFO_BAR **mit Senderlogo/-icon, Sendername, aktuellem EPG-Titel, Start-/Endzeit, Fortschrittsbalken, vergangener/verbleibender Zeit und nächster Sendung**. Keine primäre Pause/Stop-Schaltfläche.
+- **Zweites OK oder Runter bei geöffneter INFO_BAR** öffnet PLAYER_CONTROLS mit Untermenü für Audio/Ton, Video/Bild, Untertitel, EPG, Systemeinstellungen. Zweites OK darf keine Aktion versehentlich aktivieren.
+- **Links** öffnet eine **schnelle, aus lokalem Cache vorbereitete Senderliste**, pro sichtbarer Zeile Sendername/-icon, Jetzt-Titel, Beginn/Ende und nach Möglichkeit Next/Progress. Mehrfache langsame Katalog-/EPG-Ladungen im D-Pad-Event-Handler vermeiden. Maßgeblich sind echte Android-Latenzmessungen.
+- **Datenvorbedingung:** EPG-Sender-/Source-Matching und Kurz-EPG-Fallback im Live-Overlay mit der regulären Senderliste vereinheitlichen (Issue #13). Bei fehlenden EPG-Daten eindeutigen Missing-State statt Fake-Titel/Progress. Große Gruppen (2746/53664 Sender) und 100er-Paging performant halten. Alte Kodi-Fontglyphenfehler separat.
+- **Zustandsmodell:** `LIVE_FULL → INFO_BAR → PLAYER_CONTROLS → MORE_SETTINGS`, `Links → CHANNEL_LIST`; `Down` in INFO_BAR öffnet Menü, während Hoch/Runter im reinen Vollbildzustand die bisherige Senderwechsel-Funktion erhält. Sichere Kodi-Fokus-/onControl-/onAction-Deduplizierung.
+- **Status:** reiner Dokumentationsauftrag, kein neues Add-on, keine Kodi-Veröffentlichung und keine Android-Abnahme. Weiterhin Version 0.1.24 auf `main`. Codex soll auf neuem Branch + PR vorgehen und die Umsetzungsreihenfolge P1-EPG-Daten → zweistufige Infoleiste → Caching/Geschwindigkeit → Design für späteren XCMate Skin beachten.
+
 ## NEUER Android-TV-Gerätetest 0.1.24 – wesentlicher Fortschritt, EPG weiter offen (18.10.2026)
 
 **Priorität für den nächsten Codex-Einstieg:** [vollständiger neuer Gerätebefund / End-to-End-EPG und Fernbedienung](ANDROID_DEVICE_TEST_024_EPG_NAV_DE.md).
