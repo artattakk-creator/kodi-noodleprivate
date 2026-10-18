@@ -1,14 +1,16 @@
 # XCMate – zentraler Projekteinstieg
 
-**Status:** 18.10.2026, XCMate **0.1.22 als Testkandidat auf Entwicklungsbranch**, noch keine Produktionsveröffentlichung; Kodi-21-Dialog-/Cache-/EPG-Korrekturen lokal geprüft, Android-Abnahme offen.
+**Status:** 18.10.2026, XCMate **0.1.22 in `main` veröffentlicht** und im GS-Media-Updateindex eingetragen; **180 GitHub-CI-Tests bestanden**, Android-TV-Abnahme weiterhin offen. Gerätefunktion nicht als bestätigt markieren.
 **Repository:** https://github.com/artattakk-creator/kodi-noodleprivate  
 **Kodi-Repository:** GS Media Kodi Repository 1.7.0  
 **Angezeigter Add-on-Name:** XCMate  
 **Technische ID:** `plugin.video.xtreammate` (aus Kompatibilitätsgründen NICHT ändern)
 
-Diese Dateien sind die verbindliche Arbeitsgrundlage für spätere Chats und Entwickler. Zuerst `PROJECT_HANDOFF_DE.md` lesen, danach `ROADMAP_AND_QA_DE.md`.
+Diese Dateien sind die verbindliche Arbeitsgrundlage für spätere Chats und Entwickler. **Zuerst [`CODEX_STATUS_CURRENT_DE.md`](CODEX_STATUS_CURRENT_DE.md) für den aktuellen Stand lesen**, danach `KODI21_FIX_022_DE.md`, `PROJECT_HANDOFF_DE.md` und `ROADMAP_AND_QA_DE.md`. Ältere Dokumente enthalten historische Versionsstände.
 
 ## Dokumente
+
+- [Aktueller Codex- und Release-Status (verbindlicher Einstieg)](CODEX_STATUS_CURRENT_DE.md)
 
 - [0.1.22: Korrekturen, Testbericht und Android-Abnahme](KODI21_FIX_022_DE.md)
 
