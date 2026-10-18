@@ -1,6 +1,6 @@
 # XCMate – zentraler Projekteinstieg
 
-**Status:** 18.10.2026: **XCMate 0.1.23 ist über `main` / GS Media Kodi Repository veröffentlicht** ([PR #15](https://github.com/artattakk-creator/kodi-noodleprivate/pull/15), 202 CI-Tests, Publish erfolgreich). **Android-Gerätetest von 0.1.23 negativ:** Stream/Sitzung erkannt, TV-Navigation scheitert reproduzierbar mit `TypeError` / `SHOW_FAILED` aus Issue #12. EPG-Aktualisierung ohne neue Guide-Daten, siehe Issue #13. EPG-Status (#13) und XCMate Skin (#14) sind geplant.
+**Status:** 18.10.2026: **XCMate 0.1.24 ist auf `main` und im GS Media Kodi Repository veröffentlicht** ([PR #16](https://github.com/artattakk-creator/kodi-noodleprivate/pull/16), 213 GitHub-CI-Tests erfolgreich; [Publish-Workflow](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39143872867) erfolgreich). Im echten Android-TV bislang **nicht abgenommen**. Die P0-Korrektur für den `ControlList`-`TypeError` muss mit sichtbarer Sidebar/Fokus und Tasten geprüft werden; Issue #12 offen. EPG-Quellfehler genauer diagnostiziert, vollständige Vorschau Issue #13 und XCMate Skin Issue #14 bleiben offen.
 **Repository:** https://github.com/artattakk-creator/kodi-noodleprivate  
 **Kodi-Repository:** GS Media Kodi Repository 1.7.0  
 **Angezeigter Add-on-Name:** XCMate  
@@ -10,7 +10,7 @@ Diese Dateien sind die verbindliche Arbeitsgrundlage für spätere Chats und Ent
 
 **Verbindliche nächste Ausbaustufen:** [EPG-Status & Vorschau – Issue #13](https://github.com/artattakk-creator/kodi-noodleprivate/issues/13) **vor** [XCMate Skin – Issue #14](https://github.com/artattakk-creator/kodi-noodleprivate/issues/14). Beides geplant, noch nicht implementiert. Der Live-TV-Navigationsfehler wurde auch mit 0.1.23 bestätigt und bleibt in [Issue #12](https://github.com/artattakk-creator/kodi-noodleprivate/issues/12) offen.
 
-**Aktuelle Bearbeitung:** [P0-Korrektur 0.1.24, API-Audit, 213 Tests und nächster Android-Test](KODI21_FIX_024_DE.md) auf `fix/kodi21-strict-gui-epg-diagnostics`, [Entwurfs-PR #16](https://github.com/artattakk-creator/kodi-noodleprivate/pull/16), GitHub-CI erfolgreich. Testpaket vorbereitet; kein Merge/Produktiv-Release und keine Android-Abnahme. Issue #13 bleibt als vollständige Status-/Titelvorschau offen.
+**Aktuelle Bearbeitung:** [0.1.24 Kodi-21-Fix, 213 Tests und Android-Abnahmeplan](KODI21_FIX_024_DE.md) über [gemergten PR #16](https://github.com/artattakk-creator/kodi-noodleprivate/pull/16). **Normales Kodi-Repositoryupdate ist verfügbar**; Android-Abnahme noch offen. Issue #12 und #13 nicht schließen.
 
 ## Dokumente
 
