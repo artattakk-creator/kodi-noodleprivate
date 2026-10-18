@@ -1,7 +1,9 @@
 # XCMate / Codex – aktueller Projekt- und Release-Status (verbindliche Übergabe)
 
+**AKTUELLER CODEX-ARBEITSAUFTRAG:** [CODEX_ARBEITSAUFTRAG_025_TV_INFOBAR_EPG_STABILISIERUNG_DE.md](CODEX_ARBEITSAUFTRAG_025_TV_INFOBAR_EPG_STABILISIERUNG_DE.md) – **zuerst lesen**. Die vorherige UX-Spezifikation [TV_OSD_EPG_REMOTE_UX_SPEC_DE.md](TV_OSD_EPG_REMOTE_UX_SPEC_DE.md) gilt ergänzend; [Issue #17](https://github.com/artattakk-creator/kodi-noodleprivate/issues/17), EPG [#13](https://github.com/artattakk-creator/kodi-noodleprivate/issues/13), Fernbedienung [#12](https://github.com/artattakk-creator/kodi-noodleprivate/issues/12). **Kein neues Add-on veröffentlicht**: `main` enthält weiterhin 0.1.24 plus Dokumentationsänderungen. Erstes OK = kompakte Senderinfo (Logo, Jetzt/Danach, Von–bis, Fortschritt, Restzeit), zweites OK/Runter = Player-Menü, Links = schnelle EPG-Kanalliste. Gerätebild bestätigt nur den Overlaystart, nicht die noch fehlenden Funktionen.
+
 **Stand:** 18.10.2026  
-**Veröffentlichte XCMate-Version:** `0.1.24` (18.10.2026, reguläres GS-Media-Kodi-Repository). **Android-TV-Geräteabnahme von 0.1.24 ausstehend.** Die 0.1.23 zeigte `TypeError` im TV-Dialog; Codekorrektur und EPG-Diagnose in 0.1.24 implementiert. Siehe [Testbericht](KODI21_FIX_024_DE.md) und [Ursprungsübergabe](CODEX_HANDOFF_ANDROID_023_P0_EPG_DE.md).
+**Veröffentlichte XCMate-Version:** `0.1.24` (18.10.2026, reguläres GS-Media-Kodi-Repository). **Android-TV-Gerätetest teilweise positiv:** Dialog, Senderliste, Fokus und unteres OSD erstmals sichtbar, aber zuverlässige Bedienung/EPG/Listenlatenz noch offen. **Gesamtabnahme ausstehend.** Die 0.1.23 zeigte `TypeError` im TV-Dialog; Codekorrektur und EPG-Diagnose in 0.1.24 implementiert. Siehe [Testbericht](KODI21_FIX_024_DE.md) und [Ursprungsübergabe](CODEX_HANDOFF_ANDROID_023_P0_EPG_DE.md).
 **Technische Kodi-ID:** `plugin.video.xtreammate` – nicht ändern  
 **Repository:** https://github.com/artattakk-creator/kodi-noodleprivate  
 **Hauptbranch:** `main`  
