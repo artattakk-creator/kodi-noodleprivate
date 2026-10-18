@@ -1,6 +1,6 @@
 # XCMate – zentraler Projekteinstieg
 
-**Aktuelle Entwicklung 0.1.25:** [Implementierung, 237 Tests, Paket und Android-Testplan](IMPLEMENTIERUNG_025_TV_INFOBAR_EPG_DE.md) auf `fix/xcmate-infobar-epg-navigation`. Zweistufige TV-Bedienung und lokale EPG-/Quellenvorschau implementiert. **Noch nicht auf main / nicht am Android-TV abgenommen; produktiv bleibt 0.1.24.**
+**Aktuelle Entwicklung 0.1.25:** [Entwurfs-PR #18](https://github.com/artattakk-creator/kodi-noodleprivate/pull/18), GitHub-CI erfolgreich.  [Implementierung, 237 Tests, Paket und Android-Testplan](IMPLEMENTIERUNG_025_TV_INFOBAR_EPG_DE.md) auf `fix/xcmate-infobar-epg-navigation`. Zweistufige TV-Bedienung und lokale EPG-/Quellenvorschau implementiert. **Noch nicht auf main / nicht am Android-TV abgenommen; produktiv bleibt 0.1.24.**
 
 **Status:** 18.10.2026: **XCMate 0.1.24 ist auf `main` und im GS Media Kodi Repository veröffentlicht** ([PR #16](https://github.com/artattakk-creator/kodi-noodleprivate/pull/16), 213 GitHub-CI-Tests erfolgreich; [Publish-Workflow](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39143872867) erfolgreich). Der reale Android-TV-Test zeigt erstmals eine sichtbare XCMate-Sidebar mit Fokus und unterem OSD; **nicht vollständig abgenommen**, da EPG und Fernbedienung noch nicht stabil sind. Issue #12 offen. EPG-Quellfehler genauer diagnostiziert, vollständige Vorschau Issue #13 und XCMate Skin Issue #14 bleiben offen.
 **Repository:** https://github.com/artattakk-creator/kodi-noodleprivate  

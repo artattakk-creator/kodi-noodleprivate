@@ -6,9 +6,11 @@ Stand: 18.10.2026. Grundlage: `origin/main` / `09b04e0`, XCMate 0.1.24. Branch: 
 | --- | --- |
 | Implementiert | Auf Entwicklungsbranch: zweistufige TV-UI, lokale Sender-/EPG-Snapshots, Programm- und Quellenvorschau. |
 | Lokal geprüft | **237 Tests**, vor und nach isoliertem Build; **24 Cache-/HTTP-Tests** zusätzlich mit httpx. |
-| GitHub-CI / PR | Wird im zentralen [Statusdokument](CODEX_STATUS_CURRENT_DE.md) mit PR-/Run-Link festgehalten. |
+| GitHub-CI / PR | [Entwurfs-PR #18](https://github.com/artattakk-creator/kodi-noodleprivate/pull/18), Code-/Paketcommit `297b934`; [CI erfolgreich](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39155424177), einschließlich Artefakt-Upload; Produktions-Publish übersprungen. |
 | Auf `main` veröffentlicht | **Nein. Produktiv bleibt 0.1.24.** |
 | Android-TV bestätigt | **Nein.** Nur 0.1.24-Overlaystart ist historisch beobachtet; alle unten genannten 0.1.25-Gerätefälle sind offen. |
+
+**CI-Review-Artefakt:** [xcmate-review-18](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39155424177/artifacts/12147205646), 14 Tage verfügbar. Der API-bestätigte Upload enthält die beim jeweiligen CI-Build erzeugte SHA; die unten dokumentierte Quellen-/ZIP-Prüfung betrifft das eingecheckte lokale Paket.
 
 Vollständig gelesene Anforderungen: [Arbeitsauftrag](CODEX_ARBEITSAUFTRAG_025_TV_INFOBAR_EPG_STABILISIERUNG_DE.md), [UX-Spezifikation](TV_OSD_EPG_REMOTE_UX_SPEC_DE.md), [Gerätebefund 0.1.24](ANDROID_DEVICE_TEST_024_EPG_NAV_DE.md), Designsystem und Issues [#17](https://github.com/artattakk-creator/kodi-noodleprivate/issues/17), [#13](https://github.com/artattakk-creator/kodi-noodleprivate/issues/13), [#12](https://github.com/artattakk-creator/kodi-noodleprivate/issues/12), [#14](https://github.com/artattakk-creator/kodi-noodleprivate/issues/14). Skin #14 wird hier nicht umgesetzt.
 

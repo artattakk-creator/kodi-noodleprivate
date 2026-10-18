@@ -12,7 +12,7 @@ Die aktuellen Projektdokumente für XCMate sind unter **[docs/XCMate/README.md](
 
 **Wichtig:** Die neue Serienfortschrittsfunktion und die konfigurierbaren Grauton-/Akzent-Themes sind am 14.10.2026 spezifiziert, nicht bereits veröffentlicht. Die Android-Gerätefehler beim Startsender und der Vollbild-Fernbedienung bleiben bis zum praktischen Gegenbeweis offen.
 
-**Aktuelle XCMate-Entwicklung:** [0.1.25-Testkandidat, EPG und Android-Testplan](docs/XCMate/IMPLEMENTIERUNG_025_TV_INFOBAR_EPG_DE.md): erstes OK Senderinfo, zweites OK/Runter Bedienung, schnelle lokale Senderliste und echte EPG-/Quellenvorschau. 237 lokale Tests bestanden. **Kein Merge/Produktiv-Release, Android-Abnahme offen; produktiv bleibt 0.1.24.**
+**Aktuelle XCMate-Entwicklung:** [Entwurfs-PR #18](https://github.com/artattakk-creator/kodi-noodleprivate/pull/18), GitHub-CI erfolgreich.  [0.1.25-Testkandidat, EPG und Android-Testplan](docs/XCMate/IMPLEMENTIERUNG_025_TV_INFOBAR_EPG_DE.md): erstes OK Senderinfo, zweites OK/Runter Bedienung, schnelle lokale Senderliste und echte EPG-/Quellenvorschau. 237 lokale Tests bestanden. **Kein Merge/Produktiv-Release, Android-Abnahme offen; produktiv bleibt 0.1.24.**
 
 ## Installation
 

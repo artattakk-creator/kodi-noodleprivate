@@ -9,7 +9,7 @@
 | Implementiert | Erstes OK: kompakte echte Senderinfo; zweites OK/Runter: Bedienung; Links: acht sichtbare EPG-Senderzeilen, 100er-Seiten; Untertitel und echte Programmseite. |
 | Daten | Gemeinsamer lokaler XMLTV/Kurz-EPG-Resolver mit manuellen Overrides, Quellenstatus & Vorschau, atomarer Cache, alter brauchbarer Cache bleibt lesbar. |
 | Lokal geprüft | **237 Tests vor/nach isoliertem Build**, **24 HTTP-/Cache-Tests zusätzlich mit httpx**, strikte Omega-Verträge, 75 Paketdateien bytegenau geprüft. |
-| GitHub-CI / PR | Separater Entwurfs-PR wird bereitgestellt; Run-Link folgt nach Prüfung. |
+| GitHub-CI / PR | [Entwurfs-PR #18](https://github.com/artattakk-creator/kodi-noodleprivate/pull/18), Code-/Paketcommit `297b934`; [CI-Run 39155424177 erfolgreich](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39155424177). Test-/Build-/Upload-Schritte erfolgreich, Produktions-Publish übersprungen. |
 | Auf main / veröffentlicht | **Nein: regulär bleibt 0.1.24. Kein eigenständiger Merge/Publish.** |
 | Android bestätigt | **Nein: sämtliche 0.1.25-Abnahmeschritte offen.** 0.1.24-Overlaybilder belegen kein neues EPG oder neues OK-Verhalten. |
 
@@ -18,6 +18,8 @@
 **Konkrete Ursachen und Änderungen:** Der bisher fehlende Kurz-EPG-Pfad des Overlays ist mit normaler Senderliste/Kontext und Vorschau vereinheitlicht. Neue manuelle ID wirkt auch bei altem Alias. Die Ownership-Prüfung liest auf Tastendruck keinen vollständigen Katalog mehr; Index/Snapshot werden im Dienst vorbereitet. Keine HTTP-/XMLTV-/Cache-Leseoperationen im TV-Render-/Inputpfad. Erster OK-Druck löst keine Playeraktion aus. Quellenstatus ist pro Portal/Quelle persistent; XMLTV-Einlesen und erfolgreicher Cache-Commit bleiben getrennt.
 
 **Prüfgrenzen:** Öffentliche DE-/AT-/CH-Testabrufe scheiterten in der Cloud jeweils vor Datenempfang mit `ProxyError` (0 Bytes); keine Aussage zu Feedverfügbarkeit oder neuen Gerätefehlern. Layoutbilder sind ausdrücklich Fixturemodelle ohne nativen Renderer. Android-Latenz, Fokus und mindestens ein echter Sender mit Now/Next/Von–bis/Progress müssen am TV bestätigt werden. Issues #12/#13/#17 bleiben offen, Skin #14 bleibt separat.
+
+**Review-Artefakt:** [xcmate-review-18](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39155424177/artifacts/12147205646), API-bestätigt bereitgestellt, 14 Tage verfügbar. Die dokumentierte bytegenaue ZIP-Prüfung betrifft das eingecheckte lokale Paket; das neu gepackte CI-Artefakt enthält seine eigene SHA.
 
 **Nächster Schritt:** Entwurfs-PR/CI und Kandidat prüfen, vorbereiteten Android-Test durchführen. Erst danach mit Nutzerfreigabe der normale GS-Media-Updateweg. Quellen, Konten und Zuordnungen behalten, globale Keymap aus. Noodle Private, andere Add-ons und Produktionsindex unverändert.
 
