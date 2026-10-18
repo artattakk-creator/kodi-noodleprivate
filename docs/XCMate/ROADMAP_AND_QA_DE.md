@@ -1,5 +1,7 @@
 # XCMate – Roadmap, Bugliste und Release-Checkliste
 
+> **NEUER STAND 18.10.2026 – VORRANGIG:** XCMate **0.1.23** ist veröffentlicht, aber der **echte Android-TV-Test ist negativ**: Live-TV spielt und Sitzung wird erkannt; Kodi-`WindowDialog` schlägt mit `TypeError` / `SHOW_FAILED` fehl. Separat `EPG: PROVIDER_LIMIT / NO_NEW_GUIDE` und externe `DOWNLOAD_FAILED`. Für Codex zuerst [Vollständige Android-TV-Codex-Übergabe 0.1.23 / P0 TypeError und EPG](CODEX_HANDOFF_ANDROID_023_P0_EPG_DE.md) und danach [Projektstatus](CODEX_STATUS_CURRENT_DE.md) lesen. Unterhalb folgende alte Versionen bleiben als Historie stehen, **nicht** als aktueller Abnahmestand.
+
 > **AKTUALISIERUNG 18.10.2026:** XCMate **0.1.22** wurde nach 180 bestandenen GitHub-CI-Tests via [PR #11](https://github.com/artattakk-creator/kodi-noodleprivate/pull/11) in `main` aufgenommen und über das GS-Media-Repository veröffentlicht. **Android-TV-Abnahme steht aus.** Dieses Dokument enthält darunter teilweise historische Versions-/Fehlerstände. Für den verbindlichen aktuellen Zustand zuerst [CODEX_STATUS_CURRENT_DE.md](CODEX_STATUS_CURRENT_DE.md) und [KODI21_FIX_022_DE.md](KODI21_FIX_022_DE.md) lesen.
 
 
