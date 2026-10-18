@@ -101,6 +101,8 @@ def _save(portal_id, state):
     all_data = _load_all()
     all_data[str(portal_id)] = state
     _write_all(all_data)
+    from epg_status import changed
+    changed(portal_id)
 
 
 def add_source(portal_id, title, uri, local=False):
@@ -260,10 +262,14 @@ def merge_sources(portal_id, builtin_programmes, parse_xmltv):
         if not source.get('enabled', True):
             continue
         raw, stage = None, 'DOWNLOAD'
+        from epg_status import update as source_status, source_key
+        key = source_key(source)
+        source_status(portal_id, key, 'RUNNING', running=True, source_index=source_index)
         try:
             raw = _read_source(source)
             from live_diagnostics import record
             record('epg_source','READ',bytes=len(raw),source_index=source_index)
+            source_status(portal_id, key, 'READ', running=True, source_index=source_index,bytes=len(raw))
             stage = 'PARSE'
             channels, programmes = parse_xmltv(raw)
             if not programmes:
@@ -279,17 +285,22 @@ def merge_sources(portal_id, builtin_programmes, parse_xmltv):
             index.update(channels)
             for channel_id, entries in programmes.items():
                 if entries and not merged.get(channel_id):
-                    merged[channel_id] = entries
+                    merged[channel_id] = [dict(e, _source_index=source_index) for e in entries]
             successes += 1
             record('epg_source','READY',channels=len(channels),
                    programmes=sum(len(v) for v in programmes.values()),loaded=successes,
                    failed=failures,bytes=len(raw),source_index=source_index)
+            source_status(portal_id, key, 'READY', running=False, source_index=source_index,
+                          channels=len(channels), programmes=sum(len(v) for v in programmes.values()),
+                          bytes=len(raw))
         except Exception as exc:
             from live_diagnostics import record
             from epg_errors import failure_details
             code, fields = failure_details(exc, stage)
             record('epg_source',code,source_index=source_index,
                    failed=failures+1,bytes=len(raw) if raw is not None else 0, **fields)
+            source_status(portal_id, key, code, running=False, source_index=source_index,
+                          bytes=len(raw) if raw is not None else 0, **fields)
             failures += 1
             error('EPG source failed ({}): {}'.format(
                 source.get('id', '')[:8], type(exc).__name__))

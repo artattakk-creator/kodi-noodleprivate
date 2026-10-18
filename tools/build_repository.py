@@ -102,6 +102,10 @@ def main():
                     zf.write(f,(Path(addon)/f.relative_to(SRC/addon)).as_posix())
         with zipfile.ZipFile(dest) as zf:
             assert zf.testzip() is None and f"{addon}/addon.xml" in zf.namelist()
+        if addon == 'plugin.video.xtreammate':
+            # CI repacks ZIP timestamps: always hash this exact output archive.
+            dest.with_name(dest.name+'.sha256').write_text(
+                hashlib.sha256(dest.read_bytes()).hexdigest()+'  '+dest.name+'\n')
         if addon.startswith("repository."):
             (ROOT/dest.name).write_bytes(dest.read_bytes())
             if addon == "repository.gsmedia":

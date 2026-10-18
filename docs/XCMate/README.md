@@ -1,5 +1,7 @@
 # XCMate – zentraler Projekteinstieg
 
+**Aktuelle Entwicklung 0.1.25:** [Implementierung, 237 Tests, Paket und Android-Testplan](IMPLEMENTIERUNG_025_TV_INFOBAR_EPG_DE.md) auf `fix/xcmate-infobar-epg-navigation`. Zweistufige TV-Bedienung und lokale EPG-/Quellenvorschau implementiert. **Noch nicht auf main / nicht am Android-TV abgenommen; produktiv bleibt 0.1.24.**
+
 **Status:** 18.10.2026: **XCMate 0.1.24 ist auf `main` und im GS Media Kodi Repository veröffentlicht** ([PR #16](https://github.com/artattakk-creator/kodi-noodleprivate/pull/16), 213 GitHub-CI-Tests erfolgreich; [Publish-Workflow](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39143872867) erfolgreich). Der reale Android-TV-Test zeigt erstmals eine sichtbare XCMate-Sidebar mit Fokus und unterem OSD; **nicht vollständig abgenommen**, da EPG und Fernbedienung noch nicht stabil sind. Issue #12 offen. EPG-Quellfehler genauer diagnostiziert, vollständige Vorschau Issue #13 und XCMate Skin Issue #14 bleiben offen.
 **Repository:** https://github.com/artattakk-creator/kodi-noodleprivate  
 **Kodi-Repository:** GS Media Kodi Repository 1.7.0  
@@ -20,6 +22,8 @@ Diese Dateien sind die verbindliche Arbeitsgrundlage für spätere Chats und Ent
 **Gerätestand 0.1.24:** Echte TV-Senderliste, sichtbarer Fokus und untere Steuerung sind erstmals bestätigt; **EPG und Navigation noch nicht stabil**, Senderliste langsam. Ziel: 1× OK Infobar, 2× OK/Runter Bedienleiste, Links EPG-Senderliste. [Issue #17](https://github.com/artattakk-creator/kodi-noodleprivate/issues/17), [#13](https://github.com/artattakk-creator/kodi-noodleprivate/issues/13), [#12](https://github.com/artattakk-creator/kodi-noodleprivate/issues/12).
 
 ## Dokumente
+
+- [0.1.25: implementierter TV-/EPG-Testkandidat und vollständige Android-Abnahme](IMPLEMENTIERUNG_025_TV_INFOBAR_EPG_DE.md)
 
 - [**Codex-Arbeitsanweisung: Infobar, EPG-/Menüstabilisierung, schnelle Senderliste**](CODEX_ARBEITSAUFTRAG_025_TV_INFOBAR_EPG_STABILISIERUNG_DE.md) – **verbindlicher Einstieg**.
 

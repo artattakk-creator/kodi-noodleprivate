@@ -23,12 +23,18 @@ def _find_events(data, ids):
 def guide_for_channel(cache, epg_id='', stream_id='', now=None):
     """Return now/next dict; empty strings mean the provider has no EPG data."""
     result = {'now': '', 'next': '', 'description': '', 'image': '',
-              'now_time': '', 'next_time': ''}
+              'now_time': '', 'now_end_time': '', 'next_time': '', 'next_end_time': '',
+              'start': 0, 'stop': 0, 'next_start': 0, 'next_stop': 0,
+              'progress': None, 'elapsed': None, 'remaining': None,
+              'events': [], 'epg_id': '', 'source_index': None, 'reason': 'NO_DATA'}
     if not isinstance(cache, dict):
         return result
     ts = int(time.time() if now is None else now)
     # A manually mapped Xtream stream ID must override the provider's guide ID.
-    events = _find_events(cache, (stream_id, epg_id))
+    ident = next((str(i) for i in (stream_id, epg_id)
+                  if i and isinstance(cache.get(str(i)), list) and cache[str(i)]), '')
+    events = cache.get(ident, [])
+    result['epg_id'] = ident
     valid = []
     for e in events:
         if not isinstance(e, dict):
@@ -36,21 +42,62 @@ def guide_for_channel(cache, epg_id='', stream_id='', now=None):
         start = _as_int(e.get('start_timestamp') or e.get('start'))
         end = _as_int(e.get('stop_timestamp') or e.get('end_timestamp') or e.get('stop'))
         title = str(e.get('name') or e.get('title') or '').strip()
-        if start and end > start and title:
+        if start > 0 and end > start and title:
             valid.append((start, end, title, e))
     valid.sort(key=lambda x: x[0])
+    result['events'] = [dict(start=a, stop=b, title=t,
+                             description=str(e.get('descr') or e.get('description') or ''))
+                        for a,b,t,e in valid if b > ts][:48]
     current = next((item for item in valid if item[0] <= ts < item[1]), None)
     future = next((item for item in valid if item[0] > ts), None)
     if current:
         result['now'] = current[2]
         result['now_time'] = time.strftime('%H:%M', time.localtime(current[0]))
+        result.update(start=current[0], stop=current[1], elapsed=ts-current[0],
+                      remaining=current[1]-ts,
+                      progress=max(0., min(1., (ts-current[0])/(current[1]-current[0]))),
+                      now_end_time=time.strftime('%H:%M', time.localtime(current[1])),
+                      source_index=current[3].get('_source_index'), reason='READY')
         result['description'] = str(current[3].get('descr') or current[3].get('description') or '')
         result['image'] = str(current[3].get('screenshot_uri') or '')
         # Following programme must begin after the current programme.
-        future = next((item for item in valid if item[0] >= current[1]), future)
+        future = next((item for item in valid if item[0] >= current[1]), None)
     if future:
         result['next'] = future[2]
         result['next_time'] = time.strftime('%H:%M', time.localtime(future[0]))
+        result.update(next_start=future[0], next_stop=future[1],
+                      next_end_time=time.strftime('%H:%M', time.localtime(future[1])))
+        if not current: result['reason'] = 'FUTURE_ONLY'
+        if not current: result['source_index'] = future[3].get('_source_index')
+    return result
+
+
+def resolve_guide(cache, epg_id='', stream_id='', now=None, client=None, mappings=None):
+    """One local resolver for directory, TV snapshot and programme preview.
+
+    Explicit mapping wins even if a stale stream alias remains in the cache.
+    Cached short EPG is a fallback for missing *current* XMLTV data, never HTTP.
+    """
+    sid = str(stream_id or '')
+    mapped = (mappings or {}).get(sid)
+    if mapped:
+        result = guide_for_channel(cache, str(mapped), now=now)
+        result['epg_id'] = str(mapped)
+        result['mapping'] = 'MANUAL'
+        if not result['events']: result['reason'] = 'MANUAL_ID_MISSING'
+        return result
+    result = guide_for_channel(cache, epg_id, sid, now)
+    result['mapping'] = 'STREAM_ALIAS' if result['epg_id'] == sid and sid else 'PROVIDER_ID'
+    if not result['now'] and client is not None and sid:
+        short = cached_short_guide(client, sid, now)
+        if short['now'] or (not result['next'] and short['next']):
+            if short['now'] and not short['next'] and result['next_start']>=short['stop']:
+                for key in ('next','next_time','next_end_time','next_start','next_stop'):
+                    short[key]=result[key]
+                short['events']+= [e for e in result['events'] if e['start']>=short['stop']]
+                short['events']=short['events'][:48]
+            short.update(epg_id=sid, mapping='SHORT_EPG', source_index=-1)
+            return short
     return result
 
 
@@ -68,7 +115,8 @@ def programme_plot(info):
 def row_title(name, info):
     title = str(name)
     if info.get('now'):
-        title += '  |  Jetzt: ' + str(info['now'])
+        title += '  |  {}-{}  {}'.format(info.get('now_time',''),
+                                        info.get('now_end_time',''), info['now'])
     if info.get('next'):
         title += '  |  Danach: ' + str(info['next'])
     return title
@@ -97,7 +145,12 @@ def _short_guide(raw, now=None):
             pass
         start = _as_int(item.get('start_timestamp'))
         stop = _as_int(item.get('stop_timestamp') or item.get('end_timestamp'))
-        if start and stop > start and title:
+        if not stop:
+            # Only an explicitly named seconds field is unambiguous. Generic
+            # "duration" differs between providers; never invent its unit.
+            duration = _as_int(item.get('duration_secs'))
+            if 0 < duration <= 86400: stop = start + duration
+        if start > 0 and stop > start and title:
             normalized.append({'name': title, 'start_timestamp': start,
                                'stop_timestamp': stop})
     return guide_for_channel({'_short': normalized}, '_short', now=ts)

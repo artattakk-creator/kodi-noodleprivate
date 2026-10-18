@@ -21,6 +21,9 @@ class Control:
         self.selected = 0
     def getId(self): return id(self)
     def setVisible(self, value): self.visible = value
+    def setWidth(self, width): self.width = width
+    def setPosition(self, x, y): self.position = (x,y)
+    def setImage(self, imageFilename, useCache=True): self.image = imageFilename
     def setLabel(self, label='', font=None, textColor=None, disabledColor=None,
                  shadowColor=None, focusedColor=None, label2=''): self.label = label
     def setNavigation(self, up, down, left, right):
@@ -105,6 +108,7 @@ class OverlayLifecycleTests(unittest.TestCase):
         self.props = {}
         self.player = types.SimpleNamespace(
             isPlayingVideo=lambda:True, getPlayingFile=lambda:'https://example.invalid/live/u/p/1.ts',
+            getTotalTime=lambda:3600, getTime=lambda:0,
             pause=mock.Mock(), stop=mock.Mock(), play=mock.Mock())
         self.portal = dict(id='p', name='Demo', type='xtream', xc_host='https://example.invalid',
                            xc_user='u', xc_pass='p', start_stream_id='1')
@@ -142,9 +146,9 @@ class OverlayLifecycleTests(unittest.TestCase):
         groups.save = mock.Mock()
         epg = types.ModuleType('epg')
         epg.load_cache = lambda *_:{}
-        views = types.ModuleType('epg_views')
-        views.guide_for_channel = lambda *a:{}
-        views.row_title = lambda name, guide:name
+        views_spec = importlib.util.spec_from_file_location('epg_views',LIB/'epg_views.py')
+        views = importlib.util.module_from_spec(views_spec)
+        views_spec.loader.exec_module(views)
         profiles = types.ModuleType('remote_profiles')
         profiles.mapped_action = lambda key:{1:'left',3:'up',4:'down',117:'menu',42:'ok',122:'more'}.get(key)
         portals = types.ModuleType('portals')
@@ -157,11 +161,22 @@ class OverlayLifecycleTests(unittest.TestCase):
             remote_profiles=profiles,portals=portals,live_recovery=recovery))
         patch.start()
         self.addCleanup(patch.stop)
+        data_spec = importlib.util.spec_from_file_location('tv_data',LIB/'tv_data.py')
+        data = importlib.util.module_from_spec(data_spec)
+        data_spec.loader.exec_module(data)
+        data_patch = mock.patch.dict(sys.modules, {'tv_data':data})
+        data_patch.start()
+        self.addCleanup(data_patch.stop)
+        start_patch = mock.patch.object(data.GuideSnapshot,'start',lambda _:None)
+        start_patch.start()
+        self.addCleanup(start_patch.stop)
         spec = importlib.util.spec_from_file_location('omega_overlay_test',LIB/'live_overlay.py')
         self.module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(self.module)
         self.overlay = self.module.LiveNavigator(self.portal,'1')
         self.overlay.show()
+        self.addCleanup(self.overlay.close)
+        self.overlay.handle_command('left')
 
     def test_show_builds_once_without_an_oninit_callback(self):
         o = self.overlay
@@ -182,19 +197,112 @@ class OverlayLifecycleTests(unittest.TestCase):
             with self.subTest(keyword=keyword), self.assertRaises(TypeError):
                 ControlList(0, 0, 400, 500, **{keyword: 46})
 
+    def test_first_second_ok_down_and_back_follow_two_stage_ui_without_player_action(self):
+        o=self.overlay
+        o._switch('hidden')
+        o.native(7)
+        self.assertEqual(o.mode,'info')
+        self.assertIs(o.focus,o.capture)
+        self.assertTrue(o.info_bg.visible)
+        self.assertFalse(any(c.visible for c in o.main_buttons+o.extra_buttons))
+        self.assertIn('Sender 1',o.info_name.label)
+        self.assertIn('keine EPG-Daten',o.info_now.label)
+        self.assertFalse(o.info_progress.visible)
+        self.assertFalse(o.info_duration.visible)
+        o.native(7)
+        self.assertEqual(o.mode,'controls')
+        self.assertIs(o.focus,o.main_buttons[0])
+        self.player.pause.assert_not_called()
+        self.player.stop.assert_not_called()
+        o.native(92)
+        self.assertEqual(o.mode,'info')
+        o.native(4)
+        self.assertEqual(o.mode,'controls')
+        self.player.pause.assert_not_called()
+        o.native(92)
+        o.native(92)
+        self.assertEqual(o.mode,'hidden')
+
+    def test_infobar_uses_actual_cached_timestamps_and_expires_without_stopping(self):
+        o=self.overlay
+        now=self.module.time.time()
+        views=sys.modules['epg_views']
+        o._guide._values['1']=views.guide_for_channel({'x':[
+            {'name':'Actual News','start_timestamp':now-1800,'stop_timestamp':now+1800},
+            {'name':'Actual Next','start_timestamp':now+1800,'stop_timestamp':now+3600}]},'x',now=now)
+        o._switch('info')
+        self.assertIn('Actual News',o.info_now.label)
+        self.assertIn('Actual Next',o.info_next.label)
+        self.assertTrue(o.info_progress.visible)
+        self.assertAlmostEqual(o.info_progress.width/o._progress_width,.5,places=2)
+        o._info_deadline=0
+        o.tick()
+        self.assertEqual(o.mode,'hidden')
+        self.player.stop.assert_not_called()
+
+    def test_navigation_and_identity_checks_never_read_disk_or_call_client(self):
+        o=self.overlay
+        self.client.get_cached_catalog=mock.Mock(side_effect=AssertionError('catalog read in callback'))
+        self.client._get_json.side_effect=AssertionError('HTTP/cache access in callback')
+        self.client.get_short_epg.side_effect=AssertionError('HTTP in callback')
+        with mock.patch.object(sys.modules['epg'],'load_cache',side_effect=AssertionError('disk read')):
+            o._switch('hidden')
+            for key in (7,7,2,1,117,92,92,1,4,3,92): o.native(key)
+        self.client.get_cached_catalog.assert_not_called()
+        self.client._get_json.assert_not_called()
+        self.client.get_short_epg.assert_not_called()
+
+    def test_background_program_update_preserves_focus_and_shows_real_programmes(self):
+        o=self.overlay
+        o.handle_command('epg')
+        self.assertEqual(o.mode,'guide')
+        self.assertIn('Keine EPG-Daten',o.control.items[0])
+        now=self.module.time.time()
+        o._guide._values['1']=sys.modules['epg_views'].guide_for_channel({'x':[
+            {'name':'Programme One','start_timestamp':now-60,'stop_timestamp':now+600}]},'x')
+        o._guide.generation+=1
+        o._last_tick=0
+        o.setFocus(o.capture)  # simulate a native dialog temporarily above us
+        o.tick()
+        self.assertIn('Programme One',o.control.items[0])
+        self.assertIs(o.focus,o.capture)
+        self.player.play.assert_not_called()
+
+    def test_native_audio_video_subtitles_windows_and_unseekable_controls(self):
+        o=self.overlay
+        self.player.getTotalTime=lambda:0
+        o._switch('controls')
+        self.assertFalse(o.main_buttons[1].visible or o.main_buttons[2].visible)
+        o.native(2)
+        self.assertIs(o.focus,o.main_buttons[3])
+        for index,window in enumerate(('osdaudiosettings','osdvideosettings','osdsubtitlesettings')):
+            o._switch('extras')
+            o._execute('extras',index)
+            sys.modules['xbmc'].executebuiltin.assert_called_with('ActivateWindow('+window+')')
+
+    def test_viewport_has_at_most_eight_visible_rows_and_separate_live_focus(self):
+        o=self.overlay
+        o.native(4)
+        titles=[row[2].label for row in o._row_controls if row[2].visible]
+        self.assertTrue(titles[0].startswith('LIVE  '))
+        self.assertFalse(titles[1].startswith('LIVE  '))
+        self.assertTrue(o._row_controls[1][0].visible)
+        self.assertLessEqual(len(titles),8)
+        self.assertLessEqual(len(o._guide._wanted),9)
+
     def test_53664_channels_render_bounded_pages_and_tune_absolute_selection(self):
         o = self.overlay
         o.channels = [types.SimpleNamespace(name='Sender '+str(i), tvg_id='',
             extra={'stream_id':str(i), 'category_id':'a'}) for i in range(1,53665)]
+        o.index = sys.modules['tv_data'].CatalogIndex(o.channels)
         o.sid = '53664'
         self.player.getPlayingFile = lambda:'https://example.invalid/live/u/p/53664.ts'
         self.client.get_cached_catalog = lambda action: ([{'stream_id':'53664'}]
             if action == 'get_live_streams' else [])
         o._scroll_to_current = True
-        with mock.patch.object(sys.modules['epg_views'], 'guide_for_channel',
-                               return_value={}) as lookup:
+        with mock.patch.object(o._guide,'get',wraps=o._guide.get) as lookup:
             o._render()
-            self.assertLessEqual(lookup.call_count,100)
+            self.assertLessEqual(lookup.call_count,8)
             self.assertLessEqual(o.control.size(),102)
             self.assertEqual(o.control.items[o.control.selected],'Sender 53664')
             o._tune = mock.Mock()
@@ -214,7 +322,7 @@ class OverlayLifecycleTests(unittest.TestCase):
             self.assertEqual(o._page_start,53500)
             o.native(6)
             self.assertEqual(o._page_start,53600)
-            self.assertLessEqual(lookup.call_count,600)
+            self.assertLessEqual(lookup.call_count,48)
 
     def test_constructor_failure_preserves_stage_and_safe_exception_class(self):
         o = self.module.LiveNavigator(self.portal, '1')
@@ -267,6 +375,8 @@ class OverlayLifecycleTests(unittest.TestCase):
         o._tune.assert_called_once()
         self.assertEqual(o.mode,'hidden')
         o.native(7)
+        self.assertEqual(o.mode,'info')
+        o.native(7)
         self.assertEqual(o.mode,'controls')
         self.player.pause.assert_not_called()
         # Rapid separate keypresses must not be lost to a time-based debounce.
@@ -300,10 +410,15 @@ class OverlayLifecycleTests(unittest.TestCase):
         for c in [o.control,*o.main_buttons,*o.extra_buttons]:
             focus = c.options.get('focusTexture',c.options.get('buttonFocusTexture'))
             self.assertTrue(Path(focus).is_file())
-        self.assertNotEqual(o.control.options['buttonTexture'],o.control.options['buttonFocusTexture'])
+        o._switch('channels')
+        self.assertEqual(sum(row[0].visible for row in o._row_controls),1)
+        self.assertNotEqual(o.main_buttons[0].options['focusTexture'],
+                            o.main_buttons[0].options['noFocusTexture'])
 
     def test_learned_ok_has_no_native_click_but_still_executes(self):
         self.overlay._switch('hidden')
+        self.overlay.native(42)
+        self.assertEqual(self.overlay.mode,'info')
         self.overlay.native(42)
         self.assertEqual(self.overlay.mode,'controls')
         self.overlay.native(42)
@@ -353,7 +468,7 @@ class OverlayLifecycleTests(unittest.TestCase):
 
     def test_group_settings_from_controls_use_only_cached_categories(self):
         self.overlay._switch('extras')
-        self.overlay._execute('extras',4)
+        self.overlay._execute('extras',5)
         self.assertEqual(self.overlay.mode,'groups')
 
     def test_failed_show_releases_partial_window(self):
@@ -366,11 +481,11 @@ class OverlayLifecycleTests(unittest.TestCase):
     def test_epg_input_schedules_network_in_worker_only(self):
         self.overlay._switch('hidden')
         with mock.patch('threading.Thread') as thread:
-            self.overlay.handle_command('info')
-            thread.return_value.start.assert_called_once()
+            self.overlay.handle_command('epg')
+            self.assertEqual(self.overlay.mode,'guide')
+            thread.assert_not_called()
             self.client.get_short_epg.assert_not_called()
-            thread.call_args.kwargs['target']()
-            self.client.get_short_epg.assert_called_once()
+            self.client._get_json.assert_not_called()
 
     def run_service_once(self, existing=None):
         class Monitor:

@@ -41,7 +41,7 @@ class NativeRemoteTests(unittest.TestCase):
         profile.save(new)
         self.assertEqual(profile.mapped_action(501),'epg')
         self.assertIsNone(profile.mapped_action(117))
-        self.assertEqual(json.load(open(profile.path(),encoding='utf-8'))['epg'],501)
+        self.assertEqual(json.loads(Path(profile.path()).read_text(encoding='utf-8'))['epg'],501)
 
     def test_conflicting_buttons_are_rejected(self):
         values=self.profile.load()
@@ -73,7 +73,7 @@ class NativeRemoteTests(unittest.TestCase):
 
     def test_overlay_retains_focus_when_hidden_and_uses_mapped_actions(self):
         source=(LIB/'live_overlay.py').read_text(encoding='utf-8')
-        self.assertIn('self.setFocus(self.capture)',source)
+        self.assertIn('target = self.capture',source)
         self.assertIn('mapped_action(key)',source)
         self.assertIn('self.handle_command(mapped)',source)
         self.assertIn("self.capture.getId()",source)

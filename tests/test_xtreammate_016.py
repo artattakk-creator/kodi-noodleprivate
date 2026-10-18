@@ -42,7 +42,7 @@ class V016Checks(unittest.TestCase):
         source=(LIB/'main.py').read_text(encoding='utf-8')
         part=source[source.index('    def _live_channels(self):'):source.index('    def _add_media_context(',source.index('    def _live_channels(self):'))]
         self.assertIn('prefetch_short_guides(p, chunk,',part)
-        self.assertIn('cached_short_guide(',part)
+        self.assertIn('resolve_guide(',part)
         self.assertNotIn('get_short_epg(',part)
 
 if __name__=='__main__':

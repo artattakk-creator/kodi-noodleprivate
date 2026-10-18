@@ -127,6 +127,72 @@ class CacheAndEPGTests(unittest.TestCase):
         self.assertEqual(other.configuration('p')['mappings'],{'1':'station.id'})
         self.assertEqual(Path(other._file_path()).read_bytes(),config)
 
+    def test_atomic_failed_cache_write_keeps_previous_bytes_and_reports_epg_failure(self):
+        self.epg._save_disk('p',{'old':[{'name':'Previous'}]})
+        path=self.root/'profile/cache'/(self.epg._disk_ck('p')+'.json')
+        previous=path.read_bytes()
+        self.vfs.refuse_writes.add(str(path.parent))
+        with self.assertRaises(OSError): self.epg._save_disk('p',{'new':[]})
+        self.assertEqual(path.read_bytes(),previous)
+        self.assertFalse(list(path.parent.glob('.xcmate-cache-*')))
+
+    def test_private_fallback_wins_over_older_custom_cache_and_survives_reload(self):
+        selected=self.select_folder()
+        self.utils.cache_set('e'*32,{'name':'old'})
+        self.vfs.refuse_writes.add(selected)
+        self.assertTrue(self.utils.cache_set('e'*32,{'name':'new'}))
+        self.vfs.refuse_writes.clear()
+        other=load('fresh_cache_reader','utils.py')
+        self.assertEqual(other.cache_get('e'*32),{'name':'new'})
+
+    def test_expired_refresh_ttl_keeps_valid_old_epg_without_marking_it_fresh(self):
+        import json
+        old={'x':[{'name':'Retained'}]}
+        self.epg._save_disk('p',old)
+        path=self.root/'profile/cache'/(self.epg._disk_ck('p')+'.json')
+        raw=json.loads(path.read_text())
+        raw['ts']-=2*86400
+        path.write_text(json.dumps(raw))
+        self.epg._mem_clear('p')
+        self.assertEqual(self.epg.load_cache('p'),old)
+        self.assertFalse(self.epg._is_fresh('p'))
+
+    def test_obsolete_but_valid_xmltv_never_overwrites_working_cache(self):
+        old={'old':[{'name':'Retained'}]}
+        self.epg._save_disk('p',old)
+        raw=b'<tv><programme channel="one" start="20200101120000 +0000" stop="20200101130000 +0000"><title>Old</title></programme></tv>'
+        with mock.patch.object(self.epg,'http_get',return_value=(raw,{})):
+            result=self.epg._refresh_portal_epg('p',dict(id='p',type='m3u',epg_url='https://example.invalid'))
+        self.assertEqual(result,{})
+        self.epg._mem_clear('p')
+        self.assertEqual(self.epg.load_cache('p'),old)
+
+    def test_import_mapping_persistence_to_real_local_tv_snapshot(self):
+        from epg_status import read
+        self.sources.add_source('p','Test','https://example.invalid/guide')
+        self.sources.set_mapping('p','7','one')
+        now=time.time()
+        stamp=lambda ts:time.strftime('%Y%m%d%H%M%S +0000',time.gmtime(ts))
+        raw=('<tv><channel id="one"><display-name>Station</display-name></channel>'+
+             self.programme(stamp(now-600),stamp(now+600))+self.programme(stamp(now+600),stamp(now+1800))+'</tv>').encode()
+        client=types.SimpleNamespace(_get_json=mock.Mock(side_effect=AssertionError('manual mapping must win')))
+        logos=types.ModuleType('logo_cache');logos.request=lambda _:None
+        with mock.patch.dict(sys.modules,{'epg':self.epg,'epg_sources':self.sources,'logo_cache':logos}), \
+             mock.patch.object(self.sources,'_read_source',return_value=gzip.compress(raw)):
+            self.epg._refresh_portal_epg('p',dict(id='p',type='m3u'))
+            self.epg._mem_clear('p')
+            data=load('end_to_end_tv_data','tv_data.py')
+            snapshot=data.GuideSnapshot(dict(id='p',type='xtream'),client)
+            snapshot.request([types.SimpleNamespace(name='Station',tvg_id='wrong',logo='',extra={'stream_id':'7'})])
+            snapshot.refresh()
+            info=snapshot.get('7')
+        self.assertEqual((info['now'],info['next']),('Film','Film'))
+        self.assertEqual(info['mapping'],'MANUAL')
+        self.assertTrue(0<info['progress']<1)
+        self.assertEqual(self.sources.configuration('p')['mappings'],{'7':'one'})
+        status=read('p')
+        self.assertEqual(status['cache']['code'],'READY')
+
     @staticmethod
     def programme(start='20261018120000 +0200', stop='20261018130000 +0200'):
         return f'<programme channel="one" start="{start}" stop="{stop}"><title>Film</title></programme>'

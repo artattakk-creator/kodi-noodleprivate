@@ -1,0 +1,132 @@
+"""Local indexed catalog and bounded EPG snapshots for TV callbacks.
+
+Only the worker reads disk/cache or queues service requests. GUI callbacks read
+immutable prepared values and update the wanted viewport. No HTTP here.
+"""
+from collections import OrderedDict
+import threading
+import time
+
+from epg_views import guide_for_channel
+
+
+class CatalogIndex:
+    def __init__(self, channels):
+        self.channels = tuple(channels)
+        self.by_sid, self.groups = {}, {}
+        self.positions, self.group_positions = {}, {}
+        for i,channel in enumerate(self.channels):
+            sid,cid = str(channel.extra.get('stream_id','')),str(channel.extra.get('category_id',''))
+            self.by_sid[sid] = channel
+            self.positions[sid] = i
+            group=self.groups.setdefault(cid,[])
+            self.group_positions.setdefault(cid,{})[sid]=len(group)
+            group.append(channel)
+        self.groups = {k:tuple(v) for k,v in self.groups.items()}
+        self._selections = OrderedDict()
+
+    def selection(self, category, enabled):
+        key = (str(category), None if enabled is None else frozenset(enabled))
+        if key not in self._selections:
+            if category != '*':
+                rows = self.groups.get(str(category), ()) if enabled is None or str(category) in enabled else ()
+                positions=self.group_positions.get(str(category),{}) if rows else {}
+            elif enabled is None: rows,positions = self.channels,self.positions
+            else:
+                rows = tuple(c for c in self.channels if str(c.extra.get('category_id','')) in enabled)
+                positions={str(c.extra.get('stream_id','')):i for i,c in enumerate(rows)}
+            self._selections[key] = (rows, positions)
+            if len(self._selections) > 4: self._selections.popitem(last=False)
+        return self._selections[key]
+
+
+class GuideSnapshot:
+    def __init__(self, portal, client):
+        self.portal, self.client = portal, client
+        self._lock = threading.Lock()
+        self._wake, self._stop = threading.Event(), threading.Event()
+        self._wanted, self._values = (), OrderedDict()
+        self.generation = 0
+        self._revision, self._cache, self._mappings = None, {}, {}
+        self._thread = None
+
+    def start(self):
+        if self._thread is None:
+            self._thread = threading.Thread(target=self._run, daemon=True, name='XCMateLocalGuide')
+            self._thread.start()
+
+    def close(self):
+        self._stop.set()
+        self._wake.set()
+
+    def request(self, channels):
+        unique = {str(c.extra.get('stream_id','')):c for c in channels}
+        wanted = tuple(unique.values())[:16]
+        with self._lock:
+            if wanted != self._wanted:
+                self._wanted = wanted
+                self._wake.set()
+
+    def get(self, sid, now=None):
+        ts = time.time() if now is None else now
+        with self._lock: base = self._values.get(str(sid))
+        if base is None: return guide_for_channel({}, now=ts)
+        if base.get('start',0) <= ts < base.get('stop',0):
+            info = dict(base)
+            info.update(elapsed=ts-info['start'], remaining=info['stop']-ts,
+                        progress=max(0.,min(1.,(ts-info['start'])/(info['stop']-info['start']))))
+            return info
+        if not base.get('now') and base.get('next_start',0)>ts:
+            return dict(base)
+        # Re-evaluate only a bounded, already normalized programme list in RAM.
+        info = guide_for_channel({'v':[dict(name=e['title'], start_timestamp=e['start'],
+            stop_timestamp=e['stop'], descr=e.get('description','')) for e in base['events']]}, 'v', now=ts)
+        info.update(epg_id=base.get('epg_id',''), mapping=base.get('mapping',''),
+                    source_index=base.get('source_index'))
+        if not info['events']: info['reason'] = base.get('reason','NO_DATA')
+        return info
+
+    def refresh(self):
+        """One worker iteration, also usable deterministically in integration tests."""
+        from epg import load_cache, _mem_clear
+        from epg_sources import configuration
+        from epg_status import revision
+        from epg_views import resolve_guide, prefetch_short_guides
+        now = time.time()
+        started=time.perf_counter()
+        rev = revision(self.portal['id'])
+        reloaded=rev != self._revision
+        if reloaded:
+            _mem_clear(self.portal['id'])
+            self._cache = load_cache(self.portal['id'])
+            self._mappings = configuration(self.portal['id'])['mappings']
+            self._revision = rev
+        cache_ms=(time.perf_counter()-started)*1000
+        with self._lock: wanted = self._wanted
+        from logo_cache import request as request_logos
+        request_logos(wanted)
+        values, missing = {}, []
+        for c in wanted:
+            sid = str(c.extra.get('stream_id',''))
+            info = resolve_guide(self._cache, c.tvg_id, sid, now, self.client, self._mappings)
+            values[sid] = info
+            if not info['now'] and sid not in self._mappings: missing.append(c)
+        with self._lock:
+            self._values.update(values)
+            for sid in values: self._values.move_to_end(sid)
+            while len(self._values) > 128: self._values.popitem(last=False)
+            self.generation += 1
+        if missing: prefetch_short_guides(self.portal, missing, limit=16)
+        from live_diagnostics import record
+        record('epg_performance','GUIDE_WORKER',cache_ms=cache_ms,cache_hit=not reloaded,
+               snapshot_ms=(time.perf_counter()-started)*1000-cache_ms,items=len(values))
+
+    def _run(self):
+        while not self._stop.is_set():
+            self._wake.wait(5)
+            self._wake.clear()
+            if self._stop.is_set(): break
+            try: self.refresh()
+            except Exception as exc:
+                from live_diagnostics import record
+                record('epg', 'LOCAL_SNAPSHOT_FAILED', exception_class=type(exc).__name__)
