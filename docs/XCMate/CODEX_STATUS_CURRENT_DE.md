@@ -1,5 +1,17 @@
 # XCMate / Codex – aktueller Projekt- und Release-Status (verbindliche Übergabe)
 
+## VERBINDLICHER NEUER RELEASE-STAND 18.10.2026 – XCMate 0.1.25 veröffentlicht
+
+- **Version im öffentlichen GS Media Kodi Repository: `0.1.25`**, aktualisierbar über Kodi »XCMate → Informationen → Aktualisieren«. Addon-ID bleibt `plugin.video.xtreammate`.
+- Nach Nutzerauftrag wurde [PR #18](https://github.com/artattakk-creator/kodi-noodleprivate/pull/18) aus `fix/xcmate-infobar-epg-navigation` geprüft, vom Entwurf auf Review gesetzt und als `601c421b004f746341ecf3a8c0f7bf1200a7c84d` nach `main` gemergt. Kein Änderungskonflikt (`behind_by=0`).
+- GitHub-PR-[CI-Run 39155542397](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39155542397) **237/237 Tests bestanden**; automatischer [Push-/Publish-Run 39156573306](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39156573306) **erfolgreich**, ebenfalls 237 Tests.
+- `src/plugin.video.xtreammate/addon.xml` und `addons.xml` zeigen beide **0.1.25**, `addons.xml.md5` im Build neu erzeugt. Veröffentlichte ZIP: `plugin.video.xtreammate/plugin.video.xtreammate-0.1.25.zip` (**259497 Bytes**), SHA-256 `0022633e056940fb6a338b1d5ccb01ce2585d6093652242e7579b0b5b7418ae3`; eigene SHA-256-Berechnung gegen die veröffentlichte Paket-Sidecar **erfolgreich**. Der frühere Branch-Testpaket-Hash `583026db...` ist **nur historisch** und gilt nicht für das neu gepackte Produktionspaket.
+- **Implementierte Änderungen laut PR:** 1× OK kompakte EPG-Infobar, 2× OK/Runter Player-Steuerung; lokaler Now-/Next-Resolver und EPG-Status & Vorschau; vorberechnete Katalog-/EPG-Indizes, 8 sichtbare Senderzeilen, Cache-Härtung, lokale Logo-Icons.
+- **Echter Android-TV-Test steht aus**: weder erfolgreiches EPG/Import noch native 1×/2× OK, fokussierte Tasten oder Beschleunigung gelten als verifiziert. Cloud-Zugriff auf öffentliche DE/AT/CH-Feeds laut Codex an ProxyError gescheitert, nicht als Provider-Ausfall bewerten. [Geräteplan](IMPLEMENTIERUNG_025_TV_INFOBAR_EPG_DE.md). Bestehende Issues [#12](https://github.com/artattakk-creator/kodi-noodleprivate/issues/12), [#13](https://github.com/artattakk-creator/kodi-noodleprivate/issues/13), [#17](https://github.com/artattakk-creator/kodi-noodleprivate/issues/17) bis zur Gerätetest-Abnahme offen. Separater XCMate Skin [#14](https://github.com/artattakk-creator/kodi-noodleprivate/issues/14) bleibt zukünftig.
+- **Nächster Schritt:** Auf Android-TV normal über GS-Media-Kodi-Repository von `0.1.24` auf `0.1.25` aktualisieren; Kodi ganz neu starten; unter Diagnose `service build=25` bestätigen; ersten und zweiten OK-Druck, Down/Links, EPG-Quellenstatus, echtes JETZT/DANACH + Start/Ende + Fortschrittsbalken, Senderwechsel und Fokus prüfen; Fremd-Add-on/VOD/Stop gegentesten. Neue Fehlerstände dokumentieren; keine Issue-Schließung ohne reale Abnahme.
+- **Hinweis:** Unterhalb dieser neuen Überschrift verbliebene Tabellenangaben »nicht in main / 0.1.24 produktiv« sind historische Codex-Kandidatenangaben, **nicht** der aktuelle Status. Bei künftigen Codex-Chats diesen Block als erste Statusquelle verwenden.
+
+
 ## Entwicklung 0.1.25 – aktuelle Übergabe (18.10.2026)
 
 **Branch:** `fix/xcmate-infobar-epg-navigation`, Basis `09b04e0` von `main` (0.1.24). **Implementierung und vollständiger Android-Testplan:** [IMPLEMENTIERUNG_025_TV_INFOBAR_EPG_DE.md](IMPLEMENTIERUNG_025_TV_INFOBAR_EPG_DE.md).
