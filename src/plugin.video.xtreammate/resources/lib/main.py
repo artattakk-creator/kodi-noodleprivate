@@ -607,6 +607,7 @@ class Router:
         last_seen = ('kein Lebenszeichen' if health['age'] is None
                      else '{:.1f} Sekunden'.format(health['age']))
         rows = [
+            'Installierte XCMate-Version: '+ADDON.getAddonInfo('version'),
             '=== Hintergrunddienst (OHNE Stream prüfbar) ===',
             'Dienststatus: ' + health['state'],
             'Letztes Lebenszeichen: ' + last_seen,

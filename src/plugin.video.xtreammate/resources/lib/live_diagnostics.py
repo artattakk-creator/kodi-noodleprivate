@@ -16,7 +16,7 @@ FIELDS = frozenset(('video', 'marker', 'catalog', 'channels', 'programmes',
                     'matched', 'visible', 'now_count', 'next_count', 'loaded',
                     'failed', 'bytes', 'focus_id', 'dialog_id', 'focused',
                     'action_id', 'button_code', 'count', 'running', 'last_success',
-                    'source_index', 'enabled', 'requested', 'item_tag', 'fullscreen','limit_bytes'))
+                    'source_index', 'enabled', 'requested', 'item_tag', 'fullscreen','limit_bytes','build'))
 _WRITTEN = {}
 PREFIX = 'XtreamMate.Diagnostic.'
 EXPLANATIONS={

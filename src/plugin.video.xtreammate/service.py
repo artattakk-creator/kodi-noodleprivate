@@ -3,6 +3,7 @@ import xbmc, xbmcaddon, xbmcgui
 
 ADDON    = xbmcaddon.Addon()
 LIB_PATH = os.path.join(os.path.dirname(__file__), 'resources', 'lib')
+SERVICE_BUILD = 23
 if LIB_PATH not in sys.path:
     sys.path.insert(0, LIB_PATH)
 
@@ -133,14 +134,14 @@ class IPTVMasterService(xbmc.Monitor):
         instance = uuid.uuid4().hex
         loops = 0
         heartbeat(marker, instance, loops, phase='gestartet')
-        diagnostic('service','STARTED',running=True,count=loops)
+        diagnostic('service','STARTED',running=True,count=loops,build=SERVICE_BUILD)
         note(marker, LAST_ERROR, 'keine gemeldet')
         while not self.abortRequested():
             loops += 1
             heartbeat(marker, instance, loops, phase='läuft')
             if time.monotonic()>=self._next_diagnostic:
                 self._next_diagnostic=time.monotonic()+30
-                diagnostic('service','RUNNING',running=True,count=loops)
+                diagnostic('service','RUNNING',running=True,count=loops,build=SERVICE_BUILD)
             # Explicit visible-page/manual EPG requests are small, service-owned
             # jobs. They are independent of opt-in bulk catalogue prefetch.
             try:
@@ -309,7 +310,7 @@ class IPTVMasterService(xbmc.Monitor):
             self._overlay.close()
         if marker.getProperty(INSTANCE) == instance:
             marker.setProperty(PHASE, 'beendet')
-        diagnostic('service','STOPPED',running=False,count=loops)
+        diagnostic('service','STOPPED',running=False,count=loops,build=SERVICE_BUILD)
         from live_diagnostics import checkpoint
         checkpoint()
         info('XCMate service stopped')

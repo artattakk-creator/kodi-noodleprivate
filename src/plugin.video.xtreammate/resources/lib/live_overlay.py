@@ -193,6 +193,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
         try:
             if not self._drawn:
                 self._build_controls()
+                xbmcgui.Window(10000).setProperty('XtreamMate.NativeActionCount','0')
+                trace('input','WAITING_FOR_ACTION',count=0)
             try: self.setProperty('XtreamMate.NavigatorIdentity',self._window_nonce)
             except Exception: pass
             trace('dialog','SHOW_REQUESTED',channels=len(self.channels),catalog=self._catalog_ready)
