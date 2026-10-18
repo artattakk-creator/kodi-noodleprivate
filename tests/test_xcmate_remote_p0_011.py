@@ -105,7 +105,7 @@ class TestXCMateKeymap(unittest.TestCase):
 
 
 class TestNativeOverlayKeyHandling(unittest.TestCase):
-    def test_native_dpad_bypasses_kodi_osd(self):
+    def test_command_mapping_bypasses_kodi_osd(self):
         xbmc = types.ModuleType("xbmc")
         paused = []
         player = types.SimpleNamespace(
@@ -132,7 +132,7 @@ class TestNativeOverlayKeyHandling(unittest.TestCase):
             mod = import_module("test_011_overlay", "live_overlay.py")
             overlay = mod.LiveNavigator.__new__(mod.LiveNavigator)
             overlay.mode = "hidden"
-            overlay._last_select = 0
+            overlay._accept_input = lambda: True
             overlay._focus_main = 0
             overlay._focus_extra = 0
             overlay.main_buttons = [1, 2, 3, 4, 5]
@@ -158,13 +158,13 @@ class TestNativeOverlayKeyHandling(unittest.TestCase):
             self.assertEqual(seen[:2], [("zap", 1), ("zap", -1)])
             overlay.onAction(action(2))
             self.assertIn("recent", seen)
-            overlay.onAction(action(7))
+            overlay.handle_command("ok")
             self.assertEqual(overlay.mode, "controls")
             overlay.onAction(action(2))
             self.assertEqual(overlay._focus_main, 1)
             overlay.onAction(action(1))
             self.assertEqual(overlay._focus_main, 0)
-            overlay.onAction(action(7))
+            overlay.handle_command("ok")
             self.assertIn(("controls", 0), seen)
             overlay.onAction(action(117))
             self.assertEqual(overlay.mode, "extras")
@@ -178,7 +178,7 @@ class TestNativeOverlayKeyHandling(unittest.TestCase):
             self.assertEqual(overlay.mode, "hidden")
             overlay.onAction(action(12))
             self.assertEqual(paused, ["pause"])
-            self.assertGreaterEqual(int(properties["XtreamMate.NativeActionCount"]), 12)
+            self.assertGreaterEqual(int(properties["XtreamMate.NativeActionCount"]), 10)
             self.assertEqual(properties["XtreamMate.LastHandledKey"], "play_pause")
 
 

@@ -4,6 +4,8 @@ import json
 import time
 import hashlib
 import logging
+import uuid
+from network_io import read_http_chunks, MAX_HTTP_BYTES
 
 import xbmc
 import xbmcaddon
@@ -50,26 +52,53 @@ def setting_int(key, default=0):
     except Exception:
         return default
 
+_CACHE_WRITABLE = {}
+
+
+def _private_cache_dir():
+    path = xbmcvfs.translatePath(f'special://userdata/addon_data/{ADDON_ID}/cache/')
+    xbmcvfs.mkdirs(path)
+    return path
+
+
+def _cache_is_writable(path):
+    if time.monotonic() - _CACHE_WRITABLE.get(path, float('-inf')) < 30:
+        return True
+    probe = os.path.join(path, '.xcmate-probe-' + uuid.uuid4().hex)
+    created = False
+    try:
+        if not (xbmcvfs.exists(path) or xbmcvfs.mkdirs(path)):
+            return False
+        with xbmcvfs.File(probe, 'w') as stream:
+            created = True
+            if not stream.write('XCMate cache probe'):
+                return False
+        _CACHE_WRITABLE[path] = time.monotonic()
+        return True
+    except Exception:
+        return False
+    finally:
+        if created:
+            xbmcvfs.delete(probe)
+
+
 def cache_dir():
     """Use the selected Kodi folder, falling back to the add-on-owned cache.
 
     The folder picker persists cache_dir in Kodi. Never erase other user files.
     Missing or inaccessible custom locations must not stop XCMate from starting.
     """
-    fallback = xbmcvfs.translatePath(
-        f'special://userdata/addon_data/{ADDON_ID}/cache/')
     selected = (setting('cache_dir') or '').strip()
     if selected:
         try:
             path = (xbmcvfs.translatePath(selected)
                     if selected.startswith('special://') else selected)
-            if xbmcvfs.exists(path) or xbmcvfs.mkdirs(path):
+            if _cache_is_writable(path):
                 return path
         except Exception:
             pass
         warn('Configured XCMate cache directory unavailable; using private default')
-    xbmcvfs.mkdirs(fallback)
-    return fallback
+    return _private_cache_dir()
 
 def addon_data_dir():
     path = xbmcvfs.translatePath(f'special://userdata/addon_data/{ADDON_ID}/')
@@ -96,40 +125,56 @@ def _default_headers():
         'Accept-Encoding': 'gzip, deflate',
     }
 
-def http_get(url, params=None, headers=None, timeout=None, stream=False):
+def http_get(url, params=None, headers=None, timeout=None, stream=False,
+             max_bytes=MAX_HTTP_BYTES, max_seconds=60):
     to      = timeout or setting_int('http_timeout', 15)
     retries = setting_int('max_retries', 3)
     verify  = setting_bool('ssl_verify', True)
     hdrs    = {**_default_headers(), **(headers or {})}
 
     last_exc = None
+    deadline = time.monotonic() + max_seconds
     for attempt in range(retries + 1):
         try:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise TimeoutError('HTTP response time budget exceeded')
             if HAVE_HTTPX:
                 proxy = _build_proxy()
                 client_kwargs = dict(
                     headers=hdrs,
-                    timeout=to,
+                    timeout=min(to, remaining),
                     verify=verify,
                     follow_redirects=True,
                 )
                 if proxy:
-                    client_kwargs['proxies'] = proxy
+                    client_kwargs['proxy'] = proxy
                 with httpx.Client(**client_kwargs) as client:
-                    r = client.get(url, params=params)
-                    r.raise_for_status()
-                    return r.content, dict(r.headers)
+                    with client.stream('GET', url, params=params) as r:
+                        r.raise_for_status()
+                        # No chunk_size buffering: enforce the deadline after
+                        # each transport read, including slow/dripping servers.
+                        body = read_http_chunks(r.iter_raw(),
+                                                r.headers, max_bytes, deadline)
+                        return body, dict(r.headers)
             else:
                 import urllib.request, urllib.parse
+                request_url = url
                 if params:
-                    url = url + ('&' if '?' in url else '?') + urllib.parse.urlencode(params)
-                req = urllib.request.Request(url, headers=hdrs)
-                with urllib.request.urlopen(req, timeout=to) as resp:
-                    return resp.read(), dict(resp.headers)
+                    request_url += ('&' if '?' in url else '?') + urllib.parse.urlencode(params)
+                req = urllib.request.Request(request_url, headers=hdrs)
+                with urllib.request.urlopen(req, timeout=min(to, remaining)) as resp:
+                    chunks = iter(lambda: resp.read1(min(65536, max_bytes+1)), b'')
+                    body = read_http_chunks(chunks, resp.headers, max_bytes, deadline)
+                    return body, dict(resp.headers)
+        except ValueError:
+            # Size/encoding rejection cannot be repaired by downloading again.
+            raise
         except Exception as exc:
             last_exc = exc
             if attempt < retries:
-                time.sleep(1.5 ** attempt)
+                delay = min(1.5 ** attempt, max(0, deadline-time.monotonic()))
+                time.sleep(delay)
     raise last_exc
 
 def http_post(url, data=None, json_data=None, headers=None, timeout=None):
@@ -175,13 +220,22 @@ def cache_get(key, max_age=3600):
         return None
 
 def cache_set(key, data):
-    path = os.path.join(cache_dir(), key + '.json')
-    try:
-        obj = json.dumps({'ts': time.time(), 'data': data})
-        with xbmcvfs.File(path, 'w') as f:
-            f.write(obj)
-    except Exception as e:
-        error(f'cache_set error: {e}')
+    obj = json.dumps({'ts': time.time(), 'data': data})
+    directory = cache_dir()
+    for attempt in range(2):
+        try:
+            with xbmcvfs.File(os.path.join(directory, key + '.json'), 'w') as f:
+                if not f.write(obj):
+                    raise OSError('Cache write refused')
+            return True
+        except Exception:
+            _CACHE_WRITABLE.pop(directory, None)
+            fallback = _private_cache_dir()
+            if attempt or directory == fallback:
+                error('XCMate cache write failed (path redacted)')
+                return False
+            warn('XCMate cache permissions changed; retrying in private cache')
+            directory = fallback
 
 def cache_clear():
     cd = cache_dir()

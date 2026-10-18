@@ -139,6 +139,8 @@ class IPTVMasterService(xbmc.Monitor):
                 from live_overlay import start_if_eligible, session_from_property, SESSION_KEY
                 from remote_control import parse_command, COMMAND_KEY
                 player = xbmc.Player()
+                if self._overlay is not None and self._overlay._closed:
+                    self._overlay = None
                 if player.isPlayingVideo():
                     announced_health = session_from_property(marker.getProperty(SESSION_KEY))
                     if (not announced_health and
@@ -213,6 +215,9 @@ class IPTVMasterService(xbmc.Monitor):
                                         current_channel.extra.get('category_id') or '*')
                                 self._overlay._scroll_to_current = True
                                 self._last_session_nonce = active_session['nonce']
+                        if self._overlay is not None and not self._overlay.owns_playback():
+                            self._overlay.close()
+                            self._overlay = None
                     if self._overlay is None:
                         session = session_from_property(xbmcgui.Window(10000).getProperty(SESSION_KEY))
                         candidate = start_if_eligible(self._last_session_nonce)
@@ -234,6 +239,7 @@ class IPTVMasterService(xbmc.Monitor):
                                 self._last_session_nonce = session['nonce'] if session else ''
                                 self._overlay_failure_reported = False
                             except Exception as exc:
+                                candidate.close()
                                 self._overlay = None
                                 xbmcgui.Window(10000).setProperty(
                                     'XtreamMate.OverlayStatus', 'Fehler: ' + type(exc).__name__)

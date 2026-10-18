@@ -5,8 +5,9 @@ Up/Down: zap one station in the active group when hidden, otherwise highlight it
 Context/Menu (or 0): toggle a group in the saved multi-selection.
 Back on groups: close overlay. Stop: stop playback and close overlay.
 
-All Kodi controls are owned by the GUI thread; no network requests are made in
-onAction. Reloading is only done during session initialization or group toggles.
+Kodi handles native list movement before Python callbacks. Bridge commands move
+the list explicitly; native events must not move it a second time. No network
+requests are made in input callbacks.
 """
 import json
 import os
@@ -105,6 +106,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self.xc = XtreamClient(portal['xc_host'], portal['xc_user'], portal['xc_pass'])
         self.sid = str(initial_sid)
         self._recent_sid = ''
+        self._tune_deadline = 0
         self.groups = []
         self.enabled = load(portal['id'])
         self.channels = []
@@ -119,7 +121,6 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self._intro_deadline = None
         self._focus_main = 0
         self._focus_extra = 0
-        self._last_select = 0
         selected_stream = next((c for c in self.channels
                                 if str(c.extra.get('stream_id')) == self.sid), None)
         # Normally zap within the playing station's own category. Selecting
@@ -173,7 +174,61 @@ class LiveNavigator(xbmcgui.WindowDialog):
             self._render()
         return True
 
-    def onInit(self):
+    def show(self):
+        """Plain Omega WindowDialog does not dispatch Python onInit()."""
+        if self._closed:
+            return
+        try:
+            if not self._drawn:
+                self._build_controls()
+            super().show()
+            self._render()
+        except Exception:
+            self.close()
+            raise
+
+    def close(self):
+        if self._closed:
+            return
+        self._closed = True
+        self._intro_deadline = None
+        super().close()
+        marker = xbmcgui.Window(10000)
+        marker.clearProperty('XtreamMate.RemoteCommand')
+        session = session_from_property(marker.getProperty(SESSION_KEY))
+        if session and (session['pid'], session['sid']) == (str(self.portal['id']), self.sid):
+            marker.clearProperty(SESSION_KEY)
+        marker.setProperty('XtreamMate.OverlayStatus', 'geschlossen')
+
+    def owns_playback(self):
+        """Release input immediately if playback belongs to another add-on."""
+        try:
+            player = xbmc.Player()
+            if not player.isPlayingVideo():
+                return False
+            from live_recovery import recover_from_player_path
+            match = recover_from_player_path(
+                player.getPlayingFile(), [self.portal],
+                lambda *args: self.xc)
+            if not match or match[0] != str(self.portal['id']):
+                return False
+            # Player.play is asynchronous; the old verified live URL may remain
+            # visible briefly while Kodi resolves the newly selected channel.
+            return (match[1] == self.sid or
+                    (match[1] == self._recent_sid and
+                     time.monotonic() < self._tune_deadline))
+        except Exception:
+            return False
+
+    def _accept_input(self):
+        if self._closed:
+            return False
+        if not self.owns_playback():
+            self.close()
+            return False
+        return True
+
+    def _build_controls(self):
         import xbmcaddon
         try:
             width = max(840, self.getWidth())
@@ -182,17 +237,22 @@ class LiveNavigator(xbmcgui.WindowDialog):
             width, height = 1280, 720
         image = os.path.join(xbmcaddon.Addon().getAddonInfo('path'),
                              'resources', 'media', 'tv_overlay_bg.png')
+        media = os.path.dirname(image)
+        normal = os.path.join(media, 'remote_normal.png')
+        focused = os.path.join(media, 'remote_focus.png')
         sidebar = min(600, max(440, int(width * 0.47)))
         self.bg = xbmcgui.ControlImage(0, 0, sidebar, height, image)
         self.heading = xbmcgui.ControlLabel(32, 25, sidebar-48, 55, 'XCMate', 'font16', '0xFFFFFFFF')
         self.sub = xbmcgui.ControlLabel(32, 82, sidebar-48, 40, '', 'font13', '0xFFB6BCC6')
         self.control = xbmcgui.ControlList(32, 135, sidebar-58, height-205,
-            font='font13', textColor='0xFFFFFFFF', selectedColor='0xFFD2D8E0')
-        self.control.setItemHeight(46)
-        self.control.setSpace(3)
+            font='font13', textColor='0xFFFFFFFF', selectedColor='0xFFFFFFFF',
+            buttonTexture=normal, buttonFocusTexture=focused,
+            itemHeight=46, space=3)
         # Keep a real, focusable Kodi control while the sidebar is hidden.
         # Otherwise WindowDialog receives no Android remote key events.
-        self.capture = xbmcgui.ControlButton(0, 0, 8, 8, '')
+        transparent = os.path.join(media, 'remote_clear.png')
+        self.capture = xbmcgui.ControlButton(0, 0, 8, 8, '',
+            focusTexture=transparent, noFocusTexture=transparent)
         self.footer = xbmcgui.ControlLabel(32, height-65, sidebar-40, 48, '', 'font12', '0xFFD3D7E2')
         self.osd_bg = xbmcgui.ControlImage(0, height-165, width, 165, image)
         self.osd_title = xbmcgui.ControlLabel(26, height-155, width-50, 38, '', 'font13', '0xFFFFFFFF')
@@ -203,22 +263,28 @@ class LiveNavigator(xbmcgui.WindowDialog):
         space = max(125, int((width-40)/len(main)))
         for idx, label in enumerate(main):
             self.main_buttons.append(xbmcgui.ControlButton(
-                20+idx*space, height-111, space-8, 40, label))
+                20+idx*space, height-111, space-8, 40, label,
+                focusTexture=focused, noFocusTexture=normal))
         space2 = max(110, int((width-40)/len(extra)))
         for idx, label in enumerate(extra):
             self.extra_buttons.append(xbmcgui.ControlButton(
-                20+idx*space2, height-59, space2-8, 40, label))
+                20+idx*space2, height-59, space2-8, 40, label,
+                focusTexture=focused, noFocusTexture=normal))
         for control in (self.bg, self.heading, self.sub, self.control, self.footer,
                         self.capture, self.osd_bg, self.osd_title, *self.main_buttons, *self.extra_buttons):
             self.addControl(control)
+        # Button navigation is handled by our command model, not twice by Kodi.
+        for control in (self.capture, *self.main_buttons, *self.extra_buttons):
+            control.setNavigation(control, control, control, control)
+        self.control.controlLeft(self.control)
+        self.control.controlRight(self.control)
         self._drawn = True
         marker = xbmcgui.Window(10000)
         marker.setProperty('XtreamMate.OverlayStatus', 'bereit')
-        marker.setProperty('XtreamMate.InputMode', 'native WindowDialog + XCMate keymap')
+        marker.setProperty('XtreamMate.InputMode', 'native WindowDialog / onControl')
         self._intro_deadline = time.monotonic() + 16.0
-        self._render()
         marker.setProperty('XtreamMate.AutoPopupStatus',
-                           'onInit abgeschlossen – Senderliste sichtbar (16s)')
+                           'Controls aufgebaut – Senderliste sichtbar (16s)')
 
     def _render(self):
         if not self._drawn:
@@ -352,6 +418,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             return
         if self.sid != sid:
             self._recent_sid = self.sid
+            self._tune_deadline = time.monotonic() + 8
         self.sid = sid
         self._scroll_to_current = True
         announce(self.portal['id'], sid, channel.name)
@@ -457,10 +524,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 import xbmcaddon
                 xbmcaddon.Addon().openSettings()
             elif index == 4:
-                from group_selection import manage_groups
-                manage_groups(self.portal)
-                from group_selection import load
-                self.enabled = load(self.portal['id'])
+                # The full manager can fetch uncached categories. Stay in our
+                # already loaded groups while handling a player input event.
                 self._switch('groups')
                 return
         self._switch('hidden')
@@ -492,6 +557,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
 
     def handle_command(self, command):
         """XCMate-local TV commands; never open Kodi's own player OSD."""
+        if not self._accept_input():
+            return
         self._intro_deadline = None
         if command in ('left', 'long_left'):
             if self.mode in ('controls', 'extras'):
@@ -520,7 +587,9 @@ class LiveNavigator(xbmcgui.WindowDialog):
                     self._focus_extra = (self._focus_extra + 1) % len(self.extra_buttons)
                 self._render()
         elif command in ('more', 'long_ok', 'menu', 'long_menu'):
-            if command == 'long_menu':
+            if command == 'menu' and self.mode == 'groups':
+                self._toggle()
+            elif command == 'long_menu':
                 self._switch('guide')
             else:
                 self._switch('extras')
@@ -586,7 +655,10 @@ class LiveNavigator(xbmcgui.WindowDialog):
         Log numeric action/buttoncode only; never include stream URLs.
         The keymap bridge is a fallback, not the sole remote input path.
         """
+        if not self._accept_input():
+            return
         key = int(action.getId())
+        self._intro_deadline = None
         try:
             raw = int(action.getButtonCode())
         except Exception:
@@ -614,30 +686,31 @@ class LiveNavigator(xbmcgui.WindowDialog):
             mapped = 'play_pause'
         elif key == ACTION_RIGHT:
             mapped = 'right'
-        elif key in (ACTION_PAGE_UP, ACTION_PAGE_DOWN):
-            if self.mode in ('channels', 'guide', 'groups'):
-                self._position(-10 if key == ACTION_PAGE_UP else 10)
+        elif key in (ACTION_UP, ACTION_DOWN, ACTION_PAGE_UP, ACTION_PAGE_DOWN) and self.mode in ('channels', 'guide', 'groups'):
+            # CGUIControlList already applied this action before onAction.
+            self._highlight[self.mode] = self.control.getSelectedPosition()
+            return
+        elif key == ACTION_SELECT:
+            # Omega dispatches onControl BEFORE onAction(SELECT). Handling
+            # SELECT here too would execute a second action in the new mode.
+            marker.setProperty('XtreamMate.LastHandledKey', 'ok')
             return
         else:
             from remote_profiles import mapped_action
             mapped = mapped_action(key)
         if mapped:
-            if mapped == 'ok':
-                self._last_select = time.time()
             marker.setProperty('XtreamMate.LastHandledKey', mapped)
             self.handle_command(mapped)
 
-    def onClick(self, control_id):
-        # The transparent focus button is the native Android OK receiver.
-        if self._drawn and control_id == self.capture.getId():
-            if time.time() - self._last_select >= 0.3:
-                self._last_select = time.time()
-                self.handle_command('ok')
+    def onControl(self, control):
+        """Omega's click callback for programmatically created controls."""
+        if not self._accept_input() or not self._drawn:
             return
-        # Kodi may invoke onAction(SELECT) and onClick for one press.
-        if time.time()-self._last_select < 0.3:
+        control_id = control.getId()
+        if control_id == self.capture.getId():
+            self.handle_command('ok')
             return
-        if self._drawn and control_id == self.control.getId() and self.mode in ('groups','channels','guide'):
+        if control_id == self.control.getId() and self.mode in ('groups','channels','guide'):
             self._select()
             return
         if self.mode == 'controls':
@@ -660,7 +733,8 @@ def start_if_eligible(last_nonce):
     if not portal or portal.get('type') != 'xtream':
         return None
     try:
-        return LiveNavigator(portal, session['sid'])
+        candidate = LiveNavigator(portal, session['sid'])
+        return candidate if candidate.owns_playback() else None
     except Exception as exc:
         warn('XCMate navigator cannot start: {}'.format(type(exc).__name__))
         return None
