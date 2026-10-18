@@ -1,16 +1,18 @@
 # XCMate – zentraler Projekteinstieg
 
-**Status:** 18.10.2026: **XCMate 0.1.23 ist über `main` / GS Media Kodi Repository veröffentlicht** ([PR #15](https://github.com/artattakk-creator/kodi-noodleprivate/pull/15), 202 CI-Tests, Publish erfolgreich). Android-Geräteabnahme steht aus; 0.1.22 zeigte weiterhin den Navigation-Startfehler aus Issue #12. EPG-Status (#13) und XCMate Skin (#14) sind geplant.
+**Status:** 18.10.2026: **XCMate 0.1.23 ist über `main` / GS Media Kodi Repository veröffentlicht** ([PR #15](https://github.com/artattakk-creator/kodi-noodleprivate/pull/15), 202 CI-Tests, Publish erfolgreich). **Android-Gerätetest von 0.1.23 negativ:** Stream/Sitzung erkannt, TV-Navigation scheitert reproduzierbar mit `TypeError` / `SHOW_FAILED` aus Issue #12. EPG-Aktualisierung ohne neue Guide-Daten, siehe Issue #13. EPG-Status (#13) und XCMate Skin (#14) sind geplant.
 **Repository:** https://github.com/artattakk-creator/kodi-noodleprivate  
 **Kodi-Repository:** GS Media Kodi Repository 1.7.0  
 **Angezeigter Add-on-Name:** XCMate  
 **Technische ID:** `plugin.video.xtreammate` (aus Kompatibilitätsgründen NICHT ändern)
 
-Diese Dateien sind die verbindliche Arbeitsgrundlage für spätere Chats und Entwickler. **Zuerst [`CODEX_STATUS_CURRENT_DE.md`](CODEX_STATUS_CURRENT_DE.md) für den aktuellen Stand lesen**, danach `KODI21_FIX_022_DE.md`, `PROJECT_HANDOFF_DE.md` und `ROADMAP_AND_QA_DE.md`. Ältere Dokumente enthalten historische Versionsstände.
+Diese Dateien sind die verbindliche Arbeitsgrundlage für spätere Chats und Entwickler. **Zuerst [`CODEX_HANDOFF_ANDROID_023_P0_EPG_DE.md`](CODEX_HANDOFF_ANDROID_023_P0_EPG_DE.md) als aktuellen Codex-Arbeitsauftrag und [`CODEX_STATUS_CURRENT_DE.md`](CODEX_STATUS_CURRENT_DE.md) für den Release-/Projektstand lesen**, danach `KODI21_FIX_022_DE.md`, `PROJECT_HANDOFF_DE.md` und `ROADMAP_AND_QA_DE.md`. Ältere Dokumente enthalten historische Versionsstände.
 
-**Verbindliche nächste Ausbaustufen:** [EPG-Status & Vorschau – Issue #13](https://github.com/artattakk-creator/kodi-noodleprivate/issues/13) **vor** [XCMate Skin – Issue #14](https://github.com/artattakk-creator/kodi-noodleprivate/issues/14). Beides geplant, noch nicht implementiert. Der Live-TV-Fernbedienungsfehler aus 0.1.22 bleibt in [Issue #12](https://github.com/artattakk-creator/kodi-noodleprivate/issues/12) offen.
+**Verbindliche nächste Ausbaustufen:** [EPG-Status & Vorschau – Issue #13](https://github.com/artattakk-creator/kodi-noodleprivate/issues/13) **vor** [XCMate Skin – Issue #14](https://github.com/artattakk-creator/kodi-noodleprivate/issues/14). Beides geplant, noch nicht implementiert. Der Live-TV-Navigationsfehler wurde auch mit 0.1.23 bestätigt und bleibt in [Issue #12](https://github.com/artattakk-creator/kodi-noodleprivate/issues/12) offen.
 
 ## Dokumente
+
+- [Vollständige Android-TV-Codex-Übergabe 0.1.23 / P0 TypeError und EPG](CODEX_HANDOFF_ANDROID_023_P0_EPG_DE.md) – **erste Lektüre für Codex; bestätigte Gerätewerte, Kodi-ControlList-API und Abnahmetests**.
 
 - [Aktueller Codex- und Release-Status (verbindlicher Einstieg)](CODEX_STATUS_CURRENT_DE.md)
 
