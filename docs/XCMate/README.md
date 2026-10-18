@@ -14,7 +14,11 @@ Diese Dateien sind die verbindliche Arbeitsgrundlage für spätere Chats und Ent
 
 **NEUER Android-TV-Praxistest zu 0.1.24 (18.10.):** Echte XCMate-Senderliste, Fokusmarkierung, untere OSD-Leiste und Zusatzmenü werden erstmals sichtbar über laufendem TV dargestellt. **Noch nicht abgenommen:** zuverlässiger D-Pad-Kanalwechsel/Bedienung und EPG-Titel. Der `XCMate · EPG`-Modus zeigt derzeit nur die Senderliste ohne Jetzt/Danach; Codex soll fehlenden Kurz-EPG-Fallback und Quellenstatus untersuchen. [Gerätetest und Folgeauftrag](ANDROID_DEVICE_TEST_024_EPG_NAV_DE.md) · [Issue #12](https://github.com/artattakk-creator/kodi-noodleprivate/issues/12) · [Issue #13](https://github.com/artattakk-creator/kodi-noodleprivate/issues/13).
 
+**Neue verbindliche Bedienvorgabe:** [TV-OSD/EPG/Performance-Spezifikation](TV_OSD_EPG_REMOTE_UX_SPEC_DE.md) und [Umsetzungs-Issue #17](https://github.com/artattakk-creator/kodi-noodleprivate/issues/17). **1× OK:** Senderinfo mit Icon, Jetzt/Danach, Laufzeit/Fortschritt. **2× OK bzw. Runter bei geöffneter Info:** untere Player-Bedienleiste. **Links:** schneller lokaler Senderkatalog mit Jetzt, Von–bis und EPG-Fortschritt. Erst funktionsfähige EPG-Daten, dann finaler UI-/Skin-Ausbau. Noch nicht implementiert.
+
 ## Dokumente
+
+- [NEU: verbindliche TiviMate-orientierte XCMate-Infobar, EPG-Liste, Tastenkonzept und Performance](TV_OSD_EPG_REMOTE_UX_SPEC_DE.md) – [Issue #17](https://github.com/artattakk-creator/kodi-noodleprivate/issues/17)
 
 - [NEU: Android-TV-Test 0.1.24 – Overlay sichtbar, Navigation teilweise, EPG leer](ANDROID_DEVICE_TEST_024_EPG_NAV_DE.md)
 
