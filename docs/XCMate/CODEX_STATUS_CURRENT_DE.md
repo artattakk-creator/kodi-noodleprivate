@@ -33,6 +33,33 @@
 
 Die neue XMLTV-Obergrenze beträgt **80 MiB entpackte XMLTV-Daten pro Quelle**, 150.000 Sendungen insgesamt und weitere dokumentierte Limits. Ein zuvor analysierter DE-MASTER-XMLTV-Datensatz war ca. 100 MiB unkomprimiert und kann dadurch bei dieser Version abgewiesen werden. Das ist ein **offenes Kompatibilitäts-/Abnahmethema**, nicht als funktionierendes EPG bewerten. Prüfe gegebenenfalls kleinere DE/AT/CH-Quellen und diskutiere später Streaming-Senderfilterung, ohne das Speicherlimit unkontrolliert zu erhöhen.
 
+## Android-TV-Diagnose mit drei Fotos – 18.10.2026
+
+**Installierte Add-on-Version bei diesen Screenshots weiterhin nicht verifiziert** (ggf. 0.1.21, nicht als erfolgreiche 0.1.22-Geräteabnahme interpretieren).
+
+**Hintergrunddienst (Foto 1):**
+- Dienststatus **LÄUFT**, letzte Lebenszeichen-Aktualisierung **0,1 Sekunden**.
+- **533** Dienstschleifen, Dienstphase „läuft“, letzter Dienstfehler „keine gemeldet“.
+- Letzte Live-Beobachtung „noch nicht geprüft“; Sitzungswiederherstellung „noch keine Prüfung“; TV-Einblendung „noch nicht gestartet“; Diensteingabe noch nicht verarbeitet.
+- Autostart-Diagnosemodus **PAUSIERT**.
+
+**Separater XML-Popup-Test (Fotos 1–2):**
+- Darstellungsweg `WindowXMLDialog – Default/720p`.
+- Popup-Status `XML: PER ZURÜCK GESCHLOSSEN`.
+- **18** registrierte Popup-Eingabeereignisse.
+- Letzte Taste `Zurück (Navigation)`, Kodi-Aktions-ID **92**.
+- Zuletzt gespeicherter Fokusstatus **„Testfeld“**.
+- Der Code `popup_probe.py` setzt bei Richtungstasten den internen `focus_index` abwechselnd auf Testfeld/Schließen. Der Diagnoseeintrag ist **kein Beweis für einen sichtbaren Fokuswechsel auf dem Display**. Nutzer konnte eine tatsächliche sichtbare Fokusbewegung nicht sicher erkennen.
+
+**Reales Live-TV-Overlay (Fotos 2–3):**
+- Auto-TV-Popup / TV-Einblendung **nicht gestartet**; XCMate-Stream erkannt **NEIN**; Video läuft **NEIN**.
+- Globale Kodi-Tastenbelegung **INAKTIV**; Tastenübernahme nicht überprüft; Eingabepfad nicht aktiv; **0 native TV-Overlay-Tastenereignisse**.
+- Diese Werte sind konsistent mit einem Popup-Test **ohne** Live-TV und **kein** fehlgeschlagener Live-TV-Fernbedienungstest. XML-Popup (`WindowXMLDialog`) und echtes Player-Overlay (`WindowDialog`) sind getrennte UIs.
+
+**Bewertung:** GUI des unabhängigen XML-Testdialogs erfolgreich, Dienst aktiv; **noch kein Nachweis** für sichtbaren Fokus und Fernbedienung im tatsächlichen XCMate-Live-TV-Overlay. Zuletzt gemeldeter schwarzer Bildschirm nach VOD-Wiedergabe bleibt ein separater offener Fehler.
+
+**Nächster kontrollierter Test:** Zuerst Version in Kodi-Add-on-Info feststellen. Falls `0.1.21`, normal über GS Media Repository auf `0.1.22` aktualisieren und Kodi neu starten. Ohne Aktivierung der globalen Keymap einen XCMate-Live-Sender manuell starten; Foto/Video des tatsächlichen Overlays mit Fokus und Verhalten bei Links/Hoch/Runter/OK/Zurück, danach sicher stoppen. Bei Fehlern anonymisiertes `kodi.log` und ggf. `kodi.old.log` sichern. Nicht aus dem bloßen Popup-Test auf funktionierende Live-TV-Steuerung schließen.
+
 ## Android-TV-Rückmeldung vom 18.10.2026 (Versionsstand noch NICHT bestätigt)
 
 **Achtung: Der Nutzer vermutet, dass beim Test noch XCMate 0.1.21 installiert war.** Die untenstehenden Beobachtungen dürfen daher nicht als Erfolg oder Misserfolg der 0.1.22-Korrekturen gewertet werden, solange die auf dem Fernseher angezeigte Versionsnummer nicht geprüft ist.
