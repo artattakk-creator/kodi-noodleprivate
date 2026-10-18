@@ -19,6 +19,14 @@ import xbmcgui
 
 from utils import info, warn
 
+
+def trace(stage, code, **fields):
+    try:
+        from live_diagnostics import record
+        record(stage,code,**fields)
+    except Exception:
+        pass
+
 SESSION_KEY = 'XtreamMate.LiveSession'
 ACTION_LEFT = 1
 ACTION_RIGHT = 2
@@ -42,6 +50,8 @@ def announce(portal_id, stream_id, channel_name=''):
              'name': str(channel_name)[:160], 'at': time.time(),
              'nonce': uuid.uuid4().hex}
     xbmcgui.Window(10000).setProperty(SESSION_KEY, json.dumps(value))
+    trace('session','ANNOUNCED',marker=True)
+    return value
 
 
 def session_from_property(raw, now=None):
@@ -107,6 +117,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self.sid = str(initial_sid)
         self._recent_sid = ''
         self._tune_deadline = 0
+        self._previous_session = None
+        self._window_nonce = uuid.uuid4().hex
         self.groups = []
         self.enabled = load(portal['id'])
         self.channels = []
@@ -181,11 +193,33 @@ class LiveNavigator(xbmcgui.WindowDialog):
         try:
             if not self._drawn:
                 self._build_controls()
+            try: self.setProperty('XtreamMate.NavigatorIdentity',self._window_nonce)
+            except Exception: pass
+            trace('dialog','SHOW_REQUESTED',channels=len(self.channels),catalog=self._catalog_ready)
             super().show()
             self._render()
+            self.observe_focus()
         except Exception:
+            trace('dialog','SHOW_FAILED')
             self.close()
             raise
+
+    def observe_focus(self):
+        focus_id=dialog_id=-1
+        try: focus_id=self.getFocusId()
+        except Exception: pass
+        try: dialog_id=xbmcgui.getCurrentWindowDialogId()
+        except Exception: pass
+        controls=([self.control,self.capture,*self.main_buttons,*self.extra_buttons]
+                  if self._drawn else [])
+        trace('focus','OBSERVED',focus_id=focus_id,dialog_id=dialog_id,
+              focused=any(c.getId()==focus_id for c in controls))
+        if dialog_id>0:
+            try:
+                active=xbmcgui.Window(dialog_id).getProperty('XtreamMate.NavigatorIdentity')==self._window_nonce
+                trace('focus','ACTIVE_DIALOG' if active else 'OTHER_DIALOG',
+                      focus_id=focus_id,dialog_id=dialog_id,focused=active)
+            except Exception: pass
 
     def close(self):
         if self._closed:
@@ -199,6 +233,11 @@ class LiveNavigator(xbmcgui.WindowDialog):
         if session and (session['pid'], session['sid']) == (str(self.portal['id']), self.sid):
             marker.clearProperty(SESSION_KEY)
         marker.setProperty('XtreamMate.OverlayStatus', 'geschlossen')
+        trace('dialog','CLOSED',video=xbmc.Player().isPlayingVideo())
+        try:
+            from live_diagnostics import checkpoint
+            checkpoint()
+        except Exception: pass
 
     def owns_playback(self):
         """Release input immediately if playback belongs to another add-on."""
@@ -206,10 +245,13 @@ class LiveNavigator(xbmcgui.WindowDialog):
             player = xbmc.Player()
             if not player.isPlayingVideo():
                 return False
-            from live_recovery import recover_from_player_path
-            match = recover_from_player_path(
-                player.getPlayingFile(), [self.portal],
-                lambda *args: self.xc)
+            from live_recovery import playback_match
+            session=session_from_property(xbmcgui.Window(10000).getProperty(SESSION_KEY))
+            match,reason = playback_match(player,[self.portal],lambda *args:self.xc,session)
+            if not match and self._previous_session and time.monotonic()<self._tune_deadline:
+                match,reason=playback_match(player,[self.portal],lambda *args:self.xc,self._previous_session)
+                if match: reason='PREVIOUS_'+reason
+            trace('ownership',reason,video=True,marker=bool(session),catalog=self._catalog_ready)
             if not match or match[0] != str(self.portal['id']):
                 return False
             # Player.play is asynchronous; the old verified live URL may remain
@@ -218,6 +260,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
                     (match[1] == self._recent_sid and
                      time.monotonic() < self._tune_deadline))
         except Exception:
+            trace('ownership','CHECK_FAILED')
             return False
 
     def _accept_input(self):
@@ -421,9 +464,12 @@ class LiveNavigator(xbmcgui.WindowDialog):
             self._tune_deadline = time.monotonic() + 8
         self.sid = sid
         self._scroll_to_current = True
-        announce(self.portal['id'], sid, channel.name)
+        self._previous_session=session_from_property(xbmcgui.Window(10000).getProperty(SESSION_KEY))
+        session=announce(self.portal['id'], sid, channel.name)
         self._switch('hidden')
         item = build_playable_item(channel.url, title=channel.name, logo=channel.logo)
+        from live_recovery import tag_live_item
+        trace('session','ITEM_TAGGED' if tag_live_item(item,session) else 'ITEM_TAG_UNAVAILABLE',marker=True)
         xbmc.Player().play(item.getPath(), item)
 
     def _zap(self, step):
@@ -672,6 +718,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         except (ValueError, TypeError):
             count = 0
         marker.setProperty('XtreamMate.NativeActionCount', str(count+1))
+        trace('input','NATIVE_ACTION',action_id=key,button_code=raw,count=count+1)
         # Back and Context are *not* Kodi player OSD commands in XCMate.
         # Must override learned Back->left and default Menu->epg from old profiles.
         if key in BACK_ACTIONS:
@@ -727,14 +774,18 @@ def start_if_eligible(last_nonce):
         return None
     session = session_from_property(xbmcgui.Window(10000).getProperty(SESSION_KEY))
     if not session or session['nonce'] == last_nonce:
+        trace('dialog','NO_SESSION' if not session else 'SESSION_ALREADY_HANDLED',marker=bool(session))
         return None
     from portals import get_by_id
     portal = get_by_id(session['pid'])
-    if not portal or portal.get('type') != 'xtream':
+    if not portal or portal.get('type') != 'xtream' or not portal.get('enabled',True):
+        trace('dialog','PORTAL_UNAVAILABLE',marker=True)
         return None
     try:
         candidate = LiveNavigator(portal, session['sid'])
+        trace('dialog','CANDIDATE_CREATED',channels=len(candidate.channels),catalog=candidate._catalog_ready)
         return candidate if candidate.owns_playback() else None
     except Exception as exc:
+        trace('dialog','CONSTRUCTION_FAILED')
         warn('XCMate navigator cannot start: {}'.format(type(exc).__name__))
         return None

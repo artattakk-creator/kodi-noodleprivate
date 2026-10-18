@@ -9,6 +9,11 @@ if LIB_PATH not in sys.path:
 from utils import setting_bool, setting_int, info, error
 
 
+def diagnostic(stage,code,**fields):
+    from live_diagnostics import record
+    record(stage,code,**fields)
+
+
 # A direct RunPlugin autoplay announces its session before Player.play() has
 # completed. Kodi may need several seconds to open the IPTV stream. An idle
 # service must not erase that fresh marker using its pre-existing idle timer.
@@ -47,6 +52,8 @@ class IPTVMasterService(xbmc.Monitor):
         self._overlay_failure_reported = False
         self._remote_keymap_checked = False
         self._next_recovery_probe = 0
+        self._next_diagnostic = 0
+        self._next_candidate_probe = 0
         # Undo persistent global keymaps from older XCMate releases unless
         # the user explicitly chose the fallback for their remote control.
         try:
@@ -126,10 +133,26 @@ class IPTVMasterService(xbmc.Monitor):
         instance = uuid.uuid4().hex
         loops = 0
         heartbeat(marker, instance, loops, phase='gestartet')
+        diagnostic('service','STARTED',running=True,count=loops)
         note(marker, LAST_ERROR, 'keine gemeldet')
         while not self.abortRequested():
             loops += 1
             heartbeat(marker, instance, loops, phase='läuft')
+            if time.monotonic()>=self._next_diagnostic:
+                self._next_diagnostic=time.monotonic()+30
+                diagnostic('service','RUNNING',running=True,count=loops)
+            # Explicit visible-page/manual EPG requests are small, service-owned
+            # jobs. They are independent of opt-in bulk catalogue prefetch.
+            try:
+                from epg_views import poll_short_guides
+                poll_short_guides()
+            except Exception:
+                diagnostic('epg','SHORT_REQUEST_FAILED')
+            try:
+                from epg import poll_refresh_request
+                poll_refresh_request()
+            except Exception:
+                diagnostic('epg','REFRESH_REQUEST_FAILED')
             # Safe mode: heavy Xtream catalog and XMLTV downloads stay off
             # unless explicitly enabled. The player/remote service still runs.
             if setting_bool('xc_background_prefetch', False):
@@ -164,6 +187,9 @@ class IPTVMasterService(xbmc.Monitor):
                                 marker.setProperty(
                                     'XtreamMate.SessionRecovery', 'XCMate-Live-Stream erkannt')
                             else:
+                                from live_recovery import playback_match
+                                _,reason=playback_match(player,get_active(),XtreamClient)
+                                diagnostic('ownership',reason,video=True,marker=False)
                                 marker.setProperty(
                                     'XtreamMate.SessionRecovery',
                                     'keine eindeutige XCMate-Live-Adresse')
@@ -220,7 +246,15 @@ class IPTVMasterService(xbmc.Monitor):
                             self._overlay = None
                     if self._overlay is None:
                         session = session_from_property(xbmcgui.Window(10000).getProperty(SESSION_KEY))
-                        candidate = start_if_eligible(self._last_session_nonce)
+                        fullscreen=xbmc.getCondVisibility('Window.IsActive(fullscreenvideo)')
+                        # AV playback can precede Kodi's fullscreen activation.
+                        # A dialog shown too early can be covered immediately.
+                        if session and not fullscreen:
+                            diagnostic('dialog','WAIT_FULLSCREEN',marker=True,fullscreen=False)
+                        candidate=None
+                        if fullscreen and time.monotonic()>=self._next_candidate_probe:
+                            self._next_candidate_probe=time.monotonic()+1
+                            candidate=start_if_eligible(self._last_session_nonce)
                         if candidate is not None:
                             try:
                                 if not self._remote_keymap_checked:
@@ -258,6 +292,7 @@ class IPTVMasterService(xbmc.Monitor):
                     if time.monotonic() >= self._next_overlay_check:
                         self._next_overlay_check = time.monotonic() + 1.0
                         self._overlay.refresh_from_cache()
+                        self._overlay.observe_focus()
                     cmd = parse_command(xbmcgui.Window(10000).getProperty(COMMAND_KEY))
                     if cmd and cmd['nonce'] != self._last_command_nonce:
                         self._last_command_nonce = cmd['nonce']
@@ -266,6 +301,7 @@ class IPTVMasterService(xbmc.Monitor):
                         xbmcgui.Window(10000).setProperty('XtreamMate.LastHandledKey', cmd['action'])
                         note(marker, LAST_INPUT, 'Bridge: ' + cmd['action'])
             except Exception as exc:
+                diagnostic('service','TV_LOOP_FAILED',running=True)
                 note(marker, LAST_ERROR, 'TV-Loop: ' + type(exc).__name__)
                 error('XCMate TV navigation unavailable: {}'.format(type(exc).__name__))
             self.waitForAbort(0.2)
@@ -273,6 +309,9 @@ class IPTVMasterService(xbmc.Monitor):
             self._overlay.close()
         if marker.getProperty(INSTANCE) == instance:
             marker.setProperty(PHASE, 'beendet')
+        diagnostic('service','STOPPED',running=False,count=loops)
+        from live_diagnostics import checkpoint
+        checkpoint()
         info('XCMate service stopped')
 
 

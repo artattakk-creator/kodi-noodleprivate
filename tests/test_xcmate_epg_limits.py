@@ -182,7 +182,7 @@ class CacheAndEPGTests(unittest.TestCase):
         method=next(n for n in router.body if isinstance(n,ast.FunctionDef) and n.name=='_refresh_epg')
         events=[]
         module=types.ModuleType('epg')
-        module.warmup_async=lambda *a,**kw:events.append('scheduled')
+        module.request_refresh=lambda *a,**kw:events.append('scheduled')
         portals=types.ModuleType('portals')
         portals.get_by_id=lambda _:dict(id='p')
         ns=dict(notify=lambda *a,**kw:events.append('notified'),

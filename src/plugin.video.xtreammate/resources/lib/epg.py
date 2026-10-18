@@ -6,7 +6,8 @@ import datetime
 from concurrent.futures import ThreadPoolExecutor
 from xml.etree import ElementTree as ET
 from urllib.parse import unquote_plus
-from epg_io import XMLTVReader, MAX_XML_BYTES, MAX_PROGRAMMES, MAX_CHANNELS
+from epg_io import XMLTVReader, MAX_XML_BYTES, MAX_PROGRAMMES, MAX_CHANNELS, XMLTVLimitError
+from network_io import ResponseLimitError
 
 import xbmcvfs
 
@@ -90,7 +91,7 @@ def parse_xmltv(content: bytes):
                     continue
                 count += 1
                 if count > MAX_PROGRAMMES:
-                    raise ValueError('XMLTV programme limit exceeded')
+                    raise XMLTVLimitError('XMLTV programme limit exceeded','programmes')
                 title = (element.findtext('title') or '')[:512]
                 desc = (element.findtext('desc') or '')[:4096]
                 cat = element.findtext('category') or ''
@@ -129,7 +130,7 @@ def parse_xmltv(content: bytes):
             if root_element is not element:
                 root_element.clear()
             if len(channels) > MAX_CHANNELS:
-                raise ValueError('XMLTV channel limit exceeded')
+                raise XMLTVLimitError('XMLTV channel limit exceeded','channels')
     except ET.ParseError as exc:
         error(f'XMLTV parse error: {exc}')
         return {}, {}
@@ -148,6 +149,39 @@ _MEM_LOCK     = threading.Lock()
 _REFRESH_LOCK = threading.Lock()
 _WARMUP_THREADS = {}
 _WARMUP_LOCK  = threading.Lock()
+
+
+def diagnostic(code,**fields):
+    from live_diagnostics import record
+    record('epg',code,**fields)
+
+
+def request_refresh(portal_id,p,force=False):
+    """Persist intent in Kodi, then let the long-lived service own the worker."""
+    import uuid,xbmcgui
+    xbmcgui.Window(10000).setProperty('XtreamMate.EPGRefreshRequest',json.dumps({
+        'pid':str(portal_id),'force':bool(force),'at':time.time(),'nonce':uuid.uuid4().hex}))
+    diagnostic('REQUESTED',running=False,requested=True)
+
+
+_LAST_REFRESH_REQUEST=''
+
+
+def poll_refresh_request():
+    import xbmcgui,portals
+    global _LAST_REFRESH_REQUEST
+    raw=xbmcgui.Window(10000).getProperty('XtreamMate.EPGRefreshRequest')
+    if not raw or len(raw)>4096: return
+    try: value=json.loads(raw)
+    except (ValueError,TypeError): return
+    if not isinstance(value,dict) or value.get('nonce')==_LAST_REFRESH_REQUEST: return
+    try:
+        if not 0<=time.time()-float(value.get('at',0))<120: return
+    except (ValueError,TypeError): return
+    p=portals.get_by_id(value.get('pid'))
+    if not p or not p.get('enabled',True): return
+    warmup_async(p['id'],p,force=bool(value.get('force')))
+    _LAST_REFRESH_REQUEST=value.get('nonce')
 
 
 def _mem_get(portal_id):
@@ -443,7 +477,23 @@ def resolve_epg_key(portal_id, channel: dict):
 def _refresh_portal_epg(portal_id, p, force=False):
     # Several portals/GUI invocations must not parse large guides concurrently.
     with _REFRESH_LOCK:
-        return _refresh_portal_epg_inner(portal_id, p, force=force)
+        diagnostic('RUNNING',running=True)
+        try:
+            result=_refresh_portal_epg_inner(portal_id,p,force=force)
+            if result:
+                diagnostic('READY',running=False,channels=len(result),
+                           programmes=sum(len(v) for v in result.values()),last_success=time.time())
+                from epg_views import refresh_visible_page
+                refresh_visible_page(portal_id)
+            else:
+                diagnostic('NO_NEW_GUIDE',running=False)
+            return result
+        except Exception:
+            diagnostic('REFRESH_FAILED',running=False)
+            raise
+        finally:
+            from live_diagnostics import checkpoint
+            checkpoint()
 
 
 def _refresh_portal_epg_inner(portal_id, p, force=False):
@@ -466,6 +516,8 @@ def _refresh_portal_epg_inner(portal_id, p, force=False):
             raw, _ = http_get(epg_url, max_bytes=MAX_XML_BYTES, max_seconds=60)
             channels, programmes = parse_xmltv(raw)
         except Exception as e:
+            diagnostic('PROVIDER_LIMIT' if isinstance(e,(XMLTVLimitError,ResponseLimitError))
+                       else 'PROVIDER_FAILED',running=True,limit_bytes=MAX_XML_BYTES)
             error('[EPG] fetch failed: {}'.format(type(e).__name__))
 
     if not programmes and p.get('type') == 'stb':

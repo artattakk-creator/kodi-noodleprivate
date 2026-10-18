@@ -92,6 +92,8 @@ class OverlayLifecycleTests(unittest.TestCase):
         xbmc = types.ModuleType('xbmc')
         xbmc.Player = lambda:self.player
         xbmc.executebuiltin = mock.Mock()
+        xbmc.getCondVisibility = lambda *_:True
+        xbmc.getInfoLabel = lambda *_:''
         addon = types.ModuleType('xbmcaddon')
         addon.Addon = lambda:types.SimpleNamespace(getAddonInfo=lambda *_:str(LIB.parents[1]))
         utils = types.ModuleType('utils')
@@ -308,6 +310,29 @@ class OverlayLifecycleTests(unittest.TestCase):
         self.run_service_once(existing=self.overlay)
         self.assertTrue(self.overlay._closed)
         self.assertEqual(self.overlay.closes,1)
+
+    def test_service_waits_until_kodi_has_activated_fullscreen(self):
+        self.module.announce('p','1')
+        sys.modules['xbmc'].getCondVisibility=lambda _:False
+        candidate=self.module.LiveNavigator(self.portal,'1')
+        with mock.patch.object(self.module,'LiveNavigator',return_value=candidate):
+            self.run_service_once()
+        self.assertEqual(candidate.shows,0)
+        self.assertIn(self.module.SESSION_KEY,self.props)
+        self.assertIn('WAIT_FULLSCREEN',self.props.get('XtreamMate.Diagnostic.dialog',''))
+
+    def test_redirected_tune_retains_previous_tag_only_during_transition(self):
+        session=self.module.announce('p','1')
+        self.player.getPlayingFile=lambda:'https://redirect.invalid/opaque'
+        self.player.getVideoInfoTag=lambda:types.SimpleNamespace(getUniqueID=lambda _:__import__('json').dumps(session))
+        self.assertTrue(self.overlay.owns_playback())
+        player=types.ModuleType('player')
+        player.build_playable_item=lambda *a,**kw:types.SimpleNamespace(getPath=lambda:a[0])
+        with mock.patch.dict(sys.modules,{'player':player}):
+            self.overlay._tune(self.overlay.channels[1])
+        self.assertTrue(self.overlay.owns_playback())
+        self.overlay._tune_deadline=0
+        self.assertFalse(self.overlay.owns_playback())
 
 
 if __name__ == '__main__': unittest.main()
