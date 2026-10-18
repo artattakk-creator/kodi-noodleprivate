@@ -1,7 +1,7 @@
 # XCMate / Codex – aktueller Projekt- und Release-Status (verbindliche Übergabe)
 
 **Stand:** 18.10.2026  
-**Veröffentlichte XCMate-Version:** `0.1.23` (18.10.2026, reguläres GS-Media-Kodi-Repository). **Geräteabnahme für 0.1.23 offen.** Für 0.1.22 ist der P0-Fernbedienungsfehler einschließlich „XCMate Navigation konnte nicht geöffnet werden“ bestätigt.
+**Veröffentlichte XCMate-Version:** `0.1.23` (18.10.2026, reguläres GS-Media-Kodi-Repository). **Android-Gerätetest für 0.1.23 fehlgeschlagen:** TV-Dialog `TypeError`, Dialog-Verlauf `CANDIDATE_CREATED → SHOW_FAILED → CLOSED`; P0 und EPG bleiben offen. Siehe neue vollständige [Codex-Übergabe](CODEX_HANDOFF_ANDROID_023_P0_EPG_DE.md).
 **Technische Kodi-ID:** `plugin.video.xtreammate` – nicht ändern  
 **Repository:** https://github.com/artattakk-creator/kodi-noodleprivate  
 **Hauptbranch:** `main`  
@@ -9,6 +9,8 @@
 **Übernahme 0.1.22:** [Pull Request #11](https://github.com/artattakk-creator/kodi-noodleprivate/pull/11), Merge-Commit `c14d7815bf0ca2e93dd3e1fa5225ca1df36c8f54`.
 **Veröffentlichung 0.1.22:** GitHub-Action [Publish GS Media Kodi updates](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39126897807) erfolgreich; `addons.xml` meldet XCMate `0.1.22`, ZIP `plugin.video.xtreammate/plugin.video.xtreammate-0.1.22.zip` vorhanden.
 **Letzter geprüfter Repository-Stand nach Auto-Publish (vor dieser Statusaktualisierung):** `9b590ea2dc0983fa75b084582431065211de1484`.
+
+**VERBINDLICHER CODEX-ARBEITSAUFTRAG:** [Vollständige Android-TV-Codex-Übergabe 0.1.23 / P0 TypeError und EPG](CODEX_HANDOFF_ANDROID_023_P0_EPG_DE.md). Der hier folgende Ablauf ist die detailreiche historische Diagnosedokumentation; die neue Datei enthält den konsolidierten P0/P1-Plan und den sicheren nächsten Branch-/PR-Ablauf.
 
 ## P0 eingegrenzt durch FÜNF DIAGNOSEFOTOS von Android-TV / XCMate 0.1.23 (18.10.2026)
 
