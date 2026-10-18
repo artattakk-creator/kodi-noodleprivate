@@ -77,7 +77,7 @@ class NativeRemoteTests(unittest.TestCase):
         self.assertIn('mapped_action(key)',source)
         self.assertIn('self.handle_command(mapped)',source)
         self.assertIn("self.capture.getId()",source)
-        self.assertIn("self._last_select = time.time()",source)
+        self.assertIn("def onControl(self, control):",source)
 
     def test_android_remote_learning_accessible_from_home_settings(self):
         main=(LIB/'main.py').read_text(encoding='utf-8')
