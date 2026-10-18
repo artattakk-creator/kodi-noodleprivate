@@ -1,4 +1,5 @@
 import re
+import io
 import gzip
 import time
 import json
@@ -53,63 +54,76 @@ def _parse_xmltv_ts(s):
 
 
 def parse_xmltv(content: bytes):
+    """Parse XMLTV incrementally instead of building a full XML document tree.
+
+    Each finished <channel>/<programme> node is released during parsing.
+    This significantly reduces peak memory on Android when using several
+    large external German, Austrian or Swiss programme guides.
+    """
     if content[:2] == b'\x1f\x8b':
         content = gzip.decompress(content)
-    channels   = {}
+    channels = {}
     programmes = {}
+    root_element = None
     try:
-        root = ET.fromstring(content)
-    except ET.ParseError as e:
-        error(f'XMLTV parse error: {e}')
-        return channels, programmes
-    for ch in root.findall('channel'):
-        cid   = ch.get('id', '')
-        dname = ch.findtext('display-name') or cid
-        channels[cid] = dname
-    for prog in root.findall('programme'):
-        cid   = prog.get('channel', '')
-        start = _parse_xmltv_ts(prog.get('start', '0'))
-        stop  = _parse_xmltv_ts(prog.get('stop',  '0'))
-        title = prog.findtext('title') or ''
-        desc  = prog.findtext('desc')  or ''
-        cat   = prog.findtext('category') or ''
-        icon_el = prog.find('icon')
-        icon  = icon_el.get('src', '') if icon_el is not None else ''
-        episode = ''
-        for en in prog.findall('episode-num'):
-            sys_ = en.get('system', '')
-            if 'xmltv_ns' in sys_:
-                parts = (en.text or '').split('.')
-                s = int(parts[0].strip()) + 1 if parts[0].strip().isdigit() else 0
-                e = int(parts[1].strip()) + 1 if len(parts) > 1 and parts[1].strip().isdigit() else 0
-                if s and e:
-                    episode = f'S{s:02d}E{e:02d}'
-                break
-            elif 'onscreen' in sys_:
-                episode = en.text or ''
-        rating = ''
-        for r in prog.findall('rating'):
-            rating = r.findtext('value') or ''
-            break
-        entry = {
-            'channel'         : cid,
-            'start_timestamp' : start,
-            'stop_timestamp'  : stop,
-            'name'            : title,
-            'descr'           : desc,
-            'screenshot_uri'  : icon,
-            'category'        : cat,
-            'episode'         : episode,
-            'rating'          : rating,
-        }
-        programmes.setdefault(cid, []).append(entry)
-        channels.setdefault(cid, cid)
+        for event, element in ET.iterparse(io.BytesIO(content),
+                                          events=('start', 'end')):
+            if root_element is None:
+                root_element = element
+            if event != 'end' or element.tag not in ('channel', 'programme'):
+                continue
+            if element.tag == 'channel':
+                cid = element.get('id', '')
+                channels[cid] = element.findtext('display-name') or cid
+            else:
+                cid = element.get('channel', '')
+                start = _parse_xmltv_ts(element.get('start', '0'))
+                stop = _parse_xmltv_ts(element.get('stop', '0'))
+                title = element.findtext('title') or ''
+                desc = element.findtext('desc') or ''
+                cat = element.findtext('category') or ''
+                icon_el = element.find('icon')
+                icon = icon_el.get('src', '') if icon_el is not None else ''
+                episode = ''
+                for en in element.findall('episode-num'):
+                    sys_ = en.get('system', '')
+                    if 'xmltv_ns' in sys_:
+                        parts = (en.text or '').split('.')
+                        s = int(parts[0].strip()) + 1 if parts[0].strip().isdigit() else 0
+                        e = int(parts[1].strip()) + 1 if len(parts) > 1 and parts[1].strip().isdigit() else 0
+                        if s and e:
+                            episode = f'S{s:02d}E{e:02d}'
+                        break
+                    elif 'onscreen' in sys_:
+                        episode = en.text or ''
+                rating = ''
+                for r in element.findall('rating'):
+                    rating = r.findtext('value') or ''
+                    break
+                entry = {
+                    'channel': cid,
+                    'start_timestamp': start,
+                    'stop_timestamp': stop,
+                    'name': title,
+                    'descr': desc,
+                    'screenshot_uri': icon,
+                    'category': cat,
+                    'episode': episode,
+                    'rating': rating,
+                }
+                programmes.setdefault(cid, []).append(entry)
+                channels.setdefault(cid, cid)
+            # Discard all processed siblings but not an unfinished node.
+            if root_element is not element:
+                root_element.clear()
+    except ET.ParseError as exc:
+        error(f'XMLTV parse error: {exc}')
+        return {}, {}
     for cid in programmes:
         programmes[cid].sort(key=lambda x: x['start_timestamp'])
     info(f'XMLTV: {len(channels)} channels, '
          f'{sum(len(v) for v in programmes.values())} programmes')
     return channels, programmes
-
 
 _MEM_CACHE    = {}
 _MEM_LOCK     = threading.Lock()

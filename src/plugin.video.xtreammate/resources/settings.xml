@@ -43,6 +43,9 @@
     <setting id="startup_xtream" type="action"
              label="XCMate: Startsender / Startgruppe"
              action="RunPlugin(plugin://plugin.video.xtreammate/?action=startup_settings)"/>
+    <setting id="xc_remote_keymap_fallback" type="bool"
+             label="XCMate: Alternative Vollbild-Keymap (nur bei Bedarf)"
+             default="false"/>
     <setting id="remote_xtream" type="action"
              label="XCMate: Links / OK Fernbedienung aktivieren"
              action="RunPlugin(plugin://plugin.video.xtreammate/?action=remote_setup)"/>

@@ -38,6 +38,8 @@ class TestXCMateKeymap(unittest.TestCase):
         utils = types.ModuleType("utils")
         utils.addon_data_dir = lambda: self.tmp.name
         utils.info = utils.warn = lambda *args, **kw: None
+        # Legacy test explicitly opts in to the optional fallback keymap.
+        utils.setting_bool = lambda key, default=False: True
         p = mock.patch.dict(sys.modules, {
             "xbmc": xbmc, "xbmcgui": gui, "xbmcvfs": vfs, "utils": utils,
         })

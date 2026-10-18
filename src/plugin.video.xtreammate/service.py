@@ -47,6 +47,14 @@ class IPTVMasterService(xbmc.Monitor):
         self._overlay_failure_reported = False
         self._remote_keymap_checked = False
         self._next_recovery_probe = 0
+        # Undo persistent global keymaps from older XCMate releases unless
+        # the user explicitly chose the fallback for their remote control.
+        try:
+            from remote_control import release_unrequested_keymap
+            if release_unrequested_keymap():
+                info('XCMate legacy fullscreen keymap safely retired')
+        except Exception as exc:
+            error('XCMate keymap safety check failed: ' + type(exc).__name__)
         self._start_reminders()
 
     def _start_reminders(self):

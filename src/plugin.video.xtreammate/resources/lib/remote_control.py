@@ -54,6 +54,32 @@ def opted_out():
     return os.path.isfile(_opt_out_path())
 
 
+def keymap_opted_in():
+    """Native WindowDialog navigation is the safe default.
+
+    Kodi's FullscreenVideo keymaps affect other addons too, so the RunScript
+    bridge must never be installed automatically without an explicit opt-in.
+    """
+    from utils import setting_bool
+    return setting_bool('xc_remote_keymap_fallback', False)
+
+
+def release_unrequested_keymap():
+    """Remove only our own legacy managed keymap, never a foreign keymap.
+
+    Called at XCMate service startup so a stale fullscreen keymap cannot
+    intercept remote keys in BINGIE MOD or other Kodi video addons.
+    """
+    if keymap_opted_in() or not is_enabled():
+        return False
+    try:
+        os.unlink(keymap_path())
+        xbmc.executebuiltin('Action(reloadkeymaps)')
+        return True
+    except OSError:
+        return False
+
+
 def build_keymap():
     root = ET.Element('keymap')
     full = ET.SubElement(root, 'FullscreenVideo')
@@ -119,6 +145,8 @@ def ensure_for_live_tv():
     """
     if opted_out():
         return 'vom Nutzer deaktiviert'
+    if not keymap_opted_in():
+        return 'native Kodi-Steuerung (globale Keymap ausgeschaltet)'
     path = keymap_path()
     if os.path.isfile(path) and not is_enabled():
         return 'Konflikt: fremde xtreammate.xml'
@@ -138,7 +166,7 @@ def configure():
     dialog = xbmcgui.Dialog()
     active = is_enabled()
     choice = dialog.select('XCMate – TV-Fernbedienung', [
-        'Fernbedienungssteuerung ' + ('deaktivieren' if active else 'aktivieren'),
+        'Alternative globale Vollbild-Keymap ' + ('deaktivieren' if active else 'aktivieren'),
         'Bedienung und Diagnose anzeigen',
     ])
     if choice == 1:
@@ -154,7 +182,9 @@ def configure():
         return
     if active:
         disable()
-        dialog.notification('XCMate', 'Fernbedienungssteuerung deaktiviert')
+        import xbmcaddon
+        xbmcaddon.Addon().setSetting('xc_remote_keymap_fallback', 'false')
+        dialog.notification('XCMate', 'Globale Keymap deaktiviert')
     else:
         if not dialog.yesno('XCMate',
             'XCMate steuert während eigenem Live-TV Links/Rechts/Hoch/Runter, '
@@ -167,7 +197,9 @@ def configure():
                 os.unlink(flag)
             if not enable():
                 raise OSError('keymap not available')
-            dialog.ok('XCMate', 'Tastenübernahme aktiviert. Kodi bei Bedarf neu starten.')
+            import xbmcaddon
+            xbmcaddon.Addon().setSetting('xc_remote_keymap_fallback', 'true')
+            dialog.ok('XCMate', 'Alternative Vollbild-Keymap aktiviert. Kodi bei Bedarf neu starten.')
         except OSError as exc:
             dialog.ok('XCMate', 'Aktivierung fehlgeschlagen: {}'.format(type(exc).__name__))
 
