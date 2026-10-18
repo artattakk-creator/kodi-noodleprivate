@@ -77,6 +77,7 @@ def row_title(name, info):
 _SHORT_LOCK = None
 _SHORT_INFLIGHT = set()
 _SHORT_SEEN = {}
+_SHORT_FAILED = {}
 
 def _short_guide(raw, now=None):
     """Normalize cached get_short_epg events into XMLTV-compatible Now/Next."""
@@ -108,7 +109,68 @@ def cached_short_guide(client, stream_id, now=None):
         extra={'stream_id': str(stream_id), 'limit': 4}, cached_only=True)
     return _short_guide(data, now=now)
 
-def prefetch_short_guides(portal, channels, limit=24):
+def _view_key(path):
+    import hashlib,json,urllib.parse
+    p=urllib.parse.urlsplit(path)
+    q=dict(urllib.parse.parse_qsl(p.query))
+    if p.scheme!='plugin' or p.netloc!='plugin.video.xtreammate' or q.get('action')!='live_channels':
+        return ''
+    data=[q.get('pid',''),q.get('group',''),q.get('page','0')]
+    return hashlib.sha256(json.dumps(data,sort_keys=True).encode()).hexdigest()
+
+
+def prefetch_short_guides(portal, channels, limit=24, view_path=''):
+    """Send a bounded page request to the long-lived service, not a GUI thread."""
+    import json,uuid,xbmcgui
+    if not isinstance(portal,dict) or portal.get('type')!='xtream': return
+    sids=[str(ch.extra.get('stream_id')) for ch in channels if ch.extra.get('stream_id')][:limit]
+    if not sids: return
+    request={'pid':str(portal['id']),'sids':sids,'at':time.time(),
+             'nonce':uuid.uuid4().hex,'view':_view_key(view_path)}
+    xbmcgui.Window(10000).setProperty('XtreamMate.ShortGuideRequest',json.dumps(request))
+
+
+def refresh_visible_page(portal_id, view_key=''):
+    """Refresh only our current sender page, never a player or another add-on."""
+    import xbmc,urllib.parse
+    try:
+        path=xbmc.getInfoLabel('Container.FolderPath')
+        key=_view_key(path)
+        params=dict(urllib.parse.parse_qsl(urllib.parse.urlsplit(path).query))
+        if not key or params.get('pid')!=str(portal_id): return
+        if view_key and key!=view_key: return
+        if xbmc.getCondVisibility('Window.IsActive(fullscreenvideo)'): return
+        xbmc.executebuiltin('Container.Refresh')
+    except Exception:
+        pass
+
+
+_LAST_REQUEST=''
+
+
+def poll_short_guides():
+    import json,xbmcgui
+    import portals
+    global _LAST_REQUEST
+    window=xbmcgui.Window(10000)
+    raw=window.getProperty('XtreamMate.ShortGuideRequest')
+    if not raw or len(raw)>8192: return
+    try: request=json.loads(raw)
+    except (ValueError,TypeError): return
+    if not isinstance(request,dict) or request.get('nonce')==_LAST_REQUEST: return
+    try:
+        if not 0<=time.time()-float(request.get('at',0))<120: return
+    except (ValueError,TypeError): return
+    portal=portals.get_by_id(request.get('pid'))
+    if not portal or not portal.get('enabled',True) or portal.get('type')!='xtream': return
+    sids=request.get('sids')
+    if not isinstance(sids,list): return
+    sids=[sid for sid in sids[:24] if isinstance(sid,str) and sid.isdecimal()]
+    if _start_short_guides(portal,sids,str(request.get('view') or '')):
+        _LAST_REQUEST=request['nonce']
+
+
+def _start_short_guides(portal, sids, view_key=''):
     """Prefetch missing visible TV programmes without waiting in Kodi navigation."""
     import threading
     from concurrent.futures import ThreadPoolExecutor
@@ -119,31 +181,50 @@ def prefetch_short_guides(portal, channels, limit=24):
     if not isinstance(portal, dict) or portal.get('type') != 'xtream':
         return
     pid = str(portal['id'])
-    sids = [str(ch.extra.get('stream_id')) for ch in channels
-            if ch.extra.get('stream_id')][:limit]
     current = time.time()
     with _SHORT_LOCK:
-        if pid in _SHORT_INFLIGHT:
-            return
-        ids = [sid for sid in sids if current-_SHORT_SEEN.get((pid,sid),0)>1800]
+        if _SHORT_INFLIGHT:
+            return False
+        ids = [sid for sid in sids if current-_SHORT_SEEN.get((pid,sid),0)>1800
+               and current-_SHORT_FAILED.get((pid,sid),0)>30]
         if not ids:
-            return
+            return True
         _SHORT_INFLIGHT.add(pid)
-        for sid in ids:
-            _SHORT_SEEN[(pid,sid)] = current
     def worker():
         try:
+            changed=[]
             xc = XtreamClient(portal['xc_host'],portal['xc_user'],portal['xc_pass'])
             def fetch(sid):
-                if cached_short_guide(xc,sid)['now']:
+                cached=cached_short_guide(xc,sid)
+                if cached['now'] or cached['next']:
+                    _SHORT_SEEN[(pid,sid)]=time.time()
                     return
                 try:
-                    xc.get_short_epg(sid,limit=4,force_refresh=True)
+                    data=xc.get_short_epg(sid,limit=4,force_refresh=True)
+                    guide=_short_guide(data)
+                    if guide['now'] or guide['next']:
+                        _SHORT_SEEN[(pid,sid)]=time.time()
+                        changed.append(sid)
+                    else:
+                        _SHORT_FAILED[(pid,sid)]=time.time()
                 except Exception:
-                    pass
+                    _SHORT_FAILED[(pid,sid)]=time.time()
             with ThreadPoolExecutor(max_workers=3) as executor:
                 list(executor.map(fetch,ids))
+            for history in (_SHORT_SEEN,_SHORT_FAILED):
+                if len(history)>512:
+                    for key in sorted(history,key=history.get)[:-512]:
+                        history.pop(key,None)
+            if view_key and changed:
+                # Never refresh an unrelated directory or steal fullscreen
+                # focus when the user has left the requested sender page.
+                refresh_visible_page(pid,view_key)
         finally:
             with _SHORT_LOCK:
                 _SHORT_INFLIGHT.discard(pid)
-    threading.Thread(target=worker,daemon=True,name='XCMateShortGuide').start()
+    try:
+        threading.Thread(target=worker,daemon=True,name='XCMateShortGuide').start()
+    except RuntimeError:
+        with _SHORT_LOCK: _SHORT_INFLIGHT.discard(pid)
+        return False
+    return True

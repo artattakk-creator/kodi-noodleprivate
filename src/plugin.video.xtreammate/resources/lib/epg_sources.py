@@ -14,7 +14,8 @@ from urllib.parse import urlsplit
 
 from utils import addon_data_dir, cache_key, cache_get, cache_set, http_get, error
 
-from epg_io import MAX_XML_BYTES, MAX_PROGRAMMES
+from epg_io import MAX_XML_BYTES, MAX_PROGRAMMES, XMLTVLimitError
+from network_io import ResponseLimitError
 INDEX_TTL = 30 * 86400
 
 # Public third-party XMLTV links; availability and channel coverage can change.
@@ -175,7 +176,7 @@ def _read_source(source):
         raw, _ = http_get(uri, timeout=20, max_bytes=MAX_XML_BYTES, max_seconds=60)
     raw = bytes(raw) if not isinstance(raw, bytes) else raw
     if len(raw) > MAX_XML_BYTES:
-        raise ValueError('XMLTV-Datei ist zu groß (max. 80 MB)')
+        raise XMLTVLimitError('XMLTV-Datei ist zu groß (max. 80 MB)')
     # GZIP is expanded incrementally by parse_xmltv, under the same size budget
     # as the provider guide. Never allocate the whole uncompressed feed here.
     if b'<!DOCTYPE' in raw[:4096].upper() or b'<!ENTITY' in raw[:4096].upper():
@@ -258,8 +259,11 @@ def merge_sources(portal_id, builtin_programmes, parse_xmltv):
     for source in state['sources']:
         if not source.get('enabled', True):
             continue
+        raw=None
         try:
             raw = _read_source(source)
+            from live_diagnostics import record
+            record('epg_source','READ',bytes=len(raw),source_index=successes+failures+1)
             channels, programmes = parse_xmltv(raw)
             if not programmes:
                 raise ValueError('XMLTV enthält keine Sendungen')
@@ -267,14 +271,22 @@ def merge_sources(portal_id, builtin_programmes, parse_xmltv):
                          if entries and not merged.get(cid)}
             added_count = sum(len(entries) for entries in additions.values())
             if programme_count + added_count > MAX_PROGRAMMES:
-                raise ValueError('Combined XMLTV programme limit exceeded')
+                raise XMLTVLimitError('Combined XMLTV programme limit exceeded','programmes')
             programme_count += added_count
             index.update(channels)
             for channel_id, entries in programmes.items():
                 if entries and not merged.get(channel_id):
                     merged[channel_id] = entries
             successes += 1
+            record('epg_source','READY',channels=len(channels),
+                   programmes=sum(len(v) for v in programmes.values()),loaded=successes,failed=failures,bytes=len(raw))
         except Exception as exc:
+            from live_diagnostics import record
+            code=('HTTP_BYTE_LIMIT' if isinstance(exc,ResponseLimitError) else
+                  'XMLTV_'+exc.kind.upper()+'_LIMIT' if isinstance(exc,XMLTVLimitError) else
+                  'INVALID_XMLTV' if isinstance(exc,ValueError) else 'DOWNLOAD_FAILED')
+            record('epg_source',code,source_index=successes+failures+1,
+                   failed=failures+1,limit_bytes=MAX_XML_BYTES,bytes=len(raw) if raw is not None else 0)
             failures += 1
             error('EPG source failed ({}): {}'.format(
                 source.get('id', '')[:8], type(exc).__name__))
@@ -382,7 +394,7 @@ def _choose_mapping(portal):
 def manage(portal=None):
     """Kodi-native remote navigable EPG settings, including Android file picker."""
     import xbmcgui
-    from epg import warmup_async
+    from epg import request_refresh
     portal = portal or _choose_portal()
     if not portal:
         return
@@ -418,7 +430,7 @@ def manage(portal=None):
                                    type=xbmcgui.INPUT_ALPHANUM)
                     add_source(portal['id'], name, uri, local=True)
             elif choice == 3:
-                warmup_async(portal['id'], portal, force=True)
+                request_refresh(portal['id'], portal, force=True)
                 d.notification('XCMate EPG', 'Aktualisierung im Hintergrund gestartet')
             elif choice == 4:
                 _choose_mapping(portal)

@@ -6,6 +6,10 @@ import zlib
 MAX_HTTP_BYTES = 80 * 1024 * 1024
 
 
+class ResponseLimitError(ValueError):
+    pass
+
+
 def read_http_chunks(chunks, headers, max_bytes, deadline):
     encoding = next((str(v).lower() for k, v in headers.items()
                      if k.lower() == 'content-encoding'), '')
@@ -20,11 +24,11 @@ def read_http_chunks(chunks, headers, max_bytes, deadline):
                 raise TimeoutError('HTTP response time budget exceeded')
             received += len(chunk)
             if received > max_bytes:
-                raise ValueError('HTTP response exceeds size limit')
+                raise ResponseLimitError('HTTP response exceeds size limit')
             data = decoder.decompress(chunk, max_bytes-decoded+1) if decoder else chunk
             decoded += len(data)
             if decoded > max_bytes or (decoder and decoder.unconsumed_tail):
-                raise ValueError('Decoded HTTP response exceeds size limit')
+                raise ResponseLimitError('Decoded HTTP response exceeds size limit')
             output.write(data)
         if decoder and not decoder.eof:
             raise ValueError('Truncated HTTP compressed response')

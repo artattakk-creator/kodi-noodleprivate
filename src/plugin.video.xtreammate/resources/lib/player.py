@@ -119,7 +119,7 @@ def _apply_drm(li, drm_info: dict, hdr_str: str = ''):
 
 def play_stream(handle: int, url: str,
                 title: str = '', logo: str = '',
-                headers: dict = None, drm_info: dict = None):
+                headers: dict = None, drm_info: dict = None, live_session=None):
 
     if not url:
         error('play_stream: no URL provided')
@@ -128,6 +128,10 @@ def play_stream(handle: int, url: str,
     info('play_stream: URL redacted')
     li = build_playable_item(url, title=title, logo=logo,
                              headers=headers, drm_info=drm_info)
+    if live_session:
+        from live_recovery import tag_live_item
+        from live_overlay import trace
+        trace('session','ITEM_TAGGED' if tag_live_item(li,live_session) else 'ITEM_TAG_UNAVAILABLE',marker=True)
     xbmcplugin.setResolvedUrl(handle, True, li)
 
 def play_catchup(handle: int, url: str,

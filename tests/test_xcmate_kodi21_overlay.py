@@ -92,6 +92,8 @@ class OverlayLifecycleTests(unittest.TestCase):
         xbmc = types.ModuleType('xbmc')
         xbmc.Player = lambda:self.player
         xbmc.executebuiltin = mock.Mock()
+        xbmc.getCondVisibility = lambda *_:True
+        xbmc.getInfoLabel = lambda *_:''
         addon = types.ModuleType('xbmcaddon')
         addon.Addon = lambda:types.SimpleNamespace(getAddonInfo=lambda *_:str(LIB.parents[1]))
         utils = types.ModuleType('utils')
@@ -308,6 +310,44 @@ class OverlayLifecycleTests(unittest.TestCase):
         self.run_service_once(existing=self.overlay)
         self.assertTrue(self.overlay._closed)
         self.assertEqual(self.overlay.closes,1)
+
+    def test_service_waits_until_kodi_has_activated_fullscreen(self):
+        self.module.announce('p','1')
+        sys.modules['xbmc'].getCondVisibility=lambda _:False
+        candidate=self.module.LiveNavigator(self.portal,'1')
+        with mock.patch.object(self.module,'LiveNavigator',return_value=candidate):
+            self.run_service_once()
+        self.assertEqual(candidate.shows,0)
+        self.assertIn(self.module.SESSION_KEY,self.props)
+        self.assertIn('WAIT_FULLSCREEN',self.props.get('XtreamMate.Diagnostic.dialog',''))
+
+    def test_redirected_tune_retains_previous_tag_only_during_transition(self):
+        session=self.module.announce('p','1')
+        self.player.getPlayingFile=lambda:'https://redirect.invalid/opaque'
+        self.player.getVideoInfoTag=lambda:types.SimpleNamespace(getUniqueID=lambda _:__import__('json').dumps(session))
+        self.assertTrue(self.overlay.owns_playback())
+        player=types.ModuleType('player')
+        player.build_playable_item=lambda *a,**kw:types.SimpleNamespace(getPath=lambda:a[0])
+        with mock.patch.dict(sys.modules,{'player':player}):
+            self.overlay._tune(self.overlay.channels[1])
+        self.assertTrue(self.overlay.owns_playback())
+        self.overlay._tune_deadline=0
+        self.assertFalse(self.overlay.owns_playback())
+
+    def test_rejected_native_event_is_distinct_from_no_callback(self):
+        self.player.getPlayingFile=lambda:'plugin://another.addon/movie'
+        self.overlay.onAction(types.SimpleNamespace(getId=lambda:7,getButtonCode=lambda:23))
+        self.assertTrue(self.overlay._closed)
+        self.assertIn('ACTION_REJECTED',self.props['XtreamMate.Diagnostic.input'])
+        self.assertIn('"action_id": 7',self.props['XtreamMate.Diagnostic.input'])
+
+    def test_malformed_and_expired_markers_have_distinct_diagnostic_codes(self):
+        import json
+        self.assertIsNone(self.module.session_from_property('not-json'))
+        self.assertIn('MARKER_INVALID',self.props['XtreamMate.Diagnostic.session'])
+        self.assertIsNone(self.module.session_from_property(json.dumps(
+            dict(pid='p',sid='1',nonce='n',at=1)),now=100000))
+        self.assertIn('MARKER_EXPIRED',self.props['XtreamMate.Diagnostic.session'])
 
 
 if __name__ == '__main__': unittest.main()

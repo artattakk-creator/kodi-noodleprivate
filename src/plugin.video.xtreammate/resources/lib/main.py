@@ -607,6 +607,7 @@ class Router:
         last_seen = ('kein Lebenszeichen' if health['age'] is None
                      else '{:.1f} Sekunden'.format(health['age']))
         rows = [
+            'Installierte XCMate-Version: '+ADDON.getAddonInfo('version'),
             '=== Hintergrunddienst (OHNE Stream prüfbar) ===',
             'Dienststatus: ' + health['state'],
             'Letztes Lebenszeichen: ' + last_seen,
@@ -648,9 +649,11 @@ class Router:
             'Letzte Kodi-Taste: ' + (marker.getProperty('XtreamMate.LastRemoteKey') or 'noch keine'),
             'Zuletzt verarbeitet: ' + (marker.getProperty('XtreamMate.LastHandledKey') or 'noch keine'),
         ]
+        from live_diagnostics import report
+        rows.extend(['']+report())
         if not is_enabled():
             rows.append('')
-            rows.append('XCMate richtet bei Live-TV seine Keymap ein, sofern nicht deaktiviert.')
+            rows.append('Globale Keymap bleibt aus, sofern nicht ausdrücklich aktiviert.')
         else:
             rows.append('')
             rows.append('Test: Nach dem Stream diese Diagnose erneut öffnen;')
@@ -750,7 +753,9 @@ class Router:
         p, sid, title, item = prepared
         from live_overlay import announce
         try:
-            announce(p['id'], sid, title)
+            session=announce(p['id'], sid, title)
+            from live_recovery import tag_live_item
+            tag_live_item(item,session)
             xbmcgui.Window(10000).setProperty(
                 'XtreamMate.StartupStatus', 'Kodi-Auflösung: ' + title[:64])
             xbmcplugin.setResolvedUrl(self._handle, True, item)
@@ -769,7 +774,9 @@ class Router:
         p, sid, title, item = prepared
         from live_overlay import announce
         try:
-            announce(p['id'], sid, title)
+            session=announce(p['id'], sid, title)
+            from live_recovery import tag_live_item
+            tag_live_item(item,session)
             xbmcgui.Window(10000).setProperty(
                 'XtreamMate.StartupStatus', 'Autoplay-Direktstart: ' + title[:64])
             xbmc.Player().play(item.getPath(), item)
@@ -1018,14 +1025,19 @@ class Router:
         if xc_epg:
             from epg_sources import configuration
             manual_epg = configuration(p['id'])['mappings']
-            prefetch_short_guides(p, chunk)
+            prefetch_short_guides(p, chunk,view_path=self.url(action='live_channels',
+                                  pid=p['id'],group=group,page=page))
         now = time.time()
+        matched=now_count=next_count=0
         for ch in chunk:
             li = channel_list_item(ch)
             epg = guide_for_channel(guide, ch.tvg_id,
                                     ch.extra.get('stream_id',''), now)
             if not (epg['now'] or epg['next']) and xc_epg:
                 epg = cached_short_guide(xc_epg, ch.extra.get('stream_id',''), now)
+            now_count+=bool(epg['now'])
+            next_count+=bool(epg['next'])
+            matched+=bool(epg['now'] or epg['next'])
             from epg_views import programme_plot
             li.setInfo('video', {'title':ch.name, 'plot':programme_plot(epg),
                                  'mediatype':'video'})
@@ -1051,6 +1063,7 @@ class Router:
                  f'RunPlugin({self.url(action="toggle_favourite", url=ch.url, name=ch.name, logo=ch.logo, group=ch.group)})'),
                 ('EPG',
                  f'Container.Update({self.url(action="epg_channel", pid=p["id"], tvg_id=epg_link_id, name=ch.name)})'),
+                ('EPG-/Live-Diagnose',f'RunPlugin({self.url(action="remote_diagnostics")})'),
             ]
             if ch.catchup or ch.catchup_days:
                 cm.append((_L(32009),
@@ -1071,6 +1084,10 @@ class Router:
                                    group=group, page=page + 1),
                           icon=_ICON_SETTINGS)
 
+        from live_diagnostics import record
+        record('epg_list','RENDERED',visible=len(chunk),matched=matched,
+               now_count=now_count,next_count=next_count,channels=len(guide),
+               programmes=sum(len(v) for v in guide.values() if isinstance(v,list)))
         xbmcplugin.addSortMethod(self._handle, xbmcplugin.SORT_METHOD_NONE)
         xbmcplugin.endOfDirectory(self._handle, succeeded=True, updateListing=False, cacheToDisc=False)
 
@@ -2203,16 +2220,23 @@ class Router:
             return
         # The service displays a transparent on-video TV remote panel. Never
         # put the stream URL or Xtream credentials in the session marker.
-        pid = self._params.get('pid', '')
-        sid = self._params.get('sid', '')
-        if pid and sid:
-            import portals as _portals
-            p = _portals.get_by_id(pid)
-            if p and p.get('type') == 'xtream':
-                from live_overlay import announce
-                announce(pid, sid, name)
+        session=None
+        import portals as _portals
+        from live_recovery import recover_from_player_path
+        from xtream import XtreamClient
+        active=_portals.get_active()
+        requested_pid=self._params.get('pid')
+        if requested_pid:
+            active=[p for p in active if str(p.get('id'))==str(requested_pid)]
+        match=recover_from_player_path(url,active,XtreamClient)
+        if match:
+            from live_overlay import announce
+            session=announce(match[0],match[1],name)
+        else:
+            from live_diagnostics import record
+            record('session','SOURCE_NOT_VERIFIED',marker=False)
         from player import play_stream
-        play_stream(self._handle, url, title=name, logo=logo)
+        play_stream(self._handle, url, title=name, logo=logo,live_session=session)
 
     def _play_vod(self):
         p   = self._portal()
@@ -2404,8 +2428,8 @@ class Router:
         # End the plugin directory request before scheduling any network work.
         if self._handle >= 0:
             xbmcplugin.endOfDirectory(self._handle, succeeded=False, cacheToDisc=False)
-        from epg import warmup_async
-        warmup_async(p['id'], p, force=True)
+        from epg import request_refresh
+        request_refresh(p['id'], p, force=True)
         notify('XCMate', 'EPG-Aktualisierung im Hintergrund gestartet')
 
     def _do_clear_cache(self):

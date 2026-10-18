@@ -46,6 +46,9 @@ class _Player:
 
 class StartupKodiContractTests(unittest.TestCase):
     def setUp(self):
+        path=mock.patch.object(sys,'path',[str(LIB),*sys.path])
+        path.start()
+        self.addCleanup(path.stop)
         self.resolved = []
         self.announced = []
         self.builtins = []
