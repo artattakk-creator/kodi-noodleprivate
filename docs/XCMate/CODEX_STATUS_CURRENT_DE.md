@@ -33,6 +33,20 @@
 
 Die neue XMLTV-Obergrenze beträgt **80 MiB entpackte XMLTV-Daten pro Quelle**, 150.000 Sendungen insgesamt und weitere dokumentierte Limits. Ein zuvor analysierter DE-MASTER-XMLTV-Datensatz war ca. 100 MiB unkomprimiert und kann dadurch bei dieser Version abgewiesen werden. Das ist ein **offenes Kompatibilitäts-/Abnahmethema**, nicht als funktionierendes EPG bewerten. Prüfe gegebenenfalls kleinere DE/AT/CH-Quellen und diskutiere später Streaming-Senderfilterung, ohne das Speicherlimit unkontrolliert zu erhöhen.
 
+## BESTÄTIGTER Realgeräte-Test: XCMate 0.1.22 – Live-TV-Navigation schlägt fehl (18.10.2026)
+
+**Versionsnummer 0.1.22 vom Nutzer bestätigt.** Die nachfolgenden Beobachtungen beziehen sich auf echtes Live-TV, nicht auf den separaten XML-Popup-Diagnosetest.
+
+- **Positiv:** XCMate startet, reguläre Senderliste lässt sich öffnen, ein Xtream-Sender lässt sich starten und abspielen. Kurzes OK öffnet zügig und zuverlässig das **Kodi-Standard-Videoplayer-Menü**.
+- **P0 offen:** Eigenes XCMate-Live-TV-Overlay / XCMate-OSD ist nicht erreichbar. Links öffnet keine XCMate-Senderliste; Hoch/Runter schaltet keine Sender; langes OK bzw. der gewünschte zusätzliche Bedienbereich mit Video-/Audio-/Untertitel- und Systemeinstellungen ist nicht erreichbar. **P0 nicht als behoben abschließen.**
+- **P1 offen:** Reguläre XCMate-Senderliste zeigt **keine EPG-Jetzt/Danach-Angaben**. Ein zuvor gemeldeter Hintergrunddownload wurde nur gestartet, seine erfolgreiche Verarbeitung und Xtream-Senderzuordnung nicht bestätigt.
+- Technischer Hypothesenpfad im Code: `main._play_live` meldet Xtream-LiveSession nur bei vorhandenem pid/sid; `service` startet Dialog nur für bestätigte Sessions, `LiveNavigator.owns_playback` gleicht laufende URL mit konfiguriertem Portal ab. **Ob eine bestimmte Prüfung fehlschlägt, muss mit Geräte-Diagnose und Kodi-Log geklärt werden**, nicht unbelegt behaupten.
+- Mögliche weitere Ursache EPG: 80-MiB-Grenze für XMLTV verhindert großes deutsches DE-MASTER; andere Ursachen sind EPG-Downloadfehler, leerer Cache, unpassende Channel-IDs oder Zeitfenster.
+
+**Nachverfolgung:** [GitHub-Issue #12 – Realgerät: XCMate-Fernbedienung greift nicht, Senderliste ohne EPG](https://github.com/artattakk-creator/kodi-noodleprivate/issues/12). Codex soll auf einem neuen Fix-Branch arbeiten und mit Geräte-Logs testen; keine ungetestete direkte Veröffentlichung auf `main`.
+
+**Nächster konkreter Geräteschritt:** Live-TV-Sender starten, dann ohne Kodi-Neustart Wiedergabe beenden und sofort `XCMate → TV-Fernbedienung: Diagnose` öffnen. Die Felder für letzte Live-Beobachtung, Sitzungswiederherstellung, Auto-TV-Popup, TV-Einblendung, Eingabepfad, native Tastenereignisse und letzte Fehler vollständig fotografieren. Bei weiterem Black Screen ggf. `kodi.log`/`kodi.old.log` anonymisieren und auswerten. Die getrennten VOD-Abbruchprobleme bleiben offen.
+
 ## Android-TV-Diagnose mit drei Fotos – 18.10.2026
 
 **Installierte Add-on-Version bei diesen Screenshots weiterhin nicht verifiziert** (ggf. 0.1.21, nicht als erfolgreiche 0.1.22-Geräteabnahme interpretieren).
