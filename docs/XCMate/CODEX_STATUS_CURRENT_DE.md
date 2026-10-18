@@ -1,14 +1,65 @@
 # XCMate / Codex – aktueller Projekt- und Release-Status (verbindliche Übergabe)
 
 **Stand:** 18.10.2026  
-**Aktuelle Kodi-Version:** `0.1.22` (aus `main` des GS Media Kodi Repository veröffentlicht; Android-TV-Abnahme AUSSTEHEND)  
+**Veröffentlichte XCMate-Version:** `0.1.22` (Live-Wiedergabe bestätigt; Live-TV-Navigation und EPG in der Senderliste laut Issue #12 fehlgeschlagen). **Testkandidat:** `0.1.23` auf separatem Branch, Android-Prüfung offen.
 **Technische Kodi-ID:** `plugin.video.xtreammate` – nicht ändern  
 **Repository:** https://github.com/artattakk-creator/kodi-noodleprivate  
 **Hauptbranch:** `main`  
-**Codex-Entwicklungsbranch:** `fix/xcmate-kodi21-overlay-epg` (historischer Stand dieser Korrektur)  
-**Übernahme:** [Pull Request #11](https://github.com/artattakk-creator/kodi-noodleprivate/pull/11), Merge-Commit `c14d7815bf0ca2e93dd3e1fa5225ca1df36c8f54`.  
-**Veröffentlichung:** GitHub-Action [Publish GS Media Kodi updates](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39126897807) erfolgreich; `addons.xml` meldet XCMate `0.1.22`, ZIP `plugin.video.xtreammate/plugin.video.xtreammate-0.1.22.zip` vorhanden.  
+**Codex-Entwicklungsbranch:** `fix/issue-12-live-session-diagnostics` (0.1.23, nicht veröffentlicht); vorheriger Branch `fix/xcmate-kodi21-overlay-epg` ist historisch.
+**Übernahme 0.1.22:** [Pull Request #11](https://github.com/artattakk-creator/kodi-noodleprivate/pull/11), Merge-Commit `c14d7815bf0ca2e93dd3e1fa5225ca1df36c8f54`.
+**Veröffentlichung 0.1.22:** GitHub-Action [Publish GS Media Kodi updates](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39126897807) erfolgreich; `addons.xml` meldet XCMate `0.1.22`, ZIP `plugin.video.xtreammate/plugin.video.xtreammate-0.1.22.zip` vorhanden.
 **Letzter geprüfter Repository-Stand nach Auto-Publish (vor dieser Statusaktualisierung):** `9b590ea2dc0983fa75b084582431065211de1484`.
+
+## Bearbeitung Issue #12 – Testkandidat 0.1.23 (18.10.2026)
+
+**Status:** Auf `fix/issue-12-live-session-diagnostics` implementiert und lokal geprüft. **Nicht nach main übernommen, nicht produktiv veröffentlicht; Issue #12 bleibt bis zur Android-Abnahme offen.**
+Ausgangsstand der Untersuchung: `aa0c3c39d13f1ad120440d2a9c75a0cf59435e1e`. Zwischenzeitliche reine Statusergänzungen aus `main` bis `131ecf6d4615e06156b25d2a71aebcd1725c7d3e` sind übernommen; die Planung für #13/#14 bleibt erhalten.
+Implementierung: `dbd6c20`. Version und überprüftes Testpaket: `87ab41e`.
+
+### Gesicherte Beobachtung und Grenze der Ursachenanalyse
+
+Der reale Fehlerstand 0.1.22 bleibt verbindlich: Live-TV spielt, OK erreicht nur Kodi-OSD, XCMate-Navigation greift nicht und normale Senderliste bleibt ohne Jetzt/Danach.
+Es liegen weiterhin keine Gerätewerte vor, die **eine einzige konkrete Fehlerstelle** in der Zulassung-/Dialogkette beweisen.
+Die folgenden Codefälle wurden lokal reproduziert und korrigiert; daraus folgt noch kein Nachweis, dass der Fehler am Fernseher beseitigt ist.
+
+### Korrekturen und gezielte Diagnose
+
+- **Stream-Zuordnung:** Die bisherige bytegenaue URI-Gleichheit verwirft auch äquivalente Schreibweisen (Hostschreibweise, Standardport, URL-Encoding). Der Vergleich normalisiert diese Bestandteile, hält aber Protokoll, Origin, Zugangspfad, Query-Token und Pfadsegmentgrenzen getrennt. Deaktivierte und bei URL-Recovery mehrdeutige Portale werden abgewiesen.
+- **Session am Start:** `_play_live` leitet die Session aus einer verifizierten konfigurierten Live-Adresse ab; fehlende/falsche zusätzliche sid-Parameter machen daraus keine beliebige XCMate-Sitzung. Ein vorgegebener Portalbezug bleibt bindend.
+- **Redirects:** Ein XCMate-eigenes ListItem erhält über die Kodi-21-`InfoTagVideo.setUniqueIDs`-API nur pid/sid, Zeit und eine zufällige aktuelle Sessionkennung. Die laufende Player-Metadatenkennung muss exakt zur aktuellen Session passen. Damit kann ein veränderter getPlayingFile-Pfad bestätigt werden. Ein unbekannter Redirect **ohne** passende aktuelle Itemkennung wird weiterhin abgewiesen; kein pauschales Übernehmen anderer Videos. Bei Senderwechsel gilt die bestehende begrenzte Acht-Sekunden-Toleranz auch für die vorherige verifizierte Itemkennung.
+- **Dienst/Anzeige:** Navigator-Aktivierung wartet auf Kodis tatsächliches FullscreenVideo-Fenster; eine schon aktive Video-Pipeline allein reicht nicht. Abgewiesene Kandidaten werden höchstens einmal pro Sekunde neu geprüft. Der Dienst meldet eine feste laufende Codekennung `build=23`, unabhängig von der im Plugin angezeigten installierten Version.
+- **Fokus/Eingaben:** Anzeigeanforderung, Aufbaufehler, tatsächliche Focus-ID und oberste Dialog-ID sowie aktuelle Dialogzugehörigkeit werden getrennt protokolliert. Ein Startstatus ist kein Fokusbeweis. Der native Eingabezähler startet pro neuem Navigator bei null. Ein anderer Kodi-Dialog wird nicht gewaltsam verdrängt. Die globale Keymap bleibt opt-in.
+- **EPG der normalen Senderliste:** Die sichtbaren bis zu 24 Sender werden als kurzer Auftrag dem langlebigen Dienst übergeben. Die GUI wartet auf keinen Download. Maximal ein Short-Guide-Worker mit drei parallelen Abrufen; aktuelle Jobs werden nicht doppelt gestartet. Erfolgreiche Daten werden 30 Minuten, fehlgeschlagene Abrufe nur 30 Sekunden zurückgestellt. Zustandstabellen sind begrenzt.
+- **Jetzt/Danach aktualisieren:** Nach erfolgreichen Short-Guide-Abrufen wird ausschließlich dieselbe noch geöffnete XCMate-Senderseite aktualisiert. Andere Add-ons und FullscreenVideo werden nicht aktualisiert. Auch ein fertiger XMLTV-Refresh kann die aktuell passende Senderseite aktualisieren. Ein leerer Download löst keine Refresh-Endlosschleife aus.
+- **Manuelle XMLTV-Aktualisierung:** Der Aufruf wird an den Dienst übergeben; die kurzlebige Plugin-Instanz startet keinen eigenen Download mehr. `REQUESTED` und tatsächliches `RUNNING/READY` sind getrennt. Ein laufender Dienst ist Voraussetzung für die Ausführung.
+- **Persistente Diagnose:** `live_diagnostics.py` speichert pro Komponente höchstens 16 kleine Ereignisse in `xcmate_diagnostic_*.json` im privaten Add-on-Profil. Neueste Window-Properties werden beim Stop/Shutdown und EPG-Abschluss auf Disk gesichert. Die Diagnose ist ohne Wiedergabe lesbar und kann einen Kodi-Neustart überstehen, sofern das private Profil beschreibbar ist. Es werden nur feste Statuscodes, Zeitstempel, Zahlen und boolesche Werte gespeichert; keine Provider-URL, Zugangsdaten, Kanalnamen oder Runtime-Sessionkennung.
+- **EPG-Status:** Gespeichert werden Anforderung/Laufstatus, letzte erfolgreiche Importzeit, Sender-/Sendungszahlen, Eingangsbytes der Quelle, Limit-/Format-/Downloadfehler sowie Jetzt-/Danach-Treffer der sichtbaren Seite. Einstieg weiterhin `TV-Fernbedienung: Diagnose`, zusätzlich Sender-Kontextmenü `EPG-/Live-Diagnose`. Dies ist die Issue-12-Diagnose, noch nicht die vollständige Quellen-/Titelvorschau aus Issue #13.
+- **Grenzen bleiben erhalten:** Große DE-MASTER-Dateien können weiterhin am 80-MiB-Limit scheitern. Byte-, Programm- und Senderlimits werden als unterschiedliche Codes protokolliert; die Limits wurden nicht erhöht. Ein bloß gestarteter Download gilt weiterhin nicht als erfolgreicher Import.
+
+### Testergebnisse und Paket
+
+- **200 lokale unittest-Tests bestanden, keine Fehler und keine übersprungenen Tests.** Gesamtsuite auch nach dem vollständigen Repository-Build in der separaten Buildkopie erfolgreich.
+- **18 neue Issue-12-Tests**: URI-Gleichwertigkeit und Gegenbeispiele, passende/veraltete/fremde Itemkennungen, deaktivierte/mehrdeutige Portale, Sessionableitung im tatsächlichen Wiedergabepfad, ListItem-Weitergabe an setResolvedUrl, persistente Diagnose einschließlich Neustart, Worker-Auftragskette und selektiver Seitenrefresh.
+- **Zwei zusätzliche Kodi-Dienst-/Dialogregressionen**: keine Anzeige vor Fullscreen-Aktivierung; begrenzte Übernahme der vorherigen Identität während eines Redirect-Senderwechsels.
+- Der Senderlisten-Integrationstest führt die tatsächliche `_live_channels`-Funktion aus: erste Darstellung ohne EPG → Dienstauftrag → erfolgreicher Short-Guide → Container.Refresh → erneute Darstellung mit echten synthetischen Jetzt-/Danach-Titeln und Trefferzählung.
+- **15 bestehende HTTP-/Cache-/XMLTV-Grenztests zusätzlich mit installiertem httpx ausgeführt**, einschließlich tatsächlicher lokaler HTTP-Requests über beide HTTP-Backends.
+- Python-Kompilierung, ZIP-Integrität und Verzeichnislayout, Manifestversion sowie byteweiser Abgleich jedes Paketbestandteils mit dem Kandidatenquellcode erfolgreich.
+- Keine echten Android-Tests dieser Änderungen; kein GitHub-CI-Ergebnis für diesen neuen Branch behaupten. Noodle Private, andere Add-ons, Produktionsindex und Veröffentlichungsworkflow sind gegenüber main unverändert.
+- Paket: `plugin.video.xtreammate/plugin.video.xtreammate-0.1.23.zip`, **239640 Bytes**.
+- SHA-256: `bd78e51a5b2cbf923fcdeab57628015cae0c9aed6056445188c6f327af397446`; daneben als `.zip.sha256` hinterlegt.
+- Automatische PR-/Issue-Kommentar-Erstellung ist derzeit durch den bestätigten Proxy-CONNECT-403 für `api.github.com` blockiert. Die öffentliche Issue-Seite wurde gelesen; Git-Zugriff funktioniert. Branch und Übergabe können deshalb bereitgestellt werden, ohne einen erstellten PR oder geschlossenen Issue vorzutäuschen.
+
+### Nächster kontrollierter Android-Test mit 0.1.23
+
+1. Das Kandidaten-ZIP als XCMate-Update installieren, nicht deinstallieren und keine Profile löschen. Kodi vollständig neu starten. Installierte Version 0.1.23 kontrollieren; globale Fallback-Keymap für diesen Test ausgeschaltet lassen.
+2. Normale Senderliste öffnen und kurz auf den begrenzten Short-Guide warten. Erscheinen Jetzt/Danach? Bei Bedarf `EPG-/Live-Diagnose` im Sender-Kontextmenü öffnen: `epg_list` liefert die sichtbare Trefferquote; `epg/epg_source` unterscheiden Anforderung, Importerfolg und Quellengrenzen.
+3. Einen bekannten Xtream-Live-Sender starten. Nach Erreichen des Vollbilds Links, Hoch/Runter, OK und Menü prüfen. Erscheint die XCMate-Sidebar? Ist der Fokus sichtbar? Bleibt nur Kodi-OSD erreichbar?
+4. Wiedergabe stoppen, **ohne Kodi-Neustart** `TV-Fernbedienung: Diagnose` öffnen. Den neuen gespeicherten Abschnitt vollständig erfassen. Besonders wichtig: `service build=23`, `session`, `ownership`, `dialog`, `focus` und `input` samt Zeitpunkten/Verlauf.
+5. Interpretation: `URL_NOT_VERIFIED` = keine bestätigte Zuordnung; `ITEM_IDENTITY` oder `URL_IDENTITY` = Zuordnung gelungen; `WAIT_FULLSCREEN` = GUI noch nicht bereit; `SHOW_REQUESTED` allein beweist keine Aktivierung; `ACTIVE_DIALOG/OTHER_DIALOG` und Focus-ID grenzen die Oberfläche ein; `WAITING_FOR_ACTION/count=0` zeigt fehlende Eingaben im aktuellen Navigator. Die alten 18 XML-Popup-Ereignisse sind davon getrennt.
+6. Danach ein Video aus einem anderen Add-on starten und dessen normale Bedienung prüfen. Bei erneutem Kodi-Neustart muss die vorherige Live-/EPG-Diagnose weiterhin über ihren Zeitstempel erkennbar sein; der neue Dienststart darf seinen eigenen Status erneuern.
+7. Für XMLTV gesondert eine kleine bestehende Quelle manuell aktualisieren und tatsächliches READY, Importzeit, Zahlen und Sender-Matching prüfen. Ein XMLTV-Limitfehler darf nicht als erfolgreiche EPG-Abnahme zählen.
+
+Offen bleiben die tatsächliche Kodi-Metadatenübernahme auf Android, Redirect-Verhalten des Providers, native Langdruck-Action-IDs, sichtbare Dialog-/Fokusdarstellung mit BINGIE MOD, EPG-Abdeckung und der getrennte VOD-Rückkehrfehler. **Kein P0-/P1-Geräte-PASS ohne diesen Test.** Die vollständige EPG-Status-/Titelvorschau (#13) und XCMate Skin (#14) bleiben eigene geplante Aufgaben.
 
 ## Zuerst lesen – maßgebliche Unterlagen
 
@@ -125,4 +176,4 @@ Die neue XMLTV-Obergrenze beträgt **80 MiB entpackte XMLTV-Daten pro Quelle**, 
 - **P3:** Cache-Sicherheit, Profilpersistenz, ressourcenschonende große XMLTV-Feeds.
 - **P4:** Freigegebenes grafisches Design, Farben und Komfortfunktionen.
 
-**Nächster Schritt:** Erstes reguläres GS-Media-Repository-Update auf `0.1.22` auf dem Fernseher und protokollierte Geräteabnahme, bevor ein P0/P1-Fehler als behoben geschlossen wird.
+**Nächster Schritt:** Testkandidat 0.1.23 vom Issue-12-Entwicklungsbranch gezielt am Android-TV prüfen und anschließend die gespeicherte Diagnose auswerten. Issue #12 bis zum belegten Gerätetest offen halten; danach EPG-Status & Vorschau (#13), dann XCMate Skin (#14).

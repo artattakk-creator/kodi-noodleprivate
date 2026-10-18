@@ -1,6 +1,6 @@
 # XCMate – zentraler Projekteinstieg
 
-**Status:** 18.10.2026, XCMate **0.1.22 in `main` veröffentlicht** und im GS-Media-Updateindex eingetragen; **180 GitHub-CI-Tests bestanden**, Android-TV-Abnahme weiterhin offen. Gerätefunktion nicht als bestätigt markieren.
+**Status:** 18.10.2026: XCMate 0.1.22 ist veröffentlicht; Live-TV-Navigation und EPG-Liste scheitern laut bestätigtem Android-Test in Issue #12. Testkandidat **0.1.23** auf `fix/issue-12-live-session-diagnostics`: 200 lokale Tests bestanden; Android-Abnahme offen, keine neue Veröffentlichung.
 **Repository:** https://github.com/artattakk-creator/kodi-noodleprivate  
 **Kodi-Repository:** GS Media Kodi Repository 1.7.0  
 **Angezeigter Add-on-Name:** XCMate  
