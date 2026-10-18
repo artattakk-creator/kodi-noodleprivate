@@ -12,6 +12,16 @@
 
 **VERBINDLICHER CODEX-ARBEITSAUFTRAG:** [Vollständige Android-TV-Codex-Übergabe 0.1.23 / P0 TypeError und EPG](CODEX_HANDOFF_ANDROID_023_P0_EPG_DE.md). Der hier folgende Ablauf ist die detailreiche historische Diagnosedokumentation; die neue Datei enthält den konsolidierten P0/P1-Plan und den sicheren nächsten Branch-/PR-Ablauf.
 
+## NEUER Android-TV-Gerätetest 0.1.24 – wesentlicher Fortschritt, EPG weiter offen (18.10.2026)
+
+**Priorität für den nächsten Codex-Einstieg:** [vollständiger neuer Gerätebefund / End-to-End-EPG und Fernbedienung](ANDROID_DEVICE_TEST_024_EPG_NAV_DE.md).
+
+- Drei Nutzerfotos zeigen tatsächlich das XCMate-`WindowDialog` **über laufendem TV**: `XCMate · EPG`, Kanalansicht mit `2746 Sender`, `Seite 2/28` und sichtbarer Fokusmarkierung, unteres OSD mit `Weitere` sowie eine zweite Leiste mit `Ton / Bild / EPG / Einstellungen / Sendergruppen`. Gegenüber 0.1.23 ist der P0-`TypeError` im beobachteten Ablauf praktisch überwunden. Der EPG-Modus ist aber nur eine Senderliste ohne Sendetitel.
+- **Unbestätigt/offen:** Zuverlässiges Umschalten und Durchsteuern mit D-Pad/OK/Zurück (Nutzer meldet noch Unzuverlässigkeit), öffnender EPG-Button und tatsächlicher Guide-Import. Fokusbilder beweisen nicht alle Tastenaktionen. Issues #12 und #13 OFFEN lassen.
+- Codebefund: `live_overlay._render()` benutzt `load_cache` für Guide-Zeilen, **nicht** den `cached_short_guide`-Fallback der regulären Kodi-Senderliste. `_epg()` zeigt lediglich vorhandenen Kurz-EPG zum aktiven Sender oder triggert asynchrones Nachladen mit Info „Gleich erneut öffnen“. Keine EPG-Timeline vorhanden.
+- Zusätzlich die fehlenden Symbolglyphen (leere Kästchen) und mögliche Unterkanten-/Safe-Area-Darstellung bei der späteren UI-Pflege erfassen; `XCMate Skin` als separater Zukunftsplan.
+- **Nächster Gerätetest:** tatsächlich installierte 0.1.24 und `service build=24` in Diagnose bestätigen, gezieltes OK auf `EPG` der Extras-Zeile mit Ergebnisfoto, nach ~30–60 s wiederholen, danach EPG-/Source-/List-Diagnose aufnehmen. Einen EPG-tauglichen Sender wählen und separat D-Pad/OK-Kanalwechsel testen; keine globale Keymap einschalten.
+
 ## Veröffentlichungsnachtrag 0.1.24 – verbindlicher Stand ab 18.10.2026
 
 - **Freigabe/Übernahme:** Der Nutzer beauftragte explizit die Prüfung und Übernahme per regulärem Kodi-Update. GitHub-PR [#16](https://github.com/artattakk-creator/kodi-noodleprivate/pull/16) geprüft und über Merge-Commit `199f4d1231ce01f5d3c15d6db7ec253df721be9a` nach `main` übernommen.
