@@ -107,6 +107,16 @@ Die neue XMLTV-Obergrenze beträgt **80 MiB entpackte XMLTV-Daten pro Quelle**, 
 - ChatGPT kann den fremden laufenden Codex-Chat **nicht direkt live mitlesen**. Sichtbar und überprüfbar sind hochgeladene Branches, PRs, Commits, Tests, Artefakte und Dokumentation. Nicht gepushte Arbeit und Android-TV-Funktionen können dadurch nicht bestätigt werden.
 - **Kein ungeprüftes Weiterentwickeln parallel auf `main`**, solange Codex denselben Bereich bearbeitet. Laufende Android-Tests und echte Logs entscheiden die nächste Priorität.
 
+## Neue verbindliche Produktausbaustufen (18.10.2026)
+
+**Produktname für den separaten Kodi-Skin: `XCMate Skin`**. Nicht „GS Media Skin“. Das bestehende XCMate-Add-on behält seine ID `plugin.video.xtreammate`.
+
+1. **Zuerst EPG unabhängig von einem Skin wirklich sichtbar machen – [Issue #13](https://github.com/artattakk-creator/kodi-noodleprivate/issues/13).** Nutzer kann in 0.1.22 EPG-Downloads anstoßen, sieht aber weder den erfolgreichen Import noch Jetzt/Danach in der Senderliste. Zuerst Menüpunkt **EPG-Status & Vorschau** mit Quelle, Ergebnis, Importzeit, Sender-/Sendungszahlen, Matching-Quote, konkreter Fehlermeldung und echten Now-/Next-Titeln aus vorhandenem Cache; keine Hintergrunddownloads durch bloße Öffnung. `EPG jetzt` existiert bereits in XCMate (Route `epg_now`), liefert aber keine detaillierte Importdiagnose; tatsächliche Datenverfügbarkeit ungeklärt.
+2. **Danach Machbarkeitsprototyp `XCMate Skin` – [Issue #14](https://github.com/artattakk-creator/kodi-noodleprivate/issues/14).** Als separater Kodi-Skin, nicht als Überschreibung des laufenden BINGIE MOD. Ziel: Kodi-TV-Oberfläche mit Senderliste/EPG, sichtbar fokussierbarem Player-OSD, Links=Senderliste, Hoch/Runter=Senderwechsel, OK=Bedienleiste, Zusatzmenü für Video/Audio/Untertitel/Einstellungen. Existierenden Xtream-/EPG-Kern aus XCMate weiterbenutzen, Skin ist Darstellung/Steuerung; Kodi bleibt Videoplayer.
+3. **Fokus und globale Tastenbelegung zuerst auf Android-TV nachweisen**; Skin-Wechsel muss sicher rückgängig zu machen sein. Keine Vermischung der EPG-Fehler mit dem ungeklärten Live-TV-Fernbedienungsfehler [Issue #12](https://github.com/artattakk-creator/kodi-noodleprivate/issues/12). Vor vollständigem BINGIE-MOD-Fork ursprüngliche Lizenz und benötigte Abhängigkeiten prüfen.
+
+**Status:** Diese beiden Erweiterungen sind geplant/dokumentiert, **nicht** als implementiert oder auf Android verifiziert melden. Priorität: EPG-Datensichtbarkeit vor neuer Skin-Oberfläche. Der bestehende Code darf nicht gleichzeitig ohne abgestimmten Branch in `main` weiterentwickelt werden.
+
 ## Geplante Prioritäten
 
 - **P0:** Keine Kodi-weiten Hänger oder Eingriffe in BINGIE MOD, korrekter Add-on-Start.
