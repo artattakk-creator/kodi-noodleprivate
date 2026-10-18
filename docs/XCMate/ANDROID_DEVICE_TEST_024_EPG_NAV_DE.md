@@ -39,6 +39,8 @@
 5. **Quellenstatus:** Im Hauptmenü EPG-Verwaltung und aktuell gespeicherte Quellreihenfolge `[1],[2],…` ansehen (keine Zugangsdaten teilen), DE-EPGShare01 als kleinere Quelle einzeln im Hintergrund aktualisieren, dann vollständige `epg`/`epg_source`/Match-Diagnose prüfen. Die große Kaimandura-Datei kann 80 MiB Entpacklimit überschreiten; nicht blind erhöhen.
 6. **Isolation:** Stream beenden; Film aus anderem Add-on abspielen und stoppen, prüfen, ob Kodi-Standardbedienung normal bleibt.
 
+> **Nachtrag vom Nutzer (18.10.2026):** verbindliche neue Bedienvorgabe in [TV_OSD_EPG_REMOTE_UX_SPEC_DE.md](TV_OSD_EPG_REMOTE_UX_SPEC_DE.md) / [Issue #17](https://github.com/artattakk-creator/kodi-noodleprivate/issues/17): **erstes OK** Sender-/Jetzt-/Danach-Infobar mit Fortschritt und Restdauer; **zweites OK oder Runter** darunterliegendes Player-Menü; **Links** schnelle EPG-Senderliste mit Jetzt-Titel und Von–bis pro Sender. Dieser Nachtrag ersetzt bezüglich OK-Druck die bisherige direkte Öffnung der alten unteren Playerleiste; EPG-Datenimport und Performance müssen vorher bzw. parallel zuverlässig funktionieren. Noch nicht implementiert.
+
 ## 5. Codex-Auftrag für nächste Version, noch kein Release
 
 **P1 Vorrang nach P0-Sichtbarkeitsfortschritt:** EPG-Probleme entlang `Source → Download → Parse → persistierter Cache → XMLTV-/Xtream-ID-Zuordnung → Jetzt/Danach → `live_overlay._render()` und `_epg()`` reproduzierbar klären. Fehlenden `cached_short_guide`-Fallback im Overlay ergänzen, ohne bei Fernbedienungsdruck Netzwerk im GUI-Thread auszuführen. Eine klare Status-/Vorschauansicht aus Issue #13 realisieren. Keine „EPG funktioniert“-Behauptung ohne sichtbare Titel/Zeiten.
