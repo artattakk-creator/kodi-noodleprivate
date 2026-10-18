@@ -1,16 +1,25 @@
 # XCMate / Codex – aktueller Projekt- und Release-Status (verbindliche Übergabe)
 
 **Stand:** 18.10.2026  
-**Veröffentlichte XCMate-Version:** `0.1.23` (18.10.2026, reguläres GS-Media-Kodi-Repository). **Android-Gerätetest für 0.1.23 fehlgeschlagen:** TV-Dialog `TypeError`, Dialog-Verlauf `CANDIDATE_CREATED → SHOW_FAILED → CLOSED`; P0 und EPG bleiben offen. Siehe neue vollständige [Codex-Übergabe](CODEX_HANDOFF_ANDROID_023_P0_EPG_DE.md).
+**Veröffentlichte XCMate-Version:** `0.1.24` (18.10.2026, reguläres GS-Media-Kodi-Repository). **Android-TV-Geräteabnahme von 0.1.24 ausstehend.** Die 0.1.23 zeigte `TypeError` im TV-Dialog; Codekorrektur und EPG-Diagnose in 0.1.24 implementiert. Siehe [Testbericht](KODI21_FIX_024_DE.md) und [Ursprungsübergabe](CODEX_HANDOFF_ANDROID_023_P0_EPG_DE.md).
 **Technische Kodi-ID:** `plugin.video.xtreammate` – nicht ändern  
 **Repository:** https://github.com/artattakk-creator/kodi-noodleprivate  
 **Hauptbranch:** `main`  
-**Codex-Entwicklungsbranch:** `fix/kodi21-strict-gui-epg-diagnostics` – Kandidat 0.1.24, kein Merge/Produktiv-Release. Vorheriger Branch `fix/issue-12-live-session-diagnostics` ist über PR #15 übernommen.
+**Codex-Entwicklungsbranch:** `fix/kodi21-strict-gui-epg-diagnostics` – 0.1.24 über [PR #16](https://github.com/artattakk-creator/kodi-noodleprivate/pull/16) nach `main` übernommen; Branch ist historischer Fix-Stand. Für neue Änderungen separaten Branch anlegen.
 **Übernahme 0.1.22:** [Pull Request #11](https://github.com/artattakk-creator/kodi-noodleprivate/pull/11), Merge-Commit `c14d7815bf0ca2e93dd3e1fa5225ca1df36c8f54`.
 **Veröffentlichung 0.1.22:** GitHub-Action [Publish GS Media Kodi updates](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39126897807) erfolgreich; `addons.xml` meldet XCMate `0.1.22`, ZIP `plugin.video.xtreammate/plugin.video.xtreammate-0.1.22.zip` vorhanden.
 **Letzter geprüfter Repository-Stand nach Auto-Publish (vor dieser Statusaktualisierung):** `9b590ea2dc0983fa75b084582431065211de1484`.
 
 **VERBINDLICHER CODEX-ARBEITSAUFTRAG:** [Vollständige Android-TV-Codex-Übergabe 0.1.23 / P0 TypeError und EPG](CODEX_HANDOFF_ANDROID_023_P0_EPG_DE.md). Der hier folgende Ablauf ist die detailreiche historische Diagnosedokumentation; die neue Datei enthält den konsolidierten P0/P1-Plan und den sicheren nächsten Branch-/PR-Ablauf.
+
+## Veröffentlichungsnachtrag 0.1.24 – verbindlicher Stand ab 18.10.2026
+
+- **Freigabe/Übernahme:** Der Nutzer beauftragte explizit die Prüfung und Übernahme per regulärem Kodi-Update. GitHub-PR [#16](https://github.com/artattakk-creator/kodi-noodleprivate/pull/16) geprüft und über Merge-Commit `199f4d1231ce01f5d3c15d6db7ec253df721be9a` nach `main` übernommen.
+- **CI:** GitHub [Run 39143441999](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39143441999) erfolgreich mit **213/213 Tests**; aktualisierte Kodi-GUI-Vertragstests und EPG-Regressionen enthalten.
+- **Produktive Veröffentlichung:** [Push-/Publish-Workflow 39143872867](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39143872867) erfolgreich. `src/plugin.video.xtreammate/addon.xml` und `addons.xml` weisen beide `0.1.24` aus; ZIP `plugin.video.xtreammate/plugin.video.xtreammate-0.1.24.zip` im `main` vorhanden und über das bestehende GS-Media-Repository abrufbar. `addons.xml.md5` aktualisiert.
+- **Build-Prüfsumme:** GitHub Actions hat die 242152-Byte-ZIP neu gepackt; die Kandidaten-SHA `1100ea73...` gilt **nur für das historische Branch-Paket**. Die veröffentlichte 0.1.24-ZIP hat SHA-256 `ddb4a7eb29fece8213f0254af9fb0b8fb949466746a026d0fed75342b8acb376`; die Sidecar-`.zip.sha256` wurde auf diesen Wert korrigiert. Bei späteren Releases sollte der CI-Paketbau Prüfsummen automatisch neu schreiben (separater Build-Hardening-Auftrag).
+- **Gerätestatus:** **Nicht** behaupten, dass der P0 auf Android behoben ist, solange sichtbare TV-Sidebar, Fokus und Fernbedienung nicht an Version 0.1.24 bestätigt sind. Globale Keymap deaktiviert lassen, BINGIE MOD/fremde Add-ons gegenprüfen. EPG-Verarbeitung und echte Jetzt/Danach-Inhalte ebenfalls noch offen. Issues [#12](https://github.com/artattakk-creator/kodi-noodleprivate/issues/12), [#13](https://github.com/artattakk-creator/kodi-noodleprivate/issues/13) offen lassen; XCMate Skin [#14](https://github.com/artattakk-creator/kodi-noodleprivate/issues/14) später.
+- **Nächster Schritt:** Auf Android-TV in Kodi `XCMate → Aktualisieren` auf 0.1.24, Kodi vollständig neu starten, `service build=24` in `TV-Fernbedienung: Diagnose` prüfen; Live-Sender und TV-Overlay/Focus/DPAD/OK/Zurück testen; danach EPG-Quellenfehlercodes und Senderliste untersuchen. Details im [Abnahmeplan 0.1.24](KODI21_FIX_024_DE.md).
 
 ## Implementierung nach Android-Befund: Testkandidat 0.1.24 (18.10.2026)
 
