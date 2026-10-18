@@ -338,8 +338,8 @@ class Router:
 
         if len(active) == 1:
             self._show_portal_home(active[0])
-            # Recovery 0.1.19: do not launch video while Kodi builds the menu.
-            # Autoplay stays configured and can be re-enabled after TV UI repair.
+            # Diagnostics safe-mode remains ON by default. Explicit opt-in works.
+            self._maybe_autoplay_start(active[0])
             return
 
         from concurrent.futures import ThreadPoolExecutor, as_completed as _asc
