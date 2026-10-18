@@ -2401,10 +2401,12 @@ class Router:
         p   = P.get_by_id(pid)
         if not p:
             return
-        notify('XCMate', 'Refreshing EPG…', duration=1500)
-        from epg import ensure_epg_loaded_for_portal
-        ensure_epg_loaded_for_portal(p, force=True)
-        notify('XCMate', 'EPG refreshed')
+        # End the plugin directory request before scheduling any network work.
+        if self._handle >= 0:
+            xbmcplugin.endOfDirectory(self._handle, succeeded=False, cacheToDisc=False)
+        from epg import warmup_async
+        warmup_async(p['id'], p, force=True)
+        notify('XCMate', 'EPG-Aktualisierung im Hintergrund gestartet')
 
     def _do_clear_cache(self):
         cache_clear()

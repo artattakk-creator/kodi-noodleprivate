@@ -1,6 +1,4 @@
 import re
-import io
-import gzip
 import time
 import json
 import threading
@@ -8,6 +6,7 @@ import datetime
 from concurrent.futures import ThreadPoolExecutor
 from xml.etree import ElementTree as ET
 from urllib.parse import unquote_plus
+from epg_io import XMLTVReader, MAX_XML_BYTES, MAX_PROGRAMMES, MAX_CHANNELS
 
 import xbmcvfs
 
@@ -43,13 +42,16 @@ class Programme:
         return max(0.0, min(1.0, (time.time() - self.start) / dur))
 
 def _parse_xmltv_ts(s):
-    m = _DT_RE.match(s.strip())
+    m = _DT_RE.fullmatch(s.strip())
     if not m:
-        return 0
+        raise ValueError('Invalid XMLTV timestamp')
     dt_str, tz_str = m.group(1), m.group(2) or '+0000'
     dt     = datetime.datetime.strptime(dt_str, '%Y%m%d%H%M%S')
     sign   = 1 if tz_str[0] == '+' else -1
-    offset = sign * (int(tz_str[1:3]) * 3600 + int(tz_str[3:5]) * 60)
+    hours, minutes = int(tz_str[1:3]), int(tz_str[3:5])
+    if hours > 23 or minutes > 59:
+        raise ValueError('Invalid XMLTV timezone')
+    offset = sign * (hours * 3600 + minutes * 60)
     return int(dt.replace(tzinfo=datetime.timezone.utc).timestamp()) - offset
 
 
@@ -60,13 +62,13 @@ def parse_xmltv(content: bytes):
     This significantly reduces peak memory on Android when using several
     large external German, Austrian or Swiss programme guides.
     """
-    if content[:2] == b'\x1f\x8b':
-        content = gzip.decompress(content)
+    stream = XMLTVReader(content, max_bytes=MAX_XML_BYTES)
     channels = {}
     programmes = {}
     root_element = None
+    count = skipped = 0
     try:
-        for event, element in ET.iterparse(io.BytesIO(content),
+        for event, element in ET.iterparse(stream,
                                           events=('start', 'end')):
             if root_element is None:
                 root_element = element
@@ -77,10 +79,20 @@ def parse_xmltv(content: bytes):
                 channels[cid] = element.findtext('display-name') or cid
             else:
                 cid = element.get('channel', '')
-                start = _parse_xmltv_ts(element.get('start', '0'))
-                stop = _parse_xmltv_ts(element.get('stop', '0'))
-                title = element.findtext('title') or ''
-                desc = element.findtext('desc') or ''
+                try:
+                    start = _parse_xmltv_ts(element.get('start', ''))
+                    stop = _parse_xmltv_ts(element.get('stop', ''))
+                    if not cid or stop <= start:
+                        raise ValueError('Invalid XMLTV programme interval')
+                except (ValueError, OverflowError):
+                    skipped += 1
+                    root_element.clear()
+                    continue
+                count += 1
+                if count > MAX_PROGRAMMES:
+                    raise ValueError('XMLTV programme limit exceeded')
+                title = (element.findtext('title') or '')[:512]
+                desc = (element.findtext('desc') or '')[:4096]
                 cat = element.findtext('category') or ''
                 icon_el = element.find('icon')
                 icon = icon_el.get('src', '') if icon_el is not None else ''
@@ -116,9 +128,15 @@ def parse_xmltv(content: bytes):
             # Discard all processed siblings but not an unfinished node.
             if root_element is not element:
                 root_element.clear()
+            if len(channels) > MAX_CHANNELS:
+                raise ValueError('XMLTV channel limit exceeded')
     except ET.ParseError as exc:
         error(f'XMLTV parse error: {exc}')
         return {}, {}
+    finally:
+        stream.close()
+    if skipped:
+        warn('XMLTV: skipped {} invalid programme timestamps/intervals'.format(skipped))
     for cid in programmes:
         programmes[cid].sort(key=lambda x: x['start_timestamp'])
     info(f'XMLTV: {len(channels)} channels, '
@@ -127,6 +145,7 @@ def parse_xmltv(content: bytes):
 
 _MEM_CACHE    = {}
 _MEM_LOCK     = threading.Lock()
+_REFRESH_LOCK = threading.Lock()
 _WARMUP_THREADS = {}
 _WARMUP_LOCK  = threading.Lock()
 
@@ -422,6 +441,12 @@ def resolve_epg_key(portal_id, channel: dict):
 
 
 def _refresh_portal_epg(portal_id, p, force=False):
+    # Several portals/GUI invocations must not parse large guides concurrently.
+    with _REFRESH_LOCK:
+        return _refresh_portal_epg_inner(portal_id, p, force=force)
+
+
+def _refresh_portal_epg_inner(portal_id, p, force=False):
     epg_url = p.get('epg_url', '')
     if not epg_url:
         ptype = p.get('type', 'm3u')
@@ -438,7 +463,7 @@ def _refresh_portal_epg(portal_id, p, force=False):
     if epg_url:
         info('[EPG] fetching XMLTV guide (URL redacted)')
         try:
-            raw, _ = http_get(epg_url)
+            raw, _ = http_get(epg_url, max_bytes=MAX_XML_BYTES, max_seconds=60)
             channels, programmes = parse_xmltv(raw)
         except Exception as e:
             error('[EPG] fetch failed: {}'.format(type(e).__name__))
@@ -448,20 +473,10 @@ def _refresh_portal_epg(portal_id, p, force=False):
         programmes, channels = _fetch_stb_bulk(p)
 
     if not programmes and p.get('type') == 'stb':
-        warn('[EPG] XMLTV leer – verwende STB get_epg_info bulk')
-        programmes, channels = _fetch_stb_bulk(p)
-
-    if not programmes and p.get('type') == 'stb':
-        warn('[EPG] bulk leer – starte get_short_epg async im Hintergrund')
-        def _short_epg_bg():
-            progs, _ = _fetch_stb_short_epg(p)
-            if progs:
-                _save_disk(portal_id, progs)
-                _mem_set(portal_id, progs)
-                info(f'[EPG] {portal_id}: {len(progs)} channels (short_epg bg)')
-        threading.Thread(target=_short_epg_bg, daemon=True,
-                         name=f'epg_short_{portal_id}').start()
-        return {}
+        warn('[EPG] bulk leer – verwende get_short_epg im EPG-Worker')
+        # Already running in an EPG worker; do not spawn an untracked second
+        # refresh that can race the next request or bypass the memory gate.
+        programmes, channels = _fetch_stb_short_epg(p)
 
     # Preserve native Xtream/M3U/STB EPG, then overlay configured XMLTV feeds.
     # Each feed is optional: a failed remote URL never deletes working guide data.
@@ -520,12 +535,15 @@ def _fetch_stb_short_epg(p):
     if not stb or not stb.authenticate():
         return {}, {}
 
-    channels_list = stb.get_live_channels()
+    channels_list = stb.get_live_channels()[:MAX_CHANNELS]
     programmes    = {}
     ch_names      = {}
     lock          = threading.Lock()
+    deadline = time.monotonic() + 60
 
     def _fetch(ch):
+        if time.monotonic() >= deadline:
+            return
         ch_id  = str(ch.get('id', ''))
         tvg_id = ch.get('epg_channel_id') or ch_id
         entries = stb.get_short_epg(ch_id, count=10)
@@ -534,7 +552,7 @@ def _fetch_stb_short_epg(p):
                 programmes[tvg_id] = entries
                 ch_names[tvg_id]   = ch.get('name', tvg_id)
 
-    workers = min(20, max(1, len(channels_list)))
+    workers = min(4, max(1, len(channels_list)))
     with ThreadPoolExecutor(max_workers=workers) as ex:
         list(ex.map(_fetch, channels_list))
 
@@ -556,7 +574,10 @@ def warmup_async(portal_id, p, force=False):
         def _run():
             import xbmc
             xbmc.sleep(200)
-            _refresh_portal_epg(portal_id, p, force=force)
+            try:
+                _refresh_portal_epg(portal_id, p, force=force)
+            except Exception as exc:
+                error('[EPG] background refresh failed: ' + type(exc).__name__)
 
         t = threading.Thread(target=_run, daemon=True, name=f'epg_warmup_{portal_id}')
         t.start()

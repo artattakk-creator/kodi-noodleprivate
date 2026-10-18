@@ -4,6 +4,8 @@ import os
 import pathlib
 import tempfile
 import unittest
+import time
+import uuid
 import xml.etree.ElementTree as ET
 from unittest import mock
 
@@ -30,6 +32,15 @@ class MemoryVFS:
         self.dirs.add(path)
         return True
 
+    def File(self, path, mode='r'):
+        class File:
+            def __enter__(inner): return inner
+            def __exit__(inner, *args): pass
+            def write(inner, value):
+                self.files.add(path)
+                return True
+        return File()
+
     def listdir(self, path):
         return [], [os.path.basename(f) for f in self.files if os.path.dirname(f) == path]
 
@@ -51,14 +62,14 @@ class CacheFolderRegression(unittest.TestCase):
     def _load_cache_functions(self, location, missing=None):
         source = (ROOT / "resources/lib/utils.py").read_text(encoding="utf-8")
         parsed = ast.parse(source)
-        names = ("cache_dir", "cache_clear")
+        names = ("cache_dir", "cache_clear", "_cache_is_writable", "_private_cache_dir")
         nodes = [n for n in parsed.body if isinstance(n, ast.FunctionDef) and n.name in names]
         self.assertEqual(len(nodes), len(names))
         temp = tempfile.TemporaryDirectory()
         self.addCleanup(temp.cleanup)
         vfs = MemoryVFS(temp.name, missing)
         notices = []
-        ns = dict(os=os, xbmcvfs=vfs, ADDON_ID="plugin.video.xtreammate",
+        ns = dict(os=os, time=time, uuid=uuid, _CACHE_WRITABLE={}, xbmcvfs=vfs, ADDON_ID="plugin.video.xtreammate",
                   setting=lambda key: location if key == "cache_dir" else "",
                   warn=notices.append, info=lambda *a: None)
         exec(compile(ast.Module(body=nodes, type_ignores=[]), "<cache>", "exec"), ns)

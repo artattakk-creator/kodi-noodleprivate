@@ -4,8 +4,6 @@ Built-in programme IDs take precedence; external feeds fill missing IDs.
 Saved sender mappings take precedence for individual Xtream streams.
 Configuration is separate from Kodi caches and survives add-on upgrades.
 """
-import gzip
-import io
 import json
 import os
 import re
@@ -16,7 +14,7 @@ from urllib.parse import urlsplit
 
 from utils import addon_data_dir, cache_key, cache_get, cache_set, http_get, error
 
-MAX_XML_BYTES = 80 * 1024 * 1024
+from epg_io import MAX_XML_BYTES, MAX_PROGRAMMES
 INDEX_TTL = 30 * 86400
 
 # Public third-party XMLTV links; availability and channel coverage can change.
@@ -174,15 +172,12 @@ def _read_source(source):
     else:
         if urlsplit(uri).scheme.lower() not in ('http', 'https'):
             raise ValueError('Nur HTTP(S)-EPG-Adressen sind erlaubt')
-        raw, _ = http_get(uri, timeout=20)
+        raw, _ = http_get(uri, timeout=20, max_bytes=MAX_XML_BYTES, max_seconds=60)
     raw = bytes(raw) if not isinstance(raw, bytes) else raw
     if len(raw) > MAX_XML_BYTES:
         raise ValueError('XMLTV-Datei ist zu groß (max. 80 MB)')
-    if raw[:2] == b'\x1f\x8b':
-        with gzip.GzipFile(fileobj=io.BytesIO(raw)) as archive:
-            raw = archive.read(MAX_XML_BYTES + 1)
-        if len(raw) > MAX_XML_BYTES:
-            raise ValueError('Entpackte XMLTV-Daten sind zu groß')
+    # GZIP is expanded incrementally by parse_xmltv, under the same size budget
+    # as the provider guide. Never allocate the whole uncompressed feed here.
     if b'<!DOCTYPE' in raw[:4096].upper() or b'<!ENTITY' in raw[:4096].upper():
         raise ValueError('XML-Dokument mit DTD/Entities nicht erlaubt')
     return raw
@@ -252,13 +247,14 @@ def _link_cached_xtream_channels(portal_id, programmes, channel_index):
 def merge_sources(portal_id, builtin_programmes, parse_xmltv):
     """Fetch enabled XMLTV feeds; retain built-in data when any feed fails.
 
-    Feed order is priority order: the last enabled feed wins for overlapping
-    channel IDs. Explicit sender-to-XMLTV mapping is applied last and wins.
+    Provider IDs win, followed by the first enabled external feed. Explicit
+    sender-to-XMLTV mapping is applied last and wins.
     """
     state = configuration(portal_id)
     merged = dict(builtin_programmes or {})
     index = {}
     successes, failures = 0, 0
+    programme_count = sum(len(entries) for entries in merged.values())
     for source in state['sources']:
         if not source.get('enabled', True):
             continue
@@ -267,6 +263,12 @@ def merge_sources(portal_id, builtin_programmes, parse_xmltv):
             channels, programmes = parse_xmltv(raw)
             if not programmes:
                 raise ValueError('XMLTV enthält keine Sendungen')
+            additions = {cid: entries for cid, entries in programmes.items()
+                         if entries and not merged.get(cid)}
+            added_count = sum(len(entries) for entries in additions.values())
+            if programme_count + added_count > MAX_PROGRAMMES:
+                raise ValueError('Combined XMLTV programme limit exceeded')
+            programme_count += added_count
             index.update(channels)
             for channel_id, entries in programmes.items():
                 if entries and not merged.get(channel_id):

@@ -11,6 +11,7 @@ from pathlib import Path
 from unittest import mock
 
 LIB = Path(__file__).resolve().parents[1] / 'src/plugin.video.xtreammate/resources/lib'
+sys.path.insert(0, str(LIB))
 
 
 class EpgSourceTests(unittest.TestCase):
@@ -24,7 +25,7 @@ class EpgSourceTests(unittest.TestCase):
         utils.cache_key = lambda s: sha256(s.encode('utf-8')).hexdigest()
         utils.cache_get = lambda key, max_age=0: self.cache.get(key)
         utils.cache_set = lambda key, value: self.cache.__setitem__(key, value)
-        utils.http_get = lambda uri, timeout=20: (b'<tv/>', {})
+        utils.http_get = lambda uri, timeout=20, **kwargs: (b'<tv/>', {})
         utils.error = lambda message: None
         p = mock.patch.dict(sys.modules, {'utils': utils})
         p.start()
@@ -104,7 +105,7 @@ class EpgSourceTests(unittest.TestCase):
         compressed = gzip.compress(b'<tv><programme/></tv>')
         with mock.patch.object(self.module, 'http_get', return_value=(compressed, {})):
             out = self.module._read_source({'uri':'https://example.test/a.gz', 'local':False})
-        self.assertTrue(out.startswith(b'<tv>'))
+        self.assertEqual(gzip.decompress(out), b'<tv><programme/></tv>')
         with mock.patch.object(self.module, 'http_get', return_value=(b'<!DOCTYPE tv>', {})):
             with self.assertRaises(ValueError):
                 self.module._read_source({'uri':'https://example.test/tv.xml', 'local':False})

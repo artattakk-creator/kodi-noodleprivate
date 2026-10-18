@@ -11,6 +11,7 @@ import xml.etree.ElementTree as ET
 from unittest import mock
 
 LIB = Path(__file__).resolve().parents[1] / "src/plugin.video.xtreammate/resources/lib"
+sys.path.insert(0, str(LIB))
 
 
 def _module(name, file):
