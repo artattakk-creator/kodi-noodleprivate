@@ -1,9 +1,11 @@
 # Übergabeblock für einen neuen XCMate-Chat
 
+> **AKTUELLER ARBEITSAUFTRAG 18.10.2026 (hat Vorrang vor historischen Angaben unten):** XCMate **0.1.23** ist über `main` veröffentlicht und auf dem echten Android-TV mit `TypeError` beim TV-`WindowDialog` gescheitert; die EPG-Aktualisierung lieferte keine neuen Guide-Daten. Lies **zuerst** [CODEX_HANDOFF_ANDROID_023_P0_EPG_DE.md](CODEX_HANDOFF_ANDROID_023_P0_EPG_DE.md), [CODEX_STATUS_CURRENT_DE.md](CODEX_STATUS_CURRENT_DE.md), [Issue #12](https://github.com/artattakk-creator/kodi-noodleprivate/issues/12) und [Issue #13](https://github.com/artattakk-creator/kodi-noodleprivate/issues/13). Prüfe besonders `live_overlay.py::LiveNavigator._build_controls` und die **falsch benannten `ControlList`-Keywords `itemHeight`/`space`** gegen Kodi 21/Omega. Neuer Fix-Branch + strikte Regressionstests + PR. **`main` nicht ohne Nutzerfreigabe verändern.** Der Projektname des geplanten separaten Skins ist **XCMate Skin** (Issue #14), erst nach P0/EPG-Prüfung.
+
 > **AKTUALISIERUNG 18.10.2026:** XCMate **0.1.22** wurde nach 180 bestandenen GitHub-CI-Tests via [PR #11](https://github.com/artattakk-creator/kodi-noodleprivate/pull/11) in `main` aufgenommen und über das GS-Media-Repository veröffentlicht. **Android-TV-Abnahme steht aus.** Dieses Dokument enthält darunter teilweise historische Versions-/Fehlerstände. Für den verbindlichen aktuellen Zustand zuerst [CODEX_STATUS_CURRENT_DE.md](CODEX_STATUS_CURRENT_DE.md) und [KODI21_FIX_022_DE.md](KODI21_FIX_022_DE.md) lesen.
 
 
-Wir setzen mein Kodi-/IPTV-Projekt **XCMate** (GS Media) fort. Arbeite direkt im GitHub-Repository https://github.com/artattakk-creator/kodi-noodleprivate auf `main`.
+Wir setzen mein Kodi-/IPTV-Projekt **XCMate** (GS Media) fort. Repository: https://github.com/artattakk-creator/kodi-noodleprivate. **Ausgangsbasis `main`, Änderungen ausschließlich in neuem Entwicklungsbranch.**
 
 **WICHTIG: Bitte zuerst diese GitHub-Dateien lesen:**
 1. `docs/XCMate/README.md`
