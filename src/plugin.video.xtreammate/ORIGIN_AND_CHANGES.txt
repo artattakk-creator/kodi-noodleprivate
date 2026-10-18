@@ -12,3 +12,5 @@ posters are fetched by Kodi as needed and are not predownloaded en masse.
 There is no video source or login embedded in this package. Use authorized services.
 
 2026-10-14: Visible product branding changed to XCMate at release 0.1.9. Internal Kodi addon ID `plugin.video.xtreammate` unchanged to preserve upgrades and user profiles. Upstream attribution and GPL remain unchanged.
+
+2026-10-18: XCMate 0.1.22 test candidate: explicit Kodi 21 WindowDialog control construction and onControl callbacks, single native navigation/selection, bundled focus textures, playback ownership cleanup, writable-cache fallback, per-programme XMLTV validation, bounded streaming HTTP/GZIP and asynchronous manual EPG refresh. Existing accounts, mappings and add-on identity preserved. Android-TV acceptance pending.

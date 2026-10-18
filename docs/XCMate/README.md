@@ -1,6 +1,6 @@
 # XCMate – zentraler Projekteinstieg
 
-**Status:** 15.10.2026, Release 0.1.17 mit sichtbar bestätigbarem Kodi-Dialog und eigenem XML-Popup (Android-Darstellungstest offen)  
+**Status:** 18.10.2026, XCMate **0.1.22 als Testkandidat auf Entwicklungsbranch**, noch keine Produktionsveröffentlichung; Kodi-21-Dialog-/Cache-/EPG-Korrekturen lokal geprüft, Android-Abnahme offen.
 **Repository:** https://github.com/artattakk-creator/kodi-noodleprivate  
 **Kodi-Repository:** GS Media Kodi Repository 1.7.0  
 **Angezeigter Add-on-Name:** XCMate  
@@ -9,6 +9,8 @@
 Diese Dateien sind die verbindliche Arbeitsgrundlage für spätere Chats und Entwickler. Zuerst `PROJECT_HANDOFF_DE.md` lesen, danach `ROADMAP_AND_QA_DE.md`.
 
 ## Dokumente
+
+- [0.1.22: Korrekturen, Testbericht und Android-Abnahme](KODI21_FIX_022_DE.md)
 
 - [Projektübergabe / Architektur / aktueller Zustand](PROJECT_HANDOFF_DE.md)
 - [Neue Serienfunktion: Fortsetzen, Gesehen-Status, nächste Folge](SERIES_PROGRESS_SPEC_DE.md)

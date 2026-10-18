@@ -261,5 +261,53 @@ class OverlayLifecycleTests(unittest.TestCase):
             thread.call_args.kwargs['target']()
             self.client.get_short_epg.assert_called_once()
 
+    def run_service_once(self, existing=None):
+        class Monitor:
+            def __init__(self): self.finished=False
+            def abortRequested(self): return self.finished
+            def waitForAbort(self, timeout): self.finished=True; return True
+        sys.modules['xbmc'].Monitor=Monitor
+        sys.modules['utils'].setting_bool=lambda key,default=False:False
+        sys.modules['utils'].setting_int=lambda key,default=0:default
+        sys.modules['utils'].error=lambda *a:None
+        sys.modules['portals'].get_active=lambda:[self.portal]
+        remote=types.ModuleType('remote_control')
+        remote.COMMAND_KEY='XtreamMate.RemoteCommand'
+        remote.parse_command=lambda _:None
+        remote.ensure_for_live_tv=mock.Mock(return_value='native')
+        remote.release_unrequested_keymap=mock.Mock(return_value=False)
+        healthspec=importlib.util.spec_from_file_location('omega_health',LIB/'service_health.py')
+        health=importlib.util.module_from_spec(healthspec)
+        healthspec.loader.exec_module(health)
+        with mock.patch.dict(sys.modules,dict(live_overlay=self.module,remote_control=remote,service_health=health)):
+            spec=importlib.util.spec_from_file_location('omega_service',LIB.parents[1]/'service.py')
+            module=importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            with mock.patch.object(module.IPTVMasterService,'_start_reminders'):
+                service=module.IPTVMasterService()
+            if existing:
+                service._overlay=existing
+                service._last_session_nonce=self.module.session_from_property(self.props[self.module.SESSION_KEY])['nonce']
+            service.run()
+        self.assertNotIn('Fehler',self.props.get(health.LAST_ERROR,''))
+        return remote
+
+    def test_service_starts_real_dialog_and_cleans_it_on_shutdown(self):
+        self.module.announce('p','1')
+        candidate=self.module.LiveNavigator(self.portal,'1')
+        with mock.patch.object(self.module,'LiveNavigator',return_value=candidate):
+            self.run_service_once()
+        self.assertTrue(candidate._drawn)
+        self.assertEqual(candidate.shows,1)
+        self.assertEqual(candidate.closes,1)
+        self.assertNotIn(self.module.SESSION_KEY,self.props)
+
+    def test_service_releases_foreign_playback_without_new_key_events(self):
+        self.module.announce('p','1')
+        self.player.getPlayingFile=lambda:'plugin://another.addon/movie'
+        self.run_service_once(existing=self.overlay)
+        self.assertTrue(self.overlay._closed)
+        self.assertEqual(self.overlay.closes,1)
+
 
 if __name__ == '__main__': unittest.main()
