@@ -33,6 +33,21 @@
 
 Die neue XMLTV-Obergrenze beträgt **80 MiB entpackte XMLTV-Daten pro Quelle**, 150.000 Sendungen insgesamt und weitere dokumentierte Limits. Ein zuvor analysierter DE-MASTER-XMLTV-Datensatz war ca. 100 MiB unkomprimiert und kann dadurch bei dieser Version abgewiesen werden. Das ist ein **offenes Kompatibilitäts-/Abnahmethema**, nicht als funktionierendes EPG bewerten. Prüfe gegebenenfalls kleinere DE/AT/CH-Quellen und diskutiere später Streaming-Senderfilterung, ohne das Speicherlimit unkontrolliert zu erhöhen.
 
+## Android-TV-Rückmeldung vom 18.10.2026 (Versionsstand noch NICHT bestätigt)
+
+**Achtung: Der Nutzer vermutet, dass beim Test noch XCMate 0.1.21 installiert war.** Die untenstehenden Beobachtungen dürfen daher nicht als Erfolg oder Misserfolg der 0.1.22-Korrekturen gewertet werden, solange die auf dem Fernseher angezeigte Versionsnummer nicht geprüft ist.
+
+- XCMate-Hauptmenü war wieder aufrufbar.
+- In `Konfigurieren` öffnete sich die EPG-Verwaltung, und eine Meldung bestätigte den **Start** eines Hintergrunddownloads. Ob XMLTV-Dateien vollständig geladen und korrekt zugeordnet wurden, ist noch unbestätigt.
+- `Neueste Filme` zeigte eine Liste; ein Film ließ sich starten und abspielen.
+- Bei der Rückkehr bzw. beim Versuch, die VOD-Filmwiedergabe zu stoppen, erschien ein schwarzer Bildschirm und der Nutzer konnte nicht normal zurück navigieren. Ursache ungeklärt; **VOD/Player-Rückkehr als separaten offenen Fehler führen**, nicht vorschnell auf das Live-TV-Overlay zurückführen.
+- Der separat gestartete XCMate-Popup-Diagnosetest zeigte ein Fenster. Tasteneingaben wurden durch wechselnde Kodi-Keycodes und akustisch wahrgenommen; **eine sichtbare Fokus-/Cursorbewegung war nicht eindeutig feststellbar**.
+- Noch kein Diagnose-Screenshot bzw. Gerätelog zur Auswertung übermittelt. Ein Kodi-Neustart war wegen des schwarzen Bildschirms in Betracht gezogen worden.
+
+**Diagnosedaten:** `popup_probe.py` schreibt Popup-Status, letzte Taste, Anzahl und Fokus in `xbmcgui.Window(10000)`-Properties. Diese **können beim vollständigen Kodi-Neustart verschwinden**. Bilder vor dem Neustart bevorzugen. Kodi-Protokoll und ggf. `kodi.old.log` nach dem Neustart prüfen; Logs vor einer Weitergabe von Zugangsdaten bereinigen.
+
+**Nächster Test:** Zunächst Versionsnummer auf Android-TV kontrollieren. Falls noch 0.1.21, über das GS-Media-Kodi-Repository auf 0.1.22 aktualisieren, Kodi neu starten und Start/EPG/Popup/Fokus/VOD-Abbruch getrennt testen. Erst danach Folgereparatur auf einem Codex-Branch planen.
+
 ## Verbindliche Aufgaben für den Android-TV-Abnahmetest
 
 1. Kodi aus dem GS-Media-Repository regulär auf XCMate `0.1.22` aktualisieren, Add-on- und Profildaten beibehalten und Kodi vollständig neu starten.
