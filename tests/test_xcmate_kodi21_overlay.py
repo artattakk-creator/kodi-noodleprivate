@@ -334,5 +334,20 @@ class OverlayLifecycleTests(unittest.TestCase):
         self.overlay._tune_deadline=0
         self.assertFalse(self.overlay.owns_playback())
 
+    def test_rejected_native_event_is_distinct_from_no_callback(self):
+        self.player.getPlayingFile=lambda:'plugin://another.addon/movie'
+        self.overlay.onAction(types.SimpleNamespace(getId=lambda:7,getButtonCode=lambda:23))
+        self.assertTrue(self.overlay._closed)
+        self.assertIn('ACTION_REJECTED',self.props['XtreamMate.Diagnostic.input'])
+        self.assertIn('"action_id": 7',self.props['XtreamMate.Diagnostic.input'])
+
+    def test_malformed_and_expired_markers_have_distinct_diagnostic_codes(self):
+        import json
+        self.assertIsNone(self.module.session_from_property('not-json'))
+        self.assertIn('MARKER_INVALID',self.props['XtreamMate.Diagnostic.session'])
+        self.assertIsNone(self.module.session_from_property(json.dumps(
+            dict(pid='p',sid='1',nonce='n',at=1)),now=100000))
+        self.assertIn('MARKER_EXPIRED',self.props['XtreamMate.Diagnostic.session'])
+
 
 if __name__ == '__main__': unittest.main()

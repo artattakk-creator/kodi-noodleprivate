@@ -10,6 +10,7 @@ the list explicitly; native events must not move it a second time. No network
 requests are made in input callbacks.
 """
 import json
+import math
 import os
 import time
 import uuid
@@ -59,11 +60,18 @@ def session_from_property(raw, now=None):
         obj = json.loads(raw)
         if (not isinstance(obj, dict) or not obj.get('pid') or not obj.get('sid')
                 or not obj.get('nonce')):
+            if raw: trace('session','MARKER_INVALID',marker=True)
             return None
-        if abs((time.time() if now is None else now) - float(obj.get('at', 0))) > 86400:
+        at=float(obj.get('at',0))
+        if not math.isfinite(at):
+            trace('session','MARKER_INVALID',marker=True)
+            return None
+        if abs((time.time() if now is None else now) - at) > 86400:
+            trace('session','MARKER_EXPIRED',marker=True)
             return None
         return obj
     except (TypeError, ValueError, KeyError):
+        if raw: trace('session','MARKER_INVALID',marker=True)
         return None
 
 
@@ -703,14 +711,17 @@ class LiveNavigator(xbmcgui.WindowDialog):
         Log numeric action/buttoncode only; never include stream URLs.
         The keymap bridge is a fallback, not the sole remote input path.
         """
-        if not self._accept_input():
-            return
         key = int(action.getId())
-        self._intro_deadline = None
         try:
             raw = int(action.getButtonCode())
         except Exception:
             raw = 0
+        was_closed=getattr(self,'_closed',False)
+        if not self._accept_input():
+            trace('input','ACTION_IGNORED_CLOSED' if was_closed else 'ACTION_REJECTED',
+                  action_id=key,button_code=raw)
+            return
+        self._intro_deadline = None
         marker = xbmcgui.Window(10000)
         marker.setProperty('XtreamMate.LastRemoteKey', '{} / {} (native)'.format(key, raw))
         marker.setProperty('XtreamMate.AutoPopupStatus',
