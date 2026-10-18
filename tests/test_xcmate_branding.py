@@ -9,10 +9,21 @@ class XCMateBrandingTests(unittest.TestCase):
     def test_display_name_and_version(self):
         addon=ET.parse(ROOT/"addon.xml").getroot()
         self.assertEqual(addon.get("name"),"XCMate")
-        self.assertEqual(addon.get("version"),"0.1.18")
+        self.assertEqual(addon.get("version"),"0.1.19")
         self.assertEqual(addon.get("id"),"plugin.video.xtreammate")
         self.assertTrue(all("XCMate" in (node.text or "")
                             for node in addon.findall(".//summary")))
+    def test_recovery_keeps_epg_dialog_and_startup_nonblocking(self):
+        entry=(ROOT/"default.py").read_text(encoding="utf-8")
+        main=(ROOT/"resources/lib/main.py").read_text(encoding="utf-8")
+        self.assertIn("traceback.format_tb(exc.__traceback__)",entry)
+        self.assertIn("XCMate – Startfehler",entry)
+        epg=main.split("    def _epg_sources(self):",1)[1].split("    def _refresh_epg(self):",1)[0]
+        self.assertIn("xbmcplugin.endOfDirectory",epg)
+        self.assertLess(epg.index("xbmcplugin.endOfDirectory"),epg.index("manage(portal)"))
+        root=main.split("    def _root(self):",1)[1].split("    def _maybe_autoplay_start(self",1)[0]
+        self.assertNotIn("self._maybe_autoplay_start(active[0])",root)
+
     def test_kodi_settings_and_languages(self):
         settings=(ROOT/"resources/settings.xml").read_text(encoding="utf-8")
         self.assertIn("XCMate: Android-Fernbedienung anlernen",settings)

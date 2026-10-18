@@ -338,7 +338,8 @@ class Router:
 
         if len(active) == 1:
             self._show_portal_home(active[0])
-            self._maybe_autoplay_start(active[0])
+            # Recovery 0.1.19: do not launch video while Kodi builds the menu.
+            # Autoplay stays configured and can be re-enabled after TV UI repair.
             return
 
         from concurrent.futures import ThreadPoolExecutor, as_completed as _asc
@@ -2384,6 +2385,11 @@ class Router:
         xbmc.executebuiltin('Container.Refresh')
 
     def _epg_sources(self):
+        # Close Kodi's directory request BEFORE opening a modal EPG manager.
+        # Otherwise clicking this folder action can leave a persistent spinner.
+        if self._handle >= 0:
+            xbmcplugin.endOfDirectory(self._handle, succeeded=False,
+                                      cacheToDisc=False)
         import portals as P
         from epg_sources import manage
         portal = P.get_by_id(self._params.get('pid', ''))
