@@ -1,14 +1,27 @@
 # XCMate / Codex – aktueller Projekt- und Release-Status (verbindliche Übergabe)
 
 **Stand:** 18.10.2026  
-**Veröffentlichte XCMate-Version:** `0.1.22` (Live-Wiedergabe bestätigt; Live-TV-Navigation und EPG in der Senderliste laut Issue #12 fehlgeschlagen). **Testkandidat:** `0.1.23` auf separatem Branch, Android-Prüfung offen.
+**Veröffentlichte XCMate-Version:** `0.1.23` (18.10.2026, reguläres GS-Media-Kodi-Repository). **Geräteabnahme für 0.1.23 offen.** Für 0.1.22 ist der P0-Fernbedienungsfehler einschließlich „XCMate Navigation konnte nicht geöffnet werden“ bestätigt.
 **Technische Kodi-ID:** `plugin.video.xtreammate` – nicht ändern  
 **Repository:** https://github.com/artattakk-creator/kodi-noodleprivate  
 **Hauptbranch:** `main`  
-**Codex-Entwicklungsbranch:** `fix/issue-12-live-session-diagnostics` (0.1.23, nicht veröffentlicht); vorheriger Branch `fix/xcmate-kodi21-overlay-epg` ist historisch.
+**Codex-Entwicklungsbranch:** `fix/issue-12-live-session-diagnostics` (0.1.23, via [PR #15](https://github.com/artattakk-creator/kodi-noodleprivate/pull/15) nach `main` übernommen); vorheriger Branch `fix/xcmate-kodi21-overlay-epg` ist historisch.
 **Übernahme 0.1.22:** [Pull Request #11](https://github.com/artattakk-creator/kodi-noodleprivate/pull/11), Merge-Commit `c14d7815bf0ca2e93dd3e1fa5225ca1df36c8f54`.
 **Veröffentlichung 0.1.22:** GitHub-Action [Publish GS Media Kodi updates](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39126897807) erfolgreich; `addons.xml` meldet XCMate `0.1.22`, ZIP `plugin.video.xtreammate/plugin.video.xtreammate-0.1.22.zip` vorhanden.
 **Letzter geprüfter Repository-Stand nach Auto-Publish (vor dieser Statusaktualisierung):** `9b590ea2dc0983fa75b084582431065211de1484`.
+
+## Veröffentlichungsnachtrag 0.1.23 – 18.10.2026 (aktuell maßgeblich)
+
+**XCMate 0.1.23 ist nach [PR #15](https://github.com/artattakk-creator/kodi-noodleprivate/pull/15) in `main` veröffentlicht.**
+- GitHub-PR-CI: [202 automatisierte Tests bestanden](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39136334056).
+- Merge-Commit: `510b7953b158384d4ab56d3381efad08bfe4efc7`.
+- Automatischer Publish-Workflow: [erfolgreich](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39136445020).
+- `addons.xml` und `src/plugin.video.xtreammate/addon.xml` weisen **Version 0.1.23** aus. Veröffentlichte ZIP: `plugin.video.xtreammate/plugin.video.xtreammate-0.1.23.zip`, 239771 Byte.
+- Die GitHub-Actions-Verpackung erzeugte einen **byteweise anderen ZIP-Container** als der Codex-Testbranch bei gleicher Dateigröße. Die anfänglich veraltete SHA-256-Sidecardatei wurde nach Messung der veröffentlichten ZIP korrigiert: `570b71356782516c95cfdcaf64f6a65d722860fbe5a2bc2935d71eb422ebff99`. Der ursprünglich unten genannte Codex-Branch-Hash `d3242e...` ist **nur der historische Kandidatenhash**, nicht der Release-Hash.
+- Die Aussage im unten folgenden Abschnitt „nicht nach main übernommen“ beschreibt den **damaligen Testkandidatenstand** und ist durch diesen Veröffentlichungsnachtrag überholt.
+- **Neuer bestätigter 0.1.22-Gerätebefund:** Das reale Live-TV löste die Meldung **„XCMate Navigation konnte nicht geöffnet werden“** aus (siehe [Issue #12](https://github.com/artattakk-creator/kodi-noodleprivate/issues/12)). Der Dienst hat damit eine Ausnahme während des Overlay-Startversuchs erkannt; genaue Exception ohne Geräte-Diagnose noch nicht belegt.
+- **Geräteprüfung 0.1.23 ausstehend:** Nach Kodi-Repo-Update zuerst Add-on-Version und `service build=23` bestätigen, anschließend Navigation, Dialog/Fokus und EPG im Diagnosetool erfassen. **Nicht** behaupten, dass der P0 auf Android bereits behoben ist.
+- Offene Pläne: EPG-Status-/Titelvorschau [Issue #13](https://github.com/artattakk-creator/kodi-noodleprivate/issues/13) und [XCMate Skin #14](https://github.com/artattakk-creator/kodi-noodleprivate/issues/14).
 
 ## Bearbeitung Issue #12 – Testkandidat 0.1.23 (18.10.2026)
 
