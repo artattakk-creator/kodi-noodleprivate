@@ -122,8 +122,11 @@ class IPTVMasterService(xbmc.Monitor):
         while not self.abortRequested():
             loops += 1
             heartbeat(marker, instance, loops, phase='läuft')
-            self._maybe_refresh_epg()
-            self._maybe_warm_catalogs()
+            # Safe mode: heavy Xtream catalog and XMLTV downloads stay off
+            # unless explicitly enabled. The player/remote service still runs.
+            if setting_bool('xc_background_prefetch', False):
+                self._maybe_refresh_epg()
+                self._maybe_warm_catalogs()
             try:
                 from live_overlay import start_if_eligible, session_from_property, SESSION_KEY
                 from remote_control import parse_command, COMMAND_KEY

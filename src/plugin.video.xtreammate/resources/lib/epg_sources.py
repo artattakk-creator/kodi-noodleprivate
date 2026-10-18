@@ -317,8 +317,8 @@ def _choose_preset(portal):
         dialog.notification('XCMate EPG', 'EPG-Paket bereits vorhanden')
         return False
     dialog.notification('XCMate EPG',
-                        '{} Quelle(n) ergänzt – EPG wird aktualisiert'.format(len(added)))
-    warmup_async(portal['id'], portal, force=True)
+                        '{} Quelle(n) gespeichert. EPG bei Bedarf manuell laden.'.format(len(added)))
+    # Avoid automatically parsing several large XMLTV files on Android TV.
     return True
 
 

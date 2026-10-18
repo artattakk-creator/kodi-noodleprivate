@@ -80,6 +80,10 @@
              action="RunPlugin(plugin://plugin.video.xtreammate/?action=epg_sources)"/>
     <setting id="epg_enabled"         type="bool"   label="32236" default="true"/>
     <setting id="epg_lines"           type="slider" label="32237" default="3"    range="0,1,5"/>
+    <!-- Safety default: do not download all EPG files and Xtream catalogs on Kodi startup. -->
+    <setting id="xc_background_prefetch" type="bool"
+             label="XCMate: Automatische Hintergrund-Downloads (EPG/Kataloge) erlauben"
+             default="false"/>
     <setting id="epg_auto_refresh"    type="bool"   label="32231" default="true"/>
     <setting id="epg_refresh_hours"   type="slider" label="32232" default="12" range="1,1,48"/>
     <setting id="epg_hours_ahead"     type="slider" label="32233" default="12" range="2,2,24"/>
@@ -96,7 +100,9 @@
   <category label="32250">
     <setting id="cache_playlists" type="bool"   label="32251" default="true"/>
     <setting id="cache_epg"       type="bool"   label="32252" default="true"/>
-    <setting id="cache_dir"       type="text"   label="32253" default=""/>
+    <!-- Kodi browse dialog saves the chosen folder; empty uses the private default. -->
+    <setting id="cache_dir"       type="folder" label="32253"
+             source="auto" option="writeable" default=""/>
     <setting id="clear_cache"     type="action" label="32254"
              action="RunPlugin(plugin://plugin.video.xtreammate/?action=clear_cache)"/>
     <setting id="favourites_file"   type="text" label="32255" default=""/>

@@ -51,11 +51,25 @@ def setting_int(key, default=0):
         return default
 
 def cache_dir():
-    path = setting('cache_dir')
-    if not path:
-        path = xbmcvfs.translatePath(f'special://userdata/addon_data/{ADDON_ID}/cache/')
-    xbmcvfs.mkdirs(path)
-    return path
+    """Use the selected Kodi folder, falling back to the add-on-owned cache.
+
+    The folder picker persists cache_dir in Kodi. Never erase other user files.
+    Missing or inaccessible custom locations must not stop XCMate from starting.
+    """
+    fallback = xbmcvfs.translatePath(
+        f'special://userdata/addon_data/{ADDON_ID}/cache/')
+    selected = (setting('cache_dir') or '').strip()
+    if selected:
+        try:
+            path = (xbmcvfs.translatePath(selected)
+                    if selected.startswith('special://') else selected)
+            if xbmcvfs.exists(path) or xbmcvfs.mkdirs(path):
+                return path
+        except Exception:
+            pass
+        warn('Configured XCMate cache directory unavailable; using private default')
+    xbmcvfs.mkdirs(fallback)
+    return fallback
 
 def addon_data_dir():
     path = xbmcvfs.translatePath(f'special://userdata/addon_data/{ADDON_ID}/')
@@ -173,7 +187,11 @@ def cache_clear():
     cd = cache_dir()
     dirs, files = xbmcvfs.listdir(cd)
     for fn in files:
-        if fn.endswith('.json'):
+        # A user-selected folder may contain unrelated JSON. Only clear
+        # XCMate's hashed cache keys, never personal files or addon settings.
+        base, ext = os.path.splitext(fn)
+        if ext == '.json' and len(base) == 32 and all(
+                ch in '0123456789abcdef' for ch in base):
             xbmcvfs.delete(os.path.join(cd, fn))
     info('Cache cleared')
 
