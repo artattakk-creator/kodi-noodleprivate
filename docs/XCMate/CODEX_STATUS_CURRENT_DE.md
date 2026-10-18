@@ -16,6 +16,8 @@
 
 **Aktueller Test-/Änderungsbericht:** [KODI21_FIX_024_DE.md](KODI21_FIX_024_DE.md). P0-Codekorrektur lokal geprüft, Android-Abnahme offen. Die vollständige Ausgangsübergabe und Issues #12/#13 wurden gelesen.
 
+**GitHub:** [Entwurfs-PR #16](https://github.com/artattakk-creator/kodi-noodleprivate/pull/16), Code-/Paketcommit `1dc780f`; [CI-Run 39143315938 erfolgreich](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39143315938). Review-Artefakt `xcmate-review-16` erfolgreich hochgeladen; Produktions-Publish übersprungen. Prüfgrenzen des Cloud-Artefaktdownloads stehen im vollständigen Bericht. Kein Merge und keine Veröffentlichung auf `main`.
+
 - API-Fehler nachgewiesen: `ControlList(itemHeight, space)` wird von den strikten Omega-Signaturen mit `TypeError` abgewiesen. Korrigiert auf `_itemHeight`, `_space`; zuvor 18 Starttests rot, jetzt 23 strikte Dialog-/Callbacktests grün. Weitere direkte Kodi-GUI-Aufrufe und lokale Aliase werden mit einem repositoryweiten Signaturtest geprüft.
 - Navigator rendert höchstens 100 Sender je Seite statt bis zu 53.664 EPG-Zeilen. Seitenlinks, letzter Sender und absolute Tune-Zuordnung getestet. Derselbe `WindowDialog.onInit`-Fehler im Tastenanlerndialog ebenfalls korrigiert.
 - Persistente sichere Fehlerstufe/-klasse für Dialoge und EPG; EPG unterscheidet Download, Parse, Merge, HTTP/XMLTV-Eingangs- und Entpackgrenzen sowie Kanal-/Sendungslimits. `DOWNLOAD_FAILED` war bisher ein Catch-all nach bereits erfolgreichem Lesen; 3,59 MB belegen keine Größenüberschreitung. Reale externe Gerätefehler bleiben bis zum nächsten Abruf unbekannt.

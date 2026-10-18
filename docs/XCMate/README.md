@@ -10,7 +10,7 @@ Diese Dateien sind die verbindliche Arbeitsgrundlage für spätere Chats und Ent
 
 **Verbindliche nächste Ausbaustufen:** [EPG-Status & Vorschau – Issue #13](https://github.com/artattakk-creator/kodi-noodleprivate/issues/13) **vor** [XCMate Skin – Issue #14](https://github.com/artattakk-creator/kodi-noodleprivate/issues/14). Beides geplant, noch nicht implementiert. Der Live-TV-Navigationsfehler wurde auch mit 0.1.23 bestätigt und bleibt in [Issue #12](https://github.com/artattakk-creator/kodi-noodleprivate/issues/12) offen.
 
-**Aktuelle Bearbeitung:** [P0-Korrektur 0.1.24, API-Audit, 213 Tests und nächster Android-Test](KODI21_FIX_024_DE.md) auf `fix/kodi21-strict-gui-epg-diagnostics`. Testpaket vorbereitet; kein Merge/Produktiv-Release und keine Android-Abnahme. Issue #13 bleibt als vollständige Status-/Titelvorschau offen.
+**Aktuelle Bearbeitung:** [P0-Korrektur 0.1.24, API-Audit, 213 Tests und nächster Android-Test](KODI21_FIX_024_DE.md) auf `fix/kodi21-strict-gui-epg-diagnostics`, [Entwurfs-PR #16](https://github.com/artattakk-creator/kodi-noodleprivate/pull/16), GitHub-CI erfolgreich. Testpaket vorbereitet; kein Merge/Produktiv-Release und keine Android-Abnahme. Issue #13 bleibt als vollständige Status-/Titelvorschau offen.
 
 ## Dokumente
 
