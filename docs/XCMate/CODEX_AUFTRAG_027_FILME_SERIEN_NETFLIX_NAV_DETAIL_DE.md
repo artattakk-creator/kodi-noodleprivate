@@ -98,6 +98,8 @@ Beim Film-Cover-OK **eigene schöne Film-Detailseite** mit:
 
 **Für jede Phase:** Branch ab aktuellem `main`, Kodi-21-GUI-Test/Stubs und echte Android-TV-Abnahmebeschreibung; CI und PR, **kein Merge/Update-Release ohne Freigabe des Nutzers**. Je Funktion getrennt `implementiert` / `CI bestanden` / `in main` / `Android geprüft` fortschreiben.
 
+**GitHub-Umsetzungsticket:** [Issue #24 – Filme/Serien-UX](https://github.com/artattakk-creator/kodi-noodleprivate/issues/24). **Oberauftrag:** [Issue #23 – 0.1.27-Hauptmenü](https://github.com/artattakk-creator/kodi-noodleprivate/issues/23). Beide enthalten eine Entwicklungsanforderung, keinen bereits veröffentlichten Code.
+
 ## 8. Code-Fundstellen (bereits geprüft)
 
 - `main.py::_recent_media`: verwendet `latest_media.recent_entries(...limit=50)`, liefert Kodi-Directory-Widgets und bei VOD **sofortigen Abspiel-Link**, bei Serie Staffelordner. Als Datenbasis brauchbar, aber **noch keine horizontale XCMate-Landingpage**.
