@@ -136,6 +136,28 @@ Designs 2/3 und installierbare Downloadthemes sind derzeit nicht beauftragt. Bes
 Branding/Live-Texturen und BINGIE-Konfiguration erhalten. Nach Integration Geräteprüfungen
 A/B/C/E einschließlich Textkontrast, Safe Area und Speicherverbrauch wiederholen.
 
+## H – Englisch/Deutsch und Upgrade (alle Gerätefälle noch offen)
+
+1. Auf vorhandener **deutscher 0.1.26-Installation** Kandidat ohne Löschen des Profils installieren,
+   Kodi neu starten. Home weiter deutsch mit genau sechs Punkten; Settings zehn Kategorien.
+   Accounts, Startsender, Gruppen/Favoriten, EPG-Zuordnungen und `lang_priority` unverändert.
+2. Neues oder bewusst englisch eingestelltes **Testprofil**: sechs Homepunkte Start channel,
+   Live TV, EPG, Movies, Series, Settings. Medien, Suche (1 match / mehrere matches), EPG-
+   Tagesknöpfe, Widgetquellen, Resume und Reminderstatus englisch. Deutsch weiterhin gebündelt.
+3. Sprachwahl ist die bereits vorhandene Kodi-Nutzersprache, kein neuer XCMate-Paketmanager.
+   Sprache ausschließlich selbst im Testprofil ändern. XCMate/Settingsfenster vollständig
+   schließen und neu öffnen; bei gecachten nativen Settingslabels Kodi neu starten.
+   **Keinen sofortigen Livewechsel bereits geöffneter Kodi-Settings behaupten.**
+4. Eigene Testfixture mit einem fehlenden deutschen neuen Text: nur dieser Text Englisch,
+   übrige Oberfläche weiter Deutsch. Defekter Formatplatzhalter soll keinen Dialog abstürzen
+   lassen. Produktive PO-Dateien nicht am Gerät für diesen Test bearbeiten/überschreiben.
+5. Englischer UI-Test bei deutschem IPTV-Inhaltsfilter: UI bleibt Englisch, der Filter bleibt
+   auf Deutsch. Sender-/Film-/EPG-Originaltexte nicht als automatisch übersetzte Inhalte bewerten.
+6. Im neuen Guide Datum/Sender wählen, zu Video/anderem Fenster und zurück: Header/Fokus erhalten.
+   BINGIE-Widget nach Sprachwechsel neu öffnen/aktualisieren, ohne Skin-Dateien zu ändern.
+7. Sämtliche Live-Freeze-Fälle A erneut prüfen. Alte Overlaytexte werden in dieser Runde
+   bewusst nicht invasiv umgeschrieben; neue Lokalisierung ist kein kompletter Live-UI-Umbau.
+
 ## Review und regulärer Updateweg
 
 1. Testprotokoll mit installierter ZIP-SHA, Kodi-/Skinversion und konkreten PASS/FAIL-Werten

@@ -1,5 +1,8 @@
 # XCMate 0.1.27 – Implementierung und Prüfbericht
 
+**Aktualisierung:** [PR-Synchronisierung und en/de-Stabilisierung](STABILISIERUNG_027_SYNC_LOKALISIERUNG_DE.md)
+mit 338 Tests ist der aktuelle Stand. Frühere Code-/CI-Abschnitte bleiben Historie.
+
 Stand: 19.10.2026. **Entwicklungskandidat, keine Produktivveröffentlichung.**
 Basis `main` / `823ae26`, Branch `feat/xcmate-027-catalogue-home`.
 Parallel ergänzte Dokumentationsbasis `main`/`fbfb56c` konfliktfrei in den Entwicklungsbranch übernommen.
@@ -140,24 +143,18 @@ Pfeiltasten führen keine HTTP-Aufrufe aus. Ein Hintergrundbild darf sich nachtr
 - Aufnahmeordner wird erst nach eigenem UUID-Dateirundtest gespeichert; Fehler löscht
   ausschließlich die eigene Testdatei, keine fremden Dateien.
 
-## Tests und Build
+## Tests und Build (aktueller Sprachkandidat)
 
-- **313/313 Tests bestanden**, vor und nach dem isolierten vollständigen Repositorybau;
-  Python 3.12.14/Pillow 12.3.0, einschließlich Noodle-/Repository-Regressionen.
-- **60 neue 0.1.27-Tests**, dazu bestehende Tests angepasst und gezielt erweitert:
-  40 bisherige strikte Overlay-/Callbacktests, insgesamt 26 HTTP-/EPG-Tests.
-- **26/26 HTTP-/Cache-/XMLTV-Tests zusätzlich mit installiertem httpx 0.28.1 bestanden**;
-  lokaler Streamingserver, Byte-/Zeit-/GZIP-Limits und alter gültiger Cache geprüft.
-- Syntaxprüfung über alle drei Add-on-Quellverzeichnisse erfolgreich. Drei ZIPs und
-  Repositoryinstaller/Index-MD5 im isolierten Build geprüft; fremde generierte Pakete verworfen.
-- **XCMate 0.1.27 / Dienstbuild 27:** 299893 Bytes, **95 Dateien**,
-  alle Paketdateien bytegenau zum Branch-Quellbaum identisch; CRC fehlerfrei.
-- SHA-256: `891474ccb9835425ea8e15e3dcf07c90f2f19000bc0791606078fdd8318f5076`.
-- [Installierbare Test-ZIP](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.27.zip)
-  · [Prüfsumme](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.27.zip.sha256).
-- PR/CI werden im abschließenden GitHub-Übergabeabschnitt verknüpft. Keine Android-Erfolge
-  aus Unit-/Callbacktests ableiten. CI erzeugt ein eigenes ZIP mit eigenen ZIP-Zeitstempeln;
-  deshalb dessen eigene SHA verwenden, nicht die obige mit dem CI-Archiv verwechseln.
+- **338/338 Tests bestanden**, vor und nach isoliertem Repositorybuild; 25 neue Sprachtests.
+- **26/26 HTTP-/Cache-/XMLTV-Tests zusätzlich mit httpx 0.28.1 bestanden**.
+- Syntax, drei isolierte ZIPs, Installerkopien und Index-MD5 geprüft; nur XCMate übernommen.
+- **0.1.27 / Dienstbuild 27:** 308392 Bytes, **96 Dateien** bytegenau zu Quellen, CRC OK.
+- SHA-256 `ab53aeb1f4e4e01473e2f935faabaf4480742ed268d6abc8dea69436bb62b16e`.
+- [Test-ZIP](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.27.zip)
+  · [SHA](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.27.zip.sha256).
+- Finaler CI-Nachweis und neue Sprach-/Upgrade-Abnahme im
+  [Stabilisierungsbericht](STABILISIERUNG_027_SYNC_LOKALISIERUNG_DE.md).
+  Alte grüne Läufe unten belegen ausschließlich die historische Fassung vor dieser Runde.
 
 Reproduzierbar lokal: `PYTHONDONTWRITEBYTECODE=1 python -B -m unittest discover -s tests -v`.
 Der vollständige Repositorybuilder läuft ausschließlich in einer Wegwerfkopie, da er auch
@@ -208,7 +205,7 @@ Nächster Schritt nach grünem Cloud-Build: [Android-Abnahme](ANDROID_TESTPLAN_0
 [BINGIE-Konfiguration](BINGIE_MOD_WIDGETS_027_DE.md), anschließend ausdrücklich freigegebener
 regulärer Repository-Updateweg. Offene Issues nicht vor Geräteabnahme pauschal schließen.
 
-## GitHub-Übergabe
+## Historische GitHub-Übergabe vor Synchronisierung/Lokalisierung
 
 [Entwurfs-PR #28](https://github.com/artattakk-creator/kodi-noodleprivate/pull/28),
 Hauptcode `3731db7`, Datenmodule `643692b`, ergänzende Ressourcenhärtung `96b2c2a`.

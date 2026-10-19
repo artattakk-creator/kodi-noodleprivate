@@ -1,11 +1,10 @@
 # XCMate 0.1.27 – Codex-Zusatzauftrag: Filme und Serien in fernbedienbarer Streaming-Oberfläche
 
-> **Implementierungsstand 19.10.2026:** Neue Module/Routen des 0.1.27-Kandidaten sind auf
-> `feat/xcmate-027-catalogue-home` implementiert und in 313 Cloud-Tests geprüft.
-> [Bericht, ZIP, genaue Teilabgrenzung](IMPLEMENTIERUNG_027_KATALOG_WIDGETS_EPG_DE.md)
-> und [offene Android-Abnahme](ANDROID_TESTPLAN_027_DE.md) sind maßgeblich für den Ist-Stand.
-> Produktiv bleibt 0.1.26. Die nachfolgenden Anforderungen bleiben der Vertrag;
-> Aussagen „noch keine Implementierung“ beschreiben ihren ursprünglichen Auftragsstand.
+> **Aktueller Implementierungsstand PR #28:** [Stabilisierung/en/de/338 Tests](STABILISIERUNG_027_SYNC_LOKALISIERUNG_DE.md).
+> Main 345b93d integriert, bestehende Funktionsanforderungen erhalten. Neue String-IDs
+> vollständig Englisch/Deutsch; Kodi-Sprache und alte Einstellungen bleiben unverändert.
+> Produktiv 0.1.26, Draft ohne Merge/Publish; Android-/Grafikabnahme weiter offen.
+> Nachfolgende Auftragsformulierungen dokumentieren das vollständige Ziel und ältere Stände.
 
 **Beschlossen:** 19.10.2026, ergänzende Nutzeranforderung zum bereits auf GitHub hinterlegten [0.1.27-Hauptauftrag](CODEX_AUFTRAG_027_STARTMENUE_SETTINGS_GRUPPEN_EPG_DE.md).  
 **Basis:** `main`, aktuell veröffentlichte XCMate-Version `0.1.26`; noch **KEINE** Implementierung/Abnahme für diese neue Oberfläche.  

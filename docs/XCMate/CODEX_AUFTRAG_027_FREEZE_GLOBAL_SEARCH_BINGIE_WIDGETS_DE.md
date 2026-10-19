@@ -1,11 +1,10 @@
 # XCMate 0.1.27 – verbindliche Ergänzung: Navigations-Freeze, Medien-Backdrops, globale Suche und BINGIE-MOD-Widgets
 
-> **Implementierungsstand 19.10.2026:** Neue Module/Routen des 0.1.27-Kandidaten sind auf
-> `feat/xcmate-027-catalogue-home` implementiert und in 313 Cloud-Tests geprüft.
-> [Bericht, ZIP, genaue Teilabgrenzung](IMPLEMENTIERUNG_027_KATALOG_WIDGETS_EPG_DE.md)
-> und [offene Android-Abnahme](ANDROID_TESTPLAN_027_DE.md) sind maßgeblich für den Ist-Stand.
-> Produktiv bleibt 0.1.26. Die nachfolgenden Anforderungen bleiben der Vertrag;
-> Aussagen „noch keine Implementierung“ beschreiben ihren ursprünglichen Auftragsstand.
+> **Aktueller Implementierungsstand PR #28:** [Stabilisierung/en/de/338 Tests](STABILISIERUNG_027_SYNC_LOKALISIERUNG_DE.md).
+> Main 345b93d integriert, bestehende Funktionsanforderungen erhalten. Neue String-IDs
+> vollständig Englisch/Deutsch; Kodi-Sprache und alte Einstellungen bleiben unverändert.
+> Produktiv 0.1.26, Draft ohne Merge/Publish; Android-/Grafikabnahme weiter offen.
+> Nachfolgende Auftragsformulierungen dokumentieren das vollständige Ziel und ältere Stände.
 
 **Erfasst:** 19.10.2026. **Status:** vom Nutzer festgelegte Anforderungen; **noch nicht implementiert, nicht auf Android-TV getestet, kein neuer Release**.  
 **Repository:** `artattakk-creator/kodi-noodleprivate`; Kodi-Add-on `plugin.video.xtreammate`; derzeit veröffentlicht **0.1.26**.  

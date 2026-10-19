@@ -1,41 +1,20 @@
 # XCMate – zentraler Projekteinstieg
 
-**GitHub-Nachweis:** [Entwurfs-PR #28](https://github.com/artattakk-creator/kodi-noodleprivate/pull/28)
-· [CI erfolgreich, 313 Tests](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39257022639) auf Paketcommit `b63d98a`.
-[Testartefakt `xcmate-review-28`](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39257022639/artifacts/12187784190) (ZIP samt eigener SHA, 287969 Bytes
-Artefaktarchiv, bis 02.11.2026). Build, Syntax, Tests und Upload erfolgreich;
-Produktions-Publish ausdrücklich **übersprungen**. Das CI-Archiv besitzt ZIP-Zeitstempel
-seines Builds; seine eigene beigefügte SHA verwenden. Lokale oben verlinkte Test-ZIP
-unabhängig mit 95 Quelldateien/CRC/SHA geprüft; CI-Upload und Artefaktmetadaten verifiziert.
-
-> **PR #28 – funktionaler Zwischenstand:** [Entwurfs-PR](https://github.com/artattakk-creator/kodi-noodleprivate/pull/28)
-> enthält das geprüfte Testpaket. Parallel hinzugekommene Designbeschlüsse aus `main`/`fbfb56c`
-> wurden vollständig gelesen und übernommen. **Space Premium bleibt das einzig freigegebene
-> Zieldesign.** Die zwei neuen neutralen technischen Fallbacktexturen im Funktionskandidaten
-> sind kein freigegebenes Grafikdesign; finale Grafikproduktion, Theme-Resolver und Icon-/Home-
-> Sichtabnahme folgen separat nach [Design-Freeze](DESIGN_FREEZE_SPACE_PREMIUM_THEME_ARCHITECTURE_DE.md)
-> und [Issue #27](https://github.com/artattakk-creator/kodi-noodleprivate/issues/27).
-> Kein Ersatz der bestehenden Wortmarke/Live-Texturen und kein vorweggenommener Grafik-PASS.
-
-> **AKTUELLER ENTWICKLUNGSSTAND 0.1.27 – 19.10.2026:**
-> Basis `main`/`823ae26`, Branch `feat/xcmate-027-catalogue-home`.
-> **Produktiv bleibt 0.1.26; kein Merge/Publish.**
-> [Implementierung, Testergebnisse und installierbare ZIP](IMPLEMENTIERUNG_027_KATALOG_WIDGETS_EPG_DE.md),
-> [vollständiger Android-TV-Testplan](ANDROID_TESTPLAN_027_DE.md),
-> [drei BINGIE-MOD-Widgetquellen samt Einrichtung](BINGIE_MOD_WIDGETS_027_DE.md).
-> Sechs Hauptpunkte, strukturierte Einstellungen, neue Xtream-WindowXML-Medienseiten,
-> lokale dreigeteilte Suche, Widgets, 7/10-Tage-EPG-Tagesliste und Erinnerungen implementiert.
-> **313 Tests vor/nach isoliertem Build bestanden; 26 HTTP-/EPG-Tests zusätzlich mit httpx.**
-> Testpaket: 299893 Bytes, 95 Dateien bytegenau geprüft, Dienstbuild 27.
-> Nutzerzusatz umgesetzt: Mehrtages-EPG bei ausreichender 24-h-Deckung weiterverwenden;
-> Neuheiten standardmäßig zehn Tage/100 gespeicherte Titel pro Medienart, ältere/undatierte
-> Auffüllung ehrlich gekennzeichnet, beide Werte einstellbar. Navigation lädt keine Kataloge/XMLTV.
-> Live-Overlay/Remote-/Player-Dateien bytegleich zur 0.1.26-Basis; Freeze-Regression geprüft.
-> **Alle neuen nativen Android-/BINGIE-Funktionen benötigen Geräteabnahme.**
-> Offen: Auto-Next-Countdown, portalweite Continue-Reihe, Staffel-/Serienreset, Auto-Tune,
-> EPG-Aufnahmescheduler/Android-Engine, neue M3U-/STB-Vollindexoberfläche und portalübergreifende
-> neue Suche. Aufnahmeprobe ist keine funktionsfähige Aufnahmezusage.
-> Ältere „0.1.27 noch nicht implementiert“- und frühere Kandidatenblöcke darunter sind historisch.
+> **AKTUELL – PR #28 synchronisiert und lokalisiert (19.10.2026):**
+> `main` **345b93d** via Mergecommit **e933ea0** integriert, kein History-Rewrite.
+> [Aktueller Stabilisierungsbericht, Tests und Test-ZIP](STABILISIERUNG_027_SYNC_LOKALISIERUNG_DE.md)
+> · [Android-Abnahmeplan](ANDROID_TESTPLAN_027_DE.md) · [Draft-PR #28](https://github.com/artattakk-creator/kodi-noodleprivate/pull/28).
+> **338 Tests vor/nach isoliertem Build bestanden**, darunter 25 neue Sprachtests;
+> 26 HTTP-/EPG-Tests zusätzlich mit httpx. 207 neue en/de-String-IDs (32400–32606).
+> Englisch ist technische Basis/Fallback; deutsches Kodi-Altprofil bleibt deutsch.
+> Kein Schreiben der Kodi-Sprache, keine Umdeutung von `lang_priority`, keine Datenmigration.
+> Test-ZIP 0.1.27 / Build 27: **308392 Bytes, 96 Dateien**, CRC/SHA/Quellbytes geprüft.
+> Alle bisherigen 0.1.27-Funktionen erhalten; Live-Overlay/Remote-/Player-Freeze geprüft.
+> Neue native Android-/BINGIE-/Sprachfälle noch am Gerät abzunehmen. Space-Premium-Grafiken,
+> Theme- und Language-Pack-Installer bleiben separate Aufgaben; `fanart`-Manifestfehler offen.
+> Drive-Übergabe aus der Cloud **HTTP 403**, daher autorisiert GitHub als Grundlage verwendet.
+> **Produktiv bleibt 0.1.26; PR bleibt Draft, kein Merge/Publish.**
+> Historische CI-/Paketangaben unten ersetzen nicht den aktuellen Prüfstand des Berichts.
 
 > **AKTUELLE GESICHERTE PROJEKTÜBERGABE (19.10.2026):** [Google-Drive-Datei XCMate_Projektuebergabe_2026-10-19_AKTUELL.md](https://drive.google.com/file/d/12yo2Ukev2haMhVxzz7QEuMSq-PIh900_/view?usp=drivesdk) im Ordner [XCMate Projekt](https://drive.google.com/drive/folders/1f_CvKdgXGdTw1FFQ2vaCUjFFlG6Pp4db). Dort sind die vier Space-Premium-Grafiken + ZIP/Preview bereits im Ordner „Grafiken/Space Premium - Set 01“, und eine neue [Language-Packs-Ablage](https://drive.google.com/drive/folders/1vOjjhTUKmgaG18X2MkYZWhQa4BCdqmep) wurde angelegt. Englische Basis- und deutsche Bestands-`strings.po` bleiben im Kodi-Quellbaum; weitere Pakete noch nicht implementiert. Die ältere Drive-Datei `XCMate_Projektuebergabe_2026-10-19.md` ist historisch, **diese AKTUELL-Fassung verwenden**. [Codex-PR #28](https://github.com/artattakk-creator/kodi-noodleprivate/pull/28) ist weiterhin Draft und noch **nicht** produktiv; `0.1.26` bleibt veröffentlicht.
 

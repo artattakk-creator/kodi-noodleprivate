@@ -1,5 +1,10 @@
 # XCMate 0.1.27 – drei BINGIE-MOD-Widgetreihen
 
+**Sprachkandidat:** [aktueller en/de-Bericht und Paket](STABILISIERUNG_027_SYNC_LOKALISIERUNG_DE.md).
+Die drei URIs bleiben identisch. Englisch: Settings → Appearance & language → Widget sources;
+Deutsch wie unten. Kodi-/Widgetfenster nach Sprachwechsel neu öffnen; keine automatische
+Neubeschriftung bereits gecachter Skin-Widgets zugesagt.
+
 **Testkandidat; produktiv bleibt 0.1.26.** Keine automatische Skinänderung.
 Die Routen sind mit strikten Kodi-ListItems/Metadaten lokal getestet. Auf einem echten
 Android-TV mit Titan BINGIE MOD sind Anordnung, Renderer, Fokus und konkrete Menünamen
