@@ -106,17 +106,16 @@ class SafeModeRegression(unittest.TestCase):
         self.assertEqual(self.play_calls, [])
         self.assertIn('Popup-Test', self.properties['XtreamMate.AutoplayDiagnosticState'])
 
-    def test_menu_places_popup_test_before_manual_live(self):
-        self.router._portal_plot = lambda *a, **kw: ''
+    def test_popup_test_moves_to_maintenance_while_normal_home_has_six_items(self):
+        rows=[]
+        self.router._add_dir=lambda label,url,**kw:rows.append((label,url))
         self.router._show_portal_home(self.portal)
-        labels = [x[0][2].__class__ for x in self.added if isinstance(x, tuple)]
-        self.assertGreaterEqual(len(labels), 3)
-        # Inspect authored source: first menu item is independent popup.
-        source = (LIB / 'main.py').read_text(encoding='utf-8')
-        root = source.split('    def _show_portal_home', 1)[1].split(
-            '    def _setup_wizard', 1)[0]
-        self.assertLess(root.index('Popup- und Fernbedienungstest (OHNE TV)'),
-                        root.index('self._add_dir(_L(32001)'))
+        self.assertEqual(len(rows),6)
+        self.assertFalse(any('popup_probe' in url for _,url in rows))
+        rows.clear()
+        from home_menu import settings
+        settings(self.router,self.portal,'maintenance')
+        self.assertTrue(any('popup_probe' in url for _,url in rows))
 
     def test_kodi_settings_have_two_recovery_entrances(self):
         root = ET.parse(SETTINGS).getroot()

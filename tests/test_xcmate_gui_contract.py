@@ -21,6 +21,8 @@ CONSTRUCTORS = {
     'WindowDialog': lambda: None,
     'WindowXMLDialog': lambda xmlFilename, scriptPath, defaultSkin='Default',
                              defaultRes='720p': None,
+    'WindowXML': lambda xmlFilename, scriptPath, defaultSkin='Default',
+                       defaultRes='720p': None,
     'Dialog': lambda: None, 'DialogProgress': lambda: None,
     'ListItem': lambda label='', label2='', path='', offscreen=False: None,
 }
@@ -54,6 +56,12 @@ LIST_ITEM = {
     'getVideoInfoTag': lambda: None, 'getPath': lambda: None,
     'setSubtitles': lambda subtitleFiles: None,
     'setLabel': lambda label: None, 'setPath': lambda path: None,
+}
+VIDEO_TAG = {
+    # xbmc/xbmc 21.0-Omega InfoTagVideo.h:1730; values is named uniqueIDs
+    # in C++, while defaultuniqueid is optional. Current calls are positional.
+    'setUniqueIDs': lambda uniqueIDs, defaultuniqueid='': None,
+    'getUniqueID': lambda key: None,
 }
 
 
@@ -90,6 +98,8 @@ class GUIContractTests(unittest.TestCase):
                                                 'update': lambda percent, message='': None,
                                                 'close': lambda: None,
                                                 'iscanceled': lambda: None}}.get(kind)
+                    if isinstance(owner,ast.Call) and isinstance(owner.func,ast.Attribute) and owner.func.attr=='getVideoInfoTag':
+                        table=VIDEO_TAG
                     if table is not None:
                         contract = table.get(method)
                         self.assertIsNotNone(contract, (path, kind, method))

@@ -1,5 +1,10 @@
 # XCMate – Sprachpakete (Language Packs) / Architektur und Entwicklungsauftrag
 
+**Teilstand PR #28:** [en/de-Lokalisierung mit 207 neuen IDs und 25 Sprachtests implementiert](STABILISIERUNG_027_SYNC_LOKALISIERUNG_DE.md).
+Native Kodi-Sprachauswahl bleibt unverändert; englischer Fallback pro Text, deutsche
+Altinstallation erhalten. **Installer, externe Packs und eigener Sprachwahldialog weiterhin offen.**
+
+
 **Entscheidung:** 19.10.2026. **Status:** verbindliche Produktspezifikation; **noch keine neue Runtime-Sprachpaket-Installation oder Downloadfunktion implementiert**. Aktuelles produktives XCMate: **0.1.26**; Funktions-FREEZE für Live-TV-/Remote-OSD.
 
 ## 1. Verbindliche Sprachenregel

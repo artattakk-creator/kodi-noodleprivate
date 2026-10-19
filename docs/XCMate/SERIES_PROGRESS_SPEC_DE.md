@@ -1,4 +1,15 @@
-# XCMate – verbindliche Spezifikation Serienfortschritt (noch NICHT implementiert)
+# XCMate – verbindliche Spezifikation Serienfortschritt
+
+**Teilimplementierung 0.1.27, 19.10.2026:** ID-gebundene Episode-/Movie-Bookmarks, manuelles
+Resume/Weiterschauen/nächste Folge, Seen/Unseen/Reset einzelner Episoden implementiert und
+getestet. [Bericht, Abweichungen und offene Android-Abnahme](IMPLEMENTIERUNG_027_KATALOG_WIDGETS_EPG_DE.md).
+**Noch offen:** Auto-Next samt Countdown/Optionen, Continue-Reihe auf Serienstartseite und
+Staffel-/Serienreset. Als erste Stufe isoliertes `media_state_v1.sqlite` mit getrennten
+Transaktionen statt gemeinsamem JSON-Snapshot, damit parallele Kodi-Interpreter nicht
+gegenseitig Änderungen überschreiben. Eine vorhandene `series_progress.json` wird weder
+überschrieben noch migriert. Neue getaggte MediaSession und Polling ergänzen ausschließlich
+neue Spielrouten; bisherige Live-/Movie-/Episode-Routen bleiben unverändert. Das alte Modell
+unten beschreibt das vollständige Ziel, nicht bereits alle gelieferten Funktionen.
 
 **Priorität:** P1, nach Stabilisierung des Android-Startsenders und der Fernbedienung.  
 **Ziel:** TV-Fernbedienungsfreundliches „Weiterschauen“, automatisch nächste Folge, Gesehen-Status, sicheres Fortsetzen. Keine Annahme, dass das System im Stand 0.1.9 schon existiert.

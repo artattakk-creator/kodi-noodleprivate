@@ -1,5 +1,23 @@
 # XCMate – zentraler Projekteinstieg
 
+> **AKTUELL – PR #28 synchronisiert und lokalisiert (19.10.2026):**
+> `main` **345b93d** via Mergecommit **e933ea0** integriert, kein History-Rewrite.
+> [Aktueller Stabilisierungsbericht, Tests und Test-ZIP](STABILISIERUNG_027_SYNC_LOKALISIERUNG_DE.md)
+> · [Android-Abnahmeplan](ANDROID_TESTPLAN_027_DE.md) · [Draft-PR #28](https://github.com/artattakk-creator/kodi-noodleprivate/pull/28).
+> **Lokal 338 Tests vor/nach isoliertem Build bestanden**, darunter 25 neue Sprachtests;
+> 26 HTTP-/EPG-Tests zusätzlich mit httpx. 207 neue en/de-String-IDs (32400–32606).
+> Englisch ist technische Basis/Fallback; deutsches Kodi-Altprofil bleibt deutsch.
+> Kein Schreiben der Kodi-Sprache, keine Umdeutung von `lang_priority`, keine Datenmigration.
+> Test-ZIP 0.1.27 / Build 27: **308392 Bytes, 96 Dateien**, CRC/SHA/Quellbytes geprüft.
+> Alle bisherigen 0.1.27-Funktionen erhalten; Live-Overlay/Remote-/Player-Freeze geprüft.
+> Neue native Android-/BINGIE-/Sprachfälle noch am Gerät abzunehmen. Space-Premium-Grafiken,
+> Theme- und Language-Pack-Installer bleiben separate Aufgaben; `fanart`-Manifestfehler offen.
+> Drive-Übergabe aus der Cloud **HTTP 403**, daher autorisiert GitHub als Grundlage verwendet.
+> Neuer [GitHub-Prüflauf](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39282533858) auf `0e00227` noch **queued / kein Runner**
+> (19.10.2026, 18:08 MESZ); kein CI-PASS für den Sprachcode behauptet.
+> **Produktiv bleibt 0.1.26; PR bleibt Draft, kein Merge/Publish.**
+> Historische CI-/Paketangaben unten ersetzen nicht den aktuellen Prüfstand des Berichts.
+
 > **AKTUELLE GESICHERTE PROJEKTÜBERGABE (19.10.2026):** [Google-Drive-Datei XCMate_Projektuebergabe_2026-10-19_AKTUELL.md](https://drive.google.com/file/d/12yo2Ukev2haMhVxzz7QEuMSq-PIh900_/view?usp=drivesdk) im Ordner [XCMate Projekt](https://drive.google.com/drive/folders/1f_CvKdgXGdTw1FFQ2vaCUjFFlG6Pp4db). Dort sind die vier Space-Premium-Grafiken + ZIP/Preview bereits im Ordner „Grafiken/Space Premium - Set 01“, und eine neue [Language-Packs-Ablage](https://drive.google.com/drive/folders/1vOjjhTUKmgaG18X2MkYZWhQa4BCdqmep) wurde angelegt. Englische Basis- und deutsche Bestands-`strings.po` bleiben im Kodi-Quellbaum; weitere Pakete noch nicht implementiert. Die ältere Drive-Datei `XCMate_Projektuebergabe_2026-10-19.md` ist historisch, **diese AKTUELL-Fassung verwenden**. [Codex-PR #28](https://github.com/artattakk-creator/kodi-noodleprivate/pull/28) ist weiterhin Draft und noch **nicht** produktiv; `0.1.26` bleibt veröffentlicht.
 
 

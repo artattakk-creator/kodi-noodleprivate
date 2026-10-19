@@ -129,6 +129,8 @@ class Router:
             'popup_probe': self._popup_probe,
             'autoplay_diagnostic_mode': self._autoplay_diagnostic_mode,
         }
+        from app_routes import ACTIONS
+        R.update({name:self._app_route for name in ACTIONS})
         if action == 'root' and not _portals_mod.load_all():
             from setup_wizard import setup
             created = setup()
@@ -337,40 +339,10 @@ class Router:
             xbmcplugin.endOfDirectory(self._handle)
             return
 
-        if len(active) == 1:
-            self._show_portal_home(active[0])
-            # Diagnostics safe-mode remains ON by default. Explicit opt-in works.
-            self._maybe_autoplay_start(active[0])
-            return
-
-        from concurrent.futures import ThreadPoolExecutor, as_completed as _asc
-        plots = {}
-        with ThreadPoolExecutor(max_workers=min(len(active), 4)) as _ex:
-            _futs = {_ex.submit(self._portal_plot, p, cached_only=True): p['id'] for p in active}
-            for _fut in _asc(_futs):
-                try:
-                    plots[_futs[_fut]] = _fut.result()
-                except Exception:
-                    plots[_futs[_fut]] = ''
-        for p in active:
-            self._add_dir(p['name'],
-                          self.url(action='portal_home', pid=p['id']),
-                          icon=_ICON_TV,
-                          plot=plots.get(p['id'], ''))
-
-        self._add_dir(_L(32011), self.url(action='favourites'),
-                      icon=_ICON_FAV,
-                      plot='Alle Favoriten aus allen Portalen anzeigen.')
-        self._add_dir(_L(32010), self.url(action='search'),
-                      icon=_ICON_SEARCH,
-                      plot='Portalübergreifend nach Sendern, Filmen und Serien suchen.')
-        self._add_dir(_L(32012), self.url(action='portal_manager'),
-                      icon=_ICON_SETTINGS,
-                      plot='Portale hinzufügen, bearbeiten oder entfernen.')
-        self._add_dir(_L(32007), self.url(action='settings'),
-                      icon=_ICON_SETTINGS,
-                      plot='Addon-Einstellungen öffnen.')
-        xbmcplugin.endOfDirectory(self._handle)
+        from home_menu import active_portal
+        portal = active_portal(active, self._params.get('pid',''))
+        self._show_portal_home(portal)
+        self._maybe_autoplay_start(portal)
 
     def _maybe_autoplay_start(self, portal):
         """Start the configured channel once on app entry, not on every refresh.
@@ -417,6 +389,14 @@ class Router:
         self._show_portal_home(p)
 
     def _show_portal_home(self, p: dict):
+        from home_menu import show
+        show(self,p)
+
+    def _app_route(self):
+        from app_routes import dispatch
+        dispatch(self)
+
+    def _legacy_portal_home(self, p: dict):
         ptype = p.get('type', 'm3u')
         xbmcplugin.setPluginCategory(self._handle, p['name'])
         xbmcplugin.setContent(self._handle, '')

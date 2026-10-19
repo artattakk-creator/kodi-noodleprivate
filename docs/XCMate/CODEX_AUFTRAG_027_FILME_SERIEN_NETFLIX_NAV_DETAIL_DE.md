@@ -1,5 +1,11 @@
 # XCMate 0.1.27 – Codex-Zusatzauftrag: Filme und Serien in fernbedienbarer Streaming-Oberfläche
 
+> **Aktueller Implementierungsstand PR #28:** [Stabilisierung/en/de/338 Tests](STABILISIERUNG_027_SYNC_LOKALISIERUNG_DE.md).
+> Main 345b93d integriert, bestehende Funktionsanforderungen erhalten. Neue String-IDs
+> vollständig Englisch/Deutsch; Kodi-Sprache und alte Einstellungen bleiben unverändert.
+> Produktiv 0.1.26, Draft ohne Merge/Publish; Android-/Grafikabnahme weiter offen.
+> Nachfolgende Auftragsformulierungen dokumentieren das vollständige Ziel und ältere Stände.
+
 **Beschlossen:** 19.10.2026, ergänzende Nutzeranforderung zum bereits auf GitHub hinterlegten [0.1.27-Hauptauftrag](CODEX_AUFTRAG_027_STARTMENUE_SETTINGS_GRUPPEN_EPG_DE.md).  
 **Basis:** `main`, aktuell veröffentlichte XCMate-Version `0.1.26`; noch **KEINE** Implementierung/Abnahme für diese neue Oberfläche.  
 **Produktziel:** Eigenständiger XCMate-Film-/Serienbereich mit dem Navigationsprinzip von Netflix-/BINGIE-MOD-/TiviMate-Oberflächen, **ohne** proprietäre Grafiken, Software oder UI-Assets zu übernehmen. Format: Kodi 21/Omega, Android-TV/Fernbedienung, BINGIE MOD als installierter Skin. **Die bestehende, nun funktionierende Live-TV-Infobar samt drei Bedienebenen bleibt Freeze.**

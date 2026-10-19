@@ -1,5 +1,11 @@
 # XCMate 0.1.27 – verbindlicher Codex-Entwicklungsauftrag: schlankes Hauptmenü, Einstellungen und gruppenbasierter Langzeit-EPG
 
+> **Aktueller Implementierungsstand PR #28:** [Stabilisierung/en/de/338 Tests](STABILISIERUNG_027_SYNC_LOKALISIERUNG_DE.md).
+> Main 345b93d integriert, bestehende Funktionsanforderungen erhalten. Neue String-IDs
+> vollständig Englisch/Deutsch; Kodi-Sprache und alte Einstellungen bleiben unverändert.
+> Produktiv 0.1.26, Draft ohne Merge/Publish; Android-/Grafikabnahme weiter offen.
+> Nachfolgende Auftragsformulierungen dokumentieren das vollständige Ziel und ältere Stände.
+
 > **SPRACHPAKETE – 19.10.2026:** Englisch `en_GB` ist die technische XCMate-Basis/Fallbacksprache; Deutsch `de_DE` bleibt als bereits vorhandene, mitgelieferte Sprache **unverändert installiert und wählbar**. Bestehende Kodi-Nutzersprachen nicht zurücksetzen. [Vollständiger Sprachpaket-/Kodi-21-Plan](LANGUAGE_PACK_ARCHITECTURE_027_DE.md), [GitHub-Staging `language_packs/`](../../language_packs/README.md), [Issue #29](https://github.com/artattakk-creator/kodi-noodleprivate/issues/29). Später weitere XCMate-UI-Sprachen optional laden/aktivieren/löschen unter **Einstellungen → Darstellung & Sprache**, unabhängig vom bestehenden IPTV-Inhaltsfilter `lang_priority`. **Nur Verzeichnisse/Dokumentation vorbereitet, der Sprachpaketinstaller ist noch nicht implementiert.** **Google-Drive-Archiv:** [XCMate Projekt](https://drive.google.com/drive/folders/1f_CvKdgXGdTw1FFQ2vaCUjFFlG6Pp4db) / [Language-Packs](https://drive.google.com/drive/folders/1vOjjhTUKmgaG18X2MkYZWhQa4BCdqmep). Bestehende Live-TV-/Fernbedienungsfunktionen 0.1.26 FREEZE; kein Release 0.1.27.
 
 

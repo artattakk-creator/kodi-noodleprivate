@@ -1,5 +1,11 @@
 # XCMate 0.1.27 – verbindliche Ergänzung: Navigations-Freeze, Medien-Backdrops, globale Suche und BINGIE-MOD-Widgets
 
+> **Aktueller Implementierungsstand PR #28:** [Stabilisierung/en/de/338 Tests](STABILISIERUNG_027_SYNC_LOKALISIERUNG_DE.md).
+> Main 345b93d integriert, bestehende Funktionsanforderungen erhalten. Neue String-IDs
+> vollständig Englisch/Deutsch; Kodi-Sprache und alte Einstellungen bleiben unverändert.
+> Produktiv 0.1.26, Draft ohne Merge/Publish; Android-/Grafikabnahme weiter offen.
+> Nachfolgende Auftragsformulierungen dokumentieren das vollständige Ziel und ältere Stände.
+
 **Erfasst:** 19.10.2026. **Status:** vom Nutzer festgelegte Anforderungen; **noch nicht implementiert, nicht auf Android-TV getestet, kein neuer Release**.  
 **Repository:** `artattakk-creator/kodi-noodleprivate`; Kodi-Add-on `plugin.video.xtreammate`; derzeit veröffentlicht **0.1.26**.  
 **Lesereihenfolge für Codex:** [Hauptauftrag 0.1.27](CODEX_AUFTRAG_027_STARTMENUE_SETTINGS_GRUPPEN_EPG_DE.md) → [Filme-/Serien-Bauanweisung](CODEX_AUFTRAG_027_FILME_SERIEN_NETFLIX_NAV_DETAIL_DE.md) → **dieses Dokument** → [aktueller Release-Status](CODEX_STATUS_CURRENT_DE.md).  

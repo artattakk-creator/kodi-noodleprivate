@@ -157,6 +157,19 @@ class CacheAndEPGTests(unittest.TestCase):
         self.assertEqual(self.epg.load_cache('p'),old)
         self.assertFalse(self.epg._is_fresh('p'))
 
+    def test_eight_day_old_ten_day_guide_stays_available_to_frozen_infobar(self):
+        import json
+        now=time.time()
+        retained={'x':[dict(name='Still current',start_timestamp=now-60,stop_timestamp=now+1800)]}
+        self.epg._save_disk('p',retained)
+        path=self.root/'profile/cache'/(self.epg._disk_ck('p')+'.json')
+        raw=json.loads(path.read_text());raw['ts']-=8*86400;path.write_text(json.dumps(raw))
+        self.epg._mem_clear('p')
+        self.assertEqual(self.epg.load_cache('p'),retained)
+        self.assertFalse(self.epg._is_fresh('p'))
+        raw['ts']-=3*86400;path.write_text(json.dumps(raw));self.epg._mem_clear('p')
+        self.assertEqual(self.epg.load_cache('p'),{})
+
     def test_obsolete_but_valid_xmltv_never_overwrites_working_cache(self):
         old={'old':[{'name':'Retained'}]}
         self.epg._save_disk('p',old)
@@ -166,6 +179,15 @@ class CacheAndEPGTests(unittest.TestCase):
         self.assertEqual(result,{})
         self.epg._mem_clear('p')
         self.assertEqual(self.epg.load_cache('p'),old)
+
+    def test_real_programme_on_day_nine_is_a_usable_guide_not_obsolete(self):
+        start=time.time()+8*86400
+        stamp=lambda ts:time.strftime('%Y%m%d%H%M%S +0000',time.gmtime(ts))
+        raw=('<tv><programme channel="one" start="'+stamp(start)+'" stop="'+stamp(start+3600)+'"><title>Day nine</title></programme></tv>').encode()
+        with mock.patch.object(self.epg,'http_get',return_value=(raw,{})):
+            self.epg._refresh_portal_epg('p',dict(id='p',type='m3u',epg_url='https://example.invalid'))
+        self.epg._mem_clear('p')
+        self.assertEqual(self.epg.load_cache('p')['one'][0]['name'],'Day nine')
 
     def test_import_mapping_persistence_to_real_local_tv_snapshot(self):
         from epg_status import read

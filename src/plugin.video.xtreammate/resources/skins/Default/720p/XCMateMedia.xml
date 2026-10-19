@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+  <defaultcontrol always="true">120</defaultcontrol>
+  <allowoverlay>yes</allowoverlay>
+  <coordinates><system>1</system><posx>0</posx><posy>0</posy></coordinates>
+  <controls>
+    <control type="image" id="100">
+      <left>0</left><top>0</top><width>1280</width><height>720</height><aspectratio>scale</aspectratio>
+      <texture>special://home/addons/plugin.video.xtreammate/resources/media/media_neutral.png</texture>
+    </control>
+    <control type="image">
+      <left>0</left><top>0</top><width>1280</width><height>720</height>
+      <texture>special://home/addons/plugin.video.xtreammate/resources/media/media_shade.png</texture>
+    </control>
+    <control type="label" id="101">
+      <left>44</left><top>32</top><width>960</width><height>44</height>
+      <font>font16</font><textcolor>FFF0F2F5</textcolor><label/>
+    </control>
+    <control type="label" id="103">
+      <left>44</left><top>82</top><width>1192</width><height>36</height>
+      <font>font16</font><textcolor>FFF0F2F5</textcolor><label/>
+    </control>
+    <control type="label" id="102">
+      <left>44</left><top>124</top><width>1192</width><height>32</height>
+      <font>font12</font><textcolor>FFB6BCC6</textcolor><label/>
+    </control>
+    <control type="button" id="400">
+      <left>1050</left><top>32</top><width>186</width><height>44</height>
+      <font>font13</font><label/><onleft>120</onleft><onright>400</onright><onup>400</onup><ondown>120</ondown>
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+    </control>
+    <control type="list" id="110">
+      <left>44</left><top>174</top><width>1192</width><height>326</height><orientation>horizontal</orientation>
+      <onleft>110</onleft><onright>110</onright><onup>400</onup><ondown>120</ondown>
+      <itemlayout width="190" height="320">
+        <control type="image"><left>5</left><top>5</top><width>180</width><height>270</height><aspectratio>keep</aspectratio><texture>$INFO[ListItem.Art(poster)]</texture></control>
+        <control type="label"><left>5</left><top>282</top><width>180</width><height>30</height><font>font12</font><textcolor>FFB6BCC6</textcolor><label>$INFO[ListItem.Label]</label></control>
+      </itemlayout>
+      <focusedlayout width="190" height="320">
+        <control type="image"><width>190</width><height>320</height><texture>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texture></control>
+        <control type="image"><left>5</left><top>5</top><width>180</width><height>270</height><aspectratio>keep</aspectratio><texture>$INFO[ListItem.Art(poster)]</texture></control>
+        <control type="label"><left>5</left><top>282</top><width>180</width><height>30</height><font>font12</font><textcolor>FFF0F2F5</textcolor><label>$INFO[ListItem.Label]</label></control>
+      </focusedlayout>
+    </control>
+    <control type="button" id="120">
+      <left>44</left><top>548</top><width>480</width><height>66</height>
+      <font>font13</font><label/><onup>110</onup><ondown>120</ondown><onleft>120</onleft><onright>400</onright>
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+    </control>
+    <control type="list" id="200">
+      <left>44</left><top>174</top><width>258</width><height>480</height><orientation>vertical</orientation>
+      <onleft>200</onleft><onright>200</onright><onup>200</onup><ondown>200</ondown>
+      <itemlayout width="258" height="52"><control type="label"><left>12</left><width>234</width><height>52</height><font>font13</font><textcolor>FFB6BCC6</textcolor><label>$INFO[ListItem.Label]</label></control></itemlayout>
+      <focusedlayout width="258" height="52">
+        <control type="image"><width>258</width><height>52</height><texture>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texture></control>
+        <control type="label"><left>12</left><width>234</width><height>52</height><font>font13</font><textcolor>FFF0F2F5</textcolor><label>$INFO[ListItem.Label]</label></control>
+      </focusedlayout>
+    </control>
+    <control type="panel" id="210">
+      <left>320</left><top>174</top><width>916</width><height>480</height><orientation>vertical</orientation>
+      <onleft>210</onleft><onright>210</onright><onup>210</onup><ondown>210</ondown>
+      <itemlayout width="190" height="240">
+        <control type="image"><left>25</left><top>3</top><width>140</width><height>210</height><aspectratio>keep</aspectratio><texture>$INFO[ListItem.Art(poster)]</texture></control>
+        <control type="label"><left>5</left><top>213</top><width>180</width><height>27</height><font>font12</font><textcolor>FFB6BCC6</textcolor><label>$INFO[ListItem.Label]</label></control>
+      </itemlayout>
+      <focusedlayout width="190" height="240">
+        <control type="image"><width>190</width><height>240</height><texture>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texture></control>
+        <control type="image"><left>25</left><top>3</top><width>140</width><height>210</height><aspectratio>keep</aspectratio><texture>$INFO[ListItem.Art(poster)]</texture></control>
+        <control type="label"><left>5</left><top>213</top><width>180</width><height>27</height><font>font12</font><textcolor>FFF0F2F5</textcolor><label>$INFO[ListItem.Label]</label></control>
+      </focusedlayout>
+    </control>
+    <control type="image" id="310"><left>44</left><top>186</top><width>240</width><height>360</height><aspectratio>keep</aspectratio><texture/></control>
+    <control type="textbox" id="320"><left>330</left><top>184</top><width>882</width><height>174</height><font>font13</font><textcolor>FFF0F2F5</textcolor><label/></control>
+    <control type="list" id="300">
+      <left>330</left><top>382</top><width>882</width><height>264</height><orientation>vertical</orientation>
+      <onleft>300</onleft><onright>300</onright><onup>300</onup><ondown>300</ondown>
+      <itemlayout width="882" height="48"><control type="label"><left>16</left><width>850</width><height>48</height><font>font13</font><textcolor>FFB6BCC6</textcolor><label>$INFO[ListItem.Label]</label></control></itemlayout>
+      <focusedlayout width="882" height="48">
+        <control type="image"><width>882</width><height>48</height><texture>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texture></control>
+        <control type="label"><left>16</left><width>850</width><height>48</height><font>font13</font><textcolor>FFF0F2F5</textcolor><label>$INFO[ListItem.Label]</label></control>
+      </focusedlayout>
+    </control>
+    <control type="list" id="330">
+      <left>44</left><top>174</top><width>1192</width><height>480</height><orientation>vertical</orientation>
+      <onleft>330</onleft><onright>330</onright><onup>330</onup><ondown>330</ondown>
+      <itemlayout width="1192" height="60"><control type="label"><left>16</left><width>1160</width><height>60</height><font>font13</font><textcolor>FFB6BCC6</textcolor><label>$INFO[ListItem.Label]</label></control></itemlayout>
+      <focusedlayout width="1192" height="60">
+        <control type="image"><width>1192</width><height>60</height><texture>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texture></control>
+        <control type="label"><left>16</left><width>1160</width><height>60</height><font>font13</font><textcolor>FFF0F2F5</textcolor><label>$INFO[ListItem.Label]</label></control>
+      </focusedlayout>
+    </control>
+    <control type="label" id="501"><left>44</left><top>672</top><width>1192</width><height>28</height><font>font12</font><textcolor>FFB6BCC6</textcolor><label/></control>
+  </controls>
+</window>

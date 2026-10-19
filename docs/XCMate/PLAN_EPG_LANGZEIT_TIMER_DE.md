@@ -1,5 +1,13 @@
 # XCMate – separate Ausbaustufen Langzeit-EPG und Timer
 
+**Teilimplementierung 0.1.27, 19.10.2026:** Persistenter begrenzter 10-Tage-Guide,
+barrierefreie Tagesliste, Quellenreichweite, cacheerhaltender Import und lokale Erinnerungen
+mit Storno vorhanden. [Bericht und genaue Grenzen](IMPLEMENTIERUNG_027_KATALOG_WIDGETS_EPG_DE.md).
+**Auto-Tune, Aufnahmeplanung, Android-Engine und Wakeup weiterhin offen.** Keine Produktiv-
+veröffentlichung; native Abnahme ausstehend. Die Analyse der früheren Grenzen unten bleibt
+historisch gültig; Overlay-Limit 48 unverändert, Langzeitguide separat. Der JSON-Fallback
+und die Brauchbarkeitsprüfung sind im Kandidaten auf zehn Tage erweitert.
+
 Stand 19.10.2026. **Analyse/Plan, keine fertige Implementierung.**
 P0 kommt separat als [0.1.26-Kandidat](IMPLEMENTIERUNG_026_P0_REMOTE_OSD_DE.md).
 Arbeitsgrundlage: [Geräteübergabe §§4–6](ANDROID_025_HANDOFF_REMOTE_3LEVEL_EPG_SCHEDULE_DE.md)
