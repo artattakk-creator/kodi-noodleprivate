@@ -5,10 +5,10 @@
   "canonical_drive_folder": "https://drive.google.com/drive/folders/1UPA7fLKIq21GkA4NzAPEVfLp2BvSpm3y",
   "target": 98,
   "archive_present": 16,
-  "approved": 14,
-  "pending_approval": 2,
+  "approved": 16,
+  "pending_approval": 0,
   "remaining_unproduced": 82,
-  "note": "98 slots tracked as one optional theme; 14 approved, 2 design proposals awaiting visual approval, 82 not produced. Branding 1-4 unchanged; no runtime integration.",
+  "note": "98 slots in one optional Space Premium theme. 16 approved/archived, 82 not produced. User permits future revisions of slots 15-16 while preserving approved originals. No Kodi runtime integration.",
   "slots": [
     {
       "slot": 1,
@@ -136,19 +136,21 @@
       "slot": 15,
       "path": "home/bg-series.jpg",
       "category": "home",
-      "status": "generated_pending_visual_approval_not_integrated",
+      "status": "archived_approved_not_integrated",
       "sha256": "195b6e32289a31e0aa5fe31bf3420fc7541573cbac75f1041307dd05194e03c8",
       "source_batch_reference": "derived-prototype-from-approved-space-premium-home-backgrounds-2026-10-19",
-      "note": "Textfree Full HD concept composited with approved home assets. Pending user review; not part of XCMate core."
+      "note": "Textfree Full HD concept composited with approved home assets. Pending user review; not part of XCMate core.",
+      "approval_note": "Approved 2026-10-19 as modifiable visual baseline; preserve SHA and earlier versions, never overwrite without version history; optional theme only."
     },
     {
       "slot": 16,
       "path": "home/bg-settings.jpg",
       "category": "home",
-      "status": "generated_pending_visual_approval_not_integrated",
+      "status": "archived_approved_not_integrated",
       "sha256": "0dc5a282fb9538e728afa9c0c1b21b08d0658214ef181f8d4a5524b9852d54fd",
       "source_batch_reference": "derived-prototype-from-approved-space-premium-home-backgrounds-2026-10-19",
-      "note": "Textfree Full HD concept composited with approved home assets. Pending user review; not part of XCMate core."
+      "note": "Textfree Full HD concept composited with approved home assets. Pending user review; not part of XCMate core.",
+      "approval_note": "Approved 2026-10-19 as modifiable visual baseline; preserve SHA and earlier versions, never overwrite without version history; optional theme only."
     },
     {
       "slot": 17,
@@ -813,7 +815,14 @@
       "slots": "5-14",
       "outcome": "approved",
       "constraint": "Do not delete, overwrite, or change slots 1-4. All assets remain in optional Space Premium theme only."
+    },
+    {
+      "date": "2026-10-19",
+      "slots": "15-16",
+      "outcome": "approved_revisable_baseline",
+      "constraint": "Keep prior assets; no integration or replacement of branding 1-4."
     }
   ],
-  "runtime_release_version": "0.1.27"
+  "runtime_release_version": "0.1.27",
+  "display_settings_backlog": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/31"
 }
