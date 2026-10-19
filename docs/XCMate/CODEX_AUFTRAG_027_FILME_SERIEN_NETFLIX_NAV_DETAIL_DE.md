@@ -4,6 +4,10 @@
 **Basis:** `main`, aktuell veröffentlichte XCMate-Version `0.1.26`; noch **KEINE** Implementierung/Abnahme für diese neue Oberfläche.  
 **Produktziel:** Eigenständiger XCMate-Film-/Serienbereich mit dem Navigationsprinzip von Netflix-/BINGIE-MOD-/TiviMate-Oberflächen, **ohne** proprietäre Grafiken, Software oder UI-Assets zu übernehmen. Format: Kodi 21/Omega, Android-TV/Fernbedienung, BINGIE MOD als installierter Skin. **Die bestehende, nun funktionierende Live-TV-Infobar samt drei Bedienebenen bleibt Freeze.**
 
+## 0a. Ergänzungs-Freeze: Hintergrundgrafik und exakte Gruppensteuerung
+
+Die präzisierte **verbindliche** Nutzeranforderung steht zusätzlich in [FREEZE / Suche / BINGIE-MOD-Widgets](CODEX_AUFTRAG_027_FREEZE_GLOBAL_SEARCH_BINGIE_WIDGETS_DE.md), einschließlich Codeansatz, Such-Trefferzahlen und drei Kodi-Homepage-Widgets ([#25](https://github.com/artattakk-creator/kodi-noodleprivate/issues/25), [#26](https://github.com/artattakk-creator/kodi-noodleprivate/issues/26)). **Jede Film- und Serienansicht** soll möglichst ein echtes Backdrop/Fanart des fokussierten Titels als dunkel überlagertes Hintergrundbild zeigen (kein Fake-Bild). Innerhalb der Kategorie-Galerie muss **Rechts von der Gruppenleiste** zur **vollbreiten Posteransicht** führen, und **Links erst an der linken Grid-Grenze** die Gruppenleiste automatisch wieder öffnen; Fokus, Gruppenauswahl und Scrollposition bleiben erhalten. Alle bisherigen Live-TV-, Player- und Fernbedienungsfunktionen von 0.1.26 sind **funktionaler Freeze**; Änderungen daran sind ohne besonderen nachweisbaren Grund untersagt.
+
 ## 1. Verbindlicher Einstieg: sechs XCMate-Hauptpunkte bleiben unverändert
 
 `Startkanal · Live-TV · EPG · Filme · Serien · Einstellungen` bleiben die **einzigen sechs Einträge** im obersten Hauptmenü. **Filme** und **Serien** öffnen jeweils eine **eigene Landingpage** mit Neuheiten-Karussell oben und darunter einem anwählbaren Bereich für alle Kategorien/Gruppen. Keine Rückkehr zur bisherigen flachen Gruppenliste als erste Seite.
