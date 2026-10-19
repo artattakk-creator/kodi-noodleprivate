@@ -4,10 +4,10 @@ Stand 19.10.2026. **EIN Space-Premium-Design, EIN 98-Slot-Manifest, EIN fortlauf
 
 - [**Google Drive – Space Premium MASTER 98**](https://drive.google.com/drive/folders/1UPA7fLKIq21GkA4NzAPEVfLp2BvSpm3y) ist die zentrale Originalablage.
 - 98 logische Slots, nicht zwangsläufig 98 unterschiedliche neue Dateien; vorhandene kompatible Assets später mappingbasiert wiederverwenden.
-- Zurzeit **14/98 archiviert**: 4 freigegebene Brandingdateien, 10 neue Home-Dateien **noch nicht visuell abgenommen**; 84 Slots noch ohne neue Grafik. Kein Asset ist allein durch Archivierung zur Kodi-Integration freigegeben.
+- Zurzeit **14/98 archiviert**: 14 freigegebene eigenständige Dateien (4 Branding + 10 Home), 84 Slots noch zu produzieren. Nutzerabnahme der Slots 5–14 am 19.10.2026; Slots 1–4 unverändert erhalten. Kein Asset ist allein durch Archivierung zur Kodi-Integration freigegeben.
 - Dateiname und Bereich sind aus `docs/XCMate/GRAPHICS_V2_ASSET_PLAN_027_DE.md` bindend. Slot nur nach Nutzerentscheidung ersetzen; Bildmaße/SHA-256 im Archivmanifest führen.
 - Arbeitsreihenfolge: **produzieren → Nutzerfreigabe → im MASTER 98 speichern → Hash/Status prüfen → gesonderte Integrationsfreigabe → separater Theme-PR/CI/Android-Test**.
-- Keine Live-TV-/Fernbedienungs-/BINGIE-MOD-Änderung, keine ungefragte Veröffentlichung. 0.1.26 bleibt Produktivstand bis freigegebenes Update.
+- Keine Live-TV-/Fernbedienungs-/BINGIE-MOD-Änderung, keine ungefragte Veröffentlichung. 0.1.27 ist der aktuelle Produktivstand. Diese Grafikfreigabe verändert Kodi nicht.
 
 ## Slotstatus
 
@@ -17,16 +17,16 @@ Stand 19.10.2026. **EIN Space-Premium-Design, EIN 98-Slot-Manifest, EIN fortlauf
 | 2 | `branding/wordmark-white.png` | Archiviert und freigegeben |
 | 3 | `branding/splash-1920.jpg` | Archiviert und freigegeben |
 | 4 | `branding/fanart-1920.jpg` | Archiviert und freigegeben |
-| 5 | `home/icon-start.png` | Archiviert; visuelle Abnahme offen |
-| 6 | `home/icon-live.png` | Archiviert; visuelle Abnahme offen |
-| 7 | `home/icon-epg.png` | Archiviert; visuelle Abnahme offen |
-| 8 | `home/icon-movies.png` | Archiviert; visuelle Abnahme offen |
-| 9 | `home/icon-series.png` | Archiviert; visuelle Abnahme offen |
-| 10 | `home/icon-settings.png` | Archiviert; visuelle Abnahme offen |
-| 11 | `home/bg-start.jpg` | Archiviert; visuelle Abnahme offen |
-| 12 | `home/bg-live.jpg` | Archiviert; visuelle Abnahme offen |
-| 13 | `home/bg-epg.jpg` | Archiviert; visuelle Abnahme offen |
-| 14 | `home/bg-movies.jpg` | Archiviert; visuelle Abnahme offen |
+| 5 | `home/icon-start.png` | Archiviert und freigegeben |
+| 6 | `home/icon-live.png` | Archiviert und freigegeben |
+| 7 | `home/icon-epg.png` | Archiviert und freigegeben |
+| 8 | `home/icon-movies.png` | Archiviert und freigegeben |
+| 9 | `home/icon-series.png` | Archiviert und freigegeben |
+| 10 | `home/icon-settings.png` | Archiviert und freigegeben |
+| 11 | `home/bg-start.jpg` | Archiviert und freigegeben |
+| 12 | `home/bg-live.jpg` | Archiviert und freigegeben |
+| 13 | `home/bg-epg.jpg` | Archiviert und freigegeben |
+| 14 | `home/bg-movies.jpg` | Archiviert und freigegeben |
 | 15 | `home/bg-series.jpg` | Offen |
 | 16 | `home/bg-settings.jpg` | Offen |
 | 17 | `settings/icon-accounts.png` | Offen |
@@ -111,5 +111,7 @@ Stand 19.10.2026. **EIN Space-Premium-Design, EIN 98-Slot-Manifest, EIN fortlauf
 | 96 | `widgets/widget-movie-fallback.png` | Offen |
 | 97 | `widgets/widget-series-fallback.png` | Offen |
 | 98 | `widgets/widget-header.png` | Offen |
+
+**Abnahmevermerk 19.10.2026:** Nutzer hat die eigenständigen Positionen 5–14 ausdrücklich freigegeben. Sie liegen im separaten `home/`-Ordner, 1–4 im separaten `branding/`-Ordner; keine Datei ersetzt oder löscht eine der vier bisherigen Freigaben. Alle 14 im zentralen Archiv nach Dateiname und SHA-256 dokumentiert. Einbau in das **optionale** Space-Premium-Theme erfolgt erst separat.
 
 **Datei-Referenzen:** Alte Chargen: `artwork/xcmate/space-premium/set-02/` im Artwork-Branch; Brandingdateien aus Drive Set 01 sind bislang nicht als GitHub-Binärdateien vorhanden. Diese älteren Ordner nicht als zweiten Master behandeln.
