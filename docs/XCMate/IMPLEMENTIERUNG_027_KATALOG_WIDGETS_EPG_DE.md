@@ -215,4 +215,12 @@ Hauptcode `3731db7`, Datenmodule `643692b`, ergänzende Ressourcenhärtung `96b2
 Die parallelen Main-Designbeschlüsse wurden in `c643e0e` übernommen. Der erste PR-Lauf
 [39256740591](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39256740591)
 bestand mit damals 312 Tests; der abschließende Stand enthält 313 Tests einschließlich
-Fehler-Rückoff und wird erneut als PR-Kandidat geprüft. Finaler CI-/Artefaktnachweis folgt.
+Fehler-Rückoff und wird erneut als PR-Kandidat geprüft. Finaler Code-/Paketstand `b63d98a` in
+[CI 39257022639 erfolgreich geprüft](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39257022639):
+**313/313 Tests**, Build/Syntax/Upload erfolgreich, Produktions-Publish übersprungen.
+[CI-Artefakt xcmate-review-28](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39257022639/artifacts/12187784190),
+ID `12187784190`, 287969 Bytes Artefaktarchiv, Ablauf 02.11.2026, enthält CI-ZIP und eigene SHA.
+Artefaktmetadaten und Uploadstatus sind überprüft. Die im Branch gespeicherte lokale ZIP
+ist gesondert vollständig bytegeprüft; CI-ZIP-Zeitstempel können eine andere Paket-SHA ergeben.
+Der anschließende Übergabecommit verändert ausschließlich Dokumentation, weder Quellen noch ZIP.
+PR bleibt Entwurf; keine automatische Issue-Schließung oder Veröffentlichung.

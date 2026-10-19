@@ -315,7 +315,7 @@ in der ZIP gepackte `WindowXMLDialog`-Vorlage
 XML wird nur nach Benutzerbestätigung geöffnet.
 Native Fallback-Meldung bei XML-Load-Fehler und diagnostischer
 Renderer-Status vorhanden. PR #10, CI #38731122534, Publish
-#38731326443 grün. ZIP 223470 Bytes, Katalog 0.1.17.
+#38731226443 grün. ZIP 223470 Bytes, Katalog 0.1.17.
 
 **Abnahmefrage:** Wird das native Fenster sichtbar? Anschließend
 wird das eigene XML-Fenster sichtbar und fokussierbar?

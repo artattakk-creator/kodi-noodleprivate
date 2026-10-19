@@ -1,5 +1,13 @@
 # XCMate – zentraler Projekteinstieg
 
+**GitHub-Nachweis:** [Entwurfs-PR #28](https://github.com/artattakk-creator/kodi-noodleprivate/pull/28)
+· [CI erfolgreich, 313 Tests](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39257022639) auf Paketcommit `b63d98a`.
+[Testartefakt `xcmate-review-28`](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39257022639/artifacts/12187784190) (ZIP samt eigener SHA, 287969 Bytes
+Artefaktarchiv, bis 02.11.2026). Build, Syntax, Tests und Upload erfolgreich;
+Produktions-Publish ausdrücklich **übersprungen**. Das CI-Archiv besitzt ZIP-Zeitstempel
+seines Builds; seine eigene beigefügte SHA verwenden. Lokale oben verlinkte Test-ZIP
+unabhängig mit 95 Quelldateien/CRC/SHA geprüft; CI-Upload und Artefaktmetadaten verifiziert.
+
 > **PR #28 – funktionaler Zwischenstand:** [Entwurfs-PR](https://github.com/artattakk-creator/kodi-noodleprivate/pull/28)
 > enthält das geprüfte Testpaket. Parallel hinzugekommene Designbeschlüsse aus `main`/`fbfb56c`
 > wurden vollständig gelesen und übernommen. **Space Premium bleibt das einzig freigegebene

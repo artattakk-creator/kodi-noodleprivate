@@ -344,7 +344,7 @@ Noch kein EPG-/Live-Remote-Geräte-PASS.
 
 **GitHub:** PR [#10](https://github.com/artattakk-creator/kodi-noodleprivate/pull/10),
 grüne PR-CI [38731122534](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/38731122534),
-grüne Publikation [38731326443](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/38731326443).
+grüne Publikation [38731226443](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/38731226443).
 ZIP `plugin.video.xtreammate/plugin.video.xtreammate-0.1.17.zip`
 223470 Bytes; Source/Katalog jeweils 0.1.17;
 `addons.xml.md5` vorhanden. Altes ZIP bleibt vorhanden.
