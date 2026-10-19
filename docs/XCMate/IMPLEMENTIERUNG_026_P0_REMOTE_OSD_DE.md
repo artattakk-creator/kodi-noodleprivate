@@ -4,6 +4,15 @@ Stand: 19.10.2026. Basis `main` / `3f5e898`, veröffentlichtes XCMate **0.1.25**
 Branch `fix/xcmate-026-remote-three-level`. Kodi-ID bleibt `plugin.video.xtreammate`.
 **0.1.26 ist ausschließlich ein überprüfter Cloud-Testkandidat. Android-Abnahme offen; kein Merge, kein Produktionsupdate.**
 
+**Review:** [Entwurfs-PR #22](https://github.com/artattakk-creator/kodi-noodleprivate/pull/22),
+Code-/Paketcommit `902b3dda823c0498ba9e3aea45944a57b0e5d532`.
+[GitHub-CI erfolgreich](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39229913403):
+Build, Syntax, Tests und Upload erfolgreich; Produktions-Publish **übersprungen**.
+[CI-Testartefakt xcmate-review-22](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39229913403/artifacts/12176890835),
+Upload API-bestätigt (252540 Bytes äußeres Artefakt, Aufbewahrung bis 02.11.2026).
+Das neu gepackte CI-ZIP hat eine eigene Sidecar-SHA; der unten genannte Hash gilt für das
+bytegenau geprüfte eingecheckte Kandidaten-ZIP. Kein lokaler Downloadabgleich des CI-Containers behauptet.
+
 Gelesene Grundlage: vollständige [Android-Übergabe 0.1.25](ANDROID_025_HANDOFF_REMOTE_3LEVEL_EPG_SCHEDULE_DE.md),
 [zentraler Status](CODEX_STATUS_CURRENT_DE.md), [UX-Spezifikation](TV_OSD_EPG_REMOTE_UX_SPEC_DE.md),
 [0.1.25-Implementierung](IMPLEMENTIERUNG_025_TV_INFOBAR_EPG_DE.md) sowie Issues

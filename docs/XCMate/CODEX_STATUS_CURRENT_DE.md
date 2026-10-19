@@ -6,6 +6,12 @@
 Basis `3f5e898`. [Vollständige Änderungen, Testbericht, ZIP und Android-Plan](IMPLEMENTIERUNG_026_P0_REMOTE_OSD_DE.md).
 Die erste OK-Infobar ist unverändert; die folgende 0.1.25-Gerätemeldung bleibt der reale Ausgangsbefund.
 
+**GitHub:** [Entwurfs-PR #22](https://github.com/artattakk-creator/kodi-noodleprivate/pull/22),
+Code-/Paketcommit `902b3dd`. [CI erfolgreich](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39229913403),
+Build/Tests/Upload grün, Produktions-Publish übersprungen.
+[Testartefakt xcmate-review-22](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39229913403/artifacts/12176890835)
+mit eigener CI-Paket-SHA, bis 02.11.2026 verfügbar.
+
 - **P0 implementiert:** nativer Links-Dispatch trotz altem Remote-Profil, zusätzliche gelernte
   Aliase erhalten, kein Profildateizugriff pro Taste; drei getrennte Ebenen Info → Player →
   Einstellungen mit Up/Down/Back. Dynamisches Play/Pause, getrenntes Stop, Seek/Live-Ende nur
