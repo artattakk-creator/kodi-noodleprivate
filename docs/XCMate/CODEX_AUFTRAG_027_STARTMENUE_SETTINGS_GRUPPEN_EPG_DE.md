@@ -1,5 +1,12 @@
 # XCMate 0.1.27 – verbindlicher Codex-Entwicklungsauftrag: schlankes Hauptmenü, Einstellungen und gruppenbasierter Langzeit-EPG
 
+> **Implementierungsstand 19.10.2026:** Neue Module/Routen des 0.1.27-Kandidaten sind auf
+> `feat/xcmate-027-catalogue-home` implementiert und in 312 Cloud-Tests geprüft.
+> [Bericht, ZIP, genaue Teilabgrenzung](IMPLEMENTIERUNG_027_KATALOG_WIDGETS_EPG_DE.md)
+> und [offene Android-Abnahme](ANDROID_TESTPLAN_027_DE.md) sind maßgeblich für den Ist-Stand.
+> Produktiv bleibt 0.1.26. Die nachfolgenden Anforderungen bleiben der Vertrag;
+> Aussagen „noch keine Implementierung“ beschreiben ihren ursprünglichen Auftragsstand.
+
 **Stand:** 19.10.2026. **Quelle:** expliziter Nutzerauftrag direkt nach erfolgreichem Android-TV-Update auf XCMate `0.1.26`.  
 **Repository:** `artattakk-creator/kodi-noodleprivate`; Basis aktuelles `main`; Kodi-ID **`plugin.video.xtreammate`** behalten.  
 **Veröffentlichung:** produktiv **0.1.26**; `0.1.27` ist eine **Zielversionsnummer, noch kein Release, kein Code-Fix und keine Geräteabnahme**.  

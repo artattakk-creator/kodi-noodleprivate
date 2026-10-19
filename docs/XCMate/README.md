@@ -1,5 +1,25 @@
 # XCMate – zentraler Projekteinstieg
 
+> **AKTUELLER ENTWICKLUNGSSTAND 0.1.27 – 19.10.2026:**
+> Basis `main`/`823ae26`, Branch `feat/xcmate-027-catalogue-home`.
+> **Produktiv bleibt 0.1.26; kein Merge/Publish.**
+> [Implementierung, Testergebnisse und installierbare ZIP](IMPLEMENTIERUNG_027_KATALOG_WIDGETS_EPG_DE.md),
+> [vollständiger Android-TV-Testplan](ANDROID_TESTPLAN_027_DE.md),
+> [drei BINGIE-MOD-Widgetquellen samt Einrichtung](BINGIE_MOD_WIDGETS_027_DE.md).
+> Sechs Hauptpunkte, strukturierte Einstellungen, neue Xtream-WindowXML-Medienseiten,
+> lokale dreigeteilte Suche, Widgets, 7/10-Tage-EPG-Tagesliste und Erinnerungen implementiert.
+> **312 Tests vor/nach isoliertem Build bestanden; 26 HTTP-/EPG-Tests zusätzlich mit httpx.**
+> Testpaket: 299709 Bytes, 95 Dateien bytegenau geprüft, Dienstbuild 27.
+> Nutzerzusatz umgesetzt: Mehrtages-EPG bei ausreichender 24-h-Deckung weiterverwenden;
+> Neuheiten standardmäßig zehn Tage/100 gespeicherte Titel pro Medienart, ältere/undatierte
+> Auffüllung ehrlich gekennzeichnet, beide Werte einstellbar. Navigation lädt keine Kataloge/XMLTV.
+> Live-Overlay/Remote-/Player-Dateien bytegleich zur 0.1.26-Basis; Freeze-Regression geprüft.
+> **Alle neuen nativen Android-/BINGIE-Funktionen benötigen Geräteabnahme.**
+> Offen: Auto-Next-Countdown, portalweite Continue-Reihe, Staffel-/Serienreset, Auto-Tune,
+> EPG-Aufnahmescheduler/Android-Engine, neue M3U-/STB-Vollindexoberfläche und portalübergreifende
+> neue Suche. Aufnahmeprobe ist keine funktionsfähige Aufnahmezusage.
+> Ältere „0.1.27 noch nicht implementiert“- und frühere Kandidatenblöcke darunter sind historisch.
+
 > **AKTUELLE ZUSATZANFORDERUNG 19.10.2026 – FUNKTIONALER FREEZE 0.1.26 + Suche + BINGIE MOD:** [Verbindlicher vollständiger Codex-Vertrag](CODEX_AUFTRAG_027_FREEZE_GLOBAL_SEARCH_BINGIE_WIDGETS_DE.md), [Issue #25 gemeinsame LIVE-TV/Filme/Serien-Suche](https://github.com/artattakk-creator/kodi-noodleprivate/issues/25), [Issue #26 drei BINGIE-MOD-Home-Widgets](https://github.com/artattakk-creator/kodi-noodleprivate/issues/26). Alle bestehenden 0.1.26-Funktionen (**Live-TV, erste OK-Infobar, 3 Player-/Einstellungsebenen, D-Pad/Links-Gruppen, Portal-/EPG-Profile**) sind **FREEZE** und werden ausschließlich durch neue Module/Routen ergänzt. In Film- UND Serien-Landingpage und Gruppen-/Posteransicht echtes Fanart/Backdrop des fokussierten Titels, links ausklappbare Gruppenleiste, Rechts vollbreites Postergrid, Links am Gridrand Gruppen erneut zeigen. Die **globale Suche** hat drei getrennte Ergebnisrubriken mit tatsächlichen Gesamtzahlen und korrekter Auswahl/Playback. **BINGIE MOD Homescreen:** drei horizontale Widgetrails in Reihenfolge 1) Live-Sender der Startkanalgruppe samt Now/Next, 2) neueste Filme, 3) neueste Serien. Die Widget-Routen liefern passende Kodi-ListItems; **keine ungefragten Veränderungen an fremden Skin-Dateien oder vorhandenen Nutzer-Widgets**. Zunächst einrichten über dokumentierte BINGIE-MOD-Skineinstellungen; echte Android-Abnahme/CI erforderlich. Aktueller Veröffentlichungsstand bleibt **XCMate 0.1.26**; Ziel 0.1.27 nur nach Codex-PR/Review/Releasefreigabe.
 
 
