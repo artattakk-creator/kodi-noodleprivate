@@ -1,12 +1,12 @@
 # CODEX-ARBEITSAUFTRAG – XCMate 0.1.28
 ## Performance, EPG, Medienkataloge, Live-TV-Preloading und UI-Einstellungen
 
-**Projekt:** XCMate – GS Media Kodi IPTV Add-on  
-**Repository:** https://github.com/artattakk-creator/kodi-noodleprivate  
-**Aktuelle Produktivversion:** 0.1.27  
-**Zielversion:** 0.1.28  
-**Add-on-ID:** `plugin.video.xtreammate`  
-**Zielplattform:** Kodi 21 Omega / Android-TV / Titan BINGIE MOD  
+**Projekt:** XCMate – GS Media Kodi IPTV Add-on<br>
+**Repository:** https://github.com/artattakk-creator/kodi-noodleprivate<br>
+**Aktuelle Produktivversion:** 0.1.27<br>
+**Zielversion:** 0.1.28<br>
+**Add-on-ID:** `plugin.video.xtreammate`<br>
+**Zielplattform:** Kodi 21 Omega / Android-TV / Titan BINGIE MOD<br>
 **Auftrag:** Fehlerbehebung, Performance-Optimierung und Erweiterung der bestehenden Installation.
 
 ---
@@ -217,10 +217,10 @@ Diese Gruppe wird außerdem im Startseiten-Widget verwendet.
 
 Deshalb gilt folgende EPG-Priorität:
 
-**P0:** Startsender – Jetzt/Danach  
-**P1:** Sichtbare Sender der Startgruppe  
-**P2:** Übrige Sender der aktivierten Startgruppe  
-**P3:** Weitere aktivierte Sendergruppen  
+**P0:** Startsender – Jetzt/Danach<br>
+**P1:** Sichtbare Sender der Startgruppe<br>
+**P2:** Übrige Sender der aktivierten Startgruppe<br>
+**P3:** Weitere aktivierte Sendergruppen<br>
 **P4:** Nur bei Bedarf andere Daten, jedoch niemals deaktivierte Gruppen aktualisieren
 
 Implementierung:

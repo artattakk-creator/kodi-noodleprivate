@@ -5,7 +5,7 @@
 > · [vollständiger 0.1.28-Auftrag](CODEX_AUFTRAG_028_PERFORMANCE_EPG_UI_DE.md)
 > · [Android-TV-Abnahme und Repository-Updateweg](ANDROID_TESTPLAN_028_DE.md).
 > **381 Tests bestanden, 43 neue Regressionen; Test-ZIP 0.1.28 / Build 28 geprüft.**
-> Neuer Branch `feat/xcmate-028-streaming-stability`; **kein automatischer Main-Merge/Publish**.
+> [Draft-PR #36](https://github.com/artattakk-creator/kodi-noodleprivate/pull/36), Branch `feat/xcmate-028-streaming-stability`; **kein automatischer Main-Merge/Publish**.
 > Streaming-/Gruppenimporte, Medien-/Suchstart, großer EPG, Startgruppen-Snapshots und separate
 > Pre-Play-Anzeige implementiert; eigener en/de-Schalter und Core-Darstellung vorbereitet.
 > Optionale Theme-/Language-Pack-Installer und vollständige Legacy-Lokalisierung bleiben offen.

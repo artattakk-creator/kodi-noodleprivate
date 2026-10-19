@@ -49,5 +49,7 @@
   "model_cold_window_ms": 9.253,
   "android_verified": false,
   "current_public_de_at_feeds": "HTTP 403 from cloud; not validated",
-  "github_ci": "pending PR run; no new CI PASS claimed"
+  "github_ci": "No new run visible at first post-creation query; no CI PASS claimed",
+  "pull_request": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/36",
+  "observed_at": "2026-10-19T19:47:51.236858+00:00"
 }

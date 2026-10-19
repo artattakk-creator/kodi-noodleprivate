@@ -2,7 +2,7 @@
 
 Stand: 19.10.2026. **Reviewkandidat, nicht veröffentlicht.**
 Basis ausschließlich `main` **103646f98b21c27973a6a12316dca33c0378ecff**, produktiv **0.1.27**.
-Branch `feat/xcmate-028-streaming-stability`. Add-on-ID bleibt `plugin.video.xtreammate`.
+Branch `feat/xcmate-028-streaming-stability`, [Draft-PR #36](https://github.com/artattakk-creator/kodi-noodleprivate/pull/36). Add-on-ID bleibt `plugin.video.xtreammate`.
 [Verbindlicher Auftrag](CODEX_AUFTRAG_028_PERFORMANCE_EPG_UI_DE.md) ·
 [Android-Abnahme](ANDROID_TESTPLAN_028_DE.md).
 
@@ -203,7 +203,8 @@ CRC erfolgreich und **jede Paketdatei bytegenau gegen die aktuellen Branchquelle
 ```
 
 Maschinenlesbar: [TESTERGEBNISSE_028.json](TESTERGEBNISSE_028.json).
-GitHub-CI wird mit dem Draft-PR angefordert; dessen aktueller Run wird gesondert verlinkt.
+[Draft-PR #36](https://github.com/artattakk-creator/kodi-noodleprivate/pull/36) ist erstellt. Aktuelle CI-Läufe: [Branch-Prüfungen](https://github.com/artattakk-creator/kodi-noodleprivate/actions?query=branch%3Afeat%2Fxcmate-028-streaming-stability).
+Bei der ersten Abfrage nach PR-Erstellung war noch kein neuer Lauf sichtbar; **kein CI-Erfolg belegt**.
 **Noch keinen CI-PASS für 0.1.28 behaupten**, bevor ein neuer Lauf abgeschlossen ist.
 CI-ZIP-Zeitstempel können eine andere Paket-SHA ergeben; der eigene verifizierte Kandidat
 ist die hier verlinkte Datei samt eigener Sidecar, kein ungeprüfter Binärvergleich mit CI.
