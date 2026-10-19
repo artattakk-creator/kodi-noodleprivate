@@ -43,10 +43,12 @@ class GuideWindow(xbmcgui.WindowXML):
         self._ready=True;self._group_view(False)
         self.getControl(102).setLabel(tr(32541))
         def load():
-            from library_index import Reader,refresh,initial_group
+            from library_index import Reader,initial_group
             from guide_store import refresh as refresh_guide
             from epg_sources import configuration
-            if self.portal.get('type')=='xtream': refresh(self.portal,self.router._xc(self.portal))
+            if self.portal.get('type')=='xtream':
+                from catalog_sync import request
+                request(self.portal,'live',self.portal.get('start_group_id',''),priority=0)
             self.reader=Reader(self.portal['id'])
             self.mappings=configuration(self.portal['id'])['mappings']
             try: refresh_guide(self.portal)
@@ -210,7 +212,8 @@ class GuideWindow(xbmcgui.WindowXML):
 
 
 def open_guide(router,portal):
-    window=GuideWindow('XCMateGuide.xml',xbmcaddon.Addon().getAddonInfo('path'),'Default','720p')
+    from appearance import window_source
+    window=GuideWindow('XCMateGuide.xml',window_source('XCMateGuide.xml'),'Default','720p')
     window.configure(router,portal)
     try: window.doModal()
     finally: window.close()

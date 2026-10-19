@@ -43,17 +43,8 @@ class Programme:
         return max(0.0, min(1.0, (time.time() - self.start) / dur))
 
 def _parse_xmltv_ts(s):
-    m = _DT_RE.fullmatch(s.strip())
-    if not m:
-        raise ValueError('Invalid XMLTV timestamp')
-    dt_str, tz_str = m.group(1), m.group(2) or '+0000'
-    dt     = datetime.datetime.strptime(dt_str, '%Y%m%d%H%M%S')
-    sign   = 1 if tz_str[0] == '+' else -1
-    hours, minutes = int(tz_str[1:3]), int(tz_str[3:5])
-    if hours > 23 or minutes > 59:
-        raise ValueError('Invalid XMLTV timezone')
-    offset = sign * (hours * 3600 + minutes * 60)
-    return int(dt.replace(tzinfo=datetime.timezone.utc).timestamp()) - offset
+    from xmltv_stream import timestamp
+    return timestamp(s)
 
 
 def parse_xmltv(content: bytes):
@@ -495,6 +486,14 @@ def _refresh_portal_epg(portal_id, p, force=False):
                 refresh_visible_page(portal_id)
             else:
                 diagnostic('NO_NEW_GUIDE',running=False)
+            if force:
+                try:
+                    import xbmcgui
+                    from epg_status import read
+                    state=read(portal_id).get('refresh',{})
+                    code=state.get('code','READY' if result else 'NO_NEW_GUIDE')
+                    xbmcgui.Dialog().notification('XCMate EPG',code+' · '+str(state.get('loaded',0))+' / '+str(state.get('failed',0)))
+                except Exception: pass
             return result
         except Exception:
             diagnostic('REFRESH_FAILED',running=False)
@@ -505,6 +504,9 @@ def _refresh_portal_epg(portal_id, p, force=False):
 
 
 def _refresh_portal_epg_inner(portal_id, p, force=False):
+    if p.get('type')=='xtream':
+        from stream_epg import refresh
+        return refresh(p,force=force)
     epg_url = p.get('epg_url', '')
     if not epg_url:
         ptype = p.get('type', 'm3u')

@@ -99,6 +99,8 @@ def settings(router, portal, section=''):
         add(tr(32440),'settings')
         add(tr(32441),'recording_capabilities')
     elif section=='appearance':
+        add(tr(32620),'ui_language')
+        add(tr(32622),'appearance_settings')
         add(tr(32442),'settings')
         add(tr(32443),'widget_setup')
         add(tr(32444),'widget_live_start_group')

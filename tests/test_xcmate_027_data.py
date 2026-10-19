@@ -92,8 +92,10 @@ class DataTests(unittest.TestCase):
     def test_bad_or_over_budget_import_preserves_previous_catalog(self):
         self.put('vod',[dict(stream_id='1',name='Previous',category_id='a')])
         self.assertFalse(self.put('vod',None))
-        with mock.patch.object(self.index,'MAX_ROWS',1):
-            with self.assertRaises(ValueError): self.put('vod',[{},{}])
+        def interrupted():
+            yield dict(stream_id='2',name='Partial',category_id='a')
+            raise ValueError('broken input')
+        with self.assertRaises(ValueError): self.put('vod',interrupted())
         self.assertEqual(self.index.Reader('p').get('vod','1')['name'],'Previous')
 
     def test_recent_rail_keeps_older_proven_titles_and_honest_unknown_baseline(self):
@@ -168,7 +170,7 @@ class DataTests(unittest.TestCase):
         self.assertFalse(self.guide.import_cache('p',{},now=self.now))
         self.guide.import_cache('p',{'x':[dict(future,name='Today',start_timestamp=self.now,stop_timestamp=self.now+3600)]},now=self.now)
         self.assertEqual(self.guide.horizon('p','x')['programmes'],2)
-        with mock.patch.object(self.guide,'MAX_EVENTS',1):
+        with mock.patch.object(self.guide,'MAX_EVENTS',0):
             with self.assertRaises(ValueError): self.guide.import_cache('p',{'x':[future]},now=self.now)
         self.assertEqual(self.guide.horizon('p','x')['programmes'],2)
 

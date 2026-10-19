@@ -206,8 +206,8 @@ class CatalogContractTests(unittest.TestCase):
     def test_both_catalogs_have_every_new_id_and_matching_format_fields(self):
         en,de=self.catalogs['en_gb'],self.catalogs['de_de']
         self.assertEqual(set(en),set(de))
-        self.assertEqual({i for i in en if i>=32400},set(range(32400,32607)))
-        for ident in range(32400,32607):
+        self.assertTrue(set(range(32400,32607)).issubset(en))
+        for ident in (i for i in en if i>=32400):
             self.assertTrue(en[ident].strip());self.assertTrue(de[ident].strip())
             self.assertEqual(self.l10n.fields(en[ident]),self.l10n.fields(de[ident]),ident)
 

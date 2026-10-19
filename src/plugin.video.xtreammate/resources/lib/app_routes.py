@@ -1,7 +1,7 @@
 """New routes only. Legacy provider/player entry points remain compatible."""
 from localization import tr
 
-ACTIONS=('xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
+ACTIONS=('ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
          'movies_home','series_home','media_detail','media_favourites','global_search','search_section',
          'widget_live_start_group','widget_recent_vod','widget_recent_series','widget_setup',
          'recording_folder','recording_capabilities','about_xcmate','guide_browser','media_play','guide_timers','guide_status')
@@ -26,6 +26,16 @@ def dispatch(router):
     from home_menu import settings,show,recording_folder
     action=router._params.get('action','xcmate_home')
     portal=portal_for(router)
+    if action=='ui_language':
+        _end(router,False)
+        from localization import choose_language
+        if choose_language(): xbmc.executebuiltin('Container.Refresh')
+        return
+    if action=='appearance_settings':
+        _end(router,False)
+        from appearance import configure
+        configure()
+        return
     if action in ('settings_home','settings_section'):
         settings(router,portal,router._params.get('section','') if action=='settings_section' else '')
         return
@@ -100,11 +110,11 @@ def dispatch(router):
             route=('m3u_movies' if kind=='vod' else 'm3u_series') if portal.get('type')=='m3u' else ('vod_categories' if kind=='vod' else 'series_categories')
             xbmc.executebuiltin('Container.Update('+router.url(action=route,pid=portal['id'])+')')
             return
-        _end(router,False)
+        _end(router)
         from media_window import open_media
         open_media(router,portal,kind,router._params.get('sid',''),favourites=action=='media_favourites')
     elif action=='guide_browser':
-        _end(router,False)
+        _end(router)
         from guide_window import open_guide
         open_guide(router,portal)
     elif action=='media_play':
@@ -123,28 +133,48 @@ def search(router,portal):
             xbmc.executebuiltin('Container.Update('+router.url(action='global_search',pid=portal['id'],q=query[:200])+')')
         return
     reader=Reader(portal['id'])
+    incomplete=False
+    from catalog_sync import request
+    from library_index import IndexReadError,sync_state
+    for section in LABELS:
+        request(portal,section,portal.get('start_group_id','') if section=='live' else '',priority=5)
     xbmcplugin.setPluginCategory(router._handle,'XCMate · '+query[:200])
     xbmcplugin.setContent(router._handle,'files')
     kind=router._params.get('kind')
     if kind not in LABELS:
         for section,label_id in LABELS.items():
             label=tr(label_id)
-            _,total=reader.page(section,query,limit=1)
-            status=str(total)+tr(32606 if total==1 else 32471) if reader.state(section) else tr(32472)
+            try:
+                _,total=reader.page(section,query,limit=1)
+                state=reader.state(section);jobs=sync_state(portal['id'],section)
+                status=str(total)+tr(32606 if total==1 else 32471) if state else tr(32472)
+                if jobs and jobs[0]['code']=='FAILED':
+                    status+=' · '+tr(32614);incomplete=True
+                elif not state or (jobs and jobs[0]['code']=='INDEXING'):
+                    status+=' · '+tr(32613);incomplete=True
+            except IndexReadError:
+                status=tr(32614);incomplete=True
             router._add_dir(label+' · '+status,router.url(action='search_section',pid=portal['id'],kind=section,q=query))
     else:
         offset=page_offset(router)
-        rows,total=reader.page(kind,query,offset=offset,limit=48)
+        query_failed=False
+        try: rows,total=reader.page(kind,query,offset=offset,limit=48)
+        except IndexReadError:
+            query_failed=True
+            rows,total=[],0
+            router._add_dir(tr(32614),router.url(action='search_section',pid=portal['id'],kind=kind,q=query))
         for item in rows: add_index_item(router,portal,kind,item)
         paging(router,total,offset,action='search_section',kind=kind,q=query)
-        if not rows:
+        if not rows and not query_failed:
             router._add_dir(tr(32473) if reader.state(kind) else tr(32474),
                             router.url(action='global_search',pid=portal['id'],q=query))
+    if incomplete:
+        router._add_dir(tr(32615),router.url(action='global_search',pid=portal['id'],q=query))
     _end(router)
 
 
 def page_offset(router):
-    try: return min(1000000,max(0,int(router._params.get('offset','0'))))
+    try: return min(9223372036854775807,max(0,int(router._params.get('offset','0'))))
     except (TypeError,ValueError): return 0
 
 

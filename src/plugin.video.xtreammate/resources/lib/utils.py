@@ -532,3 +532,38 @@ def _L(string_id: int, *fmt_args) -> str:
         except Exception:
             pass
     return s
+
+
+from contextlib import contextmanager
+
+
+@contextmanager
+def http_stream(url, params=None, headers=None, timeout=15, max_seconds=300,
+                cancel=lambda: False):
+    """One response, worker only. Failed imports retry from a fresh generation.
+
+    No full body allocation and no 80-MiB collection limit. Existing http_get
+    remains bounded for authentication, metadata and short guide requests.
+    """
+    from network_io import decoded_chunks, ChunkReader
+    deadline = time.monotonic()+max_seconds
+    hdrs = {**_default_headers(), **(headers or {})}
+    if HAVE_HTTPX:
+        options = dict(headers=hdrs, timeout=timeout, verify=setting_bool('ssl_verify',True), follow_redirects=True)
+        proxy = _build_proxy()
+        if proxy: options['proxy'] = proxy
+        with httpx.Client(**options) as client:
+            with client.stream('GET',url,params=params) as response:
+                response.raise_for_status()
+                yield ChunkReader(decoded_chunks(response.iter_raw(chunk_size=65536),response.headers,deadline,cancel))
+    else:
+        import urllib.request, urllib.parse
+        if params: url += ('&' if '?' in url else '?')+urllib.parse.urlencode(params)
+        context = None
+        if not setting_bool('ssl_verify',True):
+            import ssl
+            context = ssl._create_unverified_context()
+        request = urllib.request.Request(url, headers=hdrs)
+        with urllib.request.urlopen(request,timeout=timeout,context=context) as response:
+            chunks = iter(lambda: response.read1(65536), b'')
+            yield ChunkReader(decoded_chunks(chunks,response.headers,deadline,cancel))

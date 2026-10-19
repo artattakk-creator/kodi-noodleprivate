@@ -9,6 +9,7 @@ import os
 import queue
 import threading
 import sqlite3
+import time
 from concurrent.futures import ThreadPoolExecutor
 
 import xbmc
@@ -27,6 +28,9 @@ class MediaWindow(xbmcgui.WindowXML):
         self.rows=[];self.groups=[];self.selected=None;self.episodes=[];self.actions=[]
         self._positions={};self._previous=None;self._last_position=0;self._cols=4
         self._ready=False;self._closed=False;self._generation=0
+        self._watch_stop=threading.Event();self._watch_thread=None;self._pending_future=None
+        self._opened_at=time.monotonic();self._seen_revision=''
+        self._catalog_missing=True
         self._lock=threading.RLock();self._pool=ThreadPoolExecutor(max_workers=2)
         self._art=queue.Queue(maxsize=3)
         self._art_thread=threading.Thread(target=self._art_loop,daemon=True,name='XCMate-art')
@@ -51,33 +55,41 @@ class MediaWindow(xbmcgui.WindowXML):
         self.getControl(120).setLabel((tr(32403) if self.kind=='vod' else tr(32404))+tr(32492))
         self.getControl(102).setLabel(tr(32491))
         self._request(self._initial,self._initial_ready)
+        self._start_watch()
 
     def _request(self,job,apply):
         self._generation+=1;generation=self._generation
-        future=self._pool.submit(job)
+        if self._pending_future is not None: self._pending_future.cancel()
+        future=self._pool.submit(job);self._pending_future=future
         def done(result):
             try: value=result.result()
             except Exception as exc:
                 with self._lock:
                     if not self._closed and generation==self._generation:
-                        self.getControl(102).setLabel(tr(32493)+type(exc).__name__)
+                        from import_budget import safe_failure
+                        from utils import warn
+                        warn('Media local query: '+str(safe_failure(exc)))
+                        self.getControl(102).setLabel(tr(32610))
+                        self.setFocusId(120)
                 return
             with self._lock:
                 if not self._closed and generation==self._generation: apply(value)
         future.add_done_callback(done)
 
     def _initial(self):
-        from library_index import refresh,Reader
-        client=self.router._xc(self.portal)
-        refresh(self.portal,client)
+        from library_index import Reader
+        from catalog_sync import request
         reader=Reader(self.portal['id'])
-        return reader,reader.groups(self.kind),reader.state(self.kind)
+        groups=reader.groups(self.kind)
+        preferred=self.category or (groups[0]['cid'] if groups else '')
+        request(self.portal,self.kind,preferred,priority=2)
+        return reader,groups,reader.state(self.kind)
 
     def _initial_ready(self,value):
         self.reader,self.groups,state=value
         self._catalog_missing=not bool(state)
         self._fill(200,[dict(name=g['title'],sid=g['cid']) for g in self.groups])
-        self.category=self.groups[0]['cid'] if self.groups else ''
+        self.category=self.category if any(g['cid']==self.category for g in self.groups) else (self.groups[0]['cid'] if self.groups else '')
         if not state:
             self.getControl(102).setLabel(tr(32494))
             self.getControl(120).setLabel(tr(32495))
@@ -90,6 +102,37 @@ class MediaWindow(xbmcgui.WindowXML):
             self.initial_sid=''
             if item: self._details(item);return
         self._page('landing',0)
+
+    def _start_watch(self):
+        if self._watch_thread is not None: return
+        def watch():
+            while not self._watch_stop.wait(2):
+                if self._closed: return
+                try: self._poll_catalog()
+                except Exception: pass
+        self._watch_thread=threading.Thread(target=watch,name='XCMate-index-view',daemon=True)
+        self._watch_thread.start()
+
+    def _poll_catalog(self):
+        from library_index import Reader,sync_state
+        reader=Reader(self.portal['id'])
+        state=reader.state(self.kind)
+        revision=(state or {}).get('revision','')
+        with self._lock:
+            if self._closed: return
+            if state and revision!=self._seen_revision:
+                self._seen_revision=revision
+                if self.mode in ('landing','grid','groups'):
+                    self.reader=reader;self.groups=reader.groups(self.kind);self._catalog_missing=False
+                    self._fill(200,[dict(name=g['title'],sid=g['cid']) for g in self.groups])
+                    if not self.category and self.groups: self.category=self.groups[0]['cid']
+                    self._page(self.mode,self.offset)
+            status=sync_state(self.portal['id'],self.kind)
+            if status and status[0]['code'] in ('FAILED','CANCELLED'):
+                self.getControl(102).setLabel(tr(32610))
+                if self._catalog_missing: self.getControl(120).setLabel(tr(32611))
+            elif status and status[0]['code']=='INDEXING':
+                self.getControl(102).setLabel(tr(32612,status[0]['stored'],status[0]['received']))
 
     def _fill(self,control_id,rows):
         from media_art import local_art
@@ -282,10 +325,9 @@ class MediaWindow(xbmcgui.WindowXML):
             if controlId==120 and hasattr(self,'reader'):
                 if getattr(self,'_catalog_missing',False):
                     self.getControl(102).setLabel(tr(32522))
-                    def load():
-                        self.router._xc(self.portal).warm_catalogs(include_live=False,include_vod=self.kind=='vod',include_series=self.kind=='series')
-                        return self._initial()
-                    self._request(load,self._initial_ready)
+                    from catalog_sync import request
+                    request(self.portal,self.kind,self.category,priority=1,force=True)
+                    self._request(self._initial,self._initial_ready)
                     return
                 self._cols=4;self._page('grid',0)
             elif controlId in (110,210):
@@ -294,7 +336,10 @@ class MediaWindow(xbmcgui.WindowXML):
             elif controlId==200:
                 pos=self.getControl(200).getSelectedPosition()
                 if 0<=pos<len(self.groups):
-                    self.category=self.groups[pos]['cid'];self._page('grid',0)
+                    self.category=self.groups[pos]['cid']
+                    from catalog_sync import request
+                    request(self.portal,self.kind,self.category,priority=1)
+                    self._page('grid',0)
             elif controlId==300 and self.mode=='detail':
                 pos=self.getControl(300).getSelectedPosition()
                 if not 0<=pos<len(self.actions): return
@@ -403,13 +448,14 @@ class MediaWindow(xbmcgui.WindowXML):
 
     def close(self):
         if self._closed: return
-        self._closed=True;self._generation+=1
+        self._closed=True;self._generation+=1;self._watch_stop.set()
         self._pool.shutdown(wait=False,cancel_futures=True)
         super().close()
 
 
 def open_media(router,portal,kind,sid='',favourites=False):
-    window=MediaWindow('XCMateMedia.xml',xbmcaddon.Addon().getAddonInfo('path'),'Default','720p')
+    from appearance import window_source
+    window=MediaWindow('XCMateMedia.xml',window_source('XCMateMedia.xml'),'Default','720p')
     window.configure(router,portal,kind,sid,favourites)
     try: window.doModal()
     finally: window.close()

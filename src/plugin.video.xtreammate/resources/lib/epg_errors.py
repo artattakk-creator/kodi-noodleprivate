@@ -17,7 +17,7 @@ def failure_details(exc, stage):
         kind = exc.kind
         fields['limit_kind'] = kind
         fields['limit_value'] = {'channels': MAX_CHANNELS,
-                                 'programmes': MAX_PROGRAMMES}.get(kind, MAX_XML_BYTES)
+                                 'programmes': MAX_PROGRAMMES,'field_bytes':256*1024,'nesting':32}.get(kind, MAX_XML_BYTES)
         if kind in ('bytes', 'input_bytes', 'decoded_bytes'):
             fields['limit_bytes'] = MAX_XML_BYTES
         prefix = 'HTTP_' if isinstance(exc, ResponseLimitError) else 'XMLTV_'
@@ -26,7 +26,9 @@ def failure_details(exc, stage):
         code = 'EMPTY_GUIDE'
     elif isinstance(exc, (gzip.BadGzipFile, EOFError, zlib.error, HTTPCompressionError)):
         code = 'GZIP_INVALID' if stage == 'PARSE' else 'HTTP_COMPRESSION_FAILED'
-    elif isinstance(exc, ET.ParseError):
+    elif type(exc).__name__ == 'UnsafeXMLTV':
+        code = 'XMLTV_UNSAFE_DECLARATION'
+    elif type(exc).__name__ == 'XMLTVSyntaxError' or isinstance(exc, ET.ParseError):
         code = 'INVALID_XMLTV'
     elif isinstance(exc, TimeoutError) or type(exc).__name__ in (
             'ReadTimeout', 'ConnectTimeout', 'WriteTimeout', 'PoolTimeout'):
@@ -41,5 +43,9 @@ def failure_details(exc, stage):
     if status is None: status = getattr(exc, 'code', None)
     if isinstance(status, int) and 100 <= status <= 599:
         fields['http_status'] = status
+    from import_budget import safe_failure
+    details=safe_failure(exc)
+    fields['error_file']=details['frames'][-1][0] if details['frames'] else ''
+    fields['error_line']=details['frames'][-1][1] if details['frames'] else 0
     fields['failure_code'] = code
     return code, fields

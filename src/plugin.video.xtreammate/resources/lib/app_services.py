@@ -5,6 +5,7 @@ import time
 _worker=None
 _guard=threading.Lock()
 _retry_after={}
+_bootstrapped=set()
 
 
 def refresh_local():
@@ -16,7 +17,13 @@ def refresh_local():
         if time.monotonic()<_retry_after.get(portal['id'],0): continue
         try:
             client=XtreamClient(portal['xc_host'],portal['xc_user'],portal['xc_pass'])
-            refresh(portal,client)
+            if not hasattr(client,'iter_catalog'):
+                refresh(portal,client)
+            elif portal['id'] not in _bootstrapped:
+                from catalog_sync import request
+                for kind in ('live','vod','series'):
+                    request(portal,kind,portal.get('start_group_id','') if kind=='live' else '',priority=20)
+                _bootstrapped.add(portal['id'])
             from guide_store import refresh as refresh_guide
             refresh_guide(portal)
             from library_index import Reader,initial_group
@@ -44,19 +51,30 @@ def _run():
     import xbmc
     monitor=xbmc.Monitor()
     while not monitor.abortRequested():
+        worked=False
+        # Optional guide/art preparation may fail independently. It must not
+        # starve an otherwise valid movie/series sync request.
         try: refresh_local()
+        except Exception: pass
+        try:
+            from startup_preload import prepare
+            prepare(cancel=monitor.abortRequested)
+        except Exception: pass
+        try:
+            from catalog_sync import run_next
+            worked=run_next(monitor.abortRequested)
         except Exception: pass
         try:
             from guide_timers import poll as poll_timers
             poll_timers()
         except Exception: pass
-        if monitor.waitForAbort(15): break
+        if monitor.waitForAbort(0.1 if worked else 5): break
 
 
 def poll():
     global _worker
     with _guard:
-        if _worker is None:
+        if _worker is None or not _worker.is_alive():
             _worker=threading.Thread(target=_run,name='XCMate-library',daemon=True)
             _worker.start()
     from media_progress import poll as poll_media

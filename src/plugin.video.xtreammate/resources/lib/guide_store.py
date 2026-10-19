@@ -19,16 +19,22 @@ def path():
     return os.path.join(addon_data_dir(),'guide_v1.sqlite')
 
 
-def connect(filename=None):
+def connect(filename=None,write=False):
+    existed=os.path.isfile(filename or path())
     db=sqlite3.connect(filename or path(),timeout=2)
     db.row_factory=sqlite3.Row
-    page_size=db.execute('PRAGMA page_size').fetchone()[0]
-    db.execute('PRAGMA max_page_count='+str((80*1024*1024)//page_size))
+    if existed and not write: return db
+    from import_budget import check_space
+    check_space(filename or path())
+    db.execute('PRAGMA journal_mode=WAL')
+    db.execute('PRAGMA max_page_count=2147483646')
     db.executescript('''CREATE TABLE IF NOT EXISTS guide_meta(pid TEXT PRIMARY KEY,revision TEXT,updated REAL);
       CREATE TABLE IF NOT EXISTS guide_alias(pid TEXT,alias TEXT,cid TEXT,PRIMARY KEY(pid,alias));
       CREATE TABLE IF NOT EXISTS programmes(pid TEXT,cid TEXT,start INTEGER,stop INTEGER,
         title TEXT,description TEXT,source INTEGER,PRIMARY KEY(pid,cid,start,stop));
-      CREATE INDEX IF NOT EXISTS guide_window ON programmes(pid,cid,start);''')
+      CREATE INDEX IF NOT EXISTS guide_window ON programmes(pid,cid,start);
+      CREATE INDEX IF NOT EXISTS guide_source ON programmes(pid,cid,source,start);
+      CREATE INDEX IF NOT EXISTS guide_expiry ON programmes(stop);''')
     return db
 
 
@@ -36,7 +42,7 @@ def import_cache(pid,cache,revision='',now=None,filename=None):
     from epg_views import _as_int
     now=int(time.time() if now is None else now)
     if not isinstance(cache,dict) or not cache: return False
-    db=connect(filename)
+    db=connect(filename,write=True)
     try:
         with db:
             db.execute('DELETE FROM programmes WHERE stop<?',(now-86400,))
@@ -67,8 +73,8 @@ def import_cache(pid,cache,revision='',now=None,filename=None):
                 db.execute('DELETE FROM programmes WHERE pid=? AND cid=? AND start<? AND stop>?',
                            (pid,row[0],row[2],row[1]))
             db.execute('INSERT OR REPLACE INTO programmes SELECT ?,cid,start,stop,title,description,source FROM incoming',(pid,))
-            count=db.execute('SELECT count(*) FROM programmes WHERE pid=?',(pid,)).fetchone()[0]
-            if count>MAX_EVENTS: raise ValueError('guide index budget')
+            # The bounded incoming cache is only a compatibility step, not
+            # a cap on all ten days already imported by the streaming reader.
             db.execute('INSERT OR REPLACE INTO guide_meta VALUES(?,?,?)',(pid,revision,time.time()))
         return True
     finally: db.close()
@@ -144,3 +150,27 @@ def status_lines(portal,filename=None):
                 tr(32566)+str(entry.get('code',tr(32567)))]
     if not rows: lines.append(tr(32568))
     return lines
+
+
+def covers_active(portal,hours=24):
+    """Check actual saved day-guide coverage, not the four-event fast snapshot."""
+    if portal.get('type')!='xtream': return False
+    from stream_epg import active_streams
+    from epg_sources import configuration
+    streams=active_streams(portal);mappings=configuration(portal['id'])['mappings']
+    now=int(time.time());end=now+hours*3600;seen=False
+    db=connect()
+    try:
+        for row in streams:
+            seen=True;alias=mappings.get(row['sid']) or row['sid']
+            target=db.execute('SELECT cid FROM guide_alias WHERE pid=? AND alias=?',(portal['id'],alias)).fetchone()
+            cid=target[0] if target else mappings.get(row['sid']) or row.get('epg_channel_id') or row['sid']
+            covered=now
+            for begin,stop in db.execute('SELECT start,stop FROM programmes WHERE pid=? AND cid=? AND start<? AND stop>? ORDER BY start',
+                                         (portal['id'],cid,end,now)):
+                if begin>covered+60: break
+                covered=max(covered,stop)
+                if covered>=end: break
+            if covered<end: return False
+        return seen
+    finally: db.close()
