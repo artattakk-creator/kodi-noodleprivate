@@ -203,9 +203,19 @@ CRC erfolgreich und **jede Paketdatei bytegenau gegen die aktuellen Branchquelle
 ```
 
 Maschinenlesbar: [TESTERGEBNISSE_028.json](TESTERGEBNISSE_028.json).
-[Draft-PR #36](https://github.com/artattakk-creator/kodi-noodleprivate/pull/36) ist erstellt. Aktuelle CI-Läufe: [Branch-Prüfungen](https://github.com/artattakk-creator/kodi-noodleprivate/actions?query=branch%3Afeat%2Fxcmate-028-streaming-stability).
-Bei der ersten Abfrage nach PR-Erstellung war noch kein neuer Lauf sichtbar; **kein CI-Erfolg belegt**.
-**Noch keinen CI-PASS für 0.1.28 behaupten**, bevor ein neuer Lauf abgeschlossen ist.
+**GitHub-CI erfolgreich:** [Run 39313972637](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39313972637) auf
+`d915966a2a934af8e1bbf0cb82e88df9e51c0af1`: vollständiger Job samt Build, Syntax, Tests,
+Paketvorbereitung und Upload **success**. Produktionsschritt **skipped**.
+[Artefakt `xcmate-review-36`](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39313972637/artifacts/12216318143), ID `12216318143`,
+322.110 Bytes Artefaktarchiv, nicht abgelaufen, verfügbar bis **02.11.2026, 19:49:48 UTC**.
+Auch der vorherige Run `39313879228` auf `41cc8bb` ist erfolgreich.
+
+Die CI-Job-/Schritt- und Artefaktmetadaten wurden direkt geprüft. Der Logdownload war
+nicht verfügbar; **381 ist die vollständig nachgewiesene lokale Testzahl**, keine aus
+fehlenden CI-Logs erfundene Zählung. Ein anschließend ausschließlich die Übergabe ändernder
+Dokumentationspush kann einen weiteren CI-Lauf auslösen; Quellen und geprüfte ZIP bleiben
+bytegleich. Aktuellen Headstatus im [Draft-PR #36](https://github.com/artattakk-creator/kodi-noodleprivate/pull/36) ablesen.
+
 CI-ZIP-Zeitstempel können eine andere Paket-SHA ergeben; der eigene verifizierte Kandidat
 ist die hier verlinkte Datei samt eigener Sidecar, kein ungeprüfter Binärvergleich mit CI.
 
