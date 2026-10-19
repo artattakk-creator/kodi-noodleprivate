@@ -39,3 +39,11 @@
 ## D. Direktverweis für Codex
 
 Lies dieses Design-Freeze-Dokument und GRAPHICS_V2_ASSET_PLAN_027_DE.md vor dem Grafik-Sprint. Erzeuge und integriere **nur Design 1 „Space Premium“**. Bereite die Asset-Resolver-Schnittstelle so vor, dass weitere rein grafische Designpakete *später* ergänzbar wären, ohne Kodi/BINGIE MOD oder die gefreezte Live-TV-Bedienung zu verändern. Designs 2/3 noch nicht bauen.
+
+## E. Abgenommener Ablageprozess und erste vier Archivdateien
+
+**Nutzerauftrag vom 19.10.2026:** Die vier bereits generierten Branding-Grafiken sollen als **freigegebene Archivvorlagen** direkt nach `artwork/xcmate/space-premium/` hochgeladen werden. **Neuer verbindlicher Folgeworkflow**: Grafiken erzeugen → konkrete Nutzerfreigabe abwarten → Original-Binärdateien in das zum jeweiligen XCMate-Design gehörende GitHub-Quellarchiv übertragen → SHA-256 und Abmessungen auf GitHub vergleichen → erst nach gesonderter technischer Freigabe in eine installierbare Theme-/Add-on-Version integrieren.
+
+Der Zielordner wurde im Repository über [README.md](../../artwork/xcmate/space-premium/README.md) und [asset-manifest.json](../../artwork/xcmate/space-premium/asset-manifest.json) tatsächlich angelegt. **Uploadstatus: Binärdateien NOCH NICHT übertragen**, da die vorliegenden Chat-Binärattachments über die vorhandene GitHub-Connector-Dateischnittstelle nicht als Quellbytes übernommen werden konnten. **Nicht** als installiert oder auf GitHub vorhanden ausgeben. Das geprüfte Manifest gibt Zielgröße/Hash pro Datei an und trägt derzeit entsprechend `present_in_repo=false`.
+
+Aufnahmen, Gameplay, VOD und Kodi-Live-TV-0.1.26-Assets bleiben bis dahin unverändert; der Freigabe-/Archivstatus berechtigt **nicht** eigenmächtig zum Austausch von `src/plugin.video.xtreammate/icon.png` oder `fanart.jpg`.
