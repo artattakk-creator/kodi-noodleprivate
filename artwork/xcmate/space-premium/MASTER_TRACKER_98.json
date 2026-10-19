@@ -4,11 +4,11 @@
   "theme": "space-premium",
   "canonical_drive_folder": "https://drive.google.com/drive/folders/1UPA7fLKIq21GkA4NzAPEVfLp2BvSpm3y",
   "target": 98,
-  "archive_present": 70,
-  "approved": 70,
+  "archive_present": 80,
+  "approved": 80,
   "pending_approval": 0,
-  "remaining_unproduced": 28,
-  "note": "ONE optional Space Premium 98-slot theme. Slots 1–70 approved/archived, 71–98 not produced. No Kodi runtime integration. Originals and SHA preserved.",
+  "remaining_unproduced": 18,
+  "note": "ONE optional Space Premium 98-slot theme. Slots 1–80 approved/archived, 81–98 not produced. No Kodi runtime integration. Originals and SHA preserved.",
   "slots": [
     {
       "slot": 1,
@@ -836,81 +836,161 @@
       "slot": 71,
       "path": "player/icon-audio.png",
       "category": "player",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "0e1d2ed06745b88bfb1331131ba97880e0c511b535ddb224c47a30820f3b5b10",
+      "source_batch_reference": "player-shared-slots-71-80-2026-10-20",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 74543,
+      "source_sha256": "d19f7acf10407aec36cd3a65252604be22526c47b22c6edb0352179e85138178",
+      "approval_note": "User approved 2026-10-20; theme only; no Core installation or automatic download."
     },
     {
       "slot": 72,
       "path": "player/icon-subtitles.png",
       "category": "player",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "279a6dea04805476bb6e59a3dbcb93f2d338765758e4429a5e5e063745a82201",
+      "source_batch_reference": "player-shared-slots-71-80-2026-10-20",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 70942,
+      "source_sha256": "717596cccfca3470989f702c4ffdda5d188b7b434f85b3bc3ef3f6b19a32d082",
+      "approval_note": "User approved 2026-10-20; theme only; no Core installation or automatic download."
     },
     {
       "slot": 73,
       "path": "player/icon-video-settings.png",
       "category": "player",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "82072437ccfbb54cd993ca8715368519bab89d81aa8ee9c129e1207e8dee4f57",
+      "source_batch_reference": "player-shared-slots-71-80-2026-10-20",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 75203,
+      "source_sha256": "720e075a2502ffcb8878215a1a0e1c0df1345264f6db29d52fe21a2615b032d9",
+      "approval_note": "User approved 2026-10-20; theme only; no Core installation or automatic download."
     },
     {
       "slot": 74,
       "path": "player/icon-more.png",
       "category": "player",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "02cfdaa32c068242e7b0790cdae51f9ea7ae69cb488553ad6038bf59079f3ba6",
+      "source_batch_reference": "player-shared-slots-71-80-2026-10-20",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 73616,
+      "source_sha256": "8bfb0cce75163f275de11d9ee1d6d355bbe254b068d1c40686d8af1aff3cf0ea",
+      "approval_note": "User approved 2026-10-20; theme only; no Core installation or automatic download."
     },
     {
       "slot": 75,
       "path": "player/panel-infobar.png",
       "category": "player",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "b4368ae6cb18bcf93de923e3b01906e86f0338e079834ce82f2f97c357add8e1",
+      "source_batch_reference": "player-shared-slots-71-80-2026-10-20",
+      "size_px": [
+        1920,
+        300
+      ],
+      "mode": "RGBA",
+      "size_bytes": 7526,
+      "source_sha256": "b4368ae6cb18bcf93de923e3b01906e86f0338e079834ce82f2f97c357add8e1",
+      "approval_note": "User approved 2026-10-20; theme only; no Core installation or automatic download."
     },
     {
       "slot": 76,
       "path": "player/panel-controls.png",
       "category": "player",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "0385f96617f17fe63961d8c7cf89d3860104ab0d9841cea25aacb18393a0b25a",
+      "source_batch_reference": "player-shared-slots-71-80-2026-10-20",
+      "size_px": [
+        1920,
+        240
+      ],
+      "mode": "RGBA",
+      "size_bytes": 7726,
+      "source_sha256": "0385f96617f17fe63961d8c7cf89d3860104ab0d9841cea25aacb18393a0b25a",
+      "approval_note": "User approved 2026-10-20; theme only; no Core installation or automatic download."
     },
     {
       "slot": 77,
       "path": "player/panel-options.png",
       "category": "player",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "4ca393c22ec9865684e01edca5e5532de19d85c0e67e43684d66973b43375dff",
+      "source_batch_reference": "player-shared-slots-71-80-2026-10-20",
+      "size_px": [
+        920,
+        680
+      ],
+      "mode": "RGBA",
+      "size_bytes": 7680,
+      "source_sha256": "4ca393c22ec9865684e01edca5e5532de19d85c0e67e43684d66973b43375dff",
+      "approval_note": "User approved 2026-10-20; theme only; no Core installation or automatic download."
     },
     {
       "slot": 78,
       "path": "player/panel-progress-track.png",
       "category": "player",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "0e028644a807b2ee7788d53f375a7060b9f04e5bc3bc2f616bc13999dbd0a8fb",
+      "source_batch_reference": "player-shared-slots-71-80-2026-10-20",
+      "size_px": [
+        1920,
+        74
+      ],
+      "mode": "RGBA",
+      "size_bytes": 1174,
+      "source_sha256": "0e028644a807b2ee7788d53f375a7060b9f04e5bc3bc2f616bc13999dbd0a8fb",
+      "approval_note": "User approved 2026-10-20; theme only; no Core installation or automatic download."
     },
     {
       "slot": 79,
       "path": "shared/icon-search.png",
       "category": "shared",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "9296754df54be9f5eaed9c7f0fb66d5b6b14e2201b856b6ac3b873db7fd6b521",
+      "source_batch_reference": "player-shared-slots-71-80-2026-10-20",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 76006,
+      "source_sha256": "29137560ebea9d79800b79515d5ef83f8e52bb41c96b6facdf9e19f6c6423580",
+      "approval_note": "User approved 2026-10-20; theme only; no Core installation or automatic download."
     },
     {
       "slot": 80,
       "path": "shared/icon-filter.png",
       "category": "shared",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "f557723741d576f72cd39241b0434c390f31ab24e40856f37eabc75371cdecdb",
+      "source_batch_reference": "player-shared-slots-71-80-2026-10-20",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 74539,
+      "source_sha256": "3f138110950204d61b9cb322a675b1200e795a041fafaff69eb968b0f734f30e",
+      "approval_note": "User approved 2026-10-20; theme only; no Core installation or automatic download."
     },
     {
       "slot": 81,
@@ -1087,6 +1167,12 @@
       "slots": "61-70",
       "outcome": "approved",
       "constraint": "10 EPG/Player icons user approved; sources preserved; optional theme only; no Core integration."
+    },
+    {
+      "date": "2026-10-20",
+      "slots": "71-80",
+      "outcome": "approved",
+      "constraint": "10 Player/Shared assets user approved; originals preserved; optional theme only; no Kodi Core integration."
     }
   ],
   "runtime_release_version": "0.1.27",
@@ -1122,6 +1208,14 @@
       "approval": "approved",
       "drive_folder": "https://drive.google.com/drive/folders/1UPA7fLKIq21GkA4NzAPEVfLp2BvSpm3y",
       "archive": "XCMate_Space_Premium_61-70.zip"
+    },
+    {
+      "date": "2026-10-20",
+      "slots": "71-80",
+      "created": 10,
+      "approval": "approved",
+      "drive_folder": "https://drive.google.com/drive/folders/1UPA7fLKIq21GkA4NzAPEVfLp2BvSpm3y",
+      "archive": "XCMate_Space_Premium_71-80_FREIGEGEBEN.zip"
     }
   ]
 }

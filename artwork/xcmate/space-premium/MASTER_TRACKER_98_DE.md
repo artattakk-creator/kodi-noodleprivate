@@ -2,10 +2,10 @@
 
 **20.10.2026 – EIN optionales Space-Premium-Design, KEINE eigenständigen Grafiksets.**
 
-- **70 freigegeben:** Slots 1–60; alle Originale bleiben unverändert archiviert.
+- **80 freigegeben:** Slots 1–80; alle Originale bleiben unverändert archiviert.
 - **0 Entwürfe mit offener Abnahme.**
-- **28 noch offen:** Nr. 71–98.
-- Alle 70 verfügbaren Dateien sind reine Theme-Assets – **keine Integration in XCMate Core 0.1.27** und keine automatischen Downloads.
+- **18 noch offen:** Nr. 81–98.
+- Alle 80 verfügbaren Dateien sind reine Theme-Assets – **keine Integration in XCMate Core 0.1.27** und keine automatischen Downloads.
 - Revisionen versionieren: Originale und SHA-256 erhalten.
 
 **Masterordner Google Drive:** https://drive.google.com/drive/folders/1UPA7fLKIq21GkA4NzAPEVfLp2BvSpm3y
@@ -19,10 +19,10 @@
 | Einstellungen | 20 | 20 | 0 | 0 |
 | Filme/Serien | 14 | 14 | 0 | 0 |
 | EPG | 12 | 12 | 0 | 0 |
-| Player/Fernbedienung | 16 | 8 | 0 | 8 |
-| Suche/Navigation | 16 | 0 | 0 | 16 |
+| Player/Fernbedienung | 16 | 16 | 0 | 0 |
+| Suche/Navigation | 16 | 2 | 0 | 14 |
 | Widgets | 4 | 0 | 0 | 4 |
-| **Gesamt** | **98** | **70** | **0** | **28** |
+| **Gesamt** | **98** | **80** | **0** | **18** |
 
 ## Alle 98 Positionen
 
@@ -98,16 +98,16 @@
 | 68 | `player/icon-skip-back.png` | ✓ Freigegeben · archiviert, nicht integriert |
 | 69 | `player/icon-skip-forward.png` | ✓ Freigegeben · archiviert, nicht integriert |
 | 70 | `player/icon-live-edge.png` | ✓ Freigegeben · archiviert, nicht integriert |
-| 71 | `player/icon-audio.png` | ○ Noch zu erstellen |
-| 72 | `player/icon-subtitles.png` | ○ Noch zu erstellen |
-| 73 | `player/icon-video-settings.png` | ○ Noch zu erstellen |
-| 74 | `player/icon-more.png` | ○ Noch zu erstellen |
-| 75 | `player/panel-infobar.png` | ○ Noch zu erstellen |
-| 76 | `player/panel-controls.png` | ○ Noch zu erstellen |
-| 77 | `player/panel-options.png` | ○ Noch zu erstellen |
-| 78 | `player/panel-progress-track.png` | ○ Noch zu erstellen |
-| 79 | `shared/icon-search.png` | ○ Noch zu erstellen |
-| 80 | `shared/icon-filter.png` | ○ Noch zu erstellen |
+| 71 | `player/icon-audio.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 72 | `player/icon-subtitles.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 73 | `player/icon-video-settings.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 74 | `player/icon-more.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 75 | `player/panel-infobar.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 76 | `player/panel-controls.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 77 | `player/panel-options.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 78 | `player/panel-progress-track.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 79 | `shared/icon-search.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 80 | `shared/icon-filter.png` | ✓ Freigegeben · archiviert, nicht integriert |
 | 81 | `shared/icon-sort.png` | ○ Noch zu erstellen |
 | 82 | `shared/icon-clear.png` | ○ Noch zu erstellen |
 | 83 | `shared/icon-back.png` | ○ Noch zu erstellen |
@@ -146,3 +146,9 @@
 
 - **61–70 (EPG / Player):** Zehn vom Nutzer freigegebene RGBA-Icons (256 × 256) archiviert; unveränderte 1254 × 1254 Originalgenerationen erhalten. Kontaktblätter JPG/PDF, Prüfsummen, Manifest, README und Quellen-ZIP liegen vor.
 - **Fortschritt:** 70/98 freigegeben, 28 offen. XCMate Core bleibt unverändert; kein Merge nach `main`.
+
+## Freigabe 20.10.2026 – Charge 71–80
+
+- Alle zehn Motive 71–80 ausdrücklich freigegeben.
+- Originalquellen und 10 Kodi-RGBA-Assets samt SHA-256 und JPG/PDF-Kontaktblatt versioniert.
+- 80/98 freigegeben; 18 offene Positionen (81–98). Keine automatische Integration und kein Merge nach `main`.
