@@ -16,11 +16,13 @@ LIB = Path(__file__).resolve().parents[1] / 'src/plugin.video.xtreammate/resourc
 class Control:
     def __init__(self, options=None):
         self.visible = True
+        self.enabled = True
         self.options = options or {}
         self.items = []
         self.selected = 0
     def getId(self): return id(self)
     def setVisible(self, value): self.visible = value
+    def setEnabled(self, enabled): self.enabled = enabled
     def setWidth(self, width): self.width = width
     def setPosition(self, x, y): self.position = (x,y)
     def setImage(self, imageFilename, useCache=True): self.image = imageFilename
@@ -29,8 +31,8 @@ class Control:
     def setNavigation(self, up, down, left, right):
         assert all(isinstance(c, Control) for c in (up, down, left, right))
         self.navigation = (up, down, left, right)
-    def controlLeft(self, control): pass
-    def controlRight(self, control): pass
+    def controlLeft(self, control): self.left = control
+    def controlRight(self, control): self.right = control
     def reset(self): self.items = []
     def addItems(self, items): self.items = list(items)
     def size(self): return len(self.items)
@@ -81,8 +83,9 @@ class OmegaDialog:
     def addControls(self, pControls):
         for control in pControls: self.addControl(control)
     def setFocus(self, control):
-        assert control in self.controls and control.visible
+        assert control in self.controls and control.visible and control.enabled
         self.focus = control
+    def getFocusId(self): return self.focus.getId() if self.focus else -1
     def show(self):
         # Deliberately no onInit callback for a programmatic WindowDialog.
         self.shown = True
@@ -95,7 +98,13 @@ class OmegaDialog:
         if isinstance(self.focus, ControlList) and key in (3, 4, 5, 6):
             step = {3:-1, 4:1, 5:-10, 6:10}[key]
             self.focus.selected = min(max(self.focus.selected + step, 0), self.focus.size()-1)
-        if key == 7 and hasattr(self, 'onControl'):
+        elif key in (1,2,3,4) and self.focus:
+            if isinstance(self.focus,ControlList):
+                target=getattr(self.focus,'left' if key==1 else 'right',self.focus)
+            else:
+                target=self.focus.navigation[{3:0,4:1,1:2,2:3}[key]]
+            if target.enabled: self.setFocus(target)
+        if key == 7 and hasattr(self, 'onControl') and self.focus.enabled:
             self.onControl(self.focus)
         self.onAction(types.SimpleNamespace(getId=lambda:key, getButtonCode=lambda:0))
 
@@ -106,10 +115,12 @@ class OverlayLifecycleTests(unittest.TestCase):
         path_patch.start()
         self.addCleanup(path_patch.stop)
         self.props = {}
+        self.paused=False
+        def pause(): self.paused=not self.paused
         self.player = types.SimpleNamespace(
             isPlayingVideo=lambda:True, getPlayingFile=lambda:'https://example.invalid/live/u/p/1.ts',
             getTotalTime=lambda:3600, getTime=lambda:0,
-            pause=mock.Mock(), stop=mock.Mock(), play=mock.Mock())
+            pause=mock.Mock(side_effect=pause), stop=mock.Mock(), play=mock.Mock(),seekTime=mock.Mock())
         self.portal = dict(id='p', name='Demo', type='xtream', xc_host='https://example.invalid',
                            xc_user='u', xc_pass='p', start_stream_id='1')
         categories = [dict(category_id='a', category_name='A'),dict(category_id='b', category_name='B')]
@@ -131,7 +142,7 @@ class OverlayLifecycleTests(unittest.TestCase):
         xbmc = types.ModuleType('xbmc')
         xbmc.Player = lambda:self.player
         xbmc.executebuiltin = mock.Mock()
-        xbmc.getCondVisibility = lambda *_:True
+        xbmc.getCondVisibility = lambda condition:self.paused if condition=='Player.Paused' else True
         xbmc.getInfoLabel = lambda *_:''
         addon = types.ModuleType('xbmcaddon')
         addon.Addon = lambda:types.SimpleNamespace(getAddonInfo=lambda *_:str(LIB.parents[1]))
@@ -149,8 +160,12 @@ class OverlayLifecycleTests(unittest.TestCase):
         views_spec = importlib.util.spec_from_file_location('epg_views',LIB/'epg_views.py')
         views = importlib.util.module_from_spec(views_spec)
         views_spec.loader.exec_module(views)
-        profiles = types.ModuleType('remote_profiles')
-        profiles.mapped_action = lambda key:{1:'left',3:'up',4:'down',117:'menu',42:'ok',122:'more'}.get(key)
+        utils.addon_data_dir = lambda:'/unused'
+        profiles_spec = importlib.util.spec_from_file_location('remote_profiles',LIB/'remote_profiles.py')
+        profiles = importlib.util.module_from_spec(profiles_spec)
+        with mock.patch.dict(sys.modules,utils=utils): profiles_spec.loader.exec_module(profiles)
+        self.bindings = dict(profiles.DEFAULT, ok=42)
+        profiles.load = mock.Mock(side_effect=lambda:dict(self.bindings))
         portals = types.ModuleType('portals')
         portals.get_by_id = lambda *_:self.portal
         spec = importlib.util.spec_from_file_location('live_recovery',LIB/'live_recovery.py')
@@ -191,6 +206,157 @@ class OverlayLifecycleTests(unittest.TestCase):
         self.assertEqual(self.props['XtreamMate.OverlayStatus'],'bereit')
         self.assertEqual(o.control.options['_itemHeight'],46)
         self.assertEqual(o.control.options['_space'],3)
+
+    def test_native_left_survives_stale_profile_on_capture_and_list_ten_times(self):
+        self.bindings['left']=88
+        self.bindings['more']=1  # historical collision with native LEFT
+        o=self.module.LiveNavigator(self.portal,'1')
+        self.addCleanup(o.close)
+        o.show()
+        for _ in range(10):
+            self.assertIs(o.focus,o.capture)
+            o.native(1)
+            self.assertEqual(o.mode,'channels')
+            self.assertIs(o.focus,o.control)
+            o.native(1)
+            self.assertEqual(o.mode,'groups')
+            o.native(2)
+            self.assertEqual(o.mode,'channels')
+            o.native(92)
+            self.assertEqual(o.mode,'hidden')
+        self.player.pause.assert_not_called()
+        self.player.stop.assert_not_called()
+        self.assertEqual(o._left_counts,dict(left_received=20,left_channels=10,left_groups=10))
+
+    def test_profile_is_not_read_in_native_callbacks(self):
+        o=self.overlay
+        profiles=sys.modules['remote_profiles']
+        profiles.load.side_effect=AssertionError('profile disk read in callback')
+        o._switch('hidden')
+        for key in (1,1,2,92,42,4,4,3,3,92): o.native(key)
+
+    def test_corrupt_remote_profile_falls_back_without_blocking_dialog_start(self):
+        profiles=sys.modules['remote_profiles']
+        profiles.load.side_effect=ValueError('invalid profile')
+        o=self.module.LiveNavigator(self.portal,'1')
+        self.addCleanup(o.close)
+        o.show()
+        o.native(1)
+        self.assertEqual(o.mode,'channels')
+        o.native(1)
+        self.assertEqual(o.mode,'groups')
+
+    def test_native_left_trace_contains_mapping_mode_transition_and_focus(self):
+        o=self.overlay
+        o._switch('hidden')
+        with mock.patch.object(self.module,'trace') as trace:
+            o.native(1)
+        handled=next(c for c in trace.call_args_list if c.args==('input','COMMAND_HANDLED'))
+        self.assertEqual(handled.kwargs['input_source'],'native')
+        self.assertEqual(handled.kwargs['action_id'],1)
+        self.assertEqual(handled.kwargs['command'],'left')
+        self.assertEqual(handled.kwargs['mode_before'],'hidden')
+        self.assertEqual(handled.kwargs['mode_after'],'channels')
+        self.assertEqual(handled.kwargs['focus_before'],o.capture.getId())
+        self.assertEqual(handled.kwargs['focus_id'],o.control.getId())
+
+    def test_play_pause_updates_label_and_icon_and_only_stop_stops(self):
+        o=self.overlay
+        o._switch('controls')
+        self.assertEqual(o.main_buttons[0].label,'Pause')
+        o.native(7)
+        self.player.pause.assert_called_once()
+        self.assertEqual(o.mode,'controls')
+        self.assertEqual(o.main_buttons[0].label,'Weiter')
+        self.assertTrue(o._button_icons[0][1].image.endswith('tv_play.png'))
+        o.native(7)
+        self.assertEqual(self.player.pause.call_count,2)
+        self.assertEqual(o.main_buttons[0].label,'Pause')
+        self.player.stop.assert_not_called()
+        o._focus_main=3
+        o._render()
+        o.native(7)
+        self.player.stop.assert_called_once()
+        self.assertTrue(o._closed)
+
+    def test_seek_and_live_edge_are_clamped_and_capability_rechecked(self):
+        o=self.overlay
+        self.player.getTime=lambda:5
+        o._switch('controls')
+        o._execute('controls',1)
+        self.player.seekTime.assert_called_with(0)
+        self.player.getTime=lambda:3595
+        o._execute('controls',2)
+        self.player.seekTime.assert_called_with(3600)
+        o._execute('controls',5)
+        self.player.seekTime.assert_called_with(3600)
+        self.player.seekTime.reset_mock()
+        for duration in (0,5,float('nan'),float('inf')):
+            self.player.getTotalTime=lambda:duration
+            o._render()
+            self.assertTrue(all(o.main_buttons[i].visible for i in (1,2,5)))
+            self.assertFalse(any(o.main_buttons[i].enabled for i in (1,2,5)))
+            for i in (1,2,5): o._execute('controls',i)
+            o.handle_command('long_play_pause')
+        self.player.seekTime.assert_not_called()
+        self.player.getTotalTime=lambda:3600
+        sys.modules['xbmc'].getCondVisibility=lambda _:False
+        o._execute('controls',5)
+        self.player.seekTime.assert_not_called()
+
+    def test_tick_reflects_external_pause_without_moving_focus(self):
+        o=self.overlay
+        o._switch('controls')
+        o.native(2)
+        focused=o.focus
+        self.paused=True
+        o._last_tick=0
+        o.tick()
+        self.assertEqual(o.main_buttons[0].label,'Weiter')
+        self.assertIs(o.focus,focused)
+
+    def test_lost_seek_capability_repairs_focus_only_in_own_top_dialog(self):
+        o=self.overlay
+        gui=sys.modules['xbmcgui']
+        for own in (True,False):
+            self.player.getTotalTime=lambda:3600
+            o._switch('controls')
+            o._focus_main=1
+            o._render()
+            self.player.getTotalTime=lambda:0
+            saved_window=gui.Window
+            top=types.SimpleNamespace(getProperty=lambda _:o._window_nonce if own else 'other')
+            with mock.patch.object(gui,'getCurrentWindowDialogId',return_value=12345,create=True), \
+                 mock.patch.object(gui,'Window',side_effect=lambda ident:saved_window(ident) if ident==10000 else top):
+                o._last_tick=0
+                o.tick()
+            self.assertIs(o.focus,o.main_buttons[0 if own else 1])
+        self.player.pause.assert_not_called()
+        self.player.stop.assert_not_called()
+
+    def test_frozen_025_infobar_geometry_assets_and_text(self):
+        o=self.overlay
+        expected=[(32,472,1216,216),(54,506,96,96),(174,486,1060,32),
+                  (174,527,815,29),(1000,527,230,29),(174,567,820,8),
+                  (174,567,820,8),(174,589,1060,27),(174,621,1060,29),
+                  (174,659,1060,24)]
+        self.assertEqual([tuple(c.options[k] for k in ('x','y','width','height'))
+                          for c in o._info_controls],expected)
+        self.assertEqual(o.info_hint.options['label'],
+                         'OK / Runter: Bedienung    Links: Sender    Zurück: TV')
+        self.assertEqual(o.info_now.options['textColor'],'0xFFF0F2F5')
+        self.assertTrue(o.info_bg.options['filename'].endswith('tv_panel.png'))
+        self.assertTrue(o.info_progress.options['filename'].endswith('tv_progress.png'))
+
+    def test_down_and_up_change_levels_without_executing_transport(self):
+        o=self.overlay
+        o._switch('hidden')
+        for key,mode in ((7,'info'),(7,'controls'),(4,'extras'),(3,'controls'),
+                         (3,'info'),(3,'hidden')):
+            o.native(key)
+            self.assertEqual(o.mode,mode)
+        self.player.pause.assert_not_called()
+        self.player.stop.assert_not_called()
 
     def test_native_binding_rejects_both_old_keyword_names(self):
         for keyword in ('itemHeight', 'space'):
@@ -272,7 +438,7 @@ class OverlayLifecycleTests(unittest.TestCase):
         o=self.overlay
         self.player.getTotalTime=lambda:0
         o._switch('controls')
-        self.assertFalse(o.main_buttons[1].visible or o.main_buttons[2].visible)
+        self.assertFalse(o.main_buttons[1].enabled or o.main_buttons[2].enabled or o.main_buttons[5].enabled)
         o.native(2)
         self.assertIs(o.focus,o.main_buttons[3])
         for index,window in enumerate(('osdaudiosettings','osdvideosettings','osdsubtitlesettings')):
@@ -382,7 +548,7 @@ class OverlayLifecycleTests(unittest.TestCase):
         # Rapid separate keypresses must not be lost to a time-based debounce.
         o.native(7)
         self.player.pause.assert_called_once()
-        self.assertEqual(o.mode,'hidden')
+        self.assertEqual(o.mode,'controls')
 
     def test_dpad_menu_back_and_visible_focus_textures(self):
         o = self.overlay
@@ -400,12 +566,14 @@ class OverlayLifecycleTests(unittest.TestCase):
         o.native(92)
         self.assertEqual(o.mode,'controls')
         o.native(2)
-        self.assertIs(o.focus,o.main_buttons[1])
+        self.assertIs(o.focus,o.main_buttons[2])
         o.native(1)
         self.assertIs(o.focus,o.main_buttons[0])
         o.native(4)
-        self.assertIs(o.focus,o.main_buttons[1])
+        self.assertEqual(o.mode,'extras')
+        self.assertIs(o.focus,o.extra_buttons[0])
         o.native(3)
+        self.assertEqual(o.mode,'controls')
         self.assertIs(o.focus,o.main_buttons[0])
         for c in [o.control,*o.main_buttons,*o.extra_buttons]:
             focus = c.options.get('focusTexture',c.options.get('buttonFocusTexture'))

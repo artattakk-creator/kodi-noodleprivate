@@ -1,5 +1,10 @@
 # XCMate 0.1.25 – realer Android-TV-Test und verbindlicher Codex-Folgeauftrag: dreistufiges OSD, Links-Taste, 7–10-Tage-EPG
 
+> **Umsetzungsnachtrag 19.10.2026:** [0.1.26-P0-Kandidat](IMPLEMENTIERUNG_026_P0_REMOTE_OSD_DE.md)
+> mit 250 bestandenen Tests und geprüfter Installationsdatei vorbereitet. Kein neuer Android-Test,
+> kein Merge/Publish; produktiv bleibt 0.1.25. [P1/P2-Analyse](PLAN_EPG_LANGZEIT_TIMER_DE.md) separat.
+> Der nachfolgende Gerätebefund/Arbeitsauftrag bleibt als unveränderte Ausgangslage erhalten.
+
 **Stand:** 19.10.2026. **Quelle:** neue direkte Gerätemeldung des Nutzers nach Update auf XCMate 0.1.25. **Status:** Gerätebefund + Anforderung, **KEINE IMPLEMENTIERUNG UND KEIN RELEASE**. Kodi-ID `plugin.video.xtreammate` unverändert; weiter über GS Media Kodi Repository. Der vorherige 0.1.24-Dialogfehler ist für die beobachtete Szene überwunden. Der getrennte [Herkunfts-/Lizenz-Audit](CODE_ORIGIN_LICENSE_AUDIT_025_DE.md) ist nicht Gegenstand dieses Funktionsauftrags.
 
 ## 1. Harte Gerätedaten: bestätigt / nicht bestätigt / fehlgeschlagen

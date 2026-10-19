@@ -1,5 +1,41 @@
 # XCMate / Codex – aktueller Projekt- und Release-Status (verbindliche Übergabe)
 
+## Aktuell: 0.1.26-P0-Kandidat geprüft, Android-Abnahme offen – 19.10.2026
+
+**Produktiv bleibt 0.1.25.** Entwicklungsbranch `fix/xcmate-026-remote-three-level`,
+Basis `3f5e898`. [Vollständige Änderungen, Testbericht, ZIP und Android-Plan](IMPLEMENTIERUNG_026_P0_REMOTE_OSD_DE.md).
+Die erste OK-Infobar ist unverändert; die folgende 0.1.25-Gerätemeldung bleibt der reale Ausgangsbefund.
+
+**GitHub:** [Entwurfs-PR #22](https://github.com/artattakk-creator/kodi-noodleprivate/pull/22),
+Code-/Paketcommit `902b3dd`. [CI erfolgreich](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39229913403),
+Build/Tests/Upload grün, Produktions-Publish übersprungen.
+[Testartefakt xcmate-review-22](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39229913403/artifacts/12176890835)
+mit eigener CI-Paket-SHA, bis 02.11.2026 verfügbar.
+
+- **P0 implementiert:** nativer Links-Dispatch trotz altem Remote-Profil, zusätzliche gelernte
+  Aliase erhalten, kein Profildateizugriff pro Taste; drei getrennte Ebenen Info → Player →
+  Einstellungen mit Up/Down/Back. Dynamisches Play/Pause, getrenntes Stop, Seek/Live-Ende nur
+  bei Kodi-Freigabe. Keine globale Keymap oder fremde Add-on-Änderung.
+- **Ursache präzise:** Profilkollision am Altcode reproduziert; konkretes damaliges Android-Profil/
+  Action-ID weiterhin unbekannt. Omega stellt Python-Callbacks auch nach nativer Listennavigation zu.
+  Neue 64-Event-Diagnose mit Mapping/Fokus/Modus und LEFT-Zählern bleibt nach Stop/Restart verfügbar.
+- **250 Tests bestanden**, vor/nach isoliertem Build; 39 strikte Overlaytests, 24 HTTP-/EPG-Tests
+  zusätzlich mit httpx. Erste Infobar-Controldefinitionen bytegleich und Renderfunktion AST-identisch
+  zu `main`. Native Android-Bindings/Renderer nicht in der Cloud geprüft.
+- **Test-ZIP 0.1.26 / Dienstbuild 26:** 262100 Bytes, 77 Dateien bytegenau geprüft,
+  SHA-256 `751f47fc0fddd17ac8f576abc3e13dc6455c143ebd00d419b85acf2d765aaa3a`.
+  [ZIP](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.26.zip).
+  Produktionsindex/0.1.25-Pakete unverändert; kein Merge/Publish.
+- **P1/P2 separat:** [Analyse und Folgeplan](PLAN_EPG_LANGZEIT_TIMER_DE.md). Die 48h-Grenze ist
+  eine Statuszählung, die 48er-Grenze beschneidet UI-Ereignisse. Noch kein 7/10-Tage-Browser,
+  Auto-Tune oder EPG-Aufnahmescheduler. Android-Aufnahmeengine nicht nachgewiesen.
+- **Nächste Abnahme:** Kandidat installieren, Kodi neu starten, Version/Build 26 kontrollieren;
+  LEFT 10/10 und drei Ebenen, Seek-Fähigkeit, Fokus, Isolation und gespeicherte Diagnose prüfen.
+  Erst danach ausdrückliche Freigabe für normalen GS-Media-Repositoryupdateweg. Issues #12/#20
+  bis Geräte-PASS offen lassen. Keine 0.1.26-Funktion als auf Android bestätigt ausgeben.
+
+Die nachfolgenden Release-/Kandidatenabschnitte dokumentieren frühere Stände.
+
 > **AKTUELLER ANDROID-TV-TEST VON XCMate 0.1.25 – 19.10.2026:** Die **kompakte 1×-OK-Infobar funktioniert** und ist optisch freigegeben (**Freeze**). **P0 offen:** D-Pad **Links** öffnet im TV-Vollbild weder Senderliste noch beim zweiten Links die Gruppen; Sender-EPG ist nur über OSD-Button erreichbar. **Neue verbindliche Menüfolge:** 1× OK Infobar → 2× OK oder Runter echte Tape-Deck-Playerleiste → weiteres Runter Einstellungen mit Bild/Ton/Untertiteln/EPG/Sendergruppen. **P1/P2:** 7–10-Tage-EPG (nur echte Feed-Reichweite) mit Erinnerung, ausdrücklich optionalem Auto-Umschalten und nur bei funktionsfähiger Aufnahmeengine geplanten Aufnahmen. [Vollständiger Codex-Folgeauftrag](ANDROID_025_HANDOFF_REMOTE_3LEVEL_EPG_SCHEDULE_DE.md); [Issue #20 Links und OSD](https://github.com/artattakk-creator/kodi-noodleprivate/issues/20), [Issue #21 Langzeit-EPG und Timer](https://github.com/artattakk-creator/kodi-noodleprivate/issues/21). **Keine neue Add-on-Version freigegeben oder gebaut**, aktuell bleibt 0.1.25. Arbeiten auf eigenem Branch, PR/Tests, kein Merge ohne Nutzerfreigabe.
 
 

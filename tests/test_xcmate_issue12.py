@@ -145,6 +145,37 @@ class DiagnosticTests(unittest.TestCase):
         self.props.clear()
         self.assertEqual(self.d.snapshots()['epg']['last_success'],1234)
 
+    def test_input_callbacks_buffer_without_disk_io_then_preserve_transitions_on_restart(self):
+        with mock.patch.object(self.d,'_disk',side_effect=AssertionError('input disk read')), \
+             mock.patch.object(self.d,'_save',side_effect=AssertionError('input disk write')):
+            for i in range(80):
+                self.d.record('input','COMMAND_HANDLED',action_id=1,button_code=615,
+                              input_source='native',command='left',mode_before='hidden',
+                              mode_after='channels',focus_before=10,focus_id=20,count=i,
+                              url='https://private.invalid/secret')
+            self.assertEqual(len(self.d._INPUT_PENDING),64)
+        self.d.flush_input()
+        self.assertEqual(len(self.d._INPUT_PENDING),0)
+        self.assertEqual(len(self.d._disk('input')),64)
+        self.props.clear()
+        restarted=module('issue12_input_restart','live_diagnostics.py')
+        history=restarted._disk('input')
+        self.assertEqual((history[0]['count'],history[-1]['count']),(16,79))
+        text='\n'.join(restarted.report())
+        for value in ('command=left','mode_before=hidden','mode_after=channels','focus_before=10'):
+            self.assertIn(value,text)
+        self.assertNotIn('private',text)
+        self.assertNotIn('secret',text)
+
+    def test_failed_input_flush_retains_bounded_events_for_retry(self):
+        self.d.record('input','COMMAND_HANDLED',action_id=1)
+        with mock.patch.object(self.d.os,'replace',side_effect=OSError('profile unwritable')):
+            self.d.flush_input()
+        self.assertEqual(len(self.d._INPUT_PENDING),1)
+        self.d.flush_input()
+        self.assertEqual(len(self.d._INPUT_PENDING),0)
+        self.assertEqual(self.d._disk('input')[0]['action_id'],1)
+
     def test_failure_stage_and_class_survive_close_and_restart_without_exception_text(self):
         self.d.record('dialog','SHOW_FAILED',failure_stage='CONTROL_LIST',exception_class='TypeError',
                       message='https://private.invalid/password')

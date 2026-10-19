@@ -1,5 +1,10 @@
 # XCMate 0.1.25 – implementierter Testkandidat, EPG und Android-Abnahme
 
+> **Aktualisierung 19.10.2026:** Der neue [reale 0.1.25-Gerätebefund](ANDROID_025_HANDOFF_REMOTE_3LEVEL_EPG_SCHEDULE_DE.md)
+> bestätigt die erste OK-Infobar; LEFT scheitert. Der [0.1.26-P0-Kandidat](IMPLEMENTIERUNG_026_P0_REMOTE_OSD_DE.md)
+> ist mit 250 Cloud-Tests vorbereitet, noch ohne Android-Abnahme. Nachfolgende Angaben über
+> komplett offene 0.1.25-Gerätetests sind historische Kandidaten-/Releaseaufzeichnungen.
+
 > **RELEASE-NACHTRAG 18.10.2026:** XCMate 0.1.25 wurde nach bestandenem [237-Test-PR-CI](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39155542397) per [PR #18](https://github.com/artattakk-creator/kodi-noodleprivate/pull/18) mit Nutzerfreigabe nach `main` übernommen. Der [normale GS-Media-Repository-Publish](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39156573306) war erfolgreich; `addons.xml` zeigt **0.1.25**. Veröffentlichte ZIP ist **259497 Bytes**, SHA-256 **`0022633e056940fb6a338b1d5ccb01ce2585d6093652242e7579b0b5b7418ae3`**. Die alte Kandidaten-SHA `583026db...` bezieht sich nur auf den ursprünglichen Entwicklungsbranch. **Android-TV-Realgeräteabnahme weiterhin komplett offen**. Die weiter unten stehenden Angaben `Auf main: Nein` sind historischer Kandidatenstand, keine aktuelle Aussage.
 
 

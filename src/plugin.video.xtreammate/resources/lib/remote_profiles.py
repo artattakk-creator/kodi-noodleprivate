@@ -20,6 +20,10 @@ NAMES = {
 }
 DEFAULT = {'left': 1, 'up': 3, 'down': 4, 'ok': 7,
            'epg': 117, 'more': 122}
+# Native navigation always remains available in our own dialog. Learned keys
+# are additional aliases, never a replacement for Kodi's directional actions.
+NATIVE = {1:'left', 2:'right', 3:'up', 4:'down', 7:'ok',
+          9:'back', 10:'back', 92:'back', 117:'menu', 12:'play_pause'}
 
 def path():
     return os.path.join(addon_data_dir(), 'xtreammate_remote_actions.json')
@@ -59,15 +63,13 @@ def save(bindings):
             os.unlink(temp)
     return True
 
-def mapped_action(kodi_action):
+def mapped_action(kodi_action, bindings=None):
     code = int(kodi_action)
-    for name, bound in load().items():
+    if code in NATIVE:
+        return NATIVE[code]
+    for name, bound in (load() if bindings is None else bindings).items():
         if bound == code:
             return name
-    # Android's Back key has several Kodi equivalents. Unless specifically
-    # assigned to another action, use it to display XCMate channels.
-    if code in (9, 10, 92):
-        return 'left'
     return None
 
 def _capture():
@@ -128,8 +130,9 @@ def configure():
         if not result:
             continue
         code, raw = result
-        if code == 13:
-            d.ok('XCMate', 'Stop kann nicht als Navigationstaste verwendet werden.')
+        if code == 13 or (code in NATIVE and NATIVE[code] != command):
+            d.ok('XCMate', 'Diese native Kodi-Taste behält ihre Navigationsfunktion. '
+                 'Bitte eine zusätzliche Taste wählen.')
             continue
         other = next((k for k,v in bindings.items()
                       if v == code and k != command), None)

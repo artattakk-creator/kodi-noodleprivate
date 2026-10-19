@@ -3,7 +3,7 @@ import xbmc, xbmcaddon, xbmcgui
 
 ADDON    = xbmcaddon.Addon()
 LIB_PATH = os.path.join(os.path.dirname(__file__), 'resources', 'lib')
-SERVICE_BUILD = 25
+SERVICE_BUILD = 26
 if LIB_PATH not in sys.path:
     sys.path.insert(0, LIB_PATH)
 
@@ -133,12 +133,17 @@ class IPTVMasterService(xbmc.Monitor):
             return
         instance = uuid.uuid4().hex
         loops = 0
+        next_input_flush = 0
         heartbeat(marker, instance, loops, phase='gestartet')
         diagnostic('service','STARTED',running=True,count=loops,build=SERVICE_BUILD)
         note(marker, LAST_ERROR, 'keine gemeldet')
         while not self.abortRequested():
             loops += 1
             heartbeat(marker, instance, loops, phase='läuft')
+            if time.monotonic()>=next_input_flush:
+                next_input_flush=time.monotonic()+1
+                from live_diagnostics import flush_input
+                flush_input()
             if time.monotonic()>=self._next_diagnostic:
                 self._next_diagnostic=time.monotonic()+30
                 diagnostic('service','RUNNING',running=True,count=loops,build=SERVICE_BUILD)
