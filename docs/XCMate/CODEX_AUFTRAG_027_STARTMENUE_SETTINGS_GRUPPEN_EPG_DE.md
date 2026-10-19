@@ -49,6 +49,16 @@ Das Diagramm bezeichnet Funktionen, **keine Unicode-Glyphen für die tatsächlic
 
 **Maßgebliche vollständige technische und Design-Spezifikation:** [CODEX_AUFTRAG_027_FILME_SERIEN_NETFLIX_NAV_DETAIL_DE.md](CODEX_AUFTRAG_027_FILME_SERIEN_NETFLIX_NAV_DETAIL_DE.md). **Diese ergänzt und präzisiert ausdrücklich §1, §4, §6 und §7 des Hauptauftrags.** Insbesondere genügt eine gewöhnliche Kodi-Verzeichnisliste **nicht** für die geforderte horizontale Rail und den einklappbaren Gruppenbereich: Kodi-`WindowXML/Dialog` mit sichtbarer Android-TV-Fokusnavigation prüfen. `latest_media.recent_entries(limit=50)`, `metadata_views.py`, `get_vod_info/get_series_info` und bisherige Kodi-Player-Routen sind Startpunkte, **noch kein Nachweis der gewünschten UI und Resume-/Favoritenfunktionen**. Keine Netflix-/TiviMate-Bilder/Code kopieren, kein Live-TV regressieren.
 
+## 1b. NEUE VERBINDLICHE ERGÄNZUNG – Freeze, Suche, BINGIE MOD Widgets (19.10.2026)
+
+**Zusätzliche Anforderung:** [CODEX_AUFTRAG_027_FREEZE_GLOBAL_SEARCH_BINGIE_WIDGETS_DE.md](CODEX_AUFTRAG_027_FREEZE_GLOBAL_SEARCH_BINGIE_WIDGETS_DE.md) vollständig lesen und umsetzen. **Dies erweitert §§1, 1a, 4, 6 und 7**. XCMate **0.1.26-Live-TV-Infobar, dreistufiges OSD, Links-/Gruppensteuerung sowie alle bestehenden Kodi-Playerfunktionen sind FREEZE**; nur additive UI-/Such-/Widget-Module und nachgewiesene minimale Kompatibilitätsänderungen. Bestehende Portal-/Profil-/Medien- und EPG-Daten nicht löschen.
+
+**Filme/Serien:** echtes großes Backdrop/Fanart/Hintergrundposter für den fokussierten Titel, links fixierbare Gruppenleiste, Rechts erweitert Postergrid auf gesamte Breite, Links **am linken Gridrand** öffnet Gruppen wieder, ohne Position/Fokus zu verlieren. Separate Film-/Seriendetailansichten mit echten Laufzeiten/Bewertungen.
+
+**Gemeinsame Suche:** `LIVE-TV (N)`, `FILME (N)`, `SERIEN (N)` gleichzeitig sichtbar für dasselbe Suchwort, unabhängig paginierte tatsächliche Trefferzahlen und korrekter Detail-/Live-Playback-Einstieg. Ein globaler Such-Shortcut kommt **innerhalb** der sechs Startpunkte/Medienseiten zum Einsatz, **kein siebter Hauptmenüpunkt**. [Issue #25](https://github.com/artattakk-creator/kodi-noodleprivate/issues/25).
+
+**BINGIE-MOD-Startseite:** drei über den regulären Kodi-Skin-Widget-Konfigurationsweg einrichtbare horizontale Reihen **Live aus Startkanalgruppe mit EPG → neueste Filme → neueste Serien**, fokussierbare echte ListItems und lokal vorgehaltener Cache. BINGIE MOD nicht automatisch überschreiben; Kodi-Addon liefert kompatible Widget-Routen plus getestete Einrichtung. [Issue #26](https://github.com/artattakk-creator/kodi-noodleprivate/issues/26).
+
 ## 2. Einstellungen nach TiviMate-Bedienlogik als eigener Menüzweig
 
 **Neue oberste Einstellungen-Kategorien** (klar lesbar, Back-Stack und eindeutiger Fokus):
