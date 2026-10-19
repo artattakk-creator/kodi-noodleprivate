@@ -190,7 +190,7 @@ und `Popup-Status: PER ZURÜCK GESCHLOSSEN`.
 **Modal-Remote-Eingaben funktionieren grundsätzlich**, Problem
 ist UI-Rendering/Fokusvisualisierung; TV-Session nicht getestet.
 PR #10 mit Kodi-API-Tests grün und Publikation erfolgreich
-(CI 38731122534, Release 38731226443).
+(CI 38731122534, Release 38731326443).
 ZIP `plugin.video.xtreammate-0.1.17.zip`, 223470 Bytes.
 Neu: Popup-Test beginnt mit **sichtbarem Kodi-Dialog.select()**,
 danach auf Auswahl **Kodi WindowXMLDialog** mit eigener

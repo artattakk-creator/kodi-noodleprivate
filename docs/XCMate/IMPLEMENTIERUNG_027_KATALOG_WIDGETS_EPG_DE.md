@@ -134,22 +134,25 @@ Pfeiltasten führen keine HTTP-Aufrufe aus. Ein Hintergrundbild darf sich nachtr
   dem gecachten gültigen Serienkatalog abgeleitet, nicht aus frei gelieferten URI-Parametern.
 - Gleichzeitige Favoriten-/Fortschrittsänderungen verschiedener Kodi-Interpreter verlieren
   einander durch SQLite-Transaktionen nicht. Defekte Profildatei bleibt unverändert erhalten.
+- Fehlgeschlagene lokale Indeximporte erhalten fünf Minuten automatische Wiederholpause
+  (Commit `96b2c2a`); keine erneute Großverarbeitung alle 15 Sekunden bei vollem Datenträger.
+  Manuelle Aufträge bleiben unabhängig.
 - Aufnahmeordner wird erst nach eigenem UUID-Dateirundtest gespeichert; Fehler löscht
   ausschließlich die eigene Testdatei, keine fremden Dateien.
 
 ## Tests und Build
 
-- **312/312 Tests bestanden**, vor und nach dem isolierten vollständigen Repositorybau;
+- **313/313 Tests bestanden**, vor und nach dem isolierten vollständigen Repositorybau;
   Python 3.12.14/Pillow 12.3.0, einschließlich Noodle-/Repository-Regressionen.
-- **59 neue 0.1.27-Tests**, dazu bestehende Tests angepasst und gezielt erweitert:
+- **60 neue 0.1.27-Tests**, dazu bestehende Tests angepasst und gezielt erweitert:
   40 bisherige strikte Overlay-/Callbacktests, insgesamt 26 HTTP-/EPG-Tests.
 - **26/26 HTTP-/Cache-/XMLTV-Tests zusätzlich mit installiertem httpx 0.28.1 bestanden**;
   lokaler Streamingserver, Byte-/Zeit-/GZIP-Limits und alter gültiger Cache geprüft.
 - Syntaxprüfung über alle drei Add-on-Quellverzeichnisse erfolgreich. Drei ZIPs und
   Repositoryinstaller/Index-MD5 im isolierten Build geprüft; fremde generierte Pakete verworfen.
-- **XCMate 0.1.27 / Dienstbuild 27:** 299709 Bytes, **95 Dateien**,
+- **XCMate 0.1.27 / Dienstbuild 27:** 299893 Bytes, **95 Dateien**,
   alle Paketdateien bytegenau zum Branch-Quellbaum identisch; CRC fehlerfrei.
-- SHA-256: `d8dec1e6f3cd8846c168220f2dd92fcb208c4299b01e347258bdf122e60c03bd`.
+- SHA-256: `891474ccb9835425ea8e15e3dcf07c90f2f19000bc0791606078fdd8318f5076`.
 - [Installierbare Test-ZIP](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.27.zip)
   · [Prüfsumme](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.27.zip.sha256).
 - PR/CI werden im abschließenden GitHub-Übergabeabschnitt verknüpft. Keine Android-Erfolge
@@ -208,6 +211,8 @@ regulärer Repository-Updateweg. Offene Issues nicht vor Geräteabnahme pauschal
 ## GitHub-Übergabe
 
 [Entwurfs-PR #28](https://github.com/artattakk-creator/kodi-noodleprivate/pull/28),
-Code `3731db7`, gechecktes Paket/Dokumentation `f3e9790`; danach ausschließlich
-Dokumentationsabgleich mit den parallelen Main-Ergänzungen. Die Quellen und ZIP-Bytes
-bleiben dabei identisch. CI- und Artefaktnachweis werden hier nach dem PR-Lauf ergänzt.
+Hauptcode `3731db7`, Datenmodule `643692b`, ergänzende Ressourcenhärtung `96b2c2a`.
+Die parallelen Main-Designbeschlüsse wurden in `c643e0e` übernommen. Der erste PR-Lauf
+[39256740591](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39256740591)
+bestand mit damals 312 Tests; der abschließende Stand enthält 313 Tests einschließlich
+Fehler-Rückoff und wird erneut als PR-Kandidat geprüft. Finaler CI-/Artefaktnachweis folgt.

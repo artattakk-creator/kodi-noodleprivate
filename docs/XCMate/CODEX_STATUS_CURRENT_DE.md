@@ -17,8 +17,8 @@
 > [drei BINGIE-MOD-Widgetquellen samt Einrichtung](BINGIE_MOD_WIDGETS_027_DE.md).
 > Sechs Hauptpunkte, strukturierte Einstellungen, neue Xtream-WindowXML-Medienseiten,
 > lokale dreigeteilte Suche, Widgets, 7/10-Tage-EPG-Tagesliste und Erinnerungen implementiert.
-> **312 Tests vor/nach isoliertem Build bestanden; 26 HTTP-/EPG-Tests zusätzlich mit httpx.**
-> Testpaket: 299709 Bytes, 95 Dateien bytegenau geprüft, Dienstbuild 27.
+> **313 Tests vor/nach isoliertem Build bestanden; 26 HTTP-/EPG-Tests zusätzlich mit httpx.**
+> Testpaket: 299893 Bytes, 95 Dateien bytegenau geprüft, Dienstbuild 27.
 > Nutzerzusatz umgesetzt: Mehrtages-EPG bei ausreichender 24-h-Deckung weiterverwenden;
 > Neuheiten standardmäßig zehn Tage/100 gespeicherte Titel pro Medienart, ältere/undatierte
 > Auffüllung ehrlich gekennzeichnet, beide Werte einstellbar. Navigation lädt keine Kataloge/XMLTV.
