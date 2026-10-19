@@ -4,11 +4,11 @@
   "theme": "space-premium",
   "canonical_drive_folder": "https://drive.google.com/drive/folders/1UPA7fLKIq21GkA4NzAPEVfLp2BvSpm3y",
   "target": 98,
-  "archive_present": 16,
+  "archive_present": 36,
   "approved": 16,
-  "pending_approval": 0,
-  "remaining_unproduced": 82,
-  "note": "98 slots in one optional Space Premium theme. 16 approved/archived, 82 not produced. User permits future revisions of slots 15-16 while preserving approved originals. No Kodi runtime integration.",
+  "pending_approval": 20,
+  "remaining_unproduced": 62,
+  "note": "One 98-slot optional Space Premium theme; 16 approved; 20 further settings graphics created pending approval; 62 unproduced; no runtime integration. Keep 1-16 unchanged and track SHA-256 for all versions.",
   "slots": [
     {
       "slot": 1,
@@ -140,7 +140,7 @@
       "sha256": "195b6e32289a31e0aa5fe31bf3420fc7541573cbac75f1041307dd05194e03c8",
       "source_batch_reference": "derived-prototype-from-approved-space-premium-home-backgrounds-2026-10-19",
       "note": "Textfree Full HD concept composited with approved home assets. Pending user review; not part of XCMate core.",
-      "approval_note": "Approved 2026-10-19 as modifiable visual baseline; preserve SHA and earlier versions, never overwrite without version history; optional theme only."
+      "approval_note": "Approved as revisable baseline on 2026-10-19; keep original version and SHA256"
     },
     {
       "slot": 16,
@@ -150,167 +150,187 @@
       "sha256": "0dc5a282fb9538e728afa9c0c1b21b08d0658214ef181f8d4a5524b9852d54fd",
       "source_batch_reference": "derived-prototype-from-approved-space-premium-home-backgrounds-2026-10-19",
       "note": "Textfree Full HD concept composited with approved home assets. Pending user review; not part of XCMate core.",
-      "approval_note": "Approved 2026-10-19 as modifiable visual baseline; preserve SHA and earlier versions, never overwrite without version history; optional theme only."
+      "approval_note": "Approved as revisable baseline on 2026-10-19; keep original version and SHA256"
     },
     {
       "slot": 17,
       "path": "settings/icon-accounts.png",
       "category": "settings",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "generated_pending_visual_approval_not_integrated",
+      "sha256": "2d704502c9da2e074c4b180052ea1a61e152dfa0c4c1f4a852900a20aaed0103",
+      "source_batch_reference": "settings-17-36-2026-10-19",
+      "note": "New concept; on Google Drive settings; not yet approved, runtime integration not authorized; original slots 1-16 preserved."
     },
     {
       "slot": 18,
       "path": "settings/bg-accounts.jpg",
       "category": "settings",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "generated_pending_visual_approval_not_integrated",
+      "sha256": "e39f744743291ed4d5667ef1575b3eb781fda881bb2ba98db115cf25dfeb30be",
+      "source_batch_reference": "settings-17-36-2026-10-19",
+      "note": "New concept; on Google Drive settings; not yet approved, runtime integration not authorized; original slots 1-16 preserved."
     },
     {
       "slot": 19,
       "path": "settings/icon-start-channel.png",
       "category": "settings",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "generated_pending_visual_approval_not_integrated",
+      "sha256": "57299dcf48b494d58f9c56d730df7b58f3d4cd997ab5e14fce6b5028d4980734",
+      "source_batch_reference": "settings-17-36-2026-10-19",
+      "note": "New concept; on Google Drive settings; not yet approved, runtime integration not authorized; original slots 1-16 preserved."
     },
     {
       "slot": 20,
       "path": "settings/bg-start-channel.jpg",
       "category": "settings",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "generated_pending_visual_approval_not_integrated",
+      "sha256": "47ff20645e31b93dbec2b400f900a3d2ff21e4103a4de2455192e80b8e8e6990",
+      "source_batch_reference": "settings-17-36-2026-10-19",
+      "note": "New concept; on Google Drive settings; not yet approved, runtime integration not authorized; original slots 1-16 preserved."
     },
     {
       "slot": 21,
       "path": "settings/icon-epg.png",
       "category": "settings",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "generated_pending_visual_approval_not_integrated",
+      "sha256": "48757461372fece8a084e193234466e36407ffe452ac879acf0f05a063d2b371",
+      "source_batch_reference": "settings-17-36-2026-10-19",
+      "note": "New concept; on Google Drive settings; not yet approved, runtime integration not authorized; original slots 1-16 preserved."
     },
     {
       "slot": 22,
       "path": "settings/bg-epg.jpg",
       "category": "settings",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "generated_pending_visual_approval_not_integrated",
+      "sha256": "e77e16381a75885cb83348c0f7ab76622f01b36f6aeb87058c22c5f681ecde10",
+      "source_batch_reference": "settings-17-36-2026-10-19",
+      "note": "New concept; on Google Drive settings; not yet approved, runtime integration not authorized; original slots 1-16 preserved."
     },
     {
       "slot": 23,
       "path": "settings/icon-groups.png",
       "category": "settings",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "generated_pending_visual_approval_not_integrated",
+      "sha256": "57cb86f2f303090d673e7361e47910567790899c3c897a7f223c4cdac5fb2f54",
+      "source_batch_reference": "settings-17-36-2026-10-19",
+      "note": "New concept; on Google Drive settings; not yet approved, runtime integration not authorized; original slots 1-16 preserved."
     },
     {
       "slot": 24,
       "path": "settings/bg-groups.jpg",
       "category": "settings",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "generated_pending_visual_approval_not_integrated",
+      "sha256": "33aac1151c81d189730dfa9736fa355747030acec90f2a88b60a92bf45fa98c4",
+      "source_batch_reference": "settings-17-36-2026-10-19",
+      "note": "New concept; on Google Drive settings; not yet approved, runtime integration not authorized; original slots 1-16 preserved."
     },
     {
       "slot": 25,
       "path": "settings/icon-remote.png",
       "category": "settings",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "generated_pending_visual_approval_not_integrated",
+      "sha256": "3e719e344468a281dbbf1118ff91b2833132a17ddb0b0f4736cab32331ff8b5a",
+      "source_batch_reference": "settings-17-36-2026-10-19",
+      "note": "New concept; on Google Drive settings; not yet approved, runtime integration not authorized; original slots 1-16 preserved."
     },
     {
       "slot": 26,
       "path": "settings/bg-remote.jpg",
       "category": "settings",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "generated_pending_visual_approval_not_integrated",
+      "sha256": "704f4ce719c54ca6c821ca5b18872471e36dbc99e63ceba151bd1ebf32b7d7a3",
+      "source_batch_reference": "settings-17-36-2026-10-19",
+      "note": "New concept; on Google Drive settings; not yet approved, runtime integration not authorized; original slots 1-16 preserved."
     },
     {
       "slot": 27,
       "path": "settings/icon-player.png",
       "category": "settings",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "generated_pending_visual_approval_not_integrated",
+      "sha256": "6c55d630685a74e839fc96f6ee8c13feb29e8020aaa36f04deb31be6556b77c6",
+      "source_batch_reference": "settings-17-36-2026-10-19",
+      "note": "New concept; on Google Drive settings; not yet approved, runtime integration not authorized; original slots 1-16 preserved."
     },
     {
       "slot": 28,
       "path": "settings/bg-player.jpg",
       "category": "settings",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "generated_pending_visual_approval_not_integrated",
+      "sha256": "538a651f5aaeadb4b73436baffc0e6d6ddd16fae861f5be0b49303484c7ce274",
+      "source_batch_reference": "settings-17-36-2026-10-19",
+      "note": "New concept; on Google Drive settings; not yet approved, runtime integration not authorized; original slots 1-16 preserved."
     },
     {
       "slot": 29,
       "path": "settings/icon-recordings.png",
       "category": "settings",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "generated_pending_visual_approval_not_integrated",
+      "sha256": "45d68f058ca204e241bacf7a95ae4263214660146dfe896fed14d632f5ba6ff0",
+      "source_batch_reference": "settings-17-36-2026-10-19",
+      "note": "New concept; on Google Drive settings; not yet approved, runtime integration not authorized; original slots 1-16 preserved."
     },
     {
       "slot": 30,
       "path": "settings/bg-recordings.jpg",
       "category": "settings",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "generated_pending_visual_approval_not_integrated",
+      "sha256": "3bf553f82b2f7f09996e33b8b3b713621d0ea4b814ec60e12e0457d75f372957",
+      "source_batch_reference": "settings-17-36-2026-10-19",
+      "note": "New concept; on Google Drive settings; not yet approved, runtime integration not authorized; original slots 1-16 preserved."
     },
     {
       "slot": 31,
       "path": "settings/icon-appearance.png",
       "category": "settings",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "generated_pending_visual_approval_not_integrated",
+      "sha256": "7c9dcf33469a6f718fa1dd8fe8f1ba719e59cdb0eae9ec854d1902758e228a25",
+      "source_batch_reference": "settings-17-36-2026-10-19",
+      "note": "New concept; on Google Drive settings; not yet approved, runtime integration not authorized; original slots 1-16 preserved."
     },
     {
       "slot": 32,
       "path": "settings/bg-appearance.jpg",
       "category": "settings",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "generated_pending_visual_approval_not_integrated",
+      "sha256": "24f8831f097e0c246d4e2988e26ae6b9215030c49da3fb3d48f3b3e34b0b7dd0",
+      "source_batch_reference": "settings-17-36-2026-10-19",
+      "note": "New concept; on Google Drive settings; not yet approved, runtime integration not authorized; original slots 1-16 preserved."
     },
     {
       "slot": 33,
       "path": "settings/icon-maintenance.png",
       "category": "settings",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "generated_pending_visual_approval_not_integrated",
+      "sha256": "707f0476151beee9de3f8831bbea033e6d6c0d662c6e9b247f33a34fd0d29361",
+      "source_batch_reference": "settings-17-36-2026-10-19",
+      "note": "New concept; on Google Drive settings; not yet approved, runtime integration not authorized; original slots 1-16 preserved."
     },
     {
       "slot": 34,
       "path": "settings/bg-maintenance.jpg",
       "category": "settings",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "generated_pending_visual_approval_not_integrated",
+      "sha256": "4cf3b2c3d4abf5701b2a1f54939bda3577e3e743048cf5ce58941c9d345f0737",
+      "source_batch_reference": "settings-17-36-2026-10-19",
+      "note": "New concept; on Google Drive settings; not yet approved, runtime integration not authorized; original slots 1-16 preserved."
     },
     {
       "slot": 35,
       "path": "settings/icon-about.png",
       "category": "settings",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "generated_pending_visual_approval_not_integrated",
+      "sha256": "ddedeb3ff3ca0c1284be39aee41a1beea1d9b6fb3204319f7977a3e038961bb9",
+      "source_batch_reference": "settings-17-36-2026-10-19",
+      "note": "New concept; on Google Drive settings; not yet approved, runtime integration not authorized; original slots 1-16 preserved."
     },
     {
       "slot": 36,
       "path": "settings/bg-about.jpg",
       "category": "settings",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "generated_pending_visual_approval_not_integrated",
+      "sha256": "3baf2125d3caabb52283d74f07a9e0af990e764b16e79493cee84e70e33ad2c8",
+      "source_batch_reference": "settings-17-36-2026-10-19",
+      "note": "New concept; on Google Drive settings; not yet approved, runtime integration not authorized; original slots 1-16 preserved."
     },
     {
       "slot": 37,
@@ -815,14 +835,17 @@
       "slots": "5-14",
       "outcome": "approved",
       "constraint": "Do not delete, overwrite, or change slots 1-4. All assets remain in optional Space Premium theme only."
-    },
-    {
-      "date": "2026-10-19",
-      "slots": "15-16",
-      "outcome": "approved_revisable_baseline",
-      "constraint": "Keep prior assets; no integration or replacement of branding 1-4."
     }
   ],
   "runtime_release_version": "0.1.27",
-  "display_settings_backlog": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/31"
+  "production_history": [
+    {
+      "date": "2026-10-19",
+      "slots": "17-36",
+      "created": 20,
+      "approval": "pending",
+      "drive_folder": "https://drive.google.com/drive/folders/1hAVCr4SllD6E4saLCbXuF707cvBUSJOy",
+      "archive": "XCMate_Space_Premium_Assets_17_36.zip"
+    }
+  ]
 }

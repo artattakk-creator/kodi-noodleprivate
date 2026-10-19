@@ -1,0 +1,270 @@
+{
+  "title": "XCMate Space Premium graphics production 17–36",
+  "date": "2026-10-19",
+  "status": "all new assets pending user visual approval",
+  "preserves_previous_slots": "1–16 unchanged",
+  "runtime_integrated": false,
+  "source": "generated space icon gallery + approved space premium backgrounds",
+  "files": [
+    {
+      "slot": 17,
+      "path": "settings/icon-accounts.png",
+      "file": "icon-accounts.png",
+      "kind": "icon_transparent_png",
+      "pixel_dimensions": [
+        256,
+        256
+      ],
+      "size_bytes": 99399,
+      "sha256": "2d704502c9da2e074c4b180052ea1a61e152dfa0c4c1f4a852900a20aaed0103",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 18,
+      "path": "settings/bg-accounts.jpg",
+      "file": "bg-accounts.jpg",
+      "kind": "background_jpeg",
+      "pixel_dimensions": [
+        1920,
+        1080
+      ],
+      "size_bytes": 469717,
+      "sha256": "e39f744743291ed4d5667ef1575b3eb781fda881bb2ba98db115cf25dfeb30be",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 19,
+      "path": "settings/icon-start-channel.png",
+      "file": "icon-start-channel.png",
+      "kind": "icon_transparent_png",
+      "pixel_dimensions": [
+        256,
+        256
+      ],
+      "size_bytes": 96060,
+      "sha256": "57299dcf48b494d58f9c56d730df7b58f3d4cd997ab5e14fce6b5028d4980734",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 20,
+      "path": "settings/bg-start-channel.jpg",
+      "file": "bg-start-channel.jpg",
+      "kind": "background_jpeg",
+      "pixel_dimensions": [
+        1920,
+        1080
+      ],
+      "size_bytes": 462022,
+      "sha256": "47ff20645e31b93dbec2b400f900a3d2ff21e4103a4de2455192e80b8e8e6990",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 21,
+      "path": "settings/icon-epg.png",
+      "file": "icon-epg.png",
+      "kind": "icon_transparent_png",
+      "pixel_dimensions": [
+        256,
+        256
+      ],
+      "size_bytes": 86344,
+      "sha256": "48757461372fece8a084e193234466e36407ffe452ac879acf0f05a063d2b371",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 22,
+      "path": "settings/bg-epg.jpg",
+      "file": "bg-epg.jpg",
+      "kind": "background_jpeg",
+      "pixel_dimensions": [
+        1920,
+        1080
+      ],
+      "size_bytes": 484117,
+      "sha256": "e77e16381a75885cb83348c0f7ab76622f01b36f6aeb87058c22c5f681ecde10",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 23,
+      "path": "settings/icon-groups.png",
+      "file": "icon-groups.png",
+      "kind": "icon_transparent_png",
+      "pixel_dimensions": [
+        256,
+        256
+      ],
+      "size_bytes": 89507,
+      "sha256": "57cb86f2f303090d673e7361e47910567790899c3c897a7f223c4cdac5fb2f54",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 24,
+      "path": "settings/bg-groups.jpg",
+      "file": "bg-groups.jpg",
+      "kind": "background_jpeg",
+      "pixel_dimensions": [
+        1920,
+        1080
+      ],
+      "size_bytes": 477783,
+      "sha256": "33aac1151c81d189730dfa9736fa355747030acec90f2a88b60a92bf45fa98c4",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 25,
+      "path": "settings/icon-remote.png",
+      "file": "icon-remote.png",
+      "kind": "icon_transparent_png",
+      "pixel_dimensions": [
+        256,
+        256
+      ],
+      "size_bytes": 89401,
+      "sha256": "3e719e344468a281dbbf1118ff91b2833132a17ddb0b0f4736cab32331ff8b5a",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 26,
+      "path": "settings/bg-remote.jpg",
+      "file": "bg-remote.jpg",
+      "kind": "background_jpeg",
+      "pixel_dimensions": [
+        1920,
+        1080
+      ],
+      "size_bytes": 352663,
+      "sha256": "704f4ce719c54ca6c821ca5b18872471e36dbc99e63ceba151bd1ebf32b7d7a3",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 27,
+      "path": "settings/icon-player.png",
+      "file": "icon-player.png",
+      "kind": "icon_transparent_png",
+      "pixel_dimensions": [
+        256,
+        256
+      ],
+      "size_bytes": 93072,
+      "sha256": "6c55d630685a74e839fc96f6ee8c13feb29e8020aaa36f04deb31be6556b77c6",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 28,
+      "path": "settings/bg-player.jpg",
+      "file": "bg-player.jpg",
+      "kind": "background_jpeg",
+      "pixel_dimensions": [
+        1920,
+        1080
+      ],
+      "size_bytes": 428830,
+      "sha256": "538a651f5aaeadb4b73436baffc0e6d6ddd16fae861f5be0b49303484c7ce274",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 29,
+      "path": "settings/icon-recordings.png",
+      "file": "icon-recordings.png",
+      "kind": "icon_transparent_png",
+      "pixel_dimensions": [
+        256,
+        256
+      ],
+      "size_bytes": 89557,
+      "sha256": "45d68f058ca204e241bacf7a95ae4263214660146dfe896fed14d632f5ba6ff0",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 30,
+      "path": "settings/bg-recordings.jpg",
+      "file": "bg-recordings.jpg",
+      "kind": "background_jpeg",
+      "pixel_dimensions": [
+        1920,
+        1080
+      ],
+      "size_bytes": 477510,
+      "sha256": "3bf553f82b2f7f09996e33b8b3b713621d0ea4b814ec60e12e0457d75f372957",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 31,
+      "path": "settings/icon-appearance.png",
+      "file": "icon-appearance.png",
+      "kind": "icon_transparent_png",
+      "pixel_dimensions": [
+        256,
+        256
+      ],
+      "size_bytes": 98930,
+      "sha256": "7c9dcf33469a6f718fa1dd8fe8f1ba719e59cdb0eae9ec854d1902758e228a25",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 32,
+      "path": "settings/bg-appearance.jpg",
+      "file": "bg-appearance.jpg",
+      "kind": "background_jpeg",
+      "pixel_dimensions": [
+        1920,
+        1080
+      ],
+      "size_bytes": 456604,
+      "sha256": "24f8831f097e0c246d4e2988e26ae6b9215030c49da3fb3d48f3b3e34b0b7dd0",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 33,
+      "path": "settings/icon-maintenance.png",
+      "file": "icon-maintenance.png",
+      "kind": "icon_transparent_png",
+      "pixel_dimensions": [
+        256,
+        256
+      ],
+      "size_bytes": 81366,
+      "sha256": "707f0476151beee9de3f8831bbea033e6d6c0d662c6e9b247f33a34fd0d29361",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 34,
+      "path": "settings/bg-maintenance.jpg",
+      "file": "bg-maintenance.jpg",
+      "kind": "background_jpeg",
+      "pixel_dimensions": [
+        1920,
+        1080
+      ],
+      "size_bytes": 485428,
+      "sha256": "4cf3b2c3d4abf5701b2a1f54939bda3577e3e743048cf5ce58941c9d345f0737",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 35,
+      "path": "settings/icon-about.png",
+      "file": "icon-about.png",
+      "kind": "icon_transparent_png",
+      "pixel_dimensions": [
+        256,
+        256
+      ],
+      "size_bytes": 102099,
+      "sha256": "ddedeb3ff3ca0c1284be39aee41a1beea1d9b6fb3204319f7977a3e038961bb9",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 36,
+      "path": "settings/bg-about.jpg",
+      "file": "bg-about.jpg",
+      "kind": "background_jpeg",
+      "pixel_dimensions": [
+        1920,
+        1080
+      ],
+      "size_bytes": 480624,
+      "sha256": "3baf2125d3caabb52283d74f07a9e0af990e764b16e79493cee84e70e33ad2c8",
+      "status": "generated_pending_visual_approval_not_integrated"
+    }
+  ]
+}
