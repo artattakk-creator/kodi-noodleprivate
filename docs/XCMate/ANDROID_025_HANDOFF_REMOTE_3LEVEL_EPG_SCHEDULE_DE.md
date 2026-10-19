@@ -105,6 +105,8 @@
 
 **Phasen dürfen hintereinander als Kandidaten ausgeführt werden, ohne 0.1.25 auf dem TV zu destabilisieren.** Für jede Phase neuer Branch ab aktuellem `main`, lokale strikte Kodi-21-Tests, CI, PR, Geräteabnahmeplan, aktualisierte Dokumente. **Keine automatische Übernahme auf main oder öffentliche Veröffentlichung ohne Nutzerfreigabe.** Kodi-ID/GS-Media-Updatepfad und Kundendaten erhalten. Das separate XCMate Skin [Issue #14](https://github.com/artattakk-creator/kodi-noodleprivate/issues/14) ist kein Blocker; eigenständige UI direkt im Add-on erhalten.
 
+**Umsetzungstickets:** [#20 P0 Links und dreistufiges OSD](https://github.com/artattakk-creator/kodi-noodleprivate/issues/20) sowie [#21 P1/P2 Langzeit-EPG, Reminder/Auto-Tune und Aufnahmen](https://github.com/artattakk-creator/kodi-noodleprivate/issues/21). Beide Issues sind Entwicklungsaufträge, noch keine implementierte Version.
+
 ## 7. Codeeinstiege und Referenzen
 
 - `src/plugin.video.xtreammate/resources/lib/live_overlay.py`: `ACTION_LEFT`, `_build_controls`-Left-Control-Nav, `onAction`, `onControl`, `handle_command`, `_list_content`, `_execute`, dreistufige OSD-Zustandsmaschine.
