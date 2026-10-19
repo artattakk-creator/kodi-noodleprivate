@@ -35,13 +35,19 @@ Das Diagramm bezeichnet Funktionen, **keine Unicode-Glyphen für die tatsächlic
 | **Startkanal** | Gespeicherten Startsender **direkt abspielen**, ohne das Startsender-Setup statt dessen zu öffnen. Fehlt ein gültiger Startsender, klaren Dialog mit Weg zu `Einstellungen → Startkanal & Startgruppe` zeigen; keine falsche Stream-URL verwenden. |
 | **Live-TV** | Sendergruppen und Senderliste des aktiven Portals öffnen, wie Kodi-Stand erlaubt. Aktuelle Gruppe/aktuell laufender Sender sinnvoll vorausgewählt; Live-Overlay nicht durch Menüumbau regressieren. |
 | **EPG – Programmführer** | Eigenen **großen gruppenbasierten EPG-Browser** öffnen (siehe §§3–4), nicht nur einen Textviewer der nächsten 3–48 Sendungen. Gruppe des eingestellten Startkanals beim Erstaufruf als **Initialgruppe** verwenden (wenn verfügbar/aktiv), nicht willkürlich „alle Sender“. |
-| **Filme** | Vorhandene Filmkategorien/VOD-Inhalte des aktiven Portals anzeigen; bisherige „Neueste Filme“, Favoriten, Suche etc. **als Unterfunktionen im Filme-Bereich erhalten**, nicht Features entfernen. |
-| **Serien** | Serienkategorien und Staffeln/Episoden anzeigen; „Neueste Serien“ als Unterfunktion. |
+| **Filme** | **Eigene Film-Landingpage:** horizontale `Neu hinzugefügt`-Posterreihe (alle nachvollziehbar neuen Titel lazy durchscrollbar), darunter `Filme / Kategorien` → erste aktivierte Filmgruppe, linke Gruppenleiste, rechts einklappbare vollbreite Posterwand. Cover OK → große Film-Detailansicht mit Backdrop, Metadaten, Abspielen/Neustart/Fortsetzen, Favoriten an/aus, validiertem YouTube-Trailer. **Verbindlicher Zusatzauftrag:** [Film- und Serien-UX](CODEX_AUFTRAG_027_FILME_SERIEN_NETFLIX_NAV_DETAIL_DE.md). Bestehende Filme/Neueste/Suche erhalten. |
+| **Serien** | **Eigene Serien-Landingpage** mit horizontaler Neuheitenreihe, `Serien / Kategorien` und erster aktivierter Gruppe; links Gruppenleiste, rechts Posterwand (Rechts maximiert/Links Gruppen); Serien-Detailansicht mit Backdrop, Metadaten, Favoriten, Trailer, Staffeln/Folgen, Fortschritt/Fortsetzen/Weiterschauen gemäß [SERIES_PROGRESS_SPEC_DE.md](SERIES_PROGRESS_SPEC_DE.md). **Verbindliche Umsetzung:** [Film- und Serien-UX](CODEX_AUFTRAG_027_FILME_SERIEN_NETFLIX_NAV_DETAIL_DE.md). |
 | **Einstellungen** | Klares neues Untermenü, siehe §2; alle technisch relevanten bisherigen Optionen bleiben erreichbar, werden aber aus Startübersicht entfernt. |
 
 **Ersteinrichtung und mehrere Portale:** Ohne Portal wie bislang „Einrichtungsassistent“ anbieten (und Einstellungen/Account hinzufügen), statt sechs unbrauchbare Menüpunkte zu zeigen. Bei mehreren aktiven Portalen aktiven/Standard-Account sicher auswählen bzw. gespeicherte Auswahl verwenden; **die Startseite soll trotzdem die sechs Hauptpunkte** zeigen, nicht ausschließlich eine Portalliste. Accountwechsel im neuen Untermenü. Getrennte Startsender/-gruppe und Daten je `portal_id` respektieren. Bei nicht unterstütztem VOD/Serienformat einen verständlichen Hinweis anzeigen oder die Kompatibilität pro Portal dokumentieren; keine heimliche Löschung der Navigation.
 
 **Technischer Iststand:** `main.py::_root()` verzweigt bisher nach 0/1/mehreren Portalen; `_show_portal_home()` enthält zahlreiche technisch/diagnostische Einträge, die aktuell das Hauptmenü überladen. Nicht alles löschen – Navigation **umstrukturieren**. Bisher `_maybe_autoplay_start()` beim Eintritt in eine Portalstartseite nur unter ausdrücklicher Einstellung/Diagnosemodus; die neue reine Hauptmenüanzeige darf nicht selbst einen Sender starten.
+
+## 1a. VERBINDLICHER ZUSATZAUFTRAG: Netflix-/BINGIE-MOD-artige Filme und Serien
+
+**NEUE Nutzeranforderung 19.10.2026:** Die sechs Hauptmenüpunkte bleiben, aber Filme und Serien öffnen nicht sofort eine einfache Kodi-Kategorieliste. Stattdessen **zuerst eine Landingpage mit horizontal scrollbarer Neuheitenreihe**, darunter `Filme/Kategorien` bzw. `Serien/Kategorien`; dann **erste aktivierte Gruppe**, links ein-/ausblendbare Gruppen-Navigation und rechts mittige/vollbreite Posterübersicht. Cover OK öffnet eine bildstarke **Film- bzw. Seriendetailseite** mit echten Titeldaten, Bewertung/Laufzeit soweit vorhanden, Titelbild/Backdrop, Filmstart/Neustart/Fortsetzen, Medienfavorit ein/aus und validiertem YouTube-Trailer. Serien zusätzlich Staffeln/Episoden und Weiterschauen.
+
+**Maßgebliche vollständige technische und Design-Spezifikation:** [CODEX_AUFTRAG_027_FILME_SERIEN_NETFLIX_NAV_DETAIL_DE.md](CODEX_AUFTRAG_027_FILME_SERIEN_NETFLIX_NAV_DETAIL_DE.md). **Diese ergänzt und präzisiert ausdrücklich §1, §4, §6 und §7 des Hauptauftrags.** Insbesondere genügt eine gewöhnliche Kodi-Verzeichnisliste **nicht** für die geforderte horizontale Rail und den einklappbaren Gruppenbereich: Kodi-`WindowXML/Dialog` mit sichtbarer Android-TV-Fokusnavigation prüfen. `latest_media.recent_entries(limit=50)`, `metadata_views.py`, `get_vod_info/get_series_info` und bisherige Kodi-Player-Routen sind Startpunkte, **noch kein Nachweis der gewünschten UI und Resume-/Favoritenfunktionen**. Keine Netflix-/TiviMate-Bilder/Code kopieren, kein Live-TV regressieren.
 
 ## 2. Einstellungen nach TiviMate-Bedienlogik als eigener Menüzweig
 
@@ -97,8 +103,10 @@ XCMate
  │    ├─ Rechts / Links → Sendung/Zeit navigieren (ohne Gruppensteuerung zu verschlucken)
  │    ├─ Tag vor/zurück → bis zu 7/10 echte EPG-Tage
  │    └─ OK Sendung     → Details / Ansehen / Erinnern / Aufnahme (falls unterstützt)
- ├─ Filme               → Film-Kategorien, Neueste, Favoriten, Suche
- ├─ Serien              → Serien-Kategorien, Neueste, Favoriten, Suche
+ ├─ Filme               → Landingpage: Neuheiten-Rail → Filme/Kategorien
+ │                        → Gruppen links / Posterwand rechts → Film-Detail/Playback
+ ├─ Serien              → Landingpage: Neuheiten-Rail → Serien/Kategorien
+ │                        → Gruppen links / Posterwand rechts → Serien-Detail/Staffeln/Folgen
  └─ Einstellungen
       ├─ Accounts & Portale
       ├─ Startkanal & Startgruppe
@@ -133,6 +141,12 @@ XCMate
 - **Keine Regression** der funktionierenden TV-Infobar/dreistufigen Fernbedienung 0.1.26.
 - Tests: Menüreihenfolge 6, 0/1/mehrere Portale, Back-Stack, PIDs/Portale, Startkanal direkt starten, Autoplay unverändert/opt-in, Settings ohne Datenverlust, Aufnahmeordner und Fernbedienungs-Anlerntest erreichbar, Kategorie ohne VOD, Other Add-ons/BINGIE MOD isoliert.
 
+**Phase A2 – Film-/Serien-UX (eigener PR oder klar separat testbare Commits, zusätzlich zu Phase A):**
+- Neue `movies_home`/`series_home`-Landingpages mit **horizontalen Neuheitenreihen** und gut fokussiertem `Filme/Kategorien`-/`Serien/Kategorien`-Übergang; volle Katalogreichweite via paginiertem Viewport, nicht nur 50 Titel.
+- Gruppenliste links, Posterwand rechts, **Rechts klappt linke Leiste ein**, **Links am Coverrand klappt wieder aus**; Fokus und Back-Stack persistieren.
+- Vollwertige Movie-/Series-Detailseiten mit echten Artworks und Metadaten, dynamischem Favoritenstatus, Movie-Resume, Trailer und Serien-Staffeln/Episoden/Progress. Nicht nur `xbmcgui.Dialog().textviewer`.
+- Kodi-`WindowXML`-/Skin-Widgets auf **tatsächliche** Machbarkeit prüfen, strikte Kodi-21-Tests und echten Android-TV-Prototyp belegen. Ergänzung: [Spezifikation Filme/Serien](CODEX_AUFTRAG_027_FILME_SERIEN_NETFLIX_NAV_DETAIL_DE.md). Bei größerem Umfang in eigene PRs aufteilen statt scheinbar fertige 0.1.27.
+
 **Phase B – großer EPG-Browser (PR B, bei großem Umfang als Folgekandidat oder klar separater Commit):**
 - Eigenes EPG-Window/Dialog unter Kodi 21; Sendergruppe des Startkanals initial, Links öffnet Gruppen, Zeilen/Timeline per Remote, Tag-/Zeitnavigation und Programme bis tatsächlicher Feed-Horizont.
 - Begrenzter indizierter Hintergrundspeicher und echte Quellen-/Zuordnungsdaten, nicht nur optisch generierte Demo-Sendungen. EPG-Zeitbereiche und aktive Gruppen via separate Unit-/Kodi-Mock-Vertragstests nachweisen.
@@ -148,11 +162,12 @@ XCMate
 
 1. Android Kodi → XCMate öffnet **genau sechs** Punkte und keine Diagnoseliste im normalen Startmenü.
 2. **Startkanal** spielt direkt; danach 1× OK kompakte Now/Next-Infobar, 2× OK Player, nochmal Runter Settings, Links öffnet Senderliste und nochmals Links Gruppen – kein Verlust der 0.1.26-Funktion.
-3. **EPG direkt aus Hauptmenü** öffnet große Übersicht mit tatsächlich passender **Startkanal-Gruppe**. Links → Gruppen, andere Gruppe OK → neue Senderspalte; Zurück → Guide. Kein Kodi-/Skin-Hänger.
-4. Heute/andere reale Tage mit Uhrzeiten, Sendungen inkl. Mitternacht/DST, fehlende Quellen transparent. Bei 24-/48h-Feed Tage +3…+9 bewusst leer anzeigen; echte 7–10 Tage nur bei ausreichend langen Datenfeeds bestätigen.
-5. **Einstellungen** öffnen 10 Kategorien. Account-Daten sinnvoll/maskiert; EPG-Quellen/Mappings und Sendergruppen funktionieren, gelernte Fernbedienung auffindbar, alternative Keymap aus.
-6. Aufnahmeordner auswählbar, Speicherung und Schreibbarkeitscheck nach Kodi-Neustart; keine „Aufnahme läuft“-Behauptung ohne tatsächliche Engine. Bestehende Favoriten, Portale, EPG-Zuordnungen, VOD/Serien, Noodle Private und BINGIE MOD erhalten.
-7. Fernbedienungsfokus und -aktionen mit mehr als einem Tastenprofil, 2.746 und 53.664 Sendern ohne unnötige synchrone EPG-/HTTP-Arbeit testen. Tests dokumentieren, Release erst nach Review.
+3. **Filme/Serien:** Beide Landingpages öffnen mit horizontaler Neuheitenreihe und `Kategorien`-Einstieg; erste aktivierte Gruppe, Links Gruppen öffnen / Rechts Posterwand maximieren, echte Cover-Details mit Abspielen, Movie-Resume/Favoriten/Trailer und Serien-Staffeln/Progress. **Erst Kodi-Android-Test = PASS**, nicht ausschließlich Quellcode-/Mock-Erfolg. Detailabnahme im [Medien-UX-Auftrag](CODEX_AUFTRAG_027_FILME_SERIEN_NETFLIX_NAV_DETAIL_DE.md).
+4. **EPG direkt aus Hauptmenü** öffnet große Übersicht mit tatsächlich passender **Startkanal-Gruppe**. Links → Gruppen, andere Gruppe OK → neue Senderspalte; Zurück → Guide. Kein Kodi-/Skin-Hänger.
+5. Heute/andere reale Tage mit Uhrzeiten, Sendungen inkl. Mitternacht/DST, fehlende Quellen transparent. Bei 24-/48h-Feed Tage +3…+9 bewusst leer anzeigen; echte 7–10 Tage nur bei ausreichend langen Datenfeeds bestätigen.
+6. **Einstellungen** öffnen 10 Kategorien. Account-Daten sinnvoll/maskiert; EPG-Quellen/Mappings und Sendergruppen funktionieren, gelernte Fernbedienung auffindbar, alternative Keymap aus.
+7. Aufnahmeordner auswählbar, Speicherung und Schreibbarkeitscheck nach Kodi-Neustart; keine „Aufnahme läuft“-Behauptung ohne tatsächliche Engine. Bestehende Favoriten, Portale, EPG-Zuordnungen, VOD/Serien, Noodle Private und BINGIE MOD erhalten.
+8. Fernbedienungsfokus und -aktionen mit mehr als einem Tastenprofil, 2.746 und 53.664 Sendern ohne unnötige synchrone EPG-/HTTP-Arbeit testen. Tests dokumentieren, Release erst nach Review.
 
 ## 8. Verweise für Codex
 
