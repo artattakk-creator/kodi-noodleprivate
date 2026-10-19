@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "language": "fr_FR",
+  "language_name": "Français",
+  "pack_version": "1.0.0",
+  "min_xcmate_version": "0.1.27",
+  "files": {
+    "strings.po": "REPLACE_WITH_SHA256_HEX_DIGEST"
+  },
+  "notes": "VORLAGE; KEIN FERTIGES/VERFÜGBARES SPRACHPAKET. Locale und Hash vor Veröffentlichung verifizieren."
+}

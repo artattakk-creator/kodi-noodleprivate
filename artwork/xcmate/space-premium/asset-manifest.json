@@ -1,0 +1,51 @@
+{
+  "theme_id": "space-premium",
+  "label": "Space Premium – Design 1",
+  "status": "asset-source-staging",
+  "approved_for_archive": "2026-10-19",
+  "release_state": "NOT_INSTALLED",
+  "targets": {
+    "kodi_addon_id": "plugin.video.xtreammate",
+    "current_production_version": "0.1.26"
+  },
+  "license_note": "User-approved generated graphic assets; code provenance notices of XCMate unchanged.",
+  "files": [
+    {
+      "name": "icon-512.png",
+      "width": 512,
+      "height": 512,
+      "media_type": "image/png",
+      "size_bytes": 402058,
+      "sha256": "81da1003a2753ec6afbdd50b2a320e738a2131ad9f0d76606da1babdd0d2f135",
+      "present_in_repo": false
+    },
+    {
+      "name": "wordmark-white.png",
+      "width": 1600,
+      "height": 410,
+      "media_type": "image/png",
+      "size_bytes": 60444,
+      "sha256": "37d3b575d2e33fca436483e14b04b6878c081301b54abfd854053488404c2bb5",
+      "present_in_repo": false
+    },
+    {
+      "name": "splash-1920.jpg",
+      "width": 1920,
+      "height": 1080,
+      "media_type": "image/jpeg",
+      "size_bytes": 339906,
+      "sha256": "2553464f81de674f3de8726ba1ec81dcf57d7c0232d39aa3322af10ee0435fcc",
+      "present_in_repo": false
+    },
+    {
+      "name": "fanart-1920.jpg",
+      "width": 1920,
+      "height": 1080,
+      "media_type": "image/jpeg",
+      "size_bytes": 526738,
+      "sha256": "b2eb85d05f6a0d8c5c68d19a19733973c3af360e542c51c8abac768f318cf997",
+      "present_in_repo": false
+    }
+  ],
+  "note": "Images are stored in the approved chat export ZIP until their raw binary GitHub uploads are verified. Do not treat this manifest as proof of uploaded artwork."
+}
