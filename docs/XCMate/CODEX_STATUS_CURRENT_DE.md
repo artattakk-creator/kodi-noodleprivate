@@ -1,5 +1,19 @@
 # XCMate / Codex – aktueller Projekt- und Release-Status (verbindliche Übergabe)
 
+> **AKTUELL – Entwicklung 0.1.28 (19.10.2026):** Produktiv ist **0.1.27**, Main-Basis
+> `103646f`; PR #28 wurde übernommen. [Neuer Implementierungs-/Testbericht](IMPLEMENTIERUNG_028_PERFORMANCE_EPG_UI_DE.md)
+> · [vollständiger 0.1.28-Auftrag](CODEX_AUFTRAG_028_PERFORMANCE_EPG_UI_DE.md)
+> · [Android-TV-Abnahme und Repository-Updateweg](ANDROID_TESTPLAN_028_DE.md).
+> **381 Tests bestanden, 43 neue Regressionen; Test-ZIP 0.1.28 / Build 28 geprüft.**
+> Neuer Branch `feat/xcmate-028-streaming-stability`; **kein automatischer Main-Merge/Publish**.
+> Streaming-/Gruppenimporte, Medien-/Suchstart, großer EPG, Startgruppen-Snapshots und separate
+> Pre-Play-Anzeige implementiert; eigener en/de-Schalter und Core-Darstellung vorbereitet.
+> Optionale Theme-/Language-Pack-Installer und vollständige Legacy-Lokalisierung bleiben offen.
+> **Geräteabnahme offen**, aktuelle DE-/AT-Originalfeeds aus der Cloud HTTP 403.
+> Die folgenden 0.1.27-/älteren Kandidaten- und Releaseabschnitte sind historische Nachweise;
+> für aktuelle Testzahlen, Paket und Freigabe ausschließlich den neuen Bericht verwenden.
+
+
 > **AKTUELL – PR #28 synchronisiert und lokalisiert (19.10.2026):**
 > `main` **345b93d** via Mergecommit **e933ea0** integriert, kein History-Rewrite.
 > [Aktueller Stabilisierungsbericht, Tests und Test-ZIP](STABILISIERUNG_027_SYNC_LOKALISIERUNG_DE.md)

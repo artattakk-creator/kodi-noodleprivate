@@ -1,0 +1,53 @@
+{
+  "version": "0.1.28",
+  "service_build": 28,
+  "tests": 381,
+  "files": 106,
+  "bytes": 335286,
+  "sha256": "415055a9907711e35f0797e86e5ea528bdb0c7cf2da6060c47de14eb93cdfb9c",
+  "crc": "PASS",
+  "source_bytes": "PASS",
+  "three_zips": "PASS",
+  "index_md5": "PASS",
+  "production_unchanged": "PASS",
+  "base_commit": "103646f98b21c27973a6a12316dca33c0378ecff",
+  "source_commit": "25b13736e68f12a46589d774b6ef86cd593c96a3",
+  "baseline_tests": 338,
+  "new_regressions": 43,
+  "failed": 0,
+  "skipped": 0,
+  "full_suite_seconds": 55.173,
+  "package": "plugin.video.xtreammate/plugin.video.xtreammate-0.1.28.zip",
+  "production_version": "0.1.27",
+  "metrics": {
+    "LARGE_XMLTV": {
+      "parsed": 160005,
+      "stored": 160003,
+      "xml_bytes": 95571948,
+      "sqlite_bytes": 199876608,
+      "seconds": 3.219
+    },
+    "LARGE_CATALOGUE": [
+      {
+        "kind": "vod",
+        "rows": 200005,
+        "http_bytes": 109380521,
+        "sqlite_bytes": 241090560,
+        "seconds": 23.35,
+        "peak_rss_kib": 47416
+      },
+      {
+        "kind": "series",
+        "rows": 200005,
+        "http_bytes": 109380521,
+        "sqlite_bytes": 484851712,
+        "seconds": 23.182,
+        "peak_rss_kib": 47416
+      }
+    ]
+  },
+  "model_cold_window_ms": 9.253,
+  "android_verified": false,
+  "current_public_de_at_feeds": "HTTP 403 from cloud; not validated",
+  "github_ci": "pending PR run; no new CI PASS claimed"
+}
