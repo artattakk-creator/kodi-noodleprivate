@@ -11,7 +11,9 @@ und ist für ZIP, Lokalisierung und aktuellen Prüfstand maßgeblich.
 - Branch: `feat/xcmate-027-catalogue-home`, [bestehender Draft-PR #28](https://github.com/artattakk-creator/kodi-noodleprivate/pull/28).
 - Main-Integration als echter Mergecommit **`e933ea0`**, kein Rebase, Force-Push oder History-Rewrite.
 - Lokalisierungs-/Testcommit **`d9efed9`**. Paket und Übergabe separat danach; den aktuellen
-  Head und Checkstatus zeigt der PR. Der neue CI-Nachweis wird nach Upload ergänzt.
+  Head und Checkstatus zeigt der PR. **Geprüftes Quell-/Paketcommit `0e00227`**;
+  nachfolgende Übergabeänderungen ausschließlich Dokumentation. 53 Dateien im gesamten PR
+  gegenüber Main. Der PR ist konfliktfrei (`MERGEABLE`), bleibt Draft, Auto-Merge aus.
 - 13 Main-Commits gegenüber der zuletzt integrierten Basis `fbfb56c` übernommen. Ausschließlich
   Dokumentation und Staging: Sprachpaketplan, aktuelle Drive-Verweise, Grafikarchiv/Manifest.
 - Drei Konflikte: `CODEX_STATUS_CURRENT_DE.md`, `README.md`,
@@ -34,7 +36,11 @@ mit dem Inhalt der Drive-Datei oder mit dortigen Grafik-Binärdaten; kein Blocki
   `de_de/strings.po`, einschließlich aller sechs Homepunkte, zehn Settingsbereiche,
   Untermenüs, Medien-/EPG-Oberflächen, Suche, Widgets, Reminderstatus und Engine-/Speicherdiagnose.
 - `localization.py::tr` verwendet **`xbmcaddon.Addon().getLocalizedString(int)`**. Kodi wählt
-  die installierte Nutzersprache. Fehlende/leere Texte, Lookupfehler oder falsche Formatfelder
+  die installierte Nutzersprache. Native Signatur gegen
+  [Omega Addon.h:97](https://github.com/xbmc/xbmc/blob/21.0-Omega/xbmc/interfaces/legacy/Addon.h#L97)
+  und [Addon.cpp:79](https://github.com/xbmc/xbmc/blob/21.0-Omega/xbmc/interfaces/legacy/Addon.cpp#L79)
+  geprüft: `getLocalizedString(int id)` liest Add-on-Strings, ändert keine Sprache.
+  Fehlende/leere Texte, Lookupfehler oder falsche Formatfelder
   fallen **nur für die betroffene Zeichenkette** auf gebündeltes Englisch zurück.
 - Englisches PO einmal lokal lesen und pro Interpreter cachen; kein Netz, keine Dateien
   pro Pfeiltaste, keine externen Userdata-Packs importieren. Formatfelder samt Formatangaben
@@ -107,6 +113,23 @@ Reihenfolge von Formatfeldern, Native-Lookupfehler, Offline-Fallbackcache, echte
 Providertext-Erhalt, Reminderzustände und Guide-Reaktivierung. Verwendete native API-Verträge
 bleiben die für Kodi-Tag `21.0-Omega` dokumentierten Signaturen. Kein WindowDialog-onInit
 künstlich als Erfolg ausgegeben.
+
+### GitHub-CI auf dem neuen Code-/Paketstand
+
+[Neuer PR-Prüflauf 39282533858](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39282533858) für `0e00227f8828fc44e1a56e88296e4653b4cd597f`.
+**Stand 19.10.2026, 18:08 Uhr MESZ: `queued`, noch kein Runner zugewiesen, keine Conclusion.**
+Der letzte Codecommit ist `d9efed9`; alle nachfolgenden Änderungen betreffen Paket/Dokumentation.
+Der neue GitHub-Lauf ist **noch kein Erfolgsnachweis**. Die 338 Tests in diesem Bericht sind
+vollständig lokal vor/nach isoliertem Build bestanden; alte grüne CI-Läufe mit 313 Tests
+werden nicht auf den Sprachcode übertragen. PR-Mergebereitschaft kann während des wartenden
+Checks `UNSTABLE` lauten, obwohl der eigentliche Merge konfliktfrei ist.
+
+GitHub zeigt bereits Artefaktmetadaten, jedoch fehlt ein erfolgreicher Jobabschluss.
+Daher daraus keinen erfolgreichen Upload-/Testabschluss ableiten. Die verlinkte lokale
+Branch-ZIP wurde unabhängig vollständig geprüft und steht für Review bereit.
+Nachfolgender Dokumentationspush kann einen weiteren PR-Prüflauf mit identischen Quellen
+starten; dessen Status am finalen PR-Head zusätzlich kontrollieren. Kein Workflow-Dispatch,
+kein Produktions-Publish und keine Änderung der Runner-/Workflowkonfiguration ausgeführt.
 
 ## D. Noch notwendige Abnahme und offene Punkte
 

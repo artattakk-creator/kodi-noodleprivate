@@ -4,7 +4,7 @@
 > `main` **345b93d** via Mergecommit **e933ea0** integriert, kein History-Rewrite.
 > [Aktueller Stabilisierungsbericht, Tests und Test-ZIP](STABILISIERUNG_027_SYNC_LOKALISIERUNG_DE.md)
 > · [Android-Abnahmeplan](ANDROID_TESTPLAN_027_DE.md) · [Draft-PR #28](https://github.com/artattakk-creator/kodi-noodleprivate/pull/28).
-> **338 Tests vor/nach isoliertem Build bestanden**, darunter 25 neue Sprachtests;
+> **Lokal 338 Tests vor/nach isoliertem Build bestanden**, darunter 25 neue Sprachtests;
 > 26 HTTP-/EPG-Tests zusätzlich mit httpx. 207 neue en/de-String-IDs (32400–32606).
 > Englisch ist technische Basis/Fallback; deutsches Kodi-Altprofil bleibt deutsch.
 > Kein Schreiben der Kodi-Sprache, keine Umdeutung von `lang_priority`, keine Datenmigration.
@@ -13,6 +13,8 @@
 > Neue native Android-/BINGIE-/Sprachfälle noch am Gerät abzunehmen. Space-Premium-Grafiken,
 > Theme- und Language-Pack-Installer bleiben separate Aufgaben; `fanart`-Manifestfehler offen.
 > Drive-Übergabe aus der Cloud **HTTP 403**, daher autorisiert GitHub als Grundlage verwendet.
+> Neuer [GitHub-Prüflauf](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39282533858) auf `0e00227` noch **queued / kein Runner**
+> (19.10.2026, 18:08 MESZ); kein CI-PASS für den Sprachcode behauptet.
 > **Produktiv bleibt 0.1.26; PR bleibt Draft, kein Merge/Publish.**
 > Historische CI-/Paketangaben unten ersetzen nicht den aktuellen Prüfstand des Berichts.
 
