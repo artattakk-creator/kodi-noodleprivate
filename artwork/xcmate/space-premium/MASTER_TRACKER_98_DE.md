@@ -12,21 +12,21 @@
 
 **Freigabe 19.10.2026:** Die Positionen **5–14** wurden ausdrücklich abgenommen, weil sie separate Dateien sind. Die Branding-Positionen **1–4 bleiben unverändert und dürfen nicht ersetzt oder gelöscht werden**. Alle 14 Assets behalten separate Hashes; keine technische Theme-Integration freigegeben.
 
-**Entwürfe Nr. 15 und 16 vom 19.10.2026:** Aus unseren vorhandenen, genehmigten Space-Premium-Bildgrundlagen separat abgeleitete 16:9-Kompositionen; 1920×1080 JPG, siehe die Hashes in `MASTER_TRACKER_98.json`. Noch keine Nutzerabnahme, daher keine technische Integration.
+**Entwürfe Nr. 15 und 16 vom 19.10.2026:** Aus unseren vorhandenen, genehmigten Space-Premium-Bildgrundlagen separat abgeleitete 16:9-Kompositionen; 1920×1080 JPG, siehe die Hashes in `MASTER_TRACKER_98.json`. Nutzerabnahme fuer beide Entwuerfe erteilt; spaetere Versionierung erlaubt, keine technische Integration.
 
 ## Übersicht
 
 | Bereich | Soll | Archiviert | Freigegeben | Noch zu produzieren |
 |---|---:|---:|---:|---:|
 | `branding` | 4 | 4 | 4 | 0 |
-| `home` | 12 | 12 | 10 | 0 |
+| `home` | 12 | 12 | 12 | 0 |
 | `settings` | 20 | 0 | 0 | 20 |
 | `media` | 14 | 0 | 0 | 14 |
 | `epg` | 12 | 0 | 0 | 12 |
 | `player` | 16 | 0 | 0 | 16 |
 | `shared` | 16 | 0 | 0 | 16 |
 | `widgets` | 4 | 0 | 0 | 4 |
-| **Gesamt** | **98** | **16** | **14** | **82** |
+| **Gesamt** | **98** | **16** | **16** | **82** |
 
 ## Masterliste aller 98 Positionen
 
@@ -46,8 +46,8 @@
 | 12 | `home/bg-live.jpg` | freigegeben, archiviert; nicht integriert |
 | 13 | `home/bg-epg.jpg` | freigegeben, archiviert; nicht integriert |
 | 14 | `home/bg-movies.jpg` | freigegeben, archiviert; nicht integriert |
-| 15 | `home/bg-series.jpg` | Entwurf vorhanden, visuelle Abnahme offen; nicht integriert |
-| 16 | `home/bg-settings.jpg` | Entwurf vorhanden, visuelle Abnahme offen; nicht integriert |
+| 15 | `home/bg-series.jpg` | freigegeben; spaetere Aenderung moeglich; nicht integriert |
+| 16 | `home/bg-settings.jpg` | freigegeben; spaetere Aenderung moeglich; nicht integriert |
 | 17 | `settings/icon-accounts.png` | offen |
 | 18 | `settings/bg-accounts.jpg` | offen |
 | 19 | `settings/icon-start-channel.png` | offen |
@@ -134,3 +134,5 @@
 ## Verbindliche Arbeitsregel
 
 Nach jeder weiteren Grafikproduktion diesen Tracker und das JSON gemeinsam fortschreiben, die neue Datei nur in den passenden Master-Unterordner `branding`, `home`, `settings`, `media`, `epg`, `player`, `shared` oder `widgets` ablegen, zugehörige Quellbilder in `sources` archivieren und vor jeder Integration einen eigenen Design-PR mit Android-Abnahme verlangen.
+
+**Weitere verbindliche Skin-Aufgaben:** https://github.com/artattakk-creator/kodi-noodleprivate/issues/31 (Transparenz, Farben, Schriftfarbe und Schriftgroesse); Core-Schutz/optionale Themes #30.
