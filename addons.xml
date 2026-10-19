@@ -20,7 +20,7 @@
 </addon>
 <addon id="plugin.video.xtreammate"
        name="XCMate"
-       version="0.1.26"
+       version="0.1.27"
        provider-name="GS Media (Fork of mr-evil1)">
 
   <requires>
@@ -52,7 +52,7 @@
     </description>
     <platform>all</platform>
     <license>GPL-2.0-only</license>
-    <defaultlanguage>resource.language.de_de</defaultlanguage>
+    <defaultlanguage>resource.language.en_gb</defaultlanguage>
     <forum>https://forum.kodi.tv</forum>
     <website>https://kodi.tv</website>
     <source>https://github.com/mr-evil1/kodi-media-repo</source>
