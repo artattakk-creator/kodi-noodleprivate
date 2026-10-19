@@ -1,0 +1,121 @@
+{
+  "title": "XCMate Space Premium – Home Assets Set 02",
+  "release_state": "SOURCE_ARCHIVE_ONLY_NOT_INSTALLED",
+  "date": "2026-10-19",
+  "theme_id": "space-premium",
+  "addon_id": "plugin.video.xtreammate",
+  "asset_count": 10,
+  "license_note": "Generated assets, subject to user visual approval. No changes to Kodi runtime or main; source project artifacts separately archived.",
+  "files": [
+    {
+      "path": "resources/media/graphics_v2/home/icon-start.png",
+      "name": "icon-start.png",
+      "kind": "icon",
+      "size_bytes": 84909,
+      "sha256": "625d73d50b9ce77ee78d2033f30f4fab715ed7d5b05c4c87e4e4c536d5777325",
+      "width": 256,
+      "height": 256,
+      "source_path": "sources/icon-start-source.png",
+      "source_sha256": "9c6e772f2188286d984f34533b9720e58d746d8d280eb0ee3b358ebc31370a96"
+    },
+    {
+      "path": "resources/media/graphics_v2/home/icon-live.png",
+      "name": "icon-live.png",
+      "kind": "icon",
+      "size_bytes": 94962,
+      "sha256": "2f05225301945cedd3972bbcf4498b509d62a9adc73886823247f33cc6c450ad",
+      "width": 256,
+      "height": 256,
+      "source_path": "sources/icon-live-source.png",
+      "source_sha256": "01a8e3b7db9884549ef2c42f52c6e4977305d0f282681112a0f1609666241928"
+    },
+    {
+      "path": "resources/media/graphics_v2/home/icon-epg.png",
+      "name": "icon-epg.png",
+      "kind": "icon",
+      "size_bytes": 90461,
+      "sha256": "80e543f7289d2d952f344bb1e1ea3d3d18c3fb96f37b182d059a1a99823f1214",
+      "width": 256,
+      "height": 256,
+      "source_path": "sources/icon-epg-source.png",
+      "source_sha256": "624a0a3f2cb0e5f3a65269ddebbf448fbc4d0403748c6033afa463fd8f65df6a"
+    },
+    {
+      "path": "resources/media/graphics_v2/home/icon-movies.png",
+      "name": "icon-movies.png",
+      "kind": "icon",
+      "size_bytes": 92344,
+      "sha256": "c266e41d88459065f4d813853a873e2c717af0a5407ff2caf97febbddb4e4323",
+      "width": 256,
+      "height": 256,
+      "source_path": "sources/icon-movies-source.png",
+      "source_sha256": "4d4d23bf2644a24d0ad48d2444ffdd70e034b34ab57c90e041bcb653e9d5a2c9"
+    },
+    {
+      "path": "resources/media/graphics_v2/home/icon-series.png",
+      "name": "icon-series.png",
+      "kind": "icon",
+      "size_bytes": 85406,
+      "sha256": "f470a20b90a5449f847eac14ba3f81a79a0e7d8f5be9da7529c84e760c7bce80",
+      "width": 256,
+      "height": 256,
+      "source_path": "sources/icon-series-source.png",
+      "source_sha256": "3432b215280522d3a5471b1464b2f7735907d7a23141af4f9b561063decec55e"
+    },
+    {
+      "path": "resources/media/graphics_v2/home/icon-settings.png",
+      "name": "icon-settings.png",
+      "kind": "icon",
+      "size_bytes": 111854,
+      "sha256": "2f6bf044e70f0bb860ec33198388c9af9085c1ad2d44c9ccf71b2a7906ba0655",
+      "width": 256,
+      "height": 256,
+      "source_path": "sources/icon-settings-source.png",
+      "source_sha256": "05028e62dd1678a3844c4ef0d78f8421b526eab34a0cbd6f893ca1ded4a2f04c"
+    },
+    {
+      "path": "resources/media/graphics_v2/home/bg-start.jpg",
+      "name": "bg-start.jpg",
+      "kind": "background",
+      "size_bytes": 494561,
+      "sha256": "48ac9d71f5ab14f16a995f768e74d1053bcc099bf74a0279cbd0683fa22281ff",
+      "width": 1920,
+      "height": 1080,
+      "source_path": "sources/bg-start-source.png",
+      "source_sha256": "9d4682d7e99b2249ba87d4f6e5bb75e0a590fb9ee8d5175dd542a0fd852a6e43"
+    },
+    {
+      "path": "resources/media/graphics_v2/home/bg-live.jpg",
+      "name": "bg-live.jpg",
+      "kind": "background",
+      "size_bytes": 522861,
+      "sha256": "35b7dd8271b8d6a6be352011c3ab22b731ea8bbb307ad880d64e320769140f0a",
+      "width": 1920,
+      "height": 1080,
+      "source_path": "sources/bg-live-source.png",
+      "source_sha256": "5b0ff3484359a8cce541fd9f3d1e08e643fdcc25bb6cc39925b0d8e14c611422"
+    },
+    {
+      "path": "resources/media/graphics_v2/home/bg-epg.jpg",
+      "name": "bg-epg.jpg",
+      "kind": "background",
+      "size_bytes": 515638,
+      "sha256": "43690fe3f4d563b79feebdce0d82ee2b94b0d6f609270d2e960d2585e468dfbf",
+      "width": 1920,
+      "height": 1080,
+      "source_path": "sources/bg-epg-source.png",
+      "source_sha256": "ff9233271cf48c9188d2f9a3568956d4a3afac6f0a20cd2b4d12ac4d55d08894"
+    },
+    {
+      "path": "resources/media/graphics_v2/home/bg-movies.jpg",
+      "name": "bg-movies.jpg",
+      "kind": "background",
+      "size_bytes": 520014,
+      "sha256": "5b2e513d92d69416f40aa5d69ca20caee0b3911e86579d14b7f16b9026507fee",
+      "width": 1920,
+      "height": 1080,
+      "source_path": "sources/bg-movies-source.png",
+      "source_sha256": "d76ea7cd11c304fdca4008fdce8418919140385257d294223f4c2c25a562c1e1"
+    }
+  ]
+}
