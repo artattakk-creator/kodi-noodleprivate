@@ -1,0 +1,20 @@
+{
+  "base": "823ae26",
+  "files": {
+    "src/plugin.video.xtreammate/resources/lib/live_overlay.py": "82b1cfdc462ba003049dabe3185ec9c80b7484a07f1fd2d6233fcefbae587307",
+    "src/plugin.video.xtreammate/resources/lib/live_recovery.py": "1507a21dda340b5b44a75e642475b15767243f64d17d42ac855608652b247f8c",
+    "src/plugin.video.xtreammate/resources/lib/remote_profiles.py": "b42fa39fec0e1d1fb74335fd8c21d68fc0e1d447f79802e210c274efba74b930",
+    "src/plugin.video.xtreammate/resources/lib/remote_control.py": "59b5565f504d721cf4c230d74f5f8d04454f12e7e6c6af6114b3251610c7dbbc",
+    "src/plugin.video.xtreammate/resources/lib/remote_bridge.py": "0d84b93798901dd3885250fb8110c250a068a85761d48303120bce0415fa4153",
+    "src/plugin.video.xtreammate/resources/lib/player.py": "7a68038053464a7107f93fa89ac0761f8f1c91dc9c4617e6ab05c7a78005b301"
+  },
+  "methods": {
+    "_maybe_autoplay_start": "cbb4cd04ddf469ce51479a2d48cfea88fa810daef7b8d050fbf92dc66c09e849",
+    "_startup_playable": "55c77e352b864485a67070df80a96a22484aaf7a58705cb2302dccf40c3946a5",
+    "_play_start": "c913c38d6f5ce0dbe109c787d3384143969d3f50643b514fa6eba46d35e16ebc",
+    "_play_start_direct": "1f8e012d0350e15ccf6e2835748d21ae50d2cf938335bcd4c7217ee5bc4e8747",
+    "_play_live": "2032d43259abc5ccec6cae369bb922be6e672adf6368230c4a4935e78a426fe9",
+    "_play_vod": "50ddec7d01eacf5d3e7e683958a97356ee837dbcfb9551c188d935b4579fed19",
+    "_play_episode": "5f225181617fc89cff3da376964ddd1ad0542b20910bfe805b06c06b151e8767"
+  }
+}

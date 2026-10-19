@@ -3,7 +3,7 @@ import xbmc, xbmcaddon, xbmcgui
 
 ADDON    = xbmcaddon.Addon()
 LIB_PATH = os.path.join(os.path.dirname(__file__), 'resources', 'lib')
-SERVICE_BUILD = 26
+SERVICE_BUILD = 27
 if LIB_PATH not in sys.path:
     sys.path.insert(0, LIB_PATH)
 
@@ -85,11 +85,17 @@ class IPTVMasterService(xbmc.Monitor):
         def refresh():
             try:
                 import portals as P
-                from epg import ensure_epg_loaded_for_portal
+                from epg import ensure_epg_loaded_for_portal, load_cache
+                from epg_cache_policy import enough_coverage
                 for portal in P.get_active():
                     if self.abortRequested():
                         return
-                    ensure_epg_loaded_for_portal(portal, force=True)
+                    # Only this background worker scans the saved guide. A
+                    # downloaded multi-day guide need not be fetched every
+                    # interval/restart while it still covers the next day.
+                    if enough_coverage(load_cache(portal['id'])):
+                        continue
+                    ensure_epg_loaded_for_portal(portal, force=False)
             except Exception as exc:
                 error('Service EPG refresh: {}'.format(type(exc).__name__))
         self._epg_worker = threading.Thread(target=refresh, name='XCMateEPG', daemon=True)
@@ -149,6 +155,11 @@ class IPTVMasterService(xbmc.Monitor):
                 diagnostic('service','RUNNING',running=True,count=loops,build=SERVICE_BUILD)
             # Explicit visible-page/manual EPG requests are small, service-owned
             # jobs. They are independent of opt-in bulk catalogue prefetch.
+            try:
+                from app_services import poll as poll_app_features
+                poll_app_features()
+            except Exception as exc:
+                error('XCMate optional app service: '+type(exc).__name__)
             try:
                 from epg_views import poll_short_guides
                 poll_short_guides()
@@ -313,6 +324,11 @@ class IPTVMasterService(xbmc.Monitor):
             self.waitForAbort(0.2)
         if self._overlay is not None:
             self._overlay.close()
+        try:
+            from media_progress import shutdown as shutdown_media_progress
+            shutdown_media_progress()
+        except Exception:
+            pass
         if marker.getProperty(INSTANCE) == instance:
             marker.setProperty(PHASE, 'beendet')
         diagnostic('service','STOPPED',running=False,count=loops,build=SERVICE_BUILD)

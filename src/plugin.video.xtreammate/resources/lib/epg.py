@@ -227,7 +227,7 @@ def load_cache(portal_id):
     if not isinstance(on_disk, dict):
         # A failed refresh must not hide still-current/future programmes from
         # the previous successful import. Resolver rejects expired events.
-        on_disk = _load_disk(portal_id,max_age=7*86400)
+        on_disk = _load_disk(portal_id,max_age=10*86400)
     if isinstance(on_disk, dict):
         _mem_set(portal_id, on_disk)
         return on_disk
@@ -569,7 +569,7 @@ def _refresh_portal_epg_inner(portal_id, p, force=False):
         now=time.time()
         usable=sum(1 for entries in programmes.values() for e in entries if isinstance(e,dict)
                    and _as_int(e.get('stop_timestamp'))>max(now,_as_int(e.get('start_timestamp')))
-                   and 0<_as_int(e.get('start_timestamp'))<now+7*86400)
+                   and 0<_as_int(e.get('start_timestamp'))<now+10*86400)
         if not usable:
             # A syntactically valid but obsolete feed must not replace a good
             # guide. Parsing success is distinct from usable cache publication.

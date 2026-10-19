@@ -173,7 +173,8 @@ class OverlayLifecycleTests(unittest.TestCase):
         spec.loader.exec_module(recovery)
         patch = mock.patch.dict(sys.modules,dict(xbmc=xbmc,xbmcgui=gui,xbmcaddon=addon,utils=utils,
             xtream=xtream,iptv=iptv,group_selection=groups,epg=epg,epg_views=views,
-            remote_profiles=profiles,portals=portals,live_recovery=recovery))
+            remote_profiles=profiles,portals=portals,live_recovery=recovery,
+            app_services=types.SimpleNamespace(poll=lambda:None)))
         patch.start()
         self.addCleanup(patch.stop)
         data_spec = importlib.util.spec_from_file_location('tv_data',LIB/'tv_data.py')
@@ -695,6 +696,15 @@ class OverlayLifecycleTests(unittest.TestCase):
         self.assertEqual(candidate.shows,1)
         self.assertEqual(candidate.closes,1)
         self.assertNotIn(self.module.SESSION_KEY,self.props)
+
+    def test_optional_new_app_worker_failure_does_not_block_frozen_live_dialog(self):
+        sys.modules['app_services'].poll=mock.Mock(side_effect=ValueError('optional index unavailable'))
+        self.module.announce('p','1')
+        candidate=self.module.LiveNavigator(self.portal,'1')
+        with mock.patch.object(self.module,'LiveNavigator',return_value=candidate):
+            self.run_service_once()
+        self.assertEqual(candidate.shows,1)
+        self.assertEqual(candidate.closes,1)
 
     def test_service_releases_foreign_playback_without_new_key_events(self):
         self.module.announce('p','1')
