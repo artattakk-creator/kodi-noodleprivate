@@ -1,8 +1,10 @@
 """Optional additive work, isolated from the frozen live navigator loop."""
 import threading
+import time
 
 _worker=None
 _guard=threading.Lock()
+_retry_after={}
 
 
 def refresh_local():
@@ -11,6 +13,7 @@ def refresh_local():
     from library_index import refresh
     for portal in get_active():
         if portal.get('type')!='xtream': continue
+        if time.monotonic()<_retry_after.get(portal['id'],0): continue
         try:
             client=XtreamClient(portal['xc_host'],portal['xc_user'],portal['xc_pass'])
             refresh(portal,client)
@@ -27,7 +30,12 @@ def refresh_local():
             if cid:
                 rows,_=reader.page('live',category=cid,limit=12,pin=start['sid'] if start else None)
                 request(rows)
+            _retry_after.pop(portal['id'],None)
         except Exception as exc:
+            # A disk-full/over-budget/corrupt import must not reparse the same
+            # large local snapshot every 15 seconds. Explicit UI requests are
+            # independent; automatic retries wait five minutes.
+            _retry_after[portal['id']]=time.monotonic()+300
             from utils import warn
             warn('Local library index: '+type(exc).__name__)
 

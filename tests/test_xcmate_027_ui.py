@@ -73,6 +73,18 @@ class NavigationTests(Fixture,unittest.TestCase):
         self.cache['xml'][0]['stop_timestamp']=self.now+3600
         targets[0]();refresh.assert_called_once_with(self.portal,force=False)
 
+    def test_failed_background_index_has_retry_backoff_instead_of_reparsing_every_tick(self):
+        services=importlib.import_module('app_services')
+        services._retry_after.clear()
+        self.addCleanup(services._retry_after.clear)
+        fake_xc=types.SimpleNamespace(XtreamClient=lambda *a:self.client)
+        with mock.patch.dict(sys.modules,xtream=fake_xc), \
+             mock.patch.object(self.index,'refresh',side_effect=OSError('disk full')) as refresh, \
+             mock.patch.object(services.time,'monotonic',return_value=100) as clock:
+            services.refresh_local();refresh.assert_called_once()
+            clock.return_value=115;services.refresh_local();self.assertEqual(refresh.call_count,1)
+            clock.return_value=401;services.refresh_local();self.assertEqual(refresh.call_count,2)
+
     def test_search_has_three_true_counts_and_paginates_beyond_fifty(self):
         self.router._params.update(action='global_search',q='house of dragon')
         self.routes.dispatch(self.router)
