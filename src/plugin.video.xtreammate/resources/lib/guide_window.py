@@ -1,4 +1,5 @@
 """Full-screen accessible multi-channel day guide; queries off the GUI thread."""
+from localization import tr
 import datetime
 import threading
 import time
@@ -28,16 +29,19 @@ class GuideWindow(xbmcgui.WindowXML):
             except Exception as exc:
                 with self._lock:
                     if not self._closed and generation==self._generation:
-                        self.getControl(102).setLabel('Lokaler Guide nicht verfügbar · '+type(exc).__name__+' · EPG-Status unter Einstellungen')
+                        self.getControl(102).setLabel(tr(32539)+type(exc).__name__+tr(32540))
                 return
             with self._lock:
                 if not self._closed and generation==self._generation: apply(value)
         future.add_done_callback(done)
 
     def onInit(self):
+        for control_id,string_id in ((310,32588),(311,32589),(312,32590),(501,32591)):
+            self.getControl(control_id).setLabel(tr(string_id))
         if self._ready: return
+        self.getControl(101).setLabel(tr(32604))
         self._ready=True;self._group_view(False)
-        self.getControl(102).setLabel('Lokaler Programmführer wird vorbereitet …')
+        self.getControl(102).setLabel(tr(32541))
         def load():
             from library_index import Reader,refresh,initial_group
             from guide_store import refresh as refresh_guide
@@ -59,7 +63,7 @@ class GuideWindow(xbmcgui.WindowXML):
         self.groups,self.category=value
         self._fill(200,[g['title'] for g in self.groups])
         if not self.category:
-            self.getControl(102).setLabel('Keine aktivierte Sendergruppe im lokalen Katalog · Einstellungen → Wartung')
+            self.getControl(102).setLabel(tr(32542))
             self.setFocusId(310);return
         self._load_channels(0)
 
@@ -93,7 +97,7 @@ class GuideWindow(xbmcgui.WindowXML):
         # channel/day's programme to the newly selected stream/reminder.
         self.programmes=[];self.event_total=0;self.getControl(220).reset()
         date=datetime.date.today()+datetime.timedelta(days=day)
-        self.getControl(101).setLabel('XCMate · Programmführer · '+date.strftime('%d.%m.%Y')+' · '+channel['name'])
+        self.getControl(101).setLabel(tr(32543)+date.strftime(tr(32583))+' · '+channel['name'])
         def load():
             from guide_store import day_window,events,horizon
             from epg import load_cache
@@ -122,13 +126,13 @@ class GuideWindow(xbmcgui.WindowXML):
         now=time.time()
         self._fill(220,[('{} - {} · {}'.format(time.strftime('%H:%M',time.localtime(e['start'])),
             time.strftime('%H:%M',time.localtime(e['stop'])),e['title']))+
-            (' · JETZT' if e['start']<=now<e['stop'] else '') for e in self.programmes])
+            (tr(32544) if e['start']<=now<e['stop'] else '') for e in self.programmes])
         last=horizon['last_event']
-        limit='Daten bis '+time.strftime('%d.%m. %H:%M',time.localtime(last)) if last else 'Kein Langzeit-EPG vorhanden'
-        self.getControl(102).setLabel('{} · Tag {}/{} · {} Programme · Links: Gruppen / Sender'.format(
+        limit=tr(32545)+time.strftime(tr(32584),time.localtime(last)) if last else tr(32546)
+        self.getControl(102).setLabel(tr(32547).format(
             limit,self.day+1,self.days,self.event_total))
         if not self.programmes:
-            self._fill(220,['Für diesen Tag keine echten Programmdaten · EPG-Status unter Einstellungen'])
+            self._fill(220,[tr(32548)])
 
     def _group_view(self,expanded):
         self.getControl(200).setVisible(expanded)
@@ -144,7 +148,7 @@ class GuideWindow(xbmcgui.WindowXML):
         key=action.getId();focus=self.getFocusId()
         with self._lock:
             if key==117:
-                query=xbmcgui.Dialog().input('XCMate · Globale Suche')
+                query=xbmcgui.Dialog().input(tr(32534))
                 if query.strip():
                     self.close()
                     xbmc.executebuiltin('Container.Update('+self.router.url(action='global_search',pid=self.portal['id'],q=query[:200])+')')
@@ -182,14 +186,14 @@ class GuideWindow(xbmcgui.WindowXML):
             pos=self.getControl(220).getSelectedPosition()
             if not 0<=pos<len(self.programmes): return
             event=self.programmes[pos]
-            choices=['Sendungsdetails','Sender jetzt ansehen']
-            if event['start']>time.time(): choices.append('5 Minuten vorher erinnern')
+            choices=[tr(32549),tr(32550)]
+            if event['start']>time.time(): choices.append(tr(32551))
             selected=xbmcgui.Dialog().select(event['title'],choices)
             if selected==0:
-                text='{}\n{} - {}\n{}\nQuelle: {}\n\nAuto-Umschalten und Aufnahmeplanung sind noch nicht freigegeben.'.format(
-                    self.channel['name'],time.strftime('%d.%m. %H:%M',time.localtime(event['start'])),
-                    time.strftime('%d.%m. %H:%M',time.localtime(event['stop'])),event.get('description') or 'Keine Beschreibung',
-                    'Xtream Kurz-EPG' if event.get('source')==-1 else 'Anbieter' if not event.get('source') else 'Externe Quelle '+str(event['source']))
+                text=tr(32552).format(
+                    self.channel['name'],time.strftime(tr(32584),time.localtime(event['start'])),
+                    time.strftime(tr(32584),time.localtime(event['stop'])),event.get('description') or tr(32553),
+                    tr(32554) if event.get('source')==-1 else tr(32555) if not event.get('source') else tr(32556)+str(event['source']))
                 xbmcgui.Dialog().textviewer(event['title'],text)
             elif selected==1:
                 self.close()
@@ -197,7 +201,7 @@ class GuideWindow(xbmcgui.WindowXML):
             elif selected==2:
                 from guide_timers import add
                 if add(self.portal['id'],self.sid,self.channel['name'],event):
-                    xbmcgui.Dialog().notification('XCMate','Erinnerung gespeichert · Kodi muss eingeschaltet sein')
+                    xbmcgui.Dialog().notification('XCMate',tr(32557))
 
     def close(self):
         if self._closed: return

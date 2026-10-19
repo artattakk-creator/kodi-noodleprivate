@@ -1,4 +1,5 @@
 """Explicitly tagged non-live playback; isolated polling and bounded writes."""
+from localization import tr
 import json
 import math
 import time
@@ -83,7 +84,7 @@ def poll(player=None,now=None):
                         player.seekTime(min(target,duration-30))
                         position=min(target,duration-30)
                     elif now<_resume_deadline: return
-                    else: xbmcgui.Dialog().notification('XCMate','Diese Quelle unterstützt kein Fortsetzen · Wiedergabe ab Anfang')
+                    else: xbmcgui.Dialog().notification('XCMate',tr(32538))
             _seeked=True
         _last=(position,duration)
         if now-_written>=15:

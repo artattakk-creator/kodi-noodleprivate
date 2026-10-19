@@ -1,4 +1,5 @@
 """Provider metadata normalization; explicit detail work runs off GUI callbacks."""
+from localization import tr
 import json
 import math
 import time
@@ -8,9 +9,9 @@ def recent_label(item,days=10,now=None):
     now=time.time() if now is None else now
     stamp=item.get('added_at')
     if not isinstance(stamp,(int,float)) or not math.isfinite(stamp):
-        return 'Verfügbarer Titel · Hinzufügedatum unbekannt'
-    date=time.strftime('%d.%m.%Y',time.localtime(stamp))
-    return ('Neu · ' if now-stamp<=max(1,min(days,30))*86400 else 'Zuletzt hinzugefügt · älter als {} Tage · '.format(days))+date
+        return tr(32535)
+    date=time.strftime(tr(32583),time.localtime(stamp))
+    return (tr(32536) if now-stamp<=max(1,min(days,30))*86400 else tr(32537).format(days))+date
 
 
 def details(client,kind,sid):
@@ -64,7 +65,7 @@ def episode_records(data,series_id):
             try: number=int(row.get('episode_num',0))
             except (ValueError,TypeError): number=0
             info=row.get('info') if isinstance(row.get('info'),dict) else {}
-            result.append(dict(info,sid=str(row['id']),name=str(row.get('title') or 'Episode'),
+            result.append(dict(info,sid=str(row['id']),name=str(row.get('title') or tr(32605)),
                 series_id=str(series_id),season=int(season),episode=number,
                 container_extension=row.get('container_extension','mkv')))
     result.sort(key=lambda e:(e['season'],e['episode'],e['sid']))

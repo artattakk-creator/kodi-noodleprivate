@@ -14,7 +14,7 @@
     </control>
     <control type="label" id="101">
       <left>44</left><top>32</top><width>960</width><height>44</height>
-      <font>font16</font><textcolor>FFF0F2F5</textcolor><label>XCMate</label>
+      <font>font16</font><textcolor>FFF0F2F5</textcolor><label/>
     </control>
     <control type="label" id="103">
       <left>44</left><top>82</top><width>1192</width><height>36</height>
@@ -26,7 +26,7 @@
     </control>
     <control type="button" id="400">
       <left>1050</left><top>32</top><width>186</width><height>44</height>
-      <font>font13</font><label>Suche</label><onleft>120</onleft><onright>400</onright><onup>400</onup><ondown>120</ondown>
+      <font>font13</font><label/><onleft>120</onleft><onright>400</onright><onup>400</onup><ondown>120</ondown>
       <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
     </control>
@@ -45,7 +45,7 @@
     </control>
     <control type="button" id="120">
       <left>44</left><top>548</top><width>480</width><height>66</height>
-      <font>font13</font><label>Filme / Serien · Kategorien</label><onup>110</onup><ondown>120</ondown><onleft>120</onleft><onright>400</onright>
+      <font>font13</font><label/><onup>110</onup><ondown>120</ondown><onleft>120</onleft><onright>400</onright>
       <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
     </control>
@@ -91,6 +91,6 @@
         <control type="label"><left>16</left><width>1160</width><height>60</height><font>font13</font><textcolor>FFF0F2F5</textcolor><label>$INFO[ListItem.Label]</label></control>
       </focusedlayout>
     </control>
-    <control type="label"><left>44</left><top>672</top><width>1192</width><height>28</height><font>font12</font><textcolor>FFB6BCC6</textcolor><label>OK: Details / Aktion · Zurück: eine Ebene · Seite hoch/runter: blättern · Menü: Suche</label></control>
+    <control type="label" id="501"><left>44</left><top>672</top><width>1192</width><height>28</height><font>font12</font><textcolor>FFB6BCC6</textcolor><label/></control>
   </controls>
 </window>

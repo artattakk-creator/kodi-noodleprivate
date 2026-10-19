@@ -3,6 +3,7 @@
 Only local normalized cache is imported. Failed/shorter imports retain future
 programmes outside the new source window. No GUI callback performs an import.
 """
+from localization import tr
 import datetime
 import hashlib
 import json
@@ -129,17 +130,17 @@ def status_lines(portal,filename=None):
     try:
         rows=db.execute('SELECT source,min(start),max(stop),count(*) FROM programmes WHERE pid=? GROUP BY source',(portal['id'],)).fetchall()
     finally: db.close()
-    lines=['Lokaler Langzeit-EPG · vorhandene echte Daten, kein Download beim Öffnen',
-           'Erhaltener Horizont kann aus früheren erfolgreichen Imports stammen.']
+    lines=[tr(32558),
+           tr(32559)]
     for source,first,last,count in rows:
         source_record=None
         if source>0 and source<=len(config['sources']): source_record=config['sources'][source-1]
-        name=safe_name(source_record.get('name')) if source_record else 'Anbieter / Cache' if source==0 else 'Kurz-EPG'
+        name=safe_name(source_record.get('name')) if source_record else tr(32560) if source==0 else tr(32561)
         entry=state.get(source_key(source_record) if source_record else 'provider',{})
         success=entry.get('last_success')
-        lines+=['','{} · {} Programme'.format(name,count),
-                'Von {} bis {}'.format(time.strftime('%d.%m.%Y %H:%M',time.localtime(first)),time.strftime('%d.%m.%Y %H:%M',time.localtime(last))),
-                'Letzter Quellenerfolg: '+(time.strftime('%d.%m.%Y %H:%M',time.localtime(success)) if success else 'nicht bestätigt'),
-                'Quellenstatus: '+str(entry.get('code','nicht verfügbar'))]
-    if not rows: lines.append('Kein Langzeit-EPG im lokalen Index. Quellen und Importstatus prüfen.')
+        lines+=['',tr(32562).format(name,count),
+                tr(32563).format(time.strftime(tr(32585),time.localtime(first)),time.strftime(tr(32585),time.localtime(last))),
+                tr(32564)+(time.strftime(tr(32585),time.localtime(success)) if success else tr(32565)),
+                tr(32566)+str(entry.get('code',tr(32567)))]
+    if not rows: lines.append(tr(32568))
     return lines

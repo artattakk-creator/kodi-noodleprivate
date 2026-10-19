@@ -127,10 +127,10 @@
     <setting id="catchup_format" type="text" label="32266"
              default="{url}?utc={utc}&amp;lutc={lutc}"/>
   </category>
-  <category label="XCMate · Katalog und Programmführer">
-    <setting id="active_portal_id" type="text" label="Aktiver Account" default="" visible="false"/>
-    <setting id="recent_days" type="number" label="Neuheitenzeitraum (Tage)" default="10"/>
-    <setting id="recent_keep" type="number" label="Gespeicherte Neuheiten je Medienart (24–500)" default="100"/>
-    <setting id="epg_days" type="number" label="EPG-Tagesnavigation (7 oder 10)" default="7"/>
+  <category label="32592">
+    <setting id="active_portal_id" type="text" label="32593" default="" visible="false"/>
+    <setting id="recent_days" type="number" label="32594" default="10"/>
+    <setting id="recent_keep" type="number" label="32595" default="100"/>
+    <setting id="epg_days" type="number" label="32596" default="7"/>
   </category>
 </settings>

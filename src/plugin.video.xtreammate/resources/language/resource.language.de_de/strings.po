@@ -738,3 +738,833 @@ msgstr "{} Portale importiert"
 msgctxt "#32317"
 msgid "{} portals exported"
 msgstr "{} Portale exportiert"
+
+# XCMate 0.1.27 UI: English base and permanently bundled German.
+
+msgctxt "#32400"
+msgid "Start channel"
+msgstr "Startkanal"
+
+msgctxt "#32401"
+msgid "Live TV"
+msgstr "Live-TV"
+
+msgctxt "#32402"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#32403"
+msgid "Movies"
+msgstr "Filme"
+
+msgctxt "#32404"
+msgid "Series"
+msgstr "Serien"
+
+msgctxt "#32405"
+msgid "Settings"
+msgstr "Einstellungen"
+
+msgctxt "#32406"
+msgid "Accounts & portals"
+msgstr "Accounts & Portale"
+
+msgctxt "#32407"
+msgid "Start channel & group"
+msgstr "Startkanal & Startgruppe"
+
+msgctxt "#32408"
+msgid "Groups & favourites"
+msgstr "Sendergruppen & Favoriten"
+
+msgctxt "#32409"
+msgid "Remote control & buttons"
+msgstr "Fernbedienung & Tasten"
+
+msgctxt "#32410"
+msgid "Player & playback"
+msgstr "Player & Wiedergabe"
+
+msgctxt "#32411"
+msgid "Recordings & storage"
+msgstr "Aufnahmen & Speicher"
+
+msgctxt "#32412"
+msgid "Appearance & language"
+msgstr "Darstellung & Sprache"
+
+msgctxt "#32413"
+msgid "Maintenance & diagnostics"
+msgstr "Wartung & Diagnose"
+
+msgctxt "#32414"
+msgid "About XCMate & licences"
+msgstr "Über XCMate & Lizenzen"
+
+msgctxt "#32415"
+msgid "Accounts, search and more options"
+msgstr "Accounts, Suche und weitere Optionen"
+
+msgctxt "#32416"
+msgid "Choose active account"
+msgstr "Aktiven Account wählen"
+
+msgctxt "#32417"
+msgid "Account"
+msgstr "Account"
+
+msgctxt "#32418"
+msgid "Account information · "
+msgstr "Kontoinformationen · "
+
+msgctxt "#32419"
+msgid "Add / edit / disable accounts"
+msgstr "Accounts hinzufügen / bearbeiten / deaktivieren"
+
+msgctxt "#32420"
+msgid "Setup wizard"
+msgstr "Einrichtungsassistent"
+
+msgctxt "#32421"
+msgid "Choose start channel and group"
+msgstr "Startkanal und Startgruppe auswählen"
+
+msgctxt "#32422"
+msgid "Change the autoplay diagnostic pause"
+msgstr "Autostart-Diagnosepause bewusst ändern"
+
+msgctxt "#32423"
+msgid "Programme guide"
+msgstr "Programmführer"
+
+msgctxt "#32424"
+msgid "Sources / priority / channel mapping"
+msgstr "Quellen / Priorität / Senderzuordnung"
+
+msgctxt "#32425"
+msgid "EPG status & preview"
+msgstr "EPG-Status & Vorschau"
+
+msgctxt "#32426"
+msgid "Long-term EPG: source coverage"
+msgstr "Langzeit-EPG: Quellenreichweite"
+
+msgctxt "#32427"
+msgid "Manage / cancel reminders"
+msgstr "Erinnerungen verwalten / stornieren"
+
+msgctxt "#32428"
+msgid "Refresh EPG in the background"
+msgstr "EPG im Hintergrund aktualisieren"
+
+msgctxt "#32429"
+msgid "EPG period / refresh (Kodi settings)"
+msgstr "EPG-Zeitraum / Aktualisierung (Kodi-Einstellungen)"
+
+msgctxt "#32430"
+msgid "Manage live TV / movie / series groups"
+msgstr "Live-/Film-/Seriengruppen verwalten"
+
+msgctxt "#32431"
+msgid "Existing live TV favourites"
+msgstr "Bisherige Live-Favoriten"
+
+msgctxt "#32432"
+msgid "Movie favourites"
+msgstr "Filmfavoriten"
+
+msgctxt "#32433"
+msgid "Series favourites"
+msgstr "Serienfavoriten"
+
+msgctxt "#32434"
+msgid "Search live TV / movies / series"
+msgstr "Gemeinsame Suche: Live-TV / Filme / Serien"
+
+msgctxt "#32435"
+msgid "Learn remote buttons (Android)"
+msgstr "Fernbedienungstasten anlernen (Android)"
+
+msgctxt "#32436"
+msgid "Optional global fallback keymap (default OFF)"
+msgstr "Optionale globale Fallback-Keymap (Standard AUS)"
+
+msgctxt "#32437"
+msgid "Player, subtitles and infobar timeout"
+msgstr "Player, Untertitel und Infoleisten-Ausblendzeit"
+
+msgctxt "#32438"
+msgid "Choose and check recording folder"
+msgstr "Aufnahmeverzeichnis auswählen und prüfen"
+
+msgctxt "#32439"
+msgid "Check saved recording folder"
+msgstr "Gespeicherten Aufnahmeordner prüfen"
+
+msgctxt "#32440"
+msgid "Existing recordings / player options"
+msgstr "Bestehende Aufnahmen / Playeroptionen"
+
+msgctxt "#32441"
+msgid "Recording engine: Android test required"
+msgstr "Aufnahmeengine: Android-Prüfung erforderlich"
+
+msgctxt "#32442"
+msgid "Language / appearance / content filters"
+msgstr "Sprache / Darstellung / Filter"
+
+msgctxt "#32443"
+msgid "Set up BINGIE MOD widgets"
+msgstr "BINGIE-MOD-Widgets einrichten"
+
+msgctxt "#32444"
+msgid "Widget source 1: live TV from start channel group"
+msgstr "Widget-Quelle 1: Live-TV aus Startkanalgruppe"
+
+msgctxt "#32445"
+msgid "Widget source 2: latest movies"
+msgstr "Widget-Quelle 2: Neueste Filme"
+
+msgctxt "#32446"
+msgid "Widget source 3: latest series"
+msgstr "Widget-Quelle 3: Neueste Serien"
+
+msgctxt "#32447"
+msgid "Global search"
+msgstr "Gemeinsame Suche"
+
+msgctxt "#32448"
+msgid "Refresh local catalogues"
+msgstr "Lokale Kataloge aktualisieren"
+
+msgctxt "#32449"
+msgid "TV remote diagnostics"
+msgstr "TV-Fernbedienung: Diagnose"
+
+msgctxt "#32450"
+msgid "Check background service"
+msgstr "Hintergrunddienst prüfen"
+
+msgctxt "#32451"
+msgid "Popup and remote test (WITHOUT TV)"
+msgstr "Popup- und Fernbedienungstest (OHNE TV)"
+
+msgctxt "#32452"
+msgid "Clear cache (with confirmation)"
+msgstr "Cache löschen (mit Bestätigung)"
+
+msgctxt "#32453"
+msgid "All Kodi add-on settings"
+msgstr "Alle Kodi-Add-on-Einstellungen"
+
+msgctxt "#32454"
+msgid "Version / origin / licences"
+msgstr "Version / Herkunft / Lizenzen"
+
+msgctxt "#32455"
+msgid "XCMate · Recording folder"
+msgstr "XCMate · Aufnahmeverzeichnis"
+
+msgctxt "#32456"
+msgid "{} MiB free"
+msgstr "{} MiB frei"
+
+msgctxt "#32457"
+msgid "Free space cannot be determined for this VFS path"
+msgstr "Freier Speicher über diesen VFS-Pfad nicht ermittelbar"
+
+msgctxt "#32458"
+msgid "\nThe folder is writable. This does not yet confirm a working recording engine."
+msgstr "\nVerzeichnis ist beschreibbar. Eine Aufnahmeengine ist damit noch nicht bestätigt."
+
+msgctxt "#32459"
+msgid "The folder could not be verified as writable. The previous setting is kept."
+msgstr "Verzeichnis nicht zuverlässig beschreibbar. Die bisherige Einstellung bleibt erhalten."
+
+msgctxt "#32460"
+msgid "LIVE TV"
+msgstr "LIVE-TV"
+
+msgctxt "#32461"
+msgid "MOVIES"
+msgstr "FILME"
+
+msgctxt "#32462"
+msgid "SERIES"
+msgstr "SERIEN"
+
+msgctxt "#32463"
+msgid "XCMate · Choose active account"
+msgstr "XCMate · Aktiven Account wählen"
+
+msgctxt "#32464"
+msgid "XCMate · Long-term EPG"
+msgstr "XCMate · Langzeit-EPG"
+
+msgctxt "#32465"
+msgid "\nKodi ID: plugin.video.xtreammate\nGPL fork: mr-evil1 TiViMate Kodi. Origin/licence notices are retained; see the project licence files."
+msgstr "\nKodi-ID: plugin.video.xtreammate\nGPL-Fork: mr-evil1 TiViMate Kodi. Herkunft/Lizenzen bleiben erhalten; siehe Projekt-Lizenzdateien."
+
+msgctxt "#32466"
+msgid "Please set up an account under Settings first."
+msgstr "Bitte zuerst unter Einstellungen einen Account einrichten."
+
+msgctxt "#32467"
+msgid "No valid start channel in the local catalogue. Choose a start channel and group?"
+msgstr "Kein gültiger Startkanal im lokalen Katalog. Startkanal & Startgruppe auswählen?"
+
+msgctxt "#32468"
+msgid "This media section is disabled for the account. Settings → Accounts & portals."
+msgstr "Dieser Medienbereich ist für den Account deaktiviert. Einstellungen → Accounts & Portale."
+
+msgctxt "#32469"
+msgid "The new media interface requires a local Xtream catalogue. The existing media list for this portal type remains available."
+msgstr "Die neue Medienoberfläche benötigt den lokalen Xtream-Katalog. Die bisherige Medienliste dieses Portaltyps bleibt verfügbar."
+
+msgctxt "#32470"
+msgid "XCMate · Search live TV, movies and series"
+msgstr "XCMate · Live-TV, Filme und Serien suchen"
+
+msgctxt "#32471"
+msgid " matches"
+msgstr " Treffer"
+
+msgctxt "#32472"
+msgid "Index loading / catalogue unavailable"
+msgstr "Index wird geladen / Katalog nicht verfügbar"
+
+msgctxt "#32473"
+msgid "No matches"
+msgstr "Keine Treffer"
+
+msgctxt "#32474"
+msgid "Index loading · open again later"
+msgstr "Index wird geladen · später erneut öffnen"
+
+msgctxt "#32475"
+msgid "Previous page"
+msgstr "Vorherige Seite"
+
+msgctxt "#32476"
+msgid "More results"
+msgstr "Weitere Ergebnisse"
+
+msgctxt "#32477"
+msgid "{} · {} total"
+msgstr "{} · {} insgesamt"
+
+msgctxt "#32478"
+msgid "Live TV index loading / no active channel · open maintenance"
+msgstr "Live-TV-Index wird geladen / kein aktiver Sender · Wartung öffnen"
+
+msgctxt "#32479"
+msgid "No channels in the active start channel group · check groups"
+msgstr "Keine Sender in der aktiven Startkanalgruppe · Gruppen prüfen"
+
+msgctxt "#32480"
+msgid "Catalogue not yet available locally · open to load"
+msgstr "Katalog noch nicht lokal verfügbar · zum Laden öffnen"
+
+msgctxt "#32481"
+msgid "Show all"
+msgstr "Alle anzeigen"
+
+msgctxt "#32482"
+msgid " saved titles"
+msgstr " gespeicherte Titel"
+
+msgctxt "#32483"
+msgid "BINGIE MOD · optional widget setup"
+msgstr "BINGIE MOD · freiwillige Widget-Einrichtung"
+
+msgctxt "#32484"
+msgid "Skin settings → Configure main menu → desired menu item → Widgets."
+msgstr "Skin-Einstellungen → Hauptmenü konfigurieren → gewünschten Menüpunkt → Widgets."
+
+msgctxt "#32485"
+msgid "Add three widget rows in this order (names vary with the skin version):"
+msgstr "Drei Widget-Reihen in dieser Reihenfolge hinzufügen (Bezeichnungen variieren je Skinversion):"
+
+msgctxt "#32486"
+msgid "Latest movies"
+msgstr "Neueste Filme"
+
+msgctxt "#32487"
+msgid "Latest series"
+msgstr "Neueste Serien"
+
+msgctxt "#32488"
+msgid "Use Video add-ons → XCMate → Settings → Appearance → Widget sources."
+msgstr "Als Quelle Video-Add-ons → XCMate → Einstellungen → Darstellung → Widget-Quellen nutzen."
+
+msgctxt "#32489"
+msgid "Live TV: logo/landscape; movies/series: 2:3 posters. Note existing widgets first; remove only newly added rows to undo setup."
+msgstr "Live: Logo/Querformat; Filme/Serien: Poster 2:3. Vorhandene Widgets vorher notieren; nur neu angelegte Reihen zum Rückbau entfernen."
+
+msgctxt "#32490"
+msgid "No skin files or user configuration are changed automatically. The installed BINGIE MOD version has not yet been tested on the device."
+msgstr "Keine Skin-Dateien oder Nutzerkonfiguration werden automatisch verändert. Die tatsächlich installierte BINGIE-MOD-Version ist hier noch nicht am Gerät geprüft."
+
+msgctxt "#32491"
+msgid "Preparing local catalogue …"
+msgstr "Lokaler Katalog wird vorbereitet …"
+
+msgctxt "#32492"
+msgid " / Categories"
+msgstr " / Kategorien"
+
+msgctxt "#32493"
+msgid "Data unavailable · "
+msgstr "Daten nicht verfügbar · "
+
+msgctxt "#32494"
+msgid "No local catalogue · OK on Load catalogue starts a background job"
+msgstr "Kein lokaler Katalog · OK auf Katalog laden startet einen Hintergrundauftrag"
+
+msgctxt "#32495"
+msgid "Load catalogue in the background"
+msgstr "Katalog im Hintergrund laden"
+
+msgctxt "#32496"
+msgid "Loading local titles …"
+msgstr "Lokale Titel werden geladen …"
+
+msgctxt "#32497"
+msgid "{} titles · {}–{} / {} · Left/Right: posters · Menu: search"
+msgstr "{} Titel · {}–{} / {} · Links/Rechts: Poster · Menü: Suche"
+
+msgctxt "#32498"
+msgid "Recently added"
+msgstr "Neu hinzugefügt"
+
+msgctxt "#32499"
+msgid "Category"
+msgstr "Kategorie"
+
+msgctxt "#32500"
+msgid "No confirmed new titles · open categories"
+msgstr "Keine belegten Neuheiten · Kategorien öffnen"
+
+msgctxt "#32501"
+msgid "No enabled titles in this group"
+msgstr "Keine aktivierten Titel in dieser Gruppe"
+
+msgctxt "#32502"
+msgid " min."
+msgstr " Min."
+
+msgctxt "#32503"
+msgid "Rating: "
+msgstr "Bewertung: "
+
+msgctxt "#32504"
+msgid " (provider)"
+msgstr " (Anbieter)"
+
+msgctxt "#32505"
+msgid "Loading provider metadata in the background …"
+msgstr "Anbieter-Metadaten werden im Hintergrund geladen …"
+
+msgctxt "#32506"
+msgid "Provider metadata"
+msgstr "Anbieter-Metadaten"
+
+msgctxt "#32507"
+msgid "Year"
+msgstr "Jahr"
+
+msgctxt "#32508"
+msgid "Genre"
+msgstr "Genre"
+
+msgctxt "#32509"
+msgid "Rating"
+msgstr "Bewertung"
+
+msgctxt "#32510"
+msgid "Duration: {} min."
+msgstr "Laufzeit: {} Min."
+
+msgctxt "#32511"
+msgid "The provider has not supplied a description."
+msgstr "Der Anbieter liefert keine Beschreibung."
+
+msgctxt "#32512"
+msgid "Play"
+msgstr "Abspielen"
+
+msgctxt "#32513"
+msgid "Restart"
+msgstr "Neu starten"
+
+msgctxt "#32514"
+msgid "Resume from {:02d}:{:02d}:{:02d}"
+msgstr "Fortsetzen ab {:02d}:{:02d}:{:02d}"
+
+msgctxt "#32515"
+msgid "Seasons and episodes"
+msgstr "Staffeln und Episoden"
+
+msgctxt "#32516"
+msgid "Continue watching · Season {} Episode {}"
+msgstr "Weiterschauen · Staffel {} Folge {}"
+
+msgctxt "#32517"
+msgid "Next episode · Season {} Episode {}"
+msgstr "Nächste Folge · Staffel {} Folge {}"
+
+msgctxt "#32518"
+msgid "Remove from favourites"
+msgstr "Aus Favoriten entfernen"
+
+msgctxt "#32519"
+msgid "Add to favourites"
+msgstr "Zu Favoriten hinzufügen"
+
+msgctxt "#32520"
+msgid "Media profile unreadable · data is preserved · favourites/progress unavailable"
+msgstr "Medienprofil nicht lesbar · Daten bleiben erhalten · Favoriten/Fortschritt nicht verfügbar"
+
+msgctxt "#32521"
+msgid "Trailer on YouTube"
+msgstr "Trailer auf YouTube"
+
+msgctxt "#32522"
+msgid "Catalogue loading in the background · Back remains available"
+msgstr "Katalog lädt im Hintergrund · Zurück bleibt bedienbar"
+
+msgctxt "#32523"
+msgid "Season "
+msgstr "Staffel "
+
+msgctxt "#32524"
+msgid "Resume episode? No starts from the beginning."
+msgstr "Episode fortsetzen? Nein startet von Anfang."
+
+msgctxt "#32525"
+msgid "Watched"
+msgstr "Gesehen"
+
+msgctxt "#32526"
+msgid "Started"
+msgstr "Begonnen"
+
+msgctxt "#32527"
+msgid "Unwatched"
+msgstr "Ungesehen"
+
+msgctxt "#32528"
+msgid "XCMate · Episode"
+msgstr "XCMate · Folge"
+
+msgctxt "#32529"
+msgid "Mark as watched"
+msgstr "Als gesehen markieren"
+
+msgctxt "#32530"
+msgid "Mark as unwatched"
+msgstr "Als ungesehen markieren"
+
+msgctxt "#32531"
+msgid "Reset progress"
+msgstr "Fortschritt zurücksetzen"
+
+msgctxt "#32532"
+msgid "Reset progress for this episode?"
+msgstr "Fortschritt dieser Folge zurücksetzen?"
+
+msgctxt "#32533"
+msgid "This group has no local titles · choose another group"
+msgstr "Diese Gruppe enthält keine lokalen Titel · andere Gruppe wählen"
+
+msgctxt "#32534"
+msgid "XCMate · Global search"
+msgstr "XCMate · Globale Suche"
+
+msgctxt "#32535"
+msgid "Available title · date added unknown"
+msgstr "Verfügbarer Titel · Hinzufügedatum unbekannt"
+
+msgctxt "#32536"
+msgid "New · "
+msgstr "Neu · "
+
+msgctxt "#32537"
+msgid "Recently added · older than {} days · "
+msgstr "Zuletzt hinzugefügt · älter als {} Tage · "
+
+msgctxt "#32538"
+msgid "This source does not support resume · playing from the beginning"
+msgstr "Diese Quelle unterstützt kein Fortsetzen · Wiedergabe ab Anfang"
+
+msgctxt "#32539"
+msgid "Local guide unavailable · "
+msgstr "Lokaler Guide nicht verfügbar · "
+
+msgctxt "#32540"
+msgid " · EPG status under Settings"
+msgstr " · EPG-Status unter Einstellungen"
+
+msgctxt "#32541"
+msgid "Preparing local programme guide …"
+msgstr "Lokaler Programmführer wird vorbereitet …"
+
+msgctxt "#32542"
+msgid "No enabled channel group in the local catalogue · Settings → Maintenance"
+msgstr "Keine aktivierte Sendergruppe im lokalen Katalog · Einstellungen → Wartung"
+
+msgctxt "#32543"
+msgid "XCMate · Programme guide · "
+msgstr "XCMate · Programmführer · "
+
+msgctxt "#32544"
+msgid " · NOW"
+msgstr " · JETZT"
+
+msgctxt "#32545"
+msgid "Data until "
+msgstr "Daten bis "
+
+msgctxt "#32546"
+msgid "No long-term EPG available"
+msgstr "Kein Langzeit-EPG vorhanden"
+
+msgctxt "#32547"
+msgid "{} · Day {}/{} · {} programmes · Left: groups / channels"
+msgstr "{} · Tag {}/{} · {} Programme · Links: Gruppen / Sender"
+
+msgctxt "#32548"
+msgid "No real programme data for this day · EPG status under Settings"
+msgstr "Für diesen Tag keine echten Programmdaten · EPG-Status unter Einstellungen"
+
+msgctxt "#32549"
+msgid "Programme details"
+msgstr "Sendungsdetails"
+
+msgctxt "#32550"
+msgid "Watch channel now"
+msgstr "Sender jetzt ansehen"
+
+msgctxt "#32551"
+msgid "Remind me 5 minutes before"
+msgstr "5 Minuten vorher erinnern"
+
+msgctxt "#32552"
+msgid "{}\n{} - {}\n{}\nSource: {}\n\nAuto-tune and scheduled recording are not yet approved."
+msgstr "{}\n{} - {}\n{}\nQuelle: {}\n\nAuto-Umschalten und Aufnahmeplanung sind noch nicht freigegeben."
+
+msgctxt "#32553"
+msgid "No description"
+msgstr "Keine Beschreibung"
+
+msgctxt "#32554"
+msgid "Xtream short EPG"
+msgstr "Xtream Kurz-EPG"
+
+msgctxt "#32555"
+msgid "Provider"
+msgstr "Anbieter"
+
+msgctxt "#32556"
+msgid "External source "
+msgstr "Externe Quelle "
+
+msgctxt "#32557"
+msgid "Reminder saved · Kodi must be running"
+msgstr "Erinnerung gespeichert · Kodi muss eingeschaltet sein"
+
+msgctxt "#32558"
+msgid "Local long-term EPG · existing real data, no download on opening"
+msgstr "Lokaler Langzeit-EPG · vorhandene echte Daten, kein Download beim Öffnen"
+
+msgctxt "#32559"
+msgid "Retained coverage may come from earlier successful imports."
+msgstr "Erhaltener Horizont kann aus früheren erfolgreichen Imports stammen."
+
+msgctxt "#32560"
+msgid "Provider / cache"
+msgstr "Anbieter / Cache"
+
+msgctxt "#32561"
+msgid "Short EPG"
+msgstr "Kurz-EPG"
+
+msgctxt "#32562"
+msgid "{} · {} programmes"
+msgstr "{} · {} Programme"
+
+msgctxt "#32563"
+msgid "From {} to {}"
+msgstr "Von {} bis {}"
+
+msgctxt "#32564"
+msgid "Last successful source import: "
+msgstr "Letzter Quellenerfolg: "
+
+msgctxt "#32565"
+msgid "not confirmed"
+msgstr "nicht bestätigt"
+
+msgctxt "#32566"
+msgid "Source status: "
+msgstr "Quellenstatus: "
+
+msgctxt "#32567"
+msgid "unavailable"
+msgstr "nicht verfügbar"
+
+msgctxt "#32568"
+msgid "No long-term EPG in the local index. Check sources and import status."
+msgstr "Kein Langzeit-EPG im lokalen Index. Quellen und Importstatus prüfen."
+
+msgctxt "#32569"
+msgid "XCMate · Reminder"
+msgstr "XCMate · Erinnerung"
+
+msgctxt "#32570"
+msgid "XCMate · Reminders"
+msgstr "XCMate · Erinnerungen"
+
+msgctxt "#32571"
+msgid "Cancel reminder?"
+msgstr "Erinnerung stornieren?"
+
+msgctxt "#32572"
+msgid "Android recording capability: separate device test"
+msgstr "Android-Aufnahmefähigkeit: separate Geräteprüfung"
+
+msgctxt "#32573"
+msgid "This check installs nothing and starts no recording."
+msgstr "Diese Prüfung installiert nichts und startet keine Aufnahme."
+
+msgctxt "#32574"
+msgid "FFmpeg: no executable candidate found."
+msgstr "FFmpeg: kein ausführbarer Kandidat gefunden."
+
+msgctxt "#32575"
+msgid "FFmpeg version probe: "
+msgstr "FFmpeg-Versionsprobe: "
+
+msgctxt "#32576"
+msgid "executable"
+msgstr "ausführbar"
+
+msgctxt "#32577"
+msgid "failed"
+msgstr "fehlgeschlagen"
+
+msgctxt "#32578"
+msgid "FFmpeg version probe: failed / timed out."
+msgstr "FFmpeg-Versionsprobe: fehlgeschlagen / Zeitlimit."
+
+msgctxt "#32579"
+msgid "PVR engine / IPTV channel mapping: not verified."
+msgstr "PVR-Engine / Zuordnung der IPTV-Sender: nicht verifiziert."
+
+msgctxt "#32580"
+msgid "Check the recording folder separately; sufficient free space and provider connections are required."
+msgstr "Aufnahmeordner separat prüfen; freier Speicher und Provider-Parallelstreams müssen reichen."
+
+msgctxt "#32581"
+msgid "Only a verified short test recording confirms recording capability."
+msgstr "Erst eine nachgewiesene kurze Testaufnahme bestätigt die Aufnahmefähigkeit."
+
+msgctxt "#32582"
+msgid "Scheduled EPG recording and Android wakeup are not yet implemented/approved."
+msgstr "EPG-Aufnahmeplanung und Android-Wakeup sind noch nicht implementiert/freigegeben."
+
+msgctxt "#32583"
+msgid "%d/%m/%Y"
+msgstr "%d.%m.%Y"
+
+msgctxt "#32584"
+msgid "%d/%m %H:%M"
+msgstr "%d.%m. %H:%M"
+
+msgctxt "#32585"
+msgid "%d/%m/%Y %H:%M"
+msgstr "%d.%m.%Y %H:%M"
+
+msgctxt "#32586"
+msgid "Search"
+msgstr "Suche"
+
+msgctxt "#32587"
+msgid "OK: details / action · Back: one level · Page up/down: browse · Menu: search"
+msgstr "OK: Details / Aktion · Zurück: eine Ebene · Seite hoch/runter: blättern · Menü: Suche"
+
+msgctxt "#32588"
+msgid "Previous day"
+msgstr "Tag zurück"
+
+msgctxt "#32589"
+msgid "Next day"
+msgstr "Tag weiter"
+
+msgctxt "#32590"
+msgid "EPG status"
+msgstr "EPG-Status"
+
+msgctxt "#32591"
+msgid "Channels: Up/Down · OK: programmes / details · Left: channels / groups · Page: browse · Back: close"
+msgstr "Sender: Hoch/Runter · OK: Sendungen / Details · Links: Sender / Gruppen · Seite: blättern · Zurück: schließen"
+
+msgctxt "#32592"
+msgid "XCMate · Catalogue and programme guide"
+msgstr "XCMate · Katalog und Programmführer"
+
+msgctxt "#32593"
+msgid "Active account"
+msgstr "Aktiver Account"
+
+msgctxt "#32594"
+msgid "Recent title period (days)"
+msgstr "Neuheitenzeitraum (Tage)"
+
+msgctxt "#32595"
+msgid "Saved recent titles per media type (24–500)"
+msgstr "Gespeicherte Neuheiten je Medienart (24–500)"
+
+msgctxt "#32596"
+msgid "EPG day navigation (7 or 10)"
+msgstr "EPG-Tagesnavigation (7 oder 10)"
+
+msgctxt "#32597"
+msgid "Now {}: {}"
+msgstr "Jetzt {}: {}"
+
+msgctxt "#32598"
+msgid "Next {}: {}"
+msgstr "Danach {}: {}"
+
+msgctxt "#32599"
+msgid "No EPG data currently available."
+msgstr "Zurzeit keine EPG-Daten vorhanden."
+
+msgctxt "#32600"
+msgid "Pending"
+msgstr "Ausstehend"
+
+msgctxt "#32601"
+msgid "Notified"
+msgstr "Benachrichtigt"
+
+msgctxt "#32602"
+msgid "Cancelled"
+msgstr "Storniert"
+
+msgctxt "#32603"
+msgid "Missed"
+msgstr "Verpasst"
+
+msgctxt "#32604"
+msgid "XCMate · Programme guide · Day list"
+msgstr "XCMate · Programmführer · Tagesliste"
+
+msgctxt "#32605"
+msgid "Episode"
+msgstr "Episode"
+
+msgctxt "#32606"
+msgid " match"
+msgstr " Treffer"

@@ -3,6 +3,7 @@
 Native XML controls dispatch onClick, unlike programmatic WindowDialog. Data,
 metadata and images are prepared by bounded workers; callbacks only use views.
 """
+from localization import tr
 import json
 import os
 import queue
@@ -32,21 +33,23 @@ class MediaWindow(xbmcgui.WindowXML):
         self._art_thread.start()
 
     def onInit(self):
+        self.getControl(400).setLabel(tr(32586))
+        self.getControl(501).setLabel(tr(32587))
         if self._ready:
             self._show(self.mode)
             if self.mode=='detail': self._detail_ready((self.selected,{'episodes':self._episode_raw()}))
             elif self.mode=='episodes': self._show_episodes()
             elif self.mode=='seasons':
-                self._fill(330,[dict(name='Staffel '+str(s),sid=str(s)) for s in self.seasons]);self.setFocusId(330)
+                self._fill(330,[dict(name=tr(32523)+str(s),sid=str(s)) for s in self.seasons]);self.setFocusId(330)
             else:
                 self._fill(200,[dict(name=g['title'],sid=g['cid']) for g in self.groups])
                 self._page_ready((self.rows,self.total))
             return
         self._ready=True
         self._show('landing')
-        self.getControl(101).setLabel('XCMate · '+('FILME' if self.kind=='vod' else 'SERIEN'))
-        self.getControl(120).setLabel(('Filme' if self.kind=='vod' else 'Serien')+' / Kategorien')
-        self.getControl(102).setLabel('Lokaler Katalog wird vorbereitet …')
+        self.getControl(101).setLabel('XCMate · '+(tr(32461) if self.kind=='vod' else tr(32462)))
+        self.getControl(120).setLabel((tr(32403) if self.kind=='vod' else tr(32404))+tr(32492))
+        self.getControl(102).setLabel(tr(32491))
         self._request(self._initial,self._initial_ready)
 
     def _request(self,job,apply):
@@ -57,7 +60,7 @@ class MediaWindow(xbmcgui.WindowXML):
             except Exception as exc:
                 with self._lock:
                     if not self._closed and generation==self._generation:
-                        self.getControl(102).setLabel('Daten nicht verfügbar · '+type(exc).__name__)
+                        self.getControl(102).setLabel(tr(32493)+type(exc).__name__)
                 return
             with self._lock:
                 if not self._closed and generation==self._generation: apply(value)
@@ -76,11 +79,11 @@ class MediaWindow(xbmcgui.WindowXML):
         self._fill(200,[dict(name=g['title'],sid=g['cid']) for g in self.groups])
         self.category=self.groups[0]['cid'] if self.groups else ''
         if not state:
-            self.getControl(102).setLabel('Kein lokaler Katalog · OK auf Katalog laden startet einen Hintergrundauftrag')
-            self.getControl(120).setLabel('Katalog im Hintergrund laden')
+            self.getControl(102).setLabel(tr(32494))
+            self.getControl(120).setLabel(tr(32495))
             self.setFocusId(120)
             return
-        self.getControl(120).setLabel(('Filme' if self.kind=='vod' else 'Serien')+' / Kategorien')
+        self.getControl(120).setLabel((tr(32403) if self.kind=='vod' else tr(32404))+tr(32492))
         if self.initial_sid:
             # Fetching the one ID is local, still on the data worker callback.
             item=self.reader.get(self.kind,self.initial_sid)
@@ -103,7 +106,7 @@ class MediaWindow(xbmcgui.WindowXML):
         self.mode=mode;self.offset=max(0,offset)
         self._show(mode)
         self.rows=[];self.getControl(110 if mode=='landing' else 210).reset()
-        self.getControl(102).setLabel('Lokale Titel werden geladen …')
+        self.getControl(102).setLabel(tr(32496))
         kind,category,page=self.kind,self.category,self.offset
         def load():
             if self.favourites_only:
@@ -123,10 +126,10 @@ class MediaWindow(xbmcgui.WindowXML):
         self._fill(cid,self.rows)
         pos=min(self._positions.get((self.mode,self.category,self.offset),0),max(0,len(self.rows)-1))
         self.getControl(cid).selectItem(pos);self._last_position=pos
-        self.getControl(102).setLabel('{} Titel · {}–{} / {} · Links/Rechts: Poster · Menü: Suche'.format(
-            'Neu hinzugefügt' if self.mode=='landing' else 'Kategorie',self.offset+1 if self.rows else 0,
+        self.getControl(102).setLabel(tr(32497).format(
+            tr(32498) if self.mode=='landing' else tr(32499),self.offset+1 if self.rows else 0,
             self.offset+len(self.rows),self.total) if self.rows else
-            ('Keine belegten Neuheiten · Kategorien öffnen' if self.mode=='landing' else 'Keine aktivierten Titel in dieser Gruppe'))
+            (tr(32500) if self.mode=='landing' else tr(32501)))
         self._page_status='{}–{} / {}'.format(self.offset+1 if self.rows else 0,self.offset+len(self.rows),self.total)
         if not self.rows and self.mode=='grid':
             self.mode='groups' if self.groups else 'landing';self._show(self.mode)
@@ -156,8 +159,8 @@ class MediaWindow(xbmcgui.WindowXML):
         info=video_info(self.selected)
         fields=[getattr(self,'_page_status','')]
         if self.mode=='landing': fields.append(recent_label(self.selected,setting_int('recent_days',10)))
-        if info.get('duration'): fields.append(str(info['duration']//60)+' Min.')
-        if 'rating' in info: fields.append('Bewertung: '+str(info['rating'])+' (Anbieter)')
+        if info.get('duration'): fields.append(str(info['duration']//60)+tr(32502))
+        if 'rating' in info: fields.append(tr(32503)+str(info['rating'])+tr(32504))
         self.getControl(102).setLabel(' · '.join(fields))
         self._queue_art(self.selected)
 
@@ -198,7 +201,7 @@ class MediaWindow(xbmcgui.WindowXML):
         self.mode='detail';self.selected=dict(item);self._show('detail')
         self.actions=[]
         self._detail_ready((dict(item),{}))
-        self.getControl(102).setLabel('Anbieter-Metadaten werden im Hintergrund geladen …')
+        self.getControl(102).setLabel(tr(32505))
         def load():
             from media_data import details
             from metadata_views import enrich
@@ -227,42 +230,42 @@ class MediaWindow(xbmcgui.WindowXML):
             return state['progress'].get(progress_key(self.portal['id'],kind,sid,series,season),{})
         info=video_info(item)
         self.getControl(103).setLabel(info['title'])
-        meta=['Anbieter-Metadaten']
-        for name,key in (('Jahr','year'),('Genre','genre'),('Bewertung','rating')):
+        meta=[tr(32506)]
+        for name,key in ((tr(32507),'year'),(tr(32508),'genre'),(tr(32509),'rating')):
             if key in info: meta.append('{}: {}'.format(name,info[key]))
-        if 'duration' in info: meta.append('Laufzeit: {} Min.'.format(info['duration']//60))
+        if 'duration' in info: meta.append(tr(32510).format(info['duration']//60))
         self.getControl(102).setLabel(' · '.join(meta))
         self.getControl(310).setImage(local_art(item)['poster'])
-        self.getControl(320).setText(info['plot'] or 'Der Anbieter liefert keine Beschreibung.')
+        self.getControl(320).setText(info['plot'] or tr(32511))
         self._queue_art(item)
         self.actions=[]
         if self.kind=='vod':
             saved=progress('vod',item['sid'])
-            self.actions=[('Abspielen','play'),('Neu starten','restart')]
+            self.actions=[(tr(32512),'play'),(tr(32513),'restart')]
             position=resume_position(saved)
             if position:
-                self.actions.insert(0,('Fortsetzen ab {:02d}:{:02d}:{:02d}'.format(int(position)//3600,int(position)//60%60,int(position)%60),'resume'))
+                self.actions.insert(0,(tr(32514).format(int(position)//3600,int(position)//60%60,int(position)%60),'resume'))
         else:
             self.episodes=episode_records(data,item['sid'])
-            self.actions=[('Staffeln und Episoden','seasons')] if self.episodes else []
+            self.actions=[(tr(32515),'seasons')] if self.episodes else []
             saved_episodes=[(e,progress('episode',e['sid'],e['series_id'],e['season'])) for e in self.episodes]
             started=[pair for pair in saved_episodes if resume_position(pair[1])]
             if started:
                 self.continue_episode=max(started,key=lambda pair:pair[1].get('updated',0))[0]
                 e=self.continue_episode
-                self.actions.append(('Weiterschauen · Staffel {} Folge {}'.format(e['season'],e['episode']),'continue_episode'))
+                self.actions.append((tr(32516).format(e['season'],e['episode']),'continue_episode'))
             watched=[i for i,(e,s) in enumerate(saved_episodes) if s.get('watched') and e['season']>0 and e['episode']>0]
             if watched and max(watched)+1<len(self.episodes):
                 self.next_episode=self.episodes[max(watched)+1]
                 if self.next_episode['season']>0 and self.next_episode['episode']>0:
-                    self.actions.append(('Nächste Folge · Staffel {} Folge {}'.format(self.next_episode['season'],self.next_episode['episode']),'next_episode'))
+                    self.actions.append((tr(32517).format(self.next_episode['season'],self.next_episode['episode']),'next_episode'))
         fav=state_key(self.portal['id'],self.kind,item['sid']) in state['favourites']
         if self._state_ready:
-            self.actions.append(('Aus Favoriten entfernen' if fav else 'Zu Favoriten hinzufügen','favourite'))
-        else: self.getControl(102).setLabel('Medienprofil nicht lesbar · Daten bleiben erhalten · Favoriten/Fortschritt nicht verfügbar')
+            self.actions.append((tr(32518) if fav else tr(32519),'favourite'))
+        else: self.getControl(102).setLabel(tr(32520))
         self.trailer=trailer_id(item)
         if self.trailer and xbmc.getCondVisibility('System.HasAddon(plugin.video.youtube)'):
-            self.actions.append(('Trailer auf YouTube','trailer'))
+            self.actions.append((tr(32521),'trailer'))
         self._fill(300,[dict(name=label,sid=action) for label,action in self.actions])
         self.getControl(300).selectItem(next((i for i,a in enumerate(self.actions) if a[1]==old_action),0))
         self.setFocusId(old_focus if old_focus in (300,400) else 300)
@@ -278,7 +281,7 @@ class MediaWindow(xbmcgui.WindowXML):
                 self._search();return
             if controlId==120 and hasattr(self,'reader'):
                 if getattr(self,'_catalog_missing',False):
-                    self.getControl(102).setLabel('Katalog lädt im Hintergrund · Zurück bleibt bedienbar')
+                    self.getControl(102).setLabel(tr(32522))
                     def load():
                         self.router._xc(self.portal).warm_catalogs(include_live=False,include_vod=self.kind=='vod',include_series=self.kind=='series')
                         return self._initial()
@@ -307,7 +310,7 @@ class MediaWindow(xbmcgui.WindowXML):
                 elif action=='seasons':
                     self.mode='seasons';self._show('seasons')
                     self.seasons=sorted({e['season'] for e in self.episodes})
-                    self._fill(330,[dict(name='Staffel '+str(s),sid=str(s)) for s in self.seasons]);self.setFocusId(330)
+                    self._fill(330,[dict(name=tr(32523)+str(s),sid=str(s)) for s in self.seasons]);self.setFocusId(330)
             elif controlId==330:
                 pos=self.getControl(330).getSelectedPosition()
                 if self.mode=='seasons' and 0<=pos<len(self.seasons):
@@ -317,7 +320,7 @@ class MediaWindow(xbmcgui.WindowXML):
                     e=self.visible_episodes[pos]
                     from media_state import progress,resume_position
                     saved=progress(self.portal['id'],'episode',e['sid'],e['series_id'],e['season'])
-                    resume=bool(resume_position(saved)) and xbmcgui.Dialog().yesno('XCMate','Episode fortsetzen? Nein startet von Anfang.')
+                    resume=bool(resume_position(saved)) and xbmcgui.Dialog().yesno('XCMate',tr(32524))
                     self._play(e,'episode',resume)
 
     def _episode_raw(self):
@@ -333,7 +336,7 @@ class MediaWindow(xbmcgui.WindowXML):
         rows=[]
         for e in self.visible_episodes:
             saved=snapshot.get(progress_key(self.portal['id'],'episode',e['sid'],e['series_id'],e['season']),{})
-            status='Gesehen' if saved.get('watched') else 'Begonnen' if saved.get('position') else 'Ungesehen'
+            status=tr(32525) if saved.get('watched') else tr(32526) if saved.get('position') else tr(32527)
             rows.append(dict(e,name='{} · {} · {}'.format(e['episode'],e['name'],status)))
         self._fill(330,rows);self.getControl(330).selectItem(0);self.setFocusId(330)
 
@@ -343,7 +346,7 @@ class MediaWindow(xbmcgui.WindowXML):
             if key in (9,10,92):
                 self._generation+=1
                 if self.mode=='episodes':
-                    self.mode='seasons';self._fill(330,[dict(name='Staffel '+str(s),sid=str(s)) for s in self.seasons]);return
+                    self.mode='seasons';self._fill(330,[dict(name=tr(32523)+str(s),sid=str(s)) for s in self.seasons]);return
                 if self.mode=='seasons': self.mode='detail';self._show('detail');self.setFocusId(300);return
                 if self.mode=='detail' and self._previous:
                     mode,self.category,offset,pos=self._previous
@@ -356,8 +359,8 @@ class MediaWindow(xbmcgui.WindowXML):
                 if self.mode=='episodes':
                     pos=self.getControl(330).getSelectedPosition()
                     if 0<=pos<len(self.visible_episodes):
-                        choice=xbmcgui.Dialog().select('XCMate · Folge',['Als gesehen markieren','Als ungesehen markieren','Fortschritt zurücksetzen'])
-                        if choice in (0,1,2) and (choice!=2 or xbmcgui.Dialog().yesno('XCMate','Fortschritt dieser Folge zurücksetzen?')):
+                        choice=xbmcgui.Dialog().select(tr(32528),[tr(32529),tr(32530),tr(32531)])
+                        if choice in (0,1,2) and (choice!=2 or xbmcgui.Dialog().yesno('XCMate',tr(32532))):
                             from media_state import mark_episode
                             mark_episode(self.portal['id'],self.visible_episodes[pos],True if choice==0 else False if choice==1 else None)
                             self._show_episodes();self.getControl(330).selectItem(pos)
@@ -372,7 +375,7 @@ class MediaWindow(xbmcgui.WindowXML):
                 return
             if focus==200 and key==2:
                 if not self.rows:
-                    self.getControl(102).setLabel('Diese Gruppe enthält keine lokalen Titel · andere Gruppe wählen')
+                    self.getControl(102).setLabel(tr(32533))
                     return
                 self.mode='grid';self._cols=6;self._show('grid');self.setFocusId(210);return
             if focus not in (110,210): return
@@ -393,7 +396,7 @@ class MediaWindow(xbmcgui.WindowXML):
             if 0<=pos<len(self.rows): self._focus_item(pos)
 
     def _search(self):
-        query=xbmcgui.Dialog().input('XCMate · Globale Suche')
+        query=xbmcgui.Dialog().input(tr(32534))
         if query.strip():
             self.close()
             xbmc.executebuiltin('Container.Update('+self.router.url(action='global_search',pid=self.portal['id'],q=query[:200])+')')

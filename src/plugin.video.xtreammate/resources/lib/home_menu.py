@@ -1,15 +1,16 @@
 """Additive 0.1.27 navigation. Existing playback/settings actions stay valid."""
+from localization import tr
 import os
 import uuid
 
-HOME = (('Startkanal','home_start','tv.png'), ('Live-TV','home_live','tv.png'),
-        ('EPG','guide_browser','epg.png'), ('Filme','movies_home','vod.png'),
-        ('Serien','series_home','series.png'), ('Einstellungen','settings_home','settings.png'))
-SETTINGS = (('Accounts & Portale','accounts'), ('Startkanal & Startgruppe','startup'),
-            ('EPG','epg'), ('Sendergruppen & Favoriten','groups'),
-            ('Fernbedienung & Tasten','remote'), ('Player & Wiedergabe','player'),
-            ('Aufnahmen & Speicher','storage'), ('Darstellung & Sprache','appearance'),
-            ('Wartung & Diagnose','maintenance'), ('Über XCMate & Lizenzen','about'))
+HOME = ((32400,'home_start','tv.png'), (32401,'home_live','tv.png'),
+        (32402,'guide_browser','epg.png'), (32403,'movies_home','vod.png'),
+        (32404,'series_home','series.png'), (32405,'settings_home','settings.png'))
+SETTINGS = ((32406,'accounts'), (32407,'startup'),
+            (32402,'epg'), (32408,'groups'),
+            (32409,'remote'), (32410,'player'),
+            (32411,'storage'), (32412,'appearance'),
+            (32413,'maintenance'), (32414,'about'))
 
 
 def active_portal(portals, preferred=''):
@@ -25,10 +26,11 @@ def show(router, portal):
     path=xbmcaddon.Addon().getAddonInfo('path')
     xbmcplugin.setPluginCategory(router._handle,'XCMate · '+portal.get('name',''))
     xbmcplugin.setContent(router._handle,'files')
-    for label,action,icon in HOME:
+    for label_id,action,icon in HOME:
+        label=tr(label_id)
         router._add_dir(label,router.url(action=action,pid=portal['id']),
                         icon=os.path.join(path,'resources','media',icon),
-                        plot=('Accounts, Suche und weitere Optionen' if action=='settings_home' else label))
+                        plot=(tr(32415) if action=='settings_home' else label))
     xbmcplugin.endOfDirectory(router._handle,cacheToDisc=False)
 
 
@@ -57,59 +59,59 @@ def settings(router, portal, section=''):
     def add(label,action,**params):
         router._add_dir(label,router.url(action=action,pid=pid,**params))
     if not section:
-        for label,key in SETTINGS: add(label,'settings_section',section=key)
+        for label_id,key in SETTINGS: add(tr(label_id),'settings_section',section=key)
     elif section=='accounts':
         from portals import get_active
-        add('Aktiven Account wählen','account_select')
+        add(tr(32416),'account_select')
         for p in get_active():
-            add('{} · {}'.format(p.get('name','Account'),p.get('type','')),'account_select',selected=p['id'])
+            add('{} · {}'.format(p.get('name',tr(32417)),p.get('type','')),'account_select',selected=p['id'])
             account_action={'xtream':'xtream_account','stb':'stb_account','m3u':'m3u_account'}.get(p.get('type'))
             if account_action:
-                router._add_dir('Kontoinformationen · '+p.get('name','Account'),
+                router._add_dir(tr(32418)+p.get('name',tr(32417)),
                                 router.url(action=account_action,pid=p['id']))
-        add('Accounts hinzufügen / bearbeiten / deaktivieren','portal_manager')
-        add('Einrichtungsassistent','setup_wizard')
+        add(tr(32419),'portal_manager')
+        add(tr(32420),'setup_wizard')
     elif section=='startup':
-        add('Startkanal und Startgruppe auswählen','startup_settings')
-        add('Autostart-Diagnosepause bewusst ändern','autoplay_diagnostic_mode')
+        add(tr(32421),'startup_settings')
+        add(tr(32422),'autoplay_diagnostic_mode')
     elif section=='epg':
-        add('Programmführer','guide_browser')
-        add('Quellen / Priorität / Senderzuordnung','epg_sources')
-        add('EPG-Status & Vorschau','epg_status')
-        add('Langzeit-EPG: Quellenreichweite','guide_status')
-        add('Erinnerungen verwalten / stornieren','guide_timers')
-        add('EPG im Hintergrund aktualisieren','refresh_epg')
-        add('EPG-Zeitraum / Aktualisierung (Kodi-Einstellungen)','settings')
+        add(tr(32423),'guide_browser')
+        add(tr(32424),'epg_sources')
+        add(tr(32425),'epg_status')
+        add(tr(32426),'guide_status')
+        add(tr(32427),'guide_timers')
+        add(tr(32428),'refresh_epg')
+        add(tr(32429),'settings')
     elif section=='groups':
-        add('Live-/Film-/Seriengruppen verwalten','groups_manager')
-        add('Bisherige Live-Favoriten','favourites')
-        add('Filmfavoriten','media_favourites',kind='vod')
-        add('Serienfavoriten','media_favourites',kind='series')
-        add('Gemeinsame Suche: Live-TV / Filme / Serien','global_search')
+        add(tr(32430),'groups_manager')
+        add(tr(32431),'favourites')
+        add(tr(32432),'media_favourites',kind='vod')
+        add(tr(32433),'media_favourites',kind='series')
+        add(tr(32434),'global_search')
     elif section=='remote':
-        add('Fernbedienungstasten anlernen (Android)','remote_learn')
-        add('Optionale globale Fallback-Keymap (Standard AUS)','remote_setup')
+        add(tr(32435),'remote_learn')
+        add(tr(32436),'remote_setup')
     elif section=='player':
-        add('Player, Untertitel und Infoleisten-Ausblendzeit','settings')
+        add(tr(32437),'settings')
     elif section=='storage':
-        add('Aufnahmeverzeichnis auswählen und prüfen','recording_folder')
-        add('Gespeicherten Aufnahmeordner prüfen','recording_folder',check='1')
-        add('Bestehende Aufnahmen / Playeroptionen','settings')
-        add('Aufnahmeengine: Android-Prüfung erforderlich','recording_capabilities')
+        add(tr(32438),'recording_folder')
+        add(tr(32439),'recording_folder',check='1')
+        add(tr(32440),'settings')
+        add(tr(32441),'recording_capabilities')
     elif section=='appearance':
-        add('Sprache / Darstellung / Filter','settings')
-        add('BINGIE-MOD-Widgets einrichten','widget_setup')
-        add('Widget-Quelle 1: Live-TV aus Startkanalgruppe','widget_live_start_group')
-        add('Widget-Quelle 2: Neueste Filme','widget_recent_vod')
-        add('Widget-Quelle 3: Neueste Serien','widget_recent_series')
+        add(tr(32442),'settings')
+        add(tr(32443),'widget_setup')
+        add(tr(32444),'widget_live_start_group')
+        add(tr(32445),'widget_recent_vod')
+        add(tr(32446),'widget_recent_series')
     elif section=='maintenance':
-        for label,action in (('Gemeinsame Suche','global_search'),('Lokale Kataloge aktualisieren','refresh_portal'),
-            ('EPG-Status & Vorschau','epg_status'),('TV-Fernbedienung: Diagnose','remote_diagnostics'),
-            ('Hintergrunddienst prüfen','service_recover'),('Popup- und Fernbedienungstest (OHNE TV)','popup_probe'),
-            ('Cache löschen (mit Bestätigung)','clear_cache'),('Alle Kodi-Add-on-Einstellungen','settings')):
+        for label,action in ((tr(32447),'global_search'),(tr(32448),'refresh_portal'),
+            (tr(32425),'epg_status'),(tr(32449),'remote_diagnostics'),
+            (tr(32450),'service_recover'),(tr(32451),'popup_probe'),
+            (tr(32452),'clear_cache'),(tr(32453),'settings')):
             add(label,action)
     elif section=='about':
-        add('Version / Herkunft / Lizenzen','about_xcmate')
+        add(tr(32454),'about_xcmate')
     xbmcplugin.endOfDirectory(router._handle,cacheToDisc=False)
 
 
@@ -117,7 +119,7 @@ def recording_folder(check_only=False):
     import xbmcgui, xbmcaddon, xbmcvfs
     from utils import setting
     old=setting('recordings_folder','special://profile/addon_data/plugin.video.xtreammate/recordings/')
-    selected=old if check_only else xbmcgui.Dialog().browseSingle(0,'XCMate · Aufnahmeverzeichnis','files',defaultt=old)
+    selected=old if check_only else xbmcgui.Dialog().browseSingle(0,tr(32455),'files',defaultt=old)
     if not selected: return
     if probe_directory(selected,xbmcvfs):
         if not check_only: xbmcaddon.Addon().setSetting('recordings_folder',selected)
@@ -126,8 +128,8 @@ def recording_folder(check_only=False):
         display=urlunsplit((parts.scheme,parts.hostname or '',parts.path,'','')) if parts.scheme and parts.netloc else selected
         try:
             status=os.statvfs(xbmcvfs.translatePath(selected))
-            space='{} MiB frei'.format(status.f_bavail*status.f_frsize//(1024*1024))
-        except (AttributeError,OSError,RuntimeError): space='Freier Speicher über diesen VFS-Pfad nicht ermittelbar'
-        xbmcgui.Dialog().ok('XCMate',display+'\n'+space+'\nVerzeichnis ist beschreibbar. Eine Aufnahmeengine ist damit noch nicht bestätigt.')
+            space=tr(32456).format(status.f_bavail*status.f_frsize//(1024*1024))
+        except (AttributeError,OSError,RuntimeError): space=tr(32457)
+        xbmcgui.Dialog().ok('XCMate',display+'\n'+space+tr(32458))
     else:
-        xbmcgui.Dialog().ok('XCMate','Verzeichnis nicht zuverlässig beschreibbar. Die bisherige Einstellung bleibt erhalten.')
+        xbmcgui.Dialog().ok('XCMate',tr(32459))

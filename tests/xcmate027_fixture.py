@@ -104,6 +104,7 @@ class Fixture:
     def setUp(self):
         temp=tempfile.TemporaryDirectory();self.addCleanup(temp.cleanup)
         self.folder=Path(temp.name);self.options={};self.properties={};self.added=[];self.ends=[];self.builtins=[]
+        self.ui_locale='de_de'
         self.portal=dict(id='p',name='Demo',type='xtream',enabled=True,xc_host='https://provider.invalid',xc_user='user',xc_pass='SECRET',start_stream_id='1',start_group_id='b')
         self.portals=[self.portal];self.now=int(time.time())
         categories=[dict(category_id='a',category_name='A'),dict(category_id='b',category_name='B')]
@@ -132,7 +133,8 @@ class Fixture:
         utils.cache_set=mock.Mock(return_value=True)
         addon=types.ModuleType('xbmcaddon')
         addon.Addon=lambda *args:types.SimpleNamespace(getAddonInfo=lambda k: {'path':str(ADDON),'id':'plugin.video.xtreammate','version':'0.1.27'}.get(k,''),
-            setSetting=lambda k,v:self.options.__setitem__(k,v))
+            setSetting=lambda k,v:self.options.__setitem__(k,v),
+            getLocalizedString=lambda ident:self.translations.get(self.ui_locale,{}).get(ident,''))
         gui=types.ModuleType('xbmcgui');gui.WindowXML=WindowXML;gui.ListItem=ListItem
         gui.Window=lambda n:types.SimpleNamespace(getProperty=lambda k:self.properties.get(k,''),setProperty=self.properties.__setitem__,clearProperty=lambda k:self.properties.pop(k,None))
         self.dialog=types.SimpleNamespace(input=mock.Mock(return_value=''),select=mock.Mock(return_value=-1),
@@ -151,6 +153,9 @@ class Fixture:
         sources=types.ModuleType('epg_sources');sources.configuration=lambda pid:{'mappings':{},'sources':[]}
         status=types.ModuleType('epg_status');status.revision=lambda pid:'r1';status.read=lambda pid:{}
         patch_path=mock.patch.object(sys,'path',[str(LIB)]+sys.path);patch_path.start();self.addCleanup(patch_path.stop)
+        from localization import read_catalog
+        self.translations={locale:read_catalog(ADDON/'resources/language'/('resource.language.'+locale)/'strings.po')
+                           for locale in ('de_de','en_gb')}
         patch=mock.patch.dict(sys.modules,utils=utils,xbmc=xbmc,xbmcgui=gui,xbmcplugin=plugin,xbmcaddon=addon,
             portals=portals,epg=epg,epg_sources=sources,epg_status=status,xbmcvfs=types.ModuleType('xbmcvfs'))
         patch.start();self.addCleanup(patch.stop)

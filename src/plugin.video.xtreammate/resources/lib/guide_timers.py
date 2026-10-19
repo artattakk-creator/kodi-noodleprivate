@@ -1,4 +1,5 @@
 """ID-based notification timers; no automatic tune, recording or wake promise."""
+from localization import tr
 import hashlib
 import json
 import os
@@ -58,13 +59,15 @@ def poll(now=None,notify=None):
     for row in due:
         message=row['channel']+' · '+row['title']+' · '+time.strftime('%H:%M',time.localtime(row['start']))
         if notify: notify(message)
-        else: xbmcgui.Dialog().notification('XCMate · Erinnerung',message,time=8000)
+        else: xbmcgui.Dialog().notification(tr(32569),message,time=8000)
 
 
 def manage(pid):
     import xbmcgui
     rows=list_timers(pid)
-    selected=xbmcgui.Dialog().select('XCMate · Erinnerungen',[
-        '{} · {} · {}'.format(r['state'],time.strftime('%d.%m. %H:%M',time.localtime(r['start'])),r['title']) for r in rows])
-    if 0<=selected<len(rows) and rows[selected]['state']=='pending' and xbmcgui.Dialog().yesno('XCMate','Erinnerung stornieren?'):
+    labels={'pending':32600,'notified':32601,'cancelled':32602,'missed':32603}
+    selected=xbmcgui.Dialog().select(tr(32570),[
+        '{} · {} · {}'.format(tr(labels[r['state']]) if r['state'] in labels else r['state'],
+                              time.strftime(tr(32584),time.localtime(r['start'])),r['title']) for r in rows])
+    if 0<=selected<len(rows) and rows[selected]['state']=='pending' and xbmcgui.Dialog().yesno('XCMate',tr(32571)):
         cancel(rows[selected]['id'])

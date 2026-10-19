@@ -1,10 +1,11 @@
 """New routes only. Legacy provider/player entry points remain compatible."""
+from localization import tr
 
 ACTIONS=('xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
          'movies_home','series_home','media_detail','media_favourites','global_search','search_section',
          'widget_live_start_group','widget_recent_vod','widget_recent_series','widget_setup',
          'recording_folder','recording_capabilities','about_xcmate','guide_browser','media_play','guide_timers','guide_status')
-LABELS={'live':'LIVE-TV','vod':'FILME','series':'SERIEN'}
+LABELS={'live':32460,'vod':32461,'series':32462}
 
 
 def portal_for(router):
@@ -34,7 +35,7 @@ def dispatch(router):
         selected=router._params.get('selected','')
         _end(router,False)
         if not selected:
-            i=xbmcgui.Dialog().select('XCMate · Aktiven Account wählen',[p.get('name','Account') for p in rows])
+            i=xbmcgui.Dialog().select(tr(32463),[p.get('name',tr(32417)) for p in rows])
             if i<0 or i>=len(rows): return
             selected=str(rows[i]['id'])
         if selected not in {str(p['id']) for p in rows}: return
@@ -53,12 +54,12 @@ def dispatch(router):
         _end(router,False)
         if portal:
             from guide_store import status_lines
-            xbmcgui.Dialog().textviewer('XCMate · Langzeit-EPG','\n'.join(status_lines(portal)))
+            xbmcgui.Dialog().textviewer(tr(32464),'\n'.join(status_lines(portal)))
         return
     if action in ('about_xcmate','recording_capabilities','widget_setup'):
         _end(router,False)
         if action=='about_xcmate':
-            text='XCMate '+xbmcaddon.Addon().getAddonInfo('version')+'\nKodi-ID: plugin.video.xtreammate\nGPL-Fork: mr-evil1 TiViMate Kodi. Herkunft/Lizenzen bleiben erhalten; siehe Projekt-Lizenzdateien.'
+            text='XCMate '+xbmcaddon.Addon().getAddonInfo('version')+tr(32465)
         elif action=='recording_capabilities':
             from recording_probe import report
             text=report()
@@ -68,7 +69,7 @@ def dispatch(router):
         return
     if not portal:
         _end(router,False)
-        xbmcgui.Dialog().ok('XCMate','Bitte zuerst unter Einstellungen einen Account einrichten.')
+        xbmcgui.Dialog().ok('XCMate',tr(32466))
         return
     router._params['pid']=portal['id']
     if action=='xcmate_home': show(router,portal)
@@ -78,7 +79,7 @@ def dispatch(router):
         xc=router._xc(portal) if portal.get('type')=='xtream' else None
         streams=xc.get_cached_catalog('get_live_streams') if xc else None
         if not sid or not any(isinstance(s,dict) and str(s.get('stream_id'))==sid for s in (streams or [])):
-            if xbmcgui.Dialog().yesno('XCMate','Kein gültiger Startkanal im lokalen Katalog. Startkanal & Startgruppe auswählen?'):
+            if xbmcgui.Dialog().yesno('XCMate',tr(32467)):
                 xbmc.executebuiltin('Container.Update('+router.url(action='startup_settings',pid=portal['id'])+')')
             return
         router._play_start_direct()
@@ -91,11 +92,11 @@ def dispatch(router):
             _end(router,False);return
         if not portal.get('include_vod' if kind=='vod' else 'include_series',True):
             _end(router,False)
-            xbmcgui.Dialog().ok('XCMate','Dieser Medienbereich ist für den Account deaktiviert. Einstellungen → Accounts & Portale.')
+            xbmcgui.Dialog().ok('XCMate',tr(32468))
             return
         if portal.get('type')!='xtream':
             _end(router,False)
-            xbmcgui.Dialog().ok('XCMate','Die neue Medienoberfläche benötigt den lokalen Xtream-Katalog. Die bisherige Medienliste dieses Portaltyps bleibt verfügbar.')
+            xbmcgui.Dialog().ok('XCMate',tr(32469))
             route=('m3u_movies' if kind=='vod' else 'm3u_series') if portal.get('type')=='m3u' else ('vod_categories' if kind=='vod' else 'series_categories')
             xbmc.executebuiltin('Container.Update('+router.url(action=route,pid=portal['id'])+')')
             return
@@ -117,7 +118,7 @@ def search(router,portal):
     query=router._params.get('q')
     if query is None:
         _end(router,False)
-        query=xbmcgui.Dialog().input('XCMate · Live-TV, Filme und Serien suchen')
+        query=xbmcgui.Dialog().input(tr(32470))
         if query.strip():
             xbmc.executebuiltin('Container.Update('+router.url(action='global_search',pid=portal['id'],q=query[:200])+')')
         return
@@ -126,9 +127,10 @@ def search(router,portal):
     xbmcplugin.setContent(router._handle,'files')
     kind=router._params.get('kind')
     if kind not in LABELS:
-        for section,label in LABELS.items():
+        for section,label_id in LABELS.items():
+            label=tr(label_id)
             _,total=reader.page(section,query,limit=1)
-            status=str(total)+' Treffer' if reader.state(section) else 'Index wird geladen / Katalog nicht verfügbar'
+            status=str(total)+tr(32606 if total==1 else 32471) if reader.state(section) else tr(32472)
             router._add_dir(label+' · '+status,router.url(action='search_section',pid=portal['id'],kind=section,q=query))
     else:
         offset=page_offset(router)
@@ -136,7 +138,7 @@ def search(router,portal):
         for item in rows: add_index_item(router,portal,kind,item)
         paging(router,total,offset,action='search_section',kind=kind,q=query)
         if not rows:
-            router._add_dir('Keine Treffer' if reader.state(kind) else 'Index wird geladen · später erneut öffnen',
+            router._add_dir(tr(32473) if reader.state(kind) else tr(32474),
                             router.url(action='global_search',pid=portal['id'],q=query))
     _end(router)
 
@@ -147,9 +149,9 @@ def page_offset(router):
 
 
 def paging(router,total,offset,**params):
-    for label,target in (('Vorherige Seite',offset-48),('Weitere Ergebnisse',offset+48)):
+    for label,target in ((tr(32475),offset-48),(tr(32476),offset+48)):
         if 0<=target<total:
-            router._add_dir('{} · {} insgesamt'.format(label,total),router.url(pid=router._params['pid'],offset=target,**params))
+            router._add_dir(tr(32477).format(label,total),router.url(pid=router._params['pid'],offset=target,**params))
 
 
 def add_index_item(router,portal,kind,item,epg=None,recent=False):
@@ -190,7 +192,7 @@ def widget(router,portal,action):
                                pin=start['sid'] if start else None) if cid else ([],0)
         from epg import load_cache
         from epg_sources import configuration
-        from epg_views import resolve_guide,programme_plot
+        from epg_views import resolve_guide
         cache=load_cache(portal['id']); mappings=configuration(portal['id'])['mappings']
         xbmcplugin.setContent(router._handle,'videos')
         for row in rows:
@@ -198,11 +200,11 @@ def widget(router,portal,action):
                                client=router._xc(portal),mappings=mappings)
             add_index_item(router,portal,'live',row,dict(Now=info['now'],Next=info['next'],
                 Start=info['start'],Stop=info['stop'],Progress=info['progress'] if info['progress'] is not None else '',
-                plot=programme_plot(info)))
+                plot=guide_plot(info)))
         paging(router,total,page_offset(router),action=action)
         if not rows:
-            router._add_dir('Live-TV-Index wird geladen / kein aktiver Sender · Wartung öffnen' if not reader.state('live')
-                            else 'Keine Sender in der aktiven Startkanalgruppe · Gruppen prüfen',
+            router._add_dir(tr(32478) if not reader.state('live')
+                            else tr(32479),
                             router.url(action='settings_section',pid=portal['id'],section='maintenance'))
     else:
         kind='vod' if action=='widget_recent_vod' else 'series'
@@ -211,21 +213,30 @@ def widget(router,portal,action):
         rows,total=reader.rail(kind,limit=24,keep=setting_int('recent_keep',100))
         for row in rows: add_index_item(router,portal,kind,row,recent=True)
         if not rows and not reader.state(kind):
-            router._add_dir('Katalog noch nicht lokal verfügbar · zum Laden öffnen',
+            router._add_dir(tr(32480),
                             router.url(action='movies_home' if kind=='vod' else 'series_home',pid=portal['id']))
-        router._add_dir('Alle anzeigen'+(' · '+str(total)+' gespeicherte Titel' if total else ''),
+        router._add_dir(tr(32481)+(' · '+str(total)+tr(32482) if total else ''),
                         router.url(action='movies_home' if kind=='vod' else 'series_home',pid=portal['id']))
     _end(router)
 
 
+def guide_plot(info):
+    """Localize the new widget without changing the frozen live resolver."""
+    lines=[]
+    if info.get('now'): lines.append(tr(32597,info.get('now_time',''),info['now']))
+    if info.get('next'): lines.append(tr(32598,info.get('next_time',''),info['next']))
+    if info.get('description'): lines.append(str(info['description']))
+    return '\n'.join(lines) if lines else tr(32599)
+
+
 def widget_instructions(router,portal):
     pid=portal['id'] if portal else ''
-    lines=['BINGIE MOD · freiwillige Widget-Einrichtung',
-           'Skin-Einstellungen → Hauptmenü konfigurieren → gewünschten Menüpunkt → Widgets.',
-           'Drei Widget-Reihen in dieser Reihenfolge hinzufügen (Bezeichnungen variieren je Skinversion):']
-    for title,action in (('Live-TV','widget_live_start_group'),('Neueste Filme','widget_recent_vod'),('Neueste Serien','widget_recent_series')):
+    lines=[tr(32483),
+           tr(32484),
+           tr(32485)]
+    for title,action in ((tr(32401),'widget_live_start_group'),(tr(32486),'widget_recent_vod'),(tr(32487),'widget_recent_series')):
         lines+=['',title,router.url(action=action,pid=pid)]
-    lines+=['','Als Quelle Video-Add-ons → XCMate → Einstellungen → Darstellung → Widget-Quellen nutzen.',
-            'Live: Logo/Querformat; Filme/Serien: Poster 2:3. Vorhandene Widgets vorher notieren; nur neu angelegte Reihen zum Rückbau entfernen.',
-            'Keine Skin-Dateien oder Nutzerkonfiguration werden automatisch verändert. Die tatsächlich installierte BINGIE-MOD-Version ist hier noch nicht am Gerät geprüft.']
+    lines+=['',tr(32488),
+            tr(32489),
+            tr(32490)]
     return '\n'.join(lines)
