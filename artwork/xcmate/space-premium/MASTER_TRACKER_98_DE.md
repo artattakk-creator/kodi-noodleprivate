@@ -2,10 +2,10 @@
 
 **19.10.2026 – EIN optionales Space-Premium-Design, KEINE eigenständigen Grafiksets.**
 
-- **36 freigegeben:** Slots 1–36; die zuletzt freigegebenen Positionen 17–36 bleiben unverändert.
-- **14 erstellt, Abnahme offen:** die Mediengrafiken Nr. 37–50.
-- **48 noch offen:** Nr. 51–98.
-- Alle 50 verfügbaren Dateien sind reine Theme-Assets – **keine Integration in XCMate Core 0.1.27** und keine automatischen Downloads.
+- **60 freigegeben:** Slots 1–60; alle Originale bleiben unverändert archiviert.
+- **0 Entwürfe mit offener Abnahme.**
+- **38 noch offen:** Nr. 61–98.
+- Alle 60 verfügbaren Dateien sind reine Theme-Assets – **keine Integration in XCMate Core 0.1.27** und keine automatischen Downloads.
 - Revisionen versionieren: Originale und SHA-256 erhalten.
 
 **Masterordner Google Drive:** https://drive.google.com/drive/folders/1UPA7fLKIq21GkA4NzAPEVfLp2BvSpm3y
@@ -17,12 +17,12 @@
 | Branding | 4 | 4 | 0 | 0 |
 | Hauptmenü | 12 | 12 | 0 | 0 |
 | Einstellungen | 20 | 20 | 0 | 0 |
-| Filme/Serien | 14 | 0 | 14 | 0 |
-| EPG | 12 | 0 | 0 | 12 |
+| Filme/Serien | 14 | 14 | 0 | 0 |
+| EPG | 12 | 10 | 0 | 2 |
 | Player/Fernbedienung | 16 | 0 | 0 | 16 |
 | Suche/Navigation | 16 | 0 | 0 | 16 |
 | Widgets | 4 | 0 | 0 | 4 |
-| **Gesamt** | **98** | **36** | **14** | **48** |
+| **Gesamt** | **98** | **60** | **0** | **38** |
 
 ## Alle 98 Positionen
 
@@ -64,30 +64,30 @@
 | 34 | `settings/bg-maintenance.jpg` | ✓ Freigegeben · archiviert, nicht integriert |
 | 35 | `settings/icon-about.png` | ✓ Freigegeben · archiviert, nicht integriert |
 | 36 | `settings/bg-about.jpg` | ✓ Freigegeben · archiviert, nicht integriert |
-| 37 | `media/icon-play.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 38 | `media/icon-restart.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 39 | `media/icon-resume.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 40 | `media/icon-favorite-add.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 41 | `media/icon-favorite-remove.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 42 | `media/icon-trailer.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 43 | `media/icon-seasons.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 44 | `media/icon-episodes.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 45 | `media/placeholder-movie-poster.jpg` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 46 | `media/placeholder-series-poster.jpg` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 47 | `media/placeholder-movie-backdrop.jpg` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 48 | `media/placeholder-series-backdrop.jpg` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 49 | `media/rail-gradient.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 50 | `media/poster-shade.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 51 | `epg/icon-today.png` | ○ Noch zu erstellen |
-| 52 | `epg/icon-day-prev.png` | ○ Noch zu erstellen |
-| 53 | `epg/icon-day-next.png` | ○ Noch zu erstellen |
-| 54 | `epg/icon-remind.png` | ○ Noch zu erstellen |
-| 55 | `epg/icon-auto-switch.png` | ○ Noch zu erstellen |
-| 56 | `epg/icon-record.png` | ○ Noch zu erstellen |
-| 57 | `epg/icon-channels.png` | ○ Noch zu erstellen |
-| 58 | `epg/icon-clock.png` | ○ Noch zu erstellen |
-| 59 | `epg/bg-guide.jpg` | ○ Noch zu erstellen |
-| 60 | `epg/bg-detail.jpg` | ○ Noch zu erstellen |
+| 37 | `media/icon-play.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 38 | `media/icon-restart.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 39 | `media/icon-resume.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 40 | `media/icon-favorite-add.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 41 | `media/icon-favorite-remove.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 42 | `media/icon-trailer.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 43 | `media/icon-seasons.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 44 | `media/icon-episodes.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 45 | `media/placeholder-movie-poster.jpg` | ✓ Freigegeben · archiviert, nicht integriert |
+| 46 | `media/placeholder-series-poster.jpg` | ✓ Freigegeben · archiviert, nicht integriert |
+| 47 | `media/placeholder-movie-backdrop.jpg` | ✓ Freigegeben · archiviert, nicht integriert |
+| 48 | `media/placeholder-series-backdrop.jpg` | ✓ Freigegeben · archiviert, nicht integriert |
+| 49 | `media/rail-gradient.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 50 | `media/poster-shade.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 51 | `epg/icon-today.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 52 | `epg/icon-day-prev.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 53 | `epg/icon-day-next.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 54 | `epg/icon-remind.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 55 | `epg/icon-auto-switch.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 56 | `epg/icon-record.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 57 | `epg/icon-channels.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 58 | `epg/icon-clock.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 59 | `epg/bg-guide.jpg` | ✓ Freigegeben · archiviert, nicht integriert |
+| 60 | `epg/bg-detail.jpg` | ✓ Freigegeben · archiviert, nicht integriert |
 | 61 | `epg/no-data.png` | ○ Noch zu erstellen |
 | 62 | `epg/source-error.png` | ○ Noch zu erstellen |
 | 63 | `player/icon-play.png` | ○ Noch zu erstellen |
@@ -129,8 +129,15 @@
 
 ## Technische Vorgaben
 
-- Master-Slots 1–50 liegen in eigenständigen Kategorie-Unterordnern; vorhandene Branding-/Home-/Settings-Dateien bleiben unverändert.
+- Master-Slots 1–60 liegen in eigenständigen Kategorie-Unterordnern; vorhandene Branding-/Home-/Settings-Dateien bleiben unverändert.
 - PNG-Icons haben echte Transparenz, Film-/Serienposter 600×900, Backdrops 1920×1080, Rail 1920×280 RGBA, Poster-Schatten 600×900 RGBA.
 - UI-Deckkraft/Farben/Fonts kommen später über den optionalen Skinbereich (GitHub Issue #31).
 - Optionales Theme und Lightweight Core gemäß Issue #30; nichts automatisch nach `main` mergen.
-- Alle Mediengrafiken 37–50 benötigen noch ausdrückliche Nutzerfreigabe.
+- Die Mediengrafiken 37–50 sowie EPG-Grafiken 51–60 sind vom Nutzer am 19.10.2026 freigegeben; 61–62 bleiben offen. Keine produktive Integration.
+
+## Freigaben 19.10.2026
+
+- **37–50 (Media):** Nutzerfreigabe erteilt; bereits archivierte Originale unverändert.
+- **51–60 (EPG):** Nutzerfreigabe erteilt; acht 256×256-RGBA-Icons und zwei 1920×1080-JPG-Hintergründe. Die Quelldateien liegen zusätzlich im Versionsarchiv.
+- Neues Kontaktblatt JPG/PDF sowie SHA-256-/Assetmanifest: `epg/`.
+- **Offen:** 61–98. Der Kodi-Core bleibt unverändert, kein Merge nach `main`.

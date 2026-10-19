@@ -1,0 +1,171 @@
+{
+  "project": "XCMate",
+  "theme": "Space Premium",
+  "master_count": 98,
+  "slots": "51–60",
+  "approval": "approved_by_user_2026-10-19",
+  "runtime_integrated": false,
+  "image_export_note": "Icons 256x256 RGBA; backgrounds 1920x1080 RGB JPEG; generated original sources preserved",
+  "assets": [
+    {
+      "slot": 51,
+      "path": "epg/icon-today.png",
+      "name": "icon-today.png",
+      "label": "Heute",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 69023,
+      "sha256": "ce3839ede71f25cceb3aa1d4d52db63c5902cec45700718a05cfa8d4370c9af5",
+      "status": "approved_not_integrated",
+      "source_filename": "51_a_high_resolution_glossy_futuristic_sci_fi_icon_g_1_batch_1.png",
+      "source_sha256": "a4545965fc78ffa6cfa280d6c52ec346e970752cc48042aa711fb0ae83b9a2c1"
+    },
+    {
+      "slot": 52,
+      "path": "epg/icon-day-prev.png",
+      "name": "icon-day-prev.png",
+      "label": "Vorheriger Tag",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 84250,
+      "sha256": "1a7be34f1ef3f8fb82dd3298014a6216f0f1fa3926fa29bfdea232d543cabb28",
+      "status": "approved_not_integrated",
+      "source_filename": "52_a_clean_high_resolution_futuristic_neon_sci_fi_ic_2_batch_2.png",
+      "source_sha256": "a54925613ebe95de714777b61330d23042804e1ffdf3d0c1f4bc2b7d7b8a7a56"
+    },
+    {
+      "slot": 53,
+      "path": "epg/icon-day-next.png",
+      "name": "icon-day-next.png",
+      "label": "Nächster Tag",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 76047,
+      "sha256": "bb017efbc81bc984455f56f9e1af4d2bfa1aa523ae849c67afc491924542165b",
+      "status": "approved_not_integrated",
+      "source_filename": "53_a_clean_high_resolution_sci_fi_neon_icon_illustra_3_batch_3.png",
+      "source_sha256": "775495af27986526bc4697b4f4be4a72d7e7a69ecee303b3fe0e08da8c7c9e79"
+    },
+    {
+      "slot": 54,
+      "path": "epg/icon-remind.png",
+      "name": "icon-remind.png",
+      "label": "Erinnerung",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 76595,
+      "sha256": "b42a9ce995ae0d005f39eaee612c70f2e5bc86eee8f3662e7ab85560874d7b25",
+      "status": "approved_not_integrated",
+      "source_filename": "54_a_highly_polished_3d_cgi_style_icon_on_a_transpare_4_batch_4.png",
+      "source_sha256": "08fd8d75387479d9e57c50815813a6867ac077b32909cee49709c71be1a3e4f0"
+    },
+    {
+      "slot": 55,
+      "path": "epg/icon-auto-switch.png",
+      "name": "icon-auto-switch.png",
+      "label": "Autom. Umschalten",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 66090,
+      "sha256": "fdd7711a827a852a22a34083ca1cc0c2a6e546e8d36d142d16ce3b43786ffd2f",
+      "status": "approved_not_integrated",
+      "source_filename": "55_a_high_resolution_ultra_polished_sci_fi_futuri_5_batch_5.png",
+      "source_sha256": "bc0844e6293334f674caac3b4655e743927d74f7340f5dfe6a6972136aa11f91"
+    },
+    {
+      "slot": 56,
+      "path": "epg/icon-record.png",
+      "name": "icon-record.png",
+      "label": "Aufnahme",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 75517,
+      "sha256": "ff09cf8d37c87d3e18b20cf73fa716a6777c02f6646c9600f168df6f717fb573",
+      "status": "approved_not_integrated",
+      "source_filename": "56_a_high_resolution_sci_fi_record_rec_button_i_6_batch_6.png",
+      "source_sha256": "726b036db0b142a55dc191e07fb6f82e3b5f0fa30984d57964eb15a003815b0f"
+    },
+    {
+      "slot": 57,
+      "path": "epg/icon-channels.png",
+      "name": "icon-channels.png",
+      "label": "Senderübersicht",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 94380,
+      "sha256": "192020e8e3b20ae23540686a06a4289ce71d77cb9e3ba8533374c4632e929516",
+      "status": "approved_not_integrated",
+      "source_filename": "57_a_high_resolution_glossy_sci_fi_ui_icon_illustrati_7_batch_7.png",
+      "source_sha256": "9972459b1223d0b9b02c4e45d7db5d02480dc843bff276df87ccb5d0a7ab3d0e"
+    },
+    {
+      "slot": 58,
+      "path": "epg/icon-clock.png",
+      "name": "icon-clock.png",
+      "label": "Uhrzeit",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 85790,
+      "sha256": "d1ae559da39c40f182c17db4017d13979e807ca90ff621508a74d1beb701279c",
+      "status": "approved_not_integrated",
+      "source_filename": "58_a_high_detail_sci_fi_space_themed_digital_icon_sty_8_batch_8.png",
+      "source_sha256": "d0c74ff7ef7df1f8b938cdb04c71fc066003962c31a3812f95a46fbffa7125b6"
+    },
+    {
+      "slot": 59,
+      "path": "epg/bg-guide.jpg",
+      "name": "bg-guide.jpg",
+      "label": "EPG-Übersicht",
+      "size_px": [
+        1920,
+        1080
+      ],
+      "mode": "RGB",
+      "size_bytes": 512257,
+      "sha256": "3f41c5192f4d01526cb3e9e8e0076ed668a0675faa70046ba9886f7444c41ad0",
+      "status": "approved_not_integrated",
+      "source_filename": "59_wide_cinematic_sci_fi_space_background_and_ui_styl_9_batch_9.png",
+      "source_sha256": "0b456abadecd6c01d85bff2dad990398656d5ea18823cd39eaefc1ad02084636"
+    },
+    {
+      "slot": 60,
+      "path": "epg/bg-detail.jpg",
+      "name": "bg-detail.jpg",
+      "label": "EPG-Details",
+      "size_px": [
+        1920,
+        1080
+      ],
+      "mode": "RGB",
+      "size_bytes": 594373,
+      "sha256": "dfe878ef84336f45514ec42fe3bd56472286ee67c1180d3aca393842a04c2f2c",
+      "status": "approved_not_integrated",
+      "source_filename": "60_a_cinematic_sci_fi_space_interior_observation_scen_10_batch_10.png",
+      "source_sha256": "6e392cdf0465933c051ffeffa6530b8ab307a72489a5024c39a9b3ff872d440e"
+    }
+  ]
+}

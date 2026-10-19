@@ -4,11 +4,11 @@
   "theme": "space-premium",
   "canonical_drive_folder": "https://drive.google.com/drive/folders/1UPA7fLKIq21GkA4NzAPEVfLp2BvSpm3y",
   "target": 98,
-  "archive_present": 50,
-  "approved": 36,
-  "pending_approval": 14,
-  "remaining_unproduced": 48,
-  "note": "ONE optional Space Premium 98-slot theme. Slots 1-36 approved, 37-50 generated pending visual approval, 51-98 unproduced. No runtime integration. Previously approved originals retained.",
+  "archive_present": 60,
+  "approved": 60,
+  "pending_approval": 0,
+  "remaining_unproduced": 38,
+  "note": "ONE optional Space Premium 98-slot theme. Slots 1–60 approved, 61–98 not produced. No runtime integration. Originals and SHA preserved.",
   "slots": [
     {
       "slot": 1,
@@ -356,207 +356,311 @@
       "slot": 37,
       "path": "media/icon-play.png",
       "category": "media",
-      "status": "generated_pending_visual_approval_not_integrated",
+      "status": "archived_approved_not_integrated",
       "sha256": "2bde3373cf65311f19a28a58b4de0b3afdf8e395cdb6a851554827eaaa0cdc87",
       "source_batch_reference": "media-slots-37-50-2026-10-19",
-      "note": "Created and archived on Google Drive/GitHub. Pending user visual approval. No Kodi runtime integration."
+      "note": "Approved; archived source unchanged. Not part of Kodi runtime.",
+      "approval_note": "User approved on 2026-10-19; original assets and SHA retained, no runtime integration."
     },
     {
       "slot": 38,
       "path": "media/icon-restart.png",
       "category": "media",
-      "status": "generated_pending_visual_approval_not_integrated",
+      "status": "archived_approved_not_integrated",
       "sha256": "a8d797b6ff709158731d35b1cd40243eb8b12ba75d15538c9183354de6a476c6",
       "source_batch_reference": "media-slots-37-50-2026-10-19",
-      "note": "Created and archived on Google Drive/GitHub. Pending user visual approval. No Kodi runtime integration."
+      "note": "Approved; archived source unchanged. Not part of Kodi runtime.",
+      "approval_note": "User approved on 2026-10-19; original assets and SHA retained, no runtime integration."
     },
     {
       "slot": 39,
       "path": "media/icon-resume.png",
       "category": "media",
-      "status": "generated_pending_visual_approval_not_integrated",
+      "status": "archived_approved_not_integrated",
       "sha256": "21db7468b6aa74bdb1d7b035577b1fed01b8216b121f73b4e4036af0d9ddd503",
       "source_batch_reference": "media-slots-37-50-2026-10-19",
-      "note": "Created and archived on Google Drive/GitHub. Pending user visual approval. No Kodi runtime integration."
+      "note": "Approved; archived source unchanged. Not part of Kodi runtime.",
+      "approval_note": "User approved on 2026-10-19; original assets and SHA retained, no runtime integration."
     },
     {
       "slot": 40,
       "path": "media/icon-favorite-add.png",
       "category": "media",
-      "status": "generated_pending_visual_approval_not_integrated",
+      "status": "archived_approved_not_integrated",
       "sha256": "360e98cbb8cbb4c0059c9366808dd0e87806c077587588b5229500689fba6eea",
       "source_batch_reference": "media-slots-37-50-2026-10-19",
-      "note": "Created and archived on Google Drive/GitHub. Pending user visual approval. No Kodi runtime integration."
+      "note": "Approved; archived source unchanged. Not part of Kodi runtime.",
+      "approval_note": "User approved on 2026-10-19; original assets and SHA retained, no runtime integration."
     },
     {
       "slot": 41,
       "path": "media/icon-favorite-remove.png",
       "category": "media",
-      "status": "generated_pending_visual_approval_not_integrated",
+      "status": "archived_approved_not_integrated",
       "sha256": "547ba5d3aa34198a8b62336db99ca9ef1999876832ffd8b197fc747e3abea887",
       "source_batch_reference": "media-slots-37-50-2026-10-19",
-      "note": "Created and archived on Google Drive/GitHub. Pending user visual approval. No Kodi runtime integration."
+      "note": "Approved; archived source unchanged. Not part of Kodi runtime.",
+      "approval_note": "User approved on 2026-10-19; original assets and SHA retained, no runtime integration."
     },
     {
       "slot": 42,
       "path": "media/icon-trailer.png",
       "category": "media",
-      "status": "generated_pending_visual_approval_not_integrated",
+      "status": "archived_approved_not_integrated",
       "sha256": "9768048f0fd3f6bd3256ac726d13c9deb37c1cb45a7837aef18dad5cc760b829",
       "source_batch_reference": "media-slots-37-50-2026-10-19",
-      "note": "Created and archived on Google Drive/GitHub. Pending user visual approval. No Kodi runtime integration."
+      "note": "Approved; archived source unchanged. Not part of Kodi runtime.",
+      "approval_note": "User approved on 2026-10-19; original assets and SHA retained, no runtime integration."
     },
     {
       "slot": 43,
       "path": "media/icon-seasons.png",
       "category": "media",
-      "status": "generated_pending_visual_approval_not_integrated",
+      "status": "archived_approved_not_integrated",
       "sha256": "b0ef1f5fe3f56f192696605e3e3915961a01e4a1139b186c95c3fa2aa6cd532a",
       "source_batch_reference": "media-slots-37-50-2026-10-19",
-      "note": "Created and archived on Google Drive/GitHub. Pending user visual approval. No Kodi runtime integration."
+      "note": "Approved; archived source unchanged. Not part of Kodi runtime.",
+      "approval_note": "User approved on 2026-10-19; original assets and SHA retained, no runtime integration."
     },
     {
       "slot": 44,
       "path": "media/icon-episodes.png",
       "category": "media",
-      "status": "generated_pending_visual_approval_not_integrated",
+      "status": "archived_approved_not_integrated",
       "sha256": "901894d103017ac44a72bb20c579b7cefb7b01cbdcfe847a8e9ef457e647d111",
       "source_batch_reference": "media-slots-37-50-2026-10-19",
-      "note": "Created and archived on Google Drive/GitHub. Pending user visual approval. No Kodi runtime integration."
+      "note": "Approved; archived source unchanged. Not part of Kodi runtime.",
+      "approval_note": "User approved on 2026-10-19; original assets and SHA retained, no runtime integration."
     },
     {
       "slot": 45,
       "path": "media/placeholder-movie-poster.jpg",
       "category": "media",
-      "status": "generated_pending_visual_approval_not_integrated",
+      "status": "archived_approved_not_integrated",
       "sha256": "85fd3a849d88f087473808d38fca197f2f7e4ab802687865e8ab0254efe30984",
       "source_batch_reference": "media-slots-37-50-2026-10-19",
-      "note": "Created and archived on Google Drive/GitHub. Pending user visual approval. No Kodi runtime integration."
+      "note": "Approved; archived source unchanged. Not part of Kodi runtime.",
+      "approval_note": "User approved on 2026-10-19; original assets and SHA retained, no runtime integration."
     },
     {
       "slot": 46,
       "path": "media/placeholder-series-poster.jpg",
       "category": "media",
-      "status": "generated_pending_visual_approval_not_integrated",
+      "status": "archived_approved_not_integrated",
       "sha256": "4c8f89be2c90e7ce5603e1f8015c4e0f4261a8651488b0504a24cd39b58f8aca",
       "source_batch_reference": "media-slots-37-50-2026-10-19",
-      "note": "Created and archived on Google Drive/GitHub. Pending user visual approval. No Kodi runtime integration."
+      "note": "Approved; archived source unchanged. Not part of Kodi runtime.",
+      "approval_note": "User approved on 2026-10-19; original assets and SHA retained, no runtime integration."
     },
     {
       "slot": 47,
       "path": "media/placeholder-movie-backdrop.jpg",
       "category": "media",
-      "status": "generated_pending_visual_approval_not_integrated",
+      "status": "archived_approved_not_integrated",
       "sha256": "a80f2feb5a6e7941cd39a6ed05c37176186b03d262ebe69e91d0e756482316a6",
       "source_batch_reference": "media-slots-37-50-2026-10-19",
-      "note": "Created and archived on Google Drive/GitHub. Pending user visual approval. No Kodi runtime integration."
+      "note": "Approved; archived source unchanged. Not part of Kodi runtime.",
+      "approval_note": "User approved on 2026-10-19; original assets and SHA retained, no runtime integration."
     },
     {
       "slot": 48,
       "path": "media/placeholder-series-backdrop.jpg",
       "category": "media",
-      "status": "generated_pending_visual_approval_not_integrated",
+      "status": "archived_approved_not_integrated",
       "sha256": "60d1a03e8ca62043561fa5360cf338820ba2a499d15c37f850b9ddb3b6916e0a",
       "source_batch_reference": "media-slots-37-50-2026-10-19",
-      "note": "Created and archived on Google Drive/GitHub. Pending user visual approval. No Kodi runtime integration."
+      "note": "Approved; archived source unchanged. Not part of Kodi runtime.",
+      "approval_note": "User approved on 2026-10-19; original assets and SHA retained, no runtime integration."
     },
     {
       "slot": 49,
       "path": "media/rail-gradient.png",
       "category": "media",
-      "status": "generated_pending_visual_approval_not_integrated",
+      "status": "archived_approved_not_integrated",
       "sha256": "4209e0f1fe2f76544f8553954e5d8259541959cdec7a0ba8a4d32708364ac0f5",
       "source_batch_reference": "media-slots-37-50-2026-10-19",
-      "note": "Created and archived on Google Drive/GitHub. Pending user visual approval. No Kodi runtime integration."
+      "note": "Approved; archived source unchanged. Not part of Kodi runtime.",
+      "approval_note": "User approved on 2026-10-19; original assets and SHA retained, no runtime integration."
     },
     {
       "slot": 50,
       "path": "media/poster-shade.png",
       "category": "media",
-      "status": "generated_pending_visual_approval_not_integrated",
+      "status": "archived_approved_not_integrated",
       "sha256": "ad04c5f16c44a2e471b6f88792d572967174fa492d3756431c938bbd68e76f82",
       "source_batch_reference": "media-slots-37-50-2026-10-19",
-      "note": "Created and archived on Google Drive/GitHub. Pending user visual approval. No Kodi runtime integration."
+      "note": "Approved; archived source unchanged. Not part of Kodi runtime.",
+      "approval_note": "User approved on 2026-10-19; original assets and SHA retained, no runtime integration."
     },
     {
       "slot": 51,
       "path": "epg/icon-today.png",
       "category": "epg",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "ce3839ede71f25cceb3aa1d4d52db63c5902cec45700718a05cfa8d4370c9af5",
+      "source_batch_reference": "epg-slots-51-60-2026-10-19",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 69023,
+      "source_sha256": "a4545965fc78ffa6cfa280d6c52ec346e970752cc48042aa711fb0ae83b9a2c1",
+      "source_filename": "51_a_high_resolution_glossy_futuristic_sci_fi_icon_g_1_batch_1.png",
+      "approval_note": "User approved 2026-10-19; separated optional theme; no Core installation or automatic download."
     },
     {
       "slot": 52,
       "path": "epg/icon-day-prev.png",
       "category": "epg",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "1a7be34f1ef3f8fb82dd3298014a6216f0f1fa3926fa29bfdea232d543cabb28",
+      "source_batch_reference": "epg-slots-51-60-2026-10-19",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 84250,
+      "source_sha256": "a54925613ebe95de714777b61330d23042804e1ffdf3d0c1f4bc2b7d7b8a7a56",
+      "source_filename": "52_a_clean_high_resolution_futuristic_neon_sci_fi_ic_2_batch_2.png",
+      "approval_note": "User approved 2026-10-19; separated optional theme; no Core installation or automatic download."
     },
     {
       "slot": 53,
       "path": "epg/icon-day-next.png",
       "category": "epg",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "bb017efbc81bc984455f56f9e1af4d2bfa1aa523ae849c67afc491924542165b",
+      "source_batch_reference": "epg-slots-51-60-2026-10-19",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 76047,
+      "source_sha256": "775495af27986526bc4697b4f4be4a72d7e7a69ecee303b3fe0e08da8c7c9e79",
+      "source_filename": "53_a_clean_high_resolution_sci_fi_neon_icon_illustra_3_batch_3.png",
+      "approval_note": "User approved 2026-10-19; separated optional theme; no Core installation or automatic download."
     },
     {
       "slot": 54,
       "path": "epg/icon-remind.png",
       "category": "epg",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "b42a9ce995ae0d005f39eaee612c70f2e5bc86eee8f3662e7ab85560874d7b25",
+      "source_batch_reference": "epg-slots-51-60-2026-10-19",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 76595,
+      "source_sha256": "08fd8d75387479d9e57c50815813a6867ac077b32909cee49709c71be1a3e4f0",
+      "source_filename": "54_a_highly_polished_3d_cgi_style_icon_on_a_transpare_4_batch_4.png",
+      "approval_note": "User approved 2026-10-19; separated optional theme; no Core installation or automatic download."
     },
     {
       "slot": 55,
       "path": "epg/icon-auto-switch.png",
       "category": "epg",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "fdd7711a827a852a22a34083ca1cc0c2a6e546e8d36d142d16ce3b43786ffd2f",
+      "source_batch_reference": "epg-slots-51-60-2026-10-19",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 66090,
+      "source_sha256": "bc0844e6293334f674caac3b4655e743927d74f7340f5dfe6a6972136aa11f91",
+      "source_filename": "55_a_high_resolution_ultra_polished_sci_fi_futuri_5_batch_5.png",
+      "approval_note": "User approved 2026-10-19; separated optional theme; no Core installation or automatic download."
     },
     {
       "slot": 56,
       "path": "epg/icon-record.png",
       "category": "epg",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "ff09cf8d37c87d3e18b20cf73fa716a6777c02f6646c9600f168df6f717fb573",
+      "source_batch_reference": "epg-slots-51-60-2026-10-19",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 75517,
+      "source_sha256": "726b036db0b142a55dc191e07fb6f82e3b5f0fa30984d57964eb15a003815b0f",
+      "source_filename": "56_a_high_resolution_sci_fi_record_rec_button_i_6_batch_6.png",
+      "approval_note": "User approved 2026-10-19; separated optional theme; no Core installation or automatic download."
     },
     {
       "slot": 57,
       "path": "epg/icon-channels.png",
       "category": "epg",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "192020e8e3b20ae23540686a06a4289ce71d77cb9e3ba8533374c4632e929516",
+      "source_batch_reference": "epg-slots-51-60-2026-10-19",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 94380,
+      "source_sha256": "9972459b1223d0b9b02c4e45d7db5d02480dc843bff276df87ccb5d0a7ab3d0e",
+      "source_filename": "57_a_high_resolution_glossy_sci_fi_ui_icon_illustrati_7_batch_7.png",
+      "approval_note": "User approved 2026-10-19; separated optional theme; no Core installation or automatic download."
     },
     {
       "slot": 58,
       "path": "epg/icon-clock.png",
       "category": "epg",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "d1ae559da39c40f182c17db4017d13979e807ca90ff621508a74d1beb701279c",
+      "source_batch_reference": "epg-slots-51-60-2026-10-19",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 85790,
+      "source_sha256": "d0c74ff7ef7df1f8b938cdb04c71fc066003962c31a3812f95a46fbffa7125b6",
+      "source_filename": "58_a_high_detail_sci_fi_space_themed_digital_icon_sty_8_batch_8.png",
+      "approval_note": "User approved 2026-10-19; separated optional theme; no Core installation or automatic download."
     },
     {
       "slot": 59,
       "path": "epg/bg-guide.jpg",
       "category": "epg",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "3f41c5192f4d01526cb3e9e8e0076ed668a0675faa70046ba9886f7444c41ad0",
+      "source_batch_reference": "epg-slots-51-60-2026-10-19",
+      "size_px": [
+        1920,
+        1080
+      ],
+      "mode": "RGB",
+      "size_bytes": 512257,
+      "source_sha256": "0b456abadecd6c01d85bff2dad990398656d5ea18823cd39eaefc1ad02084636",
+      "source_filename": "59_wide_cinematic_sci_fi_space_background_and_ui_styl_9_batch_9.png",
+      "approval_note": "User approved 2026-10-19; separated optional theme; no Core installation or automatic download."
     },
     {
       "slot": 60,
       "path": "epg/bg-detail.jpg",
       "category": "epg",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "dfe878ef84336f45514ec42fe3bd56472286ee67c1180d3aca393842a04c2f2c",
+      "source_batch_reference": "epg-slots-51-60-2026-10-19",
+      "size_px": [
+        1920,
+        1080
+      ],
+      "mode": "RGB",
+      "size_bytes": 594373,
+      "source_sha256": "6e392cdf0465933c051ffeffa6530b8ab307a72489a5024c39a9b3ff872d440e",
+      "source_filename": "60_a_cinematic_sci_fi_space_interior_observation_scen_10_batch_10.png",
+      "approval_note": "User approved 2026-10-19; separated optional theme; no Core installation or automatic download."
     },
     {
       "slot": 61,
@@ -875,6 +979,18 @@
       "slots": "17-36",
       "outcome": "approved",
       "constraint": "20 existing settings assets approved by user, no overwrites or runtime integration"
+    },
+    {
+      "date": "2026-10-19",
+      "slots": "37-50",
+      "outcome": "approved",
+      "constraint": "Media artwork previously created and archived; unchanged sources; not integrated."
+    },
+    {
+      "date": "2026-10-19",
+      "slots": "51-60",
+      "outcome": "approved",
+      "constraint": "10 EPG assets user approved. Original image generations preserved. No Kodi runtime integration."
     }
   ],
   "runtime_release_version": "0.1.27",
@@ -891,9 +1007,17 @@
       "date": "2026-10-19",
       "slots": "37-50",
       "created": 14,
-      "approval": "pending",
+      "approval": "approved",
       "drive_folder": "https://drive.google.com/drive/folders/1FnYj4u1E0fTA1GYwGkRoKwTLwAwH0VrO",
       "archive": "XCMate_Space_Premium_Medien_37-50.zip"
+    },
+    {
+      "date": "2026-10-19",
+      "slots": "51-60",
+      "created": 10,
+      "approval": "approved",
+      "drive_folder": "https://drive.google.com/drive/folders/1Cg1x9AyT985hQ3tVgGkiU1iOSHQGWHsA",
+      "archive": "XCMate_Space_Premium_EPG_51-60.zip"
     }
   ]
 }
