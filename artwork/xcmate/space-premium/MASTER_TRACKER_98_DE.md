@@ -1,12 +1,12 @@
-# XCMate Space Premium – VERBINDLICHE 98er-Masterliste
+# XCMate Space Premium – verbindliche 98er-Masterliste
 
-**Stand: 19.10.2026 – genau EIN optionales Space-Premium-Design; keine neuen unabhängigen Grafiksets.**
+**19.10.2026 – EIN optionales Space-Premium-Design, KEINE eigenständigen Grafiksets.**
 
-- **98 Grafikpositionen insgesamt** – 16 freigegeben, 20 neue Entwürfe zur Sichtabnahme, 62 noch zu erstellen.
-- **Positionen 1–16 bleiben unverändert** (16 bestätigt freigegeben).
-- **Positionen 17–36:** zehn Einstellungs-Icons und zehn Hintergründe fertig exportiert, **noch nicht vom Nutzer abgenommen**.
-- Alle Versionen lassen sich später ändern; alte Originale und SHA-256 archiviert halten.
-- Space Premium ist optional gemäß GitHub-Issue #30. Keine Assets automatisch in den produktiven XCMate-0.1.27-Core integrieren.
+- **36 freigegeben:** Slots 1–36; die zuletzt freigegebenen Positionen 17–36 bleiben unverändert.
+- **14 erstellt, Abnahme offen:** die Mediengrafiken Nr. 37–50.
+- **48 noch offen:** Nr. 51–98.
+- Alle 50 verfügbaren Dateien sind reine Theme-Assets – **keine Integration in XCMate Core 0.1.27** und keine automatischen Downloads.
+- Revisionen versionieren: Originale und SHA-256 erhalten.
 
 **Masterordner Google Drive:** https://drive.google.com/drive/folders/1UPA7fLKIq21GkA4NzAPEVfLp2BvSpm3y
 
@@ -16,13 +16,13 @@
 |---|---:|---:|---:|---:|
 | Branding | 4 | 4 | 0 | 0 |
 | Hauptmenü | 12 | 12 | 0 | 0 |
-| Einstellungen | 20 | 0 | 20 | 0 |
-| Filme/Serien | 14 | 0 | 0 | 14 |
+| Einstellungen | 20 | 20 | 0 | 0 |
+| Filme/Serien | 14 | 0 | 14 | 0 |
 | EPG | 12 | 0 | 0 | 12 |
 | Player/Fernbedienung | 16 | 0 | 0 | 16 |
 | Suche/Navigation | 16 | 0 | 0 | 16 |
 | Widgets | 4 | 0 | 0 | 4 |
-| **Gesamt** | **98** | **16** | **20** | **62** |
+| **Gesamt** | **98** | **36** | **14** | **48** |
 
 ## Alle 98 Positionen
 
@@ -44,40 +44,40 @@
 | 14 | `home/bg-movies.jpg` | ✓ Freigegeben · archiviert, nicht integriert |
 | 15 | `home/bg-series.jpg` | ✓ Freigegeben · archiviert, nicht integriert |
 | 16 | `home/bg-settings.jpg` | ✓ Freigegeben · archiviert, nicht integriert |
-| 17 | `settings/icon-accounts.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 18 | `settings/bg-accounts.jpg` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 19 | `settings/icon-start-channel.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 20 | `settings/bg-start-channel.jpg` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 21 | `settings/icon-epg.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 22 | `settings/bg-epg.jpg` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 23 | `settings/icon-groups.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 24 | `settings/bg-groups.jpg` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 25 | `settings/icon-remote.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 26 | `settings/bg-remote.jpg` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 27 | `settings/icon-player.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 28 | `settings/bg-player.jpg` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 29 | `settings/icon-recordings.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 30 | `settings/bg-recordings.jpg` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 31 | `settings/icon-appearance.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 32 | `settings/bg-appearance.jpg` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 33 | `settings/icon-maintenance.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 34 | `settings/bg-maintenance.jpg` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 35 | `settings/icon-about.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 36 | `settings/bg-about.jpg` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
-| 37 | `media/icon-play.png` | ○ Noch zu erstellen |
-| 38 | `media/icon-restart.png` | ○ Noch zu erstellen |
-| 39 | `media/icon-resume.png` | ○ Noch zu erstellen |
-| 40 | `media/icon-favorite-add.png` | ○ Noch zu erstellen |
-| 41 | `media/icon-favorite-remove.png` | ○ Noch zu erstellen |
-| 42 | `media/icon-trailer.png` | ○ Noch zu erstellen |
-| 43 | `media/icon-seasons.png` | ○ Noch zu erstellen |
-| 44 | `media/icon-episodes.png` | ○ Noch zu erstellen |
-| 45 | `media/placeholder-movie-poster.jpg` | ○ Noch zu erstellen |
-| 46 | `media/placeholder-series-poster.jpg` | ○ Noch zu erstellen |
-| 47 | `media/placeholder-movie-backdrop.jpg` | ○ Noch zu erstellen |
-| 48 | `media/placeholder-series-backdrop.jpg` | ○ Noch zu erstellen |
-| 49 | `media/rail-gradient.png` | ○ Noch zu erstellen |
-| 50 | `media/poster-shade.png` | ○ Noch zu erstellen |
+| 17 | `settings/icon-accounts.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 18 | `settings/bg-accounts.jpg` | ✓ Freigegeben · archiviert, nicht integriert |
+| 19 | `settings/icon-start-channel.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 20 | `settings/bg-start-channel.jpg` | ✓ Freigegeben · archiviert, nicht integriert |
+| 21 | `settings/icon-epg.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 22 | `settings/bg-epg.jpg` | ✓ Freigegeben · archiviert, nicht integriert |
+| 23 | `settings/icon-groups.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 24 | `settings/bg-groups.jpg` | ✓ Freigegeben · archiviert, nicht integriert |
+| 25 | `settings/icon-remote.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 26 | `settings/bg-remote.jpg` | ✓ Freigegeben · archiviert, nicht integriert |
+| 27 | `settings/icon-player.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 28 | `settings/bg-player.jpg` | ✓ Freigegeben · archiviert, nicht integriert |
+| 29 | `settings/icon-recordings.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 30 | `settings/bg-recordings.jpg` | ✓ Freigegeben · archiviert, nicht integriert |
+| 31 | `settings/icon-appearance.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 32 | `settings/bg-appearance.jpg` | ✓ Freigegeben · archiviert, nicht integriert |
+| 33 | `settings/icon-maintenance.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 34 | `settings/bg-maintenance.jpg` | ✓ Freigegeben · archiviert, nicht integriert |
+| 35 | `settings/icon-about.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 36 | `settings/bg-about.jpg` | ✓ Freigegeben · archiviert, nicht integriert |
+| 37 | `media/icon-play.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
+| 38 | `media/icon-restart.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
+| 39 | `media/icon-resume.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
+| 40 | `media/icon-favorite-add.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
+| 41 | `media/icon-favorite-remove.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
+| 42 | `media/icon-trailer.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
+| 43 | `media/icon-seasons.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
+| 44 | `media/icon-episodes.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
+| 45 | `media/placeholder-movie-poster.jpg` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
+| 46 | `media/placeholder-series-poster.jpg` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
+| 47 | `media/placeholder-movie-backdrop.jpg` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
+| 48 | `media/placeholder-series-backdrop.jpg` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
+| 49 | `media/rail-gradient.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
+| 50 | `media/poster-shade.png` | ◐ ERSTELLT · Sichtabnahme offen, nicht integriert |
 | 51 | `epg/icon-today.png` | ○ Noch zu erstellen |
 | 52 | `epg/icon-day-prev.png` | ○ Noch zu erstellen |
 | 53 | `epg/icon-day-next.png` | ○ Noch zu erstellen |
@@ -127,10 +127,10 @@
 | 97 | `widgets/widget-series-fallback.png` | ○ Noch zu erstellen |
 | 98 | `widgets/widget-header.png` | ○ Noch zu erstellen |
 
-## Technische Regeln
+## Technische Vorgaben
 
-- PNG-Icons: transparenter Hintergrund; JPG-Hintergründe: textfrei 1920×1080, später unabhängig per Kodi-Skin-Deckkraftregelung einstellbar.
-- Alle Grafiken der Kategorie `settings` liegen im zentralen Master-Unterordner `settings/`; keine separate Produkt-Theme-Version erstellen.
-- Echte weitere Erstellung: Position 37 `media/icon-play.png` und anschließend in fortlaufender Reihenfolge.
-- Bei Abnahme nur den Trackerstatus ändern; originale Assetdateien nicht überschreiben.
-- GitHub-Archivierung nur auf Artwork-Branch; Codex-Arbeit und Release-Branch bleiben unberührt.
+- Master-Slots 1–50 liegen in eigenständigen Kategorie-Unterordnern; vorhandene Branding-/Home-/Settings-Dateien bleiben unverändert.
+- PNG-Icons haben echte Transparenz, Film-/Serienposter 600×900, Backdrops 1920×1080, Rail 1920×280 RGBA, Poster-Schatten 600×900 RGBA.
+- UI-Deckkraft/Farben/Fonts kommen später über den optionalen Skinbereich (GitHub Issue #31).
+- Optionales Theme und Lightweight Core gemäß Issue #30; nichts automatisch nach `main` mergen.
+- Alle Mediengrafiken 37–50 benötigen noch ausdrückliche Nutzerfreigabe.

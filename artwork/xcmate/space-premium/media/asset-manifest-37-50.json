@@ -1,0 +1,192 @@
+{
+  "project": "XCMate",
+  "theme": "Space Premium",
+  "master_count": 98,
+  "slots": "37–50",
+  "runtime_integrated": false,
+  "approval": "pending",
+  "assets": [
+    {
+      "slot": 37,
+      "path": "media/icon-play.png",
+      "name": "icon-play.png",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 103668,
+      "sha256": "2bde3373cf65311f19a28a58b4de0b3afdf8e395cdb6a851554827eaaa0cdc87",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 38,
+      "path": "media/icon-restart.png",
+      "name": "icon-restart.png",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 92770,
+      "sha256": "a8d797b6ff709158731d35b1cd40243eb8b12ba75d15538c9183354de6a476c6",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 39,
+      "path": "media/icon-resume.png",
+      "name": "icon-resume.png",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 97815,
+      "sha256": "21db7468b6aa74bdb1d7b035577b1fed01b8216b121f73b4e4036af0d9ddd503",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 40,
+      "path": "media/icon-favorite-add.png",
+      "name": "icon-favorite-add.png",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 76137,
+      "sha256": "360e98cbb8cbb4c0059c9366808dd0e87806c077587588b5229500689fba6eea",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 41,
+      "path": "media/icon-favorite-remove.png",
+      "name": "icon-favorite-remove.png",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 77253,
+      "sha256": "547ba5d3aa34198a8b62336db99ca9ef1999876832ffd8b197fc747e3abea887",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 42,
+      "path": "media/icon-trailer.png",
+      "name": "icon-trailer.png",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 84797,
+      "sha256": "9768048f0fd3f6bd3256ac726d13c9deb37c1cb45a7837aef18dad5cc760b829",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 43,
+      "path": "media/icon-seasons.png",
+      "name": "icon-seasons.png",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 105145,
+      "sha256": "b0ef1f5fe3f56f192696605e3e3915961a01e4a1139b186c95c3fa2aa6cd532a",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 44,
+      "path": "media/icon-episodes.png",
+      "name": "icon-episodes.png",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 69393,
+      "sha256": "901894d103017ac44a72bb20c579b7cefb7b01cbdcfe847a8e9ef457e647d111",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 45,
+      "path": "media/placeholder-movie-poster.jpg",
+      "name": "placeholder-movie-poster.jpg",
+      "size_px": [
+        600,
+        900
+      ],
+      "mode": "RGB",
+      "size_bytes": 181630,
+      "sha256": "85fd3a849d88f087473808d38fca197f2f7e4ab802687865e8ab0254efe30984",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 46,
+      "path": "media/placeholder-series-poster.jpg",
+      "name": "placeholder-series-poster.jpg",
+      "size_px": [
+        600,
+        900
+      ],
+      "mode": "RGB",
+      "size_bytes": 163331,
+      "sha256": "4c8f89be2c90e7ce5603e1f8015c4e0f4261a8651488b0504a24cd39b58f8aca",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 47,
+      "path": "media/placeholder-movie-backdrop.jpg",
+      "name": "placeholder-movie-backdrop.jpg",
+      "size_px": [
+        1920,
+        1080
+      ],
+      "mode": "RGB",
+      "size_bytes": 479741,
+      "sha256": "a80f2feb5a6e7941cd39a6ed05c37176186b03d262ebe69e91d0e756482316a6",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 48,
+      "path": "media/placeholder-series-backdrop.jpg",
+      "name": "placeholder-series-backdrop.jpg",
+      "size_px": [
+        1920,
+        1080
+      ],
+      "mode": "RGB",
+      "size_bytes": 369232,
+      "sha256": "60d1a03e8ca62043561fa5360cf338820ba2a499d15c37f850b9ddb3b6916e0a",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 49,
+      "path": "media/rail-gradient.png",
+      "name": "rail-gradient.png",
+      "size_px": [
+        1920,
+        280
+      ],
+      "mode": "RGBA",
+      "size_bytes": 13506,
+      "sha256": "4209e0f1fe2f76544f8553954e5d8259541959cdec7a0ba8a4d32708364ac0f5",
+      "status": "generated_pending_visual_approval_not_integrated"
+    },
+    {
+      "slot": 50,
+      "path": "media/poster-shade.png",
+      "name": "poster-shade.png",
+      "size_px": [
+        600,
+        900
+      ],
+      "mode": "RGBA",
+      "size_bytes": 3914,
+      "sha256": "ad04c5f16c44a2e471b6f88792d572967174fa492d3756431c938bbd68e76f82",
+      "status": "generated_pending_visual_approval_not_integrated"
+    }
+  ]
+}
