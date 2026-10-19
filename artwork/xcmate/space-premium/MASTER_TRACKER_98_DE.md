@@ -1,117 +1,136 @@
-# XCMate Space Premium — VERBINDLICHER MASTER-TRACKER (98 Slots)
+# XCMate Space Premium – verbindlicher MASTER-Tracker (98 Positionen)
 
-Stand 19.10.2026. **EIN Space-Premium-Design, EIN 98-Slot-Manifest, EIN fortlaufendes Masterarchiv.** Die Namen „Set 01/02“ sind nur bereits vorhandene historische Produktionschargen und **keine neuen Themes/Produktlinien**. Keine weiteren Set-/Designordner für künftige Assets eröffnen.
+**Stand: 19.10.2026 | EIN Design, EIN fortlaufendes Grafiksystem, EIN Masterordner.**
 
-- [**Google Drive – Space Premium MASTER 98**](https://drive.google.com/drive/folders/1UPA7fLKIq21GkA4NzAPEVfLp2BvSpm3y) ist die zentrale Originalablage.
-- 98 logische Slots, nicht zwangsläufig 98 unterschiedliche neue Dateien; vorhandene kompatible Assets später mappingbasiert wiederverwenden.
-- Zurzeit **14/98 archiviert**: 14 freigegebene eigenständige Dateien (4 Branding + 10 Home), 84 Slots noch zu produzieren. Nutzerabnahme der Slots 5–14 am 19.10.2026; Slots 1–4 unverändert erhalten. Kein Asset ist allein durch Archivierung zur Kodi-Integration freigegeben.
-- Dateiname und Bereich sind aus `docs/XCMate/GRAPHICS_V2_ASSET_PLAN_027_DE.md` bindend. Slot nur nach Nutzerentscheidung ersetzen; Bildmaße/SHA-256 im Archivmanifest führen.
-- Arbeitsreihenfolge: **produzieren → Nutzerfreigabe → im MASTER 98 speichern → Hash/Status prüfen → gesonderte Integrationsfreigabe → separater Theme-PR/CI/Android-Test**.
-- Keine Live-TV-/Fernbedienungs-/BINGIE-MOD-Änderung, keine ungefragte Veröffentlichung. 0.1.27 ist der aktuelle Produktivstand. Diese Grafikfreigabe verändert Kodi nicht.
+**[Google-Drive-Masterordner](https://drive.google.com/drive/folders/1UPA7fLKIq21GkA4NzAPEVfLp2BvSpm3y)**
 
-## Slotstatus
+- **98 logische Grafik-Slots sind das feste Ziel**, nicht 98 beliebige neue Pakete. Wiederverwendete Bestandsdateien zählen mit.
+- Keine weiteren getrennten „Sets“ als Produktdesign. Bisherige `Set 01`/`Set 02` sind lediglich historische Produktions-/Quellarchive.
+- Jede neue Grafik bekommt genau einen vorhandenen Slot (Pfad/Dateiname), den Status und nach Prüfung SHA-256. Niemals denselben Slot ungefragt überschreiben.
+- **Abnahmefolge:** generieren → Nutzerfreigabe → Masterarchiv/Hash dokumentieren → separate Integrationsfreigabe → Kodi-/CI-/Gerätetest.
+- Produktivversion `0.1.27` und Titan BINGIE MOD durch reine Grafikfreigabe unverändert. Space Premium bleibt optionales, noch nicht integriertes Theme.
 
-| Nr. | Semantischer Slot | Status |
+**Freigabe 19.10.2026:** Die Positionen **5–14** wurden ausdrücklich abgenommen, weil sie separate Dateien sind. Die Branding-Positionen **1–4 bleiben unverändert und dürfen nicht ersetzt oder gelöscht werden**. Alle 14 Assets behalten separate Hashes; keine technische Theme-Integration freigegeben.
+
+**Entwürfe Nr. 15 und 16 vom 19.10.2026:** Aus unseren vorhandenen, genehmigten Space-Premium-Bildgrundlagen separat abgeleitete 16:9-Kompositionen; 1920×1080 JPG, siehe die Hashes in `MASTER_TRACKER_98.json`. Noch keine Nutzerabnahme, daher keine technische Integration.
+
+## Übersicht
+
+| Bereich | Soll | Archiviert | Freigegeben | Noch zu produzieren |
+|---|---:|---:|---:|---:|
+| `branding` | 4 | 4 | 4 | 0 |
+| `home` | 12 | 12 | 10 | 0 |
+| `settings` | 20 | 0 | 0 | 20 |
+| `media` | 14 | 0 | 0 | 14 |
+| `epg` | 12 | 0 | 0 | 12 |
+| `player` | 16 | 0 | 0 | 16 |
+| `shared` | 16 | 0 | 0 | 16 |
+| `widgets` | 4 | 0 | 0 | 4 |
+| **Gesamt** | **98** | **16** | **14** | **82** |
+
+## Masterliste aller 98 Positionen
+
+| Nr. | Pfad | Status |
 |---:|---|---|
-| 1 | `branding/icon-512.png` | Archiviert und freigegeben |
-| 2 | `branding/wordmark-white.png` | Archiviert und freigegeben |
-| 3 | `branding/splash-1920.jpg` | Archiviert und freigegeben |
-| 4 | `branding/fanart-1920.jpg` | Archiviert und freigegeben |
-| 5 | `home/icon-start.png` | Archiviert und freigegeben |
-| 6 | `home/icon-live.png` | Archiviert und freigegeben |
-| 7 | `home/icon-epg.png` | Archiviert und freigegeben |
-| 8 | `home/icon-movies.png` | Archiviert und freigegeben |
-| 9 | `home/icon-series.png` | Archiviert und freigegeben |
-| 10 | `home/icon-settings.png` | Archiviert und freigegeben |
-| 11 | `home/bg-start.jpg` | Archiviert und freigegeben |
-| 12 | `home/bg-live.jpg` | Archiviert und freigegeben |
-| 13 | `home/bg-epg.jpg` | Archiviert und freigegeben |
-| 14 | `home/bg-movies.jpg` | Archiviert und freigegeben |
-| 15 | `home/bg-series.jpg` | Offen |
-| 16 | `home/bg-settings.jpg` | Offen |
-| 17 | `settings/icon-accounts.png` | Offen |
-| 18 | `settings/bg-accounts.jpg` | Offen |
-| 19 | `settings/icon-start-channel.png` | Offen |
-| 20 | `settings/bg-start-channel.jpg` | Offen |
-| 21 | `settings/icon-epg.png` | Offen |
-| 22 | `settings/bg-epg.jpg` | Offen |
-| 23 | `settings/icon-groups.png` | Offen |
-| 24 | `settings/bg-groups.jpg` | Offen |
-| 25 | `settings/icon-remote.png` | Offen |
-| 26 | `settings/bg-remote.jpg` | Offen |
-| 27 | `settings/icon-player.png` | Offen |
-| 28 | `settings/bg-player.jpg` | Offen |
-| 29 | `settings/icon-recordings.png` | Offen |
-| 30 | `settings/bg-recordings.jpg` | Offen |
-| 31 | `settings/icon-appearance.png` | Offen |
-| 32 | `settings/bg-appearance.jpg` | Offen |
-| 33 | `settings/icon-maintenance.png` | Offen |
-| 34 | `settings/bg-maintenance.jpg` | Offen |
-| 35 | `settings/icon-about.png` | Offen |
-| 36 | `settings/bg-about.jpg` | Offen |
-| 37 | `media/icon-play.png` | Offen |
-| 38 | `media/icon-restart.png` | Offen |
-| 39 | `media/icon-resume.png` | Offen |
-| 40 | `media/icon-favorite-add.png` | Offen |
-| 41 | `media/icon-favorite-remove.png` | Offen |
-| 42 | `media/icon-trailer.png` | Offen |
-| 43 | `media/icon-seasons.png` | Offen |
-| 44 | `media/icon-episodes.png` | Offen |
-| 45 | `media/placeholder-movie-poster.jpg` | Offen |
-| 46 | `media/placeholder-series-poster.jpg` | Offen |
-| 47 | `media/placeholder-movie-backdrop.jpg` | Offen |
-| 48 | `media/placeholder-series-backdrop.jpg` | Offen |
-| 49 | `media/rail-gradient.png` | Offen |
-| 50 | `media/poster-shade.png` | Offen |
-| 51 | `epg/icon-today.png` | Offen |
-| 52 | `epg/icon-day-prev.png` | Offen |
-| 53 | `epg/icon-day-next.png` | Offen |
-| 54 | `epg/icon-remind.png` | Offen |
-| 55 | `epg/icon-auto-switch.png` | Offen |
-| 56 | `epg/icon-record.png` | Offen |
-| 57 | `epg/icon-channels.png` | Offen |
-| 58 | `epg/icon-clock.png` | Offen |
-| 59 | `epg/bg-guide.jpg` | Offen |
-| 60 | `epg/bg-detail.jpg` | Offen |
-| 61 | `epg/no-data.png` | Offen |
-| 62 | `epg/source-error.png` | Offen |
-| 63 | `player/icon-play.png` | Offen |
-| 64 | `player/icon-pause.png` | Offen |
-| 65 | `player/icon-stop.png` | Offen |
-| 66 | `player/icon-seek-back.png` | Offen |
-| 67 | `player/icon-seek-forward.png` | Offen |
-| 68 | `player/icon-skip-back.png` | Offen |
-| 69 | `player/icon-skip-forward.png` | Offen |
-| 70 | `player/icon-live-edge.png` | Offen |
-| 71 | `player/icon-audio.png` | Offen |
-| 72 | `player/icon-subtitles.png` | Offen |
-| 73 | `player/icon-video-settings.png` | Offen |
-| 74 | `player/icon-more.png` | Offen |
-| 75 | `player/panel-infobar.png` | Offen |
-| 76 | `player/panel-controls.png` | Offen |
-| 77 | `player/panel-options.png` | Offen |
-| 78 | `player/panel-progress-track.png` | Offen |
-| 79 | `shared/icon-search.png` | Offen |
-| 80 | `shared/icon-filter.png` | Offen |
-| 81 | `shared/icon-sort.png` | Offen |
-| 82 | `shared/icon-clear.png` | Offen |
-| 83 | `shared/icon-back.png` | Offen |
-| 84 | `shared/icon-forward.png` | Offen |
-| 85 | `shared/icon-close.png` | Offen |
-| 86 | `shared/icon-check.png` | Offen |
-| 87 | `shared/icon-warning.png` | Offen |
-| 88 | `shared/icon-info.png` | Offen |
-| 89 | `shared/focus-ring.png` | Offen |
-| 90 | `shared/focus-rail.png` | Offen |
-| 91 | `shared/sidebar-bg.png` | Offen |
-| 92 | `shared/glass-panel.png` | Offen |
-| 93 | `shared/divider.png` | Offen |
-| 94 | `shared/loading-skeleton.png` | Offen |
-| 95 | `widgets/widget-live-fallback.png` | Offen |
-| 96 | `widgets/widget-movie-fallback.png` | Offen |
-| 97 | `widgets/widget-series-fallback.png` | Offen |
-| 98 | `widgets/widget-header.png` | Offen |
+| 1 | `branding/icon-512.png` | freigegeben, archiviert; nicht integriert |
+| 2 | `branding/wordmark-white.png` | freigegeben, archiviert; nicht integriert |
+| 3 | `branding/splash-1920.jpg` | freigegeben, archiviert; nicht integriert |
+| 4 | `branding/fanart-1920.jpg` | freigegeben, archiviert; nicht integriert |
+| 5 | `home/icon-start.png` | freigegeben, archiviert; nicht integriert |
+| 6 | `home/icon-live.png` | freigegeben, archiviert; nicht integriert |
+| 7 | `home/icon-epg.png` | freigegeben, archiviert; nicht integriert |
+| 8 | `home/icon-movies.png` | freigegeben, archiviert; nicht integriert |
+| 9 | `home/icon-series.png` | freigegeben, archiviert; nicht integriert |
+| 10 | `home/icon-settings.png` | freigegeben, archiviert; nicht integriert |
+| 11 | `home/bg-start.jpg` | freigegeben, archiviert; nicht integriert |
+| 12 | `home/bg-live.jpg` | freigegeben, archiviert; nicht integriert |
+| 13 | `home/bg-epg.jpg` | freigegeben, archiviert; nicht integriert |
+| 14 | `home/bg-movies.jpg` | freigegeben, archiviert; nicht integriert |
+| 15 | `home/bg-series.jpg` | Entwurf vorhanden, visuelle Abnahme offen; nicht integriert |
+| 16 | `home/bg-settings.jpg` | Entwurf vorhanden, visuelle Abnahme offen; nicht integriert |
+| 17 | `settings/icon-accounts.png` | offen |
+| 18 | `settings/bg-accounts.jpg` | offen |
+| 19 | `settings/icon-start-channel.png` | offen |
+| 20 | `settings/bg-start-channel.jpg` | offen |
+| 21 | `settings/icon-epg.png` | offen |
+| 22 | `settings/bg-epg.jpg` | offen |
+| 23 | `settings/icon-groups.png` | offen |
+| 24 | `settings/bg-groups.jpg` | offen |
+| 25 | `settings/icon-remote.png` | offen |
+| 26 | `settings/bg-remote.jpg` | offen |
+| 27 | `settings/icon-player.png` | offen |
+| 28 | `settings/bg-player.jpg` | offen |
+| 29 | `settings/icon-recordings.png` | offen |
+| 30 | `settings/bg-recordings.jpg` | offen |
+| 31 | `settings/icon-appearance.png` | offen |
+| 32 | `settings/bg-appearance.jpg` | offen |
+| 33 | `settings/icon-maintenance.png` | offen |
+| 34 | `settings/bg-maintenance.jpg` | offen |
+| 35 | `settings/icon-about.png` | offen |
+| 36 | `settings/bg-about.jpg` | offen |
+| 37 | `media/icon-play.png` | offen |
+| 38 | `media/icon-restart.png` | offen |
+| 39 | `media/icon-resume.png` | offen |
+| 40 | `media/icon-favorite-add.png` | offen |
+| 41 | `media/icon-favorite-remove.png` | offen |
+| 42 | `media/icon-trailer.png` | offen |
+| 43 | `media/icon-seasons.png` | offen |
+| 44 | `media/icon-episodes.png` | offen |
+| 45 | `media/placeholder-movie-poster.jpg` | offen |
+| 46 | `media/placeholder-series-poster.jpg` | offen |
+| 47 | `media/placeholder-movie-backdrop.jpg` | offen |
+| 48 | `media/placeholder-series-backdrop.jpg` | offen |
+| 49 | `media/rail-gradient.png` | offen |
+| 50 | `media/poster-shade.png` | offen |
+| 51 | `epg/icon-today.png` | offen |
+| 52 | `epg/icon-day-prev.png` | offen |
+| 53 | `epg/icon-day-next.png` | offen |
+| 54 | `epg/icon-remind.png` | offen |
+| 55 | `epg/icon-auto-switch.png` | offen |
+| 56 | `epg/icon-record.png` | offen |
+| 57 | `epg/icon-channels.png` | offen |
+| 58 | `epg/icon-clock.png` | offen |
+| 59 | `epg/bg-guide.jpg` | offen |
+| 60 | `epg/bg-detail.jpg` | offen |
+| 61 | `epg/no-data.png` | offen |
+| 62 | `epg/source-error.png` | offen |
+| 63 | `player/icon-play.png` | offen |
+| 64 | `player/icon-pause.png` | offen |
+| 65 | `player/icon-stop.png` | offen |
+| 66 | `player/icon-seek-back.png` | offen |
+| 67 | `player/icon-seek-forward.png` | offen |
+| 68 | `player/icon-skip-back.png` | offen |
+| 69 | `player/icon-skip-forward.png` | offen |
+| 70 | `player/icon-live-edge.png` | offen |
+| 71 | `player/icon-audio.png` | offen |
+| 72 | `player/icon-subtitles.png` | offen |
+| 73 | `player/icon-video-settings.png` | offen |
+| 74 | `player/icon-more.png` | offen |
+| 75 | `player/panel-infobar.png` | offen |
+| 76 | `player/panel-controls.png` | offen |
+| 77 | `player/panel-options.png` | offen |
+| 78 | `player/panel-progress-track.png` | offen |
+| 79 | `shared/icon-search.png` | offen |
+| 80 | `shared/icon-filter.png` | offen |
+| 81 | `shared/icon-sort.png` | offen |
+| 82 | `shared/icon-clear.png` | offen |
+| 83 | `shared/icon-back.png` | offen |
+| 84 | `shared/icon-forward.png` | offen |
+| 85 | `shared/icon-close.png` | offen |
+| 86 | `shared/icon-check.png` | offen |
+| 87 | `shared/icon-warning.png` | offen |
+| 88 | `shared/icon-info.png` | offen |
+| 89 | `shared/focus-ring.png` | offen |
+| 90 | `shared/focus-rail.png` | offen |
+| 91 | `shared/sidebar-bg.png` | offen |
+| 92 | `shared/glass-panel.png` | offen |
+| 93 | `shared/divider.png` | offen |
+| 94 | `shared/loading-skeleton.png` | offen |
+| 95 | `widgets/widget-live-fallback.png` | offen |
+| 96 | `widgets/widget-movie-fallback.png` | offen |
+| 97 | `widgets/widget-series-fallback.png` | offen |
+| 98 | `widgets/widget-header.png` | offen |
 
-**Abnahmevermerk 19.10.2026:** Nutzer hat die eigenständigen Positionen 5–14 ausdrücklich freigegeben. Sie liegen im separaten `home/`-Ordner, 1–4 im separaten `branding/`-Ordner; keine Datei ersetzt oder löscht eine der vier bisherigen Freigaben. Alle 14 im zentralen Archiv nach Dateiname und SHA-256 dokumentiert. Einbau in das **optionale** Space-Premium-Theme erfolgt erst separat.
+## Verbindliche Arbeitsregel
 
-**Datei-Referenzen:** Alte Chargen: `artwork/xcmate/space-premium/set-02/` im Artwork-Branch; Brandingdateien aus Drive Set 01 sind bislang nicht als GitHub-Binärdateien vorhanden. Diese älteren Ordner nicht als zweiten Master behandeln.
+Nach jeder weiteren Grafikproduktion diesen Tracker und das JSON gemeinsam fortschreiben, die neue Datei nur in den passenden Master-Unterordner `branding`, `home`, `settings`, `media`, `epg`, `player`, `shared` oder `widgets` ablegen, zugehörige Quellbilder in `sources` archivieren und vor jeder Integration einen eigenen Design-PR mit Android-Abnahme verlangen.

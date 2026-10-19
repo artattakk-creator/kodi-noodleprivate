@@ -1,0 +1,819 @@
+{
+  "title": "XCMate Space Premium — 98 logische Grafikpositionen",
+  "generated": "2026-10-19",
+  "theme": "space-premium",
+  "canonical_drive_folder": "https://drive.google.com/drive/folders/1UPA7fLKIq21GkA4NzAPEVfLp2BvSpm3y",
+  "target": 98,
+  "archive_present": 16,
+  "approved": 14,
+  "pending_approval": 2,
+  "remaining_unproduced": 82,
+  "note": "98 slots tracked as one optional theme; 14 approved, 2 design proposals awaiting visual approval, 82 not produced. Branding 1-4 unchanged; no runtime integration.",
+  "slots": [
+    {
+      "slot": 1,
+      "path": "branding/icon-512.png",
+      "category": "branding",
+      "status": "archived_approved_not_integrated",
+      "sha256": "81da1003a2753ec6afbdd50b2a320e738a2131ad9f0d76606da1babdd0d2f135",
+      "source_batch_reference": "approved-branding-2026-10-19"
+    },
+    {
+      "slot": 2,
+      "path": "branding/wordmark-white.png",
+      "category": "branding",
+      "status": "archived_approved_not_integrated",
+      "sha256": "37d3b575d2e33fca436483e14b04b6878c081301b54abfd854053488404c2bb5",
+      "source_batch_reference": "approved-branding-2026-10-19"
+    },
+    {
+      "slot": 3,
+      "path": "branding/splash-1920.jpg",
+      "category": "branding",
+      "status": "archived_approved_not_integrated",
+      "sha256": "2553464f81de674f3de8726ba1ec81dcf57d7c0232d39aa3322af10ee0435fcc",
+      "source_batch_reference": "approved-branding-2026-10-19"
+    },
+    {
+      "slot": 4,
+      "path": "branding/fanart-1920.jpg",
+      "category": "branding",
+      "status": "archived_approved_not_integrated",
+      "sha256": "b2eb85d05f6a0d8c5c68d19a19733973c3af360e542c51c8abac768f318cf997",
+      "source_batch_reference": "approved-branding-2026-10-19"
+    },
+    {
+      "slot": 5,
+      "path": "home/icon-start.png",
+      "category": "home",
+      "status": "archived_approved_not_integrated",
+      "sha256": "625d73d50b9ce77ee78d2033f30f4fab715ed7d5b05c4c87e4e4c536d5777325",
+      "source_batch_reference": "home-production-2026-10-19",
+      "approval_note": "User-approved 2026-10-19; stand-alone asset; independent from frozen brand assets 1-4; no runtime integration"
+    },
+    {
+      "slot": 6,
+      "path": "home/icon-live.png",
+      "category": "home",
+      "status": "archived_approved_not_integrated",
+      "sha256": "2f05225301945cedd3972bbcf4498b509d62a9adc73886823247f33cc6c450ad",
+      "source_batch_reference": "home-production-2026-10-19",
+      "approval_note": "User-approved 2026-10-19; stand-alone asset; independent from frozen brand assets 1-4; no runtime integration"
+    },
+    {
+      "slot": 7,
+      "path": "home/icon-epg.png",
+      "category": "home",
+      "status": "archived_approved_not_integrated",
+      "sha256": "80e543f7289d2d952f344bb1e1ea3d3d18c3fb96f37b182d059a1a99823f1214",
+      "source_batch_reference": "home-production-2026-10-19",
+      "approval_note": "User-approved 2026-10-19; stand-alone asset; independent from frozen brand assets 1-4; no runtime integration"
+    },
+    {
+      "slot": 8,
+      "path": "home/icon-movies.png",
+      "category": "home",
+      "status": "archived_approved_not_integrated",
+      "sha256": "c266e41d88459065f4d813853a873e2c717af0a5407ff2caf97febbddb4e4323",
+      "source_batch_reference": "home-production-2026-10-19",
+      "approval_note": "User-approved 2026-10-19; stand-alone asset; independent from frozen brand assets 1-4; no runtime integration"
+    },
+    {
+      "slot": 9,
+      "path": "home/icon-series.png",
+      "category": "home",
+      "status": "archived_approved_not_integrated",
+      "sha256": "f470a20b90a5449f847eac14ba3f81a79a0e7d8f5be9da7529c84e760c7bce80",
+      "source_batch_reference": "home-production-2026-10-19",
+      "approval_note": "User-approved 2026-10-19; stand-alone asset; independent from frozen brand assets 1-4; no runtime integration"
+    },
+    {
+      "slot": 10,
+      "path": "home/icon-settings.png",
+      "category": "home",
+      "status": "archived_approved_not_integrated",
+      "sha256": "2f6bf044e70f0bb860ec33198388c9af9085c1ad2d44c9ccf71b2a7906ba0655",
+      "source_batch_reference": "home-production-2026-10-19",
+      "approval_note": "User-approved 2026-10-19; stand-alone asset; independent from frozen brand assets 1-4; no runtime integration"
+    },
+    {
+      "slot": 11,
+      "path": "home/bg-start.jpg",
+      "category": "home",
+      "status": "archived_approved_not_integrated",
+      "sha256": "48ac9d71f5ab14f16a995f768e74d1053bcc099bf74a0279cbd0683fa22281ff",
+      "source_batch_reference": "home-production-2026-10-19",
+      "approval_note": "User-approved 2026-10-19; stand-alone asset; independent from frozen brand assets 1-4; no runtime integration"
+    },
+    {
+      "slot": 12,
+      "path": "home/bg-live.jpg",
+      "category": "home",
+      "status": "archived_approved_not_integrated",
+      "sha256": "35b7dd8271b8d6a6be352011c3ab22b731ea8bbb307ad880d64e320769140f0a",
+      "source_batch_reference": "home-production-2026-10-19",
+      "approval_note": "User-approved 2026-10-19; stand-alone asset; independent from frozen brand assets 1-4; no runtime integration"
+    },
+    {
+      "slot": 13,
+      "path": "home/bg-epg.jpg",
+      "category": "home",
+      "status": "archived_approved_not_integrated",
+      "sha256": "43690fe3f4d563b79feebdce0d82ee2b94b0d6f609270d2e960d2585e468dfbf",
+      "source_batch_reference": "home-production-2026-10-19",
+      "approval_note": "User-approved 2026-10-19; stand-alone asset; independent from frozen brand assets 1-4; no runtime integration"
+    },
+    {
+      "slot": 14,
+      "path": "home/bg-movies.jpg",
+      "category": "home",
+      "status": "archived_approved_not_integrated",
+      "sha256": "5b2e513d92d69416f40aa5d69ca20caee0b3911e86579d14b7f16b9026507fee",
+      "source_batch_reference": "home-production-2026-10-19",
+      "approval_note": "User-approved 2026-10-19; stand-alone asset; independent from frozen brand assets 1-4; no runtime integration"
+    },
+    {
+      "slot": 15,
+      "path": "home/bg-series.jpg",
+      "category": "home",
+      "status": "generated_pending_visual_approval_not_integrated",
+      "sha256": "195b6e32289a31e0aa5fe31bf3420fc7541573cbac75f1041307dd05194e03c8",
+      "source_batch_reference": "derived-prototype-from-approved-space-premium-home-backgrounds-2026-10-19",
+      "note": "Textfree Full HD concept composited with approved home assets. Pending user review; not part of XCMate core."
+    },
+    {
+      "slot": 16,
+      "path": "home/bg-settings.jpg",
+      "category": "home",
+      "status": "generated_pending_visual_approval_not_integrated",
+      "sha256": "0dc5a282fb9538e728afa9c0c1b21b08d0658214ef181f8d4a5524b9852d54fd",
+      "source_batch_reference": "derived-prototype-from-approved-space-premium-home-backgrounds-2026-10-19",
+      "note": "Textfree Full HD concept composited with approved home assets. Pending user review; not part of XCMate core."
+    },
+    {
+      "slot": 17,
+      "path": "settings/icon-accounts.png",
+      "category": "settings",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 18,
+      "path": "settings/bg-accounts.jpg",
+      "category": "settings",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 19,
+      "path": "settings/icon-start-channel.png",
+      "category": "settings",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 20,
+      "path": "settings/bg-start-channel.jpg",
+      "category": "settings",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 21,
+      "path": "settings/icon-epg.png",
+      "category": "settings",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 22,
+      "path": "settings/bg-epg.jpg",
+      "category": "settings",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 23,
+      "path": "settings/icon-groups.png",
+      "category": "settings",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 24,
+      "path": "settings/bg-groups.jpg",
+      "category": "settings",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 25,
+      "path": "settings/icon-remote.png",
+      "category": "settings",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 26,
+      "path": "settings/bg-remote.jpg",
+      "category": "settings",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 27,
+      "path": "settings/icon-player.png",
+      "category": "settings",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 28,
+      "path": "settings/bg-player.jpg",
+      "category": "settings",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 29,
+      "path": "settings/icon-recordings.png",
+      "category": "settings",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 30,
+      "path": "settings/bg-recordings.jpg",
+      "category": "settings",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 31,
+      "path": "settings/icon-appearance.png",
+      "category": "settings",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 32,
+      "path": "settings/bg-appearance.jpg",
+      "category": "settings",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 33,
+      "path": "settings/icon-maintenance.png",
+      "category": "settings",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 34,
+      "path": "settings/bg-maintenance.jpg",
+      "category": "settings",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 35,
+      "path": "settings/icon-about.png",
+      "category": "settings",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 36,
+      "path": "settings/bg-about.jpg",
+      "category": "settings",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 37,
+      "path": "media/icon-play.png",
+      "category": "media",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 38,
+      "path": "media/icon-restart.png",
+      "category": "media",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 39,
+      "path": "media/icon-resume.png",
+      "category": "media",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 40,
+      "path": "media/icon-favorite-add.png",
+      "category": "media",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 41,
+      "path": "media/icon-favorite-remove.png",
+      "category": "media",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 42,
+      "path": "media/icon-trailer.png",
+      "category": "media",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 43,
+      "path": "media/icon-seasons.png",
+      "category": "media",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 44,
+      "path": "media/icon-episodes.png",
+      "category": "media",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 45,
+      "path": "media/placeholder-movie-poster.jpg",
+      "category": "media",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 46,
+      "path": "media/placeholder-series-poster.jpg",
+      "category": "media",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 47,
+      "path": "media/placeholder-movie-backdrop.jpg",
+      "category": "media",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 48,
+      "path": "media/placeholder-series-backdrop.jpg",
+      "category": "media",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 49,
+      "path": "media/rail-gradient.png",
+      "category": "media",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 50,
+      "path": "media/poster-shade.png",
+      "category": "media",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 51,
+      "path": "epg/icon-today.png",
+      "category": "epg",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 52,
+      "path": "epg/icon-day-prev.png",
+      "category": "epg",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 53,
+      "path": "epg/icon-day-next.png",
+      "category": "epg",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 54,
+      "path": "epg/icon-remind.png",
+      "category": "epg",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 55,
+      "path": "epg/icon-auto-switch.png",
+      "category": "epg",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 56,
+      "path": "epg/icon-record.png",
+      "category": "epg",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 57,
+      "path": "epg/icon-channels.png",
+      "category": "epg",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 58,
+      "path": "epg/icon-clock.png",
+      "category": "epg",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 59,
+      "path": "epg/bg-guide.jpg",
+      "category": "epg",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 60,
+      "path": "epg/bg-detail.jpg",
+      "category": "epg",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 61,
+      "path": "epg/no-data.png",
+      "category": "epg",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 62,
+      "path": "epg/source-error.png",
+      "category": "epg",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 63,
+      "path": "player/icon-play.png",
+      "category": "player",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 64,
+      "path": "player/icon-pause.png",
+      "category": "player",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 65,
+      "path": "player/icon-stop.png",
+      "category": "player",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 66,
+      "path": "player/icon-seek-back.png",
+      "category": "player",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 67,
+      "path": "player/icon-seek-forward.png",
+      "category": "player",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 68,
+      "path": "player/icon-skip-back.png",
+      "category": "player",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 69,
+      "path": "player/icon-skip-forward.png",
+      "category": "player",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 70,
+      "path": "player/icon-live-edge.png",
+      "category": "player",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 71,
+      "path": "player/icon-audio.png",
+      "category": "player",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 72,
+      "path": "player/icon-subtitles.png",
+      "category": "player",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 73,
+      "path": "player/icon-video-settings.png",
+      "category": "player",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 74,
+      "path": "player/icon-more.png",
+      "category": "player",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 75,
+      "path": "player/panel-infobar.png",
+      "category": "player",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 76,
+      "path": "player/panel-controls.png",
+      "category": "player",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 77,
+      "path": "player/panel-options.png",
+      "category": "player",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 78,
+      "path": "player/panel-progress-track.png",
+      "category": "player",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 79,
+      "path": "shared/icon-search.png",
+      "category": "shared",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 80,
+      "path": "shared/icon-filter.png",
+      "category": "shared",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 81,
+      "path": "shared/icon-sort.png",
+      "category": "shared",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 82,
+      "path": "shared/icon-clear.png",
+      "category": "shared",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 83,
+      "path": "shared/icon-back.png",
+      "category": "shared",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 84,
+      "path": "shared/icon-forward.png",
+      "category": "shared",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 85,
+      "path": "shared/icon-close.png",
+      "category": "shared",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 86,
+      "path": "shared/icon-check.png",
+      "category": "shared",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 87,
+      "path": "shared/icon-warning.png",
+      "category": "shared",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 88,
+      "path": "shared/icon-info.png",
+      "category": "shared",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 89,
+      "path": "shared/focus-ring.png",
+      "category": "shared",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 90,
+      "path": "shared/focus-rail.png",
+      "category": "shared",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 91,
+      "path": "shared/sidebar-bg.png",
+      "category": "shared",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 92,
+      "path": "shared/glass-panel.png",
+      "category": "shared",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 93,
+      "path": "shared/divider.png",
+      "category": "shared",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 94,
+      "path": "shared/loading-skeleton.png",
+      "category": "shared",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 95,
+      "path": "widgets/widget-live-fallback.png",
+      "category": "widgets",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 96,
+      "path": "widgets/widget-movie-fallback.png",
+      "category": "widgets",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 97,
+      "path": "widgets/widget-series-fallback.png",
+      "category": "widgets",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    },
+    {
+      "slot": 98,
+      "path": "widgets/widget-header.png",
+      "category": "widgets",
+      "status": "planned",
+      "sha256": null,
+      "source_batch_reference": null
+    }
+  ],
+  "approval_history": [
+    {
+      "date": "2026-10-19",
+      "slots": "5-14",
+      "outcome": "approved",
+      "constraint": "Do not delete, overwrite, or change slots 1-4. All assets remain in optional Space Premium theme only."
+    }
+  ],
+  "runtime_release_version": "0.1.27"
+}
