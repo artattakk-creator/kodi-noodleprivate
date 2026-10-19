@@ -1,5 +1,14 @@
 # XCMate / Codex – aktueller Projekt- und Release-Status (verbindliche Übergabe)
 
+> **PR #28 – funktionaler Zwischenstand:** [Entwurfs-PR](https://github.com/artattakk-creator/kodi-noodleprivate/pull/28)
+> enthält das geprüfte Testpaket. Parallel hinzugekommene Designbeschlüsse aus `main`/`fbfb56c`
+> wurden vollständig gelesen und übernommen. **Space Premium bleibt das einzig freigegebene
+> Zieldesign.** Die zwei neuen neutralen technischen Fallbacktexturen im Funktionskandidaten
+> sind kein freigegebenes Grafikdesign; finale Grafikproduktion, Theme-Resolver und Icon-/Home-
+> Sichtabnahme folgen separat nach [Design-Freeze](DESIGN_FREEZE_SPACE_PREMIUM_THEME_ARCHITECTURE_DE.md)
+> und [Issue #27](https://github.com/artattakk-creator/kodi-noodleprivate/issues/27).
+> Kein Ersatz der bestehenden Wortmarke/Live-Texturen und kein vorweggenommener Grafik-PASS.
+
 > **AKTUELLER ENTWICKLUNGSSTAND 0.1.27 – 19.10.2026:**
 > Basis `main`/`823ae26`, Branch `feat/xcmate-027-catalogue-home`.
 > **Produktiv bleibt 0.1.26; kein Merge/Publish.**
@@ -19,6 +28,12 @@
 > EPG-Aufnahmescheduler/Android-Engine, neue M3U-/STB-Vollindexoberfläche und portalübergreifende
 > neue Suche. Aufnahmeprobe ist keine funktionsfähige Aufnahmezusage.
 > Ältere „0.1.27 noch nicht implementiert“- und frühere Kandidatenblöcke darunter sind historisch.
+
+> **GRAFIKDESIGN FREIGEGEBEN 19.10.2026:** **Nur Variante 1 „SPACE PREMIUM“** aus der drei Designs umfassenden XCMate-Konzeptgrafik ist als neuer Standard gewählt: tiefblauer Weltraum, Erdkrümmung, verchromtes 3D-X, leuchtendes Cyan. **Der bisherige schlichte Metallgrau-Stil ist ausdrücklich verworfen**. [Verbindliche Freigabe und Theme-Architektur](DESIGN_FREEZE_SPACE_PREMIUM_THEME_ARCHITECTURE_DE.md) · [98-Asset-Produktionsplan](GRAPHICS_V2_ASSET_PLAN_027_DE.md) · [Issue #27](https://github.com/artattakk-creator/kodi-noodleprivate/issues/27). **Nur Design 1 wird jetzt gestaltet/integriert**; Designs 2 und 3 werden höchstens als spätere installierbare **XCMate-interne Grafikthemes** technisch vorbereitet, **nicht** jetzt produziert. BINGIE MOD ist und bleibt der aktive Kodi-Skin, keine globale Skin-Änderung. Zuerst Icon (512×512) und volle Home-Vorschau (1920×1080) zur Sichtabnahme; **noch keine Einzel-Assetproduktion**. **0.1.26 Live-TV/Remote FREEZE** bleibt bindend. Release bleibt 0.1.26.
+
+
+> **GRAFIKSYSTEM-PLAN 19.10.2026:** [XCMate Graphics v2 – vollständiges 98-Asset-Manifest](GRAPHICS_V2_ASSET_PLAN_027_DE.md) · [Grafik-Umsetzungsissue #27](https://github.com/artattakk-creator/kodi-noodleprivate/issues/27). Im aktuellen produktiven `0.1.26`-Add-on **32 Runtime-Bilder (114.014 Bytes)**. Geplant **98 logische Grafikslots** insgesamt für Branding, sechs Home-Bereiche, zehn Settings-Untermenüs, EPG, Film/Serie, Player, Suche und drei BINGIE-MOD-Widgets. **Freigegebenes ursprüngliches XCMate-Logo/Space-Motiv beibehalten**, Details/Quellstatus in [Art-Manifest](ARTWORK_ASSET_MANIFEST_DE.md); Dynamic-VOD-Artworks aus Provider, nicht im ZIP vervielfältigen. **Manifest-Bug:** `addon.xml` referenziert `fanart.png`, vorhanden ist `fanart.jpg`; erst in geprüftem Grafik-PR korrigieren. **Live-TV-UI- und Remote-Freeze 0.1.26** bleibt; **noch kein neues Artwork generiert/installiert und kein Release 0.1.27**.
+
 
 > **AKTUELLE ZUSATZANFORDERUNG 19.10.2026 – FUNKTIONALER FREEZE 0.1.26 + Suche + BINGIE MOD:** [Verbindlicher vollständiger Codex-Vertrag](CODEX_AUFTRAG_027_FREEZE_GLOBAL_SEARCH_BINGIE_WIDGETS_DE.md), [Issue #25 gemeinsame LIVE-TV/Filme/Serien-Suche](https://github.com/artattakk-creator/kodi-noodleprivate/issues/25), [Issue #26 drei BINGIE-MOD-Home-Widgets](https://github.com/artattakk-creator/kodi-noodleprivate/issues/26). Alle bestehenden 0.1.26-Funktionen (**Live-TV, erste OK-Infobar, 3 Player-/Einstellungsebenen, D-Pad/Links-Gruppen, Portal-/EPG-Profile**) sind **FREEZE** und werden ausschließlich durch neue Module/Routen ergänzt. In Film- UND Serien-Landingpage und Gruppen-/Posteransicht echtes Fanart/Backdrop des fokussierten Titels, links ausklappbare Gruppenleiste, Rechts vollbreites Postergrid, Links am Gridrand Gruppen erneut zeigen. Die **globale Suche** hat drei getrennte Ergebnisrubriken mit tatsächlichen Gesamtzahlen und korrekter Auswahl/Playback. **BINGIE MOD Homescreen:** drei horizontale Widgetrails in Reihenfolge 1) Live-Sender der Startkanalgruppe samt Now/Next, 2) neueste Filme, 3) neueste Serien. Die Widget-Routen liefern passende Kodi-ListItems; **keine ungefragten Veränderungen an fremden Skin-Dateien oder vorhandenen Nutzer-Widgets**. Zunächst einrichten über dokumentierte BINGIE-MOD-Skineinstellungen; echte Android-Abnahme/CI erforderlich. Aktueller Veröffentlichungsstand bleibt **XCMate 0.1.26**; Ziel 0.1.27 nur nach Codex-PR/Review/Releasefreigabe.
 

@@ -2,6 +2,7 @@
 
 Stand: 19.10.2026. **Entwicklungskandidat, keine Produktivveröffentlichung.**
 Basis `main` / `823ae26`, Branch `feat/xcmate-027-catalogue-home`.
+Parallel ergänzte Dokumentationsbasis `main`/`fbfb56c` konfliktfrei in den Entwicklungsbranch übernommen.
 Produktiv bleibt **0.1.26**. Der Nutzer bestätigt dessen grundsätzliche Android-TV-Funktion;
 die detaillierte Einzelabnahme ist damit nicht ersetzt.
 
@@ -186,7 +187,15 @@ Playback/Resume/Stop/Shutdown, beschädigter Zustand, VFS-Schreibverweigerung, E
 5. Grafische Mehrsender-Zeitmatrix zusätzlich zur fertigen Tagesliste; zuletzt gewählte EPG-
    Gruppe über Sitzungen speichern; weitere Anbieterbilderformate außer PNG/JPEG; Aufwachen
    bei ausgeschaltetem Kodi. Neue Erinnerungen werden nicht in alte Reminderdateien migriert.
-6. **Realer Android-/BINGIE-MOD-Nachweis** einschließlich Skinversion, Screenshots, Kalt-/Warm-
+6. **Grafik-Sprint / Issue #27:** Während der Funktionsimplementierung kamen auf `main`
+   die vollständigen [Space-Premium-Vorgaben](DESIGN_FREEZE_SPACE_PREMIUM_THEME_ARCHITECTURE_DE.md)
+   und der [98-Slot-Plan](GRAPHICS_V2_ASSET_PLAN_027_DE.md) hinzu; beide und Issue #27 inklusive
+   Nutzerkommentar vollständig gelesen. Space Premium ist alleiniger freigegebener Zielstil.
+   Die zwei technischen neutralen Fallbackbilder dieses Funktionskandidaten sind keine finale
+   Designfreigabe. 512er-Icon/Full-HD-Home-Vorschau und deren Sichtabnahme, Theme-Resolver,
+   Fanart-Metadatenpfadkorrektur und anschließende Einzelassetproduktion bleiben separater
+   Grafik-Sprint. Vorhandene Branding-/Live-Texturen nicht still ersetzen; Designs 2/3 nicht bauen.
+7. **Realer Android-/BINGIE-MOD-Nachweis** einschließlich Skinversion, Screenshots, Kalt-/Warm-
    Zeiten und Speicherwerten. Alle neuen nativen Funktionen bleiben bis dahin ungeprüft am Gerät.
 
 Kein automatischer Merge, keine Produktivversion, kein Main-Indexupdate und keine Skin-/Keymap-
@@ -195,3 +204,10 @@ Kein automatischer Merge, keine Produktivversion, kein Main-Indexupdate und kein
 Nächster Schritt nach grünem Cloud-Build: [Android-Abnahme](ANDROID_TESTPLAN_027_DE.md),
 [BINGIE-Konfiguration](BINGIE_MOD_WIDGETS_027_DE.md), anschließend ausdrücklich freigegebener
 regulärer Repository-Updateweg. Offene Issues nicht vor Geräteabnahme pauschal schließen.
+
+## GitHub-Übergabe
+
+[Entwurfs-PR #28](https://github.com/artattakk-creator/kodi-noodleprivate/pull/28),
+Code `3731db7`, gechecktes Paket/Dokumentation `f3e9790`; danach ausschließlich
+Dokumentationsabgleich mit den parallelen Main-Ergänzungen. Die Quellen und ZIP-Bytes
+bleiben dabei identisch. CI- und Artefaktnachweis werden hier nach dem PR-Lauf ergänzt.

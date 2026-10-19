@@ -126,6 +126,16 @@ Live spielt direkt. Bestehende fremde Widgets, Skin und Noodle Private unveränd
 8. Profilverbrauch nach zehn Tagen und nach kürzerem/fehlerhaftem Import vergleichen.
    Budgetfehler dürfen bestehende Quellen/Konten/Favoriten/Zuordnungen nicht löschen.
 
+## G – separate Grafikabnahme (offen, vor finaler Designfreigabe)
+
+Space Premium ist der einzige freigegebene Zielstil. Der funktionale Zwischenkandidat
+verwendet technische neutrale Fallbacks, keine finale Grafikproduktion. Separater Sprint:
+512×512-Icon und 1920×1080-Home-Vorschau einzeln sichtbar abnehmen, dann Theme-Resolver/
+Assets nach Issue #27 integrieren. Keine Ersatzfreigabe für einen grauen Standardstil;
+Designs 2/3 und installierbare Downloadthemes sind derzeit nicht beauftragt. Bestehendes
+Branding/Live-Texturen und BINGIE-Konfiguration erhalten. Nach Integration Geräteprüfungen
+A/B/C/E einschließlich Textkontrast, Safe Area und Speicherverbrauch wiederholen.
+
 ## Review und regulärer Updateweg
 
 1. Testprotokoll mit installierter ZIP-SHA, Kodi-/Skinversion und konkreten PASS/FAIL-Werten

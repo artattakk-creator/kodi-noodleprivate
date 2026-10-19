@@ -7,6 +7,9 @@
 > Produktiv bleibt 0.1.26. Die nachfolgenden Anforderungen bleiben der Vertrag;
 > Aussagen „noch keine Implementierung“ beschreiben ihren ursprünglichen Auftragsstand.
 
+> **GRAFIKDESIGN FREIGEGEBEN 19.10.2026:** **Nur Variante 1 „SPACE PREMIUM“** aus der drei Designs umfassenden XCMate-Konzeptgrafik ist als neuer Standard gewählt: tiefblauer Weltraum, Erdkrümmung, verchromtes 3D-X, leuchtendes Cyan. **Der bisherige schlichte Metallgrau-Stil ist ausdrücklich verworfen**. [Verbindliche Freigabe und Theme-Architektur](DESIGN_FREEZE_SPACE_PREMIUM_THEME_ARCHITECTURE_DE.md) · [98-Asset-Produktionsplan](GRAPHICS_V2_ASSET_PLAN_027_DE.md) · [Issue #27](https://github.com/artattakk-creator/kodi-noodleprivate/issues/27). **Nur Design 1 wird jetzt gestaltet/integriert**; Designs 2 und 3 werden höchstens als spätere installierbare **XCMate-interne Grafikthemes** technisch vorbereitet, **nicht** jetzt produziert. BINGIE MOD ist und bleibt der aktive Kodi-Skin, keine globale Skin-Änderung. Zuerst Icon (512×512) und volle Home-Vorschau (1920×1080) zur Sichtabnahme; **noch keine Einzel-Assetproduktion**. **0.1.26 Live-TV/Remote FREEZE** bleibt bindend. Release bleibt 0.1.26.
+
+
 **Stand:** 19.10.2026. **Quelle:** expliziter Nutzerauftrag direkt nach erfolgreichem Android-TV-Update auf XCMate `0.1.26`.  
 **Repository:** `artattakk-creator/kodi-noodleprivate`; Basis aktuelles `main`; Kodi-ID **`plugin.video.xtreammate`** behalten.  
 **Veröffentlichung:** produktiv **0.1.26**; `0.1.27` ist eine **Zielversionsnummer, noch kein Release, kein Code-Fix und keine Geräteabnahme**.  
