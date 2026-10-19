@@ -1,11 +1,11 @@
 # XCMate Space Premium – verbindliche 98er-Masterliste
 
-**19.10.2026 – EIN optionales Space-Premium-Design, KEINE eigenständigen Grafiksets.**
+**20.10.2026 – EIN optionales Space-Premium-Design, KEINE eigenständigen Grafiksets.**
 
-- **60 freigegeben:** Slots 1–60; alle Originale bleiben unverändert archiviert.
+- **70 freigegeben:** Slots 1–60; alle Originale bleiben unverändert archiviert.
 - **0 Entwürfe mit offener Abnahme.**
-- **38 noch offen:** Nr. 61–98.
-- Alle 60 verfügbaren Dateien sind reine Theme-Assets – **keine Integration in XCMate Core 0.1.27** und keine automatischen Downloads.
+- **28 noch offen:** Nr. 71–98.
+- Alle 70 verfügbaren Dateien sind reine Theme-Assets – **keine Integration in XCMate Core 0.1.27** und keine automatischen Downloads.
 - Revisionen versionieren: Originale und SHA-256 erhalten.
 
 **Masterordner Google Drive:** https://drive.google.com/drive/folders/1UPA7fLKIq21GkA4NzAPEVfLp2BvSpm3y
@@ -18,11 +18,11 @@
 | Hauptmenü | 12 | 12 | 0 | 0 |
 | Einstellungen | 20 | 20 | 0 | 0 |
 | Filme/Serien | 14 | 14 | 0 | 0 |
-| EPG | 12 | 10 | 0 | 2 |
-| Player/Fernbedienung | 16 | 0 | 0 | 16 |
+| EPG | 12 | 12 | 0 | 0 |
+| Player/Fernbedienung | 16 | 8 | 0 | 8 |
 | Suche/Navigation | 16 | 0 | 0 | 16 |
 | Widgets | 4 | 0 | 0 | 4 |
-| **Gesamt** | **98** | **60** | **0** | **38** |
+| **Gesamt** | **98** | **70** | **0** | **28** |
 
 ## Alle 98 Positionen
 
@@ -88,16 +88,16 @@
 | 58 | `epg/icon-clock.png` | ✓ Freigegeben · archiviert, nicht integriert |
 | 59 | `epg/bg-guide.jpg` | ✓ Freigegeben · archiviert, nicht integriert |
 | 60 | `epg/bg-detail.jpg` | ✓ Freigegeben · archiviert, nicht integriert |
-| 61 | `epg/no-data.png` | ○ Noch zu erstellen |
-| 62 | `epg/source-error.png` | ○ Noch zu erstellen |
-| 63 | `player/icon-play.png` | ○ Noch zu erstellen |
-| 64 | `player/icon-pause.png` | ○ Noch zu erstellen |
-| 65 | `player/icon-stop.png` | ○ Noch zu erstellen |
-| 66 | `player/icon-seek-back.png` | ○ Noch zu erstellen |
-| 67 | `player/icon-seek-forward.png` | ○ Noch zu erstellen |
-| 68 | `player/icon-skip-back.png` | ○ Noch zu erstellen |
-| 69 | `player/icon-skip-forward.png` | ○ Noch zu erstellen |
-| 70 | `player/icon-live-edge.png` | ○ Noch zu erstellen |
+| 61 | `epg/no-data.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 62 | `epg/source-error.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 63 | `player/icon-play.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 64 | `player/icon-pause.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 65 | `player/icon-stop.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 66 | `player/icon-seek-back.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 67 | `player/icon-seek-forward.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 68 | `player/icon-skip-back.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 69 | `player/icon-skip-forward.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 70 | `player/icon-live-edge.png` | ✓ Freigegeben · archiviert, nicht integriert |
 | 71 | `player/icon-audio.png` | ○ Noch zu erstellen |
 | 72 | `player/icon-subtitles.png` | ○ Noch zu erstellen |
 | 73 | `player/icon-video-settings.png` | ○ Noch zu erstellen |
@@ -133,11 +133,16 @@
 - PNG-Icons haben echte Transparenz, Film-/Serienposter 600×900, Backdrops 1920×1080, Rail 1920×280 RGBA, Poster-Schatten 600×900 RGBA.
 - UI-Deckkraft/Farben/Fonts kommen später über den optionalen Skinbereich (GitHub Issue #31).
 - Optionales Theme und Lightweight Core gemäß Issue #30; nichts automatisch nach `main` mergen.
-- Die Mediengrafiken 37–50 sowie EPG-Grafiken 51–60 sind vom Nutzer am 19.10.2026 freigegeben; 61–62 bleiben offen. Keine produktive Integration.
+- Die Mediengrafiken 37–50 sowie EPG-Grafiken 51–60 sind vom Nutzer am 19.10.2026 freigegeben; 61–62 sind freigegeben und archiviert. Keine produktive Integration.
 
 ## Freigaben 19.10.2026
 
 - **37–50 (Media):** Nutzerfreigabe erteilt; bereits archivierte Originale unverändert.
 - **51–60 (EPG):** Nutzerfreigabe erteilt; acht 256×256-RGBA-Icons und zwei 1920×1080-JPG-Hintergründe. Die Quelldateien liegen zusätzlich im Versionsarchiv.
 - Neues Kontaktblatt JPG/PDF sowie SHA-256-/Assetmanifest: `epg/`.
-- **Offen:** 61–98. Der Kodi-Core bleibt unverändert, kein Merge nach `main`.
+- **Offen:** 71–98. Der Kodi-Core bleibt unverändert, kein Merge nach `main`.
+
+## Freigaben 20.10.2026
+
+- **61–70 (EPG / Player):** Zehn vom Nutzer freigegebene RGBA-Icons (256 × 256) archiviert; unveränderte 1254 × 1254 Originalgenerationen erhalten. Kontaktblätter JPG/PDF, Prüfsummen, Manifest, README und Quellen-ZIP liegen vor.
+- **Fortschritt:** 70/98 freigegeben, 28 offen. XCMate Core bleibt unverändert; kein Merge nach `main`.

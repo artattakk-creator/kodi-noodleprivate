@@ -1,14 +1,14 @@
 {
   "title": "XCMate Space Premium — 98 logische Grafikpositionen",
-  "generated": "2026-10-19",
+  "generated": "2026-10-20",
   "theme": "space-premium",
   "canonical_drive_folder": "https://drive.google.com/drive/folders/1UPA7fLKIq21GkA4NzAPEVfLp2BvSpm3y",
   "target": 98,
-  "archive_present": 60,
-  "approved": 60,
+  "archive_present": 70,
+  "approved": 70,
   "pending_approval": 0,
-  "remaining_unproduced": 38,
-  "note": "ONE optional Space Premium 98-slot theme. Slots 1–60 approved, 61–98 not produced. No runtime integration. Originals and SHA preserved.",
+  "remaining_unproduced": 28,
+  "note": "ONE optional Space Premium 98-slot theme. Slots 1–70 approved/archived, 71–98 not produced. No Kodi runtime integration. Originals and SHA preserved.",
   "slots": [
     {
       "slot": 1,
@@ -666,81 +666,171 @@
       "slot": 61,
       "path": "epg/no-data.png",
       "category": "epg",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "01c7b350d41cd5d3e05923e66e3fd0fba25d7ad70fcc33b945ee298c9a7d2cc1",
+      "source_batch_reference": "epg-player-slots-61-70-2026-10-20",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 77670,
+      "source_sha256": "9085922b6e608205eff1198159d3ea46eca70ea6535b172ba6c75c0fe129a3ad",
+      "source_filename": "61_a_high_quality_3d_glossy_sci_fi_icon_graphic_on_a_1_batch_1.png",
+      "approval_note": "User approved 2026-10-20; theme only; no Core installation or automatic download."
     },
     {
       "slot": 62,
       "path": "epg/source-error.png",
       "category": "epg",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "99fdc38e07a050f0bb55c2a2849ec10f0afe29867ab8fa7f46605ae21dc39db3",
+      "source_batch_reference": "epg-player-slots-61-70-2026-10-20",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 79165,
+      "source_sha256": "dab545060869a885e9403e7a981326e8c5d9197fe4b60abf95018abc23b540c0",
+      "source_filename": "62_a_clean_high_detail_3d_sci_fi_icon_illustration_o_2_batch_2.png",
+      "approval_note": "User approved 2026-10-20; theme only; no Core installation or automatic download."
     },
     {
       "slot": 63,
       "path": "player/icon-play.png",
       "category": "player",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "28cc3878ff543cb2e65d1219d8250f2c79ba1b86df0dcad6ab30b073976b07b7",
+      "source_batch_reference": "epg-player-slots-61-70-2026-10-20",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 89124,
+      "source_sha256": "e7832881197d183edbdbc1c3454e2c996c0040388600df6bd2d244d1a2354443",
+      "source_filename": "63_a_high_detail_photorealistic_glossy_3d_sci_fi_ico_3_batch_3.png",
+      "approval_note": "User approved 2026-10-20; theme only; no Core installation or automatic download."
     },
     {
       "slot": 64,
       "path": "player/icon-pause.png",
       "category": "player",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "3d1d882863a341fc8a29583e61704b2452706b2f15c4d357089a36676c1d0bc2",
+      "source_batch_reference": "epg-player-slots-61-70-2026-10-20",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 97000,
+      "source_sha256": "3d14b6dd3ef985c8fc5c6e62c2fe9c538edd5569ca42ef06e34f28963d3c90e1",
+      "source_filename": "64_a_high_resolution_ultra_detailed_sci_fi_glossy_3d_4_batch_4.png",
+      "approval_note": "User approved 2026-10-20; theme only; no Core installation or automatic download."
     },
     {
       "slot": 65,
       "path": "player/icon-stop.png",
       "category": "player",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "ec1d268b641ca2961c4bdcee874324ced787b7ffa3398c1bc0e7c5b520942305",
+      "source_batch_reference": "epg-player-slots-61-70-2026-10-20",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 93615,
+      "source_sha256": "9c53a55e3525ae518e8b8735472482895f39f98c578762850c9792e25b0f6574",
+      "source_filename": "65_a_high_detail_glossy_sci_fi_3d_icon_on_a_transpar_5_batch_5.png",
+      "approval_note": "User approved 2026-10-20; theme only; no Core installation or automatic download."
     },
     {
       "slot": 66,
       "path": "player/icon-seek-back.png",
       "category": "player",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "bf91948fd7e7adfadceeddc6064a20578d91c95ef5297be301c85be880cc01d3",
+      "source_batch_reference": "epg-player-slots-61-70-2026-10-20",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 67235,
+      "source_sha256": "b012a4a0375594b263e22f7a3b9ff78738ae3edafd12b65269dd927d045d5b1a",
+      "source_filename": "66_a_highly_detailed_glossy_neon_sci_fi_icon_on_a_tr_6_batch_6.png",
+      "approval_note": "User approved 2026-10-20; theme only; no Core installation or automatic download."
     },
     {
       "slot": 67,
       "path": "player/icon-seek-forward.png",
       "category": "player",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "ac9daecd5497760a34f44f23ecf7e1e33820bcd246a989d276cd69b188276545",
+      "source_batch_reference": "epg-player-slots-61-70-2026-10-20",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 60786,
+      "source_sha256": "0d6b90d3521594048eff105e2b9d0caf6549d645811ef4bffa2c24c139b586dd",
+      "source_filename": "67_a_clean_high_resolution_glossy_sci_fi_icon_style_7_batch_7.png",
+      "approval_note": "User approved 2026-10-20; theme only; no Core installation or automatic download."
     },
     {
       "slot": 68,
       "path": "player/icon-skip-back.png",
       "category": "player",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "65720f967353e77c70a7b1a1e117223ffe778689bcce2b9b95c44b0eadb3172f",
+      "source_batch_reference": "epg-player-slots-61-70-2026-10-20",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 70896,
+      "source_sha256": "51eecd5b6d651eaa43df7a6488e007039ab389b319f29f8b535b5cef7ad37eaa",
+      "source_filename": "68_a_high_resolution_ultra_detailed_3d_cgi_neon_sci_8_batch_8.png",
+      "approval_note": "User approved 2026-10-20; theme only; no Core installation or automatic download."
     },
     {
       "slot": 69,
       "path": "player/icon-skip-forward.png",
       "category": "player",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "868cf014f3baeec1c3d8d10788e0547bc99a2663cb0e7e7349ed083ad22adf47",
+      "source_batch_reference": "epg-player-slots-61-70-2026-10-20",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 56626,
+      "source_sha256": "fed942668b6b0b9ce1b30f50cdcc862170f3fb1661cf603718c2a81ab4b2f162",
+      "source_filename": "69_a_high_detail_glossy_sci_fi_3d_icon_on_a_transpar_9_batch_9.png",
+      "approval_note": "User approved 2026-10-20; theme only; no Core installation or automatic download."
     },
     {
       "slot": 70,
       "path": "player/icon-live-edge.png",
       "category": "player",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "11e590302a89a7c109ee38f58f2b05973887ee01520d029e2c8b1acca11684f5",
+      "source_batch_reference": "epg-player-slots-61-70-2026-10-20",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 44602,
+      "source_sha256": "228cebb176bc61a97f7c0994b273a94614f4cd719e7b8ccae25d2c04a7bdffca",
+      "source_filename": "70_a_single_high_resolution_ultra_detailed_sci_fi_g_10_batch_10.png",
+      "approval_note": "User approved 2026-10-20; theme only; no Core installation or automatic download."
     },
     {
       "slot": 71,
@@ -991,6 +1081,12 @@
       "slots": "51-60",
       "outcome": "approved",
       "constraint": "10 EPG assets user approved. Original image generations preserved. No Kodi runtime integration."
+    },
+    {
+      "date": "2026-10-20",
+      "slots": "61-70",
+      "outcome": "approved",
+      "constraint": "10 EPG/Player icons user approved; sources preserved; optional theme only; no Core integration."
     }
   ],
   "runtime_release_version": "0.1.27",
@@ -1018,6 +1114,14 @@
       "approval": "approved",
       "drive_folder": "https://drive.google.com/drive/folders/1Cg1x9AyT985hQ3tVgGkiU1iOSHQGWHsA",
       "archive": "XCMate_Space_Premium_EPG_51-60.zip"
+    },
+    {
+      "date": "2026-10-20",
+      "slots": "61-70",
+      "created": 10,
+      "approval": "approved",
+      "drive_folder": "https://drive.google.com/drive/folders/1UPA7fLKIq21GkA4NzAPEVfLp2BvSpm3y",
+      "archive": "XCMate_Space_Premium_61-70.zip"
     }
   ]
 }
