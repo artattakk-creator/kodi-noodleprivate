@@ -7,7 +7,7 @@ sys.path.insert(0,str(REPO/'tests'))
 from test_xcmate_kodi21_overlay import OverlayLifecycleTests,ControlImage,ControlLabel,ControlButton
 case=OverlayLifecycleTests();case.setUp()
 o=case.overlay
-root=REPO/'docs/XCMate/assets/025';root.mkdir(parents=True,exist_ok=True)
+root=REPO/'docs/XCMate/assets/026';root.mkdir(parents=True,exist_ok=True)
 fontpath='/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
 try:
  for ch in o.channels:
@@ -37,11 +37,13 @@ try:
     size={'font16':28,'font13':21,'font12':17}.get(opts.get('font'),21)
     layer=Image.new('RGBA',(w,h));draw=ImageDraw.Draw(layer)
     offset=int(opts.get('textOffsetX',0)) if isinstance(c,ControlButton) else 0
-    draw.text((offset,2),label,font=ImageFont.truetype(fontpath,size),fill='#F0F2F5')
+    draw.text((offset,2),label,font=ImageFont.truetype(fontpath,size),
+              fill='#F0F2F5' if c.enabled else '#6F7780')
     im.alpha_composite(layer,(int(x),int(y)))
   ImageDraw.Draw(im).text((32,731),'Layoutmodell aus Control-Koordinaten / Testdaten / keine Kodi- oder Android-Aufnahme',font=ImageFont.truetype(fontpath,17),fill='#D2D8E0')
   im.convert('RGB').save(root/name)
  render('info','infobar-layout.png')
  render('channels','channels-layout.png')
- render('extras','controls-layout.png')
+ render('controls','controls-layout.png')
+ render('extras','settings-layout.png')
 finally:case.doCleanups()

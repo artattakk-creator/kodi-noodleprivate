@@ -6,10 +6,13 @@ Image.new('RGBA',(16,16),(27,29,33,225)).save(folder/'tv_panel.png')
 Image.new('RGBA',(16,8),(110,189,217,255)).save(folder/'tv_progress.png')
 Image.new('RGBA',(16,16),(58,75,91,255)).save(folder/'tv_focus.png')
 Image.new('RGBA',(16,16),(41,45,51,245)).save(folder/'tv_normal.png')
-for name in ('pause','stop','back','forward','more','audio','video','subtitle','epg','settings','tv'):
+for name in ('pause','play','live','stop','back','forward','more','audio','video','subtitle','epg','settings','tv'):
  im=Image.new('RGBA',(64,64));d=ImageDraw.Draw(im);c=(240,242,245,255)
  if name=='pause':
   d.rectangle((16,12,26,52),fill=c);d.rectangle((38,12,48,52),fill=c)
+ elif name=='play':d.polygon([(19,12),(51,32),(19,52)],fill=c)
+ elif name=='live':
+  d.polygon([(12,14),(39,32),(12,50)],fill=c);d.rectangle((44,14,50,50),fill=c)
  elif name=='stop':d.rounded_rectangle((14,14,50,50),radius=3,fill=c)
  elif name in ('back','forward'):
   d.polygon([(12,32),(31,14),(31,50)],fill=c);d.polygon([(31,32),(51,14),(51,50)],fill=c)

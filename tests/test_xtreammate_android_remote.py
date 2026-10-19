@@ -32,7 +32,7 @@ class NativeRemoteTests(unittest.TestCase):
         self.assertEqual(profile.mapped_action(3),'up')
         self.assertEqual(profile.mapped_action(4),'down')
         self.assertEqual(profile.mapped_action(7),'ok')
-        self.assertEqual(profile.mapped_action(92),'left')
+        self.assertEqual(profile.mapped_action(92),'back')
 
     def test_learned_actions_persist_and_take_effect(self):
         profile=self.profile
@@ -40,7 +40,7 @@ class NativeRemoteTests(unittest.TestCase):
         new['epg']=501
         profile.save(new)
         self.assertEqual(profile.mapped_action(501),'epg')
-        self.assertIsNone(profile.mapped_action(117))
+        self.assertEqual(profile.mapped_action(117),'menu')
         self.assertEqual(json.loads(Path(profile.path()).read_text(encoding='utf-8'))['epg'],501)
 
     def test_conflicting_buttons_are_rejected(self):
@@ -53,6 +53,17 @@ class NativeRemoteTests(unittest.TestCase):
     def test_foreign_profile_is_not_misinterpreted(self):
         Path(self.profile.path()).write_text('{"epg": "not a number"}',encoding='utf-8')
         self.assertEqual(self.profile.load()['epg'],117)
+
+    def test_legacy_profile_preserved_native_directions_win_and_extra_left_still_works(self):
+        profile=self.profile
+        saved=dict(profile.DEFAULT,left=501,more=1)
+        Path(profile.path()).write_text(json.dumps(saved),encoding='utf-8')
+        before=Path(profile.path()).read_bytes()
+        bindings=profile.load()
+        self.assertEqual(profile.mapped_action(1,bindings),'left')
+        self.assertEqual(profile.mapped_action(501,bindings),'left')
+        self.assertEqual(profile.mapped_action(2,bindings),'right')
+        self.assertEqual(Path(profile.path()).read_bytes(),before)
 
     def test_startsender_uses_separate_kodi_playback_modes(self):
         source=(LIB/'main.py').read_text(encoding='utf-8')
@@ -74,8 +85,8 @@ class NativeRemoteTests(unittest.TestCase):
     def test_overlay_retains_focus_when_hidden_and_uses_mapped_actions(self):
         source=(LIB/'live_overlay.py').read_text(encoding='utf-8')
         self.assertIn('target = self.capture',source)
-        self.assertIn('mapped_action(key)',source)
-        self.assertIn('self.handle_command(mapped)',source)
+        self.assertIn('mapped_action(key, self._bindings)',source)
+        self.assertIn("self.handle_command(mapped,source='native'",source)
         self.assertIn("self.capture.getId()",source)
         self.assertIn("def onControl(self, control):",source)
 

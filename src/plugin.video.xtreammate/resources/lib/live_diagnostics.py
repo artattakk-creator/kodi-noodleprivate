@@ -9,6 +9,8 @@ import math
 import os
 import tempfile
 import time
+import threading
+from collections import deque
 
 STAGES = ('session', 'ownership', 'service', 'dialog', 'focus', 'input',
           'epg', 'epg_source', 'epg_list', 'performance',
@@ -20,8 +22,16 @@ FIELDS = frozenset(('video', 'marker', 'catalog', 'channels', 'programmes',
                     'source_index', 'enabled', 'requested', 'item_tag', 'fullscreen',
                     'limit_bytes', 'limit_value', 'http_status', 'build',
                     'index_ms', 'snapshot_ms', 'render_ms', 'focus_ms', 'items',
-                    'cache_ms', 'cache_hit', 'last_channels', 'last_programmes'))
+                    'cache_ms', 'cache_hit', 'last_channels', 'last_programmes',
+                    'control_id', 'focus_before', 'learned_left_action',
+                    'left_received', 'left_channels', 'left_groups'))
 TEXT_FIELDS = {
+    'mode_before': frozenset(('hidden','info','controls','extras','channels','groups','guide')),
+    'mode_after': frozenset(('hidden','info','controls','extras','channels','groups','guide')),
+    'input_source': frozenset(('native','control','bridge')),
+    'command': frozenset(('left','right','up','down','ok','back','menu','epg','guide','more',
+        'info','play_pause','long_left','long_right','long_up','long_down','long_ok',
+        'long_back','long_menu','long_play_pause')),
     'failure_stage': frozenset(('BUILD_CONTROLS', 'CONTROL_LIST', 'WINDOW_SHOW',
                                'RENDER', 'FOCUS', 'DOWNLOAD', 'PARSE', 'MERGE')),
     'exception_class': frozenset(('TypeError', 'RuntimeError', 'ValueError',
@@ -40,6 +50,8 @@ TEXT_FIELDS = {
         'DOWNLOAD_TIMEOUT', 'DOWNLOAD_FAILED', 'PARSE_FAILED', 'EMPTY_GUIDE')),
 }
 _WRITTEN = {}
+_INPUT_PENDING = deque(maxlen=64)
+_INPUT_LOCK = threading.RLock()
 PREFIX = 'XtreamMate.Diagnostic.'
 EXPLANATIONS={
     'URL_NOT_VERIFIED':'Player-Pfad passt nicht; keine passende aktuelle ListItem-Kennung.',
@@ -88,7 +100,7 @@ def _disk(stage):
             raw=f.read(32769)
         if len(raw)>32768: return []
         data=json.loads(raw)
-        return [e for e in (_clean(v) for v in data[-16:]) if e and e['stage']==stage]
+        return [e for e in (_clean(v) for v in data[-(64 if stage=='input' else 16):]) if e and e['stage']==stage]
     except Exception:
         return []
 
@@ -107,24 +119,30 @@ def record(stage, code, **fields):
         xbmcgui.Window(10000).setProperty(PREFIX+stage,json.dumps(entry))
     except Exception:
         pass
+    if stage=='input':
+        # Native callbacks only enqueue bounded data. Service/Stop flushes it;
+        # no profile reads, fsync or JSON-file rewrite for each remote press.
+        with _INPUT_LOCK: _INPUT_PENDING.append(entry)
+        return
     previous=_WRITTEN.get(stage)
     if previous and previous['code']==code and entry['at']-previous['at']<2:
         return
     _save(entry)
 
 
-def _save(entry):
+def _save(entry, batch=None):
     stage=entry['stage']
     target=temp=None
     try:
         target=_path(stage)
         entries=_disk(stage)
-        entries.append(entry)
+        entries.extend(batch if batch is not None else [entry])
         fd,temp=tempfile.mkstemp(prefix='.xcmate-diag-', dir=os.path.dirname(target))
         with os.fdopen(fd,'w',encoding='utf-8') as f:
-            json.dump(entries[-16:],f,separators=(',',':'))
+            json.dump(entries[-(64 if stage=='input' else 16):],f,separators=(',',':'))
         os.replace(temp,target)
         _WRITTEN[stage]=entry
+        return True
     except Exception:
         pass
     finally:
@@ -135,8 +153,16 @@ def _save(entry):
 
 def checkpoint():
     """Flush the newest throttled input/focus state before the dialog closes."""
+    flush_input()
     for entry in snapshots().values():
         if entry!=_WRITTEN.get(entry['stage']): _save(entry)
+
+
+def flush_input():
+    """Called by the service timer and on close; retain a 64-event input trail."""
+    with _INPUT_LOCK:
+        if _INPUT_PENDING and _save(_INPUT_PENDING[-1], list(_INPUT_PENDING)):
+            _INPUT_PENDING.clear()
 
 
 def snapshots():
@@ -153,6 +179,7 @@ def snapshots():
 
 
 def report():
+    flush_input()
     lines=['=== Gespeicherte Live-/EPG-Diagnose (auch nach Stop/Neustart) ===']
     for stage,entry in snapshots().items():
         lines.append('{}: {} [{}]'.format(stage,entry['code'],
@@ -169,6 +196,13 @@ def report():
         history=_disk(stage)
         if history:
             lines.append('  Verlauf: '+' → '.join(e['code'] for e in history[-8:]))
+            if stage=='input':
+                for event in history:
+                    values=['{}={}'.format(k,event[k]) for k in ('input_source','action_id',
+                        'button_code','command','mode_before','mode_after','focus_before','focus_id',
+                        'control_id','learned_left_action') if k in event]
+                    lines.append('  {} {} {}'.format(time.strftime('%H:%M:%S',time.localtime(event['at'])),
+                                                      event['code'],' '.join(values)))
             failure = next((e for e in reversed(history) if 'exception_class' in e), None)
             if failure:
                 details = ['{}={}'.format(k, failure[k]) for k in sorted(FIELDS | TEXT_FIELDS.keys())

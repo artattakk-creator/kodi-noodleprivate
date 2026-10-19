@@ -123,6 +123,13 @@ class LiveNavigator(xbmcgui.WindowDialog):
         from tv_data import CatalogIndex, GuideSnapshot
         from types import SimpleNamespace
         self.portal = portal
+        self._left_counts = dict(left_received=0,left_channels=0,left_groups=0)
+        from remote_profiles import load as load_bindings, DEFAULT
+        try:
+            self._bindings = load_bindings()
+        except (OSError, ValueError, TypeError):
+            self._bindings = dict(DEFAULT)
+            trace('input','PROFILE_FALLBACK')
         self.xc = XtreamClient(portal['xc_host'], portal['xc_user'], portal['xc_pass'])
         self.sid = str(initial_sid)
         self._recent_sid = ''
@@ -226,7 +233,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
             if not self._drawn:
                 self._build_controls()
                 xbmcgui.Window(10000).setProperty('XtreamMate.NativeActionCount','0')
-                trace('input','WAITING_FOR_ACTION',count=0)
+                trace('input','WAITING_FOR_ACTION',count=0,
+                      learned_left_action=self._bindings.get('left',ACTION_LEFT))
             try: self.setProperty('XtreamMate.NavigatorIdentity',self._window_nonce)
             except Exception: pass
             trace('dialog','SHOW_REQUESTED',channels=len(self.channels),catalog=self._catalog_ready)
@@ -357,13 +365,14 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self.osd_bg = xbmcgui.ControlImage(32,height-204,width-64,172,panel)
         self.osd_title = xbmcgui.ControlLabel(52,height-194,width-104,30,'XCMate','font13','0xFFF0F2F5')
         self.main_buttons,self.extra_buttons,self._button_icons = [],[],[]
-        main = [('Pause / Weiter','pause'),('-10 s','back'),('+30 s','forward'),('Stop','stop'),('Weitere','more')]
+        # Stable action indices; visual tape-deck order is defined in _render.
+        main = [('Pause','pause'),('-10 s','back'),('+30 s','forward'),('Stop','stop'),('Weitere','more'),('Live-Ende','live')]
         extra = [('Ton','audio'),('Bild','video'),('Untertitel','subtitle'),('EPG','epg'),('Einstellungen','settings'),('Gruppen','tv')]
-        for entries,buttons,y in ((main,self.main_buttons,height-150),(extra,self.extra_buttons,height-92)):
+        for entries,buttons,y in ((main,self.main_buttons,height-150),(extra,self.extra_buttons,height-150)):
             space = (width-104)//len(entries)
             for i,(label,icon) in enumerate(entries):
                 buttons.append(xbmcgui.ControlButton(52+i*space,y,space-8,46,label,
-                    focusTexture=focused,noFocusTexture=normal,textOffsetX=36,font='font13'))
+                    focusTexture=focused,noFocusTexture=normal,textOffsetX=36,font='font13',disabledColor='0xFF6F7780'))
                 self._button_icons.append((buttons[-1],xbmcgui.ControlImage(60+i*space,y+12,22,22,
                     os.path.join(media,'tv_'+icon+'.png'))))
         all_controls = [self.bg,self.heading,self.sub,self.control,self.footer,self.capture,
@@ -383,8 +392,14 @@ class LiveNavigator(xbmcgui.WindowDialog):
 
     def _can_seek(self):
         try:
-            return bool(xbmc.getCondVisibility('Player.SeekEnabled') and xbmc.Player().getTotalTime()>5)
+            duration=float(xbmc.Player().getTotalTime())
+            return bool(xbmc.getCondVisibility('Player.SeekEnabled') and math.isfinite(duration) and duration>5)
         except Exception: return False
+
+    def _render_transport(self):
+        paused=bool(xbmc.getCondVisibility('Player.Paused'))
+        self.main_buttons[0].setLabel('Weiter' if paused else 'Pause')
+        self._button_icons[0][1].setImage(os.path.join(self._media,'tv_play.png' if paused else 'tv_pause.png'))
 
     def _local_logo(self, channel):
         from logo_cache import local_logo
@@ -485,20 +500,38 @@ class LiveNavigator(xbmcgui.WindowDialog):
         for c in self._info_controls: c.setVisible(self.mode=='info')
         for c in (self.osd_bg,self.osd_title): c.setVisible(osd)
         seek = self._can_seek() if osd else False
-        self._main_indices = [0,1,2,3,4] if seek else [0,3,4]
-        for i,c in enumerate(self.main_buttons): c.setVisible(osd and i in self._main_indices)
-        for slot,i in enumerate(self._main_indices):
-            space=(self._width-104)//len(self._main_indices)
+        transport = [1,0,2,5,3,4]
+        self._main_indices = transport if seek else [0,3,4]
+        for i,c in enumerate(self.main_buttons):
+            c.setVisible(self.mode=='controls')
+            c.setEnabled(i in self._main_indices)
+        for slot,i in enumerate(transport):
+            space=(self._width-104)//len(transport)
             self.main_buttons[i].setPosition(52+slot*space,self._height-150)
             self.main_buttons[i].setWidth(space-8)
             self._button_icons[i][1].setPosition(60+slot*space,self._height-138)
         for c in self.extra_buttons: c.setVisible(self.mode=='extras')
-        for button,image in self._button_icons: image.setVisible(button in self.main_buttons and osd and self.main_buttons.index(button) in self._main_indices or button in self.extra_buttons and self.mode=='extras')
+        for button,image in self._button_icons:
+            image.setVisible(button in self.main_buttons and self.mode=='controls' or
+                             button in self.extra_buttons and self.mode=='extras')
         target = self.capture
         if self.mode=='info': self._render_info()
         elif osd:
-            if self._focus_main not in self._main_indices: self._focus_main=0
-            self.osd_title.setLabel('XCMate - '+('Bedienung' if self.mode=='controls' else 'Weitere Einstellungen'))
+            self._render_transport()
+            if self._focus_main not in self._main_indices:
+                previous=self.main_buttons[self._focus_main]
+                self._focus_main=0
+                if self.mode=='controls' and not focus:
+                    try:
+                        dialog=xbmcgui.Window(xbmcgui.getCurrentWindowDialogId())
+                        # Repair a newly disabled seek focus only while this
+                        # dialog is topmost; never steal Audio/Video's focus.
+                        focus=(self.getFocusId()==previous.getId() and
+                               dialog.getProperty('XtreamMate.NavigatorIdentity')==self._window_nonce)
+                    except (AttributeError,RuntimeError): pass
+            title = ('Player - Runter: Einstellungen' if seek else
+                     'Player - Kein Spulen/Live-Ende verfügbar - Runter: Einstellungen')
+            self.osd_title.setLabel('XCMate - '+(title if self.mode=='controls' else 'Einstellungen - Hoch: Player'))
             target = self.main_buttons[self._focus_main] if self.mode=='controls' else self.extra_buttons[self._focus_extra]
         elif listing:
             index_begin=time.perf_counter()
@@ -538,6 +571,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
         if now-self._last_tick<1: return
         self._last_tick=now
         if self.mode=='info': self._render_info()
+        elif self.mode in ('controls','extras'):
+            self._render(focus=False)
         elif self.mode in ('channels','groups','guide') and self._guide.generation!=self._guide_generation:
             self._guide_generation=self._guide.generation
             self._render(focus=False)
@@ -662,13 +697,14 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self._tune(channel)
 
     def _seek(self, seconds):
+        if not self._can_seek(): return
         player = xbmc.Player()
         try:
             duration = float(player.getTotalTime())
             position = float(player.getTime())
-            if duration < 5:
+            if not math.isfinite(position):
                 raise ValueError('live stream without timeshift')
-            player.seekTime(min(max(position+seconds, 0), duration))
+            player.seekTime(duration if seconds is None else min(max(position+seconds, 0), duration))
         except Exception:
             xbmcgui.Dialog().notification('XCMate',
                 'Spulen ist bei diesem Live-Sender nicht verfügbar (kein Timeshift).')
@@ -681,17 +717,19 @@ class LiveNavigator(xbmcgui.WindowDialog):
 
     def _execute(self, section, index):
         if section == 'controls':
-            if index in (1,2) and not self._can_seek(): return
+            if index in (1,2,5) and not self._can_seek(): return
             if index == 4:
                 self._switch('extras')
                 return
-            self._switch('hidden')
             if index == 0: xbmc.Player().pause()
             elif index == 1: self._seek(-10)
             elif index == 2: self._seek(30)
+            elif index == 5: self._seek(None)
             elif index == 3:
                 xbmc.Player().stop()
                 self.close()
+                return
+            self._render()
         else:
             if index == 3:
                 self._epg()
@@ -731,10 +769,32 @@ class LiveNavigator(xbmcgui.WindowDialog):
             if str(c.extra.get('stream_id')) == str(result.extra.get('stream_id'))), 0)
         self._switch('channels')
 
-    def handle_command(self, command):
-        """XCMate-local TV commands; never open Kodi's own player OSD."""
+    def _input_trace(self, code, source, command='', before=None, **fields):
+        try: focus_id=self.getFocusId()
+        except (RuntimeError, AttributeError): focus_id=-1
+        counts=getattr(self,'_left_counts',{})
+        if code=='COMMAND_HANDLED' and source=='native' and fields.get('action_id')==ACTION_LEFT:
+            counts['left_received']=counts.get('left_received',0)+1
+            if before in ('hidden','info') and self.mode=='channels':
+                counts['left_channels']=counts.get('left_channels',0)+1
+            elif before=='channels' and self.mode=='groups':
+                counts['left_groups']=counts.get('left_groups',0)+1
+        trace('input',code,input_source=source,command=command,
+              mode_before=before or self.mode,mode_after=self.mode,focus_id=focus_id,
+              learned_left_action=getattr(self,'_bindings',{}).get('left',ACTION_LEFT),**counts,**fields)
+
+    def handle_command(self, command, source='bridge', **fields):
+        before=self.mode
+        try: fields['focus_before']=self.getFocusId()
+        except (RuntimeError,AttributeError): pass
         if not self._accept_input():
+            self._input_trace('COMMAND_REJECTED',source,command,before,**fields)
             return
+        self._handle_command(command)
+        self._input_trace('COMMAND_HANDLED',source,command,before,**fields)
+
+    def _handle_command(self, command):
+        """XCMate-local TV commands; never open Kodi's own player OSD."""
         self._intro_deadline = None
         if self.mode=='info': self._info_deadline=time.monotonic()+self._info_timeout
         if command in ('left', 'long_left'):
@@ -797,14 +857,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         elif command == 'long_down':
             self._search_channels()
         elif command == 'long_play_pause':
-            # Only attempt a live edge jump when Kodi has a seekable stream.
-            try:
-                p = xbmc.Player()
-                duration = p.getTotalTime()
-                if duration > 5:
-                    p.seekTime(duration)
-            except Exception:
-                pass
+            self._seek(None)
         elif command == 'play_pause':
             xbmc.Player().pause()
         elif command in ('up', 'down'):
@@ -812,14 +865,12 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 self._zap(1 if command == 'up' else -1)
             elif self.mode=='info':
                 if command=='down': self._switch('controls')
+                else: self._switch('hidden')
             elif self.mode in ('channels', 'groups', 'guide'):
                 self._position(-1 if command == 'up' else 1)
             elif self.mode in ('controls','extras'):
-                # D-pad vertical movement stays inside our focusable OSD.
-                index = '_focus_main' if self.mode == 'controls' else '_focus_extra'
-                indices = self._main_indices if self.mode=='controls' else list(range(len(self.extra_buttons)))
-                setattr(self,index,indices[(indices.index(getattr(self,index))+(-1 if command=='up' else 1))%len(indices)])
-                self._render()
+                if self.mode=='controls': self._switch('info' if command=='up' else 'extras')
+                elif command=='up': self._switch('controls')
         elif command == 'ok':
             if self.mode == 'hidden':
                 self._switch('info')
@@ -859,7 +910,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         except (ValueError, TypeError):
             count = 0
         marker.setProperty('XtreamMate.NativeActionCount', str(count+1))
-        trace('input','NATIVE_ACTION',action_id=key,button_code=raw,count=count+1)
+        self._input_trace('NATIVE_ACTION','native',action_id=key,button_code=raw,count=count+1)
         # Back and Context are *not* Kodi player OSD commands in XCMate.
         # Must override learned Back->left and default Menu->epg from old profiles.
         if key in BACK_ACTIONS:
@@ -874,6 +925,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
             mapped = 'play_pause'
         elif key == ACTION_RIGHT:
             mapped = 'right'
+        elif key == ACTION_LEFT:
+            mapped = 'left'
         elif key in (ACTION_UP, ACTION_DOWN, ACTION_PAGE_UP, ACTION_PAGE_DOWN) and self.mode in ('channels', 'guide', 'groups'):
             # CGUIControlList already applied this action before onAction.
             if key in (ACTION_PAGE_UP, ACTION_PAGE_DOWN) and self.mode == 'channels':
@@ -882,18 +935,24 @@ class LiveNavigator(xbmcgui.WindowDialog):
             else:
                 self._remember_position()
             self._render_rows()
+            self._input_trace('NATIVE_LIST_MOVED','native',action_id=key,button_code=raw)
             return
         elif key == ACTION_SELECT:
             # Omega dispatches onControl BEFORE onAction(SELECT). Handling
             # SELECT here too would execute a second action in the new mode.
             marker.setProperty('XtreamMate.LastHandledKey', 'ok')
+            self._input_trace('SELECT_ALREADY_CLICKED','native',action_id=key,button_code=raw)
             return
+        elif key in (ACTION_UP, ACTION_DOWN):
+            mapped = 'up' if key==ACTION_UP else 'down'
         else:
             from remote_profiles import mapped_action
-            mapped = mapped_action(key)
+            mapped = mapped_action(key, self._bindings)
         if mapped:
             marker.setProperty('XtreamMate.LastHandledKey', mapped)
-            self.handle_command(mapped)
+            self.handle_command(mapped,source='native',action_id=key,button_code=raw)
+        else:
+            self._input_trace('ACTION_UNMAPPED','native',action_id=key,button_code=raw)
 
     def onControl(self, control):
         """Omega's click callback for programmatically created controls."""
@@ -901,17 +960,24 @@ class LiveNavigator(xbmcgui.WindowDialog):
             return
         control_id = control.getId()
         if control_id == self.capture.getId():
-            self.handle_command('ok')
+            self.handle_command('ok',source='control',control_id=control_id)
             return
         if control_id == self.control.getId() and self.mode in ('groups','channels','guide'):
-            self._select()
+            self.handle_command('ok',source='control',control_id=control_id)
             return
         if self.mode == 'controls':
             for i,button in enumerate(self.main_buttons):
-                if button.getId() == control_id: self._execute('controls',i);return
+                if button.getId() == control_id:
+                    if i not in self._main_indices: return
+                    self._focus_main=i
+                    self.handle_command('ok',source='control',control_id=control_id)
+                    return
         elif self.mode == 'extras':
             for i,button in enumerate(self.extra_buttons):
-                if button.getId() == control_id: self._execute('extras',i);return
+                if button.getId() == control_id:
+                    self._focus_extra=i
+                    self.handle_command('ok',source='control',control_id=control_id)
+                    return
 
 
 def start_if_eligible(last_nonce):
