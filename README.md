@@ -12,7 +12,11 @@ Die aktuellen Projektdokumente für XCMate sind unter **[docs/XCMate/README.md](
 
 **Wichtig:** Die neue Serienfortschrittsfunktion und die konfigurierbaren Grauton-/Akzent-Themes sind am 14.10.2026 spezifiziert, nicht bereits veröffentlicht. Die Android-Gerätefehler beim Startsender und der Vollbild-Fernbedienung bleiben bis zum praktischen Gegenbeweis offen.
 
-**Aktuelle XCMate-Entwicklung:** [Entwurfs-PR #18](https://github.com/artattakk-creator/kodi-noodleprivate/pull/18), GitHub-CI erfolgreich.  [0.1.25-Testkandidat, EPG und Android-Testplan](docs/XCMate/IMPLEMENTIERUNG_025_TV_INFOBAR_EPG_DE.md): erstes OK Senderinfo, zweites OK/Runter Bedienung, schnelle lokale Senderliste und echte EPG-/Quellenvorschau. 237 lokale Tests bestanden. **Kein Merge/Produktiv-Release, Android-Abnahme offen; produktiv bleibt 0.1.24.**
+**Aktuelle XCMate-Entwicklung (20.10.2026):** Produktiv **0.1.28**.
+[Start-Hotfix 0.1.28.1 / Issue #38](docs/XCMate/HOTFIX_0281_STARTUP_DE.md):
+399 Tests bestanden, instrumentierter Start, sichere Portaldateien und begrenzte Widget-Abfragen.
+Testkandidat auf separatem Branch; **keine Veröffentlichung vor Review und Android-Abnahme**.
+[Testinstallation und regulärer Updateweg](docs/XCMate/ANDROID_TESTPLAN_0281_DE.md).
 
 ## Installation
 
@@ -26,7 +30,7 @@ If GitHub Pages is enabled (main/(root)), Kodi's optional HTTPS source is `https
 ## Available add-ons
 
 - `plugin.video.noodleprivate` – video lists, search, playback, named favorites, home screen widgets.
-- `plugin.video.xtreammate` – XCMate 0.1.2, setup wizard, persistent Xtream groups, reversible fullscreen TV remote mapping, startup channel and group, and up/down channel zapping.
+- `plugin.video.xtreammate` – XCMate 0.1.28, setup wizard, persistent Xtream groups, reversible fullscreen TV remote mapping, startup channel and group, and up/down channel zapping.
 
 ## Maintaining multiple add-ons
 

@@ -20,7 +20,7 @@ def active_streams(portal):
 
 
 @contextmanager
-def source_stream(source):
+def source_stream(source,cancel=lambda:False):
     uri=source['uri']
     if source.get('local'):
         import xbmcvfs
@@ -32,7 +32,7 @@ def source_stream(source):
         finally: stream.file.close()
     else:
         from utils import http_stream
-        with http_stream(uri,max_seconds=300) as stream: yield stream
+        with http_stream(uri,max_seconds=300,cancel=cancel) as stream: yield stream
 
 
 def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=lambda:False):
@@ -77,7 +77,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         with db: db.execute('DELETE FROM xml_stage')
         phase='DOWNLOAD'
         try:
-            with source_stream(source) as stream:
+            with source_stream(source,cancel=cancel) as stream:
                 phase='PARSE'
                 counts=parse(stream,channel,programme,cancel)
         except Exception as exc:

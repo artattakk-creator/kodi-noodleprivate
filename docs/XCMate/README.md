@@ -1,5 +1,17 @@
 # XCMate – zentraler Projekteinstieg
 
+> **AKTUELL – P0-Start-Hotfix 0.1.28.1 (20.10.2026):** Produktiv ist **0.1.28**,
+> Main-Basis `63b4cd6`; PR #36 wurde integriert und regulär veröffentlicht.
+> [Issue #38](https://github.com/artattakk-creator/kodi-noodleprivate/issues/38): intermittierender Android-Start-Hänger,
+> nach Stopp/Cache-Leerung vorläufig erholt; **Geräteursache weiterhin unbewiesen**.
+> [Hotfix-Bericht und Paket](HOTFIX_0281_STARTUP_DE.md) · [vollständiger Auftrag](CODEX_AUFTRAG_0281_STARTUP_HOTFIX_DE.md)
+> · [Android-Test/Repository-Update/Rollback](ANDROID_TESTPLAN_0281_DE.md) · [399/399 Tests + Nachweise](TESTERGEBNISSE_0281.json).
+> Branch `fix/xcmate-028-startup-hang`, **18 neue Starttests**, zusätzlich 26 HTTP-/EPG-Tests bestanden.
+> Test-ZIP **0.1.28.1**, 107 Dateien / 338.115 Bytes; Remote-/Live-Freeze und andere Add-ons unverändert.
+> **Kein Merge/Release; Android-Hotfix-Abnahme offen.** Design/Theme/Sprache aus Issue #37 zurückgestellt.
+> Frühere „AKTUELL“-Abschnitte unten sind historische Übergaben und keine gültige Releaseangabe.
+
+
 > **AKTUELL – Entwicklung 0.1.28 (19.10.2026):** Produktiv ist **0.1.27**, Main-Basis
 > `103646f`; PR #28 wurde übernommen. [Neuer Implementierungs-/Testbericht](IMPLEMENTIERUNG_028_PERFORMANCE_EPG_UI_DE.md)
 > · [vollständiger 0.1.28-Auftrag](CODEX_AUFTRAG_028_PERFORMANCE_EPG_UI_DE.md)

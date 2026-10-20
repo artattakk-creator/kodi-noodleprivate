@@ -1,0 +1,97 @@
+{
+  "date": "2026-10-20",
+  "issue": 38,
+  "branch": "fix/xcmate-028-startup-hang",
+  "production_version": "0.1.28",
+  "base_commit": "63b4cd6981351a398968a3795831cf024b07b2ba",
+  "candidate_version": "0.1.28.1",
+  "source_tree_sha256": "3636a473ef39faa974ab34e5b5931243bc02b257b2422e71baacde6c0266b904",
+  "full_suite": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 python -B -m unittest discover -s tests -v",
+    "tests": 399,
+    "passed": 399,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 55.611,
+    "environment": "Python 3.12.14, Linux cloud, isolated official build; Kodi modules modeled"
+  },
+  "hotfix_tests": {
+    "tests": 18,
+    "passed": 18,
+    "seconds": 0.846
+  },
+  "supplemental_http": {
+    "tests": 26,
+    "passed": 26,
+    "seconds": 1.095,
+    "httpx_version": "0.28.1",
+    "backends": [
+      "urllib",
+      "httpx"
+    ]
+  },
+  "baseline_counterexamples": [
+    {
+      "test": "test_actual_entry_imports_no_http_epg_or_catalogue_and_reads_existing_profile_once",
+      "result": "fails_on_released_028",
+      "exit_code": 1
+    },
+    {
+      "test": "test_empty_profile_is_read_only_and_assistant_is_available_without_modal",
+      "result": "fails_on_released_028",
+      "exit_code": 1
+    },
+    {
+      "test": "test_fifo_portal_file_is_rejected_without_blocking_open",
+      "result": "fails_on_released_028",
+      "exit_code": 1
+    },
+    {
+      "test": "test_duplicate_epg_worker_returns_instead_of_waiting_for_refresh_lock",
+      "result": "hangs_on_released_028",
+      "timeout_seconds": 4
+    }
+  ],
+  "package": {
+    "path": "plugin.video.xtreammate/plugin.video.xtreammate-0.1.28.1.zip",
+    "files": 107,
+    "bytes": 338115,
+    "sha256": "0d82fba50c26f4139126c2c4aff28b71d19f92dcd1bb547494afc9e3cc642036",
+    "crc": "PASS",
+    "every_file_matches_source": "PASS",
+    "python_syntax": "PASS"
+  },
+  "freeze": {
+    "files_byte_equal": [
+      "live_overlay.py",
+      "live_recovery.py",
+      "remote_profiles.py",
+      "remote_control.py",
+      "remote_bridge.py",
+      "player.py"
+    ],
+    "main_methods_ast_equal": [
+      "_maybe_autoplay_start",
+      "_startup_playable",
+      "_play_start",
+      "_play_start_direct",
+      "_play_live",
+      "_play_vod",
+      "_play_episode"
+    ],
+    "protected_production_files": 53,
+    "production_index_changed": false,
+    "other_addons_changed": false
+  },
+  "android": {
+    "status": "PENDING",
+    "original_intermittent_hang_reproduced_in_cloud": false,
+    "original_root_cause": "UNPROVEN",
+    "previous_028_live_tests": "Issue #38 comments 2026-10-20 11:26/11:27 UTC: start picture/sound, first OK, second OK, quick left list with EPG passed after recovery"
+  },
+  "ci": {
+    "status": "NOT_YET_REQUESTED",
+    "note": "Local results only; current GitHub PR checks are authoritative. No production publish."
+  }
+}

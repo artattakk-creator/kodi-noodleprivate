@@ -375,7 +375,7 @@ class CacheAndEPGTests(unittest.TestCase):
         thread=threading.Thread(target=server.serve_forever,daemon=True)
         thread.start()
         try:
-            backends=[False,True] if self.utils.HAVE_HTTPX else [False]
+            backends=[False,True] if self.utils._httpx_available() else [False]
             for backend in backends:
                 with self.subTest(httpx=backend), mock.patch.object(self.utils,'HAVE_HTTPX',backend):
                     base=f'http://127.0.0.1:{server.server_port}'

@@ -149,9 +149,10 @@ class IndexReadError(RuntimeError):
 
 
 class Reader:
-    def __init__(self,pid,filename=None):
+    def __init__(self,pid,filename=None,timeout=2,query_seconds=None):
         self.pid,self.filename=str(pid),filename
         self._selections={}
+        self.timeout,self.query_seconds=timeout,query_seconds
 
     def _filter(self,kind):
         from group_selection import enabled_ids
@@ -162,8 +163,14 @@ class Reader:
     def _query(self,sql,args=(),kind=None):
         db=None
         try:
-            db=connect(self.filename)
+            db=connect(self.filename, timeout=self.timeout)
             if db is None: return []
+            # A large catalogue or a temporarily locked legacy database must
+            # not monopolize a skin widget/UI invocation. No partial result is
+            # published; the caller receives an explicit, retryable error.
+            if self.query_seconds is not None:
+                deadline=time.monotonic()+self.query_seconds
+                db.set_progress_handler(lambda: int(time.monotonic()>=deadline),1000)
             if 'titles' in sql and db.execute("SELECT 1 FROM sqlite_master WHERE name='readable_titles'").fetchone():
                 sql=sql.replace('FROM titles','FROM readable_titles')
             if kind is not None:

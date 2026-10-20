@@ -1,5 +1,17 @@
 # Übergabeblock für einen neuen XCMate-Chat
 
+> **AKTUELL – P0-Start-Hotfix 0.1.28.1 (20.10.2026):** Produktiv ist **0.1.28**,
+> Main-Basis `63b4cd6`; PR #36 wurde integriert und regulär veröffentlicht.
+> [Issue #38](https://github.com/artattakk-creator/kodi-noodleprivate/issues/38): intermittierender Android-Start-Hänger,
+> nach Stopp/Cache-Leerung vorläufig erholt; **Geräteursache weiterhin unbewiesen**.
+> [Hotfix-Bericht und Paket](HOTFIX_0281_STARTUP_DE.md) · [vollständiger Auftrag](CODEX_AUFTRAG_0281_STARTUP_HOTFIX_DE.md)
+> · [Android-Test/Repository-Update/Rollback](ANDROID_TESTPLAN_0281_DE.md) · [399/399 Tests + Nachweise](TESTERGEBNISSE_0281.json).
+> Branch `fix/xcmate-028-startup-hang`, **18 neue Starttests**, zusätzlich 26 HTTP-/EPG-Tests bestanden.
+> Test-ZIP **0.1.28.1**, 107 Dateien / 338.115 Bytes; Remote-/Live-Freeze und andere Add-ons unverändert.
+> **Kein Merge/Release; Android-Hotfix-Abnahme offen.** Design/Theme/Sprache aus Issue #37 zurückgestellt.
+> Frühere „AKTUELL“-Abschnitte unten sind historische Übergaben und keine gültige Releaseangabe.
+
+
 > **AKTUELLE GESICHERTE PROJEKTÜBERGABE (19.10.2026):** [Google-Drive-Datei XCMate_Projektuebergabe_2026-10-19_AKTUELL.md](https://drive.google.com/file/d/12yo2Ukev2haMhVxzz7QEuMSq-PIh900_/view?usp=drivesdk) im Ordner [XCMate Projekt](https://drive.google.com/drive/folders/1f_CvKdgXGdTw1FFQ2vaCUjFFlG6Pp4db). Dort sind die vier Space-Premium-Grafiken + ZIP/Preview bereits im Ordner „Grafiken/Space Premium - Set 01“, und eine neue [Language-Packs-Ablage](https://drive.google.com/drive/folders/1vOjjhTUKmgaG18X2MkYZWhQa4BCdqmep) wurde angelegt. Englische Basis- und deutsche Bestands-`strings.po` bleiben im Kodi-Quellbaum; weitere Pakete noch nicht implementiert. Die ältere Drive-Datei `XCMate_Projektuebergabe_2026-10-19.md` ist historisch, **diese AKTUELL-Fassung verwenden**. [Codex-PR #28](https://github.com/artattakk-creator/kodi-noodleprivate/pull/28) ist weiterhin Draft und noch **nicht** produktiv; `0.1.26` bleibt veröffentlicht.
 
 

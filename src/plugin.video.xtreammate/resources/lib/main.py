@@ -4,7 +4,6 @@ import urllib.parse
 import json
 import threading
 from typing import Optional
-from concurrent.futures import ThreadPoolExecutor
 
 import xbmc
 import xbmcgui
@@ -54,14 +53,18 @@ class Router:
         )
 
     def dispatch(self):
-        import portals as _portals_mod
-        _portals_mod.import_from_settings()
-
+        from boot_diagnostics import phase, mark
         action = self._params.get('action', 'root')
-        debug('dispatch: {}'.format(action))
+        # Log a route before imports/settings work; arbitrary query text is not logged.
+        mark('ROUTE', action=action)
+        with phase('PORTALS_IMPORT'):
+            import portals as _portals_mod
+        # No migration/settings writes on every root or parallel widget request.
+        # Legacy settings can be imported explicitly from the empty-profile menu.
 
         R = {
             'root'               : self._root,
+            'import_legacy_settings': self._import_legacy_settings,
             'portal_manager'     : self._portal_manager,
             'portal_home'        : self._portal_home,
             'live_groups'        : self._live_groups,
@@ -131,15 +134,26 @@ class Router:
         }
         from app_routes import ACTIONS
         R.update({name:self._app_route for name in ACTIONS})
-        if action == 'root' and not _portals_mod.load_all():
-            from setup_wizard import setup
-            created = setup()
-            if created:
-                # The same request renders the new portal home directly.
-                self._params['pid'] = created['id']
-                self._portal_home()
-                return
-        R.get(action, self._root)()
+        if action in ('root', 'portal_home', 'xcmate_home'):
+            with phase('ROOT_MENU'):
+                R.get(action, self._root)()
+        else:
+            R.get(action, self._root)()
+
+
+    def _end_directory(self, *args, **kwargs):
+        from boot_diagnostics import finish_directory
+        finish_directory(self, *args, **kwargs)
+
+
+    def _import_legacy_settings(self):
+        # Explicit action: release Kodi's directory spinner before migration.
+        self._end_directory(cacheToDisc=False)
+        import portals
+        from boot_diagnostics import phase
+        with phase('PORTALS_MIGRATION'):
+            portals.import_from_settings()
+        xbmc.executebuiltin('Container.Refresh')
 
 
     def _portal_plot(self, p: dict, extra: str = '', cached_only=False) -> str:
@@ -329,6 +343,8 @@ class Router:
             self._add_dir('[+] Einrichtungsassistent starten',
                           self.url(action='setup_wizard'),
                           icon=_ICON_SETTINGS)
+            self._add_dir('Vorhandene Playlists aus Einstellungen übernehmen',
+                          self.url(action='import_legacy_settings'), icon=_ICON_SETTINGS)
             self._add_dir(_L(32060),
                           self.url(action='portal_manager'),
                           icon=_ICON_SETTINGS,
@@ -336,7 +352,7 @@ class Router:
             self._add_dir(_L(32007), self.url(action='settings'),
                           icon=_ICON_SETTINGS,
                           plot='Addon-Einstellungen öffnen.')
-            xbmcplugin.endOfDirectory(self._handle)
+            self._end_directory()
             return
 
         from home_menu import active_portal
@@ -384,7 +400,7 @@ class Router:
         p   = P.get_by_id(pid)
         if not p:
             notify(_L(32000), _L(32050))
-            xbmcplugin.endOfDirectory(self._handle, False)
+            self._end_directory(False)
             return
         self._show_portal_home(p)
 
@@ -538,9 +554,9 @@ class Router:
 
 
     def _setup_wizard(self):
+        self._end_directory(cacheToDisc=False)
         from setup_wizard import setup
         portal = setup()
-        xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
         if portal:
             # Replace the setup container with the newly created portal home.
             xbmc.executebuiltin('Container.Update({},replace)'.format(

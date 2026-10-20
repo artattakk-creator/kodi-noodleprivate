@@ -260,7 +260,7 @@ class StreamingEPGTests(unittest.TestCase):
     def import_(self,raw,index=0,mappings=None):
         from contextlib import contextmanager
         @contextmanager
-        def stream(_): yield io.BytesIO(gzip.compress(raw))
+        def stream(_,cancel=lambda:False): yield io.BytesIO(gzip.compress(raw))
         with mock.patch.object(self.epg,'source_stream',stream):
             return self.epg.import_source('p',dict(uri='redacted'),index,self.streams,mappings or {})
     def test_real_gzip_import_name_match_active_filter_shared_fast_snapshot(self):
@@ -315,7 +315,7 @@ class LargeGuideTests(unittest.TestCase):
             yield b'</tv>'
         streams=[dict(sid='1',name='TV',epg_channel_id='xml')]
         @contextmanager
-        def source(_): yield ChunkReader(chunks())
+        def source(_,cancel=lambda:False): yield ChunkReader(chunks())
         started=time.monotonic()
         with mock.patch.object(epg,'source_stream',source):
             counts=epg.import_source('p',{},0,streams,{})

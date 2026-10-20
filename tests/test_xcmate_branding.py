@@ -9,14 +9,15 @@ class XCMateBrandingTests(unittest.TestCase):
     def test_display_name_and_version(self):
         addon=ET.parse(ROOT/"addon.xml").getroot()
         self.assertEqual(addon.get("name"),"XCMate")
-        self.assertEqual(addon.get("version"),"0.1.28")
+        self.assertEqual(addon.get("version"),"0.1.28.1")
         self.assertEqual(addon.get("id"),"plugin.video.xtreammate")
         self.assertTrue(all("XCMate" in (node.text or "")
                             for node in addon.findall(".//summary")))
     def test_recovery_keeps_epg_dialog_and_startup_nonblocking(self):
         entry=(ROOT/"default.py").read_text(encoding="utf-8")
         main=(ROOT/"resources/lib/main.py").read_text(encoding="utf-8")
-        self.assertIn("traceback.format_tb(exc.__traceback__)",entry)
+        self.assertIn("mark('START_FAILED', error=type(exc).__name__)",entry)
+        self.assertNotIn('traceback.format_tb',entry)  # Source lines can contain secrets.
         self.assertIn("XCMate – Startfehler",entry)
         epg=main.split("    def _epg_sources(self):",1)[1].split("    def _refresh_epg(self):",1)[0]
         self.assertIn("xbmcplugin.endOfDirectory",epg)

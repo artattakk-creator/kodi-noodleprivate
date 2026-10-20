@@ -2,6 +2,7 @@ import json
 import time
 import uuid
 import os
+import stat
 from typing import Optional
 
 import xbmcvfs
@@ -23,18 +24,31 @@ def _db_path():
 
 def load_all() -> list:
     """Read the stored portals. Do not silently treat unreadable data as empty."""
-    path = _db_path()
-    if not xbmcvfs.exists(path):
-        return []
+    from boot_diagnostics import phase
     try:
-        # addon_data_dir() returns a translated LOCAL path. Native Python IO
-        # supports atomic os.replace writes and avoids incompatible Kodi VFS
-        # File context-manager behaviour on some installations.
-        with open(path, 'r', encoding='utf-8') as stream:
-            value = json.load(stream)
-        if not isinstance(value, list):
-            raise ValueError('Portal-Datenbank enthält keine Liste')
-        return value
+        with phase('PORTALS_LOAD'):
+            path = _db_path()
+            try:
+                # Already a translated LOCAL profile path. No Kodi VFS existence
+                # probe and no settings migration on every UI/widget request.
+                fd = os.open(path, os.O_RDONLY | getattr(os, 'O_NONBLOCK', 0))
+            except FileNotFoundError:
+                if os.path.lexists(path):
+                    raise ValueError('Ungültige Portaldatei')
+                return []
+            with os.fdopen(fd, 'rb') as stream:
+                if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
+                    raise ValueError('Keine reguläre Portaldatei')
+                raw = stream.read(4*1024*1024+1)
+            if len(raw) > 4*1024*1024:
+                raise ValueError('Portaldatei zu groß')
+            value = json.loads(raw)
+            if (not isinstance(value, list) or any(
+                    not isinstance(p, dict) or not isinstance(p.get('id'), str)
+                    or not p['id'] or p.get('type') not in PORTAL_TYPES
+                    for p in value)):
+                raise ValueError('Ungültige Portalliste')
+            return value
     except Exception as exc:
         error('portals.load_all failed: {}'.format(type(exc).__name__))
         raise RuntimeError('Portalliste kann nicht gelesen werden. Daten wurden nicht verändert.') from exc

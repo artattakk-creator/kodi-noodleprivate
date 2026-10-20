@@ -17,8 +17,8 @@ def portal_for(router):
 
 
 def _end(router,ok=True):
-    import xbmcplugin
-    xbmcplugin.endOfDirectory(router._handle,ok,cacheToDisc=False)
+    from boot_diagnostics import finish_directory
+    finish_directory(router,ok,cacheToDisc=False)
 
 
 def dispatch(router):
@@ -214,7 +214,7 @@ def add_index_item(router,portal,kind,item,epg=None,recent=False):
 def widget(router,portal,action):
     import xbmcplugin
     from library_index import Reader,initial_group
-    reader=Reader(portal['id'])
+    reader=Reader(portal['id'],timeout=0.05,query_seconds=0.35)
     if action=='widget_live_start_group':
         start=reader.get('live',str(portal.get('start_stream_id') or ''))
         cid=initial_group(portal,reader.groups('live'),start)

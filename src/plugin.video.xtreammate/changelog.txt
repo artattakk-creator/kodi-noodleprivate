@@ -1,3 +1,9 @@
+0.1.28.1 – Startstabilität (Testkandidat, noch nicht freigegeben)
+- Hauptmenü und Widgets ohne HTTP-Import oder automatische Portal-Migration starten.
+- Datensparsame BOOT-Phasenmarker und kontrollierter Verzeichnisabschluss bei Startfehlern.
+- Portaldateien streng und ohne Reset lesen; Legacy-Übernahme ausdrücklich auslösen.
+- Widget-Abfragen begrenzen und doppelte EPG-Worker abbrechen; Live-TV-Navigation unverändert.
+
 0.1.28 — review candidate (not published)
 - Stream active Xtream categories into atomic, batch-written SQLite generations.
 - Immediate local media windows, progressive search and explicit import errors.

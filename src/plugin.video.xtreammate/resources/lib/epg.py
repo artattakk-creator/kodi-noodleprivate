@@ -475,7 +475,11 @@ def resolve_epg_key(portal_id, channel: dict):
 
 def _refresh_portal_epg(portal_id, p, force=False):
     # Several portals/GUI invocations must not parse large guides concurrently.
-    with _REFRESH_LOCK:
+    # A duplicate worker must not wait indefinitely during a Kodi update/stop.
+    if not _REFRESH_LOCK.acquire(timeout=0.1):
+        diagnostic('REFRESH_BUSY',running=False)
+        return None
+    try:
         diagnostic('RUNNING',running=True)
         try:
             result=_refresh_portal_epg_inner(portal_id,p,force=force)
@@ -501,12 +505,16 @@ def _refresh_portal_epg(portal_id, p, force=False):
         finally:
             from live_diagnostics import checkpoint
             checkpoint()
+    finally:
+        _REFRESH_LOCK.release()
 
 
 def _refresh_portal_epg_inner(portal_id, p, force=False):
     if p.get('type')=='xtream':
         from stream_epg import refresh
-        return refresh(p,force=force)
+        import xbmc
+        cancel = xbmc.Monitor().abortRequested if hasattr(xbmc,'Monitor') else lambda: False
+        return refresh(p,force=force,cancel=cancel)
     epg_url = p.get('epg_url', '')
     if not epg_url:
         ptype = p.get('type', 'm3u')
