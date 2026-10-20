@@ -235,3 +235,22 @@ class IntegrationTests(Fixture,unittest.TestCase):
             db=store.connect()
             self.assertIn('owner',{row[1] for row in db.execute('PRAGMA table_info(worker)')})
             self.assertEqual(db.execute('SELECT bytes FROM jobs WHERE ident="old"').fetchone()[0],123);db.close()
+
+    def test_manifest_assets_exist_in_complete_addon(self):
+        import xml.etree.ElementTree as ET
+        from xcmate027_fixture import ADDON
+        manifest=ET.parse(ADDON/'addon.xml').getroot()
+        for node in manifest.findall('.//assets/*'):
+            if node.tag in ('icon','fanart','screenshot'): self.assertTrue((ADDON/node.text).is_file(),node.text)
+
+    def test_builder_keeps_real_jpeg_reference_and_legacy_png_fallback(self):
+        from xcmate027_fixture import ROOT
+        spec=importlib.util.spec_from_file_location('integration_builder',ROOT/'tools/build_repository.py');builder=importlib.util.module_from_spec(spec);spec.loader.exec_module(builder)
+        source=self.folder/'source';xtream=source/'plugin.video.xtreammate';noodle=source/'plugin.video.noodleprivate'
+        xtream.mkdir(parents=True);noodle.mkdir()
+        original='<addon><assets><fanart>fanart.jpg</fanart></assets></addon>'
+        (xtream/'addon.xml').write_text(original);(xtream/'fanart.jpg').write_bytes(b'existing jpeg asset')
+        (noodle/'addon.xml').write_text(original);(noodle/'default.py').write_text('# no runtime changes')
+        with mock.patch.object(builder,'SRC',source),mock.patch.object(builder,'IDS',('plugin.video.xtreammate','plugin.video.noodleprivate')): builder.seed()
+        self.assertEqual((xtream/'addon.xml').read_text(),original)
+        self.assertIn('fanart.png',(noodle/'addon.xml').read_text())

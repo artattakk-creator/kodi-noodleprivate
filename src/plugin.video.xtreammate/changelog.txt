@@ -1,4 +1,6 @@
 0.1.29.2 – Universeller Setup-Assistent und private Playlist-Bearbeitung (Testkandidat)
+- Integrations-QA: späte Starts nach Zurück abbrechen; unvollständige M3U-Updates behalten Altbestand.
+- Kodi-21.3-API geprüft, echte JPEG-Fanart im Paket korrekt referenziert; Service-Build 29.
 - Kategorien vor selektivem Scan, private Zwischenablage und explizites Speichern.
 - Gemeinsame Quellenadapter/Medienansichten für Xtream, M3U und Stalker.
 - Persistenter M3U-Editor mit Overrides, Gruppenzuordnung, Reihenfolge und Export.

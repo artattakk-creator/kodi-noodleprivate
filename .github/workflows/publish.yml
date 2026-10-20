@@ -92,6 +92,9 @@ jobs:
               manifest = ET.fromstring(archive.read('plugin.video.xtreammate/addon.xml'))
               assert manifest.attrib['id'] == 'plugin.video.xtreammate'
               assert manifest.attrib['version'] == addon.attrib['version']
+              for node in manifest.findall('.//assets/*'):
+                  if node.tag in ('icon', 'fanart', 'screenshot'):
+                      assert 'plugin.video.xtreammate/' + node.text in archive.namelist(), node.text
           log = Path('xcmate-test-results.log').read_text()
           match = re.search(r'Ran (\d+) tests? in ([0-9.]+)s', log)
           assert match and '\nOK' in log and '\nFAILED' not in log

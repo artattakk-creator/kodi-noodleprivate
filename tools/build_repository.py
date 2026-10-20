@@ -47,7 +47,9 @@ def seed():
     for addon in IDS:
         xml = SRC / addon / "addon.xml"
         data = xml.read_text(encoding="utf-8")
-        if "fanart.jpg" in data:
+        # Keep a real packaged JPEG (XCMate); PNG fallback is for addons
+        # whose original JPEG was absent and is generated below.
+        if "fanart.jpg" in data and not (SRC / addon / "fanart.jpg").is_file():
             xml.write_text(data.replace("fanart.jpg", "fanart.png"), encoding="utf-8")
     entry = SRC/"plugin.video.noodleprivate"/"default.py"
     content = entry.read_text(encoding="utf-8")
