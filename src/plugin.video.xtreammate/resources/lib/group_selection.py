@@ -155,13 +155,13 @@ def _checkbox_selection(dialog, kind, categories, ids, current, new_ids):
             and 0 <= index < len(ids)}
 
 
-def choose_groups(portal, kind='live'):
+def choose_groups(portal, kind='live',categories=None,allow_refresh=True):
     """Persist changes once on Save; Back discards temporary checkbox selections."""
     import xbmcgui
     if kind not in KINDS or portal.get('type') != 'xtream':
         return False
     dlg = xbmcgui.Dialog()
-    cats = _categories(portal, kind)
+    cats = _categories(portal, kind) if categories is None else list(categories)
     if not cats:
         dlg.ok('XCMate', 'Keine {} vom Server erhalten.'.format(LABELS[kind]))
         return False
@@ -204,6 +204,11 @@ def choose_groups(portal, kind='live'):
         elif choice == 4:
             auto_new = not auto_new
         elif choice == 5:
+            if not allow_refresh:
+                from catalog_sync import request
+                request(portal,kind,priority=0,force=True)
+                dlg.notification('XCMate','Kategorien-Aktualisierung im Hintergrund angefordert.')
+                continue
             try:
                 updated = _categories(portal, kind, force=True)
                 if updated:

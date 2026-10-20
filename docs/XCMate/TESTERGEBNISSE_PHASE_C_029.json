@@ -1,0 +1,18 @@
+{
+  "version": "0.1.29.1",
+  "files": 109,
+  "bytes": 345227,
+  "sha256": "0c1ad79bf58e01d94675d31573cda7e1a42523d7f96151d2bcc09aca3cf69827",
+  "crc": "PASS",
+  "source_bytes": "PASS",
+  "syntax": "PASS",
+  "build": "/workspace/cloud-setup/kodi-noodleprivate/xcmate-0.1.29.1-h29ks_00/repository",
+  "tests": 425,
+  "passed": 425,
+  "failures": 0,
+  "skipped": 0,
+  "seconds": 62.315,
+  "new_cases": 8,
+  "android": "PENDING",
+  "base_branch": "feat/xcmate-persistent-media"
+}

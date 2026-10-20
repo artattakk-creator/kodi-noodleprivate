@@ -154,6 +154,7 @@ class OverlayLifecycleTests(unittest.TestCase):
         iptv.Channel = lambda **kwargs:types.SimpleNamespace(tvg_id='', **{k:v for k,v in kwargs.items() if k!='tvg_id'})
         groups = types.ModuleType('group_selection')
         groups.load = lambda *_:None
+        groups.enabled_ids = lambda pid,kind,categories:{str(c['category_id']) for c in categories}
         groups.save = mock.Mock()
         epg = types.ModuleType('epg')
         epg.load_cache = lambda *_:{}
@@ -476,20 +477,20 @@ class OverlayLifecycleTests(unittest.TestCase):
             o.native(7)
             self.assertEqual(o._tune.call_args.args[0].extra['stream_id'],'53664')
             o._tune.reset_mock()
-            o.control.selectItem(0)  # previous-page link, not a station
+            # Every row is now a real station, no visible page actions.
+            o.control.selectItem(0)
             o.native(7)
+            self.assertEqual(o._tune.call_args.args[0].extra['stream_id'],'53601')
+            o._tune.reset_mock()
+            o._highlight['channels']=53599;o._scroll_to_current=False;o._render()
+            o.native(4)
+            self.assertEqual(o._highlight['channels'],53600)
+            self.assertEqual(o.control.items[o.control.selected],'Sender 53601')
+            o.native(3)
+            self.assertEqual(o._highlight['channels'],53599)
+            self.assertEqual(o.control.items[o.control.selected],'Sender 53600')
             o._tune.assert_not_called()
-            self.assertEqual(o._page_start,53500)
-            self.assertEqual(o.control.items[o.control.selected],'Sender 53501')
-            o.control.selectItem(o.control.size()-1)  # next-page link
-            o.native(7)
-            self.assertEqual(o._page_start,53600)
-            o._tune.assert_not_called()
-            o.native(5)
-            self.assertEqual(o._page_start,53500)
-            o.native(6)
-            self.assertEqual(o._page_start,53600)
-            self.assertLessEqual(lookup.call_count,48)
+            self.assertLessEqual(o.control.size(),100)
 
     def test_constructor_failure_preserves_stage_and_safe_exception_class(self):
         o = self.module.LiveNavigator(self.portal, '1')

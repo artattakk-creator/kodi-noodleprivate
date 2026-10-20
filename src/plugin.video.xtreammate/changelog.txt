@@ -1,3 +1,8 @@
+0.1.29.1 – Aktive Gruppen und kontinuierliche Senderliste (Testkandidat)
+- Live-Gruppen ohne AN/AUS; Menü öffnet Checkbox-Verwaltung ohne Providerzugriff.
+- Durchgehendes Scrollen über interne 100er-Fenster, keine sichtbaren Seiteneinträge.
+- Bewährte OK-/Back-/Zap- und Player-Methoden unverändert abgesichert.
+
 0.1.29 – Dauerhafte Medienbilder und persönliche Reihen (Testkandidat)
 - Bilddateien dauerhaft behalten; persistente Aufträge, begrenzte Wiederholung und konfigurierbares Speicherbudget.
 - Neu hinzugefügt, Meine Favoriten und Weiter ansehen direkt in Film-/Serienstartseiten.
