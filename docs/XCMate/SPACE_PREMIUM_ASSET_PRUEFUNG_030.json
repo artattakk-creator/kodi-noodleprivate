@@ -1,674 +1,100 @@
 {
-  "status": "BLOCKED_NETWORK_PROXY_403",
-  "date": "2026-10-20",
+  "status": "PASS_98_ORIGINALS_AVAILABLE",
+  "date": "2026-10-21",
   "required": 98,
-  "downloaded": 0,
-  "decoded": 0,
-  "master_tracker_read": false,
-  "reference_is_authoritative": false,
-  "reference": "GRAPHICS_V2_ASSET_PLAN_027_DE.md (historical naming only; Drive mastertracker not accessible)",
-  "theme_zip_created": false,
+  "available": 98,
+  "decoded": 98,
+  "logical_keys": 106,
+  "original_bytes_preserved": true,
+  "manifest_hashes_dimensions_alpha": "PASS",
+  "zip_crc": "PASS",
+  "theme_zip_created": true,
+  "theme_sha256": "8fc7f312a65fa5ecdbe68d3487939a25d685de29717896a0a1113c8d41176ae2",
+  "theme_bytes": 19772084,
+  "independent_github_bytes": {
+    "status": "PASS",
+    "blob": "c6c72acf0179b3d4bbb197416814ac45f38a0e95",
+    "bytes": 19772084,
+    "sha256": "8fc7f312a65fa5ecdbe68d3487939a25d685de29717896a0a1113c8d41176ae2",
+    "images": 98,
+    "keys": 106
+  },
+  "master_tracker_retrieved_this_run": false,
+  "master_tracker_basis": "User confirms prior 98/98 tracker verification; this run checks committed authoritative manifest, source hashes, archive and independent GitHub bytes",
+  "runtime_bound_files": 86,
+  "unconnected_files": 12,
+  "renderer_acceptance": "NOT_RUN_ANDROID",
   "previews_created": false,
-  "access_checks": [
-    {
-      "name": "branding",
-      "url": "https://drive.google.com/drive/folders/1E1Ob14vAyuM7NlLACNWEKWvzhsiNtcJL",
-      "error": "Tunnel connection failed: 403 Forbidden"
-    },
-    {
-      "name": "tracker_view",
-      "url": "https://drive.google.com/file/d/14NY62as0U-UWkTp_Rp3AiS0NreifxYOZ/view",
-      "error": "Tunnel connection failed: 403 Forbidden"
-    },
-    {
-      "name": "master",
-      "url": "https://drive.google.com/drive/folders/1UPA7fLKIq21GkA4NzAPEVfLp2BvSpm3y",
-      "error": "Tunnel connection failed: 403 Forbidden"
-    },
-    {
-      "name": "home",
-      "url": "https://drive.google.com/drive/folders/1IYCFPr6jTwxNI7elF42uOW98LYLEby19",
-      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
-    },
-    {
-      "name": "settings",
-      "url": "https://drive.google.com/drive/folders/1hAVCr4SllD6E4saLCbXuF707cvBUSJOy",
-      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
-    },
-    {
-      "name": "media",
-      "url": "https://drive.google.com/drive/folders/1FnYj4u1E0fTA1GYwGkRoKwTLwAwH0VrO",
-      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
-    },
-    {
-      "name": "epg",
-      "url": "https://drive.google.com/drive/folders/1Cg1x9AyT985hQ3tVgGkiU1iOSHQGWHsA",
-      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
-    },
-    {
-      "name": "player",
-      "url": "https://drive.google.com/drive/folders/1rJzEAc48cQoSkKjeHLqVjld7_pPahmW4",
-      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
-    },
-    {
-      "name": "shared",
-      "url": "https://drive.google.com/drive/folders/1xjo9dYcbpaYuidtm8YjUOX6-qkEHHI3o",
-      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
-    },
-    {
-      "name": "widgets",
-      "url": "https://drive.google.com/drive/folders/1_nsaYc2bCXKOU4U8APCO94tREErWf1HJ",
-      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
-    },
-    {
-      "name": "originals",
-      "url": "https://drive.google.com/drive/folders/1HDl6ANSi6giLqBl_IfTZ4VT5QkiD21Sv",
-      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
-    },
-    {
-      "name": "tracker_download",
-      "url": "https://drive.google.com/uc?export=download&id=14NY62as0U-UWkTp_Rp3AiS0NreifxYOZ",
-      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
-    },
-    {
-      "name": "tracker_content",
-      "url": "https://drive.usercontent.google.com/download?id=14NY62as0U-UWkTp_Rp3AiS0NreifxYOZ&export=download",
-      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
-    }
-  ],
-  "missing_reference_slots": [
-    {
-      "reference_path": "assets/branding/icon-512.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/branding/wordmark-white.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/branding/splash-1920.jpg",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/branding/fanart-1920.jpg",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/home/icon-start.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/home/icon-live.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/home/icon-epg.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/home/icon-movies.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/home/icon-series.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/home/icon-settings.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/home/bg-start.jpg",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/home/bg-live.jpg",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/home/bg-epg.jpg",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/home/bg-movies.jpg",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/home/bg-series.jpg",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/home/bg-settings.jpg",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/settings/icon-accounts.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/settings/bg-accounts.jpg",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/settings/icon-start-channel.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/settings/bg-start-channel.jpg",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/settings/icon-epg.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/settings/bg-epg.jpg",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/settings/icon-groups.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/settings/bg-groups.jpg",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/settings/icon-remote.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/settings/bg-remote.jpg",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/settings/icon-player.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/settings/bg-player.jpg",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/settings/icon-recordings.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/settings/bg-recordings.jpg",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/settings/icon-appearance.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/settings/bg-appearance.jpg",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/settings/icon-maintenance.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/settings/bg-maintenance.jpg",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/settings/icon-about.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/settings/bg-about.jpg",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/media/icon-play.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/media/icon-restart.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/media/icon-resume.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/media/icon-favorite-add.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/media/icon-favorite-remove.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/media/icon-trailer.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/media/icon-seasons.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/media/icon-episodes.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/media/placeholder-movie-poster.jpg",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/media/placeholder-series-poster.jpg",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/media/placeholder-movie-backdrop.jpg",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/media/placeholder-series-backdrop.jpg",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/media/rail-gradient.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/media/poster-shade.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/epg/icon-today.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/epg/icon-day-prev.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/epg/icon-day-next.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/epg/icon-remind.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/epg/icon-auto-switch.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/epg/icon-record.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/epg/icon-channels.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/epg/icon-clock.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/epg/bg-guide.jpg",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/epg/bg-detail.jpg",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/epg/no-data.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/epg/source-error.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/player/icon-play.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/player/icon-pause.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/player/icon-stop.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/player/icon-seek-back.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/player/icon-seek-forward.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/player/icon-skip-back.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/player/icon-skip-forward.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/player/icon-live-edge.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/player/icon-audio.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/player/icon-subtitles.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/player/icon-video-settings.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/player/icon-more.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/player/panel-infobar.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/player/panel-controls.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/player/panel-options.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/player/panel-progress-track.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/shared/icon-search.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/shared/icon-filter.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/shared/icon-sort.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/shared/icon-clear.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/shared/icon-back.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/shared/icon-forward.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/shared/icon-close.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/shared/icon-check.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/shared/icon-warning.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/shared/icon-info.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/shared/focus-ring.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/shared/focus-rail.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/shared/sidebar-bg.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/shared/glass-panel.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/shared/divider.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/shared/loading-skeleton.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/widgets/widget-live-fallback.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/widgets/widget-movie-fallback.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/widgets/widget-series-fallback.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    },
-    {
-      "reference_path": "assets/widgets/widget-header.png",
-      "downloaded": false,
-      "readable": "NOT_CHECKED",
-      "sha256": "NOT_CHECKED"
-    }
-  ],
-  "delivery_needed": [
-    "Original mastertracker export including all 98 final names/uses/dimensions/hashes if available",
-    "All 98 approved original binary files, preserving eight category directories, preferably one ZIP",
-    "Existing original JSON manifests, SHA256 files and provenance/license notes"
-  ]
+  "historical_network_attempts": {
+    "status": "HISTORICAL_NOT_CURRENT_BLOCKER",
+    "date": "2026-10-20",
+    "access_checks": [
+      {
+        "name": "branding",
+        "url": "https://drive.google.com/drive/folders/1E1Ob14vAyuM7NlLACNWEKWvzhsiNtcJL",
+        "error": "Tunnel connection failed: 403 Forbidden"
+      },
+      {
+        "name": "tracker_view",
+        "url": "https://drive.google.com/file/d/14NY62as0U-UWkTp_Rp3AiS0NreifxYOZ/view",
+        "error": "Tunnel connection failed: 403 Forbidden"
+      },
+      {
+        "name": "master",
+        "url": "https://drive.google.com/drive/folders/1UPA7fLKIq21GkA4NzAPEVfLp2BvSpm3y",
+        "error": "Tunnel connection failed: 403 Forbidden"
+      },
+      {
+        "name": "home",
+        "url": "https://drive.google.com/drive/folders/1IYCFPr6jTwxNI7elF42uOW98LYLEby19",
+        "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+      },
+      {
+        "name": "settings",
+        "url": "https://drive.google.com/drive/folders/1hAVCr4SllD6E4saLCbXuF707cvBUSJOy",
+        "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+      },
+      {
+        "name": "media",
+        "url": "https://drive.google.com/drive/folders/1FnYj4u1E0fTA1GYwGkRoKwTLwAwH0VrO",
+        "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+      },
+      {
+        "name": "epg",
+        "url": "https://drive.google.com/drive/folders/1Cg1x9AyT985hQ3tVgGkiU1iOSHQGWHsA",
+        "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+      },
+      {
+        "name": "player",
+        "url": "https://drive.google.com/drive/folders/1rJzEAc48cQoSkKjeHLqVjld7_pPahmW4",
+        "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+      },
+      {
+        "name": "shared",
+        "url": "https://drive.google.com/drive/folders/1xjo9dYcbpaYuidtm8YjUOX6-qkEHHI3o",
+        "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+      },
+      {
+        "name": "widgets",
+        "url": "https://drive.google.com/drive/folders/1_nsaYc2bCXKOU4U8APCO94tREErWf1HJ",
+        "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+      },
+      {
+        "name": "originals",
+        "url": "https://drive.google.com/drive/folders/1HDl6ANSi6giLqBl_IfTZ4VT5QkiD21Sv",
+        "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+      },
+      {
+        "name": "tracker_download",
+        "url": "https://drive.google.com/uc?export=download&id=14NY62as0U-UWkTp_Rp3AiS0NreifxYOZ",
+        "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+      },
+      {
+        "name": "tracker_content",
+        "url": "https://drive.usercontent.google.com/download?id=14NY62as0U-UWkTp_Rp3AiS0NreifxYOZ&export=download",
+        "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+      }
+    ]
+  },
+  "matrix": "SPACE_PREMIUM_RENDERER_MATRIX_030.json"
 }

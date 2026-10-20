@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
@@ -49,6 +49,9 @@ jobs:
                   shutil.copyfile(src/rel,target)
               output=Path(tmp)/'XCMate-Space-Premium-1.0.0.zip'
               report=build(stage,output)
+              committed=src/output.name
+              if committed.exists() and committed.read_bytes()!=output.read_bytes():
+                  raise ValueError('Immutable theme version changed: choose a new version before review')
               for filename in [output,output.with_suffix('.zip.sha256'),output.with_suffix('.validation.json')]:
                   shutil.copyfile(filename,src/filename.name)
               print(json.dumps({k:v for k,v in report.items() if k!='images'},indent=2))
@@ -97,12 +100,3 @@ jobs:
             plugin.video.xtreammate/plugin.video.xtreammate-0.1.30.zip
             plugin.video.xtreammate/plugin.video.xtreammate-0.1.30.zip.sha256
           if-no-files-found: error
-      - name: Commit verified packages only to the feature branch (no release or merge)
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- themes/xcmate/space-premium/XCMate-Space-Premium-1.0.0.zip themes/xcmate/space-premium/XCMate-Space-Premium-1.0.0.zip.sha256 themes/xcmate/space-premium/XCMate-Space-Premium-1.0.0.validation.json plugin.video.xtreammate/plugin.video.xtreammate-0.1.30.zip plugin.video.xtreammate/plugin.video.xtreammate-0.1.30.zip.sha256
-          if ! git diff --cached --quiet; then
-            git commit -m "Build verified Space Premium theme 1.0.0 (draft PR #50)"
-            git push origin HEAD:refs/heads/feat/xcmate-space-premium-installer
-          fi

@@ -80,6 +80,8 @@ def window_source(xml_filename, kind='vod'):
     # Texture-only changes: IDs, geometry, native navigation and callbacks stay
     # in the bundled XML. Themes cannot supply their own executable layouts.
     if theme:
+        from theme_render import decorate_xml
+        decorate_xml(tree,theme,xml_filename)
         background='background.epg' if xml_filename=='XCMateGuide.xml' else 'background.series' if kind=='series' else 'background.movies'
         keys={'media_neutral.png':background, 'tv_focus.png':'focus.default',
               'tv_normal.png':'panel.default', 'media_shade.png':'panel.overlay'}
@@ -87,20 +89,23 @@ def window_source(xml_filename, kind='vod'):
             if node.tag in ('texture','texturefocus','texturenofocus') and node.text and not node.text.startswith('$'):
                 key=keys.get(node.text.rsplit('/',1)[-1])
                 if key: node.text=asset(key,node.text,snapshot=theme)
+        for cid,key in (('110','focus.rail'),('111','focus.rail'),('112','focus.rail'),('210','focus.media')):
+            for node in tree.findall("./controls/control[@id='"+cid+"']//texture"):
+                if node.text==asset('focus.default',snapshot=theme): node.text=asset(key,node.text,snapshot=theme)
     for node in tree.getroot().iter():
         if node.tag=='font': node.text=FONTS[values['font']]
         elif node.tag=='textcolor':
             node.text=argb(values['secondary'] if node.text=='FFB6BCC6' else values['text'])
         elif node.tag=='texture' and node.text:
             node.set('colordiffuse',argb('FFFFFF',values['icon_opacity']))
-        elif node.tag=='texturefocus': node.set('colordiffuse',argb(values['focus'],values['panel_opacity']))
-        elif node.tag=='texturenofocus': node.set('colordiffuse',argb(values['background'],values['panel_opacity']))
+        elif node.tag=='texturefocus': node.set('colordiffuse',argb('FFFFFF' if theme else values['focus'],values['panel_opacity']))
+        elif node.tag=='texturenofocus': node.set('colordiffuse',argb('FFFFFF' if theme else values['background'],values['panel_opacity']))
     # Background and shade images get their own alpha; focused labels stay
     # readable even if the user makes the backdrop fully transparent.
     for control in tree.findall('./controls/control'):
         if control.get('type')=='image' and control.findtext('width')=='1280':
             texture=control.find('texture')
-            if texture is not None: texture.set('colordiffuse',argb(values['background'],values['background_opacity']))
+            if texture is not None: texture.set('colordiffuse',argb('FFFFFF' if theme else values['background'],values['background_opacity']))
     for control in tree.getroot().iter('control'):
         font=control.find('font')
         if font is not None and values['font']=='large':

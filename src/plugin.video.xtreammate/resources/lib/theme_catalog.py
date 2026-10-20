@@ -7,6 +7,7 @@ import tempfile
 import time
 from urllib.parse import urlsplit
 from urllib.request import Request, build_opener, HTTPRedirectHandler
+from urllib.error import HTTPError, URLError
 
 from theme_package import MAX_ZIP, MAX_METADATA, fail, json_object, version
 
@@ -51,7 +52,11 @@ def stream(url, sink, limit, cancel=lambda: False):
 
 def catalogue(core, cancel=lambda: False):
     import io
-    sink = io.BytesIO(); stream(CATALOG, sink, MAX_METADATA, cancel)
+    sink = io.BytesIO()
+    try: stream(CATALOG, sink, MAX_METADATA, cancel)
+    except HTTPError as error:
+        fail('CATALOG_NOT_PUBLISHED' if error.code==404 else 'DOWNLOAD')
+    except (URLError,TimeoutError): fail('DOWNLOAD')
     return parse_catalogue(json_object(sink.getvalue()), core)
 
 
@@ -69,10 +74,12 @@ def parse_catalogue(data, core):
         if type(row.get('bytes')) is not int or not 0 < row['bytes'] <= MAX_ZIP: fail('CATALOG')
         support = row.get('supported_xcmate')
         if not isinstance(support, dict): fail('CATALOG')
-        identity = (row['id'], row['version'])
+        identity = (row['id'], version(row['version']))
         if identity in identities: fail('CATALOG')
         identities.add(identity)
-        if version(support.get('min')) <= version(core) < version(support.get('max_exclusive')): result.append(row)
+        low,high=version(support.get('min')),version(support.get('max_exclusive'))
+        if low>=high: fail('CATALOG')
+        if low <= version(core) < high: result.append(row)
     return result
 
 

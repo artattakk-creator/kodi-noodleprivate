@@ -24,7 +24,6 @@ def build(source, output, core='0.1.30'):
     Image.MAX_IMAGE_PIXELS = 8*1024*1024
     source, output = Path(source), Path(output)
     spec = manifest(json_object((source/'theme.json').read_bytes()), core)
-    if spec['id'] != 'space-premium' or spec['version'] != '1.0.0': fail('VERSION')
     actual = {p.relative_to(source).as_posix() for p in source.rglob('*') if p.is_file()}
     if actual != METADATA | set(spec['required_files']): fail('INCOMPLETE')
     reports = []

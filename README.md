@@ -1,4 +1,4 @@
-> **XCMate:** [0.1.29.2 installieren und sichern; Theme-Installer 0.1.30 im separaten Review](docs/XCMate/INSTALLATION_0292_UND_THEME_030_DE.md). Space-Premium-Originale hier wegen Drive-403 noch nicht prüfbar; kein vollständiges Theme-Paket.
+> **XCMate 0.1.30 / Draft-PR #50:** [Aktueller vollständiger Prüfbericht](docs/XCMate/PR50_PRUEFBERICHT_030_20261021_DE.md), 509 Tests, beide Pakete geprüft. Space Premium 98 Originale/106 Keys; 86 Bilder angebunden, zwölf Reserve-Slots und Android-Abnahme offen. Kein Merge/Release/Produktivindex-Update; produktiv 0.1.29.2. Frühere XCMate-Versions-/Mergeangaben unten sind historische Übergaben.
 
 # GS Media Kodi Repository
 

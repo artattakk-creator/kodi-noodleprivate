@@ -76,3 +76,33 @@ class ExitTests(Fixture,unittest.TestCase):
         self.properties.pop('XtreamMate.LiveSession',None)
         self.exit.poll(self.player,fullscreen=True);self.assertFalse(self.stops)
         self.assertTrue(self.exit.poll(self.player,fullscreen=False));self.assertEqual(len(self.stops),1)
+
+    def test_asynchronous_kodi_stop_is_not_repeated_during_return_callback(self):
+        # Kodi stop() may return before isPlayingVideo becomes False. No fake
+        # synchronous player-state change here: repeat the actual exit entry.
+        stops=[];self.player.stop=lambda:stops.append(1)
+        self.assertTrue(self.exit.stop_owned(self.player))
+        self.properties[self.progress.PROPERTY]=json.dumps(self.session)
+        self.assertFalse(self.exit.stop_owned(self.player))
+        self.assertEqual(stops,[1])
+
+    def test_pending_stop_does_not_suppress_another_owned_item(self):
+        self.player.stop=lambda:self.stops.append(1)
+        self.assertTrue(self.exit.stop_owned(self.player))
+        self.session['nonce']='new';self.media_id='new'
+        self.properties[self.progress.PROPERTY]=json.dumps(self.session)
+        self.assertTrue(self.exit.stop_owned(self.player));self.assertEqual(len(self.stops),2)
+
+    def test_diagnostic_window_query_failure_cannot_change_exit_policy(self):
+        with mock.patch.object(sys.modules['xbmc'],'getCondVisibility',side_effect=RuntimeError('private diagnostic failure')):
+            self.assertFalse(self.exit.poll(self.player,fullscreen=True))
+            self.assertTrue(self.exit.poll(self.player,fullscreen=False))
+        self.assertEqual(len(self.stops),1)
+
+    def test_failed_native_stop_can_be_retried_without_a_stale_pending_marker(self):
+        stop=self.player.stop
+        self.player.stop=mock.Mock(side_effect=RuntimeError('private Kodi error'))
+        self.assertFalse(self.exit.stop_owned(self.player))
+        self.assertFalse(self.properties.get(self.exit.STOP_KEY))
+        self.player.stop=stop
+        self.assertTrue(self.exit.stop_owned(self.player));self.assertEqual(len(self.stops),1)

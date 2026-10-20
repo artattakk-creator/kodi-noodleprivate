@@ -1,9 +1,6 @@
 # XCMate Themes – Paketformat 1 und Installer 0.1.30
 
-> **AKTUALISIERUNG 20.10.2026:** Die früher fehlenden 98 Originale wurden aus dem freigegebenen Nutzer-ZIP übernommen und das Theme-Paket erfolgreich und reproduzierbar erstellt. Die weiter unten stehenden Netzwerk-/Quellblocker und „kein Bau“-Passagen dokumentieren einen **historischen** Zwischenstand. Der Theme-GitHub-Katalog enthält jetzt den geprüften 1.0.0-Eintrag im Draft-Branch; Main enthält ihn **bis zu einer ausdrücklichen Freigabe/Merge nicht**. **Aktueller Nachweis: [98er Build-/Abnahmebericht](SPACE_PREMIUM_98_BUILD_ABNAHME_20261020_DE.md).** Die vollständige grafische Runtime-Abnahme bleibt offen.
-
-Entwicklungsstand; kein produktiver Theme-Download verfügbar. Der
-[Originale-/Übergabeblocker](INSTALLATION_0292_UND_THEME_030_DE.md) bleibt offen.
+Stand **21.10.2026**, bestehender Draft-PR #50. Originale **98/98 vorhanden**, ein freigegebener Katalogeintrag im Entwicklungsbranch, **main-Katalog und Theme-ZIP derzeit HTTP 404**. GitHub ist die einzige offizielle Online-Quelle; Drive ist Quellarchiv. Kein Merge/Release/Index-Update. [Aktueller vollständiger Prüfbericht](PR50_PRUEFBERICHT_030_20261021_DE.md), [Pakete/Backup](INSTALLATION_0292_UND_THEME_030_DE.md).
 
 ## Format und Kompatibilität
 
@@ -19,7 +16,7 @@ Theme-ZIPs werden **innerhalb XCMates**, nicht im Kodi-Add-on-ZIP-Installer geö
 | Feld | Vertrag |
 |---|---|
 | schema_version | Ganzzahl 1 |
-| id/name/version/author | `space-premium` / `Space Premium` / `1.0.0` / `GS Media` |
+| id/name/version/author | Eigene stabile ID, Anzeigename, semantische Version, Autor; Beispiel Space Premium 1.0.0 |
 | supported_xcmate | `{"min":"0.1.30","max_exclusive":"0.2.0"}`; obere Grenze exklusiv |
 | palette | background/accent/focus/text/secondary, je sechs Hex-Zeichen ohne `#` |
 | assets | Stabile logische Schlüssel → sichere relative Bildpfade |
@@ -31,8 +28,7 @@ Theme-ZIPs werden **innerhalb XCMates**, nicht im Kodi-Add-on-ZIP-Installer geö
 Space Premium verlangt **98 verschiedene vorhandene Bilddateien**, nicht 98 Aliasse
 derselben Datei. Zusätzlich sind `background.home`, `background.movies`,
 `background.series`, `background.epg`, `icon.settings`, `icon.epg`, `panel.sidebar`
-und `focus.default` Pflichtschlüssel. Weitere Aliasse sind erlaubt. Der tatsächliche
-98er-Abgleich mit dem verbindlichen Mastertracker kann erst nach dessen Übergabe erfolgen.
+und `focus.default` Pflichtschlüssel. Weitere Aliasse sind erlaubt. Der Nutzer bestätigt den früheren Tracker-Abgleich; alle 98 Originale sind nun vorhanden und in dieser Runde gegen Manifest/ZIP/GitHub-Bytes geprüft.
 
 Die bisher freigegebenen vorläufigen Farbtokens sind `061322`, `159FEA`, `42D9FF`,
 `E6F5FF`, `88A6BE`; Navy `0A2947` bleibt eine dokumentierte Materialreferenz.
@@ -106,43 +102,20 @@ einen lokalen Snapshot, damit Navigation nicht 98 Dateien pro Kachel erneut prü
 Öffnen ohne optionales Theme ist read-only und erzeugt keinen Theme-Ordner.
 Eine bereits sichtbare Ansicht wird bei externer Beschädigung nicht live neu aufgebaut.
 
-## Aktuelle Layoutanbindung und ehrliche Grenzen
+## Aktuelle Renderer-Anbindung und Grenzen
 
-| Bereich | Stand |
-|---|---|
-| Einstellungen → Darstellung & Sprache → XCMate-Designs | Installer/Import/Katalog/Aktivierung/Standard/Entfernen implementiert |
-| Hauptmenü | Logische Iconpfade und Home-Fanart; vorhandene Kodi-Verzeichnisansicht bleibt |
-| Film-/Serienfenster | Palette, Fokus, Hintergründe, Posterfallback; Provider-Art bleibt dynamisch |
-| EPG-Fenster | Palette, Fokus, Hintergrund; Control-IDs/Geometrie/Pfeilnavigation gleich |
-| Live-TV/Gruppe/Sender/Infobar/untere Bedienleiste | **Unverändert**, komplette grafische Anbindung bis Originale/Abnahme offen |
-| Spezifische Settings-Hintergründe/alle 98 Nutzungspositionen | Mapping anhand des unzugänglichen Mastertrackers noch offen |
-| Reale Kodi-Previews aller zehn Ansichten | **Nicht erstellt**, Originale und Kodi-Renderer hier fehlen |
-| Android 21.3 / ARM32 | API-Argumenttests vorhanden; tatsächliches Rendering/Fokus/Leistung **NOT_RUN** |
+[98-Dateien-/106-Key-Matrix](SPACE_PREMIUM_RENDERER_MATRIX_030.json): 86 Originaldateien an echte Verbraucher oder bedingte Fallbacks angebunden, 12 ohne Verbraucher. Unter anderem Livegruppen/-sender, Infobar/Controls/Extras, EPG, Mediaaktionen und Widgets mit Originaltexturen. Stock-Eingaben, Control-IDs, fokussierbare Geometrie und Navigationsziele bleiben gleich; nur lokale Themeauflösung/Texturepfade und nicht fokussierbare Dekorationen ergänzt. Keine Netzwerkzugriffe beim Navigieren. Freeze-Referenzdateien unverändert; enge AST-Normalisierung der Texturehooks und nativer Stock-/Theme-Vergleich bestanden.
 
-Die gefreezten Dateien einschließlich `live_overlay.py`, Keymap-/Remote-/Playerpfaden
-bleiben unverändert. Kein grafischer Komplettumbau als angeblich funktionierendes
-Theme ausgegeben. Die vorhandenen Freeze-Fixtures werden nicht neu festgeschrieben.
+Zwölf Reservebilder und deren fehlende Verbraucher stehen im Prüfbericht; weder Aufnahme/Skip noch neue Startup-/Ladescreens werden erfunden. Reale Kodi-Previews, IR, BINGIE, RAM/Skalierung und Android-Renderer **NOT_RUN**. Paketvollständigkeit bedeutet keine vollständige visuelle Abnahme.
 
-## Bau und Katalogpflege nach Übergabe der Originale
+## Erweiterbarer GitHub-Katalog und künftiger Updateweg
 
-1. Originale schreibgeschützt archivieren; Mastertracker, Herkunft und vorhandene
-   SHA-256 abgleichen. Im Staging nur **bytegleich kopieren**, nichts skalieren.
-2. Finale `theme.json` mit allen 98 Pfaden/Schlüsseln/Hashes und freigegebenen Tokens
-   erstellen; README/Lizenz und SHA256SUMS beilegen. Maße/Alpha aus Master übernehmen.
-3. `python -B tools/build_xcmate_theme.py --source <staging> --output <neuer-Pfad>/XCMate-Space-Premium-1.0.0.zip`
-   decodiert jedes Bild vollständig, vergleicht alle deklarierte Hashes/Properties,
-   baut reproduzierbar und schreibt ZIP-SHA256 plus `.validation.json`. Vorhandene
-   Ausgabe wird nicht überschrieben. Aktuell fehlt das echte Staging, daher kein Bau.
-4. Nach erfolgreicher visueller/technischer Prüfung ZIP, `.zip.sha256` und bytegleiches
-   Manifest unter `themes/xcmate/space-premium/` zur PR-Prüfung ablegen. Im
-   `catalog-v1.json` explizit approved=true, id/name/version, supported_xcmate,
-   HTTPS-URL, ZIP-SHA256 und tatsächliche Bytes eintragen. Keine Platzhalter-URL.
-5. `python -B tools/validate_xcmate_catalog.py` prüft offline alle freigegebenen
-   Einträge einschließlich vollständigem Decoding. Eigener PR-Workflow ist read-only
-   und veröffentlicht nichts. **0 freigegebene Pakete ist nicht 98/98 Assets.**
-6. Erst nach Freigabe zusammenführen. Runtime-Katalog zeigt auf den produktiven
-   Main-Pfad; solange er dort noch fehlt, zeigt die Entwicklungs-ZIP beim Abruf
-   einen Downloadhinweis. Der leere Katalog in diesem Branch ist kein Live-Angebot.
+1. Neue Themes erhalten eine eigene `id`, `name`, `version`, `supported_xcmate`; keine Core-Auswahländerung für weitere IDs nötig. Der generische Hostbuilder akzeptiert weitere Themes; zwei unterschiedliche temporäre Fixtures belegen den kompletten Import-/Aktivierungs-/Updateweg. Keine öffentlich freigegebenen Testthemes oder neue Originalkunst erzeugt.
+2. Autorisierte Originale inklusive Herkunft/Lizenz unverändert archivieren. Eigenes Staging mit `theme.json`, `SHA256SUMS.txt`, `README.md`, `LICENSE.txt` und manifestierten Bildern vorbereiten. Allgemeine Pflichtkeys erfüllen; nur `space-premium` verlangt genau 98 verschiedene Bilder. Keine ausführbaren Themes.
+3. `python -B tools/build_xcmate_theme.py --source <staging> --output <neuer-Pfad>/<Theme>-<Version>.zip` decodiert vollständig und erzeugt reproduzierbares ZIP, SHA-Datei und Validierungsbericht; bestehendes Ausgabeziel wird nicht überschrieben. Weitere Versionen vorzugsweise unter `themes/xcmate/<id>/<version>/` ablegen; vorhandenes Space-Premium-1.0.0-Layout bleibt gültig.
+4. ZIP + `.zip.sha256` + Manifest + Nachweise und **generischen Katalogeintrag** als PR vorlegen: `id/name/version/supported_xcmate/url/sha256/bytes/approved`. Nur allowlisted HTTPS-URL unter diesem GitHub-Repository/main, kein Drive/Redirect/Fremdhost. `approved=true` im Reviewbranch macht nichts vorzeitig auf main verfügbar.
+5. `python -B tools/validate_xcmate_catalog.py` prüft alle freigegebenen Pakete offline einschließlich vollständigem Decoding. Draft-Builder erzeugt Artefakte read-only, ohne automatischen Commit. Eine existierende Themeversion muss beim Neubau bytegleich bleiben. **Niemals andere Bytes unter 1.0.0 ersetzen**; Änderungen brauchen neue Version und Review.
+6. Nach Review und **ausdrücklicher Benutzerfreigabe**, nicht durch diesen Auftrag, folgt Merge. Erst dann müssen main-Katalog **und exakt referenziertes ZIP** am Android-Gerät HTTP 200 liefern. Bytes/SHA/Kompatibilität unabhängig vergleichen, Katalogauswahl/Download/Import/Aktivierung/Offline-Restart real abnehmen. Bis dahin zeigt 0.1.30 unter „Online-Katalog“ einen verständlichen 404-Hinweis. Lokaler ZIP-Import ist jetzt testbar.
+7. Theme-Onlineverfügbarkeit und reguläre Core-Repositoryveröffentlichung sind getrennt. Ein späterer Core-Publish benötigt zusätzlich expliziten Owner-`workflow_dispatch` auf main mit `publish_repository=true` (Default false); kein Publish durch PR oder Main-Push. **Hier nicht ausgelöst.** Vorher Kodi-Profil konsistent sichern, Android-Gates und #40 prüfen. Benutzer entscheidet weiterhin über Merge und Release.
 
-Theme 1.0.0 benötigt Core ≥0.1.30 und <0.2.0. Core 0.1.29.2 besitzt den Installer
-noch nicht und wird nicht nachträglich unter gleicher Versionsnummer verändert.
+Space Premium 1.0.0 ist unveränderlich: **19.772.084 Bytes**, SHA-256 `8fc7f312a65fa5ecdbe68d3487939a25d685de29717896a0a1113c8d41176ae2`, Core **>=0.1.30,<0.2.0**. Core 0.1.29.2 hat keinen Themeinstaller und wird nicht unter gleicher Version ersetzt. Der freigegebene Core-Icon bleibt unabhängig vom Theme permanent enthalten.

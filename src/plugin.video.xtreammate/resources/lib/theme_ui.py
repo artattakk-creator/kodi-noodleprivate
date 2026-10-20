@@ -56,7 +56,8 @@ def local_import(uri, cancel=lambda: False):
 def _message(code):
     import xbmcgui
     ids = {'SPACE':32815, 'BUSY':32816, 'INCOMPATIBLE':32817, 'DOWNLOAD':32818,
-           'CHECKSUM':32819, 'INCOMPLETE':32820, 'SAME_VERSION':32821, 'DOWNGRADE':32822}
+           'CHECKSUM':32819, 'INCOMPLETE':32820, 'SAME_VERSION':32821, 'DOWNGRADE':32822,
+           'CATALOG_NOT_PUBLISHED':32824}
     xbmcgui.Dialog().ok(tr(32800), tr(ids.get(code, 32814)))
 
 
@@ -64,9 +65,12 @@ def manage():
     import xbmcgui
     from theme_store import installed, select, remove, core_version
     from theme_catalog import catalogue, download
+    from theme_render import choice_items, snapshot
     dialog = xbmcgui.Dialog()
     while True:
-        choice = dialog.select(tr(32800), [tr(i) for i in (32801,32802,32803,32804,32805)])
+        theme=snapshot()
+        choice = dialog.select(tr(32800), choice_items([tr(i) for i in (32801,32823,32803,32804,32805)],
+            ['icon.shared.check','icon.shared.search','icon.shared.forward','icon.shared.clear','icon.shared.close'],theme),useDetails=bool(theme))
         if choice < 0: return
         try:
             if choice == 2:

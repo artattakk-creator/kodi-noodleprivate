@@ -20,6 +20,7 @@ def validate(repo=ROOT):
     data=json_object((repo/'themes/xcmate/catalog-v1.json').read_bytes())
     # Validate even packages outside this candidate's compatible range.
     rows=[]
+    parse_catalogue(data,'0.1.30')  # Validate shape before iterating .get fields.
     for entry in data.get('themes',[]):
         if not isinstance(entry,dict) or entry.get('approved') is not True: continue
         compatible=parse_catalogue(dict(schema_version=data.get('schema_version'),themes=[entry]),entry.get('supported_xcmate',{}).get('min'))

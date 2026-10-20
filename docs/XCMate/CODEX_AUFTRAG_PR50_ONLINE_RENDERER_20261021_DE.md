@@ -1,0 +1,25 @@
+## Verbindlicher nächster Codex-Auftrag – Online-Theme-Katalog & Release-Gates (ohne Merge)
+
+**Entscheidung:** GitHub ist die einzige offizielle Online-Quelle für installierbare XCMate-Themes. Google Drive dient weiterhin als Quell-/Archivspeicher. Weiterarbeit ausschließlich in `feat/xcmate-space-premium-installer` (Draft PR #50). **Nicht mergen, nicht releasen, nicht `main` oder den produktiven Add-on-Index verändern.**
+
+### A. Online-Installation ab Core 0.1.30 freigabefertig machen
+1. Den vorhandenen HTTPS-Katalog `themes/xcmate/catalog-v1.json` und seinen Importpfad `Einstellungen → Darstellung & Sprache → XCMate-Designs → Online-Katalog` durchgängig prüfen. Core 0.1.29.2 hat diesen Installer noch nicht.
+2. Aktuelles Katalogziel ist ausschließlich `https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/themes/xcmate/catalog-v1.json`. **In main existiert diese Datei vor dem Merge noch nicht (404).** Den Online-Download daher nicht als bereits produktiv verfügbar bezeichnen. Nach *später explizit freigegebenem Merge* müssen Katalog **und** exakt das referenzierte ZIP auf `main` verfügbar sein und auf dem realen Android-Gerät HTTP 200 liefern.
+3. Space Premium `1.0.0`: Hash `8fc7f312a65fa5ecdbe68d3487939a25d685de29717896a0a1113c8d41176ae2`, Größe `19772084` Bytes, Core `>=0.1.30,<0.2.0`. Vor Livegang die GitHub-Bytes unabhängig erneut mit Katalogdaten und `theme.json` vergleichen; Datei unter derselben Version nie austauschen.
+4. Der Katalog ist generisch für **weitere Themes**, jeweils eigene `id`, `name`, `version`, `supported_xcmate`, `url`, `sha256`, `bytes`, `approved`; kein Hardcoding von `space-premium` im eigentlichen Auswahl-/Importprozess. Bitte mindestens **zwei unterschiedliche Test-Themes/Katalogeinträge** ausschließlich als Fixtures testen (kein neues Artwork erzeugen oder öffentliches Testtheme freigeben). Vorhandene Host-/Pfad-Allowlist, ZIP- und Hashprüfung, Limits, cancel und atomare Theme-Revisionen beibehalten. Keine beliebigen externen URLs und kein Ausweichen auf Google Drive ohne gesondertes Security-Konzept.
+5. Kodi-UX prüfen: Katalog abrufen, mehrere Themes listen, Installieren, installierte Version anzeigen, gezielt aktivieren, Standarddesign wählen, Update/neue Version, Abbruch/Offline/404/Checksum-/Inkompatibilitätsfall verständlich behandeln. Download nicht im UI-/Fernbedienungs-Callback blockierend ausführen. Theme-ZIP **nicht** über Kodis generischen Add-on-ZIP-Installer öffnen.
+6. Vollständige technische Renderer-Mapping-Matrix für **98 Originalbilder und 106 logische Keys** erstellen: welche Slots zur Laufzeit benutzt werden, wo Fallback/Platzhalter bewusst konditional bleiben, welche unverbunden sind. Fehlende reine Texture-Integrationen für EPG, Media-Buttons, Widgets und Live-Sender-/Gruppenliste/Infobar/Playerleiste ergänzen, nur wenn Frozen OSD-/Remote-/Playback-Navigation nachweislich unverändert bleibt. Nicht künstlich behaupten, alle 98 seien gleichzeitig sichtbar.
+7. Alte, jetzt widersprüchliche Ergebnisdateien und Testpläne (`TESTERGEBNISSE_THEME_030.json`, `INSTALLATION_0292_UND_THEME_030_DE.md`, `ANDROID_TESTPLAN_THEME_030_DE.md`) mit **aktuellen verifizierten** Resultaten und sauber als Historie markierten Blockern aktualisieren.
+
+### B. Qualitäts- und Release-Gates
+- Python-Gesamtsuite, Sicherheits-/Katalogtests, beide Builds, ZIP-CRC, SHA-256, Icon dauerhaft im Core und GitHub Actions grün; CI-URLs/Commit-SHA protokollieren.
+- Unbedingt Issue #40 untersuchen: Live-TV BACK → sporadischer Ladebildschirm-Hänger, VOD/Serie BACK → owned Playback inkl. Audio stoppt, Resume bleibt. **Keine Ursachen ohne Logs behaupten**, keine Daten oder Kodi-Profilordner löschen; bloßes Schließen einer Overlay-Ebene darf Stream nicht stoppen. Der bekannte Freeze der Fernbedienungsbelegung bleibt.
+- Gerätetest Kodi 21.3 ARM32 / Titan BINGIE MOD: Sicherung des kompletten Profils inkl. externer Caches, Stock-Theme, lokaler ZIP-Import, Online-Katalog nach Verfügbarkeit, Aktivierung/Offline-Start/Defekt-Fallback, 720p/1080p/4K/Focus/IR, Film/Serie/EPG/Live, Datenpersistenz, RAM und Kaltstart. Bekannte Probleme #37 (lokale Gruppengröße) und #38 (~17 s Start) separat dokumentieren.
+- Die **Freigabe zur Zusammenführung und Veröffentlichung bleibt ausschließlich beim Benutzer**. Keine automatische Merge-/Release-/Index-Aktion durch Workflow oder Codex.
+
+### C. Codex-Lieferumfang im bestehenden Draft PR #50
+- Fertige Änderungen, vollständiger Testbericht mit aktueller CI und 98-Slot-Mappingmatrix; Dokumentation des künftigen Workflows `Theme-ZIP + Hash + Katalogeintrag → PR → Review → Merge → Online verfügbar` für weitere Themes.
+- Eindeutige Liste offener Android-Tests und Release-Blocker, inklusive #40.
+- Erst **danach** Merge-Vorschlag zur ausdrücklichen Benutzerentscheidung, nicht selbst ausführen.
+
+**Hinweis:** Die vorliegende Original-ZIP wurde bereits 98/98 gegen den Tracker verifiziert. Vorhandenes Theme-ZIP, `theme.json`, Core-Icon und Installer nutzen; **keine 98 Grafiken neu erzeugen**.

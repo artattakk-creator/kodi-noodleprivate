@@ -2152,3 +2152,11 @@ msgstr "This version is already installed with different content. Use a new them
 msgctxt "#32822"
 msgid "An older theme version cannot replace a newer installed version."
 msgstr "An older theme version cannot replace a newer installed version."
+
+msgctxt "#32823"
+msgid "Online catalogue"
+msgstr "Online catalogue"
+
+msgctxt "#32824"
+msgid "The official catalogue is not available yet (HTTP 404). Use a verified local theme ZIP or try again after the approved publication."
+msgstr "The official catalogue is not available yet (HTTP 404). Use a verified local theme ZIP or try again after the approved publication."

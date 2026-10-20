@@ -99,7 +99,7 @@ class GUIContractTests(unittest.TestCase):
                 if isinstance(owner, ast.Name) and owner.id == 'xbmcgui':
                     # getCurrentWindowDialogId is the only free GUI function used.
                     contract = CONSTRUCTORS.get(method)
-                    if method == 'getCurrentWindowDialogId': contract = lambda: None
+                    if method in ('getCurrentWindowDialogId','getCurrentWindowId'): contract = lambda: None
                     self.assertIsNotNone(contract, (path, method))
                 else:
                     kind = aliases.get(owner.id) if isinstance(owner, ast.Name) else None

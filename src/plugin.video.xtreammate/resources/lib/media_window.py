@@ -156,7 +156,10 @@ class MediaWindow(xbmcgui.WindowXML):
         items=[]
         for row in rows:
             li=xbmcgui.ListItem(str(row.get('name','')))
-            li.setArt(local_art(row,self._theme))
+            if control_id in (300,330):
+                from theme_render import action_art
+                li.setArt(action_art(row.get('sid','') if control_id==300 else 'next_episode' if self.mode=='episodes' else 'seasons',self._theme,row.get('favourite',False)))
+            else: li.setArt(local_art(row,self._theme))
             li.setInfo('video',{'title':str(row.get('name',''))})
             items.append(li)
         control.addItems(items)
@@ -353,7 +356,7 @@ class MediaWindow(xbmcgui.WindowXML):
         self.trailer=trailer_id(item)
         if self.trailer and xbmc.getCondVisibility('System.HasAddon(plugin.video.youtube)'):
             self.actions.append((tr(32521),'trailer'))
-        self._fill(300,[dict(name=label,sid=action) for label,action in self.actions])
+        self._fill(300,[dict(name=label,sid=action,favourite=fav) for label,action in self.actions])
         self.getControl(300).selectItem(next((i for i,a in enumerate(self.actions) if a[1]==old_action),0))
         self.setFocusId(old_focus if old_focus in (300,400) else 300)
 

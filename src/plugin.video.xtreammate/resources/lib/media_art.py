@@ -103,8 +103,10 @@ def local_art(item,theme=_THEME_UNSET):
     if theme is _THEME_UNSET: theme=current()
     placeholder=asset('widget.live' if item.get('kind')=='live' else 'placeholder.series.poster' if item.get('kind')=='series' else 'placeholder.movie.poster',placeholder,snapshot=theme)
     poster,backdrop=sources(item)
-    poster=cached(poster) or placeholder; backdrop=cached(backdrop)
-    return dict(poster=poster,thumb=poster,icon=poster,fanart=backdrop,landscape=backdrop or poster)
+    cached_poster=cached(poster);poster=cached_poster or placeholder; backdrop=cached(backdrop)
+    fallback_backdrop=asset('placeholder.series.backdrop' if item.get('kind')=='series' else 'placeholder.movie.backdrop',snapshot=theme) if item.get('kind')!='live' else ''
+    return dict(poster=poster,thumb=poster,icon=poster,fanart=backdrop or fallback_backdrop,
+                landscape=backdrop or cached_poster or poster)
 
 
 def request(items,priority=0):

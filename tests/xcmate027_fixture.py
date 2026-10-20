@@ -47,6 +47,9 @@ class WindowXML:
         self.tree=ET.parse(Path(scriptPath)/'resources/skins'/defaultSkin/defaultRes/xmlFilename).getroot()
         self.controls={int(n.get('id')):Control(n) for n in self.tree.findall('./controls/control') if n.get('id')}
         self.focus=int(self.tree.findtext('defaultcontrol'));self.shown=False
+        self.window_properties={}
+    def setProperty(self,key,value): self.window_properties[key]=value
+    def getProperty(self,key): return self.window_properties.get(key,'')
     def getControl(self,controlId): return self.controls[controlId]
     def setFocusId(self,iControlId):
         assert self.controls[iControlId].visible, ('focus on hidden control',iControlId)

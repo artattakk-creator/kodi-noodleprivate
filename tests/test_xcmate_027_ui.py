@@ -330,10 +330,42 @@ class FreezeTests(unittest.TestCase):
                 reference=json.loads((ROOT/'tests/fixtures/xcmate_026_overlay_ast.json').read_text())
                 self.assertEqual(reference['original_sha256'],digest)
                 source=(ROOT/file).read_text()
+                # Authorized texture-only extension. Strip only exact local
+                # imports/snapshot assignment and unwrap texture(owner, OLD,
+                # optional_key). Everything else retains its original AST hash.
+                tree=ast.parse(source)
+                class TextureOnly(ast.NodeTransformer):
+                    method=''
+                    def visit_FunctionDef(self,node):
+                        previous=self.method;self.method=node.name
+                        node=self.generic_visit(node);self.method=previous
+                        return node
+                    def visit_ImportFrom(self,node):
+                        if node.module=='theme_render' and self.method in ('_build_controls','_render_transport','_local_logo'):
+                            self_names={alias.name for alias in node.names}
+                            if self_names <= {'live_texture','snapshot'}: return None
+                        return node
+                    def visit_Assign(self,node):
+                        if (self.method=='_build_controls' and len(node.targets)==1 and ast.unparse(node.targets[0])=='self._theme'
+                                and ast.unparse(node.value)=='snapshot()'): return None
+                        return self.generic_visit(node)
+                    def visit_Call(self,node):
+                        node=self.generic_visit(node)
+                        if isinstance(node.func,ast.Name) and node.func.id=='live_texture':
+                            if self.method not in ('_build_controls','_render_transport','_local_logo') or len(node.args) not in (2,3) or ast.unparse(node.args[0])!='self' or node.keywords:
+                                raise AssertionError('unapproved texture hook')
+                            if len(node.args)==3 and any(isinstance(part,(ast.Call,ast.NamedExpr,ast.Subscript)) for part in ast.walk(node.args[2])):
+                                raise AssertionError('texture key must not have side effects')
+                            return node.args[1]
+                        return node
+                # Preserve the pre-existing exact-source normalizations below.
+                # Unparse only after those normalizations (the text strings
+                # used by the historical freeze check intentionally stay exact).
                 # Explicit shared-adapter constructor injection; every other
                 # original constructor statement remains frozen.
                 source=source.replace("def __init__(self, portal, initial_sid='', client=None):","def __init__(self, portal, initial_sid=''):")
                 source=source.replace("self.xc = client if client is not None else XtreamClient(","self.xc = XtreamClient(")
+                source=source.replace("        self.osd_bg.setImage(live_texture(self,os.path.join(self._media,'tv_panel.png'),'panel.player.options' if self.mode=='extras' else 'panel.player.controls'))\n",'')
                 # Two exact display-string replacements only in _render.
                 source=source.replace("self.sub.setLabel('{} Sender'.format(len(self.visible_channels)))",
                     "self.sub.setLabel('{} Sender - Seite {}/{}'.format(len(self.visible_channels),self._page_start//100+1, max(1,(len(self.visible_channels)+99)//100)))")
@@ -343,7 +375,7 @@ class FreezeTests(unittest.TestCase):
                 source=source.replace("        if self.mode=='channels':\n            self._move_channels(step)\n            return\n",'')
                 source=source.replace("            if key in (ACTION_UP,ACTION_DOWN) and self.mode=='channels':\n                self._move_channels(-1 if key==ACTION_UP else 1)\n                self._input_trace('NATIVE_LIST_MOVED','native',action_id=key,button_code=raw)\n                return\n            elif key",'            if key')
                 functions={};outer=[]
-                for node in ast.parse(source).body:
+                for node in TextureOnly().visit(ast.parse(source)).body:
                     if isinstance(node,ast.FunctionDef): functions[node.name]=node
                     elif isinstance(node,ast.ClassDef):
                         for method in node.body:

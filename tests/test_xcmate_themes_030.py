@@ -346,13 +346,21 @@ class ThemeTests(unittest.TestCase):
             source=ET.fromstring(original)
             script=appearance.window_source(filename)
             rendered=ET.parse(Path(script)/'resources/skins/Default/720p'/filename).getroot()
-            self.assertEqual(len(list(source.iter('control'))),len(list(rendered.iter('control'))))
-            for a,b in zip(source.iter('control'),rendered.iter('control')):
+            # Only decorative, unfocusable image nodes may be added. Existing
+            # focus targets retain exact geometry and all navigation links.
+            original_controls=list(source.iter('control'))
+            generated=[n for n in rendered.iter('control') if n.get('xcmate-decoration')!='true']
+            self.assertEqual(len(original_controls),len(generated))
+            for a,b in zip(original_controls,generated):
                 self.assertEqual(a.attrib,b.attrib)
-                for tag in ('left','top','width','height','onleft','onright','onup','ondown','label'):
+                tags=('left','top','width','height','onleft','onright','onup','ondown','label') if a.get('id') or a.get('type')!='label' else ('top','height','label')
+                for tag in tags:
                     self.assertEqual(a.findtext(tag),b.findtext(tag))
+            for node in rendered.iter('control'):
+                if node.get('xcmate-decoration')=='true':
+                    self.assertEqual(node.get('type'),'image');self.assertIsNone(node.get('id'))
             self.assertEqual([n.text for n in source.iter('texture') if (n.text or '').startswith('$')],
-                [n.text for n in rendered.iter('texture') if (n.text or '').startswith('$')])
+                [n.text for node in generated for n in node.findall('texture') if (n.text or '').startswith('$') and n.text.startswith('$INFO[ListItem.Art')])
             self.assertIn(str(self.store.root()),ET.tostring(rendered).decode())
             self.assertEqual((ADDON/'resources/skins/Default/720p'/filename).read_bytes(),original)
 
@@ -413,6 +421,53 @@ class ThemeTests(unittest.TestCase):
         profile_bomb=raw[:33]+chunk+raw[33:]
         with self.assertRaisesRegex(self.package.ThemeError,'LIMIT'):
             self.install(asset=profile_bomb)
+
+    def test_two_distinct_generic_themes_catalogue_install_activate_update_and_restart(self):
+        rows=[];packages={}
+        for ident,name in (('fixture-blue','Blue Fixture'),('fixture-gold','Gold Fixture')):
+            files=self.files(theme_id=ident);spec=json.loads(files['theme.json']);spec['name']=name;files['theme.json']=json.dumps(spec).encode()
+            path=self.archive(files,name=ident+'.zip');raw=path.read_bytes()
+            url=self.catalog.ORIGIN+'themes/xcmate/'+ident+'/theme.zip'
+            packages[url]=raw
+            rows.append(dict(id=ident,name=name,version='1.0.0',approved=True,url=url,
+                sha256=hashlib.sha256(raw).hexdigest(),bytes=len(raw),supported_xcmate=spec['supported_xcmate']))
+        parsed=self.catalog.parse_catalogue(dict(schema_version=1,themes=rows),'0.1.30')
+        self.assertEqual([r['name'] for r in parsed],['Blue Fixture','Gold Fixture'])
+        def stream(url,sink,limit,cancel):
+            data=packages[url];sink.write(data);return hashlib.sha256(data).hexdigest(),len(data)
+        with mock.patch.object(self.catalog,'stream',side_effect=stream):
+            revisions=[self.catalog.download(row) for row in parsed]
+        self.assertEqual({r['spec']['id'] for r in self.store.installed()},{'fixture-blue','fixture-gold'})
+        for revision in revisions:
+            self.store.select(revision);self.assertEqual(importlib.reload(self.store).current()['revision'],revision)
+        update=self.store.install(self.archive(self.files(theme_id='fixture-gold',version='1.1.0')))
+        self.assertEqual(self.store.current()['revision'],update)
+        self.store.select('');self.assertIsNone(self.store.current())
+
+    def test_online_catalogue_404_has_explicit_not_yet_published_error(self):
+        from urllib.error import HTTPError
+        with mock.patch.object(self.catalog,'stream',side_effect=HTTPError(self.catalog.CATALOG,404,'Not found',{},None)):
+            with self.assertRaisesRegex(self.package.ThemeError,'CATALOG_NOT_PUBLISHED'):self.catalog.catalogue('0.1.30')
+        self.assertEqual(self.store.installed(),[])
+
+    def test_online_native_selection_lists_multiple_themes_and_cancel_does_not_download(self):
+        gui=types.ModuleType('xbmcgui');dialog=mock.Mock();gui.Dialog=lambda:dialog
+        rows=[dict(id='blue',name='Blue',version='1.0.0'),dict(id='gold',name='Gold',version='2.0.0')]
+        dialog.select.side_effect=[1,-1,-1]
+        with mock.patch.dict(sys.modules,xbmcgui=gui):
+            ui=importlib.import_module('theme_ui')
+            with mock.patch.object(ui,'job',side_effect=lambda fn:fn(lambda:False)),mock.patch.object(self.catalog,'catalogue',return_value=rows),mock.patch.object(self.catalog,'download') as download:
+                ui.manage();download.assert_not_called()
+        self.assertEqual(dialog.select.call_args_list[1].args[1],['Blue 1.0.0','Gold 2.0.0'])
+
+    def test_release_workflows_have_no_automatic_main_publication_or_theme_mutation(self):
+        workflow=(ROOT/'.github/workflows/publish.yml').read_text()
+        condition=next(line for line in workflow.splitlines() if 'inputs.publish_repository == true' in line)
+        self.assertIn("github.event_name == 'workflow_dispatch'",condition)
+        self.assertIn("github.actor == 'artattakk-creator'",condition)
+        theme=(ROOT/'.github/workflows/xcmate-space-premium-build.yml').read_text()
+        self.assertIn('contents: read',theme);self.assertNotIn('git push',theme)
+        self.assertIn('committed.read_bytes()!=output.read_bytes()',theme)
 
 
 if __name__=='__main__': unittest.main()

@@ -1,8 +1,8 @@
-# XCMate 0.1.29.2 installieren; Theme-Installer 0.1.30 im Review
+# XCMate – veröffentlichte 0.1.29.2 und geprüfter Testkandidat 0.1.30
 
-> **AKTUALISIERUNG 20.10.2026:** Die unten stehenden Aussagen „0/98“, „Originale fehlen“ und „Katalog leer“ sind **historischer Stand vor Übergabe des geprüften Nutzer-ZIPs** und **nicht mehr aktuell**. Alle 98 Originalgrafiken sind nun überprüft und in PR #50 enthalten; das installierbare Theme 1.0.0 wurde vom offiziellen GitHub-Builder mit SHA-256 `8fc7f312a65fa5ecdbe68d3487939a25d685de29717896a0a1113c8d41176ae2` erzeugt. Vollständige Runtime-Integration und Android-Abnahme stehen noch aus. **Maßgeblich ist [98er Build-/Abnahmebericht](SPACE_PREMIUM_98_BUILD_ABNAHME_20261020_DE.md).**
+Stand **21.10.2026**. Bestehender [Draft-PR #50](https://github.com/artattakk-creator/kodi-noodleprivate/pull/50), ausschließlich `feat/xcmate-space-premium-installer`. Kein Merge, Release oder Produktivindex-Update. Frühere Drive-403-/0-von-98-Aussagen sind historisch; alle 98 Originale sind vorhanden.
 
-Stand: 20.10.2026. [Verbindlicher Auftrag](CODEX_AUFTRAG_INSTALLATION_THEME_030_DE.md).
+Maßgeblich: [vollständiger Prüfbericht](PR50_PRUEFBERICHT_030_20261021_DE.md), [Maschinenbericht](TESTERGEBNISSE_THEME_030.json), [Android-Testplan](ANDROID_TESTPLAN_THEME_030_DE.md).
 
 ## A – Tatsächlich veröffentlichte Installation
 
@@ -103,69 +103,19 @@ Soll/Ist-Ergebnis und datensparsame Diagnosecodes festhalten.
 Ohne reales Ergebnis wird 0.1.29.2 **nicht als am Gerät abgenommen** markiert.
 Die frühere sporadische Android-Startursache #38 bleibt unbewiesen.
 
-## B – Space Premium 1.0.0: Originale fehlen in dieser Laufzeit
+## B – Jetzt vorbereitete Installationsdateien für den Gerätetest
 
-**0/98 Originaldateien heruntergeladen oder decodiert.** Mastertracker und alle acht
-Kategorieordner sowie Originalordner und direkte Tracker-Downloadwege sind am
-Netzwerkproxy mit `Tunnel connection failed: 403 Forbidden` blockiert. Das ist keine
-Aussage, dass die Dateien auf Drive fehlen oder die Nutzerfreigabe nicht vorliegt.
+1. Nach vollständiger Sicherung die [Core-Test-ZIP 0.1.30](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.30.zip) über **Kodi → Add-ons → Aus ZIP-Datei installieren** unter derselben ID aktualisieren. 125 Dateien, **785.140 Bytes**, SHA-256 `0334e765a71b540a88ac51a6c7bf924ebc3df1f98b9e29f31df9fa068ed58c9f`; [Prüfsummendatei](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.30.zip.sha256). Das permanente freigegebene 512er-Core-Icon ist enthalten. Die 98 optionalen Themebilder sind separat.
+2. [Space Premium 1.0.0](../../themes/xcmate/space-premium/XCMate-Space-Premium-1.0.0.zip) vollständig herunterladen: **19.772.084 Bytes**, SHA-256 `8fc7f312a65fa5ecdbe68d3487939a25d685de29717896a0a1113c8d41176ae2`. In **XCMate → Einstellungen → Darstellung & Sprache → XCMate-Designs → lokales ZIP importieren** auswählen; danach installierte Version prüfen und gezielt aktivieren. **Theme-ZIP niemals mit Kodis Add-on-ZIP-Installer öffnen.** USB/SMB-VFS ebenfalls im Gerätetest prüfen.
+3. Originale 98/98 und 106 Keys sind geprüft, Theme bytegleich reproduziert und unabhängig aus GitHub-Blob-Bytes bestätigt. Aktuell sind **86 Originalbilder** über echte Verbraucher oder bedingte Fallbacks angebunden, **12 ohne Verbraucher**: siehe [vollständige Matrix](SPACE_PREMIUM_RENDERER_MATRIX_030.json). Das ist keine vollständige visuelle Android-Abnahme und kein Versprechen gleichzeitiger Sichtbarkeit aller Bilder.
+4. **Online-Katalog** bleibt an GitHub `main` gebunden. Katalog und Theme-ZIP liefern dort derzeit **HTTP 404**; der Installer erklärt dies. Kein Drive-Fallback und kein vorgetäuschtes Online-Angebot. Erst nach späterer ausdrücklicher Freigabe müssen **beide** realen URLs auf dem Android-Gerät HTTP 200 und die unveränderten Hashes liefern.
 
-[Maschinenlesbarer Zugriffs-/Fehlbestandsbericht](SPACE_PREMIUM_ASSET_PRUEFUNG_030.json)
-enthält alle 13 Versuche und 98 **historische Referenzpfade** aus dem Repositoryplan.
-Da der aktuelle Mastertracker nicht lesbar ist, sind diese Namen **keine bestätigte
-aktuelle Drive-Masterliste**. Die definitive Namens-/Maß-/Hashprüfung ist noch offen.
+**509/509 Gesamttests**, zusätzlich 37/37 fokussierte Diagnose-/Exit-/Renderer-Tests. Beide Builds, Syntax, API-Verträge, ZIP-CRC, Quellbytes und reproduzierbare Pakete bestanden. Aktuelle CI-Nachweise stehen im [Prüfbericht](PR50_PRUEFBERICHT_030_20261021_DE.md), nicht in alten 496-Test-Angaben.
 
-Zur Fortsetzung benötigt diese Laufzeit eine übergebene ZIP mit **allen 98 unveränderten
-Originalen in den acht Kategorieordnern**, den **Mastertracker als exportierte Datei**
-und vorhandene JSON-Manifeste/SHA-256-/Herkunfts- und Lizenzhinweise. Bereits vorhandene
-Teil-ZIPs können zusammen übergeben werden; keine Neuproduktion oder Konvertierung.
+## C – Erhaltung und Rückkehr
 
-Es gibt daher **kein** `XCMate-Space-Premium-1.0.0.zip`, keine tatsächlichen
-Space-Premium-Layoutabbildungen und keinen vorgetäuschten Vollständigkeitsnachweis.
-Kein Original wurde verändert, ersetzt oder neu generiert. Der GitHub-Katalog ist
-absichtlich leer. Auch die in Tests erzeugten 98 Mini-Bilder sind keine Produktassets.
+Themeimport/-wechsel arbeitet ausschließlich im optionalen `themes_v1`-Bereich und verändert keine Konten, EPG-Quellen, Mappings, Favoriten, Resume oder globalen Keymaps. Bei Video/Audio bleibt ein Designwechsel bis zur nächsten Ansicht nach Wiedergabeende vorgemerkt. Beschädigte/inkompatible Auswahl fällt auf das Core-Design zurück.
 
-## C – Separater Installer-Branch, kein Release
+Rollback des **0.1.30-Tests**: Kodi beenden; oben geprüfte unveränderte **0.1.29.2** über dieselbe ID installieren. Der alte Core ignoriert `themes_v1`. Für den exakten vorherigen Datenstand die vollständige zusammengehörige Sicherung inklusive externer Caches und DB/WAL/SHM zurückspielen. Keine App-/Kontodaten löschen.
 
-Branch `feat/xcmate-space-premium-installer`, vorgeschlagener Core **0.1.30**;
-0.1.29.2 und seine veröffentlichte ZIP bleiben bytegleich. Technischer Vertrag,
-Limits und Integrationsgrenzen: [THEME_FORMAT_INSTALLER_030_DE.md](THEME_FORMAT_INSTALLER_030_DE.md).
-Neue Funktionen: **Einstellungen → Darstellung & Sprache → XCMate-Designs**,
-installierte Designs mit Version/Aktivierung, GitHub-Katalog, lokaler ZIP-Import,
-Standarddesign und bestätigtes Entfernen. Downloads/Prüfungen laufen in einem
-abbrechbaren Worker. Der Wechsel stoppt keine Wiedergabe und wartet gegebenenfalls
-auf die nächste nach der Wiedergabe geöffnete Ansicht.
-
-Neue Tests und endgültige Prüfsumme des **Core-Testpakets** stehen im
-[Theme-Testbericht](TESTERGEBNISSE_THEME_030.json). Dieses Paket enthält den Installer,
-**kein vollständiges Space-Premium-Design**. Den separat vorbereiteten Android-Testplan
-für den Installer enthält [ANDROID_TESTPLAN_THEME_030_DE.md](ANDROID_TESTPLAN_THEME_030_DE.md).
-Keine eigenmächtigen Merges, Releases oder globalen Skin-/Keymapänderungen.
-
-### Geprüfter Installer-Testkandidat
-
-**496/496 Tests** (34 neue Theme-Regressionen), 66,514 s; ergänzend 40/40
-HTTP-/EPG-/Cache-Prüfungen in 1,201 s. Syntax und strikte Kodi-GUI-Argumenttests grün.
-Der tatsächliche Kodi-21.3-Dialog-Header wurde erneut vom gepinnten Commit gelesen;
-sein SHA-256 stimmt mit der vorhandenen API-Fixture überein.
-
-[Core-Test-ZIP 0.1.30](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.30.zip)
-([SHA256-Datei](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.30.zip.sha256)):
-**124 Dateien / 389.577 Bytes**, SHA-256
-`dca16f1ebb37ac650f426bb167b615f947b20b3e50468577559b9d07e5c27a12`.
-ZIP-CRC, Pfade, exakte Dateiliste und jeder Quellbytevergleich bestanden; zweiter
-Bau mit dem offiziellen kanonischen Packer erzeugt identische ZIP-Bytes.
-Der vollständige Repositorybuilder lief ausschließlich in einer isolierten Kopie;
-nur diese XCMate-Test-ZIP und ihre Prüfsumme wurden zurückkopiert. Produktivindex,
-veröffentlichte 0.1.29.2 sowie Noodle-/Repository-Add-ons bleiben unverändert.
-
-Der erste Gesamtlauf fand eine echte Startregression: Lesen ohne optionales Theme
-erzeugte einen Ordner. Behoben durch read-only Lesen der Auswahl; der unveränderte
-Bestandstest zur Profilerhaltung besteht wieder. Zwei Versions-Assertions wurden
-auf den neuen Core-Kandidaten umgestellt; ein älteres GUI-Testfixture erhielt den
-tatsächlichen Profilpfad-Vertrag und einen expliziten Importpfad. Die Freeze-
-Referenzdateien wurden **nicht** angepasst, und kein `WindowDialog.onInit` erfunden.
-
-[Draft-PR #50](https://github.com/artattakk-creator/kodi-noodleprivate/pull/50): Der vorherige Stand bestand zwei CI-Läufe, dessen binäres Paket ist durch den oben genannten Kandidaten ersetzt. Ein zusätzlicher Regressionstest bewies, dass ein kleines PNG zuvor ein stark expandierendes iCCP-Farbprofil einschleusen konnte. Jetzt sind alle PNG-Nebenmetadaten einschließlich begrenzt entpackter iCCP/zTXt/iTXt-Inhalte auf zusammen 1 MiB begrenzt. Der neue Test scheiterte vor der Korrektur und besteht danach; die gesamte Suite ist mit 496 Tests erneut grün. Die aktuelle PR-CI prüft genau diesen Kandidaten nochmals. Keine Originalgrafik wurde verändert.
-
-**Letzter Implementierungsstand bestätigt:** [CI 39469067207](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39469067207) auf `2c9c8a483f8d2789d902ac3218eab7210ce813b9` und [Katalogprüfung](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39469067294) erfolgreich. [Aktuelles CI-Artefakt](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39469067207/artifacts/12285862589) enthält den oben genannten inneren ZIP-SHA-256 im Namen. Upload erfolgreich, **Produktivveröffentlichung SKIPPED**. Die lokale Suite umfasst 496 Tests; der direkte CI-Rohlog-/Binärdownload wurde nach der vorangegangenen Transportablehnung nicht erneut versucht. Es wird kein heruntergeladener CI-Binärnachweis behauptet. Diese abschließende Dokumentation verändert Core, Tests und ZIP nicht.
+Issue #40 bleibt offen: Der doppelte asynchrone Stop ist automatisiert bewiesen und abgesichert; die Ursache des sporadischen Android-Ladehängers ist unbewiesen. Lokale Diagnose und Android-Gegenprobe sind vorbereitet. #37 und #38 bleiben separate bekannte Probleme. Kein reguläres Repositoryupdate von 0.1.30 vor Benutzerfreigabe und Geräteprüfung.
