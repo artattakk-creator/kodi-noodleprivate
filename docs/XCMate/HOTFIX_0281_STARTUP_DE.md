@@ -121,9 +121,18 @@ mit dem aktuellen XCMate-Quellbaum überein.
 0d82fba50c26f4139126c2c4aff28b71d19f92dcd1bb547494afc9e3cc642036
 ```
 
-[Draft-PR #39](https://github.com/artattakk-creator/kodi-noodleprivate/pull/39) ist erstellt. [GitHub-CI auf Codecommit `45d4eae`](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39416120636)
-ist zum Dokumentationszeitpunkt **in Arbeit**, noch kein CI-PASS behauptet.
-Lokale Nachweise sind vollständig; aktueller CI-Stand und Reviewartefakt im PR prüfen.
+[Draft-PR #39](https://github.com/artattakk-creator/kodi-noodleprivate/pull/39).
+**[CI erfolgreich](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39416216202)** auf `fcf3fac`
+(Anwendung/Tests unverändert gegenüber Codecommit `45d4eae`). Build, Syntax, Suite und
+Artefakt-Upload erfolgreich; **Produktiv-Publish-Schritt übersprungen**. Auch der frühere
+Code-Lauf `39416120636` ist erfolgreich. Nachweis über Run-/Job-/Schrittmetadaten;
+kein separat aus CI-Logs extrahierter Testzähler behauptet.
+[CI-Reviewartefakt `xcmate-review-39`](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39416216202/artifacts/12261762240), ID `12261762240`,
+324.855 Bytes, Ablauf 03.11.2026 11:38 UTC. Download des CI-ZIP über die Cloud-API nicht
+verfügbar; dessen Bytes daher nicht zusätzlich geprüft. Das dauerhaft im PR-Branch
+liegende lokale Kandidaten-ZIP wurde vollständig gegen den Quellcode geprüft.
+Die abschließende Dokumentationsänderung verändert keine Anwendung oder Tests;
+aktuelle Checks des PR bleiben die maßgebliche Anzeige des letzten Commitstands.
 CI erstellt eine eigene ZIP mit eigener SHA (ZIP-Zeitstempel können abweichen).
 **Kein Main-Merge, kein Release, produktiver Index weiterhin 0.1.28.**
 

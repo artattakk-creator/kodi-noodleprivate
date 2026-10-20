@@ -6,7 +6,7 @@
 > nach Stopp/Cache-Leerung vorläufig erholt; **Geräteursache weiterhin unbewiesen**.
 > [Hotfix-Bericht und Paket](HOTFIX_0281_STARTUP_DE.md) · [vollständiger Auftrag](CODEX_AUFTRAG_0281_STARTUP_HOTFIX_DE.md)
 > · [Android-Test/Repository-Update/Rollback](ANDROID_TESTPLAN_0281_DE.md) · [399/399 Tests + Nachweise](TESTERGEBNISSE_0281.json).
-> [Draft-PR #39](https://github.com/artattakk-creator/kodi-noodleprivate/pull/39), [CI-Lauf](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39416120636) zum Eintrag noch laufend.
+> [Draft-PR #39](https://github.com/artattakk-creator/kodi-noodleprivate/pull/39), [CI erfolgreich](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39416216202), [Reviewartefakt](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39416216202/artifacts/12261762240).
 > Branch `fix/xcmate-028-startup-hang`, **18 neue Starttests**, zusätzlich 26 HTTP-/EPG-Tests bestanden.
 > Test-ZIP **0.1.28.1**, 107 Dateien / 338.115 Bytes; Remote-/Live-Freeze und andere Add-ons unverändert.
 > **Kein Merge/Release; Android-Hotfix-Abnahme offen.** Design/Theme/Sprache aus Issue #37 zurückgestellt.
