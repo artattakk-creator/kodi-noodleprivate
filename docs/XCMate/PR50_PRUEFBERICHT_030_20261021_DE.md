@@ -57,7 +57,17 @@ Der gezielte Einzellauf deckte zusätzlich eine ältere Fixture-Abhängigkeit vo
 
 Geprüfte Regressionen umfassen reales Original-Theme plus native WindowDialog-/WindowXML-Ereignisse, stockidentische Liveeingaben, Defektfallback, echte Mediaaktionen/Widgetart/Guide-Zustände ohne Navigation-HTTP, generischen Mehrtheme-Katalog, 404/Offline/Hash/Kompatibilität, Archiv-/Bildlimits/Cancel/atomare Installation, asynchronen Stop/Retry, Profil- und Freeze-Erhaltung. Kleine synthetische Themebilder sind ausschließlich Testfixtures.
 
-**CI: Nach Push zu ergänzen.** Maßgebliche Maschinenwerte und finale Run-URLs werden in [TESTERGEBNISSE_THEME_030.json](TESTERGEBNISSE_THEME_030.json) festgehalten. CI-Artefaktdownload wird nur dann behauptet, wenn wirklich erfolgt; Artefaktmetadaten allein sind kein unabhängiger Binärdownload.
+**Alle drei CI-Läufe erfolgreich**, geprüfter Implementierungscommit `c7a7ecd77b448323979ffec60fbd5f30cbf66537`:
+
+| Prüfung | Ergebnis / Nachweis |
+|---|---|
+| Gesamtsuite, Syntax, Repositorybau und Core-Artefakt | [39511206845](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39511206845) SUCCESS; Publish-Schritt **SKIPPED** |
+| Katalog/alle Originalbilder | [39511206877](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39511206877) SUCCESS |
+| Theme- und Core-Neubau, unveränderliche 1.0.0 | [39511202966](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39511202966) SUCCESS |
+
+[Core-CI-Artefakt](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39511206845/artifacts/12305232920), Name enthält den oben geprüften inneren Core-SHA-256. [Beide Pakete aus Theme-/Core-Build](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39511202966/artifacts/12306620319), [Katalogbericht](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39511206877/artifacts/12305327591). Uploads und Run-/Job-/Artefaktmetadaten bestätigt; äußere Artefaktdigests stehen im [Maschinenbericht](TESTERGEBNISSE_THEME_030.json). **Kein heruntergeladener CI-Binärnachweis behauptet**; Rohlogtransport abgewiesen, CI-Testzahl nicht direkt aus Rohlog gelesen. Die Zahl 509 stammt aus dem abschließenden lokalen vollständigen Lauf. Der erfolgreiche CI-Prepare-Schritt prüft seinerseits Testsummen/OK, exakte Quellbytes und sichere ZIP-Inhalte.
+
+Zusätzlich nach Push die tatsächlichen Core-GitHub-Blob-Bytes `736a3e87248a95faf16fdc6040e780038e781ab9` unabhängig geladen: **785.140 Bytes**, identisch zum lokalen ZIP, SHA und CRC bestanden. Dieser unabhängige GitHub-Dateinachweis ist vom nicht heruntergeladenen Actions-Artefakt ausdrücklich getrennt. Nachfolgender Dokumentationscommit ändert keine Core-/Theme-/Test-/Workflowbytes.
 
 ## Veröffentlichungssperre und nächster Schritt
 
