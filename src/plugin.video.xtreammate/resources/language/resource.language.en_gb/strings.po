@@ -1568,3 +1568,147 @@ msgstr "Episode"
 msgctxt "#32606"
 msgid " match"
 msgstr " match"
+
+msgctxt "#32610"
+msgid "Import/query failed. Previous data retained. Choose Retry."
+msgstr "Import/query failed. Previous data retained. Choose Retry."
+
+msgctxt "#32611"
+msgid "Retry active groups"
+msgstr "Retry active groups"
+
+msgctxt "#32612"
+msgid "Indexing: {} stored / {} received"
+msgstr "Indexing: {} stored / {} received"
+
+msgctxt "#32613"
+msgid "Index incomplete — refresh results"
+msgstr "Index incomplete — refresh results"
+
+msgctxt "#32614"
+msgid "Index failed — retry"
+msgstr "Index failed — retry"
+
+msgctxt "#32615"
+msgid "Refresh results / continue indexing"
+msgstr "Refresh results / continue indexing"
+
+msgctxt "#32620"
+msgid "Language → XCMate language"
+msgstr "Language → XCMate language"
+
+msgctxt "#32621"
+msgid "Follow Kodi language"
+msgstr "Follow Kodi language"
+
+msgctxt "#32622"
+msgid "Skin & appearance"
+msgstr "Skin & appearance"
+
+msgctxt "#32623"
+msgid "Apply"
+msgstr "Apply"
+
+msgctxt "#32624"
+msgid "Discard changes"
+msgstr "Discard changes"
+
+msgctxt "#32625"
+msgid "Restore defaults"
+msgstr "Restore defaults"
+
+msgctxt "#32626"
+msgid "Preview"
+msgstr "Preview"
+
+msgctxt "#32627"
+msgid "Background opacity"
+msgstr "Background opacity"
+
+msgctxt "#32628"
+msgid "Panel opacity"
+msgstr "Panel opacity"
+
+msgctxt "#32629"
+msgid "Icon opacity"
+msgstr "Icon opacity"
+
+msgctxt "#32630"
+msgid "Background colour"
+msgstr "Background colour"
+
+msgctxt "#32631"
+msgid "Accent colour"
+msgstr "Accent colour"
+
+msgctxt "#32632"
+msgid "Focus colour"
+msgstr "Focus colour"
+
+msgctxt "#32633"
+msgid "Text colour"
+msgstr "Text colour"
+
+msgctxt "#32634"
+msgid "Secondary text colour"
+msgstr "Secondary text colour"
+
+msgctxt "#32635"
+msgid "Font scale"
+msgstr "Font scale"
+
+msgctxt "#32636"
+msgid "Standard (lightweight core)"
+msgstr "Standard (lightweight core)"
+
+msgctxt "#32637"
+msgid "Small / font12"
+msgstr "Small / font12"
+
+msgctxt "#32638"
+msgid "Normal / font13"
+msgstr "Normal / font13"
+
+msgctxt "#32639"
+msgid "Large / font16"
+msgstr "Large / font16"
+
+msgctxt "#32640"
+msgid "Invalid colour. Use six RGB hex digits."
+msgstr "Invalid colour. Use six RGB hex digits."
+
+msgctxt "#32641"
+msgid "Preview title — focused selection"
+msgstr "Preview title — focused selection"
+
+msgctxt "#32642"
+msgid "Font sizes use fonts provided by the Kodi skin. Live TV and native Kodi lists retain their proven layout."
+msgstr "Font sizes use fonts provided by the Kodi skin. Live TV and native Kodi lists retain their proven layout."
+
+msgctxt "#32643"
+msgid "Display settings could not be saved. Previous settings retained."
+msgstr "Display settings could not be saved. Previous settings retained."
+
+msgctxt "#32644"
+msgid "Connecting …"
+msgstr "Connecting …"
+
+msgctxt "#32645"
+msgid "Buffering …"
+msgstr "Buffering …"
+
+msgctxt "#32646"
+msgid "No EPG data"
+msgstr "No EPG data"
+
+msgctxt "#32647"
+msgid "Back / Stop: cancel connection"
+msgstr "Back / Stop: cancel connection"
+
+msgctxt "#32648"
+msgid "Connection timed out. Select the channel again to retry."
+msgstr "Connection timed out. Select the channel again to retry."
+
+msgctxt "#32649"
+msgid "Live"
+msgstr "Live"

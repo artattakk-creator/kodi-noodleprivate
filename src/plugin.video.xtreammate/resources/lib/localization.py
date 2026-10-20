@@ -1,4 +1,4 @@
-"""Bundled Kodi UI strings with per-message English fallback (no downloads).
+"""Bundled UI strings with independent XCMate language and English fallback.
 
 Kodi selects the installed user language. Never change that preference or the
 unrelated IPTV content filter. Only bundled en_GB is read for fallback; arbitrary
@@ -50,6 +50,29 @@ def english():
     return read_catalog(filename)
 
 
+@lru_cache(maxsize=2)
+def bundled(locale):
+    if locale=='en_gb': return english()
+    if locale!='de_de': return {}
+    return read_catalog(os.path.join(os.path.dirname(__file__),'..','language',
+                        'resource.language.de_de','strings.po'))
+
+
+def choose_language():
+    import xbmcgui,xbmcaddon
+    from utils import setting
+    values=('de_de','en_gb','kodi')
+    current=setting('xcmate_ui_language','kodi')
+    choice=xbmcgui.Dialog().select(tr(32620),['Deutsch','English',tr(32621)],
+                                preselect=values.index(current) if current in values else 2)
+    if 0<=choice<len(values):
+        xbmcaddon.Addon().setSetting('xcmate_ui_language',values[choice])
+        # Only reopen XCMate windows. Kodi-native addon settings remain in
+        # Kodi's own language; arbitrary userdata PO files are not loaded.
+        return True
+    return False
+
+
 def fields(text):
     """Preserve field identity and format specs; allow translated field order."""
     result=[];automatic=0
@@ -64,7 +87,9 @@ def tr(string_id,*args,**kwargs):
     import xbmcaddon
     base=english().get(int(string_id),'#'+str(string_id))
     try:
-        text=xbmcaddon.Addon().getLocalizedString(int(string_id))
+        from utils import setting
+        locale=setting('xcmate_ui_language','kodi')
+        text=xbmcaddon.Addon().getLocalizedString(int(string_id)) if locale=='kodi' else bundled(locale).get(int(string_id),'')
         if not isinstance(text,str) or not text.strip() or text=='#'+str(string_id) or fields(text)!=fields(base):
             text=base
     except (AttributeError,RuntimeError,ValueError,TypeError): text=base

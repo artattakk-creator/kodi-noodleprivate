@@ -737,6 +737,10 @@ class Router:
         from live_overlay import announce
         try:
             session=announce(p['id'], sid, title)
+            from play_intent import before_play
+            if not before_play(session):
+                xbmcplugin.setResolvedUrl(self._handle, False, xbmcgui.ListItem())
+                return
             from live_recovery import tag_live_item
             tag_live_item(item,session)
             xbmcgui.Window(10000).setProperty(
@@ -758,6 +762,8 @@ class Router:
         from live_overlay import announce
         try:
             session=announce(p['id'], sid, title)
+            from play_intent import before_play
+            if not before_play(session): return
             from live_recovery import tag_live_item
             tag_live_item(item,session)
             xbmcgui.Window(10000).setProperty(
@@ -2222,6 +2228,10 @@ class Router:
         else:
             from live_diagnostics import record
             record('session','SOURCE_NOT_VERIFIED',marker=False)
+        from play_intent import before_play
+        if not before_play(session):
+            xbmcplugin.setResolvedUrl(self._handle, False, xbmcgui.ListItem())
+            return
         from player import play_stream
         play_stream(self._handle, url, title=name, logo=logo,live_session=session)
 
@@ -2384,6 +2394,15 @@ class Router:
         pid = self._params.get('pid', '')
         p   = P.get_by_id(pid)
         if not p:
+            return
+        if p.get('type')=='xtream':
+            if self._handle>=0:
+                xbmcplugin.endOfDirectory(self._handle,True,cacheToDisc=False)
+            from catalog_sync import request
+            for kind in ('live','vod','series'):
+                request(p,kind,p.get('start_group_id','') if kind=='live' else '',
+                        priority=0 if kind=='live' else 20,force=True)
+            notify('XCMate','Katalog-Aktualisierung im Hintergrund angefordert')
             return
         notify('XCMate', f'Refreshing {p["name"]}…', duration=1500)
         self._load_channels(p, force=True)

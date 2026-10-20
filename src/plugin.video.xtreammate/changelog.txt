@@ -1,0 +1,8 @@
+0.1.28 — review candidate (not published)
+- Stream active Xtream categories into atomic, batch-written SQLite generations.
+- Immediate local media windows, progressive search and explicit import errors.
+- Stream large XMLTV into the ten-day guide; shared start-group Now/Next.
+- Separate pre-play status/handshake; frozen live remote callbacks retained.
+- Independent bundled DE/EN language; core appearance preview and persistence.
+- Premium theme and external language installers remain separate work.
+

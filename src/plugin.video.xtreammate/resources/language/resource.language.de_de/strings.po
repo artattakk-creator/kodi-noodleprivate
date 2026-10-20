@@ -1568,3 +1568,147 @@ msgstr "Episode"
 msgctxt "#32606"
 msgid " match"
 msgstr " Treffer"
+
+msgctxt "#32610"
+msgid "Import/query failed. Previous data retained. Choose Retry."
+msgstr "Import/Abfrage fehlgeschlagen. Vorhandene Daten bleiben erhalten. Erneut versuchen."
+
+msgctxt "#32611"
+msgid "Retry active groups"
+msgstr "Aktivierte Gruppen erneut laden"
+
+msgctxt "#32612"
+msgid "Indexing: {} stored / {} received"
+msgstr "Indexierung: {} gespeichert / {} empfangen"
+
+msgctxt "#32613"
+msgid "Index incomplete — refresh results"
+msgstr "Index unvollständig — Ergebnisse aktualisieren"
+
+msgctxt "#32614"
+msgid "Index failed — retry"
+msgstr "Index fehlgeschlagen — erneut versuchen"
+
+msgctxt "#32615"
+msgid "Refresh results / continue indexing"
+msgstr "Ergebnisse aktualisieren / Indexierung fortsetzen"
+
+msgctxt "#32620"
+msgid "Language → XCMate language"
+msgstr "Sprache → XCMate-Sprache"
+
+msgctxt "#32621"
+msgid "Follow Kodi language"
+msgstr "Kodi-Sprache übernehmen"
+
+msgctxt "#32622"
+msgid "Skin & appearance"
+msgstr "Skin & Darstellung"
+
+msgctxt "#32623"
+msgid "Apply"
+msgstr "Übernehmen"
+
+msgctxt "#32624"
+msgid "Discard changes"
+msgstr "Änderungen verwerfen"
+
+msgctxt "#32625"
+msgid "Restore defaults"
+msgstr "Standardwerte wiederherstellen"
+
+msgctxt "#32626"
+msgid "Preview"
+msgstr "Vorschau"
+
+msgctxt "#32627"
+msgid "Background opacity"
+msgstr "Hintergrunddeckkraft"
+
+msgctxt "#32628"
+msgid "Panel opacity"
+msgstr "Paneldeckkraft"
+
+msgctxt "#32629"
+msgid "Icon opacity"
+msgstr "Icondeckkraft"
+
+msgctxt "#32630"
+msgid "Background colour"
+msgstr "Hintergrundfarbe"
+
+msgctxt "#32631"
+msgid "Accent colour"
+msgstr "Akzentfarbe"
+
+msgctxt "#32632"
+msgid "Focus colour"
+msgstr "Fokusfarbe"
+
+msgctxt "#32633"
+msgid "Text colour"
+msgstr "Schriftfarbe"
+
+msgctxt "#32634"
+msgid "Secondary text colour"
+msgstr "Sekundäre Schriftfarbe"
+
+msgctxt "#32635"
+msgid "Font scale"
+msgstr "Schriftstufe"
+
+msgctxt "#32636"
+msgid "Standard (lightweight core)"
+msgstr "Standard (schlanke Grundinstallation)"
+
+msgctxt "#32637"
+msgid "Small / font12"
+msgstr "Klein / font12"
+
+msgctxt "#32638"
+msgid "Normal / font13"
+msgstr "Normal / font13"
+
+msgctxt "#32639"
+msgid "Large / font16"
+msgstr "Groß / font16"
+
+msgctxt "#32640"
+msgid "Invalid colour. Use six RGB hex digits."
+msgstr "Ungültige Farbe. Sechs RGB-Hexziffern verwenden."
+
+msgctxt "#32641"
+msgid "Preview title — focused selection"
+msgstr "Vorschau — fokussierte Auswahl"
+
+msgctxt "#32642"
+msgid "Font sizes use fonts provided by the Kodi skin. Live TV and native Kodi lists retain their proven layout."
+msgstr "Schriftstufen verwenden die Fonts des Kodi-Skins. Live-TV und native Kodi-Listen behalten ihr bewährtes Layout."
+
+msgctxt "#32643"
+msgid "Display settings could not be saved. Previous settings retained."
+msgstr "Darstellung konnte nicht gespeichert werden. Bisherige Werte bleiben erhalten."
+
+msgctxt "#32644"
+msgid "Connecting …"
+msgstr "Verbinde …"
+
+msgctxt "#32645"
+msgid "Buffering …"
+msgstr "Puffert …"
+
+msgctxt "#32646"
+msgid "No EPG data"
+msgstr "Keine EPG-Daten"
+
+msgctxt "#32647"
+msgid "Back / Stop: cancel connection"
+msgstr "Zurück / Stop: Verbindung abbrechen"
+
+msgctxt "#32648"
+msgid "Connection timed out. Select the channel again to retry."
+msgstr "Verbindungszeit überschritten. Sender zum Wiederholen erneut wählen."
+
+msgctxt "#32649"
+msgid "Live"
+msgstr "Live"

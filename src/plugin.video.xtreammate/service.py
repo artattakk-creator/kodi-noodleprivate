@@ -3,7 +3,7 @@ import xbmc, xbmcaddon, xbmcgui
 
 ADDON    = xbmcaddon.Addon()
 LIB_PATH = os.path.join(os.path.dirname(__file__), 'resources', 'lib')
-SERVICE_BUILD = 27
+SERVICE_BUILD = 28
 if LIB_PATH not in sys.path:
     sys.path.insert(0, LIB_PATH)
 
@@ -93,7 +93,8 @@ class IPTVMasterService(xbmc.Monitor):
                     # Only this background worker scans the saved guide. A
                     # downloaded multi-day guide need not be fetched every
                     # interval/restart while it still covers the next day.
-                    if enough_coverage(load_cache(portal['id'])):
+                    from guide_store import covers_active
+                    if enough_coverage(load_cache(portal['id'])) or covers_active(portal):
                         continue
                     ensure_epg_loaded_for_portal(portal, force=False)
             except Exception as exc:
@@ -176,6 +177,11 @@ class IPTVMasterService(xbmc.Monitor):
                 self._maybe_refresh_epg()
                 self._maybe_warm_catalogs()
             try:
+                try:
+                    from play_intent import poll as poll_preplay
+                    poll_preplay(self._overlay)
+                except Exception as exc:
+                    diagnostic('dialog','PREPLAY_FAILED',exception_class=type(exc).__name__)
                 from live_overlay import start_if_eligible, session_from_property, SESSION_KEY
                 from remote_control import parse_command, COMMAND_KEY
                 player = xbmc.Player()
@@ -229,7 +235,7 @@ class IPTVMasterService(xbmc.Monitor):
                     # Preserve a fresh announcement even when _stopped_since
                     # started long before RunPlugin created this TV session.
                     pending_start = pending_live_start(
-                        announced, self._last_session_nonce)
+                        announced, self._last_session_nonce) or bool(getattr(self._overlay,'_connecting',False))
                     if time.monotonic() - self._stopped_since > 8 and not pending_start:
                         if self._overlay is not None:
                             self._overlay.close()
@@ -271,7 +277,11 @@ class IPTVMasterService(xbmc.Monitor):
                         candidate=None
                         if fullscreen and time.monotonic()>=self._next_candidate_probe:
                             self._next_candidate_probe=time.monotonic()+1
-                            candidate=start_if_eligible(self._last_session_nonce)
+                            if marker.getProperty('XCMate.PrePlay.Ready') or marker.getProperty('XCMate.PrePlay.Request'):
+                                from preplay import start_navigator
+                                candidate=start_navigator(self._last_session_nonce)
+                            else:
+                                candidate=start_if_eligible(self._last_session_nonce)
                         if candidate is not None:
                             try:
                                 if not self._remote_keymap_checked:
@@ -304,6 +314,8 @@ class IPTVMasterService(xbmc.Monitor):
                                     xbmcgui.Dialog().notification('XCMate',
                                          'TV-Navigation konnte nicht geöffnet werden')
                                     self._overlay_failure_reported = True
+                if self._overlay is not None and getattr(self._overlay,'_connecting',False) and not player.isPlayingVideo():
+                    self._overlay.tick()
                 if self._overlay is not None and player.isPlayingVideo():
                     self._overlay.expire_intro()
                     if time.monotonic() >= self._next_overlay_check:

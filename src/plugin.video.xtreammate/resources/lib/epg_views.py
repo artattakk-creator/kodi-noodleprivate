@@ -262,8 +262,10 @@ def _start_short_guides(portal, sids, view_key=''):
                         _SHORT_FAILED[(pid,sid)]=time.time()
                 except Exception:
                     _SHORT_FAILED[(pid,sid)]=time.time()
-            with ThreadPoolExecutor(max_workers=3) as executor:
-                list(executor.map(fetch,ids))
+            # Start/first visible channel is completed before lower priorities.
+            if ids: fetch(ids[0])
+            with ThreadPoolExecutor(max_workers=2) as executor:
+                list(executor.map(fetch,ids[1:]))
             for history in (_SHORT_SEEN,_SHORT_FAILED):
                 if len(history)>512:
                     for key in sorted(history,key=history.get)[:-512]:

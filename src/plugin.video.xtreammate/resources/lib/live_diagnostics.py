@@ -24,8 +24,9 @@ FIELDS = frozenset(('video', 'marker', 'catalog', 'channels', 'programmes',
                     'index_ms', 'snapshot_ms', 'render_ms', 'focus_ms', 'items',
                     'cache_ms', 'cache_hit', 'last_channels', 'last_programmes',
                     'control_id', 'focus_before', 'learned_left_action',
-                    'left_received', 'left_channels', 'left_groups'))
+                    'left_received', 'left_channels', 'left_groups', 'error_line'))
 TEXT_FIELDS = {
+    'error_file': frozenset(('epg.py','epg_io.py','xmltv_stream.py','stream_epg.py','network_io.py','utils.py','epg_sources.py','library_index.py')),
     'mode_before': frozenset(('hidden','info','controls','extras','channels','groups','guide')),
     'mode_after': frozenset(('hidden','info','controls','extras','channels','groups','guide')),
     'input_source': frozenset(('native','control','bridge')),
@@ -38,16 +39,16 @@ TEXT_FIELDS = {
         'ReferenceError', 'SystemError', 'MemoryError', 'TimeoutError', 'OSError',
         'XMLTVLimitError', 'ResponseLimitError', 'ParseError', 'BadGzipFile',
         'EOFError', 'error', 'HTTPError', 'HTTPStatusError', 'HTTPCompressionError', 'EmptyGuideError',
-        'ReadTimeout', 'ConnectTimeout', 'WriteTimeout', 'PoolTimeout',
+        'UnsafeXMLTV','XMLTVSyntaxError','InterruptedError','ReadTimeout', 'ConnectTimeout', 'WriteTimeout', 'PoolTimeout',
         'ConnectError', 'ReadError', 'ProxyError', 'RemoteProtocolError',
         'PermissionError', 'FileNotFoundError', 'OTHER')),
     'limit_kind': frozenset(('input_bytes', 'decoded_bytes', 'bytes',
-                             'programmes', 'channels')),
+                             'programmes', 'channels','field_bytes','nesting')),
     'failure_code': frozenset(('HTTP_INPUT_BYTES_LIMIT', 'HTTP_DECODED_BYTES_LIMIT',
         'XMLTV_INPUT_BYTES_LIMIT', 'XMLTV_DECODED_BYTES_LIMIT', 'XMLTV_BYTES_LIMIT',
         'XMLTV_PROGRAMMES_LIMIT', 'XMLTV_CHANNELS_LIMIT', 'GZIP_INVALID',
         'HTTP_COMPRESSION_FAILED', 'INVALID_XMLTV', 'PARSE_TIMEOUT',
-        'DOWNLOAD_TIMEOUT', 'DOWNLOAD_FAILED', 'PARSE_FAILED', 'EMPTY_GUIDE')),
+        'XMLTV_UNSAFE_DECLARATION','XMLTV_FIELD_BYTES_LIMIT','XMLTV_NESTING_LIMIT', 'DOWNLOAD_TIMEOUT', 'DOWNLOAD_FAILED', 'PARSE_FAILED', 'EMPTY_GUIDE')),
 }
 _WRITTEN = {}
 _INPUT_PENDING = deque(maxlen=64)

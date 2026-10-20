@@ -66,7 +66,8 @@ class XtreamClient:
         if cached_only:
             return None
         try:
-            raw, _ = http_get(self._api_url(), params=params)
+            limits=dict(timeout=3,max_bytes=2*1024*1024,max_seconds=8) if action=='get_short_epg' else {}
+            raw, _ = http_get(self._api_url(), params=params,**limits)
             data = json.loads(raw)
             if data is not None:
                 cache_set(ck, data)
@@ -81,8 +82,69 @@ class XtreamClient:
             error('Xtream API {} request failed: {}'.format(action, type(exc).__name__))
             return None
 
+    def iter_catalog(self, action, category_id=None, cached_only=False, cancel=lambda:False):
+        """Stream a category response. Never deserialize the global cache to filter.
+
+        Providers ignoring category_id are tolerated: every row is locally checked
+        by the transactional index writer. The discarded count diagnoses support.
+        Existing global JSON files are streamed as an offline migration fallback.
+        """
+        import os
+        from utils import cache_dir, _private_cache_dir
+        from streaming_json import iter_array
+        extra = {'category_id':str(category_id)} if category_id is not None else {}
+        if cached_only:
+            for root in dict.fromkeys((cache_dir(),_private_cache_dir())):
+                filename = os.path.join(root,self._cache_key(action,extra)+'.json')
+                if not os.path.isfile(filename) and extra:
+                    filename = os.path.join(root,self._cache_key(action)+'.json')
+                if os.path.isfile(filename):
+                    # cache_set stores {ts,data}, inspect without loading the array.
+                    with open(filename,'rb') as stream:
+                        from streaming_json import cached_array
+                        yield from cached_array(stream,cancel)
+                    return
+            raise FileNotFoundError('No local catalogue snapshot')
+        from utils import http_stream
+        params = {**self._base_params(),'action':action,**extra}
+        with http_stream(self._api_url(),params=params,cancel=cancel) as stream:
+            yield from iter_array(stream,cancel)
+
+    def _local_portal(self):
+        try:
+            from portals import get_active
+            return next((p for p in get_active() if p.get('type')=='xtream'
+                and p.get('xc_user')==self.username and p.get('xc_pass')==self.password
+                and (str(p.get('xc_host','')) if str(p.get('xc_host','')).startswith(('http://','https://')) else 'http://'+str(p.get('xc_host',''))).rstrip('/')==self.host.rstrip('/')),None)
+        except (ImportError,AttributeError): return None
+
+    def _indexed_live(self,category_id=None):
+        portal=self._local_portal()
+        if not portal: return None
+        from library_index import Reader
+        reader=Reader(portal['id'])
+        if not reader.state('live'): return None
+        result=[];offset=0
+        while True:
+            rows,total=reader.page('live',category=category_id,offset=offset,limit=100)
+            result.extend(dict(row,stream_id=row['sid']) for row in rows)
+            offset+=len(rows)
+            if not rows or offset>=total: return result
+
+    def is_cached_live_id(self,sid):
+        portal=self._local_portal()
+        if portal:
+            from library_index import Reader
+            reader=Reader(portal['id'])
+            if reader.state('live'): return reader.get('live',sid) is not None
+        streams=self.get_cached_catalog('get_live_streams') or []
+        return any(str(r.get('stream_id'))==str(sid) for r in streams if isinstance(r,dict))
+
     def get_cached_catalog(self, action):
         """Never use the network (especially from Kodi's UI/service loop)."""
+        if action=='get_live_streams':
+            indexed=self._indexed_live()
+            if indexed is not None: return indexed
         if action not in ('get_live_categories', 'get_live_streams',
                           'get_vod_categories', 'get_vod_streams',
                           'get_series_categories', 'get_series'):
@@ -92,6 +154,12 @@ class XtreamClient:
     def warm_catalogs(self, include_live=True, include_vod=True,
                       include_series=True, force=False):
         """Called only in a background worker; preloads index files on disk."""
+        portal=self._local_portal()
+        if portal:
+            from catalog_sync import request
+            for kind,enabled in (('live',include_live),('vod',include_vod),('series',include_series)):
+                if enabled: request(portal,kind,portal.get('start_group_id','') if kind=='live' else '',priority=20,force=force)
+            return
         actions = []
         if include_live:
             actions += ['get_live_categories', 'get_live_streams']
@@ -135,6 +203,9 @@ class XtreamClient:
         return self._get_json('get_live_categories', force_refresh=force_refresh) or []
 
     def get_live_streams(self, category_id=None, force_refresh=False):
+        if not force_refresh:
+            indexed=self._indexed_live(category_id)
+            if indexed is not None: return indexed
         if category_id is not None and not force_refresh:
             all_streams = self.get_cached_catalog('get_live_streams')
             if isinstance(all_streams, list):

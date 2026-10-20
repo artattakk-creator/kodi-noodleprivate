@@ -325,7 +325,15 @@ class FreezeTests(unittest.TestCase):
         frozen=json.loads((ROOT/'tests/fixtures/xcmate_026_freeze.json').read_text())
         for file,digest in frozen['files'].items():
             self.assertEqual(hashlib.sha256((ROOT/file).read_bytes()).hexdigest(),digest,file)
-        tree=ast.parse((LIB/'main.py').read_text())
+        source=(LIB/'main.py').read_text()
+        additions=[
+            "            from play_intent import before_play\n            if not before_play(session):\n                xbmcplugin.setResolvedUrl(self._handle, False, xbmcgui.ListItem())\n                return\n",
+            "            from play_intent import before_play\n            if not before_play(session): return\n",
+            "        from play_intent import before_play\n        if not before_play(session):\n            xbmcplugin.setResolvedUrl(self._handle, False, xbmcgui.ListItem())\n            return\n"]
+        for addition in additions:
+            self.assertEqual(source.count(addition),1)
+            source=source.replace(addition,'')
+        tree=ast.parse(source)
         methods={n.name:ast.dump(n,include_attributes=False) for n in ast.walk(tree) if isinstance(n,ast.FunctionDef)}
         for name,digest in frozen['methods'].items():
             self.assertEqual(hashlib.sha256(methods[name].encode()).hexdigest(),digest,name)
