@@ -1,7 +1,7 @@
 """New routes only. Legacy provider/player entry points remain compatible."""
 from localization import tr
 
-ACTIONS=('playlist_editor','source_live','source_play','source_start','art_status','art_retry','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
+ACTIONS=('theme_manager','playlist_editor','source_live','source_play','source_start','art_status','art_retry','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
          'movies_home','series_home','media_detail','media_favourites','global_search','search_section',
          'widget_live_start_group','widget_recent_vod','widget_recent_series','widget_setup',
          'recording_folder','recording_capabilities','about_xcmate','guide_browser','media_play','guide_timers','guide_status')
@@ -26,6 +26,11 @@ def dispatch(router):
     from home_menu import settings,show,recording_folder
     action=router._params.get('action','xcmate_home')
     portal=portal_for(router)
+    if action=='theme_manager':
+        _end(router,False)
+        from theme_ui import manage
+        manage()
+        return
     if action in ('art_status','art_retry'):
         _end(router,False)
         from art_store import status,retry

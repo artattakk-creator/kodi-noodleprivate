@@ -1,3 +1,5 @@
+> **Update 20.10.2026:** 0.1.29.2 wurde inzwischen per PR #49 veröffentlicht. Aktuelle ZIP-Prüfung, Sicherung und regulärer Updateweg: [INSTALLATION_0292_UND_THEME_030_DE.md](INSTALLATION_0292_UND_THEME_030_DE.md). Die Gerätefälle bleiben offen. Abweichende Merge-/Indexaussagen im nachfolgenden ursprünglichen RC-Plan sind historisch.
+
 # Android-Abnahme 0.1.29.2 – alle Gerätefälle noch OFFEN
 
 Ziel: Kodi **21.3 / Omega**, Android-TV **ARM32**, RK3528; Tests jeweils unter

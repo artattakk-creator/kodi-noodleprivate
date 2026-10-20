@@ -1,0 +1,68 @@
+{
+  "status": "PASS_WITH_BLOCKED_THEME_ASSETS",
+  "version": "0.1.30",
+  "base_main": "116d653efb95df18a4ba750cb33d108fc2e2c276",
+  "branch": "feat/xcmate-space-premium-installer",
+  "suite": {
+    "tests": 495,
+    "seconds": 64.866,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0
+  },
+  "new_theme_tests": 33,
+  "supplementary": {
+    "tests": 40,
+    "seconds": 1.201,
+    "patterns": [
+      "test_xcmate_epg_limits.py",
+      "test_xtreammate_epg_sources.py",
+      "test_xtreammate_epg_mapping.py",
+      "test_xtreammate_cache.py"
+    ]
+  },
+  "package": {
+    "filename": "plugin.video.xtreammate-0.1.30.zip",
+    "files": 124,
+    "bytes": 389206,
+    "sha256": "b922515e4fee2d0a9d939a23f59a94ff2671d5bdc53e0b18f652b0149a57f1cc",
+    "crc": "PASS",
+    "source_bytes": "PASS",
+    "private_profile_payloads": "ABSENT",
+    "reproducible": "PASS",
+    "theme_assets_included": false
+  },
+  "catalogue": {
+    "status": "PASS",
+    "approved_packages": 0,
+    "packages": [],
+    "space_premium_complete": false
+  },
+  "kodi_api": {
+    "tag": "21.3-Omega",
+    "commit": "a3a448d26b8d560a65655dab2cd122994dc4e146",
+    "Dialog_h_sha256": "4a4146cf2266e64a063bb396167ce2d91026e17bd796318b6c00503c49e6febb",
+    "strict_gui_contracts": "PASS"
+  },
+  "freeze": {
+    "live_overlay": "UNCHANGED",
+    "remote_and_player": "UNCHANGED",
+    "freeze_fixtures": "UNCHANGED",
+    "noodle_private": "UNCHANGED",
+    "repository_gsmedia": "UNCHANGED",
+    "productive_index": "UNCHANGED"
+  },
+  "original_graphics": {
+    "required": 98,
+    "downloaded": 0,
+    "full_decode": 0,
+    "master_tracker_read": false,
+    "blocker": "NETWORK_PROXY_403",
+    "synthetic_test_fixtures_are_not_originals": true
+  },
+  "android_acceptance": "NOT_RUN",
+  "live_theme_texture_integration": "DEFERRED_UNTIL_ORIGINAL_ASSETS",
+  "theme_previews": "NOT_CREATED",
+  "ci": "PENDING_PR",
+  "production_published": false
+}

@@ -1,3 +1,7 @@
+> **Aktuell – 20.10.2026:** 0.1.29.2 ist nach PR #49 auf `main` veröffentlicht und erneut gegen die tatsächlichen GitHub-Dateibytes geprüft. Android-Abnahme weiterhin offen. Neuer separater Branch `feat/xcmate-space-premium-installer`, vorgeschlagener Core 0.1.30, kein Release/Merge. **Space Premium: 0/98 Originale hier verfügbar, Drive-Proxy 403; kein vollständiges Theme-ZIP/keine Originalvorschau.**
+> [Installation, Sicherung, Status und Blocker](INSTALLATION_0292_UND_THEME_030_DE.md) · [Installer/Paketformat und Integrationsgrenzen](THEME_FORMAT_INSTALLER_030_DE.md) · [Asset-Prüfbericht](SPACE_PREMIUM_ASSET_PRUEFUNG_030.json) · [495/495 Tests, davon 33 neu; ergänzend 40/40](TESTERGEBNISSE_THEME_030.json).
+> Frühere Texte zum noch ausstehenden 0.1.29.2-Merge/Publish sind historische Planungsstände.
+
 # XCMate – zentraler Projekteinstieg
 
 > **VERBINDLICHER INTEGRATIONSSTAND – 20.10.2026:** Ein vollständiger **RC 0.1.29.2** für das direkte Update von **0.1.28**, keine fünf Installationen.

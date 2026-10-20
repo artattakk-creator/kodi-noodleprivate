@@ -1,3 +1,9 @@
+0.1.30 – Separater Theme-Installer (Entwicklung, keine Produktivfreigabe)
+- Lokaler ZIP-Import, begrenzter HTTPS-Katalog, geprüfte unveränderliche Theme-Revisionen.
+- Aktivierung/Standarddesign nur in XCMate; laufende Wiedergabe verschiebt den Wechsel.
+- Kein Space-Premium-Paket enthalten: 98 Originale/Mastertracker wegen Drive-403 noch nicht prüfbar.
+- Live-TV-Remote/Overlay-Dateien unverändert; vollständige grafische Integration offen.
+
 0.1.29.2 – Universeller Setup-Assistent und private Playlist-Bearbeitung (Testkandidat)
 - Integrations-QA: späte Starts nach Zurück abbrechen; unvollständige M3U-Updates behalten Altbestand.
 - Kodi-21.3-API geprüft, echte JPEG-Fanart im Paket korrekt referenziert; Service-Build 29.

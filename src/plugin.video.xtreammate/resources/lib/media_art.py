@@ -93,9 +93,15 @@ def sources(item):
     return poster,backdrop or poster
 
 
-def local_art(item):
+_THEME_UNSET=object()
+
+
+def local_art(item,theme=_THEME_UNSET):
     import xbmcaddon
     placeholder=os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media','tv.png' if item.get('kind')=='live' else 'series.png' if item.get('kind')=='series' else 'vod.png')
+    from theme_store import asset, current
+    if theme is _THEME_UNSET: theme=current()
+    placeholder=asset('widget.live' if item.get('kind')=='live' else 'placeholder.series.poster' if item.get('kind')=='series' else 'placeholder.movie.poster',placeholder,snapshot=theme)
     poster,backdrop=sources(item)
     poster=cached(poster) or placeholder; backdrop=cached(backdrop)
     return dict(poster=poster,thumb=poster,icon=poster,fanart=backdrop,landscape=backdrop or poster)

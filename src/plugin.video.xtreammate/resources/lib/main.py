@@ -2626,6 +2626,7 @@ class Router:
                             force_refresh=force)
 
     def _add_dir(self, label, url, icon=None, is_folder=True, plot=''):
+        from theme_store import asset
         li = xbmcgui.ListItem(label)
         _icon = icon if icon else ADDON_ICON
         li.setArt({
@@ -2633,7 +2634,7 @@ class Router:
             'thumb':     _icon,
             'landscape': _icon,
             'clearart':  _icon,
-            'fanart':    ADDON_FANART,
+            'fanart':    asset('background.home',ADDON_FANART),
         })
         li.setInfo('video', {'title': label, 'plot': plot or label})
         if not is_folder:

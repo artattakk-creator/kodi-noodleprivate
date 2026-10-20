@@ -27,12 +27,16 @@ def show(router, portal):
     from boot_diagnostics import finish_directory
     import xbmcaddon
     path=xbmcaddon.Addon().getAddonInfo('path')
+    from theme_store import current, asset
+    theme=current()
     xbmcplugin.setPluginCategory(router._handle,'XCMate · '+portal.get('name',''))
     xbmcplugin.setContent(router._handle,'files')
     for label_id,action,icon in HOME:
         label=tr(label_id)
         router._add_dir(label,router.url(action=action,pid=portal['id']),
-                        icon=os.path.join(path,'resources','media',icon),
+                        icon=asset('icon.'+{'home_start':'start','home_live':'live','guide_browser':'epg',
+                            'movies_home':'movies','series_home':'series','settings_home':'settings'}[action],
+                            os.path.join(path,'resources','media',icon),snapshot=theme),
                         plot=(tr(32415) if action=='settings_home' else label))
     finish_directory(router,cacheToDisc=False)
 
@@ -107,6 +111,7 @@ def settings(router, portal, section=''):
         add(tr(32441),'recording_capabilities')
     elif section=='appearance':
         add(tr(32620),'ui_language')
+        add(tr(32800),'theme_manager')
         add(tr(32622),'appearance_settings')
         add(tr(32442),'settings')
         add(tr(32443),'widget_setup')

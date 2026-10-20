@@ -1,3 +1,5 @@
+> **XCMate:** [0.1.29.2 installieren und sichern; Theme-Installer 0.1.30 im separaten Review](docs/XCMate/INSTALLATION_0292_UND_THEME_030_DE.md). Space-Premium-Originale hier wegen Drive-403 noch nicht prüfbar; kein vollständiges Theme-Paket.
+
 # GS Media Kodi Repository
 
 > **XCMate RC 0.1.29.2:** [vollständige Integrationsprüfung](docs/XCMate/INTEGRATIONSPRUEFUNG_RC_0292_DE.md), **462 Tests + 26 HTTP-/EPG-Tests** bestanden. Ein direktes Update von 0.1.28, Android-Abnahme offen; kein Merge/Release.

@@ -60,7 +60,7 @@ def argb(colour,opacity=100):
     return '{:02X}{}'.format(round(max(0,min(100,opacity))*255/100),colour)
 
 
-def window_source(xml_filename):
+def window_source(xml_filename, kind='vod'):
     """Generate an XCMate-only WindowXML variant; stable IDs/navigation retained.
 
     WindowXML reads XML/fonts at construction: reopen applies a new profile.
@@ -70,9 +70,23 @@ def window_source(xml_filename):
     from utils import addon_data_dir
     original=xbmcaddon.Addon().getAddonInfo('path')
     values=read()
-    if values==DEFAULT: return original
+    from theme_store import current, asset
+    theme=current()
+    if theme:
+        values.update({k:v.upper() for k,v in theme['spec']['palette'].items()})
+    if values==DEFAULT and not theme: return original
     source=Path(original)/'resources/skins/Default/720p'/xml_filename
     tree=ET.parse(source)
+    # Texture-only changes: IDs, geometry, native navigation and callbacks stay
+    # in the bundled XML. Themes cannot supply their own executable layouts.
+    if theme:
+        background='background.epg' if xml_filename=='XCMateGuide.xml' else 'background.series' if kind=='series' else 'background.movies'
+        keys={'media_neutral.png':background, 'tv_focus.png':'focus.default',
+              'tv_normal.png':'panel.default', 'media_shade.png':'panel.overlay'}
+        for node in tree.getroot().iter():
+            if node.tag in ('texture','texturefocus','texturenofocus') and node.text and not node.text.startswith('$'):
+                key=keys.get(node.text.rsplit('/',1)[-1])
+                if key: node.text=asset(key,node.text,snapshot=theme)
     for node in tree.getroot().iter():
         if node.tag=='font': node.text=FONTS[values['font']]
         elif node.tag=='textcolor':
