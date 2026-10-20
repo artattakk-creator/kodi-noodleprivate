@@ -54,13 +54,13 @@ jobs:
           for f in tests/test_addon.py tests/test_site.py tests/test_providers.py; do
             sed -i "s@'..', 'plugin.video.noodleprivate'@'..', 'src', 'plugin.video.noodleprivate'@g" "$f"
           done
-          python -m unittest discover -s tests -v
+          python -m unittest discover -s tests -v 2>&1 | tee xcmate-test-results.log
       - name: Prepare XCMate pull request test package
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
         run: |
           python - <<'PY'
-          import hashlib
-          from pathlib import Path
+          import hashlib, json, os, re, stat, zipfile
+          from pathlib import Path, PurePosixPath
           import shutil
           import xml.etree.ElementTree as ET
           addon = ET.parse('src/plugin.video.xtreammate/addon.xml').getroot()
@@ -69,14 +69,44 @@ jobs:
           output.mkdir()
           target = output / filename
           shutil.copyfile(Path('plugin.video.xtreammate') / filename, target)
-          (output / (filename + '.sha256')).write_text(
-              hashlib.sha256(target.read_bytes()).hexdigest() + '  ' + filename + '\n')
+          digest = hashlib.sha256(target.read_bytes()).hexdigest()
+          (output / (filename + '.sha256')).write_text(digest + '  ' + filename + '\n')
+          source = Path('src/plugin.video.xtreammate')
+          expected = {'plugin.video.xtreammate/' + str(p.relative_to(source)): p
+                      for p in source.rglob('*') if p.is_file()
+                      and '__pycache__' not in p.parts and p.suffix not in ('.pyc', '.pyo')
+                      and p.name != '.DS_Store'}
+          with zipfile.ZipFile(target) as archive:
+              assert archive.testzip() is None, 'ZIP CRC failure'
+              assert len(archive.namelist()) == len(set(archive.namelist())), 'Duplicate ZIP entry'
+              assert set(archive.namelist()) == set(expected), 'Source/ZIP file mismatch'
+              for entry in archive.infolist():
+                  parts = PurePosixPath(entry.filename)
+                  assert not parts.is_absolute() and '..' not in parts.parts
+                  assert not stat.S_ISLNK(entry.external_attr >> 16)
+                  assert not set(parts.parts) & {'.git', '__pycache__', 'tests', 'addon_data'}
+                  assert parts.suffix.lower() not in {'.pyc', '.pyo', '.sqlite', '.db', '.log'}
+                  assert parts.name not in {'.env', 'portals.json', 'xtreammate_groups.json',
+                      'xtreammate_epg_sources.json', 'xtreammate_remote_actions.json'}
+                  assert archive.read(entry) == expected[entry.filename].read_bytes(), entry.filename
+              manifest = ET.fromstring(archive.read('plugin.video.xtreammate/addon.xml'))
+              assert manifest.attrib['id'] == 'plugin.video.xtreammate'
+              assert manifest.attrib['version'] == addon.attrib['version']
+          log = Path('xcmate-test-results.log').read_text()
+          match = re.search(r'Ran (\d+) tests? in ([0-9.]+)s', log)
+          assert match and '\nOK' in log and '\nFAILED' not in log
+          shutil.copyfile('xcmate-test-results.log', output / 'test-results.log')
+          (output / 'build-verification.json').write_text(json.dumps(dict(
+              commit=os.environ['GITHUB_SHA'], version=addon.attrib['version'],
+              tests=int(match.group(1)), seconds=float(match.group(2)),
+              files=len(expected), bytes=target.stat().st_size, sha256=digest,
+              crc='PASS', paths='PASS', source_bytes='PASS', production_publish=False), indent=2) + '\n')
           PY
       - name: Upload XCMate pull request test package
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v4
         with:
-          name: xcmate-review-${{ github.event.pull_request.number }}
+          name: xcmate-review-${{ github.event.pull_request.number || github.run_id }}
           path: xcmate-review/
           if-no-files-found: error
           retention-days: 14
