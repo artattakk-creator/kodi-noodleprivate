@@ -302,7 +302,7 @@ class ThemeTests(unittest.TestCase):
             with mock.patch.object(ui,'job',side_effect=lambda fn:fn(lambda:False)): ui.manage()
             self.assertEqual(len(self.store.installed()),1)
 
-    def test_published_core_remains_verified_and_catalogue_does_not_offer_missing_art(self):
+    def test_published_core_remains_verified_and_approved_theme_is_complete(self):
         # CI's official builder replaces its disposable index with 0.1.30.
         # Verify the immutable published package against a matching frozen
         # index fixture; the real main index is separately checked by the tool.
@@ -319,7 +319,23 @@ class ThemeTests(unittest.TestCase):
         spec=importlib.util.spec_from_file_location('verify_installation',path);module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
         report=module.verify(published)
         self.assertEqual(report['version'],'0.1.29.2');self.assertTrue(report['upgrade_same_id'])
-        self.assertEqual(json.loads((ROOT/'themes/xcmate/catalog-v1.json').read_text())['themes'],[])
+        catalogue=json.loads((ROOT/'themes/xcmate/catalog-v1.json').read_text())
+        self.assertEqual(catalogue['schema_version'],1)
+        self.assertEqual(len(catalogue['themes']),1)
+        approved=catalogue['themes'][0]
+        self.assertIs(approved['approved'],True)
+        self.assertEqual((approved['id'],approved['version']),('space-premium','1.0.0'))
+        self.assertEqual(approved['sha256'],'8fc7f312a65fa5ecdbe68d3487939a25d685de29717896a0a1113c8d41176ae2')
+        self.assertEqual(approved['bytes'],19772084)
+        package=ROOT/'themes/xcmate/space-premium/XCMate-Space-Premium-1.0.0.zip'
+        self.assertEqual(package.stat().st_size,approved['bytes'])
+        self.assertEqual(hashlib.sha256(package.read_bytes()).hexdigest(),approved['sha256'])
+        with zipfile.ZipFile(package) as artwork:
+            manifest=json.loads(artwork.read('theme.json'))
+            self.assertEqual(len(manifest['required_files']),98)
+            self.assertEqual(len(set(manifest['required_files'])),98)
+            self.assertIsNone(artwork.testzip())
+
 
     def test_theme_xml_preserves_geometry_control_ids_remote_links_and_dynamic_provider_art(self):
         import xml.etree.ElementTree as ET
