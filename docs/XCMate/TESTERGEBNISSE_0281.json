@@ -91,7 +91,12 @@
     "previous_028_live_tests": "Issue #38 comments 2026-10-20 11:26/11:27 UTC: start picture/sound, first OK, second OK, quick left list with EPG passed after recovery"
   },
   "ci": {
-    "status": "NOT_YET_REQUESTED",
-    "note": "Local results only; current GitHub PR checks are authoritative. No production publish."
-  }
+    "status": "IN_PROGRESS_AT_DOCUMENTATION",
+    "run_id": 39416120636,
+    "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39416120636",
+    "source_commit": "45d4eaedc5a9947a16942ea5d35abc12c980ae12",
+    "note": "No CI PASS claimed yet; local suite passed. Read PR checks for current status; production publish disabled for PR."
+  },
+  "source_commit": "45d4eaedc5a9947a16942ea5d35abc12c980ae12",
+  "pull_request": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/39"
 }

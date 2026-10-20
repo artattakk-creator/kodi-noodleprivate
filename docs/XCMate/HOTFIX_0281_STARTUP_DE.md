@@ -121,8 +121,9 @@ mit dem aktuellen XCMate-Quellbaum überein.
 0d82fba50c26f4139126c2c4aff28b71d19f92dcd1bb547494afc9e3cc642036
 ```
 
-GitHub-CI ist zum Dokumentationszeitpunkt noch nicht angefordert. Lokale Nachweise
-sind vollständig; aktueller CI-Stand und Reviewartefakt folgen im Hotfix-PR.
+[Draft-PR #39](https://github.com/artattakk-creator/kodi-noodleprivate/pull/39) ist erstellt. [GitHub-CI auf Codecommit `45d4eae`](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39416120636)
+ist zum Dokumentationszeitpunkt **in Arbeit**, noch kein CI-PASS behauptet.
+Lokale Nachweise sind vollständig; aktueller CI-Stand und Reviewartefakt im PR prüfen.
 CI erstellt eine eigene ZIP mit eigener SHA (ZIP-Zeitstempel können abweichen).
 **Kein Main-Merge, kein Release, produktiver Index weiterhin 0.1.28.**
 
