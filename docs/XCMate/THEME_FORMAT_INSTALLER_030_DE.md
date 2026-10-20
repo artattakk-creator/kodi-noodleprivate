@@ -1,5 +1,7 @@
 # XCMate Themes – Paketformat 1 und Installer 0.1.30
 
+> **AKTUALISIERUNG 20.10.2026:** Die früher fehlenden 98 Originale wurden aus dem freigegebenen Nutzer-ZIP übernommen und das Theme-Paket erfolgreich und reproduzierbar erstellt. Die weiter unten stehenden Netzwerk-/Quellblocker und „kein Bau“-Passagen dokumentieren einen **historischen** Zwischenstand. Der Theme-GitHub-Katalog enthält jetzt den geprüften 1.0.0-Eintrag im Draft-Branch; Main enthält ihn **bis zu einer ausdrücklichen Freigabe/Merge nicht**. **Aktueller Nachweis: [98er Build-/Abnahmebericht](SPACE_PREMIUM_98_BUILD_ABNAHME_20261020_DE.md).** Die vollständige grafische Runtime-Abnahme bleibt offen.
+
 Entwicklungsstand; kein produktiver Theme-Download verfügbar. Der
 [Originale-/Übergabeblocker](INSTALLATION_0292_UND_THEME_030_DE.md) bleibt offen.
 
