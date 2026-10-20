@@ -22,6 +22,10 @@ def play(router,portal):
     kind=router._params.get('kind','vod');sid=str(router._params.get('sid') or '')
     if kind not in ('vod','episode','series_item') or not sid or portal.get('type') not in ('xtream','m3u','stb'):
         xbmcplugin.setResolvedUrl(router._handle,False,xbmcgui.ListItem());return
+    from media_intent import allowed,complete
+    request=str(router._params.get('intent') or '')
+    if request and not allowed(request,portal['id'],kind,sid):
+        xbmcplugin.setResolvedUrl(router._handle,False,xbmcgui.ListItem());return
     xc=router._xc(portal)
     if kind in ('vod','series_item'):
         record=Reader(portal['id']).get('series' if kind=='series_item' else 'vod',sid)
@@ -50,8 +54,10 @@ def play(router,portal):
         item=build_playable_item(url,title=record.get('name',''),logo='',headers=headers)
     except (ValueError,OSError,RuntimeError):
         xbmcplugin.setResolvedUrl(router._handle,False,xbmcgui.ListItem());return
+    if request and not allowed(request,portal['id'],kind,sid):
+        xbmcplugin.setResolvedUrl(router._handle,False,xbmcgui.ListItem());return
     session={k:str(record[k]) for k in ('series_id','season','episode') if k in record}
-    session.update(pid=str(portal['id']),kind=kind,sid=sid,nonce=uuid.uuid4().hex,at=time.time(),
+    session.update(pid=str(portal['id']),kind=kind,sid=sid,nonce=request or uuid.uuid4().hex,at=time.time(),
                    resume=router._params.get('resume')=='1')
     try:
         item.getVideoInfoTag().setUniqueIDs({UNIQUE_ID:session['nonce']})
@@ -59,6 +65,7 @@ def play(router,portal):
     except (AttributeError,RuntimeError):
         # Playback still works, but no unverified resume tracking.
         xbmcgui.Window(10000).clearProperty(PROPERTY)
+    if request: complete(request)
     xbmcplugin.setResolvedUrl(router._handle,True,item)
 
 

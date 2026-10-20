@@ -28,7 +28,7 @@ class MediaWindow(xbmcgui.WindowXML):
         self.rails={111:[],112:[]};self._art_revision=0
         self.rows=[];self.groups=[];self.selected=None;self.episodes=[];self.actions=[]
         self._positions={};self._previous=None;self._last_position=0;self._cols=4
-        self._ready=False;self._closed=False;self._generation=0
+        self._ready=False;self._closed=False;self._generation=0;self._play_intent=''
         self._watch_stop=threading.Event();self._watch_thread=None;self._pending_future=None
         self._opened_at=time.monotonic();self._seen_revision=''
         self._catalog_missing=True
@@ -47,6 +47,8 @@ class MediaWindow(xbmcgui.WindowXML):
         if self._ready:
             # Kodi calls onInit again after returning from fullscreen video.
             from playback_exit import stop_owned
+            from media_intent import cancel
+            cancel(self.portal['id'],self._play_intent)
             stop_owned(pid=self.portal['id'])
             self._show(self.mode)
             if self.mode=='detail': self._detail_ready((self.selected,{'episodes':self._episode_raw()}))
@@ -352,8 +354,10 @@ class MediaWindow(xbmcgui.WindowXML):
         self.setFocusId(old_focus if old_focus in (300,400) else 300)
 
     def _play(self,item,kind,resume=False):
+        from media_intent import begin
+        self._play_intent=begin(self.portal['id'],kind,item['sid'])
         url=self.router.url(action='media_play',pid=self.portal['id'],kind=kind,sid=item['sid'],
-            series_id=item.get('series_id'),season=item.get('season'),episode=item.get('episode'),resume='1' if resume else '0')
+            series_id=item.get('series_id'),season=item.get('season'),episode=item.get('episode'),intent=self._play_intent,resume='1' if resume else '0')
         xbmc.executebuiltin('PlayMedia('+url+')')
 
     def onClick(self,controlId):
@@ -452,6 +456,8 @@ class MediaWindow(xbmcgui.WindowXML):
         key=action.getId()
         with self._lock:
             if key in (9,10,92):
+                from media_intent import cancel
+                cancel(self.portal['id'],self._play_intent)
                 from playback_exit import stop_owned
                 if stop_owned(pid=self.portal['id']): return
                 self._generation+=1
@@ -529,6 +535,8 @@ class MediaWindow(xbmcgui.WindowXML):
 
     def close(self):
         if self._closed: return
+        from media_intent import cancel
+        cancel(self.portal['id'],self._play_intent)
         self._closed=True;self._generation+=1;self._watch_stop.set()
         self._pool.shutdown(wait=False,cancel_futures=True)
         super().close()

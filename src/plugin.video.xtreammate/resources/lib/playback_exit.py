@@ -92,6 +92,9 @@ def poll(player=None,fullscreen=None):
     try:
         token=identity(player)
         if not token: _armed=None;return False
+        if token[0]=='media':
+            from media_intent import cancelled
+            if cancelled(token[1]): return stop_owned(player,expected=token)
         if fullscreen is None:
             if not hasattr(xbmc,'getCondVisibility'): return False
             fullscreen=xbmc.getCondVisibility('Window.IsVisible(fullscreenvideo)')

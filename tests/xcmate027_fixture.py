@@ -43,7 +43,7 @@ class Control:
 
 
 class WindowXML:
-    def __init__(self,xmlFilename,scriptPath,defaultSkin='Default',defaultRes='720p'):
+    def __init__(self,xmlFilename,scriptPath,defaultSkin='Default',defaultRes='720p',isMedia=False):
         self.tree=ET.parse(Path(scriptPath)/'resources/skins'/defaultSkin/defaultRes/xmlFilename).getroot()
         self.controls={int(n.get('id')):Control(n) for n in self.tree.findall('./controls/control') if n.get('id')}
         self.focus=int(self.tree.findtext('defaultcontrol'));self.shown=False

@@ -1,0 +1,114 @@
+{
+  "repository": "xbmc/xbmc",
+  "tag": "21.3-Omega",
+  "commit": "a3a448d26b8d560a65655dab2cd122994dc4e146",
+  "headers": {
+    "Control-21.3.h": "fd67d7aefeb40451a347c43fe22b6a8e00c6bddff1b0627ffd0ea9bc9bb14a6b",
+    "Window.h": "a502ffece784779b1596b76f77152fa61de776bea21846b5fd10249c0a5ce8fe",
+    "WindowXML.h": "6fdc664f6b625e60a6ede07bb12cb4c42394f0576ea4a38a727bd6e816179444",
+    "WindowDialog.h": "b4db3492614044c7ae77cc787b7cd29765bb0ed32dbd44e446785e2349a31f54",
+    "Dialog.h": "4a4146cf2266e64a063bb396167ce2d91026e17bd796318b6c00503c49e6febb",
+    "ListItem.h": "959136af6d1b5cce5b19e45a3fc1c85d5c4e1254080141dc6b8b7fe1a94daf2a",
+    "InfoTagVideo.h": "1906350d59d50a8f8fcb7d6cc7ceb413390f610fb9dfcd8a2741b79346535b31"
+  },
+  "constructors": {
+    "ControlList": {
+      "signature": "ControlList(long x, long y, long width, long height, const char* font = NULL, const char* textColor = NULL, const char* buttonTexture = NULL, const char* buttonFocusTexture = NULL, const char* selectedColor = NULL, long _imageWidth=10, long _imageHeight=10, long _itemTextXOffset = CONTROL_TEXT_OFFSET_X, long _itemTextYOffset = CONTROL_TEXT_OFFSET_Y, long _itemHeight = 27, long _space = 2, long _alignmentY = XBFONT_CENTER_Y);",
+      "parameters": [
+        "x",
+        "y",
+        "width",
+        "height",
+        "font",
+        "textColor",
+        "buttonTexture",
+        "buttonFocusTexture",
+        "selectedColor",
+        "_imageWidth",
+        "_imageHeight",
+        "_itemTextXOffset",
+        "_itemTextYOffset",
+        "_itemHeight",
+        "_space",
+        "_alignmentY"
+      ]
+    },
+    "ControlButton": {
+      "signature": "ControlButton(long x, long y, long width, long height, const String& label, const char* focusTexture = NULL, const char* noFocusTexture = NULL, long textOffsetX = CONTROL_TEXT_OFFSET_X, long textOffsetY = CONTROL_TEXT_OFFSET_Y, long alignment = (XBFONT_LEFT | XBFONT_CENTER_Y), const char* font = NULL, const char* textColor = NULL, const char* disabledColor = NULL, long angle = 0, const char* shadowColor = NULL, const char* focusedColor = NULL);",
+      "parameters": [
+        "x",
+        "y",
+        "width",
+        "height",
+        "label",
+        "focusTexture",
+        "noFocusTexture",
+        "textOffsetX",
+        "textOffsetY",
+        "alignment",
+        "font",
+        "textColor",
+        "disabledColor",
+        "angle",
+        "shadowColor",
+        "focusedColor"
+      ]
+    },
+    "ControlImage": {
+      "signature": "ControlImage(long x, long y, long width, long height, const char* filename, long aspectRatio = 0, const char* colorDiffuse = NULL);",
+      "parameters": [
+        "x",
+        "y",
+        "width",
+        "height",
+        "filename",
+        "aspectRatio",
+        "colorDiffuse"
+      ]
+    },
+    "ControlLabel": {
+      "signature": "ControlLabel(long x, long y, long width, long height, const String& label, const char* font = NULL, const char* textColor = NULL, const char* disabledColor = NULL, long alignment = XBFONT_LEFT, bool hasPath = false, long angle = 0);",
+      "parameters": [
+        "x",
+        "y",
+        "width",
+        "height",
+        "label",
+        "font",
+        "textColor",
+        "disabledColor",
+        "alignment",
+        "hasPath",
+        "angle"
+      ]
+    },
+    "WindowXML": {
+      "signature": "WindowXML(const String& xmlFilename, const String& scriptPath, const String& defaultSkin = \"Default\", const String& defaultRes = \"720p\", bool isMedia = false);",
+      "parameters": [
+        "xmlFilename",
+        "scriptPath",
+        "defaultSkin",
+        "defaultRes",
+        "isMedia"
+      ]
+    },
+    "WindowXMLDialog": {
+      "signature": "WindowXMLDialog(const String& xmlFilename, const String& scriptPath, const String& defaultSkin = \"Default\", const String& defaultRes = \"720p\");",
+      "parameters": [
+        "xmlFilename",
+        "scriptPath",
+        "defaultSkin",
+        "defaultRes"
+      ]
+    }
+  },
+  "lifecycle": {
+    "WindowDialog": "GUI_MSG_WINDOW_INIT delegates to native window, no Python onInit callback",
+    "WindowXML": "GUI_MSG_WINDOW_INIT explicitly invokes WindowXML::onInit",
+    "sources": {
+      "Window.cpp": "4aecd8caa947b62052189610069bef3fa4cedcebaff46d64e2df411e6d517a96",
+      "WindowDialog.cpp": "256b4565d9f6cce512f8be85841ed56bd5ddd5afae1ac94be2dfcc981e2c9e95",
+      "WindowXML.cpp": "ff2596e7eb1e14fde3048859b09be1ef4914ed8e89dba26f6fc9078741e256df"
+    }
+  }
+}

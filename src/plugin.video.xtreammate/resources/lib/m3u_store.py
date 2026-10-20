@@ -113,7 +113,7 @@ def import_playlist(uri,filename,cancel=lambda:False,progress=None):
     generation=uuid.uuid4().hex;db=connect(filename);count=0;batch=[];batch_bytes=0
     # Duplicate occurrence numbers are held in SQLite, not an unbounded set.
     db.execute('CREATE TEMP TABLE seen(ident TEXT PRIMARY KEY,n INTEGER)')
-    attrs={};name='';group='';header_epg=''
+    attrs={};name='';group='';header_epg='';pending_entry=False
     def flush():
         nonlocal batch_bytes
         if not batch: return
@@ -131,6 +131,8 @@ def import_playlist(uri,filename,cancel=lambda:False,progress=None):
                 if line.upper().startswith('#EXTM3U'):
                     header=_parse_attrs(line);header_epg=header.get('x-tvg-url') or header.get('tvg-url') or ''
                 elif line.upper().startswith('#EXTINF'):
+                    if pending_entry: raise ValueError('playlist entry has no stream URI')
+                    pending_entry=True
                     attrs,name=extinf(line);group=attrs.get('group-title') or attrs.get('group') or ''
                 elif line.upper().startswith('#EXTGRP:'): group=line[8:].strip()
                 elif line.startswith('#'): continue
@@ -139,7 +141,7 @@ def import_playlist(uri,filename,cancel=lambda:False,progress=None):
                     if not urlsplit(line.partition('|')[0]).scheme:
                         line=urljoin(uri,line) if urlsplit(uri).scheme in ('http','https') else os.path.normpath(os.path.join(os.path.dirname(uri),line))
                     if urlsplit(line.partition('|')[0]).scheme not in ('http','https','rtsp','rtmp','udp','rtp','smb','nfs','file','special',''):
-                        attrs={};name='';continue
+                        attrs={};name='';pending_entry=False;continue
                     group=group or 'Unsortiert';gid=group_id(group)
                     kind={'movies':'vod'}.get(classify_group(group),classify_group(group))
                     ident=hashlib.sha256((attrs.get('tvg-id') or stable_url(line)).encode()).hexdigest()[:28]
@@ -151,8 +153,9 @@ def import_playlist(uri,filename,cancel=lambda:False,progress=None):
                     batch.append((sid,generation,name or attrs.get('tvg-name') or 'Unbenannter Eintrag',gid,line,
                         attrs.get('tvg-logo',''),attrs.get('tvg-id',''),count,json.dumps(attrs)))
                     batch_bytes+=sum(len(value.encode('utf-8')) for value in batch[-1] if isinstance(value,str))
-                    count+=1;attrs={};name='';group=''
+                    count+=1;attrs={};name='';group='';pending_entry=False
                     if len(batch)>=256 or batch_bytes>=1024*1024: flush()
+            if pending_entry: raise ValueError('truncated playlist entry')
             flush()
         if not count: raise ValueError('empty playlist')
         if cancel(): raise InterruptedError('playlist cancelled')
