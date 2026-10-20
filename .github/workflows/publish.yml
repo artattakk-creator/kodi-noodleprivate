@@ -56,6 +56,7 @@ jobs:
           done
           python -m unittest discover -s tests -v 2>&1 | tee xcmate-test-results.log
       - name: Prepare XCMate pull request test package
+        id: xcmate_package
         if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
         run: |
           python - <<'PY'
@@ -71,6 +72,9 @@ jobs:
           shutil.copyfile(Path('plugin.video.xtreammate') / filename, target)
           digest = hashlib.sha256(target.read_bytes()).hexdigest()
           (output / (filename + '.sha256')).write_text(digest + '  ' + filename + '\n')
+          if os.environ.get('GITHUB_OUTPUT'):
+              with open(os.environ['GITHUB_OUTPUT'], 'a') as result:
+                  result.write('sha256=' + digest + '\n')
           source = Path('src/plugin.video.xtreammate')
           expected = {'plugin.video.xtreammate/' + str(p.relative_to(source)): p
                       for p in source.rglob('*') if p.is_file()
@@ -109,7 +113,7 @@ jobs:
         if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v4
         with:
-          name: xcmate-review-${{ github.event.pull_request.number || github.run_id }}
+          name: xcmate-review-${{ github.event.pull_request.number || github.run_id }}-${{ steps.xcmate_package.outputs.sha256 }}
           path: xcmate-review/
           if-no-files-found: error
           retention-days: 14
