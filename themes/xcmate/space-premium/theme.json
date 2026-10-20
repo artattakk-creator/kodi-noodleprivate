@@ -1,0 +1,828 @@
+{
+  "schema_version": 1,
+  "id": "space-premium",
+  "name": "Space Premium",
+  "version": "1.0.0",
+  "author": "GS Media",
+  "supported_xcmate": {
+    "min": "0.1.30",
+    "max_exclusive": "0.2.0"
+  },
+  "palette": {
+    "background": "061322",
+    "accent": "159FEA",
+    "focus": "42D9FF",
+    "text": "E6F5FF",
+    "secondary": "88A6BE"
+  },
+  "assets": {
+    "background.epg": "assets/epg/bg-guide.jpg",
+    "background.epg.detail": "assets/epg/bg-detail.jpg",
+    "background.epg.guide": "assets/epg/bg-guide.jpg",
+    "background.home": "assets/home/bg-start.jpg",
+    "background.home.epg": "assets/home/bg-epg.jpg",
+    "background.home.live": "assets/home/bg-live.jpg",
+    "background.home.movies": "assets/home/bg-movies.jpg",
+    "background.home.series": "assets/home/bg-series.jpg",
+    "background.home.settings": "assets/home/bg-settings.jpg",
+    "background.home.start": "assets/home/bg-start.jpg",
+    "background.live": "assets/home/bg-live.jpg",
+    "background.movies": "assets/home/bg-movies.jpg",
+    "background.series": "assets/home/bg-series.jpg",
+    "background.settings": "assets/home/bg-settings.jpg",
+    "background.settings.about": "assets/settings/bg-about.jpg",
+    "background.settings.accounts": "assets/settings/bg-accounts.jpg",
+    "background.settings.appearance": "assets/settings/bg-appearance.jpg",
+    "background.settings.epg": "assets/settings/bg-epg.jpg",
+    "background.settings.groups": "assets/settings/bg-groups.jpg",
+    "background.settings.maintenance": "assets/settings/bg-maintenance.jpg",
+    "background.settings.player": "assets/settings/bg-player.jpg",
+    "background.settings.recordings": "assets/settings/bg-recordings.jpg",
+    "background.settings.remote": "assets/settings/bg-remote.jpg",
+    "background.settings.start-channel": "assets/settings/bg-start-channel.jpg",
+    "branding.fanart": "assets/branding/fanart-1920.jpg",
+    "branding.icon": "assets/branding/icon-512.png",
+    "branding.splash": "assets/branding/splash-1920.jpg",
+    "branding.wordmark": "assets/branding/wordmark-white.png",
+    "focus.default": "assets/shared/focus-ring.png",
+    "focus.media": "assets/shared/focus-ring.png",
+    "focus.rail": "assets/shared/focus-rail.png",
+    "icon.epg": "assets/home/icon-epg.png",
+    "icon.epg.auto-switch": "assets/epg/icon-auto-switch.png",
+    "icon.epg.channels": "assets/epg/icon-channels.png",
+    "icon.epg.clock": "assets/epg/icon-clock.png",
+    "icon.epg.day-next": "assets/epg/icon-day-next.png",
+    "icon.epg.day-prev": "assets/epg/icon-day-prev.png",
+    "icon.epg.record": "assets/epg/icon-record.png",
+    "icon.epg.remind": "assets/epg/icon-remind.png",
+    "icon.epg.today": "assets/epg/icon-today.png",
+    "icon.live": "assets/home/icon-live.png",
+    "icon.media.episodes": "assets/media/icon-episodes.png",
+    "icon.media.favorite-add": "assets/media/icon-favorite-add.png",
+    "icon.media.favorite-remove": "assets/media/icon-favorite-remove.png",
+    "icon.media.play": "assets/media/icon-play.png",
+    "icon.media.restart": "assets/media/icon-restart.png",
+    "icon.media.resume": "assets/media/icon-resume.png",
+    "icon.media.seasons": "assets/media/icon-seasons.png",
+    "icon.media.trailer": "assets/media/icon-trailer.png",
+    "icon.movies": "assets/home/icon-movies.png",
+    "icon.player.audio": "assets/player/icon-audio.png",
+    "icon.player.live-edge": "assets/player/icon-live-edge.png",
+    "icon.player.more": "assets/player/icon-more.png",
+    "icon.player.pause": "assets/player/icon-pause.png",
+    "icon.player.play": "assets/player/icon-play.png",
+    "icon.player.seek-back": "assets/player/icon-seek-back.png",
+    "icon.player.seek-forward": "assets/player/icon-seek-forward.png",
+    "icon.player.skip-back": "assets/player/icon-skip-back.png",
+    "icon.player.skip-forward": "assets/player/icon-skip-forward.png",
+    "icon.player.stop": "assets/player/icon-stop.png",
+    "icon.player.subtitles": "assets/player/icon-subtitles.png",
+    "icon.player.video-settings": "assets/player/icon-video-settings.png",
+    "icon.series": "assets/home/icon-series.png",
+    "icon.settings": "assets/home/icon-settings.png",
+    "icon.settings.about": "assets/settings/icon-about.png",
+    "icon.settings.accounts": "assets/settings/icon-accounts.png",
+    "icon.settings.appearance": "assets/settings/icon-appearance.png",
+    "icon.settings.epg": "assets/settings/icon-epg.png",
+    "icon.settings.groups": "assets/settings/icon-groups.png",
+    "icon.settings.maintenance": "assets/settings/icon-maintenance.png",
+    "icon.settings.player": "assets/settings/icon-player.png",
+    "icon.settings.recordings": "assets/settings/icon-recordings.png",
+    "icon.settings.remote": "assets/settings/icon-remote.png",
+    "icon.settings.start-channel": "assets/settings/icon-start-channel.png",
+    "icon.shared.back": "assets/shared/icon-back.png",
+    "icon.shared.check": "assets/shared/icon-check.png",
+    "icon.shared.clear": "assets/shared/icon-clear.png",
+    "icon.shared.close": "assets/shared/icon-close.png",
+    "icon.shared.filter": "assets/shared/icon-filter.png",
+    "icon.shared.forward": "assets/shared/icon-forward.png",
+    "icon.shared.info": "assets/shared/icon-info.png",
+    "icon.shared.search": "assets/shared/icon-search.png",
+    "icon.shared.sort": "assets/shared/icon-sort.png",
+    "icon.shared.warning": "assets/shared/icon-warning.png",
+    "icon.start": "assets/home/icon-start.png",
+    "panel.default": "assets/shared/glass-panel.png",
+    "panel.divider": "assets/shared/divider.png",
+    "panel.loading": "assets/shared/loading-skeleton.png",
+    "panel.media.poster.shade": "assets/media/poster-shade.png",
+    "panel.media.rail.gradient": "assets/media/rail-gradient.png",
+    "panel.overlay": "assets/shared/glass-panel.png",
+    "panel.player.controls": "assets/player/panel-controls.png",
+    "panel.player.infobar": "assets/player/panel-infobar.png",
+    "panel.player.options": "assets/player/panel-options.png",
+    "panel.player.progress-track": "assets/player/panel-progress-track.png",
+    "panel.sidebar": "assets/shared/sidebar-bg.png",
+    "placeholder.movie.backdrop": "assets/media/placeholder-movie-backdrop.jpg",
+    "placeholder.movie.poster": "assets/media/placeholder-movie-poster.jpg",
+    "placeholder.series.backdrop": "assets/media/placeholder-series-backdrop.jpg",
+    "placeholder.series.poster": "assets/media/placeholder-series-poster.jpg",
+    "status.epg.no-data": "assets/epg/no-data.png",
+    "status.epg.source-error": "assets/epg/source-error.png",
+    "widget.header": "assets/widgets/widget-header.png",
+    "widget.live": "assets/widgets/widget-live-fallback.png",
+    "widget.movie": "assets/widgets/widget-movie-fallback.png",
+    "widget.series": "assets/widgets/widget-series-fallback.png"
+  },
+  "required_files": [
+    "assets/branding/fanart-1920.jpg",
+    "assets/branding/icon-512.png",
+    "assets/branding/splash-1920.jpg",
+    "assets/branding/wordmark-white.png",
+    "assets/epg/bg-detail.jpg",
+    "assets/epg/bg-guide.jpg",
+    "assets/epg/icon-auto-switch.png",
+    "assets/epg/icon-channels.png",
+    "assets/epg/icon-clock.png",
+    "assets/epg/icon-day-next.png",
+    "assets/epg/icon-day-prev.png",
+    "assets/epg/icon-record.png",
+    "assets/epg/icon-remind.png",
+    "assets/epg/icon-today.png",
+    "assets/epg/no-data.png",
+    "assets/epg/source-error.png",
+    "assets/home/bg-epg.jpg",
+    "assets/home/bg-live.jpg",
+    "assets/home/bg-movies.jpg",
+    "assets/home/bg-series.jpg",
+    "assets/home/bg-settings.jpg",
+    "assets/home/bg-start.jpg",
+    "assets/home/icon-epg.png",
+    "assets/home/icon-live.png",
+    "assets/home/icon-movies.png",
+    "assets/home/icon-series.png",
+    "assets/home/icon-settings.png",
+    "assets/home/icon-start.png",
+    "assets/media/icon-episodes.png",
+    "assets/media/icon-favorite-add.png",
+    "assets/media/icon-favorite-remove.png",
+    "assets/media/icon-play.png",
+    "assets/media/icon-restart.png",
+    "assets/media/icon-resume.png",
+    "assets/media/icon-seasons.png",
+    "assets/media/icon-trailer.png",
+    "assets/media/placeholder-movie-backdrop.jpg",
+    "assets/media/placeholder-movie-poster.jpg",
+    "assets/media/placeholder-series-backdrop.jpg",
+    "assets/media/placeholder-series-poster.jpg",
+    "assets/media/poster-shade.png",
+    "assets/media/rail-gradient.png",
+    "assets/player/icon-audio.png",
+    "assets/player/icon-live-edge.png",
+    "assets/player/icon-more.png",
+    "assets/player/icon-pause.png",
+    "assets/player/icon-play.png",
+    "assets/player/icon-seek-back.png",
+    "assets/player/icon-seek-forward.png",
+    "assets/player/icon-skip-back.png",
+    "assets/player/icon-skip-forward.png",
+    "assets/player/icon-stop.png",
+    "assets/player/icon-subtitles.png",
+    "assets/player/icon-video-settings.png",
+    "assets/player/panel-controls.png",
+    "assets/player/panel-infobar.png",
+    "assets/player/panel-options.png",
+    "assets/player/panel-progress-track.png",
+    "assets/settings/bg-about.jpg",
+    "assets/settings/bg-accounts.jpg",
+    "assets/settings/bg-appearance.jpg",
+    "assets/settings/bg-epg.jpg",
+    "assets/settings/bg-groups.jpg",
+    "assets/settings/bg-maintenance.jpg",
+    "assets/settings/bg-player.jpg",
+    "assets/settings/bg-recordings.jpg",
+    "assets/settings/bg-remote.jpg",
+    "assets/settings/bg-start-channel.jpg",
+    "assets/settings/icon-about.png",
+    "assets/settings/icon-accounts.png",
+    "assets/settings/icon-appearance.png",
+    "assets/settings/icon-epg.png",
+    "assets/settings/icon-groups.png",
+    "assets/settings/icon-maintenance.png",
+    "assets/settings/icon-player.png",
+    "assets/settings/icon-recordings.png",
+    "assets/settings/icon-remote.png",
+    "assets/settings/icon-start-channel.png",
+    "assets/shared/divider.png",
+    "assets/shared/focus-rail.png",
+    "assets/shared/focus-ring.png",
+    "assets/shared/glass-panel.png",
+    "assets/shared/icon-back.png",
+    "assets/shared/icon-check.png",
+    "assets/shared/icon-clear.png",
+    "assets/shared/icon-close.png",
+    "assets/shared/icon-filter.png",
+    "assets/shared/icon-forward.png",
+    "assets/shared/icon-info.png",
+    "assets/shared/icon-search.png",
+    "assets/shared/icon-sort.png",
+    "assets/shared/icon-warning.png",
+    "assets/shared/loading-skeleton.png",
+    "assets/shared/sidebar-bg.png",
+    "assets/widgets/widget-header.png",
+    "assets/widgets/widget-live-fallback.png",
+    "assets/widgets/widget-movie-fallback.png",
+    "assets/widgets/widget-series-fallback.png"
+  ],
+  "sha256": {
+    "assets/branding/fanart-1920.jpg": "b2eb85d05f6a0d8c5c68d19a19733973c3af360e542c51c8abac768f318cf997",
+    "assets/branding/icon-512.png": "81da1003a2753ec6afbdd50b2a320e738a2131ad9f0d76606da1babdd0d2f135",
+    "assets/branding/splash-1920.jpg": "2553464f81de674f3de8726ba1ec81dcf57d7c0232d39aa3322af10ee0435fcc",
+    "assets/branding/wordmark-white.png": "37d3b575d2e33fca436483e14b04b6878c081301b54abfd854053488404c2bb5",
+    "assets/epg/bg-detail.jpg": "dfe878ef84336f45514ec42fe3bd56472286ee67c1180d3aca393842a04c2f2c",
+    "assets/epg/bg-guide.jpg": "3f41c5192f4d01526cb3e9e8e0076ed668a0675faa70046ba9886f7444c41ad0",
+    "assets/epg/icon-auto-switch.png": "fdd7711a827a852a22a34083ca1cc0c2a6e546e8d36d142d16ce3b43786ffd2f",
+    "assets/epg/icon-channels.png": "192020e8e3b20ae23540686a06a4289ce71d77cb9e3ba8533374c4632e929516",
+    "assets/epg/icon-clock.png": "d1ae559da39c40f182c17db4017d13979e807ca90ff621508a74d1beb701279c",
+    "assets/epg/icon-day-next.png": "bb017efbc81bc984455f56f9e1af4d2bfa1aa523ae849c67afc491924542165b",
+    "assets/epg/icon-day-prev.png": "1a7be34f1ef3f8fb82dd3298014a6216f0f1fa3926fa29bfdea232d543cabb28",
+    "assets/epg/icon-record.png": "ff09cf8d37c87d3e18b20cf73fa716a6777c02f6646c9600f168df6f717fb573",
+    "assets/epg/icon-remind.png": "b42a9ce995ae0d005f39eaee612c70f2e5bc86eee8f3662e7ab85560874d7b25",
+    "assets/epg/icon-today.png": "ce3839ede71f25cceb3aa1d4d52db63c5902cec45700718a05cfa8d4370c9af5",
+    "assets/epg/no-data.png": "01c7b350d41cd5d3e05923e66e3fd0fba25d7ad70fcc33b945ee298c9a7d2cc1",
+    "assets/epg/source-error.png": "99fdc38e07a050f0bb55c2a2849ec10f0afe29867ab8fa7f46605ae21dc39db3",
+    "assets/home/bg-epg.jpg": "43690fe3f4d563b79feebdce0d82ee2b94b0d6f609270d2e960d2585e468dfbf",
+    "assets/home/bg-live.jpg": "35b7dd8271b8d6a6be352011c3ab22b731ea8bbb307ad880d64e320769140f0a",
+    "assets/home/bg-movies.jpg": "5b2e513d92d69416f40aa5d69ca20caee0b3911e86579d14b7f16b9026507fee",
+    "assets/home/bg-series.jpg": "195b6e32289a31e0aa5fe31bf3420fc7541573cbac75f1041307dd05194e03c8",
+    "assets/home/bg-settings.jpg": "0dc5a282fb9538e728afa9c0c1b21b08d0658214ef181f8d4a5524b9852d54fd",
+    "assets/home/bg-start.jpg": "48ac9d71f5ab14f16a995f768e74d1053bcc099bf74a0279cbd0683fa22281ff",
+    "assets/home/icon-epg.png": "80e543f7289d2d952f344bb1e1ea3d3d18c3fb96f37b182d059a1a99823f1214",
+    "assets/home/icon-live.png": "2f05225301945cedd3972bbcf4498b509d62a9adc73886823247f33cc6c450ad",
+    "assets/home/icon-movies.png": "c266e41d88459065f4d813853a873e2c717af0a5407ff2caf97febbddb4e4323",
+    "assets/home/icon-series.png": "f470a20b90a5449f847eac14ba3f81a79a0e7d8f5be9da7529c84e760c7bce80",
+    "assets/home/icon-settings.png": "2f6bf044e70f0bb860ec33198388c9af9085c1ad2d44c9ccf71b2a7906ba0655",
+    "assets/home/icon-start.png": "625d73d50b9ce77ee78d2033f30f4fab715ed7d5b05c4c87e4e4c536d5777325",
+    "assets/media/icon-episodes.png": "901894d103017ac44a72bb20c579b7cefb7b01cbdcfe847a8e9ef457e647d111",
+    "assets/media/icon-favorite-add.png": "360e98cbb8cbb4c0059c9366808dd0e87806c077587588b5229500689fba6eea",
+    "assets/media/icon-favorite-remove.png": "547ba5d3aa34198a8b62336db99ca9ef1999876832ffd8b197fc747e3abea887",
+    "assets/media/icon-play.png": "2bde3373cf65311f19a28a58b4de0b3afdf8e395cdb6a851554827eaaa0cdc87",
+    "assets/media/icon-restart.png": "a8d797b6ff709158731d35b1cd40243eb8b12ba75d15538c9183354de6a476c6",
+    "assets/media/icon-resume.png": "21db7468b6aa74bdb1d7b035577b1fed01b8216b121f73b4e4036af0d9ddd503",
+    "assets/media/icon-seasons.png": "b0ef1f5fe3f56f192696605e3e3915961a01e4a1139b186c95c3fa2aa6cd532a",
+    "assets/media/icon-trailer.png": "9768048f0fd3f6bd3256ac726d13c9deb37c1cb45a7837aef18dad5cc760b829",
+    "assets/media/placeholder-movie-backdrop.jpg": "a80f2feb5a6e7941cd39a6ed05c37176186b03d262ebe69e91d0e756482316a6",
+    "assets/media/placeholder-movie-poster.jpg": "85fd3a849d88f087473808d38fca197f2f7e4ab802687865e8ab0254efe30984",
+    "assets/media/placeholder-series-backdrop.jpg": "60d1a03e8ca62043561fa5360cf338820ba2a499d15c37f850b9ddb3b6916e0a",
+    "assets/media/placeholder-series-poster.jpg": "4c8f89be2c90e7ce5603e1f8015c4e0f4261a8651488b0504a24cd39b58f8aca",
+    "assets/media/poster-shade.png": "ad04c5f16c44a2e471b6f88792d572967174fa492d3756431c938bbd68e76f82",
+    "assets/media/rail-gradient.png": "4209e0f1fe2f76544f8553954e5d8259541959cdec7a0ba8a4d32708364ac0f5",
+    "assets/player/icon-audio.png": "0e1d2ed06745b88bfb1331131ba97880e0c511b535ddb224c47a30820f3b5b10",
+    "assets/player/icon-live-edge.png": "11e590302a89a7c109ee38f58f2b05973887ee01520d029e2c8b1acca11684f5",
+    "assets/player/icon-more.png": "02cfdaa32c068242e7b0790cdae51f9ea7ae69cb488553ad6038bf59079f3ba6",
+    "assets/player/icon-pause.png": "3d1d882863a341fc8a29583e61704b2452706b2f15c4d357089a36676c1d0bc2",
+    "assets/player/icon-play.png": "28cc3878ff543cb2e65d1219d8250f2c79ba1b86df0dcad6ab30b073976b07b7",
+    "assets/player/icon-seek-back.png": "bf91948fd7e7adfadceeddc6064a20578d91c95ef5297be301c85be880cc01d3",
+    "assets/player/icon-seek-forward.png": "ac9daecd5497760a34f44f23ecf7e1e33820bcd246a989d276cd69b188276545",
+    "assets/player/icon-skip-back.png": "65720f967353e77c70a7b1a1e117223ffe778689bcce2b9b95c44b0eadb3172f",
+    "assets/player/icon-skip-forward.png": "868cf014f3baeec1c3d8d10788e0547bc99a2663cb0e7e7349ed083ad22adf47",
+    "assets/player/icon-stop.png": "ec1d268b641ca2961c4bdcee874324ced787b7ffa3398c1bc0e7c5b520942305",
+    "assets/player/icon-subtitles.png": "279a6dea04805476bb6e59a3dbcb93f2d338765758e4429a5e5e063745a82201",
+    "assets/player/icon-video-settings.png": "82072437ccfbb54cd993ca8715368519bab89d81aa8ee9c129e1207e8dee4f57",
+    "assets/player/panel-controls.png": "0385f96617f17fe63961d8c7cf89d3860104ab0d9841cea25aacb18393a0b25a",
+    "assets/player/panel-infobar.png": "b4368ae6cb18bcf93de923e3b01906e86f0338e079834ce82f2f97c357add8e1",
+    "assets/player/panel-options.png": "4ca393c22ec9865684e01edca5e5532de19d85c0e67e43684d66973b43375dff",
+    "assets/player/panel-progress-track.png": "0e028644a807b2ee7788d53f375a7060b9f04e5bc3bc2f616bc13999dbd0a8fb",
+    "assets/settings/bg-about.jpg": "3baf2125d3caabb52283d74f07a9e0af990e764b16e79493cee84e70e33ad2c8",
+    "assets/settings/bg-accounts.jpg": "e39f744743291ed4d5667ef1575b3eb781fda881bb2ba98db115cf25dfeb30be",
+    "assets/settings/bg-appearance.jpg": "24f8831f097e0c246d4e2988e26ae6b9215030c49da3fb3d48f3b3e34b0b7dd0",
+    "assets/settings/bg-epg.jpg": "e77e16381a75885cb83348c0f7ab76622f01b36f6aeb87058c22c5f681ecde10",
+    "assets/settings/bg-groups.jpg": "33aac1151c81d189730dfa9736fa355747030acec90f2a88b60a92bf45fa98c4",
+    "assets/settings/bg-maintenance.jpg": "4cf3b2c3d4abf5701b2a1f54939bda3577e3e743048cf5ce58941c9d345f0737",
+    "assets/settings/bg-player.jpg": "538a651f5aaeadb4b73436baffc0e6d6ddd16fae861f5be0b49303484c7ce274",
+    "assets/settings/bg-recordings.jpg": "3bf553f82b2f7f09996e33b8b3b713621d0ea4b814ec60e12e0457d75f372957",
+    "assets/settings/bg-remote.jpg": "704f4ce719c54ca6c821ca5b18872471e36dbc99e63ceba151bd1ebf32b7d7a3",
+    "assets/settings/bg-start-channel.jpg": "47ff20645e31b93dbec2b400f900a3d2ff21e4103a4de2455192e80b8e8e6990",
+    "assets/settings/icon-about.png": "ddedeb3ff3ca0c1284be39aee41a1beea1d9b6fb3204319f7977a3e038961bb9",
+    "assets/settings/icon-accounts.png": "2d704502c9da2e074c4b180052ea1a61e152dfa0c4c1f4a852900a20aaed0103",
+    "assets/settings/icon-appearance.png": "7c9dcf33469a6f718fa1dd8fe8f1ba719e59cdb0eae9ec854d1902758e228a25",
+    "assets/settings/icon-epg.png": "48757461372fece8a084e193234466e36407ffe452ac879acf0f05a063d2b371",
+    "assets/settings/icon-groups.png": "57cb86f2f303090d673e7361e47910567790899c3c897a7f223c4cdac5fb2f54",
+    "assets/settings/icon-maintenance.png": "707f0476151beee9de3f8831bbea033e6d6c0d662c6e9b247f33a34fd0d29361",
+    "assets/settings/icon-player.png": "6c55d630685a74e839fc96f6ee8c13feb29e8020aaa36f04deb31be6556b77c6",
+    "assets/settings/icon-recordings.png": "45d68f058ca204e241bacf7a95ae4263214660146dfe896fed14d632f5ba6ff0",
+    "assets/settings/icon-remote.png": "3e719e344468a281dbbf1118ff91b2833132a17ddb0b0f4736cab32331ff8b5a",
+    "assets/settings/icon-start-channel.png": "57299dcf48b494d58f9c56d730df7b58f3d4cd997ab5e14fce6b5028d4980734",
+    "assets/shared/divider.png": "8f25fc56ff847cc9056a2c3043b5a7900e9ad6652dd50f131e8c3283868a976c",
+    "assets/shared/focus-rail.png": "402c68602672da92820057453f978a6c64f5387ffa701baad00b31188e6c6773",
+    "assets/shared/focus-ring.png": "626b58e5f8370b76987588e929d53579ff2b8899ada8c4a7b7e69d4bd6708a5e",
+    "assets/shared/glass-panel.png": "b4a8ad6b3ffeaabd384b8842e2bcf9f1283bc80abce03fcdde52d3d0a82b981f",
+    "assets/shared/icon-back.png": "76ada815204523849e4bfe7f504f3827be05fc14e3d08b30aea1bd067183a83d",
+    "assets/shared/icon-check.png": "a18823b1a3c241b796c6b76fd4beecc064c35c6e10f04dce6d7ba6725fd2a5b6",
+    "assets/shared/icon-clear.png": "15790791c23786ae2a2f98198b40767e2d627bffe1adf68815fa831a5f148925",
+    "assets/shared/icon-close.png": "f1720fadcc6dd7f56e5116eb4f59a1b306c2f42d965150825f818739d2536ecd",
+    "assets/shared/icon-filter.png": "f557723741d576f72cd39241b0434c390f31ab24e40856f37eabc75371cdecdb",
+    "assets/shared/icon-forward.png": "b93400630f43ec1ceb16f7fd4dc6ea56a45d7f32b94e598fc555a72cfc881dbc",
+    "assets/shared/icon-info.png": "99a7b86a797d6b7a7a180c6c63b4eb4e8c83b64ce378714bbdba4039ba319182",
+    "assets/shared/icon-search.png": "9296754df54be9f5eaed9c7f0fb66d5b6b14e2201b856b6ac3b873db7fd6b521",
+    "assets/shared/icon-sort.png": "590fd768b9d251c79f067a061569d41e82dc128d9bcd157b0b39683f86b1e0ec",
+    "assets/shared/icon-warning.png": "66410decefddea7efeed0941084522ae64308959d767d442b18582ca6e2c17c1",
+    "assets/shared/loading-skeleton.png": "ac293ee11f37cdf5ceb03b67bb925a21936eec47c1aa6a68550ceef8df4e4ffd",
+    "assets/shared/sidebar-bg.png": "1624c5ace46c345f6d95ad7a39cd455c457767e1934d9b429a3697067717ee55",
+    "assets/widgets/widget-header.png": "caa6a0bdd87e1309e52efd2853ec4ad3850280bfcde5c0f904430589afec639b",
+    "assets/widgets/widget-live-fallback.png": "c32e27e033e96b3418eb05570455ee309564891978c4973401a38efda898a46e",
+    "assets/widgets/widget-movie-fallback.png": "47f081db3f14a97c1294eb47a023c7d8920a75108d1c2ee4a4148d828dca7571",
+    "assets/widgets/widget-series-fallback.png": "e3340d0eb4982b22983187ae58a1300f7e1fea04cb1ab20b9cd346605136c322"
+  },
+  "asset_properties": {
+    "assets/branding/fanart-1920.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "alpha": false
+    },
+    "assets/branding/icon-512.png": {
+      "width": 512,
+      "height": 512,
+      "alpha": false
+    },
+    "assets/branding/splash-1920.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "alpha": false
+    },
+    "assets/branding/wordmark-white.png": {
+      "width": 1600,
+      "height": 410,
+      "alpha": true
+    },
+    "assets/epg/bg-detail.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "alpha": false
+    },
+    "assets/epg/bg-guide.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "alpha": false
+    },
+    "assets/epg/icon-auto-switch.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/epg/icon-channels.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/epg/icon-clock.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/epg/icon-day-next.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/epg/icon-day-prev.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/epg/icon-record.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/epg/icon-remind.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/epg/icon-today.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/epg/no-data.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/epg/source-error.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/home/bg-epg.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "alpha": false
+    },
+    "assets/home/bg-live.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "alpha": false
+    },
+    "assets/home/bg-movies.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "alpha": false
+    },
+    "assets/home/bg-series.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "alpha": false
+    },
+    "assets/home/bg-settings.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "alpha": false
+    },
+    "assets/home/bg-start.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "alpha": false
+    },
+    "assets/home/icon-epg.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/home/icon-live.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/home/icon-movies.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/home/icon-series.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/home/icon-settings.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/home/icon-start.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/media/icon-episodes.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/media/icon-favorite-add.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/media/icon-favorite-remove.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/media/icon-play.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/media/icon-restart.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/media/icon-resume.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/media/icon-seasons.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/media/icon-trailer.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/media/placeholder-movie-backdrop.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "alpha": false
+    },
+    "assets/media/placeholder-movie-poster.jpg": {
+      "width": 600,
+      "height": 900,
+      "alpha": false
+    },
+    "assets/media/placeholder-series-backdrop.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "alpha": false
+    },
+    "assets/media/placeholder-series-poster.jpg": {
+      "width": 600,
+      "height": 900,
+      "alpha": false
+    },
+    "assets/media/poster-shade.png": {
+      "width": 600,
+      "height": 900,
+      "alpha": true
+    },
+    "assets/media/rail-gradient.png": {
+      "width": 1920,
+      "height": 280,
+      "alpha": true
+    },
+    "assets/player/icon-audio.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/player/icon-live-edge.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/player/icon-more.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/player/icon-pause.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/player/icon-play.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/player/icon-seek-back.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/player/icon-seek-forward.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/player/icon-skip-back.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/player/icon-skip-forward.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/player/icon-stop.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/player/icon-subtitles.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/player/icon-video-settings.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/player/panel-controls.png": {
+      "width": 1920,
+      "height": 240,
+      "alpha": true
+    },
+    "assets/player/panel-infobar.png": {
+      "width": 1920,
+      "height": 300,
+      "alpha": true
+    },
+    "assets/player/panel-options.png": {
+      "width": 920,
+      "height": 680,
+      "alpha": true
+    },
+    "assets/player/panel-progress-track.png": {
+      "width": 1920,
+      "height": 74,
+      "alpha": true
+    },
+    "assets/settings/bg-about.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "alpha": false
+    },
+    "assets/settings/bg-accounts.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "alpha": false
+    },
+    "assets/settings/bg-appearance.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "alpha": false
+    },
+    "assets/settings/bg-epg.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "alpha": false
+    },
+    "assets/settings/bg-groups.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "alpha": false
+    },
+    "assets/settings/bg-maintenance.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "alpha": false
+    },
+    "assets/settings/bg-player.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "alpha": false
+    },
+    "assets/settings/bg-recordings.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "alpha": false
+    },
+    "assets/settings/bg-remote.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "alpha": false
+    },
+    "assets/settings/bg-start-channel.jpg": {
+      "width": 1920,
+      "height": 1080,
+      "alpha": false
+    },
+    "assets/settings/icon-about.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/settings/icon-accounts.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/settings/icon-appearance.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/settings/icon-epg.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/settings/icon-groups.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/settings/icon-maintenance.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/settings/icon-player.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/settings/icon-recordings.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/settings/icon-remote.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/settings/icon-start-channel.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/shared/divider.png": {
+      "width": 1920,
+      "height": 180,
+      "alpha": true
+    },
+    "assets/shared/focus-rail.png": {
+      "width": 1920,
+      "height": 180,
+      "alpha": true
+    },
+    "assets/shared/focus-ring.png": {
+      "width": 512,
+      "height": 512,
+      "alpha": true
+    },
+    "assets/shared/glass-panel.png": {
+      "width": 1280,
+      "height": 720,
+      "alpha": true
+    },
+    "assets/shared/icon-back.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/shared/icon-check.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/shared/icon-clear.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/shared/icon-close.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/shared/icon-filter.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/shared/icon-forward.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/shared/icon-info.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/shared/icon-search.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/shared/icon-sort.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/shared/icon-warning.png": {
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    "assets/shared/loading-skeleton.png": {
+      "width": 1280,
+      "height": 720,
+      "alpha": true
+    },
+    "assets/shared/sidebar-bg.png": {
+      "width": 600,
+      "height": 1080,
+      "alpha": true
+    },
+    "assets/widgets/widget-header.png": {
+      "width": 1920,
+      "height": 200,
+      "alpha": true
+    },
+    "assets/widgets/widget-live-fallback.png": {
+      "width": 800,
+      "height": 450,
+      "alpha": true
+    },
+    "assets/widgets/widget-movie-fallback.png": {
+      "width": 800,
+      "height": 450,
+      "alpha": true
+    },
+    "assets/widgets/widget-series-fallback.png": {
+      "width": 800,
+      "height": 450,
+      "alpha": true
+    }
+  },
+  "capabilities": {
+    "home": true,
+    "settings": true,
+    "media": true,
+    "epg": true,
+    "player": true,
+    "widgets": true,
+    "shared": true,
+    "branding": true
+  }
+}
