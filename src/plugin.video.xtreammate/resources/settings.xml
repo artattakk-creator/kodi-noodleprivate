@@ -130,6 +130,7 @@
   <category label="32592">
     <setting id="xcmate_ui_language" type="text" label="32620" default="kodi" visible="false"/>
     <setting id="active_portal_id" type="text" label="32593" default="" visible="false"/>
+    <setting id="media_art_budget_mb" type="number" label="32660" default="512"/>
     <setting id="recent_days" type="number" label="32594" default="10"/>
     <setting id="recent_keep" type="number" label="32595" default="100"/>
     <setting id="epg_days" type="number" label="32596" default="7"/>

@@ -1,3 +1,8 @@
+0.1.29 – Dauerhafte Medienbilder und persönliche Reihen (Testkandidat)
+- Bilddateien dauerhaft behalten; persistente Aufträge, begrenzte Wiederholung und konfigurierbares Speicherbudget.
+- Neu hinzugefügt, Meine Favoriten und Weiter ansehen direkt in Film-/Serienstartseiten.
+- Lokale Favoritenmetadaten auch offline, sofortiges Entfernen, Folgenstatus mit Prozent und nächste ungesehene Folge.
+
 0.1.28.2 – Wiedergabe verlassen (Testkandidat)
 - XCMate-eigene Film-/Seriensitzung bei Vollbild-Rückkehr stoppen und letzte Position sichern.
 - Live-Overlay-Back bleibt unverändert; erst Wechsel zur Kodi-Navigation beendet eigene Live-Sitzung.

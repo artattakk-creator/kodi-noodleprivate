@@ -1,7 +1,7 @@
 """New routes only. Legacy provider/player entry points remain compatible."""
 from localization import tr
 
-ACTIONS=('ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
+ACTIONS=('art_status','art_retry','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
          'movies_home','series_home','media_detail','media_favourites','global_search','search_section',
          'widget_live_start_group','widget_recent_vod','widget_recent_series','widget_setup',
          'recording_folder','recording_capabilities','about_xcmate','guide_browser','media_play','guide_timers','guide_status')
@@ -26,6 +26,14 @@ def dispatch(router):
     from home_menu import settings,show,recording_folder
     action=router._params.get('action','xcmate_home')
     portal=portal_for(router)
+    if action in ('art_status','art_retry'):
+        _end(router,False)
+        from art_store import status,retry
+        if action=='art_retry': retry()
+        value=status()
+        xbmcgui.Dialog().textviewer(tr(32661),str(value['bytes']//(1024*1024))+' / '+str(value['budget']//(1024*1024))+' MiB\n'+
+            '\n'.join(k+': '+str(v) for k,v in value['counts'].items()))
+        return
     if action=='ui_language':
         _end(router,False)
         from localization import choose_language

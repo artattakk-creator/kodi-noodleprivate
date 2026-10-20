@@ -1,20 +1,17 @@
-"""Bounded background-only image cache. GUI receives LOCAL paths exclusively."""
+"""Persistent budgeted artwork. GUI receives LOCAL paths exclusively."""
 import hashlib
 import os
 import struct
+import sqlite3
 import tempfile
 import threading
 import time
-import queue
 from urllib.parse import urlsplit
 
 _lock=threading.RLock()
 _queue_lock=threading.RLock()
 MAX_BYTES=3*1024*1024
 MAX_PIXELS=8*1024*1024
-MAX_DISK_BYTES=32*1024*1024
-_requests=queue.Queue(maxsize=32)
-_requested={}
 _worker=None
 
 
@@ -47,7 +44,11 @@ def folder():
 def cached(url):
     if not isinstance(url,str) or not url: return ''
     filename=os.path.join(folder(),hashlib.sha256(url.encode()).hexdigest()+'.img')
-    return filename if os.path.isfile(filename) else ''
+    try:
+        with open(filename,'rb') as stream: header=stream.read(65536)
+        w,h=dimensions(header)
+        return filename if 0<w<=4096 and 0<h<=4096 and w*h<=MAX_PIXELS else ''
+    except (OSError,ValueError): return ''
 
 
 def fetch(url):
@@ -55,9 +56,19 @@ def fetch(url):
     if not isinstance(url,str) or urlsplit(url).scheme not in ('http','https'): return ''
     with _lock:
         hit=cached(url)
-        if hit: return hit
+        if hit:
+            from art_store import ready
+            ready(url,os.path.getsize(hit))
+            return hit
+        from art_store import budget,used
+        from import_budget import check_space
+        root=folder();os.makedirs(root,exist_ok=True)
+        available=budget()-used()
+        if available<=0: raise OSError(28,'Artwork budget full')
+        check_space(os.path.join(root,'pending'),min(MAX_BYTES,available))
         from utils import http_get
-        data,_=http_get(url,timeout=4,max_bytes=MAX_BYTES,max_seconds=6)
+        data,_=http_get(url,timeout=4,max_bytes=min(MAX_BYTES,available),max_seconds=6)
+        if len(data)>available: raise OSError(28,'Artwork budget full')
         w,h=dimensions(data)
         if not 0<w<=4096 or not 0<h<=4096 or w*h>MAX_PIXELS:
             raise ValueError('image dimensions exceed budget')
@@ -69,15 +80,8 @@ def fetch(url):
             os.replace(tmp,filename)
         finally:
             if os.path.exists(tmp): os.unlink(tmp)
-        files=sorted((os.path.join(root,n) for n in os.listdir(root) if n.endswith('.img')),
-                     key=os.path.getmtime,reverse=True)
-        used=0
-        for index,old in enumerate(files):
-            try:
-                size=os.path.getsize(old)
-                if index>=64 or used+size>MAX_DISK_BYTES: os.unlink(old)
-                else: used+=size
-            except OSError: pass
+        from art_store import ready
+        ready(url,len(data))
         return filename
 
 
@@ -97,28 +101,30 @@ def local_art(item):
     return dict(poster=poster,thumb=poster,icon=poster,fanart=backdrop,landscape=backdrop or poster)
 
 
-def request(items):
-    """Bounded service prefetch for widget covers, with retry backoff."""
+def request(items,priority=0):
+    """Persist bounded visible-page requests, then start one worker."""
     global _worker
+    urls=[u for item in items[:48] for u in dict.fromkeys(sources(item))
+          if isinstance(u,str) and urlsplit(u).scheme in ('http','https') and not cached(u)]
+    if not urls: return
+    from art_store import enqueue
+    try: enqueue(urls,priority)
+    except (OSError,RuntimeError,sqlite3.Error): return
     with _queue_lock:
-        if _worker is None:
-            _worker=threading.Thread(target=_prefetch,daemon=True,name='XCMate-widget-art');_worker.start()
-        now=time.monotonic()
-        for item in items[:12]:
-            for url in dict.fromkeys(sources(item)):
-                if not url or _requested.get(url,0)>now: continue
-                try: _requests.put_nowait(url)
-                except queue.Full: return
-                _requested[url]=now+180
-        if len(_requested)>128:
-            for url in list(_requested)[:-128]: _requested.pop(url,None)
+        if _worker is None or not _worker.is_alive():
+            _worker=threading.Thread(target=_prefetch,daemon=True,name='XCMate-artwork');_worker.start()
 
 
 def _prefetch():
     import xbmc
+    from art_store import run_one
     monitor=xbmc.Monitor()
     while not monitor.abortRequested():
-        try: url=_requests.get(timeout=.5)
-        except queue.Empty: continue
-        try: fetch(url)
-        except Exception: pass
+        try: worked=run_one()
+        except Exception: worked=False
+        if monitor.waitForAbort(.1 if worked else 2): return
+
+
+def revision():
+    try: return os.stat(folder()).st_mtime_ns
+    except OSError: return 0

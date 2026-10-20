@@ -70,7 +70,7 @@ class WindowXML:
                 if 0<=target<len(c.items): c.selected=target
             else:
                 target=int(c.node.findtext('on'+direction,str(focus)))
-                if target in self.controls and self.controls[target].visible: self.setFocusId(target)
+                if target in self.controls and self.controls[target].visible: WindowXML.setFocusId(self,target)
         self.onAction(types.SimpleNamespace(getId=lambda:key,getButtonCode=lambda:0))
 
 

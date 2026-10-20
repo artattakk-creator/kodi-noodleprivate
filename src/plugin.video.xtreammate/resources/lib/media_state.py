@@ -36,12 +36,15 @@ def favourite(pid,kind,sid):
     finally: db.close()
 
 
-def toggle(pid,kind,sid):
+def toggle(pid,kind,sid,item=None):
     ident=key(pid,kind,sid);db=_db()
     try:
         db.execute('BEGIN IMMEDIATE')
         exists=db.execute('SELECT 1 FROM favourites WHERE ident=?',(ident,)).fetchone()
         db.execute('DELETE FROM favourites WHERE ident=?' if exists else 'INSERT INTO favourites VALUES(?)',(ident,))
+        if not exists and item:
+            db.execute('CREATE TABLE IF NOT EXISTS favourite_items(ident TEXT PRIMARY KEY,payload TEXT)')
+            db.execute('INSERT OR REPLACE INTO favourite_items VALUES(?,?)',(ident,json.dumps(item)))
         db.commit()
         return not bool(exists)
     finally: db.close()
@@ -97,3 +100,33 @@ def mark_episode(pid,episode,watched=None):
                 value.update(watched=bool(watched),updated=time.time())
                 db.execute('INSERT OR REPLACE INTO progress VALUES(?,?)',(ident,json.dumps(value)))
     finally: db.close()
+
+
+def rail_items(pid,kind,reader,rail='favourites'):
+    """Local ID-based rails; ended playback never changes favourites."""
+    state=read();ids=[]
+    if rail=='favourites':
+        ids=[json.loads(k)[2] for k in state['favourites'] if json.loads(k)[:2]==[str(pid),kind]]
+    else:
+        pairs=sorted(state['progress'].items(),key=lambda pair:pair[1].get('updated',0),reverse=True)
+        for ident,value in pairs:
+            fields=json.loads(ident)
+            if fields[0]!=str(pid) or not resume_position(value): continue
+            if kind=='vod' and fields[1]=='vod': ids.append(fields[2])
+            elif kind=='series' and fields[1]=='episode' and len(fields)==5: ids.append(fields[2])
+    rows=[];db=_db()
+    try:
+        db.execute('CREATE TABLE IF NOT EXISTS favourite_items(ident TEXT PRIMARY KEY,payload TEXT)')
+        for sid in dict.fromkeys(ids):
+            item=reader.get(kind,sid)
+            if item:
+                if rail=='favourites':
+                    with db: db.execute('INSERT OR REPLACE INTO favourite_items VALUES(?,?)',(key(pid,kind,sid),json.dumps(item)))
+            elif rail=='favourites':
+                saved=db.execute('SELECT payload FROM favourite_items WHERE ident=?',(key(pid,kind,sid),)).fetchone()
+                from localization import tr
+                item=json.loads(saved[0]) if saved else dict(sid=sid,kind=kind,name=tr(32666))
+                item=dict(item,_unavailable=True)
+            if item: rows.append(item)
+    finally: db.close()
+    return rows

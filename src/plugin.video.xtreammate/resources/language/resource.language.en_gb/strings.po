@@ -1712,3 +1712,43 @@ msgstr "Connection timed out. Select the channel again to retry."
 msgctxt "#32649"
 msgid "Live"
 msgstr "Live"
+
+msgctxt "#32660"
+msgid "Artwork storage budget (MiB)"
+msgstr "Artwork storage budget (MiB)"
+
+msgctxt "#32661"
+msgid "Artwork storage status"
+msgstr "Artwork storage status"
+
+msgctxt "#32662"
+msgid "Retry failed artwork downloads"
+msgstr "Retry failed artwork downloads"
+
+msgctxt "#32663"
+msgid "Recently added"
+msgstr "Recently added"
+
+msgctxt "#32664"
+msgid "My favourites"
+msgstr "My favourites"
+
+msgctxt "#32665"
+msgid "No favourites yet"
+msgstr "No favourites yet"
+
+msgctxt "#32666"
+msgid "Saved favourite (metadata unavailable)"
+msgstr "Saved favourite (metadata unavailable)"
+
+msgctxt "#32667"
+msgid "This title is currently unavailable in the selected catalogue."
+msgstr "This title is currently unavailable in the selected catalogue."
+
+msgctxt "#32668"
+msgid "Continue watching"
+msgstr "Continue watching"
+
+msgctxt "#32669"
+msgid "No unfinished titles"
+msgstr "No unfinished titles"

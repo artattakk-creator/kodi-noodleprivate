@@ -98,6 +98,8 @@ def settings(router, portal, section=''):
     elif section=='player':
         add(tr(32437),'settings')
     elif section=='storage':
+        add(tr(32661),'art_status')
+        add(tr(32662),'art_retry')
         add(tr(32438),'recording_folder')
         add(tr(32439),'recording_folder',check='1')
         add(tr(32440),'settings')

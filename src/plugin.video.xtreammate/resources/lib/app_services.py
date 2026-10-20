@@ -57,6 +57,10 @@ def _run():
         try: refresh_local()
         except Exception: pass
         try:
+            from art_store import prefetch_selected
+            prefetch_selected()
+        except Exception: pass
+        try:
             from startup_preload import prepare
             prepare(cancel=monitor.abortRequested)
         except Exception: pass

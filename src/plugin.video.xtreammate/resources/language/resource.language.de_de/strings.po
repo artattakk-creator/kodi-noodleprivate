@@ -1712,3 +1712,43 @@ msgstr "Verbindungszeit überschritten. Sender zum Wiederholen erneut wählen."
 msgctxt "#32649"
 msgid "Live"
 msgstr "Live"
+
+msgctxt "#32660"
+msgid "Artwork storage budget (MiB)"
+msgstr "Bildspeicherbudget (MiB)"
+
+msgctxt "#32661"
+msgid "Artwork storage status"
+msgstr "Bildspeicherstatus"
+
+msgctxt "#32662"
+msgid "Retry failed artwork downloads"
+msgstr "Fehlgeschlagene Bilder erneut laden"
+
+msgctxt "#32663"
+msgid "Recently added"
+msgstr "Neu hinzugefügt"
+
+msgctxt "#32664"
+msgid "My favourites"
+msgstr "Meine Favoriten"
+
+msgctxt "#32665"
+msgid "No favourites yet"
+msgstr "Noch keine Favoriten"
+
+msgctxt "#32666"
+msgid "Saved favourite (metadata unavailable)"
+msgstr "Gespeicherter Favorit (Metadaten nicht verfügbar)"
+
+msgctxt "#32667"
+msgid "This title is currently unavailable in the selected catalogue."
+msgstr "Dieser Titel ist im ausgewählten Katalog derzeit nicht verfügbar."
+
+msgctxt "#32668"
+msgid "Continue watching"
+msgstr "Weiter ansehen"
+
+msgctxt "#32669"
+msgid "No unfinished titles"
+msgstr "Keine begonnenen Titel"
