@@ -1,5 +1,11 @@
 # XCMate – zentraler Projekteinstieg
 
+> **VERBINDLICHER INTEGRATIONSSTAND – 20.10.2026:** Ein vollständiger **RC 0.1.29.2** für das direkte Update von **0.1.28**, keine fünf Installationen.
+> [Strukturierter Prüfbericht, Paket und Freigabeplan](INTEGRATIONSPRUEFUNG_RC_0292_DE.md) · [462/462 Integrationstests + 26/26 HTTP-/EPG-Tests](TESTERGEBNISSE_INTEGRATION_0292.json) · [Android-/Sicherungs-/Rollbackplan](ANDROID_TESTPLAN_UNIVERSAL_029_DE.md).
+> Alle fünf Draft-PRs #39/#45/#46/#47/#48 offen; #48 enthält alle Vorgänger und die gezielten QA-Fixes. **Produktiv weiter 0.1.28, kein Main-Merge/Release. Android-Abnahme offen.**
+> Frühere 448-/459-Testangaben und Paketprüfsummen sind historische Zwischenstände; für den jetzigen RC ausschließlich diesen Integrationsbericht verwenden.
+
+
 > **VERBINDLICHER STAND – 20.10.2026, universelle Weiterentwicklung:** Produktiv bleibt **0.1.28** (`main` `63b4cd6`).
 > Geprüfter kumulativer **Testkandidat 0.1.29.2**, **448/448 Tests + 26/26 HTTP-/EPG-Tests**, Android-Abnahme **offen**.
 > Getrennte gestapelte Draft-PRs: [A: Wiedergabestopp #45](https://github.com/artattakk-creator/kodi-noodleprivate/pull/45),

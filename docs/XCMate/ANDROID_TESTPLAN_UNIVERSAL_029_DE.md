@@ -4,12 +4,16 @@ Ziel: Kodi **21.3 / Omega**, Android-TV **ARM32**, RK3528; Tests jeweils unter
 **Titan BINGIE MOD und Estuary**. Cloud-Callbackmodelle ersetzen diesen Nachweis nicht.
 Produktiv bleibt 0.1.28. Kein Main-Merge/Repository-Update vor Review und Freigabe.
 
+## Ein direktes Update: 0.1.28 → 0.1.29.2
+
+Nur die unten genannte vollständige ZIP installieren. Die vier vorherigen Entwicklungs-ZIPs sind nicht erforderlich. [Integrationsprüfung und kontrollierter Main-/Releaseplan](INTEGRATIONSPRUEFUNG_RC_0292_DE.md).
+
 ## Geprüfte Installationsdatei und Sicherung
 
 [Test-ZIP 0.1.29.2](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.2.zip)
 ([SHA256-Datei](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.2.zip.sha256)),
-119 Dateien / **373.616 Bytes**, SHA256:
-`cb4727741fdfcae641a147437bf36ed0b90f9c61e6b2637db218516334742642`.
+120 Dateien / **375.229 Bytes**, SHA256:
+`55b6b74e262b30cca37eaf8d251753e5cfb5fcfe06f3e13bd28d3452f56b73d6`.
 
 1. Kodi vollständig beenden. Vollständiges bestehendes XCMate-Profil einschließlich
    aller SQLite-/WAL-Dateien und gewähltem Bild-/Cacheordner lokal sichern. Nicht nur
@@ -19,7 +23,7 @@ Produktiv bleibt 0.1.28. Kein Main-Merge/Repository-Update vor Review und Freiga
    weiterhin 0.1.28 und ist für diesen Test kein automatischer Installationsweg.
 3. In Kodi **Add-ons → Aus ZIP-Datei installieren**: Kandidat über dieselbe ID
    `plugin.video.xtreammate` installieren. Keine Deinstallation und kein Profillöschen.
-4. Version im Add-on prüfen, Kodi neu starten, bestehende Accounts/Gruppen/Quellen,
+4. Version 0.1.29.2 / Service-Build 29 prüfen, Kodi neu starten, bestehende Accounts/Gruppen/Quellen,
    Favoriten und Resume mit Sicherungsbestand vergleichen. Noodle/andere Add-ons testen.
 
 ## A – Start und eigener Wiedergabestopp (#38/#40)
@@ -113,21 +117,13 @@ URLs nicht ungeschützt in Issues/PRs einfügen. Anbieterbesonderheiten anonymis
 
 ## Regulärer Updateweg – erst nach ausdrücklicher Freigabe
 
-1. Review/Android-Abnahme der ZIP und aller vier Phasen; Startup-Hotfix #39 separat
-   berücksichtigen. Gestapelte Reihenfolge: **#39 → #45 → #46 → #47 → #48**.
-2. Nach Übernahme einer Basis den jeweils nächsten PR auf `main` umstellen, Diff
-   prüfen und Tests für den resultierenden Stand erneut ausführen. Keine ungeprüfte
-   automatische Kettenübernahme, kein Main-Push durch diesen Entwicklungsauftrag.
-3. Erst nach Freigabe mit dem vorhandenen offiziellen Repository-Builder die
-   freigegebene Version in einer isolierten Kopie bauen; ZIP, Metadaten, Checksummen
-   und XCMate-Eintrag im Kodi-Index prüfen. Unverwandte Add-ons/ZIPs nicht übernehmen.
-   Regulären Main-Workflow nur im freigegebenen Releasevorgang auslösen.
-4. Kodi „Auf Aktualisierungen prüfen“ / „Aus Repository aktualisieren“, gleiche Add-on-ID.
-   Danach bestehendes Profil und Version erneut prüfen. Kein Neuaccount-/Resetzwang.
+Maßgeblich ist [Abschnitt 13 des Integrationsberichts](INTEGRATIONSPRUEFUNG_RC_0292_DE.md):
+Der bestehende Main-Push-Workflow muss während der fünf gestapelten Merges pausieren,
+damit keine Zwischenversionen veröffentlicht werden. Danach manueller Prüflauf ohne
+Publish; erst nach Releasefreigabe ausschließlich XCMate-Artefakte und Index bewusst
+übernehmen. `repository.gsmedia` bleibt 1.7.0. Keine dieser Aktionen wurde ausgeführt.
 
-Rollback vor Freigabe: Kodi beenden, unveränderte veröffentlichte 0.1.28-ZIP wieder
-über dieselbe ID installieren; Profil nicht löschen. Für eine vollständige Rückkehr
-zur alten Datensicht die zuvor erstellte **vollständige** Sicherung bei beendetem Kodi
-wiederherstellen. Neue Quelladapter-Accounts sind in alter Version nicht vollständig
-bedienbar; deshalb vor breitem produktivem Einsatz abnehmen. Keine automatische
-irreversible Datenmigration wurde eingeführt.
+Rollback: Kodi beenden, unveränderte 0.1.28-ZIP über dieselbe ID installieren; keine
+Konten/Add-on-Daten löschen. Für exakt vorherigen Zustand vollständige Profil-/WAL-/
+Bildsicherung wiederherstellen. Neue Adapter-Accounts sind in 0.1.28 nicht vollständig
+bedienbar. Eine ZIP allein ersetzt deshalb keine Datensicherung.

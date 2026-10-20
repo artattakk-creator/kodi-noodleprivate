@@ -1,0 +1,414 @@
+{
+  "base": "63b4cd6",
+  "scope": "all cumulative changes, docs and review artifacts included",
+  "files": [
+    {
+      "status": "M",
+      "path": ".github/workflows/publish.yml"
+    },
+    {
+      "status": "M",
+      "path": "README.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/XCMate/ANDROID_TESTPLAN_0281_DE.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/XCMate/ANDROID_TESTPLAN_UNIVERSAL_029_DE.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/XCMate/ARCHITEKTUR_UNIVERSAL_029_DE.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/XCMate/CODEX_AUFTRAG_0281_STARTUP_HOTFIX_DE.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/XCMate/CODEX_AUFTRAG_INTEGRATION_0292_DE.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/XCMate/CODEX_AUFTRAG_UNIVERSAL_029_DE.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/XCMate/CODEX_STATUS_CURRENT_DE.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/XCMate/HOTFIX_0281_STARTUP_DE.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/XCMate/INTEGRATIONSPRUEFUNG_RC_0292_DE.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/XCMate/NEW_CHAT_COPY_BLOCK_DE.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/XCMate/PHASE_B_PERSISTENZ_FAVORITEN_029_DE.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/XCMate/PHASE_C_LIVE_GRUPPEN_SCROLL_029_DE.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/XCMate/PHASE_D_UNIVERSAL_SETUP_029_DE.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/XCMate/PROJECT_HANDOFF_DE.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/XCMate/README.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/XCMate/TESTERGEBNISSE_0281.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/XCMate/TESTERGEBNISSE_INTEGRATION_0292.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/XCMate/TESTERGEBNISSE_PHASE_A_029.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/XCMate/TESTERGEBNISSE_PHASE_B_029.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/XCMate/TESTERGEBNISSE_PHASE_C_029.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/XCMate/TESTERGEBNISSE_PHASE_D_029.json"
+    },
+    {
+      "status": "A",
+      "path": "plugin.video.xtreammate/plugin.video.xtreammate-0.1.28.1.zip"
+    },
+    {
+      "status": "A",
+      "path": "plugin.video.xtreammate/plugin.video.xtreammate-0.1.28.1.zip.sha256"
+    },
+    {
+      "status": "A",
+      "path": "plugin.video.xtreammate/plugin.video.xtreammate-0.1.28.2.zip"
+    },
+    {
+      "status": "A",
+      "path": "plugin.video.xtreammate/plugin.video.xtreammate-0.1.28.2.zip.sha256"
+    },
+    {
+      "status": "A",
+      "path": "plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.1.zip"
+    },
+    {
+      "status": "A",
+      "path": "plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.1.zip.sha256"
+    },
+    {
+      "status": "A",
+      "path": "plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.2.zip"
+    },
+    {
+      "status": "A",
+      "path": "plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.2.zip.sha256"
+    },
+    {
+      "status": "A",
+      "path": "plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.zip"
+    },
+    {
+      "status": "A",
+      "path": "plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.zip.sha256"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/addon.xml"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/changelog.txt"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/default.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/language/resource.language.de_de/strings.po"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/language/resource.language.en_gb/strings.po"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/app_routes.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/app_services.py"
+    },
+    {
+      "status": "A",
+      "path": "src/plugin.video.xtreammate/resources/lib/art_store.py"
+    },
+    {
+      "status": "A",
+      "path": "src/plugin.video.xtreammate/resources/lib/boot_diagnostics.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/catalog_sync.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/epg.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/epg_sources.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/epg_views.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/group_selection.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/guide_window.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/home_menu.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/iptv.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/library_index.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/live_overlay.py"
+    },
+    {
+      "status": "A",
+      "path": "src/plugin.video.xtreammate/resources/lib/m3u_store.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/main.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/media_art.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/media_data.py"
+    },
+    {
+      "status": "A",
+      "path": "src/plugin.video.xtreammate/resources/lib/media_intent.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/media_progress.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/media_state.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/media_window.py"
+    },
+    {
+      "status": "A",
+      "path": "src/plugin.video.xtreammate/resources/lib/playback_exit.py"
+    },
+    {
+      "status": "A",
+      "path": "src/plugin.video.xtreammate/resources/lib/playlist_editor.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/portal_manager.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/portals.py"
+    },
+    {
+      "status": "A",
+      "path": "src/plugin.video.xtreammate/resources/lib/profile_transaction.py"
+    },
+    {
+      "status": "A",
+      "path": "src/plugin.video.xtreammate/resources/lib/setup_draft.py"
+    },
+    {
+      "status": "A",
+      "path": "src/plugin.video.xtreammate/resources/lib/setup_window.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/setup_wizard.py"
+    },
+    {
+      "status": "A",
+      "path": "src/plugin.video.xtreammate/resources/lib/source_adapters.py"
+    },
+    {
+      "status": "A",
+      "path": "src/plugin.video.xtreammate/resources/lib/source_live.py"
+    },
+    {
+      "status": "A",
+      "path": "src/plugin.video.xtreammate/resources/lib/source_sync.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/stalker.py"
+    },
+    {
+      "status": "A",
+      "path": "src/plugin.video.xtreammate/resources/lib/stalker_stream.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/startup_preferences.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/stream_epg.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/tv_data.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/lib/utils.py"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/settings.xml"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/resources/skins/Default/720p/XCMateMedia.xml"
+    },
+    {
+      "status": "A",
+      "path": "src/plugin.video.xtreammate/resources/skins/Default/720p/XCMateSetup.xml"
+    },
+    {
+      "status": "M",
+      "path": "src/plugin.video.xtreammate/service.py"
+    },
+    {
+      "status": "A",
+      "path": "tests/fixtures/kodi_213_gui_api.json"
+    },
+    {
+      "status": "A",
+      "path": "tests/fixtures/xcmate_026_overlay_ast.json"
+    },
+    {
+      "status": "M",
+      "path": "tests/test_repository_layout.py"
+    },
+    {
+      "status": "M",
+      "path": "tests/test_xcmate_027_localization.py"
+    },
+    {
+      "status": "M",
+      "path": "tests/test_xcmate_027_ui.py"
+    },
+    {
+      "status": "A",
+      "path": "tests/test_xcmate_0281_boot.py"
+    },
+    {
+      "status": "M",
+      "path": "tests/test_xcmate_028_streaming.py"
+    },
+    {
+      "status": "A",
+      "path": "tests/test_xcmate_0292_integration.py"
+    },
+    {
+      "status": "M",
+      "path": "tests/test_xcmate_branding.py"
+    },
+    {
+      "status": "A",
+      "path": "tests/test_xcmate_continuous_live_037_042.py"
+    },
+    {
+      "status": "M",
+      "path": "tests/test_xcmate_epg_limits.py"
+    },
+    {
+      "status": "A",
+      "path": "tests/test_xcmate_exit_040.py"
+    },
+    {
+      "status": "M",
+      "path": "tests/test_xcmate_gui_contract.py"
+    },
+    {
+      "status": "M",
+      "path": "tests/test_xcmate_kodi21_overlay.py"
+    },
+    {
+      "status": "A",
+      "path": "tests/test_xcmate_media_persistence_041_044.py"
+    },
+    {
+      "status": "A",
+      "path": "tests/test_xcmate_source_navigation_043.py"
+    },
+    {
+      "status": "M",
+      "path": "tests/test_xcmate_tv_025.py"
+    },
+    {
+      "status": "A",
+      "path": "tests/test_xcmate_universal_sources_043.py"
+    },
+    {
+      "status": "M",
+      "path": "tests/xcmate027_fixture.py"
+    },
+    {
+      "status": "M",
+      "path": "tools/build_repository.py"
+    },
+    {
+      "status": "A",
+      "path": "docs/XCMate/INTEGRATION_0292_DATEIEN.json"
+    }
+  ]
+}

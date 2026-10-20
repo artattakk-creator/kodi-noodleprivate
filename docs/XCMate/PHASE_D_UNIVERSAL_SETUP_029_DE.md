@@ -129,8 +129,8 @@ M3U hat keinen erfundenen Kurz-EPG-Endpunkt. Manuelle Senderzuordnungen bleiben 
 ## Prüfungen und Grenzen
 
 **448/448 vollständige Tests in 64,884 s**, darunter 23 neue Quellen-/Navigationsregressionen; zusätzlich **26/26 HTTP-/EPG-Tests in 1,036 s** mit httpx/urllib.
-Isolierter offizieller Build: **119 Dateien / 373.616 Bytes**, CRC/Syntax/jedes Quellbyte geprüft.
-SHA256 `cb4727741fdfcae641a147437bf36ed0b90f9c61e6b2637db218516334742642`.
+Isolierter offizieller Build: **120 Dateien / 375.229 Bytes**, CRC/Syntax/jedes Quellbyte geprüft.
+SHA256 `55b6b74e262b30cca37eaf8d251753e5cfb5fcfe06f3e13bd28d3452f56b73d6`.
 [Installierbare Test-ZIP](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.2.zip) ·
 [Maschineller Bericht](TESTERGEBNISSE_PHASE_D_029.json) · [Geräteplan](ANDROID_TESTPLAN_UNIVERSAL_029_DE.md).
 Neue Regressionen prüfen echte SQLite, lokale und echte HTTP-M3U-Übertragung,

@@ -1,0 +1,190 @@
+{
+  "date": "2026-10-20",
+  "purpose": "Single integrated RC, no merge/release",
+  "version": "0.1.29.2",
+  "production_version": "0.1.28",
+  "main": "63b4cd6981351a398968a3795831cf024b07b2ba",
+  "source_commit": "620a72476494888e6d812b58eb4a1f9cd0ea6e29",
+  "source_tree_sha256": "0d68343815962732b27e6dbe9b6a1802a30e5b97a4dece99f698060a9a4d1ea9",
+  "prs_at_start": [
+    {
+      "number": 39,
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "mergeable": true,
+      "mergeable_state": "clean",
+      "head": "295f9d4286961c2c05065db2a939df15ea391f83",
+      "head_ref": "fix/xcmate-028-startup-hang",
+      "base": "63b4cd6981351a398968a3795831cf024b07b2ba",
+      "base_ref": "main"
+    },
+    {
+      "number": 45,
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "mergeable": true,
+      "mergeable_state": "clean",
+      "head": "27dfe336c318edb4886f9508f14ee7fb6ad95603",
+      "head_ref": "fix/xcmate-owned-playback-exit",
+      "base": "295f9d4286961c2c05065db2a939df15ea391f83",
+      "base_ref": "fix/xcmate-028-startup-hang"
+    },
+    {
+      "number": 46,
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "mergeable": true,
+      "mergeable_state": "clean",
+      "head": "c5cea4f6bea078ee242d837df7fe2baae38ba015",
+      "head_ref": "feat/xcmate-persistent-media",
+      "base": "27dfe336c318edb4886f9508f14ee7fb6ad95603",
+      "base_ref": "fix/xcmate-owned-playback-exit"
+    },
+    {
+      "number": 47,
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "mergeable": true,
+      "mergeable_state": "clean",
+      "head": "dec3ee469d653bd93eaf274c7cd5bc24e0df8f8b",
+      "head_ref": "feat/xcmate-active-continuous-live",
+      "base": "c5cea4f6bea078ee242d837df7fe2baae38ba015",
+      "base_ref": "feat/xcmate-persistent-media"
+    },
+    {
+      "number": 48,
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "mergeable": true,
+      "mergeable_state": "clean",
+      "head": "3150105f67cc96668951556a742a0a8a05bf14b3",
+      "head_ref": "feat/xcmate-universal-setup",
+      "base": "dec3ee469d653bd93eaf274c7cd5bc24e0df8f8b",
+      "base_ref": "feat/xcmate-active-continuous-live"
+    }
+  ],
+  "ancestry": "all five PR heads are ancestors of checked RC; exact base/head dependency chain",
+  "full_suite": {
+    "tests": 462,
+    "passed": 462,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0,
+    "seconds": 74.126,
+    "isolated": true,
+    "official_builder": true,
+    "command": "PYTHONDONTWRITEBYTECODE=1 python -B -m unittest discover -s tests -v"
+  },
+  "supplemental_http": {
+    "tests": 26,
+    "passed": 26,
+    "seconds": 1.378,
+    "httpx": "0.28.1"
+  },
+  "new_tests": {
+    "integration": 13,
+    "kodi_213_api": 1
+  },
+  "baseline_counterexamples": {
+    "failed_before_fix": [
+      "test_back_before_plugin_resolver_cannot_start_late_hidden_movie",
+      "test_back_during_buffering_stops_verified_late_video_without_arming_fullscreen",
+      "test_partial_refresh_with_dangling_extinf_keeps_previous_private_generation",
+      "test_builder_keeps_real_jpeg_reference_and_legacy_png_fallback",
+      "test_manifest_assets_exist_in_complete_addon"
+    ],
+    "expected_failures": 5,
+    "all_pass_after_fix": true
+  },
+  "intermediate_runs": [
+    {
+      "tests": 459,
+      "passed": 459,
+      "package_asset_validation": "FAIL: missing fanart.png; not final acceptance"
+    },
+    {
+      "tests": 461,
+      "passed": 461,
+      "followed_by_reproducible_archive_test": true
+    }
+  ],
+  "kodi_api": {
+    "tag": "21.3-Omega",
+    "commit": "a3a448d26b8d560a65655dab2cd122994dc4e146",
+    "headers": {
+      "Control-21.3.h": "fd67d7aefeb40451a347c43fe22b6a8e00c6bddff1b0627ffd0ea9bc9bb14a6b",
+      "Window.h": "a502ffece784779b1596b76f77152fa61de776bea21846b5fd10249c0a5ce8fe",
+      "WindowXML.h": "6fdc664f6b625e60a6ede07bb12cb4c42394f0576ea4a38a727bd6e816179444",
+      "WindowDialog.h": "b4db3492614044c7ae77cc787b7cd29765bb0ed32dbd44e446785e2349a31f54",
+      "Dialog.h": "4a4146cf2266e64a063bb396167ce2d91026e17bd796318b6c00503c49e6febb",
+      "ListItem.h": "959136af6d1b5cce5b19e45a3fc1c85d5c4e1254080141dc6b8b7fe1a94daf2a",
+      "InfoTagVideo.h": "1906350d59d50a8f8fcb7d6cc7ceb413390f610fb9dfcd8a2741b79346535b31"
+    },
+    "lifecycle": {
+      "WindowDialog": "GUI_MSG_WINDOW_INIT delegates to native window, no Python onInit callback",
+      "WindowXML": "GUI_MSG_WINDOW_INIT explicitly invokes WindowXML::onInit",
+      "sources": {
+        "Window.cpp": "4aecd8caa947b62052189610069bef3fa4cedcebaff46d64e2df411e6d517a96",
+        "WindowDialog.cpp": "256b4565d9f6cce512f8be85841ed56bd5ddd5afae1ac94be2dfcc981e2c9e95",
+        "WindowXML.cpp": "ff2596e7eb1e14fde3048859b09be1ef4914ed8e89dba26f6fc9078741e256df"
+      }
+    }
+  },
+  "build": {
+    "commit": "620a72476494888e6d812b58eb4a1f9cd0ea6e29",
+    "version": "0.1.29.2",
+    "tests": 462,
+    "seconds": 74.126,
+    "files": 120,
+    "bytes": 375229,
+    "sha256": "55b6b74e262b30cca37eaf8d251753e5cfb5fcfe06f3e13bd28d3452f56b73d6",
+    "crc": "PASS",
+    "paths": "PASS",
+    "source_bytes": "PASS",
+    "production_publish": false
+  },
+  "ci": {
+    "status": "pending_new_full_run_with_artifact"
+  },
+  "production": {
+    "main_changed": false,
+    "index_changed": false,
+    "official_028_zip_changed": false,
+    "repository_gsmedia_version": "1.7.0",
+    "noodle_version": "0.4.2",
+    "other_addons_changed": false,
+    "global_keymap_changes": false,
+    "release": false,
+    "pr_merges": false
+  },
+  "data_integrity": {
+    "actual_028_archive_used": true,
+    "old_profile_configuration_bytes": "UNCHANGED",
+    "old_db_rows": "PRESERVED",
+    "old_artwork_bytes": "UNCHANGED",
+    "known_artwork_redownload": false,
+    "additive_migration_failure": "ROWS_PRESERVED_RETRY_PASSES",
+    "parallel_epg_art_native_navigation": "PASS_IN_CLOUD_MODEL"
+  },
+  "local_build_incident": {
+    "generated_files_in_worktree": 8,
+    "restored_byte_equal": true,
+    "committed_or_pushed": false,
+    "final_build_isolated": true
+  },
+  "android": {
+    "status": "NOT_RUN",
+    "skins": [
+      "BINGIE MOD",
+      "Estuary"
+    ],
+    "target": "Kodi 21.3 Android ARM32",
+    "plan": "ANDROID_TESTPLAN_UNIVERSAL_029_DE.md"
+  },
+  "recommendation": "Ready for Android test; production approval pending"
+}

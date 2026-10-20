@@ -4,21 +4,25 @@
   "branch": "feat/xcmate-universal-setup",
   "production_version": "0.1.28",
   "base_main": "63b4cd6981351a398968a3795831cf024b07b2ba",
-  "source_commit": "e7d90f5c644aabb550aed989c7362a99cd5a8601",
-  "source_tree_sha256": "8c02016665d057fa6116ba5cbe7beeb9cf5b1e95d6b73c7d23a66610b1347957",
+  "source_commit": "620a72476494888e6d812b58eb4a1f9cd0ea6e29",
+  "source_tree_sha256": "0d68343815962732b27e6dbe9b6a1802a30e5b97a4dece99f698060a9a4d1ea9",
   "full_suite": {
-    "tests": 448,
-    "passed": 448,
-    "failures": 0,
+    "tests": 462,
+    "passed": 462,
     "errors": 0,
+    "failures": 0,
     "skipped": 0,
-    "seconds": 64.884,
+    "seconds": 74.126,
+    "isolated": true,
+    "official_builder": true,
     "command": "PYTHONDONTWRITEBYTECODE=1 python -B -m unittest discover -s tests -v"
   },
   "new_regressions": {
     "source_staging_editor_epg": 18,
     "strict_source_navigation": 5,
-    "total": 23
+    "total": 37,
+    "integration": 13,
+    "kodi_213_api": 1
   },
   "supplemental_http": {
     "tests": 26,
@@ -47,21 +51,20 @@
     }
   },
   "build": {
+    "commit": "620a72476494888e6d812b58eb4a1f9cd0ea6e29",
     "version": "0.1.29.2",
-    "files": 119,
-    "bytes": 373616,
-    "sha256": "cb4727741fdfcae641a147437bf36ed0b90f9c61e6b2637db218516334742642",
+    "tests": 462,
+    "seconds": 74.126,
+    "files": 120,
+    "bytes": 375229,
+    "sha256": "55b6b74e262b30cca37eaf8d251753e5cfb5fcfe06f3e13bd28d3452f56b73d6",
     "crc": "PASS",
+    "paths": "PASS",
     "source_bytes": "PASS",
-    "syntax": "PASS"
+    "production_publish": false
   },
   "ci": {
-    "previous_checked_head": "9fbb28cf4a45d69d935fc6193df612ae4e979672",
-    "previous_run": 39438464927,
-    "previous_conclusion": "success",
-    "status": "pending_final_byte_budget_rerun",
-    "publish": "skipped",
-    "artifact": "Test ZIP tracked directly in PR; workflow_dispatch has no upload step"
+    "status": "pending_new_full_run_with_artifact"
   },
   "android": {
     "status": "NOT_RUN",
@@ -98,5 +101,27 @@
     "Actual Android/IR/USB/SMB/provider dialect acceptance pending",
     "Non-Xtream automatic open-time autoplay not implemented; manual home start supported",
     "Optional image cleanup UI and theme/language installers remain outside this phase"
-  ]
+  ],
+  "current_integration_report": "TESTERGEBNISSE_INTEGRATION_0292.json",
+  "previous_pre_integration": {
+    "source_commit": "e7d90f5c644aabb550aed989c7362a99cd5a8601",
+    "full_suite": {
+      "tests": 448,
+      "passed": 448,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 64.884,
+      "command": "PYTHONDONTWRITEBYTECODE=1 python -B -m unittest discover -s tests -v"
+    },
+    "build": {
+      "version": "0.1.29.2",
+      "files": 119,
+      "bytes": 373616,
+      "sha256": "cb4727741fdfcae641a147437bf36ed0b90f9c61e6b2637db218516334742642",
+      "crc": "PASS",
+      "source_bytes": "PASS",
+      "syntax": "PASS"
+    }
+  }
 }
