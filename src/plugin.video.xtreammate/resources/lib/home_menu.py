@@ -31,12 +31,16 @@ def show(router, portal):
     theme=current()
     xbmcplugin.setPluginCategory(router._handle,'XCMate · '+portal.get('name',''))
     xbmcplugin.setContent(router._handle,'files')
+    home_names={'home_start':'start','home_live':'live','guide_browser':'epg',
+                'movies_home':'movies','series_home':'series','settings_home':'settings'}
     for label_id,action,icon in HOME:
         label=tr(label_id)
+        name=home_names[action]
         router._add_dir(label,router.url(action=action,pid=portal['id']),
-                        icon=asset('icon.'+{'home_start':'start','home_live':'live','guide_browser':'epg',
-                            'movies_home':'movies','series_home':'series','settings_home':'settings'}[action],
-                            os.path.join(path,'resources','media',icon),snapshot=theme),
+                        icon=asset('icon.'+name,os.path.join(path,'resources','media',icon),
+                                   snapshot=theme),
+                        fanart=asset('background.home.'+name,os.path.join(path,'fanart.jpg'),
+                                     snapshot=theme),
                         plot=(tr(32415) if action=='settings_home' else label))
     finish_directory(router,cacheToDisc=False)
 
@@ -64,8 +68,19 @@ def settings(router, portal, section=''):
     import xbmc, xbmcgui, xbmcplugin, xbmcaddon
     from boot_diagnostics import finish_directory
     pid=portal['id'] if portal else ''
+    from theme_store import current, asset
+    theme=current()
+    addon_path=xbmcaddon.Addon().getAddonInfo('path')
+    base_icon=os.path.join(addon_path,'resources','media','settings.png')
+    base_fanart=os.path.join(addon_path,'fanart.jpg')
+    section_alias={'startup':'start-channel','storage':'recordings'}
     def add(label,action,**params):
-        router._add_dir(label,router.url(action=action,pid=pid,**params))
+        theme_section=section or params.get('section','')
+        name=section_alias.get(theme_section,theme_section)
+        icon=asset('icon.settings.'+name,base_icon,snapshot=theme) if name else base_icon
+        fanart=asset('background.settings.'+name,base_fanart,snapshot=theme) if name else base_fanart
+        router._add_dir(label,router.url(action=action,pid=pid,**params),
+                        icon=icon,fanart=fanart)
     if not section:
         for label_id,key in SETTINGS: add(tr(label_id),'settings_section',section=key)
     elif section=='accounts':
