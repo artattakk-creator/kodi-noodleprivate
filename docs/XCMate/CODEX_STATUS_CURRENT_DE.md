@@ -1,6 +1,6 @@
 > **Aktuell – 20.10.2026:** 0.1.29.2 ist nach PR #49 auf `main` veröffentlicht und erneut gegen die tatsächlichen GitHub-Dateibytes geprüft. Android-Abnahme weiterhin offen. Neuer separater Branch `feat/xcmate-space-premium-installer`, vorgeschlagener Core 0.1.30, kein Release/Merge. **Space Premium: 0/98 Originale hier verfügbar, Drive-Proxy 403; kein vollständiges Theme-ZIP/keine Originalvorschau.**
 > [Installation, Sicherung, Status und Blocker](INSTALLATION_0292_UND_THEME_030_DE.md) · [Installer/Paketformat und Integrationsgrenzen](THEME_FORMAT_INSTALLER_030_DE.md) · [Asset-Prüfbericht](SPACE_PREMIUM_ASSET_PRUEFUNG_030.json) · [496/496 Tests, davon 34 neu; ergänzend 40/40](TESTERGEBNISSE_THEME_030.json).
-> [Draft-PR #50](https://github.com/artattakk-creator/kodi-noodleprivate/pull/50) · [Aktuelle CI für den PNG-Metadaten-Nachtest](https://github.com/artattakk-creator/kodi-noodleprivate/pull/50/checks).
+> [Draft-PR #50](https://github.com/artattakk-creator/kodi-noodleprivate/pull/50) · [CI für letzten Implementierungsstand grün; Veröffentlichung übersprungen](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39469067207).
 > Frühere Texte zum noch ausstehenden 0.1.29.2-Merge/Publish sind historische Planungsstände.
 
 # XCMate / Codex – aktueller Projekt- und Release-Status (verbindliche Übergabe)
