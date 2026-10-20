@@ -141,6 +141,7 @@ class Fixture:
             yesno=mock.Mock(return_value=False),ok=mock.Mock(),notification=mock.Mock(),textviewer=mock.Mock())
         gui.Dialog=lambda:self.dialog
         xbmc=types.ModuleType('xbmc');xbmc.executebuiltin=self.builtins.append
+        xbmc.Player=lambda:types.SimpleNamespace(isPlayingVideo=lambda:False)
         xbmc.getCondVisibility=lambda c:c=='System.HasAddon(plugin.video.youtube)' or c=='Player.SeekEnabled'
         plugin=types.ModuleType('xbmcplugin');plugin.setContent=mock.Mock();plugin.setPluginCategory=mock.Mock()
         plugin.endOfDirectory=lambda *a,**kw:self.ends.append((a,kw))

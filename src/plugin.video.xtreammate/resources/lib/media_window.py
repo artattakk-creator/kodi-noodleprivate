@@ -40,6 +40,9 @@ class MediaWindow(xbmcgui.WindowXML):
         self.getControl(400).setLabel(tr(32586))
         self.getControl(501).setLabel(tr(32587))
         if self._ready:
+            # Kodi calls onInit again after returning from fullscreen video.
+            from playback_exit import stop_owned
+            stop_owned(pid=self.portal['id'])
             self._show(self.mode)
             if self.mode=='detail': self._detail_ready((self.selected,{'episodes':self._episode_raw()}))
             elif self.mode=='episodes': self._show_episodes()
@@ -389,6 +392,8 @@ class MediaWindow(xbmcgui.WindowXML):
         key=action.getId()
         with self._lock:
             if key in (9,10,92):
+                from playback_exit import stop_owned
+                if stop_owned(pid=self.portal['id']): return
                 self._generation+=1
                 if self.mode=='episodes':
                     self.mode='seasons';self._fill(330,[dict(name=tr(32523)+str(s),sid=str(s)) for s in self.seasons]);return

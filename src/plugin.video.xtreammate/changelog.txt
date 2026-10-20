@@ -1,3 +1,8 @@
+0.1.28.2 – Wiedergabe verlassen (Testkandidat)
+- XCMate-eigene Film-/Seriensitzung bei Vollbild-Rückkehr stoppen und letzte Position sichern.
+- Live-Overlay-Back bleibt unverändert; erst Wechsel zur Kodi-Navigation beendet eigene Live-Sitzung.
+- Fremde Streams und bestehende Profile bleiben unberührt.
+
 0.1.28.1 – Startstabilität (Testkandidat, noch nicht freigegeben)
 - Hauptmenü und Widgets ohne HTTP-Import oder automatische Portal-Migration starten.
 - Datensparsame BOOT-Phasenmarker und kontrollierter Verzeichnisabschluss bei Startfehlern.
