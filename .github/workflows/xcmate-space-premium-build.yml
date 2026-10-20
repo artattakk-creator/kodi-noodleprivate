@@ -83,7 +83,7 @@ jobs:
               dest.parent.mkdir(parents=True,exist_ok=True)
               shutil.copyfile(output,dest)
               digest=hashlib.sha256(output.read_bytes()).hexdigest()
-              dest.with_name(dest.name+'.sha256').write_text(digest+'  '+dest.name+'\\n')
+              dest.with_name(dest.name+'.sha256').write_text(digest+'  '+dest.name+'\n')
               print('XCMate core 0.1.30 RC SHA256:',digest)
           PY
       - name: Upload verified theme for PR review
