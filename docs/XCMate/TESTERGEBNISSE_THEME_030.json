@@ -63,6 +63,28 @@
   "android_acceptance": "NOT_RUN",
   "live_theme_texture_integration": "DEFERRED_UNTIL_ORIGINAL_ASSETS",
   "theme_previews": "NOT_CREATED",
-  "ci": "PENDING_PR",
-  "production_published": false
+  "ci": {
+    "status": "SUCCESS",
+    "source_commit": "f84f5c8270d1ee9d5fe31f7ddeb047d74ba7aae3",
+    "run": 39467782407,
+    "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39467782407",
+    "catalogue_workflow_run": 39467782777,
+    "catalogue_status": "SUCCESS",
+    "artifact_id": 12285437739,
+    "artifact_url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39467782407/artifacts/12285437739",
+    "artifact_name": "xcmate-review-50-b922515e4fee2d0a9d939a23f59a94ff2671d5bdc53e0b18f652b0149a57f1cc",
+    "artifact_outer_sha256": "c276192862d66f181828bd4f85f970dfbde5a988c7109851d1ee454fdb5923fe",
+    "inner_sha256_exposed_in_artifact_name": "b922515e4fee2d0a9d939a23f59a94ff2671d5bdc53e0b18f652b0149a57f1cc",
+    "artifact_upload": "SUCCESS",
+    "cloud_artifact_download": "FAILED_TRANSPORT",
+    "downloaded_ci_binary_verified": false,
+    "local_source_and_zip_verified": true,
+    "publish_step": "SKIPPED",
+    "test_log_summaries": [],
+    "cloud_raw_log_download": "BLOCKED_FORBIDDEN",
+    "ci_test_count_directly_read_from_log": false,
+    "ci_status_source": "GitHub run/job API; prepare/upload succeeded; artifact name exposes verified inner SHA; local suite count 495"
+  },
+  "production_published": false,
+  "pull_request": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/50"
 }

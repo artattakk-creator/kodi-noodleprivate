@@ -163,3 +163,16 @@ Bestandstest zur Profilerhaltung besteht wieder. Zwei Versions-Assertions wurden
 auf den neuen Core-Kandidaten umgestellt; ein älteres GUI-Testfixture erhielt den
 tatsächlichen Profilpfad-Vertrag und einen expliziten Importpfad. Die Freeze-
 Referenzdateien wurden **nicht** angepasst, und kein `WindowDialog.onInit` erfunden.
+
+[Draft-PR #50](https://github.com/artattakk-creator/kodi-noodleprivate/pull/50):
+Core-Build/Test und separater Katalogcheck sind auf Quellcommit
+`f84f5c8270d1ee9d5fe31f7ddeb047d74ba7aae3` **grün**.
+[CI-Lauf](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39467782407),
+[hochgeladenes Core-Testartefakt](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39467782407/artifacts/12285437739).
+Der Artefaktname enthält denselben inneren ZIP-SHA-256 wie die lokal vollständig
+geprüfte ZIP. Der Schritt **Commit and publish generated archives wurde übersprungen**.
+Downloads der CI-Artefaktdatei und Rohlogs werden in dieser Cloud-Laufzeit vom
+Transport abgewiesen; deshalb wird kein zusätzlicher heruntergeladener CI-Binär- oder
+Rohlognachweis behauptet. API-Status/Upload und lokale Paketprüfung sind getrennt im
+Maschinenbericht ausgewiesen. Die abschließende Dokumentationsänderung verändert
+keine Core-/Test-/Builddatei und kein Paket.
