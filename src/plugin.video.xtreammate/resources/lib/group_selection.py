@@ -1,3 +1,4 @@
+from profile_transaction import serialized
 """Persistent per-portal Xtream live/VOD/series category controls.
 
 Selections are keyed by provider category ID, so provider renames do not undo
@@ -62,6 +63,7 @@ def load(portal_id, kind='live'):
     return None if state is None else state['enabled']
 
 
+@serialized
 def save(portal_id, categories, kind='live', known=None, auto_new=False):
     if kind not in KINDS:
         raise ValueError('Ungültige Gruppenart')
@@ -111,6 +113,11 @@ def filter_entries(entries, portal_id, kind):
 
 def _categories(portal, kind, force=False):
     """Keep the cached Xtream category catalog unless explicit refresh is requested."""
+    if portal.get('type') in ('m3u','stb'):
+        from source_adapters import for_portal
+        from catalog_sync import request
+        if force: request(portal,kind,priority=0,force=True)
+        return for_portal(portal).categories(kind)
     from xtream import XtreamClient
     xc = XtreamClient(portal['xc_host'], portal['xc_user'], portal['xc_pass'])
     method = getattr(xc, {'live': 'get_live_categories',
@@ -158,7 +165,7 @@ def _checkbox_selection(dialog, kind, categories, ids, current, new_ids):
 def choose_groups(portal, kind='live',categories=None,allow_refresh=True):
     """Persist changes once on Save; Back discards temporary checkbox selections."""
     import xbmcgui
-    if kind not in KINDS or portal.get('type') != 'xtream':
+    if kind not in KINDS or portal.get('type') not in ('xtream','m3u','stb'):
         return False
     dlg = xbmcgui.Dialog()
     cats = _categories(portal, kind) if categories is None else list(categories)
@@ -176,6 +183,12 @@ def choose_groups(portal, kind='live',categories=None,allow_refresh=True):
     def commit():
         save(portal['id'], [cid for cid in ids if cid in current],
              kind=kind, known=ids, auto_new=auto_new)
+        if portal.get('type') in ('m3u','stb'):
+            from portals import update
+            update(portal['id'],{'include_'+kind:bool(current)})
+            portal['include_'+kind]=bool(current)
+            from catalog_sync import request
+            request(portal,kind,priority=1)
         dlg.notification('XCMate', '{}: {} von {} aktiv'.format(
             LABELS[kind], len(current), len(ids)))
         return True
@@ -231,7 +244,7 @@ def choose_groups(portal, kind='live',categories=None,allow_refresh=True):
 def manage_groups(portal):
     """Persistent TV/VOD/Series manager, available from home and portal settings."""
     import xbmcgui
-    if portal.get('type') != 'xtream':
+    if portal.get('type') not in ('xtream','m3u','stb'):
         return
     dlg = xbmcgui.Dialog()
     while True:

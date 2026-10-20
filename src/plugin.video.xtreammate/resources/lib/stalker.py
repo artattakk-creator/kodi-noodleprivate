@@ -106,7 +106,7 @@ class StalkerClient:
               'AppleWebKit/533.3 (KHTML, like Gecko) '
               'MAG200 stbapp ver: 2 rev: 250 Safari/533.3')
 
-    def __init__(self, portal_url: str, mac: str):
+    def __init__(self, portal_url: str, mac: str, serial=None, device_id=None):
         host          = _strip_portal_suffix(_normalise_host(portal_url))
         self._base    = host
         self._portal  = host + self.PORTAL_PATH
@@ -121,7 +121,12 @@ class StalkerClient:
             self._token  = tok
             self._serial = ser
             self._authed = True
-            debug(f'STB: restored token from cache for {self._mac}')
+            debug('STB DEBUG (details redacted)')
+
+        if serial or device_id:
+            self._authed=False;self._token=None
+            if serial: self._serial=serial
+            if device_id: self._dev_id=device_id
 
     def _headers(self, with_auth: bool = True) -> dict:
         ua = setting('user_agent', self.STB_UA)
@@ -157,11 +162,12 @@ class StalkerClient:
             if isinstance(raw, (bytes, bytearray)):
                 if raw[:2] == b'\x1f\x8b':
                     import gzip as _gzip
-                    raw = _gzip.decompress(raw)
+                    from network_io import read_http_chunks
+                    raw = read_http_chunks([raw], {'Content-Encoding':'gzip'}, 8*1024*1024, time.monotonic()+10)
                 raw = raw.decode('utf-8', errors='replace')
             data = json.loads(raw)
         except Exception as e:
-            error(f'STB _get({params.get("action","?")}): {e}')
+            error('STB ERROR (details redacted)')
             return {}
         if ck and not skip_cache:
             cache_set(cache_key(ck), data)
@@ -171,7 +177,7 @@ class StalkerClient:
         if self._authed and not force:
             return True
 
-        info(f'STB auth: MAC={self._mac}  portal={self._portal}')
+        info('STB INFO (details redacted)')
 
         try:
             raw, _ = http_get(self._portal, headers=self._headers(with_auth=False),
@@ -184,17 +190,17 @@ class StalkerClient:
                               })
             data = json.loads(raw)
         except Exception as e:
-            error(f'STB handshake failed: {e}')
+            error('STB ERROR (details redacted)')
             return False
 
         js    = data.get('js', {}) if isinstance(data, dict) else {}
         token = js.get('token', '')
         if not token:
-            error(f'STB handshake: no token. Response: {str(data)[:200]}')
+            error('STB ERROR (details redacted)')
             return False
 
         self._token = token
-        debug(f'STB: token={token[:20]}…')
+        debug('STB DEBUG (details redacted)')
         try:
             raw2, _ = http_get(self._portal, headers=self._headers(),
                                params={
@@ -217,7 +223,7 @@ class StalkerClient:
                                    'JsHttpRequest'   : '1-xml',
                                })
         except Exception as e:
-            warn(f'STB get_profile failed (non-fatal): {e}')
+            warn('STB WARN (details redacted)')
 
         self._authed = True
         _save_token(self._mac, self._portal, token, self._serial)
@@ -258,7 +264,7 @@ class StalkerClient:
                               timeout=15)
             data = json.loads(raw)
         except Exception as e:
-            error(f'STB create_link: {e}')
+            error('STB ERROR (details redacted)')
             return fallback
 
         js  = data.get('js', {}) if isinstance(data, dict) else {}
@@ -266,10 +272,10 @@ class StalkerClient:
         url = _clean_stream_url(lnk)
 
         if not url:
-            warn(f'STB create_link returned empty url, fallback={fallback}')
+            warn('STB WARN (details redacted)')
             return fallback
 
-        debug(f'STB create_link resolved: {url[:80]}')
+        debug('STB DEBUG (details redacted)')
         return url
 
     def get_channel_stream_url(self, cmd: str) -> str:
@@ -563,11 +569,12 @@ class StalkerClientCompat(StalkerClient):
             if isinstance(raw, (bytes, bytearray)):
                 if raw[:2] == b'\x1f\x8b':
                     import gzip as _gzip
-                    raw = _gzip.decompress(raw)
+                    from network_io import read_http_chunks
+                    raw = read_http_chunks([raw], {'Content-Encoding':'gzip'}, 8*1024*1024, time.monotonic()+10)
                 raw = raw.decode('utf-8', errors='replace')
             data = json.loads(raw)
         except Exception as e:
-            error(f'STB compat create_link: {e}')
+            error('STB ERROR (details redacted)')
             return ''
         js  = data.get('js', {}) if isinstance(data, dict) else {}
         lnk = js.get('cmd', '') if isinstance(js, dict) else ''
@@ -575,7 +582,7 @@ class StalkerClientCompat(StalkerClient):
         if not url:
             warn('STB compat create_link: empty url')
         else:
-            debug(f'STB compat create_link resolved: {url[:80]}')
+            debug('STB DEBUG (details redacted)')
         return url
 
     def get_short_epg(self, ch_id: str, count: int = 5,
@@ -604,13 +611,13 @@ def client_for_portal(p: dict) -> Optional['StalkerClient']:
     cached_mode = _load_mode(mac.upper(), portal_url)
 
     if cached_mode is True:
-        info(f'STB: using cached compat mode for {url}')
-        return StalkerClientCompat(url, mac)
+        info('STB INFO (details redacted)')
+        return StalkerClientCompat(url, mac, serial=p.get('stb_serial'), device_id=p.get('stb_device_id'))
 
     if cached_mode is False:
-        return StalkerClient(url, mac)
+        return StalkerClient(url, mac, serial=p.get('stb_serial'), device_id=p.get('stb_device_id'))
 
-    client = StalkerClient(url, mac)
+    client = StalkerClient(url, mac, serial=p.get('stb_serial'), device_id=p.get('stb_device_id'))
     if client._authed:
         _save_mode(mac.upper(), portal_url, False)
         return client
@@ -619,6 +626,6 @@ def client_for_portal(p: dict) -> Optional['StalkerClient']:
         _save_mode(mac.upper(), portal_url, False)
         return client
 
-    warn(f'STB: standard auth failed for {url}, switching to compat mode')
+    warn('STB WARN (details redacted)')
     _save_mode(mac.upper(), portal_url, True)
-    return StalkerClientCompat(url, mac)
+    return StalkerClientCompat(url, mac, serial=p.get('stb_serial'), device_id=p.get('stb_device_id'))

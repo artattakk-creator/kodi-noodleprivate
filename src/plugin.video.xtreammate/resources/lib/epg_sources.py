@@ -1,3 +1,4 @@
+from profile_transaction import serialized
 """Per-portal XMLTV source and channel mapping manager for Kodi/Android.
 
 Built-in programme IDs take precedence; external feeds fill missing IDs.
@@ -97,6 +98,7 @@ def configuration(portal_id):
     }
 
 
+@serialized
 def _save(portal_id, state):
     all_data = _load_all()
     all_data[str(portal_id)] = state
