@@ -71,7 +71,7 @@ def settings(router, portal, section=''):
     from theme_store import current, asset
     theme=current()
     addon_path=xbmcaddon.Addon().getAddonInfo('path')
-    base_icon=os.path.join(addon_path,'resources','media','settings.png')
+    base_icon=os.path.join(addon_path,'icon.png')
     base_fanart=os.path.join(addon_path,'fanart.jpg')
     section_alias={'startup':'start-channel','storage':'recordings'}
     def add(label,action,**params):
