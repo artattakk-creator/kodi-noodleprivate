@@ -1,0 +1,73 @@
+name: Build XCMate Space Premium 98 (draft)
+on:
+  push:
+    branches:
+      - feat/xcmate-space-premium-installer
+    paths:
+      - 'themes/xcmate/space-premium/assets/**'
+      - 'themes/xcmate/space-premium/theme.json'
+      - 'themes/xcmate/space-premium/SHA256SUMS.txt'
+      - 'themes/xcmate/space-premium/README.md'
+      - 'themes/xcmate/space-premium/LICENSE.txt'
+      - 'tools/build_xcmate_theme.py'
+      - 'src/plugin.video.xtreammate/resources/lib/theme_package.py'
+      - '.github/workflows/xcmate-space-premium-build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    if: github.repository == 'artattakk-creator/kodi-noodleprivate' && github.ref == 'refs/heads/feat/xcmate-space-premium-installer'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install host-only Pillow
+        run: python -m pip install 'Pillow>=11,<13'
+      - name: Build and validate the approved 98 asset package
+        run: |
+          python - <<'PY'
+          import json, os, shutil, sys, tempfile
+          from pathlib import Path
+          sys.path.insert(0, str(Path('tools').resolve()))
+          from build_xcmate_theme import build
+          from theme_package import manifest, json_object
+          src=Path('themes/xcmate/space-premium')
+          spec=manifest(json_object((src/'theme.json').read_bytes()),'0.1.30')
+          if spec['id']!='space-premium' or len(spec['required_files'])!=98:
+              raise ValueError('Missing approved original assets')
+          with tempfile.TemporaryDirectory(prefix='xcmate-98-') as tmp:
+              stage=Path(tmp)/'source';stage.mkdir()
+              for rel in ['theme.json','SHA256SUMS.txt','README.md','LICENSE.txt']+spec['required_files']:
+                  target=stage/rel;target.parent.mkdir(parents=True,exist_ok=True)
+                  shutil.copyfile(src/rel,target)
+              output=Path(tmp)/'XCMate-Space-Premium-1.0.0.zip'
+              report=build(stage,output)
+              for filename in [output,output.with_suffix('.zip.sha256'),output.with_suffix('.validation.json')]:
+                  shutil.copyfile(filename,src/filename.name)
+              print(json.dumps({k:v for k,v in report.items() if k!='images'},indent=2))
+          PY
+      - name: Upload verified theme for PR review
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcmate-space-premium-1.0.0-draft
+          path: |
+            themes/xcmate/space-premium/XCMate-Space-Premium-1.0.0.zip
+            themes/xcmate/space-premium/XCMate-Space-Premium-1.0.0.zip.sha256
+            themes/xcmate/space-premium/XCMate-Space-Premium-1.0.0.validation.json
+          if-no-files-found: error
+      - name: Commit package only to the feature branch (no release or merge)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- themes/xcmate/space-premium/XCMate-Space-Premium-1.0.0.zip themes/xcmate/space-premium/XCMate-Space-Premium-1.0.0.zip.sha256 themes/xcmate/space-premium/XCMate-Space-Premium-1.0.0.validation.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Build verified Space Premium theme 1.0.0 (draft PR #50)"
+            git push origin HEAD:refs/heads/feat/xcmate-space-premium-installer
+          fi
