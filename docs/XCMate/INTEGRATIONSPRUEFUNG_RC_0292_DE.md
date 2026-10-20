@@ -26,7 +26,7 @@ Der RC enthält Start-Hotfix, Wiedergabestopp, persistente Bilder/Favoriten/Folg
 aktive Gruppen, kontinuierliche Senderliste, alle Quellenadapter, Assistent und Editor.
 **Ein Update 0.1.28 → 0.1.29.2 mit genau einer ZIP ist vorgesehen.** Die vier früheren
 ZIP-Versionen sind historische Phasenartefakte und keine Installationsvoraussetzung.
-Isoliert geprüfter Code-/CI-Stand: `620a72476494888e6d812b58eb4a1f9cd0ea6e29`;
+Isoliert geprüfter Quellstand: `620a72476494888e6d812b58eb4a1f9cd0ea6e29`;
 nachfolgende Bericht-/Artefaktcommits verändern diesen Quellstand nicht.
 
 ## 3. Gefundene Fehler und Behebung
@@ -143,8 +143,14 @@ Python-Standardbibliothek plus Kodi-API; `requests` bleibt optional, HTTP hat ur
 
 `55b6b74e262b30cca37eaf8d251753e5cfb5fcfe06f3e13bd28d3452f56b73d6`
 
-Der GitHub-Prüflauf und sein Artefaktlink werden nach Abschluss im maschinellen
-Bericht und hier ergänzt. Bei Actions zunächst den äußeren Artefaktcontainer entpacken;
+[GitHub-Prüflauf erfolgreich](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39449616224), geprüfter Commit `9a3fbab`.
+[CI-Artefakt](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39449616224/artifacts/12278445261): Kodi-ZIP, SHA256, Testlog und Build-JSON.
+Build, Syntax, Tests, Paketprüfung und Upload erfolgreich; Publish **SKIPPED**.
+Die im Artefaktnamen ausgegebene innere ZIP-Prüfsumme stimmt exakt mit der lokalen
+RC-Prüfsumme überein. Der unabhängige Binärdownload des CI-Containers aus dieser
+Cloud wurde mit HTTP 403 blockiert (0 Bytes); dessen Inhalt wurde deshalb hier
+nicht nochmals heruntergeladen/geöffnet. Lokales identisches Quellpaket vollständig
+geprüft, CI-Paketprüfung und Uploadstatus über GitHub bestätigt. Bei Actions zunächst den äußeren Artefaktcontainer entpacken;
 in Kodi ausschließlich die darin enthaltene Add-on-ZIP installieren.
 
 ## 11. Ein-Schritt-Gerätetest, Sicherung und Rollback

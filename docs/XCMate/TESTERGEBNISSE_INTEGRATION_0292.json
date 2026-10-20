@@ -149,7 +149,44 @@
     "production_publish": false
   },
   "ci": {
-    "status": "pending_new_full_run_with_artifact"
+    "run": 39449616224,
+    "head": "9a3fbaba4685e8e00aad939339e95a1c7b042399",
+    "conclusion": "success",
+    "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39449616224",
+    "artifact": {
+      "id": 12278445261,
+      "name": "xcmate-review-39449616224-55b6b74e262b30cca37eaf8d251753e5cfb5fcfe06f3e13bd28d3452f56b73d6",
+      "bytes": 374660,
+      "outer_digest": "sha256:4edae9654978949ce86b293934a0fd16dce22f38bdc1bcacd3cbeec42e4f3295",
+      "expires_at": "2026-11-03T15:36:08Z",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39449616224/artifacts/12278445261",
+      "advertised_inner_sha256": "55b6b74e262b30cca37eaf8d251753e5cfb5fcfe06f3e13bd28d3452f56b73d6",
+      "matches_local": true
+    },
+    "steps": {
+      "Set up job": "success",
+      "Run actions/checkout@v4": "success",
+      "Run actions/setup-python@v5": "success",
+      "Install artwork build dependency": "success",
+      "Bootstrap pinned XtreamMate GPL source": "success",
+      "Apply XtreamMate 0.1.1 fix": "success",
+      "Apply XtreamMate 0.1.2 remote and startup functions": "success",
+      "Apply XtreamMate 0.1.5 TV navigation, EPG, metadata and widgets": "success",
+      "Build all Kodi addon packages and index": "success",
+      "Check Python syntax": "success",
+      "Run Noodle Private regression tests": "success",
+      "Prepare XCMate pull request test package": "success",
+      "Upload XCMate pull request test package": "success",
+      "Commit and publish generated archives": "skipped",
+      "Post Run actions/setup-python@v5": "success",
+      "Post Run actions/checkout@v4": "success",
+      "Complete job": "success"
+    },
+    "binary_download": {
+      "download_bytes": 0,
+      "status": "CLOUD_DOWNLOAD_EMPTY",
+      "note": "Artifact metadata/upload/job verified; binary download unavailable in this cloud proxy. Local exact-source ZIP is verified."
+    }
   },
   "production": {
     "main_changed": false,
@@ -186,5 +223,14 @@
     "target": "Kodi 21.3 Android ARM32",
     "plan": "ANDROID_TESTPLAN_UNIVERSAL_029_DE.md"
   },
-  "recommendation": "Ready for Android test; production approval pending"
+  "recommendation": "Ready for Android test; production approval pending",
+  "update_path": {
+    "production": "0.1.28",
+    "simulated_update": "0.1.29.2",
+    "same_addon_id": true,
+    "index_md5": "PASS",
+    "other_index_entries": "IDENTICAL",
+    "other_addons": "UNCHANGED",
+    "source_scope": "PASS"
+  }
 }
