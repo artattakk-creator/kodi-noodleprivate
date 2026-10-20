@@ -296,3 +296,14 @@ class SourceTests(Fixture,unittest.TestCase):
         self.assertEqual(self.index.Reader(portal['id']).page('live')[1],0)
         adapter=self.adapters.for_portal(portal);self.assertTrue(adapter.categories('live'))
         self.assertFalse(self.real_portals.get_by_id(portal['id']).get('source_schema'))
+
+    def test_long_playlist_rows_flush_by_bytes_before_row_limit(self):
+        source=self.folder/'long.m3u'
+        with source.open('w') as stream:
+            stream.write('#EXTM3U\n')
+            for n in range(12): stream.write('#EXTINF:-1 group-title="DE",Long '+str(n)+'\nhttps://stream.invalid/'+str(n)+'/'+'x'*200000+'\n')
+        flushed=[];filename=str(self.folder/'long.sqlite')
+        result=self.store.import_playlist(str(source),filename,progress=flushed.append)
+        self.assertEqual(result['entries'],12);self.assertLess(flushed[0],12)
+        self.assertTrue(all(b-a<=6 for a,b in zip([0]+flushed,flushed)))
+        self.assertEqual(len(list(self.store.entries(filename))),12)

@@ -110,15 +110,16 @@ def stable_url(uri):
 def import_playlist(uri,filename,cancel=lambda:False,progress=None):
     from iptv import classify_group,_parse_attrs
     from import_budget import check_space
-    generation=uuid.uuid4().hex;db=connect(filename);count=0;batch=[]
+    generation=uuid.uuid4().hex;db=connect(filename);count=0;batch=[];batch_bytes=0
     # Duplicate occurrence numbers are held in SQLite, not an unbounded set.
     db.execute('CREATE TEMP TABLE seen(ident TEXT PRIMARY KEY,n INTEGER)')
     attrs={};name='';group='';header_epg=''
     def flush():
+        nonlocal batch_bytes
         if not batch: return
         check_space(filename,sum(len(r[4])+len(r[8]) for r in batch)*3)
         with db: db.executemany('INSERT INTO base VALUES(?,?,?,?,?,?,?,?,?)',batch)
-        batch.clear()
+        batch.clear();batch_bytes=0
         if progress: progress(count)
     try:
         with source(uri,cancel) as stream:
@@ -149,8 +150,9 @@ def import_playlist(uri,filename,cancel=lambda:False,progress=None):
                     db.execute('INSERT OR IGNORE INTO groups VALUES(?,?,?)',(gid,group,kind))
                     batch.append((sid,generation,name or attrs.get('tvg-name') or 'Unbenannter Eintrag',gid,line,
                         attrs.get('tvg-logo',''),attrs.get('tvg-id',''),count,json.dumps(attrs)))
+                    batch_bytes+=sum(len(value.encode('utf-8')) for value in batch[-1] if isinstance(value,str))
                     count+=1;attrs={};name='';group=''
-                    if len(batch)>=256: flush()
+                    if len(batch)>=256 or batch_bytes>=1024*1024: flush()
             flush()
         if not count: raise ValueError('empty playlist')
         if cancel(): raise InterruptedError('playlist cancelled')
