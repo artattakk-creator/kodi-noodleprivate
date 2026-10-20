@@ -330,6 +330,10 @@ class FreezeTests(unittest.TestCase):
                 reference=json.loads((ROOT/'tests/fixtures/xcmate_026_overlay_ast.json').read_text())
                 self.assertEqual(reference['original_sha256'],digest)
                 source=(ROOT/file).read_text()
+                # Explicit shared-adapter constructor injection; every other
+                # original constructor statement remains frozen.
+                source=source.replace("def __init__(self, portal, initial_sid='', client=None):","def __init__(self, portal, initial_sid=''):")
+                source=source.replace("self.xc = client if client is not None else XtreamClient(","self.xc = XtreamClient(")
                 # Two exact display-string replacements only in _render.
                 source=source.replace("self.sub.setLabel('{} Sender'.format(len(self.visible_channels)))",
                     "self.sub.setLabel('{} Sender - Seite {}/{}'.format(len(self.visible_channels),self._page_start//100+1, max(1,(len(self.visible_channels)+99)//100)))")

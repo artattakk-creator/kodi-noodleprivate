@@ -394,7 +394,7 @@ def sync_kind(portal,client,kind,preferred='',force=False,cancel=lambda:False,fi
 
 def request_sync(portal,kind,preferred='',priority=20,force=False,filename=None):
     """Small persisted intent, consumed by one service worker. No network."""
-    if kind not in CATALOGS or portal.get('type')!='xtream': return
+    if kind not in CATALOGS or portal.get('type') not in ('xtream','m3u','stb'): return
     db=connect(filename,write=True,timeout=0.05)
     try:
         with db:

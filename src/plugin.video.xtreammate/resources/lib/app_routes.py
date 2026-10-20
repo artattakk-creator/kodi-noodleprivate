@@ -1,7 +1,7 @@
 """New routes only. Legacy provider/player entry points remain compatible."""
 from localization import tr
 
-ACTIONS=('art_status','art_retry','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
+ACTIONS=('playlist_editor','source_live','source_play','source_start','art_status','art_retry','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
          'movies_home','series_home','media_detail','media_favourites','global_search','search_section',
          'widget_live_start_group','widget_recent_vod','widget_recent_series','widget_setup',
          'recording_folder','recording_capabilities','about_xcmate','guide_browser','media_play','guide_timers','guide_status')
@@ -90,8 +90,19 @@ def dispatch(router):
         xbmcgui.Dialog().ok('XCMate',tr(32466))
         return
     router._params['pid']=portal['id']
-    if action=='xcmate_home': show(router,portal)
+    if action=='playlist_editor':
+        _end(router,False)
+        if portal.get('type')=='m3u':
+            from playlist_editor import open_editor
+            open_editor(portal)
+    elif action in ('source_live','source_play','source_start'):
+        from source_live import browse,play
+        browse(router,portal) if action=='source_live' else play(router,portal,direct=action=='source_start')
+    elif action=='xcmate_home': show(router,portal)
     elif action=='home_start':
+        if portal.get('type') in ('m3u','stb'):
+            from source_live import play
+            play(router,portal,direct=True);return
         _end(router,False)
         sid=str(portal.get('start_stream_id') or '')
         xc=router._xc(portal) if portal.get('type')=='xtream' else None
@@ -101,7 +112,11 @@ def dispatch(router):
                 xbmc.executebuiltin('Container.Update('+router.url(action='startup_settings',pid=portal['id'])+')')
             return
         router._play_start_direct()
-    elif action=='home_live': router._live_groups()
+    elif action=='home_live':
+        if portal.get('type') in ('m3u','stb'):
+            from source_live import browse
+            browse(router,portal)
+        else: router._live_groups()
     elif action in ('global_search','search_section'): search(router,portal)
     elif action.startswith('widget_'): widget(router,portal,action)
     elif action in ('movies_home','series_home','media_detail','media_favourites'):
@@ -111,12 +126,6 @@ def dispatch(router):
         if not portal.get('include_vod' if kind=='vod' else 'include_series',True):
             _end(router,False)
             xbmcgui.Dialog().ok('XCMate',tr(32468))
-            return
-        if portal.get('type')!='xtream':
-            _end(router,False)
-            xbmcgui.Dialog().ok('XCMate',tr(32469))
-            route=('m3u_movies' if kind=='vod' else 'm3u_series') if portal.get('type')=='m3u' else ('vod_categories' if kind=='vod' else 'series_categories')
-            xbmc.executebuiltin('Container.Update('+router.url(action=route,pid=portal['id'])+')')
             return
         _end(router)
         from media_window import open_media
@@ -213,7 +222,7 @@ def add_index_item(router,portal,kind,item,epg=None,recent=False):
         li.setInfo('video',{'plot':label+'\n'+str(item.get('plot') or '')})
     if kind=='live':
         li.setProperty('IsPlayable','true')
-        url=router.url(action='play_live',pid=portal['id'],sid=item['sid'],name=item['name'])
+        url=router.url(action='play_live' if portal.get('type')=='xtream' else 'source_play',pid=portal['id'],sid=item['sid'],name=item['name'])
     else:
         url=router.url(action='media_detail',pid=portal['id'],kind=kind,sid=item['sid'])
     xbmcplugin.addDirectoryItem(router._handle,url,li,isFolder=kind!='live')

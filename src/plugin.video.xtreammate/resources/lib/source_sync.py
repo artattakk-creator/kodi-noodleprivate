@@ -7,7 +7,7 @@ import uuid
 def sync_kind(portal,kind,force=False,cancel=lambda:False,requested_at=None,local_only=False):
     from library_index import connect,import_group,_sync_note
     from source_adapters import for_portal
-    from group_selection import enabled_ids
+    from group_selection import enabled_ids,load
     from m3u_store import path as playlist_path,connect as playlist_connect
     adapter=for_portal(portal);pid=str(portal['id'])
     if not local_only and not portal.get('include_'+kind,True): return
@@ -33,6 +33,10 @@ def sync_kind(portal,kind,force=False,cancel=lambda:False,requested_at=None,loca
         elif force or not groups:
             groups=adapter.categories(kind,remote=True)
         allowed=enabled_ids(pid,kind,groups)
+        if not portal.get('source_schema') and load(pid,kind) is None:
+            # Existing non-Xtream sources need explicit category opt-in.
+            # Discover metadata, preserve legacy routes, do not import countries.
+            allowed=set()
         with db:
             db.executemany('INSERT OR REPLACE INTO groups VALUES(?,?,?,?,?)',[(pid,kind,str(g['category_id']),str(g['category_name']),i) for i,g in enumerate(groups)])
         if portal['type']=='m3u':

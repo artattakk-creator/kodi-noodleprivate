@@ -5,6 +5,7 @@ index batches before publication keeps old accounts readable and transactions
 short. Rollback affects only this newly allocated ID, never an existing account.
 """
 import json
+from localization import tr
 import os
 import shutil
 import sqlite3
@@ -30,8 +31,8 @@ class Draft:
         self.adapter=for_portal(self.data,filename=self.index,playlist=self.playlist)
 
     def discover(self,cancel=lambda:False,status=lambda *a:None):
-        status(0,'Verbindung und Kategorien prüfen …')
-        self.adapter.authenticate(cancel,lambda count:status(0,'Playlist analysiert: '+str(count)+' Einträge'))
+        status(0,tr(32711))
+        self.adapter.authenticate(cancel,lambda count:status(0,tr(32773,count)))
         for i,kind in enumerate(KINDS):
             if cancel(): raise InterruptedError('setup cancelled')
             self.categories[kind]=self.adapter.categories(kind,remote=True)
@@ -62,8 +63,7 @@ class Draft:
                     state['received']+=1;yield row
                 state['done']=True
             def progress(received,stored,discarded):
-                status(number*85//len(groups),kind+' · Kategorie '+str(number+1)+'/'+str(len(groups))+
-                    ' · gelesen '+str(received)+' · bestätigt gespeichert '+str(stored))
+                status(number*85//len(groups),kind+' · '+tr(32774,number+1,len(groups),received,stored))
             try:
                 counts=import_group(self.pid,kind,cid,rows(),filename=self.index,cancel=cancel,
                     progress=progress,allowed=self.selected[kind])
@@ -79,7 +79,7 @@ class Draft:
             self.report[kind]=reader.page(kind,limit=1)[1]
         if not sum(self.report[k] for k in KINDS): raise ValueError('no selected content imported')
         self._scan_epg(cancel,status)
-        self.scanned=True;status(100,'Scan abgeschlossen · Zahlen bestätigt')
+        self.scanned=True;status(100,tr(32742))
         return self.report
 
     def _scan_epg(self,cancel,status):
@@ -95,7 +95,7 @@ class Draft:
         if self.provider_epg and uri: sources.insert(0,dict(uri=uri,local=not uri.startswith(('http://','https://'))))
         for index,source in enumerate(sources):
             if cancel(): raise InterruptedError('setup cancelled')
-            status(85+index*14//max(1,len(sources)),'EPG-Quelle '+str(index+1)+'/'+str(len(sources)))
+            status(85+index*14//max(1,len(sources)),tr(32706)+' '+str(index+1)+'/'+str(len(sources)))
             try:
                 counts=import_source(self.pid,source,index,streams,{},filename=self.guide,cancel=cancel)
                 self.report['epg']+=counts['stored'];self.report['sources'].append(dict(code='READY',bytes=counts['bytes'],stored=counts['stored']))
@@ -170,6 +170,11 @@ class Draft:
                 self.data['provider_epg_enabled']=self.provider_epg
                 self.data['epg_show']=bool(self.provider_epg or self.epg_sources)
                 save_sources(self.pid,dict(sources=self.epg_sources,mappings={}))
+                if os.path.isfile(self.guide):
+                    from stream_epg import fast_snapshot,active_streams
+                    from epg import _save_disk,_mem_set
+                    snapshot=fast_snapshot(self.pid,active_streams(self.data),{})
+                    if snapshot: _save_disk(self.pid,snapshot);_mem_set(self.pid,snapshot)
                 if cancel(): raise InterruptedError('setup save cancelled')
                 portal=portals.add(self.data,portal_id=self.pid)
                 self.saved=True

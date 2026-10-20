@@ -175,7 +175,7 @@ def _view_key(path):
 def prefetch_short_guides(portal, channels, limit=24, view_path=''):
     """Send a bounded page request to the long-lived service, not a GUI thread."""
     import json,uuid,xbmcgui
-    if not isinstance(portal,dict) or portal.get('type')!='xtream': return
+    if not isinstance(portal,dict) or portal.get('type') not in ('xtream','stb'): return
     sids=[str(ch.extra.get('stream_id')) for ch in channels if ch.extra.get('stream_id')][:limit]
     if not sids: return
     request={'pid':str(portal['id']),'sids':sids,'at':time.time(),
@@ -215,10 +215,10 @@ def poll_short_guides():
         if not 0<=time.time()-float(request.get('at',0))<120: return
     except (ValueError,TypeError): return
     portal=portals.get_by_id(request.get('pid'))
-    if not portal or not portal.get('enabled',True) or portal.get('type')!='xtream': return
+    if not portal or not portal.get('enabled',True) or portal.get('type') not in ('xtream','stb'): return
     sids=request.get('sids')
     if not isinstance(sids,list): return
-    sids=[sid for sid in sids[:24] if isinstance(sid,str) and sid.isdecimal()]
+    sids=[sid for sid in sids[:24] if isinstance(sid,str) and 0<len(sid)<=256 and (portal.get('type')=='stb' or sid.isdecimal())]
     if _start_short_guides(portal,sids,str(request.get('view') or '')):
         _LAST_REQUEST=request['nonce']
 
@@ -231,7 +231,7 @@ def _start_short_guides(portal, sids, view_key=''):
     global _SHORT_LOCK
     if _SHORT_LOCK is None:
         _SHORT_LOCK = threading.Lock()
-    if not isinstance(portal, dict) or portal.get('type') != 'xtream':
+    if not isinstance(portal, dict) or portal.get('type') not in ('xtream','stb'):
         return
     pid = str(portal['id'])
     current = time.time()
@@ -246,7 +246,10 @@ def _start_short_guides(portal, sids, view_key=''):
     def worker():
         try:
             changed=[]
-            xc = XtreamClient(portal['xc_host'],portal['xc_user'],portal['xc_pass'])
+            if portal.get('type')=='stb':
+                from source_adapters import for_portal
+                xc=for_portal(portal)
+            else: xc = XtreamClient(portal['xc_host'],portal['xc_user'],portal['xc_pass'])
             def fetch(sid):
                 cached=cached_short_guide(xc,sid)
                 if cached['now'] or cached['next']:

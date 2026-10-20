@@ -700,7 +700,7 @@ class Router:
         from startup_preferences import configure_startup
         p=self._portal()
         if not p:
-            candidates=[x for x in portals.get_active() if x.get('type')=='xtream']
+            candidates=[x for x in portals.get_active() if x.get('type') in ('xtream','m3u','stb')]
             if not candidates:
                 xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
                 return
@@ -796,7 +796,7 @@ class Router:
         pid = self._params.get('pid', '')
         p = portals.get_by_id(pid) if pid else None
         if not p:
-            options = [item for item in portals.load_all() if item.get('type') == 'xtream']
+            options = [item for item in portals.load_all() if item.get('type') in ('xtream','m3u','stb')]
             if not options:
                 xbmcgui.Dialog().ok('XCMate', 'Zuerst einen Xtream-Codes-Zugang einrichten.')
                 xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
@@ -814,7 +814,7 @@ class Router:
 
     def _group_settings(self):
         p = self._portal()
-        if not p or p.get('type') != 'xtream':
+        if not p or p.get('type') not in ('xtream','m3u','stb'):
             xbmcplugin.endOfDirectory(self._handle, False)
             return
         from group_selection import choose_groups
@@ -2536,8 +2536,11 @@ class Router:
         return p
 
     def _xc(self, p: dict):
-        if not p or p.get('type') != 'xtream':
-            return None
+        if not p: return None
+        if p.get('type') in ('m3u','stb'):
+            from source_adapters import for_portal
+            return for_portal(p)
+        if p.get('type')!='xtream': return None
         from xtream import XtreamClient
         return XtreamClient(p['xc_host'], p['xc_user'], p['xc_pass'])
 

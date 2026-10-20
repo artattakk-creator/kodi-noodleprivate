@@ -5,6 +5,7 @@ immutable prepared values and update the wanted viewport. No HTTP here.
 """
 from collections import OrderedDict
 import threading
+import sqlite3
 import time
 
 from epg_views import guide_for_channel
@@ -109,6 +110,19 @@ class GuideSnapshot:
         for c in wanted:
             sid = str(c.extra.get('stream_id',''))
             info = resolve_guide(self._cache, c.tvg_id, sid, now, self.client, self._mappings)
+            if not info['now']:
+                # A saved ten-day guide outlives its small compatibility
+                # snapshot. Read only this worker's bounded visible viewport.
+                try:
+                    from guide_store import events
+                    ident=self._mappings.get(sid) or sid
+                    rows,_=events(self.portal['id'],ident,int(now),int(now)+2*86400,limit=4)
+                    if not rows and sid not in self._mappings and c.tvg_id:
+                        rows,_=events(self.portal['id'],c.tvg_id,int(now),int(now)+2*86400,limit=4)
+                    if rows:
+                        stored=guide_for_channel({'v':[dict(name=r['title'],descr=r['description'],start_timestamp=r['start'],stop_timestamp=r['stop'],_source_index=r['source']) for r in rows]},'v',now=now)
+                        if stored['now'] or not info['next']: info=stored
+                except (OSError,RuntimeError,sqlite3.Error): pass
             values[sid] = info
             if not info['now'] and sid not in self._mappings: missing.append(c)
         with self._lock:

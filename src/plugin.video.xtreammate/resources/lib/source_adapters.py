@@ -15,7 +15,7 @@ KINDS=('live','vod','series')
 class Adapter:
     def __init__(self,portal,filename=None,playlist=None):
         self.portal,self.pid,self.filename=portal,str(portal['id']),filename
-        self.playlist=playlist;self._provider=None;self._links={};self._local_urls={}
+        self.playlist=playlist;self._provider=None;self._links={};self._local_urls={};self._catalog_snapshot=None
         self.capabilities=dict(categories=True,live=True,vod=True,series=True,
             series_tree=portal['type']!='m3u',playlist_editor=portal['type']=='m3u',xmltv=bool(portal.get('epg_url')))
 
@@ -155,6 +155,7 @@ class Adapter:
         return Reader(self.pid,self.filename)
 
     def get_cached_catalog(self,action):
+        if self._catalog_snapshot is not None and action in self._catalog_snapshot: return self._catalog_snapshot[action]
         from library_index import CATALOGS
         for kind,(items,cats,id_key) in CATALOGS.items():
             if action==cats: return self.categories(kind)
@@ -238,7 +239,7 @@ class Adapter:
 
     def get_short_epg(self,sid,limit=8,force_refresh=False):
         if self.portal['type']!='stb': return {}
-        rows=self.provider.get_short_epg(str(sid),count=limit) or []
+        rows=self.provider.get_short_epg(str(sid),count=limit,force=force_refresh) or []
         result={'epg_listings':[dict(title=r.get('name') or r.get('title') or '',
             start_timestamp=r.get('start_timestamp') or r.get('start') or 0,
             end_timestamp=r.get('stop_timestamp') or r.get('end_timestamp') or r.get('stop') or 0) for r in rows if isinstance(r,dict)]}

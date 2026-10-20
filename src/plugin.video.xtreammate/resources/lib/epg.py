@@ -510,7 +510,7 @@ def _refresh_portal_epg(portal_id, p, force=False):
 
 
 def _refresh_portal_epg_inner(portal_id, p, force=False):
-    if p.get('type')=='xtream':
+    if p.get('type')=='xtream' or p.get('source_schema')==1:
         from stream_epg import refresh
         import xbmc
         cancel = xbmc.Monitor().abortRequested if hasattr(xbmc,'Monitor') else lambda: False

@@ -111,7 +111,7 @@ def adjacent_channel(channels, category_id, enabled, current_sid, step):
 class LiveNavigator(xbmcgui.WindowDialog):
     """Nonblocking WindowDialog; service.py owns and closes its lifecycle."""
 
-    def __init__(self, portal, initial_sid=''):
+    def __init__(self, portal, initial_sid='', client=None):
         super().__init__()
         from xtream import XtreamClient
         from iptv import Channel
@@ -126,7 +126,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         except (OSError, ValueError, TypeError):
             self._bindings = dict(DEFAULT)
             trace('input','PROFILE_FALLBACK')
-        self.xc = XtreamClient(portal['xc_host'], portal['xc_user'], portal['xc_pass'])
+        self.xc = client if client is not None else XtreamClient(portal['xc_host'], portal['xc_user'], portal['xc_pass'])
         self.sid = str(initial_sid)
         self._recent_sid = ''
         self._tune_deadline = 0

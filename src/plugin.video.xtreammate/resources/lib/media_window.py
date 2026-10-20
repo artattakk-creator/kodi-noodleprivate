@@ -316,8 +316,10 @@ class MediaWindow(xbmcgui.WindowXML):
         self.getControl(320).setText(info['plot'] or tr(32511))
         self._queue_art(item)
         self.actions=[]
-        if self.kind=='vod':
-            saved=progress('vod',item['sid'])
+        flat=self.kind=='series' and bool(item.get('series_flat'))
+        if flat: self.getControl(320).setText(tr(32744))
+        if self.kind=='vod' or flat:
+            saved=progress('series_item' if flat else 'vod',item['sid'])
             self.actions=[(tr(32512),'play'),(tr(32513),'restart')]
             position=resume_position(saved)
             if position:
@@ -325,6 +327,7 @@ class MediaWindow(xbmcgui.WindowXML):
         else:
             self.episodes=episode_records(data,item['sid'])
             self.actions=[(tr(32515),'seasons')] if self.episodes else []
+            if not self.episodes and self.portal.get('type')=='stb': self.getControl(320).setText(tr(32775))
             saved_episodes=[(e,progress('episode',e['sid'],e['series_id'],e['season'])) for e in self.episodes]
             started=[pair for pair in saved_episodes if resume_position(pair[1])]
             if started:
@@ -383,7 +386,7 @@ class MediaWindow(xbmcgui.WindowXML):
                 pos=self.getControl(300).getSelectedPosition()
                 if not 0<=pos<len(self.actions): return
                 action=self.actions[pos][1]
-                if action in ('play','restart','resume'): self._play(self.selected,'vod',action=='resume')
+                if action in ('play','restart','resume'): self._play(self.selected,'series_item' if self.kind=='series' and self.selected.get('series_flat') else 'vod',action=='resume')
                 elif action=='favourite':
                     from media_state import toggle
                     toggle(self.portal['id'],self.kind,self.selected['sid'],self.selected)

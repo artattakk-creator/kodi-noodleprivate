@@ -177,3 +177,122 @@ class SourceTests(Fixture,unittest.TestCase):
             d=self.draft();window=ui.SetupWindow('XCMateSetup.xml',str(ADDON),'Default','720p');window.configure(d)
             window.doModal();window.native(92);window._pool.drain()
             self.assertIsNone(window.result);self.assertFalse(Path(d.folder).exists());self.assertEqual(len(self.real_portals.load_all()),1)
+
+    def test_large_file_and_real_http_playlist_stream_to_selected_index(self):
+        import threading
+        import urllib.request
+        from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
+        source=self.folder/'large.m3u8';count=20005
+        with source.open('w') as file:
+            file.write('#EXTM3U\n')
+            for n in range(count):
+                file.write('#EXTINF:-1 tvg-id="id'+str(n)+'" group-title="'+('DE' if n%4==0 else 'FR')+'",Channel '+str(n)+'\nhttps://stream.invalid/'+str(n)+'\n')
+        local=str(self.folder/'large.sqlite');result=self.store.import_playlist(str(source),local)
+        self.assertEqual(result['entries'],count)
+        class Handler(BaseHTTPRequestHandler):
+            def log_message(self,*args): pass
+            def do_GET(self):
+                self.send_response(200);self.send_header('Content-Length',str(source.stat().st_size));self.end_headers()
+                with source.open('rb') as f:
+                    while True:
+                        chunk=f.read(32768)
+                        if not chunk: break
+                        self.wfile.write(chunk)
+        server=ThreadingHTTPServer(('127.0.0.1',0),Handler);thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start()
+        self.addCleanup(server.server_close);self.addCleanup(server.shutdown)
+        @contextmanager
+        def transport(uri,cancel=lambda:False,**kw):
+            with urllib.request.urlopen(uri,timeout=5) as response: yield response
+        sys.modules['utils'].http_stream=transport
+        d=importlib.import_module('setup_draft').Draft(dict(type='m3u',name='HTTP',m3u_url='http://127.0.0.1:'+str(server.server_port)+'/large.m3u8'))
+        self.addCleanup(d.dispose);d.discover();d.selected['live']={g['category_id'] for g in d.categories['live'] if g['category_name']=='DE'}
+        report=d.scan();self.assertEqual(report['live'],5002)
+        p=d.save();rows,total=self.index.Reader(p['id']).page('live');self.assertEqual(total,5002)
+        self.assertTrue(all(int(r['name'].split()[-1])%4==0 for r in rows))
+        # Once committed, the configured background queue accepts this source.
+        self.index.request_sync(p,'live')
+        db=self.index.connect()
+        try: self.assertIsNotNone(db.execute('SELECT 1 FROM sync_requests WHERE pid=?',(p['id'],)).fetchone())
+        finally: db.close()
+        print('\nLARGE_M3U '+json.dumps(dict(parsed=count,active=report['live'],bytes=source.stat().st_size)))
+
+    def test_failed_playlist_refresh_retains_generation_and_manual_overrides(self):
+        filename=str(self.folder/'stable.sqlite');self.store.import_playlist(str(self.original),filename)
+        row=next(self.store.entries(filename));self.store.edit(filename,row['sid'],name='Persistent override')
+        before=[(r['sid'],r['name']) for r in self.store.entries(filename)]
+        self.original.write_text('#EXTM3U\n#EXTINF:-1,Broken\nhttps://stream.invalid/\x00bad\n')
+        with self.assertRaises(ValueError): self.store.import_playlist(str(self.original),filename)
+        self.assertEqual([(r['sid'],r['name']) for r in self.store.entries(filename)],before)
+        with mock.patch('import_budget.check_space',side_effect=OSError(28,'full')):
+            self.original.write_text('#EXTM3U\n#EXTINF:-1,New\nhttps://stream.invalid/new\n')
+            with self.assertRaises(OSError): self.store.import_playlist(str(self.original),filename)
+        self.assertEqual([(r['sid'],r['name']) for r in self.store.entries(filename)],before)
+
+    def test_stalker_selected_raw_index_details_and_link_only_after_scan(self):
+        d=importlib.import_module('setup_draft').Draft(dict(type='stb',name='MAG',stb_url='https://provider.invalid',stb_mac='00:11:22:33:44:55'))
+        self.addCleanup(d.dispose)
+        provider=types.SimpleNamespace(authenticate=lambda:True,get_live_categories=lambda:[dict(id='de',title='DE'),dict(id='fr',title='FR')],get_vod_categories=lambda:[],get_series_categories=lambda:[],
+            get_channel_stream_url=mock.Mock(return_value='https://stream.invalid/resolved'),stream_headers=lambda:{'User-Agent':'MAG'})
+        d.adapter._provider=provider;d.discover();provider.get_channel_stream_url.assert_not_called();d.selected['live']={'de'}
+        called=[]
+        def rows(kind,cid,cancel):
+            called.append((kind,cid));yield dict(id='opaque-id',name='News',tv_genre_id='de',cmd='ffmpeg http://localhost/ch/1')
+            yield dict(id='other-id',name='Foreign',tv_genre_id='fr',cmd='secret')
+        d.adapter._stalker_rows=rows;report=d.scan();self.assertEqual(report['live'],1);self.assertEqual(called,[('live','de')])
+        p=d.save();adapter=self.adapters.for_portal(p);adapter._provider=provider
+        uri,headers=adapter.play_uri('live','opaque-id');self.assertEqual(uri,'https://stream.invalid/resolved')
+        provider.get_channel_stream_url.assert_called_once_with('ffmpeg http://localhost/ch/1')
+        with self.assertRaises(ValueError): adapter.play_uri('live','other-id')
+
+    def test_m3u_flat_series_has_no_fabricated_seasons_and_uses_verified_playback_state(self):
+        from xcmate027_fixture import ADDON
+        self.original.write_text('#EXTM3U\n#EXTINF:-1 tvg-id="flat" group-title="Series",Single entry\nhttps://stream.invalid/series.mkv\n')
+        d=self.draft();d.discover();self.assertTrue(d.categories['series'])
+        d.selected['series']={g['category_id'] for g in d.categories['series']};d.scan();p=d.save()
+        row=self.index.Reader(p['id']).page('series')[0][0];self.assertTrue(row['series_flat'])
+        self.router._xc=lambda portal:self.adapters.for_portal(portal)
+        self.router._params.update(pid=p['id'],kind='series_item',sid=row['sid'])
+        progress=importlib.import_module('media_progress');tag=types.SimpleNamespace(setUniqueIDs=mock.Mock())
+        item=types.SimpleNamespace(getVideoInfoTag=lambda:tag)
+        builder=mock.Mock(return_value=item)
+        with mock.patch.dict(sys.modules,player=types.SimpleNamespace(build_playable_item=builder)):
+            progress.play(self.router,p)
+        session=json.loads(self.properties[progress.PROPERTY]);self.assertEqual(session['kind'],'series_item')
+        self.assertNotIn('season',session);self.assertEqual(builder.call_args.args[0],'https://stream.invalid/series.mkv')
+        self.state.save_progress(session,100,1000)
+        self.assertEqual(self.state.rail_items(p['id'],'series',self.index.Reader(p['id']),'continue')[0]['sid'],row['sid'])
+        details=self.adapters.for_portal(p).details('series',row['sid']);self.assertEqual(details['episodes'],{})
+        window=self.media.MediaWindow('XCMateMedia.xml',str(ADDON),'Default','720p')
+        window.configure(self.router,p,'series',row['sid']);window.doModal();window._pool.drain()
+        self.assertIn('resume',[action for label,action in window.actions]);self.assertNotIn('seasons',[action for label,action in window.actions])
+        window.close()
+
+    def test_explicit_epg_stream_filters_foreign_data_and_restores_now_from_saved_sqlite(self):
+        import time
+        now=int(time.time());stamp=lambda n:time.strftime('%Y%m%d%H%M%S +0000',time.gmtime(n))
+        source=self.folder/'guide.xml'
+        source.write_text('<tv><channel id="news"><display-name>News</display-name></channel><channel id="foreign"><display-name>Other</display-name></channel>'+''.join('<programme channel="'+cid+'" start="'+stamp(now-60)+'" stop="'+stamp(now+3600)+'"><title>'+name+'</title></programme>' for cid,name in (('news','Current saved programme'),('foreign','Foreign programme')) )+'</tv>')
+        d=self.draft();d.discover();d.selected['live']={g['category_id'] for g in d.categories['live'] if g['category_name']=='DE'}
+        d.epg_sources=[dict(id='manual',uri=str(source),name='Test',local=True,enabled=True)]
+        report=d.scan();self.assertEqual(report['epg'],1);self.assertEqual(report['sources'][0]['stored'],1)
+        self.assertEqual(report['sources'][0]['bytes'],source.stat().st_size)
+        epg=sys.modules['epg'];snapshots={};epg._save_disk=lambda pid,cache:snapshots.update({pid:cache});epg._mem_set=lambda *a:None
+        p=d.save();sid=self.index.Reader(p['id']).page('live')[0][0]['sid']
+        self.assertEqual(snapshots[p['id']][sid][0]['name'],'Current saved programme')
+        from guide_store import events
+        self.assertEqual(events(p['id'],'foreign',now,now+3600)[1],0)
+        # Compatibility snapshot may expire; the persistent DB remains valid.
+        epg._mem_clear=lambda *a:None
+        spec=importlib.util.spec_from_file_location('saved_tv_data',LIB/'tv_data.py');data=importlib.util.module_from_spec(spec);spec.loader.exec_module(data)
+        with mock.patch.dict(sys.modules,logo_cache=types.SimpleNamespace(request=lambda *a:None),live_diagnostics=types.SimpleNamespace(record=lambda *a,**kw:None)):
+            guide=data.GuideSnapshot(p,self.adapters.for_portal(p));guide.request([types.SimpleNamespace(tvg_id='news',name='News',logo='',extra={'stream_id':sid})]);guide.refresh()
+        self.assertEqual(guide.get(sid)['now'],'Current saved programme')
+        print('\nSELECTIVE_XMLTV '+json.dumps(dict(bytes=source.stat().st_size,parsed=2,stored=report['epg'])))
+
+    def test_legacy_source_discovers_categories_without_automatic_country_import(self):
+        portal=self.real_portals.add(dict(type='m3u',name='Legacy',m3u_url=str(self.original)))
+        from source_sync import sync_kind
+        sync_kind(portal,'live')
+        self.assertEqual(self.index.Reader(portal['id']).page('live')[1],0)
+        adapter=self.adapters.for_portal(portal);self.assertTrue(adapter.categories('live'))
+        self.assertFalse(self.real_portals.get_by_id(portal['id']).get('source_schema'))

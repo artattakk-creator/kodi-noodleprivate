@@ -20,11 +20,12 @@ def play(router,portal):
     from player import build_playable_item
     from library_index import Reader
     kind=router._params.get('kind','vod');sid=str(router._params.get('sid') or '')
-    if kind not in ('vod','episode') or not sid or portal.get('type')!='xtream':
+    if kind not in ('vod','episode','series_item') or not sid or portal.get('type') not in ('xtream','m3u','stb'):
         xbmcplugin.setResolvedUrl(router._handle,False,xbmcgui.ListItem());return
     xc=router._xc(portal)
-    if kind=='vod':
-        record=Reader(portal['id']).get('vod',sid)
+    if kind in ('vod','series_item'):
+        record=Reader(portal['id']).get('series' if kind=='series_item' else 'vod',sid)
+        if kind=='series_item' and not (portal.get('type')=='m3u' and record and record.get('series_flat')): record=None
         if not record:
             xbmcplugin.setResolvedUrl(router._handle,False,xbmcgui.ListItem());return
     else:
@@ -39,8 +40,16 @@ def play(router,portal):
             xbmcplugin.setResolvedUrl(router._handle,False,xbmcgui.ListItem());return
     extension=str(record.get('container_extension') or 'mkv')
     if not extension.isalnum() or len(extension)>8: extension='mkv'
-    url=xc.vod_stream_url(sid,extension) if kind=='vod' else xc.series_episode_url(sid,extension)
-    item=build_playable_item(url,title=record.get('name',''),logo='')
+    try:
+        headers={}
+        if portal.get('type')=='xtream':
+            url=xc.vod_stream_url(sid,extension) if kind=='vod' else xc.series_episode_url(sid,extension)
+        elif kind=='episode':
+            url,headers=xc.episode_uri(series_id,sid,str(record.get('season','')))
+        else: url,headers=xc.play_uri('series' if kind=='series_item' else 'vod',sid)
+        item=build_playable_item(url,title=record.get('name',''),logo='',headers=headers)
+    except (ValueError,OSError,RuntimeError):
+        xbmcplugin.setResolvedUrl(router._handle,False,xbmcgui.ListItem());return
     session={k:str(record[k]) for k in ('series_id','season','episode') if k in record}
     session.update(pid=str(portal['id']),kind=kind,sid=sid,nonce=uuid.uuid4().hex,at=time.time(),
                    resume=router._params.get('resume')=='1')
@@ -62,7 +71,7 @@ def poll(player=None,now=None):
     try:
         raw=xbmcgui.Window(10000).getProperty(PROPERTY)
         session=json.loads(raw) if raw and len(raw)<4096 else {}
-        valid=(isinstance(session,dict) and session.get('kind') in ('vod','episode') and
+        valid=(isinstance(session,dict) and session.get('kind') in ('vod','episode','series_item') and
                all(session.get(k) for k in ('nonce','pid','sid')) and
                0<=time.time()-float(session.get('at',0))<86400 and player.isPlayingVideo() and
                player.getVideoInfoTag().getUniqueID(UNIQUE_ID)==session['nonce'])

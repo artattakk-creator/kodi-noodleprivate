@@ -87,6 +87,7 @@ def settings(router, portal, section=''):
         add(tr(32428),'refresh_epg')
         add(tr(32429),'settings')
     elif section=='groups':
+        if portal and portal.get('type')=='m3u': add(tr(32746),'playlist_editor')
         add(tr(32430),'groups_manager')
         add(tr(32431),'favourites')
         add(tr(32432),'media_favourites',kind='vod')

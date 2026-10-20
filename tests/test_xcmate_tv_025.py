@@ -111,7 +111,8 @@ class SnapshotTests(unittest.TestCase):
         logos=types.ModuleType('logo_cache')
         logos.request=mock.Mock()
         patch=mock.patch.dict(sys.modules,dict(epg=epg,epg_sources=sources,epg_status=status,
-            epg_views=self.v,xbmcgui=gui,logo_cache=logos))
+            epg_views=self.v,xbmcgui=gui,logo_cache=logos,
+            guide_store=types.SimpleNamespace(events=mock.Mock(return_value=([],0)))))
         patch.start();self.addCleanup(patch.stop)
         self.d=module('tv025_data','tv_data.py')
         self.client=types.SimpleNamespace(_get_json=mock.Mock(return_value={}))

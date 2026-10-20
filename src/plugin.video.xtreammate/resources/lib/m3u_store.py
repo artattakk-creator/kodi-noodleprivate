@@ -250,10 +250,10 @@ def add(filename,name,gid,url,logo='',epg=''):
     return sid
 
 
-def duplicates(filename):
+def duplicates(filename,limit=1000,offset=0):
     db=connect(filename)
     try:
-        return [dict(r) for r in db.execute('SELECT url,min(name) name,count(*) n FROM ('+VIEW+') WHERE deleted=0 GROUP BY url HAVING count(*)>1')]
+        return [dict(r) for r in db.execute('SELECT url,min(name) name,count(*) n FROM ('+VIEW+') WHERE deleted=0 GROUP BY url HAVING count(*)>1 LIMIT ? OFFSET ?',(max(1,min(1000,int(limit))),max(0,int(offset))))]
     finally: db.close()
 
 

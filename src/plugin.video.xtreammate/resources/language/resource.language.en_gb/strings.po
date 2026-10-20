@@ -1752,3 +1752,311 @@ msgstr "Continue watching"
 msgctxt "#32669"
 msgid "No unfinished titles"
 msgstr "No unfinished titles"
+
+msgctxt "#32700"
+msgid "Setup · select categories"
+msgstr "Setup · select categories"
+
+msgctxt "#32701"
+msgid "Live TV"
+msgstr "Live TV"
+
+msgctxt "#32702"
+msgid "Movies"
+msgstr "Movies"
+
+msgctxt "#32703"
+msgid "Series"
+msgstr "Series"
+
+msgctxt "#32704"
+msgid "Select all"
+msgstr "Select all"
+
+msgctxt "#32705"
+msgid "Select none"
+msgstr "Select none"
+
+msgctxt "#32706"
+msgid "EPG sources"
+msgstr "EPG sources"
+
+msgctxt "#32707"
+msgid "Next"
+msgstr "Next"
+
+msgctxt "#32708"
+msgid "Cancel"
+msgstr "Cancel"
+
+msgctxt "#32709"
+msgid "Save"
+msgstr "Save"
+
+msgctxt "#32710"
+msgid "Back"
+msgstr "Back"
+
+msgctxt "#32711"
+msgid "Checking connection and categories…"
+msgstr "Checking connection and categories…"
+
+msgctxt "#32712"
+msgid "Only selected categories will be imported. Menu: assign M3U group type."
+msgstr "Only selected categories will be imported. Menu: assign M3U group type."
+
+msgctxt "#32713"
+msgid "Importing selected content…"
+msgstr "Importing selected content…"
+
+msgctxt "#32714"
+msgid "Confirmed: {0} channels · {1} movies · {2} series · {3} programmes"
+msgstr "Confirmed: {0} channels · {1} movies · {2} series · {3} programmes"
+
+msgctxt "#32715"
+msgid "Import failed ({0}). Existing accounts are retained."
+msgstr "Import failed ({0}). Existing accounts are retained."
+
+msgctxt "#32716"
+msgid "Saving private working copy…"
+msgstr "Saving private working copy…"
+
+msgctxt "#32717"
+msgid "Provider XMLTV (only if available)"
+msgstr "Provider XMLTV (only if available)"
+
+msgctxt "#32718"
+msgid "Configured XMLTV address"
+msgstr "Configured XMLTV address"
+
+msgctxt "#32719"
+msgid "Add XMLTV URL"
+msgstr "Add XMLTV URL"
+
+msgctxt "#32720"
+msgid "No EPG source selected"
+msgstr "No EPG source selected"
+
+msgctxt "#32721"
+msgid "Working copy · Playlist editor"
+msgstr "Working copy · Playlist editor"
+
+msgctxt "#32722"
+msgid "Search"
+msgstr "Search"
+
+msgctxt "#32723"
+msgid "Groups"
+msgstr "Groups"
+
+msgctxt "#32724"
+msgid "Add channel"
+msgstr "Add channel"
+
+msgctxt "#32725"
+msgid "Duplicates"
+msgstr "Duplicates"
+
+msgctxt "#32726"
+msgid "Export"
+msgstr "Export"
+
+msgctxt "#32727"
+msgid "Rename"
+msgstr "Rename"
+
+msgctxt "#32728"
+msgid "Assign group"
+msgstr "Assign group"
+
+msgctxt "#32729"
+msgid "Logo URL"
+msgstr "Logo URL"
+
+msgctxt "#32730"
+msgid "EPG ID (tvg-id)"
+msgstr "EPG ID (tvg-id)"
+
+msgctxt "#32731"
+msgid "Enable / disable"
+msgstr "Enable / disable"
+
+msgctxt "#32732"
+msgid "Move up"
+msgstr "Move up"
+
+msgctxt "#32733"
+msgid "Move down"
+msgstr "Move down"
+
+msgctxt "#32734"
+msgid "Remove"
+msgstr "Remove"
+
+msgctxt "#32735"
+msgid "Create group"
+msgstr "Create group"
+
+msgctxt "#32736"
+msgid "Group type"
+msgstr "Group type"
+
+msgctxt "#32737"
+msgid "Stream URL"
+msgstr "Stream URL"
+
+msgctxt "#32738"
+msgid "Name"
+msgstr "Name"
+
+msgctxt "#32739"
+msgid "Export destination folder"
+msgstr "Export destination folder"
+
+msgctxt "#32740"
+msgid "Export filename (.m3u8)"
+msgstr "Export filename (.m3u8)"
+
+msgctxt "#32741"
+msgid "Overwrite existing export?"
+msgstr "Overwrite existing export?"
+
+msgctxt "#32742"
+msgid "Completed"
+msgstr "Completed"
+
+msgctxt "#32743"
+msgid "Failed ({0})"
+msgstr "Failed ({0})"
+
+msgctxt "#32744"
+msgid "No season or episode metadata. Play this playlist entry."
+msgstr "No season or episode metadata. Play this playlist entry."
+
+msgctxt "#32745"
+msgid "Play entry"
+msgstr "Play entry"
+
+msgctxt "#32746"
+msgid "Playlist editor"
+msgstr "Playlist editor"
+
+msgctxt "#32747"
+msgid "More…"
+msgstr "More…"
+
+msgctxt "#32748"
+msgid "EPG transfer and stored programmes"
+msgstr "EPG transfer and stored programmes"
+
+msgctxt "#32749"
+msgid "Choose a group first."
+msgstr "Choose a group first."
+
+msgctxt "#32750"
+msgid "The source playlist cannot be overwritten here."
+msgstr "The source playlist cannot be overwritten here."
+
+msgctxt "#32751"
+msgid "Remove this entry from the working copy?"
+msgstr "Remove this entry from the working copy?"
+
+msgctxt "#32752"
+msgid "EPG source failures: {0}; media remains usable."
+msgstr "EPG source failures: {0}; media remains usable."
+
+msgctxt "#32753"
+msgid "Source"
+msgstr "Source"
+
+msgctxt "#32754"
+msgid "Channels {0}–{1} · {2} displayed"
+msgstr "Channels {0}–{1} · {2} displayed"
+
+msgctxt "#32755"
+msgid "Library projection is updating in the background."
+msgstr "Library projection is updating in the background."
+
+msgctxt "#32756"
+msgid "Previous entries"
+msgstr "Previous entries"
+
+msgctxt "#32757"
+msgid "Next entries"
+msgstr "Next entries"
+
+msgctxt "#32758"
+msgid "No extra authentication options supplied"
+msgstr "No extra authentication options supplied"
+
+msgctxt "#32759"
+msgid "Optional serial number (blank: provider default)"
+msgstr "Optional serial number (blank: provider default)"
+
+msgctxt "#32760"
+msgid "Optional device ID (blank: provider default)"
+msgstr "Optional device ID (blank: provider default)"
+
+msgctxt "#32761"
+msgid "Stalker portal (MAC)"
+msgstr "Stalker portal (MAC)"
+
+msgctxt "#32762"
+msgid "M3U file (local / USB / network)"
+msgstr "M3U file (local / USB / network)"
+
+msgctxt "#32763"
+msgid "M3U playlist URL"
+msgstr "M3U playlist URL"
+
+msgctxt "#32764"
+msgid "Xtream server URL (including port)"
+msgstr "Xtream server URL (including port)"
+
+msgctxt "#32765"
+msgid "Username"
+msgstr "Username"
+
+msgctxt "#32766"
+msgid "Password"
+msgstr "Password"
+
+msgctxt "#32767"
+msgid "Optional XMLTV URL"
+msgstr "Optional XMLTV URL"
+
+msgctxt "#32768"
+msgid "Select M3U file"
+msgstr "Select M3U file"
+
+msgctxt "#32769"
+msgid "Stalker portal URL"
+msgstr "Stalker portal URL"
+
+msgctxt "#32770"
+msgid "Stalker MAC address"
+msgstr "Stalker MAC address"
+
+msgctxt "#32771"
+msgid "Add connection"
+msgstr "Add connection"
+
+msgctxt "#32772"
+msgid "Playlist name"
+msgstr "Playlist name"
+
+msgctxt "#32773"
+msgid "Playlist analysed: {0} entries"
+msgstr "Playlist analysed: {0} entries"
+
+msgctxt "#32774"
+msgid "Category {0}/{1} · received {2} · confirmed stored {3}"
+msgstr "Category {0}/{1} · received {2} · confirmed stored {3}"
+
+msgctxt "#32775"
+msgid "The provider supplied no usable season/episode metadata."
+msgstr "The provider supplied no usable season/episode metadata."
+
+msgctxt "#32776"
+msgid "First 1000 duplicate groups"
+msgstr "First 1000 duplicate groups"

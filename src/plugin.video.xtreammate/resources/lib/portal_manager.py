@@ -101,34 +101,8 @@ def _portal_menu(p: dict):
                 notify(_L(32012), _L(32084, name))
                 break
 def _wizard_add():
-    dlg  = xbmcgui.Dialog()
-    data = {}
-
-    name = dlg.input(_L(32061), defaultt=_L(32090),
-                     type=xbmcgui.INPUT_ALPHANUM)
-    if not name:
-        return
-    data['name'] = name
-
-    type_idx = dlg.select(_L(32062), PORTAL_LABELS)
-    if type_idx < 0:
-        return
-    data['type'] = PORTAL_TYPES[type_idx]
-
-    if not _fill_type_fields(dlg, data):
-        return
-
-    epg = dlg.input(_L(32072),
-                    type=xbmcgui.INPUT_ALPHANUM)
-    data['epg_url'] = epg or ''
-
-    data['epg_show'] = dlg.yesno(_L(32093), _L(32094))
-
-    summary = _build_summary(data)
-    if dlg.yesno(_L(32060), summary + f'\n\n{_L(32073)}'):
-        portal = add(data)
-        notify(_L(32012), _L(32083, portal['name']))
-        xbmc.executebuiltin('Container.Refresh')
+    from setup_wizard import setup
+    return setup()
 
 def _wizard_edit(p: dict) -> bool:
     dlg = xbmcgui.Dialog()

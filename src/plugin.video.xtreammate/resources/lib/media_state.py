@@ -65,7 +65,7 @@ def progress(pid,kind,sid,series_id='',season=''):
 
 
 def save_progress(session,position,duration):
-    if session.get('kind') not in ('vod','episode'): return False
+    if session.get('kind') not in ('vod','episode','series_item'): return False
     if session['kind']=='episode' and not all(k in session for k in ('series_id','season')): return False
     if not all(isinstance(v,(float,int)) and math.isfinite(v) for v in (position,duration)): return False
     if position<60 or duration<60 or position>duration+2: return False
@@ -113,6 +113,7 @@ def rail_items(pid,kind,reader,rail='favourites'):
             fields=json.loads(ident)
             if fields[0]!=str(pid) or not resume_position(value): continue
             if kind=='vod' and fields[1]=='vod': ids.append(fields[2])
+            elif kind=='series' and fields[1]=='series_item': ids.append(fields[2])
             elif kind=='series' and fields[1]=='episode' and len(fields)==5: ids.append(fields[2])
     rows=[];db=_db()
     try:

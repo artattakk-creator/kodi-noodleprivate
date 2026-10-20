@@ -237,27 +237,6 @@ def load_m3u(url_or_path: str, portal_id: str = '',
         error('load_m3u: empty URL/path')
         return []
 
-    if portal_id and url_or_path.startswith('http'):
-        try:
-            from portals import detect_xtream, update as portal_update, get_by_id
-            xc = detect_xtream(url_or_path)
-            if xc:
-                p = get_by_id(portal_id)
-                if p and p.get('type') == 'm3u':
-                    info(f'load_m3u: Xtream detected for portal {portal_id}, auto-upgrading')
-                    portal_update(portal_id, {
-                        'type'    : 'xtream',
-                        'xc_host' : xc['xc_host'],
-                        'xc_user' : xc['xc_user'],
-                        'xc_pass' : xc['xc_pass'],
-                        'm3u_url' : '',
-                    })
-                    from xtream import XtreamClient
-                    xc_client = XtreamClient(xc['xc_host'], xc['xc_user'], xc['xc_pass'])
-                    return xc_client.get_live_streams()
-        except Exception as _e:
-            error(f'load_m3u xtream auto-upgrade failed: {_e}')
-
     use_cache   = setting_bool('cache_playlists', True)
     cache_hours = 24
     ck = cache_key((portal_id or '') + url_or_path)

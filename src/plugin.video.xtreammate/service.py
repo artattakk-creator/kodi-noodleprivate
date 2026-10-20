@@ -289,6 +289,9 @@ class IPTVMasterService(xbmc.Monitor):
                                 candidate=start_navigator(self._last_session_nonce)
                             else:
                                 candidate=start_if_eligible(self._last_session_nonce)
+                                if candidate is None:
+                                    from source_live import start_if_eligible as source_navigator
+                                    candidate=source_navigator(self._last_session_nonce)
                         if candidate is not None:
                             try:
                                 if not self._remote_keymap_checked:

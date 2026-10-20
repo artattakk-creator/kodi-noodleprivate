@@ -1,3 +1,11 @@
+0.1.29.2 – Universeller Setup-Assistent und private Playlist-Bearbeitung (Testkandidat)
+- Kategorien vor selektivem Scan, private Zwischenablage und explizites Speichern.
+- Gemeinsame Quellenadapter/Medienansichten für Xtream, M3U und Stalker.
+- Persistenter M3U-Editor mit Overrides, Gruppenzuordnung, Reihenfolge und Export.
+- EPG aus dauerhafter SQLite für sichtbare Sender nachladen; Quellen bleiben opt-in.
+- Nicht-Xtream-Live-Navigation mit geprüften Item-Tags und asynchroner Linkauflösung.
+- Keine automatische M3U-Konvertierung, kein Main-Merge/Release; Android-Abnahme offen.
+
 0.1.29.1 – Aktive Gruppen und kontinuierliche Senderliste (Testkandidat)
 - Live-Gruppen ohne AN/AUS; Menü öffnet Checkbox-Verwaltung ohne Providerzugriff.
 - Durchgehendes Scrollen über interne 100er-Fenster, keine sichtbaren Seiteneinträge.
