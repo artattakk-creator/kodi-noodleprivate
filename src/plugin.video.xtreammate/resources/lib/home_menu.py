@@ -1,5 +1,6 @@
 """Additive 0.1.27 navigation. Existing playback/settings actions stay valid."""
 from localization import tr
+from boot_diagnostics import phase
 import os
 import uuid
 
@@ -20,8 +21,10 @@ def active_portal(portals, preferred=''):
     return next((p for p in active if str(p['id'])==chosen), active[0] if active else None)
 
 
+@phase('HOME_MENU')
 def show(router, portal):
     import xbmcplugin
+    from boot_diagnostics import finish_directory
     import xbmcaddon
     path=xbmcaddon.Addon().getAddonInfo('path')
     xbmcplugin.setPluginCategory(router._handle,'XCMate · '+portal.get('name',''))
@@ -31,7 +34,7 @@ def show(router, portal):
         router._add_dir(label,router.url(action=action,pid=portal['id']),
                         icon=os.path.join(path,'resources','media',icon),
                         plot=(tr(32415) if action=='settings_home' else label))
-    xbmcplugin.endOfDirectory(router._handle,cacheToDisc=False)
+    finish_directory(router,cacheToDisc=False)
 
 
 def probe_directory(folder, vfs):
@@ -55,6 +58,7 @@ def probe_directory(folder, vfs):
 
 def settings(router, portal, section=''):
     import xbmc, xbmcgui, xbmcplugin, xbmcaddon
+    from boot_diagnostics import finish_directory
     pid=portal['id'] if portal else ''
     def add(label,action,**params):
         router._add_dir(label,router.url(action=action,pid=pid,**params))
@@ -83,6 +87,7 @@ def settings(router, portal, section=''):
         add(tr(32428),'refresh_epg')
         add(tr(32429),'settings')
     elif section=='groups':
+        if portal and portal.get('type')=='m3u': add(tr(32746),'playlist_editor')
         add(tr(32430),'groups_manager')
         add(tr(32431),'favourites')
         add(tr(32432),'media_favourites',kind='vod')
@@ -94,6 +99,8 @@ def settings(router, portal, section=''):
     elif section=='player':
         add(tr(32437),'settings')
     elif section=='storage':
+        add(tr(32661),'art_status')
+        add(tr(32662),'art_retry')
         add(tr(32438),'recording_folder')
         add(tr(32439),'recording_folder',check='1')
         add(tr(32440),'settings')
@@ -114,7 +121,7 @@ def settings(router, portal, section=''):
             add(label,action)
     elif section=='about':
         add(tr(32454),'about_xcmate')
-    xbmcplugin.endOfDirectory(router._handle,cacheToDisc=False)
+    finish_directory(router,cacheToDisc=False)
 
 
 def recording_folder(check_only=False):

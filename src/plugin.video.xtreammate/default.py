@@ -9,28 +9,36 @@ if LIB_PATH not in sys.path:
 
 
 def run():
+    from boot_diagnostics import phase, mark, finish_directory
+    mark('ENTRY')
+    router = None
     try:
-        from main import Router
-        Router(sys.argv).dispatch()
+        with phase('MAIN_IMPORT'):
+            from main import Router
+        with phase('ROUTER_INIT'):
+            router = Router(sys.argv)
+        with phase('DISPATCH'):
+            router.dispatch()
     except Exception as exc:
         # Kodi otherwise leaves an endless spinner on unhandled plugin errors.
-        import traceback
-        import xbmc
         import xbmcgui
-        import xbmcplugin
-        xbmc.log('[XCMate] FATAL (credentials not logged): ' +
-                 ''.join(traceback.format_tb(exc.__traceback__)), xbmc.LOGERROR)
+        mark('START_FAILED', error=type(exc).__name__)
         try:
-            handle = int(sys.argv[1])
-            if handle >= 0:
-                xbmcplugin.endOfDirectory(handle, succeeded=False,
-                                          cacheToDisc=False)
+            if router is None:
+                # The main import/constructor may have failed before a Router
+                # existed. Do not import main again to report that failure.
+                from types import SimpleNamespace
+                router = SimpleNamespace(_handle=int(sys.argv[1]))
+            finish_directory(router, succeeded=False, cacheToDisc=False)
         except Exception:
             pass
-        xbmcgui.Dialog().ok(
-            'XCMate – Startfehler',
-            '{}. Bitte Kodi-Protokoll prüfen. Deine Senderdaten bleiben erhalten.'.format(
-                type(exc).__name__))
+        # Non-modal: an error in a widget must not open a blocking OK dialog.
+        try:
+            xbmcgui.Dialog().notification(
+                'XCMate – Startfehler',
+                'BOOT START_FAILED. Bitte Kodi-Protokoll prüfen. Daten bleiben erhalten.')
+        except Exception:
+            pass
 
 
 if __name__ == '__main__':

@@ -13,11 +13,14 @@ def refresh_local():
     from xtream import XtreamClient
     from library_index import refresh
     for portal in get_active():
-        if portal.get('type')!='xtream': continue
+        if portal.get('type') not in ('xtream','m3u','stb'): continue
         if time.monotonic()<_retry_after.get(portal['id'],0): continue
         try:
-            client=XtreamClient(portal['xc_host'],portal['xc_user'],portal['xc_pass'])
-            if not hasattr(client,'iter_catalog'):
+            if portal['type']=='xtream': client=XtreamClient(portal['xc_host'],portal['xc_user'],portal['xc_pass'])
+            else:
+                from source_adapters import for_portal
+                client=for_portal(portal)
+            if portal['type']=='xtream' and not hasattr(client,'iter_catalog'):
                 refresh(portal,client)
             elif portal['id'] not in _bootstrapped:
                 from catalog_sync import request
@@ -55,6 +58,10 @@ def _run():
         # Optional guide/art preparation may fail independently. It must not
         # starve an otherwise valid movie/series sync request.
         try: refresh_local()
+        except Exception: pass
+        try:
+            from art_store import prefetch_selected
+            prefetch_selected()
         except Exception: pass
         try:
             from startup_preload import prepare

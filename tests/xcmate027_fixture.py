@@ -43,7 +43,7 @@ class Control:
 
 
 class WindowXML:
-    def __init__(self,xmlFilename,scriptPath,defaultSkin='Default',defaultRes='720p'):
+    def __init__(self,xmlFilename,scriptPath,defaultSkin='Default',defaultRes='720p',isMedia=False):
         self.tree=ET.parse(Path(scriptPath)/'resources/skins'/defaultSkin/defaultRes/xmlFilename).getroot()
         self.controls={int(n.get('id')):Control(n) for n in self.tree.findall('./controls/control') if n.get('id')}
         self.focus=int(self.tree.findtext('defaultcontrol'));self.shown=False
@@ -70,7 +70,7 @@ class WindowXML:
                 if 0<=target<len(c.items): c.selected=target
             else:
                 target=int(c.node.findtext('on'+direction,str(focus)))
-                if target in self.controls and self.controls[target].visible: self.setFocusId(target)
+                if target in self.controls and self.controls[target].visible: WindowXML.setFocusId(self,target)
         self.onAction(types.SimpleNamespace(getId=lambda:key,getButtonCode=lambda:0))
 
 
@@ -141,6 +141,7 @@ class Fixture:
             yesno=mock.Mock(return_value=False),ok=mock.Mock(),notification=mock.Mock(),textviewer=mock.Mock())
         gui.Dialog=lambda:self.dialog
         xbmc=types.ModuleType('xbmc');xbmc.executebuiltin=self.builtins.append
+        xbmc.Player=lambda:types.SimpleNamespace(isPlayingVideo=lambda:False)
         xbmc.getCondVisibility=lambda c:c=='System.HasAddon(plugin.video.youtube)' or c=='Player.SeekEnabled'
         plugin=types.ModuleType('xbmcplugin');plugin.setContent=mock.Mock();plugin.setPluginCategory=mock.Mock()
         plugin.endOfDirectory=lambda *a,**kw:self.ends.append((a,kw))

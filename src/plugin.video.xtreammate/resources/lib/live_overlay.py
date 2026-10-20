@@ -76,16 +76,12 @@ def session_from_property(raw, now=None):
 
 
 def category_rows(categories, enabled):
-    """Pure helper: all categories including disabled are shown, sorted by source."""
-    selected = None if enabled is None else set(str(x) for x in enabled)
-    rows = [('*', 'Alle aktivierten Gruppen', True)]
-    for c in categories:
-        cid = str(c.get('category_id', ''))
-        if not cid:
-            continue
-        rows.append((cid, str(c.get('category_name', cid)),
-                     selected is None or cid in selected))
-    return rows
+    """Normal navigation contains active groups only; management keeps all."""
+    selected=None if enabled is None else set(map(str,enabled))
+    rows=[(str(c['category_id']),str(c.get('category_name') or c['category_id']),True)
+          for c in categories if c.get('category_id') not in (None,'') and (selected is None or str(c['category_id']) in selected)]
+    return [('*','Alle aktivierten Gruppen',True)]+rows if rows else [
+        ('','Keine aktiven Gruppen – Menü: Gruppen verwalten',False)]
 
 
 def channels_for_category(channels, category_id, enabled):
@@ -115,7 +111,7 @@ def adjacent_channel(channels, category_id, enabled, current_sid, step):
 class LiveNavigator(xbmcgui.WindowDialog):
     """Nonblocking WindowDialog; service.py owns and closes its lifecycle."""
 
-    def __init__(self, portal, initial_sid=''):
+    def __init__(self, portal, initial_sid='', client=None):
         super().__init__()
         from xtream import XtreamClient
         from iptv import Channel
@@ -130,7 +126,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         except (OSError, ValueError, TypeError):
             self._bindings = dict(DEFAULT)
             trace('input','PROFILE_FALLBACK')
-        self.xc = XtreamClient(portal['xc_host'], portal['xc_user'], portal['xc_pass'])
+        self.xc = client if client is not None else XtreamClient(portal['xc_host'], portal['xc_user'], portal['xc_pass'])
         self.sid = str(initial_sid)
         self._recent_sid = ''
         self._tune_deadline = 0
@@ -202,6 +198,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 extra={'category_id': cid,
                        'stream_id': str(stream['stream_id'])}))
         self.groups, self.channels = groups, channels
+        from group_selection import enabled_ids
+        self.enabled=enabled_ids(self.portal['id'],'live',groups)
         from tv_data import CatalogIndex
         self.index = CatalogIndex(channels)
         self.index.selection('*',self.enabled)
@@ -428,7 +426,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
     def _list_content(self):
         if self.mode == 'groups':
             self.rows = category_rows(self.groups,self.enabled)
-            return [('AN' if active else 'AUS')+'  '+name for _,name,active in self.rows]
+            return [name for _,name,_ in self.rows]
         if self.mode == 'guide':
             info = self._guide.get(self._guide_sid)
             self._programme_events = info['events']
@@ -443,11 +441,9 @@ class LiveNavigator(xbmcgui.WindowDialog):
         pos = min(max(pos,0),max(len(self.visible_channels)-1,0))
         self._highlight['channels'] = pos
         self._page_start = pos//CHANNEL_PAGE_SIZE*CHANNEL_PAGE_SIZE
-        self._row_offset = int(self._page_start>0)
+        self._row_offset = 0
         page = self.visible_channels[self._page_start:self._page_start+CHANNEL_PAGE_SIZE]
         labels = [c.name for c in page]
-        if self._row_offset: labels.insert(0,'Vorherige Senderseite')
-        if self._page_start+len(page)<len(self.visible_channels): labels.append('Nächste Senderseite')
         return labels or ['Senderkatalog wird vorbereitet' if not self._catalog_ready else 'Keine aktivierten Sender']
 
     def _render_rows(self):
@@ -547,12 +543,11 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 self.control.selectItem(min(max(pos,0),len(labels)-1))
             self.heading.setLabel('XCMate - '+{'channels':'LIVE-TV','groups':'SENDERGRUPPEN','guide':'PROGRAMM'}[self.mode])
             if self.mode=='channels':
-                self.sub.setLabel('{} Sender - Seite {}/{}'.format(len(self.visible_channels),self._page_start//100+1,
-                    max(1,(len(self.visible_channels)+99)//100)))
+                self.sub.setLabel('{} Sender'.format(len(self.visible_channels)))
             elif self.mode=='guide':
                 ch=self.index.by_sid.get(self._guide_sid)
                 self.sub.setLabel(ch.name if ch else 'Programmübersicht')
-            else: self.sub.setLabel('OK: öffnen    Menü: Gruppe ein/aus')
+            else: self.sub.setLabel('OK: öffnen    Menü: Gruppen verwalten')
             self.footer.setLabel('OK: auswählen    Links: Gruppen    Zurück: TV')
             self._render_rows()
             target = self.control
@@ -582,6 +577,9 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self.tick()
 
     def _position(self, step):
+        if self.mode=='channels':
+            self._move_channels(step)
+            return
         count = self.control.size()
         if count > 0:
             i = min(max(self.control.getSelectedPosition() + step, 0), count - 1)
@@ -599,14 +597,23 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 return
         self._highlight[self.mode] = i
 
-    def _page_channels(self, step):
-        target = self._page_start + step * CHANNEL_PAGE_SIZE
-        if 0 <= target < len(self.visible_channels):
-            self._highlight[self.mode] = target
-            self._scroll_to_current = False
+    def _move_channels(self,step):
+        """Absolute position; Kodi's native list movement is never applied twice."""
+        if not self.visible_channels: return False
+        previous=self._highlight['channels']
+        target=min(max(previous+step,0),len(self.visible_channels)-1)
+        self._highlight['channels']=target
+        self._scroll_to_current=False
+        if not self._page_start<=target<self._page_start+CHANNEL_PAGE_SIZE:
             self._render()
-            return True
-        return False
+        else:
+            self.control.selectItem(target-self._page_start)
+            self._render_rows()
+        return target!=previous
+
+    def _page_channels(self, step):
+        if len(self.visible_channels)<=CHANNEL_PAGE_SIZE: return False
+        return self._move_channels(step*CHANNEL_PAGE_SIZE)
 
     def _switch(self, mode):
         self.mode = mode
@@ -614,26 +621,17 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self._render()
 
     def _toggle(self):
-        from group_selection import save
-        if self.mode != 'groups':
-            return
-        pos = self.control.getSelectedPosition()
-        if pos < 1 or pos >= len(self.rows):
-            return
-        cid = self.rows[pos][0]
-        all_ids = {str(c.get('category_id')) for c in self.groups}
-        if self.enabled is None:
-            self.enabled = all_ids
-        else:
-            self.enabled = set(self.enabled)
-        if cid in self.enabled:
-            self.enabled.remove(cid)
-        else:
-            self.enabled.add(cid)
-        save(self.portal['id'], self.enabled)
-        self._highlight['groups'] = pos
-        if self.category_id != '*' and self.category_id not in self.enabled:
-            self.category_id = '*'
+        """Menu opens explicit checkbox management, never toggles a nav row."""
+        if self.mode!='groups': return
+        from group_selection import choose_groups,enabled_ids
+        if not choose_groups(self.portal,'live',categories=self.groups,allow_refresh=False): return
+        self.enabled=enabled_ids(self.portal['id'],'live',self.groups)
+        self._load_catalog_from_disk()
+        if self.category_id!='*' and self.category_id not in self.enabled: self.category_id='*'
+        self._highlight['groups']=0
+        self._highlight['channels']=0
+        self._scroll_to_current=False
+        self._list_key=None
         self._render()
 
     def _select(self):
@@ -641,8 +639,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             i = self.control.getSelectedPosition()
             if 0 <= i < len(self.rows):
                 cid, _, active = self.rows[i]
-                if cid != '*' and not active:
-                    self._toggle()
+                if not active: return
                 self.category_id = cid
                 self._scroll_to_current = False
                 self._highlight['channels'] = 0
@@ -654,13 +651,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 xbmcgui.Dialog().textviewer('XCMate - '+event['title'],event.get('description') or 'Keine Beschreibung vorhanden.')
         elif self.mode == 'channels':
             row = self.control.getSelectedPosition()
-            if self._row_offset and row == 0:
-                self._page_channels(-1)
-                return
             i = self._page_start + row - self._row_offset
-            if i == self._page_start + CHANNEL_PAGE_SIZE:
-                self._page_channels(1)
-                return
             if 0 <= i < len(self.visible_channels):
                 c = self.visible_channels[i]
                 self._highlight[self.mode] = i
@@ -929,7 +920,11 @@ class LiveNavigator(xbmcgui.WindowDialog):
             mapped = 'left'
         elif key in (ACTION_UP, ACTION_DOWN, ACTION_PAGE_UP, ACTION_PAGE_DOWN) and self.mode in ('channels', 'guide', 'groups'):
             # CGUIControlList already applied this action before onAction.
-            if key in (ACTION_PAGE_UP, ACTION_PAGE_DOWN) and self.mode == 'channels':
+            if key in (ACTION_UP,ACTION_DOWN) and self.mode=='channels':
+                self._move_channels(-1 if key==ACTION_UP else 1)
+                self._input_trace('NATIVE_LIST_MOVED','native',action_id=key,button_code=raw)
+                return
+            elif key in (ACTION_PAGE_UP, ACTION_PAGE_DOWN) and self.mode == 'channels':
                 if not self._page_channels(-1 if key == ACTION_PAGE_UP else 1):
                     self._remember_position()
             else:

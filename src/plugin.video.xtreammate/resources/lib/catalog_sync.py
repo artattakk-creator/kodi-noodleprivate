@@ -26,7 +26,11 @@ def run_next(cancel=lambda:False):
             db.execute('DELETE FROM sync_requests WHERE pid=? AND kind=?',(job['pid'],job['kind']))
     finally: db.close()
     portal=get_by_id(job['pid'])
-    if not portal or not portal.get('enabled',True) or portal.get('type')!='xtream': return True
+    if not portal or not portal.get('enabled',True) or portal.get('type') not in ('xtream','m3u','stb'): return True
+    if portal['type']!='xtream':
+        from source_sync import sync_kind as sync_source
+        sync_source(portal,job['kind'],bool(job['force']),cancel,job['requested'])
+        return True
     client=XtreamClient(portal['xc_host'],portal['xc_user'],portal['xc_pass'])
     more=sync_kind(portal,client,job['kind'],job['preferred'],bool(job['force']),cancel,
                    max_groups=1,requested_at=job['requested'])

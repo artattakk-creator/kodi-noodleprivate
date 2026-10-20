@@ -1,5 +1,39 @@
 # XCMate / Codex – aktueller Projekt- und Release-Status (verbindliche Übergabe)
 
+> **VERBINDLICHER INTEGRATIONSSTAND – 20.10.2026:** Ein vollständiger **RC 0.1.29.2** für das direkte Update von **0.1.28**, keine fünf Installationen.
+> [Strukturierter Prüfbericht, Paket und Freigabeplan](INTEGRATIONSPRUEFUNG_RC_0292_DE.md) · [462/462 Integrationstests + 26/26 HTTP-/EPG-Tests](TESTERGEBNISSE_INTEGRATION_0292.json) · [Android-/Sicherungs-/Rollbackplan](ANDROID_TESTPLAN_UNIVERSAL_029_DE.md).
+> Alle fünf Draft-PRs #39/#45/#46/#47/#48 offen; #48 enthält alle Vorgänger und die gezielten QA-Fixes. **Produktiv weiter 0.1.28, kein Main-Merge/Release. Android-Abnahme offen.**
+> Frühere 448-/459-Testangaben und Paketprüfsummen sind historische Zwischenstände; für den jetzigen RC ausschließlich diesen Integrationsbericht verwenden.
+> [CI erfolgreich / Publish übersprungen](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39449616224) · [CI-RC-Artefakt](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39449616224/artifacts/12278445261).
+
+
+> **VERBINDLICHER STAND – 20.10.2026, universelle Weiterentwicklung:** Produktiv bleibt **0.1.28** (`main` `63b4cd6`).
+> Geprüfter kumulativer **Testkandidat 0.1.29.2**, **448/448 Tests + 26/26 HTTP-/EPG-Tests**, Android-Abnahme **offen**.
+> Getrennte gestapelte Draft-PRs: [A: Wiedergabestopp #45](https://github.com/artattakk-creator/kodi-noodleprivate/pull/45),
+> [B: Bilder/Favoriten/Folgen #46](https://github.com/artattakk-creator/kodi-noodleprivate/pull/46),
+> [C: aktive Gruppen/Senderliste #47](https://github.com/artattakk-creator/kodi-noodleprivate/pull/47),
+> [D: universeller Setup/Editor #48](https://github.com/artattakk-creator/kodi-noodleprivate/pull/48), vorausgesetzt [Start-Hotfix #39](https://github.com/artattakk-creator/kodi-noodleprivate/pull/39).
+> [Auftrag](CODEX_AUFTRAG_UNIVERSAL_029_DE.md) · [Bestandsanalyse/Dateiplan](ARCHITEKTUR_UNIVERSAL_029_DE.md) ·
+> [Implementierung/Grenzen](PHASE_D_UNIVERSAL_SETUP_029_DE.md) · [Testnachweise](TESTERGEBNISSE_PHASE_D_029.json) ·
+> [Android-Test, Test-ZIP und regulärer Update-/Rollbackweg](ANDROID_TESTPLAN_UNIVERSAL_029_DE.md).
+> Branch `feat/xcmate-universal-setup`; A/B/C-CI erfolgreich. [D-Prüflauf](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39438464927) zunächst gestartet; verbindliches Endergebnis im Testbericht.
+> **Kein Main-Merge, Tag, Release oder Produktivupdate.** Startup-Geräteursache #38 bleibt unbewiesen; kein Android-PASS aus Cloudtests ableiten.
+> Ältere „AKTUELL“-Abschnitte darunter sind historische Nachweise und keine heutige Versions-/Freigabeangabe.
+
+
+> **AKTUELL – P0-Start-Hotfix 0.1.28.1 (20.10.2026):** Produktiv ist **0.1.28**,
+> Main-Basis `63b4cd6`; PR #36 wurde integriert und regulär veröffentlicht.
+> [Issue #38](https://github.com/artattakk-creator/kodi-noodleprivate/issues/38): intermittierender Android-Start-Hänger,
+> nach Stopp/Cache-Leerung vorläufig erholt; **Geräteursache weiterhin unbewiesen**.
+> [Hotfix-Bericht und Paket](HOTFIX_0281_STARTUP_DE.md) · [vollständiger Auftrag](CODEX_AUFTRAG_0281_STARTUP_HOTFIX_DE.md)
+> · [Android-Test/Repository-Update/Rollback](ANDROID_TESTPLAN_0281_DE.md) · [399/399 Tests + Nachweise](TESTERGEBNISSE_0281.json).
+> [Draft-PR #39](https://github.com/artattakk-creator/kodi-noodleprivate/pull/39), [CI erfolgreich](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39416216202), [Reviewartefakt](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39416216202/artifacts/12261762240).
+> Branch `fix/xcmate-028-startup-hang`, **18 neue Starttests**, zusätzlich 26 HTTP-/EPG-Tests bestanden.
+> Test-ZIP **0.1.28.1**, 107 Dateien / 338.115 Bytes; Remote-/Live-Freeze und andere Add-ons unverändert.
+> **Kein Merge/Release; Android-Hotfix-Abnahme offen.** Design/Theme/Sprache aus Issue #37 zurückgestellt.
+> Frühere „AKTUELL“-Abschnitte unten sind historische Übergaben und keine gültige Releaseangabe.
+
+
 > **AKTUELL – Entwicklung 0.1.28 (19.10.2026):** Produktiv ist **0.1.27**, Main-Basis
 > `103646f`; PR #28 wurde übernommen. [Neuer Implementierungs-/Testbericht](IMPLEMENTIERUNG_028_PERFORMANCE_EPG_UI_DE.md)
 > · [vollständiger 0.1.28-Auftrag](CODEX_AUFTRAG_028_PERFORMANCE_EPG_UI_DE.md)

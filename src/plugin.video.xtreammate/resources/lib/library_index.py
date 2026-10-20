@@ -15,7 +15,7 @@ CATALOGS={'live':('get_live_streams','get_live_categories','stream_id'),
           'series':('get_series','get_series_categories','series_id')}
 FIELDS=('name','stream_icon','cover','movie_image','backdrop_path','plot','description',
         'year','releaseDate','genre','rating','rating_5based','duration','duration_secs',
-        'container_extension','epg_channel_id')
+        'container_extension','epg_channel_id','source_key','series_flat')
 BATCH_ROWS=256
 
 
@@ -149,9 +149,10 @@ class IndexReadError(RuntimeError):
 
 
 class Reader:
-    def __init__(self,pid,filename=None):
+    def __init__(self,pid,filename=None,timeout=2,query_seconds=None):
         self.pid,self.filename=str(pid),filename
         self._selections={}
+        self.timeout,self.query_seconds=timeout,query_seconds
 
     def _filter(self,kind):
         from group_selection import enabled_ids
@@ -162,8 +163,14 @@ class Reader:
     def _query(self,sql,args=(),kind=None):
         db=None
         try:
-            db=connect(self.filename)
+            db=connect(self.filename, timeout=self.timeout)
             if db is None: return []
+            # A large catalogue or a temporarily locked legacy database must
+            # not monopolize a skin widget/UI invocation. No partial result is
+            # published; the caller receives an explicit, retryable error.
+            if self.query_seconds is not None:
+                deadline=time.monotonic()+self.query_seconds
+                db.set_progress_handler(lambda: int(time.monotonic()>=deadline),1000)
             if 'titles' in sql and db.execute("SELECT 1 FROM sqlite_master WHERE name='readable_titles'").fetchone():
                 sql=sql.replace('FROM titles','FROM readable_titles')
             if kind is not None:
@@ -387,7 +394,7 @@ def sync_kind(portal,client,kind,preferred='',force=False,cancel=lambda:False,fi
 
 def request_sync(portal,kind,preferred='',priority=20,force=False,filename=None):
     """Small persisted intent, consumed by one service worker. No network."""
-    if kind not in CATALOGS or portal.get('type')!='xtream': return
+    if kind not in CATALOGS or portal.get('type') not in ('xtream','m3u','stb'): return
     db=connect(filename,write=True,timeout=0.05)
     try:
         with db:

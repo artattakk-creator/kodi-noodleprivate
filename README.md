@@ -1,5 +1,9 @@
 # GS Media Kodi Repository
 
+> **XCMate RC 0.1.29.2:** [vollständige Integrationsprüfung](docs/XCMate/INTEGRATIONSPRUEFUNG_RC_0292_DE.md), **462 Tests + 26 HTTP-/EPG-Tests** bestanden. Ein direktes Update von 0.1.28, Android-Abnahme offen; kein Merge/Release.
+
+> **XCMate-Testentwicklung 20.10.2026:** Produktiv bleibt **0.1.28**. Getrennte Draft-PRs [#45](https://github.com/artattakk-creator/kodi-noodleprivate/pull/45), [#46](https://github.com/artattakk-creator/kodi-noodleprivate/pull/46), [#47](https://github.com/artattakk-creator/kodi-noodleprivate/pull/47), [#48](https://github.com/artattakk-creator/kodi-noodleprivate/pull/48), auf Start-Hotfix #39. Kandidat **0.1.29.2**, 447 Tests + 26 HTTP-/EPG-Tests bestanden; **Android-Abnahme offen, kein Merge/Release**. [Zentrale Übergabe](docs/XCMate/CODEX_STATUS_CURRENT_DE.md) · [Test-ZIP/Android-/Updateplan](docs/XCMate/ANDROID_TESTPLAN_UNIVERSAL_029_DE.md).
+
 Public Kodi repository for GS Media's own add-ons, plugins, scripts and services.
 
 **Repository add-on ID:** `repository.gsmedia`  
@@ -12,7 +16,11 @@ Die aktuellen Projektdokumente für XCMate sind unter **[docs/XCMate/README.md](
 
 **Wichtig:** Die neue Serienfortschrittsfunktion und die konfigurierbaren Grauton-/Akzent-Themes sind am 14.10.2026 spezifiziert, nicht bereits veröffentlicht. Die Android-Gerätefehler beim Startsender und der Vollbild-Fernbedienung bleiben bis zum praktischen Gegenbeweis offen.
 
-**Aktuelle XCMate-Entwicklung:** [Entwurfs-PR #18](https://github.com/artattakk-creator/kodi-noodleprivate/pull/18), GitHub-CI erfolgreich.  [0.1.25-Testkandidat, EPG und Android-Testplan](docs/XCMate/IMPLEMENTIERUNG_025_TV_INFOBAR_EPG_DE.md): erstes OK Senderinfo, zweites OK/Runter Bedienung, schnelle lokale Senderliste und echte EPG-/Quellenvorschau. 237 lokale Tests bestanden. **Kein Merge/Produktiv-Release, Android-Abnahme offen; produktiv bleibt 0.1.24.**
+**Aktuelle XCMate-Entwicklung (20.10.2026):** Produktiv **0.1.28**.
+[Start-Hotfix 0.1.28.1 / Issue #38](docs/XCMate/HOTFIX_0281_STARTUP_DE.md):
+399 Tests bestanden, instrumentierter Start, sichere Portaldateien und begrenzte Widget-Abfragen.
+Testkandidat auf separatem Branch; **keine Veröffentlichung vor Review und Android-Abnahme**.
+[Testinstallation und regulärer Updateweg](docs/XCMate/ANDROID_TESTPLAN_0281_DE.md).
 
 ## Installation
 
@@ -26,7 +34,7 @@ If GitHub Pages is enabled (main/(root)), Kodi's optional HTTPS source is `https
 ## Available add-ons
 
 - `plugin.video.noodleprivate` – video lists, search, playback, named favorites, home screen widgets.
-- `plugin.video.xtreammate` – XCMate 0.1.2, setup wizard, persistent Xtream groups, reversible fullscreen TV remote mapping, startup channel and group, and up/down channel zapping.
+- `plugin.video.xtreammate` – XCMate 0.1.28, setup wizard, persistent Xtream groups, reversible fullscreen TV remote mapping, startup channel and group, and up/down channel zapping.
 
 ## Maintaining multiple add-ons
 

@@ -1712,3 +1712,351 @@ msgstr "Verbindungszeit überschritten. Sender zum Wiederholen erneut wählen."
 msgctxt "#32649"
 msgid "Live"
 msgstr "Live"
+
+msgctxt "#32660"
+msgid "Artwork storage budget (MiB)"
+msgstr "Bildspeicherbudget (MiB)"
+
+msgctxt "#32661"
+msgid "Artwork storage status"
+msgstr "Bildspeicherstatus"
+
+msgctxt "#32662"
+msgid "Retry failed artwork downloads"
+msgstr "Fehlgeschlagene Bilder erneut laden"
+
+msgctxt "#32663"
+msgid "Recently added"
+msgstr "Neu hinzugefügt"
+
+msgctxt "#32664"
+msgid "My favourites"
+msgstr "Meine Favoriten"
+
+msgctxt "#32665"
+msgid "No favourites yet"
+msgstr "Noch keine Favoriten"
+
+msgctxt "#32666"
+msgid "Saved favourite (metadata unavailable)"
+msgstr "Gespeicherter Favorit (Metadaten nicht verfügbar)"
+
+msgctxt "#32667"
+msgid "This title is currently unavailable in the selected catalogue."
+msgstr "Dieser Titel ist im ausgewählten Katalog derzeit nicht verfügbar."
+
+msgctxt "#32668"
+msgid "Continue watching"
+msgstr "Weiter ansehen"
+
+msgctxt "#32669"
+msgid "No unfinished titles"
+msgstr "Keine begonnenen Titel"
+
+msgctxt "#32700"
+msgid "Setup · select categories"
+msgstr "Einrichtung · Kategorien auswählen"
+
+msgctxt "#32701"
+msgid "Live TV"
+msgstr "Live-TV"
+
+msgctxt "#32702"
+msgid "Movies"
+msgstr "Filme"
+
+msgctxt "#32703"
+msgid "Series"
+msgstr "Serien"
+
+msgctxt "#32704"
+msgid "Select all"
+msgstr "Alle auswählen"
+
+msgctxt "#32705"
+msgid "Select none"
+msgstr "Keine auswählen"
+
+msgctxt "#32706"
+msgid "EPG sources"
+msgstr "EPG-Quellen"
+
+msgctxt "#32707"
+msgid "Next"
+msgstr "Weiter"
+
+msgctxt "#32708"
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgctxt "#32709"
+msgid "Save"
+msgstr "Speichern"
+
+msgctxt "#32710"
+msgid "Back"
+msgstr "Zurück"
+
+msgctxt "#32711"
+msgid "Checking connection and categories…"
+msgstr "Verbindung und Kategorien werden geprüft …"
+
+msgctxt "#32712"
+msgid "Only selected categories will be imported. Menu: assign M3U group type."
+msgstr "Nur ausgewählte Kategorien werden importiert. Menü: M3U-Gruppenart zuordnen."
+
+msgctxt "#32713"
+msgid "Importing selected content…"
+msgstr "Ausgewählte Inhalte werden importiert …"
+
+msgctxt "#32714"
+msgid "Confirmed: {0} channels · {1} movies · {2} series · {3} programmes"
+msgstr "Bestätigt: {0} Sender · {1} Filme · {2} Serien · {3} Sendungen"
+
+msgctxt "#32715"
+msgid "Import failed ({0}). Existing accounts are retained."
+msgstr "Import fehlgeschlagen ({0}). Bestehende Accounts bleiben erhalten."
+
+msgctxt "#32716"
+msgid "Saving private working copy…"
+msgstr "Private Arbeitskopie wird gespeichert …"
+
+msgctxt "#32717"
+msgid "Provider XMLTV (only if available)"
+msgstr "Anbieter-XMLTV (sofern verfügbar)"
+
+msgctxt "#32718"
+msgid "Configured XMLTV address"
+msgstr "Eingegebene XMLTV-Adresse"
+
+msgctxt "#32719"
+msgid "Add XMLTV URL"
+msgstr "XMLTV-URL hinzufügen"
+
+msgctxt "#32720"
+msgid "No EPG source selected"
+msgstr "Keine EPG-Quelle ausgewählt"
+
+msgctxt "#32721"
+msgid "Working copy · Playlist editor"
+msgstr "Arbeitskopie · Playlist-Editor"
+
+msgctxt "#32722"
+msgid "Search"
+msgstr "Suchen"
+
+msgctxt "#32723"
+msgid "Groups"
+msgstr "Gruppen"
+
+msgctxt "#32724"
+msgid "Add channel"
+msgstr "Sender hinzufügen"
+
+msgctxt "#32725"
+msgid "Duplicates"
+msgstr "Doppelte Einträge"
+
+msgctxt "#32726"
+msgid "Export"
+msgstr "Exportieren"
+
+msgctxt "#32727"
+msgid "Rename"
+msgstr "Umbenennen"
+
+msgctxt "#32728"
+msgid "Assign group"
+msgstr "Gruppe zuordnen"
+
+msgctxt "#32729"
+msgid "Logo URL"
+msgstr "Logo-Adresse"
+
+msgctxt "#32730"
+msgid "EPG ID (tvg-id)"
+msgstr "EPG-ID (tvg-id)"
+
+msgctxt "#32731"
+msgid "Enable / disable"
+msgstr "Aktivieren / deaktivieren"
+
+msgctxt "#32732"
+msgid "Move up"
+msgstr "Nach oben"
+
+msgctxt "#32733"
+msgid "Move down"
+msgstr "Nach unten"
+
+msgctxt "#32734"
+msgid "Remove"
+msgstr "Entfernen"
+
+msgctxt "#32735"
+msgid "Create group"
+msgstr "Gruppe erstellen"
+
+msgctxt "#32736"
+msgid "Group type"
+msgstr "Gruppenart"
+
+msgctxt "#32737"
+msgid "Stream URL"
+msgstr "Stream-Adresse"
+
+msgctxt "#32738"
+msgid "Name"
+msgstr "Name"
+
+msgctxt "#32739"
+msgid "Export destination folder"
+msgstr "Zielordner für Export"
+
+msgctxt "#32740"
+msgid "Export filename (.m3u8)"
+msgstr "Exportdateiname (.m3u8)"
+
+msgctxt "#32741"
+msgid "Overwrite existing export?"
+msgstr "Vorhandenen Export überschreiben?"
+
+msgctxt "#32742"
+msgid "Completed"
+msgstr "Abgeschlossen"
+
+msgctxt "#32743"
+msgid "Failed ({0})"
+msgstr "Fehlgeschlagen ({0})"
+
+msgctxt "#32744"
+msgid "No season or episode metadata. Play this playlist entry."
+msgstr "Keine Staffel- oder Folgenmetadaten. Diesen Playlist-Eintrag abspielen."
+
+msgctxt "#32745"
+msgid "Play entry"
+msgstr "Eintrag abspielen"
+
+msgctxt "#32746"
+msgid "Playlist editor"
+msgstr "Playlist-Editor"
+
+msgctxt "#32747"
+msgid "More…"
+msgstr "Weitere …"
+
+msgctxt "#32748"
+msgid "EPG transfer and stored programmes"
+msgstr "EPG-Übertragung und gespeicherte Sendungen"
+
+msgctxt "#32749"
+msgid "Choose a group first."
+msgstr "Zuerst eine Gruppe auswählen."
+
+msgctxt "#32750"
+msgid "The source playlist cannot be overwritten here."
+msgstr "Die ursprüngliche Playlist darf hier nicht überschrieben werden."
+
+msgctxt "#32751"
+msgid "Remove this entry from the working copy?"
+msgstr "Diesen Eintrag aus der Arbeitskopie entfernen?"
+
+msgctxt "#32752"
+msgid "EPG source failures: {0}; media remains usable."
+msgstr "EPG-Quellenfehler: {0}; Medien bleiben nutzbar."
+
+msgctxt "#32753"
+msgid "Source"
+msgstr "Quelle"
+
+msgctxt "#32754"
+msgid "Channels {0}–{1} · {2} displayed"
+msgstr "Sender {0}–{1} · {2} angezeigt"
+
+msgctxt "#32755"
+msgid "Library projection is updating in the background."
+msgstr "Der Medienindex wird im Hintergrund aktualisiert."
+
+msgctxt "#32756"
+msgid "Previous entries"
+msgstr "Vorherige Einträge"
+
+msgctxt "#32757"
+msgid "Next entries"
+msgstr "Weitere Einträge"
+
+msgctxt "#32758"
+msgid "No extra authentication options supplied"
+msgstr "Keine zusätzlichen Anmeldeoptionen angegeben"
+
+msgctxt "#32759"
+msgid "Optional serial number (blank: provider default)"
+msgstr "Optionale Seriennummer (leer: Anbietervorgabe)"
+
+msgctxt "#32760"
+msgid "Optional device ID (blank: provider default)"
+msgstr "Optionale Geräte-ID (leer: Anbietervorgabe)"
+
+msgctxt "#32761"
+msgid "Stalker portal (MAC)"
+msgstr "Stalker-Portal (MAC)"
+
+msgctxt "#32762"
+msgid "M3U file (local / USB / network)"
+msgstr "M3U-Datei (lokal / USB / Netzwerk)"
+
+msgctxt "#32763"
+msgid "M3U playlist URL"
+msgstr "M3U-Playlist-Adresse"
+
+msgctxt "#32764"
+msgid "Xtream server URL (including port)"
+msgstr "Xtream-Serveradresse (mit Port)"
+
+msgctxt "#32765"
+msgid "Username"
+msgstr "Benutzername"
+
+msgctxt "#32766"
+msgid "Password"
+msgstr "Kennwort"
+
+msgctxt "#32767"
+msgid "Optional XMLTV URL"
+msgstr "Optionale XMLTV-Adresse"
+
+msgctxt "#32768"
+msgid "Select M3U file"
+msgstr "M3U-Datei auswählen"
+
+msgctxt "#32769"
+msgid "Stalker portal URL"
+msgstr "Stalker-Portaladresse"
+
+msgctxt "#32770"
+msgid "Stalker MAC address"
+msgstr "Stalker-MAC-Adresse"
+
+msgctxt "#32771"
+msgid "Add connection"
+msgstr "Verbindung hinzufügen"
+
+msgctxt "#32772"
+msgid "Playlist name"
+msgstr "Name der Programmliste"
+
+msgctxt "#32773"
+msgid "Playlist analysed: {0} entries"
+msgstr "Playlist analysiert: {0} Einträge"
+
+msgctxt "#32774"
+msgid "Category {0}/{1} · received {2} · confirmed stored {3}"
+msgstr "Kategorie {0}/{1} · gelesen {2} · bestätigt gespeichert {3}"
+
+msgctxt "#32775"
+msgid "The provider supplied no usable season/episode metadata."
+msgstr "Der Anbieter lieferte keine verwendbaren Staffel-/Folgenmetadaten."
+
+msgctxt "#32776"
+msgid "First 1000 duplicate groups"
+msgstr "Erste 1000 Duplikatgruppen"

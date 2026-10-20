@@ -12,13 +12,22 @@ import xbmcaddon
 import xbmcgui
 import xbmcvfs
 
-try:
-    import httpx
-    HAVE_HTTPX = True
-except ImportError:
-    import urllib.request
-    import urllib.error
-    HAVE_HTTPX = False
+# Transport imports belong to the first network request, never menu startup.
+# None means unresolved; tests/older callers can still select either backend.
+HAVE_HTTPX = None
+httpx = None
+
+
+def _httpx_available():
+    global HAVE_HTTPX, httpx
+    if HAVE_HTTPX is not False and httpx is None:
+        try:
+            import httpx as transport
+            httpx = transport
+            HAVE_HTTPX = True
+        except ImportError:
+            HAVE_HTTPX = False
+    return bool(HAVE_HTTPX)
 
 ADDON    = xbmcaddon.Addon()
 ADDON_ID = ADDON.getAddonInfo('id')
@@ -102,7 +111,10 @@ def cache_dir():
 
 def addon_data_dir():
     path = xbmcvfs.translatePath(f'special://userdata/addon_data/{ADDON_ID}/')
-    xbmcvfs.mkdirs(path)
+    # This is a local, translated Kodi profile. Avoid redundant VFS mutations
+    # during every read and every concurrent plugin invocation.
+    if not os.path.isdir(path):
+        os.makedirs(path, exist_ok=True)
     return path
 
 def _build_proxy():
@@ -139,7 +151,7 @@ def http_get(url, params=None, headers=None, timeout=None, stream=False,
             remaining = deadline - time.monotonic()
             if remaining <= 0:
                 raise TimeoutError('HTTP response time budget exceeded')
-            if HAVE_HTTPX:
+            if _httpx_available():
                 proxy = _build_proxy()
                 client_kwargs = dict(
                     headers=hdrs,
@@ -181,7 +193,7 @@ def http_post(url, data=None, json_data=None, headers=None, timeout=None):
     to   = timeout or setting_int('http_timeout', 15)
     hdrs = {**_default_headers(), **(headers or {})}
     verify = setting_bool('ssl_verify', True)
-    if HAVE_HTTPX:
+    if _httpx_available():
         proxy = _build_proxy()
         kw = dict(headers=hdrs, timeout=to, verify=verify, follow_redirects=True)
         if proxy:
@@ -548,7 +560,7 @@ def http_stream(url, params=None, headers=None, timeout=15, max_seconds=300,
     from network_io import decoded_chunks, ChunkReader
     deadline = time.monotonic()+max_seconds
     hdrs = {**_default_headers(), **(headers or {})}
-    if HAVE_HTTPX:
+    if _httpx_available():
         options = dict(headers=hdrs, timeout=timeout, verify=setting_bool('ssl_verify',True), follow_redirects=True)
         proxy = _build_proxy()
         if proxy: options['proxy'] = proxy

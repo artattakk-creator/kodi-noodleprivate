@@ -6,6 +6,7 @@ These checks bind arguments only; real Android rendering still needs acceptance.
 """
 import ast
 import inspect
+import json
 from pathlib import Path
 import unittest
 
@@ -22,7 +23,7 @@ CONSTRUCTORS = {
     'WindowXMLDialog': lambda xmlFilename, scriptPath, defaultSkin='Default',
                              defaultRes='720p': None,
     'WindowXML': lambda xmlFilename, scriptPath, defaultSkin='Default',
-                       defaultRes='720p': None,
+                       defaultRes='720p', isMedia=False: None,
     'Dialog': lambda: None, 'DialogProgress': lambda: None,
     'ListItem': lambda label='', label2='', path='', offscreen=False: None,
 }
@@ -66,6 +67,18 @@ VIDEO_TAG = {
 
 
 class GUIContractTests(unittest.TestCase):
+    def test_strict_constructor_parameter_names_match_pinned_213_headers(self):
+        fixture=Path(__file__).resolve().parent/'fixtures/kodi_213_gui_api.json'
+        proof=json.loads(fixture.read_text())
+        self.assertEqual(proof['commit'],'a3a448d26b8d560a65655dab2cd122994dc4e146')
+        for name,contract in proof['constructors'].items():
+            target=CONSTRUCTORS[name]
+            params=list(inspect.signature(target.__init__ if inspect.isclass(target) else target).parameters)
+            if params and params[0]=='self': params=params[1:]
+            self.assertEqual(params,contract['parameters'],name)
+        self.assertIn('_imageWidth',proof['constructors']['ControlList']['parameters'])
+        self.assertNotIn('imageWidth',proof['constructors']['ControlList']['parameters'])
+
     def test_all_direct_gui_constructors_and_native_dialog_arguments(self):
         checked = 0
         for path in ROOT.rglob('*.py'):

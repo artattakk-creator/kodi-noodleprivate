@@ -1,0 +1,19 @@
+{
+  "version": "0.1.29",
+  "files": 109,
+  "bytes": 344929,
+  "sha256": "92239fca8ba12169f4ded8b57a40866f15c14375bb4188c45503da6f66733ea0",
+  "crc": "PASS",
+  "source_bytes": "PASS",
+  "syntax": "PASS",
+  "build": "/workspace/cloud-setup/kodi-noodleprivate/xcmate-0.1.29-afgl9upp/repository",
+  "full_suite": 417,
+  "passed": 417,
+  "failures": 0,
+  "skipped": 0,
+  "seconds": 60.714,
+  "focused_final_ui": 31,
+  "focused_final_persistence": 11,
+  "android": "PENDING",
+  "base_branch": "fix/xcmate-owned-playback-exit"
+}

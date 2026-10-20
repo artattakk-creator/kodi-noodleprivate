@@ -20,7 +20,7 @@ def active_streams(portal):
 
 
 @contextmanager
-def source_stream(source):
+def source_stream(source,cancel=lambda:False):
     uri=source['uri']
     if source.get('local'):
         import xbmcvfs
@@ -32,7 +32,7 @@ def source_stream(source):
         finally: stream.file.close()
     else:
         from utils import http_stream
-        with http_stream(uri,max_seconds=300) as stream: yield stream
+        with http_stream(uri,max_seconds=300,cancel=cancel) as stream: yield stream
 
 
 def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=lambda:False):
@@ -77,7 +77,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         with db: db.execute('DELETE FROM xml_stage')
         phase='DOWNLOAD'
         try:
-            with source_stream(source) as stream:
+            with source_stream(source,cancel=cancel) as stream:
                 phase='PARSE'
                 counts=parse(stream,channel,programme,cancel)
         except Exception as exc:
@@ -145,7 +145,7 @@ def refresh(portal,force=False,cancel=lambda:False):
     from epg_sources import configuration
     from epg_status import update,source_key
     from epg_errors import failure_details
-    from xtream import XtreamClient
+    from source_adapters import for_portal
     from epg import _save_disk,_mem_set
     pid=portal['id'];streams=list(active_streams(portal));config=configuration(pid)
     if not streams:
@@ -153,9 +153,10 @@ def refresh(portal,force=False,cancel=lambda:False):
         from catalog_sync import request
         request(portal,'live',portal.get('start_group_id',''),priority=0)
         return {}
-    xc=XtreamClient(portal['xc_host'],portal['xc_user'],portal['xc_pass'])
-    provider=dict(uri=portal.get('epg_url') or xc.get_xmltv_epg_url(),local=False)
-    sources=[('provider',provider,0)]+[(source_key(s),s,i) for i,s in enumerate(config['sources'],1) if s.get('enabled',True)]
+    if not portal.get('epg_show',True): return {}
+    xc=for_portal(portal);uri=portal.get('epg_url') or xc.get_xmltv_epg_url()
+    provider=dict(uri=uri,local=not uri.startswith(('http://','https://')))
+    sources=([('provider',provider,0)] if uri and portal.get('provider_epg_enabled',True) else [])+[(source_key(s),s,i) for i,s in enumerate(config['sources'],1) if s.get('enabled',True)]
     successes=failures=0
     for key,source,index in sources:
         if cancel(): break

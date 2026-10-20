@@ -46,7 +46,7 @@ class GuideWindow(xbmcgui.WindowXML):
             from library_index import Reader,initial_group
             from guide_store import refresh as refresh_guide
             from epg_sources import configuration
-            if self.portal.get('type')=='xtream':
+            if self.portal.get('type') in ('xtream','m3u','stb'):
                 from catalog_sync import request
                 request(self.portal,'live',self.portal.get('start_group_id',''),priority=0)
             self.reader=Reader(self.portal['id'])
@@ -106,7 +106,7 @@ class GuideWindow(xbmcgui.WindowXML):
             from epg_views import resolve_guide
             # Use precisely the shared mapping/short-EPG resolver for the
             # current programme; the day DB supplies the uncapped remainder.
-            client=self.router._xc(self.portal) if self.portal.get('type')=='xtream' else None
+            client=self.router._xc(self.portal)
             info=resolve_guide(load_cache(self.portal['id']),channel.get('epg_channel_id',''),channel['sid'],
                                client=client,mappings=self.mappings)
             eid=self.mappings.get(channel['sid']) or channel['sid']

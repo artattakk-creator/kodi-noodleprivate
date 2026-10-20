@@ -1,0 +1,18 @@
+{
+  "version": "0.1.28.2",
+  "files": 108,
+  "bytes": 340222,
+  "sha256": "6c33c782c04d0cbd0052f55b33054d8c8607ac4f5114939bb38997164b6f72b2",
+  "crc": "PASS",
+  "source_bytes": "PASS",
+  "syntax": "PASS",
+  "build": "/workspace/cloud-setup/kodi-noodleprivate/xcmate-0.1.28.2-nhqdwa2o/repository",
+  "tests": 406,
+  "passed": 406,
+  "failures": 0,
+  "skipped": 0,
+  "seconds": 60.162,
+  "new_exit_tests": 7,
+  "android": "PENDING",
+  "base_branch": "fix/xcmate-028-startup-hang"
+}

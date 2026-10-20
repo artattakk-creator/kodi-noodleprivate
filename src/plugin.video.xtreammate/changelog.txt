@@ -1,3 +1,34 @@
+0.1.29.2 – Universeller Setup-Assistent und private Playlist-Bearbeitung (Testkandidat)
+- Integrations-QA: späte Starts nach Zurück abbrechen; unvollständige M3U-Updates behalten Altbestand.
+- Kodi-21.3-API geprüft, echte JPEG-Fanart im Paket korrekt referenziert; Service-Build 29.
+- Kategorien vor selektivem Scan, private Zwischenablage und explizites Speichern.
+- Gemeinsame Quellenadapter/Medienansichten für Xtream, M3U und Stalker.
+- Persistenter M3U-Editor mit Overrides, Gruppenzuordnung, Reihenfolge und Export.
+- EPG aus dauerhafter SQLite für sichtbare Sender nachladen; Quellen bleiben opt-in.
+- Nicht-Xtream-Live-Navigation mit geprüften Item-Tags und asynchroner Linkauflösung.
+- Keine automatische M3U-Konvertierung, kein Main-Merge/Release; Android-Abnahme offen.
+
+0.1.29.1 – Aktive Gruppen und kontinuierliche Senderliste (Testkandidat)
+- Live-Gruppen ohne AN/AUS; Menü öffnet Checkbox-Verwaltung ohne Providerzugriff.
+- Durchgehendes Scrollen über interne 100er-Fenster, keine sichtbaren Seiteneinträge.
+- Bewährte OK-/Back-/Zap- und Player-Methoden unverändert abgesichert.
+
+0.1.29 – Dauerhafte Medienbilder und persönliche Reihen (Testkandidat)
+- Bilddateien dauerhaft behalten; persistente Aufträge, begrenzte Wiederholung und konfigurierbares Speicherbudget.
+- Neu hinzugefügt, Meine Favoriten und Weiter ansehen direkt in Film-/Serienstartseiten.
+- Lokale Favoritenmetadaten auch offline, sofortiges Entfernen, Folgenstatus mit Prozent und nächste ungesehene Folge.
+
+0.1.28.2 – Wiedergabe verlassen (Testkandidat)
+- XCMate-eigene Film-/Seriensitzung bei Vollbild-Rückkehr stoppen und letzte Position sichern.
+- Live-Overlay-Back bleibt unverändert; erst Wechsel zur Kodi-Navigation beendet eigene Live-Sitzung.
+- Fremde Streams und bestehende Profile bleiben unberührt.
+
+0.1.28.1 – Startstabilität (Testkandidat, noch nicht freigegeben)
+- Hauptmenü und Widgets ohne HTTP-Import oder automatische Portal-Migration starten.
+- Datensparsame BOOT-Phasenmarker und kontrollierter Verzeichnisabschluss bei Startfehlern.
+- Portaldateien streng und ohne Reset lesen; Legacy-Übernahme ausdrücklich auslösen.
+- Widget-Abfragen begrenzen und doppelte EPG-Worker abbrechen; Live-TV-Navigation unverändert.
+
 0.1.28 — review candidate (not published)
 - Stream active Xtream categories into atomic, batch-written SQLite generations.
 - Immediate local media windows, progressive search and explicit import errors.

@@ -3,7 +3,7 @@ import xbmc, xbmcaddon, xbmcgui
 
 ADDON    = xbmcaddon.Addon()
 LIB_PATH = os.path.join(os.path.dirname(__file__), 'resources', 'lib')
-SERVICE_BUILD = 28
+SERVICE_BUILD = 29
 if LIB_PATH not in sys.path:
     sys.path.insert(0, LIB_PATH)
 
@@ -154,6 +154,13 @@ class IPTVMasterService(xbmc.Monitor):
             if time.monotonic()>=self._next_diagnostic:
                 self._next_diagnostic=time.monotonic()+30
                 diagnostic('service','RUNNING',running=True,count=loops,build=SERVICE_BUILD)
+            # Fullscreen-to-navigation transition, independent of slow workers.
+            # The live overlay itself and its Back hierarchy remain unchanged.
+            try:
+                from playback_exit import poll as poll_playback_exit
+                poll_playback_exit()
+            except Exception:
+                diagnostic('ownership','EXIT_CHECK_FAILED')
             # Explicit visible-page/manual EPG requests are small, service-owned
             # jobs. They are independent of opt-in bulk catalogue prefetch.
             try:
@@ -282,6 +289,9 @@ class IPTVMasterService(xbmc.Monitor):
                                 candidate=start_navigator(self._last_session_nonce)
                             else:
                                 candidate=start_if_eligible(self._last_session_nonce)
+                                if candidate is None:
+                                    from source_live import start_if_eligible as source_navigator
+                                    candidate=source_navigator(self._last_session_nonce)
                         if candidate is not None:
                             try:
                                 if not self._remote_keymap_checked:

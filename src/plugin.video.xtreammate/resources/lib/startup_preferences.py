@@ -13,11 +13,16 @@ def candidates(groups, streams, enabled):
 
 
 def configure_startup(portal):
-    if portal.get('type')!='xtream':
+    if portal.get('type') not in ('xtream','m3u','stb'):
         return False
     dlg=xbmcgui.Dialog()
-    xc=XtreamClient(portal['xc_host'],portal['xc_user'],portal['xc_pass'])
-    groups=[c for c in xc.get_live_categories() if isinstance(c,dict)]
+    if portal.get('type')=='xtream':
+        xc=XtreamClient(portal['xc_host'],portal['xc_user'],portal['xc_pass'])
+        categories=xc.get_live_categories()
+    else:
+        from source_adapters import for_portal
+        xc=for_portal(portal);categories=xc.get_cached_catalog('get_live_categories')
+    groups=[c for c in categories if isinstance(c,dict)]
     if not groups:
         dlg.ok('XCMate','Keine Sendergruppen vom Portal verfügbar.')
         return False
@@ -32,7 +37,7 @@ def configure_startup(portal):
     position=dlg.select('XCMate – Start-Sendergruppe', options, preselect=max(0,initial))
     if position<0: return False
     group='*' if position==0 else str(visible[position-1]['category_id'])
-    streams=[x for x in xc.get_live_streams() if isinstance(x,dict) and x.get('stream_id')]
+    streams=[x for x in (xc.get_live_streams() if portal.get('type')=='xtream' else xc.get_cached_catalog('get_live_streams')) if isinstance(x,dict) and x.get('stream_id')]
     names,available=candidates(groups,streams,selected)
     if group!='*':
         available=[x for x in available if str(x.get('category_id'))==group]
@@ -45,7 +50,7 @@ def configure_startup(portal):
         [str(c.get('name','Sender')) for c in available],preselect=initial)
     if chosen<0: return False
     channel=available[chosen]
-    autoplay=dlg.yesno('XCMate – Automatischer Start',
+    autoplay=portal.get('type')=='xtream' and dlg.yesno('XCMate – Automatischer Start',
         'Soll dieser Sender automatisch starten, wenn XCMate geöffnet wird? '
         'Mit Nein bleibt der Sender über „Startsender abspielen“ erreichbar.')
     if not update(portal['id'], {'start_group_id':group,

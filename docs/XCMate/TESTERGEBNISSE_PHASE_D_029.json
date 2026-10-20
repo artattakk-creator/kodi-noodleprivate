@@ -1,0 +1,164 @@
+{
+  "date": "2026-10-20",
+  "phase": "D",
+  "branch": "feat/xcmate-universal-setup",
+  "production_version": "0.1.28",
+  "base_main": "63b4cd6981351a398968a3795831cf024b07b2ba",
+  "source_commit": "620a72476494888e6d812b58eb4a1f9cd0ea6e29",
+  "source_tree_sha256": "0d68343815962732b27e6dbe9b6a1802a30e5b97a4dece99f698060a9a4d1ea9",
+  "full_suite": {
+    "tests": 462,
+    "passed": 462,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0,
+    "seconds": 74.126,
+    "isolated": true,
+    "official_builder": true,
+    "command": "PYTHONDONTWRITEBYTECODE=1 python -B -m unittest discover -s tests -v"
+  },
+  "new_regressions": {
+    "source_staging_editor_epg": 18,
+    "strict_source_navigation": 5,
+    "total": 37,
+    "integration": 13,
+    "kodi_213_api": 1
+  },
+  "supplemental_http": {
+    "tests": 26,
+    "passed": 26,
+    "seconds": 1.036,
+    "httpx": "0.28.1",
+    "backends": [
+      "urllib",
+      "httpx"
+    ]
+  },
+  "measurements": {
+    "m3u": {
+      "parsed": 20005,
+      "active": 5002,
+      "bytes": 1727118,
+      "transport": [
+        "Kodi VFS file model",
+        "real localhost HTTP"
+      ]
+    },
+    "xmltv_selection": {
+      "bytes": 400,
+      "parsed": 2,
+      "stored": 1
+    }
+  },
+  "build": {
+    "commit": "620a72476494888e6d812b58eb4a1f9cd0ea6e29",
+    "version": "0.1.29.2",
+    "tests": 462,
+    "seconds": 74.126,
+    "files": 120,
+    "bytes": 375229,
+    "sha256": "55b6b74e262b30cca37eaf8d251753e5cfb5fcfe06f3e13bd28d3452f56b73d6",
+    "crc": "PASS",
+    "paths": "PASS",
+    "source_bytes": "PASS",
+    "production_publish": false
+  },
+  "ci": {
+    "run": 39449616224,
+    "head": "9a3fbaba4685e8e00aad939339e95a1c7b042399",
+    "conclusion": "success",
+    "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39449616224",
+    "artifact": {
+      "id": 12278445261,
+      "name": "xcmate-review-39449616224-55b6b74e262b30cca37eaf8d251753e5cfb5fcfe06f3e13bd28d3452f56b73d6",
+      "bytes": 374660,
+      "outer_digest": "sha256:4edae9654978949ce86b293934a0fd16dce22f38bdc1bcacd3cbeec42e4f3295",
+      "expires_at": "2026-11-03T15:36:08Z",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39449616224/artifacts/12278445261",
+      "advertised_inner_sha256": "55b6b74e262b30cca37eaf8d251753e5cfb5fcfe06f3e13bd28d3452f56b73d6",
+      "matches_local": true
+    },
+    "steps": {
+      "Set up job": "success",
+      "Run actions/checkout@v4": "success",
+      "Run actions/setup-python@v5": "success",
+      "Install artwork build dependency": "success",
+      "Bootstrap pinned XtreamMate GPL source": "success",
+      "Apply XtreamMate 0.1.1 fix": "success",
+      "Apply XtreamMate 0.1.2 remote and startup functions": "success",
+      "Apply XtreamMate 0.1.5 TV navigation, EPG, metadata and widgets": "success",
+      "Build all Kodi addon packages and index": "success",
+      "Check Python syntax": "success",
+      "Run Noodle Private regression tests": "success",
+      "Prepare XCMate pull request test package": "success",
+      "Upload XCMate pull request test package": "success",
+      "Commit and publish generated archives": "skipped",
+      "Post Run actions/setup-python@v5": "success",
+      "Post Run actions/checkout@v4": "success",
+      "Complete job": "success"
+    },
+    "binary_download": {
+      "download_bytes": 0,
+      "status": "CLOUD_DOWNLOAD_EMPTY",
+      "note": "Artifact metadata/upload/job verified; binary download unavailable in this cloud proxy. Local exact-source ZIP is verified."
+    }
+  },
+  "android": {
+    "status": "NOT_RUN",
+    "plan": "ANDROID_TESTPLAN_UNIVERSAL_029_DE.md",
+    "platform": "Kodi 21.3 Android ARM32, BINGIE MOD and Estuary",
+    "provider_credentials_available": false
+  },
+  "prior_ci": {
+    "phase_a": {
+      "run": 39426853346,
+      "conclusion": "success"
+    },
+    "phase_b": {
+      "initial_run": 39429052787,
+      "initial_conclusion": "failure",
+      "reason": "strict season caption expectation updated to include requested watched/total status",
+      "rerun": 39430263404,
+      "conclusion": "success"
+    },
+    "phase_c": {
+      "run": 39431385493,
+      "conclusion": "success"
+    }
+  },
+  "constraints": {
+    "main_changed": false,
+    "release": false,
+    "tag": false,
+    "global_keymaps_enabled": false,
+    "other_addons_changed": false
+  },
+  "limitations": [
+    "Original Android startup cause #38 remains unproven",
+    "Actual Android/IR/USB/SMB/provider dialect acceptance pending",
+    "Non-Xtream automatic open-time autoplay not implemented; manual home start supported",
+    "Optional image cleanup UI and theme/language installers remain outside this phase"
+  ],
+  "current_integration_report": "TESTERGEBNISSE_INTEGRATION_0292.json",
+  "previous_pre_integration": {
+    "source_commit": "e7d90f5c644aabb550aed989c7362a99cd5a8601",
+    "full_suite": {
+      "tests": 448,
+      "passed": 448,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 64.884,
+      "command": "PYTHONDONTWRITEBYTECODE=1 python -B -m unittest discover -s tests -v"
+    },
+    "build": {
+      "version": "0.1.29.2",
+      "files": 119,
+      "bytes": 373616,
+      "sha256": "cb4727741fdfcae641a147437bf36ed0b90f9c61e6b2637db218516334742642",
+      "crc": "PASS",
+      "source_bytes": "PASS",
+      "syntax": "PASS"
+    }
+  }
+}

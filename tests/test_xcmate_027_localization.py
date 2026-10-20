@@ -118,7 +118,7 @@ class LocalizationTests(Fixture,unittest.TestCase):
         self.assertIn(('Seasons and episodes','seasons'),w.actions)
         w.getControl(300).selectItem(next(i for i,(_,key) in enumerate(w.actions) if key=='seasons'))
         w.native(7)
-        self.assertEqual(w.getControl(330).items[0].label,'Season 1')
+        self.assertEqual(w.getControl(330).items[0].label,'Season 1 · 0/2 · Unwatched')
         w.native(7)
         self.assertIn('Unwatched',w.getControl(330).items[0].label)
         self.assertEqual(self.builtins,[])

@@ -1,7 +1,9 @@
+from profile_transaction import serialized
 import json
 import time
 import uuid
 import os
+import stat
 from typing import Optional
 
 import xbmcvfs
@@ -23,23 +25,37 @@ def _db_path():
 
 def load_all() -> list:
     """Read the stored portals. Do not silently treat unreadable data as empty."""
-    path = _db_path()
-    if not xbmcvfs.exists(path):
-        return []
+    from boot_diagnostics import phase
     try:
-        # addon_data_dir() returns a translated LOCAL path. Native Python IO
-        # supports atomic os.replace writes and avoids incompatible Kodi VFS
-        # File context-manager behaviour on some installations.
-        with open(path, 'r', encoding='utf-8') as stream:
-            value = json.load(stream)
-        if not isinstance(value, list):
-            raise ValueError('Portal-Datenbank enthält keine Liste')
-        return value
+        with phase('PORTALS_LOAD'):
+            path = _db_path()
+            try:
+                # Already a translated LOCAL profile path. No Kodi VFS existence
+                # probe and no settings migration on every UI/widget request.
+                fd = os.open(path, os.O_RDONLY | getattr(os, 'O_NONBLOCK', 0))
+            except FileNotFoundError:
+                if os.path.lexists(path):
+                    raise ValueError('Ungültige Portaldatei')
+                return []
+            with os.fdopen(fd, 'rb') as stream:
+                if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
+                    raise ValueError('Keine reguläre Portaldatei')
+                raw = stream.read(4*1024*1024+1)
+            if len(raw) > 4*1024*1024:
+                raise ValueError('Portaldatei zu groß')
+            value = json.loads(raw)
+            if (not isinstance(value, list) or any(
+                    not isinstance(p, dict) or not isinstance(p.get('id'), str)
+                    or not p['id'] or p.get('type') not in PORTAL_TYPES
+                    for p in value)):
+                raise ValueError('Ungültige Portalliste')
+            return value
     except Exception as exc:
         error('portals.load_all failed: {}'.format(type(exc).__name__))
         raise RuntimeError('Portalliste kann nicht gelesen werden. Daten wurden nicht verändert.') from exc
 
 
+@serialized
 def save_all(portal_list: list):
     """Write atomically to Kodi's local profile, then verify it was persisted.
 
@@ -76,10 +92,12 @@ def get_active() -> list:
     return [p for p in load_all() if p.get('enabled', True)]
 
 
-def add(portal: dict) -> dict:
+@serialized
+def add(portal: dict, portal_id=None) -> dict:
     now = int(time.time())
+    extra={k:portal[k] for k in ('source_schema','m3u_original','m3u_origin','provider_epg_enabled','stb_serial','stb_device_id') if k in portal}
     portal = {
-        'id'      : str(uuid.uuid4()),
+        'id'      : str(portal_id or uuid.uuid4()),
         'name'    : portal.get('name', 'New Portal'),
         'type'    : portal.get('type', 'm3u'),
         'enabled' : portal.get('enabled', True),
@@ -100,13 +118,16 @@ def add(portal: dict) -> dict:
         'created' : now,
         'updated' : now,
     }
+    portal.update(extra)
     portals = load_all()
+    if any(p['id']==portal['id'] for p in portals): raise ValueError('portal ID already exists')
     portals.append(portal)
     save_all(portals)
-    info(f'Portal added: {portal["name"]} ({portal["type"]})')
+    info('Portal added and verified')
     return portal
 
 
+@serialized
 def update(portal_id: str, changes: dict) -> bool:
     portals = load_all()
     for p in portals:
@@ -114,12 +135,13 @@ def update(portal_id: str, changes: dict) -> bool:
             p.update(changes)
             p['updated'] = int(time.time())
             save_all(portals)
-            info(f'Portal updated: {p["name"]}')
+            info('Portal updated and verified')
             return True
     error(f'portals.update: id {portal_id} not found')
     return False
 
 
+@serialized
 def delete(portal_id: str) -> bool:
     portals = load_all()
     before  = len(portals)
@@ -141,6 +163,7 @@ def toggle_enabled(portal_id: str) -> bool:
     return new_state
 
 
+@serialized
 def move_up(portal_id: str):
     portals = load_all()
     idx = next((i for i, p in enumerate(portals) if p.get('id') == portal_id), -1)
@@ -149,6 +172,7 @@ def move_up(portal_id: str):
         save_all(portals)
 
 
+@serialized
 def move_down(portal_id: str):
     portals = load_all()
     idx = next((i for i, p in enumerate(portals) if p.get('id') == portal_id), -1)
@@ -169,6 +193,7 @@ def _clear_cache_for(portal_id: str):
     cache_clear()
 
 
+@serialized
 def import_from_settings():
     from utils import setting, setting_bool, setting_int
     portals = load_all()
