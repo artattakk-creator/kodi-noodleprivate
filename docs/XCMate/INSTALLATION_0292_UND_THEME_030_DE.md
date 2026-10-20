@@ -142,15 +142,15 @@ Keine eigenmächtigen Merges, Releases oder globalen Skin-/Keymapänderungen.
 
 ### Geprüfter Installer-Testkandidat
 
-**495/495 Tests** (33 neue Theme-Regressionen), 64,866 s; ergänzend 40/40
+**496/496 Tests** (34 neue Theme-Regressionen), 66,514 s; ergänzend 40/40
 HTTP-/EPG-/Cache-Prüfungen in 1,201 s. Syntax und strikte Kodi-GUI-Argumenttests grün.
 Der tatsächliche Kodi-21.3-Dialog-Header wurde erneut vom gepinnten Commit gelesen;
 sein SHA-256 stimmt mit der vorhandenen API-Fixture überein.
 
 [Core-Test-ZIP 0.1.30](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.30.zip)
 ([SHA256-Datei](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.30.zip.sha256)):
-**124 Dateien / 389.206 Bytes**, SHA-256
-`b922515e4fee2d0a9d939a23f59a94ff2671d5bdc53e0b18f652b0149a57f1cc`.
+**124 Dateien / 389.577 Bytes**, SHA-256
+`dca16f1ebb37ac650f426bb167b615f947b20b3e50468577559b9d07e5c27a12`.
 ZIP-CRC, Pfade, exakte Dateiliste und jeder Quellbytevergleich bestanden; zweiter
 Bau mit dem offiziellen kanonischen Packer erzeugt identische ZIP-Bytes.
 Der vollständige Repositorybuilder lief ausschließlich in einer isolierten Kopie;
@@ -164,15 +164,4 @@ auf den neuen Core-Kandidaten umgestellt; ein älteres GUI-Testfixture erhielt d
 tatsächlichen Profilpfad-Vertrag und einen expliziten Importpfad. Die Freeze-
 Referenzdateien wurden **nicht** angepasst, und kein `WindowDialog.onInit` erfunden.
 
-[Draft-PR #50](https://github.com/artattakk-creator/kodi-noodleprivate/pull/50):
-Core-Build/Test und separater Katalogcheck sind auf Quellcommit
-`f84f5c8270d1ee9d5fe31f7ddeb047d74ba7aae3` **grün**.
-[CI-Lauf](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39467782407),
-[hochgeladenes Core-Testartefakt](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39467782407/artifacts/12285437739).
-Der Artefaktname enthält denselben inneren ZIP-SHA-256 wie die lokal vollständig
-geprüfte ZIP. Der Schritt **Commit and publish generated archives wurde übersprungen**.
-Downloads der CI-Artefaktdatei und Rohlogs werden in dieser Cloud-Laufzeit vom
-Transport abgewiesen; deshalb wird kein zusätzlicher heruntergeladener CI-Binär- oder
-Rohlognachweis behauptet. API-Status/Upload und lokale Paketprüfung sind getrennt im
-Maschinenbericht ausgewiesen. Die abschließende Dokumentationsänderung verändert
-keine Core-/Test-/Builddatei und kein Paket.
+[Draft-PR #50](https://github.com/artattakk-creator/kodi-noodleprivate/pull/50): Der vorherige Stand bestand zwei CI-Läufe, dessen binäres Paket ist durch den oben genannten Kandidaten ersetzt. Ein zusätzlicher Regressionstest bewies, dass ein kleines PNG zuvor ein stark expandierendes iCCP-Farbprofil einschleusen konnte. Jetzt sind alle PNG-Nebenmetadaten einschließlich begrenzt entpackter iCCP/zTXt/iTXt-Inhalte auf zusammen 1 MiB begrenzt. Der neue Test scheiterte vor der Korrektur und besteht danach; die gesamte Suite ist mit 496 Tests erneut grün. Die aktuelle PR-CI prüft genau diesen Kandidaten nochmals. Keine Originalgrafik wurde verändert.

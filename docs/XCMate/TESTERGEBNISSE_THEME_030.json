@@ -4,13 +4,13 @@
   "base_main": "116d653efb95df18a4ba750cb33d108fc2e2c276",
   "branch": "feat/xcmate-space-premium-installer",
   "suite": {
-    "tests": 495,
-    "seconds": 64.866,
+    "tests": 496,
+    "seconds": 66.514,
     "failures": 0,
     "errors": 0,
     "skips": 0
   },
-  "new_theme_tests": 33,
+  "new_theme_tests": 34,
   "supplementary": {
     "tests": 40,
     "seconds": 1.201,
@@ -24,8 +24,8 @@
   "package": {
     "filename": "plugin.video.xtreammate-0.1.30.zip",
     "files": 124,
-    "bytes": 389206,
-    "sha256": "b922515e4fee2d0a9d939a23f59a94ff2671d5bdc53e0b18f652b0149a57f1cc",
+    "bytes": 389577,
+    "sha256": "dca16f1ebb37ac650f426bb167b615f947b20b3e50468577559b9d07e5c27a12",
     "crc": "PASS",
     "source_bytes": "PASS",
     "private_profile_payloads": "ABSENT",
@@ -63,7 +63,20 @@
   "android_acceptance": "NOT_RUN",
   "live_theme_texture_integration": "DEFERRED_UNTIL_ORIGINAL_ASSETS",
   "theme_previews": "NOT_CREATED",
-  "ci": {
+  "production_published": false,
+  "pull_request": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/50",
+  "png_metadata_regression": {
+    "before_fix": "FAIL (profile bomb accepted)",
+    "after_fix": "PASS",
+    "metadata_limit_bytes": 1048576,
+    "formats": [
+      "iCCP",
+      "zTXt",
+      "iTXt"
+    ],
+    "metadata_expansion_bounded": true
+  },
+  "previous_pre_metadata_ci": {
     "status": "SUCCESS",
     "source_commit": "f84f5c8270d1ee9d5fe31f7ddeb047d74ba7aae3",
     "run": 39467782407,
@@ -85,6 +98,9 @@
     "ci_test_count_directly_read_from_log": false,
     "ci_status_source": "GitHub run/job API; prepare/upload succeeded; artifact name exposes verified inner SHA; local suite count 495"
   },
-  "production_published": false,
-  "pull_request": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/50"
+  "ci": {
+    "status": "PENDING_RECHECK_PNG_METADATA_LIMIT",
+    "lookup": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/50/checks",
+    "package_sha256": "dca16f1ebb37ac650f426bb167b615f947b20b3e50468577559b9d07e5c27a12"
+  }
 }

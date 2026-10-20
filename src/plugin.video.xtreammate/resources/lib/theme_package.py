@@ -113,7 +113,7 @@ def image(data, suffix):
     if suffix.lower() == '.png':
         if not data.startswith(b'\x89PNG\r\n\x1a\n'): fail('IMAGE')
         offset, width, height, inflate, decoded, expected = 8, 0, 0, None, 0, 0
-        alpha, seen_idat, ended = False, False, False
+        alpha, seen_idat, ended, metadata = False, False, False, 0
         while offset + 12 <= len(data):
             length = int.from_bytes(data[offset:offset+4], 'big')
             kind = data[offset+4:offset+8]
@@ -122,6 +122,26 @@ def image(data, suffix):
             payload = data[offset+8:stop-4]
             if zlib.crc32(kind + payload) & 0xffffffff != int.from_bytes(data[stop-4:stop], 'big'):
                 fail('IMAGE')
+            if kind not in (b'IHDR',b'IDAT',b'IEND',b'PLTE'):
+                # Pixel limits alone do not bound iCCP/zTXt/iTXt expansion in
+                # Kodi's image decoder. Keep all ancillary metadata <=1 MiB.
+                metadata += len(payload)
+                if metadata > 1024*1024: fail('LIMIT')
+                compressed = None
+                if kind in (b'iCCP',b'zTXt',b'iTXt'):
+                    split = payload.find(b'\0')
+                    if not 1 <= split <= 79 or split+2 >= len(payload): fail('IMAGE')
+                    if kind in (b'iCCP',b'zTXt'):
+                        if payload[split+1]: fail('IMAGE')
+                        compressed = payload[split+2:]
+                    else:
+                        flag, method = payload[split+1:split+3]
+                        if flag not in (0,1) or method: fail('IMAGE')
+                        remainder = payload[split+3:].split(b'\0',2)
+                        if len(remainder)!=3: fail('IMAGE')
+                        if flag: compressed = remainder[2]
+                    if compressed is not None:
+                        metadata += _metadata_inflate(compressed,1024*1024-metadata)
             if kind == b'IHDR':
                 if width or offset != 8 or length != 13: fail('IMAGE')
                 width, height, depth, colour, comp, filt, interlace = struct.unpack('>IIBBBBB', payload)
@@ -192,6 +212,19 @@ def image(data, suffix):
 
 def _dimensions(width, height):
     if not 0 < width <= 4096 or not 0 < height <= 4096 or width*height > MAX_PIXELS: fail('LIMIT')
+
+
+def _metadata_inflate(compressed, limit):
+    decoded=0; inflate=zlib.decompressobj(); chunk=compressed
+    try:
+        while chunk:
+            decoded += len(inflate.decompress(chunk,65536))
+            if decoded>limit: fail('LIMIT')
+            if inflate.unused_data: fail('IMAGE')
+            chunk=inflate.unconsumed_tail
+        if not inflate.eof: fail('IMAGE')
+    except zlib.error: fail('IMAGE')
+    return decoded
 
 
 def check_archive(archive, core):

@@ -391,5 +391,12 @@ class ThemeTests(unittest.TestCase):
         corrupt=raw[:offset]+replacement+raw[offset+size+12:]
         with self.assertRaisesRegex(self.package.ThemeError,'IMAGE'): self.install(asset=corrupt)
 
+    def test_png_compressed_colour_profile_bomb_is_rejected_before_kodi_decoding(self):
+        raw=png();payload=b'profile\0\0'+zlib.compress(b'A'*(2*1024*1024))
+        chunk=struct.pack('>I',len(payload))+b'iCCP'+payload+struct.pack('>I',zlib.crc32(b'iCCP'+payload)&0xffffffff)
+        profile_bomb=raw[:33]+chunk+raw[33:]
+        with self.assertRaisesRegex(self.package.ThemeError,'LIMIT'):
+            self.install(asset=profile_bomb)
+
 
 if __name__=='__main__': unittest.main()

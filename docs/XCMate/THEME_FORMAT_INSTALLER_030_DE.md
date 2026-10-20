@@ -55,6 +55,9 @@ README/Lizenzhinweise erklären Herkunft/Freigabe/Nutzungsrechte, ohne Providerd
   prüfen. Der Android-Core braucht kein Pillow/natives Zusatzmodul. **Vollständiges
   JPEG-/PNG-Decoding erfolgt zusätzlich mit Pillow beim Paketbau/Katalogcheck.**
   Strukturelle Runtime-Prüfung ersetzt weder diesen Decodercheck noch Kodi-Rendering.
+- PNG-Nebenmetadaten insgesamt höchstens 1 MiB, einschließlich begrenzt entpackter
+  iCCP-/zTXt-/iTXt-Inhalte. Ein kleiner ZIP-/PNG-Input darf auch über Farbprofile
+  oder komprimierten Text keinen unbeschränkten Decoder-Speicher anfordern.
 - Mindestens 32 MiB freien Speicher für übrige Profilschreibvorgänge lassen;
   512 MiB Gesamtbudget für gültige Theme-Bilder und maximal 32 Revisionen.
   Keine automatische Löschung vorhandener Cover oder Metadaten zur Platzgewinnung.
