@@ -1,0 +1,97 @@
+{
+  "date": "2026-10-20",
+  "phase": "D",
+  "branch": "feat/xcmate-universal-setup",
+  "production_version": "0.1.28",
+  "base_main": "63b4cd6981351a398968a3795831cf024b07b2ba",
+  "source_commit": "b59a2cb",
+  "source_tree_sha256": "91ecf63e62d3f3fe8e8e37c2d1921cdd35644b3a30689a30564dbafe878e2089",
+  "full_suite": {
+    "tests": 447,
+    "passed": 447,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 64.451,
+    "command": "PYTHONDONTWRITEBYTECODE=1 python -B -m unittest discover -s tests -v"
+  },
+  "new_regressions": {
+    "source_staging_editor_epg": 17,
+    "strict_source_navigation": 5,
+    "total": 22
+  },
+  "supplemental_http": {
+    "tests": 26,
+    "passed": 26,
+    "seconds": 1.036,
+    "httpx": "0.28.1",
+    "backends": [
+      "urllib",
+      "httpx"
+    ]
+  },
+  "measurements": {
+    "m3u": {
+      "parsed": 20005,
+      "active": 5002,
+      "bytes": 1727118,
+      "transport": [
+        "Kodi VFS file model",
+        "real localhost HTTP"
+      ]
+    },
+    "xmltv_selection": {
+      "bytes": 400,
+      "parsed": 2,
+      "stored": 1
+    }
+  },
+  "build": {
+    "version": "0.1.29.2",
+    "files": 119,
+    "bytes": 373552,
+    "sha256": "645ba6847f05d276efcf05cbcdab218b2ca4c310b6745e1d81866ca67debb7ec",
+    "crc": "PASS",
+    "source_bytes": "PASS",
+    "syntax": "PASS"
+  },
+  "ci": {
+    "status": "pending_manual_read_only_workflow_dispatch"
+  },
+  "android": {
+    "status": "NOT_RUN",
+    "plan": "ANDROID_TESTPLAN_UNIVERSAL_029_DE.md",
+    "platform": "Kodi 21.3 Android ARM32, BINGIE MOD and Estuary",
+    "provider_credentials_available": false
+  },
+  "prior_ci": {
+    "phase_a": {
+      "run": 39426853346,
+      "conclusion": "success"
+    },
+    "phase_b": {
+      "initial_run": 39429052787,
+      "initial_conclusion": "failure",
+      "reason": "strict season caption expectation updated to include requested watched/total status",
+      "rerun": 39430263404,
+      "conclusion": "success"
+    },
+    "phase_c": {
+      "run": 39431385493,
+      "conclusion": "success"
+    }
+  },
+  "constraints": {
+    "main_changed": false,
+    "release": false,
+    "tag": false,
+    "global_keymaps_enabled": false,
+    "other_addons_changed": false
+  },
+  "limitations": [
+    "Original Android startup cause #38 remains unproven",
+    "Actual Android/IR/USB/SMB/provider dialect acceptance pending",
+    "Non-Xtream automatic open-time autoplay not implemented; manual home start supported",
+    "Optional image cleanup UI and theme/language installers remain outside this phase"
+  ]
+}
