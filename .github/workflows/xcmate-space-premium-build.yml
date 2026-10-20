@@ -10,7 +10,7 @@ on:
       - 'themes/xcmate/space-premium/README.md'
       - 'themes/xcmate/space-premium/LICENSE.txt'
       - 'tools/build_xcmate_theme.py'
-      - 'src/plugin.video.xtreammate/resources/lib/theme_package.py'
+      - 'src/plugin.video.xtreammate/**'
       - '.github/workflows/xcmate-space-premium-build.yml'
   workflow_dispatch:
 
