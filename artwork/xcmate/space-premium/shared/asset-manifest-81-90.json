@@ -1,0 +1,165 @@
+{
+  "schema": "xcmate-space-premium-asset-batch/1.0",
+  "batch": "81-90",
+  "theme": "space-premium",
+  "status": "APPROVED_ARCHIVED_ONLY",
+  "approved_total_before_batch": 80,
+  "open_total_before_batch": 18,
+  "assets": [
+    {
+      "slot": 81,
+      "path": "shared/icon-sort.png",
+      "description": "Sortieren",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "sha256": "590fd768b9d251c79f067a061569d41e82dc128d9bcd157b0b39683f86b1e0ec",
+      "size_bytes": 69452,
+      "status": "APPROVED",
+      "approved_date": "2026-10-20",
+      "integration": "not_integrated"
+    },
+    {
+      "slot": 82,
+      "path": "shared/icon-clear.png",
+      "description": "Löschen",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "sha256": "15790791c23786ae2a2f98198b40767e2d627bffe1adf68815fa831a5f148925",
+      "size_bytes": 70634,
+      "status": "APPROVED",
+      "approved_date": "2026-10-20",
+      "integration": "not_integrated"
+    },
+    {
+      "slot": 83,
+      "path": "shared/icon-back.png",
+      "description": "Zurück",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "sha256": "76ada815204523849e4bfe7f504f3827be05fc14e3d08b30aea1bd067183a83d",
+      "size_bytes": 69561,
+      "status": "APPROVED",
+      "approved_date": "2026-10-20",
+      "integration": "not_integrated"
+    },
+    {
+      "slot": 84,
+      "path": "shared/icon-forward.png",
+      "description": "Vorwärts",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "sha256": "b93400630f43ec1ceb16f7fd4dc6ea56a45d7f32b94e598fc555a72cfc881dbc",
+      "size_bytes": 69824,
+      "status": "APPROVED",
+      "approved_date": "2026-10-20",
+      "integration": "not_integrated"
+    },
+    {
+      "slot": 85,
+      "path": "shared/icon-close.png",
+      "description": "Schließen",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "sha256": "f1720fadcc6dd7f56e5116eb4f59a1b306c2f42d965150825f818739d2536ecd",
+      "size_bytes": 72786,
+      "status": "APPROVED",
+      "approved_date": "2026-10-20",
+      "integration": "not_integrated"
+    },
+    {
+      "slot": 86,
+      "path": "shared/icon-check.png",
+      "description": "Bestätigen",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "sha256": "a18823b1a3c241b796c6b76fd4beecc064c35c6e10f04dce6d7ba6725fd2a5b6",
+      "size_bytes": 72221,
+      "status": "APPROVED",
+      "approved_date": "2026-10-20",
+      "integration": "not_integrated"
+    },
+    {
+      "slot": 87,
+      "path": "shared/icon-warning.png",
+      "description": "Warnung",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "sha256": "66410decefddea7efeed0941084522ae64308959d767d442b18582ca6e2c17c1",
+      "size_bytes": 74075,
+      "status": "APPROVED",
+      "approved_date": "2026-10-20",
+      "integration": "not_integrated"
+    },
+    {
+      "slot": 88,
+      "path": "shared/icon-info.png",
+      "description": "Information",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "sha256": "99a7b86a797d6b7a7a180c6c63b4eb4e8c83b64ce378714bbdba4039ba319182",
+      "size_bytes": 75532,
+      "status": "APPROVED",
+      "approved_date": "2026-10-20",
+      "integration": "not_integrated"
+    },
+    {
+      "slot": 89,
+      "path": "shared/focus-ring.png",
+      "description": "Fokusrahmen",
+      "size_px": [
+        512,
+        512
+      ],
+      "mode": "RGBA",
+      "sha256": "626b58e5f8370b76987588e929d53579ff2b8899ada8c4a7b7e69d4bd6708a5e",
+      "size_bytes": 127369,
+      "status": "APPROVED",
+      "approved_date": "2026-10-20",
+      "integration": "not_integrated"
+    },
+    {
+      "slot": 90,
+      "path": "shared/focus-rail.png",
+      "description": "Fokusleiste",
+      "size_px": [
+        1920,
+        180
+      ],
+      "mode": "RGBA",
+      "sha256": "402c68602672da92820057453f978a6c64f5387ffa701baad00b31188e6c6773",
+      "size_bytes": 9975,
+      "status": "APPROVED",
+      "approved_date": "2026-10-20",
+      "integration": "not_integrated"
+    }
+  ],
+  "source": "Raster compositing from approved Space Premium chrome/galaxy high resolution source material. Original 1-80 retained unchanged.",
+  "runtime": "not-integrated",
+  "approved_total_after_batch": 90,
+  "remaining_after_batch": 8,
+  "approved_date": "2026-10-20"
+}

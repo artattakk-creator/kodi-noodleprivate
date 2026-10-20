@@ -4,11 +4,11 @@
   "theme": "space-premium",
   "canonical_drive_folder": "https://drive.google.com/drive/folders/1UPA7fLKIq21GkA4NzAPEVfLp2BvSpm3y",
   "target": 98,
-  "archive_present": 80,
-  "approved": 80,
+  "archive_present": 90,
+  "approved": 90,
   "pending_approval": 0,
-  "remaining_unproduced": 18,
-  "note": "ONE optional Space Premium 98-slot theme. Slots 1–80 approved/archived, 81–98 not produced. No Kodi runtime integration. Originals and SHA preserved.",
+  "remaining_unproduced": 8,
+  "note": "ONE optional 98-slot Space Premium theme. Slots 1–90 approved/archived, slots 91–98 remain unapproved. No Kodi runtime integration. Sources/SHA preserved.",
   "slots": [
     {
       "slot": 1,
@@ -996,81 +996,171 @@
       "slot": 81,
       "path": "shared/icon-sort.png",
       "category": "shared",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "590fd768b9d251c79f067a061569d41e82dc128d9bcd157b0b39683f86b1e0ec",
+      "source_batch_reference": "space-premium-shared-81-90-2026-10-20",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 69452,
+      "source_filename": "81_source_master_1254.png",
+      "approval_note": "User approved 2026-10-20, original PNG unchanged; optional theme only, not integrated.",
+      "source_sha256": "fd549418848af5b916aacff9db693e55eec0015f3ca74c429e560b463cca691b"
     },
     {
       "slot": 82,
       "path": "shared/icon-clear.png",
       "category": "shared",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "15790791c23786ae2a2f98198b40767e2d627bffe1adf68815fa831a5f148925",
+      "source_batch_reference": "space-premium-shared-81-90-2026-10-20",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 70634,
+      "source_filename": "82_source_master_1254.png",
+      "approval_note": "User approved 2026-10-20, original PNG unchanged; optional theme only, not integrated.",
+      "source_sha256": "3080dfc0b766f1b25d9d84d43beb498d74adfe8ebe1555cd953a344f457652f0"
     },
     {
       "slot": 83,
       "path": "shared/icon-back.png",
       "category": "shared",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "76ada815204523849e4bfe7f504f3827be05fc14e3d08b30aea1bd067183a83d",
+      "source_batch_reference": "space-premium-shared-81-90-2026-10-20",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 69561,
+      "source_filename": "83_source_master_1254.png",
+      "approval_note": "User approved 2026-10-20, original PNG unchanged; optional theme only, not integrated.",
+      "source_sha256": "0c5cfc4728e2ae55b52fc66b8b6d06346d2e8d7783c895b7ff3f2e7b9c2d6b96"
     },
     {
       "slot": 84,
       "path": "shared/icon-forward.png",
       "category": "shared",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "b93400630f43ec1ceb16f7fd4dc6ea56a45d7f32b94e598fc555a72cfc881dbc",
+      "source_batch_reference": "space-premium-shared-81-90-2026-10-20",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 69824,
+      "source_filename": "84_source_master_1254.png",
+      "approval_note": "User approved 2026-10-20, original PNG unchanged; optional theme only, not integrated.",
+      "source_sha256": "0bccfd7b28b67f74b16b58c57a1b35e51f6a9a84e4a9aa7179793bd2bf52fb4e"
     },
     {
       "slot": 85,
       "path": "shared/icon-close.png",
       "category": "shared",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "f1720fadcc6dd7f56e5116eb4f59a1b306c2f42d965150825f818739d2536ecd",
+      "source_batch_reference": "space-premium-shared-81-90-2026-10-20",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 72786,
+      "source_filename": "85_source_master_1254.png",
+      "approval_note": "User approved 2026-10-20, original PNG unchanged; optional theme only, not integrated.",
+      "source_sha256": "f0587e226ba34b7942e220e128f38cb398f545e6df79bcef822345a6e86456d0"
     },
     {
       "slot": 86,
       "path": "shared/icon-check.png",
       "category": "shared",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "a18823b1a3c241b796c6b76fd4beecc064c35c6e10f04dce6d7ba6725fd2a5b6",
+      "source_batch_reference": "space-premium-shared-81-90-2026-10-20",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 72221,
+      "source_filename": "86_source_master_1254.png",
+      "approval_note": "User approved 2026-10-20, original PNG unchanged; optional theme only, not integrated.",
+      "source_sha256": "7da55ec781750fcd8fb53b83cb178669b219a78e3cd520959c29f5374b675468"
     },
     {
       "slot": 87,
       "path": "shared/icon-warning.png",
       "category": "shared",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "66410decefddea7efeed0941084522ae64308959d767d442b18582ca6e2c17c1",
+      "source_batch_reference": "space-premium-shared-81-90-2026-10-20",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 74075,
+      "source_filename": "87_source_master_1254.png",
+      "approval_note": "User approved 2026-10-20, original PNG unchanged; optional theme only, not integrated.",
+      "source_sha256": "7b5247bd6a4f60d6b9166f3b6e6717f45f6b3325cc867ad5286557047bed5ef4"
     },
     {
       "slot": 88,
       "path": "shared/icon-info.png",
       "category": "shared",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "99a7b86a797d6b7a7a180c6c63b4eb4e8c83b64ce378714bbdba4039ba319182",
+      "source_batch_reference": "space-premium-shared-81-90-2026-10-20",
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "size_bytes": 75532,
+      "source_filename": "88_source_master_1254.png",
+      "approval_note": "User approved 2026-10-20, original PNG unchanged; optional theme only, not integrated.",
+      "source_sha256": "c31276a719a4f1687d205a454cf940abfd60c25be9f13b72133d1acdade2ee7b"
     },
     {
       "slot": 89,
       "path": "shared/focus-ring.png",
       "category": "shared",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "626b58e5f8370b76987588e929d53579ff2b8899ada8c4a7b7e69d4bd6708a5e",
+      "source_batch_reference": "space-premium-shared-81-90-2026-10-20",
+      "size_px": [
+        512,
+        512
+      ],
+      "mode": "RGBA",
+      "size_bytes": 127369,
+      "source_filename": "89_source_master_1254.png",
+      "approval_note": "User approved 2026-10-20, original PNG unchanged; optional theme only, not integrated.",
+      "source_sha256": "2c4fbdbc989dbd6641cb6636f9d4f1ccfff6cad50719c470fed241b542c7486c"
     },
     {
       "slot": 90,
       "path": "shared/focus-rail.png",
       "category": "shared",
-      "status": "planned",
-      "sha256": null,
-      "source_batch_reference": null
+      "status": "archived_approved_not_integrated",
+      "sha256": "402c68602672da92820057453f978a6c64f5387ffa701baad00b31188e6c6773",
+      "source_batch_reference": "space-premium-shared-81-90-2026-10-20",
+      "size_px": [
+        1920,
+        180
+      ],
+      "mode": "RGBA",
+      "size_bytes": 9975,
+      "source_filename": "90_source_master_1920x180.png",
+      "approval_note": "User approved 2026-10-20, original PNG unchanged; optional theme only, not integrated.",
+      "source_sha256": "402c68602672da92820057453f978a6c64f5387ffa701baad00b31188e6c6773"
     },
     {
       "slot": 91,
@@ -1173,6 +1263,12 @@
       "slots": "71-80",
       "outcome": "approved",
       "constraint": "10 Player/Shared assets user approved; originals preserved; optional theme only; no Kodi Core integration."
+    },
+    {
+      "date": "2026-10-20",
+      "slots": "81-90",
+      "outcome": "approved",
+      "constraint": "10 Shared icons/focus assets user approved; originals versioned; optional theme only; no Core integration."
     }
   ],
   "runtime_release_version": "0.1.27",
@@ -1216,6 +1312,14 @@
       "approval": "approved",
       "drive_folder": "https://drive.google.com/drive/folders/1UPA7fLKIq21GkA4NzAPEVfLp2BvSpm3y",
       "archive": "XCMate_Space_Premium_71-80_FREIGEGEBEN.zip"
+    },
+    {
+      "date": "2026-10-20",
+      "slots": "81-90",
+      "created": 10,
+      "approval": "approved",
+      "drive_folder": "https://drive.google.com/drive/folders/1UPA7fLKIq21GkA4NzAPEVfLp2BvSpm3y",
+      "archive": "XCMate_Space_Premium_81-90_FREIGEGEBEN.zip"
     }
   ]
 }

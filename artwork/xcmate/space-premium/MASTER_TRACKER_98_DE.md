@@ -2,10 +2,10 @@
 
 **20.10.2026 – EIN optionales Space-Premium-Design, KEINE eigenständigen Grafiksets.**
 
-- **80 freigegeben:** Slots 1–80; alle Originale bleiben unverändert archiviert.
+- **90 freigegeben:** Slots 1–90; alle Originale bleiben unverändert archiviert.
 - **0 Entwürfe mit offener Abnahme.**
-- **18 noch offen:** Nr. 81–98.
-- Alle 80 verfügbaren Dateien sind reine Theme-Assets – **keine Integration in XCMate Core 0.1.27** und keine automatischen Downloads.
+- **8 noch offen:** Nr. 91–98.
+- Alle 90 verfügbaren Dateien sind reine Theme-Assets – **keine Integration in XCMate Core 0.1.27** und keine automatischen Downloads.
 - Revisionen versionieren: Originale und SHA-256 erhalten.
 
 **Masterordner Google Drive:** https://drive.google.com/drive/folders/1UPA7fLKIq21GkA4NzAPEVfLp2BvSpm3y
@@ -20,9 +20,9 @@
 | Filme/Serien | 14 | 14 | 0 | 0 |
 | EPG | 12 | 12 | 0 | 0 |
 | Player/Fernbedienung | 16 | 16 | 0 | 0 |
-| Suche/Navigation | 16 | 2 | 0 | 14 |
+| Suche/Navigation | 16 | 12 | 0 | 4 |
 | Widgets | 4 | 0 | 0 | 4 |
-| **Gesamt** | **98** | **80** | **0** | **18** |
+| **Gesamt** | **98** | **90** | **0** | **8** |
 
 ## Alle 98 Positionen
 
@@ -108,16 +108,16 @@
 | 78 | `player/panel-progress-track.png` | ✓ Freigegeben · archiviert, nicht integriert |
 | 79 | `shared/icon-search.png` | ✓ Freigegeben · archiviert, nicht integriert |
 | 80 | `shared/icon-filter.png` | ✓ Freigegeben · archiviert, nicht integriert |
-| 81 | `shared/icon-sort.png` | ○ Noch zu erstellen |
-| 82 | `shared/icon-clear.png` | ○ Noch zu erstellen |
-| 83 | `shared/icon-back.png` | ○ Noch zu erstellen |
-| 84 | `shared/icon-forward.png` | ○ Noch zu erstellen |
-| 85 | `shared/icon-close.png` | ○ Noch zu erstellen |
-| 86 | `shared/icon-check.png` | ○ Noch zu erstellen |
-| 87 | `shared/icon-warning.png` | ○ Noch zu erstellen |
-| 88 | `shared/icon-info.png` | ○ Noch zu erstellen |
-| 89 | `shared/focus-ring.png` | ○ Noch zu erstellen |
-| 90 | `shared/focus-rail.png` | ○ Noch zu erstellen |
+| 81 | `shared/icon-sort.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 82 | `shared/icon-clear.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 83 | `shared/icon-back.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 84 | `shared/icon-forward.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 85 | `shared/icon-close.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 86 | `shared/icon-check.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 87 | `shared/icon-warning.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 88 | `shared/icon-info.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 89 | `shared/focus-ring.png` | ✓ Freigegeben · archiviert, nicht integriert |
+| 90 | `shared/focus-rail.png` | ✓ Freigegeben · archiviert, nicht integriert |
 | 91 | `shared/sidebar-bg.png` | ○ Noch zu erstellen |
 | 92 | `shared/glass-panel.png` | ○ Noch zu erstellen |
 | 93 | `shared/divider.png` | ○ Noch zu erstellen |
@@ -152,3 +152,10 @@
 - Alle zehn Motive 71–80 ausdrücklich freigegeben.
 - Originalquellen und 10 Kodi-RGBA-Assets samt SHA-256 und JPG/PDF-Kontaktblatt versioniert.
 - 80/98 freigegeben; 18 offene Positionen (81–98). Keine automatische Integration und kein Merge nach `main`.
+
+## Freigabe 20.10.2026 – Charge 81–90
+
+- Zehn Nutzerfreigaben: acht gemeinsame Navigation-Icons und zwei Fokus-Elemente.
+- Quellen, JPEG/PDF-Kontaktblatt, SHA-256 und Manifest archiviert.
+- 90/98 freigegeben; Grafik 91–98 sind die letzte, getrennt zur visuellen Freigabe vorzulegende Charge.
+- XCMate-Core, PR #36 und `main` bleiben unverändert.
