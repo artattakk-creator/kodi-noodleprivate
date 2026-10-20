@@ -1,5 +1,7 @@
 # XCMate 0.1.29.2 installieren; Theme-Installer 0.1.30 im Review
 
+> **AKTUALISIERUNG 20.10.2026:** Die unten stehenden Aussagen „0/98“, „Originale fehlen“ und „Katalog leer“ sind **historischer Stand vor Übergabe des geprüften Nutzer-ZIPs** und **nicht mehr aktuell**. Alle 98 Originalgrafiken sind nun überprüft und in PR #50 enthalten; das installierbare Theme 1.0.0 wurde vom offiziellen GitHub-Builder mit SHA-256 `8fc7f312a65fa5ecdbe68d3487939a25d685de29717896a0a1113c8d41176ae2` erzeugt. Vollständige Runtime-Integration und Android-Abnahme stehen noch aus. **Maßgeblich ist [98er Build-/Abnahmebericht](SPACE_PREMIUM_98_BUILD_ABNAHME_20261020_DE.md).**
+
 Stand: 20.10.2026. [Verbindlicher Auftrag](CODEX_AUFTRAG_INSTALLATION_THEME_030_DE.md).
 
 ## A – Tatsächlich veröffentlichte Installation
