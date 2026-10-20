@@ -254,3 +254,17 @@ class IntegrationTests(Fixture,unittest.TestCase):
         with mock.patch.object(builder,'SRC',source),mock.patch.object(builder,'IDS',('plugin.video.xtreammate','plugin.video.noodleprivate')): builder.seed()
         self.assertEqual((xtream/'addon.xml').read_text(),original)
         self.assertIn('fanart.png',(noodle/'addon.xml').read_text())
+
+    def test_xcmate_zip_is_reproducible_across_source_timestamps(self):
+        import os,zipfile,hashlib
+        from xcmate027_fixture import ROOT
+        spec=importlib.util.spec_from_file_location('integration_repro_builder',ROOT/'tools/build_repository.py');builder=importlib.util.module_from_spec(spec);spec.loader.exec_module(builder)
+        source=self.folder/'example.py';source.write_text('# unchanged source\n')
+        digests=[]
+        for i,stamp in enumerate((1600000000,1800000000)):
+            os.utime(source,(stamp,stamp));target=self.folder/('repro-'+str(i)+'.zip')
+            with zipfile.ZipFile(target,'w') as file: builder.package_file(file,'plugin.video.xtreammate',source,'plugin.video.xtreammate/example.py')
+            with zipfile.ZipFile(target) as file:
+                self.assertEqual(file.infolist()[0].date_time,(1980,1,1,0,0,0));self.assertEqual(file.read(file.infolist()[0]),source.read_bytes())
+            digests.append(hashlib.sha256(target.read_bytes()).hexdigest())
+        self.assertEqual(digests[0],digests[1])

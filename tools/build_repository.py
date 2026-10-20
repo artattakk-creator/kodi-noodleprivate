@@ -77,6 +77,17 @@ def image(path, w, h):
         for x in range(w): scan.extend((20+x*30//w,30+y*60//h,70+x*100//w,255))
     path.write_bytes(b"\x89PNG\r\n\x1a\n"+c(b"IHDR",struct.pack("!2I5B",w,h,8,6,0,0,0))+c(b"IDAT",zlib.compress(bytes(scan),7))+c(b"IEND",b""))
 
+def package_file(archive, addon, filename, member):
+    """One canonical XCMate RC across local/CI builds; other addons unchanged."""
+    if addon != 'plugin.video.xtreammate':
+        archive.write(filename, member)
+        return
+    info=zipfile.ZipInfo(member, date_time=(1980,1,1,0,0,0))
+    info.create_system=3
+    info.external_attr=0o100644 << 16
+    archive.writestr(info, filename.read_bytes(), compress_type=zipfile.ZIP_DEFLATED, compresslevel=8)
+
+
 def main():
     apply_pending_release()
     seed()
@@ -101,7 +112,7 @@ def main():
         with zipfile.ZipFile(dest,"w",zipfile.ZIP_DEFLATED,compresslevel=8) as zf:
             for f in sorted((SRC/addon).rglob("*")):
                 if f.is_file() and "__pycache__" not in f.parts and f.name != ".DS_Store":
-                    zf.write(f,(Path(addon)/f.relative_to(SRC/addon)).as_posix())
+                    package_file(zf,addon,f,(Path(addon)/f.relative_to(SRC/addon)).as_posix())
         with zipfile.ZipFile(dest) as zf:
             assert zf.testzip() is None and f"{addon}/addon.xml" in zf.namelist()
         if addon == 'plugin.video.xtreammate':
