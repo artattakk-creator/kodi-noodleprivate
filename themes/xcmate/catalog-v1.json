@@ -1,4 +1,18 @@
 {
   "schema_version": 1,
-  "themes": []
+  "themes": [
+    {
+      "approved": true,
+      "id": "space-premium",
+      "name": "Space Premium",
+      "version": "1.0.0",
+      "supported_xcmate": {
+        "min": "0.1.30",
+        "max_exclusive": "0.2.0"
+      },
+      "url": "https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/themes/xcmate/space-premium/XCMate-Space-Premium-1.0.0.zip",
+      "sha256": "8fc7f312a65fa5ecdbe68d3487939a25d685de29717896a0a1113c8d41176ae2",
+      "bytes": 19772084
+    }
+  ]
 }
