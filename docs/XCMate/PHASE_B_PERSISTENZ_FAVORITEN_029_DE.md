@@ -105,3 +105,8 @@ bleiben unbenutzt erhalten; keine Deinstallation mit Benutzerdaten.
 109 Dateien / 344929 Bytes; CRC/Syntax und alle Quellbytes geprüft.
 SHA256 `92239fca8ba12169f4ded8b57a40866f15c14375bb4188c45503da6f66733ea0`.
 [Maschineller Nachweis](TESTERGEBNISSE_PHASE_B_029.json).
+
+CI-Nachprüfung: Erster vollständiger Branch-CI-Lauf `39429052787` scheiterte an
+einer alten Sprachtest-Erwartung „Season 1“; die geforderte neue Statusanzeige lautet
+„Season 1 · 0/2 · Unwatched“. Die strikte vollständige Texterwartung wurde entsprechend
+der neuen UI erweitert, nicht entfernt. Erneute vollständige Prüfung folgt.
