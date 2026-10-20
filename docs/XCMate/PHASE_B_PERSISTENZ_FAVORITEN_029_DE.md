@@ -110,3 +110,7 @@ CI-Nachprüfung: Erster vollständiger Branch-CI-Lauf `39429052787` scheiterte a
 einer alten Sprachtest-Erwartung „Season 1“; die geforderte neue Statusanzeige lautet
 „Season 1 · 0/2 · Unwatched“. Die strikte vollständige Texterwartung wurde entsprechend
 der neuen UI erweitert, nicht entfernt. Erneute vollständige Prüfung folgt.
+
+## CI-Nachtrag 20.10.2026
+
+[Abschließender GitHub-Prüflauf](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39430263404) erfolgreich. Workflow manuell auf Entwicklungsbranch ausgelöst; Publish-Schritt nicht ausgeführt. Kumulativer aktueller Kandidat und Geräteplan: [Phase D / PR #48](PHASE_D_UNIVERSAL_SETUP_029_DE.md).

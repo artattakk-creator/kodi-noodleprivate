@@ -1,5 +1,19 @@
 # XCMate – vollständiges technisches Übergabedokument
 
+> **VERBINDLICHER STAND – 20.10.2026, universelle Weiterentwicklung:** Produktiv bleibt **0.1.28** (`main` `63b4cd6`).
+> Geprüfter kumulativer **Testkandidat 0.1.29.2**, **448/448 Tests + 26/26 HTTP-/EPG-Tests**, Android-Abnahme **offen**.
+> Getrennte gestapelte Draft-PRs: [A: Wiedergabestopp #45](https://github.com/artattakk-creator/kodi-noodleprivate/pull/45),
+> [B: Bilder/Favoriten/Folgen #46](https://github.com/artattakk-creator/kodi-noodleprivate/pull/46),
+> [C: aktive Gruppen/Senderliste #47](https://github.com/artattakk-creator/kodi-noodleprivate/pull/47),
+> [D: universeller Setup/Editor #48](https://github.com/artattakk-creator/kodi-noodleprivate/pull/48), vorausgesetzt [Start-Hotfix #39](https://github.com/artattakk-creator/kodi-noodleprivate/pull/39).
+> [Auftrag](CODEX_AUFTRAG_UNIVERSAL_029_DE.md) · [Bestandsanalyse/Dateiplan](ARCHITEKTUR_UNIVERSAL_029_DE.md) ·
+> [Implementierung/Grenzen](PHASE_D_UNIVERSAL_SETUP_029_DE.md) · [Testnachweise](TESTERGEBNISSE_PHASE_D_029.json) ·
+> [Android-Test, Test-ZIP und regulärer Update-/Rollbackweg](ANDROID_TESTPLAN_UNIVERSAL_029_DE.md).
+> Branch `feat/xcmate-universal-setup`; A/B/C-CI erfolgreich. [D-Prüflauf](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39438464927) zunächst gestartet; verbindliches Endergebnis im Testbericht.
+> **Kein Main-Merge, Tag, Release oder Produktivupdate.** Startup-Geräteursache #38 bleibt unbewiesen; kein Android-PASS aus Cloudtests ableiten.
+> Ältere „AKTUELL“-Abschnitte darunter sind historische Nachweise und keine heutige Versions-/Freigabeangabe.
+
+
 > **AKTUALISIERUNG 18.10.2026:** XCMate **0.1.22** wurde nach 180 bestandenen GitHub-CI-Tests via [PR #11](https://github.com/artattakk-creator/kodi-noodleprivate/pull/11) in `main` aufgenommen und über das GS-Media-Repository veröffentlicht. **Android-TV-Abnahme steht aus.** Dieses Dokument enthält darunter teilweise historische Versions-/Fehlerstände. Für den verbindlichen aktuellen Zustand zuerst [CODEX_STATUS_CURRENT_DE.md](CODEX_STATUS_CURRENT_DE.md) und [KODI21_FIX_022_DE.md](KODI21_FIX_022_DE.md) lesen.
 
 

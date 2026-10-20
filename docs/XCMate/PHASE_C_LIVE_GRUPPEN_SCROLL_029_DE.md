@@ -76,3 +76,7 @@ ID installieren; keine Profil-/Gruppen-/DB-Löschung. Datenformat der Auswahl un
 [Geprüftes ZIP 0.1.29.1](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.1.zip):
 109 Dateien / 345227 Bytes, SHA256 `0c1ad79bf58e01d94675d31573cda7e1a42523d7f96151d2bcc09aca3cf69827`.
 Syntax/CRC und jedes Quellbyte geprüft. [Maschineller Nachweis](TESTERGEBNISSE_PHASE_C_029.json).
+
+## CI-Nachtrag 20.10.2026
+
+[Abschließender GitHub-Prüflauf](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39431385493) erfolgreich. Workflow manuell auf Entwicklungsbranch ausgelöst; Publish-Schritt nicht ausgeführt. Kumulativer aktueller Kandidat und Geräteplan: [Phase D / PR #48](PHASE_D_UNIVERSAL_SETUP_029_DE.md).

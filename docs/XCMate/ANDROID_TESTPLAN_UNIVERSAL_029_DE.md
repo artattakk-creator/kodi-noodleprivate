@@ -8,8 +8,8 @@ Produktiv bleibt 0.1.28. Kein Main-Merge/Repository-Update vor Review und Freiga
 
 [Test-ZIP 0.1.29.2](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.2.zip)
 ([SHA256-Datei](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.2.zip.sha256)),
-119 Dateien / **373.552 Bytes**, SHA256:
-`645ba6847f05d276efcf05cbcdab218b2ca4c310b6745e1d81866ca67debb7ec`.
+119 Dateien / **373.616 Bytes**, SHA256:
+`cb4727741fdfcae641a147437bf36ed0b90f9c61e6b2637db218516334742642`.
 
 1. Kodi vollständig beenden. Vollständiges bestehendes XCMate-Profil einschließlich
    aller SQLite-/WAL-Dateien und gewähltem Bild-/Cacheordner lokal sichern. Nicht nur
@@ -114,7 +114,7 @@ URLs nicht ungeschützt in Issues/PRs einfügen. Anbieterbesonderheiten anonymis
 ## Regulärer Updateweg – erst nach ausdrücklicher Freigabe
 
 1. Review/Android-Abnahme der ZIP und aller vier Phasen; Startup-Hotfix #39 separat
-   berücksichtigen. Gestapelte Reihenfolge: **#39 → #45 → #46 → #47 → Phase D**.
+   berücksichtigen. Gestapelte Reihenfolge: **#39 → #45 → #46 → #47 → #48**.
 2. Nach Übernahme einer Basis den jeweils nächsten PR auf `main` umstellen, Diff
    prüfen und Tests für den resultierenden Stand erneut ausführen. Keine ungeprüfte
    automatische Kettenübernahme, kein Main-Push durch diesen Entwicklungsauftrag.

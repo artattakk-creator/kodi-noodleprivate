@@ -1,5 +1,7 @@
 # GS Media Kodi Repository
 
+> **XCMate-Testentwicklung 20.10.2026:** Produktiv bleibt **0.1.28**. Getrennte Draft-PRs [#45](https://github.com/artattakk-creator/kodi-noodleprivate/pull/45), [#46](https://github.com/artattakk-creator/kodi-noodleprivate/pull/46), [#47](https://github.com/artattakk-creator/kodi-noodleprivate/pull/47), [#48](https://github.com/artattakk-creator/kodi-noodleprivate/pull/48), auf Start-Hotfix #39. Kandidat **0.1.29.2**, 447 Tests + 26 HTTP-/EPG-Tests bestanden; **Android-Abnahme offen, kein Merge/Release**. [Zentrale Übergabe](docs/XCMate/CODEX_STATUS_CURRENT_DE.md) · [Test-ZIP/Android-/Updateplan](docs/XCMate/ANDROID_TESTPLAN_UNIVERSAL_029_DE.md).
+
 Public Kodi repository for GS Media's own add-ons, plugins, scripts and services.
 
 **Repository add-on ID:** `repository.gsmedia`  

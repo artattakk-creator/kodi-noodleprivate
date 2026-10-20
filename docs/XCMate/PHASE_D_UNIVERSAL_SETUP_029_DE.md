@@ -1,7 +1,7 @@
 # Phase D – gemeinsamer Setup-Assistent und Quellenverwaltung
 
 20.10.2026. Testkandidat **0.1.29.2**, Branch `feat/xcmate-universal-setup`,
-auf Phase C / PR #47, B / #46, A / #45 und Start-Hotfix / #39.
+[Draft-PR #48](https://github.com/artattakk-creator/kodi-noodleprivate/pull/48), auf Phase C / PR #47, B / #46, A / #45 und Start-Hotfix / #39.
 Produktiv bleibt **0.1.28**, Main-Basis `63b4cd6`. Kein Merge, Tag oder Release.
 [Vollständiger Auftrag](CODEX_AUFTRAG_UNIVERSAL_029_DE.md) ·
 [Analyse, Architektur, Dateien und Abhängigkeiten](ARCHITEKTUR_UNIVERSAL_029_DE.md).
@@ -75,7 +75,9 @@ Name/Logo-URL/EPG-ID ändern, aktivieren/deaktivieren, Reihenfolge ändern, hinz
 entfernen, Duplikate erkennen (erste 1000 Gruppen) und M3U8 exportieren.
 
 `m3u_store.py` liest begrenzte 32-KiB-Blöcke, höchstens 256-KiB-Zeilen, UTF-8/BOM,
-UTF-16 und CP1252-Fallback. Es hält keine vollständige Python-Playlist im RAM.
+UTF-16 und CP1252-Fallback. Es hält keine vollständige Python-Playlist im RAM. Schreibblöcke werden zusätzlich zur
+256er-Zeilengrenze bei etwa 1 MiB (plus einer einzelnen begrenzten Zeile) geleert;
+eine Regression prüft sehr lange Streamadressen.
 Basisgeneration und separate Overrides/custom-Einträge liegen in einer privaten
 SQLite-Arbeitskopie. Das ist bewusst zusätzliche **Editierdatenhaltung**: der gemeinsame
 Bibliotheksindex enthält nur normalisierte aktive Medien, nicht Original-URLs/Editorzustand.
@@ -126,7 +128,11 @@ M3U hat keinen erfundenen Kurz-EPG-Endpunkt. Manuelle Senderzuordnungen bleiben 
 
 ## Prüfungen und Grenzen
 
-Die endgültigen Testzahlen/Build-Prüfsumme stehen in `TESTERGEBNISSE_PHASE_D_029.json`.
+**448/448 vollständige Tests in 64,884 s**, darunter 23 neue Quellen-/Navigationsregressionen; zusätzlich **26/26 HTTP-/EPG-Tests in 1,036 s** mit httpx/urllib.
+Isolierter offizieller Build: **119 Dateien / 373.616 Bytes**, CRC/Syntax/jedes Quellbyte geprüft.
+SHA256 `cb4727741fdfcae641a147437bf36ed0b90f9c61e6b2637db218516334742642`.
+[Installierbare Test-ZIP](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.2.zip) ·
+[Maschineller Bericht](TESTERGEBNISSE_PHASE_D_029.json) · [Geräteplan](ANDROID_TESTPLAN_UNIVERSAL_029_DE.md).
 Neue Regressionen prüfen echte SQLite, lokale und echte HTTP-M3U-Übertragung,
 Kodi-WindowXML-Lebenszyklus sowie strikt modellierte native Omega-Dialogcallbacks.
 Es werden keine fehlenden echten `WindowDialog.onInit()`-Callbacks vorgetäuscht.
