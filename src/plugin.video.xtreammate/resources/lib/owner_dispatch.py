@@ -69,7 +69,7 @@ def dispose_unshown(window):
 def open_owned_window(window_class,xml,router,portal,*args,**kwargs):
     """Log constructor/configuration failures as well as the running lifecycle."""
     from appearance import window_source
-    view='GUIDE' if xml=='XCMateGuide.xml' else 'SERIES' if args and args[0]=='series' else 'MOVIES'
+    view='GUIDE' if xml in ('XCMateGuide.xml','XCMateGuideGrid.xml') else 'SERIES' if args and args[0]=='series' else 'MOVIES'
     stage='CONSTRUCT'
     window=None
     try:

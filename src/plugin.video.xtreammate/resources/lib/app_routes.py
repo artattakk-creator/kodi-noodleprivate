@@ -1,7 +1,7 @@
 """New routes only. Legacy provider/player entry points remain compatible."""
 from localization import tr
 
-ACTIONS=('playlist_editor','source_live','source_play','source_start','art_status','art_retry','art_db_health','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
+ACTIONS=('guide_grid','playlist_editor','source_live','source_play','source_start','art_status','art_retry','art_db_health','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
          'movies_home','series_home','media_detail','media_favourites','global_search','search_section',
          'widget_live_start_group','widget_recent_vod','widget_recent_series','widget_setup',
          'recording_folder','recording_capabilities','about_xcmate','guide_browser','media_play','guide_timers','guide_status')
@@ -136,6 +136,10 @@ def dispatch(router):
         from window_navigation import open_route
         from media_window import open_media
         open_route(router,portal,lambda:open_media(router,portal,kind,router._params.get('sid',''),favourites=action=='media_favourites'))
+    elif action=='guide_grid':
+        from window_navigation import open_route
+        from guide_grid_window import open_grid
+        open_route(router,portal,lambda:open_grid(router,portal))
     elif action=='guide_browser':
         from window_navigation import open_route
         from guide_window import open_guide

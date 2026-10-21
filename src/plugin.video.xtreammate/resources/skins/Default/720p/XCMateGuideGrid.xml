@@ -1,0 +1,3214 @@
+<?xml version='1.0' encoding='utf-8'?>
+<window>
+  <defaultcontrol always="true">312</defaultcontrol>
+  <allowoverlay>yes</allowoverlay>
+  <coordinates>
+    <system>1</system>
+    <posx>0</posx>
+    <posy>0</posy>
+  </coordinates>
+  <controls>
+    <control type="image">
+      <width>1280</width>
+      <height>720</height>
+      <texture>special://home/addons/plugin.video.xtreammate/resources/media/media_neutral.png</texture>
+    </control>
+    <control type="label" id="101">
+      <left>44</left>
+      <top>24</top>
+      <width>1192</width>
+      <height>38</height>
+      <font>font16</font>
+      <textcolor>FFF0F2F5</textcolor>
+      <label />
+    </control>
+    <control type="label" id="102">
+      <left>44</left>
+      <top>654</top>
+      <width>1192</width>
+      <height>24</height>
+      <font>font12</font>
+      <textcolor>FFF0F2F5</textcolor>
+      <label />
+    </control>
+    <control type="label" id="103">
+      <left>44</left>
+      <top>624</top>
+      <width>1192</width>
+      <height>26</height>
+      <font>font13</font>
+      <textcolor>FFF0F2F5</textcolor>
+      <label />
+    </control>
+    <control type="label" id="501">
+      <left>44</left>
+      <top>684</top>
+      <width>1192</width>
+      <height>24</height>
+      <font>font12</font>
+      <textcolor>FFF0F2F5</textcolor>
+      <label />
+    </control>
+    <control type="button" id="310">
+      <left>44</left>
+      <top>76</top>
+      <width>188</width>
+      <height>44</height>
+      <font>font13</font>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>315</onleft>
+      <onright>311</onright>
+      <onup>310</onup>
+      <ondown>310</ondown>
+    </control>
+    <control type="button" id="311">
+      <left>244</left>
+      <top>76</top>
+      <width>188</width>
+      <height>44</height>
+      <font>font13</font>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>310</onleft>
+      <onright>312</onright>
+      <onup>311</onup>
+      <ondown>311</ondown>
+    </control>
+    <control type="button" id="312">
+      <left>444</left>
+      <top>76</top>
+      <width>188</width>
+      <height>44</height>
+      <font>font13</font>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>311</onleft>
+      <onright>313</onright>
+      <onup>312</onup>
+      <ondown>312</ondown>
+    </control>
+    <control type="button" id="313">
+      <left>644</left>
+      <top>76</top>
+      <width>188</width>
+      <height>44</height>
+      <font>font13</font>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>312</onleft>
+      <onright>314</onright>
+      <onup>313</onup>
+      <ondown>313</ondown>
+    </control>
+    <control type="button" id="314">
+      <left>844</left>
+      <top>76</top>
+      <width>188</width>
+      <height>44</height>
+      <font>font13</font>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>313</onleft>
+      <onright>315</onright>
+      <onup>314</onup>
+      <ondown>314</ondown>
+    </control>
+    <control type="button" id="315">
+      <left>1044</left>
+      <top>76</top>
+      <width>188</width>
+      <height>44</height>
+      <font>font13</font>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>314</onleft>
+      <onright>310</onright>
+      <onup>315</onup>
+      <ondown>315</ondown>
+    </control>
+    <control type="label" id="600">
+      <left>340</left>
+      <top>132</top>
+      <width>100</width>
+      <height>30</height>
+      <font>font12</font>
+      <textcolor>FFF0F2F5</textcolor>
+      <label />
+    </control>
+    <control type="label" id="601">
+      <left>489</left>
+      <top>132</top>
+      <width>100</width>
+      <height>30</height>
+      <font>font12</font>
+      <textcolor>FFF0F2F5</textcolor>
+      <label />
+    </control>
+    <control type="label" id="602">
+      <left>638</left>
+      <top>132</top>
+      <width>100</width>
+      <height>30</height>
+      <font>font12</font>
+      <textcolor>FFF0F2F5</textcolor>
+      <label />
+    </control>
+    <control type="label" id="603">
+      <left>787</left>
+      <top>132</top>
+      <width>100</width>
+      <height>30</height>
+      <font>font12</font>
+      <textcolor>FFF0F2F5</textcolor>
+      <label />
+    </control>
+    <control type="label" id="604">
+      <left>936</left>
+      <top>132</top>
+      <width>100</width>
+      <height>30</height>
+      <font>font12</font>
+      <textcolor>FFF0F2F5</textcolor>
+      <label />
+    </control>
+    <control type="label" id="605">
+      <left>1085</left>
+      <top>132</top>
+      <width>100</width>
+      <height>30</height>
+      <font>font12</font>
+      <textcolor>FFF0F2F5</textcolor>
+      <label />
+    </control>
+    <control type="image" id="720">
+      <left>44</left>
+      <top>178</top>
+      <width>40</width>
+      <height>36</height>
+      <aspectratio>keep</aspectratio>
+      <texture />
+    </control>
+    <control type="textbox" id="700">
+      <left>92</left>
+      <top>170</top>
+      <width>236</width>
+      <height>50</height>
+      <font>font13</font>
+      <textcolor>FFF0F2F5</textcolor>
+      <label />
+    </control>
+    <control type="button" id="1000">
+      <left>340</left>
+      <top>168</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1000</onleft>
+      <onright>1000</onright>
+      <onup>1000</onup>
+      <ondown>1000</ondown>
+    </control>
+    <control type="button" id="1001">
+      <left>340</left>
+      <top>168</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1001</onleft>
+      <onright>1001</onright>
+      <onup>1001</onup>
+      <ondown>1001</ondown>
+    </control>
+    <control type="button" id="1002">
+      <left>340</left>
+      <top>168</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1002</onleft>
+      <onright>1002</onright>
+      <onup>1002</onup>
+      <ondown>1002</ondown>
+    </control>
+    <control type="button" id="1003">
+      <left>340</left>
+      <top>168</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1003</onleft>
+      <onright>1003</onright>
+      <onup>1003</onup>
+      <ondown>1003</ondown>
+    </control>
+    <control type="button" id="1004">
+      <left>340</left>
+      <top>168</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1004</onleft>
+      <onright>1004</onright>
+      <onup>1004</onup>
+      <ondown>1004</ondown>
+    </control>
+    <control type="button" id="1005">
+      <left>340</left>
+      <top>168</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1005</onleft>
+      <onright>1005</onright>
+      <onup>1005</onup>
+      <ondown>1005</ondown>
+    </control>
+    <control type="button" id="1006">
+      <left>340</left>
+      <top>168</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1006</onleft>
+      <onright>1006</onright>
+      <onup>1006</onup>
+      <ondown>1006</ondown>
+    </control>
+    <control type="button" id="1007">
+      <left>340</left>
+      <top>168</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1007</onleft>
+      <onright>1007</onright>
+      <onup>1007</onup>
+      <ondown>1007</ondown>
+    </control>
+    <control type="button" id="1008">
+      <left>340</left>
+      <top>168</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1008</onleft>
+      <onright>1008</onright>
+      <onup>1008</onup>
+      <ondown>1008</ondown>
+    </control>
+    <control type="button" id="1009">
+      <left>340</left>
+      <top>168</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1009</onleft>
+      <onright>1009</onright>
+      <onup>1009</onup>
+      <ondown>1009</ondown>
+    </control>
+    <control type="button" id="1010">
+      <left>340</left>
+      <top>168</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1010</onleft>
+      <onright>1010</onright>
+      <onup>1010</onup>
+      <ondown>1010</ondown>
+    </control>
+    <control type="button" id="1011">
+      <left>340</left>
+      <top>168</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1011</onleft>
+      <onright>1011</onright>
+      <onup>1011</onup>
+      <ondown>1011</ondown>
+    </control>
+    <control type="button" id="1012">
+      <left>340</left>
+      <top>168</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1012</onleft>
+      <onright>1012</onright>
+      <onup>1012</onup>
+      <ondown>1012</ondown>
+    </control>
+    <control type="button" id="1013">
+      <left>340</left>
+      <top>168</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1013</onleft>
+      <onright>1013</onright>
+      <onup>1013</onup>
+      <ondown>1013</ondown>
+    </control>
+    <control type="button" id="1014">
+      <left>340</left>
+      <top>168</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1014</onleft>
+      <onright>1014</onright>
+      <onup>1014</onup>
+      <ondown>1014</ondown>
+    </control>
+    <control type="button" id="1015">
+      <left>340</left>
+      <top>168</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1015</onleft>
+      <onright>1015</onright>
+      <onup>1015</onup>
+      <ondown>1015</ondown>
+    </control>
+    <control type="button" id="1016">
+      <left>340</left>
+      <top>168</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1016</onleft>
+      <onright>1016</onright>
+      <onup>1016</onup>
+      <ondown>1016</ondown>
+    </control>
+    <control type="button" id="1017">
+      <left>340</left>
+      <top>168</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1017</onleft>
+      <onright>1017</onright>
+      <onup>1017</onup>
+      <ondown>1017</ondown>
+    </control>
+    <control type="button" id="1018">
+      <left>340</left>
+      <top>168</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1018</onleft>
+      <onright>1018</onright>
+      <onup>1018</onup>
+      <ondown>1018</ondown>
+    </control>
+    <control type="button" id="1019">
+      <left>340</left>
+      <top>168</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1019</onleft>
+      <onright>1019</onright>
+      <onup>1019</onup>
+      <ondown>1019</ondown>
+    </control>
+    <control type="button" id="1020">
+      <left>340</left>
+      <top>168</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1020</onleft>
+      <onright>1020</onright>
+      <onup>1020</onup>
+      <ondown>1020</ondown>
+    </control>
+    <control type="button" id="1021">
+      <left>340</left>
+      <top>168</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1021</onleft>
+      <onright>1021</onright>
+      <onup>1021</onup>
+      <ondown>1021</ondown>
+    </control>
+    <control type="button" id="1022">
+      <left>340</left>
+      <top>168</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1022</onleft>
+      <onright>1022</onright>
+      <onup>1022</onup>
+      <ondown>1022</ondown>
+    </control>
+    <control type="button" id="1023">
+      <left>340</left>
+      <top>168</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1023</onleft>
+      <onright>1023</onright>
+      <onup>1023</onup>
+      <ondown>1023</ondown>
+    </control>
+    <control type="image" id="721">
+      <left>44</left>
+      <top>234</top>
+      <width>40</width>
+      <height>36</height>
+      <aspectratio>keep</aspectratio>
+      <texture />
+    </control>
+    <control type="textbox" id="701">
+      <left>92</left>
+      <top>226</top>
+      <width>236</width>
+      <height>50</height>
+      <font>font13</font>
+      <textcolor>FFF0F2F5</textcolor>
+      <label />
+    </control>
+    <control type="button" id="1024">
+      <left>340</left>
+      <top>224</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1024</onleft>
+      <onright>1024</onright>
+      <onup>1024</onup>
+      <ondown>1024</ondown>
+    </control>
+    <control type="button" id="1025">
+      <left>340</left>
+      <top>224</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1025</onleft>
+      <onright>1025</onright>
+      <onup>1025</onup>
+      <ondown>1025</ondown>
+    </control>
+    <control type="button" id="1026">
+      <left>340</left>
+      <top>224</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1026</onleft>
+      <onright>1026</onright>
+      <onup>1026</onup>
+      <ondown>1026</ondown>
+    </control>
+    <control type="button" id="1027">
+      <left>340</left>
+      <top>224</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1027</onleft>
+      <onright>1027</onright>
+      <onup>1027</onup>
+      <ondown>1027</ondown>
+    </control>
+    <control type="button" id="1028">
+      <left>340</left>
+      <top>224</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1028</onleft>
+      <onright>1028</onright>
+      <onup>1028</onup>
+      <ondown>1028</ondown>
+    </control>
+    <control type="button" id="1029">
+      <left>340</left>
+      <top>224</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1029</onleft>
+      <onright>1029</onright>
+      <onup>1029</onup>
+      <ondown>1029</ondown>
+    </control>
+    <control type="button" id="1030">
+      <left>340</left>
+      <top>224</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1030</onleft>
+      <onright>1030</onright>
+      <onup>1030</onup>
+      <ondown>1030</ondown>
+    </control>
+    <control type="button" id="1031">
+      <left>340</left>
+      <top>224</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1031</onleft>
+      <onright>1031</onright>
+      <onup>1031</onup>
+      <ondown>1031</ondown>
+    </control>
+    <control type="button" id="1032">
+      <left>340</left>
+      <top>224</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1032</onleft>
+      <onright>1032</onright>
+      <onup>1032</onup>
+      <ondown>1032</ondown>
+    </control>
+    <control type="button" id="1033">
+      <left>340</left>
+      <top>224</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1033</onleft>
+      <onright>1033</onright>
+      <onup>1033</onup>
+      <ondown>1033</ondown>
+    </control>
+    <control type="button" id="1034">
+      <left>340</left>
+      <top>224</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1034</onleft>
+      <onright>1034</onright>
+      <onup>1034</onup>
+      <ondown>1034</ondown>
+    </control>
+    <control type="button" id="1035">
+      <left>340</left>
+      <top>224</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1035</onleft>
+      <onright>1035</onright>
+      <onup>1035</onup>
+      <ondown>1035</ondown>
+    </control>
+    <control type="button" id="1036">
+      <left>340</left>
+      <top>224</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1036</onleft>
+      <onright>1036</onright>
+      <onup>1036</onup>
+      <ondown>1036</ondown>
+    </control>
+    <control type="button" id="1037">
+      <left>340</left>
+      <top>224</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1037</onleft>
+      <onright>1037</onright>
+      <onup>1037</onup>
+      <ondown>1037</ondown>
+    </control>
+    <control type="button" id="1038">
+      <left>340</left>
+      <top>224</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1038</onleft>
+      <onright>1038</onright>
+      <onup>1038</onup>
+      <ondown>1038</ondown>
+    </control>
+    <control type="button" id="1039">
+      <left>340</left>
+      <top>224</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1039</onleft>
+      <onright>1039</onright>
+      <onup>1039</onup>
+      <ondown>1039</ondown>
+    </control>
+    <control type="button" id="1040">
+      <left>340</left>
+      <top>224</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1040</onleft>
+      <onright>1040</onright>
+      <onup>1040</onup>
+      <ondown>1040</ondown>
+    </control>
+    <control type="button" id="1041">
+      <left>340</left>
+      <top>224</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1041</onleft>
+      <onright>1041</onright>
+      <onup>1041</onup>
+      <ondown>1041</ondown>
+    </control>
+    <control type="button" id="1042">
+      <left>340</left>
+      <top>224</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1042</onleft>
+      <onright>1042</onright>
+      <onup>1042</onup>
+      <ondown>1042</ondown>
+    </control>
+    <control type="button" id="1043">
+      <left>340</left>
+      <top>224</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1043</onleft>
+      <onright>1043</onright>
+      <onup>1043</onup>
+      <ondown>1043</ondown>
+    </control>
+    <control type="button" id="1044">
+      <left>340</left>
+      <top>224</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1044</onleft>
+      <onright>1044</onright>
+      <onup>1044</onup>
+      <ondown>1044</ondown>
+    </control>
+    <control type="button" id="1045">
+      <left>340</left>
+      <top>224</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1045</onleft>
+      <onright>1045</onright>
+      <onup>1045</onup>
+      <ondown>1045</ondown>
+    </control>
+    <control type="button" id="1046">
+      <left>340</left>
+      <top>224</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1046</onleft>
+      <onright>1046</onright>
+      <onup>1046</onup>
+      <ondown>1046</ondown>
+    </control>
+    <control type="button" id="1047">
+      <left>340</left>
+      <top>224</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1047</onleft>
+      <onright>1047</onright>
+      <onup>1047</onup>
+      <ondown>1047</ondown>
+    </control>
+    <control type="image" id="722">
+      <left>44</left>
+      <top>290</top>
+      <width>40</width>
+      <height>36</height>
+      <aspectratio>keep</aspectratio>
+      <texture />
+    </control>
+    <control type="textbox" id="702">
+      <left>92</left>
+      <top>282</top>
+      <width>236</width>
+      <height>50</height>
+      <font>font13</font>
+      <textcolor>FFF0F2F5</textcolor>
+      <label />
+    </control>
+    <control type="button" id="1048">
+      <left>340</left>
+      <top>280</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1048</onleft>
+      <onright>1048</onright>
+      <onup>1048</onup>
+      <ondown>1048</ondown>
+    </control>
+    <control type="button" id="1049">
+      <left>340</left>
+      <top>280</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1049</onleft>
+      <onright>1049</onright>
+      <onup>1049</onup>
+      <ondown>1049</ondown>
+    </control>
+    <control type="button" id="1050">
+      <left>340</left>
+      <top>280</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1050</onleft>
+      <onright>1050</onright>
+      <onup>1050</onup>
+      <ondown>1050</ondown>
+    </control>
+    <control type="button" id="1051">
+      <left>340</left>
+      <top>280</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1051</onleft>
+      <onright>1051</onright>
+      <onup>1051</onup>
+      <ondown>1051</ondown>
+    </control>
+    <control type="button" id="1052">
+      <left>340</left>
+      <top>280</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1052</onleft>
+      <onright>1052</onright>
+      <onup>1052</onup>
+      <ondown>1052</ondown>
+    </control>
+    <control type="button" id="1053">
+      <left>340</left>
+      <top>280</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1053</onleft>
+      <onright>1053</onright>
+      <onup>1053</onup>
+      <ondown>1053</ondown>
+    </control>
+    <control type="button" id="1054">
+      <left>340</left>
+      <top>280</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1054</onleft>
+      <onright>1054</onright>
+      <onup>1054</onup>
+      <ondown>1054</ondown>
+    </control>
+    <control type="button" id="1055">
+      <left>340</left>
+      <top>280</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1055</onleft>
+      <onright>1055</onright>
+      <onup>1055</onup>
+      <ondown>1055</ondown>
+    </control>
+    <control type="button" id="1056">
+      <left>340</left>
+      <top>280</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1056</onleft>
+      <onright>1056</onright>
+      <onup>1056</onup>
+      <ondown>1056</ondown>
+    </control>
+    <control type="button" id="1057">
+      <left>340</left>
+      <top>280</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1057</onleft>
+      <onright>1057</onright>
+      <onup>1057</onup>
+      <ondown>1057</ondown>
+    </control>
+    <control type="button" id="1058">
+      <left>340</left>
+      <top>280</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1058</onleft>
+      <onright>1058</onright>
+      <onup>1058</onup>
+      <ondown>1058</ondown>
+    </control>
+    <control type="button" id="1059">
+      <left>340</left>
+      <top>280</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1059</onleft>
+      <onright>1059</onright>
+      <onup>1059</onup>
+      <ondown>1059</ondown>
+    </control>
+    <control type="button" id="1060">
+      <left>340</left>
+      <top>280</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1060</onleft>
+      <onright>1060</onright>
+      <onup>1060</onup>
+      <ondown>1060</ondown>
+    </control>
+    <control type="button" id="1061">
+      <left>340</left>
+      <top>280</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1061</onleft>
+      <onright>1061</onright>
+      <onup>1061</onup>
+      <ondown>1061</ondown>
+    </control>
+    <control type="button" id="1062">
+      <left>340</left>
+      <top>280</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1062</onleft>
+      <onright>1062</onright>
+      <onup>1062</onup>
+      <ondown>1062</ondown>
+    </control>
+    <control type="button" id="1063">
+      <left>340</left>
+      <top>280</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1063</onleft>
+      <onright>1063</onright>
+      <onup>1063</onup>
+      <ondown>1063</ondown>
+    </control>
+    <control type="button" id="1064">
+      <left>340</left>
+      <top>280</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1064</onleft>
+      <onright>1064</onright>
+      <onup>1064</onup>
+      <ondown>1064</ondown>
+    </control>
+    <control type="button" id="1065">
+      <left>340</left>
+      <top>280</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1065</onleft>
+      <onright>1065</onright>
+      <onup>1065</onup>
+      <ondown>1065</ondown>
+    </control>
+    <control type="button" id="1066">
+      <left>340</left>
+      <top>280</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1066</onleft>
+      <onright>1066</onright>
+      <onup>1066</onup>
+      <ondown>1066</ondown>
+    </control>
+    <control type="button" id="1067">
+      <left>340</left>
+      <top>280</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1067</onleft>
+      <onright>1067</onright>
+      <onup>1067</onup>
+      <ondown>1067</ondown>
+    </control>
+    <control type="button" id="1068">
+      <left>340</left>
+      <top>280</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1068</onleft>
+      <onright>1068</onright>
+      <onup>1068</onup>
+      <ondown>1068</ondown>
+    </control>
+    <control type="button" id="1069">
+      <left>340</left>
+      <top>280</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1069</onleft>
+      <onright>1069</onright>
+      <onup>1069</onup>
+      <ondown>1069</ondown>
+    </control>
+    <control type="button" id="1070">
+      <left>340</left>
+      <top>280</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1070</onleft>
+      <onright>1070</onright>
+      <onup>1070</onup>
+      <ondown>1070</ondown>
+    </control>
+    <control type="button" id="1071">
+      <left>340</left>
+      <top>280</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1071</onleft>
+      <onright>1071</onright>
+      <onup>1071</onup>
+      <ondown>1071</ondown>
+    </control>
+    <control type="image" id="723">
+      <left>44</left>
+      <top>346</top>
+      <width>40</width>
+      <height>36</height>
+      <aspectratio>keep</aspectratio>
+      <texture />
+    </control>
+    <control type="textbox" id="703">
+      <left>92</left>
+      <top>338</top>
+      <width>236</width>
+      <height>50</height>
+      <font>font13</font>
+      <textcolor>FFF0F2F5</textcolor>
+      <label />
+    </control>
+    <control type="button" id="1072">
+      <left>340</left>
+      <top>336</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1072</onleft>
+      <onright>1072</onright>
+      <onup>1072</onup>
+      <ondown>1072</ondown>
+    </control>
+    <control type="button" id="1073">
+      <left>340</left>
+      <top>336</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1073</onleft>
+      <onright>1073</onright>
+      <onup>1073</onup>
+      <ondown>1073</ondown>
+    </control>
+    <control type="button" id="1074">
+      <left>340</left>
+      <top>336</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1074</onleft>
+      <onright>1074</onright>
+      <onup>1074</onup>
+      <ondown>1074</ondown>
+    </control>
+    <control type="button" id="1075">
+      <left>340</left>
+      <top>336</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1075</onleft>
+      <onright>1075</onright>
+      <onup>1075</onup>
+      <ondown>1075</ondown>
+    </control>
+    <control type="button" id="1076">
+      <left>340</left>
+      <top>336</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1076</onleft>
+      <onright>1076</onright>
+      <onup>1076</onup>
+      <ondown>1076</ondown>
+    </control>
+    <control type="button" id="1077">
+      <left>340</left>
+      <top>336</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1077</onleft>
+      <onright>1077</onright>
+      <onup>1077</onup>
+      <ondown>1077</ondown>
+    </control>
+    <control type="button" id="1078">
+      <left>340</left>
+      <top>336</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1078</onleft>
+      <onright>1078</onright>
+      <onup>1078</onup>
+      <ondown>1078</ondown>
+    </control>
+    <control type="button" id="1079">
+      <left>340</left>
+      <top>336</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1079</onleft>
+      <onright>1079</onright>
+      <onup>1079</onup>
+      <ondown>1079</ondown>
+    </control>
+    <control type="button" id="1080">
+      <left>340</left>
+      <top>336</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1080</onleft>
+      <onright>1080</onright>
+      <onup>1080</onup>
+      <ondown>1080</ondown>
+    </control>
+    <control type="button" id="1081">
+      <left>340</left>
+      <top>336</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1081</onleft>
+      <onright>1081</onright>
+      <onup>1081</onup>
+      <ondown>1081</ondown>
+    </control>
+    <control type="button" id="1082">
+      <left>340</left>
+      <top>336</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1082</onleft>
+      <onright>1082</onright>
+      <onup>1082</onup>
+      <ondown>1082</ondown>
+    </control>
+    <control type="button" id="1083">
+      <left>340</left>
+      <top>336</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1083</onleft>
+      <onright>1083</onright>
+      <onup>1083</onup>
+      <ondown>1083</ondown>
+    </control>
+    <control type="button" id="1084">
+      <left>340</left>
+      <top>336</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1084</onleft>
+      <onright>1084</onright>
+      <onup>1084</onup>
+      <ondown>1084</ondown>
+    </control>
+    <control type="button" id="1085">
+      <left>340</left>
+      <top>336</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1085</onleft>
+      <onright>1085</onright>
+      <onup>1085</onup>
+      <ondown>1085</ondown>
+    </control>
+    <control type="button" id="1086">
+      <left>340</left>
+      <top>336</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1086</onleft>
+      <onright>1086</onright>
+      <onup>1086</onup>
+      <ondown>1086</ondown>
+    </control>
+    <control type="button" id="1087">
+      <left>340</left>
+      <top>336</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1087</onleft>
+      <onright>1087</onright>
+      <onup>1087</onup>
+      <ondown>1087</ondown>
+    </control>
+    <control type="button" id="1088">
+      <left>340</left>
+      <top>336</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1088</onleft>
+      <onright>1088</onright>
+      <onup>1088</onup>
+      <ondown>1088</ondown>
+    </control>
+    <control type="button" id="1089">
+      <left>340</left>
+      <top>336</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1089</onleft>
+      <onright>1089</onright>
+      <onup>1089</onup>
+      <ondown>1089</ondown>
+    </control>
+    <control type="button" id="1090">
+      <left>340</left>
+      <top>336</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1090</onleft>
+      <onright>1090</onright>
+      <onup>1090</onup>
+      <ondown>1090</ondown>
+    </control>
+    <control type="button" id="1091">
+      <left>340</left>
+      <top>336</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1091</onleft>
+      <onright>1091</onright>
+      <onup>1091</onup>
+      <ondown>1091</ondown>
+    </control>
+    <control type="button" id="1092">
+      <left>340</left>
+      <top>336</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1092</onleft>
+      <onright>1092</onright>
+      <onup>1092</onup>
+      <ondown>1092</ondown>
+    </control>
+    <control type="button" id="1093">
+      <left>340</left>
+      <top>336</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1093</onleft>
+      <onright>1093</onright>
+      <onup>1093</onup>
+      <ondown>1093</ondown>
+    </control>
+    <control type="button" id="1094">
+      <left>340</left>
+      <top>336</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1094</onleft>
+      <onright>1094</onright>
+      <onup>1094</onup>
+      <ondown>1094</ondown>
+    </control>
+    <control type="button" id="1095">
+      <left>340</left>
+      <top>336</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1095</onleft>
+      <onright>1095</onright>
+      <onup>1095</onup>
+      <ondown>1095</ondown>
+    </control>
+    <control type="image" id="724">
+      <left>44</left>
+      <top>402</top>
+      <width>40</width>
+      <height>36</height>
+      <aspectratio>keep</aspectratio>
+      <texture />
+    </control>
+    <control type="textbox" id="704">
+      <left>92</left>
+      <top>394</top>
+      <width>236</width>
+      <height>50</height>
+      <font>font13</font>
+      <textcolor>FFF0F2F5</textcolor>
+      <label />
+    </control>
+    <control type="button" id="1096">
+      <left>340</left>
+      <top>392</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1096</onleft>
+      <onright>1096</onright>
+      <onup>1096</onup>
+      <ondown>1096</ondown>
+    </control>
+    <control type="button" id="1097">
+      <left>340</left>
+      <top>392</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1097</onleft>
+      <onright>1097</onright>
+      <onup>1097</onup>
+      <ondown>1097</ondown>
+    </control>
+    <control type="button" id="1098">
+      <left>340</left>
+      <top>392</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1098</onleft>
+      <onright>1098</onright>
+      <onup>1098</onup>
+      <ondown>1098</ondown>
+    </control>
+    <control type="button" id="1099">
+      <left>340</left>
+      <top>392</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1099</onleft>
+      <onright>1099</onright>
+      <onup>1099</onup>
+      <ondown>1099</ondown>
+    </control>
+    <control type="button" id="1100">
+      <left>340</left>
+      <top>392</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1100</onleft>
+      <onright>1100</onright>
+      <onup>1100</onup>
+      <ondown>1100</ondown>
+    </control>
+    <control type="button" id="1101">
+      <left>340</left>
+      <top>392</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1101</onleft>
+      <onright>1101</onright>
+      <onup>1101</onup>
+      <ondown>1101</ondown>
+    </control>
+    <control type="button" id="1102">
+      <left>340</left>
+      <top>392</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1102</onleft>
+      <onright>1102</onright>
+      <onup>1102</onup>
+      <ondown>1102</ondown>
+    </control>
+    <control type="button" id="1103">
+      <left>340</left>
+      <top>392</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1103</onleft>
+      <onright>1103</onright>
+      <onup>1103</onup>
+      <ondown>1103</ondown>
+    </control>
+    <control type="button" id="1104">
+      <left>340</left>
+      <top>392</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1104</onleft>
+      <onright>1104</onright>
+      <onup>1104</onup>
+      <ondown>1104</ondown>
+    </control>
+    <control type="button" id="1105">
+      <left>340</left>
+      <top>392</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1105</onleft>
+      <onright>1105</onright>
+      <onup>1105</onup>
+      <ondown>1105</ondown>
+    </control>
+    <control type="button" id="1106">
+      <left>340</left>
+      <top>392</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1106</onleft>
+      <onright>1106</onright>
+      <onup>1106</onup>
+      <ondown>1106</ondown>
+    </control>
+    <control type="button" id="1107">
+      <left>340</left>
+      <top>392</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1107</onleft>
+      <onright>1107</onright>
+      <onup>1107</onup>
+      <ondown>1107</ondown>
+    </control>
+    <control type="button" id="1108">
+      <left>340</left>
+      <top>392</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1108</onleft>
+      <onright>1108</onright>
+      <onup>1108</onup>
+      <ondown>1108</ondown>
+    </control>
+    <control type="button" id="1109">
+      <left>340</left>
+      <top>392</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1109</onleft>
+      <onright>1109</onright>
+      <onup>1109</onup>
+      <ondown>1109</ondown>
+    </control>
+    <control type="button" id="1110">
+      <left>340</left>
+      <top>392</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1110</onleft>
+      <onright>1110</onright>
+      <onup>1110</onup>
+      <ondown>1110</ondown>
+    </control>
+    <control type="button" id="1111">
+      <left>340</left>
+      <top>392</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1111</onleft>
+      <onright>1111</onright>
+      <onup>1111</onup>
+      <ondown>1111</ondown>
+    </control>
+    <control type="button" id="1112">
+      <left>340</left>
+      <top>392</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1112</onleft>
+      <onright>1112</onright>
+      <onup>1112</onup>
+      <ondown>1112</ondown>
+    </control>
+    <control type="button" id="1113">
+      <left>340</left>
+      <top>392</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1113</onleft>
+      <onright>1113</onright>
+      <onup>1113</onup>
+      <ondown>1113</ondown>
+    </control>
+    <control type="button" id="1114">
+      <left>340</left>
+      <top>392</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1114</onleft>
+      <onright>1114</onright>
+      <onup>1114</onup>
+      <ondown>1114</ondown>
+    </control>
+    <control type="button" id="1115">
+      <left>340</left>
+      <top>392</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1115</onleft>
+      <onright>1115</onright>
+      <onup>1115</onup>
+      <ondown>1115</ondown>
+    </control>
+    <control type="button" id="1116">
+      <left>340</left>
+      <top>392</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1116</onleft>
+      <onright>1116</onright>
+      <onup>1116</onup>
+      <ondown>1116</ondown>
+    </control>
+    <control type="button" id="1117">
+      <left>340</left>
+      <top>392</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1117</onleft>
+      <onright>1117</onright>
+      <onup>1117</onup>
+      <ondown>1117</ondown>
+    </control>
+    <control type="button" id="1118">
+      <left>340</left>
+      <top>392</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1118</onleft>
+      <onright>1118</onright>
+      <onup>1118</onup>
+      <ondown>1118</ondown>
+    </control>
+    <control type="button" id="1119">
+      <left>340</left>
+      <top>392</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1119</onleft>
+      <onright>1119</onright>
+      <onup>1119</onup>
+      <ondown>1119</ondown>
+    </control>
+    <control type="image" id="725">
+      <left>44</left>
+      <top>458</top>
+      <width>40</width>
+      <height>36</height>
+      <aspectratio>keep</aspectratio>
+      <texture />
+    </control>
+    <control type="textbox" id="705">
+      <left>92</left>
+      <top>450</top>
+      <width>236</width>
+      <height>50</height>
+      <font>font13</font>
+      <textcolor>FFF0F2F5</textcolor>
+      <label />
+    </control>
+    <control type="button" id="1120">
+      <left>340</left>
+      <top>448</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1120</onleft>
+      <onright>1120</onright>
+      <onup>1120</onup>
+      <ondown>1120</ondown>
+    </control>
+    <control type="button" id="1121">
+      <left>340</left>
+      <top>448</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1121</onleft>
+      <onright>1121</onright>
+      <onup>1121</onup>
+      <ondown>1121</ondown>
+    </control>
+    <control type="button" id="1122">
+      <left>340</left>
+      <top>448</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1122</onleft>
+      <onright>1122</onright>
+      <onup>1122</onup>
+      <ondown>1122</ondown>
+    </control>
+    <control type="button" id="1123">
+      <left>340</left>
+      <top>448</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1123</onleft>
+      <onright>1123</onright>
+      <onup>1123</onup>
+      <ondown>1123</ondown>
+    </control>
+    <control type="button" id="1124">
+      <left>340</left>
+      <top>448</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1124</onleft>
+      <onright>1124</onright>
+      <onup>1124</onup>
+      <ondown>1124</ondown>
+    </control>
+    <control type="button" id="1125">
+      <left>340</left>
+      <top>448</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1125</onleft>
+      <onright>1125</onright>
+      <onup>1125</onup>
+      <ondown>1125</ondown>
+    </control>
+    <control type="button" id="1126">
+      <left>340</left>
+      <top>448</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1126</onleft>
+      <onright>1126</onright>
+      <onup>1126</onup>
+      <ondown>1126</ondown>
+    </control>
+    <control type="button" id="1127">
+      <left>340</left>
+      <top>448</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1127</onleft>
+      <onright>1127</onright>
+      <onup>1127</onup>
+      <ondown>1127</ondown>
+    </control>
+    <control type="button" id="1128">
+      <left>340</left>
+      <top>448</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1128</onleft>
+      <onright>1128</onright>
+      <onup>1128</onup>
+      <ondown>1128</ondown>
+    </control>
+    <control type="button" id="1129">
+      <left>340</left>
+      <top>448</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1129</onleft>
+      <onright>1129</onright>
+      <onup>1129</onup>
+      <ondown>1129</ondown>
+    </control>
+    <control type="button" id="1130">
+      <left>340</left>
+      <top>448</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1130</onleft>
+      <onright>1130</onright>
+      <onup>1130</onup>
+      <ondown>1130</ondown>
+    </control>
+    <control type="button" id="1131">
+      <left>340</left>
+      <top>448</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1131</onleft>
+      <onright>1131</onright>
+      <onup>1131</onup>
+      <ondown>1131</ondown>
+    </control>
+    <control type="button" id="1132">
+      <left>340</left>
+      <top>448</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1132</onleft>
+      <onright>1132</onright>
+      <onup>1132</onup>
+      <ondown>1132</ondown>
+    </control>
+    <control type="button" id="1133">
+      <left>340</left>
+      <top>448</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1133</onleft>
+      <onright>1133</onright>
+      <onup>1133</onup>
+      <ondown>1133</ondown>
+    </control>
+    <control type="button" id="1134">
+      <left>340</left>
+      <top>448</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1134</onleft>
+      <onright>1134</onright>
+      <onup>1134</onup>
+      <ondown>1134</ondown>
+    </control>
+    <control type="button" id="1135">
+      <left>340</left>
+      <top>448</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1135</onleft>
+      <onright>1135</onright>
+      <onup>1135</onup>
+      <ondown>1135</ondown>
+    </control>
+    <control type="button" id="1136">
+      <left>340</left>
+      <top>448</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1136</onleft>
+      <onright>1136</onright>
+      <onup>1136</onup>
+      <ondown>1136</ondown>
+    </control>
+    <control type="button" id="1137">
+      <left>340</left>
+      <top>448</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1137</onleft>
+      <onright>1137</onright>
+      <onup>1137</onup>
+      <ondown>1137</ondown>
+    </control>
+    <control type="button" id="1138">
+      <left>340</left>
+      <top>448</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1138</onleft>
+      <onright>1138</onright>
+      <onup>1138</onup>
+      <ondown>1138</ondown>
+    </control>
+    <control type="button" id="1139">
+      <left>340</left>
+      <top>448</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1139</onleft>
+      <onright>1139</onright>
+      <onup>1139</onup>
+      <ondown>1139</ondown>
+    </control>
+    <control type="button" id="1140">
+      <left>340</left>
+      <top>448</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1140</onleft>
+      <onright>1140</onright>
+      <onup>1140</onup>
+      <ondown>1140</ondown>
+    </control>
+    <control type="button" id="1141">
+      <left>340</left>
+      <top>448</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1141</onleft>
+      <onright>1141</onright>
+      <onup>1141</onup>
+      <ondown>1141</ondown>
+    </control>
+    <control type="button" id="1142">
+      <left>340</left>
+      <top>448</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1142</onleft>
+      <onright>1142</onright>
+      <onup>1142</onup>
+      <ondown>1142</ondown>
+    </control>
+    <control type="button" id="1143">
+      <left>340</left>
+      <top>448</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1143</onleft>
+      <onright>1143</onright>
+      <onup>1143</onup>
+      <ondown>1143</ondown>
+    </control>
+    <control type="image" id="726">
+      <left>44</left>
+      <top>514</top>
+      <width>40</width>
+      <height>36</height>
+      <aspectratio>keep</aspectratio>
+      <texture />
+    </control>
+    <control type="textbox" id="706">
+      <left>92</left>
+      <top>506</top>
+      <width>236</width>
+      <height>50</height>
+      <font>font13</font>
+      <textcolor>FFF0F2F5</textcolor>
+      <label />
+    </control>
+    <control type="button" id="1144">
+      <left>340</left>
+      <top>504</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1144</onleft>
+      <onright>1144</onright>
+      <onup>1144</onup>
+      <ondown>1144</ondown>
+    </control>
+    <control type="button" id="1145">
+      <left>340</left>
+      <top>504</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1145</onleft>
+      <onright>1145</onright>
+      <onup>1145</onup>
+      <ondown>1145</ondown>
+    </control>
+    <control type="button" id="1146">
+      <left>340</left>
+      <top>504</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1146</onleft>
+      <onright>1146</onright>
+      <onup>1146</onup>
+      <ondown>1146</ondown>
+    </control>
+    <control type="button" id="1147">
+      <left>340</left>
+      <top>504</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1147</onleft>
+      <onright>1147</onright>
+      <onup>1147</onup>
+      <ondown>1147</ondown>
+    </control>
+    <control type="button" id="1148">
+      <left>340</left>
+      <top>504</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1148</onleft>
+      <onright>1148</onright>
+      <onup>1148</onup>
+      <ondown>1148</ondown>
+    </control>
+    <control type="button" id="1149">
+      <left>340</left>
+      <top>504</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1149</onleft>
+      <onright>1149</onright>
+      <onup>1149</onup>
+      <ondown>1149</ondown>
+    </control>
+    <control type="button" id="1150">
+      <left>340</left>
+      <top>504</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1150</onleft>
+      <onright>1150</onright>
+      <onup>1150</onup>
+      <ondown>1150</ondown>
+    </control>
+    <control type="button" id="1151">
+      <left>340</left>
+      <top>504</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1151</onleft>
+      <onright>1151</onright>
+      <onup>1151</onup>
+      <ondown>1151</ondown>
+    </control>
+    <control type="button" id="1152">
+      <left>340</left>
+      <top>504</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1152</onleft>
+      <onright>1152</onright>
+      <onup>1152</onup>
+      <ondown>1152</ondown>
+    </control>
+    <control type="button" id="1153">
+      <left>340</left>
+      <top>504</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1153</onleft>
+      <onright>1153</onright>
+      <onup>1153</onup>
+      <ondown>1153</ondown>
+    </control>
+    <control type="button" id="1154">
+      <left>340</left>
+      <top>504</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1154</onleft>
+      <onright>1154</onright>
+      <onup>1154</onup>
+      <ondown>1154</ondown>
+    </control>
+    <control type="button" id="1155">
+      <left>340</left>
+      <top>504</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1155</onleft>
+      <onright>1155</onright>
+      <onup>1155</onup>
+      <ondown>1155</ondown>
+    </control>
+    <control type="button" id="1156">
+      <left>340</left>
+      <top>504</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1156</onleft>
+      <onright>1156</onright>
+      <onup>1156</onup>
+      <ondown>1156</ondown>
+    </control>
+    <control type="button" id="1157">
+      <left>340</left>
+      <top>504</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1157</onleft>
+      <onright>1157</onright>
+      <onup>1157</onup>
+      <ondown>1157</ondown>
+    </control>
+    <control type="button" id="1158">
+      <left>340</left>
+      <top>504</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1158</onleft>
+      <onright>1158</onright>
+      <onup>1158</onup>
+      <ondown>1158</ondown>
+    </control>
+    <control type="button" id="1159">
+      <left>340</left>
+      <top>504</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1159</onleft>
+      <onright>1159</onright>
+      <onup>1159</onup>
+      <ondown>1159</ondown>
+    </control>
+    <control type="button" id="1160">
+      <left>340</left>
+      <top>504</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1160</onleft>
+      <onright>1160</onright>
+      <onup>1160</onup>
+      <ondown>1160</ondown>
+    </control>
+    <control type="button" id="1161">
+      <left>340</left>
+      <top>504</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1161</onleft>
+      <onright>1161</onright>
+      <onup>1161</onup>
+      <ondown>1161</ondown>
+    </control>
+    <control type="button" id="1162">
+      <left>340</left>
+      <top>504</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1162</onleft>
+      <onright>1162</onright>
+      <onup>1162</onup>
+      <ondown>1162</ondown>
+    </control>
+    <control type="button" id="1163">
+      <left>340</left>
+      <top>504</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1163</onleft>
+      <onright>1163</onright>
+      <onup>1163</onup>
+      <ondown>1163</ondown>
+    </control>
+    <control type="button" id="1164">
+      <left>340</left>
+      <top>504</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1164</onleft>
+      <onright>1164</onright>
+      <onup>1164</onup>
+      <ondown>1164</ondown>
+    </control>
+    <control type="button" id="1165">
+      <left>340</left>
+      <top>504</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1165</onleft>
+      <onright>1165</onright>
+      <onup>1165</onup>
+      <ondown>1165</ondown>
+    </control>
+    <control type="button" id="1166">
+      <left>340</left>
+      <top>504</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1166</onleft>
+      <onright>1166</onright>
+      <onup>1166</onup>
+      <ondown>1166</ondown>
+    </control>
+    <control type="button" id="1167">
+      <left>340</left>
+      <top>504</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1167</onleft>
+      <onright>1167</onright>
+      <onup>1167</onup>
+      <ondown>1167</ondown>
+    </control>
+    <control type="image" id="727">
+      <left>44</left>
+      <top>570</top>
+      <width>40</width>
+      <height>36</height>
+      <aspectratio>keep</aspectratio>
+      <texture />
+    </control>
+    <control type="textbox" id="707">
+      <left>92</left>
+      <top>562</top>
+      <width>236</width>
+      <height>50</height>
+      <font>font13</font>
+      <textcolor>FFF0F2F5</textcolor>
+      <label />
+    </control>
+    <control type="button" id="1168">
+      <left>340</left>
+      <top>560</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1168</onleft>
+      <onright>1168</onright>
+      <onup>1168</onup>
+      <ondown>1168</ondown>
+    </control>
+    <control type="button" id="1169">
+      <left>340</left>
+      <top>560</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1169</onleft>
+      <onright>1169</onright>
+      <onup>1169</onup>
+      <ondown>1169</ondown>
+    </control>
+    <control type="button" id="1170">
+      <left>340</left>
+      <top>560</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1170</onleft>
+      <onright>1170</onright>
+      <onup>1170</onup>
+      <ondown>1170</ondown>
+    </control>
+    <control type="button" id="1171">
+      <left>340</left>
+      <top>560</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1171</onleft>
+      <onright>1171</onright>
+      <onup>1171</onup>
+      <ondown>1171</ondown>
+    </control>
+    <control type="button" id="1172">
+      <left>340</left>
+      <top>560</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1172</onleft>
+      <onright>1172</onright>
+      <onup>1172</onup>
+      <ondown>1172</ondown>
+    </control>
+    <control type="button" id="1173">
+      <left>340</left>
+      <top>560</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1173</onleft>
+      <onright>1173</onright>
+      <onup>1173</onup>
+      <ondown>1173</ondown>
+    </control>
+    <control type="button" id="1174">
+      <left>340</left>
+      <top>560</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1174</onleft>
+      <onright>1174</onright>
+      <onup>1174</onup>
+      <ondown>1174</ondown>
+    </control>
+    <control type="button" id="1175">
+      <left>340</left>
+      <top>560</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1175</onleft>
+      <onright>1175</onright>
+      <onup>1175</onup>
+      <ondown>1175</ondown>
+    </control>
+    <control type="button" id="1176">
+      <left>340</left>
+      <top>560</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1176</onleft>
+      <onright>1176</onright>
+      <onup>1176</onup>
+      <ondown>1176</ondown>
+    </control>
+    <control type="button" id="1177">
+      <left>340</left>
+      <top>560</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1177</onleft>
+      <onright>1177</onright>
+      <onup>1177</onup>
+      <ondown>1177</ondown>
+    </control>
+    <control type="button" id="1178">
+      <left>340</left>
+      <top>560</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1178</onleft>
+      <onright>1178</onright>
+      <onup>1178</onup>
+      <ondown>1178</ondown>
+    </control>
+    <control type="button" id="1179">
+      <left>340</left>
+      <top>560</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1179</onleft>
+      <onright>1179</onright>
+      <onup>1179</onup>
+      <ondown>1179</ondown>
+    </control>
+    <control type="button" id="1180">
+      <left>340</left>
+      <top>560</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1180</onleft>
+      <onright>1180</onright>
+      <onup>1180</onup>
+      <ondown>1180</ondown>
+    </control>
+    <control type="button" id="1181">
+      <left>340</left>
+      <top>560</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1181</onleft>
+      <onright>1181</onright>
+      <onup>1181</onup>
+      <ondown>1181</ondown>
+    </control>
+    <control type="button" id="1182">
+      <left>340</left>
+      <top>560</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1182</onleft>
+      <onright>1182</onright>
+      <onup>1182</onup>
+      <ondown>1182</ondown>
+    </control>
+    <control type="button" id="1183">
+      <left>340</left>
+      <top>560</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1183</onleft>
+      <onright>1183</onright>
+      <onup>1183</onup>
+      <ondown>1183</ondown>
+    </control>
+    <control type="button" id="1184">
+      <left>340</left>
+      <top>560</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1184</onleft>
+      <onright>1184</onright>
+      <onup>1184</onup>
+      <ondown>1184</ondown>
+    </control>
+    <control type="button" id="1185">
+      <left>340</left>
+      <top>560</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1185</onleft>
+      <onright>1185</onright>
+      <onup>1185</onup>
+      <ondown>1185</ondown>
+    </control>
+    <control type="button" id="1186">
+      <left>340</left>
+      <top>560</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1186</onleft>
+      <onright>1186</onright>
+      <onup>1186</onup>
+      <ondown>1186</ondown>
+    </control>
+    <control type="button" id="1187">
+      <left>340</left>
+      <top>560</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1187</onleft>
+      <onright>1187</onright>
+      <onup>1187</onup>
+      <ondown>1187</ondown>
+    </control>
+    <control type="button" id="1188">
+      <left>340</left>
+      <top>560</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1188</onleft>
+      <onright>1188</onright>
+      <onup>1188</onup>
+      <ondown>1188</ondown>
+    </control>
+    <control type="button" id="1189">
+      <left>340</left>
+      <top>560</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1189</onleft>
+      <onright>1189</onright>
+      <onup>1189</onup>
+      <ondown>1189</ondown>
+    </control>
+    <control type="button" id="1190">
+      <left>340</left>
+      <top>560</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1190</onleft>
+      <onright>1190</onright>
+      <onup>1190</onup>
+      <ondown>1190</ondown>
+    </control>
+    <control type="button" id="1191">
+      <left>340</left>
+      <top>560</top>
+      <width>1</width>
+      <height>54</height>
+      <font>font13</font>
+      <textoffsetx>5</textoffsetx>
+      <label />
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>1191</onleft>
+      <onright>1191</onright>
+      <onup>1191</onup>
+      <ondown>1191</ondown>
+    </control>
+    <control type="image" id="500">
+      <left>340</left>
+      <top>166</top>
+      <width>3</width>
+      <height>450</height>
+      <texture>special://home/addons/plugin.video.xtreammate/resources/media/guide_now.png</texture>
+    </control>
+  </controls>
+</window>

@@ -5,7 +5,7 @@ import os
 import uuid
 
 HOME = ((32400,'home_start','tv.png'), (32401,'home_live','tv.png'),
-        (32402,'guide_browser','epg.png'), (32403,'movies_home','vod.png'),
+        (32402,'guide_grid','epg.png'), (32403,'movies_home','vod.png'),
         (32404,'series_home','series.png'), (32405,'settings_home','settings.png'))
 SETTINGS = ((32406,'accounts'), (32407,'startup'),
             (32402,'epg'), (32408,'groups'),

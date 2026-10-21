@@ -2144,3 +2144,83 @@ msgstr "Last database health snapshot: {0}"
 msgctxt "#32967"
 msgid "OK concerns the last database check, not completeness of images. SPACE_FULL can be an artwork-budget limit; it does not prove a physically full drive. Unregistered older images are not included in queue bytes."
 msgstr "OK concerns the last database check, not completeness of images. SPACE_FULL can be an artwork-budget limit; it does not prove a physically full drive. Unregistered older images are not included in queue bytes."
+
+msgctxt "#33100"
+msgid "XCMate TV guide"
+msgstr "XCMate TV guide"
+
+msgctxt "#33101"
+msgid "Previous day"
+msgstr "Previous day"
+
+msgctxt "#33102"
+msgid "Next day"
+msgstr "Next day"
+
+msgctxt "#33103"
+msgid "Now"
+msgstr "Now"
+
+msgctxt "#33104"
+msgid "Channel groups"
+msgstr "Channel groups"
+
+msgctxt "#33105"
+msgid "Search"
+msgstr "Search"
+
+msgctxt "#33106"
+msgid "20:15"
+msgstr "20:15"
+
+msgctxt "#33107"
+msgid "Arrows: channels/time · OK: actions · Menu: channel · Back: Home"
+msgstr "Arrows: channels/time · OK: actions · Menu: channel · Back: Home"
+
+msgctxt "#33108"
+msgid "Loading local programme data…"
+msgstr "Loading local programme data…"
+
+msgctxt "#33109"
+msgid "Local guide unavailable; no data were changed."
+msgstr "Local guide unavailable; no data were changed."
+
+msgctxt "#33110"
+msgid "No programme data in this time window"
+msgstr "No programme data in this time window"
+
+msgctxt "#33111"
+msgid "Channels {0}–{1}/{2} · programme data: {3}/{4} visible channels"
+msgstr "Channels {0}–{1}/{2} · programme data: {3}/{4} visible channels"
+
+msgctxt "#33112"
+msgid "Programme / source information"
+msgstr "Programme / source information"
+
+msgctxt "#33113"
+msgid "Remember programme"
+msgstr "Remember programme"
+
+msgctxt "#33114"
+msgid "Mapping / source: {0}"
+msgstr "Mapping / source: {0}"
+
+msgctxt "#33115"
+msgid "Save this programme in the local bookmark list?"
+msgstr "Save this programme in the local bookmark list?"
+
+msgctxt "#33116"
+msgid "Programme remembered"
+msgstr "Programme remembered"
+
+msgctxt "#33117"
+msgid "All active channel groups"
+msgstr "All active channel groups"
+
+msgctxt "#33118"
+msgid "Remembered programmes"
+msgstr "Remembered programmes"
+
+msgctxt "#33119"
+msgid "No remembered programmes"
+msgstr "No remembered programmes"
