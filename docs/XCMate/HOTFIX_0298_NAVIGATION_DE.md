@@ -56,3 +56,7 @@ Native Referenzen: [Kodi 21.2 CGUIMediaWindow](https://github.com/xbmc/xbmc/blob
 **#50 Integration:** erst nach positiver Android-Abnahme der Navigation neue Hotfix-/UI-/Artwork-Änderungen einzeln mit PR #50 abgleichen. Native Lifecycle-/Back-/Action-Einstiege und Themepräsentation sauber kombinieren; 98 Originalgrafiken/106 Keys erhalten. Neue vollständige Core-/Theme-Builds/Tests und Stock/Theme-Geräteabnahme vor Freigabe. Der bestehende 0.1.30.1-Head wird in diesem Hotfix nicht ungefragt weitergemergt.
 
 Kein Issue geschlossen, kein produktiver Index verändert. 0.1.29.7 bleibt unveränderte veröffentlichte Basis mit negativem P0-Gerätebefund, 0.1.29.6 als Rückfall. Testkandidat ≠ Android-abgenommen ≠ Release.
+
+## Finales lokales Testpaket
+
+**558/558 Tests bestanden**, 80.995 s, 0 Fehler/Skips; 18 neue Navigation-/Routingfälle. ZIP **401012 Bytes / 132 Dateien**, SHA-256 `c105cd718dbf7aeb0d81a7d4792ac4d11361194fbf566b7fe1741d48591aa30a`. Sourcebytes, CRC, sichere Pfade, Python-3.11-Syntax und unabhängiger kanonischer Zweitbau PASS. Android NOT_RUN. GitHub-CI separat am Draft-PR prüfen.

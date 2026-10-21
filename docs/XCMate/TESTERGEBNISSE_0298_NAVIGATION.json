@@ -1,0 +1,37 @@
+{
+  "version": "0.1.29.8",
+  "base_main": "bf6c88883428a97f53818ac7b9f95c41ea9f81ba",
+  "tests": {
+    "total": 558,
+    "passed": 558,
+    "seconds": 80.995,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "new_navigation_cases": 18,
+    "targeted_cases": 109
+  },
+  "build": {
+    "file": "plugin.video.xtreammate-0.1.29.8.zip",
+    "bytes": 401012,
+    "files": 132,
+    "sha256": "c105cd718dbf7aeb0d81a7d4792ac4d11361194fbf566b7fe1741d48591aa30a",
+    "source_bytes": "PASS",
+    "crc": "PASS",
+    "paths": "PASS",
+    "python311_syntax": "PASS",
+    "reproducible": "PASS"
+  },
+  "android": "NOT_RUN",
+  "protected_modules_unchanged": 14,
+  "settings_definition_and_default_budget": "UNCHANGED",
+  "published_basis": "0.1.29.7; real P0 FAIL in issue 73",
+  "fallback": "0.1.29.6",
+  "interpretation": "Two Home invocations were two intentional Back keypresses, not proof of automatic duplication",
+  "unknown": "Identity of historical active modal dialog; Android effect of new candidate",
+  "private_logs_uploaded": false,
+  "merged_to_main": false,
+  "release": false,
+  "production_index_changed": false,
+  "github_ci": "See current PR checks; no premature success claim"
+}
