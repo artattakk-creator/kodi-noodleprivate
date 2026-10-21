@@ -5,6 +5,27 @@ import xbmcgui
 from localization import tr
 
 
+def _failure_details(exc):
+    """Show only preapproved failure reasons: never echo provider URLs or credentials."""
+    if isinstance(exc, ValueError):
+        reason = str(exc)
+        if reason in ('authentication failed', 'provider authentication failed'):
+            return 'XM-SETUP-AUTH', ('Anmeldung fehlgeschlagen. Bitte Serveradresse, '
+                                     'Benutzername und Passwort kontrollieren.')
+        if reason == 'no usable categories':
+            return 'XM-SETUP-GROUPS', ('Der Anbieter hat keine nutzbaren Sender-, Film- '
+                                      'oder Seriengruppen geliefert. Portal pruefen.')
+        if reason == 'select at least one category':
+            return 'XM-SETUP-SELECT', 'Bitte mindestens eine Gruppe auswaehlen.'
+        if reason == 'no selected content imported':
+            return 'XM-SETUP-EMPTY', ('Die ausgewaehlten Gruppen liefern keine '
+                                     'importierbaren Inhalte. Andere Gruppe testen.')
+        return 'XM-SETUP-DATA', 'Unerwartete Anbieter- oder Importdaten.'
+    if isinstance(exc, (OSError, TimeoutError, ConnectionError)):
+        return 'XM-SETUP-NET', 'Verbindung oder Dateizugriff fehlgeschlagen.'
+    return 'XM-SETUP-OTHER', 'Einrichtungsfehler. Kodi-Protokoll zur Diagnose sichern.'
+
+
 class WorkWindow(xbmcgui.WindowXML):
     def configure_work(self):
         self._closed=False;self.busy=False;self.cancel=threading.Event()
@@ -25,9 +46,21 @@ class WorkWindow(xbmcgui.WindowXML):
                 try: result=future.result()
                 except InterruptedError: self.close();return
                 except Exception as exc:
-                    self.status(0,tr(32715,type(exc).__name__));return
+                    self.failed_work(exc)
+                    return
                 apply(result)
         self._future.add_done_callback(completed)
+    def failed_work(self,exc):
+        code,message=_failure_details(exc)
+        try:
+            from utils import warn
+            # No exception text, host, username, password or URL in Kodi logs.
+            warn('XCMate setup: stage={} code={} type={}'.format(
+                getattr(self,'stage','unknown'),code,type(exc).__name__))
+        except Exception:
+            pass
+        self.status(0,'{} [{}]'.format(message,code))
+
     def dispose(self): pass
     def close(self):
         with self._lock:
@@ -44,16 +77,51 @@ class SetupWindow(WorkWindow):
     def configure(self,draft):
         self.configure_work();self.draft=draft;self.kind='live';self.stage='discover';self.result=None
         self._entries=[]
+    def _show_discover_ui(self):
+        self.getControl(2).setLabel(tr(32700))
+        for ident in (10,11,12,13,14,15,16,17,100):
+            self.getControl(ident).setVisible(False)
+        self.getControl(18).setVisible(True)
+        self.getControl(18).setLabel('Abbrechen')
+        self.status(0,'Verbindung und Gruppen werden geprueft ...')
+        # The group list is empty until discovery completes. Never focus it.
+        self.setFocusId(18)
+
+    def _start_discovery(self):
+        self.stage='discover'
+        self._show_discover_ui()
+        self.work(lambda:self.draft.discover(self.cancel.is_set,self.status),
+                  self.discovered)
+
     def onInit(self):
         if self.stage!='discover': self.render();return
-        self.getControl(2).setLabel(tr(32700));self.status(0,tr(32711))
-        self.work(lambda:self.draft.discover(self.cancel.is_set,self.status),self.discovered)
+        self._start_discovery()
+
     def dispose(self): self.draft.dispose()
-    def discovered(self,result): self.stage='groups';self.render();self.setFocusId(100)
+
+    def failed_work(self,exc):
+        super().failed_work(exc)
+        if self.stage=='discover':
+            self.stage='failed'
+            for ident in (10,11,12,13,14,15,16,100):
+                self.getControl(ident).setVisible(False)
+            self.getControl(17).setLabel('Erneut versuchen')
+            self.getControl(17).setVisible(True)
+            self.getControl(18).setLabel('Abbrechen')
+            self.getControl(18).setVisible(True)
+            self.setFocusId(17)
+
+    def discovered(self,result):
+        self.stage='groups'
+        self.kind=next((kind for kind in ('live','vod','series')
+                        if self.draft.categories.get(kind)), 'live')
+        self.render()
+        self.setFocusId(100 if self._entries else 17)
     def render(self):
         for ident,label in ((10,32701),(11,32702),(12,32703),(13,32704),(14,32705),(15,32706),(16,32710),(17,32709 if self.stage=='summary' else 32707),(18,32708)):
             self.getControl(ident).setLabel(tr(label))
-        for ident in (10,11,12,13,14,15): self.getControl(ident).setVisible(self.stage=='groups')
+        for ident in (10,11,12,13,14,15,16,17,18,100):
+            self.getControl(ident).setVisible(self.stage in ('groups','summary'))
         self.getControl(100).reset();self._entries=[]
         if self.stage=='groups':
             self.status(0,tr(32712))
@@ -89,6 +157,9 @@ class SetupWindow(WorkWindow):
     def onClick(self,controlId):
         if controlId==18: self.close();return
         if self.busy: return
+        if self.stage=='failed':
+            if controlId==17: self._start_discovery()
+            return
         try:
             if self.stage=='groups':
                 if controlId in (10,11,12): self.kind=('live','vod','series')[controlId-10];self.render()
