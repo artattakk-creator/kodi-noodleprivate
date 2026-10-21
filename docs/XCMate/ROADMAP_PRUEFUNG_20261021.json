@@ -1,0 +1,18 @@
+{
+  "issues": 36,
+  "issue_comments": 60,
+  "draft_prs_before_docs_pr": 4,
+  "status_counts": {
+    "SUPERSEDED / DUPLICATE": 2,
+    "IMPLEMENTED / DEVICE TEST OPEN": 20,
+    "FUTURE": 2,
+    "PARTIAL": 10,
+    "DONE / VERIFIED": 1,
+    "OPEN": 1
+  },
+  "file_links_checked": 172,
+  "historical_entrypoints_preserved": 9,
+  "protected_wip_files_unchanged": 35,
+  "product_source_and_packages_changed": false,
+  "validation": "PASS"
+}
