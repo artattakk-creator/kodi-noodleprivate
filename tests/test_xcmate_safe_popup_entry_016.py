@@ -17,6 +17,8 @@ SETTINGS = BASE / 'src/plugin.video.xtreammate/resources/settings.xml'
 
 class SafeModeRegression(unittest.TestCase):
     def setUp(self):
+        paths=mock.patch.object(sys,'path',[str(LIB)]+sys.path)
+        paths.start();self.addCleanup(paths.stop)
         self.opts = {}
         self.play_calls = []
         self.properties = {}
@@ -110,7 +112,8 @@ class SafeModeRegression(unittest.TestCase):
         rows=[]
         self.router._add_dir=lambda label,url,**kw:rows.append((label,url))
         self.router._show_portal_home(self.portal)
-        self.assertEqual(len(rows),6)
+        # Window actions now use native non-folder/non-playable plugin items.
+        self.assertEqual(len(rows)+len(self.added),6)
         self.assertFalse(any('popup_probe' in url for _,url in rows))
         rows.clear()
         from home_menu import settings

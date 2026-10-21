@@ -95,7 +95,8 @@ class NewUITests(Fixture,unittest.TestCase):
         self.router._params['action']='movies_home'
         with mock.patch.object(self.media,'open_media') as open_media:
             def open_(*args,**kw):
-                self.assertEqual(self.ends[-1][0],(7,True))
+                self.assertEqual(self.ends[-1][0],(7,))
+                self.assertNotEqual(self.ends[-1][1].get('succeeded'),False)
             open_media.side_effect=open_
             self.routes.dispatch(self.router);open_media.assert_called_once()
 

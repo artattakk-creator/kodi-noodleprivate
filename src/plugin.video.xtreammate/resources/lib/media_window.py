@@ -23,6 +23,7 @@ PAGE=24
 class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
     def configure(self,router,portal,kind,sid='',favourites=False):
         self._configure_owner()
+        self._dispatch=getattr(router,'_navigation_dispatch','')
         self._return_home=False
         self.router,self.portal,self.kind=router,portal,kind
         self.initial_sid=sid
@@ -36,14 +37,46 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._opened_at=time.monotonic();self._seen_revision=''
         self._catalog_missing=True
         self._catalog_update=None
+        self._mode_focus={};self._next_route=None
+        self._restore_focus=None;self._season_cursor=0
+        self._episode_cursor={};self._leaving=False
         self._lock=threading.RLock();self._pool=ThreadPoolExecutor(max_workers=2)
         self._art=queue.Queue(maxsize=3)
         self._art_thread=threading.Thread(target=self._art_loop,daemon=True,name='XCMate-art')
         self._art_thread.start()
 
     def setFocusId(self,control_id):
+        if self._closed:return
+        valid=self._valid_focus()
+        if not valid:return
+        for pos,cid in enumerate(valid):
+            control=self.getControl(cid)
+            control.setNavigation(self.getControl(valid[max(0,pos-1)]),
+                                  self.getControl(valid[min(len(valid)-1,pos+1)]),control,control)
+        if control_id not in valid:
+            from window_navigation import trace
+            trace('FOCUS_FALLBACK',self.mode,dispatch=self._dispatch)
+            control_id=self._mode_focus.get(self.mode,400)
+            if control_id not in valid:control_id=valid[0]
         super().setFocusId(control_id)
         self._nav_focus=control_id
+        self._mode_focus[self.mode]=control_id
+
+    def _valid_focus(self):
+        candidates=([110,111,112,120,400,501] if self.mode=='landing' else
+                    [200,210,400,501] if self.mode in ('grid','groups') else
+                    [300,400,501] if self.mode=='detail' else [330,400,501])
+        result=[]
+        for cid in candidates:
+            if cid==110 and not self.rows:continue
+            if cid in (111,112) and not self.rails[cid]:continue
+            if cid==200 and (not self.groups or self.mode=='grid' and self._cols==6):continue
+            if cid==210 and not self.rows:continue
+            if cid==300 and not self.actions:continue
+            if cid==330 and not self.getControl(330).size():continue
+            control=self.getControl(cid)
+            if control.isVisible() and xbmc.getCondVisibility('Control.IsEnabled({})'.format(cid)):result.append(cid)
+        return result
 
     @native_init
     def onInit(self):
@@ -131,6 +164,9 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
 
     def _owner_tick(self):
         self._gui()
+        if self._leaving:
+            if time.monotonic()>=self._leave_after:self.close()
+            return
         with self._lock:
             update=self._catalog_update;self._catalog_update=None
         if update is None or self._closed: return
@@ -228,6 +264,8 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         if self.mode=='landing' and target in (111,112):
             self._restore_rail=None
             self.setFocusId(target if self.rails[target] else 120)
+        if self._restore_focus is not None:
+            target=self._restore_focus;self._restore_focus=None;self.setFocusId(target)
 
     def _show(self,mode):
         for cid in (110,111,112,113,114,115,120,200,210,300,310,320,330):
@@ -240,6 +278,8 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             self.getControl(210).setPosition(320 if expanded else 44,174)
             self.getControl(210).setWidth(916 if expanded else 1192)
             self._cols=4 if expanded else 6
+        # Kodi's default focus must never remain on the now hidden landing button.
+        self.setFocusId(self._mode_focus.get(mode,self.getFocusId()))
 
     def _focus_item(self,index):
         if not 0<=index<len(self.rows): return
@@ -281,6 +321,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         self.mode='detail';self.selected=dict(item);self._show('detail')
         self.actions=[]
         self._detail_ready((dict(item),{}))
+        self.setFocusId(300)
         if item.get('_unavailable'):
             self.getControl(102).setLabel(tr(32667));return
         self.getControl(102).setLabel(tr(32505))
@@ -364,6 +405,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         xbmc.executebuiltin('PlayMedia('+url+')')
 
     def onClick(self,controlId):
+        if self._closed or self._leaving:return
         with self._lock:
             if controlId==400:
                 self._search();return
@@ -408,9 +450,10 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             elif controlId==330:
                 pos=self.getControl(330).getSelectedPosition()
                 if self.mode=='seasons' and 0<=pos<len(self.seasons):
-                    self.season=self.seasons[pos];self.mode='episodes'
+                    self._season_cursor=pos;self.season=self.seasons[pos];self.mode='episodes'
                     self._show_episodes()
                 elif self.mode=='episodes' and 0<=pos<len(self.visible_episodes):
+                    self._episode_cursor[self.season]=pos
                     e=self.visible_episodes[pos]
                     from media_state import progress,resume_position
                     saved=progress(self.portal['id'],'episode',e['sid'],e['series_id'],e['season'])
@@ -448,33 +491,54 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             if isinstance(duration,(int,float)) and isinstance(position,(int,float)) and duration>0:
                 status+=' · {} %'.format(max(0,min(100,int(position/duration*100))))
             rows.append(dict(e,name='{} · {} · {}'.format(e['episode'],e['name'],status)))
-        self._fill(330,rows);self.getControl(330).selectItem(0);self.setFocusId(330)
+        self._fill(330,rows);self.getControl(330).selectItem(self._episode_cursor.get(self.season,0));self.setFocusId(330)
 
     def onAction(self,action):
+        if self._leaving:
+            from window_navigation import trace
+            trace('TRANSITION',self.mode,action.getId(),self._dispatch);return
+        if self._closed:
+            from window_navigation import trace
+            trace('CLOSED_INPUT',self.mode,action.getId());return
         self._action_focus=getattr(self,'_nav_focus',self.getFocusId())
         try: self._handle_action(action)
-        finally: self._nav_focus=self.getFocusId()
+        finally:
+            if not self._closed:self._nav_focus=self.getFocusId()
 
     def _handle_action(self,action):
         key=action.getId()
+        if self._closed:return
         with self._lock:
             if key in (9,10,92):
+                from window_navigation import trace
+                trace('BACK',self.mode,key,self._dispatch)
                 from media_intent import cancel
                 cancel(self.portal['id'],self._play_intent)
                 from playback_exit import stop_owned
                 if stop_owned(pid=self.portal['id']): return
                 self._generation+=1
                 if self.mode=='episodes':
-                    self.mode='seasons';self._fill(330,self._season_rows());return
+                    self.mode='seasons';self._fill(330,self._season_rows())
+                    self.getControl(330).selectItem(self._season_cursor);self.setFocusId(330);return
                 if self.mode=='seasons': self.mode='detail';self._show('detail');self.setFocusId(300);return
                 if self.mode=='detail' and self._previous:
                     mode,self.category,offset,pos=self._previous
                     self._positions[(mode,self.category,offset)]=pos
                     self._restore_rail=getattr(self,'_return_focus',None)
                     self._page(mode,offset);return
+                if self.mode=='grid' and self._cols==6:
+                    self.mode='groups';self._show('groups');self.setFocusId(200);return
                 if self.mode in ('grid','groups'):
+                    self._restore_focus=self._mode_focus.get('landing',120)
                     self._cols=4;self._page('landing',0);return
-                self._return_home=True;self.close();return
+                self._return_home=True
+                if getattr(self,'_running',False):
+                    # Keep the old native window owning queued input for three
+                    # pump ticks. A second intentional Back cannot hit Kodi's
+                    # directory before Home has been revealed.
+                    self._leaving=True;self._leave_after=time.monotonic()+.15
+                else:self.close()
+                return
             if key==117:
                 if self.mode=='episodes':
                     pos=self.getControl(330).getSelectedPosition()
@@ -533,8 +597,8 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
     def _search(self):
         query=xbmcgui.Dialog().input(tr(32534))
         if query.strip():
+            self._next_route=self.router.url(action='global_search',pid=self.portal['id'],q=query[:200])
             self.close()
-            xbmc.executebuiltin('Container.Update('+self.router.url(action='global_search',pid=self.portal['id'],q=query[:200])+')')
 
     def close(self):
         self._gui()
@@ -548,5 +612,5 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
 
 def open_media(router,portal,kind,sid='',favourites=False):
     window=open_owned_window(MediaWindow,'XCMateMedia.xml',router,portal,kind,sid,favourites)
-    if window._return_home:
-        xbmc.executebuiltin('Container.Update('+router.url(action='xcmate_home',pid=portal['id'])+',replace)')
+    if window._next_route:
+        xbmc.executebuiltin('Container.Update('+window._next_route+')')

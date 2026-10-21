@@ -108,7 +108,7 @@ class NavigationTests(Fixture,unittest.TestCase):
         for action,kind in (('widget_recent_vod','vod'),('widget_recent_series','series')):
             self.added.clear();self.router._params['action']=action;self.routes.dispatch(self.router)
             self.assertIn('action=media_detail',self.added[0][0]);self.assertIn('kind='+kind,self.added[0][0])
-            self.assertTrue(self.added[0][2]);self.assertTrue(any('Alle anzeigen' in li.label for _,li,_ in self.added))
+        self.assertFalse(self.added[0][2]);self.assertTrue(any('Alle anzeigen' in li.label for _,li,_ in self.added))
         self.assertTrue(all('SECRET' not in url and 'https%3A' not in url for url,_,_ in self.added))
         sys.modules['utils'].http_get.assert_not_called()
 

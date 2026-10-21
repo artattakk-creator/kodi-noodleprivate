@@ -192,8 +192,8 @@ class WindowOwnerTests(Fixture,unittest.TestCase):
         for action,module,name in (('guide_browser',self.guide,'open_guide'),('movies_home',self.media,'open_media')):
             self.router._params['action']=action;self.router._directory_done=False
             with mock.patch.object(module,name) as open_:self.routes.dispatch(self.router)
-            self.assertEqual(self.ends[-1][0],(7,True));open_.assert_called_once()
+            self.assertEqual(self.ends[-1][0],(7,));self.assertNotEqual(self.ends[-1][1].get('succeeded'),False);open_.assert_called_once()
         w=self.guide_window();w._return_home=True
         with mock.patch.object(self.guide,'GuideWindow',return_value=w),mock.patch.object(w,'run',side_effect=lambda:setattr(w,'_return_home',True)):
             self.guide.open_guide(self.router,self.portal)
-        self.assertEqual(len(self.builtins),1);self.assertIn('action=xcmate_home',self.builtins[0]);self.assertTrue(self.builtins[0].endswith(',replace)'))
+        self.assertEqual(len(self.builtins),2);self.assertTrue(all('action=xcmate_home' in b and b.endswith(',replace)') for b in self.builtins))
