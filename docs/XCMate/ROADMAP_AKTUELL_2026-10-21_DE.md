@@ -1,0 +1,133 @@
+# XCMate – zentrale aktive Roadmap und Issue-Abnahme
+
+**Audit-Snapshot:** 21.10.2026 · **37 offene Feature/Bug-Issues inklusive neuem #71**; **4 offene Draft-PRs**. Dies ist der *Planungs- und Prüfstatus*, keine Behauptung, dass alle gelisteten Funktionen bereits implementiert oder live getestet sind.
+
+**Projekt:** GS Media / XCMate · Add-on-ID `plugin.video.xtreammate` · Repository https://github.com/artattakk-creator/kodi-noodleprivate · Zielbox Android 13 / Rockchip RK3528 / ARM32 / Kodi **21.2** Omega / Titan BINGIE MOD. Kodi 21.3 und Estuary zusätzlich als Regression.
+
+> **KANONISCHER AKTUELLER PR-STATUS (Momentaufnahme):** Produktiv **0.1.29.6**. [PR #70](https://github.com/artattakk-creator/kodi-noodleprivate/pull/70): **0.1.29.7** (Artwork-/home_start-Hotfix) Draft, **540/540 CI**, **Android NOT_RUN**. [PR #50](https://github.com/artattakk-creator/kodi-noodleprivate/pull/50): **0.1.30.1** Core + Space Premium 1.0.0 mit 98 Originalgrafiken, **589/589 CI**, **Android NOT_RUN**. [PR #51](https://github.com/artattakk-creator/kodi-noodleprivate/pull/51): GS Media Repository 1.8.0, separater Draft. [PR #3](https://github.com/artattakk-creator/kodi-noodleprivate/pull/3): veralteter TiviMate-Tastenreferenz-Entwurf. **Keiner dieser PRs ist mit dieser Roadmap zum Merge/Release freigegeben.** Nach jedem Codex-Commit GitHub-Stände neu prüfen.
+
+**Primäres Ziel:** Jedes GitHub-Issue evidenzbasiert in `DONE_VERIFIED`, `IMPLEMENTED_TEST_OPEN`, `PARTIAL`, `OPEN`, `SUPERSEDED` oder `PARKED` einordnen, Restarbeit und Geräteabnahme dokumentieren, *erst danach* Schließung vorschlagen. Die unten verwendeten konkreteren Statusnamen sind **vorläufige Prüflabel**, nicht zwingend bereits vergebene GitHub-Labels.
+
+## Release- und Arbeits-Gates
+
+1. **P0-Hotfix #69 und `home_start`:** #70 isoliert prüfen; Artwork-DB vor Eingriff konsistent sichern (`-wal`/`-shm`), reale Android-Datenbank und Rekonstruktion verifizieren. Keine Datenlöschung, Credentials nie loggen. Anschließend Kodi 21.2/ARM32 real testen. 0.1.29.6 bleibt Rückfall.
+2. **0.1.30.1 Theme-Integration:** #50 beinhaltet bereits #70-Hotfix und 0.1.29.6-Fensterreparatur laut PR. Erst nach Hotfix-Abnahme import/rollback des Theme-ZIP, 98 Grafiken, 86 Verbraucher, Runtime-Skin-Konflikte, EPG/Filme/Serien/Live-TV/Back und Startsender testen.
+3. **P1-EPG-/Datenqualität:** #58/#59/#60 auf 0.1.29.7/0.1.30.1 messen statt nochmals blind implementieren; #57 große horizontale Programmzeitschrift / Catch-up / TMDB entkoppelt weiterentwickeln.
+4. **P1 Fernbedienung, Medienkomfort und Recorder:** #64 Remote-Profile, #24/#25/#26/#44 Medien, #62 Timer/Recorder, #63 Downloadmanager in separaten kleinen Draft-PRs.
+5. **P2 Sicherheit / Kindersicherung:** #71 opt-in PIN, nach Stabilität als gesondertes Feature; bevorzugt vor endgültiger massenhafter Widget/Download-Exposition konzeptionell spezifizieren.
+6. **Zukunft:** #14 separater Kodi-Skin und #65 X-Wall ausdrücklich nicht in 0.1.30.1 integrieren. **#66 Multiview/PiP/Split-Screen geschlossen und dauerhaft gestrichen.**
+
+## Vollständiges Inventar aller derzeit offenen GitHub-Issues
+
+**Legende:** `DEVICE_VERIFIED` = von Nutzer auf realem Gerät bestätigt; `DEVICE_SMOKE_PASS` = nur grundlegender Test, keine Vollabnahme; `IMPLEMENTED_TEST_OPEN` = im Code, Gerätetest fehlt; `PARTIAL` = Teilstand; `HISTORICAL_VERIFY` = altes Ticket gegen modernen Code prüfen; `SUPERSEDED_PARTIAL` = Überschneidung; `OPEN` = vollständiger Nachweis fehlt; `NEW_SPEC` = neu beauftragt; `PARKED` = keine aktuelle Implementierung.
+### A. Stabilität, Datenbanken, Performance und Alttickets
+
+| Issue | P | Vorläufiger Status | Nachweis / Iststand | Konkrete Restprüfung |
+| --- | --- | --- | --- | --- |
+| [#69](https://github.com/artattakk-creator/kodi-noodleprivate/issues/69) Artwork-Jobqueue: MIGRATION_FAILED / art_pending | P0 | `IN_PROGRESS` | #70 enthält Diagnose/Reparaturlogik (540 CI-Tests); reale aktive DB und Android noch ungeprüft | Artwork-Integrität auf Backup und Gerät prüfen; Wiederholungstest ohne Warnflut |
+| [#67](https://github.com/artattakk-creator/kodi-noodleprivate/issues/67) Fensterstart EPG/Filme/Serien | P0 | `DEVICE_SMOKE_PASS` | 0.1.29.6 öffnet alle drei laut Nutzer; Vollabnahme nicht dokumentiert | 10× Öffnen, Back/Fokus, Neustart, anschließend Abschlussentscheid |
+| [#58](https://github.com/artattakk-creator/kodi-noodleprivate/issues/58) Doppelte Kurz-EPG-Einträge | P1 | `IMPLEMENTED_TEST_OPEN` | Fix in 0.1.29.5/PR #61; korrigierter Window-Fix 0.1.29.6 | ProSieben HEVC 15:06/15:07, echte Dubletten vs. legitime Folgen prüfen |
+| [#59](https://github.com/artattakk-creator/kodi-noodleprivate/issues/59) Zurück aus EPG und Medien | P1 | `IMPLEMENTED_TEST_OPEN` | Code aus PR #61/#68 integriert; vollständige Hardwareabnahme fehlt | EPG→Home, Film/Serie→Home, Fokus/Back unter BINGIE testen |
+| [#60](https://github.com/artattakk-creator/kodi-noodleprivate/issues/60) XMLTV-Matching / Abdeckung 288 von 2764 | P1 | `PARTIAL` | HEVC-Normalisierung vorhanden; alte 10,4-%-Quote kein aktueller Messwert | Neue Quote und Fehlzuordnungen messen, manuelle IDs/Quellenstatus prüfen |
+| [#40](https://github.com/artattakk-creator/kodi-noodleprivate/issues/40) Wiedergabe läuft nach Back weiter / Live-Exit hängt | P0 | `PARTIAL_TEST_OPEN` | Älteres Exit-/Sessionproblem; PR #45 historisch, tatsächliche neue Geräteabnahme unklar | Player stop, Ton aus, Rücksprung/Fokus für Live/Film/Episode je 10× testen |
+| [#38](https://github.com/artattakk-creator/kodi-noodleprivate/issues/38) Kaltstart-Hänger und lange Ladezeit | P1 | `DEVICE_PARTIAL` | Alter >90-s-Hänger nicht erneut gemeldet; 0.1.29.2 mit ca. 17 s einmal gemessen | Mehrfach Kalt-/Warmstart messen und Kodi-/Plugin-Abschnitte profilieren |
+| [#33](https://github.com/artattakk-creator/kodi-noodleprivate/issues/33) Historische Filme-/Serien-ValueErrors | P1 | `DEVICE_PARTIAL` | Bereiche unter 0.1.29.6 wieder aufrufbar; Kataloggröße/Suche und Langlauf nicht geprüft | Großer echter Katalog, einzelne Titel, Serien/Staffeln, Retry messen |
+| [#32](https://github.com/artattakk-creator/kodi-noodleprivate/issues/32) Historische EPG-Import-/Refresh-Fehler | P1 | `PARTIAL_TEST_OPEN` | Guide erreichbar, aber XMLTV-Quellen-Import / echte Aktualisierung separat | Quellenstatistik nach Refresh/Neustart und DACH-Fallback verifizieren |
+| [#34](https://github.com/artattakk-creator/kodi-noodleprivate/issues/34) Aktive Gruppen priorisieren / Startsender-EPG zuerst | P1 | `PARTIAL_TEST_OPEN` | Gruppenselektive Indexierung teils vorhanden, bisher keine komplette Lastmessung | Nur aktivierte Gruppen, Startkanal-Now/Next, große Datenmenge |
+| [#35](https://github.com/artattakk-creator/kodi-noodleprivate/issues/35) Vorab-Infobar vor Playerstart + schnelles Zapping | P2 | `OPEN_VERIFY` | Live-Senderwechsel bestätigt, Pre-Play-Anzeige nicht belegt | Sichtbarkeit der Infobar vor Video, Latenz und Cache testen |
+
+### B. EPG, Programmzeitschrift und Catch-up
+
+| Issue | P | Vorläufiger Status | Nachweis / Iststand | Konkrete Restprüfung |
+| --- | --- | --- | --- | --- |
+| [#57](https://github.com/artattakk-creator/kodi-noodleprivate/issues/57) Horizontale 7–10-Tage-Programmzeitschrift + TMDB + Catch-up | P1 | `OPEN` | Eigene große Zeitleiste, Details/Filter, Catch-up-Badges und historische EPG-Daten noch nicht geräteabgenommen | Primäres EPG-Featureissue; Datenreichweite, TMDB-Matching, Zeitachse, Archivplayback |
+| [#21](https://github.com/artattakk-creator/kodi-noodleprivate/issues/21) Langzeit-Guide, Reminder, Auto-Tune, Recording | P1 | `SUPERSEDED_PARTIAL` | Zielumfang zwischen #57 und #62 aufgeteilt; bestehende Reminder vorhanden | Rest auf #57 (Guide) und #62 (Timer/Recorder) abbilden, dann Schließung vorschlagen |
+| [#13](https://github.com/artattakk-creator/kodi-noodleprivate/issues/13) EPG-Status / Vorschau / Fehlercodes | P1 | `PARTIAL_TEST_OPEN` | Status-UI existiert; reale Quellen- und Zeitachsenqualität offen | Importphase/Fehler/Programmzahl, Preview, Mapping testen |
+
+### C. Live-TV, Fernbedienung, Senderlisten
+
+| Issue | P | Vorläufiger Status | Nachweis / Iststand | Konkrete Restprüfung |
+| --- | --- | --- | --- | --- |
+| [#12](https://github.com/artattakk-creator/kodi-noodleprivate/issues/12) Alter Overlay-/Remote-Fehler 0.1.22 | P2 | `HISTORICAL_VERIFY` | Spätere Versionen zeigten funktionierende Remote-Steuerung | Mit #17/#20 abgleichen und nach Android-Regression-Abnahme schließen |
+| [#17](https://github.com/artattakk-creator/kodi-noodleprivate/issues/17) OK-Infobar, zweites OSD, Gruppen/Sender | P1 | `DEVICE_PARTIAL` | Live-Remote in 0.1.27 und später bestätigt; D-Pad/OK Freeze | 10× OK/Links/Hoch/Runter/Back, Player/EPG jetzt/gleich testen |
+| [#20](https://github.com/artattakk-creator/kodi-noodleprivate/issues/20) Links-Key, dreistufiges OSD, Tape-Deck | P1 | `PARTIAL_TEST_OPEN` | Altproblem mit späteren Fixes überlappt; Restkontext prüfen | Keymap und OSD-Tasten auf Android; Alt-Ticket-Konsolidierung |
+| [#42](https://github.com/artattakk-creator/kodi-noodleprivate/issues/42) Unendliches Scrollen ohne manuelle Seiten | P2 | `DEVICE_VERIFIED` | Nutzer bestätigte unter 0.1.29.2 kontinuierliches Scrollen | Gegen 0.1.29.6 kurz regressionsprüfen, Schließung vorschlagen |
+
+### D. Filme, Serien, Suche, Fanart und Widgets
+
+| Issue | P | Vorläufiger Status | Nachweis / Iststand | Konkrete Restprüfung |
+| --- | --- | --- | --- | --- |
+| [#24](https://github.com/artattakk-creator/kodi-noodleprivate/issues/24) Film-/Serien-Landingpages, Cover, Details, Resume | P1 | `PARTIAL` | Grundansichten und Detailrouten existieren; umfassende UX-Abnahme fehlt | Favoriten/Resume/Episode/Fokus/Posterwand testen |
+| [#25](https://github.com/artattakk-creator/kodi-noodleprivate/issues/25) Globale Suche über Live, Filme, Serien | P1 | `PARTIAL_TEST_OPEN` | Routen bestehen, getrennte Trefferzahlen und Indexfehlerbehandlung nicht vollständig abgenommen | Reale Treffer/Counts, Index läuft/leer/Fehler, >5000 Inhalte |
+| [#26](https://github.com/artattakk-creator/kodi-noodleprivate/issues/26) 3 BINGIE-Startwidgets | P2 | `IMPLEMENTED_TEST_OPEN` | Widget-Routen vorhanden; echte Einrichtung und Skin-Test offen | Live-Startgruppe/neueste Filme/Serien/Fokus ohne Skin-Dateiänderung |
+| [#41](https://github.com/artattakk-creator/kodi-noodleprivate/issues/41) Artwork dauerhaft cachen, progressive Darstellung | P1 | `PARTIAL` | Lokaler Bildcache besteht, aber #69 Artwork-SQLite-Migrationsprobleme | Erst #69, dann Persistenz, Cachebudget, Offline/Neustart testen |
+| [#44](https://github.com/artattakk-creator/kodi-noodleprivate/issues/44) Favoriten-Coverrails, Episodenstatus und Weitersehen | P1 | `PARTIAL` | Favorites/Resume-State teils vorhanden; sichtbare Rails und komplette Markierungen fehlen | Gezielte Landing-Rails + gesehen/ungesehen + Persistenz |
+
+### E. Setup, Darstellung, Sprachen, Remote-Manager
+
+| Issue | P | Vorläufiger Status | Nachweis / Iststand | Konkrete Restprüfung |
+| --- | --- | --- | --- | --- |
+| [#23](https://github.com/artattakk-creator/kodi-noodleprivate/issues/23) 6-Punkte-Hauptmenü und Untereinstellungen | P2 | `DEVICE_PARTIAL` | Hauptmenü aktuell erreichbar und brauchbar | Alle Untermenüs, Account 0/1/n, Fokus/Back, Settings testen |
+| [#27](https://github.com/artattakk-creator/kodi-noodleprivate/issues/27) Space Premium 98 Originalbilder | P1 | `IMPLEMENTED_TEST_OPEN` | 98 Dateien in #50 / Core 0.1.30.1, Android-Theme-Test offen | Integrität, 86 Verbraucher / 12 Reserve, visuelle Abnahme |
+| [#29](https://github.com/artattakk-creator/kodi-noodleprivate/issues/29) Deutsch/Englisch unabhängig von Kodi + optionale Packs | P2 | `PARTIAL` | Sprachstrings enthalten; optionale Sprachpakete noch nicht implementiert | In-App-Sprache Deutsch/Englisch, Pakete/Reset testen |
+| [#30](https://github.com/artattakk-creator/kodi-noodleprivate/issues/30) Lightweight Core + Theme/Language-Installer | P1 | `PARTIAL` | Theme-Installer in Draft #50, Language-Pack-Installer fehlt | Android Import/Download/Hashes/Rollback prüfen |
+| [#31](https://github.com/artattakk-creator/kodi-noodleprivate/issues/31) Skin & Darstellung: Opacity, UI- und Fontfarben/-größen | P2 | `OPEN_VERIFY` | Vollständiges Einstellungsmenü noch nicht gerätebestätigt | Vorschau, Persistenz, Reset, Kontraste |
+| [#37](https://github.com/artattakk-creator/kodi-noodleprivate/issues/37) Standardhintergrund/Icon/Theme + Gruppenzähler | P2 | `PARTIAL` | Aktive Gruppenliste und Scrollen am Gerät bestätigt; neue Counts/Theme-Abnahme offen | Senderzahl je Gruppe lokal anzeigen, Grafiken und Default prüfen |
+| [#43](https://github.com/artattakk-creator/kodi-noodleprivate/issues/43) Universal-Setup Xtream/M3U/Stalker/Gruppen-Import | P1 | `PARTIAL_TEST_OPEN` | 0.1.29.4 Setup-/Save-Fixes, bislang kein Multi-Portal-Kompletttest | Group-Checkbox, lokale M3U/SMB, Stalker, Importstatus/Retry, Datenübernahme |
+| [#64](https://github.com/artattakk-creator/kodi-noodleprivate/issues/64) Frei belegbare Fernbedienungstasten/Farbtasten | P1 | `OPEN` | Bestehendes Remote-Mapping funktional, generische Lern-/Konfigurationsoberfläche offen | Rot/Grün/Gelb/Blau, Info/Menu/EPG, Geräteprofile, Fallback |
+
+### F. Aufnahmen und Downloadmanager
+
+| Issue | P | Vorläufiger Status | Nachweis / Iststand | Konkrete Restprüfung |
+| --- | --- | --- | --- | --- |
+| [#62](https://github.com/artattakk-creator/kodi-noodleprivate/issues/62) Automatisches Umschalten + Aufnahme A / Live B | P1 | `OPEN` | Reminder teils vorhanden; unabhängige reale Android-Aufnahmeengine noch nicht belegt | Timer, USB/HDD/SMB, Senderwechsel ohne Aufnahmeabbruch; keine Multiview-Fenster |
+| [#63](https://github.com/artattakk-creator/kodi-noodleprivate/issues/63) Film-/Seriendownloadmanager + Offline-Bibliothek | P2 | `OPEN` | Kein real abgenommener Downloadmanager | Berechtigte DRM-freie Streams; Queue/.part/Resume, USB/SMB, Offline testen |
+
+### G. Sicherheit, Rechte und spätere Vorhaben
+
+| Issue | P | Vorläufiger Status | Nachweis / Iststand | Konkrete Restprüfung |
+| --- | --- | --- | --- | --- |
+| [#19](https://github.com/artattakk-creator/kodi-noodleprivate/issues/19) Quellcode-Lizenz-/Provenienz-Audit | P1 | `OPEN` | GPL-v2-/Root-LICENSE-Widerspruch historisch dokumentiert | Rechte-/Attributionsfragen bei neuen Releases und Fremdassets behandeln |
+| [#71](https://github.com/artattakk-creator/kodi-noodleprivate/issues/71) Optionale PIN-Kindersicherung | P2 | `NEW_SPEC` | Neues Feature, standardmäßig aus; PIN-Hash, Gruppe/Kategorie/Settings-Sperre | Threat-Model, PIN-Persistenz, alle Routen/Widgets/EPG/Playback/Downloads sichern |
+| [#14](https://github.com/artattakk-creator/kodi-noodleprivate/issues/14) Separater XCMate-Kodi-Skin | FUTURE | `PARKED` | Eigenständiger Skin ist nicht Space Premium; keine aktive Umsetzung | Nur nach Kernabnahme und Lizenzprüfung |
+| [#65](https://github.com/artattakk-creator/kodi-noodleprivate/issues/65) X-Wall / weitere Kodi-Oberflächen/Integrationen | FUTURE | `PARKED` | Explizit zurückgestellt; konkretes X-Wall-Addon nicht verifiziert | Später technisch identifizieren, keine Codex-Implementierung jetzt |
+## Pflicht-Workflow für Codex und ChatGPT bei jeder Prüf-/Entwicklungsrunde
+
+1. **Live-Bestand:** Main-Commit, offene Issue-Liste (inklusive Issues ohne Labels), alle Kommentare, relevante PR-Diffs, CI und aktuelles Gerätetestprotokoll erneut lesen. Nicht allein den GitHub-Status als Entwicklungsstatus interpretieren.
+2. **Pro Issue:** vorhandene Funktionen anhand Codepfad/Commit/PR, automatisierten Tests und **echtem Android-Resultat** getrennt belegen. Jede Abnahme soll Version, Kodi-Version, Hardware, reproduzierbare Schritte, Ergebnis und Logreferenz haben.
+3. **Statusprotokoll:** eine Tabelle pro Issue mit `Code`, `CI`, `Gerät`, `Rest`, `Abhängigkeit`, `Empfohlene Zielversion`, `Offen/Schließen?`; Querverweise in Issue-Kommentaren nachführen. Labels/Kategorien nur nach Bestätigung setzen.
+4. **Dubletten:** #12/#17/#20, #13/#21/#57, #27/#30/#37 und #32/#33/#34/#38 bündeln. Das ältere Issue nur schließen, wenn restliche Akzeptanzkriterien in einem aktuellen Issue dokumentiert sind. Keine Daten/Historie löschen.
+5. **Test-Reihenfolge:** Freeze Live-TV-Remote und Portaldaten → Menü EPG, Filme, Serien, zurück → Warm-/Kaltstart → große 2764-Sender-/Kataloglast → Artwork-/EPG-Integrität → Aufnahme-/Downloadspeicher. Bei jedem Core-/Theme-ZIP denselben Smoke-Test.
+6. **Sicherheit:** Keine IPTV-Zugangsdaten, Playlist-URLs mit Tokens, Trakt-/TMDB-Tokens, Benutzerprofile oder privaten Gerätelogs in Issues, Commits oder öffentlichen Testarchiven; nur bereinigte Auszüge. Lizenz-/Attributionsthema #19 separat berücksichtigen.
+7. **Gates:** `AUTOMATED_PASS` ≠ `ANDROID_PASS` ≠ `RELEASED`. Ein Draft-PR ist keine Freigabe. **Ohne ausdrückliches Ja des Nutzers nichts mergen oder veröffentlichen**. Gerätetest-BLOCKER zuerst behandeln.
+
+## Kindersicherung / PIN (#71) – genaue Produktentscheidung
+
+- **Standard AUS**, kein Eingriff in die bestehenden Profile und keinen PIN-Zwang nach Upgrade. Schutz nur auf ausdrücklichen Schalter des Benutzers.
+- Konfigurierbar pro geschützter Live-TV-Gruppe/Sender, Film-/Serien-Kategorie und für sensible Einstellungen; optional Schutz von Suche, EPG-Vorschau, Widgets, Favoriten, Timern, Aufnahmen und Downloads.
+- **Zentrale Autorisierung** auf Routen-/Playback-Ebene auch für Direkt-Links und Widget-Starts, nicht nur PIN-Popup beim Öffnen des Hauptmenüs; keine geschützten Titel/Poster in Vorschauen bei entsprechender Einstellung.
+- PIN nur als gesalzener langsamer Hash, keine voreingestellte Nummer, kein Klartext im Log; Fehlversuche drosseln; Entsperrung begrenzen, Neustart sperrt wieder; Verwaltung/Deaktivierung nur nach PIN.
+- Recovery-Konzept mit sicherem Wiederherstellungsweg, keine trivialen Remote-Bypässe; Kodi-/Android-weite Grenzen offen benennen. Hardwareabnahme auf Kodi 21.2/Android ARM32.
+- **Nicht** im gerade laufenden Hotfix #70 oder Theme-Kandidaten #50 realisieren; erst als separaten, prüfbaren Feature-PR spezifizieren und nach Freigabe entwickeln.
+
+## Nächste überprüfbare Meilensteine
+
+**M1 – Stabilisierung:** #70 automatisiert fertig, Android 0.1.29.7 noch offen; #69 reale DB-Integrität und `home_start`-Regressionscheck, #67/58/59/40/42 hinsichtlich Nutzerabnahme bilanzieren.
+
+**M2 – 0.1.30.1 optionales Theme:** #50 integrierter Draft/589 Tests; Core und Space Premium getrennt prüfen, keine unfertigen EPG-/TMDB-Features hineinziehen. Erst nach Android-PASS Freigabeentscheidung.
+
+**M3 – Programmzeitschrift:** horizontales Zeitraster #57, Zuordnung #60, TMDB, Catch-up, konkrete Sender/Abruf-Benchmarks, Aufnahme- und Reminderaktionen mit #62 abgrenzen.
+
+**M4 – UX und Medien:** #64 und #24/#25/#26/#44, danach optionales PIN-System #71 mit direktem Route-/Deep-Link-Schutz.
+
+**M5 – Aufnahme/Download:** #62 Aufnahme A während Live B, Auto-Tune/Timer, Speicherrechte; #63 persistenter Downloadmanager. Beides erst nach realem Gerätetest als implementiert deklarieren.
+
+**M6 – Komfort & Zukunft:** #29/#31/#43, GS-Media-Repo #51 separat, #14/#65 als Zukunft, #19 laufendes Rechteaudit.
+
+### Übergaben
+- [Projektstatus/Chat-Übergabe](PROJEKTSTATUS_UEBERGABE_2026-10-21_DE.md)
+- [Codex-Folgeauftrag](CODEX_FOLGEAUFTRAG_2026-10-21_DE.md)
+- [Historische Roadmap und alte QA-Protokolle](ROADMAP_AND_QA_DE.md)
+- [Neue Kindersicherung #71](https://github.com/artattakk-creator/kodi-noodleprivate/issues/71)
+- [Aktueller Hotfix-PR #70](https://github.com/artattakk-creator/kodi-noodleprivate/pull/70)
+- [Space Premium / 0.1.30.1 PR #50](https://github.com/artattakk-creator/kodi-noodleprivate/pull/50)
