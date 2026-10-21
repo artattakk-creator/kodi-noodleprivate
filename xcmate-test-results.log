@@ -145,10 +145,10 @@ test_restart_offline_previous_index_and_immediate_disabled_filter (test_xcmate_0
 test_same_stream_in_two_groups_counted_once_globally_but_available_in_each (test_xcmate_028_streaming.IndexTests.test_same_stream_in_two_groups_counted_once_globally_but_available_in_each) ... ok
 test_streaming_group_publishes_only_after_complete_json (test_xcmate_028_streaming.IndexTests.test_streaming_group_publishes_only_after_complete_json) ... ok
 test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update (test_xcmate_028_streaming.LargeGuideTests.test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update) ... 
-LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 21.92}
+LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 22.279}
 ok
 test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib (test_xcmate_028_streaming.LargeHTTPTests.test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib) ... 
-LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 37.621, "peak_rss_kib": 57404}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 38.669, "peak_rss_kib": 57404}]
+LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 37.317, "peak_rss_kib": 57704}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 37.635, "peak_rss_kib": 57704}]
 ok
 test_cache_envelope_and_trailing_data_validated (test_xcmate_028_streaming.ParserTests.test_cache_envelope_and_trailing_data_validated) ... ok
 test_chunked_http_gzip_and_truncated_compression (test_xcmate_028_streaming.ParserTests.test_chunked_http_gzip_and_truncated_compression) ... ok
@@ -169,7 +169,7 @@ test_generated_windowxml_stable_ids_navigation_fonts_colour_alpha_and_original_u
 test_independent_language_de_en_kodi_upgrade_and_content_filter (test_xcmate_028_ui.NewUITests.test_independent_language_de_en_kodi_upgrade_and_content_filter) ... ok
 test_language_selection_save_cancel_and_no_global_language_write (test_xcmate_028_ui.NewUITests.test_language_selection_save_cancel_and_no_global_language_write) ... ok
 test_manual_catalog_refresh_ends_directory_and_only_queues_groups (test_xcmate_028_ui.NewUITests.test_manual_catalog_refresh_ends_directory_and_only_queues_groups) ... ok
-test_movies_directory_aborts_empty_listing_before_owned_window (test_xcmate_028_ui.NewUITests.test_movies_directory_aborts_empty_listing_before_owned_window) ... ok
+test_movies_directory_succeeds_before_owned_window (test_xcmate_028_ui.NewUITests.test_movies_directory_succeeds_before_owned_window) ... ok
 test_optional_preload_failure_does_not_starve_catalogue_or_timers (test_xcmate_028_ui.NewUITests.test_optional_preload_failure_does_not_starve_catalogue_or_timers) ... ok
 test_progressive_import_is_visible_without_reopening_and_closed_view_untouched (test_xcmate_028_ui.NewUITests.test_progressive_import_is_visible_without_reopening_and_closed_view_untouched) ... ok
 test_search_cold_index_queues_all_active_kinds_and_distinguishes_missing (test_xcmate_028_ui.NewUITests.test_search_cold_index_queues_all_active_kinds_and_distinguishes_missing) ... ok
@@ -266,7 +266,7 @@ test_close_during_worker_and_stale_generation_never_apply (test_xcmate_epg_navig
 test_owner_run_receives_native_initialization_and_applies_without_keypress (test_xcmate_epg_navigation_0295.WindowOwnerTests.test_owner_run_receives_native_initialization_and_applies_without_keypress) ... ok
 test_real_catalog_watcher_defers_all_controls_and_refresh_to_owner (test_xcmate_epg_navigation_0295.WindowOwnerTests.test_real_catalog_watcher_defers_all_controls_and_refresh_to_owner) ... ok
 test_real_workers_complete_guide_and_media_only_when_owner_pumps (test_xcmate_epg_navigation_0295.WindowOwnerTests.test_real_workers_complete_guide_and_media_only_when_owner_pumps) ... ok
-test_routes_abort_empty_directory_and_back_returns_home_once_with_replace (test_xcmate_epg_navigation_0295.WindowOwnerTests.test_routes_abort_empty_directory_and_back_returns_home_once_with_replace) ... ok
+test_window_routes_succeed_and_back_returns_home_once_with_replace (test_xcmate_epg_navigation_0295.WindowOwnerTests.test_window_routes_succeed_and_back_returns_home_once_with_replace) ... ok
 test_final_sample_is_not_overwritten_by_old_periodic_checkpoint (test_xcmate_exit_040.ExitTests.test_final_sample_is_not_overwritten_by_old_periodic_checkpoint) ... ok
 test_foreign_replacement_wrong_account_and_stale_marker_never_stop (test_xcmate_exit_040.ExitTests.test_foreign_replacement_wrong_account_and_stale_marker_never_stop) ... ok
 test_item_replacement_during_checkpoint_never_stops_foreign_stream (test_xcmate_exit_040.ExitTests.test_item_replacement_during_checkpoint_never_stops_foreign_stream) ... ok
@@ -455,6 +455,16 @@ test_staged_selective_file_scan_and_save_preserve_existing_account (test_xcmate_
 test_stalker_selected_raw_index_details_and_link_only_after_scan (test_xcmate_universal_sources_043.SourceTests.test_stalker_selected_raw_index_details_and_link_only_after_scan) ... ok
 test_stalker_streams_over_fifty_pages_and_rejects_invalid_trailer (test_xcmate_universal_sources_043.SourceTests.test_stalker_streams_over_fifty_pages_and_rejects_invalid_trailer) ... ok
 test_xtream_discovery_only_calls_categories_before_selective_scan (test_xcmate_universal_sources_043.SourceTests.test_xtream_discovery_only_calls_categories_before_selective_scan) ... ok
+test_abort_before_native_init_does_not_touch_uninitialized_controls (test_xcmate_window_start_0296.WindowStartTests.test_abort_before_native_init_does_not_touch_uninitialized_controls) ... ok
+test_abort_while_waiting_for_modal_disposes_without_native_window_navigation (test_xcmate_window_start_0296.WindowStartTests.test_abort_while_waiting_for_modal_disposes_without_native_window_navigation) ... ok
+test_all_three_menu_routes_complete_successfully_then_receive_delayed_native_init (test_xcmate_window_start_0296.WindowStartTests.test_all_three_menu_routes_complete_successfully_then_receive_delayed_native_init) ... ok
+test_constructor_and_configure_failures_are_logged (test_xcmate_window_start_0296.WindowStartTests.test_constructor_and_configure_failures_are_logged) ... ok
+test_missing_native_init_has_a_bounded_diagnostic_failure (test_xcmate_window_start_0296.WindowStartTests.test_missing_native_init_has_a_bounded_diagnostic_failure) ... ok
+test_modal_busy_handoff_waits_before_show_then_opens_normally (test_xcmate_window_start_0296.WindowStartTests.test_modal_busy_handoff_waits_before_show_then_opens_normally) ... ok
+test_modal_timeout_never_closes_or_forces_another_kodi_window (test_xcmate_window_start_0296.WindowStartTests.test_modal_timeout_never_closes_or_forces_another_kodi_window) ... ok
+test_native_init_exception_is_logged_and_raised_on_owner_without_credentials (test_xcmate_window_start_0296.WindowStartTests.test_native_init_exception_is_logged_and_raised_on_owner_without_credentials) ... ok
+test_show_error_is_not_replaced_by_close_error (test_xcmate_window_start_0296.WindowStartTests.test_show_error_is_not_replaced_by_close_error) ... ok
+test_thread_guard_is_kept_and_logged_without_native_close_from_worker (test_xcmate_window_start_0296.WindowStartTests.test_thread_guard_is_kept_and_logged_without_native_close_from_worker) ... ok
 test_home_does_not_wait_for_account_call (test_xtreammate_016.V016Checks.test_home_does_not_wait_for_account_call) ... ok
 test_live_guide_only_prefetches_off_ui_thread (test_xtreammate_016.V016Checks.test_live_guide_only_prefetches_off_ui_thread) ... ok
 test_remote_diag_records_last_pressed_and_handled_key (test_xtreammate_016.V016Checks.test_remote_diag_records_last_pressed_and_handled_key) ... ok
@@ -515,11 +525,11 @@ test_widget_route_and_no_cached_credentials_in_link (test_xtreammate_widgets.Wid
 test_youtube_whitelist (test_xtreammate_widgets.WidgetsTest.test_youtube_whitelist) ... ok
 
 ----------------------------------------------------------------------
-Ran 511 tests in 122.355s
+Ran 521 tests in 126.973s
 
 OK
 
-MODEL_COLD_WINDOW_MS 4.859
+MODEL_COLD_WINDOW_MS 4.948
 
 SELECTIVE_XMLTV {"bytes": 400, "parsed": 2, "stored": 1}
 
