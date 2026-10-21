@@ -1,7 +1,7 @@
 """New routes only. Legacy provider/player entry points remain compatible."""
 from localization import tr
 
-ACTIONS=('theme_manager','playlist_editor','source_live','source_play','source_start','art_status','art_retry','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
+ACTIONS=('theme_manager','playlist_editor','source_live','source_play','source_start','art_status','art_retry','art_db_health','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
          'movies_home','series_home','media_detail','media_favourites','global_search','search_section',
          'widget_live_start_group','widget_recent_vod','widget_recent_series','widget_setup',
          'recording_folder','recording_capabilities','about_xcmate','guide_browser','media_play','guide_timers','guide_status')
@@ -27,10 +27,14 @@ def dispatch(router):
     action=router._params.get('action','xcmate_home')
     portal=portal_for(router)
     if action=='theme_manager':
-        _end(router,False)
+        _end(router)
         from theme_ui import manage
         manage()
         return
+    if action=='art_db_health':
+        _end(router)
+        from artwork_health_ui import manage
+        manage();return
     if action in ('art_status','art_retry'):
         _end(router,False)
         from art_store import status,retry
@@ -108,14 +112,15 @@ def dispatch(router):
         if portal.get('type') in ('m3u','stb'):
             from source_live import play
             play(router,portal,direct=True);return
-        _end(router,False)
         sid=str(portal.get('start_stream_id') or '')
         xc=router._xc(portal) if portal.get('type')=='xtream' else None
         streams=xc.get_cached_catalog('get_live_streams') if xc else None
         if not sid or not any(isinstance(s,dict) and str(s.get('stream_id'))==sid for s in (streams or [])):
+            _end(router,False)
             if xbmcgui.Dialog().yesno('XCMate',tr(32467)):
                 xbmc.executebuiltin('Container.Update('+router.url(action='startup_settings',pid=portal['id'])+')')
             return
+        _end(router)
         router._play_start_direct()
     elif action=='home_live':
         if portal.get('type') in ('m3u','stb'):

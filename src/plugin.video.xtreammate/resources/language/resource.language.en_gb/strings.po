@@ -2192,3 +2192,15 @@ msgstr "Online catalogue"
 msgctxt "#32824"
 msgid "The official catalogue is not available yet (HTTP 404). Use a verified local theme ZIP or try again after the approved publication."
 msgstr "The official catalogue is not available yet (HTTP 404). Use a verified local theme ZIP or try again after the approved publication."
+
+msgctxt "#32900"
+msgid "Check and repair artwork job database"
+msgstr "Check and repair artwork job database"
+
+msgctxt "#32902"
+msgid "The artwork job database is damaged. Create a new queue after a safe backup? Pending jobs will be replaced. Existing images, accounts, favourites and EPG remain."
+msgstr "The artwork job database is damaged. Create a new queue after a safe backup? Pending jobs will be replaced. Existing images, accounts, favourites and EPG remain."
+
+msgctxt "#32903"
+msgid "Checking artwork jobs and creating a consistent backup. This may take a moment."
+msgstr "Checking artwork jobs and creating a consistent backup. This may take a moment."

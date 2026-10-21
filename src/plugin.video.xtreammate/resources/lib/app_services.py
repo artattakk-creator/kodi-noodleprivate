@@ -55,6 +55,10 @@ def _run():
     monitor=xbmc.Monitor()
     while not monitor.abortRequested():
         worked=False
+        try:
+            from artwork_db import maintain
+            maintain(cancel=monitor.abortRequested)
+        except Exception: pass
         # Optional guide/art preparation may fail independently. It must not
         # starve an otherwise valid movie/series sync request.
         try: refresh_local()
