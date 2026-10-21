@@ -1,3 +1,5 @@
+> **UPDATE NACH RELEASE – 21.10.2026:** **XCMate 0.1.29.5 ist nach Integration von PR #61 in `main` regulär veröffentlicht.** GitHub-Merge `c6e7050d5b0ba5bf88943dcf9d55107f0af38fed` (manuelle Konfliktauflösung für drei Übergabedateien), erfolgreicher Publish-Workflow [39639332756](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39639332756); `addons.xml` und ZIP zeigen **0.1.29.5**. Paket 387.805 Bytes, SHA-256 `b9b527e64abd736403b721b33e065ffe1d57ea9ced8352ab23f49f7b0119c88a`. **Android-Gerätetest 0.1.29.5 noch offen**; EZ Maintenance+-Backup von 0.1.29.4 behalten. Phase-A-Issues #58/#59/#60 sind im Code bearbeitet, aber keine Geräteabnahme; PR #50/0.1.30 bleibt gesondert offen und muss die Hotfixes später übernehmen. *Ältere Release-Baseline-Angaben darunter sind historische Snapshot-Werte.*
+
 # XCMate – verbindlicher Projektstatus und Übergabe
 
 **Stand:** 21.10.2026, nach Klärung Multiview / paralleler Aufnahme.  
