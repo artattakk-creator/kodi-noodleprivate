@@ -188,11 +188,11 @@ class WindowOwnerTests(Fixture,unittest.TestCase):
         w=self.media_window();w.native(7);self.settle(w);self.assertEqual(w.mode,'detail')
         w.native(92);self.settle(w);self.assertEqual(w.mode,'landing');self.assertFalse(w._closed)
         w.native(92);self.assertTrue(w._closed);self.assertTrue(w._return_home)
-    def test_routes_abort_empty_directory_and_back_returns_home_once_with_replace(self):
+    def test_window_routes_succeed_and_back_returns_home_once_with_replace(self):
         for action,module,name in (('guide_browser',self.guide,'open_guide'),('movies_home',self.media,'open_media')):
             self.router._params['action']=action;self.router._directory_done=False
             with mock.patch.object(module,name) as open_:self.routes.dispatch(self.router)
-            self.assertEqual(self.ends[-1][0],(7,False));open_.assert_called_once()
+            self.assertEqual(self.ends[-1][0],(7,True));open_.assert_called_once()
         w=self.guide_window();w._return_home=True
         with mock.patch.object(self.guide,'GuideWindow',return_value=w),mock.patch.object(w,'run',side_effect=lambda:setattr(w,'_return_home',True)):
             self.guide.open_guide(self.router,self.portal)

@@ -1,6 +1,6 @@
 """Full-screen accessible multi-channel day guide; queries off the GUI thread."""
 from localization import tr
-from owner_dispatch import OwnerDispatch
+from owner_dispatch import OwnerDispatch,native_init,open_owned_window
 import datetime
 import threading
 import time
@@ -29,6 +29,7 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._gui()
         self.getControl(102).setLabel(tr(32610))
 
+    @native_init
     def onInit(self):
         for control_id,string_id in ((310,32588),(311,32589),(312,32590),(501,32591)):
             self.getControl(control_id).setLabel(tr(string_id))
@@ -222,10 +223,6 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXML):
 
 
 def open_guide(router,portal):
-    from appearance import window_source
-    window=GuideWindow('XCMateGuide.xml',window_source('XCMateGuide.xml'),'Default','720p')
-    window.configure(router,portal)
-    try: window.run()
-    finally: window.close()
+    window=open_owned_window(GuideWindow,'XCMateGuide.xml',router,portal)
     if window._return_home:
         xbmc.executebuiltin('Container.Update('+router.url(action='xcmate_home',pid=portal['id'])+',replace)')

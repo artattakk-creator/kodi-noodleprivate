@@ -127,11 +127,13 @@ def dispatch(router):
             _end(router,False)
             xbmcgui.Dialog().ok('XCMate',tr(32468))
             return
-        _end(router,False)
+        # This is a successful UI route. False makes Kodi's media container
+        # fall back to its previous/root directory while our window activates.
+        _end(router)
         from media_window import open_media
         open_media(router,portal,kind,router._params.get('sid',''),favourites=action=='media_favourites')
     elif action=='guide_browser':
-        _end(router,False)
+        _end(router)
         from guide_window import open_guide
         open_guide(router,portal)
     elif action=='media_play':

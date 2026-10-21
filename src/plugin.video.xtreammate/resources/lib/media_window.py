@@ -4,7 +4,7 @@ Native XML controls dispatch onClick, unlike programmatic WindowDialog. Data,
 metadata and images are prepared by bounded workers; callbacks only use views.
 """
 from localization import tr
-from owner_dispatch import OwnerDispatch
+from owner_dispatch import OwnerDispatch,native_init,open_owned_window
 import json
 import os
 import queue
@@ -45,6 +45,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         super().setFocusId(control_id)
         self._nav_focus=control_id
 
+    @native_init
     def onInit(self):
         self.getControl(400).setLabel(tr(32586))
         self.getControl(501).setLabel(tr(32587))
@@ -546,10 +547,6 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
 
 
 def open_media(router,portal,kind,sid='',favourites=False):
-    from appearance import window_source
-    window=MediaWindow('XCMateMedia.xml',window_source('XCMateMedia.xml'),'Default','720p')
-    window.configure(router,portal,kind,sid,favourites)
-    try: window.run()
-    finally: window.close()
+    window=open_owned_window(MediaWindow,'XCMateMedia.xml',router,portal,kind,sid,favourites)
     if window._return_home:
         xbmc.executebuiltin('Container.Update('+router.url(action='xcmate_home',pid=portal['id'])+',replace)')
