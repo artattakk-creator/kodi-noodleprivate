@@ -1,0 +1,68 @@
+{
+  "version": "0.1.29.5",
+  "phase": "A",
+  "base": "13fd41fda7275162d920b9c99dd8a3a6a38f0b28",
+  "tests": {
+    "total": 511,
+    "passed": 511,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 139.511,
+    "new": 15
+  },
+  "build": {
+    "version": "0.1.29.5",
+    "bytes": 387805,
+    "files": 129,
+    "sha256": "b9b527e64abd736403b721b33e065ffe1d57ea9ced8352ab23f49f7b0119c88a",
+    "crc": "PASS",
+    "source_bytes": "PASS",
+    "reproducible": "PASS",
+    "syntax": "PASS",
+    "build": "PASS"
+  },
+  "baseline": {
+    "baseline": "13fd41fda7275162d920b9c99dd8a3a6a38f0b28",
+    "short_slots_before": 4,
+    "expected_unique_slots": 2,
+    "guide_worker_gui_accesses_before": 1
+  },
+  "android": "NOT_RUN",
+  "merge": false,
+  "release": false,
+  "productive_index_changed": false,
+  "ci": {
+    "run": 39618741059,
+    "source_commit": "a4eedf68cf283aacd4ccaa097c93d89176320a88",
+    "job": "SUCCESS",
+    "workflow_api_status": "in_progress",
+    "publish": "SKIPPED",
+    "artifact": {
+      "id": 12354535700,
+      "node_id": "MDg6QXJ0aWZhY3QxMjM1NDUzNTcwMA==",
+      "name": "xcmate-review-61-b9b527e64abd736403b721b33e065ffe1d57ea9ced8352ab23f49f7b0119c88a",
+      "size_in_bytes": 387095,
+      "url": "https://api.github.com/repos/artattakk-creator/kodi-noodleprivate/actions/artifacts/12354535700",
+      "archive_download_url": "https://api.github.com/repos/artattakk-creator/kodi-noodleprivate/actions/artifacts/12354535700/zip",
+      "expired": false,
+      "digest": "sha256:d628c166617af5f3f6e2e6874468d03a53434c1a7c30a8866b406f157adbbdb7",
+      "created_at": "2026-10-21T14:40:50Z",
+      "updated_at": "2026-10-21T14:40:50Z",
+      "expires_at": "2026-11-04T14:40:49Z",
+      "workflow_run": {
+        "id": 39618741059,
+        "repository_id": 1416944317,
+        "head_repository_id": 1416944317,
+        "head_branch": "fix/xcmate-0295-epg-navigation",
+        "head_sha": "a4eedf68cf283aacd4ccaa097c93d89176320a88"
+      }
+    }
+  },
+  "pull_request": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/61",
+  "github_blob": {
+    "id": "bae5a76421fe632c23134e16bf84cc0771cd5fab",
+    "bytes": 387805,
+    "sha256": "b9b527e64abd736403b721b33e065ffe1d57ea9ced8352ab23f49f7b0119c88a"
+  }
+}

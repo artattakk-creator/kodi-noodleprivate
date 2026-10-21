@@ -40,6 +40,7 @@ def connect(filename=None,write=False):
 
 def import_cache(pid,cache,revision='',now=None,filename=None):
     from epg_views import _as_int
+    from epg_events import deduplicate
     now=int(time.time() if now is None else now)
     if not isinstance(cache,dict) or not cache: return False
     db=connect(filename,write=True)
@@ -50,7 +51,7 @@ def import_cache(pid,cache,revision='',now=None,filename=None):
             for alias,events in cache.items():
                 if not isinstance(events,list): continue
                 canonical=None
-                for event in events:
+                for event in deduplicate(events):
                     if not isinstance(event,dict): continue
                     start=_as_int(event.get('start_timestamp'));stop=_as_int(event.get('stop_timestamp'))
                     title=str(event.get('name') or event.get('title') or '')[:512]
@@ -64,6 +65,8 @@ def import_cache(pid,cache,revision='',now=None,filename=None):
                     db.execute(('INSERT OR REPLACE' if str(alias)==cid else 'INSERT OR IGNORE')+' INTO incoming VALUES(?,?,?,?,?,?)',
                         (cid,start,stop,title,str(event.get('descr') or event.get('description') or '')[:4096],source))
                 if canonical: db.execute('INSERT OR REPLACE INTO guide_alias VALUES(?,?,?)',(pid,str(alias),canonical))
+            from epg_events import clean_stage
+            clean_stage(db,'incoming')
             count=db.execute('SELECT count(*) FROM incoming').fetchone()[0]
             if not count: return False
             if count>MAX_EVENTS: raise ValueError('guide index budget')
@@ -108,10 +111,23 @@ def events(pid,epg_id,start,stop,offset=0,limit=100,filename=None):
         cid=alias[0] if alias else str(epg_id)
         where='pid=? AND cid=? AND start<? AND stop>?'
         args=(pid,cid,stop,start)
-        total=db.execute('SELECT count(*) FROM programmes WHERE '+where,args).fetchone()[0]
-        rows=db.execute('SELECT * FROM programmes WHERE '+where+' ORDER BY start,stop LIMIT ? OFFSET ?',
-                        args+(min(100,max(1,int(limit))),max(0,int(offset)))).fetchall()
-        return [dict(r) for r in rows],total
+        # Legacy rows are filtered defensively without rewriting user caches.
+        # Stream one channel/day, retaining only the requested unique page.
+        from epg_events import deduplicate
+        page=[];total=0;pending=[];offset=max(0,int(offset));limit=min(100,max(1,int(limit)))
+        def publish(batch):
+            nonlocal total
+            for row in deduplicate(batch,channel=cid):
+                if offset<=total<offset+limit: page.append(row)
+                total+=1
+        for raw in db.execute('SELECT * FROM programmes WHERE '+where+' ORDER BY start,stop',args):
+            row=dict(raw)
+            if pending and row['start']-pending[-1]['start']>120:
+                publish(pending);pending=[]
+            if len(pending)>=512: raise ValueError('EPG dense interval budget')
+            pending.append(row)
+        publish(pending)
+        return page,total
     finally: db.close()
 
 
@@ -149,6 +165,11 @@ def status_lines(portal,filename=None):
                 tr(32564)+(time.strftime(tr(32585),time.localtime(success)) if success else tr(32565)),
                 tr(32566)+str(entry.get('code',tr(32567)))]
     if not rows: lines.append(tr(32568))
+    from epg_dedup_diagnostics import read as dedup_reports
+    reports=dedup_reports()
+    if reports:
+        import json
+        lines+=['',tr(32787),json.dumps(reports[-8:],ensure_ascii=False,indent=2)]
     return lines
 
 

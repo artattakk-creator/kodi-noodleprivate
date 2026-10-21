@@ -13,10 +13,21 @@ class Cancelled(Exception):
 def valid_server(value):
     """Local syntax validation only; do not ping a user-supplied service."""
     value = (value or '').strip().rstrip('/')
+    # Xtream portals frequently supply a simple host:port. Treat that format
+    # as an HTTP origin, as the Xtream client already does in legacy accounts.
+    if '://' in value and not re.match(r'^https?://', value, re.I):
+        raise ValueError('Bitte eine http://- oder https://-Serveradresse eingeben.')
     if not re.match(r'^https?://', value, re.I):
-        raise ValueError('Bitte eine vollständige http://- oder https://-Adresse eingeben.')
+        if value.startswith(('http:', 'https:')):
+            raise ValueError('Bitte eine gueltige Serveradresse eingeben.')
+        value = 'http://' + value
     p = urlsplit(value)
-    if not p.hostname or p.username or p.password or p.fragment or p.query:
+    try:
+        port = p.port  # Invalid or out-of-range ports must not escape as ValueError.
+    except ValueError:
+        raise ValueError('Bitte eine gueltige Serveradresse mit Port eingeben.') from None
+    if (not p.hostname or p.username or p.password or p.fragment or p.query
+            or not p.netloc or any(ch.isspace() for ch in p.netloc)):
         raise ValueError('Bitte nur die Serveradresse ohne Zugangsdaten und Parameter eingeben.')
     return value
 
@@ -70,6 +81,9 @@ def setup():
         return open_setup(data)
     except Cancelled: return None
     except Exception as exc:
-        warn('XCMate setup failed: '+type(exc).__name__)
-        dlg.ok('XCMate',tr(32715,type(exc).__name__))
+        from setup_window import _failure_details
+        code,message=_failure_details(exc)
+        warn('XCMate setup input failed: code={} type={}'.format(
+            code,type(exc).__name__))
+        dlg.ok('XCMate','{} [{}]'.format(message,code))
         return None

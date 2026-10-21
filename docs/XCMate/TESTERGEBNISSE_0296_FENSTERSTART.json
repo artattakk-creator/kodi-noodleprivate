@@ -1,0 +1,85 @@
+{
+  "version": "0.1.29.6",
+  "issue": 67,
+  "published_base": "ee965351f1ace9586cce7d2b5c902c0a9a9f8089",
+  "local_source_base": "d3ae84624871c6826b99e86e0d4de6483e21b09e",
+  "base_source_and_tests_parity": "PASS",
+  "tests": {
+    "total": 521,
+    "passed": 521,
+    "new": 10,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 81.942,
+    "network_tests": "real loopback HTTP servers, permission enabled"
+  },
+  "build": {
+    "file": "plugin.video.xtreammate-0.1.29.6.zip",
+    "bytes": 389853,
+    "files": 129,
+    "sha256": "f8188f156b8d43d741706813ba6e9946d7f2be66b035e4977dadb32464afe40e",
+    "blob_sha": "64686d71c0d231381d9bcd424b61a5f1357ab7dd",
+    "syntax": "PASS",
+    "crc": "PASS",
+    "paths": "PASS",
+    "source_bytes": "PASS",
+    "reproducible": "PASS"
+  },
+  "unchanged_modules_sha256": {
+    "live_overlay.py": "7c58da99f772f04d915fe0f59f9cf08f5ecece5c09a9f08aac8465bf93839244",
+    "live_recovery.py": "1507a21dda340b5b44a75e642475b15767243f64d17d42ac855608652b247f8c",
+    "remote_control.py": "59b5565f504d721cf4c230d74f5f8d04454f12e7e6c6af6114b3251610c7dbbc",
+    "remote_bridge.py": "0d84b93798901dd3885250fb8110c250a068a85761d48303120bce0415fa4153",
+    "remote_profiles.py": "b42fa39fec0e1d1fb74335fd8c21d68fc0e1d447f79802e210c274efba74b930",
+    "epg_events.py": "92f99c243c7f97e291df7f7278c4e7727e2452db4190ece9c48e37668e980c92",
+    "epg_views.py": "7a80bde36f638b7a2b0ce1a7af339556186263b84d09630037bf6efcdf264c91",
+    "guide_store.py": "364f23a62fce72b21991d010110869abc59e874efeccc754070712b985282b0c",
+    "stream_epg.py": "ca4dc6077689011efe0233890edb93812c9766a2fdabc76e7a5350661c5e948b",
+    "epg_sources.py": "5d888b65e9ff811279299eba1a2fd07c93bd2f43d34a92d13a56ef0b0c629ba8"
+  },
+  "source_changed_files": [
+    "addon.xml",
+    "changelog.txt",
+    "resources/lib/app_routes.py",
+    "resources/lib/guide_window.py",
+    "resources/lib/media_window.py",
+    "resources/lib/owner_dispatch.py"
+  ],
+  "android": "NOT_RUN",
+  "gui_model": "AUTOMATED_PASS, not native Kodi/Android",
+  "device_log_proves": "0.1.29.5 directory failures and modal activation refusal; no 0.1.29.6 device acceptance",
+  "private_log_committed": false,
+  "merge": true,
+  "release": true,
+  "productive_index_changed": true,
+  "ci": {
+    "pr": {
+      "run": 39646493087,
+      "status": "SUCCESS",
+      "tests": 521,
+      "seconds": 120.512
+    },
+    "publish": {
+      "run": 39646892896,
+      "status": "SUCCESS",
+      "tests": 521,
+      "seconds": 126.973,
+      "publish_step": "SUCCESS"
+    }
+  },
+  "github_delivery": {
+    "status": "PUBLISHED",
+    "pr": 68,
+    "head": "b95e4a6df6705413dbfc7d0b1cd635b6bf7cd3fa",
+    "merge": "17f5f634e8d5ac74310b7bed95b5636664f92456",
+    "published_commit": "71a40675342cf911507d292f63a271a2633be497",
+    "index_version": "0.1.29.6",
+    "index_md5": "398b7fb355578a6bd8fca539abb4b730",
+    "index_md5_verified": true,
+    "zip_blob_sha": "64686d71c0d231381d9bcd424b61a5f1357ab7dd",
+    "zip_identical_to_tested_local": "PASS",
+    "regular_update_authorized": true
+  },
+  "release_authorized": true
+}

@@ -2061,6 +2061,38 @@ msgctxt "#32776"
 msgid "First 1000 duplicate groups"
 msgstr "First 1000 duplicate groups"
 
+msgctxt "#32780"
+msgid "{} of {} groups enabled"
+msgstr "{} of {} groups enabled"
+
+msgctxt "#32781"
+msgid "No categories available"
+msgstr "No categories available"
+
+msgctxt "#32782"
+msgid "Saved data could not be fully verified. The new import was rolled back."
+msgstr "Saved data could not be fully verified. The new import was rolled back."
+
+msgctxt "#32783"
+msgid "Saving is already in progress or complete."
+msgstr "Saving is already in progress or complete."
+
+msgctxt "#32784"
+msgid "{} · Group {} of {}: {} · read {}, stored {}"
+msgstr "{} · Group {} of {}: {} · read {}, stored {}"
+
+msgctxt "#32785"
+msgid "The selection changed. Please scan again."
+msgstr "The selection changed. Please scan again."
+
+msgctxt "#32786"
+msgid "Save or rollback incomplete. Existing accounts are preserved; record the diagnostic code."
+msgstr "Save or rollback incomplete. Existing accounts are preserved; record the diagnostic code."
+
+msgctxt "#32787"
+msgid "Short EPG: recent local deduplication diagnostics (anonymous stream ID)"
+msgstr "Short EPG: recent local deduplication diagnostics (anonymous stream ID)"
+
 msgctxt "#32800"
 msgid "XCMate designs"
 msgstr "XCMate designs"

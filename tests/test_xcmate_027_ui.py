@@ -131,7 +131,7 @@ class NavigationTests(Fixture,unittest.TestCase):
     def test_first_active_movie_group_native_left_edge_expand_and_right_collapse(self):
         w=self.media_window()
         self.assertEqual(w.mode,'landing');self.assertEqual(w.total,100)
-        w.native(4);self.assertEqual(w.focus,120);w.native(7);w._pool.drain()
+        w.native(4);self.assertEqual(w.focus,120);w.native(7);self.settle(w)
         self.assertEqual((w.mode,w.category),('grid','a'))
         w.native(1);self.assertEqual(w.mode,'groups');self.assertEqual(w.focus,200)
         w.native(2);self.assertEqual(w.mode,'grid');self.assertEqual(w._cols,6)
@@ -141,7 +141,7 @@ class NavigationTests(Fixture,unittest.TestCase):
         w.native(1);self.assertEqual(w.mode,'groups')
 
     def test_left_edge_after_first_grid_row_preserves_identity_despite_native_wrap(self):
-        w=self.media_window();w.native(4);w.native(7);w._pool.drain()
+        w=self.media_window();w.native(4);w.native(7);self.settle(w)
         w.native(1);w.native(2)
         w.getControl(210).selectItem(6);w._last_position=6
         w.native(1)  # Native panel can move to 5 before Python handles the edge.
@@ -149,11 +149,11 @@ class NavigationTests(Fixture,unittest.TestCase):
         w.native(2);self.assertEqual(w.getControl(210).selected,6)
 
     def test_empty_group_keeps_group_focus_and_recovers_with_another_group(self):
-        w=self.media_window();w.native(4);w.native(7);w._pool.drain()
-        w.native(1);w.native(4);w.native(7);w._pool.drain()
+        w=self.media_window();w.native(4);w.native(7);self.settle(w)
+        w.native(1);w.native(4);w.native(7);self.settle(w)
         self.assertEqual((w.category,w.mode,w.focus),('b','groups',200))
         w.native(2);self.assertEqual(w.focus,200)
-        w.native(3);w.native(7);w._pool.drain()
+        w.native(3);w.native(7);self.settle(w)
         self.assertEqual((w.category,w.mode),('a','grid'))
 
     def test_native_cover_click_opens_details_once_and_back_restores_cover_position(self):
@@ -163,10 +163,10 @@ class NavigationTests(Fixture,unittest.TestCase):
         self.assertEqual(self.builtins,[])
         # Metadata runs only after the key callback, by the worker queue.
         self.client._get_json.reset_mock()
-        self.assertTrue(w._pool.jobs);w._pool.drain()
+        self.assertTrue(w._pool.jobs);self.settle(w)
         self.client._get_json.assert_called_once()
         self.assertIn('Actual plot',w.getControl(320).text)
-        w.native(92);w._pool.drain()
+        w.native(92);self.settle(w)
         self.assertEqual((w.mode,w._last_position),('landing',2))
 
     def test_rail_all_hundred_items_reachable_with_bounded_native_controls(self):
@@ -176,13 +176,13 @@ class NavigationTests(Fixture,unittest.TestCase):
             self.assertLessEqual(len(w.getControl(110).items),24)
             if w.offset+len(w.rows)<w.total:
                 w.getControl(110).selectItem(len(w.rows)-1);w._last_position=len(w.rows)-1
-                w.native(2);w._pool.drain()
+                w.native(2);self.settle(w)
         self.assertEqual(len(ids),100);self.assertEqual(len(set(ids)),100)
         self.assertLess(len(w.controls),20)
 
     def test_favourites_resume_and_trailer_are_real_conditional_actions(self):
         self.state.save_progress(dict(pid='p',kind='vod',sid='1'),1050,2700)
-        w=self.media_window();w.native(7);w._pool.drain()
+        w=self.media_window();w.native(7);self.settle(w)
         actions=dict((key,label) for label,key in w.actions)
         self.assertIn('resume',actions);self.assertIn('00:17:30',actions['resume'])
         self.assertIn('trailer',actions)
@@ -195,7 +195,7 @@ class NavigationTests(Fixture,unittest.TestCase):
         self.router._play_youtube_id.assert_called_once_with('abcdefghijk')
 
     def test_series_has_numerically_sorted_seasons_and_starts_only_selected_episode(self):
-        w=self.media_window('series');w.native(7);w._pool.drain()
+        w=self.media_window('series');w.native(7);self.settle(w)
         self.assertEqual([(e['season'],e['episode']) for e in w.episodes],[(1,1),(1,2),(2,1)])
         w.getControl(300).selectItem(0);w.native(7)
         self.assertEqual(w.mode,'seasons');w.native(7)
@@ -206,7 +206,7 @@ class NavigationTests(Fixture,unittest.TestCase):
     def test_back_cancels_late_metadata_without_switching_view_or_focus(self):
         w=self.media_window();w.native(7)
         self.assertEqual(w.mode,'detail')
-        w.native(92);w._pool.drain()
+        w.native(92);self.settle(w)
         self.assertEqual(w.mode,'landing');self.assertEqual(w.focus,110)
 
     def test_guide_starts_in_start_channel_group_and_native_group_navigation(self):
@@ -221,7 +221,7 @@ class NavigationTests(Fixture,unittest.TestCase):
 
     def test_guide_ten_days_missing_data_is_honest_no_download_on_navigation(self):
         self.options['epg_days']=10;w=self.guide_window()
-        for _ in range(12): w.onClick(311);w._pool.drain()
+        for _ in range(12): w.onClick(311);self.settle(w)
         self.assertEqual(w.day,9)
         self.assertIn('keine echten Programmdaten',w.getControl(220).items[0].label)
         sys.modules['utils'].http_get.assert_not_called()
@@ -233,7 +233,7 @@ class NavigationTests(Fixture,unittest.TestCase):
         self.assertEqual(w.programmes,[]);self.assertEqual(w.getControl(220).items,[])
         w.native(2);w.native(7)
         self.dialog.select.assert_not_called()
-        w._pool.drain();self.assertEqual(w.sid,'2');self.assertTrue(w.programmes)
+        self.settle(w);self.assertEqual(w.sid,'2');self.assertTrue(w.programmes)
 
     def test_bad_image_headers_and_giant_images_rejected_before_native_rendering(self):
         import struct
@@ -264,19 +264,19 @@ class NavigationTests(Fixture,unittest.TestCase):
 
     def test_window_reinitialization_after_fullscreen_preserves_grid_and_detail_focus(self):
         w=self.media_window();w.native(2);w.native(2)
-        w.native(7);w._pool.drain()
+        w.native(7);self.settle(w)
         index=next(i for i,a in enumerate(w.actions) if a[1]=='favourite')
         w.getControl(300).selectItem(index)
         w.onInit()  # Native XML WINDOW_INIT also occurs on reactivation.
         self.assertEqual(w.mode,'detail')
         self.assertEqual(w.actions[w.getControl(300).getSelectedPosition()][1],'favourite')
-        w.native(92);w._pool.drain();w.onInit()
+        w.native(92);self.settle(w);w.onInit()
         self.assertEqual((w.mode,w._last_position),('landing',2))
 
     def test_series_continue_next_and_manual_seen_are_independent_of_live_playback(self):
         e=dict(pid='p',kind='episode',sid='11',series_id='1',season='1',episode='1')
         self.state.save_progress(e,1050,2700)
-        w=self.media_window('series');w.native(7);w._pool.drain()
+        w=self.media_window('series');w.native(7);self.settle(w)
         self.assertIn('continue_episode',[action for _,action in w.actions])
         self.state.save_progress(e,2600,2700);w.onInit()
         self.assertIn('next_episode',[action for _,action in w.actions])
@@ -285,7 +285,7 @@ class NavigationTests(Fixture,unittest.TestCase):
 
     def test_profile_corruption_disables_state_actions_and_preserves_bytes(self):
         statefile=Path(self.state.path());statefile.write_bytes(b'corrupt profile')
-        w=self.media_window();w.native(7);w._pool.drain()
+        w=self.media_window();w.native(7);self.settle(w)
         self.assertIn('nicht lesbar',w.getControl(102).label)
         self.assertNotIn('favourite',[action for _,action in w.actions])
         self.assertNotIn('resume',[action for _,action in w.actions])
@@ -306,7 +306,7 @@ class NavigationTests(Fixture,unittest.TestCase):
         # the actual persistent rail query, independent of provider dates.
         self.index.replace_catalog('p','vod',[dict(stream_id='1',name='Undated',category_id='a')],
                                    [dict(category_id='a',category_name='A')])
-        w._page('landing');w._pool.drain()
+        w._page('landing');self.settle(w)
         self.assertEqual(len(w.rows),1)
         self.assertIn('Hinzufügedatum unbekannt',w.getControl(102).label)
 

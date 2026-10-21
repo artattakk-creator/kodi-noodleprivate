@@ -550,7 +550,7 @@ from contextlib import contextmanager
 
 
 @contextmanager
-def http_stream(url, params=None, headers=None, timeout=15, max_seconds=300,
+def http_stream(url, params=None, headers=None, timeout=15, max_seconds=None,
                 cancel=lambda: False):
     """One response, worker only. Failed imports retry from a fresh generation.
 
@@ -558,7 +558,7 @@ def http_stream(url, params=None, headers=None, timeout=15, max_seconds=300,
     remains bounded for authentication, metadata and short guide requests.
     """
     from network_io import decoded_chunks, ChunkReader
-    deadline = time.monotonic()+max_seconds
+    deadline = None if max_seconds is None else time.monotonic()+max_seconds
     hdrs = {**_default_headers(), **(headers or {})}
     if _httpx_available():
         options = dict(headers=hdrs, timeout=timeout, verify=setting_bool('ssl_verify',True), follow_redirects=True)

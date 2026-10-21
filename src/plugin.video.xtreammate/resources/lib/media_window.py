@@ -4,6 +4,7 @@ Native XML controls dispatch onClick, unlike programmatic WindowDialog. Data,
 metadata and images are prepared by bounded workers; callbacks only use views.
 """
 from localization import tr
+from owner_dispatch import OwnerDispatch,native_init,open_owned_window
 import json
 import os
 import queue
@@ -19,8 +20,10 @@ import xbmcaddon
 PAGE=24
 
 
-class MediaWindow(xbmcgui.WindowXML):
+class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
     def configure(self,router,portal,kind,sid='',favourites=False):
+        self._configure_owner()
+        self._return_home=False
         from theme_store import current
         self._theme=current()
         self.router,self.portal,self.kind=router,portal,kind
@@ -34,6 +37,7 @@ class MediaWindow(xbmcgui.WindowXML):
         self._watch_stop=threading.Event();self._watch_thread=None;self._pending_future=None
         self._opened_at=time.monotonic();self._seen_revision=''
         self._catalog_missing=True
+        self._catalog_update=None
         self._lock=threading.RLock();self._pool=ThreadPoolExecutor(max_workers=2)
         self._art=queue.Queue(maxsize=3)
         self._art_thread=threading.Thread(target=self._art_loop,daemon=True,name='XCMate-art')
@@ -43,6 +47,7 @@ class MediaWindow(xbmcgui.WindowXML):
         super().setFocusId(control_id)
         self._nav_focus=control_id
 
+    @native_init
     def onInit(self):
         self.getControl(400).setLabel(tr(32586))
         self.getControl(501).setLabel(tr(32587))
@@ -69,24 +74,9 @@ class MediaWindow(xbmcgui.WindowXML):
         self._request(self._initial,self._initial_ready)
         self._start_watch()
 
-    def _request(self,job,apply):
-        self._generation+=1;generation=self._generation
-        if self._pending_future is not None: self._pending_future.cancel()
-        future=self._pool.submit(job);self._pending_future=future
-        def done(result):
-            try: value=result.result()
-            except Exception as exc:
-                with self._lock:
-                    if not self._closed and generation==self._generation:
-                        from import_budget import safe_failure
-                        from utils import warn
-                        warn('Media local query: '+str(safe_failure(exc)))
-                        self.getControl(102).setLabel(tr(32610))
-                        self.setFocusId(120)
-                return
-            with self._lock:
-                if not self._closed and generation==self._generation: apply(value)
-        future.add_done_callback(done)
+    def _query_failed(self,exc):
+        self._gui()
+        self.getControl(102).setLabel(tr(32610))
 
     def _initial(self):
         from library_index import Reader
@@ -94,12 +84,13 @@ class MediaWindow(xbmcgui.WindowXML):
         reader=Reader(self.portal['id'])
         groups=reader.groups(self.kind)
         preferred=self.category or (groups[0]['cid'] if groups else '')
-        request(self.portal,self.kind,preferred,priority=2)
+        if not reader.state(self.kind): request(self.portal,self.kind,preferred,priority=2)
         return reader,groups,reader.state(self.kind)
 
     def _initial_ready(self,value):
         self.reader,self.groups,state=value
         self._catalog_missing=not bool(state)
+        self._seen_revision=(state or {}).get('revision','')
         self._fill(200,[dict(name=g['title'],sid=g['cid']) for g in self.groups])
         self.category=self.category if any(g['cid']==self.category for g in self.groups) else (self.groups[0]['cid'] if self.groups else '')
         if not state:
@@ -129,21 +120,33 @@ class MediaWindow(xbmcgui.WindowXML):
         from media_art import revision
         if revision()!=self._art_revision:
             self._art_revision=revision()
-            self._refresh_art()
         from library_index import Reader,sync_state
         reader=Reader(self.portal['id'])
         state=reader.state(self.kind)
         revision=(state or {}).get('revision','')
+        status=sync_state(self.portal['id'],self.kind)
+        groups=reader.groups(self.kind) if state else []
+        with self._lock:
+            if self._closed: return
+            self._catalog_update=(reader,state,revision,status,groups)
+        if threading.get_ident()==self._owner: self._owner_tick()
+
+    def _owner_tick(self):
+        self._gui()
+        with self._lock:
+            update=self._catalog_update;self._catalog_update=None
+        if update is None or self._closed: return
+        reader,state,revision,status,groups=update
+        self._refresh_art()
         with self._lock:
             if self._closed: return
             if state and revision!=self._seen_revision:
                 self._seen_revision=revision
                 if self.mode in ('landing','grid','groups'):
-                    self.reader=reader;self.groups=reader.groups(self.kind);self._catalog_missing=False
+                    self.reader=reader;self.groups=groups;self._catalog_missing=False
                     self._fill(200,[dict(name=g['title'],sid=g['cid']) for g in self.groups])
                     if not self.category and self.groups: self.category=self.groups[0]['cid']
                     self._page(self.mode,self.offset)
-            status=sync_state(self.portal['id'],self.kind)
             if status and status[0]['code'] in ('FAILED','CANCELLED'):
                 self.getControl(102).setLabel(tr(32610))
                 if self._catalog_missing: self.getControl(120).setLabel(tr(32611))
@@ -478,7 +481,7 @@ class MediaWindow(xbmcgui.WindowXML):
                     self._page(mode,offset);return
                 if self.mode in ('grid','groups'):
                     self._cols=4;self._page('landing',0);return
-                self.close();return
+                self._return_home=True;self.close();return
             if key==117:
                 if self.mode=='episodes':
                     pos=self.getControl(330).getSelectedPosition()
@@ -541,6 +544,7 @@ class MediaWindow(xbmcgui.WindowXML):
             xbmc.executebuiltin('Container.Update('+self.router.url(action='global_search',pid=self.portal['id'],q=query[:200])+')')
 
     def close(self):
+        self._gui()
         if self._closed: return
         from media_intent import cancel
         cancel(self.portal['id'],self._play_intent)
@@ -550,8 +554,6 @@ class MediaWindow(xbmcgui.WindowXML):
 
 
 def open_media(router,portal,kind,sid='',favourites=False):
-    from appearance import window_source
-    window=MediaWindow('XCMateMedia.xml',window_source('XCMateMedia.xml',kind),'Default','720p')
-    window.configure(router,portal,kind,sid,favourites)
-    try: window.doModal()
-    finally: window.close()
+    window=open_owned_window(MediaWindow,'XCMateMedia.xml',router,portal,kind,sid,favourites)
+    if window._return_home:
+        xbmc.executebuiltin('Container.Update('+router.url(action='xcmate_home',pid=portal['id'])+',replace)')

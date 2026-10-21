@@ -1,0 +1,14 @@
+{
+  "addon": "plugin.video.xtreammate",
+  "version": "0.1.29.5",
+  "bytes": 387805,
+  "files": 129,
+  "sha256": "b9b527e64abd736403b721b33e065ffe1d57ea9ced8352ab23f49f7b0119c88a",
+  "crc": "PASS",
+  "source_bytes": "PASS",
+  "reproducible": "PASS",
+  "syntax": "PASS",
+  "build": "PASS",
+  "distribution": "manual test only",
+  "auto_update": false
+}

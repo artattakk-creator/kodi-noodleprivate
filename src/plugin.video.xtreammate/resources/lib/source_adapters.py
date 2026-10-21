@@ -127,28 +127,39 @@ class Adapter:
         from streaming_json import iter_array
         provider=self.provider
         if not provider.authenticate(): raise ValueError('provider authentication failed')
-        last=None;number=0;received=0;deadline=time.monotonic()+300
-        while True:
-            if cancel(): raise InterruptedError('source cancelled')
-            if time.monotonic()>deadline: raise TimeoutError('provider category deadline')
-            params=dict(type={'live':'itv','vod':'vod','series':'series'}[kind],action='get_ordered_list',p=number,JsHttpRequest='1-xml',sortby='name',fav='0')
-            params['genre' if kind=='live' else 'category']=cid
-            count=0;digest=hashlib.sha256()
-            with http_stream(provider._portal,params=params,headers=provider._headers(),cancel=cancel) as stream:
-                reader=ArrayReader(stream,cancel)
-                for row in iter_array(reader,cancel):
-                    digest.update(str(row.get('id',row.get('stream_id',''))).encode()+b'\0');count+=1
-                    yield row
-            if not count: return
-            fingerprint=digest.hexdigest()
-            if fingerprint==last:
-                if number==1: number+=1;continue  # Some MAG APIs alias p=0 to p=1.
-                raise ValueError('provider repeats same page')
-            received+=count
-            metadata=reader.metadata if isinstance(reader.metadata,dict) else {}
-            total=int(metadata.get('total_items') or metadata.get('total') or 0)
-            if total and received>=total: return
-            last=fingerprint;number+=1
+        import sqlite3,tempfile
+        from utils import addon_data_dir
+        from import_budget import check_space
+        with tempfile.TemporaryDirectory(prefix='xcmate-pages-',dir=addon_data_dir()) as folder:
+            check_space(folder)
+            seen=sqlite3.connect(os.path.join(folder,'pages.sqlite'))
+            seen.execute('CREATE TABLE pages(fingerprint TEXT PRIMARY KEY)')
+            try:
+                last=None;number=0;received=0
+                while True:
+                    if cancel(): raise InterruptedError('source cancelled')
+                    params=dict(type={'live':'itv','vod':'vod','series':'series'}[kind],action='get_ordered_list',p=number,JsHttpRequest='1-xml',sortby='name',fav='0')
+                    params['genre' if kind=='live' else 'category']=cid
+                    count=0;digest=hashlib.sha256()
+                    with http_stream(provider._portal,params=params,headers=provider._headers(),cancel=cancel) as stream:
+                        reader=ArrayReader(stream,cancel)
+                        for row in iter_array(reader,cancel):
+                            digest.update(str(row.get('id',row.get('stream_id',''))).encode()+b'\0');count+=1
+                            yield row
+                    if not count: return
+                    fingerprint=digest.hexdigest()
+                    if fingerprint==last:
+                        if number==1: number+=1;continue  # Some MAG APIs alias p=0 to p=1.
+                        raise ValueError('provider repeats same page')
+                    if seen.execute('SELECT 1 FROM pages WHERE fingerprint=?',(fingerprint,)).fetchone():
+                        raise ValueError('provider repeats page cycle')
+                    with seen: seen.execute('INSERT INTO pages VALUES(?)',(fingerprint,))
+                    received+=count
+                    metadata=reader.metadata if isinstance(reader.metadata,dict) else {}
+                    total=int(metadata.get('total_items') or metadata.get('total') or 0)
+                    if total and received>=total: return
+                    last=fingerprint;number+=1
+            finally: seen.close()
 
     def _reader(self):
         from library_index import Reader
