@@ -33,4 +33,6 @@ def manage():
         if xbmcgui.Dialog().yesno('XCMate',tr(32902)):
             try:result=_work(lambda cancel:rebuild(confirmed=True,cancel=cancel))
             except Exception:result=dict(code='RECOVERY_FAILED')
-            xbmcgui.Dialog().textviewer(tr(32900),'\n'.join(key+': '+str(result[key]) for key in ('code','phase','backup') if key in result))
+            text='\n'.join(key+': '+str(result[key]) for key in ('code','phase','backup') if key in result)
+            if result.get('background_paused'):text+='\n\n'+tr(32904)
+            xbmcgui.Dialog().textviewer(tr(32900),text)
