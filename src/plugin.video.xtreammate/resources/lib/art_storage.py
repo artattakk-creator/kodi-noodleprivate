@@ -64,6 +64,7 @@ def policy():
     from utils import setting_int
     saved=_read('media_art_storage_v1.json')
     if not saved:
+        if os.path.exists(_path('media_art_storage_v1.json')):raise Paused('POLICY_INVALID')
         return dict(profile='legacy',budget_mb=max(32,setting_int('media_art_budget_mb',512)),
                     reserve_mb=32,root=default_root(),previous=[],generation='legacy')
     if (saved.get('profile') not in (*PROFILES,'expert','legacy') or
@@ -167,7 +168,9 @@ def configure(profile,budget_mb=None,reserve_mb=512):
         _available(cfg) # preserve old policy if target disappeared
         _save('media_art_storage_v1.json',cfg)
     from art_store import resume_capacity
-    resume_capacity()
+    import sqlite3
+    try:resume_capacity()
+    except (sqlite3.Error,OSError):pass # saved policy remains valid; DB health reports the queue problem
     return cfg
 
 
@@ -178,7 +181,7 @@ def _hash(path):
     return digest.hexdigest()
 
 
-def migrate(parent,cancel=lambda:False):
+def _migrate_locked(parent,cancel=lambda:False):
     """Worker only, after explicit confirmation. Originals always survive.
 
     Resume after interruption by selecting the same destination. Each file is
@@ -253,10 +256,34 @@ def migrate(parent,cancel=lambda:False):
     return result
 
 
+def migrate(parent,cancel=lambda:False):
+    try:return _migrate_locked(parent,cancel)
+    except Paused as exc:
+        result=dict(code=exc.code,copied=0,verified=0,updated=time.time())
+        _save('media_art_migration_v1.json',result)
+        return result
+
+
+def _migration_worker(parent):
+    import xbmc
+    monitor=xbmc.Monitor()
+    # The GUI returns immediately. Existing bounded fetches may finish before
+    # migration acquires its exclusive volume lock; new queue work is paused.
+    for _ in range(40):
+        result=migrate(parent,cancel=monitor.abortRequested)
+        if result['code']!='MIGRATING':break
+        if monitor.waitForAbort(.25):break
+    from art_store import resume_capacity
+    try:resume_capacity()
+    except Exception:pass
+
+
 def start_migration(parent):
     global _migration
     if _migration is not None and _migration.is_alive():return False
-    _migration=threading.Thread(target=migrate,args=(parent,),daemon=True,name='XCMate-art-migration')
+    from art_store import pause_migration
+    pause_migration()
+    _migration=threading.Thread(target=_migration_worker,args=(parent,),daemon=True,name='XCMate-art-migration')
     _migration.start();return True
 
 

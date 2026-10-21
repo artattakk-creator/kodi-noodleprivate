@@ -218,6 +218,43 @@ class ArtStorageTests(Fixture,unittest.TestCase):
         with mock.patch.object(ui,'configure') as configure:self.routes.dispatch(self.router)
         configure.assert_called_once();self.assertNotEqual(self.ends[-1][1].get('succeeded'),False)
 
+    def test_corrupt_policy_pauses_instead_of_silently_switching_back_to_internal(self):
+        (self.folder/'media_art_storage_v1.json').write_text('corrupt')
+        with self.assertRaises(self.storage.Paused) as caught:self.storage.policy()
+        self.assertEqual(caught.exception.code,'POLICY_INVALID');self.http.assert_not_called()
+
+    def test_volume_file_lock_blocks_another_process_even_if_sqlite_lease_expires(self):
+        import subprocess
+        child_code="""import sys,types
+sys.path.insert(0,sys.argv[1])
+sys.modules['utils']=types.SimpleNamespace(addon_data_dir=lambda:sys.argv[2])
+from art_storage import lock
+with lock(exclusive=True):
+ print('locked',flush=True)
+ sys.stdin.read()
+"""
+        child=subprocess.Popen([sys.executable,'-c',child_code,str(LIB),str(self.folder)],stdin=subprocess.PIPE,stdout=subprocess.PIPE,text=True)
+        try:
+            self.assertEqual(child.stdout.readline().strip(),'locked')
+            with self.assertRaises(self.storage.Paused) as caught:self.art.fetch(self.url)
+            self.assertEqual(caught.exception.code,'MIGRATING');self.http.assert_not_called()
+        finally:
+            child.stdin.close();child.wait(timeout=5);child.stdout.close()
+
+    def test_all_indexed_posters_and_fanarts_are_queued_not_only_first_backdrop(self):
+        self.art.request([dict(cover='https://image.invalid/a',stream_icon='https://image.invalid/b',
+                               movie_image='https://image.invalid/a',backdrop_path=['bad','https://image.invalid/c','https://image.invalid/d'])])
+        self.assertEqual({r['url'] for r in self.rows()},{'https://image.invalid/'+name for name in 'abcd'})
+        self.assertEqual(self.art.sources(dict(cover='bad',stream_icon='https://image.invalid/b'))[0],'https://image.invalid/b')
+
+
+    def test_invalid_sources_do_not_create_endlessly_running_jobs(self):
+        self.art.request([dict(cover='not a URL',backdrop_path='smb://private/cover')])
+        self.assertEqual(self.rows(),[])
+        self.store.enqueue(['not a URL']);self.store.run_one()
+        self.assertEqual(self.rows()[0]['status'],'FAILED');self.assertEqual(self.rows()[0]['attempts'],1)
+
+
     def test_background_pause_after_confirmed_queue_rebuild_remains_respected(self):
         health=importlib.import_module('artwork_db')
         with mock.patch.object(health,'diagnostic',return_value={'background_paused':True}):self.store.prefetch_selected()

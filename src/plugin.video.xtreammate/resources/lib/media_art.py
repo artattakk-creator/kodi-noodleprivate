@@ -36,6 +36,14 @@ def dimensions(data):
     raise ValueError('unsupported image')
 
 
+def valid_url(value):
+    if not isinstance(value,str):return False
+    try:
+        parts=urlsplit(value)
+        return parts.scheme in ('http','https') and bool(parts.hostname)
+    except ValueError:return False
+
+
 def folder():
     from art_storage import root
     return root()
@@ -58,9 +66,9 @@ def cached(url):
 
 def fetch(url):
     """One bounded worker; reserve checked before HTTP and before atomic commit."""
-    if not isinstance(url,str) or urlsplit(url).scheme not in ('http','https'):return ''
+    if not valid_url(url):return ''
     from art_storage import lock,check,Paused,account
-    with _lock,lock():
+    with _lock,lock(exclusive=True):
         # Check active volume before falling back to preserved originals. An
         # absent USB must pause new writes even while old images remain visible.
         root=check(quota=False)
@@ -95,12 +103,18 @@ def fetch(url):
         return filename
 
 
-def sources(item):
-    poster=next((item.get(k) for k in ('cover','stream_icon','movie_image') if isinstance(item.get(k),str) and item[k]),'')
+def all_sources(item):
+    values=[item.get(k) for k in ('cover','stream_icon','movie_image')]
     backdrop=item.get('backdrop_path')
-    if isinstance(backdrop,list): backdrop=next((p for p in backdrop if isinstance(p,str) and p),'')
-    if not isinstance(backdrop,str): backdrop=''
-    return poster,backdrop or poster
+    values.extend(backdrop if isinstance(backdrop,list) else [backdrop])
+    return list(dict.fromkeys(u for u in values if valid_url(u)))
+
+
+def sources(item):
+    poster=next((item.get(k) for k in ('cover','stream_icon','movie_image') if valid_url(item.get(k))),'')
+    backdrop=item.get('backdrop_path')
+    values=backdrop if isinstance(backdrop,list) else [backdrop]
+    return poster,next((u for u in values if valid_url(u)),poster)
 
 
 def local_art(item):
@@ -114,8 +128,8 @@ def local_art(item):
 def request(items,priority=10):
     """Persist bounded visible-page requests, then start one worker."""
     global _worker
-    urls=[u for item in items[:48] for u in dict.fromkeys(sources(item))
-          if isinstance(u,str) and urlsplit(u).scheme in ('http','https') and not cached(u)]
+    urls=[u for item in items[:48] for u in all_sources(item)
+          if valid_url(u) and not cached(u)]
     if not urls:return True
     from art_store import enqueue
     try: enqueue(urls,priority)

@@ -72,6 +72,15 @@ def resume_capacity():
     finally:db.close()
 
 
+def pause_migration():
+    import json
+    from art_storage import policy
+    db=connect()
+    try:
+        with db:db.execute("INSERT OR REPLACE INTO art_state VALUES('pause',?)",(json.dumps(dict(code='MIGRATING',until=time.time()+60,generation=policy()['generation'])),))
+    finally:db.close()
+
+
 def run_one(now=None):
     from media_art import fetch
     now=time.time() if now is None else now
@@ -90,7 +99,8 @@ def run_one(now=None):
             claimed=db.execute("UPDATE jobs SET next_at=?,status='RUNNING' WHERE ident=? AND next_at<=?",(now+30,job['ident'],now)).rowcount
         if not claimed: return False
     finally: db.close()
-    try: fetch(job['url'])
+    try:
+        if not fetch(job['url']):raise ValueError('no supported image')
     except Exception as exc:
         from art_storage import Paused
         import errno,json
@@ -143,7 +153,7 @@ def prefetch_selected():
     if diagnostic().get('background_paused'):return
     from portals import get_active
     from library_index import Reader
-    from media_art import sources,ensure_worker
+    from media_art import sources,ensure_worker,valid_url
     ensure_worker()
     for portal in get_active():
         for kind in ('vod','series'):
@@ -181,8 +191,8 @@ def prefetch_selected():
                 with db:
                     db.execute('INSERT OR REPLACE INTO scan VALUES(?,?,?,?)',(portal['id'],kind,revision,offset+len(rows) if rows and offset+len(rows)<total else -1))
                     if offset==0:db.execute('DELETE FROM art_inventory WHERE pid=? AND kind=?',(portal['id'],kind))
-                    missing_poster=sum(not sources(item)[0] for item in rows)
-                    missing_fanart=sum(not item.get('backdrop_path') for item in rows)
+                    missing_poster=sum(not valid_url(sources(item)[0]) for item in rows)
+                    missing_fanart=sum(not any(valid_url(u) for u in (item.get('backdrop_path') if isinstance(item.get('backdrop_path'),list) else [item.get('backdrop_path')])) for item in rows)
                     db.execute("""INSERT INTO art_inventory VALUES(?,?,?,?,?,?) ON CONFLICT(pid,kind) DO UPDATE SET
                         items=items+excluded.items,poster_missing=poster_missing+excluded.poster_missing,
                         fanart_missing=fanart_missing+excluded.fanart_missing,complete=excluded.complete""",
