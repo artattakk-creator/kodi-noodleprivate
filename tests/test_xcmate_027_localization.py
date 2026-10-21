@@ -104,7 +104,7 @@ class LocalizationTests(Fixture,unittest.TestCase):
         self.assertEqual(w.getControl(400).label,'Search')
         self.assertIn('Back: one level',w.getControl(501).label)
         self.assertEqual(w.getControl(120).label,'Movies / Categories')
-        w.native(4);w.native(7);self.settle(w);w.native(1);w.native(2)
+        w.native(3);w.native(7);self.settle(w);w.native(1);w.native(2)
         self.assertEqual((w.mode,w._cols),('grid',6))
         w.native(7);self.settle(w)
         self.assertIn(('Play','play'),w.actions)

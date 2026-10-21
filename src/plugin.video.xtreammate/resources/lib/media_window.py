@@ -40,6 +40,8 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._mode_focus={};self._next_route=None
         self._restore_focus=None;self._season_cursor=0
         self._episode_cursor={};self._leaving=False
+        self._landing_loaded=False
+        self._rail_focus={}
         self._lock=threading.RLock();self._pool=ThreadPoolExecutor(max_workers=2)
         self._art=queue.Queue(maxsize=3)
         self._art_thread=threading.Thread(target=self._art_loop,daemon=True,name='XCMate-art')
@@ -59,11 +61,16 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             control_id=self._mode_focus.get(self.mode,400)
             if control_id not in valid:control_id=valid[0]
         super().setFocusId(control_id)
+        if self.mode=='landing':
+            first=next((cid for cid in (112,111,110) if cid in valid),120)
+            cat=self.getControl(120);search=self.getControl(400);row=self.getControl(first)
+            cat.setNavigation(cat,row,cat,search)
+            search.setNavigation(search,row,cat,search)
         self._nav_focus=control_id
         self._mode_focus[self.mode]=control_id
 
     def _valid_focus(self):
-        candidates=([110,111,112,120,400] if self.mode=='landing' else
+        candidates=([120,400,112,111,110] if self.mode=='landing' else
                     [200,210,400] if self.mode in ('grid','groups') else
                     [300,400] if self.mode=='detail' else [330,400])
         result=[]
@@ -222,9 +229,14 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
                 self.getControl(102).setLabel(tr(32520))
             self.rails[cid]=rows
             self._fill(cid,rows)
+            selected=self._rail_focus.get(cid,'')
+            self.getControl(cid).selectItem(next((i for i,r in enumerate(rows) if r['sid']==selected),0))
         self.getControl(113).setLabel(tr(32663))
         self.getControl(114).setLabel(tr(32664) if self.rails[111] else tr(32665))
         self.getControl(115).setLabel(tr(32668) if self.rails[112] else tr(32669))
+        for cid,gid,rows in ((112,610,self.rails[112]),(111,611,self.rails[111]),(110,612,self.rows)):
+            self.getControl(gid).setHeight(368 if rows else 48)
+            self.getControl(cid).setVisible(bool(rows))
 
     def _page(self,mode,offset=0):
         self.mode=mode;self.offset=max(0,offset)
@@ -245,6 +257,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._request(load,self._page_ready)
 
     def _page_ready(self,value):
+        old_focus=self.getFocusId()
         self.rows,self.total=value
         cid=110 if self.mode=='landing' else 210
         self._fill(cid,self.rows)
@@ -258,7 +271,12 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._page_status='{}–{} / {}'.format(self.offset+1 if self.rows else 0,self.offset+len(self.rows),self.total)
         if not self.rows and self.mode=='grid':
             self.mode='groups' if self.groups else 'landing';self._show(self.mode)
-        self.setFocusId(200 if self.mode=='groups' else cid if self.rows else 120)
+        target=200 if self.mode=='groups' else cid if self.rows else 120
+        if self.mode=='landing':
+            valid=self._valid_focus()
+            target=old_focus if self._landing_loaded and old_focus in valid else next((c for c in (112,111,110) if c in valid),120)
+            self._landing_loaded=True
+        self.setFocusId(target)
         if self.rows: self._focus_item(pos)
         target=getattr(self,'_restore_rail',None)
         if self.mode=='landing' and target in (111,112):
@@ -268,6 +286,9 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             target=self._restore_focus;self._restore_focus=None;self.setFocusId(target)
 
     def _show(self,mode):
+        self.getControl(620).setVisible(mode=='landing')
+        self.getControl(103).setVisible(mode!='landing')
+        self.getControl(400).setPosition(1050,80 if mode=='landing' else 32)
         for cid in (110,111,112,113,114,115,120,200,210,300,310,320,330):
             visible=(cid in (110,111,112,113,114,115,120) if mode=='landing' else cid in (200,210) if mode in ('grid','groups')
                      else cid in (300,310,320) if mode=='detail' else cid==330)
@@ -423,7 +444,8 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             elif controlId in (111,112):
                 pos=self.getControl(controlId).getSelectedPosition()
                 rows=self.rails[controlId]
-                if 0<=pos<len(rows): self._details(rows[pos])
+                if 0<=pos<len(rows):
+                    self._rail_focus[controlId]=rows[pos]['sid'];self._details(rows[pos])
             elif controlId==200:
                 pos=self.getControl(200).getSelectedPosition()
                 if 0<=pos<len(self.groups):
@@ -562,13 +584,18 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
                 return
             focus=self.getFocusId()
             previous_focus=getattr(self,'_action_focus',focus)
+            if self.mode=='landing' and focus in (111,112) and key in (1,2):
+                pos=self.getControl(focus).getSelectedPosition();rows=self.rails[focus]
+                if 0<=pos<len(rows):
+                    self._rail_focus[focus]=rows[pos]['sid'];self._queue_art(rows[pos])
+                return
             if self.mode=='landing' and key in (3,4) and previous_focus in (110,111,112,120):
-                order=[110]+([111] if self.rails[111] else [])+([112] if self.rails[112] else [])+[120]
+                order=[120]+([112] if self.rails[112] else [])+([111] if self.rails[111] else [])+([110] if self.rows else [])
                 index=order.index(previous_focus) if previous_focus in order else 0
                 self.setFocusId(order[max(0,min(len(order)-1,index+(-1 if key==3 else 1)))])
                 return
             if focus==400 and key==4:
-                target=110 if self.mode=='landing' and self.rows else 120
+                target=next((c for c in (112,111,110) if c in self._valid_focus()),120) if self.mode=='landing' else 120
                 if self.mode in ('grid','groups'): target=210 if self.rows else 200
                 self.setFocusId(target)
                 return
