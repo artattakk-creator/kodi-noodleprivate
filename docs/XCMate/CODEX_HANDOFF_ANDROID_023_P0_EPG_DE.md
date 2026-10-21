@@ -1,3 +1,5 @@
+> **Aktueller Einstieg (21.10.2026):** [Zentrale Roadmap](ROADMAP_AKTUELL_2026-10-21_DE.md) und [vollständige Issue-Integrationsmatrix](ISSUE_INTEGRATIONSMATRIX_DE.md). Produktiv **0.1.29.6**, Testkandidaten **0.1.29.7 / 0.1.30.1**, primäres Gerät **Kodi 21.2 / ARM32**. Die folgenden früheren Statusangaben bleiben unverändert als Historie; aktuelle Code-, CI- und Gerätebelege stehen in der zentralen Roadmap. Kein neuer Merge/Release freigegeben.
+
 # XCMate 0.1.23 – verbindliche Codex-Übergabe nach Android-TV-Gerätediagnose
 
 **Erfasst:** 18.10.2026. **Status:** P0 Live-TV-Navigator am echten Android-TV **FEHLGESCHLAGEN**; P1 EPG-Aktualisierung/Anzeige **FEHLGESCHLAGEN bzw. NICHT BESTÄTIGT**. Diese Datei ist ein **Auftrag und Befund**, keine implementierte Fehlerbehebung und keine Freigabe für 0.1.24.

@@ -1,0 +1,1511 @@
+{
+  "schema": "xcmate.issue_inventory.v1",
+  "captured_utc": "2026-10-21T20:00:22.469Z",
+  "repository": "https://github.com/artattakk-creator/kodi-noodleprivate",
+  "main": "5237f4a99f003e7fd63e80f8fd928b4616909c38",
+  "hotfix_head": "ed6c1a41e033cdc553d2e55f44731716fab5c986",
+  "theme_head": "0840f7ccfb99bafb8ade5fb18c79e85b202660cc",
+  "open_issue_count": 37,
+  "open_draft_pr_count": 4,
+  "issue_comments_read": 60,
+  "pr_comments_read": 8,
+  "status_counts": {
+    "SUPERSEDED / DUPLICATE": 2,
+    "IMPLEMENTED / DEVICE TEST OPEN": 20,
+    "FUTURE": 2,
+    "PARTIAL": 10,
+    "DONE / VERIFIED": 1,
+    "OPEN": 2
+  },
+  "issues": [
+    {
+      "issue": 12,
+      "title": "P0 Android TV 0.1.22: Live-TV-Overlay/Fernbedienung greift nicht; EPG in Senderliste leer",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/12",
+      "status": "SUPERSEDED / DUPLICATE",
+      "implementation": "Omega-konformes LiveNavigator-Overlay, Session-Recovery und lokale Now/Next; sichtbares Overlay und Remote später bestätigt.",
+      "remaining": "Alt-P0 nicht neu entwickeln. Rest vollständig zu #20 (Tastenabnahme), #13/#60 (EPG) und #67 (Fensterregression) überführen.",
+      "dependencies": "#20, #13, #60, #67; PR #16/#22",
+      "priority": "P1",
+      "target_version": "Konsolidierung; Abnahme 0.1.29.7",
+      "android": "0.1.24 Overlay sichtbar; 0.1.27 Remote positiv; keine Vollabnahme aller ursprünglichen Kriterien.",
+      "source_modules": [
+        "live_overlay.py",
+        "live_recovery.py",
+        "epg_views.py"
+      ],
+      "test_files": [
+        "test_xcmate_kodi21_overlay.py",
+        "test_xcmate_issue12.py"
+      ],
+      "github_updated_at": "2026-10-19T08:49:03Z",
+      "comment_count": 1,
+      "comments": [
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/12#issuecomment-6263364113",
+          "updated_at": "2026-10-19T08:49:03Z",
+          "body_sha256": "71bcb50c44cf0a1f6f472bb594dece9936325f6c6d9d24fcda9d98fc34e0e46d"
+        }
+      ],
+      "cross_reference_urls": [
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/13",
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/20",
+        "https://github.com/artattakk-creator/kodi-noodleprivate/pull/11"
+      ]
+    },
+    {
+      "issue": 13,
+      "title": "P1 XCMate: EPG-Status & Vorschau vor Skin-Integration sichtbar machen",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/13",
+      "status": "IMPLEMENTED / DEVICE TEST OPEN",
+      "implementation": "EPG-Status/Vorschau, persistente Quellenzustände, ID-/Namens-/manuelle Zuordnung und gemeinsamer lokaler Resolver vorhanden.",
+      "remaining": "End-to-end Refresh/Fehler/Neustart mit aktuellen Quellen erneut prüfen; schwache Abdeckung unter #60 bearbeiten, horizontaler Guide unter #57.",
+      "dependencies": "#32, #34, #60, #57",
+      "priority": "P1",
+      "target_version": "0.1.29.7 Abnahme; 0.1.31 Coverage",
+      "android": "0.1.29.4: zwei externe Feeds READY und echte Programme sichtbar; kein vollständiger aktueller Datenweg-PASS.",
+      "source_modules": [
+        "epg_preview.py",
+        "epg_status.py",
+        "epg_sources.py",
+        "epg_views.py"
+      ],
+      "test_files": [
+        "test_xtreammate_epg_sources.py",
+        "test_xcmate_028_streaming.py"
+      ],
+      "github_updated_at": "2026-10-19T11:14:20Z",
+      "comment_count": 2,
+      "comments": [
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/13#issuecomment-6263365207",
+          "updated_at": "2026-10-19T08:49:07Z",
+          "body_sha256": "3d90c873ef13673d2a6951631938ce462a743b993a46c71bbe33b5460d4a1f9c"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/13#issuecomment-6265899943",
+          "updated_at": "2026-10-19T11:14:20Z",
+          "body_sha256": "6d4a5fdaad780f99d2b7fc68a068298853b81d5ce66acca075d1492f0ddf54dd"
+        }
+      ],
+      "cross_reference_urls": [
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/12",
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/17",
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/21"
+      ]
+    },
+    {
+      "issue": 14,
+      "title": "XCMate Skin: separater Kodi-Skin-Prototyp mit TV-OSD, Fernbedienung und EPG",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/14",
+      "status": "FUTURE",
+      "implementation": "Skin-Konzept und Interaktionsreferenzen dokumentiert; bestehendes Add-on bleibt Backend.",
+      "remaining": "Separaten Kodi-Skin-PoC erst später spezifizieren, Rechte und Rückfallweg prüfen. Kein Ersatz für Space Premium.",
+      "dependencies": "#19, #57, #64; getrennt von PR #50",
+      "priority": "Future",
+      "target_version": "Später, unversioniert",
+      "android": "Kein eigener Skin auf Gerät nachgewiesen.",
+      "source_modules": [],
+      "test_files": [],
+      "github_updated_at": "2026-10-18T18:03:20Z",
+      "comment_count": 0,
+      "comments": [],
+      "cross_reference_urls": [
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/17"
+      ]
+    },
+    {
+      "issue": 17,
+      "title": "XCMate Live-TV: 1× OK Infobar mit Jetzt/Danach + Fortschritt, 2× OK OSD, schnelle EPG-Senderliste",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/17",
+      "status": "IMPLEMENTED / DEVICE TEST OPEN",
+      "implementation": "1× OK Info, 2× OK/Down Playercontrols, Optionen, Links Sender/Gruppen und lokaler EPG-Snapshot vorhanden und geschützt.",
+      "remaining": "Gezieltes 10×-Protokoll aller Ebenen/Transport/Fokus; Pre-play gehört #35, neue Tastenprofile #64. Keine Neuentwicklung der State-Machine.",
+      "dependencies": "#20, #35, #64, #60; PR #18/#22",
+      "priority": "P1",
+      "target_version": "0.1.29.7 Regression; 0.1.30.1 Theme",
+      "android": "0.1.25 Info-PASS; 0.1.27 Remote-Freeze-PASS; 0.1.28 OK/OK/Links/Zapping bestätigt, vollständige Transportabnahme offen.",
+      "source_modules": [
+        "live_overlay.py",
+        "tv_data.py",
+        "remote_bridge.py"
+      ],
+      "test_files": [
+        "test_xcmate_tv_025.py",
+        "test_xtreammate_android_remote.py"
+      ],
+      "github_updated_at": "2026-10-19T19:01:28Z",
+      "comment_count": 3,
+      "comments": [
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/17#issuecomment-6263365984",
+          "updated_at": "2026-10-19T08:49:10Z",
+          "body_sha256": "462639af16f33d3d2cf46d8faf72729dfe7f986fc1d39de8afbe488f21c8cb73"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/17#issuecomment-6274651451",
+          "updated_at": "2026-10-19T18:45:17Z",
+          "body_sha256": "c1f1a9dc21d537bafc436da85caaa99dd76dbce62af7d239336841c31d23eddf"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/17#issuecomment-6274958019",
+          "updated_at": "2026-10-19T19:01:28Z",
+          "body_sha256": "0abcc31ce1be602ff0cefca2767f957b36427f076f0417995bd6eca5477350b3"
+        }
+      ],
+      "cross_reference_urls": [
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/20",
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/21"
+      ]
+    },
+    {
+      "issue": 19,
+      "title": "Lizenz-/Provenienz-Audit: GPL-v2-Addon vs. mr-evil1-Root-LICENSE; Rechtekette klären vor XCMate V2",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/19",
+      "status": "PARTIAL",
+      "implementation": "Technisches Herkunfts-/Lizenzaudit und gepinnter Upstream-Build vorhanden; keine unabhängige Neuentwicklung behauptet.",
+      "remaining": "Originalarchiv/Notices/Rechtekette belastbar abschließen; Fremdassets und neue Datenquellen prüfen. Keine Rechtsfreigabe durch Codetest. Kein V2-Neubau beauftragt.",
+      "dependencies": "Vor öffentlicher Erweiterungsdistribution; #27, #57, PR #51",
+      "priority": "P1",
+      "target_version": "Begleitend vor nächster Distribution",
+      "android": "Kein technischer Android-Test ersetzt die Rechteklärung.",
+      "source_modules": [],
+      "test_files": [],
+      "github_updated_at": "2026-10-19T08:17:58Z",
+      "comment_count": 0,
+      "comments": [],
+      "cross_reference_urls": []
+    },
+    {
+      "issue": 20,
+      "title": "P0 XCMate 0.1.25 Android: Links-Key ohne Wirkung, dreistufiges OSD und Player-Tape-Deck",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/20",
+      "status": "IMPLEMENTED / DEVICE TEST OPEN",
+      "implementation": "Dedizierter Links-Dispatch, drei OSD-Ebenen, Event-Dedupe und Tape-Deck-Steuerung vorhanden.",
+      "remaining": "10/10 Links→Sender→Gruppen, OK/Down/Back sowie einzelne Play/Pause/Stop/Seek-Tasten auf Box protokollieren.",
+      "dependencies": "#17, #40, #64; PR #22",
+      "priority": "P1",
+      "target_version": "0.1.29.7/0.1.30.1 Regression",
+      "android": "0.1.26 allgemein positiv, 0.1.27 Fernbedienung bestätigt; vollständiges 10/10-Protokoll ausdrücklich noch offen.",
+      "source_modules": [
+        "live_overlay.py",
+        "remote_bridge.py",
+        "remote_control.py"
+      ],
+      "test_files": [
+        "test_xtreammate_android_remote.py",
+        "test_xcmate_tv_025.py"
+      ],
+      "github_updated_at": "2026-10-19T11:14:23Z",
+      "comment_count": 1,
+      "comments": [
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/20#issuecomment-6265900835",
+          "updated_at": "2026-10-19T11:14:23Z",
+          "body_sha256": "0b0b0120b06e32a572df084c0366d66d8bc609528b88b198a44fb18fd2264d81"
+        }
+      ],
+      "cross_reference_urls": []
+    },
+    {
+      "issue": 21,
+      "title": "XCMate 7–10-Tage-EPG: Sendungsbrowser, Erinnerungen/Auto-Tune und geplante Aufnahmen",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/21",
+      "status": "SUPERSEDED / DUPLICATE",
+      "implementation": "Mehrtage-Tagesbrowser, persistenter Guide, Quellenhorizont und Erinnerungen sind vorhanden.",
+      "remaining": "Gesamten UI-/Datenrest unter #57, Auto-Tune/Recorder unter #62 führen. 7–10 Tage nur soweit Feed reicht; keine zweite Guide-Entwicklung.",
+      "dependencies": "#57, #62, #60",
+      "priority": "P1",
+      "target_version": "0.1.31 Guide; 0.1.33/34 Timer/Recorder",
+      "android": "Früher Now/Next-PASS; keine vollständige Mehrtage-/Timer-Geräteabnahme.",
+      "source_modules": [
+        "guide_window.py",
+        "guide_store.py",
+        "guide_timers.py"
+      ],
+      "test_files": [
+        "test_xcmate_027_data.py",
+        "test_xcmate_027_ui.py"
+      ],
+      "github_updated_at": "2026-10-19T11:14:26Z",
+      "comment_count": 1,
+      "comments": [
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/21#issuecomment-6265901777",
+          "updated_at": "2026-10-19T11:14:26Z",
+          "body_sha256": "09934c435d7b978e497ed1f754180668b00bd63dee7e8ec358102de994882a2c"
+        }
+      ],
+      "cross_reference_urls": [
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/23"
+      ]
+    },
+    {
+      "issue": 23,
+      "title": "XCMate 0.1.27: schlankes Hauptmenü, kategorisierte Einstellungen und Startkanal-/EPG-Einstieg",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/23",
+      "status": "IMPLEMENTED / DEVICE TEST OPEN",
+      "implementation": "Sechs Homepunkte, zehn Settingskategorien, Accountwahl, Startsender, Speicher-/Diagnosezugänge vorhanden.",
+      "remaining": "Vollständige Menü-/Back-/Sprach-/0-1-mehrere-Accounts-Abnahme; eingebettete Anforderungen werden durch #24/#25/#26/#57 weitergeführt.",
+      "dependencies": "#24, #25, #26, #43, #59; PR #28/#49/#68",
+      "priority": "P1",
+      "target_version": "0.1.29.7 Abnahme; 0.1.30.1 Theme",
+      "android": "Hauptmenü 0.1.28 sichtbar und 0.1.29.6 erreichbar; nicht jede Unterkategorie einzeln abgenommen.",
+      "source_modules": [
+        "home_menu.py",
+        "app_routes.py"
+      ],
+      "test_files": [
+        "test_xcmate_027_ui.py",
+        "test_xcmate_027_localization.py"
+      ],
+      "github_updated_at": "2026-10-19T11:44:53Z",
+      "comment_count": 2,
+      "comments": [
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/23#issuecomment-6266229732",
+          "updated_at": "2026-10-19T11:33:29Z",
+          "body_sha256": "578a571cc6df72514aa4435aaf6a11f7380fb5c2fc47835f0e9d34a1a0498e80"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/23#issuecomment-6266429290",
+          "updated_at": "2026-10-19T11:44:52Z",
+          "body_sha256": "23a4fb54ed385c8c0223b8520d77c3a3dd0577c3c40cacad13b1156b327ad556"
+        }
+      ],
+      "cross_reference_urls": [
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/24",
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/25",
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/26"
+      ]
+    },
+    {
+      "issue": 24,
+      "title": "XCMate 0.1.27: Film-/Serien-Landingpages mit Neuheiten-Rail, Postergruppen, Details, Favoriten und Resume",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/24",
+      "status": "IMPLEMENTED / DEVICE TEST OPEN",
+      "implementation": "WindowXML-Landing/Grid/Details, Neuheiten, echte Metadaten/Trailer, Favoriten, Resume, Staffeln/Folgen vorhanden.",
+      "remaining": "Rails/Posterfokus/Seitenleiste/Trailer/Resume auf Android vollständig prüfen; Stop/Back #40 und Artwork #69 zuerst absichern. Auto-Next bleibt gesonderter Rest.",
+      "dependencies": "#33, #40, #41, #44, #69; PR #28/#49/#68",
+      "priority": "P1",
+      "target_version": "0.1.29.7/0.1.30.1 Abnahme",
+      "android": "0.1.29.6 öffnet Filme und Serien wieder; kein vollständiger Medien-UX-PASS.",
+      "source_modules": [
+        "media_window.py",
+        "media_data.py",
+        "media_progress.py",
+        "metadata_views.py"
+      ],
+      "test_files": [
+        "test_xcmate_027_ui.py",
+        "test_xcmate_027_progress.py"
+      ],
+      "github_updated_at": "2026-10-19T18:45:25Z",
+      "comment_count": 2,
+      "comments": [
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/24#issuecomment-6266431111",
+          "updated_at": "2026-10-19T11:44:57Z",
+          "body_sha256": "8dd9cd655b9e9145f527cff69e58d2a329fcb26f8ce4671e627603ff8bfde29a"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/24#issuecomment-6274654045",
+          "updated_at": "2026-10-19T18:45:24Z",
+          "body_sha256": "2c78b6bea168be7323f1501c0556664e00edc9a7847199250c59fd349403df46"
+        }
+      ],
+      "cross_reference_urls": [
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/23",
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/25",
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/26"
+      ]
+    },
+    {
+      "issue": 25,
+      "title": "XCMate: gemeinsame Suche über Live-TV, Filme und Serien mit echten Trefferzahlen",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/25",
+      "status": "IMPLEMENTED / DEVICE TEST OPEN",
+      "implementation": "Drei getrennte Suchrubriken mit lokalen Gesamtzahlen/Pagination; INDEXING/FAILED/unindiziert getrennt von echten Nulltreffern.",
+      "remaining": "Reale Unicode-/Mehraccount-Trennung, kalter Index, aktive Gruppen, progressive Resultate und Back testen. Zähler gelten für den jeweiligen lokalen Indexstand, keinen vollständigen Providerstand vorspiegeln.",
+      "dependencies": "#33, #34, #24",
+      "priority": "P1",
+      "target_version": "0.1.30.1 Abnahme; 0.1.30.2 Rest nach Befund",
+      "android": "0.1.27 negative Suche historisch; kein späterer vollständiger positiver Suchtest dokumentiert.",
+      "source_modules": [
+        "app_routes.py",
+        "library_index.py",
+        "catalog_sync.py"
+      ],
+      "test_files": [
+        "test_xcmate_027_data.py",
+        "test_xcmate_027_ui.py",
+        "test_xcmate_028_ui.py"
+      ],
+      "github_updated_at": "2026-10-19T18:52:52Z",
+      "comment_count": 1,
+      "comments": [
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/25#issuecomment-6274796791",
+          "updated_at": "2026-10-19T18:52:52Z",
+          "body_sha256": "aa2d936facea836c7b1fc685d158ba575f87b4bd796dcdb952a5a11fc736fcba"
+        }
+      ],
+      "cross_reference_urls": [
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/23",
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/24"
+      ]
+    },
+    {
+      "issue": 26,
+      "title": "XCMate × BINGIE MOD: drei Home-Widgets für Startkanalgruppe, neueste Filme und Serien",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/26",
+      "status": "IMPLEMENTED / DEVICE TEST OPEN",
+      "implementation": "Widget-Routen für Startsendergruppe, aktuelle Filme und Serien; Startsender-Pinning und lokale Now/Next vorhanden.",
+      "remaining": "Drei echte BINGIE-Reihen, Reihenfolge, Cover, Fokus/Back, kalt/warm und Live-Klick prüfen; bestehende Widgets nicht automatisch ändern.",
+      "dependencies": "#24, #34, #38, #60",
+      "priority": "P1",
+      "target_version": "0.1.30.1 Abnahme",
+      "android": "Widgets sind beim Nutzer eingerichtet; kein vollständiger Drei-Reihen-PASS dokumentiert.",
+      "source_modules": [
+        "app_routes.py",
+        "library_index.py"
+      ],
+      "test_files": [
+        "test_xcmate_027_ui.py",
+        "test_xtreammate_widgets.py"
+      ],
+      "github_updated_at": "2026-10-19T11:43:27Z",
+      "comment_count": 0,
+      "comments": [],
+      "cross_reference_urls": [
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/23",
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/24"
+      ]
+    },
+    {
+      "issue": 27,
+      "title": "XCMate Graphics v2: vollständiges 98-Asset-Set für Home, Einstellungen, EPG und Medien",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/27",
+      "status": "IMPLEMENTED / DEVICE TEST OPEN",
+      "implementation": "PR #50 enthält alle 98 freigegebenen Originalbilder, reproduzierbares Theme 1.0.0 und Renderer-Matrix; Originalicon im Core.",
+      "remaining": "Visuelle Android-Abnahme/Performance/Fallback offen. 86 Bilder haben echte/bedingte Verbraucher; 12 sind Reserve für spätere Funktionen und keine implementierten Features.",
+      "dependencies": "#30, #31, #37; PR #50",
+      "priority": "P1",
+      "target_version": "0.1.30.1 + Theme 1.0.0",
+      "android": "98/98 Hash-/Decoder-Prüfung, aber kein nativer Theme-PASS.",
+      "source_modules": [],
+      "test_files": [],
+      "github_updated_at": "2026-10-19T21:29:21Z",
+      "comment_count": 5,
+      "comments": [
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/27#issuecomment-6267443728",
+          "updated_at": "2026-10-19T12:41:03Z",
+          "body_sha256": "5daeaa062e34330861db764c6270ada250475474a8be1fb59153a9320e0ef306"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/27#issuecomment-6269195492",
+          "updated_at": "2026-10-19T14:08:13Z",
+          "body_sha256": "cd40e568f678a1ecf7595157c6a184c474c2c3006457576da6476522811d9a7e"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/27#issuecomment-6275766994",
+          "updated_at": "2026-10-19T19:43:23Z",
+          "body_sha256": "bdf13ebd090e38cda18ec9f03ab9a7663a203846904aca55915a492e27130af5"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/27#issuecomment-6276251844",
+          "updated_at": "2026-10-19T20:09:24Z",
+          "body_sha256": "ed31b3a0733a89ee065ed1673bb2d786778b8a497d5be426188f3a2df4d2a178"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/27#issuecomment-6277731593",
+          "updated_at": "2026-10-19T21:29:21Z",
+          "body_sha256": "dbb9f19d2f467adbbe5d1c59b2913870fb7cef3e425a81a9bece738d30ffea2f"
+        }
+      ],
+      "cross_reference_urls": [
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/23",
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/24",
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/26",
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/30",
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/31"
+      ]
+    },
+    {
+      "issue": 29,
+      "title": "XCMate: English-Basissprache, Deutsch beibehalten und optionale installierbare Sprachpakete",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/29",
+      "status": "PARTIAL",
+      "implementation": "Eigene XCMate-Sprachwahl Deutsch/Englisch/Kodi und English-Fallback bereits implementiert; beide Basiskataloge im Core.",
+      "remaining": "Eigene DE/EN-Wahl am Gerät prüfen. Optionaler sicherer Sprachpaket-Katalog/Installer/Loader/Entfernen fehlt weiterhin; getrennt von Themes.",
+      "dependencies": "#30, #31",
+      "priority": "P1",
+      "target_version": "0.1.30.1 Basisabnahme; 0.1.30.3 optionale Packs",
+      "android": "Historisch nur globale Kodi-Umschaltung bestätigt; unabhängige neue Auswahl noch ohne dokumentierten Geräte-PASS.",
+      "source_modules": [
+        "localization.py",
+        "home_menu.py"
+      ],
+      "test_files": [
+        "test_xcmate_028_ui.py",
+        "test_xcmate_027_localization.py"
+      ],
+      "github_updated_at": "2026-10-19T18:52:57Z",
+      "comment_count": 2,
+      "comments": [
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/29#issuecomment-6273335069",
+          "updated_at": "2026-10-19T17:36:33Z",
+          "body_sha256": "1b8adb3114d916e3149977fd6c94b1b57f6271481971b74218c7442fa3799800"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/29#issuecomment-6274798294",
+          "updated_at": "2026-10-19T18:52:57Z",
+          "body_sha256": "9247efa3a8f67a9644050a4f30d1e6599de5d089ee3fef3bf23352ef7731dde2"
+        }
+      ],
+      "cross_reference_urls": [
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/30"
+      ]
+    },
+    {
+      "issue": 30,
+      "title": "XCMate Lightweight Core: Themes und weitere Language Packs optional nachinstallieren",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/30",
+      "status": "PARTIAL",
+      "implementation": "Schlanker Core mit EN/DE; generischer optionaler Theme-Installer/Katalog in PR #50. Kein Theme-Autodownload beim Start.",
+      "remaining": "Optionale Language Packs aus #29 fehlen; reale Core-/RAM-/Disk-/Texturbudgets messen, optionalen Leistungsmodus erst daraus ableiten. Online-Themeangebot auf main erst nach Freigabe verfügbar.",
+      "dependencies": "#27, #29, #31; PR #50",
+      "priority": "P1",
+      "target_version": "0.1.30.1 Themes; 0.1.30.3 Sprachpakete",
+      "android": "Core nutzbar; Themewechsel/Onlineabruf/kleiner Stick nicht real abgenommen.",
+      "source_modules": [],
+      "test_files": [],
+      "github_updated_at": "2026-10-20T16:11:06Z",
+      "comment_count": 1,
+      "comments": [
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/30#issuecomment-6295452649",
+          "updated_at": "2026-10-20T16:11:06Z",
+          "body_sha256": "084c05d07d5f24b0fb71064d90f7b394b588397ce38cbbe25a9b2c2f9879dcab"
+        }
+      ],
+      "cross_reference_urls": [
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/31"
+      ]
+    },
+    {
+      "issue": 31,
+      "title": "XCMate Skin & Darstellung: Transparenz, UI-Farben, Schriftfarben und Schriftgrößen",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/31",
+      "status": "PARTIAL",
+      "implementation": "appearance.py speichert Grundfarben, drei Deckkraftwerte, drei Fontstufen, Vorschau/Abbrechen/Reset und erzeugte WindowXML-Varianten.",
+      "remaining": "Nicht alle geforderten getrennten Text-/Statusfarben, sehr großen Layouts, Profile pro Theme und Leistungsprofile belegt. Native Wirkung/Lesbarkeit/alle Flächen 720p/1080p/4K prüfen.",
+      "dependencies": "#30, #29; PR #50",
+      "priority": "P2",
+      "target_version": "0.1.30.2 Darstellung",
+      "android": "Keine vollständige native Darstellungsabnahme. Bestehende Live-Controls dürfen dabei nicht umgebaut werden.",
+      "source_modules": [
+        "appearance.py"
+      ],
+      "test_files": [
+        "test_xcmate_028_ui.py"
+      ],
+      "github_updated_at": "2026-10-19T17:36:36Z",
+      "comment_count": 1,
+      "comments": [
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/31#issuecomment-6273336038",
+          "updated_at": "2026-10-19T17:36:36Z",
+          "body_sha256": "6d7032e49bbbe698ac0d40fd0a67ced09225d88f04a2df50a11f38a562715d4b"
+        }
+      ],
+      "cross_reference_urls": []
+    },
+    {
+      "issue": 32,
+      "title": "P0 XCMate 0.1.27 Android: EPG-Seite öffnet, aber Aktualisierung bleibt aus",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/32",
+      "status": "IMPLEMENTED / DEVICE TEST OPEN",
+      "implementation": "Streamender XMLTV/SAX, numerische Zeitstempel, sichere DOCTYPE-Behandlung, Fehlerklassen, atomare Publikation und persistente Statusdaten vorhanden.",
+      "remaining": "Aktuellen manuellen Refresh mit READY/Fehler, Neustart und echten Quellen prüfen; schlechte Matchingquote unter #60 weiterführen. Alte TypeError-Lösung nicht neu schreiben.",
+      "dependencies": "#13, #34, #60; PR #36",
+      "priority": "P1",
+      "target_version": "0.1.29.7 Datenprüfung; 0.1.31 Coverage",
+      "android": "0.1.29.4 DE EPGShare01 und Kaimandura READY bestätigt; Anbieter WAITING bleibt ungeklärter Zustand.",
+      "source_modules": [
+        "xmltv_stream.py",
+        "stream_epg.py",
+        "epg_status.py",
+        "epg_sources.py"
+      ],
+      "test_files": [
+        "test_xcmate_028_streaming.py",
+        "test_xcmate_epg_limits.py"
+      ],
+      "github_updated_at": "2026-10-19T18:45:19Z",
+      "comment_count": 2,
+      "comments": [
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/32#issuecomment-6273715912",
+          "updated_at": "2026-10-19T17:56:48Z",
+          "body_sha256": "07835d1a7acf1fd0c26cfe6ff5f02721aabe04dec9004508c5da68ea2ffb60d5"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/32#issuecomment-6274652180",
+          "updated_at": "2026-10-19T18:45:19Z",
+          "body_sha256": "d794b91ad604a6d6cdf5532c168f6ec517f8c79483f05b363dae523cfed100f9"
+        }
+      ],
+      "cross_reference_urls": []
+    },
+    {
+      "issue": 33,
+      "title": "P0 XCMate 0.1.27 Android: Serien ValueError, Filme öffnen nicht und Katalog lädt zu viel",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/33",
+      "status": "IMPLEMENTED / DEVICE TEST OPEN",
+      "implementation": "Streaming-JSON, kind-/gruppenselektive Generationen, persistente Syncjobs/Leases, progressive Fenster und klare Indexfehler vorhanden. >80MiB/>200k/>64MiB automatisiert geprüft.",
+      "remaining": "Großer realer Provider/kleiner Stick, vollständige aktive Kategorien, Ressourcen und Back bei Import messen; alte ValueError-Ursache ohne alten Traceback nicht nachträglich als bewiesen ausgeben.",
+      "dependencies": "#25, #34, #38, #67; PR #36/#49/#68",
+      "priority": "P1",
+      "target_version": "0.1.29.7/0.1.30.1 Abnahme",
+      "android": "Filme/Serien öffnen unter 0.1.29.6; komplette Index-/Skalierungsabnahme offen.",
+      "source_modules": [
+        "streaming_json.py",
+        "library_index.py",
+        "catalog_sync.py",
+        "media_window.py"
+      ],
+      "test_files": [
+        "test_xcmate_028_streaming.py",
+        "test_xcmate_028_ui.py"
+      ],
+      "github_updated_at": "2026-10-19T18:52:23Z",
+      "comment_count": 1,
+      "comments": [
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/33#issuecomment-6274655112",
+          "updated_at": "2026-10-19T18:45:28Z",
+          "body_sha256": "0b8a4270031d4fc3de2b5d4b7563ae5ea0bb35f449f7d0ebeb457a191994b651"
+        }
+      ],
+      "cross_reference_urls": []
+    },
+    {
+      "issue": 34,
+      "title": "P0 XCMate: Startsender-EPG zuerst, alle Kataloge nur für aktivierte Gruppen laden",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/34",
+      "status": "IMPLEMENTED / DEVICE TEST OPEN",
+      "implementation": "Aktive Kategorien vor Import, priorisierte Syncjobs/Startgruppe, sichtbarer Short-EPG-Prefetch und gemeinsame lokale Snapshots vorhanden.",
+      "remaining": "Startsender→sichtbare Gruppe→Medien→Rest tatsächlich messen; selektive Persistenz vs. unvermeidbare vollständige Feedübertragung getrennt ausweisen. Keine deaktivierten Gruppen reaktivieren.",
+      "dependencies": "#33, #35, #60, #43",
+      "priority": "P1",
+      "target_version": "0.1.30.1 Abnahme; 0.1.30.2 Messung",
+      "android": "Aktive Gruppennavigation bestätigt; komplette Hintergrundprioritäts-/Datenmengenprüfung offen.",
+      "source_modules": [
+        "library_index.py",
+        "catalog_sync.py",
+        "startup_preload.py",
+        "stream_epg.py"
+      ],
+      "test_files": [
+        "test_xcmate_028_streaming.py",
+        "test_xcmate_universal_sources_043.py"
+      ],
+      "github_updated_at": "2026-10-19T19:01:34Z",
+      "comment_count": 2,
+      "comments": [
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/34#issuecomment-6274797560",
+          "updated_at": "2026-10-19T18:52:55Z",
+          "body_sha256": "d09e57d9c86d0f3d1569e4035f681e4ac5e82f7ce93672e1af74f62d728aacba"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/34#issuecomment-6274959719",
+          "updated_at": "2026-10-19T19:01:34Z",
+          "body_sha256": "0662460e7b515b4244f5e38342a275b8a9f501f5bd4974447ef91f36c08cbe1c"
+        }
+      ],
+      "cross_reference_urls": []
+    },
+    {
+      "issue": 35,
+      "title": "P0 XCMate 0.1.28: Live-TV-Statusleiste sofort vor Videostart, Preloading und schnelles Zapping",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/35",
+      "status": "IMPLEMENTED / DEVICE TEST OPEN",
+      "implementation": "Service-eigene Pre-play-Anzeige mit Nonce/ACK, lokalem Snapshot, Timeout/Cancel und warmem ConnectingNavigator vorhanden.",
+      "remaining": "Echte Klick→Info→Frame-Latenzen und Z-Order/Abbruch auf Kodi 21.2 messen. ACK-Timeout lässt funktionierenden Player weiterlaufen und beweist gerade keine sichtbare Vorab-Anzeige.",
+      "dependencies": "#17, #34, #38, #40; PR #36",
+      "priority": "P1",
+      "target_version": "0.1.30.1 Abnahme; 0.1.30.2 nach Befund",
+      "android": "Live-TV/OK/Zapping bestätigt; Sichtbarkeit ausdrücklich vor erstem Frame noch nicht separat abgenommen.",
+      "source_modules": [
+        "preplay.py",
+        "play_intent.py",
+        "startup_preload.py"
+      ],
+      "test_files": [
+        "test_xcmate_028_ui.py"
+      ],
+      "github_updated_at": "2026-10-19T19:01:05Z",
+      "comment_count": 0,
+      "comments": [],
+      "cross_reference_urls": []
+    },
+    {
+      "issue": 37,
+      "title": "XCMate 0.1.29 TODO: Standard-Background, Original-Icon und optionales Space Premium Theme",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/37",
+      "status": "PARTIAL",
+      "implementation": "Nur aktive Gruppen ohne AN/AUS, bestehende Verwaltung und Standard-UI vorhanden; PR #50 ergänzt Originalicon und optionales Theme.",
+      "remaining": "Lokale Senderzahl je Gruppe fehlt im geprüften _list_content; dezenter Core-Hintergrund/visuelle Nutzerabnahme und Darstellungsrest #31 offen. Verwaltungsdialog separat testen.",
+      "dependencies": "#27, #30, #31, #42; PR #50",
+      "priority": "P2",
+      "target_version": "0.1.30.1 Branding; 0.1.30.2 Gruppenzähler",
+      "android": "0.1.29.2 aktive Gruppen Test 3 PASS; Checkboxdialog dadurch ausdrücklich nicht abgenommen.",
+      "source_modules": [
+        "live_overlay.py",
+        "group_selection.py"
+      ],
+      "test_files": [
+        "test_xcmate_continuous_live_037_042.py"
+      ],
+      "github_updated_at": "2026-10-20T17:32:02Z",
+      "comment_count": 5,
+      "comments": [
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/37#issuecomment-6289896954",
+          "updated_at": "2026-10-20T11:32:56Z",
+          "body_sha256": "396003c5bfa74175881a7421fe838472008c371eb350f4043b2af00bc024b8bb"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/37#issuecomment-6289960830",
+          "updated_at": "2026-10-20T11:36:48Z",
+          "body_sha256": "4dff0a2fe7a5081edad5e37740ffa1be555abd2cb0c87b65ad891c7f198e1e78"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/37#issuecomment-6290258405",
+          "updated_at": "2026-10-20T11:54:47Z",
+          "body_sha256": "27d111c52ad5a6af0bd2f45ad1b36018ac5f6b64538d6fe3b9ee3c6cae31fd0c"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/37#issuecomment-6296992852",
+          "updated_at": "2026-10-20T17:28:34Z",
+          "body_sha256": "3a62b2470a480fd497be85013c74cbeb92351f5aef855715b84e827654d41420"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/37#issuecomment-6297059795",
+          "updated_at": "2026-10-20T17:32:02Z",
+          "body_sha256": "2eaac82f59e56e121c066f46b5e096a6c4057a5a4441c72073a83383902c7a66"
+        }
+      ],
+      "cross_reference_urls": []
+    },
+    {
+      "issue": 38,
+      "title": "P0 XCMate 0.1.28 Android-TV: Hauptmenü-Start hängt wiederholt über 90 Sekunden",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/38",
+      "status": "PARTIAL",
+      "implementation": "Root-Start entkoppelt, Offline-/Bootstrap-Diagnose und begrenzte Widgetqueries vorhanden; kein automatischer Vollimport als Home-Voraussetzung.",
+      "remaining": "17-s-Kaltstart mit BOOT-Phasen und mehreren Kalt-/Warmstarts messen; tatsächlichen Engpass korrigieren. Ursprünglicher intermittierender Hänger nicht abschließend kausal erklärt.",
+      "dependencies": "#33, #34, #35; PR #39/#49",
+      "priority": "P1",
+      "target_version": "0.1.30.2 Performance",
+      "android": "0.1.29.2 funktionaler Kaltstart-PASS ca.17s, subjektiver Einzelwert; aktuelles Home erreichbar, kein aktueller Benchmark.",
+      "source_modules": [
+        "boot_diagnostics.py",
+        "home_menu.py",
+        "app_routes.py"
+      ],
+      "test_files": [
+        "test_xcmate_0281_boot.py"
+      ],
+      "github_updated_at": "2026-10-20T17:21:24Z",
+      "comment_count": 10,
+      "comments": [
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/38#issuecomment-6285428322",
+          "updated_at": "2026-10-20T07:08:06Z",
+          "body_sha256": "da4bcb913309f65dadc18e1bde92edf9c440802fb5415f03cd8b5bbb6c8a9f31"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/38#issuecomment-6285495987",
+          "updated_at": "2026-10-20T07:12:35Z",
+          "body_sha256": "8114b0a348e9c4dd41f8df25bf92895a8613d483f708fb026ea06bfe29b863d7"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/38#issuecomment-6285613745",
+          "updated_at": "2026-10-20T07:20:19Z",
+          "body_sha256": "031e8802a9f9adbe83e1ff155632730f6e749d8870a209e7b98c304fc169769b"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/38#issuecomment-6287639885",
+          "updated_at": "2026-10-20T09:16:11Z",
+          "body_sha256": "574cad99b0e0f1fa01737c485e86fb4aa082ab1602f5038d5e3be30043cfab4a"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/38#issuecomment-6287761339",
+          "updated_at": "2026-10-20T09:23:08Z",
+          "body_sha256": "d3788ca9c6f327bf3135384ca0964a1bbc9e94df5d607ba564e0ef616d6409d3"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/38#issuecomment-6289710955",
+          "updated_at": "2026-10-20T11:21:28Z",
+          "body_sha256": "818b005bda22b3640ed8ff92da43fed1f0d3dfaaee247d619382e379579638d9"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/38#issuecomment-6289785511",
+          "updated_at": "2026-10-20T11:26:03Z",
+          "body_sha256": "afdfceffcd78c03fba34e4fc336a51edc388e894407ec0e7d1868b3c7f38dcd3"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/38#issuecomment-6289810898",
+          "updated_at": "2026-10-20T11:27:38Z",
+          "body_sha256": "5923068254b1ff3e361d411441033c054c461774502cc4ad34a86804d37d01b5"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/38#issuecomment-6290259857",
+          "updated_at": "2026-10-20T11:54:52Z",
+          "body_sha256": "28444aa40e6b07707a766f5af47bec896420e17e83f45c9dc9352b77d9e29e94"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/38#issuecomment-6296852002",
+          "updated_at": "2026-10-20T17:21:24Z",
+          "body_sha256": "30e8f3320adc72f53470f6232e014e64d35dbbe79d6902616a439825967b3cd3"
+        }
+      ],
+      "cross_reference_urls": []
+    },
+    {
+      "issue": 40,
+      "title": "[XCMate 0.1.28][P1] VOD-/Serienstreams laufen nach Zurück im Hintergrund weiter",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/40",
+      "status": "IMPLEMENTED / DEVICE TEST OPEN",
+      "implementation": "Ownership-geprüfter Stop, Fortschritt vor Stop, Fullscreen-Exit-Poll und verspätete Playback-Intent-Abwehr vorhanden.",
+      "remaining": "Releaseblocker: Live-Back-Hänger reproduzieren/entkräften; Film/Episode Back stoppt Bild+Ton, Resume bleibt, fremdes Video unberührt. Overlayebene schließen stoppt weiterhin nicht pauschal.",
+      "dependencies": "#59, #67; PR #45/#49; PR #50 Releasegate",
+      "priority": "P1",
+      "target_version": "Vor Freigabe 0.1.30.1; Test schon 0.1.29.7",
+      "android": "0.1.29.2 Live-Back-Hänger gemeldet; zweiter Lauf/aktueller Fix-PASS fehlt.",
+      "source_modules": [
+        "playback_exit.py",
+        "media_progress.py",
+        "media_intent.py",
+        "media_window.py"
+      ],
+      "test_files": [
+        "test_xcmate_exit_040.py",
+        "test_xcmate_0292_integration.py"
+      ],
+      "github_updated_at": "2026-10-20T19:58:59Z",
+      "comment_count": 2,
+      "comments": [
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/40#issuecomment-6298557049",
+          "updated_at": "2026-10-20T18:47:32Z",
+          "body_sha256": "aeda0c9ad5992ca1adbbcfc4446f12b727f4d345e3afda57b3c6f274c7f6db8c"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/40#issuecomment-6300191402",
+          "updated_at": "2026-10-20T19:58:59Z",
+          "body_sha256": "33c52121ffdf5d6c604c8651f03275b3af457c06c306807bc7824f233ece0a71"
+        }
+      ],
+      "cross_reference_urls": []
+    },
+    {
+      "issue": 41,
+      "title": "[XCMate][P1] Cover und Fanart dauerhaft speichern, Platzhalter nur bis Nachladung",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/41",
+      "status": "IMPLEMENTED / DEVICE TEST OPEN",
+      "implementation": "Dauerhafte validierte Bilder ohne alte 64-Dateien-Eviction, persistente Jobs/Budget/Retry, Aktualisierung nicht fokussierter Kacheln vorhanden.",
+      "remaining": "#69-Recovery auf Box zuerst; 130+ reale Poster/Fanarts, Neustart/offline, Budget/ENOSPC ohne Löschung sowie Prefetch-Abnahme offen. Komfort-Cleanup als explizite spätere Aktion.",
+      "dependencies": "#69, #44, #43; PR #46/#49/#70",
+      "priority": "P1",
+      "target_version": "0.1.29.7 Reparaturabnahme; 0.1.30.1 UI",
+      "android": "Reale MIGRATION_FAILED-Warnungen verhindern Vollfreigabe; 130-Bilder-PASS ist automatisiert, nicht Android.",
+      "source_modules": [
+        "art_store.py",
+        "media_art.py",
+        "media_window.py"
+      ],
+      "test_files": [
+        "test_xcmate_media_persistence_041_044.py"
+      ],
+      "github_updated_at": "2026-10-20T12:29:02Z",
+      "comment_count": 0,
+      "comments": [],
+      "cross_reference_urls": []
+    },
+    {
+      "issue": 42,
+      "title": "[XCMate] Senderliste ohne manuelle Folgeseiten – kontinuierliches Scrollen",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/42",
+      "status": "DONE / VERIFIED",
+      "implementation": "Kontinuierliche virtuelle Senderliste ohne sichtbare Seitenbuttons; native/Bridge-Grenzbewegung und richtige OK-Auswahl getestet.",
+      "remaining": "Keine neue Implementierung nötig. Formale Schließung nur nach Freigabe; 1000-Sender/PageUp/Wrap bleibt Regressionstest.",
+      "dependencies": "#37; PR #47/#49",
+      "priority": "P2",
+      "target_version": "Bereits produktiv seit 0.1.29.2",
+      "android": "Expliziter Android-Test 4 auf 0.1.29.2 PASS: kontinuierliches Scrollen einwandfrei.",
+      "source_modules": [
+        "live_overlay.py"
+      ],
+      "test_files": [
+        "test_xcmate_continuous_live_037_042.py"
+      ],
+      "github_updated_at": "2026-10-20T17:31:59Z",
+      "comment_count": 1,
+      "comments": [
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/42#issuecomment-6297058616",
+          "updated_at": "2026-10-20T17:31:58Z",
+          "body_sha256": "2c26b32a9ccd05f9ffcf7b92350e05b701e5c9c99e3e26631e1cbbee1d3efac9"
+        }
+      ],
+      "cross_reference_urls": []
+    },
+    {
+      "issue": 43,
+      "title": "[XCMate] Neuer Einrichtungsassistent: Kategorien vor Scan wählen und Assets nachladen",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/43",
+      "status": "IMPLEMENTED / DEVICE TEST OPEN",
+      "implementation": "Universelle Adapter, Kategorien vor Scan, Owner-WindowXML, Draft/selektiver Import/Readback-Save, private M3U-Kopie/Editor/Export vorhanden.",
+      "remaining": "Neue Xtream/M3U URL/USB/SMB/Stalker-Accounts, Fokus/Checkbox/Weiter/Save/Cancel und Migration real prüfen, vorzugsweise zweite Box. Bestehendes Profil nicht zum Test neu anlegen.",
+      "dependencies": "#33, #34, #41, #44; PR #48/#49/#55",
+      "priority": "P1",
+      "target_version": "0.1.30.1 Bestandsabnahme; Neueinrichtung separat",
+      "android": "0.1.29.2 Account-Erhalt/Aktivwahl PASS; 0.1.29.4-Fokus-/Langscan-/Save-Fixes noch ohne vollständigen neuen Provider-PASS.",
+      "source_modules": [
+        "source_adapters.py",
+        "setup_draft.py",
+        "setup_window.py",
+        "playlist_editor.py",
+        "m3u_store.py"
+      ],
+      "test_files": [
+        "test_xcmate_universal_sources_043.py",
+        "test_xcmate_setup_0294.py",
+        "test_xcmate_source_navigation_043.py"
+      ],
+      "github_updated_at": "2026-10-20T17:24:19Z",
+      "comment_count": 2,
+      "comments": [
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/43#issuecomment-6291175329",
+          "updated_at": "2026-10-20T12:46:49Z",
+          "body_sha256": "49046551d75ad1492605529a5e4d69d6a3bd2605a291d3888a20845394b37bd3"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/43#issuecomment-6296909614",
+          "updated_at": "2026-10-20T17:24:18Z",
+          "body_sha256": "35bef6e115988ca59d7aae2c855ff0c070c2e7876a6ed57891e5e575c86c53fe"
+        }
+      ],
+      "cross_reference_urls": [
+        "https://github.com/artattakk-creator/kodi-noodleprivate/issues/44"
+      ]
+    },
+    {
+      "issue": 44,
+      "title": "[XCMate] Favoriten-Coverrails für Filme/Serien und sichtbarer Episodenstatus",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/44",
+      "status": "IMPLEMENTED / DEVICE TEST OPEN",
+      "implementation": "Favoriten-/Weitersehen-Coverrails, lokale Snapshots, manuelles Gesehen/Ungesehen, Staffelstatus und nächste ungesehene Folge vorhanden.",
+      "remaining": "Vollständige Rail-/Offline-/Upgrade-/Mehrstaffel-Geräteabnahme; Favoriten bei Serienende behalten. Auto-Next/Staffel-/Serienreset aus älterer Spezifikation gesondert ergänzen.",
+      "dependencies": "#24, #40, #41, #69; PR #46/#49",
+      "priority": "P1",
+      "target_version": "0.1.30.1 Abnahme; 0.1.30.2 Serienrest",
+      "android": "Früher Favoritentoggle als Indiz gesehen; keine komplette Persistenz-/Rail-Geräteabnahme.",
+      "source_modules": [
+        "media_state.py",
+        "media_progress.py",
+        "media_window.py"
+      ],
+      "test_files": [
+        "test_xcmate_media_persistence_041_044.py",
+        "test_xcmate_027_progress.py"
+      ],
+      "github_updated_at": "2026-10-20T12:46:43Z",
+      "comment_count": 0,
+      "comments": [],
+      "cross_reference_urls": []
+    },
+    {
+      "issue": 57,
+      "title": "XCMate EPG: eigene Programmzeitschrift als zweispaltiger Sender-/Zeitachsen-Guide mit OK-Aktionen",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/57",
+      "status": "PARTIAL",
+      "implementation": "Bestehender Tages-/Programmlisten-Guide mit SQLite, Quellenhorizont, Details/Erinnerungen; unabhängiger Kurz-EPG-Resolver vorhanden.",
+      "remaining": "Zentralticket: echter horizontaler synchroner Raster mit fixer Sender-/Logospalte, Now-Linie, Kontext, Datenmigration, Suche/Filter/Merkliste; TMDB und Catch-up als eigene Stufen. Lokale uncommittete Entwürfe sind kein geliefertes Feature.",
+      "dependencies": "#58, #59, #60, #19; #62/#64 nachgelagert; nicht PR #50 überladen",
+      "priority": "P1",
+      "target_version": "0.1.31 Raster; 0.1.31.1 Metadaten; 0.1.31.2 Catch-up",
+      "android": "EPG öffnet 0.1.29.6, Raster/TMDB/Archivwiedergabe nicht geliefert oder abgenommen.",
+      "source_modules": [
+        "guide_window.py",
+        "guide_store.py",
+        "xmltv_stream.py",
+        "stream_epg.py"
+      ],
+      "test_files": [
+        "test_xcmate_027_data.py",
+        "test_xcmate_027_ui.py"
+      ],
+      "github_updated_at": "2026-10-21T15:47:11Z",
+      "comment_count": 5,
+      "comments": [
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/57#issuecomment-6315340740",
+          "updated_at": "2026-10-21T11:58:30Z",
+          "body_sha256": "9b90dddb7d7b0bedcfc0e639454bed899ed5118779500064d6909a867d92c200"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/57#issuecomment-6318737432",
+          "updated_at": "2026-10-21T14:39:13Z",
+          "body_sha256": "8a08efa658a38eec2bdf70dfe2768828912336fd3e1ff7319e4a4134fdd82506"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/57#issuecomment-6318841953",
+          "updated_at": "2026-10-21T14:44:15Z",
+          "body_sha256": "568ed9324b82f20890c63538fec196bf99e7417358162ea83ea6eb4dc96545c5"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/57#issuecomment-6318938566",
+          "updated_at": "2026-10-21T14:48:32Z",
+          "body_sha256": "b4d9ebfaa98a8d1ab43b7fe2e164682fab166653e79cbacc11d38c513973ed36"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/57#issuecomment-6320131298",
+          "updated_at": "2026-10-21T15:47:11Z",
+          "body_sha256": "854de2a166da24568cd5461610a40c80748692c370dcd17c9867691b59361fc3"
+        }
+      ],
+      "cross_reference_urls": []
+    },
+    {
+      "issue": 58,
+      "title": "XCMate EPG: doppelte Sender/Sendungen prüfen, Quellkonflikte bereinigen und Guide-Thread absichern",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/58",
+      "status": "IMPLEMENTED / DEVICE TEST OPEN",
+      "implementation": "Zentraler konservativer Event-Dedup, Legacy-/Import-Fallback, erweiterter Short-EPG-Cache und Owner-Pump vorhanden, in 0.1.29.6 erhalten.",
+      "remaining": "Reales ProSieben-15:06/15:07-Beispiel, Folgeepisoden, Neustart/Refresh und mehrere Quellen verifizieren; keine Quellen/Cache löschen.",
+      "dependencies": "#60, #67; PR #61/#68",
+      "priority": "P1",
+      "target_version": "0.1.29.7 Abnahme",
+      "android": "0.1.29.4 Dubletten belegt; keine positive reale Dedup-Abnahme nach 0.1.29.5/6.",
+      "source_modules": [
+        "epg_events.py",
+        "epg_views.py",
+        "guide_store.py",
+        "stream_epg.py"
+      ],
+      "test_files": [
+        "test_xcmate_epg_navigation_0295.py"
+      ],
+      "github_updated_at": "2026-10-21T13:28:04Z",
+      "comment_count": 3,
+      "comments": [
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/58#issuecomment-6316378603",
+          "updated_at": "2026-10-21T12:49:20Z",
+          "body_sha256": "eb3d31f3b0755627005851a0b09473500efcc96274b189e9668d79013e62fa67"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/58#issuecomment-6317182773",
+          "updated_at": "2026-10-21T13:23:52Z",
+          "body_sha256": "d6cf540a7b65c56dbb10aae0be2d46f8d690f32f584de6d6e82125466645d5f8"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/58#issuecomment-6317274382",
+          "updated_at": "2026-10-21T13:28:04Z",
+          "body_sha256": "3d85d065102302bad327ae0c8ae390455f971f2eb68f92169b592930ce4961f0"
+        }
+      ],
+      "cross_reference_urls": []
+    },
+    {
+      "issue": 59,
+      "title": "XCMate 0.1.29.4: Zurück aus EPG/Medien führt nicht zuverlässig zur Hauptübersicht",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/59",
+      "status": "IMPLEMENTED / DEVICE TEST OPEN",
+      "implementation": "Hierarchisches Back, einmalige Home-Rückroute und Owner-Pump/Generationsschutz vorhanden.",
+      "remaining": "20 Wiederholungen, Rapid-Back, Fokus und kein erneuter Import bei Back am Gerät; zusammen mit #40 prüfen.",
+      "dependencies": "#40, #67; PR #61/#68",
+      "priority": "P1",
+      "target_version": "0.1.29.7; 0.1.30.1 Regression",
+      "android": "Fensteröffnung 0.1.29.6 PASS, vollständiger Back-/Home-Nachweis fehlt.",
+      "source_modules": [
+        "guide_window.py",
+        "media_window.py",
+        "owner_dispatch.py",
+        "app_routes.py"
+      ],
+      "test_files": [
+        "test_xcmate_epg_navigation_0295.py",
+        "test_xcmate_window_start_0296.py"
+      ],
+      "github_updated_at": "2026-10-21T13:04:56Z",
+      "comment_count": 0,
+      "comments": [],
+      "cross_reference_urls": []
+    },
+    {
+      "issue": 60,
+      "title": "XCMate: XMLTV-Abdeckung nur 10,4 % – Sender-Matching, Quellenstatus und Kurz-EPG verbessern",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/60",
+      "status": "PARTIAL",
+      "implementation": "Konservative Codec-/DACH-Normalisierung, Priorität manueller/ID-Mappings, Quellstatus und Short-EPG-Fallback vorhanden.",
+      "remaining": "Neue echte Coverage-Messung, mehrdeutige/regionale Sender und manuelles Senderkontextmenü aus #57; WAITING differenzieren. Keine erfundene Verbesserung der 288/2764-Quote.",
+      "dependencies": "#13, #32, #34, #57, #58; PR #61",
+      "priority": "P1",
+      "target_version": "0.1.31 vor/mit Raster",
+      "android": "Letzte reale XMLTV-Quote 288/2764 =10,4% aus 0.1.29.4; keine neue Quote vorliegend.",
+      "source_modules": [
+        "epg_sources.py",
+        "epg_views.py",
+        "stream_epg.py"
+      ],
+      "test_files": [
+        "test_xcmate_epg_navigation_0295.py",
+        "test_xcmate_028_streaming.py"
+      ],
+      "github_updated_at": "2026-10-21T13:23:56Z",
+      "comment_count": 0,
+      "comments": [],
+      "cross_reference_urls": []
+    },
+    {
+      "issue": 62,
+      "title": "XCMate: EPG-gesteuerte Aufnahmen und automatisches Umschalten mit robustem Zeitplaner",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/62",
+      "status": "PARTIAL",
+      "implementation": "Persistente Erinnerungen/Storno, Recorder-Verzeichnisprobe, CLI-Capability-Probe und alter FFmpeg-Sofortaufruf vorhanden.",
+      "remaining": "Opt-in Auto-Tune und robuster Scheduler fehlen; Android-Backend/USB/SMB und A aufnehmen während B/C spielt real nachweisen. Keine VLC-/CLI-/Wake-Garantie, kein Multiview.",
+      "dependencies": "#57, #40, #64; #66 ausdrücklich gestrichen",
+      "priority": "P2",
+      "target_version": "0.1.33 Scheduler; 0.1.34 Android-Recorder",
+      "android": "Provider-Parallelstreams laut Nutzer geprüft; Android-Aufnahmeengine und fertige Datei weiterhin offen.",
+      "source_modules": [
+        "guide_timers.py",
+        "recordings.py",
+        "recording_probe.py"
+      ],
+      "test_files": [
+        "test_xcmate_027_data.py",
+        "test_xcmate_027_progress.py"
+      ],
+      "github_updated_at": "2026-10-21T15:58:41Z",
+      "comment_count": 3,
+      "comments": [
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/62#issuecomment-6319166514",
+          "updated_at": "2026-10-21T14:59:25Z",
+          "body_sha256": "187555a2c263a86bef5640e1a356111109b3201d0793c945059e19f78d0a12c7"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/62#issuecomment-6320253633",
+          "updated_at": "2026-10-21T15:52:41Z",
+          "body_sha256": "2c63b79005256e275b79c9d1755656ff7a7e533e9bdd355bd47885c26a63d039"
+        },
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/62#issuecomment-6320389293",
+          "updated_at": "2026-10-21T15:58:41Z",
+          "body_sha256": "ad4dd8e3a123408ba81dcdefd951a201776aa320aa20e26007ac834be7143632"
+        }
+      ],
+      "cross_reference_urls": []
+    },
+    {
+      "issue": 63,
+      "title": "XCMate: VOD-Filme und Serienepisoden lokal auf USB/HDD/SMB herunterladen",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/63",
+      "status": "OPEN",
+      "implementation": "Medien-Identitäten/Details und Speicherwahl-Grundbausteine vorhanden, aber kein VOD-Downloadmanager.",
+      "remaining": "Persistente Downloadqueue, Film/Episode/optionale Staffel, Range/ETag-Resume, Ziel-/Speicherprüfung, part/atomare Dateien, Cancel und Offline-Playback implementieren.",
+      "dependencies": "#24, #43, #40; Storage-Erkenntnisse #62",
+      "priority": "P2",
+      "target_version": "0.1.35 Downloads",
+      "android": "Kein funktionaler Download-/USB-/SMB-/Offline-Gerätenachweis.",
+      "source_modules": [],
+      "test_files": [],
+      "github_updated_at": "2026-10-21T14:53:51Z",
+      "comment_count": 0,
+      "comments": [],
+      "cross_reference_urls": []
+    },
+    {
+      "issue": 64,
+      "title": "XCMate: erweiterbare frei konfigurierbare Tastenprofile je Bedienkontext",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/64",
+      "status": "PARTIAL",
+      "implementation": "Sechs lernbare Befehle und sessiongeschützte opt-in Bridge/Keymap vorhanden; PR #3 liefert nur Referenzkatalog.",
+      "remaining": "Freier Tasten-Aktionsdialog/Farbtasten, zusätzliche Codes, Konflikte, Kontext- und Box-/Remoteprofile mit Import/Export und Revert fehlen. Frühere Rückfrage ist durch Nutzerkommentar geklärt.",
+      "dependencies": "#17, #20, #57; PR #3 Referenz",
+      "priority": "P1",
+      "target_version": "0.1.32 universelle Remote",
+      "android": "Bestehende Live-Steuerung bestätigt; universelle Profile auf zwei Boxen/Remotes nicht implementiert/abgenommen.",
+      "source_modules": [
+        "remote_profiles.py",
+        "remote_control.py",
+        "remote_bridge.py"
+      ],
+      "test_files": [
+        "test_xtreammate_remote.py",
+        "test_xtreammate_android_remote.py"
+      ],
+      "github_updated_at": "2026-10-21T14:59:22Z",
+      "comment_count": 1,
+      "comments": [
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/64#issuecomment-6319165533",
+          "updated_at": "2026-10-21T14:59:22Z",
+          "body_sha256": "e0f014f2007a7d0e4e37c69a2140719e1d2cbabe26e6fc2a17aad8f2167bab49"
+        }
+      ],
+      "cross_reference_urls": []
+    },
+    {
+      "issue": 65,
+      "title": "XCMate Zukunftsidee: optionale X-Wall-/BINGIE-Add-on- und Oberflächenintegration",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/65",
+      "status": "FUTURE",
+      "implementation": "Spätere Integrationsidee dokumentiert; keine eindeutige X-Wall-Addon-ID festgestellt.",
+      "remaining": "Nach Kernabnahme optional recherchieren/spezifizieren. Keine Dritt-Addon-Installation oder globale Skinänderung in diesem Auftrag.",
+      "dependencies": "#14, #19; PR #51 eigenständig",
+      "priority": "Future",
+      "target_version": "Später, unversioniert",
+      "android": "Keine Integrationsabnahme.",
+      "source_modules": [],
+      "test_files": [],
+      "github_updated_at": "2026-10-21T15:42:37Z",
+      "comment_count": 0,
+      "comments": [],
+      "cross_reference_urls": []
+    },
+    {
+      "issue": 67,
+      "title": "P0 REGRESSION XCMate 0.1.29.5 Android: EPG, Filme und Serien öffnen nicht (Live-TV funktioniert)",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/67",
+      "status": "IMPLEMENTED / DEVICE TEST OPEN",
+      "implementation": "0.1.29.6 korrigiert erfolgreichen Directory-Abschluss und nativen WindowXML-/Modal-Lifecycle; im Hotfix unverändert.",
+      "remaining": "Keine Neuimplementierung. 10× EPG/Film/Serie öffnen, Back/Home/Fokus/Resume und Neustart ergänzen, dann Schließung vorschlagen.",
+      "dependencies": "#59, #40; PR #68; PR #70/#50 Regression",
+      "priority": "P1",
+      "target_version": "0.1.29.7/0.1.30.1 Regression",
+      "android": "Expliziter realer Smoke-PASS unter 0.1.29.6 für alle drei Fenster; volle Zyklen offen.",
+      "source_modules": [
+        "owner_dispatch.py",
+        "app_routes.py",
+        "guide_window.py",
+        "media_window.py"
+      ],
+      "test_files": [
+        "test_xcmate_window_start_0296.py"
+      ],
+      "github_updated_at": "2026-10-21T18:58:37Z",
+      "comment_count": 1,
+      "comments": [
+        {
+          "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/67#issuecomment-6324074503",
+          "updated_at": "2026-10-21T18:58:36Z",
+          "body_sha256": "909bbce67d39c9c12ef5a5c4e3c813b697e0b7dd9538b3dc4cb74b87f84bbae7"
+        }
+      ],
+      "cross_reference_urls": []
+    },
+    {
+      "issue": 69,
+      "title": "XCMate Artwork-Jobqueue: wiederholtes MIGRATION_FAILED, Index art_pending prüfen und datenschonend reparieren",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/69",
+      "status": "IMPLEMENTED / DEVICE TEST OPEN",
+      "implementation": "Draft #70: atomare Artwork-Schemata, private Diagnose/Backoff, exklusiver WAL-konsistenter Backup-/Integritäts-/Indexreparaturpfad und bestätigter Queue-Rebuild.",
+      "remaining": "0.1.29.7 auf Box: konkrete SQLite-Klasse feststellen, saubere DB-Prüfung/Persistenz/Prefetch bestätigen. Kein aktives DB-Exemplar geliefert, aktueller Indexschaden nicht bewiesen.",
+      "dependencies": "#41; PR #70; in PR #50 integriert",
+      "priority": "P0",
+      "target_version": "0.1.29.7 zuerst",
+      "android": "0.1.29.6-Log 22 generische Warnungen; neue sichere Recovery auf Android NOT_RUN.",
+      "source_modules": [],
+      "test_files": [],
+      "github_updated_at": "2026-10-21T18:58:34Z",
+      "comment_count": 0,
+      "comments": [],
+      "cross_reference_urls": []
+    },
+    {
+      "issue": 71,
+      "title": "XCMate: optionale PIN-Kindersicherung für Sendergruppen, Filme, Serien und Einstellungen",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/71",
+      "status": "OPEN",
+      "implementation": "Historische PIN-Fotoreferenz, aber keine zentrale Autorisierung oder verifizierte PIN-Implementierung vorhanden.",
+      "remaining": "Nur Architektur/Abnahmetests planen: Standard AUS, geschütztes Regel-/PIN-Management, gesalzener langsamer KDF, persistenter Fehlversuchs-Backoff, befristete Entsperrung/Recovery und Schutz aller Routen/Widgets/Metadaten/Playback/Timer/Offlinepfade. Nicht #70/#50 erweitern.",
+      "dependencies": "#43, #64, #57, #62, #63",
+      "priority": "P2",
+      "target_version": "0.1.32.1 vorgeschlagen; zunächst Architektur",
+      "android": "Neues paralleles Issue, keine Implementierung oder Android-Abnahme.",
+      "source_modules": [],
+      "test_files": [],
+      "github_updated_at": "2026-10-21T19:51:40Z",
+      "comment_count": 0,
+      "comments": [],
+      "cross_reference_urls": []
+    }
+  ],
+  "prs": [
+    {
+      "number": 3,
+      "title": "XCMate P1: TiviMate 5.3.3 remote mapping reference and tests",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/3",
+      "draft": true,
+      "head": "0162b24e696807525b665f579524e2870c875f3e",
+      "branch": "feat/xcmate-tivimate-remote-profile",
+      "base": "7c5a4fc0359842f9759ba4f0e3c4f11b65b2cf83",
+      "updated_at": "2026-10-14T12:00:06Z"
+    },
+    {
+      "number": 50,
+      "title": "XCMate 0.1.30.1: Space Premium + Hotfixbasis 0.1.29.7 (Draft)",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/50",
+      "draft": true,
+      "head": "0840f7ccfb99bafb8ade5fb18c79e85b202660cc",
+      "branch": "feat/xcmate-space-premium-installer",
+      "base": "b6383de5ec1763b10a012f90c47f8f220725544c",
+      "updated_at": "2026-10-21T19:45:55Z"
+    },
+    {
+      "number": 51,
+      "title": "GS Media 1.8.0: TMDb Helper, Pluto TV, SHOUTcast, MP3 Streams + Bestandsquellen",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/51",
+      "draft": true,
+      "head": "62db8fea465d6ab8bf0a691937228f508aa92b14",
+      "branch": "feat/gsmedia-mp3-streams-epg-20261021",
+      "base": "116d653efb95df18a4ba750cb33d108fc2e2c276",
+      "updated_at": "2026-10-21T08:11:47Z"
+    },
+    {
+      "number": 70,
+      "title": "XCMate 0.1.29.7: sichere Artwork-DB-Reparatur und Startsender-Routing",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/70",
+      "draft": true,
+      "head": "ed6c1a41e033cdc553d2e55f44731716fab5c986",
+      "branch": "fix/xcmate-0297-artwork-startup",
+      "base": "b6383de5ec1763b10a012f90c47f8f220725544c",
+      "updated_at": "2026-10-21T19:45:50Z"
+    }
+  ],
+  "closed_exclusion": {
+    "issue": 66,
+    "state": "closed",
+    "reason": "not_planned",
+    "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/66"
+  },
+  "privacy": "Keine Geräte-Logs, Datenbanken, Tokens oder Accountdaten übernommen; Kommentartexte nur lokal gelesen, öffentlich nur URL/Hash/Metadaten.",
+  "related_closed_prs": [
+    {
+      "number": 68,
+      "title": "XCMate 0.1.29.6: Fensterstart nach Android-Regression #67 reparieren",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/68",
+      "merged_at": "2026-10-21T17:47:16Z",
+      "merge_commit_sha": "17f5f634e8d5ac74310b7bed95b5636664f92456"
+    },
+    {
+      "number": 61,
+      "title": "XCMate 0.1.29.5: EPG-Dubletten und sichere Guide-/Mediennavigation",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/61",
+      "merged_at": "2026-10-21T16:56:48Z",
+      "merge_commit_sha": "c6e7050d5b0ba5bf88943dcf9d55107f0af38fed"
+    },
+    {
+      "number": 56,
+      "title": "Neo Dark: Opt-in XCMate 0.1.29.4 ZIP als manueller Download",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/56",
+      "merged_at": "2026-10-21T11:26:12Z",
+      "merge_commit_sha": "454266dbff500d0b45d9cc36e54086af6caf8fde"
+    },
+    {
+      "number": 55,
+      "title": "XCMate 0.1.29.4 P0: Setup-Checkboxen, lange Scans und verifiziertes Speichern",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/55",
+      "merged_at": "2026-10-21T14:21:52Z",
+      "merge_commit_sha": "8967070255b48ca5555cb48e7451f2c45b4684e5"
+    },
+    {
+      "number": 54,
+      "title": "Kodi-Dateimanager: doppelten Testversionen-Link entfernen und echte XCMate-ZIP im Ordner bereitstellen",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/54",
+      "merged_at": "2026-10-21T10:07:21Z",
+      "merge_commit_sha": "5b32dd8d47fd2e26de203802df3a9dd3095dad29"
+    },
+    {
+      "number": 53,
+      "title": "GS Media: XCMate 0.1.29.3 als optionalen ZIP-Testbuild über Onlinequelle anbieten",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/53",
+      "merged_at": "2026-10-21T10:00:20Z",
+      "merge_commit_sha": "cd00f4eab914e37ae4abf5ca6d060f0289cc15b4"
+    },
+    {
+      "number": 52,
+      "title": "XCMate 0.1.29.3 P0: Setup-Fokus sichtbar, Importfehler diagnostizierbar und Retry",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/52",
+      "merged_at": "2026-10-21T14:21:54Z",
+      "merge_commit_sha": "32970a6688c17f0aebd6945873658e5b41a47c5a"
+    },
+    {
+      "number": 49,
+      "title": "Integrate XCMate 0.1.29.2 complete release stack into main",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/49",
+      "merged_at": "2026-10-20T16:07:45Z",
+      "merge_commit_sha": "374b0ffb6e2189d49d1babca098d3cd5db50fecd"
+    },
+    {
+      "number": 48,
+      "title": "XCMate 0.1.29.2: universeller Setup und geprüfter vollständiger Integrations-RC",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/48",
+      "merged_at": null,
+      "merge_commit_sha": "5005260fa2fe41b04ef2df0f4926c067261a7f89"
+    },
+    {
+      "number": 47,
+      "title": "XCMate Phase C: nur aktive Gruppen und kontinuierliche Senderliste (#37/#42)",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/47",
+      "merged_at": null,
+      "merge_commit_sha": "5acddb9326b73c5226a5bf968fb9db66a4a22b5d"
+    },
+    {
+      "number": 46,
+      "title": "XCMate Phase B: dauerhafte Bilder, Favoriten und Weitersehen (#41/#44)",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/46",
+      "merged_at": null,
+      "merge_commit_sha": "b9fa9a99a594f54530ecd4ca5192a072628f8d26"
+    },
+    {
+      "number": 45,
+      "title": "XCMate Phase A: eigene Wiedergabe beim Verlassen stoppen (#40)",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/45",
+      "merged_at": null,
+      "merge_commit_sha": "31087d34034cab524a45648594dee302d3ed7715"
+    },
+    {
+      "number": 39,
+      "title": "XCMate 0.1.28.1: Startpfad entkoppeln und Android-Hänger diagnostizieren (#38)",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/39",
+      "merged_at": "2026-10-20T16:07:47Z",
+      "merge_commit_sha": "295f9d4286961c2c05065db2a939df15ea391f83"
+    },
+    {
+      "number": 36,
+      "title": "XCMate 0.1.28: Streaming-Kataloge, EPG und sichere Pre-Play-Anzeige",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/36",
+      "merged_at": "2026-10-20T06:42:20Z",
+      "merge_commit_sha": "6ee59571c250e8fe097d7c71162eba6f9f9db34a"
+    },
+    {
+      "number": 28,
+      "title": "XCMate 0.1.27: lokale Medienoberflächen, Widgets und dauerhafter EPG",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/28",
+      "merged_at": "2026-10-19T16:43:42Z",
+      "merge_commit_sha": "ad4606f42f9be91bd6496d3d5b93eab05a5643f0"
+    },
+    {
+      "number": 22,
+      "title": "XCMate 0.1.26 P0: Links reparieren und dreistufige TV-Steuerung",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/22",
+      "merged_at": "2026-10-19T10:47:45Z",
+      "merge_commit_sha": "cfbe1207fc344c77fbe2042b07f10a2e21fefc03"
+    },
+    {
+      "number": 18,
+      "title": "XCMate 0.1.25: zweistufige TV-Infobar, lokales EPG und schnelle Navigation",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/18",
+      "merged_at": "2026-10-18T18:58:00Z",
+      "merge_commit_sha": "601c421b004f746341ecf3a8c0f7bf1200a7c84d"
+    },
+    {
+      "number": 16,
+      "title": "XCMate 0.1.24: Omega-ControlList-TypeError beheben und EPG-Fehler trennen",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/16",
+      "merged_at": "2026-10-18T16:11:25Z",
+      "merge_commit_sha": "199f4d1231ce01f5d3c15d6db7ec253df721be9a"
+    },
+    {
+      "number": 15,
+      "title": "XCMate 0.1.23 – Android LiveSession-Diagnose und EPG-Updates veröffentlichen",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/15",
+      "merged_at": "2026-10-18T14:32:16Z",
+      "merge_commit_sha": "510b7953b158384d4ab56d3381efad08bfe4efc7"
+    },
+    {
+      "number": 11,
+      "title": "Release XCMate 0.1.22 – Kodi 21 Fernbedienung und EPG-Stabilität",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/11",
+      "merged_at": "2026-10-18T12:20:48Z",
+      "merge_commit_sha": "c14d7815bf0ca2e93dd3e1fa5225ca1df36c8f54"
+    },
+    {
+      "number": 10,
+      "title": "XCMate 0.1.17 P0: visible native popup chooser + explicit Kodi XML WindowDialog",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/10",
+      "merged_at": "2026-10-15T11:58:55Z",
+      "merge_commit_sha": "431a267888e7de329f9cccecf6ef484f8b3f0bcf"
+    },
+    {
+      "number": 9,
+      "title": "XCMate 0.1.16 P0: prevent autoplay from blocking remote popup diagnosis",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/9",
+      "merged_at": "2026-10-15T08:53:42Z",
+      "merge_commit_sha": "a56db2348e8fe9a30c7942ecab89300f124636eb"
+    },
+    {
+      "number": 8,
+      "title": "XCMate 0.1.15: standalone remote popup test and visible Live TV sidebar",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/8",
+      "merged_at": "2026-10-14T15:47:51Z",
+      "merge_commit_sha": "b92497016057320a4a52b97024d608900155ccd9"
+    },
+    {
+      "number": 7,
+      "title": "XCMate 0.1.14 P0: recover lost session from verified running Xtream stream",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/7",
+      "merged_at": "2026-10-14T15:15:01Z",
+      "merge_commit_sha": "0b751dae3f503814c15b0e0f4b1d3dd20116a23c"
+    },
+    {
+      "number": 6,
+      "title": "XCMate 0.1.13 P0: offline service heartbeat and guarded manual restart",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/6",
+      "merged_at": "2026-10-14T14:20:38Z",
+      "merge_commit_sha": "fbe6230def5ece1c689c21a328558e380b77fc6d"
+    },
+    {
+      "number": 5,
+      "title": "XCMate 0.1.12: preserve LiveSession while autoplay stream opens",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/5",
+      "merged_at": "2026-10-14T13:15:15Z",
+      "merge_commit_sha": "26c03e6c94027ad4cd9fba18bf15f579e2980c49"
+    },
+    {
+      "number": 4,
+      "title": "XCMate 0.1.11 P0: Android remote takeover and independent TV OSD",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/4",
+      "merged_at": "2026-10-14T12:38:17Z",
+      "merge_commit_sha": "d7d09705593c689834c829a41df6854441715377"
+    },
+    {
+      "number": 2,
+      "title": "XCMate 0.1.10: Fix Android startup playable routing and remote OSD",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/2",
+      "merged_at": "2026-10-14T10:54:46Z",
+      "merge_commit_sha": "77aec9be727182582b5e06a040490215c3df1e4d"
+    },
+    {
+      "number": 1,
+      "title": "Noodle Private v0.3.0 – Cumination provider bridge and shared favorites",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/1",
+      "merged_at": "2026-10-13T15:56:32Z",
+      "merge_commit_sha": "492aea7cdfb3063c553bf7fff762b44c88125c5c"
+    }
+  ],
+  "source_code_base": "b6383de5ec1763b10a012f90c47f8f220725544c",
+  "concurrent_main_change": "Four documentation-only commits; issue #71 added during audit; current canonical roadmap reused."
+}
