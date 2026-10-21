@@ -1,11 +1,11 @@
 {
   "schema": "xcmate.issue_inventory.v1",
-  "captured_utc": "2026-10-21T19:48:03.267Z",
+  "captured_utc": "2026-10-21T20:00:22.469Z",
   "repository": "https://github.com/artattakk-creator/kodi-noodleprivate",
-  "main": "b6383de5ec1763b10a012f90c47f8f220725544c",
+  "main": "5237f4a99f003e7fd63e80f8fd928b4616909c38",
   "hotfix_head": "ed6c1a41e033cdc553d2e55f44731716fab5c986",
   "theme_head": "0840f7ccfb99bafb8ade5fb18c79e85b202660cc",
-  "open_issue_count": 36,
+  "open_issue_count": 37,
   "open_draft_pr_count": 4,
   "issue_comments_read": 60,
   "pr_comments_read": 8,
@@ -15,7 +15,7 @@
     "FUTURE": 2,
     "PARTIAL": 10,
     "DONE / VERIFIED": 1,
-    "OPEN": 1
+    "OPEN": 2
   },
   "issues": [
     {
@@ -1232,6 +1232,24 @@
       "comment_count": 0,
       "comments": [],
       "cross_reference_urls": []
+    },
+    {
+      "issue": 71,
+      "title": "XCMate: optionale PIN-Kindersicherung für Sendergruppen, Filme, Serien und Einstellungen",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/71",
+      "status": "OPEN",
+      "implementation": "Historische PIN-Fotoreferenz, aber keine zentrale Autorisierung oder verifizierte PIN-Implementierung vorhanden.",
+      "remaining": "Nur Architektur/Abnahmetests planen: Standard AUS, geschütztes Regel-/PIN-Management, gesalzener langsamer KDF, persistenter Fehlversuchs-Backoff, befristete Entsperrung/Recovery und Schutz aller Routen/Widgets/Metadaten/Playback/Timer/Offlinepfade. Nicht #70/#50 erweitern.",
+      "dependencies": "#43, #64, #57, #62, #63",
+      "priority": "P2",
+      "target_version": "0.1.32.1 vorgeschlagen; zunächst Architektur",
+      "android": "Neues paralleles Issue, keine Implementierung oder Android-Abnahme.",
+      "source_modules": [],
+      "test_files": [],
+      "github_updated_at": "2026-10-21T19:51:40Z",
+      "comment_count": 0,
+      "comments": [],
+      "cross_reference_urls": []
     }
   ],
   "prs": [
@@ -1487,5 +1505,7 @@
       "merged_at": "2026-10-13T15:56:32Z",
       "merge_commit_sha": "492aea7cdfb3063c553bf7fff762b44c88125c5c"
     }
-  ]
+  ],
+  "source_code_base": "b6383de5ec1763b10a012f90c47f8f220725544c",
+  "concurrent_main_change": "Four documentation-only commits; issue #71 added during audit; current canonical roadmap reused."
 }

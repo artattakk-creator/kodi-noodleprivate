@@ -4,8 +4,8 @@
 
 ## Verifizierter Bestand und Arbeitsgrenzen
 
-- Live-GitHub-Erhebung: **36 offene Issues**, alle **60 Issue-Kommentare**, **vier offene Draft-PRs** mit insgesamt **acht PR-Kommentaren** gelesen. Die Vorgabe „drei Drafts“ ist durch den inzwischen erstellten Hotfix #70 überholt. Die eigene Dokumentations-PR erhöht den PR-Zähler erst nach dieser Momentaufnahme; sie ist kein Produktkandidat.
-- Produktiv: **0.1.29.6**, `main` **b6383de5ec1763b10a012f90c47f8f220725544c**. [PR #68](https://github.com/artattakk-creator/kodi-noodleprivate/pull/68) ist gemergt; [Publish 39646892896](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39646892896) war erfolgreich. Die reguläre Installation ist laut Nutzer erfolgreich; Hauptmenü, Live-TV, EPG, Filme und Serien sind unter 0.1.29.6 real erreichbar. Das ist ein **Smoke-PASS**, keine pauschale Vollabnahme.
+- Live-GitHub-Erhebung: **37 offene Issues** (36 aus dem Auftrag plus das parallel neu eröffnete #71), alle **60 Issue-Kommentare**, **vier offene Draft-PRs** mit insgesamt **acht PR-Kommentaren** gelesen. Die Vorgabe „drei Drafts“ ist durch den inzwischen erstellten Hotfix #70 überholt. Die eigene Dokumentations-PR erhöht den PR-Zähler erst nach dieser Momentaufnahme; sie ist kein Produktkandidat.
+- Produktiv: **0.1.29.6**, `main` zuletzt **5237f4a99f003e7fd63e80f8fd928b4616909c38**. Während der Prüfung kamen gegenüber **b6383de5ec1763b10a012f90c47f8f220725544c** ausschließlich vier Dokumentationscommits hinzu; Produktcode und Pakete sind identisch. [PR #68](https://github.com/artattakk-creator/kodi-noodleprivate/pull/68) ist gemergt; [Publish 39646892896](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39646892896) war erfolgreich. Die reguläre Installation ist laut Nutzer erfolgreich; Hauptmenü, Live-TV, EPG, Filme und Serien sind unter 0.1.29.6 real erreichbar. Das ist ein **Smoke-PASS**, keine pauschale Vollabnahme.
 - Primäre Abnahme: **Kodi 21.2 Omega, Python 3.11.7, Android 13, RK3528/DQ08 ARM32, Titan BINGIE MOD 2.2.3**. Frühere Angaben „Kodi 21.3“ in Alt-Issues korrigieren die tatsächliche Box nicht. **Kodi 21.3** bleibt zusätzlich zu prüfen; Estuary sowie 720p/1080p, Darstellung bei 4K und ein kleiner Stick gehören in die Erweiterungsprüfung.
 - Zuerst enger **0.1.29.7-Hotfix**, dann **0.1.30.1-Theme-Integration**. Beide Pakete sind gebaut und automatisiert geprüft, Android jeweils **NOT_RUN**. Es fehlt kein weiterer Featurebau zum Beginnen des Hotfix-Gerätetests. Bei einem neuen reproduzierten Fehler gezielt korrigieren und neu prüfen, keine spekulative Neuentwicklung.
 - **Keine Merges, Releases oder produktiven Repositoryupdates durch diesen Auftrag.** Keine Issue-Schließung ohne vorgelegten Bereinigungsvorschlag und Nutzerfreigabe. Die bestehende Veröffentlichungserlaubnis für 0.1.29.6 ist keine Freigabe der neuen Kandidaten.
@@ -14,14 +14,14 @@
 
 ## Statussystem und vollständige Konsolidierung
 
-Die [Integrationsmatrix](ISSUE_INTEGRATIONSMATRIX_DE.md) enthält für **jedes der 36 Issues** Nummer/Titel, einen Status, vorhandene Komponenten, konkreten Rest, Abhängigkeiten, Priorität, Zielversion und Teststand. Code-/Testbelege verweisen auf konkrete unveränderliche Referenzcommits. Die ursprünglichen Kommentare sind einzeln verlinkt; nur ihre URLs/Hashes/Metadaten werden im Bestand gespeichert.
+Die [Integrationsmatrix](ISSUE_INTEGRATIONSMATRIX_DE.md) enthält für **jedes der 37 Issues** Nummer/Titel, einen Status, vorhandene Komponenten, konkreten Rest, Abhängigkeiten, Priorität, Zielversion und Teststand. Code-/Testbelege verweisen auf konkrete unveränderliche Referenzcommits. Die ursprünglichen Kommentare sind einzeln verlinkt; nur ihre URLs/Hashes/Metadaten werden im Bestand gespeichert.
 
 | Kategorie | Anzahl | Bedeutung |
 |---|---:|---|
 | DONE / VERIFIED | 1 | #42: Code, Tests und ausdrücklicher Android-PASS vorhanden |
 | IMPLEMENTED / DEVICE TEST OPEN | 20 | Implementierung vorhanden; vollständige Abnahme des gesamten Tickets fehlt |
 | PARTIAL | 10 | Konkrete funktionale Restarbeiten neben vorhandenen Bausteinen |
-| OPEN | 1 | #63: eigentlicher Downloadmanager fehlt |
+| OPEN | 2 | #63 Downloadmanager und neu #71 zentrale optionale PIN-Kindersicherung fehlen |
 | SUPERSEDED / DUPLICATE | 2 | #12 und #21 als historische Sammeltickets zur Überführung vorgeschlagen |
 | FUTURE | 2 | #14 eigener Kodi-Skin und #65 spätere Drittintegration |
 
@@ -36,7 +36,7 @@ Die [Integrationsmatrix](ISSUE_INTEGRATIONSMATRIX_DE.md) enthält für **jedes d
 | [#51 – GS Media Repository 1.8.0](https://github.com/artattakk-creator/kodi-noodleprivate/pull/51) | `62db8fea465d6ab8bf0a691937228f508aa92b14` | Separates Repositoryprojekt: TMDb Helper, Pluto.TV, SHOUTcast, MP3 Streams; TV-Spielfilm-Mediathek ist kein Guide und kein brauchbarer Python-3-Import | Eigene Upstream-/Lizenz-/Paket-/Android-Abnahme. Hier keine neue Suite ausgeführt, keine Freigabe aus altem PR-Text ableiten |
 | [#3 – Tastenreferenz](https://github.com/artattakk-creator/kodi-noodleprivate/pull/3) | `0162b24e696807525b665f579524e2870c875f3e` | Historischer TiviMate-Funktions-/Kurz-/Langdruckkatalog, **keine universelle Remoteimplementierung** | Als Referenz für #64 nutzen; keinen alten Branch als fertigen Remoteersatz mergen. Historische Tests nicht als aktuelle Android-Prüfung ausgeben |
 
-Die frühere Aussage „#50 ist 49 Commits hinter main“ gilt für dessen alten Head. Der oben genannte integrierte Head enthält main und Hotfix. Vor jeder späteren Weiterarbeit Heads/Abstammung/CI erneut live prüfen.
+Die frühere Aussage „#50 ist 49 Commits hinter main“ gilt für dessen alten Head. Der oben genannte integrierte Head enthält die geprüfte main-Codebasis b6383de und Hotfix. Die vier späteren main-Dokumentationscommits wurden nur in diesen Dokumentationsbranch übernommen; sie ändern keinen Produktcode. Vor jeder späteren Weiterarbeit Heads/Abstammung/CI erneut live prüfen.
 
 ## Phase A – aktuelle Fehler, Datenintegrität und Abnahme
 
@@ -111,13 +111,26 @@ Android-Recorder als gesonderte Machbarkeit/Backend-Abnahme: `probe/start/stop/s
 - **[#19](https://github.com/artattakk-creator/kodi-noodleprivate/issues/19)**: technisches Audit vorhanden, tatsächliche Rechtekette/Notices und Drittasset-/Datenrechte offen. Begleitend vor neuer öffentlicher Distribution klären, weder pauschalen Closed-Source-Freibrief noch neue hypothetische kommerzielle Freigabeanforderung erfinden. Kein eigenmächtiger Lizenzwechsel oder V2-Neubau.
 - **[#14](https://github.com/artattakk-creator/kodi-noodleprivate/issues/14)** eigener Kodi-Skin: Zukunftskonzept mit separater ID/Rückfallweg, nicht optionales XCMate-Theme. **[#65](https://github.com/artattakk-creator/kodi-noodleprivate/issues/65)** X-Wall/Drittoberflächen: Parkplatz, Add-on-ID noch ungeklärt, derzeit kein Implementierungsauftrag. **PR #51** bleibt separates Repositoryprojekt.
 - **[#66](https://github.com/artattakk-creator/kodi-noodleprivate/issues/66)** bleibt **closed / not planned**: Multiview, Split-Screen, PiP und Mehrfach-Videodecoder sind ausdrücklich gestrichen, auch wenn ältere Referenzfotos/JSON diese nennen. Nur Aufnahme A + normale Wiedergabe B bleibt.
-- Historische [Foto-/Settingsreferenz](TIVIMATE_SETTINGS_CONTRACT_2026-10-14.json) und [vierter Referenzbericht](TIVIMATE_SETTINGS_FOURTH_SERIES_2026-10-14_DE.md) bewahren zusätzliche Wünsche: Backup/Restore, Kindersicherung/PIN mit Zugriffsregeln/Throttling, Sleep-/Start-/Hostoptionen, Player-/Audio-/Subtitle-/AFR-/Decoderpräferenzen, Opt-in-Telemetrie sowie Über-/Lizenzinformationen. Das sind keine pauschal erledigten Funktionen und keine Freigabe, Kodi-globales Verhalten zu ändern. Vor späterer Umsetzung jeden noch gewünschten Punkt aus der Referenz in ein eigenes Ticket mit Istcode-/Testnachweis überführen; **Future / Version offen**, keine automatische Vollkopie von TiviMate-Fotowerten. Bestehende Teilfunktionen zunächst prüfen. Auto-Next/Staffelreset sind oben konkret #24/#44 zugeordnet.
+- Historische [Foto-/Settingsreferenz](TIVIMATE_SETTINGS_CONTRACT_2026-10-14.json) und [vierter Referenzbericht](TIVIMATE_SETTINGS_FOURTH_SERIES_2026-10-14_DE.md) bewahren zusätzliche Wünsche: Backup/Restore, Sleep-/Start-/Hostoptionen, Player-/Audio-/Subtitle-/AFR-/Decoderpräferenzen, Opt-in-Telemetrie sowie Über-/Lizenzinformationen. Das sind keine pauschal erledigten Funktionen und keine Freigabe, Kodi-globales Verhalten zu ändern. Vor späterer Umsetzung jeden noch gewünschten Punkt aus der Referenz in ein eigenes Ticket mit Istcode-/Testnachweis überführen; **Future / Version offen**, keine automatische Vollkopie von TiviMate-Fotowerten. Bestehende Teilfunktionen zunächst prüfen. Auto-Next/Staffelreset sind oben konkret #24/#44 zugeordnet.
 
 ## Bereits gelieferte Arbeit und tatsächlich fehlende Funktionen
 
 **Keine neue Implementierung planen für:** kontinuierliches Scrollen #42 (voll bestätigt), den wieder funktionierenden Fensterstart #67 (Smoke-PASS), aktive Gruppen #37 (Teil-PASS), Bestandsaccount/Aktivwahl #43 (Teil-PASS), bestehende Live-Remote-State-Machine #17/#20, eigene DE/EN-Wahl, Streaming-/Gruppenimport, Medienrails/Favoriten/Resume und lokale Bilderhaltung. Bei den zuletzt genannten Funktionen fehlen überwiegend spezifische Android-Abnahmen; #69 ist ein tatsächlicher aktueller Fehlerpfad. Automatisierte Belege und engere reale PASS-Umfänge stehen in der Matrix.
 
-**Funktional noch zu entwickeln:** horizontaler #57-Raster mit vollständiger Kontext-/Metadatenpersistenz, durchgängiges Catch-up mit Archivwiedergabe, TMDB-Anreicherung, universeller #64-Tasten-Aktionsdialog/Profile, #62 Auto-Tune/Scheduler und bewiesenes Android-Recorderbackend, #63 Downloadmanager, optionale #29-Sprachpakete, vollständige #31-Personalisierung, #37-Gruppenzähler sowie Auto-Next/Staffel-/Serienreset. #38 benötigt zunächst messbare Ursachenanalyse statt eines angenommenen neuen Features. #14/#65 bleiben bewusst zurückgestellt; Lizenz-/Provenienzreste #19 sind getrennte Prüfarbeit.
+**Funktional noch zu entwickeln:** zentrale optionale PIN-Kindersicherung #71 sowie horizontaler #57-Raster mit vollständiger Kontext-/Metadatenpersistenz, durchgängiges Catch-up mit Archivwiedergabe, TMDB-Anreicherung, universeller #64-Tasten-Aktionsdialog/Profile, #62 Auto-Tune/Scheduler und bewiesenes Android-Recorderbackend, #63 Downloadmanager, optionale #29-Sprachpakete, vollständige #31-Personalisierung, #37-Gruppenzähler sowie Auto-Next/Staffel-/Serienreset. #38 benötigt zunächst messbare Ursachenanalyse statt eines angenommenen neuen Features. #14/#65 bleiben bewusst zurückgestellt; Lizenz-/Provenienzreste #19 sind getrennte Prüfarbeit.
+
+## Separate Phase – Sicherheit & Kindersicherung (#71), P2
+
+Das während der laufenden Prüfung neu angelegte [Issue #71](https://github.com/artattakk-creator/kodi-noodleprivate/issues/71) wird zusätzlich zu allen ursprünglich genannten 36 Issues berücksichtigt. **OPEN, derzeit ausschließlich Architektur-/Abnahmetestplanung** nach Stabilität und Haupt-EPG/Theme-Integration. Keine Implementierung in #70 oder #50. Die historische PIN-Fotoreferenz ist kein vorhandenes Autorisierungssystem.
+
+- Standard **AUS** auch bei Upgrade, keine voreingestellte PIN oder plötzliche Sperre. Eigene IR-bedienbare Einstellungen für Erstellen/Ändern/Test/Ein-Aus/Regeln/Jetzt sperren; vorhandene aktive PIN schützt immer ihre Verwaltung/Deaktivierung. Abbruch/leere Eingabe erteilt keine Freigabe.
+- Explizite Regeln pro Bereich und sinnvoll pro Account: Gruppen/Sender, Film-/Serienkategorien, Suche/Favoriten/EPG-Details/Widgets, Aufnahmen/Downloads und sensible Portal-/Speicher-/Sicherheitseinstellungen. Sichtbarkeit geschützter Poster/Titel/Details separat regelbar; Provider-Altersgenre ist keine verlässliche Zugriffsregel.
+- Eine zentrale Autorisierungsentscheidung für **Routen und tatsächliche Playback-Session** entwerfen. Direkte Plugin-URLs, Widgets/Deep Links, Kontext, Resume/Verlauf, Catch-up, Guide, Timer und Offline-Medien innerhalb XCMates dürfen die Regel nicht umgehen. Hintergrundaufnahme kann gezielt autorisiert bleiben, ohne beliebige Wiedergabe zu entsperren. Kein Tastendruck-HTTP.
+- PIN nur gesalzen mit langsamem KDF (z.B. PBKDF2-HMAC-SHA256) und constant-time Vergleich; angemessene Parameter auf ARM32 messen, kein Klartext/Hash im Log oder Screenshot. Fehlversuchs-Backoff/Sperrfrist persistent, Neustart darf sie nicht einfach umgehen. Freigaben zeitlich begrenzt und bei Neustart/definierten Wechseln erneut sperren.
+- Nichtdestruktive Einstellungen/Migration und sicherer nutzerkontrollierter Recoveryweg, keine Standard-PIN/Backdoor. Kodi-/Dateisystem-/fremde Add-on-Zugriffe liegen teilweise außerhalb XCMates; kein systemweiter Android-Kindersicherungsersatz versprochen.
+- Architekturabnahme: Default-off/Upgrade; korrekt/falsch/Cancel/5+ Fehlversuche/Neustart/Recovery/defekte Settings; jede Entryroute/Widget/Metadatensicht; getrennte Aufnahme-/Playerfreigaben und Nichtbeeinträchtigung ungeschützter Inhalte. Danach eigener Feature-PR mit KDF-/Routen-/Session-/Migrationstests und Kodi-21.2/ARM32/BINGIE/Estuary sowie 21.3-Geräteabnahme.
+
+Abhängigkeiten/Integrationspunkte: #43 Setup/Portale, #57 Guide/Catch-up, #64 Remote, #62 Timer/Recorder, #63 Downloads. Vorschlag **0.1.32.1**, zunächst nur Entwurf; Schnittstellen vor Aufnahme-/Downloadexposition mitplanen, heutige Hotfix-Abnahme dadurch nicht blockieren.
 
 ## Vorgeschlagene Versionen und Abhängigkeiten
 
@@ -130,6 +143,7 @@ Android-Recorder als gesonderte Machbarkeit/Backend-Abnahme: `probe/start/stop/s
 | **0.1.31** | #60 Coverage/Quellenqualität und #57 Raster-Grundfunktion mit bestehenden Remindern | #58/#59 bestanden, echte UTC-/DST-/7–10-Tage-Daten, große virtuelle Fenster, IR/Back, Stock/Theme. Kein Recorderzwang |
 | **0.1.31.1 / .2** | Getrennte #57-Stufen: TMDB/Detail-/Filteranreicherung; danach Catch-up-Persistenz/Archiv | Attribution/sicheres Matching; echte Archiv-Capabilities/historischer EPG/Playback. Metadaten sind keine Sendezeiten |
 | **0.1.32** | #64 universelle Tasten-/Box-/Remoteprofile | Alter Freeze unverändert, zwei verschiedene Geräte/Remotes, kein System-Key-Hijacking |
+| **0.1.32.1** | #71 optionale zentrale PIN-Kindersicherung, zunächst nur Architekturplanung | Standard AUS, zentrale Route-/Session-/Metadatensperre, KDF/Throttle/Recovery und eigener Android-Test; kein Hotfix-/Themeumfang |
 | **0.1.33** | #62 Reminder-Verwaltung + Opt-in Auto-Tune/Scheduler | Konflikt-/Neustart-/DST-/Cancel-Nachweis; Recorderbuttons nicht ohne Engine freischalten |
 | **0.1.34** | #62 Android-Aufnahmebackend und Sofort-/EPG-Aufnahmen | Tatsächliche Datei, USB/HDD/SMB und A aufnehmen + B/C schauen; kein Multiview |
 | **0.1.35** | #63 direkter VOD-/Episoden-/Staffeldownloadmanager | Storage-/Resume-/Cancel-/Offline-Abnahme. Kann technisch separat nach Storagekonzept entwickelt werden |
@@ -165,7 +179,9 @@ Nächster Testlauf: (1) 0.1.29.7 manuell installieren, Neustart; (2) Einstellung
 
 [Hotfix-Maschinenbericht](https://github.com/artattakk-creator/kodi-noodleprivate/blob/ed6c1a41e033cdc553d2e55f44731716fab5c986/docs/XCMate/TESTERGEBNISSE_0297_ARTWORK_START.json) · [Integrationsbericht](https://github.com/artattakk-creator/kodi-noodleprivate/blob/0840f7ccfb99bafb8ade5fb18c79e85b202660cc/docs/XCMate/TESTERGEBNISSE_0301_ARTWORK_START.json) · [Renderer-Matrix](https://github.com/artattakk-creator/kodi-noodleprivate/blob/0840f7ccfb99bafb8ade5fb18c79e85b202660cc/docs/XCMate/SPACE_PREMIUM_RENDERER_MATRIX_030.json).
 
-Dieser Ergänzungsauftrag ändert ausschließlich Dokumentation. Keine neue Add-on-Version, kein neuer Paketbau, keine erneute Behauptung von Android-PASS und keine Änderung der Hotfix-/Theme-Quellstände. Dokumentationsprüfung: vollständige 36/36-Zuordnung, Kommentare/Pagination, Statuszählung, lokale und gepinnte Codelinks, vorhandene Belege, ausschließlich docs-Diff und Erhalt der historischen Inhalte. Ergebnis separat in der Dokumentations-PR festhalten.
+Dieser Ergänzungsauftrag ändert ausschließlich Dokumentation. Keine neue Add-on-Version, kein neuer Paketbau, keine erneute Behauptung von Android-PASS und keine Änderung der Hotfix-/Theme-Quellstände. Dokumentationsprüfung: vollständige 37/37-Zuordnung (einschließlich ursprünglicher 36/36), Kommentare/Pagination, Statuszählung, lokale und gepinnte Codelinks, vorhandene Belege, ausschließlich docs-Diff und Erhalt der historischen Inhalte. Ergebnis separat in der Dokumentations-PR festhalten.
+
+[Unveränderter paralleler Planungssnapshot vor dieser Codeprüfung](ROADMAP_PLANUNG_VOR_CODEPRUEFUNG_20261021_DE.md) bleibt zur Historie erhalten. Dessen vorläufige Annahme fehlender Favoritenrails ist durch die konkrete Codeprüfung in der Matrix korrigiert. Nur diese Datei ist der aktuelle Roadmap-Einstieg.
 
 ## Pflege und nächste freigabefähige Schritte
 

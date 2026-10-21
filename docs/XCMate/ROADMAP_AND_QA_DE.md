@@ -1,4 +1,4 @@
-> **Aktueller Einstieg (21.10.2026):** [Zentrale Roadmap](ROADMAP_ZENTRAL_DE.md) und [vollständige Issue-Integrationsmatrix](ISSUE_INTEGRATIONSMATRIX_DE.md). Produktiv **0.1.29.6**, Testkandidaten **0.1.29.7 / 0.1.30.1**, primäres Gerät **Kodi 21.2 / ARM32**. Die folgenden früheren Statusangaben bleiben unverändert als Historie; aktuelle Code-, CI- und Gerätebelege stehen in der zentralen Roadmap. Kein neuer Merge/Release freigegeben.
+> **Aktueller Einstieg (21.10.2026):** [Zentrale Roadmap](ROADMAP_AKTUELL_2026-10-21_DE.md) und [vollständige Issue-Integrationsmatrix](ISSUE_INTEGRATIONSMATRIX_DE.md). Produktiv **0.1.29.6**, Testkandidaten **0.1.29.7 / 0.1.30.1**, primäres Gerät **Kodi 21.2 / ARM32**. Die folgenden früheren Statusangaben bleiben unverändert als Historie; aktuelle Code-, CI- und Gerätebelege stehen in der zentralen Roadmap. Kein neuer Merge/Release freigegeben.
 
 # XCMate – Roadmap, Bugliste und Release-Checkliste
 
