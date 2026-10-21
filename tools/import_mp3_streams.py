@@ -19,9 +19,9 @@ SOURCE = (
 )
 # Pin of upstream GitHub release ZIP verified from the GitHub content API.
 UPSTREAM_GIT_BLOB = "ebc7f51129fb24f7db0c9d85c8c5c03ec3f97929"
-MAX_DOWNLOAD = 8 * 1024 * 1024
-MAX_MEMBERS = 300
-MAX_UNPACKED = 48 * 1024 * 1024
+MAX_DOWNLOAD = 64 * 1024 * 1024
+MAX_MEMBERS = 1000
+MAX_UNPACKED = 256 * 1024 * 1024
 
 
 def fetch_release():
