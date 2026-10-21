@@ -35,19 +35,10 @@ def guide_for_channel(cache, epg_id='', stream_id='', now=None):
                   if i and isinstance(cache.get(str(i)), list) and cache[str(i)]), '')
     events = cache.get(ident, [])
     result['epg_id'] = ident
-    valid = []
-    for e in events:
-        if not isinstance(e, dict):
-            continue
-        start = _as_int(e.get('start_timestamp') or e.get('start'))
-        end = _as_int(e.get('stop_timestamp') or e.get('end_timestamp') or e.get('stop'))
-        title = str(e.get('name') or e.get('title') or '').strip()
-        if start > 0 and end > start and title:
-            valid.append((start, end, title, e))
-    valid.sort(key=lambda x: x[0])
-    result['events'] = [dict(start=a, stop=b, title=t,
-                             description=str(e.get('descr') or e.get('description') or ''))
-                        for a,b,t,e in valid if b > ts][:48]
+    from epg_events import deduplicate
+    clean=deduplicate(events,channel=ident)
+    valid=[(e['start'],e['stop'],e['title'],e) for e in clean]
+    result['events'] = [dict(e) for e in clean if e['stop']>ts][:48]
     current = next((item for item in valid if item[0] <= ts < item[1]), None)
     future = next((item for item in valid if item[0] > ts), None)
     if current:
@@ -151,16 +142,32 @@ def _short_guide(raw, now=None):
             duration = _as_int(item.get('duration_secs'))
             if 0 < duration <= 86400: stop = start + duration
         if start > 0 and stop > start and title:
-            normalized.append({'name': title, 'start_timestamp': start,
-                               'stop_timestamp': stop})
-    return guide_for_channel({'_short': normalized}, '_short', now=ts)
+            record=dict(item,name=title,start_timestamp=start,stop_timestamp=stop,_source_index=-1)
+            description=str(item.get('description') or item.get('descr') or '')
+            try: description=base64.b64decode(description,validate=True).decode('utf-8')
+            except (ValueError,TypeError,UnicodeError): pass
+            record['descr']=description
+            normalized.append(record)
+    from epg_events import deduplicate
+    decisions=[];clean=deduplicate(normalized,channel='_short',decisions=decisions)
+    result=guide_for_channel({'_short':clean},'_short',now=ts)
+    result.update(raw_count=len(entries),unique_count=len(clean),duplicates=len(normalized)-len(clean),
+                  dedup_decisions=decisions)
+    return result
 
 def cached_short_guide(client, stream_id, now=None):
     if not stream_id:
         return guide_for_channel({}, now=now)
-    data = client._get_json('get_short_epg',
-        extra={'stream_id': str(stream_id), 'limit': 4}, cached_only=True)
-    return _short_guide(data, now=now)
+    # Old four-event caches remain valid. Extended results use a separate key;
+    # only the service may fill it, never remote navigation or local views.
+    best=None
+    for limit in (12,4):
+        data=client._get_json('get_short_epg',
+            extra={'stream_id':str(stream_id),'limit':limit},cached_only=True)
+        guide=_short_guide(data,now=now)
+        if best is None or (bool(guide['now']),len(guide['events']))>(bool(best['now']),len(best['events'])):
+            best=guide
+    return best
 
 def _view_key(path):
     import hashlib,json,urllib.parse
@@ -176,7 +183,7 @@ def prefetch_short_guides(portal, channels, limit=24, view_path=''):
     """Send a bounded page request to the long-lived service, not a GUI thread."""
     import json,uuid,xbmcgui
     if not isinstance(portal,dict) or portal.get('type') not in ('xtream','stb'): return
-    sids=[str(ch.extra.get('stream_id')) for ch in channels if ch.extra.get('stream_id')][:limit]
+    sids=[str(sid) for ch in channels if (sid:=(ch.get('sid') if isinstance(ch,dict) else ch.extra.get('stream_id')))][:limit]
     if not sids: return
     request={'pid':str(portal['id']),'sids':sids,'at':time.time(),
              'nonce':uuid.uuid4().hex,'view':_view_key(view_path)}
@@ -252,12 +259,18 @@ def _start_short_guides(portal, sids, view_key=''):
             else: xc = XtreamClient(portal['xc_host'],portal['xc_user'],portal['xc_pass'])
             def fetch(sid):
                 cached=cached_short_guide(xc,sid)
-                if cached['now'] or cached['next']:
+                if (cached['now'] or cached['next']) and not (cached.get('duplicates') and cached.get('unique_count',0)<4):
                     _SHORT_SEEN[(pid,sid)]=time.time()
                     return
                 try:
-                    data=xc.get_short_epg(sid,limit=4,force_refresh=True)
+                    data=xc.get_short_epg(sid,limit=12,force_refresh=True)
                     guide=_short_guide(data)
+                    # Optional diagnostics must never turn valid EPG into a
+                    # failed fetch (e.g. inaccessible profile during shutdown).
+                    try:
+                        from epg_dedup_diagnostics import record
+                        record(pid,sid,guide)
+                    except Exception: pass
                     if guide['now'] or guide['next']:
                         _SHORT_SEEN[(pid,sid)]=time.time()
                         changed.append(sid)
@@ -273,6 +286,9 @@ def _start_short_guides(portal, sids, view_key=''):
                 if len(history)>512:
                     for key in sorted(history,key=history.get)[:-512]:
                         history.pop(key,None)
+            if changed:
+                import xbmcgui,uuid
+                xbmcgui.Window(10000).setProperty('XCMate.ShortGuideRevision.'+pid,uuid.uuid4().hex)
             if view_key and changed:
                 # Never refresh an unrelated directory or steal fullscreen
                 # focus when the user has left the requested sender page.

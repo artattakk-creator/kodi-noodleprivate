@@ -101,7 +101,8 @@ class IdentityTests(unittest.TestCase):
         player=types.ModuleType('player')
         player.play_stream=mock.Mock()
         with mock.patch.dict(sys.modules,dict(portals=portals,xtream=xtream,live_overlay=live,
-                                             live_recovery=self.r,player=player)):
+                                             live_recovery=self.r,player=player,
+                                             play_intent=types.SimpleNamespace(before_play=lambda session:True))):
             namespace['_play_live'](types.SimpleNamespace(_params={
                 'url':self.client.live_stream_url('17','ts'),'sid':'999'},_handle=1))
         self.assertEqual(announced[0][:2],('p','17'))

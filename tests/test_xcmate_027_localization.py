@@ -86,7 +86,7 @@ class LocalizationTests(Fixture,unittest.TestCase):
     def test_invalid_placeholder_falls_back_before_real_resume_action_formats(self):
         self.translations['de_de'][32514]='Fortsetzen {unknown}'
         self.state.save_progress(dict(pid='p',kind='vod',sid='1'),1050,2700)
-        w=self.media_window();w.native(7);w._pool.drain()
+        w=self.media_window();w.native(7);self.settle(w)
         labels=dict((action,label) for label,action in w.actions)
         self.assertEqual(labels['resume'],'Resume from 00:17:30')
         self.assertEqual(labels['restart'],'Neu starten')
@@ -104,9 +104,9 @@ class LocalizationTests(Fixture,unittest.TestCase):
         self.assertEqual(w.getControl(400).label,'Search')
         self.assertIn('Back: one level',w.getControl(501).label)
         self.assertEqual(w.getControl(120).label,'Movies / Categories')
-        w.native(4);w.native(7);w._pool.drain();w.native(1);w.native(2)
+        w.native(4);w.native(7);self.settle(w);w.native(1);w.native(2)
         self.assertEqual((w.mode,w._cols),('grid',6))
-        w.native(7);w._pool.drain()
+        w.native(7);self.settle(w)
         self.assertIn(('Play','play'),w.actions)
         self.assertIn(('Add to favourites','favourite'),w.actions)
         self.assertIn('Rating',w.getControl(102).label)
@@ -114,7 +114,7 @@ class LocalizationTests(Fixture,unittest.TestCase):
         self.assertNotIn('Anbieter',w.getControl(102).label)
 
     def test_english_series_actions_seasons_and_watched_labels(self):
-        self.ui_locale='en_gb';w=self.media_window('series');w.native(7);w._pool.drain()
+        self.ui_locale='en_gb';w=self.media_window('series');w.native(7);self.settle(w)
         self.assertIn(('Seasons and episodes','seasons'),w.actions)
         w.getControl(300).selectItem(next(i for i,(_,key) in enumerate(w.actions) if key=='seasons'))
         w.native(7)
@@ -133,7 +133,7 @@ class LocalizationTests(Fixture,unittest.TestCase):
         self.assertIn('Day 1/10',w.getControl(102).label)
         w.native(1);self.assertEqual(w.focus,200)
         w.native(2);self.assertEqual(w.focus,210)
-        w.onClick(311);w._pool.drain()
+        w.onClick(311);self.settle(w)
         self.assertIn('Day 2/10',w.getControl(102).label)
         sys.modules['utils'].http_get.assert_not_called()
 
@@ -182,7 +182,7 @@ class LocalizationTests(Fixture,unittest.TestCase):
 
     def test_guide_reactivation_keeps_selected_date_channel_and_focus(self):
         self.ui_locale='en_gb';w=self.guide_window()
-        w.onClick(311);w._pool.drain();w.native(2)
+        w.onClick(311);self.settle(w);w.native(2)
         before=(w.day,w.sid,w.focus,w.getControl(101).label)
         w.onInit()  # WindowXML's real WINDOW_INIT on reactivation, not WindowDialog.
         self.assertEqual((w.day,w.sid,w.focus,w.getControl(101).label),before)

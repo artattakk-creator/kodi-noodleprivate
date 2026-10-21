@@ -1,0 +1,6 @@
+{
+  "baseline": "13fd41fda7275162d920b9c99dd8a3a6a38f0b28",
+  "short_slots_before": 4,
+  "expected_unique_slots": 2,
+  "guide_worker_gui_accesses_before": 1
+}
