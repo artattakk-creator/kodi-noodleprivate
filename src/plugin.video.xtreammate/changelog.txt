@@ -1,3 +1,11 @@
+0.1.29.7 – Artwork-Jobdatenbank und Startsender-Route (Testkandidat)
+- Atomic schema initialization; private SQLite diagnostics and bounded retries instead of MIGRATION_FAILED loops.
+- Consistent WAL-aware backup and verified art_pending-only index repair; no automatic table/queue reset.
+- Explicit confirmed queue recovery preserves image files, accounts, favourites, guide and progress.
+- Successful home_start directory completion preserves direct live playback and remote navigation.
+- Primary device: Kodi 21.2 / Android 13 / RK3528 ARM32; Kodi 21.3 remains supported.
+- No production update or merge without release approval; 0.1.29.6 remains rollback.
+
 0.1.29.6 – P0 Fensterstart nach Android-Regression #67 (Testkandidat)
 - EPG-/Film-/Serienfenster starten wieder nach erfolgreichem Kodi-Verzeichnisabschluss.
 - Vor Aktivierung auf Ende eines modalen Kodi-Ladedialogs warten; keine Zwangsschließung.

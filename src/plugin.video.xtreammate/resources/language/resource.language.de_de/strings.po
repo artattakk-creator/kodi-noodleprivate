@@ -2092,3 +2092,15 @@ msgstr "Speicherung oder Rücknahme unvollständig. Bestehende Accounts bleiben 
 msgctxt "#32787"
 msgid "Short EPG: recent local deduplication diagnostics (anonymous stream ID)"
 msgstr "Kurz-EPG: letzte lokale Dubletten-Diagnosen (anonyme Senderkennung)"
+
+msgctxt "#32900"
+msgid "Check and repair artwork job database"
+msgstr "Artwork-Jobdatenbank prüfen und reparieren"
+
+msgctxt "#32902"
+msgid "The artwork job database is damaged. Create a new queue after a safe backup? Pending jobs will be replaced. Existing images, accounts, favourites and EPG remain."
+msgstr "Die Artwork-Jobdatenbank ist beschädigt. Nach sicherer Sicherung eine neue Queue erstellen? Offene Jobs werden ersetzt. Vorhandene Bilder, Accounts, Favoriten und EPG bleiben erhalten."
+
+msgctxt "#32903"
+msgid "Checking artwork jobs and creating a consistent backup. This may take a moment."
+msgstr "Artwork-Jobs prüfen und konsistente Sicherung erstellen. Dies kann einen Moment dauern."

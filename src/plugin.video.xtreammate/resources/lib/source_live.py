@@ -61,7 +61,7 @@ def play(router,portal,direct=False):
         if not tag_live_item(item,session): raise RuntimeError('Kodi live identity unavailable')
         if direct:
             from app_routes import _end
-            _end(router,False);xbmc.Player().play(item.getPath(),item)
+            _end(router);xbmc.Player().play(item.getPath(),item)
         else: xbmcplugin.setResolvedUrl(router._handle,True,item)
     except Exception as exc:
         trace('dialog','SOURCE_PLAY_FAILED',exception_class=type(exc).__name__)

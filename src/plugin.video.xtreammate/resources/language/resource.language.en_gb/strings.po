@@ -2092,3 +2092,15 @@ msgstr "Save or rollback incomplete. Existing accounts are preserved; record the
 msgctxt "#32787"
 msgid "Short EPG: recent local deduplication diagnostics (anonymous stream ID)"
 msgstr "Short EPG: recent local deduplication diagnostics (anonymous stream ID)"
+
+msgctxt "#32900"
+msgid "Check and repair artwork job database"
+msgstr "Check and repair artwork job database"
+
+msgctxt "#32902"
+msgid "The artwork job database is damaged. Create a new queue after a safe backup? Pending jobs will be replaced. Existing images, accounts, favourites and EPG remain."
+msgstr "The artwork job database is damaged. Create a new queue after a safe backup? Pending jobs will be replaced. Existing images, accounts, favourites and EPG remain."
+
+msgctxt "#32903"
+msgid "Checking artwork jobs and creating a consistent backup. This may take a moment."
+msgstr "Checking artwork jobs and creating a consistent backup. This may take a moment."
