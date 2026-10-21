@@ -1,3 +1,7 @@
+0.1.29.12 (separate VOD player OSD test candidate)
+- Native XCMate transport overlay reconstructed from original live tape-deck elements.
+- Verified media ownership, capability-gated seek/audio/subtitles, neon native focus and future action registry.
+
 0.1.29.11 (test candidate)
 - Read-only partial artwork status, bounded BUSY retry, reduced writer contention and private-safe SQLite diagnostics.
 - Complete the legacy settings directory before opening the native settings dialog.

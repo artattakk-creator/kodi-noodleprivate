@@ -59,6 +59,11 @@ def play(router,portal):
     session={k:str(record[k]) for k in ('series_id','season','episode') if k in record}
     session.update(pid=str(portal['id']),kind=kind,sid=sid,nonce=request or uuid.uuid4().hex,at=time.time(),
                    resume=router._params.get('resume')=='1')
+    session['title']=str(record.get('name') or '')[:512]
+    try:
+        from media_art import local_art
+        session['poster']=local_art(record)['poster']
+    except (OSError,ValueError,RuntimeError):pass
     try:
         item.getVideoInfoTag().setUniqueIDs({UNIQUE_ID:session['nonce']})
         xbmcgui.Window(10000).setProperty(PROPERTY,json.dumps(session))

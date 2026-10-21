@@ -2144,3 +2144,67 @@ msgstr "Letzter Datenbank-Prüfstand: {0}"
 msgctxt "#32967"
 msgid "OK concerns the last database check, not completeness of images. SPACE_FULL can be an artwork-budget limit; it does not prove a physically full drive. Unregistered older images are not included in queue bytes."
 msgstr "OK betrifft die letzte Datenbankprüfung, nicht die Vollständigkeit der Bilder. SPACE_FULL kann das Artwork-Budget betreffen und beweist keinen physisch vollen Datenträger. Noch nicht erfasste ältere Bilder sind in den Queue-Bytes nicht enthalten."
+
+msgctxt "#33000"
+msgid "XCMate player"
+msgstr "XCMate-Player"
+
+msgctxt "#33001"
+msgid "Pause"
+msgstr "Pause"
+
+msgctxt "#33002"
+msgid "-10 s"
+msgstr "-10 s"
+
+msgctxt "#33003"
+msgid "+30 s"
+msgstr "+30 s"
+
+msgctxt "#33004"
+msgid "Stop"
+msgstr "Stoppen"
+
+msgctxt "#33005"
+msgid "Audio track"
+msgstr "Tonspur"
+
+msgctxt "#33006"
+msgid "Subtitles"
+msgstr "Untertitel"
+
+msgctxt "#33007"
+msgid "Subtitles on/off"
+msgstr "Untertitel an/aus"
+
+msgctxt "#33008"
+msgid "Picture"
+msgstr "Bild"
+
+msgctxt "#33009"
+msgid "Audio settings"
+msgstr "Toneinstellungen"
+
+msgctxt "#33010"
+msgid "Media information"
+msgstr "Medieninformation"
+
+msgctxt "#33011"
+msgid "Back: hide controls · Stop: end this XCMate video"
+msgstr "Zurück: Leiste ausblenden · Stoppen: dieses XCMate-Video beenden"
+
+msgctxt "#33012"
+msgid "XCMate media playback"
+msgstr "XCMate-Medienwiedergabe"
+
+msgctxt "#33013"
+msgid "Time unavailable"
+msgstr "Zeit nicht verfügbar"
+
+msgctxt "#33014"
+msgid "Play"
+msgstr "Abspielen"
+
+msgctxt "#33015"
+msgid "Action unavailable for this stream"
+msgstr "Aktion für diesen Stream nicht verfügbar"

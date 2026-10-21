@@ -2144,3 +2144,67 @@ msgstr "Last database health snapshot: {0}"
 msgctxt "#32967"
 msgid "OK concerns the last database check, not completeness of images. SPACE_FULL can be an artwork-budget limit; it does not prove a physically full drive. Unregistered older images are not included in queue bytes."
 msgstr "OK concerns the last database check, not completeness of images. SPACE_FULL can be an artwork-budget limit; it does not prove a physically full drive. Unregistered older images are not included in queue bytes."
+
+msgctxt "#33000"
+msgid "XCMate player"
+msgstr "XCMate player"
+
+msgctxt "#33001"
+msgid "Pause"
+msgstr "Pause"
+
+msgctxt "#33002"
+msgid "-10 s"
+msgstr "-10 s"
+
+msgctxt "#33003"
+msgid "+30 s"
+msgstr "+30 s"
+
+msgctxt "#33004"
+msgid "Stop"
+msgstr "Stop"
+
+msgctxt "#33005"
+msgid "Audio track"
+msgstr "Audio track"
+
+msgctxt "#33006"
+msgid "Subtitles"
+msgstr "Subtitles"
+
+msgctxt "#33007"
+msgid "Subtitles on/off"
+msgstr "Subtitles on/off"
+
+msgctxt "#33008"
+msgid "Picture"
+msgstr "Picture"
+
+msgctxt "#33009"
+msgid "Audio settings"
+msgstr "Audio settings"
+
+msgctxt "#33010"
+msgid "Media information"
+msgstr "Media information"
+
+msgctxt "#33011"
+msgid "Back: hide controls · Stop: end this XCMate video"
+msgstr "Back: hide controls · Stop: end this XCMate video"
+
+msgctxt "#33012"
+msgid "XCMate media playback"
+msgstr "XCMate media playback"
+
+msgctxt "#33013"
+msgid "Time unavailable"
+msgstr "Time unavailable"
+
+msgctxt "#33014"
+msgid "Play"
+msgstr "Play"
+
+msgctxt "#33015"
+msgid "Action unavailable for this stream"
+msgstr "Action unavailable for this stream"
