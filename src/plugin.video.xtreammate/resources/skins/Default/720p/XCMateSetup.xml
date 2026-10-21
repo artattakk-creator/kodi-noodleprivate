@@ -66,7 +66,7 @@
           <height>46</height>
           <font>font13</font>
           <textcolor>FFFFFFFF</textcolor>
-          <label>$INFO[ListItem.Label]</label>
+          <label>▶  $INFO[ListItem.Label]</label>
         </control>
       </focusedlayout>
     </control>
@@ -77,7 +77,7 @@
       <height>50</height>
       <font>font13</font>
       <textcolor>FFFFFFFF</textcolor>
-      <focusedcolor>FFFFFFFF</focusedcolor>
+      <focusedcolor>FF00E5FF</focusedcolor>
       <texturefocus colordiffuse="FF287984">white.png</texturefocus>
       <texturenofocus colordiffuse="FF253A51">white.png</texturenofocus>
       <label>$LOCALIZE[32701]</label>
@@ -93,7 +93,7 @@
       <height>50</height>
       <font>font13</font>
       <textcolor>FFFFFFFF</textcolor>
-      <focusedcolor>FFFFFFFF</focusedcolor>
+      <focusedcolor>FF00E5FF</focusedcolor>
       <texturefocus colordiffuse="FF287984">white.png</texturefocus>
       <texturenofocus colordiffuse="FF253A51">white.png</texturenofocus>
       <label>$LOCALIZE[32702]</label>
@@ -109,7 +109,7 @@
       <height>50</height>
       <font>font13</font>
       <textcolor>FFFFFFFF</textcolor>
-      <focusedcolor>FFFFFFFF</focusedcolor>
+      <focusedcolor>FF00E5FF</focusedcolor>
       <texturefocus colordiffuse="FF287984">white.png</texturefocus>
       <texturenofocus colordiffuse="FF253A51">white.png</texturenofocus>
       <label>$LOCALIZE[32703]</label>
@@ -125,7 +125,7 @@
       <height>50</height>
       <font>font13</font>
       <textcolor>FFFFFFFF</textcolor>
-      <focusedcolor>FFFFFFFF</focusedcolor>
+      <focusedcolor>FF00E5FF</focusedcolor>
       <texturefocus colordiffuse="FF287984">white.png</texturefocus>
       <texturenofocus colordiffuse="FF253A51">white.png</texturenofocus>
       <label>$LOCALIZE[32704]</label>
@@ -141,7 +141,7 @@
       <height>50</height>
       <font>font13</font>
       <textcolor>FFFFFFFF</textcolor>
-      <focusedcolor>FFFFFFFF</focusedcolor>
+      <focusedcolor>FF00E5FF</focusedcolor>
       <texturefocus colordiffuse="FF287984">white.png</texturefocus>
       <texturenofocus colordiffuse="FF253A51">white.png</texturenofocus>
       <label>$LOCALIZE[32705]</label>
@@ -157,7 +157,7 @@
       <height>50</height>
       <font>font13</font>
       <textcolor>FFFFFFFF</textcolor>
-      <focusedcolor>FFFFFFFF</focusedcolor>
+      <focusedcolor>FF00E5FF</focusedcolor>
       <texturefocus colordiffuse="FF287984">white.png</texturefocus>
       <texturenofocus colordiffuse="FF253A51">white.png</texturenofocus>
       <label>$LOCALIZE[32706]</label>
@@ -173,7 +173,7 @@
       <height>50</height>
       <font>font13</font>
       <textcolor>FFFFFFFF</textcolor>
-      <focusedcolor>FFFFFFFF</focusedcolor>
+      <focusedcolor>FF00E5FF</focusedcolor>
       <texturefocus colordiffuse="FF287984">white.png</texturefocus>
       <texturenofocus colordiffuse="FF253A51">white.png</texturenofocus>
       <label>$LOCALIZE[32710]</label>
@@ -189,7 +189,7 @@
       <height>50</height>
       <font>font13</font>
       <textcolor>FFFFFFFF</textcolor>
-      <focusedcolor>FFFFFFFF</focusedcolor>
+      <focusedcolor>FF00E5FF</focusedcolor>
       <texturefocus colordiffuse="FF287984">white.png</texturefocus>
       <texturenofocus colordiffuse="FF253A51">white.png</texturenofocus>
       <label>$LOCALIZE[32707]</label>
@@ -205,7 +205,7 @@
       <height>50</height>
       <font>font13</font>
       <textcolor>FFFFFFFF</textcolor>
-      <focusedcolor>FFFFFFFF</focusedcolor>
+      <focusedcolor>FF00E5FF</focusedcolor>
       <texturefocus colordiffuse="FF287984">white.png</texturefocus>
       <texturenofocus colordiffuse="FF253A51">white.png</texturenofocus>
       <label>$LOCALIZE[32708]</label>
