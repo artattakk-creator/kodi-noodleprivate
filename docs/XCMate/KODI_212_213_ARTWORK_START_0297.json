@@ -1,0 +1,38 @@
+{
+  "primary": {
+    "kodi": "21.2-Omega",
+    "commit": "d1a1d48c3cb3722d39264ffdd8132f755ffecd27",
+    "python": "3.11.7",
+    "android": "13",
+    "cpu": "RK3528 ARM32",
+    "skin": "Titan BINGIE MOD 2.2.3"
+  },
+  "secondary": {
+    "kodi": "21.3-Omega",
+    "commit": "a3a448d26b8d560a65655dab2cd122994dc4e146"
+  },
+  "files": [
+    {
+      "path": "xbmc/interfaces/legacy/Window.cpp",
+      "sha256": "4aecd8caa947b62052189610069bef3fa4cedcebaff46d64e2df411e6d517a96",
+      "identical_212_213": true
+    },
+    {
+      "path": "xbmc/interfaces/legacy/Monitor.cpp",
+      "sha256": "8a15d34d6969894f1a984d4f83cbd940b583fa3ceec019d68247e0ec6b5bc00c",
+      "identical_212_213": true
+    },
+    {
+      "path": "xbmc/interfaces/legacy/Dialog.h",
+      "sha256": "4a4146cf2266e64a063bb396167ce2d91026e17bd796318b6c00503c49e6febb",
+      "identical_212_213": true
+    },
+    {
+      "path": "xbmc/interfaces/legacy/ModuleXbmcplugin.h",
+      "sha256": "6d27ad5daa726e821107453fb836345f1749177ab6031c13f62c6ef29b643f24",
+      "identical_212_213": true
+    }
+  ],
+  "scope": "Pinned SDK text/signature comparison and Python GUI models only; no native Kodi execution or hardware timing claim.",
+  "new_device_tests": "NOT_RUN"
+}
