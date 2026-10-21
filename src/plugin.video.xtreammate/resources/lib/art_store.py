@@ -116,6 +116,8 @@ def retry():
 
 def prefetch_selected():
     """One local page per service cycle; never enqueue disabled categories."""
+    from artwork_db import diagnostic
+    if diagnostic().get('background_paused'):return
     from portals import get_active
     from library_index import Reader
     from media_art import sources
