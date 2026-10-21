@@ -105,8 +105,14 @@ def _failure(exc,phase):
                sqlite_code=getattr(exc,'sqlite_errorcode',0)&255,
                retry_after=now+delay,identity=_identity(filename))
     _failures[filename]=value
+    value['last_warning_at']=prior.get('last_warning_at',0)
+    for key in ('checked_at','backup','integrity_code'):
+        if key in prior:value[key]=prior[key]
+    if 'integrity_code' not in value and prior.get('code') in ('OK','INDEX_REPAIRED','QUEUE_REBUILT'):value['integrity_code']=prior['code']
+    emit=prior.get('code')!=code or now-value['last_warning_at']>=60
+    if emit:value['last_warning_at']=now
     _save(value)
-    if prior.get('code')!=code or prior.get('retry_after',0)<=now:
+    if emit:
         from utils import warn
         warn('XCMate artwork db: code={} phase={} sqlite={}'.format(code,phase,value['sqlite_code']))
     return value
@@ -164,6 +170,12 @@ class _Connection(sqlite3.Connection):
 
 
 def _schema(db):
+    # A fresh plugin interpreter need not acquire a writer merely to discover
+    # an already complete schema. Missing legacy components still use the
+    # existing additive initializer; no journal-mode/schema migration is added.
+    names={r[0] for r in db.execute("SELECT name FROM sqlite_master WHERE type IN ('table','index')")}
+    if {'jobs','scan','worker','art_pending'}.issubset(names):
+        if 'owner' in {r[1] for r in db.execute('PRAGMA table_info(worker)')} and db.execute('SELECT 1 FROM worker WHERE id=1').fetchone():return
     db.execute('BEGIN IMMEDIATE')
     try:
         for statement in _SCHEMA:db.execute(statement)
@@ -280,7 +292,7 @@ def _valid_tables(db):
 
 
 def _healthy(code,backup=''):
-    value=dict(code=code,checked_at=time.time(),retry_after=0,identity=_identity(path()))
+    value=dict(code=code,integrity_code=code,checked_at=time.time(),retry_after=0,identity=_identity(path()),last_warning_at=diagnostic().get('last_warning_at',0))
     if code=='QUEUE_REBUILT' or diagnostic().get('background_paused'):
         value['background_paused']=True
     if backup:value['backup']=os.path.basename(backup)
@@ -295,7 +307,7 @@ def maintain(force=False,cancel=lambda:False):
     prior=diagnostic();now=time.time()
     if not force and prior.get('identity')==_identity(path()):
         if prior.get('retry_after',0)>now:return prior
-        if prior.get('code') in ('OK','INDEX_REPAIRED','QUEUE_REBUILT') and now-prior.get('checked_at',0)<86400:return prior
+        if prior.get('integrity_code',prior.get('code')) in ('OK','INDEX_REPAIRED','QUEUE_REBUILT') and now-prior.get('checked_at',0)<86400:return prior
     fd=None;db=None;backup='';working='';phase='LOCK'
     try:
         fd=_lock(True);db=sqlite3.connect(path(),timeout=.05)
@@ -406,3 +418,27 @@ def rebuild(confirmed=False,cancel=lambda:False):
         if new:
             try:os.unlink(new)
             except OSError:pass
+
+
+def snapshot(cancel=lambda:False):
+    """Strictly read-only statistics; no schema/init/adoption/repair side effects."""
+    from urllib.parse import quote
+    if cancel():return dict(code='CANCELLED',counts=None,bytes=None)
+    if not os.path.exists(path()):return dict(code='NOT_CREATED',counts={},bytes=0)
+    fd=None;db=None
+    try:
+        fd=_lock()
+        db=sqlite3.connect('file:'+quote(path(),safe='/')+'?mode=ro',uri=True,timeout=.025)
+        db.execute('PRAGMA query_only=ON')
+        deadline=time.monotonic()+.15
+        db.set_progress_handler(lambda:int(cancel() or time.monotonic()>deadline),1000)
+        rows=list(db.execute('SELECT status,count(*),coalesce(sum(bytes),0) FROM jobs GROUP BY status'))
+        return dict(code='OK',counts={r[0]:r[1] for r in rows},bytes=sum(r[2] for r in rows))
+    except (sqlite3.Error,OSError) as exc:
+        from boot_diagnostics import mark
+        mark('ART_STATUS_COUNTS_FAILED',error=type(exc).__name__)
+        return dict(code='CANCELLED' if cancel() else classify(exc),counts=None,bytes=None,
+                    error=type(exc).__name__,sqlite_code=getattr(exc,'sqlite_errorcode',0)&255)
+    finally:
+        if db is not None:db.close()
+        _unlock(fd)

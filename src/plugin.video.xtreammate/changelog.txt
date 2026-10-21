@@ -1,3 +1,7 @@
+0.1.29.11 (test candidate)
+- Read-only partial artwork status, bounded BUSY retry, reduced writer contention and private-safe SQLite diagnostics.
+- Complete the legacy settings directory before opening the native settings dialog.
+
 0.1.29.8 – Testkandidat: sichere Medienfokus-/Back-Navigation und Kodi-Aktionsrouting.
 0.1.29.7 – Artwork-Jobdatenbank und Startsender-Route (Testkandidat)
 - Atomic schema initialization; private SQLite diagnostics and bounded retries instead of MIGRATION_FAILED loops.

@@ -2459,6 +2459,7 @@ class Router:
         notify('XCMate', 'Cache cleared')
 
     def _open_settings(self):
+        self._end_directory(succeeded=True,cacheToDisc=False)
         ADDON.openSettings()
 
     def _add_portal_from_settings(self):

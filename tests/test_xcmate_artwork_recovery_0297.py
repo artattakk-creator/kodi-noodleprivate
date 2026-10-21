@@ -189,7 +189,7 @@ class ArtworkRecoveryTests(Fixture,unittest.TestCase):
         self.assertEqual(set(calls),{owner})
 
     def test_sqlite_writer_busy_is_classified_and_retries_are_bounded_across_reload(self):
-        self.seed();writer=sqlite3.connect(self.path);writer.execute('BEGIN IMMEDIATE')
+        self.seed();writer=sqlite3.connect(self.path);writer.execute('BEGIN EXCLUSIVE')
         self.health._initialized.clear()
         try:
             with self.assertRaises(sqlite3.OperationalError):self.health.connect()
