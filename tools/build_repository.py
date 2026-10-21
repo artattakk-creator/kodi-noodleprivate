@@ -129,6 +129,8 @@ def main():
     # A download or hash error aborts the build instead of publishing a broken index.
     from import_mp3_streams import add_to_repository
     entries.append(add_to_repository(ROOT))
+    from import_kodi_omega_selected import import_selected
+    entries.extend(import_selected(ROOT))
     idx='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<addons>\n'+"\n".join(entries)+"\n</addons>\n"
     ET.fromstring(idx)
     (ROOT/"addons.xml").write_text(idx,encoding="utf-8")
