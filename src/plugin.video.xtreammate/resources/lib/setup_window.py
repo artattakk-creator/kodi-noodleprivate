@@ -9,6 +9,13 @@ def _failure_details(exc):
     """Show only preapproved failure reasons: never echo provider URLs or credentials."""
     if isinstance(exc, ValueError):
         reason = str(exc)
+        if reason.startswith('Bitte ') or reason.startswith('Die Stalker-MAC-Adresse'):
+            return 'XM-SETUP-INPUT', ('Serveradresse und Port kontrollieren. '
+                                      'Nur den Server eintragen, keine komplette '
+                                      'M3U-/API-URL mit Zugangsdaten.')
+        if reason == 'Benutzername und Kennwort sind erforderlich.':
+            return 'XM-SETUP-CREDENTIALS', ('Benutzername und Passwort '
+                                            'duerfen nicht leer sein.')
         if reason in ('authentication failed', 'provider authentication failed'):
             return 'XM-SETUP-AUTH', ('Anmeldung fehlgeschlagen. Bitte Serveradresse, '
                                      'Benutzername und Passwort kontrollieren.')
