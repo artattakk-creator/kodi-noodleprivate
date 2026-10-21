@@ -63,3 +63,11 @@ Die 98 Originalassets werden unverändert weiterverwendet.
 8. EPG und Live-TV unverändert testen. 20 Minuten Laufzeit, Fokusfehler/Freeze zählen.
 
 Bei Fehler: Kandidat nicht freigeben, dokumentierter Rückfall 0.1.29.6 bleibt.
+
+## Host-Verifikation
+
+564/564 Tests bestanden, 79,825 s. ZIP-CRC, sichere Pfade, vollständiger
+Quellvergleich, Python-AST und byteidentische unabhängige ZIP-Reproduktion
+bestanden. Hash und Paketgröße stehen in TESTERGEBNISSE_0299_MEDIA_RAILS.json.
+Dies ersetzt keine native Android-Abnahme. Der gestapelte PR richtet sich
+zunächst gegen den Hotfix-Branch; dessen Workflow startet nur bei PRs nach main.

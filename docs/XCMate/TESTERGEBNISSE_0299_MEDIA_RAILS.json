@@ -1,0 +1,17 @@
+{
+  "version": "0.1.29.9",
+  "tests": 564,
+  "seconds": 79.825,
+  "failures": 0,
+  "errors": 0,
+  "files": 132,
+  "bytes": 401639,
+  "sha256": "41c61b26af1a56851e85a6ba25f1b25a8bedb8fc634a55c320dbe5a0f87689b0",
+  "crc": "PASS",
+  "paths": "PASS",
+  "source_bytes": "PASS",
+  "reproducible_zip": "PASS",
+  "python_ast": "PASS",
+  "android": "NOT_RUN",
+  "production_publish": false
+}
