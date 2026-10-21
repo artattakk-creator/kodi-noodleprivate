@@ -9,6 +9,12 @@
 
 > **DIESE DATEI IST DIE MASSGEBLICHE NEUE EINSTIEGSÜBERGABE.** Frühere Dokumente wie `PROJECT_HANDOFF_DE.md`, `NEW_CHAT_COPY_BLOCK_DE.md` und `CODEX_STATUS_CURRENT_DE.md` bewahren historische Teilstände, darunter veraltete Angaben „0.1.29.4 nicht gemergt“. Nicht als heutigen Release-Status auslegen. Nach dem hier angegebenen Datum den tatsächlichen GitHub-Stand erneut prüfen; dies ist eine Momentaufnahme.
 
+## 0. Zuständigkeit, Chat-Wechsel und Codex-Fortsetzung
+
+- **Dieses Gespräch läuft in ChatGPT, nicht in einer Codex-Entwicklungsumgebung.** ChatGPT koordiniert Architektur, Entscheidungslage, Issue-Spezifikationen und diese Dokumentation.
+- **Codex ist der getrennte Entwicklungsworkflow** für Implementierung, Tests, Draft-PRs, ZIP-Paketierung und Changelog. Codex soll zum Wiedereinstieg diese Datei, den [Codex-Folgeauftrag](CODEX_FOLGEAUFTRAG_2026-10-21_DE.md) sowie offene Issues samt Kommentaren lesen, dann Branches und PRs erneut live prüfen.
+- **Neuer ChatGPT-Chat:** Den kopierfertigen Abschnitt „Kurze Übergabe für einen neuen Chat“ am Ende dieser Datei senden und diesen GitHub-Link einfügen. Die aktuelle Codebasis und Branchstände können sich seit dem Dokumentationszeitpunkt geändert haben.
+- **Wichtig:** Ein ChatGPT-Chatwechsel startet weder automatisch Codex noch eine neue Entwicklungsaufgabe. Ohne ausdrückliche Freigabe keine produktiven Änderungen, Merges oder Releases. Dokumentationsänderungen in `docs/` sind keine neue Add-on-Version.
 ## 1. Verifizierter Versions-, GitHub- und Gerätestand
 
 | Bereich | Bestätigter Stand | Noch offen |
