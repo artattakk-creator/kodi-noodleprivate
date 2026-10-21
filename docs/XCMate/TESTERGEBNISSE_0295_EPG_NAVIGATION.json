@@ -1,0 +1,36 @@
+{
+  "version": "0.1.29.5",
+  "phase": "A",
+  "base": "13fd41fda7275162d920b9c99dd8a3a6a38f0b28",
+  "tests": {
+    "total": 511,
+    "passed": 511,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 139.511,
+    "new": 15
+  },
+  "build": {
+    "version": "0.1.29.5",
+    "bytes": 387805,
+    "files": 129,
+    "sha256": "b9b527e64abd736403b721b33e065ffe1d57ea9ced8352ab23f49f7b0119c88a",
+    "crc": "PASS",
+    "source_bytes": "PASS",
+    "reproducible": "PASS",
+    "syntax": "PASS",
+    "build": "PASS"
+  },
+  "baseline": {
+    "baseline": "13fd41fda7275162d920b9c99dd8a3a6a38f0b28",
+    "short_slots_before": 4,
+    "expected_unique_slots": 2,
+    "guide_worker_gui_accesses_before": 1
+  },
+  "android": "NOT_RUN",
+  "merge": false,
+  "release": false,
+  "productive_index_changed": false,
+  "ci": "PENDING"
+}

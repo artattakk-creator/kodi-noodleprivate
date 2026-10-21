@@ -54,7 +54,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
     def flush():
         if not batch: return
         check_space(target,sum(len(r[-1])+len(r[-2]) for r in batch)*4)
-        with db: db.executemany('INSERT OR REPLACE INTO xml_stage VALUES(?,?,?,?,?,?)',batch)
+        with db: db.executemany('''INSERT INTO xml_stage VALUES(?,?,?,?,?,?) ON CONFLICT(generation,cid,start,stop) DO UPDATE SET title=excluded.title,description=excluded.description WHERE length(excluded.description)>length(xml_stage.description)''',batch)
         batch.clear()
     def channel(cid,name):
         key=_channel_name_key(name)
@@ -98,6 +98,8 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
                     elif sid not in mappings and not db.execute('SELECT 1 FROM xml_stage WHERE generation=? AND cid=? LIMIT 1',(generation,aliases[sid])).fetchone(): aliases[sid]=cid
         check_space(target)
         with db:
+            from epg_events import clean_stage
+            clean_stage(db,'xml_stage',' WHERE generation=?',(generation,))
             # The atomic publication can use disk journals but never builds
             # Python lists of all events. Prior future days outside coverage
             # survive shorter successful feeds.

@@ -2088,3 +2088,7 @@ msgstr "The selection changed. Please scan again."
 msgctxt "#32786"
 msgid "Save or rollback incomplete. Existing accounts are preserved; record the diagnostic code."
 msgstr "Save or rollback incomplete. Existing accounts are preserved; record the diagnostic code."
+
+msgctxt "#32787"
+msgid "Short EPG: recent local deduplication diagnostics (anonymous stream ID)"
+msgstr "Short EPG: recent local deduplication diagnostics (anonymous stream ID)"

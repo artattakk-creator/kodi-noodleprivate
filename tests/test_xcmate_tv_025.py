@@ -55,8 +55,9 @@ class ProgrammeModelTests(unittest.TestCase):
         self.assertEqual(info['now'],'Short News')
         self.assertEqual(info['remaining'],1740)
         self.assertEqual(info['source_index'],-1)
-        client._get_json.assert_called_once_with('get_short_epg',
-            extra={'stream_id':'7','limit':4},cached_only=True)
+        self.assertEqual(client._get_json.call_args_list,[
+            mock.call('get_short_epg',extra={'stream_id':'7','limit':12},cached_only=True),
+            mock.call('get_short_epg',extra={'stream_id':'7','limit':4},cached_only=True)])
 
     def test_invalid_zero_negative_reversed_and_overlapping_events_never_fake_progress(self):
         bad={'x':[dict(name='Bad',start_timestamp=0,stop_timestamp=0),

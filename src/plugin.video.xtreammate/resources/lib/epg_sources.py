@@ -200,8 +200,10 @@ def available_channels(portal_id):
 def _channel_name_key(value):
     """Conservative exact-name comparison; no uncertain title mapping."""
     value = unicodedata.normalize('NFKD', str(value or '')).casefold()
-    value = re.sub(r'^\s*(?:de|ger|at|aut|ch|sui|nl)\s*[|:–-]\s*', '', value)
-    value = re.sub(r'\s*(?:uhd|fhd|hd|sd|4k)\s*$', '', value)
+    # Strip country only with a separator; keep meaningful variants/regions.
+    value = re.sub(r'^\s*(?:de|ger|germany|deutschland|at|aut|ch|sui|nl)\s*[|:–-]\s*', '', value)
+    suffix=r'(?:uhd|fhd|hd|sd|4k|hevc|avc|h[. ]?26[45]|x26[45])'
+    value = re.sub(r'(?:[\s|:()\[\]-]+'+suffix+r')+[\s)\]]*$', '', value)
     return re.sub(r'[^a-z0-9]+', '', value)
 
 

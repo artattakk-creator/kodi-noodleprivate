@@ -1,5 +1,6 @@
 """Full-screen accessible multi-channel day guide; queries off the GUI thread."""
 from localization import tr
+from owner_dispatch import OwnerDispatch
 import datetime
 import threading
 import time
@@ -10,30 +11,23 @@ import xbmcgui
 import xbmcaddon
 
 
-class GuideWindow(xbmcgui.WindowXML):
+class GuideWindow(OwnerDispatch,xbmcgui.WindowXML):
     def configure(self,router,portal):
+        self._configure_owner()
+        self._return_home=False
         self.router,self.portal=router,portal
         self._pool=ThreadPoolExecutor(max_workers=1)
         self._lock=threading.RLock();self._generation=0;self._closed=False;self._ready=False
         self.groups=[];self.channels=[];self.programmes=[];self.category='';self.sid=''
         self.day=0;self.channel_offset=0;self.event_offset=0;self.event_total=0;self.channel_total=0
         self.mappings={};self._last_channel_pos=-1
+        self._short_revision='';self._short_poll=0
         from utils import setting_int
         self.days=10 if setting_int('epg_days',7)==10 else 7
 
-    def _request(self,job,apply):
-        self._generation+=1;generation=self._generation
-        future=self._pool.submit(job)
-        def done(result):
-            try: value=result.result()
-            except Exception as exc:
-                with self._lock:
-                    if not self._closed and generation==self._generation:
-                        self.getControl(102).setLabel(tr(32539)+type(exc).__name__+tr(32540))
-                return
-            with self._lock:
-                if not self._closed and generation==self._generation: apply(value)
-        future.add_done_callback(done)
+    def _query_failed(self,exc):
+        self._gui()
+        self.getControl(102).setLabel(tr(32610))
 
     def onInit(self):
         for control_id,string_id in ((310,32588),(311,32589),(312,32590),(501,32591)):
@@ -46,23 +40,23 @@ class GuideWindow(xbmcgui.WindowXML):
             from library_index import Reader,initial_group
             from guide_store import refresh as refresh_guide
             from epg_sources import configuration
-            if self.portal.get('type') in ('xtream','m3u','stb'):
+            if not Reader(self.portal['id']).state('live') and self.portal.get('type') in ('xtream','m3u','stb'):
                 from catalog_sync import request
                 request(self.portal,'live',self.portal.get('start_group_id',''),priority=0)
-            self.reader=Reader(self.portal['id'])
-            self.mappings=configuration(self.portal['id'])['mappings']
+            reader=Reader(self.portal['id'])
+            mappings=configuration(self.portal['id'])['mappings']
             try: refresh_guide(self.portal)
             except Exception: pass  # A failed import does not erase the previous DB.
-            groups=self.reader.groups('live')
-            start=self.reader.get('live',str(self.portal.get('start_stream_id') or ''))
-            return groups,initial_group(self.portal,groups,start)
+            groups=reader.groups('live')
+            start=reader.get('live',str(self.portal.get('start_stream_id') or ''))
+            return reader,mappings,groups,initial_group(self.portal,groups,start)
         self._request(load,self._initial_ready)
 
     def _fill(self,cid,labels):
         control=self.getControl(cid);control.reset();control.addItems([xbmcgui.ListItem(label) for label in labels])
 
     def _initial_ready(self,value):
-        self.groups,self.category=value
+        self.reader,self.mappings,self.groups,self.category=value
         self._fill(200,[g['title'] for g in self.groups])
         if not self.category:
             self.getControl(102).setLabel(tr(32542))
@@ -89,6 +83,18 @@ class GuideWindow(xbmcgui.WindowXML):
         if self.channels:
             self._load_events(0)
             request(self.channels)
+            from epg_views import prefetch_short_guides
+            prefetch_short_guides(self.portal,self.channels)
+
+    def _owner_tick(self):
+        if time.monotonic()-self._short_poll<.5: return
+        self._short_poll=time.monotonic()
+        revision=xbmcgui.Window(10000).getProperty('XCMate.ShortGuideRevision.'+str(self.portal['id']))
+        if revision!=self._short_revision and self._pending_future is None:
+            self._short_revision=revision
+            if revision and self.channels:
+                self._restore_event=self.getControl(220).getSelectedPosition()
+                self._load_events(max(0,self._last_channel_pos),self.event_offset)
 
     def _load_events(self,pos,offset=0):
         if not 0<=pos<len(self.channels): return
@@ -118,8 +124,8 @@ class GuideWindow(xbmcgui.WindowXML):
             if day==0 and page==0 and info.get('mapping')=='SHORT_EPG':
                 rows=[dict(e,title=e['title'],description=e.get('description',''),source=-1) for e in info['events']]+[
                     e for e in rows if not info.get('stop') or e['start']>=info['stop']]
-                unique={ (e['start'],e['stop']):e for e in rows }
-                rows=sorted(unique.values(),key=lambda e:e['start'])[:100];total=max(total,len(rows))
+                from epg_events import deduplicate
+                rows=deduplicate(rows,channel=channel['sid'])[:100];total=max(total,len(rows))
             return rows,total,horizon(self.portal['id'],eid),info
         self._request(load,self._events_ready)
 
@@ -129,6 +135,8 @@ class GuideWindow(xbmcgui.WindowXML):
         self._fill(220,[('{} - {} · {}'.format(time.strftime('%H:%M',time.localtime(e['start'])),
             time.strftime('%H:%M',time.localtime(e['stop'])),e['title']))+
             (tr(32544) if e['start']<=now<e['stop'] else '') for e in self.programmes])
+        if hasattr(self,'_restore_event'):
+            self.getControl(220).selectItem(self._restore_event);del self._restore_event
         last=horizon['last_event']
         limit=tr(32545)+time.strftime(tr(32584),time.localtime(last)) if last else tr(32546)
         self.getControl(102).setLabel(tr(32547).format(
@@ -157,7 +165,8 @@ class GuideWindow(xbmcgui.WindowXML):
                 return
             if key in (9,10,92):
                 if focus==200: self._group_view(False);self.setFocusId(210 if self.channels else 310)
-                else: self.close()
+                elif focus==220: self.setFocusId(210 if self.channels else 310)
+                else: self._return_home=True;self.close()
                 return
             if key==1:
                 if focus==220: self.setFocusId(210 if self.channels else 310)
@@ -206,6 +215,7 @@ class GuideWindow(xbmcgui.WindowXML):
                     xbmcgui.Dialog().notification('XCMate',tr(32557))
 
     def close(self):
+        self._gui()
         if self._closed: return
         self._closed=True;self._generation+=1
         self._pool.shutdown(wait=False,cancel_futures=True);super().close()
@@ -215,5 +225,7 @@ def open_guide(router,portal):
     from appearance import window_source
     window=GuideWindow('XCMateGuide.xml',window_source('XCMateGuide.xml'),'Default','720p')
     window.configure(router,portal)
-    try: window.doModal()
+    try: window.run()
     finally: window.close()
+    if window._return_home:
+        xbmc.executebuiltin('Container.Update('+router.url(action='xcmate_home',pid=portal['id'])+',replace)')

@@ -98,8 +98,8 @@ class PersistenceTests(Fixture,unittest.TestCase):
 
     def test_favourite_detail_back_restores_rail_and_selection(self):
         self.state.toggle('p','vod','2')
-        w=self.media_window();w.setFocusId(111);w.native(7);w._pool.drain()
-        self.assertEqual(w.mode,'detail');w.native(92);w._pool.drain()
+        w=self.media_window();w.setFocusId(111);w.native(7);self.settle(w)
+        self.assertEqual(w.mode,'detail');w.native(92);self.settle(w)
         self.assertEqual(w.getFocusId(),111)
 
     def test_favourite_snapshot_survives_missing_provider_rows_and_completion(self):
@@ -124,7 +124,7 @@ class PersistenceTests(Fixture,unittest.TestCase):
         self.state.toggle('p','series','1')
         self.state.save_progress(dict(pid='p',kind='episode',sid='12',series_id='1',season='1',episode='2'),300,1200)
         w=self.media_window('series');self.assertEqual(w.rails[112][0]['sid'],'1')
-        w.native(7);w._pool.drain()
+        w.native(7);self.settle(w)
         choice=next(i for i,(_,action) in enumerate(w.actions) if action=='seasons')
         w.getControl(300).selectItem(choice);w.onClick(300);w.onClick(330)
         self.assertTrue(any('25 %' in li.label for li in w.getControl(330).items))

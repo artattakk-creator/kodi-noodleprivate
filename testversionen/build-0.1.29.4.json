@@ -1,0 +1,8 @@
+{
+  "addon": "plugin.video.xtreammate",
+  "version": "0.1.29.4",
+  "sha256": "7b914eb02756751978df5b80f0cf574760fc9d2215cb06ed4b7fe9123534f69f",
+  "bytes": 382936,
+  "distribution": "manual test only",
+  "auto_update": false
+}

@@ -169,7 +169,7 @@ class Fixture:
             portals=portals,epg=epg,epg_sources=sources,epg_status=status,xbmcvfs=types.ModuleType('xbmcvfs'))
         patch.start();self.addCleanup(patch.stop)
         for name in ('library_index','group_selection','latest_media','home_menu','app_routes','media_art','media_state',
-                     'media_data','media_progress','media_window','guide_store','guide_window','guide_timers'):
+                     'owner_dispatch','media_data','media_progress','media_window','guide_store','guide_window','guide_timers'):
             sys.modules.pop(name,None)
         self.index=importlib.import_module('library_index');self.routes=importlib.import_module('app_routes')
         self.media=importlib.import_module('media_window');self.guide=importlib.import_module('guide_window')
@@ -189,9 +189,16 @@ class Fixture:
     def media_window(self,kind='vod'):
         w=self.media.MediaWindow('XCMateMedia.xml',str(ADDON),'Default','720p')
         w.configure(self.router,self.portal,kind)
-        self.addCleanup(w.close);w.doModal();w._pool.drain();return w
+        self.addCleanup(w.close);w.doModal();self.settle(w);return w
 
     def guide_window(self):
         w=self.guide.GuideWindow('XCMateGuide.xml',str(ADDON),'Default','720p')
         w.configure(self.router,self.portal)
-        self.addCleanup(w.close);w.doModal();w._pool.drain();return w
+        self.addCleanup(w.close);w.doModal();self.settle(w);return w
+
+    def settle(self,window):
+        # Complete queued data work, then explicitly deliver on the GUI owner.
+        for _ in range(40):
+            window._pool.drain();window.pump()
+            if not window._pool.jobs: return
+        raise AssertionError('unbounded owner jobs')

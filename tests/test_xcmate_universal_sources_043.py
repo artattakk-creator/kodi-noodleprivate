@@ -263,7 +263,7 @@ class SourceTests(Fixture,unittest.TestCase):
         self.assertEqual(self.state.rail_items(p['id'],'series',self.index.Reader(p['id']),'continue')[0]['sid'],row['sid'])
         details=self.adapters.for_portal(p).details('series',row['sid']);self.assertEqual(details['episodes'],{})
         window=self.media.MediaWindow('XCMateMedia.xml',str(ADDON),'Default','720p')
-        window.configure(self.router,p,'series',row['sid']);window.doModal();window._pool.drain()
+        window.configure(self.router,p,'series',row['sid']);window.doModal();self.settle(window)
         self.assertIn('resume',[action for label,action in window.actions]);self.assertNotIn('seasons',[action for label,action in window.actions])
         window.close()
 

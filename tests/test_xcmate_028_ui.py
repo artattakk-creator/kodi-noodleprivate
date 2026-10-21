@@ -67,16 +67,16 @@ class NewUITests(Fixture,unittest.TestCase):
             self.assertTrue(w.shown);self.assertEqual(w.getFocusId(),120)
             self.assertTrue(w._catalog_missing)
             w.native(7);w.native(92)
-            w._pool.drain();self.assertFalse(w.shown);self.assertTrue(w._closed)
+            self.settle(w);self.assertFalse(w.shown);self.assertTrue(w._closed)
         print('\nMODEL_COLD_WINDOW_MS {:.3f}'.format(visible*1000))
         sys.modules['utils'].http_get.assert_not_called()
 
     def test_progressive_import_is_visible_without_reopening_and_closed_view_untouched(self):
         w=self.media_window();self.assertEqual(w.total,100)
         self.index.import_group('p','vod','a',[dict(stream_id='new',category_id='a',name='Fresh')])
-        w._poll_catalog();w._pool.drain();self.assertEqual(w.total,1);self.assertEqual(w.rows[0]['sid'],'new')
+        w._poll_catalog();self.settle(w);self.assertEqual(w.total,1);self.assertEqual(w.rows[0]['sid'],'new')
         w.close();label=w.getControl(102).label
-        w._poll_catalog();w._pool.drain();self.assertEqual(w.getControl(102).label,label)
+        w._poll_catalog();self.settle(w);self.assertEqual(w.getControl(102).label,label)
 
     def test_search_cold_index_queues_all_active_kinds_and_distinguishes_missing(self):
         db=self.index.connect(write=True)
@@ -91,11 +91,11 @@ class NewUITests(Fixture,unittest.TestCase):
         finally: db.close()
         sys.modules['utils'].http_get.assert_not_called()
 
-    def test_movies_directory_completes_successfully_before_modal_window(self):
+    def test_movies_directory_aborts_empty_listing_before_owned_window(self):
         self.router._params['action']='movies_home'
         with mock.patch.object(self.media,'open_media') as open_media:
             def open_(*args,**kw):
-                self.assertEqual(self.ends[-1][0],(7,True))
+                self.assertEqual(self.ends[-1][0],(7,False))
             open_media.side_effect=open_
             self.routes.dispatch(self.router);open_media.assert_called_once()
 

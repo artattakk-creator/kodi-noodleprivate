@@ -127,11 +127,11 @@ def dispatch(router):
             _end(router,False)
             xbmcgui.Dialog().ok('XCMate',tr(32468))
             return
-        _end(router)
+        _end(router,False)
         from media_window import open_media
         open_media(router,portal,kind,router._params.get('sid',''),favourites=action=='media_favourites')
     elif action=='guide_browser':
-        _end(router)
+        _end(router,False)
         from guide_window import open_guide
         open_guide(router,portal)
     elif action=='media_play':
