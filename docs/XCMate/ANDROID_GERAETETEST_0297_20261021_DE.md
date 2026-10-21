@@ -53,3 +53,17 @@
 - [Artwork-Budget/Cover #41](https://github.com/artattakk-creator/kodi-noodleprivate/issues/41)
 - [Artwork-DB-Integrität #69](https://github.com/artattakk-creator/kodi-noodleprivate/issues/69)
 - [Aufnahmeengine #62](https://github.com/artattakk-creator/kodi-noodleprivate/issues/62)
+
+## E. Nachlieferung `kodi(3).log` – konkrete Evidenz (21.10.2026, 22:56:16–23:04:17 CEST)
+
+- **Version definitiv 0.1.29.7**, Kodi 21.2 / ARM32 / Rockchip RK3528 / Android TV 13; XCMate wird gestartet und Menü initialisiert. Diese hochgeladene **aktive** Logdatei beginnt mit einem Kodi-Neustart; es ist nicht sicher, ob der zuvor gemeldete Serien-Kodi-Freeze in ihr enthalten ist. Keine Python-Tracebacks, `START_FAILED`, `MIGRATION_FAILED` oder explizite ANR-/Crashsignatur. Nutzerfehlerbeschreibung bleibt P0 [#73](https://github.com/artattakk-creator/kodi-noodleprivate/issues/73); Ursache noch nicht bestätigt.
+- **P0-Fensternavigation:** Modal-/Medien-Dispatch-Dauern von 67.474, 59.070, 55.502, 48.191 und 24.232 ms protokolliert. Nicht automatisch als Hänger werten, da Modalfenster die Pluginlaufzeit bis zum Schließen erklären können. `ROUTE action=OTHER` maskiert Medienaktionen. Codex: datensparsame WindowXML-Lifecycle- und Back-/State-Marker ergänzen.
+- **DB:** 0× `MIGRATION_FAILED`; **1× `XCMate artwork db: code=BUSY phase=OPEN sqlite=0`** um 22:58:08.094. Ein sporadischer Lock-/Busy-Fall ist **nicht** gleich SQLite-Datenbankkorruption. Siehe [#69](https://github.com/artattakk-creator/kodi-noodleprivate/issues/69). Die Cachegrenze 514/512 MiB stammt aus dem Gerätedialog, nicht aus einer gemessenen Dateisystem-Freiheitsprüfung in diesem Log.
+- **Neu P1 [#75](https://github.com/artattakk-creator/kodi-noodleprivate/issues/75):** XCMate `GetDirectory - Error getting` bei `art_status` 22:59:22, `art_retry` 23:00:24, `recording_capabilities` 23:01:28, `appearance_settings` 23:02:37, gefolgt von `CGUIMediaWindow::GetDirectory failed`. `app_routes.py` schließt diese Popup-Aktionen mit `endOfDirectory(... succeeded=False)` ab; hier liegt ein konkreter Routen-Semantikfehler, aber nicht automatisch Ursache des P0-Freezes.
+- **Start-/Servicekosten:** 195× `PORTALS_LOAD_BEGIN` über etwa 8 Minuten, Einzelreads meist 1–5 ms; das erste `MAIN_IMPORT_DONE` braucht 6056 ms, spätere Importphasen meist wesentlich kürzer. Performance-/Loggingprüfung nach P0, nicht vorschnell Polling entfernen.
+- **FFmpeg:** Kodi enthält FFmpeg **6.0.1-Kodi** als interne Decoding-Library und hat **`inputstream.ffmpegdirect v21.3.8` installiert**. Das ist keine ausführbare FFmpeg-Aufnahme-CLI; unabhängiges Record-Backend weiterhin [#62](https://github.com/artattakk-creator/kodi-noodleprivate/issues/62).
+- **Fremd-Add-ons:** Repository `bingie` altes Schema, xVAULT HTTP-Downloadwarnung, TMDb Helper Trakt nicht autorisiert, TVSpielfilm-Directory-Fehler; keine direkte XCMate-Ursachenzuschreibung.
+- **Log-Nachforderung:** Caber Toss listet am Ende **beide** Dateien `kodi.log` und `kodi.old.log` für gesäuberten Export auf; für die exakte Absturzursache ist besonders **`kodi.old.log`** unmittelbar vor 22:56 relevant. Keine echten Portal-IDs, Zugangsdaten, lokalen Hostnamen oder SMB-Freigaben ins öffentliche Repo übernehmen.
+
+**Status:** 0.1.29.7 real getestet, Installations- und Basismenu-PASS; aber P0 #73 offen, P1 #75 neu. Noch kein Freigabe-PASS für 0.1.30.1.
+
