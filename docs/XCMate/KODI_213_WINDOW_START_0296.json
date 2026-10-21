@@ -1,0 +1,100 @@
+{
+  "kodi": "21.3-Omega",
+  "commit": "a3a448d26b8d560a65655dab2cd122994dc4e146",
+  "files": [
+    {
+      "path": "xbmc/filesystem/PluginDirectory.cpp",
+      "sha256": "f8f66d63f9d93a898d832b2e7b42f61bcb4294d3c67c0013f0d9418819046bd4",
+      "url": "https://github.com/xbmc/xbmc/blob/a3a448d26b8d560a65655dab2cd122994dc4e146/xbmc/filesystem/PluginDirectory.cpp"
+    },
+    {
+      "path": "xbmc/interfaces/generic/ScriptRunner.cpp",
+      "sha256": "336b099424b5d684d59654418c70a614ac34859fda3e6d7d2fe46753cf71d10e",
+      "url": "https://github.com/xbmc/xbmc/blob/a3a448d26b8d560a65655dab2cd122994dc4e146/xbmc/interfaces/generic/ScriptRunner.cpp"
+    },
+    {
+      "path": "xbmc/windows/GUIMediaWindow.cpp",
+      "sha256": "25f919093ae5bca55458c05e724449e68889534e2a72464f47a7cdccf787c0af",
+      "url": "https://github.com/xbmc/xbmc/blob/a3a448d26b8d560a65655dab2cd122994dc4e146/xbmc/windows/GUIMediaWindow.cpp"
+    },
+    {
+      "path": "xbmc/interfaces/legacy/Window.cpp",
+      "sha256": "55a2e8527fc1a27e83acadd19e4bcf2b51370dfdc230e8d5cb8e850ed6824cab",
+      "url": "https://github.com/xbmc/xbmc/blob/a3a448d26b8d560a65655dab2cd122994dc4e146/xbmc/interfaces/legacy/Window.cpp"
+    },
+    {
+      "path": "xbmc/interfaces/legacy/Monitor.cpp",
+      "sha256": "c4b951b64cfff896f28ad5257d043aa2343e2a2f4e392aba9cbce79cb94ca328",
+      "url": "https://github.com/xbmc/xbmc/blob/a3a448d26b8d560a65655dab2cd122994dc4e146/xbmc/interfaces/legacy/Monitor.cpp"
+    },
+    {
+      "path": "xbmc/interfaces/python/CallbackHandler.cpp",
+      "sha256": "13fa09b45b149727c40e121b6cf8eefaf2ed9a33fb75346e01dd93bda256b650",
+      "url": "https://github.com/xbmc/xbmc/blob/a3a448d26b8d560a65655dab2cd122994dc4e146/xbmc/interfaces/python/CallbackHandler.cpp"
+    },
+    {
+      "path": "xbmc/interfaces/legacy/WindowXML.cpp",
+      "sha256": "8024a65d70dd2350e344a6ade3199adf8002315362ab753e81d6cd88b43f5106",
+      "url": "https://github.com/xbmc/xbmc/blob/a3a448d26b8d560a65655dab2cd122994dc4e146/xbmc/interfaces/legacy/WindowXML.cpp"
+    },
+    {
+      "path": "xbmc/guilib/GUIWindowManager.cpp",
+      "sha256": "6c0fa781d19cf1353678b7835f9fe1155be11b29b7818f404a6813d9fb3d116e",
+      "url": "https://github.com/xbmc/xbmc/blob/a3a448d26b8d560a65655dab2cd122994dc4e146/xbmc/guilib/GUIWindowManager.cpp"
+    },
+    {
+      "path": "xbmc/GUIInfoManager.cpp",
+      "sha256": "2e89605252ff44c7502516dd8149e70d781765ce93fd9c85adbd09e6ab43e490",
+      "url": "https://github.com/xbmc/xbmc/blob/a3a448d26b8d560a65655dab2cd122994dc4e146/xbmc/GUIInfoManager.cpp"
+    }
+  ],
+  "findings": {
+    "directory_failure": "PluginDirectory.cpp EndOfDirectory stores m_success=false and signals SetDone; ScriptRunner.cpp WaitOnScriptResult returns IsSuccessful; GUIMediaWindow.cpp Update lines 841-855 falls back to previous/root on GetDirectory failure.",
+    "window_pump": "Window.cpp show activates via TMSG_GUI_ACTIVATE_WINDOW; doModal calls the same show plus MakePendingCalls. Monitor.cpp waitForAbort also calls MakePendingCalls; show/pump itself is not proved incompatible.",
+    "callback_thread": "CallbackHandler.cpp isStateOk checks the original PyThreadState, WindowXML.cpp queues native onInit on GUI_MSG_WINDOW_INIT. Keep owner checks, do not revert worker-GUI callbacks.",
+    "device_causality": "User log confirms GetDirectory failures for guide_browser/movies_home followed by activation refused due to active modal dialogs (13000,13001,13002). GUIWindowManager.cpp 866-873 rejects exactly this state and plays ACTION_ERROR. Modal dialog type is not logged; no callback/thread exception was present. 0.1.29.6 device acceptance remains NOT_RUN."
+  },
+  "published_baseline": {
+    "main": "ee965351f1ace9586cce7d2b5c902c0a9a9f8089",
+    "local_test_base": "d3ae84624871c6826b99e86e0d4de6483e21b09e",
+    "source_and_tests_identical": true
+  },
+  "device_log_evidence": {
+    "version": "0.1.29.5",
+    "private_log_committed": false,
+    "thread_guard_error_found": false,
+    "python_traceback_found": false,
+    "events": [
+      {
+        "time": "19:14:04.250",
+        "route": "guide_browser",
+        "failure": "GetDirectory error"
+      },
+      {
+        "time": "19:14:05.175",
+        "window": 13000,
+        "failure": "activation refused: active modal dialogs"
+      },
+      {
+        "time": "19:14:14.706",
+        "route": "movies_home",
+        "failure": "GetDirectory error"
+      },
+      {
+        "time": "19:14:15.541",
+        "window": 13001,
+        "failure": "activation refused: active modal dialogs"
+      },
+      {
+        "time": "19:14:55.309",
+        "route": "guide_browser",
+        "failure": "GetDirectory error"
+      },
+      {
+        "time": "19:14:56.046",
+        "window": 13002,
+        "failure": "activation refused: active modal dialogs"
+      }
+    ]
+  }
+}

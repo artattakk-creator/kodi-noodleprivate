@@ -91,11 +91,11 @@ class NewUITests(Fixture,unittest.TestCase):
         finally: db.close()
         sys.modules['utils'].http_get.assert_not_called()
 
-    def test_movies_directory_aborts_empty_listing_before_owned_window(self):
+    def test_movies_directory_succeeds_before_owned_window(self):
         self.router._params['action']='movies_home'
         with mock.patch.object(self.media,'open_media') as open_media:
             def open_(*args,**kw):
-                self.assertEqual(self.ends[-1][0],(7,False))
+                self.assertEqual(self.ends[-1][0],(7,True))
             open_media.side_effect=open_
             self.routes.dispatch(self.router);open_media.assert_called_once()
 

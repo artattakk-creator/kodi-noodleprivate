@@ -1,3 +1,18 @@
+0.1.29.6 – P0 Fensterstart nach Android-Regression #67 (Testkandidat)
+- EPG-/Film-/Serienfenster starten wieder nach erfolgreichem Kodi-Verzeichnisabschluss.
+- Vor Aktivierung auf Ende eines modalen Kodi-Ladedialogs warten; keine Zwangsschließung.
+- Owner-Pump ohne Worker-GUI-Zugriffe bleibt; natives onInit wird überwacht und sicher diagnostiziert.
+- Fensterfehler werden ohne Zugangsdaten protokolliert; Close-Fehler verdecken keinen Startfehler.
+- EPG-Deduplikation, HEVC-Matching und Back-Hierarchie aus 0.1.29.5 erhalten.
+- Keine Datenmigration/Resets und keine Änderung der Live-TV-/Fernbedienungsnavigation.
+- Automatisierte Prüfung und Android-Geräteabnahme getrennt; kein automatisches Release/Merge.
+
+0.1.29.5 – EPG-Dubletten und Navigation (Android-Fensterregression bekannt)
+- Zentrale toleranzbasierte Dublettenbereinigung; legitime Episoden bleiben getrennt.
+- Daten-Worker liefern Ergebnisse an den Fensterthread; konservative Sendernamensnormalisierung.
+- EPG-/Medien-Back-Hierarchie und expliziter Rückweg zur Hauptübersicht.
+- Android-Test negativ für Fensterstart; Korrekturkandidat 0.1.29.6 siehe oben.
+
 0.1.29.4 – P0 Setup, Scan und verifiziertes Speichern (Testkandidat)
 - WindowXML-Updates und Schließen nur auf dem Fenster-eigenen Python-Thread; Worker liefern Daten.
 - Drei getrennte Kategorienlisten, echte PNG-Checkboxen, sichtbarer Fokus/Reiter und Auswahlzähler.
