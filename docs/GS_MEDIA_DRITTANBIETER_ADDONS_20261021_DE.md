@@ -16,8 +16,15 @@ Der neue Builder `tools/import_mp3_streams.py` ruft das veröffentlichte Paket a
 
 Die lokalen Offline-Tests verwenden ausschließlich synthetische Test-ZIPs. **Vor Merge/Release:** echter Upstream-Download aus CI, Original-ZIP/Quellprüfung, Lizenzprüfung, Gesamtsuite und Android-21.3-Funktionstest. Bestehende `main`-Releases dürfen nicht beeinträchtigt werden.
 
+## TMDb Helper, Pluto TV, SHOUTcast und EZ Maintenance+
+- **EZ Maintenance+** ist bereits über den unveränderten peno64-Repoindex in GS Media 1.7.0 verfügbar; keine Kopie und keine neue Einbindung.
+- **TMDb Helper** wird ab Kodi 21 über den Omega-Katalog des Originalautors `jurialmunkey/repository.jurialmunkey/master/omega/zips/` inklusive der gemeinsam gepflegten Modulpakete angeboten. Dies ist **kein installierter zweiter Repository-Add-on**, sondern eine zusätzliche `<dir>`-Quelle der GS Media Repository-Definition. Dieser Upstream-Katalog enthält auch weitere Add-ons von jurialmunkey.
+- **Pluto.TV** `plugin.video.plutotv` **1.6.2** und **SHOUTcast** `plugin.audio.shoutcast` **2.5.2+matrix.1** werden gezielt über das offizielle Kodi-Omega-Downloadarchiv in unserem Buildhost bezogen, ZIP-CRC/Pfad/Version/Python/Größen geprüft, ohne Byteänderung der Original-ZIPs in unseren Katalog aufgenommen. Keine unnötige Duplikation des gesamten Kodi.tv-Katalogs. Die Paket-Versionen werden **fest gewählt**, für Updates sind spätere ausdrückliche Anpassungen/Prüfungen nötig. Kodi besitzt trotzdem weiterhin sein offizielles Kodi.tv-Repository als Standardquelle für abhängige Module.
+
+Veröffentlichungsvoraussetzung: CI-Build und Quellen-HTTP-Test, zwei Original-ZIPs und die Kodi-21.3-Installation praktisch testen. Nicht unterstellen, dass die Angebote von Pluto oder SHOUTcast unabhängig von ihren Live-APIs immer streamen.
+
 ## TV Spielfilm
-Ein eindeutig verifizierbares eigenständiges **Kodi-21-Add-on „TV Spielfilm“** konnte nicht gefunden werden. Die bisher identifizierte Software `service.takealug.epg-grabber` nutzt „TV Spielfilm“ als mögliche externe Datenquelle, ist jedoch **kein TV-Programmführer mit diesem Namen**. Quelle: https://github.com/DeBaschdi/service.takealug.epg-grabber ; Kodinerds-Katalog: https://repo.kodinerds.net/
+Ein eigenständiger **Kodi-21-Programmführer „TV Spielfilm“** konnte nicht nachgewiesen werden. Ein historisches Kodinerds-Addon `plugin.video.tvspielfilm_de` Version **1.2.4 (2020)** existiert zwar, ist aber laut Original-`addon.xml` ein **Mediatheken-Addon** und nutzt Kodi-Python **2.25.0** – daher kein Ersatz für den gewünschten Fernsehprogrammführer. Die bisher identifizierte Software `service.takealug.epg-grabber` nutzt „TV Spielfilm“ als mögliche externe Datenquelle, ist jedoch **kein TV-Programmführer mit diesem Namen**. Quelle: https://github.com/DeBaschdi/service.takealug.epg-grabber ; Kodinerds-Katalog: https://repo.kodinerds.net/
 
 Daher wird kein nicht überprüftes TV-Spielfilm-Paket erfunden und keine zusätzliche Hintergrund-EPG-Abfrage im GS-Media-Katalog stillschweigend aktiviert. Prüfen, welches konkrete frühere Plugin der Benutzer meinte. Separate EPG-Grabber erst nach Abgleich mit XCMate-EPG-Manager und Kodi-21.3-Tests anbieten.
 
