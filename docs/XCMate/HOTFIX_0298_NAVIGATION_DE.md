@@ -59,4 +59,4 @@ Kein Issue geschlossen, kein produktiver Index verändert. 0.1.29.7 bleibt unver
 
 ## Finales lokales Testpaket
 
-**558/558 Tests bestanden**, 80.995 s, 0 Fehler/Skips; 18 neue Navigation-/Routingfälle. ZIP **401012 Bytes / 132 Dateien**, SHA-256 `c105cd718dbf7aeb0d81a7d4792ac4d11361194fbf566b7fe1741d48591aa30a`. Sourcebytes, CRC, sichere Pfade, Python-3.11-Syntax und unabhängiger kanonischer Zweitbau PASS. Android NOT_RUN. GitHub-CI separat am Draft-PR prüfen.
+**558/558 Tests bestanden**, 78.312 s, 0 Fehler/Skips; 18 neue Navigation-/Routingfälle. Finaler Paketnachtrag: ausschließlich interaktive Fokusziele (Fußzeile 501 ist ein Label). ZIP **401011 Bytes / 132 Dateien**, SHA-256 `b55aed3cb8b19b8d8be8d2e84e6c87ee479dd99851c78b367003c374878c75f7`. Sourcebytes, CRC, sichere Pfade, Python-3.11-Syntax und unabhängiger kanonischer Zweitbau PASS. Android NOT_RUN. GitHub-CI separat am Draft-PR prüfen.

@@ -4,7 +4,7 @@
   "tests": {
     "total": 558,
     "passed": 558,
-    "seconds": 80.995,
+    "seconds": 78.312,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
@@ -13,9 +13,9 @@
   },
   "build": {
     "file": "plugin.video.xtreammate-0.1.29.8.zip",
-    "bytes": 401012,
+    "bytes": 401011,
     "files": 132,
-    "sha256": "c105cd718dbf7aeb0d81a7d4792ac4d11361194fbf566b7fe1741d48591aa30a",
+    "sha256": "b55aed3cb8b19b8d8be8d2e84e6c87ee479dd99851c78b367003c374878c75f7",
     "source_bytes": "PASS",
     "crc": "PASS",
     "paths": "PASS",
@@ -33,5 +33,6 @@
   "merged_to_main": false,
   "release": false,
   "production_index_changed": false,
-  "github_ci": "See current PR checks; no premature success claim"
+  "github_ci": "See current PR checks; no premature success claim",
+  "focus_type_contract": "button/list/panel only; no footer label"
 }
