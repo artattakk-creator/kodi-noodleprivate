@@ -147,5 +147,25 @@
     "status": "PENDING_PUSH"
   },
   "production_published": false,
-  "merged": false
+  "merged": false,
+  "pull_request": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/55",
+  "github_independent_bytes": {
+    "status": "PASS",
+    "bytes": 382936,
+    "sha256": "7b914eb02756751978df5b80f0cf574760fc9d2215cb06ed4b7fe9123534f69f",
+    "blob": "eb0f048219974c85cc1f764811f47f425a72507b",
+    "source": "GitHub git/blobs independent base64 download"
+  },
+  "main_sync": {
+    "commit": "5b32dd8d47fd2e26de203802df3a9dd3095dad29",
+    "reason": "Resolve add/add conflict in manual testversionen/index.html; keep both manual packages; no source/test/core bytes changed",
+    "productive_index": "UNCHANGED"
+  },
+  "manual_source": {
+    "page": "testversionen/index.html",
+    "package": "testversionen/plugin.video.xtreammate-0.1.29.4.zip",
+    "same_bytes_as_core": true,
+    "comparison_0293_preserved": true,
+    "productive_main_updated": false
+  }
 }

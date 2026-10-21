@@ -1,6 +1,6 @@
 # XCMate 0.1.29.4 – P0 Setup, lange Scans und Speichern
 
-Stand **21.10.2026**. Neuer separater Branch `fix/xcmate-0294-setup-scan-save`, Grundlage **PR #52 / 0.1.29.3 / `32970a6688c17f0aebd6945873658e5b41a47c5a`**. PR #52 und seine Vergleichsversion bleiben erhalten. Unabhängig von Space-Premium-PR #50 und Repository-PR #51. **Kein Merge, Release oder produktives Repositoryupdate.**
+Stand **21.10.2026**. [Draft-PR #55](https://github.com/artattakk-creator/kodi-noodleprivate/pull/55), neuer separater Branch `fix/xcmate-0294-setup-scan-save`, Grundlage **PR #52 / 0.1.29.3 / `32970a6688c17f0aebd6945873658e5b41a47c5a`**. PR #52 und seine Vergleichsversion bleiben erhalten. Unabhängig von Space-Premium-PR #50 und Repository-PR #51. **Kein Merge, Release oder produktives Repositoryupdate.**
 
 [Vollständiger Nutzerauftrag](CODEX_AUFTRAG_0294_SETUP_SCAN_SAVE_DE.md) · [vor Implementierung dokumentierte Ursachen](HOTFIX_0294_ROOT_CAUSES_DE.md) · [Maschinenbericht](TESTERGEBNISSE_0294_SETUP_SCAN_SAVE.json) · [Android-/IR-/Installationsplan](ANDROID_TESTPLAN_0294_SETUP_SCAN_SAVE_DE.md).
 
@@ -47,6 +47,10 @@ Der erste Gesamtlauf meldete zwei erwartete alte Versionsassertionen (0.1.29.3);
 
 CRC, Pfade, keine Duplikate/Symlinks/Profil-/DB-/Log-/Bytecode-Dateien, komplette Dateiliste und **jeder ZIP-Bytevergleich mit aktuellem Quellcode** bestanden. Zweiter kanonischer Bau ist bytegleich. Alle fünf PNGs vollständig decodiert. 0.1.29.3 wurde aus dem unveränderten PR-52-Commit reproduziert und stimmt mit dessen veröffentlichtem **CI-Prüfsummenwert** überein; kein veränderter Inhalt unter derselben Version.
 
-Für GS Media/Neo Dark ist die 0.1.29.4-ZIP ausschließlich als manuell ausgewählte Testdatei im Entwicklungsbranch vorbereitet. Kein produktiver addons.xml-Eintrag und keine automatische Updateveröffentlichung. CI-Artefakt zuerst entpacken; nur die innere `plugin.video.xtreammate-0.1.29.4.zip` in Kodis Add-on-ZIP-Installer wählen. Nicht den Quellcode-ZIP oder äußeren Actions-Container installieren.
+Für GS Media/Neo Dark ist die 0.1.29.4-ZIP ausschließlich als manuell ausgewählte Testdatei im Entwicklungsbranch vorbereitet: [Testversionsseite](../../testversionen/index.html) mit genau einem Link je 0.1.29.4 und 0.1.29.3, [direkte 0.1.29.4-Datei](../../testversionen/plugin.video.xtreammate-0.1.29.4.zip) und Prüfsummendatei. Beide Core-/Testquellenkopien sind bytegleich. Auf main bleibt die bisherige Testversionsseite unverändert; dort wird 0.1.29.4 durch diesen Auftrag nicht sichtbar. Kein produktiver addons.xml-Eintrag und keine automatische Updateveröffentlichung. CI-Artefakt zuerst entpacken; nur die innere `plugin.video.xtreammate-0.1.29.4.zip` in Kodis Add-on-ZIP-Installer wählen. Nicht den Quellcode-ZIP oder äußeren Actions-Container installieren.
+
+**Unabhängiger GitHub-Dateinachweis:** Blob `eb0f048219974c85cc1f764811f47f425a72507b` nach Push über GitHub-API/Base64 geladen: exakt 382936 Bytes und gleicher SHA-256 wie das lokal geprüfte ZIP.
+
+**Branch-Synchronisierung:** main `5b32dd8` brachte ausschließlich die zwischenzeitlich veröffentlichte manuelle 0.1.29.3-Testversionsseite/-datei und deren Root-HTML-Link. Add/add-Konflikt in `testversionen/index.html` ausschließlich im Hotfix-Branch aufgelöst, alte 0.1.29.3 erhalten und neue manuelle Datei ergänzt. Kein Merge **nach main**, keine fremden Add-on- oder produktiven addons.xml-Änderungen; getestete Source-/Test-/Corebytes bleiben gleich. Diese Branch-Synchronisierung ermöglicht erst die normale PR-CI.
 
 **CI und Draft-PR:** Nach Push im [Maschinenbericht](TESTERGEBNISSE_0294_SETUP_SCAN_SAVE.json) zu ergänzen. CI-Publish muss SKIPPED bleiben. Baseline/main/PR #50 werden nicht verändert. Alle Freigaben bleiben beim Benutzer.
