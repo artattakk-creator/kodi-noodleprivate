@@ -42,3 +42,5 @@ Cloudtests sind keine Android-Abnahme. Kein Merge, Release, Tag oder produktiver
 ## Branch-Synchronisierung
 
 `origin/main` `454266dbff500d0b45d9cc36e54086af6caf8fde` wurde ausschließlich in den Hotfix-Branch übernommen. Der einzige Konflikt lag in der manuellen `testversionen/index.html`: 0.1.29.4/0.1.29.3 und ihre unveränderten Prüfsummen erhalten, optionale 0.1.29.5 ergänzt. Keine Source-/Test-/Coreänderung aus der Synchronisierung; kein Merge nach main und kein Produktivindexupdate.
+
+**Zwischenzeitlicher externer Main-Stand:** `3b6e3691b3b99290f7d00fbe5c14a0314626b6ce` enthält die vom Repositorybetreiber vorgenommene Freigabe der unveränderten 0.1.29.4. Für konfliktfreien PR #61 wurde main erneut ausschließlich in den Entwicklungsbranch synchronisiert; dessen veröffentlichte Index-/Archivbytes unverändert übernommen. Dieser Auftrag veröffentlicht weiterhin weder 0.1.29.5 noch 0.1.30.1. Der Konflikt betraf nur die manuelle HTML-Testseite. Source-/Test-/Corebytes gegenüber dem geprüften 511er-Lauf unverändert.
