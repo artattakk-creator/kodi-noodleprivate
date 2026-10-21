@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="repository.gsmedia" name="GS Media Kodi Repository" version="1.7.0" provider-name="GS Media">
+<addon id="repository.gsmedia" name="GS Media Kodi Repository" version="1.8.0" provider-name="GS Media">
   <extension point="xbmc.addon.repository">
     <dir>
       <info compressed="false">https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/addons.xml</info>
