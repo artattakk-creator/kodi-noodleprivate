@@ -1,3 +1,5 @@
+> **XCMate-Projektübergabe (aktuell 21.10.2026):** [verbindlicher Status für neue Chats](docs/XCMate/PROJEKTSTATUS_UEBERGABE_2026-10-21_DE.md) · [Codex-Folgeauftrag](docs/XCMate/CODEX_FOLGEAUFTRAG_2026-10-21_DE.md). XCMate 0.1.29.4 regulär veröffentlicht; PR #50/0.1.30 Draft; Multiview gestrichen.
+
 > **XCMate P0-Hotfix 0.1.29.4:** [Prüfbericht, 496 Tests und manuelle Test-ZIP](docs/XCMate/HOTFIX_0294_SETUP_SCAN_SAVE_DE.md) · [Android-/IR-Abnahmeplan](docs/XCMate/ANDROID_TESTPLAN_0294_SETUP_SCAN_SAVE_DE.md). Neuer separater Branch auf PR #52; kein Merge, Release oder Produktivindex-Update. Ältere XCMate-Stände darunter sind Historie.
 
 # GS Media Kodi Repository
