@@ -9,13 +9,13 @@
 - XML-Fokus für Listen war nur über die Hintergrundtextur signalisiert, ohne zusätzliche Textmarkierung. Button-Fokusfarben waren weiß und damit teils schwer erkennbar.
 
 ## Gezielte Änderung
-- Während der Anbieterabfrage: **sichtbarer, fokussierter Abbrechen-Button**, Liste und Gruppenschaltflächen ausgeblendet.
+- Während der Anbieterabfrage: **sichtbarer, fokussierter Abbrechen-Button**, Liste und Gruppenschaltflächen ausgeblendet. Kodi-XML-Defaultcontrol ebenfalls von leerer Liste #100 auf den Abbrechen-Button #18 umgestellt, damit der Skin den Fokus nicht später zurücksetzt.
 - Bei Entdeckungsfehler: **fokussierter „Erneut versuchen“-Button** plus Abbrechen.
 - Serveradresse ohne Schema (typisch `host:port`) als `http://host:port` normalisiert; explizites HTTPS bleibt unverändert, und komplette M3U-URLs mit Query-/Zugangsdaten werden nicht als Serveradresse angenommen. Vorher wurden typische Host:Port-Eingaben direkt als `ValueError` abgewiesen.
 - Fehlerarten über feste, **credential-freie** Codes `XM-SETUP-AUTH/GROUPS/SELECT/EMPTY/DATA/NET/OTHER` und verständliche Hilfetexte statt generischem `ValueError`. Im Protokoll nur Phase, Typ und Code; nie Passwort, Benutzername oder Portal-URL.
-- Fokus nach erfolgreicher Abfrage auf erste verfügbare Art (Live, Filme, Serien) und deren Liste.
+- Fokus nach erfolgreicher Abfrage auf erste verfügbare Art (Live, Filme, Serien) und deren Liste; sichtbarer Fokus bleibt bei Gruppenwechsel und Checkbox-Toggle erhalten.
 - Fokusmarkierung `▶` für Gruppen und türkis hervorgehobene Schaltflächen; vorhandener Live-TV-Overlay-/IR-Freeze bleibt unangetastet.
-- Version **0.1.29.3**; acht neue GUI-/Diagnosetests in `tests/test_xcmate_0293_setup_first_run.py` fuenf URL-/Validierungstests in `tests/test_xcmate_0293_setup_inputs.py` sowie die aktualisierten Branding-/Versionslayoutregressionen.
+- Version **0.1.29.3**; neun neue GUI-/Diagnosetests in `tests/test_xcmate_0293_setup_first_run.py` fuenf URL-/Validierungstests in `tests/test_xcmate_0293_setup_inputs.py` sowie die aktualisierten Branding-/Versionslayoutregressionen.
 
 ## Grenzen / gesicherter Stand
 Der ValueError kann in `source_adapters.Adapter.authenticate` bei `authentication failed`, in `Draft.discover` bei `no usable categories` oder an anderen Validierungspunkten entstehen. **Seine tatsächliche Ursache beim konkreten IPTV-Account ist ohne gerätespezifischen Log-/Fehlercode nicht bestätigt**. Der Hotfix behebt den blind/unbedienbaren Fehlerzustand und schafft diagnostische Codes, garantiert aber keine Anmeldung an einem unbekannten Portal. Dieser Hotfix ersetzt auch nicht die Android-GUI-Abnahme. GUI-Änderungen aus der bestehenden Async-Callbackstruktur sind auf dem Android-Gerät mit echter IR zu testen.
