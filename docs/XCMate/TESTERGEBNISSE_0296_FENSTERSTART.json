@@ -50,15 +50,36 @@
   "gui_model": "AUTOMATED_PASS, not native Kodi/Android",
   "device_log_proves": "0.1.29.5 directory failures and modal activation refusal; no 0.1.29.6 device acceptance",
   "private_log_committed": false,
-  "merge": false,
-  "release": false,
-  "productive_index_changed": false,
-  "ci": "PENDING",
+  "merge": true,
+  "release": true,
+  "productive_index_changed": true,
+  "ci": {
+    "pr": {
+      "run": 39646493087,
+      "status": "SUCCESS",
+      "tests": 521,
+      "seconds": 120.512
+    },
+    "publish": {
+      "run": 39646892896,
+      "status": "SUCCESS",
+      "tests": 521,
+      "seconds": 126.973,
+      "publish_step": "SUCCESS"
+    }
+  },
   "github_delivery": {
-    "status": "AUTHORIZED_PENDING_UPLOAD",
-    "authorization": "User explicitly approved GitHub upload and regular Kodi update distribution on 2026-10-21. This includes required merge and repository publishing.",
-    "draft_pr_created": false,
-    "remote_branch_created": false
+    "status": "PUBLISHED",
+    "pr": 68,
+    "head": "b95e4a6df6705413dbfc7d0b1cd635b6bf7cd3fa",
+    "merge": "17f5f634e8d5ac74310b7bed95b5636664f92456",
+    "published_commit": "71a40675342cf911507d292f63a271a2633be497",
+    "index_version": "0.1.29.6",
+    "index_md5": "398b7fb355578a6bd8fca539abb4b730",
+    "index_md5_verified": true,
+    "zip_blob_sha": "64686d71c0d231381d9bcd424b61a5f1357ab7dd",
+    "zip_identical_to_tested_local": "PASS",
+    "regular_update_authorized": true
   },
   "release_authorized": true
 }

@@ -63,3 +63,12 @@ Alle neun Geräteprüfschritte sind für 0.1.29.6 zunächst **NOT_RUN**. Android
 ## Ausdrückliche Nutzerfreigabe zur Bereitstellung
 
 Der Nutzer hat am 21.10.2026 ausdrücklich angewiesen: „Ja natürlich, lad den hoch. Der soll auf GitHub zu finden sein und auch per reguläres Update zu ziehen sein.“ Der zuvor abgelehnte Upload ist damit ausdrücklich genehmigt, einschließlich des für den regulären GS-Media-Updateweg erforderlichen Merges und Publish-Workflows. Keine erneute Rückfrage erforderlich. Die Geräteabnahme von 0.1.29.6 wird dadurch nicht als bestanden bezeichnet. Das private Original-Log bleibt lokal.
+
+
+## Regulär veröffentlicht nach Nutzerfreigabe
+
+[PR #68](https://github.com/artattakk-creator/kodi-noodleprivate/pull/68) ist gemergt: `17f5f634e8d5ac74310b7bed95b5636664f92456`. PR-CI [39646493087](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39646493087) SUCCESS, 521 Tests / 120,512 s. Publish-CI [39646892896](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39646892896) SUCCESS, 521 Tests / 126,973 s, produktiver Publish-Schritt SUCCESS.
+
+Veröffentlichter Stand `71a40675342cf911507d292f63a271a2633be497`: `addons.xml` listet 0.1.29.6; MD5 `398b7fb355578a6bd8fca539abb4b730` passt zu den exakten Indexbytes. Git-Blob des veröffentlichten ZIPs `64686d71c0d231381d9bcd424b61a5f1357ab7dd` ist identisch zum geprüften lokalen Paket; SHA-256-Datei entspricht `f8188f156b8d43d741706813ba6e9946d7f2be66b035e4977dadb32464afe40e`. Das 0.1.29.4-ZIP ist weiterhin vorhanden. Die vorherigen Bereitstellungsblockaden sind durch die ausdrückliche Freigabe aufgehoben und historisch.
+
+**Regulär aktualisieren:** Kodi → Add-ons → Aus Repository installieren → GS Media Repository → Kontextmenü → Nach Aktualisierungen suchen; danach XCMate → Aktualisieren/Versionen → **0.1.29.6** auswählen. Je nach Skin liegt „Nach Aktualisierungen suchen“ im Add-on-Seitenmenü. Anschließend Kodi neu starten und zuerst EPG, Filme, Serien öffnen. Keine Deinstallation/Neueinrichtung. Geräteabnahme bleibt NOT_RUN, Issue #67 bis Nutzerbestätigung offen.
