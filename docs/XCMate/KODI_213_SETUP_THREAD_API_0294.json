@@ -1,0 +1,44 @@
+{
+  "kodi": "21.3-Omega",
+  "commit": "a3a448d26b8d560a65655dab2cd122994dc4e146",
+  "source_base": "https://github.com/xbmc/xbmc/blob/a3a448d26b8d560a65655dab2cd122994dc4e146/",
+  "files": [
+    {
+      "path": "xbmc/interfaces/legacy/Window.cpp",
+      "sha256": "4aecd8caa947b62052189610069bef3fa4cedcebaff46d64e2df411e6d517a96"
+    },
+    {
+      "path": "xbmc/interfaces/legacy/Window.h",
+      "sha256": "a502ffece784779b1596b76f77152fa61de776bea21846b5fd10249c0a5ce8fe"
+    },
+    {
+      "path": "xbmc/interfaces/legacy/Monitor.cpp",
+      "sha256": "8a15d34d6969894f1a984d4f83cbd940b583fa3ceec019d68247e0ec6b5bc00c"
+    },
+    {
+      "path": "xbmc/interfaces/python/LanguageHook.cpp",
+      "sha256": "091657c89c508c76af069afa0f615f1266788c35d1a066c2cac7bff6972852e1"
+    },
+    {
+      "path": "xbmc/interfaces/python/CallbackHandler.cpp",
+      "sha256": "716a773ec9d03484d25c56c8ffabe7bf72c713d2309769331d4092ea7e8048c0"
+    },
+    {
+      "path": "xbmc/interfaces/python/CallbackHandler.h",
+      "sha256": "5e77fe499638ed83852cff24c9119be227a8cf556156b44597afd9d1db682633"
+    },
+    {
+      "path": "xbmc/interfaces/legacy/Control.cpp",
+      "sha256": "5a560e55a284415e193195d9a5c2e590ec0844dd3fe3c4aa99ce0e0d1d9b2f50"
+    }
+  ],
+  "contract": {
+    "Window_show": "Nonblocking show, actual native WindowXML onInit",
+    "Monitor_waitForAbort": "Monitor.cpp:39-62 calls languageHook->MakePendingCalls after each bounded wait",
+    "Callback_owner": "CallbackHandler.cpp:24-43 compares objectThreadState and PyThreadState_Get",
+    "Window_doModal_reference": "Window.cpp:658+ pumps MakePendingCalls; own loop uses public show+Monitor wait to permit future polling",
+    "python_dispatch": "Every Control/WindowXML completion operation runs in captured owner thread; actual worker guard regression passes",
+    "ControlList_getListItem": "Control.cpp:1425-1432 returns original shared ListItem from vecItems; addItems/sendLabelBind:1243-1271 shares CFileItem. In-place property/art updates require no list reset."
+  },
+  "android_acceptance": "NOT_RUN"
+}

@@ -1,3 +1,5 @@
+> **XCMate P0-Hotfix 0.1.29.4:** [Prüfbericht, 496 Tests und manuelle Test-ZIP](docs/XCMate/HOTFIX_0294_SETUP_SCAN_SAVE_DE.md) · [Android-/IR-Abnahmeplan](docs/XCMate/ANDROID_TESTPLAN_0294_SETUP_SCAN_SAVE_DE.md). Neuer separater Branch auf PR #52; kein Merge, Release oder Produktivindex-Update. Ältere XCMate-Stände darunter sind Historie.
+
 # GS Media Kodi Repository
 
 > **XCMate RC 0.1.29.2:** [vollständige Integrationsprüfung](docs/XCMate/INTEGRATIONSPRUEFUNG_RC_0292_DE.md), **462 Tests + 26 HTTP-/EPG-Tests** bestanden. Ein direktes Update von 0.1.28, Android-Abnahme offen; kein Merge/Release.

@@ -1,3 +1,9 @@
+> **Aktuell – 21.10.2026, P0-Hotfix 0.1.29.4:** Basis PR #52 / 0.1.29.3, neuer Branch `fix/xcmate-0294-setup-scan-save`. Worker-GUI-Pfad korrigiert, grafische Checkboxen und drei getrennte Listen, lange Scans ohne Gesamtdeadline, verifiziertes Speichern und Rollback nur neuer ID. **496/496 Tests**, 20 neue Regressionen; Android-/IR-/BINGIE-Abnahme und alleinige native Crashursache **offen**. Kein Merge/Release/Produktivindex-Update, PR #50/0.1.30 unberührt.
+> [Vollständiger Prüfbericht und beide ZIPs](HOTFIX_0294_SETUP_SCAN_SAVE_DE.md) · [Testdaten/CI](TESTERGEBNISSE_0294_SETUP_SCAN_SAVE.json) · [Android-Test und manueller Onlinequellenweg](ANDROID_TESTPLAN_0294_SETUP_SCAN_SAVE_DE.md) · [vorher dokumentierte Ursachen](HOTFIX_0294_ROOT_CAUSES_DE.md).
+> Alle älteren „Aktuell“-/Versions-/Freigabeangaben darunter sind historische Übergaben. Maßgeblich ist der oben verlinkte aktuelle Hotfix-Bericht; keine Android-Abnahme aus Cloudtests.
+
+## Historische Übergaben
+
 # Übergabeblock für einen neuen XCMate-Chat
 
 > **VERBINDLICHER INTEGRATIONSSTAND – 20.10.2026:** Ein vollständiger **RC 0.1.29.2** für das direkte Update von **0.1.28**, keine fünf Installationen.

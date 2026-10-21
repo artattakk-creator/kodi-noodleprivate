@@ -141,15 +141,15 @@ class SourceTests(Fixture,unittest.TestCase):
         with mock.patch.object(ui,'ThreadPoolExecutor',QueuedPool),mock.patch.object(Control,'setPercent',lambda c,p:setattr(c,'percent',p),create=True):
             d=self.draft();window=ui.SetupWindow('XCMateSetup.xml',str(ADDON),'Default','720p');window.configure(d)
             window.doModal();self.assertTrue(window.busy);self.assertEqual(len(self.real_portals.load_all()),1)
-            window._pool.drain();self.assertEqual(window.stage,'groups');self.assertFalse(any(d.selected.values()))
+            window._pool.drain();window.pump();self.assertEqual(window.stage,'groups');self.assertFalse(any(d.selected.values()))
             self.assertFalse(d.provider_epg);self.assertEqual(d.epg_sources,[])
             pos=next(i for i,g in enumerate(window._entries) if g['category_name']=='DE')
             window.getControl(100).selectItem(pos);window.native(7)
             self.assertEqual(len(d.selected['live']),1)
             window.setFocusId(17);window.native(7);self.assertTrue(window.busy)
-            window._pool.drain();self.assertEqual(window.stage,'summary');self.assertEqual(d.report['live'],1)
+            window._pool.drain();window.pump();self.assertEqual(window.stage,'summary');self.assertEqual(d.report['live'],1)
             self.assertEqual(len(self.real_portals.load_all()),1)
-            window.native(7);window._pool.drain()
+            window.native(7);window._pool.drain();window.pump()
             self.assertTrue(d.saved);self.assertEqual(window.result['id'],d.pid)
             self.assertEqual(len(self.real_portals.load_all()),2)
             self.assertFalse(Path(d.folder).exists())
@@ -276,7 +276,7 @@ class SourceTests(Fixture,unittest.TestCase):
         d.epg_sources=[dict(id='manual',uri=str(source),name='Test',local=True,enabled=True)]
         report=d.scan();self.assertEqual(report['epg'],1);self.assertEqual(report['sources'][0]['stored'],1)
         self.assertEqual(report['sources'][0]['bytes'],source.stat().st_size)
-        epg=sys.modules['epg'];snapshots={};epg._save_disk=lambda pid,cache:snapshots.update({pid:cache});epg._mem_set=lambda *a:None
+        epg=sys.modules['epg'];snapshots={};epg._save_disk=lambda pid,cache,notify=True:snapshots.update({pid:cache});epg._mem_set=lambda *a:None
         p=d.save();sid=self.index.Reader(p['id']).page('live')[0][0]['sid']
         self.assertEqual(snapshots[p['id']][sid][0]['name'],'Current saved programme')
         from guide_store import events

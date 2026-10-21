@@ -198,13 +198,13 @@ def _load_disk(portal_id, max_age):
     return cache_get(_disk_ck(portal_id), max_age=max_age)
 
 
-def _save_disk(portal_id, data):
+def _save_disk(portal_id, data, notify=True):
     if cache_set(_disk_ck(portal_id), data) is False:
         from epg_status import update
         update(portal_id, 'cache', 'CACHE_WRITE_FAILED', exception_class='OSError')
         raise OSError('EPG cache could not be persisted')
     from epg_status import changed, update
-    changed(portal_id)
+    if notify: changed(portal_id)
     update(portal_id, 'cache', 'READY', channels=len(data),
            programmes=sum(len(v) for v in data.values() if isinstance(v,list)))
 

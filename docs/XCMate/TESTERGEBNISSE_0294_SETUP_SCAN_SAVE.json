@@ -1,0 +1,191 @@
+{
+  "status": "PASS_AUTOMATED_ANDROID_ACCEPTANCE_OPEN",
+  "date": "2026-10-21",
+  "version": "0.1.29.4",
+  "baseline_version": "0.1.29.3",
+  "baseline_pr": 52,
+  "baseline_commit": "32970a6688c17f0aebd6945873658e5b41a47c5a",
+  "observed_main": "5b32dd8d47fd2e26de203802df3a9dd3095dad29",
+  "branch": "fix/xcmate-0294-setup-scan-save",
+  "suite": {
+    "tests": 496,
+    "seconds": 68.994,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0
+  },
+  "new_hotfix_tests": 20,
+  "focused": {
+    "tests": 49,
+    "seconds": 5.034,
+    "result": "PASS",
+    "modules": [
+      "test_xcmate_setup_0294",
+      "test_xcmate_universal_sources_043",
+      "test_xcmate_0293_setup_first_run",
+      "test_xcmate_gui_contract"
+    ]
+  },
+  "before_after": {
+    "baseline_gui_worker": "FAIL_GUI_GETCONTROL_ON_WORKER",
+    "baseline_long_scan": "FAIL_HTTP_STREAMING_DEADLINE",
+    "baseline_readback": "FAIL_SUCCESS_WITH_WRONG_COUNTS",
+    "baseline_tests": 3,
+    "after": "PASS"
+  },
+  "storage": {
+    "channels": 2400,
+    "movies": 7,
+    "series": 9,
+    "readback": "PASS",
+    "restart_simulation": "MODULE_RELOAD_FRESH_CONNECTIONS_SAME_PERSISTENT_PROFILE",
+    "physical_kodi_restart": "NOT_RUN",
+    "save_repeat_guard": "PASS",
+    "new_id_rollback_before_after_publication": "PASS",
+    "epg_cache_and_guide_rollback": "PASS",
+    "old_account_100_movies_preserved": true
+  },
+  "streaming": {
+    "no_default_total_deadline": true,
+    "long_http_simulated_seconds_over": 1200,
+    "long_stalker_simulated_seconds_over": 300,
+    "long_xmltv_simulated_seconds_over": 300,
+    "connect_read_timeout_seconds": 15,
+    "decoded_idle_timeout_seconds": 30,
+    "consumer_sqlite_time_excluded_from_idle": true,
+    "explicit_caller_deadline_retained": true,
+    "stalker_cycle_detection": "DISK_BACKED_FINGERPRINTS",
+    "memory_buffers": "BOUNDED",
+    "cancel": "PASS"
+  },
+  "gui": {
+    "owner_thread_pump": "PUBLIC_WINDOW_SHOW_AND_MONITOR_WAITFORABORT",
+    "actual_executor_thread_guards": "PASS",
+    "completion_without_keypress": "PASS",
+    "late_result_after_close": "NO_GUI_APPLY_CLEANUP_ONCE",
+    "checkbox": "OWN_PNG_LISTITEM_ART_PROPERTY",
+    "list_reset_on_toggle": false,
+    "three_distinct_lists": [
+      100,
+      101,
+      102
+    ],
+    "native_remote_tab_roundtrip": "PASS",
+    "scroll_cursor_preserved": "PASS_MODEL_NO_RESET",
+    "physical_ir_focus_rendering": "NOT_RUN"
+  },
+  "build": {
+    "repository": "PASS_ISOLATED_COPY",
+    "syntax": "PASS",
+    "package": {
+      "version": "0.1.29.4",
+      "filename": "plugin.video.xtreammate-0.1.29.4.zip",
+      "bytes": 382936,
+      "files": 126,
+      "sha256": "7b914eb02756751978df5b80f0cf574760fc9d2215cb06ed4b7fe9123534f69f",
+      "crc": "PASS",
+      "structure": "PASS",
+      "source_bytes": "PASS",
+      "reproducible": "PASS",
+      "profile_payloads": "ABSENT",
+      "owned_png_controls": [
+        {
+          "name": "setup_checked.png",
+          "bytes": 185,
+          "sha256": "d8182f6384b738ce27d11dc35c42414d9c08b312c5820f24e1ed014c55f2e4ab",
+          "full_decode": "PASS"
+        },
+        {
+          "name": "setup_focus.png",
+          "bytes": 103,
+          "sha256": "dc80dbcecf9c317c566a5d6f7d83ca23f8b74a52549630a121d497868b209118",
+          "full_decode": "PASS"
+        },
+        {
+          "name": "setup_normal.png",
+          "bytes": 105,
+          "sha256": "2dd2b39911d65cee3eed2c2b285b29ea01b52ce3f4412a99a237534062315604",
+          "full_decode": "PASS"
+        },
+        {
+          "name": "setup_selected.png",
+          "bytes": 105,
+          "sha256": "1f42fbaf73394d12f09859ced9f40c01896a3e9a53e1f4578b00d95fe2f3a0e8",
+          "full_decode": "PASS"
+        },
+        {
+          "name": "setup_unchecked.png",
+          "bytes": 117,
+          "sha256": "4d897ee60aaa4df6ddaf9619cab3136ebed90ecfeb6531ef1f656450e32fc3b1",
+          "full_decode": "PASS"
+        }
+      ]
+    },
+    "comparison": {
+      "version": "0.1.29.3",
+      "bytes": 376662,
+      "files": 120,
+      "sha256": "3c1f54a6d4ffdf6c069c483ade06867c18ff528414724a13656011f3d30189af",
+      "source_commit": "32970a6688c17f0aebd6945873658e5b41a47c5a",
+      "matches_pr52_ci_hash": true,
+      "crc": "PASS"
+    }
+  },
+  "freeze": {
+    "live_overlay": "BYTE_UNCHANGED",
+    "remote_player_startup": "BYTE_UNCHANGED",
+    "freeze_fixtures": "BYTE_UNCHANGED",
+    "noodle_other_addons": "UNCHANGED",
+    "global_keymaps": "UNCHANGED",
+    "productive_index": "UNCHANGED",
+    "existing_0292_zip": "UNCHANGED",
+    "pr50": "UNTOUCHED"
+  },
+  "android_crash_cause": "WORKER_GUI_DEFECT_PROVEN_NOT_SINGLE_DEVICE_CAUSE_WITHOUT_CRASH_LOG",
+  "android_acceptance": "NOT_RUN",
+  "ci": {
+    "status": "SUCCESS",
+    "source_commit": "f9883552b0dfa08466b186501aa3e8c6c056a888",
+    "implementation_commit": "fd8f09c8e69de0341a285e75bcafe2f48a6e38c4",
+    "run": 39589564830,
+    "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39589564830",
+    "artifact_id": 12341200362,
+    "artifact_name": "xcmate-review-55-7b914eb02756751978df5b80f0cf574760fc9d2215cb06ed4b7fe9123534f69f",
+    "artifact_url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39589564830/artifacts/12341200362",
+    "artifact_outer_sha256": "sha256:ee48aa2c44c67fc750fff815560c44cb35b7975671ba4239afa99d8dd91e6417",
+    "artifact_bytes": 382020,
+    "core_inner_sha256_in_artifact_name": "7b914eb02756751978df5b80f0cf574760fc9d2215cb06ed4b7fe9123534f69f",
+    "publish": "SKIPPED",
+    "raw_log_download": "BLOCKED_TRANSPORT",
+    "ci_test_count": null,
+    "test_count_local": 496,
+    "artifact_binary_downloaded": false,
+    "verification": "GitHub run/job/artifact APIs; successful Prepare validates complete successful suite, CRC, source bytes, paths; inner core SHA matches local reproducible ZIP and independent GitHub blob"
+  },
+  "production_published": false,
+  "merged": false,
+  "pull_request": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/55",
+  "github_independent_bytes": {
+    "status": "PASS",
+    "bytes": 382936,
+    "sha256": "7b914eb02756751978df5b80f0cf574760fc9d2215cb06ed4b7fe9123534f69f",
+    "blob": "eb0f048219974c85cc1f764811f47f425a72507b",
+    "source": "GitHub git/blobs independent base64 download"
+  },
+  "main_sync": {
+    "commit": "5b32dd8d47fd2e26de203802df3a9dd3095dad29",
+    "reason": "Resolve add/add conflict in manual testversionen/index.html; keep both manual packages; no source/test/core bytes changed",
+    "productive_index": "UNCHANGED"
+  },
+  "manual_source": {
+    "page": "testversionen/index.html",
+    "package": "testversionen/plugin.video.xtreammate-0.1.29.4.zip",
+    "same_bytes_as_core": true,
+    "comparison_0293_preserved": true,
+    "productive_main_updated": false,
+    "metadata": "testversionen/build.json",
+    "old_metadata_preserved": "testversionen/build-0.1.29.3.json",
+    "inherited_0293_write_workflow": "NOT_CARRIED_FORWARD_PR52_UNTOUCHED",
+    "validation": "PASS_UNIQUE_TWO_ZIP_LINKS_METADATA_HASHES_DUPLICATE_BYTES_CRC"
+  }
+}

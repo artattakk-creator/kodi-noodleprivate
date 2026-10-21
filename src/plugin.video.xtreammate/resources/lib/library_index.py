@@ -256,6 +256,7 @@ def import_group(pid,kind,cid,entries,filename=None,cancel=lambda:False,progress
         for item in entries:
             if cancel(): raise InterruptedError('catalogue import cancelled')
             received+=1
+            if progress and received % BATCH_ROWS == 0: progress(received,stored,discarded)
             if not isinstance(item,dict): continue
             category=str(item.get('category_id') or '')
             if category not in allowed: discarded+=1;continue

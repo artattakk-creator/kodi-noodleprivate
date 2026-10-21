@@ -43,7 +43,7 @@ def read_http_chunks(chunks, headers, max_bytes, deadline):
         return output.getvalue()
 
 
-def decoded_chunks(chunks, headers, deadline, cancel=lambda: False):
+def decoded_chunks(chunks, headers, deadline, cancel=lambda: False, idle_seconds=30):
     """Streaming alternative: 64-KiB working buffers, no collection-size cap.
 
     Caller must persist incrementally under a disk-space budget. Compression
@@ -54,9 +54,14 @@ def decoded_chunks(chunks, headers, deadline, cancel=lambda: False):
     if encoding not in ('', 'identity', 'gzip', 'deflate'):
         raise ValueError('Unsupported HTTP content encoding')
     decoder = zlib.decompressobj(31 if encoding == 'gzip' else 15) if encoding in ('gzip','deflate') else None
-    for raw in chunks:
+    last_progress=time.monotonic()
+    def check():
         if cancel(): raise InterruptedError('HTTP request cancelled')
-        if time.monotonic() > deadline: raise TimeoutError('HTTP streaming deadline')
+        now=time.monotonic()
+        if deadline is not None and now>deadline: raise TimeoutError('HTTP streaming deadline')
+        if now-last_progress>idle_seconds: raise TimeoutError('HTTP streaming idle timeout')
+    for raw in chunks:
+        check()
         # A transport may deliver large chunks; never pass them whole to zlib.
         for offset in range(0, len(raw), 65536):
             data = raw[offset:offset+65536]
@@ -65,10 +70,15 @@ def decoded_chunks(chunks, headers, deadline, cancel=lambda: False):
                     out = decoder.decompress(data, 65536)
                     data = decoder.unconsumed_tail
                     if decoder.unused_data: raise HTTPCompressionError('Trailing compressed HTTP data')
-                    if cancel(): raise InterruptedError('HTTP request cancelled')
-                    if time.monotonic() > deadline: raise TimeoutError('HTTP streaming deadline')
-                    if out: yield out
-            elif data: yield data
+                    check()
+                    if out:
+                        last_progress=time.monotonic()
+                        yield out
+                        last_progress=time.monotonic()  # Exclude consumer/SQLite work.
+            elif data:
+                last_progress=time.monotonic()
+                yield data
+                last_progress=time.monotonic()
     if decoder and not decoder.eof: raise HTTPCompressionError('Truncated HTTP compressed response')
 
 
