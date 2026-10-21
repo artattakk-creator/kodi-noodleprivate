@@ -156,6 +156,7 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXML):
             if self.channels: self._load_events(max(0,self.getControl(210).getSelectedPosition()))
 
     def onAction(self,action):
+        if self._closed:return
         key=action.getId();focus=self.getFocusId()
         with self._lock:
             if key==117:
@@ -186,6 +187,7 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXML):
                 if 0<=offset<self.event_total: self._load_events(self._last_channel_pos,offset)
 
     def onClick(self,controlId):
+        if self._closed:return
         if controlId in (310,311): self._day(-1 if controlId==310 else 1);return
         if controlId==312:
             xbmc.executebuiltin('RunPlugin('+self.router.url(action='epg_status',pid=self.portal['id'])+')');return
@@ -223,6 +225,4 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXML):
 
 
 def open_guide(router,portal):
-    window=open_owned_window(GuideWindow,'XCMateGuide.xml',router,portal)
-    if window._return_home:
-        xbmc.executebuiltin('Container.Update('+router.url(action='xcmate_home',pid=portal['id'])+',replace)')
+    open_owned_window(GuideWindow,'XCMateGuide.xml',router,portal)

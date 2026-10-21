@@ -12,6 +12,9 @@ PHASES = frozenset(('ENTRY', 'MAIN_IMPORT', 'ROUTER_INIT', 'DISPATCH',
 ROUTES = frozenset(('root', 'portal_home', 'xcmate_home', 'portal_manager',
     'setup_wizard', 'import_legacy_settings', 'widget_live_start_group',
     'widget_recent_vod', 'widget_recent_series'))
+ROUTES=ROUTES|frozenset(('movies_home','series_home','media_detail','media_favourites',
+    'guide_browser','art_status','art_retry','art_db_health','recording_capabilities',
+    'appearance_settings','global_search','settings_section'))
 ERRORS = frozenset(('RuntimeError', 'OSError', 'PermissionError', 'ValueError',
     'TypeError', 'ImportError', 'ModuleNotFoundError', 'TimeoutError',
     'MemoryError', 'IndexReadError', 'PortalReadError'))

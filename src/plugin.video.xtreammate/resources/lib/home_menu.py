@@ -31,7 +31,9 @@ def show(router, portal):
     xbmcplugin.setContent(router._handle,'files')
     for label_id,action,icon in HOME:
         label=tr(label_id)
-        router._add_dir(label,router.url(action=action,pid=portal['id']),
+        from window_navigation import WINDOW_ACTIONS,add_action
+        add=add_action if action in WINDOW_ACTIONS else lambda router,*a,**kw:router._add_dir(*a,**kw)
+        add(router,label,router.url(action=action,pid=portal['id']),
                         icon=os.path.join(path,'resources','media',icon),
                         plot=(tr(32415) if action=='settings_home' else label))
     finish_directory(router,cacheToDisc=False)
@@ -61,7 +63,11 @@ def settings(router, portal, section=''):
     from boot_diagnostics import finish_directory
     pid=portal['id'] if portal else ''
     def add(label,action,**params):
-        router._add_dir(label,router.url(action=action,pid=pid,**params))
+        from window_navigation import WINDOW_ACTIONS,DIALOG_ACTIONS,add_action
+        url=router.url(action=action,pid=pid,**params)
+        if action in WINDOW_ACTIONS|DIALOG_ACTIONS or action=='global_search':
+            add_action(router,label,url)
+        else:router._add_dir(label,url)
     if not section:
         for label_id,key in SETTINGS: add(tr(label_id),'settings_section',section=key)
     elif section=='accounts':

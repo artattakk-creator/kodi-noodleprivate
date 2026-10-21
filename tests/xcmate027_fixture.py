@@ -27,7 +27,7 @@ class ListItem:
 
 class Control:
     def __init__(self,node):
-        self.kind=node.get('type');self.node=node;self.visible=True
+        self.kind=node.get('type');self.node=node;self.visible=True;self.enabled=True
         self.items=[];self.selected=0;self.label=node.findtext('label','')
         self.width=int(node.findtext('width','0'));self.x=int(node.findtext('left','0'));self.y=int(node.findtext('top','0'))
     def reset(self): self.items=[];self.selected=0
@@ -36,6 +36,14 @@ class Control:
     def getSelectedPosition(self): return self.selected
     def selectItem(self,item): self.selected=max(0,min(item,len(self.items)-1))
     def setVisible(self,visible): self.visible=visible
+    def isVisible(self): return self.visible
+    def setEnabled(self,enabled): self.enabled=enabled
+    def size(self):return len(self.items)
+    def setNavigation(self,up,down,left,right):
+        for key,control in zip(('up','down','left','right'),(up,down,left,right)):
+            node=self.node.find('on'+key)
+            if node is None:node=ET.SubElement(self.node,'on'+key)
+            node.text=control.node.get('id')
     def setLabel(self,label='',font=None,textColor=None,disabledColor=None,shadowColor=None,focusedColor=None,label2=''): self.label=label
     def setText(self,text): self.text=text
     def setWidth(self,width): self.width=width
@@ -52,17 +60,21 @@ class WindowXML:
     def getProperty(self,key): return self._window_properties.get(key,'')
     def show(self):
         self.shown=True
+        sys.modules['xbmc']._focus_window=self
         self.onInit()
     def getControl(self,controlId): return self.controls[controlId]
     def setFocusId(self,iControlId):
         assert self.controls[iControlId].visible, ('focus on hidden control',iControlId)
+        assert self.controls[iControlId].kind in ('button','list','panel'),('focus on noninteractive control',iControlId)
         self.focus=iControlId
     def getFocusId(self): return self.focus
     def doModal(self):
         self.shown=True
+        sys.modules['xbmc']._focus_window=self
         self.onInit()  # Real WindowXML callback, NOT WindowDialog's absent onInit.
     def close(self): self.shown=False
     def native(self,key):
+        sys.modules['xbmc']._focus_window=self
         focus=self.focus;c=self.controls[focus]
         if key==7: self.onClick(focus)
         elif key in (1,2,3,4):
@@ -146,9 +158,23 @@ class Fixture:
         self.dialog=types.SimpleNamespace(input=mock.Mock(return_value=''),select=mock.Mock(return_value=-1),
             yesno=mock.Mock(return_value=False),ok=mock.Mock(),notification=mock.Mock(),textviewer=mock.Mock())
         gui.Dialog=lambda:self.dialog
-        xbmc=types.ModuleType('xbmc');xbmc.executebuiltin=self.builtins.append
+        xbmc=types.ModuleType('xbmc');self.current_folder='plugin://plugin.video.xtreammate/?action=xcmate_home&pid=p'
+        def builtin(command):
+            self.builtins.append(command)
+            if command.startswith('Container.Update('):
+                self.current_folder=command[len('Container.Update('):-1].removesuffix(',replace')
+            elif command.startswith('ActivateWindow(Videos,'):
+                self.current_folder=command[len('ActivateWindow(Videos,'):-1].removesuffix(',return')
+        xbmc.executebuiltin=builtin
+        xbmc.getInfoLabel=lambda label:self.current_folder if label=='Container.FolderPath' else ''
+        xbmc.Monitor=lambda:types.SimpleNamespace(waitForAbort=lambda n:False)
         xbmc.Player=lambda:types.SimpleNamespace(isPlayingVideo=lambda:False)
-        xbmc.getCondVisibility=lambda c:c=='System.HasAddon(plugin.video.youtube)' or c=='Player.SeekEnabled'
+        def condition(c):
+            if c.startswith('Control.IsEnabled('):
+                w=getattr(xbmc,'_focus_window',None);cid=int(c[len('Control.IsEnabled('):-1])
+                return w.controls[cid].enabled if w else True
+            return c=='System.HasAddon(plugin.video.youtube)' or c=='Player.SeekEnabled'
+        xbmc.getCondVisibility=condition
         plugin=types.ModuleType('xbmcplugin');plugin.setContent=mock.Mock();plugin.setPluginCategory=mock.Mock()
         plugin.endOfDirectory=lambda *a,**kw:self.ends.append((a,kw))
         plugin.addDirectoryItem=lambda handle,url,listitem,isFolder=True:self.added.append((url,listitem,isFolder))
@@ -169,7 +195,7 @@ class Fixture:
             portals=portals,epg=epg,epg_sources=sources,epg_status=status,xbmcvfs=types.ModuleType('xbmcvfs'))
         patch.start();self.addCleanup(patch.stop)
         for name in ('library_index','group_selection','latest_media','home_menu','app_routes','media_art','media_state',
-                     'owner_dispatch','media_data','media_progress','media_window','guide_store','guide_window','guide_timers'):
+                     'owner_dispatch','window_navigation','media_data','media_progress','media_window','guide_store','guide_window','guide_timers'):
             sys.modules.pop(name,None)
         self.index=importlib.import_module('library_index');self.routes=importlib.import_module('app_routes')
         self.media=importlib.import_module('media_window');self.guide=importlib.import_module('guide_window')

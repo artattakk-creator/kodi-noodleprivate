@@ -1,3 +1,4 @@
+0.1.29.8 – Testkandidat: sichere Medienfokus-/Back-Navigation und Kodi-Aktionsrouting.
 0.1.29.7 – Artwork-Jobdatenbank und Startsender-Route (Testkandidat)
 - Atomic schema initialization; private SQLite diagnostics and bounded retries instead of MIGRATION_FAILED loops.
 - Consistent WAL-aware backup and verified art_pending-only index repair; no automatic table/queue reset.

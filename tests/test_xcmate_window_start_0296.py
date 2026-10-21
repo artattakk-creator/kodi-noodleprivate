@@ -38,6 +38,7 @@ class WindowStartTests(Fixture, unittest.TestCase):
             self.assertEqual(self.trace[0],('directory',True))
             self.trace.append(('show',None));self.windows.append(window)
             window.shown=True
+            importlib.import_module('xbmc')._focus_window=window
             self.native.append(window.onInit)  # delivered by the wait, not show()
         self.patch(mock.patch.object(WindowXML,'show',show))
         for module in (self.guide,self.media):
@@ -56,6 +57,7 @@ class WindowStartTests(Fixture, unittest.TestCase):
         if self.native:
             self.trace.append(('native_init',None));self.native.pop(0)()
         window=self.windows[-1]
+        if getattr(window,'_leaving',False):window._leave_after=0
         future=window._pending_future
         if future:self.assertTrue(wait([future],timeout=3).done)
         if (getattr(window,'channels',None) or getattr(window,'rows',None)) and future is None:
@@ -101,8 +103,9 @@ class WindowStartTests(Fixture, unittest.TestCase):
     def test_missing_native_init_has_a_bounded_diagnostic_failure(self):
         owner=importlib.import_module('owner_dispatch')
         with mock.patch.object(owner.xbmc,'Monitor',return_value=types.SimpleNamespace(waitForAbort=lambda n:False)),\
-             mock.patch.object(owner.time,'monotonic',side_effect=[0,0,20,20,20]):
-            with self.assertRaises(owner.WindowStartError):self.route('guide_browser')
+             mock.patch.object(owner,'_clock',side_effect=[0,0,20,20,20]):
+            with mock.patch.object(importlib.import_module('window_navigation'),'open_route',side_effect=lambda r,p,fn:(self.routes._end(r),fn())[-1]):
+                with self.assertRaises(owner.WindowStartError):self.route('guide_browser')
         self.assertTrue(self.windows[-1]._closed)
         self.assertTrue(any('INIT_TIMEOUT' in row for row in self.logs))
 
@@ -125,9 +128,10 @@ class WindowStartTests(Fixture, unittest.TestCase):
     def test_modal_timeout_never_closes_or_forces_another_kodi_window(self):
         owner=importlib.import_module('owner_dispatch')
         with mock.patch.object(owner.xbmc,'getCondVisibility',return_value=True),\
-             mock.patch.object(owner.time,'monotonic',side_effect=[0,20]),\
+             mock.patch.object(owner,'_clock',side_effect=[0,20]),\
              mock.patch.object(WindowXML,'close') as close:
-            with self.assertRaises(owner.WindowStartError):self.route('guide_browser')
+            with mock.patch.object(importlib.import_module('window_navigation'),'open_route',side_effect=lambda r,p,fn:(self.routes._end(r),fn())[-1]):
+                with self.assertRaises(owner.WindowStartError):self.route('guide_browser')
         self.assertFalse(self.windows);close.assert_not_called()
         self.assertTrue(any('MODAL_TIMEOUT' in row for row in self.logs))
 
@@ -154,10 +158,10 @@ class WindowStartTests(Fixture, unittest.TestCase):
     def test_show_error_is_not_replaced_by_close_error(self):
         original=ValueError('PRIVATE show failure')
         with mock.patch.object(WindowXML,'show',side_effect=original),\
-             mock.patch.object(WindowXML,'close',side_effect=RuntimeError('PRIVATE close failure')):
+             mock.patch.object(WindowXML,'close',side_effect=RuntimeError('PRIVATE close failure')) as close:
             with self.assertRaises(ValueError) as captured:self.route('movies_home')
         self.assertIs(captured.exception,original)
-        self.assertTrue(any('CLOSE_FAILED' in row for row in self.logs))
+        self.assertTrue(any('DISPOSE_UNSHOWN' in row for row in self.logs));close.assert_not_called()
         self.assertNotIn('PRIVATE','\n'.join(self.logs))
 
     def test_constructor_and_configure_failures_are_logged(self):

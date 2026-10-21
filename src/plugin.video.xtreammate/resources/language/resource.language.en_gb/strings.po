@@ -2108,3 +2108,7 @@ msgstr "Checking artwork jobs and creating a consistent backup. This may take a 
 msgctxt "#32904"
 msgid "Background artwork preloading is paused after recovery. Existing images remain available; visible pages can load missing images. Use the artwork retry action to resume background preloading."
 msgstr "Background artwork preloading is paused after recovery. Existing images remain available; visible pages can load missing images. Use the artwork retry action to resume background preloading."
+
+msgctxt "#32910"
+msgid "The view could not be opened. Home remains available. Close any open Kodi dialog and try again."
+msgstr "The view could not be opened. Home remains available. Close any open Kodi dialog and try again."

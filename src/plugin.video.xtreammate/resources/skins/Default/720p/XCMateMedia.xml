@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <window>
-  <defaultcontrol always="true">120</defaultcontrol>
+  <defaultcontrol always="true">400</defaultcontrol>
   <allowoverlay>yes</allowoverlay>
   <coordinates>
     <system>1</system>

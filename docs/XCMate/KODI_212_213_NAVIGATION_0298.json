@@ -1,0 +1,21 @@
+{
+  "primary": "Kodi 21.2 Omega / Python 3.11 / ARM32",
+  "secondary": "Kodi 21.3 Omega",
+  "native_android": "NOT_RUN",
+  "control_headers_212_213_identical": true,
+  "control_sha256": "495b6d4d39375143cc1d4c5e5879dcbd055d9a753aad633d8cf8f2406c86e684",
+  "media_window_sha256": "cdf2faf9148b755cb980629b3902477ed900d91fac14f3706c376feecdee3493",
+  "contracts": [
+    "nonfolder nonplayable plugin -> RunScriptWithParams",
+    "Window.show -> activate; Window.close -> previous native window",
+    "Control.isVisible/setNavigation and ControlList.size exist",
+    "No Python Control.isEnabled getter; Control.IsEnabled(id) boolean condition",
+    "native getCurrentWindowId/getCurrentWindowDialogId no arguments"
+  ],
+  "sources": [
+    "https://github.com/xbmc/xbmc/blob/21.2-Omega/xbmc/interfaces/legacy/Control.h",
+    "https://github.com/xbmc/xbmc/blob/21.2-Omega/xbmc/windows/GUIMediaWindow.cpp",
+    "https://github.com/xbmc/xbmc/blob/21.2-Omega/xbmc/interfaces/legacy/Window.cpp",
+    "https://github.com/xbmc/xbmc/blob/21.2-Omega/xbmc/GUIInfoManager.cpp"
+  ]
+}

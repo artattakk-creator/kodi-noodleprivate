@@ -26,12 +26,15 @@ def dispatch(router):
     from home_menu import settings,show,recording_folder
     action=router._params.get('action','xcmate_home')
     portal=portal_for(router)
+    if action in ('guide_timers','guide_status','widget_setup') and not portal:
+        _end(router,False)
+        xbmcgui.Dialog().notification('XCMate',tr(32466));return
     if action=='art_db_health':
         _end(router)
         from artwork_health_ui import manage
         manage();return
     if action in ('art_status','art_retry'):
-        _end(router,False)
+        _end(router)
         from art_store import status,retry
         if action=='art_retry': retry()
         value=status()
@@ -39,12 +42,12 @@ def dispatch(router):
             '\n'.join(k+': '+str(v) for k,v in value['counts'].items()))
         return
     if action=='ui_language':
-        _end(router,False)
+        _end(router)
         from localization import choose_language
         if choose_language(): xbmc.executebuiltin('Container.Refresh')
         return
     if action=='appearance_settings':
-        _end(router,False)
+        _end(router)
         from appearance import configure
         configure()
         return
@@ -55,7 +58,7 @@ def dispatch(router):
         from portals import get_active
         rows=get_active()
         selected=router._params.get('selected','')
-        _end(router,False)
+        _end(router)
         if not selected:
             i=xbmcgui.Dialog().select(tr(32463),[p.get('name',tr(32417)) for p in rows])
             if i<0 or i>=len(rows): return
@@ -65,21 +68,21 @@ def dispatch(router):
         xbmc.executebuiltin('Container.Update('+router.url(action='xcmate_home',pid=selected)+')')
         return
     if action=='recording_folder':
-        _end(router,False); recording_folder(router._params.get('check')=='1'); return
+        _end(router); recording_folder(router._params.get('check')=='1'); return
     if action=='guide_timers':
-        _end(router,False)
+        _end(router)
         if portal:
             from guide_timers import manage
             manage(portal['id'])
         return
     if action=='guide_status':
-        _end(router,False)
+        _end(router)
         if portal:
             from guide_store import status_lines
             xbmcgui.Dialog().textviewer(tr(32464),'\n'.join(status_lines(portal)))
         return
     if action in ('about_xcmate','recording_capabilities','widget_setup'):
-        _end(router,False)
+        _end(router)
         if action=='about_xcmate':
             text='XCMate '+xbmcaddon.Addon().getAddonInfo('version')+tr(32465)
         elif action=='recording_capabilities':
@@ -95,7 +98,7 @@ def dispatch(router):
         return
     router._params['pid']=portal['id']
     if action=='playlist_editor':
-        _end(router,False)
+        _end(router,portal.get('type')=='m3u')
         if portal.get('type')=='m3u':
             from playlist_editor import open_editor
             open_editor(portal)
@@ -132,15 +135,13 @@ def dispatch(router):
             _end(router,False)
             xbmcgui.Dialog().ok('XCMate',tr(32468))
             return
-        # This is a successful UI route. False makes Kodi's media container
-        # fall back to its previous/root directory while our window activates.
-        _end(router)
+        from window_navigation import open_route
         from media_window import open_media
-        open_media(router,portal,kind,router._params.get('sid',''),favourites=action=='media_favourites')
+        open_route(router,portal,lambda:open_media(router,portal,kind,router._params.get('sid',''),favourites=action=='media_favourites'))
     elif action=='guide_browser':
-        _end(router)
+        from window_navigation import open_route
         from guide_window import open_guide
-        open_guide(router,portal)
+        open_route(router,portal,lambda:open_guide(router,portal))
     elif action=='media_play':
         from media_progress import play
         play(router,portal)
@@ -151,7 +152,7 @@ def search(router,portal):
     from library_index import Reader
     query=router._params.get('q')
     if query is None:
-        _end(router,False)
+        _end(router)
         query=xbmcgui.Dialog().input(tr(32470))
         if query.strip():
             xbmc.executebuiltin('Container.Update('+router.url(action='global_search',pid=portal['id'],q=query[:200])+')')
@@ -232,7 +233,8 @@ def add_index_item(router,portal,kind,item,epg=None,recent=False):
         url=router.url(action='play_live' if portal.get('type')=='xtream' else 'source_play',pid=portal['id'],sid=item['sid'],name=item['name'])
     else:
         url=router.url(action='media_detail',pid=portal['id'],kind=kind,sid=item['sid'])
-    xbmcplugin.addDirectoryItem(router._handle,url,li,isFolder=kind!='live')
+    if kind!='live':li.setProperty('IsPlayable','false')
+    xbmcplugin.addDirectoryItem(router._handle,url,li,isFolder=False)
 
 
 def widget(router,portal,action):
