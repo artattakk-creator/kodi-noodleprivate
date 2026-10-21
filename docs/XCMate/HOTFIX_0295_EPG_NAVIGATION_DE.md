@@ -38,3 +38,7 @@ Installation 0.1.29.5 ist **optional**; gewünschter Haupttest folgt mit integri
 6. Manueller Mappingdialog nur bewusst ändern, ProSieben/MAXX und SAT.1/GOLD/Regionen getrennt, fehlende Daten ehrlich angezeigt: NOT_RUN.
 
 Cloudtests sind keine Android-Abnahme. Kein Merge, Release, Tag oder produktiver Repositoryupdate; endgültige Freigabe bleibt beim Nutzer.
+
+## Branch-Synchronisierung
+
+`origin/main` `454266dbff500d0b45d9cc36e54086af6caf8fde` wurde ausschließlich in den Hotfix-Branch übernommen. Der einzige Konflikt lag in der manuellen `testversionen/index.html`: 0.1.29.4/0.1.29.3 und ihre unveränderten Prüfsummen erhalten, optionale 0.1.29.5 ergänzt. Keine Source-/Test-/Coreänderung aus der Synchronisierung; kein Merge nach main und kein Produktivindexupdate.
