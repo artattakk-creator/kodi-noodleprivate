@@ -16,12 +16,19 @@
       <aspectratio>scale</aspectratio>
       <texture>special://home/addons/plugin.video.xtreammate/resources/media/media_neutral.png</texture>
     </control>
-    <control type="image">
+    <control type="image" id="104">
       <left>0</left>
       <top>0</top>
       <width>1280</width>
       <height>720</height>
       <texture>special://home/addons/plugin.video.xtreammate/resources/media/media_shade.png</texture>
+    </control>
+    <control type="image" id="105">
+      <left>0</left>
+      <top>0</top>
+      <width>1280</width>
+      <height>720</height>
+      <texture>special://home/addons/plugin.video.xtreammate/resources/media/media_detail_gradient.png</texture>
     </control>
     <control type="label" id="101">
       <left>44</left>
@@ -61,7 +68,7 @@
       <onright>400</onright>
       <onup>400</onup>
       <ondown>112</ondown>
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
     </control>
     <control type="button" id="120">
@@ -75,7 +82,7 @@
       <ondown>112</ondown>
       <onleft>120</onleft>
       <onright>400</onright>
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
     </control>
     <control type="list" id="200">
@@ -102,7 +109,7 @@
         <control type="image">
           <width>258</width>
           <height>52</height>
-          <texture>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texture>
+          <texture border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texture>
         </control>
         <control type="label">
           <left>12</left>
@@ -147,7 +154,7 @@
         <control type="image">
           <width>190</width>
           <height>240</height>
-          <texture>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texture>
+          <texture border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texture>
         </control>
         <control type="image">
           <left>25</left>
@@ -209,7 +216,7 @@
         <control type="image">
           <width>882</width>
           <height>48</height>
-          <texture>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texture>
+          <texture border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texture>
         </control>
         <control type="label">
           <left>16</left>
@@ -245,7 +252,7 @@
         <control type="image">
           <width>1192</width>
           <height>60</height>
-          <texture>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texture>
+          <texture border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texture>
         </control>
         <control type="label">
           <left>16</left>
@@ -332,7 +339,7 @@
                 <top>0</top>
                 <width>178</width>
                 <height>332</height>
-                <texture>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texture>
+                <texture border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texture>
               </control>
               <control type="image">
                 <left>7</left>
@@ -405,7 +412,7 @@
                 <top>0</top>
                 <width>178</width>
                 <height>332</height>
-                <texture>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texture>
+                <texture border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texture>
               </control>
               <control type="image">
                 <left>7</left>
@@ -478,7 +485,7 @@
                 <top>0</top>
                 <width>178</width>
                 <height>332</height>
-                <texture>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texture>
+                <texture border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texture>
               </control>
               <control type="image">
                 <left>7</left>

@@ -59,7 +59,7 @@ class MediaRails299(Fixture,unittest.TestCase):
 
     def test_playback_close_search_and_owner_are_unchanged_from_hotfix(self):
         import json
-        frozen=json.loads((Path(__file__).parent/'fixtures/xcmate_0298_ui_freeze.json').read_text())
+        frozen=json.loads((Path(__file__).parent/'fixtures/xcmate_02911_ui_freeze.json').read_text())
         import hashlib
         for name,sha in frozen['modules'].items():self.assertEqual(hashlib.sha256((LIB/name).read_bytes()).hexdigest(),sha,name)
         tree=ast.parse((LIB/'media_window.py').read_text())

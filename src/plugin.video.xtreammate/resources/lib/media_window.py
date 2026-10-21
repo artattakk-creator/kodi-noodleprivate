@@ -286,6 +286,8 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             target=self._restore_focus;self._restore_focus=None;self.setFocusId(target)
 
     def _show(self,mode):
+        self.getControl(104).setVisible(mode!='detail')
+        self.getControl(105).setVisible(mode=='detail')
         self.getControl(620).setVisible(mode=='landing')
         self.getControl(103).setVisible(mode!='landing')
         self.getControl(400).setPosition(1050,80 if mode=='landing' else 32)
