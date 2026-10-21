@@ -1,7 +1,7 @@
 """New routes only. Legacy provider/player entry points remain compatible."""
 from localization import tr
 
-ACTIONS=('playlist_editor','source_live','source_play','source_start','art_status','art_retry','art_db_health','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
+ACTIONS=('art_storage_settings','playlist_editor','source_live','source_play','source_start','art_status','art_retry','art_db_health','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
          'movies_home','series_home','media_detail','media_favourites','global_search','search_section',
          'widget_live_start_group','widget_recent_vod','widget_recent_series','widget_setup',
          'recording_folder','recording_capabilities','about_xcmate','guide_browser','media_play','guide_timers','guide_status')
@@ -33,14 +33,16 @@ def dispatch(router):
         _end(router)
         from artwork_health_ui import manage
         manage();return
+    if action=='art_storage_settings':
+        _end(router)
+        from art_storage_ui import configure
+        configure();return
     if action in ('art_status','art_retry'):
         _end(router)
-        from art_store import status,retry
-        if action=='art_retry': retry()
-        value=status()
-        xbmcgui.Dialog().textviewer(tr(32661),str(value['bytes']//(1024*1024))+' / '+str(value['budget']//(1024*1024))+' MiB\n'+
-            '\n'.join(k+': '+str(v) for k,v in value['counts'].items()))
-        return
+        from art_store import retry
+        if action=='art_retry':retry()
+        from art_storage_ui import show_status
+        show_status();return
     if action=='ui_language':
         _end(router)
         from localization import choose_language

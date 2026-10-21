@@ -207,6 +207,7 @@ class Fixture:
         # HTTP prefetch is a separate daemon in production; key callbacks only
         # enqueue work. Keep native UI tests independent of that worker.
         p=mock.patch.object(importlib.import_module('media_art'),'request');p.start();self.addCleanup(p.stop)
+        p=mock.patch.object(importlib.import_module('media_art'),'ensure_worker');p.start();self.addCleanup(p.stop)
         self.router=types.SimpleNamespace(_params={'pid':'p'},_handle=7,_xc=lambda p:self.client,
             url=lambda **kw:'plugin://plugin.video.xtreammate/?'+urllib.parse.urlencode({k:v for k,v in kw.items() if v is not None}),
             _add_dir=lambda label,url,**kw:self.added.append((url,ListItem(label),True)),

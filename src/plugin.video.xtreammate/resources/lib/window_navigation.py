@@ -13,7 +13,7 @@ from urllib.parse import urlsplit,parse_qs
 import xbmc
 import xbmcgui
 
-DIALOG_ACTIONS=frozenset(('art_status','art_retry','art_db_health','ui_language',
+DIALOG_ACTIONS=frozenset(('art_status','art_retry','art_db_health','art_storage_settings','ui_language',
     'appearance_settings','account_select','recording_folder','recording_capabilities',
     'guide_timers','guide_status','about_xcmate','widget_setup','playlist_editor'))
 WINDOW_ACTIONS=frozenset(('movies_home','series_home','media_detail','media_favourites','guide_browser'))

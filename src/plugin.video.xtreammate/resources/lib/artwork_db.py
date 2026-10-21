@@ -30,6 +30,8 @@ _SCHEMA=(
        priority INTEGER,attempts INTEGER,next_at REAL,updated REAL,bytes INTEGER)''',
     'CREATE INDEX IF NOT EXISTS art_pending ON jobs(status,next_at,priority)',
     'CREATE TABLE IF NOT EXISTS scan(pid TEXT,kind TEXT,revision TEXT,offset INTEGER,PRIMARY KEY(pid,kind))',
+    "CREATE TABLE IF NOT EXISTS art_state(name TEXT PRIMARY KEY,value TEXT)",
+    "CREATE TABLE IF NOT EXISTS art_inventory(pid TEXT,kind TEXT,items INTEGER,poster_missing INTEGER,fanart_missing INTEGER,complete INTEGER,PRIMARY KEY(pid,kind))",
     "CREATE TABLE IF NOT EXISTS worker(id INTEGER PRIMARY KEY,until REAL,owner TEXT DEFAULT '')")
 
 

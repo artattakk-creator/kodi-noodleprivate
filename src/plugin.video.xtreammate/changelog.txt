@@ -1,3 +1,8 @@
+0.1.29.10 (isolated artwork test candidate)
+- Explicit storage profiles, >4 GiB expert budget, volume reserve, verified migration retaining originals.
+- Persistent bounded full-catalog artwork scan, priority queue, distinct capacity pause causes and diagnostics.
+- No automatic storage change, publication or Android acceptance.
+
 0.1.29.8 – Testkandidat: sichere Medienfokus-/Back-Navigation und Kodi-Aktionsrouting.
 0.1.29.7 – Artwork-Jobdatenbank und Startsender-Route (Testkandidat)
 - Atomic schema initialization; private SQLite diagnostics and bounded retries instead of MIGRATION_FAILED loops.

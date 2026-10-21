@@ -131,3 +131,28 @@ def rail_items(pid,kind,reader,rail='favourites'):
             if item: rows.append(item)
     finally: db.close()
     return rows
+
+
+def art_priority_page(pid,kind,reader,rail,offset=0):
+    """One bounded ID page for the artwork worker, without writing UI state."""
+    db=_db()
+    try:
+        table='progress' if rail=='continue' else 'favourites'
+        rows=db.execute('SELECT * FROM '+table+' ORDER BY ident LIMIT 48 OFFSET ?',(offset,)).fetchall()
+    finally:db.close()
+    result=[]
+    for row in rows:
+        try:
+            fields=json.loads(row[0])
+            if fields[0]!=str(pid):continue
+            item_kind=fields[1];sid=fields[2]
+            if rail=='continue':
+                value=json.loads(row[1])
+                if not resume_position(value):continue
+                if kind=='vod' and item_kind!='vod':continue
+                if kind=='series' and item_kind not in ('episode','series_item'):continue
+            elif item_kind!=kind:continue
+            item=reader.get(kind,sid)
+            if item:result.append(item)
+        except (ValueError,IndexError,TypeError):continue
+    return result,offset+len(rows) if len(rows)==48 else 0
