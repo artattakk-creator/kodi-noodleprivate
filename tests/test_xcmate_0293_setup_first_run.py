@@ -157,8 +157,25 @@ class SetupFirstRunTests(unittest.TestCase):
         self.assertEqual(win.focus, 100)
         self.assertEqual(len(win.getControl(100).items), 1)
 
+    def test_group_switch_and_checkbox_keep_visible_focus(self):
+        win = self.new_window()
+        win.draft.categories["live"] = [
+            {"category_id": "1", "category_name": "News"}]
+        win.draft.categories["vod"] = [
+            {"category_id": "7", "category_name": "Filme"}]
+        win.onInit()
+        win.discovered(win.draft.categories)
+        win.onClick(11)
+        self.assertEqual(win.kind, "vod")
+        self.assertEqual(win.focus, 100)
+        win.getControl(100).position = 0
+        win.onClick(100)
+        self.assertEqual(win.focus, 100)
+        self.assertIn("7", win.draft.selected["vod"])
+
     def test_xml_has_focus_marker_and_colored_buttons(self):
         root = ET.parse(XML).getroot()
+        self.assertEqual(root.findtext("defaultcontrol"), "18")
         lst = root.find("./controls/control[@id='100']")
         self.assertIsNotNone(lst)
         focused = lst.find("focusedlayout")
