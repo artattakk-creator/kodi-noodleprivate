@@ -2104,3 +2104,7 @@ msgstr "Die Artwork-Jobdatenbank ist beschädigt. Nach sicherer Sicherung eine n
 msgctxt "#32903"
 msgid "Checking artwork jobs and creating a consistent backup. This may take a moment."
 msgstr "Artwork-Jobs prüfen und konsistente Sicherung erstellen. Dies kann einen Moment dauern."
+
+msgctxt "#32904"
+msgid "Background artwork preloading is paused after recovery. Existing images remain available; visible pages can load missing images. Use the artwork retry action to resume background preloading."
+msgstr "Das Hintergrund-Vorabladen ist nach der Wiederherstellung pausiert. Vorhandene Bilder bleiben verfügbar; sichtbare Seiten können fehlende Bilder laden. Mit der Artwork-Wiederholen-Aktion lässt sich das Vorabladen wieder aktivieren."
