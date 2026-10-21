@@ -145,10 +145,10 @@ test_restart_offline_previous_index_and_immediate_disabled_filter (test_xcmate_0
 test_same_stream_in_two_groups_counted_once_globally_but_available_in_each (test_xcmate_028_streaming.IndexTests.test_same_stream_in_two_groups_counted_once_globally_but_available_in_each) ... ok
 test_streaming_group_publishes_only_after_complete_json (test_xcmate_028_streaming.IndexTests.test_streaming_group_publishes_only_after_complete_json) ... ok
 test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update (test_xcmate_028_streaming.LargeGuideTests.test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update) ... 
-LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 22.279}
+LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 20.276}
 ok
 test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib (test_xcmate_028_streaming.LargeHTTPTests.test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib) ... 
-LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 37.317, "peak_rss_kib": 57704}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 37.635, "peak_rss_kib": 57704}]
+LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 32.354, "peak_rss_kib": 57776}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 32.395, "peak_rss_kib": 57776}]
 ok
 test_cache_envelope_and_trailing_data_validated (test_xcmate_028_streaming.ParserTests.test_cache_envelope_and_trailing_data_validated) ... ok
 test_chunked_http_gzip_and_truncated_compression (test_xcmate_028_streaming.ParserTests.test_chunked_http_gzip_and_truncated_compression) ... ok
@@ -208,6 +208,25 @@ test_explicit_https_kept (test_xcmate_0293_setup_inputs.WizardServerTests.test_e
 test_reject_blank_and_unqualified_host (test_xcmate_0293_setup_inputs.WizardServerTests.test_reject_blank_and_unqualified_host) ... ok
 test_reject_embedded_credentials_or_url_query (test_xcmate_0293_setup_inputs.WizardServerTests.test_reject_embedded_credentials_or_url_query) ... ok
 test_reject_invalid_port_or_protocol (test_xcmate_0293_setup_inputs.WizardServerTests.test_reject_invalid_port_or_protocol) ... ok
+test_active_xcmate_connection_prevents_maintenance_and_recovery (test_xcmate_artwork_recovery_0297.ArtworkRecoveryTests.test_active_xcmate_connection_prevents_maintenance_and_recovery) ... ok
+test_atomic_schema_failure_rolls_back_and_preserves_jobs (test_xcmate_artwork_recovery_0297.ArtworkRecoveryTests.test_atomic_schema_failure_rolls_back_and_preserves_jobs) ... ok
+test_cancellation_before_backup_completion_retains_corrupt_source (test_xcmate_artwork_recovery_0297.ArtworkRecoveryTests.test_cancellation_before_backup_completion_retains_corrupt_source) ... ok
+test_confirmed_rebuild_adopts_real_images_and_preserves_unrelated_profile_bytes (test_xcmate_artwork_recovery_0297.ArtworkRecoveryTests.test_confirmed_rebuild_adopts_real_images_and_preserves_unrelated_profile_bytes) ... ok
+test_diagnostic_progress_ui_never_runs_inside_the_database_worker (test_xcmate_artwork_recovery_0297.ArtworkRecoveryTests.test_diagnostic_progress_ui_never_runs_inside_the_database_worker) ... ok
+test_failed_backup_space_check_never_changes_source (test_xcmate_artwork_recovery_0297.ArtworkRecoveryTests.test_failed_backup_space_check_never_changes_source) ... ok
+test_healthy_database_is_not_rebuilt_even_with_confirmation (test_xcmate_artwork_recovery_0297.ArtworkRecoveryTests.test_healthy_database_is_not_rebuilt_even_with_confirmation) ... ok
+test_incompatible_schema_is_reported_and_never_automatically_dropped (test_xcmate_artwork_recovery_0297.ArtworkRecoveryTests.test_incompatible_schema_is_reported_and_never_automatically_dropped) ... ok
+test_online_backup_contains_committed_wal_rows (test_xcmate_artwork_recovery_0297.ArtworkRecoveryTests.test_online_backup_contains_committed_wal_rows) ... ok
+test_readonly_and_schema_diagnostics_never_include_private_exception_text (test_xcmate_artwork_recovery_0297.ArtworkRecoveryTests.test_readonly_and_schema_diagnostics_never_include_private_exception_text) ... ok
+test_readonly_diagnostic_remains_accurate_when_state_file_cannot_be_written (test_xcmate_artwork_recovery_0297.ArtworkRecoveryTests.test_readonly_diagnostic_remains_accurate_when_state_file_cannot_be_written) ... ok
+test_real_index_only_corruption_repaired_with_immutable_consistent_backup (test_xcmate_artwork_recovery_0297.ArtworkRecoveryTests.test_real_index_only_corruption_repaired_with_immutable_consistent_backup) ... ok
+test_sqlite_writer_busy_is_classified_and_retries_are_bounded_across_reload (test_xcmate_artwork_recovery_0297.ArtworkRecoveryTests.test_sqlite_writer_busy_is_classified_and_retries_are_bounded_across_reload) ... ok
+test_table_page_corruption_is_never_automatically_recreated (test_xcmate_artwork_recovery_0297.ArtworkRecoveryTests.test_table_page_corruption_is_never_automatically_recreated) ... ok
+test_unsupported_file_lock_leaves_normal_queue_access_available (test_xcmate_artwork_recovery_0297.ArtworkRecoveryTests.test_unsupported_file_lock_leaves_normal_queue_access_available) ... ok
+test_wal_sidecars_held_by_legacy_reader_block_atomic_queue_replacement (test_xcmate_artwork_recovery_0297.ArtworkRecoveryTests.test_wal_sidecars_held_by_legacy_reader_block_atomic_queue_replacement) ... ok
+test_missing_start_channel_keeps_failure_and_never_plays (test_xcmate_artwork_recovery_0297.StartRouteTests.test_missing_start_channel_keeps_failure_and_never_plays) ... ok
+test_runplugin_handle_does_not_complete_a_nonexistent_directory (test_xcmate_artwork_recovery_0297.StartRouteTests.test_runplugin_handle_does_not_complete_a_nonexistent_directory) ... ok
+test_valid_home_start_finishes_success_before_unchanged_direct_player (test_xcmate_artwork_recovery_0297.StartRouteTests.test_valid_home_start_finishes_success_before_unchanged_direct_player) ... ok
 test_display_name_and_version (test_xcmate_branding.XCMateBrandingTests.test_display_name_and_version) ... ok
 test_internal_communication_and_saved_ids_unchanged (test_xcmate_branding.XCMateBrandingTests.test_internal_communication_and_saved_ids_unchanged) ... ok
 test_kodi_settings_and_languages (test_xcmate_branding.XCMateBrandingTests.test_kodi_settings_and_languages) ... ok
@@ -525,11 +544,11 @@ test_widget_route_and_no_cached_credentials_in_link (test_xtreammate_widgets.Wid
 test_youtube_whitelist (test_xtreammate_widgets.WidgetsTest.test_youtube_whitelist) ... ok
 
 ----------------------------------------------------------------------
-Ran 521 tests in 126.973s
+Ran 540 tests in 108.326s
 
 OK
 
-MODEL_COLD_WINDOW_MS 4.948
+MODEL_COLD_WINDOW_MS 3.962
 
 SELECTIVE_XMLTV {"bytes": 400, "parsed": 2, "stored": 1}
 
