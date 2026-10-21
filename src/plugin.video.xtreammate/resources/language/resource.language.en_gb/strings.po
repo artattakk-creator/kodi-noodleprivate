@@ -2112,3 +2112,143 @@ msgstr "Background artwork preloading is paused after recovery. Existing images 
 msgctxt "#32910"
 msgid "The view could not be opened. Home remains available. Close any open Kodi dialog and try again."
 msgstr "The view could not be opened. Home remains available. Close any open Kodi dialog and try again."
+
+msgctxt "#32920"
+msgid "Artwork storage"
+msgstr "Artwork storage"
+
+msgctxt "#32921"
+msgid "Choose storage profile"
+msgstr "Choose storage profile"
+
+msgctxt "#32922"
+msgid "Choose destination and copy artwork"
+msgstr "Choose destination and copy artwork"
+
+msgctxt "#32923"
+msgid "Small box (256 MiB)"
+msgstr "Small box (256 MiB)"
+
+msgctxt "#32924"
+msgid "Standard (1 GiB)"
+msgstr "Standard (1 GiB)"
+
+msgctxt "#32925"
+msgid "Large library (16 GiB)"
+msgstr "Large library (16 GiB)"
+
+msgctxt "#32926"
+msgid "Automatic: free capacity minus reserve"
+msgstr "Automatic: free capacity minus reserve"
+
+msgctxt "#32927"
+msgid "Expert (32 MiB to 1 TiB)"
+msgstr "Expert (32 MiB to 1 TiB)"
+
+msgctxt "#32928"
+msgid "Budget in MiB: 32 to 1048576"
+msgstr "Budget in MiB: 32 to 1048576"
+
+msgctxt "#32929"
+msgid "Reserve in MiB: 32 to 1048576"
+msgstr "Reserve in MiB: 32 to 1048576"
+
+msgctxt "#32930"
+msgid "Save {0}? Budget: {1} MiB (0 = automatic); reserve: {2} MiB. Existing images stay."
+msgstr "Save {0}? Budget: {1} MiB (0 = automatic); reserve: {2} MiB. Existing images stay."
+
+msgctxt "#32931"
+msgid "Saved; capacity-paused jobs resume one at a time."
+msgstr "Saved; capacity-paused jobs resume one at a time."
+
+msgctxt "#32932"
+msgid "Invalid input or storage unavailable; previous policy retained."
+msgstr "Invalid input or storage unavailable; previous policy retained."
+
+msgctxt "#32933"
+msgid "VFS/SMB capacity cannot be verified. Direct downloads and migration are paused. Use a mounted writable volume with measurable free space."
+msgstr "VFS/SMB capacity cannot be verified. Direct downloads and migration are paused. Use a mounted writable volume with measurable free space."
+
+msgctxt "#32934"
+msgid "Copy and verify every image in the background? Originals remain. The active destination changes only after complete verification."
+msgstr "Copy and verify every image in the background? Originals remain. The active destination changes only after complete verification."
+
+msgctxt "#32935"
+msgid "Profile: {0}"
+msgstr "Profile: {0}"
+
+msgctxt "#32936"
+msgid "Artwork directory: {0}"
+msgstr "Artwork directory: {0}"
+
+msgctxt "#32937"
+msgid "Used / assigned: {0} / {1} MiB"
+msgstr "Used / assigned: {0} / {1} MiB"
+
+msgctxt "#32938"
+msgid "Free / total volume capacity: {0} / {1} MiB"
+msgstr "Free / total volume capacity: {0} / {1} MiB"
+
+msgctxt "#32939"
+msgid "Safety reserve: {0} MiB"
+msgstr "Safety reserve: {0} MiB"
+
+msgctxt "#32940"
+msgid "Storage check: {0}"
+msgstr "Storage check: {0}"
+
+msgctxt "#32941"
+msgid "Unique image URL jobs (READY=downloaded, PENDING/RUNNING=queued, FAILED=network/image error):"
+msgstr "Unique image URL jobs (READY=downloaded, PENDING/RUNNING=queued, FAILED=network/image error):"
+
+msgctxt "#32942"
+msgid "Worker pause: {0}"
+msgstr "Worker pause: {0}"
+
+msgctxt "#32943"
+msgid "Catalog inventory (complete=1: all currently imported active rows scanned):"
+msgstr "Catalog inventory (complete=1: all currently imported active rows scanned):"
+
+msgctxt "#32944"
+msgid "{0}: {1} items; no poster URL: {2}; no fanart URL: {3}; complete: {4}"
+msgstr "{0}: {1} items; no poster URL: {2}; no fanart URL: {3}; complete: {4}"
+
+msgctxt "#32945"
+msgid "Artwork database: {0}"
+msgstr "Artwork database: {0}"
+
+msgctxt "#32946"
+msgid "OK means the last database check succeeded; it does not guarantee all pictures exist."
+msgstr "OK means the last database check succeeded; it does not guarantee all pictures exist."
+
+msgctxt "#32947"
+msgid "Last check (UTC epoch): {0}"
+msgstr "Last check (UTC epoch): {0}"
+
+msgctxt "#32948"
+msgid "Last SQLite error code: {0}"
+msgstr "Last SQLite error code: {0}"
+
+msgctxt "#32949"
+msgid "Recovery backup recorded: {0}"
+msgstr "Recovery backup recorded: {0}"
+
+msgctxt "#32950"
+msgid "Repair required: {0}"
+msgstr "Repair required: {0}"
+
+msgctxt "#32951"
+msgid "QUOTA_FULL=assigned budget; DISK_LOW/DISK_FULL=physical capacity; STORAGE_OFFLINE=detached volume; PERMISSION_DENIED=write access. Legacy SPACE_FULL is ambiguous. Failed/missing URLs do not imply a damaged database."
+msgstr "QUOTA_FULL=assigned budget; DISK_LOW/DISK_FULL=physical capacity; STORAGE_OFFLINE=detached volume; PERMISSION_DENIED=write access. Legacy SPACE_FULL is ambiguous. Failed/missing URLs do not imply a damaged database."
+
+msgctxt "#32952"
+msgid "Last migration: {0}"
+msgstr "Last migration: {0}"
+
+msgctxt "#32953"
+msgid "Artwork diagnostics unavailable; use database health. No files were deleted."
+msgstr "Artwork diagnostics unavailable; use database health. No files were deleted."
+
+msgctxt "#32954"
+msgid "Copy started. Progress is shown in artwork status."
+msgstr "Copy started. Progress is shown in artwork status."

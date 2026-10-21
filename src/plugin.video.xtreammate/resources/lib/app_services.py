@@ -34,12 +34,12 @@ def refresh_local():
             reader=Reader(portal['id'])
             for kind in ('vod','series'):
                 rows,_=reader.rail(kind,limit=12)
-                request(rows)
+                request(rows,priority=20)
             start=reader.get('live',str(portal.get('start_stream_id') or ''))
             cid=initial_group(portal,reader.groups('live'),start)
             if cid:
                 rows,_=reader.page('live',category=cid,limit=12,pin=start['sid'] if start else None)
-                request(rows)
+                request(rows,priority=20)
             _retry_after.pop(portal['id'],None)
         except Exception as exc:
             # A disk-full/over-budget/corrupt import must not reparse the same

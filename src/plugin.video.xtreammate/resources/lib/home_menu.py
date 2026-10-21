@@ -105,6 +105,7 @@ def settings(router, portal, section=''):
     elif section=='player':
         add(tr(32437),'settings')
     elif section=='storage':
+        add(tr(32920),'art_storage_settings')
         add(tr(32900),'art_db_health')
         add(tr(32661),'art_status')
         add(tr(32662),'art_retry')

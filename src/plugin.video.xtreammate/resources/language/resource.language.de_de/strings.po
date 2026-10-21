@@ -2112,3 +2112,143 @@ msgstr "Das Hintergrund-Vorabladen ist nach der Wiederherstellung pausiert. Vorh
 msgctxt "#32910"
 msgid "The view could not be opened. Home remains available. Close any open Kodi dialog and try again."
 msgstr "Die Ansicht konnte nicht geöffnet werden. Die Hauptübersicht bleibt verfügbar. Bitte einen offenen Kodi-Dialog schließen und erneut versuchen."
+
+msgctxt "#32920"
+msgid "Artwork storage"
+msgstr "Artwork-Speicher"
+
+msgctxt "#32921"
+msgid "Choose storage profile"
+msgstr "Speicherprofil wählen"
+
+msgctxt "#32922"
+msgid "Choose destination and copy artwork"
+msgstr "Ziel wählen und Artwork kopieren"
+
+msgctxt "#32923"
+msgid "Small box (256 MiB)"
+msgstr "Kleine Box (256 MiB)"
+
+msgctxt "#32924"
+msgid "Standard (1 GiB)"
+msgstr "Standard (1 GiB)"
+
+msgctxt "#32925"
+msgid "Large library (16 GiB)"
+msgstr "Große Mediathek (16 GiB)"
+
+msgctxt "#32926"
+msgid "Automatic: free capacity minus reserve"
+msgstr "Automatisch: freier Speicher abzüglich Reserve"
+
+msgctxt "#32927"
+msgid "Expert (32 MiB to 1 TiB)"
+msgstr "Experte (32 MiB bis 1 TiB)"
+
+msgctxt "#32928"
+msgid "Budget in MiB: 32 to 1048576"
+msgstr "Budget in MiB: 32 bis 1048576"
+
+msgctxt "#32929"
+msgid "Reserve in MiB: 32 to 1048576"
+msgstr "Reserve in MiB: 32 bis 1048576"
+
+msgctxt "#32930"
+msgid "Save {0}? Budget: {1} MiB (0 = automatic); reserve: {2} MiB. Existing images stay."
+msgstr "{0} speichern? Budget: {1} MiB (0 = automatisch); Reserve: {2} MiB. Vorhandene Bilder bleiben erhalten."
+
+msgctxt "#32931"
+msgid "Saved; capacity-paused jobs resume one at a time."
+msgstr "Gespeichert; wegen Kapazität pausierte Jobs starten einzeln erneut."
+
+msgctxt "#32932"
+msgid "Invalid input or storage unavailable; previous policy retained."
+msgstr "Ungültige Eingabe oder Speicher nicht verfügbar; bisherige Einstellung bleibt erhalten."
+
+msgctxt "#32933"
+msgid "VFS/SMB capacity cannot be verified. Direct downloads and migration are paused. Use a mounted writable volume with measurable free space."
+msgstr "Freier VFS-/SMB-Speicher ist nicht überprüfbar. Direkte Downloads und Migration pausieren. Ein eingebundenes beschreibbares Laufwerk mit messbarem freien Speicher verwenden."
+
+msgctxt "#32934"
+msgid "Copy and verify every image in the background? Originals remain. The active destination changes only after complete verification."
+msgstr "Alle Bilder im Hintergrund kopieren und prüfen? Originale bleiben erhalten. Das aktive Ziel wechselt erst nach vollständiger Prüfung."
+
+msgctxt "#32935"
+msgid "Profile: {0}"
+msgstr "Profil: {0}"
+
+msgctxt "#32936"
+msgid "Artwork directory: {0}"
+msgstr "Artwork-Verzeichnis: {0}"
+
+msgctxt "#32937"
+msgid "Used / assigned: {0} / {1} MiB"
+msgstr "Belegt / zugewiesen: {0} / {1} MiB"
+
+msgctxt "#32938"
+msgid "Free / total volume capacity: {0} / {1} MiB"
+msgstr "Freier / gesamter Laufwerksspeicher: {0} / {1} MiB"
+
+msgctxt "#32939"
+msgid "Safety reserve: {0} MiB"
+msgstr "Sicherheitsreserve: {0} MiB"
+
+msgctxt "#32940"
+msgid "Storage check: {0}"
+msgstr "Speicherprüfung: {0}"
+
+msgctxt "#32941"
+msgid "Unique image URL jobs (READY=downloaded, PENDING/RUNNING=queued, FAILED=network/image error):"
+msgstr "Eindeutige Bild-URL-Jobs (READY=geladen, PENDING/RUNNING=wartend, FAILED=Netz-/Bildfehler):"
+
+msgctxt "#32942"
+msgid "Worker pause: {0}"
+msgstr "Worker-Pause: {0}"
+
+msgctxt "#32943"
+msgid "Catalog inventory (complete=1: all currently imported active rows scanned):"
+msgstr "Kataloginventar (vollständig=1: alle aktuell importierten aktiven Einträge erfasst):"
+
+msgctxt "#32944"
+msgid "{0}: {1} items; no poster URL: {2}; no fanart URL: {3}; complete: {4}"
+msgstr "{0}: {1} Einträge; ohne Poster-URL: {2}; ohne Fanart-URL: {3}; vollständig: {4}"
+
+msgctxt "#32945"
+msgid "Artwork database: {0}"
+msgstr "Artwork-Datenbank: {0}"
+
+msgctxt "#32946"
+msgid "OK means the last database check succeeded; it does not guarantee all pictures exist."
+msgstr "OK bedeutet: letzte Datenbankprüfung erfolgreich. Es garantiert keine vollständigen Bilder."
+
+msgctxt "#32947"
+msgid "Last check (UTC epoch): {0}"
+msgstr "Letzte Prüfung (UTC-Zeitstempel): {0}"
+
+msgctxt "#32948"
+msgid "Last SQLite error code: {0}"
+msgstr "Letzter SQLite-Fehlercode: {0}"
+
+msgctxt "#32949"
+msgid "Recovery backup recorded: {0}"
+msgstr "Wiederherstellungsbackup vermerkt: {0}"
+
+msgctxt "#32950"
+msgid "Repair required: {0}"
+msgstr "Reparatur erforderlich: {0}"
+
+msgctxt "#32951"
+msgid "QUOTA_FULL=assigned budget; DISK_LOW/DISK_FULL=physical capacity; STORAGE_OFFLINE=detached volume; PERMISSION_DENIED=write access. Legacy SPACE_FULL is ambiguous. Failed/missing URLs do not imply a damaged database."
+msgstr "QUOTA_FULL=zugewiesenes Budget; DISK_LOW/DISK_FULL=physischer Speicher; STORAGE_OFFLINE=Laufwerk fehlt; PERMISSION_DENIED=Schreibrecht fehlt. Altes SPACE_FULL ist mehrdeutig. Fehlende/nicht erreichbare URLs bedeuten keine defekte Datenbank."
+
+msgctxt "#32952"
+msgid "Last migration: {0}"
+msgstr "Letzte Migration: {0}"
+
+msgctxt "#32953"
+msgid "Artwork diagnostics unavailable; use database health. No files were deleted."
+msgstr "Artwork-Diagnose nicht verfügbar; Datenbankzustand prüfen. Es wurden keine Dateien gelöscht."
+
+msgctxt "#32954"
+msgid "Copy started. Progress is shown in artwork status."
+msgstr "Kopiervorgang gestartet. Fortschritt siehe Artwork-Status."

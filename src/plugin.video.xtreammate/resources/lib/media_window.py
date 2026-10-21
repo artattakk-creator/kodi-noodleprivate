@@ -198,7 +198,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             items.append(li)
         control.addItems(items)
         from media_art import request
-        request(rows,priority=0)
+        request(rows,priority=0 if control_id==112 else 5 if control_id==111 else 10)
 
     def _refresh_art(self):
         from media_art import local_art
@@ -313,7 +313,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         while not self._closed:
             try: item=self._art.get(timeout=.5)
             except queue.Empty: continue
-            request([item],priority=0)
+            request([item],priority=10)
 
     def _details(self,item):
         self._previous=(self.mode,self.category,self.offset,self._last_position)

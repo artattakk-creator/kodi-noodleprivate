@@ -36,61 +36,85 @@ def dimensions(data):
     raise ValueError('unsupported image')
 
 
+def valid_url(value):
+    if not isinstance(value,str):return False
+    try:
+        parts=urlsplit(value)
+        return parts.scheme in ('http','https') and bool(parts.hostname)
+    except ValueError:return False
+
+
 def folder():
-    from utils import addon_data_dir
-    return os.path.join(addon_data_dir(),'media_art_v1')
+    from art_storage import root
+    return root()
 
 
 def cached(url):
-    if not isinstance(url,str) or not url: return ''
-    filename=os.path.join(folder(),hashlib.sha256(url.encode()).hexdigest()+'.img')
+    if not isinstance(url,str) or not url:return ''
+    from art_storage import candidates,Paused
     try:
-        with open(filename,'rb') as stream: header=stream.read(65536)
-        w,h=dimensions(header)
-        return filename if 0<w<=4096 and 0<h<=4096 and w*h<=MAX_PIXELS else ''
-    except (OSError,ValueError): return ''
+        for root in candidates():
+            filename=os.path.join(root,hashlib.sha256(url.encode()).hexdigest()+'.img')
+            try:
+                with open(filename,'rb') as stream:header=stream.read(65536)
+                w,h=dimensions(header)
+                if 0<w<=4096 and 0<h<=4096 and w*h<=MAX_PIXELS:return filename
+            except (OSError,ValueError):pass
+    except Paused:pass
+    return ''
 
 
 def fetch(url):
-    """Call from a bounded worker only, never from onAction/onFocus."""
-    if not isinstance(url,str) or urlsplit(url).scheme not in ('http','https'): return ''
-    with _lock:
+    """One bounded worker; reserve checked before HTTP and before atomic commit."""
+    if not valid_url(url):return ''
+    from art_storage import lock,check,Paused,account
+    with _lock,lock(exclusive=True):
+        # Check active volume before falling back to preserved originals. An
+        # absent USB must pause new writes even while old images remain visible.
+        root=check(quota=False)
         hit=cached(url)
         if hit:
             from art_store import ready
-            ready(url,os.path.getsize(hit))
-            return hit
+            ready(url,os.path.getsize(hit));return hit
         from art_store import budget,used
-        from import_budget import check_space
-        root=folder();os.makedirs(root,exist_ok=True)
         available=budget()-used()
-        if available<=0: raise OSError(28,'Artwork budget full')
-        check_space(os.path.join(root,'pending'),min(MAX_BYTES,available))
+        if available<=0:raise Paused('QUOTA_FULL')
+        check(MAX_BYTES,quota=False)
+        from import_budget import check_space
+        check_space(os.path.join(root,'pending'),MAX_BYTES)
         from utils import http_get
-        data,_=http_get(url,timeout=4,max_bytes=min(MAX_BYTES,available),max_seconds=6)
-        if len(data)>available: raise OSError(28,'Artwork budget full')
+        data,_=http_get(url,timeout=4,max_bytes=MAX_BYTES,max_seconds=6)
+        if len(data)>available:raise Paused('QUOTA_FULL')
         w,h=dimensions(data)
-        if not 0<w<=4096 or not 0<h<=4096 or w*h>MAX_PIXELS:
-            raise ValueError('image dimensions exceed budget')
-        root=folder();os.makedirs(root,exist_ok=True)
+        if not 0<w<=4096 or not 0<h<=4096 or w*h>MAX_PIXELS:raise ValueError('image dimensions exceed budget')
+        check(len(data),quota=False)
         filename=os.path.join(root,hashlib.sha256(url.encode()).hexdigest()+'.img')
+        old_size=os.path.getsize(filename) if os.path.isfile(filename) else 0
         fd,tmp=tempfile.mkstemp(prefix='.art-',dir=root)
         try:
-            with os.fdopen(fd,'wb') as stream: stream.write(data)
+            with os.fdopen(fd,'wb') as stream:
+                stream.write(data);stream.flush();os.fsync(stream.fileno())
             os.replace(tmp,filename)
+            account(root,len(data)-old_size)
         finally:
-            if os.path.exists(tmp): os.unlink(tmp)
+            if os.path.exists(tmp):os.unlink(tmp)
         from art_store import ready
         ready(url,len(data))
         return filename
 
 
-def sources(item):
-    poster=next((item.get(k) for k in ('cover','stream_icon','movie_image') if isinstance(item.get(k),str) and item[k]),'')
+def all_sources(item):
+    values=[item.get(k) for k in ('cover','stream_icon','movie_image')]
     backdrop=item.get('backdrop_path')
-    if isinstance(backdrop,list): backdrop=next((p for p in backdrop if isinstance(p,str) and p),'')
-    if not isinstance(backdrop,str): backdrop=''
-    return poster,backdrop or poster
+    values.extend(backdrop if isinstance(backdrop,list) else [backdrop])
+    return list(dict.fromkeys(u for u in values if valid_url(u)))
+
+
+def sources(item):
+    poster=next((item.get(k) for k in ('cover','stream_icon','movie_image') if valid_url(item.get(k))),'')
+    backdrop=item.get('backdrop_path')
+    values=backdrop if isinstance(backdrop,list) else [backdrop]
+    return poster,next((u for u in values if valid_url(u)),poster)
 
 
 def local_art(item):
@@ -101,15 +125,22 @@ def local_art(item):
     return dict(poster=poster,thumb=poster,icon=poster,fanart=backdrop,landscape=backdrop or poster)
 
 
-def request(items,priority=0):
+def request(items,priority=10):
     """Persist bounded visible-page requests, then start one worker."""
     global _worker
-    urls=[u for item in items[:48] for u in dict.fromkeys(sources(item))
-          if isinstance(u,str) and urlsplit(u).scheme in ('http','https') and not cached(u)]
-    if not urls: return
+    urls=[u for item in items[:48] for u in all_sources(item)
+          if valid_url(u) and not cached(u)]
+    if not urls:return True
     from art_store import enqueue
     try: enqueue(urls,priority)
-    except (OSError,RuntimeError,sqlite3.Error): return
+    except (OSError,RuntimeError,sqlite3.Error):return False
+    ensure_worker()
+    return True
+
+
+def ensure_worker():
+    """Restart persistent jobs even when catalog scan is already complete."""
+    global _worker
     with _queue_lock:
         if _worker is None or not _worker.is_alive():
             _worker=threading.Thread(target=_prefetch,daemon=True,name='XCMate-artwork');_worker.start()

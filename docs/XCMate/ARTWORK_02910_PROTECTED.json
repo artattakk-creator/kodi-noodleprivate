@@ -1,0 +1,16 @@
+{
+  "resources/lib/live_overlay.py": "UNCHANGED",
+  "resources/lib/live_recovery.py": "UNCHANGED",
+  "resources/lib/remote_control.py": "UNCHANGED",
+  "resources/lib/remote_bridge.py": "UNCHANGED",
+  "resources/lib/remote_profiles.py": "UNCHANGED",
+  "resources/lib/player.py": "UNCHANGED",
+  "resources/lib/playback_exit.py": "UNCHANGED",
+  "resources/lib/media_progress.py": "UNCHANGED",
+  "resources/lib/guide_store.py": "UNCHANGED",
+  "resources/lib/epg_events.py": "UNCHANGED",
+  "resources/lib/epg_sources.py": "UNCHANGED",
+  "resources/lib/owner_dispatch.py": "UNCHANGED",
+  "resources/lib/guide_window.py": "UNCHANGED",
+  "resources/settings.xml": "UNCHANGED"
+}

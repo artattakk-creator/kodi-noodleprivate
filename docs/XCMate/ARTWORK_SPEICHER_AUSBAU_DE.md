@@ -2,6 +2,8 @@
 
 21.10.2026. Neuer konsolidierter Nutzerauftrag: **erst P0 0.1.29.8, dann separat UI/Artwork**. Dieser Plan ist keine Einstellung auf der Box und keine automatische Speicherumstellung. Ältere Issue-Kommentare „jetzt nur dokumentieren“ werden nicht als zusätzliche Freigabesperre für den ausdrücklich neu beauftragten separaten Ausbau ausgelegt. Produktive Profile/Standardwerte bleiben unverändert; jede spätere Auswahl/Migration erfolgt bewusst im Add-on.
 
+> Separater lokaler/USB-Testkandidat 0.1.29.10 ist inzwischen implementiert: [Umfang, Grenzen und Android-Anleitung](ARTWORK_02910_IMPLEMENTIERUNG_DE.md). Direkte SMB-/VFS-Unterstützung bleibt wegen ungeprüfter Freiraumfähigkeit offen. Die folgenden Punkte dokumentieren den Plan auf Basis 0.1.29.7/0.1.29.8.
+
 ## Belegter Iststand
 
 Persistente URL-/SHA-Jobqueue, Bilder ohne automatische Eviction, ein Download-Lease, sichtbare Seiten vor 48er-Katalogseiten, Retry und lokaler Bildordner existieren. Nicht neu bauen. `media_art_budget_mb` ist 512 MiB, `art_store.budget()` kappt auf 4096 MiB; das ist eine Speichergrenze, kein RAM-Budget. `SPACE_FULL` vermischt Quota und echte Dateisystemreserve. Blindes Retry aller Jobs bringt bei erschöpfter Quota keinen Fortschritt. Aktuelle Nutzerwerte 514/512 MiB, READY3767, SPACE_FULL≈17667 bzw. PENDING≈17638 sind getrennte Momentaufnahmen.
