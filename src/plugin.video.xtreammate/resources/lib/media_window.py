@@ -63,9 +63,9 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._mode_focus[self.mode]=control_id
 
     def _valid_focus(self):
-        candidates=([110,111,112,120,400,501] if self.mode=='landing' else
-                    [200,210,400,501] if self.mode in ('grid','groups') else
-                    [300,400,501] if self.mode=='detail' else [330,400,501])
+        candidates=([110,111,112,120,400] if self.mode=='landing' else
+                    [200,210,400] if self.mode in ('grid','groups') else
+                    [300,400] if self.mode=='detail' else [330,400])
         result=[]
         for cid in candidates:
             if cid==110 and not self.rows:continue

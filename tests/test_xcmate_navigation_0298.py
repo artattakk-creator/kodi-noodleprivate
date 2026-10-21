@@ -68,7 +68,7 @@ class Navigation298(Fixture,unittest.TestCase):
         for mode in ('groups','grid','detail','seasons','episodes'):
             w.mode=mode;w.rows=[];w.groups=[];w.actions=[]
             w._show(mode);w.setFocusId(120);w.setFocusId(110)
-            self.assertIn(w.getFocusId(),(400,501))
+            self.assertEqual(w.getFocusId(),400)
             self.assertTrue(w.getControl(w.getFocusId()).isVisible())
         w.mode='landing';w._show('landing');w.setFocusId(120)
         self.assertEqual(w.getFocusId(),120)
@@ -92,6 +92,8 @@ class Navigation298(Fixture,unittest.TestCase):
     def test_disabled_control_is_checked_via_real_kodi_info_condition(self):
         w=self.media_window();w.getControl(120).setEnabled(False);w.setFocusId(120)
         self.assertNotEqual(w.getFocusId(),120)
+        self.assertNotIn(501,w._valid_focus())
+        self.assertTrue(all(w.getControl(cid).kind in ('button','list','panel') for cid in w._valid_focus()))
         self.assertNotIn('.isEnabled(', (LIB/'media_window.py').read_text())
         self.assertIn('Control.IsEnabled(', (LIB/'media_window.py').read_text())
 

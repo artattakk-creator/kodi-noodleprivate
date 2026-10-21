@@ -65,6 +65,7 @@ class WindowXML:
     def getControl(self,controlId): return self.controls[controlId]
     def setFocusId(self,iControlId):
         assert self.controls[iControlId].visible, ('focus on hidden control',iControlId)
+        assert self.controls[iControlId].kind in ('button','list','panel'),('focus on noninteractive control',iControlId)
         self.focus=iControlId
     def getFocusId(self): return self.focus
     def doModal(self):
