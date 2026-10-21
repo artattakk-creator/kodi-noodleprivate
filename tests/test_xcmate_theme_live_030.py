@@ -92,6 +92,8 @@ class WindowAndDiagnosticTests(Fixture,unittest.TestCase):
             importlib.import_module('theme_render').guide_state(window,'error')
             window.native(2)
             self.assertTrue(window.getProperty('XCMate.EpgStatusIcon').endswith('assets/epg/source-error.png'))
+            window.native(92);self.assertTrue(window.shown)
+            self.assertEqual(window.getFocusId(),210)
             window.native(92);self.assertFalse(window.shown)
         sys.modules['utils'].http_get.assert_not_called()
 

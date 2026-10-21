@@ -39,7 +39,7 @@ jobs:
           from build_xcmate_theme import build
           from theme_package import manifest, json_object
           src=Path('themes/xcmate/space-premium')
-          spec=manifest(json_object((src/'theme.json').read_bytes()),'0.1.30')
+          spec=manifest(json_object((src/'theme.json').read_bytes()),'0.1.30.1')
           if spec['id']!='space-premium' or len(spec['required_files'])!=98:
               raise ValueError('Missing approved original assets')
           with tempfile.TemporaryDirectory(prefix='xcmate-98-') as tmp:
@@ -56,7 +56,7 @@ jobs:
                   shutil.copyfile(filename,src/filename.name)
               print(json.dumps({k:v for k,v in report.items() if k!='images'},indent=2))
           PY
-      - name: Repack XCMate 0.1.30 candidate with permanently bundled approved core icon
+      - name: Repack XCMate 0.1.30.1 candidate with permanently bundled approved core icon
         run: |
           python - <<'PY'
           import hashlib, shutil, tempfile, zipfile
@@ -70,7 +70,7 @@ jobs:
           if hashlib.sha256(icon.read_bytes()).hexdigest()!=expected:
               raise ValueError('The approved XCMate core icon was changed')
           version=ET.parse(src/'addon.xml').getroot().get('version')
-          if version!='0.1.30':
+          if version!='0.1.30.1':
               raise ValueError('Wrong XCMate core candidate')
           dest=Path(addon)/(addon+'-'+version+'.zip')
           with tempfile.TemporaryDirectory(prefix='xcmate-core-') as tmp:
@@ -87,7 +87,7 @@ jobs:
               shutil.copyfile(output,dest)
               digest=hashlib.sha256(output.read_bytes()).hexdigest()
               dest.with_name(dest.name+'.sha256').write_text(digest+'  '+dest.name+'\n')
-              print('XCMate core 0.1.30 RC SHA256:',digest)
+              print('XCMate core 0.1.30.1 RC SHA256:',digest)
           PY
       - name: Upload verified theme for PR review
         uses: actions/upload-artifact@v4
@@ -97,6 +97,6 @@ jobs:
             themes/xcmate/space-premium/XCMate-Space-Premium-1.0.0.zip
             themes/xcmate/space-premium/XCMate-Space-Premium-1.0.0.zip.sha256
             themes/xcmate/space-premium/XCMate-Space-Premium-1.0.0.validation.json
-            plugin.video.xtreammate/plugin.video.xtreammate-0.1.30.zip
-            plugin.video.xtreammate/plugin.video.xtreammate-0.1.30.zip.sha256
+            plugin.video.xtreammate/plugin.video.xtreammate-0.1.30.1.zip
+            plugin.video.xtreammate/plugin.video.xtreammate-0.1.30.1.zip.sha256
           if-no-files-found: error
