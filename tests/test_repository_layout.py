@@ -13,7 +13,7 @@ class RepositoryLayoutTests(unittest.TestCase):
     def test_gs_media_only_update_origin(self):
         manifest = ET.parse(SRC / "repository.gsmedia" / "addon.xml").getroot()
         self.assertEqual(manifest.get("id"), "repository.gsmedia")
-        self.assertEqual(manifest.get("version"), "1.7.0")
+        self.assertEqual(manifest.get("version"), "1.8.0")
         dirs = manifest.findall("./extension[@point='xbmc.addon.repository']/dir")
         self.assertEqual(len(dirs), 9)
         self.assertEqual(dirs[8].get('minversion'), '20.9.1')
