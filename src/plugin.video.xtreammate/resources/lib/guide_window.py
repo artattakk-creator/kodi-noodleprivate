@@ -15,6 +15,8 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXML):
     def configure(self,router,portal):
         self._configure_owner()
         self._return_home=False
+        from theme_render import snapshot
+        self._theme=snapshot()
         self.router,self.portal=router,portal
         self._pool=ThreadPoolExecutor(max_workers=1)
         self._lock=threading.RLock();self._generation=0;self._closed=False;self._ready=False
@@ -27,10 +29,14 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXML):
 
     def _query_failed(self,exc):
         self._gui()
+        from theme_render import guide_state
+        guide_state(self,'error')
         self.getControl(102).setLabel(tr(32610))
 
     @native_init
     def onInit(self):
+        from theme_render import guide_state
+        guide_state(self,'loading')
         for control_id,string_id in ((310,32588),(311,32589),(312,32590),(501,32591)):
             self.getControl(control_id).setLabel(tr(string_id))
         if self._ready: return
@@ -132,6 +138,8 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXML):
 
     def _events_ready(self,value):
         self.programmes,self.event_total,horizon,info=value
+        from theme_render import guide_state
+        guide_state(self,'ready' if self.programmes else 'empty',self.getFocusId()==220)
         now=time.time()
         self._fill(220,[('{} - {} · {}'.format(time.strftime('%H:%M',time.localtime(e['start'])),
             time.strftime('%H:%M',time.localtime(e['stop'])),e['title']))+
@@ -157,6 +165,8 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXML):
 
     def onAction(self,action):
         key=action.getId();focus=self.getFocusId()
+        from theme_render import guide_state
+        guide_state(self,detail=focus==220)
         with self._lock:
             if key==117:
                 query=xbmcgui.Dialog().input(tr(32534))
@@ -200,7 +210,9 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXML):
             event=self.programmes[pos]
             choices=[tr(32549),tr(32550)]
             if event['start']>time.time(): choices.append(tr(32551))
-            selected=xbmcgui.Dialog().select(event['title'],choices)
+            from theme_render import choice_items
+            selected=xbmcgui.Dialog().select(event['title'],choice_items(choices,
+                ['icon.epg.clock','icon.player.play','icon.epg.remind'],self._theme),useDetails=bool(self._theme))
             if selected==0:
                 text=tr(32552).format(
                     self.channel['name'],time.strftime(tr(32584),time.localtime(event['start'])),

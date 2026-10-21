@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "version": "0.1.29.2",
+  "sha256": "55b6b74e262b30cca37eaf8d251753e5cfb5fcfe06f3e13bd28d3452f56b73d6",
+  "bytes": 375229,
+  "files": 120,
+  "crc": "PASS",
+  "index_version": "PASS",
+  "index_md5": "PASS",
+  "private_profile_files": "ABSENT",
+  "upgrade_same_id": true,
+  "android_acceptance": "NOT_RUN",
+  "credentials_audit": "No profile/DB/log payloads; not a runtime account audit",
+  "main_commit": "116d653efb95df18a4ba750cb33d108fc2e2c276",
+  "pr_49": "MERGED",
+  "published_workflow": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39454694462",
+  "github_binary_download": "PASS via contents API base64 (raw transport returned transform error)",
+  "github_download_bytes": 375229,
+  "github_download_sha256": "55b6b74e262b30cca37eaf8d251753e5cfb5fcfe06f3e13bd28d3452f56b73d6"
+}

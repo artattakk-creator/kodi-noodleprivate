@@ -1,0 +1,26 @@
+name: Validate XCMate theme catalogue
+on:
+  pull_request:
+    paths:
+      - 'themes/**'
+      - 'tools/*xcmate*theme*.py'
+      - 'tools/validate_xcmate_catalog.py'
+      - 'src/plugin.video.xtreammate/resources/lib/theme_*.py'
+      - '.github/workflows/xcmate-themes.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'Pillow>=11,<13'
+      - run: python tools/validate_xcmate_catalog.py --output theme-catalogue-validation.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xcmate-theme-catalogue-validation
+          path: theme-catalogue-validation.json

@@ -318,15 +318,17 @@ class LiveNavigator(xbmcgui.WindowDialog):
 
     def _build_controls(self):
         import xbmcaddon
+        from theme_render import live_texture, snapshot
+        self._theme = snapshot()
         width, height = max(960,self.getWidth()), max(640,self.getHeight())
         self._width, self._height = width,height
         self._media = os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media')
         media = self._media
-        normal,focused,clear = [os.path.join(media,s+'.png') for s in ('tv_normal','tv_focus','remote_clear')]
+        normal,focused,clear = [live_texture(self,os.path.join(media,s+'.png')) for s in ('tv_normal','tv_focus','remote_clear')]
         panel = os.path.join(media,'tv_panel.png')
         sidebar = min(800,int(width*.65))
         self._sidebar = sidebar
-        self.bg = xbmcgui.ControlImage(24,24,sidebar,height-48,panel)
+        self.bg = xbmcgui.ControlImage(24,24,sidebar,height-48,live_texture(self,panel,'panel.sidebar'))
         self.heading = xbmcgui.ControlLabel(48,38,sidebar-48,36,'XCMate','font16','0xFFF0F2F5')
         self.sub = xbmcgui.ControlLabel(48,78,sidebar-48,28,'','font12','0xFFB6BCC6')
         self._startup_stage = 'CONTROL_LIST'
@@ -344,23 +346,23 @@ class LiveNavigator(xbmcgui.WindowDialog):
             y = 116+i*row_height
             self._row_controls.append((
                 xbmcgui.ControlImage(44,y,sidebar-40,row_height-3,focused),
-                xbmcgui.ControlImage(52,y+7,42,42,os.path.join(media,'tv.png'),aspectRatio=2),
+                xbmcgui.ControlImage(52,y+7,42,42,live_texture(self,os.path.join(media,'tv.png')),aspectRatio=2),
                 xbmcgui.ControlLabel(106,y+1,sidebar-128,27,'','font13','0xFFF0F2F5'),
                 xbmcgui.ControlLabel(106,y+28,sidebar-128,25,'','font12','0xFFB6BCC6')))
-        self.info_bg = xbmcgui.ControlImage(32,height-248,width-64,216,panel)
-        self.info_logo = xbmcgui.ControlImage(54,height-214,96,96,os.path.join(media,'tv.png'),aspectRatio=2)
+        self.info_bg = xbmcgui.ControlImage(32,height-248,width-64,216,live_texture(self,panel,'panel.player.infobar'))
+        self.info_logo = xbmcgui.ControlImage(54,height-214,96,96,live_texture(self,os.path.join(media,'tv.png')),aspectRatio=2)
         self.info_name = xbmcgui.ControlLabel(174,height-234,width-220,32,'','font16','0xFFF0F2F5')
         self.info_now = xbmcgui.ControlLabel(174,height-193,width-465,29,'','font13','0xFFF0F2F5')
         self.info_times = xbmcgui.ControlLabel(width-280,height-193,230,29,'','font13','0xFFD2D8E0')
         self._progress_width = width-460
-        self.info_track = xbmcgui.ControlImage(174,height-153,self._progress_width,8,normal)
+        self.info_track = xbmcgui.ControlImage(174,height-153,self._progress_width,8,live_texture(self,normal,'panel.player.progress-track'))
         self.info_progress = xbmcgui.ControlImage(174,height-153,self._progress_width,8,os.path.join(media,'tv_progress.png'))
         self.info_duration = xbmcgui.ControlLabel(174,height-131,width-220,27,'','font12','0xFFB6BCC6')
         self.info_next = xbmcgui.ControlLabel(174,height-99,width-220,29,'','font13','0xFFF0F2F5')
         self.info_hint = xbmcgui.ControlLabel(174,height-61,width-220,24,'OK / Runter: Bedienung    Links: Sender    Zurück: TV','font12','0xFFB6BCC6')
         self._info_controls = [self.info_bg,self.info_logo,self.info_name,self.info_now,self.info_times,
                               self.info_track,self.info_progress,self.info_duration,self.info_next,self.info_hint]
-        self.osd_bg = xbmcgui.ControlImage(32,height-204,width-64,172,panel)
+        self.osd_bg = xbmcgui.ControlImage(32,height-204,width-64,172,live_texture(self,panel,'panel.player.controls'))
         self.osd_title = xbmcgui.ControlLabel(52,height-194,width-104,30,'XCMate','font13','0xFFF0F2F5')
         self.main_buttons,self.extra_buttons,self._button_icons = [],[],[]
         # Stable action indices; visual tape-deck order is defined in _render.
@@ -372,7 +374,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 buttons.append(xbmcgui.ControlButton(52+i*space,y,space-8,46,label,
                     focusTexture=focused,noFocusTexture=normal,textOffsetX=36,font='font13',disabledColor='0xFF6F7780'))
                 self._button_icons.append((buttons[-1],xbmcgui.ControlImage(60+i*space,y+12,22,22,
-                    os.path.join(media,'tv_'+icon+'.png'))))
+                    live_texture(self,os.path.join(media,'tv_'+icon+'.png')))))
         all_controls = [self.bg,self.heading,self.sub,self.control,self.footer,self.capture,
             *[c for row in self._row_controls for c in row],*self._info_controls,
             self.osd_bg,self.osd_title,*self.main_buttons,*self.extra_buttons,
@@ -395,13 +397,16 @@ class LiveNavigator(xbmcgui.WindowDialog):
         except Exception: return False
 
     def _render_transport(self):
+        from theme_render import live_texture
+        self.osd_bg.setImage(live_texture(self,os.path.join(self._media,'tv_panel.png'),'panel.player.options' if self.mode=='extras' else 'panel.player.controls'))
         paused=bool(xbmc.getCondVisibility('Player.Paused'))
         self.main_buttons[0].setLabel('Weiter' if paused else 'Pause')
-        self._button_icons[0][1].setImage(os.path.join(self._media,'tv_play.png' if paused else 'tv_pause.png'))
+        self._button_icons[0][1].setImage(live_texture(self,os.path.join(self._media,'tv_play.png' if paused else 'tv_pause.png')))
 
     def _local_logo(self, channel):
         from logo_cache import local_logo
-        return local_logo(getattr(channel,'logo','')) or os.path.join(self._media,'tv.png')
+        from theme_render import live_texture
+        return local_logo(getattr(channel,'logo','')) or live_texture(self,os.path.join(self._media,'tv.png'),'icon.settings.groups' if self.mode=='groups' else 'icon.epg.clock' if self.mode=='guide' else 'icon.live')
 
     def _render_info(self):
         channel = self.index.by_sid.get(self.sid)

@@ -13,6 +13,7 @@ import threading
 from collections import deque
 
 STAGES = ('session', 'ownership', 'service', 'dialog', 'focus', 'input',
+          'exit',
           'epg', 'epg_source', 'epg_list', 'performance',
           'catalog_performance', 'epg_performance')
 FIELDS = frozenset(('video', 'marker', 'catalog', 'channels', 'programmes',
@@ -25,6 +26,7 @@ FIELDS = frozenset(('video', 'marker', 'catalog', 'channels', 'programmes',
                     'cache_ms', 'cache_hit', 'last_channels', 'last_programmes',
                     'control_id', 'focus_before', 'learned_left_action',
                     'left_received', 'left_channels', 'left_groups', 'error_line'))
+FIELDS = FIELDS | {'window_id','busy','duration_ms','pending','resume_saved'}
 TEXT_FIELDS = {
     'error_file': frozenset(('epg.py','epg_io.py','xmltv_stream.py','stream_epg.py','network_io.py','utils.py','epg_sources.py','library_index.py')),
     'mode_before': frozenset(('hidden','info','controls','extras','channels','groups','guide')),
@@ -52,6 +54,7 @@ TEXT_FIELDS = {
 }
 _WRITTEN = {}
 _INPUT_PENDING = deque(maxlen=64)
+_EXIT_PENDING = deque(maxlen=64)
 _INPUT_LOCK = threading.RLock()
 PREFIX = 'XtreamMate.Diagnostic.'
 EXPLANATIONS={
@@ -110,6 +113,11 @@ def record(stage, code, **fields):
     """Diagnostics must never break playback, even with an unwritable profile."""
     entry=_clean(dict(fields, stage=stage, code=code, at=time.time()))
     if entry is None: return
+    if stage=='input' and code=='NATIVE_ACTION' and entry.get('action_id') in (9,10,92):
+        try:
+            import xbmc
+            xbmc.log('[XCMate][EXIT] BACK_RECEIVED '+json.dumps(entry,sort_keys=True),xbmc.LOGINFO)
+        except Exception: pass
     if stage=='epg' and 'last_success' not in entry:
         for prior in reversed(_disk(stage)):
             if 'last_success' in prior:
@@ -120,10 +128,10 @@ def record(stage, code, **fields):
         xbmcgui.Window(10000).setProperty(PREFIX+stage,json.dumps(entry))
     except Exception:
         pass
-    if stage=='input':
+    if stage in ('input','exit'):
         # Native callbacks only enqueue bounded data. Service/Stop flushes it;
         # no profile reads, fsync or JSON-file rewrite for each remote press.
-        with _INPUT_LOCK: _INPUT_PENDING.append(entry)
+        with _INPUT_LOCK: (_INPUT_PENDING if stage=='input' else _EXIT_PENDING).append(entry)
         return
     previous=_WRITTEN.get(stage)
     if previous and previous['code']==code and entry['at']-previous['at']<2:
@@ -154,16 +162,19 @@ def _save(entry, batch=None):
 
 def checkpoint():
     """Flush the newest throttled input/focus state before the dialog closes."""
-    flush_input()
+    flush_input(include_exit=False)
     for entry in snapshots().values():
+        if entry['stage']=='exit': continue
         if entry!=_WRITTEN.get(entry['stage']): _save(entry)
 
 
-def flush_input():
+def flush_input(include_exit=True):
     """Called by the service timer and on close; retain a 64-event input trail."""
     with _INPUT_LOCK:
         if _INPUT_PENDING and _save(_INPUT_PENDING[-1], list(_INPUT_PENDING)):
             _INPUT_PENDING.clear()
+        if include_exit and _EXIT_PENDING and _save(_EXIT_PENDING[-1], list(_EXIT_PENDING)):
+            _EXIT_PENDING.clear()
 
 
 def snapshots():

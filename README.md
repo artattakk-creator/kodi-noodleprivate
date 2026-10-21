@@ -1,3 +1,5 @@
+> **Integrations-Testzweig 0.1.30.1 (21.10.2026):** Produktiv bleibt 0.1.29.6; die folgenden älteren Versionsangaben sind Historie. Space Premium / PR #50 wird mit der aktuellen stabilen Basis und dem Artwork-/Startsender-Hotfix geprüft. Kein Merge nach main und kein produktiver Update.
+
 > **XCMate 0.1.29.5 jetzt regulär verfügbar (21.10.2026):** EPG-/Navigationshotfix aus [PR #61](https://github.com/artattakk-creator/kodi-noodleprivate/pull/61) in `main` gemergt; [GitHub-Publish erfolgreich](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39639332756). `addons.xml` listet 0.1.29.5. [Aktuelle Projektübergabe](docs/XCMate/PROJEKTSTATUS_UEBERGABE_2026-10-21_DE.md). Android-Gerätetest noch ausstehend, 0.1.29.4-Backup behalten.
 
 > **XCMate-Projektübergabe (aktuell 21.10.2026):** [verbindlicher Status für neue Chats](docs/XCMate/PROJEKTSTATUS_UEBERGABE_2026-10-21_DE.md) · [Codex-Folgeauftrag](docs/XCMate/CODEX_FOLGEAUFTRAG_2026-10-21_DE.md). XCMate 0.1.29.4 regulär veröffentlicht; PR #50/0.1.30 Draft; Multiview gestrichen.

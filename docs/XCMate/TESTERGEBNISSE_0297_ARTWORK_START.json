@@ -1,0 +1,36 @@
+{
+  "version": "0.1.29.7",
+  "base_main": "b6383de5ec1763b10a012f90c47f8f220725544c",
+  "tests": {
+    "total": 540,
+    "passed": 540,
+    "seconds": 89.055,
+    "failed": 0,
+    "skipped": 0
+  },
+  "build": {
+    "file": "plugin.video.xtreammate-0.1.29.7.zip",
+    "bytes": 397264,
+    "files": 131,
+    "sha256": "4c45c573f2adaf977e37ae6d5ca5e5f67f1e797d9d976aa2ea28e20df2890128",
+    "crc": "PASS",
+    "paths": "PASS",
+    "source_bytes": "PASS",
+    "reproducible": "PASS",
+    "python_311_syntax": "PASS"
+  },
+  "runtime_test_environment": {
+    "python": "3.12.14",
+    "sqlite": "3.53.1"
+  },
+  "device_primary": "Kodi 21.2 / Android 13 / RK3528 ARM32 / BINGIE MOD 2.2.3",
+  "device_secondary": "Kodi 21.3",
+  "android": "NOT_RUN",
+  "actual_device_artwork_db_supplied": false,
+  "actual_device_sqlite_root_cause": "UNCONFIRMED; log masks SQLite exception",
+  "private_log_uploaded": false,
+  "release": false,
+  "merged_to_main": false,
+  "production_index_updated": false,
+  "github_ci": "See live PR checks; local package report does not claim a future CI result."
+}

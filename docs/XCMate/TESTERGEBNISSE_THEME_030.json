@@ -1,0 +1,199 @@
+{
+  "status": "PASS_AUTOMATED_ANDROID_ACCEPTANCE_OPEN",
+  "date": "2026-10-21",
+  "version": "0.1.30",
+  "base_main": "116d653efb95df18a4ba750cb33d108fc2e2c276",
+  "initial_pr_head": "5dcca09c8d4d6912d7be8e9ed04fae3d068472d5",
+  "branch": "feat/xcmate-space-premium-installer",
+  "suite": {
+    "tests": 509,
+    "seconds": 65.82,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0
+  },
+  "supplementary": {
+    "tests": 37,
+    "seconds": 4.58,
+    "result": "PASS",
+    "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=tests python -B -m unittest test_xcmate_issue12 test_xcmate_exit_040 test_xcmate_theme_live_030"
+  },
+  "package": {
+    "filename": "plugin.video.xtreammate-0.1.30.zip",
+    "files": 125,
+    "bytes": 785140,
+    "sha256": "0334e765a71b540a88ac51a6c7bf924ebc3df1f98b9e29f31df9fa068ed58c9f",
+    "crc": "PASS",
+    "paths": "PASS",
+    "source_bytes": "PASS",
+    "private_profile_payloads": "ABSENT",
+    "reproducible": "PASS",
+    "theme_assets_included": false,
+    "approved_core_icon_sha256": "81da1003a2753ec6afbdd50b2a320e738a2131ad9f0d76606da1babdd0d2f135",
+    "independent_github_bytes": {
+      "status": "PASS",
+      "blob": "736a3e87248a95faf16fdc6040e780038e781ab9",
+      "bytes": 785140,
+      "sha256": "0334e765a71b540a88ac51a6c7bf924ebc3df1f98b9e29f31df9fa068ed58c9f",
+      "crc": "PASS",
+      "source": "GitHub git/blobs base64 independent download"
+    }
+  },
+  "theme": {
+    "id": "space-premium",
+    "version": "1.0.0",
+    "bytes": 19772084,
+    "sha256": "8fc7f312a65fa5ecdbe68d3487939a25d685de29717896a0a1113c8d41176ae2",
+    "assets": 98,
+    "logical_keys": 106,
+    "build": "PASS_BYTE_IDENTICAL",
+    "full_decode": "PASS",
+    "github_independent_bytes": "PASS"
+  },
+  "catalogue": {
+    "status": "PASS",
+    "approved_packages": 1,
+    "packages": [
+      {
+        "id": "space-premium",
+        "version": "1.0.0",
+        "assets": 98,
+        "sha256": "8fc7f312a65fa5ecdbe68d3487939a25d685de29717896a0a1113c8d41176ae2",
+        "full_decode": true
+      }
+    ],
+    "space_premium_complete": true
+  },
+  "public_main_http": [
+    {
+      "path": "addons.xml",
+      "http": 200,
+      "checked_without_credentials": true
+    },
+    {
+      "path": "themes/xcmate/catalog-v1.json",
+      "http": 404,
+      "checked_without_credentials": true
+    },
+    {
+      "path": "themes/xcmate/space-premium/XCMate-Space-Premium-1.0.0.zip",
+      "http": 404,
+      "checked_without_credentials": true
+    }
+  ],
+  "generic_catalogue": {
+    "distinct_fixture_themes": 2,
+    "real_install_activate_update": "PASS",
+    "public_test_artwork": false
+  },
+  "renderer": {
+    "originals": 98,
+    "logical_keys": 106,
+    "bound_files": 86,
+    "unconnected_files": 12,
+    "matrix": "SPACE_PREMIUM_RENDERER_MATRIX_030.json",
+    "acceptance": "NOT_RUN_ANDROID"
+  },
+  "kodi_api": {
+    "tag": "21.3-Omega",
+    "commit": "a3a448d26b8d560a65655dab2cd122994dc4e146",
+    "ModuleXbmcgui_h_sha256": "98c301e4a609e808dce6a0936e7e0c6035e1667f5311d7811f122d33be739296",
+    "strict_gui_contracts": "PASS"
+  },
+  "freeze": {
+    "live_input_geometry_control_order_navigation": "PASS",
+    "texture_only_hooks": "EXPLICITLY_NORMALIZED_AST",
+    "freeze_fixtures": "UNCHANGED",
+    "global_keymaps": "UNCHANGED",
+    "noodle_private": "UNCHANGED",
+    "repository_gsmedia": "UNCHANGED",
+    "productive_index": "UNCHANGED",
+    "published_0292_zip": "UNCHANGED"
+  },
+  "issue_40": {
+    "android_hang_cause": "UNPROVEN",
+    "async_stop_duplicate": {
+      "before_fix": "FAIL_ON_BASELINE_5dcca09",
+      "after_fix": "PASS"
+    },
+    "diagnostics": "BOUNDED_QUEUE_SERVICE_PERSISTENCE_AND_IMMEDIATE_ALLOWLISTED_KODI_LOG",
+    "device_acceptance": "NOT_RUN",
+    "issue_closed": false
+  },
+  "builds": {
+    "repository": "PASS_ISOLATED_COPY",
+    "theme": "PASS_BYTE_IDENTICAL",
+    "syntax": "PASS"
+  },
+  "security": "PASS_BOUNDED_ZIP_PNG_METADATA_DOWNLOAD_HASH_PATHS_CANCEL_ATOMIC_REVISIONS",
+  "android_acceptance": "NOT_RUN",
+  "ci": {
+    "status": "SUCCESS",
+    "source_commit": "c7a7ecd77b448323979ffec60fbd5f30cbf66537",
+    "runs": [
+      {
+        "conclusion": "success",
+        "databaseId": 39511206877,
+        "event": "pull_request",
+        "headSha": "c7a7ecd77b448323979ffec60fbd5f30cbf66537",
+        "name": "Validate XCMate theme catalogue",
+        "status": "completed",
+        "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39511206877"
+      },
+      {
+        "conclusion": "success",
+        "databaseId": 39511206845,
+        "event": "pull_request",
+        "headSha": "c7a7ecd77b448323979ffec60fbd5f30cbf66537",
+        "name": "Publish GS Media Kodi updates",
+        "status": "completed",
+        "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39511206845"
+      },
+      {
+        "conclusion": "success",
+        "databaseId": 39511202966,
+        "event": "push",
+        "headSha": "c7a7ecd77b448323979ffec60fbd5f30cbf66537",
+        "name": "Build XCMate Space Premium 98 (draft)",
+        "status": "completed",
+        "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39511202966"
+      }
+    ],
+    "artifacts": [
+      {
+        "id": 12305232920,
+        "name": "xcmate-review-50-0334e765a71b540a88ac51a6c7bf924ebc3df1f98b9e29f31df9fa068ed58c9f",
+        "outer_digest": "sha256:3c398ce283a28b56458d65912098ce86a209ffeeee5a119a4669c40dcb183cbe",
+        "bytes": 785537,
+        "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39511206845/artifacts/12305232920",
+        "expired": false
+      },
+      {
+        "id": 12306620319,
+        "name": "xcmate-space-premium-1.0.0-draft",
+        "outer_digest": "sha256:5e3b4a172dbfa4b3b99ca22275b2ceda47beb4a65404860e9dbdff674bae64ea",
+        "bytes": 20549186,
+        "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39511202966/artifacts/12306620319",
+        "expired": false
+      },
+      {
+        "id": 12305327591,
+        "name": "xcmate-theme-catalogue-validation",
+        "outer_digest": "sha256:dbff6a68fb2ae276f4d7eeefa01395db33a2570fec41970c009f5dc306d24c5e",
+        "bytes": 376,
+        "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39511206877/artifacts/12305327591",
+        "expired": false
+      }
+    ],
+    "publish_step": "SKIPPED",
+    "core_inner_sha256_in_artifact_name": "0334e765a71b540a88ac51a6c7bf924ebc3df1f98b9e29f31df9fa068ed58c9f",
+    "artifact_binary_downloaded": false,
+    "raw_log_download": "BLOCKED_TRANSPORT",
+    "ci_test_count_directly_read_from_log": false,
+    "test_count_local": 509,
+    "source": "GitHub run/job/artifact API; Prepare step validates suite success and source/ZIP bytes; inner core hash matches independent GitHub blob and local reproducible build"
+  },
+  "production_published": false,
+  "merged": false,
+  "pull_request": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/50"
+}

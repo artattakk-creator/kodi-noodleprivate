@@ -5,8 +5,27 @@ ownership from a stale property alone, a title, a window, or a provider URL.
 """
 import json
 import time
+import hashlib
 
 _armed=None
+STOP_KEY='XCMate.PlaybackStopping'
+_observed=None
+
+
+def _trace(code, **fields):
+    # Queue only: no profile/SQLite/network writes on the GUI exit callback.
+    try:
+        from live_diagnostics import record
+        record('exit',code,**fields)
+    except Exception: pass
+    try:
+        import xbmc
+        xbmc.log('[XCMate][EXIT] '+code+' '+json.dumps(fields,sort_keys=True),xbmc.LOGINFO)
+    except Exception: pass
+
+
+def _fingerprint(token):
+    return hashlib.sha256(json.dumps([token[0]]+[token[1].get(k) for k in ('pid','sid','nonce','at','kind','series_id','season','episode')]).encode()).hexdigest()
 
 
 def _session(raw):
@@ -53,6 +72,14 @@ def stop_owned(player=None,pid=None,expected=None):
         token=identity(player)
         if not token or (pid is not None and token[1]['pid']!=str(pid)) or (expected and not _same(token,expected)):
             return False
+        marker=xbmcgui.Window(10000)
+        try:
+            pending=json.loads(marker.getProperty(STOP_KEY)[:256] or '{}')
+            if pending.get('item')==_fingerprint(token) and 0<=time.monotonic()-float(pending.get('at',0))<2:
+                _trace('STOP_PENDING',pending=True)
+                return False
+        except (ValueError,TypeError,AttributeError): pass
+        began=time.monotonic();_trace('EXIT_REQUESTED',video=True)
         if token[0]=='media':
             from media_state import save_progress
             from media_progress import _current,_last
@@ -61,13 +88,21 @@ def stop_owned(player=None,pid=None,expected=None):
             except (RuntimeError,TypeError,ValueError):
                 sample=_last if _current and _current.get('nonce')==token[1]['nonce'] else None
             if sample:
-                try: save_progress(token[1],*sample)
+                try:
+                    saved=save_progress(token[1],*sample)
+                    _trace('RESUME_CHECKPOINT',resume_saved=bool(saved),duration_ms=(time.monotonic()-began)*1000)
                 except Exception:
                     # A failed disk must not leave unwanted audio playing.
                     from utils import warn
                     warn('XCMate exit checkpoint: WRITE_FAILED')
         if not _same(token,identity(player)): return False
-        player.stop()
+        marker.setProperty(STOP_KEY,json.dumps({'item':_fingerprint(token),'at':time.monotonic()}))
+        try: player.stop()
+        except (RuntimeError,TypeError,ValueError):
+            marker.clearProperty(STOP_KEY)
+            _trace('STOP_FAILED',video=True)
+            return False
+        _trace('STOP_SENT',duration_ms=(time.monotonic()-began)*1000,video=True)
         marker=xbmcgui.Window(10000)
         from media_progress import PROPERTY
         SESSION_KEY='XtreamMate.LiveSession'
@@ -86,18 +121,30 @@ def stop_owned(player=None,pid=None,expected=None):
 
 
 def poll(player=None,fullscreen=None):
-    global _armed
+    global _armed,_observed
     import xbmc
     player=player or xbmc.Player()
     try:
         token=identity(player)
-        if not token: _armed=None;return False
+        if not token:
+            if _observed is not None: _trace('NO_OWNED_VIDEO',video=bool(player.isPlayingVideo()))
+            _observed=None;_armed=None;return False
         if token[0]=='media':
             from media_intent import cancelled
             if cancelled(token[1]): return stop_owned(player,expected=token)
         if fullscreen is None:
             if not hasattr(xbmc,'getCondVisibility'): return False
             fullscreen=xbmc.getCondVisibility('Window.IsVisible(fullscreenvideo)')
+        state=(_fingerprint(token),bool(fullscreen))
+        if state!=_observed:
+            try:
+                import xbmcgui
+                _trace('FULLSCREEN' if fullscreen else 'NAVIGATION',video=True,fullscreen=bool(fullscreen),
+                    window_id=xbmcgui.getCurrentWindowId() if hasattr(xbmcgui,'getCurrentWindowId') else 0,
+                    dialog_id=xbmcgui.getCurrentWindowDialogId() if hasattr(xbmcgui,'getCurrentWindowDialogId') else 0,
+                    busy=bool(xbmc.getCondVisibility('Window.IsActive(busydialog)') or xbmc.getCondVisibility('Window.IsActive(busydialognocancel)')))
+            except Exception: _trace('WINDOW_STATE_UNAVAILABLE')
+            _observed=state
         if fullscreen:
             _armed=token
             return False

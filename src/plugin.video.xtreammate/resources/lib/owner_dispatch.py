@@ -66,7 +66,7 @@ def open_owned_window(window_class,xml,router,portal,*args,**kwargs):
     window=None
     try:
         window_mark(view,stage)
-        window=window_class(xml,window_source(xml),'Default','720p')
+        window=window_class(xml,window_source(xml,args[0] if xml=='XCMateMedia.xml' and args else 'vod'),'Default','720p')
         window._window_view=view
         stage='CONFIGURE';window_mark(view,stage)
         window.configure(router,portal,*args,**kwargs)

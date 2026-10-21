@@ -1,7 +1,7 @@
 """New routes only. Legacy provider/player entry points remain compatible."""
 from localization import tr
 
-ACTIONS=('playlist_editor','source_live','source_play','source_start','art_status','art_retry','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
+ACTIONS=('theme_manager','playlist_editor','source_live','source_play','source_start','art_status','art_retry','art_db_health','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
          'movies_home','series_home','media_detail','media_favourites','global_search','search_section',
          'widget_live_start_group','widget_recent_vod','widget_recent_series','widget_setup',
          'recording_folder','recording_capabilities','about_xcmate','guide_browser','media_play','guide_timers','guide_status')
@@ -26,6 +26,15 @@ def dispatch(router):
     from home_menu import settings,show,recording_folder
     action=router._params.get('action','xcmate_home')
     portal=portal_for(router)
+    if action=='theme_manager':
+        _end(router)
+        from theme_ui import manage
+        manage()
+        return
+    if action=='art_db_health':
+        _end(router)
+        from artwork_health_ui import manage
+        manage();return
     if action in ('art_status','art_retry'):
         _end(router,False)
         from art_store import status,retry
@@ -103,14 +112,15 @@ def dispatch(router):
         if portal.get('type') in ('m3u','stb'):
             from source_live import play
             play(router,portal,direct=True);return
-        _end(router,False)
         sid=str(portal.get('start_stream_id') or '')
         xc=router._xc(portal) if portal.get('type')=='xtream' else None
         streams=xc.get_cached_catalog('get_live_streams') if xc else None
         if not sid or not any(isinstance(s,dict) and str(s.get('stream_id'))==sid for s in (streams or [])):
+            _end(router,False)
             if xbmcgui.Dialog().yesno('XCMate',tr(32467)):
                 xbmc.executebuiltin('Container.Update('+router.url(action='startup_settings',pid=portal['id'])+')')
             return
+        _end(router)
         router._play_start_direct()
     elif action=='home_live':
         if portal.get('type') in ('m3u','stb'):
@@ -203,11 +213,18 @@ def paging(router,total,offset,**params):
             router._add_dir(tr(32477).format(label,total),router.url(pid=router._params['pid'],offset=target,**params))
 
 
-def add_index_item(router,portal,kind,item,epg=None,recent=False):
+def add_index_item(router,portal,kind,item,epg=None,recent=False,widget=False):
     import xbmcgui,xbmcplugin
     from media_art import local_art
     li=xbmcgui.ListItem(item['name'])
     art=local_art(item)
+    if widget:
+        from theme_render import snapshot
+        from theme_store import asset
+        theme=snapshot()
+        if theme and art['landscape'].startswith(str(theme['folder'])+'/'):
+            art['landscape']=asset('widget.live' if kind=='live' else 'widget.series' if kind=='series' else 'widget.movie',art['landscape'],snapshot=theme)
+        art['banner']=asset('widget.header',snapshot=theme)
     li.setArt(art)
     li.setInfo('video',{'title':item['name'],'plot':(epg or {}).get('plot') or item.get('plot') or '',
                         'mediatype':{'vod':'movie','series':'tvshow','live':'video'}[kind]})
@@ -249,7 +266,7 @@ def widget(router,portal,action):
                                client=router._xc(portal),mappings=mappings)
             add_index_item(router,portal,'live',row,dict(Now=info['now'],Next=info['next'],
                 Start=info['start'],Stop=info['stop'],Progress=info['progress'] if info['progress'] is not None else '',
-                plot=guide_plot(info)))
+                plot=guide_plot(info)),widget=True)
         paging(router,total,page_offset(router),action=action)
         if not rows:
             router._add_dir(tr(32478) if not reader.state('live')
@@ -260,7 +277,7 @@ def widget(router,portal,action):
         xbmcplugin.setContent(router._handle,'movies' if kind=='vod' else 'tvshows')
         from utils import setting_int
         rows,total=reader.rail(kind,limit=24,keep=setting_int('recent_keep',100))
-        for row in rows: add_index_item(router,portal,kind,row,recent=True)
+        for row in rows: add_index_item(router,portal,kind,row,recent=True,widget=True)
         if not rows and not reader.state(kind):
             router._add_dir(tr(32480),
                             router.url(action='movies_home' if kind=='vod' else 'series_home',pid=portal['id']))

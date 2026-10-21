@@ -100,12 +100,14 @@ class IdentityTests(unittest.TestCase):
         xtream.XtreamClient=self.factory
         player=types.ModuleType('player')
         player.play_stream=mock.Mock()
+        intent=types.ModuleType('play_intent')
+        intent.before_play=mock.Mock(return_value=True)
         with mock.patch.dict(sys.modules,dict(portals=portals,xtream=xtream,live_overlay=live,
-                                             live_recovery=self.r,player=player,
-                                             play_intent=types.SimpleNamespace(before_play=lambda session:True))):
+                                             live_recovery=self.r,player=player,play_intent=intent)):
             namespace['_play_live'](types.SimpleNamespace(_params={
                 'url':self.client.live_stream_url('17','ts'),'sid':'999'},_handle=1))
         self.assertEqual(announced[0][:2],('p','17'))
+        intent.before_play.assert_called_once_with(self.session)
         self.assertEqual(player.play_stream.call_args.kwargs['live_session'],self.session)
 
 

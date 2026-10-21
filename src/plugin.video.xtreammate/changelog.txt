@@ -1,3 +1,25 @@
+0.1.30.1 – Space Premium mit aktueller Hotfixbasis (Testkandidat)
+- Bestehende 98 Originalgrafiken und Installer mit 0.1.29.4/5/6 zusammengeführt.
+- Kodi-21.2/ARM32 primär; Artwork-/Startsender-Fix 0.1.29.7 im selben Integrationszweig enthalten.
+- Kein Raster-EPG/TMDB-Ausbau aus lokalen Zukunftsarbeiten übernommen.
+- Keine Produktivfreigabe; getrennte Android-Abnahme erforderlich.
+
+0.1.30 – Space Premium und Theme-Installer (Entwicklung, keine Produktivfreigabe)
+- Lokaler ZIP-Import, begrenzter HTTPS-Katalog, geprüfte unveränderliche Theme-Revisionen.
+- Aktivierung/Standarddesign nur in XCMate; laufende Wiedergabe verschiebt den Wechsel.
+- Separates Space-Premium-1.0.0-Paket mit 98 geprüften Originalen; Basis-Icon dauerhaft im Core.
+- Texturen für Live-TV/EPG/Medien/Widgets angebunden; bestehende Fernbedienungslogik erhalten.
+- Online-Katalog auf main vor Freigabe noch 404; keine automatische Veröffentlichung.
+- Asynchrone Stop-Wiederholungen begrenzt; Android-Ladebildschirm-Hänger #40 weiterhin offen.
+
+0.1.29.7 – Artwork-Jobdatenbank und Startsender-Route (Testkandidat)
+- Atomic schema initialization; private SQLite diagnostics and bounded retries instead of MIGRATION_FAILED loops.
+- Consistent WAL-aware backup and verified art_pending-only index repair; no automatic table/queue reset.
+- Explicit confirmed queue recovery preserves image files, accounts, favourites, guide and progress.
+- Successful home_start directory completion preserves direct live playback and remote navigation.
+- Primary device: Kodi 21.2 / Android 13 / RK3528 ARM32; Kodi 21.3 remains supported.
+- No production update or merge without release approval; 0.1.29.6 remains rollback.
+
 0.1.29.6 – P0 Fensterstart nach Android-Regression #67 (Testkandidat)
 - EPG-/Film-/Serienfenster starten wieder nach erfolgreichem Kodi-Verzeichnisabschluss.
 - Vor Aktivierung auf Ende eines modalen Kodi-Ladedialogs warten; keine Zwangsschließung.

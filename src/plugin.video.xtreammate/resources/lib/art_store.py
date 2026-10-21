@@ -13,27 +13,8 @@ _ADOPTED=set()
 
 
 def connect():
-    from utils import addon_data_dir
-    db=sqlite3.connect(os.path.join(addon_data_dir(),'media_art_jobs_v1.sqlite'),timeout=.05)
-    try:
-        db.row_factory=sqlite3.Row
-        db.executescript('''CREATE TABLE IF NOT EXISTS jobs(
-          ident TEXT PRIMARY KEY,url TEXT,status TEXT,priority INTEGER,attempts INTEGER,
-          next_at REAL,updated REAL,bytes INTEGER);
-          CREATE INDEX IF NOT EXISTS art_pending ON jobs(status,next_at,priority);
-          CREATE TABLE IF NOT EXISTS scan(pid TEXT,kind TEXT,revision TEXT,offset INTEGER,
-          PRIMARY KEY(pid,kind));
-          CREATE TABLE IF NOT EXISTS worker(id INTEGER PRIMARY KEY,until REAL,owner TEXT DEFAULT '');
-          INSERT OR IGNORE INTO worker(id,until) VALUES(1,0);''')
-        if 'owner' not in {r[1] for r in db.execute('PRAGMA table_info(worker)')}:
-            db.execute("ALTER TABLE worker ADD COLUMN owner TEXT DEFAULT ''")
-            db.commit()
-        return db
-    except sqlite3.Error:
-        db.close()
-        from utils import warn
-        warn('XCMate artwork schema: MIGRATION_FAILED')
-        raise
+    from artwork_db import connect as open_jobs
+    return open_jobs()
 
 
 def budget():
@@ -125,6 +106,8 @@ def status():
 
 
 def retry():
+    from artwork_db import reset_retry
+    reset_retry()
     db=connect()
     try:
         with db: db.execute("UPDATE jobs SET attempts=0,next_at=0,status='PENDING' WHERE status!='READY'")
@@ -133,6 +116,8 @@ def retry():
 
 def prefetch_selected():
     """One local page per service cycle; never enqueue disabled categories."""
+    from artwork_db import diagnostic
+    if diagnostic().get('background_paused'):return
     from portals import get_active
     from library_index import Reader
     from media_art import sources

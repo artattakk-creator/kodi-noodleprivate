@@ -1,0 +1,5 @@
+GS Media – XCMate Space Premium artwork package
+
+The 98 raster images are supplied as approved GS Media project assets. This archive does not grant a general-purpose licence for third-party redistribution. Obtain permission from the rights holder(s) before external distribution, and verify any underlying third-party asset rights independently.
+
+This is a graphics package and does not modify the licence governing XCMate program code or Kodi. No executable files are included.

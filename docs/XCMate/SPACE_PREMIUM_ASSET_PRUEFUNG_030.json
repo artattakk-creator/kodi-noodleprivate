@@ -1,0 +1,100 @@
+{
+  "status": "PASS_98_ORIGINALS_AVAILABLE",
+  "date": "2026-10-21",
+  "required": 98,
+  "available": 98,
+  "decoded": 98,
+  "logical_keys": 106,
+  "original_bytes_preserved": true,
+  "manifest_hashes_dimensions_alpha": "PASS",
+  "zip_crc": "PASS",
+  "theme_zip_created": true,
+  "theme_sha256": "8fc7f312a65fa5ecdbe68d3487939a25d685de29717896a0a1113c8d41176ae2",
+  "theme_bytes": 19772084,
+  "independent_github_bytes": {
+    "status": "PASS",
+    "blob": "c6c72acf0179b3d4bbb197416814ac45f38a0e95",
+    "bytes": 19772084,
+    "sha256": "8fc7f312a65fa5ecdbe68d3487939a25d685de29717896a0a1113c8d41176ae2",
+    "images": 98,
+    "keys": 106
+  },
+  "master_tracker_retrieved_this_run": false,
+  "master_tracker_basis": "User confirms prior 98/98 tracker verification; this run checks committed authoritative manifest, source hashes, archive and independent GitHub bytes",
+  "runtime_bound_files": 86,
+  "unconnected_files": 12,
+  "renderer_acceptance": "NOT_RUN_ANDROID",
+  "previews_created": false,
+  "historical_network_attempts": {
+    "status": "HISTORICAL_NOT_CURRENT_BLOCKER",
+    "date": "2026-10-20",
+    "access_checks": [
+      {
+        "name": "branding",
+        "url": "https://drive.google.com/drive/folders/1E1Ob14vAyuM7NlLACNWEKWvzhsiNtcJL",
+        "error": "Tunnel connection failed: 403 Forbidden"
+      },
+      {
+        "name": "tracker_view",
+        "url": "https://drive.google.com/file/d/14NY62as0U-UWkTp_Rp3AiS0NreifxYOZ/view",
+        "error": "Tunnel connection failed: 403 Forbidden"
+      },
+      {
+        "name": "master",
+        "url": "https://drive.google.com/drive/folders/1UPA7fLKIq21GkA4NzAPEVfLp2BvSpm3y",
+        "error": "Tunnel connection failed: 403 Forbidden"
+      },
+      {
+        "name": "home",
+        "url": "https://drive.google.com/drive/folders/1IYCFPr6jTwxNI7elF42uOW98LYLEby19",
+        "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+      },
+      {
+        "name": "settings",
+        "url": "https://drive.google.com/drive/folders/1hAVCr4SllD6E4saLCbXuF707cvBUSJOy",
+        "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+      },
+      {
+        "name": "media",
+        "url": "https://drive.google.com/drive/folders/1FnYj4u1E0fTA1GYwGkRoKwTLwAwH0VrO",
+        "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+      },
+      {
+        "name": "epg",
+        "url": "https://drive.google.com/drive/folders/1Cg1x9AyT985hQ3tVgGkiU1iOSHQGWHsA",
+        "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+      },
+      {
+        "name": "player",
+        "url": "https://drive.google.com/drive/folders/1rJzEAc48cQoSkKjeHLqVjld7_pPahmW4",
+        "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+      },
+      {
+        "name": "shared",
+        "url": "https://drive.google.com/drive/folders/1xjo9dYcbpaYuidtm8YjUOX6-qkEHHI3o",
+        "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+      },
+      {
+        "name": "widgets",
+        "url": "https://drive.google.com/drive/folders/1_nsaYc2bCXKOU4U8APCO94tREErWf1HJ",
+        "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+      },
+      {
+        "name": "originals",
+        "url": "https://drive.google.com/drive/folders/1HDl6ANSi6giLqBl_IfTZ4VT5QkiD21Sv",
+        "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+      },
+      {
+        "name": "tracker_download",
+        "url": "https://drive.google.com/uc?export=download&id=14NY62as0U-UWkTp_Rp3AiS0NreifxYOZ",
+        "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+      },
+      {
+        "name": "tracker_content",
+        "url": "https://drive.usercontent.google.com/download?id=14NY62as0U-UWkTp_Rp3AiS0NreifxYOZ&export=download",
+        "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+      }
+    ]
+  },
+  "matrix": "SPACE_PREMIUM_RENDERER_MATRIX_030.json"
+}

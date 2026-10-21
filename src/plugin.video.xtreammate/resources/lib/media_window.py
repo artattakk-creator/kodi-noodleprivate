@@ -24,6 +24,8 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
     def configure(self,router,portal,kind,sid='',favourites=False):
         self._configure_owner()
         self._return_home=False
+        from theme_store import current
+        self._theme=current()
         self.router,self.portal,self.kind=router,portal,kind
         self.initial_sid=sid
         self.favourites_only=favourites
@@ -157,7 +159,10 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         items=[]
         for row in rows:
             li=xbmcgui.ListItem(str(row.get('name','')))
-            li.setArt(local_art(row))
+            if control_id in (300,330):
+                from theme_render import action_art
+                li.setArt(action_art(row.get('sid','') if control_id==300 else 'next_episode' if self.mode=='episodes' else 'seasons',self._theme,row.get('favourite',False)))
+            else: li.setArt(local_art(row,self._theme))
             li.setInfo('video',{'title':str(row.get('name',''))})
             items.append(li)
         control.addItems(items)
@@ -171,9 +176,9 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             controls={110:self.rows} if self.mode=='landing' else {210:self.rows} if self.mode in ('grid','groups') else {}
             if self.mode=='landing': controls.update(self.rails)
             for cid,rows in controls.items():
-                for pos,row in enumerate(rows): self.getControl(cid).getListItem(pos).setArt(local_art(row))
+                for pos,row in enumerate(rows): self.getControl(cid).getListItem(pos).setArt(local_art(row,self._theme))
             if self.selected:
-                art=local_art(self.selected)
+                art=local_art(self.selected,self._theme)
                 if art['fanart']: self.getControl(100).setImage(art['fanart'])
                 if self.mode=='detail': self.getControl(310).setImage(art['poster'])
 
@@ -259,8 +264,10 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
 
     def _queue_art(self,item):
         from media_art import local_art
-        art=local_art(item)
-        self.getControl(100).setImage(art['fanart'] or os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media','media_neutral.png'))
+        art=local_art(item,self._theme)
+        from theme_store import asset
+        self.getControl(100).setImage(art['fanart'] or asset('background.series' if self.kind=='series' else 'background.movies',
+            os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media','media_neutral.png'),snapshot=self._theme))
         try: self._art.put_nowait(dict(item))
         except queue.Full:
             try: self._art.get_nowait()
@@ -317,7 +324,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             if key in info: meta.append('{}: {}'.format(name,info[key]))
         if 'duration' in info: meta.append(tr(32510).format(info['duration']//60))
         self.getControl(102).setLabel(' · '.join(meta))
-        self.getControl(310).setImage(local_art(item)['poster'])
+        self.getControl(310).setImage(local_art(item,self._theme)['poster'])
         self.getControl(320).setText(info['plot'] or tr(32511))
         self._queue_art(item)
         self.actions=[]
@@ -352,7 +359,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         self.trailer=trailer_id(item)
         if self.trailer and xbmc.getCondVisibility('System.HasAddon(plugin.video.youtube)'):
             self.actions.append((tr(32521),'trailer'))
-        self._fill(300,[dict(name=label,sid=action) for label,action in self.actions])
+        self._fill(300,[dict(name=label,sid=action,favourite=fav) for label,action in self.actions])
         self.getControl(300).selectItem(next((i for i,a in enumerate(self.actions) if a[1]==old_action),0))
         self.setFocusId(old_focus if old_focus in (300,400) else 300)
 

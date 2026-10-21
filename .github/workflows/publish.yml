@@ -23,6 +23,12 @@ on:
       - "tools/**"
       - ".github/workflows/publish.yml"
   workflow_dispatch:
+    inputs:
+      publish_repository:
+        description: 'Explicit owner approval to publish generated repository files on main'
+        type: boolean
+        required: false
+        default: false
 permissions:
   contents: write
 jobs:
@@ -118,7 +124,7 @@ jobs:
           if-no-files-found: error
           retention-days: 14
       - name: Commit and publish generated archives
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'workflow_dispatch' && inputs.publish_repository == true && github.ref == 'refs/heads/main' && github.actor == 'artattakk-creator'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

@@ -5,6 +5,7 @@ Kodi mock contracts, not proof of hardware Android remote support.
 import importlib.util
 from pathlib import Path
 import sys
+import tempfile
 import types
 import unittest
 from unittest import mock
@@ -17,6 +18,9 @@ SETTINGS = BASE / 'src/plugin.video.xtreammate/resources/settings.xml'
 
 class SafeModeRegression(unittest.TestCase):
     def setUp(self):
+        temporary=tempfile.TemporaryDirectory();self.addCleanup(temporary.cleanup)
+        module_path=mock.patch.object(sys,'path',[str(LIB)]+sys.path)
+        module_path.start();self.addCleanup(module_path.stop)
         self.opts = {}
         self.play_calls = []
         self.properties = {}
@@ -28,6 +32,7 @@ class SafeModeRegression(unittest.TestCase):
             'include_live': True,
         }
         utils = types.ModuleType('utils')
+        utils.addon_data_dir=lambda:temporary.name
         for k in ('setting', 'setting_int', 'load_favourites', 'toggle_favourite',
                   'is_favourite', 'cache_clear', 'notify', 'debug', 'info',
                   'warn', 'error', 'apply_lang_sort', '_L'):

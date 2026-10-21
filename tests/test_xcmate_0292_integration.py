@@ -221,16 +221,19 @@ class IntegrationTests(Fixture,unittest.TestCase):
         db.executescript('CREATE TABLE jobs(ident TEXT PRIMARY KEY,url TEXT,status TEXT,priority INTEGER,attempts INTEGER,next_at REAL,updated REAL,bytes INTEGER);CREATE TABLE worker(id INTEGER PRIMARY KEY,until REAL);INSERT INTO worker VALUES(1,0);')
         db.execute('INSERT INTO jobs VALUES(?,?,?,?,?,?,?,?)',('old','private','READY',0,0,0,0,123));db.commit();db.close()
         connect=sqlite3.connect
-        class Failing(sqlite3.Connection):
-            def execute(self,sql,parameters=()):
-                if sql.startswith('ALTER TABLE'): raise sqlite3.OperationalError('secret provider details')
-                return super().execute(sql,parameters)
+        health=importlib.import_module('artwork_db');execute=health._Connection.execute
+        def fail(db,sql,parameters=()):
+            if sql.startswith('ALTER TABLE'):raise sqlite3.OperationalError('secret provider details')
+            return execute(db,sql,parameters)
         store=importlib.import_module('art_store')
-        with mock.patch.object(store.sqlite3,'connect',side_effect=lambda *a,**kw:connect(*a,**kw,factory=Failing)),mock.patch.object(sys.modules['utils'],'warn') as warn:
+        with mock.patch.object(health._Connection,'execute',fail),mock.patch.object(sys.modules['utils'],'warn') as warn:
             with self.assertRaises(sqlite3.OperationalError): store.connect()
-            warn.assert_called_once_with('XCMate artwork schema: MIGRATION_FAILED')
+            warn.assert_called_once()
+            self.assertIn('code=SQL_ERROR',warn.call_args.args[0])
+            self.assertNotIn('secret provider details',warn.call_args.args[0])
         db=connect(filename)
         self.assertEqual(db.execute('SELECT * FROM jobs').fetchone(),('old','private','READY',0,0,0,0,123));db.close()
+        health.reset_retry()
         for _ in range(2):
             db=store.connect()
             self.assertIn('owner',{row[1] for row in db.execute('PRAGMA table_info(worker)')})
