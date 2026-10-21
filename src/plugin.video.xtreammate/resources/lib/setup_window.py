@@ -169,13 +169,16 @@ class SetupWindow(WorkWindow):
             return
         try:
             if self.stage=='groups':
-                if controlId in (10,11,12): self.kind=('live','vod','series')[controlId-10];self.render()
+                if controlId in (10,11,12):
+                    self.kind=('live','vod','series')[controlId-10]
+                    self.render()
+                    self.setFocusId(100 if self._entries else 17)
                 elif controlId==100:
                     pos=self.getControl(100).getSelectedPosition()
                     if 0<=pos<len(self._entries):
                         cid=str(self._entries[pos]['category_id']);selected=self.draft.selected[self.kind]
                         selected.remove(cid) if cid in selected else selected.add(cid)
-                        self.render();self.getControl(100).selectItem(pos)
+                        self.render();self.getControl(100).selectItem(pos);self.setFocusId(100)
                 elif controlId in (13,14):
                     self.draft.selected[self.kind]={str(g['category_id']) for g in self._entries} if controlId==13 else set();self.render()
                 elif controlId==15: self.choose_epg()
