@@ -93,6 +93,7 @@ class ArtworkRecoveryTests(Fixture,unittest.TestCase):
             p=self.folder/name;p.write_bytes(b'PRIVATE-BYTES-'+name.encode());protected[p]=p.read_bytes()
         result=self.health.rebuild(confirmed=True)
         self.assertEqual(result['code'],'QUEUE_REBUILT');self.assertEqual(self.integrity(),['ok'])
+        self.assertTrue(result['background_paused'])
         self.assertEqual(image.read_bytes(),png);self.assertEqual(bad.read_bytes(),b'bad image')
         self.assertEqual({p:p.read_bytes() for p in protected},protected)
         db=self.health.connect()
@@ -101,6 +102,10 @@ class ArtworkRecoveryTests(Fixture,unittest.TestCase):
             self.assertEqual(len(jobs),1);self.assertEqual(jobs[0]['ident'],'a'*64)
             self.assertEqual(jobs[0]['url'],'');self.assertEqual(jobs[0]['status'],'READY')
         finally:db.close()
+        # A queue rebuild must not restart a background sweep of the catalogue.
+        with mock.patch.object(self.index,'Reader',side_effect=AssertionError('unexpected catalogue sweep')):
+            self.store.prefetch_selected()
+        self.store.retry();self.assertFalse(self.health.diagnostic()['background_paused'])
 
     def test_healthy_database_is_not_rebuilt_even_with_confirmation(self):
         self.seed();before=self.digest()

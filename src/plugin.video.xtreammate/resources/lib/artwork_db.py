@@ -115,7 +115,7 @@ def _failure(exc,phase):
 def reset_retry():
     """Explicit retry only; does not remove or reset a database or any image."""
     _failures.pop(path(),None)
-    value=diagnostic();value['retry_after']=0;_save(value)
+    value=diagnostic();value['retry_after']=0;value['background_paused']=False;_save(value)
 
 
 def _lock(exclusive=False):
@@ -281,6 +281,8 @@ def _valid_tables(db):
 
 def _healthy(code,backup=''):
     value=dict(code=code,checked_at=time.time(),retry_after=0,identity=_identity(path()))
+    if code=='QUEUE_REBUILT' or diagnostic().get('background_paused'):
+        value['background_paused']=True
     if backup:value['backup']=os.path.basename(backup)
     _failures.pop(path(),None);_save(value)
     return value
