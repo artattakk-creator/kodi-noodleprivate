@@ -144,7 +144,23 @@
   "android_crash_cause": "WORKER_GUI_DEFECT_PROVEN_NOT_SINGLE_DEVICE_CAUSE_WITHOUT_CRASH_LOG",
   "android_acceptance": "NOT_RUN",
   "ci": {
-    "status": "PENDING_PUSH"
+    "status": "SUCCESS",
+    "source_commit": "f9883552b0dfa08466b186501aa3e8c6c056a888",
+    "implementation_commit": "fd8f09c8e69de0341a285e75bcafe2f48a6e38c4",
+    "run": 39589564830,
+    "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39589564830",
+    "artifact_id": 12341200362,
+    "artifact_name": "xcmate-review-55-7b914eb02756751978df5b80f0cf574760fc9d2215cb06ed4b7fe9123534f69f",
+    "artifact_url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39589564830/artifacts/12341200362",
+    "artifact_outer_sha256": "sha256:ee48aa2c44c67fc750fff815560c44cb35b7975671ba4239afa99d8dd91e6417",
+    "artifact_bytes": 382020,
+    "core_inner_sha256_in_artifact_name": "7b914eb02756751978df5b80f0cf574760fc9d2215cb06ed4b7fe9123534f69f",
+    "publish": "SKIPPED",
+    "raw_log_download": "BLOCKED_TRANSPORT",
+    "ci_test_count": null,
+    "test_count_local": 496,
+    "artifact_binary_downloaded": false,
+    "verification": "GitHub run/job/artifact APIs; successful Prepare validates complete successful suite, CRC, source bytes, paths; inner core SHA matches local reproducible ZIP and independent GitHub blob"
   },
   "production_published": false,
   "merged": false,
@@ -166,6 +182,10 @@
     "package": "testversionen/plugin.video.xtreammate-0.1.29.4.zip",
     "same_bytes_as_core": true,
     "comparison_0293_preserved": true,
-    "productive_main_updated": false
+    "productive_main_updated": false,
+    "metadata": "testversionen/build.json",
+    "old_metadata_preserved": "testversionen/build-0.1.29.3.json",
+    "inherited_0293_write_workflow": "NOT_CARRIED_FORWARD_PR52_UNTOUCHED",
+    "validation": "PASS_UNIQUE_TWO_ZIP_LINKS_METADATA_HASHES_DUPLICATE_BYTES_CRC"
   }
 }
