@@ -145,10 +145,10 @@ test_restart_offline_previous_index_and_immediate_disabled_filter (test_xcmate_0
 test_same_stream_in_two_groups_counted_once_globally_but_available_in_each (test_xcmate_028_streaming.IndexTests.test_same_stream_in_two_groups_counted_once_globally_but_available_in_each) ... ok
 test_streaming_group_publishes_only_after_complete_json (test_xcmate_028_streaming.IndexTests.test_streaming_group_publishes_only_after_complete_json) ... ok
 test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update (test_xcmate_028_streaming.LargeGuideTests.test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update) ... 
-LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 20.276}
+LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 21.607}
 ok
 test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib (test_xcmate_028_streaming.LargeHTTPTests.test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib) ... 
-LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 32.354, "peak_rss_kib": 57776}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 32.395, "peak_rss_kib": 57776}]
+LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 38.406, "peak_rss_kib": 57820}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 38.377, "peak_rss_kib": 57820}]
 ok
 test_cache_envelope_and_trailing_data_validated (test_xcmate_028_streaming.ParserTests.test_cache_envelope_and_trailing_data_validated) ... ok
 test_chunked_http_gzip_and_truncated_compression (test_xcmate_028_streaming.ParserTests.test_chunked_http_gzip_and_truncated_compression) ... ok
@@ -374,6 +374,24 @@ test_over_hundred_covers_survive_return_restart_and_never_refetch (test_xcmate_m
 test_series_continue_status_and_favourites_are_independent (test_xcmate_media_persistence_041_044.PersistenceTests.test_series_continue_status_and_favourites_are_independent) ... ok
 test_visible_art_refresh_updates_nonfocused_tiles_without_reload (test_xcmate_media_persistence_041_044.PersistenceTests.test_visible_art_refresh_updates_nonfocused_tiles_without_reload) ... ok
 test_worker_lease_blocks_parallel_download_and_recovers_after_expiry (test_xcmate_media_persistence_041_044.PersistenceTests.test_worker_lease_blocks_parallel_download_and_recovers_after_expiry) ... ok
+test_action_window_returns_to_same_home_without_container_update (test_xcmate_navigation_0298.Navigation298.test_action_window_returns_to_same_home_without_container_update) ... ok
+test_cross_interpreter_lease_rejects_second_window_before_constructor (test_xcmate_navigation_0298.Navigation298.test_cross_interpreter_lease_rejects_second_window_before_constructor) ... ok
+test_disabled_control_is_checked_via_real_kodi_info_condition (test_xcmate_navigation_0298.Navigation298.test_disabled_control_is_checked_via_real_kodi_info_condition) ... ok
+test_empty_favourite_removal_keeps_focus_valid (test_xcmate_navigation_0298.Navigation298.test_empty_favourite_removal_keeps_focus_valid) ... ok
+test_episode_back_restores_selected_season (test_xcmate_navigation_0298.Navigation298.test_episode_back_restores_selected_season) ... ok
+test_failed_anchor_does_not_show_window_or_create_recursive_updates (test_xcmate_navigation_0298.Navigation298.test_failed_anchor_does_not_show_window_or_create_recursive_updates) ... ok
+test_focus_navigation_never_targets_hidden_or_empty_control (test_xcmate_navigation_0298.Navigation298.test_focus_navigation_never_targets_hidden_or_empty_control) ... ok
+test_full_posterwall_back_restores_groups_then_landing_then_home (test_xcmate_navigation_0298.Navigation298.test_full_posterwall_back_restores_groups_then_landing_then_home) ... ok
+test_hidden_120_and_empty_lists_fall_back_to_visible_header (test_xcmate_navigation_0298.Navigation298.test_hidden_120_and_empty_lists_fall_back_to_visible_header) ... ok
+test_home_and_settings_use_nonfolder_nonplayable_plugin_actions (test_xcmate_navigation_0298.Navigation298.test_home_and_settings_use_nonfolder_nonplayable_plugin_actions) ... ok
+test_invalid_media_route_still_reports_real_failure (test_xcmate_navigation_0298.Navigation298.test_invalid_media_route_still_reports_real_failure) ... ok
+test_legacy_directory_anchor_happens_before_open_only_once (test_xcmate_navigation_0298.Navigation298.test_legacy_directory_anchor_happens_before_open_only_once) ... ok
+test_modal_start_failure_keeps_home_and_notifies_without_dialog_close (test_xcmate_navigation_0298.Navigation298.test_modal_start_failure_keeps_home_and_notifies_without_dialog_close) ... ok
+test_popup_routes_complete_success_once_or_no_directory_for_action_handle (test_xcmate_navigation_0298.Navigation298.test_popup_routes_complete_success_once_or_no_directory_for_action_handle) ... ok
+test_repeated_ten_movie_and_series_cycles_keep_parent_and_valid_focus (test_xcmate_navigation_0298.Navigation298.test_repeated_ten_movie_and_series_cycles_keep_parent_and_valid_focus) ... ok
+test_running_window_owns_both_back_events_until_transition_is_drained (test_xcmate_navigation_0298.Navigation298.test_running_window_owns_both_back_events_until_transition_is_drained) ... ok
+test_search_transition_runs_after_native_close (test_xcmate_navigation_0298.Navigation298.test_search_transition_runs_after_native_close) ... ok
+test_two_intentional_backs_close_once_and_never_reopen_or_exit_container (test_xcmate_navigation_0298.Navigation298.test_two_intentional_backs_close_once_and_never_reopen_or_exit_container) ... ok
 test_autoplay_diagnostic_safe_by_default_keeps_manual_play (test_xcmate_p0_playback.StartupKodiContractTests.test_autoplay_diagnostic_safe_by_default_keeps_manual_play) ... ok
 test_invalid_start_returns_failed_playable_not_empty_directory (test_xcmate_p0_playback.StartupKodiContractTests.test_invalid_start_returns_failed_playable_not_empty_directory) ... ok
 test_manual_playable_uses_resolver_and_never_direct_player (test_xcmate_p0_playback.StartupKodiContractTests.test_manual_playable_uses_resolver_and_never_direct_player) ... ok
@@ -544,11 +562,11 @@ test_widget_route_and_no_cached_credentials_in_link (test_xtreammate_widgets.Wid
 test_youtube_whitelist (test_xtreammate_widgets.WidgetsTest.test_youtube_whitelist) ... ok
 
 ----------------------------------------------------------------------
-Ran 540 tests in 108.326s
+Ran 558 tests in 126.089s
 
 OK
 
-MODEL_COLD_WINDOW_MS 3.962
+MODEL_COLD_WINDOW_MS 5.128
 
 SELECTIVE_XMLTV {"bytes": 400, "parsed": 2, "stored": 1}
 
