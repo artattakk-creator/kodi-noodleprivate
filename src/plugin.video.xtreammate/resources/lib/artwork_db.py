@@ -205,11 +205,18 @@ def _bounded(db,cancel):
     db.set_progress_handler(lambda:int(cancel() or time.monotonic()>deadline),1000)
 
 
+def _sync_directory(folder):
+    fd=os.open(folder,os.O_RDONLY|getattr(os,'O_DIRECTORY',0))
+    try:os.fsync(fd)
+    finally:os.close(fd)
+
+
 def _backup(source,cancel):
     """Caller holds application exclusive lock and SQLite BEGIN IMMEDIATE."""
     from import_budget import check_space
     root=os.path.join(os.path.dirname(path()),'artwork_db_backups')
     os.makedirs(root,exist_ok=True)
+    _sync_directory(os.path.dirname(root))
     size=sum(os.path.getsize(p) for p in (path(),path()+'-wal') if os.path.exists(p))
     check_space(os.path.join(root,'snapshot'),max(4096,size)*2)
     name='artwork-'+time.strftime('%Y%m%dT%H%M%S',time.gmtime())+'-'+uuid.uuid4().hex+'.sqlite'
@@ -223,6 +230,7 @@ def _backup(source,cancel):
         target.close();target=None
         with open(partial,'rb') as stream:os.fsync(stream.fileno())
         os.replace(partial,filename)
+        _sync_directory(root)  # backup name is durable before any live repair
     finally:
         reader.close()
         if target is not None:target.close()
@@ -380,6 +388,7 @@ def rebuild(confirmed=False,cancel=lambda:False):
         if any(os.path.exists(path()+suffix) for suffix in ('-wal','-shm')):
             raise sqlite3.OperationalError('database is locked')
         phase='REPLACE';os.replace(new,path());new=''
+        _sync_directory(os.path.dirname(path()))
         _initialized.clear()
         from art_store import _ADOPTED
         _ADOPTED.discard(folder())
