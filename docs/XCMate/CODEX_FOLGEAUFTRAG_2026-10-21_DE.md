@@ -1,3 +1,5 @@
+> **RELEASE-KORREKTUR 21.10.2026:** Der Hotfix **0.1.29.5 aus PR #61 ist inzwischen in `main` gemergt und über das reguläre Kodi-Repository veröffentlicht** (Workflow [39639332756](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39639332756) SUCCESS). Vor neuen Arbeiten den aktuellen `main`-Stand verwenden; **#58/#59/#60 nicht blind erneut implementieren**, sondern realen Android-Gerätetest von 0.1.29.5 abwarten. 0.1.29.4 als Rollback erhalten, #50/0.1.30 weiter Draft. Dieser Hinweis supersediert die zeitlichen Basisangaben im ursprünglichen Folgeauftrag.
+
 # XCMate – Codex-Folgeauftrag / verbindliche Übergabe 21.10.2026
 
 **VOR JEDER CODE-ÄNDERUNG:** Lies [Projektstatus / Übergabe](PROJEKTSTATUS_UEBERGABE_2026-10-21_DE.md), sämtliche Issues **#57, #58, #59, #60, #62, #63, #64** samt Kommentarverlauf, sowie Draft-PR **#50** und den neuesten `main`-Stand. Stelle zunächst fest, was Codex bereits umgesetzt hat und was noch offen ist. Die heute dokumentierten Issue-Inhalte sind verbindlich; nicht automatisch jeden Zukunftswunsch in 0.1.30 hineinimplementieren.
