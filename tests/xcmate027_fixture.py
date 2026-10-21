@@ -22,6 +22,7 @@ class ListItem:
     def setArt(self,dictionary): self.art.update(dictionary)
     def setInfo(self,type,infoLabels): self.info.update(infoLabels)
     def setProperty(self,key,value): self.props[key]=value
+    def getProperty(self,key): return self.props.get(key,'')
 
 
 class Control:
@@ -46,7 +47,12 @@ class WindowXML:
     def __init__(self,xmlFilename,scriptPath,defaultSkin='Default',defaultRes='720p',isMedia=False):
         self.tree=ET.parse(Path(scriptPath)/'resources/skins'/defaultSkin/defaultRes/xmlFilename).getroot()
         self.controls={int(n.get('id')):Control(n) for n in self.tree.findall('./controls/control') if n.get('id')}
-        self.focus=int(self.tree.findtext('defaultcontrol'));self.shown=False
+        self.focus=int(self.tree.findtext('defaultcontrol'));self.shown=False;self._window_properties={}
+    def setProperty(self,key,value): self._window_properties[key]=value
+    def getProperty(self,key): return self._window_properties.get(key,'')
+    def show(self):
+        self.shown=True
+        self.onInit()
     def getControl(self,controlId): return self.controls[controlId]
     def setFocusId(self,iControlId):
         assert self.controls[iControlId].visible, ('focus on hidden control',iControlId)
@@ -151,6 +157,8 @@ class Fixture:
         portals.get_by_id=lambda pid:next((p for p in self.portals if p['id']==pid),None)
         portals.import_from_settings=lambda:None;portals.load_all=lambda:self.portals
         epg=types.ModuleType('epg');self.cache={};epg.load_cache=lambda pid:self.cache
+        epg._disk_ck=lambda pid:utils.cache_key('epg2_'+pid)
+        epg._mem_clear=lambda pid=None:None
         sources=types.ModuleType('epg_sources');sources.configuration=lambda pid:{'mappings':{},'sources':[]}
         status=types.ModuleType('epg_status');status.revision=lambda pid:'r1';status.read=lambda pid:{}
         patch_path=mock.patch.object(sys,'path',[str(LIB)]+sys.path);patch_path.start();self.addCleanup(patch_path.stop)

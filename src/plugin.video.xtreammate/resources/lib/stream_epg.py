@@ -32,7 +32,7 @@ def source_stream(source,cancel=lambda:False):
         finally: stream.file.close()
     else:
         from utils import http_stream
-        with http_stream(uri,max_seconds=300,cancel=cancel) as stream: yield stream
+        with http_stream(uri,cancel=cancel) as stream: yield stream
 
 
 def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=lambda:False):

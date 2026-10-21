@@ -34,6 +34,7 @@ class FakeControl:
         self.items.extend(vals)
     def selectItem(self, pos):
         self.position = pos
+    def getListItem(self,index): return self.items[index]
     def getSelectedPosition(self):
         return getattr(self, "position", -1)
 
@@ -47,6 +48,7 @@ class FakeWindowXML:
         return self.controls.setdefault(cid, FakeControl())
     def setFocusId(self, cid):
         self.focus = cid
+    def setProperty(self,key,value): setattr(self,key,value)
     def close(self):
         self.closed = True
 
@@ -68,7 +70,8 @@ class SetupFirstRunTests(unittest.TestCase):
     def setUpClass(cls):
         fake_gui = types.ModuleType("xbmcgui")
         fake_gui.WindowXML = FakeWindowXML
-        fake_gui.ListItem = lambda label: types.SimpleNamespace(label=label)
+        from xcmate027_fixture import ListItem
+        fake_gui.ListItem = ListItem
         localization = types.ModuleType("localization")
         localization.tr = lambda key, *a: "localized:{}:{}".format(key, a)
         with patch.dict(sys.modules, {"xbmcgui": fake_gui,
@@ -87,6 +90,9 @@ class SetupFirstRunTests(unittest.TestCase):
         patcher = patch.object(self.module.WorkWindow, "work",
                                lambda win, job, apply: setattr(win, "_test_job", job))
         patcher.start()
+        addon=types.ModuleType('xbmcaddon')
+        addon.Addon=lambda:types.SimpleNamespace(getAddonInfo=lambda _:str(ROOT/'src/plugin.video.xtreammate'))
+        patcher=patch.dict(sys.modules,xbmcaddon=addon);patcher.start()
         return window
 
     def test_discovery_has_visible_cancel_focus_not_empty_list(self):
@@ -154,8 +160,8 @@ class SetupFirstRunTests(unittest.TestCase):
         win.discovered(win.draft.categories)
         self.assertEqual(win.stage, "groups")
         self.assertEqual(win.kind, "vod")
-        self.assertEqual(win.focus, 100)
-        self.assertEqual(len(win.getControl(100).items), 1)
+        self.assertEqual(win.focus, win.list_id)
+        self.assertEqual(len(win.getControl(win.list_id).items), 1)
 
     def test_group_switch_and_checkbox_keep_visible_focus(self):
         win = self.new_window()
@@ -167,10 +173,10 @@ class SetupFirstRunTests(unittest.TestCase):
         win.discovered(win.draft.categories)
         win.onClick(11)
         self.assertEqual(win.kind, "vod")
-        self.assertEqual(win.focus, 100)
-        win.getControl(100).position = 0
-        win.onClick(100)
-        self.assertEqual(win.focus, 100)
+        self.assertEqual(win.focus, win.list_id)
+        win.getControl(win.list_id).position = 0
+        win.onClick(win.list_id)
+        self.assertEqual(win.focus, win.list_id)
         self.assertIn("7", win.draft.selected["vod"])
 
     def test_xml_has_focus_marker_and_colored_buttons(self):
@@ -179,9 +185,10 @@ class SetupFirstRunTests(unittest.TestCase):
         lst = root.find("./controls/control[@id='100']")
         self.assertIsNotNone(lst)
         focused = lst.find("focusedlayout")
-        self.assertIn("▶", focused.find(".//label").text)
+        self.assertTrue(focused.find(".//texture").text.endswith("setup_focus.png"))
+        self.assertNotIn("▶", ET.tostring(focused).decode())
         button = root.find("./controls/control[@id='17']")
-        self.assertEqual(button.findtext("focusedcolor"), "FF00E5FF")
+        self.assertEqual(button.findtext("focusedcolor"), "FF061820")
 
 
 if __name__ == "__main__":

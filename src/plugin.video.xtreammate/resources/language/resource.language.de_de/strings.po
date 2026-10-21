@@ -1775,7 +1775,7 @@ msgstr "Alle auswählen"
 
 msgctxt "#32705"
 msgid "Select none"
-msgstr "Keine auswählen"
+msgstr "Alle abwählen"
 
 msgctxt "#32706"
 msgid "EPG sources"
@@ -2060,3 +2060,31 @@ msgstr "Der Anbieter lieferte keine verwendbaren Staffel-/Folgenmetadaten."
 msgctxt "#32776"
 msgid "First 1000 duplicate groups"
 msgstr "Erste 1000 Duplikatgruppen"
+
+msgctxt "#32780"
+msgid "{} of {} groups enabled"
+msgstr "{} von {} Gruppen aktiviert"
+
+msgctxt "#32781"
+msgid "No categories available"
+msgstr "Keine Kategorien vorhanden"
+
+msgctxt "#32782"
+msgid "Saved data could not be fully verified. The new import was rolled back."
+msgstr "Gespeicherte Daten konnten nicht vollständig verifiziert werden. Der neue Import wurde zurückgenommen."
+
+msgctxt "#32783"
+msgid "Saving is already in progress or complete."
+msgstr "Speichern läuft bereits oder wurde abgeschlossen."
+
+msgctxt "#32784"
+msgid "{} · Group {} of {}: {} · read {}, stored {}"
+msgstr "{} · Gruppe {} von {}: {} · gelesen {}, gespeichert {}"
+
+msgctxt "#32785"
+msgid "The selection changed. Please scan again."
+msgstr "Die Auswahl wurde geändert. Bitte erneut scannen."
+
+msgctxt "#32786"
+msgid "Save or rollback incomplete. Existing accounts are preserved; record the diagnostic code."
+msgstr "Speicherung oder Rücknahme unvollständig. Bestehende Accounts bleiben erhalten; Diagnosecode notieren."

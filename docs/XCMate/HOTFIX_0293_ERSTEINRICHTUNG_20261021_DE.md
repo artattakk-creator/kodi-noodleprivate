@@ -1,3 +1,5 @@
+> **Vergleichsstand 0.1.29.3 unverändert erhalten.** Neuer getesteter Hotfix-Kandidat: [0.1.29.4 / vollständiger Prüfbericht](HOTFIX_0294_SETUP_SCAN_SAVE_DE.md). Die folgenden Ergebnisse dokumentieren ausschließlich PR #52; keine rückwirkende Geräteabnahme.
+
 # XCMate 0.1.29.3 – Android-Ersteinrichtungs-Hotfix (21.10.2026)
 
 **Befund am echten Gerät:** Frisch zurückgesetztes Kodi 21.3, Estuary, XCMate 0.1.29.2. Bei Konto-/Quellenanlage meldet der Assistent `Import fehlgeschlagen – ValueError – bestehende Accounts bleiben erhalten`; sichtbarer Navigationsfokus fehlt, Richtungstasten wirken erfolglos.

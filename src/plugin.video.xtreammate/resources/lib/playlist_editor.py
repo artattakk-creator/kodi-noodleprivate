@@ -12,6 +12,7 @@ class PlaylistEditor(WorkWindow):
         from m3u_store import path
         self.filename=path(portal['id'])
     def onInit(self):
+        self._initialized=True
         self.getControl(2).setLabel(tr(32721))
         for ident,label in ((10,32722),(11,32723),(12,32724),(13,32725),(14,32726),(15,32747),(16,32756),(17,32757),(18,32710)):
             self.getControl(ident).setLabel(tr(label))
@@ -125,5 +126,5 @@ class PlaylistEditor(WorkWindow):
 
 def open_editor(portal):
     import xbmcaddon
-    window=PlaylistEditor('XCMateSetup.xml',xbmcaddon.Addon().getAddonInfo('path'),'Default','720p')
-    window.configure(portal);window.doModal()
+    window=PlaylistEditor('XCMatePlaylistEditor.xml',xbmcaddon.Addon().getAddonInfo('path'),'Default','720p')
+    window.configure(portal);window.run()

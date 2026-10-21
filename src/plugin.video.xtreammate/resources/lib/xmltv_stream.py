@@ -41,13 +41,13 @@ class PrefixReader:
         return data+self.stream.read(min(65536,size-len(data)))
 
 
-def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=300):
+def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None):
     stream=PrefixReader(stream)
     data=gzip.GzipFile(fileobj=stream) if stream.prefix==b'\x1f\x8b' else stream
     parser=expat.ParserCreate()
     parser.buffer_text=True
     stack=[];record=None;text=[];text_length=0;attrs={};counts=dict(channels=0,programmes=0,skipped=0,bytes=0)
-    deadline=time.monotonic()+max_seconds
+    deadline=None if max_seconds is None else time.monotonic()+max_seconds
     def unsafe(*args): raise UnsafeXMLTV('XMLTV DTD/entity declaration rejected')
     def doctype(name,system_id,public_id,internal):
         if name!='tv' or system_id!='xmltv.dtd' or public_id or internal: unsafe()
@@ -105,7 +105,7 @@ def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=300):
     try:
         while True:
             if cancel(): raise InterruptedError('XMLTV import cancelled')
-            if time.monotonic()>deadline: raise TimeoutError('XMLTV streaming deadline')
+            if deadline is not None and time.monotonic()>deadline: raise TimeoutError('XMLTV streaming deadline')
             chunk=data.read(32768);counts['bytes']+=len(chunk)
             parser.Parse(chunk,not chunk)
             if not chunk: break

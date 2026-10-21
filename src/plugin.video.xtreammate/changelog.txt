@@ -1,3 +1,12 @@
+0.1.29.4 – P0 Setup, Scan und verifiziertes Speichern (Testkandidat)
+- WindowXML-Updates und Schließen nur auf dem Fenster-eigenen Python-Thread; Worker liefern Daten.
+- Drei getrennte Kategorienlisten, echte PNG-Checkboxen, sichtbarer Fokus/Reiter und Auswahlzähler.
+- Umschalten ohne Listenreset, getrennte Auswahl und Scrollposition pro Bereich.
+- Lange Scans ohne Gesamtdeadline; Read-/Inaktivitätsschutz, Abbruch und Zykluserkennung bleiben.
+- Frisches Staging, Save-Lock, permanente Readback-/Integritätsprüfung und Rollback nur neuer ID.
+- Keine sofortige doppelte Kataloganforderung nach erfolgreichem Import.
+- Keine Änderung am Live-/Remote-/Startsender-Freeze; Android-/IR-Abnahme offen, kein Release/Merge.
+
 0.1.29.2 – Universeller Setup-Assistent und private Playlist-Bearbeitung (Testkandidat)
 - Integrations-QA: späte Starts nach Zurück abbrechen; unvollständige M3U-Updates behalten Altbestand.
 - Kodi-21.3-API geprüft, echte JPEG-Fanart im Paket korrekt referenziert; Service-Build 29.
