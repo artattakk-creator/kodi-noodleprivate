@@ -133,3 +133,29 @@ class ProgressiveMediaTests(Fixture,unittest.TestCase):
             w._catalog_update=(w.reader,w.reader.state(w.kind),'new',None,w.groups)
             with mock.patch.object(w,'_refresh_art') as art:w._owner_tick();art.assert_not_called()
         self.assertFalse(w._closed)
+    def test_play_cancels_old_metadata_ui_callback_before_entering_fullscreen(self):
+        w=self.media_window();w.onClick(110);old=w._pending_future;self.assertIsNotNone(old)
+        w._play(w.selected,'vod');self.assertTrue(old.cancelled());self.assertIsNone(w._pending_apply)
+        self.assertIsNone(w._pending_future)
+    def test_only_validated_explicit_movie_resolver_reveals_hidden_title(self):
+        hidden=importlib.import_module('media_continue');hidden.hide('p','2');hidden.hide('other','2')
+        self.router._params.update(kind='vod',sid='2',intent='invalid')
+        progress=importlib.import_module('media_progress');progress.play(self.router,self.portal)
+        self.assertEqual(hidden.hidden('p'),{'2'})
+        self.router._params.pop('intent')
+        item=types.SimpleNamespace(getVideoInfoTag=lambda:types.SimpleNamespace(setUniqueIDs=lambda values:None))
+        with mock.patch.dict(sys.modules,player=types.SimpleNamespace(build_playable_item=lambda *a,**k:item)):
+            progress.play(self.router,self.portal)
+        self.assertEqual(hidden.hidden('p'),set());self.assertEqual(hidden.hidden('other'),{'2'})
+        self.assertTrue(sys.modules['xbmcplugin'].setResolvedUrl.call_args.args[1])
+    def test_category_panels_have_large_portrait_and_two_line_title_area(self):
+        w=self.category(count=1)
+        for layout in (w.getControl(210).node.find('itemlayout'),w.getControl(210).node.find('focusedlayout')):
+            poster=next(c for c in layout.findall('control') if 'ListItem.Art(poster)' in c.findtext('texture',''))
+            self.assertEqual((poster.findtext('width'),poster.findtext('height')),('164','246'))
+            self.assertGreaterEqual(int(layout.find('control[@type="textbox"]').findtext('height')),56)
+    def test_eye_assets_have_the_requested_green_and_red_colors(self):
+        from PIL import Image
+        green=Image.open(ADDON/'resources/media/eye_unseen.png').getpixel((20,12))
+        red=Image.open(ADDON/'resources/media/eye_watched.png').getpixel((20,12))
+        self.assertGreater(green[1],green[0]);self.assertGreater(red[0],red[1])

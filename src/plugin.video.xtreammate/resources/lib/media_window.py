@@ -451,6 +451,9 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
 
     def _play(self,item,kind,resume=False):
         self._playback_waiting=True;self._playback_seen=False
+        self._generation+=1
+        if self._pending_future is not None:self._pending_future.cancel()
+        self._pending_future=None;self._pending_apply=None
         from media_intent import begin
         self._play_intent=begin(self.portal['id'],kind,item['sid'])
         url=self.router.url(action='media_play',pid=self.portal['id'],kind=kind,sid=item['sid'],

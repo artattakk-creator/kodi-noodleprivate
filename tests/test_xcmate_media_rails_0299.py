@@ -78,7 +78,9 @@ class MediaRails299(Fixture,unittest.TestCase):
                 # #102 catalogue refresh restores the selected absolute row.
                 text=ast.unparse(fn).replace("start = self.offset\n                if self.mode == 'grid' and self.rows:\n                    absolute = self.offset + self.getControl(210).getSelectedPosition()\n                    start = absolute // PAGE * PAGE\n                    self._positions[self.mode, self.category, start] = absolute - start\n                self._page(self.mode, start)","self._page(self.mode, self.offset)")
                 fn=ast.parse(text).body[0]
-            elif name=='_play':del fn.body[:2]
+            elif name=='_play':
+                original=next(i for i,n in enumerate(fn.body) if isinstance(n,ast.ImportFrom) and n.module=='media_intent')
+                del fn.body[:original]
             elif name=='close':
                 del fn.body[4:6]
             self.assertEqual(ast.dump(fn,include_attributes=False),signature,name)
