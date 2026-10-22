@@ -1,6 +1,6 @@
 # XCMate – Projektübergabe und Android-Abnahme (22.10.2026)
 
-> **Verbindlicher Übergabestand.** Kein Release oder Merge durch diese Dokumentation. Für operative Arbeiten GitHub-Zustand erneut abgleichen.
+> **GitHub-Update 22.10.2026:** PR [#80](https://github.com/artattakk-creator/kodi-noodleprivate/pull/80) / **0.1.29.11 wurde auf ausdrücklichen Nutzerauftrag nach erfolgreicher CI in `main` gemergt** (Commit [`ce8a287`](https://github.com/artattakk-creator/kodi-noodleprivate/commit/ce8a287776338f3be8a0d58c97b8232d3fd4172d)). `src/plugin.video.xtreammate/addon.xml` meldet jetzt 0.1.29.11; der **öffentliche `addons.xml`-Updatekatalog meldet weiterhin 0.1.29.8**. Dies war **kein Kodi-Repository-Release**. **Android 0.1.29.11: NOT_RUN; letzte gerätebestätigte stabile Version bleibt 0.1.29.8.** Issues #69 und #75 bleiben bis nach realer Verifikation offen. Alle anderen Kandidaten .13/.14/.15 sind weiter nicht gemergt. Neue Merges/Releases nur auf erneuten Nutzerauftrag.
 
 ## Grunddaten und Schutzregeln
 
@@ -11,11 +11,11 @@
 - **Versionsgrenze strikt unter 0.1.30.** Alte ZIPs niemals überschreiben. Keine eigenmächtigen Merges, Releases, Datenbank-Löschungen, Profil-Migrationen, globalen Keymap-Änderungen oder Issue-Schließungen ohne reale Abnahme.
 - Vor dem ersten Android-Test Profilbackup, vorhandene Portale, EPG-Mappings, Sendergruppen, Favoriten, Artwork und Resume-Daten erhalten; vertrauliche Logs vor Veröffentlichung bereinigen.
 
-## Kandidaten zur gestaffelten Android-Abnahme
+## Kandidaten zur gestaffelten Android-Abnahme (PR #80 bereits gemergt, Android noch offen)
 
 | Reihenfolge | Version | Draft-PR | Schwerpunkt | Berichtete automatisierte Tests | Android |
 |---|---|---|---|---|---|
-| 1 | 0.1.29.11 | [#80](https://github.com/artattakk-creator/kodi-noodleprivate/pull/80) | Bildspeicherstatus und SQLite-BUSY | 568 PASS; CI PASS | NOT_RUN |
+| 1 | 0.1.29.11 | [#80 – MERGED](https://github.com/artattakk-creator/kodi-noodleprivate/pull/80) | Bildspeicherstatus und SQLite-BUSY | 568 PASS; CI PASS | NOT_RUN |
 | 2 | 0.1.29.13 | [#82](https://github.com/artattakk-creator/kodi-noodleprivate/pull/82) | Horizontaler EPG-Programmguide | 584 PASS | NOT_RUN |
 | 3 | 0.1.29.14 | [#83](https://github.com/artattakk-creator/kodi-noodleprivate/pull/83) | Film-/Serien-UI, grüner Fokus, Fanart | 580 PASS | NOT_RUN |
 | 4 | 0.1.29.15 | [#84](https://github.com/artattakk-creator/kodi-noodleprivate/pull/84) | Eigenes XCMate-Media-Player-OSD | 581 PASS | NOT_RUN |
