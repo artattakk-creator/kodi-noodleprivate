@@ -1,5 +1,7 @@
 # 0.1.29.13 – erste horizontale XCMate-Programmzeitschrift (#57)
 
+**Veröffentlichungsstatus 22.10.2026:** [PR #82](https://github.com/artattakk-creator/kodi-noodleprivate/pull/82) auf ausdrückliche Nutzeranweisung nach `main` gemergt; [GitHub-Publish PASS](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39733665167); `addons.xml` meldet 0.1.29.13. **Echte Android-EPG-Abnahme weiterhin NOT_RUN.**
+
 Basis: 0.1.29.11 / Statusfix #80. Eigener Branch, nicht mit Player-OSD oder
 Medien-UI kumuliert. Unter dem bestehenden Hauptmenüpunkt EPG öffnet die native
 Action-Route guide_grid das neue Raster. guide_browser und die bisherige
@@ -105,7 +107,7 @@ Die SVG-Modellansicht verwendet synthetische Beispieldaten und ist ausdrücklich
     Kodi 21.2 ARM32/BINGIE MOD, zusätzlich Estuary. Raster-/Kontext-Screenshots
     erstellen, tatsächliche Coverage und 20-Minuten-Stabilität protokollieren.
 
-Keine Release-/Mergefreigabe. Unverändertes 0.1.29.8 bleibt Rückfallbasis.
+Nach expliziter Nutzerfreigabe in `main` veröffentlicht. Android-Test des Rasters steht aus. 0.1.29.11 bleibt die zuletzt auf Android funktional geprüfte Arbeitsversion (mit dokumentierten Restbefunden); 0.1.29.8 bleibt älterer stabiler Rückfallstand.
 
 ## Host-Verifikation
 
