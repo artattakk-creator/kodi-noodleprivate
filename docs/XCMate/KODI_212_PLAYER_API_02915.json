@@ -1,0 +1,52 @@
+{
+  "kodi": "21.2-Omega",
+  "sources": [
+    "https://raw.githubusercontent.com/xbmc/xbmc/21.2-Omega/xbmc/interfaces/legacy/Player.h",
+    "https://raw.githubusercontent.com/xbmc/xbmc/21.2-Omega/xbmc/GUIInfoManager.cpp"
+  ],
+  "capabilities": {
+    "pause": true,
+    "seek": true,
+    "subtitle_visibility": true
+  },
+  "methods": [
+    {
+      "name": "getAvailableAudioStreams",
+      "declared": true
+    },
+    {
+      "name": "getAvailableSubtitleStreams",
+      "declared": true
+    },
+    {
+      "name": "setAudioStream",
+      "declared": true
+    },
+    {
+      "name": "setSubtitleStream",
+      "declared": true
+    },
+    {
+      "name": "showSubtitles",
+      "declared": true
+    },
+    {
+      "name": "getTime",
+      "declared": true
+    },
+    {
+      "name": "getTotalTime",
+      "declared": true
+    },
+    {
+      "name": "seekTime",
+      "declared": true
+    },
+    {
+      "name": "pause",
+      "declared": true
+    }
+  ],
+  "rejected_candidate": "0.1.29.12 / PR81: canpause is not Player.GetProperties field",
+  "android": "NOT_RUN"
+}

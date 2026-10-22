@@ -1,0 +1,17 @@
+{
+  "version": "0.1.29.15",
+  "tests": 581,
+  "seconds": 82.952,
+  "failures": 0,
+  "errors": 0,
+  "files": 135,
+  "bytes": 408839,
+  "sha256": "ef02da17cad658858ea9a98c10ce28d95e67d0f86a2ac20b21ba6c223db8e34d",
+  "crc": "PASS",
+  "paths": "PASS",
+  "source_bytes": "PASS",
+  "reproducible_zip": "PASS",
+  "python_ast": "PASS",
+  "android": "NOT_RUN",
+  "production_publish": false
+}
