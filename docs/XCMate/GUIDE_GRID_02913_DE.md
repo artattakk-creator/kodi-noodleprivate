@@ -1,6 +1,6 @@
 # 0.1.29.13 – erste horizontale XCMate-Programmzeitschrift (#57)
 
-**Veröffentlichungsstatus 22.10.2026:** [PR #82](https://github.com/artattakk-creator/kodi-noodleprivate/pull/82) auf ausdrückliche Nutzeranweisung nach `main` gemergt; [GitHub-Publish PASS](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39733665167); `addons.xml` meldet 0.1.29.13. **Echte Android-EPG-Abnahme weiterhin NOT_RUN.**
+**Veröffentlichungsstatus 22.10.2026:** [PR #82](https://github.com/artattakk-creator/kodi-noodleprivate/pull/82) auf ausdrückliche Nutzeranweisung nach `main` gemergt; [GitHub-Publish PASS](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39733665167); `addons.xml` meldet 0.1.29.13. **Android-Ersttest: Layout positiv, Gruppen-/Logo-/XMLTV-Korrekturen offen (Issue #88).**
 
 Basis: 0.1.29.11 / Statusfix #80. Eigener Branch, nicht mit Player-OSD oder
 Medien-UI kumuliert. Unter dem bestehenden Hauptmenüpunkt EPG öffnet die native
@@ -84,7 +84,11 @@ keine ungetesteten oder mangels Engine funktionslosen Aufnahmebuttons gezeigt.
 Die SVG-Modellansicht verwendet synthetische Beispieldaten und ist ausdrücklich
 **kein Kodi-/Android-Screenshot**. Echte Bild-/TV-Abnahme ist noch offen.
 
-## Android-Test – NOT_RUN
+## Android-Ersttest – 22.10.2026 (nach Veröffentlichung)
+
+**Layout positiv vom Nutzer bewertet**, horizontaler Guide angezeigt. **Funktionale Abnahme NICHT bestanden:** Die Sender aller aktivierten Gruppen werden beim Einstieg gemischt, weil `category=None` voreingestellt ist; Nutzer verlangt zuerst eine native Gruppenliste und anschließend EPG *nur der gewählten Gruppe*, Back/Links wieder zur Gruppenliste. Senderlogos erscheinen noch nicht (Cache-/Quelle-/Budgetursache überprüfen, Artwork 514/512 MB und viele SPACE_FULL-Jobs gemeldet). XMLTV-Zuordnung soll direkt aus dem Senderkontext des Rasters erreichbar sein; nur einige Sender haben EPG-Daten. Verbindlicher Auftrag [#88](https://github.com/artattakk-creator/kodi-noodleprivate/issues/88), Mapping-Kontext [#60](https://github.com/artattakk-creator/kodi-noodleprivate/issues/60). Keine Mergefreigabe für Folgefix oder weitere Drafts ohne explizite Nutzerbestätigung.
+
+## Android-Testplan (teilweise durchgeführt; weitere Abnahme offen)
 
 1. Zuerst Statusfix 11 abnehmen, Profil sichern, dann nur dieses isolierte ZIP.
 2. Hauptmenü EPG: feste Sendernamen/-logos links, echte Sendungen rechts,
@@ -107,7 +111,7 @@ Die SVG-Modellansicht verwendet synthetische Beispieldaten und ist ausdrücklich
     Kodi 21.2 ARM32/BINGIE MOD, zusätzlich Estuary. Raster-/Kontext-Screenshots
     erstellen, tatsächliche Coverage und 20-Minuten-Stabilität protokollieren.
 
-Nach expliziter Nutzerfreigabe in `main` veröffentlicht. Android-Test des Rasters steht aus. 0.1.29.11 bleibt die zuletzt auf Android funktional geprüfte Arbeitsversion (mit dokumentierten Restbefunden); 0.1.29.8 bleibt älterer stabiler Rückfallstand.
+Nach expliziter Nutzerfreigabe in `main` veröffentlicht. Android-Ersttest des Rasters ergab offenen Gruppen-/Logo-/Mapping-Blocker (#88); vollständiger Android-Test steht aus. 0.1.29.11 bleibt die zuletzt auf Android funktional geprüfte Arbeitsversion (mit dokumentierten Restbefunden); 0.1.29.8 bleibt älterer stabiler Rückfallstand.
 
 ## Host-Verifikation
 
