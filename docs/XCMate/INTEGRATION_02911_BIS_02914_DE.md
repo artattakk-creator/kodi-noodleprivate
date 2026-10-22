@@ -1,4 +1,4 @@
-# Integrationsstand 22.10.2026 – ausschließlich 0.1.29.x
+# Integrationsstand 22.10.2026 – 0.1.29.11/13/14/15
 
 Produktiv/Android-abgenommen: **0.1.29.8**, #73 geschlossen. Die berichteten
 20/20 Reopen-, 6/6 Doppel-Back- sowie Detail-/Playback-Prüfungen werden erhalten.
@@ -8,7 +8,7 @@ Keine eigenmächtigen main-Merges, Releases oder regulären Updates.
 ```mermaid
 flowchart LR
   A[main: 0.1.29.8] --> B[0.1.29.11: Status/BUSY]
-  B --> C[0.1.29.12: VOD-OSD]
+  B --> C[0.1.29.15: VOD-OSD]
   B --> D[0.1.29.13: EPG-Raster]
   B --> E[0.1.29.14: Fokus/Fanart]
   F[Draft 77: große Reihen] --> E
@@ -16,7 +16,7 @@ flowchart LR
   I[Draft 50: Space Premium] --> J[zurückgestellt]
 ```
 
-**12/13/14 sind getrennte Geschwister-Kandidaten auf Basis 11**, kein kumuliertes
+**13/14/15 sind getrennte Geschwister-Kandidaten auf Basis 11**, kein kumuliertes
 Produktivrelease. Ein höher nummeriertes ZIP enthält deshalb nicht automatisch
 alle anderen Feature-Drafts. Zuerst 11 auf der Box prüfen, danach die jeweiligen
 Funktionen getrennt. Erst nach positiver Geräteabnahme in einem eigenen neuen
@@ -44,6 +44,29 @@ SMB-/content://-Schreibbetrieb bleibt ein eigener Schritt mit echtem Kodi-VFS-
 Adapter, verifiziertem Freiraum/Reserve, sicherem Datei-Commit, Offline-Snapshot,
 Hashprüfung und Android-Berechtigungsabnahme; keine Python-Dateioperationen auf
 smb:// und keine behauptete Vollunterstützung. Vorhandene Bilder immer behalten.
+
+## Aktuelle Testpakete und Freigabegrenzen
+
+| Version | Draft-PR | Hosttests | Android |
+|---|---|---:|---|
+| 0.1.29.11 Status/BUSY | [#80](https://github.com/artattakk-creator/kodi-noodleprivate/pull/80) | 568 | NOT_RUN |
+| 0.1.29.15 VOD-OSD | [#84](https://github.com/artattakk-creator/kodi-noodleprivate/pull/84) | 581 | NOT_RUN |
+| 0.1.29.13 EPG-Raster | [#82](https://github.com/artattakk-creator/kodi-noodleprivate/pull/82) | 584 | NOT_RUN |
+| 0.1.29.14 Medien-UI | [#83](https://github.com/artattakk-creator/kodi-noodleprivate/pull/83) | 580 | NOT_RUN |
+
+Der eigene erste Player-Draft #81 / 0.1.29.12 ist **zurückgezogen, nicht
+installieren**. Beim abschließenden Kodi-21.2-API-Abgleich wurde das ungültige
+RPC-Feld canpause erkannt, das das frühe Hostmodell nicht geprüft hatte.
+Das alte ZIP bleibt unverändert, deshalb neue freie Version 0.1.29.15; diese
+verwendet die belegten Player.PauseEnabled/Player.SeekEnabled-Bedingungen.
+Die übrigen Player-Methoden und Subtitle-Visibility sind gegen Kodi 21.2 geprüft.
+
+Für 11 ist GitHub-CI ebenfalls PASS. Die Feature-PRs sind für isolierte Reviews
+gegen den 11-Branch gestapelt; der nur auf main-PRs konfigurierte Workflow
+startet dort noch nicht. Die vollständigen Hostlogs/Hashes liegen in allen
+Branches. ZIP-CRC, sichere Pfade, Source-Bytes und byteidentische unabhängige
+Reproduktion sind jeweils PASS. Alle Python-Dateien bestehen zusätzlich die
+3.11-Grammatikprüfung; eine ausgeführte Kodi-/Android-Laufzeit wird nicht behauptet.
 
 ## Noch offene Geräte-/Featuregrenzen
 
