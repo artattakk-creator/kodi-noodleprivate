@@ -77,7 +77,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         if self.mode=='episodes':
             rows=self.getControl(330);search=self.getControl(400)
             target=self.getControl(340) if 340 in valid else rows
-            rows.setNavigation(target,rows,rows,rows)
+            rows.setNavigation(target,rows,rows,target)
             search.setNavigation(search,target,search,search)
             if 340 in valid:target.setNavigation(search,rows,rows,rows)
         self._nav_focus=control_id
@@ -705,6 +705,8 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             if self.mode=='episodes':
                 previous_pos=self._episode_last_pos
                 self._sync_episode_next()
+                if key==2 and previous_focus==330 and self.next_episode:
+                    self.setFocusId(340);return
                 if key==3 and previous_focus==330 and previous_pos==0 and self.getControl(330).getSelectedPosition()==0:
                     self.setFocusId(340 if self.next_episode else 400);return
                 if key==4 and focus==400:self.setFocusId(340 if self.next_episode else 330);return

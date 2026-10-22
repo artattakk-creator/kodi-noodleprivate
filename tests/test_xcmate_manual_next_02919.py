@@ -58,6 +58,8 @@ class ManualNextTests(Fixture,unittest.TestCase):
         self.assertEqual(w.next_episode['sid'],'12')
         w.native(4);self.assertEqual(w.getControl(330).getSelectedPosition(),1)
         self.assertEqual(w.next_episode['sid'],'21');self.assertIn('Staffel 2',w.getControl(340).label)
+        w.native(2);self.assertEqual(w.getFocusId(),340);self.assertEqual(w.next_episode['sid'],'21')
+        w.native(4);self.assertEqual(w.getControl(330).getSelectedPosition(),1)
         with mock.patch.object(w.router,'_xc',side_effect=AssertionError('provider on D-pad')):
             w.native(3);self.assertEqual(w.next_episode['sid'],'12')
             w.getControl(330).selectItem(1);w.pump();self.assertEqual(w.next_episode['sid'],'21')
@@ -74,7 +76,7 @@ class ManualNextTests(Fixture,unittest.TestCase):
     def test_next_crosses_season_and_returns_to_correct_episode_without_autoplay(self):
         for native in (False,True):
             w=self.series();self.episodes(w);w.native(4)
-            w.setFocusId(340);w.native(7);self.assertIn('sid=21',self.builtins[-1]);calls=len(self.builtins)
+            w.native(2);self.assertEqual(w.getFocusId(),340);w.native(7);self.assertIn('sid=21',self.builtins[-1]);calls=len(self.builtins)
             self.return_from_video(w,native)
             self.assertEqual((w.mode,w.season,w.getFocusId()),('episodes',2,330))
             self.assertEqual(w.visible_episodes[w.getControl(330).getSelectedPosition()]['sid'],'21')

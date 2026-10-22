@@ -19,7 +19,7 @@ Basis .18, Android 13 ARM32 / Kodi 21.2 Omega / Titan BINGIE MOD / IR. Jede Chec
 ## #44 Manuelle nächste Folge
 
 - [ ] Serie mit bestätigtem Nachfolger öffnen: im Detail „Nächste Folge · Staffel X Folge Y“ sichtbar. Ziel muss der aktuellen lokalen Auswahl/letzten echten Wiedergabe folgen; ohne Historie ist die erste gültige Folge der anfängliche Bezug.
-- [ ] Episodenliste: ersten Eintrag markieren, Hoch → sichtbarer Next-Button; Down zurück zur Liste. Von Suche Down erreichbar. Button benennt den Nachfolger der markierten Folge, auch bei Markierung mitten in einer Staffel.
+- [ ] Episodenliste: beliebige Folge markieren, Rechts → sichtbarer Next-Button ohne Wechsel der Bezugsfolge; Down zurück zur Liste. Alternativ ab erster Zeile Hoch → Next. Von Suche Down erreichbar. Button benennt den Nachfolger der markierten Folge, auch bei Markierung mitten in einer Staffel.
 - [ ] Explizites OK auf Next startet genau diese Folge, Bild/Ton/Resume korrekt. Kein Doppelstart bei zweitem OK während Startübergang.
 - [ ] Gleichen Nachfolger trotz ungesehenem/gesehenem Ausgangsstatus anbieten. Status nur an bewusst gewählten Testfolgen ändern; vorhandenes Resume anderer Folgen bleibt erhalten.
 - [ ] Letzte Folge einer Staffel mit bestätigtem Nachfolger → erste vorhandene gültige Folge der nächsten Staffel. Bei Nummernlücken die nächste tatsächlich vorhandene Folge. Keine fremde Serie/Portal-ID.
