@@ -100,6 +100,12 @@ Die SVG-Modellansicht verwendet synthetische Beispieldaten und ist ausdrücklich
 
 **Codefakten:** `guide_grid_data.SPAN=3*3600`, `GuideGridWindow._step` soll an Zeitfenstergrenze asynchron weiterladen. `guide_store` und `stream_epg` können reale Programme bis +10 Tage speichern; **keine Garantie**, dass die angeschlossenen XMLTV-/Providerquellen 7–10 Tage liefern. Xtream-Kurz-EPG ist nur Fallback im Gegenwartsfenster. **Praktischer Diagnoseweg:** XCMate → Einstellungen → EPG → **„Langzeit-EPG: Quellenreichweite“** (`guide_status`), zeigt real gespeicherte erste/letzte Programmdaten und letzte erfolgreiche Quellaktualisierung ohne neue Downloads. Die Kopfleiste „Jetzt“/„20:15“ bleibt zudem wegen [#92](https://github.com/artattakk-creator/kodi-noodleprivate/issues/92) per IR nicht zugänglich; P0 Playback aus EPG [#89](https://github.com/artattakk-creator/kodi-noodleprivate/issues/89) weiterhin nicht betätigen.
 
+## Android-Test 7C – Quellhorizont durch Diagnosefotos bestätigt (22.10.2026)
+
+**Realer lokaler Cache enthält Zukunftsprogramme weit über den beobachteten 14:00-Navigationsstopp hinaus:** `Deutschland · EPGShare01` **9.967 Sendungen**, **21.10.2026 06:00 – 25.10.2026 13:00**, Import-READY am **21.10. 13:48**; `Deutschland · Kaimandura Master` **33.573 Sendungen**, **21.10.2026 06:00 – 28.10.2026 09:30**, Import-READY am **21.10. 13:50**. **Quellenhorizonte sind über alle Sender aggregiert**; nicht als senderspezifische EPG-Verfügbarkeit ausgeben. Daher: globaler Langzeit-EPG-Import **PASS**, konkrete Sender-ID-Mappings und horizontaler Fokus-/Seitenübergang weiterhin zu klären; [Issue #93](https://github.com/artattakk-creator/kodi-noodleprivate/issues/93).
+
+**Dubletten-Diagnose:** `XTREAM_SHORT` meldet u. a. `4 Rohdatensätze → 3 eindeutig (1 entfernt)`, `4 → 2 (2 entfernt)`, `4 → 4 (0 entfernt)`; der sichtbare Rasterguide zeigt laut Nutzer keine doppelten Sendungsblöcke. **Deduplizierung in überprüften Beispielen = Teil-PASS**, nicht alle Kanäle/Feeds/Tage geprüft, [Issue #58](https://github.com/artattakk-creator/kodi-noodleprivate/issues/58). Diagnose derzeit sehr roh (mehrseitiges JSON unter „Plot“), verständlichere Kurzansicht empfohlen.
+
 ## Android-Testplan (teilweise durchgeführt; weitere Abnahme offen)
 
 1. Zuerst Statusfix 11 abnehmen, Profil sichern, dann nur dieses isolierte ZIP.
