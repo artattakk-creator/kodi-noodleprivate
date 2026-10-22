@@ -42,6 +42,12 @@ Add-on-Name bleibt **XCMate**, Anbieterzeile wird **GS Media** ohne „Fork of m
 
 Neue Regressionen verwenden je **500 synthetische Film-/Serientitel mit insgesamt 1000 unterschiedlichen Bildadressen** und einer gültigen PNG-Testgrafik: echte lokale Dateien/SQLite, tiefe Kategorieansicht >240, sichtbare Übernahme, Rückscrollen und Modulneustart ohne erneuten HTTP-Aufruf. Kein echter Provider-/Androidtest und keine Behauptung 1000 unterschiedlicher Motive. Weitere Tests betreffen reale Worker/SQLite, physische Reserve vor/nach HTTP, explizite Limits/default-Marker, erschöpfte Space-Jobs, persistente Retry-Marker, Fehlertypen/Datenschutz, Pause, Priorität/Fairness, Claim-/Lease-Races, alte Schema-Daten und Lizenzroute.
 
-Ursprüngliche Freeze-Hashes werden nicht pauschal ersetzt: genau benannte unveränderte .19-Artwork-Funktionen für Dateiübernahme/Lock/Backup/Repair bleiben AST-geprüft; neue Queue-/Budgetteile erhalten eigene Tests. Die einzige Navigationserweiterung ist die ausdrücklich benannte Lizenz-Dialogroute. Media-Resolver/Next/Resume/Stop/Live/EPG-Playback bleiben geschützt. Vollsuite/ZIP/SHA folgen im Lieferbericht.
+Ursprüngliche Freeze-Hashes werden nicht pauschal ersetzt: genau benannte unveränderte .19-Artwork-Funktionen für Dateiübernahme/Lock/Backup/Repair bleiben AST-geprüft; neue Queue-/Budgetteile erhalten eigene Tests. Die einzige Navigationserweiterung ist die ausdrücklich benannte Lizenz-Dialogroute. Media-Resolver/Next/Resume/Stop/Live/EPG-Playback bleiben geschützt. Vollsuite/ZIP/SHA stehen im folgenden Lieferbericht.
 
 **Rest:** echte Android-Poster-/Logoabdeckung, 500 Titel, Neustart/Offline, Mehrportal und reale Speicher-/Dateisystemeigenschaften prüfen. Fehlende oder ungültige Providerbilder werden nicht erfunden. #41/#90 nicht ohne Geräteabnahme schließen; #69 nicht als Datenbankreparatur abgeschlossen markieren. [Android-Checkboxen](ANDROID_TEST_02920_DE.md). **Autoplay #85 ist nicht enthalten**, siehe [separate technische Vorbereitung](AUTOPLAY_VORBEREITUNG_NACH_TEST46_DE.md). Kein Merge/Release/OTA, kein produktiver Index geändert.
+
+## Gelieferter Prüfstand
+
+**709 Tests PASS in 88,278 s**, 0 Fehler/Fehlschläge, keine unbehandelten Worker-Ausnahmen; **27 neue Tests**. [Vollständiges Protokoll](TESTLOG_02920.txt) · [Prüfbericht](TESTERGEBNISSE_02920.json). ZIP: 147 Dateien / 449728 Bytes, CRC/Pfade/Quellbytegleichheit und unabhängig reproduzierbarer Neuaufbau PASS. Python-3.11-Grammatik für 89 Dateien PASS (kein 3.11-Laufzeittest). Geschützte Playback-/Live-/EPG-Dateien, Service, Medien-XML, Lizenz/Herkunft und alte ZIPs bytegleich; 35 fremde WIP-Dateien unverändert. Android .20 **NOT_TESTED**.
+
+SHA256: `970323bb740ba74dcb03e7e4fe255e77b586f8cb748ea3f9a26ade2681f79e89`.

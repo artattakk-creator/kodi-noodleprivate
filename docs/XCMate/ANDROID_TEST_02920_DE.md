@@ -32,3 +32,13 @@ Android 13 ARM32 / Kodi 21.2 / Titan BINGIE MOD / IR. .19-Tests 42–46 laut Nut
 - [ ] Add-on heißt XCMate, Anbieter **GS Media** ohne Fork-Suffix. Add-on-Information nennt die Herkunft. Einstellungen → Info → Lizenzen und Herkunft zeigt Upstream/Änderungshinweise und vollständige GPL; keine Copyrightentfernung.
 
 Rückfall: unverändertes .19-ZIP mit bestehendem Profil. Die additive Queue-Metadatentabelle erfordert keine Rückmigration. Falls das Limit für .20 bewusst auf 0 geändert wurde, hat .19 dafür noch die alte Budgetsemantik; beim Rückfall den vorher notierten Wert manuell wiederherstellen. Bilddateien/Jobs nicht löschen. Bei Crash/Hänger/Hintergrundton abbrechen, Version/Schritt/Zeitpunkt und bereinigte private Diagnose sichern. Kein Merge/Release ohne ausdrückliche Freigabe.
+
+## Download und SHA256
+
+[Android-Test-ZIP 0.1.29.20](https://github.com/artattakk-creator/kodi-noodleprivate/raw/refs/heads/fix/xcmate-02920-artwork/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.20.zip) · [SHA256-Datei](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.20.zip.sha256)
+
+```text
+970323bb740ba74dcb03e7e4fe255e77b586f8cb748ea3f9a26ade2681f79e89  plugin.video.xtreammate-0.1.29.20.zip
+```
+
+Host: 709 Tests PASS. Neue Android-Abnahme: **NOT_TESTED**. Nur manuelle Testinstallation, kein reguläres Update veröffentlicht.
