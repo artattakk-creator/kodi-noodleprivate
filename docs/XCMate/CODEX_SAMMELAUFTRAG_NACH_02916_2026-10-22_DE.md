@@ -2,6 +2,50 @@
 
 **Verbindlicher Nutzerauftrag 22.10.2026:** Die vollständigen Android-Ergebnisse als PASS/FAIL/NOT_TESTED auf GitHub erfassen und einen **priorisierten gemeinsamen Änderungsvorschlag** für den nächsten Teststand ausarbeiten. **Keine automatische Integration, kein Merge, kein reguläres OTA/Release ohne neue ausdrückliche Freigabe.**
 
+## VERBINDLICHE ERGÄNZUNG 22.10.2026: weitere sinnvolle offene Issues, EPG-Preview, Catch-up und größere Cover
+
+**Diese aktuelle Präzisierung geht älteren Detailvorgaben vor.** Der Nutzer wünscht ausdrücklich, dass Codex weitere sinnvolle, thematisch passende offene Issues prüft und nicht nur die bisherige Liste abarbeitet. Vor Beginn der Entwicklung daher **alle zurzeit offenen XCMate-GitHub-Issues** inventarisieren (59 beim letzten Abruf) und eine kurze Triage-Tabelle erstellen: Issue, bestehender Stand in aktuellem main, realer Android-PASS/FAIL/NOT_RUN, technische Abhängigkeit, geeignetes gemeinsames Fixpaket, Umsetzungsentscheidung oder begründete Zurückstellung. **Keine willkürliche Aufnahme aller 59 Issues in einen untestbaren Groß-PR**; P0 STOP #97 und geschützter EPG-Playback-Retest #89 bleiben zwingend zuerst.
+
+### A. [#98](https://github.com/artattakk-creator/kodi-noodleprivate/issues/98): EPG zuweisen mit sofortiger, nichtpersistenter Anbieter-/Kanalvorschau (P1, verbindlich)
+
+**Exakter Nutzerablauf:**
+1. Im **großen horizontalen EPG** den betreffenden TV-Sender markieren, **OK / Untermenü / EPG zuweisen** öffnen. Das ist eine Senderaktion, nicht nur ein globale Einstellungen-Seite.
+2. In einem IR-bedienbaren Dialog **alle verfügbaren EPG-Kanäle aller konfigurierten Anbieter** mit **Anbietername, Kanalname, EPG-ID, Quellenstatus und soweit lokal bekannt Datenreichweite** anzeigen. Quelle und Kanal als Paar identifizieren (auch wenn zwei Anbieter gleiche IDs/Namen führen). Nutzer soll nach Sendernamen/ID suchen, plausibel gerankte Treffer sehen, Quellen/Kanäle wechseln und durch sehr große Listen navigieren können. Vorhandenes Mapping kennzeichnen.
+3. **Sofort beim Auswählen** den **ausgewählten EPG-Datensatz als temporäre Vorschau im bereits geöffneten horizontalen Raster des markierten Senders** darstellen, mit echten Jetzt-/Nächste-/Zukunfts-Sendungen. Die übrigen Sender, Gruppe und Zeitposition unverändert lassen. **Kein Speichern, kein Mapping-Write, kein globaler Import, keine neue Auswahl als Standard.**
+4. **Wenn kein EPG erscheint:** klarer Leer-/Nichtgeladen-/BUSY-Status, ohne falsch wirkenden versteckten SHORT_EPG-Fallback. Einfach sofort den **nächsten EPG-Anbieter und dessen Kanal** auswählen und im Raster vergleichen, beliebig oft.
+5. **Erst mit „Speichern“** das zuletzt gewählte **Anbieter-ID + EPG-Kanal-ID**-Paar **nur für portal_id + stream_id** atomar dauerhaft zuweisen. Danach den betroffenen Sender im Guide, Now/Next und Langzeitdaten sofort konsistent aktualisieren. Kein Kodi-Neustart nötig; Quelle bei gleicher EPG-ID nicht vertauschen. Alte manuelle String-Mappings rückwärtskompatibel lesen.
+6. **„Abbrechen“/Back** verwirft jede Probeauswahl vollständig: vorherige Zuordnung, Rasterprogramme, Zeitachse, Senderfokus/Gruppe und persistierte Dateien bleiben unverändert. Entfernen/Zurücksetzen nur als ausdrücklich bestätigte separate Speicheraktion.
+
+**Technische Besonderheit:** epg_sources.py hat bereits configuration, available_channels und set_mapping, aber die globale _choose_mapping-Funktion schreibt sofort und ist **nicht** als Preview implementiert. guide_grid_window.py hat schon OK-Untermenü und separate SQL-/Diagnose-Reader. Der derzeit aggregierte XMLTV-Kanalindex kann die Herkunft unterschiedlicher Anbieter verschleiern. Im kombinierten SQLite-Guide können gleiche Kanal-IDs aus mehreren Feeds kollidieren. **Codex muss erst echte Source-qualified Daten-/Alias-Auflösung durchgehend gewährleisten; ein umbenanntes globales Mapping mit immer identischer Vorschau wäre ausdrücklich falsch.** Wenn nötig, rückwärtskompatibles, source-qualified Mapping und lokale Quell-Programmindexierung, atomarer Save und temporärer Worker-only Preview-State; keine zweite vollständige Datenbank, kein Full-HTTP bei Fokuswechsel, keine unsichere Profil-/DB-Migration.
+
+**Pflichttests:** Zwei XMLTV-Anbieter mit **gleicher Kanal-ID und verschiedenen Programmen** müssen im Preview *verschiedene* Daten anzeigen; Wechsel A→B→C→Cancel bewahrt Konfigurations-/DB-Bytes exakt; Wechsel A→B→Save ändert nur genau einen Stream desselben Portals, bleibt nach Kodi-Neustart erhalten, aktualisiert Guide/Now/Next sofort; mehrdeutige Regional-/HD-Kanäle, leere Quelle, DB_BUSY, keine Daten, schneller Wechsel und Cancel während Worker, alte Mappings, Android-Fernbedienung. Vollständige Spezifikation [#98](https://github.com/artattakk-creator/kodi-noodleprivate/issues/98).
+
+### B. [#99](https://github.com/artattakk-creator/kodi-noodleprivate/issues/99): Catch-up-/Replay-Symbol im großen EPG (P1, verbindlich)
+
+**Verbindlich:** Gut lesbares kleines **Catch-up-Zeichen** für tatsächlich im nachträglichen Abruffenster verfügbare Sender/Sendungen, im Raster/Senderbereich und im Detail erklärt. Nur anhand **realer Provider-Capability/Stream-Metadaten** wie tv_archive/tv_archive_duration und konkretem Ereigniszeitraum kennzeichnen; vergangene XMLTV-Sendung allein beweist keine Archiv-Verfügbarkeit. Start-over für laufende Sendung getrennt von Catch-up betrachten. Solange keine **tatsächlich funktionsfähige, Android-getestete Archiv-Playerroute** vorliegt, nur informatives Symbol und **keinen scheinbar funktionierenden Replay-Button**. Unterschied zu EPG-Aufnahmen #62 sauber erhalten. BINGIE-Neonfokus #92 muss Schrift/Icons weiterhin lesbar lassen. Details/Regressionen in [#99](https://github.com/artattakk-creator/kodi-noodleprivate/issues/99).
+
+### C. [#74](https://github.com/artattakk-creator/kodi-noodleprivate/issues/74): Film- und Seriencover deutlich vergrößern, Rail-UX korrigieren (P1, verbindlich)
+
+**Nicht vergessen:** #74 beschreibt für **Filme UND Serien** derzeit winzige Poster (alte 100x92 px in einem 106x118 Layout) und unlesbare Titel. **Größere echte Poster im 2:3-Seitenverhältnis**, je nach 720p/1080p ungefähr **150–190 px Breite bei 720p** als Ausgangspunkt, mindestens zweizeilig gut lesbare Titel, sauber sichtbare Neon-Fokusrahmen, vertikales Scrollen zwischen hohen Reihen und keine zu kleine Überfüllung. Obere erreichbare Navigation **Kategorien / Suche**, Landing-Reihenfolge **Weiter ansehen → Meine Favoriten → Neuheiten**. Die bestehende Medien-Favoriten- und Resume-Logik (#44/#41) sowie Back- und Playerzustand erhalten.
+
+**Vorarbeiten bewusst verwerten:** [Draft-PR #83 (0.1.29.14)](https://github.com/artattakk-creator/kodi-noodleprivate/pull/83) enthält laut GitHub-Beschreibung bereits 164x246 Poster, Rail-Neuanordnung, Neon-Fokus und Detail-Fanart, ist aber **gestapelt auf älterem Branch**, auf Android **NOT_RUN** und **nicht in main gemergt**. [Draft-PR #84 (0.1.29.15)](https://github.com/artattakk-creator/kodi-noodleprivate/pull/84) betrifft das eigene VOD-OSD und ist ebenfalls nicht integriert. **Nicht blind mergen, Versionsnummern wiederverwenden oder komplette Branches in main überschreiben.** Codex soll die relevanten Diffs/Tests prüfen und nur passende Teiländerungen auf **aktuellem main / XCMate .16** konfliktfrei in neuen Draft-PR übertragen, sonst sauber nachstellen. Echtbild-Android-Abnahme erforderlich. (#74, #83, #77, #44, #41, #79, #84).
+
+### D. Weitere passende offene Issues prüfen, modular integrieren
+
+**P0 zuerst und unabhängig testbar:** #97 Live-TV-STOP/Exit ohne Neustart, danach #89 EPG-Playerstart kontrolliert auf Android. Keine Playback-Schleifen.
+
+**P1 EPG-UX/Quellpaket:** #98 manuelle Vorschau/Speichern, #99 Catch-up-Zeichen, #88 Startsendergruppe/Logos/Rich-Details, #60 Zuordnungen/Matching, #92 Fokusschrift + direkter Jetzt-Shortcut beispielsweise **BLAUE** Farbtaste, #93 Block-zu-Block-EPG und bessere Leerdaten-Diagnose, #57 Raster, #58 alte Dublettenfälle. Erst sichere technische Wechselwirkungen prüfen.
+
+**P1 Medien-/Artwork-/Performancepaket:** #74 Covergröße und Reihen, #83 als selektiver Draft-Vergleich, #44 Favoriten/Weitersehen, #41 persistente Cover, #90 512-MB-Artworkbudget und hängende SPACE_FULL-Jobs, #91 SQLite-Retry/Queues, #69 MIGRATION_FAILED-Index und #86 Filmimport-Fehlerbanner. Bei unterschiedlichem Risiko zwei abhängige Draft-PRs statt eines Codebergs. **SQLite-Locks, WAL und echte Speicherreserve nicht deaktivieren.**
+
+**Anschluss-Funktionen, ggf. eigener PR:** #42 kontinuierliche Senderliste ohne Seitentasten, #94 Icon-Rail, #95 zukünftige Sendungen des im Mini-EPG markierten Senders, #64 kontextbezogene Tastenprofile; #85 Serien-Autoplay bis zum bewussten Stop und Staffelwechsel sowie #79/#84 Medien-OSD erst nach STOP-/Ended-Abgrenzung, damit keine neue Autoplay-/Player-Reentrancy entsteht. Bei sinnvoll vorhandenen Vorarbeiten getrennt vorbereiten, nicht stillschweigend auslassen.
+
+**Bewusst später/ohne funktionale Scheinzusagen:** #62 EPG-Aufnahmen/Auto-Tune nur mit echten Capabilities und Opt-in; #63 Downloads, #71 PIN, #50 Space Premium, #65 X-Wall, #30 Lightweight Core und größere Design-/Systemumbauten. Historische P0-Issues gegen aktuellen Code/Android-Stand kontrollieren, nicht blind als weiterhin reproduzierbar behandeln.
+
+**Verpflichtende Codex-Antwort:** Issue-Triage-Tabelle (Issue, realer Stand, Relevant?, Implementieren/Separat/Zurückstellen, Begründung), Integrationsplan mit abhängigen Branches, neue regressionssichere **Draft-PR(s)**, Test-ZIP + SHA256, Android-IR-Testplan, Dokumentation der bewusst nicht enthaltenen Änderungen. **Kein Merge nach main, kein Release, keine Kodi-OTA-Aktualisierung und keine Datenlöschung ohne ausdrückliche erneute Freigabe.** Aktueller Hauptstand bleibt .16.
+
+---
+
 ## 0. Rahmen, Basis, Ausgangslage
 
 - Repository: https://github.com/artattakk-creator/kodi-noodleprivate
