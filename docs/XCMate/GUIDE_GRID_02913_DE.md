@@ -106,6 +106,12 @@ Die SVG-Modellansicht verwendet synthetische Beispieldaten und ist ausdrücklich
 
 **Dubletten-Diagnose:** `XTREAM_SHORT` meldet u. a. `4 Rohdatensätze → 3 eindeutig (1 entfernt)`, `4 → 2 (2 entfernt)`, `4 → 4 (0 entfernt)`; der sichtbare Rasterguide zeigt laut Nutzer keine doppelten Sendungsblöcke. **Deduplizierung in überprüften Beispielen = Teil-PASS**, nicht alle Kanäle/Feeds/Tage geprüft, [Issue #58](https://github.com/artattakk-creator/kodi-noodleprivate/issues/58). Diagnose derzeit sehr roh (mehrseitiges JSON unter „Plot“), verständlichere Kurzansicht empfohlen.
 
+## Android-Test 7D – Kurzvorschau ist nicht die Langzeit-Datenbank (22.10.2026)
+
+Nach erfolgreichem Durchlaufen des Kodi-Textviewers „Plot“ und der Popup-Suche wurde für einen ausgewählten Sender „Morden im Norden“ (**22.10. 09:55–10:40**) als einziger sichtbarer Programmeintrag angezeigt. Status: `Zuordnung: SHORT_EPG | EPG-ID: 411462 | Quelle: Xtream Kurz-EPG`. Der **Sendername ist auf dem Nutzerfoto nicht lesbar**. Die Vorschau liefert einen **PASS für Sender-Suche und Kurz-EPG-Nachschlagen**, aber keinen Langzeit-Horizontnachweis.
+
+**Codeabgrenzung:** `epg_preview.show()` liest `epg.load_cache()` und `epg_views.resolve_guide()`; `SHORT_EPG` verwendet den gecachten Xtream-Kurz-EPG-Fallback. **Dieser Pop-up-Pfad liest nicht `guide_v1.sqlite`**, während der große horizontale EPG in `guide_grid_data.page()` genau die persistente Langzeitdatenbank/`guide_alias` liest. Deshalb kann mit diesem Popup **weder** fehlende XMLTV-Langzeitdaten des gewählten Senders **noch** der UI-Abbruch um 14 Uhr festgestellt werden. **Fix-Anforderung #93:** sichere lokale per-Sender-Read-only-Horizontdiagnose des großen Guide-Readers, inkl. ID-Alias/`first_event`/`last_event`/tatsächlicher Zukunftssendungen. In #60 sind die UX- und Zuordnungsdetails beschrieben. P0 EPG→„Jetzt Sender ansehen“ #89 bleibt gesperrt.
+
 ## Android-Testplan (teilweise durchgeführt; weitere Abnahme offen)
 
 1. Zuerst Statusfix 11 abnehmen, Profil sichern, dann nur dieses isolierte ZIP.
