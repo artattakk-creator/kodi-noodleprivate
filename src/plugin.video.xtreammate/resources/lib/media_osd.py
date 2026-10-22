@@ -3,6 +3,7 @@
 Built/shown/polled on the existing service owner thread, like the proven live
 navigator. No modal loop, global keymap, HTTP, catalog query or live mutation.
 """
+import json
 import math
 import os
 import time
@@ -64,7 +65,15 @@ class MediaOSD(xbmcgui.WindowDialog):
         try:duration=_number(self.player.getTotalTime())
         except (AttributeError,RuntimeError,ValueError):duration=0
         seek=bool(xbmc.getCondVisibility('Player.SeekEnabled') and duration>0)
-        return dict(pause=True,stop=True,back=seek,forward=seek,audio=bool(audio),subtitles=bool(subtitles),
+        if time.monotonic()-getattr(self,'_cap_at',-10)>1:
+            self._cap_at=time.monotonic();self._player_caps={}
+            try:
+                reply=json.loads(xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=1,method='Player.GetProperties',params=dict(playerid=1,properties=['canpause','canseek'])))))
+                self._player_caps=reply.get('result',{})
+            except (AttributeError,RuntimeError,ValueError,TypeError):pass
+        pause=self._player_caps.get('canpause') is True
+        seek=seek and self._player_caps.get('canseek') is True
+        return dict(pause=pause,stop=True,back=seek,forward=seek,audio=bool(audio),subtitles=bool(subtitles),
                     subtitle_toggle=bool(subtitles),video=True,audio_settings=True,info=True)
 
     def _build(self):
@@ -91,7 +100,10 @@ class MediaOSD(xbmcgui.WindowDialog):
                 self.buttons[name].setNavigation(self.buttons[target],self.buttons[target],
                                                 self.buttons[names[(i-1)%len(names)]],self.buttons[names[(i+1)%len(names)]])
         for button in [*self.buttons.values(),*self.icons.values()]:button.setVisible(self.visible)
-        if self.visible:self.setFocus(self.buttons.get(old,self.buttons['pause']))
+        if self.visible:self.setFocus(self.buttons.get(old,self._default_control()))
+
+    def _default_control(self):
+        return self.buttons.get('pause',self.buttons['info'])
 
     def focus_action(self):
         try:ident=self.getFocusId()
@@ -106,7 +118,7 @@ class MediaOSD(xbmcgui.WindowDialog):
         if not self.owned():self.dispose();return
         self.visible=True;self._build()
         for control in self.decor+list(self.buttons.values())+list(self.icons.values()):control.setVisible(True)
-        self.setFocus(self.buttons['pause']);self.update()
+        self.setFocus(self._default_control());self.update()
 
     def hide_bar(self):
         self.visible=False
@@ -126,8 +138,9 @@ class MediaOSD(xbmcgui.WindowDialog):
             self.progress.setVisible(duration>0)
         except (RuntimeError,ValueError,TypeError):self.position.setLabel(tr(33013));self.progress.setVisible(False)
         paused=xbmc.getCondVisibility('Player.Paused')
-        self.buttons['pause'].setLabel(tr(33014) if paused else tr(33001))
-        self.icons['pause'].setImage(os.path.join(self.media,'tv_play.png' if paused else 'tv_pause.png'))
+        if 'pause' in self.buttons:
+            self.buttons['pause'].setLabel(tr(33014) if paused else tr(33001))
+            self.icons['pause'].setImage(os.path.join(self.media,'tv_play.png' if paused else 'tv_pause.png'))
 
     def invoke(self,name):
         if not self.owned():self.dispose();return False
