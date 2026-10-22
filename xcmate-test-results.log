@@ -145,10 +145,10 @@ test_restart_offline_previous_index_and_immediate_disabled_filter (test_xcmate_0
 test_same_stream_in_two_groups_counted_once_globally_but_available_in_each (test_xcmate_028_streaming.IndexTests.test_same_stream_in_two_groups_counted_once_globally_but_available_in_each) ... ok
 test_streaming_group_publishes_only_after_complete_json (test_xcmate_028_streaming.IndexTests.test_streaming_group_publishes_only_after_complete_json) ... ok
 test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update (test_xcmate_028_streaming.LargeGuideTests.test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update) ... 
-LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 22.451}
+LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 22.146}
 ok
 test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib (test_xcmate_028_streaming.LargeHTTPTests.test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib) ... 
-LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 37.831, "peak_rss_kib": 58060}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 37.962, "peak_rss_kib": 58060}]
+LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 37.124, "peak_rss_kib": 58076}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 37.621, "peak_rss_kib": 60312}]
 ok
 test_cache_envelope_and_trailing_data_validated (test_xcmate_028_streaming.ParserTests.test_cache_envelope_and_trailing_data_validated) ... ok
 test_chunked_http_gzip_and_truncated_compression (test_xcmate_028_streaming.ParserTests.test_chunked_http_gzip_and_truncated_compression) ... ok
@@ -305,6 +305,22 @@ test_movie_and_episode_return_checkpoint_before_single_stop (test_xcmate_exit_04
 test_overlay_back_and_buffering_do_not_stop (test_xcmate_exit_040.ExitTests.test_overlay_back_and_buffering_do_not_stop) ... ok
 test_all_direct_gui_constructors_and_native_dialog_arguments (test_xcmate_gui_contract.GUIContractTests.test_all_direct_gui_constructors_and_native_dialog_arguments) ... ok
 test_strict_constructor_parameter_names_match_pinned_213_headers (test_xcmate_gui_contract.GUIContractTests.test_strict_constructor_parameter_names_match_pinned_213_headers) ... ok
+test_bookmark_contains_ids_facts_and_no_source_urls (test_xcmate_guide_grid_02913.GridTests.test_bookmark_contains_ids_facts_and_no_source_urls) ... ok
+test_day_buttons_use_local_calendar_across_dst (test_xcmate_guide_grid_02913.GridTests.test_day_buttons_use_local_calendar_across_dst) ... ok
+test_dense_schedule_pans_exactly_to_selected_event_without_recursive_load (test_xcmate_guide_grid_02913.GridTests.test_dense_schedule_pans_exactly_to_selected_event_without_recursive_load) ... FAIL
+test_empty_data_is_named_empty_and_ok_watch_is_explicit (test_xcmate_guide_grid_02913.GridTests.test_empty_data_is_named_empty_and_ok_watch_is_explicit) ... ok
+test_fast_double_back_keeps_owner_until_transition_finishes (test_xcmate_guide_grid_02913.GridTests.test_fast_double_back_keeps_owner_until_transition_finishes) ... ok
+test_in_page_directions_do_not_query_database_or_network (test_xcmate_guide_grid_02913.GridTests.test_in_page_directions_do_not_query_database_or_network) ... ok
+test_logos_use_existing_local_artwork_and_refresh_without_remote_textures (test_xcmate_guide_grid_02913.GridTests.test_logos_use_existing_local_artwork_and_refresh_without_remote_textures) ... ok
+test_m3u_watch_uses_existing_tagged_source_resolver (test_xcmate_guide_grid_02913.GridTests.test_m3u_watch_uses_existing_tagged_source_resolver) ... ok
+test_manual_mapping_wins_and_missing_does_not_fall_back_silently (test_xcmate_guide_grid_02913.GridTests.test_manual_mapping_wins_and_missing_does_not_fall_back_silently) ... ok
+test_missing_database_is_not_created_and_no_programmes_are_invented (test_xcmate_guide_grid_02913.GridTests.test_missing_database_is_not_created_and_no_programmes_are_invented) ... ok
+test_native_grid_visible_focus_and_now_marker_do_not_start_playback (test_xcmate_guide_grid_02913.GridTests.test_native_grid_visible_focus_and_now_marker_do_not_start_playback) ... ok
+test_new_home_epg_route_is_action_and_legacy_route_still_exists (test_xcmate_guide_grid_02913.GridTests.test_new_home_epg_route_is_action_and_legacy_route_still_exists) ... ok
+test_over_2400_channels_render_only_eight_and_page_synchronously (test_xcmate_guide_grid_02913.GridTests.test_over_2400_channels_render_only_eight_and_page_synchronously) ... ok
+test_readonly_guide_does_not_change_existing_database (test_xcmate_guide_grid_02913.GridTests.test_readonly_guide_does_not_change_existing_database) ... ok
+test_selected_event_details_context_back_keeps_grid_and_cursor (test_xcmate_guide_grid_02913.GridTests.test_selected_event_details_context_back_keeps_grid_and_cursor) ... ok
+test_shared_axis_clips_and_keeps_duration_proportions (test_xcmate_guide_grid_02913.GridTests.test_shared_axis_clips_and_keeps_duration_proportions) ... ok
 test_epg_last_success_survives_failed_followup (test_xcmate_issue12.DiagnosticTests.test_epg_last_success_survives_failed_followup) ... ok
 test_failed_input_flush_retains_bounded_events_for_retry (test_xcmate_issue12.DiagnosticTests.test_failed_input_flush_retains_bounded_events_for_retry) ... ok
 test_failure_stage_and_class_survive_close_and_restart_without_exception_text (test_xcmate_issue12.DiagnosticTests.test_failure_stage_and_class_survive_close_and_restart_without_exception_text) ... ok
@@ -571,12 +587,21 @@ test_provider_synopsis_fallback (test_xtreammate_widgets.WidgetsTest.test_provid
 test_widget_route_and_no_cached_credentials_in_link (test_xtreammate_widgets.WidgetsTest.test_widget_route_and_no_cached_credentials_in_link) ... ok
 test_youtube_whitelist (test_xtreammate_widgets.WidgetsTest.test_youtube_whitelist) ... ok
 
+======================================================================
+FAIL: test_dense_schedule_pans_exactly_to_selected_event_without_recursive_load (test_xcmate_guide_grid_02913.GridTests.test_dense_schedule_pans_exactly_to_selected_event_without_recursive_load)
 ----------------------------------------------------------------------
-Ran 568 tests in 129.338s
+Traceback (most recent call last):
+  File "/home/runner/work/kodi-noodleprivate/kodi-noodleprivate/tests/test_xcmate_guide_grid_02913.py", line 113, in test_dense_schedule_pans_exactly_to_selected_event_without_recursive_load
+    self.assertEqual(w.origin,self.origin+29*60);self.assertTrue(w._loading)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1792650300 != 1792650540
 
-OK
+----------------------------------------------------------------------
+Ran 584 tests in 126.967s
 
-MODEL_COLD_WINDOW_MS 5.375
+FAILED (failures=1)
+
+MODEL_COLD_WINDOW_MS 4.787
 
 SELECTIVE_XMLTV {"bytes": 400, "parsed": 2, "stored": 1}
 
