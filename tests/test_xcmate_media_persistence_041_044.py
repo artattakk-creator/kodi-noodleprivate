@@ -52,7 +52,7 @@ class PersistenceTests(Fixture,unittest.TestCase):
         stamp=time.time()+60
         for n in range(5): self.store.run_one(now=stamp+n*1801)
         db=self.store.connect()
-        try: row=dict(db.execute("SELECT * FROM jobs WHERE status='FAILED'").fetchone())
+        try: row=dict(db.execute("SELECT * FROM jobs WHERE status='NETWORK_ERROR'").fetchone())
         finally: db.close()
         self.assertEqual(row['attempts'],3)
         calls=self.http.call_count;self.store.run_one(now=stamp+100000);self.assertEqual(self.http.call_count,calls)

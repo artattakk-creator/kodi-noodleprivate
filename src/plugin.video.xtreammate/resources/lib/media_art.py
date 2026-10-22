@@ -13,6 +13,11 @@ _queue_lock=threading.RLock()
 MAX_BYTES=3*1024*1024
 MAX_PIXELS=8*1024*1024
 _worker=None
+_enrol_worker=None
+_inbox={}
+_serial=0
+_enqueue_code='NOT_REQUESTED'
+MAX_INBOX=2048
 
 
 def dimensions(data):
@@ -51,50 +56,63 @@ def cached(url):
     except (OSError,ValueError): return ''
 
 
+def valid_source(value):
+    if not isinstance(value,str) or not value or len(value)>8192 or any(ord(c)<32 or ord(c)==127 for c in value):return False
+    try:
+        parts=urlsplit(value)
+        return parts.scheme in ('http','https') and bool(parts.hostname) and not any(c.isspace() for c in parts.hostname) and (parts.port is None or 0<parts.port<65536)
+    except ValueError:return False
+
+
 def fetch(url):
-    """Call from a bounded worker only, never from onAction/onFocus."""
-    if not isinstance(url,str) or urlsplit(url).scheme not in ('http','https'): return ''
+    """Worker-only. Stable names, no eviction, capacity checked before/after IO."""
+    from art_storage import check,ArtworkFailure
+    if not valid_source(url):raise ArtworkFailure('INVALID_SOURCE')
     with _lock:
         hit=cached(url)
         if hit:
             from art_store import ready
-            ready(url,os.path.getsize(hit))
-            return hit
+            ready(url,os.path.getsize(hit));return hit
         from art_store import budget,used
         from import_budget import check_space
-        root=folder();os.makedirs(root,exist_ok=True)
-        available=budget()-used()
-        if available<=0: raise OSError(28,'Artwork budget full')
-        check_space(os.path.join(root,'pending'),min(MAX_BYTES,available))
-        from utils import http_get
-        data,_=http_get(url,timeout=4,max_bytes=min(MAX_BYTES,available),max_seconds=6)
-        if len(data)>available: raise OSError(28,'Artwork budget full')
-        w,h=dimensions(data)
-        if not 0<w<=4096 or not 0<h<=4096 or w*h>MAX_PIXELS:
-            raise ValueError('image dimensions exceed budget')
-        root=folder();os.makedirs(root,exist_ok=True)
-        filename=os.path.join(root,hashlib.sha256(url.encode()).hexdigest()+'.img')
-        fd,tmp=tempfile.mkstemp(prefix='.art-',dir=root)
+        root=folder();tmp=''
         try:
-            with os.fdopen(fd,'wb') as stream: stream.write(data)
-            os.replace(tmp,filename)
+            os.makedirs(root,exist_ok=True)
+            cap=budget()
+            if cap and used()>=cap:raise ArtworkFailure('BUDGET_FULL')
+            check(MAX_BYTES,limit=0)
+            check_space(os.path.join(root,'pending'),MAX_BYTES)
+            from utils import http_get
+            try:data,_=http_get(url,timeout=4,max_bytes=MAX_BYTES,max_seconds=6)
+            except ValueError:raise ArtworkFailure('INVALID_IMAGE') from None
+            except Exception:raise ArtworkFailure('NETWORK_ERROR') from None
+            try:
+                w,h=dimensions(data)
+                if len(data)>MAX_BYTES or not 0<w<=4096 or not 0<h<=4096 or w*h>MAX_PIXELS:raise ValueError()
+            except (ValueError,TypeError,struct.error):raise ArtworkFailure('INVALID_IMAGE') from None
+            check(len(data),limit=cap,used=used() if cap else 0)
+            filename=os.path.join(root,hashlib.sha256(url.encode()).hexdigest()+'.img')
+            fd,tmp=tempfile.mkstemp(prefix='.art-',dir=root)
+            with os.fdopen(fd,'wb') as stream:
+                stream.write(data);stream.flush();os.fsync(stream.fileno())
+            os.replace(tmp,filename);tmp=''
+        except ArtworkFailure:raise
+        except OSError as exc:
+            raise ArtworkFailure('DISK_FULL' if exc.errno==28 else 'CACHE_ERROR') from None
         finally:
-            if os.path.exists(tmp): os.unlink(tmp)
+            if tmp:
+                try:os.unlink(tmp)
+                except OSError:pass
         from art_store import ready
-        ready(url,len(data))
-        return filename
+        ready(url,len(data));return filename
 
 
 def sources(item):
-    def valid(value):
-        if not isinstance(value,str):return False
-        try:return urlsplit(value).scheme in ('http','https') and bool(urlsplit(value).hostname)
-        except ValueError:return False
-    poster=next((item.get(k) for k in ('cover','stream_icon','movie_image','cover_big') if valid(item.get(k))),'')
+    poster=next((item.get(k) for k in ('cover','stream_icon','movie_image','cover_big') if valid_source(item.get(k))),'')
     fanart=[]
     for key in ('backdrop_path','backdrop','fanart','fanart_image'):
         value=item.get(key);fanart.extend(value if isinstance(value,list) else [value])
-    return poster,next((value for value in fanart if valid(value)),'')
+    return poster,next((value for value in fanart if valid_source(value)),'')
 
 
 def local_art(item):
@@ -106,17 +124,65 @@ def local_art(item):
 
 
 def request(items,priority=0):
-    """Persist bounded visible-page requests, then start one worker."""
-    global _worker
-    urls=[u for item in items[:48] for u in dict.fromkeys(sources(item))
-          if isinstance(u,str) and urlsplit(u).scheme in ('http','https') and not cached(u)]
-    if not urls: return
-    from art_store import enqueue
-    try: enqueue(urls,priority)
-    except (OSError,RuntimeError,sqlite3.Error): return
+    """GUI-safe bounded inbox. SQLite enrolment and HTTP use distinct workers."""
+    global _enrol_worker,_serial
+    with _queue_lock:
+        for item in items[:48]:
+            rank=-10 if item.get('kind')=='live' and priority<=0 else priority
+            for url in dict.fromkeys(sources(item)):
+                if not url or cached(url):continue
+                previous=_inbox.get(url)
+                _serial+=1
+                _inbox[url]=(min(rank,previous[0]) if previous else rank,previous[1] if previous else _serial,previous[2] if previous else 0,previous[3] if previous else 0)
+        while len(_inbox)>MAX_INBOX:
+            worst=max(_inbox,key=lambda url:(_inbox[url][0],-_inbox[url][1]))
+            del _inbox[worst]  # only unpersisted old requests; never existing jobs/files
+        if _inbox and (_enrol_worker is None or not _enrol_worker.is_alive()):
+            _enrol_worker=threading.Thread(target=_enrol_loop,daemon=True,name='XCMate-art-enrol')
+            _enrol_worker.start()
+
+
+def _persist_next():
+    global _worker,_enqueue_code
+    with _queue_lock:
+        batch=sorted((url for url,value in _inbox.items() if value[3]<=time.monotonic()),key=lambda url:_inbox[url][:2])[:48]
+        if not batch:return False
+        priority=_inbox[batch[0]][0]
+        batch=[url for url in batch if _inbox[url][0]==priority]
+        values={url:_inbox[url] for url in batch}
+    try:
+        from art_store import enqueue
+        enqueue(batch,priority);_enqueue_code='NOT_REQUESTED'
+        with _queue_lock:
+            for url,value in values.items():
+                if _inbox.get(url)==value:_inbox.pop(url,None)
+    except (OSError,RuntimeError,sqlite3.Error) as exc:
+        from artwork_db import classify,diagnostic
+        code=classify(exc)
+        _enqueue_code=('DB_BUSY' if code=='BUSY' or diagnostic().get('code')=='BUSY' else 'DB_UNAVAILABLE') if isinstance(exc,sqlite3.Error) else 'DISK_FULL' if getattr(exc,'errno',None)==28 else 'CACHE_ERROR'
+        with _queue_lock:
+            for url,value in values.items():
+                current=_inbox.get(url)
+                if current is None:continue
+                if value[2]<2:_inbox[url]=(current[0],current[1],value[2]+1,time.monotonic()+5)
+                else:_inbox.pop(url,None)
+        return True
     with _queue_lock:
         if _worker is None or not _worker.is_alive():
             _worker=threading.Thread(target=_prefetch,daemon=True,name='XCMate-artwork');_worker.start()
+    return True
+
+
+def _enrol_loop():
+    import xbmc
+    global _enrol_worker
+    monitor=xbmc.Monitor()
+    while not monitor.abortRequested():
+        with _queue_lock:
+            if not _inbox:_enrol_worker=None;return
+        _persist_next()
+        if monitor.waitForAbort(.1):break
+    with _queue_lock:_enrol_worker=None
 
 
 def _prefetch():
@@ -132,3 +198,33 @@ def _prefetch():
 def revision():
     try: return os.stat(folder()).st_mtime_ns
     except OSError: return 0
+
+
+def diagnose(item):
+    """Read-only worker diagnosis. Never return a URL, path or exception text."""
+    from artwork_db import image_states
+    from art_store import key
+    urls=sources(item);states,db_code=image_states([key(u) for u in urls if u])
+    result={}
+    fields=(('cover','stream_icon','movie_image','cover_big'),('backdrop_path','backdrop','fanart','fanart_image'))
+    for name,url,keys in zip(('poster','fanart'),urls,fields):
+        if not url:
+            result[name]='INVALID_SOURCE' if any(item.get(k) for k in keys) else 'NO_SOURCE';continue
+        if cached(url):result[name]='READY';continue
+        filename=os.path.join(folder(),key(url)+'.img')
+        if os.path.exists(filename):result[name]='CACHE_ERROR';continue
+        code=states.get(key(url))
+        if code=='READY':code='CACHE_ERROR'
+        if code is None:
+            with _queue_lock:waiting=url in _inbox
+            code=('PENDING' if _enqueue_code=='NOT_REQUESTED' else _enqueue_code) if waiting else db_code if db_code not in ('OK','NOT_CREATED') else _enqueue_code
+        result[name]=code
+    return result
+
+
+def diagnostic_label(code):
+    from localization import tr
+    codes=('READY','NO_SOURCE','INVALID_SOURCE','NOT_REQUESTED','PENDING','RUNNING',
+           'NETWORK_ERROR','INVALID_IMAGE','CACHE_ERROR','SPACE_FULL','BUDGET_FULL',
+           'DISK_FULL','DB_BUSY','DB_UNAVAILABLE','FAILED','UNKNOWN')
+    return tr(33410+codes.index(code) if code in codes else 33425)

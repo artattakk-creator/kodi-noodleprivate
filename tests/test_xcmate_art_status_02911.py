@@ -19,7 +19,7 @@ class ArtStatusTests(Fixture,unittest.TestCase):
         try:
             for _ in range(10):
                 value=self.store.status();self.assertEqual(value['code'],'BUSY')
-                self.assertEqual(value['budget'],512*1048576);self.assertIsNone(value['counts'])
+                self.assertEqual(value['budget'],0);self.assertIsNone(value['counts'])
                 self.assertIn('free',value)
         finally:writer.rollback();writer.close()
         self.assertLess(time.monotonic()-start,1.5);self.assertEqual(self.dbpath.read_bytes(),before)

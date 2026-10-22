@@ -1,7 +1,7 @@
 """New routes only. Legacy provider/player entry points remain compatible."""
 from localization import tr
 
-ACTIONS=('guide_grid','playlist_editor','source_live','source_play','source_start','art_status','art_retry','art_db_health','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
+ACTIONS=('xcmate_licenses','guide_grid','playlist_editor','source_live','source_play','source_start','art_status','art_retry','art_db_health','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
          'movies_home','series_home','media_detail','media_favourites','global_search','search_section',
          'widget_live_start_group','widget_recent_vod','widget_recent_series','widget_setup',
          'recording_folder','recording_capabilities','about_xcmate','guide_browser','media_play','guide_timers','guide_status')
@@ -29,6 +29,14 @@ def dispatch(router):
     if action in ('guide_timers','guide_status','widget_setup') and not portal:
         _end(router,False)
         xbmcgui.Dialog().notification('XCMate',tr(32466));return
+    if action=='xcmate_licenses':
+        _end(router)
+        from pathlib import Path
+        root=Path(xbmcaddon.Addon().getAddonInfo('path'))
+        text='XCMate · GS Media\nhttps://github.com/artattakk-creator/kodi-noodleprivate\n\n'
+        for name in ('ORIGIN_AND_CHANGES.txt','LICENSE'):
+            text+=name+'\n'+(root/name).read_text(encoding='utf-8')+'\n\n'
+        xbmcgui.Dialog().textviewer(tr(33406),text);return
     if action=='art_db_health':
         _end(router)
         from artwork_health_ui import manage

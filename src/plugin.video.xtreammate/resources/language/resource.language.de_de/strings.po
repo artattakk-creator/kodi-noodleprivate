@@ -2252,3 +2252,115 @@ msgstr "Aus Weiter ansehen entfernen"
 msgctxt "#33203"
 msgid "{0} · Titles {1}–{2} of {3}"
 msgstr "{0} · Titel {1}–{2} von {3}"
+
+msgctxt "#33400"
+msgid "Poster: {0}"
+msgstr "Poster: {0}"
+
+msgctxt "#33401"
+msgid "available storage"
+msgstr "verfügbarer Speicher"
+
+msgctxt "#33402"
+msgid "Minimum free storage reserve: {0} MiB"
+msgstr "Mindestreserve für freien Speicher: {0} MiB"
+
+msgctxt "#33403"
+msgid "Artwork limit in MiB (0 = available storage)"
+msgstr "Bildspeicherlimit in MiB (0 = verfügbarer Speicher)"
+
+msgctxt "#33404"
+msgid "Artwork: minimum free storage in MiB (minimum 32)"
+msgstr "Bilder: Mindestfreiraum in MiB (mindestens 32)"
+
+msgctxt "#33405"
+msgid "Show licences and origin"
+msgstr "Lizenzen und Herkunft anzeigen"
+
+msgctxt "#33406"
+msgid "XCMate · Licences and origin"
+msgstr "XCMate · Lizenzen und Herkunft"
+
+msgctxt "#33410"
+msgid "stored locally"
+msgstr "lokal gespeichert"
+
+msgctxt "#33411"
+msgid "no provider image"
+msgstr "kein Providerbild"
+
+msgctxt "#33412"
+msgid "invalid provider image address"
+msgstr "ungültige Bildquelle"
+
+msgctxt "#33413"
+msgid "not queued yet"
+msgstr "noch nicht eingereiht"
+
+msgctxt "#33414"
+msgid "download pending"
+msgstr "Download ausstehend"
+
+msgctxt "#33415"
+msgid "downloading"
+msgstr "wird geladen"
+
+msgctxt "#33416"
+msgid "network error"
+msgstr "Netzwerkfehler"
+
+msgctxt "#33417"
+msgid "invalid or oversized image"
+msgstr "ungültiges oder zu großes Bild"
+
+msgctxt "#33418"
+msgid "local cache error"
+msgstr "lokaler Cachefehler"
+
+msgctxt "#33419"
+msgid "legacy storage block"
+msgstr "alte Speicherblockade"
+
+msgctxt "#33420"
+msgid "configured image limit reached"
+msgstr "eingestelltes Bildlimit erreicht"
+
+msgctxt "#33421"
+msgid "free storage reserve or drive full"
+msgstr "Freiraumreserve erreicht oder Laufwerk voll"
+
+msgctxt "#33422"
+msgid "image database busy"
+msgstr "Bilddatenbank belegt"
+
+msgctxt "#33423"
+msgid "image database unavailable"
+msgstr "Bilddatenbank nicht verfügbar"
+
+msgctxt "#33424"
+msgid "legacy download error"
+msgstr "älterer Downloadfehler"
+
+msgctxt "#33425"
+msgid "status unavailable"
+msgstr "Status nicht verfügbar"
+
+msgctxt "#33407"
+msgid "Artwork downloads: {0}"
+msgstr "Bilddownloads: {0}"
+
+msgctxt "#33408"
+msgid "paused"
+msgstr "pausiert"
+
+msgctxt "#33409"
+msgid "active"
+msgstr "aktiv"
+
+msgctxt "#33426"
+msgid "Pause artwork downloads"
+msgstr "Bilddownloads pausieren"
+
+msgctxt "#33427"
+msgid "Image bytes recorded in queue: {0} MiB · Limit: {1}"
+msgstr "In Queue erfasste Bildbytes: {0} MiB · Limit: {1}"

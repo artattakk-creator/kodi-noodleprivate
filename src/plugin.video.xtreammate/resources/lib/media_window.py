@@ -43,6 +43,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._episode_cursor={};self._leaving=False
         self._landing_loaded=False
         self._rail_focus={}
+        self._art_selected=None;self._art_diagnostic=None
         self._append_future=None;self._append_context=None;self._append_failed=False
         self._append_advance=None;self._grid_return=None
         self._playback_waiting=False;self._playback_seen=False
@@ -74,6 +75,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             cat=self.getControl(120);search=self.getControl(400);row=self.getControl(first)
             cat.setNavigation(cat,row,cat,search)
             search.setNavigation(search,row,cat,search)
+            self._track_art_focus()
         if self.mode=='episodes':
             rows=self.getControl(330);search=self.getControl(400)
             target=self.getControl(340) if 340 in valid else rows
@@ -183,8 +185,14 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         revision=(state or {}).get('revision','')
         status=sync_state(self.portal['id'],self.kind)
         groups=reader.groups(self.kind) if state else []
+        with self._lock:item=dict(self._art_selected) if self._art_selected else None
+        if item:
+            from media_art import diagnose,request
+            diagnosis=diagnose(item)
+            if diagnosis['poster'] in ('NOT_REQUESTED','DB_BUSY'):request([item])
         with self._lock:
             if self._closed: return
+            if item:self._art_diagnostic=(item,diagnosis)
             self._catalog_update=(reader,state,revision,status,groups)
         if threading.get_ident()==self._owner: self._owner_tick()
 
@@ -250,6 +258,11 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
                 art=local_art(self.selected)
                 if art['fanart']: self.getControl(100).setImage(art['fanart'])
                 if self.mode=='detail': self.getControl(310).setImage(art['poster'])
+            if self.mode in ('landing','grid','groups','detail') and self._art_diagnostic:
+                item,value=self._art_diagnostic
+                if item==self._art_selected:
+                    from media_art import diagnostic_label
+                    self.getControl(501).setLabel(tr(33400,diagnostic_label(value['poster']))+' · '+tr(32587))
 
     def _refresh_rails(self):
         from media_state import rail_items
@@ -318,8 +331,16 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             self.setFocusId(target if self.rails[target] else 120)
         if self._restore_focus is not None:
             target=self._restore_focus;self._restore_focus=None;self.setFocusId(target)
+        self._track_art_focus()
+
+    def _track_art_focus(self):
+        focus=self.getFocusId()
+        if self.mode=='landing' and focus in (111,112):
+            rows=self.rails[focus];pos=self.getControl(focus).getSelectedPosition()
+            if 0<=pos<len(rows) and rows[pos]!=self._art_selected:self._queue_art(rows[pos])
 
     def _show(self,mode):
+        self.getControl(501).setLabel(tr(32587))
         self.getControl(340).setVisible(mode=='episodes' and self.next_episode is not None)
         self.getControl(330).setPosition(44,190 if mode=='episodes' else 174)
         for cid in (630,631,632,633):self.getControl(cid).setVisible(mode=='episodes')
@@ -359,6 +380,8 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._queue_art(self.selected)
 
     def _queue_art(self,item):
+        self._art_selected=dict(item)
+        self.getControl(501).setLabel(tr(32587))
         from media_art import local_art
         art=local_art(item)
         self.getControl(100).setImage(art['fanart'] or os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media','media_neutral.png'))

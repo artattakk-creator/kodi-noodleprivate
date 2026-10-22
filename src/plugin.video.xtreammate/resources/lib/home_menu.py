@@ -128,6 +128,7 @@ def settings(router, portal, section=''):
             add(label,action)
     elif section=='about':
         add(tr(32454),'about_xcmate')
+        add(tr(33405),'xcmate_licenses')
     finish_directory(router,cacheToDisc=False)
 
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon id="plugin.video.xtreammate"
        name="XCMate"
-       version="0.1.29.19"
-       provider-name="GS Media (Fork of mr-evil1)">
+       version="0.1.29.20"
+       provider-name="GS Media">
 
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
@@ -36,7 +36,7 @@
     <defaultlanguage>resource.language.en_gb</defaultlanguage>
     <forum>https://forum.kodi.tv</forum>
     <website>https://kodi.tv</website>
-    <source>https://github.com/mr-evil1/kodi-media-repo</source>
+    <source>https://github.com/artattakk-creator/kodi-noodleprivate</source>
     <news>German and English language support; Language filter; Xtream auto-detection; Parallel search</news>
     <assets>
       <icon>icon.png</icon>
