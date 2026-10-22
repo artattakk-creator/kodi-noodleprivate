@@ -57,10 +57,10 @@ def cached(url):
 
 
 def valid_source(value):
-    if not isinstance(value,str) or not value or len(value)>8192 or any(ord(c)<33 for c in value):return False
+    if not isinstance(value,str) or not value or len(value)>8192 or any(ord(c)<32 or ord(c)==127 for c in value):return False
     try:
         parts=urlsplit(value)
-        return parts.scheme in ('http','https') and bool(parts.hostname) and (parts.port is None or 0<parts.port<65536)
+        return parts.scheme in ('http','https') and bool(parts.hostname) and not any(c.isspace() for c in parts.hostname) and (parts.port is None or 0<parts.port<65536)
     except ValueError:return False
 
 

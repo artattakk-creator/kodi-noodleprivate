@@ -59,6 +59,15 @@ class Artwork20Tests(Fixture,unittest.TestCase):
         self.options['media_art_reserve_mb']=1;self.assertEqual(self.policy.reserve(),32*1048576)
         self.options['media_art_reserve_mb']=2048;self.assertEqual(self.policy.reserve(),2048*1048576)
 
+    def test_legacy_provider_path_spaces_keep_the_same_local_cache_key(self):
+        url='https://image.invalid/Movie Posters/A Film.jpg'
+        filename=Path(self.art.fetch(url));calls=self.http.call_count
+        self.assertEqual(self.art.sources(dict(cover=url))[0],url)
+        self.assertEqual(self.art.local_art(dict(cover=url))['poster'],str(filename))
+        self.assertEqual(self.art.fetch(url),str(filename));self.assertEqual(self.http.call_count,calls)
+        self.assertFalse(self.art.valid_source('https://bad host.invalid/image.jpg'))
+        self.assertFalse(self.art.valid_source('https://image.invalid/a\nSECRET'))
+
     def test_saved_kodi_default_512_migrates_readonly_but_explicit_512_survives(self):
         filename=self.folder/'settings.xml';self.options['media_art_budget_mb']=512
         for marker,expected in (('true',0),('false',512*1048576)):
