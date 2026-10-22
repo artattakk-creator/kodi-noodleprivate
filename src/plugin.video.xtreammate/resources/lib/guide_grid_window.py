@@ -58,8 +58,9 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
     def _selected(self):
         if not self.rows:return None
         events=self.rows[self.row]['events']
-        return next((e for e in events if e['start']<=self.cursor<e['stop']),
-                    min(events,key=lambda e:min(abs(e['start']-self.cursor),abs(e['stop']-self.cursor))) if events else None)
+        containing=[e for e in events if e['start']<=self.cursor<e['stop']]
+        if containing:return max(containing,key=lambda e:e['start'])
+        return min(events,key=lambda e:min(abs(e['start']-self.cursor),abs(e['stop']-self.cursor))) if events else None
 
     def _render(self):
         if self._closed or self._leaving:return
@@ -118,8 +119,11 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
             return
         if not self.rows:return
         events=self.rows[self.row]['events'];selected=self._selected();step=-1 if direction==1 else 1
-        if selected and 0<=events.index(selected)+step<len(events):
-            self.cursor=events[events.index(selected)+step]['start']
+        # Adjacent array entries can overlap or be nearest to a gap. Their
+        # start may be behind the cursor: never let Right repeat/jump backwards.
+        boundary=selected['start'] if step<0 and selected and selected['start']<=self.cursor else self.cursor
+        candidates=[e['start'] for e in events if (e['start']>boundary if step>0 else e['start']<boundary)]
+        if candidates:self.cursor=min(candidates) if step>0 else max(candidates)
         else:self.cursor+=step*1800
         if not self.origin<=self.cursor<self.origin+SPAN:
             self.origin=self.cursor//1800*1800;self._load()

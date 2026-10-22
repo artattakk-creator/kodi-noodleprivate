@@ -73,3 +73,13 @@ class DiagnosticsTests(Fixture,unittest.TestCase):
         with mock.patch.object(self.data,'page',side_effect=lambda portal,offset,origin,*a:dict(rows=[dict(r,events=[]) for r in w.rows],total=3,groups=[],origin=origin,offset=offset)):
             for _ in range(55):w._step(2);self.settle(w);self.assertGreaterEqual(w.getFocusId(),1000)
         self.assertEqual(w.cursor,start+55*1800);self.assertIsNone(w._selected())
+    def test_overlapping_programmes_do_not_move_right_backwards_or_trap_cursor(self):
+        db=self.store.connect()
+        with db:
+            db.execute('DELETE FROM programmes')
+            for start,stop,title in [(0,3*3600,'Long'),(3600,5400,'Overlap'),(7200,9000,'After 14')]:
+                db.execute('INSERT INTO programmes VALUES(?,?,?,?,?,?,?)',('p','long',self.origin+start,self.origin+stop,title,'',1))
+        db.close();w=self.window()
+        for _ in range(10):
+            previous=w.cursor;w._step(2);self.settle(w);self.assertGreater(w.cursor,previous)
+        self.assertGreater(w.cursor,self.origin+3*3600)
