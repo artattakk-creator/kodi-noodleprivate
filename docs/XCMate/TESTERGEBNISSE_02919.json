@@ -1,0 +1,55 @@
+{
+  "version": "0.1.29.19",
+  "tests": 682,
+  "seconds": 88.895,
+  "failures": 0,
+  "errors": 0,
+  "files": 146,
+  "bytes": 444258,
+  "sha256": "9a7301943ba2f2013a5c3c86084cc55ce2d3dbe551edf6063bd76062be17dbcf",
+  "crc": "PASS",
+  "paths": "PASS",
+  "source_bytes": "PASS",
+  "reproducible_zip": "PASS",
+  "python_ast": "PASS",
+  "android": "NOT_TESTED",
+  "production_publish": false,
+  "basis_commit": "ce8d99cf365aa557ab93084f2d842e1ff4312497",
+  "source_commit": "8149e0d2390841a01ce1dd75ba381ab69361b694",
+  "python_files": 88,
+  "python_311_grammar": "PASS (AST only; not Python 3.11 runtime)",
+  "new_tests": 23,
+  "unrelated_wip_unchanged": 35,
+  "protected_modules_byte_identical": [
+    "media_progress.py",
+    "media_state.py",
+    "media_intent.py",
+    "playback_exit.py",
+    "owner_dispatch.py",
+    "live_exit.py",
+    "live_overlay.py",
+    "preplay.py",
+    "guide_grid_window.py",
+    "guide_playback.py",
+    "guide_grid_data.py",
+    "library_index.py",
+    "art_store.py",
+    "artwork_db.py",
+    "media_continue.py",
+    "appearance.py",
+    "service.py"
+  ],
+  "autoplay": "NOT_IMPLEMENTED (#85); separate plan",
+  "previous_full_runs": [
+    {
+      "tests": 682,
+      "result": "FAIL (two old .18 manifest-version assertions; corrected)"
+    },
+    {
+      "tests": 682,
+      "result": "PASS before final top-level series identity guard"
+    }
+  ],
+  "android_018_evidence": "Tests 34-39 qualified PASS; Test 40 six PASS, manual Next FAIL; 40E confirms successor exists",
+  "actual_kodi_rendering": "NOT_TESTED"
+}

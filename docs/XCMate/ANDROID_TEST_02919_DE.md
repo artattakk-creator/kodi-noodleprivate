@@ -36,3 +36,13 @@ Basis .18, Android 13 ARM32 / Kodi 21.2 Omega / Titan BINGIE MOD / IR. Jede Chec
 - [ ] Bekannter guter Live-Sender → Stop → Home, kein Neustart/Hintergrundton. Bekannter EPG-Sender → Ansehen → Stop; EPG-Zeitnavigation über 14 Uhr.
 
 Autoplay #85 ist **NOT_IMPLEMENTED** und wird separat entwickelt; die ausbleibende automatische Fortsetzung ist hier kein neuer Fehler. Ungeprüfte Schritte bleiben NOT_TESTED. Kein Merge/Release/produktives Update ohne ausdrückliche Freigabe.
+
+## Download und SHA256
+
+[Android-Test-ZIP 0.1.29.19](https://github.com/artattakk-creator/kodi-noodleprivate/raw/refs/heads/feat/xcmate-02919-manual-next/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.19.zip) · [SHA256-Datei](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.19.zip.sha256)
+
+```text
+9a7301943ba2f2013a5c3c86084cc55ce2d3dbe551edf6063bd76062be17dbcf  plugin.video.xtreammate-0.1.29.19.zip
+```
+
+Host: 682 Tests PASS; Android: **NOT_TESTED**. ZIP ausschließlich zur manuellen Testinstallation.

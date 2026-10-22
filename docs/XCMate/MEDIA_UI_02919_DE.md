@@ -33,4 +33,10 @@ Neue Tests prüfen Layout/Layering, native Rail-Auswahl/Back für Filme und Seri
 
 **#74 bleibt offen:** subjektive TV-Lesbarkeit/Postergröße, Rahmen auf hellen/dunklen Postern, 720p/1080p, BINGIE/Estuary und optionales Theme auf Gerät abnehmen. **#44 bleibt offen:** neue manuelle Next-Funktion auf Android, Mehrportal-Isolation, Offline-/Providerfehler und übrige Sonderfälle. Die .18-Teil-PASS bleiben gültig; sie ersetzen keine .19-Abnahme. Artwork-Budget #90/#91/#69 und Catch-up/Guide bleiben eigene Pakete.
 
-Alle neuen .19-Funktionen Android **NOT_TESTED**. [Android-Checkboxen](ANDROID_TEST_02919_DE.md), [Autoplay-Folgeplan](AUTOPLAY_FOLGEPLAN_NACH_02919_DE.md). Vollständiger Testbericht und ZIP-SHA werden mit dem Paket ergänzt.
+Alle neuen .19-Funktionen Android **NOT_TESTED**. [Android-Checkboxen](ANDROID_TEST_02919_DE.md), [Autoplay-Folgeplan](AUTOPLAY_FOLGEPLAN_NACH_02919_DE.md). Vollständiger Testbericht und ZIP-SHA sind unten ergänzt.
+
+## Gelieferter Prüfstand
+
+**682 Tests bestanden in 88,895 s**, 0 Fehler/Fehlschläge; davon **23 neue Tests**. [Vollständiger Testlog](TESTLOG_02919.txt) · [Prüfbericht](TESTERGEBNISSE_02919.json). ZIP **146 Dateien / 444258 Bytes**; CRC, sichere Pfade, Quellbytegleichheit und unabhängiger reproduzierbarer Neuaufbau PASS. Python-3.11-Grammatik für 88 Dateien PASS (kein 3.11-Laufzeittest). Geschützte Module/Service und alte Pakete bytegleich, 35 fremde WIP-Dateien unverändert. Neue .19-Funktionen Android **NOT_TESTED**.
+
+SHA256: `9a7301943ba2f2013a5c3c86084cc55ce2d3dbe551edf6063bd76062be17dbcf`.
