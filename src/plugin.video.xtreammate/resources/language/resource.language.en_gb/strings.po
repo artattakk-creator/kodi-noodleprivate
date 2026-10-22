@@ -2232,3 +2232,7 @@ msgstr "Dense schedule: move right for more programmes"
 msgctxt "#33122"
 msgid "Playback was not started. Try Live TV from the channel list."
 msgstr "Playback was not started. Try Live TV from the channel list."
+
+msgctxt "#33121"
+msgid "Channel diagnostics: long-term EPG"
+msgstr "Channel diagnostics: long-term EPG"

@@ -15,7 +15,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._pool=ThreadPoolExecutor(max_workers=1);self._generation=0;self._closed=False;self._ready=False
         self._loading=False;self._leaving=False;self._cells={};self.rows=[];self.groups=[];self.category=None
         self.offset=0;self.total=0;self.row=0;self.cursor=int(time.time());self.origin=self.cursor//1800*1800
-        self._last_refresh=0;self._art_revision=0;self._short_revision='';self._return_home=False;self._play_request=None
+        self._last_refresh=0;self._art_revision=0;self._short_revision='';self._return_home=False;self._play_request=None;self._diagnosing=False
         from guide_playback import player_state
         self._entry_player=player_state()
 
@@ -29,6 +29,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         self.getControl(101).setLabel(tr(33100));self._load()
 
     def _load(self,background=False):
+        self._diagnosing=False
         self._background=background;self._last_data_refresh=time.monotonic()
         if not background:self._loading=True;self.setFocusId(312)
         self.getControl(102).setLabel(tr(33108))
@@ -49,6 +50,8 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
 
     def _query_failed(self,exc):
         self._loading=False
+        if self._diagnosing:
+            self._diagnosing=False;self.getControl(102).setLabel(tr(33109));return
         if not self._background:self.rows=[];self._render();self.setFocusId(312)
         self.getControl(102).setLabel(tr(33109))
 
@@ -132,7 +135,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
     def _actions(self,channel_only=False):
         if self._closed or self._leaving or self._loading or not self.rows:return
         row=self.rows[self.row];channel=row['channel'];event=self._selected()
-        choices=[tr(33112),tr(32550),tr(33118)]
+        choices=[tr(33112),tr(32550),tr(33118),tr(33121)]
         if event and not channel_only:
             if event['start']>time.time():choices.append(tr(32551))
             choices.append(tr(33113))
@@ -152,6 +155,8 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
             self._generation+=1
             if self._pending_future is not None:self._pending_future.cancel()
             self._pending_future=None;self._pending_apply=None
+        elif 0<=choice<len(choices) and choices[choice]==tr(33121):
+            self._diagnose()
         elif 0<=choice<len(choices) and choices[choice]==tr(33118):
             from guide_bookmarks import entries
             entries=entries(self.portal['id'])
@@ -166,6 +171,22 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
                 remember(self.portal['id'],channel['sid'],event)
                 xbmcgui.Dialog().notification('XCMate',tr(33116))
         # Recording/Catch-up/TMDB are not advertised as working capabilities.
+
+    def _diagnose(self):
+        if self._diagnosing:return
+        self._diagnosing=True
+        portal,router=self.portal,self.router
+        row=self.rows[self.row];origin,cursor,focus=self.origin,self.cursor,self.getFocusId()
+        def load():
+            from guide_grid_diagnostics import inspect
+            try:client=router._xc(portal)
+            except (AttributeError,ValueError):client=None
+            return inspect(portal,row,origin,cursor,focus,client)
+        self._request(load,self._diagnosed)
+
+    def _diagnosed(self,text):
+        self._diagnosing=False
+        if not self._leaving:xbmcgui.Dialog().textviewer(tr(33121),text)
 
     def onAction(self,action):
         if self._closed or self._leaving:return
@@ -205,6 +226,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         if self._leaving:
             if time.monotonic()>=self._leave_after:self.close()
             return
+        if self._diagnosing:return
         # Poll only revision hints/time. Direction keys do not query the DB.
         now=time.monotonic()
         if now-self._last_refresh<2:return
