@@ -753,7 +753,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
                 li=xbmcgui.ListItem(row['name']);li.setArt(local_art(row));li.setInfo('video',{'title':row['name']});items.append(li)
             panel.addItems(items);self.rows+=rows
             if len(self.rows)>WINDOW_ITEMS:
-                trim=len(self.rows)-WINDOW_ITEMS
+                trim=((len(self.rows)-WINDOW_ITEMS+PAGE-1)//PAGE)*PAGE
                 for _ in range(trim):panel.removeItem(0)
                 self.rows=self.rows[trim:];self.offset+=trim
         else:

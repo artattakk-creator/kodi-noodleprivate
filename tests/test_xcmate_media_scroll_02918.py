@@ -159,3 +159,12 @@ class ProgressiveMediaTests(Fixture,unittest.TestCase):
         green=Image.open(ADDON/'resources/media/eye_unseen.png').getpixel((20,12))
         red=Image.open(ADDON/'resources/media/eye_watched.png').getpixel((20,12))
         self.assertGreater(green[1],green[0]);self.assertGreater(red[0],red[1])
+    def test_final_partial_batch_does_not_shift_the_focused_poster_to_another_column(self):
+        w=self.category(count=263)
+        for _ in range(9):w._prefetch(force=True);self.settle(w)
+        self.assertEqual(len(w.rows),240)
+        w.getControl(210).selectItem(235);w._focus_item(235);sid=w.rows[235]['sid']
+        w._prefetch(force=True);self.settle(w)
+        pos=w.getControl(210).getSelectedPosition()
+        self.assertEqual(w.rows[pos]['sid'],sid);self.assertEqual(pos%w._cols,235%w._cols)
+        self.assertEqual(w.offset,24);self.assertEqual(len(w.rows),239)
