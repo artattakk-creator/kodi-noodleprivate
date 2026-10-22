@@ -27,6 +27,14 @@ Der Nutzer bestätigt ausdrücklich die bereits funktionierende **Links-Navigati
 
 **Umsetzungsaufträge:** [#94 Navigation/Icon-Rail](https://github.com/artattakk-creator/kodi-noodleprivate/issues/94), [#95 markierter-Sender-Folge-EPG](https://github.com/artattakk-creator/kodi-noodleprivate/issues/95); [vollständige Live-TV-UX-Spezifikation](LIVE_TV_NAV_ICON_RAIL_SENDERVORSCHAU_2026-10-22_DE.md). Bestehende IR-Profile/OK-Infoleiste/Player-OSD/Back/Zapping/Portale erhalten, Kodi-Thread-/Owner-Wechsel schützen. **Noch kein Codefix/Test-ZIP/OTA-Release.** Nächste Umsetzung über neuen Draft-PR auf Basis von `main`/0.1.29.13 nach P0-Absturzfix #89 und mit eigener Android-Abnahme.
 
+## Weitere Android-Regression 22.10.2026: Dubletten im alten Programmführer (#58)
+
+**Route:** `XCMate → Einstellungen → EPG → Programmführer` öffnet **`guide_browser / GuideWindow`**, **nicht** den neuen horizontalen `guide_grid`-Guide. Nutzerfoto: ausgewählter Sender **`DE| SAT.1 HEVC`**, unabhängige rechte **Programmliste mit zwei Einträgen derselben Sendung „Richter Alexander Hold“**, **09:57–10:57 und 09:59–10:58**, jeweils `JETZT`. Dies ist eine echte **sichtbare Überlappungs-/Doppelanzeige für den gewählten Sender** und ein **FAIL für diesen alten Guide**, [Issue #58](https://github.com/artattakk-creator/kodi-noodleprivate/issues/58). Der früher bestätigte „keine sichtbaren Dubletten“-Teil-PASS war **nur für das horizontale Guide-Raster** und galt nicht systemübergreifend.
+
+**Codebefund:** `guide_window._load_events` verbindet read-only `guide_store.events` (SQLite) mit `epg_views.resolve_guide`/Xtream-Short-EPG-Fallback. `guide_store.events` **verwendet bereits `epg_events.deduplicate`**, weshalb nicht pauschal „keine Dedup angewandt“ gilt. `epg_events.duplicate` prüft für denselben kanonischen Kanal denselben normierten Titel, eine exakt sekundengenaue Start- und Stopptoleranz **bis 120 Sekunden**, mindestens 90% Überlappung. Die TV-Minutenanzeige enthält keine Sekunden; somit können die tatsächlichen Starts um **mehr als 120 Sekunden** auseinander liegen. Alternativ falsches Alias-/Quellmatching oder UI-Fokus-/asynchrone Anfragezuordnung untersuchen. Zusätzlich erschien als Senderlistenelement die Bezeichnung `##### GERMANY HEVC #####` – prüfen, ob realer Stream oder vom Provider gelieferte Trennzeile. Linke Senderliste und rechte Programmliste **nicht als zeilengleiche Tabellenzeilen deuten**. Keine Kanal-übergreifende Titelverschmelzung.
+
+**Status:** Alte EPG-Route **DOPPELANZEIGE FAIL**; neuer horizontaler Guide bisher **visueller Teil-PASS**, keine Vollabnahme; Kodi-Prozessabsturz `Jetzt Sender ansehen` weiterhin **P0 [#89](https://github.com/artattakk-creator/kodi-noodleprivate/issues/89)**. Codesicherer Korrektur-Test auf separatem PR; keine automatische Veröffentlichung, keine Löschung von Provider/Cache/Benutzerdaten.
+
 ## Grunddaten und Schutzregeln
 
 - Projekt: **GS Media XCMate**, Kodi-IPTV-Add-on `plugin.video.xtreammate`.
