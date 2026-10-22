@@ -48,6 +48,6 @@ Ursprüngliche Freeze-Hashes werden nicht pauschal ersetzt: genau benannte unver
 
 ## Gelieferter Prüfstand
 
-**709 Tests PASS in 88,278 s**, 0 Fehler/Fehlschläge, keine unbehandelten Worker-Ausnahmen; **27 neue Tests**. [Vollständiges Protokoll](TESTLOG_02920.txt) · [Prüfbericht](TESTERGEBNISSE_02920.json). ZIP: 147 Dateien / 449728 Bytes, CRC/Pfade/Quellbytegleichheit und unabhängig reproduzierbarer Neuaufbau PASS. Python-3.11-Grammatik für 89 Dateien PASS (kein 3.11-Laufzeittest). Geschützte Playback-/Live-/EPG-Dateien, Service, Medien-XML, Lizenz/Herkunft und alte ZIPs bytegleich; 35 fremde WIP-Dateien unverändert. Android .20 **NOT_TESTED**.
+**710 Tests PASS in 89,043 s**, 0 Fehler/Fehlschläge, keine unbehandelten Worker-Ausnahmen; **28 neue Tests**. [Vollständiges Protokoll](TESTLOG_02920.txt) · [Prüfbericht](TESTERGEBNISSE_02920.json). ZIP: 147 Dateien / 449748 Bytes, CRC/Pfade/Quellbytegleichheit und unabhängig reproduzierbarer Neuaufbau PASS. Python-3.11-Grammatik für 89 Dateien PASS (kein 3.11-Laufzeittest). Geschützte Playback-/Live-/EPG-Dateien, Service, Medien-XML, Lizenz/Herkunft und alte ZIPs bytegleich; 35 fremde WIP-Dateien unverändert. Android .20 **NOT_TESTED**.
 
-SHA256: `970323bb740ba74dcb03e7e4fe255e77b586f8cb748ea3f9a26ade2681f79e89`.
+SHA256: `c08b7e3217ebce0a5e9ad7864268412a7ba830b79ce0e1278684dce2dae11536`.

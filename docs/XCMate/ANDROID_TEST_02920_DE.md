@@ -38,7 +38,7 @@ Rückfall: unverändertes .19-ZIP mit bestehendem Profil. Die additive Queue-Met
 [Android-Test-ZIP 0.1.29.20](https://github.com/artattakk-creator/kodi-noodleprivate/raw/refs/heads/fix/xcmate-02920-artwork/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.20.zip) · [SHA256-Datei](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.20.zip.sha256)
 
 ```text
-970323bb740ba74dcb03e7e4fe255e77b586f8cb748ea3f9a26ade2681f79e89  plugin.video.xtreammate-0.1.29.20.zip
+c08b7e3217ebce0a5e9ad7864268412a7ba830b79ce0e1278684dce2dae11536  plugin.video.xtreammate-0.1.29.20.zip
 ```
 
-Host: 709 Tests PASS. Neue Android-Abnahme: **NOT_TESTED**. Nur manuelle Testinstallation, kein reguläres Update veröffentlicht.
+Host: 710 Tests PASS. Neue Android-Abnahme: **NOT_TESTED**. Nur manuelle Testinstallation, kein reguläres Update veröffentlicht.

@@ -1,12 +1,12 @@
 {
   "version": "0.1.29.20",
-  "tests": 709,
-  "seconds": 88.278,
+  "tests": 710,
+  "seconds": 89.043,
   "failures": 0,
   "errors": 0,
   "files": 147,
-  "bytes": 449728,
-  "sha256": "970323bb740ba74dcb03e7e4fe255e77b586f8cb748ea3f9a26ade2681f79e89",
+  "bytes": 449748,
+  "sha256": "c08b7e3217ebce0a5e9ad7864268412a7ba830b79ce0e1278684dce2dae11536",
   "crc": "PASS",
   "paths": "PASS",
   "source_bytes": "PASS",
@@ -15,8 +15,8 @@
   "android": "NOT_TESTED",
   "production_publish": false,
   "basis_commit": "de0b13c8b950830110b16e972b26fde421b7602b",
-  "source_commit": "ac218059038433a9365ccd36013d36172883f7a3",
-  "new_tests": 27,
+  "source_commit": "913abfd4c849a0ca128a8aa5d93d335cc14a7768",
+  "new_tests": 28,
   "python_files": 89,
   "python_311_grammar": "PASS (AST only; not Python 3.11 runtime)",
   "baseline_android": "User confirms .19 Tests 42-46 PASS for tested flows",
@@ -53,5 +53,10 @@
     "tests": 708,
     "result": "one old ValueError expectation; strengthened to typed INVALID_IMAGE assertion"
   },
-  "production_index_unchanged": true
+  "production_index_unchanged": true,
+  "legacy_provider_path_spaces": "PASS; unchanged source/cache key",
+  "pre_compatibility_full_run": {
+    "tests": 709,
+    "result": "PASS before added path-space regression"
+  }
 }

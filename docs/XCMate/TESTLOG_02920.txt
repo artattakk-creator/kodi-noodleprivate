@@ -145,10 +145,10 @@ test_restart_offline_previous_index_and_immediate_disabled_filter (test_xcmate_0
 test_same_stream_in_two_groups_counted_once_globally_but_available_in_each (test_xcmate_028_streaming.IndexTests.test_same_stream_in_two_groups_counted_once_globally_but_available_in_each) ... ok
 test_streaming_group_publishes_only_after_complete_json (test_xcmate_028_streaming.IndexTests.test_streaming_group_publishes_only_after_complete_json) ... ok
 test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update (test_xcmate_028_streaming.LargeGuideTests.test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update) ... 
-LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 12.592}
+LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 12.128}
 ok
 test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib (test_xcmate_028_streaming.LargeHTTPTests.test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib) ... 
-LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 25.066, "peak_rss_kib": 51688}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 25.196, "peak_rss_kib": 51688}]
+LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 25.581, "peak_rss_kib": 51736}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 25.876, "peak_rss_kib": 51736}]
 ok
 test_cache_envelope_and_trailing_data_validated (test_xcmate_028_streaming.ParserTests.test_cache_envelope_and_trailing_data_validated) ... ok
 test_chunked_http_gzip_and_truncated_compression (test_xcmate_028_streaming.ParserTests.test_chunked_http_gzip_and_truncated_compression) ... ok
@@ -228,6 +228,7 @@ test_five_hundred_movie_and_series_posters_persist_beyond_sliding_window_and_rel
 test_fixed_budget_and_physical_reserve_have_distinct_codes_and_no_download (test_xcmate_artwork_02920.Artwork20Tests.test_fixed_budget_and_physical_reserve_have_distinct_codes_and_no_download) ... ok
 test_footer_describes_current_continue_cover_and_refreshes_without_reopening (test_xcmate_artwork_02920.Artwork20Tests.test_footer_describes_current_continue_cover_and_refreshes_without_reopening) ... ok
 test_free_storage_is_rechecked_after_http_before_atomic_write (test_xcmate_artwork_02920.Artwork20Tests.test_free_storage_is_rechecked_after_http_before_atomic_write) ... ok
+test_legacy_provider_path_spaces_keep_the_same_local_cache_key (test_xcmate_artwork_02920.Artwork20Tests.test_legacy_provider_path_spaces_keep_the_same_local_cache_key) ... ok
 test_licences_are_accessible_without_active_portal (test_xcmate_artwork_02920.Artwork20Tests.test_licences_are_accessible_without_active_portal) ... ok
 test_lost_job_claim_does_not_leave_thirty_second_global_lease (test_xcmate_artwork_02920.Artwork20Tests.test_lost_job_claim_does_not_leave_thirty_second_global_lease) ... ok
 test_missing_provider_invalid_source_pending_network_and_cache_status (test_xcmate_artwork_02920.Artwork20Tests.test_missing_provider_invalid_source_pending_network_and_cache_status) ... ok
@@ -713,11 +714,11 @@ test_widget_route_and_no_cached_credentials_in_link (test_xtreammate_widgets.Wid
 test_youtube_whitelist (test_xtreammate_widgets.WidgetsTest.test_youtube_whitelist) ... ok
 
 ----------------------------------------------------------------------
-Ran 709 tests in 88.278s
+Ran 710 tests in 89.043s
 
 OK
 
-MODEL_COLD_WINDOW_MS 2.653
+MODEL_COLD_WINDOW_MS 2.766
 
 SELECTIVE_XMLTV {"bytes": 400, "parsed": 2, "stored": 1}
 
