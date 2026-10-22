@@ -2,6 +2,39 @@
 
 **Verbindlicher Nutzerauftrag 22.10.2026:** Die vollständigen Android-Ergebnisse als PASS/FAIL/NOT_TESTED auf GitHub erfassen und einen **priorisierten gemeinsamen Änderungsvorschlag** für den nächsten Teststand ausarbeiten. **Keine automatische Integration, kein Merge, kein reguläres OTA/Release ohne neue ausdrückliche Freigabe.**
 
+## WEITERE VERBINDLICHE PRÄZISIERUNG 22.10.2026: Infobar mit technischen Icons und EPG-Name-Matching
+
+**Diese neueren Anforderungen ergänzen alle vorhergehenden Spezifikationen, ohne den P0-Reparaturauftrag vorzuziehen.**
+
+### E. [#100](https://github.com/artattakk-creator/kodi-noodleprivate/issues/100) – erweiterte XCMate-Live-TV-Infobar (NEUE To-do-Anforderung, P2 nach STOP-Fix)
+
+Bei laufendem Live-TV soll die mit **1× OK** eingeblendete, bereits auf Android funktionierende XCMate-Infobar künftig eine kompakte Reihe informativer Status-Icons erhalten, ähnlich einem TV-Receiver:
+
+- **Videoauflösung** aus der aktuell dekodierten Videobildgröße: SD/720p/1080p/2160p bzw. HD/FHD/UHD, mit sicherer Unterscheidung von Interlaced-/Progressive-Kennzeichnung, sofern Kodi sie tatsächlich liefert. **Nicht den Sendernamen als Auflösungsbeweis nutzen** – „ZDF FHD“ kann real mit einer anderen Auflösung spielen.
+- **Videocodec**: H.264/AVC, H.265/HEVC, AV1 usw. nur wenn die Kodi-21.2-Player-Schnittstelle diese Information zuverlässig meldet; ggf. HDR/SDR und Bildrate, sofern belegbar.
+- **Tonformat**: AAC, PCM, AC-3/**Dolby Digital**, E-AC-3/**Dolby Digital Plus**, DTS usw.; **Stereoton (2.0), 5.1, 7.1**, Audiospur-/Sprachkennzeichnung. **Dolby Atmos nur mit tatsächlichem Atmos-Nachweis**, nicht allein wegen E-AC3. Keine rechtlich ungesichert verwendeten Dolby-Markenlogos; neutrale TV-taugliche Badges („DD“, „DD+“, „5.1“, „1080p“) sind akzeptabel.
+- **Untertitel/CC** verfügbar/aktiv, ggf. Sprachspur; weitere Angaben über ein sauberes technisches Detailmenü statt erster Infobar zu überladen. Fehlende oder nicht zuverlässige Kodi-Metadaten als „unbekannt“ behandeln, keine erfundenen Statussymbole.
+- Aufnahmen von **aktueller, eigener XCMate-Player-Session**, nicht aus XMLTV oder Dateinamensraten. Beim Sender-/Audiotrack-/Untertitelwechsel dynamisch aktualisieren, ohne blockierenden JSON-RPC-/HTTP-Call oder D-Pad-Latenz. Kodi 21.2-Kompatibilität von InfoTag-/Player-Properties belegen, Fallback auf Unbekannt. Display-Ausgabeauflösung nicht mit Stream-Bildauflösung verwechseln.
+- **1× OK bleibt Infobar**, **2× OK/↓ bleibt Steuerleiste**, Links bleibt Mini-EPG. Existierende Jetzt/Danach-/Progress-Anzeige, Fokus, Stop-Hotfix und fremde Player nicht beeinflussen; BINGIE/Estuary-Skin und Space-Premium-kompatibles Design.
+- Implementierung **als separater modularer UI-Draft-PR nach P0 #97**, wenn nicht zweifelsfrei konfliktfrei kombinierbar. Realgerätetests für 720p/1080i/1080p/2160p, AC3/EAC3/AAC, Ton-/Sprachwechsel, unbekannte Streams, Subtitle-Status, Senderwechsel, Stop und Kodi-Player-Lifecycle. **Kein Android-PASS ohne Gerätetest.**
+
+**Code:** `resources/lib/live_overlay.py::_render_info()` zeigt bisher Senderlogo, Sendung Jetzt/Danach, Zeit und Progress, aber keine technische Videospur-/Tonspur-Iconzeile. Bestehende [#17](https://github.com/artattakk-creator/kodi-noodleprivate/issues/17) (Infoleiste), [#20](https://github.com/artattakk-creator/kodi-noodleprivate/issues/20) (Remote-Steuerleiste), [#64](https://github.com/artattakk-creator/kodi-noodleprivate/issues/64) (Kontexttasten) als Schutzregeln berücksichtigen. Volle Spezifikation [#100](https://github.com/artattakk-creator/kodi-noodleprivate/issues/100).
+
+### F. [#98](https://github.com/artattakk-creator/kodi-noodleprivate/issues/98) – EPG-Vorschläge auch bei Sendernamen mit HD/FHD/Joyn finden (P1, verbindlich)
+
+Der Benutzer möchte bei „**EPG zuweisen**“ nicht selbst alle EPG-Namen durchsuchen müssen. Das Dialogfenster muss **den aktuell markierten Live-Sendernamen als vorgefüllten Suchbegriff verwenden**, passende EPG-Kanäle **aller bereits bekannten Anbieter automatisch vorschlagen und oben anordnen**, ohne vorzeitiges Speichern.
+
+- Beispiel: **„ZDF“, „ZDF HD“, „DE | ZDF FHD“, „ZDF HEVC“, „Joyn ZDF“, „ZDF (Joyn)“** sollen trotz technischer Qualitäts- und Plattformzusätze denselben **Kernsender „ZDF“** erkennen und entsprechende Vorschaukandidaten liefern.
+- Case-insensitive/Unicode-normalisierte Token-Suche. **Getrennt** kontrollierte Senderpräfixe/Länder, Qualitätsangaben wie SD/HD/FHD/UHD/4K/HEVC, Plattformmarken wie Joyn als mögliche Distributionszusätze entfernen. Danach exact-core vor alias-core vor vorsichtigem Fuzzy-Vergleich. Originalnamen, Anbieter und EPG-Kanal-ID in der Liste immer sichtbar; nicht alle Senderfamilien global zusammenführen.
+- **Gefährlicher Fehler, ausdrücklich vermeiden:** Ein simples `'ZDF' in sendername` würde „ZDFneo“ und „ZDFinfo“ als identische Hauptstation behandeln. Diese **verschiedenen Kernkanäle müssen getrennt bleiben**; ebenso RTL/RTL2/RTLup, ProSieben/ProSieben MAXX oder bundesweite/regionale Fenster. In unklaren Fällen nur alternative Suchtreffer mit Hinweis statt automatische Gleichsetzung.
+- Automatische Vorschläge dürfen für den Nutzer den besten **temporären Previewkandidaten markieren**, aber **niemals selbst `Speichern` auslösen**. Live-Vorschau pro **Anbieter-ID + EPG-Kanal-ID**, bei keiner Programmabdeckung nächsten Treffer/Kanal/Anbieter wählen, Cancel unverändert und persistent ohne Writes, Save erst explizit.
+- **Keine** teuren Internetabfragen, globale Quell-Reimports, irreversibles Matching oder automatisches Deaktivieren von Feedquellen. Existierende `epg_sources._channel_name_key` mit bisher konservativem Exact-Matching erweitern, aber ohne bisher korrekte automatische Mappings / Sicherheitsprüfungen zu verschlechtern; Preview-Ranking kann bewusst großzügiger sein als persistentes Auto-Mapping.
+- Pflichttests für ZDF/Joyn/HD/FHD/HEVC und Kontrast ZDFneo/ZDFinfo, ebenso identische EPG-IDs verschiedener Feeds, regionale Quellen, echte im Raster sichtbare Programme, Save/Cancel, schnelle Senderwechsel, Kodi-IR-Fokus. Spezifikation [#98](https://github.com/artattakk-creator/kodi-noodleprivate/issues/98).
+
+**Paketierung / Priorität:** #97 P0 Stop/Exit **zuerst**, #89 danach gezielt Android nachtesten; #98 EPG-Name-Matching **mit der transaktionalen EPG-Zuordnung** entwickeln; #100 erweiterte Infobar **als späteres, klar dokumentiertes To-do** mit eigener Draft-PR. Bereits offene P1 #99 Catch-up, #74 größere Film-/Seriencover, #90/#91 Artwork/SQLite bleiben unverändert verbindlich. **Keine Merge- oder Releasefreigabe.**
+
+---
+
 ## VERBINDLICHE ERGÄNZUNG 22.10.2026: weitere sinnvolle offene Issues, EPG-Preview, Catch-up und größere Cover
 
 **Diese aktuelle Präzisierung geht älteren Detailvorgaben vor.** Der Nutzer wünscht ausdrücklich, dass Codex weitere sinnvolle, thematisch passende offene Issues prüft und nicht nur die bisherige Liste abarbeitet. Vor Beginn der Entwicklung daher **alle zurzeit offenen XCMate-GitHub-Issues** inventarisieren (59 beim letzten Abruf) und eine kurze Triage-Tabelle erstellen: Issue, bestehender Stand in aktuellem main, realer Android-PASS/FAIL/NOT_RUN, technische Abhängigkeit, geeignetes gemeinsames Fixpaket, Umsetzungsentscheidung oder begründete Zurückstellung. **Keine willkürliche Aufnahme aller 59 Issues in einen untestbaren Groß-PR**; P0 STOP #97 und geschützter EPG-Playback-Retest #89 bleiben zwingend zuerst.
