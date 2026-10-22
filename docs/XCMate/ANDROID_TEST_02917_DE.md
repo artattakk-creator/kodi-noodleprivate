@@ -1,5 +1,9 @@
 # Android-Test 0.1.29.17 – NOT_RUN
 
+[Test-ZIP](https://github.com/artattakk-creator/kodi-noodleprivate/raw/refs/heads/fix/xcmate-02917-live-stop/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.17.zip) · [SHA256-Datei](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.17.zip.sha256)
+
+SHA256: `5f388a6fdd5ee37416cc9b01c60932ac26b3c073cb368d88e7317fe2a23f9b10`
+
 Gerät: Android 13 / RK3528 ARM32 / Kodi 21.2 Omega / Titan BINGIE MOD; später Estuary. Erst P0 #97 abnehmen, danach EPG-Playback #89. Bestehende installierte .16 ist nur funktionaler Teil-PASS.
 
 1. **Installieren:** Kodi beenden, bestehendes Profil privat sichern, Test-ZIP herunterladen und SHA256 prüfen. „Aus ZIP-Datei installieren“, Version .17 bestätigen, Kodi neu starten. Kein Deinstallieren, Cache-/Datenreset oder Gruppen-/Portalneuaufbau. Kein reguläres OTA-Angebot für diesen Kandidaten.
