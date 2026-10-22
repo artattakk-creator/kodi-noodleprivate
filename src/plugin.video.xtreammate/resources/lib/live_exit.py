@@ -88,11 +88,15 @@ def _poll(navigator=None):
         value['phase']='stopping';_save(value)
         if playing:
             if not stop_owned(player,expected=token):
-                value['phase']='failed';_save(value);_trace('OWNERSHIP_CHANGED',session);return True
+                value['phase']='failed';_save(value)
+                if navigator is not None and not navigator._closed:navigator.close()
+                _trace('OWNERSHIP_CHANGED',session);return True
         _trace('STOP_SENT',session)
     if player.isPlayingVideo() or (hasattr(player,'isPlaying') and player.isPlaying()):
         if time.monotonic()>value['deadline']:
-            value['phase']='failed';_save(value);_trace('STOP_TIMEOUT',session)
+            value['phase']='failed';_save(value)
+            if navigator is not None and not navigator._closed:navigator.close()
+            _trace('STOP_TIMEOUT',session)
             xbmcgui.Dialog().notification('XCMate','Live-TV konnte nicht beendet werden.')
         return True
     if value['phase']=='stopping':
@@ -123,4 +127,5 @@ def poll(navigator=None):
         if not value:return False
         if time.monotonic()>value['deadline']:
             value['phase']='failed';_save(value)
+            if navigator is not None and not navigator._closed:navigator.close()
         _trace('PLAYER_UNAVAILABLE',value['session']);return True

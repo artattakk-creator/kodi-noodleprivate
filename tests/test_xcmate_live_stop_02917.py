@@ -59,6 +59,7 @@ class StopTests(Fixture,unittest.TestCase):
         self.sync=False;self.exit.request(self.nav);value=self.exit.state();value.update(not_before=0,deadline=0);self.exit._save(value)
         for _ in range(8):self.exit.poll(self.nav)
         self.assertEqual(self.stops,1);self.assertEqual(self.exit.state()['phase'],'failed');self.assertFalse(self.builtins)
+        self.nav.close.assert_called_once()  # Failure must not trap GUI input forever.
     def test_preplay_properties_are_nonce_scoped_and_cancel_is_retained(self):
         for key in ('XCMate.PrePlay.Request','XCMate.PrePlay.Ready','XCMate.PrePlay.Ack'):
             self.properties[key]=json.dumps(self.session) if key.endswith('Request') else 'own'
