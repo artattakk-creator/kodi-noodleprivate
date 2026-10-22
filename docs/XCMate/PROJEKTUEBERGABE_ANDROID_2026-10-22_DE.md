@@ -1,6 +1,16 @@
 # XCMate – Projektübergabe und Android-Abnahme (22.10.2026)
 
-> **GitHub-/Android-Stand 22.10.2026:** 0.1.29.11 / [PR #80](https://github.com/artattakk-creator/kodi-noodleprivate/pull/80) wurde auf Android **funktional mit Restbefunden** abgenommen (Bildspeicherstatus 10/10, Filme/Serien, Resume, EPG und Live-TV PASS). Die [bereinigte Logauswertung](ANDROID_LOG_AUSWERTUNG_02911_2026-10-22_DE.md) dokumentiert weiterhin SQLite-BUSY und Android-MediaCodec-Warnungen; Issues #69/#75/#86/#87 bleiben offen. **0.1.29.13 / [PR #82](https://github.com/artattakk-creator/kodi-noodleprivate/pull/82) wurde auf ausdrücklichen Nutzerauftrag nach `main` gemergt** (Merge [`dcee6d2`](https://github.com/artattakk-creator/kodi-noodleprivate/commit/dcee6d2a57a9d7b3dad4e1257f688b13fabbf79b)). Der [Publish-Workflow](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39733665167) war erfolgreich, und **`addons.xml` bietet 0.1.29.13 regulär an**. **Android-Test des neuen horizontalen EPG: NOT_RUN**. Feature-Drafts .14/.15 bleiben separat und ungemergt. Keine weiteren Merges/Releases ohne erneute Freigabe.
+> **GitHub-/Android-Stand 22.10.2026:** 0.1.29.11 / [PR #80](https://github.com/artattakk-creator/kodi-noodleprivate/pull/80) wurde auf Android **funktional mit Restbefunden** abgenommen (Bildspeicherstatus 10/10, Filme/Serien, Resume, EPG und Live-TV PASS). Die [bereinigte Logauswertung](ANDROID_LOG_AUSWERTUNG_02911_2026-10-22_DE.md) dokumentiert weiterhin SQLite-BUSY und Android-MediaCodec-Warnungen; Issues #69/#75/#86/#87 bleiben offen. **0.1.29.13 / [PR #82](https://github.com/artattakk-creator/kodi-noodleprivate/pull/82) wurde auf ausdrücklichen Nutzerauftrag nach `main` gemergt** (Merge [`dcee6d2`](https://github.com/artattakk-creator/kodi-noodleprivate/commit/dcee6d2a57a9d7b3dad4e1257f688b13fabbf79b)). Der [Publish-Workflow](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/39733665167) war erfolgreich, und **`addons.xml` bietet 0.1.29.13 regulär an**. **Android-Ersttest des neuen horizontalen EPG: Layout positiv, Gruppen-/Logo-/Zuordnungs-Blocker in Issue #88**. Feature-Drafts .14/.15 bleiben separat und ungemergt. Keine weiteren Merges/Releases ohne erneute Freigabe.
+
+## 0.1.29.13 – Android-Ersttest des horizontalen EPG (22.10.2026)
+
+**Gestaltung:** Raster, gemeinsame Zeitachse und genereller visueller Aufbau vom Nutzer ausdrücklich positiv bewertet. **Funktionale EPG-Gesamtabnahme NICHT bestanden**; [Issue #88](https://github.com/artattakk-creator/kodi-noodleprivate/issues/88) enthält den verbindlichen Auftrag.
+
+- **Gruppen-Navigation BLOCKER:** Einstieg zeigt alle aktiven Sender gruppenübergreifend. Soll: zuerst nur aktivierte **Sendergruppen**; OK auf z. B. „Germany HD HEVC“ -> ausschließlich diese Sender mit EPG. Links vom Raster/Back -> Gruppen, Back dort -> XCMate Home. Erhalt von Gruppenreihenfolge, Fokus und Zuordnung.
+- **Logos FEHLEN:** vorhandene Guide-Logoanzeige auf Android leer. Auf `stream_icon`, lokale Pfade, vorhandene `media_art`-Queue/Artwork-Budget 514/512 MB und `SPACE_FULL` achten; keine unkontrollierte Budgetänderung oder Löschung.
+- **XMLTV-Zuordnung FEHLT IM RASTER:** manche Programme vorhanden, andere nicht; gezielte Aktion `EPG zuordnen/ändern` für gewählten Sender mit Auswahl/Vorschau gespeicherter XMLTV-IDs, atomarer Persistenz über `epg_sources.set_mapping()`, kontrollierter Refresh ohne Gesamtscan. Weitere Matching-Verbesserung in [#60](https://github.com/artattakk-creator/kodi-noodleprivate/issues/60).
+- **Codeursache Gruppenanzeige bestätigt:** `GuideGridWindow.category=None` beim Start; `Reader.page(...,category=None)` aggregiert aktive Sender. Der Header-Dialog für Gruppen reicht UX-seitig nicht aus. Back kehrt derzeit direkt zu Home zurück.
+- **Schutz:** 0.1.29.13 bereits regulär veröffentlicht, kein stiller Hotfix-/Main-Merge; 0.1.29.11 bleibt funktional geprüfte Basis; neuer Korrektur-Draft-PR auf `main` mit freier 0.1.29.x-Version, danach Android-Tests. Filme/Serien/Live-TV nicht verändern.
 
 ## Grunddaten und Schutzregeln
 
@@ -16,7 +26,7 @@
 | Reihenfolge | Version | Draft-PR | Schwerpunkt | Berichtete automatisierte Tests | Android |
 |---|---|---|---|---|---|
 | 1 | 0.1.29.11 | [#80 – MERGED](https://github.com/artattakk-creator/kodi-noodleprivate/pull/80) | Bildspeicherstatus und SQLite-BUSY | 568 PASS; CI PASS | **Funktional PASS mit Restbefunden** |
-| 2 | 0.1.29.13 | [#82 – MERGED/PUBLISHED](https://github.com/artattakk-creator/kodi-noodleprivate/pull/82) | Horizontaler EPG-Programmguide | 584 PASS; Publish PASS | **NOT_RUN** |
+| 2 | 0.1.29.13 | [#82 – MERGED/PUBLISHED](https://github.com/artattakk-creator/kodi-noodleprivate/pull/82) | Horizontaler EPG-Programmguide | 584 PASS; Publish PASS | **Layout PASS, Gruppen/Logos/Mappings ausstehend (#88)** |
 | 3 | 0.1.29.14 | [#83](https://github.com/artattakk-creator/kodi-noodleprivate/pull/83) | Film-/Serien-UI, grüner Fokus, Fanart | 580 PASS | NOT_RUN |
 | 4 | 0.1.29.15 | [#84](https://github.com/artattakk-creator/kodi-noodleprivate/pull/84) | Eigenes XCMate-Media-Player-OSD | 581 PASS | NOT_RUN |
 
