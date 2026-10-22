@@ -90,4 +90,6 @@ def poll():
             _worker.start()
     from media_progress import poll as poll_media
     poll_media()
+    from media_osd import poll as poll_osd
+    poll_osd()
 
