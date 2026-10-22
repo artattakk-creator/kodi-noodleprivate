@@ -56,7 +56,7 @@
       <height>44</height>
       <font>font13</font>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>315</onleft>
       <onright>311</onright>
@@ -70,7 +70,7 @@
       <height>44</height>
       <font>font13</font>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>310</onleft>
       <onright>312</onright>
@@ -84,7 +84,7 @@
       <height>44</height>
       <font>font13</font>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>311</onleft>
       <onright>313</onright>
@@ -98,7 +98,7 @@
       <height>44</height>
       <font>font13</font>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>312</onleft>
       <onright>314</onright>
@@ -112,7 +112,7 @@
       <height>44</height>
       <font>font13</font>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>313</onleft>
       <onright>315</onright>
@@ -126,7 +126,7 @@
       <height>44</height>
       <font>font13</font>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>314</onleft>
       <onright>310</onright>
@@ -212,7 +212,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1000</onleft>
       <onright>1000</onright>
@@ -227,7 +227,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1001</onleft>
       <onright>1001</onright>
@@ -242,7 +242,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1002</onleft>
       <onright>1002</onright>
@@ -257,7 +257,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1003</onleft>
       <onright>1003</onright>
@@ -272,7 +272,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1004</onleft>
       <onright>1004</onright>
@@ -287,7 +287,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1005</onleft>
       <onright>1005</onright>
@@ -302,7 +302,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1006</onleft>
       <onright>1006</onright>
@@ -317,7 +317,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1007</onleft>
       <onright>1007</onright>
@@ -332,7 +332,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1008</onleft>
       <onright>1008</onright>
@@ -347,7 +347,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1009</onleft>
       <onright>1009</onright>
@@ -362,7 +362,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1010</onleft>
       <onright>1010</onright>
@@ -377,7 +377,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1011</onleft>
       <onright>1011</onright>
@@ -392,7 +392,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1012</onleft>
       <onright>1012</onright>
@@ -407,7 +407,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1013</onleft>
       <onright>1013</onright>
@@ -422,7 +422,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1014</onleft>
       <onright>1014</onright>
@@ -437,7 +437,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1015</onleft>
       <onright>1015</onright>
@@ -452,7 +452,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1016</onleft>
       <onright>1016</onright>
@@ -467,7 +467,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1017</onleft>
       <onright>1017</onright>
@@ -482,7 +482,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1018</onleft>
       <onright>1018</onright>
@@ -497,7 +497,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1019</onleft>
       <onright>1019</onright>
@@ -512,7 +512,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1020</onleft>
       <onright>1020</onright>
@@ -527,7 +527,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1021</onleft>
       <onright>1021</onright>
@@ -542,7 +542,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1022</onleft>
       <onright>1022</onright>
@@ -557,7 +557,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1023</onleft>
       <onright>1023</onright>
@@ -589,7 +589,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1024</onleft>
       <onright>1024</onright>
@@ -604,7 +604,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1025</onleft>
       <onright>1025</onright>
@@ -619,7 +619,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1026</onleft>
       <onright>1026</onright>
@@ -634,7 +634,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1027</onleft>
       <onright>1027</onright>
@@ -649,7 +649,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1028</onleft>
       <onright>1028</onright>
@@ -664,7 +664,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1029</onleft>
       <onright>1029</onright>
@@ -679,7 +679,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1030</onleft>
       <onright>1030</onright>
@@ -694,7 +694,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1031</onleft>
       <onright>1031</onright>
@@ -709,7 +709,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1032</onleft>
       <onright>1032</onright>
@@ -724,7 +724,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1033</onleft>
       <onright>1033</onright>
@@ -739,7 +739,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1034</onleft>
       <onright>1034</onright>
@@ -754,7 +754,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1035</onleft>
       <onright>1035</onright>
@@ -769,7 +769,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1036</onleft>
       <onright>1036</onright>
@@ -784,7 +784,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1037</onleft>
       <onright>1037</onright>
@@ -799,7 +799,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1038</onleft>
       <onright>1038</onright>
@@ -814,7 +814,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1039</onleft>
       <onright>1039</onright>
@@ -829,7 +829,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1040</onleft>
       <onright>1040</onright>
@@ -844,7 +844,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1041</onleft>
       <onright>1041</onright>
@@ -859,7 +859,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1042</onleft>
       <onright>1042</onright>
@@ -874,7 +874,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1043</onleft>
       <onright>1043</onright>
@@ -889,7 +889,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1044</onleft>
       <onright>1044</onright>
@@ -904,7 +904,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1045</onleft>
       <onright>1045</onright>
@@ -919,7 +919,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1046</onleft>
       <onright>1046</onright>
@@ -934,7 +934,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1047</onleft>
       <onright>1047</onright>
@@ -966,7 +966,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1048</onleft>
       <onright>1048</onright>
@@ -981,7 +981,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1049</onleft>
       <onright>1049</onright>
@@ -996,7 +996,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1050</onleft>
       <onright>1050</onright>
@@ -1011,7 +1011,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1051</onleft>
       <onright>1051</onright>
@@ -1026,7 +1026,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1052</onleft>
       <onright>1052</onright>
@@ -1041,7 +1041,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1053</onleft>
       <onright>1053</onright>
@@ -1056,7 +1056,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1054</onleft>
       <onright>1054</onright>
@@ -1071,7 +1071,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1055</onleft>
       <onright>1055</onright>
@@ -1086,7 +1086,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1056</onleft>
       <onright>1056</onright>
@@ -1101,7 +1101,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1057</onleft>
       <onright>1057</onright>
@@ -1116,7 +1116,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1058</onleft>
       <onright>1058</onright>
@@ -1131,7 +1131,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1059</onleft>
       <onright>1059</onright>
@@ -1146,7 +1146,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1060</onleft>
       <onright>1060</onright>
@@ -1161,7 +1161,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1061</onleft>
       <onright>1061</onright>
@@ -1176,7 +1176,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1062</onleft>
       <onright>1062</onright>
@@ -1191,7 +1191,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1063</onleft>
       <onright>1063</onright>
@@ -1206,7 +1206,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1064</onleft>
       <onright>1064</onright>
@@ -1221,7 +1221,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1065</onleft>
       <onright>1065</onright>
@@ -1236,7 +1236,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1066</onleft>
       <onright>1066</onright>
@@ -1251,7 +1251,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1067</onleft>
       <onright>1067</onright>
@@ -1266,7 +1266,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1068</onleft>
       <onright>1068</onright>
@@ -1281,7 +1281,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1069</onleft>
       <onright>1069</onright>
@@ -1296,7 +1296,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1070</onleft>
       <onright>1070</onright>
@@ -1311,7 +1311,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1071</onleft>
       <onright>1071</onright>
@@ -1343,7 +1343,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1072</onleft>
       <onright>1072</onright>
@@ -1358,7 +1358,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1073</onleft>
       <onright>1073</onright>
@@ -1373,7 +1373,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1074</onleft>
       <onright>1074</onright>
@@ -1388,7 +1388,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1075</onleft>
       <onright>1075</onright>
@@ -1403,7 +1403,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1076</onleft>
       <onright>1076</onright>
@@ -1418,7 +1418,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1077</onleft>
       <onright>1077</onright>
@@ -1433,7 +1433,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1078</onleft>
       <onright>1078</onright>
@@ -1448,7 +1448,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1079</onleft>
       <onright>1079</onright>
@@ -1463,7 +1463,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1080</onleft>
       <onright>1080</onright>
@@ -1478,7 +1478,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1081</onleft>
       <onright>1081</onright>
@@ -1493,7 +1493,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1082</onleft>
       <onright>1082</onright>
@@ -1508,7 +1508,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1083</onleft>
       <onright>1083</onright>
@@ -1523,7 +1523,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1084</onleft>
       <onright>1084</onright>
@@ -1538,7 +1538,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1085</onleft>
       <onright>1085</onright>
@@ -1553,7 +1553,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1086</onleft>
       <onright>1086</onright>
@@ -1568,7 +1568,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1087</onleft>
       <onright>1087</onright>
@@ -1583,7 +1583,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1088</onleft>
       <onright>1088</onright>
@@ -1598,7 +1598,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1089</onleft>
       <onright>1089</onright>
@@ -1613,7 +1613,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1090</onleft>
       <onright>1090</onright>
@@ -1628,7 +1628,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1091</onleft>
       <onright>1091</onright>
@@ -1643,7 +1643,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1092</onleft>
       <onright>1092</onright>
@@ -1658,7 +1658,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1093</onleft>
       <onright>1093</onright>
@@ -1673,7 +1673,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1094</onleft>
       <onright>1094</onright>
@@ -1688,7 +1688,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1095</onleft>
       <onright>1095</onright>
@@ -1720,7 +1720,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1096</onleft>
       <onright>1096</onright>
@@ -1735,7 +1735,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1097</onleft>
       <onright>1097</onright>
@@ -1750,7 +1750,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1098</onleft>
       <onright>1098</onright>
@@ -1765,7 +1765,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1099</onleft>
       <onright>1099</onright>
@@ -1780,7 +1780,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1100</onleft>
       <onright>1100</onright>
@@ -1795,7 +1795,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1101</onleft>
       <onright>1101</onright>
@@ -1810,7 +1810,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1102</onleft>
       <onright>1102</onright>
@@ -1825,7 +1825,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1103</onleft>
       <onright>1103</onright>
@@ -1840,7 +1840,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1104</onleft>
       <onright>1104</onright>
@@ -1855,7 +1855,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1105</onleft>
       <onright>1105</onright>
@@ -1870,7 +1870,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1106</onleft>
       <onright>1106</onright>
@@ -1885,7 +1885,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1107</onleft>
       <onright>1107</onright>
@@ -1900,7 +1900,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1108</onleft>
       <onright>1108</onright>
@@ -1915,7 +1915,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1109</onleft>
       <onright>1109</onright>
@@ -1930,7 +1930,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1110</onleft>
       <onright>1110</onright>
@@ -1945,7 +1945,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1111</onleft>
       <onright>1111</onright>
@@ -1960,7 +1960,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1112</onleft>
       <onright>1112</onright>
@@ -1975,7 +1975,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1113</onleft>
       <onright>1113</onright>
@@ -1990,7 +1990,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1114</onleft>
       <onright>1114</onright>
@@ -2005,7 +2005,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1115</onleft>
       <onright>1115</onright>
@@ -2020,7 +2020,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1116</onleft>
       <onright>1116</onright>
@@ -2035,7 +2035,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1117</onleft>
       <onright>1117</onright>
@@ -2050,7 +2050,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1118</onleft>
       <onright>1118</onright>
@@ -2065,7 +2065,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1119</onleft>
       <onright>1119</onright>
@@ -2097,7 +2097,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1120</onleft>
       <onright>1120</onright>
@@ -2112,7 +2112,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1121</onleft>
       <onright>1121</onright>
@@ -2127,7 +2127,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1122</onleft>
       <onright>1122</onright>
@@ -2142,7 +2142,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1123</onleft>
       <onright>1123</onright>
@@ -2157,7 +2157,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1124</onleft>
       <onright>1124</onright>
@@ -2172,7 +2172,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1125</onleft>
       <onright>1125</onright>
@@ -2187,7 +2187,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1126</onleft>
       <onright>1126</onright>
@@ -2202,7 +2202,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1127</onleft>
       <onright>1127</onright>
@@ -2217,7 +2217,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1128</onleft>
       <onright>1128</onright>
@@ -2232,7 +2232,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1129</onleft>
       <onright>1129</onright>
@@ -2247,7 +2247,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1130</onleft>
       <onright>1130</onright>
@@ -2262,7 +2262,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1131</onleft>
       <onright>1131</onright>
@@ -2277,7 +2277,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1132</onleft>
       <onright>1132</onright>
@@ -2292,7 +2292,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1133</onleft>
       <onright>1133</onright>
@@ -2307,7 +2307,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1134</onleft>
       <onright>1134</onright>
@@ -2322,7 +2322,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1135</onleft>
       <onright>1135</onright>
@@ -2337,7 +2337,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1136</onleft>
       <onright>1136</onright>
@@ -2352,7 +2352,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1137</onleft>
       <onright>1137</onright>
@@ -2367,7 +2367,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1138</onleft>
       <onright>1138</onright>
@@ -2382,7 +2382,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1139</onleft>
       <onright>1139</onright>
@@ -2397,7 +2397,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1140</onleft>
       <onright>1140</onright>
@@ -2412,7 +2412,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1141</onleft>
       <onright>1141</onright>
@@ -2427,7 +2427,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1142</onleft>
       <onright>1142</onright>
@@ -2442,7 +2442,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1143</onleft>
       <onright>1143</onright>
@@ -2474,7 +2474,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1144</onleft>
       <onright>1144</onright>
@@ -2489,7 +2489,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1145</onleft>
       <onright>1145</onright>
@@ -2504,7 +2504,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1146</onleft>
       <onright>1146</onright>
@@ -2519,7 +2519,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1147</onleft>
       <onright>1147</onright>
@@ -2534,7 +2534,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1148</onleft>
       <onright>1148</onright>
@@ -2549,7 +2549,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1149</onleft>
       <onright>1149</onright>
@@ -2564,7 +2564,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1150</onleft>
       <onright>1150</onright>
@@ -2579,7 +2579,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1151</onleft>
       <onright>1151</onright>
@@ -2594,7 +2594,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1152</onleft>
       <onright>1152</onright>
@@ -2609,7 +2609,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1153</onleft>
       <onright>1153</onright>
@@ -2624,7 +2624,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1154</onleft>
       <onright>1154</onright>
@@ -2639,7 +2639,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1155</onleft>
       <onright>1155</onright>
@@ -2654,7 +2654,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1156</onleft>
       <onright>1156</onright>
@@ -2669,7 +2669,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1157</onleft>
       <onright>1157</onright>
@@ -2684,7 +2684,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1158</onleft>
       <onright>1158</onright>
@@ -2699,7 +2699,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1159</onleft>
       <onright>1159</onright>
@@ -2714,7 +2714,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1160</onleft>
       <onright>1160</onright>
@@ -2729,7 +2729,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1161</onleft>
       <onright>1161</onright>
@@ -2744,7 +2744,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1162</onleft>
       <onright>1162</onright>
@@ -2759,7 +2759,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1163</onleft>
       <onright>1163</onright>
@@ -2774,7 +2774,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1164</onleft>
       <onright>1164</onright>
@@ -2789,7 +2789,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1165</onleft>
       <onright>1165</onright>
@@ -2804,7 +2804,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1166</onleft>
       <onright>1166</onright>
@@ -2819,7 +2819,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1167</onleft>
       <onright>1167</onright>
@@ -2851,7 +2851,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1168</onleft>
       <onright>1168</onright>
@@ -2866,7 +2866,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1169</onleft>
       <onright>1169</onright>
@@ -2881,7 +2881,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1170</onleft>
       <onright>1170</onright>
@@ -2896,7 +2896,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1171</onleft>
       <onright>1171</onright>
@@ -2911,7 +2911,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1172</onleft>
       <onright>1172</onright>
@@ -2926,7 +2926,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1173</onleft>
       <onright>1173</onright>
@@ -2941,7 +2941,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1174</onleft>
       <onright>1174</onright>
@@ -2956,7 +2956,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1175</onleft>
       <onright>1175</onright>
@@ -2971,7 +2971,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1176</onleft>
       <onright>1176</onright>
@@ -2986,7 +2986,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1177</onleft>
       <onright>1177</onright>
@@ -3001,7 +3001,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1178</onleft>
       <onright>1178</onright>
@@ -3016,7 +3016,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1179</onleft>
       <onright>1179</onright>
@@ -3031,7 +3031,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1180</onleft>
       <onright>1180</onright>
@@ -3046,7 +3046,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1181</onleft>
       <onright>1181</onright>
@@ -3061,7 +3061,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1182</onleft>
       <onright>1182</onright>
@@ -3076,7 +3076,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1183</onleft>
       <onright>1183</onright>
@@ -3091,7 +3091,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1184</onleft>
       <onright>1184</onright>
@@ -3106,7 +3106,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1185</onleft>
       <onright>1185</onright>
@@ -3121,7 +3121,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1186</onleft>
       <onright>1186</onright>
@@ -3136,7 +3136,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1187</onleft>
       <onright>1187</onright>
@@ -3151,7 +3151,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1188</onleft>
       <onright>1188</onright>
@@ -3166,7 +3166,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1189</onleft>
       <onright>1189</onright>
@@ -3181,7 +3181,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1190</onleft>
       <onright>1190</onright>
@@ -3196,7 +3196,7 @@
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>1191</onleft>
       <onright>1191</onright>

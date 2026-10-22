@@ -2224,3 +2224,7 @@ msgstr "Gemerkte Sendungen"
 msgctxt "#33119"
 msgid "No remembered programmes"
 msgstr "Keine gemerkten Sendungen"
+
+msgctxt "#33120"
+msgid "Dense schedule: move right for more programmes"
+msgstr "Dichte Programmliste: rechts zu weiteren Sendungen"

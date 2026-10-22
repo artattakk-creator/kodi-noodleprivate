@@ -84,14 +84,35 @@ class GridTests(Fixture,unittest.TestCase):
         if not hasattr(time,'tzset'):self.skipTest('POSIX timezone API')
         old=os.environ.get('TZ');os.environ['TZ']='Europe/Berlin';time.tzset()
         try:
-            # Pure calendar rule used by _day: 25-hour autumn day.
             import datetime
-            before=datetime.datetime(2026,10,25,0,0);after=before+datetime.timedelta(days=1)
-            self.assertEqual(time.mktime(after.timetuple())-time.mktime(before.timetuple()),25*3600)
+            w=self.window();before=datetime.datetime(2026,10,25,0,0)
+            w.cursor=int(time.mktime(before.timetuple()));stamp=w.cursor
+            class FixedDate(datetime.date):
+                @classmethod
+                def today(cls):return cls(2026,10,25)
+            with mock.patch.object(self.grid.datetime,'date',FixedDate):w._day(1)
+            self.assertEqual(w.cursor-stamp,25*3600)
         finally:
             if old is None:os.environ.pop('TZ',None)
             else:os.environ['TZ']=old
             time.tzset()
+
+    def test_fast_double_back_keeps_owner_until_transition_finishes(self):
+        w=self.window();w._running=True
+        self.key(w,92);self.assertTrue(w._leaving);self.assertFalse(w._closed)
+        self.key(w,92);self.assertFalse(w._closed);self.assertFalse(self.builtins)
+        w._leave_after=0;w._owner_tick();self.assertTrue(w._closed)
+
+    def test_dense_schedule_pans_exactly_to_selected_event_without_recursive_load(self):
+        db=self.store.connect()
+        with db:db.execute('DELETE FROM programmes')
+        db.close()
+        data=[dict(channel='xml',start_timestamp=self.origin+n*60,stop_timestamp=self.origin+(n+1)*60,name='Short '+str(n)) for n in range(60)]
+        self.store.import_cache('p',{'xml':data},now=self.origin-1)
+        w=self.window();w.cursor=self.origin+29*60;w._render()
+        self.assertEqual(w.origin,self.origin+29*60);self.assertTrue(w._loading)
+        self.settle(w);self.assertFalse(w._loading);self.assertEqual(w._selected()['title'],'Short 29')
+
 
     def test_bookmark_contains_ids_facts_and_no_source_urls(self):
         bookmarks=importlib.import_module('guide_bookmarks')

@@ -13,7 +13,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
     def configure(self,router,portal):
         self._configure_owner();self.router,self.portal=router,portal
         self._pool=ThreadPoolExecutor(max_workers=1);self._generation=0;self._closed=False;self._ready=False
-        self._loading=False;self._cells={};self.rows=[];self.groups=[];self.category=None
+        self._loading=False;self._leaving=False;self._cells={};self.rows=[];self.groups=[];self.category=None
         self.offset=0;self.total=0;self.row=0;self.cursor=int(time.time());self.origin=self.cursor//1800*1800
         self._last_refresh=0;self._short_revision='';self._return_home=False
 
@@ -56,7 +56,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
                     min(events,key=lambda e:min(abs(e['start']-self.cursor),abs(e['stop']-self.cursor))) if events else None)
 
     def _render(self):
-        if self._closed:return
+        if self._closed or self._leaving:return
         self._cells={};target=None
         for r in range(ROWS):
             row=self.rows[r] if r<len(self.rows) else None
@@ -87,7 +87,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         if 0<=delta<896:marker.setPosition(340+int(delta),166)
         self.getControl(101).setLabel(tr(33100)+' · '+time.strftime('%a %d.%m.%Y',time.localtime(self.origin)))
         available=sum(bool(r['events']) for r in self.rows)
-        self.getControl(102).setLabel(tr(33111,self.offset+1 if self.rows else 0,min(self.total,self.offset+len(self.rows)),self.total,available,len(self.rows)))
+        self.getControl(102).setLabel(tr(33111,self.offset+1 if self.rows else 0,min(self.total,self.offset+len(self.rows)),self.total,available,len(self.rows))+(' · '+tr(33120) if any(len(r['events'])>CELLS for r in self.rows) else ''))
         self._focus_cell(target)
 
     def _focus_cell(self,cid=None):
@@ -155,15 +155,22 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         # Recording/Catch-up/TMDB are not advertised as working capabilities.
 
     def onAction(self,action):
-        if self._closed:return
+        if self._closed or self._leaving:return
         key=action.getId();focus=self.getFocusId()
-        if key in (9,10,92):self._return_home=True;self.close();return
+        if key in (9,10,92):
+            self._return_home=True
+            if getattr(self,'_running',False):
+                self._leaving=True;self._leave_after=time.monotonic()+.15;self._generation+=1
+                if self._pending_future is not None:self._pending_future.cancel()
+                self._pending_future=None
+            else:self.close()
+            return
         if key==117:self._actions(channel_only=True);return
         if focus in self._cells and key in (1,2,3,4):self._step(key)
         elif focus<1000 and key==4 and not self._loading:self._focus_cell()
 
     def onClick(self,cid):
-        if self._closed:return
+        if self._closed or self._leaving:return
         if cid in self._cells:
             previous=self._selected();self.row,event=self._cells[cid]
             if event is not None and event is not previous:self.cursor=max(self.origin,event['start'])
@@ -182,6 +189,9 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
                 self._next_route=self.router.url(action='global_search',pid=self.portal['id'],q=query[:200]);self.close()
 
     def _owner_tick(self):
+        if self._leaving:
+            if time.monotonic()>=self._leave_after:self.close()
+            return
         # Poll only revision hints/time. Direction keys do not query the DB.
         now=time.monotonic()
         if now-self._last_refresh<2:return
