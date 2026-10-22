@@ -22,6 +22,8 @@ def records(data,pid,series_id):
     raw=data.get('episodes',{}) if isinstance(data,dict) else {}
     clean={}
     if not str(pid) or not str(series_id) or not isinstance(raw,dict) or not _belongs(data,pid,series_id):return []
+    info=data.get('info') if isinstance(data.get('info'),dict) else {}
+    if not _belongs(info,pid,series_id):return []
     for season,rows in raw.items():
         if not isinstance(rows,list):continue
         clean[season]=[]

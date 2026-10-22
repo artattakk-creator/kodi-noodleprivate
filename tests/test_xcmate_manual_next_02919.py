@@ -123,6 +123,7 @@ class ManualNextTests(Fixture,unittest.TestCase):
         self.assertEqual([e['sid'] for e in actual],['11','16'])
         self.assertEqual(sequence.successor(actual,'p','1',actual[0])['sid'],'16')
         self.assertEqual(sequence.records({'pid':'other','episodes':{'1':rows}},'p','1'),[])
+        self.assertEqual(sequence.records({'info':{'series_id':'other'},'episodes':{'1':rows}},'p','1'),[])
 
     def test_ambiguous_ids_or_positions_invalid_numbers_and_specials_are_not_next(self):
         sequence=importlib.import_module('media_sequence')
