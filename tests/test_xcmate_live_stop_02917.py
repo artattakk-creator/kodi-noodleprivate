@@ -116,3 +116,7 @@ class StopTests(Fixture,unittest.TestCase):
             for _ in range(3):self.exit.poll(self.nav)
         self.assertFalse(self.builtins)
         self.exit.poll(self.nav);self.assertEqual(len(self.builtins),1)
+    def test_completed_live_exit_does_not_disable_later_media_or_foreign_player_service(self):
+        self.exit.request(self.nav);self.finish();self.playing=True;self.tag='foreign-video'
+        self.assertFalse(self.exit.poll(self.nav));self.assertEqual(self.exit.state()['phase'],'complete')
+        self.assertEqual(self.stops,1);self.assertEqual(len(self.builtins),1)

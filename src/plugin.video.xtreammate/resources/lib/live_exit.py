@@ -64,9 +64,12 @@ def _poll(navigator=None):
     if current and current['nonce']!=session['nonce']:
         if navigator is not None and getattr(navigator,'_exiting',False):navigator.close()
         marker.clearProperty(KEY);return False
-    if value['phase'] in ('complete','failed'):return True
     player=xbmc.Player()
     from playback_exit import identity,_same,stop_owned
+    if value['phase'] in ('complete','failed'):
+        # A past live Exit must not disable media_progress/playback_exit for
+        # a later movie or a foreign add-on. Keep the root-autoplay tombstone.
+        return not player.isPlayingVideo() or _same(identity(player),('live',session))
     token=identity(player)
     playing=player.isPlaying() if hasattr(player,'isPlaying') else player.isPlayingVideo()
     if playing and not _same(token,('live',session)):
