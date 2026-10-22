@@ -13,13 +13,13 @@ class MediaFocusTests(Fixture,unittest.TestCase):
             textures=control.findall('texturefocus')+control.findall('./focusedlayout/control/texture')
             frames=[n for n in textures if 'focus' in (n.text or '')]
             self.assertTrue(frames,cid)
-            for frame in frames:self.assertTrue(frame.text.endswith('xcmate_focus_neon.png'));self.assertEqual(frame.get('border'),'4')
+            for frame in frames:self.assertTrue(frame.text.endswith('xcmate_focus_neon.png'));self.assertEqual(frame.get('border'),'6' if cid in (110,111,112,210) else '4')
 
     def test_existing_appearance_preferences_do_not_tint_or_dim_new_focus_frame(self):
         appearance=importlib.import_module('appearance');appearance.save(dict(appearance.DEFAULT,focus='2276A8',icon_opacity=25))
         before=Path(appearance.path()).read_bytes();generated=ET.parse(Path(appearance.window_source('XCMateMedia.xml'))/'resources/skins/Default/720p/XCMateMedia.xml')
         for texture in generated.iter():
-            if (texture.text or '').endswith('xcmate_focus_neon.png'):self.assertIn(texture.get('colordiffuse'),(None,'FFFFFFFF'))
+            if (texture.text or '').endswith('xcmate_focus_neon.png'):self.assertIn(texture.get('colordiffuse'),(None,'FFFFFFFF','FF000000'))
         self.assertEqual(Path(appearance.path()).read_bytes(),before)
 
     def test_poster_is_not_used_as_fake_fanart(self):

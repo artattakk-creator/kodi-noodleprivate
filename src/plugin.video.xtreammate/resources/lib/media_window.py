@@ -46,6 +46,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._append_future=None;self._append_context=None;self._append_failed=False
         self._append_advance=None;self._grid_return=None
         self._playback_waiting=False;self._playback_seen=False
+        self._episode_refs={};self.next_episode=None;self._episode_last_pos=0;self._episode_next_key=None
         self._lock=threading.RLock();self._pool=ThreadPoolExecutor(max_workers=2)
         self._art=queue.Queue(maxsize=3)
         self._art_thread=threading.Thread(target=self._art_loop,daemon=True,name='XCMate-art')
@@ -73,13 +74,19 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             cat=self.getControl(120);search=self.getControl(400);row=self.getControl(first)
             cat.setNavigation(cat,row,cat,search)
             search.setNavigation(search,row,cat,search)
+        if self.mode=='episodes':
+            rows=self.getControl(330);search=self.getControl(400)
+            target=self.getControl(340) if 340 in valid else rows
+            rows.setNavigation(target,rows,rows,target)
+            search.setNavigation(search,target,search,search)
+            if 340 in valid:target.setNavigation(search,rows,rows,rows)
         self._nav_focus=control_id
         self._mode_focus[self.mode]=control_id
 
     def _valid_focus(self):
         candidates=([120,400,112,111,110] if self.mode=='landing' else
                     [200,210,400] if self.mode in ('grid','groups') else
-                    [300,400] if self.mode=='detail' else [330,400])
+                    [300,400] if self.mode=='detail' else [330,340,400] if self.mode=='episodes' else [330,400])
         result=[]
         for cid in candidates:
             if cid==110 and not self.rows:continue
@@ -88,6 +95,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             if cid==210 and not self.rows:continue
             if cid==300 and not self.actions:continue
             if cid==330 and not self.getControl(330).size():continue
+            if cid==340 and self.next_episode is None:continue
             control=self.getControl(cid)
             if control.isVisible() and xbmc.getCondVisibility('Control.IsEnabled({})'.format(cid)):result.append(cid)
         return result
@@ -184,6 +192,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._gui()
         self._poll_playback_return()
         if self._playback_waiting and self._playback_seen:return
+        if self.mode=='episodes':self._sync_episode_next()
         self._poll_append()
         if self._leaving:
             if time.monotonic()>=self._leave_after:self.close()
@@ -257,7 +266,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         self.getControl(114).setLabel(tr(32664) if self.rails[111] else tr(32665))
         self.getControl(115).setLabel(tr(32668) if self.rails[112] else tr(32669))
         for cid,gid,rows in ((112,610,self.rails[112]),(111,611,self.rails[111]),(110,612,self.rows)):
-            self.getControl(gid).setHeight(368 if rows else 48)
+            self.getControl(gid).setHeight(288 if rows else 48)
             self.getControl(cid).setVisible(bool(rows))
 
     def _page(self,mode,offset=0):
@@ -311,6 +320,8 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             target=self._restore_focus;self._restore_focus=None;self.setFocusId(target)
 
     def _show(self,mode):
+        self.getControl(340).setVisible(mode=='episodes' and self.next_episode is not None)
+        self.getControl(330).setPosition(44,190 if mode=='episodes' else 174)
         for cid in (630,631,632,633):self.getControl(cid).setVisible(mode=='episodes')
         self.getControl(631).setLabel(tr(32527));self.getControl(633).setLabel(tr(32525))
         self.getControl(104).setVisible(mode!='detail')
@@ -393,7 +404,8 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         old_position=self.getControl(300).getSelectedPosition()
         old_action=self.actions[old_position][1] if 0<=old_position<len(self.actions) else ''
         from media_art import local_art
-        from media_data import video_info,episode_records
+        from media_data import video_info
+        from media_sequence import records
         from metadata_views import trailer_id
         from media_state import read,key as state_key,progress_key,resume_position
         item,data=value;self.selected=item
@@ -423,7 +435,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             if position:
                 self.actions.insert(0,(tr(32514).format(int(position)//3600,int(position)//60%60,int(position)%60),'resume'))
         else:
-            self.episodes=episode_records(data,item['sid'])
+            self.episodes=records(data,self.portal['id'],item['sid'])
             self.actions=[(tr(32515),'seasons')] if self.episodes else []
             if not self.episodes and self.portal.get('type')=='stb': self.getControl(320).setText(tr(32775))
             saved_episodes=[(e,progress('episode',e['sid'],e['series_id'],e['season'])) for e in self.episodes]
@@ -432,11 +444,10 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
                 self.continue_episode=max(started,key=lambda pair:pair[1].get('updated',0))[0]
                 e=self.continue_episode
                 self.actions.append((tr(32516).format(e['season'],e['episode']),'continue_episode'))
-            watched=[i for i,(e,s) in enumerate(saved_episodes) if s.get('watched') and e['season']>0 and e['episode']>0]
-            unseen=[e for e,s in saved_episodes if not s.get('watched') and e['season']>0 and e['episode']>0]
-            if watched and unseen:
-                self.next_episode=unseen[0]
-                self.actions.append((tr(32517).format(self.next_episode['season'],self.next_episode['episode']),'next_episode'))
+            self.next_episode=self._next_for_series(state['progress'])
+            if self.next_episode:
+                e=self.next_episode
+                self.actions.append((tr(32517).format(e['season'],e['episode']),'next_episode'))
         if item.get('_unavailable'): self.actions=[]
         fav=state_key(self.portal['id'],self.kind,item['sid']) in state['favourites']
         if self._state_ready:
@@ -450,6 +461,16 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         self.setFocusId(old_focus if old_focus in (300,400) else 300)
 
     def _play(self,item,kind,resume=False):
+        if kind=='episode':
+            from media_sequence import match
+            episode=match(self.episodes,self.portal['id'],self.selected['sid'],item)
+            if episode:
+                self._episode_refs[(str(self.portal['id']),str(self.selected['sid']))]=episode
+                if self.mode=='episodes':
+                    self.season=episode['season']
+                    if self.season in self.seasons:self._season_cursor=self.seasons.index(self.season)
+                    rows=[e for e in self.episodes if e['season']==self.season]
+                    self._episode_cursor[self.season]=next(i for i,e in enumerate(rows) if e['sid']==episode['sid'])
         self._playback_waiting=True;self._playback_seen=False
         self._generation+=1
         if self._pending_future is not None:self._pending_future.cancel()
@@ -499,11 +520,14 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
                     self._detail_ready((self.selected,{'episodes':self._episode_raw()}))
                 elif action=='trailer': self.router._play_youtube_id(self.trailer)
                 elif action in ('continue_episode','next_episode'):
-                    self._play(self.continue_episode if action=='continue_episode' else self.next_episode,'episode',action=='continue_episode')
+                    if action=='next_episode':self._play_next()
+                    else:self._play(self.continue_episode,'episode',True)
                 elif action=='seasons':
                     self.mode='seasons';self._show('seasons')
                     self.seasons=sorted({e['season'] for e in self.episodes})
                     self._fill(330,self._season_rows());self.setFocusId(330)
+            elif controlId==340 and self.mode=='episodes':
+                self._sync_episode_next();self._play_next()
             elif controlId==330:
                 pos=self.getControl(330).getSelectedPosition()
                 if self.mode=='seasons' and 0<=pos<len(self.seasons):
@@ -549,7 +573,48 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             if isinstance(duration,(int,float)) and isinstance(position,(int,float)) and duration>0:
                 status+=' · {} %'.format(max(0,min(100,int(position/duration*100))))
             rows.append(dict(e,name='{} · {}{}'.format(e['episode'],e['name'],' · '+status if status else ''),_watched=bool(saved.get('watched'))))
-        self._fill(330,rows);self.getControl(330).selectItem(self._episode_cursor.get(self.season,0));self.setFocusId(330)
+        self._fill(330,rows);self.getControl(330).selectItem(self._episode_cursor.get(self.season,0))
+        self._sync_episode_next();self.setFocusId(330)
+
+    def _next_for_series(self,snapshot=None):
+        from media_sequence import ordered,successor
+        from media_state import progress_key
+        pid,series=str(self.portal['id']),str(self.selected['sid'])
+        rows=ordered(self.episodes,pid,series)
+        reference=self._episode_refs.get((pid,series))
+        if reference is None and rows:
+            # Real playback payloads carry position/duration; manual Seen marks
+            # alone are never mistaken for a last-played episode.
+            saved=[(e,(snapshot or {}).get(progress_key(pid,'episode',e['sid'],series,e['season']),{})) for e in rows]
+            played=[(e,p) for e,p in saved if isinstance(p.get('position'),(int,float)) and p['position']>=60
+                    and str(p.get('pid',''))==pid and str(p.get('series_id',''))==series]
+            reference=max(played,key=lambda pair:pair[1].get('updated',0))[0] if played else rows[0]
+        return successor(self.episodes,pid,series,reference)
+
+    def _sync_episode_next(self):
+        if self.mode!='episodes' or self._playback_waiting:return
+        pos=self.getControl(330).getSelectedPosition()
+        key=(str(self.portal['id']),str(self.selected['sid']),id(self.episodes),self.season,pos)
+        if key==self._episode_next_key:return
+        self._episode_next_key=key
+        if 0<=pos<len(self.visible_episodes):
+            self._episode_last_pos=pos
+            self._episode_cursor[self.season]=pos
+            self._episode_refs[(str(self.portal['id']),str(self.selected['sid']))]=self.visible_episodes[pos]
+        self.next_episode=self._next_for_series()
+        button=self.getControl(340);button.setVisible(self.next_episode is not None)
+        if self.next_episode:
+            e=self.next_episode;button.setLabel(tr(32517).format(e['season'],e['episode']))
+        if self.getFocusId()==340 and self.next_episode is None:self.setFocusId(330)
+
+    def _play_next(self):
+        if self._playback_waiting or self.selected.get('_unavailable'):return
+        # Revalidate against the current local series, never trust a stale button.
+        from media_state import read
+        try:snapshot=read()['progress']
+        except (ValueError,OSError,sqlite3.Error):snapshot={}
+        target=self._next_for_series(snapshot)
+        if target is not None:self._play(target,'episode')
 
     def onAction(self,action):
         if self._leaving:
@@ -576,9 +641,11 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
                 if stop_owned(pid=self.portal['id']): return
                 self._generation+=1
                 if self.mode=='episodes':
-                    self.mode='seasons';self._fill(330,self._season_rows())
+                    self.mode='seasons';self._show('seasons');self._fill(330,self._season_rows())
                     self.getControl(330).selectItem(self._season_cursor);self.setFocusId(330);return
-                if self.mode=='seasons': self.mode='detail';self._show('detail');self.setFocusId(300);return
+                if self.mode=='seasons':
+                    self.mode='detail';self._show('detail')
+                    self._detail_ready((self.selected,{'episodes':self._episode_raw()}));self.setFocusId(300);return
                 if self.mode=='detail' and self._grid_return:
                     mode,self.category,self.offset,self.rows,self.total,pos,self._cols=self._grid_return
                     self._grid_return=None;self.mode=mode
@@ -635,6 +702,14 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
                 return
             focus=self.getFocusId()
             previous_focus=getattr(self,'_action_focus',focus)
+            if self.mode=='episodes':
+                previous_pos=self._episode_last_pos
+                self._sync_episode_next()
+                if key==2 and previous_focus==330 and self.next_episode:
+                    self.setFocusId(340);return
+                if key==3 and previous_focus==330 and previous_pos==0 and self.getControl(330).getSelectedPosition()==0:
+                    self.setFocusId(340 if self.next_episode else 400);return
+                if key==4 and focus==400:self.setFocusId(340 if self.next_episode else 330);return
             if self.mode in ('grid','groups') and previous_focus==210:
                 panel=self.getControl(210);pos=panel.getSelectedPosition()
                 if key==4:
