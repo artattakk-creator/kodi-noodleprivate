@@ -145,10 +145,10 @@ test_restart_offline_previous_index_and_immediate_disabled_filter (test_xcmate_0
 test_same_stream_in_two_groups_counted_once_globally_but_available_in_each (test_xcmate_028_streaming.IndexTests.test_same_stream_in_two_groups_counted_once_globally_but_available_in_each) ... ok
 test_streaming_group_publishes_only_after_complete_json (test_xcmate_028_streaming.IndexTests.test_streaming_group_publishes_only_after_complete_json) ... ok
 test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update (test_xcmate_028_streaming.LargeGuideTests.test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update) ... 
-LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 21.509}
+LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 22.326}
 ok
 test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib (test_xcmate_028_streaming.LargeHTTPTests.test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib) ... 
-LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 36.861, "peak_rss_kib": 58580}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 37.148, "peak_rss_kib": 60468}]
+LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 37.979, "peak_rss_kib": 58620}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 38.007, "peak_rss_kib": 58620}]
 ok
 test_cache_envelope_and_trailing_data_validated (test_xcmate_028_streaming.ParserTests.test_cache_envelope_and_trailing_data_validated) ... ok
 test_chunked_http_gzip_and_truncated_compression (test_xcmate_028_streaming.ParserTests.test_chunked_http_gzip_and_truncated_compression) ... ok
@@ -428,12 +428,35 @@ test_stop_during_warm_tune_cancels_pending_nonce_and_either_verified_item (test_
 test_stop_timeout_is_bounded_no_retry_loop_no_false_home (test_xcmate_live_stop_02917.StopTests.test_stop_timeout_is_bounded_no_retry_loop_no_false_home) ... ok
 test_stopped_native_player_uses_last_verified_item_and_returns_home (test_xcmate_live_stop_02917.StopTests.test_stopped_native_player_uses_last_verified_item_and_returns_home) ... ok
 test_wrong_portal_or_forged_announcement_never_creates_intent (test_xcmate_live_stop_02917.StopTests.test_wrong_portal_or_forged_announcement_never_creates_intent) ... ok
+test_after_episode_list_back_detail_next_uses_last_selected_not_first_unseen (test_xcmate_manual_next_02919.ManualNextTests.test_after_episode_list_back_detail_next_uses_last_selected_not_first_unseen) ... ok
+test_ambiguous_ids_or_positions_invalid_numbers_and_specials_are_not_next (test_xcmate_manual_next_02919.ManualNextTests.test_ambiguous_ids_or_positions_invalid_numbers_and_specials_are_not_next) ... ok
+test_cross_portal_series_and_stale_episode_reference_fail_closed (test_xcmate_manual_next_02919.ManualNextTests.test_cross_portal_series_and_stale_episode_reference_fail_closed) ... ok
+test_empty_single_and_missing_successor_never_invent_episode (test_xcmate_manual_next_02919.ManualNextTests.test_empty_single_and_missing_successor_never_invent_episode) ... ok
+test_explicit_foreign_provider_identities_rejected_before_binding (test_xcmate_manual_next_02919.ManualNextTests.test_explicit_foreign_provider_identities_rejected_before_binding) ... ok
+test_explicit_next_click_starts_exactly_one_target_and_not_on_owner_ticks (test_xcmate_manual_next_02919.ManualNextTests.test_explicit_next_click_starts_exactly_one_target_and_not_on_owner_ticks) ... ok
+test_invalid_provider_numbers_remain_excluded_after_window_reinit (test_xcmate_manual_next_02919.ManualNextTests.test_invalid_provider_numbers_remain_excluded_after_window_reinit) ... ok
+test_latest_real_progress_selects_anchor_after_new_window_not_manual_seen_time (test_xcmate_manual_next_02919.ManualNextTests.test_latest_real_progress_selects_anchor_after_new_window_not_manual_seen_time) ... ok
+test_movies_and_flat_series_have_no_episode_next_or_button (test_xcmate_manual_next_02919.ManualNextTests.test_movies_and_flat_series_have_no_episode_next_or_button) ... ok
+test_natural_end_in_detail_preserves_anchor_then_manual_next (test_xcmate_manual_next_02919.ManualNextTests.test_natural_end_in_detail_preserves_anchor_then_manual_next) ... ok
+test_next_crosses_season_and_returns_to_correct_episode_without_autoplay (test_xcmate_manual_next_02919.ManualNextTests.test_next_crosses_season_and_returns_to_correct_episode_without_autoplay) ... ok
+test_next_ignores_all_seen_all_unseen_and_mixed_seen (test_xcmate_manual_next_02919.ManualNextTests.test_next_ignores_all_seen_all_unseen_and_mixed_seen) ... ok
+test_numeric_sort_gaps_season_transition_and_real_end (test_xcmate_manual_next_02919.ManualNextTests.test_numeric_sort_gaps_season_transition_and_real_end) ... ok
+test_resume_favourites_and_eyes_unchanged_by_manual_selection_and_back (test_xcmate_manual_next_02919.ManualNextTests.test_resume_favourites_and_eyes_unchanged_by_manual_selection_and_back) ... ok
+test_selected_middle_episode_controls_button_without_provider_requests (test_xcmate_manual_next_02919.ManualNextTests.test_selected_middle_episode_controls_button_without_provider_requests) ... ok
+test_series_end_no_button_no_detail_action_and_no_replay (test_xcmate_manual_next_02919.ManualNextTests.test_series_end_no_button_no_detail_action_and_no_replay) ... ok
+test_stale_button_cannot_play_removed_or_foreign_target (test_xcmate_manual_next_02919.ManualNextTests.test_stale_button_cannot_play_removed_or_foreign_target) ... ok
+test_stationary_owner_polls_do_not_resort_or_query_episodes_repeatedly (test_xcmate_manual_next_02919.ManualNextTests.test_stationary_owner_polls_do_not_resort_or_query_episodes_repeatedly) ... ok
+test_zero_watched_has_manual_next_and_read_only_navigation_never_starts (test_xcmate_manual_next_02919.ManualNextTests.test_zero_watched_has_manual_next_and_read_only_navigation_never_starts) ... ok
 test_asynchronous_fanart_refresh_updates_current_detail_without_reopening (test_xcmate_media_focus_02914.MediaFocusTests.test_asynchronous_fanart_refresh_updates_current_detail_without_reopening) ... ok
 test_existing_appearance_preferences_do_not_tint_or_dim_new_focus_frame (test_xcmate_media_focus_02914.MediaFocusTests.test_existing_appearance_preferences_do_not_tint_or_dim_new_focus_frame) ... ok
 test_missing_fanart_for_new_title_clears_previous_title_background (test_xcmate_media_focus_02914.MediaFocusTests.test_missing_fanart_for_new_title_clears_previous_title_background) ... ok
 test_neon_frame_is_used_for_every_interactive_layout_and_nine_slice_border (test_xcmate_media_focus_02914.MediaFocusTests.test_neon_frame_is_used_for_every_interactive_layout_and_nine_slice_border) ... ok
 test_nested_detail_fields_preserve_real_fanart_and_ignore_malformed_addresses (test_xcmate_media_focus_02914.MediaFocusTests.test_nested_detail_fields_preserve_real_fanart_and_ignore_malformed_addresses) ... ok
 test_poster_is_not_used_as_fake_fanart (test_xcmate_media_focus_02914.MediaFocusTests.test_poster_is_not_used_as_fake_fanart) ... ok
+test_compact_rows_fit_scroll_viewport_and_keep_category_column_contract (test_xcmate_media_layout_02919.CompactPosterTests.test_compact_rows_fit_scroll_viewport_and_keep_category_column_contract) ... ok
+test_dual_contrast_native_focus_frame_surrounds_poster_and_does_not_cover_it (test_xcmate_media_layout_02919.CompactPosterTests.test_dual_contrast_native_focus_frame_surrounds_poster_and_does_not_cover_it) ... ok
+test_horizontal_ir_and_back_keep_selected_cover_in_every_rail_and_media_kind (test_xcmate_media_layout_02919.CompactPosterTests.test_horizontal_ir_and_back_keep_selected_cover_in_every_rail_and_media_kind) ... ok
+test_movies_and_series_keep_title_font_size_independent_of_smaller_poster (test_xcmate_media_layout_02919.CompactPosterTests.test_movies_and_series_keep_title_font_size_independent_of_smaller_poster) ... ok
 test_budget_or_disk_full_keeps_existing_images_and_does_not_evict (test_xcmate_media_persistence_041_044.PersistenceTests.test_budget_or_disk_full_keeps_existing_images_and_does_not_evict) ... ok
 test_corrupt_file_is_not_used_and_legacy_valid_files_are_preserved (test_xcmate_media_persistence_041_044.PersistenceTests.test_corrupt_file_is_not_used_and_legacy_valid_files_are_preserved) ... ok
 test_durable_queue_prioritizes_visible_and_limits_retries_after_restart (test_xcmate_media_persistence_041_044.PersistenceTests.test_durable_queue_prioritizes_visible_and_limits_retries_after_restart) ... ok
@@ -663,11 +686,11 @@ test_widget_route_and_no_cached_credentials_in_link (test_xtreammate_widgets.Wid
 test_youtube_whitelist (test_xtreammate_widgets.WidgetsTest.test_youtube_whitelist) ... ok
 
 ----------------------------------------------------------------------
-Ran 659 tests in 132.084s
+Ran 682 tests in 136.865s
 
 OK
 
-MODEL_COLD_WINDOW_MS 14.901
+MODEL_COLD_WINDOW_MS 5.021
 
 SELECTIVE_XMLTV {"bytes": 400, "parsed": 2, "stored": 1}
 
