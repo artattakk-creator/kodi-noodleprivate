@@ -2248,3 +2248,7 @@ msgstr "Loading more titles …"
 msgctxt "#33202"
 msgid "Remove from Continue watching"
 msgstr "Remove from Continue watching"
+
+msgctxt "#33203"
+msgid "{0} · Titles {1}–{2} of {3}"
+msgstr "{0} · Titles {1}–{2} of {3}"

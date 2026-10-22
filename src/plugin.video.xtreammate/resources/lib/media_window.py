@@ -692,7 +692,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
     def _grid_status(self):
         name=next((g['title'] for g in self.groups if g['cid']==self.category),tr(32499))
         self._page_status=tr(33200,name,self.offset+len(self.rows),self.total)
-        if self.offset:self._page_status+=' · '+str(self.offset+1)+'–'+str(self.offset+len(self.rows))
+        if self.offset:self._page_status=tr(33203,name,self.offset+1,self.offset+len(self.rows),self.total)
         self.getControl(102).setLabel(self._page_status)
 
     def _prefetch(self,direction=1,force=False,advance=None):
