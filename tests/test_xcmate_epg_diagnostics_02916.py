@@ -83,3 +83,16 @@ class DiagnosticsTests(Fixture,unittest.TestCase):
         for _ in range(10):
             previous=w.cursor;w._step(2);self.settle(w);self.assertGreater(w.cursor,previous)
         self.assertGreater(w.cursor,self.origin+3*3600)
+    def test_real_short_only_sender_has_no_invented_future_and_can_navigate_beyond_it(self):
+        self.index.import_group('p','live','a',[dict(stream_id='1',category_id='a',name='Short only',epg_channel_id='')])
+        now=int(time.time());origin=now//1800*1800
+        self.client._get_json=mock.Mock(return_value=dict(epg_listings=[dict(title='Cached now',start_timestamp=origin,stop_timestamp=origin+1800)]))
+        w=self.window();w.cursor=now;w.origin=origin;w._load();self.settle(w)
+        self.assertEqual(w.rows[0]['mapping'],'SHORT_EPG');self.assertTrue(w.rows[0]['events'])
+        text=self.diag.inspect(self.portal,w.rows[0],w.origin,w.cursor,w.getFocusId(),self.client)
+        self.assertIn('Programme: 0',text);self.assertIn('SHORT_EPG',text)
+        for _ in range(20):
+            before=w.cursor;w._step(2);self.settle(w);self.assertGreater(w.cursor,before)
+        self.assertFalse(w.rows[0]['events']);self.assertGreaterEqual(w.getFocusId(),1000)
+        self.assertTrue(all(call.kwargs.get('cached_only') for call in self.client._get_json.call_args_list))
+        self.assertFalse(self.builtins)

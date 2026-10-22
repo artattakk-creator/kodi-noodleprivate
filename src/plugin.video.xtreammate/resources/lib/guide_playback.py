@@ -4,6 +4,12 @@ import xbmc,xbmcgui
 from localization import tr
 
 
+def _mark(stage):
+    # Fixed stages only, no sender IDs, paths, stream URLs or exception text.
+    try:xbmc.log('[XCMate][GUIDE_HANDOFF] stage='+stage,xbmc.LOGINFO)
+    except (AttributeError,RuntimeError):pass
+
+
 def player_state():
     try:
         player=xbmc.Player()
@@ -13,6 +19,7 @@ def player_state():
 
 
 def request(portal,channel,entry_player):
+    _mark('QUEUED')
     return dict(pid=str(portal['id']),sid=str(channel['sid']),player=entry_player,
                 session=xbmcgui.Window(10000).getProperty('XtreamMate.LiveSession'))
 
@@ -44,6 +51,7 @@ def _handoff(router,portal,intent):
     url=router.url(action=action,pid=intent['pid'],sid=channel['sid'],name=channel['name'])
     if player_state()!=intent['player']:return False
     if xbmcgui.Window(10000).getProperty('XtreamMate.LiveSession')!=intent['session']:return False
+    _mark('RESOLVER_REQUEST')
     xbmc.executebuiltin('PlayMedia('+url+')')
     return True
 
@@ -54,5 +62,6 @@ def handoff(router,portal,intent):
     except Exception:
         # Bounded read failures must not escape into another playback attempt.
         started=False
+    _mark('DISPATCHED' if started else 'SKIPPED')
     if not started:xbmcgui.Dialog().notification('XCMate',tr(33122))
     return started
