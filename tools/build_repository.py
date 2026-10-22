@@ -125,6 +125,12 @@ def main():
                 direct = ROOT / "repository-programme" / dest.name
                 direct.parent.mkdir(parents=True, exist_ok=True)
                 direct.write_bytes(dest.read_bytes())
+    # Third-party music release; pinned, validated and packaged on build hosts only.
+    # A download or hash error aborts the build instead of publishing a broken index.
+    from import_mp3_streams import add_to_repository
+    entries.append(add_to_repository(ROOT))
+    from import_kodi_omega_selected import import_selected
+    entries.extend(import_selected(ROOT))
     idx='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<addons>\n'+"\n".join(entries)+"\n</addons>\n"
     ET.fromstring(idx)
     (ROOT/"addons.xml").write_text(idx,encoding="utf-8")

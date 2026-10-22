@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="repository.gsmedia" name="GS Media Kodi Repository" version="1.7.0" provider-name="GS Media">
+<addon id="repository.gsmedia" name="GS Media Kodi Repository" version="1.8.0" provider-name="GS Media">
   <extension point="xbmc.addon.repository">
     <dir>
       <info compressed="false">https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/addons.xml</info>
@@ -56,13 +56,21 @@
       <datadir zip="true">https://raw.githubusercontent.com/mr-evil1/kodi-media-repo/main/</datadir>
       <hashes>false</hashes>
     </dir>
+    <!-- jurialmunkey Omega: TMDb Helper and its matching module dependencies.
+         Kodi reads upstream packages through GS Media; no second repository add-on. -->
+    <dir minversion="20.9.1">
+      <info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/omega/zips/addons.xml</info>
+      <checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/omega/zips/addons.xml.md5</checksum>
+      <datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/omega/zips/</datadir>
+      <hashes>false</hashes>
+    </dir>
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary lang="de_DE">Zentrales GS Media Kodi Repository (einzige Update-Quelle fuer Noodle Private)</summary>
-    <description lang="de_DE">Zentraler GS Media Katalog fuer XtreamMate und Noodle Private, Cumination, SMR, xVAULT, Titan BINGIE MOD, EZ Maintenance+ und Kodi Media von mr-evil1 (einschliesslich TiViMate Kodi).</description>
+    <description lang="de_DE">Zentraler GS Media Katalog fuer XtreamMate und Noodle Private, Cumination, SMR, xVAULT, Titan BINGIE MOD, EZ Maintenance+, TMDb Helper (jurialmunkey), Pluto TV, SHOUTcast und Kodi Media von mr-evil1 (einschliesslich TiViMate Kodi).</description>
     <summary lang="en_GB">GS Media's Kodi add-on repository</summary>
     <description lang="en_GB">One GS Media catalog for XtreamMate and Noodle Private, Cumination, SMR, xVAULT, Titan BINGIE MOD, EZ Maintenance+ and mr-evil1's Kodi Media add-ons including TiViMate Kodi.</description>
-    <disclaimer lang="de_DE">Eigenständiges Drittanbieter-Repository. Externe Projekte (Cumination, SMR, xVAULT, BINGIE MOD, EZ Maintenance+, mr-evil1 Kodi Media) werden unveraendert von ihren Urhebern gepflegt; xVAULT-Support nur ueber das offizielle Repository. Nicht mit Team Kodi verbunden.</disclaimer>
+    <disclaimer lang="de_DE">Eigenständiges Drittanbieter-Repository. Externe Projekte (Cumination, SMR, xVAULT, BINGIE MOD, EZ Maintenance+, jurialmunkey, mr-evil1 Kodi Media) werden unveraendert von ihren Urhebern gepflegt; xVAULT-Support nur ueber das offizielle Repository. Nicht mit Team Kodi verbunden.</disclaimer>
     <platform>all</platform>
     <license>MIT</license>
     <assets><icon>icon.png</icon><fanart>fanart.png</fanart></assets>
