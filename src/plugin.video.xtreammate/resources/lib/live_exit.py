@@ -108,7 +108,9 @@ def _poll(navigator=None):
     if getattr(xbmc.Monitor(),'abortRequested',lambda:False)():return True
     value['phase']='complete';_save(value)
     url='plugin://plugin.video.xtreammate/?'+urlencode(dict(action='xcmate_home',pid=session['pid']))
-    xbmc.executebuiltin('ActivateWindow(Videos,'+url+',return)')
+    if xbmc.getCondVisibility('Window.IsActive(videos)'):
+        xbmc.executebuiltin('Container.Update('+url+',replace)')
+    else:xbmc.executebuiltin('ActivateWindow(Videos,'+url+',return)')
     _trace('HOME_REQUESTED',session);return True
 
 

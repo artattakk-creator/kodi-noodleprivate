@@ -130,3 +130,9 @@ class StopTests(Fixture,unittest.TestCase):
             if completes:self.tag=self.properties[self.exit.SESSION]
             self.finish();self.assertEqual(self.exit.state()['phase'],'complete')
         self.assertEqual(self.stops,2)
+    def test_active_video_directory_is_replaced_instead_of_reactivating_play_route(self):
+        self.exit.request(self.nav);self.ready();self.exit.poll(self.nav)
+        with mock.patch.object(sys.modules['xbmc'],'getCondVisibility',side_effect=lambda c:c=='Window.IsActive(videos)'):
+            self.exit.poll(self.nav)
+        self.assertTrue(self.builtins[-1].startswith('Container.Update('));self.assertTrue(self.builtins[-1].endswith(',replace)'))
+        self.assertIn('action=xcmate_home',self.builtins[-1])
