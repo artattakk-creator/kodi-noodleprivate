@@ -114,6 +114,11 @@ class GridTests(Fixture,unittest.TestCase):
         self.settle(w);self.assertFalse(w._loading);self.assertEqual(w._selected()['title'],'Short 29')
 
 
+    def test_m3u_watch_uses_existing_tagged_source_resolver(self):
+        self.portal['type']='m3u';w=self.window();self.dialog.select.return_value=1
+        w.onClick(w.getFocusId());self.assertIn('action=source_play',self.builtins[-1]);self.assertIn('sid=1',self.builtins[-1])
+
+
     def test_bookmark_contains_ids_facts_and_no_source_urls(self):
         bookmarks=importlib.import_module('guide_bookmarks')
         event=dict(start=self.origin,stop=self.origin+1800,title='A',url='SECRET')

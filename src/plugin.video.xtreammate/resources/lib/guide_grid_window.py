@@ -138,7 +138,8 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         elif choice==1:
             # IDs come from the selected active Reader page, never an event URL.
             sid=channel['sid'];self.close()
-            xbmc.executebuiltin('PlayMedia('+self.router.url(action='play_live',pid=self.portal['id'],sid=sid,name=channel['name'])+')')
+            action='play_live' if self.portal.get('type')=='xtream' else 'source_play'
+            xbmc.executebuiltin('PlayMedia('+self.router.url(action=action,pid=self.portal['id'],sid=sid,name=channel['name'])+')')
         elif 0<=choice<len(choices) and choices[choice]==tr(33118):
             from guide_bookmarks import entries
             entries=entries(self.portal['id'])
