@@ -1,5 +1,9 @@
 # Android-Abnahme 0.1.29.16 – noch NICHT ausgeführt
 
+[Test-ZIP](https://github.com/artattakk-creator/kodi-noodleprivate/raw/refs/heads/fix/xcmate-02916-epg-handoff/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.16.zip) · [SHA256-Datei](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.16.zip.sha256)
+
+SHA256: `51ff97aa6771c73921b9fa735cafe88de57302633a3bdd253c501601c3ae82a3`
+
 Zielgerät: Android 13 / RK3528 ARM32 / Kodi 21.2 Omega / Titan BINGIE MOD; anschließend nach Möglichkeit Estuary. Produktiver Rückfallstand: Android-funktionierende 0.1.29.11. Keine automatische Veröffentlichung oder Freigabe durch Hosttests.
 
 1. **Vorbereitung:** Kodi schließen, bestehendes Profil bei Bedarf privat sichern, Test-ZIP und SHA256 vom Draft-Branch laden. Installationsberechtigung für unbekannte Quellen nur wie bisher. ZIP mit einem SHA256-Werkzeug prüfen. In Kodi „Aus ZIP-Datei installieren“ → `plugin.video.xtreammate-0.1.29.16.zip`. Version 0.1.29.16 bestätigen, Kodi neu starten. Kein Deinstallieren, Cachelöschen, Neuimport oder Datenreset. Prüfen, dass kein anderer Testkandidat .14/.15 aktiv ist. Dies ist ein manuelles Testupdate, kein reguläres OTA-Angebot.
