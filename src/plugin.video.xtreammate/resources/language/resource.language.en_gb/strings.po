@@ -2236,3 +2236,15 @@ msgstr "Playback was not started. Try Live TV from the channel list."
 msgctxt "#33121"
 msgid "Channel diagnostics: long-term EPG"
 msgstr "Channel diagnostics: long-term EPG"
+
+msgctxt "#33200"
+msgid "{0} · {1} of {2} titles loaded"
+msgstr "{0} · {1} of {2} titles loaded"
+
+msgctxt "#33201"
+msgid "Loading more titles …"
+msgstr "Loading more titles …"
+
+msgctxt "#33202"
+msgid "Remove from Continue watching"
+msgstr "Remove from Continue watching"

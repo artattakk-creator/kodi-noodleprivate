@@ -2236,3 +2236,15 @@ msgstr "Wiedergabe nicht gestartet. Live-TV erneut über die Senderliste öffnen
 msgctxt "#33121"
 msgid "Channel diagnostics: long-term EPG"
 msgstr "Senderdiagnose: Langzeit-EPG"
+
+msgctxt "#33200"
+msgid "{0} · {1} of {2} titles loaded"
+msgstr "{0} · {1} von {2} Titeln geladen"
+
+msgctxt "#33201"
+msgid "Loading more titles …"
+msgstr "Weitere Titel werden geladen …"
+
+msgctxt "#33202"
+msgid "Remove from Continue watching"
+msgstr "Aus Weiter ansehen entfernen"
