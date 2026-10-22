@@ -145,10 +145,10 @@ test_restart_offline_previous_index_and_immediate_disabled_filter (test_xcmate_0
 test_same_stream_in_two_groups_counted_once_globally_but_available_in_each (test_xcmate_028_streaming.IndexTests.test_same_stream_in_two_groups_counted_once_globally_but_available_in_each) ... ok
 test_streaming_group_publishes_only_after_complete_json (test_xcmate_028_streaming.IndexTests.test_streaming_group_publishes_only_after_complete_json) ... ok
 test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update (test_xcmate_028_streaming.LargeGuideTests.test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update) ... 
-LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 21.737}
+LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 23.861}
 ok
 test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib (test_xcmate_028_streaming.LargeHTTPTests.test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib) ... 
-LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 37.504, "peak_rss_kib": 58000}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 37.601, "peak_rss_kib": 58000}]
+LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 28.632, "peak_rss_kib": 58164}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 28.693, "peak_rss_kib": 58164}]
 ok
 test_cache_envelope_and_trailing_data_validated (test_xcmate_028_streaming.ParserTests.test_cache_envelope_and_trailing_data_validated) ... ok
 test_chunked_http_gzip_and_truncated_compression (test_xcmate_028_streaming.ParserTests.test_chunked_http_gzip_and_truncated_compression) ... ok
@@ -407,6 +407,27 @@ test_kodi_header_suffix_is_ignored_without_logging (test_xcmate_live_session_rec
 test_no_network_and_local_nonsecret_diagnostics (test_xcmate_live_session_recovery.RecoveryTests.test_no_network_and_local_nonsecret_diagnostics) ... ok
 test_other_kodi_video_or_plugin_never_activates (test_xcmate_live_session_recovery.RecoveryTests.test_other_kodi_video_or_plugin_never_activates) ... ok
 test_provider_credentials_must_match_not_just_host (test_xcmate_live_session_recovery.RecoveryTests.test_provider_credentials_must_match_not_just_host) ... ok
+test_active_video_directory_is_replaced_instead_of_reactivating_play_route (test_xcmate_live_stop_02917.StopTests.test_active_video_directory_is_replaced_instead_of_reactivating_play_route) ... ok
+test_async_stop_holds_input_and_recovery_until_video_really_ends (test_xcmate_live_stop_02917.StopTests.test_async_stop_holds_input_and_recovery_until_video_really_ends) ... ok
+test_changed_foreign_item_between_request_and_tick_is_never_stopped_or_navigated (test_xcmate_live_stop_02917.StopTests.test_changed_foreign_item_between_request_and_tick_is_never_stopped_or_navigated) ... ok
+test_completed_live_exit_does_not_disable_later_media_or_foreign_player_service (test_xcmate_live_stop_02917.StopTests.test_completed_live_exit_does_not_disable_later_media_or_foreign_player_service) ... ok
+test_controls_stop_long_back_hidden_back_and_native_stop_only_request (test_xcmate_live_stop_02917.StopTests.test_controls_stop_long_back_hidden_back_and_native_stop_only_request) ... ok
+test_disappearing_infotag_cannot_terminate_service_or_stop_foreign (test_xcmate_live_stop_02917.StopTests.test_disappearing_infotag_cannot_terminate_service_or_stop_foreign) ... ok
+test_double_stop_ten_sessions_do_not_block_new_conscious_selection (test_xcmate_live_stop_02917.StopTests.test_double_stop_ten_sessions_do_not_block_new_conscious_selection) ... ok
+test_exit_blocks_root_autoplay_until_explicit_selection (test_xcmate_live_stop_02917.StopTests.test_exit_blocks_root_autoplay_until_explicit_selection) ... ok
+test_exit_latch_blocks_late_ok_back_and_zap (test_xcmate_live_stop_02917.StopTests.test_exit_latch_blocks_late_ok_back_and_zap) ... ok
+test_future_new_session_properties_are_not_erased (test_xcmate_live_stop_02917.StopTests.test_future_new_session_properties_are_not_erased) ... ok
+test_home_start_is_action_not_reloadable_directory (test_xcmate_live_stop_02917.StopTests.test_home_start_is_action_not_reloadable_directory) ... ok
+test_legacy_start_folder_anchors_home_before_play_and_new_action_keeps_home (test_xcmate_live_stop_02917.StopTests.test_legacy_start_folder_anchors_home_before_play_and_new_action_keeps_home) ... ok
+test_modal_is_not_forcibly_closed_or_navigated_away (test_xcmate_live_stop_02917.StopTests.test_modal_is_not_forcibly_closed_or_navigated_away) ... ok
+test_new_explicit_session_cancels_old_exit_without_clearing_new_marker (test_xcmate_live_stop_02917.StopTests.test_new_explicit_session_cancels_old_exit_without_clearing_new_marker) ... ok
+test_preplay_properties_are_nonce_scoped_and_cancel_is_retained (test_xcmate_live_stop_02917.StopTests.test_preplay_properties_are_nonce_scoped_and_cancel_is_retained) ... ok
+test_request_is_callback_only_and_many_ticks_stop_and_return_exactly_once (test_xcmate_live_stop_02917.StopTests.test_request_is_callback_only_and_many_ticks_stop_and_return_exactly_once) ... ok
+test_service_gate_is_before_playback_exit_preplay_and_recovery_but_after_background_jobs (test_xcmate_live_stop_02917.StopTests.test_service_gate_is_before_playback_exit_preplay_and_recovery_but_after_background_jobs) ... ok
+test_stop_during_warm_tune_cancels_pending_nonce_and_either_verified_item (test_xcmate_live_stop_02917.StopTests.test_stop_during_warm_tune_cancels_pending_nonce_and_either_verified_item) ... ok
+test_stop_timeout_is_bounded_no_retry_loop_no_false_home (test_xcmate_live_stop_02917.StopTests.test_stop_timeout_is_bounded_no_retry_loop_no_false_home) ... ok
+test_stopped_native_player_uses_last_verified_item_and_returns_home (test_xcmate_live_stop_02917.StopTests.test_stopped_native_player_uses_last_verified_item_and_returns_home) ... ok
+test_wrong_portal_or_forged_announcement_never_creates_intent (test_xcmate_live_stop_02917.StopTests.test_wrong_portal_or_forged_announcement_never_creates_intent) ... ok
 test_budget_or_disk_full_keeps_existing_images_and_does_not_evict (test_xcmate_media_persistence_041_044.PersistenceTests.test_budget_or_disk_full_keeps_existing_images_and_does_not_evict) ... ok
 test_corrupt_file_is_not_used_and_legacy_valid_files_are_preserved (test_xcmate_media_persistence_041_044.PersistenceTests.test_corrupt_file_is_not_used_and_legacy_valid_files_are_preserved) ... ok
 test_durable_queue_prioritizes_visible_and_limits_retries_after_restart (test_xcmate_media_persistence_041_044.PersistenceTests.test_durable_queue_prioritizes_visible_and_limits_retries_after_restart) ... ok
@@ -606,11 +627,11 @@ test_widget_route_and_no_cached_credentials_in_link (test_xtreammate_widgets.Wid
 test_youtube_whitelist (test_xtreammate_widgets.WidgetsTest.test_youtube_whitelist) ... ok
 
 ----------------------------------------------------------------------
-Ran 602 tests in 131.960s
+Ran 623 tests in 110.620s
 
 OK
 
-MODEL_COLD_WINDOW_MS 5.309
+MODEL_COLD_WINDOW_MS 4.710
 
 SELECTIVE_XMLTV {"bytes": 400, "parsed": 2, "stored": 1}
 
