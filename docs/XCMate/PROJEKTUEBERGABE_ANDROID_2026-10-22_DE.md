@@ -7,20 +7,20 @@
 - Projekt: **GS Media XCMate**, Kodi-IPTV-Add-on `plugin.video.xtreammate`.
 - Repository: https://github.com/artattakk-creator/kodi-noodleprivate
 - Testgerät: Android TV 13, Rockchip RK3528/ARM32, Kodi 21.2 Omega, Titan BINGIE MOD 2.2.3, IR-Fernbedienung.
-- **Letzte real bestätigte stabile Version: 0.1.29.8**. Die getestete Film-/Seriennavigation ist vor Regressionen zu schützen. Issue [#73](https://github.com/artattakk-creator/kodi-noodleprivate/issues/73) abgeschlossen: 20/20 Öffnen-Schließen, 6/6 Doppel-Zurück, Film- und Episodenrückkehr PASS.
+- **Letzter auf Android funktional getesteter Stand: 0.1.29.11 (mit offenen SQLite-/Import-/Codec-Befunden); 0.1.29.8 ist die ältere bestätigte stabile Rückfallbasis.** Die getestete Film-/Seriennavigation ist vor Regressionen zu schützen. Issue [#73](https://github.com/artattakk-creator/kodi-noodleprivate/issues/73) abgeschlossen: 20/20 Öffnen-Schließen, 6/6 Doppel-Zurück, Film- und Episodenrückkehr PASS.
 - **Versionsgrenze strikt unter 0.1.30.** Alte ZIPs niemals überschreiben. Keine eigenmächtigen Merges, Releases, Datenbank-Löschungen, Profil-Migrationen, globalen Keymap-Änderungen oder Issue-Schließungen ohne reale Abnahme.
 - Vor dem ersten Android-Test Profilbackup, vorhandene Portale, EPG-Mappings, Sendergruppen, Favoriten, Artwork und Resume-Daten erhalten; vertrauliche Logs vor Veröffentlichung bereinigen.
 
-## Kandidaten zur gestaffelten Android-Abnahme (PR #80 bereits gemergt, Android noch offen)
+## Gestaffelte Android-Abnahme (0.1.29.11 funktional PASS; 0.1.29.13 veröffentlicht, Gerätetest offen)
 
 | Reihenfolge | Version | Draft-PR | Schwerpunkt | Berichtete automatisierte Tests | Android |
 |---|---|---|---|---|---|
-| 1 | 0.1.29.11 | [#80 – MERGED](https://github.com/artattakk-creator/kodi-noodleprivate/pull/80) | Bildspeicherstatus und SQLite-BUSY | 568 PASS; CI PASS | NOT_RUN |
-| 2 | 0.1.29.13 | [#82](https://github.com/artattakk-creator/kodi-noodleprivate/pull/82) | Horizontaler EPG-Programmguide | 584 PASS | NOT_RUN |
+| 1 | 0.1.29.11 | [#80 – MERGED](https://github.com/artattakk-creator/kodi-noodleprivate/pull/80) | Bildspeicherstatus und SQLite-BUSY | 568 PASS; CI PASS | **Funktional PASS mit Restbefunden** |
+| 2 | 0.1.29.13 | [#82 – MERGED/PUBLISHED](https://github.com/artattakk-creator/kodi-noodleprivate/pull/82) | Horizontaler EPG-Programmguide | 584 PASS; Publish PASS | **NOT_RUN** |
 | 3 | 0.1.29.14 | [#83](https://github.com/artattakk-creator/kodi-noodleprivate/pull/83) | Film-/Serien-UI, grüner Fokus, Fanart | 580 PASS | NOT_RUN |
 | 4 | 0.1.29.15 | [#84](https://github.com/artattakk-creator/kodi-noodleprivate/pull/84) | Eigenes XCMate-Media-Player-OSD | 581 PASS | NOT_RUN |
 
-**Achtung:** 0.1.29.13, .14 und .15 sind **nicht kumulativ**; es sind separate Entwicklungsbranches auf Grundlage von .11. Sie dürfen erst nach unabhängiger Android-Abnahme in einem eigenen Integrationsstand zusammengeführt werden. Die zurückgezogene Version **0.1.29.12/PR #81 niemals installieren** (ungültiges Kodi-API-Capability-Feld).
+**Achtung:** 0.1.29.13 ist jetzt in `main`; .14 und .15 bleiben **nicht kumulative Feature-Drafts** auf Grundlage von .11. Ihre Integration muss die neuen .13-Änderungen bewusst erhalten, technisch prüfen und gesondert auf Android abnehmen. Die zurückgezogene Version **0.1.29.12/PR #81 niemals installieren** (ungültiges Kodi-API-Capability-Feld).
 
 ### Test 1 – 0.1.29.11, Issue #75 und #69
 
@@ -32,7 +32,7 @@ Unter .8 schlug `art_status` fehl: `DISPATCH_FAILED error=OTHER`, außerdem `art
 
 ### Test 2 – 0.1.29.13, EPG-Guide (Issue #57)
 
-- Test-ZIP: https://github.com/artattakk-creator/kodi-noodleprivate/raw/refs/heads/feat/xcmate-02913-guide-grid/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.13.zip
+- Reguläres ZIP / Kodi-Repository: https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.13.zip
 - SHA256: `485d59229aaf288de1b6392fc3169cc7d5b718402609fe40b0cd6a2391bdb091`
 - Soll: fixe Senderlogo-Spalte, horizontale gemeinsame Zeitskala, nach Dauer skalierte Sendungsblöcke, Jetzt-Markierung, neongrüner Fokus. Hoch/Runter Senderzeilen; Links/Rechts Sendungen; OK Details/Aktionen; Zurück schließt Kontext bzw. Guide; Sprünge zu Jetzt/20:15/Tagen sowie Gruppenwechsel und Suche.
 - Noch offen: erweitertes XMLTV-Mapping, TMDB, Catch-up, echte Aufnahme, Quellenvollständigkeit für 7–10 Tage. Issues #60, #58, #62. Auch fehlende EPG-Daten müssen kontrolliert behandelt werden.
