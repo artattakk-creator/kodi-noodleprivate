@@ -15,7 +15,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._pool=ThreadPoolExecutor(max_workers=1);self._generation=0;self._closed=False;self._ready=False
         self._loading=False;self._leaving=False;self._cells={};self.rows=[];self.groups=[];self.category=None
         self.offset=0;self.total=0;self.row=0;self.cursor=int(time.time());self.origin=self.cursor//1800*1800
-        self._last_refresh=0;self._short_revision='';self._return_home=False
+        self._last_refresh=0;self._art_revision=0;self._short_revision='';self._return_home=False
 
     @native_init
     def onInit(self):
@@ -61,9 +61,8 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         for r in range(ROWS):
             row=self.rows[r] if r<len(self.rows) else None
             self.getControl(700+r).setText(row['channel']['name'] if row else '')
-            from logo_cache import local_logo
-            logo=local_logo(row['channel'].get('stream_icon','')) if row else ''
-            self.getControl(720+r).setImage(logo or '')
+            from media_art import local_art
+            self.getControl(720+r).setImage(local_art(row['channel'])['thumb'] if row else '')
             candidates=[e for e in row['events'] if rectangle(e['start'],e['stop'],self.origin)] if row else []
             selected=self._selected() if r==self.row else None
             # If an unusually dense schedule exceeds the native pool, pan to
@@ -89,6 +88,10 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         available=sum(bool(r['events']) for r in self.rows)
         self.getControl(102).setLabel(tr(33111,self.offset+1 if self.rows else 0,min(self.total,self.offset+len(self.rows)),self.total,available,len(self.rows))+(' · '+tr(33120) if any(len(r['events'])>CELLS for r in self.rows) else ''))
         self._focus_cell(target)
+
+    def _refresh_logos(self):
+        from media_art import local_art
+        for r,row in enumerate(self.rows):self.getControl(720+r).setImage(local_art(row['channel'])['thumb'])
 
     def _focus_cell(self,cid=None):
         if cid is None:
@@ -197,6 +200,9 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         now=time.monotonic()
         if now-self._last_refresh<2:return
         self._last_refresh=now
+        from media_art import revision as art_revision
+        value=art_revision()
+        if value!=self._art_revision:self._art_revision=value;self._refresh_logos()
         revision=xbmcgui.Window(10000).getProperty('XCMate.ShortGuideRevision.'+str(self.portal['id']))
         if revision!=self._short_revision and self._pending_future is None:
             self._short_revision=revision

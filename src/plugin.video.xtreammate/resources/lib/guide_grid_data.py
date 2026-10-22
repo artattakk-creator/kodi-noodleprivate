@@ -53,4 +53,8 @@ def page(portal,offset,origin,category=None,client=None):
                                truncated=len(events)>CELLS))
     finally:
         if db is not None:db.close()
+    # Original persistent artwork cache, queued from this viewport worker.
+    # No remote texture ever reaches the GUI and no cache path is changed.
+    from media_art import request
+    request(channels)
     return dict(rows=result,total=total,groups=reader.groups('live'),code=state,origin=origin,offset=offset)

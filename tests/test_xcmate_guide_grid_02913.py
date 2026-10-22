@@ -114,6 +114,14 @@ class GridTests(Fixture,unittest.TestCase):
         self.settle(w);self.assertFalse(w._loading);self.assertEqual(w._selected()['title'],'Short 29')
 
 
+    def test_logos_use_existing_local_artwork_and_refresh_without_remote_textures(self):
+        w=self.window();art=importlib.import_module('media_art')
+        with mock.patch.object(art,'local_art',return_value=dict(thumb='/local/logo.img')):w._refresh_logos()
+        self.assertEqual(w.getControl(720).image,'/local/logo.img')
+        self.data.page(self.portal,0,self.origin);art.request.assert_called()
+        sys.modules['utils'].http_get.assert_not_called()
+
+
     def test_m3u_watch_uses_existing_tagged_source_resolver(self):
         self.portal['type']='m3u';w=self.window();self.dialog.select.return_value=1
         w.onClick(w.getFocusId());self.assertIn('action=source_play',self.builtins[-1]);self.assertIn('sid=1',self.builtins[-1])
