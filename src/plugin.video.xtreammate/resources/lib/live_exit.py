@@ -45,10 +45,15 @@ def request(navigator):
     if not token or token[0]!='live' or token[1]['pid']!=str(navigator.portal['id']):return False
     from live_overlay import session_from_property
     announced=session_from_property(_marker().getProperty(SESSION))
-    if announced and not _same(token,('live',announced)):return False
+    pending=None
+    if announced and not _same(token,('live',announced)):
+        previous=getattr(navigator,'_previous_session',None)
+        if not (previous and _same(token,('live',previous)) and announced['pid']==str(navigator.portal['id']) and announced['sid']==navigator.sid):return False
+        pending={k:announced[k] for k in ('pid','sid','nonce','at')}
     value=dict(session={k:token[1][k] for k in ('pid','sid','nonce','at')},phase='requested',at=time.time(),deadline=time.monotonic()+5,not_before=time.monotonic()+.15)
+    value['pending']=pending
     _save(value);navigator._exiting=True;navigator._exit_nonce=token[1]['nonce']
-    _marker().setProperty('XCMate.PrePlay.Cancel',token[1]['nonce'])
+    _marker().setProperty('XCMate.PrePlay.Cancel',(pending or token[1])['nonce'])
     _trace('STOP_REQUESTED',token[1]);return True
 
 
@@ -61,7 +66,8 @@ def _poll(navigator=None):
     session=value['session'];marker=_marker()
     from live_overlay import session_from_property
     current=session_from_property(marker.getProperty(SESSION))
-    if current and current['nonce']!=session['nonce']:
+    allowed=[session]+([value['pending']] if value.get('pending') else [])
+    if current and not any(current['nonce']==item['nonce'] for item in allowed):
         if navigator is not None and getattr(navigator,'_exiting',False):navigator.close()
         marker.clearProperty(KEY);return False
     player=xbmc.Player()
@@ -69,10 +75,10 @@ def _poll(navigator=None):
     if value['phase'] in ('complete','failed'):
         # A past live Exit must not disable media_progress/playback_exit for
         # a later movie or a foreign add-on. Keep the root-autoplay tombstone.
-        return not player.isPlayingVideo() or _same(identity(player),('live',session))
+        return not player.isPlayingVideo() or any(_same(identity(player),('live',item)) for item in allowed)
     token=identity(player)
     playing=player.isPlaying() if hasattr(player,'isPlaying') else player.isPlayingVideo()
-    if playing and not _same(token,('live',session)):
+    if playing and not any(_same(token,('live',item)) for item in allowed):
         # Foreign playback must neither receive stop nor a GUI navigation.
         if navigator is not None and getattr(navigator,'_exiting',False):navigator.close()
         value['phase']='failed';_save(value);_trace('FOREIGN_PLAYER',session);return True
@@ -81,7 +87,7 @@ def _poll(navigator=None):
         # Commit before invoking native Stop; reentrant ticks cannot stop twice.
         value['phase']='stopping';_save(value)
         if playing:
-            if not stop_owned(player,expected=('live',session)):
+            if not stop_owned(player,expected=token):
                 value['phase']='failed';_save(value);_trace('OWNERSHIP_CHANGED',session);return True
         _trace('STOP_SENT',session)
     if player.isPlayingVideo() or (hasattr(player,'isPlaying') and player.isPlaying()):
@@ -93,7 +99,7 @@ def _poll(navigator=None):
         if navigator is not None and not navigator._closed:navigator.close()
         for key in ('XCMate.PrePlay.Request','XCMate.PrePlay.Ack','XCMate.PrePlay.Ready',SESSION,'XtreamMate.RemoteCommand'):
             raw=marker.getProperty(key)
-            if key=='XtreamMate.RemoteCommand' or raw==session['nonce'] or (session_from_property(raw) or {}).get('nonce')==session['nonce']:marker.clearProperty(key)
+            if key=='XtreamMate.RemoteCommand' or raw in [item['nonce'] for item in allowed] or (session_from_property(raw) or {}).get('nonce') in [item['nonce'] for item in allowed]:marker.clearProperty(key)
         value['phase']='home';_save(value);_trace('STOP_DONE',session)
         return True  # Native close returns before navigation on a later tick.
     if xbmc.getCondVisibility('System.HasActiveModalDialog'):

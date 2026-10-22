@@ -120,3 +120,13 @@ class StopTests(Fixture,unittest.TestCase):
         self.exit.request(self.nav);self.finish();self.playing=True;self.tag='foreign-video'
         self.assertFalse(self.exit.poll(self.nav));self.assertEqual(self.exit.state()['phase'],'complete')
         self.assertEqual(self.stops,1);self.assertEqual(len(self.builtins),1)
+    def test_stop_during_warm_tune_cancels_pending_nonce_and_either_verified_item(self):
+        for completes in (False,True):
+            self.exit.new_selection();self.nav._exiting=False;self.nav._closed=False;self.playing=True
+            self.properties[self.exit.SESSION]=json.dumps(dict(self.session,sid='2',nonce='pending'))
+            self.nav.sid='2';self.nav._previous_session=self.session
+            self.tag=json.dumps(self.session)
+            self.assertTrue(self.exit.request(self.nav));self.assertEqual(self.properties['XCMate.PrePlay.Cancel'],'pending')
+            if completes:self.tag=self.properties[self.exit.SESSION]
+            self.finish();self.assertEqual(self.exit.state()['phase'],'complete')
+        self.assertEqual(self.stops,2)

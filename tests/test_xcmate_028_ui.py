@@ -221,6 +221,8 @@ class PrePlayTests(unittest.TestCase):
         self.player.isPlayingVideo=lambda:True
         nav=self.preplay.ConnectingNavigator(self.portal,'1');self.addCleanup(nav.close);nav.show()
         count=len(nav.controls)
+        self.player.getVideoInfoTag=lambda:types.SimpleNamespace(getUniqueID=lambda key:json.dumps(self.session) if key=='xcmate_live' else '')
+        nav._accept_input()
         def play(*args):
             self.assertEqual(nav.mode,'info');self.assertIn(self.preplay.tr(32645),nav.info_hint.label)
             self.player.isPlayingVideo=lambda:False
@@ -231,4 +233,8 @@ class PrePlayTests(unittest.TestCase):
             stack.enter_context(mock.patch.dict(sys.modules,player=fake))
             nav._tune(nav.index.by_sid['2'])
         self.assertEqual(len(nav.controls),count);self.assertTrue(nav._connecting)
-        nav.handle_command('back');self.assertTrue(nav._closed);self.player.stop.assert_called_once()
+        nav.handle_command('back');self.assertTrue(nav._exiting);self.assertFalse(nav._closed);self.player.stop.assert_not_called()
+        import live_exit
+        value=live_exit.state();value['not_before']=0;live_exit._save(value)
+        live_exit.poll(nav);self.assertTrue(nav._closed)
+        self.player.stop.assert_not_called()  # Already in a verified playback gap.
