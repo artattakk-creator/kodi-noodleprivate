@@ -139,7 +139,8 @@ def dispatch(router):
     elif action=='guide_grid':
         from window_navigation import open_route
         from guide_grid_window import open_grid
-        open_route(router,portal,lambda:open_grid(router,portal))
+        from guide_playback import handoff
+        open_route(router,portal,lambda:open_grid(router,portal),after_close=handoff)
     elif action=='guide_browser':
         from window_navigation import open_route
         from guide_window import open_guide

@@ -49,7 +49,11 @@ class GridTests(Fixture,unittest.TestCase):
         self.assertIn('Keine',w.getControl(w.getFocusId()).label)
         self.dialog.select.return_value=-1;w.onClick(w.getFocusId());self.assertFalse(self.builtins)
         self.dialog.select.return_value=1;w.onClick(w.getFocusId())
-        self.assertTrue(w._closed);self.assertIn('action=play_live',self.builtins[-1]);self.assertIn('sid=1',self.builtins[-1])
+        self.assertTrue(w._leaving);self.assertFalse(w._closed);self.assertFalse(self.builtins)
+        w._leave_after=0;w._owner_tick()
+        import guide_playback
+        self.assertTrue(guide_playback.handoff(self.router,self.portal,w._play_request))
+        self.assertIn('action=play_live',self.builtins[-1]);self.assertIn('sid=1',self.builtins[-1])
 
     def test_selected_event_details_context_back_keeps_grid_and_cursor(self):
         w=self.window();cursor=w.cursor;self.dialog.select.return_value=0
@@ -109,7 +113,8 @@ class GridTests(Fixture,unittest.TestCase):
         db.close()
         data=[dict(channel='xml',start_timestamp=self.origin+n*60,stop_timestamp=self.origin+(n+1)*60,name='Short '+str(n)) for n in range(60)]
         self.store.import_cache('p',{'xml':data},now=self.origin-1)
-        w=self.window();w.cursor=self.origin+29*60;w._render()
+        with mock.patch.object(self.grid.time,'time',return_value=self.origin):w=self.window()
+        w.cursor=self.origin+29*60;w._render()
         self.assertEqual(w.origin,self.origin+29*60);self.assertTrue(w._loading)
         self.settle(w);self.assertFalse(w._loading);self.assertEqual(w._selected()['title'],'Short 29')
 
@@ -124,7 +129,11 @@ class GridTests(Fixture,unittest.TestCase):
 
     def test_m3u_watch_uses_existing_tagged_source_resolver(self):
         self.portal['type']='m3u';w=self.window();self.dialog.select.return_value=1
-        w.onClick(w.getFocusId());self.assertIn('action=source_play',self.builtins[-1]);self.assertIn('sid=1',self.builtins[-1])
+        w.onClick(w.getFocusId());self.assertFalse(self.builtins)
+        w._leave_after=0;w._owner_tick()
+        import guide_playback
+        self.assertTrue(guide_playback.handoff(self.router,self.portal,w._play_request))
+        self.assertIn('action=source_play',self.builtins[-1]);self.assertIn('sid=1',self.builtins[-1])
 
 
     def test_bookmark_contains_ids_facts_and_no_source_urls(self):

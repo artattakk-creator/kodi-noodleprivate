@@ -2228,3 +2228,11 @@ msgstr "Keine gemerkten Sendungen"
 msgctxt "#33120"
 msgid "Dense schedule: move right for more programmes"
 msgstr "Dichte Programmliste: rechts zu weiteren Sendungen"
+
+msgctxt "#33122"
+msgid "Playback was not started. Try Live TV from the channel list."
+msgstr "Wiedergabe nicht gestartet. Live-TV erneut über die Senderliste öffnen."
+
+msgctxt "#33121"
+msgid "Channel diagnostics: long-term EPG"
+msgstr "Senderdiagnose: Langzeit-EPG"

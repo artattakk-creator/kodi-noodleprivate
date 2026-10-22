@@ -2228,3 +2228,11 @@ msgstr "No remembered programmes"
 msgctxt "#33120"
 msgid "Dense schedule: move right for more programmes"
 msgstr "Dense schedule: move right for more programmes"
+
+msgctxt "#33122"
+msgid "Playback was not started. Try Live TV from the channel list."
+msgstr "Playback was not started. Try Live TV from the channel list."
+
+msgctxt "#33121"
+msgid "Channel diagnostics: long-term EPG"
+msgstr "Channel diagnostics: long-term EPG"
