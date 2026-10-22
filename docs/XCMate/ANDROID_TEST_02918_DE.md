@@ -11,3 +11,13 @@ Android 13 / RK3528 ARM32 / Kodi 21.2 Omega / Titan BINGIE MOD; später möglich
 7. **Gemeldeter Episodenende-Hänger:** Eine bereits funktionierende Episode natürlich auslaufen lassen. Erwartet: Detail-/Folgenansicht wieder mit sichtbarem, bedienbarem Fokus; Pfeile/OK/Back funktionieren ohne Umweg über Gesamtansicht. Den manuellen Next-Eintrag anwählen, wenn gewünscht. **Automatischer Folgestart ist in .18 nicht implementiert und bleibt NOT_IMPLEMENTED (#85).** Start/Stop/Back einer einzelnen Folge sowie Resume nach Kodi-Neustart separat prüfen.
 8. **.17-Regression:** Ein normaler Live-TV-Start→Stop→Home; ein bekannter guter Sender aus großem EPG→Ansehen→Stop; EPG über 14 Uhr; grundlegende Favoriten/Staffeln/Seen/Back. Keine Änderungen an globalen Tasten. Bei Prozessende, Startloop oder GUI-Hänger sofort abbrechen, Zeitpunkt/Schritt und bereinigte private Diagnose sichern; keine Crash-Schleife.
 9. Ergebnis je Teilfunktion als PASS/FAIL/NOT_TESTED mit installierter Version/SHA/Kodi/Skin melden. Keine geheimen URLs, Tokens oder Portaldetails öffentlich teilen. Neue Funktions-PASS gelten nur für die tatsächlich geprüfte Sequenz. Keine eigenmächtige Integration, kein Release/OTA ohne ausdrückliche Nutzerfreigabe.
+
+## Download und Prüfsumme
+
+[Test-ZIP 0.1.29.18](https://github.com/artattakk-creator/kodi-noodleprivate/raw/refs/heads/feat/xcmate-02918-media-scroll/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.18.zip) · [SHA256-Datei](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.18.zip.sha256)
+
+```text
+bf579d8187189055fb4db5970b1f8f01700d8c8db95c71b24c0ee7bd41ab40df  plugin.video.xtreammate-0.1.29.18.zip
+```
+
+Nur manuelle Testinstallation; kein Eintrag im produktiven Kodi-Updateindex.
