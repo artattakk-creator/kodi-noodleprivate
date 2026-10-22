@@ -145,10 +145,10 @@ test_restart_offline_previous_index_and_immediate_disabled_filter (test_xcmate_0
 test_same_stream_in_two_groups_counted_once_globally_but_available_in_each (test_xcmate_028_streaming.IndexTests.test_same_stream_in_two_groups_counted_once_globally_but_available_in_each) ... ok
 test_streaming_group_publishes_only_after_complete_json (test_xcmate_028_streaming.IndexTests.test_streaming_group_publishes_only_after_complete_json) ... ok
 test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update (test_xcmate_028_streaming.LargeGuideTests.test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update) ... 
-LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 22.326}
+LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 22.179}
 ok
 test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib (test_xcmate_028_streaming.LargeHTTPTests.test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib) ... 
-LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 37.979, "peak_rss_kib": 58620}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 38.007, "peak_rss_kib": 58620}]
+LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 38.251, "peak_rss_kib": 58312}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 37.949, "peak_rss_kib": 58312}]
 ok
 test_cache_envelope_and_trailing_data_validated (test_xcmate_028_streaming.ParserTests.test_cache_envelope_and_trailing_data_validated) ... ok
 test_chunked_http_gzip_and_truncated_compression (test_xcmate_028_streaming.ParserTests.test_chunked_http_gzip_and_truncated_compression) ... ok
@@ -218,6 +218,34 @@ test_reserved_writer_does_not_block_readonly_statistics_and_no_adoption (test_xc
 test_snapshot_does_not_create_missing_database_or_adopt_any_file (test_xcmate_art_status_02911.ArtStatusTests.test_snapshot_does_not_create_missing_database_or_adopt_any_file) ... ok
 test_status_route_opens_textviewer_with_busy_message_and_completes_once (test_xcmate_art_status_02911.ArtStatusTests.test_status_route_opens_textviewer_with_busy_message_and_completes_once) ... ok
 test_ten_status_reads_under_exclusive_lock_keep_partial_budget_and_return_bounded (test_xcmate_art_status_02911.ArtStatusTests.test_ten_status_reads_under_exclusive_lock_keep_partial_budget_and_return_bounded) ... ok
+test_auto_storage_can_download_when_recorded_use_already_exceeds_512_mib (test_xcmate_artwork_02920.Artwork20Tests.test_auto_storage_can_download_when_recorded_use_already_exceeds_512_mib) ... ok
+test_busy_enrolment_keeps_visible_batch_until_delayed_retry (test_xcmate_artwork_02920.Artwork20Tests.test_busy_enrolment_keeps_visible_batch_until_delayed_retry) ... ok
+test_default_auto_has_no_512_mib_or_4096_mib_cap_and_preserves_custom_limit (test_xcmate_artwork_02920.Artwork20Tests.test_default_auto_has_no_512_mib_or_4096_mib_cap_and_preserves_custom_limit) ... ok
+test_download_pause_preserves_jobs_and_ready_images (test_xcmate_artwork_02920.Artwork20Tests.test_download_pause_preserves_jobs_and_ready_images) ... ok
+test_enrolment_disk_full_is_distinct_from_database_contention (test_xcmate_artwork_02920.Artwork20Tests.test_enrolment_disk_full_is_distinct_from_database_contention) ... ok
+test_existing_queue_gains_only_additive_retry_metadata_and_keeps_jobs (test_xcmate_artwork_02920.Artwork20Tests.test_existing_queue_gains_only_additive_retry_metadata_and_keeps_jobs) ... ok
+test_five_hundred_movie_and_series_posters_persist_beyond_sliding_window_and_reload (test_xcmate_artwork_02920.Artwork20Tests.test_five_hundred_movie_and_series_posters_persist_beyond_sliding_window_and_reload) ... ok
+test_fixed_budget_and_physical_reserve_have_distinct_codes_and_no_download (test_xcmate_artwork_02920.Artwork20Tests.test_fixed_budget_and_physical_reserve_have_distinct_codes_and_no_download) ... ok
+test_footer_describes_current_continue_cover_and_refreshes_without_reopening (test_xcmate_artwork_02920.Artwork20Tests.test_footer_describes_current_continue_cover_and_refreshes_without_reopening) ... ok
+test_free_storage_is_rechecked_after_http_before_atomic_write (test_xcmate_artwork_02920.Artwork20Tests.test_free_storage_is_rechecked_after_http_before_atomic_write) ... ok
+test_legacy_provider_path_spaces_keep_the_same_local_cache_key (test_xcmate_artwork_02920.Artwork20Tests.test_legacy_provider_path_spaces_keep_the_same_local_cache_key) ... ok
+test_licences_are_accessible_without_active_portal (test_xcmate_artwork_02920.Artwork20Tests.test_licences_are_accessible_without_active_portal) ... ok
+test_lost_job_claim_does_not_leave_thirty_second_global_lease (test_xcmate_artwork_02920.Artwork20Tests.test_lost_job_claim_does_not_leave_thirty_second_global_lease) ... ok
+test_missing_provider_invalid_source_pending_network_and_cache_status (test_xcmate_artwork_02920.Artwork20Tests.test_missing_provider_invalid_source_pending_network_and_cache_status) ... ok
+test_network_errors_stop_after_three_and_are_not_reset_by_space_recovery (test_xcmate_artwork_02920.Artwork20Tests.test_network_errors_stop_after_three_and_are_not_reset_by_space_recovery) ... ok
+test_network_invalid_source_invalid_image_and_cache_write_are_separate (test_xcmate_artwork_02920.Artwork20Tests.test_network_invalid_source_invalid_image_and_cache_write_are_separate) ... ok
+test_old_worker_cannot_overwrite_replacement_ready_or_release_its_lease (test_xcmate_artwork_02920.Artwork20Tests.test_old_worker_cannot_overwrite_replacement_ready_or_release_its_lease) ... ok
+test_public_title_is_gs_media_and_licence_origin_stay_visible (test_xcmate_artwork_02920.Artwork20Tests.test_public_title_is_gs_media_and_licence_origin_stay_visible) ... ok
+test_queue_enrolment_honours_configured_free_reserve_before_any_db_creation (test_xcmate_artwork_02920.Artwork20Tests.test_queue_enrolment_honours_configured_free_reserve_before_any_db_creation) ... ok
+test_read_only_diagnosis_under_writer_lock_does_not_repair_or_reset (test_xcmate_artwork_02920.Artwork20Tests.test_read_only_diagnosis_under_writer_lock_does_not_repair_or_reset) ... ok
+test_real_enrol_and_download_workers_use_their_own_sqlite_connections (test_xcmate_artwork_02920.Artwork20Tests.test_real_enrol_and_download_workers_use_their_own_sqlite_connections) ... ok
+test_recover_exhausted_legacy_space_jobs_in_bounded_idempotent_portions (test_xcmate_artwork_02920.Artwork20Tests.test_recover_exhausted_legacy_space_jobs_in_bounded_idempotent_portions) ... ok
+test_repeated_disk_full_does_not_generate_an_infinite_download_retry (test_xcmate_artwork_02920.Artwork20Tests.test_repeated_disk_full_does_not_generate_an_infinite_download_retry) ... ok
+test_request_callback_never_opens_sqlite_or_http_and_inbox_is_bounded (test_xcmate_artwork_02920.Artwork20Tests.test_request_callback_never_opens_sqlite_or_http_and_inbox_is_bounded) ... ok
+test_saved_kodi_default_512_migrates_readonly_but_explicit_512_survives (test_xcmate_artwork_02920.Artwork20Tests.test_saved_kodi_default_512_migrates_readonly_but_explicit_512_survives) ... ok
+test_space_recovery_does_nothing_under_physical_or_configured_pressure (test_xcmate_artwork_02920.Artwork20Tests.test_space_recovery_does_nothing_under_physical_or_configured_pressure) ... ok
+test_sqlite_enrolment_retries_are_bounded_without_network_or_private_logging (test_xcmate_artwork_02920.Artwork20Tests.test_sqlite_enrolment_retries_are_bounded_without_network_or_private_logging) ... ok
+test_visible_epg_logos_precede_covers_and_oldest_job_gets_a_fair_turn (test_xcmate_artwork_02920.Artwork20Tests.test_visible_epg_logos_precede_covers_and_oldest_job_gets_a_fair_turn) ... ok
 test_active_xcmate_connection_prevents_maintenance_and_recovery (test_xcmate_artwork_recovery_0297.ArtworkRecoveryTests.test_active_xcmate_connection_prevents_maintenance_and_recovery) ... ok
 test_atomic_schema_failure_rolls_back_and_preserves_jobs (test_xcmate_artwork_recovery_0297.ArtworkRecoveryTests.test_atomic_schema_failure_rolls_back_and_preserves_jobs) ... ok
 test_cancellation_before_backup_completion_retains_corrupt_source (test_xcmate_artwork_recovery_0297.ArtworkRecoveryTests.test_cancellation_before_backup_completion_retains_corrupt_source) ... ok
@@ -686,11 +714,11 @@ test_widget_route_and_no_cached_credentials_in_link (test_xtreammate_widgets.Wid
 test_youtube_whitelist (test_xtreammate_widgets.WidgetsTest.test_youtube_whitelist) ... ok
 
 ----------------------------------------------------------------------
-Ran 682 tests in 136.865s
+Ran 710 tests in 150.148s
 
 OK
 
-MODEL_COLD_WINDOW_MS 5.021
+MODEL_COLD_WINDOW_MS 6.191
 
 SELECTIVE_XMLTV {"bytes": 400, "parsed": 2, "stored": 1}
 
