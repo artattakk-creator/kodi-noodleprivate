@@ -10,9 +10,8 @@ class MediaOSDTests(Fixture,unittest.TestCase):
         OmegaDialog.removeControl=lambda self,c:self.controls.remove(c)
         gui.ControlButton=ControlButton;gui.ControlImage=ControlImage;gui.ControlLabel=ControlLabel
         gui.getCurrentWindowDialogId=lambda:9999
-        self.flags={'Window.IsVisible(fullscreenvideo)':True,'Player.SeekEnabled':True}
+        self.flags={'Window.IsVisible(fullscreenvideo)':True,'Player.SeekEnabled':True,'Player.PauseEnabled':True}
         sys.modules['xbmc'].getCondVisibility=lambda key:self.flags.get(key,False)
-        sys.modules['xbmc'].executeJSONRPC=lambda request:json.dumps(dict(result=dict(canpause=True,canseek=True)))
         self.session=dict(pid='p',kind='vod',sid='2',nonce='ours',at=time.time(),title='Local title')
         self.properties['XCMate.MediaSession']=json.dumps(self.session)
         self.player=mock.Mock();self.player.isPlayingVideo.return_value=True
@@ -90,8 +89,8 @@ class MediaOSDTests(Fixture,unittest.TestCase):
         self.osd.poll(self.player);self.assertIsNone(self.osd._window);self.player.stop.assert_not_called()
 
     def test_unavailable_pause_and_seek_are_hidden_when_player_rejects_capability(self):
-        sys.modules['xbmc'].executeJSONRPC=lambda request:json.dumps(dict(result=dict(canpause=False,canseek=False)))
-        self.window._cap_at=-10;self.window.show_bar()
+        self.flags['Player.PauseEnabled']=False;self.flags['Player.SeekEnabled']=False
+        self.window.show_bar()
         self.assertNotIn('pause',self.window.buttons);self.assertNotIn('back',self.window.buttons)
         self.assertEqual(self.window.focus_action(),'info');self.assertFalse(self.window.invoke('pause'))
         self.player.pause.assert_not_called()

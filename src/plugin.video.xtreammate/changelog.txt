@@ -1,4 +1,5 @@
-0.1.29.12 (separate VOD player OSD test candidate)
+0.1.29.15 (corrected VOD player OSD test candidate)
+- Verified Kodi 21.2 Player.PauseEnabled/SeekEnabled capabilities; replaces withdrawn 0.1.29.12 candidate.
 - Native XCMate transport overlay reconstructed from original live tape-deck elements.
 - Verified media ownership, capability-gated seek/audio/subtitles, neon native focus and future action registry.
 

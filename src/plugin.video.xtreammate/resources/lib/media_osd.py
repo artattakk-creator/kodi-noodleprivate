@@ -3,7 +3,6 @@
 Built/shown/polled on the existing service owner thread, like the proven live
 navigator. No modal loop, global keymap, HTTP, catalog query or live mutation.
 """
-import json
 import math
 import os
 import time
@@ -65,14 +64,7 @@ class MediaOSD(xbmcgui.WindowDialog):
         try:duration=_number(self.player.getTotalTime())
         except (AttributeError,RuntimeError,ValueError):duration=0
         seek=bool(xbmc.getCondVisibility('Player.SeekEnabled') and duration>0)
-        if time.monotonic()-getattr(self,'_cap_at',-10)>1:
-            self._cap_at=time.monotonic();self._player_caps={}
-            try:
-                reply=json.loads(xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=1,method='Player.GetProperties',params=dict(playerid=1,properties=['canpause','canseek'])))))
-                self._player_caps=reply.get('result',{})
-            except (AttributeError,RuntimeError,ValueError,TypeError):pass
-        pause=self._player_caps.get('canpause') is True
-        seek=seek and self._player_caps.get('canseek') is True
+        pause=bool(xbmc.getCondVisibility('Player.PauseEnabled'))
         return dict(pause=pause,stop=True,back=seek,forward=seek,audio=bool(audio),subtitles=bool(subtitles),
                     subtitle_toggle=bool(subtitles),video=True,audio_settings=True,info=True)
 
