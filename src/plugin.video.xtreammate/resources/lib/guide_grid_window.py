@@ -181,11 +181,12 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._diagnosing=True
         portal,router=self.portal,self.router
         row=self.rows[self.row];origin,cursor,focus=self.origin,self.cursor,self.getFocusId()
+        snapshot=dict(loading=self._loading,cells=len(self._cells))
         def load():
             from guide_grid_diagnostics import inspect
             try:client=router._xc(portal)
             except (AttributeError,ValueError):client=None
-            return inspect(portal,row,origin,cursor,focus,client)
+            return inspect(portal,row,origin,cursor,focus,client,snapshot)
         self._request(load,self._diagnosed)
 
     def _diagnosed(self,text):

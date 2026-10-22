@@ -55,3 +55,36 @@ class HandoffTests(Fixture,unittest.TestCase):
             self.assertTrue(self.play.handoff(self.router,self.portal,intent));self.assertFalse(self.play.handoff(self.router,self.portal,intent))
             self.assertIn('action='+action,self.builtins[-1]);self.assertIn('sid=1',self.builtins[-1])
         self.assertEqual(len(self.builtins),3)
+    def test_real_owner_loop_closes_outside_callback_then_dispatches_after_unlock(self):
+        nav=importlib.import_module('window_navigation');self.router._handle=-1
+        windows=[];phase=[0];in_callback=[False]
+        original=self.grid.GuideGridWindow.configure
+        def configure(w,*args):original(w,*args);windows.append(w)
+        def wait(seconds):
+            if not windows:return False
+            w=windows[0];phase[0]+=1
+            if phase[0]==1:w._pool.drain()
+            elif phase[0]==2:
+                in_callback[0]=True
+                w.native(7);self.assertFalse(w._closed);self.assertFalse(self.builtins)
+                in_callback[0]=False;w._leave_after=0
+            elif phase[0]>8:self.fail('owner did not finish')
+            return False
+        monitor=types.SimpleNamespace(waitForAbort=wait)
+        self.dialog.select.return_value=1
+        def after(router,portal,intent):
+            w=windows[0];self.assertTrue(w._closed);self.assertFalse(w._running);self.assertFalse(in_callback[0])
+            self.assertIsNone(w._pending_apply)
+            with nav.ownership() as acquired:self.assertTrue(acquired)
+            self.assertTrue(self.play.handoff(router,portal,intent))
+        with mock.patch.object(self.grid.GuideGridWindow,'configure',configure),mock.patch.object(sys.modules['xbmc'],'Monitor',return_value=monitor):
+            nav.open_route(self.router,self.portal,lambda:self.grid.open_grid(self.router,self.portal),after_close=after)
+        self.assertEqual(sum(s.startswith('PlayMedia(') for s in self.builtins),1)
+    def test_foreign_audio_started_during_guide_is_preserved(self):
+        intent=self.intent()
+        with mock.patch.object(sys.modules['xbmc'],'Player',return_value=types.SimpleNamespace(isPlaying=lambda:True,getPlayingFile=lambda:'foreign-audio')):
+            self.assertFalse(self.play.handoff(self.router,self.portal,intent))
+        self.assertFalse(self.builtins)
+    def test_new_nonce_on_same_playing_path_cancels_stale_handoff(self):
+        intent=self.intent();self.properties['XtreamMate.LiveSession']='new-session'
+        self.assertFalse(self.play.handoff(self.router,self.portal,intent));self.assertFalse(self.builtins)

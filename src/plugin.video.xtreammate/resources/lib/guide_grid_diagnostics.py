@@ -8,7 +8,7 @@ def _stamp(value):
     return time.strftime('%d.%m.%Y %H:%M',time.localtime(value)) if value is not None else '—'
 
 
-def inspect(portal,row,origin,cursor,focus,client=None):
+def inspect(portal,row,origin,cursor,focus,client=None,snapshot=None):
     from guide_store import path
     from epg_sources import configuration
     from epg_preview import safe_name
@@ -21,6 +21,7 @@ def inspect(portal,row,origin,cursor,focus,client=None):
            'Cursor: '+_stamp(cursor)+' | origin: '+_stamp(origin)+' | focus: '+str(int(focus)),
            'guide_v1.sqlite (read-only) | '+('MANUAL' if manual else 'AUTO'),
            'Provider EPG-ID: '+safe_name(channel.get('epg_channel_id'),'—')]
+    if snapshot:lines.append('loading='+str(bool(snapshot['loading']))+' | cells='+str(int(snapshot['cells'])))
     filename=path();db=None
     try:
         if not os.path.exists(filename):lines.append('NOT_CREATED')

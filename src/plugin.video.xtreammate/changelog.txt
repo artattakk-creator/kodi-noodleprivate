@@ -1,3 +1,9 @@
+0.1.29.16 (isolated EPG test candidate; no production publication)
+- Defer Watch to a single existing live resolver after native callbacks, owner pump and navigation lock have ended; do not close/play inside the OK callback.
+- Selected-channel diagnostics read the real long-term SQLite horizon, alias and sources separately from the local short cache, without import or data reset.
+- Reproduced overlap navigation trap fixed separately: Right always advances and Left always goes back, including gaps and window transitions.
+- Android acceptance remains required for the native Kodi crash; source/host checks cannot certify the RK3528 player lifecycle.
+
 0.1.29.13 (separate horizontal guide test candidate)
 - Fixed channel column, proportional shared time grid, native green focus, now line, local cache-only background pages and explicit programme actions.
 - Legacy guide/live overlays remain available unchanged.

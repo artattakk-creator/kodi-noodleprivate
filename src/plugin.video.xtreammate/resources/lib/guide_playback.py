@@ -7,12 +7,14 @@ from localization import tr
 def player_state():
     try:
         player=xbmc.Player()
-        return (True,player.getPlayingFile()) if player.isPlayingVideo() else (False,'')
+        playing=player.isPlaying() if hasattr(player,'isPlaying') else player.isPlayingVideo()
+        return (True,player.getPlayingFile()) if playing else (False,'')
     except (AttributeError,RuntimeError):return None
 
 
 def request(portal,channel,entry_player):
-    return dict(pid=str(portal['id']),sid=str(channel['sid']),player=entry_player)
+    return dict(pid=str(portal['id']),sid=str(channel['sid']),player=entry_player,
+                session=xbmcgui.Window(10000).getProperty('XtreamMate.LiveSession'))
 
 
 def _handoff(router,portal,intent):
@@ -22,6 +24,7 @@ def _handoff(router,portal,intent):
     if intent.get('pid')!=str(portal['id']) or not intent.get('sid'):return False
     monitor=xbmc.Monitor();deadline=time.monotonic()+2
     while True:
+        if getattr(monitor,'abortRequested',lambda:False)():return False
         try:active=int(xbmcgui.getCurrentWindowId())==intent.get('window')
         except (AttributeError,RuntimeError):active=False
         if not active and not xbmc.getCondVisibility('System.HasActiveModalDialog'):break
@@ -40,6 +43,7 @@ def _handoff(router,portal,intent):
     # supplies the resolver handle in a new plugin invocation; no direct player.
     url=router.url(action=action,pid=intent['pid'],sid=channel['sid'],name=channel['name'])
     if player_state()!=intent['player']:return False
+    if xbmcgui.Window(10000).getProperty('XtreamMate.LiveSession')!=intent['session']:return False
     xbmc.executebuiltin('PlayMedia('+url+')')
     return True
 
