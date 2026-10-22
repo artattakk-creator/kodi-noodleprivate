@@ -1,3 +1,7 @@
+0.1.29.13 (separate horizontal guide test candidate)
+- Fixed channel column, proportional shared time grid, native green focus, now line, local cache-only background pages and explicit programme actions.
+- Legacy guide/live overlays remain available unchanged.
+
 0.1.29.11 (test candidate)
 - Read-only partial artwork status, bounded BUSY retry, reduced writer contention and private-safe SQLite diagnostics.
 - Complete the legacy settings directory before opening the native settings dialog.

@@ -2144,3 +2144,87 @@ msgstr "Letzter Datenbank-Prüfstand: {0}"
 msgctxt "#32967"
 msgid "OK concerns the last database check, not completeness of images. SPACE_FULL can be an artwork-budget limit; it does not prove a physically full drive. Unregistered older images are not included in queue bytes."
 msgstr "OK betrifft die letzte Datenbankprüfung, nicht die Vollständigkeit der Bilder. SPACE_FULL kann das Artwork-Budget betreffen und beweist keinen physisch vollen Datenträger. Noch nicht erfasste ältere Bilder sind in den Queue-Bytes nicht enthalten."
+
+msgctxt "#33100"
+msgid "XCMate TV guide"
+msgstr "XCMate-Programmzeitschrift"
+
+msgctxt "#33101"
+msgid "Previous day"
+msgstr "Vortag"
+
+msgctxt "#33102"
+msgid "Next day"
+msgstr "Folgetag"
+
+msgctxt "#33103"
+msgid "Now"
+msgstr "Jetzt"
+
+msgctxt "#33104"
+msgid "Channel groups"
+msgstr "Sendergruppen"
+
+msgctxt "#33105"
+msgid "Search"
+msgstr "Suche"
+
+msgctxt "#33106"
+msgid "20:15"
+msgstr "20:15"
+
+msgctxt "#33107"
+msgid "Arrows: channels/time · OK: actions · Menu: channel · Back: Home"
+msgstr "Pfeile: Sender/Zeit · OK: Aktionen · Menü: Sender · Zurück: Home"
+
+msgctxt "#33108"
+msgid "Loading local programme data…"
+msgstr "Lokale Programmdaten werden geladen…"
+
+msgctxt "#33109"
+msgid "Local guide unavailable; no data were changed."
+msgstr "Lokaler Guide nicht verfügbar; keine Daten wurden geändert."
+
+msgctxt "#33110"
+msgid "No programme data in this time window"
+msgstr "Keine Programmdaten in diesem Zeitfenster"
+
+msgctxt "#33111"
+msgid "Channels {0}–{1}/{2} · programme data: {3}/{4} visible channels"
+msgstr "Sender {0}–{1}/{2} · Programmdaten: {3}/{4} sichtbare Sender"
+
+msgctxt "#33112"
+msgid "Programme / source information"
+msgstr "Programm-/Quelleninformation"
+
+msgctxt "#33113"
+msgid "Remember programme"
+msgstr "Sendung merken"
+
+msgctxt "#33114"
+msgid "Mapping / source: {0}"
+msgstr "Zuordnung / Quelle: {0}"
+
+msgctxt "#33115"
+msgid "Save this programme in the local bookmark list?"
+msgstr "Diese Sendung in der lokalen Merkliste speichern?"
+
+msgctxt "#33116"
+msgid "Programme remembered"
+msgstr "Sendung gemerkt"
+
+msgctxt "#33117"
+msgid "All active channel groups"
+msgstr "Alle aktiven Sendergruppen"
+
+msgctxt "#33118"
+msgid "Remembered programmes"
+msgstr "Gemerkte Sendungen"
+
+msgctxt "#33119"
+msgid "No remembered programmes"
+msgstr "Keine gemerkten Sendungen"
+
+msgctxt "#33120"
+msgid "Dense schedule: move right for more programmes"
+msgstr "Dichte Programmliste: rechts zu weiteren Sendungen"
