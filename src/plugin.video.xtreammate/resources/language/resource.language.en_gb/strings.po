@@ -2112,3 +2112,35 @@ msgstr "Background artwork preloading is paused after recovery. Existing images 
 msgctxt "#32910"
 msgid "The view could not be opened. Home remains available. Close any open Kodi dialog and try again."
 msgstr "The view could not be opened. Home remains available. Close any open Kodi dialog and try again."
+
+msgctxt "#32960"
+msgid "Artwork status (read-only)"
+msgstr "Artwork status (read-only)"
+
+msgctxt "#32961"
+msgid "Statistics: {0}"
+msgstr "Statistics: {0}"
+
+msgctxt "#32962"
+msgid "Image bytes recorded in queue / budget: {0} / {1} MiB"
+msgstr "Image bytes recorded in queue / budget: {0} / {1} MiB"
+
+msgctxt "#32963"
+msgid "Free / total physical storage: {0} / {1} MiB"
+msgstr "Free / total physical storage: {0} / {1} MiB"
+
+msgctxt "#32964"
+msgid "Jobs by state:"
+msgstr "Jobs by state:"
+
+msgctxt "#32965"
+msgid "Database temporarily busy or unavailable. Retry later; no files or jobs were changed."
+msgstr "Database temporarily busy or unavailable. Retry later; no files or jobs were changed."
+
+msgctxt "#32966"
+msgid "Last database health snapshot: {0}"
+msgstr "Last database health snapshot: {0}"
+
+msgctxt "#32967"
+msgid "OK concerns the last database check, not completeness of images. SPACE_FULL can be an artwork-budget limit; it does not prove a physically full drive. Unregistered older images are not included in queue bytes."
+msgstr "OK concerns the last database check, not completeness of images. SPACE_FULL can be an artwork-budget limit; it does not prove a physically full drive. Unregistered older images are not included in queue bytes."

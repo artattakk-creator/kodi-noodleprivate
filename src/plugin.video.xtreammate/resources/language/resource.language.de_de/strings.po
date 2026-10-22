@@ -2112,3 +2112,35 @@ msgstr "Das Hintergrund-Vorabladen ist nach der Wiederherstellung pausiert. Vorh
 msgctxt "#32910"
 msgid "The view could not be opened. Home remains available. Close any open Kodi dialog and try again."
 msgstr "Die Ansicht konnte nicht geöffnet werden. Die Hauptübersicht bleibt verfügbar. Bitte einen offenen Kodi-Dialog schließen und erneut versuchen."
+
+msgctxt "#32960"
+msgid "Artwork status (read-only)"
+msgstr "Bildspeicherstatus (nur lesend)"
+
+msgctxt "#32961"
+msgid "Statistics: {0}"
+msgstr "Statistik: {0}"
+
+msgctxt "#32962"
+msgid "Image bytes recorded in queue / budget: {0} / {1} MiB"
+msgstr "In Queue erfasste Bildbytes / Budget: {0} / {1} MiB"
+
+msgctxt "#32963"
+msgid "Free / total physical storage: {0} / {1} MiB"
+msgstr "Freier / gesamter physischer Speicher: {0} / {1} MiB"
+
+msgctxt "#32964"
+msgid "Jobs by state:"
+msgstr "Jobs nach Zustand:"
+
+msgctxt "#32965"
+msgid "Database temporarily busy or unavailable. Retry later; no files or jobs were changed."
+msgstr "Datenbank vorübergehend belegt oder nicht verfügbar. Später erneut öffnen; keine Dateien oder Jobs wurden geändert."
+
+msgctxt "#32966"
+msgid "Last database health snapshot: {0}"
+msgstr "Letzter Datenbank-Prüfstand: {0}"
+
+msgctxt "#32967"
+msgid "OK concerns the last database check, not completeness of images. SPACE_FULL can be an artwork-budget limit; it does not prove a physically full drive. Unregistered older images are not included in queue bytes."
+msgstr "OK betrifft die letzte Datenbankprüfung, nicht die Vollständigkeit der Bilder. SPACE_FULL kann das Artwork-Budget betreffen und beweist keinen physisch vollen Datenträger. Noch nicht erfasste ältere Bilder sind in den Queue-Bytes nicht enthalten."

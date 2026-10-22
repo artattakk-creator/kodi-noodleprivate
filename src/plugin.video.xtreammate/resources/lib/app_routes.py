@@ -37,10 +37,8 @@ def dispatch(router):
         _end(router)
         from art_store import status,retry
         if action=='art_retry': retry()
-        value=status()
-        xbmcgui.Dialog().textviewer(tr(32661),str(value['bytes']//(1024*1024))+' / '+str(value['budget']//(1024*1024))+' MiB\n'+
-            '\n'.join(k+': '+str(v) for k,v in value['counts'].items()))
-        return
+        from artwork_health_ui import show_status
+        show_status();return
     if action=='ui_language':
         _end(router)
         from localization import choose_language

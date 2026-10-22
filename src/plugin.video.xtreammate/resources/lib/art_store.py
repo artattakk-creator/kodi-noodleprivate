@@ -54,12 +54,15 @@ def used():
     root=folder();db=connect()
     try:
         if root not in _ADOPTED:
-            # Adopt old 64-file cache once, without moving/deleting its files.
-            with db:
-                if os.path.isdir(root):
-                    for entry in os.scandir(root):
-                        if not entry.name.endswith('.img') or not entry.is_file(): continue
-                        db.execute("INSERT OR IGNORE INTO jobs VALUES(?,'','READY',0,0,0,?,?)",(entry.name[:-4],time.time(),entry.stat().st_size))
+            known={r[0] for r in db.execute('SELECT ident FROM jobs')}
+            pending=[]
+            if os.path.isdir(root):
+                with os.scandir(root) as entries:
+                    for entry in entries:
+                        if entry.name.endswith('.img') and entry.name[:-4] not in known and entry.is_file():
+                            pending.append((entry.name[:-4],time.time(),entry.stat().st_size))
+            for start in range(0,len(pending),64):
+                with db:db.executemany("INSERT OR IGNORE INTO jobs VALUES(?,'','READY',0,0,0,?,?)",pending[start:start+64])
             _ADOPTED.add(root)
         return db.execute('SELECT coalesce(sum(bytes),0) FROM jobs').fetchone()[0]
     finally: db.close()
@@ -71,10 +74,12 @@ def run_one(now=None):
     owner=uuid.uuid4().hex
     db=connect()
     try:
-        db.execute('BEGIN IMMEDIATE')
+        # Empty queues and another active lease do not need a write lock.
         if db.execute('SELECT until FROM worker WHERE id=1').fetchone()[0]>now: return False
         row=db.execute("SELECT * FROM jobs WHERE status!='READY' AND attempts<3 AND next_at<=? ORDER BY priority,updated LIMIT 1",(now,)).fetchone()
         if not row: return False
+        db.execute('BEGIN IMMEDIATE')
+        if db.execute('SELECT until FROM worker WHERE id=1').fetchone()[0]>now:return False
         job=dict(row)
         # Claim with a finite lease, survives an interrupted Kodi process.
         with db:
@@ -83,6 +88,10 @@ def run_one(now=None):
         if not claimed: return False
     finally: db.close()
     try: fetch(job['url'])
+    except sqlite3.Error:
+        # A completed file survives; the finite claim expires and a later
+        # attempt adopts it. No network-attempt counter or reset is needed.
+        return False
     except Exception as exc:
         code='SPACE_FULL' if isinstance(exc,OSError) and getattr(exc,'errno',None)==28 else 'FAILED'
         db=connect()
@@ -91,18 +100,32 @@ def run_one(now=None):
                 (code,now+min(1800,60*2**job['attempts']),now,job['ident']))
         finally: db.close()
     finally:
-        db=connect()
         try:
-            with db: db.execute("UPDATE worker SET until=0,owner='' WHERE id=1 AND owner=?",(owner,))
-        finally: db.close()
+            db=connect()
+            try:
+                with db:db.execute("UPDATE worker SET until=0,owner='' WHERE id=1 AND owner=?",(owner,))
+            finally:db.close()
+        except sqlite3.Error:pass # finite lease; never turn BUSY into data loss
     return True
 
 
-def status():
-    db=connect()
-    try: counts={r[0]:r[1] for r in db.execute('SELECT status,count(*) FROM jobs GROUP BY status')}
-    finally: db.close()
-    return dict(counts=counts,bytes=used(),budget=budget())
+def status(cancel=lambda:False):
+    from artwork_db import snapshot,diagnostic
+    import shutil
+    value=dict(budget=budget(),bytes=None,counts=None,code='UNAVAILABLE',health=diagnostic())
+    # All waits happen in the status worker, at most one short retry. Never
+    # reuse the writer connector or run file adoption from a status route.
+    for attempt in range(2):
+        value.update(snapshot(cancel))
+        if value['code']!='BUSY' or attempt or cancel():break
+        import xbmc
+        if xbmc.Monitor().waitForAbort(.04):break
+    try:
+        from media_art import folder
+        capacity=shutil.disk_usage(os.path.dirname(folder()))
+        value.update(free=capacity.free,total=capacity.total)
+    except OSError:value['capacity_code']='UNAVAILABLE'
+    return value
 
 
 def retry():

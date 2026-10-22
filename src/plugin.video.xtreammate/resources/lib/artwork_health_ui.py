@@ -36,3 +36,26 @@ def manage():
             text='\n'.join(key+': '+str(result[key]) for key in ('code','phase','backup') if key in result)
             if result.get('background_paused'):text+='\n\n'+tr(32904)
             xbmcgui.Dialog().textviewer(tr(32900),text)
+
+
+def status_text(value):
+    def mib(number):return str(number//1048576) if isinstance(number,(int,float)) else '—'
+    lines=[tr(32960),tr(32961,value.get('code','UNAVAILABLE')),
+           tr(32962,mib(value.get('bytes')),mib(value.get('budget'))),
+           tr(32963,mib(value.get('free')),mib(value.get('total'))),tr(32964)]
+    if value.get('counts') is not None:lines.extend(str(k)+': '+str(v) for k,v in sorted(value['counts'].items()))
+    else:lines.append(tr(32965))
+    health=value.get('health',{})
+    lines.extend([tr(32966,health.get('integrity_code',health.get('code','NOT_CHECKED'))),tr(32967)])
+    return '\n'.join(lines)
+
+
+def show_status():
+    from art_store import status
+    try:value=_work(lambda cancel:status(cancel=cancel))
+    except Exception as exc:
+        from boot_diagnostics import mark
+        mark('ART_STATUS_COUNTS_FAILED',error=type(exc).__name__)
+        from art_store import budget
+        value=dict(code='UNAVAILABLE',budget=budget())
+    xbmcgui.Dialog().textviewer(tr(32661),status_text(value))
