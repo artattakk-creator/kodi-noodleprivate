@@ -131,7 +131,7 @@ class NavigationTests(Fixture,unittest.TestCase):
     def test_first_active_movie_group_native_left_edge_expand_and_right_collapse(self):
         w=self.media_window()
         self.assertEqual(w.mode,'landing');self.assertEqual(w.total,100)
-        w.native(4);self.assertEqual(w.focus,120);w.native(7);self.settle(w)
+        w.native(3);self.assertEqual(w.focus,120);w.native(7);self.settle(w)
         self.assertEqual((w.mode,w.category),('grid','a'))
         w.native(1);self.assertEqual(w.mode,'groups');self.assertEqual(w.focus,200)
         w.native(2);self.assertEqual(w.mode,'grid');self.assertEqual(w._cols,6)
@@ -141,7 +141,7 @@ class NavigationTests(Fixture,unittest.TestCase):
         w.native(1);self.assertEqual(w.mode,'groups')
 
     def test_left_edge_after_first_grid_row_preserves_identity_despite_native_wrap(self):
-        w=self.media_window();w.native(4);w.native(7);self.settle(w)
+        w=self.media_window();w.native(3);w.native(7);self.settle(w)
         w.native(1);w.native(2)
         w.getControl(210).selectItem(6);w._last_position=6
         w.native(1)  # Native panel can move to 5 before Python handles the edge.
@@ -149,7 +149,7 @@ class NavigationTests(Fixture,unittest.TestCase):
         w.native(2);self.assertEqual(w.getControl(210).selected,6)
 
     def test_empty_group_keeps_group_focus_and_recovers_with_another_group(self):
-        w=self.media_window();w.native(4);w.native(7);self.settle(w)
+        w=self.media_window();w.native(3);w.native(7);self.settle(w)
         w.native(1);w.native(4);w.native(7);self.settle(w)
         self.assertEqual((w.category,w.mode,w.focus),('b','groups',200))
         w.native(2);self.assertEqual(w.focus,200)
@@ -178,7 +178,7 @@ class NavigationTests(Fixture,unittest.TestCase):
                 w.getControl(110).selectItem(len(w.rows)-1);w._last_position=len(w.rows)-1
                 w.native(2);self.settle(w)
         self.assertEqual(len(ids),100);self.assertEqual(len(set(ids)),100)
-        self.assertLess(len(w.controls),20)
+        self.assertLessEqual(len(w.controls),30)
 
     def test_favourites_resume_and_trailer_are_real_conditional_actions(self):
         self.state.save_progress(dict(pid='p',kind='vod',sid='1'),1050,2700)

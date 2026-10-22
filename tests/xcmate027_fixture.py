@@ -31,7 +31,11 @@ class Control:
         self.items=[];self.selected=0;self.label=node.findtext('label','')
         self.width=int(node.findtext('width','0'));self.x=int(node.findtext('left','0'));self.y=int(node.findtext('top','0'))
     def reset(self): self.items=[];self.selected=0
-    def addItems(self,items): self.items=[ListItem(i) if isinstance(i,str) else i for i in items]
+    def addItems(self,items): self.items.extend(ListItem(i) if isinstance(i,str) else i for i in items)
+    def removeItem(self,index):
+        del self.items[index]
+        if self.selected>index:self.selected-=1
+        self.selected=max(0,min(self.selected,len(self.items)-1))
     def getListItem(self,index): return self.items[index]
     def getSelectedPosition(self): return self.selected
     def selectItem(self,item): self.selected=max(0,min(item,len(self.items)-1))
@@ -47,6 +51,7 @@ class Control:
     def setLabel(self,label='',font=None,textColor=None,disabledColor=None,shadowColor=None,focusedColor=None,label2=''): self.label=label
     def setText(self,text): self.text=text
     def setWidth(self,width): self.width=width
+    def setHeight(self,height):self.height=height
     def setPosition(self,x,y): self.x,self.y=x,y
     def setImage(self,imageFilename,useCache=True): self.image=imageFilename
 
@@ -54,7 +59,7 @@ class Control:
 class WindowXML:
     def __init__(self,xmlFilename,scriptPath,defaultSkin='Default',defaultRes='720p',isMedia=False):
         self.tree=ET.parse(Path(scriptPath)/'resources/skins'/defaultSkin/defaultRes/xmlFilename).getroot()
-        self.controls={int(n.get('id')):Control(n) for n in self.tree.findall('./controls/control') if n.get('id')}
+        self.controls={int(n.get('id')):Control(n) for n in self.tree.findall('.//control') if n.get('id')}
         self.focus=int(self.tree.findtext('defaultcontrol'));self.shown=False;self._window_properties={}
     def setProperty(self,key,value): self._window_properties[key]=value
     def getProperty(self,key): return self._window_properties.get(key,'')
@@ -62,7 +67,9 @@ class WindowXML:
         self.shown=True
         sys.modules['xbmc']._focus_window=self
         self.onInit()
-    def getControl(self,controlId): return self.controls[controlId]
+    def getControl(self,controlId):
+        assert self.controls[controlId].kind!='grouplist','Kodi Python cannot wrap grouplist'
+        return self.controls[controlId]
     def setFocusId(self,iControlId):
         assert self.controls[iControlId].visible, ('focus on hidden control',iControlId)
         assert self.controls[iControlId].kind in ('button','list','panel'),('focus on noninteractive control',iControlId)

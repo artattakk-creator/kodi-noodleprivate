@@ -115,10 +115,15 @@ def rail_items(pid,kind,reader,rail='favourites'):
             if kind=='vod' and fields[1]=='vod': ids.append(fields[2])
             elif kind=='series' and fields[1]=='series_item': ids.append(fields[2])
             elif kind=='series' and fields[1]=='episode' and len(fields)==5: ids.append(fields[2])
+    suppressed=set()
+    if rail=='continue' and kind=='vod':
+        from media_continue import hidden
+        suppressed=hidden(pid)
     rows=[];db=_db()
     try:
         db.execute('CREATE TABLE IF NOT EXISTS favourite_items(ident TEXT PRIMARY KEY,payload TEXT)')
         for sid in dict.fromkeys(ids):
+            if sid in suppressed:continue
             item=reader.get(kind,sid)
             if item:
                 if rail=='favourites':

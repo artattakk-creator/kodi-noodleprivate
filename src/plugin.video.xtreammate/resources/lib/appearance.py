@@ -77,7 +77,7 @@ def window_source(xml_filename):
         if node.tag=='font': node.text=FONTS[values['font']]
         elif node.tag=='textcolor':
             node.text=argb(values['secondary'] if node.text=='FFB6BCC6' else values['text'])
-        elif node.tag=='texture' and node.text:
+        elif node.tag=='texture' and node.text and not node.text.endswith('xcmate_focus_neon.png'):
             node.set('colordiffuse',argb('FFFFFF',values['icon_opacity']))
         elif node.tag=='texturefocus' and not (node.text or '').endswith('xcmate_focus_neon.png'): node.set('colordiffuse',argb(values['focus'],values['panel_opacity']))
         elif node.tag=='texturenofocus': node.set('colordiffuse',argb(values['background'],values['panel_opacity']))

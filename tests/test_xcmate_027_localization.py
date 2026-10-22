@@ -104,7 +104,7 @@ class LocalizationTests(Fixture,unittest.TestCase):
         self.assertEqual(w.getControl(400).label,'Search')
         self.assertIn('Back: one level',w.getControl(501).label)
         self.assertEqual(w.getControl(120).label,'Movies / Categories')
-        w.native(4);w.native(7);self.settle(w);w.native(1);w.native(2)
+        w.native(3);w.native(7);self.settle(w);w.native(1);w.native(2)
         self.assertEqual((w.mode,w._cols),('grid',6))
         w.native(7);self.settle(w)
         self.assertIn(('Play','play'),w.actions)
@@ -120,7 +120,9 @@ class LocalizationTests(Fixture,unittest.TestCase):
         w.native(7)
         self.assertEqual(w.getControl(330).items[0].label,'Season 1 · 0/2 · Unwatched')
         w.native(7)
-        self.assertIn('Unwatched',w.getControl(330).items[0].label)
+        self.assertTrue(w.getControl(330).items[0].getProperty('XCMate.Eye').endswith('eye_unseen.png'))
+        self.assertEqual(w.getControl(631).label,'Unwatched')
+        self.assertEqual(w.getControl(633).label,'Watched')
         self.assertEqual(self.builtins,[])
 
     def test_english_guide_day_buttons_empty_status_and_group_focus(self):

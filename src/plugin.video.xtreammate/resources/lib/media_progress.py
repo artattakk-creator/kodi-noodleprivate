@@ -66,6 +66,10 @@ def play(router,portal):
         # Playback still works, but no unverified resume tracking.
         xbmcgui.Window(10000).clearProperty(PROPERTY)
     if request: complete(request)
+    if kind=='vod':
+        from media_continue import reveal
+        try:reveal(portal['id'],sid)
+        except (OSError,sqlite3.Error):pass  # Playback remains available on read-only/full storage.
     xbmcplugin.setResolvedUrl(router._handle,True,item)
 
 

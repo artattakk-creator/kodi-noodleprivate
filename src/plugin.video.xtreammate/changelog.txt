@@ -1,3 +1,11 @@
+0.1.29.18 (media/UI test candidate; main remains .17)
+- Progressive 24-title category batches for movies and series, appended automatically near the native Down boundary; bounded 240-item moving UI window and category totals.
+- 164x246 posters, two-line titles, top categories/search, Continue -> Favourites -> New, stable detail return and async artwork focus.
+- Green eye = unseen, red eye = watched; permanent episode legend and existing progress preserved.
+- Explicit portal-local Continue suppression for movies without deleting progress/favourites/seen state; a validated new movie request can reveal it again.
+- Cancel stale metadata UI callbacks before playback; owner restores detail/episode focus after natural playback end even without a repeated onInit.
+- No series auto-next, catch-up action, global keymap, artwork repair or automatic release. Android NOT_TESTED.
+
 0.1.29.17 (isolated Live-TV Stop/Exit test candidate)
 - Start channel is a Home action; legacy folder calls anchor Home before direct playback.
 - Stop/long Back/Back from hidden TV requests a session-scoped exit. Service stops only the verified tagged item, waits for termination, closes its overlay and returns to XCMate Home.
