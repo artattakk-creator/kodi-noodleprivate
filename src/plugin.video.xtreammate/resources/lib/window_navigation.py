@@ -89,9 +89,10 @@ def _anchor_home(router,portal,dispatch):
     trace('ANCHOR_TIMEOUT',dispatch=dispatch);return False
 
 
-def open_route(router,portal,opener):
+def open_route(router,portal,opener,after_close=None):
     dispatch=uuid.uuid4().hex
     trace('ENTRY',dispatch=dispatch)
+    result=None
     with ownership() as acquired:
         if not acquired:
             # Existing WindowXML keeps owning input; do not replace its container.
@@ -102,7 +103,7 @@ def open_route(router,portal,opener):
         router._navigation_dispatch=dispatch
         try:
             trace('OPEN',dispatch=dispatch)
-            opener()
+            result=opener()
         except Exception as exc:
             from owner_dispatch import WindowStartError
             if not isinstance(exc,WindowStartError):raise
@@ -112,3 +113,6 @@ def open_route(router,portal,opener):
             trace('START_RECOVERED',dispatch=dispatch)
             xbmcgui.Dialog().notification('XCMate',tr(32910))
         finally:trace('RETURN',dispatch=dispatch)
+
+    # The native callback/pump and cross-interpreter navigation lock have ended.
+    if after_close is not None and result is not None:after_close(router,portal,result)

@@ -15,7 +15,9 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._pool=ThreadPoolExecutor(max_workers=1);self._generation=0;self._closed=False;self._ready=False
         self._loading=False;self._leaving=False;self._cells={};self.rows=[];self.groups=[];self.category=None
         self.offset=0;self.total=0;self.row=0;self.cursor=int(time.time());self.origin=self.cursor//1800*1800
-        self._last_refresh=0;self._art_revision=0;self._short_revision='';self._return_home=False
+        self._last_refresh=0;self._art_revision=0;self._short_revision='';self._return_home=False;self._play_request=None
+        from guide_playback import player_state
+        self._entry_player=player_state()
 
     @native_init
     def onInit(self):
@@ -31,11 +33,12 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         if not background:self._loading=True;self.setFocusId(312)
         self.getControl(102).setLabel(tr(33108))
         origin,offset,category=self.origin,self.offset,self.category
+        router,portal=self.router,self.portal
         def load():
             from guide_grid_data import page
-            try:client=self.router._xc(self.portal)
+            try:client=router._xc(portal)
             except (ValueError,AttributeError):client=None
-            return page(self.portal,offset,origin,category,client)
+            return page(portal,offset,origin,category,client)
         self._request(load,self._loaded)
 
     def _loaded(self,value):
@@ -127,7 +130,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         self.cursor=target;self.origin=target//1800*1800;self._load()
 
     def _actions(self,channel_only=False):
-        if self._loading or not self.rows:return
+        if self._closed or self._leaving or self._loading or not self.rows:return
         row=self.rows[self.row];channel=row['channel'];event=self._selected()
         choices=[tr(33112),tr(32550),tr(33118)]
         if event and not channel_only:
@@ -139,10 +142,16 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
             if event:text+='\n'+event['title']+'\n'+str(event.get('description') or tr(32553))
             xbmcgui.Dialog().textviewer(tr(33112),text)
         elif choice==1:
-            # IDs come from the selected active Reader page, never an event URL.
-            sid=channel['sid'];self.close()
-            action='play_live' if self.portal.get('type')=='xtream' else 'source_play'
-            xbmc.executebuiltin('PlayMedia('+self.router.url(action=action,pid=self.portal['id'],sid=sid,name=channel['name'])+')')
+            # Only record the selected channel. No close/PlayMedia in a native
+            # callback: the owner pump closes after this callback has returned.
+            from guide_playback import request
+            self._play_request=request(self.portal,channel,self._entry_player)
+            try:self._play_request['window']=int(xbmcgui.getCurrentWindowId())
+            except (AttributeError,RuntimeError):self._play_request['window']=None
+            self._leaving=True;self._leave_after=time.monotonic()+.15
+            self._generation+=1
+            if self._pending_future is not None:self._pending_future.cancel()
+            self._pending_future=None;self._pending_apply=None
         elif 0<=choice<len(choices) and choices[choice]==tr(33118):
             from guide_bookmarks import entries
             entries=entries(self.portal['id'])
@@ -215,10 +224,16 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
     def close(self):
         self._gui()
         if self._closed:return
-        self._closed=True;self._generation+=1;self._pool.shutdown(wait=False,cancel_futures=True);super().close()
+        self._closed=True;self._generation+=1
+        if self._pending_future is not None:self._pending_future.cancel()
+        self._pending_future=None;self._pending_apply=None
+        self._pool.shutdown(wait=False,cancel_futures=True);super().close()
 
 
 def open_grid(router,portal):
     window=open_owned_window(GuideGridWindow,'XCMateGuideGrid.xml',router,portal)
     if getattr(window,'_next_route',''):xbmc.executebuiltin('Container.Update('+window._next_route+')')
-    return window
+    intent=window._play_request
+    # Do not return or retain the WindowXML through the playback transition.
+    del window
+    return intent
