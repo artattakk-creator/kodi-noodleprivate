@@ -1,3 +1,9 @@
+0.1.29.17 (isolated Live-TV Stop/Exit test candidate)
+- Start channel is a Home action; legacy folder calls anchor Home before direct playback.
+- Stop/long Back/Back from hidden TV requests a session-scoped exit. Service stops only the verified tagged item, waits for termination, closes its overlay and returns to XCMate Home.
+- Cancel preplay/recovery/root-autoplay after explicit Exit until a new selection. No foreign player stops; no global keymap or data changes.
+- Existing .16 EPG handoff and fixed 14:00 navigation preserved; Android acceptance pending.
+
 0.1.29.16 (isolated EPG test candidate; no production publication)
 - Defer Watch to a single existing live resolver after native callbacks, owner pump and navigation lock have ended; do not close/play inside the OK callback.
 - Selected-channel diagnostics read the real long-term SQLite horizon, alias and sources separately from the local short cache, without import or data reset.

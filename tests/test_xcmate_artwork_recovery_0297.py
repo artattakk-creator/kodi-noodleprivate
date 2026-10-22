@@ -236,10 +236,12 @@ class StartRouteTests(Fixture,unittest.TestCase):
     def test_valid_home_start_finishes_success_before_unchanged_direct_player(self):
         self.router._params['action']='home_start'
         def play():
-            self.assertEqual(self.ends,[((7,True),{'cacheToDisc':False})])
+            self.assertEqual(self.ends,[((7,),{'cacheToDisc':False})])
+            self.assertEqual(len(self.added),6)
+            self.assertIn('action=xcmate_home',self.builtins[-1])
         self.router._play_start_direct=mock.Mock(side_effect=play)
         self.routes.dispatch(self.router)
-        self.router._play_start_direct.assert_called_once();self.assertEqual(self.builtins,[])
+        self.router._play_start_direct.assert_called_once();self.assertIn('action=xcmate_home',self.builtins[-1])
 
     def test_missing_start_channel_keeps_failure_and_never_plays(self):
         self.portal['start_stream_id']='missing';self.router._params['action']='home_start'

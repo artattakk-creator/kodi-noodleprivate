@@ -1,0 +1,18 @@
+# Android-Test 0.1.29.17 – NOT_RUN
+
+[Test-ZIP](https://github.com/artattakk-creator/kodi-noodleprivate/raw/refs/heads/fix/xcmate-02917-live-stop/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.17.zip) · [SHA256-Datei](../../plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.17.zip.sha256)
+
+SHA256: `5f388a6fdd5ee37416cc9b01c60932ac26b3c073cb368d88e7317fe2a23f9b10`
+
+Gerät: Android 13 / RK3528 ARM32 / Kodi 21.2 Omega / Titan BINGIE MOD; später Estuary. Erst P0 #97 abnehmen, danach EPG-Playback #89. Bestehende installierte .16 ist nur funktionaler Teil-PASS.
+
+1. **Installieren:** Kodi beenden, bestehendes Profil privat sichern, Test-ZIP herunterladen und SHA256 prüfen. „Aus ZIP-Datei installieren“, Version .17 bestätigen, Kodi neu starten. Kein Deinstallieren, Cache-/Datenreset oder Gruppen-/Portalneuaufbau. Kein reguläres OTA-Angebot für diesen Kandidaten.
+2. **Einzeltest Stop zuerst:** XCMate-Hauptübersicht → Startsender. Bild/Ton, 1× OK-Infoleiste inkl. EPG, Links-Mini-EPG und Zurück zum Video prüfen. Untere Steuerleiste öffnen → Stop **einmal**. Erwartet: Video/Ton enden, eigenes Overlay schließt, XCMate-Hauptübersicht erscheint, kein ungefragter Senderstart. Mindestens 10 Sekunden beobachten. Erst wenn dies PASS ist, weitergehen.
+3. **Wiederholung:** Zehn normale Start/Stop-Zyklen, anschließend anderer Sender, Senderwechsel, doppelte Stop-/OK-/Back-Eingabe im Übergang. Physische Stop-Taste und langes Back (falls vorhanden) prüfen. Kurzes Back schließt zunächst die jeweilige Overlayebene; Back bei bereits verborgenem Overlay beendet Live-TV zu XCMate Home. Kein Kodi-/Android-Exit, kein Doppelsender, kein Hintergrundton. Nach bewusster Neuauswahl muss derselbe Sender wieder startbar sein.
+4. **Konkurrenz/Fehler nur gezielt:** Bei verändertem Account/Player keine fremde Wiedergabe stoppen oder dorthin navigieren. Verbindungsaufbau/kurzer Zapping-Gap bleibt erlaubt; kein generelles Recovery-Abschalten. Falls ein Stop nicht bestätigt wird, Timeout-Meldung statt Endlosschleife; Kodi darf weiter bedienbar sein. Einen früher funktionierenden Sender verwenden, keine Decoderexperimente.
+5. **P0-Folgegate #89:** Nur nach stabilem Stop denselben bekannten guten Sender aus großem EPG → OK → „Jetzt Sender ansehen“ **einmal** starten und stoppen. Bei stabilem Einzeltest fünf Wiederholungen. Der .16-Handoff ist unverändert, auf Android bislang NOT_TESTED.
+6. **Regressionsschutz:** Großer EPG weiter über 14 Uhr, Diagnose öffnet (leere Coverage bleibt eigener Befund), Medien/Staffeln/Folgen/Resume/Favoriten und Zurück, neuer manueller Live-Start nach Film, weitere bestehende Accounts/Quellen. Keine neuen Features aus dem Integrationsplan als vorhanden testen.
+7. **Bei erneutem Kodi-Ende oder Startloop sofort abbrechen.** Keine Crash-Schleife. Uhrzeit und letzten Bedienungsschritt notieren; Kodi-Log und ggf. Android-logcat/Tombstone privat sichern und URLs/Tokens/Host-/Nutzerdaten vor Weitergabe entfernen. Im Log sind `[XCMate][LIVE_EXIT]`-Stages mit anonymem Sessionfingerabdruck für Stop/Home und START_RESOLVER/LIVE_RESOLVER relevant. Entscheidend ist, ob nach STOP ein neuer Resolver-Aufruf erscheint, nicht bloß ein Overlay.
+8. **Ergebnis:** Installierte Version/SHA, Kodi/Skin und Schritte jeweils PASS/FAIL/NOT_TESTED melden. Host-/CI-Erfolg ist keine Android-Abnahme. Erst nach Nutzerbestätigung und ausdrücklicher Freigabe darf ein Merge/Release erwogen werden.
+
+Rückfall bei Bedarf: unverändertes .16-ZIP (mit bekanntem Stop-FAIL), alternativ zuvor Android-funktionale .11 (mit dokumentierten Restbefunden). Profil behalten; alten Installationsstand nicht als neue Gesamtabnahme behandeln. Die Version .12 bleibt zurückgezogen.

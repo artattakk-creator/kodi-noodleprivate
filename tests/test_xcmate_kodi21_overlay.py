@@ -1,3 +1,4 @@
+import json
 """Omega WindowDialog integration model, not an Android device acceptance test.
 
 WindowDialog.show does NOT call onInit. Native controls move/click before
@@ -195,6 +196,19 @@ class OverlayLifecycleTests(unittest.TestCase):
         self.addCleanup(self.overlay.close)
         self.overlay.handle_command('left')
 
+    def finish_owned_exit(self):
+        import live_exit
+        value=live_exit.state();self.assertIsNotNone(value)
+        value['not_before']=0;live_exit._save(value)
+        self.player.stop.assert_not_called()
+        self.player.stop.side_effect=lambda:setattr(self.player,'isPlayingVideo',lambda:False)
+        live_exit.poll(self.overlay)
+        live_exit.poll(self.overlay)
+
+    def tag_current_live(self):
+        session=self.module.announce('p','1')
+        self.player.getVideoInfoTag=lambda:types.SimpleNamespace(getUniqueID=lambda key:json.dumps(session) if key=='xcmate_live' else '')
+
     def test_show_builds_once_without_an_oninit_callback(self):
         o = self.overlay
         self.assertTrue(o._drawn and o.shown)
@@ -275,9 +289,11 @@ class OverlayLifecycleTests(unittest.TestCase):
         self.assertEqual(self.player.pause.call_count,2)
         self.assertEqual(o.main_buttons[0].label,'Pause')
         self.player.stop.assert_not_called()
+        self.tag_current_live()
         o._focus_main=3
         o._render()
         o.native(7)
+        self.finish_owned_exit()
         self.player.stop.assert_called_once()
         self.assertTrue(o._closed)
 
@@ -610,7 +626,7 @@ class OverlayLifecycleTests(unittest.TestCase):
         o = self.overlay
         self.module.announce('other','2')
         o.native(13)
-        self.player.stop.assert_called_once()
+        self.player.stop.assert_not_called()  # A newer foreign session rejects stale Exit.
         o.close()
         self.assertEqual(o.closes,1)
         self.assertEqual(self.module.session_from_property(self.props[self.module.SESSION_KEY])['pid'],'other')
@@ -630,8 +646,9 @@ class OverlayLifecycleTests(unittest.TestCase):
         self.assertTrue(self.overlay.owns_playback())
 
     def test_stop_clears_owned_session_and_prevents_reopening(self):
-        self.module.announce('p','1')
+        self.tag_current_live()
         self.overlay.native(13)
+        self.finish_owned_exit()
         self.assertNotIn(self.module.SESSION_KEY,self.props)
         self.overlay.show()
         self.assertFalse(self.overlay.shown)

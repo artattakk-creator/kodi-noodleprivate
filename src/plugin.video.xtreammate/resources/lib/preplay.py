@@ -159,6 +159,7 @@ class ConnectingNavigator(LiveNavigator):
                         and time.monotonic()-self._connecting_started<60)
         return False
     def _accept_input(self):
+        if getattr(self,'_exiting',False):return False
         if self._connecting and not self._closed:
             from live_overlay import session_from_property,SESSION_KEY
             session=session_from_property(marker().getProperty(SESSION_KEY))
@@ -167,7 +168,7 @@ class ConnectingNavigator(LiveNavigator):
     def handle_command(self,command,source='bridge',**fields):
         if self._connecting:
             if command=='back':
-                xbmc.Player().stop();self.close();return
+                self._request_exit();return
             if command not in ('up','down','left','right'): return
             # Only safe sender/list navigation; never pause/seek a pending player.
             if self.mode=='info' and command in ('up','down'):
@@ -184,5 +185,5 @@ class ConnectingNavigator(LiveNavigator):
                 except RuntimeError: return
                 self._connecting=False;self._switch('info')
             elif time.monotonic()-self._connecting_started>60:
-                xbmc.Player().stop();self.close();return
+                self._request_exit();return
         super().tick()

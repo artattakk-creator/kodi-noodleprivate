@@ -154,11 +154,14 @@ class IPTVMasterService(xbmc.Monitor):
             if time.monotonic()>=self._next_diagnostic:
                 self._next_diagnostic=time.monotonic()+30
                 diagnostic('service','RUNNING',running=True,count=loops,build=SERVICE_BUILD)
+            from live_exit import poll as poll_live_exit
+            exiting=poll_live_exit(self._overlay)
+            if self._overlay is not None and self._overlay._closed:self._overlay=None
             # Fullscreen-to-navigation transition, independent of slow workers.
             # The live overlay itself and its Back hierarchy remain unchanged.
             try:
                 from playback_exit import poll as poll_playback_exit
-                poll_playback_exit()
+                if not exiting:poll_playback_exit()
             except Exception:
                 diagnostic('ownership','EXIT_CHECK_FAILED')
             # Explicit visible-page/manual EPG requests are small, service-owned
@@ -183,6 +186,9 @@ class IPTVMasterService(xbmc.Monitor):
             if setting_bool('xc_background_prefetch', False):
                 self._maybe_refresh_epg()
                 self._maybe_warm_catalogs()
+            if exiting:
+                self.waitForAbort(.2)
+                continue  # Background jobs above still run; live recovery stays cancelled.
             try:
                 try:
                     from play_intent import poll as poll_preplay

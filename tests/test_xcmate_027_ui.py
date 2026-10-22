@@ -350,8 +350,12 @@ class FreezeTests(unittest.TestCase):
                             if isinstance(method,ast.FunctionDef): functions[node.name+'.'+method.name]=method
                     else: outer.append(ast.dump(node,include_attributes=False))
                 allowed={'category_rows','LiveNavigator._list_content',
-                    'LiveNavigator._page_channels','LiveNavigator._toggle','LiveNavigator._select'}
-                self.assertEqual(set(functions),set(reference['functions'])|{'LiveNavigator._move_channels'})
+                    'LiveNavigator._page_channels','LiveNavigator._toggle','LiveNavigator._select',
+                    # Explicit #97 exception: request-only exit, ownership and
+                    # cancellation; original baseline hashes stay unchanged.
+                    'announce','LiveNavigator.close','LiveNavigator._accept_input',
+                    'LiveNavigator._execute','LiveNavigator._handle_command','LiveNavigator.onAction'}
+                self.assertEqual(set(functions),set(reference['functions'])|{'LiveNavigator._move_channels','LiveNavigator._request_exit'})
                 self.assertEqual(outer,reference['outer'])
                 for name,original in reference['functions'].items():
                     if name not in allowed:
@@ -366,6 +370,9 @@ class FreezeTests(unittest.TestCase):
         for addition in additions:
             self.assertEqual(source.count(addition),1)
             source=source.replace(addition,'')
+        source=source.replace("        from live_exit import state as live_exit_state\n        if live_exit_state():return\n",'')
+        for stage in ('START_RESOLVER','LIVE_RESOLVER'):
+            source=source.replace("        from live_exit import _trace\n        _trace('"+stage+"')\n",'')
         tree=ast.parse(source)
         methods={n.name:ast.dump(n,include_attributes=False) for n in ast.walk(tree) if isinstance(n,ast.FunctionDef)}
         for name,digest in frozen['methods'].items():

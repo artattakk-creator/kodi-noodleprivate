@@ -47,6 +47,8 @@ CHANNEL_PAGE_SIZE = 100
 
 def announce(portal_id, stream_id, channel_name=''):
     """Set a small, short-lived playback marker; never store provider passwords."""
+    from live_exit import new_selection
+    new_selection()
     value = {'pid': str(portal_id), 'sid': str(stream_id),
              'name': str(channel_name)[:160], 'at': time.time(),
              'nonce': uuid.uuid4().hex}
@@ -275,7 +277,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         marker = xbmcgui.Window(10000)
         marker.clearProperty('XtreamMate.RemoteCommand')
         session = session_from_property(marker.getProperty(SESSION_KEY))
-        if session and (session['pid'], session['sid']) == (str(self.portal['id']), self.sid):
+        if session and (session['pid'], session['sid']) == (str(self.portal['id']), self.sid) and (not getattr(self,'_exit_nonce','') or session['nonce']==self._exit_nonce):
             marker.clearProperty(SESSION_KEY)
         marker.setProperty('XtreamMate.OverlayStatus', 'geschlossen')
         trace('dialog','CLOSED',video=xbmc.Player().isPlayingVideo())
@@ -309,12 +311,22 @@ class LiveNavigator(xbmcgui.WindowDialog):
             return False
 
     def _accept_input(self):
-        if self._closed:
+        if self._closed or getattr(self,'_exiting',False):
             return False
         if not self.owns_playback():
             self.close()
             return False
+        from playback_exit import identity
+        try:self._owned_token=identity(xbmc.Player())
+        except (AttributeError,RuntimeError):self._owned_token=None
         return True
+
+    def _request_exit(self):
+        from live_exit import request,_trace
+        try:accepted=request(self)
+        except (AttributeError,RuntimeError):accepted=False
+        if not accepted:_trace('STOP_REJECTED')
+        return accepted
 
     def _build_controls(self):
         import xbmcaddon
@@ -717,8 +729,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             elif index == 2: self._seek(30)
             elif index == 5: self._seek(None)
             elif index == 3:
-                xbmc.Player().stop()
-                self.close()
+                self._request_exit()
                 return
             self._render()
         else:
@@ -827,7 +838,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             self._switch('info')
         elif command in ('back',):
             if self.mode == 'hidden':
-                self.close()
+                self._request_exit()
             elif self.mode == 'channels':
                 self._switch('hidden')
             elif self.mode == 'guide':
@@ -841,8 +852,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             else:
                 self._switch('hidden')
         elif command == 'long_back':
-            xbmc.Player().stop()
-            self.close()
+            self._request_exit()
         elif command == 'long_up':
             self._recent()
         elif command == 'long_down':
@@ -886,6 +896,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
             raw = int(action.getButtonCode())
         except Exception:
             raw = 0
+        if key==ACTION_STOP and not self._closed and not getattr(self,'_exiting',False):
+            self._request_exit();return
         was_closed=getattr(self,'_closed',False)
         if not self._accept_input():
             trace('input','ACTION_IGNORED_CLOSED' if was_closed else 'ACTION_REJECTED',
@@ -908,10 +920,6 @@ class LiveNavigator(xbmcgui.WindowDialog):
             mapped = 'back'
         elif key == ACTION_CONTEXT_MENU:
             mapped = 'menu'
-        elif key == ACTION_STOP:
-            xbmc.Player().stop()
-            self.close()
-            return
         elif key == ACTION_PAUSE:
             mapped = 'play_pause'
         elif key == ACTION_RIGHT:
