@@ -1,0 +1,81 @@
+# XCMate – Projektübergabe und Android-Abnahme (22.10.2026)
+
+> **Verbindlicher Übergabestand.** Kein Release oder Merge durch diese Dokumentation. Für operative Arbeiten GitHub-Zustand erneut abgleichen.
+
+## Grunddaten und Schutzregeln
+
+- Projekt: **GS Media XCMate**, Kodi-IPTV-Add-on `plugin.video.xtreammate`.
+- Repository: https://github.com/artattakk-creator/kodi-noodleprivate
+- Testgerät: Android TV 13, Rockchip RK3528/ARM32, Kodi 21.2 Omega, Titan BINGIE MOD 2.2.3, IR-Fernbedienung.
+- **Letzte real bestätigte stabile Version: 0.1.29.8**. Die getestete Film-/Seriennavigation ist vor Regressionen zu schützen. Issue [#73](https://github.com/artattakk-creator/kodi-noodleprivate/issues/73) abgeschlossen: 20/20 Öffnen-Schließen, 6/6 Doppel-Zurück, Film- und Episodenrückkehr PASS.
+- **Versionsgrenze strikt unter 0.1.30.** Alte ZIPs niemals überschreiben. Keine eigenmächtigen Merges, Releases, Datenbank-Löschungen, Profil-Migrationen, globalen Keymap-Änderungen oder Issue-Schließungen ohne reale Abnahme.
+- Vor dem ersten Android-Test Profilbackup, vorhandene Portale, EPG-Mappings, Sendergruppen, Favoriten, Artwork und Resume-Daten erhalten; vertrauliche Logs vor Veröffentlichung bereinigen.
+
+## Kandidaten zur gestaffelten Android-Abnahme
+
+| Reihenfolge | Version | Draft-PR | Schwerpunkt | Berichtete automatisierte Tests | Android |
+|---|---|---|---|---|---|
+| 1 | 0.1.29.11 | [#80](https://github.com/artattakk-creator/kodi-noodleprivate/pull/80) | Bildspeicherstatus und SQLite-BUSY | 568 PASS; CI PASS | NOT_RUN |
+| 2 | 0.1.29.13 | [#82](https://github.com/artattakk-creator/kodi-noodleprivate/pull/82) | Horizontaler EPG-Programmguide | 584 PASS | NOT_RUN |
+| 3 | 0.1.29.14 | [#83](https://github.com/artattakk-creator/kodi-noodleprivate/pull/83) | Film-/Serien-UI, grüner Fokus, Fanart | 580 PASS | NOT_RUN |
+| 4 | 0.1.29.15 | [#84](https://github.com/artattakk-creator/kodi-noodleprivate/pull/84) | Eigenes XCMate-Media-Player-OSD | 581 PASS | NOT_RUN |
+
+**Achtung:** 0.1.29.13, .14 und .15 sind **nicht kumulativ**; es sind separate Entwicklungsbranches auf Grundlage von .11. Sie dürfen erst nach unabhängiger Android-Abnahme in einem eigenen Integrationsstand zusammengeführt werden. Die zurückgezogene Version **0.1.29.12/PR #81 niemals installieren** (ungültiges Kodi-API-Capability-Feld).
+
+### Test 1 – 0.1.29.11, Issue #75 und #69
+
+Unter .8 schlug `art_status` fehl: `DISPATCH_FAILED error=OTHER`, außerdem `artwork db: code=BUSY phase=QUERY sqlite=5`. Dies beweist **keine** Beschädigung der Datenbank.
+
+- Test-ZIP: https://github.com/artattakk-creator/kodi-noodleprivate/raw/refs/heads/fix/xcmate-02911-art-status/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.11.zip
+- SHA256: `428a23ae8a627075da779b3bff0618d1ca70b535aa44a12355ed22e95e912faa`
+- ZIP installieren, Versionsanzeige prüfen, Kodi vollständig neu starten. Bildspeicherstatus **10×** öffnen/schließen; gesperrte Datenbank muss einen verständlichen Teilstatus liefern; Diagnose und Einstellungen prüfen; EPG, Live-TV, Filme und Serien auf Grundfunktion testen. Bei FAIL sofort Testkette anhalten, Zeitpunkt/Log erfassen; keine Daten verändern.
+
+### Test 2 – 0.1.29.13, EPG-Guide (Issue #57)
+
+- Test-ZIP: https://github.com/artattakk-creator/kodi-noodleprivate/raw/refs/heads/feat/xcmate-02913-guide-grid/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.13.zip
+- SHA256: `485d59229aaf288de1b6392fc3169cc7d5b718402609fe40b0cd6a2391bdb091`
+- Soll: fixe Senderlogo-Spalte, horizontale gemeinsame Zeitskala, nach Dauer skalierte Sendungsblöcke, Jetzt-Markierung, neongrüner Fokus. Hoch/Runter Senderzeilen; Links/Rechts Sendungen; OK Details/Aktionen; Zurück schließt Kontext bzw. Guide; Sprünge zu Jetzt/20:15/Tagen sowie Gruppenwechsel und Suche.
+- Noch offen: erweitertes XMLTV-Mapping, TMDB, Catch-up, echte Aufnahme, Quellenvollständigkeit für 7–10 Tage. Issues #60, #58, #62. Auch fehlende EPG-Daten müssen kontrolliert behandelt werden.
+
+### Test 3 – 0.1.29.14, Medien-UI (Issue #74)
+
+- Test-ZIP: https://github.com/artattakk-creator/kodi-noodleprivate/raw/refs/heads/feat/xcmate-02914-media-focus/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.14.zip
+- SHA256: `995ba0a4fc263de9a55fb3568adeeb8cc4866c912cacedf27617aaec3b6ecf84`
+- Prüfen: Suchfeld/Kategorien oben; Reihenfolge Weiter ansehen → Favoriten → Neu hinzugefügt; größere Poster, mehrzeilige Titel, vertikale Navigation, sichtbare neongrüne Fokusumrandung auf allen navigierbaren Elementen; je Film korrektes großflächiges Fanart mit dunklem Textverlauf und neutralem Fallback; keine fremden/stale Hintergrundbilder. Keine vorhandenen Appearance-Settings verändern.
+
+### Test 4 – 0.1.29.15, XCMate-Player-OSD (Issue #79)
+
+- Test-ZIP: https://github.com/artattakk-creator/kodi-noodleprivate/raw/refs/heads/feat/xcmate-02915-media-osd/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.15.zip
+- SHA256: `ef02da17cad658858ea9a98c10ce28d95e67d0f86a2ac20b21ba6c223db8e34d`
+- Prüfen: Filme und Serienepisoden mehrfach starten; OK öffnet XCMate-OSD, Zurück schließt nur OSD, bewusstes Stop beendet Bild/Ton; Play/Pause, Seek wo unterstützt, Tonspur, Untertitel, Bild-/Tonsettings, Poster/Titel/Laufzeit, Fokus, Resume. Kein Eingriff in fremde Kodi-Wiedergaben oder Live-TV-Overlay.
+- Geplanter, noch **nicht aktiver** Downloadbutton siehe Issue #63.
+- **Serien-Autoplay ist ausdrücklich NICHT Bestandteil dieses Kandidaten.**
+
+## Entwicklungsauftrag danach: Serien-Autoplay – Issue #85
+
+- Verbindliches Issue: https://github.com/artattakk-creator/kodi-noodleprivate/issues/85
+- Historische Spezifikation mit verbindlichem neuen Vorrang: https://github.com/artattakk-creator/kodi-noodleprivate/blob/main/docs/XCMate/SERIES_PROGRESS_SPEC_DE.md
+- Geplanter Kandidat **0.1.29.16**, nur nach Prüfung auf bereits vergebene Versionsnummer, als **eigener Draft-PR auf Grundlage von PR #84**. ZIP .15 unangetastet lassen.
+
+**Soll:** Nach dem regulären Ende einer vom Nutzer bewusst gestarteten Serienepisode die nächste tatsächlich vorhandene Episode derselben Serie und desselben Portals **automatisch ohne weiteres OK** abspielen, auch über Staffelgrenzen. Fehlende Episodennummern überspringen, aber numerische Reihenfolge behalten; Staffel 0/Specials nicht automatisch einreihen; am wirklichen Serienende aufhören, kein erneuter Start von Episode 1. Manueller Stop und Stop während Übergangs brechen die gesamte Kette ab, ohne Hintergrundton. Opt-out für die aktuelle Sitzung im eigenen OSD; bestehende produktive Einstellungen nicht heimlich ändern. Nur bei verifiziertem natürlichem Ende fortsetzen; nicht bei Netzwerkfehler, Kodi-Ende, manuellem Stop, Film, Trailer, Live-TV oder fremden Add-ons. Ereignisse idempotent verarbeiten (keine Doppelfolge); Resume/Gesehen, Session-Ownership, Titel/Poster/Fortschritt im OSD sauber aktualisieren. Keine GUI-Blockierung oder Endlosschleife bei fehlenden Folgen.
+
+Technische Anknüpfungspunkte: `media_progress.py`, `media_osd.py`, `media_window.py`, `media_data.py`, `media_state.py`, `media_intent.py`, `service.py`; kanonische Folgenliste aus `media_data.episode_records()` wiederverwenden.
+
+**Abnahme:** Folge bis Ende → automatische nächste; mehrere Folgen; Staffelwechsel; manueller Stop während Wiedergabe und Übergang; Start mitten in späterer Staffel; Lücken/Serienende/Fehler; Watched/Resume; zuverlässiges Kodi/IR nach Stop; keine Regression des Live-TV-Overlays. Status: SPEZIFIZIERT / NICHT IMPLEMENTIERT / ANDROID NOT_RUN.
+
+## Weitere bekannte Baustellen
+
+- Artwork-/Speicherprofile, lokal/USB und SMB: Issue [#41](https://github.com/artattakk-creator/kodi-noodleprivate/issues/41), Draft [#78](https://github.com/artattakk-creator/kodi-noodleprivate/pull/78), vollständiger direkter SMB-Zugriff offen. Speicherbudget/-ort nicht anfassen.
+- Aufnahme / automatisches Umschalten: Issue [#62](https://github.com/artattakk-creator/kodi-noodleprivate/issues/62), nur mit real bestätigter Android-Unterstützung.
+- Externe XMLTV-Quellen, Sender-Matching und manuelle EPG-Zuordnung: Issue [#60](https://github.com/artattakk-creator/kodi-noodleprivate/issues/60).
+- Space Premium, 98 Grafiken: PR [#50](https://github.com/artattakk-creator/kodi-noodleprivate/pull/50) **zurückgestellt**; keine 0.1.30.1.
+
+## Verbindlicher Ablauf im nächsten Chat
+
+1. Zunächst **nur** Android-Test 0.1.29.11 / PR #80; in kurzen Einzelschritten führen und nach jedem Schritt Nutzerergebnis abfragen.
+2. Jeden Befund mit installierter Version, PASS/FAIL, exakter Beobachtung, Uhrzeit, ggf. Screenshot und **bereinigtem** `kodi.log` dem zuständigen Issue zuordnen.
+3. Nach bestandenem Test separat .13, danach .14, danach .15; bei Fehler sofort stoppen. Kein vorzeitiges Zusammenführen.
+4. Anschließend #85 / .16 entwickeln lassen und separat abnehmen. Ein kumulativer Integrationskandidat kommt **erst nach** den Einzelabnahmen.
+5. Codex-Codearbeiten: eigener Branch, automatisierte Tests, installierbares ZIP, SHA256, Draft-PR, Android-Testanleitung; **keine eigenmächtigen Merges/Releases**.
+
+Siehe auch [Integrationsdokument](https://github.com/artattakk-creator/kodi-noodleprivate/blob/feat/xcmate-02914-media-focus/docs/XCMate/INTEGRATION_02911_BIS_02914_DE.md).
