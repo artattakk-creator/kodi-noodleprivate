@@ -106,6 +106,10 @@ def dispatch(router):
     elif action=='xcmate_home': show(router,portal)
     elif action=='home_start':
         if portal.get('type') in ('m3u','stb'):
+            if router._handle>=0:
+                from window_navigation import _anchor_home
+                import uuid
+                if not _anchor_home(router,portal,uuid.uuid4().hex):return
             from source_live import play
             play(router,portal,direct=True);return
         sid=str(portal.get('start_stream_id') or '')
@@ -116,7 +120,12 @@ def dispatch(router):
             if xbmcgui.Dialog().yesno('XCMate',tr(32467)):
                 xbmc.executebuiltin('Container.Update('+router.url(action='startup_settings',pid=portal['id'])+')')
             return
-        _end(router)
+        # Legacy folder URLs must complete with Home before direct playback.
+        # New Home entries run as actions (handle -1), retaining that directory.
+        if router._handle>=0:
+            from window_navigation import _anchor_home
+            import uuid
+            if not _anchor_home(router,portal,uuid.uuid4().hex):return
         router._play_start_direct()
     elif action=='home_live':
         if portal.get('type') in ('m3u','stb'):

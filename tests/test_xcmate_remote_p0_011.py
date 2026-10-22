@@ -147,6 +147,8 @@ class TestNativeOverlayKeyHandling(unittest.TestCase):
             overlay._select = lambda: seen.append("select")
             overlay._epg = lambda: seen.append("info")
             overlay.close = lambda: seen.append('closed')
+            # Mapping-only fixture; full exit/service lifecycle tested in .17.
+            overlay._request_exit = lambda: seen.append('closed')
             seen = []
             action = lambda key: types.SimpleNamespace(
                 getId=lambda: key, getButtonCode=lambda: 0)

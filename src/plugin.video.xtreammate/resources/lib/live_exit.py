@@ -1,0 +1,115 @@
+"""Session-scoped explicit TV exit; callbacks request, service stops/returns."""
+import hashlib,json,time
+from urllib.parse import urlencode
+import xbmc,xbmcgui
+KEY='XCMate.LiveExit'
+SESSION='XtreamMate.LiveSession'
+
+
+def _marker():return xbmcgui.Window(10000)
+
+
+def state():
+    try:
+        value=json.loads(_marker().getProperty(KEY))
+        from playback_exit import _session
+        if isinstance(value,dict) and _session(json.dumps(value.get('session'))) and value.get('phase') in ('requested','stopping','home','complete','failed') and 0<=time.time()-value['at']<86400:return value
+    except (ValueError,TypeError,KeyError):pass
+    return None
+
+
+def _save(value):_marker().setProperty(KEY,json.dumps(value))
+
+
+def _trace(stage,session=None):
+    # Stable correlation without clear portal, sender, nonce or URL in the log.
+    digest=hashlib.sha256(json.dumps({k:(session or {}).get(k) for k in ('pid','sid','nonce')},sort_keys=True).encode()).hexdigest()[:12]
+    try:
+        xbmc.log('[XCMate][LIVE_EXIT] stage='+stage+' session='+digest+
+                 ' video='+str(int(xbmc.Player().isPlayingVideo()))+
+                 ' window='+str(int(xbmcgui.getCurrentWindowId())),xbmc.LOGINFO)
+    except (AttributeError,RuntimeError):pass
+
+
+def new_selection():
+    # Called by an actual resolver/tune announcement; service URL-recovery is
+    # suppressed while this intent exists and cannot create this selection.
+    _marker().clearProperty(KEY)
+
+
+def request(navigator):
+    if getattr(navigator,'_exiting',False):return True
+    from playback_exit import identity,_same
+    player=xbmc.Player();token=identity(player)
+    if token is None and not player.isPlayingVideo():token=getattr(navigator,'_owned_token',None)
+    if not token or token[0]!='live' or token[1]['pid']!=str(navigator.portal['id']):return False
+    from live_overlay import session_from_property
+    announced=session_from_property(_marker().getProperty(SESSION))
+    if announced and not _same(token,('live',announced)):return False
+    value=dict(session={k:token[1][k] for k in ('pid','sid','nonce','at')},phase='requested',at=time.time(),deadline=time.monotonic()+5,not_before=time.monotonic()+.15)
+    _save(value);navigator._exiting=True;navigator._exit_nonce=token[1]['nonce']
+    _marker().setProperty('XCMate.PrePlay.Cancel',token[1]['nonce'])
+    _trace('STOP_REQUESTED',token[1]);return True
+
+
+def _poll(navigator=None):
+    value=state()
+    if value is None:
+        # A consciously selected new session replaces the old exiting dialog.
+        if navigator is not None and getattr(navigator,'_exiting',False):navigator.close()
+        return False
+    session=value['session'];marker=_marker()
+    from live_overlay import session_from_property
+    current=session_from_property(marker.getProperty(SESSION))
+    if current and current['nonce']!=session['nonce']:
+        if navigator is not None and getattr(navigator,'_exiting',False):navigator.close()
+        marker.clearProperty(KEY);return False
+    if value['phase'] in ('complete','failed'):return True
+    player=xbmc.Player()
+    from playback_exit import identity,_same,stop_owned
+    token=identity(player)
+    playing=player.isPlaying() if hasattr(player,'isPlaying') else player.isPlayingVideo()
+    if playing and not _same(token,('live',session)):
+        # Foreign playback must neither receive stop nor a GUI navigation.
+        if navigator is not None and getattr(navigator,'_exiting',False):navigator.close()
+        value['phase']='failed';_save(value);_trace('FOREIGN_PLAYER',session);return True
+    if value['phase']=='requested':
+        if time.monotonic()<value['not_before']:return True
+        # Commit before invoking native Stop; reentrant ticks cannot stop twice.
+        value['phase']='stopping';_save(value)
+        if playing:
+            if not stop_owned(player,expected=('live',session)):
+                value['phase']='failed';_save(value);_trace('OWNERSHIP_CHANGED',session);return True
+        _trace('STOP_SENT',session)
+    if player.isPlayingVideo() or (hasattr(player,'isPlaying') and player.isPlaying()):
+        if time.monotonic()>value['deadline']:
+            value['phase']='failed';_save(value);_trace('STOP_TIMEOUT',session)
+            xbmcgui.Dialog().notification('XCMate','Live-TV konnte nicht beendet werden.')
+        return True
+    if value['phase']=='stopping':
+        if navigator is not None and not navigator._closed:navigator.close()
+        for key in ('XCMate.PrePlay.Request','XCMate.PrePlay.Ack','XCMate.PrePlay.Ready',SESSION,'XtreamMate.RemoteCommand'):
+            raw=marker.getProperty(key)
+            if key=='XtreamMate.RemoteCommand' or raw==session['nonce'] or (session_from_property(raw) or {}).get('nonce')==session['nonce']:marker.clearProperty(key)
+        value['phase']='home';_save(value);_trace('STOP_DONE',session)
+        return True  # Native close returns before navigation on a later tick.
+    if xbmc.getCondVisibility('System.HasActiveModalDialog'):
+        if time.monotonic()>value['deadline']:value['phase']='failed';_save(value);_trace('RETURN_BLOCKED',session)
+        return True
+    if getattr(xbmc.Monitor(),'abortRequested',lambda:False)():return True
+    value['phase']='complete';_save(value)
+    url='plugin://plugin.video.xtreammate/?'+urlencode(dict(action='xcmate_home',pid=session['pid']))
+    xbmc.executebuiltin('ActivateWindow(Videos,'+url+',return)')
+    _trace('HOME_REQUESTED',session);return True
+
+
+def poll(navigator=None):
+    try:return _poll(navigator)
+    except (AttributeError,RuntimeError,TypeError,ValueError,KeyError):
+        # Kodi can invalidate InfoTags between isPlayingVideo and identity().
+        # Hold this exit while pending; never terminate the background service.
+        value=state()
+        if not value:return False
+        if time.monotonic()>value['deadline']:
+            value['phase']='failed';_save(value)
+        _trace('PLAYER_UNAVAILABLE',value['session']);return True

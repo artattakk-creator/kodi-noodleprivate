@@ -370,6 +370,8 @@ class Router:
         # autoplay preference is preserved, but 0.1.16 pauses execution by
         # default. Otherwise entering a single-portal Kodi plugin always
         # starts Live TV before the modal popup can be opened.
+        from live_exit import state as live_exit_state
+        if live_exit_state():return
         if setting_bool('autoplay_diagnostics_safe', True):
             xbmcgui.Window(10000).setProperty(
                 'XtreamMate.AutoplayDiagnosticState',
@@ -745,6 +747,8 @@ class Router:
         A ListItem with IsPlayable=true invokes Kodi's playback handshake.
         Calling Player.play() here leaves the pending plugin URL unresolved.
         """
+        from live_exit import _trace
+        _trace('START_RESOLVER')
         prepared = self._startup_playable()
         if prepared is None:
             xbmcplugin.setResolvedUrl(self._handle, False, xbmcgui.ListItem())
@@ -771,6 +775,8 @@ class Router:
 
     def _play_start_direct(self):
         """RunPlugin-only autoplay: direct playback without setResolvedUrl."""
+        from live_exit import _trace
+        _trace('START_RESOLVER')
         prepared = self._startup_playable()
         if prepared is None:
             return
@@ -2209,6 +2215,8 @@ class Router:
 
 
     def _play_live(self):
+        from live_exit import _trace
+        _trace('LIVE_RESOLVER')
         import urllib.parse
         url  = self._params.get('url', '')
         name = self._params.get('name', '')

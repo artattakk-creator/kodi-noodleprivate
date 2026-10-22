@@ -32,7 +32,7 @@ def show(router, portal):
     for label_id,action,icon in HOME:
         label=tr(label_id)
         from window_navigation import WINDOW_ACTIONS,add_action
-        add=add_action if action in WINDOW_ACTIONS else lambda router,*a,**kw:router._add_dir(*a,**kw)
+        add=add_action if action in WINDOW_ACTIONS or action=='home_start' else lambda router,*a,**kw:router._add_dir(*a,**kw)
         add(router,label,router.url(action=action,pid=portal['id']),
                         icon=os.path.join(path,'resources','media',icon),
                         plot=(tr(32415) if action=='settings_home' else label))
