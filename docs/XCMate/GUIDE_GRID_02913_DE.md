@@ -94,6 +94,12 @@ Die SVG-Modellansicht verwendet synthetische Beispieldaten und ist ausdrücklich
 
 **Verbindliche Start-UX-Präzisierung:** Beim EPG-Einstieg **sofort das horizontale Raster der konfigurierten Startsendergruppe mit dem Startsender im sichtbaren Fokus** (kein erstmaliger Gruppenlistenbildschirm, keine globale Alle-Sender-Ansicht); **Links** führt zur Sendergruppenliste, dort andere Gruppe OK → nur deren Guide, siehe #88.
 
+## Android-Test 7B – 22.10.2026 (EPG-Horizont)
+
+**Teil-PASS:** In der sichtbaren horizontalen EPG-Ansicht keine doppelten Sendungsblöcke gesehen (Issue [#58](https://github.com/artattakk-creator/kodi-noodleprivate/issues/58) **nicht** als Gesamt-PASS schließen). **FAIL:** Nutzer gelangt mit Rechts nicht über ungefähr **14:00 Uhr** hinaus. Ob Navigation/Focus/3-h-Reload oder begrenzte Quell-/Cache-Abdeckung vorliegt, ist offen; separater Auftrag [#93](https://github.com/artattakk-creator/kodi-noodleprivate/issues/93).
+
+**Codefakten:** `guide_grid_data.SPAN=3*3600`, `GuideGridWindow._step` soll an Zeitfenstergrenze asynchron weiterladen. `guide_store` und `stream_epg` können reale Programme bis +10 Tage speichern; **keine Garantie**, dass die angeschlossenen XMLTV-/Providerquellen 7–10 Tage liefern. Xtream-Kurz-EPG ist nur Fallback im Gegenwartsfenster. **Praktischer Diagnoseweg:** XCMate → Einstellungen → EPG → **„Langzeit-EPG: Quellenreichweite“** (`guide_status`), zeigt real gespeicherte erste/letzte Programmdaten und letzte erfolgreiche Quellaktualisierung ohne neue Downloads. Die Kopfleiste „Jetzt“/„20:15“ bleibt zudem wegen [#92](https://github.com/artattakk-creator/kodi-noodleprivate/issues/92) per IR nicht zugänglich; P0 Playback aus EPG [#89](https://github.com/artattakk-creator/kodi-noodleprivate/issues/89) weiterhin nicht betätigen.
+
 ## Android-Testplan (teilweise durchgeführt; weitere Abnahme offen)
 
 1. Zuerst Statusfix 11 abnehmen, Profil sichern, dann nur dieses isolierte ZIP.
