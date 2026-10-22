@@ -63,6 +63,19 @@ class MediaRails299(Fixture,unittest.TestCase):
         import hashlib
         for name,sha in frozen['modules'].items():
             source=(LIB/name).read_bytes()
+            if name=='window_navigation.py':
+                addition="'xcmate_licenses',"
+                self.assertEqual(source.count(addition.encode()),1)
+                source=source.replace(addition.encode(),b'')
+            if name in ('art_store.py','artwork_db.py'):
+                # .20 budget/queue/schema are intentionally changed. Preserve
+                # the exact .19 storage/lock/backup/repair safety contracts.
+                baseline=json.loads((Path(__file__).parent/'fixtures/xcmate_02919_artwork_safety.json').read_text())[name]
+                module=ast.parse(source)
+                for method,expected in baseline.items():
+                    actual=next(n for n in module.body if isinstance(n,ast.FunctionDef) and n.name==method)
+                    self.assertEqual(ast.dump(actual,include_attributes=False),expected,name+':'+method)
+                continue
             if name=='media_progress.py':
                 hook="    if kind=='vod':\n        from media_continue import reveal\n        try:reveal(portal['id'],sid)\n        except (OSError,sqlite3.Error):pass  # Playback remains available on read-only/full storage.\n"
                 self.assertEqual(source.count(hook.encode()),1);source=source.replace(hook.encode(),b'')

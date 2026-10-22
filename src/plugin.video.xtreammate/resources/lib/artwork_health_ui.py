@@ -41,7 +41,8 @@ def manage():
 def status_text(value):
     def mib(number):return str(number//1048576) if isinstance(number,(int,float)) else '—'
     lines=[tr(32960),tr(32961,value.get('code','UNAVAILABLE')),
-           tr(32962,mib(value.get('bytes')),mib(value.get('budget'))),
+           tr(33427,mib(value.get('bytes')),mib(value.get('budget'))+' MiB' if value.get('budget') else tr(33401)),
+           tr(33402,mib(value.get('reserve'))),tr(33407,tr(33408 if value.get('paused') else 33409)),
            tr(32963,mib(value.get('free')),mib(value.get('total'))),tr(32964)]
     if value.get('counts') is not None:lines.extend(str(k)+': '+str(v) for k,v in sorted(value['counts'].items()))
     else:lines.append(tr(32965))

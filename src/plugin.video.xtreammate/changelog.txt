@@ -1,3 +1,12 @@
+0.1.29.20 (isolated artwork test candidate on .19)
+- Automatic artwork storage by available device capacity; configurable free reserve (1024 MiB default, at least 32). Explicit existing image limits retained; 0 means automatic, no 4096 MiB ceiling.
+- Separate provider-source, queue, network, invalid-image, cache, configured-budget and physical-storage diagnostics; no private URLs in status/logs.
+- Bounded, durable reactivation of exhausted SPACE_FULL jobs once per unchanged policy; READY/images and network retry limits preserved.
+- SQLite enrolment moved off GUI callbacks into a bounded inbox/worker; visible EPG logos prioritized, fair queue turns, safe claim/lease completion and pause setting.
+- Existing persistent local images refresh in visible rails/categories/EPG; focused poster status shown without list/focus reset.
+- Display provider GS Media without fork suffix; complete existing licence/origin documents accessible under Info and attribution retained in addon information.
+- No autoplay, player/Live/EPG-playback change, database reset, image cleanup, keymap change, merge/release or production index update. Android NOT_TESTED.
+
 0.1.29.19 (isolated media UI/manual-next test candidate; baseline .18)
 - Reduce category and rail posters to 108x162 (2:3); preserve font13 and wide two-line labels. Compact rail spacing; original 4/6-column grid and bounded paging retained.
 - Place the existing native neon focus texture directly around each poster with a dark contrast edge; frame is visible only for the actively focused control.

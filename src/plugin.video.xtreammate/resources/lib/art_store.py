@@ -10,6 +10,8 @@ import time
 import uuid
 
 _ADOPTED=set()
+_recovery_due={}
+_served=0
 
 
 def connect():
@@ -18,8 +20,8 @@ def connect():
 
 
 def budget():
-    from utils import setting_int
-    return max(32,min(4096,setting_int('media_art_budget_mb',512)))*1024*1024
+    from art_storage import budget as configured
+    return configured()
 
 
 def key(url): return hashlib.sha256(url.encode()).hexdigest()
@@ -37,7 +39,8 @@ def enqueue(urls,priority=0):
                 db.execute('''INSERT INTO jobs VALUES(?,?,'PENDING',?,0,0,?,0)
                   ON CONFLICT(ident) DO UPDATE SET url=excluded.url,
                   priority=min(priority,excluded.priority),
-                  status=CASE WHEN status='READY' THEN 'PENDING' ELSE status END''',
+                  status=CASE WHEN status='READY' THEN 'PENDING' ELSE status END
+                  WHERE jobs.url!=excluded.url OR jobs.priority>excluded.priority OR jobs.status='READY' ''',
                     (key(url),url,priority,time.time()))
     finally: db.close()
 
@@ -68,44 +71,85 @@ def used():
     finally: db.close()
 
 
+def recover_space(now=None):
+    """One bounded, durable opportunity per blocked job and policy. No deletes."""
+    from art_storage import check,token,ArtworkFailure
+    from artwork_db import path
+    from media_art import MAX_BYTES
+    now=time.time() if now is None else now
+    filename=path()
+    if now<_recovery_due.get(filename,0):return 0
+    _recovery_due[filename]=now+5
+    try:
+        # Distinguish actual capacity from a configured cap before touching jobs.
+        check(MAX_BYTES,limit=0)
+        cap=budget()
+        if cap and used()>=cap:return 0
+    except (OSError,sqlite3.Error):return 0
+    policy=token();db=connect()
+    try:
+        if not db.execute("SELECT 1 FROM jobs j LEFT JOIN art_recovery r ON r.ident=j.ident WHERE j.status IN ('SPACE_FULL','BUDGET_FULL','DISK_FULL') AND (r.policy IS NULL OR r.policy!=?) LIMIT 1",(policy,)).fetchone():return 0
+        db.execute('BEGIN IMMEDIATE')
+        rows=list(db.execute("""SELECT j.ident FROM jobs j LEFT JOIN art_recovery r ON r.ident=j.ident
+          WHERE j.status IN ('SPACE_FULL','BUDGET_FULL','DISK_FULL') AND (r.policy IS NULL OR r.policy!=?)
+          ORDER BY j.priority,j.updated LIMIT 32""",(policy,)))
+        with db:
+            for row in rows:
+                db.execute('INSERT OR REPLACE INTO art_recovery VALUES(?,?)',(row['ident'],policy))
+                db.execute("UPDATE jobs SET status='PENDING',attempts=0,next_at=0,updated=? WHERE ident=?",(now,row['ident']))
+        return len(rows)
+    finally:db.close()
+
+
 def run_one(now=None):
     from media_art import fetch
+    from utils import setting_bool
+    if setting_bool('media_art_paused',False):return False
+    global _served
     now=time.time() if now is None else now
     owner=uuid.uuid4().hex
+    recover_space(now)
     db=connect()
     try:
-        # Empty queues and another active lease do not need a write lock.
-        if db.execute('SELECT until FROM worker WHERE id=1').fetchone()[0]>now: return False
-        row=db.execute("SELECT * FROM jobs WHERE status!='READY' AND attempts<3 AND next_at<=? ORDER BY priority,updated LIMIT 1",(now,)).fetchone()
-        if not row: return False
+        if db.execute('SELECT until FROM worker WHERE id=1').fetchone()[0]>now:return False
+        # Storage blocks are only eligible via the bounded policy recovery above.
+        order='updated,priority' if _served%8==7 else 'priority,updated'
+        row=db.execute("SELECT * FROM jobs WHERE status IN ('PENDING','RUNNING','FAILED','NETWORK_ERROR','CACHE_ERROR') AND attempts<3 AND next_at<=? ORDER BY "+order+" LIMIT 1",(now,)).fetchone()
+        if not row:return False
         db.execute('BEGIN IMMEDIATE')
         if db.execute('SELECT until FROM worker WHERE id=1').fetchone()[0]>now:return False
         job=dict(row)
-        # Claim with a finite lease, survives an interrupted Kodi process.
         with db:
             db.execute('UPDATE worker SET until=?,owner=? WHERE id=1',(now+30,owner))
-            claimed=db.execute("UPDATE jobs SET next_at=?,status='RUNNING' WHERE ident=? AND next_at<=?",(now+30,job['ident'],now)).rowcount
-        if not claimed: return False
-    finally: db.close()
-    try: fetch(job['url'])
+            claimed=db.execute("UPDATE jobs SET next_at=?,status='RUNNING' WHERE ident=? AND status!='READY' AND attempts<3 AND next_at<=?",(now+30,job['ident'],now)).rowcount
+        if not claimed:
+            with db:db.execute("UPDATE worker SET until=0,owner='' WHERE id=1 AND owner=?",(owner,))
+            return False
+        _served+=1
+    finally:db.close()
+    try:fetch(job['url'])
     except sqlite3.Error:
-        # A completed file survives; the finite claim expires and a later
-        # attempt adopts it. No network-attempt counter or reset is needed.
-        return False
+        return False  # Existing file survives; lease expires; no network retry consumed.
     except Exception as exc:
-        code='SPACE_FULL' if isinstance(exc,OSError) and getattr(exc,'errno',None)==28 else 'FAILED'
+        from art_storage import ArtworkFailure
+        if isinstance(exc,ArtworkFailure):code=exc.code
+        elif isinstance(exc,OSError) and getattr(exc,'errno',None)==28:code='DISK_FULL'
+        elif isinstance(exc,OSError) and getattr(exc,'errno',None) in (13,30):code='CACHE_ERROR'
+        else:code='NETWORK_ERROR'
+        exhausted=code in ('INVALID_SOURCE','INVALID_IMAGE','BUDGET_FULL','DISK_FULL')
+        attempts=3 if exhausted else job['attempts']+1
         db=connect()
         try:
-            with db: db.execute('UPDATE jobs SET status=?,attempts=attempts+1,next_at=?,updated=? WHERE ident=?',
-                (code,now+min(1800,60*2**job['attempts']),now,job['ident']))
-        finally: db.close()
+            with db:db.execute('UPDATE jobs SET status=?,attempts=?,next_at=?,updated=? WHERE ident=? AND EXISTS(SELECT 1 FROM worker WHERE id=1 AND owner=?)',
+                (code,attempts,now+min(1800,60*2**min(job['attempts'],3)),now,job['ident'],owner))
+        finally:db.close()
     finally:
         try:
             db=connect()
             try:
                 with db:db.execute("UPDATE worker SET until=0,owner='' WHERE id=1 AND owner=?",(owner,))
             finally:db.close()
-        except sqlite3.Error:pass # finite lease; never turn BUSY into data loss
+        except sqlite3.Error:pass
     return True
 
 
@@ -113,6 +157,10 @@ def status(cancel=lambda:False):
     from artwork_db import snapshot,diagnostic
     import shutil
     value=dict(budget=budget(),bytes=None,counts=None,code='UNAVAILABLE',health=diagnostic())
+    from art_storage import reserve
+    value['reserve']=reserve()
+    from utils import setting_bool
+    value['paused']=setting_bool('media_art_paused',False)
     # All waits happen in the status worker, at most one short retry. Never
     # reuse the writer connector or run file adoption from a status route.
     for attempt in range(2):
@@ -133,7 +181,9 @@ def retry():
     reset_retry()
     db=connect()
     try:
-        with db: db.execute("UPDATE jobs SET attempts=0,next_at=0,status='PENDING' WHERE status!='READY'")
+        with db:
+            db.execute("UPDATE jobs SET attempts=0,next_at=0,status='PENDING' WHERE status!='READY'")
+            db.execute("UPDATE art_recovery SET policy=''")
     finally: db.close()
 
 

@@ -29,6 +29,7 @@ _SCHEMA=(
     '''CREATE TABLE IF NOT EXISTS jobs(ident TEXT PRIMARY KEY,url TEXT,status TEXT,
        priority INTEGER,attempts INTEGER,next_at REAL,updated REAL,bytes INTEGER)''',
     'CREATE INDEX IF NOT EXISTS art_pending ON jobs(status,next_at,priority)',
+    'CREATE TABLE IF NOT EXISTS art_recovery(ident TEXT PRIMARY KEY,policy TEXT)',
     'CREATE TABLE IF NOT EXISTS scan(pid TEXT,kind TEXT,revision TEXT,offset INTEGER,PRIMARY KEY(pid,kind))',
     "CREATE TABLE IF NOT EXISTS worker(id INTEGER PRIMARY KEY,until REAL,owner TEXT DEFAULT '')")
 
@@ -174,7 +175,7 @@ def _schema(db):
     # an already complete schema. Missing legacy components still use the
     # existing additive initializer; no journal-mode/schema migration is added.
     names={r[0] for r in db.execute("SELECT name FROM sqlite_master WHERE type IN ('table','index')")}
-    if {'jobs','scan','worker','art_pending'}.issubset(names):
+    if {'jobs','scan','worker','art_pending','art_recovery'}.issubset(names):
         if 'owner' in {r[1] for r in db.execute('PRAGMA table_info(worker)')} and db.execute('SELECT 1 FROM worker WHERE id=1').fetchone():return
     db.execute('BEGIN IMMEDIATE')
     try:
@@ -439,6 +440,27 @@ def snapshot(cancel=lambda:False):
         mark('ART_STATUS_COUNTS_FAILED',error=type(exc).__name__)
         return dict(code='CANCELLED' if cancel() else classify(exc),counts=None,bytes=None,
                     error=type(exc).__name__,sqlite_code=getattr(exc,'sqlite_errorcode',0)&255)
+    finally:
+        if db is not None:db.close()
+        _unlock(fd)
+
+
+def image_states(keys):
+    """Worker-only read-only lookup. Only digests and whitelisted codes escape."""
+    from urllib.parse import quote
+    if not os.path.exists(path()):return {},'NOT_CREATED'
+    fd=None;db=None
+    allowed={'PENDING','RUNNING','READY','FAILED','NETWORK_ERROR','CACHE_ERROR',
+             'INVALID_SOURCE','INVALID_IMAGE','SPACE_FULL','BUDGET_FULL','DISK_FULL'}
+    try:
+        fd=_lock()
+        db=sqlite3.connect('file:'+quote(path(),safe='/')+'?mode=ro',uri=True,timeout=.025)
+        db.execute('PRAGMA query_only=ON')
+        keys=list(dict.fromkeys(keys))[:96]
+        if not keys:return {},'OK'
+        rows=db.execute('SELECT ident,status FROM jobs WHERE ident IN ('+','.join('?' for _ in keys)+')',keys)
+        return {ident:state if state in allowed else 'UNKNOWN' for ident,state in rows},'OK'
+    except (sqlite3.Error,OSError) as exc:return {},'DB_BUSY' if classify(exc)=='BUSY' else 'DB_UNAVAILABLE'
     finally:
         if db is not None:db.close()
         _unlock(fd)
