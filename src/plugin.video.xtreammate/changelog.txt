@@ -1,3 +1,10 @@
+0.1.29.19 (isolated media UI/manual-next test candidate; baseline .18)
+- Reduce category and rail posters to 108x162 (2:3); preserve font13 and wide two-line labels. Compact rail spacing; original 4/6-column grid and bounded paging retained.
+- Place the existing native neon focus texture directly around each poster with a dark contrast edge; frame is visible only for the actively focused control.
+- Manual Next in series details and a dedicated episode-list header button, relative to selected/last-played episode, numeric season/episode order, gaps and season boundaries; independent of watched status.
+- Reject explicit foreign identities, ambiguous episode IDs/positions and invalid Next metadata; revalidate before an explicit click starts playback. Restore target season/episode and focus after return.
+- No automatic next episode, OSD integration, player/service/Live/EPG change, data reset, production index update or release. Android NOT_TESTED.
+
 0.1.29.18 (media/UI test candidate; main remains .17)
 - Progressive 24-title category batches for movies and series, appended automatically near the native Down boundary; bounded 240-item moving UI window and category totals.
 - 164x246 posters, two-line titles, top categories/search, Continue -> Favourites -> New, stable detail return and async artwork focus.

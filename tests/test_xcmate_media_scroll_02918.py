@@ -152,7 +152,7 @@ class ProgressiveMediaTests(Fixture,unittest.TestCase):
         w=self.category(count=1)
         for layout in (w.getControl(210).node.find('itemlayout'),w.getControl(210).node.find('focusedlayout')):
             poster=next(c for c in layout.findall('control') if 'ListItem.Art(poster)' in c.findtext('texture',''))
-            self.assertEqual((poster.findtext('width'),poster.findtext('height')),('164','246'))
+            self.assertEqual((poster.findtext('width'),poster.findtext('height')),('108','162'))
             self.assertGreaterEqual(int(layout.find('control[@type="textbox"]').findtext('height')),56)
     def test_eye_assets_have_the_requested_green_and_red_colors(self):
         from PIL import Image

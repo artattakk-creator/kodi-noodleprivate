@@ -18,7 +18,7 @@ class MediaRails299(Fixture,unittest.TestCase):
             layout=w.getControl(cid).node.find('itemlayout')
             poster=layout.find('control[@type="image"]');title=layout.find('control[@type="textbox"]')
             width=int(poster.findtext('width'));height=int(poster.findtext('height'))
-            self.assertGreaterEqual(width,150);self.assertLessEqual(width,190)
+            self.assertGreaterEqual(width,106);self.assertLessEqual(width,112)
             self.assertEqual(width*3,height*2)
             self.assertGreaterEqual(int(title.findtext('height')),56)
         self.assertGreater(sum(int(g.findtext('height')) for g in scroll.findall('control')),int(scroll.findtext('height')))
@@ -37,7 +37,7 @@ class MediaRails299(Fixture,unittest.TestCase):
     def test_empty_rows_shrink_skip_focus_and_do_not_hide_large_new_titles(self):
         w=self.media_window()
         self.assertEqual(w.getControl(610).height,48);self.assertEqual(w.getControl(611).height,48)
-        self.assertEqual(w.getControl(612).height,368)
+        self.assertEqual(w.getControl(612).height,288)
         self.assertNotIn(111,w._valid_focus());self.assertNotIn(112,w._valid_focus())
         w.native(3);self.assertEqual(w.getFocusId(),120)
         w.native(4);self.assertEqual(w.getFocusId(),110)
@@ -74,6 +74,8 @@ class MediaRails299(Fixture,unittest.TestCase):
             # actual player start remains identical apart from view tracking.
             fn=ast.parse(ast.unparse(fn)).body[0]
             if name=='_owner_tick':
+                self.assertEqual(ast.unparse(fn.body[3]), "if self.mode == 'episodes':\n    self._sync_episode_next()")
+                del fn.body[3]  # .19 local manual-action refresh, no player work.
                 del fn.body[1:4]
                 # #102 catalogue refresh restores the selected absolute row.
                 text=ast.unparse(fn).replace("start = self.offset\n                if self.mode == 'grid' and self.rows:\n                    absolute = self.offset + self.getControl(210).getSelectedPosition()\n                    start = absolute // PAGE * PAGE\n                    self._positions[self.mode, self.category, start] = absolute - start\n                self._page(self.mode, start)","self._page(self.mode, self.offset)")
