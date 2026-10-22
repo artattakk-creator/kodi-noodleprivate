@@ -1,3 +1,6 @@
+0.1.29.14 (separate media UI candidate)
+- Integrate large rails from #77, native neon focus, dedicated coloured fanart and asynchronous detail refresh.
+
 0.1.29.11 (test candidate)
 - Read-only partial artwork status, bounded BUSY retry, reduced writer contention and private-safe SQLite diagnostics.
 - Complete the legacy settings directory before opening the native settings dialog.

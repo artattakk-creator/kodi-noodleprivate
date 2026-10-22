@@ -66,4 +66,11 @@ def enrich(item, details):
         info = details.get('info') or details.get('movie_data') or details
         if isinstance(info, dict):
             combined.update({k:v for k,v in info.items() if v not in (None, '')})
+    # Provider detail responses split imagery between info/movie_data/root.
+    # Preserve explicit backdrop fields without ever substituting the poster.
+    if isinstance(details,dict):
+        for key in ('backdrop_path','backdrop','fanart','fanart_image','cover_big'):
+            for source in (details.get('info'),details.get('movie_data'),details):
+                if isinstance(source,dict) and source.get(key):
+                    combined[key]=source[key];break
     return combined

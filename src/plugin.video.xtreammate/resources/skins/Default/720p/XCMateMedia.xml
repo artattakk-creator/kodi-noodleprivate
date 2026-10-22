@@ -16,12 +16,19 @@
       <aspectratio>scale</aspectratio>
       <texture>special://home/addons/plugin.video.xtreammate/resources/media/media_neutral.png</texture>
     </control>
-    <control type="image">
+    <control type="image" id="104">
       <left>0</left>
       <top>0</top>
       <width>1280</width>
       <height>720</height>
       <texture>special://home/addons/plugin.video.xtreammate/resources/media/media_shade.png</texture>
+    </control>
+    <control type="image" id="105">
+      <left>0</left>
+      <top>0</top>
+      <width>1280</width>
+      <height>720</height>
+      <texture>special://home/addons/plugin.video.xtreammate/resources/media/media_detail_gradient.png</texture>
     </control>
     <control type="label" id="101">
       <left>44</left>
@@ -52,7 +59,7 @@
     </control>
     <control type="button" id="400">
       <left>1050</left>
-      <top>32</top>
+      <top>80</top>
       <width>186</width>
       <height>44</height>
       <font>font13</font>
@@ -60,76 +67,22 @@
       <onleft>120</onleft>
       <onright>400</onright>
       <onup>400</onup>
-      <ondown>120</ondown>
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texturefocus>
+      <ondown>112</ondown>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
-    </control>
-    <control type="list" id="110">
-      <left>44</left>
-      <top>194</top>
-      <width>1192</width>
-      <height>120</height>
-      <orientation>horizontal</orientation>
-      <onleft>110</onleft>
-      <onright>110</onright>
-      <onup>400</onup>
-      <ondown>111</ondown>
-      <itemlayout width="106" height="118">
-        <control type="image">
-          <left>5</left>
-          <top>5</top>
-          <width>100</width>
-          <height>92</height>
-          <aspectratio>keep</aspectratio>
-          <texture>$INFO[ListItem.Art(poster)]</texture>
-        </control>
-        <control type="label">
-          <left>5</left>
-          <top>94</top>
-          <width>100</width>
-          <height>24</height>
-          <font>font12</font>
-          <textcolor>FFB6BCC6</textcolor>
-          <label>$INFO[ListItem.Label]</label>
-        </control>
-      </itemlayout>
-      <focusedlayout width="106" height="118">
-        <control type="image">
-          <width>100</width>
-          <height>92</height>
-          <texture>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texture>
-        </control>
-        <control type="image">
-          <left>5</left>
-          <top>5</top>
-          <width>100</width>
-          <height>92</height>
-          <aspectratio>keep</aspectratio>
-          <texture>$INFO[ListItem.Art(poster)]</texture>
-        </control>
-        <control type="label">
-          <left>5</left>
-          <top>94</top>
-          <width>100</width>
-          <height>24</height>
-          <font>font12</font>
-          <textcolor>FFF0F2F5</textcolor>
-          <label>$INFO[ListItem.Label]</label>
-        </control>
-      </focusedlayout>
     </control>
     <control type="button" id="120">
       <left>44</left>
-      <top>634</top>
-      <width>480</width>
-      <height>34</height>
+      <top>80</top>
+      <width>300</width>
+      <height>44</height>
       <font>font13</font>
       <label />
-      <onup>110</onup>
-      <ondown>120</ondown>
+      <onup>120</onup>
+      <ondown>112</ondown>
       <onleft>120</onleft>
       <onright>400</onright>
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texturefocus>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
     </control>
     <control type="list" id="200">
@@ -156,7 +109,7 @@
         <control type="image">
           <width>258</width>
           <height>52</height>
-          <texture>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texture>
+          <texture border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texture>
         </control>
         <control type="label">
           <left>12</left>
@@ -201,7 +154,7 @@
         <control type="image">
           <width>190</width>
           <height>240</height>
-          <texture>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texture>
+          <texture border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texture>
         </control>
         <control type="image">
           <left>25</left>
@@ -263,7 +216,7 @@
         <control type="image">
           <width>882</width>
           <height>48</height>
-          <texture>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texture>
+          <texture border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texture>
         </control>
         <control type="label">
           <left>16</left>
@@ -299,7 +252,7 @@
         <control type="image">
           <width>1192</width>
           <height>60</height>
-          <texture>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texture>
+          <texture border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texture>
         </control>
         <control type="label">
           <left>16</left>
@@ -320,140 +273,242 @@
       <textcolor>FFB6BCC6</textcolor>
       <label />
     </control>
-    <control type="list" id="111">
-      <left>44</left>
-      <top>350</top>
-      <width>1192</width>
-      <height>120</height>
-      <orientation>horizontal</orientation>
-      <onleft>111</onleft>
-      <onright>111</onright>
-      <onup>110</onup>
-      <ondown>112</ondown>
-      <itemlayout width="106" height="118">
-        <control type="image">
-          <left>5</left>
-          <top>5</top>
-          <width>100</width>
-          <height>92</height>
-          <aspectratio>keep</aspectratio>
-          <texture>$INFO[ListItem.Art(poster)]</texture>
+    <control type="group" id="620">
+      <left>0</left>
+      <top>0</top>
+      <width>1280</width>
+      <height>720</height>
+      <control type="grouplist" id="600">
+        <left>44</left>
+        <top>166</top>
+        <width>1192</width>
+        <height>494</height>
+        <orientation>vertical</orientation>
+        <itemgap>14</itemgap>
+        <scrolltime>180</scrolltime>
+        <usecontrolcoords>true</usecontrolcoords>
+        <onup>120</onup>
+        <ondown>600</ondown>
+        <control type="group" id="610">
+          <left>0</left>
+          <top>0</top>
+          <width>1192</width>
+          <height>368</height>
+          <control type="label" id="115">
+            <left>0</left>
+            <top>0</top>
+            <width>1192</width>
+            <height>30</height>
+            <font>font13</font>
+            <textcolor>FFB6BCC6</textcolor>
+            <label />
+          </control>
+          <control type="list" id="112">
+            <left>0</left>
+            <top>34</top>
+            <width>1192</width>
+            <height>334</height>
+            <orientation>horizontal</orientation>
+            <onleft>112</onleft>
+            <onright>112</onright>
+            <onup>120</onup>
+            <ondown>111</ondown>
+            <itemlayout width="180" height="334">
+              <control type="image">
+                <left>7</left>
+                <top>6</top>
+                <width>164</width>
+                <height>246</height>
+                <aspectratio>keep</aspectratio>
+                <texture>$INFO[ListItem.Art(poster)]</texture>
+              </control>
+              <control type="textbox">
+                <left>7</left>
+                <top>260</top>
+                <width>164</width>
+                <height>64</height>
+                <font>font13</font>
+                <textcolor>FFF0F2F5</textcolor>
+                <label>$INFO[ListItem.Label]</label>
+                <align>left</align>
+              </control>
+            </itemlayout>
+            <focusedlayout width="180" height="334">
+              <control type="image">
+                <left>0</left>
+                <top>0</top>
+                <width>178</width>
+                <height>332</height>
+                <texture border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texture>
+              </control>
+              <control type="image">
+                <left>7</left>
+                <top>6</top>
+                <width>164</width>
+                <height>246</height>
+                <aspectratio>keep</aspectratio>
+                <texture>$INFO[ListItem.Art(poster)]</texture>
+              </control>
+              <control type="textbox">
+                <left>7</left>
+                <top>260</top>
+                <width>164</width>
+                <height>64</height>
+                <font>font13</font>
+                <textcolor>FFF0F2F5</textcolor>
+                <label>$INFO[ListItem.Label]</label>
+                <align>left</align>
+              </control>
+            </focusedlayout>
+          </control>
         </control>
-        <control type="label">
-          <left>5</left>
-          <top>94</top>
-          <width>100</width>
-          <height>24</height>
-          <font>font12</font>
-          <textcolor>FFB6BCC6</textcolor>
-          <label>$INFO[ListItem.Label]</label>
+        <control type="group" id="611">
+          <left>0</left>
+          <top>0</top>
+          <width>1192</width>
+          <height>368</height>
+          <control type="label" id="114">
+            <left>0</left>
+            <top>0</top>
+            <width>1192</width>
+            <height>30</height>
+            <font>font13</font>
+            <textcolor>FFB6BCC6</textcolor>
+            <label />
+          </control>
+          <control type="list" id="111">
+            <left>0</left>
+            <top>34</top>
+            <width>1192</width>
+            <height>334</height>
+            <orientation>horizontal</orientation>
+            <onleft>111</onleft>
+            <onright>111</onright>
+            <onup>112</onup>
+            <ondown>110</ondown>
+            <itemlayout width="180" height="334">
+              <control type="image">
+                <left>7</left>
+                <top>6</top>
+                <width>164</width>
+                <height>246</height>
+                <aspectratio>keep</aspectratio>
+                <texture>$INFO[ListItem.Art(poster)]</texture>
+              </control>
+              <control type="textbox">
+                <left>7</left>
+                <top>260</top>
+                <width>164</width>
+                <height>64</height>
+                <font>font13</font>
+                <textcolor>FFF0F2F5</textcolor>
+                <label>$INFO[ListItem.Label]</label>
+                <align>left</align>
+              </control>
+            </itemlayout>
+            <focusedlayout width="180" height="334">
+              <control type="image">
+                <left>0</left>
+                <top>0</top>
+                <width>178</width>
+                <height>332</height>
+                <texture border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texture>
+              </control>
+              <control type="image">
+                <left>7</left>
+                <top>6</top>
+                <width>164</width>
+                <height>246</height>
+                <aspectratio>keep</aspectratio>
+                <texture>$INFO[ListItem.Art(poster)]</texture>
+              </control>
+              <control type="textbox">
+                <left>7</left>
+                <top>260</top>
+                <width>164</width>
+                <height>64</height>
+                <font>font13</font>
+                <textcolor>FFF0F2F5</textcolor>
+                <label>$INFO[ListItem.Label]</label>
+                <align>left</align>
+              </control>
+            </focusedlayout>
+          </control>
         </control>
-      </itemlayout>
-      <focusedlayout width="106" height="118">
-        <control type="image">
-          <width>100</width>
-          <height>92</height>
-          <texture>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texture>
+        <control type="group" id="612">
+          <left>0</left>
+          <top>0</top>
+          <width>1192</width>
+          <height>368</height>
+          <control type="label" id="113">
+            <left>0</left>
+            <top>0</top>
+            <width>1192</width>
+            <height>30</height>
+            <font>font13</font>
+            <textcolor>FFB6BCC6</textcolor>
+            <label />
+          </control>
+          <control type="list" id="110">
+            <left>0</left>
+            <top>34</top>
+            <width>1192</width>
+            <height>334</height>
+            <orientation>horizontal</orientation>
+            <onleft>110</onleft>
+            <onright>110</onright>
+            <onup>111</onup>
+            <ondown>110</ondown>
+            <itemlayout width="180" height="334">
+              <control type="image">
+                <left>7</left>
+                <top>6</top>
+                <width>164</width>
+                <height>246</height>
+                <aspectratio>keep</aspectratio>
+                <texture>$INFO[ListItem.Art(poster)]</texture>
+              </control>
+              <control type="textbox">
+                <left>7</left>
+                <top>260</top>
+                <width>164</width>
+                <height>64</height>
+                <font>font13</font>
+                <textcolor>FFF0F2F5</textcolor>
+                <label>$INFO[ListItem.Label]</label>
+                <align>left</align>
+              </control>
+            </itemlayout>
+            <focusedlayout width="180" height="334">
+              <control type="image">
+                <left>0</left>
+                <top>0</top>
+                <width>178</width>
+                <height>332</height>
+                <texture border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texture>
+              </control>
+              <control type="image">
+                <left>7</left>
+                <top>6</top>
+                <width>164</width>
+                <height>246</height>
+                <aspectratio>keep</aspectratio>
+                <texture>$INFO[ListItem.Art(poster)]</texture>
+              </control>
+              <control type="textbox">
+                <left>7</left>
+                <top>260</top>
+                <width>164</width>
+                <height>64</height>
+                <font>font13</font>
+                <textcolor>FFF0F2F5</textcolor>
+                <label>$INFO[ListItem.Label]</label>
+                <align>left</align>
+              </control>
+            </focusedlayout>
+          </control>
         </control>
-        <control type="image">
-          <left>5</left>
-          <top>5</top>
-          <width>100</width>
-          <height>92</height>
-          <aspectratio>keep</aspectratio>
-          <texture>$INFO[ListItem.Art(poster)]</texture>
-        </control>
-        <control type="label">
-          <left>5</left>
-          <top>94</top>
-          <width>100</width>
-          <height>24</height>
-          <font>font12</font>
-          <textcolor>FFF0F2F5</textcolor>
-          <label>$INFO[ListItem.Label]</label>
-        </control>
-      </focusedlayout>
-    </control>
-    <control type="list" id="112">
-      <left>44</left>
-      <top>506</top>
-      <width>1192</width>
-      <height>120</height>
-      <orientation>horizontal</orientation>
-      <onleft>112</onleft>
-      <onright>112</onright>
-      <onup>111</onup>
-      <ondown>120</ondown>
-      <itemlayout width="106" height="118">
-        <control type="image">
-          <left>5</left>
-          <top>5</top>
-          <width>100</width>
-          <height>92</height>
-          <aspectratio>keep</aspectratio>
-          <texture>$INFO[ListItem.Art(poster)]</texture>
-        </control>
-        <control type="label">
-          <left>5</left>
-          <top>94</top>
-          <width>100</width>
-          <height>24</height>
-          <font>font12</font>
-          <textcolor>FFB6BCC6</textcolor>
-          <label>$INFO[ListItem.Label]</label>
-        </control>
-      </itemlayout>
-      <focusedlayout width="106" height="118">
-        <control type="image">
-          <width>100</width>
-          <height>92</height>
-          <texture>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texture>
-        </control>
-        <control type="image">
-          <left>5</left>
-          <top>5</top>
-          <width>100</width>
-          <height>92</height>
-          <aspectratio>keep</aspectratio>
-          <texture>$INFO[ListItem.Art(poster)]</texture>
-        </control>
-        <control type="label">
-          <left>5</left>
-          <top>94</top>
-          <width>100</width>
-          <height>24</height>
-          <font>font12</font>
-          <textcolor>FFF0F2F5</textcolor>
-          <label>$INFO[ListItem.Label]</label>
-        </control>
-      </focusedlayout>
-    </control>
-    <control type="label" id="113">
-      <left>44</left>
-      <top>164</top>
-      <width>1192</width>
-      <height>28</height>
-      <font>font13</font>
-      <textcolor>FFB6BCC6</textcolor>
-      <label />
-    </control>
-    <control type="label" id="114">
-      <left>44</left>
-      <top>320</top>
-      <width>1192</width>
-      <height>28</height>
-      <font>font13</font>
-      <textcolor>FFB6BCC6</textcolor>
-      <label />
-    </control>
-    <control type="label" id="115">
-      <left>44</left>
-      <top>476</top>
-      <width>1192</width>
-      <height>28</height>
-      <font>font13</font>
-      <textcolor>FFB6BCC6</textcolor>
-      <label />
+      </control>
     </control>
   </controls>
 </window>

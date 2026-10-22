@@ -86,11 +86,15 @@ def fetch(url):
 
 
 def sources(item):
-    poster=next((item.get(k) for k in ('cover','stream_icon','movie_image') if isinstance(item.get(k),str) and item[k]),'')
-    backdrop=item.get('backdrop_path')
-    if isinstance(backdrop,list): backdrop=next((p for p in backdrop if isinstance(p,str) and p),'')
-    if not isinstance(backdrop,str): backdrop=''
-    return poster,backdrop or poster
+    def valid(value):
+        if not isinstance(value,str):return False
+        try:return urlsplit(value).scheme in ('http','https') and bool(urlsplit(value).hostname)
+        except ValueError:return False
+    poster=next((item.get(k) for k in ('cover','stream_icon','movie_image','cover_big') if valid(item.get(k))),'')
+    fanart=[]
+    for key in ('backdrop_path','backdrop','fanart','fanart_image'):
+        value=item.get(key);fanart.extend(value if isinstance(value,list) else [value])
+    return poster,next((value for value in fanart if valid(value)),'')
 
 
 def local_art(item):
