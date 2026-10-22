@@ -7,6 +7,7 @@ import xml.etree.ElementTree as ET
 
 MIB=1048576
 MIN_RESERVE=32*MIB
+WRITE_HEADROOM=256*1024  # SQLite/page/allocation overhead beyond image bytes
 
 
 class ArtworkFailure(OSError):
@@ -41,7 +42,7 @@ def capacity():
 
 def check(upcoming,limit=None,used=None):
     value=capacity()
-    if value['free']<value['reserve']+max(0,upcoming):raise ArtworkFailure('DISK_FULL')
+    if value['free']<value['reserve']+max(0,upcoming)+WRITE_HEADROOM:raise ArtworkFailure('DISK_FULL')
     limit=budget() if limit is None else limit
     if limit:
         if used is None:

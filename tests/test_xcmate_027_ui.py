@@ -241,7 +241,9 @@ class NavigationTests(Fixture,unittest.TestCase):
         self.assertRaises(ValueError,art.dimensions,b'not an image')
         png=b'\x89PNG\r\n\x1a\n'+b'\0'*8+struct.pack('>II',100000,100000)
         sys.modules['utils'].http_get.side_effect=None;sys.modules['utils'].http_get.return_value=(png,{})
-        self.assertRaises(ValueError,art.fetch,'https://image.invalid/huge')
+        from art_storage import ArtworkFailure
+        with self.assertRaises(ArtworkFailure) as error:art.fetch('https://image.invalid/huge')
+        self.assertEqual(error.exception.code,'INVALID_IMAGE')
         self.assertFalse(any(self.folder.glob('media_art_v1/*.img')))
 
     def test_xml_window_factory_rejects_non_api_constructor_keywords(self):

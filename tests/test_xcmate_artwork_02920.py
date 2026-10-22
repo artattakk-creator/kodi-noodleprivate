@@ -136,6 +136,13 @@ class Artwork20Tests(Fixture,unittest.TestCase):
         self.options['media_art_budget_mb']=8192
         self.assertEqual(self.store.recover_space(stamp+50),32)
 
+    def test_queue_enrolment_honours_configured_free_reserve_before_any_db_creation(self):
+        value=dict(free=self.policy.reserve()+1,total=100*1048576**2,reserve=self.policy.reserve(),budget=0)
+        with mock.patch.object(self.policy,'capacity',return_value=value):
+            with self.assertRaises(self.policy.ArtworkFailure) as error:self.store.enqueue(['https://image.invalid/queue'])
+        self.assertEqual(error.exception.code,'DISK_FULL')
+        self.assertFalse(Path(self.health.path()).exists());self.http.assert_not_called()
+
     def test_space_recovery_does_nothing_under_physical_or_configured_pressure(self):
         urls=['https://image.invalid/one'];self.seed(urls);before=self.row(urls[0]);stamp=time.time()
         with mock.patch.object(self.policy,'check',side_effect=self.policy.ArtworkFailure('DISK_FULL')):self.assertEqual(self.store.recover_space(stamp),0)

@@ -30,6 +30,8 @@ def key(url): return hashlib.sha256(url.encode()).hexdigest()
 def enqueue(urls,priority=0):
     from media_art import cached,folder
     from import_budget import check_space
+    from art_storage import check
+    check(sum(len(u) for u in urls)*3,limit=0)
     check_space(os.path.join(os.path.dirname(folder()),'media_art_jobs_v1.sqlite'),sum(len(u) for u in urls)*3)
     db=connect()
     try:
