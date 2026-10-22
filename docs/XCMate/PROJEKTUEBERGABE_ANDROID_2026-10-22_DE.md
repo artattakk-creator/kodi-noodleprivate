@@ -15,6 +15,18 @@
 - **P1 EPG-Daten und Details:** Nur ein Teil der EPG-Daten sichtbar; XMLTV-Kanalzuordnung direkt am gewählten Sender aus dem Raster mit gespeicherten Daten/Quellen, Vorschau/Bestätigung und kontrollierter Aktualisierung gewünscht ([#60](https://github.com/artattakk-creator/kodi-noodleprivate/issues/60), [#88](https://github.com/artattakk-creator/kodi-noodleprivate/issues/88)). OK → Details liefert bislang nur Kurztext; Nutzer wünscht Langbeschreibungen, Episodenbilder/Fanart und verfügbare Programminformationen aus tatsächlichen XMLTV-/Providerdaten, ggf. verifiziertem Metadata-Enrichment. Fehlende Infos ehrlich anzeigen, kein Schein-TMDB-Matching oder HTTP im GUI-Thread.
 - **Schutz:** 0.1.29.13 ist bereits via GS Media Repo veröffentlicht, **kein weiterer Merge/Release** durch Testbericht. 0.1.29.11 ist der zuletzt funktional geprüfte Arbeitsstand (mit dokumentierten SQLite-/Codec-/Filmimport-Restbefunden). Ein neuer Fix muss auf `main`/0.1.29.13 aufsetzen und als eigener **Draft-PR/Test-ZIP** geprüft werden. Filme/Serien/Live-Overlay, Portal-/EPG-Daten, Favoriten und Resume bleiben unverändert.
 
+## Neue Live-TV-Menüfunktionen für nächste Entwicklungsiteration (22.10.2026)
+
+Der Nutzer bestätigt ausdrücklich die bereits funktionierende **Links-Navigation von Vollbild → Senderliste/Mini-EPG → Sendergruppen** und fordert folgende **zusätzliche**, noch **nicht implementierte** Ebenen:
+
+- **3× Links:** Vertikale, schmale **Icon-Leiste**.
+- **4× Links:** Gleiche Icon-Leiste erweitert mit **Beschriftungen**.
+- **5× Links:** Schließt **sämtliche Overlayebenen** und zeigt wieder das **weiterlaufende TV-Vollbild**.
+- Icon-Menü exakt: **Suchen · Favoriten · Live-TV · Filme · Serien · Einstellungen · Verlassen**. **Verlassen** ist ein eigener Menübefehl zur **XCMate-Hauptübersicht**, ausdrücklich **nicht** dasselbe wie fünftes Links (TV-Vollbild).
+- In der **Senderliste/Mini-EPG**: **Rechts auf markiertem Sender** → Programmliste **dieses markierten Senders** mit Jetzt-/Danach-/späteren Sendungen (tatsächliche lokale XMLTV-/Kurz-EPG-Daten); **keine Umschaltung** des laufenden Streams. Links/Back → Senderliste mit demselben Fokus. Der bisherige `LiveNavigator._epg()`-Pfad nimmt noch `self.sid` (laufend) statt fokussierter Kanal-ID; Kontextroute sicher umbauen.
+
+**Umsetzungsaufträge:** [#94 Navigation/Icon-Rail](https://github.com/artattakk-creator/kodi-noodleprivate/issues/94), [#95 markierter-Sender-Folge-EPG](https://github.com/artattakk-creator/kodi-noodleprivate/issues/95); [vollständige Live-TV-UX-Spezifikation](LIVE_TV_NAV_ICON_RAIL_SENDERVORSCHAU_2026-10-22_DE.md). Bestehende IR-Profile/OK-Infoleiste/Player-OSD/Back/Zapping/Portale erhalten, Kodi-Thread-/Owner-Wechsel schützen. **Noch kein Codefix/Test-ZIP/OTA-Release.** Nächste Umsetzung über neuen Draft-PR auf Basis von `main`/0.1.29.13 nach P0-Absturzfix #89 und mit eigener Android-Abnahme.
+
 ## Grunddaten und Schutzregeln
 
 - Projekt: **GS Media XCMate**, Kodi-IPTV-Add-on `plugin.video.xtreammate`.
