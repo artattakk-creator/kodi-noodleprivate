@@ -2788,3 +2788,15 @@ msgstr "Aufnahmeaktion nicht möglich oder abgebrochen. Speicher und Aufnahmesta
 msgctxt "#34013"
 msgid "Start manual recording"
 msgstr "Sofortaufnahme starten"
+
+msgctxt "#34100"
+msgid "Aufnahmeziel ist für die native Aufnahme nicht geeignet."
+msgstr "Aufnahmeziel ist für die native Aufnahme nicht geeignet."
+
+msgctxt "#34101"
+msgid "Geprüften app-internen Aufnahmeordner verwenden? Vorhandene Dateien bleiben am bisherigen Ort."
+msgstr "Geprüften app-internen Aufnahmeordner verwenden? Vorhandene Dateien bleiben am bisherigen Ort."
+
+msgctxt "#34102"
+msgid "Aufnahmeziel geprüft: Schreiben, Lesen, Hardlinks, Synchronisierung und Speicherreserve."
+msgstr "Aufnahmeziel geprüft: Schreiben, Lesen, Hardlinks, Synchronisierung und Speicherreserve."

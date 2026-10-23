@@ -28,9 +28,17 @@ def _start(portal):
     if duration not in range(5):return
     # A second provider connection is always explicit, even with no player.
     if not dialog.yesno('XCMate',tr(34004)):return
-    target=xbmcvfs.translatePath(setting('recordings_folder',os.path.join(addon_data_dir(),'recordings')))
-    if not os.path.isabs(target) or '://' in target:
-        dialog.ok('XCMate',tr(34005));return
+    from capture_target import configured,probe,compatible_default,TargetFailure
+    target=configured()
+    try:
+        result=work(lambda:probe(target,create=True))
+        if result is None:return
+    except TargetFailure as exc:
+        dialog.ok('XCMate',tr(34100)+'\n'+exc.code)
+        target=work(compatible_default)
+        if not target or not dialog.yesno('XCMate',tr(34101)):return
+        import xbmcaddon
+        xbmcaddon.Addon().setSetting('recordings_folder',target)
     ident=work(lambda:add(portal,channels[choice],target,(2,5,30,60,120)[duration]*60))
     if ident:dialog.notification('XCMate',tr(34006))
 

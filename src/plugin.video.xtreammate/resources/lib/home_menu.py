@@ -155,15 +155,16 @@ def recording_folder(check_only=False):
     old=setting('recordings_folder','special://profile/addon_data/plugin.video.xtreammate/recordings/')
     selected=old if check_only else xbmcgui.Dialog().browseSingle(0,tr(32455),'files',defaultt=old)
     if not selected: return
-    if probe_directory(selected,xbmcvfs):
-        if not check_only: xbmcaddon.Addon().setSetting('recordings_folder',selected)
-        from urllib.parse import urlsplit,urlunsplit
-        parts=urlsplit(selected)
-        display=urlunsplit((parts.scheme,parts.hostname or '',parts.path,'','')) if parts.scheme and parts.netloc else selected
-        try:
-            status=os.statvfs(xbmcvfs.translatePath(selected))
-            space=tr(32456).format(status.f_bavail*status.f_frsize//(1024*1024))
-        except (AttributeError,OSError,RuntimeError): space=tr(32457)
-        xbmcgui.Dialog().ok('XCMate',display+'\n'+space+tr(32458))
-    else:
-        xbmcgui.Dialog().ok('XCMate',tr(32459))
+    from capture_target import probe,compatible_default,TargetFailure
+    from capture_ui import work
+    selected=xbmcvfs.translatePath(selected)
+    try:
+        result=work(lambda:probe(selected,create=True))
+        if result is None:return
+    except TargetFailure as exc:
+        xbmcgui.Dialog().ok('XCMate',tr(34100)+'\n'+exc.code)
+        alternative=work(compatible_default)
+        if check_only or not alternative or not xbmcgui.Dialog().yesno('XCMate',tr(34101)):return
+        selected=alternative
+    if not check_only:xbmcaddon.Addon().setSetting('recordings_folder',selected)
+    xbmcgui.Dialog().ok('XCMate',tr(34102))

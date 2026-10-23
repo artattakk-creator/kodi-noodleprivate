@@ -2788,3 +2788,15 @@ msgstr "Recording action unavailable or cancelled. Check storage and recording s
 msgctxt "#34013"
 msgid "Start manual recording"
 msgstr "Start manual recording"
+
+msgctxt "#34100"
+msgid "This target does not support native recording."
+msgstr "This target does not support native recording."
+
+msgctxt "#34101"
+msgid "Use the verified app-private recording folder? Existing files remain in their current location."
+msgstr "Use the verified app-private recording folder? Existing files remain in their current location."
+
+msgctxt "#34102"
+msgid "Recording target verified: write, read, hardlinks, sync and free-space reserve."
+msgstr "Recording target verified: write, read, hardlinks, sync and free-space reserve."

@@ -59,6 +59,8 @@ def _run():
                         else:
                             update(job['id'],status='starting')
                             try:
+                                from capture_target import probe
+                                probe(job['target'],create=True)
                                 source=resolve(job)
                                 current=next((r for r in rows() if r['id']==job['id']),None)
                                 if _stop.is_set() or monitor.abortRequested() or current is None or current['stop']:
