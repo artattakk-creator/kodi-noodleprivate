@@ -1,4 +1,5 @@
 0.1.29.29 – isolierter Download-Speicher-Testkandidat
+- Lokale Geräte-/Ordnerbindung verhindert internen Mountordner-Fallback bei entferntem USB. Expliziter neuer Download desselben Mediums in anderem Ziel erzeugt eigenen Auftrag und erhält den alten.
 - #136: Eigener dauerhaft gespeicherter Downloadordner, bisheriger gemeinsamer Ordner bleibt Standard bis zur ausdrücklichen Auswahl. Aufnahmeziel unverändert.
 - Interne/native USB-Ziele mit unverändertem atomarem No-Replace-Vertrag; inkompatible lokale USB-Volumes nach Zustimmung über lokale Zwischenkopie, O_EXCL/NoFollow, Datei-fsync und Zielhash, ohne Atomic-Rename-Versprechen.
 - Kodi-SMB-Ziele über getrennten reinen Python-SMB2-Adapter: signierte authentifizierte Verbindung, exklusives FILE_CREATE/Write-Through, serverseitiges ReplaceIfExists=False und Größen-/SHA256-Verifikation. Keine SMB1-/Gast-/unsignierte Rückstufung.

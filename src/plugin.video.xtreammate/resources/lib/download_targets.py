@@ -13,6 +13,7 @@ def db():
     path=os.path.join(addon_data_dir(),'download_targets_v1.sqlite')
     connection=sqlite3.connect(path,timeout=.25);connection.row_factory=sqlite3.Row;os.chmod(path,0o600)
     connection.executescript('''CREATE TABLE IF NOT EXISTS approvals(target TEXT PRIMARY KEY);
+      CREATE TABLE IF NOT EXISTS volumes(target TEXT PRIMARY KEY,device TEXT,inode TEXT);
       CREATE TABLE IF NOT EXISTS transfers(token TEXT PRIMARY KEY,job TEXT,target TEXT,part TEXT,file TEXT,status TEXT);''')
     return connection
 
@@ -60,6 +61,35 @@ def recoverable(job,final):
     if not final.startswith('smb://'):return any(r['status']=='COPYING' for r in values)
     import download_smb as smb
     return any(r['status']=='READY_RENAME' and r['part'] and not smb.exists(r['part']) for r in values)
+
+
+def identity(root):
+    if root.startswith('smb://'):return {}
+    try:value=os.stat(normalize(root),follow_symlinks=False)
+    except OSError as exc:raise Failure('TARGET_REMOVED','MOUNT_STAT',exc.errno or 0) from None
+    import stat
+    if not stat.S_ISDIR(value.st_mode):raise Failure('TARGET_NOT_DIRECTORY','MOUNT_STAT')
+    return dict(target_device=str(value.st_dev),target_inode=str(value.st_ino))
+
+
+def bind(root):
+    if root.startswith('smb://'):return
+    value=identity(root);key=hashlib.sha256(normalize(root).encode()).hexdigest();connection=db()
+    try:
+        with connection:connection.execute('INSERT OR REPLACE INTO volumes VALUES(?,?,?)',(key,value['target_device'],value['target_inode']))
+    finally:connection.close()
+
+
+def check_identity(root,media=None):
+    if root.startswith('smb://'):return
+    expected={k:str((media or {}).get(k) or '') for k in ('target_device','target_inode')}
+    if not all(expected.values()):
+        key=hashlib.sha256(normalize(root).encode()).hexdigest();connection=db()
+        try:row=connection.execute('SELECT device,inode FROM volumes WHERE target=?',(key,)).fetchone()
+        finally:connection.close()
+        if row is None:return
+        expected=dict(target_device=row['device'],target_inode=row['inode'])
+    if identity(root)!=expected:raise Failure('TARGET_CHANGED','MOUNT_IDENTITY')
 
 
 def configured():
@@ -157,6 +187,7 @@ def probe(root):
     # An external-copy backend is never enabled merely by editing a folder URI.
     root=normalize(root)
     if root.startswith('smb://') and not approved(root):raise Failure('STAGING_CONSENT_REQUIRED','TARGET_APPROVAL')
+    check_identity(root)
     result=assess(root)
     if result['staging'] and not approved(root):raise Failure('STAGING_CONSENT_REQUIRED','TARGET_APPROVAL')
     return result

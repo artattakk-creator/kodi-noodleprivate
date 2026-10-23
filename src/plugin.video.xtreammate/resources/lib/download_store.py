@@ -1,7 +1,7 @@
 """Private ID-only download queue. Each worker owns its SQLite connection."""
 import hashlib,json,os,sqlite3,time,uuid
 
-FIELDS=('pid','kind','sid','series_id','season','episode','title','series_title','year','duration','poster','target')
+FIELDS=('pid','kind','sid','series_id','season','episode','title','series_title','year','duration','poster','target','target_device','target_inode')
 STATES=frozenset(('QUEUED','RUNNING','PAUSED','COMPLETE','FAILED','CANCELLED','PUBLISHING','TRANSFERRING'))
 
 
@@ -57,6 +57,11 @@ def enqueue(media):
     value={k:str(media.get(k,''))[:4096 if k=='target' else 1024] for k in FIELDS};conn=db()
     try:
         with conn:
+            prior=conn.execute('SELECT payload FROM jobs WHERE id=?',(ident,)).fetchone()
+            if prior:
+                old=json.loads(prior['payload'])
+                changed=old.get('target')!=value['target'] or any(old.get(k) and old.get(k)!=value.get(k) for k in ('target_device','target_inode'))
+                if changed:ident=hashlib.sha256((ident+'\0'+json.dumps([value.get(k,'') for k in ('target','target_device','target_inode')])).encode()).hexdigest()
             if conn.execute('SELECT COUNT(*) FROM jobs').fetchone()[0]>=1000 and not conn.execute('SELECT 1 FROM jobs WHERE id=?',(ident,)).fetchone():raise ValueError('queue limit')
             conn.execute("INSERT OR IGNORE INTO jobs(id,payload,state,updated) VALUES(?,?,'QUEUED',?)",(ident,json.dumps(value),time.time()))
             conn.execute('UPDATE jobs SET hidden=0 WHERE id=?',(ident,))

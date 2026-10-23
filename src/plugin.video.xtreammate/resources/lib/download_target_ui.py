@@ -14,7 +14,7 @@ def capabilities(value):
 
 def choose(check_only=False):
     from capture_ui import work
-    from download_targets import configured,normalize,assess,approved
+    from download_targets import configured,normalize,assess,approved,bind
     from transfer_diagnostics import describe
     try:
         old=configured()
@@ -43,6 +43,7 @@ def choose(check_only=False):
         if value['staging'] and not xbmcgui.Dialog().yesno('XCMate',tr(34709)+'\n\n'+text):return
         if not xbmcgui.Dialog().yesno('XCMate',tr(34712)+'\n\n'+text):return
         if value['staging']:work(lambda:approved(selected,save=True))
+        work(lambda:bind(selected))
         xbmcaddon.Addon().setSetting('downloads_folder',selected)
         xbmcaddon.Addon().setSetting('downloads_folder_enabled','1')
         xbmcgui.Dialog().ok('XCMate',tr(34713))
