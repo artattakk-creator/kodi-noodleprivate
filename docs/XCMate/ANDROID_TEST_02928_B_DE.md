@@ -77,3 +77,19 @@ Download. Downloads bleiben im gewählten Aufnahmeordner als `Download - …`.
 Alle neuen Android-Punkte zunächst NOT_TESTED. Ein Host-/CI-PASS ersetzt diese
 Prüfung nicht. Rohlogs bleiben privat. Neue Gerätespuren sind nun den Kategorien
 DETAIL_MENU, CAPTURE_TARGET, CAPTURE und DOWNLOAD zuordenbar.
+
+## Vorabnachweise am Host
+
+964 automatisierte Tests PASS (111.056 s). Echter 120.32-s-MPEG2/MP2-Mitschnitt
+über gedrosseltes Loopback-HTTP mit absichtlich deaktivierten Hardlinks:
+9.057.088 Bytes, manuell finalisiert, RENAME_NOREPLACE, vollständiger strikter
+FFmpeg-Decode exit0 ohne stderr. Das ist keine Android-Wiedergabeabnahme.
+
+Je ein Film-/Folgenauftrag über reales Loopback-HTTP: je 404.305 Bytes MP4,
+vollständiger SHA256-Abgleich und strikter Decode PASS. Beide im gleichen Ordner,
+mit Download-Kennzeichnung; HLS-Aufnahme dort separat abgelehnt. Details in
+RECORDER_HOST_02928_B.json und DOWNLOAD_HOST_02928_B.json.
+
+ZIP SHA256: `5cf61349d2fbb633e5ec892824b434c1fb6b07d6af55abb48a29d20dbffa4bbb`.
+Späterer kumulativer .28-C-Kandidat ersetzt dieses B-ZIP; nicht mehrere .28-ZIPs
+verwechseln. Alle neuen Android-Felder bleiben NOT_TESTED bis zum Gerätetest.

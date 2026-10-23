@@ -1,0 +1,15 @@
+{
+  "status": "complete",
+  "code": "",
+  "bytes": 9057088,
+  "seconds": 120.32,
+  "storage_backend": "RENAME_NOREPLACE",
+  "host_elapsed_seconds": 120.382,
+  "kodi_offline_playback": "NOT_TESTED",
+  "sha256": "69e1515ce4ab1ec64e413947a4d106294868453610eb2d025851e373a56e00d9",
+  "environment": "Linux host / real throttled loopback HTTP / generated MPEG2-MP2 TS fixture",
+  "hardlinks": "simulated unavailable (errno95)",
+  "manual_finish": true,
+  "strict_ffmpeg_decode": "PASS (exit0, empty stderr)",
+  "android": "NOT_TESTED"
+}
