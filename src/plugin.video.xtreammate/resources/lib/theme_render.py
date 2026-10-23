@@ -60,7 +60,7 @@ def apply_xml(tree,theme,filename,kind='vod'):
     root=tree.getroot();controls=root.find('controls')
     background='background.epg.detail' if filename=='XCMateProgramme.xml' else 'background.epg.guide' if 'Guide' in filename else 'background.series' if kind=='series' else 'background.movies'
     keys={'media_neutral.png':background,'tv_normal.png':'panel.default','media_shade.png':'panel.overlay',
-          'tv_focus.png':'focus.default','xcmate_focus_neon.png':'focus.media','media_detail_gradient.png':'panel.media.rail.gradient'}
+          'tv_focus.png':'focus.default','media_detail_gradient.png':'panel.media.rail.gradient'}
     for node in root.iter():
         if node.tag in ('texture','texturefocus','texturenofocus') and node.text and not node.text.startswith('$'):
             key=keys.get(node.text.rsplit('/',1)[-1])
@@ -86,10 +86,15 @@ def apply_xml(tree,theme,filename,kind='vod'):
                     if left is not None:left.text='46'
                     if width is not None:width.text=str(max(1,int(width.text)-38))
         for layout in root.iter():
-            if layout.tag not in ('itemlayout','focusedlayout'):continue
+            # Focused rows use the proven Core frame and no poster overlay.
+            if layout.tag!='itemlayout':continue
             for n in list(layout.findall("control[@type='image']")):
                 if n.findtext('texture')=='$INFO[ListItem.Art(poster)]':
+                    before=len(layout)
                     image(layout,'panel.media.poster.shade',n.findtext('left','0'),n.findtext('top','0'),n.findtext('width','100'),n.findtext('height','92'))
+                    if len(layout)>before:
+                        shade=layout[-1];layout.remove(shade)
+                        layout.insert(list(layout).index(n)+1,shade)
         image(controls,'icon.shared.search',1058,38,28,28)
     headers=(('310','icon.epg.day-prev'),('311','icon.epg.day-next'),('312','icon.epg.today'),('313','icon.epg.clock'),('314','icon.epg.channels'),('315','icon.shared.search')) if filename=='XCMateGuideGrid.xml' else (('310','icon.epg.day-prev'),('311','icon.epg.day-next'),('312','icon.shared.info')) if filename=='XCMateGuide.xml' else ()
     for cid,key in headers:

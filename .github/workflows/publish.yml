@@ -51,6 +51,7 @@ jobs:
         run: python -m compileall -q src
       - name: Run Noodle Private regression tests
         run: |
+          set -o pipefail
           for f in tests/test_addon.py tests/test_site.py tests/test_providers.py; do
             sed -i "s@'..', 'plugin.video.noodleprivate'@'..', 'src', 'plugin.video.noodleprivate'@g" "$f"
           done

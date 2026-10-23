@@ -6,13 +6,16 @@ _worker=None
 _guard=threading.Lock()
 _retry_after={}
 _bootstrapped=set()
+_stop=threading.Event()
 
 
-def refresh_local():
+def refresh_local(cancel=lambda:False):
+    if cancel():return
     from portals import get_active
     from xtream import XtreamClient
     from library_index import refresh
     for portal in get_active():
+        if cancel():return
         if portal.get('type') not in ('xtream','m3u','stb'): continue
         if time.monotonic()<_retry_after.get(portal['id'],0): continue
         try:
@@ -25,10 +28,13 @@ def refresh_local():
             elif portal['id'] not in _bootstrapped:
                 from catalog_sync import request
                 for kind in ('live','vod','series'):
+                    if cancel():return
                     request(portal,kind,portal.get('start_group_id','') if kind=='live' else '',priority=20)
                 _bootstrapped.add(portal['id'])
             from guide_store import refresh as refresh_guide
+            if cancel():return
             refresh_guide(portal)
+            if cancel():return
             from library_index import Reader,initial_group
             from media_art import request
             reader=Reader(portal['id'])
@@ -53,28 +59,34 @@ def refresh_local():
 def _run():
     import xbmc
     monitor=xbmc.Monitor()
-    while not monitor.abortRequested():
+    cancelled=lambda:_stop.is_set() or monitor.abortRequested()
+    while not cancelled():
         worked=False
         try:
             from artwork_db import maintain
-            maintain(cancel=monitor.abortRequested)
+            maintain(cancel=cancelled)
         except Exception: pass
+        if cancelled():break
         # Optional guide/art preparation may fail independently. It must not
         # starve an otherwise valid movie/series sync request.
-        try: refresh_local()
+        try: refresh_local(cancelled)
         except Exception: pass
+        if cancelled():break
         try:
             from art_store import prefetch_selected
             prefetch_selected()
         except Exception: pass
+        if cancelled():break
         try:
             from startup_preload import prepare
-            prepare(cancel=monitor.abortRequested)
+            prepare(cancel=cancelled)
         except Exception: pass
+        if cancelled():break
         try:
             from catalog_sync import run_next
-            worked=run_next(monitor.abortRequested)
+            worked=run_next(cancelled)
         except Exception: pass
+        if cancelled():break
         try:
             from guide_timers import poll as poll_timers
             poll_timers()
@@ -85,6 +97,7 @@ def _run():
 def poll():
     global _worker
     with _guard:
+        if _stop.is_set():return
         if _worker is None or not _worker.is_alive():
             _worker=threading.Thread(target=_run,name='XCMate-library',daemon=True)
             _worker.start()
@@ -95,3 +108,18 @@ def poll():
 
     from media_osd import poll as poll_osd
     poll_osd()
+
+
+def shutdown():
+    """Prevent new optional work; never block Kodi waiting on provider IO.
+
+    Already running non-cancellable HTTP may outlive this bounded join. That
+    limitation is reported explicitly, rather than claiming a forced stop.
+    """
+    with _guard:
+        _stop.set();worker=_worker
+    if worker is not None and worker is not threading.current_thread():worker.join(timeout=.2)
+    stopped=worker is None or not worker.is_alive()
+    from boot_diagnostics import mark
+    mark('APP_WORKER_STOPPED' if stopped else 'APP_WORKER_STOP_PENDING')
+    return stopped

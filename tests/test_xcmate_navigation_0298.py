@@ -63,17 +63,21 @@ class Navigation298(Fixture,unittest.TestCase):
         w.native(92);self.assertEqual(w.mode,'seasons')
         self.assertEqual(w.getControl(330).getSelectedPosition(),1)
 
-    def test_hidden_120_and_empty_lists_fall_back_to_visible_header(self):
+    def test_empty_catalogue_uses_header_but_loading_detail_retains_action_target(self):
         w=self.media_window()
         for mode in ('groups','grid','detail','seasons','episodes'):
             w.mode=mode;w.rows=[];w.groups=[];w.actions=[]
             w._show(mode);w.setFocusId(120);w.setFocusId(110)
-            self.assertEqual(w.getFocusId(),400)
-            self.assertTrue(w.getControl(w.getFocusId()).isVisible())
+            if mode in ('groups','grid'):
+                self.assertEqual(w.getFocusId(),400)
+                self.assertTrue(w.getControl(w.getFocusId()).isVisible())
+            else:
+                self.assertEqual(w._focus_pending,(mode,300 if mode=='detail' else 330))
+                self.assertNotEqual(w._mode_focus[mode],400)
         w.mode='landing';w._show('landing');w.setFocusId(120)
         self.assertEqual(w.getFocusId(),120)
         default=w.tree.find('defaultcontrol')
-        self.assertEqual(default.text,'400');self.assertEqual(default.get('always'),'true')
+        self.assertEqual(default.text,'120');self.assertEqual(default.get('always'),'false')
 
     def test_focus_navigation_never_targets_hidden_or_empty_control(self):
         w=self.media_window();w.native(7);self.settle(w)
@@ -92,6 +96,7 @@ class Navigation298(Fixture,unittest.TestCase):
     def test_disabled_control_is_checked_via_real_kodi_info_condition(self):
         w=self.media_window();w.getControl(120).setEnabled(False);w.setFocusId(120)
         self.assertNotEqual(w.getFocusId(),120)
+        self.assertIsNone(w._focus_pending)
         self.assertNotIn(501,w._valid_focus())
         self.assertTrue(all(w.getControl(cid).kind in ('button','list','panel') for cid in w._valid_focus()))
         self.assertNotIn('.isEnabled(', (LIB/'media_window.py').read_text())
