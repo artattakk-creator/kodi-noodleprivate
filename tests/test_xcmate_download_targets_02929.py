@@ -54,6 +54,21 @@ class Targets29Tests(TargetsFixture,unittest.TestCase):
         self.assertEqual(self.store.get(second)['media']['target'],str(two))
         self.assertEqual(self.store.enqueue(self.make_media(str(two))),second)
 
+    def test_usb_removed_while_http_stage_downloads_is_not_recreated_at_publish(self):
+        root=self.folder/'usb';root.mkdir();self.targets.bind(str(root))
+        media=dict(self.make_media(str(root)),**self.targets.identity(str(root)));ident=self.store.enqueue(media)
+        caps=dict(staging=True,type='LOCAL_USB',backend='LOCAL_STAGE_VERIFY')
+        response=self.response();original=response.read
+        def remove(count):
+            data=original(count)
+            if not data and root.exists():root.rmdir()
+            return data
+        response.read=remove
+        with mock.patch.object(self.files,'probe',return_value=caps):
+            self.worker.run_one(resolver=lambda m:('https://fixture.invalid/file.mp4',{}),opener=lambda *a:response)
+        row=self.store.get(ident);self.assertEqual(row['state'],'FAILED');self.assertIn('TARGET_REMOVED',row['code'])
+        self.assertFalse(root.exists());self.assertEqual(Path(row['part']).read_bytes(),PAYLOAD)
+
     def test_picker_persists_separate_target_and_cancel_does_not_change_any_setting(self):
         import download_target_ui
         root=self.folder/'usb';root.mkdir();before=dict(self.options)
