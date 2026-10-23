@@ -145,10 +145,10 @@ test_restart_offline_previous_index_and_immediate_disabled_filter (test_xcmate_0
 test_same_stream_in_two_groups_counted_once_globally_but_available_in_each (test_xcmate_028_streaming.IndexTests.test_same_stream_in_two_groups_counted_once_globally_but_available_in_each) ... ok
 test_streaming_group_publishes_only_after_complete_json (test_xcmate_028_streaming.IndexTests.test_streaming_group_publishes_only_after_complete_json) ... ok
 test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update (test_xcmate_028_streaming.LargeGuideTests.test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update) ... 
-LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 22.075}
+LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 22.382}
 ok
 test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib (test_xcmate_028_streaming.LargeHTTPTests.test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib) ... 
-LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 36.885, "peak_rss_kib": 61448}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 37.107, "peak_rss_kib": 61448}]
+LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 37.504, "peak_rss_kib": 61264}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 37.184, "peak_rss_kib": 63008}]
 ok
 test_cache_envelope_and_trailing_data_validated (test_xcmate_028_streaming.ParserTests.test_cache_envelope_and_trailing_data_validated) ... ok
 test_chunked_http_gzip_and_truncated_compression (test_xcmate_028_streaming.ParserTests.test_chunked_http_gzip_and_truncated_compression) ... ok
@@ -381,6 +381,19 @@ test_live_overlay_back_does_not_stop_but_actual_navigation_does (test_xcmate_exi
 test_media_window_reinit_after_fullscreen_stops_owned_movie (test_xcmate_exit_040.ExitTests.test_media_window_reinit_after_fullscreen_stops_owned_movie) ... ok
 test_movie_and_episode_return_checkpoint_before_single_stop (test_xcmate_exit_040.ExitTests.test_movie_and_episode_return_checkpoint_before_single_stop) ... ok
 test_overlay_back_and_buffering_do_not_stop (test_xcmate_exit_040.ExitTests.test_overlay_back_and_buffering_do_not_stop) ... ok
+test_detail_retry_runs_in_worker_and_keeps_manual_next_and_play_actions (test_xcmate_graphics_02923.GraphicsTests.test_detail_retry_runs_in_worker_and_keeps_manual_next_and_play_actions) ... ok
+test_dns_tls_timeout_and_connection_do_not_expose_exception_text (test_xcmate_graphics_02923.GraphicsTests.test_dns_tls_timeout_and_connection_do_not_expose_exception_text) ... ok
+test_explicit_retry_only_selected_asset_and_rate_limited_across_reloads (test_xcmate_graphics_02923.GraphicsTests.test_explicit_retry_only_selected_asset_and_rate_limited_across_reloads) ... ok
+test_home_start_uses_original_branding_and_offline_diagnostic_route (test_xcmate_graphics_02923.GraphicsTests.test_home_start_uses_original_branding_and_offline_diagnostic_route) ... ok
+test_http_failures_are_distinct_and_permanent_statuses_exhaust_once (test_xcmate_graphics_02923.GraphicsTests.test_http_failures_are_distinct_and_permanent_statuses_exhaust_once) ... ok
+test_legacy_exhausted_network_failure_can_select_existing_alternative (test_xcmate_graphics_02923.GraphicsTests.test_legacy_exhausted_network_failure_can_select_existing_alternative) ... ok
+test_missing_provider_source_is_not_a_network_failure (test_xcmate_graphics_02923.GraphicsTests.test_missing_provider_source_is_not_a_network_failure) ... ok
+test_original_icon_has_new_immutable_cache_key_and_runtime_report_is_private (test_xcmate_graphics_02923.GraphicsTests.test_original_icon_has_new_immutable_cache_key_and_runtime_report_is_private) ... ok
+test_rate_limit_respects_server_cooldown_even_for_manual_retry (test_xcmate_graphics_02923.GraphicsTests.test_rate_limit_respects_server_cooldown_even_for_manual_retry) ... ok
+test_ready_image_and_ready_status_are_never_reset_by_retry (test_xcmate_graphics_02923.GraphicsTests.test_ready_image_and_ready_status_are_never_reset_by_retry) ... ok
+test_same_record_alternative_is_selected_after_permanent_error_without_title_lookup (test_xcmate_graphics_02923.GraphicsTests.test_same_record_alternative_is_selected_after_permanent_error_without_title_lookup) ... ok
+test_selected_report_is_readonly_and_never_contains_urls_or_ids (test_xcmate_graphics_02923.GraphicsTests.test_selected_report_is_readonly_and_never_contains_urls_or_ids) ... ok
+test_transient_failure_retries_are_finite_and_inner_http_retries_disabled (test_xcmate_graphics_02923.GraphicsTests.test_transient_failure_retries_are_finite_and_inner_http_retries_disabled) ... ok
 test_all_direct_gui_constructors_and_native_dialog_arguments (test_xcmate_gui_contract.GUIContractTests.test_all_direct_gui_constructors_and_native_dialog_arguments) ... ok
 test_strict_constructor_parameter_names_match_pinned_213_headers (test_xcmate_gui_contract.GUIContractTests.test_strict_constructor_parameter_names_match_pinned_213_headers) ... ok
 test_bookmark_contains_ids_facts_and_no_source_urls (test_xcmate_guide_grid_02913.GridTests.test_bookmark_contains_ids_facts_and_no_source_urls) ... ok
@@ -789,11 +802,11 @@ test_widget_route_and_no_cached_credentials_in_link (test_xtreammate_widgets.Wid
 test_youtube_whitelist (test_xtreammate_widgets.WidgetsTest.test_youtube_whitelist) ... ok
 
 ----------------------------------------------------------------------
-Ran 785 tests in 147.409s
+Ran 798 tests in 152.344s
 
 OK
 
-MODEL_COLD_WINDOW_MS 5.001
+MODEL_COLD_WINDOW_MS 4.871
 
 SELECTIVE_XMLTV {"bytes": 400, "parsed": 2, "stored": 1}
 
