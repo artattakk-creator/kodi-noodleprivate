@@ -147,7 +147,7 @@ class DownloadTests(unittest.TestCase):
         self.store.command(self.ident,'cancel')
         self.ident=self.store.enqueue(dict(self.media,sid='2',target='smb://test-only/share/archive'))
         row,opened=self.run_job()
-        self.assertEqual((row['state'],row['code'].split('@')[0]),('FAILED','UNSUPPORTED_TARGET'))
+        self.assertEqual((row['state'],row['code'].split('@')[0]),('FAILED','STAGING_CONSENT_REQUIRED'))
         self.resolve.assert_not_called();opened.assert_not_called()
     def test_full_part_is_published_after_interrupted_rename_without_new_http(self):
         with mock.patch.object(self.files,'rename',side_effect=self.files.FileFailure('TARGET_RENAME')):row,_=self.run_job()

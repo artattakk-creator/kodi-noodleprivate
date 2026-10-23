@@ -40,18 +40,29 @@ def safe_name(value,default='XCMate'):
 
 
 def exists(uri):
+    if uri.startswith('smb://'):
+        from download_smb import exists as smb_exists
+        return smb_exists(uri)
     if local(uri):return os.path.exists(native(uri))
     import xbmcvfs
     return xbmcvfs.exists(uri)
 
 
 def size(uri):
+    if uri.startswith('smb://'):
+        from download_smb import size as smb_size
+        return smb_size(uri)
     if local(uri):return os.path.getsize(native(uri))
     import xbmcvfs
     return xbmcvfs.Stat(uri).st_size()
 
 
 def mkdir(uri):
+    if uri.startswith('smb://'):
+        from download_smb import session,Failure
+        with session(uri) as (connection,share,path):
+            if not connection.getAttributes(share,path or '/',timeout=10).isDirectory:raise Failure('TARGET_NOT_DIRECTORY','SMB_STAT')
+        return
     if local(uri):os.makedirs(native(uri),exist_ok=True)
     else:
         import xbmcvfs
@@ -59,6 +70,9 @@ def mkdir(uri):
 
 
 def remove(uri):
+    if uri.startswith('smb://'):
+        from download_smb import remove as smb_remove
+        return smb_remove(uri)
     if local(uri):os.unlink(native(uri))
     else:
         import xbmcvfs
@@ -95,6 +109,7 @@ def capacity(uri,additional=0):
 def file_limit(uri):
     from utils import setting_int
     configured=max(1,min(512,setting_int('downloads_max_gib',64)))*1024**3
+    if uri.startswith('smb://'):return configured
     if not local(uri):return min(configured,4*1024**3-1)
     # Linux/Android VFAT is limited to 4 GiB-1; unknown VFS targets use that
     # conservative policy too. Other local FS errors remain real failures.
@@ -112,6 +127,9 @@ def file_limit(uri):
 
 
 def reader(uri):
+    if uri.startswith('smb://'):
+        from download_smb import Reader
+        return Reader(uri)
     if local(uri):return open(native(uri),'rb')
     import xbmcvfs
     source=xbmcvfs.File(uri)
@@ -151,9 +169,8 @@ def flush(stream):
 
 
 def probe(root):
-    from atomic_media import probe as native_probe
-    result=native_probe(native(root),create=True)
-    return dict(writable=True,free=result['free'],max_bytes=file_limit(root),vfs=False)
+    from download_targets import probe as target_probe
+    return target_probe(root)
 
 
 def owned_part(uri,ident):

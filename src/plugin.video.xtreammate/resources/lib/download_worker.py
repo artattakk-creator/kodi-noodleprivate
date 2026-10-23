@@ -33,6 +33,9 @@ def destination(media,ident,extension):
 
 
 def _hash(uri,limit):
+    if uri.startswith('smb://'):
+        from download_smb import digest
+        return digest(uri,limit)
     from media_files import reader
     digest=hashlib.sha256();size=0
     with reader(uri) as stream:
@@ -55,19 +58,22 @@ def run_one(cancel=lambda:False,resolver=None,opener=None):
     ident,owner=job['id'],job['owner'];media=job['media'];part=job['part'];output=None;response=None
     digest=hashlib.sha256();count=0;total=0;last=time.monotonic();last_bytes=0
     try:
-        files.probe(media['target'])
+        import download_targets as targets
+        caps=files.probe(media['target'])
+        workspace=targets.stage_root() if caps['staging'] else media['target']
         # Repair only a completely verified own publish interrupted after rename.
         if job['file'] and files.exists(job['file']):
-            if job['total']>0 and files.size(job['file'])==job['total'] and _hash(job['file'],job['total'])==job['digest']:
+            if (not caps['staging'] or targets.recoverable(ident,job['file'])) and job['total']>0 and files.size(job['file'])==job['total'] and _hash(job['file'],job['total'])==job['digest']:
                 store.finish(ident,owner,'COMPLETE');return True
-            raise DownloadFailure('TARGET_EXISTS')
+            if not (caps['staging'] and targets.owned(ident,job['file'])):raise DownloadFailure('TARGET_EXISTS')
         if job['file'] and job['total']>0 and job['bytes']==job['total'] and files.owned_part(part,ident) and files.exists(part) and _hash(part,job['total'])==job['digest']:
             connection=store.db()
             try:
-                with connection:changed=connection.execute("UPDATE jobs SET state='PUBLISHING' WHERE id=? AND owner=? AND state='RUNNING'",(ident,owner)).rowcount
+                with connection:changed=connection.execute("UPDATE jobs SET state=? WHERE id=? AND owner=? AND state='RUNNING'",('TRANSFERRING' if caps['staging'] else 'PUBLISHING',ident,owner)).rowcount
             finally:connection.close()
             if not changed:raise InterruptedError()
-            files.rename(part,job['file']);store.finish(ident,owner,'COMPLETE');return True
+            final=_publish(job,part,job['file'],job['total'],job['digest'],caps,cancel)
+            store.checkpoint(ident,owner,file=final);store.finish(ident,owner,'COMPLETE');return True
         url,headers=(resolver or resolve)(media);fingerprint=hashlib.sha256(url.encode()).hexdigest()
         offset=job['bytes'] if job['code'] not in ('SOURCE_CHANGED','PART_CHANGED','BAD_RANGE') and job['fingerprint']==fingerprint and (job['etag'] and not job['etag'].startswith('W/') or job['modified']) else 0
         if offset and job['total'] and offset>=job['total']:offset=0
@@ -90,8 +96,9 @@ def run_one(cancel=lambda:False,resolver=None,opener=None):
         elif status==200:offset=0;total=int(length)
         else:raise DownloadFailure('HTTP_ERROR')
         if total>files.file_limit(media['target']):raise DownloadFailure('FILE_LIMIT')
-        files.mkdir(media['target']);files.capacity(media['target'],total) # VFS prefix rebuild needs headroom too.
-        newpart=files.join(media['target'],'.xcmate-'+ident+'-'+uuid.uuid4().hex+'.part')
+        files.mkdir(media['target']);files.capacity(workspace,total)
+        files.capacity(media['target'],total)
+        newpart=files.join(workspace,'.xcmate-'+ident+'-'+uuid.uuid4().hex+'.part')
         output=files.writer(newpart)
         if offset:
             with files.reader(part) as prior:
@@ -117,7 +124,7 @@ def run_one(cancel=lambda:False,resolver=None,opener=None):
                 # Collect a sufficient format probe before writing any payload.
                 if len(first)<min(1024,total):continue
                 extension=container(first);final=destination(media,ident,extension);data=first;first=b''
-            files.capacity(media['target'],len(data));output.write(data);digest.update(data);count+=len(data)
+            files.capacity(workspace,len(data));output.write(data);digest.update(data);count+=len(data)
             now=time.monotonic()
             if now-last>=.5:
                 files.flush(output)
@@ -135,10 +142,11 @@ def run_one(cancel=lambda:False,resolver=None,opener=None):
         connection=store.db()
         try:
             with connection:
-                changed=connection.execute("UPDATE jobs SET state='PUBLISHING' WHERE id=? AND owner=? AND state='RUNNING'",(ident,owner)).rowcount
+                changed=connection.execute("UPDATE jobs SET state=? WHERE id=? AND owner=? AND state='RUNNING'",('TRANSFERRING' if caps['staging'] else 'PUBLISHING',ident,owner)).rowcount
         finally:connection.close()
         if not changed:raise InterruptedError()
-        files.rename(part,final);store.finish(ident,owner,'COMPLETE')
+        final=_publish(job,part,final,total,digest.hexdigest(),caps,cancel)
+        store.checkpoint(ident,owner,file=final);store.finish(ident,owner,'COMPLETE')
     except InterruptedError:
         if output is not None:
             try:files.flush(output);store.checkpoint(ident,owner,bytes=count,digest=digest.hexdigest(),speed=0)
@@ -152,7 +160,7 @@ def run_one(cancel=lambda:False,resolver=None,opener=None):
         if not isinstance(code,str):
             from art_errors import classify
             errno=getattr(error,'errno',None)
-            code='NO_SPACE' if errno==28 else 'TARGET_WRITE' if errno in (13,30) else 'TARGET_UNAVAILABLE' if errno==2 else classify(error)
+            code='FILE_LIMIT' if errno==27 else 'NO_SPACE' if errno==28 else 'TARGET_WRITE' if errno in (13,30) else 'TARGET_UNAVAILABLE' if errno==2 else classify(error)
         transient=code in ('TIMEOUT','DNS_ERROR','CONNECTION_ERROR','NETWORK_ERROR','HTTP_SERVER','TRUNCATED')
         from transfer_diagnostics import encode,mark
         reason=encode(error,code);mark('DOWNLOAD','FAILED',reason)
@@ -161,3 +169,24 @@ def run_one(cancel=lambda:False,resolver=None,opener=None):
         if response is not None:response.close()
         if output is not None:output.close()
     return True
+
+
+def _publish(job,part,final,total,digest,caps,cancel):
+    import download_store as store,download_targets as targets
+    ident,owner=job['id'],job['owner'];last=[0]
+    def stopped():
+        if cancel():return True
+        row=store.get(ident)
+        return not row or row['owner']!=owner or row['state'] not in ('TRANSFERRING','PUBLISHING')
+    def progress(count):
+        now=time.monotonic()
+        if now-last[0]>=.5:
+            store.checkpoint(ident,owner,copy_bytes=count);last[0]=now
+    def destination(uri):store.checkpoint(ident,owner,file=uri,copy_bytes=0)
+    def claim():
+        if cancel():return False
+        connection=store.db()
+        try:
+            with connection:return bool(connection.execute("UPDATE jobs SET state='PUBLISHING' WHERE id=? AND owner=? AND state='TRANSFERRING'",(ident,owner)).rowcount)
+        finally:connection.close()
+    return targets.publish(part,final,ident,total,digest,caps,stopped,progress,destination,claim)

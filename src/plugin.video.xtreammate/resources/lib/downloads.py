@@ -6,7 +6,7 @@ _guard=threading.Lock();_worker=None;_stop=threading.Event()
 
 
 def folder():
-    from capture_target import configured
+    from download_targets import configured
     return configured()
 
 

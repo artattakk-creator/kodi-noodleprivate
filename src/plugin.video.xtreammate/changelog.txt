@@ -1,3 +1,11 @@
+0.1.29.29 – isolierter Download-Speicher-Testkandidat
+- #136: Eigener dauerhaft gespeicherter Downloadordner, bisheriger gemeinsamer Ordner bleibt Standard bis zur ausdrücklichen Auswahl. Aufnahmeziel unverändert.
+- Interne/native USB-Ziele mit unverändertem atomarem No-Replace-Vertrag; inkompatible lokale USB-Volumes nach Zustimmung über lokale Zwischenkopie, O_EXCL/NoFollow, Datei-fsync und Zielhash, ohne Atomic-Rename-Versprechen.
+- Kodi-SMB-Ziele über getrennten reinen Python-SMB2-Adapter: signierte authentifizierte Verbindung, exklusives FILE_CREATE/Write-Through, serverseitiges ReplaceIfExists=False und Größen-/SHA256-Verifikation. Keine SMB1-/Gast-/unsignierte Rückstufung.
+- Unterbrechung, Pause und Retry bei Zielkopie erhalten die lokale Datei. Kein erneuter HTTP-Download einer bereits vollständigen geprüften Zwischenkopie; keine irreführende COMPLETE-Anzeige.
+- Fähigkeiten/Dateigrenzen, unbekannter SMB-Freiraum und notwendige Staging-Kapazität sichtbar; kein stiller Wechsel auf internen Zielordner. Stage-Dateien zur Wiederherstellung erhalten.
+- Abhängigkeiten privat namensgebunden und mit Lizenzen eingebettet, keine Laufzeitinstallation. Android-/echte USB-/Nutzer-SMB-Abnahme offen, kein Release/OTA/main-Merge. Redirect-Reparatur separat.
+
 0.1.29.28 – Android-Testkandidat
 - #111: Expliziter Einzelposter-Retry priorisiert belegte alternative Bildadresse desselben Datensatzes, ohne Fanart/andere Titel; gültige READY-Bilder und Worker/Cooldowns bleiben geschützt.
 - Fehlende Datei hinter alter READY-Zeile kann erneut geladen werden; keine Titelraterei oder unbelegte TMDB-Zuordnung.
