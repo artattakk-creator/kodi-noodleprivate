@@ -84,3 +84,17 @@ Diese P0/P1-Testlieferung erledigt die folgenden Aufgaben noch nicht:
 
 Nach P0-Geräteabnahme jede dieser Arbeiten separat entwickeln und testen. Dieser
 Kandidat darf nicht als vollständige Erledigung der UI-/EPG-/Setup-Roadmap gelten.
+
+## Paketnachweis
+
+Kumulatives C-ZIP: `plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.28.zip`
+(1.819.405 Bytes / 177 Dateien).
+
+SHA256: `fdb5bea7a3c119783e8cd51ba6aa62f78726b4821eb68bf24e5e45134c418fa2`
+
+970 lokale Tests PASS (109.659 s), keine Fehler oder Thread-Exceptions.
+Python-Syntax, ZIP-CRC, vollständiger Quelldateiabgleich, sichere Archivpfade und
+bytegenau reproduzierbarer ZIP-Build PASS. Vollständiges Log und JSON neben
+dieser Anleitung. CI-Ergebnis des endgültigen Liefercommits im Draft-PR;
+Produktionsveröffentlichung bleibt ausgeschlossen. Host-Aufnahme und reale
+HTTP-Fixture-Downloads sind in den unveränderten B-Nachweisen dokumentiert.
