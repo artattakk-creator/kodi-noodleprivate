@@ -1,3 +1,7 @@
+0.1.29.27 – Testschritt A, nicht veröffentlicht
+- #125: Such-Live-Start nach Owner-Freigabe direkt über den bestehenden Player/ListItem-Vertrag; kein verschachtelter Plugin-Resolver.
+- Busy-/Fremdplayer-/Session-Gates, einmaliger Intent und anonyme Gründe. EPG-/Autoplay-Pfade unverändert.
+
 0.1.29.26 (Android test candidate: in-window search and manual Direct-TS recording)
 - Keep search input/results in the existing native MediaWindow owner. No close/Container.Update handoff on submit. Worker-only local LIVE/MOVIE/SERIES counts, pagination, existing details/player routes, real current EPG title matches, mapping/group filters and explicit missing/error states. Trace only anonymous lifecycle markers. Native Android crash cause remains unproven; #118 stays open until device acceptance.
 - Enable explicit manual recording Start/Finish under Storage and recordings. A service-owned single recorder uses an authorized independent HTTP(S) Direct-TS connection, private command DB, persistent states, bounded network/probe/file/free-space limits and owned .part artifacts. No external FFmpeg app, timers, downloads or media-manager activation. Existing recordings.json is untouched.
