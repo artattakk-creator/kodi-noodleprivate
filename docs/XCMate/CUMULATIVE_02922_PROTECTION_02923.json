@@ -1,0 +1,25 @@
+{
+  "basis": "283c006ebafc6a237365652edaffcbb3bc2ba990",
+  "unchanged": {
+    "src/plugin.video.xtreammate/resources/lib/guide_grid_window.py": "e8aee7830cb0fcd55f84fb088dda870294734a7b649fadb2e8128ff57a9667f4",
+    "src/plugin.video.xtreammate/resources/lib/guide_grid_data.py": "6afc41da635d923bd76d6039ee9b33981e2adb509a73f986b873db3bc78fa6a6",
+    "src/plugin.video.xtreammate/resources/lib/guide_grid_diagnostics.py": "fc7e838506d4ccf4c818c834c5f7f9d9cca8ea6b3127c22b4807266e47ad2933",
+    "src/plugin.video.xtreammate/resources/lib/guide_playback.py": "f41f6c2414e8152441a9ba5bd374e7ebaa056dc96197be0fd31bf2dd87b5f467",
+    "src/plugin.video.xtreammate/resources/lib/guide_window.py": "5c4d585e69c0ff8d73faa4227b9857e0a18bc29f8752f1c171d1f38c817cca7f",
+    "src/plugin.video.xtreammate/resources/lib/owner_dispatch.py": "9f84982d1181f3e6513590cb139db0b413e1da4a6992e37a4e1dc4bfb12517d2",
+    "src/plugin.video.xtreammate/resources/lib/media_autoplay.py": "e81baac249e4272c1d782143471ca3381a4b5258884ae0fba10af00cd75fc588",
+    "src/plugin.video.xtreammate/resources/lib/media_osd.py": "7f82acaf66062b7d4d898394a5f14c313da9edef5d49db8e31851e5d6758e78f",
+    "src/plugin.video.xtreammate/resources/lib/media_progress.py": "e03d047d4cbb0a0b0e806244c26a40460b4beee7943630460ad99d74f3d21c75",
+    "src/plugin.video.xtreammate/resources/lib/media_intent.py": "3609442a2b769f57a3ddfe1ad910eb833128cb50dcc058fb726fbeb7ad25c4a8",
+    "src/plugin.video.xtreammate/resources/lib/media_sequence.py": "07dff55b3ea3abe6805e679ccc3e91158f7bf9a677e0de4a3c84201c97e0f259",
+    "src/plugin.video.xtreammate/resources/lib/media_state.py": "34e4bc4354e4a7769c5fb60095839fda5a5d6854c4e4e99854cbc81b58881eb7",
+    "src/plugin.video.xtreammate/resources/lib/playback_exit.py": "ad31f4bbfaa6177d8a1c90c6088becac58bc7dcbb1202c520ebded220d196fc7",
+    "src/plugin.video.xtreammate/resources/lib/app_services.py": "20b6d4a1c67de882a76ecfbb8e7d94d2393b83600a279d083a376345962b13c0",
+    "src/plugin.video.xtreammate/resources/skins/Default/720p/XCMateGuide.xml": "a6ec25022f44d2c3fbfea363f8231ba75b4a259ea887ad369acce4e13aedbb56",
+    "src/plugin.video.xtreammate/resources/skins/Default/720p/XCMatePopupTest.xml": "841b9b2b882b0291113e73573822e8cffd478f1159d8090d88123c6edd83dedd",
+    "src/plugin.video.xtreammate/resources/skins/Default/720p/XCMateMedia.xml": "1d4f999f1469313415a3d30f2c7299c5a146e8cdd66ab588b0ae10adf453117a",
+    "src/plugin.video.xtreammate/resources/skins/Default/720p/XCMateSetup.xml": "d7b7f64572588bd16a1773886a2ccfdffc329401a0895c14b0c7b14cc6f1e6bd",
+    "src/plugin.video.xtreammate/resources/skins/Default/720p/XCMatePlaylistEditor.xml": "5901f338b894c27ce3c6183d5f2900a9b74b5428b50e39f4fa08a6238fef5829",
+    "src/plugin.video.xtreammate/resources/skins/Default/720p/XCMateGuideGrid.xml": "6ebf40bbe44d23574d5a4c84f4c37ab1edc572cd3849e675fb17cab64b24b7bd"
+  }
+}
