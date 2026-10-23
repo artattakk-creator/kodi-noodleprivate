@@ -31,9 +31,13 @@ Kodi-Dateiquellen/USB-Mount vorher in Android/Kodi freigeben. Ziel wählen, tats
 Prüfung abwarten, Fähigkeiten ansehen, gegebenenfalls Staging erlauben und Übernahme
 bestätigen. Danach Kodi neu starten und „Downloadziel und Fähigkeiten prüfen“ aufrufen.
 Aufnahmeziel separat prüfen. Ohne bestätigte Auswahl bleibt der alte gemeinsame
-Ordner Standard; Fehler/Cancel bewirken keinen internen Rückfall. Bestehende
-Aufträge behalten ihren alten Zielordner – für einen neuen Zieltest einen neuen,
-noch nicht heruntergeladenen Film bzw. eine andere einzelne Folge verwenden.
+Ordner Standard; Fehler/Cancel bewirken keinen internen Rückfall. Neue lokale Ziele/Aufträge
+sind an Geräte-/Ordneridentität gebunden: TARGET_REMOVED/TARGET_CHANGED stoppt vor
+dem Start und erneut vor der Zielkopie nach dem HTTP-Download. Nach physischem Remount/Wechsel Ziel bewusst neu prüfen und
+auswählen; alte Aufträge werden nicht unbemerkt auf ein anderes Medium übernommen. Bestehende
+Aufträge behalten ihren alten Zielordner. Eine ausdrücklich neue Anforderung
+derselben Datei nach Zielwechsel erzeugt einen separaten Auftrag im neuen Ziel;
+im Manager den neuen Auftrag prüfen.
 
 Native lokale Ziele benötigen unverändert sichere No-Replace-/fsync-Fähigkeit.
 Geeignete andere lokale USB-Ziele verwenden nach Zustimmung eine vollständige
@@ -138,15 +142,19 @@ vor einem vollständigen RC.** Außerdem #120 Live-Shortcut, #122 Original-Splas
 ## Paket und Testergebnis
 
 `plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.29.zip`
-(2.003.455 Bytes, 244 Quelldateien; enthält private reine Python-SMB-Abhängigkeiten
-und deren Lizenzhinweise).
+(2.004.070 Bytes, 244 Quelldateien; private reine Python-SMB-Abhängigkeiten
+und deren Lizenzhinweise enthalten).
 
-SHA256: `805e29885bf39e3e2c60e3af82ebcd9f3ccf82b6cebd24ebd3d7e47e4eb58ab5`
+SHA256: `3459f6be595126b27e15db044de5ba8b40f84e42e521485fc96142ebea069d57`
 
-997 lokale Tests PASS in 113.580 s, 0 Fehler, 0 übersprungene Tests, keine
+1000 lokale Tests PASS in 111.849 s, 0 Fehler, 0 übersprungene Tests, keine
 Thread-Exceptions. Syntax, ZIP-CRC/Pfade, vollständiger Quelldateiabgleich und
 bytegenau reproduzierbarer Build PASS. Vollständiger Testlog und maschinenlesbarer
 Bericht neben dieser Anleitung; CI-Nachweis zum endgültigen Liefercommit im
-kumulativen Draft-PR. Die Schutzprüfung wurde nicht abgeschwächt: die zunächst
+kumulativen Draft-PR #139. Die Schutzprüfung wurde nicht abgeschwächt: die zunächst
 beanstandete Ergänzung an window_navigation.py wurde zurückgenommen; die neuen
 Picker werden lokal als nicht abspielbare Dialogaktionen eingebunden.
+
+Zusätzlich geprüft: entfernte/ersetzte lokale Ziele vor Schreiben, erneute Prüfung
+nach HTTP-Staging vor der Zielkopie, Erhalt der Zwischenkopie bei entferntem USB,
+separater neuer Auftrag bei ausdrücklich gewähltem anderen Downloadziel.
