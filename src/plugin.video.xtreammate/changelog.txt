@@ -1,3 +1,8 @@
+0.1.29.23 (isolated cumulative graphics candidate on main .22)
+- Keep exact approved original icon bytes with a content-addressed Kodi metadata/Home reference; publish the matching repository icon asset and expose a private runtime reference check. Android visibility remains pending.
+- Distinguish HTTP/auth/rate-limit/DNS/TLS/timeout/connection poster failures; bounded worker retries, Retry-After cooldown, one-image user retry and same-record metadata alternatives. No title guessing, global reset or cached-image deletion.
+- Preserve Test 50 EPG navigation and playback/autoplay/Resume; no theme core merge, Kodi skin/keymap changes, production index update or release. Real Aladdin 1992 cause and device success remain unverified.
+
 0.1.29.22 (cumulative update candidate on main .21; supersedes isolated .22 ZIPs)
 - Include all .21 series autoplay, own Player OSD, nonce/Stop/error/shutdown protections, manual Next, watched/resume state and their existing tests unchanged.
 - Preserve horizontal EPG; open the enabled saved start group with the saved channel at its original ordinal; separate group browser, scoped rows and stable per-group viewports.
