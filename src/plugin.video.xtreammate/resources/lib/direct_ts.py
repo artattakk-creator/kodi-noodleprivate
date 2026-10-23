@@ -154,6 +154,19 @@ class Recorder:
 
     def finish(self):self.finished.set()
 
+    def _probe_target(self,directory):
+        name=self.ident+'.probe';link=name+'.link';created=False;linked=False
+        try:
+            fd=os.open(name,os.O_CREAT|os.O_EXCL|os.O_WRONLY|os.O_NOFOLLOW,0o600,dir_fd=directory)
+            created=True
+            with os.fdopen(fd,'wb') as stream:stream.write(b'XCMate');stream.flush();os.fsync(stream.fileno())
+            try:os.link(name,link,src_dir_fd=directory,dst_dir_fd=directory,follow_symlinks=False)
+            except OSError:raise Failure('UNSUPPORTED_TARGET') from None
+            linked=True;os.fsync(directory)
+        finally:
+            if linked:os.unlink(link,dir_fd=directory)
+            if created:os.unlink(name,dir_fd=directory)
+
     def _space(self,fd,incoming=0):
         capacity=os.fstatvfs(fd)
         # Retain room for the bounded-memory finalization copy as well.
@@ -183,6 +196,7 @@ class Recorder:
             if not directory.is_absolute() or directory.is_symlink():raise Failure('UNSUPPORTED_TARGET')
             fd=os.open(directory,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW)
             self._space(fd)
+            self._probe_target(fd)
             self._save(fd)
             if self.cancel.is_set():raise Failure('CANCELLED')
             transport=Transport();pending=bytearray();probe_start=time.monotonic()

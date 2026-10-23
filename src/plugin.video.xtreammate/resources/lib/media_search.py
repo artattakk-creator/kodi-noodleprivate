@@ -76,6 +76,7 @@ class SearchMixin:
     def _search_ready(self,value):
         if self.mode!='search':return
         self._search_loading=False;self._search_data=value
+        self.getControl(103).setLabel(tr(33903)+' · '+self._search_query)
         for pos,kind in enumerate(KINDS):
             count=value[kind]['total']
             self.getControl(700+pos).setLabel(tr(LABELS[pos])+' ('+(str(count) if count is not None else '…')+')')

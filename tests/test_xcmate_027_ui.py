@@ -178,7 +178,11 @@ class NavigationTests(Fixture,unittest.TestCase):
                 w.getControl(110).selectItem(len(w.rows)-1);w._last_position=len(w.rows)-1
                 w.native(2);self.settle(w)
         self.assertEqual(len(ids),100);self.assertEqual(len(set(ids)),100)
-        self.assertLessEqual(len(w.controls),31)  # one fixed manual Next button
+        # .26 adds exactly six shared search controls, independent of result
+        # count. The original rail budget remains 31, not one control per item.
+        search={700,701,702,710,720,721}
+        self.assertTrue(search.issubset(w.controls))
+        self.assertLessEqual(len(set(w.controls)-search),31)
 
     def test_favourites_resume_and_trailer_are_real_conditional_actions(self):
         self.state.save_progress(dict(pid='p',kind='vod',sid='1'),1050,2700)

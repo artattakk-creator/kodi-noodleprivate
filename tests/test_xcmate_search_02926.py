@@ -35,6 +35,7 @@ class SearchTests(Fixture,unittest.TestCase):
         self.assertEqual((w.mode,w.kind),('detail','series'))
         w.native(92);self.settle(w)
         self.assertEqual(w.mode,'search');self.assertEqual(w._search_query,'House')
+        self.assertIn('House',w.getControl(103).label)
         w.native(92);self.settle(w);self.assertEqual(w.kind,'vod')
         self.assertFalse(self.builtins)
 

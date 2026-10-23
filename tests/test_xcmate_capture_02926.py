@@ -131,5 +131,12 @@ class CaptureTests(Fixture,unittest.TestCase):
             self.store.update(ident,status='complete',file='../foreign.ts')
             ui.manage();player.assert_not_called()
 
+    def test_target_without_hardlinks_is_rejected_before_opening_provider(self):
+        recorder=self.ts.Recorder('https://private.invalid/TOKEN',str(self.folder),120,separate_connection=True)
+        with mock.patch.object(self.ts.os,'link',side_effect=OSError(95,'unsupported')),mock.patch.object(self.ts,'build_opener') as provider:
+            state=recorder.run()
+        self.assertEqual((state['status'],state['code']),('failed','UNSUPPORTED_TARGET'))
+        provider.assert_not_called();self.assertFalse(list(self.folder.glob('*.probe*')))
+
 
 if __name__=='__main__':unittest.main()
