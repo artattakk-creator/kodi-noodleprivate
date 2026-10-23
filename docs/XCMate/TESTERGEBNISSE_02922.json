@@ -37,5 +37,10 @@
   "old_isolated_02922": "SUPERSEDED_DO_NOT_INSTALL",
   "uninstall_required": false,
   "downgrade_required": false,
-  "data_reset": false
+  "data_reset": false,
+  "integrated_main_documentation_commit": "8457896e7a6d1f575aff5024bea8daa6dc80e22e",
+  "subsequent_main_delta": [
+    "docs/XCMate/ANDROID_TEST_49_02921_DE.md"
+  ],
+  "source_and_zip_unchanged_after_documentation_merge": true
 }

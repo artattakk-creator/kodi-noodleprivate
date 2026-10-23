@@ -31,3 +31,7 @@ Artwork-Downloadpause bleibt BLOCKED_UI / NOT_TESTED; vorhandene Bilder/Jobs nic
 ## Frischer Host-Nachweis dieses kumulativen Pakets
 
 **785/785 PASS in 95.682 s**, 0 Fehler/Fehlschläge/unkontrollierte Worker-Ausnahmen. Neue Paket-SHA256: `886839ba128c36dcc716dc063b8b4c4a8a965e07f4372692b000729db517862f`. Original-Icon im ZIP bytegleich zur freigegebenen SHA256. Sämtliche .21-Autoplay-/Player-/Service- und Artwork-Dateien, produktiver Index, bestehende ZIPs und 35 fremde WIP-Dateien unverändert geprüft. Aktuelle GitHub-CI wird am finalen Commit ausgeführt und in PR #110 verlinkt. Android NOT_TESTED.
+
+## Abschließender Dokumentationsabgleich
+
+Während der Entwicklung kam auf main `8457896e7a6d1f575aff5024bea8daa6dc80e22e` hinzu (nur `ANDROID_TEST_49_02921_DE.md`, keine Source-/Paketänderung). Dieser Nachtrag wurde ebenfalls normal in den Draft integriert und der dortige alte .22-Sperrverweis auf den neuen kumulativen Kandidaten aktualisiert. Programmcode, Original-Icon und ZIP sind bytegleich zum frischen 785-Test-Hostlauf auf Basis `3307e00`; Source-/Teststand `eb954c2` bleibt maßgeblich. .22-Android weiterhin NOT_TESTED. CI wird am abschließenden Dokumentations-/Paketstand erneut automatisch ausgeführt und im PR verlinkt.
