@@ -1,5 +1,7 @@
 # XCMate 0.1.29.24 – Android-Gesamttest: Ergebnisse
 
+> **KRITISCHER NACHTEST vom 23.10.2026 (spätere Nutzerbeobachtung):** Das zuvor als PASS gemeldete Space Premium zeigt **P0-Fehler** beim Rückwechsel zu Lightweight, unsichtbaren Fokus in Filmen/Serien und Dateifenstern sowie OK→Suche statt fokussierter Detailaktion. Die früheren Sammel-PASS D/F gelten **nicht als Abnahme** dieser konkreten Funktionen. Artwork C bleibt FAIL. **[Nachtest / P0-Bericht](ANDROID_NACHTEST_02924_PREMIUM_P0_20261023_DE.md)** · [GitHub-Issue #115](https://github.com/artattakk-creator/kodi-noodleprivate/issues/115). Original-Icon und großes EPG wurden durch die neuen Angaben nicht widerrufen.
+
 **Datum der Nutzer-Rückmeldung:** 23.10.2026  
 **Produktive Version:** `0.1.29.24`, GS Media Kodi Repository, `plugin.video.xtreammate`  
 **Gerät/Zielumgebung:** Android TV 13, RK3528 ARM32, Kodi 21.2 Omega, Titan BINGIE MOD, IR-Fernbedienung (bestehende Testumgebung).  
