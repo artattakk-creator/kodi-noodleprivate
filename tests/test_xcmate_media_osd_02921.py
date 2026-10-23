@@ -120,3 +120,20 @@ class MediaOSDTests(Fixture,unittest.TestCase):
         self.properties[STATE]=json.dumps(dict(root='root',nonce='next',pid='p',phase='STARTING',enabled=True,at=time.time()))
         self.player.isPlayingVideo.return_value=False
         self.key(92);self.assertTrue(cancelled('root','p'));self.assertTrue(self.window.closed);self.player.stop.assert_not_called()
+
+    def test_stop_before_owner_consumes_end_callback_cancels_playing_marker(self):
+        from media_autoplay import STATE,cancelled
+        self.session.update(kind='episode',series_id='1',autoplay=True,autoplay_chain='root')
+        self.properties['XCMate.MediaSession']=json.dumps(self.session)
+        self.properties[STATE]=json.dumps(dict(root='root',nonce='ours',pid='p',phase='PLAYING',enabled=True,at=time.time()))
+        self.player.isPlayingVideo.return_value=False
+        self.key(13);self.assertTrue(cancelled('root','p'));self.assertTrue(self.window.closed);self.player.stop.assert_not_called()
+
+    def test_visible_bar_back_during_transition_hides_before_hidden_back_cancels(self):
+        from media_autoplay import STATE,cancelled
+        self.session.update(kind='episode',series_id='1',autoplay=True,autoplay_chain='root')
+        self.properties['XCMate.MediaSession']=json.dumps(self.session)
+        self.properties[STATE]=json.dumps(dict(root='root',nonce='ours',pid='p',phase='PLAYING',enabled=True,at=time.time()))
+        self.window.show_bar();self.player.isPlayingVideo.return_value=False
+        self.key(92);self.assertFalse(self.window.visible);self.assertFalse(cancelled('root','p'));self.assertFalse(self.window.closed)
+        self.key(92);self.assertTrue(cancelled('root','p'));self.assertTrue(self.window.closed)

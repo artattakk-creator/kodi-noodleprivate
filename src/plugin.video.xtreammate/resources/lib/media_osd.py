@@ -58,7 +58,7 @@ class MediaOSD(xbmcgui.WindowDialog):
         return view(self.token[1].get('autoplay_chain',''),self.token[1]['pid']) if self.token[1].get('autoplay_chain') else {}
 
     def transition(self):
-        return bool(self.chain().get('phase') in ('ENDED_PENDING','PREPARING','STARTING'))
+        return bool(not self.owned() and self.chain().get('phase') in ('PLAYING','ENDED_PENDING','PREPARING','STARTING'))
 
     def owned(self):return _same(self.token,identity(self.player)) and self.token[0]=='media'
 
@@ -147,7 +147,7 @@ class MediaOSD(xbmcgui.WindowDialog):
             self.icons['pause'].setImage(os.path.join(self.media,'tv_play.png' if paused else 'tv_pause.png'))
 
     def invoke(self,name):
-        if name=='stop' and (self.owned() or self.transition()):
+        if name=='stop' and (self.owned() or self.token[1].get('autoplay_chain')):
             from media_autoplay import request_cancel
             request_cancel(self.token[1].get('autoplay_chain',''),self.token[1]['pid'])
             result=stop_owned(self.player,expected=self.token) if self.owned() else True
@@ -185,9 +185,12 @@ class MediaOSD(xbmcgui.WindowDialog):
     def onAction(self,action):
         if self.closed:return
         key=action.getId()
+        if key==13:self.invoke('stop');return
         if not self.owned():
-            if self.transition():
-                if key in (9,10,92,13):self.invoke('stop')
+            if self.transition() or self.token[1].get('autoplay_chain'):
+                if key in (9,10,92):
+                    if self.visible:self.hide_bar()
+                    else:self.invoke('stop')
                 return
             self.dispose();return
         if key in (9,10,92):
