@@ -16,7 +16,7 @@ on:
       - ".release/xtreammate_0.1.0.patch.xz.b64"
       - ".github/workflows/publish.yml"
   pull_request:
-    branches: [main]
+    branches: [main, "fix/xcmate-02927-*"]
     paths:
       - "tests/**"
       - "src/**"
