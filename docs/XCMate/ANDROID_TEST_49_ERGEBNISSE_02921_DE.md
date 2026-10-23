@@ -43,7 +43,7 @@ Nutzerbericht: EPG zeigt Sendergruppen und Sender weiterhin **ungeordnet/vermeng
 
 Erforderliche Folgearbeiten: Startsendergruppe direkt und **nur diese** im Guide anzeigen; ursprüngliche Gruppe-/Senderreihenfolge erhalten; Gruppenliste per Links-Grenze erreichbar machen; ausgewählte Gruppe filtern; zeitliche Programme innerhalb der Senderzeile korrekt sortieren; Kopfbuttons via Hoch-Routing fokussierbar und per OK auslösbar; lesbarer Fokus und gestufter Back-Pfad. Das gemeldete Ungeordnetsein beweist **noch keine** doppelten XMLTV-Rohdatensätze (#58), keine spekulative Fehlerursache behaupten.
 
-Der bisherige .22-Draft PR #110 stammt aus der alten .20-Basis und ist **kein gültiges kumulatives Update**. Erst nach Neubau auf .21 und Test von Autoplay+EPG in .22 bewerten. Original-XCMate-Icon aus PR #50 bleibt obligatorischer Bestandteil von .22 (Issue #37).
+**Nachtrag, aktueller GitHub-Stand:** PR #110 wurde während der Test-49-Auswertung tatsächlich kumulativ auf die .21-Basis portiert (Commit `13f1e27423b47fa3b0915cec7faa1869be0d27e0`). Der neue Draft meldet **785/785 Host- und CI-Tests PASS** und ein geprüftes Original-XCMate-Icon, das auf echte Android-Verifikation wartet. **Der veraltete, isolierte .22-Teststand bleibt ungültig** und darf nicht über .21 installiert werden. Der neue kumulative .22-Kandidat ist [in PR #110](https://github.com/artattakk-creator/kodi-noodleprivate/pull/110) dokumentiert und **noch nicht gemergt, nicht produktiv freigegeben und auf Android NOT_TESTED**. Die Fehlerbeobachtung **A06 FAIL betrifft weiterhin die getestete .21**, nicht den noch ungetesteten neuen .22-Code; Startgruppen-/Header-/Focus-Abnahme in .22 steht offen.
 
 ### 3. Bekannter Artwork-Pause-Button
 
@@ -58,6 +58,6 @@ Fehlender Button bleibt aus Test 48 **BLOCKED_UI / NOT_TESTED**. Keine Daten lö
 - **#85**: B01, B03–B08 PASS; B02 Staffelwechsel **NOT_TESTED**. Offen bis echte Staffelgrenze.
 - **#88/#92**: A06 FAIL. EPG-Reihenfolge, Gruppenrouting, Headerfokus weiterhin offen.
 - **#41/#90**: A07 PASS für Artwork/Bestand, jedoch nicht alle Speicher-/Fehlerfälle oder Button-UI abgenommen; offen.
-- **#37**: Original-Icon nicht Bestandteil der .21; für korrigierte .22 verpflichtend; offen.
+- **#37**: Original-Icon nicht Bestandteil der .21; im neuen kumulativen .22-Draft laut dokumentierter Binär-/CI-Prüfung integriert, Sichtprüfung auf Android weiterhin offen.
 
 **Freigaben:** Keine weitere Version, kein Merge, kein Release, kein produktiver OTA-Index-Eingriff. Nachweis umfasst den Nutzerbericht, keine Implementierung/Fix-Zusage.
