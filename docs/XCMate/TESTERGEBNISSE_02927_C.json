@@ -1,0 +1,26 @@
+{
+  "version": "0.1.29.27",
+  "tests": 942,
+  "seconds": 110.24,
+  "failures": 0,
+  "errors": 0,
+  "files": 175,
+  "bytes": 1812602,
+  "sha256": "4d4c0b800aead61ee45c739fff0a1cc7df710ab19408d584b0f4238a61c48d1b",
+  "crc": "PASS",
+  "paths": "PASS",
+  "source_bytes": "PASS",
+  "reproducible_zip": "PASS",
+  "python_ast": "PASS",
+  "android": "NOT_TESTED",
+  "production_publish": false,
+  "source_commit": "012afa1",
+  "phase": "internal test C: A+B+detail menu/downloads; not full release candidate",
+  "protected_modules_byte_equal": 12,
+  "protected_media_methods_ast_equal": 10,
+  "host_download_proof": "DOWNLOAD_HOST_02927_C.json",
+  "full_release_gates": [
+    "#43 complete first-run wizard",
+    "#127 informative search results"
+  ]
+}
