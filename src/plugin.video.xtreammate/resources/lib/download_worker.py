@@ -20,14 +20,15 @@ def destination(media,ident,extension):
     return join(root,name+' -- '+ident[:20]+'.'+extension)
 
 
-def _hash(uri,limit):
+def _hash(uri,limit,cancel=lambda:False):
     if uri.startswith('smb://'):
         from download_smb import digest
-        return digest(uri,limit)
+        return digest(uri,limit,cancel)
     from media_files import reader
     digest=hashlib.sha256();size=0
     with reader(uri) as stream:
         while True:
+            if cancel():raise InterruptedError()
             data=stream.read(CHUNK)
             if not data:break
             size+=len(data)
