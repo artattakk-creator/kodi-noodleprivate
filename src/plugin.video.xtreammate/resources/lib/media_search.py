@@ -24,7 +24,9 @@ def mark(event,correlation=''):
 def handoff(router,portal,window):
     intent=getattr(window,'_search_live',None)
     if intent:
-        from guide_playback import handoff as play
+        # Native input/pump and navigation lease must have finished first.
+        if not window._closed or getattr(window,'_running',False):return False
+        from search_live import handoff as play
         play(router,portal,intent)
 
 

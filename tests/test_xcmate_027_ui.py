@@ -182,7 +182,9 @@ class NavigationTests(Fixture,unittest.TestCase):
         # count. The original rail budget remains 31, not one control per item.
         search={700,701,702,710,720,721}
         self.assertTrue(search.issubset(w.controls))
-        self.assertLessEqual(len(set(w.controls)-search),31)
+        detail_menu={800,801,802,810}
+        self.assertTrue(detail_menu.issubset(w.controls))
+        self.assertLessEqual(len(set(w.controls)-search-detail_menu),31)
 
     def test_favourites_resume_and_trailer_are_real_conditional_actions(self):
         self.state.save_progress(dict(pid='p',kind='vod',sid='1'),1050,2700)

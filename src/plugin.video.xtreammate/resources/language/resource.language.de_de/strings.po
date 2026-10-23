@@ -2788,3 +2788,115 @@ msgstr "Aufnahmeaktion nicht möglich oder abgebrochen. Speicher und Aufnahmesta
 msgctxt "#34013"
 msgid "Start manual recording"
 msgstr "Sofortaufnahme starten"
+
+msgctxt "#34100"
+msgid "Aufnahmeziel ist für die native Aufnahme nicht geeignet."
+msgstr "Aufnahmeziel ist für die native Aufnahme nicht geeignet."
+
+msgctxt "#34101"
+msgid "Geprüften app-internen Aufnahmeordner verwenden? Vorhandene Dateien bleiben am bisherigen Ort."
+msgstr "Geprüften app-internen Aufnahmeordner verwenden? Vorhandene Dateien bleiben am bisherigen Ort."
+
+msgctxt "#34102"
+msgid "Aufnahmeziel geprüft: Schreiben, Lesen, Hardlinks, Synchronisierung und Speicherreserve."
+msgstr "Aufnahmeziel geprüft: Schreiben, Lesen, Hardlinks, Synchronisierung und Speicherreserve."
+
+msgctxt "#34200"
+msgid "Download movie"
+msgstr "Film herunterladen"
+
+msgctxt "#34201"
+msgid "Download episode …"
+msgstr "Folge herunterladen …"
+
+msgctxt "#34202"
+msgid "Manage downloads"
+msgstr "Downloads verwalten"
+
+msgctxt "#34203"
+msgid "Download poster again"
+msgstr "Poster erneut herunterladen"
+
+msgctxt "#34204"
+msgid "Close menu"
+msgstr "Menü schließen"
+
+msgctxt "#34205"
+msgid "No downloadable episodes available."
+msgstr "Keine herunterladbaren Folgen vorhanden."
+
+msgctxt "#34206"
+msgid "Save download in the recording folder? This uses an additional provider connection. Only permitted direct sources are supported."
+msgstr "Download im Aufnahmeordner speichern? Dafür wird eine zusätzliche Anbieter-Verbindung verwendet. Nur erlaubte direkte Quellen werden unterstützt."
+
+msgctxt "#34207"
+msgid "Download queued. See Manage downloads for progress."
+msgstr "Download vorgemerkt. Fortschritt unter Downloads verwalten."
+
+msgctxt "#34208"
+msgid "Download action failed. Check the target and download status."
+msgstr "Download-Aktion fehlgeschlagen. Bitte Ziel und Downloadstatus prüfen."
+
+msgctxt "#34209"
+msgid "No downloads yet."
+msgstr "Noch keine Downloads vorhanden."
+
+msgctxt "#34210"
+msgid "Download"
+msgstr "Download"
+
+msgctxt "#34211"
+msgid "Play file"
+msgstr "Datei abspielen"
+
+msgctxt "#34212"
+msgid "Pause"
+msgstr "Pausieren"
+
+msgctxt "#34213"
+msgid "Cancel download (keep partial file)"
+msgstr "Download abbrechen (Teildatei behalten)"
+
+msgctxt "#34214"
+msgid "Resume"
+msgstr "Fortsetzen"
+
+msgctxt "#34215"
+msgid "Retry"
+msgstr "Erneut versuchen"
+
+msgctxt "#34216"
+msgid "Download request updated."
+msgstr "Download-Auftrag aktualisiert."
+
+msgctxt "#34217"
+msgid "Job is busy or cannot be changed now."
+msgstr "Auftrag ist noch beschäftigt oder kann jetzt nicht geändert werden."
+
+msgctxt "#34220"
+msgid "Queued"
+msgstr "Vorgemerkt"
+
+msgctxt "#34221"
+msgid "Downloading"
+msgstr "Wird heruntergeladen"
+
+msgctxt "#34222"
+msgid "Paused"
+msgstr "Pausiert"
+
+msgctxt "#34223"
+msgid "Complete"
+msgstr "Fertig"
+
+msgctxt "#34224"
+msgid "Failed"
+msgstr "Fehlgeschlagen"
+
+msgctxt "#34225"
+msgid "Cancelled"
+msgstr "Abgebrochen"
+
+msgctxt "#34226"
+msgid "Finalizing"
+msgstr "Wird abgeschlossen"

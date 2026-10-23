@@ -98,6 +98,8 @@ def poll():
     global _worker
     from capture_service import poll as poll_captures
     poll_captures()
+    from downloads import poll as poll_downloads
+    poll_downloads()
     with _guard:
         if _stop.is_set():return
         if _worker is None or not _worker.is_alive():
@@ -120,6 +122,8 @@ def shutdown():
     """
     from capture_service import shutdown as shutdown_captures
     shutdown_captures()
+    from downloads import shutdown as shutdown_downloads
+    shutdown_downloads()
     with _guard:
         _stop.set();worker=_worker
     if worker is not None and worker is not threading.current_thread():worker.join(timeout=.2)

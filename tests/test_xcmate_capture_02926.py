@@ -16,7 +16,7 @@ from xcmate027_fixture import Fixture
 class CaptureTests(Fixture,unittest.TestCase):
     def setUp(self):
         super().setUp()
-        for name in ('direct_ts','capture_store','capture_service','capture_ui'):sys.modules.pop(name,None)
+        for name in ('direct_ts','capture_target','capture_store','capture_service','capture_ui'):sys.modules.pop(name,None)
         self.ts=importlib.import_module('direct_ts');self.store=importlib.import_module('capture_store')
 
     def packet(self,pid,payload=b'',start=False):
@@ -135,7 +135,7 @@ class CaptureTests(Fixture,unittest.TestCase):
         recorder=self.ts.Recorder('https://private.invalid/TOKEN',str(self.folder),120,separate_connection=True)
         with mock.patch.object(self.ts.os,'link',side_effect=OSError(95,'unsupported')),mock.patch.object(self.ts,'build_opener') as provider:
             state=recorder.run()
-        self.assertEqual((state['status'],state['code']),('failed','UNSUPPORTED_TARGET'))
+        self.assertEqual((state['status'],state['code']),('failed','TARGET_HARDLINK_UNSUPPORTED'))
         provider.assert_not_called();self.assertFalse(list(self.folder.glob('*.probe*')))
 
     def test_stop_while_resolving_source_cannot_start_a_late_recorder(self):

@@ -6,6 +6,7 @@ metadata and images are prepared by bounded workers; callbacks only use views.
 from localization import tr
 from owner_dispatch import OwnerDispatch,native_init,open_owned_window
 from media_search import SearchMixin
+from detail_menu import DetailMenuMixin
 import json
 import os
 import queue
@@ -22,7 +23,7 @@ PAGE=24
 WINDOW_ITEMS=240
 
 
-class MediaWindow(SearchMixin,OwnerDispatch,xbmcgui.WindowXML):
+class MediaWindow(DetailMenuMixin,SearchMixin,OwnerDispatch,xbmcgui.WindowXML):
     def configure(self,router,portal,kind,sid='',favourites=False):
         self._configure_owner()
         from theme_render import snapshot
@@ -120,6 +121,7 @@ class MediaWindow(SearchMixin,OwnerDispatch,xbmcgui.WindowXML):
         if pending[1] in self._valid_focus():self.setFocusId(pending[1])
 
     def _valid_focus(self,native=True):
+        if getattr(self,'_detail_menu_open',False):return [810]
         candidates=([120,400,112,111,110] if self.mode=='landing' else
                     [200,210,400] if self.mode in ('grid','groups') else
                     [300,400] if self.mode=='detail' else [700,701,702,710,720,721,400] if self.mode=='search' else [330,340,400] if self.mode=='episodes' else [330,400])
@@ -389,6 +391,7 @@ class MediaWindow(SearchMixin,OwnerDispatch,xbmcgui.WindowXML):
             if 0<=pos<len(rows) and rows[pos]!=self._art_selected:self._queue_art(rows[pos])
 
     def _show(self,mode):
+        self._detail_menu_hide()
         self.getControl(501).setLabel(tr(32587))
         self.getControl(340).setVisible(mode=='episodes' and self.next_episode is not None)
         self.getControl(330).setPosition(44,190 if mode=='episodes' else 174)
@@ -564,6 +567,7 @@ class MediaWindow(SearchMixin,OwnerDispatch,xbmcgui.WindowXML):
 
     def onClick(self,controlId):
         if self._closed or self._leaving:return
+        if self._detail_menu_click(controlId):return
         with self._lock:
             self._resume_focus()
             if self._focus_pending is not None:return
@@ -734,6 +738,7 @@ class MediaWindow(SearchMixin,OwnerDispatch,xbmcgui.WindowXML):
         key=action.getId()
         if self._closed:return
         with self._lock:
+            if self._detail_menu_action(key):return
             if self._search_action(key):return
             if key in (9,10,92):
                 from window_navigation import trace
