@@ -24,8 +24,8 @@ def open_source(url,headers):
 
 
 def destination(media,ident,extension):
-    from media_files import join,safe_name,mkdir
-    root=media['target'];mkdir(root)
+    from media_files import join,safe_name
+    root=media['target']
     name='Download - '+safe_name(media.get('series_title') or media['title'])
     if media['kind']=='episode':
         name+=' - S'+str(int(media['season'])).zfill(2)+'E'+str(int(media['episode'])).zfill(2)
@@ -176,6 +176,7 @@ def run_one(cancel=lambda:False,resolver=None,opener=None):
 def _publish(job,part,final,total,digest,caps,cancel):
     import download_store as store,download_targets as targets
     ident,owner=job['id'],job['owner'];last=[0]
+    targets.check_identity(job['media']['target'],job['media'])
     def stopped():
         if cancel():return True
         row=store.get(ident)
