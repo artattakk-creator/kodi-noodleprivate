@@ -724,8 +724,15 @@
       </focusedlayout>
     </control>
 
+
+    <control type="button" id="820">
+      <left>850</left><top>32</top><width>184</width><height>52</height>
+      <label /><font>font13</font><textcolor>FFFFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>300</onleft><onright>400</onright><onup>400</onup><ondown>300</ondown>
+    </control>
     <control type="group" id="800">
-      <visible>Window.Property(XCMate.DetailMenu)</visible>
       <animation effect="slide" start="-460,0" end="0,0" time="160">Visible</animation>
       <control type="image" id="801">
         <left>0</left><top>0</top><width>460</width><height>720</height>

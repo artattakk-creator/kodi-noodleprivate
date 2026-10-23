@@ -1,3 +1,12 @@
+0.1.29.28 – Android-Testkandidat
+- #111: Expliziter Einzelposter-Retry priorisiert belegte alternative Bildadresse desselben Datensatzes, ohne Fanart/andere Titel; gültige READY-Bilder und Worker/Cooldowns bleiben geschützt.
+- Fehlende Datei hinter alter READY-Zeile kann erneut geladen werden; keine Titelraterei oder unbelegte TMDB-Zuordnung.
+- #126: Atomares No-Replace-Publish ohne Hardlinkpflicht, mit exklusivem Hardlink-Rückfall; Datei-/Verzeichnissync und No-Overwrite-Schutz bleiben verpflichtend.
+- Speicher-, Source-/HLS-/DASH-/HTTP- und Laufzeitfehler getrennt in UI/Logs; Bytes und aktive Aufnahme erst nach tatsächlichem Schreiben.
+- Downloads prüfen nur ihre Speicher-/Mediendateifähigkeit, unabhängig vom Direct-TS-Aufnahmeformat.
+- #131: Native Menü-Elterngruppe explizit zeigen/verbergen; sichtbarer lokaler Aktionen-Button und Links teilen denselben Einstieg.
+- Menü-Fokus über verzögerte native Sichtbarkeit wiederherstellen; Detail-/Aktionsposition beim Schließen behalten, anonyme Gerätetraces.
+
 0.1.29.27 – Testschritt C, nicht veröffentlicht
 - Details: Links öffnet natives Untermenü mit selektivem Poster-Retry und Film-/Folgen-Download.
 - Downloads: gemeinsamer Aufnahmeordner, Download-Dateinamen, persistente Pause/Abbruch/Fortsetzen-Verwaltung.

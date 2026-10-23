@@ -230,7 +230,7 @@ def retry_one(url,now=None):
         db.execute('CREATE TABLE IF NOT EXISTS art_retry_limits(ident TEXT PRIMARY KEY,next_at REAL)')
         db.execute('BEGIN IMMEDIATE')
         job=db.execute('SELECT status,next_at FROM jobs WHERE ident=?',(key(url),)).fetchone()
-        if job and job['status']=='READY':return 'READY'
+        if job and job['status']=='READY' and cached(url):return 'READY'
         if job and job['status']=='RUNNING' and job['next_at']>now:return 'RUNNING'
         if job and job['status']=='HTTP_RATE_LIMIT' and job['next_at']>now:return 'WAIT'
         prior=db.execute('SELECT next_at FROM art_retry_limits WHERE ident=?',(key(url),)).fetchone()

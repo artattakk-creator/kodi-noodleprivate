@@ -22,7 +22,7 @@ MAX_PROBE=2*1024*1024
 
 
 class Failure(Exception):
-    def __init__(self,code):self.code=code;super().__init__(code)
+    def __init__(self,code,step='',number=0):self.code=code;self.step=step;self.number=number;super().__init__(code)
 
 
 def crc(data):
@@ -110,7 +110,7 @@ def validate_url(value):
         p=urlsplit(value)
         if p.scheme not in ('http','https') or not p.hostname or p.username or p.password or p.fragment or p.port==0:raise ValueError()
         if len(value)>8192 or any(ord(c)<33 or ord(c)==127 for c in value):raise ValueError()
-        if p.path.lower().endswith(('.m3u','.m3u8','.mpd')):raise Failure('UNSUPPORTED_MANIFEST')
+        if p.path.lower().endswith(('.m3u','.m3u8','.mpd')):raise Failure('UNSUPPORTED_MANIFEST',step='SOURCE_DASH' if p.path.lower().endswith('.mpd') else 'SOURCE_HLS')
     except ValueError:raise Failure('INVALID_SOURCE') from None
     return value
 
@@ -125,7 +125,8 @@ class Redirects(HTTPRedirectHandler):
 
 
 def error_code(error):
-    if isinstance(error,Failure):return error.code
+    from atomic_media import StorageFailure
+    if isinstance(error,(Failure,StorageFailure)):return error.code
     if isinstance(error,HTTPError):
         return 'HTTP_AUTH' if error.code in (401,403) else 'HTTP_MISSING' if error.code in (404,410) else 'HTTP_LIMIT' if error.code==429 else 'HTTP_ERROR'
     if isinstance(error,URLError):return error_code(error.reason)
@@ -156,7 +157,7 @@ class Recorder:
 
     def _probe_target(self,directory):
         from capture_target import probe_fd
-        probe_fd(directory)
+        self.state['storage_backend']=probe_fd(directory)
 
     def _space(self,fd,incoming=0):
         capacity=os.fstatvfs(fd)
@@ -176,7 +177,7 @@ class Recorder:
             if self._started:raise Failure('ALREADY_STARTED')
             self._started=True
         fd=None;output=None;part=self.ident+'.ts.part';final=self.ident+'.ts'
-        began=None;written=False;promoted=False;next_status=0
+        began=None;written=False;promoted=False;next_status=0;operation='TARGET'
         try:
             if not self.authorized:raise Failure('CONNECTION_CONFIRMATION_REQUIRED')
             if not isinstance(self.duration,(int,float)) or isinstance(self.duration,bool) or not math.isfinite(self.duration) or not 0<self.duration<=21600:raise Failure('INVALID_DURATION')
@@ -188,39 +189,49 @@ class Recorder:
             fd=os.open(directory,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW)
             self._space(fd)
             self._probe_target(fd)
-            self._save(fd)
+            operation='STATE_SAVE';self._save(fd)
             if self.cancel.is_set():raise Failure('CANCELLED')
-            transport=Transport();pending=bytearray();probe_start=time.monotonic()
+            transport=Transport();pending=bytearray();signature=bytearray();probe_start=time.monotonic()
             # Keep system HTTPS CA trust. There is no implicit reconnect or
             # second source connection; redirects obey urllib's finite bound.
             opener=build_opener(ProxyHandler(),Redirects(),HTTPSHandler())
             request=Request(self.source,headers={'User-Agent':'XCMate-native-ts-prototype','Accept':'video/mp2t','Accept-Encoding':'identity'})
+            operation='HTTP_OPEN'
             with opener.open(request,timeout=2) as response:
                 content=response.headers.get('Content-Type','').split(';',1)[0].lower()
-                if content in ('application/vnd.apple.mpegurl','application/x-mpegurl','application/dash+xml','text/html','application/json'):raise Failure('NOT_DIRECT_TS')
+                if content in ('application/vnd.apple.mpegurl','application/x-mpegurl','application/dash+xml'):raise Failure('UNSUPPORTED_MANIFEST',step='SOURCE_DASH' if content=='application/dash+xml' else 'SOURCE_HLS')
+                if content in ('text/html','application/json'):raise Failure('NOT_DIRECT_TS',step='SOURCE_RESPONSE')
                 if response.status!=200 or response.headers.get('Content-Encoding','identity').lower()!='identity':raise Failure('UNSUPPORTED_RESPONSE')
                 while True:
                     if self.cancel.is_set():raise Failure('CANCELLED')
                     if began is not None and (self.finished.is_set() or time.monotonic()-began>=self.duration):break
-                    chunk=response.read(PACKET*200)
+                    operation='SOURCE_READ';chunk=response.read(PACKET*200)
                     if not chunk:raise Failure('SOURCE_EOF')
+                    if began is None:
+                        signature.extend(chunk[:max(0,2048-len(signature))]);head=bytes(signature).lstrip()
+                        if head.startswith(b'#EXTM3U'):raise Failure('UNSUPPORTED_MANIFEST',step='SOURCE_HLS')
+                        if head.startswith((b'<MPD',b'<mpd')) or head.startswith(b'<?xml') and (b'<MPD' in head or b'<mpd' in head):raise Failure('UNSUPPORTED_MANIFEST',step='SOURCE_DASH')
                     complete=transport.feed(chunk)
                     if began is None:
                         pending.extend(complete)
                         if len(pending)>MAX_PROBE or time.monotonic()-probe_start>10:raise Failure('TS_PROBE_LIMIT')
                         if not transport.ready:continue
+                        operation='OPEN_FILE'
                         output=os.fdopen(os.open(part,os.O_CREAT|os.O_EXCL|os.O_WRONLY|os.O_NOFOLLOW,0o600,dir_fd=fd),'wb')
-                        began=time.monotonic();self.state.update(status='recording',code='')
+                        began=time.monotonic();self.state.update(status='starting',code='')
                         complete=bytes(pending);pending.clear();self._save(fd)
                     self._space(fd,len(complete))
                     if self.cancel.is_set():raise Failure('CANCELLED')
-                    output.write(complete);self.state['bytes']+=len(complete);written=written or bool(complete)
+                    operation='WRITE';output.write(complete);self.state['bytes']+=len(complete)
+                    if not written and complete:
+                        operation='FSYNC_FILE';output.flush();os.fsync(output.fileno());written=True
+                    if self.state['bytes']>0:self.state['status']='recording'
                     self.state['seconds']=round(time.monotonic()-began,3)
                     if self.state['seconds']>=next_status:
                         self._save(fd);next_status=self.state['seconds']+5
                 # At a timed boundary, an incomplete last packet is retained
                 # only in memory and never written to disk. No resync/guessing.
-                output.flush();os.fsync(output.fileno());output.close();output=None
+                operation='FSYNC_FILE';output.flush();os.fsync(output.fileno());output.close();output=None
                 if self.cancel.is_set():raise Failure('CANCELLED')
                 self.state['bytes']=finalize(fd,part,final,transport.media_pids,self.cancel.is_set)
                 promoted=True;os.fsync(fd)
@@ -232,7 +243,7 @@ class Recorder:
                 except OSError:
                     self.state['code']='PART_CLEANUP_PENDING';self._save(fd)
         except Exception as error:
-            self.state.update(status='partial' if written or promoted else 'failed',code=error_code(error))
+            self.state.update(status='partial' if written or promoted else 'failed',code=error_code(error),step=getattr(error,'step','') or operation,errno=getattr(error,'number',getattr(error,'errno',0)) or 0)
             if fd is not None:
                 try:self._save(fd)
                 except OSError:pass
@@ -283,8 +294,8 @@ def finalize(directory,part,final,pids,cancel=lambda:False):
                 if kept!=pids:raise Failure('RECORDING_TOO_SHORT')
                 target.flush();os.fsync(target.fileno())
             if cancel():raise Failure('CANCELLED')
-            os.link(scratch,final,src_dir_fd=directory,dst_dir_fd=directory,follow_symlinks=False)
-            os.fsync(directory)
+            from atomic_media import publish
+            publish(directory,scratch,final)
         finally:
             try:os.unlink(scratch,dir_fd=directory)
             except FileNotFoundError:pass

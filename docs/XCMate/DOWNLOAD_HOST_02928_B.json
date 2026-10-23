@@ -1,0 +1,26 @@
+{
+  "environment": "Linux host / real loopback HTTP / generated MP4 fixture",
+  "hardlinks": "simulated unavailable (errno95)",
+  "backend": "RENAME_NOREPLACE",
+  "recorder_hls": "UNSUPPORTED_MANIFEST",
+  "shared_folder": true,
+  "downloads": [
+    {
+      "kind": "vod",
+      "status": "COMPLETE",
+      "bytes": 404305,
+      "sha256": "4f084a93b8596a560d7531dd883cc00909aea93dc32b597f823985e087ab520b",
+      "host_strict_decode": "PASS",
+      "kodi_android_playback": "NOT_TESTED"
+    },
+    {
+      "kind": "episode",
+      "status": "COMPLETE",
+      "bytes": 404305,
+      "sha256": "4f084a93b8596a560d7531dd883cc00909aea93dc32b597f823985e087ab520b",
+      "host_strict_decode": "PASS",
+      "kodi_android_playback": "NOT_TESTED"
+    }
+  ],
+  "android": "NOT_TESTED"
+}

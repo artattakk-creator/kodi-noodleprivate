@@ -2754,8 +2754,8 @@ msgid "An additional stream connection will be opened. Your provider must permit
 msgstr "An additional stream connection will be opened. Your provider must permit it. Start recording independently of the player?"
 
 msgctxt "#34005"
-msgid "Test feature: local writable storage with hardlink support only; no SMB/VFS/FAT32."
-msgstr "Test feature: local writable storage with hardlink support only; no SMB/VFS/FAT32."
+msgid "Test feature: verified local storage with atomic no-overwrite publication; no unverified VFS targets."
+msgstr "Test feature: verified local storage with atomic no-overwrite publication; no unverified VFS targets."
 
 msgctxt "#34006"
 msgid "Recording requested. Check status under Manual recordings."
@@ -2900,3 +2900,75 @@ msgstr "Cancelled"
 msgctxt "#34226"
 msgid "Finalizing"
 msgstr "Finalizing"
+
+msgctxt "#34300"
+msgid "Actions"
+msgstr "Actions"
+
+msgctxt "#34400"
+msgid "Storage target is not ready. Check access, free space and safe file publication, or choose the verified internal folder."
+msgstr "Storage target is not ready. Check access, free space and safe file publication, or choose the verified internal folder."
+
+msgctxt "#34401"
+msgid "Live recording source is not supported. Select a permitted direct MPEG-TS channel; HLS, DASH and protected streams are separate cases."
+msgstr "Live recording source is not supported. Select a permitted direct MPEG-TS channel; HLS, DASH and protected streams are separate cases."
+
+msgctxt "#34402"
+msgid "Provider/HTTP request failed. Check access and allowed simultaneous connections."
+msgstr "Provider/HTTP request failed. Check access and allowed simultaneous connections."
+
+msgctxt "#34403"
+msgid "Recording action failed. The technical reason is shown below; existing media is kept."
+msgstr "Recording action failed. The technical reason is shown below; existing media is kept."
+
+msgctxt "#34404"
+msgid "Download failed. Check the direct HTTP(S) media source, target and technical reason below."
+msgstr "Download failed. Check the direct HTTP(S) media source, target and technical reason below."
+
+msgctxt "#34405"
+msgid "Connection failed. Check the network and retry this request later."
+msgstr "Connection failed. Check the network and retry this request later."
+
+msgctxt "#34406"
+msgid "Transfer cancelled or interrupted. Existing files and available partial data are kept."
+msgstr "Transfer cancelled or interrupted. Existing files and available partial data are kept."
+
+msgctxt "#34410"
+msgid "Storage verified for atomic publication without overwriting existing files."
+msgstr "Storage verified for atomic publication without overwriting existing files."
+
+msgctxt "#34411"
+msgid "No verified persistent target was found. Select a suitable folder; no provider connection was opened."
+msgstr "No verified persistent target was found. Select a suitable folder; no provider connection was opened."
+
+msgctxt "#34412"
+msgid "Storage readiness does not confirm stream compatibility. Live recording requires direct MPEG-TS; movie/episode downloads can use supported direct media containers."
+msgstr "Storage readiness does not confirm stream compatibility. Live recording requires direct MPEG-TS; movie/episode downloads can use supported direct media containers."
+
+msgctxt "#34420"
+msgid "Queued"
+msgstr "Queued"
+
+msgctxt "#34421"
+msgid "Checking / connecting"
+msgstr "Checking / connecting"
+
+msgctxt "#34422"
+msgid "Recording"
+msgstr "Recording"
+
+msgctxt "#34423"
+msgid "Complete"
+msgstr "Complete"
+
+msgctxt "#34424"
+msgid "Failed"
+msgstr "Failed"
+
+msgctxt "#34425"
+msgid "Partial"
+msgstr "Partial"
+
+msgctxt "#34500"
+msgid "No additional verified provider image source available."
+msgstr "No additional verified provider image source available."

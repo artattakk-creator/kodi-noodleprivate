@@ -278,12 +278,30 @@ def diagnostic_label(code):
 
 
 def retry_poster(item):
-    """Explicit one-image worker action; never refresh metadata by title."""
-    from art_store import retry_one
-    url=sources(item)[0]
-    if not url:return 'NO_SOURCE'
-    result=retry_one(url)
-    if result=='PENDING':request([item],priority=-20)
+    """Explicit one-poster retry, with alternatives from this exact record only."""
+    from art_store import retry_one,key
+    global _choice_revision
+    candidates=poster_candidates(item)
+    if not candidates:return 'NO_SOURCE'
+    if any(cached(url) for url in candidates):return 'READY'
+    current=sources(item)[0]
+    values,db_code=_image_snapshot(item)
+    if db_code not in ('OK','NOT_CREATED'):return 'DB_BUSY' if db_code in ('BUSY','DB_BUSY') else 'DB_UNAVAILABLE'
+    failed={'HTTP_AUTH','HTTP_NOT_FOUND','HTTP_CLIENT','HTTP_SERVER','HTTP_RATE_LIMIT',
+            'INVALID_IMAGE','INVALID_SOURCE','NETWORK_ERROR','TIMEOUT','DNS_ERROR','CONNECTION_ERROR','TLS_ERROR','FAILED','CACHE_ERROR'}
+    previous=values.get(key(current),{})
+    chosen=current
+    if previous.get('status') in failed or previous.get('attempts',0)>=3:
+        chosen=next((url for url in candidates if url!=current and values.get(key(url),{}).get('status') not in failed),current)
+    if chosen!=current:
+        with _queue_lock:
+            if len(_choices)>=2048:_choices.pop(next(iter(_choices)))
+            _choices[_choice_key(item)]=chosen;_choice_revision+=1
+    result=retry_one(chosen)
+    if result=='PENDING':
+        # Wake the existing bounded queue with just this poster; do not enqueue
+        # fanart or unrelated assets when the user retries one selected image.
+        request([dict(cover=chosen)],priority=-20)
     return result
 
 

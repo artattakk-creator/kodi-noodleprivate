@@ -1,0 +1,21 @@
+{
+  "version": "0.1.29.28",
+  "tests": 964,
+  "seconds": 111.056,
+  "failures": 0,
+  "errors": 0,
+  "files": 177,
+  "bytes": 1818850,
+  "sha256": "5cf61349d2fbb633e5ec892824b434c1fb6b07d6af55abb48a29d20dbffa4bbb",
+  "crc": "PASS",
+  "paths": "PASS",
+  "source_bytes": "PASS",
+  "reproducible_zip": "PASS",
+  "python_ast": "PASS",
+  "android": "NOT_TESTED",
+  "production_publish": false,
+  "source_commit": "48b62894bc3d585b36195af3c8ab6bb6f63a43ec",
+  "recording_host_report": "RECORDER_HOST_02928_B.json",
+  "download_host_report": "DOWNLOAD_HOST_02928_B.json",
+  "ci": "PENDING_DRAFT_PR"
+}

@@ -1,0 +1,47 @@
+{
+  "version": "0.1.29.28",
+  "tests": 970,
+  "seconds": 109.659,
+  "failures": 0,
+  "errors": 0,
+  "files": 177,
+  "bytes": 1819405,
+  "sha256": "fdb5bea7a3c119783e8cd51ba6aa62f78726b4821eb68bf24e5e45134c418fa2",
+  "crc": "PASS",
+  "paths": "PASS",
+  "source_bytes": "PASS",
+  "reproducible_zip": "PASS",
+  "python_ast": "PASS",
+  "android": "NOT_TESTED",
+  "production_publish": false,
+  "source_commit": "75648a06a02f2289db2c8dc93c11630a11ed3900",
+  "ci": "See draft PR for final delivery-head workflow run",
+  "ci_a": {
+    "run": 40023845552,
+    "result": "SUCCESS",
+    "tests": 949,
+    "publish": "SKIPPED"
+  },
+  "host_proofs": [
+    "RECORDER_HOST_02928_B.json",
+    "DOWNLOAD_HOST_02928_B.json"
+  ],
+  "protected_modules": "byte-identical to main e6bb1cf: search, player, EPG, autoplay, resume, theme renderer",
+  "protected_media_window_methods": 10,
+  "original_icon_sha256": "81da1003a2753ec6afbdd50b2a320e738a2131ad9f0d76606da1babdd0d2f135",
+  "preserved_unfinished_work": {
+    "premium": 35,
+    "downloads_prototype": 27
+  },
+  "full_rc_open_gates": [
+    43,
+    127
+  ],
+  "additional_open_work": [
+    120,
+    122,
+    123,
+    98,
+    115
+  ]
+}

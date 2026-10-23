@@ -162,7 +162,8 @@ def recording_folder(check_only=False):
         result=work(lambda:probe(selected,create=True))
         if result is None:return
     except TargetFailure as exc:
-        xbmcgui.Dialog().ok('XCMate',tr(34100)+'\n'+exc.code)
+        from transfer_diagnostics import describe
+        xbmcgui.Dialog().ok('XCMate',describe(exc))
         alternative=work(compatible_default)
         if check_only or not alternative or not xbmcgui.Dialog().yesno('XCMate',tr(34101)):return
         selected=alternative
