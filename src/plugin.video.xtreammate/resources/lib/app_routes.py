@@ -4,7 +4,7 @@ from localization import tr
 ACTIONS=('theme_manager','branding_status','xcmate_licenses','guide_grid','playlist_editor','source_live','source_play','source_start','art_status','art_retry','art_db_health','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
          'movies_home','series_home','media_detail','media_favourites','global_search','search_section',
          'widget_live_start_group','widget_recent_vod','widget_recent_series','widget_setup',
-         'recording_folder','recording_capabilities','about_xcmate','guide_browser','media_play','guide_timers','guide_status')
+         'record_now','recordings_manage','recording_folder','recording_capabilities','about_xcmate','guide_browser','media_play','guide_timers','guide_status')
 LABELS={'live':32460,'vod':32461,'series':32462}
 
 
@@ -83,6 +83,13 @@ def dispatch(router):
         return
     if action=='recording_folder':
         _end(router); recording_folder(router._params.get('check')=='1'); return
+    if action in ('record_now','recordings_manage'):
+        _end(router)
+        from capture_ui import start,manage
+        if action=='recordings_manage':manage()
+        elif portal:start(portal)
+        else:xbmcgui.Dialog().ok('XCMate',tr(32466))
+        return
     if action=='guide_timers':
         _end(router)
         if portal:
@@ -100,7 +107,7 @@ def dispatch(router):
         if action=='about_xcmate':
             text='XCMate '+xbmcaddon.Addon().getAddonInfo('version')+tr(32465)
         elif action=='recording_capabilities':
-            from recording_probe import report
+            from capture_ui import report
             text=report()
         else:
             text=widget_instructions(router,portal)
@@ -148,6 +155,11 @@ def dispatch(router):
             from source_live import browse
             browse(router,portal)
         else: router._live_groups()
+    elif action=='global_search' and router._handle<0:
+        from media_window import open_search
+        from media_search import handoff
+        from window_navigation import open_route
+        open_route(router,portal,lambda:open_search(router,portal,router._params.get('q')),after_close=handoff)
     elif action in ('global_search','search_section'): search(router,portal)
     elif action.startswith('widget_'): widget(router,portal,action)
     elif action in ('movies_home','series_home','media_detail','media_favourites'):
@@ -160,7 +172,8 @@ def dispatch(router):
             return
         from window_navigation import open_route
         from media_window import open_media
-        open_route(router,portal,lambda:open_media(router,portal,kind,router._params.get('sid',''),favourites=action=='media_favourites'))
+        from media_search import handoff
+        open_route(router,portal,lambda:open_media(router,portal,kind,router._params.get('sid',''),favourites=action=='media_favourites'),after_close=handoff)
     elif action=='guide_grid':
         from window_navigation import open_route
         from guide_grid_window import open_grid

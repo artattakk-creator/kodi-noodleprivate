@@ -1,0 +1,18 @@
+{
+  "id": "2f522f4130014f36b2786598819c0ef5",
+  "status": "complete",
+  "code": "",
+  "bytes": 9057088,
+  "seconds": 120.32,
+  "file": "2f522f4130014f36b2786598819c0ef5.ts",
+  "host_elapsed_seconds": 120.39,
+  "kodi_offline_playback": "NOT_TESTED",
+  "sha256": "69e1515ce4ab1ec64e413947a4d106294868453610eb2d025851e373a56e00d9",
+  "strict_mpeg2_mp2_decoder": "PASS",
+  "strict_mpeg2_mp2_stderr_bytes": 0,
+  "h264_aac_cut_finalization": "PASS",
+  "strict_h264_aac_stderr_bytes": 0,
+  "kodi_android": "NOT_TESTED",
+  "scope": "Host-generated test sources only; no provider stream or Android playback proof",
+  "production_publish": false
+}

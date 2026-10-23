@@ -65,6 +65,9 @@ class MediaRails299(Fixture,unittest.TestCase):
             from theme_texture_contract import without_theme
             source=without_theme((LIB/name).read_bytes())
             if name=='window_navigation.py':
+                capture_hook=b"DIALOG_ACTIONS=DIALOG_ACTIONS|frozenset(('record_now','recordings_manage'))\n"
+                self.assertEqual(source.count(capture_hook),1)
+                source=source.replace(capture_hook,b'')
                 focus_events=b"'FOCUS_DEFER','FOCUS_READY',"
                 self.assertEqual(source.count(focus_events),1)
                 source=source.replace(focus_events,b'')
@@ -110,6 +113,8 @@ class MediaRails299(Fixture,unittest.TestCase):
             # actual player start remains identical apart from view tracking.
             fn=ast.parse(ast.unparse(fn)).body[0]
             if name=='_owner_tick':
+                self.assertEqual(ast.unparse(fn.body[1]),'self._search_tick()')
+                del fn.body[1]
                 # .25 defers native focus by one existing pump tick. The
                 # original owner, playback and catalogue statements stay frozen.
                 self.assertEqual(ast.unparse(fn.body[1]),'self._resume_focus()')
@@ -120,6 +125,12 @@ class MediaRails299(Fixture,unittest.TestCase):
                 # #102 catalogue refresh restores the selected absolute row.
                 text=ast.unparse(fn).replace("start = self.offset\n                if self.mode == 'grid' and self.rows:\n                    absolute = self.offset + self.getControl(210).getSelectedPosition()\n                    start = absolute // PAGE * PAGE\n                    self._positions[self.mode, self.category, start] = absolute - start\n                self._page(self.mode, start)","self._page(self.mode, self.offset)")
                 fn=ast.parse(text).body[0]
+            elif name=='_search':
+                # #118 explicit replacement: keep the owner rather than close
+                # and navigate via a concurrent Container.Update. Tested in .26.
+                self.assertEqual(ast.unparse(fn.body[0]),'self._open_search()')
+                self.assertEqual(len(fn.body),1)
+                continue
             elif name=='_play':
                 original=next(i for i,n in enumerate(fn.body) if isinstance(n,ast.ImportFrom) and n.module=='media_intent')
                 del fn.body[:original]
@@ -131,6 +142,8 @@ class MediaRails299(Fixture,unittest.TestCase):
                         self.assertEqual({k.arg for k in call.keywords}&{'autoplay','autoplay_chain'},{'autoplay','autoplay_chain'})
                         call.keywords=[k for k in call.keywords if k.arg not in ('autoplay','autoplay_chain')]
             elif name=='close':
+                self.assertEqual(ast.unparse(fn.body[-1]),'self._search_closed()')
+                del fn.body[-1]
                 self.assertEqual(ast.unparse(fn.body[2]),'self._cancel_chain()')
                 del fn.body[2]
                 del fn.body[4:6]

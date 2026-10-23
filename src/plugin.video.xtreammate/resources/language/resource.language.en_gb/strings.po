@@ -2696,3 +2696,95 @@ msgstr "98 original images installed only in XCMate. Kodi skin stays as selected
 msgctxt "#33813"
 msgid "Manage designs"
 msgstr "Manage designs"
+
+msgctxt "#33900"
+msgid "LIVE TV CHANNELS"
+msgstr "LIVE TV CHANNELS"
+
+msgctxt "#33901"
+msgid "MOVIES"
+msgstr "MOVIES"
+
+msgctxt "#33902"
+msgid "SERIES"
+msgstr "SERIES"
+
+msgctxt "#33903"
+msgid "Search results"
+msgstr "Search results"
+
+msgctxt "#33904"
+msgid "Loading local index …"
+msgstr "Loading local index …"
+
+msgctxt "#33905"
+msgid "Now"
+msgstr "Now"
+
+msgctxt "#33906"
+msgid "Local search index unavailable. Retry."
+msgstr "Local search index unavailable. Retry."
+
+msgctxt "#33907"
+msgid "No results"
+msgstr "No results"
+
+msgctxt "#33908"
+msgid "Current EPG unavailable; searching channel names."
+msgstr "Current EPG unavailable; searching channel names."
+
+msgctxt "#34000"
+msgid "Search channel for manual recording"
+msgstr "Search channel for manual recording"
+
+msgctxt "#34001"
+msgid "Select channel (up to 100 results)"
+msgstr "Select channel (up to 100 results)"
+
+msgctxt "#34002"
+msgid "Maximum recording duration"
+msgstr "Maximum recording duration"
+
+msgctxt "#34003"
+msgid "{} minutes"
+msgstr "{} minutes"
+
+msgctxt "#34004"
+msgid "An additional stream connection will be opened. Your provider must permit it. Start recording independently of the player?"
+msgstr "An additional stream connection will be opened. Your provider must permit it. Start recording independently of the player?"
+
+msgctxt "#34005"
+msgid "Test feature: local writable storage with hardlink support only; no SMB/VFS/FAT32."
+msgstr "Test feature: local writable storage with hardlink support only; no SMB/VFS/FAT32."
+
+msgctxt "#34006"
+msgid "Recording requested. Check status under Manual recordings."
+msgstr "Recording requested. Check status under Manual recordings."
+
+msgctxt "#34007"
+msgid "No manual recordings."
+msgstr "No manual recordings."
+
+msgctxt "#34008"
+msgid "Manual recordings / Stop / Play"
+msgstr "Manual recordings / Stop / Play"
+
+msgctxt "#34009"
+msgid "Finish recording safely now? The player remains unchanged."
+msgstr "Finish recording safely now? The player remains unchanged."
+
+msgctxt "#34010"
+msgid "Play completed local recording?"
+msgstr "Play completed local recording?"
+
+msgctxt "#34011"
+msgid "Native Direct-TS manual recording (test candidate): Start/Stop without an FFmpeg app, timers or media manager."
+msgstr "Native Direct-TS manual recording (test candidate): Start/Stop without an FFmpeg app, timers or media manager."
+
+msgctxt "#34012"
+msgid "Recording action unavailable or cancelled. Check storage and recording status."
+msgstr "Recording action unavailable or cancelled. Check storage and recording status."
+
+msgctxt "#34013"
+msgid "Start manual recording"
+msgstr "Start manual recording"

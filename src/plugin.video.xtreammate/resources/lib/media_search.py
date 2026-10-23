@@ -1,0 +1,146 @@
+"""Search stays inside the existing native window, never Container.Update."""
+import time
+import uuid
+import xbmc
+import xbmcgui
+from localization import tr
+
+KINDS=('live','vod','series')
+LABELS=(33900,33901,33902)
+FIELDS=('mode','kind','category','offset','rows','total','selected','groups','_previous',
+        '_grid_return','_return_focus','episodes','next_episode','season','seasons')
+
+
+def mark(event,correlation=''):
+    allowed=('SEARCH_INPUT_ACCEPTED','SEARCH_GUI_READY','SEARCH_RETURN','SEARCH_RESULT_READY','SEARCH_WORKER_FAILED','SEARCH_WINDOW_CLOSED','SEARCH_WORKER_STOP_PENDING')
+    if event not in allowed:return
+    try:
+        xbmc.log('[XCMate][SEARCH] event={} ms={} dispatch={} window={} owner={}'.format(
+            event,int(time.monotonic()*1000),correlation if len(correlation)==32 else '',
+            xbmcgui.getCurrentWindowId(),__import__('threading').get_ident()),xbmc.LOGINFO)
+    except (AttributeError,RuntimeError):pass
+
+
+def handoff(router,portal,window):
+    intent=getattr(window,'_search_live',None)
+    if intent:
+        from guide_playback import handoff as play
+        play(router,portal,intent)
+
+
+class SearchMixin:
+    def _search_closed(self):
+        if not hasattr(self,'_search_correlation'):return
+        mark('SEARCH_WINDOW_CLOSED',self._search_correlation)
+        future=getattr(self,'_pending_future',None)
+        if future is not None and not future.done():mark('SEARCH_WORKER_STOP_PENDING',self._search_correlation)
+
+    def _search_tick(self):
+        startup=getattr(self,'_search_startup',None)
+        if startup is not None:
+            self._search_startup=None;self._open_search(startup[0])
+
+    def _open_search(self,query=None):
+        if self._closed or self._leaving or getattr(self,'_search_prompt',False):return
+        self._search_prompt=True
+        try:
+            if query is None:query=xbmcgui.Dialog().input(tr(32534),defaultt=getattr(self,'_search_query',''))
+        finally:self._search_prompt=False
+        query=str(query or '').strip()[:200]
+        if not query:
+            if getattr(self,'_search_root',False) and not hasattr(self,'_search_origin'):self.close()
+            return
+        self._search_correlation=uuid.uuid4().hex
+        mark('SEARCH_INPUT_ACCEPTED',self._search_correlation)
+        if not hasattr(self,'_search_origin'):
+            self._search_origin={name:getattr(self,name) for name in FIELDS if hasattr(self,name)}
+            self._search_origin_focus=self.getFocusId()
+        self._search_query=query;self._search_kind=getattr(self,'_search_kind',self.kind)
+        if self._search_kind not in KINDS:self._search_kind='vod'
+        self._search_offset=0;self._search_selected=0;self._search_rows=[];self._search_data={};self._search_loading=True
+        self.mode='search';self._show('search')
+        for pos,label in enumerate(LABELS):self.getControl(700+pos).setLabel(tr(label)+' (…)')
+        self.getControl(720).setLabel(tr(32475));self.getControl(721).setLabel(tr(32476))
+        self.getControl(103).setLabel(tr(33903))
+        self.getControl(102).setLabel(tr(33904));self._fill(710,[])
+        self.setFocusId(700+KINDS.index(self._search_kind))
+        self._search_load()
+        mark('SEARCH_GUI_READY',self._search_correlation)
+
+    def _search_load(self):
+        from search_data import search
+        portal=dict(self.portal);query=self._search_query;kind=self._search_kind;offset=self._search_offset
+        self._search_loading=True
+        self._request(lambda:search(portal,query,kind,offset),self._search_ready)
+
+    def _search_ready(self,value):
+        if self.mode!='search':return
+        self._search_loading=False;self._search_data=value
+        for pos,kind in enumerate(KINDS):
+            count=value[kind]['total']
+            self.getControl(700+pos).setLabel(tr(LABELS[pos])+' ('+(str(count) if count is not None else '…')+')')
+        section=value[self._search_kind];self._search_rows=section['rows']
+        rows=[dict(row,name=row.get('name','')+(' · '+tr(33905)+': '+row['_now_title'] if row.get('_now_match') else '')) for row in self._search_rows]
+        self._fill(710,rows)
+        self.getControl(710).selectItem(getattr(self,'_search_selected',0))
+        self.getControl(102).setLabel(tr(33906) if section['code']=='INDEX_ERROR' else tr(33904) if section['total'] is None else
+            tr(33907) if not rows else '{}–{} / {}'.format(self._search_offset+1,self._search_offset+len(rows),section['total']))
+        self.getControl(501).setLabel(tr(33908) if section['code'] in ('NO_EPG','EPG_UNAVAILABLE') else '')
+        self.getControl(720).setVisible(self._search_offset>0)
+        self.getControl(721).setVisible(bool(section['total'] and self._search_offset+len(rows)<section['total']))
+        self.setFocusId(710 if rows else 700+KINDS.index(self._search_kind))
+        mark('SEARCH_RESULT_READY',self._search_correlation)
+
+    def _search_click(self,cid):
+        if self.mode!='search':return False
+        if cid in (700,701,702):
+            self._search_kind=KINDS[cid-700];self._search_offset=0;self._search_selected=0;self._search_load();return True
+        if cid in (720,721):
+            self._search_offset=max(0,self._search_offset+(-48 if cid==720 else 48));self._search_selected=0;self._search_load();return True
+        if cid!=710:return False
+        if self._search_loading:return True
+        pos=self.getControl(710).getSelectedPosition()
+        if not 0<=pos<len(self._search_rows):return True
+        item=self._search_rows[pos]
+        self._search_selected=pos
+        if self._search_kind=='live':
+            from guide_playback import request,player_state
+            self._search_live=request(self.portal,item,player_state())
+            try:self._search_live['window']=int(xbmcgui.getCurrentWindowId())
+            except (AttributeError,RuntimeError):self._search_live['window']=None
+            self._leaving=True;self._leave_after=time.monotonic()+.15
+        else:
+            self.kind=self._search_kind;self._grid_return=None;self._search_detail=True
+            self._details(item)
+        return True
+
+    def _search_action(self,key):
+        if key in (9,10,92) and self.mode=='detail' and getattr(self,'_search_detail',False):
+            self._search_detail=False;self._generation+=1;self.mode='search';self._show('search')
+            self._search_ready(self._search_data);return True
+        if self.mode!='search':return False
+        if key in (9,10,92):
+            self._generation+=1
+            if self._pending_future is not None:self._pending_future.cancel()
+            mark('SEARCH_RETURN',self._search_correlation)
+            if getattr(self,'_search_root',False):
+                if getattr(self,'_running',False):self._leaving=True;self._leave_after=time.monotonic()+.15
+                else:self.close()
+                return True
+            origin=self._search_origin;del self._search_origin
+            for name,value in origin.items():setattr(self,name,value)
+            self._show(self.mode)
+            if self.mode=='detail':self._detail_ready((self.selected,{'episodes':self._episode_raw()}))
+            elif self.mode=='episodes':self._show_episodes()
+            elif self.mode=='seasons':self._fill(330,self._season_rows())
+            else:self._page_ready((self.rows,self.total))
+            self.setFocusId(self._search_origin_focus);return True
+        focus=self.getFocusId()
+        if key in (1,2) and focus in (700,701,702):
+            self.setFocusId(700+(focus-700+(-1 if key==1 else 1))%3);return True
+        if key==4 and focus in (400,700,701,702):
+            self.setFocusId(710 if self._search_rows else 700+KINDS.index(self._search_kind));return True
+        if key==3 and focus==710 and self.getControl(710).getSelectedPosition()==0:
+            self.setFocusId(700+KINDS.index(self._search_kind));return True
+        if key==117:self._open_search();return True
+        return key in (1,2,3,4,5,6,7)

@@ -608,5 +608,120 @@
       <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
     </control>
+    <control type="button" id="700">
+      <left>44</left>
+      <top>174</top>
+      <width>384</width>
+      <height>44</height>
+      <font>font13</font>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <textcolor>FFF0F2F5</textcolor>
+      <focusedcolor>FFFFFFFF</focusedcolor>
+      <onup>400</onup>
+      <ondown>710</ondown>
+      <onleft>702</onleft>
+      <onright>701</onright>
+    </control>
+    <control type="button" id="701">
+      <left>448</left>
+      <top>174</top>
+      <width>384</width>
+      <height>44</height>
+      <font>font13</font>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <textcolor>FFF0F2F5</textcolor>
+      <focusedcolor>FFFFFFFF</focusedcolor>
+      <onup>400</onup>
+      <ondown>710</ondown>
+      <onleft>700</onleft>
+      <onright>702</onright>
+    </control>
+    <control type="button" id="702">
+      <left>852</left>
+      <top>174</top>
+      <width>384</width>
+      <height>44</height>
+      <font>font13</font>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <textcolor>FFF0F2F5</textcolor>
+      <focusedcolor>FFFFFFFF</focusedcolor>
+      <onup>400</onup>
+      <ondown>710</ondown>
+      <onleft>701</onleft>
+      <onright>700</onright>
+    </control>
+    <control type="button" id="720">
+      <left>44</left>
+      <top>644</top>
+      <width>180</width>
+      <height>44</height>
+      <font>font13</font>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <textcolor>FFF0F2F5</textcolor>
+      <focusedcolor>FFFFFFFF</focusedcolor>
+      <onup>400</onup>
+      <ondown>710</ondown>
+      <onleft>710</onleft>
+      <onright>710</onright>
+    </control>
+    <control type="button" id="721">
+      <left>1056</left>
+      <top>644</top>
+      <width>180</width>
+      <height>44</height>
+      <font>font13</font>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <textcolor>FFF0F2F5</textcolor>
+      <focusedcolor>FFFFFFFF</focusedcolor>
+      <onup>400</onup>
+      <ondown>710</ondown>
+      <onleft>710</onleft>
+      <onright>710</onright>
+    </control>
+    <control type="list" id="710">
+      <left>44</left>
+      <top>230</top>
+      <width>1192</width>
+      <height>402</height>
+      <orientation>vertical</orientation>
+      <onup>700</onup>
+      <ondown>721</ondown>
+      <onleft>700</onleft>
+      <onright>701</onright>
+      <itemlayout width="1192" height="60">
+        <control type="label">
+          <left>16</left>
+          <top>4</top>
+          <width>1160</width>
+          <height>52</height>
+          <font>font13</font>
+          <textcolor>FFF0F2F5</textcolor>
+          <label>$INFO[ListItem.Label]</label>
+        </control>
+      </itemlayout>
+      <focusedlayout width="1192" height="60">
+        <control type="image">
+          <left>0</left>
+          <top>0</top>
+          <width>1192</width>
+          <height>60</height>
+          <texture border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texture>
+        </control>
+        <control type="label">
+          <left>16</left>
+          <top>4</top>
+          <width>1160</width>
+          <height>52</height>
+          <font>font13</font>
+          <textcolor>FFF0F2F5</textcolor>
+          <label>$INFO[ListItem.Label]</label>
+        </control>
+      </focusedlayout>
+    </control>
   </controls>
 </window>

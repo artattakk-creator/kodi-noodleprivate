@@ -166,12 +166,10 @@ class Navigation298(Fixture,unittest.TestCase):
         self.router._params.update(action='media_detail',kind='bogus')
         self.routes.dispatch(self.router);self.assertEqual(self.ends[-1][0],(7,False))
 
-    def test_search_transition_runs_after_native_close(self):
+    def test_search_stays_in_owned_window_without_container_transition(self):
         w=self.media_window();self.dialog.input.return_value='Local title'
-        w._search();self.assertTrue(w._closed);self.assertFalse(self.builtins)
-        with mock.patch.object(self.media,'open_owned_window',return_value=w):
-            self.media.open_media(self.router,self.portal,'vod')
-        self.assertEqual(len(self.builtins),1);self.assertIn('action=global_search',self.builtins[0])
+        w._search();self.assertFalse(w._closed);self.assertEqual(w.mode,'search')
+        self.settle(w);self.assertFalse(self.builtins)
 
 
 if __name__=='__main__':unittest.main()
