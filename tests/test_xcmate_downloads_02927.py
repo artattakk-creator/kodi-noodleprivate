@@ -118,8 +118,13 @@ class DownloadTests(unittest.TestCase):
         self.assertEqual(os.stat(self.store.path()).st_mode&0o777,0o600)
         raw=Path(self.store.path()).read_bytes();self.assertNotIn(b'PRIVATE',raw)
     def test_redirect_policy_never_forwards_authentication_to_foreign_origin(self):
-        from urllib.request import Request
-        with self.assertRaisesRegex(Exception,'REDIRECT_UNSUPPORTED'):self.worker.SameOrigin().redirect_request(Request('https://one.invalid/file',headers={'Authorization':'PRIVATE'}),None,302,'',{},'https://two.invalid/file')
+        import download_redirect as redirects
+        response=Response(status=302,headers={'Location':'https://two.invalid/file'})
+        transport=mock.Mock(return_value=response)
+        with mock.patch.object(redirects,'addresses',return_value=['93.184.216.34']):
+            with self.assertRaisesRegex(Exception,'REDIRECT_UNTRUSTED_TARGET'):
+                redirects.open_source('https://one.invalid/file',{'Authorization':'PRIVATE'},transport=transport)
+        transport.assert_called_once()
     def test_playlist_and_drm_sources_are_explicitly_rejected(self):
         source=importlib.import_module('download_sources')
         for uri in ('file:///etc/passwd','https://a.invalid/a.m3u8','https://a.invalid/a.mpd','https://a.invalid/a|token=SECRET'):
@@ -133,6 +138,8 @@ class DownloadTests(unittest.TestCase):
             def do_GET(self):
                 self.send_response(200);self.send_header('Content-Length',str(len(PAYLOAD)));self.send_header('Content-Type','video/mp4');self.send_header('ETag','"real-fixture"');self.end_headers()
                 for n in range(0,len(PAYLOAD),8192):self.wfile.write(PAYLOAD[n:n+8192])
+        import download_redirect
+        patch=mock.patch.object(download_redirect,'addresses',return_value=['127.0.0.1']);patch.start();self.addCleanup(patch.stop)
         server=ThreadingHTTPServer(('127.0.0.1',0),Handler);thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start()
         try:
             url=f'http://127.0.0.1:{server.server_port}/sample.mp4'

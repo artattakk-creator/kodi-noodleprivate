@@ -2,25 +2,13 @@
 import hashlib,os,re,time,uuid
 from urllib.error import HTTPError
 from urllib.parse import urlsplit
-from urllib.request import Request,build_opener,HTTPRedirectHandler
 from download_sources import DownloadFailure,validate,container
 from media_files import FileFailure
 
 CHUNK=64*1024
 
 
-class SameOrigin(HTTPRedirectHandler):
-    def redirect_request(self,req,fp,code,msg,headers,newurl):
-        validate(newurl);before,after=urlsplit(req.full_url),urlsplit(newurl)
-        if (before.scheme,before.netloc)!=(after.scheme,after.netloc):raise DownloadFailure('REDIRECT_UNSUPPORTED')
-        return super().redirect_request(req,fp,code,msg,headers,newurl)
-
-
-def open_source(url,headers):
-    validate(url)
-    safe={str(k):str(v) for k,v in headers.items() if re.fullmatch('[A-Za-z0-9-]{1,64}',str(k)) and '\r' not in str(v) and '\n' not in str(v)}
-    safe['Accept-Encoding']='identity'
-    return build_opener(SameOrigin()).open(Request(url,headers=safe),timeout=10)
+from download_redirect import open_source
 
 
 def destination(media,ident,extension):
@@ -69,12 +57,16 @@ def run_one(cancel=lambda:False,resolver=None,opener=None):
             if not changed:raise InterruptedError()
             files.rename(part,job['file']);store.finish(ident,owner,'COMPLETE');return True
         url,headers=(resolver or resolve)(media);fingerprint=hashlib.sha256(url.encode()).hexdigest()
-        offset=job['bytes'] if job['code'] not in ('SOURCE_CHANGED','PART_CHANGED','BAD_RANGE') and job['fingerprint']==fingerprint and (job['etag'] and not job['etag'].startswith('W/') or job['modified']) else 0
+        offset=job['bytes'] if job['code'] not in ('SOURCE_CHANGED','PART_CHANGED','BAD_RANGE') and job['fingerprint'].split(':')[0]==fingerprint and (job['etag'] and not job['etag'].startswith('W/') or job['modified']) else 0
         if offset and job['total'] and offset>=job['total']:offset=0
         if offset and (not files.owned_part(part,ident) or not files.exists(part) or files.size(part)!=offset or _hash(part,offset)!=job['digest']):offset=0
         headers=dict(headers)
         if offset:headers.update(Range='bytes='+str(offset)+'-',**{'If-Range':job['etag'] if job['etag'] and not job['etag'].startswith('W/') else job['modified']})
-        response=(opener or open_source)(url,headers)
+        response=opener(url,headers) if opener else open_source(url,headers,pid=media['pid'],job_id=ident)
+        final_fingerprint=getattr(response,'source_fingerprint','')
+        if final_fingerprint:
+            fingerprint+=':'+final_fingerprint
+            if offset and job['fingerprint']!=fingerprint:raise DownloadFailure('SOURCE_CHANGED')
         status=getattr(response,'status',200);h=response.headers
         if h.get('Content-Encoding','identity').lower()!='identity':raise DownloadFailure('UNSUPPORTED_SOURCE')
         mime=h.get('Content-Type','').lower()

@@ -1,3 +1,10 @@
+0.1.29.29 – isolierter Redirect-Testkandidat
+- #135: Portal- und Quellhost-gebundene, widerrufbare Redirect-Freigaben. Keine automatische Freigabe unbekannter CDN-Hosts.
+- Höchstens fünf Redirects; DNS-Prüfung und gepinnte Verbindung pro Hop, TLS-Hostname-Prüfung, kein HTTPS-Downgrade oder Credential-Forwarding über Origin-Grenzen.
+- Private/LAN-Ziele nur nach gesonderter ausdrücklicher Freigabe; Loopback, Link-Local, Metadaten und IPv6-Tunnel/NAT64 bleiben gesperrt.
+- Endzielwechsel beim Resume erzwingt sicheren Neustart; bestehende Content-/Range-/Hash-/Dateigrenzprüfungen bleiben erhalten. Keine öffentlichen Host-/URL-/Token-Logs.
+- Android-Abnahme offen. Speicherreparatur #136 folgt separat; nur der kumulative Kandidat ist für die gemeinsame Abnahme vorgesehen. Kein Release/OTA/main-Merge.
+
 0.1.29.28 – Android-Testkandidat
 - #111: Expliziter Einzelposter-Retry priorisiert belegte alternative Bildadresse desselben Datensatzes, ohne Fanart/andere Titel; gültige READY-Bilder und Worker/Cooldowns bleiben geschützt.
 - Fehlende Datei hinter alter READY-Zeile kann erneut geladen werden; keine Titelraterei oder unbelegte TMDB-Zuordnung.

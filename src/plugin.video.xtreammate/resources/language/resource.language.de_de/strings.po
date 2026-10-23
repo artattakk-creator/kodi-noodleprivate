@@ -2972,3 +2972,35 @@ msgstr "Unvollständig"
 msgctxt "#34500"
 msgid "No additional verified provider image source available."
 msgstr "Keine weitere verifizierte Provider-Bildquelle vorhanden."
+
+msgctxt "#34600"
+msgid "Review/approve redirect target for this portal"
+msgstr "Redirect-Ziel für dieses Portal prüfen/freigeben"
+
+msgctxt "#34601"
+msgid "This host is not automatically trusted. Approve only if you independently trust source and destination. Approval applies only to this portal and source. Login and provider headers are never forwarded across origins."
+msgstr "Dieser Host ist nicht automatisch vertrauenswürdig. Nur freigeben, wenn Sie Quelle und Ziel unabhängig als vertrauenswürdig kennen. Die Freigabe gilt nur für dieses Portal und diesen Quellhost. Keine Anmeldung oder Provider-Header werden zum anderen Host übertragen."
+
+msgctxt "#34602"
+msgid "This host resolves to a private network. Explicitly allow only your own trusted LAN server? Loopback, link-local and metadata destinations remain blocked."
+msgstr "Der Host zeigt auf ein privates Netz. Zugriff nur ausdrücklich für einen eigenen, vertrauenswürdigen LAN-Server erlauben? Loopback, Link-Local und Metadatenziele bleiben gesperrt."
+
+msgctxt "#34603"
+msgid "Approval saved. Retry the download explicitly. Revoke it at any time under Redirect approvals."
+msgstr "Freigabe gespeichert. Download anschließend gezielt erneut versuchen. Unter Redirect-Freigaben jederzeit widerrufbar."
+
+msgctxt "#34604"
+msgid "Manage redirect approvals for this portal"
+msgstr "Redirect-Freigaben dieses Portals verwalten"
+
+msgctxt "#34605"
+msgid "Revoke this approval? Pause an already connected transfer first if needed."
+msgstr "Diese Freigabe widerrufen? Laufende, bereits verbundene Übertragungen bei Bedarf vorher pausieren."
+
+msgctxt "#34606"
+msgid "No redirect approvals are stored for this portal."
+msgstr "Für dieses Portal sind keine Redirect-Freigaben gespeichert."
+
+msgctxt "#34610"
+msgid "Download redirect blocked. Review/approve its destination or manage existing approvals in the download manager. The technical code gives the reason."
+msgstr "Download-Weiterleitung blockiert. Ziel im Downloadmanager ausdrücklich prüfen/freigeben oder vorhandene Freigabe verwalten. Der technische Code nennt den Grund."
