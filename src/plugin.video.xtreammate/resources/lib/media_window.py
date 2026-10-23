@@ -41,6 +41,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._catalog_missing=True
         self._catalog_update=None
         self._mode_focus={};self._next_route=None
+        self._focus_pending=None
         self._restore_focus=None;self._season_cursor=0
         self._episode_cursor={};self._leaving=False
         self._landing_loaded=False
@@ -57,21 +58,41 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
 
     def setFocusId(self,control_id):
         if self._closed:return
+        # Native setVisible/enabled flags may lag one GUI frame. Keep the
+        # intended target instead of committing a temporary fallback to Search.
+        eligible=self._valid_focus(native=False)
+        if control_id not in eligible:
+            primary=300 if self.mode=='detail' else 330 if self.mode in ('episodes','seasons') else None
+            control_id=primary if primary is not None else next(iter(eligible),None)
+        if control_id is None:return
         valid=self._valid_focus()
-        if not valid:return
+        if control_id not in valid:
+            if self.mode in ('detail','seasons','episodes') and control_id in (300,330,340):
+                self._mode_focus[self.mode]=control_id
+                pending=(self.mode,control_id)
+                if self._focus_pending!=pending:
+                    from window_navigation import trace
+                    trace('FOCUS_DEFER',self.mode,control_id,self._dispatch)
+                self._focus_pending=pending
+                return
+            # Preserve established catalogue/landing navigation when a target
+            # is genuinely disabled or its row has disappeared.
+            if not valid:return
+            control_id=self._mode_focus.get(self.mode,valid[0])
+            if control_id not in valid:control_id=valid[0]
+        deferred=self._focus_pending is not None
+        self._focus_pending=None
         for pos,cid in enumerate(valid):
             control=self.getControl(cid)
             control.setNavigation(self.getControl(valid[max(0,pos-1)]),
                                   self.getControl(valid[min(len(valid)-1,pos+1)]),control,control)
-        if control_id not in valid:
-            from window_navigation import trace
-            trace('FOCUS_FALLBACK',self.mode,dispatch=self._dispatch)
-            control_id=self._mode_focus.get(self.mode,400)
-            if control_id not in valid:control_id=valid[0]
         if 210 in valid:
             panel=self.getControl(210)
             panel.setNavigation(self.getControl(400),panel,panel,panel)
         super().setFocusId(control_id)
+        if deferred:
+            from window_navigation import trace
+            trace('FOCUS_READY',self.mode,control_id,self._dispatch)
         if self.mode=='landing':
             first=next((cid for cid in (112,111,110) if cid in valid),120)
             cat=self.getControl(120);search=self.getControl(400);row=self.getControl(first)
@@ -87,7 +108,17 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._nav_focus=control_id
         self._mode_focus[self.mode]=control_id
 
-    def _valid_focus(self):
+    def _resume_focus(self):
+        # One nonblocking check per existing owner-pump tick. No GUI work on
+        # workers, no additional loop, and no search click while focus is stale.
+        if self._closed or self._leaving or self._playback_waiting:return
+        pending=self._focus_pending
+        if pending is None:return
+        if pending[0]!=self.mode:
+            self._focus_pending=None;return
+        if pending[1] in self._valid_focus():self.setFocusId(pending[1])
+
+    def _valid_focus(self,native=True):
         candidates=([120,400,112,111,110] if self.mode=='landing' else
                     [200,210,400] if self.mode in ('grid','groups') else
                     [300,400] if self.mode=='detail' else [330,340,400] if self.mode=='episodes' else [330,400])
@@ -101,7 +132,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             if cid==330 and not self.getControl(330).size():continue
             if cid==340 and self.next_episode is None:continue
             control=self.getControl(cid)
-            if control.isVisible() and xbmc.getCondVisibility('Control.IsEnabled({})'.format(cid)):result.append(cid)
+            if not native or control.isVisible() and xbmc.getCondVisibility('Control.IsEnabled({})'.format(cid)):result.append(cid)
         return result
 
     @native_init
@@ -201,6 +232,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
 
     def _owner_tick(self):
         self._gui()
+        self._resume_focus()
         self._poll_playback_return()
         if self._playback_waiting and self._playback_seen:return
         if self.mode=='episodes':self._sync_episode_next()
@@ -367,7 +399,8 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             self.getControl(210).setWidth(916 if expanded else 1192)
             self._cols=4 if expanded else 6
         # Kodi's default focus must never remain on the now hidden landing button.
-        self.setFocusId(self._mode_focus.get(mode,self.getFocusId()))
+        primary=300 if mode=='detail' else 330 if mode in ('seasons','episodes') else self.getFocusId()
+        self.setFocusId(self._mode_focus.get(mode,primary))
 
     def _focus_item(self,index):
         if not 0<=index<len(self.rows): return
@@ -410,8 +443,9 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             self._grid_return=(self.mode,self.category,self.offset,list(self.rows),self.total,self._last_position,self._cols)
         self._previous=(self.mode,self.category,self.offset,self._last_position)
         self._return_focus=self.getFocusId()
-        self.mode='detail';self.selected=dict(item);self._show('detail')
         self.actions=[]
+        self._mode_focus['detail']=300
+        self.mode='detail';self.selected=dict(item);self._show('detail')
         self._detail_ready((dict(item),{}))
         self.setFocusId(300)
         if item.get('_unavailable'):
@@ -429,7 +463,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
 
     def _detail_ready(self,value):
         if self.mode!='detail': return
-        old_focus=self.getFocusId()
+        old_focus=self._mode_focus.get('detail',300)
         old_position=self.getControl(300).getSelectedPosition()
         old_action=self.actions[old_position][1] if 0<=old_position<len(self.actions) else ''
         from media_art import local_art
@@ -518,8 +552,11 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
     def onClick(self,controlId):
         if self._closed or self._leaving:return
         with self._lock:
+            self._resume_focus()
+            if self._focus_pending is not None:return
             if controlId==400:
-                self._search();return
+                if self.getFocusId()==400 and self._mode_focus.get(self.mode)==400:self._search()
+                return
             if controlId==120 and hasattr(self,'reader'):
                 if getattr(self,'_catalog_missing',False):
                     self.getControl(102).setLabel(tr(32522))
@@ -721,6 +758,10 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
                     self._leaving=True;self._leave_after=time.monotonic()+.15
                 else:self.close()
                 return
+            self._resume_focus()
+            if self._focus_pending is not None:return
+            if key in (1,2,3,4) and self.getFocusId() in self._valid_focus():
+                self._mode_focus[self.mode]=self.getFocusId()
             if key==117:
                 if self.mode=='episodes':
                     pos=self.getControl(330).getSelectedPosition()
@@ -792,6 +833,8 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             if focus==400 and key==4:
                 target=next((c for c in (112,111,110) if c in self._valid_focus()),120) if self.mode=='landing' else 120
                 if self.mode in ('grid','groups'): target=210 if self.rows else 200
+                elif self.mode=='detail':target=300
+                elif self.mode=='seasons':target=330
                 self.setFocusId(target)
                 return
             if focus==200 and key==2:

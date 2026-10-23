@@ -19,6 +19,7 @@ DEFAULT=dict(theme='core',background_opacity=100,panel_opacity=90,icon_opacity=1
 COLOURS=('background','accent','focus','text','secondary')
 OPACITY=('background_opacity','panel_opacity','icon_opacity')
 FONTS={'small':'font12','normal':'font13','large':'font16'}
+RENDER_REVISION='02925-core-focus'
 
 
 def path():
@@ -98,9 +99,18 @@ def window_source(xml_filename, kind='vod'):
             try: height=int(control.findtext('height','0'))
             except ValueError: height=0
             if 0<height<36: font.text='font13'
+    if xml_filename=='XCMateMedia.xml':
+        # Selection contrast must not depend on the Premium palette or alpha.
+        for layout in tree.iter('focusedlayout'):
+            for text in layout.iter('textcolor'):text.text='FFF0F2F5'
+        for button in tree.findall(".//control[@type='button']"):
+            colour=button.find('focusedcolor')
+            if colour is None:colour=ET.SubElement(button,'focusedcolor')
+            colour.text='FFF0F2F5'
     heading=tree.find("./controls/control[@id='101']/textcolor")
     if heading is not None: heading.text=argb(values['accent'])
-    variant=hashlib.sha256((str(theme['revision']) if theme else 'core').encode()).hexdigest()[:16]
+    # A fresh path prevents Kodi reusing the previous renderer's cached XML.
+    variant=hashlib.sha256((RENDER_REVISION+':'+(str(theme['revision']) if theme else 'core')).encode()).hexdigest()[:16]
     root=Path(addon_data_dir())/('ui_'+variant+'_'+kind)
     target=root/'resources/skins/Default/720p'/xml_filename
     target.parent.mkdir(parents=True,exist_ok=True)

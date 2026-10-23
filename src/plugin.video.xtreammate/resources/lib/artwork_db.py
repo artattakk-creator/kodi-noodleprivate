@@ -148,10 +148,19 @@ class _Connection(sqlite3.Connection):
     _art_phase='QUERY'
 
     def execute(self,sql,parameters=()):
-        try:return super().execute(sql,parameters)
-        except sqlite3.Error as exc:
-            _failure(exc,self._art_phase)
-            raise
+        # Only retry an initial lock acquisition. An existing transaction may
+        # have a stale read snapshot and must be rolled back by its owner.
+        # SQLite BUSY leaves a failed first statement unapplied; repeating it
+        # once does not replay successful statements or consume an HTTP retry.
+        transaction=self.in_transaction
+        for attempt in range(2):
+            try:return super().execute(sql,parameters)
+            except sqlite3.Error as exc:
+                if not transaction and not attempt and classify(exc)=='BUSY':
+                    threading.Event().wait(.025)
+                    continue
+                _failure(exc,self._art_phase)
+                raise
 
     def commit(self):
         try:return super().commit()
@@ -482,3 +491,41 @@ def image_details(keys):
     finally:
         if db is not None:db.close()
         _unlock(fd)
+
+
+def image_snapshot(keys,cancel=lambda:False):
+    """Worker-only, bounded read retry; coherent status/counters, never URLs.
+
+    Read-only URI also sees committed WAL data. Do not change an existing
+    database's journal mode or hold a shared lock while waiting between tries.
+    Maximum SQLite busy wait is 2 x 75 ms plus one 25 ms worker delay.
+    """
+    from urllib.parse import quote
+    from art_errors import CODES
+    keys=list(dict.fromkeys(keys))[:96]
+    if cancel():return {},'CANCELLED'
+    if not keys:return {},'OK'
+    if not os.path.exists(path()):return {},'NOT_CREATED'
+    allowed=set(CODES)|{'PENDING','RUNNING','READY','FAILED','NETWORK_ERROR','CACHE_ERROR',
+                         'INVALID_SOURCE','INVALID_IMAGE','SPACE_FULL','BUDGET_FULL','DISK_FULL'}
+    for attempt in range(2):
+        fd=None;db=None
+        try:
+            if cancel():return {},'CANCELLED'
+            fd=_lock()
+            db=sqlite3.connect('file:'+quote(path(),safe='/')+'?mode=ro',uri=True,timeout=.075)
+            db.execute('PRAGMA query_only=ON')
+            deadline=time.monotonic()+.1
+            db.set_progress_handler(lambda:int(cancel() or time.monotonic()>deadline),1000)
+            rows=db.execute('SELECT ident,status,attempts,updated,next_at FROM jobs WHERE ident IN ('+','.join('?' for _ in keys)+')',keys)
+            return {r[0]:dict(status=r[1] if r[1] in allowed else 'UNKNOWN',attempts=r[2],updated=r[3],next_at=r[4]) for r in rows},'OK'
+        except (sqlite3.Error,OSError) as exc:
+            if cancel():return {},'CANCELLED'
+            code='DB_BUSY' if classify(exc)=='BUSY' else 'DB_UNAVAILABLE'
+            if code!='DB_BUSY' or attempt:return {},code
+        finally:
+            if db is not None:db.close()
+            _unlock(fd)
+        # This helper is never called by a GUI callback. Only one finite retry.
+        threading.Event().wait(.025)
+    return {},'DB_BUSY'

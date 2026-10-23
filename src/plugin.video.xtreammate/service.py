@@ -350,6 +350,11 @@ class IPTVMasterService(xbmc.Monitor):
                 note(marker, LAST_ERROR, 'TV-Loop: ' + type(exc).__name__)
                 error('XCMate TV navigation unavailable: {}'.format(type(exc).__name__))
             self.waitForAbort(0.2)
+        try:
+            from app_services import shutdown as shutdown_app_features
+            shutdown_app_features()
+        except Exception:
+            diagnostic('service','APP_STOP_FAILED')
         if self._overlay is not None:
             self._overlay.close()
         try:

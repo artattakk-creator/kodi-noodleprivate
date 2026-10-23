@@ -1,3 +1,10 @@
+0.1.29.25 (Premium navigation and artwork contention hotfix on published .24)
+- Keep intended detail-action focus across delayed native visibility and metadata refresh; defer on the existing owner pump instead of committing Search. Ignore stale Search callbacks, restore Down to actions, and stop forcing Search as the XML default on window activation.
+- Use proven Core media focus frames in Premium, independent of palette opacity. Keep focused text readable, omit focused-poster overlays, draw other poster shades below text, and use a fresh generated-XML cache namespace. Original icon and all 98 optional package images remain unchanged.
+- Read poster status/counters together with one bounded read-only lock retry. Report DB_BUSY independently of stale inbox/network errors; retry an initial SQLite statement lock once before recording BUSY, never replay an existing transaction. Keep journal mode, cached READY files, leases, backups, space and finite HTTP retries.
+- Stop scheduling optional service work between stages after abort; bounded shutdown reports already running work honestly. Provider IO and historical GetDirectory/update failures still require real-device diagnosis.
+- Android visual/poster acceptance remains NOT_TESTED. No native recorder, timers or offline-media prototype is activated in this hotfix. Staffeluebergang B02 remains a separate open test.
+
 0.1.29.24 (separate cumulative optional-theme candidate; includes .23)
 - Selectively port declarative theme package/catalogue/store/UI/renderer components from #50 onto current .22 EPG and .23 artwork APIs. Standard Lightweight remains offline; Space Premium can be previewed, explicitly downloaded/installed, activated, switched offline or removed without touching media data.
 - Preserve all 98 original image hashes; adjusted manifest and deterministic optional ZIP have a new digest. Pinned review catalogue/package commits, HTTPS-only bounded download, SHA256, manifest/paths/image checks, staged extraction, atomic selection and rollback; no theme network traffic at startup.

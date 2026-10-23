@@ -223,19 +223,24 @@ def revision():
     except OSError: return _choice_revision
 
 
-def diagnose(item):
+def _image_snapshot(item):
+    from artwork_db import image_snapshot
+    from art_store import key
+    return image_snapshot([key(u) for u in [*poster_candidates(item),*sources(item)] if u])
+
+
+def diagnose(item,_snapshot=None):
     """Worker diagnosis and same-record fallback. Never expose private sources."""
-    from artwork_db import image_states
     from art_store import key
     from art_errors import PERMANENT
     global _choice_revision
     candidates=poster_candidates(item)
-    urls=sources(item);states,db_code=image_states([key(u) for u in [*candidates,*urls] if u])
+    urls=sources(item);values,db_code=_image_snapshot(item) if _snapshot is None else _snapshot
+    states={ident:value['status'] for ident,value in values.items()}
     chosen=next((u for u in candidates if cached(u)),None)
     exhausted=False
     if urls[0] and states.get(key(urls[0])) not in PERMANENT:
-        from artwork_db import image_details
-        counters,_=image_details([key(urls[0])]);exhausted=counters.get(key(urls[0]),{}).get('attempts',0)>=3
+        exhausted=values.get(key(urls[0]),{}).get('attempts',0)>=3
     if not chosen and urls[0] and (states.get(key(urls[0])) in PERMANENT or exhausted):
         chosen=next((u for u in candidates if states.get(key(u)) not in PERMANENT and states.get(key(u)) not in ('NETWORK_ERROR','TIMEOUT','DNS_ERROR','CONNECTION_ERROR','HTTP_SERVER','HTTP_RATE_LIMIT')),None)
     if chosen and chosen!=urls[0]:
@@ -256,7 +261,7 @@ def diagnose(item):
         if code=='READY':code='CACHE_ERROR'
         if code is None:
             with _queue_lock:waiting=url in _inbox
-            code=('PENDING' if _enqueue_code=='NOT_REQUESTED' else _enqueue_code) if waiting else db_code if db_code not in ('OK','NOT_CREATED') else _enqueue_code
+            code=db_code if db_code not in ('OK','NOT_CREATED') else ('PENDING' if _enqueue_code=='NOT_REQUESTED' else _enqueue_code) if waiting else _enqueue_code
         result[name]=code
     return result
 
@@ -283,11 +288,11 @@ def retry_poster(item):
 
 
 def poster_report(item):
-    from artwork_db import image_details
     from art_store import key
-    status=diagnose(item)['poster']
+    snapshot=_image_snapshot(item)
+    status=diagnose(item,_snapshot=snapshot)['poster']
     url=sources(item)[0];fields=('cover','stream_icon','movie_image','cover_big')
-    values,code=image_details([key(url)] if url else [])
+    values,code=snapshot
     value=values.get(key(url),{}) if url else {}
     return dict(source_field=next((field for field in fields if item.get(field)==url),'NONE'),
                 candidate_count=len(poster_candidates(item)),status=status,

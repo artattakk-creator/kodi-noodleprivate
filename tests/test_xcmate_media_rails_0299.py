@@ -65,6 +65,9 @@ class MediaRails299(Fixture,unittest.TestCase):
             from theme_texture_contract import without_theme
             source=without_theme((LIB/name).read_bytes())
             if name=='window_navigation.py':
+                focus_events=b"'FOCUS_DEFER','FOCUS_READY',"
+                self.assertEqual(source.count(focus_events),1)
+                source=source.replace(focus_events,b'')
                 addition="'xcmate_licenses',"
                 self.assertEqual(source.count(addition.encode()),1)
                 source=source.replace(addition.encode(),b'')
@@ -107,6 +110,10 @@ class MediaRails299(Fixture,unittest.TestCase):
             # actual player start remains identical apart from view tracking.
             fn=ast.parse(ast.unparse(fn)).body[0]
             if name=='_owner_tick':
+                # .25 defers native focus by one existing pump tick. The
+                # original owner, playback and catalogue statements stay frozen.
+                self.assertEqual(ast.unparse(fn.body[1]),'self._resume_focus()')
+                del fn.body[1]
                 self.assertEqual(ast.unparse(fn.body[3]), "if self.mode == 'episodes':\n    self._sync_episode_next()")
                 del fn.body[3]  # .19 local manual-action refresh, no player work.
                 del fn.body[1:4]

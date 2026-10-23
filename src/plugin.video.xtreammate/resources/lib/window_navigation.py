@@ -23,7 +23,7 @@ _local=threading.Lock()
 def trace(event,mode='',key=0,dispatch=''):
     """No route arguments, account IDs, filenames, URLs or exception messages."""
     if event not in ('ENTRY','BUSY','ANCHOR','HOME_READY','ANCHOR_TIMEOUT','OPEN','RETURN',
-                     'BACK','TRANSITION','CLOSED_INPUT','FOCUS_FALLBACK','START_RECOVERED'):
+                     'BACK','TRANSITION','CLOSED_INPUT','FOCUS_FALLBACK','FOCUS_DEFER','FOCUS_READY','START_RECOVERED'):
         return
     values=['[XCMate][NAV] event='+event,'ms='+str(int(time.monotonic()*1000)),
             'thread='+str(threading.get_ident()),'key='+str(int(key))]
