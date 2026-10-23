@@ -1,3 +1,9 @@
+0.1.29.24 (separate cumulative optional-theme candidate; includes .23)
+- Selectively port declarative theme package/catalogue/store/UI/renderer components from #50 onto current .22 EPG and .23 artwork APIs. Standard Lightweight remains offline; Space Premium can be previewed, explicitly downloaded/installed, activated, switched offline or removed without touching media data.
+- Preserve all 98 original image hashes; adjusted manifest and deterministic optional ZIP have a new digest. Pinned review catalogue/package commits, HTTPS-only bounded download, SHA256, manifest/paths/image checks, staged extraction, atomic selection and rollback; no theme network traffic at startup.
+- Persist/migrate appearance theme preference; corrupt/missing/incompatible packages fall back to Core. Playback defers selection. Home, settings, live, current guide/media XML, placeholders, widgets and own OSD use local texture snapshots; original addon/Home branding remains immutable.
+- Keep .22 guide transparent focus frames, white guide text, control geometry and all input/owner/player code. Global BINGIE skin, Kodi keymaps and artwork/portal/Resume stores remain untouched. Android acceptance NOT_TESTED; no release/OTA/merge.
+
 0.1.29.23 (isolated cumulative graphics candidate on main .22)
 - Keep exact approved original icon bytes with a content-addressed Kodi metadata/Home reference; publish the matching repository icon asset and expose a private runtime reference check. Android visibility remains pending.
 - Distinguish HTTP/auth/rate-limit/DNS/TLS/timeout/connection poster failures; bounded worker retries, Retry-After cooldown, one-image user retry and same-record metadata alternatives. No title guessing, global reset or cached-image deletion.

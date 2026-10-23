@@ -24,6 +24,8 @@ WINDOW_ITEMS=240
 class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
     def configure(self,router,portal,kind,sid='',favourites=False):
         self._configure_owner()
+        from theme_render import snapshot
+        self._theme=snapshot()
         self._dispatch=getattr(router,'_navigation_dispatch','')
         self._return_home=False
         self.router,self.portal,self.kind=router,portal,kind
@@ -237,7 +239,10 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         items=[]
         for row in rows:
             li=xbmcgui.ListItem(str(row.get('name','')))
-            li.setArt(local_art(row))
+            li.setArt(local_art(row,self._theme))
+            if control_id in (300,330):
+                from theme_render import action_art
+                li.setArt(action_art(row.get('sid','') if control_id==300 else 'next_episode' if self.mode=='episodes' else 'seasons',self._theme,row.get('favourite',getattr(self,'_theme_favourite',False))))
             li.setInfo('video',{'title':str(row.get('name',''))})
             if '_watched' in row:
                 icon='eye_watched.png' if row['_watched'] else 'eye_unseen.png'
@@ -254,9 +259,9 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             controls={110:self.rows} if self.mode=='landing' else {210:self.rows} if self.mode in ('grid','groups') else {}
             if self.mode=='landing': controls.update(self.rails)
             for cid,rows in controls.items():
-                for pos,row in enumerate(rows): self.getControl(cid).getListItem(pos).setArt(local_art(row))
+                for pos,row in enumerate(rows): self.getControl(cid).getListItem(pos).setArt(local_art(row,self._theme))
             if self.selected:
-                art=local_art(self.selected)
+                art=local_art(self.selected,self._theme)
                 if art['fanart']: self.getControl(100).setImage(art['fanart'])
                 if self.mode=='detail': self.getControl(310).setImage(art['poster'])
             if self.mode in ('landing','grid','groups','detail') and self._art_diagnostic:
@@ -384,7 +389,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._art_selected=dict(item)
         self.getControl(501).setLabel(tr(32587))
         from media_art import local_art
-        art=local_art(item)
+        art=local_art(item,self._theme)
         self.getControl(100).setImage(art['fanart'] or os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media','media_neutral.png'))
         try: self._art.put_nowait(dict(item))
         except queue.Full:
@@ -446,7 +451,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             if key in info: meta.append('{}: {}'.format(name,info[key]))
         if 'duration' in info: meta.append(tr(32510).format(info['duration']//60))
         self.getControl(102).setLabel(' · '.join(meta))
-        self.getControl(310).setImage(local_art(item)['poster'])
+        self.getControl(310).setImage(local_art(item,self._theme)['poster'])
         self.getControl(320).setText(info['plot'] or tr(32511))
         self._queue_art(item)
         self.actions=[]
@@ -474,6 +479,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
                 self.actions.append((tr(32517).format(e['season'],e['episode']),'next_episode'))
         if item.get('_unavailable'): self.actions=[]
         fav=state_key(self.portal['id'],self.kind,item['sid']) in state['favourites']
+        self._theme_favourite=fav
         if self._state_ready:
             self.actions.append((tr(32518) if fav else tr(32519),'favourite'))
         else: self.getControl(102).setLabel(tr(32520))
@@ -871,7 +877,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         if direction>0:
             items=[]
             for row in rows:
-                li=xbmcgui.ListItem(row['name']);li.setArt(local_art(row));li.setInfo('video',{'title':row['name']});items.append(li)
+                li=xbmcgui.ListItem(row['name']);li.setArt(local_art(row,self._theme));li.setInfo('video',{'title':row['name']});items.append(li)
             panel.addItems(items);self.rows+=rows
             if len(self.rows)>WINDOW_ITEMS:
                 trim=((len(self.rows)-WINDOW_ITEMS+PAGE-1)//PAGE)*PAGE

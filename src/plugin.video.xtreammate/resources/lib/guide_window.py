@@ -14,6 +14,7 @@ import xbmcaddon
 class GuideWindow(OwnerDispatch,xbmcgui.WindowXML):
     def configure(self,router,portal):
         self._configure_owner()
+        self._theme=__import__('theme_render').snapshot()
         self._return_home=False
         self.router,self.portal=router,portal
         self._pool=ThreadPoolExecutor(max_workers=1)
@@ -26,6 +27,7 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXML):
         self.days=10 if setting_int('epg_days',7)==10 else 7
 
     def _query_failed(self,exc):
+        __import__('theme_render').guide_status(self,'error')
         self._gui()
         self.getControl(102).setLabel(tr(32610))
 
@@ -131,6 +133,7 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._request(load,self._events_ready)
 
     def _events_ready(self,value):
+        __import__('theme_render').guide_status(self,'ready' if value[0] else 'empty',True)
         self.programmes,self.event_total,horizon,info=value
         now=time.time()
         self._fill(220,[('{} - {} · {}'.format(time.strftime('%H:%M',time.localtime(e['start'])),
@@ -146,6 +149,7 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXML):
             self._fill(220,[tr(32548)])
 
     def _group_view(self,expanded):
+        __import__('theme_render').guide_status(self,'loading')
         self.getControl(200).setVisible(expanded)
         self.getControl(210).setVisible(not expanded)
 
@@ -202,7 +206,7 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXML):
             event=self.programmes[pos]
             choices=[tr(32549),tr(32550)]
             if event['start']>time.time(): choices.append(tr(32551))
-            selected=xbmcgui.Dialog().select(event['title'],choices)
+            selected=xbmcgui.Dialog().select(event['title'],__import__('theme_render').epg_choices(choices,self._theme),useDetails=bool(self._theme))
             if selected==0:
                 text=tr(32552).format(
                     self.channel['name'],time.strftime(tr(32584),time.localtime(event['start'])),

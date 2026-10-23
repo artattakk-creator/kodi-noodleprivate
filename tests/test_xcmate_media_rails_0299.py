@@ -62,11 +62,15 @@ class MediaRails299(Fixture,unittest.TestCase):
         frozen=json.loads((Path(__file__).parent/'fixtures/xcmate_02917_media_baseline.json').read_text())
         import hashlib
         for name,sha in frozen['modules'].items():
-            source=(LIB/name).read_bytes()
+            from theme_texture_contract import without_theme
+            source=without_theme((LIB/name).read_bytes())
             if name=='window_navigation.py':
                 addition="'xcmate_licenses',"
                 self.assertEqual(source.count(addition.encode()),1)
                 source=source.replace(addition.encode(),b'')
+                manager="'theme_manager',"
+                self.assertEqual(source.count(manager.encode()),1)
+                source=source.replace(manager.encode(),b'')
                 branding="'branding_status',"
                 self.assertEqual(source.count(branding.encode()),1)
                 source=source.replace(branding.encode(),b'')

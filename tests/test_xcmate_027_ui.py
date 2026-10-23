@@ -331,7 +331,8 @@ class FreezeTests(unittest.TestCase):
                 # methods may change. Original file digest is never replaced.
                 reference=json.loads((ROOT/'tests/fixtures/xcmate_026_overlay_ast.json').read_text())
                 self.assertEqual(reference['original_sha256'],digest)
-                source=(ROOT/file).read_text()
+                from theme_texture_contract import without_theme
+                source=without_theme((ROOT/file).read_text())
                 # Explicit shared-adapter constructor injection; every other
                 # original constructor statement remains frozen.
                 source=source.replace("def __init__(self, portal, initial_sid='', client=None):","def __init__(self, portal, initial_sid=''):")

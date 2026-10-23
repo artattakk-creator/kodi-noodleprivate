@@ -36,17 +36,18 @@ class MediaOSD(xbmcgui.WindowDialog):
     def __init__(self,token,player):
         super().__init__();self.token=token;self.player=player;self.visible=False;self.closed=False;self.suspended=False
         self.native_id=9999;self.buttons={};self.icons={};self.decor=[];self._last=0;self._signature=();self.actions=[]
+        self._theme=__import__('theme_render').snapshot()
         self.media=os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media')
         self.width,self.height=max(960,self.getWidth()),max(640,self.getHeight())
         clear=os.path.join(self.media,'remote_clear.png')
         self.capture=xbmcgui.ControlButton(8,8,8,8,'',focusTexture=clear,noFocusTexture=clear)
         self.addControl(self.capture);self.capture.setNavigation(self.capture,self.capture,self.capture,self.capture)
         y=self.height-264
-        self.panel=xbmcgui.ControlImage(32,y,self.width-64,232,os.path.join(self.media,'tv_panel.png'))
+        self.panel=xbmcgui.ControlImage(32,y,self.width-64,232,__import__('theme_render').texture(self,os.path.join(self.media,'tv_panel.png'),'panel.player.controls'))
         self.poster=xbmcgui.ControlImage(48,y+14,88,132,token[1].get('poster') or os.path.join(self.media,'vod.png'),aspectRatio=2)
         self.title=xbmcgui.ControlLabel(156,y+10,self.width-208,34,'','font16','0xFFF4F7F9')
         self.position=xbmcgui.ControlLabel(156,y+48,self.width-208,26,'','font13','0xFFDCE2EA')
-        self.track=xbmcgui.ControlImage(156,y+82,self.width-212,8,os.path.join(self.media,'tv_normal.png'))
+        self.track=xbmcgui.ControlImage(156,y+82,self.width-212,8,__import__('theme_render').texture(self,os.path.join(self.media,'tv_normal.png'),'panel.player.progress-track'))
         self.progress=xbmcgui.ControlImage(156,y+82,1,8,os.path.join(self.media,'tv_progress.png'))
         self.hint=xbmcgui.ControlLabel(48,self.height-54,self.width-96,24,tr(33011),'font12','0xFFDCE2EA')
         self.decor=[self.panel,self.poster,self.title,self.position,self.track,self.progress,self.hint]
@@ -86,11 +87,11 @@ class MediaOSD(xbmcgui.WindowDialog):
             row=[entry for entry in entries if entry[2]==group];step=(self.width-208)//max(1,len(row))
             for i,(name,label,_) in enumerate(row):
                 control=xbmcgui.ControlButton(156+i*step,y,step-8,46,tr(label),
-                    focusTexture=os.path.join(self.media,'xcmate_focus_neon.png'),
-                    noFocusTexture=os.path.join(self.media,'tv_normal.png'),textOffsetX=36,font='font13',textColor='0xFFF4F7F9',focusedColor='0xFFFFFFFF')
+                    focusTexture=__import__('theme_render').texture(self,os.path.join(self.media,'xcmate_focus_neon.png'),'focus.default'),
+                    noFocusTexture=__import__('theme_render').texture(self,os.path.join(self.media,'tv_normal.png'),'panel.default'),textOffsetX=36,font='font13',textColor='0xFFF4F7F9',focusedColor='0xFFFFFFFF')
                 self.buttons[name]=control;self.addControl(control)
                 icon={'autoplay':'more','subtitle_toggle':'subtitle','subtitles':'subtitle','audio_settings':'audio','info':'more','video':'video'}.get(name,'pause' if name=='pause' else name)
-                self.icons[name]=xbmcgui.ControlImage(164+i*step,y+12,22,22,os.path.join(self.media,'tv_'+icon+'.png'))
+                self.icons[name]=xbmcgui.ControlImage(164+i*step,y+12,22,22,__import__('theme_render').texture(self,os.path.join(self.media,'tv_'+icon+'.png'),''))
                 self.addControl(self.icons[name])
         rows=[[e[0] for e in entries if e[2]==group] for group in ('transport','settings')]
         for r,names in enumerate(rows):
@@ -144,7 +145,7 @@ class MediaOSD(xbmcgui.WindowDialog):
         paused=xbmc.getCondVisibility('Player.Paused')
         if 'pause' in self.buttons:
             self.buttons['pause'].setLabel(tr(33014) if paused else tr(33001))
-            self.icons['pause'].setImage(os.path.join(self.media,'tv_play.png' if paused else 'tv_pause.png'))
+            self.icons['pause'].setImage(__import__('theme_render').texture(self,os.path.join(self.media,'tv_play.png' if paused else 'tv_pause.png'),''))
 
     def invoke(self,name):
         if name=='stop' and (self.owned() or self.token[1].get('autoplay_chain')):

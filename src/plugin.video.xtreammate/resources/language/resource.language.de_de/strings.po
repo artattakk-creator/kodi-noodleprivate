@@ -2527,3 +2527,172 @@ msgstr "Poster: Zeitüberschreitung"
 msgctxt "#33718"
 msgid "Poster: connection failed"
 msgstr "Poster: Verbindungsfehler"
+
+
+msgctxt "#32800"
+msgid "XCMate designs"
+msgstr "XCMate-Designs"
+
+msgctxt "#32801"
+msgid "Installed designs"
+msgstr "Installierte Designs"
+
+msgctxt "#32802"
+msgid "Install design from GitHub"
+msgstr "Design aus GitHub installieren"
+
+msgctxt "#32803"
+msgid "Install design from ZIP"
+msgstr "Design aus ZIP installieren"
+
+msgctxt "#32804"
+msgid "Restore default design"
+msgstr "Standarddesign wiederherstellen"
+
+msgctxt "#32805"
+msgid "Remove design"
+msgstr "Design entfernen"
+
+msgctxt "#32806"
+msgid "Activate design"
+msgstr "Design aktivieren"
+
+msgctxt "#32807"
+msgid "Remove all installed versions of {}?"
+msgstr "Alle installierten Versionen von {} entfernen?"
+
+msgctxt "#32808"
+msgid "Design selected. New XCMate views use this design."
+msgstr "Design ausgewählt. Neue XCMate-Ansichten verwenden dieses Design."
+
+msgctxt "#32809"
+msgid "Design change queued. It applies to the next XCMate view opened after playback."
+msgstr "Designwechsel vorgemerkt. Er gilt für die nächste nach der Wiedergabe geöffnete XCMate-Ansicht."
+
+msgctxt "#32810"
+msgid "Checking design. Cancel is available."
+msgstr "Design wird geprüft. Abbrechen ist möglich."
+
+msgctxt "#32811"
+msgid "Design installed. Select it under Installed designs to activate it."
+msgstr "Design installiert. Zum Aktivieren unter Installierte Designs auswählen."
+
+msgctxt "#32812"
+msgid "No approved compatible designs are available in the catalogue yet."
+msgstr "Im Katalog stehen noch keine freigegebenen kompatiblen Designs bereit."
+
+msgctxt "#32813"
+msgid "No valid optional designs installed. The default design remains available."
+msgstr "Keine gültigen optionalen Designs installiert. Das Standarddesign bleibt verfügbar."
+
+msgctxt "#32814"
+msgid "The design could not be validated or saved. Existing designs and account data are preserved."
+msgstr "Das Design konnte nicht geprüft oder gespeichert werden. Bestehende Designs und Kontodaten bleiben erhalten."
+
+msgctxt "#32815"
+msgid "Not enough storage. Existing artwork will not be deleted."
+msgstr "Nicht genügend Speicherplatz. Vorhandene Bilder werden nicht gelöscht."
+
+msgctxt "#32816"
+msgid "Stop playback before removing a design. No playback was stopped."
+msgstr "Vor dem Entfernen eines Designs die Wiedergabe beenden. Es wurde keine Wiedergabe gestoppt."
+
+msgctxt "#32817"
+msgid "This design is incompatible with the installed XCMate version."
+msgstr "Dieses Design ist mit der installierten XCMate-Version nicht kompatibel."
+
+msgctxt "#32818"
+msgid "The design download failed. Please try again later."
+msgstr "Das Design konnte nicht heruntergeladen werden. Bitte später erneut versuchen."
+
+msgctxt "#32819"
+msgid "The design checksum does not match. Installation was rejected."
+msgstr "Die Design-Prüfsumme stimmt nicht überein. Die Installation wurde abgewiesen."
+
+msgctxt "#32820"
+msgid "Required design files are missing. Installation was rejected."
+msgstr "Erforderliche Design-Dateien fehlen. Die Installation wurde abgewiesen."
+
+msgctxt "#32821"
+msgid "This version is already installed with different content. Use a new theme version."
+msgstr "Diese Version ist bereits mit anderem Inhalt installiert. Eine neue Theme-Version verwenden."
+
+msgctxt "#32822"
+msgid "An older theme version cannot replace a newer installed version."
+msgstr "Eine ältere Theme-Version kann eine neuere installierte Version nicht ersetzen."
+
+msgctxt "#32823"
+msgid "Online catalogue"
+msgstr "Online-Katalog"
+
+msgctxt "#32824"
+msgid "The official catalogue is not available yet (HTTP 404). Use a verified local theme ZIP or try again after the approved publication."
+msgstr "Der offizielle Katalog ist noch nicht verfügbar (HTTP 404). Eine geprüfte lokale Theme-ZIP verwenden oder nach der freigegebenen Bereitstellung erneut versuchen."
+msgctxt "#33800"
+msgid "XCMate designs"
+msgstr "XCMate-Designs"
+
+
+msgctxt "#33801"
+msgid "Standard – XCMate Lightweight"
+msgstr "Standard – XCMate Lightweight"
+
+
+msgctxt "#33802"
+msgid "Space Premium – GS Media"
+msgstr "Space Premium – GS Media"
+
+
+msgctxt "#33803"
+msgid "Not installed"
+msgstr "Nicht installiert"
+
+
+msgctxt "#33804"
+msgid "Installed"
+msgstr "Installiert"
+
+
+msgctxt "#33805"
+msgid "Active"
+msgstr "Aktiv"
+
+
+msgctxt "#33806"
+msgid "Design preview"
+msgstr "Design-Vorschau"
+
+
+msgctxt "#33807"
+msgid "Download and install"
+msgstr "Herunterladen und installieren"
+
+
+msgctxt "#33808"
+msgid "Activate"
+msgstr "Aktivieren"
+
+
+msgctxt "#33809"
+msgid "Use the standard design"
+msgstr "Zum Standarddesign wechseln"
+
+
+msgctxt "#33810"
+msgid "Remove theme package"
+msgstr "Theme-Paket entfernen"
+
+
+msgctxt "#33811"
+msgid "The selected design applies when you reopen a view. Current playback is preserved."
+msgstr "Ausgewähltes Design gilt beim nächsten Öffnen. Laufende Wiedergabe bleibt erhalten."
+
+
+msgctxt "#33812"
+msgid "98 original images installed only in XCMate. Kodi skin stays as selected."
+msgstr "98 Originalgrafiken, Installation nur in XCMate. Kein Wechsel des Kodi-Skins."
+
+
+msgctxt "#33813"
+msgid "Manage designs"
+msgstr "Designs verwalten"
