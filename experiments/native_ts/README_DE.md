@@ -57,14 +57,34 @@ ffmpeg -v error -f lavfi -i testsrc2=size=320x180:rate=10 \
 python experiments/native_ts/smoke.py /tmp/fixture180.ts /tmp/native-capture
 ```
 
-Host-Mitschnitt und Offline-Decoderprüfung werden mit ihren tatsächlichen
-Ergebnissen getrennt dokumentiert. Sie sind **kein Kodi-Geräte-Playback**.
+## Tatsächlicher Host-Test am 23.10.2026
+
+- 11 gezielte Tests **PASS**, 0,574 s; [vollständiges Log](UNIT_TESTLOG.txt).
+- Echte kontinuierliche HTTP-Aufnahme: **120,338 s Wandzeit**, 9.061.600 Bytes,
+  PAT/PMT/CRC/188-Byte-Pakete **PASS**, Media-Dauer 120,910022 s; SHA256
+  `2935e61da48f631723b811d42b810d3b9050161e5591f4e1f0c82b32e760cb4c`.
+- Die vollständige frei erzeugte 180-s-Quelldatei decodiert streng **PASS**.
+  Die ersten 119 Sekunden des Mitschnitts decodieren streng ebenfalls **PASS**.
+- **Gesamter Mitschnitt: strenger Decoder FAIL, Exit 183.** Am zeitgesteuerten
+  Ende wird ein Video-PES/Frame angeschnitten (`ac-tex damaged`, fehlende MVs).
+  Ganze TS-Pakete garantieren kein vollständiges letztes Codecframe. Der
+  Prototyp meldet derzeit nach seinem Dauer-/Paketgate `complete`; das ist noch
+  **kein bestandener Codec-/Produktionsabschluss**. Endfinalisierung muss vor
+  Integration korrigiert und erneut geprüft werden.
+- Kodi-Offline-Playback und Android-ARM32-/USB-/SMB-Abnahme **NOT_TESTED**.
+
+[Maschinenlesbarer Bericht](HOST_TESTERGEBNISSE.json). Die TS-Testdatei und
+Original-Providerlogs werden nicht ins Repository übernommen. Hosttests
+ersetzen kein Kodi-Geräte-Playback. Die bekannte Endframe-Schwäche wird nicht
+mit einem erfolgreichen CLI-Exit ohne strenge Fehlerprüfung kaschiert.
 
 ## Integrationsblocker – bleibt Draft
 
 1. **Kodi-Offline-Playback der 2–5-Minuten-Aufnahme NOT_TESTED.** Kein Kodi-
    Prozess/Android-Gerät im Workspace. Auch ein erfolgreicher Host-Decoder
    erfüllt diese Freigabebedingung nicht.
+   **Zusätzlich strenger Host-Codec-Test FAIL am abgeschnittenen letzten Frame**;
+   die aktuelle Paket-/Dauerprüfung reicht noch nicht als Complete-Gate.
 2. Android-ARM32-POSIX-/USB-/Dateisystemtests fehlen. Exklusive Hardlinks sind
    auf FAT32/SMB nicht vorauszusetzen; dort wird diese Engine nicht freigegeben.
    Ein eigener geprüfter VFS-Publish-/Recovery-Pfad ist noch erforderlich.

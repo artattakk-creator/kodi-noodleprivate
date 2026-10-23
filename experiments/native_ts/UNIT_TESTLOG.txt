@@ -1,0 +1,16 @@
+test_bad_crc_and_adaptation_length_are_rejected (test_xcmate_native_ts_prototype.FormatTests.test_bad_crc_and_adaptation_length_are_rejected) ... ok
+test_http_only_no_userinfo_manifest_or_redirect_downgrade (test_xcmate_native_ts_prototype.FormatTests.test_http_only_no_userinfo_manifest_or_redirect_downgrade) ... ok
+test_no_false_acceptance_of_sync_only_garbage_html_or_manifest (test_xcmate_native_ts_prototype.FormatTests.test_no_false_acceptance_of_sync_only_garbage_html_or_manifest) ... ok
+test_real_crc_pat_pmt_and_fragmented_packet_boundaries (test_xcmate_native_ts_prototype.FormatTests.test_real_crc_pat_pmt_and_fragmented_packet_boundaries) ... ok
+test_scrambling_and_conditional_access_are_rejected (test_xcmate_native_ts_prototype.FormatTests.test_scrambling_and_conditional_access_are_rejected) ... ok
+test_cancel_during_read_retains_partial_and_never_creates_final (test_xcmate_native_ts_prototype.WorkerTests.test_cancel_during_read_retains_partial_and_never_creates_final) ... ok
+test_connection_confirmation_and_unsupported_target_make_no_request (test_xcmate_native_ts_prototype.WorkerTests.test_connection_confirmation_and_unsupported_target_make_no_request) ... ok
+test_disk_limit_and_fake_ts_never_complete (test_xcmate_native_ts_prototype.WorkerTests.test_disk_limit_and_fake_ts_never_complete) ... ok
+test_early_eof_is_partial_not_complete_and_does_not_leak_source (test_xcmate_native_ts_prototype.WorkerTests.test_early_eof_is_partial_not_complete_and_does_not_leak_source) ... ok
+test_real_local_http_and_non_ts_content (test_xcmate_native_ts_prototype.WorkerTests.test_real_local_http_and_non_ts_content) ... ok
+test_timed_valid_recording_finalizes_only_complete_packets_and_keeps_foreign_files (test_xcmate_native_ts_prototype.WorkerTests.test_timed_valid_recording_finalizes_only_complete_packets_and_keeps_foreign_files) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.574s
+
+OK
