@@ -1,6 +1,6 @@
 # Android-Test – XCMate 0.1.29.24 / Space Premium 1.0.0
 
-Separater kumulativer Draft einschließlich .23, keine Veröffentlichung. Erst .23-Grafikbefunde dokumentieren, dann direkt über vorhandenes XCMate installieren; keine Deinstallation und kein Cache-/Datenreset. ZIP mit SHA256 prüfen. Ziel: Android 13 RK3528 ARM32, Kodi 21.2, Titan BINGIE MOD, IR. Alle neuen Zeilen hier NOT_TESTED; einzeln PASS / FAIL / NOT_TESTED melden.
+**Status 23.10.2026:** XCMate **0.1.29.24 wurde über PR #114 nach `main` gemergt und im GS-Media-Repository veröffentlicht.** Der Nutzer hat den **Android-Gesamttest A–F: 5 PASS / 1 FAIL** gemeldet (einziger FAIL: **C Poster und Artwork**). **[Ergebnisdokumentation](ANDROID_GESAMTTEST_02924_ERGEBNISSE_20261023_DE.md)**. Dies sind Sammelkategorien, **keine automatisch bestandenen Einzeltests T01–T12**; diese Checkliste bleibt für konkrete Nachprüfungen offen. Testumgebung: Android 13 RK3528 ARM32, Kodi 21.2, Titan BINGIE MOD, IR. Keine Deinstallation oder Cache-/Datenlöschung; Space Premium wird innerhalb XCMate heruntergeladen, nicht als globales Kodi-Add-on installiert.
 
 - [ ] T01 .24 installiert, Portale, Gruppen, Startsender, Favoriten, EPG-Zuordnungen, Resume/Gesehen und gespeicherte Cover erhalten.
 - [ ] T02 Ohne Paket: Standard – XCMate Lightweight öffnet Home, Live, EPG, Filme/Serien; Original-Icon auf Kodi-Kachel, Info und Home sichtbar, auch nach Neustart.
