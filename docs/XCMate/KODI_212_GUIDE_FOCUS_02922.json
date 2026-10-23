@@ -1,0 +1,9 @@
+{
+  "version": "21.2-Omega",
+  "sources": [
+    "https://github.com/xbmc/xbmc/blob/21.2-Omega/xbmc/interfaces/legacy/Window.cpp",
+    "https://github.com/xbmc/xbmc/blob/21.2-Omega/xbmc/interfaces/legacy/Control.cpp"
+  ],
+  "window_copies_xml_colours": true,
+  "setLabel_preserves_unspecified_focus_colour": true
+}

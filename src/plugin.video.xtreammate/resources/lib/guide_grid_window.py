@@ -13,7 +13,8 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
     def configure(self,router,portal):
         self._configure_owner();self.router,self.portal=router,portal
         self._pool=ThreadPoolExecutor(max_workers=1);self._generation=0;self._closed=False;self._ready=False
-        self._loading=False;self._leaving=False;self._cells={};self.rows=[];self.groups=[];self.category=None
+        self._loading=False;self._leaving=False;self._cells={};self.rows=[];self.groups=[];self.category=''
+        self.mode='grid';self._focus_zone='grid';self._header=312;self._views={};self._group_back_after=0;self._input_after=0;self._group_return=None
         self.offset=0;self.total=0;self.row=0;self.cursor=int(time.time());self.origin=self.cursor//1800*1800
         self._last_refresh=0;self._art_revision=0;self._short_revision='';self._return_home=False;self._play_request=None;self._diagnosing=False
         from guide_playback import player_state
@@ -24,14 +25,33 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         if self._ready:return
         self._ready=True
         for cid in range(1000,1000+ROWS*CELLS):self.getControl(cid).setVisible(False)
-        for cid,ident in ((310,33101),(311,33102),(312,33103),(313,33104),(314,33105),(315,33106),(501,33107)):
+        for cid,ident in ((310,33101),(311,33102),(312,33103),(313,33104),(314,33105),(315,33106),(501,33602)):
             self.getControl(cid).setLabel(tr(ident))
-        self.getControl(101).setLabel(tr(33100));self._load()
+        self.getControl(200).setVisible(False);self.getControl(201).setVisible(False);self.getControl(202).setVisible(False)
+        for r in range(ROWS):self.getControl(730+r).setVisible(False);self.getControl(750+r).setVisible(False)
+        self.getControl(101).setLabel(tr(33100));self._initial_load()
+
+    def _initial_load(self):
+        self._loading=True;self._background=False;self._last_data_refresh=time.monotonic()
+        self.getControl(102).setLabel(tr(33108))
+        def load():
+            from guide_grid_data import initial
+            try:client=self.router._xc(self.portal)
+            except (ValueError,AttributeError):client=None
+            return initial(self.portal,self.origin,client)
+        self._request(load,self._initial_ready)
+
+    def _initial_ready(self,value):
+        self.category=value['category'];self.offset=value['offset'];self.row=value['row']
+        self._loaded(value)
+        if not self.groups:self._show_groups(refresh=False)
 
     def _load(self,background=False):
         self._diagnosing=False
         self._background=background;self._last_data_refresh=time.monotonic()
-        if not background:self._loading=True;self.setFocusId(312)
+        if not background:
+            self._loading=True
+            if self._focus_zone=='grid':self.setFocusId(312)
         self.getControl(102).setLabel(tr(33108))
         origin,offset,category=self.origin,self.offset,self.category
         router,portal=self.router,self.portal
@@ -44,12 +64,15 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
 
     def _loaded(self,value):
         self._loading=False;self.rows=value['rows'];self.total=value['total'];self.groups=value['groups']
+        if self.groups and self.category not in {g['cid'] for g in self.groups}:
+            self.category=self.groups[0]['cid'];self.offset=self.row=0;self._load();return
         self.row=min(self.row,max(0,len(self.rows)-1));self._render()
         from epg_views import prefetch_short_guides
         if self.rows:prefetch_short_guides(self.portal,[row['channel'] for row in self.rows],limit=ROWS)
 
     def _query_failed(self,exc):
         self._loading=False
+        if self.mode=='groups':self.getControl(102).setLabel(tr(33109));return
         if self._diagnosing:
             self._diagnosing=False;self.getControl(102).setLabel(tr(33109));return
         if not self._background:self.rows=[];self._render();self.setFocusId(312)
@@ -63,10 +86,12 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         return min(events,key=lambda e:min(abs(e['start']-self.cursor),abs(e['stop']-self.cursor))) if events else None
 
     def _render(self):
-        if self._closed or self._leaving:return
+        if self._closed or self._leaving or self.mode=='groups':return
         self._cells={};target=None
         for r in range(ROWS):
             row=self.rows[r] if r<len(self.rows) else None
+            self.getControl(730+r).setVisible(row is not None)
+            self.getControl(750+r).setVisible(row is not None and r==self.row)
             self.getControl(700+r).setText(row['channel']['name'] if row else '')
             from media_art import local_art
             self.getControl(720+r).setImage(local_art(row['channel'])['thumb'] if row else '')
@@ -91,7 +116,8 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         now=time.time();delta=(now-self.origin)*896/SPAN;marker=self.getControl(500)
         marker.setVisible(0<=delta<896)
         if 0<=delta<896:marker.setPosition(340+int(delta),166)
-        self.getControl(101).setLabel(tr(33100)+' · '+time.strftime('%a %d.%m.%Y',time.localtime(self.origin)))
+        group=next((g['title'] for g in self.groups if g['cid']==self.category),'')
+        self.getControl(101).setLabel(tr(33100)+' · '+group+' · '+time.strftime('%a %d.%m.%Y',time.localtime(self.origin)))
         available=sum(bool(r['events']) for r in self.rows)
         self.getControl(102).setLabel(tr(33111,self.offset+1 if self.rows else 0,min(self.total,self.offset+len(self.rows)),self.total,available,len(self.rows))+(' · '+tr(33120) if any(len(r['events'])>CELLS for r in self.rows) else ''))
         self._focus_cell(target)
@@ -104,9 +130,11 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         if cid is None:
             event=self._selected();cid=next((key for key,(r,e) in self._cells.items() if r==self.row and e is event),None)
             if cid is None:cid=next((key for key,(r,e) in self._cells.items() if r==self.row),312)
-        self.setFocusId(cid)
+        if self._focus_zone=='grid':self.setFocusId(cid)
+        elif self._focus_zone=='sender' and self.rows:self.setFocusId(730+self.row)
+        for r in range(ROWS):self.getControl(750+r).setVisible(r==self.row and r<len(self.rows) and self.mode=='grid')
         event=self._selected()
-        self.getControl(103).setLabel((time.strftime('%H:%M',time.localtime(event['start']))+' – '+time.strftime('%H:%M',time.localtime(event['stop']))+' · '+event['title']) if event else tr(33110))
+        self.getControl(103).setLabel((self.rows[self.row]['channel']['name']+' · ' if self.rows else '')+(time.strftime('%H:%M',time.localtime(event['start']))+' – '+time.strftime('%H:%M',time.localtime(event['stop']))+' · '+event['title']) if event else tr(33110))
 
     def _step(self,direction):
         if self._loading:return
@@ -123,7 +151,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         # start may be behind the cursor: never let Right repeat/jump backwards.
         boundary=selected['start'] if step<0 and selected and selected['start']<=self.cursor else self.cursor
         candidates=[e['start'] for e in events if (e['start']>boundary if step>0 else e['start']<boundary)]
-        if candidates:self.cursor=min(candidates) if step>0 else max(candidates)
+        if candidates:self.cursor=min(candidates) if step>0 else max(self.origin,max(candidates))
         else:self.cursor+=step*1800
         if not self.origin<=self.cursor<self.origin+SPAN:
             self.origin=self.cursor//1800*1800;self._load()
@@ -193,23 +221,135 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._diagnosing=False
         if not self._leaving:xbmcgui.Dialog().textviewer(tr(33121),text)
 
+    def _grid_visibility(self,visible):
+        for cid in list(range(310,316))+list(range(600,606))+list(range(700,708))+list(range(720,728))+list(range(730,738))+list(range(750,758))+list(self._cells):
+            self.getControl(cid).setVisible(visible)
+        self.getControl(500).setVisible(False)
+        self.getControl(200).setVisible(not visible and bool(self.groups))
+        self.getControl(201).setVisible(not visible and not self.groups)
+
+    def _show_groups(self,refresh=True):
+        if self.mode=='grid':
+            self._views[self.category]=(self.offset,self.row,self.cursor,self.origin,self._focus_zone)
+            self._group_return=(self.category,self.offset,self.row,self.cursor,self.origin,self._focus_zone,self._header,self.rows,self.total)
+        self.mode='groups';self._loading=False;self._diagnosing=False
+        self._generation+=1
+        if self._pending_future is not None:self._pending_future.cancel()
+        self._pending_future=None;self._pending_apply=None
+        self._group_back_after=time.monotonic()+.15
+        self._grid_visibility(False);self._fill_groups()
+        if refresh:
+            def load():
+                from library_index import Reader
+                return Reader(self.portal['id']).groups('live')
+            self._request(load,self._groups_loaded)
+
+    def _fill_groups(self,selected=None):
+        if self.mode!='groups':return
+        panel=self.getControl(200);panel.reset()
+        panel.addItems([xbmcgui.ListItem(g['title']) for g in self.groups])
+        selected=self.category if selected is None else selected
+        panel.selectItem(next((i for i,g in enumerate(self.groups) if g['cid']==selected),0))
+        self.getControl(200).setVisible(bool(self.groups));self.getControl(201).setVisible(not self.groups)
+        self.getControl(201).setLabel(tr(33604))
+        self.getControl(101).setLabel(tr(33601));self.getControl(103).setLabel(tr(33603));self.getControl(102).setLabel('')
+        self.getControl(501).setLabel(tr(33603))
+        # Empty groups retain a focusable explicit Home button.
+        self.getControl(202).setVisible(not self.groups)
+        self.getControl(202).setLabel(tr(33605))
+        self.setFocusId(200 if self.groups else 202)
+
+    def _groups_loaded(self,groups):
+        if self.mode!='groups':return
+        index=self.getControl(200).getSelectedPosition()
+        selected=self.groups[index]['cid'] if self.groups and index<len(self.groups) else self.category
+        self.groups=groups;self._fill_groups(selected)
+
+    def _choose_group(self):
+        if not self.groups:return
+        index=self.getControl(200).getSelectedPosition()
+        if not 0<=index<len(self.groups):return
+        self.category=self.groups[index]['cid'];self.mode='grid'
+        self.offset,self.row,self.cursor,self.origin,_=self._views.get(self.category,(0,0,self.cursor,self.origin,'grid'))
+        self._focus_zone='grid';self._grid_visibility(True);self.getControl(202).setVisible(False)
+        # Never display the previous group's channels while the new local page
+        # is pending; keep the saved row/offset, but clear only the UI snapshot.
+        self.rows=[];self.total=0;self._render()
+        self.getControl(501).setLabel(tr(33602));self._load()
+
+    def _return_to_grid(self):
+        """Cancel group browsing; restore the exact view without changing settings."""
+        snapshot=self._group_return
+        if not snapshot or not self.groups:self._leave_home();return
+        self._generation+=1
+        if self._pending_future is not None:self._pending_future.cancel()
+        self._pending_future=None;self._pending_apply=None
+        self._diagnosing=False;self._loading=False
+        (self.category,self.offset,self.row,self.cursor,self.origin,self._focus_zone,
+         self._header,self.rows,self.total)=snapshot
+        self._group_return=None;self.mode='grid';self._input_after=time.monotonic()+.15
+        self._grid_visibility(True);self.getControl(202).setVisible(False)
+        self.getControl(501).setLabel(tr(33602))
+        missing=self.category not in {g['cid'] for g in self.groups}
+        if missing:
+            self.category=self.groups[0]['cid'];self.offset=self.row=0
+            self.rows=[];self.total=0;self._focus_zone='grid'
+        if self._focus_zone=='header':self.setFocusId(self._header)
+        self._render()
+        if missing:self._load()
+
+    def _header_focus(self):
+        self._focus_zone='header';self.setFocusId(self._header)
+
+    def _leave_home(self):
+        self._return_home=True
+        if getattr(self,'_running',False):
+            self._leaving=True;self._leave_after=time.monotonic()+.15;self._generation+=1
+            if self._pending_future is not None:self._pending_future.cancel()
+            self._pending_future=None;self._pending_apply=None
+        else:self.close()
+
     def onAction(self,action):
         if self._closed or self._leaving:return
         key=action.getId();focus=self.getFocusId()
         if key in (9,10,92):
-            self._return_home=True
-            if getattr(self,'_running',False):
-                self._leaving=True;self._leave_after=time.monotonic()+.15;self._generation+=1
-                if self._pending_future is not None:self._pending_future.cancel()
-                self._pending_future=None
-            else:self.close()
+            if time.monotonic()<self._input_after:return
+            if self.mode=='grid':self._leave_home()
+            elif time.monotonic()>=self._group_back_after:self._return_to_grid()
             return
+        if self.mode=='groups':return
+        if 310<=focus<=315:self._focus_zone='header';self._header=focus
+        elif 730<=focus<730+ROWS:self._focus_zone='sender';self.row=focus-730
+        elif focus in self._cells:self._focus_zone='grid'
         if key==117:self._actions(channel_only=True);return
-        if focus in self._cells and key in (1,2,3,4):self._step(key)
-        elif focus<1000 and key==4 and not self._loading:self._focus_cell()
+        if key==218:self._header_focus();return  # Kodi ACTION_BLUE, XCMate-local only
+        if self._loading:return
+        if focus in self._cells and key in (1,2,3,4):
+            if key==3 and self.row==0:self._header_focus();return
+            if key==1:
+                event=self._selected()
+                if focus==min((cid for cid,(r,e) in self._cells.items() if r==self.row),default=focus):
+                    self._focus_zone='sender';self.setFocusId(730+self.row);self._focus_cell();return
+            self._step(key)
+        elif 730<=focus<730+ROWS:
+            if key==1:self._show_groups()
+            elif key==2:self._focus_zone='grid';self._focus_cell()
+            elif key in (3,4):
+                if key==3 and self.row==0 and self.offset==0:self._header_focus()
+                else:self._step(key)
+        elif 310<=focus<=315:
+            if key==4:self._focus_zone='grid';self._focus_cell()
+            elif key==3 and self.offset>=ROWS:
+                self.offset-=ROWS;self.row=ROWS-1;self._focus_zone='grid';self._load()
 
     def onClick(self,cid):
         if self._closed or self._leaving:return
+        if self.mode=='groups':
+            if cid==200:self._choose_group()
+            elif cid==202:self._leave_home()
+            return
+        if 730<=cid<730+ROWS:
+            self.row=cid-730;self._actions(channel_only=True);return
         if cid in self._cells:
             previous=self._selected();self.row,event=self._cells[cid]
             if event is not None and event is not previous:self.cursor=max(self.origin,event['start'])
@@ -219,9 +359,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         elif cid==315:
             local=datetime.datetime.fromtimestamp(self.cursor).replace(hour=20,minute=15,second=0,microsecond=0)
             self.cursor=int(time.mktime(local.timetuple()));self.origin=self.cursor//1800*1800;self._load()
-        elif cid==313:
-            selected=xbmcgui.Dialog().select(tr(33104),[tr(33117)]+[g['title'] for g in self.groups])
-            if 0<=selected<=len(self.groups):self.category=None if selected==0 else self.groups[selected-1]['cid'];self.offset=self.row=0;self._load()
+        elif cid==313:self._show_groups()
         elif cid==314:
             query=xbmcgui.Dialog().input(tr(32534))
             if query.strip():
@@ -231,7 +369,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         if self._leaving:
             if time.monotonic()>=self._leave_after:self.close()
             return
-        if self._diagnosing:return
+        if self._diagnosing or self.mode=='groups':return
         # Poll only revision hints/time. Direction keys do not query the DB.
         now=time.monotonic()
         if now-self._last_refresh<2:return

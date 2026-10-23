@@ -4,7 +4,7 @@
 
 **Zielplattform:** Android TV 13, RK3528 ARM32, Kodi 21.2 Omega, Titan BINGIE MOD, IR-Fernbedienung. Test-ID: 49.
 
-**Version:** 0.1.29.21 aus `main`; PR #109 gemergt. Version 0.1.29.22 in PR #110 ist noch alter nichtkumulativer Draft und **darf nicht installiert** werden. Später wird .22 direkt auf .21 aufgebaut (ohne Downgrade), siehe [Updatepfad](UPDATEPFAD_02921_02922_DE.md).
+**Version:** 0.1.29.21 aus `main`; PR #109 gemergt. PR #110 wurde inzwischen als **kumulativer .22-Kandidat auf .21** überarbeitet: Autoplay/Player bleiben erhalten, EPG-Korrekturen und Original-Icon sind enthalten. Die alten isolierten .22-ZIPs sind überholt. Für den neuen Kandidaten gelten der gepinnte ZIP/Hash in PR #110 und [die eigene .22-Direktupdate-Anleitung](ANDROID_TEST_02922_DE.md): direkt über .21 installieren, ohne Deinstallation oder Downgrade. Siehe [Updatepfad](UPDATEPFAD_02921_02922_DE.md).
 
 ## Abnahme: PASS / FAIL / NOT_TESTED
 

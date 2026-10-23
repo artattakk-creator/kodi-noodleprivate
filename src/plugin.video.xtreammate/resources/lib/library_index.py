@@ -209,6 +209,16 @@ class Reader:
         rows=self._query('SELECT payload FROM titles WHERE pid=? AND kind=? AND sid=?'+self._filter(kind),(self.pid,kind,str(sid)),kind)
         return json.loads(rows[0]['payload']) if rows else None
 
+    def position(self,kind,sid,category):
+        """Read-only ordinal position in one allowed group; never pin/reorder."""
+        where='pid=? AND kind=? AND cid=?'+self._filter(kind)
+        args=[self.pid,kind,str(category)]
+        rows=self._query('SELECT MIN(ordinal) AS n FROM titles WHERE '+where+' AND sid=?',args+[str(sid)],kind)
+        ordinal=rows[0]['n'] if rows else None
+        if ordinal is None:return None
+        rows=self._query('SELECT COUNT(DISTINCT sid) AS n FROM titles WHERE '+where+' AND ordinal<?',args+[ordinal],kind)
+        return rows[0]['n'] if rows else None
+
     def rail(self,kind,offset=0,limit=24,keep=100):
         keep=max(24,min(int(keep),500))
         rows,total=self.page(kind,recent=True,include_undated=True,offset=offset,limit=min(limit,max(1,keep-offset)))

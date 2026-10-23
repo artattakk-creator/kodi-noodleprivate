@@ -2450,3 +2450,24 @@ msgstr ""
 msgctxt "#33506"
 msgid "Autoplay stopped: episode or playback unavailable."
 msgstr ""
+
+
+msgctxt "#33601"
+msgid "Channel groups"
+msgstr ""
+
+msgctxt "#33602"
+msgid "Left at first programme: channel · Left again: groups · Up at first row: header · Blue: header · Back: Home"
+msgstr ""
+
+msgctxt "#33603"
+msgid "OK: open group · Back: EPG"
+msgstr ""
+
+msgctxt "#33604"
+msgid "No enabled channel groups available."
+msgstr ""
+
+msgctxt "#33605"
+msgid "XCMate Home"
+msgstr ""

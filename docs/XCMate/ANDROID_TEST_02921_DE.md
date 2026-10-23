@@ -16,4 +16,4 @@ Kodi 21.2 Omega, Android 13 ARM32, Titan BINGIE MOD, IR-Fernbedienung; wenn mög
 
 Pro Punkt `PASS / FAIL / NOT_TESTED`, genaue Version und Beobachtung melden. Logs vor Upload redigieren (keine Provider-URLs/Zugangsdaten/Tokens). Bei Problemen .20 aus dem unveränderten ZIP installieren und Kodi neu starten; vorhandene Daten behalten.
 
-Anschließend **vor dem separaten EPG-Test .20 wieder installieren**. .22 stammt unabhängig von .20, enthält also kein .21-Autoplay. Keine Freigabe/Veröffentlichung aus Host-Tests ableiten.
+Nächster kumulativer Test: die vorhandene .21 unverändert lassen und den neuen kumulativen .22-Kandidaten direkt darüber installieren. **Kein Downgrade auf .20 und keine Deinstallation.** Autoplay bleibt in .22 erhalten. Maßgeblich: `UPDATEPFAD_02921_02922_DE.md` und `ANDROID_TEST_02922_DE.md`. Alte isolierte .22-ZIPs sind überholt.

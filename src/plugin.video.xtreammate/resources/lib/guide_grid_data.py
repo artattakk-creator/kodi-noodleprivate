@@ -58,3 +58,25 @@ def page(portal,offset,origin,category=None,client=None):
     from media_art import request
     request(channels)
     return dict(rows=result,total=total,groups=reader.groups('live'),code=state,origin=origin,offset=offset)
+
+
+def initial(portal,origin,client=None):
+    """Select one enabled start group and reveal the unmodified channel order."""
+    from library_index import Reader
+    reader=Reader(portal['id']);groups=reader.groups('live')
+    allowed={str(g['cid']) for g in groups}
+    start=reader.get('live',str(portal.get('start_stream_id') or ''))
+    saved=str(portal.get('start_group_id') or '')
+    category=saved if saved in allowed else ''
+    position=reader.position('live',start['sid'],category) if start and category else None
+    if start and position is None:
+        candidate=str(start.get('category_id') or '')
+        if candidate in allowed:category=candidate
+    if not category:category=str(groups[0]['cid']) if groups else ''
+    position=reader.position('live',start['sid'],category) if start and category else None
+    position=position if position is not None else 0
+    offset=position//ROWS*ROWS
+    # Empty category is deliberately an empty selection, never category=None.
+    value=page(portal,offset,origin,category,client)
+    value.update(category=category,row=position-offset)
+    return value

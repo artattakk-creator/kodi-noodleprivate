@@ -1,3 +1,10 @@
+0.1.29.22 (cumulative update candidate on main .21; supersedes isolated .22 ZIPs)
+- Include all .21 series autoplay, own Player OSD, nonce/Stop/error/shutdown protections, manual Next, watched/resume state and their existing tests unchanged.
+- Preserve horizontal EPG; open the enabled saved start group with the saved channel at its original ordinal; separate group browser, scoped rows and stable per-group viewports.
+- Left at sender boundary opens groups; Back from groups restores the prior guide view, Back from guide returns Home, repeat Back is guarded. IR-accessible headers, visible sender/programme text, transparent frames and refresh focus retention.
+- Integrate the exact original 512x512 theme-independent XCMate icon from approved PR #50 artwork (SHA256 81da1003a2753ec6afbdd50b2a320e738a2131ad9f0d76606da1babdd0d2f135); no complete theme merge, generated substitute or cache cleanup.
+- Direct .21 -> .22 install/update, unchanged addon ID/settings/data paths. No downgrade, uninstall, portal import, data deletion, keymap change or production index update. Host and CI are fresh cumulative runs; Android NOT_TESTED.
+
 0.1.29.21 (isolated series autoplay test candidate; baseline main .20)
 - Session-local episode autoplay after verified natural Ended callbacks; numeric same-portal/same-series successors, number gaps and season transitions; no wrap, specials, ambiguous or foreign episodes.
 - Stop/exit/error/shutdown and transition cancellation take priority; one new nonce per next episode, bounded callback queue, no GUI/HTTP/SQLite work in player callbacks, no restart from playback gaps.

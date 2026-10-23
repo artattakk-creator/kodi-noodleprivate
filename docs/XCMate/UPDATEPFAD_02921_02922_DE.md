@@ -10,7 +10,7 @@ Kodi 21.2 Omega, Android TV 13 RK3528 ARM32, Skin Titan BINGIE MOD, IR-Fernbedie
 
 - `0.1.29.20`: vorherige Hauptbasis; historische Rückfalloption, **kein Zwischenschritt für die .22-Abnahme**.
 - `0.1.29.21`: PR #109 am 23.10.2026 auf ausdrückliche Nutzerfreigabe unverändert nach `main` gemergt. Merge-SHA `5a634043410b615d0e270a0d9fca2174690f78f1`. 756 Hosttests und CI PASS, Android weiterhin NOT_TESTED. Für Kodi über GS-Media-Repositoriumsindex `addons.xml` gelistet.
-- `0.1.29.22`: PR #110, Draft, **nach Merge #109 inkompatible alte Entwicklungsbasis**. Der alte ZIP-Kandidat enthält kein .21-Autoplay und darf nicht als reguläres Update von .21 verwendet werden.
+- `0.1.29.22`: PR #110 bleibt Draft und wird kumulativ auf aktuellem main .21 überarbeitet, einschließlich Repository-Publishing und dieser Updatepfadvorgabe. Neuer Gesamtbericht `KUMULATIV_02922_DE.md`; alle .21-Funktionen, EPG-Korrekturen und Original-Icon sind enthalten. **Frühere isolierte .22-ZIPs sind überholt und dürfen nicht als Update von .21 verwendet werden.**
 
 **Ab sofort ausschließlich kumulative Versionierung und Updates:** .20 → .21 → .22 → weitere Versionen. Keine Deinstallation von .21, kein künstliches Zurückrollen auf .20, keine getrennten Feature-Releases, die Funktionen vorheriger Versionen entfernen.
 
@@ -45,3 +45,13 @@ Serien-Autoplay nach natürlichem Episodenende; automatische Fortsetzung einschl
 - Kein Löschen von Portalen, Favoriten, Resume, EPG-Daten oder Caches; keine globalen Kodi-Keymap-Änderungen.
 
 Referenzen: Issues #37 (Original-Icon), #85 (Autoplay), #88/#92 (EPG-Start/Fokus), #98 (EPG-Quellenwechsel), Draft #50 (Space Premium), PR #109 und #110.
+
+## 5. Umsetzung im überarbeiteten Draft #110
+
+Aktuelle Basis `3307e006a9de9fd53236ec881191851291731c98`; normaler Merge in den bestehenden Entwicklungsbranch, kein Force-Push. Sämtliche .21-Autoplay-/Player-/Service-/Artwork-Dateien und die zwei .21-Regressionstestdateien sind unverändert erhalten. Original-Icon SHA256 geprüft und binär übernommen. Aktuelle Zurück-Regel aus dem Nutzerauftrag: Gruppenübersicht schließen → vorige EPG-Ansicht wiederherstellen; Back im Raster → Home. Neue Snapshot-/Repeat-/Fallback-Tests und kumulative Icon-/Daten-/Player-EPG-Tests.
+
+Neue vollständige Prüfnachweise stehen in `TESTERGEBNISSE_02922.json` und `TESTLOG_02922.txt`, aktuelle ZIP-Prüfsumme in `plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.22.zip.sha256` und gepinnter Download/CI-Nachweis in PR #110. Android-Anleitung `ANDROID_TEST_02922_DE.md` gilt für Installation direkt über .21. **Android NOT_TESTED, keine Merge-/Releasefreigabe.**
+
+## Frischer Host-Nachweis dieses kumulativen Pakets
+
+**785/785 PASS in 95.682 s**, 0 Fehler/Fehlschläge/unkontrollierte Worker-Ausnahmen. Neue Paket-SHA256: `886839ba128c36dcc716dc063b8b4c4a8a965e07f4372692b000729db517862f`. Original-Icon im ZIP bytegleich zur freigegebenen SHA256. Sämtliche .21-Autoplay-/Player-/Service- und Artwork-Dateien, produktiver Index, bestehende ZIPs und 35 fremde WIP-Dateien unverändert geprüft. Aktuelle GitHub-CI wird am finalen Commit ausgeführt und in PR #110 verlinkt. Android NOT_TESTED.

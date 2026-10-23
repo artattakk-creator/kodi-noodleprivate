@@ -2450,3 +2450,24 @@ msgstr "Serie beendet"
 msgctxt "#33506"
 msgid "Autoplay stopped: episode or playback unavailable."
 msgstr "Autoplay beendet: Folge oder Wiedergabe nicht verfügbar."
+
+
+msgctxt "#33601"
+msgid "Channel groups"
+msgstr "Sendergruppen"
+
+msgctxt "#33602"
+msgid "Left at first programme: channel · Left again: groups · Up at first row: header · Blue: header · Back: Home"
+msgstr "Links am ersten Programm: Sender · Nochmals Links: Gruppen · Oben: Kopfzeile · Blau: Kopfzeile · Zurück: Home"
+
+msgctxt "#33603"
+msgid "OK: open group · Back: EPG"
+msgstr "OK: Gruppe öffnen · Zurück: EPG"
+
+msgctxt "#33604"
+msgid "No enabled channel groups available."
+msgstr "Keine aktivierten Sendergruppen vorhanden."
+
+msgctxt "#33605"
+msgid "XCMate Home"
+msgstr "XCMate Home"

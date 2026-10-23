@@ -64,6 +64,7 @@ class GridTests(Fixture,unittest.TestCase):
     def test_over_2400_channels_render_only_eight_and_page_synchronously(self):
         rows=[dict(stream_id=str(i),category_id='a',name='Channel '+str(i),epg_channel_id='xml') for i in range(2501)]
         self.index.import_group('p','live','a',rows)
+        self.portal['start_stream_id']='0'
         w=self.window();self.assertEqual(w.total,2501);self.assertEqual(len(w.rows),8)
         for _ in range(8):self.key(w,4)
         self.assertEqual(w.offset,8);self.assertEqual(w.row,0);self.assertEqual(w.rows[0]['channel']['sid'],'8')
