@@ -36,3 +36,23 @@ Zu untersuchen sind insbesondere WindowXML-Besitzerwechsel, Container-Navigation
 6. Bei weiterem Prozessabsturz private Android-Crashdaten (logcat/tombstone) untersuchen; keine Rohdaten öffentlich veröffentlichen.
 
 Ergebnis: M04 bleibt FAIL und #118 OPEN bis echte Android-Geräteabnahme. Space Premium nicht berühren. Die separaten Posterfehler A02/A03 bleiben FAIL; kein aus diesen Suchlogs gesicherter Zusammenhang.
+
+## Weitere abgeglichene Signale ohne gesicherte Absturzursache
+- `GetDirectory - Error` tritt im alten Log 3-mal und im neuen 2-mal auf, jedoch nicht als direktes Endsignal des Such-Dispatch. Nicht automatisch der Suche zuordnen.
+- XCMate-Artwork-DB `BUSY` ist im alten Log einmal vermerkt, im neuen keinmal. Kein nachweisbarer Zusammenhang zum Suchabsturz oder den separaten Poster-Timeouts (#111).
+- Wiederholte Repository-Warnungen (BINGIE-Schema, fremde HTTP-Repositories) betreffen andere Add-ons. Keine Ursachenzuweisung an XCMate.
+- Das neue Log enthält keine weitere `global_search`-Route: Es dokumentiert den Neustart und die anschließende Kodi-Nutzung.
+- Der Eintrag `CPythonInvoker: waiting on thread` unmittelbar nach dem Medienfenster ist beobachtet, aber für sich kein Nachweis eines Thread-Leaks.
+- Keine Nutzerdaten- oder Cache-Löschung für Tests erforderlich. Kein globaler Kodi-Keymap-Eingriff.
+
+## Empfohlene zusätzliche Android-Abnahme nach Korrektur
+- Texteingabe `Upload`, OK: Kodi bleibt offen; ein einzelner stabiler Ergebnis-Navigator erscheint.
+- LIVE-TV / FILME / SERIEN mit getrennten Trefferzahlen und 0-Treffer-/Index-lädt-Zuständen; Live-TV-EPG-Jetzt-Titel-Matches dürfen nicht mit bloßen Sendernamen-Matches verwechselt werden.
+- Leere Eingabe, Abbrechen, erneutes Öffnen, schnelle wiederholte OK-/Zurück-Aktionen, Wechsel in Filmdetails und zurück.
+- Pause/Resume, Live-TV-Overlay, EPG-Guide, Favoriten, Original-Icon, Provider- und Persistenzdaten als bestehende Lightweight-Regressionen weiter PASS; keine Space-Premium-Abnahme.
+- Erst ein echter Android-Gerätetest darf #118 von FAIL auf PASS setzen. Ein bestandener Unit-Test oder ein formaler `DISPATCH_DONE` genügt nicht.
+
+## Referenzen
+- [#118 – P0 Absturz nach Such-OK](https://github.com/artattakk-creator/kodi-noodleprivate/issues/118)
+- [#25 – globale Suche über Live-TV/Filme/Serien](https://github.com/artattakk-creator/kodi-noodleprivate/issues/25)
+- [Gesamtabnahme 0.1.29.25 Lightweight](ANDROID_ABNAHMEERGEBNISSE_LIGHTWEIGHT_02925_20261023_DE.md): 23 PASS / 3 FAIL / 1 NOT_TESTED
