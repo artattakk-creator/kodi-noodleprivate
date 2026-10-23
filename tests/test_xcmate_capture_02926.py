@@ -42,7 +42,7 @@ class CaptureTests(Fixture,unittest.TestCase):
         (root/'own.part').write_bytes(raw);(root/'final.ts').write_bytes(b'KEEP')
         fd=os.open(root,os.O_RDONLY|os.O_DIRECTORY)
         try:
-            with self.assertRaises(FileExistsError):self.ts.finalize(fd,'own.part','final.ts',{257})
+            with self.assertRaisesRegex(OSError,'TARGET_EXISTS'):self.ts.finalize(fd,'own.part','final.ts',{257})
         finally:os.close(fd)
         self.assertEqual((root/'final.ts').read_bytes(),b'KEEP');self.assertEqual((root/'own.part').read_bytes(),raw)
 
@@ -131,11 +131,11 @@ class CaptureTests(Fixture,unittest.TestCase):
             self.store.update(ident,status='complete',file='../foreign.ts')
             ui.manage();player.assert_not_called()
 
-    def test_target_without_hardlinks_is_rejected_before_opening_provider(self):
+    def test_target_without_atomic_publication_is_rejected_before_opening_provider(self):
         recorder=self.ts.Recorder('https://private.invalid/TOKEN',str(self.folder),120,separate_connection=True)
-        with mock.patch.object(self.ts.os,'link',side_effect=OSError(95,'unsupported')),mock.patch.object(self.ts,'build_opener') as provider:
+        with mock.patch('atomic_media._rename_noreplace',side_effect=OSError(95,'unsupported')),mock.patch.object(self.ts.os,'link',side_effect=OSError(95,'unsupported')),mock.patch.object(self.ts,'build_opener') as provider:
             state=recorder.run()
-        self.assertEqual((state['status'],state['code']),('failed','TARGET_HARDLINK_UNSUPPORTED'))
+        self.assertEqual((state['status'],state['code']),('failed','TARGET_ATOMIC_PUBLISH_UNAVAILABLE'))
         provider.assert_not_called();self.assertFalse(list(self.folder.glob('*.probe*')))
 
     def test_stop_while_resolving_source_cannot_start_a_late_recorder(self):

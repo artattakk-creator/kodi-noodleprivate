@@ -28,30 +28,44 @@ def _start(portal):
     if duration not in range(5):return
     # A second provider connection is always explicit, even with no player.
     if not dialog.yesno('XCMate',tr(34004)):return
-    from capture_target import configured,probe,compatible_default,TargetFailure
-    target=configured()
-    try:
-        result=work(lambda:probe(target,create=True))
-        if result is None:return
-    except TargetFailure as exc:
-        dialog.ok('XCMate',tr(34100)+'\n'+exc.code)
-        target=work(compatible_default)
-        if not target or not dialog.yesno('XCMate',tr(34101)):return
-        import xbmcaddon
-        xbmcaddon.Addon().setSetting('recordings_folder',target)
+    target=select_target()
+    if target is None:return
     ident=work(lambda:add(portal,channels[choice],target,(2,5,30,60,120)[duration]*60))
     if ident:dialog.notification('XCMate',tr(34006))
 
 
+def select_target(component='capture'):
+    from capture_target import configured,probe,compatible_default,TargetFailure
+    from transfer_diagnostics import describe,mark
+    target=configured()
+    try:
+        if work(lambda:probe(target,create=True)) is None:return None
+        mark('DOWNLOAD' if component=='download' else 'CAPTURE','TARGET_READY')
+        return target
+    except TargetFailure as exc:
+        xbmcgui.Dialog().ok('XCMate',describe(exc,component))
+        alternative=work(compatible_default)
+        if not alternative:
+            xbmcgui.Dialog().ok('XCMate',tr(34411));return None
+        if not xbmcgui.Dialog().yesno('XCMate',tr(34101)):return None
+        import xbmcaddon
+        xbmcaddon.Addon().setSetting('recordings_folder',alternative)
+        return alternative
+
+
 def _manage():
     from capture_store import rows,finish
+    from transfer_diagnostics import describe
     values=work(rows)
     if not values:xbmcgui.Dialog().ok('XCMate',tr(34007));return
-    choice=xbmcgui.Dialog().select(tr(34008),[r['label']+' · '+r['status']+' · '+str(r['bytes']//1048576)+' MiB'+(' · '+r['code'] if r['code'] else '') for r in values])
+    status_ids={'pending':34420,'starting':34421,'recording':34422,'complete':34423,'failed':34424,'partial':34425}
+    choice=xbmcgui.Dialog().select(tr(34008),[r['label']+' · '+tr(status_ids.get(r['status'],34424))+' · '+format(r['bytes']/1048576,'.2f')+' MiB ('+str(r['bytes'])+' Bytes)'+(' · '+r['code'] if r['code'] else '') for r in values])
     if not 0<=choice<len(values):return
     item=values[choice]
     if item['status'] in ('pending','starting','recording'):
         if xbmcgui.Dialog().yesno('XCMate',tr(34009)):work(lambda:finish(item['id']))
+    elif item['status'] in ('failed','partial'):
+        xbmcgui.Dialog().ok('XCMate',describe(item['code']))
     elif item['status']=='complete' and item['file']:
         from pathlib import Path
         # Only an owned finalized basename, never .part or a foreign path.
@@ -63,14 +77,24 @@ def _manage():
 
 
 def report():
-    return tr(34011)+'\n'+tr(34005)+'\n'+tr(34004)
+    from capture_target import configured,probe
+    from transfer_diagnostics import describe
+    try:
+        result=work(lambda:probe(configured(),create=True))
+        state=tr(34410)+' ('+result['publish']+')' if result else tr(34406)
+    except Exception as exc:state=describe(exc)
+    return tr(34011)+'\n'+state+'\n'+tr(34412)+'\n'+tr(34004)
 
 
 def start(portal):
     try:_start(portal)
-    except Exception:xbmcgui.Dialog().ok('XCMate',tr(34012))
+    except Exception as exc:
+        from transfer_diagnostics import describe
+        xbmcgui.Dialog().ok('XCMate',describe(exc))
 
 
 def manage():
     try:_manage()
-    except Exception:xbmcgui.Dialog().ok('XCMate',tr(34012))
+    except Exception as exc:
+        from transfer_diagnostics import describe
+        xbmcgui.Dialog().ok('XCMate',describe(exc))

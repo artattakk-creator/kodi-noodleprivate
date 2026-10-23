@@ -1,4 +1,7 @@
 0.1.29.28 – Android-Testkandidat
+- #126: Atomares No-Replace-Publish ohne Hardlinkpflicht, mit exklusivem Hardlink-Rückfall; Datei-/Verzeichnissync und No-Overwrite-Schutz bleiben verpflichtend.
+- Speicher-, Source-/HLS-/DASH-/HTTP- und Laufzeitfehler getrennt in UI/Logs; Bytes und aktive Aufnahme erst nach tatsächlichem Schreiben.
+- Downloads prüfen nur ihre Speicher-/Mediendateifähigkeit, unabhängig vom Direct-TS-Aufnahmeformat.
 - #131: Native Menü-Elterngruppe explizit zeigen/verbergen; sichtbarer lokaler Aktionen-Button und Links teilen denselben Einstieg.
 - Menü-Fokus über verzögerte native Sichtbarkeit wiederherstellen; Detail-/Aktionsposition beim Schließen behalten, anonyme Gerätetraces.
 

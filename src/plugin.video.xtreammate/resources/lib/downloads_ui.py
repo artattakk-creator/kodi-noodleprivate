@@ -19,9 +19,18 @@ def request(window):
         portal=dict(window.portal)
         def enqueue():
             from downloads import enqueue
-            return enqueue(portal,kind,sid,series)
-        window._request(enqueue,lambda ident:xbmcgui.Dialog().notification('XCMate',tr(34207)))
-    except Exception:xbmcgui.Dialog().ok('XCMate',tr(34208))
+            from transfer_diagnostics import encode
+            try:return dict(id=enqueue(portal,kind,sid,series))
+            except Exception as exc:return dict(error=encode(exc))
+        def ready(result):
+            if result.get('error'):
+                from transfer_diagnostics import describe
+                xbmcgui.Dialog().ok('XCMate',describe(result['error'],'download'))
+            else:xbmcgui.Dialog().notification('XCMate',tr(34207))
+        window._request(enqueue,ready)
+    except Exception as exc:
+        from transfer_diagnostics import describe
+        xbmcgui.Dialog().ok('XCMate',describe(exc,'download'))
 
 
 def manage():
@@ -35,6 +44,9 @@ def manage():
         selected=xbmcgui.Dialog().select(tr(34202),labels)
         if not 0<=selected<len(rows):return
         row=rows[selected];state=row['state']
+        if state=='FAILED':
+            from transfer_diagnostics import describe
+            xbmcgui.Dialog().ok('XCMate',describe(row['code'],'download'))
         actions=['play'] if state=='COMPLETE' else ['pause','cancel'] if state in ('QUEUED','RUNNING') else ['resume','cancel'] if state=='PAUSED' else ['retry'] if state in ('FAILED','CANCELLED') else []
         if not actions:return
         words={'play':34211,'pause':34212,'cancel':34213,'resume':34214,'retry':34215}
@@ -47,4 +59,6 @@ def manage():
         else:
             changed=work(lambda:command(row['id'],action))
             xbmcgui.Dialog().notification('XCMate',tr(34216 if changed else 34217))
-    except Exception:xbmcgui.Dialog().ok('XCMate',tr(34208))
+    except Exception as exc:
+        from transfer_diagnostics import describe
+        xbmcgui.Dialog().ok('XCMate',describe(exc,'download'))

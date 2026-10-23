@@ -55,6 +55,7 @@ def run_one(cancel=lambda:False,resolver=None,opener=None):
     ident,owner=job['id'],job['owner'];media=job['media'];part=job['part'];output=None;response=None
     digest=hashlib.sha256();count=0;total=0;last=time.monotonic();last_bytes=0
     try:
+        files.probe(media['target'])
         # Repair only a completely verified own publish interrupted after rename.
         if job['file'] and files.exists(job['file']):
             if job['total']>0 and files.size(job['file'])==job['total'] and _hash(job['file'],job['total'])==job['digest']:
@@ -67,7 +68,6 @@ def run_one(cancel=lambda:False,resolver=None,opener=None):
             finally:connection.close()
             if not changed:raise InterruptedError()
             files.rename(part,job['file']);store.finish(ident,owner,'COMPLETE');return True
-        files.probe(media['target'])
         url,headers=(resolver or resolve)(media);fingerprint=hashlib.sha256(url.encode()).hexdigest()
         offset=job['bytes'] if job['code'] not in ('SOURCE_CHANGED','PART_CHANGED','BAD_RANGE') and job['fingerprint']==fingerprint and (job['etag'] and not job['etag'].startswith('W/') or job['modified']) else 0
         if offset and job['total'] and offset>=job['total']:offset=0
@@ -154,7 +154,9 @@ def run_one(cancel=lambda:False,resolver=None,opener=None):
             errno=getattr(error,'errno',None)
             code='NO_SPACE' if errno==28 else 'TARGET_WRITE' if errno in (13,30) else 'TARGET_UNAVAILABLE' if errno==2 else classify(error)
         transient=code in ('TIMEOUT','DNS_ERROR','CONNECTION_ERROR','NETWORK_ERROR','HTTP_SERVER','TRUNCATED')
-        store.fail(ident,owner,code,transient)
+        from transfer_diagnostics import encode,mark
+        reason=encode(error,code);mark('DOWNLOAD','FAILED',reason)
+        store.fail(ident,owner,reason,transient)
     finally:
         if response is not None:response.close()
         if output is not None:output.close()

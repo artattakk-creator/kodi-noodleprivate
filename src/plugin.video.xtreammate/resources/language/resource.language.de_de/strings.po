@@ -2754,8 +2754,8 @@ msgid "An additional stream connection will be opened. Your provider must permit
 msgstr "Eine zusätzliche Streamverbindung wird geöffnet. Der Anbieter muss sie erlauben. Aufnahme unabhängig vom Player starten?"
 
 msgctxt "#34005"
-msgid "Test feature: local writable storage with hardlink support only; no SMB/VFS/FAT32."
-msgstr "Testfunktion: nur lokaler beschreibbarer Speicher mit Hardlink-Unterstützung; kein SMB/VFS/FAT32."
+msgid "Test feature: verified local storage with atomic no-overwrite publication; no unverified VFS targets."
+msgstr "Testfunktion: geprüfter lokaler Speicher mit atomischer Veröffentlichung ohne Überschreiben; keine ungeprüften VFS-Ziele."
 
 msgctxt "#34006"
 msgid "Recording requested. Check status under Manual recordings."
@@ -2798,8 +2798,8 @@ msgid "Geprüften app-internen Aufnahmeordner verwenden? Vorhandene Dateien blei
 msgstr "Geprüften app-internen Aufnahmeordner verwenden? Vorhandene Dateien bleiben am bisherigen Ort."
 
 msgctxt "#34102"
-msgid "Aufnahmeziel geprüft: Schreiben, Lesen, Hardlinks, Synchronisierung und Speicherreserve."
-msgstr "Aufnahmeziel geprüft: Schreiben, Lesen, Hardlinks, Synchronisierung und Speicherreserve."
+msgid "Aufnahmeziel geprüft: Schreiben, Lesen, atomische Veröffentlichung, Synchronisierung und Speicherreserve."
+msgstr "Aufnahmeziel geprüft: Schreiben, Lesen, atomische Veröffentlichung, Synchronisierung und Speicherreserve."
 
 msgctxt "#34200"
 msgid "Download movie"
@@ -2904,3 +2904,67 @@ msgstr "Wird abgeschlossen"
 msgctxt "#34300"
 msgid "Actions"
 msgstr "Aktionen"
+
+msgctxt "#34400"
+msgid "Storage target is not ready. Check access, free space and safe file publication, or choose the verified internal folder."
+msgstr "Speicherziel nicht bereit. Rechte, Freiplatz und sichere Dateiveröffentlichung prüfen oder den geprüften internen Ordner wählen."
+
+msgctxt "#34401"
+msgid "Live recording source is not supported. Select a permitted direct MPEG-TS channel; HLS, DASH and protected streams are separate cases."
+msgstr "Live-Aufnahmequelle nicht unterstützt. Einen erlaubten direkten MPEG-TS-Sender wählen; HLS, DASH und geschützte Streams sind getrennte Fälle."
+
+msgctxt "#34402"
+msgid "Provider/HTTP request failed. Check access and allowed simultaneous connections."
+msgstr "Provider-/HTTP-Anfrage fehlgeschlagen. Zugang und erlaubte gleichzeitige Verbindungen prüfen."
+
+msgctxt "#34403"
+msgid "Recording action failed. The technical reason is shown below; existing media is kept."
+msgstr "Aufnahmeaktion fehlgeschlagen. Der technische Grund steht unten; vorhandene Medien bleiben erhalten."
+
+msgctxt "#34404"
+msgid "Download failed. Check the direct HTTP(S) media source, target and technical reason below."
+msgstr "Download fehlgeschlagen. Direkte HTTP(S)-Mediendatei, Speicherziel und technischen Grund unten prüfen."
+
+msgctxt "#34405"
+msgid "Connection failed. Check the network and retry this request later."
+msgstr "Verbindungsfehler. Netzwerk prüfen und diesen Auftrag später gezielt wiederholen."
+
+msgctxt "#34406"
+msgid "Transfer cancelled or interrupted. Existing files and available partial data are kept."
+msgstr "Übertragung abgebrochen oder unterbrochen. Vorhandene Dateien und verfügbare Teildaten bleiben erhalten."
+
+msgctxt "#34410"
+msgid "Storage verified for atomic publication without overwriting existing files."
+msgstr "Speicher für atomische Veröffentlichung ohne Überschreiben vorhandener Dateien geprüft."
+
+msgctxt "#34411"
+msgid "No verified persistent target was found. Select a suitable folder; no provider connection was opened."
+msgstr "Kein geprüfter dauerhafter Zielordner gefunden. Geeigneten Ordner wählen; keine Providerverbindung geöffnet."
+
+msgctxt "#34412"
+msgid "Storage readiness does not confirm stream compatibility. Live recording requires direct MPEG-TS; movie/episode downloads can use supported direct media containers."
+msgstr "Eine Speicherfreigabe bestätigt noch kein Streamformat. Live-Aufnahmen benötigen direktes MPEG-TS; Film-/Folgendownloads können unterstützte direkte Mediencontainer verwenden."
+
+msgctxt "#34420"
+msgid "Queued"
+msgstr "Vorgemerkt"
+
+msgctxt "#34421"
+msgid "Checking / connecting"
+msgstr "Prüfung / Verbindung"
+
+msgctxt "#34422"
+msgid "Recording"
+msgstr "Aufnahme läuft"
+
+msgctxt "#34423"
+msgid "Complete"
+msgstr "Fertig"
+
+msgctxt "#34424"
+msgid "Failed"
+msgstr "Fehlgeschlagen"
+
+msgctxt "#34425"
+msgid "Partial"
+msgstr "Unvollständig"

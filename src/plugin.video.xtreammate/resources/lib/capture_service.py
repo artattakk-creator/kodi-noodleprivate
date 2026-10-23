@@ -31,6 +31,7 @@ def _run():
     except ImportError:return
     from capture_store import path,rows,update,interrupted
     from direct_ts import Recorder,error_code
+    from transfer_diagnostics import encode,mark
     lock=None;active=None;worker=None;job=None;last=0
     monitor=xbmc.Monitor()
     try:
@@ -45,12 +46,12 @@ def _run():
                     current=next((r for r in snapshot if r['id']==job['id']),None)
                     if current and current['stop']:active.finish()
                     if not worker.is_alive():
-                        state=dict(active.state)
-                        update(job['id'],status=state['status'],bytes=state['bytes'],seconds=state['seconds'],code=state['code'],file=state.get('file',''))
+                        state=dict(active.state);mark('CAPTURE','STATE',state)
+                        update(job['id'],status=state['status'],bytes=state['bytes'],seconds=state['seconds'],code=encode(state),file=state.get('file',''))
                         active=None;worker=None;job=None
                     elif time.monotonic()-last>=1:
-                        state=dict(active.state);last=time.monotonic()
-                        update(job['id'],status=state['status'] if state['status']!='pending' else 'starting',bytes=state['bytes'],seconds=state['seconds'],code=state['code'])
+                        state=dict(active.state);last=time.monotonic();mark('CAPTURE','STATE',state)
+                        update(job['id'],status=state['status'] if state['status']!='pending' else 'starting',bytes=state['bytes'],seconds=state['seconds'],code=encode(state))
                 if active is None:
                     job=next((r for r in reversed(snapshot) if r['status']=='pending'),None)
                     if job:
@@ -61,6 +62,8 @@ def _run():
                             try:
                                 from capture_target import probe
                                 probe(job['target'],create=True)
+                                mark('CAPTURE','TARGET_READY')
+                                mark('CAPTURE','SOURCE_RESOLVE')
                                 source=resolve(job)
                                 current=next((r for r in rows() if r['id']==job['id']),None)
                                 if _stop.is_set() or monitor.abortRequested() or current is None or current['stop']:
@@ -71,7 +74,8 @@ def _run():
                                 active.ident=job['id'];active.state['id']=job['id']
                                 worker=threading.Thread(target=active.run,name='XCMate-capture',daemon=True);worker.start()
                             except Exception as exc:
-                                update(job['id'],status='failed',code=error_code(exc));active=None;worker=None;job=None
+                                mark('CAPTURE','FAILED',encode(exc,error_code(exc)))
+                                update(job['id'],status='failed',code=encode(exc,error_code(exc)));active=None;worker=None;job=None
             except Exception:
                 # A temporary DB failure never starts a second recorder.
                 pass

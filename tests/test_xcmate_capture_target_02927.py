@@ -17,9 +17,9 @@ class TargetTests(Fixture,unittest.TestCase):
         self.assertEqual(keep.read_bytes(),b'KEEP')
 
     def test_hardlink_errno_and_operation_are_reported_without_private_path(self):
-        with mock.patch.object(self.target.os,'link',side_effect=OSError(95,'secret/path')),mock.patch.object(self.target,'mark') as mark:
+        with mock.patch('atomic_media._rename_noreplace',side_effect=OSError(95,'unsupported')),mock.patch.object(self.target.os,'link',side_effect=OSError(95,'secret/path')),mock.patch.object(self.target,'mark') as mark:
             with self.assertRaises(self.target.TargetFailure) as raised:self.target.probe(str(self.folder))
-        self.assertEqual((raised.exception.code,raised.exception.step,raised.exception.number),('TARGET_HARDLINK_UNSUPPORTED','LINK',95))
+        self.assertEqual((raised.exception.code,raised.exception.step,raised.exception.number),('TARGET_ATOMIC_PUBLISH_UNAVAILABLE','LINK',95))
         self.assertNotIn('secret',str(mark.call_args_list));self.assertFalse(list(self.folder.glob('*.probe*')))
 
     def test_readonly_permission_and_reserve_fail_differently(self):
@@ -40,12 +40,12 @@ class TargetTests(Fixture,unittest.TestCase):
         store=importlib.import_module('capture_store');service=importlib.import_module('capture_service')
         store.add(self.portal,dict(sid='1'),str(self.folder/'captures'),120)
         monitor=types.SimpleNamespace(abortRequested=lambda:False,waitForAbort=lambda n:True)
-        with mock.patch.object(self.target.os,'link',side_effect=OSError(95,'private')),\
+        with mock.patch('atomic_media._rename_noreplace',side_effect=OSError(95,'unsupported')),mock.patch.object(self.target.os,'link',side_effect=OSError(95,'private')),\
              mock.patch.object(service,'resolve') as resolve,\
              mock.patch.object(sys.modules['xbmc'],'Monitor',return_value=monitor):
             service._run()
         resolve.assert_not_called();row=store.rows()[0]
-        self.assertEqual((row['status'],row['bytes'],row['code']),('failed',0,'TARGET_HARDLINK_UNSUPPORTED'))
+        self.assertEqual((row['status'],row['bytes'],row['code'].split('@')[0]),('failed',0,'TARGET_ATOMIC_PUBLISH_UNAVAILABLE'))
 
     def test_ui_rejects_bad_target_without_enqueuing_or_silent_setting_change(self):
         ui=importlib.import_module('capture_ui');store=importlib.import_module('capture_store')
@@ -53,7 +53,7 @@ class TargetTests(Fixture,unittest.TestCase):
         self.dialog.yesno.side_effect=[True,False]
         with mock.patch.object(ui,'work',side_effect=lambda fn:fn()),\
              mock.patch.object(self.target,'configured',return_value=str(self.folder)),\
-             mock.patch.object(self.target,'probe',side_effect=self.target.TargetFailure('TARGET_HARDLINK_UNSUPPORTED','LINK',95)),\
+             mock.patch.object(self.target,'probe',side_effect=self.target.TargetFailure('TARGET_ATOMIC_PUBLISH_UNAVAILABLE','LINK',95)),\
              mock.patch.object(self.target,'compatible_default',return_value=str(self.folder/'alternative')),\
              mock.patch.object(store,'add') as add:
             ui.start(self.portal)

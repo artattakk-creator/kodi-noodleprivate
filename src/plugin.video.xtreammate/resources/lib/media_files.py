@@ -66,16 +66,16 @@ def remove(uri):
 
 
 def rename(source,target):
-    if exists(target):raise FileFailure('TARGET_EXISTS')
-    if local(source):
-        # The destination has an unpredictable, job-owned suffix. Link first
-        # gives a strict non-overwrite publish on capable local filesystems.
-        try:os.link(native(source),native(target),follow_symlinks=False)
-        except FileExistsError:raise FileFailure('TARGET_EXISTS') from None
-        else:os.unlink(native(source))
-    else:
-        import xbmcvfs
-        if not xbmcvfs.rename(source,target):raise FileFailure('TARGET_RENAME')
+    from atomic_media import publish,StorageFailure
+    if not local(source) or not local(target):raise FileFailure('TARGET_UNSUPPORTED')
+    source=native(source);target=native(target)
+    if os.path.dirname(source)!=os.path.dirname(target):raise FileFailure('TARGET_DIRECTORY_MISMATCH')
+    directory=os.open(os.path.dirname(source),os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW)
+    try:
+        try:return publish(directory,os.path.basename(source),os.path.basename(target))
+        except StorageFailure as exc:
+            error=FileFailure(exc.code);error.step=exc.step;error.number=exc.number;raise error from None
+    finally:os.close(directory)
 
 
 def capacity(uri,additional=0):
@@ -151,7 +151,7 @@ def flush(stream):
 
 
 def probe(root):
-    from capture_target import probe as native_probe
+    from atomic_media import probe as native_probe
     result=native_probe(native(root),create=True)
     return dict(writable=True,free=result['free'],max_bytes=file_limit(root),vfs=False)
 
