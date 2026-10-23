@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "catalogue_https": true,
+  "package_https": true,
+  "sha256": "79a37cd1568611054d87697045e6879664677f05348c7af93836e4d70872bdf9",
+  "bytes": 19772195,
+  "installed_originals": 98,
+  "restart_selection": true,
+  "android": "NOT_TESTED"
+}
