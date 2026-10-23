@@ -2,7 +2,19 @@
 
 **Quelle:** unmittelbare reale Rückmeldung des Nutzers von der Android-TV-Box, **nicht** CI oder Simulation. **Version:** XCMate 0.1.29.25. **Umfang:** ausschließlich Lightweight, kein Test des optionalen Space Premium, dessen Grafiken, Fokus oder Umstellung. Kodi 21.2 Omega / Android 13 ARM32 / Titan BINGIE MOD; genaue Testuhrzeiten nicht vorgelegt.
 
-**Ergebnis:** **23 PASS, 3 FAIL, 1 NOT_TESTED (27 Tests)**. PASS-Quote 23/27 = 85,2 %. Angaben sind als **Einzeltest-Nutzerabnahme** und **nur für den beschriebenen Umfang** zu verstehen, nicht als Gesamtfreigabe oder automatische Erledigung aller verknüpften Issues.
+**Aktualisierter Stand nach mündlichem Nachtest 23.10.2026:** **22 PASS, 4 FAIL, 1 NOT_TESTED (27 Tests)**. PASS-Quote 22/27 = 81,5 %. Der bereits zuvor als PASS erfasste E05 wurde durch einen **neu gemeldeten Regressions-FAIL** ersetzt. Der erfolgreiche staffelübergreifende Autoplay-Wechsel ist ein **zusätzlicher Teilnachweis zu P02**, kein neuer Test innerhalb der 27. Angaben sind als **Einzeltest-Nutzerabnahme** und **nur für den beschriebenen Umfang** zu verstehen, nicht als Gesamtfreigabe oder automatische Erledigung aller verknüpften Issues.
+
+## Mündlicher Android-Nachtest 23.10.2026 (ergänzt nach ursprünglicher Abnahme)
+
+**P02 / #85 – Staffelübergreifender Serien-Autoplay: zusätzlicher PASS.** Der Nutzer hat jetzt den automatischen Übergang von der letzten Folge einer Staffel in die nächste Staffel erfolgreich am Android-TV-Gerät überprüft. Die Funktion läuft nach Nutzerurteil sehr gut und muss **unverändert bleiben**. Frühere Formulierung „staffelübergreifend noch nicht getestet“ ist damit überholt. Dies ergänzt P02, erhöht aber die Anzahl der originalen 27 Tests nicht.
+
+**E07 – Jetzt/Danach: erneut als PASS bestätigt.** Der Nutzer berichtet korrekte aktuelle und folgende EPG-Programmangaben. Keine Aussage über hundertprozentige EPG-Abdeckung sämtlicher Sender/Provider.
+
+**E05 / #121 – Senderstart aus großem EPG: neuer FAIL / Regression.** Beim Aufruf eines Senders aus dem EPG erscheint eine Fehlermeldung. Der genaue Wortlaut und ein **aktuelles Kodi-Log für genau diesen neuen Fehlschlag** liegen bislang nicht vor. Die zuletzt berichtete Fehlfunktion überstimmt den vorherigen E05-PASS, nicht die bereits bestätigten übrigen EPG-Funktionen. In einer **früheren privaten Logdatei** (`kodi.old(3).log`) wurde einmal `GUIDE_HANDOFF QUEUED -> SKIPPED` (15:51:52–15:51:54) und später `QUEUED -> RESOLVER_REQUEST -> DISPATCHED` (15:52:42–15:52:44) beobachtet; dies ist **nur ein Diagnoseansatz**, keine nachgewiesene Ursache für den jüngsten Nutzerfehler. Codepfad: `guide_grid_window.py` → `guide_playback.py` → `PlayMedia(play_live)` (oder Ablehnung vor dem Player). Keine Provider-URLs/IDs öffentlich dokumentieren.
+
+**M07 – Datei-/Ordnerauswahl: weiterhin NOT_TESTED.** Geeigneter realer Testpfad ist **XCMate → Einstellungen → Speicher → Aufnahmeordner** (Kodi-System-`browseSingle(0,...)`). Weitere unabhängige Dateiauswahl: **Einstellungen → Darstellung & Sprache → XCMate-Designs → ZIP-Datei installieren** (`browseSingle(1,...)`). Code-Nachweis eines Dialogs ist **kein Nutzer-PASS**. Für reinen Navigationscheck Dialog öffnen und abbrechen, keine Einstellungen überschreiben.
+
+**Neue Änderungsanforderungen, keine bereits getesteten Features:** #122 Lightweight soll unverändertes `themes/xcmate/space-premium/assets/branding/splash-1920.jpg` als durchgehenden Grundhintergrund zeigen, auch auf ersten Film-/Serienseiten. #123 TV-Programmzeitschrift-artige reichhaltige EPG-Sendungsdetailansicht mit korrekten dynamischen Bildern (eindeutige TMDB-Zuordnung nur für passende Inhalte, sonst Senderlogo/Placeholder). #120 Skin-Live-TV-Shortcut startet weiterhin keinen Sender (40+ Sekunden Spinner), bestehender FAIL.
 
 ## Vollständiges Ergebnis nach Original-Test-IDs
 
@@ -20,7 +32,7 @@
 | M06 | Rückkehr nach Film/Episode | **PASS** | #79, #115 (nur Lightweight) |
 | M07 | Datei-/Ordnerauswahl | **NOT_TESTED** | #115 |
 | P01 | Filmwiedergabe/Resume | **PASS** | #79 |
-| P02 | Autoplay nächste Episode derselben Staffel | **PASS** | #85 (Teilabnahme; Staffelübergang B02 offen) |
+| P02 | Autoplay nächste Episode, inzwischen auch **über Staffelgrenzen** | **PASS** | #85 (Android-Nachtest Staffelübergang PASS; Funktion einfrieren) |
 | P03 | Stop beendet Serien-Autoplay | **PASS** | #85 (Teilabnahme) |
 | P04 | VOD-OSD/Player-Bedienleiste | **PASS** | #79 |
 | P05 | Live-TV IR Startsender/Overlay/Senderwechsel | **PASS** | Live-Regression |
@@ -28,7 +40,7 @@
 | E02 | Großes EPG Raster-Fokus und Sendungstitel | **PASS** | #57, #92 |
 | E03 | EPG Kopfbuttons per IR | **PASS** | #92 |
 | E04 | EPG Gruppenwahl | **PASS** | #88 |
-| E05 | EPG OK-Menü und Senderstart | **PASS** | #57, #88 |
+| E05 | EPG OK-Menü und Senderstart | **FAIL** | #57, #88, **#121** (nachträglich gemeldete Senderstart-Regression) |
 | E06 | Keine doppelten EPG-Einträge | **PASS** | #58 (sichtbarer Stichprobentest) |
 | E07 | EPG Daten/Quellenstatus | **PASS** | #60 (Teilabnahme; keine erneute Coverage-Messung) |
 | A01 | Poster nach Scrollen/Back/Neustart dauerhaft | **PASS** | #41 (Teilabnahme) |
@@ -42,7 +54,7 @@
 
 **Vollständiger Log-Nachtrag:** [Bereinigter Android-Logvergleich 0.1.29.25](ANDROID_SUCHCRASH_LOGVERGLEICH_02925_20261023_DE.md). Der dokumentierte parallele Home-/Search-Aufruf ist ein Untersuchungsansatz, noch kein bewiesener nativer Absturzmechanismus.
 
-**Nutzer-Nachtrag 23.10.2026 – P0:** Die Suchmaske öffnet sich in **Lightweight** ordnungsgemäß. Nach Eingabe des Beispiels **`Upload`** und Bestätigung mit **OK** erscheint **keine** Suchergebnisansicht; stattdessen springt XCMate kurz auf die Plugin-Startseite und anschließend **stürzt der gesamte Kodi-Prozess ab/beendet sich**. Das ist ein **reproduzierbarer Kodi-Crash**, kein bloß falsches Suchlayout. Eigenständiges [P0-Issue #118](https://github.com/artattakk-creator/kodi-noodleprivate/issues/118) zur Absturzbehebung eröffnet. Der ursprünglich gewünschte, separat bedienbare **globalen Suchergebnis-Bildschirm mit LIVE-TV / FILME / SERIEN**, echten Trefferzahlen und korrekten Detail-/Player-Aktionen ist in [#25](https://github.com/artattakk-creator/kodi-noodleprivate/issues/25) weiter erfasst. **LIVE-TV soll auch EPG-Jetzt-Treffer („wo läuft das gerade?“) auf Sendern zeigen**, nicht nur nach Sendernamen suchen. Ungeklärt bleibt die technische Crash-Ursache: der vorhandene Übergang `media_window._search()` → `close()` → `open_media():Container.Update(global_search)` sowie Suchindex/GUI-Thread/Lifecycle muss mit Android-Log untersucht werden, nicht als gesicherte Ursache behaupten. M04 bleibt **FAIL**, Gesamtzählung weiter **23 PASS / 3 FAIL / 1 NOT_TESTED**; Space Premium bleibt vom Test ausgeschlossen.
+**Nutzer-Nachtrag 23.10.2026 – P0:** Die Suchmaske öffnet sich in **Lightweight** ordnungsgemäß. Nach Eingabe des Beispiels **`Upload`** und Bestätigung mit **OK** erscheint **keine** Suchergebnisansicht; stattdessen springt XCMate kurz auf die Plugin-Startseite und anschließend **stürzt der gesamte Kodi-Prozess ab/beendet sich**. Das ist ein **reproduzierbarer Kodi-Crash**, kein bloß falsches Suchlayout. Eigenständiges [P0-Issue #118](https://github.com/artattakk-creator/kodi-noodleprivate/issues/118) zur Absturzbehebung eröffnet. Der ursprünglich gewünschte, separat bedienbare **globalen Suchergebnis-Bildschirm mit LIVE-TV / FILME / SERIEN**, echten Trefferzahlen und korrekten Detail-/Player-Aktionen ist in [#25](https://github.com/artattakk-creator/kodi-noodleprivate/issues/25) weiter erfasst. **LIVE-TV soll auch EPG-Jetzt-Treffer („wo läuft das gerade?“) auf Sendern zeigen**, nicht nur nach Sendernamen suchen. Ungeklärt bleibt die technische Crash-Ursache: der vorhandene Übergang `media_window._search()` → `close()` → `open_media():Container.Update(global_search)` sowie Suchindex/GUI-Thread/Lifecycle muss mit Android-Log untersucht werden, nicht als gesicherte Ursache behaupten. M04 bleibt **FAIL**; nach dem zusätzlichen E05-Regressionsbericht lautet der aktuelle Gesamtstand **22 PASS / 4 FAIL / 1 NOT_TESTED**; Space Premium bleibt vom Test ausgeschlossen.
 
 ### A02 – Posterdiagnose: FAIL, aber Fehlerklasse verbessert
 
@@ -75,8 +87,8 @@ Im Code von 0.1.29.25 hat `media_art.py::poster_candidates(item)` bislang aussch
 - **Version/Daten/Original-Icon:** B01–B03 PASS.
 - **Hauptmenü/Zurück:** B04 PASS für getestete Wege; #59 ggf. weiterhin weitere Grenzen prüfen.
 - **Lightweight Medien:** M01/M02/M03/M05/M06 PASS; **M04 FAIL**, M07 nicht getestet; Space-Premium-Fokus bleibt separat in #115 offen.
-- **Player:** P01–P05 alle PASS; Autoplay nächste **Folge derselben Staffel** und manueller Stop belegt, **Staffelübergreifender Wechsel B02 nicht getestet**.
-- **Großes EPG:** E01–E07 sämtlich Nutzer-PASS im Testumfang. **Kein** impliziter Nachweis von #98 „EPG zuweisen“ mit Vorschau, Timeraufnahmen oder 10-Tage-Langzeittest sämtlicher Sender. Dedupe E06 als praktische sichtbare Prüfung, kein providerweiter mathematischer Beweis. E07 keine neue XMLTV-Quotenbestimmung.
+- **Player:** P01–P05 alle PASS; auch der **staffelübergreifende automatische Wechsel** ist am 23.10.2026 als Android-PASS gemeldet. Serien-Autoplay inklusive Stop-Verhalten **unverändert schützen; keine refaktorierende Änderung ohne ausdrückliche Notwendigkeit**.
+- **Großes EPG:** E01–E04 und E06–E07 im Testumfang PASS; **E05 jetzt FAIL**, weil der Aufruf eines Senders aus dem großen EPG laut neuem Nutzerbericht eine Fehlermeldung auslöst. **Kein** impliziter Nachweis von #98 „EPG zuweisen“ mit Vorschau, Timeraufnahmen oder 10-Tage-Langzeittest sämtlicher Sender. Dedupe E06 als praktische sichtbare Prüfung, kein providerweiter mathematischer Beweis. E07 keine neue XMLTV-Quotenbestimmung.
 - **Artwork:** A01/A04 PASS für Persistenz, Status/Diagnostik; **A02/A03 FAIL** für den echten Abruf. #41/#90 nicht aufgrund einzelner PASS als vollständig behoben deklarieren; Budget-/SPACE_FULL-Nacharbeiten separat.
 - **Nicht Bestandteil .25:** Draft #117 native TS Engine, EPG-Aufnahmen/Timer #62, Meine Medien #113, VOD-Downloads #63 sowie Premium-Design und Premium-Artwork.
 
