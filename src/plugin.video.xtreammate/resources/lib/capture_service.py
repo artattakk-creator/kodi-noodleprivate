@@ -60,7 +60,8 @@ def _run():
                             update(job['id'],status='starting')
                             try:
                                 source=resolve(job)
-                                if _stop.is_set() or monitor.abortRequested():
+                                current=next((r for r in rows() if r['id']==job['id']),None)
+                                if _stop.is_set() or monitor.abortRequested() or current is None or current['stop']:
                                     update(job['id'],status='failed',code='CANCELLED');job=None;continue
                                 os.makedirs(job['target'],mode=0o700,exist_ok=True)
                                 active=Recorder(source,job['target'],job['duration'],separate_connection=True)

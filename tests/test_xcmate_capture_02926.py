@@ -138,5 +138,15 @@ class CaptureTests(Fixture,unittest.TestCase):
         self.assertEqual((state['status'],state['code']),('failed','UNSUPPORTED_TARGET'))
         provider.assert_not_called();self.assertFalse(list(self.folder.glob('*.probe*')))
 
+    def test_stop_while_resolving_source_cannot_start_a_late_recorder(self):
+        service=importlib.import_module('capture_service')
+        ident=self.store.add(self.portal,{'sid':'1'},str(self.folder/'captures'),120)
+        monitor=types.SimpleNamespace(abortRequested=lambda:False,waitForAbort=lambda n:True)
+        def resolve(job):self.store.finish(ident);return 'https://private.invalid/SECRET'
+        with mock.patch.object(service,'resolve',side_effect=resolve),mock.patch.object(service.xbmc,'Monitor',return_value=monitor),mock.patch.object(self.ts,'Recorder') as recorder:
+            service._run()
+        recorder.assert_not_called()
+        self.assertEqual((self.store.rows()[0]['status'],self.store.rows()[0]['code']),('failed','CANCELLED'))
+
 
 if __name__=='__main__':unittest.main()
