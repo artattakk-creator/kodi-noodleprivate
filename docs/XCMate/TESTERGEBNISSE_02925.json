@@ -1,0 +1,32 @@
+{
+  "version": "0.1.29.25",
+  "tests": 866,
+  "seconds": 112.151,
+  "failures": 0,
+  "errors": 0,
+  "files": 160,
+  "bytes": 1777580,
+  "sha256": "b0274520ce81d597dbab089e2e1072146dfee77113506b7e2453ce4085e6e3ed",
+  "crc": "PASS",
+  "paths": "PASS",
+  "source_bytes": "PASS",
+  "reproducible_zip": "PASS",
+  "python_ast": "PASS",
+  "android": "NOT_TESTED",
+  "production_publish": false,
+  "basis": "523c264e2760d707ef9f9f4e449670292a4a7092",
+  "source_commit": "087ac0c3c416f26d310e66d9762daf364ec8731b",
+  "new_targeted_tests": 19,
+  "baseline_focus_tests": {
+    "tests": 9,
+    "failures": 6,
+    "errors": 0
+  },
+  "original_icon": "BYTE_IDENTICAL",
+  "original_theme_images": "98/98 unchanged package",
+  "protected_source_files": "13 byte-identical to main .24",
+  "b02": "EXCLUDED_OPEN_85",
+  "native_ts": "NOT_INTEGRATED_SEPARATE_DRAFT",
+  "provider_poster_cause": "NOT_VERIFIED_ON_DEVICE",
+  "historical_service_5s_cause": "NOT_FULLY_RESOLVED"
+}
