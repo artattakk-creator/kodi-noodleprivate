@@ -138,8 +138,10 @@ def _smb_probe(root):
     import download_smb as smb
     from media_files import join
     token=uuid.uuid4().hex;one=join(root,'.xcmate-probe-'+token+'.a');two=one+'.b';final=one+'.verified'
-    source=Path(stage_root())/(token+'.probe');source.write_bytes(b'XCMate SMB2 capability probe');expected=source.read_bytes();created=[]
+    source=Path(stage_root())/(token+'.probe');expected=b'XCMate SMB2 capability probe';created=[];own=None
     try:
+        fd=os.open(str(source),os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600);own=os.fstat(fd)
+        with os.fdopen(fd,'wb') as stream:stream.write(expected);stream.flush();os.fsync(stream.fileno())
         with smb.session(root) as (connection,share,path):
             if not connection.getAttributes(share,path or '/',timeout=10).isDirectory:raise Failure('TARGET_NOT_DIRECTORY','SMB_STAT')
         smb.upload_exclusive(str(source),one);created.append(one)
@@ -157,7 +159,11 @@ def _smb_probe(root):
         smb.rename(one,final);created.remove(one);created.append(final)
         if smb.digest(final,len(expected))!=digest:raise Failure('TARGET_VERIFY_FAILED','SMB_HASH')
     finally:
-        source.unlink(missing_ok=True)
+        if own is not None:
+            try:
+                current=source.lstat()
+                if (current.st_dev,current.st_ino)==(own.st_dev,own.st_ino):source.unlink()
+            except FileNotFoundError:pass
         for uri in created:
             try:smb.remove(uri)
             except smb.Failure:pass
