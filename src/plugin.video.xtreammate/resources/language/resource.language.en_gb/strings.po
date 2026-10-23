@@ -2968,3 +2968,7 @@ msgstr "Failed"
 msgctxt "#34425"
 msgid "Partial"
 msgstr "Partial"
+
+msgctxt "#34500"
+msgid "No additional verified provider image source available."
+msgstr "No additional verified provider image source available."

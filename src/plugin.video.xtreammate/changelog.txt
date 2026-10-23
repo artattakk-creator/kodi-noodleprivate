@@ -1,4 +1,6 @@
 0.1.29.28 – Android-Testkandidat
+- #111: Expliziter Einzelposter-Retry priorisiert belegte alternative Bildadresse desselben Datensatzes, ohne Fanart/andere Titel; gültige READY-Bilder und Worker/Cooldowns bleiben geschützt.
+- Fehlende Datei hinter alter READY-Zeile kann erneut geladen werden; keine Titelraterei oder unbelegte TMDB-Zuordnung.
 - #126: Atomares No-Replace-Publish ohne Hardlinkpflicht, mit exklusivem Hardlink-Rückfall; Datei-/Verzeichnissync und No-Overwrite-Schutz bleiben verpflichtend.
 - Speicher-, Source-/HLS-/DASH-/HTTP- und Laufzeitfehler getrennt in UI/Logs; Bytes und aktive Aufnahme erst nach tatsächlichem Schreiben.
 - Downloads prüfen nur ihre Speicher-/Mediendateifähigkeit, unabhängig vom Direct-TS-Aufnahmeformat.

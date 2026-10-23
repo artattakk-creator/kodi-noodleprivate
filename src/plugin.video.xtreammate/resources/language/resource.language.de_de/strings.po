@@ -2968,3 +2968,7 @@ msgstr "Fehlgeschlagen"
 msgctxt "#34425"
 msgid "Partial"
 msgstr "Unvollständig"
+
+msgctxt "#34500"
+msgid "No additional verified provider image source available."
+msgstr "Keine weitere verifizierte Provider-Bildquelle vorhanden."

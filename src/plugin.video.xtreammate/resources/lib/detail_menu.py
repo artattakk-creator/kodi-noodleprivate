@@ -83,11 +83,15 @@ class DetailMenuMixin:
         elif choice==2:
             item=dict(self.selected)
             def retry():
-                from media_art import retry_poster
-                return retry_poster(item)
-            def ready(code):
+                from media_art import retry_poster,poster_report
+                code=retry_poster(item)
+                return code,poster_report(item)
+            def ready(value):
                 from media_art import diagnostic_label
-                xbmcgui.Dialog().notification('XCMate',diagnostic_label(code))
+                code,report=value
+                text=diagnostic_label(code)+' · '+str(report['source_field'])
+                if report['candidate_count']<2:text+=' · '+tr(34500)
+                xbmcgui.Dialog().notification('XCMate',text)
             self._request(retry,ready)
         elif choice==3:self._poster_status()
         return True
