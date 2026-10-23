@@ -211,3 +211,24 @@ class AutoplayTests(Fixture,unittest.TestCase):
         self.assertTrue(window._chain_active());self.assertEqual(window._play_intent,'next');self.assertEqual(window.season,2)
         window.onInit();self.assertTrue(window._playback_waiting);self.assertFalse(self.auto.cancelled(root,'p'))
         window._cancel_chain();self.assertTrue(self.auto.cancelled(root,'p'))
+
+    def test_actual_local_loader_uses_same_portal_cache_and_rejects_disabled_portal(self):
+        session=dict(pid='p',series_id='1')
+        with mock.patch.dict(sys.modules,xtream=types.SimpleNamespace(XtreamClient=lambda *args:self.client)):
+            rows=self.auto.load_episodes(session)
+            self.assertEqual([r['sid'] for r in rows],['11','12','21'])
+            self.assertTrue(all(r['pid']=='p' and r['series_id']=='1' for r in rows))
+            self.portal['enabled']=False
+            with self.assertRaises(ValueError):self.auto.load_episodes(session)
+        sys.modules['utils'].http_get.assert_not_called()
+
+    def test_stop_during_resolver_build_blocks_final_resolved_url(self):
+        self.start();self.ended();self.c.tick()
+        params={k:v[0] for k,v in parse_qs(urlsplit(self.builtins[-1][len('PlayMedia('):-1]).query).items()}
+        self.router._params=params
+        def build(*args,**kwargs):
+            self.auto.request_cancel('root','p')
+            return types.SimpleNamespace(getVideoInfoTag=lambda:types.SimpleNamespace(setUniqueIDs=mock.Mock()))
+        with mock.patch.dict(sys.modules,player=types.SimpleNamespace(build_playable_item=build)):
+            self.progress.play(self.router,self.portal)
+        self.assertFalse(sys.modules['xbmcplugin'].setResolvedUrl.call_args.args[1])

@@ -150,7 +150,7 @@ class MediaOSD(xbmcgui.WindowDialog):
         if name=='stop' and (self.owned() or self.transition()):
             from media_autoplay import request_cancel
             request_cancel(self.token[1].get('autoplay_chain',''),self.token[1]['pid'])
-            result=stop_owned(self.player,pid=self.token[1]['pid']) if self.owned() else True
+            result=stop_owned(self.player,expected=self.token) if self.owned() else True
             self.dispose();return result
         if not self.owned():self.dispose();return False
         if name not in {e[0] for e in available(self.token[1],self.capabilities())}:return False
