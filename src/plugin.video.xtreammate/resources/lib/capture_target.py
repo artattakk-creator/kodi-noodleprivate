@@ -16,7 +16,7 @@ def mark(code,step='DONE',number=0):
     try:
         import xbmc
         xbmc.log('[XCMate][CAPTURE_TARGET] code={} syscall={} errno={}'.format(code,step,number),xbmc.LOGINFO)
-    except (AttributeError,RuntimeError):pass
+    except (ImportError,AttributeError,RuntimeError):pass
 
 
 def _failure(exc,step):
@@ -83,7 +83,7 @@ def compatible_default():
             if private and os.path.isdir(private):candidates.insert(0,os.path.join(private,'XCMate','recordings'))
             for base in ('/data/user/0/org.xbmc.kodi/files','/data/data/org.xbmc.kodi/files'):
                 if os.path.isdir(base):candidates.append(os.path.join(base,'XCMate','recordings'))
-    except (AttributeError,RuntimeError):pass
+    except (ImportError,AttributeError,RuntimeError):pass
     for target in dict.fromkeys(candidates):
         try:probe(target,create=True);return target
         except Failure:continue
