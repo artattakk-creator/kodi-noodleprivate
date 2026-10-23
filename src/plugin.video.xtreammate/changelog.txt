@@ -1,4 +1,5 @@
-0.1.29.27 – Testschritt A, nicht veröffentlicht
+0.1.29.27 – Testschritt B, nicht veröffentlicht
+- #126: Gemeinsame native Zielprobe im Picker, vor Jobannahme und vor Provider-Resolve; geprüfte interne Alternative nur nach Zustimmung.
 - #125: Such-Live-Start nach Owner-Freigabe direkt über den bestehenden Player/ListItem-Vertrag; kein verschachtelter Plugin-Resolver.
 - Busy-/Fremdplayer-/Session-Gates, einmaliger Intent und anonyme Gründe. EPG-/Autoplay-Pfade unverändert.
 
