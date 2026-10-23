@@ -115,8 +115,10 @@ def run_one(now=None):
     try:
         if db.execute('SELECT until FROM worker WHERE id=1').fetchone()[0]>now:return False
         # Storage blocks are only eligible via the bounded policy recovery above.
+        from art_errors import CODES
+        eligible=','.join("'"+c+"'" for c in CODES)
         order='updated,priority' if _served%8==7 else 'priority,updated'
-        row=db.execute("SELECT * FROM jobs WHERE status IN ('PENDING','RUNNING','FAILED','NETWORK_ERROR','CACHE_ERROR') AND attempts<3 AND next_at<=? ORDER BY "+order+" LIMIT 1",(now,)).fetchone()
+        row=db.execute("SELECT * FROM jobs WHERE status IN ('PENDING','RUNNING','FAILED','NETWORK_ERROR','CACHE_ERROR',"+eligible+") AND attempts<3 AND next_at<=? ORDER BY "+order+" LIMIT 1",(now,)).fetchone()
         if not row:return False
         db.execute('BEGIN IMMEDIATE')
         if db.execute('SELECT until FROM worker WHERE id=1').fetchone()[0]>now:return False
@@ -138,12 +140,13 @@ def run_one(now=None):
         elif isinstance(exc,OSError) and getattr(exc,'errno',None)==28:code='DISK_FULL'
         elif isinstance(exc,OSError) and getattr(exc,'errno',None) in (13,30):code='CACHE_ERROR'
         else:code='NETWORK_ERROR'
-        exhausted=code in ('INVALID_SOURCE','INVALID_IMAGE','BUDGET_FULL','DISK_FULL')
+        from art_errors import PERMANENT
+        exhausted=code in PERMANENT or code in ('BUDGET_FULL','DISK_FULL')
         attempts=3 if exhausted else job['attempts']+1
         db=connect()
         try:
             with db:db.execute('UPDATE jobs SET status=?,attempts=?,next_at=?,updated=? WHERE ident=? AND EXISTS(SELECT 1 FROM worker WHERE id=1 AND owner=?)',
-                (code,attempts,now+min(1800,60*2**min(job['attempts'],3)),now,job['ident'],owner))
+                (code,attempts,now+(getattr(exc,'retry_after',300) if code=='HTTP_RATE_LIMIT' else min(1800,60*2**min(job['attempts'],3))),now,job['ident'],owner))
         finally:db.close()
     finally:
         try:
@@ -214,3 +217,27 @@ def prefetch_selected():
             try:
                 with db: db.execute('INSERT OR REPLACE INTO scan VALUES(?,?,?,?)',(portal['id'],kind,revision,offset+len(rows) if rows and offset+len(rows)<total else -1))
             finally: db.close()
+
+
+def retry_one(url,now=None):
+    """Only this URL; durable 60 s user-action limit and server cooldown."""
+    from media_art import cached,valid_source
+    if not valid_source(url):return 'INVALID_SOURCE'
+    if cached(url):return 'READY'
+    now=time.time() if now is None else now
+    db=connect()
+    try:
+        db.execute('CREATE TABLE IF NOT EXISTS art_retry_limits(ident TEXT PRIMARY KEY,next_at REAL)')
+        db.execute('BEGIN IMMEDIATE')
+        job=db.execute('SELECT status,next_at FROM jobs WHERE ident=?',(key(url),)).fetchone()
+        if job and job['status']=='READY':return 'READY'
+        if job and job['status']=='RUNNING' and job['next_at']>now:return 'RUNNING'
+        if job and job['status']=='HTTP_RATE_LIMIT' and job['next_at']>now:return 'WAIT'
+        prior=db.execute('SELECT next_at FROM art_retry_limits WHERE ident=?',(key(url),)).fetchone()
+        if prior and prior[0]>now:return 'WAIT'
+        with db:
+            db.execute('INSERT OR REPLACE INTO art_retry_limits VALUES(?,?)',(key(url),now+60))
+            if job:db.execute("UPDATE jobs SET status='PENDING',attempts=0,next_at=0,priority=-20,updated=? WHERE ident=?",(now,key(url)))
+    finally:db.close()
+    if not job:enqueue([url],-20)
+    return 'PENDING'

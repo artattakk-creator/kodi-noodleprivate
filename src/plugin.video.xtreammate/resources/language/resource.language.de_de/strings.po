@@ -2471,3 +2471,59 @@ msgstr "Keine aktivierten Sendergruppen vorhanden."
 msgctxt "#33605"
 msgid "XCMate Home"
 msgstr "XCMate Home"
+
+msgctxt "#33701"
+msgid "Original XCMate icon diagnostics"
+msgstr "Original-XCMate-Icon prüfen"
+
+msgctxt "#33702"
+msgid "No Kodi image databases or cached images are deleted."
+msgstr "Kodi-Bilddatenbanken und gespeicherte Bilder werden nicht gelöscht."
+
+msgctxt "#33703"
+msgid "Poster status / retry"
+msgstr "Posterstatus / erneut versuchen"
+
+msgctxt "#33704"
+msgid "Retry this poster"
+msgstr "Dieses Poster erneut laden"
+
+msgctxt "#33705"
+msgid "Waiting for cooldown"
+msgstr "Wartezeit bis zum nächsten Versuch"
+
+msgctxt "#33710"
+msgid "Poster: authentication required (HTTP 401/403)"
+msgstr "Poster: Anmeldung erforderlich (HTTP 401/403)"
+
+msgctxt "#33711"
+msgid "Poster: source missing (HTTP 404/410)"
+msgstr "Poster: Quelle fehlt (HTTP 404/410)"
+
+msgctxt "#33712"
+msgid "Poster: rate limit (HTTP 429)"
+msgstr "Poster: Abruf begrenzt (HTTP 429)"
+
+msgctxt "#33713"
+msgid "Poster: server error (HTTP 5xx)"
+msgstr "Poster: Serverfehler (HTTP 5xx)"
+
+msgctxt "#33714"
+msgid "Poster: HTTP request rejected"
+msgstr "Poster: HTTP-Anfrage abgewiesen"
+
+msgctxt "#33715"
+msgid "Poster: DNS lookup failed"
+msgstr "Poster: DNS-Auflösung fehlgeschlagen"
+
+msgctxt "#33716"
+msgid "Poster: TLS certificate/connection failed"
+msgstr "Poster: TLS-Zertifikat/Verbindung fehlgeschlagen"
+
+msgctxt "#33717"
+msgid "Poster: request timed out"
+msgstr "Poster: Zeitüberschreitung"
+
+msgctxt "#33718"
+msgid "Poster: connection failed"
+msgstr "Poster: Verbindungsfehler"

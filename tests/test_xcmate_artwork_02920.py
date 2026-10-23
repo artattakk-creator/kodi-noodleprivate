@@ -119,7 +119,7 @@ class Artwork20Tests(Fixture,unittest.TestCase):
         self.http.assert_not_called()
         self.http.side_effect=TimeoutError('https://PRIVATE/TOKEN')
         with self.assertRaises(self.policy.ArtworkFailure) as error:self.art.fetch('https://image.invalid/network')
-        self.assertEqual(str(error.exception),'[Errno 5] NETWORK_ERROR');self.assertNotIn('PRIVATE',str(error.exception))
+        self.assertEqual(str(error.exception),'[Errno 5] TIMEOUT');self.assertNotIn('PRIVATE',str(error.exception))
         self.http.side_effect=None;self.http.return_value=(b'not an image',{})
         with self.assertRaises(self.policy.ArtworkFailure) as error:self.art.fetch('https://image.invalid/bad')
         self.assertEqual(error.exception.code,'INVALID_IMAGE')
@@ -169,7 +169,7 @@ class Artwork20Tests(Fixture,unittest.TestCase):
         url='https://image.invalid/network';self.store.enqueue([url]);stamp=time.time()+1
         self.http.side_effect=TimeoutError('PRIVATE URL TOKEN')
         for delta in (0,61,182,10000,20000):self.store.run_one(stamp+delta)
-        self.assertEqual(self.http.call_count,3);self.assertEqual(self.row(url)['status'],'NETWORK_ERROR')
+        self.assertEqual(self.http.call_count,3);self.assertEqual(self.row(url)['status'],'TIMEOUT')
         self.assertEqual(self.row(url)['attempts'],3);self.assertEqual(self.store.recover_space(stamp+30000),0)
 
     def test_visible_epg_logos_precede_covers_and_oldest_job_gets_a_fair_turn(self):
@@ -204,7 +204,7 @@ class Artwork20Tests(Fixture,unittest.TestCase):
         url='https://PRIVATE/TOKEN';self.store.enqueue([url])
         self.assertEqual(self.art.diagnose(dict(cover=url))['poster'],'PENDING')
         self.http.side_effect=TimeoutError('PRIVATE');self.store.run_one()
-        value=self.art.diagnose(dict(cover=url));self.assertEqual(value['poster'],'NETWORK_ERROR')
+        value=self.art.diagnose(dict(cover=url));self.assertEqual(value['poster'],'TIMEOUT')
         self.assertNotIn('PRIVATE',json.dumps(value));self.assertNotIn(url,json.dumps(value))
         self.http.side_effect=None;filename=Path(self.art.fetch(url));filename.write_bytes(b'corrupt')
         self.assertEqual(self.art.diagnose(dict(cover=url))['poster'],'CACHE_ERROR')

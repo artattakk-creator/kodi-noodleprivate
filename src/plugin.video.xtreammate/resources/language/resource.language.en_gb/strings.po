@@ -2471,3 +2471,59 @@ msgstr ""
 msgctxt "#33605"
 msgid "XCMate Home"
 msgstr ""
+
+msgctxt "#33701"
+msgid "Original XCMate icon diagnostics"
+msgstr ""
+
+msgctxt "#33702"
+msgid "No Kodi image databases or cached images are deleted."
+msgstr ""
+
+msgctxt "#33703"
+msgid "Poster status / retry"
+msgstr ""
+
+msgctxt "#33704"
+msgid "Retry this poster"
+msgstr ""
+
+msgctxt "#33705"
+msgid "Waiting for cooldown"
+msgstr ""
+
+msgctxt "#33710"
+msgid "Poster: authentication required (HTTP 401/403)"
+msgstr ""
+
+msgctxt "#33711"
+msgid "Poster: source missing (HTTP 404/410)"
+msgstr ""
+
+msgctxt "#33712"
+msgid "Poster: rate limit (HTTP 429)"
+msgstr ""
+
+msgctxt "#33713"
+msgid "Poster: server error (HTTP 5xx)"
+msgstr ""
+
+msgctxt "#33714"
+msgid "Poster: HTTP request rejected"
+msgstr ""
+
+msgctxt "#33715"
+msgid "Poster: DNS lookup failed"
+msgstr ""
+
+msgctxt "#33716"
+msgid "Poster: TLS certificate/connection failed"
+msgstr ""
+
+msgctxt "#33717"
+msgid "Poster: request timed out"
+msgstr ""
+
+msgctxt "#33718"
+msgid "Poster: connection failed"
+msgstr ""

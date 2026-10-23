@@ -67,6 +67,9 @@ class MediaRails299(Fixture,unittest.TestCase):
                 addition="'xcmate_licenses',"
                 self.assertEqual(source.count(addition.encode()),1)
                 source=source.replace(addition.encode(),b'')
+                branding="'branding_status',"
+                self.assertEqual(source.count(branding.encode()),1)
+                source=source.replace(branding.encode(),b'')
             if name in ('art_store.py','artwork_db.py'):
                 # .20 budget/queue/schema are intentionally changed. Preserve
                 # the exact .19 storage/lock/backup/repair safety contracts.

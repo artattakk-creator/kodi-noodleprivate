@@ -138,9 +138,9 @@ def _default_headers():
     }
 
 def http_get(url, params=None, headers=None, timeout=None, stream=False,
-             max_bytes=MAX_HTTP_BYTES, max_seconds=60):
+             max_bytes=MAX_HTTP_BYTES, max_seconds=60, retry_limit=None):
     to      = timeout or setting_int('http_timeout', 15)
-    retries = setting_int('max_retries', 3)
+    retries = setting_int('max_retries', 3) if retry_limit is None else max(0,min(3,int(retry_limit)))
     verify  = setting_bool('ssl_verify', True)
     hdrs    = {**_default_headers(), **(headers or {})}
 

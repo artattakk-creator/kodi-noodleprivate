@@ -17,6 +17,8 @@ _enrol_worker=None
 _inbox={}
 _serial=0
 _enqueue_code='NOT_REQUESTED'
+_choices={}
+_choice_revision=0
 MAX_INBOX=2048
 
 
@@ -83,9 +85,12 @@ def fetch(url):
             check(MAX_BYTES,limit=0)
             check_space(os.path.join(root,'pending'),MAX_BYTES)
             from utils import http_get
-            try:data,_=http_get(url,timeout=4,max_bytes=MAX_BYTES,max_seconds=6)
+            try:data,_=http_get(url,timeout=4,max_bytes=MAX_BYTES,max_seconds=6,retry_limit=0)
             except ValueError:raise ArtworkFailure('INVALID_IMAGE') from None
-            except Exception:raise ArtworkFailure('NETWORK_ERROR') from None
+            except Exception as error:
+                from art_errors import classify,retry_after
+                failure=ArtworkFailure(classify(error));failure.retry_after=retry_after(error)
+                raise failure from None
             try:
                 w,h=dimensions(data)
                 if len(data)>MAX_BYTES or not 0<w<=4096 or not 0<h<=4096 or w*h>MAX_PIXELS:raise ValueError()
@@ -107,8 +112,18 @@ def fetch(url):
         ready(url,len(data));return filename
 
 
+def poster_candidates(item):
+    return list(dict.fromkeys(item.get(k) for k in ('cover','stream_icon','movie_image','cover_big') if valid_source(item.get(k))))
+
+
+def _choice_key(item):
+    return hashlib.sha256('\n'.join(poster_candidates(item)).encode()).hexdigest()
+
+
 def sources(item):
-    poster=next((item.get(k) for k in ('cover','stream_icon','movie_image','cover_big') if valid_source(item.get(k))),'')
+    candidates=poster_candidates(item)
+    with _queue_lock:chosen=_choices.get(_choice_key(item))
+    poster=next((u for u in candidates if cached(u)),chosen if chosen in candidates else candidates[0] if candidates else '')
     fanart=[]
     for key in ('backdrop_path','backdrop','fanart','fanart_image'):
         value=item.get(key);fanart.extend(value if isinstance(value,list) else [value])
@@ -196,15 +211,31 @@ def _prefetch():
 
 
 def revision():
-    try: return os.stat(folder()).st_mtime_ns
-    except OSError: return 0
+    try: return os.stat(folder()).st_mtime_ns+_choice_revision
+    except OSError: return _choice_revision
 
 
 def diagnose(item):
-    """Read-only worker diagnosis. Never return a URL, path or exception text."""
+    """Worker diagnosis and same-record fallback. Never expose private sources."""
     from artwork_db import image_states
     from art_store import key
-    urls=sources(item);states,db_code=image_states([key(u) for u in urls if u])
+    from art_errors import PERMANENT
+    global _choice_revision
+    candidates=poster_candidates(item)
+    urls=sources(item);states,db_code=image_states([key(u) for u in [*candidates,*urls] if u])
+    chosen=next((u for u in candidates if cached(u)),None)
+    exhausted=False
+    if urls[0] and states.get(key(urls[0])) not in PERMANENT:
+        from artwork_db import image_details
+        counters,_=image_details([key(urls[0])]);exhausted=counters.get(key(urls[0]),{}).get('attempts',0)>=3
+    if not chosen and urls[0] and (states.get(key(urls[0])) in PERMANENT or exhausted):
+        chosen=next((u for u in candidates if states.get(key(u)) not in PERMANENT and states.get(key(u)) not in ('NETWORK_ERROR','TIMEOUT','DNS_ERROR','CONNECTION_ERROR','HTTP_SERVER','HTTP_RATE_LIMIT')),None)
+    if chosen and chosen!=urls[0]:
+        with _queue_lock:
+            if len(_choices)>=2048:_choices.pop(next(iter(_choices)))
+            _choices[_choice_key(item)]=chosen;_choice_revision+=1
+        urls=sources(item)
+        if not cached(chosen):request([item])
     result={}
     fields=(('cover','stream_icon','movie_image','cover_big'),('backdrop_path','backdrop','fanart','fanart_image'))
     for name,url,keys in zip(('poster','fanart'),urls,fields):
@@ -227,4 +258,29 @@ def diagnostic_label(code):
     codes=('READY','NO_SOURCE','INVALID_SOURCE','NOT_REQUESTED','PENDING','RUNNING',
            'NETWORK_ERROR','INVALID_IMAGE','CACHE_ERROR','SPACE_FULL','BUDGET_FULL',
            'DISK_FULL','DB_BUSY','DB_UNAVAILABLE','FAILED','UNKNOWN')
+    if code=='WAIT':return tr(33705)
+    from art_errors import CODES
+    if code in CODES:return tr(33710+CODES.index(code))
     return tr(33410+codes.index(code) if code in codes else 33425)
+
+
+def retry_poster(item):
+    """Explicit one-image worker action; never refresh metadata by title."""
+    from art_store import retry_one
+    url=sources(item)[0]
+    if not url:return 'NO_SOURCE'
+    result=retry_one(url)
+    if result=='PENDING':request([item],priority=-20)
+    return result
+
+
+def poster_report(item):
+    from artwork_db import image_details
+    from art_store import key
+    status=diagnose(item)['poster']
+    url=sources(item)[0];fields=('cover','stream_icon','movie_image','cover_big')
+    values,code=image_details([key(url)] if url else [])
+    value=values.get(key(url),{}) if url else {}
+    return dict(source_field=next((field for field in fields if item.get(field)==url),'NONE'),
+                candidate_count=len(poster_candidates(item)),status=status,
+                attempts=value.get('attempts',0),updated=value.get('updated',0),next_at=value.get('next_at',0),database=code)

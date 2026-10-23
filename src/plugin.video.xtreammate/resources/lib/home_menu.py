@@ -34,7 +34,7 @@ def show(router, portal):
         from window_navigation import WINDOW_ACTIONS,add_action
         add=add_action if action in WINDOW_ACTIONS or action=='home_start' else lambda router,*a,**kw:router._add_dir(*a,**kw)
         add(router,label,router.url(action=action,pid=portal['id']),
-                        icon=os.path.join(path,'resources','media',icon),
+                        icon=__import__('branding').icon() if action=='home_start' else os.path.join(path,'resources','media',icon),
                         plot=(tr(32415) if action=='settings_home' else label))
     finish_directory(router,cacheToDisc=False)
 
@@ -127,6 +127,7 @@ def settings(router, portal, section=''):
             (tr(32452),'clear_cache'),(tr(32453),'settings')):
             add(label,action)
     elif section=='about':
+        add(tr(33701),'branding_status')
         add(tr(32454),'about_xcmate')
         add(tr(33405),'xcmate_licenses')
     finish_directory(router,cacheToDisc=False)
