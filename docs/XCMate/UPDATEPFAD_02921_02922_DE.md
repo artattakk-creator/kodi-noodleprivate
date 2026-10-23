@@ -51,3 +51,7 @@ Referenzen: Issues #37 (Original-Icon), #85 (Autoplay), #88/#92 (EPG-Start/Fokus
 Aktuelle Basis `3307e006a9de9fd53236ec881191851291731c98`; normaler Merge in den bestehenden Entwicklungsbranch, kein Force-Push. Sämtliche .21-Autoplay-/Player-/Service-/Artwork-Dateien und die zwei .21-Regressionstestdateien sind unverändert erhalten. Original-Icon SHA256 geprüft und binär übernommen. Aktuelle Zurück-Regel aus dem Nutzerauftrag: Gruppenübersicht schließen → vorige EPG-Ansicht wiederherstellen; Back im Raster → Home. Neue Snapshot-/Repeat-/Fallback-Tests und kumulative Icon-/Daten-/Player-EPG-Tests.
 
 Neue vollständige Prüfnachweise stehen in `TESTERGEBNISSE_02922.json` und `TESTLOG_02922.txt`, aktuelle ZIP-Prüfsumme in `plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.22.zip.sha256` und gepinnter Download/CI-Nachweis in PR #110. Android-Anleitung `ANDROID_TEST_02922_DE.md` gilt für Installation direkt über .21. **Android NOT_TESTED, keine Merge-/Releasefreigabe.**
+
+## Frischer Host-Nachweis dieses kumulativen Pakets
+
+**785/785 PASS in 95.682 s**, 0 Fehler/Fehlschläge/unkontrollierte Worker-Ausnahmen. Neue Paket-SHA256: `886839ba128c36dcc716dc063b8b4c4a8a965e07f4372692b000729db517862f`. Original-Icon im ZIP bytegleich zur freigegebenen SHA256. Sämtliche .21-Autoplay-/Player-/Service- und Artwork-Dateien, produktiver Index, bestehende ZIPs und 35 fremde WIP-Dateien unverändert geprüft. Aktuelle GitHub-CI wird am finalen Commit ausgeführt und in PR #110 verlinkt. Android NOT_TESTED.
