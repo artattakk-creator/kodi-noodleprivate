@@ -353,6 +353,8 @@ class IPTVMasterService(xbmc.Monitor):
         if self._overlay is not None:
             self._overlay.close()
         try:
+            from media_autoplay import shutdown as shutdown_autoplay
+            shutdown_autoplay()
             from media_progress import shutdown as shutdown_media_progress
             shutdown_media_progress()
         except Exception:

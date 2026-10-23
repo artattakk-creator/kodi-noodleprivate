@@ -54,6 +54,9 @@ def stop_owned(player=None,pid=None,expected=None):
         if not token or (pid is not None and token[1]['pid']!=str(pid)) or (expected and not _same(token,expected)):
             return False
         if token[0]=='media':
+            if token[1].get('autoplay_chain'):
+                from media_autoplay import request_cancel
+                request_cancel(token[1]['autoplay_chain'],token[1]['pid'])
             from media_state import save_progress
             from media_progress import _current,_last
             try:
