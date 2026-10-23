@@ -20,6 +20,7 @@ class DetailMenuMixin:
         if key!=1 or self.mode!='detail' or not self.actions or self._playback_waiting:return False
         self._detail_menu_focus=self.getFocusId()
         self._detail_menu_open=True;self.setProperty('XCMate.DetailMenu','true')
+        self.getControl(802).setLabel('XCMate')
         self._fill(810,[dict(name=tr(34200 if self.kind=='vod' else 34201)),
                         dict(name=tr(34202)),dict(name=tr(34203)),
                         dict(name=tr(33703)),dict(name=tr(34204))])

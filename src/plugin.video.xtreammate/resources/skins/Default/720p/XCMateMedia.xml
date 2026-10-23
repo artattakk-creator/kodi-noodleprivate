@@ -734,7 +734,7 @@
       </control>
       <control type="label" id="802">
         <left>28</left><top>48</top><width>404</width><height>48</height>
-        <font>font16</font><textcolor>FFFFFFFF</textcolor><label>XCMate</label>
+        <font>font16</font><textcolor>FFFFFFFF</textcolor><label />
       </control>
       <control type="list" id="810">
         <left>20</left><top>128</top><width>420</width><height>500</height>

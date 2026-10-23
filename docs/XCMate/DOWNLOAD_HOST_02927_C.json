@@ -1,0 +1,25 @@
+{
+  "source": "freely generated testsrc2/sine MPEG4/AAC fixture, 4 seconds",
+  "transport": "real local HTTP",
+  "results": [
+    {
+      "kind": "vod",
+      "bytes": 404305,
+      "sha256": "4f084a93b8596a560d7531dd883cc00909aea93dc32b597f823985e087ab520b",
+      "same_recording_folder": true,
+      "download_filename": true,
+      "strict_decode_exit": 0,
+      "strict_decode_stderr_bytes": 0
+    },
+    {
+      "kind": "episode",
+      "bytes": 404305,
+      "sha256": "4f084a93b8596a560d7531dd883cc00909aea93dc32b597f823985e087ab520b",
+      "same_recording_folder": true,
+      "download_filename": true,
+      "strict_decode_exit": 0,
+      "strict_decode_stderr_bytes": 0
+    }
+  ],
+  "android_offline_playback": "NOT_TESTED"
+}
