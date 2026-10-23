@@ -1,3 +1,10 @@
+0.1.29.21 (isolated series autoplay test candidate; baseline main .20)
+- Session-local episode autoplay after verified natural Ended callbacks; numeric same-portal/same-series successors, number gaps and season transitions; no wrap, specials, ambiguous or foreign episodes.
+- Stop/exit/error/shutdown and transition cancellation take priority; one new nonce per next episode, bounded callback queue, no GUI/HTTP/SQLite work in player callbacks, no restart from playback gaps.
+- Selectively port the Kodi 21.2 own media OSD from #84, with episode-only Autoplay On/Off, native IR focus, protected audio/subtitle/seek/pause and Stop/Back handling.
+- Natural-end checkpoint precedes handoff; current episode/season and return focus follow automatic starts. Manual Next, existing watched/resume storage and artwork retained.
+- No persistent option migration, keymap change, EPG/Live-TV navigation change, data reset, merge or release. Android NOT_TESTED.
+
 0.1.29.20 (isolated artwork test candidate on .19)
 - Automatic artwork storage by available device capacity; configurable free reserve (1024 MiB default, at least 32). Explicit existing image limits retained; 0 means automatic, no 4096 MiB ceiling.
 - Separate provider-source, queue, network, invalid-image, cache, configured-budget and physical-storage diagnostics; no private URLs in status/logs.

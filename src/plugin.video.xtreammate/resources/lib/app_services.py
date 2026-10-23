@@ -88,6 +88,10 @@ def poll():
         if _worker is None or not _worker.is_alive():
             _worker=threading.Thread(target=_run,name='XCMate-library',daemon=True)
             _worker.start()
+    from media_autoplay import poll as poll_autoplay
+    poll_autoplay()
     from media_progress import poll as poll_media
     poll_media()
 
+    from media_osd import poll as poll_osd
+    poll_osd()

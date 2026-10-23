@@ -33,13 +33,13 @@ def play(router,portal):
         if not record:
             xbmcplugin.setResolvedUrl(router._handle,False,xbmcgui.ListItem());return
     else:
-        from media_data import episode_records
+        from media_sequence import records
         series_id=router._params.get('series_id','')
         if not Reader(portal['id']).get('series',series_id):
             xbmcplugin.setResolvedUrl(router._handle,False,xbmcgui.ListItem());return
         # Playback validation is cache-only, never trust an arbitrary episode URL/extension.
         data=xc._get_json('get_series_info',extra={'series_id':series_id},cached_only=True) or {}
-        record=next((e for e in episode_records(data,series_id) if e['sid']==sid),None)
+        record=next((e for e in records(data,portal['id'],series_id) if e['sid']==sid),None)
         if record is None:
             xbmcplugin.setResolvedUrl(router._handle,False,xbmcgui.ListItem());return
     extension=str(record.get('container_extension') or 'mkv')
@@ -56,9 +56,20 @@ def play(router,portal):
         xbmcplugin.setResolvedUrl(router._handle,False,xbmcgui.ListItem());return
     if request and not allowed(request,portal['id'],kind,sid):
         xbmcplugin.setResolvedUrl(router._handle,False,xbmcgui.ListItem());return
+    chain=str(router._params.get('autoplay_chain') or request)
+    from media_autoplay import cancelled as chain_cancelled
+    if kind=='episode' and chain_cancelled(chain,portal['id']):
+        xbmcplugin.setResolvedUrl(router._handle,False,xbmcgui.ListItem());return
     session={k:str(record[k]) for k in ('series_id','season','episode') if k in record}
     session.update(pid=str(portal['id']),kind=kind,sid=sid,nonce=request or uuid.uuid4().hex,at=time.time(),
                    resume=router._params.get('resume')=='1')
+    session['title']=str(record.get('name') or '')[:512]
+    session['autoplay']=bool(kind=='episode' and request and router._params.get('autoplay')=='1')
+    if session['autoplay']:session['autoplay_chain']=chain
+    try:
+        from media_art import local_art
+        session['poster']=local_art(record)['poster']
+    except (OSError,ValueError,RuntimeError):pass
     try:
         item.getVideoInfoTag().setUniqueIDs({UNIQUE_ID:session['nonce']})
         xbmcgui.Window(10000).setProperty(PROPERTY,json.dumps(session))

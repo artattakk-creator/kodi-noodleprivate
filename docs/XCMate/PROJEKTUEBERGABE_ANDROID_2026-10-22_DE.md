@@ -1,3 +1,13 @@
+# Aktueller Nachtrag nach Android-Test 48 (23.10.2026)
+
+Stabil: main 0.1.29.20, Test 48 **10 PASS / 0 FAIL / 1 NOT_TESTED**. Nutzerpräzisierung: Artwork-Pause-Test mangels sichtbarem Schalter nicht durchführbar; kein Datenreset erforderlich.
+
+Dieser Branch enthält ausschließlich **0.1.29.21 – Serien-Autoplay (#85)**. Android **NOT_TESTED**. Der andere Kandidat ist eine unabhängige Entwicklung direkt auf .20. Keine Integration, Veröffentlichung oder Merge freigegeben.
+
+Details: `AUTOPLAY_02921_DE.md`, `ANDROID_TEST_02921_DE.md`, `TESTERGEBNISSE_02921.json`, `TESTLOG_02921.txt`.
+
+---
+
 > **AKTUELL NACH ANDROID-TEST 46 (22.10.2026):** Main **0.1.29.19 / `de0b13c`**, Tests 42–46 für die geprüften Abläufe PASS. Neuer separater Artwork-Draft **0.1.29.20** auf `fix/xcmate-02920-artwork`: sicherer automatischer Bildspeicher/Reserve, begrenzte Space-Queue-Reaktivierung, Ursachenstatus, priorisierte sichtbare Bilder und Worker-Anmeldung. [Umsetzung/Restpunkte](ARTWORK_02920_DE.md) · [Android-Test .20](ANDROID_TEST_02920_DE.md) · [Autoplay technisch separat vorbereitet](AUTOPLAY_VORBEREITUNG_NACH_TEST46_DE.md). Anbieterzeile künftig GS Media; Lizenz/Herkunft vollständig in Info und Add-on-Beschreibung erhalten. Neue .20-Funktionen Android **NOT_TESTED**. Kein Merge/Release/OTA, .19-Rückfall und Benutzerdaten erhalten. Nachfolgende ältere Statusblöcke sind historische Übergaben.
 
 > **AKTUELL 22.10.2026 – Basis main 0.1.29.18 / `ce8d99c`, neuer Draft-Kandidat 0.1.29.19:** .18 wurde inzwischen veröffentlicht und auf Android getestet. Tests 34–39 qualifiziert erfolgreich; Test 40 sechs PASS, manuelle Next-Aktion FAIL, Diagnose 40E bestätigt vorhandenen Nachfolger. Natürliche Rückkehr/Fokus, Stop von Bild/Ton, Resume, Seen/Augen/Legende, Favoriten und Continue-Ausblendung erhalten. .19 korrigiert Poster auf 108×162 bei gleicher Schrift, direkten kontrastreichen Fokusrahmen und manuelle Next-Aktion in Detail/Folgenliste; kein Autoplay. [Umsetzung/Restpunkte](MEDIA_UI_02919_DE.md) · [Android-Checkboxen .19](ANDROID_TEST_02919_DE.md) · [Separater Autoplay-Plan #85](AUTOPLAY_FOLGEPLAN_NACH_02919_DE.md). .19 Android **NOT_TESTED**. Adult ist der Kategoriename; alte Mengenangaben illustrativ. Keine Freigabe für Merge/Release/OTA. **Nachfolgende ältere Versions-/Abnahmeeinträge sind historisch und werden durch diesen aktuellen Status ergänzt.**

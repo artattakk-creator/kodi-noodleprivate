@@ -46,7 +46,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._art_selected=None;self._art_diagnostic=None
         self._append_future=None;self._append_context=None;self._append_failed=False
         self._append_advance=None;self._grid_return=None
-        self._playback_waiting=False;self._playback_seen=False
+        self._playback_waiting=False;self._playback_seen=False;self._autoplay_root=''
         self._episode_refs={};self.next_episode=None;self._episode_last_pos=0;self._episode_next_key=None
         self._lock=threading.RLock();self._pool=ThreadPoolExecutor(max_workers=2)
         self._art=queue.Queue(maxsize=3)
@@ -107,6 +107,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         self.getControl(400).setLabel(tr(32586))
         self.getControl(501).setLabel(tr(32587))
         if self._ready:
+            if self._chain_active():return
             # Kodi calls onInit again after returning from fullscreen video.
             from playback_exit import stop_owned
             from media_intent import cancel
@@ -484,6 +485,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         self.setFocusId(old_focus if old_focus in (300,400) else 300)
 
     def _play(self,item,kind,resume=False):
+        self._cancel_chain()
         if kind=='episode':
             from media_sequence import match
             episode=match(self.episodes,self.portal['id'],self.selected['sid'],item)
@@ -500,8 +502,10 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._pending_future=None;self._pending_apply=None
         from media_intent import begin
         self._play_intent=begin(self.portal['id'],kind,item['sid'])
+        self._autoplay_root=self._play_intent if kind=='episode' else ''
         url=self.router.url(action='media_play',pid=self.portal['id'],kind=kind,sid=item['sid'],
-            series_id=item.get('series_id'),season=item.get('season'),episode=item.get('episode'),intent=self._play_intent,resume='1' if resume else '0')
+            series_id=item.get('series_id'),season=item.get('season'),episode=item.get('episode'),intent=self._play_intent,resume='1' if resume else '0',
+            autoplay='1' if kind=='episode' else '0',autoplay_chain=self._autoplay_root)
         xbmc.executebuiltin('PlayMedia('+url+')')
 
     def onClick(self,controlId):
@@ -659,6 +663,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
                 from window_navigation import trace
                 trace('BACK',self.mode,key,self._dispatch)
                 from media_intent import cancel
+                self._cancel_chain()
                 cancel(self.portal['id'],self._play_intent)
                 from playback_exit import stop_owned
                 if stop_owned(pid=self.portal['id']): return
@@ -867,8 +872,32 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._grid_status()
         if self.getFocusId()==210 and self.rows:self._focus_item(selected)
 
+    def _cancel_chain(self):
+        from media_autoplay import request_cancel
+        request_cancel(getattr(self,'_autoplay_root',''),self.portal['id'])
+
+    def _chain_active(self):
+        root=getattr(self,'_autoplay_root','')
+        if not root:return False
+        from media_autoplay import view
+        state=view(root,self.portal['id'])
+        if not state:return False
+        self._play_intent=state['nonce'];self._playback_waiting=True
+        if state['phase']=='PLAYING':self._playback_seen=True
+        if self.selected and str(self.selected['sid'])==state.get('series_id'):
+            from media_sequence import match
+            episode=match(self.episodes,self.portal['id'],self.selected['sid'],state)
+            if episode:
+                self._episode_refs[(str(self.portal['id']),str(self.selected['sid']))]=episode
+                self.season=episode['season']
+                if self.season in getattr(self,'seasons',[]):self._season_cursor=self.seasons.index(self.season)
+                rows=[e for e in self.episodes if e['season']==self.season]
+                self._episode_cursor[self.season]=next(i for i,e in enumerate(rows) if e['sid']==episode['sid'])
+        return True
+
     def _poll_playback_return(self):
         if not self._playback_waiting or self._leaving or self._closed:return
+        if self._chain_active():return
         player=xbmc.Player()
         try:
             if player.isPlayingVideo():
@@ -897,6 +926,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
     def close(self):
         self._gui()
         if self._closed: return
+        self._cancel_chain()
         from media_intent import cancel
         cancel(self.portal['id'],self._play_intent)
         if self._append_future is not None:self._append_future.cancel()
