@@ -47,6 +47,9 @@ def begin(pid,kind,sid):
 
 
 def cancelled(session):
+    if session.get('autoplay_chain'):
+        from media_autoplay import cancelled as chain_cancelled
+        if chain_cancelled(session['autoplay_chain'],session.get('pid')):return True
     entries=_read(CANCELLED)
     return bool(isinstance(entries,list) and any(_valid(e,86400) and all(e[k]==session.get(k) for k in ('nonce','pid','sid')) for e in entries))
 

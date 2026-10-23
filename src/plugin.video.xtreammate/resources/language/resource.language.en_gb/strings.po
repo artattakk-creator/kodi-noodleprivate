@@ -2365,16 +2365,103 @@ msgctxt "#33427"
 msgid "Image bytes recorded in queue: {0} MiB · Limit: {1}"
 msgstr "Image bytes recorded in queue: {0} MiB · Limit: {1}"
 
+
+msgctxt "#33001"
+msgid "Pause"
+msgstr "Pause"
+
+msgctxt "#33002"
+msgid "-10 s"
+msgstr "-10 s"
+
+msgctxt "#33003"
+msgid "+30 s"
+msgstr "+30 s"
+
+msgctxt "#33004"
+msgid "Stop"
+msgstr "Stop"
+
+msgctxt "#33005"
+msgid "Audio track"
+msgstr "Audio track"
+
+msgctxt "#33006"
+msgid "Subtitles"
+msgstr "Subtitles"
+
+msgctxt "#33007"
+msgid "Subtitles on/off"
+msgstr "Subtitles on/off"
+
+msgctxt "#33008"
+msgid "Picture"
+msgstr "Picture"
+
+msgctxt "#33009"
+msgid "Audio settings"
+msgstr "Audio settings"
+
+msgctxt "#33010"
+msgid "Media information"
+msgstr "Media information"
+
+msgctxt "#33011"
+msgid "Back: hide controls · Stop: end this XCMate video"
+msgstr "Back: hide controls · Stop: end this XCMate video"
+
+msgctxt "#33012"
+msgid "XCMate media playback"
+msgstr "XCMate media playback"
+
+msgctxt "#33013"
+msgid "Time unavailable"
+msgstr "Time unavailable"
+
+msgctxt "#33014"
+msgid "Play"
+msgstr "Play"
+
+msgctxt "#33015"
+msgid "Action unavailable for this stream"
+msgstr "Action unavailable for this stream"
+
+
+msgctxt "#33501"
+msgid "Play next episode automatically"
+msgstr ""
+
+msgctxt "#33502"
+msgid "Autoplay: On"
+msgstr ""
+
+msgctxt "#33503"
+msgid "Autoplay: Off"
+msgstr ""
+
+msgctxt "#33504"
+msgid "Preparing next episode · Stop to end"
+msgstr ""
+
+msgctxt "#33505"
+msgid "Series finished"
+msgstr ""
+
+msgctxt "#33506"
+msgid "Autoplay stopped: episode or playback unavailable."
+msgstr ""
+
+
 msgctxt "#33601"
 msgid "Channel groups"
 msgstr ""
 
 msgctxt "#33602"
-msgid "Left at first programme: channel · Left again: groups · Up at first row: header · Blue: header · Back: groups"
+msgid "Left at first programme: channel · Left again: groups · Up at first row: header · Blue: header · Back: Home"
 msgstr ""
 
 msgctxt "#33603"
-msgid "OK: open group · Back: XCMate Home"
+msgid "OK: open group · Back: EPG"
 msgstr ""
 
 msgctxt "#33604"

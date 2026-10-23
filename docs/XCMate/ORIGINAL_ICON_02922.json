@@ -1,0 +1,16 @@
+{
+  "source_branch": "feat/xcmate-space-premium-installer",
+  "source_path": "themes/xcmate/space-premium/assets/branding/icon-512.png",
+  "source_commit": "3aa97ad0e6eb307eb861a76e59551d10966fa713",
+  "git_blob": "c6649e18f972a633f942b0010682c500239e7f42",
+  "destination": "src/plugin.video.xtreammate/icon.png",
+  "sha256": "81da1003a2753ec6afbdd50b2a320e738a2131ad9f0d76606da1babdd0d2f135",
+  "bytes": 402058,
+  "width": 512,
+  "height": 512,
+  "theme_independent": true,
+  "source_bytes": "PASS",
+  "generated": false,
+  "android_display": "NOT_TESTED",
+  "cache_deleted": false
+}

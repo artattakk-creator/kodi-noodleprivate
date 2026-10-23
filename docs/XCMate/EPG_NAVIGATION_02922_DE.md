@@ -1,6 +1,6 @@
 # XCMate 0.1.29.22 – EPG-Startgruppe, Gruppenansicht und Fokus (#88/#92)
 
-**Android: NOT_TESTED.** Eigener Branch `fix/xcmate-02922-guide-navigation`, Draft-PR auf main, ohne Autoplay-Code.
+**Android: NOT_TESTED.** Kumulativer Branch `fix/xcmate-02922-guide-navigation`, Draft-PR #110 auf main .21 einschließlich Autoplay/Player und Original-Icon. Direkter Updatepfad .21 → .22; Gesamtbericht `KUMULATIV_02922_DE.md`.
 
 ## Diagnose und Umsetzung
 
@@ -15,7 +15,7 @@ Eine eigenständige native Gruppenliste zeigt nur aktivierte Gruppen in gespeich
 - Programme: Rechts/Links zwischen Sendungen. **Links am ersten sichtbaren Programm** wechselt ohne Zeitversatz in die Sender-Spalte; **nochmals Links** an dieser definierten Sendergrenze öffnet Gruppen. Rechts aus der Sender-Spalte zurück zum gewählten Programm. OK am Sender öffnet das bestehende Sendermenü.
 - **Hoch aus der obersten sichtbaren Programmzeile → Kopfzeile**, unabhängig vom Senderoffset. Links/Rechts dort erreicht alle sechs nativen Buttons; **Runter → vorherige Rasterzeile**. Optional blaue Taste (`ACTION_BLUE=218`) direkt zur Kopfzeile, ausschließlich in diesem Fenster. Keine globale Keymap.
 - Vorherige Senderseiten bleiben erreichbar: aus der Kopfzeile nochmals Hoch oder in der Sender-Spalte über die obere Seitengrenze. Runter am unteren Rand lädt wie bisher die nächste begrenzte Acht-Sender-Seite.
-- **Zurück im Raster → Gruppen**, **Zurück in Gruppen → XCMate Home**. Ein unmittelbarer Back-Repeat nach Gruppenöffnung wird für 150 ms abgefangen; beim eigentlichen Schließen bleibt der Owner wie bisher noch drei Pump-Takte erhalten. Kein erneuter Playerstart.
+- **Zurück in Gruppen → vorherige EPG-Ansicht mit Sender-/Zeit-/Fokusposition**, **Zurück im Raster → XCMate Home**. Dies folgt dem neuen Arbeitsauftrag vom 23.10.2026. Ein unmittelbarer Back-Repeat nach Gruppenöffnung wird für 150 ms abgefangen; beim eigentlichen Schließen bleibt der Owner wie bisher noch drei Pump-Takte erhalten. Kein erneuter Playerstart.
 - Hintergrundrefresh aktualisiert Daten/Logos, lässt den aktuellen Header-/Sender-Fokus stehen. Kopfaktionen bleiben in der Kopfzeile, bis der Nutzer Runter wählt. Die zugrunde liegende horizontale UTC-Achse, DST-Tage, Programmlücken und vorhandenen Playback-Handoff bleiben erhalten.
 
 ## Lesbarkeit und Schutz
@@ -28,14 +28,10 @@ Artwork-Module, bestehende lokale Logos/Queue, bestätigter Logo-Refresh, Guide-
 
 ## Nachweise und Grenzen
 
-23 neue Hosttests mit echter SQLite und nativer Fokus-Simulation: 2.501 Sender, Startsender an Position 1.979 (Viewport 1.976, Zeile 3), keine Umordnung, falsche/fehlende Gruppen und Sender, leerer Zustand, reine Gruppenauswahl, 20 Wechsel mit exaktem Restore, alle sechs Header, Jetzt/20:15/Vortag/Folgetag, Blue, vorherige Senderseiten, Back-Repeat, stale Future, unveränderte Logos/DBs, Appearance-Kontrast und PNG-/XML-Layer. Die drei bestehenden Guide-Tests wurden nur an die beauftragte neue Back-Hierarchie und den nun tatsächlich fokussierten Startsender angepasst. Originale Freeze-Referenzen bleiben unverändert.
+26 EPG-Navigationstests (23 übernommene und drei neue Gruppen-Back-Fälle) mit echter SQLite und nativer Fokus-Simulation: 2.501 Sender, Startsender an Position 1.979 (Viewport 1.976, Zeile 3), keine Umordnung, falsche/fehlende Gruppen und Sender, leerer Zustand, reine Gruppenauswahl, 20 Wechsel mit exaktem Restore, alle sechs Header, Jetzt/20:15/Vortag/Folgetag, Blue, vorherige Senderseiten, Back-Repeat, stale Future, unveränderte Logos/DBs, Appearance-Kontrast und PNG-/XML-Layer. Der bestehende Guide-Back-Test bleibt auf direkter Home-Rückkehr aus dem Raster; der große Pagingtest berücksichtigt den nun tatsächlich fokussierten Startsender. Originale Freeze-Referenzen bleiben unverändert.
 
 Vollständige Suite: `TESTERGEBNISSE_02922.json` / `TESTLOG_02922.txt`. ZIP/CRC/Sourcebytes/Reproduktion und Python-3.11-Grammatik werden separat geprüft. Screenshot-/Skin-/Decoderwirkung ist keine Leistung der Host-Simulation: **Android NOT_TESTED**. Neuer realer Test muss Sender- und Sendungstext ausdrücklich getrennt bestätigen.
 
-## Gemeinsamer Stand und Schutz
+## Kumulative Basis und Schutz
 
-Basis ist `main` 0.1.29.20, Commit `b6407e750470c2b8dc250e1030ee0fceb147791e`.
-Android-Test 48 der .20: **10 PASS, 0 FAIL, 1 NOT_TESTED**. Bestätigt sind die tatsächlich geprüften Grundpfade, nicht alle EPG-Oberflächenanforderungen.
-Nachtrag des Nutzers: **Kein erreichbarer Artwork-Downloadpause-Button vorhanden. Test E ist nicht durchführbar (BLOCKED_UI / NOT_TESTED)**. Der boolesche Backend-Schalter in der nativen `resources/settings.xml` ersetzt keinen sichtbaren Zugang im eigenen XCMate-Menü. `home_menu.settings(storage)` bietet Status, Wiederholung, DB-Zustand und weitere Speicherpunkte, aber keinen Pause-Schalter. Fast alle Bilder sind bereits heruntergeladen; kein Nachladen, Löschen oder Reset für diesen Test erforderlich. Dieser Menü-Nachtrag wird separat geführt und nicht in einen fachfremden Test-PR gemischt.
-
-Beide Kandidaten stammen direkt von .20 und sind **unabhängig**. .21 enthält Autoplay, .22 ausschließlich den EPG-Fix und deshalb **kein .21-Autoplay**. Spätere gemeinsame Integration erst nach separater Android-Abnahme und ausdrücklicher Freigabe. Kein Merge, Release, Tag oder produktiver Repository-Index wird durch diese Arbeit ausgelöst. .20 und ihre ZIP-Datei bleiben unverändert. Keine Keymaps, Portale, Favoriten, Resume-, Gesehen-, Mapping-, XMLTV- oder Artwork-Daten löschen/zurücksetzen. Vorhandene privaten Provideradressen niemals in Testberichte kopieren.
+Aktueller main .21: `3307e006a9de9fd53236ec881191851291731c98`. Sämtliche .21-Autoplay-/Player-Funktionen bleiben erhalten, mit neuer EPG-Oberfläche und Original-Icon. Direktes Update von .21, kein Downgrade oder Deinstallieren. Frühere isolierte .22-ZIPs sind überholt. Siehe `KUMULATIV_02922_DE.md` und `UPDATEPFAD_02921_02922_DE.md`. Kein Reset, keine Portal-/EPG-Zuordnungsänderung oder Keymap-Änderung; Artwork-Pause weiterhin BLOCKED_UI / NOT_TESTED.

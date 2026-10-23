@@ -29,6 +29,11 @@ class GuideNavigationTests(Fixture,unittest.TestCase):
 
     def key(self,w,k):w.native(k);self.settle(w)
 
+    def groups(self,w):
+        self.key(w,218)
+        while w.getFocusId()!=313:self.key(w,2)
+        self.key(w,7)
+
     def large(self,size=2501,start=1979):
         self.index.import_group('p','live','a',[dict(stream_id=str(i),category_id='a',name='Channel '+str(i),epg_channel_id='xml') for i in range(size)])
         self.index.import_group('p','live','b',[dict(stream_id='b'+str(i),category_id='b',name='Group B '+str(i),epg_channel_id='xml') for i in range(13)])
@@ -80,19 +85,22 @@ class GuideNavigationTests(Fixture,unittest.TestCase):
         self.key(w,1);self.assertEqual(w.getFocusId(),730)
 
     def test_group_select_contains_only_selected_group_and_back_restores_group_focus(self):
-        self.large(start=0);w=self.window();self.key(w,92);self.key(w,4)
+        self.large(start=0);w=self.window();self.groups(w);self.key(w,4)
         w.native(7)
         self.assertEqual(w.rows,[]);self.assertEqual(w._cells,{})
         self.assertTrue(all(w.getControl(700+r).text=='' for r in range(8)))
         self.settle(w)
         self.assertEqual(w.category,'b');self.assertEqual(w.total,13);self.assertEqual(w.mode,'grid')
         self.assertTrue(all(r['channel']['sid'].startswith('b') for r in w.rows));self.assertFalse(w.getControl(200).visible)
-        self.key(w,92);self.assertEqual(w.getControl(200).getSelectedPosition(),1)
+        self.groups(w);self.assertEqual(w.getControl(200).getSelectedPosition(),1)
 
-    def test_back_is_grid_groups_home_and_double_back_is_absorbed(self):
-        w=self.window();w._running=True
-        self.key(w,92);self.assertEqual(w.mode,'groups');self.key(w,92);self.assertFalse(w._leaving)
-        w._group_back_after=0;self.key(w,92);self.assertTrue(w._leaving);self.assertFalse(w._closed)
+    def test_back_closes_group_browser_to_epg_and_repeat_does_not_exit_home(self):
+        w=self.window();w._running=True;self.groups(w)
+        self.assertEqual(w.mode,'groups');self.key(w,92);self.assertEqual(w.mode,'groups')
+        w._group_back_after=0;self.key(w,92)
+        self.assertEqual(w.mode,'grid');self.assertFalse(w._closed);self.assertEqual(w.getFocusId(),313)
+        self.key(w,92);self.assertFalse(w._leaving)
+        w._input_after=0;self.key(w,92);self.assertTrue(w._leaving);self.assertFalse(w._closed)
         self.key(w,92);self.assertFalse(w._closed);w._leave_after=0;w._owner_tick();self.assertTrue(w._closed)
         self.assertTrue(w._return_home);self.assertFalse(self.builtins)
 
@@ -100,8 +108,8 @@ class GuideNavigationTests(Fixture,unittest.TestCase):
         self.large(start=1979);w=self.window();self.key(w,2)
         snapshot=(w.category,w.offset,w.row,w.cursor,w.origin)
         for _ in range(20):
-            self.key(w,92);self.assertEqual(w.mode,'groups');self.key(w,4);self.key(w,7)
-            self.assertEqual(w.category,'b');self.key(w,92);self.key(w,3);self.key(w,7)
+            self.groups(w);self.assertEqual(w.mode,'groups');self.key(w,4);self.key(w,7)
+            self.assertEqual(w.category,'b');self.groups(w);self.key(w,3);self.key(w,7)
             self.assertEqual((w.category,w.offset,w.row,w.cursor,w.origin),snapshot)
         self.assertFalse(w._closed);self.assertFalse(self.builtins);sys.modules['utils'].http_get.assert_not_called()
 
@@ -188,3 +196,23 @@ class GuideNavigationTests(Fixture,unittest.TestCase):
         with mock.patch.object(art,'local_art',return_value={'thumb':'/local/persistent.img'}):w._refresh_logos()
         self.assertEqual(w.getControl(720).image,'/local/persistent.img');self.assertEqual(Path(self.store.path()).read_bytes(),before);self.assertEqual(self.portal,portal)
         self.assertFalse(self.builtins);sys.modules['utils'].http_get.assert_not_called()
+
+    def test_group_back_restores_sender_view_and_time_without_sql_or_source_changes(self):
+        self.large();w=self.window();self.key(w,1)
+        snapshot=(w.category,w.offset,w.row,w.cursor,w.origin,w.getFocusId())
+        self.key(w,1);self.assertEqual(w.mode,'groups');w._group_back_after=0
+        with mock.patch.object(self.data,'page',side_effect=AssertionError('Back must use cached view')):
+            self.key(w,92)
+        self.assertEqual((w.category,w.offset,w.row,w.cursor,w.origin,w.getFocusId()),snapshot)
+        self.assertFalse(w._closed);self.assertFalse(self.options)
+
+    def test_group_back_after_category_disappears_uses_allowed_fallback_without_rewriting_start(self):
+        self.large();w=self.window();before=dict(self.portal);self.groups(w)
+        w.groups=[g for g in w.groups if g['cid']=='b'];w._group_back_after=0
+        self.key(w,92);self.assertEqual(w.mode,'grid');self.assertEqual(w.category,'b')
+        self.assertTrue(all(row['channel']['category_id']=='b' for row in w.rows));self.assertEqual(self.portal,before)
+
+    def test_group_back_cancels_pending_groups_future_and_never_reopens_browser(self):
+        w=self.window();w._show_groups();future=w._pending_future;w._group_back_after=0
+        w.native(92);self.assertTrue(future.cancelled());self.settle(w)
+        self.assertEqual(w.mode,'grid');self.assertFalse(w.getControl(200).visible);self.assertFalse(w._closed)

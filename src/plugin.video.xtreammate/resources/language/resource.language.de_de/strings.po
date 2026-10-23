@@ -2365,17 +2365,104 @@ msgctxt "#33427"
 msgid "Image bytes recorded in queue: {0} MiB · Limit: {1}"
 msgstr "In Queue erfasste Bildbytes: {0} MiB · Limit: {1}"
 
+
+msgctxt "#33001"
+msgid "Pause"
+msgstr "Pause"
+
+msgctxt "#33002"
+msgid "-10 s"
+msgstr "-10 s"
+
+msgctxt "#33003"
+msgid "+30 s"
+msgstr "+30 s"
+
+msgctxt "#33004"
+msgid "Stop"
+msgstr "Stoppen"
+
+msgctxt "#33005"
+msgid "Audio track"
+msgstr "Tonspur"
+
+msgctxt "#33006"
+msgid "Subtitles"
+msgstr "Untertitel"
+
+msgctxt "#33007"
+msgid "Subtitles on/off"
+msgstr "Untertitel an/aus"
+
+msgctxt "#33008"
+msgid "Picture"
+msgstr "Bild"
+
+msgctxt "#33009"
+msgid "Audio settings"
+msgstr "Toneinstellungen"
+
+msgctxt "#33010"
+msgid "Media information"
+msgstr "Medieninformation"
+
+msgctxt "#33011"
+msgid "Back: hide controls · Stop: end this XCMate video"
+msgstr "Zurück: Leiste ausblenden · Stoppen: dieses XCMate-Video beenden"
+
+msgctxt "#33012"
+msgid "XCMate media playback"
+msgstr "XCMate-Medienwiedergabe"
+
+msgctxt "#33013"
+msgid "Time unavailable"
+msgstr "Zeit nicht verfügbar"
+
+msgctxt "#33014"
+msgid "Play"
+msgstr "Abspielen"
+
+msgctxt "#33015"
+msgid "Action unavailable for this stream"
+msgstr "Aktion für diesen Stream nicht verfügbar"
+
+
+msgctxt "#33501"
+msgid "Play next episode automatically"
+msgstr "Nächste Folge automatisch"
+
+msgctxt "#33502"
+msgid "Autoplay: On"
+msgstr "Autoplay: Ein"
+
+msgctxt "#33503"
+msgid "Autoplay: Off"
+msgstr "Autoplay: Aus"
+
+msgctxt "#33504"
+msgid "Preparing next episode · Stop to end"
+msgstr "Nächste Folge wird vorbereitet · Stop zum Beenden"
+
+msgctxt "#33505"
+msgid "Series finished"
+msgstr "Serie beendet"
+
+msgctxt "#33506"
+msgid "Autoplay stopped: episode or playback unavailable."
+msgstr "Autoplay beendet: Folge oder Wiedergabe nicht verfügbar."
+
+
 msgctxt "#33601"
 msgid "Channel groups"
 msgstr "Sendergruppen"
 
 msgctxt "#33602"
-msgid "Left at first programme: channel · Left again: groups · Up at first row: header · Blue: header · Back: groups"
-msgstr "Links am ersten Programm: Sender · Nochmals Links: Gruppen · Oben: Kopfzeile · Blau: Kopfzeile · Zurück: Gruppen"
+msgid "Left at first programme: channel · Left again: groups · Up at first row: header · Blue: header · Back: Home"
+msgstr "Links am ersten Programm: Sender · Nochmals Links: Gruppen · Oben: Kopfzeile · Blau: Kopfzeile · Zurück: Home"
 
 msgctxt "#33603"
-msgid "OK: open group · Back: XCMate Home"
-msgstr "OK: Gruppe öffnen · Zurück: XCMate Home"
+msgid "OK: open group · Back: EPG"
+msgstr "OK: Gruppe öffnen · Zurück: EPG"
 
 msgctxt "#33604"
 msgid "No enabled channel groups available."

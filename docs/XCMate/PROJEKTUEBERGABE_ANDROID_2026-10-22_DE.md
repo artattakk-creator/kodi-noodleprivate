@@ -1,10 +1,20 @@
+# Aktueller Stand 23.10.2026 – kumulative .22 auf main .21
+
+Maßgeblich: `UPDATEPFAD_02921_02922_DE.md`. Main `3307e006a9de9fd53236ec881191851291731c98` enthält .21 einschließlich Autoplay und Publishing. Draft #110 wird kumulativ zu .22 überarbeitet: sämtliche .21-Funktionen + EPG-Startgruppe/Gruppen/Fokus + Original-Icon. Direkt .21 → .22 installieren, **kein Downgrade oder Deinstallieren**. Alte isolierte .22-ZIPs sind ungültige Updatekandidaten; neue Prüfsumme aus PR #110 verwenden.
+
+Gesamtbericht `KUMULATIV_02922_DE.md`; neue Anleitung `ANDROID_TEST_02922_DE.md`; frische kumulative Ergebnisse `TESTERGEBNISSE_02922.json` / `TESTLOG_02922.txt`. Android durchgängig NOT_TESTED. Artwork-Pause bleibt BLOCKED_UI / NOT_TESTED. Keine Produktivfreigabe/Release/OTA oder Merge nach main.
+
+---
+
+## Historische Übergabe (durch aktuellen Updatepfad ersetzt)
+
 # Aktueller Nachtrag nach Android-Test 48 (23.10.2026)
 
 Stabil: main 0.1.29.20, Test 48 **10 PASS / 0 FAIL / 1 NOT_TESTED**. Nutzerpräzisierung: Artwork-Pause-Test mangels sichtbarem Schalter nicht durchführbar; kein Datenreset erforderlich.
 
-Dieser Branch enthält ausschließlich **0.1.29.22 – EPG-Navigation/Lesbarkeit (#88/#92)**. Android **NOT_TESTED**. Der andere Kandidat ist eine unabhängige Entwicklung direkt auf .20. Keine Integration, Veröffentlichung oder Merge freigegeben.
+Dieser Branch enthält ausschließlich **0.1.29.21 – Serien-Autoplay (#85)**. Android **NOT_TESTED**. Der andere Kandidat ist eine unabhängige Entwicklung direkt auf .20. Keine Integration, Veröffentlichung oder Merge freigegeben.
 
-Details: `EPG_NAVIGATION_02922_DE.md`, `ANDROID_TEST_02922_DE.md`, `TESTERGEBNISSE_02922.json`, `TESTLOG_02922.txt`.
+Details: `AUTOPLAY_02921_DE.md`, `ANDROID_TEST_02921_DE.md`, `TESTERGEBNISSE_02921.json`, `TESTLOG_02921.txt`.
 
 ---
 

@@ -14,7 +14,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._configure_owner();self.router,self.portal=router,portal
         self._pool=ThreadPoolExecutor(max_workers=1);self._generation=0;self._closed=False;self._ready=False
         self._loading=False;self._leaving=False;self._cells={};self.rows=[];self.groups=[];self.category=''
-        self.mode='grid';self._focus_zone='grid';self._header=312;self._views={};self._group_back_after=0
+        self.mode='grid';self._focus_zone='grid';self._header=312;self._views={};self._group_back_after=0;self._input_after=0;self._group_return=None
         self.offset=0;self.total=0;self.row=0;self.cursor=int(time.time());self.origin=self.cursor//1800*1800
         self._last_refresh=0;self._art_revision=0;self._short_revision='';self._return_home=False;self._play_request=None;self._diagnosing=False
         from guide_playback import player_state
@@ -229,7 +229,9 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         self.getControl(201).setVisible(not visible and not self.groups)
 
     def _show_groups(self,refresh=True):
-        if self.mode=='grid':self._views[self.category]=(self.offset,self.row,self.cursor,self.origin,self._focus_zone)
+        if self.mode=='grid':
+            self._views[self.category]=(self.offset,self.row,self.cursor,self.origin,self._focus_zone)
+            self._group_return=(self.category,self.offset,self.row,self.cursor,self.origin,self._focus_zone,self._header,self.rows,self.total)
         self.mode='groups';self._loading=False;self._diagnosing=False
         self._generation+=1
         if self._pending_future is not None:self._pending_future.cancel()
@@ -275,6 +277,27 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         self.rows=[];self.total=0;self._render()
         self.getControl(501).setLabel(tr(33602));self._load()
 
+    def _return_to_grid(self):
+        """Cancel group browsing; restore the exact view without changing settings."""
+        snapshot=self._group_return
+        if not snapshot or not self.groups:self._leave_home();return
+        self._generation+=1
+        if self._pending_future is not None:self._pending_future.cancel()
+        self._pending_future=None;self._pending_apply=None
+        self._diagnosing=False;self._loading=False
+        (self.category,self.offset,self.row,self.cursor,self.origin,self._focus_zone,
+         self._header,self.rows,self.total)=snapshot
+        self._group_return=None;self.mode='grid';self._input_after=time.monotonic()+.15
+        self._grid_visibility(True);self.getControl(202).setVisible(False)
+        self.getControl(501).setLabel(tr(33602))
+        missing=self.category not in {g['cid'] for g in self.groups}
+        if missing:
+            self.category=self.groups[0]['cid'];self.offset=self.row=0
+            self.rows=[];self.total=0;self._focus_zone='grid'
+        if self._focus_zone=='header':self.setFocusId(self._header)
+        self._render()
+        if missing:self._load()
+
     def _header_focus(self):
         self._focus_zone='header';self.setFocusId(self._header)
 
@@ -290,8 +313,9 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         if self._closed or self._leaving:return
         key=action.getId();focus=self.getFocusId()
         if key in (9,10,92):
-            if self.mode=='grid':self._show_groups()
-            elif time.monotonic()>=self._group_back_after:self._leave_home()
+            if time.monotonic()<self._input_after:return
+            if self.mode=='grid':self._leave_home()
+            elif time.monotonic()>=self._group_back_after:self._return_to_grid()
             return
         if self.mode=='groups':return
         if 310<=focus<=315:self._focus_zone='header';self._header=focus
