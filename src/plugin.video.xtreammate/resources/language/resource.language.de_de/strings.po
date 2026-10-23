@@ -2364,3 +2364,23 @@ msgstr "Bilddownloads pausieren"
 msgctxt "#33427"
 msgid "Image bytes recorded in queue: {0} MiB · Limit: {1}"
 msgstr "In Queue erfasste Bildbytes: {0} MiB · Limit: {1}"
+
+msgctxt "#33601"
+msgid "Channel groups"
+msgstr "Sendergruppen"
+
+msgctxt "#33602"
+msgid "Left at first programme: channel · Left again: groups · Up at first row: header · Blue: header · Back: groups"
+msgstr "Links am ersten Programm: Sender · Nochmals Links: Gruppen · Oben: Kopfzeile · Blau: Kopfzeile · Zurück: Gruppen"
+
+msgctxt "#33603"
+msgid "OK: open group · Back: XCMate Home"
+msgstr "OK: Gruppe öffnen · Zurück: XCMate Home"
+
+msgctxt "#33604"
+msgid "No enabled channel groups available."
+msgstr "Keine aktivierten Sendergruppen vorhanden."
+
+msgctxt "#33605"
+msgid "XCMate Home"
+msgstr "XCMate Home"

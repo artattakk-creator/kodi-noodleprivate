@@ -59,11 +59,13 @@ class GridTests(Fixture,unittest.TestCase):
         w=self.window();cursor=w.cursor;self.dialog.select.return_value=0
         w.onClick(w.getFocusId());self.dialog.textviewer.assert_called_once();self.assertFalse(w._closed);self.assertEqual(w.cursor,cursor)
         self.dialog.select.return_value=-1;self.key(w,117);self.assertFalse(w._closed)
-        self.key(w,92);self.assertTrue(w._closed)
+        self.key(w,92);self.assertEqual(w.mode,'groups');self.assertFalse(w._closed)
+        w._group_back_after=0;self.key(w,92);self.assertTrue(w._closed)
 
     def test_over_2400_channels_render_only_eight_and_page_synchronously(self):
         rows=[dict(stream_id=str(i),category_id='a',name='Channel '+str(i),epg_channel_id='xml') for i in range(2501)]
         self.index.import_group('p','live','a',rows)
+        self.portal['start_stream_id']='0'
         w=self.window();self.assertEqual(w.total,2501);self.assertEqual(len(w.rows),8)
         for _ in range(8):self.key(w,4)
         self.assertEqual(w.offset,8);self.assertEqual(w.row,0);self.assertEqual(w.rows[0]['channel']['sid'],'8')
@@ -103,7 +105,9 @@ class GridTests(Fixture,unittest.TestCase):
 
     def test_fast_double_back_keeps_owner_until_transition_finishes(self):
         w=self.window();w._running=True
-        self.key(w,92);self.assertTrue(w._leaving);self.assertFalse(w._closed)
+        self.key(w,92);self.assertEqual(w.mode,'groups');self.assertFalse(w._closed)
+        self.key(w,92);self.assertFalse(w._leaving)
+        w._group_back_after=0;self.key(w,92);self.assertTrue(w._leaving);self.assertFalse(w._closed)
         self.key(w,92);self.assertFalse(w._closed);self.assertFalse(self.builtins)
         w._leave_after=0;w._owner_tick();self.assertTrue(w._closed)
 

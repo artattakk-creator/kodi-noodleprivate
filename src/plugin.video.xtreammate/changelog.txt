@@ -1,3 +1,10 @@
+0.1.29.22 (isolated EPG navigation test candidate; baseline main .20)
+- Open only the enabled saved start group and reveal the saved start channel at its original ordinal, with deterministic group fallback and no persisted setting changes.
+- Separate enabled-channel-groups screen, native OK selection, per-group viewport restoration, staged Back to groups/Home and input guard against repeat Back.
+- Left from first visible programme enters the sender column; Left at sender boundary opens groups. Up from first visible programme row reaches all six headers; Down returns, Blue is an optional local shortcut. Prior channel pages remain reachable via sender Up/header Up.
+- Explicit white normal/focused button text, transparent neon frames, sender frame behind logo/name and full selected channel/programme footer; preserve focus on background refresh, including custom appearance profiles.
+- Read-only channel ordinal lookup; no changes to confirmed EPG playback, artwork/logo queue, XMLTV feeds/mapping, providers, media playback, global keymaps or stored user data. Android NOT_TESTED.
+
 0.1.29.20 (isolated artwork test candidate on .19)
 - Automatic artwork storage by available device capacity; configurable free reserve (1024 MiB default, at least 32). Explicit existing image limits retained; 0 means automatic, no 4096 MiB ceiling.
 - Separate provider-source, queue, network, invalid-image, cache, configured-budget and physical-storage diagnostics; no private URLs in status/logs.
