@@ -2696,3 +2696,95 @@ msgstr "98 Originalgrafiken, Installation nur in XCMate. Kein Wechsel des Kodi-S
 msgctxt "#33813"
 msgid "Manage designs"
 msgstr "Designs verwalten"
+
+msgctxt "#33900"
+msgid "LIVE TV CHANNELS"
+msgstr "LIVE-TV-SENDER"
+
+msgctxt "#33901"
+msgid "MOVIES"
+msgstr "FILME"
+
+msgctxt "#33902"
+msgid "SERIES"
+msgstr "SERIEN"
+
+msgctxt "#33903"
+msgid "Search results"
+msgstr "Suchergebnisse"
+
+msgctxt "#33904"
+msgid "Loading local index …"
+msgstr "Lokaler Index wird geladen …"
+
+msgctxt "#33905"
+msgid "Now"
+msgstr "Jetzt"
+
+msgctxt "#33906"
+msgid "Local search index unavailable. Retry."
+msgstr "Lokaler Suchindex nicht verfügbar. Erneut versuchen."
+
+msgctxt "#33907"
+msgid "No results"
+msgstr "Keine Treffer"
+
+msgctxt "#33908"
+msgid "Current EPG unavailable; searching channel names."
+msgstr "EPG-Jetzt nicht verfügbar; Suche nach Sendernamen."
+
+msgctxt "#34000"
+msgid "Search channel for manual recording"
+msgstr "Sender für Sofortaufnahme suchen"
+
+msgctxt "#34001"
+msgid "Select channel (up to 100 results)"
+msgstr "Sender wählen (bis zu 100 Treffer)"
+
+msgctxt "#34002"
+msgid "Maximum recording duration"
+msgstr "Maximale Aufnahmedauer"
+
+msgctxt "#34003"
+msgid "{} minutes"
+msgstr "{} Minuten"
+
+msgctxt "#34004"
+msgid "An additional stream connection will be opened. Your provider must permit it. Start recording independently of the player?"
+msgstr "Eine zusätzliche Streamverbindung wird geöffnet. Der Anbieter muss sie erlauben. Aufnahme unabhängig vom Player starten?"
+
+msgctxt "#34005"
+msgid "Test feature: local writable storage with hardlink support only; no SMB/VFS/FAT32."
+msgstr "Testfunktion: nur lokaler beschreibbarer Speicher mit Hardlink-Unterstützung; kein SMB/VFS/FAT32."
+
+msgctxt "#34006"
+msgid "Recording requested. Check status under Manual recordings."
+msgstr "Aufnahme angefordert. Status unter Sofortaufnahmen prüfen."
+
+msgctxt "#34007"
+msgid "No manual recordings."
+msgstr "Keine Sofortaufnahmen vorhanden."
+
+msgctxt "#34008"
+msgid "Manual recordings / Stop / Play"
+msgstr "Sofortaufnahmen / Stoppen / Abspielen"
+
+msgctxt "#34009"
+msgid "Finish recording safely now? The player remains unchanged."
+msgstr "Aufnahme jetzt sicher abschließen? Der Player bleibt unverändert."
+
+msgctxt "#34010"
+msgid "Play completed local recording?"
+msgstr "Fertige lokale Aufnahme abspielen?"
+
+msgctxt "#34011"
+msgid "Native Direct-TS manual recording (test candidate): Start/Stop without an FFmpeg app, timers or media manager."
+msgstr "Native Direct-TS-Sofortaufnahme (Testkandidat): Start/Stop ohne FFmpeg-App, Timer oder Medienmanager."
+
+msgctxt "#34012"
+msgid "Recording action unavailable or cancelled. Check storage and recording status."
+msgstr "Aufnahmeaktion nicht möglich oder abgebrochen. Speicher und Aufnahmestatus prüfen."
+
+msgctxt "#34013"
+msgid "Start manual recording"
+msgstr "Sofortaufnahme starten"

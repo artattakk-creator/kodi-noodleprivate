@@ -5,6 +5,7 @@ metadata and images are prepared by bounded workers; callbacks only use views.
 """
 from localization import tr
 from owner_dispatch import OwnerDispatch,native_init,open_owned_window
+from media_search import SearchMixin
 import json
 import os
 import queue
@@ -21,7 +22,7 @@ PAGE=24
 WINDOW_ITEMS=240
 
 
-class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
+class MediaWindow(SearchMixin,OwnerDispatch,xbmcgui.WindowXML):
     def configure(self,router,portal,kind,sid='',favourites=False):
         self._configure_owner()
         from theme_render import snapshot
@@ -121,7 +122,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
     def _valid_focus(self,native=True):
         candidates=([120,400,112,111,110] if self.mode=='landing' else
                     [200,210,400] if self.mode in ('grid','groups') else
-                    [300,400] if self.mode=='detail' else [330,340,400] if self.mode=='episodes' else [330,400])
+                    [300,400] if self.mode=='detail' else [700,701,702,710,720,721,400] if self.mode=='search' else [330,340,400] if self.mode=='episodes' else [330,400])
         result=[]
         for cid in candidates:
             if cid==110 and not self.rows:continue
@@ -131,6 +132,11 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             if cid==300 and not self.actions:continue
             if cid==330 and not self.getControl(330).size():continue
             if cid==340 and self.next_episode is None:continue
+            if cid==710 and (not getattr(self,'_search_rows',[]) or getattr(self,'_search_loading',False)):continue
+            if cid==720 and not getattr(self,'_search_offset',0):continue
+            if cid==721:
+                section=getattr(self,'_search_data',{}).get(getattr(self,'_search_kind','vod'),{})
+                if not section.get('total') or self._search_offset+len(self._search_rows)>=section['total']:continue
             control=self.getControl(cid)
             if not native or control.isVisible() and xbmc.getCondVisibility('Control.IsEnabled({})'.format(cid)):result.append(cid)
         return result
@@ -169,6 +175,10 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
 
     def _query_failed(self,exc):
         self._gui()
+        if self.mode=='search':
+            self._search_loading=False
+            from media_search import mark
+            mark('SEARCH_WORKER_FAILED',self._search_correlation)
         self.getControl(102).setLabel(tr(32610))
 
     def _initial(self):
@@ -232,6 +242,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
 
     def _owner_tick(self):
         self._gui()
+        self._search_tick()
         self._resume_focus()
         self._poll_playback_return()
         if self._playback_waiting and self._playback_seen:return
@@ -398,6 +409,8 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
             self.getControl(210).setPosition(320 if expanded else 44,174)
             self.getControl(210).setWidth(916 if expanded else 1192)
             self._cols=4 if expanded else 6
+        for cid in (700,701,702,710,720,721):self.getControl(cid).setVisible(mode=='search')
+        if mode=='search':self.getControl(330).setVisible(False)
         # Kodi's default focus must never remain on the now hidden landing button.
         primary=300 if mode=='detail' else 330 if mode in ('seasons','episodes') else self.getFocusId()
         self.setFocusId(self._mode_focus.get(mode,primary))
@@ -554,6 +567,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         with self._lock:
             self._resume_focus()
             if self._focus_pending is not None:return
+            if self._search_click(controlId):return
             if controlId==400:
                 if self.getFocusId()==400 and self._mode_focus.get(self.mode)==400:self._search()
                 return
@@ -720,6 +734,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         key=action.getId()
         if self._closed:return
         with self._lock:
+            if self._search_action(key):return
             if key in (9,10,92):
                 from window_navigation import trace
                 trace('BACK',self.mode,key,self._dispatch)
@@ -985,10 +1000,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         elif self.mode=='seasons':self._fill(330,self._season_rows());self.setFocusId(330)
 
     def _search(self):
-        query=xbmcgui.Dialog().input(tr(32534))
-        if query.strip():
-            self._next_route=self.router.url(action='global_search',pid=self.portal['id'],q=query[:200])
-            self.close()
+        self._open_search()
 
     def close(self):
         self._gui()
@@ -1001,9 +1013,16 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._closed=True;self._generation+=1;self._watch_stop.set()
         self._pool.shutdown(wait=False,cancel_futures=True)
         super().close()
+        self._search_closed()
 
 
 def open_media(router,portal,kind,sid='',favourites=False):
-    window=open_owned_window(MediaWindow,'XCMateMedia.xml',router,portal,kind,sid,favourites)
-    if window._next_route:
-        xbmc.executebuiltin('Container.Update('+window._next_route+')')
+    return open_owned_window(MediaWindow,'XCMateMedia.xml',router,portal,kind,sid,favourites)
+
+
+def open_search(router,portal,query=None):
+    class SearchWindow(MediaWindow):
+        def configure(self,*args,**kwargs):
+            super().configure(*args,**kwargs)
+            self._search_startup=(query,);self._search_root=True
+    return open_owned_window(SearchWindow,'XCMateMedia.xml',router,portal,'vod')

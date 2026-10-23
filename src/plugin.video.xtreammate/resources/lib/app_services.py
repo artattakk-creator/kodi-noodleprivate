@@ -96,6 +96,8 @@ def _run():
 
 def poll():
     global _worker
+    from capture_service import poll as poll_captures
+    poll_captures()
     with _guard:
         if _stop.is_set():return
         if _worker is None or not _worker.is_alive():
@@ -116,6 +118,8 @@ def shutdown():
     Already running non-cancellable HTTP may outlive this bounded join. That
     limitation is reported explicitly, rather than claiming a forced stop.
     """
+    from capture_service import shutdown as shutdown_captures
+    shutdown_captures()
     with _guard:
         _stop.set();worker=_worker
     if worker is not None and worker is not threading.current_thread():worker.join(timeout=.2)
