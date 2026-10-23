@@ -76,7 +76,20 @@ class MediaRails299(Fixture,unittest.TestCase):
                     actual=next(n for n in module.body if isinstance(n,ast.FunctionDef) and n.name==method)
                     self.assertEqual(ast.dump(actual,include_attributes=False),expected,name+':'+method)
                 continue
+            if name=='playback_exit.py':
+                # #85 explicit exception: cancellation before checkpoint/stop.
+                hook="            if token[1].get('autoplay_chain'):\n                from media_autoplay import request_cancel\n                request_cancel(token[1]['autoplay_chain'],token[1]['pid'])\n"
+                self.assertEqual(source.count(hook.encode()),1);source=source.replace(hook.encode(),b'')
             if name=='media_progress.py':
+                # #85 resolver metadata/cancellation and verified ordering are
+                # intentional; retain the original full-module baseline hash.
+                additions=[
+                    "    chain=str(router._params.get('autoplay_chain') or request)\n    from media_autoplay import cancelled as chain_cancelled\n    if kind=='episode' and chain_cancelled(chain,portal['id']):\n        xbmcplugin.setResolvedUrl(router._handle,False,xbmcgui.ListItem());return\n",
+                    "    session['title']=str(record.get('name') or '')[:512]\n    session['autoplay']=bool(kind=='episode' and request and router._params.get('autoplay')=='1')\n    if session['autoplay']:session['autoplay_chain']=chain\n    try:\n        from media_art import local_art\n        session['poster']=local_art(record)['poster']\n    except (OSError,ValueError,RuntimeError):pass\n"]
+                for addition in additions:
+                    self.assertEqual(source.count(addition.encode()),1);source=source.replace(addition.encode(),b'')
+                source=source.replace(b'from media_sequence import records',b'from media_data import episode_records')
+                source=source.replace(b"records(data,portal['id'],series_id)",b'episode_records(data,series_id)')
                 hook="    if kind=='vod':\n        from media_continue import reveal\n        try:reveal(portal['id'],sid)\n        except (OSError,sqlite3.Error):pass  # Playback remains available on read-only/full storage.\n"
                 self.assertEqual(source.count(hook.encode()),1);source=source.replace(hook.encode(),b'')
             self.assertEqual(hashlib.sha256(source).hexdigest(),sha,name)
@@ -96,7 +109,16 @@ class MediaRails299(Fixture,unittest.TestCase):
             elif name=='_play':
                 original=next(i for i,n in enumerate(fn.body) if isinstance(n,ast.ImportFrom) and n.module=='media_intent')
                 del fn.body[:original]
+                # Only session root + explicit episode-mode route arguments.
+                assignment=next(n for n in fn.body if isinstance(n,ast.Assign) and ast.unparse(n.targets[0])=='self._autoplay_root')
+                fn.body.remove(assignment)
+                for call in ast.walk(fn):
+                    if isinstance(call,ast.Call) and ast.unparse(call.func)=='self.router.url':
+                        self.assertEqual({k.arg for k in call.keywords}&{'autoplay','autoplay_chain'},{'autoplay','autoplay_chain'})
+                        call.keywords=[k for k in call.keywords if k.arg not in ('autoplay','autoplay_chain')]
             elif name=='close':
+                self.assertEqual(ast.unparse(fn.body[2]),'self._cancel_chain()')
+                del fn.body[2]
                 del fn.body[4:6]
             self.assertEqual(ast.dump(fn,include_attributes=False),signature,name)
 
