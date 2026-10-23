@@ -1,5 +1,7 @@
 # XCMate 0.1.29.25 – Android-Abnahme Lightweight / letzte Releases
 
+> **Abnahme vom 23.10.2026 liegt vor:** [Ergebnisse .25 Lightweight – 23 PASS / 3 FAIL / 1 NOT_TESTED](ANDROID_ABNAHMEERGEBNISSE_LIGHTWEIGHT_02925_20261023_DE.md). Die folgende Matrix ist der ursprüngliche **Testplan** und keine Aussage über den aktuellen PASS-Status. Space Premium bleibt ausgeschlossen.
+
 **Stand:** 23.10.2026  
 **Gerät:** Android 13 RK3528 ARM32, Kodi 21.2 Omega, Titan BINGIE MOD 2.2.3, IR-Fernbedienung.  
 **Installierte Testversion:** 0.1.29.25 (reguläres GS Media Repository), Basis .21–.25.  
