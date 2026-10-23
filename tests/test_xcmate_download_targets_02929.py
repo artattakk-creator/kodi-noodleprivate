@@ -46,6 +46,13 @@ class Targets29Tests(TargetsFixture,unittest.TestCase):
         self.assertEqual(self.options['downloads_folder'],str(root));self.assertEqual(self.options['downloads_folder_enabled'],'1')
         self.assertEqual(self.options.get('recordings_folder'),before.get('recordings_folder'))
 
+    def test_destination_actions_are_nonfolder_without_changing_existing_owner_navigation(self):
+        import home_menu
+        home_menu.settings(self.router,self.portal,'storage')
+        selected=[(url,item,folder) for url,item,folder in self.added if 'action=download_folder' in url or 'action=download_capabilities' in url]
+        self.assertEqual(len(selected),2)
+        for url,item,folder in selected:self.assertFalse(folder);self.assertEqual(item.getProperty('IsPlayable'),'false')
+
     def test_usb_staged_backend_uses_exclusive_copy_hash_and_keeps_recovery_stage(self):
         import atomic_media
         root=self.folder/'usb';root.mkdir();before=root/'foreign.mp4';before.write_bytes(b'KEEP')
@@ -202,6 +209,19 @@ class SMB2Wire29Tests(TargetsFixture,unittest.TestCase):
             self.worker.run_one(resolver=mock.Mock(side_effect=AssertionError('local stage must survive disconnect')),opener=mock.Mock(side_effect=AssertionError('no HTTP restart')))
         row=self.store.get(ident);self.assertEqual(row['state'],'COMPLETE',row['code'])
         self.assertEqual(self.smb.digest(row['file'],len(PAYLOAD)),hashlib.sha256(PAYLOAD).hexdigest())
+
+    def test_abort_after_smb_rename_pauses_and_verified_recovery_needs_no_http(self):
+        self.targets.approved(self.uri,save=True);caps=self.targets.probe(self.uri)
+        ident=self.store.enqueue(self.make_media(self.uri));aborted=[False];original=self.smb.rename
+        def rename(*args):
+            result=original(*args);aborted[0]=True;return result
+        with mock.patch.object(self.files,'probe',return_value=caps),mock.patch.object(self.smb,'rename',side_effect=rename):
+            self.worker.run_one(cancel=lambda:aborted[0],resolver=lambda m:('https://fixture.invalid/file.mp4',{}),opener=lambda *a:self.response())
+        row=self.store.get(ident);self.assertEqual(row['state'],'PAUSED');self.assertTrue(self.smb.exists(row['file']))
+        self.assertTrue(self.store.command(ident,'resume'));aborted[0]=False
+        with mock.patch.object(self.files,'probe',return_value=caps):
+            self.worker.run_one(resolver=mock.Mock(side_effect=AssertionError('no HTTP after completed rename')))
+        self.assertEqual(self.store.get(ident)['state'],'COMPLETE')
 
     def test_real_smb_corrupted_network_copy_is_not_published_or_complete(self):
         self.targets.approved(self.uri,save=True);caps=self.targets.probe(self.uri)

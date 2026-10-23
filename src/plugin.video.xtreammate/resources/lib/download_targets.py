@@ -181,7 +181,7 @@ def publish(source,final,job,total,expected,caps,cancel=lambda:False,progress=la
         record(token,job,target,remote,final,'READY_RENAME')
         if cancel() or not claim():raise InterruptedError()
         smb.rename(remote,final);record(token,job,target,remote,final,'RENAMED')
-        if smb.size(final)!=total or smb.digest(final,total)!=expected:raise Failure('TARGET_VERIFY_FAILED','SMB_HASH_FINAL')
+        if smb.size(final)!=total or smb.digest(final,total,cancel)!=expected:raise Failure('TARGET_VERIFY_FAILED','SMB_HASH_FINAL')
     else:
         from download_worker import _hash
         base=re.sub(r'--target-[0-9a-f]{32}(?=\.[a-z0-9]+$)','',final)
@@ -196,7 +196,7 @@ def publish(source,final,job,total,expected,caps,cancel=lambda:False,progress=la
                 if not data:break
                 output.write(data);count+=len(data);progress(count)
             files.flush(output)
-        if files.size(final)!=total or _hash(final,total)!=expected:raise Failure('TARGET_VERIFY_FAILED','USB_HASH')
+        if files.size(final)!=total or _hash(final,total,cancel)!=expected:raise Failure('TARGET_VERIFY_FAILED','USB_HASH')
         if cancel() or not claim():raise InterruptedError()
     record(token,job,target,'',final,'VERIFIED')
     # Keep the fully fsynced local stage: no automatic user-file/cache deletion.
