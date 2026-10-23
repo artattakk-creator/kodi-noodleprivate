@@ -67,6 +67,11 @@ Kein Recorder-CLI-Prozess, Timer, Downloader oder Medienmanager wird aktiviert.
 mit MPEG2/MP2: Exit 0, leeres Fehlerlog. Zusätzlich H264/AAC mit absichtlich
 angeschnittenem Paketende finalisiert: strenger Decoder Exit 0, leeres Fehlerlog.
 [Maschinenlesbarer Bericht](RECORDER_HOST_02926.json).
+Auch ein weiterer 120,393-s-Mitschnitt mit ausdrücklich ausgelöstem manuellem
+Abschluss besteht die strenge vollständige Decoderprüfung ohne Fehler;
+[separater Nachweis](RECORDER_MANUAL_HOST_02926.json). Die Zieldateisystem-Probe
+prüft Schreiben/Hardlink vor dem Öffnen einer Providerverbindung. Ein Stop
+während der Quellenauflösung verhindert einen verspäteten Recorderstart.
 Die Entwicklungshost-CLI erzeugt/prüft nur Testquellen; sie wird von der Engine
 nicht aufgerufen. **Kodi-/Android-Offline-Wiedergabe bleibt NOT_TESTED.**
 
