@@ -37,6 +37,7 @@ def describe(value,component='capture'):
     if not encoded:return ''
     code=encoded.split('@')[0]
     if code.startswith('REDIRECT_'):ident=34610
+    elif code.startswith(('SMB_','STAGING_')) or code=='TARGET_ANDROID_ACCESS_REQUIRED':ident=34715
     elif code.startswith('TARGET_') or code in ('UNSUPPORTED_TARGET','DISK_FULL','NO_SPACE'):ident=34400
     elif code.startswith('HTTP_'):ident=34402
     elif code in ('TIMEOUT','DNS_ERROR','TLS_ERROR','CONNECTION_ERROR','NETWORK_ERROR'):ident=34405

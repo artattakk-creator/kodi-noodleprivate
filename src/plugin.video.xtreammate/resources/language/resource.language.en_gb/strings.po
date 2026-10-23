@@ -3004,3 +3004,79 @@ msgstr "No redirect approvals are stored for this portal."
 msgctxt "#34610"
 msgid "Download redirect blocked. Review/approve its destination or manage existing approvals in the download manager. The technical code gives the reason."
 msgstr "Download redirect blocked. Review/approve its destination or manage existing approvals in the download manager. The technical code gives the reason."
+
+msgctxt "#34700"
+msgid "Choose download destination: internal / USB / SMB"
+msgstr "Choose download destination: internal / USB / SMB"
+
+msgctxt "#34701"
+msgid "Check download destination and capabilities"
+msgstr "Check download destination and capabilities"
+
+msgctxt "#34702"
+msgid "Destination type"
+msgstr "Destination type"
+
+msgctxt "#34703"
+msgid "Storage method"
+msgstr "Storage method"
+
+msgctxt "#34704"
+msgid "Unknown on destination; real write/hash test, local staging capacity is checked"
+msgstr "Unknown on destination; real write/hash test, local staging capacity is checked"
+
+msgctxt "#34705"
+msgid "Yes"
+msgstr "Yes"
+
+msgctxt "#34706"
+msgid "Playable without network when storage remains connected"
+msgstr "Playable without network when storage remains connected"
+
+msgctxt "#34707"
+msgid "No"
+msgstr "No"
+
+msgctxt "#34708"
+msgid "Additional complete local staging copy required"
+msgstr "Additional complete local staging copy required"
+
+msgctxt "#34709"
+msgid "Allow local staging and verified transfer for this destination? Requires space for the complete file. Interruptions preserve partials; retry copies the verified local file again. No automatic fallback to an internal destination. The non-atomic USB copy method may leave a visible incomplete destination file; XCMate never enables its playback. Local stages are retained for recovery."
+msgstr "Allow local staging and verified transfer for this destination? Requires space for the complete file. Interruptions preserve partials; retry copies the verified local file again. No automatic fallback to an internal destination. The non-atomic USB copy method may leave a visible incomplete destination file; XCMate never enables its playback. Local stages are retained for recovery."
+
+msgctxt "#34711"
+msgid "Transferring/verifying destination"
+msgstr "Transferring/verifying destination"
+
+msgctxt "#34712"
+msgid "Use this verified destination for new downloads? The recording destination and existing files remain unchanged."
+msgstr "Use this verified destination for new downloads? The recording destination and existing files remain unchanged."
+
+msgctxt "#34713"
+msgid "Download destination saved. Recording destination unchanged."
+msgstr "Download destination saved. Recording destination unchanged."
+
+msgctxt "#34714"
+msgid "No destination change. Grant USB access in Android and check Kodi file sources; for SAF without POSIX access choose an accessible mount. Configure SMB in Kodi and use a signed SMB2 account. SMB remains network-dependent."
+msgstr "No destination change. Grant USB access in Android and check Kodi file sources; for SAF without POSIX access choose an accessible mount. Configure SMB in Kodi and use a signed SMB2 account. SMB remains network-dependent."
+
+msgctxt "#34715"
+msgid "Download destination or network share is not ready. Technical reason below; the selected destination is retained."
+msgstr "Download destination or network share is not ready. Technical reason below; the selected destination is retained."
+
+msgctxt "#34716"
+msgid "SMB2 requires a share account. Store credentials for this destination on this device? Only for your trusted SMB shares. No guest/SMB1/unsigned connection. Kodi playback additionally needs its own saved share login."
+msgstr "SMB2 requires a share account. Store credentials for this destination on this device? Only for your trusted SMB shares. No guest/SMB1/unsigned connection. Kodi playback additionally needs its own saved share login."
+
+msgctxt "#34717"
+msgid "SMB user (optional DOMAIN\\user)"
+msgstr "SMB user (optional DOMAIN\\user)"
+
+msgctxt "#34718"
+msgid "SMB password \u2013 stored on this device only"
+msgstr "SMB password – stored on this device only"
+
+msgctxt "#34719"
+msgid "Maximum download file size (GiB)"
+msgstr "Maximum download file size (GiB)"

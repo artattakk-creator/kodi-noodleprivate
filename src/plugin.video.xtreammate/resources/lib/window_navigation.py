@@ -14,7 +14,7 @@ import xbmc
 import xbmcgui
 
 DIALOG_ACTIONS=frozenset(('branding_status','theme_manager','art_status','art_retry','art_db_health','ui_language',
-    'appearance_settings','settings','account_select','recording_folder','recording_capabilities',
+    'appearance_settings','settings','account_select','recording_folder','recording_capabilities','download_folder','download_capabilities',
     'xcmate_licenses','guide_timers','guide_status','about_xcmate','widget_setup','playlist_editor'))
 WINDOW_ACTIONS=frozenset(('movies_home','series_home','media_detail','media_favourites','guide_browser','guide_grid'))
 _local=threading.Lock()
