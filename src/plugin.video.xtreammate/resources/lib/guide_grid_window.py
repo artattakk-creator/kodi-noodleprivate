@@ -270,6 +270,9 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         self.category=self.groups[index]['cid'];self.mode='grid'
         self.offset,self.row,self.cursor,self.origin,_=self._views.get(self.category,(0,0,self.cursor,self.origin,'grid'))
         self._focus_zone='grid';self._grid_visibility(True);self.getControl(202).setVisible(False)
+        # Never display the previous group's channels while the new local page
+        # is pending; keep the saved row/offset, but clear only the UI snapshot.
+        self.rows=[];self.total=0;self._render()
         self.getControl(501).setLabel(tr(33602));self._load()
 
     def _header_focus(self):

@@ -80,7 +80,11 @@ class GuideNavigationTests(Fixture,unittest.TestCase):
         self.key(w,1);self.assertEqual(w.getFocusId(),730)
 
     def test_group_select_contains_only_selected_group_and_back_restores_group_focus(self):
-        self.large(start=0);w=self.window();self.key(w,92);self.key(w,4);self.key(w,7)
+        self.large(start=0);w=self.window();self.key(w,92);self.key(w,4)
+        w.native(7)
+        self.assertEqual(w.rows,[]);self.assertEqual(w._cells,{})
+        self.assertTrue(all(w.getControl(700+r).text=='' for r in range(8)))
+        self.settle(w)
         self.assertEqual(w.category,'b');self.assertEqual(w.total,13);self.assertEqual(w.mode,'grid')
         self.assertTrue(all(r['channel']['sid'].startswith('b') for r in w.rows));self.assertFalse(w.getControl(200).visible)
         self.key(w,92);self.assertEqual(w.getControl(200).getSelectedPosition(),1)
