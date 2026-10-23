@@ -2900,3 +2900,7 @@ msgstr "Cancelled"
 msgctxt "#34226"
 msgid "Finalizing"
 msgstr "Finalizing"
+
+msgctxt "#34300"
+msgid "Actions"
+msgstr "Actions"

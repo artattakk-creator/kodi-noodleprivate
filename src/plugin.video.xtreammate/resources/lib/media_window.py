@@ -69,7 +69,7 @@ class MediaWindow(DetailMenuMixin,SearchMixin,OwnerDispatch,xbmcgui.WindowXML):
         if control_id is None:return
         valid=self._valid_focus()
         if control_id not in valid:
-            if self.mode in ('detail','seasons','episodes') and control_id in (300,330,340):
+            if self.mode in ('detail','seasons','episodes') and control_id in (300,330,340,810,820):
                 self._mode_focus[self.mode]=control_id
                 pending=(self.mode,control_id)
                 if self._focus_pending!=pending:
@@ -113,7 +113,7 @@ class MediaWindow(DetailMenuMixin,SearchMixin,OwnerDispatch,xbmcgui.WindowXML):
     def _resume_focus(self):
         # One nonblocking check per existing owner-pump tick. No GUI work on
         # workers, no additional loop, and no search click while focus is stale.
-        if self._closed or self._leaving or self._playback_waiting:return
+        if self._closed or self._leaving or self._playback_waiting and not getattr(self,'_detail_menu_open',False):return
         pending=self._focus_pending
         if pending is None:return
         if pending[0]!=self.mode:
@@ -121,10 +121,11 @@ class MediaWindow(DetailMenuMixin,SearchMixin,OwnerDispatch,xbmcgui.WindowXML):
         if pending[1] in self._valid_focus():self.setFocusId(pending[1])
 
     def _valid_focus(self,native=True):
-        if getattr(self,'_detail_menu_open',False):return [810]
+        if getattr(self,'_detail_menu_open',False):
+            return [810] if not native or self.getControl(800).isVisible() and self.getControl(810).isVisible() else []
         candidates=([120,400,112,111,110] if self.mode=='landing' else
                     [200,210,400] if self.mode in ('grid','groups') else
-                    [300,400] if self.mode=='detail' else [700,701,702,710,720,721,400] if self.mode=='search' else [330,340,400] if self.mode=='episodes' else [330,400])
+                    [300,820,400] if self.mode=='detail' else [700,701,702,710,720,721,400] if self.mode=='search' else [330,340,400] if self.mode=='episodes' else [330,400])
         result=[]
         for cid in candidates:
             if cid==110 and not self.rows:continue
@@ -391,7 +392,7 @@ class MediaWindow(DetailMenuMixin,SearchMixin,OwnerDispatch,xbmcgui.WindowXML):
             if 0<=pos<len(rows) and rows[pos]!=self._art_selected:self._queue_art(rows[pos])
 
     def _show(self,mode):
-        self._detail_menu_hide()
+        self._detail_menu_prepare(mode)
         self.getControl(501).setLabel(tr(32587))
         self.getControl(340).setVisible(mode=='episodes' and self.next_episode is not None)
         self.getControl(330).setPosition(44,190 if mode=='episodes' else 174)

@@ -2900,3 +2900,7 @@ msgstr "Abgebrochen"
 msgctxt "#34226"
 msgid "Finalizing"
 msgstr "Wird abgeschlossen"
+
+msgctxt "#34300"
+msgid "Actions"
+msgstr "Aktionen"
