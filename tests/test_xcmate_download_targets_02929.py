@@ -35,6 +35,25 @@ class Targets29Tests(TargetsFixture,unittest.TestCase):
         self.assertEqual(self.targets.configured(),self.options['downloads_folder'])
         self.assertEqual(self.options['recordings_folder'],str(self.folder/'recordings'))
 
+    def test_removed_or_replaced_selected_usb_fails_before_recreating_path_or_resolving(self):
+        root=self.folder/'usb';root.mkdir();self.targets.bind(str(root));identity=self.targets.identity(str(root))
+        ident=self.store.enqueue(dict(self.make_media(str(root)),**identity));root.rmdir()
+        resolver=mock.Mock()
+        with mock.patch.object(self.files,'probe',side_effect=AssertionError('must fail before any write/probe')):
+            self.worker.run_one(resolver=resolver)
+        row=self.store.get(ident);self.assertIn('TARGET_REMOVED',row['code']);self.assertFalse(root.exists());resolver.assert_not_called()
+        root.mkdir();self.assertTrue(self.store.command(ident,'retry',now=time.time()+60))
+        with mock.patch.object(self.targets,'identity',return_value=dict(target_device='replaced',target_inode='changed')),mock.patch.object(self.files,'probe',side_effect=AssertionError('wrong device must not be touched')):
+            self.worker.run_one(resolver=resolver)
+        self.assertIn('TARGET_CHANGED',self.store.get(ident)['code']);resolver.assert_not_called()
+
+    def test_new_request_in_another_target_gets_new_job_and_keeps_old_target(self):
+        one=self.folder/'one';two=self.folder/'two';one.mkdir();two.mkdir()
+        first=self.store.enqueue(self.make_media(str(one)));second=self.store.enqueue(self.make_media(str(two)))
+        self.assertNotEqual(first,second);self.assertEqual(self.store.get(first)['media']['target'],str(one))
+        self.assertEqual(self.store.get(second)['media']['target'],str(two))
+        self.assertEqual(self.store.enqueue(self.make_media(str(two))),second)
+
     def test_picker_persists_separate_target_and_cancel_does_not_change_any_setting(self):
         import download_target_ui
         root=self.folder/'usb';root.mkdir();before=dict(self.options)

@@ -48,6 +48,7 @@ def run_one(cancel=lambda:False,resolver=None,opener=None):
     digest=hashlib.sha256();count=0;total=0;last=time.monotonic();last_bytes=0
     try:
         import download_targets as targets
+        targets.check_identity(media['target'],media)
         caps=files.probe(media['target'])
         workspace=targets.stage_root() if caps['staging'] else media['target']
         # Repair only a completely verified own publish interrupted after rename.

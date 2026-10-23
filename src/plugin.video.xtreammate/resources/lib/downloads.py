@@ -17,6 +17,8 @@ def enqueue(portal,kind,sid,series_id='',cancel=lambda:False):
     if cancel():raise InterruptedError()
     target=folder();probe(target)
     media=describe(portal,kind,sid,series_id,target)
+    from download_targets import identity
+    media.update(identity(target))
     if cancel():raise InterruptedError()
     ident=download_store.enqueue(media)
     if cancel():download_store.command(ident,'cancel')

@@ -11,6 +11,13 @@ Der Kodi-Quellenbrowser zeigt konfigurierte Dateiquellen und erreichbare Volumes
 Ziel prüfen, Fähigkeiten lesen, gegebenenfalls Staging ausdrücklich erlauben und
 Übernahme bestätigen. Erst danach wird das Ziel für **neue** Downloads gespeichert.
 Laufende/vorhandene Aufträge behalten ihren bei Erstellung gespeicherten Zielordner.
+Eine ausdrücklich neu angeforderte gleiche Mediendatei in einem anderen Ziel erhält
+einen separaten Auftrag; der alte Auftrag wird nicht umgebogen.
+Lokale Ziele werden an Gerät und Ordner-Inode gebunden, neue Aufträge speichern
+diese Identität. Fehlt USB oder ändert sich der Mount, Abbruch vor Probe/Schreiben;
+kein Neuanlegen im darunterliegenden internen Mountordner. Nach physischem
+Remount/Wechsel bei TARGET_CHANGED Ziel bewusst neu prüfen/auswählen; vorhandene
+Aufträge werden nicht still auf ein anderes Medium übernommen.
 Keine bestehenden Dateien werden verschoben oder gelöscht. Aufnahmeziel bleibt
 `recordings_folder`; die neue Auswahl ist unabhängig davon.
 
