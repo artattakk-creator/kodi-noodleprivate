@@ -2800,3 +2800,103 @@ msgstr "Use the verified app-private recording folder? Existing files remain in 
 msgctxt "#34102"
 msgid "Recording target verified: write, read, hardlinks, sync and free-space reserve."
 msgstr "Recording target verified: write, read, hardlinks, sync and free-space reserve."
+
+msgctxt "#34200"
+msgid "Download movie"
+msgstr "Download movie"
+
+msgctxt "#34201"
+msgid "Download episode …"
+msgstr "Download episode …"
+
+msgctxt "#34202"
+msgid "Manage downloads"
+msgstr "Manage downloads"
+
+msgctxt "#34203"
+msgid "Download poster again"
+msgstr "Download poster again"
+
+msgctxt "#34204"
+msgid "Close menu"
+msgstr "Close menu"
+
+msgctxt "#34205"
+msgid "No downloadable episodes available."
+msgstr "No downloadable episodes available."
+
+msgctxt "#34206"
+msgid "Save download in the recording folder? This uses an additional provider connection. Only permitted direct sources are supported."
+msgstr "Save download in the recording folder? This uses an additional provider connection. Only permitted direct sources are supported."
+
+msgctxt "#34207"
+msgid "Download queued. See Manage downloads for progress."
+msgstr "Download queued. See Manage downloads for progress."
+
+msgctxt "#34208"
+msgid "Download action failed. Check the target and download status."
+msgstr "Download action failed. Check the target and download status."
+
+msgctxt "#34209"
+msgid "No downloads yet."
+msgstr "No downloads yet."
+
+msgctxt "#34210"
+msgid "Download"
+msgstr "Download"
+
+msgctxt "#34211"
+msgid "Play file"
+msgstr "Play file"
+
+msgctxt "#34212"
+msgid "Pause"
+msgstr "Pause"
+
+msgctxt "#34213"
+msgid "Cancel download (keep partial file)"
+msgstr "Cancel download (keep partial file)"
+
+msgctxt "#34214"
+msgid "Resume"
+msgstr "Resume"
+
+msgctxt "#34215"
+msgid "Retry"
+msgstr "Retry"
+
+msgctxt "#34216"
+msgid "Download request updated."
+msgstr "Download request updated."
+
+msgctxt "#34217"
+msgid "Job is busy or cannot be changed now."
+msgstr "Job is busy or cannot be changed now."
+
+msgctxt "#34220"
+msgid "Queued"
+msgstr "Queued"
+
+msgctxt "#34221"
+msgid "Downloading"
+msgstr "Downloading"
+
+msgctxt "#34222"
+msgid "Paused"
+msgstr "Paused"
+
+msgctxt "#34223"
+msgid "Complete"
+msgstr "Complete"
+
+msgctxt "#34224"
+msgid "Failed"
+msgstr "Failed"
+
+msgctxt "#34225"
+msgid "Cancelled"
+msgstr "Cancelled"
+
+msgctxt "#34226"
+msgid "Finalizing"
+msgstr "Finalizing"

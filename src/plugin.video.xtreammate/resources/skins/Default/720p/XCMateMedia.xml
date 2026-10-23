@@ -723,5 +723,30 @@
         </control>
       </focusedlayout>
     </control>
+
+    <control type="group" id="800">
+      <visible>Window.Property(XCMate.DetailMenu)</visible>
+      <animation effect="slide" start="-460,0" end="0,0" time="160">Visible</animation>
+      <control type="image" id="801">
+        <left>0</left><top>0</top><width>460</width><height>720</height>
+        <texture>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texture>
+        <colordiffuse>FF101722</colordiffuse>
+      </control>
+      <control type="label" id="802">
+        <left>28</left><top>48</top><width>404</width><height>48</height>
+        <font>font16</font><textcolor>FFFFFFFF</textcolor><label>XCMate</label>
+      </control>
+      <control type="list" id="810">
+        <left>20</left><top>128</top><width>420</width><height>500</height>
+        <onleft>810</onleft><onright>810</onright><onup>810</onup><ondown>810</ondown>
+        <itemlayout width="420" height="70">
+          <control type="label"><left>12</left><top>8</top><width>394</width><height>54</height><font>font13</font><textcolor>FFF0F2F5</textcolor><label>$INFO[ListItem.Label]</label></control>
+        </itemlayout>
+        <focusedlayout width="420" height="70">
+          <control type="image"><left>0</left><top>0</top><width>420</width><height>70</height><texture>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texture></control>
+          <control type="label"><left>12</left><top>8</top><width>394</width><height>54</height><font>font13</font><textcolor>FFFFFFFF</textcolor><label>$INFO[ListItem.Label]</label></control>
+        </focusedlayout>
+      </control>
+    </control>
   </controls>
 </window>
