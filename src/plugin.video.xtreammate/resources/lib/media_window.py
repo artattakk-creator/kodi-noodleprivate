@@ -480,6 +480,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
         self.trailer=trailer_id(item)
         if self.trailer and xbmc.getCondVisibility('System.HasAddon(plugin.video.youtube)'):
             self.actions.append((tr(32521),'trailer'))
+        if not item.get('_unavailable'):self.actions.append((tr(33703),'poster_status'))
         self._fill(300,[dict(name=label,sid=action) for label,action in self.actions])
         self.getControl(300).selectItem(next((i for i,a in enumerate(self.actions) if a[1]==old_action),0))
         self.setFocusId(old_focus if old_focus in (300,400) else 300)
@@ -549,6 +550,7 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
                 elif action in ('continue_episode','next_episode'):
                     if action=='next_episode':self._play_next()
                     else:self._play(self.continue_episode,'episode',True)
+                elif action=='poster_status':self._poster_status()
                 elif action=='seasons':
                     self.mode='seasons';self._show('seasons')
                     self.seasons=sorted({e['season'] for e in self.episodes})
@@ -567,6 +569,22 @@ class MediaWindow(OwnerDispatch,xbmcgui.WindowXML):
                     saved=progress(self.portal['id'],'episode',e['sid'],e['series_id'],e['season'])
                     resume=bool(resume_position(saved)) and xbmcgui.Dialog().yesno('XCMate',tr(32524))
                     self._play(e,'episode',resume)
+
+    def _poster_status(self):
+        item=dict(self.selected)
+        def inspect():
+            from media_art import poster_report
+            return poster_report(item)
+        def show(report):
+            from media_art import diagnostic_label
+            text=diagnostic_label(report['status'])+'\n'+', '.join(k+': '+str(v) for k,v in report.items() if k!='status')
+            choice=xbmcgui.Dialog().select(tr(33703),[text,tr(33704)])
+            if choice==1:
+                def retry():
+                    from media_art import retry_poster
+                    return retry_poster(item)
+                self._request(retry,lambda code:xbmcgui.Dialog().notification('XCMate',diagnostic_label(code)))
+        self._request(inspect,show)
 
     def _episode_raw(self):
         raw={}

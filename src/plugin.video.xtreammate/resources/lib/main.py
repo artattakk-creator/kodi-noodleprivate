@@ -21,7 +21,8 @@ from utils import (
 ADDON      = xbmcaddon.Addon()
 ADDON_ID   = ADDON.getAddonInfo('id')
 ADDON_PATH = ADDON.getAddonInfo('path').rstrip('/')
-ADDON_ICON   = ADDON_PATH + '/icon.png'
+from branding import icon as original_icon
+ADDON_ICON   = original_icon()
 ADDON_FANART = ADDON_PATH + '/fanart.jpg'
 
 def _media(name):

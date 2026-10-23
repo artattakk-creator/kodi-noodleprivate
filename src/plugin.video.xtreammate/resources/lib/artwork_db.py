@@ -450,7 +450,8 @@ def image_states(keys):
     from urllib.parse import quote
     if not os.path.exists(path()):return {},'NOT_CREATED'
     fd=None;db=None
-    allowed={'PENDING','RUNNING','READY','FAILED','NETWORK_ERROR','CACHE_ERROR',
+    from art_errors import CODES
+    allowed=set(CODES)|{'PENDING','RUNNING','READY','FAILED','NETWORK_ERROR','CACHE_ERROR',
              'INVALID_SOURCE','INVALID_IMAGE','SPACE_FULL','BUDGET_FULL','DISK_FULL'}
     try:
         fd=_lock()
@@ -460,6 +461,23 @@ def image_states(keys):
         if not keys:return {},'OK'
         rows=db.execute('SELECT ident,status FROM jobs WHERE ident IN ('+','.join('?' for _ in keys)+')',keys)
         return {ident:state if state in allowed else 'UNKNOWN' for ident,state in rows},'OK'
+    except (sqlite3.Error,OSError) as exc:return {},'DB_BUSY' if classify(exc)=='BUSY' else 'DB_UNAVAILABLE'
+    finally:
+        if db is not None:db.close()
+        _unlock(fd)
+
+
+def image_details(keys):
+    """Read-only selected-image counters; private URLs are never selected."""
+    from urllib.parse import quote
+    if not os.path.exists(path()):return {},'NOT_CREATED'
+    fd=None;db=None
+    try:
+        fd=_lock();db=sqlite3.connect('file:'+quote(path(),safe='/')+'?mode=ro',uri=True,timeout=.025)
+        db.execute('PRAGMA query_only=ON');keys=list(dict.fromkeys(keys))[:8]
+        if not keys:return {},'OK'
+        rows=db.execute('SELECT ident,attempts,updated,next_at FROM jobs WHERE ident IN ('+','.join('?' for _ in keys)+')',keys)
+        return {r[0]:dict(attempts=r[1],updated=r[2],next_at=r[3]) for r in rows},'OK'
     except (sqlite3.Error,OSError) as exc:return {},'DB_BUSY' if classify(exc)=='BUSY' else 'DB_UNAVAILABLE'
     finally:
         if db is not None:db.close()

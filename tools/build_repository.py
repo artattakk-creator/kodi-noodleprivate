@@ -106,6 +106,15 @@ def main():
         version=xmlroot.attrib["version"]
         assert re.fullmatch(r"\d+(?:\.\d+){2,3}",version)
         content=xmlfile.read_text(encoding="utf-8").strip()
+        # Kodi resolves repository artwork outside the addon ZIP. Publish the
+        # exact manifest asset at the matching relative repository path.
+        for asset in xmlroot.findall("extension[@point='xbmc.addon.metadata']/assets/icon"):
+            relative=Path(asset.text or '')
+            if relative.is_absolute() or '..' in relative.parts:raise ValueError('Unsafe addon asset')
+            source=SRC/addon/relative
+            if source.is_file():
+                target=ROOT/addon/relative;target.parent.mkdir(parents=True,exist_ok=True)
+                target.write_bytes(source.read_bytes())
         entries.append(re.sub(r"^<\?xml[^>]*\?>\s*","",content))
         dest=ROOT/addon/f"{addon}-{version}.zip"
         dest.parent.mkdir(exist_ok=True, parents=True)
