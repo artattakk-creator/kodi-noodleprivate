@@ -40,6 +40,8 @@
 
 ### M04 – Film-/Seriensuche: FAIL
 
+**Vollständiger Log-Nachtrag:** [Bereinigter Android-Logvergleich 0.1.29.25](ANDROID_SUCHCRASH_LOGVERGLEICH_02925_20261023_DE.md). Der dokumentierte parallele Home-/Search-Aufruf ist ein Untersuchungsansatz, noch kein bewiesener nativer Absturzmechanismus.
+
 **Nutzer-Nachtrag 23.10.2026 – P0:** Die Suchmaske öffnet sich in **Lightweight** ordnungsgemäß. Nach Eingabe des Beispiels **`Upload`** und Bestätigung mit **OK** erscheint **keine** Suchergebnisansicht; stattdessen springt XCMate kurz auf die Plugin-Startseite und anschließend **stürzt der gesamte Kodi-Prozess ab/beendet sich**. Das ist ein **reproduzierbarer Kodi-Crash**, kein bloß falsches Suchlayout. Eigenständiges [P0-Issue #118](https://github.com/artattakk-creator/kodi-noodleprivate/issues/118) zur Absturzbehebung eröffnet. Der ursprünglich gewünschte, separat bedienbare **globalen Suchergebnis-Bildschirm mit LIVE-TV / FILME / SERIEN**, echten Trefferzahlen und korrekten Detail-/Player-Aktionen ist in [#25](https://github.com/artattakk-creator/kodi-noodleprivate/issues/25) weiter erfasst. **LIVE-TV soll auch EPG-Jetzt-Treffer („wo läuft das gerade?“) auf Sendern zeigen**, nicht nur nach Sendernamen suchen. Ungeklärt bleibt die technische Crash-Ursache: der vorhandene Übergang `media_window._search()` → `close()` → `open_media():Container.Update(global_search)` sowie Suchindex/GUI-Thread/Lifecycle muss mit Android-Log untersucht werden, nicht als gesicherte Ursache behaupten. M04 bleibt **FAIL**, Gesamtzählung weiter **23 PASS / 3 FAIL / 1 NOT_TESTED**; Space Premium bleibt vom Test ausgeschlossen.
 
 ### A02 – Posterdiagnose: FAIL, aber Fehlerklasse verbessert
