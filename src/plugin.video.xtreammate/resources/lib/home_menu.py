@@ -29,12 +29,17 @@ def show(router, portal):
     path=xbmcaddon.Addon().getAddonInfo('path')
     xbmcplugin.setPluginCategory(router._handle,'XCMate · '+portal.get('name',''))
     xbmcplugin.setContent(router._handle,'files')
+    from theme_render import snapshot
+    from theme_store import asset
+    theme=snapshot()
     for label_id,action,icon in HOME:
         label=tr(label_id)
+        name={'home_start':'start','home_live':'live','guide_grid':'epg','movies_home':'movies','series_home':'series','settings_home':'settings'}[action]
         from window_navigation import WINDOW_ACTIONS,add_action
         add=add_action if action in WINDOW_ACTIONS or action=='home_start' else lambda router,*a,**kw:router._add_dir(*a,**kw)
         add(router,label,router.url(action=action,pid=portal['id']),
-                        icon=__import__('branding').icon() if action=='home_start' else os.path.join(path,'resources','media',icon),
+                        icon=__import__('branding').icon() if action=='home_start' else asset('icon.'+name,os.path.join(path,'resources','media',icon),snapshot=theme),
+                        fanart=asset('background.home.'+name,os.path.join(path,'fanart.jpg'),snapshot=theme),
                         plot=(tr(32415) if action=='settings_home' else label))
     finish_directory(router,cacheToDisc=False)
 
@@ -62,12 +67,18 @@ def settings(router, portal, section=''):
     import xbmc, xbmcgui, xbmcplugin, xbmcaddon
     from boot_diagnostics import finish_directory
     pid=portal['id'] if portal else ''
+    from theme_render import snapshot
+    from theme_store import asset
+    theme=snapshot()
     def add(label,action,**params):
         from window_navigation import WINDOW_ACTIONS,DIALOG_ACTIONS,add_action
         url=router.url(action=action,pid=pid,**params)
+        key=section or params.get('section','')
+        key={'storage':'recordings','startup':'start-channel','designs':'appearance'}.get(key,key)
+        art=dict(icon=asset('icon.settings.'+key,os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources/media/settings.png'),snapshot=theme),fanart=asset('background.settings.'+key,asset('background.settings',os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'fanart.jpg'),snapshot=theme),snapshot=theme))
         if action in WINDOW_ACTIONS|DIALOG_ACTIONS or action=='global_search':
-            add_action(router,label,url)
-        else:router._add_dir(label,url)
+            add_action(router,label,url,**art)
+        else:router._add_dir(label,url,**art)
     if not section:
         for label_id,key in SETTINGS: add(tr(label_id),'settings_section',section=key)
     elif section=='accounts':
@@ -112,7 +123,10 @@ def settings(router, portal, section=''):
         add(tr(32439),'recording_folder',check='1')
         add(tr(32440),'settings')
         add(tr(32441),'recording_capabilities')
+    elif section=='designs':
+        add(tr(33813),'theme_manager')
     elif section=='appearance':
+        add(tr(33800),'settings_section',section='designs')
         add(tr(32620),'ui_language')
         add(tr(32622),'appearance_settings')
         add(tr(32442),'settings')

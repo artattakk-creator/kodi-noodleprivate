@@ -130,12 +130,20 @@ def sources(item):
     return poster,next((value for value in fanart if valid_source(value)),'')
 
 
-def local_art(item):
+def local_art(item,theme=None):
     import xbmcaddon
     placeholder=os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media','tv.png' if item.get('kind')=='live' else 'series.png' if item.get('kind')=='series' else 'vod.png')
+    if theme:
+        from theme_store import asset
+        placeholder=asset('icon.live' if item.get('kind')=='live' else 'placeholder.series.poster' if item.get('kind')=='series' else 'placeholder.movie.poster',placeholder,snapshot=theme)
     poster,backdrop=sources(item)
-    poster=cached(poster) or placeholder; backdrop=cached(backdrop)
-    return dict(poster=poster,thumb=poster,icon=poster,fanart=backdrop,landscape=backdrop or poster)
+    cached_poster=cached(poster)
+    poster=cached_poster or placeholder; backdrop=cached(backdrop)
+    provider_landscape=backdrop or cached_poster
+    if theme and not backdrop:
+        from theme_store import asset
+        backdrop=asset('placeholder.series.backdrop' if item.get('kind')=='series' else 'placeholder.movie.backdrop',snapshot=theme)
+    return dict(poster=poster,thumb=poster,icon=poster,fanart=backdrop,landscape=provider_landscape or backdrop or poster)
 
 
 def request(items,priority=0):

@@ -1,0 +1,1762 @@
+{
+  "schema_version": 1,
+  "original_files": 98,
+  "legacy_bound": 86,
+  "legacy_reserve": 12,
+  "current_bound_or_conditional": 87,
+  "current_reserve": 11,
+  "reserve_promoted": "icon.epg.today: existing functional Now header, control 312",
+  "android": "NOT_TESTED",
+  "files": [
+    {
+      "path": "assets/branding/fanart-1920.jpg",
+      "sha256": "b2eb85d05f6a0d8c5c68d19a19733973c3af360e542c51c8abac768f318cf997",
+      "properties": {
+        "width": 1920,
+        "height": 1080,
+        "alpha": false
+      },
+      "keys": [
+        "branding.fanart"
+      ],
+      "consumers": [],
+      "runtime_bound": false,
+      "legacy_runtime_bound": false,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/branding/icon-512.png",
+      "sha256": "81da1003a2753ec6afbdd50b2a320e738a2131ad9f0d76606da1babdd0d2f135",
+      "properties": {
+        "width": 512,
+        "height": 512,
+        "alpha": false
+      },
+      "keys": [
+        "branding.icon"
+      ],
+      "consumers": [
+        "branding.icon + addon.xml content-addressed original; immutable Core copy, never replaced by a theme"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/branding/splash-1920.jpg",
+      "sha256": "2553464f81de674f3de8726ba1ec81dcf57d7c0232d39aa3322af10ee0435fcc",
+      "properties": {
+        "width": 1920,
+        "height": 1080,
+        "alpha": false
+      },
+      "keys": [
+        "branding.splash"
+      ],
+      "consumers": [],
+      "runtime_bound": false,
+      "legacy_runtime_bound": false,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/branding/wordmark-white.png",
+      "sha256": "37d3b575d2e33fca436483e14b04b6878c081301b54abfd854053488404c2bb5",
+      "properties": {
+        "width": 1600,
+        "height": 410,
+        "alpha": true
+      },
+      "keys": [
+        "branding.wordmark"
+      ],
+      "consumers": [],
+      "runtime_bound": false,
+      "legacy_runtime_bound": false,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/epg/bg-detail.jpg",
+      "sha256": "dfe878ef84336f45514ec42fe3bd56472286ee67c1180d3aca393842a04c2f2c",
+      "properties": {
+        "width": 1920,
+        "height": 1080,
+        "alpha": false
+      },
+      "keys": [
+        "background.epg.detail"
+      ],
+      "consumers": [
+        "theme_render.apply_xml / LiveNavigator texture arguments; current .22 controls"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/epg/bg-guide.jpg",
+      "sha256": "3f41c5192f4d01526cb3e9e8e0076ed668a0675faa70046ba9886f7444c41ad0",
+      "properties": {
+        "width": 1920,
+        "height": 1080,
+        "alpha": false
+      },
+      "keys": [
+        "background.epg",
+        "background.epg.guide"
+      ],
+      "consumers": [
+        "theme_render.apply_xml / LiveNavigator texture arguments; current .22 controls"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/epg/icon-auto-switch.png",
+      "sha256": "fdd7711a827a852a22a34083ca1cc0c2a6e546e8d36d142d16ce3b43786ffd2f",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.epg.auto-switch"
+      ],
+      "consumers": [],
+      "runtime_bound": false,
+      "legacy_runtime_bound": false,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/epg/icon-channels.png",
+      "sha256": "192020e8e3b20ae23540686a06a4289ce71d77cb9e3ba8533374c4632e929516",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.epg.channels"
+      ],
+      "consumers": [
+        "theme_render.apply_xml current .22 header IDs; epg_choices; Live texture fallback according to logical key"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/epg/icon-clock.png",
+      "sha256": "d1ae559da39c40f182c17db4017d13979e807ca90ff621508a74d1beb701279c",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.epg.clock"
+      ],
+      "consumers": [
+        "theme_render.apply_xml current .22 header IDs; epg_choices; Live texture fallback according to logical key"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/epg/icon-day-next.png",
+      "sha256": "bb017efbc81bc984455f56f9e1af4d2bfa1aa523ae849c67afc491924542165b",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.epg.day-next"
+      ],
+      "consumers": [
+        "theme_render.apply_xml current .22 header IDs; epg_choices; Live texture fallback according to logical key"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/epg/icon-day-prev.png",
+      "sha256": "1a7be34f1ef3f8fb82dd3298014a6216f0f1fa3926fa29bfdea232d543cabb28",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.epg.day-prev"
+      ],
+      "consumers": [
+        "theme_render.apply_xml current .22 header IDs; epg_choices; Live texture fallback according to logical key"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/epg/icon-record.png",
+      "sha256": "ff09cf8d37c87d3e18b20cf73fa716a6777c02f6646c9600f168df6f717fb573",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.epg.record"
+      ],
+      "consumers": [],
+      "runtime_bound": false,
+      "legacy_runtime_bound": false,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/epg/icon-remind.png",
+      "sha256": "b42a9ce995ae0d005f39eaee612c70f2e5bc86eee8f3662e7ab85560874d7b25",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.epg.remind"
+      ],
+      "consumers": [
+        "theme_render.apply_xml current .22 header IDs; epg_choices; Live texture fallback according to logical key"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/epg/icon-today.png",
+      "sha256": "ce3839ede71f25cceb3aa1d4d52db63c5902cec45700718a05cfa8d4370c9af5",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.epg.today"
+      ],
+      "consumers": [
+        "theme_render.apply_xml current .22 header IDs; epg_choices; Live texture fallback according to logical key"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": false,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/epg/no-data.png",
+      "sha256": "01c7b350d41cd5d3e05923e66e3fd0fba25d7ad70fcc33b945ee298c9a7d2cc1",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "status.epg.no-data"
+      ],
+      "consumers": [
+        "theme_render.guide_status; current guide owner callbacks -> unfocusable status texture"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/epg/source-error.png",
+      "sha256": "99fdc38e07a050f0bb55c2a2849ec10f0afe29867ab8fa7f46605ae21dc39db3",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "status.epg.source-error"
+      ],
+      "consumers": [
+        "theme_render.guide_status; current guide owner callbacks -> unfocusable status texture"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/home/bg-epg.jpg",
+      "sha256": "43690fe3f4d563b79feebdce0d82ee2b94b0d6f609270d2e960d2585e468dfbf",
+      "properties": {
+        "width": 1920,
+        "height": 1080,
+        "alpha": false
+      },
+      "keys": [
+        "background.home.epg"
+      ],
+      "consumers": [
+        "home_menu.show; current Home routes; background aliases share original files"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/home/bg-live.jpg",
+      "sha256": "35b7dd8271b8d6a6be352011c3ab22b731ea8bbb307ad880d64e320769140f0a",
+      "properties": {
+        "width": 1920,
+        "height": 1080,
+        "alpha": false
+      },
+      "keys": [
+        "background.home.live",
+        "background.live"
+      ],
+      "consumers": [
+        "home_menu.show; current Home routes; background aliases share original files"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/home/bg-movies.jpg",
+      "sha256": "5b2e513d92d69416f40aa5d69ca20caee0b3911e86579d14b7f16b9026507fee",
+      "properties": {
+        "width": 1920,
+        "height": 1080,
+        "alpha": false
+      },
+      "keys": [
+        "background.home.movies",
+        "background.movies"
+      ],
+      "consumers": [
+        "home_menu.show; current Home routes; background aliases share original files"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/home/bg-series.jpg",
+      "sha256": "195b6e32289a31e0aa5fe31bf3420fc7541573cbac75f1041307dd05194e03c8",
+      "properties": {
+        "width": 1920,
+        "height": 1080,
+        "alpha": false
+      },
+      "keys": [
+        "background.home.series",
+        "background.series"
+      ],
+      "consumers": [
+        "home_menu.show; current Home routes; background aliases share original files"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/home/bg-settings.jpg",
+      "sha256": "0dc5a282fb9538e728afa9c0c1b21b08d0658214ef181f8d4a5524b9852d54fd",
+      "properties": {
+        "width": 1920,
+        "height": 1080,
+        "alpha": false
+      },
+      "keys": [
+        "background.home.settings",
+        "background.settings"
+      ],
+      "consumers": [
+        "home_menu.settings (current section aliases; artwork only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/home/bg-start.jpg",
+      "sha256": "48ac9d71f5ab14f16a995f768e74d1053bcc099bf74a0279cbd0683fa22281ff",
+      "properties": {
+        "width": 1920,
+        "height": 1080,
+        "alpha": false
+      },
+      "keys": [
+        "background.home",
+        "background.home.start"
+      ],
+      "consumers": [
+        "home_menu.show; current Home routes; background aliases share original files"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/home/icon-epg.png",
+      "sha256": "80e543f7289d2d952f344bb1e1ea3d3d18c3fb96f37b182d059a1a99823f1214",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.epg"
+      ],
+      "consumers": [
+        "home_menu.show; current Home routes; background aliases share original files"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/home/icon-live.png",
+      "sha256": "2f05225301945cedd3972bbcf4498b509d62a9adc73886823247f33cc6c450ad",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.live"
+      ],
+      "consumers": [
+        "home_menu.show; current Home routes; background aliases share original files"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/home/icon-movies.png",
+      "sha256": "c266e41d88459065f4d813853a873e2c717af0a5407ff2caf97febbddb4e4323",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.movies"
+      ],
+      "consumers": [
+        "home_menu.show; current Home routes; background aliases share original files"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/home/icon-series.png",
+      "sha256": "f470a20b90a5449f847eac14ba3f81a79a0e7d8f5be9da7529c84e760c7bce80",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.series"
+      ],
+      "consumers": [
+        "home_menu.show; current Home routes; background aliases share original files"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/home/icon-settings.png",
+      "sha256": "2f6bf044e70f0bb860ec33198388c9af9085c1ad2d44c9ccf71b2a7906ba0655",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.settings"
+      ],
+      "consumers": [
+        "home_menu.show; current Home routes; background aliases share original files"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/home/icon-start.png",
+      "sha256": "625d73d50b9ce77ee78d2033f30f4fab715ed7d5b05c4c87e4e4c536d5777325",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.start"
+      ],
+      "consumers": [
+        "theme_ui.manage Standard row; Home startup keeps immutable Original icon"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/media/icon-episodes.png",
+      "sha256": "901894d103017ac44a72bb20c579b7cefb7b01cbdcfe847a8e9ef457e647d111",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.media.episodes"
+      ],
+      "consumers": [
+        "MediaWindow._fill -> theme_render.action_art (available detail/episode actions only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/media/icon-favorite-add.png",
+      "sha256": "360e98cbb8cbb4c0059c9366808dd0e87806c077587588b5229500689fba6eea",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.media.favorite-add"
+      ],
+      "consumers": [
+        "MediaWindow._fill -> theme_render.action_art (available detail/episode actions only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/media/icon-favorite-remove.png",
+      "sha256": "547ba5d3aa34198a8b62336db99ca9ef1999876832ffd8b197fc747e3abea887",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.media.favorite-remove"
+      ],
+      "consumers": [
+        "MediaWindow._fill -> theme_render.action_art (available detail/episode actions only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/media/icon-play.png",
+      "sha256": "2bde3373cf65311f19a28a58b4de0b3afdf8e395cdb6a851554827eaaa0cdc87",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.media.play"
+      ],
+      "consumers": [
+        "MediaWindow._fill -> theme_render.action_art (available detail/episode actions only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/media/icon-restart.png",
+      "sha256": "a8d797b6ff709158731d35b1cd40243eb8b12ba75d15538c9183354de6a476c6",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.media.restart"
+      ],
+      "consumers": [
+        "MediaWindow._fill -> theme_render.action_art (available detail/episode actions only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/media/icon-resume.png",
+      "sha256": "21db7468b6aa74bdb1d7b035577b1fed01b8216b121f73b4e4036af0d9ddd503",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.media.resume"
+      ],
+      "consumers": [
+        "MediaWindow._fill -> theme_render.action_art (available detail/episode actions only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/media/icon-seasons.png",
+      "sha256": "b0ef1f5fe3f56f192696605e3e3915961a01e4a1139b186c95c3fa2aa6cd532a",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.media.seasons"
+      ],
+      "consumers": [
+        "MediaWindow._fill -> theme_render.action_art (available detail/episode actions only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/media/icon-trailer.png",
+      "sha256": "9768048f0fd3f6bd3256ac726d13c9deb37c1cb45a7837aef18dad5cc760b829",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.media.trailer"
+      ],
+      "consumers": [
+        "MediaWindow._fill -> theme_render.action_art (available detail/episode actions only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/media/placeholder-movie-backdrop.jpg",
+      "sha256": "a80f2feb5a6e7941cd39a6ed05c37176186b03d262ebe69e91d0e756482316a6",
+      "properties": {
+        "width": 1920,
+        "height": 1080,
+        "alpha": false
+      },
+      "keys": [
+        "placeholder.movie.backdrop"
+      ],
+      "consumers": [
+        "media_art.local_art; local provider images take priority"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/media/placeholder-movie-poster.jpg",
+      "sha256": "85fd3a849d88f087473808d38fca197f2f7e4ab802687865e8ab0254efe30984",
+      "properties": {
+        "width": 600,
+        "height": 900,
+        "alpha": false
+      },
+      "keys": [
+        "placeholder.movie.poster"
+      ],
+      "consumers": [
+        "media_art.local_art; local provider images take priority"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/media/placeholder-series-backdrop.jpg",
+      "sha256": "60d1a03e8ca62043561fa5360cf338820ba2a499d15c37f850b9ddb3b6916e0a",
+      "properties": {
+        "width": 1920,
+        "height": 1080,
+        "alpha": false
+      },
+      "keys": [
+        "placeholder.series.backdrop"
+      ],
+      "consumers": [
+        "media_art.local_art; local provider images take priority"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/media/placeholder-series-poster.jpg",
+      "sha256": "4c8f89be2c90e7ce5603e1f8015c4e0f4261a8651488b0504a24cd39b58f8aca",
+      "properties": {
+        "width": 600,
+        "height": 900,
+        "alpha": false
+      },
+      "keys": [
+        "placeholder.series.poster"
+      ],
+      "consumers": [
+        "media_art.local_art; local provider images take priority"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/media/poster-shade.png",
+      "sha256": "ad04c5f16c44a2e471b6f88792d572967174fa492d3756431c938bbd68e76f82",
+      "properties": {
+        "width": 600,
+        "height": 900,
+        "alpha": true
+      },
+      "keys": [
+        "panel.media.poster.shade"
+      ],
+      "consumers": [
+        "theme_render.apply_xml / LiveNavigator texture arguments; current .22 controls"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/media/rail-gradient.png",
+      "sha256": "4209e0f1fe2f76544f8553954e5d8259541959cdec7a0ba8a4d32708364ac0f5",
+      "properties": {
+        "width": 1920,
+        "height": 280,
+        "alpha": true
+      },
+      "keys": [
+        "panel.media.rail.gradient"
+      ],
+      "consumers": [
+        "theme_render.apply_xml / LiveNavigator texture arguments; current .22 controls"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/player/icon-audio.png",
+      "sha256": "0e1d2ed06745b88bfb1331131ba97880e0c511b535ddb224c47a30820f3b5b10",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.player.audio"
+      ],
+      "consumers": [
+        "LiveNavigator texture arguments / MediaOSD texture snapshots; capabilities and input unchanged"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/player/icon-live-edge.png",
+      "sha256": "11e590302a89a7c109ee38f58f2b05973887ee01520d029e2c8b1acca11684f5",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.player.live-edge"
+      ],
+      "consumers": [
+        "LiveNavigator texture arguments / MediaOSD texture snapshots; capabilities and input unchanged"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/player/icon-more.png",
+      "sha256": "02cfdaa32c068242e7b0790cdae51f9ea7ae69cb488553ad6038bf59079f3ba6",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.player.more"
+      ],
+      "consumers": [
+        "LiveNavigator texture arguments / MediaOSD texture snapshots; capabilities and input unchanged"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/player/icon-pause.png",
+      "sha256": "3d1d882863a341fc8a29583e61704b2452706b2f15c4d357089a36676c1d0bc2",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.player.pause"
+      ],
+      "consumers": [
+        "LiveNavigator texture arguments / MediaOSD texture snapshots; capabilities and input unchanged"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/player/icon-play.png",
+      "sha256": "28cc3878ff543cb2e65d1219d8250f2c79ba1b86df0dcad6ab30b073976b07b7",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.player.play"
+      ],
+      "consumers": [
+        "LiveNavigator texture arguments / MediaOSD texture snapshots; capabilities and input unchanged"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/player/icon-seek-back.png",
+      "sha256": "bf91948fd7e7adfadceeddc6064a20578d91c95ef5297be301c85be880cc01d3",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.player.seek-back"
+      ],
+      "consumers": [
+        "LiveNavigator texture arguments / MediaOSD texture snapshots; capabilities and input unchanged"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/player/icon-seek-forward.png",
+      "sha256": "ac9daecd5497760a34f44f23ecf7e1e33820bcd246a989d276cd69b188276545",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.player.seek-forward"
+      ],
+      "consumers": [
+        "LiveNavigator texture arguments / MediaOSD texture snapshots; capabilities and input unchanged"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/player/icon-skip-back.png",
+      "sha256": "65720f967353e77c70a7b1a1e117223ffe778689bcce2b9b95c44b0eadb3172f",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.player.skip-back"
+      ],
+      "consumers": [],
+      "runtime_bound": false,
+      "legacy_runtime_bound": false,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/player/icon-skip-forward.png",
+      "sha256": "868cf014f3baeec1c3d8d10788e0547bc99a2663cb0e7e7349ed083ad22adf47",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.player.skip-forward"
+      ],
+      "consumers": [],
+      "runtime_bound": false,
+      "legacy_runtime_bound": false,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/player/icon-stop.png",
+      "sha256": "ec1d268b641ca2961c4bdcee874324ced787b7ffa3398c1bc0e7c5b520942305",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.player.stop"
+      ],
+      "consumers": [
+        "LiveNavigator texture arguments / MediaOSD texture snapshots; capabilities and input unchanged"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/player/icon-subtitles.png",
+      "sha256": "279a6dea04805476bb6e59a3dbcb93f2d338765758e4429a5e5e063745a82201",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.player.subtitles"
+      ],
+      "consumers": [
+        "LiveNavigator texture arguments / MediaOSD texture snapshots; capabilities and input unchanged"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/player/icon-video-settings.png",
+      "sha256": "82072437ccfbb54cd993ca8715368519bab89d81aa8ee9c129e1207e8dee4f57",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.player.video-settings"
+      ],
+      "consumers": [
+        "LiveNavigator texture arguments / MediaOSD texture snapshots; capabilities and input unchanged"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/player/panel-controls.png",
+      "sha256": "0385f96617f17fe63961d8c7cf89d3860104ab0d9841cea25aacb18393a0b25a",
+      "properties": {
+        "width": 1920,
+        "height": 240,
+        "alpha": true
+      },
+      "keys": [
+        "panel.player.controls"
+      ],
+      "consumers": [
+        "LiveNavigator texture arguments / MediaOSD texture snapshots; capabilities and input unchanged"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/player/panel-infobar.png",
+      "sha256": "b4368ae6cb18bcf93de923e3b01906e86f0338e079834ce82f2f97c357add8e1",
+      "properties": {
+        "width": 1920,
+        "height": 300,
+        "alpha": true
+      },
+      "keys": [
+        "panel.player.infobar"
+      ],
+      "consumers": [
+        "LiveNavigator texture arguments / MediaOSD texture snapshots; capabilities and input unchanged"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/player/panel-options.png",
+      "sha256": "4ca393c22ec9865684e01edca5e5532de19d85c0e67e43684d66973b43375dff",
+      "properties": {
+        "width": 920,
+        "height": 680,
+        "alpha": true
+      },
+      "keys": [
+        "panel.player.options"
+      ],
+      "consumers": [
+        "LiveNavigator texture arguments / MediaOSD texture snapshots; capabilities and input unchanged"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/player/panel-progress-track.png",
+      "sha256": "0e028644a807b2ee7788d53f375a7060b9f04e5bc3bc2f616bc13999dbd0a8fb",
+      "properties": {
+        "width": 1920,
+        "height": 74,
+        "alpha": true
+      },
+      "keys": [
+        "panel.player.progress-track"
+      ],
+      "consumers": [
+        "LiveNavigator texture arguments / MediaOSD texture snapshots; capabilities and input unchanged"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/settings/bg-about.jpg",
+      "sha256": "3baf2125d3caabb52283d74f07a9e0af990e764b16e79493cee84e70e33ad2c8",
+      "properties": {
+        "width": 1920,
+        "height": 1080,
+        "alpha": false
+      },
+      "keys": [
+        "background.settings.about"
+      ],
+      "consumers": [
+        "home_menu.settings (current section aliases; artwork only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/settings/bg-accounts.jpg",
+      "sha256": "e39f744743291ed4d5667ef1575b3eb781fda881bb2ba98db115cf25dfeb30be",
+      "properties": {
+        "width": 1920,
+        "height": 1080,
+        "alpha": false
+      },
+      "keys": [
+        "background.settings.accounts"
+      ],
+      "consumers": [
+        "home_menu.settings (current section aliases; artwork only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/settings/bg-appearance.jpg",
+      "sha256": "24f8831f097e0c246d4e2988e26ae6b9215030c49da3fb3d48f3b3e34b0b7dd0",
+      "properties": {
+        "width": 1920,
+        "height": 1080,
+        "alpha": false
+      },
+      "keys": [
+        "background.settings.appearance"
+      ],
+      "consumers": [
+        "home_menu.settings (current section aliases; artwork only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/settings/bg-epg.jpg",
+      "sha256": "e77e16381a75885cb83348c0f7ab76622f01b36f6aeb87058c22c5f681ecde10",
+      "properties": {
+        "width": 1920,
+        "height": 1080,
+        "alpha": false
+      },
+      "keys": [
+        "background.settings.epg"
+      ],
+      "consumers": [
+        "home_menu.settings (current section aliases; artwork only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/settings/bg-groups.jpg",
+      "sha256": "33aac1151c81d189730dfa9736fa355747030acec90f2a88b60a92bf45fa98c4",
+      "properties": {
+        "width": 1920,
+        "height": 1080,
+        "alpha": false
+      },
+      "keys": [
+        "background.settings.groups"
+      ],
+      "consumers": [
+        "home_menu.settings (current section aliases; artwork only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/settings/bg-maintenance.jpg",
+      "sha256": "4cf3b2c3d4abf5701b2a1f54939bda3577e3e743048cf5ce58941c9d345f0737",
+      "properties": {
+        "width": 1920,
+        "height": 1080,
+        "alpha": false
+      },
+      "keys": [
+        "background.settings.maintenance"
+      ],
+      "consumers": [
+        "home_menu.settings (current section aliases; artwork only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/settings/bg-player.jpg",
+      "sha256": "538a651f5aaeadb4b73436baffc0e6d6ddd16fae861f5be0b49303484c7ce274",
+      "properties": {
+        "width": 1920,
+        "height": 1080,
+        "alpha": false
+      },
+      "keys": [
+        "background.settings.player"
+      ],
+      "consumers": [
+        "home_menu.settings (current section aliases; artwork only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/settings/bg-recordings.jpg",
+      "sha256": "3bf553f82b2f7f09996e33b8b3b713621d0ea4b814ec60e12e0457d75f372957",
+      "properties": {
+        "width": 1920,
+        "height": 1080,
+        "alpha": false
+      },
+      "keys": [
+        "background.settings.recordings"
+      ],
+      "consumers": [
+        "home_menu.settings (current section aliases; artwork only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/settings/bg-remote.jpg",
+      "sha256": "704f4ce719c54ca6c821ca5b18872471e36dbc99e63ceba151bd1ebf32b7d7a3",
+      "properties": {
+        "width": 1920,
+        "height": 1080,
+        "alpha": false
+      },
+      "keys": [
+        "background.settings.remote"
+      ],
+      "consumers": [
+        "home_menu.settings (current section aliases; artwork only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/settings/bg-start-channel.jpg",
+      "sha256": "47ff20645e31b93dbec2b400f900a3d2ff21e4103a4de2455192e80b8e8e6990",
+      "properties": {
+        "width": 1920,
+        "height": 1080,
+        "alpha": false
+      },
+      "keys": [
+        "background.settings.start-channel"
+      ],
+      "consumers": [
+        "home_menu.settings (current section aliases; artwork only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/settings/icon-about.png",
+      "sha256": "ddedeb3ff3ca0c1284be39aee41a1beea1d9b6fb3204319f7977a3e038961bb9",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.settings.about"
+      ],
+      "consumers": [
+        "home_menu.settings (current section aliases; artwork only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/settings/icon-accounts.png",
+      "sha256": "2d704502c9da2e074c4b180052ea1a61e152dfa0c4c1f4a852900a20aaed0103",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.settings.accounts"
+      ],
+      "consumers": [
+        "home_menu.settings (current section aliases; artwork only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/settings/icon-appearance.png",
+      "sha256": "7c9dcf33469a6f718fa1dd8fe8f1ba719e59cdb0eae9ec854d1902758e228a25",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.settings.appearance"
+      ],
+      "consumers": [
+        "home_menu.settings (current section aliases; artwork only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/settings/icon-epg.png",
+      "sha256": "48757461372fece8a084e193234466e36407ffe452ac879acf0f05a063d2b371",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.settings.epg"
+      ],
+      "consumers": [
+        "home_menu.settings (current section aliases; artwork only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/settings/icon-groups.png",
+      "sha256": "57cb86f2f303090d673e7361e47910567790899c3c897a7f223c4cdac5fb2f54",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.settings.groups"
+      ],
+      "consumers": [
+        "home_menu.settings (current section aliases; artwork only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/settings/icon-maintenance.png",
+      "sha256": "707f0476151beee9de3f8831bbea033e6d6c0d662c6e9b247f33a34fd0d29361",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.settings.maintenance"
+      ],
+      "consumers": [
+        "home_menu.settings (current section aliases; artwork only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/settings/icon-player.png",
+      "sha256": "6c55d630685a74e839fc96f6ee8c13feb29e8020aaa36f04deb31be6556b77c6",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.settings.player"
+      ],
+      "consumers": [
+        "home_menu.settings (current section aliases; artwork only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/settings/icon-recordings.png",
+      "sha256": "45d68f058ca204e241bacf7a95ae4263214660146dfe896fed14d632f5ba6ff0",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.settings.recordings"
+      ],
+      "consumers": [
+        "home_menu.settings (current section aliases; artwork only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/settings/icon-remote.png",
+      "sha256": "3e719e344468a281dbbf1118ff91b2833132a17ddb0b0f4736cab32331ff8b5a",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.settings.remote"
+      ],
+      "consumers": [
+        "home_menu.settings (current section aliases; artwork only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/settings/icon-start-channel.png",
+      "sha256": "57299dcf48b494d58f9c56d730df7b58f3d4cd997ab5e14fce6b5028d4980734",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.settings.start-channel"
+      ],
+      "consumers": [
+        "home_menu.settings (current section aliases; artwork only)"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/shared/divider.png",
+      "sha256": "8f25fc56ff847cc9056a2c3043b5a7900e9ad6652dd50f131e8c3283868a976c",
+      "properties": {
+        "width": 1920,
+        "height": 180,
+        "alpha": true
+      },
+      "keys": [
+        "panel.divider"
+      ],
+      "consumers": [
+        "theme_render.apply_xml / LiveNavigator texture arguments; current .22 controls"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/shared/focus-rail.png",
+      "sha256": "402c68602672da92820057453f978a6c64f5387ffa701baad00b31188e6c6773",
+      "properties": {
+        "width": 1920,
+        "height": 180,
+        "alpha": true
+      },
+      "keys": [
+        "focus.rail"
+      ],
+      "consumers": [
+        "theme_render.apply_xml / LiveNavigator texture arguments; current .22 controls"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/shared/focus-ring.png",
+      "sha256": "626b58e5f8370b76987588e929d53579ff2b8899ada8c4a7b7e69d4bd6708a5e",
+      "properties": {
+        "width": 512,
+        "height": 512,
+        "alpha": true
+      },
+      "keys": [
+        "focus.default",
+        "focus.media"
+      ],
+      "consumers": [
+        "theme_render.apply_xml / LiveNavigator texture arguments; current .22 controls"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/shared/glass-panel.png",
+      "sha256": "b4a8ad6b3ffeaabd384b8842e2bcf9f1283bc80abce03fcdde52d3d0a82b981f",
+      "properties": {
+        "width": 1280,
+        "height": 720,
+        "alpha": true
+      },
+      "keys": [
+        "panel.default",
+        "panel.overlay"
+      ],
+      "consumers": [
+        "theme_render.apply_xml / LiveNavigator texture arguments; current .22 controls"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/shared/icon-back.png",
+      "sha256": "76ada815204523849e4bfe7f504f3827be05fc14e3d08b30aea1bd067183a83d",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.shared.back"
+      ],
+      "consumers": [
+        "theme_ui native action rows / theme_render.apply_xml decorations and epg_choices"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/shared/icon-check.png",
+      "sha256": "a18823b1a3c241b796c6b76fd4beecc064c35c6e10f04dce6d7ba6725fd2a5b6",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.shared.check"
+      ],
+      "consumers": [
+        "theme_ui native action rows / theme_render.apply_xml decorations and epg_choices"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/shared/icon-clear.png",
+      "sha256": "15790791c23786ae2a2f98198b40767e2d627bffe1adf68815fa831a5f148925",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.shared.clear"
+      ],
+      "consumers": [
+        "theme_ui native action rows / theme_render.apply_xml decorations and epg_choices"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/shared/icon-close.png",
+      "sha256": "f1720fadcc6dd7f56e5116eb4f59a1b306c2f42d965150825f818739d2536ecd",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.shared.close"
+      ],
+      "consumers": [
+        "theme_ui native action rows / theme_render.apply_xml decorations and epg_choices"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/shared/icon-filter.png",
+      "sha256": "f557723741d576f72cd39241b0434c390f31ab24e40856f37eabc75371cdecdb",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.shared.filter"
+      ],
+      "consumers": [],
+      "runtime_bound": false,
+      "legacy_runtime_bound": false,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/shared/icon-forward.png",
+      "sha256": "b93400630f43ec1ceb16f7fd4dc6ea56a45d7f32b94e598fc555a72cfc881dbc",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.shared.forward"
+      ],
+      "consumers": [
+        "theme_ui native action rows / theme_render.apply_xml decorations and epg_choices"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/shared/icon-info.png",
+      "sha256": "99a7b86a797d6b7a7a180c6c63b4eb4e8c83b64ce378714bbdba4039ba319182",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.shared.info"
+      ],
+      "consumers": [
+        "theme_ui native action rows / theme_render.apply_xml decorations and epg_choices"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/shared/icon-search.png",
+      "sha256": "9296754df54be9f5eaed9c7f0fb66d5b6b14e2201b856b6ac3b873db7fd6b521",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.shared.search"
+      ],
+      "consumers": [
+        "theme_ui native action rows / theme_render.apply_xml decorations and epg_choices"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/shared/icon-sort.png",
+      "sha256": "590fd768b9d251c79f067a061569d41e82dc128d9bcd157b0b39683f86b1e0ec",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.shared.sort"
+      ],
+      "consumers": [],
+      "runtime_bound": false,
+      "legacy_runtime_bound": false,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/shared/icon-warning.png",
+      "sha256": "66410decefddea7efeed0941084522ae64308959d767d442b18582ca6e2c17c1",
+      "properties": {
+        "width": 256,
+        "height": 256,
+        "alpha": true
+      },
+      "keys": [
+        "icon.shared.warning"
+      ],
+      "consumers": [],
+      "runtime_bound": false,
+      "legacy_runtime_bound": false,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/shared/loading-skeleton.png",
+      "sha256": "ac293ee11f37cdf5ceb03b67bb925a21936eec47c1aa6a68550ceef8df4e4ffd",
+      "properties": {
+        "width": 1280,
+        "height": 720,
+        "alpha": true
+      },
+      "keys": [
+        "panel.loading"
+      ],
+      "consumers": [],
+      "runtime_bound": false,
+      "legacy_runtime_bound": false,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/shared/sidebar-bg.png",
+      "sha256": "1624c5ace46c345f6d95ad7a39cd455c457767e1934d9b429a3697067717ee55",
+      "properties": {
+        "width": 600,
+        "height": 1080,
+        "alpha": true
+      },
+      "keys": [
+        "panel.sidebar"
+      ],
+      "consumers": [
+        "theme_render.apply_xml / LiveNavigator texture arguments; current .22 controls"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/widgets/widget-header.png",
+      "sha256": "caa6a0bdd87e1309e52efd2853ec4ad3850280bfcde5c0f904430589afec639b",
+      "properties": {
+        "width": 1920,
+        "height": 200,
+        "alpha": true
+      },
+      "keys": [
+        "widget.header"
+      ],
+      "consumers": [
+        "app_routes.add_index_item(widget=True); provider image wins; Kodi skin determines banner visibility"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/widgets/widget-live-fallback.png",
+      "sha256": "c32e27e033e96b3418eb05570455ee309564891978c4973401a38efda898a46e",
+      "properties": {
+        "width": 800,
+        "height": 450,
+        "alpha": true
+      },
+      "keys": [
+        "widget.live"
+      ],
+      "consumers": [
+        "app_routes.add_index_item(widget=True); provider image wins; Kodi skin determines banner visibility"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/widgets/widget-movie-fallback.png",
+      "sha256": "47f081db3f14a97c1294eb47a023c7d8920a75108d1c2ee4a4148d828dca7571",
+      "properties": {
+        "width": 800,
+        "height": 450,
+        "alpha": true
+      },
+      "keys": [
+        "widget.movie"
+      ],
+      "consumers": [
+        "app_routes.add_index_item(widget=True); provider image wins; Kodi skin determines banner visibility"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    },
+    {
+      "path": "assets/widgets/widget-series-fallback.png",
+      "sha256": "e3340d0eb4982b22983187ae58a1300f7e1fea04cb1ab20b9cd346605136c322",
+      "properties": {
+        "width": 800,
+        "height": 450,
+        "alpha": true
+      },
+      "keys": [
+        "widget.series"
+      ],
+      "consumers": [
+        "app_routes.add_index_item(widget=True); provider image wins; Kodi skin determines banner visibility"
+      ],
+      "runtime_bound": true,
+      "legacy_runtime_bound": true,
+      "device_acceptance": "NOT_TESTED"
+    }
+  ]
+}

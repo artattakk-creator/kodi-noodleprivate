@@ -29,6 +29,7 @@ def path():
 def validate(data):
     result=dict(DEFAULT)
     if not isinstance(data,dict): return result
+    if isinstance(data.get('theme'),str) and re.fullmatch(r'[a-z][a-z0-9-]{0,47}',data['theme']):result['theme']=data['theme']
     for key in COLOURS:
         value=str(data.get(key,'')).upper().lstrip('#')
         if re.fullmatch('[0-9A-F]{6}',value): result[key]=value
@@ -60,7 +61,7 @@ def argb(colour,opacity=100):
     return '{:02X}{}'.format(round(max(0,min(100,opacity))*255/100),colour)
 
 
-def window_source(xml_filename):
+def window_source(xml_filename, kind='vod'):
     """Generate an XCMate-only WindowXML variant; stable IDs/navigation retained.
 
     WindowXML reads XML/fonts at construction: reopen applies a new profile.
@@ -70,23 +71,27 @@ def window_source(xml_filename):
     from utils import addon_data_dir
     original=xbmcaddon.Addon().getAddonInfo('path')
     values=read()
-    if values==DEFAULT: return original
+    from theme_render import snapshot,apply_xml
+    theme=snapshot()
+    if theme:values.update({k:v.upper() for k,v in theme['spec']['palette'].items()})
+    if values==DEFAULT and not theme: return original
     source=Path(original)/'resources/skins/Default/720p'/xml_filename
     tree=ET.parse(source)
+    if theme:apply_xml(tree,theme,xml_filename,kind)
     for node in tree.getroot().iter():
         if node.tag=='font': node.text=FONTS[values['font']]
         elif node.tag=='textcolor' and xml_filename!='XCMateGuideGrid.xml':
             node.text=argb(values['secondary'] if node.text=='FFB6BCC6' else values['text'])
         elif node.tag=='texture' and node.text and not node.text.endswith(('xcmate_focus_neon.png','guide_focus_frame.png')):
             node.set('colordiffuse',argb('FFFFFF',values['icon_opacity']))
-        elif node.tag=='texturefocus' and not (node.text or '').endswith(('xcmate_focus_neon.png','guide_focus_frame.png')): node.set('colordiffuse',argb(values['focus'],values['panel_opacity']))
-        elif node.tag=='texturenofocus': node.set('colordiffuse',argb(values['background'],values['panel_opacity']))
+        elif node.tag=='texturefocus' and not (node.text or '').endswith(('xcmate_focus_neon.png','guide_focus_frame.png')): node.set('colordiffuse',argb('FFFFFF' if theme else values['focus'],values['panel_opacity']))
+        elif node.tag=='texturenofocus': node.set('colordiffuse',argb('FFFFFF' if theme else values['background'],values['panel_opacity']))
     # Background and shade images get their own alpha; focused labels stay
     # readable even if the user makes the backdrop fully transparent.
     for control in tree.findall('./controls/control'):
         if control.get('type')=='image' and control.findtext('width')=='1280':
             texture=control.find('texture')
-            if texture is not None: texture.set('colordiffuse',argb(values['background'],values['background_opacity']))
+            if texture is not None: texture.set('colordiffuse',argb('FFFFFF' if theme else values['background'],values['background_opacity']))
     for control in tree.getroot().iter('control'):
         font=control.find('font')
         if font is not None and values['font']=='large':
@@ -95,7 +100,8 @@ def window_source(xml_filename):
             if 0<height<36: font.text='font13'
     heading=tree.find("./controls/control[@id='101']/textcolor")
     if heading is not None: heading.text=argb(values['accent'])
-    root=Path(addon_data_dir())/'ui_core'
+    variant=hashlib.sha256((str(theme['revision']) if theme else 'core').encode()).hexdigest()[:16]
+    root=Path(addon_data_dir())/('ui_'+variant+'_'+kind)
     target=root/'resources/skins/Default/720p'/xml_filename
     target.parent.mkdir(parents=True,exist_ok=True)
     data=ET.tostring(tree.getroot(),encoding='utf-8',xml_declaration=True)

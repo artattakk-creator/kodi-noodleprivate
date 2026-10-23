@@ -13,7 +13,7 @@ from urllib.parse import urlsplit,parse_qs
 import xbmc
 import xbmcgui
 
-DIALOG_ACTIONS=frozenset(('branding_status','art_status','art_retry','art_db_health','ui_language',
+DIALOG_ACTIONS=frozenset(('branding_status','theme_manager','art_status','art_retry','art_db_health','ui_language',
     'appearance_settings','settings','account_select','recording_folder','recording_capabilities',
     'xcmate_licenses','guide_timers','guide_status','about_xcmate','widget_setup','playlist_editor'))
 WINDOW_ACTIONS=frozenset(('movies_home','series_home','media_detail','media_favourites','guide_browser','guide_grid'))
@@ -37,12 +37,13 @@ def trace(event,mode='',key=0,dispatch=''):
     except Exception: pass
 
 
-def add_action(router,label,url,icon=None,plot=''):
+def add_action(router,label,url,icon=None,plot='',fanart=None):
     import xbmcplugin
     item=xbmcgui.ListItem(label)
     item.setProperty('IsPlayable','false')
     item.setInfo('video',{'title':label,'plot':plot or label})
     if icon:item.setArt({'icon':icon,'thumb':icon})
+    if fanart:item.setArt({'fanart':fanart})
     xbmcplugin.addDirectoryItem(router._handle,url,item,isFolder=False)
 
 

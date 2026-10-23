@@ -2635,7 +2635,7 @@ class Router:
                             portal_id=p.get('id', ''),
                             force_refresh=force)
 
-    def _add_dir(self, label, url, icon=None, is_folder=True, plot=''):
+    def _add_dir(self, label, url, icon=None, is_folder=True, plot='', fanart=None):
         li = xbmcgui.ListItem(label)
         _icon = icon if icon else ADDON_ICON
         li.setArt({
@@ -2643,7 +2643,7 @@ class Router:
             'thumb':     _icon,
             'landscape': _icon,
             'clearart':  _icon,
-            'fanart':    ADDON_FANART,
+            'fanart':    fanart or ADDON_FANART,
         })
         li.setInfo('video', {'title': label, 'plot': plot or label})
         if not is_folder:

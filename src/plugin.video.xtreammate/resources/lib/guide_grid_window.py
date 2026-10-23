@@ -12,6 +12,7 @@ from guide_grid_data import ROWS,SPAN,CELLS,rectangle
 class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
     def configure(self,router,portal):
         self._configure_owner();self.router,self.portal=router,portal
+        self._theme=__import__('theme_render').snapshot()
         self._pool=ThreadPoolExecutor(max_workers=1);self._generation=0;self._closed=False;self._ready=False
         self._loading=False;self._leaving=False;self._cells={};self.rows=[];self.groups=[];self.category=''
         self.mode='grid';self._focus_zone='grid';self._header=312;self._views={};self._group_back_after=0;self._input_after=0;self._group_return=None
@@ -63,6 +64,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._request(load,self._loaded)
 
     def _loaded(self,value):
+        __import__('theme_render').guide_status(self,'ready' if value['rows'] else 'empty')
         self._loading=False;self.rows=value['rows'];self.total=value['total'];self.groups=value['groups']
         if self.groups and self.category not in {g['cid'] for g in self.groups}:
             self.category=self.groups[0]['cid'];self.offset=self.row=0;self._load();return
@@ -71,6 +73,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         if self.rows:prefetch_short_guides(self.portal,[row['channel'] for row in self.rows],limit=ROWS)
 
     def _query_failed(self,exc):
+        __import__('theme_render').guide_status(self,'error')
         self._loading=False
         if self.mode=='groups':self.getControl(102).setLabel(tr(33109));return
         if self._diagnosing:
@@ -94,7 +97,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
             self.getControl(750+r).setVisible(row is not None and r==self.row)
             self.getControl(700+r).setText(row['channel']['name'] if row else '')
             from media_art import local_art
-            self.getControl(720+r).setImage(local_art(row['channel'])['thumb'] if row else '')
+            self.getControl(720+r).setImage(local_art(row['channel'],self._theme)['thumb'] if row else '')
             candidates=[e for e in row['events'] if rectangle(e['start'],e['stop'],self.origin)] if row else []
             selected=self._selected() if r==self.row else None
             # If an unusually dense schedule exceeds the native pool, pan to
@@ -124,7 +127,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
 
     def _refresh_logos(self):
         from media_art import local_art
-        for r,row in enumerate(self.rows):self.getControl(720+r).setImage(local_art(row['channel'])['thumb'])
+        for r,row in enumerate(self.rows):self.getControl(720+r).setImage(local_art(row['channel'],self._theme)['thumb'])
 
     def _focus_cell(self,cid=None):
         if cid is None:
@@ -171,7 +174,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         if event and not channel_only:
             if event['start']>time.time():choices.append(tr(32551))
             choices.append(tr(33113))
-        choice=xbmcgui.Dialog().select(channel['name'] if channel_only or not event else event['title'],choices)
+        choice=xbmcgui.Dialog().select(channel['name'] if channel_only or not event else event['title'],__import__('theme_render').epg_choices(choices,self._theme),useDetails=bool(self._theme))
         if choice==0:
             text=channel['name']+'\n'+tr(33114,row['mapping'])
             if event:text+='\n'+event['title']+'\n'+str(event.get('description') or tr(32553))
