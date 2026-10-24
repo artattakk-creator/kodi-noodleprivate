@@ -1,0 +1,22 @@
+{
+  "base": "6c1b9c34b547764523fba295e449821513c8f647",
+  "version": "0.1.29.33",
+  "reproduction_on_032": {"tests": 3, "failures": 3, "errors": 0},
+  "reproduction_tests": [
+    "test_three_reported_busy_timeouts_yield_an_owned_search_continuation",
+    "test_native_media_default_is_visible_in_search_after_keyboard",
+    "test_focus_lag_cannot_retain_xml_edge_to_hidden_landing_button"
+  ],
+  "fixed_reproduction": "PASS",
+  "new_busy_focus_tests": 19,
+  "new_search_ui_tests": 6,
+  "kodi_api_tag": "21.2-Omega",
+  "async_api": "RunPlugin -> CPluginDirectory::RunScriptWithParams -> CScriptRunner::ExecuteScript -> ExecuteAsync",
+  "addon_context_preserved": true,
+  "native_modal_guard_bypassed": false,
+  "foreign_dialogs_closed": false,
+  "timeout_increased": false,
+  "mapping_98_implemented": false,
+  "private_raw_logs_published": false,
+  "android": "NOT_TESTED"
+}

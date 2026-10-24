@@ -260,7 +260,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
 
     def _grid_visibility(self,visible):
         for cid in list(range(310,316))+list(range(600,606))+list(range(700,708))+list(range(720,728))+list(range(730,738))+list(range(750,758))+list(self._cells):
-            self.getControl(cid).setVisible(visible)
+            self.getControl(cid).setVisible(visible or cid==314)
         self.getControl(500).setVisible(False)
         self.getControl(200).setVisible(not visible and bool(self.groups))
         self.getControl(201).setVisible(not visible and not self.groups)
@@ -381,6 +381,9 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
 
     def onClick(self,cid):
         if self._closed or self._leaving or self._search_prompt or self._focus_pending is not None:return
+        if cid==314:
+            from search_navigation import queue
+            queue(self,'grid');return
         if self.mode=='groups':
             if cid==200:self._choose_group()
             elif cid==202:self._leave_home()
@@ -397,9 +400,6 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
             local=datetime.datetime.fromtimestamp(self.cursor).replace(hour=20,minute=15,second=0,microsecond=0)
             self.cursor=int(time.mktime(local.timetuple()));self.origin=self.cursor//1800*1800;self._load()
         elif cid==313:self._show_groups()
-        elif cid==314:
-            from search_navigation import queue
-            queue(self,'grid')
 
     def _owner_tick(self):
         if not self._leaving:self._resume_focus()

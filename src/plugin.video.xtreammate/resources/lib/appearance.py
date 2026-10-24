@@ -19,7 +19,7 @@ DEFAULT=dict(theme='core',background_opacity=100,panel_opacity=90,icon_opacity=1
 COLOURS=('background','accent','focus','text','secondary')
 OPACITY=('background_opacity','panel_opacity','icon_opacity')
 FONTS={'small':'font12','normal':'font13','large':'font16'}
-RENDER_REVISION='02930-core-original-splash'
+RENDER_REVISION='02933-safe-native-focus'
 
 
 def path():

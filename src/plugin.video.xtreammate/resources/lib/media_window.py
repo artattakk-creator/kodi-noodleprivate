@@ -60,6 +60,7 @@ class MediaWindow(DetailMenuMixin,SearchMixin,OwnerDispatch,xbmcgui.WindowXML):
 
     def setFocusId(self,control_id):
         if self._closed:return
+        requested=control_id
         # Native setVisible/enabled flags may lag one GUI frame. Keep the
         # intended target instead of committing a temporary fallback to Search.
         eligible=self._valid_focus(native=False)
@@ -68,6 +69,13 @@ class MediaWindow(DetailMenuMixin,SearchMixin,OwnerDispatch,xbmcgui.WindowXML):
             control_id=primary if primary is not None else next(iter(eligible),None)
         if control_id is None:return
         valid=self._valid_focus()
+        if self.mode=='search':
+            from search_navigation import focus_details
+            focus_details(self,requested,eligible,valid)
+            # Native XML can process another key before visibility catches up.
+            # Never leave old 400 -> 120 landing edges live during that frame.
+            for cid in (400,700,701,702,710,720,721):
+                control=self.getControl(cid);control.setNavigation(control,control,control,control)
         if control_id not in valid:
             if (self.mode in ('detail','seasons','episodes') and control_id in (300,330,340,810,820)
                     or self.mode=='search' and control_id in eligible):
@@ -304,8 +312,12 @@ class MediaWindow(DetailMenuMixin,SearchMixin,OwnerDispatch,xbmcgui.WindowXML):
         control=self.getControl(control_id);control.reset()
         items=[]
         for row in rows:
-            li=xbmcgui.ListItem(str(row.get('name','')))
-            li.setArt(local_art(row,self._theme))
+            if control_id==710:
+                from search_results import item
+                li=item(row,self._theme)
+            else:
+                li=xbmcgui.ListItem(str(row.get('name','')))
+                li.setArt(local_art(row,self._theme))
             if control_id in (300,330):
                 from theme_render import action_art
                 li.setArt(action_art(row.get('sid','') if control_id==300 else 'next_episode' if self.mode=='episodes' else 'seasons',self._theme,row.get('favourite',getattr(self,'_theme_favourite',False))))

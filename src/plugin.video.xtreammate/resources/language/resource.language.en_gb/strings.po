@@ -3208,3 +3208,23 @@ msgstr "Write, read and remove one new XCMate test file at the configured downlo
 msgctxt "#35009"
 msgid "Destination test passed: bytes and SHA256 match. This does not prove a complete movie/episode download."
 msgstr "Destination test passed: bytes and SHA256 match. This does not prove a complete movie/episode download."
+
+msgctxt "#35100"
+msgid "Channel"
+msgstr "Channel"
+
+msgctxt "#35101"
+msgid "Movie"
+msgstr "Movie"
+
+msgctxt "#35102"
+msgid "Series"
+msgstr "Series"
+
+msgctxt "#35103"
+msgid "Now"
+msgstr "Now"
+
+msgctxt "#35104"
+msgid "No current programme in local EPG"
+msgstr "No current programme in local EPG"

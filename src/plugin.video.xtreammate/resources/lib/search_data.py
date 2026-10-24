@@ -99,7 +99,7 @@ class LiveSearch:
             name=all(t in normalized(row.get('name','')) for t in self.tokens)
             programme=bool(title and all(t in normalized(title) for t in self.tokens))
             self.counts['name_hits']+=int(name);self.counts['programme_hits']+=int(programme)
-            if name or programme:self.result.append(dict(row,_now_title=title if programme else '',_now_match=programme))
+            if name or programme:self.result.append(dict(row,_now_title=title,_now_match=programme))
             if processed>=64 or time.monotonic()>=deadline:break
         code='EPG_PARTIAL' if not self.done else 'READY' if self.counts['now_count'] and self.code!='EPG_UNAVAILABLE' else self.code
         from live_diagnostics import record

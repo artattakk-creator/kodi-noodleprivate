@@ -1,0 +1,16 @@
+{
+  "run_url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/40125855688",
+  "run_id": 40125855688,
+  "job_id": 120966971868,
+  "source_commit": "16276391abd1dfa1007e270042b05950dc13c509",
+  "status": "PASS",
+  "tests": 1093,
+  "seconds": 197.786,
+  "thread_exceptions": false,
+  "artifact_id": 12573511578,
+  "artifact_name": "xcmate-review-156-3a647b5f9428b08843ce76479d67bb3f05b2ec555982947eeb4883948fcd1df9",
+  "addon_zip_sha256": "3a647b5f9428b08843ce76479d67bb3f05b2ec555982947eeb4883948fcd1df9",
+  "ci_and_local_zip_hash": "IDENTICAL",
+  "production_publish_step": "SKIPPED",
+  "android": "NOT_TESTED"
+}

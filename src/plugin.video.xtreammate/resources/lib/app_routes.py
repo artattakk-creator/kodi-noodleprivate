@@ -1,7 +1,7 @@
 """New routes only. Legacy provider/player entry points remain compatible."""
 from localization import tr
 
-ACTIONS=('download_target_test','stability_test','download_folder','download_capabilities','theme_manager','branding_status','xcmate_licenses','guide_grid','playlist_editor','source_live','source_play','source_start','art_status','art_retry','art_db_health','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
+ACTIONS=('search_continue','download_target_test','stability_test','download_folder','download_capabilities','theme_manager','branding_status','xcmate_licenses','guide_grid','playlist_editor','source_live','source_play','source_start','art_status','art_retry','art_db_health','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
          'movies_home','series_home','media_detail','media_favourites','global_search','search_section',
          'widget_live_start_group','widget_recent_vod','widget_recent_series','widget_setup',
          'record_now','recordings_manage','recording_folder','recording_capabilities','about_xcmate','guide_browser','media_play','guide_timers','guide_status')
@@ -25,6 +25,10 @@ def dispatch(router):
     import xbmc,xbmcgui,xbmcaddon
     from home_menu import settings,show,recording_folder
     action=router._params.get('action','xcmate_home')
+    if action=='search_continue':
+        _end(router)
+        from search_handoff import run
+        run(router._params.get('token',''));return
     portal=portal_for(router)
     if action in ('guide_timers','guide_status','widget_setup') and not portal:
         _end(router,False)
@@ -167,11 +171,10 @@ def dispatch(router):
             browse(router,portal)
         else: router._live_groups()
     elif action=='global_search':
-        from media_window import open_search
-        from media_search import handoff
+        from search_handoff import handoff
         from window_navigation import open_route
-        from search_navigation import anchor
-        open_route(router,portal,lambda:open_search(router,portal,router._params.get('q'),getattr(router,'_navigation_dispatch','')),after_close=handoff,anchor=anchor)
+        from search_navigation import anchor,open_root
+        open_route(router,portal,lambda:open_root(router,portal),after_close=handoff,anchor=anchor)
     elif action=='search_section': search(router,portal)
     elif action.startswith('widget_'): widget(router,portal,action)
     elif action in ('movies_home','series_home','media_detail','media_favourites'):
@@ -189,12 +192,12 @@ def dispatch(router):
     elif action=='guide_grid':
         from window_navigation import open_route
         from guide_grid_window import open_grid
-        from guide_playback import handoff
+        from search_handoff import handoff
         open_route(router,portal,lambda:open_grid(router,portal),after_close=handoff)
     elif action=='guide_browser':
         from window_navigation import open_route
         from guide_window import open_guide
-        from guide_playback import handoff
+        from search_handoff import handoff
         open_route(router,portal,lambda:open_guide(router,portal),after_close=handoff)
     elif action=='media_play':
         from media_progress import play

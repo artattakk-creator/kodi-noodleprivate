@@ -43,6 +43,18 @@ class SearchMixin:
         startup=getattr(self,'_search_startup',None)
         if startup is not None:
             self._search_startup=None;self._open_search(startup[0])
+        if self.mode!='search' or self._closed or self._leaving:return
+        now=time.monotonic()
+        if now<getattr(self,'_search_art_poll',0):return
+        self._search_art_poll=now+.5
+        from media_art import revision,local_art
+        current=revision()
+        if current==getattr(self,'_search_art_revision',None):return
+        self._search_art_revision=current
+        # Update existing ListItems; never reset selection/focus for an image.
+        control=self.getControl(710)
+        for pos,row in enumerate(getattr(self,'_search_rows',[])):
+            if pos<control.size():control.getListItem(pos).setArt(local_art(dict(row,kind=self._search_kind),self._theme))
 
     def _open_search(self,query=None):
         if self._closed or self._leaving or getattr(self,'_search_prompt',False):return
@@ -63,7 +75,7 @@ class SearchMixin:
         self._search_query=query;self._search_kind=getattr(self,'_search_kind',self.kind)
         if self._search_kind not in KINDS:self._search_kind='vod'
         self._search_offset=0;self._search_selected=0;self._search_rows=[];self._search_data={};self._search_loading=True
-        self._search_continuation=None
+        self._search_continuation=None;self._search_rendered=None
         self.mode='search';self._show('search')
         for pos,label in enumerate(LABELS):self.getControl(700+pos).setLabel(tr(label)+' (…)')
         self.getControl(720).setLabel(tr(32475));self.getControl(721).setLabel(tr(32476))
@@ -93,14 +105,17 @@ class SearchMixin:
         value={k:v for k,v in value.items() if k!='_continuation'}
         if not resume:self._search_loading=False
         self._search_data=value
-        old_focus=self.getFocusId();old_position=self.getControl(710).getSelectedPosition()
+        old_focus=self._mode_focus.get('search',self.getFocusId()) if resume else self.getFocusId()
+        old_position=self.getControl(710).getSelectedPosition()
         self.getControl(103).setLabel(tr(33903)+' · '+self._search_query)
         for pos,kind in enumerate(KINDS):
             count=value[kind]['total']
             self.getControl(700+pos).setLabel(tr(LABELS[pos])+' ('+(str(count)+('+' if value[kind].get('partial') else '') if count is not None else '…')+')')
         section=value[self._search_kind];self._search_rows=section['rows']
-        rows=[dict(row,name=row.get('name','')+(' · '+tr(33905)+': '+row['_now_title'] if row.get('_now_match') else '')) for row in self._search_rows]
-        self._fill(710,rows)
+        rows=[dict(row,kind=self._search_kind) for row in self._search_rows]
+        signature=tuple((str(row.get('sid','')),row.get('name',''),row.get('_now_title','')) for row in rows)
+        if resume or signature!=getattr(self,'_search_rendered',None):
+            self._fill(710,rows);self._search_rendered=signature
         self.getControl(710).selectItem(old_position if old_focus==710 else getattr(self,'_search_selected',0))
         self.getControl(102).setLabel(tr(33906) if section['code']=='INDEX_ERROR' else tr(33904) if section['total'] is None else
             tr(33907) if not rows else '{}–{} / {}'.format(self._search_offset+1,self._search_offset+len(rows),section['total']))
