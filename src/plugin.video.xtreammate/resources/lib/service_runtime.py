@@ -112,7 +112,7 @@ def cancelled():
     return bool(callback and callback())
 
 
-def timeout(value):return min(value,2) if _service or getattr(_local,'cancel',None) else value
+def timeout(value):return min(value,2) if getattr(_local,'cancel',None) else value
 
 
 def wait(seconds):

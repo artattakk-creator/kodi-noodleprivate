@@ -40,8 +40,9 @@ aus einer steigenden Gesamtkurve während Wiedergabe ableiten.
 ## Shutdown
 
 Stop-Signale vor den begrenzten Joins, sofortige Sperre neuer optionaler Starts,
-Artwork-Enrol/Download und Mess-Worker werden berücksichtigt. Service-HTTP erhält
-einen endlichen 2-s-Socket-Timeout, Stop/MemoryError werden nicht erneut retried.
+Artwork-Enrol/Download und Mess-Worker werden berücksichtigt. Optionales HTTP in
+expliziten Hintergrund-Scopes erhält einen endlichen 2-s-Socket-Timeout; bestehende
+Autoplay-/Vordergrund-Timeouts bleiben erhalten. Stop/MemoryError werden nicht erneut retried.
 Streaming-Reads prüfen Abbruch und Retry-Wartezeiten sind unterbrechbar.
 Native Download-/SMB-Sockets werden bei Service-Stop per shutdown geweckt; ihre
 IO-Eigentümer schließen die eigenen Deskriptoren. TLS behält Zertifikatsprüfung

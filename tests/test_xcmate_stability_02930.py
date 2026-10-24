@@ -74,6 +74,8 @@ class Stability30Tests(unittest.TestCase):
             self.assertEqual(self.runtime.timeout(15),2);self.runtime.stop()
             with self.assertRaises(InterruptedError):read_http_chunks([b'PRIVATE'],{},100,9999999999)
         self.assertFalse(self.runtime.cancelled())
+        self.runtime.install()
+        self.assertEqual(self.runtime.timeout(15),15)  # Preserve foreground/autoplay deadlines.
 
     def test_optional_preparation_does_not_repeat_on_each_fast_catalogue_tick(self):
         ticks=[0];monitor=types.SimpleNamespace(abortRequested=lambda:False)
