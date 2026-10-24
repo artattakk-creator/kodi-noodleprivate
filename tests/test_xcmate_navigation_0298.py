@@ -77,7 +77,7 @@ class Navigation298(Fixture,unittest.TestCase):
         w.mode='landing';w._show('landing');w.setFocusId(120)
         self.assertEqual(w.getFocusId(),120)
         default=w.tree.find('defaultcontrol')
-        self.assertEqual(default.text,'120');self.assertEqual(default.get('always'),'false')
+        self.assertEqual(default.text,'400');self.assertEqual(default.get('always'),'true')
 
     def test_focus_navigation_never_targets_hidden_or_empty_control(self):
         w=self.media_window();w.native(7);self.settle(w)

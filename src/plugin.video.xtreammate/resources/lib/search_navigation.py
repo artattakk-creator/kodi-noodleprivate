@@ -13,7 +13,8 @@ from owner_dispatch import WindowStartError
 def mark(stage,router=None,source='',session='',focus=0,owner=False):
     if stage not in ('ENTRY','DIRECTORY_READY','DIRECTORY_TIMEOUT','INTENT','CANCEL',
                      'GUIDE_CLOSED','SEARCH_OPEN','SEARCH_CLOSED','GUIDE_RESTORE','FOCUS_TIMEOUT','START_FAILED',
-                     'WAIT_RELEASE','RELEASE_READY','RELEASE_TIMEOUT'):return
+                     'WAIT_RELEASE','RELEASE_READY','RELEASE_TIMEOUT','BUSY_DEFERRED','ASYNC_QUEUED',
+                     'ASYNC_READY','BLOCK_FOREIGN','BLOCK_CONTEXT','BLOCK_OWNER','BLOCK_STALE','ASYNC_FAILED'):return
     if source not in ('guide','grid','route','media'):source='route'
     if len(session)!=32 or any(c not in '0123456789abcdef' for c in session):session=''
     values=['[XCMate][SEARCH_NAV] stage='+stage,'source='+source,'session='+session,
@@ -35,6 +36,7 @@ def anchor(router,portal,dispatch):
     # Do not issue a second Home update while Kodi is completing this request.
     from home_menu import show
     show(router,portal)
+    if busy_dialog():return True
     deadline=time.monotonic()+5;monitor=xbmc.Monitor()
     while time.monotonic()<deadline:
         path=urlsplit(xbmc.getInfoLabel('Container.FolderPath'))
@@ -42,6 +44,7 @@ def anchor(router,portal,dispatch):
                 and not xbmc.getCondVisibility('Container.IsUpdating')):
             # Let the directory's GUI message finish before WindowXML.show().
             if monitor.waitForAbort(.05):return False
+            if busy_dialog():return True
             if xbmc.getCondVisibility('Container.IsUpdating'):continue
             mark('DIRECTORY_READY',router,session=dispatch,owner=True);return True
         if monitor.waitForAbort(.05):return False
@@ -73,6 +76,20 @@ def queue(window,source):
     window._leaving=True;window._leave_after=time.monotonic()+.15
 
 
+def busy_dialog():
+    try:return int(xbmcgui.getCurrentWindowDialogId())==10138 and xbmc.getCondVisibility('System.HasActiveModalDialog')
+    except (AttributeError,RuntimeError,TypeError,ValueError):return False
+
+
+def open_root(router,portal):
+    session=getattr(router,'_navigation_dispatch','')
+    if busy_dialog() and not getattr(router,'_search_async_owner',False):
+        from search_handoff import SearchTransfer
+        return SearchTransfer(router,portal,dict(query=router._params.get('q'),session=session,window=None,view=None),'route')
+    from media_window import open_search
+    return open_search(router,portal,router._params.get('q'),session)
+
+
 def released(router,source,session,window_id):
     # Window.close() may still have an outstanding native GUI message. A Python
     # _closed flag alone is not proof that the old Kodi window has deactivated.
@@ -82,24 +99,32 @@ def released(router,source,session,window_id):
         if monitor.waitForAbort(.05):return False
         try:active=window_id is not None and int(xbmcgui.getCurrentWindowId())==window_id
         except (AttributeError,RuntimeError,TypeError,ValueError):active=False
+        if not active and busy_dialog() and not getattr(router,'_search_async_owner',False):
+            mark('BUSY_DEFERRED',router,source,session,owner=True);return False
         if not active and not xbmc.getCondVisibility('System.HasActiveModalDialog'):
             mark('RELEASE_READY',router,source,session,owner=True);return True
         if time.monotonic()>=deadline:
             mark('RELEASE_TIMEOUT',router,source,session,owner=True);return False
 
 
-def guide_flow(router,portal,open_window,window_class,xml,source):
-    view=None
+def guide_flow(router,portal,open_window,window_class,xml,source,initial=None):
+    view=None;request=initial
     while True:
-        window=open_window(window_class,xml,router,portal,**({'return_view':view} if view is not None else {}))
-        request=getattr(window,'_search_request',None)
-        if request is None:return getattr(window,'_play_request',None)
-        if not window._closed or getattr(window,'_running',False):return None
-        view=request['view']
-        session=request['session']
-        mark('GUIDE_CLOSED',router,source,session,owner=True)
-        del window
-        if not released(router,source,session,request.get('window')):return None
+        if request is None:
+            window=open_window(window_class,xml,router,portal,**({'return_view':view} if view is not None else {}))
+            request=getattr(window,'_search_request',None)
+            if request is None:return getattr(window,'_play_request',None)
+            if not window._closed or getattr(window,'_running',False):return None
+            mark('GUIDE_CLOSED',router,source,request['session'],owner=True)
+            del window
+        view=request['view'];session=request['session']
+        if request.get('restore_only'):
+            request=None;continue
+        if not released(router,source,session,request.get('window')):
+            if busy_dialog() and not getattr(router,'_search_async_owner',False):
+                from search_handoff import SearchTransfer
+                return SearchTransfer(router,portal,request,source)
+            return None
         from media_window import open_search
         mark('SEARCH_OPEN',router,source,session,owner=True)
         try:search=open_search(router,portal,request['query'],session)
@@ -108,12 +133,33 @@ def guide_flow(router,portal,open_window,window_class,xml,source):
             from localization import tr
             xbmcgui.Dialog().notification('XCMate',tr(32910))
             if xbmc.Monitor().waitForAbort(0):return None
-            continue
+            request=None;continue
         if not search._closed or getattr(search,'_running',False):return None
         intent=getattr(search,'_search_live',None)
         native_window=getattr(search,'_search_native_window',None)
         mark('SEARCH_CLOSED',router,source,session,owner=True)
         del search
         if intent:return intent  # Existing caller dispatches only AFTER unlocking.
-        if not released(router,source,session,native_window):return None
+        if not released(router,source,session,native_window):
+            if busy_dialog() and not getattr(router,'_search_async_owner',False):
+                from search_handoff import SearchTransfer
+                request=dict(request,restore_only=True,window=native_window)
+                return SearchTransfer(router,portal,request,source)
+            return None
+        request=None
         mark('GUIDE_RESTORE',router,source,session,owner=True)
+
+
+def focus_details(window,target,eligible,valid):
+    """Changed fixed focus state only; no labels, queries or account metadata."""
+    try:
+        control=window.getControl(target)
+        state=(int(target),target in eligible,bool(control.isVisible()),
+               bool(xbmc.getCondVisibility('Control.IsEnabled({})'.format(target))),int(window.getFocusId()))
+        if state==getattr(window,'_search_focus_trace',None):return
+        window._search_focus_trace=state
+        session=getattr(window,'_search_correlation','')
+        if len(session)!=32 or any(c not in '0123456789abcdef' for c in session):session=''
+        xbmc.log('[XCMate][FOCUS] mode=search target={} semantic={} visible={} enabled={} focus={} session={}'.format(
+            state[0],int(state[1]),int(state[2]),int(state[3]),state[4],session),xbmc.LOGINFO)
+    except (AttributeError,RuntimeError,TypeError,ValueError,KeyError):pass
