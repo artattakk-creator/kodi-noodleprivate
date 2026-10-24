@@ -1,0 +1,15 @@
+{
+  "run": 40082027484,
+  "job": 120837373029,
+  "source_commit": "0b12bc33ec8d7f28c666e52a26622715aa82c224",
+  "tests": 1029,
+  "seconds": 190.384,
+  "thread_exceptions": false,
+  "sha256": "0ab5331d2ea84abb587fd59d5ff719b5602fdc2927ffe9dc478d763921153b81",
+  "supplied_review_zip_verified": true,
+  "result": "PASS",
+  "publish_step": "skipped",
+  "android": "NOT_TESTED",
+  "production_publish": false,
+  "url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/40082027484"
+}

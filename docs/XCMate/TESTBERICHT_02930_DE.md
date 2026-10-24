@@ -2,7 +2,8 @@
 
 **Review-Draft:** [#149](https://github.com/artattakk-creator/kodi-noodleprivate/pull/149).
 **Quellbasis:** main b7ff441 (Produktivversion .29; neue Delta-Testpolitik enthalten).
-**Kumulativer geprüfter Quellstand:** 942fef59cae8d2e3721343396706c8cf812c39c1.
+**Geprüfter Addon-Code:** 942fef59cae8d2e3721343396706c8cf812c39c1.
+**Finaler Test-/Workflow-Quellstand:** 0b12bc33ec8d7f28c666e52a26622715aa82c224.
 Nachfolgende Commits ergänzen Testpaket/Nachweise/Dokumentation und einen reinen
 CI-Vergleich des mitgelieferten ZIP mit dem Neuaufbau; kein weiterer Addon-Diff.
 Kein main-Merge, Release oder Updatekanal-Publish. Der produktive Index und das
@@ -29,7 +30,7 @@ keine Deinstallation/Resets. [Ausführbare Android-Anleitung und Ergebnisblock](
 | Draft / Issue | Änderung | Vollständige Quell-PR-CI |
 |---|---|---|
 | [#144](https://github.com/artattakk-creator/kodi-noodleprivate/pull/144) / #141 | Versionsgeprüfte Portal-Snapshots, defensive Kopien, OOM-Backoff; optionale Vorbereitung entprellt; kontrollierte Service-/IO-Abbrüche; opt-in 4-/8-h ARM32-Messung | [1009 PASS](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/40080332199) |
-| [#145](https://github.com/artattakk-creator/kodi-noodleprivate/pull/145) / #136 | Getrennte Quellenpicker/Backend-Marker, Kodi-SMB-Liste, USB-Mounts, exklusive private .part-Zwischenablage ohne Hardlinkpflicht | [1008 PASS](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/40080881232) |
+| [#145](https://github.com/artattakk-creator/kodi-noodleprivate/pull/145) / #136 | Getrennte Quellenpicker/Backend-Marker, Kodi-SMB-Liste, USB-Mounts, exklusive private .part-Zwischenablage ohne Hardlinkpflicht | [1008 PASS](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/40082012443) |
 | [#146](https://github.com/artattakk-creator/kodi-noodleprivate/pull/146) / #140 | Gültiges cache-only Jetzt-Short-EPG, begrenzte relevante Alias-/DB-Abfragen, anonyme Abdeckungs-/Trefferdiagnose | [1005 PASS](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/40080760988) |
 | [#148](https://github.com/artattakk-creator/kodi-noodleprivate/pull/148) / #122 | Bytegleiches originales Space-Motiv lokal im Lightweight-Skin; stabile Landing-/Suchhintergründe | [1003 PASS](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/40081044333) |
 | [#147](https://github.com/artattakk-creator/kodi-noodleprivate/pull/147) / #142 | Ungültiges PO-Unicode-Escape durch UTF-8 ersetzt, Gettext-Validator und CI-Schritt | [1004 PASS](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/40080768386) |
@@ -37,12 +38,14 @@ keine Deinstallation/Resets. [Ausführbare Android-Anleitung und Ergebnisblock](
 Alle fünf Drafts offen, kein Merge. Supersedierte rote Läufe betrafen die alte
 Picker-Testbedienung bzw. alte Neutral-Hintergrund-Erwartungen; deren beabsichtigte
 Verhaltensprüfungen wurden an die neue Quellenwahl/den Original-Splash angepasst.
-Keine Schutz-Hashes oder Player-Regressionen aufgeweicht. Endstände siehe
+Keine Schutz-Hashes oder Player-Regressionen aufgeweicht. Ein späterer
+Kollisions-Stresslauf deckte zusätzlich eine Host-Server-Race auf; siehe unten.
+Quell-CI und Fixture-Nachtest siehe
 [CI-Provenienz](CI_02930_QUELLPRs.json).
 
 ## Vollständige kumulative Hostprüfung
 
-**1029 Tests PASS, 0 Fehler/Failures/Skips, 114,869 s** unter Python 3.12/Linux x86_64.
+**1029 Tests PASS, 0 Fehler/Failures/Skips, 115,845 s** unter Python 3.12/Linux x86_64.
 Keine Thread-Ausnahme. Hostabhängigkeit impacket==0.13.0 für reale SMB2-Wire-Tests;
 nicht Teil des Addons. [Vollständiges Testprotokoll (nur Zeilenend-Leerzeichen normalisiert)](TESTLOG_02930.txt) und
 [maschineller Paket-/Testbericht](TESTERGEBNISSE_02930.json).
@@ -70,6 +73,18 @@ FFmpeg-Dekodierung PASS; keine Authorization/Cookie/Provider-Key-Weitergabe.
 [Transferbericht](DOWNLOAD_HOSTTRANSFER_02930.json). Die Loopback-DNS-Ausnahme ist
 nur Fixture-Patch; produktive SSRF-/TLS-/Redirect-Schutzregeln bleiben bestehen.
 Keine echten Providerstreams/Privatserver benutzt. USB hier simuliert.
+
+Ein weiterer GitHub-Lauf fand eine **Race im Host-Testserver impacket 0.13.0**:
+SMB2Create verwendete exists() + O_CREAT ohne O_EXCL. Die Fixture serialisiert
+nun ausschließlich CREATE-Handler, um die vorgeschriebene atomare FILE_CREATE-
+Semantik abzubilden. Der signierte Client und seine FILE_CREATE-Anforderung bleiben
+unverändert; keine Produktiv-/os.open-Patches, keine abgeschwächte Assertion.
+Zwölf synchronisierte Runden mit je fünf Clients verlangen genau einen Erfolg
+und vier TARGET_EXISTS bei korrektem Dateiinhalt. Gezielter Stresslauf, kompletter
+1029-Test-Hostlauf und acht Transfers wurden damit erneut erfolgreich ausgeführt.
+Das Addon-ZIP bleibt in jedem Byte gleich. Finale kumulative [GitHub-CI: 1029 PASS](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/40082027484)
+in 190.384 s, keine Thread-Ausnahme. Neuaufbau und committed Review-ZIP
+bytegleich geprüft; Publish-Schritt SKIPPED. [CI-Nachweis](CI_02930_KUMULATIV.json).
 
 Paketprüfung: CRC, eindeutige/sichere ZIP-Pfade, keine Symlinks/Profile/DBs/Logs,
 250 source-bytegleiche Dateien, Python-AST, Manifest, deterministischer Neuaufbau

@@ -1,7 +1,7 @@
 {
   "version": "0.1.29.30",
   "tests": 1029,
-  "seconds": 114.869,
+  "seconds": 115.845,
   "failures": 0,
   "errors": 0,
   "files": 250,
@@ -14,7 +14,7 @@
   "python_ast": "PASS",
   "android": "NOT_TESTED",
   "production_publish": false,
-  "source_commit": "942fef59cae8d2e3721343396706c8cf812c39c1",
+  "source_commit": "0b12bc33ec8d7f28c666e52a26622715aa82c224",
   "python": "3.12",
   "host_environment": "Linux x86_64; actual Android/ARM32 not available",
   "po_catalogs": 2,
@@ -22,5 +22,9 @@
   "host_redirect_transfers": 8,
   "host_strict_decode": "PASS",
   "thread_exceptions": false,
-  "skipped": 0
+  "skipped": 0,
+  "addon_code_commit": "942fef59cae8d2e3721343396706c8cf812c39c1",
+  "smb_fixture": "Host CREATE handlers serialized to model atomic FILE_CREATE; no product patch",
+  "smb_collision_rounds": 12,
+  "smb_parallel_clients_per_round": 5
 }
