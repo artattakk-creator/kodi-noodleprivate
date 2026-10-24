@@ -30,7 +30,7 @@ def approve(row):
             current=get(row['id'])
             if not current or current['media']['pid']!=row['media']['pid'] or current['state']!='FAILED':return False
             if not current['code'].startswith(('REDIRECT_UNTRUSTED_TARGET','REDIRECT_PRIVATE_ADDRESS')):return False
-            return command(row['id'],'retry')
+            return command(row['id'],'retry',required_state='FAILED',required_code=current['code'])
         changed=work(retry)
         xbmcgui.Dialog().notification('XCMate',tr(34216 if changed else 35005))
     else:xbmcgui.Dialog().ok('XCMate',tr(34603))

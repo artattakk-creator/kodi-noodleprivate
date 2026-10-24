@@ -21,6 +21,8 @@ Bisherige Portal+Source-Origin+Target-Origin-Bindung bleibt unverändert.
 Ein zweiter bewusster Dialog darf ausschließlich diesen weiterhin fehlgeschlagenen
 Redirect-Job erneut einreihen. Kein Start durch Navigation oder Grant allein,
 keine Wiederbelebung abgebrochener/anderer Aufträge, Cooldown/Lease bleiben.
+Status und Fehlercode werden im selben Job-Commit erneut verglichen; ein
+gleichzeitig eintreffendes Cancel gewinnt gegen den bestätigten Retry.
 Freigaben weiter einzeln widerrufbar. HTTPS-Downgrade, Hop-/Loop-/SSRF-/DNS-Pinning,
 Header-/Cookie-Schutz, Content-/Range-/Hash-/NoReplace-Regeln unverändert.
 
@@ -45,7 +47,7 @@ Der kleine Test beweist keine vollständige Filmdatei und keine native Aufnahme.
 
 ## Host- und Android-Abnahme
 
-57 gezielte Hosttests PASS (11 neue), einschließlich Default-Deny, enger Grant+
+58 gezielte Hosttests PASS (12 neue), einschließlich Default-Deny, enger Grant+
 gezielter Retry, geänderter Pending-Anfrage, weiter gesperrtem Loopback, Widerruf,
 UI-Aktionsreihenfolge, Source-/Ziel-Diagnose, echten lokalen und signierten SMB2-
 Kurztransfers, Cancel ohne Write und ersetztem Inode ohne fremde Löschung.
