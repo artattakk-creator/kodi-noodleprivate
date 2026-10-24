@@ -90,6 +90,17 @@ class MediaRails299(Fixture,unittest.TestCase):
                 branding="'branding_status',"
                 self.assertEqual(source.count(branding.encode()),1)
                 source=source.replace(branding.encode(),b'')
+            if name=='guide_window.py':
+                # #140 intentionally changes search handoff and return snapshots.
+                # Pin the reviewed complete module and independently preserve
+                # every untouched method from .31; the historic freeze stays.
+                contract=json.loads((Path(__file__).parent/'fixtures/xcmate_02932_guide_search_contract.json').read_text())
+                self.assertEqual(hashlib.sha256(source).hexdigest(),contract['reviewed_normalized_sha256'])
+                module=ast.parse(source)
+                for method,expected in contract['unchanged_methods'].items():
+                    actual=next(n for n in ast.walk(module) if isinstance(n,ast.FunctionDef) and n.name==method)
+                    self.assertEqual(ast.dump(actual,include_attributes=False),expected,method)
+                continue
             if name in ('art_store.py','artwork_db.py'):
                 # .20 budget/queue/schema are intentionally changed. Preserve
                 # the exact .19 storage/lock/backup/repair safety contracts.
