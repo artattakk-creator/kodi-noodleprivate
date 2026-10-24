@@ -76,6 +76,7 @@ class MediaWindow(DetailMenuMixin,SearchMixin,OwnerDispatch,xbmcgui.WindowXML):
                 if self._focus_pending!=pending:
                     from window_navigation import trace
                     trace('FOCUS_DEFER',self.mode,control_id,self._dispatch)
+                if self._focus_pending!=pending:self._focus_deadline=time.monotonic()+2
                 self._focus_pending=pending
                 return
             # Preserve established catalogue/landing navigation when a target
@@ -119,6 +120,11 @@ class MediaWindow(DetailMenuMixin,SearchMixin,OwnerDispatch,xbmcgui.WindowXML):
         if pending is None:return
         if pending[0]!=self.mode:
             self._focus_pending=None;return
+        if self.mode=='search' and time.monotonic()>=getattr(self,'_focus_deadline',float('inf')):
+            self._focus_pending=None
+            from search_navigation import mark
+            mark('FOCUS_TIMEOUT',self.router,'media',getattr(self,'_search_correlation',''),pending[1],True)
+            return
         if pending[1] in self._valid_focus():self.setFocusId(pending[1])
 
     def _valid_focus(self,native=True):
@@ -177,6 +183,12 @@ class MediaWindow(DetailMenuMixin,SearchMixin,OwnerDispatch,xbmcgui.WindowXML):
                 self._page_ready((self.rows,self.total))
             return
         self._ready=True
+        if getattr(self,'_search_root',False):
+            # A root search has no landing/catalogue frame to initialize.
+            try:self._search_native_window=int(xbmcgui.getCurrentWindowId())
+            except (AttributeError,RuntimeError,TypeError,ValueError):self._search_native_window=None
+            self.mode='search';self._show('search')
+            self.getControl(101).setLabel(tr(32586));return
         self._show('landing')
         self.getControl(101).setLabel('XCMate · '+(tr(32461) if self.kind=='vod' else tr(32462)))
         self.getControl(120).setLabel((tr(32403) if self.kind=='vod' else tr(32404))+tr(32492))
@@ -1039,9 +1051,10 @@ def open_media(router,portal,kind,sid='',favourites=False):
     return open_owned_window(MediaWindow,'XCMateMedia.xml',router,portal,kind,sid,favourites)
 
 
-def open_search(router,portal,query=None):
+def open_search(router,portal,query=None,session=''):
     class SearchWindow(MediaWindow):
         def configure(self,*args,**kwargs):
             super().configure(*args,**kwargs)
-            self._search_startup=(query,);self._search_root=True
+            self._search_startup=(query,);self._search_root=True;self._search_kind='live'
+            self._search_next_session=session
     return open_owned_window(SearchWindow,'XCMateMedia.xml',router,portal,'vod')

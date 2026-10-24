@@ -1,3 +1,10 @@
+0.1.29.32 – gezielter kumulativer Suchfenster-Testkandidat
+- #140: Interaktive global_search immer als native XCMate-Suche, unabhängig vom Plugin-Handle. Alte search_section-Widget-Verzeichnisse bleiben kompatibel.
+- Beide EPG-Fenster übergeben die Suche erst nach Callback-/Owner-Pump-Ende und nativer Fensterfreigabe, ohne Container.Update zur Suchroute. Back stellt die vorherige Guide-Ansicht wieder her.
+- Root-Suche initialisiert direkt die Suchansicht und Live-TV-Rubrik; kein konkurrierender Film-Landing-Worker und keine versteckte Landing-Fokusaktivierung.
+- Veraltete Worker-Callbacks zusätzlich an Suchsession, Rubrik und Seite gebunden; begrenztes Deferring bei nativer Fokusverzögerung, anonymisierte Handoff-Diagnose.
+- Player, Dienst, EPG-Daten/Matching, Downloads, Aufnahme, Artwork, Originalicon und Profildaten unverändert. Android-Abnahme NAVSEARCH-01–08 / REG-01–03 noch NOT_TESTED.
+
 0.1.29.31 – kumulativer Android-Testkandidat
 - #140: Jetzt-EPG lokal inkrementell über alle zulässigen Sender durchsuchen; Teilzählung bis zum Abschluss, kein stiller Abbruch nach zwei Sekunden.
 - #140: Nach Keyboard-OK Suchnavigation behalten, Treffer erst bewusst auswählen. Native Re-Init-/Focus-Lag-/alte Klickpfade abfangen; Suchworker nicht durch Landing ersetzen.

@@ -12,10 +12,11 @@ import xbmcaddon
 
 
 class GuideWindow(OwnerDispatch,xbmcgui.WindowXML):
-    def configure(self,router,portal):
+    def configure(self,router,portal,return_view=None):
         self._configure_owner()
         self._theme=__import__('theme_render').snapshot()
         self._return_home=False
+        self._leaving=False;self._search_prompt=False;self._search_request=None;self._search_return=return_view
         self.router,self.portal=router,portal
         self._pool=ThreadPoolExecutor(max_workers=1)
         self._lock=threading.RLock();self._generation=0;self._closed=False;self._ready=False
@@ -64,7 +65,12 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXML):
         if not self.category:
             self.getControl(102).setLabel(tr(32542))
             self.setFocusId(310);return
-        self._load_channels(0)
+        if self._search_return is not None:
+            view=self._search_return;self._search_return=None
+            self.category=view['category'];self.day=view['day']
+            self._search_restore=view
+            self._load_channels(view['channel_offset'])
+        else:self._load_channels(0)
 
     def _load_channels(self,offset):
         self.channel_offset=max(0,offset);self._last_channel_pos=-1
@@ -84,12 +90,19 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXML):
         self.getControl(210).selectItem(0)
         self.setFocusId(210 if self.channels else 310)
         if self.channels:
-            self._load_events(0)
+            view=getattr(self,'_search_restore',None)
+            pos=min(view['channel_pos'],len(self.channels)-1) if view else 0
+            self.getControl(210).selectItem(pos)
+            if view:self._restore_event=view['event_pos']
+            self._load_events(pos,view['event_offset'] if view else 0)
             request(self.channels)
             from epg_views import prefetch_short_guides
             prefetch_short_guides(self.portal,self.channels)
 
     def _owner_tick(self):
+        if self._leaving:
+            if time.monotonic()>=self._leave_after:self.close()
+            return
         if time.monotonic()-self._short_poll<.5: return
         self._short_poll=time.monotonic()
         revision=xbmcgui.Window(10000).getProperty('XCMate.ShortGuideRevision.'+str(self.portal['id']))
@@ -147,6 +160,11 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXML):
             limit,self.day+1,self.days,self.event_total))
         if not self.programmes:
             self._fill(220,[tr(32548)])
+        view=getattr(self,'_search_restore',None)
+        if view:
+            del self._search_restore
+            if view['focus']==200:self._group_view(True)
+            self.setFocusId(view['focus'])
 
     def _group_view(self,expanded):
         __import__('theme_render').guide_status(self,'loading')
@@ -160,14 +178,12 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXML):
             if self.channels: self._load_events(max(0,self.getControl(210).getSelectedPosition()))
 
     def onAction(self,action):
-        if self._closed:return
+        if self._closed or self._leaving or self._search_prompt:return
         key=action.getId();focus=self.getFocusId()
         with self._lock:
             if key==117:
-                query=xbmcgui.Dialog().input(tr(32534))
-                if query.strip():
-                    self.close()
-                    xbmc.executebuiltin('Container.Update('+self.router.url(action='global_search',pid=self.portal['id'],q=query[:200])+')')
+                from search_navigation import queue
+                queue(self,'guide')
                 return
             if key in (9,10,92):
                 if focus==200: self._group_view(False);self.setFocusId(210 if self.channels else 310)
@@ -191,7 +207,7 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXML):
                 if 0<=offset<self.event_total: self._load_events(self._last_channel_pos,offset)
 
     def onClick(self,controlId):
-        if self._closed:return
+        if self._closed or self._leaving or self._search_prompt:return
         if controlId in (310,311): self._day(-1 if controlId==310 else 1);return
         if controlId==312:
             xbmc.executebuiltin('RunPlugin('+self.router.url(action='epg_status',pid=self.portal['id'])+')');return
@@ -229,4 +245,5 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXML):
 
 
 def open_guide(router,portal):
-    open_owned_window(GuideWindow,'XCMateGuide.xml',router,portal)
+    from search_navigation import guide_flow
+    return guide_flow(router,portal,open_owned_window,GuideWindow,'XCMateGuide.xml','guide')

@@ -33,6 +33,8 @@ def handoff(router,portal,window):
 class SearchMixin:
     def _search_closed(self):
         if not hasattr(self,'_search_correlation'):return
+        from search_navigation import mark as nav_mark
+        nav_mark('SEARCH_CLOSED',self.router,'media',self._search_correlation,owner=True)
         mark('SEARCH_WINDOW_CLOSED',self._search_correlation)
         future=getattr(self,'_pending_future',None)
         if future is not None and not future.done():mark('SEARCH_WORKER_STOP_PENDING',self._search_correlation)
@@ -52,7 +54,8 @@ class SearchMixin:
         if not query:
             if getattr(self,'_search_root',False) and not hasattr(self,'_search_origin'):self.close()
             return
-        self._search_correlation=uuid.uuid4().hex
+        session=getattr(self,'_search_next_session','');self._search_next_session=''
+        self._search_correlation=session if len(session)==32 and all(c in '0123456789abcdef' for c in session) else uuid.uuid4().hex
         mark('SEARCH_INPUT_ACCEPTED',self._search_correlation)
         if not hasattr(self,'_search_origin'):
             self._search_origin={name:getattr(self,name) for name in FIELDS if hasattr(self,name)}
@@ -69,13 +72,20 @@ class SearchMixin:
         self.setFocusId(700+KINDS.index(self._search_kind))
         self._search_load()
         mark('SEARCH_GUI_READY',self._search_correlation)
+        from search_navigation import mark as nav_mark
+        nav_mark('SEARCH_OPEN',self.router,'media',self._search_correlation,self.getFocusId(),True)
 
     def _search_load(self):
         from search_data import search
         portal=dict(self.portal);query=self._search_query;kind=self._search_kind;offset=self._search_offset
         cursor=getattr(self,'_search_continuation',None);self._search_continuation=None
+        session=self._search_correlation
         if cursor is None:self._search_loading=True
-        self._request(lambda:search(portal,query,kind,offset,incremental=True,continuation=cursor,correlation=self._search_correlation),self._search_ready)
+        def apply(value):
+            if (not self._closed and not self._leaving and self.mode=='search' and
+                session==self._search_correlation and kind==self._search_kind and offset==self._search_offset):
+                self._search_ready(value)
+        self._request(lambda:search(portal,query,kind,offset,incremental=True,continuation=cursor,correlation=session),apply)
 
     def _search_ready(self,value,resume=False):
         if self.mode!='search' or self._closed or self._leaving:return

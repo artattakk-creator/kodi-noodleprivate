@@ -91,7 +91,7 @@ def _anchor_home(router,portal,dispatch):
     trace('ANCHOR_TIMEOUT',dispatch=dispatch);return False
 
 
-def open_route(router,portal,opener,after_close=None):
+def open_route(router,portal,opener,after_close=None,anchor=None):
     dispatch=uuid.uuid4().hex
     trace('ENTRY',dispatch=dispatch)
     result=None
@@ -101,7 +101,7 @@ def open_route(router,portal,opener,after_close=None):
             from boot_diagnostics import finish_directory
             finish_directory(router,succeeded=True,cacheToDisc=False)
             trace('BUSY',dispatch=dispatch);return
-        if not _anchor_home(router,portal,dispatch):return
+        if not (anchor or _anchor_home)(router,portal,dispatch):return
         router._navigation_dispatch=dispatch
         try:
             trace('OPEN',dispatch=dispatch)

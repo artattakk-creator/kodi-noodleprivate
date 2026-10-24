@@ -166,12 +166,13 @@ def dispatch(router):
             from source_live import browse
             browse(router,portal)
         else: router._live_groups()
-    elif action=='global_search' and router._handle<0:
+    elif action=='global_search':
         from media_window import open_search
         from media_search import handoff
         from window_navigation import open_route
-        open_route(router,portal,lambda:open_search(router,portal,router._params.get('q')),after_close=handoff)
-    elif action in ('global_search','search_section'): search(router,portal)
+        from search_navigation import anchor
+        open_route(router,portal,lambda:open_search(router,portal,router._params.get('q'),getattr(router,'_navigation_dispatch','')),after_close=handoff,anchor=anchor)
+    elif action=='search_section': search(router,portal)
     elif action.startswith('widget_'): widget(router,portal,action)
     elif action in ('movies_home','series_home','media_detail','media_favourites'):
         kind=router._params.get('kind','series' if action=='series_home' else 'vod')
@@ -193,7 +194,8 @@ def dispatch(router):
     elif action=='guide_browser':
         from window_navigation import open_route
         from guide_window import open_guide
-        open_route(router,portal,lambda:open_guide(router,portal))
+        from guide_playback import handoff
+        open_route(router,portal,lambda:open_guide(router,portal),after_close=handoff)
     elif action=='media_play':
         from media_progress import play
         play(router,portal)

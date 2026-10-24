@@ -140,7 +140,7 @@ class LocalizationTests(Fixture,unittest.TestCase):
         sys.modules['utils'].http_get.assert_not_called()
 
     def test_search_and_widgets_are_english_without_translating_provider_titles(self):
-        self.ui_locale='en_gb';self.router._params.update(action='global_search',q='house of dragon')
+        self.ui_locale='en_gb';self.router._params.update(action='search_section',q='house of dragon')
         self.routes.dispatch(self.router)
         self.assertEqual(self.labels(),['LIVE TV · 1 match','MOVIES · 100 matches','SERIES · 3 matches'])
         self.added.clear();self.router._params['action']='widget_recent_vod';self.routes.dispatch(self.router)

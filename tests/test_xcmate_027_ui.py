@@ -86,7 +86,7 @@ class NavigationTests(Fixture,unittest.TestCase):
             clock.return_value=401;services.refresh_local();self.assertEqual(refresh.call_count,2)
 
     def test_search_has_three_true_counts_and_paginates_beyond_fifty(self):
-        self.router._params.update(action='global_search',q='house of dragon')
+        self.router._params.update(action='search_section',q='house of dragon')
         self.routes.dispatch(self.router)
         self.assertEqual([li.label for _,li,_ in self.added],['LIVE-TV · 1 Treffer','FILME · 100 Treffer','SERIEN · 3 Treffer'])
         self.added.clear();self.router._params.update(action='search_section',kind='vod',offset='96')
