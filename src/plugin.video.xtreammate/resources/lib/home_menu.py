@@ -76,7 +76,7 @@ def settings(router, portal, section=''):
         key=section or params.get('section','')
         key={'storage':'recordings','startup':'start-channel','designs':'appearance'}.get(key,key)
         art=dict(icon=asset('icon.settings.'+key,os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources/media/settings.png'),snapshot=theme),fanart=asset('background.settings.'+key,asset('background.settings',os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'fanart.jpg'),snapshot=theme),snapshot=theme))
-        if action in WINDOW_ACTIONS|DIALOG_ACTIONS or action=='global_search':
+        if action in WINDOW_ACTIONS|DIALOG_ACTIONS or action in ('global_search','download_folder','download_capabilities'):
             add_action(router,label,url,**art)
         else:router._add_dir(label,url,**art)
     if not section:
@@ -116,6 +116,8 @@ def settings(router, portal, section=''):
     elif section=='player':
         add(tr(32437),'settings')
     elif section=='storage':
+        add(tr(34700),'download_folder')
+        add(tr(34701),'download_capabilities')
         add(tr(34013),'record_now')
         add(tr(34008),'recordings_manage')
         add(tr(32900),'art_db_health')

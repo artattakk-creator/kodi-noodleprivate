@@ -137,4 +137,9 @@
     <setting id="recent_keep" type="number" label="32595" default="100"/>
     <setting id="epg_days" type="number" label="32596" default="7"/>
   </category>
+  <category label="34700">
+    <setting id="downloads_folder_enabled" type="text" default="" visible="false"/>
+    <setting id="downloads_folder" type="text" label="34700" default="" visible="false"/>
+    <setting id="downloads_max_gib" type="number" label="34719" default="64"/>
+  </category>
 </settings>

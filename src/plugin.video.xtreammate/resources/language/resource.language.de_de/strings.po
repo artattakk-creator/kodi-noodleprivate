@@ -2972,3 +2972,111 @@ msgstr "Unvollständig"
 msgctxt "#34500"
 msgid "No additional verified provider image source available."
 msgstr "Keine weitere verifizierte Provider-Bildquelle vorhanden."
+
+msgctxt "#34600"
+msgid "Review/approve redirect target for this portal"
+msgstr "Redirect-Ziel für dieses Portal prüfen/freigeben"
+
+msgctxt "#34601"
+msgid "This host is not automatically trusted. Approve only if you independently trust source and destination. Approval applies only to this portal and source. Login and provider headers are never forwarded across origins."
+msgstr "Dieser Host ist nicht automatisch vertrauenswürdig. Nur freigeben, wenn Sie Quelle und Ziel unabhängig als vertrauenswürdig kennen. Die Freigabe gilt nur für dieses Portal und diesen Quellhost. Keine Anmeldung oder Provider-Header werden zum anderen Host übertragen."
+
+msgctxt "#34602"
+msgid "This host resolves to a private network. Explicitly allow only your own trusted LAN server? Loopback, link-local and metadata destinations remain blocked."
+msgstr "Der Host zeigt auf ein privates Netz. Zugriff nur ausdrücklich für einen eigenen, vertrauenswürdigen LAN-Server erlauben? Loopback, Link-Local und Metadatenziele bleiben gesperrt."
+
+msgctxt "#34603"
+msgid "Approval saved. Retry the download explicitly. Revoke it at any time under Redirect approvals."
+msgstr "Freigabe gespeichert. Download anschließend gezielt erneut versuchen. Unter Redirect-Freigaben jederzeit widerrufbar."
+
+msgctxt "#34604"
+msgid "Manage redirect approvals for this portal"
+msgstr "Redirect-Freigaben dieses Portals verwalten"
+
+msgctxt "#34605"
+msgid "Revoke this approval? Pause an already connected transfer first if needed."
+msgstr "Diese Freigabe widerrufen? Laufende, bereits verbundene Übertragungen bei Bedarf vorher pausieren."
+
+msgctxt "#34606"
+msgid "No redirect approvals are stored for this portal."
+msgstr "Für dieses Portal sind keine Redirect-Freigaben gespeichert."
+
+msgctxt "#34610"
+msgid "Download redirect blocked. Review/approve its destination or manage existing approvals in the download manager. The technical code gives the reason."
+msgstr "Download-Weiterleitung blockiert. Ziel im Downloadmanager ausdrücklich prüfen/freigeben oder vorhandene Freigabe verwalten. Der technische Code nennt den Grund."
+
+msgctxt "#34700"
+msgid "Choose download destination: internal / USB / SMB"
+msgstr "Downloadziel wählen: intern / USB / SMB"
+
+msgctxt "#34701"
+msgid "Check download destination and capabilities"
+msgstr "Downloadziel und Fähigkeiten prüfen"
+
+msgctxt "#34702"
+msgid "Destination type"
+msgstr "Zieltyp"
+
+msgctxt "#34703"
+msgid "Storage method"
+msgstr "Speicherverfahren"
+
+msgctxt "#34704"
+msgid "Unknown on destination; real write/hash test, local staging capacity is checked"
+msgstr "Auf Ziel unbekannt; echter Schreib-/Hash-Test, lokaler Staging-Freiraum wird geprüft"
+
+msgctxt "#34705"
+msgid "Yes"
+msgstr "Ja"
+
+msgctxt "#34706"
+msgid "Playable without network when storage remains connected"
+msgstr "Ohne Netzwerk abspielbar, wenn Medium angeschlossen"
+
+msgctxt "#34707"
+msgid "No"
+msgstr "Nein"
+
+msgctxt "#34708"
+msgid "Additional complete local staging copy required"
+msgstr "Zusätzliche vollständige lokale Zwischenkopie erforderlich"
+
+msgctxt "#34709"
+msgid "Allow local staging and verified transfer for this destination? Requires space for the complete file. Interruptions preserve partials; retry copies the verified local file again. No automatic fallback to an internal destination. The non-atomic USB copy method may leave a visible incomplete destination file; XCMate never enables its playback. Local stages are retained for recovery."
+msgstr "Für dieses Ziel lokale Zwischenablage und geprüfte Zielübertragung erlauben? Benötigt Platz für die ganze Datei. Unterbrechungen erhalten den Dateianteil; erneut versuchen kopiert die geprüfte lokale Datei neu. Keine automatische Rückkehr zum internen Ziel. Bei nicht-atomarem USB-Verfahren kann eine unvollständige Zieldatei sichtbar bleiben; XCMate gibt sie nicht zur Wiedergabe frei. Lokale Zwischenkopien bleiben zur Wiederherstellung erhalten."
+
+msgctxt "#34711"
+msgid "Transferring/verifying destination"
+msgstr "Übertrage/verifiziere am Ziel"
+
+msgctxt "#34712"
+msgid "Use this verified destination for new downloads? The recording destination and existing files remain unchanged."
+msgstr "Dieses geprüfte Ziel dauerhaft nur für neue Downloads übernehmen? Aufnahmeziel und vorhandene Dateien bleiben unverändert."
+
+msgctxt "#34713"
+msgid "Download destination saved. Recording destination unchanged."
+msgstr "Downloadziel gespeichert. Aufnahmeziel unverändert."
+
+msgctxt "#34714"
+msgid "No destination change. Grant USB access in Android and check Kodi file sources; for SAF without POSIX access choose an accessible mount. Configure SMB in Kodi and use a signed SMB2 account. SMB remains network-dependent."
+msgstr "Kein Zielwechsel. USB in Android freigeben und in Kodi-Dateiquellen prüfen; bei SAF ohne POSIX-Zugriff einen zugreifbaren Mount wählen. SMB in Kodi einrichten und passenden SMB2-Account mit Signierung verwenden. SMB bleibt netzabhängig."
+
+msgctxt "#34715"
+msgid "Download destination or network share is not ready. Technical reason below; the selected destination is retained."
+msgstr "Download-Speicherziel oder Netzwerkfreigabe nicht bereit. Technischer Code unten; bestehendes Ziel bleibt gewählt."
+
+msgctxt "#34716"
+msgid "SMB2 requires a share account. Store credentials for this destination on this device? Only for your trusted SMB shares. No guest/SMB1/unsigned connection. Kodi playback additionally needs its own saved share login."
+msgstr "SMB2 benötigt einen eigenen Freigabe-Account. Zugang für dieses Ziel auf diesem Gerät speichern? Nur für vertrauenswürdige eigene SMB-Freigaben. Keine Gast-/SMB1-/unsignierte Verbindung. Kodi-Wiedergabe benötigt zusätzlich die in Kodi gespeicherte Freigabe-Anmeldung."
+
+msgctxt "#34717"
+msgid "SMB user (optional DOMAIN\\user)"
+msgstr "SMB-Benutzer (optional DOMÄNE\\Benutzer)"
+
+msgctxt "#34718"
+msgid "SMB password \u2013 stored on this device only"
+msgstr "SMB-Passwort – nur lokal gespeichert"
+
+msgctxt "#34719"
+msgid "Maximum download file size (GiB)"
+msgstr "Maximale Download-Dateigröße (GiB)"

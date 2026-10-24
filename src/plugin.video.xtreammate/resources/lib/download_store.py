@@ -1,8 +1,8 @@
 """Private ID-only download queue. Each worker owns its SQLite connection."""
 import hashlib,json,os,sqlite3,time,uuid
 
-FIELDS=('pid','kind','sid','series_id','season','episode','title','series_title','year','duration','poster','target')
-STATES=frozenset(('QUEUED','RUNNING','PAUSED','COMPLETE','FAILED','CANCELLED','PUBLISHING'))
+FIELDS=('pid','kind','sid','series_id','season','episode','title','series_title','year','duration','poster','target','target_device','target_inode')
+STATES=frozenset(('QUEUED','RUNNING','PAUSED','COMPLETE','FAILED','CANCELLED','PUBLISHING','TRANSFERRING'))
 
 
 def path():
@@ -22,6 +22,10 @@ def db():
       owner TEXT NOT NULL DEFAULT '',lease REAL NOT NULL DEFAULT 0,updated REAL NOT NULL,hidden INTEGER NOT NULL DEFAULT 0);
       CREATE TABLE IF NOT EXISTS worker(id INTEGER PRIMARY KEY,owner TEXT,lease REAL);
       INSERT OR IGNORE INTO worker VALUES(1,'',0);''')
+    if 'copy_bytes' not in {row[1] for row in connection.execute('PRAGMA table_info(jobs)')}:
+        try:connection.execute('ALTER TABLE jobs ADD COLUMN copy_bytes INTEGER NOT NULL DEFAULT 0')
+        except sqlite3.OperationalError:
+            if 'copy_bytes' not in {row[1] for row in connection.execute('PRAGMA table_info(jobs)')}:raise
     return connection
 
 
@@ -53,6 +57,11 @@ def enqueue(media):
     value={k:str(media.get(k,''))[:4096 if k=='target' else 1024] for k in FIELDS};conn=db()
     try:
         with conn:
+            prior=conn.execute('SELECT payload FROM jobs WHERE id=?',(ident,)).fetchone()
+            if prior:
+                old=json.loads(prior['payload'])
+                changed=old.get('target')!=value['target'] or any(old.get(k) and old.get(k)!=value.get(k) for k in ('target_device','target_inode'))
+                if changed:ident=hashlib.sha256((ident+'\0'+json.dumps([value.get(k,'') for k in ('target','target_device','target_inode')])).encode()).hexdigest()
             if conn.execute('SELECT COUNT(*) FROM jobs').fetchone()[0]>=1000 and not conn.execute('SELECT 1 FROM jobs WHERE id=?',(ident,)).fetchone():raise ValueError('queue limit')
             conn.execute("INSERT OR IGNORE INTO jobs(id,payload,state,updated) VALUES(?,?,'QUEUED',?)",(ident,json.dumps(value),time.time()))
             conn.execute('UPDATE jobs SET hidden=0 WHERE id=?',(ident,))
@@ -65,7 +74,7 @@ def claim(now=None):
     try:
         conn.execute('BEGIN IMMEDIATE')
         # A disappeared worker does not cause uncontrolled automatic restarts.
-        conn.execute("UPDATE jobs SET state='PAUSED',code='INTERRUPTED',owner='',speed=0 WHERE state IN ('RUNNING','PUBLISHING') AND lease<=?",(now,))
+        conn.execute("UPDATE jobs SET state='PAUSED',code='INTERRUPTED',owner='',speed=0 WHERE state IN ('RUNNING','PUBLISHING','TRANSFERRING') AND lease<=?",(now,))
         if conn.execute('SELECT lease FROM worker WHERE id=1').fetchone()[0]>now:conn.rollback();return None
         row=conn.execute("SELECT * FROM jobs WHERE state='QUEUED' AND next_at<=? ORDER BY updated LIMIT 1",(now,)).fetchone()
         if row is None:conn.commit();return None
@@ -76,7 +85,7 @@ def claim(now=None):
 
 
 def checkpoint(ident,owner,**values):
-    allowed={'bytes','total','speed','part','file','etag','modified','fingerprint','digest'}
+    allowed={'bytes','total','speed','part','file','etag','modified','fingerprint','digest','copy_bytes'}
     if set(values)-allowed:raise ValueError('checkpoint fields')
     now=time.time();conn=db()
     try:
@@ -94,7 +103,7 @@ def finish(ident,owner,state,code=''):
     try:
         with conn:
             row=conn.execute('SELECT state FROM jobs WHERE id=? AND owner=?',(ident,owner)).fetchone()
-            if row and row[0] in ('RUNNING','PUBLISHING'):
+            if row and row[0] in ('RUNNING','PUBLISHING','TRANSFERRING'):
                 conn.execute('UPDATE jobs SET state=?,code=?,speed=0,owner=\'\',lease=0,updated=? WHERE id=? AND owner=?',(state,code,time.time(),ident,owner))
             if row and row[0] in ('PAUSED','CANCELLED'):conn.execute("UPDATE jobs SET owner='',lease=0,speed=0 WHERE id=? AND owner=?",(ident,owner))
             conn.execute("UPDATE worker SET lease=0,owner='' WHERE id=1 AND owner=?",(owner,))
@@ -105,7 +114,7 @@ def fail(ident,owner,code,transient=False):
     row=get(ident);conn=db()
     try:
         with conn:
-            if row and row['owner']==owner and row['state'] in ('RUNNING','PUBLISHING'):
+            if row and row['owner']==owner and row['state'] in ('RUNNING','PUBLISHING','TRANSFERRING'):
                 retry=transient and row['attempts']<3
                 conn.execute("UPDATE jobs SET state=?,code=?,next_at=?,speed=0,owner='',lease=0,updated=? WHERE id=? AND owner=?",('QUEUED' if retry else 'FAILED',code,time.time()+30*2**row['attempts'],time.time(),ident,owner))
             conn.execute("UPDATE worker SET lease=0,owner='' WHERE id=1 AND owner=?",(owner,))
@@ -118,8 +127,8 @@ def command(ident,action,now=None):
         conn.execute('BEGIN IMMEDIATE');row=conn.execute('SELECT * FROM jobs WHERE id=?',(ident,)).fetchone()
         if row is None:conn.rollback();return False
         state=row['state']
-        if action=='pause' and state in ('QUEUED','RUNNING'):conn.execute("UPDATE jobs SET state='PAUSED',speed=0 WHERE id=?",(ident,))
-        elif action=='cancel' and state in ('QUEUED','RUNNING','PAUSED','FAILED'):conn.execute("UPDATE jobs SET state='CANCELLED',speed=0 WHERE id=?",(ident,))
+        if action=='pause' and state in ('QUEUED','RUNNING','TRANSFERRING'):conn.execute("UPDATE jobs SET state='PAUSED',speed=0 WHERE id=?",(ident,))
+        elif action=='cancel' and state in ('QUEUED','RUNNING','TRANSFERRING','PAUSED','FAILED'):conn.execute("UPDATE jobs SET state='CANCELLED',speed=0 WHERE id=?",(ident,))
         elif action in ('resume','retry') and state in ('PAUSED','FAILED','CANCELLED'):
             if row['lease']>now or (state!='PAUSED' and row['retry_at']>now):conn.rollback();return False
             conn.execute("UPDATE jobs SET state='QUEUED',attempts=0,next_at=0,retry_at=?,hidden=0,updated=? WHERE id=?",(now+60,now,ident))

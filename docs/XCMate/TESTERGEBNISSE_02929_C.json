@@ -1,0 +1,53 @@
+{
+  "version": "0.1.29.29",
+  "tests": 1000,
+  "seconds": 111.849,
+  "failures": 0,
+  "errors": 0,
+  "files": 244,
+  "bytes": 2004070,
+  "sha256": "3459f6be595126b27e15db044de5ba8b40f84e42e521485fc96142ebea069d57",
+  "crc": "PASS",
+  "paths": "PASS",
+  "source_bytes": "PASS",
+  "reproducible_zip": "PASS",
+  "python_ast": "PASS",
+  "android": "NOT_TESTED",
+  "production_publish": false,
+  "source_commit": "de042ce4d80c663cf2eb27b1174ba0ae771a4362",
+  "base_main": "c17cb4f8901d2830a0105fff1c681dbf34e5c921",
+  "skipped": 0,
+  "thread_exceptions": 0,
+  "ci": "Final delivery-head workflow evidence in cumulative draft PR #139",
+  "host_e2e_report": "HOST_E2E_02929.json",
+  "host_e2e_transfers": 8,
+  "host_e2e_decode": "PASS",
+  "actual_usb_hardware": "NOT_TESTED",
+  "actual_android_kodi_vfs": "NOT_TESTED",
+  "protected_modules": "Byte-identical search/player/guide/autoplay/resume/navigation/recording/artwork modules",
+  "original_icon_sha256": "81da1003a2753ec6afbdd50b2a320e738a2131ad9f0d76606da1babdd0d2f135",
+  "main_028_zip_and_index": "UNCHANGED",
+  "unfinished_wip_files_unchanged": [
+    35,
+    27
+  ],
+  "full_rc_mandatory_open": [
+    43,
+    127
+  ],
+  "additional_roadmap_open": [
+    120,
+    122,
+    123,
+    98,
+    115
+  ],
+  "android_acceptance_open": [
+    135,
+    136,
+    131,
+    126,
+    111,
+    63
+  ]
+}
