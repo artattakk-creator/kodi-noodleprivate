@@ -1,4 +1,4 @@
-"""One-shot, memory-only continuation in Kodi's asynchronous RunScript owner.
+"""One-shot, memory-only continuation in Kodi's asynchronous plugin owner.
 
 The originating plugin returns normally. The new invocation acquires its OWN
 navigation lease and waits for real native release; no modal bypass/forced close.
@@ -46,8 +46,9 @@ def schedule(transfer):
         value=json.dumps(payload,ensure_ascii=True,separators=(',',':'))
         if len(value)>MAX_BYTES:raise ValueError('SEARCH_CONTINUATION_SIZE')
         home.setProperty(PREFIX+token,value)
-        # Fixed installed script + random token only, never a query/account URL.
-        xbmc.executebuiltin('RunScript("special://home/addons/plugin.video.xtreammate/search_handoff.py",'+token+')')
+        # Kodi RunPlugin -> ExecuteAsync retains this add-on's API context.
+        # Fixed action + random token only, never query/account parameters.
+        xbmc.executebuiltin('RunPlugin(plugin://plugin.video.xtreammate/?action=search_continue&token='+token+')')
     except (ValueError,RuntimeError,TypeError):
         home.clearProperty(PREFIX+token)
         if home.getProperty(LATEST)==token:home.clearProperty(LATEST)
@@ -106,7 +107,7 @@ def _ready(payload):
 
 
 def run(token):
-    """Called by the separate Kodi script, never by a native Guide callback."""
+    """Called by the separate Kodi plugin invocation, never by a native Guide callback."""
     from window_navigation import ownership
     home=xbmcgui.Window(10000);result=None;portal=None;router=None
     with ownership() as acquired:

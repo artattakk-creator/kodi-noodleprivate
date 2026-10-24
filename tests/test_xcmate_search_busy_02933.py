@@ -46,9 +46,9 @@ class SearchBusy33(Fixture,unittest.TestCase):
         self.busy();nav=importlib.import_module('window_navigation');self.router._handle=-1
         self.router._params.update(action='global_search',q='House');self.router._navigation_dispatch='a'*32
         with mock.patch.object(self.media,'open_search') as opened:self.routes.dispatch(self.router)
-        opened.assert_not_called();self.assertEqual(len(self.builtins),1);self.assertTrue(self.builtins[0].startswith('RunScript('))
+        opened.assert_not_called();self.assertEqual(len(self.builtins),1);self.assertTrue(self.builtins[0].startswith('RunPlugin('))
         broker=importlib.import_module('search_handoff');token=self.token(broker)
-        # Kodi ExecuteAsync has queued the script; return of the first plugin
+        # Kodi ExecuteAsync has queued the plugin; return of the first plugin
         # clears its native Busy. Only now does the new script own a window.
         self.dialog_id=0;calls=[]
         def execute(w):
@@ -117,7 +117,7 @@ class SearchBusy33(Fixture,unittest.TestCase):
             broker.run(token)
         opened.assert_called_once();self.assertFalse(any('Container.Update' in c for c in self.builtins))
 
-    def test_run_script_parameters_and_traces_never_contain_search_or_credentials(self):
+    def test_async_plugin_parameters_and_traces_never_contain_search_or_credentials(self):
         broker,transfer=self.transfer(query='PRIVATE House SECRET');broker.schedule(transfer)
         self.assertNotIn('PRIVATE',self.builtins[-1]);self.assertNotIn('SECRET',self.builtins[-1])
         self.assertNotIn('pid=',self.builtins[-1]);self.assertNotIn('q=',self.builtins[-1])
@@ -196,6 +196,13 @@ class SearchBusy33(Fixture,unittest.TestCase):
         transfer.payload['request']['view']={'oversized':'x'*300}
         with mock.patch.object(broker,'MAX_BYTES',128):self.assertFalse(broker.schedule(transfer))
         self.assertIsNone(broker._consume(previous));self.assertNotIn(broker.LATEST,self.properties)
+
+    def test_async_route_keeps_plugin_context_and_consumes_only_opaque_token(self):
+        broker,transfer=self.transfer();broker.schedule(transfer);token=self.token(broker)
+        self.router._handle=-1;self.router._params.update(action='search_continue',token=token)
+        with mock.patch.object(broker,'run',return_value=True) as run,mock.patch.object(self.routes,'portal_for',side_effect=AssertionError('unneeded portal enumeration')):
+            self.routes.dispatch(self.router)
+        run.assert_called_once_with(token);self.assertFalse(self.ends)
 
 
 if __name__=='__main__':unittest.main()
