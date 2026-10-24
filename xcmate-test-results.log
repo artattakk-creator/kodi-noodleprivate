@@ -145,10 +145,10 @@ test_restart_offline_previous_index_and_immediate_disabled_filter (test_xcmate_0
 test_same_stream_in_two_groups_counted_once_globally_but_available_in_each (test_xcmate_028_streaming.IndexTests.test_same_stream_in_two_groups_counted_once_globally_but_available_in_each) ... ok
 test_streaming_group_publishes_only_after_complete_json (test_xcmate_028_streaming.IndexTests.test_streaming_group_publishes_only_after_complete_json) ... ok
 test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update (test_xcmate_028_streaming.LargeGuideTests.test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update) ... 
-LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 15.011}
+LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 21.783}
 ok
 test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib (test_xcmate_028_streaming.LargeHTTPTests.test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib) ... 
-LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 22.861, "peak_rss_kib": 65900}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 22.201, "peak_rss_kib": 65900}]
+LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 37.358, "peak_rss_kib": 66348}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 37.351, "peak_rss_kib": 66348}]
 ok
 test_cache_envelope_and_trailing_data_validated (test_xcmate_028_streaming.ParserTests.test_cache_envelope_and_trailing_data_validated) ... ok
 test_chunked_http_gzip_and_truncated_compression (test_xcmate_028_streaming.ParserTests.test_chunked_http_gzip_and_truncated_compression) ... ok
@@ -837,6 +837,27 @@ test_stuck_busy_fails_before_source_resolution_or_player (test_xcmate_search_liv
 test_tag_failure_rolls_back_own_marker_without_play (test_xcmate_search_live_02927.SearchLiveTests.test_tag_failure_rolls_back_own_marker_without_play) ... ok
 test_unchanged_foreign_player_is_also_rejected (test_xcmate_search_live_02927.SearchLiveTests.test_unchanged_foreign_player_is_also_rejected) ... ok
 test_window_must_finish_owner_before_search_handoff (test_xcmate_search_live_02927.SearchLiveTests.test_window_must_finish_owner_before_search_handoff) ... ok
+test_action_handle_home_and_foreign_context_have_one_explicit_owner (test_xcmate_search_navigation_02932.SearchNavigation32.test_action_handle_home_and_foreign_context_have_one_explicit_owner) ... ok
+test_directory_completion_precedes_window_without_a_second_home_update (test_xcmate_search_navigation_02932.SearchNavigation32.test_directory_completion_precedes_window_without_a_second_home_update) ... ok
+test_directory_timeout_and_busy_owner_never_open_or_recurse (test_xcmate_search_navigation_02932.SearchNavigation32.test_directory_timeout_and_busy_owner_never_open_or_recurse) ... ok
+test_existing_search_section_widget_remains_directory_only (test_xcmate_search_navigation_02932.SearchNavigation32.test_existing_search_section_widget_remains_directory_only) ... ok
+test_grid_header_312_focus_waits_for_native_visibility_and_can_expire (test_xcmate_search_navigation_02932.SearchNavigation32.test_grid_header_312_focus_waits_for_native_visibility_and_can_expire) ... ok
+test_grid_search_back_preserves_time_group_row_and_focus (test_xcmate_search_navigation_02932.SearchNavigation32.test_grid_search_back_preserves_time_group_row_and_focus) ... ok
+test_grid_search_closes_on_pump_without_directory_handoff (test_xcmate_search_navigation_02932.SearchNavigation32.test_grid_search_closes_on_pump_without_directory_handoff) ... ok
+test_guide_keyboard_cancel_and_fast_repeated_input_keep_one_intent (test_xcmate_search_navigation_02932.SearchNavigation32.test_guide_keyboard_cancel_and_fast_repeated_input_keep_one_intent) ... ok
+test_legacy_guide_search_only_queues_until_its_owner_tick (test_xcmate_search_navigation_02932.SearchNavigation32.test_legacy_guide_search_only_queues_until_its_owner_tick) ... ok
+test_media_detail_search_back_restores_detail_and_valid_focus (test_xcmate_search_navigation_02932.SearchNavigation32.test_media_detail_search_back_restores_detail_and_valid_focus) ... ok
+test_native_close_must_finish_before_another_window_can_open (test_xcmate_search_navigation_02932.SearchNavigation32.test_native_close_must_finish_before_another_window_can_open) ... ok
+test_native_search_initialization_has_no_landing_query_or_focus (test_xcmate_search_navigation_02932.SearchNavigation32.test_native_search_initialization_has_no_landing_query_or_focus) ... ok
+test_positive_directory_global_search_also_opens_native_search (test_xcmate_search_navigation_02932.SearchNavigation32.test_positive_directory_global_search_also_opens_native_search) ... ok
+test_real_guide_search_back_owner_sequence_restores_selected_view (test_xcmate_search_navigation_02932.SearchNavigation32.test_real_guide_search_back_owner_sequence_restores_selected_view) ... ok
+test_release_timeout_keeps_closed_guide_from_opening_search (test_xcmate_search_navigation_02932.SearchNavigation32.test_release_timeout_keeps_closed_guide_from_opening_search) ... ok
+test_search_focus_lag_is_bounded_and_never_focuses_hidden_120 (test_xcmate_search_navigation_02932.SearchNavigation32.test_search_focus_lag_is_bounded_and_never_focuses_hidden_120) ... ok
+test_search_initial_keyboard_cancel_has_no_landing_or_result_job (test_xcmate_search_navigation_02932.SearchNavigation32.test_search_initial_keyboard_cancel_has_no_landing_or_result_job) ... ok
+test_search_live_intent_is_dispatched_only_after_navigation_lease_ends (test_xcmate_search_navigation_02932.SearchNavigation32.test_search_live_intent_is_dispatched_only_after_navigation_lease_ends) ... ok
+test_stale_callback_after_new_query_tab_change_and_close_is_ignored (test_xcmate_search_navigation_02932.SearchNavigation32.test_stale_callback_after_new_query_tab_change_and_close_is_ignored) ... ok
+test_trace_contains_only_allowlisted_metadata_and_no_query_or_accounts (test_xcmate_search_navigation_02932.SearchNavigation32.test_trace_contains_only_allowlisted_metadata_and_no_query_or_accounts) ... ok
+test_twenty_ir_cycles_retain_native_search_and_require_explicit_selection (test_xcmate_search_navigation_02932.SearchNavigation32.test_twenty_ir_cycles_retain_native_search_and_require_explicit_selection) ... ok
 test_heartbeat_detects_running_stale_and_stopped (test_xcmate_service_health_p0.ServiceHealthTests.test_heartbeat_detects_running_stale_and_stopped) ... ok
 test_last_stream_and_osd_status_survive_idle (test_xcmate_service_health_p0.ServiceHealthTests.test_last_stream_and_osd_status_survive_idle) ... ok
 test_manual_start_gates_duplicate_and_pending_requests (test_xcmate_service_health_p0.ServiceHealthTests.test_manual_start_gates_duplicate_and_pending_requests) ... ok
@@ -1052,11 +1073,11 @@ test_widget_route_and_no_cached_credentials_in_link (test_xtreammate_widgets.Wid
 test_youtube_whitelist (test_xtreammate_widgets.WidgetsTest.test_youtube_whitelist) ... ok
 
 ----------------------------------------------------------------------
-Ran 1047 tests in 137.861s
+Ran 1068 tests in 196.247s
 
 OK
 
-MODEL_COLD_WINDOW_MS 4.761
+MODEL_COLD_WINDOW_MS 6.575
 
 SELECTIVE_XMLTV {"bytes": 400, "parsed": 2, "stored": 1}
 
