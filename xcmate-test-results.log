@@ -145,10 +145,10 @@ test_restart_offline_previous_index_and_immediate_disabled_filter (test_xcmate_0
 test_same_stream_in_two_groups_counted_once_globally_but_available_in_each (test_xcmate_028_streaming.IndexTests.test_same_stream_in_two_groups_counted_once_globally_but_available_in_each) ... ok
 test_streaming_group_publishes_only_after_complete_json (test_xcmate_028_streaming.IndexTests.test_streaming_group_publishes_only_after_complete_json) ... ok
 test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update (test_xcmate_028_streaming.LargeGuideTests.test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update) ... 
-LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 21.783}
+LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 18.788}
 ok
 test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib (test_xcmate_028_streaming.LargeHTTPTests.test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib) ... 
-LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 37.358, "peak_rss_kib": 66348}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 37.351, "peak_rss_kib": 66348}]
+LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 29.891, "peak_rss_kib": 65508}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 30.081, "peak_rss_kib": 65508}]
 ok
 test_cache_envelope_and_trailing_data_validated (test_xcmate_028_streaming.ParserTests.test_cache_envelope_and_trailing_data_validated) ... ok
 test_chunked_http_gzip_and_truncated_compression (test_xcmate_028_streaming.ParserTests.test_chunked_http_gzip_and_truncated_compression) ... ok
@@ -826,6 +826,25 @@ test_progressive_completion_does_not_move_focus_to_results (test_xcmate_search_0
 test_reinit_during_slow_search_never_replaces_its_worker_with_landing (test_xcmate_search_02931.Search31Tests.test_reinit_during_slow_search_never_replaces_its_worker_with_landing) ... ok
 test_root_search_keyboard_ok_does_not_select_first_result_or_stale_landing (test_xcmate_search_02931.Search31Tests.test_root_search_keyboard_ok_does_not_select_first_result_or_stale_landing) ... ok
 test_short_cache_after_old_two_second_cutoff_is_still_searched_for_all_channels (test_xcmate_search_02931.Search31Tests.test_short_cache_after_old_two_second_cutoff_is_still_searched_for_all_channels) ... ok
+test_async_plugin_parameters_and_traces_never_contain_search_or_credentials (test_xcmate_search_busy_02933.SearchBusy33.test_async_plugin_parameters_and_traces_never_contain_search_or_credentials) ... ok
+test_async_route_keeps_plugin_context_and_consumes_only_opaque_token (test_xcmate_search_busy_02933.SearchBusy33.test_async_route_keeps_plugin_context_and_consumes_only_opaque_token) ... ok
+test_busy_continuation_uses_real_search_then_restores_real_guide_view (test_xcmate_search_busy_02933.SearchBusy33.test_busy_continuation_uses_real_search_then_restores_real_guide_view) ... ok
+test_busy_is_not_ignored_and_continuation_runs_only_after_original_return (test_xcmate_search_busy_02933.SearchBusy33.test_busy_is_not_ignored_and_continuation_runs_only_after_original_return) ... ok
+test_context_portal_player_or_session_change_cancels_delayed_search (test_xcmate_search_busy_02933.SearchBusy33.test_context_portal_player_or_session_change_cancels_delayed_search) ... ok
+test_focus_lag_cannot_retain_xml_edge_to_hidden_landing_button (test_xcmate_search_busy_02933.SearchBusy33.test_focus_lag_cannot_retain_xml_edge_to_hidden_landing_button) ... ok
+test_foreign_dialog_keeps_owner_start_guard_and_slow_busy_release_is_bounded (test_xcmate_search_busy_02933.SearchBusy33.test_foreign_dialog_keeps_owner_start_guard_and_slow_busy_release_is_bounded) ... ok
+test_grid_safe_native_default_stays_visible_in_group_mode (test_xcmate_search_busy_02933.SearchBusy33.test_grid_safe_native_default_stays_visible_in_group_mode) ... ok
+test_guide_busy_defers_after_unlock_then_restores_from_same_snapshot (test_xcmate_search_busy_02933.SearchBusy33.test_guide_busy_defers_after_unlock_then_restores_from_same_snapshot) ... ok
+test_keyboard_native_reinit_retains_search_target_and_xml_default_is_safe (test_xcmate_search_busy_02933.SearchBusy33.test_keyboard_native_reinit_retains_search_target_and_xml_default_is_safe) ... ok
+test_late_foreign_window_owner_rejects_transfer_and_clears_memory_token (test_xcmate_search_busy_02933.SearchBusy33.test_late_foreign_window_owner_rejects_transfer_and_clears_memory_token) ... ok
+test_native_media_default_is_visible_in_search_after_keyboard (test_xcmate_search_busy_02933.SearchBusy33.test_native_media_default_is_visible_in_search_after_keyboard) ... ok
+test_partial_counts_do_not_reset_an_unchanged_focused_result_container (test_xcmate_search_busy_02933.SearchBusy33.test_partial_counts_do_not_reset_an_unchanged_focused_result_container) ... ok
+test_positive_directory_handle_yields_then_uses_completed_container (test_xcmate_search_busy_02933.SearchBusy33.test_positive_directory_handle_yields_then_uses_completed_container) ... ok
+test_real_foreign_dialog_never_gets_forced_closed_or_bypassed (test_xcmate_search_busy_02933.SearchBusy33.test_real_foreign_dialog_never_gets_forced_closed_or_bypassed) ... ok
+test_real_foreign_modal_does_not_create_any_search_continuation (test_xcmate_search_busy_02933.SearchBusy33.test_real_foreign_modal_does_not_create_any_search_continuation) ... ok
+test_rejected_new_payload_also_invalidates_the_previous_pending_search (test_xcmate_search_busy_02933.SearchBusy33.test_rejected_new_payload_also_invalidates_the_previous_pending_search) ... ok
+test_three_reported_busy_timeouts_yield_an_owned_search_continuation (test_xcmate_search_busy_02933.SearchBusy33.test_three_reported_busy_timeouts_yield_an_owned_search_continuation) ... ok
+test_ttl_latest_wins_and_replay_do_not_reopen_a_search (test_xcmate_search_busy_02933.SearchBusy33.test_ttl_latest_wins_and_replay_do_not_reopen_a_search) ... ok
 test_busy_gate_waits_for_actual_clear_without_closing_foreign_dialog (test_xcmate_search_live_02927.SearchLiveTests.test_busy_gate_waits_for_actual_clear_without_closing_foreign_dialog) ... ok
 test_direct_play_occurs_once_without_directory_resolver_or_container_transition (test_xcmate_search_live_02927.SearchLiveTests.test_direct_play_occurs_once_without_directory_resolver_or_container_transition) ... ok
 test_guide_handoff_remains_existing_plugin_resolver (test_xcmate_search_live_02927.SearchLiveTests.test_guide_handoff_remains_existing_plugin_resolver) ... ok
@@ -858,6 +877,12 @@ test_search_live_intent_is_dispatched_only_after_navigation_lease_ends (test_xcm
 test_stale_callback_after_new_query_tab_change_and_close_is_ignored (test_xcmate_search_navigation_02932.SearchNavigation32.test_stale_callback_after_new_query_tab_change_and_close_is_ignored) ... ok
 test_trace_contains_only_allowlisted_metadata_and_no_query_or_accounts (test_xcmate_search_navigation_02932.SearchNavigation32.test_trace_contains_only_allowlisted_metadata_and_no_query_or_accounts) ... ok
 test_twenty_ir_cycles_retain_native_search_and_require_explicit_selection (test_xcmate_search_navigation_02932.SearchNavigation32.test_twenty_ir_cycles_retain_native_search_and_require_explicit_selection) ... ok
+test_downloaded_poster_refreshes_existing_item_without_reset_or_focus_change (test_xcmate_search_ui_02933.SearchUI33.test_downloaded_poster_refreshes_existing_item_without_reset_or_focus_change) ... ok
+test_live_name_hit_shows_local_now_title_without_claiming_programme_match (test_xcmate_search_ui_02933.SearchUI33.test_live_name_hit_shows_local_now_title_without_claiming_programme_match) ... ok
+test_missing_artwork_and_epg_use_safe_local_type_fallbacks (test_xcmate_search_ui_02933.SearchUI33.test_missing_artwork_and_epg_use_safe_local_type_fallbacks) ... ok
+test_movie_and_series_have_cached_poster_primary_title_and_type (test_xcmate_search_ui_02933.SearchUI33.test_movie_and_series_have_cached_poster_primary_title_and_type) ... ok
+test_rich_xml_has_two_noninteractive_artwork_shapes_and_two_text_lines (test_xcmate_search_ui_02933.SearchUI33.test_rich_xml_has_two_noninteractive_artwork_shapes_and_two_text_lines) ... ok
+test_switch_tabs_and_select_movie_then_back_keeps_native_controls (test_xcmate_search_ui_02933.SearchUI33.test_switch_tabs_and_select_movie_then_back_keeps_native_controls) ... ok
 test_heartbeat_detects_running_stale_and_stopped (test_xcmate_service_health_p0.ServiceHealthTests.test_heartbeat_detects_running_stale_and_stopped) ... ok
 test_last_stream_and_osd_status_survive_idle (test_xcmate_service_health_p0.ServiceHealthTests.test_last_stream_and_osd_status_survive_idle) ... ok
 test_manual_start_gates_duplicate_and_pending_requests (test_xcmate_service_health_p0.ServiceHealthTests.test_manual_start_gates_duplicate_and_pending_requests) ... ok
@@ -1073,11 +1098,11 @@ test_widget_route_and_no_cached_credentials_in_link (test_xtreammate_widgets.Wid
 test_youtube_whitelist (test_xtreammate_widgets.WidgetsTest.test_youtube_whitelist) ... ok
 
 ----------------------------------------------------------------------
-Ran 1068 tests in 196.247s
+Ran 1093 tests in 161.849s
 
 OK
 
-MODEL_COLD_WINDOW_MS 6.575
+MODEL_COLD_WINDOW_MS 20.013
 
 SELECTIVE_XMLTV {"bytes": 400, "parsed": 2, "stored": 1}
 
