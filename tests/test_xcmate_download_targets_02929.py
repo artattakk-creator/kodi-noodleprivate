@@ -288,15 +288,19 @@ class SMB2Wire29Tests(TargetsFixture,unittest.TestCase):
         self.smb.upload_exclusive(str(source),self.uri+'/one.part');self.smb.upload_exclusive(str(source),self.uri+'/two.mp4')
         with self.assertRaisesRegex(Exception,'TARGET_EXISTS'):self.smb.rename(self.uri+'/one.part',self.uri+'/two.mp4')
         self.assertEqual((self.share/'one.part').read_bytes(),PAYLOAD);self.assertEqual((self.share/'two.mp4').read_bytes(),PAYLOAD)
-        results=[]
-        def create():
-            try:self.smb.upload_exclusive(str(source),self.uri+'/race.mp4');results.append('OK')
-            except self.smb.Failure as exc:results.append(exc.code)
-        threads=[threading.Thread(target=create) for _ in range(5)]
-        for thread in threads:thread.start()
-        for thread in threads:thread.join(15);self.assertFalse(thread.is_alive())
-        self.assertEqual(results.count('OK'),1);self.assertEqual(results.count('TARGET_EXISTS'),4)
-        self.assertEqual((self.share/'race.mp4').read_bytes(),PAYLOAD)
+        # Repeat synchronized contention against the real signed wire server.
+        for iteration in range(12):
+            results=[];barrier=threading.Barrier(5);target=self.uri+'/race-'+str(iteration)+'.mp4'
+            def create():
+                barrier.wait(5)
+                try:self.smb.upload_exclusive(str(source),target);results.append('OK')
+                except self.smb.Failure as exc:results.append(exc.code)
+            threads=[threading.Thread(target=create) for _ in range(5)]
+            for thread in threads:thread.start()
+            for thread in threads:thread.join(15);self.assertFalse(thread.is_alive())
+            self.assertEqual(results.count('OK'),1);self.assertEqual(results.count('TARGET_EXISTS'),4)
+            self.assertEqual((self.share/('race-'+str(iteration)+'.mp4')).read_bytes(),PAYLOAD)
+
 
 
 if __name__=='__main__':unittest.main()
