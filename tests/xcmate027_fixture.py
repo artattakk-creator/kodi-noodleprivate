@@ -199,7 +199,8 @@ class Fixture:
         self.translations={locale:read_catalog(ADDON/'resources/language'/('resource.language.'+locale)/'strings.po')
                            for locale in ('de_de','en_gb')}
         patch=mock.patch.dict(sys.modules,utils=utils,xbmc=xbmc,xbmcgui=gui,xbmcplugin=plugin,xbmcaddon=addon,
-            portals=portals,epg=epg,epg_sources=sources,epg_status=status,xbmcvfs=types.ModuleType('xbmcvfs'))
+            portals=portals,epg=epg,epg_sources=sources,epg_status=status,xbmcvfs=types.ModuleType('xbmcvfs'),
+            xtream=types.SimpleNamespace(XtreamClient=lambda *args:self.client))
         patch.start();self.addCleanup(patch.stop)
         for name in ('library_index','group_selection','latest_media','home_menu','app_routes','media_art','media_state',
                      'owner_dispatch','window_navigation','media_data','media_progress','media_window','guide_store','guide_window','guide_timers'):
