@@ -29,7 +29,7 @@ def show(router, portal):
     path=xbmcaddon.Addon().getAddonInfo('path')
     xbmcplugin.setPluginCategory(router._handle,'XCMate · '+portal.get('name',''))
     xbmcplugin.setContent(router._handle,'files')
-    from theme_render import snapshot
+    from theme_render import snapshot,lightweight_background
     from theme_store import asset
     theme=snapshot()
     for label_id,action,icon in HOME:
@@ -39,7 +39,7 @@ def show(router, portal):
         add=add_action if action in WINDOW_ACTIONS or action=='home_start' else lambda router,*a,**kw:router._add_dir(*a,**kw)
         add(router,label,router.url(action=action,pid=portal['id']),
                         icon=__import__('branding').icon() if action=='home_start' else asset('icon.'+name,os.path.join(path,'resources','media',icon),snapshot=theme),
-                        fanart=asset('background.home.'+name,os.path.join(path,'fanart.jpg'),snapshot=theme),
+                        fanart=asset('background.home.'+name,lightweight_background(),snapshot=theme),
                         plot=(tr(32415) if action=='settings_home' else label))
     finish_directory(router,cacheToDisc=False)
 
@@ -67,7 +67,7 @@ def settings(router, portal, section=''):
     import xbmc, xbmcgui, xbmcplugin, xbmcaddon
     from boot_diagnostics import finish_directory
     pid=portal['id'] if portal else ''
-    from theme_render import snapshot
+    from theme_render import snapshot,lightweight_background
     from theme_store import asset
     theme=snapshot()
     def add(label,action,**params):
@@ -75,7 +75,7 @@ def settings(router, portal, section=''):
         url=router.url(action=action,pid=pid,**params)
         key=section or params.get('section','')
         key={'storage':'recordings','startup':'start-channel','designs':'appearance'}.get(key,key)
-        art=dict(icon=asset('icon.settings.'+key,os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources/media/settings.png'),snapshot=theme),fanart=asset('background.settings.'+key,asset('background.settings',os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'fanart.jpg'),snapshot=theme),snapshot=theme))
+        art=dict(icon=asset('icon.settings.'+key,os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources/media/settings.png'),snapshot=theme),fanart=asset('background.settings.'+key,asset('background.settings',lightweight_background(),snapshot=theme),snapshot=theme))
         if action in WINDOW_ACTIONS|DIALOG_ACTIONS or action in ('global_search','download_folder','download_capabilities','stability_test'):
             add_action(router,label,url,**art)
         else:router._add_dir(label,url,**art)

@@ -14,7 +14,7 @@
       <width>1280</width>
       <height>720</height>
       <aspectratio>scale</aspectratio>
-      <texture>special://home/addons/plugin.video.xtreammate/resources/media/media_neutral.png</texture>
+      <texture>special://home/addons/plugin.video.xtreammate/resources/media/lightweight_splash.jpg</texture>
     </control>
     <control type="image" id="104">
       <left>0</left>
