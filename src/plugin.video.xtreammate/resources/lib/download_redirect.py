@@ -3,7 +3,7 @@
 No cookie jar, automatic authentication, proxy credentials or redirected headers.
 DNS results are connected directly; HTTPS verifies the original hostname/SNI.
 """
-import hashlib,http.client,ipaddress,re,socket,ssl
+import hashlib,http.client,ipaddress,re,socket,ssl,sys
 from urllib.parse import urljoin,urlsplit
 from urllib.error import HTTPError
 from download_sources import DownloadFailure,validate
@@ -51,8 +51,13 @@ def _connect(url,ips,headers):
     p=urlsplit(url);port=p.port or (443 if p.scheme=='https' else 80);connection=None
     try:
         raw=socket.create_connection((ips[0],port),timeout=10)
+        runtime=sys.modules.get('service_runtime')
+        if runtime:runtime.track_socket(raw)
         if p.scheme=='https':
-            try:raw=ssl.create_default_context().wrap_socket(raw,server_hostname=p.hostname)
+            try:
+                raw=ssl.create_default_context().wrap_socket(raw,server_hostname=p.hostname,do_handshake_on_connect=False)
+                if runtime:runtime.track_socket(raw)
+                raw.do_handshake()
             except BaseException:raw.close();raise
         connection=http.client.HTTPConnection(p.hostname,port,timeout=10);connection.sock=raw
         path=p.path or '/'

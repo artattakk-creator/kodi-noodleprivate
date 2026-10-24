@@ -76,7 +76,7 @@ def settings(router, portal, section=''):
         key=section or params.get('section','')
         key={'storage':'recordings','startup':'start-channel','designs':'appearance'}.get(key,key)
         art=dict(icon=asset('icon.settings.'+key,os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources/media/settings.png'),snapshot=theme),fanart=asset('background.settings.'+key,asset('background.settings',os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'fanart.jpg'),snapshot=theme),snapshot=theme))
-        if action in WINDOW_ACTIONS|DIALOG_ACTIONS or action in ('global_search','download_folder','download_capabilities'):
+        if action in WINDOW_ACTIONS|DIALOG_ACTIONS or action in ('global_search','download_folder','download_capabilities','stability_test'):
             add_action(router,label,url,**art)
         else:router._add_dir(label,url,**art)
     if not section:
@@ -139,6 +139,7 @@ def settings(router, portal, section=''):
         add(tr(32445),'widget_recent_vod')
         add(tr(32446),'widget_recent_series')
     elif section=='maintenance':
+        add(tr(34800),'stability_test')
         for label,action in ((tr(32447),'global_search'),(tr(32448),'refresh_portal'),
             (tr(32425),'epg_status'),(tr(32449),'remote_diagnostics'),
             (tr(32450),'service_recover'),(tr(32451),'popup_probe'),

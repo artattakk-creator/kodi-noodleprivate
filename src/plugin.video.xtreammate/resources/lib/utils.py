@@ -139,7 +139,8 @@ def _default_headers():
 
 def http_get(url, params=None, headers=None, timeout=None, stream=False,
              max_bytes=MAX_HTTP_BYTES, max_seconds=60, retry_limit=None):
-    to      = timeout or setting_int('http_timeout', 15)
+    from network_io import service_cancelled,service_timeout
+    to=service_timeout(timeout or setting_int('http_timeout',15))
     retries = setting_int('max_retries', 3) if retry_limit is None else max(0,min(3,int(retry_limit)))
     verify  = setting_bool('ssl_verify', True)
     hdrs    = {**_default_headers(), **(headers or {})}
@@ -147,6 +148,7 @@ def http_get(url, params=None, headers=None, timeout=None, stream=False,
     last_exc = None
     deadline = time.monotonic() + max_seconds
     for attempt in range(retries + 1):
+        if service_cancelled():raise InterruptedError('SERVICE_STOP')
         try:
             remaining = deadline - time.monotonic()
             if remaining <= 0:
@@ -179,6 +181,12 @@ def http_get(url, params=None, headers=None, timeout=None, stream=False,
                     chunks = iter(lambda: resp.read1(min(65536, max_bytes+1)), b'')
                     body = read_http_chunks(chunks, resp.headers, max_bytes, deadline)
                     return body, dict(resp.headers)
+        except MemoryError:
+            runtime=sys.modules.get('service_runtime')
+            if runtime:runtime.note_pressure()
+            raise
+        except InterruptedError:
+            raise
         except ValueError:
             # Size/encoding rejection cannot be repaired by downloading again.
             raise
@@ -186,7 +194,10 @@ def http_get(url, params=None, headers=None, timeout=None, stream=False,
             last_exc = exc
             if attempt < retries:
                 delay = min(1.5 ** attempt, max(0, deadline-time.monotonic()))
-                time.sleep(delay)
+                runtime=sys.modules.get('service_runtime')
+                if runtime:
+                    if runtime.wait(delay):raise InterruptedError('SERVICE_STOP')
+                else:time.sleep(delay)
     raise last_exc
 
 def http_post(url, data=None, json_data=None, headers=None, timeout=None):
@@ -557,7 +568,8 @@ def http_stream(url, params=None, headers=None, timeout=15, max_seconds=None,
     No full body allocation and no 80-MiB collection limit. Existing http_get
     remains bounded for authentication, metadata and short guide requests.
     """
-    from network_io import decoded_chunks, ChunkReader
+    from network_io import decoded_chunks, ChunkReader,service_timeout
+    timeout=service_timeout(timeout)
     deadline = None if max_seconds is None else time.monotonic()+max_seconds
     hdrs = {**_default_headers(), **(headers or {})}
     if _httpx_available():

@@ -44,3 +44,27 @@ def serialized(function):
     def wrapped(*args,**kwargs):
         with writing(): return function(*args,**kwargs)
     return wrapped
+
+
+@contextmanager
+def reading(timeout=.15):
+    """Do not observe a half-committed multi-file configuration transaction.
+
+    Legacy read-only profiles need no new file. A thread already holding our
+    reentrant writer lock may verify its own write without a flock deadlock.
+    """
+    if getattr(_local,'depth',0):yield;return
+    from utils import addon_data_dir
+    path=os.path.join(addon_data_dir(),'.xcmate-config.lock')
+    try:fd=os.open(path,os.O_RDONLY)
+    except FileNotFoundError:yield;return
+    import fcntl
+    try:
+        deadline=time.monotonic()+timeout
+        while True:
+            try:fcntl.flock(fd,fcntl.LOCK_SH|fcntl.LOCK_NB);break
+            except BlockingIOError:
+                if time.monotonic()>=deadline:raise TimeoutError('profile read busy')
+                time.sleep(.005)
+        yield
+    finally:os.close(fd)

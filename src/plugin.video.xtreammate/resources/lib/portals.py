@@ -23,36 +23,19 @@ def _db_path():
     return _DB_FILE
 
 
-def load_all() -> list:
-    """Read the stored portals. Do not silently treat unreadable data as empty."""
-    from boot_diagnostics import phase
-    try:
-        with phase('PORTALS_LOAD'):
-            path = _db_path()
-            try:
-                # Already a translated LOCAL profile path. No Kodi VFS existence
-                # probe and no settings migration on every UI/widget request.
-                fd = os.open(path, os.O_RDONLY | getattr(os, 'O_NONBLOCK', 0))
-            except FileNotFoundError:
-                if os.path.lexists(path):
-                    raise ValueError('Ungültige Portaldatei')
-                return []
-            with os.fdopen(fd, 'rb') as stream:
-                if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
-                    raise ValueError('Keine reguläre Portaldatei')
-                raw = stream.read(4*1024*1024+1)
-            if len(raw) > 4*1024*1024:
-                raise ValueError('Portaldatei zu groß')
-            value = json.loads(raw)
-            if (not isinstance(value, list) or any(
-                    not isinstance(p, dict) or not isinstance(p.get('id'), str)
-                    or not p['id'] or p.get('type') not in PORTAL_TYPES
-                    for p in value)):
-                raise ValueError('Ungültige Portalliste')
-            return value
+from portal_snapshot import Snapshot,PortalReadError
+_snapshot=Snapshot()
+
+
+def _read(select=lambda rows:rows):
+    try:return _snapshot.read(_db_path(),PORTAL_TYPES,select)
+    except PortalReadError:raise
     except Exception as exc:
-        error('portals.load_all failed: {}'.format(type(exc).__name__))
-        raise RuntimeError('Portalliste kann nicht gelesen werden. Daten wurden nicht verändert.') from exc
+        raise PortalReadError('Portalliste kann nicht gelesen werden. Daten wurden nicht verändert.') from exc
+
+
+def load_all() -> list:
+    return _read()
 
 
 @serialized
@@ -79,17 +62,18 @@ def save_all(portal_list: list):
     finally:
         if os.path.exists(temp_path):
             os.unlink(temp_path)
+    _snapshot.invalidate()
     actual = load_all()
     if actual != portal_list:
         raise OSError('Portal wurde geschrieben, konnte aber nicht verifiziert werden.')
 
 
 def get_by_id(portal_id: str) -> Optional[dict]:
-    return next((p for p in load_all() if p.get('id') == portal_id), None)
+    return _read(lambda rows:next((p for p in rows if p.get('id')==portal_id),None))
 
 
 def get_active() -> list:
-    return [p for p in load_all() if p.get('enabled', True)]
+    return _read(lambda rows:[p for p in rows if p.get('enabled',True)])
 
 
 @serialized
