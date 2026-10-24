@@ -40,11 +40,12 @@ def schedule(transfer):
     payload=dict(transfer.payload,created=time.monotonic())
     token=uuid.uuid4().hex;home=xbmcgui.Window(10000)
     try:
-        value=json.dumps(payload,ensure_ascii=True,separators=(',',':'))
-        if len(value)>MAX_BYTES:raise ValueError('SEARCH_CONTINUATION_SIZE')
         previous=home.getProperty(LATEST)
         if valid_token(previous):home.clearProperty(PREFIX+previous)
-        home.setProperty(PREFIX+token,value);home.setProperty(LATEST,token)
+        home.setProperty(LATEST,token)
+        value=json.dumps(payload,ensure_ascii=True,separators=(',',':'))
+        if len(value)>MAX_BYTES:raise ValueError('SEARCH_CONTINUATION_SIZE')
+        home.setProperty(PREFIX+token,value)
         # Fixed installed script + random token only, never a query/account URL.
         xbmc.executebuiltin('RunScript("special://home/addons/plugin.video.xtreammate/search_handoff.py",'+token+')')
     except (ValueError,RuntimeError,TypeError):

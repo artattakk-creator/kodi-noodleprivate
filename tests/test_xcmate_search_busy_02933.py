@@ -191,4 +191,11 @@ class SearchBusy33(Fixture,unittest.TestCase):
         self.assertFalse(self.builtins)
 
 
+    def test_rejected_new_payload_also_invalidates_the_previous_pending_search(self):
+        broker,transfer=self.transfer();self.assertTrue(broker.schedule(transfer));previous=self.token(broker)
+        transfer.payload['request']['view']={'oversized':'x'*300}
+        with mock.patch.object(broker,'MAX_BYTES',128):self.assertFalse(broker.schedule(transfer))
+        self.assertIsNone(broker._consume(previous));self.assertNotIn(broker.LATEST,self.properties)
+
+
 if __name__=='__main__':unittest.main()

@@ -29,7 +29,7 @@ Root-global_search erhält denselben Busy-Ausweg, auch bei positivem Directory-H
 
 ## Tests und Grenzen
 
-**17 neue Busy-/Fokus-Tests plus 6 neue Suchdarstellungs-Tests.** Darunter Dreifach-Busy-Fall, realer Such-/Guide-Restore im Modell, Modal/Owner-/Player-/Portalwechsel, TTL/Replay, beide Handles, native Keyboard-Reinit, unveränderte Partial-Liste, lokale Logos/Cover/Placeholder und Bildaktualisierung ohne Fokusverlust. Historische Tests bleiben, nur explizite aktuelle Versions-/XML-Standardverträge werden angepasst. Keine Daten-/Player-Sicherheitsassertion entfernt.
+**18 neue Busy-/Fokus-Tests plus 6 neue Suchdarstellungs-Tests.** Darunter Dreifach-Busy-Fall, realer Such-/Guide-Restore im Modell, Modal/Owner-/Player-/Portalwechsel, TTL/Replay, beide Handles, native Keyboard-Reinit, unveränderte Partial-Liste, lokale Logos/Cover/Placeholder und Bildaktualisierung ohne Fokusverlust. Historische Tests bleiben, nur explizite aktuelle Versions-/XML-Standardverträge werden angepasst. Keine Daten-/Player-Sicherheitsassertion entfernt.
 
 Vollständiger Lauf/ZIP/SHA und Bestandsschutz werden im finalen Testbericht dokumentiert. **Hostsimulation ist kein Kodi-/Android-PASS.** Eine reale Entkopplung vom beobachteten Busy-Besitzer und Skin-/IR-Bedienbarkeit muss der Nutzer am Gerät prüfen.
 
