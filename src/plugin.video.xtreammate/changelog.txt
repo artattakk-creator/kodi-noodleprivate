@@ -1,3 +1,10 @@
+0.1.29.34 – Guide-/Suchfenster ohne Parent-Verzeichnis-Reaktivierung
+- #140: Guide und eigenständige Suche als WindowXMLDialog; Schließen aktiviert kein vorheriges Plugin-Verzeichnis. Film-/Serienfenster und eingebettete Suche bleiben WindowXML.
+- Native Dialogidentität und zufällige Owner-/Lease-Zuordnung statt permanentem Medienfenster 10025 als Freigabesignal. Fremde Modaldialoge und Busy weiter geschützt, keine Zwangsschließung oder Timeout-Erhöhung.
+- Guide-Senderstart über vorhandenen Live-Resolver erst nach Pump-/Lease-/Fensterfreigabe; feste SKIPPED-Gründe, erneute Player-/Sessionprüfung und dauerhafter Einmalschutz.
+- Datensparsame Root-ENTRY/RETURN- und Handoff-Phasen; keine Suchbegriffe, Portaladressen oder private Pfade.
+- Hostmodell mit Parent-Reaktivierung und vierfachen Guide-Starts; Android G1–G4 NOT_TESTED. Poster #111 separat; Mapping #98 nach Such-/Startabnahme, Downloads/Aufnahmen nachrangig. Kein Release/OTA.
+
 0.1.29.33 – Such-Busy-Handoff, sichere Fokusziele und bebilderte Treffer
 - #140: Kodi-Busy 10138 führt nach Owner-Freigabe zu einer begrenzten asynchronen Einmalübergabe; keine fremden Dialoge schließen, Modal-/Player-/Session-/Kontextschutz erhalten.
 - Native XML-Standardziele 400/314 bleiben in Suche/Gruppen sichtbar; alte Landing-Edges während Fokus-Lag entfernen. Redigierte Fokusdiagnose.

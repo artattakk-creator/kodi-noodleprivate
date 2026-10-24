@@ -151,8 +151,8 @@ class SearchMixin:
         if self._search_kind=='live':
             from guide_playback import request,player_state
             self._search_live=request(self.portal,item,player_state())
-            try:self._search_live['window']=int(xbmcgui.getCurrentWindowId())
-            except (AttributeError,RuntimeError):self._search_live['window']=None
+            from window_lifecycle import capture
+            self._search_live.update(capture(self))
             self._leaving=True;self._leave_after=time.monotonic()+.15
         else:
             self.kind=self._search_kind;self._grid_return=None;self._search_detail=True

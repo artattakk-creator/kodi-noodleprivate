@@ -46,6 +46,8 @@ def native_init(callback):
         self._window_mark('INIT_BEGIN')
         try:
             self._gui()
+            from window_lifecycle import remember
+            remember(self)
             callback(self)
         except Exception as exc:
             self._init_error=exc
@@ -94,6 +96,8 @@ class OwnerDispatch:
         self._pending_future=None;self._pending_apply=None;self._pending_generation=0
         self._native_initialized=False;self._init_error=None
         self._native_active=False
+        from window_lifecycle import configure
+        configure(self)
 
     def _window_mark(self,stage,error=None):
         view=getattr(self,'_window_view','GUIDE' if type(self).__name__=='GuideWindow' else
@@ -149,6 +153,9 @@ class OwnerDispatch:
                 previous=int(xbmcgui.getCurrentWindowId())
             except Exception:previous=None
             self.show()
+            from window_lifecycle import remember
+            remember(self)
+            if getattr(self,'_native_dialog_id',None) is not None:self._native_active=True
             try:
                 current=int(xbmcgui.getCurrentWindowId())
                 if previous is not None and current>=13000 and current!=previous:

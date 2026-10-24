@@ -23,7 +23,7 @@ PAGE=24
 WINDOW_ITEMS=240
 
 
-class MediaWindow(DetailMenuMixin,SearchMixin,OwnerDispatch,xbmcgui.WindowXML):
+class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
     def configure(self,router,portal,kind,sid='',favourites=False):
         self._configure_owner()
         from theme_render import snapshot
@@ -193,8 +193,8 @@ class MediaWindow(DetailMenuMixin,SearchMixin,OwnerDispatch,xbmcgui.WindowXML):
         self._ready=True
         if getattr(self,'_search_root',False):
             # A root search has no landing/catalogue frame to initialize.
-            try:self._search_native_window=int(xbmcgui.getCurrentWindowId())
-            except (AttributeError,RuntimeError,TypeError,ValueError):self._search_native_window=None
+            from window_lifecycle import capture
+            self._search_native_window=capture(self)
             self.mode='search';self._show('search')
             self.getControl(101).setLabel(tr(32586));return
         self._show('landing')
@@ -1053,10 +1053,17 @@ class MediaWindow(DetailMenuMixin,SearchMixin,OwnerDispatch,xbmcgui.WindowXML):
         cancel(self.portal['id'],self._play_intent)
         if self._append_future is not None:self._append_future.cancel()
         self._append_future=None
+        if getattr(self,'_search_root',False):
+            from window_lifecycle import capture
+            self._search_native_window=capture(self)
         self._closed=True;self._generation+=1;self._watch_stop.set()
         self._pool.shutdown(wait=False,cancel_futures=True)
         super().close()
         self._search_closed()
+
+
+class MediaWindow(MediaView,xbmcgui.WindowXML):
+    pass
 
 
 def open_media(router,portal,kind,sid='',favourites=False):
@@ -1064,7 +1071,8 @@ def open_media(router,portal,kind,sid='',favourites=False):
 
 
 def open_search(router,portal,query=None,session=''):
-    class SearchWindow(MediaWindow):
+    class SearchWindow(MediaView,xbmcgui.WindowXMLDialog):
+        _native_surface='dialog'
         def configure(self,*args,**kwargs):
             super().configure(*args,**kwargs)
             self._search_startup=(query,);self._search_root=True;self._search_kind='live'

@@ -61,8 +61,12 @@ def ownership():
             locked=True
         except (ImportError,OSError):
             _local.release()
+    marker=uuid.uuid4().hex if locked else ''
+    if locked:xbmcgui.Window(10000).setProperty('XCMate.NavigationLease',marker)
     try: yield locked
     finally:
+        if locked and xbmcgui.Window(10000).getProperty('XCMate.NavigationLease')==marker:
+            xbmcgui.Window(10000).clearProperty('XCMate.NavigationLease')
         if stream:stream.close()
         if locked:_local.release()
 

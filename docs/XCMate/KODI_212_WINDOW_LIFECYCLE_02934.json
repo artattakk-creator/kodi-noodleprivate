@@ -1,0 +1,30 @@
+{
+  "kodi": "21.2-Omega",
+  "evidence": "SOURCE_REVIEW_ONLY; not a native runtime test",
+  "files": [
+    {
+      "path": "xbmc/interfaces/legacy/Window.cpp",
+      "sha256": "4aecd8caa947b62052189610069bef3fa4cedcebaff46d64e2df411e6d517a96",
+      "url": "https://github.com/xbmc/xbmc/blob/21.2-Omega/xbmc/interfaces/legacy/Window.cpp"
+    },
+    {
+      "path": "xbmc/interfaces/legacy/WindowDialogMixin.cpp",
+      "sha256": "46a79e7f92d3921b7006ea4bf2cb1b87908ad06fa2f4e115765efbfca6ba1de1",
+      "url": "https://github.com/xbmc/xbmc/blob/21.2-Omega/xbmc/interfaces/legacy/WindowDialogMixin.cpp"
+    },
+    {
+      "path": "xbmc/interfaces/legacy/WindowXML.cpp",
+      "sha256": "ff2596e7eb1e14fde3048859b09be1ef4914ed8e89dba26f6fc9078741e256df",
+      "url": "https://github.com/xbmc/xbmc/blob/21.2-Omega/xbmc/interfaces/legacy/WindowXML.cpp"
+    },
+    {
+      "path": "xbmc/interfaces/legacy/WindowXML.h",
+      "sha256": "6fdc664f6b625e60a6ede07bb12cb4c42394f0576ea4a38a727bd6e816179444",
+      "url": "https://github.com/xbmc/xbmc/blob/21.2-Omega/xbmc/interfaces/legacy/WindowXML.h"
+    }
+  ],
+  "window_close": "TMSG_GUI_PREVIOUS_WINDOW",
+  "xml_dialog_close": "TMSG_GUI_PYTHON_DIALOG / HACK_CUSTOM_ACTION_CLOSING",
+  "host_model": "tests/test_xcmate_guide_lifecycle_02934.py",
+  "android": "NOT_TESTED"
+}

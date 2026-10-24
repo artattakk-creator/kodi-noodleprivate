@@ -23,6 +23,10 @@ def mark(stage,router=None,source='',session='',focus=0,owner=False):
     for key,name in (('window','getCurrentWindowId'),('dialog','getCurrentWindowDialogId')):
         try:values.append(key+'='+str(int(getattr(xbmcgui,name)())))
         except (AttributeError,RuntimeError,TypeError,ValueError):pass
+    from window_lifecycle import lease,state
+    snapshot=state();values.extend(('lease='+lease(),'updating='+str(int(snapshot['updating']))))
+    reason=getattr(router,'_search_block_reason','') if router else ''
+    if reason in ('BUSY_REENTRANT','FOREIGN_MODAL','WINDOW_ACTIVE','SESSION_CHANGED','CONTAINER_CHANGED','ABORT'):values.append('reason='+reason)
     try:xbmc.log(' '.join(values),xbmc.LOGINFO)
     except (AttributeError,RuntimeError):pass
 
@@ -66,8 +70,8 @@ def queue(window,source):
     if source=='guide':
         view.update(channel_pos=window.getControl(210).getSelectedPosition(),
                     event_pos=window.getControl(220).getSelectedPosition(),focus=window.getFocusId())
-    try:native_window=int(xbmcgui.getCurrentWindowId())
-    except (AttributeError,RuntimeError,TypeError,ValueError):native_window=None
+    from window_lifecycle import capture
+    native_window=capture(window)
     window._search_request=dict(query=query,session=uuid.uuid4().hex,view=view,window=native_window)
     mark('INTENT',window.router,source,window._search_request['session'],window.getFocusId(),True)
     window._generation+=1
@@ -96,12 +100,14 @@ def released(router,source,session,window_id):
     mark('WAIT_RELEASE',router,source,session,owner=True)
     monitor=xbmc.Monitor();deadline=time.monotonic()+2
     while True:
-        if monitor.waitForAbort(.05):return False
-        try:active=window_id is not None and int(xbmcgui.getCurrentWindowId())==window_id
-        except (AttributeError,RuntimeError,TypeError,ValueError):active=False
+        if monitor.waitForAbort(.05):
+            router._search_block_reason='ABORT';return False
+        from window_lifecycle import active as frame_active,state
+        snapshot=state();active=frame_active(window_id,snapshot)
+        router._search_block_reason=('WINDOW_ACTIVE' if active else 'BUSY_REENTRANT' if snapshot['dialog']==10138 else 'FOREIGN_MODAL' if snapshot['modal'] else 'CONTAINER_CHANGED' if snapshot['updating'] else '')
         if not active and busy_dialog() and not getattr(router,'_search_async_owner',False):
             mark('BUSY_DEFERRED',router,source,session,owner=True);return False
-        if not active and not xbmc.getCondVisibility('System.HasActiveModalDialog'):
+        if not active and not snapshot['modal'] and not snapshot['updating']:
             mark('RELEASE_READY',router,source,session,owner=True);return True
         if time.monotonic()>=deadline:
             mark('RELEASE_TIMEOUT',router,source,session,owner=True);return False
@@ -126,6 +132,7 @@ def guide_flow(router,portal,open_window,window_class,xml,source,initial=None):
                 return SearchTransfer(router,portal,request,source)
             return None
         from media_window import open_search
+        mark('ASYNC_READY',router,source,session,owner=True)
         mark('SEARCH_OPEN',router,source,session,owner=True)
         try:search=open_search(router,portal,request['query'],session)
         except WindowStartError:
