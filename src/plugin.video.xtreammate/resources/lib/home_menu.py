@@ -155,19 +155,22 @@ def recording_folder(check_only=False):
     import xbmcgui, xbmcaddon, xbmcvfs
     from utils import setting
     old=setting('recordings_folder','special://profile/addon_data/plugin.video.xtreammate/recordings/')
-    selected=old if check_only else xbmcgui.Dialog().browseSingle(0,tr(32455),'files',defaultt=old)
+    from storage_sources import choose as choose_source
+    from storage_diagnostics import mark,kind
+    selected=old if check_only else choose_source('RECORD')
     if not selected: return
     from capture_target import probe,compatible_default,TargetFailure
     from capture_ui import work
     selected=xbmcvfs.translatePath(selected)
+    mark('RECORD','TARGET_PROBE',kind(selected),'NATIVE')
     try:
         result=work(lambda:probe(selected,create=True))
         if result is None:return
     except TargetFailure as exc:
         from transfer_diagnostics import describe
-        xbmcgui.Dialog().ok('XCMate',describe(exc))
-        alternative=work(compatible_default)
-        if check_only or not alternative or not xbmcgui.Dialog().yesno('XCMate',tr(34101)):return
-        selected=alternative
-    if not check_only:xbmcaddon.Addon().setSetting('recordings_folder',selected)
+        mark('RECORD','FAILED',kind(selected),'NATIVE',exc)
+        xbmcgui.Dialog().ok('XCMate',tr(34901)+'\n'+describe(exc)+'\n'+tr(34914));return
+    if not check_only:
+        xbmcaddon.Addon().setSetting('recordings_folder',selected)
+        mark('RECORD','PERSIST_OK',kind(selected),'NATIVE')
     xbmcgui.Dialog().ok('XCMate',tr(34102))

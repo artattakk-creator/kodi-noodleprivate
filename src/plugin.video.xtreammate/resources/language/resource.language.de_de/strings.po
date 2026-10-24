@@ -894,12 +894,12 @@ msgid "Player, subtitles and infobar timeout"
 msgstr "Player, Untertitel und Infoleisten-Ausblendzeit"
 
 msgctxt "#32438"
-msgid "Choose and check recording folder"
-msgstr "Aufnahmeverzeichnis auswählen und prüfen"
+msgid "Choose recording destination (direct TS only)"
+msgstr "Aufnahmeziel wählen (nur Live-TS)"
 
 msgctxt "#32439"
-msgid "Check saved recording folder"
-msgstr "Gespeicherten Aufnahmeordner prüfen"
+msgid "Check recording destination (direct TS only)"
+msgstr "Aufnahmeziel prüfen (nur Live-TS)"
 
 msgctxt "#32440"
 msgid "Existing recordings / player options"
@@ -3006,12 +3006,12 @@ msgid "Download redirect blocked. Review/approve its destination or manage exist
 msgstr "Download-Weiterleitung blockiert. Ziel im Downloadmanager ausdrücklich prüfen/freigeben oder vorhandene Freigabe verwalten. Der technische Code nennt den Grund."
 
 msgctxt "#34700"
-msgid "Choose download destination: internal / USB / SMB"
-msgstr "Downloadziel wählen: intern / USB / SMB"
+msgid "Choose download destination (movie / episode)"
+msgstr "Downloadziel wählen (Film / Folge)"
 
 msgctxt "#34701"
-msgid "Check download destination and capabilities"
-msgstr "Downloadziel und Fähigkeiten prüfen"
+msgid "Check download destination and backend"
+msgstr "Downloadziel und Backend prüfen"
 
 msgctxt "#34702"
 msgid "Destination type"
@@ -3080,3 +3080,63 @@ msgstr "SMB-Passwort – nur lokal gespeichert"
 msgctxt "#34719"
 msgid "Maximum download file size (GiB)"
 msgstr "Maximale Download-Dateigröße (GiB)"
+
+msgctxt "#34900"
+msgid "Download destination: choose source"
+msgstr "Downloadziel: Quelle auswählen"
+
+msgctxt "#34901"
+msgid "Recording destination: choose source (direct TS only)"
+msgstr "Aufnahmeziel: Quelle auswählen (nur Live-TS)"
+
+msgctxt "#34902"
+msgid "Kodi profile / internal storage"
+msgstr "Kodi-intern / interner Speicher"
+
+msgctxt "#34903"
+msgid "USB devices / external storage"
+msgstr "USB-Geräte / externer Speicher"
+
+msgctxt "#34904"
+msgid "Existing Kodi Samba connections"
+msgstr "Vorhandene Kodi-Samba-Verbindungen"
+
+msgctxt "#34905"
+msgid "No accessible external volume found. Grant Android USB access and check Kodi file sources. No internal fallback will be selected."
+msgstr "Kein zugreifbares externes Volume gefunden. USB in Android freigeben und Kodi-Dateiquellen prüfen. Auswahl wird nicht intern ersetzt."
+
+msgctxt "#34906"
+msgid "No suitable Kodi SMB file source returned. Check Kodi File Manager or open the SMB source browser."
+msgstr "Keine passende Kodi-SMB-Dateiquelle gemeldet. Kodi-Dateiverwaltung prüfen oder die SMB-Quellenübersicht öffnen."
+
+msgctxt "#34907"
+msgid "Kodi file source"
+msgstr "Kodi-Dateiquelle"
+
+msgctxt "#34908"
+msgid "Kodi profile"
+msgstr "Kodi-Profil"
+
+msgctxt "#34909"
+msgid "Internal shared storage"
+msgstr "Interner gemeinsamer Speicher"
+
+msgctxt "#34910"
+msgid "Local filesystem overview"
+msgstr "Lokale Dateisystemübersicht"
+
+msgctxt "#34911"
+msgid "Browse another external source"
+msgstr "Weitere externe Quelle auswählen"
+
+msgctxt "#34912"
+msgid "Open SMB source browser"
+msgstr "SMB-Quellenübersicht öffnen"
+
+msgctxt "#34913"
+msgid "Choose destination folder within this source"
+msgstr "Zielordner in dieser Quelle auswählen"
+
+msgctxt "#34914"
+msgid "This checks the recording destination, not movie downloads. Recording needs native safe TS finalization. Use the separate download destination item for USB/SMB media files."
+msgstr "Diese Prüfung betrifft das Aufnahmeziel, nicht Filmdownloads. Aufnahmen benötigen native sichere TS-Finalisierung. Für USB/SMB-Filme den getrennten Downloadziel-Menüpunkt verwenden."
