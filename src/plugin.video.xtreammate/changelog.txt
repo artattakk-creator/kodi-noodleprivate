@@ -1,3 +1,12 @@
+0.1.29.31 – kumulativer Android-Testkandidat
+- #140: Jetzt-EPG lokal inkrementell über alle zulässigen Sender durchsuchen; Teilzählung bis zum Abschluss, kein stiller Abbruch nach zwei Sekunden.
+- #140: Nach Keyboard-OK Suchnavigation behalten, Treffer erst bewusst auswählen. Native Re-Init-/Focus-Lag-/alte Klickpfade abfangen; Suchworker nicht durch Landing ersetzen.
+- #135/#63: Blockiertes Redirectziel verständlich und vor blindem Retry prüfen. Unabhängig bestätigte Portal-/Source-/Target-Verbindung explizit freigeben; geänderte Pending-Anfragen nicht übernehmen. Zweite Bestätigung startet nur diesen fehlgeschlagenen Job erneut.
+- Bestehender TLS-/Downgrade-/SSRF-/DNS-/Header-/Hop-/Hash-/NoReplace-Schutz und gezielter Widerruf bleiben aktiv.
+- #136: Expliziter kleiner Ziel-Kurztransfer mit Bytes/SHA256/Readback auf konfiguriertem internem/USB-/SMB-Ziel; kein Providerabruf oder stiller Zielwechsel. Anonyme Source-/Stage-/Target-Fehlerphasen.
+- Separate Drafts #152/#153; Originalicon, Lightweight-Splash, Benutzerdaten, Player/Guide/Autoplay und vorhandene .30-PASS erhalten.
+- Aufnahme #126, Poster #111 und weitere Roadmap-Features bleiben gesondert offen. Kein erneuter pauschaler Vierstundentest, kein main-Merge/Release/OTA.
+
 0.1.29.30 – kumulativer Android-Testkandidat, kein Release
 - #141: Versionsgeprüfter Portal-Snapshot, entkoppelte API-Kopien, OOM-Backoff, weniger optionale Scan-/Vorbereitungsarbeit, anonyme Call-/Read-Zähler und begrenzte ARM32-Langzeitmessung (4/8 Stunden).
 - #141: Stop-Signale vor Worker-Joins, abbrechbare Hintergrund-IO und Download-/SMB-Sockets; unterbrochene Service-Downloads pausieren. Bestehende Autoplay-/Vordergrund-Timeouts erhalten.

@@ -45,7 +45,8 @@ def run_one(cancel=lambda:False,resolver=None,opener=None):
     job=store.claim()
     if not job:return False
     ident,owner=job['id'],job['owner'];media=job['media'];part=job['part'];output=None;response=None
-    digest=hashlib.sha256();count=0;total=0;last=time.monotonic();last_bytes=0
+    digest=hashlib.sha256();count=0;total=0;last=time.monotonic();last_bytes=0;phase='TARGET_PROBE'
+    from transfer_diagnostics import download_phase
     try:
         import download_targets as targets
         targets.check_identity(media['target'],media)
@@ -54,7 +55,7 @@ def run_one(cancel=lambda:False,resolver=None,opener=None):
         # Repair only a completely verified own publish interrupted after rename.
         if job['file'] and files.exists(job['file']):
             if (not caps['staging'] or targets.recoverable(ident,job['file'])) and job['total']>0 and files.size(job['file'])==job['total'] and _hash(job['file'],job['total'])==job['digest']:
-                store.finish(ident,owner,'COMPLETE');return True
+                store.finish(ident,owner,'COMPLETE');download_phase('COMPLETE',count=job['total']);return True
             if not (caps['staging'] and targets.owned(ident,job['file'])):raise DownloadFailure('TARGET_EXISTS')
         if job['file'] and job['total']>0 and job['bytes']==job['total'] and files.owned_part(part,ident) and files.exists(part) and _hash(part,job['total'])==job['digest']:
             connection=store.db()
@@ -62,8 +63,10 @@ def run_one(cancel=lambda:False,resolver=None,opener=None):
                 with connection:changed=connection.execute("UPDATE jobs SET state=? WHERE id=? AND owner=? AND state='RUNNING'",('TRANSFERRING' if caps['staging'] else 'PUBLISHING',ident,owner)).rowcount
             finally:connection.close()
             if not changed:raise InterruptedError()
+            phase='TARGET_COPY'
             final=_publish(job,part,job['file'],job['total'],job['digest'],caps,cancel)
-            store.checkpoint(ident,owner,file=final);store.finish(ident,owner,'COMPLETE');return True
+            store.checkpoint(ident,owner,file=final);store.finish(ident,owner,'COMPLETE');download_phase('COMPLETE',count=job['total']);return True
+        phase='SOURCE'
         url,headers=(resolver or resolve)(media);fingerprint=hashlib.sha256(url.encode()).hexdigest()
         offset=job['bytes'] if job['code'] not in ('SOURCE_CHANGED','PART_CHANGED','BAD_RANGE') and job['fingerprint'].split(':')[0]==fingerprint and (job['etag'] and not job['etag'].startswith('W/') or job['modified']) else 0
         if offset and job['total'] and offset>=job['total']:offset=0
@@ -89,9 +92,11 @@ def run_one(cancel=lambda:False,resolver=None,opener=None):
             if (job['total'] and total!=job['total']) or (job['etag'] and etag!=job['etag']) or (not job['etag'] and job['modified'] and modified!=job['modified']):raise DownloadFailure('SOURCE_CHANGED')
         elif status==200:offset=0;total=int(length)
         else:raise DownloadFailure('HTTP_ERROR')
+        phase='STAGE'
         if total>files.file_limit(media['target']):raise DownloadFailure('FILE_LIMIT')
         files.mkdir(media['target']);files.capacity(workspace,total)
         files.capacity(media['target'],total)
+        phase='STAGE'
         newpart=files.join(workspace,'.xcmate-'+ident+'-'+uuid.uuid4().hex+'.part')
         output=files.writer(newpart)
         if offset:
@@ -111,6 +116,7 @@ def run_one(cancel=lambda:False,resolver=None,opener=None):
             extension=container(first);final=destination(media,ident,extension)
         while count<total:
             if cancel() or state!='RUNNING':raise InterruptedError()
+            phase='SOURCE'
             data=response.read(min(CHUNK,total-count))
             if not data:raise DownloadFailure('TRUNCATED')
             if not extension:
@@ -118,6 +124,7 @@ def run_one(cancel=lambda:False,resolver=None,opener=None):
                 # Collect a sufficient format probe before writing any payload.
                 if len(first)<min(1024,total):continue
                 extension=container(first);final=destination(media,ident,extension);data=first;first=b''
+            phase='STAGE'
             files.capacity(workspace,len(data));output.write(data);digest.update(data);count+=len(data)
             now=time.monotonic()
             if now-last>=.5:
@@ -125,7 +132,9 @@ def run_one(cancel=lambda:False,resolver=None,opener=None):
                 state=store.checkpoint(ident,owner,bytes=count,digest=digest.hexdigest(),speed=(count-last_bytes)/max(.001,now-last))
                 last=now;last_bytes=count
                 # Bound cancellation latency even for a very fast local server.
+        phase='SOURCE'
         if response.read(1):raise DownloadFailure('LENGTH_MISMATCH')
+        phase='STAGE'
         files.flush(output);output.close();output=None
         if not final:raise DownloadFailure('INVALID_MEDIA')
         if files.size(part)!=total:raise DownloadFailure('TARGET_WRITE')
@@ -139,8 +148,9 @@ def run_one(cancel=lambda:False,resolver=None,opener=None):
                 changed=connection.execute("UPDATE jobs SET state=? WHERE id=? AND owner=? AND state='RUNNING'",('TRANSFERRING' if caps['staging'] else 'PUBLISHING',ident,owner)).rowcount
         finally:connection.close()
         if not changed:raise InterruptedError()
+        phase='TARGET_COPY'
         final=_publish(job,part,final,total,digest.hexdigest(),caps,cancel)
-        store.checkpoint(ident,owner,file=final);store.finish(ident,owner,'COMPLETE')
+        store.checkpoint(ident,owner,file=final);store.finish(ident,owner,'COMPLETE');download_phase('COMPLETE',count=total)
     except InterruptedError:
         if output is not None:
             try:files.flush(output);store.checkpoint(ident,owner,bytes=count,digest=digest.hexdigest(),speed=0)
@@ -163,6 +173,8 @@ def run_one(cancel=lambda:False,resolver=None,opener=None):
         transient=code in ('TIMEOUT','DNS_ERROR','CONNECTION_ERROR','NETWORK_ERROR','HTTP_SERVER','TRUNCATED')
         from transfer_diagnostics import encode,mark
         reason=encode(error,code);mark('DOWNLOAD','FAILED',reason)
+        failure_phase='SOURCE_REDIRECT_DENIED' if code.startswith('REDIRECT_') else {'TARGET_PROBE':'TARGET_PROBE_FAILED','SOURCE':'SOURCE_FAILED','STAGE':'STAGE_FAILED','TARGET_COPY':'TARGET_COPY_FAILED'}[phase]
+        download_phase(failure_phase,reason,count)
         store.fail(ident,owner,reason,transient)
     finally:
         if response is not None:response.close()

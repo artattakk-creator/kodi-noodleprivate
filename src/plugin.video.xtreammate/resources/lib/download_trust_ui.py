@@ -5,23 +5,37 @@ from localization import tr
 
 def approve(row):
     from capture_ui import work
-    from download_trust import pending,grant
+    from download_trust import pending,grant_pending
     from download_redirect import addresses
     from download_sources import DownloadFailure
     value=work(lambda:pending(row['id'],row['media']['pid']))
-    if not value:return
-    text=tr(34601)+'\n'+value['source']+' → '+value['target']
-    if not xbmcgui.Dialog().yesno('XCMate',text):return
+    if not value:return False
+    text=tr(35001)+'\n'+value['source']+' → '+value['target']
+    # Default/cancel keeps the host blocked. Origin presence is not verification.
+    choice=xbmcgui.Dialog().select(text,[tr(35002),tr(35003)])
+    if choice!=1:return False
+    if not xbmcgui.Dialog().yesno('XCMate',tr(34601)+'\n'+value['source']+' → '+value['target']):return False
     lan=False
     try:work(lambda:addresses(value['target']))
     except DownloadFailure as exc:
         if exc.code!='REDIRECT_PRIVATE_ADDRESS':raise
-        if not xbmcgui.Dialog().yesno('XCMate',tr(34602)):return
-        # Explicit LAN still excludes loopback, link-local, metadata/multicast,
-        # mapped unsafe addresses and unsupported schemes. Never bypass checks.
+        if not xbmcgui.Dialog().yesno('XCMate',tr(34602)):return False
         work(lambda:addresses(value['target'],lan=True));lan=True
-    work(lambda:grant(value,lan))
-    xbmcgui.Dialog().ok('XCMate',tr(34603))
+    if not work(lambda:grant_pending(value,lan)):
+        xbmcgui.Dialog().ok('XCMate',tr(35006));return False
+    # Granting does not start network IO. Retry is a second explicit job action.
+    if xbmcgui.Dialog().yesno('XCMate',tr(35004)):
+        from download_store import get,command
+        def retry():
+            current=get(row['id'])
+            if not current or current['media']['pid']!=row['media']['pid'] or current['state']!='FAILED':return False
+            if not current['code'].startswith(('REDIRECT_UNTRUSTED_TARGET','REDIRECT_PRIVATE_ADDRESS')):return False
+            return command(row['id'],'retry',required_state='FAILED',required_code=current['code'])
+        changed=work(retry)
+        xbmcgui.Dialog().notification('XCMate',tr(34216 if changed else 35005))
+    else:xbmcgui.Dialog().ok('XCMate',tr(34603))
+    return True
+
 
 
 def manage(pid):

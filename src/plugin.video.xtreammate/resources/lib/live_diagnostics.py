@@ -26,7 +26,7 @@ FIELDS = frozenset(('video', 'marker', 'catalog', 'channels', 'programmes',
                     'control_id', 'focus_before', 'learned_left_action',
                     'left_received', 'left_channels', 'left_groups', 'error_line',
                     'xml_now', 'short_now', 'manual_count', 'manual_missing',
-                    'alias_count', 'name_hits', 'programme_hits', 'source_count'))
+                    'alias_count', 'name_hits', 'programme_hits', 'source_count', 'scanned'))
 TEXT_FIELDS = {
     'error_file': frozenset(('epg.py','epg_io.py','xmltv_stream.py','stream_epg.py','network_io.py','utils.py','epg_sources.py','library_index.py')),
     'mode_before': frozenset(('hidden','info','controls','extras','channels','groups','guide')),

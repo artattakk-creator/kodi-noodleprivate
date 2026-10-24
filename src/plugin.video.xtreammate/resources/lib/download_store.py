@@ -121,12 +121,14 @@ def fail(ident,owner,code,transient=False):
     finally:conn.close()
 
 
-def command(ident,action,now=None):
+def command(ident,action,now=None,required_state=None,required_code=None):
     now=time.time() if now is None else now;conn=db()
     try:
         conn.execute('BEGIN IMMEDIATE');row=conn.execute('SELECT * FROM jobs WHERE id=?',(ident,)).fetchone()
         if row is None:conn.rollback();return False
         state=row['state']
+        if (required_state is not None and state!=required_state or required_code is not None and row['code']!=required_code):
+            conn.rollback();return False
         if action=='pause' and state in ('QUEUED','RUNNING','TRANSFERRING'):conn.execute("UPDATE jobs SET state='PAUSED',speed=0 WHERE id=?",(ident,))
         elif action=='cancel' and state in ('QUEUED','RUNNING','TRANSFERRING','PAUSED','FAILED'):conn.execute("UPDATE jobs SET state='CANCELLED',speed=0 WHERE id=?",(ident,))
         elif action in ('resume','retry') and state in ('PAUSED','FAILED','CANCELLED'):

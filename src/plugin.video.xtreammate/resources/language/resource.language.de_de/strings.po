@@ -3168,3 +3168,43 @@ msgstr "Zielordner in dieser Quelle auswählen"
 msgctxt "#34914"
 msgid "This checks the recording destination, not movie downloads. Recording needs native safe TS finalization. Use the separate download destination item for USB/SMB media files."
 msgstr "Diese Prüfung betrifft das Aufnahmeziel, nicht Filmdownloads. Aufnahmen benötigen native sichere TS-Finalisierung. Für USB/SMB-Filme den getrennten Downloadziel-Menüpunkt verwenden."
+
+msgctxt "#35000"
+msgid "Redirect approval required – select this download to review"
+msgstr "Weiterleitungsfreigabe erforderlich – diesen Download zur Prüfung auswählen"
+
+msgctxt "#35001"
+msgid "This destination is blocked. Verify it independently using your provider documentation before approval. Displayed addresses are origins only."
+msgstr "Dieses Ziel ist gesperrt. Vor Freigabe anhand eigener Anbieterinformationen unabhängig prüfen. Angezeigt werden nur Server-Ursprünge."
+
+msgctxt "#35002"
+msgid "Keep blocked / not verified"
+msgstr "Gesperrt lassen / nicht bestätigt"
+
+msgctxt "#35003"
+msgid "Provider-confirmed destination: continue review"
+msgstr "Vom Anbieter bestätigtes Ziel: Freigabe prüfen"
+
+msgctxt "#35004"
+msgid "This exact portal connection is approved. Retry only this failed download now? Other jobs are unchanged."
+msgstr "Diese konkrete Portal-Verbindung ist freigegeben. Nur diesen fehlgeschlagenen Download jetzt erneut starten? Andere Aufträge bleiben unverändert."
+
+msgctxt "#35005"
+msgid "Approval saved; job not restarted (state changed or retry cooldown). Retry later in Downloads."
+msgstr "Freigabe gespeichert; Auftrag nicht gestartet (Status geändert oder Wiederholpause). Später unter Downloads erneut versuchen."
+
+msgctxt "#35006"
+msgid "Redirect request changed or expired. Nothing approved. Reopen the current download and review again."
+msgstr "Weiterleitungsanfrage geändert oder abgelaufen. Nichts freigegeben. Aktuellen Download öffnen und erneut prüfen."
+
+msgctxt "#35007"
+msgid "Test selected download destination (small file + SHA256)"
+msgstr "Gewähltes Downloadziel testen (kleine Datei + SHA256)"
+
+msgctxt "#35008"
+msgid "Write, read and remove one new XCMate test file at the configured download destination? Existing files remain unchanged. No provider download."
+msgstr "Eine neue XCMate-Testdatei am gespeicherten Downloadziel schreiben, lesen und entfernen? Bestehende Dateien bleiben unverändert. Kein Anbieterdownload."
+
+msgctxt "#35009"
+msgid "Destination test passed: bytes and SHA256 match. This does not prove a complete movie/episode download."
+msgstr "Zieltest bestanden: Bytes und SHA256 stimmen überein. Dies bestätigt noch keinen vollständigen Film-/Folgendownload."
