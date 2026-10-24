@@ -74,10 +74,11 @@ jobs:
           target = output / filename
           shutil.copyfile(Path('plugin.video.xtreammate') / filename, target)
           digest = hashlib.sha256(target.read_bytes()).hexdigest()
-          # Cumulative .30 has a supplied, reviewed ZIP. Ensure CI regenerates
+          # Cumulative test branches can supply a reviewed ZIP. Ensure CI regenerates
           # those exact bytes, including the ZIP committed on this PR head.
-          supplied = Path('docs/XCMate/TESTERGEBNISSE_02930.json')
-          if addon.attrib['version'] == '0.1.29.30' and supplied.is_file():
+          suffix = '0' + ''.join(addon.attrib['version'].split('.')[2:])
+          supplied = Path('docs/XCMate/TESTERGEBNISSE_' + suffix + '.json')
+          if os.environ.get('GITHUB_HEAD_REF', '').startswith('test/') and supplied.is_file():
               import subprocess
               declared = json.loads(supplied.read_text())
               assert declared['sha256'] == digest, 'Review ZIP differs from source build'
