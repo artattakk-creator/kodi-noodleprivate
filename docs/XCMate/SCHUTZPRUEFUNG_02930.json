@@ -1,0 +1,27 @@
+{
+  "base": "b7ff4415ee5034973c5959857211893b2314f838",
+  "protected_source_files": {
+    "window_navigation.py": "c3f573a0aba4ac7ac1039fa2b19a731205c65bafd8ee96e63fb224c829918d33",
+    "owner_dispatch.py": "8ac44355096bcdd8173fbaae21ca5f09311ac2e884e05aa6e4593aeb89071b7c",
+    "search_live.py": "af66abb2dd49d2fb8e4c103611446b65183111dec3538912a982bace723f6c74",
+    "player.py": "7a68038053464a7107f93fa89ac0761f8f1c91dc9c4617e6ab05c7a78005b301",
+    "media_autoplay.py": "e81baac249e4272c1d782143471ca3381a4b5258884ae0fba10af00cd75fc588",
+    "media_progress.py": "e03d047d4cbb0a0b0e806244c26a40460b4beee7943630460ad99d74f3d21c75",
+    "media_sequence.py": "07dff55b3ea3abe6805e679ccc3e91158f7bf9a677e0de4a3c84201c97e0f259",
+    "guide_grid_window.py": "84018a6b552effdec1cc4502741fb7838e18c1b4ea48d3b402d105fd1067499d",
+    "guide_window.py": "adbb324fda36f4ee81f9725da982ce1c0787a6e3e646a0dc3021a1212a1eaf14",
+    "guide_store.py": "364f23a62fce72b21991d010110869abc59e874efeccc754070712b985282b0c",
+    "atomic_media.py": "c56b0020492c71fe77fdc0c1e7612733945c451de7bb0b2fe84415936060a50b"
+  },
+  "original_theme_images_unchanged": 98,
+  "original_icon_sha256": "81da1003a2753ec6afbdd50b2a320e738a2131ad9f0d76606da1babdd0d2f135",
+  "production_indexes_unchanged": true,
+  "previous_zip_unchanged": true,
+  "protected_local_wip_files": [
+    35,
+    27
+  ],
+  "profile_reset": false,
+  "keymap_change": false,
+  "production_publish": false
+}

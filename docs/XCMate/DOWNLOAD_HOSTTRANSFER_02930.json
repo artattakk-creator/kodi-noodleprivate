@@ -1,0 +1,90 @@
+{
+  "environment": "Host real two-server HTTP redirect + authenticated signed SMB2 fixture",
+  "public_ssrf_policy": "Unit tests; loopback address validation overridden only in this controlled fixture",
+  "credentials_forwarded": false,
+  "transfers": [
+    {
+      "destination": "INTERNAL",
+      "backend": "NATIVE",
+      "kind": "vod",
+      "status": "COMPLETE",
+      "bytes": 404305,
+      "sha256": "4f084a93b8596a560d7531dd883cc00909aea93dc32b597f823985e087ab520b",
+      "strict_ffmpeg_decode": "PASS",
+      "android_playback": "NOT_TESTED"
+    },
+    {
+      "destination": "INTERNAL",
+      "backend": "NATIVE",
+      "kind": "episode",
+      "status": "COMPLETE",
+      "bytes": 404305,
+      "sha256": "4f084a93b8596a560d7531dd883cc00909aea93dc32b597f823985e087ab520b",
+      "strict_ffmpeg_decode": "PASS",
+      "android_playback": "NOT_TESTED"
+    },
+    {
+      "destination": "USB_NATIVE_SIMULATED",
+      "backend": "NATIVE",
+      "kind": "vod",
+      "status": "COMPLETE",
+      "bytes": 404305,
+      "sha256": "4f084a93b8596a560d7531dd883cc00909aea93dc32b597f823985e087ab520b",
+      "strict_ffmpeg_decode": "PASS",
+      "android_playback": "NOT_TESTED"
+    },
+    {
+      "destination": "USB_NATIVE_SIMULATED",
+      "backend": "NATIVE",
+      "kind": "episode",
+      "status": "COMPLETE",
+      "bytes": 404305,
+      "sha256": "4f084a93b8596a560d7531dd883cc00909aea93dc32b597f823985e087ab520b",
+      "strict_ffmpeg_decode": "PASS",
+      "android_playback": "NOT_TESTED"
+    },
+    {
+      "destination": "USB_STAGED_SIMULATED",
+      "backend": "LOCAL_STAGE_VERIFY",
+      "kind": "vod",
+      "status": "COMPLETE",
+      "bytes": 404305,
+      "sha256": "4f084a93b8596a560d7531dd883cc00909aea93dc32b597f823985e087ab520b",
+      "strict_ffmpeg_decode": "PASS",
+      "android_playback": "NOT_TESTED"
+    },
+    {
+      "destination": "USB_STAGED_SIMULATED",
+      "backend": "LOCAL_STAGE_VERIFY",
+      "kind": "episode",
+      "status": "COMPLETE",
+      "bytes": 404305,
+      "sha256": "4f084a93b8596a560d7531dd883cc00909aea93dc32b597f823985e087ab520b",
+      "strict_ffmpeg_decode": "PASS",
+      "android_playback": "NOT_TESTED"
+    },
+    {
+      "destination": "SMB2_LOOPBACK",
+      "backend": "SMB2_STAGE_VERIFY",
+      "kind": "vod",
+      "status": "COMPLETE",
+      "bytes": 404305,
+      "sha256": "4f084a93b8596a560d7531dd883cc00909aea93dc32b597f823985e087ab520b",
+      "strict_ffmpeg_decode": "PASS",
+      "android_playback": "NOT_TESTED"
+    },
+    {
+      "destination": "SMB2_LOOPBACK",
+      "backend": "SMB2_STAGE_VERIFY",
+      "kind": "episode",
+      "status": "COMPLETE",
+      "bytes": 404305,
+      "sha256": "4f084a93b8596a560d7531dd883cc00909aea93dc32b597f823985e087ab520b",
+      "strict_ffmpeg_decode": "PASS",
+      "android_playback": "NOT_TESTED"
+    }
+  ],
+  "actual_android_usb_mount": "NOT_TESTED",
+  "kodi_vfs_playback": "NOT_TESTED",
+  "production_publish": false
+}

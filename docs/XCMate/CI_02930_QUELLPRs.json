@@ -1,0 +1,75 @@
+{
+  "source_drafts": [
+    {
+      "pr": 144,
+      "run": 40080332199,
+      "job": 120832360816,
+      "tests": 1009,
+      "seconds": 187.69,
+      "ok": true,
+      "thread_exceptions": false,
+      "publish_step_skipped": "no publish command",
+      "head": "0ecc9c83c66c375e41b0213943efaa4e8d38f035",
+      "ci_only": true,
+      "android": "NOT_TESTED",
+      "workflow_url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/40080332199"
+    },
+    {
+      "pr": 145,
+      "run": 40080881232,
+      "job": 120834005217,
+      "tests": 1008,
+      "seconds": 153.928,
+      "ok": true,
+      "thread_exceptions": false,
+      "publish_step_skipped": "no publish command",
+      "head": "f2cab620d0e538d500bd5a1868d225c41a464ef5",
+      "ci_only": true,
+      "android": "NOT_TESTED",
+      "workflow_url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/40080881232"
+    },
+    {
+      "pr": 146,
+      "run": 40080760988,
+      "job": 120833639542,
+      "tests": 1005,
+      "seconds": 186.799,
+      "ok": true,
+      "thread_exceptions": false,
+      "publish_step_skipped": "no publish command",
+      "head": "8e560c2df8fc5ac50c4a4177350cd8055fa2d14e",
+      "ci_only": true,
+      "android": "NOT_TESTED",
+      "workflow_url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/40080760988"
+    },
+    {
+      "pr": 147,
+      "run": 40080768386,
+      "job": 120833663625,
+      "tests": 1004,
+      "seconds": 179.663,
+      "ok": true,
+      "thread_exceptions": false,
+      "publish_step_skipped": "no publish command",
+      "head": "1c6e754e1d563e92999275bde87924a30af9537a",
+      "ci_only": true,
+      "android": "NOT_TESTED",
+      "workflow_url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/40080768386"
+    },
+    {
+      "pr": 148,
+      "run": 40081044333,
+      "job": 120834494299,
+      "tests": 1003,
+      "seconds": 186.881,
+      "ok": true,
+      "thread_exceptions": false,
+      "head": "3ce8151e43139344802302de325f8de06841ce13",
+      "ci_only": true,
+      "android": "NOT_TESTED",
+      "workflow_url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/40081044333"
+    }
+  ],
+  "cumulative_source_commit": "942fef59cae8d2e3721343396706c8cf812c39c1",
+  "production_publish": false
+}
