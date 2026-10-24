@@ -11,7 +11,7 @@ def kind(value):
 
 def mark(action,stage,target='',backend='',error=None,count=None):
     if action not in ('DOWNLOAD','RECORD'):return
-    if stage not in ('PICKER_ACTION','PICKER_ROOT_LISTED','SOURCE_CATEGORY','TARGET_SELECTED','TARGET_PROBE','TARGET_BOUND','PERSIST_OK','STAGING_READY','FAILED'):return
+    if stage not in ('PICKER_ACTION','PICKER_ROOT_LISTED','SOURCE_CATEGORY','TARGET_SELECTED','TARGET_PROBE','TARGET_BOUND','PERSIST_OK','STAGING_READY','TARGET_TEST_BEGIN','TARGET_TEST_DONE','FAILED'):return
     if target not in ('LOCAL','USB','SMB','UNKNOWN'):target='UNKNOWN'
     if backend not in ('','NATIVE','USB_STAGE','SMB2','INTERNAL_STAGE','INTERNAL_STAGE_EXCLUSIVE'):backend='OTHER'
     def token(value):return value if isinstance(value,str) and re.fullmatch('[A-Z][A-Z0-9_]{0,63}',value) else ''

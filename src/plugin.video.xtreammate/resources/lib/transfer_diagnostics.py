@@ -57,3 +57,11 @@ def mark(component,stage,value=''):
         status=status if status in ('pending','starting','recording','complete','partial','failed') else ''
         xbmc.log('[XCMate][{}] stage={} reason={} status={} bytes={}'.format(component,stage,encode(value),status,count if isinstance(count,int) and count>=0 else 0),xbmc.LOGINFO)
     except (ImportError,AttributeError,RuntimeError):pass
+
+
+def download_phase(phase,code='',count=0):
+    if phase not in ('SOURCE_REDIRECT_DENIED','SOURCE_FAILED','TARGET_PROBE_FAILED','STAGE_FAILED','TARGET_COPY_FAILED','COMPLETE'):return
+    try:
+        import xbmc
+        xbmc.log('[XCMate][DOWNLOAD_PHASE] phase={} code={} bytes={}'.format(phase,encode(code),count if isinstance(count,int) and count>=0 else 0),xbmc.LOGINFO)
+    except (ImportError,AttributeError,RuntimeError):pass
