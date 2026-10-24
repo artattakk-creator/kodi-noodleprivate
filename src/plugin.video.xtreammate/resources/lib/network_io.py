@@ -2,6 +2,17 @@
 import io
 import time
 import zlib
+import sys
+
+
+def service_cancelled():
+    runtime=sys.modules.get('service_runtime')
+    return bool(runtime and runtime.cancelled())
+
+
+def service_timeout(value):
+    runtime=sys.modules.get('service_runtime')
+    return runtime.timeout(value) if runtime else value
 
 MAX_HTTP_BYTES = 80 * 1024 * 1024
 
@@ -26,6 +37,7 @@ def read_http_chunks(chunks, headers, max_bytes, deadline):
     received = decoded = 0
     with io.BytesIO() as output:
         for chunk in chunks:
+            if service_cancelled():raise InterruptedError('SERVICE_STOP')
             if time.monotonic() > deadline:
                 raise TimeoutError('HTTP response time budget exceeded')
             received += len(chunk)
@@ -56,7 +68,7 @@ def decoded_chunks(chunks, headers, deadline, cancel=lambda: False, idle_seconds
     decoder = zlib.decompressobj(31 if encoding == 'gzip' else 15) if encoding in ('gzip','deflate') else None
     last_progress=time.monotonic()
     def check():
-        if cancel(): raise InterruptedError('HTTP request cancelled')
+        if cancel() or service_cancelled():raise InterruptedError('HTTP request cancelled')
         now=time.monotonic()
         if deadline is not None and now>deadline: raise TimeoutError('HTTP streaming deadline')
         if now-last_progress>idle_seconds: raise TimeoutError('HTTP streaming idle timeout')

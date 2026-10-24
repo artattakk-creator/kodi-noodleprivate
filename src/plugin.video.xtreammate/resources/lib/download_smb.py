@@ -3,7 +3,7 @@
 Kodi VFS is used for destination browsing/playback, never as an atomic writer.
 No SMB1, guest/unsigned fallback, remote shell, terminal logging or live recorder.
 """
-import hashlib,hmac,io,os,re,socket,sqlite3
+import hashlib,hmac,io,os,re,socket,sqlite3,sys
 from contextlib import contextmanager
 from urllib.parse import quote,unquote,urlsplit,urlunsplit
 from xcmate_smb_vendor.smb.SMBConnection import SMBConnection
@@ -56,6 +56,10 @@ def configure(uri):
 
 
 class SignedConnection(SMBConnection):
+    def write(self,data):
+        runtime=sys.modules.get('service_runtime')
+        if runtime and self.sock:runtime.track_socket(self.sock)
+        return super().write(data)
     def _updateState_SMB1(self,message):raise Failure('SMB2_REQUIRED','SMB_NEGOTIATE')
     def _updateState_SMB2(self,message):
         if message.command==0 and message.status==0:

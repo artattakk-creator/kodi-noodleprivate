@@ -3080,3 +3080,31 @@ msgstr "SMB password – stored on this device only"
 msgctxt "#34719"
 msgid "Maximum download file size (GiB)"
 msgstr "Maximum download file size (GiB)"
+
+msgctxt "#34800"
+msgid "Stability / long run (4–8 hours)"
+msgstr "Stability / long run (4–8 hours)"
+
+msgctxt "#34801"
+msgid "Start four-hour capture"
+msgstr "Start four-hour capture"
+
+msgctxt "#34802"
+msgid "Start eight-hour capture"
+msgstr "Start eight-hour capture"
+
+msgctxt "#34803"
+msgid "Mark test phase"
+msgstr "Mark test phase"
+
+msgctxt "#34804"
+msgid "Show anonymous measurements"
+msgstr "Show anonymous measurements"
+
+msgctxt "#34805"
+msgid "End capture"
+msgstr "End capture"
+
+msgctxt "#34806"
+msgid "Capture enabled. Keep Kodi running and follow the phase checklist. Only numeric memory, thread, queue and portal-load counters; no private contents. Device PASS requires actual acceptance."
+msgstr "Capture enabled. Keep Kodi running and follow the phase checklist. Only numeric memory, thread, queue and portal-load counters; no private contents. Device PASS requires actual acceptance."

@@ -75,7 +75,8 @@ class Redirect29Tests(Fixture,unittest.TestCase):
              mock.patch.object(self.policy.http.client,'HTTPConnection',return_value=connection):
             response=self.policy._connect(self.source+'/file',['93.184.216.34'],{})
         connect.assert_called_once_with(('93.184.216.34',443),timeout=10)
-        context.wrap_socket.assert_called_once_with(raw,server_hostname='provider.invalid')
+        context.wrap_socket.assert_called_once_with(raw,server_hostname='provider.invalid',do_handshake_on_connect=False)
+        context.wrap_socket.return_value.do_handshake.assert_called_once_with()
         self.assertEqual(response.source_fingerprint,hashlib.sha256((self.source+'/file').encode()).hexdigest())
 
     def test_rebinding_second_hop_to_private_ip_is_rejected_even_for_approved_host(self):
