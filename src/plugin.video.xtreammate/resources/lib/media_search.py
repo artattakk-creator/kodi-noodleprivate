@@ -88,7 +88,7 @@ class SearchMixin:
         self.getControl(710).selectItem(getattr(self,'_search_selected',0))
         self.getControl(102).setLabel(tr(33906) if section['code']=='INDEX_ERROR' else tr(33904) if section['total'] is None else
             tr(33907) if not rows else '{}–{} / {}'.format(self._search_offset+1,self._search_offset+len(rows),section['total']))
-        self.getControl(501).setLabel(tr(33908) if section['code'] in ('NO_EPG','EPG_UNAVAILABLE') else '')
+        self.getControl(501).setLabel(tr(33908) if section['code'] in ('NO_EPG','NO_CURRENT_EPG','EPG_UNAVAILABLE','EPG_PARTIAL') else '')
         self.getControl(720).setVisible(self._search_offset>0)
         self.getControl(721).setVisible(bool(section['total'] and self._search_offset+len(rows)<section['total']))
         self.setFocusId(710 if rows else 700+KINDS.index(self._search_kind))

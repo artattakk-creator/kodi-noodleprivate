@@ -14,7 +14,7 @@ from collections import deque
 
 STAGES = ('session', 'ownership', 'service', 'dialog', 'focus', 'input',
           'epg', 'epg_source', 'epg_list', 'performance',
-          'catalog_performance', 'epg_performance')
+          'catalog_performance', 'epg_performance', 'epg_search')
 FIELDS = frozenset(('video', 'marker', 'catalog', 'channels', 'programmes',
                     'matched', 'visible', 'now_count', 'next_count', 'loaded',
                     'failed', 'bytes', 'focus_id', 'dialog_id', 'focused',
@@ -24,7 +24,9 @@ FIELDS = frozenset(('video', 'marker', 'catalog', 'channels', 'programmes',
                     'index_ms', 'snapshot_ms', 'render_ms', 'focus_ms', 'items',
                     'cache_ms', 'cache_hit', 'last_channels', 'last_programmes',
                     'control_id', 'focus_before', 'learned_left_action',
-                    'left_received', 'left_channels', 'left_groups', 'error_line'))
+                    'left_received', 'left_channels', 'left_groups', 'error_line',
+                    'xml_now', 'short_now', 'manual_count', 'manual_missing',
+                    'alias_count', 'name_hits', 'programme_hits', 'source_count'))
 TEXT_FIELDS = {
     'error_file': frozenset(('epg.py','epg_io.py','xmltv_stream.py','stream_epg.py','network_io.py','utils.py','epg_sources.py','library_index.py')),
     'mode_before': frozenset(('hidden','info','controls','extras','channels','groups','guide')),
