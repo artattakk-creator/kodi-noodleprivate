@@ -34,6 +34,15 @@ class DownloadFlow31Tests(TargetsFixture,unittest.TestCase):
         self.assertTrue(self.trust.allowed('p',self.source,self.cdn));self.assertFalse(self.trust.allowed('foreign',self.source,self.cdn))
         self.assertFalse(self.trust.allowed('p','https://other.invalid',self.cdn))
 
+    def test_cancel_between_retry_review_and_queue_commit_wins(self):
+        row=self.denied();self.dialog.select.return_value=1;self.dialog.yesno.side_effect=[True,True]
+        original=self.store.get
+        def cancelled(ident):
+            value=original(ident);self.assertTrue(self.store.command(ident,'cancel'));return value
+        with mock.patch('download_redirect.addresses',return_value=['93.184.216.34']),mock.patch.object(self.store,'get',side_effect=cancelled):
+            self.assertTrue(self.ui.approve(row))
+        self.assertEqual(self.store.get(row['id'])['state'],'CANCELLED')
+
     def test_changed_pending_target_during_confirmation_is_never_granted(self):
         row=self.denied();self.dialog.select.return_value=1
         def change(*args,**kwargs):self.trust.remember(row['id'],'p',self.source,'https://new.invalid');return True
