@@ -8,7 +8,7 @@
 ## 1. Zeitliche Trennung der zwei Dateien
 
 - `kodi.old(8).log`: **30.692 Zeilen**, 24.10.2026 von **08:43:46–12:42:07**. **Keine Installation von .31/.32**, deshalb keine geeignete Basis für die neue .32-Race-Ursache; nur historischer Vergleich.
-- `kodi(20261024-181608).log`: **6.999 Zeilen**, 24.10.2026 von **12:42:43–20:13:58**. Installation `.30` um **12:45:14**, `.31` um **16:10:46** und **`.32` um 18:26:13, Zeile 5.446** (Installationsereignis im vollen Log). **Nur der Abschnitt ab 18:26 ist hier beweiskräftig für Version .32.**
+- `kodi(20261024-181608).log`: **6.999 Zeilen**, 24.10.2026 von **12:42:43–20:13:58**. Installation `.30` um **12:45:14**, `.31` um **16:10:46** und **`.32` um 18:26:13, Zeile 5383** (Installationsereignis im vollen Log). **Nur der Abschnitt ab 18:26 ist hier beweiskräftig für Version .32.**
 - Zielgerät: **Android TV 13, Rockchip RK3528 ARM32, Kodi 21.2 Omega, Titan BINGIE MOD 2.2.3, Full-HD**.
 
 ## 2. KRITISCH – EPG-Suche scheitert dreimal mit identischem Release-Timeout
