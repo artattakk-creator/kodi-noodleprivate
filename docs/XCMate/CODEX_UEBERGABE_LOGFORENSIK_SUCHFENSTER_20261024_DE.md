@@ -150,7 +150,7 @@ DOWNLOAD stage=FAILED bytes=0
 
 ### Nach dem Suchfix (neue Roadmap #143)
 - #111/#151 Cover-/Metadatenquellen, #17/#100 Info-/Player-OSD, #94/#150 Icon-Rail mit lizenzierter Tabler-Offline-Iconserie, #98 EPG-Quellenwechsel, #123 EPG-Programmdetail, #99 providerseitiger Catch-up, #43 Wizard/Space Premium, übrige Qualität/UX.
-- Bereits hinterlegter [Codex-Auftrag für Live-Info-Status und Player-OSD](CODEX_AUFTRAG_LIVE_TV_STREAMSTATUS_PLAYER_OSD_20261024_DE.md) liegt derzeit auf **separatem Dokumentationsbranch** `docs/xcmate-live-tv-stream-player-osd-20261024`, nicht hier erneut implementieren.
+- Bereits hinterlegter [Codex-Auftrag für Live-Info-Status und Player-OSD](https://github.com/artattakk-creator/kodi-noodleprivate/blob/docs/xcmate-live-tv-stream-player-osd-20261024/docs/XCMate/CODEX_AUFTRAG_LIVE_TV_STREAMSTATUS_PLAYER_OSD_20261024_DE.md) liegt derzeit auf **separatem Dokumentationsbranch** `docs/xcmate-live-tv-stream-player-osd-20261024`, nicht hier erneut implementieren.
 - **Erst als letzte Phase:** #63, #135, #136 (große Dateiziele), #126, #62 sowie abhängige Aufnahme-/Download-Themen.
 
 ## 6. Freigabe-Check vor einer späteren .32-Integration
