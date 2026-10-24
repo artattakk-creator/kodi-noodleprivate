@@ -82,7 +82,7 @@ class NewUITests(Fixture,unittest.TestCase):
         db=self.index.connect(write=True)
         with db: db.execute('DELETE FROM titles');db.execute('DELETE FROM catalog')
         db.close()
-        self.router._params.update(action='global_search',q='known')
+        self.router._params.update(action='search_section',q='known')
         self.routes.dispatch(self.router)
         self.assertEqual(len(self.added),4)
         self.assertTrue(all('Index' in li.label or 'Katalog' in li.label for _,li,_ in self.added[:3]))

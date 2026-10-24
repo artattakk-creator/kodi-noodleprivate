@@ -65,6 +65,16 @@ class MediaRails299(Fixture,unittest.TestCase):
             from theme_texture_contract import without_theme
             source=without_theme((LIB/name).read_bytes())
             if name=='window_navigation.py':
+                # #140 .32 adds an optional search-specific anchor. Normalize
+                # only these two reviewed hooks, then retain the whole-module
+                # baseline hash for every other ownership/navigation statement.
+                for added,original in (
+                    (b'def open_route(router,portal,opener,after_close=None,anchor=None):',
+                     b'def open_route(router,portal,opener,after_close=None):'),
+                    (b'if not (anchor or _anchor_home)(router,portal,dispatch):return',
+                     b'if not _anchor_home(router,portal,dispatch):return')):
+                    self.assertEqual(source.count(added),1)
+                    source=source.replace(added,original)
                 capture_hook=b"DIALOG_ACTIONS=DIALOG_ACTIONS|frozenset(('record_now','recordings_manage'))\n"
                 self.assertEqual(source.count(capture_hook),1)
                 source=source.replace(capture_hook,b'')
