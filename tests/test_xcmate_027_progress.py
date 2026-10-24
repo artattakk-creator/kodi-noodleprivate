@@ -138,6 +138,7 @@ class StorageTests(Fixture,unittest.TestCase):
         self.assertEqual(list(self.folder.glob('.xcmate-write-test-*')),[])
         self.options['recordings_folder']='previous'
         self.dialog.browseSingle=mock.Mock(return_value=str(self.folder))
+        self.dialog.select=mock.Mock(return_value=0)  # Explicit internal class/source in the new picker.
         from capture_target import TargetFailure
         with mock.patch.dict(sys.modules,xbmcvfs=self.vfs(deny=True)),mock.patch('capture_ui.work',side_effect=lambda fn:fn()),mock.patch('capture_target.probe',side_effect=TargetFailure('TARGET_PERMISSION','WRITE',13)),mock.patch('capture_target.compatible_default',return_value=None):
             home.recording_folder()
@@ -146,6 +147,7 @@ class StorageTests(Fixture,unittest.TestCase):
     def test_recording_directory_setting_changes_only_after_successful_probe(self):
         home=importlib.import_module('home_menu')
         self.dialog.browseSingle=mock.Mock(return_value=str(self.folder))
+        self.dialog.select=mock.Mock(return_value=0)  # Explicit internal class/source in the new picker.
         with mock.patch.dict(sys.modules,xbmcvfs=self.vfs()),mock.patch('capture_ui.work',side_effect=lambda fn:fn()): home.recording_folder()
         self.assertEqual(self.options['recordings_folder'],str(self.folder))
         self.assertEqual(list(self.folder.glob('.xcmate-write-test-*')),[])
