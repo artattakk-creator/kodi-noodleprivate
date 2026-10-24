@@ -18,6 +18,18 @@ def snapshot():
     except (OSError,ValueError,ImportError,RuntimeError):return None
 
 
+def lightweight_background():
+    import xbmcaddon
+    return os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media','lightweight_splash.jpg')
+
+
+def media_background(owner,fanart=''):
+    # Landing/search keep one stable original splash while posters refresh.
+    if not getattr(owner,'_theme',None):
+        if owner.mode in ('landing','search') or not fanart:return lightweight_background()
+    return fanart or os.path.join(__import__('xbmcaddon').Addon().getAddonInfo('path'),'resources','media','media_neutral.png')
+
+
 def texture(owner,fallback,key=''):
     from theme_store import asset
     return asset(key or LIVE_TEXTURES.get(os.path.basename(fallback),''),fallback,snapshot=getattr(owner,'_theme',None))
@@ -59,7 +71,7 @@ def apply_xml(tree,theme,filename,kind='vod'):
     from theme_store import asset
     root=tree.getroot();controls=root.find('controls')
     background='background.epg.detail' if filename=='XCMateProgramme.xml' else 'background.epg.guide' if 'Guide' in filename else 'background.series' if kind=='series' else 'background.movies'
-    keys={'media_neutral.png':background,'tv_normal.png':'panel.default','media_shade.png':'panel.overlay',
+    keys={'media_neutral.png':background,'lightweight_splash.jpg':background,'tv_normal.png':'panel.default','media_shade.png':'panel.overlay',
           'tv_focus.png':'focus.default','media_detail_gradient.png':'panel.media.rail.gradient'}
     for node in root.iter():
         if node.tag in ('texture','texturefocus','texturenofocus') and node.text and not node.text.startswith('$'):
