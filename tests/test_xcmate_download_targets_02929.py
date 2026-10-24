@@ -73,6 +73,7 @@ class Targets29Tests(TargetsFixture,unittest.TestCase):
         import download_target_ui
         root=self.folder/'usb';root.mkdir();before=dict(self.options)
         self.dialog.browseSingle.return_value=str(root);self.dialog.yesno.return_value=False
+        self.dialog.select.side_effect=[0,0,0,0]
         with mock.patch('capture_ui.work',side_effect=lambda fn:fn()):download_target_ui.choose()
         self.assertEqual(self.options,before)
         self.dialog.yesno.return_value=True
@@ -205,6 +206,18 @@ class SMB2Wire29Tests(TargetsFixture,unittest.TestCase):
         with self.assertRaisesRegex(Exception,'TARGET_EXISTS'):self.smb.upload_exclusive(str(source),foreign)
         self.assertEqual((self.share/'foreign.mp4').read_bytes(),b'KEEP')
 
+    def test_signed_smb_completes_with_exclusive_private_stage_when_native_links_are_unsupported(self):
+        import atomic_media
+        self.targets.approved(self.uri,save=True)
+        ident=self.store.enqueue(self.make_media(self.uri,'no-link'))
+        failure=atomic_media.StorageFailure('TARGET_ATOMIC_PUBLISH_UNAVAILABLE','LINK',38)
+        with mock.patch.object(atomic_media,'probe',side_effect=failure):
+            self.worker.run_one(resolver=lambda m:('https://fixture.invalid/file.mp4',{}),opener=lambda *a:self.response())
+            with self.assertRaises(atomic_media.StorageFailure):atomic_media.probe(str(self.folder/'capture'))
+        row=self.store.get(ident);self.assertEqual(row['state'],'COMPLETE',row['code'])
+        self.assertEqual(self.smb.digest(row['file'],len(PAYLOAD)),hashlib.sha256(PAYLOAD).hexdigest())
+        self.assertEqual(Path(row['part']).read_bytes(),PAYLOAD)
+
     def test_smb_copy_disconnect_keeps_stage_retry_uses_no_http_and_only_verified_complete(self):
         self.targets.approved(self.uri,save=True);caps=self.targets.probe(self.uri)
         ident=self.store.enqueue(self.make_media(self.uri));original=self.smb.upload_exclusive
@@ -275,15 +288,19 @@ class SMB2Wire29Tests(TargetsFixture,unittest.TestCase):
         self.smb.upload_exclusive(str(source),self.uri+'/one.part');self.smb.upload_exclusive(str(source),self.uri+'/two.mp4')
         with self.assertRaisesRegex(Exception,'TARGET_EXISTS'):self.smb.rename(self.uri+'/one.part',self.uri+'/two.mp4')
         self.assertEqual((self.share/'one.part').read_bytes(),PAYLOAD);self.assertEqual((self.share/'two.mp4').read_bytes(),PAYLOAD)
-        results=[]
-        def create():
-            try:self.smb.upload_exclusive(str(source),self.uri+'/race.mp4');results.append('OK')
-            except self.smb.Failure as exc:results.append(exc.code)
-        threads=[threading.Thread(target=create) for _ in range(5)]
-        for thread in threads:thread.start()
-        for thread in threads:thread.join(15);self.assertFalse(thread.is_alive())
-        self.assertEqual(results.count('OK'),1);self.assertEqual(results.count('TARGET_EXISTS'),4)
-        self.assertEqual((self.share/'race.mp4').read_bytes(),PAYLOAD)
+        # Repeat synchronized contention against the real signed wire server.
+        for iteration in range(12):
+            results=[];barrier=threading.Barrier(5);target=self.uri+'/race-'+str(iteration)+'.mp4'
+            def create():
+                barrier.wait(5)
+                try:self.smb.upload_exclusive(str(source),target);results.append('OK')
+                except self.smb.Failure as exc:results.append(exc.code)
+            threads=[threading.Thread(target=create) for _ in range(5)]
+            for thread in threads:thread.start()
+            for thread in threads:thread.join(15);self.assertFalse(thread.is_alive())
+            self.assertEqual(results.count('OK'),1);self.assertEqual(results.count('TARGET_EXISTS'),4)
+            self.assertEqual((self.share/('race-'+str(iteration)+'.mp4')).read_bytes(),PAYLOAD)
+
 
 
 if __name__=='__main__':unittest.main()

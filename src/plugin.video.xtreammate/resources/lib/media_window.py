@@ -308,7 +308,8 @@ class MediaWindow(DetailMenuMixin,SearchMixin,OwnerDispatch,xbmcgui.WindowXML):
                 for pos,row in enumerate(rows): self.getControl(cid).getListItem(pos).setArt(local_art(row,self._theme))
             if self.selected:
                 art=local_art(self.selected,self._theme)
-                if art['fanart']: self.getControl(100).setImage(art['fanart'])
+                from theme_render import media_background
+                self.getControl(100).setImage(media_background(self,art['fanart']))
                 if self.mode=='detail': self.getControl(310).setImage(art['poster'])
             if self.mode in ('landing','grid','groups','detail') and self._art_diagnostic:
                 item,value=self._art_diagnostic
@@ -393,6 +394,9 @@ class MediaWindow(DetailMenuMixin,SearchMixin,OwnerDispatch,xbmcgui.WindowXML):
 
     def _show(self,mode):
         self._detail_menu_prepare(mode)
+        if mode in ('landing','search') and not self._theme:
+            from theme_render import lightweight_background
+            self.getControl(100).setImage(lightweight_background())
         self.getControl(501).setLabel(tr(32587))
         self.getControl(340).setVisible(mode=='episodes' and self.next_episode is not None)
         self.getControl(330).setPosition(44,190 if mode=='episodes' else 174)
@@ -440,7 +444,8 @@ class MediaWindow(DetailMenuMixin,SearchMixin,OwnerDispatch,xbmcgui.WindowXML):
         self.getControl(501).setLabel(tr(32587))
         from media_art import local_art
         art=local_art(item,self._theme)
-        self.getControl(100).setImage(art['fanart'] or os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media','media_neutral.png'))
+        from theme_render import media_background
+        self.getControl(100).setImage(media_background(self,art['fanart']))
         try: self._art.put_nowait(dict(item))
         except queue.Full:
             try: self._art.get_nowait()

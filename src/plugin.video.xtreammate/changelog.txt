@@ -1,3 +1,13 @@
+0.1.29.30 – kumulativer Android-Testkandidat, kein Release
+- #141: Versionsgeprüfter Portal-Snapshot, entkoppelte API-Kopien, OOM-Backoff, weniger optionale Scan-/Vorbereitungsarbeit, anonyme Call-/Read-Zähler und begrenzte ARM32-Langzeitmessung (4/8 Stunden).
+- #141: Stop-Signale vor Worker-Joins, abbrechbare Hintergrund-IO und Download-/SMB-Sockets; unterbrochene Service-Downloads pausieren. Bestehende Autoplay-/Vordergrund-Timeouts erhalten.
+- #136: Aufnahme-/Downloadordner starten mit intern/USB/vorhandenen Kodi-SMB-Quellen. Getrennte Beschriftung und Backend-Diagnose; kein stiller Zielwechsel.
+- #136: Private Download-Zwischenablage ohne Hardlinkpflicht bei belegter Inkompatibilität; exklusive NoFollow-Datei, verpflichtendes Datei-fsync und Hashprüfungen bleiben. Endgültige Datei- und Capture-Publish-Regeln unverändert.
+- #140: Jetzt-Sendungen auch aus gültigem lokalem Short-EPG, ohne Netzwerkabruf. Relevante Mapping-/Alias-Abfragen statt Vollmaterialisierung; anonyme Abdeckungs-/Trefferdiagnose. Manuelle Zuordnungen maßgeblich.
+- #122: Exakter Original-Space-Splash lokal im Lightweight-Home, Film-/Serienstart, Suche und Menüs. Original-XCMate-Icon unverändert.
+- #142: Gültiges UTF-8 im SMB-Passworttext, PO-Validierung in CI.
+- Separate Drafts #144–#148. Android-PASS erst nach Gerätetest; historische .29-Ergebnisse unverändert. Keine Datenlöschung, Keymapänderung, Hauptbranch-Veröffentlichung oder OTA.
+
 0.1.29.29 – kumulativer Android-Testkandidat
 - Lokale Geräte-/Ordnerbindung verhindert internen Mountordner-Fallback bei entferntem USB. Expliziter neuer Download desselben Mediums in anderem Ziel erzeugt eigenen Auftrag und erhält den alten.
 - #135: Portal- und Quellhost-gebundene, widerrufbare Redirect-Freigaben. Keine automatische Freigabe unbekannter CDN-Hosts.

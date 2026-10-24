@@ -16,15 +16,18 @@ def choose(check_only=False):
     from capture_ui import work
     from download_targets import configured,normalize,assess,approved,bind
     from transfer_diagnostics import describe
+    from storage_diagnostics import mark,kind
+    from storage_sources import choose as choose_source
     try:
         old=configured()
-        selected=old if check_only else xbmcgui.Dialog().browseSingle(0,tr(34700),'files',defaultt=old)
+        selected=old if check_only else choose_source('DOWNLOAD')
         if not selected:return
         if selected.startswith('smb://'):
             from download_smb import configure,Failure,credentials
             selected=work(lambda:configure(selected))
             if not selected:return
         selected=normalize(selected)
+        mark('DOWNLOAD','TARGET_PROBE',kind(selected),'SMB2' if selected.startswith('smb://') else 'NATIVE')
         try:value=work(lambda:assess(selected))
         except Exception as exc:
             if not selected.startswith('smb://') or getattr(exc,'code','') not in ('SMB_AUTH_REQUIRED','SMB_AUTH_FAILED'):raise
@@ -44,7 +47,11 @@ def choose(check_only=False):
         if not xbmcgui.Dialog().yesno('XCMate',tr(34712)+'\n\n'+text):return
         if value['staging']:work(lambda:approved(selected,save=True))
         work(lambda:bind(selected))
+        mark('DOWNLOAD','TARGET_BOUND',kind(selected))
         xbmcaddon.Addon().setSetting('downloads_folder',selected)
         xbmcaddon.Addon().setSetting('downloads_folder_enabled','1')
+        mark('DOWNLOAD','PERSIST_OK',kind(selected))
         xbmcgui.Dialog().ok('XCMate',tr(34713))
-    except Exception as exc:xbmcgui.Dialog().ok('XCMate',describe(exc,'download')+'\n'+tr(34714))
+    except Exception as exc:
+        mark('DOWNLOAD','FAILED',kind(locals().get('selected','')),error=exc)
+        xbmcgui.Dialog().ok('XCMate',tr(34900)+'\n'+describe(exc,'download')+'\n'+tr(34714))

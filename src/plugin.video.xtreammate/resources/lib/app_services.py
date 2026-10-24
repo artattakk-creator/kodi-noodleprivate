@@ -1,6 +1,7 @@
 """Optional additive work, isolated from the frozen live navigator loop."""
 import threading
 import time
+import service_runtime as runtime
 
 _worker=None
 _guard=threading.Lock()
@@ -56,46 +57,64 @@ def refresh_local(cancel=lambda:False):
             warn('Local library index: '+type(exc).__name__)
 
 
+@runtime.background
 def _run():
     import xbmc
     monitor=xbmc.Monitor()
     cancelled=lambda:_stop.is_set() or monitor.abortRequested()
+    next_prepare=0
     while not cancelled():
+        runtime.emit()
+        if runtime.pressure():
+            if runtime.wait_abort(monitor,.5,_stop):break
+            continue
         worked=False
-        try:
-            from artwork_db import maintain
-            maintain(cancel=cancelled)
-        except Exception: pass
-        if cancelled():break
-        # Optional guide/art preparation may fail independently. It must not
-        # starve an otherwise valid movie/series sync request.
-        try: refresh_local(cancelled)
-        except Exception: pass
-        if cancelled():break
-        try:
-            from art_store import prefetch_selected
-            prefetch_selected()
-        except Exception: pass
-        if cancelled():break
-        try:
-            from startup_preload import prepare
-            prepare(cancel=cancelled)
-        except Exception: pass
-        if cancelled():break
+        if time.monotonic()>=next_prepare:
+            next_prepare=time.monotonic()+5
+            try:
+                from artwork_db import maintain
+                maintain(cancel=cancelled)
+            except MemoryError:runtime.note_pressure()
+            except Exception: pass
+            if cancelled():break
+            # Optional guide/art preparation may fail independently. It must not
+            # starve an otherwise valid movie/series sync request.
+            try: refresh_local(cancelled)
+            except MemoryError:runtime.note_pressure()
+            except Exception: pass
+            if cancelled():break
+            try:
+                from art_store import prefetch_selected
+                prefetch_selected()
+            except MemoryError:runtime.note_pressure()
+            except Exception: pass
+            if cancelled():break
+            try:
+                from startup_preload import prepare
+                prepare(cancel=cancelled)
+            except MemoryError:runtime.note_pressure()
+            except Exception: pass
+            if cancelled():break
         try:
             from catalog_sync import run_next
             worked=run_next(cancelled)
+        except MemoryError:runtime.note_pressure()
         except Exception: pass
         if cancelled():break
         try:
             from guide_timers import poll as poll_timers
             poll_timers()
+        except MemoryError:runtime.note_pressure()
         except Exception: pass
-        if monitor.waitForAbort(0.1 if worked else 5): break
+        if runtime.wait_abort(monitor,0.1 if worked else .5,_stop):break
 
 
 def poll():
     global _worker
+    if _stop.is_set():return
+    runtime.install()
+    from stability_monitor import ensure
+    ensure()
     from capture_service import poll as poll_captures
     poll_captures()
     from downloads import poll as poll_downloads
@@ -120,6 +139,15 @@ def shutdown():
     Already running non-cancellable HTTP may outlive this bounded join. That
     limitation is reported explicitly, rather than claiming a forced stop.
     """
+    _stop.set()
+    for name in ('downloads','capture_service','media_art'):
+        event=getattr(__import__(name),'_stop',None)
+        if event is not None:event.set()
+    runtime.stop()
+    from media_art import shutdown as shutdown_art
+    shutdown_art(timeout=.05)
+    from stability_monitor import shutdown as shutdown_monitor
+    shutdown_monitor()
     from capture_service import shutdown as shutdown_captures
     shutdown_captures()
     from downloads import shutdown as shutdown_downloads
@@ -127,7 +155,8 @@ def shutdown():
     with _guard:
         _stop.set();worker=_worker
     if worker is not None and worker is not threading.current_thread():worker.join(timeout=.2)
-    stopped=worker is None or not worker.is_alive()
+    candidates=[worker]+[t for t in threading.enumerate() if t is not threading.current_thread() and (t.name.startswith('XCMate') or t.name.startswith('epg_warmup_') or t.name.startswith('ThreadPoolExecutor'))]
+    stopped=all(t is None or not t.is_alive() for t in candidates)
     from boot_diagnostics import mark
     mark('APP_WORKER_STOPPED' if stopped else 'APP_WORKER_STOP_PENDING')
     return stopped

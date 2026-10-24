@@ -147,6 +147,11 @@ def run_one(cancel=lambda:False,resolver=None,opener=None):
             except (OSError,RuntimeError):pass
         store.finish(ident,owner,'PAUSED','INTERRUPTED' if cancel() else '')
     except Exception as error:
+        if cancel():
+            if output is not None:
+                try:files.flush(output);store.checkpoint(ident,owner,bytes=count,digest=digest.hexdigest(),speed=0)
+                except (OSError,RuntimeError):pass
+            store.finish(ident,owner,'PAUSED','SERVICE_INTERRUPTED');return True
         if output is not None:
             try:files.flush(output);store.checkpoint(ident,owner,bytes=count,digest=digest.hexdigest(),speed=0)
             except (OSError,RuntimeError):pass

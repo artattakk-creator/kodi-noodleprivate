@@ -20,6 +20,7 @@ _enqueue_code='NOT_REQUESTED'
 _choices={}
 _choice_revision=0
 MAX_INBOX=2048
+_stop=__import__('threading').Event()
 
 
 def dimensions(data):
@@ -149,6 +150,7 @@ def local_art(item,theme=None):
 def request(items,priority=0):
     """GUI-safe bounded inbox. SQLite enrolment and HTTP use distinct workers."""
     global _enrol_worker,_serial
+    if _stop.is_set():return
     with _queue_lock:
         for item in items[:48]:
             rank=-10 if item.get('kind')=='live' and priority<=0 else priority
@@ -191,31 +193,33 @@ def _persist_next():
                 else:_inbox.pop(url,None)
         return True
     with _queue_lock:
-        if _worker is None or not _worker.is_alive():
+        if not _stop.is_set() and (_worker is None or not _worker.is_alive()):
             _worker=threading.Thread(target=_prefetch,daemon=True,name='XCMate-artwork');_worker.start()
     return True
 
 
+@__import__('service_runtime').background
 def _enrol_loop():
     import xbmc
     global _enrol_worker
     monitor=xbmc.Monitor()
-    while not monitor.abortRequested():
+    while not _stop.is_set() and not monitor.abortRequested():
         with _queue_lock:
             if not _inbox:_enrol_worker=None;return
         _persist_next()
-        if monitor.waitForAbort(.1):break
+        if __import__('service_runtime').wait_abort(monitor,.1,_stop):break
     with _queue_lock:_enrol_worker=None
 
 
+@__import__('service_runtime').background
 def _prefetch():
     import xbmc
     from art_store import run_one
     monitor=xbmc.Monitor()
-    while not monitor.abortRequested():
+    while not _stop.is_set() and not monitor.abortRequested():
         try: worked=run_one()
         except Exception: worked=False
-        if monitor.waitForAbort(.1 if worked else 2): return
+        if __import__('service_runtime').wait_abort(monitor,.1 if worked else 2,_stop):return
 
 
 def revision():
@@ -315,3 +319,12 @@ def poster_report(item):
     return dict(source_field=next((field for field in fields if item.get(field)==url),'NONE'),
                 candidate_count=len(poster_candidates(item)),status=status,
                 attempts=value.get('attempts',0),updated=value.get('updated',0),next_at=value.get('next_at',0),database=code)
+
+
+def shutdown(timeout=.1):
+    """Stop accepting background work; preserve all persistent jobs and images."""
+    _stop.set()
+    deadline=time.monotonic()+timeout
+    for worker in (_enrol_worker,_worker):
+        if worker is not None and worker is not threading.current_thread():worker.join(max(0,deadline-time.monotonic()))
+    return all(worker is None or not worker.is_alive() for worker in (_enrol_worker,_worker))

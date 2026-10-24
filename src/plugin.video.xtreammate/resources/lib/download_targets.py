@@ -103,39 +103,68 @@ def configured():
 def stage_root():
     from utils import addon_data_dir
     from atomic_media import probe,StorageFailure
-    candidates=[os.path.join(addon_data_dir(),'download_staging')]
+    from storage_diagnostics import mark,kind
+    candidates=[]
     private=os.environ.get('ANDROID_PRIVATE','')
     if private and os.path.isdir(private):candidates.append(os.path.join(private,'XCMate','download_staging'))
     for base in ('/data/user/0/org.xbmc.kodi/files','/data/data/org.xbmc.kodi/files'):
         if os.path.isdir(base):candidates.append(os.path.join(base,'XCMate','download_staging'))
+    candidates.append(os.path.join(addon_data_dir(),'download_staging'))
+    last=None
     for path in dict.fromkeys(candidates):
-        try:probe(path,create=True);return path
-        except StorageFailure:continue
-    raise Failure('STAGING_UNAVAILABLE','STAGING_PROBE')
+        mark('DOWNLOAD','TARGET_PROBE','LOCAL','INTERNAL_STAGE')
+        if kind(path)=='USB':
+            last=Failure('STAGING_ON_REMOVABLE','MOUNT');mark('DOWNLOAD','FAILED','USB','INTERNAL_STAGE',last);continue
+        try:
+            probe(path,create=True);mark('DOWNLOAD','STAGING_READY','LOCAL','INTERNAL_STAGE');return path
+        except StorageFailure as exc:
+            last=exc;mark('DOWNLOAD','FAILED','LOCAL','INTERNAL_STAGE',exc)
+            if exc.code not in ('TARGET_SYNC_UNSUPPORTED','TARGET_ATOMIC_PUBLISH_UNAVAILABLE'):continue
+        try:
+            # A private .part is never published/playable. Exclusive/no-follow
+            # creation + file-fsync + exact readback + checkpoint/prefix hashes
+            # are sufficient; loss of a directory entry is detected on resume.
+            # This does NOT relax the final target or Direct-TS publish contract.
+            os.makedirs(path,mode=0o700,exist_ok=True)
+            directory=os.open(path,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW);os.close(directory)
+            from media_files import capacity
+            capacity(path)
+            _usb_probe(path)
+            mark('DOWNLOAD','STAGING_READY','LOCAL','INTERNAL_STAGE_EXCLUSIVE');return path
+        except (OSError,RuntimeError) as exc:
+            last=exc;mark('DOWNLOAD','FAILED','LOCAL','INTERNAL_STAGE_EXCLUSIVE',exc)
+    raise Failure('STAGING_UNAVAILABLE','INTERNAL_STAGE_'+str(getattr(last,'step','PROBE'))[:16],getattr(last,'number',getattr(last,'errno',0)) or 0)
 
 
 def _usb_probe(root):
     from atomic_media import failure
-    name='.xcmate-probe-'+uuid.uuid4().hex;path=os.path.join(root,name);created=False;own=None
+    name='.xcmate-probe-'+uuid.uuid4().hex;path=os.path.join(root,name);created=False;own=None;step='OPEN_EXCLUSIVE'
     try:
         fd=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600);created=True;own=os.fstat(fd)
-        with os.fdopen(fd,'wb') as stream:stream.write(b'XCMate');stream.flush();os.fsync(stream.fileno())
-        if Path(path).read_bytes()!=b'XCMate':raise Failure('TARGET_VERIFY_FAILED','READ')
+        with os.fdopen(fd,'wb') as stream:
+            step='WRITE';stream.write(b'XCMate');stream.flush();step='FSYNC_FILE';os.fsync(stream.fileno())
+        step='READBACK';fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW)
+        with os.fdopen(fd,'rb') as stream:
+            if stream.read(7)!=b'XCMate':raise Failure('TARGET_VERIFY_FAILED',step)
         try:
             collision=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
         except FileExistsError:pass
         else:os.close(collision);raise Failure('TARGET_NO_EXCLUSIVE_CREATE','OPEN_EXCLUSIVE')
     except OSError as exc:
         if isinstance(exc,Failure):raise
-        raise failure(exc,'USB_PROBE') from None
+        raise failure(exc,step) from None
     finally:
         if created:
-            stat=os.stat(path,follow_symlinks=False)
-            if (stat.st_dev,stat.st_ino)==(own.st_dev,own.st_ino):os.unlink(path)
+            try:
+                stat=os.stat(path,follow_symlinks=False)
+                if (stat.st_dev,stat.st_ino)==(own.st_dev,own.st_ino):os.unlink(path)
+            except FileNotFoundError:pass
 
 
 def _smb_probe(root):
     import download_smb as smb
+    from storage_diagnostics import mark
+    mark('DOWNLOAD','TARGET_PROBE','SMB','SMB2')
     from media_files import join
     token=uuid.uuid4().hex;one=join(root,'.xcmate-probe-'+token+'.a');two=one+'.b';final=one+'.verified'
     source=Path(stage_root())/(token+'.probe');expected=b'XCMate SMB2 capability probe';created=[];own=None
@@ -172,7 +201,9 @@ def _smb_probe(root):
 def assess(root):
     from atomic_media import probe as native_probe,StorageFailure
     from media_files import file_limit
+    from storage_diagnostics import mark,kind
     root=normalize(root)
+    mark('DOWNLOAD','TARGET_PROBE',kind(root),'SMB2' if root.startswith('smb://') else 'NATIVE')
     if root.startswith('smb://'):
         _smb_probe(root)
         return dict(backend='SMB2_STAGE_VERIFY',type='SMB',writable=True,free=None,max_bytes=file_limit(root),vfs=True,
@@ -183,6 +214,8 @@ def assess(root):
                     atomic_publish=True,fsync_directory=True,offline=True,resume='HTTP_RANGE',staging=False)
     except StorageFailure as exc:
         if exc.code not in ('TARGET_SYNC_UNSUPPORTED','TARGET_ATOMIC_PUBLISH_UNAVAILABLE'):raise
+        mark('DOWNLOAD','FAILED',kind(root),'NATIVE',exc)
+        mark('DOWNLOAD','TARGET_PROBE',kind(root),'USB_STAGE')
         _usb_probe(root);stage_root()
         import shutil
         return dict(backend='LOCAL_STAGE_VERIFY',type='LOCAL_USB',writable=True,free=shutil.disk_usage(root).free,max_bytes=file_limit(root),vfs=False,
