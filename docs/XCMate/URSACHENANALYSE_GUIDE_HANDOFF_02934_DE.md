@@ -32,3 +32,17 @@ Hosttests prüfen vier unterschiedliche native Blockaden separat, keine nachträ
 Such-Matching, Jetzt-EPG-Scan, Renderer, bestehende Caches/Jobs und .33-Grafiken bleiben bytegleich. Elf Sendernamen-Hits sind weiterhin kein Programmtitel-Nachweis. #140 bleibt offen bis Android-Abnahme; neue G1–G4 alle NOT_TESTED.
 
 #111: `media_art.retry_poster` wählt ausschließlich bekannte Provider-Bildadressen; `metadata_views` ist providerbasiert. Es existiert kein TMDb-Kandidatenabruf auf main. Für den gemeldeten Timeout gibt es im .33-Zeitraum keinen ausreichenden ART-/Netzfehlernachweis. Separate gezielte Diagnose/Reparatur, kein globaler Cache-/Jobreset und kein unbewiesener TMDb-Erfolg im Suchfix. #98 erst nach stabiler Suche/Guide-Start; Downloads/Aufnahmen nachrangig.
+
+## Reproduktion und Hostprüfung
+
+Aktueller Stand, ohne Kodi/Providerzugriff: `PYTHONPATH=tests python -m unittest test_xcmate_guide_lifecycle_02934 -v`. Die Gegenprobe `test_normal_window_close_reproduces_parallel_root_busy_but_dialog_close_does_not` hält das alte Parent-/Root-/Busy-Verhalten bewusst aktiv; `test_independent_parallel_root_during_guide_close_is_respected_then_released` verwendet zwei echte Python-Threads und die vorhandene Home-Route mit kontrollierter Directory-Barriere.
+
+Für die historische rote Gegenprobe eine **neue temporäre** Arbeitskopie von `6bb96547ec469e62c5f69e23a928842021bab4c4` verwenden, aus dem .34-Draft ausschließlich `tests/xcmate027_fixture.py` und `tests/test_xcmate_guide_lifecycle_02934.py` hineinkopieren. Nur in dieser temporären Fixture den Mock-Zielnamen `self.media.MediaView` durch `self.media.MediaWindow` ersetzen (auf .33 gibt es den extrahierten Mixinkern noch nicht). Dann diese drei Fälle mit `PYTHONPATH=tests python -m unittest -v` ausführen:
+
+- `test_xcmate_guide_lifecycle_02934.GuideLifecycle34.test_both_guide_types_use_native_xml_dialog_without_parent_reactivation`
+- `test_xcmate_guide_lifecycle_02934.GuideLifecycle34.test_four_reported_guide_starts_dispatch_once_without_root_reentry`
+- `test_xcmate_guide_lifecycle_02934.GuideLifecycle34.test_search_standalone_is_dialog_but_existing_media_is_window`
+
+Erwartung auf .33: genau drei FAIL, darunter vier abgelehnte statt vier erfolgreicher Starts; auf .34 PASS. Historischer synthetischer Output: `REPRO_02934_BASELINE_02933.txt`. Kein bestehendes Benutzercheckout/Profil verändern und keine echten Anbieter verwenden.
+
+Vollständige Paket-/Hostprüfung wie CI in einer separaten `git archive`-Buildkopie: `tools/build_repository.py`, `tools/validate_kodi_po.py`, `python -m compileall -q src`, anschließend `python -m unittest discover -s tests -v` mit den vorhandenen Pillow-/impacket-Testabhängigkeiten und den drei in CI dokumentierten Legacy-Testpfadkorrekturen. Den Repository-Builder nicht im produktiven Worktree ausführen: nur das geprüfte Test-ZIP übernehmen, keine generierten Repository-Indizes.
