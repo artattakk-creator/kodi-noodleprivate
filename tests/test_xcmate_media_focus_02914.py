@@ -40,15 +40,15 @@ class MediaFocusTests(Fixture,unittest.TestCase):
         def cached(url):return '/local/fanart-one.img' if downloaded[0] and url=='https://image.invalid/fanart-one' else ''
         with mock.patch.object(art,'cached',side_effect=cached):
             w=self.media_window();w.native(7);self.settle(w)
-            self.assertTrue(w.getControl(100).image.endswith('media_neutral.png'))
+            self.assertTrue(w.getControl(100).image.endswith('lightweight_splash.jpg'))
             self.assertTrue(w.getControl(105).visible);self.assertFalse(w.getControl(104).visible)
             downloaded[0]=True;w._refresh_art();self.assertEqual(w.getControl(100).image,'/local/fanart-one.img')
             self.assertEqual(w.mode,'detail');w.native(92);self.settle(w);self.assertFalse(w.getControl(105).visible)
 
     def test_missing_fanart_for_new_title_clears_previous_title_background(self):
-        art=importlib.import_module('media_art');w=self.media_window()
+        art=importlib.import_module('media_art');w=self.media_window();w.mode='detail'
         with mock.patch.object(art,'cached',side_effect=lambda url:'/local/first.img' if url=='https://image.invalid/first-art' else ''):
             w._queue_art(dict(cover='https://image.invalid/one',backdrop_path='https://image.invalid/first-art'))
             self.assertEqual(w.getControl(100).image,'/local/first.img')
             w._queue_art(dict(cover='https://image.invalid/two'))
-            self.assertTrue(w.getControl(100).image.endswith('media_neutral.png'))
+            self.assertTrue(w.getControl(100).image.endswith('lightweight_splash.jpg'))
