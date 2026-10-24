@@ -3074,7 +3074,7 @@ msgid "SMB user (optional DOMAIN\\user)"
 msgstr "SMB-Benutzer (optional DOMÄNE\\Benutzer)"
 
 msgctxt "#34718"
-msgid "SMB password \u2013 stored on this device only"
+msgid "SMB password – stored on this device only"
 msgstr "SMB-Passwort – nur lokal gespeichert"
 
 msgctxt "#34719"
