@@ -1,0 +1,18 @@
+{
+  "base": "59085e94f78d0bc9d66e3f6561a6fecf100abdf5",
+  "version": "0.1.29.32",
+  "baseline_reproduction": {"tests": 4, "failures": 4, "errors": 0},
+  "baseline_tests": [
+    "test_positive_directory_global_search_also_opens_native_search",
+    "test_legacy_guide_search_only_queues_until_its_owner_tick",
+    "test_grid_search_closes_on_pump_without_directory_handoff",
+    "test_native_search_initialization_has_no_landing_query_or_focus"
+  ],
+  "baseline_failure_codes": ["DIRECTORY_REPLACES_NATIVE", "CALLBACK_CLOSE_GUIDE", "CALLBACK_CLOSE_GRID", "ROOT_SEARCH_INITIALIZES_LANDING"],
+  "fixed_baseline_tests": "PASS",
+  "new_navigation_tests": 21,
+  "model": "strict XML controls, real owner pump, queued asynchronous data jobs and actual SQLite fixtures",
+  "android_native_race_causality": "NOT_FULLY_PROVEN",
+  "android": "NOT_TESTED",
+  "private_raw_logs_published": false
+}

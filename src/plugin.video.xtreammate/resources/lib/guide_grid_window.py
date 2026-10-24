@@ -10,7 +10,7 @@ from guide_grid_data import ROWS,SPAN,CELLS,rectangle
 
 
 class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
-    def configure(self,router,portal):
+    def configure(self,router,portal,return_view=None):
         self._configure_owner();self.router,self.portal=router,portal
         self._theme=__import__('theme_render').snapshot()
         self._pool=ThreadPoolExecutor(max_workers=1);self._generation=0;self._closed=False;self._ready=False
@@ -20,6 +20,8 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         self._last_refresh=0;self._art_revision=0;self._short_revision='';self._return_home=False;self._play_request=None;self._diagnosing=False
         from guide_playback import player_state
         self._entry_player=player_state()
+        self._search_request=None;self._search_prompt=False;self._search_return=return_view
+        self._focus_pending=None;self._focus_deadline=0
 
     @native_init
     def onInit(self):
@@ -30,7 +32,39 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
             self.getControl(cid).setLabel(tr(ident))
         self.getControl(200).setVisible(False);self.getControl(201).setVisible(False);self.getControl(202).setVisible(False)
         for r in range(ROWS):self.getControl(730+r).setVisible(False);self.getControl(750+r).setVisible(False)
-        self.getControl(101).setLabel(tr(33100));self._initial_load()
+        self.getControl(101).setLabel(tr(33100))
+        if self._search_return is not None:
+            for name,value in self._search_return.items():setattr(self,name,value)
+            self._search_return=None
+            if self.mode=='groups':self._show_groups()
+            else:
+                if self._focus_zone=='header':self.setFocusId(self._header)
+                self._load()
+        else:self._initial_load()
+
+    def setFocusId(self,cid):
+        if self._closed:return
+        control=self.getControl(cid)
+        if not control.isVisible() or not xbmc.getCondVisibility('Control.IsEnabled({})'.format(cid)):
+            if self._focus_pending!=cid:
+                self._focus_pending=cid;self._focus_deadline=time.monotonic()+2
+                from window_navigation import trace
+                trace('FOCUS_DEFER','guide',cid,getattr(self.router,'_navigation_dispatch',''))
+            return
+        pending=self._focus_pending;self._focus_pending=None
+        super().setFocusId(cid)
+        if pending is not None:
+            from window_navigation import trace
+            trace('FOCUS_READY','guide',cid,getattr(self.router,'_navigation_dispatch',''))
+
+    def _resume_focus(self):
+        cid=self._focus_pending
+        if cid is None:return
+        if time.monotonic()>=self._focus_deadline:
+            self._focus_pending=None
+            from search_navigation import mark
+            mark('FOCUS_TIMEOUT',self.router,'grid',focus=cid,owner=True);return
+        self.setFocusId(cid)
 
     def _initial_load(self):
         self._loading=True;self._background=False;self._last_data_refresh=time.monotonic()
@@ -313,7 +347,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
         else:self.close()
 
     def onAction(self,action):
-        if self._closed or self._leaving:return
+        if self._closed or self._leaving or self._search_prompt or self._focus_pending is not None:return
         key=action.getId();focus=self.getFocusId()
         if key in (9,10,92):
             if time.monotonic()<self._input_after:return
@@ -346,7 +380,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
                 self.offset-=ROWS;self.row=ROWS-1;self._focus_zone='grid';self._load()
 
     def onClick(self,cid):
-        if self._closed or self._leaving:return
+        if self._closed or self._leaving or self._search_prompt or self._focus_pending is not None:return
         if self.mode=='groups':
             if cid==200:self._choose_group()
             elif cid==202:self._leave_home()
@@ -364,11 +398,11 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
             self.cursor=int(time.mktime(local.timetuple()));self.origin=self.cursor//1800*1800;self._load()
         elif cid==313:self._show_groups()
         elif cid==314:
-            query=xbmcgui.Dialog().input(tr(32534))
-            if query.strip():
-                self._next_route=self.router.url(action='global_search',pid=self.portal['id'],q=query[:200]);self.close()
+            from search_navigation import queue
+            queue(self,'grid')
 
     def _owner_tick(self):
+        if not self._leaving:self._resume_focus()
         if self._leaving:
             if time.monotonic()>=self._leave_after:self.close()
             return
@@ -399,9 +433,5 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
 
 
 def open_grid(router,portal):
-    window=open_owned_window(GuideGridWindow,'XCMateGuideGrid.xml',router,portal)
-    if getattr(window,'_next_route',''):xbmc.executebuiltin('Container.Update('+window._next_route+')')
-    intent=window._play_request
-    # Do not return or retain the WindowXML through the playback transition.
-    del window
-    return intent
+    from search_navigation import guide_flow
+    return guide_flow(router,portal,open_owned_window,GuideGridWindow,'XCMateGuideGrid.xml','grid')
