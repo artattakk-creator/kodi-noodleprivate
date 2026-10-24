@@ -78,8 +78,8 @@ class MediaRails299(Fixture,unittest.TestCase):
                         self.assertEqual(source.count(hook.encode()),1);source=source.replace(hook.encode(),b'')
             if name=='window_navigation.py':
                 for hook in (
-                    "    marker=uuid.uuid4().hex if locked else ''\n    if locked:xbmcgui.Window(10000).setProperty('XCMate.NavigationLease',marker)\n",
-                    "        if locked and xbmcgui.Window(10000).getProperty('XCMate.NavigationLease')==marker:\n            xbmcgui.Window(10000).clearProperty('XCMate.NavigationLease')\n"):
+                    "    marker=uuid.uuid4().hex if locked else ''\n    from window_lifecycle import set_lease,clear_lease\n    if locked:set_lease(marker)\n",
+                    "        if locked:clear_lease(marker)\n"):
                     self.assertEqual(source.count(hook.encode()),1);source=source.replace(hook.encode(),b'')
                 # #140 .32 adds an optional search-specific anchor. Normalize
                 # only these two reviewed hooks, then retain the whole-module

@@ -59,6 +59,18 @@ def lease():
     except (AttributeError,RuntimeError):return ''
 
 
+def set_lease(marker):
+    try:xbmcgui.Window(10000).setProperty(LEASE_PROPERTY,marker)
+    except (AttributeError,RuntimeError):pass
+
+
+def clear_lease(marker):
+    try:
+        home=xbmcgui.Window(10000)
+        if home.getProperty(LEASE_PROPERTY)==marker:home.clearProperty(LEASE_PROPERTY)
+    except (AttributeError,RuntimeError):pass
+
+
 def route_phase(router,phase,action):
     if phase not in ('ENTRY','RETURN'):return
     if action not in ('root','portal_home','xcmate_home','guide_grid','guide_browser','global_search','search_continue'):return

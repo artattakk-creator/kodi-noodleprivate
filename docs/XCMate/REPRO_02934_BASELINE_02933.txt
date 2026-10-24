@@ -1,0 +1,48 @@
+test_both_guide_types_use_native_xml_dialog_without_parent_reactivation (test_xcmate_guide_lifecycle_02934.GuideLifecycle34.test_both_guide_types_use_native_xml_dialog_without_parent_reactivation) ... FAIL
+test_four_reported_guide_starts_dispatch_once_without_root_reentry (test_xcmate_guide_lifecycle_02934.GuideLifecycle34.test_four_reported_guide_starts_dispatch_once_without_root_reentry) ... FAIL
+test_search_standalone_is_dialog_but_existing_media_is_window (test_xcmate_guide_lifecycle_02934.GuideLifecycle34.test_search_standalone_is_dialog_but_existing_media_is_window) ... FAIL
+
+======================================================================
+FAIL: test_both_guide_types_use_native_xml_dialog_without_parent_reactivation (test_xcmate_guide_lifecycle_02934.GuideLifecycle34.test_both_guide_types_use_native_xml_dialog_without_parent_reactivation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "tests/test_xcmate_guide_lifecycle_02934.py", line 51, in test_both_guide_types_use_native_xml_dialog_without_parent_reactivation
+    self.assertTrue(issubclass(self.grid.GuideGridWindow,WindowXMLDialog))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_four_reported_guide_starts_dispatch_once_without_root_reentry (test_xcmate_guide_lifecycle_02934.GuideLifecycle34.test_four_reported_guide_starts_dispatch_once_without_root_reentry)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "tests/test_xcmate_guide_lifecycle_02934.py", line 47, in test_four_reported_guide_starts_dispatch_once_without_root_reentry
+    self.assertEqual(outcomes,[True]*4);self.assertEqual(self.root_dispatches,[])
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [False, False, False, False] != [True, True, True, True]
+
+First differing element 0:
+False
+True
+
+- [False, False, False, False]
++ [True, True, True, True]
+
+======================================================================
+FAIL: test_search_standalone_is_dialog_but_existing_media_is_window (test_xcmate_guide_lifecycle_02934.GuideLifecycle34.test_search_standalone_is_dialog_but_existing_media_is_window)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "tests/test_xcmate_guide_lifecycle_02934.py", line 60, in test_search_standalone_is_dialog_but_existing_media_is_window
+    self.assertEqual(seen,[True]);self.assertFalse(issubclass(self.media.MediaWindow,WindowXMLDialog))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [False] != [True]
+
+First differing element 0:
+False
+True
+
+- [False]
++ [True]
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.233s
+
+FAILED (failures=3)

@@ -1,5 +1,5 @@
 """Kodi 21.2 Window.close parent activation versus XMLDialog close model."""
-import importlib,sys,types,unittest
+import importlib,sys,threading,types,unittest
 from unittest import mock
 from xcmate027_fixture import Fixture,WindowXML,WindowXMLDialog,QueuedPool,ADDON
 
@@ -86,6 +86,34 @@ class GuideLifecycle34(Fixture,unittest.TestCase):
                 self.assertIsNone(navigation.guide_flow(self.router,self.portal,open_view,self.grid.GuideGridWindow,'XCMateGuideGrid.xml','grid'))
             self.assertEqual(opened,['initial','restored'])
         self.assertEqual(self.root_dispatches,[]);self.assertFalse(self.builtins)
+
+    def test_independent_parallel_root_during_guide_close_is_respected_then_released(self):
+        # An unrelated real Home route may still run. It is never suppressed
+        # or mistaken for our own dialog; defer while its directory is busy.
+        sys.modules.pop('search_navigation',None);navigation=importlib.import_module('search_navigation')
+        entered=threading.Event();resume=threading.Event();done=threading.Event();errors=[]
+        root=types.SimpleNamespace(**vars(self.router));root._handle=9;root._params={'action':'xcmate_home','pid':'p'}
+        original=sys.modules['xbmcplugin'].endOfDirectory
+        def end(*a,**kw):
+            self.busy=True;entered.set()
+            if not resume.wait(3):raise AssertionError('root barrier')
+            original(*a,**kw)
+        def run():
+            try:self.routes.dispatch(root)
+            except BaseException as exc:errors.append(exc)
+            finally:self.busy=False;done.set()
+        w=self.window()
+        with mock.patch.object(sys.modules['xbmcplugin'],'endOfDirectory',side_effect=end):
+            thread=threading.Thread(target=run);thread.start()
+            try:
+                self.assertTrue(entered.wait(3));reference=importlib.import_module('window_lifecycle').capture(w);w.close()
+                self.assertFalse(navigation.released(self.router,'grid','a'*32,reference))
+                self.assertEqual(self.router._search_block_reason,'BUSY_REENTRANT')
+            finally:resume.set();thread.join(3)
+        self.assertTrue(done.is_set());self.assertFalse(errors)
+        self.assertTrue(navigation.released(self.router,'grid','a'*32,reference))
+        self.assertEqual(self.root_dispatches,[]);self.assertTrue(self.added)
+        self.assertFalse(self.builtins)
 
     def test_normal_window_close_reproduces_parallel_root_busy_but_dialog_close_does_not(self):
         # Counterfactual .33 native mechanism; no assumption about root suppression.
@@ -201,6 +229,14 @@ class GuidePlaybackReasons34(Fixture,unittest.TestCase):
         with nav.ownership() as acquired:self.assertNotEqual(self.life.lease(),first)
         self.assertNotIn('PRIVATE',' '.join(self.logs))
         self.assertIn('phase=ENTRY action=root',' '.join(self.logs))
+
+    def test_diagnostic_property_failure_does_not_leak_or_block_the_navigation_lock(self):
+        nav=importlib.import_module('window_navigation')
+        broken=types.SimpleNamespace(setProperty=mock.Mock(side_effect=RuntimeError('diagnostic unavailable')),
+            getProperty=mock.Mock(side_effect=RuntimeError('diagnostic unavailable')))
+        with mock.patch.object(self.gui,'Window',return_value=broken):
+            with nav.ownership() as acquired:self.assertTrue(acquired)
+        with nav.ownership() as acquired:self.assertTrue(acquired)
 
     def test_async_busy_foreign_and_abort_never_open_search_or_force_dialog_closed(self):
         nav=importlib.import_module('search_navigation');router=self.router;router._search_async_owner=True
