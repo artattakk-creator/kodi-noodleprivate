@@ -61,3 +61,21 @@ def revoke(value):
     try:
         with db:db.execute('DELETE FROM grants WHERE pid=? AND source=? AND target=?',(str(value['pid']),value['source'],value['target']))
     finally:db.close()
+
+
+def grant_pending(value,lan=False):
+    """Commit exactly the still-current displayed request, never a newer hop."""
+    from download_redirect import origin
+    for key in ('source','target'):
+        if origin(value[key])!=value[key]:raise ValueError('INVALID_ORIGIN')
+    db=connect()
+    try:
+        db.execute('BEGIN IMMEDIATE')
+        row=db.execute('SELECT * FROM pending WHERE job=? AND pid=? AND updated>?',
+                       (value['job'],str(value['pid']),time.time()-86400)).fetchone()
+        if row is None or any(row[k]!=value[k] for k in ('source','target','updated')):
+            db.rollback();return False
+        db.execute('INSERT OR REPLACE INTO grants VALUES(?,?,?,?)',
+                   (str(value['pid']),value['source'],value['target'],int(bool(lan))))
+        db.commit();return True
+    finally:db.close()
