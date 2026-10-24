@@ -2,7 +2,7 @@
 
 Review: [Draft #154](https://github.com/artattakk-creator/kodi-noodleprivate/pull/154).
 Basis main **6d3555a / .30**, geprüfter Quellstand
-**0763cbd2b1d126e084c8e1eeeaafcbedb099e676**. Nachfolgende Commits ergänzen nur
+**92c3342b0260e86e3fbc1ed7729a741287ebfc56**. Nachfolgende Commits ergänzen nur
 Paket/Nachweise. Kein main-Merge, Release oder produktiver Index-/OTA-Publish.
 
 ## Installation
@@ -11,10 +11,10 @@ Paket/Nachweise. Kein main-Merge, Release oder produktiver Index-/OTA-Publish.
 · [**SHA256**](https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/test/xcmate-02931-android-cumulative/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.31.zip.sha256)
 · [**kurze Android-Anleitung**](ANDROID_ABNAHME_02931_DE.md).
 
-**2.360.279 Bytes / 251 Dateien**, Addon-ID plugin.video.xtreammate, Version .31.
+**2.360.352 Bytes / 251 Dateien**, Addon-ID plugin.video.xtreammate, Version .31.
 
 ```text
-b94eff9a615f891bfb8517486cca6c02063e7bd1b95220e26414cec0d266723f
+9632286edd1490f44d71d43b24a2bd2cea9223c75f23e1ffe57e30682255eeb0
 ```
 
 Nur dieses kumulative .31-ZIP installieren. Die Teil-PR-Artefakte prüfen jeweils
@@ -41,7 +41,10 @@ Standard bleibt gesperrt. Nur ein unabhängig anhand eigener Anbieterinformation
 bestätigtes Ziel bewusst portal-/source-/target-gebunden freigeben. Atomare Prüfung
 verhindert Grant einer währenddessen geänderten Pending-Anfrage. Zweiter Dialog
 kann nur diesen weiterhin fehlgeschlagenen Redirect-Job einreihen; andere,
-abgebrochene oder noch gesperrte Jobs unverändert. Bestehender Widerruf bleibt.
+abgebrochene oder noch gesperrte Jobs unverändert. Status/Fehlercode werden atomar
+im Queue-Commit geprüft: ein gleichzeitig eintreffendes Cancel gewinnt. Der
+Race-Fall wurde vor der Korrektur reproduziert und danach abgesichert.
+Bestehender Widerruf bleibt.
 Kein Auto-Allow, keine Aufweichung der unveränderten Redirect-/TLS-/SSRF-/DNS-/
 Header-/Content-/Hash-/NoReplace-Schutzregeln.
 
@@ -55,11 +58,11 @@ kein Ersatz für vollständigen Film/Folge oder native Direct-TS-Aufnahme.
 
 ## Tatsächliche Hostprüfung
 
-**1046 automatisierte Tests PASS**, 0 Fehler/Failures/Skips, **121,657 s** auf
+**1047 automatisierte Tests PASS**, 0 Fehler/Failures/Skips, **126,019 s** auf
 Linux x86_64/Python 3.12, keine Thread-Ausnahme. [Vollständiges Testprotokoll](TESTLOG_02931.txt)
 (nur Zeilenend-Leerzeichen normalisiert), [maschineller Bericht](TESTERGEBNISSE_02931.json).
 
-17 neue Tests: sechs Suche, elf Downloadablauf. Gezielte Suiten 36 bzw. 57 PASS.
+18 neue Tests: sechs Suche, zwölf Downloadablauf. Gezielte Suiten 36 bzw. 58 PASS.
 Darunter späte Short-only-Treffer nach >2 s auf mehreren Sendern, Keyboard-/
 langsamer Worker-Reinit, Focus-Lag, kein Auto-Player, bewusste Live-Auswahl,
 Default-Deny, genauer Grant/Retry, Pending-Wechsel, Loopback weiter abgelehnt,
@@ -84,7 +87,7 @@ neuer PO-/Runtimefehler. SHA256 oben bezeichnet das Addon-ZIP selbst.
 
 - Suche: search_data/media_search und gezielte Re-Init-/Focus-Hooks in media_window,
   numerische Diagnose-Allowlist. Delta Q1–Q3, alte Player-/Guide-Handoffs erhalten.
-- Download: Trust-UI/atomarer Pending-Grant, Manager, Worker-Phasen, neues kleines
+- Download: Trust-UI/atomarer Pending-Grant und Job-Statusguard, Manager, Worker-Phasen, neues kleines
   Zieltestmodul und Menüroute, 350xx-PO. Delta Z1/Z2 und D1–D5; echter vollständiger
   Film/Folge nach Source-Freigabe nötig. Bestehende Grants/Settings/DB-Schemata bleiben.
 - Paket: .31-Manifest/Versionsasserts, Service-Build nur numerisch 31, Changelog.

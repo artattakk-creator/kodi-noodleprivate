@@ -145,10 +145,10 @@ test_restart_offline_previous_index_and_immediate_disabled_filter (test_xcmate_0
 test_same_stream_in_two_groups_counted_once_globally_but_available_in_each (test_xcmate_028_streaming.IndexTests.test_same_stream_in_two_groups_counted_once_globally_but_available_in_each) ... ok
 test_streaming_group_publishes_only_after_complete_json (test_xcmate_028_streaming.IndexTests.test_streaming_group_publishes_only_after_complete_json) ... ok
 test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update (test_xcmate_028_streaming.LargeGuideTests.test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update) ...
-LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 13.111}
+LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 13.878}
 ok
 test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib (test_xcmate_028_streaming.LargeHTTPTests.test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib) ...
-LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 26.774, "peak_rss_kib": 56952}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 25.687, "peak_rss_kib": 56952}]
+LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 29.095, "peak_rss_kib": 57908}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 25.847, "peak_rss_kib": 57908}]
 ok
 test_cache_envelope_and_trailing_data_validated (test_xcmate_028_streaming.ParserTests.test_cache_envelope_and_trailing_data_validated) ... ok
 test_chunked_http_gzip_and_truncated_compression (test_xcmate_028_streaming.ParserTests.test_chunked_http_gzip_and_truncated_compression) ... ok
@@ -365,6 +365,7 @@ test_missing_action_metadata_does_not_hide_menu_when_media_identity_is_known (te
 test_parent_group_is_explicitly_visible_for_both_movie_and_series (test_xcmate_detail_menu_02928.Menu28Tests.test_parent_group_is_explicitly_visible_for_both_movie_and_series) ... ok
 test_same_detail_refresh_keeps_open_menu_and_close_restores_action_row (test_xcmate_detail_menu_02928.Menu28Tests.test_same_detail_refresh_keeps_open_menu_and_close_restores_action_row) ... ok
 test_visible_actions_button_uses_same_panel_without_any_left_event (test_xcmate_detail_menu_02928.Menu28Tests.test_visible_actions_button_uses_same_panel_without_any_left_event) ... ok
+test_cancel_between_retry_review_and_queue_commit_wins (test_xcmate_download_flow_02931.DownloadFlow31Tests.test_cancel_between_retry_review_and_queue_commit_wins) ... ok
 test_cancelled_target_test_never_writes (test_xcmate_download_flow_02931.DownloadFlow31Tests.test_cancelled_target_test_never_writes) ... ok
 test_changed_pending_target_during_confirmation_is_never_granted (test_xcmate_download_flow_02931.DownloadFlow31Tests.test_changed_pending_target_during_confirmation_is_never_granted) ... ok
 test_explicit_verified_origin_grant_and_second_retry_only_requeues_this_job (test_xcmate_download_flow_02931.DownloadFlow31Tests.test_explicit_verified_origin_grant_and_second_retry_only_requeues_this_job) ... ok
@@ -1051,11 +1052,11 @@ test_widget_route_and_no_cached_credentials_in_link (test_xtreammate_widgets.Wid
 test_youtube_whitelist (test_xtreammate_widgets.WidgetsTest.test_youtube_whitelist) ... ok
 
 ----------------------------------------------------------------------
-Ran 1046 tests in 121.657s
+Ran 1047 tests in 126.019s
 
 OK
 
-MODEL_COLD_WINDOW_MS 3.640
+MODEL_COLD_WINDOW_MS 3.485
 
 SELECTIVE_XMLTV {"bytes": 400, "parsed": 2, "stored": 1}
 
