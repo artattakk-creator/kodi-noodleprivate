@@ -3,7 +3,8 @@
 **Review-Draft:** [#149](https://github.com/artattakk-creator/kodi-noodleprivate/pull/149).
 **Quellbasis:** main b7ff441 (Produktivversion .29; neue Delta-Testpolitik enthalten).
 **Kumulativer geprüfter Quellstand:** 942fef59cae8d2e3721343396706c8cf812c39c1.
-Nachfolgende Commits ergänzen ausschließlich Testpaket/Nachweise/Dokumentation.
+Nachfolgende Commits ergänzen Testpaket/Nachweise/Dokumentation und einen reinen
+CI-Vergleich des mitgelieferten ZIP mit dem Neuaufbau; kein weiterer Addon-Diff.
 Kein main-Merge, Release oder Updatekanal-Publish. Der produktive Index und das
 bestehende .29-ZIP bleiben bytegleich. Kein vollständiger RC: #43/#127 bleiben offen.
 
@@ -43,7 +44,7 @@ Keine Schutz-Hashes oder Player-Regressionen aufgeweicht. Endstände siehe
 
 **1029 Tests PASS, 0 Fehler/Failures/Skips, 114,869 s** unter Python 3.12/Linux x86_64.
 Keine Thread-Ausnahme. Hostabhängigkeit impacket==0.13.0 für reale SMB2-Wire-Tests;
-nicht Teil des Addons. [Vollständiges Testprotokoll](TESTLOG_02930.txt) und
+nicht Teil des Addons. [Vollständiges Testprotokoll (nur Zeilenend-Leerzeichen normalisiert)](TESTLOG_02930.txt) und
 [maschineller Paket-/Testbericht](TESTERGEBNISSE_02930.json).
 
 - 20.000 unveränderte Portalaufrufe → exakt ein JSON-Read. Versionsänderung,
