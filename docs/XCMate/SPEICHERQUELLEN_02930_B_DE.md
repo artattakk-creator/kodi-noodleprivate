@@ -68,3 +68,14 @@ Host-SMB und simuliertes USB sind kein Nachweis physischer Android-Laufwerke.
    Poster-Retry bleibt eigener Test; keine Bilder/Jobs/Benutzerdaten löschen.
 
 Kein main-Merge, Release, Repository-Index-Update oder OTA in diesem Draft.
+
+## Host-Fixture: atomare FILE_CREATE-Semantik
+
+Ein zusätzlicher CI-Lauf zeigte eine Race Condition in impacket 0.13.0:
+`SMB2Commands.smb2Create` verwendet exists() gefolgt von O_CREAT ohne O_EXCL.
+Die Host-Fixture serialisiert deshalb ausschließlich CREATE-Handler, um den
+vorgeschriebenen atomaren SMB-FILE_CREATE-Vertrag abzubilden. Keine Client-,
+Produktiv- oder os.open-Patches. Der unveränderte Addon-Client sendet FILE_CREATE.
+Die strenge Kollisionsprüfung bleibt bestehen und läuft nun zwölf synchronisierte
+Runden mit jeweils fünf parallelen Clients: genau ein Erfolg und vier Kollisionen.
+Fixture und Test sind nur hostseitig; das Android-ZIP bleibt unverändert.
