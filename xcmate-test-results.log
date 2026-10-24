@@ -145,10 +145,10 @@ test_restart_offline_previous_index_and_immediate_disabled_filter (test_xcmate_0
 test_same_stream_in_two_groups_counted_once_globally_but_available_in_each (test_xcmate_028_streaming.IndexTests.test_same_stream_in_two_groups_counted_once_globally_but_available_in_each) ... ok
 test_streaming_group_publishes_only_after_complete_json (test_xcmate_028_streaming.IndexTests.test_streaming_group_publishes_only_after_complete_json) ... ok
 test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update (test_xcmate_028_streaming.LargeGuideTests.test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update) ... 
-LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 17.485}
+LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 15.011}
 ok
 test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib (test_xcmate_028_streaming.LargeHTTPTests.test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib) ... 
-LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 29.69, "peak_rss_kib": 63852}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 28.386, "peak_rss_kib": 63852}]
+LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 22.861, "peak_rss_kib": 65900}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 22.201, "peak_rss_kib": 65900}]
 ok
 test_cache_envelope_and_trailing_data_validated (test_xcmate_028_streaming.ParserTests.test_cache_envelope_and_trailing_data_validated) ... ok
 test_chunked_http_gzip_and_truncated_compression (test_xcmate_028_streaming.ParserTests.test_chunked_http_gzip_and_truncated_compression) ... ok
@@ -365,6 +365,18 @@ test_missing_action_metadata_does_not_hide_menu_when_media_identity_is_known (te
 test_parent_group_is_explicitly_visible_for_both_movie_and_series (test_xcmate_detail_menu_02928.Menu28Tests.test_parent_group_is_explicitly_visible_for_both_movie_and_series) ... ok
 test_same_detail_refresh_keeps_open_menu_and_close_restores_action_row (test_xcmate_detail_menu_02928.Menu28Tests.test_same_detail_refresh_keeps_open_menu_and_close_restores_action_row) ... ok
 test_visible_actions_button_uses_same_panel_without_any_left_event (test_xcmate_detail_menu_02928.Menu28Tests.test_visible_actions_button_uses_same_panel_without_any_left_event) ... ok
+test_cancel_between_retry_review_and_queue_commit_wins (test_xcmate_download_flow_02931.DownloadFlow31Tests.test_cancel_between_retry_review_and_queue_commit_wins) ... ok
+test_cancelled_target_test_never_writes (test_xcmate_download_flow_02931.DownloadFlow31Tests.test_cancelled_target_test_never_writes) ... ok
+test_changed_pending_target_during_confirmation_is_never_granted (test_xcmate_download_flow_02931.DownloadFlow31Tests.test_changed_pending_target_during_confirmation_is_never_granted) ... ok
+test_explicit_verified_origin_grant_and_second_retry_only_requeues_this_job (test_xcmate_download_flow_02931.DownloadFlow31Tests.test_explicit_verified_origin_grant_and_second_retry_only_requeues_this_job) ... ok
+test_failed_redirect_job_shows_review_action_before_blind_retry (test_xcmate_download_flow_02931.DownloadFlow31Tests.test_failed_redirect_job_shows_review_action_before_blind_retry) ... ok
+test_loopback_stays_blocked_even_after_explicit_lan_confirmation (test_xcmate_download_flow_02931.DownloadFlow31Tests.test_loopback_stays_blocked_even_after_explicit_lan_confirmation) ... ok
+test_revoke_removes_only_selected_portal_connection (test_xcmate_download_flow_02931.DownloadFlow31Tests.test_revoke_removes_only_selected_portal_connection) ... ok
+test_source_redirect_denial_is_not_logged_as_target_copy_failure (test_xcmate_download_flow_02931.DownloadFlow31Tests.test_source_redirect_denial_is_not_logged_as_target_copy_failure) ... ok
+test_target_inode_replacement_is_not_deleted (test_xcmate_download_flow_02931.DownloadFlow31Tests.test_target_inode_replacement_is_not_deleted) ... ok
+test_tiny_local_target_proves_actual_bytes_and_hash_and_preserves_existing_files (test_xcmate_download_flow_02931.DownloadFlow31Tests.test_tiny_local_target_proves_actual_bytes_and_hash_and_preserves_existing_files) ... ok
+test_unverified_default_choice_keeps_denial_and_never_starts_dns_or_retry (test_xcmate_download_flow_02931.DownloadFlow31Tests.test_unverified_default_choice_keeps_denial_and_never_starts_dns_or_retry) ... ok
+test_selected_signed_smb_target_really_receives_and_reads_tiny_file (test_xcmate_download_flow_02931.TargetWire31Tests.test_selected_signed_smb_target_really_receives_and_reads_tiny_file) ... ok
 test_abort_after_smb_rename_pauses_and_verified_recovery_needs_no_http (test_xcmate_download_targets_02929.SMB2Wire29Tests.test_abort_after_smb_rename_pauses_and_verified_recovery_needs_no_http) ... ok
 test_actual_smb_server_disconnect_and_restart_never_reports_partial_complete (test_xcmate_download_targets_02929.SMB2Wire29Tests.test_actual_smb_server_disconnect_and_restart_never_reports_partial_complete) ... ok
 test_real_smb2_film_and_episode_store_hash_no_replace_and_vfs_path (test_xcmate_download_targets_02929.SMB2Wire29Tests.test_real_smb2_film_and_episode_store_hash_no_replace_and_vfs_path) ... ok
@@ -808,6 +820,12 @@ test_search_worker_failure_is_retryable_without_closing_window (test_xcmate_sear
 test_special_characters_and_long_query_do_not_escape_local_index (test_xcmate_search_02926.SearchTests.test_special_characters_and_long_query_do_not_escape_local_index) ... ok
 test_tabs_real_counts_series_detail_and_back_restore_query (test_xcmate_search_02926.SearchTests.test_tabs_real_counts_series_detail_and_back_restore_query) ... ok
 test_upload_never_closes_window_or_navigates_home_container (test_xcmate_search_02926.SearchTests.test_upload_never_closes_window_or_navigates_home_container) ... ok
+test_invisible_search_tab_defers_focus_and_ignores_native_result_click (test_xcmate_search_02931.Search31Tests.test_invisible_search_tab_defers_focus_and_ignores_native_result_click) ... ok
+test_native_reinit_while_keyboard_is_open_preserves_window_and_pending_request (test_xcmate_search_02931.Search31Tests.test_native_reinit_while_keyboard_is_open_preserves_window_and_pending_request) ... ok
+test_progressive_completion_does_not_move_focus_to_results (test_xcmate_search_02931.Search31Tests.test_progressive_completion_does_not_move_focus_to_results) ... ok
+test_reinit_during_slow_search_never_replaces_its_worker_with_landing (test_xcmate_search_02931.Search31Tests.test_reinit_during_slow_search_never_replaces_its_worker_with_landing) ... ok
+test_root_search_keyboard_ok_does_not_select_first_result_or_stale_landing (test_xcmate_search_02931.Search31Tests.test_root_search_keyboard_ok_does_not_select_first_result_or_stale_landing) ... ok
+test_short_cache_after_old_two_second_cutoff_is_still_searched_for_all_channels (test_xcmate_search_02931.Search31Tests.test_short_cache_after_old_two_second_cutoff_is_still_searched_for_all_channels) ... ok
 test_busy_gate_waits_for_actual_clear_without_closing_foreign_dialog (test_xcmate_search_live_02927.SearchLiveTests.test_busy_gate_waits_for_actual_clear_without_closing_foreign_dialog) ... ok
 test_direct_play_occurs_once_without_directory_resolver_or_container_transition (test_xcmate_search_live_02927.SearchLiveTests.test_direct_play_occurs_once_without_directory_resolver_or_container_transition) ... ok
 test_guide_handoff_remains_existing_plugin_resolver (test_xcmate_search_live_02927.SearchLiveTests.test_guide_handoff_remains_existing_plugin_resolver) ... ok
@@ -1034,11 +1052,11 @@ test_widget_route_and_no_cached_credentials_in_link (test_xtreammate_widgets.Wid
 test_youtube_whitelist (test_xtreammate_widgets.WidgetsTest.test_youtube_whitelist) ... ok
 
 ----------------------------------------------------------------------
-Ran 1029 tests in 151.509s
+Ran 1047 tests in 137.861s
 
 OK
 
-MODEL_COLD_WINDOW_MS 5.028
+MODEL_COLD_WINDOW_MS 4.761
 
 SELECTIVE_XMLTV {"bytes": 400, "parsed": 2, "stored": 1}
 
