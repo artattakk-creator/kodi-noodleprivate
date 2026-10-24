@@ -69,7 +69,8 @@ class MediaWindow(DetailMenuMixin,SearchMixin,OwnerDispatch,xbmcgui.WindowXML):
         if control_id is None:return
         valid=self._valid_focus()
         if control_id not in valid:
-            if self.mode in ('detail','seasons','episodes') and control_id in (300,330,340,810,820):
+            if (self.mode in ('detail','seasons','episodes') and control_id in (300,330,340,810,820)
+                    or self.mode=='search' and control_id in eligible):
                 self._mode_focus[self.mode]=control_id
                 pending=(self.mode,control_id)
                 if self._focus_pending!=pending:
@@ -148,6 +149,13 @@ class MediaWindow(DetailMenuMixin,SearchMixin,OwnerDispatch,xbmcgui.WindowXML):
     def onInit(self):
         self.getControl(400).setLabel(tr(32586))
         self.getControl(501).setLabel(tr(32587))
+        if self._ready and getattr(self,'_search_prompt',False):return
+        if self._ready and self.mode=='search':
+            from media_search import mark
+            mark('SEARCH_RESUMED',getattr(self,'_search_correlation',''))
+            self._show('search')
+            if getattr(self,'_search_data',None):self._search_ready(self._search_data,resume=True)
+            return
         if self._ready:
             if self._chain_active():return
             # Kodi calls onInit again after returning from fullscreen video.

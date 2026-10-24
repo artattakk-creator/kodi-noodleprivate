@@ -12,7 +12,7 @@ FIELDS=('mode','kind','category','offset','rows','total','selected','groups','_p
 
 
 def mark(event,correlation=''):
-    allowed=('SEARCH_INPUT_ACCEPTED','SEARCH_GUI_READY','SEARCH_RETURN','SEARCH_RESULT_READY','SEARCH_WORKER_FAILED','SEARCH_WINDOW_CLOSED','SEARCH_WORKER_STOP_PENDING')
+    allowed=('SEARCH_INPUT_ACCEPTED','SEARCH_GUI_READY','SEARCH_RETURN','SEARCH_RESULT_READY','SEARCH_WORKER_FAILED','SEARCH_WINDOW_CLOSED','SEARCH_WORKER_STOP_PENDING','SEARCH_RESUMED','SEARCH_CLICK_IGNORED')
     if event not in allowed:return
     try:
         xbmc.log('[XCMate][SEARCH] event={} ms={} dispatch={} window={} owner={}'.format(
@@ -60,6 +60,7 @@ class SearchMixin:
         self._search_query=query;self._search_kind=getattr(self,'_search_kind',self.kind)
         if self._search_kind not in KINDS:self._search_kind='vod'
         self._search_offset=0;self._search_selected=0;self._search_rows=[];self._search_data={};self._search_loading=True
+        self._search_continuation=None
         self.mode='search';self._show('search')
         for pos,label in enumerate(LABELS):self.getControl(700+pos).setLabel(tr(label)+' (…)')
         self.getControl(720).setLabel(tr(32475));self.getControl(721).setLabel(tr(32476))
@@ -72,32 +73,48 @@ class SearchMixin:
     def _search_load(self):
         from search_data import search
         portal=dict(self.portal);query=self._search_query;kind=self._search_kind;offset=self._search_offset
-        self._search_loading=True
-        self._request(lambda:search(portal,query,kind,offset),self._search_ready)
+        cursor=getattr(self,'_search_continuation',None);self._search_continuation=None
+        if cursor is None:self._search_loading=True
+        self._request(lambda:search(portal,query,kind,offset,incremental=True,continuation=cursor,correlation=self._search_correlation),self._search_ready)
 
-    def _search_ready(self,value):
-        if self.mode!='search':return
-        self._search_loading=False;self._search_data=value
+    def _search_ready(self,value,resume=False):
+        if self.mode!='search' or self._closed or self._leaving:return
+        cursor=value.get('_continuation') if not resume else None
+        value={k:v for k,v in value.items() if k!='_continuation'}
+        if not resume:self._search_loading=False
+        self._search_data=value
+        old_focus=self.getFocusId();old_position=self.getControl(710).getSelectedPosition()
         self.getControl(103).setLabel(tr(33903)+' · '+self._search_query)
         for pos,kind in enumerate(KINDS):
             count=value[kind]['total']
-            self.getControl(700+pos).setLabel(tr(LABELS[pos])+' ('+(str(count) if count is not None else '…')+')')
+            self.getControl(700+pos).setLabel(tr(LABELS[pos])+' ('+(str(count)+('+' if value[kind].get('partial') else '') if count is not None else '…')+')')
         section=value[self._search_kind];self._search_rows=section['rows']
         rows=[dict(row,name=row.get('name','')+(' · '+tr(33905)+': '+row['_now_title'] if row.get('_now_match') else '')) for row in self._search_rows]
         self._fill(710,rows)
-        self.getControl(710).selectItem(getattr(self,'_search_selected',0))
+        self.getControl(710).selectItem(old_position if old_focus==710 else getattr(self,'_search_selected',0))
         self.getControl(102).setLabel(tr(33906) if section['code']=='INDEX_ERROR' else tr(33904) if section['total'] is None else
             tr(33907) if not rows else '{}–{} / {}'.format(self._search_offset+1,self._search_offset+len(rows),section['total']))
         self.getControl(501).setLabel(tr(33908) if section['code'] in ('NO_EPG','NO_CURRENT_EPG','EPG_UNAVAILABLE','EPG_PARTIAL') else '')
         self.getControl(720).setVisible(self._search_offset>0)
         self.getControl(721).setVisible(bool(section['total'] and self._search_offset+len(rows)<section['total']))
-        self.setFocusId(710 if rows else 700+KINDS.index(self._search_kind))
+        # Never turn the keyboard's finishing OK into a first-result click.
+        # Keep the tab until the user explicitly moves down to the results.
+        target=old_focus if old_focus in self._valid_focus() else 700+KINDS.index(self._search_kind)
+        self.setFocusId(target)
         mark('SEARCH_RESULT_READY',self._search_correlation)
+        if cursor is not None:
+            self._search_continuation=cursor;self._search_load()
 
     def _search_click(self,cid):
         if self.mode!='search':return False
+        if getattr(self,'_search_prompt',False) or self._focus_pending is not None:return True
+        if cid not in (400,700,701,702,710,720,721):
+            mark('SEARCH_CLICK_IGNORED',self._search_correlation);return True
+        if cid==710 and self.getFocusId()!=710:
+            mark('SEARCH_CLICK_IGNORED',self._search_correlation);return True
         if cid in (700,701,702):
-            self._search_kind=KINDS[cid-700];self._search_offset=0;self._search_selected=0;self._search_load();return True
+            self._search_kind=KINDS[cid-700];self._search_offset=0;self._search_selected=0
+            self.setFocusId(cid);self._search_load();return True
         if cid in (720,721):
             self._search_offset=max(0,self._search_offset+(-48 if cid==720 else 48));self._search_selected=0;self._search_load();return True
         if cid!=710:return False
@@ -118,6 +135,7 @@ class SearchMixin:
         return True
 
     def _search_action(self,key):
+        if getattr(self,'_search_prompt',False):return True
         if key in (9,10,92) and self.mode=='detail' and getattr(self,'_search_detail',False):
             self._search_detail=False;self._generation+=1;self.mode='search';self._show('search')
             self._search_ready(self._search_data);return True
