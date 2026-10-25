@@ -30,9 +30,10 @@ def key(url): return hashlib.sha256(url.encode()).hexdigest()
 def enqueue(urls,priority=0):
     from media_art import cached,folder
     from import_budget import check_space
-    from art_storage import check
-    check(sum(len(u) for u in urls)*3,limit=0)
-    check_space(os.path.join(os.path.dirname(folder()),'media_art_jobs_v1.sqlite'),sum(len(u) for u in urls)*3)
+    # Persist small metadata under the import reserve. The full configured
+    # image reserve remains enforced by fetch before HTTP and before writing.
+    expected=sum(len(u) for u in urls)*3+65536
+    check_space(os.path.join(os.path.dirname(folder()),'media_art_jobs_v1.sqlite'),expected)
     db=connect()
     try:
         with db:
@@ -125,7 +126,7 @@ def run_one(now=None):
         job=dict(row)
         with db:
             db.execute('UPDATE worker SET until=?,owner=? WHERE id=1',(now+30,owner))
-            claimed=db.execute("UPDATE jobs SET next_at=?,status='RUNNING' WHERE ident=? AND status!='READY' AND attempts<3 AND next_at<=?",(now+30,job['ident'],now)).rowcount
+            claimed=db.execute("UPDATE jobs SET next_at=?,status='RUNNING',updated=? WHERE ident=? AND status!='READY' AND attempts<3 AND next_at<=?",(now+30,now,job['ident'],now)).rowcount
         if not claimed:
             with db:db.execute("UPDATE worker SET until=0,owner='' WHERE id=1 AND owner=?",(owner,))
             return False
@@ -175,10 +176,11 @@ def status(cancel=lambda:False):
         if xbmc.Monitor().waitForAbort(.04):break
     try:
         from media_art import folder
-        capacity=shutil.disk_usage(os.path.dirname(folder()))
-        value.update(free=capacity.free,total=capacity.total)
+        from art_storage import capacity as read_capacity
+        value.update(read_capacity())
     except OSError:value['capacity_code']='UNAVAILABLE'
-    return value
+    from art_diagnostics import augment
+    return augment(value,cancel)
 
 
 def retry():
@@ -208,14 +210,35 @@ def prefetch_selected():
             db=connect()
             try: prior=db.execute('SELECT revision,offset FROM scan WHERE pid=? AND kind=?',(portal['id'],kind)).fetchone()
             finally: db.close()
-            offset=prior['offset'] if prior and prior['revision']==revision else 0
-            if offset<0: continue
+            acknowledged=revision+'|persisted36'
+            if prior and prior['revision'] in (revision,acknowledged):
+                offset=prior['offset']
+                if offset<0:
+                    # Older scans advanced after an in-memory request, before
+                    # enrolment committed. Recover once ONLY when the durable
+                    # queue is empty; never reset existing failed/READY jobs.
+                    if prior['revision']==acknowledged:continue
+                    db=connect()
+                    try:has_jobs=db.execute('SELECT 1 FROM jobs LIMIT 1').fetchone()
+                    finally:db.close()
+                    if has_jobs:continue
+                    offset=0
+            else:offset=0
             rows,total=reader.page(kind,offset=offset,limit=48)
-            from media_art import request
-            request(rows,priority=20)
+            from media_art import valid_source
+            from art_diagnostics import sources as observe_sources
+            observe_sources(rows,valid_source)
+            urls=list(dict.fromkeys(url for row in rows for url in sources(row) if url))
+            # This caller already runs on the service's data worker. Advance
+            # only after the persistent transaction has acknowledged this page.
+            from art_diagnostics import publish,enrol_failure
+            try:enqueue(urls,priority=20)
+            except (OSError,RuntimeError,sqlite3.Error) as error:
+                enrol_failure(error);raise
+            publish('enrol','ENQUEUED',items=len(urls))
             db=connect()
             try:
-                with db: db.execute('INSERT OR REPLACE INTO scan VALUES(?,?,?,?)',(portal['id'],kind,revision,offset+len(rows) if rows and offset+len(rows)<total else -1))
+                with db: db.execute('INSERT OR REPLACE INTO scan VALUES(?,?,?,?)',(portal['id'],kind,acknowledged,offset+len(rows) if rows and offset+len(rows)<total else -1))
             finally: db.close()
 
 
