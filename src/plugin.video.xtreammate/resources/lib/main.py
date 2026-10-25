@@ -358,6 +358,11 @@ class Router:
                           icon=_ICON_SETTINGS,
                           plot='Addon-Einstellungen öffnen.')
             self._end_directory()
+            # First-ever add-on opening on a genuinely empty profile:
+            # immediately show the existing complete setup wizard. Disabled
+            # or legacy portals never trigger destructive reconfiguration.
+            from first_run_setup import launch_once
+            launch_once(self)
             return
 
         from home_menu import active_portal
