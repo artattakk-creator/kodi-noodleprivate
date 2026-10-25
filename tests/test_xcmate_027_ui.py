@@ -216,6 +216,7 @@ class NavigationTests(Fixture,unittest.TestCase):
         self.assertEqual(w.mode,'landing');self.assertEqual(w.focus,110)
 
     def test_guide_starts_in_start_channel_group_and_native_group_navigation(self):
+        self.portal['start_group_id']='b'  # Legacy two-column guide contract; grid .35 is tested separately.
         self.cache={'xml':[dict(channel='xml',name='Actual',start_timestamp=self.now-60,stop_timestamp=self.now+3600)]}
         w=self.guide_window()
         self.assertEqual(w.category,'a')  # Start channel beats configured group b.
