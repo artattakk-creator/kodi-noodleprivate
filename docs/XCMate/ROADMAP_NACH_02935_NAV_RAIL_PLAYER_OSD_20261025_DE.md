@@ -1,5 +1,8 @@
 # XCMate – verbindliche UX-Roadmap nach .35: bildschirmhohe Rail, zweispaltiges Mini-EPG, echte Player-OSDs und Genresuche
 
+> **VERBINDLICHE RELEASE-PLANUNG 25.10.2026:** [Versionszug .36–.45 mit kombinierter Feature- und Vorversionsfehlerbehebung](VERBINDLICHE_RELEASE_ROADMAP_AB_02935_20261025_DE.md). `.35` wurde Android-funktional **15/15 PASS** abgenommen. `.36`: Such-/Start-/OSD-Restperformance **plus echte Genre-Suche**; `.37`: **dauerhaft zweispaltiges Mini-EPG und bildschirmhohe Rail NACH Sendergruppen**; `.38`: Live-Player-OSD; `.39`: VOD-OSD; spätere separate EPG-/Artwork-/Storage-Phasen. Früher genannte anderslautende vorläufige Versionsnummern in diesem Dokument sind **nicht** maßgeblich; der aktuelle verbindliche Versionszug hat Vorrang. Der Links-Vertrag `Live→Mini→Gruppen→Rail` bleibt unantastbar.
+
+
 > **NEUESTER ENTWICKLUNGSPLAN 25.10.2026, NACH BESTANDENER .35-ABNAHME:** Die früher in diesem Dokument beispielhaft genannte „.36 = Rail“-Versionsnummer war ausdrücklich nur **vorläufig** und wird durch die aktuelle [konkrete Codex-Stabilisierungsübergabe für den nächsten kumulativen Kandidaten](CODEX_AUFTRAG_02936_PERF_OSD_SEARCH_BACKLOG_20261025_DE.md) **nicht als Versionsversprechen fortgeführt**. ZUERST Such-/Startkanal-/Infoleisten-Performance und Stop/Home-Routing absichern, ggf. einzelne kleine #159/#111-Fixes. **Unmittelbar danach weiterhin verbindlich:** Mini-EPG mit rechter Programmspalte und **Links→Mini→SENDERGRUPPEN→vollhohe Rail**, danach echte Live-/VOD-Player-Buttons. Die [50-Issue-Triage](ISSUE_TRIAGE_NACH_02935_20261025_DE.md) steuert weitere getrennte PRs; [EPG Hub #161](CODEX_AUFTRAG_ZENTRALER_EPG_HUB_QUELLENMERGE_20261025_DE.md) bleibt eigenständig. **Keine Umkehr der vom Nutzer klargestellten Links-Kette.**
 
 
