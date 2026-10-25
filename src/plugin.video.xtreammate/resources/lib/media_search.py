@@ -164,6 +164,8 @@ class SearchMixin:
             mark('SEARCH_RESULT_READY',self._search_correlation);self._search_ready_trace=now
         if self._search_kind=='live' and rows and self.getControl(710).size():
             self._search_profile.emit('FIRST_LIVE_ROW_RENDERED',once=True,rows=len(rows))
+            if any(row.get('_now_match') for row in rows):
+                self._search_profile.emit('VISIBLE_FIRST_PROGRAMME',once=True,rows=len(rows))
         if cursor is not None:
             self._search_continuation=cursor;self._search_load()
 
