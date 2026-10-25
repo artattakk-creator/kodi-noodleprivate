@@ -288,9 +288,15 @@ def search(portal,query,kind='vod',offset=0,now=None,incremental=False,continuat
                     if not cursor.done:result['_continuation']=cursor
                 else:rows,code=live_matches(portal,query,reader,int(time.time() if now is None else now))
                 total=len(rows);rows=rows[start:start+PAGE]
-            else:rows,total=reader.page(section,query,offset=start,limit=PAGE);code='READY'
+            else:
+                from genre_search import status as genre_status
+                before_genre=genre_status(reader,section,query)
+                rows,total=reader.page(section,query,offset=start,limit=PAGE)
+                after_genre=genre_status(reader,section,query) if before_genre!='UNUSED' else 'UNUSED'
+                changed=before_genre!='UNUSED' and reader.state(section)!=state
+                code='GENRE_PENDING' if 'PENDING' in (before_genre,after_genre) or changed else 'READY'
             result[section]=dict(rows=rows,total=total,code=code,partial=section=='live' and '_continuation' in result)
-            if section!='live' and cursor is not None:
+            if section!='live' and cursor is not None and code!='GENRE_PENDING':
                 cursor.media_revisions[section]=(state.get('revision'),state.get('updated'))
                 cursor.media_cache[cache_key]=result[section]
                 while len(cursor.media_cache)>12:cursor.media_cache.pop(next(iter(cursor.media_cache)))

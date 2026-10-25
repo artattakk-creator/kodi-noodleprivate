@@ -102,6 +102,12 @@ def _run():
         except Exception: pass
         if cancelled():break
         try:
+            from genre_search import run_next as index_genres
+            worked=index_genres(cancelled) or worked
+        except MemoryError:runtime.note_pressure()
+        except Exception:pass
+        if cancelled():break
+        try:
             from guide_timers import poll as poll_timers
             poll_timers()
         except MemoryError:runtime.note_pressure()

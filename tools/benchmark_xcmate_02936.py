@@ -148,6 +148,35 @@ def guide_case(version):
     finally:h.doCleanups()
 
 
+def genre_cases():
+    result={}
+    for count in (1000,50000):
+        h=Harness(methodName='runTest');h.setUp()
+        try:
+            genre=importlib.import_module('genre_search')
+            rows=[dict(stream_id=str(i),category_id='a',name='Sci-Fi Archive' if i==0 else 'Item '+str(i),
+                       genre='Science Fiction' if i%10==0 else 'Drama') for i in range(count)]
+            h.index.replace_catalog('p','vod',rows,h.catalogs['get_vod_categories'])
+            reader=h.index.Reader('p',timeout=.15,query_seconds=1)
+            start=time.perf_counter_ns();_,before=reader.page('vod','Sci-Fi');title_ms=(time.perf_counter_ns()-start)/1e6
+            start=time.perf_counter_ns();batches=[]
+            while True:
+                tick=time.perf_counter_ns();worked=genre.advance('p','vod')
+                if not worked:break
+                batches.append((time.perf_counter_ns()-tick)/1e6)
+            build_ms=(time.perf_counter_ns()-start)/1e6
+            samples=[]
+            for _ in range(5):
+                tick=time.perf_counter_ns();found,total=reader.page('vod','Sci-Fi');samples.append((time.perf_counter_ns()-tick)/1e6)
+            assert before==1 and total==count//10 and found[0]['sid']=='0'
+            result[str(count)]=dict(title_only_before_ms=title_ms,title_only_before_hits=before,
+                completed_genre_hits=total,genre_query_samples_ms=samples,genre_query_median_ms=statistics.median(samples),
+                host_materialization_ms=build_ms,transactions=len(batches),maximum_transaction_ms=max(batches),
+                batch_rows=genre.BATCH,includes_service_scheduling=False)
+        finally:h.doCleanups()
+    return result
+
+
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True);parser.add_argument('--samples',type=int,default=5);args=parser.parse_args()
     result=dict(baseline=BASE,platform=platform.platform(),python=platform.python_version(),channels=2764,
@@ -158,8 +187,10 @@ def main():
         for version in ('before','after'):
             samples=[fn(version) for _ in range(max(1,min(args.samples,10)))]
             result['cases'][name][version]=dict(samples=samples,median={key:statistics.median(s[key] for s in samples) for key in samples[0]})
+    result['genre']=genre_cases()
     args.output.parent.mkdir(parents=True,exist_ok=True);args.output.write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps({name:{v:x['median'] for v,x in values.items()} for name,values in result['cases'].items()},indent=2))
+    print(json.dumps(result['genre'],indent=2))
 
 
 if __name__=='__main__':main()

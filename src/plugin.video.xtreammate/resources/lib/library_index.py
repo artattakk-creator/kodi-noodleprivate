@@ -190,18 +190,32 @@ class Reader:
 
     def page(self,kind,query='',category=None,recent=False,offset=0,limit=48,pin=None,include_undated=False):
         where='pid=? AND kind=?'+self._filter(kind); args=[self.pid,kind]
+        terms=[];term_args=[]
         for token in normalized(query).split():
-            where+=' AND search LIKE ? ESCAPE \'\\\''
-            args.append('%'+token.replace('\\','\\\\').replace('%','\\%').replace('_','\\_')+'%')
+            terms.append("search LIKE ? ESCAPE '\\'")
+            term_args.append('%'+token.replace('\\','\\\\').replace('%','\\%').replace('_','\\_')+'%')
+        title_where=' AND '.join(terms) or '1'
+        genre=None
+        if query and kind in ('vod','series'):
+            from genre_search import clause
+            genre=clause(self,kind,query)
+        if genre:
+            where+=' AND (('+title_where+') OR ('+genre[0]+'))'
+            args+=term_args+genre[1]
+        elif terms:
+            where+=' AND '+title_where;args+=term_args
         if category is not None: where+=' AND cid=?'; args.append(str(category))
         if recent and not include_undated: where+=' AND added IS NOT NULL'
-        counts=self._query('SELECT count(DISTINCT sid) AS n FROM titles WHERE '+where,args,kind)
+        counts=self._query('SELECT count(DISTINCT sid) AS n FROM titles AS results WHERE '+where,args,kind)
         total=counts[0]['n'] if counts else 0
         order='added IS NULL,added DESC,ordinal' if recent else 'ordinal'
+        if genre:
+            order='CASE WHEN search=? THEN 0 WHEN '+title_where+' THEN 1 ELSE 2 END,'+order
+            args=args+[normalized(query)]+term_args
         if pin:
             order='CASE WHEN sid=? THEN 0 ELSE 1 END,'+order
-            args=args+[str(pin)]
-        rows=self._query('SELECT payload FROM titles WHERE '+where+' GROUP BY sid ORDER BY '+order+' LIMIT ? OFFSET ?',
+            args=args[:-(1+len(term_args))]+[str(pin)]+args[-(1+len(term_args)):] if genre else args+[str(pin)]
+        rows=self._query('SELECT payload FROM titles AS results WHERE '+where+' GROUP BY sid ORDER BY '+order+' LIMIT ? OFFSET ?',
                          args+[max(1,min(int(limit),100)),max(0,int(offset))],kind)
         return [json.loads(r['payload']) for r in rows],total
 
