@@ -1,5 +1,8 @@
 # CODEX – verbindlicher Folgeauftrag nach XCMate 0.1.29.35: Performance, Routing, Suchqualität und gezielte Rest-Issues
 
+> **NEUESTE VERBINDLICHE ANWEISUNG 25.10.2026 – [Release-Roadmap ab .35](VERBINDLICHE_RELEASE_ROADMAP_AB_02935_20261025_DE.md) HAT VORRANG:** Jede Version enthält **neue Funktionen UND die Reparaturen aus der unmittelbar vorangehenden Android-Abnahme in EINEM kumulativen PR**. Für den nächsten Kandidaten `.36` ist **#159 Genre-Suche für Filme/Serien nun planmäßiger Feature-Bestandteil**, nicht nur beliebiger Optionalpunkt; **#111 Poster-Retry** soweit datensicher isolierbar ausdrücklich mitnehmen, riskanten Großumbau #111/#90 transparent als BLOCKED/nächste Version dokumentieren. Die Pflichtpakete B1–B4 bleiben bestehen. Alte Teilformulierung „C1 nur optional“ ist durch diesen neueren Nutzerbeschluss überholt. Danach `.37` Mini-EPG rechte Programmansicht PLUS vollhohe Rail **NACH der Sendergruppenebene**; `.38` Live-Player; `.39` VOD-Player. Android-FAIL der vorigen Version jeweils mit in den nächsten Feature-Kandidaten übernehmen. Keine automatische Merge-/Releasefreigabe.
+
+
 **Nutzerentscheidung:** 25.10.2026: Jetzt an XCMate weiterarbeiten, die vollständige .35-Abnahme samt Kodi-Logs berücksichtigen, zusätzliche passende offene Issues mitbearbeiten und den Rückstand schrittweise abbauen. **Keine pauschale Änderung aller 50 offenen Issues in einem PR.**
 
 **Repo:** https://github.com/artattakk-creator/kodi-noodleprivate  
