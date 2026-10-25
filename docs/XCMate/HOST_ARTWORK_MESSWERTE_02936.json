@@ -1,0 +1,62 @@
+{
+  "baseline": "656be1e73aff1c16b877880bde52f2384792677a",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "python": "3.12.14",
+  "android": "NOT_TESTED",
+  "private_logs_or_profiles_used": false,
+  "cases": {
+    "simulated_512_mib_free": {
+      "simulated_not_device": true,
+      "free_bytes": 536870912,
+      "total_bytes": 2147483648,
+      "configured_image_reserve": 1073741824,
+      "before": {
+        "database_created": false,
+        "durable_jobs": 0
+      },
+      "after": {
+        "durable_jobs": 1,
+        "job_status": "DISK_FULL",
+        "storage_result": "RESERVE_BLOCKED",
+        "network_calls": 0
+      }
+    },
+    "old_completed_empty_queue": {
+      "before": {
+        "scan_complete": true,
+        "durable_jobs": 0
+      },
+      "after": {
+        "scan_complete": true,
+        "durable_jobs": 3,
+        "persistence_acknowledged": true
+      },
+      "network_calls": 0
+    },
+    "real_local_http_fixture": {
+      "fixture_images": 7,
+      "movies": 3,
+      "series": 2,
+      "logos": 2,
+      "http_requests": 7,
+      "fixture_bytes": [
+        339,
+        340,
+        358,
+        359,
+        360,
+        364,
+        366
+      ],
+      "first_ready_ms": 21.934667,
+      "total_host_test_ms": 636.553509,
+      "all_jobs_ready": true,
+      "movie_grid_repaint": true,
+      "focus_preserved": true,
+      "all_local_paths_after_reload": true,
+      "extra_http_after_reload": 0,
+      "existing_ready_row_and_file_preserved": true,
+      "native_kodi_or_android_executed": false
+    }
+  }
+}
