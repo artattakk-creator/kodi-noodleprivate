@@ -726,6 +726,8 @@ class Router:
         Return a Kodi ListItem with the provider URL in its path. The caller
         decides whether Kodi expects a resolved playable item or a direct play.
         """
+        from live_timing import begin,emit
+        timing=begin(self)
         from portals import get_by_id
         p = get_by_id(self._params.get('pid', ''))
         if not p or p.get('type') != 'xtream' or not p.get('start_stream_id'):
@@ -735,8 +737,17 @@ class Router:
         from player import build_playable_item
         sid = str(p['start_stream_id'])
         xc = XtreamClient(p['xc_host'], p['xc_user'], p['xc_pass'])
-        cached = xc.get_cached_catalog('get_live_streams') or []
-        channel = next((c for c in cached if str(c.get('stream_id')) == sid), {})
+        from live_start import channel as start_channel
+        if hasattr(self,'_start_channel'):
+            channel = self._start_channel
+        else:
+            emit(timing,'PORTAL_REQUEST_BEGIN',network=0)
+            channel = start_channel(p,xc)
+            emit(timing,'PORTAL_REQUEST_END',network=0)
+        if channel is None:
+            notify('XCMate', 'Startsender ist nicht im aktivierten lokalen Katalog verfügbar.')
+            return None
+        emit(timing,'START_SID_RESOLVED',ready=1)
         url = xc.live_stream_url(sid, 'ts')
         if not url:
             notify('XCMate', 'Die Startsender-Adresse konnte nicht ermittelt werden.')
@@ -762,6 +773,8 @@ class Router:
         from live_overlay import announce
         try:
             session=announce(p['id'], sid, title)
+            from live_timing import bind,emit
+            bind(self._live_timing,session)
             from play_intent import before_play
             if not before_play(session):
                 xbmcplugin.setResolvedUrl(self._handle, False, xbmcgui.ListItem())
@@ -770,6 +783,7 @@ class Router:
             tag_live_item(item,session)
             xbmcgui.Window(10000).setProperty(
                 'XtreamMate.StartupStatus', 'Kodi-Auflösung: ' + title[:64])
+            emit(self._live_timing,'PLAY_INVOKED')
             xbmcplugin.setResolvedUrl(self._handle, True, item)
         except Exception as exc:
             error('XCMate startup resolver failed: {}'.format(type(exc).__name__))
@@ -789,12 +803,15 @@ class Router:
         from live_overlay import announce
         try:
             session=announce(p['id'], sid, title)
+            from live_timing import bind,emit
+            bind(self._live_timing,session)
             from play_intent import before_play
             if not before_play(session): return
             from live_recovery import tag_live_item
             tag_live_item(item,session)
             xbmcgui.Window(10000).setProperty(
                 'XtreamMate.StartupStatus', 'Autoplay-Direktstart: ' + title[:64])
+            emit(self._live_timing,'PLAY_INVOKED')
             xbmc.Player().play(item.getPath(), item)
         except Exception as exc:
             error('XCMate direct startup failed: {}'.format(type(exc).__name__))

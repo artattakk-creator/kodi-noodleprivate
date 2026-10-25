@@ -149,6 +149,8 @@ def dispatch(router):
         browse(router,portal) if action=='source_live' else play(router,portal,direct=action=='source_start')
     elif action=='xcmate_home': show(router,portal)
     elif action=='home_start':
+        from live_timing import begin
+        begin(router,menu=True)
         if portal.get('type') in ('m3u','stb'):
             if router._handle>=0:
                 from window_navigation import _anchor_home
@@ -158,8 +160,12 @@ def dispatch(router):
             play(router,portal,direct=True);return
         sid=str(portal.get('start_stream_id') or '')
         xc=router._xc(portal) if portal.get('type')=='xtream' else None
-        streams=xc.get_cached_catalog('get_live_streams') if xc else None
-        if not sid or not any(isinstance(s,dict) and str(s.get('stream_id'))==sid for s in (streams or [])):
+        from live_start import channel
+        from live_timing import emit
+        emit(router._live_timing,'PORTAL_REQUEST_BEGIN',network=0)
+        router._start_channel=channel(portal,xc) if xc else None
+        emit(router._live_timing,'PORTAL_REQUEST_END',network=0)
+        if not sid or router._start_channel is None:
             _end(router,False)
             if xbmcgui.Dialog().yesno('XCMate',tr(32467)):
                 xbmc.executebuiltin('Container.Update('+router.url(action='startup_settings',pid=portal['id'])+')')
