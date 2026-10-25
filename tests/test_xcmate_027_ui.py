@@ -340,7 +340,8 @@ class FreezeTests(unittest.TestCase):
                 self.assertEqual(reference['original_sha256'],digest)
                 from theme_texture_contract import without_theme
                 from overlay_contract_02935 import without_guide35
-                source=without_guide35(without_theme((ROOT/file).read_text()))
+                from stabilization_contract_02936 import without_stabilization36
+                source=without_guide35(without_theme(without_stabilization36((ROOT/file).read_text(),'live_overlay')))
                 # Explicit shared-adapter constructor injection; every other
                 # original constructor statement remains frozen.
                 source=source.replace("def __init__(self, portal, initial_sid='', client=None):","def __init__(self, portal, initial_sid=''):")
@@ -373,7 +374,8 @@ class FreezeTests(unittest.TestCase):
                         self.assertEqual(hashlib.sha256(ast.dump(functions[name],include_attributes=False).encode()).hexdigest(),original,name)
             else:
                 self.assertEqual(hashlib.sha256((ROOT/file).read_bytes()).hexdigest(),digest,file)
-        source=(LIB/'main.py').read_text()
+        from stabilization_contract_02936 import without_stabilization36
+        source=without_stabilization36((LIB/'main.py').read_text(),'main')
         additions=[
             "            from play_intent import before_play\n            if not before_play(session):\n                xbmcplugin.setResolvedUrl(self._handle, False, xbmcgui.ListItem())\n                return\n",
             "            from play_intent import before_play\n            if not before_play(session): return\n",

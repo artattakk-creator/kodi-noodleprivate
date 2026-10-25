@@ -66,7 +66,8 @@ class MediaRails299(Fixture,unittest.TestCase):
             source=without_theme((LIB/name).read_bytes())
             if name=='live_overlay.py':
                 from overlay_contract_02935 import without_guide35
-                source=without_guide35(source)
+                from stabilization_contract_02936 import without_stabilization36
+                source=without_guide35(without_theme(without_stabilization36((LIB/name).read_bytes(),'live_overlay')))
             if name=='owner_dispatch.py':
                 # .34 adds identity probes only; the full original pump remains pinned.
                 for hook in (

@@ -43,7 +43,12 @@ def prepare(cancel=lambda:False):
         if not cid: continue
         visible,total=reader.page('live',category=cid,limit=16,pin=start['sid'] if start else None)
         client=XtreamClient(portal['xc_host'],portal['xc_user'],portal['xc_pass'])
-        cache=load_cache(pid);mappings=configuration(pid)['mappings']
+        mappings=configuration(pid)['mappings']
+        from guide_viewport import cache as viewport_cache
+        from types import SimpleNamespace
+        channels=[SimpleNamespace(tvg_id=r.get('epg_channel_id',''),extra={'stream_id':r['sid']}) for r in visible]
+        cache=viewport_cache(pid,channels,mappings,time.time())
+        if cache is None:cache=load_cache(pid)
         rows=[];missing=[]
         for row in visible:
             if cancel(): return
