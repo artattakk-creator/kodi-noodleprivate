@@ -3,9 +3,9 @@ import json
 
 
 def read(portal,client):
-    from library_index import Reader, IndexReadError
     categories=client.get_cached_catalog('get_live_categories')
     if portal.get('type')=='xtream':
+        from library_index import Reader, IndexReadError
         reader=Reader(portal['id'],timeout=.15,query_seconds=1)
         try:
             if reader.state('live') is not None:

@@ -5,6 +5,13 @@ from xcmate027_fixture import Fixture
 
 
 class EpgSearch30Tests(Fixture,unittest.TestCase):
+    def setUp(self):
+        super().setUp()
+        # Payloads are supplied by the model; inventory now sees their real keys.
+        for sid in ('1','2','3'):
+            name=self.client._cache_key('get_short_epg',dict(stream_id=sid,limit=4))+'.json'
+            (self.folder/name).write_text('{}')
+
     def search(self,query='Upload'):
         return importlib.import_module('search_data').search(self.portal,query,kind='live',now=self.now)['live']
 

@@ -27,7 +27,8 @@ class V016Checks(unittest.TestCase):
         self.assertIn("self._startup_playable()",start)
         self.assertIn("xbmcplugin.setResolvedUrl(self._handle, True, item)",start)
         common=source[source.index("    def _startup_playable(self):"):source.index("    def _play_start(self):")]
-        self.assertIn("xc.get_cached_catalog('get_live_streams')",common)
+        self.assertIn('start_channel(p,xc)',common)
+        self.assertNotIn("xc.get_cached_catalog('get_live_streams')",common)
         self.assertNotIn("xc.get_live_streams()",start)
         self.assertIn("is_folder=False)",source)
         self.assertIn("li.setProperty('IsPlayable', 'true')",source)
