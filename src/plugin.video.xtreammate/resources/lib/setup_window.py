@@ -279,7 +279,70 @@ class SetupWindow(WorkWindow):
             self.draft.categories[self.kind].remove(group);self.draft.categories[kind].append(group);self._groups_loaded=False;self.draft.scanned=False;self.render()
             return
         super().onAction(action)
-    def scanned(self,result): self.stage='summary';self.render()
+    def _choose_start_channel(self):
+        """Optional first-run start group / channel from staged, selected data.
+
+        Only the temporary staging SQLite is read; preferences are published
+        together with the account by Draft.save() after explicit Save.
+        """
+        if not self.draft.selected['live'] or not self.draft.report.get('live'):
+            return
+        dlg = xbmcgui.Dialog()
+        if not dlg.yesno('XCMate – Startsender',
+                         'Jetzt Startgruppe und Startsender auswählen? '
+                         'Das startet noch keine Wiedergabe.'):
+            return
+        categories = [g for g in self.draft.categories['live']
+                      if str(g['category_id']) in self.draft.selected['live']]
+        if not categories:
+            return
+        selected = dlg.select('XCMate – Startgruppe', [
+            str(g.get('category_name') or g['category_id']) for g in categories])
+        if selected < 0:
+            return
+        group = categories[selected]
+        cid = str(group['category_id'])
+        from library_index import Reader
+        reader = Reader(self.draft.pid, self.draft.index, timeout=.5,
+                        query_seconds=2)
+        offset = 0
+        while True:
+            rows, total = reader.page('live', category=cid, offset=offset,
+                                      limit=100)
+            if not rows:
+                dlg.notification('XCMate', 'Keine Sender in dieser Startgruppe')
+                return
+            options = [str(r.get('name') or r.get('sid') or '') for r in rows]
+            more = offset + len(rows) < total
+            if more:
+                options.append('Weitere Sender anzeigen ...')
+            index = dlg.select('XCMate – Startsender', options)
+            if index < 0:
+                return
+            if more and index == len(rows):
+                offset += len(rows)
+                continue
+            if index >= len(rows):
+                return
+            channel = rows[index]
+            sid = str(channel.get('sid') or channel.get('stream_id') or '')
+            if not sid:
+                return
+            self.draft.data['start_group_id'] = cid
+            self.draft.data['start_stream_id'] = sid
+            self.draft.data['autoplay_start'] = False
+            return
+
+    def scanned(self,result):
+        self.stage='summary'
+        self.render()
+        try:
+            self._choose_start_channel()
+        except (ValueError, OSError, RuntimeError) as exc:
+            from utils import warn
+            warn('XCMate start-channel preview skipped: '+type(exc).__name__)
+        self.render()
+
     def saved(self,portal):
         self._gui()
         self.result=portal
