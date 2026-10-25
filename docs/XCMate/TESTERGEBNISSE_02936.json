@@ -1,0 +1,63 @@
+{
+  "version": "0.1.29.36",
+  "tests": 1214,
+  "seconds": 125.286,
+  "failures": 0,
+  "errors": 0,
+  "files": 264,
+  "bytes": 2391921,
+  "sha256": "a7cd88d07d1da3b1c14a94c2dc3983ffe8082a00e5dfc107f2d5cae69042fdca",
+  "crc": "PASS",
+  "paths": "PASS",
+  "source_bytes": "PASS",
+  "reproducible_zip": "PASS",
+  "python_ast": "PASS",
+  "android": "NOT_TESTED",
+  "production_publish": false,
+  "base_main": "46b4f9f",
+  "source_commit": "d354175",
+  "source_tree": "fdf64e051672a7d65dbb27c40340af6c54c0fb91",
+  "new_host_tests": 58,
+  "new_tests_by_area": {
+    "search": 11,
+    "startup": 7,
+    "viewport": 7,
+    "timing": 4,
+    "stop": 6,
+    "genre": 23
+  },
+  "native_kodi_runtime_executed": false,
+  "android_gates": {
+    "S36-01": "NOT_TESTED",
+    "S36-02": "NOT_TESTED",
+    "S36-03": "NOT_TESTED",
+    "S36-04": "NOT_TESTED",
+    "S36-05": "NOT_TESTED",
+    "S36-06": "NOT_TESTED",
+    "S36-07": "NOT_TESTED",
+    "S36-08": "NOT_TESTED",
+    "S36-09": "NOT_TESTED",
+    "S36-10": "NOT_TESTED",
+    "S36-11": "NOT_TESTED",
+    "S36-12": "NOT_TESTED"
+  },
+  "genre_gates": {
+    "GENRE-01": "NOT_TESTED",
+    "GENRE-02": "NOT_TESTED",
+    "GENRE-03": "NOT_TESTED",
+    "GENRE-04": "NOT_TESTED",
+    "GENRE-05": "NOT_TESTED",
+    "GENRE-06": "NOT_TESTED",
+    "GENRE-07": "NOT_TESTED"
+  },
+  "poster_fix_111": "BLOCKED_NOT_INCLUDED",
+  "genre_159": "IMPLEMENTED_HOST_VERIFIED_ANDROID_NOT_TESTED",
+  "po_contexts": {
+    "de_de": 788,
+    "en_gb": 788
+  },
+  "compileall": "PASS",
+  "ci": "PULL_REQUEST_WORKFLOW; see Draft PR live checks",
+  "production_index_version": "0.1.29.35_UNCHANGED",
+  "raw_private_logs_included": false
+}
