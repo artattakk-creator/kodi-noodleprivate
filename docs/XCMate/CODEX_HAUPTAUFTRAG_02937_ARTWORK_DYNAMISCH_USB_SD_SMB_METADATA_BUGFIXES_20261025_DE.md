@@ -1,5 +1,8 @@
 # CODEX – REGULÄRER HAUPTAUFTRAG XCMate 0.1.29.37: Dynamisch / Intern / USB-SD-SMB, Kopie, Metadaten + Vorversionsreparaturen
 
+> **AKTUELLER KOMPLETT-NEUAUFTRAG .37 (25.10.2026):** Der neue [**verbindliche konsolidierte Codex-Implementierungsauftrag**](CODEX_NEUAUFTRAG_02937_KUMULATIV_GESAMT_20261025_DE.md) und die [**separate vollständige Android-/Host-Abnahmematrix**](ANDROID_ABNAHME_02937_DE.md) ersetzen für die **praktische Arbeitsreihenfolge und Testbelege** ältere verstreute Ergänzungen. `main` bleibt `0.1.29.36`, Code-Änderungen nur in neuem `.37`-Draft-Branch ab neuestem main. Erst P0 Bestandsschutz #173 / all-media-Exit #174 / Live-Exit #169, dann dynamische/interne/USB-/SD-/SMB-Cover #172/#106 und sichere Migration, dann Rest-Wizard/Startdiagnose/Metadaten #171. Alle früher zugesagten Funktionen bleiben Bestandteil des kumulativen .37. **Nicht automatisch mergen/publishen, keine Boxprofile ändern oder Daten löschen.**
+
+
 > **Gerätezuordnung zu #174 noch offen:** „auf der alten Version“ bedeutet nicht nachgewiesen „auf der alten Box“. Nutzergerät und installierte XCMate-Version beim Folgetest ausdrücklich ermitteln; alle Aussagen „Box A / Version alt“ zu diesem neuen All-Media-Hänger sind vorläufige Arbeitshypothesen. Der bekannte Live-Hänger auf neuer Box B mit .36 bleibt separat bestätigt als Nutzerbeobachtung.
 
 
