@@ -3228,3 +3228,27 @@ msgstr "Läuft jetzt"
 msgctxt "#35104"
 msgid "No current programme in local EPG"
 msgstr "Keine aktuelle Sendung im lokalen EPG"
+
+msgctxt "#35110"
+msgid "Artwork pipeline (read-only observations)"
+msgstr "Artwork-Pipeline (nur lesende Beobachtungen)"
+
+msgctxt "#35111"
+msgid "Image storage decision: {0}"
+msgstr "Speicherentscheidung für Bilddownload: {0}"
+
+msgctxt "#35112"
+msgid "Exact bytes: free={0}, total={1}, protected reserve={2}, image budget={3}, indexed image use={4}, next maximum image={5}"
+msgstr "Exakte Bytes: frei={0}, gesamt={1}, geschützte Reserve={2}, Bildbudget={3}, erfasste Bildbytes={4}, nächstes maximales Bild={5}"
+
+msgctxt "#35113"
+msgid "Queue metadata: free={0} bytes, protected import reserve={1} bytes"
+msgstr "Queue-Metadaten: frei={0} Bytes, geschützte Importreserve={1} Bytes"
+
+msgctxt "#35114"
+msgid "Queue timestamps / exhausted jobs / download lease:"
+msgstr "Queue-Zeitpunkte / erschöpfte Jobs / Download-Lease:"
+
+msgctxt "#35115"
+msgid "RESERVE_BLOCKED protects the configured free-space reserve; it does not mean the drive has zero free bytes. BUDGET_FULL is the configured image limit. UNKNOWN means no current observation. READY jobs count database records; only a real local image is a downloaded cover. No settings were changed."
+msgstr "RESERVE_BLOCKED schützt den eingestellten Mindestfreiraum und bedeutet nicht, dass das Laufwerk null freie Bytes hat. BUDGET_FULL ist das eingestellte Bildlimit. UNKNOWN bedeutet fehlende aktuelle Beobachtung. READY-Jobs zählen Datenbankeinträge; nur eine echte lokale Bilddatei ist ein geladenes Cover. Keine Einstellung wurde geändert."
