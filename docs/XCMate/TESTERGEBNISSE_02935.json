@@ -14,8 +14,8 @@
   "python_ast": "PASS",
   "android": "NOT_TESTED",
   "production_publish": false,
-  "source_commit": "4609a4b",
-  "main_base": "030b81569d5b96b153ba1060be8525c24d27dcf3",
+  "source_commit": "4609a4b86902d797603315396dfcd6a6e33ef510",
+  "main_base": "e7202b5d824b9497188c7159eee8c5b58f2464aa",
   "new_regression_tests": 44,
   "android_gates": {
     "V0": "NOT_TESTED",
@@ -43,5 +43,7 @@
   "native_runtime": "NOT_TESTED; Kodi API host models only",
   "search_ui_freeze": "163 sources/assets byte-identical to .34",
   "merge": false,
-  "release": false
+  "release": false,
+  "original_main_base": "030b81569d5b96b153ba1060be8525c24d27dcf3",
+  "main_sync": "Documentation only; source and tests tree unchanged"
 }
