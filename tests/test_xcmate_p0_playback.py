@@ -7,6 +7,8 @@ import importlib.util
 from pathlib import Path
 import sys
 import types
+import tempfile
+import time
 import unittest
 from unittest import mock
 
@@ -49,6 +51,7 @@ class StartupKodiContractTests(unittest.TestCase):
         path=mock.patch.object(sys,'path',[str(LIB),*sys.path])
         path.start()
         self.addCleanup(path.stop)
+        temp=tempfile.TemporaryDirectory();self.addCleanup(temp.cleanup)
         self.resolved = []
         self.announced = []
         self.builtins = []
@@ -71,6 +74,7 @@ class StartupKodiContractTests(unittest.TestCase):
         for name in ("debug", "info", "warn", "error"):
             setattr(utils, name, lambda *args, **kw: None)
         utils.notify = lambda *args: self.notifications.append(args)
+        utils.addon_data_dir=lambda:temp.name
         xbmc = types.ModuleType("xbmc")
         xbmc.Player = lambda: self.player
         xbmc.executebuiltin = lambda command: self.builtins.append(command)
@@ -97,7 +101,10 @@ class StartupKodiContractTests(unittest.TestCase):
         player_module = types.ModuleType("player")
         player_module.build_playable_item = lambda url, title, logo: _Item(url)
         live = types.ModuleType("live_overlay")
-        live.announce = lambda *args: self.announced.append(args)
+        def announce(pid,sid,title):
+            self.announced.append((pid,sid,title))
+            return dict(pid=pid,sid=sid,nonce='test-session',at=time.time())
+        live.announce = announce
         modules = {
             "xbmc": xbmc, "xbmcgui": gui, "xbmcplugin": plugin,
             "xbmcaddon": addon, "xbmcvfs": types.ModuleType("xbmcvfs"),

@@ -50,6 +50,13 @@ def request(navigator):
         previous=getattr(navigator,'_previous_session',None)
         if not (previous and _same(token,('live',previous)) and announced['pid']==str(navigator.portal['id']) and announced['sid']==navigator.sid):return False
         pending={k:announced[k] for k in ('pid','sid','nonce','at')}
+    prior=state()
+    if prior and _same(('live',prior['session']),token):
+        # The latch belongs to the session, not one Python WindowDialog. A
+        # reconstructed/reentrant navigator cannot replay Stop/Home or reset
+        # an already committed phase/deadline.
+        navigator._exiting=True;navigator._exit_nonce=token[1]['nonce']
+        return True
     value=dict(session={k:token[1][k] for k in ('pid','sid','nonce','at')},phase='requested',at=time.time(),deadline=time.monotonic()+5,not_before=time.monotonic()+.15)
     value['pending']=pending
     _save(value);navigator._exiting=True;navigator._exit_nonce=token[1]['nonce']
@@ -112,10 +119,21 @@ def _poll(navigator=None):
     if getattr(xbmc.Monitor(),'abortRequested',lambda:False)():return True
     value['phase']='complete';_save(value)
     url='plugin://plugin.video.xtreammate/?'+urlencode(dict(action='xcmate_home',pid=session['pid']))
-    if xbmc.getCondVisibility('Window.IsActive(videos)'):
+    from urllib.parse import urlsplit,parse_qs
+    folder=urlsplit(xbmc.getInfoLabel('Container.FolderPath'))
+    params=parse_qs(folder.query)
+    same_home=(folder.scheme=='plugin' and folder.netloc=='plugin.video.xtreammate'
+               and params.get('action')==['xcmate_home'] and params.get('pid')==[session['pid']])
+    if same_home:
+        # Reveal the existing Videos Home without issuing another GetDirectory.
+        if not xbmc.getCondVisibility('Window.IsActive(videos)'):
+            xbmc.executebuiltin('ActivateWindow(Videos)')
+        _trace('HOME_REUSED',session)
+    elif xbmc.getCondVisibility('Window.IsActive(videos)'):
         xbmc.executebuiltin('Container.Update('+url+',replace)')
     else:xbmc.executebuiltin('ActivateWindow(Videos,'+url+',return)')
-    _trace('HOME_REQUESTED',session);return True
+    if not same_home:_trace('HOME_REQUESTED',session)
+    return True
 
 
 def poll(navigator=None):

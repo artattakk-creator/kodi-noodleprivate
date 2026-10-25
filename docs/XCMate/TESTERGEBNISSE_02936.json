@@ -1,0 +1,117 @@
+{
+  "version": "0.1.29.36",
+  "tests": 1250,
+  "seconds": 131.86,
+  "failures": 0,
+  "errors": 0,
+  "files": 266,
+  "bytes": 2400396,
+  "sha256": "5dc73ef498641854b42b153a29e3f0fbbe9387638af4a633dfc321f44dec0e52",
+  "crc": "PASS",
+  "paths": "PASS",
+  "source_bytes": "PASS",
+  "reproducible_zip": "PASS",
+  "python_ast": "PASS",
+  "android": "NOT_TESTED",
+  "production_publish": false,
+  "base_main": "138460b",
+  "source_commit": "ce5ad5649c696146229c2e40a4846550a5ec0a08",
+  "source_tree": "fece31822201020ef534e422b6ad8f965a7e2a24",
+  "new_host_tests_since_035": 94,
+  "new_artwork_tests": 36,
+  "new_tests_by_area": {
+    "search": 11,
+    "startup": 7,
+    "viewport": 7,
+    "timing": 4,
+    "stop": 6,
+    "genre": 23,
+    "artwork": 36
+  },
+  "native_kodi_runtime_executed": false,
+  "api_models": [
+    "Kodi 21.2 Omega",
+    "Kodi 21.3 Omega"
+  ],
+  "android_gates": {
+    "S36-01": "NOT_TESTED",
+    "S36-02": "NOT_TESTED",
+    "S36-03": "NOT_TESTED",
+    "S36-04": "NOT_TESTED",
+    "S36-05": "NOT_TESTED",
+    "S36-06": "NOT_TESTED",
+    "S36-07": "NOT_TESTED",
+    "S36-08": "NOT_TESTED",
+    "S36-09": "NOT_TESTED",
+    "S36-10": "NOT_TESTED",
+    "S36-11": "NOT_TESTED",
+    "S36-12": "NOT_TESTED"
+  },
+  "genre_gates": {
+    "GENRE-01": "NOT_TESTED",
+    "GENRE-02": "NOT_TESTED",
+    "GENRE-03": "NOT_TESTED",
+    "GENRE-04": "NOT_TESTED",
+    "GENRE-05": "NOT_TESTED",
+    "GENRE-06": "NOT_TESTED",
+    "GENRE-07": "NOT_TESTED"
+  },
+  "artwork_gates": {
+    "A_KODI_21_2": {
+      "ART36-01": "NOT_TESTED",
+      "ART36-02": "NOT_TESTED",
+      "ART36-03": "NOT_TESTED",
+      "ART36-04": "NOT_TESTED",
+      "ART36-05": "NOT_TESTED",
+      "ART36-06": "NOT_TESTED",
+      "ART36-07": "NOT_TESTED",
+      "ART36-08": "NOT_TESTED"
+    },
+    "B_KODI_21_3": {
+      "ART36-01": "NOT_TESTED",
+      "ART36-02": "NOT_TESTED",
+      "ART36-03": "NOT_TESTED",
+      "ART36-04": "NOT_TESTED",
+      "ART36-05": "NOT_TESTED",
+      "ART36-06": "NOT_TESTED",
+      "ART36-07": "NOT_TESTED",
+      "ART36-08": "NOT_TESTED"
+    }
+  },
+  "artwork_168": "IMPLEMENTED_HOST_VERIFIED_ANDROID_NOT_TESTED",
+  "box_b_real_storage_bytes": null,
+  "configured_image_reserve_mib": 1024,
+  "queue_metadata_import_reserve_mib": 32,
+  "artwork_queue_schema": "UNCHANGED",
+  "global_job_reset": false,
+  "wizard_preview_imported": false,
+  "genre_159": "IMPLEMENTED_HOST_VERIFIED_ANDROID_NOT_TESTED",
+  "external_tmdb_lookup": "NOT_INCLUDED",
+  "po_contexts": {
+    "de_de": 794,
+    "en_gb": 794
+  },
+  "compileall": "PASS",
+  "ci": "PULL_REQUEST_WORKFLOW; see Draft PR live checks",
+  "production_index_version": "0.1.29.35_UNCHANGED",
+  "raw_private_logs_included": false,
+  "superseded_candidate": {
+    "head": "656be1e73aff1c16b877880bde52f2384792677a",
+    "sha256": "a7cd88d07d1da3b1c14a94c2dc3983ffe8082a00e5dfc107f2d5cae69042fdca",
+    "tests": 1214,
+    "reason": "BEFORE_MANDATORY_ARTWORK_FIX_NOT_FINAL"
+  },
+  "storage_contract_106": {
+    "local_backend": "IMPLEMENTED_HOST_VERIFIED",
+    "nonlocal_memory_adapter": "HOST_ONLY_NOT_SMB",
+    "sqlite_location": "INTERNAL_UNCHANGED",
+    "uri_targets": "UNSUPPORTED_FAIL_CLOSED_IN_036",
+    "unknown_capacity": "NOT_INVENTED_FAIL_CLOSED_IN_036",
+    "image_readback": "BYTE_COUNT_SHA256_IMAGE_VALIDATION_BEFORE_ATOMIC_PUBLISH",
+    "selection_and_usb_smb_migration": "MANDATORY_037_NOT_IMPLEMENTED_IN_036",
+    "STOR_01": {
+      "A_KODI_21_2": "NOT_TESTED",
+      "B_KODI_21_3": "NOT_TESTED"
+    }
+  }
+}

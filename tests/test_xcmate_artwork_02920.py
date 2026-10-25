@@ -82,7 +82,7 @@ class Artwork20Tests(Fixture,unittest.TestCase):
         with mock.patch.object(self.store,'used',return_value=1048576):
             with self.assertRaises(self.policy.ArtworkFailure) as error:self.art.fetch(url)
             self.assertEqual(error.exception.code,'BUDGET_FULL')
-        with mock.patch.object(self.policy.shutil,'disk_usage',return_value=types.SimpleNamespace(free=32,total=100)):
+        with mock.patch.object(importlib.import_module('artwork_backend').shutil,'disk_usage',return_value=types.SimpleNamespace(free=32,total=100)):
             with self.assertRaises(self.policy.ArtworkFailure) as error:self.art.fetch(url)
             self.assertEqual(error.exception.code,'DISK_FULL')
         self.http.assert_not_called();self.assertFalse(list(self.folder.glob('media_art_v1/*.img')))
@@ -124,7 +124,7 @@ class Artwork20Tests(Fixture,unittest.TestCase):
         with self.assertRaises(self.policy.ArtworkFailure) as error:self.art.fetch('https://image.invalid/bad')
         self.assertEqual(error.exception.code,'INVALID_IMAGE')
         self.http.return_value=(self.png,{})
-        with mock.patch.object(self.art.tempfile,'mkstemp',side_effect=PermissionError(13,'PRIVATE')):
+        with mock.patch.object(importlib.import_module('artwork_backend').tempfile,'mkstemp',side_effect=PermissionError(13,'PRIVATE')):
             with self.assertRaises(self.policy.ArtworkFailure) as error:self.art.fetch('https://image.invalid/readonly')
         self.assertEqual(error.exception.code,'CACHE_ERROR')
 
@@ -145,11 +145,11 @@ class Artwork20Tests(Fixture,unittest.TestCase):
         self.options['media_art_budget_mb']=8192
         self.assertEqual(self.store.recover_space(stamp+50),32)
 
-    def test_queue_enrolment_honours_configured_free_reserve_before_any_db_creation(self):
-        value=dict(free=self.policy.reserve()+1,total=100*1048576**2,reserve=self.policy.reserve(),budget=0)
-        with mock.patch.object(self.policy,'capacity',return_value=value):
-            with self.assertRaises(self.policy.ArtworkFailure) as error:self.store.enqueue(['https://image.invalid/queue'])
-        self.assertEqual(error.exception.code,'DISK_FULL')
+    def test_queue_metadata_honours_import_reserve_before_any_db_creation(self):
+        value=types.SimpleNamespace(free=31*1048576,total=100*1048576**2)
+        with mock.patch.object(importlib.import_module('artwork_backend').shutil,'disk_usage',return_value=value):
+            with self.assertRaises(OSError) as error:self.store.enqueue(['https://image.invalid/queue'])
+        self.assertEqual(error.exception.errno,28)
         self.assertFalse(Path(self.health.path()).exists());self.http.assert_not_called()
 
     def test_space_recovery_does_nothing_under_physical_or_configured_pressure(self):

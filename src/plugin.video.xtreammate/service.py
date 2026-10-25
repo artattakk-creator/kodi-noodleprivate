@@ -3,7 +3,7 @@ import xbmc, xbmcaddon, xbmcgui
 
 ADDON    = xbmcaddon.Addon()
 LIB_PATH = os.path.join(os.path.dirname(__file__), 'resources', 'lib')
-SERVICE_BUILD = 35
+SERVICE_BUILD = 36
 if LIB_PATH not in sys.path:
     sys.path.insert(0, LIB_PATH)
 
@@ -160,6 +160,8 @@ class IPTVMasterService(xbmc.Monitor):
             if resume:
                 self._last_session_nonce='';self._next_candidate_probe=0
                 self._live_guide_resume=resume
+            from live_timing import observe as observe_live_timing
+            observe_live_timing()
             from live_exit import poll as poll_live_exit
             exiting=poll_live_exit(self._overlay)
             if self._overlay is not None and self._overlay._closed:self._overlay=None

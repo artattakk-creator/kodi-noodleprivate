@@ -45,6 +45,9 @@ class Search31Tests(Fixture,unittest.TestCase):
     def test_short_cache_after_old_two_second_cutoff_is_still_searched_for_all_channels(self):
         entries=[dict(stream_id=str(i),category_id='a',name='Channel '+str(i),epg_channel_id='missing') for i in range(135)]
         self.index.replace_catalog('p','live',entries,self.catalogs['get_live_categories'])
+        for row in entries:
+            name=self.client._cache_key('get_short_epg',dict(stream_id=row['stream_id'],limit=4))+'.json'
+            (self.folder/name).write_text('{}')
         module=importlib.import_module('search_data');clock=[0];seen=[]
         def cached(client,sid,now=None):
             seen.append(sid);clock[0]+=.3

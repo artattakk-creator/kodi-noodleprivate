@@ -98,7 +98,7 @@ class LiveSearch:
         self.channels=None;self.mappings={};self.events={};self.aliases={};self.code='NO_EPG'
         self.client=None;self.client_checked=False;self.phase='names';self.short=[];self.short_position=0
         self.media_cache={};self.media_revisions={};self.slices=0;self.last_trace=0;self.result=[];self.by_sid={}
-        self.short_ns=0;self.short_rows=0
+        self.short_ns=0;self.short_rows=0;self.short_inventory=False
         self.counts=dict(channels=0,now_count=0,xml_now=0,short_now=0,manual_count=0,
                          manual_missing=0,alias_count=0,name_hits=0,programme_hits=0,source_count=0)
         self.correlation=self.profile.generation
@@ -115,6 +115,7 @@ class LiveSearch:
                 for row in raw:
                     if self.cancel():break
                     item=json.loads(row['payload']);self._add(item,'',False)
+                self.profile.emit('INDEX_QUERY_DONE',once=True,rows=len(raw),channels=self.counts['channels'])
                 self.counts['name_hits']=len(self.result)
                 if self.result:self.profile.emit('FIRST_NAME_MATCH',once=True,rows=len(self.result))
 
@@ -192,7 +193,9 @@ class LiveSearch:
         if sampled:self.profile.emit('SLICE_BEGIN',slices=self.slices);self.last_trace=started
         if self.phase=='prepare':self._prepare()
         while self.phase=='xml' and not self.cancel():
-            if self.position>=len(self.channels):self.phase='short';break
+            if self.position>=len(self.channels):
+                self.profile.emit('NOW_LOCAL_MATCH',once=True,rows=self.counts['programme_hits'],scanned=self.position)
+                self.phase='short';break
             row=self.channels[self.position];self.position+=1;processed+=1
             manual=self.mappings.get(row['sid']);self.counts['manual_count']+=int(bool(manual))
             keys=[str(manual)] if manual else [row['sid'],str(row.get('epg_channel_id') or '')]
@@ -204,9 +207,16 @@ class LiveSearch:
             else:self.short.append(row)
             if processed>=256 or time.monotonic()>=deadline:break
         if self.phase=='short':
+            self.profile.emit('ENRICHMENT_STARTED',once=True,channels=len(self.short))
             self.profile.emit('SHORT_EPG_CACHE_BEGIN',once=True)
             cache_start=time.monotonic_ns();processed=0
             if not self.client_checked:self.client=_short_client(self.portal);self.client_checked=True
+            if self.client is not None and not self.short_inventory:
+                from short_cache_inventory import candidates
+                existing=candidates(self.client,self.short,self.cancel)
+                if existing is not None:self.short=existing
+                self.short_inventory=True
+                if not self.short:self.profile.emit('NO_PROGRESS_STOP',once=True,rows=0)
             while self.client is not None and self.short_position<len(self.short) and not self.cancel():
                 row=self.short[self.short_position];self.short_position+=1;processed+=1
                 from epg_views import cached_short_guide
@@ -217,6 +227,7 @@ class LiveSearch:
                 self._match(row,title,short=True)
                 if processed>=16 or time.monotonic()>=deadline:break
             self.short_ns+=time.monotonic_ns()-cache_start;self.short_rows+=processed
+            self.profile.emit('CACHE_BATCH_DONE',rows=processed,scanned=self.short_position,duration_ms=(time.monotonic_ns()-cache_start)//1000000)
             if self.client is None or self.short_position>=len(self.short):
                 self.phase='done'
                 self.profile.emit('SHORT_EPG_CACHE_END',once=True,rows=self.short_rows,duration_ms=self.short_ns//1000000)
@@ -232,6 +243,7 @@ class LiveSearch:
         if sampled:self.profile.emit('SLICE_END',slices=self.slices,scanned=self.position,duration_ms=(time.monotonic()-started)*1000)
         if self.done:
             self.final_code=code;self.channels=[];self.short=[];self.events={};self.aliases={}
+            self.profile.emit('FINAL',once=True,rows=len(self.result),scanned=self.position)
             self.profile.emit('SCAN_FINAL',once=True,rows=len(self.result),scanned=self.position,**{k:self.counts[k] for k in ('name_hits','programme_hits')})
         return list(self.result),code
 
@@ -276,9 +288,15 @@ def search(portal,query,kind='vod',offset=0,now=None,incremental=False,continuat
                     if not cursor.done:result['_continuation']=cursor
                 else:rows,code=live_matches(portal,query,reader,int(time.time() if now is None else now))
                 total=len(rows);rows=rows[start:start+PAGE]
-            else:rows,total=reader.page(section,query,offset=start,limit=PAGE);code='READY'
+            else:
+                from genre_search import status as genre_status
+                before_genre=genre_status(reader,section,query)
+                rows,total=reader.page(section,query,offset=start,limit=PAGE)
+                after_genre=genre_status(reader,section,query) if before_genre!='UNUSED' else 'UNUSED'
+                changed=before_genre!='UNUSED' and reader.state(section)!=state
+                code='GENRE_PENDING' if 'PENDING' in (before_genre,after_genre) or changed else 'READY'
             result[section]=dict(rows=rows,total=total,code=code,partial=section=='live' and '_continuation' in result)
-            if section!='live' and cursor is not None:
+            if section!='live' and cursor is not None and code!='GENRE_PENDING':
                 cursor.media_revisions[section]=(state.get('revision'),state.get('updated'))
                 cursor.media_cache[cache_key]=result[section]
                 while len(cursor.media_cache)>12:cursor.media_cache.pop(next(iter(cursor.media_cache)))

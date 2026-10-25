@@ -3228,3 +3228,27 @@ msgstr "Now"
 msgctxt "#35104"
 msgid "No current programme in local EPG"
 msgstr "No current programme in local EPG"
+
+msgctxt "#35110"
+msgid "Artwork pipeline (read-only observations)"
+msgstr "Artwork pipeline (read-only observations)"
+
+msgctxt "#35111"
+msgid "Image storage decision: {0}"
+msgstr "Image storage decision: {0}"
+
+msgctxt "#35112"
+msgid "Exact bytes: free={0}, total={1}, protected reserve={2}, image budget={3}, indexed image use={4}, next maximum image={5}"
+msgstr "Exact bytes: free={0}, total={1}, protected reserve={2}, image budget={3}, indexed image use={4}, next maximum image={5}"
+
+msgctxt "#35113"
+msgid "Queue metadata: free={0} bytes, protected import reserve={1} bytes"
+msgstr "Queue metadata: free={0} bytes, protected import reserve={1} bytes"
+
+msgctxt "#35114"
+msgid "Queue timestamps / exhausted jobs / download lease:"
+msgstr "Queue timestamps / exhausted jobs / download lease:"
+
+msgctxt "#35115"
+msgid "RESERVE_BLOCKED protects the configured free-space reserve; it does not mean the drive has zero free bytes. BUDGET_FULL is the configured image limit. UNKNOWN means no current observation. READY jobs count database records; only a real local image is a downloaded cover. No settings were changed."
+msgstr "RESERVE_BLOCKED protects the configured free-space reserve; it does not mean the drive has zero free bytes. BUDGET_FULL is the configured image limit. UNKNOWN means no current observation. READY jobs count database records; only a real local image is a downloaded cover. No settings were changed."

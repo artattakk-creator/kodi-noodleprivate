@@ -48,6 +48,24 @@ def status_text(value):
     else:lines.append(tr(32965))
     health=value.get('health',{})
     lines.extend([tr(32966,health.get('integrity_code',health.get('code','NOT_CHECKED'))),tr(32967)])
+    lines.extend(['',tr(35110),tr(35111,value.get('storage_result','UNKNOWN')),
+                  tr(35112,value.get('free','—'),value.get('total','—'),value.get('reserve','—'),
+                     value.get('budget','—'),value.get('bytes','—'),value.get('expected_bytes','—')),
+                  tr(35113,value.get('metadata_free','—'),value.get('metadata_reserve','—'))])
+    observations=value.get('observations',{})
+    for role in ('request','enrol','service','worker','transfer','logo'):
+        item=observations.get(role,{})
+        # Each observation was sanitized at its boundary; display only the
+        # fixed/numeric field set again, never arbitrary property contents.
+        from art_diagnostics import CODES,FIELDS
+        code=item.get('code') if item.get('code') in CODES else 'UNKNOWN'
+        safe={key:number for key,number in item.items() if key in FIELDS and isinstance(number,(int,float,bool))}
+        if item.get('reason') in CODES:safe['reason']=item['reason']
+        lines.append(role+': '+code+' '+str(safe))
+    details=value.get('queue_details',{})
+    allowed=('last_ready_at','last_attempt_at','exhausted','next_at','lease_until')
+    lines.append(tr(35114)+' '+str({key:details[key] for key in allowed if key in details}))
+    lines.append(tr(35115))
     return '\n'.join(lines)
 
 

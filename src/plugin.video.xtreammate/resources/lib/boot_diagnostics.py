@@ -9,7 +9,7 @@ from contextlib import contextmanager
 PHASES = frozenset(('APP_WORKER_STOPPED', 'APP_WORKER_STOP_PENDING', 'ENTRY', 'MAIN_IMPORT', 'ROUTER_INIT', 'DISPATCH',
     'PORTALS_IMPORT', 'PORTALS_LOAD', 'PORTALS_MIGRATION', 'ROOT_MENU',
     'HOME_MENU', 'ART_STATUS_COUNTS', 'ROUTE', 'DIRECTORY_DONE', 'START_FAILED'))
-ROUTES = frozenset(('root', 'portal_home', 'xcmate_home', 'portal_manager',
+ROUTES = frozenset(('home_start','play_start','play_start_direct','root', 'portal_home', 'xcmate_home', 'portal_manager',
     'setup_wizard', 'import_legacy_settings', 'widget_live_start_group',
     'widget_recent_vod', 'widget_recent_series'))
 ROUTES=ROUTES|frozenset(('movies_home','series_home','media_detail','media_favourites',

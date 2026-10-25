@@ -76,7 +76,8 @@ class NativeRemoteTests(unittest.TestCase):
         self.assertNotIn('xbmc.Player().play(',manual)
         self.assertIn('xbmc.Player().play(item.getPath(), item)',direct)
         self.assertNotIn('xbmcplugin.setResolvedUrl(',direct)
-        self.assertIn("xc.get_cached_catalog('get_live_streams')",common)
+        self.assertIn('start_channel(p,xc)',common)
+        self.assertNotIn("xc.get_cached_catalog('get_live_streams')",common)
         automatic=source[source.index('    def _maybe_autoplay_start('):
                          source.index('    def _portal_home(',source.index('    def _maybe_autoplay_start('))]
         self.assertIn("self.url(action='play_start_direct'",automatic)

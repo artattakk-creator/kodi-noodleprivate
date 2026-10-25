@@ -97,20 +97,26 @@ class GuideSnapshot:
         started=time.perf_counter()
         rev = revision(self.portal['id'])
         reloaded=rev != self._revision
-        if reloaded:
-            _mem_clear(self.portal['id'])
-            self._cache = load_cache(self.portal['id'])
-            self._mappings = configuration(self.portal['id'])['mappings']
-            self._revision = rev
-        cache_ms=(time.perf_counter()-started)*1000
         with self._lock: wanted = self._wanted
+        if reloaded:self._mappings = configuration(self.portal['id'])['mappings']
+        from guide_viewport import cache as viewport_cache
+        local=viewport_cache(self.portal['id'],wanted,self._mappings,now)
+        if local is None:
+            if reloaded or getattr(self,'_indexed',False):
+                _mem_clear(self.portal['id'])
+                self._cache = load_cache(self.portal['id'])
+            self._indexed=False
+        else:
+            self._cache=local;self._indexed=True
+        self._revision = rev
+        cache_ms=(time.perf_counter()-started)*1000
         from logo_cache import request as request_logos
         request_logos(wanted)
         values, missing = {}, []
         for c in wanted:
             sid = str(c.extra.get('stream_id',''))
             info = resolve_guide(self._cache, c.tvg_id, sid, now, self.client, self._mappings)
-            if not info['now']:
+            if not info['now'] and not self._indexed:
                 # A saved ten-day guide outlives its small compatibility
                 # snapshot. Read only this worker's bounded visible viewport.
                 try:

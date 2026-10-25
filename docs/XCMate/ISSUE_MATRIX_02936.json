@@ -1,0 +1,589 @@
+{
+  "snapshot_utc": "2026-10-25T15:42:00.837Z",
+  "source": "GitHub open issues API; pull requests excluded",
+  "base_main": "138460b",
+  "supersedes_pre_artwork_matrix": true,
+  "fully_android_verified": 0,
+  "implemented_host_only": 1,
+  "partially_host_verified": 11,
+  "blocked_issue_count": 0,
+  "blocked_subtasks": [
+    {
+      "issue": 111,
+      "scope": "NEW_EXTERNAL_TMDB_IMAGE_LOOKUP_NOT_INCLUDED"
+    },
+    {
+      "issue": 168,
+      "scope": "ACTUAL_BOX_B_FREE_SPACE_UNKNOWN; ANDROID_ART36_NOT_TESTED"
+    }
+  ],
+  "open_not_implemented_in_036": 43,
+  "closed_history": [
+    {
+      "issue": 97,
+      "state": "closed",
+      "changed": false
+    }
+  ],
+  "retired_pull_requests": [
+    {
+      "number": 162,
+      "state": "closed",
+      "merged": false,
+      "imported": false
+    }
+  ],
+  "issues": [
+    {
+      "issue": 168,
+      "title": "[P0][Android Kodi 21.3][.36] Neue Box lädt NULL Cover – Artwork-Queue, Speicherreserve und Quellen prüfen",
+      "github_state": "open",
+      "updated_at": "2026-10-25T15:00:49Z",
+      "scope_036": "PARTIAL_HOST_VERIFIED",
+      "android_036": "NOT_TESTED",
+      "target": "036/037_IF_NEW_ANDROID_REST",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 167,
+      "title": "[P1][XCMate .37] Geräteinformationen unter Wartung & Diagnose: RAM, Flash, CPU und echte Speicherlimits",
+      "github_state": "open",
+      "updated_at": "2026-10-25T14:02:15Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "037",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 166,
+      "title": "[P1][Xtream][Wizard .37] Nachträglich aktivierte Sendergruppe wird nicht indiziert",
+      "github_state": "open",
+      "updated_at": "2026-10-25T13:33:01Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "037",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 165,
+      "title": "[P0][Android Wizard .35→.37] Kodi-Absturz beim Speichern nach EPG-Scan – Konto bleibt erhalten",
+      "github_state": "open",
+      "updated_at": "2026-10-25T13:45:39Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "037",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 164,
+      "title": "[P1 UX][Wizard .37] EPG-Importfortschritt sichtbar animieren – Quelle 1/4 bis 4/4",
+      "github_state": "open",
+      "updated_at": "2026-10-25T13:17:56Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "037",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 161,
+      "title": "[P1][XCMate Architektur] Zentraler EPG Hub: zeitbasierter Mehrquellen-Merger, 7 Tage Historie, schneller lokaler Guide",
+      "github_state": "open",
+      "updated_at": "2026-10-25T11:40:42Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "041/042",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 159,
+      "title": "[P1 UX][XCMate] Globale Suche nach Genre: Sci-Fi, Western, Thriller – ohne Änderung der Suchmaske",
+      "github_state": "open",
+      "updated_at": "2026-10-25T11:05:52Z",
+      "scope_036": "IMPLEMENTED_HOST_VERIFIED",
+      "android_036": "NOT_TESTED",
+      "target": "036",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 151,
+      "title": "[P1][XCMate] Cover-/Bildsuche mit Quellenwahl: Anbieter → TMDb → freie Bildsuche, manuelle Auswahl und Persistenz",
+      "github_state": "open",
+      "updated_at": "2026-10-24T13:16:25Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "043",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 150,
+      "title": "[P1][XCMate UX] Einheitliche vertikale Icon-Rail in Live, EPG, Filme, Serien und weiteren Rubriken",
+      "github_state": "open",
+      "updated_at": "2026-10-25T08:38:06Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "038",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 143,
+      "title": "[MASTER][XCMate] Konsolidierte Restabnahme & risikobasierte Android-Tests statt wiederholter Alt-Issues",
+      "github_state": "open",
+      "updated_at": "2026-10-25T15:00:56Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "036_BIS_046",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 140,
+      "title": "[P1][Android .34] Live-/EPG-Suche bis 5 Minuten – Cursor-/Vollscan-Performance (Handoff funktioniert)",
+      "github_state": "open",
+      "updated_at": "2026-10-25T11:04:34Z",
+      "scope_036": "PARTIAL_HOST_VERIFIED",
+      "android_036": "NOT_TESTED",
+      "target": "036/042",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 136,
+      "title": "[P1][Android .28] Downloads/Aufnahmen: USB-Ziel und Kodi-SMB-Speicher auswählbar machen, kein stiller interner Fallback",
+      "github_state": "open",
+      "updated_at": "2026-10-24T15:46:41Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "044",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 135,
+      "title": "[P0][Android .28] Filmdownload FAILED 0 MiB – REDIRECT_UNSUPPORTED bei Anbieter-/CDN-Weiterleitung",
+      "github_state": "open",
+      "updated_at": "2026-10-24T15:46:43Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "044",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 127,
+      "title": "[P1][XCMate .27+] Rich Search Results – Senderlogos, EPG, kleine Film-/Seriencover und Qualitäts-/Quellenmetadaten",
+      "github_state": "open",
+      "updated_at": "2026-10-25T08:39:09Z",
+      "scope_036": "PARTIAL_HOST_VERIFIED",
+      "android_036": "NOT_TESTED",
+      "target": "036/040",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 126,
+      "title": "[P0][Android .26] Sofortaufnahme endet FAILED / 0 MB / UNSUPPORTED_TARGET (R03–R06 FAIL)",
+      "github_state": "open",
+      "updated_at": "2026-10-24T15:46:48Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "044",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 123,
+      "title": "[P1][EPG Design] Eigene reichhaltige Sendungsdetailseite im Stil einer TV-Programmzeitschrift statt Plot-Textviewer",
+      "github_state": "open",
+      "updated_at": "2026-10-24T13:17:22Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "045",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 120,
+      "title": "[P1][XCMate .25] Titan BINGIE MOD Live-TV-Button → Startkanal mit XCMate-Rücksprung und Schnellstart",
+      "github_state": "open",
+      "updated_at": "2026-10-25T11:04:37Z",
+      "scope_036": "PARTIAL_HOST_VERIFIED",
+      "android_036": "NOT_TESTED",
+      "target": "036",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 115,
+      "title": "[P0][Android .24] Space Premium: Fokus in Medien/Dateien unsichtbar, OK öffnet Suche (Lightweight-Rückwechsel PASS)",
+      "github_state": "open",
+      "updated_at": "2026-10-23T14:37:18Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "043",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 113,
+      "title": "[XCMate][P1] Medienmanager „Meine Medien“: Aufnahmen, Offline-Filme und Serien nach Staffeln",
+      "github_state": "open",
+      "updated_at": "2026-10-24T13:42:28Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "044",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 111,
+      "title": "[XCMate 0.1.29.22][P1] Fehlende Filmposter: „Poster Netzwerkfehler“ bei Aladdin (1992) – Quellprüfung und gezielter Retry",
+      "github_state": "open",
+      "updated_at": "2026-10-25T14:02:12Z",
+      "scope_036": "PARTIAL_HOST_VERIFIED",
+      "android_036": "NOT_TESTED",
+      "target": "036_PROVIDER_PIPELINE/043_EXTERNAL_FALLBACK",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 108,
+      "title": "[XCMate][P1] Automatische Katalog-/Artwork-Aktualisierung und sichere Bereinigung verwaister Bilder",
+      "github_state": "open",
+      "updated_at": "2026-10-23T07:01:00Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "043",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 107,
+      "title": "[XCMate][P1] Streaming stabilisieren: einstellbarer Puffer, Verbindung/Qualität und sichere Wiederaufnahme",
+      "github_state": "open",
+      "updated_at": "2026-10-23T06:51:52Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "046",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 106,
+      "title": "[XCMate][P1] Artwork nachträglich auf USB/SD/SMB/NAS auslagern – sichere Migration mit Fortschrittsanzeige",
+      "github_state": "open",
+      "updated_at": "2026-10-25T14:58:21Z",
+      "scope_036": "PARTIAL_HOST_VERIFIED",
+      "android_036": "NOT_TESTED",
+      "target": "036_BACKEND_CONTRACT/037_USB_AND_SMB_MIGRATION",
+      "closed_by_this_work": false,
+      "scope_note": "Local adapter runtime integration only; selection, VFS, migration and hardware acceptance remain .37 NOT_TESTED"
+    },
+    {
+      "issue": 102,
+      "title": "[XCMate 0.1.29.17][P1] Alle Film-/Serienkategorien zeigen nur 24 Titel – Infinite Scroll, vollständiger Katalog und Gesamtzähler",
+      "github_state": "open",
+      "updated_at": "2026-10-22T18:41:10Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "040",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 100,
+      "title": "[P1 UX] XCMate Live-TV-Infobar: echte Video-/Audio-/Untertitel- und Signalinformationen mit Icons",
+      "github_state": "open",
+      "updated_at": "2026-10-25T08:26:07Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "039",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 99,
+      "title": "[P1] XCMate EPG: Catch-up-Symbol und echter Replay-Button bei nachgewiesener Archivfähigkeit",
+      "github_state": "open",
+      "updated_at": "2026-10-24T12:58:27Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "042",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 98,
+      "title": "[P1] XCMate großes EPG: Sender-EPG zuweisen – Live-Vorschau ohne Speichern bis zur Bestätigung",
+      "github_state": "open",
+      "updated_at": "2026-10-25T08:58:41Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "041",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 95,
+      "title": "[P1] XCMate Live-TV: Rechts auf markiertem Mini-EPG-Sender zeigt weitere Sendungen",
+      "github_state": "open",
+      "updated_at": "2026-10-25T11:40:36Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "038",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 94,
+      "title": "[P1] XCMate Live-TV: Links-Navigation um vertikale Icon-Rail und ausklappbares Hauptmenü erweitern",
+      "github_state": "open",
+      "updated_at": "2026-10-25T11:40:39Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "038",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 91,
+      "title": "[P1] XCMate: künstliche SQLite-/Queue-/Cache-Blockaden systematisch beseitigen, Datenintegrität erhalten",
+      "github_state": "open",
+      "updated_at": "2026-10-25T13:18:02Z",
+      "scope_036": "PARTIAL_HOST_VERIFIED",
+      "android_036": "NOT_TESTED",
+      "target": "036/043",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 90,
+      "title": "[P1 HIGH] XCMate: 512-MB-Artwork-Sperre entfernen, Speicherreserve schützen und SPACE_FULL-Queue wieder aktivieren",
+      "github_state": "open",
+      "updated_at": "2026-10-25T15:00:53Z",
+      "scope_036": "PARTIAL_HOST_VERIFIED",
+      "android_036": "NOT_TESTED",
+      "target": "036/043",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 88,
+      "title": "XCMate EPG: Startsendergruppe direkt öffnen, Links→Gruppen; Logos, Zuordnung und Rich-Details",
+      "github_state": "open",
+      "updated_at": "2026-10-25T11:05:57Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "041",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 87,
+      "title": "XCMate Android 0.1.29.11: MediaCodec-Fehlerflut bei Videowiedergabe (33.930 Meldungen)",
+      "github_state": "open",
+      "updated_at": "2026-10-22T06:20:46Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "046",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 79,
+      "title": "XCMate: eigene Media-Player-Oberfläche für Filme/Serien wiederherstellen (OSD, Fokus, spätere Download-Aktion)",
+      "github_state": "open",
+      "updated_at": "2026-10-25T08:26:04Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "040",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 75,
+      "title": "XCMate 0.1.29.7: Diagnose- und Einstellungs-Popups erzeugen vier Kodi GetDirectory-Fehler",
+      "github_state": "open",
+      "updated_at": "2026-10-25T11:04:41Z",
+      "scope_036": "PARTIAL_HOST_VERIFIED",
+      "android_036": "NOT_TESTED",
+      "target": "036/037",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 74,
+      "title": "XCMate Filme/Serien: große lesbare Cover, Top-Navigation, Reihenfolge Weitersehen → Favoriten → Neuheiten",
+      "github_state": "open",
+      "updated_at": "2026-10-22T18:21:45Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "040",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 71,
+      "title": "XCMate: optionale PIN-Kindersicherung für Sendergruppen, Filme, Serien und Einstellungen",
+      "github_state": "open",
+      "updated_at": "2026-10-21T19:51:40Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "045",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 69,
+      "title": "XCMate Artwork-Jobqueue: wiederholtes MIGRATION_FAILED, Index art_pending prüfen und datenschonend reparieren",
+      "github_state": "open",
+      "updated_at": "2026-10-22T12:09:46Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "043",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 65,
+      "title": "XCMate Zukunftsidee: optionale X-Wall-/BINGIE-Add-on- und Oberflächenintegration",
+      "github_state": "open",
+      "updated_at": "2026-10-21T15:42:37Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "OPTIONAL_NACH_046",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 64,
+      "title": "XCMate: erweiterbare frei konfigurierbare Tastenprofile je Bedienkontext",
+      "github_state": "open",
+      "updated_at": "2026-10-22T07:57:47Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "045",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 63,
+      "title": "XCMate: VOD-Filme und Serienepisoden lokal auf USB/HDD/SMB herunterladen",
+      "github_state": "open",
+      "updated_at": "2026-10-24T15:46:46Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "044",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 62,
+      "title": "XCMate: EPG-gesteuerte Aufnahmen und automatisches Umschalten mit robustem Zeitplaner",
+      "github_state": "open",
+      "updated_at": "2026-10-24T13:42:25Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "044",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 60,
+      "title": "XCMate: XMLTV-Abdeckung nur 10,4 % – Sender-Matching, Quellenstatus und Kurz-EPG verbessern",
+      "github_state": "open",
+      "updated_at": "2026-10-23T14:04:39Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "041/042",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 58,
+      "title": "XCMate EPG: doppelte Sender/Sendungen prüfen, Quellkonflikte bereinigen und Guide-Thread absichern",
+      "github_state": "open",
+      "updated_at": "2026-10-23T14:04:36Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "041/042",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 43,
+      "title": "[P1][PARALLEL ab .36 → Release .37] Plug-and-Play-Erststart-Wizard + Neuinstallation auf Kodi 21.3/22-Testbox",
+      "github_state": "open",
+      "updated_at": "2026-10-25T13:45:44Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "037_REGULAR",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 35,
+      "title": "P0 XCMate 0.1.28: Live-TV-Statusleiste sofort vor Videostart, Preloading und schnelles Zapping",
+      "github_state": "open",
+      "updated_at": "2026-10-19T19:01:05Z",
+      "scope_036": "PARTIAL_HOST_VERIFIED",
+      "android_036": "NOT_TESTED",
+      "target": "036/039",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 34,
+      "title": "P0 XCMate: Startsender-EPG zuerst, alle Kataloge nur für aktivierte Gruppen laden",
+      "github_state": "open",
+      "updated_at": "2026-10-19T19:01:34Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "037/042",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 31,
+      "title": "XCMate Skin & Darstellung: Transparenz, UI-Farben, Schriftfarben und Schriftgrößen",
+      "github_state": "open",
+      "updated_at": "2026-10-19T17:36:36Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "043",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 30,
+      "title": "XCMate Lightweight Core: Themes und weitere Language Packs optional nachinstallieren",
+      "github_state": "open",
+      "updated_at": "2026-10-20T16:11:06Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "045",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 29,
+      "title": "XCMate: English-Basissprache, Deutsch beibehalten und optionale installierbare Sprachpakete",
+      "github_state": "open",
+      "updated_at": "2026-10-19T18:52:57Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "045",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 27,
+      "title": "XCMate Graphics v2: vollständiges 98-Asset-Set für Home, Einstellungen, EPG und Medien",
+      "github_state": "open",
+      "updated_at": "2026-10-19T21:29:21Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "043",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 26,
+      "title": "XCMate × BINGIE MOD: drei Home-Widgets für Startkanalgruppe, neueste Filme und Serien",
+      "github_state": "open",
+      "updated_at": "2026-10-19T11:43:27Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "045",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 19,
+      "title": "Lizenz-/Provenienz-Audit: GPL-v2-Addon vs. mr-evil1-Root-LICENSE; Rechtekette klären vor XCMate V2",
+      "github_state": "open",
+      "updated_at": "2026-10-19T08:17:58Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "045",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 17,
+      "title": "XCMate Live-TV: 1× OK Infobar mit Jetzt/Danach + Fortschritt, 2× OK OSD, schnelle EPG-Senderliste",
+      "github_state": "open",
+      "updated_at": "2026-10-25T11:04:39Z",
+      "scope_036": "PARTIAL_HOST_VERIFIED",
+      "android_036": "NOT_TESTED",
+      "target": "036/039",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 14,
+      "title": "XCMate Skin: separater Kodi-Skin-Prototyp mit TV-OSD, Fernbedienung und EPG",
+      "github_state": "open",
+      "updated_at": "2026-10-18T18:03:20Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "OPTIONAL_NACH_046",
+      "closed_by_this_work": false
+    }
+  ]
+}

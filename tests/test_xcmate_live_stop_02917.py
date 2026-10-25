@@ -6,6 +6,8 @@ from xcmate027_fixture import Fixture,LIB,ADDON
 class StopTests(Fixture,unittest.TestCase):
     def setUp(self):
         super().setUp()
+        # Exercise a requested Home route; .36 tests cover reusing an existing Home.
+        self.current_folder='plugin://plugin.video.xtreammate/?action=home_live&pid=p'
         for n in ('live_exit','playback_exit','live_overlay'):sys.modules.pop(n,None)
         sys.modules['xbmcgui'].WindowDialog=object
         self.live=importlib.import_module('live_overlay');self.exit=importlib.import_module('live_exit')

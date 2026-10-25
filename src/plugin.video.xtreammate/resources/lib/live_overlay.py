@@ -175,12 +175,14 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self._guide = GuideSnapshot(portal,self.xc)
         self._guide.request([selected_stream] if selected_stream else [])
         self._guide.start()
+        from live_timing import nav_ready
+        nav_ready(self)
 
     def _load_catalog_from_disk(self):
         from iptv import Channel
         started=time.perf_counter()
-        categories = self.xc.get_cached_catalog('get_live_categories')
-        streams = self.xc.get_cached_catalog('get_live_streams')
+        from live_catalog import read
+        categories,streams = read(self.portal,self.xc)
         loaded=time.perf_counter()
         if categories is None or streams is None:
             return False
@@ -243,6 +245,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
             super().show()
             self._startup_stage = 'RENDER'
             self._render()
+            from live_timing import visible
+            visible(self)
             self._startup_stage = 'FOCUS'
             self.observe_focus()
         except Exception as exc:
@@ -652,6 +656,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self.mode = mode
         self._info_deadline = time.monotonic()+self._info_timeout if mode=='info' else None
         self._render()
+        from live_timing import visible
+        visible(self)
 
     def _toggle(self):
         """Menu opens explicit checkbox management, never toggles a nav row."""
@@ -809,6 +815,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
               learned_left_action=getattr(self,'_bindings',{}).get('left',ACTION_LEFT),**counts,**fields)
 
     def handle_command(self, command, source='bridge', **fields):
+        from live_timing import remote
+        remote(self,command)
         before=self.mode
         try: fields['focus_before']=self.getFocusId()
         except (RuntimeError,AttributeError): pass

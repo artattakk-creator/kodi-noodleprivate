@@ -66,17 +66,29 @@ def _run():
     while not cancelled():
         runtime.emit()
         if runtime.pressure():
+            from art_diagnostics import publish
+            publish('service','MEMORY_PRESSURE')
             if runtime.wait_abort(monitor,.5,_stop):break
             continue
         worked=False
-        if time.monotonic()>=next_prepare:
+        prepare_now=time.monotonic()>=next_prepare
+        if prepare_now:
             next_prepare=time.monotonic()+5
             try:
                 from artwork_db import maintain
                 maintain(cancel=cancelled)
             except MemoryError:runtime.note_pressure()
-            except Exception: pass
-            if cancelled():break
+            except Exception:pass
+        if cancelled():break
+        # Persisted image jobs resume even when catalogue warming is disabled
+        # or no fresh media window requests an enrolment. Data worker only.
+        try:
+            from media_art import ensure_worker
+            ensure_worker()
+        except MemoryError:runtime.note_pressure()
+        except Exception:pass
+        if cancelled():break
+        if prepare_now:
             # Optional guide/art preparation may fail independently. It must not
             # starve an otherwise valid movie/series sync request.
             try: refresh_local(cancelled)
@@ -100,6 +112,12 @@ def _run():
             worked=run_next(cancelled)
         except MemoryError:runtime.note_pressure()
         except Exception: pass
+        if cancelled():break
+        try:
+            from genre_search import run_next as index_genres
+            worked=index_genres(cancelled) or worked
+        except MemoryError:runtime.note_pressure()
+        except Exception:pass
         if cancelled():break
         try:
             from guide_timers import poll as poll_timers

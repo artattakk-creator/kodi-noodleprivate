@@ -47,6 +47,12 @@ class SearchMixin:
             self._search_startup=None;self._open_search(startup[0])
         if self.mode!='search' or self._closed or self._leaving:return
         now=time.monotonic()
+        if getattr(self,'_search_genre_pending',False) and now>=getattr(self,'_search_genre_poll',0):
+            self._search_genre_poll=now+2
+            if now<getattr(self,'_search_genre_until',0):self._search_load()
+            else:
+                self._search_genre_pending=False
+                if self._search_kind!='live':self.getControl(501).setLabel(tr(33906))
         if now<getattr(self,'_search_art_poll',0):return
         self._search_art_poll=now+.5
         from media_art import revision,local_art
@@ -79,6 +85,8 @@ class SearchMixin:
         self._search_correlation=session if len(session)==32 and all(c in '0123456789abcdef' for c in session) else uuid.uuid4().hex
         self._search_profile=SearchProfile(self._search_correlation,getattr(self,'_native_owner',''))
         self._search_profile.emit('QUERY_ACCEPTED')
+        self._search_genre_until=time.monotonic()+120
+        self._search_genre_pending=False
         mark('SEARCH_INPUT_ACCEPTED',self._search_correlation)
         if not hasattr(self,'_search_origin'):
             self._search_origin={name:getattr(self,name) for name in FIELDS if hasattr(self,name)}
@@ -131,6 +139,7 @@ class SearchMixin:
         value={k:v for k,v in value.items() if k in KINDS}
         if not resume:self._search_loading=False
         self._search_data=value
+        self._search_genre_pending=any(v.get('code')=='GENRE_PENDING' for v in value.values())
         old_focus=self._mode_focus.get('search',self.getFocusId()) if resume else self.getFocusId()
         old_position=self.getControl(710).getSelectedPosition()
         self.getControl(103).setLabel(tr(33903)+' · '+self._search_query)
@@ -152,7 +161,7 @@ class SearchMixin:
         self.getControl(710).selectItem(old_position if old_focus==710 else getattr(self,'_search_selected',0))
         self.getControl(102).setLabel(tr(33906) if section['code']=='INDEX_ERROR' else tr(33904) if section['total'] is None else
             tr(33907) if not rows else '{}–{} / {}'.format(self._search_offset+1,self._search_offset+len(rows),section['total']))
-        self.getControl(501).setLabel(tr(33908) if section['code'] in ('NO_EPG','NO_CURRENT_EPG','EPG_UNAVAILABLE','EPG_PARTIAL') else '')
+        self.getControl(501).setLabel(tr(33904) if section['code']=='GENRE_PENDING' else tr(33908) if section['code'] in ('NO_EPG','NO_CURRENT_EPG','EPG_UNAVAILABLE','EPG_PARTIAL') else '')
         self.getControl(720).setVisible(self._search_offset>0)
         self.getControl(721).setVisible(bool(section['total'] and self._search_offset+len(rows)<section['total']))
         # Never turn the keyboard's finishing OK into a first-result click.
@@ -164,6 +173,8 @@ class SearchMixin:
             mark('SEARCH_RESULT_READY',self._search_correlation);self._search_ready_trace=now
         if self._search_kind=='live' and rows and self.getControl(710).size():
             self._search_profile.emit('FIRST_LIVE_ROW_RENDERED',once=True,rows=len(rows))
+            if any(row.get('_now_match') for row in rows):
+                self._search_profile.emit('VISIBLE_FIRST_PROGRAMME',once=True,rows=len(rows))
         if cursor is not None:
             self._search_continuation=cursor;self._search_load()
 

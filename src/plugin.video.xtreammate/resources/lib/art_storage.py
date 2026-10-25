@@ -2,7 +2,6 @@
 import errno
 import hashlib
 import os
-import shutil
 import xml.etree.ElementTree as ET
 
 MIB=1048576
@@ -11,8 +10,8 @@ WRITE_HEADROOM=256*1024  # SQLite/page/allocation overhead beyond image bytes
 
 
 class ArtworkFailure(OSError):
-    def __init__(self,code):
-        self.code=code
+    def __init__(self,code,reason='',storage=None):
+        self.code=code;self.reason=reason;self.storage=storage or {}
         super().__init__(errno.ENOSPC if code=='DISK_FULL' else errno.EDQUOT if code=='BUDGET_FULL' else errno.EIO,code)
 
 
@@ -34,21 +33,25 @@ def reserve():
     return max(MIN_RESERVE,setting_int('media_art_reserve_mb',1024)*MIB)
 
 
-def capacity():
-    from media_art import folder
-    usage=shutil.disk_usage(os.path.dirname(folder()))
-    return dict(free=usage.free,total=usage.total,reserve=reserve(),budget=budget())
+def capacity(location=None,backend=None):
+    from artwork_backend import active_backend,LocalArtworkStorage
+    storage=backend if backend is not None else active_backend() if location is None else LocalArtworkStorage(location)
+    return dict(storage.free_or_unknown(),reserve=reserve(),budget=budget())
 
 
-def check(upcoming,limit=None,used=None):
-    value=capacity()
-    if value['free']<value['reserve']+max(0,upcoming)+WRITE_HEADROOM:raise ArtworkFailure('DISK_FULL')
+def check(upcoming,limit=None,used=None,location=None,backend=None):
+    value=capacity(backend=backend) if backend is not None else capacity() if location is None else capacity(location)
+    if value.get('free') is None:
+        raise ArtworkFailure('CACHE_ERROR','CAPACITY_UNKNOWN',value)
+    if value['free']<value['reserve']+max(0,upcoming)+WRITE_HEADROOM:
+        reason='BLOCKED_REAL_DISK' if value['free']<max(0,upcoming)+WRITE_HEADROOM else 'RESERVE_BLOCKED'
+        raise ArtworkFailure('DISK_FULL',reason,value)
     limit=budget() if limit is None else limit
     if limit:
         if used is None:
             from art_store import used as current_bytes
             used=current_bytes()
-        if used+upcoming>limit:raise ArtworkFailure('BUDGET_FULL')
+        if used+upcoming>limit:raise ArtworkFailure('BUDGET_FULL','BUDGET_FULL',value)
     return value
 
 
@@ -56,3 +59,14 @@ def token():
     # Actual free bytes are intentionally excluded: a fluctuating disk does
     # not grant unbounded fresh retries to an already exhausted job.
     return hashlib.sha256(('v20:%d:%d'%(budget(),reserve())).encode()).hexdigest()
+
+
+def explain(value,upcoming,used=None):
+    free=value.get('free');reserve_bytes=value.get('reserve');limit=value.get('budget')
+    if not isinstance(free,(int,float)) or not isinstance(reserve_bytes,(int,float)):return 'UNKNOWN'
+    if free<max(0,upcoming)+WRITE_HEADROOM:return 'BLOCKED_REAL_DISK'
+    if free<reserve_bytes+max(0,upcoming)+WRITE_HEADROOM:return 'RESERVE_BLOCKED'
+    if limit:
+        if used is None:return 'UNKNOWN'
+        if used+upcoming>limit:return 'BUDGET_FULL'
+    return 'OK'
