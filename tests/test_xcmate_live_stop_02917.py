@@ -91,7 +91,11 @@ class StopTests(Fixture,unittest.TestCase):
         nav._closed=False;nav._exiting=True
         self.assertFalse(nav._accept_input());self.assertEqual(self.stops,0)
     def test_service_gate_is_before_playback_exit_preplay_and_recovery_but_after_background_jobs(self):
-        source=(ADDON/'service.py').read_text();self.assertLess(source.index('exiting=poll_live_exit'),source.index('if not exiting:poll_playback_exit'))
+        source=(ADDON/'service.py').read_text()
+        hook='if not exiting and not preserves_player():poll_playback_exit()'
+        self.assertEqual(source.count(hook),1)
+        source=source.replace(hook,'if not exiting:poll_playback_exit()')
+        self.assertLess(source.index('exiting=poll_live_exit'),source.index('if not exiting:poll_playback_exit'))
         self.assertLess(source.index('if exiting:'),source.index('poll_preplay(self._overlay)'))
         self.assertLess(source.index('poll_app_features()'),source.index('if exiting:'))
     def test_exit_blocks_root_autoplay_until_explicit_selection(self):

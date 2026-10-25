@@ -251,6 +251,15 @@ class LiveNavigator(xbmcgui.WindowDialog):
             self.close()
             raise
 
+    def suspend_for_guide(self):
+        """Service-only close: preserve the immutable running live session."""
+        if self._closed:return
+        self._closed=True
+        if hasattr(self,'_guide'):self._guide.close()
+        self._intro_deadline=None
+        xbmcgui.Window(10000).clearProperty('XtreamMate.RemoteCommand')
+        super().close()
+
     def observe_focus(self):
         focus_id=dialog_id=-1
         try: focus_id=self.getFocusId()
@@ -312,7 +321,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             return False
 
     def _accept_input(self):
-        if self._closed or getattr(self,'_exiting',False):
+        if self._closed or getattr(self,'_exiting',False) or getattr(self,'_guide_handoff',False):
             return False
         if not self.owns_playback():
             self.close()
@@ -736,7 +745,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
             self._render()
         else:
             if index == 3:
-                self._epg()
+                from live_guide_navigation import request
+                request(self)
                 return
             if index == 5:
                 self._switch('groups')
