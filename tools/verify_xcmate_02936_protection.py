@@ -15,7 +15,10 @@ ALLOWED={PREFIX+p for p in ('addon.xml','changelog.txt','service.py',
     'resources/lib/live_catalog.py','resources/lib/live_exit.py','resources/lib/live_overlay.py',
     'resources/lib/live_start.py','resources/lib/live_timing.py','resources/lib/main.py',
     'resources/lib/media_search.py','resources/lib/search_data.py','resources/lib/search_profile.py',
-    'resources/lib/short_cache_inventory.py','resources/lib/startup_preload.py','resources/lib/tv_data.py')}
+    'resources/lib/short_cache_inventory.py','resources/lib/startup_preload.py','resources/lib/tv_data.py',
+    'resources/lib/artwork_backend.py','resources/lib/art_diagnostics.py','resources/lib/art_storage.py','resources/lib/art_store.py',
+    'resources/lib/artwork_health_ui.py','resources/lib/logo_cache.py','resources/lib/media_art.py',
+    'resources/language/resource.language.de_de/strings.po','resources/language/resource.language.en_gb/strings.po')}
 
 
 def git(*args):return subprocess.check_output(['git','-C',str(ROOT),*args])
@@ -55,13 +58,17 @@ def main():
         for name,digest in json.loads(Path(manifest).read_text()).items():
             assert sha((Path(root)/name).read_bytes())==digest,name
             count+=1
-    report=dict(base=BASE,reviewed_main='46b4f9f',allowed_source_changes=sorted(ALLOWED),
+    report=dict(base=BASE,reviewed_main='138460b',allowed_source_changes=sorted(ALLOWED),
         protected_source_files=len(protected),protected_sources=protected,
         ui_asset_lifecycle_freeze_files=len(ui['files']),original_theme_images=len(images),protected_local_wip_files=count,
         live_renderers_player_and_native_callbacks='AST_IDENTICAL',guide_and_search_window_lifecycle='BYTE_IDENTICAL',
         original_icon='BYTE_IDENTICAL',autoplay_resume_watched_portal_mapping_sources='BYTE_IDENTICAL',
         downloads_and_recordings='BYTE_IDENTICAL',production_indexes='UNCHANGED',publish_workflow='UNCHANGED',previous_035_zip='UNCHANGED',
         genre_schema='TWO_ADDITIVE_DERIVED_TABLES; ORIGINAL_ROWS_VIEWS_COLUMNS_UNCHANGED_BY_HOST_TEST',
+        artwork_queue_schema='UNCHANGED; NO GLOBAL JOB RESET',
+        artwork_reserve_default_mib=1024,queue_import_reserve_mib=32,
+        wizard_sources='BYTE_IDENTICAL_TO_MAIN; NO PREVIEW_FILES_IMPORTED',
+        superseded_036_zip_sha256='a7cd88d07d1da3b1c14a94c2dc3983ffe8082a00e5dfc107f2d5cae69042fdca',
         android='NOT_TESTED')
     args.output.write_text(json.dumps(report,indent=2)+'\n')
     print(json.dumps({key:value for key,value in report.items() if key not in ('protected_sources','allowed_source_changes')}))

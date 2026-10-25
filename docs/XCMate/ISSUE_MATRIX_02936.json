@@ -1,12 +1,23 @@
 {
-  "snapshot_utc": "2026-10-25T12:00:24.103Z",
-  "source": "GitHub open issues API; 50 issues, pull requests excluded",
-  "base_main": "46b4f9f",
+  "snapshot_utc": "2026-10-25T15:42:00.837Z",
+  "source": "GitHub open issues API; pull requests excluded",
+  "base_main": "138460b",
+  "supersedes_pre_artwork_matrix": true,
   "fully_android_verified": 0,
   "implemented_host_only": 1,
-  "partially_host_verified": 6,
-  "blocked": 1,
-  "open_not_implemented_in_036": 42,
+  "partially_host_verified": 11,
+  "blocked_issue_count": 0,
+  "blocked_subtasks": [
+    {
+      "issue": 111,
+      "scope": "NEW_EXTERNAL_TMDB_IMAGE_LOOKUP_NOT_INCLUDED"
+    },
+    {
+      "issue": 168,
+      "scope": "ACTUAL_BOX_B_FREE_SPACE_UNKNOWN; ANDROID_ART36_NOT_TESTED"
+    }
+  ],
+  "open_not_implemented_in_036": 43,
   "closed_history": [
     {
       "issue": 97,
@@ -14,7 +25,65 @@
       "changed": false
     }
   ],
+  "retired_pull_requests": [
+    {
+      "number": 162,
+      "state": "closed",
+      "merged": false,
+      "imported": false
+    }
+  ],
   "issues": [
+    {
+      "issue": 168,
+      "title": "[P0][Android Kodi 21.3][.36] Neue Box lädt NULL Cover – Artwork-Queue, Speicherreserve und Quellen prüfen",
+      "github_state": "open",
+      "updated_at": "2026-10-25T15:00:49Z",
+      "scope_036": "PARTIAL_HOST_VERIFIED",
+      "android_036": "NOT_TESTED",
+      "target": "036/037_IF_NEW_ANDROID_REST",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 167,
+      "title": "[P1][XCMate .37] Geräteinformationen unter Wartung & Diagnose: RAM, Flash, CPU und echte Speicherlimits",
+      "github_state": "open",
+      "updated_at": "2026-10-25T14:02:15Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "037",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 166,
+      "title": "[P1][Xtream][Wizard .37] Nachträglich aktivierte Sendergruppe wird nicht indiziert",
+      "github_state": "open",
+      "updated_at": "2026-10-25T13:33:01Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "037",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 165,
+      "title": "[P0][Android Wizard .35→.37] Kodi-Absturz beim Speichern nach EPG-Scan – Konto bleibt erhalten",
+      "github_state": "open",
+      "updated_at": "2026-10-25T13:45:39Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "037",
+      "closed_by_this_work": false
+    },
+    {
+      "issue": 164,
+      "title": "[P1 UX][Wizard .37] EPG-Importfortschritt sichtbar animieren – Quelle 1/4 bis 4/4",
+      "github_state": "open",
+      "updated_at": "2026-10-25T13:17:56Z",
+      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "android_036": "NOT_TESTED",
+      "target": "037",
+      "closed_by_this_work": false
+    },
     {
       "issue": 161,
       "title": "[P1][XCMate Architektur] Zentraler EPG Hub: zeitbasierter Mehrquellen-Merger, 7 Tage Historie, schneller lokaler Guide",
@@ -59,7 +128,7 @@
       "issue": 143,
       "title": "[MASTER][XCMate] Konsolidierte Restabnahme & risikobasierte Android-Tests statt wiederholter Alt-Issues",
       "github_state": "open",
-      "updated_at": "2026-10-25T11:40:32Z",
+      "updated_at": "2026-10-25T15:00:56Z",
       "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
       "android_036": "NOT_TESTED",
       "target": "036_BIS_046",
@@ -159,10 +228,10 @@
       "issue": 111,
       "title": "[XCMate 0.1.29.22][P1] Fehlende Filmposter: „Poster Netzwerkfehler“ bei Aladdin (1992) – Quellprüfung und gezielter Retry",
       "github_state": "open",
-      "updated_at": "2026-10-25T11:05:55Z",
-      "scope_036": "BLOCKED",
+      "updated_at": "2026-10-25T14:02:12Z",
+      "scope_036": "PARTIAL_HOST_VERIFIED",
       "android_036": "NOT_TESTED",
-      "target": "037_DIAGNOSE/043_MIGRATION",
+      "target": "036_PROVIDER_PIPELINE/043_EXTERNAL_FALLBACK",
       "closed_by_this_work": false
     },
     {
@@ -189,11 +258,12 @@
       "issue": 106,
       "title": "[XCMate][P1] Artwork nachträglich auf USB/SD/SMB/NAS auslagern – sichere Migration mit Fortschrittsanzeige",
       "github_state": "open",
-      "updated_at": "2026-10-23T07:01:22Z",
-      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "updated_at": "2026-10-25T14:58:21Z",
+      "scope_036": "PARTIAL_HOST_VERIFIED",
       "android_036": "NOT_TESTED",
-      "target": "043",
-      "closed_by_this_work": false
+      "target": "036_BACKEND_CONTRACT/037_USB_AND_SMB_MIGRATION",
+      "closed_by_this_work": false,
+      "scope_note": "Local adapter runtime integration only; selection, VFS, migration and hardware acceptance remain .37 NOT_TESTED"
     },
     {
       "issue": 102,
@@ -259,20 +329,20 @@
       "issue": 91,
       "title": "[P1] XCMate: künstliche SQLite-/Queue-/Cache-Blockaden systematisch beseitigen, Datenintegrität erhalten",
       "github_state": "open",
-      "updated_at": "2026-10-22T09:49:58Z",
-      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "updated_at": "2026-10-25T13:18:02Z",
+      "scope_036": "PARTIAL_HOST_VERIFIED",
       "android_036": "NOT_TESTED",
-      "target": "043",
+      "target": "036/043",
       "closed_by_this_work": false
     },
     {
       "issue": 90,
       "title": "[P1 HIGH] XCMate: 512-MB-Artwork-Sperre entfernen, Speicherreserve schützen und SPACE_FULL-Queue wieder aktivieren",
       "github_state": "open",
-      "updated_at": "2026-10-23T14:04:49Z",
-      "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
+      "updated_at": "2026-10-25T15:00:53Z",
+      "scope_036": "PARTIAL_HOST_VERIFIED",
       "android_036": "NOT_TESTED",
-      "target": "043",
+      "target": "036/043",
       "closed_by_this_work": false
     },
     {
@@ -409,10 +479,10 @@
       "issue": 43,
       "title": "[P1][PARALLEL ab .36 → Release .37] Plug-and-Play-Erststart-Wizard + Neuinstallation auf Kodi 21.3/22-Testbox",
       "github_state": "open",
-      "updated_at": "2026-10-25T11:59:10Z",
+      "updated_at": "2026-10-25T13:45:44Z",
       "scope_036": "OPEN_NOT_IMPLEMENTED_IN_036",
       "android_036": "NOT_TESTED",
-      "target": "037",
+      "target": "037_REGULAR",
       "closed_by_this_work": false
     },
     {

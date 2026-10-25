@@ -1,10 +1,12 @@
 # XCMate 0.1.29.36 – Android-Abnahme
 
-Stand: 25.10.2026, Europe/Berlin. **Testkandidat / Draft / NOT_RELEASED.** Ziel: Kodi 21.2 Omega, Android TV 13, RK3528 ARM32, Titan BINGIE MOD, bisherige IR-Fernbedienung. Ausgangspunkt .35 mit 15/15 funktionalem PASS. Alle folgenden Ergebnisse gelten ausschließlich für .36 und beginnen **NOT_TESTED**.
+Stand: 25.10.2026, Europe/Berlin. **Regulärer kumulativer Testkandidat / PR #163 / NOT_RELEASED, jetzt einschließlich Artwork #168.** Box A: Kodi 21.2, Android TV 13, RK3528 ARM32, BINGIE/IR. Box B: Kodi 21.3 ARM32/RK3528, bestehendes .35-Profil; Firmware-Androidangabe und API-Level widersprüchlich, keine Android16-Kompatibilität behaupten. Historische 15/15-PASS-Abnahme gilt für Box A/.35 und wird nicht auf Box B übertragen. Alle neuen .36-Ergebnisse auf **beiden Boxen NOT_TESTED**.
+
+**Altes .36-ZIP auf Head 656be1e / SHA256 a7cd88… ist überholt.** Neues ZIP und danebenliegende neue SHA256 verwenden. Kein Wizard-Preview #162; dieser wurde ohne Merge geschlossen. Keine erneute Einrichtung zur Testvorbereitung.
 
 ## Vorbereitung ohne Profiländerung
 
-1. ZIP und danebenliegende SHA256-Datei vom Draft-Branch/CI-Artefakt verwenden; Hash kontrollieren (`sha256sum plugin.video.xtreammate-0.1.29.36.zip`, PowerShell: `Get-FileHash … -Algorithm SHA256`). Nicht alte Draft-Pakete mischen. Downloadlinks stehen im Draft-PR und [TESTERGEBNISSE_02936.json](TESTERGEBNISSE_02936.json).
+1. ZIP und danebenliegende **neue** SHA256-Datei vom Draft-Branch/CI-Artefakt verwenden; Hash kontrollieren (`sha256sum plugin.video.xtreammate-0.1.29.36.zip`, PowerShell: `Get-FileHash … -Algorithm SHA256`). CI-Artefakt zuerst entpacken und die darin enthaltene Add-on-ZIP installieren, nicht die äußere Artefakt-ZIP. Downloadlinks im PR, Hash/Quelle in [TESTERGEBNISSE_02936.json](TESTERGEBNISSE_02936.json).
 2. Bestehendes XCMate .35 über Kodi **„Aus ZIP-Datei installieren“** auf .36 aktualisieren. **Keine Deinstallation, keine Daten-/Cache-Löschung, kein Downgrade**, keine Kodi-Keymap ändern. Der produktive Repository-Index bleibt .35; .36 ist vor Freigabe kein reguläres OTA-Release.
 3. Versionsanzeige .36 prüfen. Portale, aktivierte Gruppen/Startsender, Favoriten, EPG-Zuordnungen, Cover und Resume zunächst lediglich kontrollieren. Vorhandene Quellen und Genre-Metadaten verwenden; keine neuen Anbieter anlegen oder Daten exportieren.
 4. „Kalt“ = nach normalem Kodi-Beenden/Neustart, **mit erhaltenen Daten**. „Warm“ = erneuter gleicher Ablauf ohne Neustart. Kein Force-Stop während Import/Dateischreiben. Gleiche Gruppe/Sender und tatsächliche Query privat notieren; im öffentlichen Bericht anonymisieren.
@@ -26,7 +28,7 @@ Bei jedem Gate `PASS / FAIL / BLOCKED / NOT_TESTED`, Uhrzeit und ggf. Stopuhrwer
 | **S36-08** | Film-/Seriensuche mit Postern; Details, Staffel/Episode, Resume, Back. Natürliches Episodenende einschließlich Staffelwechsel; bewusst Stop. | Unveränderte Suchmaske/Logo/Cover/Fokus/Back, Medienbereiche funktionieren. Autoplay nur nach natürlichem Ende, kein Autoplay nach Stop; Fortschritt/Gesehen-Daten erhalten. | NOT_TESTED |
 | **S36-09** | Großes EPG erstmals öffnen, gespeicherte Startgruppe/-sender prüfen; andere Gruppe wählen und zurück. Mini beim tatsächlich laufenden Sender öffnen. Eine bestehende deaktivierte Gruppe bewusst über vorhandene Verwaltung aktivieren, kontrollieren und eigene ursprüngliche Auswahl wiederherstellen. | Einstellungen nicht ungefragt verändert; aktuelle SID statt erster Zeile markiert; neu aktivierte Gruppe verliert keine vorhandenen gecachten Sender. Manuelle EPG-Mappings/Quellen und Favoriten erhalten. | NOT_TESTED |
 | **S36-10** | GENRE-01–07 unten vollständig durchführen. | Belegtes Genre in bestehenden Film-/Serientabs auffindbar, Titelpriorität, richtige Gruppen, keine Phantomgenres/Dubletten; akzeptable Erstvorbereitung und Query-Latenz. | NOT_TESTED |
-| **S36-11** | Neuer Poster-/TMDb-Fix **nicht Bestandteil**. Optional vorhandenen Einzelbild-Retry an genau einem bekannten fehlenden Poster beobachten, ohne globalen Retry. | **Kein neuer Fix-PASS ableitbar.** Konkrete Fehlerklasse/Phase datensparsam notieren; READY-Poster unberührt. Implementierungsrest #111 BLOCKED, Untersuchung .37. | NOT_TESTED / nicht enthalten |
+| **S36-11** | **Provider-Bilderpipeline jetzt enthalten.** Einzelbild-Retry an genau einem bekannten fehlenden Poster prüfen; ergänzend ART36-01–08. Kein globaler Retry. | Quelle/Job/Fehlerklasse getrennt, echter lokaler Poster statt Placeholder, alte READY unberührt. Neuer TMDb-/Fremdbild-Lookup nicht enthalten. | NOT_TESTED |
 | **S36-12** | Kodi normal neu starten, Genre erneut suchen, Medien/Guide/Resume prüfen. Bei laufender lokaler Nachindizierung Suche schließen/Kodi normal beenden und nach Neustart erneut versuchen; keine Daten löschen. | Bestehende Daten vollständig erhalten, vorbereiteter Genre-Index weiter nutzbar oder sauber wiederaufgenommen; keine Endlos-Retries, OOM-/neue DB-Fehlerschleife. C3–C5 keine separate neue Funktion dieses Pakets. | NOT_TESTED |
 
 ## GENRE-01 bis GENRE-07
@@ -63,6 +65,25 @@ Historische .35-Ergebnisse bleiben PASS. Die folgenden **neuen .36-Ergebnisse** 
 | REG-02 | Autoplay/Resume und Staffelwechsel, bewusster Stop | NOT_TESTED |
 | REG-03 | Guide→Suche→Back→Player, IR/Icon/Portal/Mappings erhalten | NOT_TESTED |
 
+## Pflichtstrecke ART36-01 bis ART36-08 – getrennt auf Box A und B
+
+Vor dem Update, soweit noch möglich, bestehenden **Bildspeicherstatus** nur lesen und Werte notieren. Ist kein Vorher-Snapshot vorhanden, bleibt er unbekannt; dafür nicht downgraden. Nach Update denselben vorhandenen Statusbereich öffnen. Er startet weder globale Retries noch Datenbank-Reparaturen. Portaltyp und Versionsanzeige getrennt notieren. Source-Beobachtung wird durch normales Öffnen einer Film-/Serien-/Senderliste mit maximal einer sichtbaren Seite erzeugt; kein Vollimport/Cache-Purge nötig.
+
+| Gate | Ausführung und harte PASS-Bedingung | Box A | Box B |
+| --- | --- | --- | --- |
+| **ART36-01** | Read-only Status vor/nach normalem Medienöffnen: **exakte Bytes** frei/gesamt/geschützte Bildreserve/Budget/erfasste Bytes/maximal nächstes Bild, separate Queue-Metadatenreserve, Pause, Source-Felder valid/no_source/invalid, Enqueue, Queue-Counts, Worker-/Lease-/READY-/Versuchszeit erfassen. `UNKNOWN` ist fehlende Beobachtung, kein Beweis für Worker-Ausfall. `0 Jobs` vs `PENDING` vs alle Fehler/erschöpft vs READY trennen. Private Quellwerte/IDs nicht exportieren. | NOT_TESTED | NOT_TESTED |
+| **ART36-02** | **Drei unterschiedliche echte Filmcover** normal aus vorhandenen Metadaten nachladen. Jeweils tatsächlich sichtbares Motiv, lokaler `.img`-Pfad/Dateigröße >0 und READY-/Bildstatus. Kodi normal beenden/neustarten: dieselben drei Cover weiterhin da, kein neuer Download erforderlich. Placeholder/Fanart zählt nicht. Keine Demo-/Fixturebilder als Android-PASS buchen. | NOT_TESTED | NOT_TESTED |
+| **ART36-03** | **Zwei echte Seriencover plus zwei echte Senderlogos** nachladen und nach normalem Kodi-Neustart sichtbar behalten. Quelle/keine Quelle getrennt, richtigen Sender und richtiges Serienmotiv prüfen. Großer EPG und vorhandener Live-Logo-Cache dürfen verschiedene lokale Ablagen verwenden; tatsächliche Bilddatei prüfen. | NOT_TESTED | NOT_TESTED |
+| **ART36-04** | Gemessenen Speicherzustand bewerten: `RESERVE_BLOCKED` bedeutet Mindestfreiraum geschützt, **nicht null freier Flash**; `BUDGET_FULL` ist internes konfiguriertes Bildlimit; `BLOCKED_REAL_DISK` unzureichender Platz für nächsten sicheren Schreibvorgang; tatsächlicher Schreibfehler `PHYSICAL_ENOSPC` separat. Bei ausreichend Platz kein 512-MiB-Default-Hardstop. Bei Reserve-/Hardwareblock **genaue Werte + Grund, BLOCKED statt Download-PASS**. Reserve nicht blind ändern/deaktivieren, keine Partition künstlich füllen. | NOT_TESTED | NOT_TESTED |
+| **ART36-05** | Tatsächlich auftretende Source-/HTTP-401/403/404/429-/DNS-/TLS-/Timeout-/INVALID_IMAGE-/CACHE_ERROR-/SQLite-BUSY-Fälle mit fester Klasse/Phase erfassen. Bestehenden Einzelbild-Retry nur gezielt, mit endlichen Versuchen/Server-Cooldown; Pause nicht automatisch aufheben. Nicht gefahrlos reproduzierbare Unterfälle bleiben NOT_TESTED, keine privaten Provider-URLs provozieren oder öffentlich kopieren. | NOT_TESTED | NOT_TESTED |
+| **ART36-06** | Mehrere bereits vorhandene READY-Poster/Logos auf Box A **vorher/nachher/neuem Kodi-Start** wiederfinden. Keine Bilddateien entfernt, keine 18k-Job-Neustartwelle, keine neue Queue/Portal-/EPG-/Resume-Initialisierung. Normales begrenztes Abarbeiten bereits zulässiger Jobs ist kein globaler Jobreset. Kein globales `art_retry` zur Vorbereitung. | NOT_TESTED | NOT_TESTED |
+| **ART36-07** | Während mehrere Cover ausstehen: Film-/Serienliste scrollen, Suche/IR/Live-TV/Guide bedienen, Auswahl nicht springen lassen. Neue Cover in sichtbarer Reihe ohne Fenster-Neuöffnung. Kodi normal neu starten: vorhandene PENDING-Jobs können ohne neue UI-Enqueue weiterarbeiten; falls kein passender offener Job vorhanden, Unterfall NOT_TESTED. Pausierte Jobs bleiben pausiert. | NOT_TESTED | NOT_TESTED |
+| **ART36-08** | S36-01–12, GENRE-01–07 und die 15 Baseline-Gates oben auf der jeweiligen Box prüfen. Keine Rücknahme von Genre/Suche/Startsender/Info/Mini/Stop/Autoplay, keine Wizard-Preview-Dateien/zusätzlichen Keymaps. Vorhandenen Wizard lediglich unverändert lassen, seine Save-/Gruppen-/Progress-/Branding-/Geräteinfo-Nacharbeiten bleiben .37. | NOT_TESTED | NOT_TESTED |
+
+**Bei fehlenden Quellen:** `NO_SOURCE` im lokalen Katalog und ein tatsächlich ungültiges Quellfeld getrennt festhalten. Nachweislich früher verlorenes `cover_big` wird bei einem **regulären** Metadatenimport künftig erhalten; das Update erfindet keine URL und erzwingt keinen globalen Neuimport. Wenn deshalb kein echtes Bild testbar ist, Gate BLOCKED/NOT_TESTED, kein Placeholder-PASS.
+
+**Bei echtem Speicher-/Reserveblock:** Erst ART36-01/04 mit Zahlen ausfüllen. Dokumentieren, ob die Bildreserve oder die separate 32-MiB-Queue-Importreserve blockiert und welches generische Speicherziel betroffen ist. Keine gefälschte Kapazität, keine Cache-Löschung/Reserve-Nullsetzung als Workaround. Geräteinfo-Seite #167 kommt regulär .37; dieser Status ist kein vollständiger Hardwarebericht.
+
 ## Ausfüllbarer Zeit-/Ergebnisbericht
 
 ```text
@@ -78,10 +99,20 @@ S36-07: NOT_TESTED | Zyklen bestanden …/20 | HOME_REUSED/REQUESTED/Directory �
 S36-08: NOT_TESTED | Episode/Staffel/Stop/Resume …
 S36-09: NOT_TESTED | Startgruppe/aktuelle SID/Checkboxen/Mappings …
 S36-10: NOT_TESTED | GENRE-01 … 02 … 03 … 04 … 05 … 06 … 07 …
-S36-11: NOT_TESTED / neuer Fix nicht enthalten | optionaler Einzelbildbefund …
+S36-11: NOT_TESTED | Providerbild/Einzelretry … | TMDb-Neusuche nicht enthalten
 S36-12: NOT_TESTED | Genre-Vorbereitung … s | Neustart/Daten …
 Baseline .36: … PASS / … FAIL / … BLOCKED / … NOT_TESTED (15 Gates)
 Neue reproduzierbare Restpunkte für .37: …
+Box A ART36-01 … 02 … 03 … 04 … 05 … 06 … 07 … 08 …
+Box B ART36-01 … 02 … 03 … 04 … 05 … 06 … 07 … 08 …
+Genaue Bytes je Box: frei … / gesamt … / Reserve … / Budget … / verwendet … / nächstes Bild …
+Queue-Metadaten: frei … / Reserve … | Source-Paket valid … / no_source … / invalid …
+Queue-Counts … | service/worker/enrol/transfer/logo … | Lease … | letzter READY-Zeitpunkt …
+Tatsächlich heruntergeladene Bilder: Filme …/3 | Serien …/2 | Logos …/2 | nach Neustart vorhanden …
 ```
 
 Keine privaten Kodi-Rohlogs, Provider-/Stream-URLs, Kontodaten, Suchbegriffe, Portal-/Kanal-IDs oder SMB-Verbindungen veröffentlichen. Für öffentlichen Bericht genügen Gate, feste Diagnosephase/Fehlerklasse, Zahlen, zufällige Generation und anonymisierte Uhrzeit. Kein Merge/Release/Issue-Abschluss allein aufgrund des Hostberichts.
+
+## Speichervertrag / STOR-01 (.36)
+
+Auf **Box A und Box B jeweils NOT_TESTED**: vorhandene lokale Bilder und Dateizahl ohne Reset prüfen; ART36-01–08 mit echten 3 Film-/2 Seriencovern/2 Logos einschließlich Neustart bestehen. Bestehende Speicherverzeichnisse und URL-Keys bleiben gleich, Job-DB bleibt intern. Kein neuer USB-/SMB-Schalter in .36. Neue Dateien werden vor Freigabe zusätzlich zurückgelesen und per SHA256 verifiziert. Echte Speicherblockade mit exakten Bytes als BLOCKED dokumentieren. STOR-02–10 aus dem [verbindlichen Speichervertrag](CODEX_ARTWORK_STORAGE_USB_SMB_BINDING_02936_02937_20261025_DE.md) gehören zusammen mit #106 zur regulären .37, einschließlich **USB UND SMB** und Bestandsmigration; bisher auf beiden Boxen NOT_TESTED.
