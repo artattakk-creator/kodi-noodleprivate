@@ -1,5 +1,8 @@
 # XCMate – Issue-Triage nach Android-Abnahme 0.1.29.35 (25.10.2026)
 
+> **AKTUELLER VERBINDLICHER VERSIONSZUG (25.10.2026):** Die [gesamte Roadmap](VERBINDLICHE_RELEASE_ROADMAP_AB_02935_20261025_DE.md) ordnet die hier kategorisierten 50 offenen Issues verbindlichen Versionen zu. **Jede neue Version liefert neue Funktionen + offene Fehler aus der direkt vorigen Android-Abnahme + geeignete kleinere Issue-Fixes zusammen**, nicht getrennte Feature-/Hotfix-Releases. Neuester Stand für `.36`: #159 ist regulärer Featureumfang, #111 gezielt nur sicher, 15/15 Funktionstest .35 PASS bei weiterhin offenen Such-/Start-/OSD-Latenzen. Diese neuere Regel ersetzt in dieser historischen Triage den Ausdruck „Genre optional“; schwierige Daten-/Migrationsthemen bleiben eigenständige vollständige Versionen und dürfen ohne getestetes Gate nicht als PASS oder geschlossen gelten.
+
+
 **Repository:** https://github.com/artattakk-creator/kodi-noodleprivate. **Exakt zum Prüfzeitpunkt:** **50 offene Issues**, **11 offene Pull Requests**, `main` Add-on-Version **0.1.29.35**. Diese Liste ist ein **prüfbarer Snapshot**, keine Behauptung, dass historische Fehler noch auf `.35` reproduzierbar sind. `PERF-03` wurde nachträglich zum **15/15 PASS** bestätigt. [Finale Messungen](ANDROID_ABNAHME_02935_LOGFORENSIK_FINAL_20261025_DE.md) · [Nächster Codex-Auftrag](CODEX_AUFTRAG_02936_PERF_OSD_SEARCH_BACKLOG_20261025_DE.md).
 
 ## Regel: Backlog reduzieren durch Abschluss der Anforderungen, nicht durch künstliches Schließen
