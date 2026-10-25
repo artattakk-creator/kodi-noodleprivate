@@ -10,7 +10,7 @@
       "short_cache_reads": 2764,
       "media_page_queries": 1012,
       "steps": 506,
-      "host_wall_ms": 1357.11
+      "host_wall_ms": 1367.824
     },
     {
       "version": "candidate .35",
@@ -21,13 +21,13 @@
       "short_cache_reads": 2764,
       "media_page_queries": 2,
       "steps": 517,
-      "host_wall_ms": 156.663
+      "host_wall_ms": 150.113
     }
   ],
   "host_first_name_2764_ms": [
-    3.874,
-    3.498,
-    3.546
+    4.889,
+    4.05,
+    3.689
   ],
   "android": "NOT_TESTED"
 }

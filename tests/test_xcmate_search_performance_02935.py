@@ -166,3 +166,19 @@ class SearchPerformance35(Fixture,unittest.TestCase):
         with mock.patch.object(self.search,'LiveSearch',wraps=self.search.LiveSearch) as created:
             fresh=self.search.search(self.portal,'Needle',kind='live',incremental=True,continuation=cursor)
         created.assert_not_called();self.assertIs(fresh['_cursor'],cursor)
+
+    def test_same_valid_now_snapshot_is_not_restarted_by_a_plain_tab_after_a_minute(self):
+        result=self.finish('Needle');cursor=result['_cursor']
+        with mock.patch.object(self.search.time,'time',return_value=self.now+65),mock.patch.object(self.search,'LiveSearch',wraps=self.search.LiveSearch) as created:
+            fresh=self.search.search(self.portal,'Needle',kind='live',incremental=True,continuation=cursor)
+        created.assert_not_called();self.assertIs(fresh['_cursor'],cursor)
+
+    def test_service_short_epg_revision_invalidates_only_the_affected_portal(self):
+        result=self.finish('Needle');cursor=result['_cursor']
+        self.properties['XCMate.ShortGuideRevision.other']='new-other'
+        with mock.patch.object(self.search,'LiveSearch',wraps=self.search.LiveSearch) as created:
+            self.search.search(self.portal,'Needle',kind='live',incremental=True,continuation=cursor)
+            created.assert_not_called()
+            self.properties['XCMate.ShortGuideRevision.p']='new-cache'
+            self.search.search(self.portal,'Needle',kind='live',incremental=True,continuation=cursor)
+            created.assert_called_once()

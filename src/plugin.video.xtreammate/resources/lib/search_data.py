@@ -49,7 +49,7 @@ def _now_events(pid,identifiers,now,cancel=lambda:False):
     return events,aliases,code,len(sources)
 
 
-def revision():
+def revision(pid):
     """Metadata only, never read/deserialize whole databases or cache catalogues."""
     from library_index import path as library_path
     from guide_store import path as guide_path
@@ -61,8 +61,12 @@ def revision():
     result=[]
     for name in names:
         try:
-            value=os.stat(name);result.append((value.st_mtime_ns,value.st_size))
+            value=os.stat(name);result.append((value.st_dev,value.st_ino,value.st_mtime_ns,value.st_size))
         except OSError:result.append(None)
+    try:
+        import xbmcgui
+        result.append(xbmcgui.Window(10000).getProperty('XCMate.ShortGuideRevision.'+str(pid)))
+    except (ImportError,AttributeError,RuntimeError):result.append('')
     return tuple(result)
 
 
@@ -87,7 +91,7 @@ class LiveSearch:
         from search_profile import SearchProfile
         self.profile=profile or SearchProfile(correlation);self.cancel=cancel
         self.portal=portal;self.query=query;self.reader=reader;self.now=now
-        self.stamp=revision();self.created=time.monotonic();self.expires=now+30;self.final_code=None
+        self.stamp=revision(portal['id']);self.created=time.monotonic();self.expires=now+3600;self.final_code=None
         state=reader.state('live') or {}
         self.catalogue_revision=(state.get('revision'),state.get('updated'));self.guide_revision=None
         self.tokens=list(dict.fromkeys(normalized(query).split()));self.position=0
@@ -115,9 +119,9 @@ class LiveSearch:
                 if self.result:self.profile.emit('FIRST_NAME_MATCH',once=True,rows=len(self.result))
 
     def valid(self):
-        if self.cancel() or self.done and (time.monotonic()-self.created>=30 or time.time()>=self.expires):return False
-        current=revision()
-        if current[2:4]!=self.stamp[2:4]:return False
+        if self.cancel() or self.done and (time.time()<self.now or time.time()>=self.expires):return False
+        current=revision(self.portal['id'])
+        if current[2:4]!=self.stamp[2:4] or current[6]!=self.stamp[6]:return False
         if (current[0],current[4])!=(self.stamp[0],self.stamp[4]):
             state=self.reader.state('live') or {}
             if (state.get('revision'),state.get('updated'))!=self.catalogue_revision:return False
@@ -147,12 +151,13 @@ class LiveSearch:
             if len(raw)>50000:raise ValueError('SEARCH_CHANNEL_LIMIT')
             self.channels=[json.loads(row['payload']) for row in raw]
         if self.cancel():return
-        self.mappings=configuration(self.portal['id']).get('mappings',{})
-        identifiers=set()
-        for row in self.channels:
-            manual=self.mappings.get(row['sid'])
-            identifiers.update([str(manual)] if manual else [row['sid'],str(row.get('epg_channel_id') or '')])
-        identifiers.discard('')
+        with self.profile.span('MAPPING'):
+            self.mappings=configuration(self.portal['id']).get('mappings',{})
+            identifiers=set()
+            for row in self.channels:
+                manual=self.mappings.get(row['sid'])
+                identifiers.update([str(manual)] if manual else [row['sid'],str(row.get('epg_channel_id') or '')])
+            identifiers.discard('')
         with self.profile.span('EPG_NOW_SQL'):
             self.guide_revision=_guide_revision(self.portal['id'])
             self.events,self.aliases,self.code,count=_now_events(self.portal['id'],identifiers,self.now,self.cancel)
