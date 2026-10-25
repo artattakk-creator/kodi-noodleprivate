@@ -1,5 +1,8 @@
 # XCMate – verbindliche UX-Roadmap nach .35: bildschirmhohe Rail, zweispaltiges Mini-EPG, echte Player-OSDs und Genresuche
 
+> **NEUESTER ENTWICKLUNGSPLAN 25.10.2026, NACH BESTANDENER .35-ABNAHME:** Die früher in diesem Dokument beispielhaft genannte „.36 = Rail“-Versionsnummer war ausdrücklich nur **vorläufig** und wird durch die aktuelle [konkrete Codex-Stabilisierungsübergabe für den nächsten kumulativen Kandidaten](CODEX_AUFTRAG_02936_PERF_OSD_SEARCH_BACKLOG_20261025_DE.md) **nicht als Versionsversprechen fortgeführt**. ZUERST Such-/Startkanal-/Infoleisten-Performance und Stop/Home-Routing absichern, ggf. einzelne kleine #159/#111-Fixes. **Unmittelbar danach weiterhin verbindlich:** Mini-EPG mit rechter Programmspalte und **Links→Mini→SENDERGRUPPEN→vollhohe Rail**, danach echte Live-/VOD-Player-Buttons. Die [50-Issue-Triage](ISSUE_TRIAGE_NACH_02935_20261025_DE.md) steuert weitere getrennte PRs; [EPG Hub #161](CODEX_AUFTRAG_ZENTRALER_EPG_HUB_QUELLENMERGE_20261025_DE.md) bleibt eigenständig. **Keine Umkehr der vom Nutzer klargestellten Links-Kette.**
+
+
 **Beschluss des Nutzers:** 25.10.2026. Produkt: XCMate GS Media, `plugin.video.xtreammate`; Kodi 21.2 Omega / Android TV 13 / RK3528 ARM32 / Titan BINGIE MOD; IR-Fernbedienung.
 
 > „Wir machen jetzt auf jeden Fall die Version noch zu Ende. Aber bei den nächsten kommenden Versionen nach der Abnahme jetzt gleich möchte ich auf jeden Fall, dass wir diese neuen Navigationspunkte mit reinnehmen. Einmal diese vertikale Menüleiste, wenn man im Mini-EPG nach links drückt und auch die Player, dass die überarbeitet werden. Also ich möchte da diese richtigen Player-Buttons haben und sowas. Die Darstellung jetzt gefällt mir einfach nicht.“
