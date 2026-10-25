@@ -122,3 +122,29 @@ class SearchPerformance35(Fixture,unittest.TestCase):
         self.assertLess(time.perf_counter()-started,10,'host bound, not Android PASS')
         self.index.replace_catalog('p','live',entries+[dict(stream_id='50000',category_id='a',name='Target')],self.catalogs['get_live_categories'])
         self.assertEqual(self.search.search(self.portal,'Target',kind='live',incremental=True)['live']['code'],'INDEX_ERROR')
+
+    def test_first_live_row_is_clickable_before_background_epg_scan_finishes(self):
+        w=self.media_window();w._search_kind='live';self.dialog.input.return_value='Needle';w._search()
+        w._pool.drain();w.pump()  # Commit names; next EPG job remains queued.
+        self.assertEqual(w._search_rows[0]['sid'],'2763');self.assertFalse(w._search_loading)
+        self.assertIsNotNone(w._pending_future);self.assertTrue(w._search_data['live']['partial'])
+        w.native(4);w.native(7)
+        self.assertEqual(w._search_live['sid'],'2763');self.assertTrue(w._leaving)
+        self.assertFalse(self.builtins)
+
+    def test_real_sqlite_lock_cannot_withhold_indexed_names_or_write_guide(self):
+        import sqlite3
+        guide=importlib.import_module('guide_store');db=guide.connect();db.close()
+        lock=sqlite3.connect(guide.path());lock.execute('PRAGMA locking_mode=EXCLUSIVE');lock.execute('BEGIN EXCLUSIVE')
+        try:
+            first=self.search.search(self.portal,'Needle',kind='live',incremental=True)
+            self.assertEqual(first['live']['rows'][0]['sid'],'2763')
+            result=self.finish('Needle');self.assertEqual(result['live']['total'],1)
+        finally:lock.rollback();lock.close()
+
+    def test_now_sql_plan_uses_channel_time_index_and_other_portal_cannot_match(self):
+        guide=importlib.import_module('guide_store');db=guide.connect()
+        with db:db.execute('INSERT INTO programmes VALUES(?,?,?,?,?,?,?)',('other','xml2763',self.now-60,self.now+60,'Foreign programme','',0))
+        plan=' '.join(str(tuple(row)) for row in db.execute('EXPLAIN QUERY PLAN SELECT cid,title,source,start,stop FROM programmes WHERE pid=? AND cid IN (?) AND start<=? AND stop>? ORDER BY source,start DESC',('p','xml2763',self.now,self.now)))
+        db.close();self.assertIn('SEARCH programmes USING INDEX',plan)
+        result=self.finish('Foreign programme');self.assertEqual(result['live']['total'],0)

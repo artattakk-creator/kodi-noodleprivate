@@ -162,12 +162,17 @@ def cached_short_guide(client, stream_id, now=None):
     # only the service may fill it, never remote navigation or local views.
     best=None
     for limit in (12,4):
-        data=client._get_json('get_short_epg',
-            extra={'stream_id':str(stream_id),'limit':limit},cached_only=True)
+        try:
+            data=client._get_json('get_short_epg',
+                extra={'stream_id':str(stream_id),'limit':limit},cached_only=True)
+        except (OSError,TimeoutError,ValueError):
+            # A failed extended cache must not hide a valid four-event cache.
+            # Cache-only read: no new network retry or cache/config mutation.
+            continue
         guide=_short_guide(data,now=now)
         if best is None or (bool(guide['now']),len(guide['events']))>(bool(best['now']),len(best['events'])):
             best=guide
-    return best
+    return best if best is not None else guide_for_channel({},now=now)
 
 def _view_key(path):
     import hashlib,json,urllib.parse

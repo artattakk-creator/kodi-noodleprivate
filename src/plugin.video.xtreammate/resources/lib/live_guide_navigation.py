@@ -27,7 +27,7 @@ def _state():
         if (not token(value.get('token')) or value.get('phase') not in PHASES or
                 not isinstance(value.get('session'),dict)):return None
         return value
-    except (ValueError,TypeError,RuntimeError):return None
+    except (ValueError,TypeError,RuntimeError,AttributeError):return None
 
 
 def _save(value):_home().setProperty(KEY,json.dumps(value,separators=(',',':')))
@@ -87,7 +87,7 @@ def preserves_player():
     return bool(value and _same_player(value))
 
 
-def poll(navigator=None):
+def _poll(navigator=None):
     """Service owner tick, with no native work on the callback stack."""
     value=_state()
     if value is None:return False
@@ -130,18 +130,32 @@ def poll(navigator=None):
     _finish(value,navigator);return False
 
 
+def poll(navigator=None):
+    try:return _poll(navigator)
+    except (AttributeError,RuntimeError,TypeError,ValueError,KeyError):
+        value=_state()
+        if value:
+            try:_finish(value,navigator,notify=True)
+            except (AttributeError,RuntimeError,TypeError,KeyError):pass
+        _mark('REJECTED');return False
+
+
 def consume_resume():
     try:
         raw=_home().getProperty(RESUME)
         value=json.loads(raw) if raw else {}
-        if 0<=time.monotonic()-value.get('at',-100)<=30:
+        if 0<=time.monotonic()-value.get('at',-100)<=86400:
             from window_lifecycle import state
             snapshot=state()
+            from playback_exit import identity
+            owned=identity(xbmc.Player())
+            if not owned or owned[0]!='live' or owned[1].get('nonce')!=value.get('nonce'):
+                _home().clearProperty(RESUME);return ''
             if snapshot['modal'] or snapshot['updating']:return ''
             if not xbmc.getCondVisibility('Window.IsActive(fullscreenvideo)'):return ''
             _home().clearProperty(RESUME);return value.get('nonce','')
         _home().clearProperty(RESUME)
-    except (ValueError,RuntimeError,TypeError):pass
+    except (ValueError,RuntimeError,TypeError,AttributeError):pass
     return ''
 
 

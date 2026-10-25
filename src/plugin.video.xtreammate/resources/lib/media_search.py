@@ -134,13 +134,18 @@ class SearchMixin:
         old_focus=self._mode_focus.get('search',self.getFocusId()) if resume else self.getFocusId()
         old_position=self.getControl(710).getSelectedPosition()
         self.getControl(103).setLabel(tr(33903)+' · '+self._search_query)
+        labels=[]
         for pos,kind in enumerate(KINDS):
             count=value[kind]['total']
-            self.getControl(700+pos).setLabel(tr(LABELS[pos])+' ('+(str(count)+('+' if value[kind].get('partial') else '') if count is not None else '…')+')')
+            labels.append(tr(LABELS[pos])+' ('+(str(count)+('+' if value[kind].get('partial') else '') if count is not None else '…')+')')
+        if tuple(labels)!=getattr(self,'_search_tab_labels',None):
+            for pos,label in enumerate(labels):self.getControl(700+pos).setLabel(label)
+            self._search_tab_labels=tuple(labels)
         section=value[self._search_kind];self._search_rows=section['rows']
         rows=[dict(row,kind=self._search_kind) for row in self._search_rows]
         signature=tuple((str(row.get('sid','')),row.get('name',''),row.get('_now_title','')) for row in rows)
-        if resume or signature!=getattr(self,'_search_rendered',None):
+        changed=resume or signature!=getattr(self,'_search_rendered',None)
+        if changed:
             with self._search_profile.span('ROW_RENDER',rows=len(rows)):
                 self._fill(710,rows)
             self._search_rendered=signature
@@ -154,7 +159,9 @@ class SearchMixin:
         # Keep the tab until the user explicitly moves down to the results.
         target=old_focus if old_focus in self._valid_focus() else 700+KINDS.index(self._search_kind)
         self.setFocusId(target)
-        mark('SEARCH_RESULT_READY',self._search_correlation)
+        now=time.monotonic();final=not section.get('partial',False)
+        if changed or final or now-getattr(self,'_search_ready_trace',-100)>=1:
+            mark('SEARCH_RESULT_READY',self._search_correlation);self._search_ready_trace=now
         if self._search_kind=='live' and rows and self.getControl(710).size():
             self._search_profile.emit('FIRST_LIVE_ROW_RENDERED',once=True,rows=len(rows))
         if cursor is not None:

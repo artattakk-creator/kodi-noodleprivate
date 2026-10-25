@@ -121,3 +121,18 @@ class LiveGuide35(Fixture,unittest.TestCase):
         self.module.restore_info(candidate,nonce);self.assertEqual(candidate.mode,'info')
         candidate.mode='hidden';self.properties[self.live.SESSION_KEY]=json.dumps(dict(self.session,nonce='new'))
         self.module.restore_info(candidate,nonce);self.assertEqual(candidate.mode,'hidden')
+
+    def test_service_keeps_autoplay_background_and_preplay_before_guide_overlay_guard(self):
+        import ast
+        source=(ADDON/'service.py').read_text()
+        ast.parse(source)
+        self.assertLess(source.index('poll_app_features()'),source.index('if guide_active:'))
+        self.assertLess(source.index('poll_preplay(self._overlay)'),source.index('if guide_active:'))
+        self.assertLess(source.index('if guide_active:'),source.index('recover_from_player_path'))
+        self.assertIn('if not exiting and not preserves_player():poll_playback_exit()',source)
+
+    def test_kodi_shutdown_cancels_queued_navigation_without_touching_player(self):
+        self.module.request(self.nav)
+        with mock.patch.object(self.xbmc,'Monitor',return_value=types.SimpleNamespace(abortRequested=lambda:True)):
+            self.assertFalse(self.module.poll(self.nav))
+        self.nav.suspend_for_guide.assert_not_called();self.assertFalse(self.builtins);self.player.stop.assert_not_called()
