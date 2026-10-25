@@ -66,6 +66,20 @@ def revision():
     return tuple(result)
 
 
+def _guide_revision(pid):
+    from guide_store import path
+    if not os.path.isfile(path()):return None
+    db=None
+    try:
+        db=sqlite3.connect('file:'+quote(path(),safe='/')+'?mode=ro',uri=True,timeout=.075)
+        db.execute('PRAGMA query_only=ON')
+        row=db.execute('SELECT revision,updated FROM guide_meta WHERE pid=?',(pid,)).fetchone()
+        return tuple(row) if row else None
+    except (sqlite3.Error,OSError):return ('UNAVAILABLE',)
+    finally:
+        if db is not None:db.close()
+
+
 class LiveSearch:
     """Names first; XML Now and cache-only short EPG in bounded worker slices."""
     def __init__(self,portal,query,reader,now,correlation='',profile=None,cancel=lambda:False):
@@ -74,6 +88,8 @@ class LiveSearch:
         self.profile=profile or SearchProfile(correlation);self.cancel=cancel
         self.portal=portal;self.query=query;self.reader=reader;self.now=now
         self.stamp=revision();self.created=time.monotonic();self.expires=now+30;self.final_code=None
+        state=reader.state('live') or {}
+        self.catalogue_revision=(state.get('revision'),state.get('updated'));self.guide_revision=None
         self.tokens=list(dict.fromkeys(normalized(query).split()));self.position=0
         self.channels=None;self.mappings={};self.events={};self.aliases={};self.code='NO_EPG'
         self.client=None;self.client_checked=False;self.phase='names';self.short=[];self.short_position=0
@@ -99,7 +115,15 @@ class LiveSearch:
                 if self.result:self.profile.emit('FIRST_NAME_MATCH',once=True,rows=len(self.result))
 
     def valid(self):
-        return not self.cancel() and self.stamp==revision() and (not self.done or time.monotonic()-self.created<30 and time.time()<self.expires)
+        if self.cancel() or self.done and (time.monotonic()-self.created>=30 or time.time()>=self.expires):return False
+        current=revision()
+        if current[2:4]!=self.stamp[2:4]:return False
+        if (current[0],current[4])!=(self.stamp[0],self.stamp[4]):
+            state=self.reader.state('live') or {}
+            if (state.get('revision'),state.get('updated'))!=self.catalogue_revision:return False
+        if self.phase not in ('names','prepare') and (current[1],current[5])!=(self.stamp[1],self.stamp[5]):
+            if _guide_revision(self.portal['id'])!=self.guide_revision:return False
+        self.stamp=current;return True
 
     @property
     def done(self):return self.phase=='done'
@@ -130,6 +154,7 @@ class LiveSearch:
             identifiers.update([str(manual)] if manual else [row['sid'],str(row.get('epg_channel_id') or '')])
         identifiers.discard('')
         with self.profile.span('EPG_NOW_SQL'):
+            self.guide_revision=_guide_revision(self.portal['id'])
             self.events,self.aliases,self.code,count=_now_events(self.portal['id'],identifiers,self.now,self.cancel)
         self.counts['source_count']=count
         stops=[event['stop'] for event in self.events.values() if event.get('stop',0)>self.now]
@@ -212,7 +237,10 @@ def search(portal,query,kind='vod',offset=0,now=None,incremental=False,continuat
     from catalog_sync import request
     reader=Reader(portal['id'],timeout=.15,query_seconds=1)
     query=str(query).strip()[:200];result={};cursor=continuation
-    if cursor is not None and (cursor.portal['id']!=portal['id'] or cursor.query!=query or not cursor.valid()):cursor=None
+    if cursor is not None:
+        try:
+            if cursor.portal['id']!=portal['id'] or cursor.query!=query or not cursor.valid():cursor=None
+        except (IndexReadError,sqlite3.Error,OSError,ValueError):cursor=None
     for section in KINDS:
         if cancel():break
         if not portal.get('include_'+section,True):

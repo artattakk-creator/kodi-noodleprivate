@@ -148,3 +148,21 @@ class SearchPerformance35(Fixture,unittest.TestCase):
         plan=' '.join(str(tuple(row)) for row in db.execute('EXPLAIN QUERY PLAN SELECT cid,title,source,start,stop FROM programmes WHERE pid=? AND cid IN (?) AND start<=? AND stop>? ORDER BY source,start DESC',('p','xml2763',self.now,self.now)))
         db.close();self.assertIn('SEARCH programmes USING INDEX',plan)
         result=self.finish('Foreign programme');self.assertEqual(result['live']['total'],0)
+
+    def test_unrelated_wal_writes_do_not_restart_the_live_generation(self):
+        result=self.finish('Needle');cursor=result['_cursor']
+        db=self.index.connect(write=True)
+        with db:db.execute('INSERT OR REPLACE INTO sync_requests VALUES(?,?,?,?,?,?)',('p','vod',10,'',0,self.now))
+        db.close()
+        with mock.patch.object(self.search,'LiveSearch',wraps=self.search.LiveSearch) as created:
+            fresh=self.search.search(self.portal,'Needle',kind='live',incremental=True,continuation=cursor)
+        created.assert_not_called();self.assertIs(fresh['_cursor'],cursor)
+
+    def test_other_portal_epg_publication_does_not_restart_this_portals_cursor(self):
+        guide=importlib.import_module('guide_store')
+        guide.import_cache('p',{'xml1':[dict(channel='xml1',name='Current',start_timestamp=self.now-60,stop_timestamp=self.now+60)]})
+        result=self.finish('Needle');cursor=result['_cursor']
+        guide.import_cache('other',{'xml1':[dict(channel='xml1',name='Unrelated',start_timestamp=self.now-60,stop_timestamp=self.now+60)]})
+        with mock.patch.object(self.search,'LiveSearch',wraps=self.search.LiveSearch) as created:
+            fresh=self.search.search(self.portal,'Needle',kind='live',incremental=True,continuation=cursor)
+        created.assert_not_called();self.assertIs(fresh['_cursor'],cursor)
