@@ -1,42 +1,45 @@
-# XCMate – verbindliche UX-Roadmap NACH Abnahme 0.1.29.35: vertikale Navigation und echte Player-OSDs
+# XCMate – verbindliche UX-Roadmap nach .35: bildschirmhohe Rail, zweispaltiges Mini-EPG, echte Player-OSDs und Genresuche
 
 **Beschluss des Nutzers:** 25.10.2026. Produkt: XCMate GS Media, `plugin.video.xtreammate`; Kodi 21.2 Omega / Android TV 13 / RK3528 ARM32 / Titan BINGIE MOD; IR-Fernbedienung.
 
 > „Wir machen jetzt auf jeden Fall die Version noch zu Ende. Aber bei den nächsten kommenden Versionen nach der Abnahme jetzt gleich möchte ich auf jeden Fall, dass wir diese neuen Navigationspunkte mit reinnehmen. Einmal diese vertikale Menüleiste, wenn man im Mini-EPG nach links drückt und auch die Player, dass die überarbeitet werden. Also ich möchte da diese richtigen Player-Buttons haben und sowas. Die Darstellung jetzt gefällt mir einfach nicht.“
 
+**AKTUELLE NUTZERKORREKTUR (25.10.2026):** Anders als in einer vorigen Assistenzinterpretation bleibt die Sendergruppen-Ansicht zwischen Mini-EPG und Navigationsleiste erhalten. Zusätzlich volle Bildschirmhöhe für Rail, rechte Mini-EPG-Programmansicht und Genre-Treffer bei Filmen/Serien.
+
 **ABSOLUTE PHASENGRENZE:** Den laufenden `.35`-Kandidaten aus [CODEX_AUFTRAG_02935_SUCHPERFORMANCE_EPG_NAV_20261025_DE.md](CODEX_AUFTRAG_02935_SUCHPERFORMANCE_EPG_NAV_20261025_DE.md) **erst implementieren, auf Android abnehmen und nur nach ausdrücklicher Freigabe nach main mergen**. NICHT eigenmächtig Navigation/Player-Redesign in laufenden `.35`-Branch injizieren. Die hier beschriebenen Arbeiten sind **nächste, separate kumulative Versionen nach .35**, Nummern erst nach dem dann tatsächlich aktuellen main festlegen.
 
-## 1. Verbindliche Änderung gegenüber älterem #94/#150-Navigationsplan
+## 1. Verbindliche KORREKTUR: Mini-EPG → Sendergruppen → bildschirmhohe Icon-Rail
 
-**Der neueste Nutzerwunsch hat bei Konflikten mit älteren Spezifikationen Vorrang.** Älter war die Kette:
-`LIVE_FULL → [Links] CHANNEL_LIST → [Links] GROUPS → [Links] NAV_ICONS → [Links] NAV_EXPANDED → …`.
+**NEUESTE ausdrückliche Nutzerpräzisierung 25.10.2026 hat Vorrang:** Die zuvor von ChatGPT angenommene Direktfolge **Mini-EPG → Rail ist falsch und widerrufen**. Die bestehende Sendergruppen-Stufe muss erhalten bleiben:
 
-**JETZT VERBINDLICH nach .35:**
-`LIVE_FULL / INFO → [Links] MINI_EPG_CHANNEL_LIST → [Links] NAV_RAIL_COMPACT → [Links] NAV_RAIL_EXPANDED`.
+`LIVE_FULL/INFO → [Links] MINI_EPG → [Links] SENDERGRUPPEN → [Links] NAV_RAIL_COMPACT → [Links] NAV_RAIL_EXPANDED`.
 
-Damit ist die **direkte Gruppenliste als zweite Links-Ebene ersetzt**; Gruppen werden **über das ausdrückliche, sofort erreichbare Menü `Sendergruppen` in der Rail** geöffnet. Es darf kein weiterer versteckter Pflicht-Klick über die Gruppe nötig sein, ehe die Rail erscheint. Die Benutzeranweisung ist klar: **einmal Links zum Mini-EPG, noch einmal Links direkt zur vertikalen Navigation.**
+- Live-Vollbild/Info, **Links einmal**: bestehende Mini-EPG-Senderliste mit rechts eingebettetem Programmbereich und dem aktuellen Sender markiert.
+- Mini-EPG mit **Senderlisten-Fokus**, **Links zweimal (ab Vollbild gezählt)**: **Sendergruppen**. Auswahl/Checkboxen/Fokus wie bisher, keine persistente Änderung der Startgruppe ohne ausdrücklich bestätigte Nutzeraktion.
+- Aus **Sendergruppen** erneut **Links (drittes Links ab Vollbild)**: **vertikale XCMate-Navigationsleiste**. Kein Überspringen der Gruppen durch globale Weiterleitung.
+- Schmale Rail → Links oder bewusst gewählter Aufklapp-Befehl: dieselbe **bildschirmhohe** Rail mit Icons und lesbaren deutschen Labels.
+- Rail Back/Rechts → Gruppen → Back/Rechts → Mini-EPG → Back → Video; Fokus, SID, aktive Gruppe und Player bleiben erhalten.
+- **Rechts in der linken Mini-EPG-Senderliste** betritt dagegen die ständig sichtbare **rechte Programmspalte** (nicht das große EPG); **Links/Back dort** geht erst zurück in die linke Senderliste, **nicht** zu Sendergruppen. Rechts/Links-Bedienung muss vom tatsächlichen Fokus abhängen, nicht nur `mode`.
+- Großer EPG weiterhin **über Infobar-EPG-Button** (schon Teil des separaten `.35`-Auftrags). Kein ungewollter Kodi-Home-/Doppelplay-Routeneffekt.
 
-**Vorschlag zur Back-/Rechts-Semantik, vor Implementierung im UI-Draft mit Android-Fokus bestätigen:**
+**Vollbildhohe Rail – verbindlicher Entwurf:** Von oberem bis unterem sicheren Anzeigerand (1080p und 720p). **Alle Hauptmenüpunkte vertikal über die nutzbare volle Höhe verteilen**, mit gutem Abstand statt kompakter Box; schmal/dunkel/leicht transparent im eingeklappten Modus, groß lesbar im beschrifteten Modus, deutlich sichtbarer TV-Fokus, einheitliche lizensierte Tabler-Icons mit lokal gepackten Kodi-PNGs und Provenienz. Gleiche komplette Höhe beim Aufklappen, keine Überlappung mit Android-/Kodi-Safe-Area. Menü: Suchen, Favoriten, Live-TV, Sendergruppen, **großer EPG**, Filme, Serien, Einstellungen, XCMate-Home/Verlassen; verfügbare XCMate-Routen wiederverwenden, keine fiktiven aktiven Aktionen. **Original-XCMate-Logo nicht ersetzen**, Space Premium opt-in. Kein HTTP bei IR-Menünavigation, keine globale Kodi-Keymap.
 
-| Zustand + Aktion | Ziel |
-| --- | --- |
-| Live-Vollbild → Links | Mini-EPG/Senderliste, **aktuell laufender Sender sichtbar markiert** |
-| Mini-EPG → Links | **Schmale vertikale Menüleiste** (`nav_icons`), ohne Stream-Neustart |
-| Schmale Leiste → Links oder OK auf bewusstem Menü-Ausklapp-Affordance | **Breite Rail mit Icons + Klartextlabels** (`nav_expanded`), kein Home-Sprung |
-| Rail kompakt/ausgeklappt → Rechts/Back | zur zuletzt sichtbaren Mini-Senderliste **mit derselben Gruppen-/Sender-/Scrollposition** |
-| Mini-EPG → Back | zurück zum unveränderten laufenden Live-TV; Back schließt UI statt Video |
-| Rail → `Sendergruppen`-Menüpunkt → OK | **Gruppenliste**, dort eine erlaubte Gruppe wählen, zurück zur Senderliste dieser Gruppe |
-| Rail → Suchen/Live-TV/Filme/Serien/Favoriten/Einstellungen/EPG | vorhandene XCMate-Router-/Kodi-Owner-sichere Route, Fokus/Return-Kontext erhalten |
-| Rail → `XCMate-Home / Verlassen` | bewusster, explizit gekennzeichneter Ausstieg zu **XCMate Home**, niemals unabsichtlich Kodi-Home |
-| Mini-EPG markierter Sender → Rechts | zukünftig optionale Programmvorschau **#95**, **nicht** in Rail-Draft integrieren, sofern nicht gesondert beauftragt |
+**Rail-Abnahme NOT_TESTED:** RAIL-01 Live→Links Mini, RAIL-02 Mini→Links Gruppen, RAIL-03 Gruppen→Links volle Icon-Rail, RAIL-04 Icon-Rail kompakt/ausgeklappt gleicher vertikaler Bereich, RAIL-05 Kategorien und Menürouten korrekt, RAIL-06 Rechts/Back über alle Ebenen mit Fokus, RAIL-07 20 IR-Durchläufe ohne Playback-/Home-Regression, RAIL-08 720p/1080p/Estuary/BINGIE.
 
-**Rail-Icons und Information Architecture:** Gemeinsam gestaltete, nicht zufällig gemischte Symbole für **Suchen, Favoriten, Live-TV, EPG, Sendergruppen, Filme, Serien, Einstellungen, XCMate-Home**. Kontextabhängige Funktionen nur bei verfügbarer Route. Die Gruppe direkt auffindbar machen; das Original-XCMate-Branding-Icon nicht ersetzen. Schon dokumentierte [Tabler-Icon-Entscheidung in #94](https://github.com/artattakk-creator/kodi-noodleprivate/issues/94) (versionierte Tabler Icons, MIT-Hinweis/Asset-Provenienz, in Kodi-taugliche lokal mitgelieferte Texturen statt Runtime-CDN) wiederverwenden. Eine gemeinsame Rail-Basis später in EPG/Home/Filmen/Serien (#150) sinnvoll, **erst Live-Flow abnehmen**, andere Rubriken nachziehen.
+## 2. Mini-EPG mit genutzter RECHTER Programmansicht (#95)
 
-**UX/Performance:** 1080p primär, 720p prüfen; schlanke grau/transparente Rail, klar kontrastierte große Icons und deutsche Labels, hochsichtbarer TV-Fokus (nicht nur Farbwechsel), keine asynchronen HTTP-Downloads oder Scan-Neustarts beim Öffnen. Fernbedienung: ↑↓ Einträge wechseln, OK ausführen, Rechts/Back zurück, kein Fokusdiebstahl und keine Doppelaktionen aus `onAction`/`onControl`; keine globalen Kodi-Keymap-Änderungen. Live-TV läuft beim bloßen Menüöffnen weiter; fremde Player-/Kodi-Systemdialoge nicht vereinnahmen.
+**Neue verbindliche Nutzeranforderung:** Das derzeit zu breite Mini-EPG lässt seinen rechten Bereich ungenutzt. **Linke Spalte = Senderliste, rechte Spalte = immer sichtbarer chronologischer Programmverlauf des links markierten Senders** im selben XCMate-Fenster. **Kein zusätzliches Popup bei Rechts**.
 
-**Künftige Rail-Tests:** RAIL-01 Live→Links Mini (aktuelle SID), RAIL-02 Mini→Links *sofort Rail*, RAIL-03 Rail↔beschriftete Rail↔Mini per Back/Rechts mit Fokus, RAIL-04 Gruppen via Rail und zurück, RAIL-05 jeden Menüpunkt nach XCMate-Router und zurück ohne Home/Player-Crash, RAIL-06 20 IR-Navigationszyklen, 720p/1080p, Estuary/BINGIE; alle bis Test auf Android **NOT_TESTED**.
+- Bei Öffnen fokussiert die linke Senderliste den **tatsächlich laufenden SID** (bei Erststart Startsender), rechts erscheint **seine** verfügbare Programmfolge.
+- **Hoch/Runter links** wechselt nur die *markierte Senderzeile*, nicht den Stream; **der rechte Verlauf aktualisiert sich sofort lokal für den markierten Sender**, nicht für den bisher laufenden. Keine synchronen Provider-Downloads, kein teurer Full-Guide-Scan pro IR-Aktion.
+- Rechte Spalte zeigt **frühere Sendungen (wenn aus XMLTV/Cache verfügbar)** → die **jetzige Sendung visuell dominant hervorgehoben** (echte Zeit/Progress, sofern valide) → **folgende Sendungen** bis zum belegten EPG-Zeithorizont. Vergangenes nicht erfinden, keine implizite Replay-Fähigkeit behaupten. Fehlen EPG-Daten: ehrlich „Keine Programmdaten verfügbar“ oder „Nur Kurz-EPG“ und Senderliste bleibt sofort bedienbar.
+- Solange die **linke Senderliste** den Eingabefokus besitzt, ist rechts die *aktuelle Sendung* **optisch markiert**, aber ihr D-Pad-Fokus ist **noch nicht** gestohlen. **Rechts** verlagert den steuerbaren Fokus zur **Jetzt-Zeile** in die rechte Spalte. Dort **Hoch/Runter** durch frühere/spätere Ereignisse, **OK** öffnet existierende Programmdetails, soweit real vorhanden, kein unbeabsichtigtes Umschalten. **Links/Back** rechts → nur zurück zu linker Liste, mit exakt dem vorigen Sender und Scrollpunkt.
+- **Links links** → Sendergruppen → Links → Rail (siehe oben); D-Pad-Ebenen sauber unterscheiden. **OK links** stimmt auf gewählten Sender ab genau einmal, bestehende LiveSession-/IR-/Playbacklogik nicht ändern.
+- Bestehende lokale `epg_views.py`/`guide_for_channel`-/XMLTV- und Provider-Short-EPG-Daten und Programme als Quelle. Kein Alias-Mismatch, doppelte Sendungen, erfundene Zeitfenster oder UI-Thread-HTTP; Play läuft im Hintergrund. Verwendete rechte Displayfläche statt immer breiter werdender linker Liste, klare Lesbarkeit aus TV-Abstand.
+- **#95 alt „Rechts öffnet neue Programmansicht“ wird präzisiert/ersetzt**: Die rechte Programmansicht ist **dauerhaft zu sehen**, Rechts aktiviert **nur den Fokus**.
+- **Abnahmen MINI-01..10 (NOT_TESTED)**: Split-Layout, laufender Sender/Startsender markiert, markierter anderer SID → rechte Events ohne Tune, Jetzt plus frühere/folgende echte Programme, Rechts→Jetzt-Fokus, Pfeile/OK Details, Links aus rechter Spalte nur zurück links, Links aus linker Spalte→Gruppen→Rail, fehlender/kurzer EPG ohne Phantomzeiten, 20 IR-Zyklen + 720p/1080p ohne Playbackregression.
 
-## 2. Verbindliche PLAYER-UX-Überarbeitung: keine bloße Kosmetik, echte große Fernbedienungsbuttons
+## 3. Verbindliche PLAYER-UX-Überarbeitung: keine bloße Kosmetik, echte große Fernbedienungsbuttons
 
 **Nutzerbewertung:** Die **derzeitige Player-Darstellung gefällt nicht und soll neu gestaltet werden**. Das ist ein **explizit autorisierter UI-Redesign-Scope der Player/OSD-Bereiche**, während die **globale dreigeteilte Suche** weiterhin [STRICT UI-FREEZE](SUCHMASKE_UI_FREEZE_02934_20261025_DE.md) bleibt.
 
@@ -48,7 +51,7 @@ Damit ist die **direkte Gruppenliste als zweite Links-Ebene ersetzt**; Gruppen w
 - **2× OK oder Runter** bringt einen **richtigen fokussierbaren Player-Controls-Balken** mit Play/Pause, Stop/Live-Ende, optisch klaren Aktionsbuttons, Tonspur, Untertitel, Bild-/Audioeinstellungen und **EPG-Button zum großen EPG** (mit `.35`-Routingbestätigung); mit Back nur Overlay schließen.
 - **Play/Pause und ±10/30s bzw. Seek/FF/RW** nur dort aktiv, wo Kodi **belegte** Pause-/Timeshift-/Seek-Fähigkeit für den aktuellen Live-Stream meldet. Sonst deaktivieren/ausgrauen oder verständlich nicht anbieten, nicht vortäuschen. Kein beliebiges Springen in linearem Live-TV.
 - Stream-Statussymbole **#100** für echte Auflösung/Codec/Audiokanäle/Untertitel in schlanker Reihe, nur technisch belegte Werte, keine 4K/Dolby-Erfindung aus Sendername. Der Umfang der Icons kann im gleichen Live-OSD-PR mitgenommen werden, sofern die IR-/Layouttests nicht überfrachtet werden.
-- Direkte **Links**-Navigation aus Vollbild/Info bleibt Mini-EPG; neuer Links-Pfad Mini→Rail bleibt von der unteren Playerleiste unabhängig und kontextsauber.
+- Direkte **Links**-Navigation aus Vollbild/Info bleibt Mini-EPG; neuer Links-Pfad Mini→Gruppen→Rail bleibt von der unteren Playerleiste unabhängig und kontextsauber.
 - **Nicht** die darunterliegende Hardware-Decoder-/Kodi-Player-Engine austauschen, um eine bessere Optik zu erzielen. Bestehende XCMate-LiveSession / Guide-Handoff / Senderzapping schützen.
 
 ### B. Filme-/Serienplayer (VOD)
@@ -64,22 +67,33 @@ Codex soll zunächst **2–3 konkrete TV-OSD-Anordnungen** (z. B. kompakte Trans
 
 **Player-Tests:** PLAY-01 1× OK Info, 2× OK Transport, PLAY-02 große echte Buttons/funktionierende Fokussteuerung, PLAY-03 unterstützte Pause/Seek vs nicht unterstütztes Live, PLAY-04 EPG-Button → großer Guide → Back zum laufenden Video, PLAY-05 VOD Pause/Seek/Stop/Resume/Audio/Untertitel, PLAY-06 Back ohne Streamstop, PLAY-07 Episoden-Autoplay inklusive Staffelübergang, PLAY-08 fremde Kodi-Player/Dialoge unberührt, PLAY-09 10x öffnen/schließen ohne Black/Busy/Root, PLAY-10 BINGIE und Estuary / 720p+1080p. Alle bis Android-Abnahme **NOT_TESTED**.
 
-## 3. Umsetzungs-Reihenfolge / Versionsphasen (Nummern ausdrücklich vorläufig)
+## 4. Genresuche in bestehender globaler Suche (#159)
 
-**PHASE JETZT:** `.35` aus bereits abgesprochenem Auftrag abschließen und Android G1–G4/PERF/ROUTE/GROUP testen. Auch die darin gewünschte einfache **Infobar-EPG→großes EPG**-Aktion **bleibt im .35-Scope**, weil sie bereits freigegeben wurde. **Nicht** die *optische Neugestaltung* oder die vertikale Rail in `.35` hineinziehen.
+**Statischer Code-Befund .34 auf main:** `library_index.FIELDS` enthält bereits `genre` (auch `plot`/`description`), und `search_results.secondary()` zeigt Genre bei Filmen und Serien an. `library_index.Reader.page()` durchsucht beim Token-`LIKE` aber lediglich das beim Import per `normalized(title)` gefüllte Feld `search`. `search_data.LiveSearch.step()` sucht Sendernamen und laufende Jetzt-Programmtitel, **nicht** Genre. Deshalb keine garantierte Genre-Treffersuche, auch wenn ein zufälliger Titel bereits „Western“ enthält.
 
-**NACH BESTANDENER .35-ABNAHME, in aufeinander folgenden kumulativen Hauptversionen:**
+**Nutzerwunsch:** Im bestehenden Suchfeld sollen `Sci-Fi`, `Science Fiction`, `Western`, `Thriller`, usw. **auch passende Filme/Serien anhand vorhandener Provider-Genre-Metadaten** liefern, selbst wenn kein Titelmatch existiert. Konservative Aliasse `Sci-Fi/Sci Fi/Science-Fiction/Science Fiction` usw. Ohne Provider-Genre keine erfundenen Treffer oder automatische Annahme, jede Provider-`category_id` sei ein Genre. Titel-Treffer sinnvoll vor Genre-Treffer, keine Duplikate; Provider-/Gruppenfilter beibehalten.
 
-1. **Nächster UX-Release (voraussichtlich .36):** Primär **Live-Mini-EPG→Linke Icon-Rail (direkt)**, kompakt/aufklappbar, Sendergruppen-Menü über Rail. Abnahme, dann Nutzer-Merge-Freigabe.
-2. **Darauffolgender UX-Release (voraussichtlich .37):** **Live-TV-Player-/Infobar-OSD-Redesign** mit echten Play/Pause-/Transport-/Ton-/Untertitel-Buttons und ggf. technisch belegten Statusicons; bestehende Live/EPG-Navigation bewahren. Designentscheidung möglichst vorher.
-3. **Darauffolgender Medien-UX-Release (voraussichtlich .38):** **Film-/Serien-OSD** neu gestalten und echt funktionsfähig machen. Test von Resume/Autoplay, Staffeln und Kodi-Player-Ownership; ggf. ein früherer gemeinsamer PR **nur** falls weniger Risiko nachgewiesen ist.
-4. **Danach:** gemeinsame Rail in anderen Rubriken (#150), Mini-EPG **Rechts→Programmvorschau** (#95), EPG-Zuordnung (#98), Artwork-Poster-Retry (#111), optionale Downloads/Aufnahme nach technischen Voraussetzungen. Keine ungefragte Aufblähung eines Releasepakets.
+**Strikt unveränderte Suchmaske** Live-TV | Filme | Serien (UI-Freeze aus `SUCHMASKE_UI_FREEZE_02934_20261025_DE.md`). Umsetzung als effiziente, datenschonende lokale Suche per vorindizierten Genrebegriffen/geeigneter schema-kompatibler Migration, keine langsamen JSON-Vollscans, kein Reimport-/Profilreset. Live-TV-Suche und Now-/EPG-Latenzfix aus .35 müssen unverändert bleiben. Echte Genre-Auswertung von TV-Programmen **nur später und nur bei vorhandenen belegten EPG-Genre-Tags**.
 
-**Spezifisch ältere Konflikte auflösen:** #94 und #150 beschrieben früher **Mini→Gruppen→Rail**, und alte #17 erwähnte **Mini→Gruppen**. Diese Regeln **werden für künftige Rail-Versionen durch diese neuere Nutzeranweisung ersetzt**. Für `.35` gilt dessen früher explizit definierter Scope bis zur Abnahme; Codex soll diese neue Folge-Roadmap kennen, aber nicht unaufgefordert den laufenden .35-PR ändern.
+**GENRE-01–07: Android NOT_TESTED**; eigener kleiner kumulativer Draft-PR nach .35, nicht unbemerkt in .35 oder das Rail-Redesign mischen. Siehe [#159](https://github.com/artattakk-creator/kodi-noodleprivate/issues/159).
 
-## 4. Pflichtprozess
+## 5. Reihenfolge der Folgeversionen (Nummern nur vorläufig)
+
+**Laufende Version .35 erst wie beauftragt abschließen und auf echter Android-Box abnehmen.** Bereits freigegeben: schnellere Live-TV-/EPG-Suche, Infobar-EPG-Button → großer Guide, Startgruppe und aktueller Senderfokus, kleine Short-EPG-Robustheit. **Die hier besprochenen UI-Umbauten und Genresuche ausdrücklich erst NACH .35**, keine laufende Codex-Arbeit unaufgefordert umwerfen.
+
+1. **Voraussichtlich .36:** gebündelte **Mini-EPG-Zweispaltenansicht (#95)** und **bildschirmhohe Rail NACH der Gruppenebene (#94/#150)**, logisch getrennte Commits und separate Android-Gates. Falls zu riskant, Split in zwei kumulative Draft-PRs/Versionen statt ungeprüft zusammenzuwerfen.
+2. **Darauffolgend:** **Live-TV-OSD/Player** mit echten funktionsfähigen Transport-/Audio-/Untertitelbuttons (#17/#100) und ausgewählter visueller Variante.
+3. **Darauffolgend:** **Film-/Serien-VOD-OSD** mit Timeline/PlayerCapabilities/Resume und unverändertem Serien-Autoplay (#79/#84).
+4. **Genre-Suche (#159):** kleiner unabhängiger PR nach .35, früher als oder zwischen den Player-UI-PRs, abhängig von Risiko; niemals um den Preis einer neuen mehrminütigen Suche.
+5. Später: Rail für übrige Bereiche #150, EPG-Quellen-Mapping #98, Poster-Retry #111, weitere Downloader/Recorder nach eigener Abnahme.
+
+**Alte widersprechende Anweisungen endgültig verworfen:** `Mini → direkt Rail` ist falsch, richtig ist `Mini → Sendergruppen → Rail`; Mini-Rechts öffnet **kein zweites Popup**, sondern aktiviert die **ständig sichtbare rechte EPG-Programmspalte**. Diese Nutzerpräzisierung ist jünger und verbindlich.
+
+## 6. Pflichtprozess
 
 Pro Release genau **kumulativ auf der letzten bestätigten main-Version**, Add-on-ID stabil, neue Draft-PR, Host-/Kodi-/WindowXML-Regressionstests, ZIP + SHA256, Android-Testplan zunächst NOT_TESTED, echte IR-Abnahme durch Nutzer. **Kein automatischer Merge, kein Kodi-Reset, kein Downgrade, kein Theme-/Portal-/Icon-Wechsel als Nebeneffekt.** Roadmap- und Designabstimmung sind keine Implementierungsfreigabe für den laufenden Kandidaten.
 
 **Quell-Issues:** [#94](https://github.com/artattakk-creator/kodi-noodleprivate/issues/94), [#150](https://github.com/artattakk-creator/kodi-noodleprivate/issues/150), [#17](https://github.com/artattakk-creator/kodi-noodleprivate/issues/17), [#100](https://github.com/artattakk-creator/kodi-noodleprivate/issues/100), [#79](https://github.com/artattakk-creator/kodi-noodleprivate/issues/79), [#84](https://github.com/artattakk-creator/kodi-noodleprivate/issues/84), [#143](https://github.com/artattakk-creator/kodi-noodleprivate/issues/143).
 
+
+**Neue Folgeissues:** [#95](https://github.com/artattakk-creator/kodi-noodleprivate/issues/95) rechte Mini-EPG-Programmansicht; [#159](https://github.com/artattakk-creator/kodi-noodleprivate/issues/159) Genre-Suche.
