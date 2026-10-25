@@ -1,6 +1,6 @@
 # XCMate 0.1.29.37 – Host-Testbericht und Android-Testkandidat
 
-**Kein Release. Keine Android-Abnahme. Kein Merge.** Basis `origin/main` `ecf85f36537b79f88cc3dfaef0fc70b10836b848` (.36), Branch `feat/xcmate-02937-cumulative`. Code: `475d9b3`, vollständiger Hoststand einschließlich letzter Modellergänzung: `fe38c74`. Spätere Liefercommits ergänzen Berichte/Paket/Prüfwerkzeuge, nicht die getesteten Add-on-Quellen. Das Paket wird in PR-CI erneut vollständig aus dem PR-Stand erzeugt und geprüft.
+**Kein Release. Keine Android-Abnahme. Kein Merge.** Basis `origin/main` `ecf85f36537b79f88cc3dfaef0fc70b10836b848` (.36), Branch `feat/xcmate-02937-cumulative`. Code: `475d9b3`, vollständiger Hoststand einschließlich letzter Modellergänzung: `fe38c74`. Spätere Liefercommits ergänzen Berichte/Paket/Prüfwerkzeuge, nicht die getesteten Add-on-Quellen. Das Paket wurde in PR-CI vollständig aus dem PR-Merge-Ref erzeugt und geprüft. Das heruntergeladene CI-Artefakt enthält bytegenau dasselbe ZIP wie der GitHub-Download und die lokale Lieferung. Dieser Bericht und CI_02937.json dokumentieren den geprüften Paket-HEAD b368f0d; der folgende reine Dokumentationscommit verändert die geprüften Quellen nicht. Der neueste Check ist zusätzlich direkt am PR sichtbar.
 
 ## Ergebnis
 
@@ -16,7 +16,7 @@
 | Sprachen/Syntax | Deutsch/Englisch je 841 eindeutige PO-Kontexte, compileall | PASS |
 | Main/Updatekanal | `addons.xml`, Prüfsumme, .36-ZIP und Publish-Workflow unverändert | PASS |
 | Andere lokale Arbeiten | 62 vorbestehende WIP-Dateien in zwei anderen Worktrees per SHA geprüft | PASS |
-| GitHub-CI | Aktueller Check am Draft-PR; nach Abschluss siehe CI_02937.json | Separat dokumentiert |
+| GitHub-CI | [Run 40237211308](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/40237211308), [CI_02937.json](CI_02937.json) | **1.298 PASS**, 206,008 s, Publish SKIPPED |
 | Android A/Kodi21.2 und B/Kodi21.3 | 39 Gates je Box, [Statusdatei](ANDROID_STATUS_02937.json) | **78× NOT_TESTED** |
 
 Eine vorhandene Warnung in der unveränderten Vendor-Datei `xcmate_smb_vendor/smb/SMBProtocol.py` betrifft einen Docstring-Escape; Syntaxprüfung endet erfolgreich. Sie wurde nicht durch eine fremde Vendor-Änderung verdeckt.
