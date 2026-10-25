@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 import sys
 import time
+import tempfile
 import types
 import unittest
 from unittest import mock
@@ -49,7 +50,9 @@ class PendingLiveSessionTests(unittest.TestCase):
         xbmcaddon.Addon = lambda: object()
         xbmcgui = types.ModuleType('xbmcgui')
         xbmcgui.Window = lambda number: self.window
+        temp=tempfile.TemporaryDirectory();self.addCleanup(temp.cleanup)
         utils = types.ModuleType('utils')
+        utils.addon_data_dir=lambda:temp.name
         utils.setting_bool = lambda *args: False
         utils.setting_int = lambda *args: 0
         utils.info = utils.error = lambda *args: None

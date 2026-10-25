@@ -258,7 +258,8 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         reader=Reader(self.portal['id'])
         state=reader.state(self.kind)
         revision=(state or {}).get('revision','')
-        status=sync_state(self.portal['id'],self.kind)
+        from catalog_delta import states as delta_states
+        status=delta_states(self.portal['id'],self.kind)+sync_state(self.portal['id'],self.kind)
         groups=reader.groups(self.kind) if state else []
         with self._lock:item=dict(self._art_selected) if self._art_selected else None
         if item:
@@ -304,6 +305,10 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
             if status and status[0]['code'] in ('FAILED','CANCELLED'):
                 self.getControl(102).setLabel(tr(32610))
                 if self._catalog_missing: self.getControl(120).setLabel(tr(32611))
+            elif status and status[0]['code'] in ('PENDING','RUNNING'):
+                self.getControl(102).setLabel(tr(35400))
+            elif status and status[0]['code']=='EMPTY_SOURCE':
+                self.getControl(102).setLabel(tr(35401))
             elif status and status[0]['code']=='INDEXING':
                 self.getControl(102).setLabel(tr(32612,status[0]['stored'],status[0]['received']))
 

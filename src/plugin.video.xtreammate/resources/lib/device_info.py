@@ -69,7 +69,7 @@ def collect():
     reported=properties.get('ro.build.version.release')
     config=read();storage=active_backend()
     result=dict(kodi=xbmc.getInfoLabel('System.BuildVersion'),addon=xbmcaddon.Addon().getAddonInfo('version'),
-                gpu='UNKNOWN unless exposed by a read-only driver interface',process_bits=8*struct.calcsize('P'),machine=platform.machine(),kernel=platform.release(),cpu=cpu,
+                gpu='UNKNOWN unless exposed by a read-only driver interface',active_skin=getattr(xbmc,'getSkinDir',lambda:'UNKNOWN')(),cpu_cores=os.cpu_count(),process_bits=8*struct.calcsize('P'),machine=platform.machine(),kernel=platform.release(),cpu=cpu,
                 ram_total_bytes=kib(mem.get('MemTotal')),ram_available_bytes=kib(mem.get('MemAvailable')),
                 process=memory(),android_reported=reported,android_sdk=sdk,android_expected_from_sdk=expected,
                 firmware_mismatch=bool(expected and reported and expected!=reported.split('.')[0]),
@@ -83,6 +83,19 @@ def collect():
     return result
 
 
+def format_report(value):
+    from localization import tr
+    def amount(number,unit):return format(number/unit,'.2f') if isinstance(number,(int,float)) else 'UNKNOWN'
+    fs=value.get('userdata_filesystem',{});art=value.get('artwork_capacity',{});rss=value.get('process',{}).get('rss_kib')
+    lines=[tr(35302,value.get('kodi'),value.get('addon')),
+           tr(35303,amount(value.get('ram_total_bytes'),1048576),amount(value.get('ram_available_bytes'),1048576),amount(rss*1024 if rss else None,1048576)),
+           tr(35304,value.get('android_reported'),value.get('android_sdk'),value.get('android_expected_from_sdk')),
+           tr(35307) if value.get('firmware_mismatch') else '',
+           tr(35305,amount(fs.get('free'),1073741824),amount(fs.get('total'),1073741824)),
+           tr(35306,value.get('artwork_mode'),amount(art.get('free'),1048576),amount(art.get('reserve'),1048576),amount(art.get('budget'),1048576))]
+    return '\n'.join(lines)+'\n\n'+json.dumps(value,ensure_ascii=False,indent=2)
+
+
 def show():
     import xbmcgui
     from artwork_ui import job
@@ -90,5 +103,5 @@ def show():
     while True:
         result=job(lambda cancel,progress:collect())
         if result is None:return
-        xbmcgui.Dialog().textviewer(tr(35300),json.dumps(result,ensure_ascii=False,indent=2))
+        xbmcgui.Dialog().textviewer(tr(35300),format_report(result))
         if not xbmcgui.Dialog().yesno(tr(35300),tr(35301)):return

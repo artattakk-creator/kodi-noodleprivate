@@ -936,6 +936,13 @@ class Router:
         if p.get('type') == 'xtream':
             from group_selection import filter_channels
             channels = filter_channels(channels, p['id'])
+        from catalog_delta import pending as delta_pending
+        pending=delta_pending(p['id'],'live') if p.get('type')=='xtream' else False
+        if pending:
+            from localization import tr
+            self._add_dir(tr(35400),self.url(action='live_groups',pid=p['id']),icon=_ICON_TV)
+        if not channels and pending:
+            self._end_directory(cacheToDisc=False);return
         if not channels:
             ptype = p.get('type', 'm3u')
             from xtream import XtreamClient

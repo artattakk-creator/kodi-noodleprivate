@@ -2,14 +2,14 @@
 import json
 import time
 import uuid
-import xbmc
-import xbmcgui
 
 KEY='XCMate.SetupTransition37'
 ACTIVE='XCMate.SetupActive37'
 
 
-def _home():return xbmcgui.Window(10000)
+def _home():
+    import xbmcgui
+    return xbmcgui.Window(10000)
 
 
 def active():
@@ -33,6 +33,7 @@ def maybe_fresh(router):
 
 
 def run(router):
+    import xbmc
     from boot_diagnostics import finish_directory,mark
     from window_navigation import ownership
     if router._handle>=0:
@@ -60,6 +61,7 @@ def run(router):
 
 
 def poll():
+    import xbmc
     from window_lifecycle import state,lease
     raw=_home().getProperty(KEY)
     try:value=json.loads(raw) if raw and len(raw)<4096 else None
@@ -78,10 +80,13 @@ def poll():
         current=urlsplit(xbmc.getInfoLabel('Container.FolderPath'))
         if current.netloc!='plugin.video.xtreammate' or parse_qs(current.query).get('action',['root'])[0]!='root':return
     if time.time()-value['at']<.2:return
+    from setup_trace import mark
+    mark('NATIVE_RELEASED')
     _home().clearProperty(KEY)  # Commit once before reentrant native dispatch.
     if value['stage']=='launch':xbmc.executebuiltin('RunPlugin('+value['url']+')')
     elif value.get('pid'):
         from urllib.parse import urlencode
         url='plugin://plugin.video.xtreammate/?'+urlencode(dict(action='xcmate_home',pid=value['pid']))
+        mark('HOME_REQUESTED')
         xbmc.executebuiltin('Container.Update('+url+',replace)')
     else:xbmc.executebuiltin('Container.Refresh')

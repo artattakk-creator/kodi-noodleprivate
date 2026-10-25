@@ -165,7 +165,7 @@ def verify(cancel=lambda:False,progress=lambda **kw:None):
             if actual!=expected-(cleanup-actual):raise StorageFailure('SOURCE_CHANGED')
             done=0
             for row in db.execute('SELECT * FROM files WHERE transfer=?',(item['id'],)):
-                if cancel():_phase(db,item,'COPIED');return False
+                if cancel():_phase(db,item,previous);return False
                 source=_source(config,row['kind'])
                 stores=(_target(item,row['kind']),) if (row['kind'],row['ident']) in cleanup and not source.exists(row['ident']) else (source,_target(item,row['kind']))
                 for storage in stores:

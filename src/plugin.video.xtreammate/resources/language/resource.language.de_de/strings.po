@@ -3408,3 +3408,35 @@ msgstr "Bestätigte interne Freigabe"
 msgctxt "#35237"
 msgid "Use the previous fixed internal image reserve again?"
 msgstr "Bisherige feste interne Bildreserve wieder verwenden?"
+
+msgctxt "#35400"
+msgid "Newly selected group: background import pending / active"
+msgstr "Neu gewählte Gruppe: Import im Hintergrund ausstehend / aktiv"
+
+msgctxt "#35401"
+msgid "Source checked: this group contains no titles"
+msgstr "Quelle geprüft: diese Gruppe enthält keine Titel"
+
+msgctxt "#35302"
+msgid "Kodi: {0} · XCMate: {1}"
+msgstr "Kodi: {0} · XCMate: {1}"
+
+msgctxt "#35303"
+msgid "Measured RAM: {0} MiB total / {1} MiB available; Kodi process: {2} MiB"
+msgstr "Gemessener RAM: {0} MiB gesamt / {1} MiB verfügbar; Kodi-Prozess: {2} MiB"
+
+msgctxt "#35304"
+msgid "Firmware reports Android {0}; SDK/API {1} corresponds to Android {2}"
+msgstr "Firmware meldet Android {0}; SDK/API {1} entspricht Android {2}"
+
+msgctxt "#35305"
+msgid "Kodi data filesystem: {0} GiB free / {1} GiB total (not guaranteed physical flash size)"
+msgstr "Kodi-Daten-Dateisystem: {0} GiB frei / {1} GiB gesamt (keine zugesicherte physische Flashgröße)"
+
+msgctxt "#35306"
+msgid "Artwork {0}: {1} MiB free · {2} MiB reserve · {3} MiB budget (0 = no collection budget)"
+msgstr "Artwork {0}: {1} MiB frei · {2} MiB Reserve · {3} MiB Budget (0 = kein Sammlungsbudget)"
+
+msgctxt "#35307"
+msgid "VERSION MISMATCH – do not treat the firmware claim as verified."
+msgstr "VERSIONSANGABEN WIDERSPRÜCHLICH – Firmwareangabe nicht als verifiziert behandeln."

@@ -16,7 +16,8 @@ class GroupUITests(unittest.TestCase):
         self.addCleanup(temp.cleanup)
         utils = types.ModuleType('utils')
         utils.addon_data_dir = lambda: temp.name
-        patch = mock.patch.dict(sys.modules, {'utils': utils})
+        utils.error=utils.info=utils.debug=utils.warn=lambda *a:None
+        patch = mock.patch.dict(sys.modules, {'utils': utils, 'portals':types.SimpleNamespace(update=lambda *a:None)})
         patch.start()
         self.addCleanup(patch.stop)
         xtream = types.ModuleType('xtream')

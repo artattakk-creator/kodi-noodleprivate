@@ -11,7 +11,7 @@ def job(function):
     def progress(**value):
         with lock:latest.clear();latest.update(value)
     pool=ThreadPoolExecutor(max_workers=1);future=pool.submit(function,cancel.is_set,progress)
-    dialog=xbmcgui.DialogProgress();dialog.create(tr(35200),tr(35220))
+    progress_dialog=xbmcgui.DialogProgress();progress_dialog.create(tr(35200),tr(35220))
     try:
         while not future.done():
             with lock:value=dict(latest)
@@ -20,12 +20,12 @@ def job(function):
             stage=value.get('stage','WORKING')
             phase={'INVENTORY':35233,'COPYING':35234,'VERIFYING':35235,'CLEANUP':35236}.get(stage)
             text=(tr(phase) if phase else stage)+' · '+str(done)+' / '+str(total)+' · '+str(value.get('done_bytes',value.get('bytes',0)))+' Bytes'
-            dialog.update(percent,text)
-            if dialog.iscanceled() or getattr(xbmc.Monitor(),'abortRequested',lambda:False)():
+            progress_dialog.update(percent,text)
+            if progress_dialog.iscanceled() or getattr(xbmc.Monitor(),'abortRequested',lambda:False)():
                 cancel.set();return None  # Worker retains original files/journal.
             xbmc.Monitor().waitForAbort(.1)
         return future.result()
-    finally:dialog.close();pool.shutdown(wait=False,cancel_futures=True)
+    finally:progress_dialog.close();pool.shutdown(wait=False,cancel_futures=True)
 
 
 def _render(uri):

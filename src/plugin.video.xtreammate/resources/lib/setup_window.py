@@ -222,6 +222,8 @@ class SetupWindow(WorkWindow):
             self.getControl(100+number).setVisible(groups and kind==self.kind and bool(self._entries))
         self.getControl(5).setVisible(groups);self.getControl(6).setVisible(groups and not self._entries)
         self.getControl(6).setLabel(tr(32781))
+        self.getControl(3).setHeight(80 if groups else 240)
+        self.getControl(4).setPosition(45,170 if groups else 330)
         if groups:
             self.status(None,tr(32712));self._selection_status()
         else:
@@ -305,10 +307,14 @@ class SetupWindow(WorkWindow):
     def scanned(self,result): self.stage='summary';self.render()
     def saved(self,portal):
         self._gui()
+        from setup_trace import mark
+        mark('GUI_CLOSE_BEGIN',getattr(self.draft,'pid',''))
         self.result=portal
         # The just-imported catalog is already complete; do not immediately
         # enqueue the same provider scan a second time.
+        pid=getattr(self.draft,'pid','')
         self.close()
+        mark('GUI_CLOSE_DONE',pid)
 
 
 

@@ -59,14 +59,14 @@ class System37(Fixture,unittest.TestCase):
         self.assertFalse(self.added);self.assertFalse(self.ends)
 
     def test_xtream_new_group_requests_delta_without_forcing_existing_groups(self):
-        groups=importlib.import_module('group_selection');sync=importlib.import_module('catalog_sync')
+        groups=importlib.import_module('group_selection');sync=importlib.import_module('catalog_delta')
         cats=[dict(category_id='a',category_name='A'),dict(category_id='b',category_name='B')]
         groups.save('p',['a'],'live',known=['a','b'],auto_new=False)
         self.dialog.select.side_effect=[1,6]
         with mock.patch.object(sync,'request') as request:
             self.assertTrue(groups.choose_groups(self.portal,'live',categories=cats,allow_refresh=False))
         self.assertEqual(request.call_count,1)
-        self.assertEqual(request.call_args.args[1:3],('live','b'));self.assertNotIn('force',request.call_args.kwargs)
+        self.assertEqual(request.call_args.args[1:3],('live','b'));self.assertFalse(request.call_args.kwargs)
         self.assertEqual(groups.load('p'),{'a','b'})
 
     def test_wizard_unknown_duration_progress_is_visible_without_false_percentage(self):
