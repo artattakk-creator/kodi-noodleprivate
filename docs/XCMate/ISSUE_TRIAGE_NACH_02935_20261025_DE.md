@@ -1,5 +1,8 @@
 # XCMate – Issue-Triage nach Android-Abnahme 0.1.29.35 (25.10.2026)
 
+> **VORGEZOGENER WIZARD AUF ZWEITER BOX – 25.10.2026:** User favorisiert #43 als **sofortige parallele Entwicklungsaufgabe** zum Neubox-Test. [parallel vorgezogener Wizard-/Neubox-Auftrag](CODEX_PARALLELAUFTRAG_WIZARD_NEUBOX_KODI21_22_20261025_DE.md). In der [verbindlicher neuer Versionszug](VERBINDLICHE_RELEASE_ROADMAP_AB_02935_20261025_DE.md) rückt #43 aus dem späteren Einrichtungs-/Beta-Bucket in **`.37` (vollständig abgenommener Wizard)**, **parallel zum laufenden .36-Fix/Genresuche-PR**; Mini+Rail verschoben auf .38, LiveOSD .39, VODOSD .40 usw. Die untenstehenden historischen Zuordnungen („Wizard erst .44“) sind überholt. Alte Issuezahl 50 stammt vom damaligen Snapshot, kein aktuelles Live-Ergebnis. **Getrennte Preview-Draft für isolierte zweite Testbox erlaubt, kumulative finale Release weiterhin nur nach Benutzermergefreigabe.**
+
+
 > **AKTUELLER VERBINDLICHER VERSIONSZUG (25.10.2026):** Die [gesamte Roadmap](VERBINDLICHE_RELEASE_ROADMAP_AB_02935_20261025_DE.md) ordnet die hier kategorisierten 50 offenen Issues verbindlichen Versionen zu. **Jede neue Version liefert neue Funktionen + offene Fehler aus der direkt vorigen Android-Abnahme + geeignete kleinere Issue-Fixes zusammen**, nicht getrennte Feature-/Hotfix-Releases. Neuester Stand für `.36`: #159 ist regulärer Featureumfang, #111 gezielt nur sicher, 15/15 Funktionstest .35 PASS bei weiterhin offenen Such-/Start-/OSD-Latenzen. Diese neuere Regel ersetzt in dieser historischen Triage den Ausdruck „Genre optional“; schwierige Daten-/Migrationsthemen bleiben eigenständige vollständige Versionen und dürfen ohne getestetes Gate nicht als PASS oder geschlossen gelten.
 
 
