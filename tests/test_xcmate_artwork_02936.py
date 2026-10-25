@@ -428,3 +428,12 @@ class Artwork36(unittest.TestCase):
             self.store.enqueue(['https://image.invalid/internal-db36'])
         self.assertEqual(Path(self.m.health.path()).parent,self.m.folder)
         self.assertFalse(external.exists())
+
+    def test_internal_ready_metadata_guard_remains_independent_of_image_capacity(self):
+        backend=importlib.import_module('artwork_backend');storage=backend.active_backend()
+        # The future image target could be large while internal metadata is
+        # blocked. Do not download then falsely publish a durable READY.
+        with mock.patch.object(storage,'free_or_unknown',return_value=dict(free=10**10,total=10**11)),mock.patch.object(backend,'active_backend',return_value=storage),mock.patch('import_budget.check_space',side_effect=OSError(28,'PRIVATE INTERNAL PATH')):
+            with self.assertRaises(self.policy.ArtworkFailure) as error:self.art.fetch('https://image.invalid/internal-full36')
+        self.assertEqual(error.exception.reason,'METADATA_RESERVE_BLOCKED')
+        self.m.http.assert_not_called();self.assertFalse(Path(self.art.folder()).exists())

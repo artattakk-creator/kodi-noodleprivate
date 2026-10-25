@@ -85,6 +85,14 @@ def fetch(url):
             cap=budget()
             if cap and used()>=cap:raise ArtworkFailure('BUDGET_FULL')
             check(MAX_BYTES,limit=0,backend=storage)
+            # READY metadata remains internal even with a future external
+            # image adapter. Retain its independent small-write preflight.
+            from artwork_db import path as jobs_path
+            from import_budget import check_space
+            try:check_space(jobs_path(),65536)
+            except OSError as error:
+                if error.errno==28:raise ArtworkFailure('DISK_FULL','METADATA_RESERVE_BLOCKED') from None
+                raise
             from utils import http_get
             try:data,_=http_get(url,timeout=4,max_bytes=MAX_BYTES,max_seconds=6,retry_limit=0)
             except ValueError:raise ArtworkFailure('INVALID_IMAGE') from None
