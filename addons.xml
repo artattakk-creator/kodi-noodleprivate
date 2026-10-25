@@ -20,7 +20,7 @@
 </addon>
 <addon id="plugin.video.xtreammate"
        name="XCMate"
-       version="0.1.29.33"
+       version="0.1.29.34"
        provider-name="GS Media">
 
   <requires>

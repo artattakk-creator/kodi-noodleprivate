@@ -145,10 +145,10 @@ test_restart_offline_previous_index_and_immediate_disabled_filter (test_xcmate_0
 test_same_stream_in_two_groups_counted_once_globally_but_available_in_each (test_xcmate_028_streaming.IndexTests.test_same_stream_in_two_groups_counted_once_globally_but_available_in_each) ... ok
 test_streaming_group_publishes_only_after_complete_json (test_xcmate_028_streaming.IndexTests.test_streaming_group_publishes_only_after_complete_json) ... ok
 test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update (test_xcmate_028_streaming.LargeGuideTests.test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update) ... 
-LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 18.788}
+LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 22.993}
 ok
 test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib (test_xcmate_028_streaming.LargeHTTPTests.test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib) ... 
-LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 29.891, "peak_rss_kib": 65508}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 30.081, "peak_rss_kib": 65508}]
+LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 303923200, "seconds": 37.365, "peak_rss_kib": 64740}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 615784448, "seconds": 37.178, "peak_rss_kib": 64740}]
 ok
 test_cache_envelope_and_trailing_data_validated (test_xcmate_028_streaming.ParserTests.test_cache_envelope_and_trailing_data_validated) ... ok
 test_chunked_http_gzip_and_truncated_compression (test_xcmate_028_streaming.ParserTests.test_chunked_http_gzip_and_truncated_compression) ... ok
@@ -533,6 +533,25 @@ test_over_2400_channels_render_only_eight_and_page_synchronously (test_xcmate_gu
 test_readonly_guide_does_not_change_existing_database (test_xcmate_guide_grid_02913.GridTests.test_readonly_guide_does_not_change_existing_database) ... ok
 test_selected_event_details_context_back_keeps_grid_and_cursor (test_xcmate_guide_grid_02913.GridTests.test_selected_event_details_context_back_keeps_grid_and_cursor) ... ok
 test_shared_axis_clips_and_keeps_duration_proportions (test_xcmate_guide_grid_02913.GridTests.test_shared_axis_clips_and_keeps_duration_proportions) ... ok
+test_both_guide_types_use_native_xml_dialog_without_parent_reactivation (test_xcmate_guide_lifecycle_02934.GuideLifecycle34.test_both_guide_types_use_native_xml_dialog_without_parent_reactivation) ... ok
+test_four_reported_guide_starts_dispatch_once_without_root_reentry (test_xcmate_guide_lifecycle_02934.GuideLifecycle34.test_four_reported_guide_starts_dispatch_once_without_root_reentry) ... ok
+test_independent_parallel_root_during_guide_close_is_respected_then_released (test_xcmate_guide_lifecycle_02934.GuideLifecycle34.test_independent_parallel_root_during_guide_close_is_respected_then_released) ... ok
+test_normal_window_close_reproduces_parallel_root_busy_but_dialog_close_does_not (test_xcmate_guide_lifecycle_02934.GuideLifecycle34.test_normal_window_close_reproduces_parallel_root_busy_but_dialog_close_does_not) ... ok
+test_search_standalone_is_dialog_but_existing_media_is_window (test_xcmate_guide_lifecycle_02934.GuideLifecycle34.test_search_standalone_is_dialog_but_existing_media_is_window) ... ok
+test_two_complete_search_excursions_restore_the_exact_grid_snapshot (test_xcmate_guide_lifecycle_02934.GuideLifecycle34.test_two_complete_search_excursions_restore_the_exact_grid_snapshot) ... ok
+test_abort_is_separate_from_busy_and_foreign_modal (test_xcmate_guide_lifecycle_02934.GuidePlaybackReasons34.test_abort_is_separate_from_busy_and_foreign_modal) ... ok
+test_async_busy_foreign_and_abort_never_open_search_or_force_dialog_closed (test_xcmate_guide_lifecycle_02934.GuidePlaybackReasons34.test_async_busy_foreign_and_abort_never_open_search_or_force_dialog_closed) ... ok
+test_consumed_intent_never_restarts_after_any_number_of_replays (test_xcmate_guide_lifecycle_02934.GuidePlaybackReasons34.test_consumed_intent_never_restarts_after_any_number_of_replays) ... ok
+test_diagnostic_property_failure_does_not_leak_or_block_the_navigation_lock (test_xcmate_guide_lifecycle_02934.GuidePlaybackReasons34.test_diagnostic_property_failure_does_not_leak_or_block_the_navigation_lock) ... ok
+test_failure_logs_only_allowlisted_codes_and_random_correlations (test_xcmate_guide_lifecycle_02934.GuidePlaybackReasons34.test_failure_logs_only_allowlisted_codes_and_random_correlations) ... ok
+test_four_distinct_native_skip_conditions_are_identified (test_xcmate_guide_lifecycle_02934.GuidePlaybackReasons34.test_four_distinct_native_skip_conditions_are_identified) ... ok
+test_invalid_changed_disabled_and_missing_entities_have_separate_reasons (test_xcmate_guide_lifecycle_02934.GuidePlaybackReasons34.test_invalid_changed_disabled_and_missing_entities_have_separate_reasons) ... ok
+test_native_marker_belongs_to_this_instance_before_dialog_id_is_accepted (test_xcmate_guide_lifecycle_02934.GuidePlaybackReasons34.test_native_marker_belongs_to_this_instance_before_dialog_id_is_accepted) ... ok
+test_navigation_lease_is_unique_cleared_after_release_and_root_trace_has_no_arguments (test_xcmate_guide_lifecycle_02934.GuidePlaybackReasons34.test_navigation_lease_is_unique_cleared_after_release_and_root_trace_has_no_arguments) ... ok
+test_player_change_during_read_is_checked_again_before_resolver (test_xcmate_guide_lifecycle_02934.GuidePlaybackReasons34.test_player_change_during_read_is_checked_again_before_resolver) ... ok
+test_player_unavailable_changed_and_new_session_are_distinct (test_xcmate_guide_lifecycle_02934.GuidePlaybackReasons34.test_player_unavailable_changed_and_new_session_are_distinct) ... ok
+test_unchanged_foreign_player_is_preserved_and_same_portal_owned_live_can_switch (test_xcmate_guide_lifecycle_02934.GuidePlaybackReasons34.test_unchanged_foreign_player_is_preserved_and_same_portal_owned_live_can_switch) ... ok
+test_unknown_dialog_identity_never_becomes_released_by_assumption (test_xcmate_guide_lifecycle_02934.GuidePlaybackReasons34.test_unknown_dialog_identity_never_becomes_released_by_assumption) ... ok
 test_appearance_keeps_guide_contrast_with_user_dark_text_preference (test_xcmate_guide_navigation_02922.GuideNavigationTests.test_appearance_keeps_guide_contrast_with_user_dark_text_preference) ... ok
 test_back_closes_group_browser_to_epg_and_repeat_does_not_exit_home (test_xcmate_guide_navigation_02922.GuideNavigationTests.test_back_closes_group_browser_to_epg_and_repeat_does_not_exit_home) ... ok
 test_blue_local_shortcut_and_header_background_refresh_do_not_steal_focus (test_xcmate_guide_navigation_02922.GuideNavigationTests.test_blue_local_shortcut_and_header_background_refresh_do_not_steal_focus) ... ok
@@ -1098,11 +1117,11 @@ test_widget_route_and_no_cached_credentials_in_link (test_xtreammate_widgets.Wid
 test_youtube_whitelist (test_xtreammate_widgets.WidgetsTest.test_youtube_whitelist) ... ok
 
 ----------------------------------------------------------------------
-Ran 1093 tests in 161.849s
+Ran 1112 tests in 197.482s
 
 OK
 
-MODEL_COLD_WINDOW_MS 20.013
+MODEL_COLD_WINDOW_MS 6.610
 
 SELECTIVE_XMLTV {"bytes": 400, "parsed": 2, "stored": 1}
 
