@@ -1,5 +1,7 @@
 # XCMate 0.1.29.35 – Android-Abnahme / Teststrecke (VORAB)
 
+> **FINALER GERÄTESTAND 25.10.2026 – 15/15 FUNKTIONS-PASS.** Der Vorab-Testplan weiter unten zeigt bewusst die ursprünglich leeren Gate-Felder, ist aber **nicht mehr der aktuelle Testergebnisstand**. Der Nutzer hat zuletzt auch **PERF-03 PASS** bestätigt. Maßgeblich: **[Android-Abnahme und vollständige Logforensik .35](ANDROID_ABNAHME_02935_LOGFORENSIK_FINAL_20261025_DE.md)**. Performance- und EPG-Coverage-Nacharbeiten trotz funktional bestandenem Test noch offen.
+
 **Stand:** 25.10.2026. **Alle Tests bei Auftragserstellung NOT_TESTED**. Kodi 21.2 Omega · Android TV 13 · RK3528 ARM32 · Titan BINGIE MOD · IR-Fernbedienung.  
 **Quellauftrag:** [CODEX_AUFTRAG_02935_SUCHPERFORMANCE_EPG_NAV_20261025_DE.md](CODEX_AUFTRAG_02935_SUCHPERFORMANCE_EPG_NAV_20261025_DE.md).
 
