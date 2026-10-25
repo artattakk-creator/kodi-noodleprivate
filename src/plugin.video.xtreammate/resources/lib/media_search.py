@@ -87,7 +87,7 @@ class SearchMixin:
         if self._search_kind not in KINDS:self._search_kind='vod'
         self._search_offset=0;self._search_selected=0;self._search_rows=[];self._search_data={};self._search_loading=True
         self._search_continuation=None;self._search_cursor=None;self._search_job=None;self._search_rendered=None
-        self._search_view=None
+        self._search_view=None;self._search_tab_labels=None
         self.mode='search';self._show('search')
         for pos,label in enumerate(LABELS):self.getControl(700+pos).setLabel(tr(label)+' (…)')
         self.getControl(720).setLabel(tr(32475));self.getControl(721).setLabel(tr(32476))

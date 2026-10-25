@@ -182,3 +182,17 @@ class SearchPerformance35(Fixture,unittest.TestCase):
             self.properties['XCMate.ShortGuideRevision.p']='new-cache'
             self.search.search(self.portal,'Needle',kind='live',incremental=True,continuation=cursor)
             created.assert_called_once()
+
+    def test_media_publication_refreshes_that_tab_without_restarting_live_scan(self):
+        result=self.finish('Needle');cursor=result['_cursor'];self.assertEqual(result['vod']['total'],0)
+        self.index.replace_catalog('p','vod',[dict(stream_id='new',category_id='a',name='Needle film')],self.catalogs['get_vod_categories'])
+        with mock.patch.object(self.search,'LiveSearch',wraps=self.search.LiveSearch) as created:
+            fresh=self.search.search(self.portal,'Needle',kind='vod',incremental=True,continuation=cursor)
+        created.assert_not_called();self.assertIs(fresh['_cursor'],cursor);self.assertEqual(fresh['vod']['total'],1)
+
+    def test_explicit_new_query_restores_count_labels_even_without_a_live_continuation(self):
+        self.portal['include_live']=False
+        w=self.media_window();self.dialog.input.return_value='House';w._search();self.settle(w)
+        first=w.getControl(701).label
+        self.dialog.input.return_value='House of Dragon';w._search();self.settle(w)
+        self.assertEqual(w.getControl(701).label,first);self.assertIn('100',first)

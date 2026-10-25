@@ -97,7 +97,7 @@ class LiveSearch:
         self.tokens=list(dict.fromkeys(normalized(query).split()));self.position=0
         self.channels=None;self.mappings={};self.events={};self.aliases={};self.code='NO_EPG'
         self.client=None;self.client_checked=False;self.phase='names';self.short=[];self.short_position=0
-        self.media_cache={};self.slices=0;self.last_trace=0;self.result=[];self.by_sid={}
+        self.media_cache={};self.media_revisions={};self.slices=0;self.last_trace=0;self.result=[];self.by_sid={}
         self.short_ns=0;self.short_rows=0
         self.counts=dict(channels=0,now_count=0,xml_now=0,short_now=0,manual_count=0,
                          manual_missing=0,alias_count=0,name_hits=0,programme_hits=0,source_count=0)
@@ -125,6 +125,12 @@ class LiveSearch:
         if (current[0],current[4])!=(self.stamp[0],self.stamp[4]):
             state=self.reader.state('live') or {}
             if (state.get('revision'),state.get('updated'))!=self.catalogue_revision:return False
+            for section,previous in list(self.media_revisions.items()):
+                state=self.reader.state(section) or {}
+                if (state.get('revision'),state.get('updated'))!=previous:
+                    for key in list(self.media_cache):
+                        if key[0]==section:self.media_cache.pop(key)
+                    self.media_revisions.pop(section,None)
         if self.phase not in ('names','prepare') and (current[1],current[5])!=(self.stamp[1],self.stamp[5]):
             if _guide_revision(self.portal['id'])!=self.guide_revision:return False
         self.stamp=current;return True
@@ -273,6 +279,7 @@ def search(portal,query,kind='vod',offset=0,now=None,incremental=False,continuat
             else:rows,total=reader.page(section,query,offset=start,limit=PAGE);code='READY'
             result[section]=dict(rows=rows,total=total,code=code,partial=section=='live' and '_continuation' in result)
             if section!='live' and cursor is not None:
+                cursor.media_revisions[section]=(state.get('revision'),state.get('updated'))
                 cursor.media_cache[cache_key]=result[section]
                 while len(cursor.media_cache)>12:cursor.media_cache.pop(next(iter(cursor.media_cache)))
         except (IndexReadError,sqlite3.Error,OSError,ValueError):
