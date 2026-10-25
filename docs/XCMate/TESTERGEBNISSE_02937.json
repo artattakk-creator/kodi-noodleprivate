@@ -1,0 +1,38 @@
+{
+  "version": "0.1.29.37",
+  "tests": 1298,
+  "seconds": 166.339,
+  "failures": 0,
+  "errors": 0,
+  "files": 279,
+  "bytes": 2434852,
+  "sha256": "31a9fed1a5c9fe4272bf041fe40155f7b524ebe863540976cd1ed3507ce891d3",
+  "crc": "PASS",
+  "paths": "PASS",
+  "source_bytes": "PASS",
+  "reproducible_zip": "PASS",
+  "python_ast": "PASS",
+  "android": "NOT_TESTED",
+  "production_publish": false,
+  "base": "ecf85f36537b79f88cc3dfaef0fc70b10836b848",
+  "source_commit": "475d9b3",
+  "test_commit": "fe38c74e5212d866632466319ddc623e4724f772",
+  "historical_tests_retained": 1250,
+  "new_tests": 48,
+  "skipped": 0,
+  "po_contexts_per_language": 841,
+  "python": "3.12.14",
+  "level": "HOST with modeled Kodi APIs, temporary profiles and real HTTP/SMB2 loopback fixtures",
+  "box_a": "NOT_TESTED",
+  "box_b": "NOT_TESTED",
+  "release_approved": false,
+  "source_warning": "Existing unchanged SMBProtocol vendor docstring invalid escape SyntaxWarning; compilation succeeds",
+  "implementation_blockers": [
+    "Physical metadata payload offload (#171); verified export only",
+    "Durable uncommitted Wizard scan resume after process death (#164/#43)"
+  ],
+  "device_release_blockers": [
+    "SAFE/EXIT gates on both actual boxes",
+    "Actual Kodi dynamic rendering and USB/SD/SMB integration"
+  ]
+}

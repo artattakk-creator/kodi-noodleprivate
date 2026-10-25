@@ -39,7 +39,7 @@ class Stop36(unittest.TestCase):
         m=self.m;m.current_folder='plugin://plugin.video.xtreammate/?action=xcmate_home&pid=p'
         m.exit.request(m.nav);m.ready();m.exit.poll(m.nav)
         with mock.patch.object(sys.modules['xbmc'],'getCondVisibility',side_effect=lambda c:c=='Window.IsActive(videos)'):
-            m.exit.poll(m.nav)
+            m.exit.poll(m.nav);m.exit.poll(m.nav)
         self.assertEqual(m.builtins,[]);self.assertEqual(m.exit.state()['phase'],'complete')
 
     def test_foreign_portal_home_is_not_mistaken_for_requested_home(self):

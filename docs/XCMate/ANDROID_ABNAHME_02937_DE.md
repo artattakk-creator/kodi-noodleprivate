@@ -1,9 +1,9 @@
 # XCMate 0.1.29.37 – VERBINDLICHER Android-/Host-Test- und Abnahmeplan
 
-**Erstellung:** 25.10.2026, Europe/Berlin · **Status: PLAN; .37 bisher weder gebaut noch auf Android getestet.**  
-**Hauptauftrag:** [CODEX_NEUAUFTRAG_02937_KUMULATIV_GESAMT_20261025_DE.md](CODEX_NEUAUFTRAG_02937_KUMULATIV_GESAMT_20261025_DE.md).  
-**Repository:** https://github.com/artattakk-creator/kodi-noodleprivate  
-**Ausgangs-Release:** `0.1.29.36`, `main`/Kodi-Index · **Neuer Kandidat:** `0.1.29.37` aus neuem Draft-PR; Download **erst nach Codex-Artefakt-Build**.
+**Erstellung:** 25.10.2026, Europe/Berlin · **Status: .37-Hostkandidat erstellt; Android auf Box A/B NOT_TESTED.**
+**Hauptauftrag:** [CODEX_NEUAUFTRAG_02937_KUMULATIV_GESAMT_20261025_DE.md](CODEX_NEUAUFTRAG_02937_KUMULATIV_GESAMT_20261025_DE.md).
+**Repository:** https://github.com/artattakk-creator/kodi-noodleprivate
+**Ausgangs-Release:** `0.1.29.36`, `main`/Kodi-Index · **Neuer Kandidat:** `0.1.29.37` aus neuem Draft-PR; Download und verbindliche SHA256 im [Testbericht](TESTBERICHT_02937_DE.md).
 
 ## Legende, Testumgebung, Schutz
 
@@ -131,3 +131,16 @@ Produktiv-mergefähig? JA/NEIN; Nur Benutzer entscheidet.
 ```
 
 **P0-Freigabe darf NICHT erfolgen**, solange aktueller Freeze, SAFE-01/02/07 (Bestandsschutz), Kodi21.2/21.3 IR-Exit und die für beide versprochenen Artwork-Modi extern/dynamisch nicht auf echter Hardware verifiziert wurden. Hardware ohne SD-Slot **kein** künstlicher PASS. Externes SMB/NAS muss real getestet sein, nicht nur Host-Mock. Keine automatischen Merges/Releases/Reset auf Nutzergeräten.
+
+## .37-Kandidat: sichere Reihenfolge für die Geräteprüfung
+
+1. **Keine automatische Installation.** Zuerst den Draft und die BLOCKED-Punkte im [Ursachenbericht](URSACHENANALYSE_02937_DE.md) lesen. Die aktuelle .36 und ihr Profil erhalten. Gerätekontext von #174 bleibt unbestätigt.
+2. Im kontrollierten Testprofil/auf Box B Version/Kodi/ABI dokumentieren. Vor dem autorisierten Update Bestand read-only sichern bzw. inventarisieren. Bestehendes Box-B-Profil bleibt intern, auch bei null READY. Keine Wizard-Neuanlage erzwingen.
+3. Zunächst SAFE-01/02/07 und **je einmal** EXIT-01, EXIT-02, EXIT-03. Bei Hänger abbrechen, keine 20 Wiederholungen. Uhrzeit/Phase notieren und neue Logs ausschließlich privat übergeben.
+4. Erst bei reagierender GUI EXIT-04..06 und REG-01..03. Bewusster Stop und natürliches Episodenende getrennt prüfen.
+5. Auf B dynamische Bilder mit echten 3 Film-/2 Seriencovern/2 Logos prüfen; Modus nur bewusst wechseln. Kodi-Texturecache ist weiterhin erlaubt. Redirect-abhängige URLs können absichtlich Platzhalter liefern.
+6. Extern zuerst eigenes ungefährliches USB-/SMB-Testziel: Probe, Inventur, Kopieren, vollständiges Verify, sichtbare Testdarstellung bestätigen, separat aktivieren. Offline/Resume mit kleinem Testbestand prüfen. **Interne Originale für diese erste Abnahme behalten.** Löschfunktion nur in einem gesondert freigegebenen ungefährlichen Fixture prüfen.
+7. Wizard nur im isolierten neuen Profil testen; vollständige vier Quellen und Gruppe-Nachimport. Prozessabbruch-Scanresume bleibt BLOCKED, nicht als bestanden abhaken. META-01 ist Export; physische Platzersparnis META-02 ist BLOCKED.
+8. Box A erst nach eigener ausdrücklicher Freigabe und read-only Vorherbestand. Zuerst bestätigen, dass sie intern geblieben ist und alle Cover/Profile/Resume-Daten erhalten sind. Auch dort EXIT/REG einzeln, keine erzwungene Artwork-Migration.
+
+Die Tabelle oben bleibt für **jeden** Android-Test beider Boxen NOT_TESTED. Fehlender SD-Slot darf nach realer Feststellung BLOCKED heißen. Host-Ergebnisse und die separat abgegrenzten Teilabdeckungen HOST-01..09 stehen im [Testbericht](TESTBERICHT_02937_DE.md); sie überschreiben keine Geräteergebnisse. Eine neue Abnahme lässt sich pro Gate in `ANDROID_STATUS_02937.json` erfassen. Kein Merge/Release ohne Nutzerfreigabe.

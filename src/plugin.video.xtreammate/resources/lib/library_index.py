@@ -355,7 +355,7 @@ def _sync_note(pid,kind,cid,code,counts=None,exc=None,filename=None):
     finally: db.close()
 
 
-def sync_kind(portal,client,kind,preferred='',force=False,cancel=lambda:False,filename=None,cached_only=False,max_groups=None,requested_at=None):
+def sync_kind(portal,client,kind,preferred='',force=False,cancel=lambda:False,filename=None,cached_only=False,max_groups=None,requested_at=None,only_categories=None):
     """One kind, enabled categories first, category API only; safe offline fallback."""
     from group_selection import enabled_ids
     import uuid
@@ -375,7 +375,8 @@ def sync_kind(portal,client,kind,preferred='',force=False,cancel=lambda:False,fi
             groups=client._get_json(group_action)
         if not isinstance(groups,list): raise FileNotFoundError('Category metadata unavailable')
         allowed=enabled_ids(pid,kind,groups)
-        active=[g for g in groups if str(g.get('category_id')) in allowed]
+        if only_categories is not None:allowed=set(allowed)&set(only_categories)
+        active=[g for g in groups if str(g.get('category_id')) in allowed and (only_categories is None or str(g.get('category_id')) in only_categories)]
         active.sort(key=lambda g:str(g['category_id'])!=str(preferred))
         with db:
             db.executemany('INSERT OR REPLACE INTO groups VALUES(?,?,?,?,?)',[

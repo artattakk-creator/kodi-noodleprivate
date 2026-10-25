@@ -8,6 +8,8 @@ from pathlib import Path
 
 
 def without_stabilization36(source,module):
+    from stabilization_contract_02937 import without_stabilization37
+    source=without_stabilization37(source,module)
     binary=isinstance(source,bytes)
     if binary:source=source.decode()
     data=json.loads((Path(__file__).parent/'fixtures/xcmate_02936_reviewed_hooks.json').read_text())

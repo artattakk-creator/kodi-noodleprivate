@@ -86,7 +86,7 @@ class BootTests(unittest.TestCase):
         with mock.patch('builtins.__import__',side_effect=guarded): self.run_entry()
         self.assertEqual(len(self.items),6);self.assertEqual(len(self.ends),1)
         self.assertEqual(self.portal_file.read_bytes(),before)
-        for phase in ('MAIN_IMPORT','ROUTER_INIT','PORTALS_IMPORT','PORTALS_LOAD','ROOT_MENU','HOME_MENU','DISPATCH'):
+        for phase in ('ARTWORK_PROFILE','HOME_FAST','HOME_PORTALS','PORTALS_LOAD','ROOT_MENU','HOME_MENU'):
             self.assertTrue(any(phase+'_BEGIN' in s for s in self.logs),phase)
             self.assertTrue(any(phase+'_DONE duration_ms=' in s for s in self.logs),phase)
         self.assertEqual(sum('PORTALS_LOAD_BEGIN' in s for s in self.logs),1)
@@ -138,11 +138,12 @@ else: raise AssertionError('FIFO accepted')
         for _ in range(6): self.run_entry()
         sys.modules.pop('main',None);sys.modules.pop('portals',None);self.run_entry()
         self.assertEqual(len(self.ends),7)
-        self.assertEqual({p.name:p.read_bytes() for p in self.profile.iterdir()},before)
+        self.assertEqual({p.name:p.read_bytes() for p in self.profile.iterdir() if p.name not in ('.artwork-config.lock','artwork_config_v1.json')},before)
+        self.assertEqual(json.loads((self.profile/'artwork_config_v1.json').read_text())['mode'],'internal')
 
     def test_init_error_and_post_completion_error_finish_exactly_once(self):
         main=importlib.import_module('main');home=importlib.import_module('home_menu')
-        with mock.patch.object(main.Router,'__init__',side_effect=RuntimeError('SECRET')): self.run_entry()
+        with mock.patch.object(main.Router,'__init__',side_effect=RuntimeError('SECRET')): self.run_entry(action='settings')
         self.assertEqual(len(self.ends),1);self.ends.clear()
         real=home.show
         def fail_after(*args): real(*args);raise RuntimeError('SECRET')
@@ -155,7 +156,7 @@ else: raise AssertionError('FIFO accepted')
         def broken(name,*a,**kw):
             if name=='main': raise ImportError('SECRET')
             return original(name,*a,**kw)
-        with mock.patch('builtins.__import__',side_effect=broken): self.run_entry()
+        with mock.patch('builtins.__import__',side_effect=broken): self.run_entry(action='settings')
         self.assertEqual(len(self.ends),1);self.ends.clear()
         with mock.patch('builtins.__import__',side_effect=broken): self.run_entry(handle=-1)
         self.assertFalse(self.ends);self.assertNotIn('SECRET','\n'.join(self.logs))

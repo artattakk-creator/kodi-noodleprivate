@@ -173,7 +173,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         if self._ready:
             if self._chain_active():return
             # Kodi calls onInit again after returning from fullscreen video.
-            from playback_exit import stop_owned
+            from exit_jobs import request as stop_owned
             from media_intent import cancel
             cancel(self.portal['id'],self._play_intent)
             stop_owned(pid=self.portal['id'])
@@ -258,7 +258,8 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         reader=Reader(self.portal['id'])
         state=reader.state(self.kind)
         revision=(state or {}).get('revision','')
-        status=sync_state(self.portal['id'],self.kind)
+        from catalog_delta import states as delta_states
+        status=delta_states(self.portal['id'],self.kind)+sync_state(self.portal['id'],self.kind)
         groups=reader.groups(self.kind) if state else []
         with self._lock:item=dict(self._art_selected) if self._art_selected else None
         if item:
@@ -304,6 +305,10 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
             if status and status[0]['code'] in ('FAILED','CANCELLED'):
                 self.getControl(102).setLabel(tr(32610))
                 if self._catalog_missing: self.getControl(120).setLabel(tr(32611))
+            elif status and status[0]['code'] in ('PENDING','RUNNING'):
+                self.getControl(102).setLabel(tr(35400))
+            elif status and status[0]['code']=='EMPTY_SOURCE':
+                self.getControl(102).setLabel(tr(35401))
             elif status and status[0]['code']=='INDEXING':
                 self.getControl(102).setLabel(tr(32612,status[0]['stored'],status[0]['received']))
 
@@ -784,7 +789,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
                 from media_intent import cancel
                 self._cancel_chain()
                 cancel(self.portal['id'],self._play_intent)
-                from playback_exit import stop_owned
+                from exit_jobs import request as stop_owned
                 if stop_owned(pid=self.portal['id']): return
                 self._generation+=1
                 if self.mode=='episodes':

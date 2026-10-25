@@ -66,7 +66,8 @@ class NativeRemoteTests(unittest.TestCase):
         self.assertEqual(Path(profile.path()).read_bytes(),before)
 
     def test_startsender_uses_separate_kodi_playback_modes(self):
-        source=(LIB/'main.py').read_text(encoding='utf-8')
+        from stabilization_contract_02937 import without_stabilization37
+        source=without_stabilization37((LIB/'main.py').read_text(encoding='utf-8'),'main')
         common=source[source.index('    def _startup_playable(self):'):
                       source.index('    def _groups_manager(self):')]
         manual=common[common.index('    def _play_start(self):'):

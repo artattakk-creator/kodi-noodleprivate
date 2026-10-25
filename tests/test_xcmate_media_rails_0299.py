@@ -63,7 +63,8 @@ class MediaRails299(Fixture,unittest.TestCase):
         import hashlib
         for name,sha in frozen['modules'].items():
             from theme_texture_contract import without_theme
-            source=without_theme((LIB/name).read_bytes())
+            from stabilization_contract_02937 import without_stabilization37
+            source=without_theme(without_stabilization37((LIB/name).read_bytes(),name))
             if name=='live_overlay.py':
                 from overlay_contract_02935 import without_guide35
                 from stabilization_contract_02936 import without_stabilization36
@@ -155,7 +156,8 @@ class MediaRails299(Fixture,unittest.TestCase):
                 hook="    if kind=='vod':\n        from media_continue import reveal\n        try:reveal(portal['id'],sid)\n        except (OSError,sqlite3.Error):pass  # Playback remains available on read-only/full storage.\n"
                 self.assertEqual(source.count(hook.encode()),1);source=source.replace(hook.encode(),b'')
             self.assertEqual(hashlib.sha256(source).hexdigest(),sha,name)
-        tree=ast.parse((LIB/'media_window.py').read_text())
+        from stabilization_contract_02937 import without_stabilization37
+        tree=ast.parse(without_stabilization37((LIB/'media_window.py').read_text(),'media_window'))
         for name,signature in frozen['methods'].items():
             fn=next(n for n in ast.walk(tree) if isinstance(n,ast.FunctionDef) and n.name==name)
             # #102 async append and #40 owner return add two polling calls;

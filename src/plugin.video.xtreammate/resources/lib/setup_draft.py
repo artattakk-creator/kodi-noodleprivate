@@ -110,6 +110,7 @@ class Draft:
             try:
                 counts=import_source(self.pid,source,index,streams,{},filename=self.guide,cancel=cancel)
                 self.report['epg']+=counts['stored'];self.report['sources'].append(dict(code='READY',bytes=counts['bytes'],stored=counts['stored']))
+                status(None,tr(32706)+' '+str(index+1)+'/'+str(len(sources))+' READY · '+str(counts['stored'])+' · '+str(counts['bytes'])+' Bytes')
             except InterruptedError: raise
             except Exception as exc:
                 self.report['sources'].append(dict(code='FAILED',error=type(exc).__name__))
@@ -192,6 +193,8 @@ class Draft:
         return dict(code='XM-SETUP-VERIFIED',counts=counts,groups=True,epg=True,integrity=True,portal=portal is not None)
 
     def _save(self,cancel):
+        from setup_trace import mark
+        mark('SAVE_BEGIN',self.pid)
         from profile_transaction import writing
         import portals
         from library_index import connect
@@ -205,12 +208,15 @@ class Draft:
             db=connect(write=True)
             try:
                 db.execute('CREATE TABLE IF NOT EXISTS source_payloads(pid TEXT,ident TEXT,payload TEXT,PRIMARY KEY(pid,ident))')
+                mark('COPY_CATALOG',self.pid)
                 self._copy(self.index,db,('groups','items_v2','heads','catalog','source_payloads'),cancel)
             finally: db.close()
             if os.path.isfile(self.guide):
                 from guide_store import connect as guide_connect
                 db=guide_connect(write=True)
-                try: self._copy(self.guide,db,('guide_meta','guide_alias','programmes'),cancel)
+                try:
+                    mark('COPY_GUIDE',self.pid)
+                    self._copy(self.guide,db,('guide_meta','guide_alias','programmes'),cancel)
                 finally: db.close()
             if self.data['type']=='m3u':
                 from m3u_store import path,export_lines
@@ -260,11 +266,15 @@ class Draft:
                         _save_disk(self.pid,snapshot,notify=False);_mem_set(self.pid,snapshot)
                 self._verify()
                 if cancel(): raise InterruptedError('setup save cancelled')
+                mark('CONFIG_PUBLISH',self.pid)
                 portal=portals.add(self.data,portal_id=self.pid)
+                mark('VERIFY',self.pid)
                 self.verification=self._verify(portal)
                 self.saved=True
+                mark('SAVE_DONE',self.pid)
                 return portal
         except BaseException as failure:
+            mark('SAVE_FAILED',self.pid)
             try:
                 with writing():
                     # Never invoke portals.delete(): it clears global caches.

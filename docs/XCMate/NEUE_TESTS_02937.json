@@ -1,0 +1,95 @@
+{
+  "total": 48,
+  "modules": [
+    {
+      "file": "tests/test_xcmate_delta_02937.py",
+      "tests": [
+        "Delta37.test_new_category_only_does_not_refresh_expired_existing_group_even_if_provider_ignores_filter",
+        "Delta37.test_restart_keeps_pending_group_and_failed_worker_cannot_claim_empty_success"
+      ],
+      "count": 2
+    },
+    {
+      "file": "tests/test_xcmate_dynamic_02937.py",
+      "tests": [
+        "Dynamic37.test_visible_dynamic_posters_and_logos_use_urls_without_archive_or_queue",
+        "Dynamic37.test_dynamic_does_not_check_archive_reserve_or_reset_old_ready_and_failed_jobs",
+        "Dynamic37.test_dynamic_rejects_non_http_credentials_private_hosts_and_mixed_dns",
+        "Dynamic37.test_dns_failure_and_missing_provider_fields_keep_neutral_placeholder",
+        "Dynamic37.test_waiting_dns_does_not_block_native_search_or_ui_owner",
+        "Dynamic37.test_texture_error_fallback_changes_no_geometry_or_focus_controls"
+      ],
+      "count": 6
+    },
+    {
+      "file": "tests/test_xcmate_exit_02937.py",
+      "tests": [
+        "Exit37.test_native_callback_publishes_without_checkpoint_stop_or_thread",
+        "Exit37.test_movie_episode_worker_checkpoints_before_exactly_one_stop",
+        "Exit37.test_stuck_native_stop_cannot_block_service_tick_or_spawn_retry",
+        "Exit37.test_player_replacement_after_intent_never_stops_foreign_video",
+        "Exit37.test_sqlite_busy_has_bounded_checkpoint_and_does_not_prevent_stop",
+        "Exit37.test_native_overlay_release_precedes_background_stop",
+        "Exit37.test_busy_exit_checkpoint_retries_are_finite_and_preserve_existing_bookmark"
+      ],
+      "count": 7
+    },
+    {
+      "file": "tests/test_xcmate_metadata_02937.py",
+      "tests": [
+        "Metadata37.test_descriptive_payload_roundtrip_and_local_catalogue_bytes_unchanged",
+        "Metadata37.test_urls_credentials_and_stream_fields_never_enter_descriptive_export",
+        "Metadata37.test_corrupt_or_offline_copy_does_not_replace_original_index"
+      ],
+      "count": 3
+    },
+    {
+      "file": "tests/test_xcmate_profile_02937.py",
+      "tests": [
+        "Profile37.test_missing_marker_is_internal_until_positive_fresh_preflight",
+        "Profile37.test_existing_empty_art_or_logo_directory_is_legacy",
+        "Profile37.test_existing_portal_settings_or_database_never_means_fresh",
+        "Profile37.test_zero_ready_legacy_job_queue_is_preserved_byte_for_byte",
+        "Profile37.test_explicit_mode_and_strategy_survive_repeated_initialize",
+        "Profile37.test_two_profiles_have_independent_modes_and_namespaces",
+        "Profile37.test_torn_config_is_conservative_and_never_erases_images",
+        "Profile37.test_failed_atomic_commit_keeps_existing_choice_and_retry_is_idempotent",
+        "Profile37.test_concurrent_fresh_entry_service_preflight_produces_one_marker"
+      ],
+      "count": 9
+    },
+    {
+      "file": "tests/test_xcmate_storage_02937.py",
+      "tests": [
+        "Storage37.test_local_usb_copy_verify_activate_leaves_originals_and_keys_intact",
+        "Storage37.test_kodi_smb_vfs_unknown_capacity_and_persistent_display_uri",
+        "Storage37.test_short_vfs_copy_never_commits_and_originals_survive",
+        "Storage37.test_pause_restart_resume_skips_verified_and_does_not_delete_source",
+        "Storage37.test_activation_requires_full_verification_and_explicit_render_confirmation",
+        "Storage37.test_offline_external_preserves_choice_all_ready_rows_and_stops_downloads",
+        "Storage37.test_external_new_download_is_not_subject_to_internal_image_reserve",
+        "Storage37.test_collision_symlink_and_credential_targets_fail_closed",
+        "Storage37.test_cleanup_is_separate_defaults_denied_and_never_touches_databases",
+        "Storage37.test_target_corruption_blocks_cleanup_and_preserves_originals",
+        "Storage37.test_two_profiles_have_distinct_external_namespaces",
+        "Storage37.test_twenty_thousand_image_inventory_copy_sha_and_restart_verification"
+      ],
+      "count": 12
+    },
+    {
+      "file": "tests/test_xcmate_system_02937.py",
+      "tests": [
+        "System37.test_device_firmware_and_sdk_mismatch_does_not_invent_advertised_ram",
+        "System37.test_wizard_root_is_deferred_while_save_window_owns_gui",
+        "System37.test_saved_wizard_cannot_navigate_before_native_release_or_foreign_modal",
+        "System37.test_existing_profile_does_not_automatically_reopen_wizard",
+        "System37.test_fast_home_matches_existing_six_items_icon_and_completion_without_catalogue",
+        "System37.test_nonhome_route_falls_back_to_full_router_without_side_effects",
+        "System37.test_xtream_new_group_requests_delta_without_forcing_existing_groups",
+        "System37.test_wizard_unknown_duration_progress_is_visible_without_false_percentage",
+        "System37.test_cancelled_worker_keeps_only_data_not_native_window_reference"
+      ],
+      "count": 9
+    }
+  ]
+}

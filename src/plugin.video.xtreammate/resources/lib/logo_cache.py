@@ -12,11 +12,17 @@ _WORKER = None
 
 
 def local_logo(uri):
+    from artwork_config import persistent
+    if not persistent():
+        from artwork_visible import dynamic
+        return dynamic(str(uri or ''))
     return _READY.get(str(uri or ''),'')
 
 
 def request(channels):
     global _WORKER
+    from artwork_config import persistent
+    if not persistent():return
     if not any(getattr(ch,'logo','') for ch in channels): return
     with _LOCK:
         if _WORKER is None or not _WORKER.is_alive():
@@ -48,26 +54,32 @@ def _run():
     while True:
         uri = _QUEUE.get()
         try:
-            if uri.startswith('/') and os.path.isfile(uri):
-                _READY[uri]=uri
-                continue
-            if not uri.startswith(('http://','https://')): continue
-            ident=hashlib.sha256(uri.encode()).hexdigest()
-            existing=storage.exists(ident) and valid(storage.read(ident,65536))
-            if not existing:
-                publish('logo','FETCH_BEGIN',expected_bytes=512*1024)
-                check(512*1024,limit=0,backend=storage)
-                raw,_=http_get(uri,timeout=3,max_bytes=512*1024,max_seconds=5)
-                if len(raw)>512*1024 or not valid(raw):
-                    publish('logo','INVALID_IMAGE');continue
-                check(len(raw),limit=0,backend=storage)
-                storage.write_verified(ident,raw,valid)
-            _READY[uri]=storage.make_display_uri(ident)
-            publish('logo','READY',bytes=storage.stat(ident)['bytes'])
-            # Bound only the RAM lookup. Previously downloaded logo files
-            # remain persistent; loading a new logo never removes an old one.
-            if len(_READY)>128:
-                for key in list(_READY)[:-128]: _READY.pop(key,None)
+            from artwork_gate import writer
+            with writer():
+                from artwork_config import persistent
+                if not persistent():continue
+                if uri.startswith('/') and os.path.isfile(uri):
+                    _READY[uri]=uri
+                    continue
+                if not uri.startswith(('http://','https://')): continue
+                ident=hashlib.sha256(uri.encode()).hexdigest()
+                storage=active_backend('logos')
+                if storage.availability()!='AVAILABLE':continue
+                existing=storage.exists(ident) and valid(storage.read(ident,65536))
+                if not existing:
+                    publish('logo','FETCH_BEGIN',expected_bytes=512*1024)
+                    check(512*1024,limit=0,backend=storage)
+                    raw,_=http_get(uri,timeout=3,max_bytes=512*1024,max_seconds=5)
+                    if len(raw)>512*1024 or not valid(raw):
+                        publish('logo','INVALID_IMAGE');continue
+                    check(len(raw),limit=0,backend=storage)
+                    storage.write_verified(ident,raw,valid)
+                _READY[uri]=storage.make_display_uri(ident)
+                publish('logo','READY',bytes=storage.stat(ident)['bytes'])
+                # Bound only the RAM lookup. Previously downloaded logo files
+                # remain persistent; loading a new logo never removes an old one.
+                if len(_READY)>128:
+                    for key in list(_READY)[:-128]: _READY.pop(key,None)
         except Exception as error:
             from art_errors import classify
             code=error.code if isinstance(error,ArtworkFailure) else 'DISK_FULL' if isinstance(error,OSError) and error.errno==28 else 'CACHE_ERROR' if isinstance(error,OSError) and error.errno in (13,30) else classify(error)

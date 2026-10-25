@@ -49,6 +49,8 @@ class IntegrationTests(Fixture,unittest.TestCase):
         self.assertEqual(self.stops,[])
         self.playing=True
         self.assertTrue(self.exit.poll(self.player,fullscreen=False))
+        from exit37_fixture import drain_stop
+        drain_stop()
         self.assertEqual(self.stops,[self.nonce])
         self.assertEqual(self.state.progress('p','vod','1')['position'],75)
 

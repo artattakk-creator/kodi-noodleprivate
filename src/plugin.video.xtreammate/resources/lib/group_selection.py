@@ -189,6 +189,16 @@ def choose_groups(portal, kind='live',categories=None,allow_refresh=True):
             portal['include_'+kind]=bool(current)
             from catalog_sync import request
             request(portal,kind,priority=1)
+        elif portal.get('type')=='xtream':
+            from portals import update
+            update(portal['id'],{'include_'+kind:bool(current)})
+            portal['include_'+kind]=bool(current)
+            # Existing sync_kind skips already complete groups. Only added
+            # group heads are requested; no force/full-provider restart.
+            from catalog_delta import request
+            previous=state['enabled'] if state else set()
+            added=current-set(previous)
+            for cid in sorted(added):request(portal,kind,cid)
         dlg.notification('XCMate', '{}: {} von {} aktiv'.format(
             LABELS[kind], len(current), len(ids)))
         return True

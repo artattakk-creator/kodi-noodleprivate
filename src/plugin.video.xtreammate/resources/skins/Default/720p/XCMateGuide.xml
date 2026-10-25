@@ -15,11 +15,11 @@
 </control>
 <control type="list" id="210"><left>44</left><top>202</top><width>350</width><height>444</height><orientation>vertical</orientation><onleft>210</onleft><onright>220</onright><onup>310</onup><ondown>210</ondown>
 <itemlayout width="350" height="60">
-<control type="image"><left>8</left><top>14</top><width>32</width><height>32</height><aspectratio>keep</aspectratio><texture>$INFO[ListItem.Art(thumb)]</texture></control>
+<control type="image"><left>8</left><top>14</top><width>32</width><height>32</height><aspectratio>keep</aspectratio><texture fallback="special://home/addons/plugin.video.xtreammate/resources/media/tv.png">$INFO[ListItem.Art(thumb)]</texture></control>
 <control type="label"><left>56</left><width>282</width><height>60</height><font>font13</font><textcolor>FFF0F2F5</textcolor><label>$INFO[ListItem.Label]</label></control></itemlayout>
 <focusedlayout width="350" height="60">
 <control type="image"><width>350</width><height>60</height><texture>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texture></control>
-<control type="image"><left>8</left><top>14</top><width>32</width><height>32</height><aspectratio>keep</aspectratio><texture>$INFO[ListItem.Art(thumb)]</texture></control>
+<control type="image"><left>8</left><top>14</top><width>32</width><height>32</height><aspectratio>keep</aspectratio><texture fallback="special://home/addons/plugin.video.xtreammate/resources/media/tv.png">$INFO[ListItem.Art(thumb)]</texture></control>
 <control type="label"><left>56</left><width>282</width><height>60</height><font>font13</font><textcolor>FFF0F2F5</textcolor><label>$INFO[ListItem.Label]</label></control></focusedlayout>
 </control>
 <control type="list" id="220"><left>416</left><top>202</top><width>820</width><height>444</height><orientation>vertical</orientation><onleft>220</onleft><onright>220</onright><onup>310</onup><ondown>220</ondown>

@@ -14,9 +14,9 @@ def path():
     return os.path.join(addon_data_dir(),'media_state_v1.sqlite')
 
 
-def _db():
+def _db(timeout=2):
     import sqlite3
-    db=sqlite3.connect(path(),timeout=2)
+    db=sqlite3.connect(path(),timeout=timeout)
     db.executescript('CREATE TABLE IF NOT EXISTS favourites(ident TEXT PRIMARY KEY);'
                      'CREATE TABLE IF NOT EXISTS progress(ident TEXT PRIMARY KEY,payload TEXT);')
     return db
@@ -64,7 +64,7 @@ def progress(pid,kind,sid,series_id='',season=''):
     finally: db.close()
 
 
-def save_progress(session,position,duration):
+def save_progress(session,position,duration,timeout=2):
     if session.get('kind') not in ('vod','episode','series_item'): return False
     if session['kind']=='episode' and not all(k in session for k in ('series_id','season')): return False
     if not all(isinstance(v,(float,int)) and math.isfinite(v) for v in (position,duration)): return False
@@ -73,7 +73,7 @@ def save_progress(session,position,duration):
     fields={k:str(session[k]) for k in ('pid','kind','sid','series_id','season','episode') if k in session}
     fields.update(position=min(position,duration),duration=duration,watched=watched,updated=time.time())
     ident=progress_key(session['pid'],session['kind'],session['sid'],session.get('series_id',''),session.get('season',''))
-    db=_db()
+    db=_db(timeout=timeout)
     try:
         with db: db.execute('INSERT OR REPLACE INTO progress VALUES(?,?)',(ident,json.dumps(fields)))
     finally: db.close()

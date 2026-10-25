@@ -28,9 +28,12 @@ def refresh_local(cancel=lambda:False):
                 refresh(portal,client)
             elif portal['id'] not in _bootstrapped:
                 from catalog_sync import request
+                from library_index import Reader
+                existing=Reader(portal['id'])
                 for kind in ('live','vod','series'):
                     if cancel():return
-                    request(portal,kind,portal.get('start_group_id','') if kind=='live' else '',priority=20)
+                    if portal.get('include_'+kind,True) and not existing.state(kind):
+                        request(portal,kind,portal.get('start_group_id','') if kind=='live' else '',priority=20)
                 _bootstrapped.add(portal['id'])
             from guide_store import refresh as refresh_guide
             if cancel():return
@@ -107,6 +110,11 @@ def _run():
             except MemoryError:runtime.note_pressure()
             except Exception: pass
             if cancelled():break
+        try:
+            from catalog_delta import run_next as run_delta
+            worked=run_delta(cancelled) or worked
+        except MemoryError:runtime.note_pressure()
+        except Exception:pass
         try:
             from catalog_sync import run_next
             worked=run_next(cancelled)

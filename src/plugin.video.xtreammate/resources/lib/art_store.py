@@ -27,7 +27,14 @@ def key(url): return hashlib.sha256(url.encode()).hexdigest()
 
 
 def enqueue(urls,priority=0):
-    from media_art import cached
+    from artwork_config import persistent
+    if not persistent():return
+    from media_art import cached,_cached_at
+    from artwork_backend import active_backend
+    storage=active_backend();external=getattr(storage,'is_external',False) is True
+    if external and storage.availability()!='AVAILABLE':
+        from artwork_vfs import StorageFailure
+        raise StorageFailure('STORAGE_OFFLINE')
     from import_budget import check_space
     # Persist small metadata under the import reserve. The full configured
     # image reserve remains enforced by fetch before HTTP and before writing.
@@ -38,7 +45,10 @@ def enqueue(urls,priority=0):
     try:
         with db:
             for url in urls:
-                if cached(url): continue
+                if _cached_at(storage,key(url)) if external else cached(url):continue
+                if external:
+                    prior=db.execute('SELECT status FROM jobs WHERE ident=?',(key(url),)).fetchone()
+                    if prior and prior[0]=='READY':continue  # Offline/missing external file never resets READY.
                 db.execute('''INSERT INTO jobs VALUES(?,?,'PENDING',?,0,0,?,0)
                   ON CONFLICT(ident) DO UPDATE SET url=excluded.url,
                   priority=min(priority,excluded.priority),
@@ -103,6 +113,14 @@ def recover_space(now=None):
 
 
 def run_one(now=None):
+    from artwork_config import persistent
+    if not persistent():return False
+    from artwork_migration import busy
+    if busy():return False
+    from artwork_backend import active_backend
+    if active_backend().availability() not in ('AVAILABLE',):
+        from art_diagnostics import publish
+        publish('worker','STORAGE_OFFLINE');return False
     from media_art import fetch
     from utils import setting_bool
     if setting_bool('media_art_paused',False):return False
@@ -140,6 +158,9 @@ def run_one(now=None):
         elif isinstance(exc,OSError) and getattr(exc,'errno',None) in (13,30):code='CACHE_ERROR'
         else:code='NETWORK_ERROR'
         from art_errors import PERMANENT
+        from artwork_gate import WriterBusy
+        if code=='STORAGE_OFFLINE' or isinstance(exc,WriterBusy) or getattr(exc,'code','')=='MODE_CHANGED':
+            return False  # Keep the leased row recoverable, no failure/reset wave.
         exhausted=code in PERMANENT or code in ('BUDGET_FULL','DISK_FULL')
         attempts=3 if exhausted else job['attempts']+1
         db=connect()
@@ -176,7 +197,11 @@ def status(cancel=lambda:False):
         value.update(read_capacity())
     except OSError:value['capacity_code']='UNAVAILABLE'
     from art_diagnostics import augment
-    return augment(value,cancel)
+    value=augment(value,cancel)
+    from artwork_config import read
+    value['artwork_mode']=read()['mode']
+    if value['artwork_mode']=='dynamic':value['storage_result']='DYNAMIC_NO_XCMATE_ARCHIVE'
+    return value
 
 
 def retry():
@@ -192,6 +217,10 @@ def retry():
 
 def prefetch_selected():
     """One local page per service cycle; never enqueue disabled categories."""
+    from artwork_config import read
+    config=read()
+    if config['mode']=='dynamic':return
+    if config['version'] and config.get('strategy','demand')!='all' and config.get('origin')!='LEGACY':return
     from artwork_db import diagnostic
     if diagnostic().get('background_paused'):return
     from portals import get_active
@@ -202,7 +231,7 @@ def prefetch_selected():
             if not portal.get('include_'+kind,True): continue
             reader=Reader(portal['id']);state=reader.state(kind)
             if not state: continue
-            revision=state['revision']+str([g['cid'] for g in reader.groups(kind)])
+            revision=state['revision']+str([g['cid'] for g in reader.groups(kind)])+str(config.get('preload_generation',''))
             db=connect()
             try: prior=db.execute('SELECT revision,offset FROM scan WHERE pid=? AND kind=?',(portal['id'],kind)).fetchone()
             finally: db.close()

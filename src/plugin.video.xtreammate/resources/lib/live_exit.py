@@ -78,7 +78,8 @@ def _poll(navigator=None):
         if navigator is not None and getattr(navigator,'_exiting',False):navigator.close()
         marker.clearProperty(KEY);return False
     player=xbmc.Player()
-    from playback_exit import identity,_same,stop_owned
+    from playback_exit import identity,_same
+    from exit_jobs import request as stop_owned
     if value['phase'] in ('complete','failed'):
         # A past live Exit must not disable media_progress/playback_exit for
         # a later movie or a foreign add-on. Keep the root-autoplay tombstone.
@@ -93,12 +94,16 @@ def _poll(navigator=None):
         if time.monotonic()<value['not_before']:return True
         # Commit before invoking native Stop; reentrant ticks cannot stop twice.
         value['phase']='stopping';_save(value)
+        # Release the native overlay BEFORE scheduling Stop on a later tick.
+        # Never wait on Player.stop while owning the live dialog.
+        if navigator is not None and not navigator._closed:navigator.close()
         if playing:
             if not stop_owned(player,expected=token):
                 value['phase']='failed';_save(value)
                 if navigator is not None and not navigator._closed:navigator.close()
                 _trace('OWNERSHIP_CHANGED',session);return True
-        _trace('STOP_SENT',session)
+        _trace('STOP_QUEUED',session)
+        return True
     if player.isPlayingVideo() or (hasattr(player,'isPlaying') and player.isPlaying()):
         if time.monotonic()>value['deadline']:
             value['phase']='failed';_save(value)

@@ -37,7 +37,8 @@ def identity(player):
 
 def _same(a,b):
     return bool(a and b and a[0]==b[0] and all(
-        a[1].get(k)==b[1].get(k) for k in ('nonce','pid','sid','at')))
+        a[1].get(k)==b[1].get(k) for k in ('nonce','pid','sid','at')) and
+        (a[0]!='media' or a[1].get('kind')==b[1].get('kind')))
 
 
 def stop_owned(player=None,pid=None,expected=None):
@@ -53,10 +54,13 @@ def stop_owned(player=None,pid=None,expected=None):
         token=identity(player)
         if not token or (pid is not None and token[1]['pid']!=str(pid)) or (expected and not _same(token,expected)):
             return False
+        checkpoint_ok=True;sample=None
         if token[0]=='media':
             if token[1].get('autoplay_chain'):
                 from media_autoplay import request_cancel
                 request_cancel(token[1]['autoplay_chain'],token[1]['pid'])
+            from exit_jobs import trace
+            trace('PROGRESS_SNAPSHOT_START',token)
             from media_state import save_progress
             from media_progress import _current,_last
             try:
@@ -64,12 +68,17 @@ def stop_owned(player=None,pid=None,expected=None):
             except (RuntimeError,TypeError,ValueError):
                 sample=_last if _current and _current.get('nonce')==token[1]['nonce'] else None
             if sample:
-                try: save_progress(token[1],*sample)
+                try: save_progress(token[1],*sample,timeout=.05)
                 except Exception:
+                    checkpoint_ok=False
+                    trace('PROGRESS_SNAPSHOT_FAIL',token)
                     # A failed disk must not leave unwanted audio playing.
                     from utils import warn
                     warn('XCMate exit checkpoint: WRITE_FAILED')
+                if checkpoint_ok:trace('PROGRESS_SNAPSHOT_DONE',token)
         if not _same(token,identity(player)): return False
+        from exit_jobs import trace
+        trace('PLAYER_STOP_START',token)
         player.stop()
         marker=xbmcgui.Window(10000)
         from media_progress import PROPERTY
@@ -82,7 +91,10 @@ def stop_owned(player=None,pid=None,expected=None):
         # older 15-second sample on its next stop notification.
         if token[0]=='media':
             import media_progress
-            if media_progress._current and media_progress._current.get('nonce')==token[1]['nonce']:
+            if not checkpoint_ok and sample:
+                media_progress.queue_exit_checkpoint(token[1],sample)
+                media_progress._current=media_progress._last=None
+            elif media_progress._current and media_progress._current.get('nonce')==token[1]['nonce']:
                 media_progress._current=media_progress._last=None
         return True
     except (AttributeError,RuntimeError,TypeError,ValueError): return False
@@ -97,7 +109,9 @@ def poll(player=None,fullscreen=None):
         if not token: _armed=None;return False
         if token[0]=='media':
             from media_intent import cancelled
-            if cancelled(token[1]): return stop_owned(player,expected=token)
+            if cancelled(token[1]):
+                from exit_jobs import request
+                return request(player,expected=token)
         if fullscreen is None:
             if not hasattr(xbmc,'getCondVisibility'): return False
             fullscreen=xbmc.getCondVisibility('Window.IsVisible(fullscreenvideo)')
@@ -107,5 +121,6 @@ def poll(player=None,fullscreen=None):
         if not _same(_armed,token):
             _armed=None
             return False  # Pending startup must never be mistaken for exit.
-        return stop_owned(player,expected=_armed)
+        from exit_jobs import request
+        return request(player,expected=_armed)
     except (AttributeError,RuntimeError,TypeError,ValueError): return False

@@ -116,6 +116,7 @@ def settings(router, portal, section=''):
     elif section=='player':
         add(tr(32437),'settings')
     elif section=='storage':
+        add(tr(35200),'artwork_manage')
         add(tr(34700),'download_folder')
         add(tr(34701),'download_capabilities')
         add(tr(35007),'download_target_test')
@@ -140,6 +141,7 @@ def settings(router, portal, section=''):
         add(tr(32445),'widget_recent_vod')
         add(tr(32446),'widget_recent_series')
     elif section=='maintenance':
+        add(tr(35300),'device_info')
         add(tr(34800),'stability_test')
         for label,action in ((tr(32447),'global_search'),(tr(32448),'refresh_portal'),
             (tr(32425),'epg_status'),(tr(32449),'remote_diagnostics'),

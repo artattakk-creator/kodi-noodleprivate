@@ -141,6 +141,7 @@ class OverlayLifecycleTests(unittest.TestCase):
         gui.Window = lambda *_:window
         gui.Dialog = lambda:types.SimpleNamespace(notification=mock.Mock(),textviewer=mock.Mock())
         xbmc = types.ModuleType('xbmc')
+        xbmc.Monitor = lambda:types.SimpleNamespace(abortRequested=lambda:False)
         xbmc.Player = lambda:self.player
         xbmc.executebuiltin = mock.Mock()
         xbmc.getCondVisibility = lambda condition:self.paused if condition=='Player.Paused' else True
@@ -202,6 +203,9 @@ class OverlayLifecycleTests(unittest.TestCase):
         value['not_before']=0;live_exit._save(value)
         self.player.stop.assert_not_called()
         self.player.stop.side_effect=lambda:setattr(self.player,'isPlayingVideo',lambda:False)
+        live_exit.poll(self.overlay)
+        from exit37_fixture import drain_stop
+        drain_stop()
         live_exit.poll(self.overlay)
         live_exit.poll(self.overlay)
 

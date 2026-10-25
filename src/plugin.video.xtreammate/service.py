@@ -3,7 +3,7 @@ import xbmc, xbmcaddon, xbmcgui
 
 ADDON    = xbmcaddon.Addon()
 LIB_PATH = os.path.join(os.path.dirname(__file__), 'resources', 'lib')
-SERVICE_BUILD = 36
+SERVICE_BUILD = 37
 if LIB_PATH not in sys.path:
     sys.path.insert(0, LIB_PATH)
 
@@ -40,6 +40,9 @@ class IPTVMasterService(xbmc.Monitor):
 
     def __init__(self):
         super().__init__()
+        from artwork_config import initialize
+        try:initialize()
+        except OSError:pass  # Fail closed to internal if profile marker cannot commit.
         self._last_epg = 0
         self._epg_worker = None
         self._stopped_since = None
@@ -162,6 +165,12 @@ class IPTVMasterService(xbmc.Monitor):
                 self._live_guide_resume=resume
             from live_timing import observe as observe_live_timing
             observe_live_timing()
+            try:
+                from setup_navigation import poll as poll_setup
+                poll_setup()
+            except Exception:diagnostic('dialog','SETUP_RETURN_FAILED')
+            from exit_jobs import poll as poll_stop_jobs
+            poll_stop_jobs()
             from live_exit import poll as poll_live_exit
             exiting=poll_live_exit(self._overlay)
             if self._overlay is not None and self._overlay._closed:self._overlay=None

@@ -200,6 +200,7 @@ class Fixture:
         portals=types.ModuleType('portals');portals.get_active=lambda:[p for p in self.portals if p.get('enabled',True)]
         portals.get_by_id=lambda pid:next((p for p in self.portals if p['id']==pid),None)
         portals.import_from_settings=lambda:None;portals.load_all=lambda:self.portals
+        portals.update=lambda pid,data:next((p.update(data) for p in self.portals if p['id']==pid),None)
         epg=types.ModuleType('epg');self.cache={};epg.load_cache=lambda pid:self.cache
         epg._disk_ck=lambda pid:utils.cache_key('epg2_'+pid)
         epg._mem_clear=lambda pid=None:None

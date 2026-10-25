@@ -8,7 +8,7 @@ class StopTests(Fixture,unittest.TestCase):
         super().setUp()
         # Exercise a requested Home route; .36 tests cover reusing an existing Home.
         self.current_folder='plugin://plugin.video.xtreammate/?action=home_live&pid=p'
-        for n in ('live_exit','playback_exit','live_overlay'):sys.modules.pop(n,None)
+        for n in ('exit_jobs','live_exit','playback_exit','live_overlay'):sys.modules.pop(n,None)
         sys.modules['xbmcgui'].WindowDialog=object
         self.live=importlib.import_module('live_overlay');self.exit=importlib.import_module('live_exit')
         self.session=dict(pid='p',sid='1',nonce='own',at=time.time())
@@ -23,6 +23,13 @@ class StopTests(Fixture,unittest.TestCase):
         self.nav=types.SimpleNamespace(portal=self.portal,sid='1',_closed=False,_owned_token=('live',self.session))
         def close():self.assertFalse(self.callbacks);self.nav._closed=True
         self.nav.close=mock.Mock(side_effect=close)
+        original=self.exit.poll
+        def service_tick(navigator=None):
+            result=original(navigator)
+            from exit37_fixture import drain_stop
+            drain_stop()
+            return result
+        self.exit.poll=service_tick
     def ready(self):
         value=self.exit.state();value['not_before']=0;self.exit._save(value)
     def finish(self):
@@ -40,7 +47,7 @@ class StopTests(Fixture,unittest.TestCase):
     def test_async_stop_holds_input_and_recovery_until_video_really_ends(self):
         self.sync=False;self.exit.request(self.nav);self.ready()
         for _ in range(10):self.assertTrue(self.exit.poll(self.nav))
-        self.assertEqual(self.stops,1);self.nav.close.assert_not_called();self.assertFalse(self.builtins)
+        self.assertEqual(self.stops,1);self.nav.close.assert_called_once();self.assertFalse(self.builtins)
         self.playing=False;self.finish();self.assertEqual(len(self.builtins),1)
     def test_changed_foreign_item_between_request_and_tick_is_never_stopped_or_navigated(self):
         self.exit.request(self.nav);self.ready();self.tag='foreign'
@@ -140,6 +147,6 @@ class StopTests(Fixture,unittest.TestCase):
     def test_active_video_directory_is_replaced_instead_of_reactivating_play_route(self):
         self.exit.request(self.nav);self.ready();self.exit.poll(self.nav)
         with mock.patch.object(sys.modules['xbmc'],'getCondVisibility',side_effect=lambda c:c=='Window.IsActive(videos)'):
-            self.exit.poll(self.nav)
+            self.exit.poll(self.nav);self.exit.poll(self.nav)
         self.assertTrue(self.builtins[-1].startswith('Container.Update('));self.assertTrue(self.builtins[-1].endswith(',replace)'))
         self.assertIn('action=xcmate_home',self.builtins[-1])

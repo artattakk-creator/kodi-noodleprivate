@@ -3252,3 +3252,191 @@ msgstr "Queue-Zeitpunkte / erschöpfte Jobs / Download-Lease:"
 msgctxt "#35115"
 msgid "RESERVE_BLOCKED protects the configured free-space reserve; it does not mean the drive has zero free bytes. BUDGET_FULL is the configured image limit. UNKNOWN means no current observation. READY jobs count database records; only a real local image is a downloaded cover. No settings were changed."
 msgstr "RESERVE_BLOCKED schützt den eingestellten Mindestfreiraum und bedeutet nicht, dass das Laufwerk null freie Bytes hat. BUDGET_FULL ist das eingestellte Bildlimit. UNKNOWN bedeutet fehlende aktuelle Beobachtung. READY-Jobs zählen Datenbankeinträge; nur eine echte lokale Bilddatei ist ein geladenes Cover. Keine Einstellung wurde geändert."
+
+msgctxt "#35200"
+msgid "Artwork management"
+msgstr "Artwork-Verwaltung"
+
+msgctxt "#35201"
+msgid "Show status and capacity"
+msgstr "Status und Speicherwerte anzeigen"
+
+msgctxt "#35202"
+msgid "Dynamic – provider artwork on demand"
+msgstr "Dynamisch – Providerbilder bei Bedarf"
+
+msgctxt "#35203"
+msgid "Persistent internal – on demand"
+msgstr "Dauerhaft intern – bei Bedarf"
+
+msgctxt "#35204"
+msgid "Choose external target / prepare transfer"
+msgstr "Externes Ziel wählen / Übertragung vorbereiten"
+
+msgctxt "#35205"
+msgid "Test target – write, read and display image"
+msgstr "Ziel prüfen – Schreiben, Lesen und Testbild"
+
+msgctxt "#35206"
+msgid "Inventory existing images"
+msgstr "Vorhandene Bilder analysieren"
+
+msgctxt "#35207"
+msgid "Copy collection / resume transfer"
+msgstr "Bestand kopieren / Übertragung fortsetzen"
+
+msgctxt "#35208"
+msgid "Verify collection and confirm image display"
+msgstr "Vollständig prüfen und Bilddarstellung bestätigen"
+
+msgctxt "#35209"
+msgid "Activate verified target"
+msgstr "Geprüftes Ziel aktivieren"
+
+msgctxt "#35210"
+msgid "Remove internal originals after verification"
+msgstr "Interne Originale nach Prüfung entfernen"
+
+msgctxt "#35211"
+msgid "Preload all available covers"
+msgstr "Alle verfügbaren Cover vorladen"
+
+msgctxt "#35212"
+msgid "Enable safe adaptive internal reserve"
+msgstr "Sichere adaptive interne Reserve aktivieren"
+
+msgctxt "#35213"
+msgid "Copy descriptive metadata externally"
+msgstr "Beschreibende Metadaten extern kopieren"
+
+msgctxt "#35214"
+msgid "Dynamic uses provider image URLs without a new XCMate archive. Existing images remain. Kodi may still cache textures. Confirm change?"
+msgstr "Dynamisch nutzt Provider-Bildadressen ohne neues XCMate-Archiv. Vorhandene Bilder bleiben. Kodi kann weiterhin eigene Texturen speichern. Wechsel bestätigen?"
+
+msgctxt "#35215"
+msgid "Choose internal mode? Existing files remain. An external collection must be copied back and verified first."
+msgstr "Internen Modus wählen? Vorhandene Dateien bleiben. Bei externer Quelle muss zuerst zurückkopiert und geprüft werden."
+
+msgctxt "#35216"
+msgid "Target prepared. Test the target, inventory, copy, verify and explicitly activate it. The previous location remains active."
+msgstr "Ziel vorbereitet. Jetzt Ziel prüfen, Bestand analysieren, kopieren, vollständig prüfen und ausdrücklich aktivieren. Die bisherige Ablage bleibt aktiv."
+
+msgctxt "#35217"
+msgid "Activate the verified new location? Internal originals will remain."
+msgstr "Geprüfte neue Ablage jetzt aktivieren? Interne Originale werden dabei nicht entfernt."
+
+msgctxt "#35218"
+msgid "Separate deletion request: remove {0} verified XCMate images / {1} internal bytes? Kodi textures and databases remain protected. Default: No."
+msgstr "Separater Löschauftrag: {0} verifizierte XCMate-Bilder / {1} Bytes intern entfernen? Kodi-Texturen und Datenbanken bleiben geschützt. Standard: Nein."
+
+msgctxt "#35219"
+msgid "Final confirmation: remove internal originals only after a fresh complete hash verification."
+msgstr "Endgültig bestätigen: nur nach erneuter vollständiger Hashprüfung dürfen die internen Originalbilder entfernt werden."
+
+msgctxt "#35220"
+msgid "Working in the background. Cancel pauses transfer; original files remain."
+msgstr "Arbeitet im Hintergrund. Abbrechen pausiert die Übertragung; Originale bleiben erhalten."
+
+msgctxt "#35221"
+msgid "Is the test image or selected cover displayed correctly on the left? Confirm only then."
+msgstr "Wird links das Testbild oder gewählte Cover korrekt angezeigt? Nur dann die Bilddarstellung bestätigen."
+
+msgctxt "#35222"
+msgid "Image visible"
+msgstr "Bild sichtbar"
+
+msgctxt "#35223"
+msgid "Not confirmed"
+msgstr "Nicht bestätigt"
+
+msgctxt "#35224"
+msgid "USB / SD / local volume"
+msgstr "USB / SD / lokaler Datenträger"
+
+msgctxt "#35225"
+msgid "Samba / SMB / NAS"
+msgstr "Samba / SMB / NAS"
+
+msgctxt "#35226"
+msgid "Choose another folder"
+msgstr "Anderen Ordner wählen"
+
+msgctxt "#35227"
+msgid "Preload covers from available valid metadata sources? Existing failed jobs will not be globally reset."
+msgstr "Alle vorhandenen gültigen Metadatenquellen für Cover vorladen? Bestehende Fehlerjobs werden nicht global zurückgesetzt."
+
+msgctxt "#35228"
+msgid "Explicitly adjust internal image reserve: 2% of measured target volume, at least 64 MiB. Separate 32 MiB metadata reserve remains."
+msgstr "Interne Bildreserve bewusst anpassen: 2 % des gemessenen Zielvolumens, mindestens 64 MiB. Die separate 32-MiB-Metadatenreserve bleibt."
+
+msgctxt "#35229"
+msgid "Save available descriptive movie/series information as a verified external copy? The local index remains complete. Physical metadata offload and space savings are still BLOCKED."
+msgstr "Vorhandene beschreibende Film-/Serieninformationen als verifizierte externe Kopie speichern? Der lokale Index bleibt vollständig erhalten. Physische Metadaten-Auslagerung und Platzgewinn sind noch BLOCKED."
+
+msgctxt "#35300"
+msgid "Device information"
+msgstr "Geräteinformationen"
+
+msgctxt "#35301"
+msgid "Refresh measured values?"
+msgstr "Messwerte erneut aktualisieren?"
+
+msgctxt "#35230"
+msgid "Dynamic uses Kodi textures; existing XCMate jobs and files remain."
+msgstr "Dynamisch verwendet Kodi-Texturen; bestehende XCMate-Jobs und Dateien bleiben erhalten."
+
+msgctxt "#35232"
+msgid "Pause / resume cover downloads"
+msgstr "Cover-Downloads pausieren / fortsetzen"
+
+msgctxt "#35233"
+msgid "Reading collection"
+msgstr "Bestand wird gelesen"
+
+msgctxt "#35234"
+msgid "Copying and verifying"
+msgstr "Kopieren und prüfen"
+
+msgctxt "#35235"
+msgid "Complete verification"
+msgstr "Vollständige Prüfung"
+
+msgctxt "#35236"
+msgid "Confirmed internal cleanup"
+msgstr "Bestätigte interne Freigabe"
+
+msgctxt "#35237"
+msgid "Use the previous fixed internal image reserve again?"
+msgstr "Bisherige feste interne Bildreserve wieder verwenden?"
+
+msgctxt "#35400"
+msgid "Newly selected group: background import pending / active"
+msgstr "Neu gewählte Gruppe: Import im Hintergrund ausstehend / aktiv"
+
+msgctxt "#35401"
+msgid "Source checked: this group contains no titles"
+msgstr "Quelle geprüft: diese Gruppe enthält keine Titel"
+
+msgctxt "#35302"
+msgid "Kodi: {0} · XCMate: {1}"
+msgstr "Kodi: {0} · XCMate: {1}"
+
+msgctxt "#35303"
+msgid "Measured RAM: {0} MiB total / {1} MiB available; Kodi process: {2} MiB"
+msgstr "Gemessener RAM: {0} MiB gesamt / {1} MiB verfügbar; Kodi-Prozess: {2} MiB"
+
+msgctxt "#35304"
+msgid "Firmware reports Android {0}; SDK/API {1} corresponds to Android {2}"
+msgstr "Firmware meldet Android {0}; SDK/API {1} entspricht Android {2}"
+
+msgctxt "#35305"
+msgid "Kodi data filesystem: {0} GiB free / {1} GiB total (not guaranteed physical flash size)"
+msgstr "Kodi-Daten-Dateisystem: {0} GiB frei / {1} GiB gesamt (keine zugesicherte physische Flashgröße)"
+
+msgctxt "#35306"
+msgid "Artwork {0}: {1} MiB free · {2} MiB reserve · {3} MiB budget (0 = no collection budget)"
+msgstr "Artwork {0}: {1} MiB frei · {2} MiB Reserve · {3} MiB Budget (0 = kein Sammlungsbudget)"
+
+msgctxt "#35307"
+msgid "VERSION MISMATCH – do not treat the firmware claim as verified."
+msgstr "VERSIONSANGABEN WIDERSPRÜCHLICH – Firmwareangabe nicht als verifiziert behandeln."

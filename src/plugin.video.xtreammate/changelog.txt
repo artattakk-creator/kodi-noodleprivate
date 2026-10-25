@@ -1,3 +1,13 @@
+0.1.29.37 (Android test candidate; not released)
+- Legacy profiles remain internal; explicit per-profile artwork choices and safe fresh-profile gate.
+- Player exit: release live overlay before queued Stop; bounded checkpoint and single-flight background native Stop with timeout diagnostics. Device root cause remains unverified.
+- Artwork: dynamic Kodi URLs for visible items, persistent internal or explicit USB/SD/Kodi-SMB target. Existing profiles remain internal; only positively fresh profiles default dynamic. Kodi texture cache remains untouched.
+- Verified per-profile external copy with inventory, SHA256, restart/pause journal, render confirmation and separate activation/optional original cleanup. Offline targets never silently switch back or reset READY jobs.
+- Storage management now includes cover-download pause/resume, explicit preloading and optional adaptive reserve; metadata/SQLite remain internal.
+- Wizard: owner-safe Save/Home handoff, data-only worker callbacks, visible activity from EPG source 1/N, original branding, and selected Xtream group delta indexing.
+- Diagnostics: measured device/RAM/firmware/API/filesystem values; smaller installed-profile Home entry preserves autoplay/navigation.
+- Optional verified descriptive metadata export; physical catalogue payload offload remains BLOCKED. Durable wizard scan resume after process death is not implemented. Native Android exit/storage/render gates remain NOT_TESTED.
+
 0.1.29.36 – kumulativer Such-/Live-/Genre-Kandidat mit Artwork-Pipeline-Reparatur
 - Artwork: backend-neutral local image reads/writes/capacity with SHA256 readback; stable files, no external target switch or migration in .36 (#106 preparation for .37).
 - #168 Pflichtumfang: Bildaufträge unter dem geschützten Importfreiraum dauerhaft speichern; vollständige Bildreserve unverändert vor HTTP und Dateiablage prüfen. Vorhandene Queue ohne neue UI-Anfrage wieder bedienen. Scanfortschritt erst nach bestätigter Enqueue-Transaktion; alte fertige Scans ausschließlich bei leerer Queue einmalig seitenweise nachholen, keine fehlgeschlagenen Altjobs global zurücksetzen.

@@ -36,6 +36,21 @@ def _failure_details(exc):
     return 'XM-SETUP-OTHER', 'Einrichtungsfehler. Kodi-Protokoll zur Diagnose sichern.'
 
 
+class _WorkState:
+    """Pure data referenced by workers; never retain a native Kodi window."""
+    def __init__(self,cancel):
+        self.cancel=cancel;self.lock=threading.RLock();self.latest=None
+        self.cleanup=lambda:None;self.disposed=False
+    def status(self,percent,text):
+        with self.lock:
+            if not self.cancel.is_set():self.latest=(percent,str(text))
+    def finished(self,future=None):
+        with self.lock:
+            if not self.cancel.is_set() or self.disposed:return
+            self.disposed=True;cleanup=self.cleanup
+        cleanup()
+
+
 class WorkWindow(xbmcgui.WindowXML):
     """Workers return data; only the Window's Python owner touches Kodi GUI.
 
@@ -45,23 +60,24 @@ class WorkWindow(xbmcgui.WindowXML):
     def configure_work(self):
         self._owner=threading.get_ident();self._initialized=False
         self._closed=False;self._disposed=False;self.busy=False;self.cancel=threading.Event()
-        self._pool=ThreadPoolExecutor(max_workers=1);self._lock=threading.RLock()
-        self._future=None;self._apply=None;self._progress=None
+        self._data_state=_WorkState(self.cancel);self._lock=self._data_state.lock
+        self._pool=ThreadPoolExecutor(max_workers=1)
+        self._future=None;self._apply=None
     def _gui(self):
         if threading.get_ident()!=self._owner: raise RuntimeError('XM-SETUP-GUI-THREAD')
     def status(self,percent,text):
         # Coalesce rather than queue an unbounded event per imported item.
-        with self._lock:
-            if not self._closed: self._progress=(percent,str(text))
+        self._data_state.status(percent,text)
         if threading.get_ident()==self._owner and self._initialized: self._paint_status()
     def _paint_status(self):
         self._gui()
-        with self._lock: value=self._progress;self._progress=None
+        with self._lock: value=self._data_state.latest;self._data_state.latest=None
         if value and not self._closed:
             percent,text=value
             self.getControl(3).setText(text)
-            self.getControl(4).setVisible(percent is not None)
-            if percent is not None: self.getControl(4).setPercent(max(0,min(100,percent)))
+            self.getControl(4).setVisible(True)
+            self.getControl(4).setPercent(max(0,min(100,percent)) if percent is not None else 0)
+            self._activity_text=text if percent is None else ''
     def work(self,job,apply):
         self._gui()
         if self.busy or self._closed: return
@@ -69,19 +85,18 @@ class WorkWindow(xbmcgui.WindowXML):
         self.working()
         self._future=self._pool.submit(job)
         # This callback never reads or changes a Kodi control or closes a GUI.
-        self._future.add_done_callback(self._finished_cleanup)
+        self._future.add_done_callback(self._data_state.finished)
     def working(self): pass
-    def _finished_cleanup(self,future):
-        if self._closed: self._dispose_once()
     def _dispose_once(self):
-        with self._lock:
-            if self._disposed: return
-            self._disposed=True
-        self.dispose()
+        self._data_state.finished();self._disposed=self._data_state.disposed
     def pump(self):
         self._gui()
         if self._closed or not self._initialized: return
         self._paint_status()
+        if self.busy and getattr(self,'_activity_text',''):
+            # Activity, not an invented byte/time percentage.
+            frame=('·','··','···')[int(__import__('time').monotonic()*2)%3]
+            self.getControl(3).setText(self._activity_text+' '+frame)
         future=self._future
         if future is None or not future.done(): return
         apply=self._apply;self._future=None;self._apply=None;self.busy=False
@@ -112,16 +127,22 @@ class WorkWindow(xbmcgui.WindowXML):
         with self._lock:
             if self._closed: return
             self._closed=True;self.cancel.set()
+            future=self._future;self._future=None;self._apply=None
+        try:
+            import xbmcgui
+            ident=xbmcgui.getCurrentWindowId()
+            if ident>=13000:xbmcgui.Window(10000).setProperty('XCMate.SetupClosedId37',str(ident))
+        except (AttributeError,RuntimeError,TypeError):pass
         super().close()
         self._pool.shutdown(wait=False,cancel_futures=True)
-        if self._future is None or self._future.done(): self._dispose_once()
+        if future is None or future.done(): self._dispose_once()
     def onAction(self,action):
         if action.getId() in (9,10,92): self.close()
         # Native arrows/OK are never replayed.
 
 class SetupWindow(WorkWindow):
     def configure(self,draft):
-        self.configure_work();self.draft=draft;self.kind='live';self.stage='discover';self.result=None
+        self.configure_work();self.draft=draft;self._data_state.cleanup=draft.dispose;self.kind='live';self.stage='discover';self.result=None
         self._entries=[]
     def _show_discover_ui(self):
         self.getControl(2).setLabel(tr(32700))
@@ -136,8 +157,8 @@ class SetupWindow(WorkWindow):
     def _start_discovery(self):
         self.stage='discover'
         self._show_discover_ui()
-        self.work(lambda:self.draft.discover(self.cancel.is_set,self.status),
-                  self.discovered)
+        draft=self.draft;cancel=self.cancel.is_set;status=self._data_state.status
+        self.work(lambda:draft.discover(cancel,status),self.discovered)
 
     def onInit(self):
         self._initialized=True
@@ -201,6 +222,8 @@ class SetupWindow(WorkWindow):
             self.getControl(100+number).setVisible(groups and kind==self.kind and bool(self._entries))
         self.getControl(5).setVisible(groups);self.getControl(6).setVisible(groups and not self._entries)
         self.getControl(6).setLabel(tr(32781))
+        self.getControl(3).setHeight(80 if groups else 240)
+        self.getControl(4).setPosition(45,170 if groups else 330)
         if groups:
             self.status(None,tr(32712));self._selection_status()
         else:
@@ -260,11 +283,13 @@ class SetupWindow(WorkWindow):
                 elif controlId==16: self.close()
                 elif controlId==17:
                     self.status(0,tr(32713))
-                    self.work(lambda:self.draft.scan(self.cancel.is_set,self.status),self.scanned)
+                    draft=self.draft;cancel=self.cancel.is_set;status=self._data_state.status
+                    self.work(lambda:draft.scan(cancel,status),self.scanned)
             elif self.stage=='summary' and controlId==16:
                 self.stage='groups';self.render();self.setFocusId(self.list_id if self._entries else 17)
             elif self.stage=='summary' and controlId==17:
-                self.status(0,tr(32716));self.work(lambda:self.draft.save(self.cancel.is_set),self.saved)
+                self.status(0,tr(32716));draft=self.draft;cancel=self.cancel.is_set
+                self.work(lambda:draft.save(cancel),self.saved)
         except (ValueError,OSError) as exc: self.status(0,tr(32743,type(exc).__name__))
     def onAction(self,action):
         if action.getId()==117 and not self.busy and self.stage=='groups' and self.draft.data['type']=='m3u':
@@ -282,10 +307,14 @@ class SetupWindow(WorkWindow):
     def scanned(self,result): self.stage='summary';self.render()
     def saved(self,portal):
         self._gui()
+        from setup_trace import mark
+        mark('GUI_CLOSE_BEGIN',getattr(self.draft,'pid',''))
         self.result=portal
         # The just-imported catalog is already complete; do not immediately
         # enqueue the same provider scan a second time.
+        pid=getattr(self.draft,'pid','')
         self.close()
+        mark('GUI_CLOSE_DONE',pid)
 
 
 
