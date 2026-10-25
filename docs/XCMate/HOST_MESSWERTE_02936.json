@@ -1,0 +1,337 @@
+{
+  "baseline": "9c558c70e8abd56d071d703ff9e78909e78c85ac",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "python": "3.12.14",
+  "channels": 2764,
+  "measurement": "Host real filesystem/SQLite/JSON behind Kodi stubs; no injected latency; no Android/IR/first-frame result",
+  "cases": {
+    "sparse_short_cache_tail": {
+      "before": {
+        "samples": [
+          {
+            "first_programme_ms": 182.458628,
+            "final_ms": 182.474682,
+            "slices": 184,
+            "cache_channel_reads": 2764,
+            "exists": 22110,
+            "mkdir": 11055
+          },
+          {
+            "first_programme_ms": 196.978228,
+            "final_ms": 196.9928,
+            "slices": 184,
+            "cache_channel_reads": 2764,
+            "exists": 22110,
+            "mkdir": 11055
+          },
+          {
+            "first_programme_ms": 168.300617,
+            "final_ms": 168.313977,
+            "slices": 184,
+            "cache_channel_reads": 2764,
+            "exists": 22110,
+            "mkdir": 11055
+          },
+          {
+            "first_programme_ms": 167.793422,
+            "final_ms": 167.809115,
+            "slices": 184,
+            "cache_channel_reads": 2764,
+            "exists": 22110,
+            "mkdir": 11055
+          },
+          {
+            "first_programme_ms": 180.199631,
+            "final_ms": 180.21265,
+            "slices": 184,
+            "cache_channel_reads": 2764,
+            "exists": 22110,
+            "mkdir": 11055
+          }
+        ],
+        "median": {
+          "first_programme_ms": 180.199631,
+          "final_ms": 180.21265,
+          "slices": 184,
+          "cache_channel_reads": 2764,
+          "exists": 22110,
+          "mkdir": 11055
+        }
+      },
+      "after": {
+        "samples": [
+          {
+            "first_programme_ms": 58.380216,
+            "final_ms": 58.391533,
+            "slices": 12,
+            "cache_channel_reads": 1,
+            "exists": 6,
+            "mkdir": 4
+          },
+          {
+            "first_programme_ms": 66.363732,
+            "final_ms": 66.378073,
+            "slices": 12,
+            "cache_channel_reads": 1,
+            "exists": 6,
+            "mkdir": 4
+          },
+          {
+            "first_programme_ms": 59.269287,
+            "final_ms": 59.281085,
+            "slices": 12,
+            "cache_channel_reads": 1,
+            "exists": 6,
+            "mkdir": 4
+          },
+          {
+            "first_programme_ms": 59.223358,
+            "final_ms": 59.234234,
+            "slices": 12,
+            "cache_channel_reads": 1,
+            "exists": 6,
+            "mkdir": 4
+          },
+          {
+            "first_programme_ms": 58.437192,
+            "final_ms": 58.448078,
+            "slices": 12,
+            "cache_channel_reads": 1,
+            "exists": 6,
+            "mkdir": 4
+          }
+        ],
+        "median": {
+          "first_programme_ms": 59.223358,
+          "final_ms": 59.234234,
+          "slices": 12,
+          "cache_channel_reads": 1,
+          "exists": 6,
+          "mkdir": 4
+        }
+      }
+    },
+    "menu_start_local_metadata": {
+      "before": {
+        "samples": [
+          {
+            "metadata_to_prepared_item_ms": 46.960453,
+            "reads": 2,
+            "bytes": 23130240
+          },
+          {
+            "metadata_to_prepared_item_ms": 43.271319,
+            "reads": 2,
+            "bytes": 23130240
+          },
+          {
+            "metadata_to_prepared_item_ms": 48.836071,
+            "reads": 2,
+            "bytes": 23130240
+          },
+          {
+            "metadata_to_prepared_item_ms": 52.929189,
+            "reads": 2,
+            "bytes": 23130240
+          },
+          {
+            "metadata_to_prepared_item_ms": 49.784394,
+            "reads": 2,
+            "bytes": 23130240
+          }
+        ],
+        "median": {
+          "metadata_to_prepared_item_ms": 48.836071,
+          "reads": 2,
+          "bytes": 23130240
+        }
+      },
+      "after": {
+        "samples": [
+          {
+            "metadata_to_prepared_item_ms": 1.699256,
+            "reads": 0,
+            "bytes": 0
+          },
+          {
+            "metadata_to_prepared_item_ms": 1.615048,
+            "reads": 0,
+            "bytes": 0
+          },
+          {
+            "metadata_to_prepared_item_ms": 1.607716,
+            "reads": 0,
+            "bytes": 0
+          },
+          {
+            "metadata_to_prepared_item_ms": 1.653907,
+            "reads": 0,
+            "bytes": 0
+          },
+          {
+            "metadata_to_prepared_item_ms": 1.532181,
+            "reads": 0,
+            "bytes": 0
+          }
+        ],
+        "median": {
+          "metadata_to_prepared_item_ms": 1.615048,
+          "reads": 0,
+          "bytes": 0
+        }
+      }
+    },
+    "navigator_catalogue_only": {
+      "before": {
+        "samples": [
+          {
+            "catalogue_preparation_ms": 29.409451,
+            "channels": 2764,
+            "reads": 1,
+            "bytes": 11565120
+          },
+          {
+            "catalogue_preparation_ms": 26.510523,
+            "channels": 2764,
+            "reads": 1,
+            "bytes": 11565120
+          },
+          {
+            "catalogue_preparation_ms": 22.582582,
+            "channels": 2764,
+            "reads": 1,
+            "bytes": 11565120
+          },
+          {
+            "catalogue_preparation_ms": 23.489803,
+            "channels": 2764,
+            "reads": 1,
+            "bytes": 11565120
+          },
+          {
+            "catalogue_preparation_ms": 22.562161,
+            "channels": 2764,
+            "reads": 1,
+            "bytes": 11565120
+          }
+        ],
+        "median": {
+          "catalogue_preparation_ms": 23.489803,
+          "channels": 2764,
+          "reads": 1,
+          "bytes": 11565120
+        }
+      },
+      "after": {
+        "samples": [
+          {
+            "catalogue_preparation_ms": 24.157449,
+            "channels": 2764,
+            "reads": 0,
+            "bytes": 0
+          },
+          {
+            "catalogue_preparation_ms": 15.221232,
+            "channels": 2764,
+            "reads": 0,
+            "bytes": 0
+          },
+          {
+            "catalogue_preparation_ms": 15.485052,
+            "channels": 2764,
+            "reads": 0,
+            "bytes": 0
+          },
+          {
+            "catalogue_preparation_ms": 15.508819,
+            "channels": 2764,
+            "reads": 0,
+            "bytes": 0
+          },
+          {
+            "catalogue_preparation_ms": 14.472401,
+            "channels": 2764,
+            "reads": 0,
+            "bytes": 0
+          }
+        ],
+        "median": {
+          "catalogue_preparation_ms": 15.485052,
+          "channels": 2764,
+          "reads": 0,
+          "bytes": 0
+        }
+      }
+    },
+    "guide_viewport_worker": {
+      "before": {
+        "samples": [
+          {
+            "one_channel_worker_ms": 13.266768,
+            "reads": 1,
+            "bytes": 6006716
+          },
+          {
+            "one_channel_worker_ms": 15.791469,
+            "reads": 1,
+            "bytes": 6006716
+          },
+          {
+            "one_channel_worker_ms": 12.32256,
+            "reads": 1,
+            "bytes": 6006716
+          },
+          {
+            "one_channel_worker_ms": 13.676881,
+            "reads": 1,
+            "bytes": 6006716
+          },
+          {
+            "one_channel_worker_ms": 12.502334,
+            "reads": 1,
+            "bytes": 6006716
+          }
+        ],
+        "median": {
+          "one_channel_worker_ms": 13.266768,
+          "reads": 1,
+          "bytes": 6006716
+        }
+      },
+      "after": {
+        "samples": [
+          {
+            "one_channel_worker_ms": 1.155939,
+            "reads": 0,
+            "bytes": 0
+          },
+          {
+            "one_channel_worker_ms": 1.214608,
+            "reads": 0,
+            "bytes": 0
+          },
+          {
+            "one_channel_worker_ms": 1.241349,
+            "reads": 0,
+            "bytes": 0
+          },
+          {
+            "one_channel_worker_ms": 1.193136,
+            "reads": 0,
+            "bytes": 0
+          },
+          {
+            "one_channel_worker_ms": 1.202975,
+            "reads": 0,
+            "bytes": 0
+          }
+        ],
+        "median": {
+          "one_channel_worker_ms": 1.202975,
+          "reads": 0,
+          "bytes": 0
+        }
+      }
+    }
+  }
+}

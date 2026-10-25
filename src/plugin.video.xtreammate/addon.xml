@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon id="plugin.video.xtreammate"
        name="XCMate"
-       version="0.1.29.35"
+       version="0.1.29.36"
        provider-name="GS Media">
 
   <requires>

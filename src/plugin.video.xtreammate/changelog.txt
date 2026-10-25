@@ -1,3 +1,11 @@
+0.1.29.36 – lokaler Such-/Startpfad, begrenzte OSD-Daten und einmaliger Stop/Home
+- #140/#127: vorhandene Kurzzeitcache-Dateien einmal ermitteln, fehlende Dateien überspringen; lokale Jetzt-Titel und Sendernamen weiter inkrementell. Unlesbare Inventare behalten den Cache-only-Fallback. Zusätzliche numerische Suchphasen, keine Suchbegriffe in Logs.
+- #120/#35: Startsender aus aktivierter lokaler Indexzeile, kein doppeltes Vollkatalog-Lesen. Legacy-Cache bleibt erhalten. Resolver und direkter Start behalten ihre bisherigen Kodi-Player-Verträge.
+- #17/#35: Sender-Metadaten aus SQLite; neu aktivierte, noch nicht indexierte Gruppen behalten den bisherigen lokalen Katalog. Guide-Worker und Startup-Preload lesen begrenzte Now/Next-Viewport-Daten statt erneut das ganze Portal-JSON. Render/Layout/Fernbedienung unverändert.
+- #75: Stop/Home pro Live-Session über Fensterinstanzen hinweg verriegeln; vorhandene Home-Ansicht ohne erneute explizite Plugin-URL wiederverwenden. Player-State-Races geschützt messen; fremde Wiedergabe nicht beenden. #97 bleibt geschlossen.
+- Anonyme monotone Messphasen für Route/Player/Info/Mini; Plugin-Eingang und Playerzustand sind keine physische IR-/First-Frame-Messung. Host-Vergleich und Android S36-01–12 separat dokumentiert, alle Android-Gates NOT_TESTED.
+- Genresuche #159 und Poster-Retry #111 bleiben getrennte offene Folgearbeiten. Keine Datenmigration, kein Reset, keine Änderung an Downloads/Aufnahmen, kein automatischer Merge/Release/OTA.
+
 0.1.29.35 – schnelle Live-Suche und gezielte Guide-Navigation (Testkandidat)
 A – #140/#127: Lokale Sendernamen vor EPG-/Short-Cache-Aufbau veröffentlichen; vorhandene PID-/Kanal-/Zeit-Indizes nutzen. Lokale Programmtitel vor fehlenden Short-Caches ergänzen. Cursor und Medienseiten pro Suchgeneration behalten, Tabwechsel nicht als neue Suche starten. Monotone, datensparsame Phasen mit Owner-/Generationsbezug; alte Ergebnisse abbrechen, Revisions-/Zeitgültigkeit prüfen.
 B – #17: Nur Extras/Infobar „EPG“ öffnet großen horizontalen Guide. Service gibt seinen Overlay-Dialog frei und startet genau einen aktionsgebundenen Guide-Aufruf ohne Home-Anker. Live-Wiedergabe bleibt erhalten; Back kann Info wiederherstellen, Senderwahl nutzt unveränderten .34-Resolver. Service/Autoplay laufen weiter. Links und konfigurierbare Mini-EPG-Tasten bleiben erhalten.
