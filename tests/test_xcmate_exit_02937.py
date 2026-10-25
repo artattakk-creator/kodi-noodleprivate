@@ -69,3 +69,13 @@ class Exit37(unittest.TestCase):
         self.assertTrue(m.nav._closed);self.assertEqual(m.stops,0)
         value=jobs.state();value['not_before']=0;jobs.save(value);jobs.poll();jobs._thread.join(2)
         self.assertEqual(m.stops,1)
+
+    def test_busy_exit_checkpoint_retries_are_finite_and_preserve_existing_bookmark(self):
+        import sqlite3
+        self.m.state.save_progress(self.m.session,700,2700)
+        self.m.player.stop=lambda:self.m.stops.append(1)
+        with mock.patch.object(self.m.state,'save_progress',side_effect=sqlite3.OperationalError('locked')) as save:
+            self.jobs.request(self.m.player);self.drain()
+            for index in range(20):self.m.progress._retry_exit_checkpoint(time.monotonic()+100+index*60)
+        self.assertEqual(save.call_count,4)  # Initial snapshot + three bounded retries.
+        self.assertEqual(self.m.state.progress('p','vod','1')['position'],700)

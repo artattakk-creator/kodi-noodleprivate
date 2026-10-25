@@ -92,7 +92,8 @@ def stop_owned(player=None,pid=None,expected=None):
         if token[0]=='media':
             import media_progress
             if not checkpoint_ok and sample:
-                media_progress._current=dict(token[1]);media_progress._last=sample
+                media_progress.queue_exit_checkpoint(token[1],sample)
+                media_progress._current=media_progress._last=None
             elif media_progress._current and media_progress._current.get('nonce')==token[1]['nonce']:
                 media_progress._current=media_progress._last=None
         return True

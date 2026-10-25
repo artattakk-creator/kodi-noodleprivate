@@ -13,6 +13,30 @@ _last=None
 _written=0
 _seeked=False
 _resume_deadline=0
+_exit_checkpoints={}
+
+
+def queue_exit_checkpoint(session,sample):
+    from utils import addon_data_dir
+    from media_state import progress_key
+    ident=(addon_data_dir(),progress_key(session['pid'],session['kind'],session['sid'],session.get('series_id',''),session.get('season','')))
+    if len(_exit_checkpoints)>=16:_exit_checkpoints.pop(next(iter(_exit_checkpoints)))
+    _exit_checkpoints[ident]=dict(session=dict(session),sample=sample,attempts=0,next_at=time.monotonic()+1)
+
+
+def _retry_exit_checkpoint(now):
+    from utils import addon_data_dir
+    from media_state import save_progress
+    for ident,value in tuple(_exit_checkpoints.items()):
+        if ident[0]!=addon_data_dir():_exit_checkpoints.pop(ident,None);continue
+        if value['next_at']>now:continue
+        try:save_progress(value['session'],*value['sample'],timeout=.05)
+        except (OSError,sqlite3.Error):
+            value['attempts']+=1
+            if value['attempts']>=3:_exit_checkpoints.pop(ident,None)
+            else:value['next_at']=now+(5 if value['attempts']==1 else 15)
+        else:_exit_checkpoints.pop(ident,None)
+        break  # At most one bounded write per service tick.
 
 
 def play(router,portal):
@@ -88,6 +112,7 @@ def poll(player=None,now=None):
     global _current,_last,_written,_seeked,_resume_deadline
     import xbmc,xbmcgui
     from media_state import progress,resume_position,save_progress
+    _retry_exit_checkpoint(time.monotonic() if now is None else now)
     from exit_jobs import state as exit_state
     pending=exit_state()
     if pending and pending['phase'] in ('pending','running'):return

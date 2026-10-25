@@ -165,6 +165,10 @@ class IPTVMasterService(xbmc.Monitor):
                 self._live_guide_resume=resume
             from live_timing import observe as observe_live_timing
             observe_live_timing()
+            try:
+                from setup_navigation import poll as poll_setup
+                poll_setup()
+            except Exception:diagnostic('dialog','SETUP_RETURN_FAILED')
             from exit_jobs import poll as poll_stop_jobs
             poll_stop_jobs()
             from live_exit import poll as poll_live_exit

@@ -56,6 +56,9 @@ class Router:
     def dispatch(self):
         from boot_diagnostics import phase, mark
         action = self._params.get('action', 'root')
+        from setup_navigation import active as wizard_active
+        if action in ('root','portal_home','xcmate_home') and wizard_active():
+            self._end_directory(succeeded=False,cacheToDisc=False);return
         # Log a route before imports/settings work; arbitrary query text is not logged.
         mark('ROUTE', action=action)
         from window_lifecycle import route_phase
@@ -345,7 +348,8 @@ class Router:
         xbmcplugin.setContent(self._handle, '')
 
         if not active:
-            self._add_dir('[+] Einrichtungsassistent starten',
+            from window_navigation import add_action
+            add_action(self,'[+] Einrichtungsassistent starten',
                           self.url(action='setup_wizard'),
                           icon=_ICON_SETTINGS)
             self._add_dir('Vorhandene Playlists aus Einstellungen übernehmen',
@@ -358,6 +362,8 @@ class Router:
                           icon=_ICON_SETTINGS,
                           plot='Addon-Einstellungen öffnen.')
             self._end_directory()
+            from setup_navigation import maybe_fresh
+            maybe_fresh(self)
             return
 
         from home_menu import active_portal
@@ -366,40 +372,8 @@ class Router:
         self._maybe_autoplay_start(portal)
 
     def _maybe_autoplay_start(self, portal):
-        """Start the configured channel once on app entry, not on every refresh.
-
-        The portal home is still built as the navigation fallback. A short
-        cooldown protects against overlapping Kodi directory refreshes.
-        """
-        # Fail-safe for Android remote diagnosis: the existing per-portal
-        # autoplay preference is preserved, but 0.1.16 pauses execution by
-        # default. Otherwise entering a single-portal Kodi plugin always
-        # starts Live TV before the modal popup can be opened.
-        from live_exit import state as live_exit_state
-        if live_exit_state():return
-        if setting_bool('autoplay_diagnostics_safe', True):
-            xbmcgui.Window(10000).setProperty(
-                'XtreamMate.AutoplayDiagnosticState',
-                'PAUSIERT – XCMate Popup-Test ohne Live-TV erreichbar')
-            return
-        if (portal.get('type') != 'xtream' or not portal.get('autoplay_start')
-                or not portal.get('start_stream_id') or xbmc.Player().isPlayingVideo()):
-            return
-        import time
-        marker = xbmcgui.Window(10000)
-        previous = marker.getProperty('XtreamMate.LastAutoplay')
-        try:
-            portal_id, timestamp = previous.rsplit(':', 1)
-            if portal_id == str(portal['id']) and time.time()-float(timestamp) < 30:
-                return
-        except (ValueError, TypeError):
-            pass
-        marker.setProperty('XtreamMate.LastAutoplay',
-                           '{}:{}'.format(portal['id'], time.time()))
-        # A RunPlugin request is not a playable-item resolution. Its handler
-        # must call xbmc.Player().play(), unlike the menu item's setResolvedUrl.
-        xbmc.executebuiltin('RunPlugin({})'.format(
-            self.url(action='play_start_direct', pid=portal['id'])))
+        from home_entry import maybe_autoplay
+        return maybe_autoplay(self,portal)
 
     def _portal_home(self):
         import portals as P
@@ -561,15 +535,8 @@ class Router:
 
 
     def _setup_wizard(self):
-        self._end_directory(cacheToDisc=False)
-        from setup_wizard import setup
-        portal = setup()
-        if portal:
-            # Replace the setup container with the newly created portal home.
-            xbmc.executebuiltin('Container.Update({},replace)'.format(
-                self.url(action='portal_home', pid=portal['id'])))
-        else:
-            xbmc.executebuiltin('Container.Refresh')
+        from setup_navigation import run
+        run(self)
 
     def _popup_probe(self):
         """Safe direct action: never resolve, play or launch the start channel."""

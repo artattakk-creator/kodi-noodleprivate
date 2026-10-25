@@ -14,8 +14,13 @@ def run():
     router = None
     try:
         from artwork_config import initialize
-        try:initialize()
-        except OSError:pass
+        with phase('ARTWORK_PROFILE'):
+            try:initialize()
+            except OSError:pass
+        from home_entry import HomeRouter,dispatch as home_dispatch
+        router=HomeRouter(sys.argv)
+        with phase('HOME_FAST'):
+            if home_dispatch(sys.argv,router=router):return
         with phase('MAIN_IMPORT'):
             from main import Router
         with phase('ROUTER_INIT'):

@@ -128,6 +128,8 @@
              default="{url}?utc={utc}&amp;lutc={lutc}"/>
   </category>
   <category label="32592">
+    <setting id="artwork_manage" type="action" label="35200" action="RunPlugin(plugin://plugin.video.xtreammate/?action=artwork_manage)"/>
+    <setting id="device_info" type="action" label="35300" action="RunPlugin(plugin://plugin.video.xtreammate/?action=device_info)"/>
     <setting id="xcmate_ui_language" type="text" label="32620" default="kodi" visible="false"/>
     <setting id="active_portal_id" type="text" label="32593" default="" visible="false"/>
     <setting id="media_art_budget_mb" type="number" label="33403" default="0"/>
