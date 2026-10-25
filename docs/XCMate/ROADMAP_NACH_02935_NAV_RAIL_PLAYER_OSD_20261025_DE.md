@@ -1,5 +1,8 @@
 # XCMate – verbindliche UX-Roadmap nach .35: bildschirmhohe Rail, zweispaltiges Mini-EPG, echte Player-OSDs und Genresuche
 
+> **NEU: WIZARD SOFORT ALS PARALLELSPUR – NEUESTE PRIORITÄT 25.10.2026:** Der Nutzer benötigt die Möglichkeit, eine **zweite Android-Box mit neuerem Kodi** per vollständigem #43-Wizard früh auszuprobieren. [parallel vorgezogener Wizard-/Neubox-Auftrag](CODEX_PARALLELAUFTRAG_WIZARD_NEUBOX_KODI21_22_20261025_DE.md). `.36` bleibt Performance+Genre, **`.37` jetzt Wizard**, **`.38` Mini-EPG rechts „Vorher/JETZT/Danach“ und volle Rail als DRITTE Links-Stufe NACH Gruppen**, **`.39` Live-TV-Player**, **`.40` VOD-Player**; ältere Ziffern dieses Dokuments sind historische Planvarianten. Keine Verschiebung der Mini/Gruppen/Rail-Semantik, nur zeitliche Priorität. Maßgeblich [verbindlicher neuer Versionszug](VERBINDLICHE_RELEASE_ROADMAP_AB_02935_20261025_DE.md).
+
+
 > **VERBINDLICHE RELEASE-PLANUNG 25.10.2026:** [Versionszug .36–.45 mit kombinierter Feature- und Vorversionsfehlerbehebung](VERBINDLICHE_RELEASE_ROADMAP_AB_02935_20261025_DE.md). `.35` wurde Android-funktional **15/15 PASS** abgenommen. `.36`: Such-/Start-/OSD-Restperformance **plus echte Genre-Suche**; `.37`: **dauerhaft zweispaltiges Mini-EPG und bildschirmhohe Rail NACH Sendergruppen**; `.38`: Live-Player-OSD; `.39`: VOD-OSD; spätere separate EPG-/Artwork-/Storage-Phasen. Früher genannte anderslautende vorläufige Versionsnummern in diesem Dokument sind **nicht** maßgeblich; der aktuelle verbindliche Versionszug hat Vorrang. Der Links-Vertrag `Live→Mini→Gruppen→Rail` bleibt unantastbar.
 
 
