@@ -52,6 +52,13 @@ def cached(url):
     if not isinstance(url,str) or not url: return ''
     from artwork_backend import active_backend
     storage=active_backend();ident=hashlib.sha256(url.encode()).hexdigest()
+    if (getattr(storage,'is_external',False) is True):
+        from artwork_visible import external
+        return external(storage,ident)
+    return _cached_at(storage,ident)
+
+
+def _cached_at(storage,ident):
     try:
         header=storage.read(ident,65536)
         w,h=dimensions(header)
@@ -70,12 +77,15 @@ def valid_source(value):
 def fetch(url):
     """Worker-only. Stable names, no eviction, capacity checked before/after IO."""
     from art_storage import check,ArtworkFailure
+    from artwork_config import persistent
+    if not persistent():raise ArtworkFailure('MODE_CHANGED')
     from art_diagnostics import publish
     if not valid_source(url):raise ArtworkFailure('INVALID_SOURCE')
     from artwork_backend import active_backend
     storage=active_backend();ident=hashlib.sha256(url.encode()).hexdigest()
-    with _lock:
-        hit=cached(url)
+    from artwork_gate import writer
+    with _lock,writer():
+        hit=_cached_at(storage,ident)
         if hit:
             from art_store import ready
             ready(url,storage.stat(ident)['bytes']);return hit
@@ -113,7 +123,7 @@ def fetch(url):
             publish('transfer',failure.code,reason=failure.reason,**failure.storage)
             raise
         except OSError as exc:
-            code='DISK_FULL' if exc.errno==28 else 'CACHE_ERROR'
+            code=getattr(exc,'code',None) or ('DISK_FULL' if exc.errno==28 else 'CACHE_ERROR')
             reason='PHYSICAL_ENOSPC' if exc.errno==28 else ''
             publish('transfer',code,reason=reason)
             raise ArtworkFailure(code,reason) from None
@@ -134,7 +144,8 @@ def _choice_key(item):
 def sources(item):
     candidates=poster_candidates(item)
     with _queue_lock:chosen=_choices.get(_choice_key(item))
-    poster=next((u for u in candidates if cached(u)),chosen if chosen in candidates else candidates[0] if candidates else '')
+    from artwork_config import persistent
+    poster=next((u for u in candidates if cached(u)),chosen if chosen in candidates else candidates[0] if candidates else '') if persistent() else candidates[0] if candidates else ''
     fanart=[]
     for key in ('backdrop_path','backdrop','fanart','fanart_image'):
         value=item.get(key);fanart.extend(value if isinstance(value,list) else [value])
@@ -148,8 +159,14 @@ def local_art(item,theme=None):
         from theme_store import asset
         placeholder=asset('icon.live' if item.get('kind')=='live' else 'placeholder.series.poster' if item.get('kind')=='series' else 'placeholder.movie.poster',placeholder,snapshot=theme)
     poster,backdrop=sources(item)
-    cached_poster=cached(poster)
-    poster=cached_poster or placeholder; backdrop=cached(backdrop)
+    from artwork_config import persistent
+    if not persistent():
+        from artwork_visible import dynamic
+        cached_poster=dynamic(poster)
+        poster=cached_poster or placeholder;backdrop=dynamic(backdrop)
+    else:
+        cached_poster=cached(poster)
+        poster=cached_poster or placeholder;backdrop=cached(backdrop)
     provider_landscape=backdrop or cached_poster
     if theme and not backdrop:
         from theme_store import asset
@@ -161,8 +178,10 @@ def request(items,priority=0):
     """GUI-safe bounded inbox. SQLite enrolment and HTTP use distinct workers."""
     global _enrol_worker,_serial
     if _stop.is_set():return
+    from artwork_config import persistent
     from art_diagnostics import sources as observe_sources
     observe_sources(items,valid_source)
+    if not persistent():return
     with _queue_lock:
         for item in items[:48]:
             rank=-10 if item.get('kind')=='live' and priority<=0 else priority
@@ -230,6 +249,8 @@ def ensure_worker():
     global _worker
     from art_diagnostics import publish
     from utils import setting_bool
+    from artwork_config import persistent
+    if not persistent():return False
     with _queue_lock:
         if _stop.is_set():
             publish('service','STOPPED',stopped=1);return False
@@ -273,8 +294,15 @@ def _prefetch():
 
 def revision():
     from artwork_backend import active_backend
-    try: return active_backend().stat()['revision']+_choice_revision
-    except OSError: return _choice_revision
+    from artwork_visible import revision as visible_revision
+    storage=active_backend()
+    try:
+        from artwork_config import root,NAME
+        config_revision=os.stat(os.path.join(root(),NAME)).st_mtime_ns
+    except OSError:config_revision=0
+    if (getattr(storage,'is_external',False) is True):return _choice_revision+visible_revision()+config_revision
+    try: return storage.stat()['revision']+_choice_revision+visible_revision()+config_revision
+    except OSError: return _choice_revision+visible_revision()+config_revision
 
 
 def _image_snapshot(item):
@@ -333,6 +361,8 @@ def diagnostic_label(code):
 
 def retry_poster(item):
     """Explicit one-poster retry, with alternatives from this exact record only."""
+    from artwork_config import persistent
+    if not persistent():return 'NOT_REQUESTED'
     from art_store import retry_one,key
     global _choice_revision
     candidates=poster_candidates(item)

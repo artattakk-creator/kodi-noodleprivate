@@ -3252,3 +3252,159 @@ msgstr "Queue timestamps / exhausted jobs / download lease:"
 msgctxt "#35115"
 msgid "RESERVE_BLOCKED protects the configured free-space reserve; it does not mean the drive has zero free bytes. BUDGET_FULL is the configured image limit. UNKNOWN means no current observation. READY jobs count database records; only a real local image is a downloaded cover. No settings were changed."
 msgstr "RESERVE_BLOCKED protects the configured free-space reserve; it does not mean the drive has zero free bytes. BUDGET_FULL is the configured image limit. UNKNOWN means no current observation. READY jobs count database records; only a real local image is a downloaded cover. No settings were changed."
+
+msgctxt "#35200"
+msgid "Artwork management"
+msgstr "Artwork management"
+
+msgctxt "#35201"
+msgid "Show status and capacity"
+msgstr "Show status and capacity"
+
+msgctxt "#35202"
+msgid "Dynamic – provider artwork on demand"
+msgstr "Dynamic – provider artwork on demand"
+
+msgctxt "#35203"
+msgid "Persistent internal – on demand"
+msgstr "Persistent internal – on demand"
+
+msgctxt "#35204"
+msgid "Choose external target / prepare transfer"
+msgstr "Choose external target / prepare transfer"
+
+msgctxt "#35205"
+msgid "Test target – write, read and display image"
+msgstr "Test target – write, read and display image"
+
+msgctxt "#35206"
+msgid "Inventory existing images"
+msgstr "Inventory existing images"
+
+msgctxt "#35207"
+msgid "Copy collection / resume transfer"
+msgstr "Copy collection / resume transfer"
+
+msgctxt "#35208"
+msgid "Verify collection and confirm image display"
+msgstr "Verify collection and confirm image display"
+
+msgctxt "#35209"
+msgid "Activate verified target"
+msgstr "Activate verified target"
+
+msgctxt "#35210"
+msgid "Remove internal originals after verification"
+msgstr "Remove internal originals after verification"
+
+msgctxt "#35211"
+msgid "Preload all available covers"
+msgstr "Preload all available covers"
+
+msgctxt "#35212"
+msgid "Enable safe adaptive internal reserve"
+msgstr "Enable safe adaptive internal reserve"
+
+msgctxt "#35213"
+msgid "Copy descriptive metadata externally"
+msgstr "Copy descriptive metadata externally"
+
+msgctxt "#35214"
+msgid "Dynamic uses provider image URLs without a new XCMate archive. Existing images remain. Kodi may still cache textures. Confirm change?"
+msgstr "Dynamic uses provider image URLs without a new XCMate archive. Existing images remain. Kodi may still cache textures. Confirm change?"
+
+msgctxt "#35215"
+msgid "Choose internal mode? Existing files remain. An external collection must be copied back and verified first."
+msgstr "Choose internal mode? Existing files remain. An external collection must be copied back and verified first."
+
+msgctxt "#35216"
+msgid "Target prepared. Test the target, inventory, copy, verify and explicitly activate it. The previous location remains active."
+msgstr "Target prepared. Test the target, inventory, copy, verify and explicitly activate it. The previous location remains active."
+
+msgctxt "#35217"
+msgid "Activate the verified new location? Internal originals will remain."
+msgstr "Activate the verified new location? Internal originals will remain."
+
+msgctxt "#35218"
+msgid "Separate deletion request: remove {0} verified XCMate images / {1} internal bytes? Kodi textures and databases remain protected. Default: No."
+msgstr "Separate deletion request: remove {0} verified XCMate images / {1} internal bytes? Kodi textures and databases remain protected. Default: No."
+
+msgctxt "#35219"
+msgid "Final confirmation: remove internal originals only after a fresh complete hash verification."
+msgstr "Final confirmation: remove internal originals only after a fresh complete hash verification."
+
+msgctxt "#35220"
+msgid "Working in the background. Cancel pauses transfer; original files remain."
+msgstr "Working in the background. Cancel pauses transfer; original files remain."
+
+msgctxt "#35221"
+msgid "Is the test image or selected cover displayed correctly on the left? Confirm only then."
+msgstr "Is the test image or selected cover displayed correctly on the left? Confirm only then."
+
+msgctxt "#35222"
+msgid "Image visible"
+msgstr "Image visible"
+
+msgctxt "#35223"
+msgid "Not confirmed"
+msgstr "Not confirmed"
+
+msgctxt "#35224"
+msgid "USB / SD / local volume"
+msgstr "USB / SD / local volume"
+
+msgctxt "#35225"
+msgid "Samba / SMB / NAS"
+msgstr "Samba / SMB / NAS"
+
+msgctxt "#35226"
+msgid "Choose another folder"
+msgstr "Choose another folder"
+
+msgctxt "#35227"
+msgid "Preload covers from available valid metadata sources? Existing failed jobs will not be globally reset."
+msgstr "Preload covers from available valid metadata sources? Existing failed jobs will not be globally reset."
+
+msgctxt "#35228"
+msgid "Explicitly adjust internal image reserve: 2% of measured target volume, at least 64 MiB. Separate 32 MiB metadata reserve remains."
+msgstr "Explicitly adjust internal image reserve: 2% of measured target volume, at least 64 MiB. Separate 32 MiB metadata reserve remains."
+
+msgctxt "#35229"
+msgid "Save available descriptive movie/series information as a verified external copy? The local index remains complete. Physical metadata offload and space savings are still BLOCKED."
+msgstr "Save available descriptive movie/series information as a verified external copy? The local index remains complete. Physical metadata offload and space savings are still BLOCKED."
+
+msgctxt "#35300"
+msgid "Device information"
+msgstr "Device information"
+
+msgctxt "#35301"
+msgid "Refresh measured values?"
+msgstr "Refresh measured values?"
+
+msgctxt "#35230"
+msgid "Dynamic uses Kodi textures; existing XCMate jobs and files remain."
+msgstr "Dynamic uses Kodi textures; existing XCMate jobs and files remain."
+
+msgctxt "#35232"
+msgid "Pause / resume cover downloads"
+msgstr "Pause / resume cover downloads"
+
+msgctxt "#35233"
+msgid "Reading collection"
+msgstr "Reading collection"
+
+msgctxt "#35234"
+msgid "Copying and verifying"
+msgstr "Copying and verifying"
+
+msgctxt "#35235"
+msgid "Complete verification"
+msgstr "Complete verification"
+
+msgctxt "#35236"
+msgid "Confirmed internal cleanup"
+msgstr "Confirmed internal cleanup"
+
+msgctxt "#35237"
+msgid "Use the previous fixed internal image reserve again?"
+msgstr "Use the previous fixed internal image reserve again?"

@@ -110,4 +110,9 @@ def active_backend(kind='media'):
     """Compatible .35 roots; no external setting or silent target fallback."""
     from utils import addon_data_dir
     if kind not in ('media','logos'):raise ValueError('INVALID_ARTWORK_KIND')
+    from artwork_config import read
+    value=read()
+    if value['mode']=='external':
+        from artwork_vfs import backend_for
+        return backend_for(value['target'],value['profile'],kind)
     return LocalArtworkStorage(os.path.join(addon_data_dir(),'media_art_v1' if kind=='media' else 'tv_logos'))

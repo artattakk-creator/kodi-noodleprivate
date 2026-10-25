@@ -15,6 +15,7 @@ import uuid
 VERSION=1
 NAME='artwork_config_v1.json'
 MODES=('dynamic','internal','external')
+_cache=None
 
 
 def root():
@@ -23,10 +24,14 @@ def root():
 
 
 def read():
+    global _cache
+    filename=os.path.join(root(),NAME)
     try:
-        with open(os.path.join(root(),NAME),encoding='utf-8') as stream:value=json.load(stream)
+        stat=os.stat(filename);signature=(filename,stat.st_mtime_ns,stat.st_ino,stat.st_size)
+        if _cache and _cache[0]==signature:return dict(_cache[1])
+        with open(filename,encoding='utf-8') as stream:value=json.load(stream)
         if value.get('version')==VERSION and value.get('mode') in MODES and isinstance(value.get('profile'),str) and len(value['profile'])==32:
-            return value
+            _cache=(signature,dict(value));return value
     except (OSError,ValueError,TypeError,AttributeError):pass
     return dict(version=0,mode='internal',strategy='demand',target='',profile='')
 
@@ -79,7 +84,9 @@ def choose(mode,*,target=None,strategy=None):
     with locked():
         value=read()
         if mode=='external' and not target:raise ValueError('VERIFIED_TARGET_REQUIRED')
-        value['mode']=mode
+        if value['mode']!='dynamic':value['archive_mode']=value['mode']
+        value['mode']=mode;value['origin']='USER'
+        if mode!='dynamic':value['archive_mode']=mode
         if target is not None:value['target']=target
         if strategy is not None:
             if strategy not in ('demand','all'):raise ValueError('INVALID_ARTWORK_STRATEGY')
