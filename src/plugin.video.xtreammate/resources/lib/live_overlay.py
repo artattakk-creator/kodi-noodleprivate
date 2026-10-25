@@ -155,7 +155,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         # Normally zap within the playing station's own category. Selecting
         # "all enabled" explicitly allows zapping across all active groups.
         self.category_id = (str(selected_stream.extra.get('category_id'))
-                            if selected_stream else str(portal.get('start_group_id') or '*'))
+                            if selected_stream else __import__('tv_focus').target(portal,self.index,self.enabled)[0])
         self._scroll_to_current = True
         self.visible_channels = []
         self._page_start = self._row_offset = 0
@@ -251,6 +251,15 @@ class LiveNavigator(xbmcgui.WindowDialog):
             self.close()
             raise
 
+    def suspend_for_guide(self):
+        """Service-only close: preserve the immutable running live session."""
+        if self._closed:return
+        self._closed=True
+        if hasattr(self,'_guide'):self._guide.close()
+        self._intro_deadline=None
+        xbmcgui.Window(10000).clearProperty('XtreamMate.RemoteCommand')
+        super().close()
+
     def observe_focus(self):
         focus_id=dialog_id=-1
         try: focus_id=self.getFocusId()
@@ -312,7 +321,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             return False
 
     def _accept_input(self):
-        if self._closed or getattr(self,'_exiting',False):
+        if self._closed or getattr(self,'_exiting',False) or getattr(self,'_guide_handoff',False):
             return False
         if not self.owns_playback():
             self.close()
@@ -629,6 +638,16 @@ class LiveNavigator(xbmcgui.WindowDialog):
         if len(self.visible_channels)<=CHANNEL_PAGE_SIZE: return False
         return self._move_channels(step*CHANNEL_PAGE_SIZE)
 
+    def _focus_playing_channel(self):
+        from tv_focus import target
+        from playback_exit import identity
+        try:owned=identity(xbmc.Player())
+        except (AttributeError,RuntimeError):owned=None
+        sid=owned[1]['sid'] if owned and owned[0]=='live' and owned[1]['pid']==str(self.portal['id']) else ''
+        self.category_id,position,found=target(self.portal,self.index,self.enabled,sid)
+        self._highlight['channels']=position;self._scroll_to_current=False;self._list_key=None
+        trace('focus','CURRENT_CHANNEL',count=position,focused=found)
+
     def _switch(self, mode):
         self.mode = mode
         self._info_deadline = time.monotonic()+self._info_timeout if mode=='info' else None
@@ -641,7 +660,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
         if not choose_groups(self.portal,'live',categories=self.groups,allow_refresh=False): return
         self.enabled=enabled_ids(self.portal['id'],'live',self.groups)
         self._load_catalog_from_disk()
-        if self.category_id!='*' and self.category_id not in self.enabled: self.category_id='*'
+        if self.category_id!='*' and self.category_id not in self.enabled:
+            self.category_id=__import__('tv_focus').target(self.portal,self.index,self.enabled)[0]
         self._highlight['groups']=0
         self._highlight['channels']=0
         self._scroll_to_current=False
@@ -736,7 +756,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
             self._render()
         else:
             if index == 3:
-                self._epg()
+                from live_guide_navigation import request
+                request(self)
                 return
             if index == 5:
                 self._switch('groups')
@@ -813,6 +834,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             elif self.mode == 'groups':
                 self._switch('hidden')
             else:
+                if self.mode in ('hidden','info'):self._focus_playing_channel()
                 self._switch('channels')
         elif command == 'right':
             if self.mode == 'hidden':

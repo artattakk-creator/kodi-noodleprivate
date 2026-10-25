@@ -1,0 +1,33 @@
+{
+  "evidence": "Synthetic host fixture, not Android latency; 40 ms injected per cache-only read, no sleeps or network",
+  "runs": [
+    {
+      "version": "baseline .34",
+      "channels": 2764,
+      "synthetic_short_cache_cost_ms": 40,
+      "first_name_model_seconds": 110.56,
+      "full_scan_model_seconds": 110.56,
+      "short_cache_reads": 2764,
+      "media_page_queries": 1012,
+      "steps": 506,
+      "host_wall_ms": 1353.527
+    },
+    {
+      "version": "candidate .35",
+      "channels": 2764,
+      "synthetic_short_cache_cost_ms": 40,
+      "first_name_model_seconds": 0.0,
+      "full_scan_model_seconds": 110.56,
+      "short_cache_reads": 2764,
+      "media_page_queries": 2,
+      "steps": 517,
+      "host_wall_ms": 159.059
+    }
+  ],
+  "host_first_name_2764_ms": [
+    3.883,
+    3.62,
+    3.557
+  ],
+  "android": "NOT_TESTED"
+}

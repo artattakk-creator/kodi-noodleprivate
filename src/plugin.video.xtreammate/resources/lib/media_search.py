@@ -33,6 +33,8 @@ def handoff(router,portal,window):
 class SearchMixin:
     def _search_closed(self):
         if not hasattr(self,'_search_correlation'):return
+        cancel=getattr(self,'_search_cancel',None)
+        if cancel is not None:cancel.set()
         from search_navigation import mark as nav_mark
         nav_mark('SEARCH_CLOSED',self.router,'media',self._search_correlation,owner=True)
         mark('SEARCH_WINDOW_CLOSED',self._search_correlation)
@@ -66,8 +68,17 @@ class SearchMixin:
         if not query:
             if getattr(self,'_search_root',False) and not hasattr(self,'_search_origin'):self.close()
             return
+        previous=getattr(self,'_search_profile',None)
+        if previous is not None:previous.emit('QUERY_CHANGED')
+        cancel=getattr(self,'_search_cancel',None)
+        if cancel is not None:cancel.set()
+        from threading import Event
+        from search_profile import SearchProfile
+        self._search_cancel=Event()
         session=getattr(self,'_search_next_session','');self._search_next_session=''
         self._search_correlation=session if len(session)==32 and all(c in '0123456789abcdef' for c in session) else uuid.uuid4().hex
+        self._search_profile=SearchProfile(self._search_correlation,getattr(self,'_native_owner',''))
+        self._search_profile.emit('QUERY_ACCEPTED')
         mark('SEARCH_INPUT_ACCEPTED',self._search_correlation)
         if not hasattr(self,'_search_origin'):
             self._search_origin={name:getattr(self,name) for name in FIELDS if hasattr(self,name)}
@@ -75,7 +86,8 @@ class SearchMixin:
         self._search_query=query;self._search_kind=getattr(self,'_search_kind',self.kind)
         if self._search_kind not in KINDS:self._search_kind='vod'
         self._search_offset=0;self._search_selected=0;self._search_rows=[];self._search_data={};self._search_loading=True
-        self._search_continuation=None;self._search_rendered=None
+        self._search_continuation=None;self._search_cursor=None;self._search_job=None;self._search_rendered=None
+        self._search_view=None;self._search_tab_labels=None
         self.mode='search';self._show('search')
         for pos,label in enumerate(LABELS):self.getControl(700+pos).setLabel(tr(label)+' (…)')
         self.getControl(720).setLabel(tr(32475));self.getControl(721).setLabel(tr(32476))
@@ -89,33 +101,54 @@ class SearchMixin:
 
     def _search_load(self):
         from search_data import search
+        # A tab switch is a view request, not a new query generation. Retain
+        # the in-flight job/cursor until its owner callback publishes it.
+        if getattr(self,'_search_job',None) is not None and self._search_job is self._pending_future:return
         portal=dict(self.portal);query=self._search_query;kind=self._search_kind;offset=self._search_offset
-        cursor=getattr(self,'_search_continuation',None);self._search_continuation=None
-        session=self._search_correlation
+        cursor=getattr(self,'_search_cursor',None)
+        session=self._search_correlation;profile=self._search_profile;cancel=self._search_cancel
         if cursor is None:self._search_loading=True
+        queued=time.monotonic_ns();profile.emit('WORKER_QUEUED')
+        def job():
+            profile.emit('WORKER_BEGIN',queue_ms=(time.monotonic_ns()-queued)//1000000)
+            return search(portal,query,kind,offset,incremental=True,continuation=cursor,
+                          correlation=session,profile=profile,cancel=cancel.is_set)
         def apply(value):
             if (not self._closed and not self._leaving and self.mode=='search' and
-                session==self._search_correlation and kind==self._search_kind and offset==self._search_offset):
+                session==self._search_correlation and not cancel.is_set()):
+                self._search_cursor=value.get('_cursor',cursor)
+                if (offset or self._search_offset) and (kind!=self._search_kind or offset!=self._search_offset):
+                    self._search_load();return
                 self._search_ready(value)
-        self._request(lambda:search(portal,query,kind,offset,incremental=True,continuation=cursor,correlation=session),apply)
+            else:profile.emit('STALE_CANCEL',once=True)
+        self._request(job,apply);self._search_job=self._pending_future
 
     def _search_ready(self,value,resume=False):
         if self.mode!='search' or self._closed or self._leaving:return
         cursor=value.get('_continuation') if not resume else None
-        value={k:v for k,v in value.items() if k!='_continuation'}
+        if '_cursor' in value:self._search_cursor=value['_cursor']
+        if '_view' in value:self._search_view=value['_view']
+        value={k:v for k,v in value.items() if k in KINDS}
         if not resume:self._search_loading=False
         self._search_data=value
         old_focus=self._mode_focus.get('search',self.getFocusId()) if resume else self.getFocusId()
         old_position=self.getControl(710).getSelectedPosition()
         self.getControl(103).setLabel(tr(33903)+' · '+self._search_query)
+        labels=[]
         for pos,kind in enumerate(KINDS):
             count=value[kind]['total']
-            self.getControl(700+pos).setLabel(tr(LABELS[pos])+' ('+(str(count)+('+' if value[kind].get('partial') else '') if count is not None else '…')+')')
+            labels.append(tr(LABELS[pos])+' ('+(str(count)+('+' if value[kind].get('partial') else '') if count is not None else '…')+')')
+        if tuple(labels)!=getattr(self,'_search_tab_labels',None):
+            for pos,label in enumerate(labels):self.getControl(700+pos).setLabel(label)
+            self._search_tab_labels=tuple(labels)
         section=value[self._search_kind];self._search_rows=section['rows']
         rows=[dict(row,kind=self._search_kind) for row in self._search_rows]
         signature=tuple((str(row.get('sid','')),row.get('name',''),row.get('_now_title','')) for row in rows)
-        if resume or signature!=getattr(self,'_search_rendered',None):
-            self._fill(710,rows);self._search_rendered=signature
+        changed=resume or signature!=getattr(self,'_search_rendered',None)
+        if changed:
+            with self._search_profile.span('ROW_RENDER',rows=len(rows)):
+                self._fill(710,rows)
+            self._search_rendered=signature
         self.getControl(710).selectItem(old_position if old_focus==710 else getattr(self,'_search_selected',0))
         self.getControl(102).setLabel(tr(33906) if section['code']=='INDEX_ERROR' else tr(33904) if section['total'] is None else
             tr(33907) if not rows else '{}–{} / {}'.format(self._search_offset+1,self._search_offset+len(rows),section['total']))
@@ -126,7 +159,11 @@ class SearchMixin:
         # Keep the tab until the user explicitly moves down to the results.
         target=old_focus if old_focus in self._valid_focus() else 700+KINDS.index(self._search_kind)
         self.setFocusId(target)
-        mark('SEARCH_RESULT_READY',self._search_correlation)
+        now=time.monotonic();final=not section.get('partial',False)
+        if changed or final or now-getattr(self,'_search_ready_trace',-100)>=1:
+            mark('SEARCH_RESULT_READY',self._search_correlation);self._search_ready_trace=now
+        if self._search_kind=='live' and rows and self.getControl(710).size():
+            self._search_profile.emit('FIRST_LIVE_ROW_RENDERED',once=True,rows=len(rows))
         if cursor is not None:
             self._search_continuation=cursor;self._search_load()
 
@@ -138,10 +175,19 @@ class SearchMixin:
         if cid==710 and self.getFocusId()!=710:
             mark('SEARCH_CLICK_IGNORED',self._search_correlation);return True
         if cid in (700,701,702):
-            self._search_kind=KINDS[cid-700];self._search_offset=0;self._search_selected=0
-            self.setFocusId(cid);self._search_load();return True
+            changed=self._search_kind!=KINDS[cid-700]
+            self._search_kind=KINDS[cid-700]
+            if cid==700:self._search_profile.emit('TAB_LIVE_SELECTED')
+            if changed:self._search_offset=0;self._search_selected=0
+            self.setFocusId(cid)
+            view=getattr(self,'_search_view',None)
+            if self._search_data and (view is None or view[0]!=self._search_kind or view[1]==self._search_offset):
+                self._search_ready(self._search_data)
+            else:self._search_rows=[];self._search_loading=True;self._fill(710,[])
+            self._search_load();return True
         if cid in (720,721):
-            self._search_offset=max(0,self._search_offset+(-48 if cid==720 else 48));self._search_selected=0;self._search_load();return True
+            self._search_offset=max(0,self._search_offset+(-48 if cid==720 else 48));self._search_selected=0
+            self._search_rows=[];self._search_loading=True;self._fill(710,[]);self._search_load();return True
         if cid!=710:return False
         if self._search_loading:return True
         pos=self.getControl(710).getSelectedPosition()
@@ -166,6 +212,7 @@ class SearchMixin:
             self._search_ready(self._search_data);return True
         if self.mode!='search':return False
         if key in (9,10,92):
+            self._search_cancel.set()
             self._generation+=1
             if self._pending_future is not None:self._pending_future.cancel()
             mark('SEARCH_RETURN',self._search_correlation)

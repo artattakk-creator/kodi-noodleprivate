@@ -24,7 +24,7 @@ class IconContractTests(unittest.TestCase):
         with Image.open(icon) as image:self.assertEqual(image.size,(512,512));image.verify()
         addon=ET.parse(ADDON/'addon.xml').getroot()
         self.assertEqual(addon.get('id'),'plugin.video.xtreammate')
-        self.assertEqual(addon.get('version'),'0.1.29.34')
+        self.assertEqual(addon.get('version'),'0.1.29.35')
         self.assertEqual(addon.findtext("extension[@point='xbmc.addon.metadata']/assets/icon"),'icon-81da1003a2753ec6.png')
 
 

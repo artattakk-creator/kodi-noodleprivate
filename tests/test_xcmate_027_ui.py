@@ -216,6 +216,7 @@ class NavigationTests(Fixture,unittest.TestCase):
         self.assertEqual(w.mode,'landing');self.assertEqual(w.focus,110)
 
     def test_guide_starts_in_start_channel_group_and_native_group_navigation(self):
+        self.portal['start_group_id']='b'  # Legacy two-column guide contract; grid .35 is tested separately.
         self.cache={'xml':[dict(channel='xml',name='Actual',start_timestamp=self.now-60,stop_timestamp=self.now+3600)]}
         w=self.guide_window()
         self.assertEqual(w.category,'a')  # Start channel beats configured group b.
@@ -338,7 +339,8 @@ class FreezeTests(unittest.TestCase):
                 reference=json.loads((ROOT/'tests/fixtures/xcmate_026_overlay_ast.json').read_text())
                 self.assertEqual(reference['original_sha256'],digest)
                 from theme_texture_contract import without_theme
-                source=without_theme((ROOT/file).read_text())
+                from overlay_contract_02935 import without_guide35
+                source=without_guide35(without_theme((ROOT/file).read_text()))
                 # Explicit shared-adapter constructor injection; every other
                 # original constructor statement remains frozen.
                 source=source.replace("def __init__(self, portal, initial_sid='', client=None):","def __init__(self, portal, initial_sid=''):")

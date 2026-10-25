@@ -149,6 +149,7 @@ class TestNativeOverlayKeyHandling(unittest.TestCase):
             overlay.close = lambda: seen.append('closed')
             # Mapping-only fixture; full exit/service lifecycle tested in .17.
             overlay._request_exit = lambda: seen.append('closed')
+            overlay._focus_playing_channel = lambda: None  # Mapping-only model; real SID focus covered in .35.
             seen = []
             action = lambda key: types.SimpleNamespace(
                 getId=lambda: key, getButtonCode=lambda: 0)

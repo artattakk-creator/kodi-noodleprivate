@@ -56,9 +56,9 @@ class GuideNavigationTests(Fixture,unittest.TestCase):
         self.portal['start_group_id']='removed';before=dict(self.portal);w=self.window()
         self.assertEqual(w.category,'a');self.assertEqual(w.rows[w.row]['channel']['sid'],'1');self.assertEqual(self.portal,before);self.assertFalse(self.options)
 
-    def test_saved_group_mismatch_falls_back_to_allowed_group_of_start_sender(self):
+    def test_valid_saved_group_stays_authoritative_when_start_sender_is_elsewhere(self):
         self.portal.update(start_group_id='b',start_stream_id='1');w=self.window()
-        self.assertEqual(w.category,'a');self.assertEqual(w.row,0);self.assertEqual(self.portal['start_group_id'],'b')
+        self.assertEqual(w.category,'b');self.assertEqual(w.row,0);self.assertEqual(self.portal['start_group_id'],'b')  # .35 explicit saved-group priority
 
     def test_missing_start_sender_uses_saved_group_and_does_not_show_other_channels(self):
         self.large(start=99999);self.portal['start_group_id']='b';w=self.window()

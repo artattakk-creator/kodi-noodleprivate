@@ -135,7 +135,7 @@ class Fixture:
         temp=tempfile.TemporaryDirectory();self.addCleanup(temp.cleanup)
         self.folder=Path(temp.name);self.options={};self.properties={};self.added=[];self.ends=[];self.builtins=[]
         self.ui_locale='de_de'
-        self.portal=dict(id='p',name='Demo',type='xtream',enabled=True,xc_host='https://provider.invalid',xc_user='user',xc_pass='SECRET',start_stream_id='1',start_group_id='b')
+        self.portal=dict(id='p',name='Demo',type='xtream',enabled=True,xc_host='https://provider.invalid',xc_user='user',xc_pass='SECRET',start_stream_id='1',start_group_id='a')
         self.portals=[self.portal];self.now=int(time.time())
         categories=[dict(category_id='a',category_name='A'),dict(category_id='b',category_name='B')]
         self.catalogs={'get_live_categories':categories,'get_vod_categories':categories,'get_series_categories':categories,

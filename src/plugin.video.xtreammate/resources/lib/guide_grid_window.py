@@ -21,7 +21,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         self._last_refresh=0;self._art_revision=0;self._short_revision='';self._return_home=False;self._play_request=None;self._diagnosing=False
         from guide_playback import player_state
         self._entry_player=player_state()
-        self._search_request=None;self._search_prompt=False;self._search_return=return_view
+        self._search_request=None;self._search_prompt=False;self._search_return=return_view;self._start_pending=return_view is None;self._start_retry=0
         self._focus_pending=None;self._focus_deadline=0
 
     @native_init
@@ -78,6 +78,8 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         self._request(load,self._initial_ready)
 
     def _initial_ready(self,value):
+        self._start_pending=not bool(value['groups'])
+        self._start_retry=time.monotonic()+2
         self.category=value['category'];self.offset=value['offset'];self.row=value['row']
         self._loaded(value)
         if not self.groups:self._show_groups(refresh=False)
@@ -298,6 +300,8 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
 
     def _groups_loaded(self,groups):
         if self.mode!='groups':return
+        if self._start_pending and groups:
+            self.mode='grid';self._grid_visibility(True);self._initial_load();return
         index=self.getControl(200).getSelectedPosition()
         selected=self.groups[index]['cid'] if self.groups and index<len(self.groups) else self.category
         self.groups=groups;self._fill_groups(selected)
@@ -306,6 +310,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         if not self.groups:return
         index=self.getControl(200).getSelectedPosition()
         if not 0<=index<len(self.groups):return
+        self._start_pending=False
         self.category=self.groups[index]['cid'];self.mode='grid'
         self.offset,self.row,self.cursor,self.origin,_=self._views.get(self.category,(0,0,self.cursor,self.origin,'grid'))
         self._focus_zone='grid';self._grid_visibility(True);self.getControl(202).setVisible(False)
@@ -406,6 +411,12 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         if self._leaving:
             if time.monotonic()>=self._leave_after:self.close()
             return
+        if self.mode=='groups' and self._start_pending and self._pending_future is None and time.monotonic()>=self._start_retry:
+            self._start_retry=time.monotonic()+2
+            def groups():
+                from library_index import Reader
+                return Reader(self.portal['id'],timeout=.15,query_seconds=1).groups('live')
+            self._request(groups,self._groups_loaded)
         if self._diagnosing or self.mode=='groups':return
         # Poll only revision hints/time. Direction keys do not query the DB.
         now=time.monotonic()

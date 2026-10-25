@@ -3,7 +3,7 @@ import xbmc, xbmcaddon, xbmcgui
 
 ADDON    = xbmcaddon.Addon()
 LIB_PATH = os.path.join(os.path.dirname(__file__), 'resources', 'lib')
-SERVICE_BUILD = 31
+SERVICE_BUILD = 35
 if LIB_PATH not in sys.path:
     sys.path.insert(0, LIB_PATH)
 
@@ -154,6 +154,12 @@ class IPTVMasterService(xbmc.Monitor):
             if time.monotonic()>=self._next_diagnostic:
                 self._next_diagnostic=time.monotonic()+30
                 diagnostic('service','RUNNING',running=True,count=loops,build=SERVICE_BUILD)
+            from live_guide_navigation import poll as poll_live_guide, preserves_player,consume_resume
+            guide_active=poll_live_guide(self._overlay)
+            resume=consume_resume()
+            if resume:
+                self._last_session_nonce='';self._next_candidate_probe=0
+                self._live_guide_resume=resume
             from live_exit import poll as poll_live_exit
             exiting=poll_live_exit(self._overlay)
             if self._overlay is not None and self._overlay._closed:self._overlay=None
@@ -161,7 +167,7 @@ class IPTVMasterService(xbmc.Monitor):
             # The live overlay itself and its Back hierarchy remain unchanged.
             try:
                 from playback_exit import poll as poll_playback_exit
-                if not exiting:poll_playback_exit()
+                if not exiting and not preserves_player():poll_playback_exit()
             except Exception:
                 diagnostic('ownership','EXIT_CHECK_FAILED')
             # Explicit visible-page/manual EPG requests are small, service-owned
@@ -195,6 +201,9 @@ class IPTVMasterService(xbmc.Monitor):
                     poll_preplay(self._overlay)
                 except Exception as exc:
                     diagnostic('dialog','PREPLAY_FAILED',exception_class=type(exc).__name__)
+                if guide_active:
+                    self.waitForAbort(.2)
+                    continue  # Native plugin owns GUI; background/autoplay polls above keep running.
                 from live_overlay import start_if_eligible, session_from_property, SESSION_KEY
                 from remote_control import parse_command, COMMAND_KEY
                 player = xbmc.Player()
@@ -310,6 +319,9 @@ class IPTVMasterService(xbmc.Monitor):
                                     'XtreamMate.OverlayStatus', 'wird gestartet')
                                 marker.setProperty('XtreamMate.AutoPopupStatus',
                                                    'TV-Popup wird angefordert')
+                                from live_guide_navigation import restore_info
+                                restore_info(candidate,getattr(self,'_live_guide_resume',''))
+                                self._live_guide_resume=''
                                 self._overlay = candidate
                                 self._overlay.show()
                                 note(marker, LAST_OVERLAY, 'TV-Dialog gestartet')

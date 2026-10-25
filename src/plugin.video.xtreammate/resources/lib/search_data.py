@@ -18,7 +18,7 @@ def _short_client(portal):
     return None
 
 
-def _now_events(pid,identifiers,now):
+def _now_events(pid,identifiers,now,cancel=lambda:False):
     from guide_store import path
     events={};aliases={};db=None;code='NO_EPG';sources=set()
     if not os.path.exists(path()):return events,aliases,code,0
@@ -26,7 +26,7 @@ def _now_events(pid,identifiers,now):
         db=sqlite3.connect('file:'+quote(path(),safe='/')+'?mode=ro',uri=True,timeout=.075)
         db.row_factory=sqlite3.Row;db.execute('PRAGMA query_only=ON')
         deadline=time.monotonic()+1
-        db.set_progress_handler(lambda:int(time.monotonic()>deadline),1000)
+        db.set_progress_handler(lambda:int(cancel() or time.monotonic()>deadline),1000)
         ids=sorted(identifiers)
         for offset in range(0,len(ids),256):
             chunk=ids[offset:offset+256];marks=','.join('?' for _ in chunk)
@@ -37,7 +37,7 @@ def _now_events(pid,identifiers,now):
             chunk=ids[offset:offset+256];marks=','.join('?' for _ in chunk)
             # No descriptions/full guide hydration, and unrelated channels cannot
             # consume a global result limit before a selected channel is seen.
-            cursor=db.execute('SELECT cid,title,source,start FROM programmes WHERE pid=? AND cid IN ('+marks+') AND start<=? AND stop>? ORDER BY source,start DESC',[pid]+chunk+[now,now])
+            cursor=db.execute('SELECT cid,title,source,start,stop FROM programmes WHERE pid=? AND cid IN ('+marks+') AND start<=? AND stop>? ORDER BY source,start DESC',[pid]+chunk+[now,now])
             for row in cursor:
                 examined+=1
                 if examined>100000:raise ValueError('SEARCH_GUIDE_LIMIT')
@@ -49,66 +49,191 @@ def _now_events(pid,identifiers,now):
     return events,aliases,code,len(sources)
 
 
+def revision(pid):
+    """Metadata only, never read/deserialize whole databases or cache catalogues."""
+    from library_index import path as library_path
+    from guide_store import path as guide_path
+    from utils import addon_data_dir
+    root=addon_data_dir()
+    names=[library_path(),guide_path(),os.path.join(root,'xtreammate_groups.json'),
+           os.path.join(root,'xtreammate_epg_sources.json')]
+    names += [p+'-wal' for p in names[:2]]
+    result=[]
+    for name in names:
+        try:
+            value=os.stat(name);result.append((value.st_dev,value.st_ino,value.st_mtime_ns,value.st_size))
+        except OSError:result.append(None)
+    try:
+        import xbmcgui
+        result.append(xbmcgui.Window(10000).getProperty('XCMate.ShortGuideRevision.'+str(pid)))
+    except (ImportError,AttributeError,RuntimeError):result.append('')
+    return tuple(result)
+
+
+def _guide_revision(pid):
+    from guide_store import path
+    if not os.path.isfile(path()):return None
+    db=None
+    try:
+        db=sqlite3.connect('file:'+quote(path(),safe='/')+'?mode=ro',uri=True,timeout=.075)
+        db.execute('PRAGMA query_only=ON')
+        row=db.execute('SELECT revision,updated FROM guide_meta WHERE pid=?',(pid,)).fetchone()
+        return tuple(row) if row else None
+    except (sqlite3.Error,OSError):return ('UNAVAILABLE',)
+    finally:
+        if db is not None:db.close()
+
+
 class LiveSearch:
-    """Worker-owned bounded slices; incomplete caches never become final zeroes."""
-    def __init__(self,portal,query,reader,now,correlation=''):
+    """Names first; XML Now and cache-only short EPG in bounded worker slices."""
+    def __init__(self,portal,query,reader,now,correlation='',profile=None,cancel=lambda:False):
         from library_index import normalized
-        from epg_sources import configuration
-        where='pid=? AND kind=?'+reader._filter('live')
-        raw=reader._query('SELECT payload FROM titles WHERE '+where+' GROUP BY sid ORDER BY ordinal LIMIT 50001',
-                                          (portal['id'],'live'),'live')
-        if len(raw)>50000:raise ValueError('SEARCH_CHANNEL_LIMIT')
-        channels=[json.loads(r['payload']) for r in raw]
-        mappings=configuration(portal['id']).get('mappings',{})
-        def ids(row):
-                manual=mappings.get(row['sid'])
-                return [str(manual)] if manual else [row['sid'],str(row.get('epg_channel_id') or '')]
-        identifiers={ident for row in channels for ident in ids(row) if ident}
-        events,aliases,code,source_count=_now_events(portal['id'],identifiers,now)
-        tokens=list(dict.fromkeys(normalized(query).split()));result=[]
-        counts=dict(channels=len(channels),now_count=0,xml_now=0,short_now=0,manual_count=0,
-                                manual_missing=0,alias_count=0,name_hits=0,programme_hits=0,source_count=source_count)
-        self.portal=portal;self.query=query;self.now=now;self.channels=channels
-        self.mappings=mappings;self.events=events;self.aliases=aliases;self.code=code
-        self.tokens=tokens;self.result=result;self.counts=counts;self.position=0
-        self.client=None;self.client_checked=False
-        self.correlation=correlation if len(correlation)==32 and all(c in '0123456789abcdef' for c in correlation) else ''
+        from search_profile import SearchProfile
+        self.profile=profile or SearchProfile(correlation);self.cancel=cancel
+        self.portal=portal;self.query=query;self.reader=reader;self.now=now
+        self.stamp=revision(portal['id']);self.created=time.monotonic();self.expires=now+3600;self.final_code=None
+        state=reader.state('live') or {}
+        self.catalogue_revision=(state.get('revision'),state.get('updated'));self.guide_revision=None
+        self.tokens=list(dict.fromkeys(normalized(query).split()));self.position=0
+        self.channels=None;self.mappings={};self.events={};self.aliases={};self.code='NO_EPG'
+        self.client=None;self.client_checked=False;self.phase='names';self.short=[];self.short_position=0
+        self.media_cache={};self.media_revisions={};self.slices=0;self.last_trace=0;self.result=[];self.by_sid={}
+        self.short_ns=0;self.short_rows=0
+        self.counts=dict(channels=0,now_count=0,xml_now=0,short_now=0,manual_count=0,
+                         manual_missing=0,alias_count=0,name_hits=0,programme_hits=0,source_count=0)
+        self.correlation=self.profile.generation
+        with self.profile.span('LIVE_CURSOR_INIT'):
+            with self.profile.span('INDEX_QUERY'):
+                where='pid=? AND kind=?'+reader._filter('live');args=[portal['id'],'live']
+                counts=reader._query('SELECT count(DISTINCT sid) AS n FROM titles WHERE '+where,args,'live')
+                self.counts['channels']=counts[0]['n'] if counts else 0
+                if self.counts['channels']>50000:raise ValueError('SEARCH_CHANNEL_LIMIT')
+                for term in self.tokens:
+                    where+=" AND search LIKE ? ESCAPE '\\'"
+                    args.append('%'+term.replace('\\','\\\\').replace('%','\\%').replace('_','\\_')+'%')
+                raw=reader._query('SELECT payload FROM titles WHERE '+where+' GROUP BY sid ORDER BY ordinal LIMIT 50001',args,'live')
+                for row in raw:
+                    if self.cancel():break
+                    item=json.loads(row['payload']);self._add(item,'',False)
+                self.counts['name_hits']=len(self.result)
+                if self.result:self.profile.emit('FIRST_NAME_MATCH',once=True,rows=len(self.result))
+
+    def valid(self):
+        if self.cancel() or self.done and (time.time()<self.now or time.time()>=self.expires):return False
+        current=revision(self.portal['id'])
+        if current[2:4]!=self.stamp[2:4] or current[6]!=self.stamp[6]:return False
+        if (current[0],current[4])!=(self.stamp[0],self.stamp[4]):
+            state=self.reader.state('live') or {}
+            if (state.get('revision'),state.get('updated'))!=self.catalogue_revision:return False
+            for section,previous in list(self.media_revisions.items()):
+                state=self.reader.state(section) or {}
+                if (state.get('revision'),state.get('updated'))!=previous:
+                    for key in list(self.media_cache):
+                        if key[0]==section:self.media_cache.pop(key)
+                    self.media_revisions.pop(section,None)
+        if self.phase not in ('names','prepare') and (current[1],current[5])!=(self.stamp[1],self.stamp[5]):
+            if _guide_revision(self.portal['id'])!=self.guide_revision:return False
+        self.stamp=current;return True
 
     @property
-    def done(self):return self.position>=len(self.channels)
+    def done(self):return self.phase=='done'
+
+    def _add(self,row,title,programme):
+        if row['sid'] in self.by_sid:
+            pos=self.by_sid[row['sid']]
+            # Replace records, never mutate a row already published to Kodi.
+            self.result[pos]=dict(row,_now_title=title,_now_match=programme)
+        else:
+            self.by_sid[row['sid']]=len(self.result)
+            self.result.append(dict(row,_now_title=title,_now_match=programme))
+
+    def _prepare(self):
+        from epg_sources import configuration
+        reader=self.reader
+        with self.profile.span('INDEX_QUERY'):
+            where='pid=? AND kind=?'+reader._filter('live')
+            raw=reader._query('SELECT payload FROM titles WHERE '+where+' GROUP BY sid ORDER BY ordinal LIMIT 50001',
+                             (self.portal['id'],'live'),'live')
+            if len(raw)>50000:raise ValueError('SEARCH_CHANNEL_LIMIT')
+            self.channels=[json.loads(row['payload']) for row in raw]
+        if self.cancel():return
+        with self.profile.span('MAPPING'):
+            self.mappings=configuration(self.portal['id']).get('mappings',{})
+            identifiers=set()
+            for row in self.channels:
+                manual=self.mappings.get(row['sid'])
+                identifiers.update([str(manual)] if manual else [row['sid'],str(row.get('epg_channel_id') or '')])
+            identifiers.discard('')
+        with self.profile.span('EPG_NOW_SQL'):
+            self.guide_revision=_guide_revision(self.portal['id'])
+            self.events,self.aliases,self.code,count=_now_events(self.portal['id'],identifiers,self.now,self.cancel)
+        self.counts['source_count']=count
+        stops=[event['stop'] for event in self.events.values() if event.get('stop',0)>self.now]
+        if stops:self.expires=min(self.expires,min(stops))
+        self.phase='xml'
+
+    def _match(self,row,title,short=False):
+        from library_index import normalized
+        if title:
+            self.counts['now_count']+=1;self.counts['short_now' if short else 'xml_now']+=1
+        programme=bool(title and all(t in normalized(title) for t in self.tokens))
+        if programme:
+            self.counts['programme_hits']+=1;self.profile.emit('FIRST_PROGRAMME_MATCH',once=True,rows=1)
+        if row['sid'] in self.by_sid or programme:self._add(row,title,programme)
 
     def step(self,budget=.2):
-        from library_index import normalized
-        deadline=time.monotonic()+budget;processed=0
-        while not self.done:
+        if self.cancel():
+            self.phase='done';self.profile.emit('STALE_CANCEL',once=True);return list(self.result),'EPG_PARTIAL'
+        if self.done and self.final_code is not None:return list(self.result),self.final_code
+        if self.phase=='names':
+            self.phase='prepare';return list(self.result),'EPG_PARTIAL'
+        self.slices+=1;started=time.monotonic();deadline=started+budget;processed=0
+        sampled=self.slices==1 or started-self.last_trace>=1
+        if sampled:self.profile.emit('SLICE_BEGIN',slices=self.slices);self.last_trace=started
+        if self.phase=='prepare':self._prepare()
+        while self.phase=='xml' and not self.cancel():
+            if self.position>=len(self.channels):self.phase='short';break
             row=self.channels[self.position];self.position+=1;processed+=1
             manual=self.mappings.get(row['sid']);self.counts['manual_count']+=int(bool(manual))
             keys=[str(manual)] if manual else [row['sid'],str(row.get('epg_channel_id') or '')]
             self.counts['alias_count']+=int(any(self.aliases.get(k,k)!=k for k in keys))
             event=next((self.events[self.aliases.get(k,k)] for k in keys if k and self.aliases.get(k,k) in self.events),None)
             title=event['title'] if event else ''
-            if title:self.counts['xml_now']+=1
+            if title:self._match(row,title)
             elif manual:self.counts['manual_missing']+=1
-            else:
-                if not self.client_checked:self.client=_short_client(self.portal);self.client_checked=True
-                if self.client is not None:
-                    from epg_views import cached_short_guide
-                    title=cached_short_guide(self.client,row['sid'],now=self.now).get('now','')
-                    if title:self.counts['short_now']+=1
-            if title:self.counts['now_count']+=1
-            name=all(t in normalized(row.get('name','')) for t in self.tokens)
-            programme=bool(title and all(t in normalized(title) for t in self.tokens))
-            self.counts['name_hits']+=int(name);self.counts['programme_hits']+=int(programme)
-            if name or programme:self.result.append(dict(row,_now_title=title,_now_match=programme))
-            if processed>=64 or time.monotonic()>=deadline:break
+            else:self.short.append(row)
+            if processed>=256 or time.monotonic()>=deadline:break
+        if self.phase=='short':
+            self.profile.emit('SHORT_EPG_CACHE_BEGIN',once=True)
+            cache_start=time.monotonic_ns();processed=0
+            if not self.client_checked:self.client=_short_client(self.portal);self.client_checked=True
+            while self.client is not None and self.short_position<len(self.short) and not self.cancel():
+                row=self.short[self.short_position];self.short_position+=1;processed+=1
+                from epg_views import cached_short_guide
+                try:
+                    guide=cached_short_guide(self.client,row['sid'],now=self.now);title=guide.get('now','')
+                    if title and guide.get('stop',0)>self.now:self.expires=min(self.expires,guide['stop'])
+                except (OSError,TimeoutError,ValueError):title=''
+                self._match(row,title,short=True)
+                if processed>=16 or time.monotonic()>=deadline:break
+            self.short_ns+=time.monotonic_ns()-cache_start;self.short_rows+=processed
+            if self.client is None or self.short_position>=len(self.short):
+                self.phase='done'
+                self.profile.emit('SHORT_EPG_CACHE_END',once=True,rows=self.short_rows,duration_ms=self.short_ns//1000000)
+        if self.cancel():self.phase='done';self.profile.emit('STALE_CANCEL',once=True)
         code='EPG_PARTIAL' if not self.done else 'READY' if self.counts['now_count'] and self.code!='EPG_UNAVAILABLE' else self.code
-        from live_diagnostics import record
-        record('epg_search',code,matched=len(self.result),scanned=self.position,**self.counts)
-        try:
-            import xbmc
-            xbmc.log('[XCMate][SEARCH_EPG] '+json.dumps(dict(code=code,dispatch=self.correlation,scanned=self.position,matched=len(self.result),**self.counts),sort_keys=True),xbmc.LOGINFO)
-        except (ImportError,AttributeError,RuntimeError):pass
-        return self.result,code
+        if sampled or self.done:
+            from live_diagnostics import record
+            record('epg_search',code,matched=len(self.result),scanned=self.position,**self.counts)
+            try:
+                import xbmc
+                xbmc.log('[XCMate][SEARCH_EPG] '+json.dumps(dict(code=code,dispatch=self.correlation,scanned=self.position,matched=len(self.result),**self.counts),sort_keys=True),xbmc.LOGINFO)
+            except (ImportError,AttributeError,RuntimeError):pass
+        if sampled:self.profile.emit('SLICE_END',slices=self.slices,scanned=self.position,duration_ms=(time.monotonic()-started)*1000)
+        if self.done:
+            self.final_code=code;self.channels=[];self.short=[];self.events={};self.aliases={}
+            self.profile.emit('SCAN_FINAL',once=True,rows=len(self.result),scanned=self.position,**{k:self.counts[k] for k in ('name_hits','programme_hits')})
+        return list(self.result),code
 
 
 def live_matches(portal,query,reader,now):
@@ -118,16 +243,26 @@ def live_matches(portal,query,reader,now):
         if cursor.done:return result,code
 
 
-
-def search(portal,query,kind='vod',offset=0,now=None,incremental=False,continuation=None,correlation=''):
+def search(portal,query,kind='vod',offset=0,now=None,incremental=False,continuation=None,correlation='',profile=None,cancel=lambda:False):
     from library_index import Reader,IndexReadError
     from catalog_sync import request
     reader=Reader(portal['id'],timeout=.15,query_seconds=1)
-    query=str(query).strip()[:200];result={}
+    query=str(query).strip()[:200];result={};cursor=continuation
+    if cursor is not None:
+        try:
+            if cursor.portal['id']!=portal['id'] or cursor.query!=query or not cursor.valid():cursor=None
+        except (IndexReadError,sqlite3.Error,OSError,ValueError):cursor=None
     for section in KINDS:
+        if cancel():break
         if not portal.get('include_'+section,True):
             result[section]=dict(rows=[],total=0,code='DISABLED');continue
         start=max(0,offset) if section==kind else 0
+        cache_key=(section,start)
+        if section!='live' and cursor is not None and cache_key in cursor.media_cache:
+            result[section]=cursor.media_cache[cache_key];continue
+        # The first Live request publishes names before any EPG or media SQL.
+        if section!='live' and incremental and kind=='live' and cursor is not None and cursor.phase=='prepare' and cursor.slices==0:
+            result[section]=dict(rows=[],total=None,code='INDEX_PENDING');continue
         try:
             state=reader.state(section)
             if not state:
@@ -135,14 +270,20 @@ def search(portal,query,kind='vod',offset=0,now=None,incremental=False,continuat
                 result[section]=dict(rows=[],total=None,code='INDEX_PENDING');continue
             if section=='live':
                 if incremental:
-                    cursor=continuation or LiveSearch(portal,query,reader,int(time.time() if now is None else now),correlation)
-                    if cursor.portal['id']!=portal['id'] or cursor.query!=query:raise ValueError('SEARCH_SESSION_CHANGED')
+                    cursor=cursor or LiveSearch(portal,query,reader,int(time.time() if now is None else now),correlation,profile,cancel)
                     rows,code=cursor.step()
+                    result['_cursor']=cursor
                     if not cursor.done:result['_continuation']=cursor
                 else:rows,code=live_matches(portal,query,reader,int(time.time() if now is None else now))
                 total=len(rows);rows=rows[start:start+PAGE]
             else:rows,total=reader.page(section,query,offset=start,limit=PAGE);code='READY'
             result[section]=dict(rows=rows,total=total,code=code,partial=section=='live' and '_continuation' in result)
+            if section!='live' and cursor is not None:
+                cursor.media_revisions[section]=(state.get('revision'),state.get('updated'))
+                cursor.media_cache[cache_key]=result[section]
+                while len(cursor.media_cache)>12:cursor.media_cache.pop(next(iter(cursor.media_cache)))
         except (IndexReadError,sqlite3.Error,OSError,ValueError):
             result[section]=dict(rows=[],total=None,code='INDEX_ERROR')
+    for section in KINDS:result.setdefault(section,dict(rows=[],total=None,code='INDEX_PENDING'))
+    if incremental:result['_view']=(kind,offset)
     return result

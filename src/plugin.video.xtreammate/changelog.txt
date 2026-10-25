@@ -1,3 +1,10 @@
+0.1.29.35 – schnelle Live-Suche und gezielte Guide-Navigation (Testkandidat)
+A – #140/#127: Lokale Sendernamen vor EPG-/Short-Cache-Aufbau veröffentlichen; vorhandene PID-/Kanal-/Zeit-Indizes nutzen. Lokale Programmtitel vor fehlenden Short-Caches ergänzen. Cursor und Medienseiten pro Suchgeneration behalten, Tabwechsel nicht als neue Suche starten. Monotone, datensparsame Phasen mit Owner-/Generationsbezug; alte Ergebnisse abbrechen, Revisions-/Zeitgültigkeit prüfen.
+B – #17: Nur Extras/Infobar „EPG“ öffnet großen horizontalen Guide. Service gibt seinen Overlay-Dialog frei und startet genau einen aktionsgebundenen Guide-Aufruf ohne Home-Anker. Live-Wiedergabe bleibt erhalten; Back kann Info wiederherstellen, Senderwahl nutzt unveränderten .34-Resolver. Service/Autoplay laufen weiter. Links und konfigurierbare Mini-EPG-Tasten bleiben erhalten.
+C – #88/#17: Gültige Startgruppe priorisieren, Startsender nur darin markieren; ungültige Gruppe sicher aus aktivierten Gruppen ersetzen. Nach spätem Katalog einmal nach Startkonfiguration öffnen. Mini-Liste fokussiert tatsächlichen portalgebundenen Live-Sender und dessen sichtbare Position. Keine Settings-/Gruppenmutation.
+D – Kurzer EPG-Cache: Fehler einer Variante verdeckt die andere gültige Variante nicht. Bestehende Netzwerkgrenzen/Backoffs bleiben erhalten. Wiederholte Suchphasen aggregieren; identische Tabbeschriftungen nicht erneut setzen. Keine Unterdrückung von Kodi-Core-/Decoderfehlern.
+Bestandsschutz: Suchlayout/3 Tabs/Logo-/Coverpositionen, Grafiken, .34-Handoff, Serien-Autoplay/Resume und Daten erhalten. Android-Gates V0/PERF/ROUTE/GROUP/MINI/REG zunächst NOT_TESTED. Kein Merge, Release oder OTA ohne Freigabe.
+
 0.1.29.34 – Guide-/Suchfenster ohne Parent-Verzeichnis-Reaktivierung
 - #140: Guide und eigenständige Suche als WindowXMLDialog; Schließen aktiviert kein vorheriges Plugin-Verzeichnis. Film-/Serienfenster und eingebettete Suche bleiben WindowXML.
 - Native Dialogidentität und zufällige Owner-/Lease-Zuordnung statt permanentem Medienfenster 10025 als Freigabesignal. Fremde Modaldialoge und Busy weiter geschützt, keine Zwangsschließung oder Timeout-Erhöhung.

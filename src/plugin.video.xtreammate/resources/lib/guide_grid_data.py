@@ -69,14 +69,21 @@ def initial(portal,origin,client=None):
     saved=str(portal.get('start_group_id') or '')
     category=saved if saved in allowed else ''
     position=reader.position('live',start['sid'],category) if start and category else None
-    if start and position is None:
+    if start and not category:
         candidate=str(start.get('category_id') or '')
         if candidate in allowed:category=candidate
     if not category:category=str(groups[0]['cid']) if groups else ''
     position=reader.position('live',start['sid'],category) if start and category else None
+    start_in_group=position is not None
     position=position if position is not None else 0
     offset=position//ROWS*ROWS
     # Empty category is deliberately an empty selection, never category=None.
     value=page(portal,offset,origin,category,client)
     value.update(category=category,row=position-offset)
+    try:
+        import xbmc
+        xbmc.log('[XCMate][GUIDE_GROUP] stage=INITIAL groups={} saved_active={} selected_saved={} start_found={} start_in_group={} rows={} category_empty={} category_star={}'.format(
+            len(groups),int(saved in allowed),int(bool(saved) and category==saved),int(start is not None),
+            int(start_in_group),len(value['rows']),int(category==''),int(category=='*')),xbmc.LOGINFO)
+    except (ImportError,AttributeError,RuntimeError):pass
     return value

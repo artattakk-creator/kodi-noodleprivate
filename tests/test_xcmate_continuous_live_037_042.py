@@ -41,7 +41,7 @@ class ContinuousTests(unittest.TestCase):
         o._tune=mock.Mock();o.native(117)
         groups.choose_groups.assert_called_once_with(o.portal,'live',categories=o.groups,allow_refresh=False)
         self.assertEqual([row[0] for row in o.rows],['*','b'])
-        self.assertEqual(o.category_id,'*');o._tune.assert_not_called()
+        self.assertEqual(o.category_id,'');o._tune.assert_not_called()  # .35: empty group data never implies All.
         self.client._get_json.assert_not_called()
 
     def test_cancelled_management_preserves_selection_focus_and_video(self):
