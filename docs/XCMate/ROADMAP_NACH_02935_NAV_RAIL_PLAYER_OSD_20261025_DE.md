@@ -89,6 +89,17 @@ Codex soll zunächst **2–3 konkrete TV-OSD-Anordnungen** (z. B. kompakte Trans
 
 **Alte widersprechende Anweisungen endgültig verworfen:** `Mini → direkt Rail` ist falsch, richtig ist `Mini → Sendergruppen → Rail`; Mini-Rechts öffnet **kein zweites Popup**, sondern aktiviert die **ständig sichtbare rechte EPG-Programmspalte**. Diese Nutzerpräzisierung ist jünger und verbindlich.
 
+### Verbindlich zusätzlich beauftragt: zentraler EPG Hub / Mehrquellen-Merger (#161)
+
+**Neuer ausdrücklicher Entwicklungsauftrag vom 25.10.2026:** **[Codex-Vollauftrag für EPG Hub](CODEX_AUFTRAG_ZENTRALER_EPG_HUB_QUELLENMERGE_20261025_DE.md)** · [GitHub-Issue #161](https://github.com/artattakk-creator/kodi-noodleprivate/issues/161).
+
+- **Vorhandene lokale `guide_v1.sqlite` beibehalten und evolutionär erweitern** statt parallele zweite Datenbank aufzubauen. Bestehender Streaming-XMLTV-Stageimport und 10-Tage-Zukunftsfenster sind Ausgangspunkt.
+- **Gesamt-EPG aus Anbieter, EPGShare01, Kaimandura etc.** nach quellenspezifischer Kanalidentität und **einzelnen Zeitintervallen** zusammenführen. Echte Lücken füllen, echte Konflikte priorisiert behandeln; manuelle Quell+Kanal-Zuordnung (#98) hat Vorrang.
+- **Bis 7 Tage EPG-Historie** soweit aus Feed/vorherigen Aktualisierungen vorhanden, plus tatsächlich vorhandene Zukunft innerhalb validierter Budgetgrenzen. **Catch-up nur bei realer Anbieterfähigkeit**, niemals aus gespeichertem EPG allein behaupten.
+- **Atomarer veröffentlichter Snapshot und Indizes** für großen Guide, zweispaltiges Mini-EPG (#95), Now/Next, Widgets und Programmtitelsuche, alle Abfragen lokal/sofort. Hintergrundaktualisierung darf UI nicht stückweise zerfallen lassen oder neue Minuten-Suchlatenzen erzeugen.
+- **Erst vorhandene .35 fertigstellen/abnehmen**; danach **eigene Architektur-/Migrations-/UI-Anbindungsetappen HUB-0…3**, je kumulativer Draft mit Tests und Android-Abnahme. Dies ist wichtiger Infrastruktur-Unterbau für die kommenden UI-/Catch-up-/Timer-Funktionen; **nicht ungefragt die bereits zugesagten Rail-/Player-Features in einen Mega-PR hineinschieben**. Reihenfolge anhand aktueller `main`-Basis und Fachabhängigkeit priorisieren, keine fixe Versionsreservierung.
+- Geschützte Basis: 3-Tab-Suchmaske, erfolgreicher Guide→Playback/Back, IR-Fokus, Starteinstellungen/Quellmapping, nächtlich bestätigtes staffelübergreifendes Serien-Autoplay, Originalicon.
+
 ## 6. Pflichtprozess
 
 Pro Release genau **kumulativ auf der letzten bestätigten main-Version**, Add-on-ID stabil, neue Draft-PR, Host-/Kodi-/WindowXML-Regressionstests, ZIP + SHA256, Android-Testplan zunächst NOT_TESTED, echte IR-Abnahme durch Nutzer. **Kein automatischer Merge, kein Kodi-Reset, kein Downgrade, kein Theme-/Portal-/Icon-Wechsel als Nebeneffekt.** Roadmap- und Designabstimmung sind keine Implementierungsfreigabe für den laufenden Kandidaten.
