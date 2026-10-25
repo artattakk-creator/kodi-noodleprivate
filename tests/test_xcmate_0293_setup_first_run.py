@@ -20,6 +20,8 @@ class FakeControl:
         self.text = ""
         self.percent = -1
         self.items = []
+    def setHeight(self, val): self.height=val
+    def setPosition(self, x, y): self.position_xy=(x,y)
     def setText(self, val):
         self.text = str(val)
     def setPercent(self, val):
