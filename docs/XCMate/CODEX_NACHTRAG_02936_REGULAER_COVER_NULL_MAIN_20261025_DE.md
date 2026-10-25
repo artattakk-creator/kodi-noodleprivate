@@ -1,5 +1,8 @@
 # CODEX – Sofortiger Zusatzauftrag für den REGULÄREN XCMate 0.1.29.36-Testkandidaten
 
+> **VERBINDLICHE ARTWORK-USB-SMB-SPEICHERARCHITEKTUR (25.10.2026):** Der Nutzer fordert, die Cover-Speicherung schon **bei der aktuellen .36-Reparatur so auszulegen, dass USB/SD/externe Festplatten UND Kodi-SMB/NAS als echte wählbare Bildziele möglich sind**. Der [**vollständige Implementierungsvertrag**](https://github.com/artattakk-creator/kodi-noodleprivate/blob/main/docs/XCMate/CODEX_ARTWORK_STORAGE_USB_SMB_BINDING_02936_02937_20261025_DE.md) hat für diese Frage Vorrang. **.36 PR #163:** Null-Cover-Reparatur + klar getestete backendneutrale Artwork-Storage-Schnittstelle (keine neue intern-POSIX-Hardcodierung), lokale Bilder-Funktion und sichere Status-/Kapazitätswerte. **.37 regulärer kumulativer Folge-Release:** echte USB- UND SMB-Speicherortauswahl, neue Downloads auf dem gewählten Ziel, Copy+Hash+Verify+Fortsetzungs-Migration vorhandener 18k+ READY-Dateien, externe Offline-Sicherheit, getrennte Löschbestätigung und Kodi21.2/21.3-Tests; #106 von alter .43-Phase **nach .37 vorgezogen**. Kodi-`smb://` braucht `xbmcvfs`, nicht `open/os.replace/shutil.disk_usage`. SQLite/EPG/Portale intern; keine Pseudounterstützung ohne TV-Test, kein Merge ohne Nutzerfreigabe.
+
+
 **Verbindlicher Beschluss 25.10.2026:** Nutzer will **keinen separaten Wizard-Testbranch** mehr, sondern **einen regulären kumulativen Testkandidaten von main**; wichtiger Zusatzbefund: **auf neuer Android-/Kodi-21.3-Box wird kein einziges Film-/Serien-Cover geladen**. Vorherige Meldung einer vermeintlich vollen Speicherpartition ist mangels realem /data-Freiplatz **nicht bewiesen**.
 
 **Repo:** https://github.com/artattakk-creator/kodi-noodleprivate  
