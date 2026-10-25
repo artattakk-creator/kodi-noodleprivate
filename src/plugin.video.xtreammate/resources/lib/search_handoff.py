@@ -89,7 +89,8 @@ def _ready(payload):
     request=payload['request'];source=payload['source']
     router=SimpleNamespace(_handle=-1,_search_async_owner=True)
     if not released(router,source,request['session'],request.get('window')):
-        _mark('BLOCK_FOREIGN',payload);return False
+        from search_navigation import mark
+        mark('BLOCK_FOREIGN',router,source,request['session'],owner=True);return False
     # No late continuation can replace a different session or directory.
     home=xbmcgui.Window(10000)
     current=player_state();saved=payload.get('player')

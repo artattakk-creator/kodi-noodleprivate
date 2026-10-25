@@ -99,6 +99,11 @@ class WindowXML:
         self.onAction(types.SimpleNamespace(getId=lambda:key,getButtonCode=lambda:0))
 
 
+class WindowXMLDialog(WindowXML):
+    """Kodi dialog close does not reactivate the parent media directory."""
+    def close(self):self.shown=False
+
+
 class StrictFuture(Future):
     def _invoke_callbacks(self):
         # Real Future logs callback errors; tests must FAIL on a native API
@@ -160,8 +165,14 @@ class Fixture:
         addon.Addon=lambda *args:types.SimpleNamespace(getAddonInfo=lambda k: {'path':str(ADDON),'id':'plugin.video.xtreammate','version':'0.1.27'}.get(k,''),
             setSetting=lambda k,v:self.options.__setitem__(k,v),
             getLocalizedString=lambda ident:self.translations.get(self.ui_locale,{}).get(ident,''))
-        gui=types.ModuleType('xbmcgui');gui.WindowXML=WindowXML;gui.ListItem=ListItem
-        gui.Window=lambda n:types.SimpleNamespace(getProperty=lambda k:self.properties.get(k,''),setProperty=self.properties.__setitem__,clearProperty=lambda k:self.properties.pop(k,None))
+        gui=types.ModuleType('xbmcgui');gui.WindowXML=WindowXML;gui.WindowXMLDialog=WindowXMLDialog;gui.ListItem=ListItem
+        def window(n):
+            active=getattr(sys.modules.get('xbmc'),'_focus_window',None)
+            if n!=10000 and active is not None and isinstance(active,WindowXMLDialog) and active.shown:return active
+            return types.SimpleNamespace(getProperty=lambda k:self.properties.get(k,''),setProperty=self.properties.__setitem__,clearProperty=lambda k:self.properties.pop(k,None))
+        gui.Window=window
+        gui.getCurrentWindowDialogId=lambda:13001 if isinstance(getattr(sys.modules.get('xbmc'),'_focus_window',None),WindowXMLDialog) and sys.modules['xbmc']._focus_window.shown else 9999
+        gui.getCurrentWindowId=lambda:13001 if getattr(sys.modules.get('xbmc'),'_focus_window',None) is not None and sys.modules['xbmc']._focus_window.shown and not isinstance(sys.modules['xbmc']._focus_window,WindowXMLDialog) else 10025
         self.dialog=types.SimpleNamespace(input=mock.Mock(return_value=''),select=mock.Mock(return_value=-1),
             yesno=mock.Mock(return_value=False),ok=mock.Mock(),notification=mock.Mock(),textviewer=mock.Mock())
         gui.Dialog=lambda:self.dialog
@@ -203,7 +214,7 @@ class Fixture:
             xtream=types.SimpleNamespace(XtreamClient=lambda *args:self.client))
         patch.start();self.addCleanup(patch.stop)
         for name in ('library_index','group_selection','latest_media','home_menu','app_routes','media_art','media_state',
-                     'owner_dispatch','window_navigation','media_data','media_progress','media_window','guide_store','guide_window','guide_timers'):
+                     'owner_dispatch','window_lifecycle','window_navigation','media_data','media_progress','media_window','guide_store','guide_window','guide_timers'):
             sys.modules.pop(name,None)
         self.index=importlib.import_module('library_index');self.routes=importlib.import_module('app_routes')
         self.media=importlib.import_module('media_window');self.guide=importlib.import_module('guide_window')
@@ -211,7 +222,7 @@ class Fixture:
         self.index.refresh(self.portal,self.client)
         for module in (self.media,self.guide):
             p=mock.patch.object(module,'ThreadPoolExecutor',QueuedPool);p.start();self.addCleanup(p.stop)
-        p=mock.patch.object(self.media.MediaWindow,'_art_loop',lambda self:None);p.start();self.addCleanup(p.stop)
+        p=mock.patch.object(self.media.MediaView,'_art_loop',lambda self:None);p.start();self.addCleanup(p.stop)
         # HTTP prefetch is a separate daemon in production; key callbacks only
         # enqueue work. Keep native UI tests independent of that worker.
         p=mock.patch.object(importlib.import_module('media_art'),'request');p.start();self.addCleanup(p.stop)

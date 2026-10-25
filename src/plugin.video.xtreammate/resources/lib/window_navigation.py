@@ -61,8 +61,12 @@ def ownership():
             locked=True
         except (ImportError,OSError):
             _local.release()
+    marker=uuid.uuid4().hex if locked else ''
+    from window_lifecycle import set_lease,clear_lease
+    if locked:set_lease(marker)
     try: yield locked
     finally:
+        if locked:clear_lease(marker)
         if stream:stream.close()
         if locked:_local.release()
 

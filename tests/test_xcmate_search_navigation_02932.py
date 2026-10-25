@@ -40,7 +40,7 @@ class SearchNavigation32(Fixture,unittest.TestCase):
             w._owner_tick();self.settle(w)
             self.assertEqual(w.mode,'search');self.assertIn(w.getFocusId(),(700,701,702))
             w.close()
-        with mock.patch.object(self.media.MediaWindow,'run',run):
+        with mock.patch.object(self.media.MediaView,'run',run):
             self.media.open_search(self.router,self.portal,'House')
 
 
@@ -94,7 +94,7 @@ class SearchNavigation32(Fixture,unittest.TestCase):
 
     def test_real_guide_search_back_owner_sequence_restores_selected_view(self):
         self.router._handle=-1;windows=[];events=[];callback=[False];nav=importlib.import_module('window_navigation')
-        original_guide=self.guide.GuideWindow.configure;original_media=self.media.MediaWindow.configure
+        original_guide=self.guide.GuideWindow.configure;original_media=self.media.MediaView.configure
         def configure_guide(w,*args,**kw):original_guide(w,*args,**kw);windows.append(w);events.append('guide')
         def configure_search(w,*args,**kw):original_media(w,*args,**kw);windows.append(w);events.append('search')
         done=set()
@@ -119,7 +119,7 @@ class SearchNavigation32(Fixture,unittest.TestCase):
             if len(events)>3:self.fail('unexpected extra window')
             return False
         self.dialog.input.return_value='House'
-        with mock.patch.object(self.guide.GuideWindow,'configure',configure_guide),mock.patch.object(self.media.MediaWindow,'configure',configure_search),mock.patch.object(sys.modules['xbmc'],'Monitor',return_value=types.SimpleNamespace(waitForAbort=tick)):
+        with mock.patch.object(self.guide.GuideWindow,'configure',configure_guide),mock.patch.object(self.media.MediaView,'configure',configure_search),mock.patch.object(sys.modules['xbmc'],'Monitor',return_value=types.SimpleNamespace(waitForAbort=tick)):
             nav.open_route(self.router,self.portal,lambda:self.guide.open_guide(self.router,self.portal))
         self.assertEqual(events,['guide','search','guide']);self.assertFalse(self.builtins)
         self.assertTrue(all(w._closed and not w._running for w in windows))
@@ -222,7 +222,7 @@ class SearchNavigation32(Fixture,unittest.TestCase):
         self.dialog.input.return_value=''
         def run(w):
             w.show();w._owner_tick();self.assertTrue(w._closed);self.assertFalse(w._pool.jobs)
-        with mock.patch.object(self.media.MediaWindow,'run',run):self.media.open_search(self.router,self.portal)
+        with mock.patch.object(self.media.MediaView,'run',run):self.media.open_search(self.router,self.portal)
         self.assertFalse(self.builtins)
 
 

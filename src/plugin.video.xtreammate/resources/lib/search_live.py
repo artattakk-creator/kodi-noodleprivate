@@ -35,7 +35,8 @@ def _idle(intent,monitor):
     while True:
         if getattr(monitor,'abortRequested',lambda:False)():raise Rejected('SHUTDOWN')
         _check_player(intent)
-        active=int(xbmcgui.getCurrentWindowId())==intent.get('window')
+        from window_lifecycle import active as frame_active
+        active=frame_active(intent)
         busy=any(xbmc.getCondVisibility(c) for c in (
             'System.HasActiveModalDialog','Window.IsActive(busydialog)',
             'Window.IsActive(busydialognocancel)'))

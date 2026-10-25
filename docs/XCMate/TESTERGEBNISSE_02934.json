@@ -1,0 +1,34 @@
+{
+  "version": "0.1.29.34",
+  "tests": 1112,
+  "seconds": 117.605,
+  "failures": 0,
+  "errors": 0,
+  "files": 255,
+  "bytes": 2371950,
+  "sha256": "39a466eb4b2813d2de654ce9e174f1d862f2bac581fc1dd235941a58722c24d1",
+  "crc": "PASS",
+  "paths": "PASS",
+  "source_bytes": "PASS",
+  "reproducible_zip": "PASS",
+  "python_ast": "PASS",
+  "android": "NOT_TESTED",
+  "production_publish": false,
+  "source_commit": "fee5b6404d28c8441b0595f96ec6f9e137f3c760",
+  "new_regression_tests": 19,
+  "android_gates": {
+    "G1": "NOT_TESTED",
+    "G2": "NOT_TESTED",
+    "G3": "NOT_TESTED",
+    "G4": "NOT_TESTED"
+  },
+  "po": {
+    "de_de": 788,
+    "en_gb": 788,
+    "status": "PASS"
+  },
+  "syntax": "PASS",
+  "native_runtime": "NOT_TESTED; source review and host model only",
+  "main_base": "6bb96547ec469e62c5f69e23a928842021bab4c4",
+  "poster_code_fix": false
+}

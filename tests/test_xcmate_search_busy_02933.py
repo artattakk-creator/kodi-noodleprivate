@@ -55,7 +55,7 @@ class SearchBusy33(Fixture,unittest.TestCase):
             w.show();w._owner_tick();self.settle(w)
             self.assertEqual(w.mode,'search');self.assertTrue(w._search_rows);self.assertIn(w.getFocusId(),w._valid_focus());calls.append('ready')
             w.close()
-        with mock.patch.object(self.media.MediaWindow,'run',execute):self.assertIsNone(broker.run(token))
+        with mock.patch.object(self.media.MediaView,'run',execute):self.assertIsNone(broker.run(token))
         self.assertEqual(calls,['ready']);self.assertNotIn(broker.PREFIX+token,self.properties)
         self.assertFalse(broker.run(token));self.assertEqual(len(self.builtins),1)
         with nav.ownership() as acquired:self.assertTrue(acquired)
@@ -163,10 +163,15 @@ class SearchBusy33(Fixture,unittest.TestCase):
         self.busy();nav=importlib.import_module('window_navigation');navigation=importlib.import_module('search_navigation')
         broker=importlib.import_module('search_handoff');self.router._handle=-1
         # Native IDs depend on whether the previous XML window is still shown.
+        from xcmate027_fixture import WindowXMLDialog
         def native_id():
             active=getattr(self.xbmc,'_focus_window',None)
-            return 13004 if active is not None and active.shown else 10025
+            return 13004 if active is not None and active.shown and not isinstance(active,WindowXMLDialog) else 10025
+        def native_dialog():
+            active=getattr(self.xbmc,'_focus_window',None)
+            return 13004 if active is not None and active.shown and isinstance(active,WindowXMLDialog) else self.dialog_id
         mock.patch.object(self.gui,'getCurrentWindowId',side_effect=native_id).start()
+        mock.patch.object(self.gui,'getCurrentWindowDialogId',side_effect=native_dialog).start()
         w=self.guide_window();w.day=2;w.getControl(210).selectItem(1);w.setFocusId(210)
         self.dialog.input.return_value='House';navigation.queue(w,'guide');w._leave_after=0;w._owner_tick()
         nav.open_route(self.router,self.portal,lambda:navigation.guide_flow(self.router,self.portal,lambda *a:w,None,'unused','guide'),after_close=broker.handoff)
@@ -179,7 +184,7 @@ class SearchBusy33(Fixture,unittest.TestCase):
             window.show();self.settle(window)
             self.assertEqual(window.day,2);self.assertEqual(window.getControl(210).getSelectedPosition(),1)
             self.assertEqual(window.getFocusId(),210);events.append('guide');window.close()
-        with mock.patch.object(self.media.MediaWindow,'run',search),mock.patch.object(self.guide.GuideWindow,'run',guide):
+        with mock.patch.object(self.media.MediaView,'run',search),mock.patch.object(self.guide.GuideWindow,'run',guide):
             self.assertTrue(broker.run(token))
         self.assertEqual(events,['search','guide']);self.assertEqual(len(self.builtins),1)
 

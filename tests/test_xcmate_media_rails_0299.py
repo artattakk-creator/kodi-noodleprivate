@@ -64,7 +64,23 @@ class MediaRails299(Fixture,unittest.TestCase):
         for name,sha in frozen['modules'].items():
             from theme_texture_contract import without_theme
             source=without_theme((LIB/name).read_bytes())
+            if name=='owner_dispatch.py':
+                # .34 adds identity probes only; the full original pump remains pinned.
+                for hook in (
+                    '            from window_lifecycle import remember\n            remember(self)\n',
+                    '        from window_lifecycle import configure\n        configure(self)\n',
+                    "            from window_lifecycle import remember\n            remember(self)\n            if getattr(self,'_native_dialog_id',None) is not None:self._native_active=True\n"):
+                    # The shorter remember hook occurs in init and post-show.
+                    if hook.endswith('remember(self)\n'):
+                        self.assertEqual(source.count(hook.encode()),2)
+                        source=source.replace(hook.encode(),b'',1)
+                    else:
+                        self.assertEqual(source.count(hook.encode()),1);source=source.replace(hook.encode(),b'')
             if name=='window_navigation.py':
+                for hook in (
+                    "    marker=uuid.uuid4().hex if locked else ''\n    from window_lifecycle import set_lease,clear_lease\n    if locked:set_lease(marker)\n",
+                    "        if locked:clear_lease(marker)\n"):
+                    self.assertEqual(source.count(hook.encode()),1);source=source.replace(hook.encode(),b'')
                 # #140 .32 adds an optional search-specific anchor. Normalize
                 # only these two reviewed hooks, then retain the whole-module
                 # baseline hash for every other ownership/navigation statement.
@@ -91,6 +107,10 @@ class MediaRails299(Fixture,unittest.TestCase):
                 self.assertEqual(source.count(branding.encode()),1)
                 source=source.replace(branding.encode(),b'')
             if name=='guide_window.py':
+                # .34 changes only the native surface and declares its identity.
+                added=b"class GuideWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):\n    _native_surface='dialog'\n"
+                self.assertEqual(source.count(added),1)
+                source=source.replace(added,b'class GuideWindow(OwnerDispatch,xbmcgui.WindowXML):\n')
                 # #140 intentionally changes search handoff and return snapshots.
                 # Pin the reviewed complete module and independently preserve
                 # every untouched method from .31; the historic freeze stays.
@@ -163,6 +183,9 @@ class MediaRails299(Fixture,unittest.TestCase):
                         self.assertEqual({k.arg for k in call.keywords}&{'autoplay','autoplay_chain'},{'autoplay','autoplay_chain'})
                         call.keywords=[k for k in call.keywords if k.arg not in ('autoplay','autoplay_chain')]
             elif name=='close':
+                hook=next(n for n in fn.body if isinstance(n,ast.If) and ast.unparse(n.test)=="getattr(self, '_search_root', False)")
+                self.assertEqual(ast.unparse(hook.body[-1]),'self._search_native_window = capture(self)')
+                fn.body.remove(hook)
                 self.assertEqual(ast.unparse(fn.body[-1]),'self._search_closed()')
                 del fn.body[-1]
                 self.assertEqual(ast.unparse(fn.body[2]),'self._cancel_chain()')

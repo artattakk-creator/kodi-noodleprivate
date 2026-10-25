@@ -58,6 +58,8 @@ class Router:
         action = self._params.get('action', 'root')
         # Log a route before imports/settings work; arbitrary query text is not logged.
         mark('ROUTE', action=action)
+        from window_lifecycle import route_phase
+        route_phase(self,'ENTRY',action)
         with phase('PORTALS_IMPORT'):
             import portals as _portals_mod
         # No migration/settings writes on every root or parallel widget request.
@@ -135,11 +137,13 @@ class Router:
         }
         from app_routes import ACTIONS
         R.update({name:self._app_route for name in ACTIONS})
-        if action in ('root', 'portal_home', 'xcmate_home'):
-            with phase('ROOT_MENU'):
+        try:
+            if action in ('root', 'portal_home', 'xcmate_home'):
+                with phase('ROOT_MENU'):
+                    R.get(action, self._root)()
+            else:
                 R.get(action, self._root)()
-        else:
-            R.get(action, self._root)()
+        finally:route_phase(self,'RETURN',action)
 
 
     def _end_directory(self, *args, **kwargs):

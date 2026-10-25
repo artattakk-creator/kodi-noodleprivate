@@ -9,7 +9,8 @@ from owner_dispatch import OwnerDispatch,native_init,open_owned_window
 from guide_grid_data import ROWS,SPAN,CELLS,rectangle
 
 
-class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
+class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
+    _native_surface='dialog'
     def configure(self,router,portal,return_view=None):
         self._configure_owner();self.router,self.portal=router,portal
         self._theme=__import__('theme_render').snapshot()
@@ -217,9 +218,8 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXML):
             # Only record the selected channel. No close/PlayMedia in a native
             # callback: the owner pump closes after this callback has returned.
             from guide_playback import request
-            self._play_request=request(self.portal,channel,self._entry_player)
-            try:self._play_request['window']=int(xbmcgui.getCurrentWindowId())
-            except (AttributeError,RuntimeError):self._play_request['window']=None
+            from window_lifecycle import capture
+            self._play_request=request(self.portal,channel,self._entry_player,capture(self))
             self._leaving=True;self._leave_after=time.monotonic()+.15
             self._generation+=1
             if self._pending_future is not None:self._pending_future.cancel()

@@ -11,7 +11,8 @@ import xbmcgui
 import xbmcaddon
 
 
-class GuideWindow(OwnerDispatch,xbmcgui.WindowXML):
+class GuideWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
+    _native_surface='dialog'
     def configure(self,router,portal,return_view=None):
         self._configure_owner()
         self._theme=__import__('theme_render').snapshot()
