@@ -4,7 +4,6 @@ Completed files are never automatically evicted. A full budget pauses new work;
 only an explicit user action retries failed jobs or removes a chosen file.
 """
 import hashlib
-import os
 import sqlite3
 import time
 import uuid
@@ -28,12 +27,13 @@ def key(url): return hashlib.sha256(url.encode()).hexdigest()
 
 
 def enqueue(urls,priority=0):
-    from media_art import cached,folder
+    from media_art import cached
     from import_budget import check_space
     # Persist small metadata under the import reserve. The full configured
     # image reserve remains enforced by fetch before HTTP and before writing.
     expected=sum(len(u) for u in urls)*3+65536
-    check_space(os.path.join(os.path.dirname(folder()),'media_art_jobs_v1.sqlite'),expected)
+    from artwork_db import path
+    check_space(path(),expected)
     db=connect()
     try:
         with db:
@@ -56,17 +56,15 @@ def ready(url,size):
 
 
 def used():
-    from media_art import folder
-    root=folder();db=connect()
+    from artwork_backend import active_backend
+    storage=active_backend();root=storage.resolve_target();db=connect()
     try:
         if root not in _ADOPTED:
             known={r[0] for r in db.execute('SELECT ident FROM jobs')}
             pending=[]
-            if os.path.isdir(root):
-                with os.scandir(root) as entries:
-                    for entry in entries:
-                        if entry.name.endswith('.img') and entry.name[:-4] not in known and entry.is_file():
-                            pending.append((entry.name[:-4],time.time(),entry.stat().st_size))
+            for entry in storage.enumerate_for_migration():
+                if entry['ident'] not in known:
+                    pending.append((entry['ident'],time.time(),entry['bytes']))
             for start in range(0,len(pending),64):
                 with db:db.executemany("INSERT OR IGNORE INTO jobs VALUES(?,'','READY',0,0,0,?,?)",pending[start:start+64])
             _ADOPTED.add(root)
@@ -161,7 +159,6 @@ def run_one(now=None):
 
 def status(cancel=lambda:False):
     from artwork_db import snapshot,diagnostic
-    import shutil
     value=dict(budget=budget(),bytes=None,counts=None,code='UNAVAILABLE',health=diagnostic())
     from art_storage import reserve
     value['reserve']=reserve()
@@ -175,7 +172,6 @@ def status(cancel=lambda:False):
         import xbmc
         if xbmc.Monitor().waitForAbort(.04):break
     try:
-        from media_art import folder
         from art_storage import capacity as read_capacity
         value.update(read_capacity())
     except OSError:value['capacity_code']='UNAVAILABLE'

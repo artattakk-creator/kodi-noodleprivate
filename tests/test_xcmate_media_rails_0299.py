@@ -132,8 +132,8 @@ class MediaRails299(Fixture,unittest.TestCase):
                 module=ast.parse(source)
                 for method,expected in baseline.items():
                     actual=next(n for n in module.body if isinstance(n,ast.FunctionDef) and n.name==method)
-                    if name=='art_store.py' and method=='prefetch_selected':
-                        contract=json.loads((Path(__file__).parent/'fixtures/xcmate_02936_art_prefetch_contract.json').read_text())
+                    if name=='art_store.py' and method in ('prefetch_selected','used'):
+                        contract=json.loads((Path(__file__).parent/('fixtures/xcmate_02936_art_prefetch_contract.json' if method=='prefetch_selected' else 'fixtures/xcmate_02936_art_used_contract.json')).read_text())
                         self.assertEqual(expected,contract['original'])
                         self.assertEqual(ast.dump(actual,include_attributes=False),contract['reviewed'])
                     else:self.assertEqual(ast.dump(actual,include_attributes=False),expected,name+':'+method)

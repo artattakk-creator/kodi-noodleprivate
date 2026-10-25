@@ -19,7 +19,7 @@ CODES=frozenset(('REQUESTED','ENQUEUED','IDLE','ACTIVE','STOPPED','START_FAILED'
     'DB_BUSY','DB_UNAVAILABLE','CACHE_ERROR','DISK_FULL','BUDGET_FULL','NETWORK_ERROR',
     'HTTP_AUTH','HTTP_NOT_FOUND','HTTP_RATE_LIMIT','HTTP_SERVER','HTTP_CLIENT','DNS_ERROR',
     'TLS_ERROR','TIMEOUT','CONNECTION_ERROR','RESERVE_BLOCKED','BLOCKED_REAL_DISK','PHYSICAL_ENOSPC',
-    'MEMORY_PRESSURE','BUSY','READONLY','CORRUPT','SCHEMA_ERROR','SPACE_FULL','IO_ERROR','SQL_ERROR','LOCK_UNSUPPORTED','UNKNOWN'))
+    'MEMORY_PRESSURE','BUSY','READONLY','CORRUPT','SCHEMA_ERROR','SPACE_FULL','IO_ERROR','SQL_ERROR','LOCK_UNSUPPORTED','CAPACITY_UNKNOWN','UNKNOWN'))
 FIELDS=frozenset(('items','valid_source','no_source','invalid_source','live_sources','vod_sources',
     'series_sources','source_cover','source_stream_icon','source_movie_image','source_cover_big',
     'inbox','inbox_due','worker_alive','enrol_alive','paused','stopped','bytes','expected_bytes',

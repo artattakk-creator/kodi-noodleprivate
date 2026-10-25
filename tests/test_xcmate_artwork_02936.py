@@ -24,7 +24,7 @@ class Artwork36(unittest.TestCase):
     def test_metadata_queue_survives_below_image_reserve_but_download_remains_blocked(self):
         url='https://image.invalid/reserve-repro'
         usage=types.SimpleNamespace(free=512*1048576,total=2*1024**3)
-        with mock.patch.object(self.policy.shutil,'disk_usage',return_value=usage):
+        with mock.patch.object(importlib.import_module('artwork_backend').shutil,'disk_usage',return_value=usage):
             self.store.enqueue([url])
             self.assertEqual(self.m.row(url)['status'],'PENDING')
             self.store.run_one()
@@ -64,20 +64,20 @@ class Artwork36(unittest.TestCase):
 
     def test_metadata_real_disk_guard_does_not_create_database_or_consume_http(self):
         usage=types.SimpleNamespace(free=31*1048576,total=2*1024**3)
-        with mock.patch.object(self.policy.shutil,'disk_usage',return_value=usage):
+        with mock.patch.object(importlib.import_module('artwork_backend').shutil,'disk_usage',return_value=usage):
             with self.assertRaises(OSError) as error:self.store.enqueue(['https://image.invalid/one'])
         self.assertEqual(error.exception.errno,28);self.assertFalse(Path(self.m.health.path()).exists())
         self.m.http.assert_not_called()
 
     def test_existing_artwork_directory_mount_is_the_capacity_target(self):
         root=Path(self.art.folder());root.mkdir()
-        with mock.patch.object(self.policy.shutil,'disk_usage',return_value=types.SimpleNamespace(free=10**10,total=10**11)) as usage:
+        with mock.patch.object(importlib.import_module('artwork_backend').shutil,'disk_usage',return_value=types.SimpleNamespace(free=10**10,total=10**11)) as usage:
             self.policy.capacity()
         usage.assert_called_once_with(str(root))
 
     def test_actual_enospc_reports_distinct_reason_and_preserves_existing_images(self):
         kept=Path(self.art.fetch('https://image.invalid/kept'));before=kept.read_bytes()
-        with mock.patch.object(self.art.tempfile,'mkstemp',side_effect=OSError(28,'PRIVATE PATH')):
+        with mock.patch.object(importlib.import_module('artwork_backend').tempfile,'mkstemp',side_effect=OSError(28,'PRIVATE PATH')):
             with self.assertRaises(self.policy.ArtworkFailure) as error:self.art.fetch('https://image.invalid/new')
         self.assertEqual(error.exception.reason,'PHYSICAL_ENOSPC')
         self.assertEqual(kept.read_bytes(),before);self.assertEqual(self.m.row('https://image.invalid/kept')['status'],'READY')
@@ -183,7 +183,7 @@ class Artwork36(unittest.TestCase):
         with db:db.execute('UPDATE worker SET until=?,owner=? WHERE id=1',(time.time()+20,'SECRET'))
         db.close();before=Path(self.m.health.path()).read_bytes()
         usage=types.SimpleNamespace(free=512*1048576,total=2*1024**3)
-        with mock.patch.object(self.policy.shutil,'disk_usage',return_value=usage),mock.patch.object(self.store,'used',side_effect=AssertionError('adoption')):
+        with mock.patch.object(importlib.import_module('artwork_backend').shutil,'disk_usage',return_value=usage),mock.patch.object(self.store,'used',side_effect=AssertionError('adoption')):
             value=self.store.status()
         self.assertEqual(value['storage_result'],'RESERVE_BLOCKED');self.assertEqual(value['free'],usage.free)
         self.assertGreater(value['queue_details']['lease_until'],time.time())
@@ -315,7 +315,7 @@ class Artwork36(unittest.TestCase):
         sys.modules.pop('logo_cache',None);logos=importlib.import_module('logo_cache');url='https://image.invalid/blocked-logo'
         queue=types.SimpleNamespace(get=mock.Mock(side_effect=[url,StopIteration]),task_done=mock.Mock())
         usage=types.SimpleNamespace(free=512*1048576,total=2*1024**3)
-        with mock.patch.object(logos,'_QUEUE',queue),mock.patch.object(self.policy.shutil,'disk_usage',return_value=usage):
+        with mock.patch.object(logos,'_QUEUE',queue),mock.patch.object(importlib.import_module('artwork_backend').shutil,'disk_usage',return_value=usage):
             with self.assertRaises(StopIteration):logos._run()
         self.m.http.assert_not_called();self.assertEqual(logos.local_logo(url),'')
         value=importlib.import_module('art_diagnostics').observation('logo')
@@ -356,3 +356,75 @@ class Artwork36(unittest.TestCase):
             self.assertTrue(worker.is_alive());self.assertFalse(release.is_set())
         finally:release.set();worker.join(2)
         self.assertFalse(worker.is_alive());self.assertEqual(results,[True])
+
+    def test_storage_contract_preserves_legacy_roots_keys_and_read_only_inventory(self):
+        backend=importlib.import_module('artwork_backend');storage=backend.active_backend()
+        self.assertIsInstance(storage,backend.ArtworkStorageBackend)
+        url='https://image.invalid/backend36';ident=self.store.key(url)
+        target=Path(self.art.fetch(url));before=target.read_bytes()
+        self.assertEqual(target,Path(self.m.folder)/'media_art_v1'/(ident+'.img'))
+        self.assertEqual(list(storage.enumerate_for_migration()),[dict(ident=ident,bytes=len(before))])
+        self.assertEqual(storage.read(ident,65536),before)
+        self.assertEqual(storage.availability(),'AVAILABLE')
+        self.assertEqual(target.read_bytes(),before)
+        self.assertFalse(hasattr(storage,'remove_confirmed_original'))
+
+    def test_vfs_and_traversal_are_rejected_before_posix_access_without_fallback(self):
+        backend=importlib.import_module('artwork_backend')
+        with mock.patch.object(backend.os,'stat',side_effect=AssertionError('must not probe URI')):
+            for target in ('smb://PRIVATE/SECRET','special://profile/SECRET','relative'):
+                with self.assertRaisesRegex(ValueError,'UNSUPPORTED_ARTWORK_BACKEND'):backend.LocalArtworkStorage(target)
+        local=backend.active_backend()
+        for key in ('../unsafe','a'*63,'a'*63+'/', 'g'*64):
+            with self.assertRaisesRegex(ValueError,'INVALID_ARTWORK_KEY'):local.resolve_target(key)
+
+    def test_failed_readback_keeps_original_and_never_commits_ready(self):
+        backend=importlib.import_module('artwork_backend');storage=backend.active_backend()
+        url='https://image.invalid/verify36';target=Path(self.art.fetch(url));original=target.read_bytes()
+        ident=self.store.key(url)
+        # A valid image changed on readback must not replace an existing file.
+        with mock.patch.object(backend.hashlib,'sha256') as digest:
+            digest.return_value.digest.side_effect=[b'actual',b'expected']
+            with self.assertRaisesRegex(OSError,'ARTWORK_VERIFY_FAILED'):
+                storage.write_verified(ident,self.m.png,lambda data:True)
+        self.assertEqual(target.read_bytes(),original)
+        self.assertEqual(list(target.parent.glob('.art-*')),[])
+        self.assertEqual(self.m.row(url)['status'],'READY')
+
+    def test_fetch_uses_backend_operations_for_read_write_capacity_and_display(self):
+        backend=importlib.import_module('artwork_backend')
+        class MemoryStorage:
+            def __init__(self):self.files={};self.writes=0
+            def read(self,key,limit):
+                if key not in self.files:raise FileNotFoundError()
+                return self.files[key][:limit]
+            def write_verified(self,key,data,validate):
+                assert validate(data);self.files[key]=data;self.writes+=1
+                return self.make_display_uri(key)
+            def make_display_uri(self,key):return 'fixture-image://'+key
+            def free_or_unknown(self):return dict(free=10**10,total=10**11)
+            def stat(self,key=None):return dict(bytes=len(self.files[key]),revision=1)
+        storage=MemoryStorage();url='https://image.invalid/adapter36'
+        with mock.patch.object(backend,'active_backend',return_value=storage),mock.patch.object(backend.os,'replace',side_effect=AssertionError('POSIX outside adapter')):
+            displayed=self.art.fetch(url)
+            self.assertEqual(self.art.cached(url),displayed)
+            self.assertEqual(self.art.fetch(url),displayed)
+        self.assertEqual(storage.writes,1);self.assertEqual(self.m.http.call_count,1)
+        self.assertEqual(self.m.row(url)['status'],'READY')
+
+    def test_unknown_backend_capacity_is_not_invented_or_borrowed_from_internal_disk(self):
+        backend=importlib.import_module('artwork_backend');storage=mock.Mock()
+        storage.free_or_unknown.return_value=dict(free=None,total=None)
+        with mock.patch.object(backend,'active_backend',return_value=storage),mock.patch.object(backend.shutil,'disk_usage',side_effect=AssertionError('wrong mount')):
+            value=self.policy.capacity();self.assertIsNone(value['free'])
+            with self.assertRaises(self.policy.ArtworkFailure) as error:self.policy.check(512)
+        self.assertEqual(error.exception.reason,'CAPACITY_UNKNOWN')
+        self.m.http.assert_not_called()
+
+    def test_job_metadata_remains_internal_when_image_backend_has_other_root(self):
+        backend=importlib.import_module('artwork_backend')
+        external=self.m.folder/'simulated-other-mount'
+        with mock.patch.object(backend,'active_backend',return_value=backend.LocalArtworkStorage(external)):
+            self.store.enqueue(['https://image.invalid/internal-db36'])
+        self.assertEqual(Path(self.m.health.path()).parent,self.m.folder)
+        self.assertFalse(external.exists())

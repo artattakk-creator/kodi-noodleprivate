@@ -48,8 +48,8 @@
         364,
         366
       ],
-      "first_ready_ms": 21.934667,
-      "total_host_test_ms": 636.553509,
+      "first_ready_ms": 11.055234,
+      "total_host_test_ms": 638.208243,
       "all_jobs_ready": true,
       "movie_grid_repaint": true,
       "focus_preserved": true,

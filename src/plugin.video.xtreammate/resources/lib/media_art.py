@@ -3,7 +3,6 @@ import hashlib
 import os
 import struct
 import sqlite3
-import tempfile
 import threading
 import time
 from urllib.parse import urlsplit
@@ -45,17 +44,18 @@ def dimensions(data):
 
 
 def folder():
-    from utils import addon_data_dir
-    return os.path.join(addon_data_dir(),'media_art_v1')
+    from artwork_backend import active_backend
+    return active_backend().resolve_target()
 
 
 def cached(url):
     if not isinstance(url,str) or not url: return ''
-    filename=os.path.join(folder(),hashlib.sha256(url.encode()).hexdigest()+'.img')
+    from artwork_backend import active_backend
+    storage=active_backend();ident=hashlib.sha256(url.encode()).hexdigest()
     try:
-        with open(filename,'rb') as stream: header=stream.read(65536)
+        header=storage.read(ident,65536)
         w,h=dimensions(header)
-        return filename if 0<w<=4096 and 0<h<=4096 and w*h<=MAX_PIXELS else ''
+        return storage.make_display_uri(ident) if 0<w<=4096 and 0<h<=4096 and w*h<=MAX_PIXELS else ''
     except (OSError,ValueError): return ''
 
 
@@ -72,21 +72,19 @@ def fetch(url):
     from art_storage import check,ArtworkFailure
     from art_diagnostics import publish
     if not valid_source(url):raise ArtworkFailure('INVALID_SOURCE')
+    from artwork_backend import active_backend
+    storage=active_backend();ident=hashlib.sha256(url.encode()).hexdigest()
     with _lock:
         hit=cached(url)
         if hit:
             from art_store import ready
-            ready(url,os.path.getsize(hit));return hit
+            ready(url,storage.stat(ident)['bytes']);return hit
         from art_store import budget,used
         publish('transfer','FETCH_BEGIN',expected_bytes=MAX_BYTES)
-        from import_budget import check_space
-        root=folder();tmp=''
         try:
-            os.makedirs(root,exist_ok=True)
             cap=budget()
             if cap and used()>=cap:raise ArtworkFailure('BUDGET_FULL')
-            check(MAX_BYTES,limit=0)
-            check_space(os.path.join(root,'pending'),MAX_BYTES)
+            check(MAX_BYTES,limit=0,backend=storage)
             from utils import http_get
             try:data,_=http_get(url,timeout=4,max_bytes=MAX_BYTES,max_seconds=6,retry_limit=0)
             except ValueError:raise ArtworkFailure('INVALID_IMAGE') from None
@@ -98,12 +96,11 @@ def fetch(url):
                 w,h=dimensions(data)
                 if len(data)>MAX_BYTES or not 0<w<=4096 or not 0<h<=4096 or w*h>MAX_PIXELS:raise ValueError()
             except (ValueError,TypeError,struct.error):raise ArtworkFailure('INVALID_IMAGE') from None
-            check(len(data),limit=cap,used=used() if cap else 0)
-            filename=os.path.join(root,hashlib.sha256(url.encode()).hexdigest()+'.img')
-            fd,tmp=tempfile.mkstemp(prefix='.art-',dir=root)
-            with os.fdopen(fd,'wb') as stream:
-                stream.write(data);stream.flush();os.fsync(stream.fileno())
-            os.replace(tmp,filename);tmp=''
+            check(len(data),limit=cap,used=used() if cap else 0,backend=storage)
+            def valid(raw):
+                width,height=dimensions(raw)
+                return 0<width<=4096 and 0<height<=4096 and width*height<=MAX_PIXELS
+            filename=storage.write_verified(ident,data,valid)
         except ArtworkFailure as failure:
             publish('transfer',failure.code,reason=failure.reason,**failure.storage)
             raise
@@ -112,10 +109,6 @@ def fetch(url):
             reason='PHYSICAL_ENOSPC' if exc.errno==28 else ''
             publish('transfer',code,reason=reason)
             raise ArtworkFailure(code,reason) from None
-        finally:
-            if tmp:
-                try:os.unlink(tmp)
-                except OSError:pass
         from art_store import ready
         ready(url,len(data))
         publish('transfer','READY',bytes=len(data))
@@ -271,7 +264,8 @@ def _prefetch():
 
 
 def revision():
-    try: return os.stat(folder()).st_mtime_ns+_choice_revision
+    from artwork_backend import active_backend
+    try: return active_backend().stat()['revision']+_choice_revision
     except OSError: return _choice_revision
 
 
@@ -307,8 +301,8 @@ def diagnose(item,_snapshot=None):
         if not url:
             result[name]='INVALID_SOURCE' if any(item.get(k) for k in keys) else 'NO_SOURCE';continue
         if cached(url):result[name]='READY';continue
-        filename=os.path.join(folder(),key(url)+'.img')
-        if os.path.exists(filename):result[name]='CACHE_ERROR';continue
+        from artwork_backend import active_backend
+        if active_backend().exists(key(url)):result[name]='CACHE_ERROR';continue
         code=states.get(key(url))
         if code=='READY':code='CACHE_ERROR'
         if code is None:

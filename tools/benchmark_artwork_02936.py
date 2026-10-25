@@ -41,7 +41,7 @@ def main():
     c=case()
     try:
         old=old_function('enqueue',c.store);usage=types.SimpleNamespace(free=512*1048576,total=2*1024**3)
-        with mock.patch.object(c.policy.shutil,'disk_usage',return_value=usage):
+        with mock.patch.object(importlib.import_module('artwork_backend').shutil,'disk_usage',return_value=usage):
             try:old(['https://fixture.invalid/one'])
             except OSError:pass
             before=dict(database_created=Path(c.m.health.path()).exists(),durable_jobs=0)
