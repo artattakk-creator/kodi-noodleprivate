@@ -1,0 +1,371 @@
+{
+  "snapshot": "2026-10-25",
+  "issues": [
+    {
+      "number": 174,
+      "title": "[P0][Gerät/Version unbestätigt] Kodi hängt beim Verlassen von Live-TV, Filmen und Serien",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/174"
+    },
+    {
+      "number": 173,
+      "title": "[P0][.37] Bestandsprofile schützen: Box A intern behalten, neue Installation dynamisch, Modi nur manuell wechseln",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/173"
+    },
+    {
+      "number": 172,
+      "title": "[P1][XCMate .37] Artwork-Betriebsarten: dynamische Provider-Bilder oder dauerhaft intern/USB/SD/SMB",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/172"
+    },
+    {
+      "number": 171,
+      "title": "[P1][XCMate .37] Film-/Serieninformationen extern ablegen: USB, SD, SMB – sicherer Metadata-Store",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/171"
+    },
+    {
+      "number": 170,
+      "title": "[P1][Android Kodi21.3][.36] XCMate-Hauptmenü startet erst nach 27 Sekunden",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/170"
+    },
+    {
+      "number": 169,
+      "title": "[P0][Android Kodi 21.3][.36] Zurück aus Live-TV hängt Kodi/Box – IR-Exit-Regression",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/169"
+    },
+    {
+      "number": 168,
+      "title": "[P0][Android Kodi 21.3][.36] Neue Box lädt NULL Cover – Artwork-Queue, Speicherreserve und Quellen prüfen",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/168"
+    },
+    {
+      "number": 167,
+      "title": "[P1][XCMate .37] Geräteinformationen unter Wartung & Diagnose: RAM, Flash, CPU und echte Speicherlimits",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/167"
+    },
+    {
+      "number": 166,
+      "title": "[P1][Xtream][Wizard .37] Nachträglich aktivierte Sendergruppe wird nicht indiziert",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/166"
+    },
+    {
+      "number": 165,
+      "title": "[P0][Android Wizard .35→.37] Kodi-Absturz beim Speichern nach EPG-Scan – Konto bleibt erhalten",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/165"
+    },
+    {
+      "number": 164,
+      "title": "[P1 UX][Wizard .37] EPG-Importfortschritt sichtbar animieren – Quelle 1/4 bis 4/4",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/164"
+    },
+    {
+      "number": 161,
+      "title": "[P1][XCMate Architektur] Zentraler EPG Hub: zeitbasierter Mehrquellen-Merger, 7 Tage Historie, schneller lokaler Guide",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/161"
+    },
+    {
+      "number": 159,
+      "title": "[P1 UX][XCMate] Globale Suche nach Genre: Sci-Fi, Western, Thriller – ohne Änderung der Suchmaske",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/159"
+    },
+    {
+      "number": 151,
+      "title": "[P1][XCMate] Cover-/Bildsuche mit Quellenwahl: Anbieter → TMDb → freie Bildsuche, manuelle Auswahl und Persistenz",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/151"
+    },
+    {
+      "number": 150,
+      "title": "[P1][XCMate UX] Einheitliche vertikale Icon-Rail in Live, EPG, Filme, Serien und weiteren Rubriken",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/150"
+    },
+    {
+      "number": 143,
+      "title": "[MASTER][XCMate] Konsolidierte Restabnahme & risikobasierte Android-Tests statt wiederholter Alt-Issues",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/143"
+    },
+    {
+      "number": 140,
+      "title": "[P1][Android .34] Live-/EPG-Suche bis 5 Minuten – Cursor-/Vollscan-Performance (Handoff funktioniert)",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/140"
+    },
+    {
+      "number": 136,
+      "title": "[P1][Android .28] Downloads/Aufnahmen: USB-Ziel und Kodi-SMB-Speicher auswählbar machen, kein stiller interner Fallback",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/136"
+    },
+    {
+      "number": 135,
+      "title": "[P0][Android .28] Filmdownload FAILED 0 MiB – REDIRECT_UNSUPPORTED bei Anbieter-/CDN-Weiterleitung",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/135"
+    },
+    {
+      "number": 127,
+      "title": "[P1][XCMate .27+] Rich Search Results – Senderlogos, EPG, kleine Film-/Seriencover und Qualitäts-/Quellenmetadaten",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/127"
+    },
+    {
+      "number": 126,
+      "title": "[P0][Android .26] Sofortaufnahme endet FAILED / 0 MB / UNSUPPORTED_TARGET (R03–R06 FAIL)",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/126"
+    },
+    {
+      "number": 123,
+      "title": "[P1][EPG Design] Eigene reichhaltige Sendungsdetailseite im Stil einer TV-Programmzeitschrift statt Plot-Textviewer",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/123"
+    },
+    {
+      "number": 120,
+      "title": "[P1][XCMate .25] Titan BINGIE MOD Live-TV-Button → Startkanal mit XCMate-Rücksprung und Schnellstart",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/120"
+    },
+    {
+      "number": 115,
+      "title": "[P0][Android .24] Space Premium: Fokus in Medien/Dateien unsichtbar, OK öffnet Suche (Lightweight-Rückwechsel PASS)",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/115"
+    },
+    {
+      "number": 113,
+      "title": "[XCMate][P1] Medienmanager „Meine Medien“: Aufnahmen, Offline-Filme und Serien nach Staffeln",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/113"
+    },
+    {
+      "number": 111,
+      "title": "[XCMate 0.1.29.22][P1] Fehlende Filmposter: „Poster Netzwerkfehler“ bei Aladdin (1992) – Quellprüfung und gezielter Retry",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/111"
+    },
+    {
+      "number": 108,
+      "title": "[XCMate][P1] Automatische Katalog-/Artwork-Aktualisierung und sichere Bereinigung verwaister Bilder",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/108"
+    },
+    {
+      "number": 107,
+      "title": "[XCMate][P1] Streaming stabilisieren: einstellbarer Puffer, Verbindung/Qualität und sichere Wiederaufnahme",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/107"
+    },
+    {
+      "number": 106,
+      "title": "[XCMate][P1] Artwork nachträglich auf USB/SD/SMB/NAS auslagern – sichere Migration mit Fortschrittsanzeige",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/106"
+    },
+    {
+      "number": 102,
+      "title": "[XCMate 0.1.29.17][P1] Alle Film-/Serienkategorien zeigen nur 24 Titel – Infinite Scroll, vollständiger Katalog und Gesamtzähler",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/102"
+    },
+    {
+      "number": 100,
+      "title": "[P1 UX] XCMate Live-TV-Infobar: echte Video-/Audio-/Untertitel- und Signalinformationen mit Icons",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/100"
+    },
+    {
+      "number": 99,
+      "title": "[P1] XCMate EPG: Catch-up-Symbol und echter Replay-Button bei nachgewiesener Archivfähigkeit",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/99"
+    },
+    {
+      "number": 98,
+      "title": "[P1] XCMate großes EPG: Sender-EPG zuweisen – Live-Vorschau ohne Speichern bis zur Bestätigung",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/98"
+    },
+    {
+      "number": 95,
+      "title": "[P1] XCMate Live-TV: Rechts auf markiertem Mini-EPG-Sender zeigt weitere Sendungen",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/95"
+    },
+    {
+      "number": 94,
+      "title": "[P1] XCMate Live-TV: Links-Navigation um vertikale Icon-Rail und ausklappbares Hauptmenü erweitern",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/94"
+    },
+    {
+      "number": 91,
+      "title": "[P1] XCMate: künstliche SQLite-/Queue-/Cache-Blockaden systematisch beseitigen, Datenintegrität erhalten",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/91"
+    },
+    {
+      "number": 90,
+      "title": "[P1 HIGH] XCMate: 512-MB-Artwork-Sperre entfernen, Speicherreserve schützen und SPACE_FULL-Queue wieder aktivieren",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/90"
+    },
+    {
+      "number": 88,
+      "title": "XCMate EPG: Startsendergruppe direkt öffnen, Links→Gruppen; Logos, Zuordnung und Rich-Details",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/88"
+    },
+    {
+      "number": 87,
+      "title": "XCMate Android 0.1.29.11: MediaCodec-Fehlerflut bei Videowiedergabe (33.930 Meldungen)",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/87"
+    },
+    {
+      "number": 79,
+      "title": "XCMate: eigene Media-Player-Oberfläche für Filme/Serien wiederherstellen (OSD, Fokus, spätere Download-Aktion)",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/79"
+    },
+    {
+      "number": 75,
+      "title": "XCMate 0.1.29.7: Diagnose- und Einstellungs-Popups erzeugen vier Kodi GetDirectory-Fehler",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/75"
+    },
+    {
+      "number": 74,
+      "title": "XCMate Filme/Serien: große lesbare Cover, Top-Navigation, Reihenfolge Weitersehen → Favoriten → Neuheiten",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/74"
+    },
+    {
+      "number": 71,
+      "title": "XCMate: optionale PIN-Kindersicherung für Sendergruppen, Filme, Serien und Einstellungen",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/71"
+    },
+    {
+      "number": 69,
+      "title": "XCMate Artwork-Jobqueue: wiederholtes MIGRATION_FAILED, Index art_pending prüfen und datenschonend reparieren",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/69"
+    },
+    {
+      "number": 65,
+      "title": "XCMate Zukunftsidee: optionale X-Wall-/BINGIE-Add-on- und Oberflächenintegration",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/65"
+    },
+    {
+      "number": 64,
+      "title": "XCMate: erweiterbare frei konfigurierbare Tastenprofile je Bedienkontext",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/64"
+    },
+    {
+      "number": 63,
+      "title": "XCMate: VOD-Filme und Serienepisoden lokal auf USB/HDD/SMB herunterladen",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/63"
+    },
+    {
+      "number": 62,
+      "title": "XCMate: EPG-gesteuerte Aufnahmen und automatisches Umschalten mit robustem Zeitplaner",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/62"
+    },
+    {
+      "number": 60,
+      "title": "XCMate: XMLTV-Abdeckung nur 10,4 % – Sender-Matching, Quellenstatus und Kurz-EPG verbessern",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/60"
+    },
+    {
+      "number": 58,
+      "title": "XCMate EPG: doppelte Sender/Sendungen prüfen, Quellkonflikte bereinigen und Guide-Thread absichern",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/58"
+    },
+    {
+      "number": 43,
+      "title": "[P1][PARALLEL ab .36 → Release .37] Plug-and-Play-Erststart-Wizard + Neuinstallation auf Kodi 21.3/22-Testbox",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/43"
+    },
+    {
+      "number": 35,
+      "title": "P0 XCMate 0.1.28: Live-TV-Statusleiste sofort vor Videostart, Preloading und schnelles Zapping",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/35"
+    },
+    {
+      "number": 34,
+      "title": "P0 XCMate: Startsender-EPG zuerst, alle Kataloge nur für aktivierte Gruppen laden",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/34"
+    },
+    {
+      "number": 31,
+      "title": "XCMate Skin & Darstellung: Transparenz, UI-Farben, Schriftfarben und Schriftgrößen",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/31"
+    },
+    {
+      "number": 30,
+      "title": "XCMate Lightweight Core: Themes und weitere Language Packs optional nachinstallieren",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/30"
+    },
+    {
+      "number": 29,
+      "title": "XCMate: English-Basissprache, Deutsch beibehalten und optionale installierbare Sprachpakete",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/29"
+    },
+    {
+      "number": 27,
+      "title": "XCMate Graphics v2: vollständiges 98-Asset-Set für Home, Einstellungen, EPG und Medien",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/27"
+    },
+    {
+      "number": 26,
+      "title": "XCMate × BINGIE MOD: drei Home-Widgets für Startkanalgruppe, neueste Filme und Serien",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/26"
+    },
+    {
+      "number": 19,
+      "title": "Lizenz-/Provenienz-Audit: GPL-v2-Addon vs. mr-evil1-Root-LICENSE; Rechtekette klären vor XCMate V2",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/19"
+    },
+    {
+      "number": 17,
+      "title": "XCMate Live-TV: 1× OK Infobar mit Jetzt/Danach + Fortschritt, 2× OK OSD, schnelle EPG-Senderliste",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/17"
+    },
+    {
+      "number": 14,
+      "title": "XCMate Skin: separater Kodi-Skin-Prototyp mit TV-OSD, Fernbedienung und EPG",
+      "state": "open",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/14"
+    }
+  ]
+}
