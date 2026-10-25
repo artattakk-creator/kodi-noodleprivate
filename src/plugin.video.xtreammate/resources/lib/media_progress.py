@@ -88,6 +88,9 @@ def poll(player=None,now=None):
     global _current,_last,_written,_seeked,_resume_deadline
     import xbmc,xbmcgui
     from media_state import progress,resume_position,save_progress
+    from exit_jobs import state as exit_state
+    pending=exit_state()
+    if pending and pending['phase'] in ('pending','running'):return
     now=time.monotonic() if now is None else now
     player=player or xbmc.Player()
     try:
@@ -98,11 +101,11 @@ def poll(player=None,now=None):
                0<=time.time()-float(session.get('at',0))<86400 and player.isPlayingVideo() and
                player.getVideoInfoTag().getUniqueID(UNIQUE_ID)==session['nonce'])
         if not valid:
-            if _current and _last: save_progress(_current,*_last)
+            if _current and _last: save_progress(_current,*_last,timeout=.05)
             _current=_last=None
             return
         if not _current or session['nonce']!=_current['nonce']:
-            if _current and _last: save_progress(_current,*_last)
+            if _current and _last: save_progress(_current,*_last,timeout=.05)
             _current,_last,_written,_seeked=session,None,now,False
             _resume_deadline=now+10
         duration=float(player.getTotalTime());position=float(player.getTime())
@@ -119,7 +122,7 @@ def poll(player=None,now=None):
             _seeked=True
         _last=(position,duration)
         if now-_written>=15:
-            save_progress(session,position,duration);_written=now
+            save_progress(session,position,duration,timeout=.05);_written=now
     except (ValueError,TypeError,AttributeError,RuntimeError,OSError,sqlite3.Error):
         # Never propagate into the frozen service's live-TV path.
         return
@@ -128,4 +131,4 @@ def poll(player=None,now=None):
 def shutdown():
     if _current and _last:
         from media_state import save_progress
-        save_progress(_current,*_last)
+        save_progress(_current,*_last,timeout=.05)

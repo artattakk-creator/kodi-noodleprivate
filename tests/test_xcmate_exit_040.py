@@ -12,7 +12,7 @@ from xcmate027_fixture import Fixture
 class ExitTests(Fixture,unittest.TestCase):
     def setUp(self):
         super().setUp()
-        sys.modules.pop('playback_exit',None);self.exit=importlib.import_module('playback_exit')
+        sys.modules.pop('exit_jobs',None);sys.modules.pop('playback_exit',None);self.exit=importlib.import_module('playback_exit')
         self.progress=importlib.import_module('media_progress');self.progress._current=self.progress._last=None
         self.session=dict(pid='p',sid='1',nonce='own',at=time.time(),kind='vod')
         self.playing=True;self.media_id='own';self.live_id='';self.position=743;self.duration=2700
@@ -34,6 +34,8 @@ class ExitTests(Fixture,unittest.TestCase):
                 self.properties[self.progress.PROPERTY]=json.dumps(self.session)
                 self.assertFalse(self.exit.poll(self.player,fullscreen=True))
                 self.assertTrue(self.exit.poll(self.player,fullscreen=False))
+                from exit37_fixture import drain_stop
+                drain_stop()
                 self.assertFalse(self.exit.poll(self.player,fullscreen=False))
                 self.assertEqual(self.properties.get(self.progress.PROPERTY,''),'')
         self.assertEqual(len(self.stops),2)
@@ -52,7 +54,7 @@ class ExitTests(Fixture,unittest.TestCase):
         self.assertFalse(self.exit.stop_owned(self.player));self.assertFalse(self.stops)
 
     def test_item_replacement_during_checkpoint_never_stops_foreign_stream(self):
-        def replaced(*args): self.media_id='foreign'
+        def replaced(*args,**kwargs): self.media_id='foreign'
         with mock.patch.object(self.state,'save_progress',side_effect=replaced):
             self.assertFalse(self.exit.stop_owned(self.player))
         self.assertFalse(self.stops)
@@ -65,6 +67,8 @@ class ExitTests(Fixture,unittest.TestCase):
 
     def test_media_window_reinit_after_fullscreen_stops_owned_movie(self):
         w=self.media_window();w.onInit()
+        from exit37_fixture import drain_stop
+        drain_stop()
         self.assertEqual(len(self.stops),1)
         w.onInit();self.assertEqual(len(self.stops),1)
 
@@ -75,4 +79,6 @@ class ExitTests(Fixture,unittest.TestCase):
         # cleared by closing the overlay; the immutable playing-item tag stays.
         self.properties.pop('XtreamMate.LiveSession',None)
         self.exit.poll(self.player,fullscreen=True);self.assertFalse(self.stops)
-        self.assertTrue(self.exit.poll(self.player,fullscreen=False));self.assertEqual(len(self.stops),1)
+        self.assertTrue(self.exit.poll(self.player,fullscreen=False))
+        from exit37_fixture import drain_stop
+        drain_stop();self.assertEqual(len(self.stops),1)

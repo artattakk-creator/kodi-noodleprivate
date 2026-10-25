@@ -173,7 +173,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         if self._ready:
             if self._chain_active():return
             # Kodi calls onInit again after returning from fullscreen video.
-            from playback_exit import stop_owned
+            from exit_jobs import request as stop_owned
             from media_intent import cancel
             cancel(self.portal['id'],self._play_intent)
             stop_owned(pid=self.portal['id'])
@@ -784,7 +784,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
                 from media_intent import cancel
                 self._cancel_chain()
                 cancel(self.portal['id'],self._play_intent)
-                from playback_exit import stop_owned
+                from exit_jobs import request as stop_owned
                 if stop_owned(pid=self.portal['id']): return
                 self._generation+=1
                 if self.mode=='episodes':

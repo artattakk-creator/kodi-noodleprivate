@@ -1,3 +1,7 @@
+0.1.29.37 (Android test candidate; not released)
+- Legacy profiles remain internal; explicit per-profile artwork choices and safe fresh-profile gate.
+- Player exit: release live overlay before queued Stop; bounded checkpoint and single-flight background native Stop with timeout diagnostics. Device root cause remains unverified.
+
 0.1.29.36 – kumulativer Such-/Live-/Genre-Kandidat mit Artwork-Pipeline-Reparatur
 - Artwork: backend-neutral local image reads/writes/capacity with SHA256 readback; stable files, no external target switch or migration in .36 (#106 preparation for .37).
 - #168 Pflichtumfang: Bildaufträge unter dem geschützten Importfreiraum dauerhaft speichern; vollständige Bildreserve unverändert vor HTTP und Dateiablage prüfen. Vorhandene Queue ohne neue UI-Anfrage wieder bedienen. Scanfortschritt erst nach bestätigter Enqueue-Transaktion; alte fertige Scans ausschließlich bei leerer Queue einmalig seitenweise nachholen, keine fehlgeschlagenen Altjobs global zurücksetzen.

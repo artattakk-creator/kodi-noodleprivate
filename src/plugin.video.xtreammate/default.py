@@ -13,6 +13,9 @@ def run():
     mark('ENTRY')
     router = None
     try:
+        from artwork_config import initialize
+        try:initialize()
+        except OSError:pass
         with phase('MAIN_IMPORT'):
             from main import Router
         with phase('ROUTER_INIT'):
