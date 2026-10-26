@@ -28,7 +28,7 @@ Das Paket liegt ausschließlich auf dem Entwicklungsbranch und als CI-Testartefa
 | Medien/Guide/Fokus | 8 neue Tests: Medien-Rail/IR/Back, eingefrorene Suche, verzögerter Modal-Handoff, Control 300; Guide 20 Öffnen-/Schließen-Zyklen |
 | VOD/Stop | 8 neue Tests zusätzlich zu alter Player-Suite: Seek-Capabilities, Zeiten, Kodi-Spulen, Back, asynchroner Stop, expliziter Retry, Home erst nach Stop |
 | Inventur/Bereinigung | 10 neue Tests: keinerlei Schreibzugriff bei Inventur, doppelte Bestätigung, eigene Dateien, Symlink-/Hardlink-/Rootaustauschschutz, Abbruch/Journal/DB-Busy, neue Dateien erhalten |
-| SQLite | 4 neue Tests mit echten temporären Datenbanken: fehlende DB, Schema, exklusive Sperre, Query-Zeitbudget |
+| SQLite | 4 neue Tests: fehlende DB, Schema und exklusive Sperre mit echten temporären Datenbanken; Query-Unterbrechung per Fehlerklassifikation |
 | Box-A-Vorprüfung | 3 neue Tests nur mit Testprofilen: bytegleiche Bestände, Sicherungsabgleich bei ruhendem Profil, Symlink-Ablehnung |
 | Bestandsmigration | Bestehende .37-Hash-/Interrupt-/VFS-/SMB2-Tests weiterhin grün; keine reale Box-Migration |
 
