@@ -1,5 +1,32 @@
 """Small indexed metadata adapter for the service-owned live navigator."""
 import json
+import threading
+import time
+from concurrent.futures import Future
+_prepared={}
+_lock=threading.Lock()
+
+
+def prepare(portal,client,force=False):
+    """Single-flight local disk/index preparation; never block the GUI owner."""
+    from utils import addon_data_dir
+    key=(addon_data_dir(),str(portal['id']))
+    with _lock:
+        previous=_prepared.get(key)
+        if previous and not force:
+            future,started=previous
+            if not future.done():return future
+            if not future.exception() and future.result()[1] is not None and time.monotonic()-started<10:return future
+        future=Future();_prepared[key]=(future,time.monotonic())
+        if len(_prepared)>4:
+            for other,(task,_) in list(_prepared.items()):
+                if other!=key and task.done():_prepared.pop(other)
+        def load():
+            if not future.set_running_or_notify_cancel():return
+            try:future.set_result(read(portal,client))
+            except BaseException as error:future.set_exception(error)
+        threading.Thread(target=load,name='XCMate-live-catalog',daemon=True).start()
+        return future
 
 
 def read(portal,client):

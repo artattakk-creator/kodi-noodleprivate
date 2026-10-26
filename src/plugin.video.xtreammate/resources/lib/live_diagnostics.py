@@ -55,6 +55,9 @@ TEXT_FIELDS = {
 _WRITTEN = {}
 _INPUT_PENDING = deque(maxlen=64)
 _INPUT_LOCK = threading.RLock()
+_GUI_PENDING={}
+_flush_thread=None
+_flush_guard=threading.Lock()
 PREFIX = 'XtreamMate.Diagnostic.'
 EXPLANATIONS={
     'URL_NOT_VERIFIED':'Player-Pfad passt nicht; keine passende aktuelle ListItem-Kennung.',
@@ -127,6 +130,9 @@ def record(stage, code, **fields):
         # no profile reads, fsync or JSON-file rewrite for each remote press.
         with _INPUT_LOCK: _INPUT_PENDING.append(entry)
         return
+    if stage in ('focus','ownership','performance'):
+        with _INPUT_LOCK:_GUI_PENDING[stage]=entry
+        return  # No diagnostic file IO on a native GUI callback.
     previous=_WRITTEN.get(stage)
     if previous and previous['code']==code and entry['at']-previous['at']<2:
         return
@@ -154,18 +160,34 @@ def _save(entry, batch=None):
             except OSError: pass
 
 
-def checkpoint():
+def checkpoint(background=False):
     """Flush the newest throttled input/focus state before the dialog closes."""
+    if background:return flush_input(background=True)
     flush_input()
     for entry in snapshots().values():
         if entry!=_WRITTEN.get(entry['stage']): _save(entry)
 
 
-def flush_input():
+def flush_input(background=False):
     """Called by the service timer and on close; retain a 64-event input trail."""
+    global _flush_thread
+    if background:
+        with _flush_guard:
+            if _flush_thread is None or not _flush_thread.is_alive():
+                _flush_thread=threading.Thread(target=flush_input,name='XCMate-diagnostics',daemon=True)
+                _flush_thread.start()
+        return
     with _INPUT_LOCK:
-        if _INPUT_PENDING and _save(_INPUT_PENDING[-1], list(_INPUT_PENDING)):
-            _INPUT_PENDING.clear()
+        batch=list(_INPUT_PENDING);_INPUT_PENDING.clear()
+        staged=dict(_GUI_PENDING);_GUI_PENDING.clear()
+    # Never hold the callback inbox lock while flash/NAS-backed profiles stall.
+    if batch and not _save(batch[-1],batch):
+        with _INPUT_LOCK:
+            newer=list(_INPUT_PENDING);_INPUT_PENDING.clear();_INPUT_PENDING.extend((batch+newer)[-64:])
+    for stage,entry in staged.items():
+        if not _save(entry):
+            with _INPUT_LOCK:
+                if stage not in _GUI_PENDING:_GUI_PENDING[stage]=entry
 
 
 def snapshots():

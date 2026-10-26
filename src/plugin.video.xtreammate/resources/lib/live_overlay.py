@@ -143,6 +143,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self._identity_client = SimpleNamespace(live_stream_url=self.xc.live_stream_url,
             is_cached_live_id=lambda sid: sid in self.index.by_sid)
         self._catalog_ready = False
+        from ui_latency39 import begin,mark
+        begin(self);mark(self,'CATALOG_SCHEDULED')
         # Cache-only, no network. The background service warms missing data;
         # list presentation is fast even when the provider stalls.
         self._load_catalog_from_disk()
@@ -182,8 +184,15 @@ class LiveNavigator(xbmcgui.WindowDialog):
     def _load_catalog_from_disk(self):
         from iptv import Channel
         started=time.perf_counter()
-        from live_catalog import read
-        categories,streams = read(self.portal,self.xc)
+        from live_catalog import read,prepare
+        if self.portal.get('type')=='xtream':
+            future=getattr(self,'_catalog_future39',None)
+            if future is None:future=self._catalog_future39=prepare(self.portal,self.xc)
+            if not future.done():return False
+            try:categories,streams=future.result()
+            except Exception:categories,streams=None,None
+            if categories is None or streams is None:self._catalog_future39=None
+        else:categories,streams = read(self.portal,self.xc)
         loaded=time.perf_counter()
         if categories is None or streams is None:
             return False
@@ -212,6 +221,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
         trace('catalog_performance','CATALOG_READY',cache_ms=(loaded-started)*1000,
               index_ms=(time.perf_counter()-loaded)*1000,channels=len(channels))
         self._catalog_ready = True
+        from ui_latency39 import mark
+        mark(self,'CATALOG_READY')
         return True
 
     def refresh_from_cache(self):
@@ -235,7 +246,10 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self._startup_stage = 'BUILD_CONTROLS'
         try:
             if not self._drawn:
+                from ui_latency39 import mark
+                mark(self,'BUILD_BEGIN')
                 self._build_controls()
+                mark(self,'BUILD_END')
                 xbmcgui.Window(10000).setProperty('XtreamMate.NativeActionCount','0')
                 trace('input','WAITING_FOR_ACTION',count=0,
                       learned_left_action=self._bindings.get('left',ACTION_LEFT))
@@ -243,7 +257,10 @@ class LiveNavigator(xbmcgui.WindowDialog):
             except Exception: pass
             trace('dialog','SHOW_REQUESTED',channels=len(self.channels),catalog=self._catalog_ready)
             self._startup_stage = 'WINDOW_SHOW'
+            from ui_latency39 import mark
+            mark(self,'SHOW_BEGIN')
             super().show()
+            mark(self,'SHOW_RETURN')
             self._startup_stage = 'RENDER'
             self._render()
             from live_timing import visible
@@ -298,7 +315,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         trace('dialog','CLOSED',video=xbmc.Player().isPlayingVideo())
         try:
             from live_diagnostics import checkpoint
-            checkpoint()
+            checkpoint(background=True)
         except Exception: pass
 
     def owns_playback(self):
@@ -326,6 +343,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
             return False
 
     def _accept_input(self):
+        from ui_latency39 import mark
+        mark(self,'OWNER_BEGIN')
         if self._closed or getattr(self,'_exiting',False) or getattr(self,'_guide_handoff',False):
             return False
         if not self.owns_playback():
@@ -334,6 +353,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         from playback_exit import identity
         try:self._owned_token=identity(xbmc.Player())
         except (AttributeError,RuntimeError):self._owned_token=None
+        mark(self,'OWNER_READY')
         return True
 
     def _request_exit(self):
@@ -450,6 +470,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self._guide.request([channel] if channel else [])
         before=time.perf_counter()
         info = self._guide.get(self.sid)
+        from ui_latency39 import mark
+        mark(self,'RAM_SNAPSHOT')
         self._snapshot_ms=getattr(self,'_snapshot_ms',0)+(time.perf_counter()-before)*1000
         self.info_logo.setImage(self._local_logo(channel))
         self.info_name.setLabel(channel.name if channel else 'Live-TV')
@@ -625,6 +647,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
             target = self._mini.list if self.mode=='channels' and self._mini.focused else self.control
         render_end = time.perf_counter()
         if focus: self.setFocus(target)
+        from ui_latency39 import mark,finish
+        mark(self,'GUI_APPLIED');finish(self)
         trace('performance',self.mode.upper(),index_ms=index_ms,snapshot_ms=self._snapshot_ms,
               render_ms=max(0,(render_end-begin)*1000-index_ms-self._snapshot_ms),focus_ms=(time.perf_counter()-render_end)*1000,
               items=len(getattr(self,'_labels',[])) if listing else 0)
@@ -719,6 +743,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
         from group_selection import choose_groups,enabled_ids
         if not choose_groups(self.portal,'live',categories=self.groups,allow_refresh=False): return
         self.enabled=enabled_ids(self.portal['id'],'live',self.groups)
+        from live_catalog import prepare
+        self._catalog_future39=prepare(self.portal,self.xc,force=True)
         self._load_catalog_from_disk()
         if self.category_id!='*' and self.category_id not in self.enabled:
             self.category_id=__import__('tv_focus').target(self.portal,self.index,self.enabled)[0]
@@ -984,6 +1010,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 self._select()
 
     def onAction(self, action):
+        from ui_latency39 import begin
+        begin(self,action.getId())
         """Native Kodi Android actions take priority while our dialog owns focus.
 
         Log numeric action/buttoncode only; never include stream URLs.
