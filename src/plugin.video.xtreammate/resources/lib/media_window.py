@@ -322,7 +322,10 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
                 li=item(row,self._theme)
             else:
                 li=xbmcgui.ListItem(str(row.get('name','')))
-                li.setArt(local_art(row,self._theme))
+                art=local_art(row,self._theme)
+                li.setArt(art)
+                if not hasattr(self,'_shown_art'):self._shown_art={}
+                self._shown_art[(control_id,len(items))]=art
             if control_id in (300,330):
                 from theme_render import action_art
                 li.setArt(action_art(row.get('sid','') if control_id==300 else 'next_episode' if self.mode=='episodes' else 'seasons',self._theme,row.get('favourite',getattr(self,'_theme_favourite',False))))
@@ -342,12 +345,22 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
             controls={110:self.rows} if self.mode=='landing' else {210:self.rows} if self.mode in ('grid','groups') else {}
             if self.mode=='landing': controls.update(self.rails)
             for cid,rows in controls.items():
-                for pos,row in enumerate(rows): self.getControl(cid).getListItem(pos).setArt(local_art(row,self._theme))
+                from artwork_visible import retain_displayed
+                if not hasattr(self,'_shown_art'):self._shown_art={}
+                for pos,row in enumerate(rows):
+                    key=(cid,pos);prior=self._shown_art.get(key,{})
+                    art=retain_displayed(row,prior,local_art(row,self._theme))
+                    if art!=prior:
+                        self.getControl(cid).getListItem(pos).setArt(art)
+                        self._shown_art[key]=art
             if self.selected:
-                art=local_art(self.selected,self._theme)
+                from artwork_visible import retain_displayed
+                prior=getattr(self,'_selected_art',{})
+                art=retain_displayed(self.selected,prior,local_art(self.selected,self._theme))
                 from theme_render import media_background
-                self.getControl(100).setImage(media_background(self,art['fanart']))
-                if self.mode=='detail': self.getControl(310).setImage(art['poster'])
+                if art.get('fanart')!=prior.get('fanart'):self.getControl(100).setImage(media_background(self,art['fanart']))
+                if self.mode=='detail' and art.get('poster')!=prior.get('poster'):self.getControl(310).setImage(art['poster'])
+                self._selected_art=art
             if self.mode in ('landing','grid','groups','detail') and self._art_diagnostic:
                 item,value=self._art_diagnostic
                 if item==self._art_selected:

@@ -3440,3 +3440,19 @@ msgstr "Artwork {0}: {1} MiB frei · {2} MiB Reserve · {3} MiB Budget (0 = kein
 msgctxt "#35307"
 msgid "VERSION MISMATCH – do not treat the firmware claim as verified."
 msgstr "VERSIONSANGABEN WIDERSPRÜCHLICH – Firmwareangabe nicht als verifiziert behandeln."
+
+msgctxt "#35500"
+msgid "Automatischen Startsender für 15 Minuten pausieren? Die gespeicherte Senderwahl bleibt erhalten."
+msgstr "Automatischen Startsender für 15 Minuten pausieren? Die gespeicherte Senderwahl bleibt erhalten."
+
+msgctxt "#35501"
+msgid "Autostart für 15 Minuten pausiert"
+msgstr "Autostart für 15 Minuten pausiert"
+
+msgctxt "#35502"
+msgid "Gespeicherte Autostart-Einstellung gilt wieder"
+msgstr "Gespeicherte Autostart-Einstellung gilt wieder"
+
+msgctxt "#35503"
+msgid "Startsender-Autostart: temporäre Diagnosepause"
+msgstr "Startsender-Autostart: temporäre Diagnosepause"

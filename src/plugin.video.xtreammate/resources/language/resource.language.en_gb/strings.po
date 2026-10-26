@@ -3440,3 +3440,19 @@ msgstr "Artwork {0}: {1} MiB free · {2} MiB reserve · {3} MiB budget (0 = no c
 msgctxt "#35307"
 msgid "VERSION MISMATCH – do not treat the firmware claim as verified."
 msgstr "VERSION MISMATCH – do not treat the firmware claim as verified."
+
+msgctxt "#35500"
+msgid "Pause startup playback for 15 minutes? Your saved channel preference is preserved."
+msgstr "Pause startup playback for 15 minutes? Your saved channel preference is preserved."
+
+msgctxt "#35501"
+msgid "Startup playback paused for 15 minutes"
+msgstr "Startup playback paused for 15 minutes"
+
+msgctxt "#35502"
+msgid "Saved startup preference is active again"
+msgstr "Saved startup preference is active again"
+
+msgctxt "#35503"
+msgid "Startup playback: temporary diagnostic pause"
+msgstr "Startup playback: temporary diagnostic pause"

@@ -73,8 +73,10 @@ def _run(kind):
             try:value=_process(kind,key,payload)
             except Exception:value=''
             with _lock:
+                previous=_values.get(key,(0,''))[1]
                 _values[key]=(time.monotonic()+(30 if value else 5),value)
-                _values.move_to_end(key);_pending.discard(key);_revision+=1
+                _values.move_to_end(key);_pending.discard(key)
+                if previous!=value:_revision+=1
                 while len(_values)>512:_values.popitem(last=False)
         finally:work.task_done()
 
@@ -82,15 +84,17 @@ def _run(kind):
 def lookup(kind,key,payload):
     with _lock:
         value=_values.get(key)
-        if value and value[0]>time.monotonic():return value[1]
+        now=time.monotonic()
+        # Revalidate ten seconds before expiry; never extend DNS approval TTL.
+        if value and value[0]>now+(10 if value[1] else 0):return value[1]
         if key not in _pending:
             try:_queues[kind].put_nowait((key,payload));_pending.add(key)
-            except queue.Full:return ''
+            except queue.Full:return value[1] if value and value[0]>now else ''
         thread=_threads.get(kind)
         if thread is None or not thread.is_alive():
             thread=threading.Thread(target=_run,args=(kind,),name='XCMate-visible-'+kind,daemon=True)
             _threads[kind]=thread;thread.start()
-    return ''
+        return value[1] if value and value[0]>now else ''
 
 
 def dynamic(url):
@@ -104,3 +108,23 @@ def external(storage,ident):
 
 def revision():
     with _lock:return _revision
+
+
+def retain_displayed(item,prior,current):
+    """Keep an already displayed texture while its exact URL is pending.
+
+    This does not admit an expired URI to a new item. Definitive DNS failure
+    removes pending and forces the placeholder; no TTL/security bypass.
+    """
+    from artwork_config import persistent
+    if persistent():return current
+    from media_art import sources
+    poster,fanart=sources(item);result=dict(current)
+    with _lock:
+        for url,fields in ((poster,('poster','thumb','icon','landscape')),(fanart,('fanart','landscape'))):
+            if url and ('dynamic',url) in _pending:
+                approved=_values.get(('dynamic',url),(0,''))[1]
+                if approved==url+KODI_OPTIONS:
+                    for field in fields:
+                        if prior.get(field)==approved:result[field]=approved
+    return result

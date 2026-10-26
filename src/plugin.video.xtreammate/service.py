@@ -3,7 +3,7 @@ import xbmc, xbmcaddon, xbmcgui
 
 ADDON    = xbmcaddon.Addon()
 LIB_PATH = os.path.join(os.path.dirname(__file__), 'resources', 'lib')
-SERVICE_BUILD = 37
+SERVICE_BUILD = 38
 if LIB_PATH not in sys.path:
     sys.path.insert(0, LIB_PATH)
 
