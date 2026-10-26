@@ -1,0 +1,90 @@
+[
+  {
+    "file": "tests/test_xcmate_art_context_02939.py",
+    "count": 4,
+    "methods": [
+      "ArtContext39.test_twenty_rebuilds_at_30_60_120_seconds_keep_seen_cover_across_rows_and_tabs",
+      "ArtContext39.test_definitive_dns_rejection_clears_rebuilt_art_without_weakening_admission",
+      "ArtContext39.test_changed_provider_url_and_new_view_cannot_inherit_expired_seen_art",
+      "ArtContext39.test_art_reference_history_is_bounded_without_deleting_any_images"
+    ]
+  },
+  {
+    "file": "tests/test_xcmate_latency_02939.py",
+    "count": 4,
+    "methods": [
+      "Latency39.test_pending_catalogue_allows_native_capture_before_2905_rows_finish",
+      "Latency39.test_focus_ownership_and_performance_callbacks_do_not_write_diagnostic_files",
+      "Latency39.test_slow_background_diagnostic_sink_never_holds_callback_inbox_lock",
+      "Latency39.test_latency_trace_is_numeric_and_does_not_claim_first_decoded_frame"
+    ]
+  },
+  {
+    "file": "tests/test_xcmate_local_epg_02939.py",
+    "count": 8,
+    "methods": [
+      "LocalEPG39.test_widget_live_and_grid_resolve_same_manual_source_with_no_http",
+      "LocalEPG39.test_rollover_progress_and_gap_are_computed_from_local_event_times",
+      "LocalEPG39.test_missing_manual_mapping_never_uses_stale_provider_or_short_epg",
+      "LocalEPG39.test_read_only_snapshot_preserves_payloads_and_only_allows_sqlite_coordination",
+      "LocalEPG39.test_failed_publication_preserves_last_successful_revision",
+      "LocalEPG39.test_sqlite_transaction_cannot_mix_new_metadata_with_old_programmes",
+      "LocalEPG39.test_existing_live_widget_is_bounded_to_twelve_and_start_channel_first",
+      "LocalEPG39.test_missing_and_corrupt_guide_are_not_created_or_reset_by_widget_reads"
+    ]
+  },
+  {
+    "file": "tests/test_xcmate_rail_mini_02939.py",
+    "count": 5,
+    "methods": [
+      "RailMini39.test_twenty_live_group_compact_full_cycles_preserve_stream_and_focus",
+      "RailMini39.test_hide_clears_all_native_labels_images_and_button_focusability",
+      "RailMini39.test_compact_group_rail_does_not_overlap_group_list",
+      "RailMini39.test_now_mark_is_permanent_when_right_focus_moves_to_another_event",
+      "RailMini39.test_compact_programme_column_fits_720_and_1080_safe_area"
+    ]
+  },
+  {
+    "file": "tests/test_xcmate_return_02939.py",
+    "count": 11,
+    "methods": [
+      "Return39.test_twenty_grid_search_and_detail_returns_keep_exact_native_view_and_focus",
+      "Return39.test_play_captures_origin_and_reentrant_oninit_does_not_reset_it",
+      "Return39.test_foreign_dialog_defers_return_and_foreign_playback_cancels_it",
+      "Return39.test_wrong_portal_or_replaced_origin_cannot_request_return",
+      "Return39.test_twenty_episode_returns_preserve_target_season_and_manual_next_state",
+      "Return39.test_actual_search_dialog_is_reshown_without_root_reload",
+      "Return39.test_failed_native_restore_releases_own_pump_without_changing_foreign_window",
+      "Return39.test_twenty_repeated_start_intents_queue_only_one_media_resolver",
+      "Return39.test_explicit_start_abort_releases_guard_for_a_fresh_playback",
+      "FullscreenBack39.test_visible_back_hides_then_hidden_back_queues_one_own_stop",
+      "FullscreenBack39.test_hidden_back_in_episode_gap_cancels_chain_without_touching_foreign_player"
+    ]
+  },
+  {
+    "file": "tests/test_xcmate_search_perf_02939.py",
+    "count": 6,
+    "methods": [
+      "SearchPerf39.test_names_publish_before_any_epg_or_media_work_even_from_movie_tab",
+      "SearchPerf39.test_twenty_short_cache_revisions_do_not_restart_inflight_channel_cursor",
+      "SearchPerf39.test_second_query_reuses_aliases_current_epg_and_catalogue_publication",
+      "SearchPerf39.test_real_publication_or_mapping_change_invalidates_cursor",
+      "SearchPerf39.test_event_boundary_expires_cached_programme_matches",
+      "SearchPerf39.test_real_cold_and_warm_scan_metrics_are_reported_without_android_claim"
+    ]
+  },
+  {
+    "file": "tests/test_xcmate_stream_osd_02939.py",
+    "count": 8,
+    "methods": [
+      "StreamOSD39.test_actual_pixel_scan_fps_audio_and_hdr_fields_without_title_guessing",
+      "StreamOSD39.test_missing_scan_and_hdr_remain_unknown_and_bad_numeric_values_are_omitted",
+      "StreamOSD39.test_metadata_is_bounded_to_one_sample_per_two_seconds_and_no_v22_fields",
+      "StreamOSD39.test_foreign_player_never_read_or_keeps_previous_session_details",
+      "StreamOSD39.test_stop_race_in_video_tag_and_during_metadata_sample_is_safe",
+      "StreamOSD39.test_twenty_standard_osd_returns_restore_own_controls_once_each",
+      "StreamOSD39.test_native_settings_and_foreign_osd_are_never_closed",
+      "StreamOSD39.test_transport_buttons_are_larger_than_settings_and_use_large_local_icons"
+    ]
+  }
+]
