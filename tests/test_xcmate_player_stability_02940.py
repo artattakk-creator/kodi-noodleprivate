@@ -100,3 +100,32 @@ class SearchNative40(unittest.TestCase):
         self.addCleanup(w.close);w._search_click(701);m.settle(w);w._play(w._search_rows[0],'vod')
         self.assertFalse(w._closed);self.assertIsNotNone(w._playback_origin39)
         self.assertEqual(m.returning.read()['owner'],w._native_owner)
+
+class FailedStartup40(base.Fixture,unittest.TestCase):
+    def setUp(self):
+        super().setUp();self.player=mock.Mock();self.player.isPlayingVideo.return_value=False;self.player.isPlaying.return_value=False
+        sys.modules['xbmc'].Player=lambda:self.player
+
+    def test_failed_resolver_restores_origin_without_stop_and_releases_pending_guard(self):
+        w=self.media_window();w._play(w.rows[0],'vod')
+        intent=importlib.import_module('media_intent');self.assertTrue(intent.failed(w._play_intent,'p'))
+        w._poll_playback_return();self.assertFalse(w._playback_waiting);self.player.stop.assert_not_called()
+        self.assertTrue(intent.cancelled(dict(pid='p',sid=w.rows[0]['sid'],nonce=w._play_intent)))
+
+    def test_decoder_failure_before_first_video_has_bounded_return_without_stop(self):
+        w=self.media_window();w._play(w.rows[0],'vod');w._playback_started40=time.monotonic()-21
+        w._poll_playback_return();self.assertFalse(w._playback_waiting);self.player.stop.assert_not_called()
+
+    def test_startup_deadline_never_stops_or_returns_over_active_foreign_player(self):
+        w=self.media_window();w._play(w.rows[0],'vod');w._playback_started40=time.monotonic()-21
+        self.player.isPlaying.return_value=True;w._poll_playback_return()
+        self.assertTrue(w._playback_waiting);self.player.stop.assert_not_called()
+
+    def test_suspended_search_dialog_with_unknown_native_id_is_shown_on_failed_start_return(self):
+        def run(w):w.show();w._owner_tick();self.settle(w)
+        with mock.patch.object(self.media.MediaView,'run',run):w=self.media.open_search(self.router,self.portal,'House')
+        self.addCleanup(w.close);w._search_click(701);self.settle(w);w._play(w._search_rows[0],'vod')
+        self.assertFalse(w.shown);self.assertTrue(w._origin_suspended40)
+        importlib.import_module('media_intent').failed(w._play_intent,'p');w._poll_playback_return()
+        self.assertTrue(w.shown);self.assertFalse(w._playback_waiting);self.assertEqual(w._search_query,'House')
+        self.player.stop.assert_not_called()

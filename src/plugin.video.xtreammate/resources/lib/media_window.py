@@ -633,7 +633,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
                     if self.season in self.seasons:self._season_cursor=self.seasons.index(self.season)
                     rows=[e for e in self.episodes if e['season']==self.season]
                     self._episode_cursor[self.season]=next(i for i,e in enumerate(rows) if e['sid']==episode['sid'])
-        self._playback_waiting=True;self._playback_seen=False
+        self._playback_waiting=True;self._playback_seen=False;self._playback_started40=time.monotonic()
         self._generation+=1
         if self._pending_future is not None:self._pending_future.cancel()
         self._pending_future=None;self._pending_apply=None
@@ -643,6 +643,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         capture_origin(self,self._play_intent)
         if getattr(self,'_native_surface','window')=='dialog':
             # Keep the owner/memento alive, release only this native modal.
+            self._origin_suspended40=True
             super().close()
         self._autoplay_root=self._play_intent if kind=='episode' else ''
         url=self.router.url(action='media_play',pid=self.portal['id'],kind=kind,sid=item['sid'],
@@ -1093,7 +1094,16 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
                 # A transient non-fullscreen frame is not a user exit.
                 # Owned Back/Stop handlers publish the explicit stop/return.
                 return
-            if not self._playback_seen or xbmc.getCondVisibility('Window.IsVisible(fullscreenvideo)') or xbmc.getCondVisibility('System.HasActiveModalDialog'):return
+            if not self._playback_seen:
+                from media_intent import failure,cancel
+                failed=failure(self._play_intent,self.portal['id'])
+                expired=time.monotonic()-getattr(self,'_playback_started40',time.monotonic())>=20
+                if not failed and not expired:return
+                if getattr(player,'isPlaying',player.isPlayingVideo)():return
+                # A failed/never-started own resolver can be cancelled, but a
+                # deadline does NOT authorize Stop on an initializing player.
+                cancel(self.portal['id'],self._play_intent);self._cancel_chain()
+            if xbmc.getCondVisibility('Window.IsVisible(fullscreenvideo)') or xbmc.getCondVisibility('System.HasActiveModalDialog'):return
         except (AttributeError,RuntimeError):return
         if getattr(self,'_playback_origin39',None):
             from media_return import restore

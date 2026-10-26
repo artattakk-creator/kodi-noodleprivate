@@ -74,3 +74,20 @@ def complete(nonce):
     import xbmcgui
     value=_read(REQUEST)
     if _valid(value) and value['nonce']==nonce: xbmcgui.Window(10000).clearProperty(REQUEST)
+
+OUTCOME='XCMate.MediaOutcome40'
+
+
+def failed(nonce,pid):
+    """Resolver returned without publishing a playable item; fixed code only."""
+    value=_read(REQUEST)
+    if not _valid(value) or value['nonce']!=nonce or value['pid']!=str(pid):return False
+    import xbmcgui
+    record={k:value[k] for k in ('nonce','pid','sid','at')};record['code']='RESOLVER_FAILED'
+    xbmcgui.Window(10000).setProperty(OUTCOME,json.dumps(record))
+    _cancel(value);complete(nonce);return True
+
+
+def failure(nonce,pid):
+    value=_read(OUTCOME)
+    return bool(_valid(value) and value.get('code')=='RESOLVER_FAILED' and value['nonce']==nonce and value['pid']==str(pid))

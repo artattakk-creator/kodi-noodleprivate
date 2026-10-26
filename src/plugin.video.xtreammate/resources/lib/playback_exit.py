@@ -1,4 +1,4 @@
-"""Stop only a verified XCMate item when fullscreen playback is left.
+"""Stop only a verified XCMate item after an explicit exit/cancellation.
 
 Overlay Back stays in fullscreen and does not call this stop path. Never infer
 ownership from a stale property alone, a title, a window, or a provider URL.

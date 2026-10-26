@@ -85,7 +85,8 @@ def restore(view,natural=False):
     view._returning39=True
     try:
         # Reuse the exact native object on its owning Python thread.
-        if not active(origin['native'],native):view.show()
+        if getattr(view,'_origin_suspended40',False) or not active(origin['native'],native):view.show()
+        view._origin_suspended40=False
         view._show(view.mode)
         if view.mode=='search' and getattr(view,'_search_data',None):view._search_ready(view._search_data,resume=True)
         elif view.mode=='detail':view._detail_ready((view.selected,{'episodes':view._episode_raw()}))

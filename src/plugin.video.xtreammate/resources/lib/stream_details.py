@@ -83,7 +83,7 @@ def groups(values):
     resolution='×'.join(values.get(k,unknown) for k in ('width','height'))
     scan={'progressive':'p','interlaced':'i','p':'p','i':'i'}.get(values.get('scan','').lower(),'')
     return (
-        (35841,35844,'device-tv',resolution+scan),
+        (35841,35844,'video',resolution+scan),
         (35841,35815,'video', ' · '.join(values.get(k,unknown) for k in ('video','decoder','pixels'))),
         (35841,35813,'more',values.get('fps',unknown)+(' fps' if values.get('fps') else '')),
         (35841,35818,'video',values.get('hdr',unknown)),
