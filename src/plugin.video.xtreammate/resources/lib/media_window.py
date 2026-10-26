@@ -624,6 +624,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         self.setFocusId(old_focus if old_focus in (300,400) else 300)
 
     def _play(self,item,kind,resume=False):
+        if self._playback_waiting:return  # IR repeats cannot queue competing resolvers.
         self._cancel_chain()
         if kind=='episode':
             from media_sequence import match
@@ -838,6 +839,10 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
                 cancel(self.portal['id'],self._play_intent)
                 from exit_jobs import request as stop_owned
                 if self._stop_media_only(): return
+                if self._playback_waiting:
+                    self._playback_waiting=False;self._playback_seen=False
+                    from media_return import discard
+                    discard(self)  # Explicit Back also cancels an unresolved start.
                 self._generation+=1
                 if self.mode=='episodes':
                     self.mode='seasons';self._show('seasons');self._fill(330,self._season_rows())

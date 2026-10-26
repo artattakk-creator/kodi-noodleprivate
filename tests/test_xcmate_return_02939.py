@@ -86,6 +86,17 @@ class Return39(model.Fixture,unittest.TestCase):
             self.assertFalse(self.returning.restore(w))
         self.assertTrue(w._closed);self.assertEqual(self.properties['XCMate.MediaReturn39.Status'],'NATIVE_RESTORE_FAILED');self.assertFalse(self.builtins)
 
+    def test_twenty_repeated_start_intents_queue_only_one_media_resolver(self):
+        w=self.media_window();w._details(w.rows[0]);self.settle(w)
+        for _ in range(20):w._play(w.selected,'vod')
+        self.assertEqual(sum(b.startswith('PlayMedia(') for b in self.builtins),1)
+
+    def test_explicit_start_abort_releases_guard_for_a_fresh_playback(self):
+        w=self.media_window();w._details(w.rows[0]);self.settle(w);w._play(w.selected,'vod')
+        first=w._play_intent;w.native(92);self.settle(w);self.assertFalse(w._playback_waiting)
+        w._details(w.rows[0]);self.settle(w);w._play(w.selected,'vod')
+        self.assertNotEqual(w._play_intent,first);self.assertEqual(sum(b.startswith('PlayMedia(') for b in self.builtins),2)
+
 
 class FullscreenBack39(unittest.TestCase):
     def setUp(self):
