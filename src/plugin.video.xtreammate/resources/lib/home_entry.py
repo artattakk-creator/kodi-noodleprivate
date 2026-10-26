@@ -19,6 +19,8 @@ class HomeRouter:
         item=xbmcgui.ListItem(label);art=icon or original_icon()
         item.setArt(dict(icon=art,thumb=art,landscape=art,clearart=art,fanart=fanart or os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'fanart.jpg')))
         item.setInfo('video',dict(title=label,plot=plot or label))
+        context=getattr(item,'addContextMenuItems',None)
+        if context:context([('XCMate-Navigation','RunPlugin('+self.url(action='navigation_rail',pid=self._params.get('pid',''))+')')])
         if not is_folder:item.setProperty('IsPlayable','true')
         xbmcplugin.addDirectoryItem(self._handle,url,item,isFolder=is_folder)
 

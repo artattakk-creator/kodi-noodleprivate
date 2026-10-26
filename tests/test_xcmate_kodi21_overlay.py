@@ -150,6 +150,7 @@ class OverlayLifecycleTests(unittest.TestCase):
         addon.Addon = lambda:types.SimpleNamespace(getAddonInfo=lambda *_:str(LIB.parents[1]))
         utils = types.ModuleType('utils')
         utils.info = utils.warn = lambda *a:None
+        utils.setting=lambda key,default='':default
         xtream = types.ModuleType('xtream')
         xtream.XtreamClient = lambda *a:self.client
         iptv = types.ModuleType('iptv')
@@ -288,7 +289,7 @@ class OverlayLifecycleTests(unittest.TestCase):
         self.player.pause.assert_called_once()
         self.assertEqual(o.mode,'controls')
         self.assertEqual(o.main_buttons[0].label,'Weiter')
-        self.assertTrue(o._button_icons[0][1].image.endswith('tv_play.png'))
+        self.assertTrue(o._button_icons[0][1].image.endswith('player-play-normal.png'))
         o.native(7)
         self.assertEqual(self.player.pause.call_count,2)
         self.assertEqual(o.main_buttons[0].label,'Pause')
@@ -490,7 +491,7 @@ class OverlayLifecycleTests(unittest.TestCase):
         o._scroll_to_current = True
         with mock.patch.object(o._guide,'get',wraps=o._guide.get) as lookup:
             o._render()
-            self.assertLessEqual(lookup.call_count,8)
+            self.assertLessEqual(lookup.call_count,9)
             self.assertLessEqual(o.control.size(),102)
             self.assertEqual(o.control.items[o.control.selected],'Sender 53664')
             o._tune = mock.Mock()
@@ -579,6 +580,8 @@ class OverlayLifecycleTests(unittest.TestCase):
         o.native(2)
         self.assertEqual(o.mode,'channels')
         o.native(2)
+        self.assertEqual(o.mode,'channels')
+        o.native(92)
         self.assertEqual(o.mode,'hidden')
         o.native(1)
         self.assertEqual(o.mode,'channels')

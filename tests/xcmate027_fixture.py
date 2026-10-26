@@ -188,6 +188,9 @@ class Fixture:
         xbmc.Monitor=lambda:types.SimpleNamespace(waitForAbort=lambda n:False)
         xbmc.Player=lambda:types.SimpleNamespace(isPlayingVideo=lambda:False)
         def condition(c):
+            if c.startswith('Control.IsVisible('):
+                w=getattr(xbmc,'_focus_window',None);cid=int(c[len('Control.IsVisible('):-1])
+                return w.controls[cid].visible if w else True
             if c.startswith('Control.IsEnabled('):
                 w=getattr(xbmc,'_focus_window',None);cid=int(c[len('Control.IsEnabled('):-1])
                 return w.controls[cid].enabled if w else True

@@ -64,8 +64,9 @@ def _finish(value,navigator=None,notify=False):
         xbmcgui.Dialog().notification('XCMate',tr(32910))
 
 
-def request(navigator):
+def request(navigator,destination='guide_grid'):
     """Native callback only creates an intent; never closes/navigates/plays."""
+    if destination not in ('guide_grid','global_search','movies_home','series_home','favourites','settings_home','startup_current'):return False
     if _state() or navigator._closed or getattr(navigator,'_guide_handoff',False):return False
     from playback_exit import identity
     from window_lifecycle import state
@@ -76,7 +77,7 @@ def request(navigator):
                 xbmcgui.Window(dialog).getProperty('XtreamMate.NavigatorIdentity')!=navigator._window_nonce):return False
         session={k:owned[1][k] for k in ('pid','sid','nonce','at')}
         value=dict(token=uuid.uuid4().hex,phase='QUEUED',session=session,owner=navigator._window_nonce,
-                   dialog=dialog,created=time.monotonic(),deadline=time.monotonic()+5)
+                   dialog=dialog,created=time.monotonic(),deadline=time.monotonic()+5,destination=destination)
         if not _announced(value):return False
         _save(value);navigator._guide_handoff=True;_mark('REQUESTED');return True
     except (AttributeError,RuntimeError,TypeError,KeyError):return False
@@ -84,7 +85,8 @@ def request(navigator):
 
 def preserves_player():
     value=_state()
-    return bool(value and _same_player(value))
+    from navigation_dispatch import holding
+    return bool(value and _same_player(value)) or holding()
 
 
 def _poll(navigator=None):
@@ -192,8 +194,30 @@ def run(token):
             router=SimpleNamespace(_handle=-1,_params={'pid':portal['id']},_xc=client,
                 _navigation_dispatch=value['token'],
                 url=lambda **kw:'plugin://plugin.video.xtreammate/?'+urlencode({k:v for k,v in kw.items() if v is not None}))
-            from guide_grid_window import open_grid
-            _mark('OPEN');intent=open_grid(router,portal)
+            destination=value.get('destination','guide_grid')
+            _mark('OPEN')
+            if destination=='guide_grid':
+                from guide_grid_window import open_grid
+                intent=open_grid(router,portal)
+            elif destination in ('movies_home','series_home'):
+                from media_window import open_media
+                window=open_media(router,portal,'vod' if destination=='movies_home' else 'series')
+                if getattr(window,'_nav_destination',None):
+                    from navigation_dispatch import RouteTransfer
+                    intent=RouteTransfer(window._nav_destination)
+            elif destination=='global_search':
+                from media_window import open_search
+                window=open_search(router,portal);intent=getattr(window,'_search_live',None)
+            elif destination=='startup_current':
+                from navigation_dispatch import current_start
+                current_start(portal,value['session'])
+        if value.get('destination') in ('favourites','settings_home'):
+            from navigation_dispatch import dispatch
+            dispatch(value['destination'],portal['id'])
+        if getattr(intent,'_nav_destination',None):
+            from navigation_dispatch import dispatch
+            dispatch(intent._nav_destination,portal['id'])
+            value.update(phase='RETURN',deadline=time.monotonic()+15);_save(value);return True
         if intent:
             # Existing .34 handoff only AFTER native pump and lease release.
             from guide_playback import handoff

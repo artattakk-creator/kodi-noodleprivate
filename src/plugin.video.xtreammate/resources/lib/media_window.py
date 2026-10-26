@@ -58,8 +58,18 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         self._art_thread=threading.Thread(target=self._art_loop,daemon=True,name='XCMate-art')
         self._art_thread.start()
 
+    def _stop_media_only(self):
+        from playback_exit import identity
+        token=identity(xbmc.Player())
+        if token and token[0]=='media':
+            from exit_jobs import request
+            return request(pid=self.portal['id'],expected=token)
+        return False
+
     def setFocusId(self,control_id):
         if self._closed:return
+        rail=getattr(self,'_navigation_rail',None)
+        if rail and rail.active:return
         requested=control_id
         # Native setVisible/enabled flags may lag one GUI frame. Keep the
         # intended target instead of committing a temporary fallback to Search.
@@ -156,7 +166,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
                 section=getattr(self,'_search_data',{}).get(getattr(self,'_search_kind','vod'),{})
                 if not section.get('total') or self._search_offset+len(self._search_rows)>=section['total']:continue
             control=self.getControl(cid)
-            if not native or control.isVisible() and xbmc.getCondVisibility('Control.IsEnabled({})'.format(cid)):result.append(cid)
+            if not native or control.isVisible() and xbmc.getCondVisibility('Control.IsEnabled({})'.format(cid)) and xbmc.getCondVisibility('Control.IsVisible({})'.format(cid)):result.append(cid)
         return result
 
     @native_init
@@ -176,7 +186,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
             from exit_jobs import request as stop_owned
             from media_intent import cancel
             cancel(self.portal['id'],self._play_intent)
-            stop_owned(pid=self.portal['id'])
+            self._stop_media_only()
             self._playback_waiting=False;self._playback_seen=False
             self._generation+=1
             if self._pending_future is not None:self._pending_future.cancel()
@@ -622,6 +632,8 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         xbmc.executebuiltin('PlayMedia('+url+')')
 
     def onClick(self,controlId):
+        rail=getattr(self,'_navigation_rail',None)
+        if rail and rail.click(controlId):return
         if self._closed or self._leaving:return
         if self._detail_menu_click(controlId):return
         with self._lock:
@@ -792,6 +804,10 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
 
     def _handle_action(self,action):
         key=action.getId()
+        from nav_rail import view_action,open_in_view
+        if view_action(self,key):return
+        if key==1 and (self.mode=='landing' and self.getFocusId()==120 or self.mode=='groups' and self.getFocusId()==200):
+            open_in_view(self,'media');return
         if self._closed:return
         with self._lock:
             if self._detail_menu_action(key):return
@@ -803,7 +819,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
                 self._cancel_chain()
                 cancel(self.portal['id'],self._play_intent)
                 from exit_jobs import request as stop_owned
-                if stop_owned(pid=self.portal['id']): return
+                if self._stop_media_only(): return
                 self._generation+=1
                 if self.mode=='episodes':
                     self.mode='seasons';self._show('seasons');self._fill(330,self._season_rows())

@@ -3456,3 +3456,291 @@ msgstr "Gespeicherte Autostart-Einstellung gilt wieder"
 msgctxt "#35503"
 msgid "Startsender-Autostart: temporäre Diagnosepause"
 msgstr "Startsender-Autostart: temporäre Diagnosepause"
+
+msgctxt "#35600"
+msgid "Suchen"
+msgstr "Suchen"
+
+msgctxt "#35601"
+msgid "Favoriten"
+msgstr "Favoriten"
+
+msgctxt "#35602"
+msgid "Live-TV"
+msgstr "Live-TV"
+
+msgctxt "#35603"
+msgid "Filme"
+msgstr "Filme"
+
+msgctxt "#35604"
+msgid "Serien"
+msgstr "Serien"
+
+msgctxt "#35605"
+msgid "Großer EPG"
+msgstr "Großer EPG"
+
+msgctxt "#35606"
+msgid "Einstellungen"
+msgstr "Einstellungen"
+
+msgctxt "#35607"
+msgid "XCMate-Home"
+msgstr "XCMate-Home"
+
+msgctxt "#35608"
+msgid "Sendergruppen"
+msgstr "Sendergruppen"
+
+msgctxt "#35609"
+msgid "Aktuellen Sender als Startsender festlegen"
+msgstr "Aktuellen Sender als Startsender festlegen"
+
+msgctxt "#35610"
+msgid "Vorher  ·  JETZT  ·  Danach — Rechts: Programme"
+msgstr "Vorher  ·  JETZT  ·  Danach — Rechts: Programme"
+
+msgctxt "#35611"
+msgid "Keine Programmdaten verfügbar"
+msgstr "Keine Programmdaten verfügbar"
+
+msgctxt "#35612"
+msgid "JETZT"
+msgstr "JETZT"
+
+msgctxt "#35613"
+msgid "Keine Beschreibung vorhanden"
+msgstr "Keine Beschreibung vorhanden"
+
+msgctxt "#35614"
+msgid "{0} als Startsender speichern? Die Autostart-Option bleibt unverändert."
+msgstr "{0} als Startsender speichern? Die Autostart-Option bleibt unverändert."
+
+msgctxt "#35620"
+msgid "Noch {0}"
+msgstr "Noch {0}"
+
+msgctxt "#35621"
+msgid "−30 s"
+msgstr "−30 s"
+
+msgctxt "#35622"
+msgid "+10 s"
+msgstr "+10 s"
+
+msgctxt "#35623"
+msgid "Rückspulen"
+msgstr "Rückspulen"
+
+msgctxt "#35624"
+msgid "Vorspulen"
+msgstr "Vorspulen"
+
+msgctxt "#35700"
+msgid "Alte interne XCMate-Bilder entfernen …"
+msgstr "Alte interne XCMate-Bilder entfernen …"
+
+msgctxt "#35701"
+msgid "Details für Entwickler"
+msgstr "Details für Entwickler"
+
+msgctxt "#35702"
+msgid "Unbekannt / nicht verfügbar"
+msgstr "Unbekannt / nicht verfügbar"
+
+msgctxt "#35703"
+msgid "Dynamisch (Kodi lädt sichtbare Bilder)"
+msgstr "Dynamisch (Kodi lädt sichtbare Bilder)"
+
+msgctxt "#35704"
+msgid "Intern dauerhaft"
+msgstr "Intern dauerhaft"
+
+msgctxt "#35705"
+msgid "Extern dauerhaft"
+msgstr "Extern dauerhaft"
+
+msgctxt "#35706"
+msgid "Betriebsart: {0}"
+msgstr "Betriebsart: {0}"
+
+msgctxt "#35707"
+msgid "Interner XCMate-Bildbestand: {0} Dateien · {1}"
+msgstr "Interner XCMate-Bildbestand: {0} Dateien · {1}"
+
+msgctxt "#35708"
+msgid "Nicht als eigene gültige Bilddatei erfasst: {0}"
+msgstr "Nicht als eigene gültige Bilddatei erfasst: {0}"
+
+msgctxt "#35709"
+msgid "Interner freier Speicher: {0}"
+msgstr "Interner freier Speicher: {0}"
+
+msgctxt "#35710"
+msgid "Aktives Bildziel: frei {0} / gesamt {1}"
+msgstr "Aktives Bildziel: frei {0} / gesamt {1}"
+
+msgctxt "#35711"
+msgid "Sicherheitsreserve für neue Archivbilder: {0}"
+msgstr "Sicherheitsreserve für neue Archivbilder: {0}"
+
+msgctxt "#35712"
+msgid "Zusätzliches Bildbudget: {0}"
+msgstr "Zusätzliches Bildbudget: {0}"
+
+msgctxt "#35713"
+msgid "Keine zusätzliche Obergrenze"
+msgstr "Keine zusätzliche Obergrenze"
+
+msgctxt "#35714"
+msgid "Speicherprüfung: {0}"
+msgstr "Speicherprüfung: {0}"
+
+msgctxt "#35715"
+msgid "Job-Datenbank — keine physische Dateiinventur:"
+msgstr "Job-Datenbank — keine physische Dateiinventur:"
+
+msgctxt "#35716"
+msgid "Ausstehend"
+msgstr "Ausstehend"
+
+msgctxt "#35717"
+msgid "In Arbeit"
+msgstr "In Arbeit"
+
+msgctxt "#35718"
+msgid "Als gespeichert verzeichnet"
+msgstr "Als gespeichert verzeichnet"
+
+msgctxt "#35719"
+msgid "Nicht mehr lokal vorhanden"
+msgstr "Nicht mehr lokal vorhanden"
+
+msgctxt "#35720"
+msgid "Speicher/Reserve blockiert"
+msgstr "Speicher/Reserve blockiert"
+
+msgctxt "#35721"
+msgid "Budgetgrenze erreicht"
+msgstr "Budgetgrenze erreicht"
+
+msgctxt "#35722"
+msgid "Fehlgeschlagen"
+msgstr "Fehlgeschlagen"
+
+msgctxt "#35723"
+msgid "Keine Job-Zeilen vorhanden"
+msgstr "Keine Job-Zeilen vorhanden"
+
+msgctxt "#35724"
+msgid "Job-Zähler nicht verfügbar: {0}"
+msgstr "Job-Zähler nicht verfügbar: {0}"
+
+msgctxt "#35725"
+msgid "Kodi-eigener Texturecache (getrennt): {0} Dateien · {1}"
+msgstr "Kodi-eigener Texturecache (getrennt): {0} Dateien · {1}"
+
+msgctxt "#35726"
+msgid "Nur Teilinventur des Kodi-Caches; Werte sind keine vollständige Belegung."
+msgstr "Nur Teilinventur des Kodi-Caches; Werte sind keine vollständige Belegung."
+
+msgctxt "#35727"
+msgid "Kodi-Thumbnails, Portale, EPG, Favoriten, Resume und Datenbanken werden nicht entfernt."
+msgstr "Kodi-Thumbnails, Portale, EPG, Favoriten, Resume und Datenbanken werden nicht entfernt."
+
+msgctxt "#35728"
+msgid "Inventur wurde abgebrochen; keine Freigabe zum Entfernen."
+msgstr "Inventur wurde abgebrochen; keine Freigabe zum Entfernen."
+
+msgctxt "#35729"
+msgid "Diese freiwillige Aktion ist nur im Modus Dynamisch verfügbar."
+msgstr "Diese freiwillige Aktion ist nur im Modus Dynamisch verfügbar."
+
+msgctxt "#35730"
+msgid "Nur physisch gefundene, gültige XCMate-Bilddateien sind auswählbar. Datenbank-Zähler belegen keinen Dateibestand."
+msgstr "Nur physisch gefundene, gültige XCMate-Bilddateien sind auswählbar. Datenbank-Zähler belegen keinen Dateibestand."
+
+msgctxt "#35731"
+msgid "Keine internen XCMate-Bilddateien gefunden."
+msgstr "Keine internen XCMate-Bilddateien gefunden."
+
+msgctxt "#35732"
+msgid "Behalten (empfohlen)"
+msgstr "Behalten (empfohlen)"
+
+msgctxt "#35733"
+msgid "Vorher auf USB/SMB sichern oder kopieren"
+msgstr "Vorher auf USB/SMB sichern oder kopieren"
+
+msgctxt "#35734"
+msgid "Nur diese XCMate-Bilder jetzt entfernen"
+msgstr "Nur diese XCMate-Bilder jetzt entfernen"
+
+msgctxt "#35735"
+msgid "Vorigen Vorgang fortsetzen: {0} Einträge · {1}"
+msgstr "Vorigen Vorgang fortsetzen: {0} Einträge · {1}"
+
+msgctxt "#35736"
+msgid "Im vorherigen Menü Ziel wählen → prüfen → Bestand kopieren → vollständig verifizieren. Der Modus muss für eine Sicherung nicht aktiviert werden. Hier wird nichts kopiert oder gelöscht."
+msgstr "Im vorherigen Menü Ziel wählen → prüfen → Bestand kopieren → vollständig verifizieren. Der Modus muss für eine Sicherung nicht aktiviert werden. Hier wird nichts kopiert oder gelöscht."
+
+msgctxt "#35737"
+msgid "{0} interne XCMate-Bilder ({1}) endgültig entfernen? Rückwechsel zu Intern kann neue Downloads benötigen."
+msgstr "{0} interne XCMate-Bilder ({1}) endgültig entfernen? Rückwechsel zu Intern kann neue Downloads benötigen."
+
+msgctxt "#35738"
+msgid "Erneut bestätigen: nur inventarisierte eigene Bilddateien entfernen. Diese Aktion ist ohne Sicherung nicht rückgängig zu machen."
+msgstr "Erneut bestätigen: nur inventarisierte eigene Bilddateien entfernen. Diese Aktion ist ohne Sicherung nicht rückgängig zu machen."
+
+msgctxt "#35739"
+msgid "In diesem Durchlauf entfernte Bildbytes: {0}"
+msgstr "In diesem Durchlauf entfernte Bildbytes: {0}"
+
+msgctxt "#35740"
+msgid "Freier Speicher vorher {0} / nachher {1}"
+msgstr "Freier Speicher vorher {0} / nachher {1}"
+
+msgctxt "#35741"
+msgid "Gemessene Freiplatz-Differenz in Bytes (kann negativ sein): {0}"
+msgstr "Gemessene Freiplatz-Differenz in Bytes (kann negativ sein): {0}"
+
+msgctxt "#35742"
+msgid "Andere Schreibvorgänge und Dateisystembelegung können die Differenz beeinflussen. Kein Platzgewinn wird aus Dateigrößen allein behauptet."
+msgstr "Andere Schreibvorgänge und Dateisystembelegung können die Differenz beeinflussen. Kein Platzgewinn wird aus Dateigrößen allein behauptet."
+
+msgctxt "#35743"
+msgid "Ausreichend freier Speicher für neue Bilder"
+msgstr "Ausreichend freier Speicher für neue Bilder"
+
+msgctxt "#35744"
+msgid "Die eingestellte Sicherheitsreserve blockiert neue Archivbilder"
+msgstr "Die eingestellte Sicherheitsreserve blockiert neue Archivbilder"
+
+msgctxt "#35745"
+msgid "Physisch zu wenig freier Speicher für neue Bilddateien"
+msgstr "Physisch zu wenig freier Speicher für neue Bilddateien"
+
+msgctxt "#35746"
+msgid "Externer Bildspeicher ist nicht erreichbar"
+msgstr "Externer Bildspeicher ist nicht erreichbar"
+
+msgctxt "#35747"
+msgid "Dynamisch: kein dauerhaftes XCMate-Bildarchiv erforderlich"
+msgstr "Dynamisch: kein dauerhaftes XCMate-Bildarchiv erforderlich"
+
+msgctxt "#35748"
+msgid "Externer XCMate-Bestand: {0} Dateien · {1}"
+msgstr "Externer XCMate-Bestand: {0} Dateien · {1}"
+
+msgctxt "#35749"
+msgid "Im dynamischen Modus nicht angewendet"
+msgstr "Im dynamischen Modus nicht angewendet"
+
+msgctxt "#35615"
+msgid "Startsender und Startgruppe wählen"
+msgstr "Startsender und Startgruppe wählen"
+
+msgctxt "#35630"
+msgid "Navigation ist noch durch ein Fenster oder den Player blockiert. Bitte später erneut wählen."
+msgstr "Navigation ist noch durch ein Fenster oder den Player blockiert. Bitte später erneut wählen."
