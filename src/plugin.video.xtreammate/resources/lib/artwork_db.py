@@ -81,6 +81,7 @@ def _save(value):
 def classify(exc):
     number=getattr(exc,'sqlite_errorcode',0)&255
     if number in (sqlite3.SQLITE_BUSY,sqlite3.SQLITE_LOCKED):return 'BUSY'
+    if number==sqlite3.SQLITE_INTERRUPT:return 'QUERY_TIMEOUT'
     if number==sqlite3.SQLITE_READONLY:return 'READONLY'
     if number==sqlite3.SQLITE_FULL or getattr(exc,'errno',None)==errno.ENOSPC:return 'SPACE_FULL'
     if number in (sqlite3.SQLITE_CORRUPT,sqlite3.SQLITE_NOTADB):return 'CORRUPT'
@@ -90,7 +91,7 @@ def classify(exc):
     # phrases internally, but never put the exception text into a log or state.
     message=str(exc).lower()
     if 'lock-unsupported' in message:return 'LOCK_UNSUPPORTED'
-    for text,code in (('locked','BUSY'),('readonly','READONLY'),('disk is full','SPACE_FULL'),
+    for text,code in (('interrupted','QUERY_TIMEOUT'),('locked','BUSY'),('readonly','READONLY'),('disk is full','SPACE_FULL'),
                       ('malformed','CORRUPT'),('not a database','CORRUPT'),
                       ('no such column','SCHEMA_ERROR'),('no such table','SCHEMA_ERROR')):
         if text in message:return code
@@ -440,13 +441,17 @@ def snapshot(cancel=lambda:False):
         fd=_lock()
         db=sqlite3.connect('file:'+quote(path(),safe='/')+'?mode=ro',uri=True,timeout=.025)
         db.execute('PRAGMA query_only=ON')
-        deadline=time.monotonic()+.15
+        deadline=time.monotonic()+.5
         db.set_progress_handler(lambda:int(cancel() or time.monotonic()>deadline),1000)
         rows=list(db.execute('SELECT status,count(*),coalesce(sum(bytes),0) FROM jobs GROUP BY status'))
         return dict(code='OK',counts={r[0]:r[1] for r in rows},bytes=sum(r[2] for r in rows))
     except (sqlite3.Error,OSError) as exc:
         from boot_diagnostics import mark
         mark('ART_STATUS_COUNTS_FAILED',error=type(exc).__name__)
+        try:
+            import xbmc
+            xbmc.log('[XCMate][ART_DB_READ] code='+classify(exc)+' sqlite='+str(getattr(exc,'sqlite_errorcode',0)&255),xbmc.LOGINFO)
+        except (AttributeError,RuntimeError):pass
         return dict(code='CANCELLED' if cancel() else classify(exc),counts=None,bytes=None,
                     error=type(exc).__name__,sqlite_code=getattr(exc,'sqlite_errorcode',0)&255)
     finally:
@@ -461,7 +466,7 @@ def image_states(keys):
     fd=None;db=None
     from art_errors import CODES
     allowed=set(CODES)|{'PENDING','RUNNING','READY','FAILED','NETWORK_ERROR','CACHE_ERROR',
-             'INVALID_SOURCE','INVALID_IMAGE','SPACE_FULL','BUDGET_FULL','DISK_FULL'}
+             'MISSING','INVALID_SOURCE','INVALID_IMAGE','SPACE_FULL','BUDGET_FULL','DISK_FULL'}
     try:
         fd=_lock()
         db=sqlite3.connect('file:'+quote(path(),safe='/')+'?mode=ro',uri=True,timeout=.025)
@@ -507,7 +512,7 @@ def image_snapshot(keys,cancel=lambda:False):
     if not keys:return {},'OK'
     if not os.path.exists(path()):return {},'NOT_CREATED'
     allowed=set(CODES)|{'PENDING','RUNNING','READY','FAILED','NETWORK_ERROR','CACHE_ERROR',
-                         'INVALID_SOURCE','INVALID_IMAGE','SPACE_FULL','BUDGET_FULL','DISK_FULL'}
+                         'MISSING','INVALID_SOURCE','INVALID_IMAGE','SPACE_FULL','BUDGET_FULL','DISK_FULL'}
     for attempt in range(2):
         fd=None;db=None
         try:
