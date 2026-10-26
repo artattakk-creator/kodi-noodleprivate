@@ -37,8 +37,8 @@ class RailMini39(unittest.TestCase):
         now=time.time();events=[dict(title='Before',start=now-600,stop=now-300),dict(title='Now',start=now-300,stop=now+300),dict(title='Next',start=now+300,stop=now+600)]
         self.o._guide.get=lambda sid:dict(now='Now',next='Next',now_time='',now_end_time='',next_time='',events=events)
         self.o.handle_command('left');mini=self.o._mini;self.o.handle_command('right');self.assertTrue(mini.focused)
-        original=list(mini.list.items);self.o.handle_command('down');self.assertEqual(mini.selected,2)
-        self.assertEqual(mini.list.items,original);self.assertIn('FF55DD99',original[1]);self.assertNotIn('FF55DD99',original[2])
+        original=list(mini.list.items);self.o.handle_command('down');self.assertEqual(mini.selected,1)
+        self.assertEqual(mini.list.items,original);self.assertTrue(all(not item for item in original));self.assertIn('FF55DD99',mini.rows[0][1].label);self.assertNotIn('FF55DD99',mini.rows[1][1].label)
         self.assertIn('▶',mini.hint.label);self.o.handle_command('left');self.assertFalse(mini.focused)
         self.assertEqual(mini.list.options['_itemHeight'],66);self.assertEqual(mini.list.options['font'],'font12')
         self.assertIn('remote_clear.png',mini.list.options['buttonFocusTexture'])

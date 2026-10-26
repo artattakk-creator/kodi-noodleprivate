@@ -50,6 +50,7 @@ class GuideSnapshot:
         self.generation = 0
         self._revision, self._cache, self._mappings = None, {}, {}
         self._thread = None
+        self._request_generation=0;self._refresh_serial=0
 
     def start(self):
         if self._thread is None:
@@ -65,6 +66,7 @@ class GuideSnapshot:
         wanted = tuple(unique.values())[:16]
         with self._lock:
             if wanted != self._wanted:
+                self._request_generation+=1
                 self._wanted = wanted
                 self._wake.set()
 
@@ -81,7 +83,7 @@ class GuideSnapshot:
             return dict(base)
         # Re-evaluate only a bounded, already normalized programme list in RAM.
         info = guide_for_channel({'v':[dict(name=e['title'], start_timestamp=e['start'],
-            stop_timestamp=e['stop'], descr=e.get('description','')) for e in base['events']]}, 'v', now=ts)
+            stop_timestamp=e['stop'], descr=e.get('description','')) for e in base.get('programme_events',base['events'])]}, 'v', now=ts)
         info.update(epg_id=base.get('epg_id',''), mapping=base.get('mapping',''),
                     source_index=base.get('source_index'))
         if base.get('programme_events'):info['programme_events']=base['programme_events']
@@ -91,6 +93,7 @@ class GuideSnapshot:
     def request_programme(self,sid):
         with self._lock:
             if str(sid)!=getattr(self,'_programme_sid',''):
+                self._request_generation+=1
                 self._programme_sid=str(sid);self._wake.set()
 
     def refresh(self):
@@ -103,7 +106,9 @@ class GuideSnapshot:
         started=time.perf_counter()
         rev = revision(self.portal['id'])
         reloaded=rev != self._revision
-        with self._lock: wanted = self._wanted
+        with self._lock:
+            wanted=self._wanted;generation=self._request_generation
+            self._refresh_serial+=1;serial=self._refresh_serial
         if reloaded:self._mappings = configuration(self.portal['id'])['mappings']
         from guide_viewport import cache as viewport_cache
         selected=getattr(self,'_programme_sid','')
@@ -139,10 +144,11 @@ class GuideSnapshot:
             if sid==selected:
                 from epg_events import deduplicate
                 raw=self._cache.get(info.get('epg_id',''),[])
-                info['programme_events']=deduplicate(raw,channel=info.get('epg_id',''))[:256] if raw else info.get('events',[])
+                info['programme_events']=[e for e in deduplicate(raw,channel=info.get('epg_id','')) if e['stop']>now][:256] if raw else info.get('events',[])
             values[sid] = info
             if not info['now'] and sid not in self._mappings: missing.append(c)
         with self._lock:
+            if generation!=self._request_generation or serial!=self._refresh_serial:return  # Late old viewport cannot publish.
             self._values.update(values)
             for sid in values: self._values.move_to_end(sid)
             while len(self._values) > 128: self._values.popitem(last=False)

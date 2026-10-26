@@ -44,7 +44,7 @@ def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,
                 if ident in view:continue
                 alias=db.execute('SELECT cid FROM guide_alias WHERE pid=? AND alias=?',(pid,ident)).fetchone()
                 cid=alias[0] if alias else ident;view.canonical[ident]=cid
-                left=start-6*3600 if history and sid==focus_sid else start
+                left=start  # Current/future before SQL LIMIT; no unsolicited history.
                 right=start+10*86400 if history and sid==focus_sid else stop
                 cap=256 if history and sid==focus_sid else min(256,limit)
                 rows=db.execute('SELECT substr(title,1,512) AS title,substr(description,1,8192) AS description,start,stop,source FROM programmes WHERE pid=? AND cid=? AND stop>? AND start<? ORDER BY start,source,stop LIMIT ?',

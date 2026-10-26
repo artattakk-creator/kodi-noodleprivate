@@ -3852,3 +3852,15 @@ msgstr "Resolution"
 msgctxt "#35845"
 msgid "Playback is still stopping. Please wait."
 msgstr "Playback is still stopping. Please wait."
+
+msgctxt "#35850"
+msgid "XCMate successfully updated!"
+msgstr "XCMate successfully updated!"
+
+msgctxt "#35851"
+msgid "Installed version: {}"
+msgstr "Installed version: {}"
+
+msgctxt "#35853"
+msgid "Widget data temporarily unavailable. Existing data is preserved."
+msgstr "Widget data temporarily unavailable. Existing data is preserved."

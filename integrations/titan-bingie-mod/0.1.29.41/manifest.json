@@ -1,0 +1,22 @@
+{
+  "version": "0.1.29.41",
+  "target_skin": "skin.titan.bingie.mod",
+  "target_version": "2.2.3",
+  "status": "REVIEW_ONLY_NOT_INSTALLED",
+  "auto_install": false,
+  "enable_setting": "xcmate41.adapter.enabled",
+  "container_ids": [
+    90241,
+    90242,
+    90243
+  ],
+  "logo_tile": [
+    160,
+    90
+  ],
+  "logo_image": [
+    80,
+    45
+  ],
+  "sha256": "a2d9b1bc7dd3ab869c79359a1d94deae9799558fa8e28d92182422fc2f9c798a"
+}
