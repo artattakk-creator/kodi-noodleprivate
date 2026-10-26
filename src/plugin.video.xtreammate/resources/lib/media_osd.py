@@ -6,12 +6,14 @@ navigator. No modal loop, global keymap, HTTP, catalog query or live mutation.
 import math
 import os
 import time
+import uuid
 import xbmc
 import xbmcgui
 import xbmcaddon
 from localization import tr
 from media_actions import available,extension
-from playback_exit import identity,_same,stop_owned
+from playback_exit import identity,_same
+from exit_jobs import request as stop_owned
 
 _window=None
 
@@ -35,6 +37,9 @@ def clock(seconds):
 class MediaOSD(xbmcgui.WindowDialog):
     def __init__(self,token,player):
         super().__init__();self.token=token;self.player=player;self.visible=False;self.closed=False;self.suspended=False
+        self._owner_nonce=uuid.uuid4().hex
+        setter=getattr(self,'setProperty',None)
+        if setter:setter('XCMate.VodOSDOwner',self._owner_nonce)
         self.native_id=9999;self.buttons={};self.icons={};self.decor=[];self._last=0;self._signature=();self.actions=[]
         self._theme=__import__('theme_render').snapshot()
         self.media=os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media')
@@ -73,7 +78,7 @@ class MediaOSD(xbmcgui.WindowDialog):
         except (AttributeError,RuntimeError,ValueError):duration=0
         seek=bool(xbmc.getCondVisibility('Player.SeekEnabled') and duration>0)
         pause=bool(xbmc.getCondVisibility('Player.PauseEnabled'))
-        return dict(pause=pause,stop=True,back=seek,forward=seek,audio=bool(audio),subtitles=bool(subtitles),
+        return dict(pause=pause,stop=True,back=seek,forward=seek,back30=seek,forward10=seek,rewind=seek,fastforward=seek,audio=bool(audio),subtitles=bool(subtitles),
                     subtitle_toggle=bool(subtitles),video=True,audio_settings=True,info=True,autoplay=bool(self.chain()))
 
     def _build(self):
@@ -91,7 +96,7 @@ class MediaOSD(xbmcgui.WindowDialog):
                     noFocusTexture=__import__('theme_render').texture(self,os.path.join(self.media,'tv_normal.png'),'panel.default'),textOffsetX=36,font='font13',textColor='0xFFF4F7F9',focusedColor='0xFFFFFFFF')
                 self.buttons[name]=control;self.addControl(control)
                 icon={'autoplay':'more','subtitle_toggle':'subtitle','subtitles':'subtitle','audio_settings':'audio','info':'more','video':'video'}.get(name,'pause' if name=='pause' else name)
-                self.icons[name]=xbmcgui.ControlImage(164+i*step,y+12,22,22,__import__('theme_render').texture(self,os.path.join(self.media,'tv_'+icon+'.png'),''))
+                self.icons[name]=xbmcgui.ControlImage(164+i*step,y+12,22,22,__import__('player_controls').texture(name))
                 self.addControl(self.icons[name])
         rows=[[e[0] for e in entries if e[2]==group] for group in ('transport','settings')]
         for r,names in enumerate(rows):
@@ -138,20 +143,20 @@ class MediaOSD(xbmcgui.WindowDialog):
         if 'autoplay' in self.buttons:self.buttons['autoplay'].setLabel(tr(33502 if self.chain().get('enabled',True) else 33503))
         try:
             position=_number(self.player.getTime());duration=_number(self.player.getTotalTime())
-            self.position.setLabel(clock(position)+' / '+clock(duration))
+            self.position.setLabel(clock(position)+' / '+clock(duration)+'  ·  '+tr(35620,clock(max(0,duration-position))))
             self.progress.setWidth(max(1,int((self.width-212)*min(1,position/duration))) if duration else 1)
             self.progress.setVisible(duration>0)
         except (RuntimeError,ValueError,TypeError):self.position.setLabel(tr(33013));self.progress.setVisible(False)
         paused=xbmc.getCondVisibility('Player.Paused')
         if 'pause' in self.buttons:
             self.buttons['pause'].setLabel(tr(33014) if paused else tr(33001))
-            self.icons['pause'].setImage(__import__('theme_render').texture(self,os.path.join(self.media,'tv_play.png' if paused else 'tv_pause.png'),''))
+            self.icons['pause'].setImage(__import__('player_controls').texture('play' if paused else 'pause'))
 
     def invoke(self,name):
         if name=='stop' and (self.owned() or self.token[1].get('autoplay_chain')):
             from media_autoplay import request_cancel
             request_cancel(self.token[1].get('autoplay_chain',''),self.token[1]['pid'])
-            result=stop_owned(self.player,expected=self.token) if self.owned() else True
+            result=stop_owned(self.player,expected=self.token,manual=True) if self.owned() else True
             self.dispose();return result
         if not self.owned():self.dispose();return False
         if name not in {e[0] for e in available(self.token[1],self.capabilities())}:return False
@@ -160,11 +165,13 @@ class MediaOSD(xbmcgui.WindowDialog):
                 from media_autoplay import toggle
                 toggle(self.token[1].get('autoplay_chain',''),self.token[1]['pid'])
             elif name=='pause':self.player.pause()
-            elif name in ('back','forward'):
+            elif name in ('back','forward','back30','forward10'):
                 position=_number(self.player.getTime());duration=_number(self.player.getTotalTime())
-                if self.owned():self.player.seekTime(max(0,min(duration-.1,position+(-10 if name=='back' else 30))))
+                if self.owned():self.player.seekTime(max(0,min(duration-.1,position+dict(back=-10,forward=30,back30=-30,forward10=10)[name])))
+            elif name in ('rewind','fastforward'):
+                if self.owned():xbmc.executebuiltin('PlayerControl('+('Rewind' if name=='rewind' else 'Forward')+')')
             elif name=='stop':
-                result=stop_owned(self.player,expected=self.token);self.dispose();return result
+                result=stop_owned(self.player,expected=self.token,manual=True);self.dispose();return result
             elif name in ('audio','subtitles'):
                 streams=self.player.getAvailableAudioStreams() if name=='audio' else self.player.getAvailableSubtitleStreams()
                 choice=xbmcgui.Dialog().select(tr(33005 if name=='audio' else 33006),list(streams))
@@ -176,7 +183,7 @@ class MediaOSD(xbmcgui.WindowDialog):
             elif name in ('video','audio_settings'):
                 self.hide_bar();self.suspended=True;self._suspend_until=time.monotonic()+.5;self.close()
                 xbmc.executebuiltin('ActivateWindow('+('osdvideosettings' if name=='video' else 'osdaudiosettings')+')')
-            elif name=='info':xbmcgui.Dialog().textviewer(tr(33010),self.token[1].get('title') or tr(33012))
+            elif name=='info':xbmcgui.Dialog().textviewer(tr(33010),(self.token[1].get('title') or tr(33012))+'\n'+__import__('player_controls').status())
             else:
                 if self.owned():return extension(name,self.token[1])
             self.update();return True
@@ -191,12 +198,12 @@ class MediaOSD(xbmcgui.WindowDialog):
             if self.transition() or self.token[1].get('autoplay_chain'):
                 if key in (9,10,92):
                     if self.visible:self.hide_bar()
-                    else:self.invoke('stop')
+                    else:self.hide_bar()
                 return
             self.dispose();return
         if key in (9,10,92):
             if self.visible:self.hide_bar()
-            else:self.invoke('stop')
+            else:self.hide_bar()
         # Native buttons call onControl BEFORE onAction(7), exactly once.
         elif key==7:return
         elif key in (12,79,229):self.invoke('pause')
@@ -223,6 +230,16 @@ def poll(player=None):
         if _window:_window.dispose();_window=None
         return
     current=_dialog_id()
+    from exit_jobs import state as exit_state
+    pending=exit_state()
+    if pending and pending['phase'] in ('pending','running') and _same(tuple(pending['token']),token):
+        if _window:_window.dispose();_window=None
+        return
+    if _window and _window.closed:_window=None
+    if _window and current>=13000:
+        try:
+            if xbmcgui.Window(current).getProperty('XCMate.VodOSDOwner')==_window._owner_nonce:_window.native_id=current
+        except (AttributeError,RuntimeError):pass
     if _window and not _same(_window.token,token):_window.dispose();_window=None
     if _window is None:
         if current not in (0,9999):return # never steal a foreign dialog

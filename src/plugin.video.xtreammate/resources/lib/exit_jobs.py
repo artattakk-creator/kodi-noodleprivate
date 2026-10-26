@@ -41,7 +41,7 @@ def trace(stage,token):
     except (AttributeError,RuntimeError):pass
 
 
-def request(player=None,pid=None,expected=None):
+def request(player=None,pid=None,expected=None,manual=False):
     import xbmc
     from playback_exit import identity,_same
     try:token=identity(player or xbmc.Player())
@@ -49,7 +49,9 @@ def request(player=None,pid=None,expected=None):
     if not token or pid is not None and token[1]['pid']!=str(pid) or expected and not _same(token,expected):return False
     with _lock:
         prior=state()
-        if prior and _same(tuple(prior['token']),token):return prior['phase'] in ('pending','running','complete')
+        if prior and _same(tuple(prior['token']),token):
+            retry=manual and prior['phase'] in ('failed','timeout') and (_thread is None or not _thread.is_alive())
+            if not retry:return prior['phase'] in ('pending','running','complete')
         if prior and prior['phase'] in ('pending','running'):return False
         if token[0]=='media' and token[1].get('autoplay_chain'):
             from media_autoplay import request_cancel
