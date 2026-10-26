@@ -145,10 +145,10 @@ test_restart_offline_previous_index_and_immediate_disabled_filter (test_xcmate_0
 test_same_stream_in_two_groups_counted_once_globally_but_available_in_each (test_xcmate_028_streaming.IndexTests.test_same_stream_in_two_groups_counted_once_globally_but_available_in_each) ... ok
 test_streaming_group_publishes_only_after_complete_json (test_xcmate_028_streaming.IndexTests.test_streaming_group_publishes_only_after_complete_json) ... ok
 test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update (test_xcmate_028_streaming.LargeGuideTests.test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update) ... 
-LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 22.419}
+LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 19.481}
 ok
 test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib (test_xcmate_028_streaming.LargeHTTPTests.test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib) ... 
-LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 309522432, "seconds": 37.666, "peak_rss_kib": 68364}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 621727744, "seconds": 37.904, "peak_rss_kib": 68364}]
+LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 309522432, "seconds": 32.567, "peak_rss_kib": 68208}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 621727744, "seconds": 32.667, "peak_rss_kib": 68208}]
 ok
 test_cache_envelope_and_trailing_data_validated (test_xcmate_028_streaming.ParserTests.test_cache_envelope_and_trailing_data_validated) ... ok
 test_chunked_http_gzip_and_truncated_compression (test_xcmate_028_streaming.ParserTests.test_chunked_http_gzip_and_truncated_compression) ... ok
@@ -950,6 +950,22 @@ test_hidden_back_does_not_stop_or_cancel_autoplay (test_xcmate_player_02938.Play
 test_pending_stop_cannot_recreate_capture_or_block_gui (test_xcmate_player_02938.Player38.test_pending_stop_cannot_recreate_capture_or_block_gui) ... ok
 test_stop_request_can_be_retried_by_user_after_failure_not_by_service_loop (test_xcmate_player_02938.Player38.test_stop_request_can_be_retried_by_user_after_failure_not_by_service_loop) ... ok
 test_timeline_includes_actual_remaining_duration (test_xcmate_player_02938.Player38.test_timeline_includes_actual_remaining_duration) ... ok
+test_decoder_failure_before_first_video_has_bounded_return_without_stop (test_xcmate_player_stability_02940.FailedStartup40.test_decoder_failure_before_first_video_has_bounded_return_without_stop) ... ok
+test_failed_resolver_restores_origin_without_stop_and_releases_pending_guard (test_xcmate_player_stability_02940.FailedStartup40.test_failed_resolver_restores_origin_without_stop_and_releases_pending_guard) ... ok
+test_old_service_running_stop_without_completion_fields_stays_quarantined (test_xcmate_player_stability_02940.FailedStartup40.test_old_service_running_stop_without_completion_fields_stays_quarantined) ... ok
+test_pending_native_stop_blocks_new_vod_and_live_handshake (test_xcmate_player_stability_02940.FailedStartup40.test_pending_native_stop_blocks_new_vod_and_live_handshake) ... ok
+test_startup_deadline_never_stops_or_returns_over_active_foreign_player (test_xcmate_player_stability_02940.FailedStartup40.test_startup_deadline_never_stops_or_returns_over_active_foreign_player) ... ok
+test_suspended_search_dialog_with_unknown_native_id_is_shown_on_failed_start_return (test_xcmate_player_stability_02940.FailedStartup40.test_suspended_search_dialog_with_unknown_native_id_is_shown_on_failed_start_return) ... ok
+test_live_exit_poll_during_blocked_stop_does_not_query_player (test_xcmate_player_stability_02940.LiveQuarantine40.test_live_exit_poll_during_blocked_stop_does_not_query_player) ... ok
+test_blocked_native_stop_quarantines_queries_and_retries_even_after_timeout (test_xcmate_player_stability_02940.PlayerStability40.test_blocked_native_stop_quarantines_queries_and_retries_even_after_timeout) ... ok
+test_explicit_startup_cancel_still_stops_only_owned_item (test_xcmate_player_stability_02940.PlayerStability40.test_explicit_startup_cancel_still_stops_only_owned_item) ... ok
+test_explicit_user_stop_is_single_flight_and_logs_whitelisted_cause (test_xcmate_player_stability_02940.PlayerStability40.test_explicit_user_stop_is_single_flight_and_logs_whitelisted_cause) ... ok
+test_foreign_modal_release_timeout_never_stops_or_closes_dialog (test_xcmate_player_stability_02940.PlayerStability40.test_foreign_modal_release_timeout_never_stops_or_closes_dialog) ... ok
+test_foreign_replacement_before_stop_worker_never_receives_stop (test_xcmate_player_stability_02940.PlayerStability40.test_foreign_replacement_before_stop_worker_never_receives_stop) ... ok
+test_native_dialog_must_really_release_before_stop_worker_starts (test_xcmate_player_stability_02940.PlayerStability40.test_native_dialog_must_really_release_before_stop_worker_starts) ... ok
+test_owner_view_poll_during_decoder_start_does_not_stop_or_request_return (test_xcmate_player_stability_02940.PlayerStability40.test_owner_view_poll_during_decoder_start_does_not_stop_or_request_return) ... ok
+test_twenty_decoder_start_fullscreen_flaps_never_authorize_a_stop (test_xcmate_player_stability_02940.PlayerStability40.test_twenty_decoder_start_fullscreen_flaps_never_authorize_a_stop) ... ok
+test_search_native_modal_released_without_discarding_origin_or_owner (test_xcmate_player_stability_02940.SearchNative40.test_search_native_modal_released_without_discarding_origin_or_owner) ... ok
 test_all_shipping_catalogs_validate_utf8_and_contexts_match (test_xcmate_po_02930.Po30Tests.test_all_shipping_catalogs_validate_utf8_and_contexts_match) ... ok
 test_duplicate_context_missing_translation_and_bad_quotes_are_rejected (test_xcmate_po_02930.Po30Tests.test_duplicate_context_missing_translation_and_bad_quotes_are_rejected) ... ok
 test_json_unicode_escape_and_other_unknown_escapes_are_rejected (test_xcmate_po_02930.Po30Tests.test_json_unicode_escape_and_other_unknown_escapes_are_rejected) ... ok
@@ -1127,6 +1143,15 @@ test_service_short_epg_revision_invalidates_only_the_affected_portal (test_xcmat
 test_tab_click_during_worker_keeps_the_same_pending_job (test_xcmate_search_performance_02935.SearchPerformance35.test_tab_click_during_worker_keeps_the_same_pending_job) ... ok
 test_unrelated_wal_writes_do_not_restart_the_live_generation (test_xcmate_search_performance_02935.SearchPerformance35.test_unrelated_wal_writes_do_not_restart_the_live_generation) ... ok
 test_xml_programme_late_in_catalogue_precedes_all_missing_short_lookups (test_xcmate_search_performance_02935.SearchPerformance35.test_xml_programme_late_in_catalogue_precedes_all_missing_short_lookups) ... ok
+test_each_kind_has_independent_second_page_and_position (test_xcmate_search_stability_02940.SearchPages40.test_each_kind_has_independent_second_page_and_position) ... ok
+test_epg_metadata_changes_update_existing_items_without_resetting_names (test_xcmate_search_stability_02940.SearchPages40.test_epg_metadata_changes_update_existing_items_without_resetting_names) ... ok
+test_film_and_series_pages_publish_before_expensive_epg_prepare (test_xcmate_search_stability_02940.SearchPages40.test_film_and_series_pages_publish_before_expensive_epg_prepare) ... ok
+test_final_confirmed_zero_replaces_old_rows_but_pending_error_does_not (test_xcmate_search_stability_02940.SearchPages40.test_final_confirmed_zero_replaces_old_rows_but_pending_error_does_not) ... ok
+test_new_query_cancels_old_callback_and_does_not_inherit_confirmed_rows (test_xcmate_search_stability_02940.SearchPages40.test_new_query_cancels_old_callback_and_does_not_inherit_confirmed_rows) ... ok
+test_no_list_reset_or_cover_replacement_for_identical_or_pending_rows (test_xcmate_search_stability_02940.SearchPages40.test_no_list_reset_or_cover_replacement_for_identical_or_pending_rows) ... ok
+test_page_cache_is_bounded_and_final_disabled_is_authoritative (test_xcmate_search_stability_02940.SearchPages40.test_page_cache_is_bounded_and_final_disabled_is_authoritative) ... ok
+test_portal_switch_rejects_old_worker_callback_even_with_same_query (test_xcmate_search_stability_02940.SearchPages40.test_portal_switch_rejects_old_worker_callback_even_with_same_query) ... ok
+test_twenty_tab_cycles_keep_confirmed_results_when_replies_are_pending (test_xcmate_search_stability_02940.SearchPages40.test_twenty_tab_cycles_keep_confirmed_results_when_replies_are_pending) ... ok
 test_downloaded_poster_refreshes_existing_item_without_reset_or_focus_change (test_xcmate_search_ui_02933.SearchUI33.test_downloaded_poster_refreshes_existing_item_without_reset_or_focus_change) ... ok
 test_live_name_hit_shows_local_now_title_without_claiming_programme_match (test_xcmate_search_ui_02933.SearchUI33.test_live_name_hit_shows_local_now_title_without_claiming_programme_match) ... ok
 test_missing_artwork_and_epg_use_safe_local_type_fallbacks (test_xcmate_search_ui_02933.SearchUI33.test_missing_artwork_and_epg_use_safe_local_type_fallbacks) ... ok
@@ -1315,6 +1340,13 @@ test_worker_prepares_then_gui_reads_only_ram_and_rolls_programme_boundary (test_
 test_per_portal_source_success_failure_restart_and_secret_filter (test_xcmate_tv_025.SourceStatusTests.test_per_portal_source_success_failure_restart_and_secret_filter) ... ok
 test_status_source_count_is_bounded (test_xcmate_tv_025.SourceStatusTests.test_status_source_count_is_bounded) ... ok
 test_search_ui_artwork_and_existing_handoff_are_byte_identical_to_main_034 (test_xcmate_ui_freeze_02935.SearchFreeze35.test_search_ui_artwork_and_existing_handoff_are_byte_identical_to_main_034) ... ok
+test_video_audio_subtitle_snapshot_uses_local_icons_and_honest_unknown_values (test_xcmate_ui_stability_02940.StreamGroups40.test_video_audio_subtitle_snapshot_uses_local_icons_and_honest_unknown_values) ... ok
+test_video_osd_is_recovered_even_during_transient_fullscreen_flag_loss (test_xcmate_ui_stability_02940.StreamGroups40.test_video_osd_is_recovered_even_during_transient_fullscreen_flag_loss) ... ok
+test_now_mark_and_focus_are_independent_in_two_line_programme_painter (test_xcmate_ui_stability_02940.UIStability40.test_now_mark_and_focus_are_independent_in_two_line_programme_painter) ... ok
+test_slow_local_epg_refresh_does_not_hold_ir_navigation_or_ram_snapshot (test_xcmate_ui_stability_02940.UIStability40.test_slow_local_epg_refresh_does_not_hold_ir_navigation_or_ram_snapshot) ... ok
+test_standard_osd_first_ok_recovery_opens_infobar_then_controls (test_xcmate_ui_stability_02940.UIStability40.test_standard_osd_first_ok_recovery_opens_infobar_then_controls) ... ok
+test_twenty_navigation_hides_clear_owned_labels_and_closed_surface (test_xcmate_ui_stability_02940.UIStability40.test_twenty_navigation_hides_clear_owned_labels_and_closed_surface) ... ok
+test_two_line_mini_title_is_bounded_and_narrower_at_both_resolutions (test_xcmate_ui_stability_02940.UIStability40.test_two_line_mini_title_is_bounded_and_narrower_at_both_resolutions) ... ok
 test_cancel_during_native_discovery_cannot_apply_late_result (test_xcmate_universal_sources_043.SourceTests.test_cancel_during_native_discovery_cannot_apply_late_result) ... ok
 test_cancelled_or_failed_scan_never_registers_portal_or_selection (test_xcmate_universal_sources_043.SourceTests.test_cancelled_or_failed_scan_never_registers_portal_or_selection) ... ok
 test_cp1252_utf16_line_budget_invalid_rows_and_duplicate_detection (test_xcmate_universal_sources_043.SourceTests.test_cp1252_utf16_line_budget_invalid_rows_and_duplicate_detection) ... ok
@@ -1410,12 +1442,12 @@ test_widget_route_and_no_cached_credentials_in_link (test_xtreammate_widgets.Wid
 test_youtube_whitelist (test_xtreammate_widgets.WidgetsTest.test_youtube_whitelist) ... ok
 
 ----------------------------------------------------------------------
-Ran 1403 tests in 355.672s
+Ran 1435 tests in 305.492s
 
 OK
 
-MODEL_COLD_WINDOW_MS 7.310
-SEARCH39_HOST [{'query_kind': 'cold', 'first_names_ms': 7.544, 'total_ms': 66.495, 'scanned': 2905, 'results': 6}, {'query_kind': 'warm', 'first_names_ms': 7.039, 'total_ms': 25.318, 'scanned': 2905, 'results': 6}]
+MODEL_COLD_WINDOW_MS 6.586
+SEARCH39_HOST [{'query_kind': 'cold', 'first_names_ms': 6.304, 'total_ms': 55.402, 'scanned': 2905, 'results': 6}, {'query_kind': 'warm', 'first_names_ms': 5.988, 'total_ms': 21.556, 'scanned': 2905, 'results': 6}]
 
 SELECTIVE_XMLTV {"bytes": 400, "parsed": 2, "stored": 1}
 
