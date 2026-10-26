@@ -114,7 +114,9 @@ def current_start(portal,session):
     from portals import update
     current=get_by_id(portal['id'])
     if not current or not current.get('enabled',True):return False
-    return update(portal['id'],dict(start_group_id=cid,start_stream_id=sid)) is not False
+    result=update(portal['id'],dict(start_group_id=cid,start_stream_id=sid)) is not False
+    if result:xbmcgui.Dialog().notification('XCMate',tr(35616))
+    return result
 
 
 def trace(stage):

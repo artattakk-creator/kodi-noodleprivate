@@ -44,3 +44,15 @@ class Player38(unittest.TestCase):
         self.assertFalse(jobs.request(self.m.player,expected=self.w.token))
         self.assertTrue(jobs.request(self.m.player,expected=self.w.token,manual=True))
         self.m.player.stop.assert_not_called()
+
+    def test_explicit_home_waits_for_owned_stop_before_navigating(self):
+        nav=importlib.import_module('navigation_dispatch');life=importlib.import_module('window_lifecycle')
+        self.m.player.isPlaying.side_effect=lambda:self.m.player.isPlayingVideo()
+        # A real Stop changes native playback state, modeled explicitly here.
+        self.m.player.stop.side_effect=lambda:setattr(self.m.player.isPlayingVideo,'return_value',False)
+        self.assertTrue(nav.dispatch('xcmate_home','p'))
+        with mock.patch.object(life,'state',return_value=dict(window=10025,dialog=0,modal=False,updating=False)),mock.patch.object(life,'lease',return_value=''):
+            nav.poll();self.assertFalse(self.m.builtins)
+            from exit37_fixture import drain_stop
+            drain_stop();nav.poll();nav.poll()
+        self.m.player.stop.assert_called_once();self.assertEqual(len(self.m.builtins),1);self.assertIn('action=xcmate_home',self.m.builtins[0])

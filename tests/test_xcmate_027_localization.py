@@ -202,7 +202,8 @@ class CatalogContractTests(unittest.TestCase):
         for locale,record in frozen['catalogs'].items():
             data=(ADDON/'resources/language'/('resource.language.'+locale)/'strings.po').read_bytes()
             self.assertEqual(hashlib.sha256(data[:record['bytes']]).hexdigest(),record['sha256'])
-        settings={n.get('id'):dict(n.attrib) for n in ET.parse(ADDON/'resources/settings.xml').iter('setting')}
+        from stabilization_contract_02938 import without_stabilization38
+        settings={n.get('id'):dict(n.attrib) for n in ET.fromstring(without_stabilization38((ADDON/'resources/settings.xml').read_bytes(),'src/plugin.video.xtreammate/resources/settings.xml')).iter('setting')}
         for ident,attributes in frozen['settings'].items(): self.assertEqual(settings[ident],attributes,ident)
 
     def test_both_catalogs_have_every_new_id_and_matching_format_fields(self):

@@ -85,3 +85,10 @@ class Entry38(Fixture,unittest.TestCase):
         self.portal['autoplay_start']=True
         sys.modules['xbmc'].Player=lambda:types.SimpleNamespace(isPlayingVideo=lambda:True,isPlaying=lambda:True)
         self.assertFalse(self.entry.still_allowed(params))
+
+    def test_legacy_setting_is_hidden_and_new_pause_is_a_visible_action(self):
+        import xml.etree.ElementTree as ET
+        from xcmate027_fixture import ADDON
+        nodes={n.get('id'):n for n in ET.parse(ADDON/'resources/settings.xml').iter('setting')}
+        self.assertEqual(nodes['autoplay_diagnostics_safe'].get('default'),'false');self.assertEqual(nodes['autoplay_diagnostics_safe'].get('visible'),'false')
+        self.assertIn('action=autoplay_diagnostic_mode',nodes['autoplay_pause_action'].get('action'))

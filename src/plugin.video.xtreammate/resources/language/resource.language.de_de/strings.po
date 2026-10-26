@@ -3744,3 +3744,7 @@ msgstr "Startsender und Startgruppe wählen"
 msgctxt "#35630"
 msgid "Navigation ist noch durch ein Fenster oder den Player blockiert. Bitte später erneut wählen."
 msgstr "Navigation ist noch durch ein Fenster oder den Player blockiert. Bitte später erneut wählen."
+
+msgctxt "#35616"
+msgid "Aktueller Sender als Startsender gespeichert"
+msgstr "Aktueller Sender als Startsender gespeichert"

@@ -3744,3 +3744,7 @@ msgstr "Choose startup channel and group"
 msgctxt "#35630"
 msgid "Navigation is still blocked by a window or player. Please try again later."
 msgstr "Navigation is still blocked by a window or player. Please try again later."
+
+msgctxt "#35616"
+msgid "Current channel saved as startup channel"
+msgstr "Current channel saved as startup channel"

@@ -56,7 +56,12 @@ def enter(router,portal):
     if (paused() or state() or portal.get('type')!='xtream' or not portal.get('enabled',True)
         or not portal.get('include_live',True) or not portal.get('autoplay_start') or not portal.get('start_stream_id')
         or getattr(player,'isPlaying',player.isPlayingVideo)()):
-        marker().setProperty(KEY,json.dumps(value));return False
+        marker().setProperty(KEY,json.dumps(value))
+        if paused():
+            import xbmcgui
+            from localization import tr
+            xbmcgui.Dialog().notification('XCMate',tr(35501))
+        return False
     from profile_transaction import writing
     try:
         with writing(timeout=.05):
