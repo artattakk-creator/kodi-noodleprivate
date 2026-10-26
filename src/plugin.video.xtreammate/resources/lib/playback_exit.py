@@ -103,26 +103,23 @@ def stop_owned(player=None,pid=None,expected=None):
 
 
 def poll(player=None,fullscreen=None):
+    """Window visibility is observation, NEVER evidence of a user's exit.
+
+    Kodi can toggle fullscreen while starting/initializing a decoder or opening
+    an audio/OSD dialog. Only an explicitly cancelled resolver/chain may stop
+    here. Back/Stop are emitted by the owning input handlers with a reason.
+    """
     global _armed
+    _armed=None
+    from exit_jobs import blocked,request
+    if blocked():return False
     import xbmc
     player=player or xbmc.Player()
     try:
         token=identity(player)
-        if not token: _armed=None;return False
-        if token[0]=='media':
+        if token and token[0]=='media':
             from media_intent import cancelled
             if cancelled(token[1]):
-                from exit_jobs import request
-                return request(player,expected=token)
-        if fullscreen is None:
-            if not hasattr(xbmc,'getCondVisibility'): return False
-            fullscreen=xbmc.getCondVisibility('Window.IsVisible(fullscreenvideo)')
-        if fullscreen:
-            _armed=token
-            return False
-        if not _same(_armed,token):
-            _armed=None
-            return False  # Pending startup must never be mistaken for exit.
-        from exit_jobs import request
-        return request(player,expected=_armed)
-    except (AttributeError,RuntimeError,TypeError,ValueError): return False
+                return request(player,expected=token,reason='AUTOPLAY_CANCEL' if token[1].get('autoplay_chain') else 'STARTUP_ABORT')
+        return False
+    except (AttributeError,RuntimeError,TypeError,ValueError):return False

@@ -63,7 +63,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         token=identity(xbmc.Player())
         if token and token[0]=='media':
             from exit_jobs import request
-            return request(pid=self.portal['id'],expected=token)
+            return request(pid=self.portal['id'],expected=token,reason='USER_BACK')
         return False
 
     def setFocusId(self,control_id):
@@ -186,11 +186,8 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
             return
         if self._ready:
             if self._chain_active():return
-            # Kodi calls onInit again after returning from fullscreen video.
-            from exit_jobs import request as stop_owned
-            from media_intent import cancel
-            cancel(self.portal['id'],self._play_intent)
-            self._stop_media_only()
+            # onInit can be delivered during Kodi decoder/fullscreen startup.
+            # Reinitialization is not an explicit Back/Stop or cancellation.
             self._playback_waiting=False;self._playback_seen=False
             self._generation+=1
             if self._pending_future is not None:self._pending_future.cancel()
@@ -644,6 +641,9 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         self._play_intent=begin(self.portal['id'],kind,item['sid'])
         from media_return import capture as capture_origin
         capture_origin(self,self._play_intent)
+        if getattr(self,'_native_surface','window')=='dialog':
+            # Keep the owner/memento alive, release only this native modal.
+            super().close()
         self._autoplay_root=self._play_intent if kind=='episode' else ''
         url=self.router.url(action='media_play',pid=self.portal['id'],kind=kind,sid=item['sid'],
             series_id=item.get('series_id'),season=item.get('season'),episode=item.get('episode'),intent=self._play_intent,resume='1' if resume else '0',
@@ -1083,18 +1083,15 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         if getattr(self,'_playback_origin39',None):
             from media_return import restore
             if restore(self):return
+        from exit_jobs import blocked
+        if blocked():return
         player=xbmc.Player()
         try:
             if player.isPlayingVideo():
                 from media_progress import UNIQUE_ID
                 if player.getVideoInfoTag().getUniqueID(UNIQUE_ID)==self._play_intent:self._playback_seen=True
-                if self._playback_seen and not xbmc.getCondVisibility('Window.IsVisible(fullscreenvideo)'):
-                    from playback_exit import identity
-                    from media_return import request as return_to_origin
-                    from exit_jobs import request as stop
-                    token=identity(player)
-                    if token and token[0]=='media' and token[1]['nonce']==self._play_intent:
-                        return_to_origin(token);stop(player,expected=token)
+                # A transient non-fullscreen frame is not a user exit.
+                # Owned Back/Stop handlers publish the explicit stop/return.
                 return
             if not self._playback_seen or xbmc.getCondVisibility('Window.IsVisible(fullscreenvideo)') or xbmc.getCondVisibility('System.HasActiveModalDialog'):return
         except (AttributeError,RuntimeError):return

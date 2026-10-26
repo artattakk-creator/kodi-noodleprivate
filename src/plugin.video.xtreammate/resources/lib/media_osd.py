@@ -159,13 +159,13 @@ class MediaOSD(xbmcgui.WindowDialog):
             self.buttons['pause'].setLabel(tr(33014) if paused else tr(33001))
             self.icons['pause'].setImage(__import__('player_controls').texture('play' if paused else 'pause'))
 
-    def invoke(self,name):
+    def invoke(self,name,reason='USER_STOP'):
         if name=='stop' and (self.owned() or self.token[1].get('autoplay_chain')):
             from media_autoplay import request_cancel
             request_cancel(self.token[1].get('autoplay_chain',''),self.token[1]['pid'])
             from media_return import request as return_to_origin
             return_to_origin(self.token)
-            result=stop_owned(self.player,expected=self.token,manual=True) if self.owned() else True
+            result=stop_owned(self.player,expected=self.token,manual=True,reason=reason) if self.owned() else True
             self.dispose();return result
         if not self.owned():self.dispose();return False
         if name not in {e[0] for e in available(self.token[1],self.capabilities())}:return False
@@ -180,7 +180,7 @@ class MediaOSD(xbmcgui.WindowDialog):
             elif name in ('rewind','fastforward'):
                 if self.owned():xbmc.executebuiltin('PlayerControl('+('Rewind' if name=='rewind' else 'Forward')+')')
             elif name=='stop':
-                result=stop_owned(self.player,expected=self.token,manual=True);self.dispose();return result
+                result=stop_owned(self.player,expected=self.token,manual=True,reason=reason);self.dispose();return result
             elif name in ('audio','subtitles'):
                 streams=self.player.getAvailableAudioStreams() if name=='audio' else self.player.getAvailableSubtitleStreams()
                 choice=xbmcgui.Dialog().select(tr(33005 if name=='audio' else 33006),list(streams))
@@ -207,12 +207,12 @@ class MediaOSD(xbmcgui.WindowDialog):
             if self.transition() or self.token[1].get('autoplay_chain'):
                 if key in (9,10,92):
                     if self.visible:self.hide_bar()
-                    else:self.invoke('stop')
+                    else:self.invoke('stop',reason='USER_BACK')
                 return
             self.dispose();return
         if key in (9,10,92):
             if self.visible:self.hide_bar()
-            else:self.invoke('stop')
+            else:self.invoke('stop',reason='USER_BACK')
         # Native buttons call onControl BEFORE onAction(7), exactly once.
         elif key==7:return
         elif key in (12,79,229):self.invoke('pause')

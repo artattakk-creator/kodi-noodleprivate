@@ -157,6 +157,11 @@ class IPTVMasterService(xbmc.Monitor):
             if time.monotonic()>=self._next_diagnostic:
                 self._next_diagnostic=time.monotonic()+30
                 diagnostic('service','RUNNING',running=True,count=loops,build=SERVICE_BUILD)
+            from exit_jobs import poll as poll_stop_jobs,blocked as stop_blocked
+            poll_stop_jobs()
+            if stop_blocked():
+                self.waitForAbort(.2)
+                continue  # Native Stop may hold Kodi's player lock; no player queries.
             from live_guide_navigation import poll as poll_live_guide, preserves_player,consume_resume
             from navigation_dispatch import poll as poll_navigation,holding
             poll_navigation()
@@ -171,8 +176,6 @@ class IPTVMasterService(xbmc.Monitor):
                 from setup_navigation import poll as poll_setup
                 poll_setup()
             except Exception:diagnostic('dialog','SETUP_RETURN_FAILED')
-            from exit_jobs import poll as poll_stop_jobs
-            poll_stop_jobs()
             from live_exit import poll as poll_live_exit
             exiting=poll_live_exit(self._overlay)
             if self._overlay is not None and self._overlay._closed:self._overlay=None

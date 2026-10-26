@@ -60,6 +60,8 @@ def restore(view,natural=False):
     if not origin or not value or value.get('owner')!=view._native_owner or value.get('pid')!=str(view.portal['id']):return False
     if not natural and not value.get('requested'):return False
     if time.monotonic()<value.get('not_before',0):return False
+    from exit_jobs import blocked
+    if blocked():return False
     import xbmc,xbmcgui
     player=xbmc.Player()
     try:
