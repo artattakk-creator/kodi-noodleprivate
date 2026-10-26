@@ -1,8 +1,5 @@
 """Bounded read-only EPG viewport; no imports, HTTP or provider mutations."""
-import os
-import sqlite3
 import time
-from urllib.parse import quote
 
 ROWS=8
 SPAN=3*3600
@@ -19,10 +16,9 @@ def rectangle(start,stop,origin,span=SPAN,width=896):
 def page(portal,offset,origin,category=None,client=None):
     from library_index import Reader
     from epg_sources import configuration
-    from guide_store import path
     from epg_events import deduplicate
     reader=Reader(portal['id']);channels,total=reader.page('live',category=category,offset=offset,limit=ROWS)
-    mappings=configuration(portal['id']).get('mappings',{});db=None;result=[]
+    mappings=configuration(portal['id']).get('mappings',{});result=[]
     from local_epg import window,channel_keys
     snapshot=window(portal['id'],channels,mappings,origin,origin+SPAN,limit=101)
     state='OK' if snapshot is not None else 'NOT_CREATED'

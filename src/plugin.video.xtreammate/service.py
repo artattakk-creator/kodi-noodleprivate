@@ -3,7 +3,7 @@ import xbmc, xbmcaddon, xbmcgui
 
 ADDON    = xbmcaddon.Addon()
 LIB_PATH = os.path.join(os.path.dirname(__file__), 'resources', 'lib')
-SERVICE_BUILD = 38
+SERVICE_BUILD = 39
 if LIB_PATH not in sys.path:
     sys.path.insert(0, LIB_PATH)
 
@@ -203,8 +203,8 @@ class IPTVMasterService(xbmc.Monitor):
                 diagnostic('epg','REFRESH_REQUEST_FAILED')
             # Safe mode: heavy Xtream catalog and XMLTV downloads stay off
             # unless explicitly enabled. The player/remote service still runs.
+            self._maybe_refresh_epg()  # Own saved EPG-auto-refresh preference.
             if setting_bool('xc_background_prefetch', False):
-                self._maybe_refresh_epg()
                 self._maybe_warm_catalogs()
             if exiting:
                 self.waitForAbort(.2)

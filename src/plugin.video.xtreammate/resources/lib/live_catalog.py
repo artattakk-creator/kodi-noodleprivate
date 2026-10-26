@@ -13,10 +13,14 @@ def prepare(portal,client,force=False):
     key=(addon_data_dir(),str(portal['id']))
     with _lock:
         previous=_prepared.get(key)
+        if previous and not previous[0].done():return previous[0]
         if previous and not force:
             future,started=previous
             if not future.done():return future
             if not future.exception() and future.result()[1] is not None and time.monotonic()-started<10:return future
+        # Bound concurrent cold portals as well as completed snapshots.
+        if key not in _prepared and sum(not f.done() for f,_ in _prepared.values())>=4:
+            future=Future();future.set_result((None,None));return future
         future=Future();_prepared[key]=(future,time.monotonic())
         if len(_prepared)>4:
             for other,(task,_) in list(_prepared.items()):

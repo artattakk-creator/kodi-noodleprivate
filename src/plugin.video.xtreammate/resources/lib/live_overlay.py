@@ -743,6 +743,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         from group_selection import choose_groups,enabled_ids
         if not choose_groups(self.portal,'live',categories=self.groups,allow_refresh=False): return
         self.enabled=enabled_ids(self.portal['id'],'live',self.groups)
+        self._catalog_ready=False
         from live_catalog import prepare
         self._catalog_future39=prepare(self.portal,self.xc,force=True)
         self._load_catalog_from_disk()
@@ -909,6 +910,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
             return
         self._handle_command(command)
         self._input_trace('COMMAND_HANDLED',source,command,before,**fields)
+        from ui_latency39 import mark,finish
+        mark(self,'GUI_APPLIED');finish(self)
 
     def _handle_command(self, command):
         """XCMate-local TV commands; never open Kodi's own player OSD."""

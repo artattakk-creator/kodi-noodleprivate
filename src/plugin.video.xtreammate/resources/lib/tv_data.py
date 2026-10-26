@@ -98,7 +98,7 @@ class GuideSnapshot:
         from epg import load_cache, _mem_clear
         from epg_sources import configuration
         from epg_status import revision
-        from epg_views import resolve_guide, prefetch_short_guides
+        from epg_views import resolve_guide
         now = time.time()
         started=time.perf_counter()
         rev = revision(self.portal['id'])
@@ -147,7 +147,8 @@ class GuideSnapshot:
             for sid in values: self._values.move_to_end(sid)
             while len(self._values) > 128: self._values.popitem(last=False)
             self.generation += 1
-        if missing: prefetch_short_guides(self.portal, missing, limit=16)
+        # Visible selection is a read request, never a per-channel network job.
+        # Configured imports run independently on the background service timer.
         from live_diagnostics import record
         record('epg_performance','GUIDE_WORKER',cache_ms=cache_ms,cache_hit=not reloaded,
                snapshot_ms=(time.perf_counter()-started)*1000-cache_ms,items=len(values))
