@@ -62,3 +62,12 @@ class LiveExit41(unittest.TestCase):
     def test_barrier_does_not_clear_foreign_or_newer_live_announcement(self):
         self.post();new=dict(self.m.session,nonce='new',sid='2');self.m.properties[self.m.exit.SESSION]=json.dumps(new)
         self.ack();self.assertEqual(json.loads(self.m.properties[self.m.exit.SESSION])['nonce'],'new')
+    def test_failed_queue_barrier_after_stop_post_remains_quarantined_without_retry(self):
+        xbmc=sys.modules['xbmc'];original=xbmc.executebuiltin
+        def post(command,wait=False):
+            if command.startswith('SetProperty('):raise RuntimeError('messenger stopping')
+            return original(command,wait=wait)
+        with mock.patch.object(xbmc,'executebuiltin',side_effect=post):self.post()
+        self.assertEqual(self.jobs.state()['phase'],'timeout');self.assertTrue(self.jobs.blocked())
+        for _ in range(20):self.assertFalse(self.jobs.request(self.m.player,manual=True));self.jobs.poll()
+        self.assertEqual(len(self.m.native_builtins),1);self.assertEqual(self.m.stops,0)

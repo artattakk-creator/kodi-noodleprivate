@@ -95,11 +95,14 @@ def _run(token):
     with _lock:
         current=state()
         if current and _same(tuple(current['token']),token) and current['phase'] in ('running','timeout'):
-            current['worker_done']=True
-            current['result']='complete' if ok else 'failed'
-            if current['phase']=='running':current['phase']=current['result']
+            ambiguous=token[0]=='live' and current.get('native_posted')
+            current['worker_done']=not ambiguous
+            current['result']='POST_UNCONFIRMED' if ambiguous else 'complete' if ok else 'failed'
+            if ambiguous:current['phase']='timeout'
+            elif current['phase']=='running':current['phase']=current['result']
             save(current)
-    trace('PLAYER_STOP_DONE' if ok else 'STOP_REJECTED',token)
+        else:ambiguous=False
+    trace('STOP_POST_UNCONFIRMED' if ambiguous else 'PLAYER_STOP_DONE' if ok else 'STOP_REJECTED',token)
 
 
 def poll():
