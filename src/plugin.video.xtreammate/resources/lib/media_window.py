@@ -171,8 +171,12 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
 
     @native_init
     def onInit(self):
+        if getattr(self,'_returning39',False):return
         self.getControl(400).setLabel(tr(32586))
         self.getControl(501).setLabel(tr(32587))
+        if self._ready and getattr(self,'_playback_origin39',None):
+            # Fullscreen/Stop races must not reset the still-owned native view.
+            self._poll_playback_return();return
         if self._ready and getattr(self,'_search_prompt',False):return
         if self._ready and self.mode=='search':
             from media_search import mark
@@ -625,6 +629,8 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         self._pending_future=None;self._pending_apply=None
         from media_intent import begin
         self._play_intent=begin(self.portal['id'],kind,item['sid'])
+        from media_return import capture as capture_origin
+        capture_origin(self,self._play_intent)
         self._autoplay_root=self._play_intent if kind=='episode' else ''
         url=self.router.url(action='media_play',pid=self.portal['id'],kind=kind,sid=item['sid'],
             series_id=item.get('series_id'),season=item.get('season'),episode=item.get('episode'),intent=self._play_intent,resume='1' if resume else '0',
@@ -1057,14 +1063,27 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
     def _poll_playback_return(self):
         if not self._playback_waiting or self._leaving or self._closed:return
         if self._chain_active():return
+        if getattr(self,'_playback_origin39',None):
+            from media_return import restore
+            if restore(self):return
         player=xbmc.Player()
         try:
             if player.isPlayingVideo():
                 from media_progress import UNIQUE_ID
                 if player.getVideoInfoTag().getUniqueID(UNIQUE_ID)==self._play_intent:self._playback_seen=True
+                if self._playback_seen and not xbmc.getCondVisibility('Window.IsVisible(fullscreenvideo)'):
+                    from playback_exit import identity
+                    from media_return import request as return_to_origin
+                    from exit_jobs import request as stop
+                    token=identity(player)
+                    if token and token[0]=='media' and token[1]['nonce']==self._play_intent:
+                        return_to_origin(token);stop(player,expected=token)
                 return
             if not self._playback_seen or xbmc.getCondVisibility('Window.IsVisible(fullscreenvideo)') or xbmc.getCondVisibility('System.HasActiveModalDialog'):return
         except (AttributeError,RuntimeError):return
+        if getattr(self,'_playback_origin39',None):
+            from media_return import restore
+            if restore(self,natural=True):return
         # Some Kodi skins reveal WindowXML without delivering another onInit.
         # Restore through the owner pump, never a player/worker callback.
         self._playback_waiting=False;self._playback_seen=False
@@ -1082,6 +1101,8 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
     def close(self):
         self._gui()
         if self._closed: return
+        from media_return import discard
+        discard(self)
         self._cancel_chain()
         from media_intent import cancel
         cancel(self.portal['id'],self._play_intent)

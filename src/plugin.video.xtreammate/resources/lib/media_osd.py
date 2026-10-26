@@ -163,6 +163,8 @@ class MediaOSD(xbmcgui.WindowDialog):
         if name=='stop' and (self.owned() or self.token[1].get('autoplay_chain')):
             from media_autoplay import request_cancel
             request_cancel(self.token[1].get('autoplay_chain',''),self.token[1]['pid'])
+            from media_return import request as return_to_origin
+            return_to_origin(self.token)
             result=stop_owned(self.player,expected=self.token,manual=True) if self.owned() else True
             self.dispose();return result
         if not self.owned():self.dispose();return False
@@ -205,12 +207,12 @@ class MediaOSD(xbmcgui.WindowDialog):
             if self.transition() or self.token[1].get('autoplay_chain'):
                 if key in (9,10,92):
                     if self.visible:self.hide_bar()
-                    else:self.hide_bar()
+                    else:self.invoke('stop')
                 return
             self.dispose();return
         if key in (9,10,92):
             if self.visible:self.hide_bar()
-            else:self.hide_bar()
+            else:self.invoke('stop')
         # Native buttons call onControl BEFORE onAction(7), exactly once.
         elif key==7:return
         elif key in (12,79,229):self.invoke('pause')
