@@ -1,0 +1,225 @@
+{
+  "count": 44,
+  "tests": [
+    {
+      "file": "tests/test_xcmate_live_exit_02941.py",
+      "cls": "LiveExit41",
+      "method": "test_no_synchronous_player_stop_wait_only_fixed_async_queue_commands"
+    },
+    {
+      "file": "tests/test_xcmate_live_exit_02941.py",
+      "cls": "LiveExit41",
+      "method": "test_post_and_early_callback_do_not_claim_done_before_native_queue_barrier"
+    },
+    {
+      "file": "tests/test_xcmate_live_exit_02941.py",
+      "cls": "LiveExit41",
+      "method": "test_timeout_never_reposts_stop_and_late_barrier_stays_timeout"
+    },
+    {
+      "file": "tests/test_xcmate_live_exit_02941.py",
+      "cls": "LiveExit41",
+      "method": "test_foreign_before_dispatch_gets_no_stop_or_navigation"
+    },
+    {
+      "file": "tests/test_xcmate_live_exit_02941.py",
+      "cls": "LiveExit41",
+      "method": "test_wrong_or_previous_barrier_cannot_complete_current_session"
+    },
+    {
+      "file": "tests/test_xcmate_live_exit_02941.py",
+      "cls": "LiveExit41",
+      "method": "test_twenty_live_back_cycles_release_overlay_then_stop_then_home_once"
+    },
+    {
+      "file": "tests/test_xcmate_live_exit_02941.py",
+      "cls": "LiveExit41",
+      "method": "test_late_native_return_does_not_turn_live_exit_timeout_into_success"
+    },
+    {
+      "file": "tests/test_xcmate_live_exit_02941.py",
+      "cls": "LiveExit41",
+      "method": "test_barrier_does_not_clear_foreign_or_newer_live_announcement"
+    },
+    {
+      "file": "tests/test_xcmate_live_exit_02941.py",
+      "cls": "LiveExit41",
+      "method": "test_failed_queue_barrier_after_stop_post_remains_quarantined_without_retry"
+    },
+    {
+      "file": "tests/test_xcmate_mini_02941.py",
+      "cls": "MiniVisual41",
+      "method": "test_one_text_layer_with_visible_focusable_native_navigation_at_720_and_1080"
+    },
+    {
+      "file": "tests/test_xcmate_mini_02941.py",
+      "cls": "MiniVisual41",
+      "method": "test_more_than_five_events_scroll_once_and_now_mark_does_not_follow_focus"
+    },
+    {
+      "file": "tests/test_xcmate_mini_02941.py",
+      "cls": "MiniVisual41",
+      "method": "test_only_future_before_limit_and_no_fake_now_on_historical_only"
+    },
+    {
+      "file": "tests/test_xcmate_mini_02941.py",
+      "cls": "MiniVisual41",
+      "method": "test_twenty_open_close_and_long_non_latin_titles_leave_no_hidden_text"
+    },
+    {
+      "file": "tests/test_xcmate_mini_02941.py",
+      "cls": "MiniVisual41",
+      "method": "test_native_action_92_preserves_back_contract_in_all_overlay_states"
+    },
+    {
+      "file": "tests/test_xcmate_mini_02941.py",
+      "cls": "MiniSnapshot41",
+      "method": "test_sql_limit_after_time_selection_keeps_future_past_300_historical_slots"
+    },
+    {
+      "file": "tests/test_xcmate_mini_02941.py",
+      "cls": "MiniSnapshot41",
+      "method": "test_late_worker_for_old_sender_selection_cannot_publish"
+    },
+    {
+      "file": "tests/test_xcmate_update_notice_02941.py",
+      "cls": "UpdateNotice41",
+      "method": "test_fresh_install_is_baseline_not_false_upgrade_and_no_dialog"
+    },
+    {
+      "file": "tests/test_xcmate_update_notice_02941.py",
+      "cls": "UpdateNotice41",
+      "method": "test_real_upgrade_shows_actual_installed_version_once_after_ok"
+    },
+    {
+      "file": "tests/test_xcmate_update_notice_02941.py",
+      "cls": "UpdateNotice41",
+      "method": "test_back_also_acknowledges_and_two_restarts_do_not_repeat"
+    },
+    {
+      "file": "tests/test_xcmate_update_notice_02941.py",
+      "cls": "UpdateNotice41",
+      "method": "test_old_service_build_witness_handles_first_actual_upgrade_from_40"
+    },
+    {
+      "file": "tests/test_xcmate_update_notice_02941.py",
+      "cls": "UpdateNotice41",
+      "method": "test_service_schedules_runplugin_but_never_opens_a_dialog"
+    },
+    {
+      "file": "tests/test_xcmate_update_notice_02941.py",
+      "cls": "UpdateNotice41",
+      "method": "test_playback_modal_owner_or_stop_defers_without_using_player_stop"
+    },
+    {
+      "file": "tests/test_xcmate_update_notice_02941.py",
+      "cls": "UpdateNotice41",
+      "method": "test_no_notice_on_repository_publish_or_same_installed_version"
+    },
+    {
+      "file": "tests/test_xcmate_update_notice_02941.py",
+      "cls": "UpdateNotice41",
+      "method": "test_numeric_versions_downgrade_and_skipped_updates_are_correct"
+    },
+    {
+      "file": "tests/test_xcmate_update_notice_02941.py",
+      "cls": "UpdateNotice41",
+      "method": "test_power_loss_before_display_retries_pending_but_bad_marker_is_baseline"
+    },
+    {
+      "file": "tests/test_xcmate_update_notice_02941.py",
+      "cls": "UpdateNotice41",
+      "method": "test_failed_dialog_never_acknowledges_and_is_rate_limited"
+    },
+    {
+      "file": "tests/test_xcmate_update_notice_02941.py",
+      "cls": "UpdateNotice41",
+      "method": "test_persistent_marker_does_not_change_existing_profile_files"
+    },
+    {
+      "file": "tests/test_xcmate_update_notice_02941.py",
+      "cls": "UpdateNotice41",
+      "method": "test_parallel_gui_presenter_cannot_show_twice"
+    },
+    {
+      "file": "tests/test_xcmate_update_notice_02941.py",
+      "cls": "UpdateNotice41",
+      "method": "test_valid_json_with_invalid_optional_marker_fields_is_safe_and_not_spam"
+    },
+    {
+      "file": "tests/test_xcmate_widgets_02941.py",
+      "cls": "Widgets41",
+      "method": "test_all_three_routes_return_bounded_valid_items_without_playback"
+    },
+    {
+      "file": "tests/test_xcmate_widgets_02941.py",
+      "cls": "Widgets41",
+      "method": "test_fresh_snapshot_is_shared_without_sql_and_policy_change_invalidates"
+    },
+    {
+      "file": "tests/test_xcmate_widgets_02941.py",
+      "cls": "Widgets41",
+      "method": "test_index_error_preserves_last_good_and_does_not_reset_or_scan"
+    },
+    {
+      "file": "tests/test_xcmate_widgets_02941.py",
+      "cls": "Widgets41",
+      "method": "test_parallel_widget_refresh_uses_lkg_without_waiting_on_file_lock"
+    },
+    {
+      "file": "tests/test_xcmate_widgets_02941.py",
+      "cls": "Widgets41",
+      "method": "test_sqlite_exclusive_lock_is_bounded_and_reports_safe_error"
+    },
+    {
+      "file": "tests/test_xcmate_widgets_02941.py",
+      "cls": "Widgets41",
+      "method": "test_small_widget_query_never_counts_entire_catalogue"
+    },
+    {
+      "file": "tests/test_xcmate_widgets_02941.py",
+      "cls": "Widgets41",
+      "method": "test_missing_corrupt_index_completes_directory_without_repair"
+    },
+    {
+      "file": "tests/test_xcmate_widgets_02941.py",
+      "cls": "Widgets41",
+      "method": "test_live_logo_scale_and_epg_progress_are_explicit_adapter_properties"
+    },
+    {
+      "file": "tests/test_xcmate_widgets_02941.py",
+      "cls": "Widgets41",
+      "method": "test_large_widget_catalogue_returns_first_page_without_full_sort_or_count"
+    },
+    {
+      "file": "tests/test_xcmate_widget_adapter_02941.py",
+      "cls": "WidgetAdapter41",
+      "method": "test_disabled_adapter_never_reads_focus_or_changes_home_configuration"
+    },
+    {
+      "file": "tests/test_xcmate_widget_adapter_02941.py",
+      "cls": "WidgetAdapter41",
+      "method": "test_focus_and_natural_rollover_use_same_real_events_without_sql_network_or_tune"
+    },
+    {
+      "file": "tests/test_xcmate_widget_adapter_02941.py",
+      "cls": "WidgetAdapter41",
+      "method": "test_different_focus_or_expired_bank_clears_previous_channel_information"
+    },
+    {
+      "file": "tests/test_xcmate_widget_adapter_02941.py",
+      "cls": "WidgetAdapter41",
+      "method": "test_versioned_skin_xml_has_half_tile_logos_real_focus_fields_and_no_auto_install"
+    },
+    {
+      "file": "tests/test_xcmate_widget_adapter_02941.py",
+      "cls": "WidgetAdapter41",
+      "method": "test_preflight_reports_invalid_xml_and_id_collision_without_writes"
+    },
+    {
+      "file": "tests/test_xcmate_widget_adapter_02941.py",
+      "cls": "WidgetAdapter41",
+      "method": "test_optional_focus_binding_failure_does_not_break_background_service"
+    }
+  ]
+}

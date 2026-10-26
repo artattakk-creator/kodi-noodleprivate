@@ -1,0 +1,21 @@
+{
+  "version": "0.1.29.41",
+  "tests": 1479,
+  "seconds": 230.409,
+  "failures": 0,
+  "errors": 0,
+  "files": 390,
+  "bytes": 2657296,
+  "sha256": "60b4b8fecdfddc5ad5b9adf2503758746deb6f911b31280d9c763e3fb2e882f1",
+  "crc": "PASS",
+  "paths": "PASS",
+  "source_bytes": "PASS",
+  "reproducible_zip": "PASS",
+  "python_ast": "PASS",
+  "android": "NOT_TESTED",
+  "production_publish": false,
+  "retained_baseline_tests": 1435,
+  "new_tests": 44,
+  "source_commit": "edacc729a369ddcc867f090a55bb4b630265a5e4",
+  "baseline": "6c362a45582350c694e4e18c13581cd57cd31d70"
+}
