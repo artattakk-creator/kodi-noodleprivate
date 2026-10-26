@@ -46,7 +46,8 @@ def blocked():
     '''
     value=state()
     return bool(value and (value['phase'] in ('pending','running') or
-                value.get('stop_started') and not value.get('worker_done')))
+                value.get('stop_started') and not value.get('worker_done') or
+                value.get('prepare_posted42') and not value.get('prepare_done42')))
 
 
 def trace(stage,token,reason=None):
@@ -63,7 +64,8 @@ def request(player=None,pid=None,expected=None,manual=False,reason='USER_STOP'):
     from playback_exit import identity,_same
     if reason not in REASONS:return False
     prior=state()
-    if prior and prior.get('stop_started') and not prior.get('worker_done'):
+    if prior and (prior.get('stop_started') and not prior.get('worker_done') or
+                  prior.get('prepare_posted42') and not prior.get('prepare_done42')):
         return bool(prior['phase']=='running' and expected and _same(tuple(prior['token']),expected))
     try:token=identity(player or xbmc.Player())
     except (AttributeError,RuntimeError,ValueError,TypeError):return False
@@ -73,7 +75,7 @@ def request(player=None,pid=None,expected=None,manual=False,reason='USER_STOP'):
         if prior and _same(tuple(prior['token']),token):
             retry=manual and prior['phase']=='failed' and not prior.get('stop_started') and (_thread is None or not _thread.is_alive())
             if not retry:return prior['phase'] in ('pending','running','complete')
-        if prior and (prior['phase'] in ('pending','running') or prior.get('stop_started') and not prior.get('worker_done')):return False
+        if prior and (prior['phase'] in ('pending','running') or prior.get('stop_started') and not prior.get('worker_done') or prior.get('prepare_posted42') and not prior.get('prepare_done42')):return False
         if token[0]=='media' and token[1].get('autoplay_chain'):
             from media_autoplay import request_cancel
             request_cancel(token[1]['autoplay_chain'],token[1]['pid'])
@@ -111,12 +113,16 @@ def poll():
     with _lock:
         value=state()
         if not value:return False
+        if value['token'][0]=='live':
+            from live_stop42 import observe
+            try:observe(value)
+            except (AttributeError,RuntimeError,ValueError,TypeError,MemoryError):pass
         if value.get('native_posted') and not value.get('worker_done'):
             from native_stop41 import returned,finish
             if returned(value):
                 finish(value);value['worker_done']=True;value['result']='complete'
-                late=value['phase']=='timeout'
-                if not late:value['phase']='complete'
+                late=value['phase']=='timeout' or time.monotonic()>value['deadline']
+                value['phase']='timeout' if late else 'complete'
                 save(value);trace('LATE_NATIVE_RETURN' if late else 'PLAYER_STOP_DONE',tuple(value['token']))
         if value['phase']=='running' and 'stop_started' not in value:
             value['stop_started']=True  # In-flight legacy job: timeout never proves completion.
@@ -138,6 +144,14 @@ def poll():
                 if not value.get('release_wait'):
                     value['release_wait']=True;save(value);trace('WAIT_NATIVE_RELEASE',tuple(value['token']))
                 return True
+            if value['token'][0]=='live':
+                from live_stop42 import prepare
+                try:
+                    if not prepare(value):return value['phase']=='pending'
+                except (AttributeError,RuntimeError,ValueError,TypeError,MemoryError,OSError):
+                    value.update(phase='timeout' if value.get('prepare_posted42') else 'failed',
+                                 worker_done=True,result='PREP_UNCONFIRMED')
+                    save(value);trace('PREP_UNCONFIRMED',tuple(value['token']));return False
             value['phase']='running';value['stop_started']=True;save(value)
             _thread=threading.Thread(target=_run,args=(tuple(value['token']),),name='XCMate-stop',daemon=True)
             try:_thread.start()

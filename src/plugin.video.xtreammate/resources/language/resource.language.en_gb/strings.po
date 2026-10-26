@@ -3864,3 +3864,7 @@ msgstr "Installed version: {}"
 msgctxt "#35853"
 msgid "Widget data temporarily unavailable. Existing data is preserved."
 msgstr "Widget data temporarily unavailable. Existing data is preserved."
+
+msgctxt "#35854"
+msgid "Live TV: release fullscreen before stopping (Android 21.3 compatibility test)"
+msgstr "Live TV: release fullscreen before stopping (Android 21.3 compatibility test)"

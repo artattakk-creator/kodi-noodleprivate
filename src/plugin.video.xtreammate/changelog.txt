@@ -1,3 +1,9 @@
+0.1.29.42 (P0 Live lifecycle compatibility/diagnostic candidate; Android NOT_TESTED)
+- Optional Android Kodi 21.3 Live-only fullscreen-deinit BEFORE Stop. Enable explicitly under Player settings; default off, existing preferences unchanged. Own overlay release, native modal-aware Videos activation/fullscreen deinit and a distinct prepare barrier must complete before the existing native Stop/return barrier. No increased timeout, repeated stop, new synchronous Stop or decoder-global setting.
+- Pending GUI preparation is single-flight across interpreters and remains quarantined after an ambiguous post/timeout. Late prepare or Stop return cannot report on-time success or navigate Home. Failed preparation cannot become success after an early playback callback.
+- The .41 RK3528 native CloseFile failure is NOT declared fixed. Host lifecycle models do not execute MediaCodec/AudioTrack. If the opt-in native deinit still hangs, stop testing and obtain separately authorized native-stack diagnostics. Per-item software-decoder control is not provided by the verified Kodi Python API.
+- VOD/series, Mini EPG, widgets, version popup, artwork modes, profiles and all .41 corrections preserved. No device mutation, merge or release; historical .41 Android FAIL retained in issue #215.
+
 0.1.29.41 (cumulative stabilization test candidate; not released)
 - P0 Live Back stays enabled. Own Live Stop uses Kodi non-waiting main queue instead of synchronous Player.stop SendMsg; a second FIFO property barrier confirms native return. Posting/early callbacks/timeouts never mean completion; no replay after timeout. VOD stop/checkpoint path remains unchanged.
 - Mini EPG has one visible custom text layer with a visible/focusable blank native navigation list. Only current/future programmes selected before SQL/list limits, five two-line rows, independent NOW/focus. Late old viewport/refresh cannot replace newer selection.

@@ -64,6 +64,8 @@
     <setting id="lang_match_group" type="bool" label="32214" default="true"/>
   </category>
   <category label="32220">
+    <!-- Explicit opt-in, never changes Kodi-wide codec or player settings. -->
+    <setting id="live_exit_fullscreen42" type="bool" label="35854" default="false"/>
     <setting id="player_default" type="enum" label="32221"
              values="32222" default="0"/>
     <setting id="user_agent" type="text" label="32223"

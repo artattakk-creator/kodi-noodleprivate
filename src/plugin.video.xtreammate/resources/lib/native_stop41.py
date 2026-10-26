@@ -17,6 +17,8 @@ def post(token):
     with exit_jobs._lock:
         value=exit_jobs.state()
         if not value or value['phase']!='running' or not _same(tuple(value['token']),token):return False
+        from live_stop42 import can_post
+        if not can_post(value,token):return False
         nonce=uuid.uuid4().hex
         value['native_ack']=nonce;value['native_posted']=True
         xbmcgui.Window(10000).clearProperty(ACK);exit_jobs.save(value)

@@ -80,9 +80,9 @@ def _poll(navigator=None):
     if blocked():return True
     from exit_jobs import state as job_state
     job=job_state()
-    if job and job['phase']=='timeout' and job['token'][1]['nonce']==session['nonce']:
+    if job and job['phase'] in ('failed','timeout') and job['token'][1]['nonce']==session['nonce']:
         if value['phase']!='failed':
-            value['phase']='failed';_save(value);_trace('STOP_TIMEOUT',session)
+            value['phase']='failed';_save(value);_trace('STOP_TIMEOUT' if job['phase']=='timeout' else 'STOP_REJECTED',session)
             if navigator is not None and not navigator._closed:navigator.close()
         return True  # Late native return is not an on-time successful exit.
     player=xbmc.Player()
