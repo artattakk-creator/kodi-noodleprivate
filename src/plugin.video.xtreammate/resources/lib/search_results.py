@@ -19,10 +19,10 @@ def secondary(row):
     return ' · '.join(parts)
 
 
-def item(row,theme=None):
+def item(row,theme=None,art=None):
     result=xbmcgui.ListItem(str(row.get('name') or ''))
     kind=row.get('kind','vod')
-    result.setArt(local_art(dict(row,kind=kind),theme))
+    result.setArt(local_art(dict(row,kind=kind),theme) if art is None else art)
     result.setProperty('XCMate.SearchKind',kind if kind in KINDS else 'vod')
     result.setProperty('XCMate.SearchSecondary',secondary(row))
     return result

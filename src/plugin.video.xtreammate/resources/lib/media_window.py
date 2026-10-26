@@ -326,20 +326,32 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
             elif status and status[0]['code']=='INDEXING':
                 self.getControl(102).setLabel(tr(32612,status[0]['stored'],status[0]['received']))
 
+    def _display_art39(self,row):
+        from collections import OrderedDict
+        from media_art import local_art,sources
+        from artwork_visible import retain_displayed
+        if not hasattr(self,'_art_history39'):self._art_history39=OrderedDict()
+        key=(str(row.get('kind',self.kind)),str(row.get('sid','')),sources(row))
+        history=self._art_history39
+        current=retain_displayed(row,history.get(key,{}),local_art(row,self._theme))
+        history[key]=current;history.move_to_end(key)
+        while len(history)>256:history.popitem(last=False)
+        return current
+
     def _fill(self,control_id,rows):
         from media_art import local_art
         control=self.getControl(control_id);control.reset()
         items=[]
         for row in rows:
+            art=self._display_art39(row)
             if control_id==710:
                 from search_results import item
-                li=item(row,self._theme)
+                li=item(row,self._theme,art=art)
             else:
                 li=xbmcgui.ListItem(str(row.get('name','')))
-                art=local_art(row,self._theme)
                 li.setArt(art)
-                if not hasattr(self,'_shown_art'):self._shown_art={}
-                self._shown_art[(control_id,len(items))]=art
+            if not hasattr(self,'_shown_art'):self._shown_art={}
+            self._shown_art[(control_id,len(items))]=art
             if control_id in (300,330):
                 from theme_render import action_art
                 li.setArt(action_art(row.get('sid','') if control_id==300 else 'next_episode' if self.mode=='episodes' else 'seasons',self._theme,row.get('favourite',getattr(self,'_theme_favourite',False))))
@@ -363,14 +375,14 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
                 if not hasattr(self,'_shown_art'):self._shown_art={}
                 for pos,row in enumerate(rows):
                     key=(cid,pos);prior=self._shown_art.get(key,{})
-                    art=retain_displayed(row,prior,local_art(row,self._theme))
+                    art=self._display_art39(row)
                     if art!=prior:
                         self.getControl(cid).getListItem(pos).setArt(art)
                         self._shown_art[key]=art
             if self.selected:
                 from artwork_visible import retain_displayed
                 prior=getattr(self,'_selected_art',{})
-                art=retain_displayed(self.selected,prior,local_art(self.selected,self._theme))
+                art=self._display_art39(self.selected)
                 from theme_render import media_background
                 if art.get('fanart')!=prior.get('fanart'):self.getControl(100).setImage(media_background(self,art['fanart']))
                 if self.mode=='detail' and art.get('poster')!=prior.get('poster'):self.getControl(310).setImage(art['poster'])
@@ -507,7 +519,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         self._art_selected=dict(item)
         self.getControl(501).setLabel(tr(32587))
         from media_art import local_art
-        art=local_art(item,self._theme)
+        art=self._display_art39(item)
         from theme_render import media_background
         self.getControl(100).setImage(media_background(self,art['fanart']))
         try: self._art.put_nowait(dict(item))
@@ -571,7 +583,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
             if key in info: meta.append('{}: {}'.format(name,info[key]))
         if 'duration' in info: meta.append(tr(32510).format(info['duration']//60))
         self.getControl(102).setLabel(' · '.join(meta))
-        self.getControl(310).setImage(local_art(item,self._theme)['poster'])
+        self.getControl(310).setImage(self._display_art39(item)['poster'])
         self.getControl(320).setText(info['plot'] or tr(32511))
         self._queue_art(item)
         self.actions=[]
@@ -1018,7 +1030,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         if direction>0:
             items=[]
             for row in rows:
-                li=xbmcgui.ListItem(row['name']);li.setArt(local_art(row,self._theme));li.setInfo('video',{'title':row['name']});items.append(li)
+                li=xbmcgui.ListItem(row['name']);li.setArt(self._display_art39(row));li.setInfo('video',{'title':row['name']});items.append(li)
             panel.addItems(items);self.rows+=rows
             if len(self.rows)>WINDOW_ITEMS:
                 trim=((len(self.rows)-WINDOW_ITEMS+PAGE-1)//PAGE)*PAGE
