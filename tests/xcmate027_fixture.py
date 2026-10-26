@@ -134,7 +134,7 @@ class QueuedPool:
 class Fixture:
     def setUp(self):
         temp=tempfile.TemporaryDirectory();self.addCleanup(temp.cleanup)
-        self.folder=Path(temp.name);self.options={};self.properties={};self.added=[];self.ends=[];self.builtins=[]
+        self.folder=Path(temp.name);self.options={};self.properties={};self.added=[];self.ends=[];self.builtins=[];self.native_builtins=[]
         self.ui_locale='de_de'
         self.portal=dict(id='p',name='Demo',type='xtream',enabled=True,xc_host='https://provider.invalid',xc_user='user',xc_pass='SECRET',start_stream_id='1',start_group_id='a')
         self.portals=[self.portal];self.now=int(time.time())
@@ -178,7 +178,9 @@ class Fixture:
             yesno=mock.Mock(return_value=False),ok=mock.Mock(),notification=mock.Mock(),textviewer=mock.Mock())
         gui.Dialog=lambda:self.dialog
         xbmc=types.ModuleType('xbmc');self.current_folder='plugin://plugin.video.xtreammate/?action=xcmate_home&pid=p'
-        def builtin(command):
+        def builtin(command,wait=False):
+            if command=='PlayerControl(Stop)' or command.startswith('SetProperty(XCMate.NativeStopAck41,'):
+                self.native_builtins.append((command,wait));return
             self.builtins.append(command)
             if command.startswith('Container.Update('):
                 self.current_folder=command[len('Container.Update('):-1].removesuffix(',replace')

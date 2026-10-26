@@ -78,6 +78,13 @@ def _poll(navigator=None):
         marker.clearProperty(KEY);return False
     from exit_jobs import blocked
     if blocked():return True
+    from exit_jobs import state as job_state
+    job=job_state()
+    if job and job['phase']=='timeout' and job['token'][1]['nonce']==session['nonce']:
+        if value['phase']!='failed':
+            value['phase']='failed';_save(value);_trace('STOP_TIMEOUT',session)
+            if navigator is not None and not navigator._closed:navigator.close()
+        return True  # Late native return is not an on-time successful exit.
     player=xbmc.Player()
     from playback_exit import identity,_same
     from exit_jobs import request as stop_owned
