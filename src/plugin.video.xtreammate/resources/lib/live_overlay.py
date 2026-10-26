@@ -120,6 +120,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         from group_selection import load
         from tv_data import CatalogIndex, GuideSnapshot
         from types import SimpleNamespace
+        self._stream_details=__import__('stream_details').Details()
         self._theme=__import__('theme_render').snapshot()
         self.portal = portal
         self._left_counts = dict(left_received=0,left_channels=0,left_groups=0)
@@ -383,7 +384,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self.info_progress = xbmcgui.ControlImage(174,height-153,self._progress_width,8,os.path.join(media,'tv_progress.png'))
         self.info_duration = xbmcgui.ControlLabel(174,height-131,width-220,27,'','font12','0xFFB6BCC6')
         self.info_next = xbmcgui.ControlLabel(174,height-99,width-220,29,'','font13','0xFFF0F2F5')
-        self.info_hint = xbmcgui.ControlLabel(174,height-61,width-220,24,'OK / Runter: Bedienung    Links: Sender    Zurück: TV','font12','0xFFB6BCC6')
+        self.info_hint = xbmcgui.ControlLabel(174,height-61,width-220,24,'','font12','0xFFB6BCC6')
         self._info_controls = [self.info_bg,self.info_logo,self.info_name,self.info_now,self.info_times,
                               self.info_track,self.info_progress,self.info_duration,self.info_next,self.info_hint]
         self.osd_bg = xbmcgui.ControlImage(32,height-300,width-64,268,__import__('theme_render').texture(self,panel,'panel.player.controls'))
@@ -395,9 +396,9 @@ class LiveNavigator(xbmcgui.WindowDialog):
         for entries,buttons,y in ((main,self.main_buttons,height-238),(extra,self.extra_buttons,height-150)):
             space = (width-104)//len(entries)
             for i,(label,icon) in enumerate(entries):
-                buttons.append(xbmcgui.ControlButton(52+i*space,y,space-8,58,label,
-                    focusTexture=focused,noFocusTexture=normal,textOffsetX=36,font='font13',disabledColor='0xFF6F7780'))
-                self._button_icons.append((buttons[-1],xbmcgui.ControlImage(60+i*space,y+12,32,32,__import__('player_controls').texture(icon))))
+                buttons.append(xbmcgui.ControlButton(52+i*space,y,space-8,88 if buttons is self.main_buttons else 46,label,
+                    focusTexture=focused,noFocusTexture=normal,textOffsetX=0 if buttons is self.main_buttons else 36,textOffsetY=26 if buttons is self.main_buttons else 2,alignment=6 if buttons is self.main_buttons else 4,font='font12',disabledColor='0xFF6F7780'))
+                self._button_icons.append((buttons[-1],xbmcgui.ControlImage(52+i*space+(space-48)//2 if buttons is self.main_buttons else 60+i*space,y+6,48 if buttons is self.main_buttons else 26,48 if buttons is self.main_buttons else 26,__import__('player_controls').texture(icon))))
         all_controls = [self.bg,self.heading,self.sub,self.control,self.footer,self.capture,
             *[c for row in self._row_controls for c in row],*self._info_controls,
             self.osd_bg,self.osd_title,*self.main_buttons,*self.extra_buttons,
@@ -461,6 +462,11 @@ class LiveNavigator(xbmcgui.WindowDialog):
             self.info_duration.setLabel('{} / {} Min. vergangen    Noch {} Minuten'.format(
                 int(info['elapsed']//60),max(1,int((info['stop']-info['start']+59)//60)),
                 max(1,int((info['remaining']+59)//60))))
+        from playback_exit import identity
+        player=xbmc.Player();token=identity(player)
+        details=self._stream_details.read(player,token if token and token[0]=='live' and token[1]['pid']==str(self.portal['id']) and token[1]['sid']==self.sid else None)
+        label=__import__('stream_details').compact(details)
+        if label!=getattr(self,'_stream_label',None):self.info_hint.setLabel(label);self._stream_label=label
         self.info_next.setLabel('DANACH: {}    ab {} Uhr'.format(info['next'],info['next_time'])
                                 if info['next'] else 'DANACH: Keine Programmdaten verfügbar')
 
@@ -553,7 +559,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             space=(self._width-104)//len(transport)
             self.main_buttons[i].setPosition(52+slot*space,self._height-238)
             self.main_buttons[i].setWidth(space-8)
-            self._button_icons[i][1].setPosition(60+slot*space,self._height-225)
+            self._button_icons[i][1].setPosition(52+slot*space+(space-48)//2,self._height-232)
         for c in self.extra_buttons:c.setVisible(osd)
         for button,image in self._button_icons:
             image.setVisible(osd)
@@ -617,6 +623,15 @@ class LiveNavigator(xbmcgui.WindowDialog):
 
     def tick(self):
         if self._closed or not self._drawn: return
+        from playback_exit import identity
+        from osd_ownership import recover
+        player=xbmc.Player();token=identity(player)
+        if token and token[0]=='live' and token[1]['pid']==str(self.portal['id']) and token[1]['sid']==self.sid:
+            if recover(player,token):self._standard_recovery=True;return
+            if getattr(self,'_standard_recovery',False):
+                dialog=xbmcgui.getCurrentWindowDialogId()
+                if dialog in (0,9999):
+                    self._standard_recovery=False;self.mode='controls';self.show()
         now=time.monotonic()
         if self.mode=='info' and self._info_deadline is not None and now>=self._info_deadline:
             self._switch('hidden')
@@ -806,7 +821,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 window=('osdaudiosettings','osdvideosettings','osdsubtitlesettings')[index]
                 xbmc.executebuiltin('ActivateWindow('+window+')')
             elif index==6:
-                xbmcgui.Dialog().textviewer('XCMate',__import__('player_controls').status() or '—')
+                xbmcgui.Dialog().textviewer('XCMate',__import__('stream_details').text(self._stream_details.read(xbmc.Player(),getattr(self,'_owned_token',None))))
             elif index == 4:
                 import xbmcaddon
                 xbmcaddon.Addon().openSettings()

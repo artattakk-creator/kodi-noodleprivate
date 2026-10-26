@@ -3748,3 +3748,79 @@ msgstr "Navigation ist noch durch ein Fenster oder den Player blockiert. Bitte s
 msgctxt "#35616"
 msgid "Aktueller Sender als Startsender gespeichert"
 msgstr "Aktueller Sender als Startsender gespeichert"
+
+msgctxt "#35800"
+msgid "Unbekannt / nicht gemeldet"
+msgstr "Unbekannt / nicht gemeldet"
+
+msgctxt "#35801"
+msgid "Untertitel"
+msgstr "Untertitel"
+
+msgctxt "#35802"
+msgid "An"
+msgstr "An"
+
+msgctxt "#35803"
+msgid "Aus"
+msgstr "Aus"
+
+msgctxt "#35804"
+msgid "Tonangaben beschreiben den Stream, nicht die HDMI-/AVR-Ausgabe."
+msgstr "Tonangaben beschreiben den Stream, nicht die HDMI-/AVR-Ausgabe."
+
+msgctxt "#35810"
+msgid "Breite"
+msgstr "Breite"
+
+msgctxt "#35811"
+msgid "Höhe"
+msgstr "Höhe"
+
+msgctxt "#35812"
+msgid "Scanart"
+msgstr "Scanart"
+
+msgctxt "#35813"
+msgid "Bildrate"
+msgstr "Bildrate"
+
+msgctxt "#35814"
+msgid "Seitenverhältnis"
+msgstr "Seitenverhältnis"
+
+msgctxt "#35815"
+msgid "Video-Codec"
+msgstr "Video-Codec"
+
+msgctxt "#35816"
+msgid "Decoder"
+msgstr "Decoder"
+
+msgctxt "#35817"
+msgid "Pixelformat"
+msgstr "Pixelformat"
+
+msgctxt "#35818"
+msgid "HDR"
+msgstr "HDR"
+
+msgctxt "#35819"
+msgid "Audio-Codec"
+msgstr "Audio-Codec"
+
+msgctxt "#35820"
+msgid "Tonkanäle"
+msgstr "Tonkanäle"
+
+msgctxt "#35821"
+msgid "Tonsprache"
+msgstr "Tonsprache"
+
+msgctxt "#35822"
+msgid "Abtastrate"
+msgstr "Abtastrate"
+
+msgctxt "#35823"
+msgid "Untertitelsprache"
+msgstr "Untertitelsprache"

@@ -3748,3 +3748,79 @@ msgstr "Navigation is still blocked by a window or player. Please try again late
 msgctxt "#35616"
 msgid "Current channel saved as startup channel"
 msgstr "Current channel saved as startup channel"
+
+msgctxt "#35800"
+msgid "Unknown / not reported"
+msgstr "Unknown / not reported"
+
+msgctxt "#35801"
+msgid "Subtitles"
+msgstr "Subtitles"
+
+msgctxt "#35802"
+msgid "On"
+msgstr "On"
+
+msgctxt "#35803"
+msgid "Off"
+msgstr "Off"
+
+msgctxt "#35804"
+msgid "Audio describes the stream, not the HDMI/AVR output."
+msgstr "Audio describes the stream, not the HDMI/AVR output."
+
+msgctxt "#35810"
+msgid "Width"
+msgstr "Width"
+
+msgctxt "#35811"
+msgid "Height"
+msgstr "Height"
+
+msgctxt "#35812"
+msgid "Scan type"
+msgstr "Scan type"
+
+msgctxt "#35813"
+msgid "Frame rate"
+msgstr "Frame rate"
+
+msgctxt "#35814"
+msgid "Aspect ratio"
+msgstr "Aspect ratio"
+
+msgctxt "#35815"
+msgid "Video codec"
+msgstr "Video codec"
+
+msgctxt "#35816"
+msgid "Decoder"
+msgstr "Decoder"
+
+msgctxt "#35817"
+msgid "Pixel format"
+msgstr "Pixel format"
+
+msgctxt "#35818"
+msgid "HDR"
+msgstr "HDR"
+
+msgctxt "#35819"
+msgid "Audio codec"
+msgstr "Audio codec"
+
+msgctxt "#35820"
+msgid "Audio channels"
+msgstr "Audio channels"
+
+msgctxt "#35821"
+msgid "Audio language"
+msgstr "Audio language"
+
+msgctxt "#35822"
+msgid "Sample rate"
+msgstr "Sample rate"
+
+msgctxt "#35823"
+msgid "Subtitle language"
+msgstr "Subtitle language"
