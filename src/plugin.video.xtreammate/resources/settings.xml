@@ -35,9 +35,8 @@
              action="RunPlugin(plugin://plugin.video.xtreammate/?action=portal_manager)"/>
     <!-- v0.1.16 recovery mode: keeps the saved per-portal start preference,
          but prevents immediate RunPlugin autoplay from blocking dialog tests. -->
-    <setting id="autoplay_diagnostics_safe" type="bool"
-             label="XCMate: Diagnosemodus (automatischen Startsender vorübergehend pausieren)"
-             default="true"/>
+    <setting id="autoplay_diagnostics_safe" type="bool" label="Legacy diagnostic flag" default="false" visible="false"/>
+    <setting id="autoplay_pause_action" type="action" label="35503" action="RunPlugin(plugin://plugin.video.xtreammate/?action=autoplay_diagnostic_mode)"/>
     <setting id="popup_xtream_diagnostic" type="action"
              label="XCMate: Popup- und Fernbedienungstest OHNE TV"
              action="RunPlugin(plugin://plugin.video.xtreammate/?action=popup_probe)"/>

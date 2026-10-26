@@ -3440,3 +3440,311 @@ msgstr "Artwork {0}: {1} MiB free · {2} MiB reserve · {3} MiB budget (0 = no c
 msgctxt "#35307"
 msgid "VERSION MISMATCH – do not treat the firmware claim as verified."
 msgstr "VERSION MISMATCH – do not treat the firmware claim as verified."
+
+msgctxt "#35500"
+msgid "Pause startup playback for 15 minutes? Your saved channel preference is preserved."
+msgstr "Pause startup playback for 15 minutes? Your saved channel preference is preserved."
+
+msgctxt "#35501"
+msgid "Startup playback paused for 15 minutes"
+msgstr "Startup playback paused for 15 minutes"
+
+msgctxt "#35502"
+msgid "Saved startup preference is active again"
+msgstr "Saved startup preference is active again"
+
+msgctxt "#35503"
+msgid "Startup playback: temporary diagnostic pause"
+msgstr "Startup playback: temporary diagnostic pause"
+
+msgctxt "#35600"
+msgid "Search"
+msgstr "Search"
+
+msgctxt "#35601"
+msgid "Favourites"
+msgstr "Favourites"
+
+msgctxt "#35602"
+msgid "Live TV"
+msgstr "Live TV"
+
+msgctxt "#35603"
+msgid "Movies"
+msgstr "Movies"
+
+msgctxt "#35604"
+msgid "Series"
+msgstr "Series"
+
+msgctxt "#35605"
+msgid "Large guide"
+msgstr "Large guide"
+
+msgctxt "#35606"
+msgid "Settings"
+msgstr "Settings"
+
+msgctxt "#35607"
+msgid "XCMate Home"
+msgstr "XCMate Home"
+
+msgctxt "#35608"
+msgid "Channel groups"
+msgstr "Channel groups"
+
+msgctxt "#35609"
+msgid "Use current channel as startup channel"
+msgstr "Use current channel as startup channel"
+
+msgctxt "#35610"
+msgid "Previous  ·  NOW  ·  Next — Right: programmes"
+msgstr "Previous  ·  NOW  ·  Next — Right: programmes"
+
+msgctxt "#35611"
+msgid "No programme data available"
+msgstr "No programme data available"
+
+msgctxt "#35612"
+msgid "NOW"
+msgstr "NOW"
+
+msgctxt "#35613"
+msgid "No description available"
+msgstr "No description available"
+
+msgctxt "#35614"
+msgid "Save {0} as the startup channel? The autoplay preference stays unchanged."
+msgstr "Save {0} as the startup channel? The autoplay preference stays unchanged."
+
+msgctxt "#35620"
+msgid "Remaining {0}"
+msgstr "Remaining {0}"
+
+msgctxt "#35621"
+msgid "−30 s"
+msgstr "−30 s"
+
+msgctxt "#35622"
+msgid "+10 s"
+msgstr "+10 s"
+
+msgctxt "#35623"
+msgid "Rewind"
+msgstr "Rewind"
+
+msgctxt "#35624"
+msgid "Fast forward"
+msgstr "Fast forward"
+
+msgctxt "#35700"
+msgid "Remove old internal XCMate images …"
+msgstr "Remove old internal XCMate images …"
+
+msgctxt "#35701"
+msgid "Developer details"
+msgstr "Developer details"
+
+msgctxt "#35702"
+msgid "Unknown / unavailable"
+msgstr "Unknown / unavailable"
+
+msgctxt "#35703"
+msgid "Dynamic (Kodi loads visible images)"
+msgstr "Dynamic (Kodi loads visible images)"
+
+msgctxt "#35704"
+msgid "Persistent internal"
+msgstr "Persistent internal"
+
+msgctxt "#35705"
+msgid "Persistent external"
+msgstr "Persistent external"
+
+msgctxt "#35706"
+msgid "Mode: {0}"
+msgstr "Mode: {0}"
+
+msgctxt "#35707"
+msgid "Internal XCMate archive: {0} files · {1}"
+msgstr "Internal XCMate archive: {0} files · {1}"
+
+msgctxt "#35708"
+msgid "Skipped entries not verified as owned images: {0}"
+msgstr "Skipped entries not verified as owned images: {0}"
+
+msgctxt "#35709"
+msgid "Free internal storage: {0}"
+msgstr "Free internal storage: {0}"
+
+msgctxt "#35710"
+msgid "Active artwork target: free {0} / total {1}"
+msgstr "Active artwork target: free {0} / total {1}"
+
+msgctxt "#35711"
+msgid "Safety reserve for new archived images: {0}"
+msgstr "Safety reserve for new archived images: {0}"
+
+msgctxt "#35712"
+msgid "Additional artwork budget: {0}"
+msgstr "Additional artwork budget: {0}"
+
+msgctxt "#35713"
+msgid "No additional upper limit"
+msgstr "No additional upper limit"
+
+msgctxt "#35714"
+msgid "Storage check: {0}"
+msgstr "Storage check: {0}"
+
+msgctxt "#35715"
+msgid "Job database — not a physical file inventory:"
+msgstr "Job database — not a physical file inventory:"
+
+msgctxt "#35716"
+msgid "Pending"
+msgstr "Pending"
+
+msgctxt "#35717"
+msgid "Running"
+msgstr "Running"
+
+msgctxt "#35718"
+msgid "Recorded as ready"
+msgstr "Recorded as ready"
+
+msgctxt "#35719"
+msgid "No longer locally present"
+msgstr "No longer locally present"
+
+msgctxt "#35720"
+msgid "Storage/reserve blocked"
+msgstr "Storage/reserve blocked"
+
+msgctxt "#35721"
+msgid "Budget limit reached"
+msgstr "Budget limit reached"
+
+msgctxt "#35722"
+msgid "Failed"
+msgstr "Failed"
+
+msgctxt "#35723"
+msgid "No job rows exist"
+msgstr "No job rows exist"
+
+msgctxt "#35724"
+msgid "Job counts unavailable: {0}"
+msgstr "Job counts unavailable: {0}"
+
+msgctxt "#35725"
+msgid "Separate Kodi texture cache: {0} files · {1}"
+msgstr "Separate Kodi texture cache: {0} files · {1}"
+
+msgctxt "#35726"
+msgid "Partial Kodi cache inventory only; this is not its complete size."
+msgstr "Partial Kodi cache inventory only; this is not its complete size."
+
+msgctxt "#35727"
+msgid "Kodi thumbnails, portals, EPG, favourites, resume and databases are never removed."
+msgstr "Kodi thumbnails, portals, EPG, favourites, resume and databases are never removed."
+
+msgctxt "#35728"
+msgid "Inventory cancelled; removal is not authorized."
+msgstr "Inventory cancelled; removal is not authorized."
+
+msgctxt "#35729"
+msgid "This optional action is available in Dynamic mode only."
+msgstr "This optional action is available in Dynamic mode only."
+
+msgctxt "#35730"
+msgid "Only physically found, validated XCMate image files are selectable. Database counts do not prove files exist."
+msgstr "Only physically found, validated XCMate image files are selectable. Database counts do not prove files exist."
+
+msgctxt "#35731"
+msgid "No internal XCMate image files found."
+msgstr "No internal XCMate image files found."
+
+msgctxt "#35732"
+msgid "Keep (recommended)"
+msgstr "Keep (recommended)"
+
+msgctxt "#35733"
+msgid "Back up or copy to USB/SMB first"
+msgstr "Back up or copy to USB/SMB first"
+
+msgctxt "#35734"
+msgid "Remove only these XCMate images now"
+msgstr "Remove only these XCMate images now"
+
+msgctxt "#35735"
+msgid "Resume previous operation: {0} entries · {1}"
+msgstr "Resume previous operation: {0} entries · {1}"
+
+msgctxt "#35736"
+msgid "Use the preceding menu: select target → probe → copy archive → verify fully. You need not activate the target for a backup. Nothing is copied or removed here."
+msgstr "Use the preceding menu: select target → probe → copy archive → verify fully. You need not activate the target for a backup. Nothing is copied or removed here."
+
+msgctxt "#35737"
+msgid "Permanently remove {0} internal XCMate images ({1})? Returning to Internal may require new downloads."
+msgstr "Permanently remove {0} internal XCMate images ({1})? Returning to Internal may require new downloads."
+
+msgctxt "#35738"
+msgid "Confirm again: remove only inventoried owned images. This cannot be undone without a backup."
+msgstr "Confirm again: remove only inventoried owned images. This cannot be undone without a backup."
+
+msgctxt "#35739"
+msgid "Image bytes removed in this run: {0}"
+msgstr "Image bytes removed in this run: {0}"
+
+msgctxt "#35740"
+msgid "Free space before {0} / after {1}"
+msgstr "Free space before {0} / after {1}"
+
+msgctxt "#35741"
+msgid "Measured change in free bytes (may be negative): {0}"
+msgstr "Measured change in free bytes (may be negative): {0}"
+
+msgctxt "#35742"
+msgid "Other writes and filesystem allocation can affect the difference. File sizes alone do not prove reclaimed space."
+msgstr "Other writes and filesystem allocation can affect the difference. File sizes alone do not prove reclaimed space."
+
+msgctxt "#35743"
+msgid "Sufficient free space for new images"
+msgstr "Sufficient free space for new images"
+
+msgctxt "#35744"
+msgid "The configured safety reserve blocks new archive images"
+msgstr "The configured safety reserve blocks new archive images"
+
+msgctxt "#35745"
+msgid "Insufficient physical free space for new image files"
+msgstr "Insufficient physical free space for new image files"
+
+msgctxt "#35746"
+msgid "External artwork storage is unavailable"
+msgstr "External artwork storage is unavailable"
+
+msgctxt "#35747"
+msgid "Dynamic: no persistent XCMate image archive required"
+msgstr "Dynamic: no persistent XCMate image archive required"
+
+msgctxt "#35748"
+msgid "External XCMate archive: {0} files · {1}"
+msgstr "External XCMate archive: {0} files · {1}"
+
+msgctxt "#35749"
+msgid "Not applied in Dynamic mode"
+msgstr "Not applied in Dynamic mode"
+
+msgctxt "#35615"
+msgid "Choose startup channel and group"
+msgstr "Choose startup channel and group"
+
+msgctxt "#35630"
+msgid "Navigation is still blocked by a window or player. Please try again later."
+msgstr "Navigation is still blocked by a window or player. Please try again later."
+
+msgctxt "#35616"
+msgid "Current channel saved as startup channel"
+msgstr "Current channel saved as startup channel"

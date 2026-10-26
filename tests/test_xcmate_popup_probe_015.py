@@ -167,7 +167,7 @@ class PopupTest(unittest.TestCase):
         self.assertIn("self._overlay.expire_intro()", service)
         self.assertIn("'popup_probe': self._popup_probe", main)
         self.assertIn("self.url(action='popup_probe')", main)
-        self.assertIn("setting_bool('autoplay_diagnostics_safe', True)", main)
+        self.assertIn("from app_entry import toggle_pause",main)
 
 
 if __name__ == '__main__':

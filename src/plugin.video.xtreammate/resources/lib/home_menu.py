@@ -142,6 +142,8 @@ def settings(router, portal, section=''):
         add(tr(32446),'widget_recent_series')
     elif section=='maintenance':
         add(tr(35300),'device_info')
+        from app_entry import paused
+        add(tr(35501) if paused() else tr(35503),'autoplay_diagnostic_mode')
         add(tr(34800),'stability_test')
         for label,action in ((tr(32447),'global_search'),(tr(32448),'refresh_portal'),
             (tr(32425),'epg_status'),(tr(32449),'remote_diagnostics'),

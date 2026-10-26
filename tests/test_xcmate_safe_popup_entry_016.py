@@ -5,6 +5,7 @@ Kodi mock contracts, not proof of hardware Android remote support.
 import importlib.util
 from pathlib import Path
 import sys
+import tempfile
 import types
 import unittest
 from unittest import mock
@@ -19,6 +20,7 @@ class SafeModeRegression(unittest.TestCase):
     def setUp(self):
         paths=mock.patch.object(sys,'path',[str(LIB)]+sys.path)
         paths.start();self.addCleanup(paths.stop)
+        temp=tempfile.TemporaryDirectory();self.addCleanup(temp.cleanup)
         self.opts = {}
         self.play_calls = []
         self.properties = {}
@@ -34,20 +36,22 @@ class SafeModeRegression(unittest.TestCase):
                   'is_favourite', 'cache_clear', 'notify', 'debug', 'info',
                   'warn', 'error', 'apply_lang_sort', '_L'):
             setattr(utils, k, lambda *a, **kw: '')
+        utils.addon_data_dir=lambda:temp.name
         utils.setting_bool = lambda key, default=False: self.opts.get(key, default)
         xbmc = types.ModuleType('xbmc')
+        xbmc.getCondVisibility=lambda c:c=='Window.IsActive(videos)'
         xbmc.Player = lambda: types.SimpleNamespace(isPlayingVideo=lambda: False)
         xbmc.executebuiltin = lambda cmd: self.play_calls.append(cmd)
         gui = types.ModuleType('xbmcgui')
         win = types.SimpleNamespace(
             getProperty=lambda k: self.properties.get(k, ''),
-            setProperty=lambda k, v: self.properties.__setitem__(k, v))
+            setProperty=lambda k, v: self.properties.__setitem__(k, v),clearProperty=lambda k:self.properties.pop(k,None))
         gui.Window = lambda wid: win
         gui.ListItem = lambda label: types.SimpleNamespace(
             setArt=lambda a: None, setInfo=lambda *a, **kw: None,
             setProperty=lambda *a, **kw: None)
         gui.Dialog = lambda: types.SimpleNamespace(
-            yesno=lambda *a: True, ok=lambda *a: None)
+            yesno=lambda *a: True, ok=lambda *a: None,notification=lambda *a:None)
         plugin = types.ModuleType('xbmcplugin')
         plugin.addDirectoryItem = lambda *a, **kw: self.added.append((a, kw))
         plugin.setPluginCategory = lambda *a: None
@@ -79,6 +83,7 @@ class SafeModeRegression(unittest.TestCase):
     def test_single_portal_root_does_not_start_television(self):
         # Mirrors the user's real broken flow: entering the only portal
         # used to queue RunPlugin and launch live TV before choosing popup.
+        self.portal['autoplay_start']=False  # .38 honors an explicit disabled preference.
         self.router._show_portal_home = lambda p: self.added.append('portal-home')
         self.router._root()
         self.assertEqual(self.added, ['portal-home'])
@@ -94,8 +99,9 @@ class SafeModeRegression(unittest.TestCase):
     def test_toggle_changes_only_addon_setting_not_portal(self):
         before = dict(self.portal)
         self.router._autoplay_diagnostic_mode()
-        self.assertEqual(self.saved_settings, [
-            ('autoplay_diagnostics_safe', 'false')])
+        self.assertEqual(self.saved_settings, [])
+        from app_entry import paused
+        self.assertTrue(paused())
         self.assertEqual(self.portal, before)
 
     def test_popup_invocation_does_not_start_tv(self):
@@ -125,10 +131,12 @@ class SafeModeRegression(unittest.TestCase):
         controls = {el.get('id'): el for el in root.iter('setting')}
         pause = controls['autoplay_diagnostics_safe']
         popup = controls['popup_xtream_diagnostic']
-        self.assertEqual(pause.get('default'), 'true')
+        self.assertEqual(pause.get('default'), 'false')
+        self.assertEqual(pause.get('visible'),'false')
+        self.assertIn('action=autoplay_diagnostic_mode',controls['autoplay_pause_action'].get('action'))
         self.assertEqual(pause.get('type'), 'bool')
         self.assertIn('action=popup_probe', popup.get('action'))
-        self.assertIn("setting_bool('autoplay_diagnostics_safe', True)",
+        self.assertIn("from app_entry import toggle_pause",
                       (LIB / 'main.py').read_text(encoding='utf-8'))
 
 

@@ -84,8 +84,14 @@ class GuideSnapshot:
             stop_timestamp=e['stop'], descr=e.get('description','')) for e in base['events']]}, 'v', now=ts)
         info.update(epg_id=base.get('epg_id',''), mapping=base.get('mapping',''),
                     source_index=base.get('source_index'))
+        if base.get('programme_events'):info['programme_events']=base['programme_events']
         if not info['events']: info['reason'] = base.get('reason','NO_DATA')
         return info
+
+    def request_programme(self,sid):
+        with self._lock:
+            if str(sid)!=getattr(self,'_programme_sid',''):
+                self._programme_sid=str(sid);self._wake.set()
 
     def refresh(self):
         """One worker iteration, also usable deterministically in integration tests."""
@@ -100,7 +106,8 @@ class GuideSnapshot:
         with self._lock: wanted = self._wanted
         if reloaded:self._mappings = configuration(self.portal['id'])['mappings']
         from guide_viewport import cache as viewport_cache
-        local=viewport_cache(self.portal['id'],wanted,self._mappings,now)
+        selected=getattr(self,'_programme_sid','')
+        local=viewport_cache(self.portal['id'],wanted,self._mappings,now,focus_sid=selected) if selected else viewport_cache(self.portal['id'],wanted,self._mappings,now)
         if local is None:
             if reloaded or getattr(self,'_indexed',False):
                 _mem_clear(self.portal['id'])
@@ -129,6 +136,10 @@ class GuideSnapshot:
                         stored=guide_for_channel({'v':[dict(name=r['title'],descr=r['description'],start_timestamp=r['start'],stop_timestamp=r['stop'],_source_index=r['source']) for r in rows]},'v',now=now)
                         if stored['now'] or not info['next']: info=stored
                 except (OSError,RuntimeError,sqlite3.Error): pass
+            if sid==selected:
+                from epg_events import deduplicate
+                raw=self._cache.get(info.get('epg_id',''),[])
+                info['programme_events']=deduplicate(raw,channel=info.get('epg_id',''))[:256] if raw else info.get('events',[])
             values[sid] = info
             if not info['now'] and sid not in self._mappings: missing.append(c)
         with self._lock:

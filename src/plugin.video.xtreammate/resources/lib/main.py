@@ -70,6 +70,7 @@ class Router:
 
         R = {
             'root'               : self._root,
+            'app_open'           : self._app_open,
             'import_legacy_settings': self._import_legacy_settings,
             'portal_manager'     : self._portal_manager,
             'portal_home'        : self._portal_home,
@@ -341,6 +342,11 @@ class Router:
             lines += ['', extra]
         return '\n'.join(lines)
 
+    def _app_open(self):
+        if self._handle>=0:return self._root()
+        self._end_directory(cacheToDisc=False)
+        xbmc.executebuiltin('ActivateWindow(Videos,'+self.url(action='root')+',return)')
+
     def _root(self):
         import portals as P
         active = P.get_active()
@@ -411,11 +417,11 @@ class Router:
                           self.url(action='popup_probe'), icon=_ICON_SETTINGS,
                           plot='Öffnet ein fokussierbares Kodi-Testfenster '
                                'ohne den Startsender zu laden.')
-            paused = setting_bool('autoplay_diagnostics_safe', True)
+            paused = __import__('app_entry').paused()
             self._add_dir(
                 ('Startsender-Autostart PAUSIERT – wieder freigeben'
                  if paused else
-                 'Startsender-Autostart AKTIV – für Diagnose pausieren'),
+                 'Diagnosepause inaktiv – für 15 Minuten pausieren'),
                 self.url(action='autoplay_diagnostic_mode'),
                 icon=_ICON_SETTINGS,
                 plot='Betrifft nur den automatischen Start beim Öffnen '
@@ -547,28 +553,9 @@ class Router:
         run_popup_test()
 
     def _autoplay_diagnostic_mode(self):
-        """Toggle only the add-on-wide safety switch, not portal settings."""
-        paused = setting_bool('autoplay_diagnostics_safe', True)
-        next_state = not paused
-        if paused:
-            if not xbmcgui.Dialog().yesno(
-                    'XCMate – Startsender',
-                    'Automatischen Senderstart wieder erlauben?\n'
-                    'Wenn die Fernbedienung noch blockiert, kann das '
-                    'den Popup-Test erneut verhindern.'):
-                return
-        ADDON.setSetting('autoplay_diagnostics_safe',
-                         'true' if next_state else 'false')
-        xbmcgui.Window(10000).setProperty(
-            'XtreamMate.AutoplayDiagnosticState',
-            'PAUSIERT' if next_state else 'FREIGEGEBEN')
-        xbmcgui.Dialog().ok(
-            'XCMate – Startsender',
-            ('Automatischer Start ist für den Popup-Test pausiert.\n'
-             'Manuelles Abspielen bleibt möglich.'
-             if next_state else
-             'Autostart freigegeben. Beim nächsten Öffnen von XCMate '
-             'wird die gespeicherte Startsender-Einstellung verwendet.'))
+        self._end_directory(cacheToDisc=False)
+        from app_entry import toggle_pause
+        toggle_pause()
 
     def _remote_diagnostics(self):
         from service_health import inspect
@@ -594,7 +581,7 @@ class Router:
             'Letzte Diensteingabe: ' + health['input'],
             '',
             'Autostart-Diagnosemodus: ' +
-            ('PAUSIERT' if setting_bool('autoplay_diagnostics_safe', True)
+            ('PAUSIERT' if __import__('app_entry').paused()
              else 'FREIGEGEBEN'),
             '=== Eigener XCMate-Popup-Test ===',
             'Popup-Darstellungsweg: ' +
@@ -760,13 +747,17 @@ class Router:
             xbmcplugin.setResolvedUrl(self._handle, False, xbmcgui.ListItem())
 
     def _play_start_direct(self):
-        """RunPlugin-only autoplay: direct playback without setResolvedUrl."""
+        """RunPlugin-only direct startup with fresh ownership checks."""
+        from app_entry import accept_play,still_allowed
+        if not accept_play(self._params):return
+
         from live_exit import _trace
         _trace('START_RESOLVER')
         prepared = self._startup_playable()
         if prepared is None:
             return
         p, sid, title, item = prepared
+        if not still_allowed(self._params):return
         from live_overlay import announce
         try:
             session=announce(p['id'], sid, title)
@@ -774,6 +765,10 @@ class Router:
             bind(self._live_timing,session)
             from play_intent import before_play
             if not before_play(session): return
+            if not still_allowed(self._params):
+                xbmcgui.Window(10000).setProperty('XCMate.PrePlay.Cancel',session['nonce'])
+                xbmcgui.Window(10000).setProperty('XtreamMate.StartupStatus','AUTOPLAY_BLOCKED_FOREIGN_OR_PREFERENCE')
+                return
             from live_recovery import tag_live_item
             tag_live_item(item,session)
             xbmcgui.Window(10000).setProperty(

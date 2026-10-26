@@ -72,17 +72,14 @@ def _manage():
     dialog=xbmcgui.Dialog()
     while True:
         value=read()
-        labels=[tr(i) for i in (35201,35202,35203,35204,35205,35206,35207,35208,35209,35210,35211,35212,35213,35232)]
+        labels=[tr(i) for i in (35201,35202,35203,35204,35205,35206,35207,35208,35209,35210,35211,35212,35213,35232,35700,35701)]
         choice=dialog.select(tr(35200)+' · '+value['mode'],labels)
         if choice<0:return
         try:
             if choice==0:
-                from art_store import status
-                data=job(lambda cancel,progress:dict(artwork=status(cancel),migration=migration.status()))
-                if data is not None:
-                    # Only counts/codes, never actual SMB path, provider URL or credentials.
-                    import json
-                    dialog.textviewer(tr(35200),tr(35230)+'\n'+value['mode']+' · '+(value.get('target','') if value['mode']=='external' else 'INTERNAL/KODI_TEXTURES')+'\n'+json.dumps(data,ensure_ascii=False,indent=2))
+                from artwork_status import collect,text
+                data=job(collect)
+                if data is not None:dialog.textviewer(tr(35200),text(data))
             elif choice in (1,2):
                 mode='dynamic' if choice==1 else 'internal'
                 if not dialog.yesno(tr(35200),tr(35214 if mode=='dynamic' else 35215)):continue
@@ -154,13 +151,22 @@ def _manage():
                 old=setting_bool('media_art_paused',False)
                 if dialog.yesno(tr(35200),tr(35232)):
                     xbmcaddon.Addon().setSetting('media_art_paused','false' if old else 'true')
+            elif choice==14:
+                from artwork_status import cleanup
+                cleanup()
+            elif choice==15:
+                from artwork_status import collect
+                data=job(collect)
+                if data:
+                    import json
+                    dialog.textviewer(tr(35701),json.dumps(data,ensure_ascii=False,indent=2))
         except Exception as error:
             code=getattr(error,'code','ARTWORK_WRITER_BUSY' if isinstance(error,BlockingIOError) else type(error).__name__)
             # Fixed code only; no exception strings or private target paths.
             allowed={'StorageFailure','OSError','OperationalError','PermissionError','WriterBusy','BlockingIOError',
                      'INVALID_TARGET','TARGET_CREDENTIALS_NOT_ALLOWED','UNSUPPORTED_TARGET','STORAGE_OFFLINE','TARGET_WRITE_FAILED',
                      'TARGET_COLLISION','IMAGE_VERIFY_FAILED','INVALID_PROFILE_NAMESPACE','TARGET_SYMLINK','NO_TRANSFER','COPY_INCOMPLETE',
-                     'SOURCE_IMAGE_INVALID','SOURCE_CHANGED','RENDER_NOT_VERIFIED','CLEANUP_NOT_AUTHORIZED','ARTWORK_WRITER_BUSY','METADATA_TARGET_REQUIRED'}
+                     'SOURCE_IMAGE_INVALID','SOURCE_CHANGED','CLEANUP_NOT_AUTHORIZED','ARTWORK_ROOT_UNSAFE','ARTWORK_ROOT_CHANGED','ARTWORK_SOURCE_CHANGED','MIGRATION_PENDING','RENDER_NOT_VERIFIED','CLEANUP_NOT_AUTHORIZED','ARTWORK_WRITER_BUSY','METADATA_TARGET_REQUIRED'}
             dialog.ok(tr(35200),code if code in allowed else 'ARTWORK_OPERATION_FAILED')
 
 

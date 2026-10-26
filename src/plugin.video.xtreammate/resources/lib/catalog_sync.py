@@ -8,7 +8,8 @@ def request(portal,kind,preferred='',priority=10,force=False):
     try: request_sync(portal,kind,preferred,priority,force)
     except (OSError,RuntimeError,sqlite3.Error) as exc:
         from utils import warn
-        warn('Catalogue request: '+type(exc).__name__)
+        from artwork_db import classify
+        warn('Catalogue request: code='+classify(exc)+' sqlite='+str(getattr(exc,'sqlite_errorcode',0)&255)+' error='+type(exc).__name__)
 
 
 def run_next(cancel=lambda:False):

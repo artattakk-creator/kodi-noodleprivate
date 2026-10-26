@@ -44,6 +44,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         else:self._initial_load()
 
     def setFocusId(self,cid):
+        if getattr(getattr(self,'_navigation_rail',None),'active',False):return
         if self._closed:return
         control=self.getControl(cid)
         if not control.isVisible() or not xbmc.getCondVisibility('Control.IsEnabled({})'.format(cid)):
@@ -354,6 +355,9 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
     def onAction(self,action):
         if self._closed or self._leaving or self._search_prompt or self._focus_pending is not None:return
         key=action.getId();focus=self.getFocusId()
+        from nav_rail import view_action,open_in_view
+        if view_action(self,key):return
+        if self.mode=='groups' and key==1:open_in_view(self,'guide');return
         if key in (9,10,92):
             if time.monotonic()<self._input_after:return
             if self.mode=='grid':self._leave_home()
@@ -385,6 +389,8 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
                 self.offset-=ROWS;self.row=ROWS-1;self._focus_zone='grid';self._load()
 
     def onClick(self,cid):
+        rail=getattr(self,'_navigation_rail',None)
+        if rail and rail.click(cid):return
         if self._closed or self._leaving or self._search_prompt or self._focus_pending is not None:return
         if cid==314:
             from search_navigation import queue

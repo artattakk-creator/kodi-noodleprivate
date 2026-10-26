@@ -52,8 +52,8 @@ def enqueue(urls,priority=0):
                 db.execute('''INSERT INTO jobs VALUES(?,?,'PENDING',?,0,0,?,0)
                   ON CONFLICT(ident) DO UPDATE SET url=excluded.url,
                   priority=min(priority,excluded.priority),
-                  status=CASE WHEN status='READY' THEN 'PENDING' ELSE status END
-                  WHERE jobs.url!=excluded.url OR jobs.priority>excluded.priority OR jobs.status='READY' ''',
+                  status=CASE WHEN status IN ('READY','MISSING') THEN 'PENDING' ELSE status END
+                  WHERE jobs.url!=excluded.url OR jobs.priority>excluded.priority OR jobs.status IN ('READY','MISSING') ''',
                     (key(url),url,priority,time.time()))
     finally: db.close()
 

@@ -118,6 +118,9 @@ def guide_flow(router,portal,open_window,window_class,xml,source,initial=None):
     while True:
         if request is None:
             window=open_window(window_class,xml,router,portal,**({'return_view':view} if view is not None else {}))
+            if getattr(window,'_nav_destination',None):
+                from navigation_dispatch import RouteTransfer
+                return RouteTransfer(window._nav_destination)
             request=getattr(window,'_search_request',None)
             if request is None:return getattr(window,'_play_request',None)
             if not window._closed or getattr(window,'_running',False):return None

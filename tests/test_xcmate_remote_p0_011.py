@@ -106,11 +106,13 @@ class TestXCMateKeymap(unittest.TestCase):
 
 class TestNativeOverlayKeyHandling(unittest.TestCase):
     def test_command_mapping_bypasses_kodi_osd(self):
+        paths=mock.patch.object(sys,'path',[str(LIB),*sys.path]);paths.start();self.addCleanup(paths.stop)
         xbmc = types.ModuleType("xbmc")
         paused = []
         player = types.SimpleNamespace(
             pause=lambda: paused.append("pause"), stop=lambda: paused.append("stop"))
         xbmc.Player = lambda: player
+        xbmc.getCondVisibility=lambda c:c=='Player.PauseEnabled'
         gui = types.ModuleType("xbmcgui")
         gui.WindowDialog = type("WindowDialog", (), {})
         properties = {}
@@ -132,6 +134,8 @@ class TestNativeOverlayKeyHandling(unittest.TestCase):
             mod = import_module("test_011_overlay", "live_overlay.py")
             overlay = mod.LiveNavigator.__new__(mod.LiveNavigator)
             overlay.mode = "hidden"
+            overlay._mini=types.SimpleNamespace(command=lambda *a:False,focused=False)
+            overlay.owns_playback=lambda:True
             overlay._info_timeout = 8
             overlay._accept_input = lambda: True
             overlay._focus_main = 0

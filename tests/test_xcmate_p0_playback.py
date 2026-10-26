@@ -4,6 +4,7 @@ A lightweight Kodi API stand-in distinguishes setResolvedUrl from Player.play;
 these are API contract tests, not an Android device acceptance test.
 """
 import importlib.util
+import urllib.parse
 from pathlib import Path
 import sys
 import types
@@ -76,11 +77,13 @@ class StartupKodiContractTests(unittest.TestCase):
         utils.notify = lambda *args: self.notifications.append(args)
         utils.addon_data_dir=lambda:temp.name
         xbmc = types.ModuleType("xbmc")
+        xbmc.getCondVisibility=lambda c:c=='Window.IsActive(videos)'
         xbmc.Player = lambda: self.player
         xbmc.executebuiltin = lambda command: self.builtins.append(command)
         gui = types.ModuleType("xbmcgui")
         gui.Window = lambda number: self.window
         gui.ListItem = _Item
+        gui.Dialog=lambda:types.SimpleNamespace(notification=lambda *a:None)
         plugin = types.ModuleType("xbmcplugin")
         plugin.setResolvedUrl = lambda *args: self.resolved.append(args)
         addon = types.ModuleType("xbmcaddon")
@@ -134,10 +137,12 @@ class StartupKodiContractTests(unittest.TestCase):
     def test_runplugin_autoplay_uses_direct_player_only(self):
         # This old playback contract applies when diagnostics guard is explicitly off.
         self.settings["autoplay_diagnostics_safe"] = False
+        self.router._params["action"]="root"
         self.router._maybe_autoplay_start(self.portal)
         self.assertEqual(len(self.builtins), 1)
         self.assertIn("action=play_start_direct", self.builtins[0])
         self.assertNotIn("PlayMedia(", self.builtins[0])
+        self.router._params=dict(urllib.parse.parse_qsl(urllib.parse.urlsplit(self.builtins[0][len("RunPlugin("):-1]).query))
         self.router._play_start_direct()
         self.assertEqual(len(self.player.played), 1)
         self.assertEqual(self.resolved, [])
@@ -148,10 +153,13 @@ class StartupKodiContractTests(unittest.TestCase):
         # Primary regression: initial single-portal entry must not autostart
         # while the foreground popup test is about to open.
         self.assertTrue(self.portal["autoplay_start"])
+        from app_entry import PAUSE
+        self.window.setProperty(PAUSE,str(time.time()+600))
+        self.router._params["action"]="root"
         self.router._maybe_autoplay_start(self.portal)
         self.assertEqual(self.builtins, [])
-        self.assertIn("PAUSIERT", self.window.getProperty(
-            "XtreamMate.AutoplayDiagnosticState"))
+        from app_entry import paused
+        self.assertTrue(paused())
         self.router._play_start_direct()
         self.assertEqual(len(self.player.played), 1)
         self.assertTrue(self.portal["autoplay_start"])

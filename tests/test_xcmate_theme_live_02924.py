@@ -50,7 +50,7 @@ class LiveTextureTests(unittest.TestCase):
         nav=self.module.LiveNavigator(self.portal,'1');nav.show();self.addCleanup(nav.close)
         count=len(nav.controls);nav._theme['spec']['assets'].pop('icon.player.play',None)
         self.paused=True;nav._render_transport()
-        self.assertTrue(nav._button_icons[0][1].image.endswith('resources/media/tv_play.png'))
+        self.assertTrue(nav._button_icons[0][1].image.endswith('resources/media/navigation/player-play-normal.png'))
         self.assertEqual(len(nav.controls),count)
 
 

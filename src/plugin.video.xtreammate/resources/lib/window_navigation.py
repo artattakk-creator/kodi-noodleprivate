@@ -18,7 +18,7 @@ DIALOG_ACTIONS=frozenset(('branding_status','theme_manager','art_status','art_re
     'xcmate_licenses','guide_timers','guide_status','about_xcmate','widget_setup','playlist_editor'))
 WINDOW_ACTIONS=frozenset(('movies_home','series_home','media_detail','media_favourites','guide_browser','guide_grid'))
 _local=threading.Lock()
-DIALOG_ACTIONS=DIALOG_ACTIONS|frozenset(('record_now','recordings_manage','setup_wizard','artwork_manage','device_info'))
+DIALOG_ACTIONS=DIALOG_ACTIONS|frozenset(('navigation_rail','autoplay_diagnostic_mode','record_now','recordings_manage','setup_wizard','artwork_manage','device_info'))
 
 
 def trace(event,mode='',key=0,dispatch=''):
@@ -119,6 +119,10 @@ def open_route(router,portal,opener,after_close=None,anchor=None):
             trace('START_RECOVERED',dispatch=dispatch)
             xbmcgui.Dialog().notification('XCMate',tr(32910))
         finally:trace('RETURN',dispatch=dispatch)
+
+    if getattr(result,'_nav_destination',None):
+        from navigation_dispatch import dispatch
+        dispatch(result._nav_destination,portal['id']);return
 
     # The native callback/pump and cross-interpreter navigation lock have ended.
     if after_close is not None and result is not None:after_close(router,portal,result)

@@ -136,6 +136,8 @@ def _run():
 
 
 def poll():
+    from app_entry import observe
+    observe()
     global _worker
     if _stop.is_set():return
     runtime.install()

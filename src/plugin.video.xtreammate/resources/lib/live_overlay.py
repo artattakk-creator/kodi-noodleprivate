@@ -386,19 +386,18 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self.info_hint = xbmcgui.ControlLabel(174,height-61,width-220,24,'OK / Runter: Bedienung    Links: Sender    Zurück: TV','font12','0xFFB6BCC6')
         self._info_controls = [self.info_bg,self.info_logo,self.info_name,self.info_now,self.info_times,
                               self.info_track,self.info_progress,self.info_duration,self.info_next,self.info_hint]
-        self.osd_bg = xbmcgui.ControlImage(32,height-204,width-64,172,__import__('theme_render').texture(self,panel,'panel.player.controls'))
-        self.osd_title = xbmcgui.ControlLabel(52,height-194,width-104,30,'XCMate','font13','0xFFF0F2F5')
+        self.osd_bg = xbmcgui.ControlImage(32,height-300,width-64,268,__import__('theme_render').texture(self,panel,'panel.player.controls'))
+        self.osd_title = xbmcgui.ControlLabel(52,height-290,width-104,30,'XCMate','font13','0xFFF0F2F5')
         self.main_buttons,self.extra_buttons,self._button_icons = [],[],[]
         # Stable action indices; visual tape-deck order is defined in _render.
         main = [('Pause','pause'),('-10 s','back'),('+30 s','forward'),('Stop','stop'),('Weitere','more'),('Live-Ende','live')]
-        extra = [('Ton','audio'),('Bild','video'),('Untertitel','subtitle'),('EPG','epg'),('Einstellungen','settings'),('Gruppen','tv')]
-        for entries,buttons,y in ((main,self.main_buttons,height-150),(extra,self.extra_buttons,height-150)):
+        extra = [('Ton','audio'),('Bild','video'),('Untertitel','subtitle'),('EPG','epg'),('Einstellungen','settings'),('Gruppen','tv'),('Info','info')]
+        for entries,buttons,y in ((main,self.main_buttons,height-238),(extra,self.extra_buttons,height-150)):
             space = (width-104)//len(entries)
             for i,(label,icon) in enumerate(entries):
-                buttons.append(xbmcgui.ControlButton(52+i*space,y,space-8,46,label,
+                buttons.append(xbmcgui.ControlButton(52+i*space,y,space-8,58,label,
                     focusTexture=focused,noFocusTexture=normal,textOffsetX=36,font='font13',disabledColor='0xFF6F7780'))
-                self._button_icons.append((buttons[-1],xbmcgui.ControlImage(60+i*space,y+12,22,22,
-                    __import__('theme_render').texture(self,os.path.join(media,'tv_'+icon+'.png'),''))))
+                self._button_icons.append((buttons[-1],xbmcgui.ControlImage(60+i*space,y+12,32,32,__import__('player_controls').texture(icon))))
         all_controls = [self.bg,self.heading,self.sub,self.control,self.footer,self.capture,
             *[c for row in self._row_controls for c in row],*self._info_controls,
             self.osd_bg,self.osd_title,*self.main_buttons,*self.extra_buttons,
@@ -408,11 +407,26 @@ class LiveNavigator(xbmcgui.WindowDialog):
             control.setNavigation(control,control,control,control)
         self.control.controlLeft(self.control)
         self.control.controlRight(self.control)
+        from nav_rail import RailView
+        from mini_epg import MiniProgramme
+        self._nav_rail=RailView(self,'live',self._nav_activate,self._nav_restore)
+        self._mini=MiniProgramme(self)
         self._drawn = True
         marker = xbmcgui.Window(10000)
         marker.setProperty('XtreamMate.OverlayStatus','bereit')
         marker.setProperty('XtreamMate.InputMode','native WindowDialog / onControl')
         marker.setProperty('XtreamMate.AutoPopupStatus','LIVE_FULL - OK: Senderinformation')
+
+    def _nav_restore(self,where):
+        self._switch('hidden' if where=='full' else 'groups')
+
+    def _nav_activate(self,action):
+        if action=='groups':self._nav_rail.hide();self._switch('groups')
+        elif action=='home_live':self._nav_rail.hide();self._switch('channels')
+        elif action=='xcmate_home':self._request_exit()
+        else:
+            from live_guide_navigation import request
+            request(self,destination=action)
 
     def _can_seek(self):
         try:
@@ -424,7 +438,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self.osd_bg.setImage(__import__('theme_render').texture(self,os.path.join(self._media,'tv_panel.png'),'panel.player.options' if self.mode=='extras' else 'panel.player.controls'))
         paused=bool(xbmc.getCondVisibility('Player.Paused'))
         self.main_buttons[0].setLabel('Weiter' if paused else 'Pause')
-        self._button_icons[0][1].setImage(__import__('theme_render').texture(self,os.path.join(self._media,'tv_play.png' if paused else 'tv_pause.png'),''))
+        self._button_icons[0][1].setImage(__import__('player_controls').texture('play' if paused else 'pause'))
 
     def _local_logo(self, channel):
         from logo_cache import local_logo
@@ -508,6 +522,12 @@ class LiveNavigator(xbmcgui.WindowDialog):
         if self.mode == 'guide':
             channel = self.index.by_sid.get(self._guide_sid)
             if channel: wanted.append(channel)
+        if self.mode=='channels':
+            self._mini.render()
+            selected=self.index.by_sid.get(self._mini.sid)
+            if selected is not None and selected not in wanted:wanted.append(selected)
+            request_programme=getattr(self._guide,'request_programme',None)
+            if request_programme:request_programme(self._mini.sid)
         self._guide.request(wanted)
 
     def _render(self, focus=True):
@@ -525,25 +545,36 @@ class LiveNavigator(xbmcgui.WindowDialog):
         seek = self._can_seek() if osd else False
         transport = [1,0,2,5,3,4]
         self._main_indices = transport if seek else [0,3,4]
+        if not xbmc.getCondVisibility('Player.PauseEnabled'):self._main_indices=[i for i in self._main_indices if i!=0]
         for i,c in enumerate(self.main_buttons):
-            c.setVisible(self.mode=='controls')
+            c.setVisible(osd)
             c.setEnabled(i in self._main_indices)
         for slot,i in enumerate(transport):
             space=(self._width-104)//len(transport)
-            self.main_buttons[i].setPosition(52+slot*space,self._height-150)
+            self.main_buttons[i].setPosition(52+slot*space,self._height-238)
             self.main_buttons[i].setWidth(space-8)
-            self._button_icons[i][1].setPosition(60+slot*space,self._height-138)
-        for c in self.extra_buttons: c.setVisible(self.mode=='extras')
+            self._button_icons[i][1].setPosition(60+slot*space,self._height-225)
+        for c in self.extra_buttons:c.setVisible(osd)
         for button,image in self._button_icons:
-            image.setVisible(button in self.main_buttons and self.mode=='controls' or
-                             button in self.extra_buttons and self.mode=='extras')
+            image.setVisible(osd)
+        self._mini.visible(self.mode=='channels')
+        if self.mode not in ('nav_icons','nav_expanded'):self._nav_rail.hide()
+        if self.mode in ('nav_icons','nav_expanded'):
+            self._nav_rail.show(self.mode=='nav_expanded',focus=focus)
+            return
+        # Both mini columns share the existing panel; groups retain old geometry.
+        left=int(self._width*.40) if self.mode=='channels' else self._sidebar
+        self.bg.setWidth(self._width-48 if self.mode=='channels' else self._sidebar)
+        self.control.setWidth(left-40)
+        for background,logo,title,detail in self._row_controls:
+            background.setWidth(left-40);title.setWidth(left-128);detail.setWidth(left-128)
         target = self.capture
         if self.mode=='info': self._render_info()
         elif osd:
             self._render_transport()
             if self._focus_main not in self._main_indices:
                 previous=self.main_buttons[self._focus_main]
-                self._focus_main=0
+                self._focus_main=self._main_indices[0]
                 if self.mode=='controls' and not focus:
                     try:
                         dialog=xbmcgui.Window(xbmcgui.getCurrentWindowDialogId())
@@ -577,7 +608,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             else: self.sub.setLabel('OK: öffnen    Menü: Gruppen verwalten')
             self.footer.setLabel('OK: auswählen    Links: Gruppen    Zurück: TV')
             self._render_rows()
-            target = self.control
+            target = self._mini.list if self.mode=='channels' and self._mini.focused else self.control
         render_end = time.perf_counter()
         if focus: self.setFocus(target)
         trace('performance',self.mode.upper(),index_ms=index_ms,snapshot_ms=self._snapshot_ms,
@@ -752,7 +783,9 @@ class LiveNavigator(xbmcgui.WindowDialog):
             if index == 4:
                 self._switch('extras')
                 return
-            if index == 0: xbmc.Player().pause()
+            if index == 0:
+                if not xbmc.getCondVisibility('Player.PauseEnabled') or not self.owns_playback():return
+                xbmc.Player().pause()
             elif index == 1: self._seek(-10)
             elif index == 2: self._seek(30)
             elif index == 5: self._seek(None)
@@ -772,6 +805,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
             if index in (0,1,2):
                 window=('osdaudiosettings','osdvideosettings','osdsubtitlesettings')[index]
                 xbmc.executebuiltin('ActivateWindow('+window+')')
+            elif index==6:
+                xbmcgui.Dialog().textviewer('XCMate',__import__('player_controls').status() or '—')
             elif index == 4:
                 import xbmcaddon
                 xbmcaddon.Addon().openSettings()
@@ -829,6 +864,11 @@ class LiveNavigator(xbmcgui.WindowDialog):
     def _handle_command(self, command):
         """XCMate-local TV commands; never open Kodi's own player OSD."""
         self._intro_deadline = None
+        if self.mode in ('nav_icons','nav_expanded'):
+            if self._nav_rail.command(command):
+                if self._nav_rail.active:self.mode='nav_expanded' if self._nav_rail.expanded else 'nav_icons'
+                return
+        if self.mode=='channels' and self._mini.command(command):return
         if self.mode=='info': self._info_deadline=time.monotonic()+self._info_timeout
         if command in ('left', 'long_left'):
             if self.mode in ('controls', 'extras'):
@@ -840,7 +880,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             elif self.mode == 'channels':
                 self._switch('groups')
             elif self.mode == 'groups':
-                self._switch('hidden')
+                self._switch('nav_icons')
             else:
                 if self.mode in ('hidden','info'):self._focus_playing_channel()
                 self._switch('channels')
@@ -849,8 +889,9 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 self._recent()
             elif self.mode == 'groups':
                 self._switch('channels')
-            elif self.mode in ('channels','guide'):
-                self._switch('hidden')
+            elif self.mode=='channels':
+                self._mini.focus()
+            elif self.mode=='guide':self._switch('hidden')
             elif self.mode in ('controls','extras'):
                 if self.mode == 'controls':
                     self._focus_main = self._main_indices[(self._main_indices.index(self._focus_main)+1)%len(self._main_indices)]
@@ -892,7 +933,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         elif command == 'long_play_pause':
             self._seek(None)
         elif command == 'play_pause':
-            xbmc.Player().pause()
+            if xbmc.getCondVisibility('Player.PauseEnabled') and self.owns_playback():xbmc.Player().pause()
         elif command in ('up', 'down'):
             if self.mode == 'hidden':
                 self._zap(1 if command == 'up' else -1)
@@ -958,6 +999,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
             mapped = 'right'
         elif key == ACTION_LEFT:
             mapped = 'left'
+        elif key in (ACTION_UP,ACTION_DOWN) and self.mode=='channels' and self._mini.focused:
+            self._mini.command('up' if key==ACTION_UP else 'down',native=True);return
         elif key in (ACTION_UP, ACTION_DOWN, ACTION_PAGE_UP, ACTION_PAGE_DOWN) and self.mode in ('channels', 'guide', 'groups'):
             # CGUIControlList already applied this action before onAction.
             if key in (ACTION_UP,ACTION_DOWN) and self.mode=='channels':
@@ -994,6 +1037,9 @@ class LiveNavigator(xbmcgui.WindowDialog):
         if not self._accept_input() or not self._drawn:
             return
         control_id = control.getId()
+        if self._nav_rail.click(control_id):return
+        if self.mode=='channels' and control_id==self._mini.list.getId():
+            self._mini.focused=True;self._mini.selected=max(0,self._mini.list.getSelectedPosition());self._mini.command('ok');return
         if control_id == self.capture.getId():
             self.handle_command('ok',source='control',control_id=control_id)
             return

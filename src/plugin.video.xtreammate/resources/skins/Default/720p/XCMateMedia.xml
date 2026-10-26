@@ -805,10 +805,12 @@
       <focusedcolor>FFFFFFFF</focusedcolor>
       <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
-      <onleft>300</onleft>
+      <onleft condition="Control.IsVisible(300) + Control.IsEnabled(300)">300</onleft>
+      <onleft condition="!Control.IsVisible(300) | !Control.IsEnabled(300)">400</onleft>
       <onright>400</onright>
       <onup>400</onup>
-      <ondown>300</ondown>
+      <ondown condition="Control.IsVisible(300) + Control.IsEnabled(300)">300</ondown>
+      <ondown condition="!Control.IsVisible(300) | !Control.IsEnabled(300)">400</ondown>
     </control>
     <control type="group" id="800">
       <animation effect="slide" start="-460,0" end="0,0" time="160">Visible</animation>

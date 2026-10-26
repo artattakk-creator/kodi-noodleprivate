@@ -1,0 +1,17 @@
+{
+  "A": {
+    "file": "A.png",
+    "sha256": "1c3f957df339eae2c751df844cf6fb683849ebf97075d7ca664d74073a525fe1",
+    "status": "DESIGN_NOT_APPROVED; NOT_A_DEVICE_SCREENSHOT"
+  },
+  "B": {
+    "file": "B.png",
+    "sha256": "2982fc01d8ca6e608f6218b09dfa8db9aad7f3b13731e041fc87ff632133d2a2",
+    "status": "DESIGN_NOT_APPROVED; NOT_A_DEVICE_SCREENSHOT"
+  },
+  "C": {
+    "file": "C.png",
+    "sha256": "065b8fd153fa84413feaea806f21cbec28cfb3a83d8bfd7a3519c73b84fb6fbf",
+    "status": "DESIGN_NOT_APPROVED; NOT_A_DEVICE_SCREENSHOT"
+  }
+}

@@ -36,7 +36,7 @@ def public_dns(url):
     p=urlsplit(url);key=(p.hostname,p.port or (443 if p.scheme=='https' else 80))
     with _lock:
         prior=_dns_cache.get(key)
-        if prior and prior[0]>time.monotonic():return prior[1]
+        if prior and prior[0]>time.monotonic()+(10 if prior[1] else 0):return prior[1]
     try:
         values=socket.getaddrinfo(key[0],key[1],type=socket.SOCK_STREAM)
         approved=bool(values) and all(ipaddress.ip_address(value[4][0]).is_global for value in values)
@@ -51,8 +51,6 @@ def public_dns(url):
 def _process(kind,key,payload):
     if kind=='dynamic':
         approved=public_dns(payload)
-        from art_diagnostics import publish
-        publish('transfer','DYNAMIC_URL_APPROVED' if approved else 'DYNAMIC_SOURCE_UNAVAILABLE')
         return payload+KODI_OPTIONS if approved else ''
     storage,ident=payload
     from artwork_vfs import image_valid
@@ -73,24 +71,37 @@ def _run(kind):
             try:value=_process(kind,key,payload)
             except Exception:value=''
             with _lock:
-                _values[key]=(time.monotonic()+(30 if value else 5),value)
-                _values.move_to_end(key);_pending.discard(key);_revision+=1
+                fresh=key not in _values
+                previous=_values.get(key,(0,''))[1]
+                expires=time.monotonic()+(30 if value else 5)
+                if kind=='dynamic' and value:
+                    parsed=urlsplit(payload);dns=_dns_cache.get((parsed.hostname,parsed.port or (443 if parsed.scheme=='https' else 80)))
+                    if not dns or not dns[1]:value=''
+                    else:expires=min(expires,dns[0])
+                _values[key]=(expires,value)
+                _values.move_to_end(key);_pending.discard(key)
+                if previous!=value:_revision+=1
                 while len(_values)>512:_values.popitem(last=False)
+            if kind=='dynamic' and (fresh or previous!=value):
+                from art_diagnostics import publish
+                publish('transfer','DYNAMIC_URL_APPROVED' if value else 'DYNAMIC_SOURCE_UNAVAILABLE')
         finally:work.task_done()
 
 
 def lookup(kind,key,payload):
     with _lock:
         value=_values.get(key)
-        if value and value[0]>time.monotonic():return value[1]
+        now=time.monotonic()
+        # Revalidate ten seconds before expiry; never extend DNS approval TTL.
+        if value and value[0]>now+(10 if value[1] else 0):return value[1]
         if key not in _pending:
             try:_queues[kind].put_nowait((key,payload));_pending.add(key)
-            except queue.Full:return ''
+            except queue.Full:return value[1] if value and value[0]>now else ''
         thread=_threads.get(kind)
         if thread is None or not thread.is_alive():
             thread=threading.Thread(target=_run,args=(kind,),name='XCMate-visible-'+kind,daemon=True)
             _threads[kind]=thread;thread.start()
-    return ''
+        return value[1] if value and value[0]>now else ''
 
 
 def dynamic(url):
@@ -104,3 +115,23 @@ def external(storage,ident):
 
 def revision():
     with _lock:return _revision
+
+
+def retain_displayed(item,prior,current):
+    """Keep an already displayed texture while its exact URL is pending.
+
+    This does not admit an expired URI to a new item. Definitive DNS failure
+    removes pending and forces the placeholder; no TTL/security bypass.
+    """
+    from artwork_config import persistent
+    if persistent():return current
+    from media_art import sources
+    poster,fanart=sources(item);result=dict(current)
+    with _lock:
+        for url,fields in ((poster,('poster','thumb','icon','landscape')),(fanart,('fanart','landscape'))):
+            if url and ('dynamic',url) in _pending:
+                approved=_values.get(('dynamic',url),(0,''))[1]
+                if approved==url+KODI_OPTIONS:
+                    for field in fields:
+                        if prior.get(field)==approved:result[field]=approved
+    return result

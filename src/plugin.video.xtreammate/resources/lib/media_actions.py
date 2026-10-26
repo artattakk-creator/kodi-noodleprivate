@@ -1,7 +1,7 @@
 """Capability-gated VOD actions; future extensions receive verified IDs only."""
 KINDS=frozenset(('vod','episode','series_item'))
 ACTIONS=(('pause',33001,'transport'),('back',33002,'transport'),('forward',33003,'transport'),
-         ('stop',33004,'transport'),('audio',33005,'transport'),('subtitles',33006,'transport'),
+         ('back30',35621,'transport'),('forward10',35622,'transport'),('rewind',35623,'transport'),('fastforward',35624,'transport'),('stop',33004,'transport'),('audio',33005,'settings'),('subtitles',33006,'settings'),
          ('subtitle_toggle',33007,'settings'),('video',33008,'settings'),
          ('audio_settings',33009,'settings'),('info',33010,'settings'),('autoplay',33501,'settings'))
 _extensions={}
