@@ -54,7 +54,7 @@ def enter(router,portal):
     player=xbmc.Player()
     from live_exit import state
     if (paused() or state() or portal.get('type')!='xtream' or not portal.get('enabled',True)
-        or not portal.get('include_live',True) or not portal.get('include_live',True) or not portal.get('autoplay_start') or not portal.get('start_stream_id')
+        or not portal.get('include_live',True) or not portal.get('autoplay_start') or not portal.get('start_stream_id')
         or getattr(player,'isPlaying',player.isPlayingVideo)()):
         marker().setProperty(KEY,json.dumps(value));return False
     from profile_transaction import writing
@@ -122,3 +122,15 @@ def observe():
     try:
         with writing(timeout=0):_observe_locked()
     except (OSError,RuntimeError):return
+
+
+def still_allowed(params):
+    if not params.get('autoplay_entry'):return True
+    import xbmc
+    from portals import get_by_id
+    try:
+        value=read();portal=get_by_id(params.get('pid',''));player=xbmc.Player()
+        return bool(value and value['nonce']==params['autoplay_entry'] and value['phase']=='consumed'
+                    and portal and portal.get('enabled',True) and portal.get('include_live',True)
+                    and portal.get('autoplay_start') and not paused() and not getattr(player,'isPlaying',player.isPlayingVideo)())
+    except (OSError,RuntimeError):return False

@@ -421,7 +421,7 @@ class Router:
             self._add_dir(
                 ('Startsender-Autostart PAUSIERT – wieder freigeben'
                  if paused else
-                 'Startsender-Autostart AKTIV – für Diagnose pausieren'),
+                 'Diagnosepause inaktiv – für 15 Minuten pausieren'),
                 self.url(action='autoplay_diagnostic_mode'),
                 icon=_ICON_SETTINGS,
                 plot='Betrifft nur den automatischen Start beim Öffnen '
@@ -747,16 +747,17 @@ class Router:
             xbmcplugin.setResolvedUrl(self._handle, False, xbmcgui.ListItem())
 
     def _play_start_direct(self):
-        from app_entry import accept_play
+        """RunPlugin-only direct startup with fresh ownership checks."""
+        from app_entry import accept_play,still_allowed
         if not accept_play(self._params):return
 
-        """RunPlugin-only autoplay: direct playback without setResolvedUrl."""
         from live_exit import _trace
         _trace('START_RESOLVER')
         prepared = self._startup_playable()
         if prepared is None:
             return
         p, sid, title, item = prepared
+        if not still_allowed(self._params):return
         from live_overlay import announce
         try:
             session=announce(p['id'], sid, title)
@@ -764,6 +765,10 @@ class Router:
             bind(self._live_timing,session)
             from play_intent import before_play
             if not before_play(session): return
+            if not still_allowed(self._params):
+                xbmcgui.Window(10000).setProperty('XCMate.PrePlay.Cancel',session['nonce'])
+                xbmcgui.Window(10000).setProperty('XtreamMate.StartupStatus','AUTOPLAY_BLOCKED_FOREIGN_OR_PREFERENCE')
+                return
             from live_recovery import tag_live_item
             tag_live_item(item,session)
             xbmcgui.Window(10000).setProperty(

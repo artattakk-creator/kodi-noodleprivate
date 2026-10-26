@@ -77,3 +77,11 @@ class Entry38(Fixture,unittest.TestCase):
         with mock.patch.object(sys.modules['xbmc'],'getCondVisibility',return_value=False):
             self.assertFalse(self.entry.enter(self.router,self.portal));self.assertIsNone(self.entry.read())
         self.assertTrue(self.entry.enter(self.router,self.portal))
+
+    def test_autoplay_ownership_and_preference_rechecked_after_resolver_work(self):
+        self.entry.enter(self.router,self.portal);params=dict(pid='p',autoplay_entry=self.entry.read()['nonce'])
+        self.assertTrue(self.entry.accept_play(params));self.assertTrue(self.entry.still_allowed(params))
+        self.portal['autoplay_start']=False;self.assertFalse(self.entry.still_allowed(params))
+        self.portal['autoplay_start']=True
+        sys.modules['xbmc'].Player=lambda:types.SimpleNamespace(isPlayingVideo=lambda:True,isPlaying=lambda:True)
+        self.assertFalse(self.entry.still_allowed(params))
