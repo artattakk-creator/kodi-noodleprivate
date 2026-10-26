@@ -145,10 +145,10 @@ test_restart_offline_previous_index_and_immediate_disabled_filter (test_xcmate_0
 test_same_stream_in_two_groups_counted_once_globally_but_available_in_each (test_xcmate_028_streaming.IndexTests.test_same_stream_in_two_groups_counted_once_globally_but_available_in_each) ... ok
 test_streaming_group_publishes_only_after_complete_json (test_xcmate_028_streaming.IndexTests.test_streaming_group_publishes_only_after_complete_json) ... ok
 test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update (test_xcmate_028_streaming.LargeGuideTests.test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update) ... 
-LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 21.341}
+LARGE_XMLTV {"parsed": 160005, "stored": 160003, "xml_bytes": 95571948, "sqlite_bytes": 199876608, "seconds": 22.12}
 ok
 test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib (test_xcmate_028_streaming.LargeHTTPTests.test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib) ... 
-LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 309522432, "seconds": 35.769, "peak_rss_kib": 69040}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 621727744, "seconds": 35.093, "peak_rss_kib": 69040}]
+LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 309522432, "seconds": 37.65, "peak_rss_kib": 69220}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 621727744, "seconds": 37.523, "peak_rss_kib": 69220}]
 ok
 test_cache_envelope_and_trailing_data_validated (test_xcmate_028_streaming.ParserTests.test_cache_envelope_and_trailing_data_validated) ... ok
 test_chunked_http_gzip_and_truncated_compression (test_xcmate_028_streaming.ParserTests.test_chunked_http_gzip_and_truncated_compression) ... ok
@@ -817,6 +817,40 @@ test_stop_during_warm_tune_cancels_pending_nonce_and_either_verified_item (test_
 test_stop_timeout_is_bounded_no_retry_loop_no_false_home (test_xcmate_live_stop_02917.StopTests.test_stop_timeout_is_bounded_no_retry_loop_no_false_home) ... ok
 test_stopped_native_player_uses_last_verified_item_and_returns_home (test_xcmate_live_stop_02917.StopTests.test_stopped_native_player_uses_last_verified_item_and_returns_home) ... ok
 test_wrong_portal_or_forged_announcement_never_creates_intent (test_xcmate_live_stop_02917.StopTests.test_wrong_portal_or_forged_announcement_never_creates_intent) ... ok
+test_ack_while_fullscreen_still_visible_does_not_start_stop (test_xcmate_live_stop_02942.LiveStop42.test_ack_while_fullscreen_still_visible_does_not_start_stop) ... ok
+test_already_safe_gui_needs_no_fullscreen_action (test_xcmate_live_stop_02942.LiveStop42.test_already_safe_gui_needs_no_fullscreen_action) ... ok
+test_deadline_passed_before_poll_never_accepts_native_ack_as_on_time (test_xcmate_live_stop_02942.LiveStop42.test_deadline_passed_before_poll_never_accepts_native_ack_as_on_time) ... ok
+test_diagnostics_never_contain_private_item_ids_or_urls (test_xcmate_live_stop_02942.LiveStop42.test_diagnostics_never_contain_private_item_ids_or_urls) ... ok
+test_early_playback_callback_cannot_replace_native_stop_barrier (test_xcmate_live_stop_02942.LiveStop42.test_early_playback_callback_cannot_replace_native_stop_barrier) ... ok
+test_explicit_opt_in_defaults_false_without_writing_existing_settings (test_xcmate_live_stop_02942.LiveStop42.test_explicit_opt_in_defaults_false_without_writing_existing_settings) ... ok
+test_failed_prepare_never_becomes_live_home_success_on_early_callback (test_xcmate_live_stop_02942.LiveStop42.test_failed_prepare_never_becomes_live_home_success_on_early_callback) ... ok
+test_foreign_item_before_preparation_receives_no_window_or_stop (test_xcmate_live_stop_02942.LiveStop42.test_foreign_item_before_preparation_receives_no_window_or_stop) ... ok
+test_foreign_modal_after_prepare_barrier_holds_stop (test_xcmate_live_stop_02942.LiveStop42.test_foreign_modal_after_prepare_barrier_holds_stop) ... ok
+test_foreign_modal_before_prepare_is_never_closed (test_xcmate_live_stop_02942.LiveStop42.test_foreign_modal_before_prepare_is_never_closed) ... ok
+test_home_and_focus_return_only_after_confirmed_stop_and_no_playback (test_xcmate_live_stop_02942.LiveStop42.test_home_and_focus_return_only_after_confirmed_stop_and_no_playback) ... ok
+test_kodi_shutdown_does_not_post_a_prepare_or_stop (test_xcmate_live_stop_02942.LiveStop42.test_kodi_shutdown_does_not_post_a_prepare_or_stop) ... ok
+test_late_native_stop_return_remains_timeout_no_auto_home (test_xcmate_live_stop_02942.LiveStop42.test_late_native_stop_return_remains_timeout_no_auto_home) ... ok
+test_main_queue_never_free_no_stop_no_retry_and_late_prepare_no_success (test_xcmate_live_stop_02942.LiveStop42.test_main_queue_never_free_no_stop_no_retry_and_late_prepare_no_success) ... ok
+test_media_job_keeps_original_synchronous_owned_exit_implementation (test_xcmate_live_stop_02942.LiveStop42.test_media_job_keeps_original_synchronous_owned_exit_implementation) ... ok
+test_memory_pressure_before_prepare_posts_no_native_command (test_xcmate_live_stop_02942.LiveStop42.test_memory_pressure_before_prepare_posts_no_native_command) ... ok
+test_modal_arriving_while_main_queue_waits_vetoes_native_window_change (test_xcmate_live_stop_02942.LiveStop42.test_modal_arriving_while_main_queue_waits_vetoes_native_window_change) ... ok
+test_native_deadlock_after_deinit_stays_failure_no_fake_success (test_xcmate_live_stop_02942.LiveStop42.test_native_deadlock_after_deinit_stays_failure_no_fake_success) ... ok
+test_no_player_mutex_queries_during_native_hang_or_after_timeout (test_xcmate_live_stop_02942.LiveStop42.test_no_player_mutex_queries_during_native_hang_or_after_timeout) ... ok
+test_owner_change_after_prepare_barrier_prevents_stop (test_xcmate_live_stop_02942.LiveStop42.test_owner_change_after_prepare_barrier_prevents_stop) ... ok
+test_pending_prepare_blocks_new_foreign_or_media_requests (test_xcmate_live_stop_02942.LiveStop42.test_pending_prepare_blocks_new_foreign_or_media_requests) ... ok
+test_post_guard_rechecks_gui_between_preparation_and_stop_worker (test_xcmate_live_stop_02942.LiveStop42.test_post_guard_rechecks_gui_between_preparation_and_stop_worker) ... ok
+test_prepare_ack_is_not_stop_done_or_permission_to_return_home (test_xcmate_live_stop_02942.LiveStop42.test_prepare_ack_is_not_stop_done_or_permission_to_return_home) ... ok
+test_prepare_survives_interpreter_restart_without_duplicate_gui_action (test_xcmate_live_stop_02942.LiveStop42.test_prepare_survives_interpreter_restart_without_duplicate_gui_action) ... ok
+test_queue_post_raises_after_first_command_stays_quarantined (test_xcmate_live_stop_02942.LiveStop42.test_queue_post_raises_after_first_command_stays_quarantined) ... ok
+test_repeated_back_cannot_double_stop_or_reset_deadline (test_xcmate_live_stop_02942.LiveStop42.test_repeated_back_cannot_double_stop_or_reset_deadline) ... ok
+test_settings_read_failure_no_native_call_or_profile_write (test_xcmate_live_stop_02942.LiveStop42.test_settings_read_failure_no_native_call_or_profile_write) ... ok
+test_strategy_a_041_native_stop_in_fullscreen_reproduces_no_return (test_xcmate_live_stop_02942.LiveStop42.test_strategy_a_041_native_stop_in_fullscreen_reproduces_no_return) ... ok
+test_strategy_b_native_fullscreen_deinit_precedes_stop_and_completion (test_xcmate_live_stop_02942.LiveStop42.test_strategy_b_native_fullscreen_deinit_precedes_stop_and_completion) ... ok
+test_strategy_does_not_change_when_setting_is_toggled_in_flight (test_xcmate_live_stop_02942.LiveStop42.test_strategy_does_not_change_when_setting_is_toggled_in_flight) ... ok
+test_twenty_opt_in_native_lifecycle_cycles_each_stop_once (test_xcmate_live_stop_02942.LiveStop42.test_twenty_opt_in_native_lifecycle_cycles_each_stop_once) ... ok
+test_unmatched_prepare_nonce_never_releases_pending_job (test_xcmate_live_stop_02942.LiveStop42.test_unmatched_prepare_nonce_never_releases_pending_job) ... ok
+test_unrelated_window_after_deinit_prevents_stop_and_home (test_xcmate_live_stop_02942.LiveStop42.test_unrelated_window_after_deinit_prevents_stop_and_home) ... ok
+test_unsupported_host_is_rejected_without_global_decoder_write (test_xcmate_live_stop_02942.LiveStop42.test_unsupported_host_is_rejected_without_global_decoder_write) ... ok
 test_existing_live_widget_is_bounded_to_twelve_and_start_channel_first (test_xcmate_local_epg_02939.LocalEPG39.test_existing_live_widget_is_bounded_to_twelve_and_start_channel_first) ... ok
 test_failed_publication_preserves_last_successful_revision (test_xcmate_local_epg_02939.LocalEPG39.test_failed_publication_preserves_last_successful_revision) ... ok
 test_missing_and_corrupt_guide_are_not_created_or_reset_by_widget_reads (test_xcmate_local_epg_02939.LocalEPG39.test_missing_and_corrupt_guide_are_not_created_or_reset_by_widget_reads) ... ok
@@ -1051,6 +1085,7 @@ test_popup_test_moves_to_maintenance_while_normal_home_has_six_items (test_xcmat
 test_single_portal_root_does_not_start_television (test_xcmate_safe_popup_entry_016.SafeModeRegression.test_single_portal_root_does_not_start_television) ... ok
 test_toggle_changes_only_addon_setting_not_portal (test_xcmate_safe_popup_entry_016.SafeModeRegression.test_toggle_changes_only_addon_setting_not_portal) ... ok
 test_user_can_opt_back_in_to_autoplay (test_xcmate_safe_popup_entry_016.SafeModeRegression.test_user_can_opt_back_in_to_autoplay) ... ok
+test_041_protected_source_bytes_and_all_1479_previous_methods_retained (test_xcmate_scope_02942.Scope42.test_041_protected_source_bytes_and_all_1479_previous_methods_retained) ... ok
 test_action_route_opens_one_owner_without_search_container_update (test_xcmate_search_02926.SearchTests.test_action_route_opens_one_owner_without_search_container_update) ... ok
 test_cancel_and_repeated_search_keep_owner_and_do_not_apply_stale_results (test_xcmate_search_02926.SearchTests.test_cancel_and_repeated_search_keep_owner_and_do_not_apply_stale_results) ... ok
 test_explicit_manual_mapping_does_not_fall_back_to_wrong_provider_epg (test_xcmate_search_02926.SearchTests.test_explicit_manual_mapping_does_not_fall_back_to_wrong_provider_epg) ... ok
@@ -1486,14 +1521,14 @@ test_widget_route_and_no_cached_credentials_in_link (test_xtreammate_widgets.Wid
 test_youtube_whitelist (test_xtreammate_widgets.WidgetsTest.test_youtube_whitelist) ... ok
 
 ----------------------------------------------------------------------
-Ran 1479 tests in 331.762s
+Ran 1514 tests in 359.455s
 
 OK
 
-MODEL_COLD_WINDOW_MS 6.691
-SEARCH39_HOST [{'query_kind': 'cold', 'first_names_ms': 6.334, 'total_ms': 65.96, 'scanned': 2905, 'results': 6}, {'query_kind': 'warm', 'first_names_ms': 6.103, 'total_ms': 21.667, 'scanned': 2905, 'results': 6}]
+MODEL_COLD_WINDOW_MS 7.806
+SEARCH39_HOST [{'query_kind': 'cold', 'first_names_ms': 7.435, 'total_ms': 62.228, 'scanned': 2905, 'results': 6}, {'query_kind': 'warm', 'first_names_ms': 7.022, 'total_ms': 24.37, 'scanned': 2905, 'results': 6}]
 
 SELECTIVE_XMLTV {"bytes": 400, "parsed": 2, "stored": 1}
 
 LARGE_M3U {"parsed": 20005, "active": 5002, "bytes": 1727118}
-WIDGET41_HOST {'rows': 20005, 'returned': 24, 'code': 'READY', 'ms': 15.97}
+WIDGET41_HOST {'rows': 20005, 'returned': 24, 'code': 'READY', 'ms': 17.542}
