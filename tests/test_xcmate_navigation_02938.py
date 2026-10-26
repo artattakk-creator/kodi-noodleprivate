@@ -55,3 +55,26 @@ class Navigation38(unittest.TestCase):
         module=importlib.import_module('mini_epg')
         events=[dict(title='After',start=110,stop=130),dict(title='Before',start=70,stop=90),dict(title='Now',start=90,stop=110),dict(title='Invalid',start=110,stop=100)]
         rows,pos=module.programme_rows(events,100);self.assertEqual([e['title'] for e in rows],['Before','Now','After']);self.assertEqual(pos,1)
+
+    def test_worker_reads_previous_current_next_from_real_guide_sqlite(self):
+        import sqlite3,tempfile,sys,types
+        from pathlib import Path
+        temp=tempfile.TemporaryDirectory();self.addCleanup(temp.cleanup);path=Path(temp.name)/'guide.sqlite'
+        now=int(time.time());pid=self.o.portal['id'];channel=self.o.index.by_sid[self.sid]
+        db=sqlite3.connect(path)
+        db.executescript('CREATE TABLE guide_meta(pid TEXT);CREATE TABLE guide_alias(pid TEXT,alias TEXT,cid TEXT);CREATE TABLE programmes(pid TEXT,cid TEXT,title TEXT,description TEXT,start INTEGER,stop INTEGER,source INTEGER);')
+        db.execute('INSERT INTO guide_meta VALUES(?)',(pid,));db.execute('INSERT INTO guide_alias VALUES(?,?,?)',(pid,self.sid,'xml'))
+        for title,start,stop in [('Previous',now-600,now-30),('Current',now-30,now+300),('Next',now+300,now+900)]:db.execute('INSERT INTO programmes VALUES(?,?,?,?,?,?,?)',(pid,'xml',title,'Local description',start,stop,0))
+        db.commit();db.close()
+        store=importlib.import_module('guide_store');self.o._guide.request([channel]);self.o._guide.request_programme(self.sid)
+        helpers=dict(epg=types.SimpleNamespace(load_cache=lambda pid:{},_mem_clear=lambda pid:None),epg_sources=types.SimpleNamespace(configuration=lambda pid:{'mappings':{}}),epg_status=types.SimpleNamespace(revision=lambda pid:'local-fixture'),logo_cache=types.SimpleNamespace(request=lambda channels:None))
+        with mock.patch.dict(sys.modules,helpers),mock.patch.object(store,'path',return_value=str(path)),mock.patch.object(sys.modules['utils'],'addon_data_dir',return_value=temp.name):self.o._guide.refresh()
+        result=self.o._guide.get(self.sid)
+        self.assertEqual([e['title'] for e in result['programme_events']],['Previous','Current','Next'])
+        self.assertEqual(result['now'],'Current');self.assertEqual(self.o.sid,self.sid)
+
+    def test_midnight_rows_show_real_date_without_changing_chronological_order(self):
+        import datetime
+        module=importlib.import_module('mini_epg');now=datetime.datetime(2026,10,26,12).timestamp()
+        event=dict(start=datetime.datetime(2026,10,27,23,30).timestamp(),stop=datetime.datetime(2026,10,28,0,30).timestamp())
+        label=module.time_label(event,now);self.assertIn('27.10.',label);self.assertIn('28.10.',label)

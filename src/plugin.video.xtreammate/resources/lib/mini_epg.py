@@ -12,6 +12,12 @@ def programme_rows(events,now=None):
     return rows,current
 
 
+def time_label(event,now=None):
+    today=datetime.datetime.fromtimestamp(time.time() if now is None else now).date()
+    start=datetime.datetime.fromtimestamp(event['start']);stop=datetime.datetime.fromtimestamp(event['stop'])
+    return start.strftime('%H:%M' if start.date()==today else '%d.%m. %H:%M')+'–'+stop.strftime('%H:%M' if stop.date()==start.date() else '%d.%m. %H:%M')
+
+
 class MiniProgramme:
     def __init__(self,owner):
         import xbmcgui
@@ -38,7 +44,7 @@ class MiniProgramme:
             changed=sid!=self.sid;self.sid=sid;self.events=events;self.signature=signature
             self.list.reset();labels=[];now=time.time()
             for e in events:
-                label=('[B]'+tr(35612)+'[/B]  ' if e['start']<=now<e['stop'] else '')+datetime.datetime.fromtimestamp(e['start']).strftime('%H:%M')+'–'+datetime.datetime.fromtimestamp(e['stop']).strftime('%H:%M')+'  '+e['title']
+                label=('[B]'+tr(35612)+'[/B]  ' if e['start']<=now<e['stop'] else '')+time_label(e,now)+'  '+e['title']
                 labels.append(label)
             self.list.addItems(labels or [tr(35611)])
             self.selected=current if changed or not self.focused else min(self.selected,max(0,len(events)-1));self.list.selectItem(self.selected)

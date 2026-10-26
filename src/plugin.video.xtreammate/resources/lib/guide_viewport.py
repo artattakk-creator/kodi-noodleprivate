@@ -27,7 +27,7 @@ def cache(pid,channels,mappings,now,focus_sid=''):
                 if not ident or ident in result:continue
                 alias=db.execute('SELECT cid FROM guide_alias WHERE pid=? AND alias=?',(pid,ident)).fetchone()
                 cid=alias[0] if alias else ident
-                rows=db.execute('SELECT title,description,start,stop,source FROM programmes WHERE pid=? AND cid=? AND stop>? AND start<? ORDER BY start,source,stop LIMIT ?',
+                rows=db.execute('SELECT substr(title,1,512) AS title,substr(description,1,8192) AS description,start,stop,source FROM programmes WHERE pid=? AND cid=? AND stop>? AND start<? ORDER BY start,source,stop LIMIT ?',
                                 (pid,cid,now-6*3600 if sid==focus_sid else now,now+(10 if sid==focus_sid else 2)*86400,256 if sid==focus_sid else 48)).fetchall()
                 result[ident]=[dict(name=r['title'],descr=r['description'],start_timestamp=r['start'],
                                     stop_timestamp=r['stop'],_source_index=r['source']) for r in rows]
