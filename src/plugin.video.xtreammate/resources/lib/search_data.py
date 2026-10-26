@@ -291,6 +291,8 @@ def search(portal,query,kind='vod',offset=0,now=None,incremental=False,continuat
         try:
             if cursor.portal['id']!=portal['id'] or cursor.query!=query or not cursor.valid():cursor=None
         except (IndexReadError,sqlite3.Error,OSError,ValueError):cursor=None
+    names_first=cursor is None
+    publish_media=bool(incremental and cursor is not None and cursor.phase=='prepare' and not getattr(cursor,'media_announced40',False))
     for section in KINDS:
         if cancel():break
         if not portal.get('include_'+section,True):
@@ -300,7 +302,7 @@ def search(portal,query,kind='vod',offset=0,now=None,incremental=False,continuat
         if section!='live' and cursor is not None and cache_key in cursor.media_cache:
             result[section]=cursor.media_cache[cache_key];continue
         # The first Live request publishes names before any EPG or media SQL.
-        if section!='live' and incremental and cursor is not None and cursor.phase=='prepare' and cursor.slices==0:
+        if section!='live' and names_first and incremental and cursor is not None and cursor.phase=='prepare' and cursor.slices==0:
             result[section]=dict(rows=[],total=None,code='INDEX_PENDING');continue
         try:
             state=reader.state(section)
@@ -310,7 +312,9 @@ def search(portal,query,kind='vod',offset=0,now=None,incremental=False,continuat
             if section=='live':
                 if incremental:
                     cursor=cursor or LiveSearch(portal,query,reader,int(time.time() if now is None else now),correlation,profile,cancel)
-                    rows,code=cursor.step()
+                    # Publish available film/series pages before expensive EPG
+                    # preparation; names were already delivered in stage one.
+                    rows,code=(list(cursor.result),'EPG_PARTIAL') if publish_media else cursor.step()
                     result['_cursor']=cursor
                     if not cursor.done:result['_continuation']=cursor
                 else:rows,code=live_matches(portal,query,reader,int(time.time() if now is None else now))
@@ -329,6 +333,7 @@ def search(portal,query,kind='vod',offset=0,now=None,incremental=False,continuat
                 while len(cursor.media_cache)>12:cursor.media_cache.pop(next(iter(cursor.media_cache)))
         except (IndexReadError,sqlite3.Error,OSError,ValueError):
             result[section]=dict(rows=[],total=None,code='INDEX_ERROR')
+    if publish_media:cursor.media_announced40=True
     for section in KINDS:result.setdefault(section,dict(rows=[],total=None,code='INDEX_PENDING'))
     if incremental:result['_view']=(kind,offset)
     return result

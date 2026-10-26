@@ -75,3 +75,30 @@ def text(values):
     if 'subtitle_enabled' in values:lines.append(tr(35801)+': '+tr(35802 if values['subtitle_enabled'] else 35803))
     lines.append(tr(35804))
     return '\n'.join(lines)
+
+
+def groups(values):
+    """A fixed, localized snapshot; unknown is explicit, no extra player reads."""
+    unknown=tr(35800)
+    resolution='×'.join(values.get(k,unknown) for k in ('width','height'))
+    scan={'progressive':'p','interlaced':'i','p':'p','i':'i'}.get(values.get('scan','').lower(),'')
+    return (
+        (35841,35844,'device-tv',resolution+scan),
+        (35841,35815,'video', ' · '.join(values.get(k,unknown) for k in ('video','decoder','pixels'))),
+        (35841,35813,'more',values.get('fps',unknown)+(' fps' if values.get('fps') else '')),
+        (35841,35818,'video',values.get('hdr',unknown)),
+        (35842,35819,'audio',' · '.join(values.get(k,unknown) for k in ('audio','channels','language','samplerate'))),
+        (35843,35801,'subtitle',tr(35802 if values.get('subtitle_enabled') else 35803) if 'subtitle_enabled' in values else unknown),
+        (35843,35823,'subtitle',values.get('subtitles',unknown)))
+
+
+def present(values):
+    import xbmcgui
+    from player_controls import texture
+    items=[]
+    for group,label,icon,value in groups(values):
+        item=xbmcgui.ListItem(tr(group)+' · '+tr(label),label2=value)
+        image=texture(icon);item.setArt(dict(icon=image,thumb=image));items.append(item)
+    choice=xbmcgui.Dialog().select(tr(33010),items,useDetails=True)
+    if isinstance(choice,int) and 0<=choice<len(items):
+        xbmcgui.Dialog().textviewer(tr(33010),text(values))

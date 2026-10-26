@@ -192,7 +192,7 @@ class MediaOSD(xbmcgui.WindowDialog):
             elif name in ('video','audio_settings'):
                 self.hide_bar();self.suspended=True;self._suspend_until=time.monotonic()+.5;self.close()
                 xbmc.executebuiltin('ActivateWindow('+('osdvideosettings' if name=='video' else 'osdaudiosettings')+')')
-            elif name=='info':xbmcgui.Dialog().textviewer(tr(33010),(self.token[1].get('title') or tr(33012))+'\n'+__import__('stream_details').text(self._details.read(self.player,self.token)))
+            elif name=='info':__import__('stream_details').present(self._details.read(self.player,self.token))
             else:
                 if self.owned():return extension(name,self.token[1])
             self.update();return True
@@ -233,6 +233,8 @@ def poll(player=None):
     global _window,_standard_recovery
     player=player or xbmc.Player()
     token=identity(player)
+    from osd_ownership import recover
+    if token and token[0]=='media' and recover(player,token):_standard_recovery=True;return
     if not token or token[0]!='media' or not _fullscreen():
         _standard_recovery=False
         if _window and _window.transition():
@@ -240,8 +242,6 @@ def poll(player=None):
         if _window:_window.dispose();_window=None
         return
     current=_dialog_id()
-    from osd_ownership import recover
-    if recover(player,token):_standard_recovery=True;return
     from exit_jobs import state as exit_state
     pending=exit_state()
     if pending and pending['phase'] in ('pending','running') and _same(tuple(pending['token']),token):

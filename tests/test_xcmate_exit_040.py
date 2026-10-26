@@ -33,7 +33,9 @@ class ExitTests(Fixture,unittest.TestCase):
                 self.playing=True;self.session.update(kind=kind,series_id='series',season='2',episode='3')
                 self.properties[self.progress.PROPERTY]=json.dumps(self.session)
                 self.assertFalse(self.exit.poll(self.player,fullscreen=True))
-                self.assertTrue(self.exit.poll(self.player,fullscreen=False))
+                self.assertFalse(self.exit.poll(self.player,fullscreen=False))
+                from exit_jobs import request
+                self.assertTrue(request(self.player,reason='USER_BACK'))
                 from exit37_fixture import drain_stop
                 drain_stop()
                 self.assertFalse(self.exit.poll(self.player,fullscreen=False))
@@ -44,7 +46,7 @@ class ExitTests(Fixture,unittest.TestCase):
         self.assertFalse(self.exit.poll(self.player,fullscreen=False))
         for _ in range(5): self.exit.poll(self.player,fullscreen=True)
         self.assertFalse(self.stops)
-        self.assertTrue(self.exit.poll(self.player,fullscreen=False))
+        self.assertFalse(self.exit.poll(self.player,fullscreen=False))
 
     def test_foreign_replacement_wrong_account_and_stale_marker_never_stop(self):
         self.exit.poll(self.player,fullscreen=True)
@@ -69,8 +71,9 @@ class ExitTests(Fixture,unittest.TestCase):
         w=self.media_window();w.onInit()
         from exit37_fixture import drain_stop
         drain_stop()
-        self.assertEqual(len(self.stops),1)
-        w.onInit();self.assertEqual(len(self.stops),1)
+        # .40: native re-init is no longer evidence of a user exit.
+        self.assertEqual(len(self.stops),0)
+        w.onInit();self.assertEqual(len(self.stops),0)
 
     def test_live_overlay_back_does_not_stop_but_actual_navigation_does(self):
         self.session['kind']='live';self.media_id='';self.live_id=json.dumps(self.session)
@@ -79,6 +82,8 @@ class ExitTests(Fixture,unittest.TestCase):
         # cleared by closing the overlay; the immutable playing-item tag stays.
         self.properties.pop('XtreamMate.LiveSession',None)
         self.exit.poll(self.player,fullscreen=True);self.assertFalse(self.stops)
-        self.assertTrue(self.exit.poll(self.player,fullscreen=False))
+        self.assertFalse(self.exit.poll(self.player,fullscreen=False))
+        from exit_jobs import request
+        self.assertTrue(request(self.player,reason='USER_HOME'))
         from exit37_fixture import drain_stop
         drain_stop();self.assertEqual(len(self.stops),1)

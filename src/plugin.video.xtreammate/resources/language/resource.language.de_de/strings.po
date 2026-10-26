@@ -3832,3 +3832,19 @@ msgstr "▶ Programmfokus · Links: Sender"
 msgctxt "#35840"
 msgid "Die vorherige XCMate-Ansicht ist nicht mehr verfügbar. Bitte den Medienbereich erneut öffnen."
 msgstr "Die vorherige XCMate-Ansicht ist nicht mehr verfügbar. Bitte den Medienbereich erneut öffnen."
+
+msgctxt "#35841"
+msgid "Video"
+msgstr "Bild"
+
+msgctxt "#35842"
+msgid "Audio"
+msgstr "Ton"
+
+msgctxt "#35843"
+msgid "Subtitles"
+msgstr "Untertitel"
+
+msgctxt "#35844"
+msgid "Resolution"
+msgstr "Auflösung"

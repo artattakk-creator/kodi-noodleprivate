@@ -3832,3 +3832,19 @@ msgstr "▶ Programme focus · Left: channels"
 msgctxt "#35840"
 msgid "The previous XCMate view is no longer available. Please reopen the media section."
 msgstr "The previous XCMate view is no longer available. Please reopen the media section."
+
+msgctxt "#35841"
+msgid "Video"
+msgstr "Video"
+
+msgctxt "#35842"
+msgid "Audio"
+msgstr "Audio"
+
+msgctxt "#35843"
+msgid "Subtitles"
+msgstr "Subtitles"
+
+msgctxt "#35844"
+msgid "Resolution"
+msgstr "Resolution"

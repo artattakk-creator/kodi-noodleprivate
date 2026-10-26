@@ -1,5 +1,5 @@
 """Always-visible local programme column for the highlighted mini-list SID."""
-import datetime,time
+import datetime,time,textwrap
 from localization import tr
 
 
@@ -22,15 +22,23 @@ class MiniProgramme:
     def __init__(self,owner):
         import xbmcgui
         self.owner=owner;self.focused=False;self.sid='';self.selected=0;self.events=[];self.signature=None
-        w,h=owner._width,owner._height;x=int(w*.36);width=int(w*.38)
+        w,h=owner._width,owner._height;x=int(w*.36);width=int(w*.32)
         self.heading=xbmcgui.ControlLabel(x,48,width,30,'','font13','0xFFF4F6F9')
         self.hint=xbmcgui.ControlLabel(x,86,width,28,tr(35610),'font12','0xFFBEC4CD')
-        self.list=xbmcgui.ControlList(x,122,width,min(376,h-190),font='font12',textColor='0xFFF4F6F9',selectedColor='0xFFFFFFFF',buttonTexture=owner._media+'/tv_normal.png',buttonFocusTexture=owner._media+'/xcmate_focus_neon.png',_itemHeight=40,_space=4)
+        self.list=xbmcgui.ControlList(x,122,width,min(376,h-190),font='font12',textColor='0xFFF4F6F9',selectedColor='0xFFFFFFFF',buttonTexture=owner._media+'/remote_clear.png',buttonFocusTexture=owner._media+'/remote_clear.png',_itemHeight=66,_space=4)
         owner.addControls([self.heading,self.hint,self.list]);self.list.controlLeft(self.list);self.list.controlRight(self.list)
+        self.rows=[]
+        for row in range(5):
+            y=122+row*70
+            highlight=xbmcgui.ControlImage(x,y,width,66,owner._media+'/xcmate_focus_neon.png')
+            stamp=xbmcgui.ControlLabel(x+8,y+2,width-16,20,'','font12','0xFFBEC4CD')
+            title=xbmcgui.ControlTextBox(x+8,y+22,width-16,40,font='font12',textColor='0xFFF4F6F9')
+            owner.addControls([highlight,stamp,title]);self.rows.append((highlight,stamp,title))
+        self.column_width=width
         self.visible(False)
 
     def visible(self,value):
-        for c in (self.heading,self.hint,self.list):c.setVisible(value)
+        for c in (self.heading,self.hint,self.list,*[c for row in self.rows for c in row]):c.setVisible(value)
         if not value:self.focused=False
 
     def render(self):
@@ -51,13 +59,26 @@ class MiniProgramme:
                 labels.append(label)
             self.list.addItems(labels or [tr(35611)])
             self.selected=current if changed or not self.focused else min(self.selected,max(0,len(events)-1));self.list.selectItem(self.selected)
-        self.visible(True)
+        self.visible(True);self._paint()
+
+    def _paint(self):
+        now=time.time();first=self.selected//5*5
+        for slot,(highlight,stamp,title) in enumerate(self.rows):
+            index=first+slot;event=self.events[index] if index<len(self.events) else None
+            highlight.setVisible(bool(event and self.focused and index==self.selected))
+            stamp.setVisible(bool(event));title.setVisible(bool(event))
+            if event:
+                active=event['start']<=now<event['stop']
+                label=('● '+tr(35612)+'  ' if active else '')+time_label(event,now)
+                stamp.setLabel('[COLOR FF55DD99]'+label+'[/COLOR]' if active else label)
+                title.setText(wrap_title(event['title'],self.column_width))
+            else:stamp.setLabel('');title.setText('')
 
     def focus(self):
         self.render()
         if not self.events:return
         self.focused=True;self.selected=programme_rows(self.events)[1];self.list.selectItem(self.selected);self.owner.setFocus(self.list)
-        self.hint.setLabel(tr(35830))
+        self.hint.setLabel(tr(35830));self._paint()
 
     def command(self,command,native=False):
         if not self.focused:return False
@@ -74,4 +95,11 @@ class MiniProgramme:
                 event=self.events[self.selected];xbmcgui.Dialog().textviewer(event['title'],event.get('description') or tr(35613))
         elif command=='right':pass
         else:return False
+        self._paint()
         return True
+
+
+def wrap_title(title,width):
+    """At most two explicit lines in a bounded native TextBox (no scrolling)."""
+    value=' '.join(str(title or '').split())[:1024]
+    return '\n'.join(textwrap.wrap(value,width=max(16,int((width-16)/8)),max_lines=2,placeholder='…'))
