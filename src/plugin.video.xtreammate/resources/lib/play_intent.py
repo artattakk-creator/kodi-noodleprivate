@@ -10,6 +10,8 @@ CANCEL='XCMate.PrePlay.Cancel'
 def marker(): return xbmcgui.Window(10000)
 
 def before_play(session,timeout=1.0):
+    from exit_jobs import blocked
+    if blocked():return False
     if not session or not hasattr(xbmc,'Monitor'): return True
     window=marker();nonce=session['nonce']
     window.setProperty(REQUEST,json.dumps(session))

@@ -276,6 +276,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
     def suspend_for_guide(self):
         """Service-only close: preserve the immutable running live session."""
         if self._closed:return
+        self._clear_surface40()
         self._closed=True
         if hasattr(self,'_guide'):self._guide.close()
         self._intro_deadline=None
@@ -299,9 +300,22 @@ class LiveNavigator(xbmcgui.WindowDialog):
                       focus_id=focus_id,dialog_id=dialog_id,focused=active)
             except Exception: pass
 
+    def _clear_surface40(self):
+        if not self._drawn:return
+        self._nav_rail.hide();self._mini.visible(False)
+        for control in (self.heading,self.sub,self.footer,self.osd_title,*self._info_controls):
+            if hasattr(control,'setLabel'):control.setLabel('')
+            control.setVisible(False)
+        for row in self._row_controls:
+            for control in row:
+                if hasattr(control,'setLabel'):control.setLabel('')
+                control.setVisible(False)
+        for control in (self.bg,self.control,self.osd_bg,*self.main_buttons,*self.extra_buttons,*[image for _,image in self._button_icons]):control.setVisible(False)
+
     def close(self):
         if self._closed:
             return
+        self._clear_surface40()
         self._closed = True
         if hasattr(self, '_guide'): self._guide.close()
         self._intro_deadline = None
@@ -356,9 +370,9 @@ class LiveNavigator(xbmcgui.WindowDialog):
         mark(self,'OWNER_READY')
         return True
 
-    def _request_exit(self):
+    def _request_exit(self,reason='USER_BACK'):
         from live_exit import request,_trace
-        try:accepted=request(self)
+        try:accepted=request(self,reason=reason)
         except (AttributeError,RuntimeError):accepted=False
         if not accepted:_trace('STOP_REJECTED')
         return accepted
@@ -407,13 +421,13 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self.info_hint = xbmcgui.ControlLabel(174,height-61,width-220,24,'','font12','0xFFB6BCC6')
         self._info_controls = [self.info_bg,self.info_logo,self.info_name,self.info_now,self.info_times,
                               self.info_track,self.info_progress,self.info_duration,self.info_next,self.info_hint]
-        self.osd_bg = xbmcgui.ControlImage(32,height-300,width-64,268,__import__('theme_render').texture(self,panel,'panel.player.controls'))
-        self.osd_title = xbmcgui.ControlLabel(52,height-290,width-104,30,'XCMate','font13','0xFFF0F2F5')
+        self.osd_bg = xbmcgui.ControlImage(32,height-330,width-64,298,__import__('theme_render').texture(self,panel,'panel.player.controls'))
+        self.osd_title = xbmcgui.ControlLabel(52,height-318,width-104,30,'XCMate','font13','0xFFF0F2F5')
         self.main_buttons,self.extra_buttons,self._button_icons = [],[],[]
         # Stable action indices; visual tape-deck order is defined in _render.
         main = [('Pause','pause'),('-10 s','back'),('+30 s','forward'),('Stop','stop'),('Weitere','more'),('Live-Ende','live')]
         extra = [('Ton','audio'),('Bild','video'),('Untertitel','subtitle'),('EPG','epg'),('Einstellungen','settings'),('Gruppen','tv'),('Info','info')]
-        for entries,buttons,y in ((main,self.main_buttons,height-238),(extra,self.extra_buttons,height-150)):
+        for entries,buttons,y in ((main,self.main_buttons,height-262),(extra,self.extra_buttons,height-144)):
             space = (width-104)//len(entries)
             for i,(label,icon) in enumerate(entries):
                 buttons.append(xbmcgui.ControlButton(52+i*space,y,space-8,88 if buttons is self.main_buttons else 46,label,
@@ -444,7 +458,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
     def _nav_activate(self,action):
         if action=='groups':self._nav_rail.hide();self._switch('groups')
         elif action=='home_live':self._nav_rail.hide();self._switch('channels')
-        elif action=='xcmate_home':self._request_exit()
+        elif action=='xcmate_home':self._request_exit('USER_HOME')
         else:
             from live_guide_navigation import request
             request(self,destination=action)
@@ -527,7 +541,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             available = i<len(self._labels)
             for c in (logo,title,detail): c.setVisible(available)
             background.setVisible(available and i==selected)
-            if not available: continue
+            if not available:title.setLabel('');detail.setLabel('');continue
             label,subtitle,channel = self._labels[i],'',None
             if self.mode == 'channels':
                 absolute = self._page_start+i-self._row_offset
@@ -566,6 +580,10 @@ class LiveNavigator(xbmcgui.WindowDialog):
         listing = self.mode in ('groups','channels','guide')
         osd = self.mode in ('controls','extras')
         for c in (self.bg,self.heading,self.sub,self.control,self.footer): c.setVisible(listing)
+        if not listing:
+            for c in (self.heading,self.sub,self.footer):c.setLabel('')
+            for _,_,title,detail in self._row_controls:title.setLabel('');detail.setLabel('')
+        if not osd:self.osd_title.setLabel('')
         for row in self._row_controls:
             for c in row: c.setVisible(False)
         for c in self._info_controls: c.setVisible(self.mode=='info')
@@ -579,9 +597,9 @@ class LiveNavigator(xbmcgui.WindowDialog):
             c.setEnabled(i in self._main_indices)
         for slot,i in enumerate(transport):
             space=(self._width-104)//len(transport)
-            self.main_buttons[i].setPosition(52+slot*space,self._height-238)
+            self.main_buttons[i].setPosition(52+slot*space,self._height-262)
             self.main_buttons[i].setWidth(space-8)
-            self._button_icons[i][1].setPosition(52+slot*space+(space-48)//2,self._height-232)
+            self._button_icons[i][1].setPosition(52+slot*space+(space-48)//2,self._height-256)
         for c in self.extra_buttons:c.setVisible(osd)
         for button,image in self._button_icons:
             image.setVisible(osd)
@@ -659,11 +677,16 @@ class LiveNavigator(xbmcgui.WindowDialog):
         from osd_ownership import recover
         player=xbmc.Player();token=identity(player)
         if token and token[0]=='live' and token[1]['pid']==str(self.portal['id']) and token[1]['sid']==self.sid:
-            if recover(player,token):self._standard_recovery=True;return
+            if recover(player,token):
+                self._standard_recovery=True
+                self._recovery_target40=self.mode if self.mode in ('controls','extras') else 'info'
+                return
             if getattr(self,'_standard_recovery',False):
                 dialog=xbmcgui.getCurrentWindowDialogId()
                 if dialog in (0,9999):
-                    self._standard_recovery=False;self.mode='controls';self.show()
+                    self._standard_recovery=False;self.mode=getattr(self,'_recovery_target40','info')
+                    self._info_deadline=time.monotonic()+self._info_timeout if self.mode=='info' else None
+                    self.show()
         now=time.monotonic()
         if self.mode=='info' and self._info_deadline is not None and now>=self._info_deadline:
             self._switch('hidden')
@@ -779,6 +802,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 self._tune(c)
 
     def _tune(self, channel):
+        from exit_jobs import blocked
+        if blocked():return
         from player import build_playable_item
         sid = str(channel.extra.get('stream_id', ''))
         if not sid:
@@ -840,7 +865,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             elif index == 2: self._seek(30)
             elif index == 5: self._seek(None)
             elif index == 3:
-                self._request_exit()
+                self._request_exit('USER_STOP')
                 return
             self._render()
         else:
@@ -856,7 +881,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 window=('osdaudiosettings','osdvideosettings','osdsubtitlesettings')[index]
                 xbmc.executebuiltin('ActivateWindow('+window+')')
             elif index==6:
-                xbmcgui.Dialog().textviewer('XCMate',__import__('stream_details').text(self._stream_details.read(xbmc.Player(),getattr(self,'_owned_token',None))))
+                __import__('stream_details').present(self._stream_details.read(xbmc.Player(),getattr(self,'_owned_token',None)))
             elif index == 4:
                 import xbmcaddon
                 xbmcaddon.Addon().openSettings()
@@ -1026,7 +1051,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         except Exception:
             raw = 0
         if key==ACTION_STOP and not self._closed and not getattr(self,'_exiting',False):
-            self._request_exit();return
+            self._request_exit('USER_STOP');return
         was_closed=getattr(self,'_closed',False)
         if not self._accept_input():
             trace('input','ACTION_IGNORED_CLOSED' if was_closed else 'ACTION_REJECTED',

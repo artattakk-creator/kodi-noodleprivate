@@ -40,8 +40,8 @@ class RailMini39(unittest.TestCase):
         original=list(mini.list.items);self.o.handle_command('down');self.assertEqual(mini.selected,2)
         self.assertEqual(mini.list.items,original);self.assertIn('FF55DD99',original[1]);self.assertNotIn('FF55DD99',original[2])
         self.assertIn('▶',mini.hint.label);self.o.handle_command('left');self.assertFalse(mini.focused)
-        self.assertEqual(mini.list.options['_itemHeight'],40);self.assertEqual(mini.list.options['font'],'font12')
-        self.assertIn('xcmate_focus_neon.png',mini.list.options['buttonFocusTexture'])
+        self.assertEqual(mini.list.options['_itemHeight'],66);self.assertEqual(mini.list.options['font'],'font12')
+        self.assertIn('remote_clear.png',mini.list.options['buttonFocusTexture'])
 
     def test_compact_programme_column_fits_720_and_1080_safe_area(self):
         module=importlib.import_module('mini_epg')

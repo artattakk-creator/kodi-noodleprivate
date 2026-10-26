@@ -1,3 +1,12 @@
+0.1.29.40 (cumulative stabilization test candidate; not released)
+- P0: transient fullscreen loss and native media re-init no longer authorize Stop or resolver cancellation. Explicit own Back/Stop/Home and cancellation carry whitelisted reason codes.
+- P0: wait for real native modal release before one Stop worker. Timeout quarantines the still-running native call across interpreters; no retry or player-mutex probes from service/return during Stop. Actual Android native deadlock remains an acceptance gate.
+- Search confirmed pages are isolated per query/portal/session/tab/offset. Pending/error responses preserve rows; final confirmed zero still clears. Stable IDs update metadata without rebuilding ListItems. Film/series data publish before EPG preparation.
+- Live standard-OSD recovery restores first-OK Infobar instead of jumping to transport; foreign dialogs and players untouched. Better-separated transport/options rows, grouped technical data with local icons and honest unknown values.
+- Narrower right Mini-EPG: bounded two-line titles, persistent NOW mark and independent focus. Hidden/closed owned surfaces clear text and focusable rail state.
+- Existing profiles, original icon, dynamic artwork, portals, groups, EPG, resume and autoplay preserved. No reset, database deletion/reindex repair or device storage/migration action.
+- All .40 Android gates NOT_TESTED. Box A excluded; no automatic install, main merge or productive release.
+
 0.1.29.39 (cumulative Android test candidate; not released)
 - Shared read-only published guide_v1 snapshot for large grid, live/mini snapshots and bounded 12-channel widgets; manual mappings win. Viewport selection never queues provider HTTP. Existing three BINGIE routes and cache-only compatibility retained; EPG background refresh respects its own saved preference.
 - Kodi21 stream fields are owner-bound, sampled at most every two seconds while visible, never guessed from channel names. No v22-only live bitrate fields, no fake SDR/progressive values. Large transport buttons and secondary settings; two design diagrams, no visual acceptance claimed.

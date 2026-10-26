@@ -10,14 +10,14 @@ import json
 from pathlib import Path
 import unittest
 
-from test_xcmate_kodi21_overlay import ControlList, ControlButton, ControlLabel, ControlImage
+from test_xcmate_kodi21_overlay import ControlList, ControlButton, ControlLabel, ControlImage, ControlTextBox
 
 ROOT = Path(__file__).resolve().parents[1] / 'src/plugin.video.xtreammate'
 
 
 CONSTRUCTORS = {
     'ControlList': ControlList, 'ControlButton': ControlButton,
-    'ControlLabel': ControlLabel, 'ControlImage': ControlImage,
+    'ControlLabel': ControlLabel, 'ControlImage': ControlImage, 'ControlTextBox': ControlTextBox,
     'Window': lambda existingWindowId=-1: None,
     'WindowDialog': lambda: None,
     'WindowXMLDialog': lambda xmlFilename, scriptPath, defaultSkin='Default',

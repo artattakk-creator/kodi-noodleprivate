@@ -83,7 +83,7 @@ def poll():
             _home().clearProperty(KEY);trace('FOREIGN_PLAYER');return
         elif action=='xcmate_home':
             from exit_jobs import request
-            if not request(player,expected=current):_home().clearProperty(KEY);trace('STOP_REJECTED');return
+            if not request(player,expected=current,reason='USER_HOME'):_home().clearProperty(KEY);trace('STOP_REJECTED');return
             pending['stopping']=True;_home().setProperty(KEY,json.dumps(pending));return
     _home().clearProperty(KEY)
     if pending.get('token'):

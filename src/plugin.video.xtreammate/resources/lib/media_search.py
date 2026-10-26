@@ -94,6 +94,9 @@ class SearchMixin:
         if not hasattr(self,'_search_origin'):
             self._search_origin={name:getattr(self,name) for name in FIELDS if hasattr(self,name)}
             self._search_origin_focus=self.getFocusId()
+        from search_snapshot import Pages
+        self._search_pages40=Pages((str(self.portal['id']),query,self._search_correlation,getattr(self,'category','')))
+        self._search_positions39={}
         self._search_query=query;self._search_kind=getattr(self,'_search_kind',self.kind)
         if self._search_kind not in KINDS:self._search_kind='vod'
         self._search_offset=0;self._search_selected=0;self._search_rows=[];self._search_data={};self._search_loading=True
@@ -126,11 +129,10 @@ class SearchMixin:
                           correlation=session,profile=profile,cancel=cancel.is_set)
         def apply(value):
             if (not self._closed and not self._leaving and self.mode=='search' and
-                session==self._search_correlation and not cancel.is_set()):
+                session==self._search_correlation and str(portal['id'])==str(self.portal['id']) and not cancel.is_set()):
                 self._search_cursor=value.get('_cursor',cursor)
-                if (offset or self._search_offset) and (kind!=self._search_kind or offset!=self._search_offset):
-                    self._search_load();return
                 self._search_ready(value)
+                if (kind,offset)!=(self._search_kind,self._search_offset):self._search_load()
             else:profile.emit('STALE_CANCEL',once=True)
         self._request(job,apply);self._search_job=self._pending_future
 
@@ -139,10 +141,13 @@ class SearchMixin:
         cursor=value.get('_continuation') if not resume else None
         if '_cursor' in value:self._search_cursor=value['_cursor']
         if '_view' in value:self._search_view=value['_view']
-        value={k:v for k,v in value.items() if k in KINDS}
-        if not resume:self._search_loading=False
+        from search_snapshot import Pages,PENDING
+        pages=getattr(self,'_search_pages40',None)
+        if pages is None:self._search_pages40=pages=Pages((str(self.portal['id']),self._search_query,self._search_correlation,getattr(self,'category','')))
+        if not resume:pages.publish(value,value.get('_view',(self._search_kind,self._search_offset)))
+        value={kind:pages.section(kind,self._search_offset if kind==self._search_kind else 0) for kind in KINDS}
         self._search_data=value
-        self._search_genre_pending=any(v.get('code')=='GENRE_PENDING' for v in value.values())
+        self._search_genre_pending=any(v.get('code') in PENDING for v in value.values())
         old_focus=self._mode_focus.get('search',self.getFocusId()) if resume else self.getFocusId()
         old_position=self.getControl(710).getSelectedPosition()
         self.getControl(103).setLabel(tr(33903)+' · '+self._search_query)
@@ -154,13 +159,28 @@ class SearchMixin:
             for pos,label in enumerate(labels):self.getControl(700+pos).setLabel(label)
             self._search_tab_labels=tuple(labels)
         section=value[self._search_kind];self._search_rows=section['rows']
+        self._search_loading=not self._search_rows and section.get('code') in PENDING
         rows=[dict(row,kind=self._search_kind) for row in self._search_rows]
-        signature=(self._search_kind,tuple((str(row.get('sid','')),row.get('name',''),row.get('_now_title','')) for row in rows))
-        changed=resume or signature!=getattr(self,'_search_rendered',None)
+        signature=(self._search_kind,self._search_offset,tuple((str(row.get('sid','')),row.get('name',''),row.get('_now_title',''),row.get('year',''),row.get('genre','')) for row in rows))
+        previous=getattr(self,'_search_rendered',None)
+        changed=signature!=previous or resume and self.getControl(710).size()!=len(rows)
+        control=self.getControl(710)
+        same_ids=bool(previous and previous[:2]==signature[:2] and tuple(r[0] for r in previous[2])==tuple(r[0] for r in signature[2]) and control.size()==len(rows))
         if changed:
-            with self._search_profile.span('ROW_RENDER',rows=len(rows)):
-                self._fill(710,rows)
+            if same_ids and not resume:
+                from search_results import secondary
+                for pos,row in enumerate(rows):
+                    if previous[2][pos]!=signature[2][pos]:
+                        item=control.getListItem(pos);item.setLabel(row.get('name',''));item.setProperty('XCMate.SearchSecondary',secondary(row))
+            else:
+                with self._search_profile.span('ROW_RENDER',rows=len(rows)):
+                    self._fill(710,rows)
             self._search_rendered=signature
+        diagnostic=(self._search_kind,self._search_offset,len(rows),section.get('total'),section.get('code'),bool(section.get('partial')),pages.preserved.get((self._search_kind,self._search_offset),False))
+        if diagnostic!=getattr(self,'_search_diagnostic40',None):
+            self._search_diagnostic40=diagnostic
+            try:xbmc.log('[XCMate][SEARCH40] generation={} section={} offset={} rows={} total={} code={} partial={} preserved={}'.format(self._search_correlation,*diagnostic),xbmc.LOGINFO)
+            except (AttributeError,RuntimeError):pass
         self.getControl(710).selectItem(old_position if old_focus==710 else getattr(self,'_search_selected',0))
         self.getControl(102).setLabel(tr(33906) if section['code']=='INDEX_ERROR' else tr(33904) if section['total'] is None else
             tr(33907) if not rows else '{}–{} / {}'.format(self._search_offset+1,self._search_offset+len(rows),section['total']))
@@ -197,13 +217,11 @@ class SearchMixin:
             if changed:self._search_offset,self._search_selected=self._search_positions39.get(self._search_kind,(0,0))
             self.setFocusId(cid)
             view=getattr(self,'_search_view',None)
-            if self._search_data and (view is None or view[0]!=self._search_kind or view[1]==self._search_offset):
-                self._search_ready(self._search_data)
-            else:self._search_rows=[];self._search_loading=True;self._fill(710,[])
+            self._search_ready({},resume=True)
             self._search_load();return True
         if cid in (720,721):
             self._search_offset=max(0,self._search_offset+(-48 if cid==720 else 48));self._search_selected=0
-            self._search_rows=[];self._search_loading=True;self._fill(710,[]);self._search_load();return True
+            self._search_ready({},resume=True);self._search_load();return True
         if cid!=710:return False
         if self._search_loading:return True
         pos=self.getControl(710).getSelectedPosition()

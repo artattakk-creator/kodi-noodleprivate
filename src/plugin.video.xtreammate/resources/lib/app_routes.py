@@ -227,7 +227,15 @@ def dispatch(router):
         open_route(router,portal,lambda:open_guide(router,portal),after_close=handoff)
     elif action=='media_play':
         from media_progress import play
-        play(router,portal)
+        try:
+            from exit_jobs import blocked
+            if blocked():
+                import xbmcplugin,xbmcgui
+                xbmcplugin.setResolvedUrl(router._handle,False,xbmcgui.ListItem());return
+            play(router,portal)
+        finally:
+            from media_intent import failed
+            failed(str(router._params.get('intent') or ''),portal['id'])
 
 
 def search(router,portal):

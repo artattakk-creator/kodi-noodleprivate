@@ -26,7 +26,6 @@ def _trace(stage,session=None):
     digest=hashlib.sha256(json.dumps({k:(session or {}).get(k) for k in ('pid','sid','nonce')},sort_keys=True).encode()).hexdigest()[:12]
     try:
         xbmc.log('[XCMate][LIVE_EXIT] stage='+stage+' session='+digest+
-                 ' video='+str(int(xbmc.Player().isPlayingVideo()))+
                  ' window='+str(int(xbmcgui.getCurrentWindowId())),xbmc.LOGINFO)
     except (AttributeError,RuntimeError):pass
 
@@ -37,7 +36,7 @@ def new_selection():
     _marker().clearProperty(KEY)
 
 
-def request(navigator):
+def request(navigator,reason='USER_BACK'):
     if getattr(navigator,'_exiting',False):return True
     from playback_exit import identity,_same
     player=xbmc.Player();token=identity(player)
@@ -58,7 +57,7 @@ def request(navigator):
         navigator._exiting=True;navigator._exit_nonce=token[1]['nonce']
         return True
     value=dict(session={k:token[1][k] for k in ('pid','sid','nonce','at')},phase='requested',at=time.time(),deadline=time.monotonic()+5,not_before=time.monotonic()+.15)
-    value['pending']=pending
+    value['pending']=pending;value['reason']=reason if reason in ('USER_BACK','USER_STOP','USER_HOME') else 'USER_BACK'
     _save(value);navigator._exiting=True;navigator._exit_nonce=token[1]['nonce']
     _marker().setProperty('XCMate.PrePlay.Cancel',(pending or token[1])['nonce'])
     _trace('STOP_REQUESTED',token[1]);return True
@@ -77,6 +76,8 @@ def _poll(navigator=None):
     if current and not any(current['nonce']==item['nonce'] for item in allowed):
         if navigator is not None and getattr(navigator,'_exiting',False):navigator.close()
         marker.clearProperty(KEY);return False
+    from exit_jobs import blocked
+    if blocked():return True
     player=xbmc.Player()
     from playback_exit import identity,_same
     from exit_jobs import request as stop_owned
@@ -98,7 +99,7 @@ def _poll(navigator=None):
         # Never wait on Player.stop while owning the live dialog.
         if navigator is not None and not navigator._closed:navigator.close()
         if playing:
-            if not stop_owned(player,expected=token):
+            if not stop_owned(player,expected=token,reason=value.get('reason','USER_BACK')):
                 value['phase']='failed';_save(value)
                 if navigator is not None and not navigator._closed:navigator.close()
                 _trace('OWNERSHIP_CHANGED',session);return True

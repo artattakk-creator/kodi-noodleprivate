@@ -65,6 +65,12 @@ class ControlLabel(Control):
         super().__init__(locals().copy())
 
 
+class ControlTextBox(Control):
+    def __init__(self,x,y,width,height,font=None,textColor=None):
+        super().__init__(locals().copy())
+    def setText(self,text):self.text=text
+
+
 class ControlImage(Control):
     def __init__(self, x, y, width, height, filename, aspectRatio=0, colorDiffuse=None):
         super().__init__(locals().copy())
@@ -136,6 +142,7 @@ class OverlayLifecycleTests(unittest.TestCase):
         gui.ControlButton = ControlButton
         gui.ControlImage = ControlImage
         gui.ControlLabel = ControlLabel
+        gui.ControlTextBox = ControlTextBox
         window = types.SimpleNamespace(setProperty=self.props.__setitem__,
             getProperty=lambda k:self.props.get(k,''),clearProperty=lambda k:self.props.pop(k,None))
         gui.Window = lambda *_:window
@@ -144,7 +151,7 @@ class OverlayLifecycleTests(unittest.TestCase):
         xbmc.Monitor = lambda:types.SimpleNamespace(abortRequested=lambda:False)
         xbmc.Player = lambda:self.player
         xbmc.executebuiltin = mock.Mock()
-        xbmc.getCondVisibility = lambda condition:self.paused if condition=='Player.Paused' else True
+        xbmc.getCondVisibility = lambda condition:self.paused if condition=='Player.Paused' else False if condition in ('System.HasActiveModalDialog','Container.IsUpdating') else True
         xbmc.getInfoLabel = lambda *_:''
         addon = types.ModuleType('xbmcaddon')
         addon.Addon = lambda:types.SimpleNamespace(getAddonInfo=lambda *_:str(LIB.parents[1]))

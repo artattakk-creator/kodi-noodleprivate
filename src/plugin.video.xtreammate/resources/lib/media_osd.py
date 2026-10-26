@@ -159,13 +159,13 @@ class MediaOSD(xbmcgui.WindowDialog):
             self.buttons['pause'].setLabel(tr(33014) if paused else tr(33001))
             self.icons['pause'].setImage(__import__('player_controls').texture('play' if paused else 'pause'))
 
-    def invoke(self,name):
+    def invoke(self,name,reason='USER_STOP'):
         if name=='stop' and (self.owned() or self.token[1].get('autoplay_chain')):
             from media_autoplay import request_cancel
             request_cancel(self.token[1].get('autoplay_chain',''),self.token[1]['pid'])
             from media_return import request as return_to_origin
             return_to_origin(self.token)
-            result=stop_owned(self.player,expected=self.token,manual=True) if self.owned() else True
+            result=stop_owned(self.player,expected=self.token,manual=True,reason=reason) if self.owned() else True
             self.dispose();return result
         if not self.owned():self.dispose();return False
         if name not in {e[0] for e in available(self.token[1],self.capabilities())}:return False
@@ -180,7 +180,7 @@ class MediaOSD(xbmcgui.WindowDialog):
             elif name in ('rewind','fastforward'):
                 if self.owned():xbmc.executebuiltin('PlayerControl('+('Rewind' if name=='rewind' else 'Forward')+')')
             elif name=='stop':
-                result=stop_owned(self.player,expected=self.token,manual=True);self.dispose();return result
+                result=stop_owned(self.player,expected=self.token,manual=True,reason=reason);self.dispose();return result
             elif name in ('audio','subtitles'):
                 streams=self.player.getAvailableAudioStreams() if name=='audio' else self.player.getAvailableSubtitleStreams()
                 choice=xbmcgui.Dialog().select(tr(33005 if name=='audio' else 33006),list(streams))
@@ -192,7 +192,7 @@ class MediaOSD(xbmcgui.WindowDialog):
             elif name in ('video','audio_settings'):
                 self.hide_bar();self.suspended=True;self._suspend_until=time.monotonic()+.5;self.close()
                 xbmc.executebuiltin('ActivateWindow('+('osdvideosettings' if name=='video' else 'osdaudiosettings')+')')
-            elif name=='info':xbmcgui.Dialog().textviewer(tr(33010),(self.token[1].get('title') or tr(33012))+'\n'+__import__('stream_details').text(self._details.read(self.player,self.token)))
+            elif name=='info':__import__('stream_details').present(self._details.read(self.player,self.token))
             else:
                 if self.owned():return extension(name,self.token[1])
             self.update();return True
@@ -207,12 +207,12 @@ class MediaOSD(xbmcgui.WindowDialog):
             if self.transition() or self.token[1].get('autoplay_chain'):
                 if key in (9,10,92):
                     if self.visible:self.hide_bar()
-                    else:self.invoke('stop')
+                    else:self.invoke('stop',reason='USER_BACK')
                 return
             self.dispose();return
         if key in (9,10,92):
             if self.visible:self.hide_bar()
-            else:self.invoke('stop')
+            else:self.invoke('stop',reason='USER_BACK')
         # Native buttons call onControl BEFORE onAction(7), exactly once.
         elif key==7:return
         elif key in (12,79,229):self.invoke('pause')
@@ -233,6 +233,8 @@ def poll(player=None):
     global _window,_standard_recovery
     player=player or xbmc.Player()
     token=identity(player)
+    from osd_ownership import recover
+    if token and token[0]=='media' and recover(player,token):_standard_recovery=True;return
     if not token or token[0]!='media' or not _fullscreen():
         _standard_recovery=False
         if _window and _window.transition():
@@ -240,8 +242,6 @@ def poll(player=None):
         if _window:_window.dispose();_window=None
         return
     current=_dialog_id()
-    from osd_ownership import recover
-    if recover(player,token):_standard_recovery=True;return
     from exit_jobs import state as exit_state
     pending=exit_state()
     if pending and pending['phase'] in ('pending','running') and _same(tuple(pending['token']),token):
