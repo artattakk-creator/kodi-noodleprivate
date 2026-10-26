@@ -1,0 +1,42 @@
+{
+  "version": "0.1.29.38",
+  "tests": 1357,
+  "seconds": 198.999,
+  "failures": 0,
+  "errors": 0,
+  "files": 380,
+  "bytes": 2631990,
+  "sha256": "8bc6af0ba8195f0ab452d3c9162392c3bf92c0ad5e4abd93af65a98de42ca238",
+  "crc": "PASS",
+  "paths": "PASS",
+  "source_bytes": "PASS",
+  "reproducible_zip": "PASS",
+  "python_ast": "PASS",
+  "android": "NOT_TESTED",
+  "production_publish": false,
+  "base": "e25020c80703d440b0606b6d66559428dfc96cca",
+  "source_commit": "54330c040218eeaf3148faff18a70fb9c2af8ee1",
+  "test_commit": "1c84ad0689c4fd154c5025f26f4f167c7beb8f21",
+  "historical_tests_retained": 1298,
+  "new_tests": 59,
+  "skipped": 0,
+  "po_contexts_per_language": 918,
+  "python": "3.12.14",
+  "level": "HOST: modeled Kodi 21 APIs; real temporary SQLite/HTTP/SMB2 fixtures; no Android execution",
+  "box_a": "NOT_TESTED; installed version UNKNOWN; read-only inventory and verified backup first",
+  "box_b": "NOT_TESTED; remains Dynamic; further storage/copy/migration/delete tests prohibited by user",
+  "release_approved": false,
+  "implementation_blockers": [
+    "Permanent rail within Kodi Home directory and complete cross-section scroll restoration not complete",
+    "Physical metadata payload offload #171; export only inherited",
+    "Durable uncommitted Wizard scan resume after process death #43/#164 inherited",
+    "Source-safe manual EPG assignment #98 remains separate"
+  ],
+  "device_release_blockers": [
+    "Actual Kodi 21.2/21.3 foreground-entry, rendering, IR/focus and playback tests",
+    "Box A verified inventory/backup before any authorized storage operation",
+    "User visual choice of OSD layout"
+  ],
+  "source_warning": "Unchanged SMBProtocol vendor docstring SyntaxWarning: invalid escape; compile succeeds",
+  "test_log_normalization": "Trailing whitespace removed; test results unchanged"
+}

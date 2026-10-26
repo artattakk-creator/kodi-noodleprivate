@@ -1,0 +1,109 @@
+[
+  {
+    "file": "tests/test_xcmate_audit_02938.py",
+    "count": 3,
+    "methods": [
+      "Audit38.test_inventory_preserves_all_bytes_and_prints_no_private_contents",
+      "Audit38.test_backup_requires_matching_bytes_and_explicit_quiescent_confirmation",
+      "Audit38.test_symlinks_prevent_claiming_full_backup_verification"
+    ]
+  },
+  {
+    "file": "tests/test_xcmate_cleanup_02938.py",
+    "count": 10,
+    "methods": [
+      "Cleanup38.test_read_only_inventory_counts_physical_images_without_creating_db_or_journal",
+      "Cleanup38.test_empty_archive_is_not_inferred_from_ready_or_job_counts",
+      "Cleanup38.test_prepare_and_execute_each_require_explicit_confirmation_and_dynamic_mode",
+      "Cleanup38.test_only_owned_hash_images_removed_and_ready_references_become_missing",
+      "Cleanup38.test_symlink_root_files_and_hardlinks_never_delete_outside_profile",
+      "Cleanup38.test_changed_source_and_replaced_root_fail_without_removing_new_file",
+      "Cleanup38.test_cancel_and_manual_resume_remove_no_extra_files",
+      "Cleanup38.test_db_busy_after_unlink_preserves_journal_and_can_be_reconciled_once",
+      "Cleanup38.test_new_images_after_inventory_are_preserved",
+      "Cleanup38.test_status_has_localized_physical_values_and_separate_queue_counts"
+    ]
+  },
+  {
+    "file": "tests/test_xcmate_context_rail_02938.py",
+    "count": 8,
+    "methods": [
+      "ContextRail38.test_media_edge_opens_and_back_restores_original_context_without_playback",
+      "ContextRail38.test_search_cannot_open_rail_and_controls_stay_unchanged",
+      "ContextRail38.test_native_click_queues_exact_destination_only_after_parent_release",
+      "ContextRail38.test_foreign_modal_defers_queued_navigation_and_token_takeover_cancels_it",
+      "ContextRail38.test_invalid_navigation_destination_is_rejected",
+      "ContextRail38.test_hidden_detail_control_300_is_never_focused_from_search",
+      "ContextRail38.test_native_detail_menu_edges_have_visibility_and_enabled_conditions",
+      "ContextRail38.test_large_guide_group_edge_rail_restores_context_twenty_times"
+    ]
+  },
+  {
+    "file": "tests/test_xcmate_entry_02938.py",
+    "count": 13,
+    "methods": [
+      "Entry38.test_legacy_diagnostic_default_does_not_override_explicit_portal_choice",
+      "Entry38.test_twenty_refreshes_and_more_than_old_cooldown_still_start_once",
+      "Entry38.test_compatible_home_and_app_open_shortcuts_share_intent",
+      "Entry38.test_disabled_or_unconfigured_portal_does_not_start",
+      "Entry38.test_foreign_player_never_replaced",
+      "Entry38.test_background_return_and_navigation_do_not_arm_autoplay",
+      "Entry38.test_temporary_pause_expires_without_changing_saved_flags",
+      "Entry38.test_replayed_queued_resolver_and_player_race_are_rejected",
+      "Entry38.test_observed_departure_rearms_next_explicit_open_not_background_service",
+      "Entry38.test_diagnostic_directory_route_finishes_without_opening_root_or_player",
+      "Entry38.test_background_root_widget_does_not_consume_the_next_explicit_entry",
+      "Entry38.test_autoplay_ownership_and_preference_rechecked_after_resolver_work",
+      "Entry38.test_legacy_setting_is_hidden_and_new_pause_is_a_visible_action"
+    ]
+  },
+  {
+    "file": "tests/test_xcmate_flicker_02938.py",
+    "count": 4,
+    "methods": [
+      "Flicker38.test_two_expiry_rounds_do_not_change_url_or_revision_on_success",
+      "Flicker38.test_expired_url_not_admitted_to_new_item_but_existing_texture_retained_while_pending",
+      "Flicker38.test_definitive_dns_failure_removes_previous_texture_without_security_bypass",
+      "Flicker38.test_new_source_cannot_inherit_other_sources_existing_approval"
+    ]
+  },
+  {
+    "file": "tests/test_xcmate_navigation_02938.py",
+    "count": 9,
+    "methods": [
+      "Navigation38.test_five_left_levels_twenty_cycles_never_stop_or_retune",
+      "Navigation38.test_reverse_rail_levels_restore_groups_then_same_mini_focus",
+      "Navigation38.test_compact_expanded_full_height_buttons_and_local_icons",
+      "Navigation38.test_mini_highlight_changes_programmes_without_tune",
+      "Navigation38.test_programme_focus_does_not_skip_groups_on_left",
+      "Navigation38.test_empty_epg_has_no_fictitious_programme_or_tune",
+      "Navigation38.test_real_previous_now_next_order_and_no_invalid_times",
+      "Navigation38.test_worker_reads_previous_current_next_from_real_guide_sqlite",
+      "Navigation38.test_midnight_rows_show_real_date_without_changing_chronological_order"
+    ]
+  },
+  {
+    "file": "tests/test_xcmate_player_02938.py",
+    "count": 8,
+    "methods": [
+      "Player38.test_forward_back_skips_clamp_and_require_actual_seek_capability",
+      "Player38.test_fast_forward_and_rewind_use_existing_kodi_engine_only",
+      "Player38.test_timeline_includes_actual_remaining_duration",
+      "Player38.test_hidden_back_does_not_stop_or_cancel_autoplay",
+      "Player38.test_pending_stop_cannot_recreate_capture_or_block_gui",
+      "Player38.test_actual_codecs_are_reported_without_guessing_quality_from_title",
+      "Player38.test_stop_request_can_be_retried_by_user_after_failure_not_by_service_loop",
+      "Player38.test_explicit_home_waits_for_owned_stop_before_navigating"
+    ]
+  },
+  {
+    "file": "tests/test_xcmate_sqlite_02938.py",
+    "count": 4,
+    "methods": [
+      "SQLite38.test_missing_job_database_is_unknown_without_creating_one",
+      "SQLite38.test_schema_error_is_not_claimed_as_zero_images_or_automatically_repaired",
+      "SQLite38.test_actual_exclusive_sqlite_lock_reports_busy_and_preserves_ready",
+      "SQLite38.test_query_budget_interrupt_distinguished_from_corruption_and_busy"
+    ]
+  }
+]

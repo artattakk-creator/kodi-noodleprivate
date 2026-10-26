@@ -1,0 +1,351 @@
+{
+  "version": "0.1.29.38",
+  "date": "2026-10-26",
+  "device_execution": false,
+  "box_a_installed_version": "UNKNOWN",
+  "box_b_storage_tests": "PROHIBITED_BY_USER",
+  "gates": [
+    {
+      "id": "SAFE-A-01",
+      "action": "Installierte XCMate-/Kodi-Version, Modus, internen Bildbestand und freien Speicher ausschließlich lesen; keine Änderung. A-Version dokumentieren.",
+      "box_a": "NOT_TESTED",
+      "box_b": "nicht anwendbar"
+    },
+    {
+      "id": "SAFE-A-02",
+      "action": "Bestehendes Profil bei beendetem Kodi sichern lassen; Sicherung mit Inventar/Größen/SHA256 vergleichen. Keine Sicherung als geprüft behaupten, solange Kodi schreibt oder Abweichungen bestehen.",
+      "box_a": "NOT_TESTED",
+      "box_b": "BLOCKED_BY_USER_STOP"
+    },
+    {
+      "id": "SAFE-03",
+      "action": "Nach freigegebenem Update Modus, Portale, Favoriten, Gruppen, EPG-Mappings, Resume und Cover mit vorherigem Bestand vergleichen. Kein impliziter Moduswechsel.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED; Modus bleibt Dynamisch"
+    },
+    {
+      "id": "AUTO-01",
+      "action": "Portal-Autostart ausdrücklich aktiv, Startsender gültig: XCMate normal öffnen. Genau ein Start; kein doppelter Resolver/Player-Aufruf.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "AUTO-02",
+      "action": "20 Verzeichnis-Refreshs, Einstellungen öffnen/schließen, Back und Rückkehr innerhalb der App: kein weiterer automatischer Start.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "AUTO-03",
+      "action": "Kompatiblen BINGIE-Einstieg `ActivateWindow(Videos,plugin://plugin.video.xtreammate/?action=app_open,return)` testen. Alternativ vorhandene `RunPlugin(...?action=app_open)`-Verknüpfung. Genau ein Vordergrundstart; keine Skin-Dateien bearbeiten.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "AUTO-04",
+      "action": "Autostart ausgeschaltet: normal/Shortcut öffnen. Kein Start. Nach Benutzeränderung gespeicherten Zustand erhalten.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "AUTO-05",
+      "action": "Fremdes Video/Audio läuft: Einstieg/Widget aktualisieren. Fremde Wiedergabe bleibt unangetastet.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "AUTO-06",
+      "action": "Sichtbare 15-Minuten-Diagnosepause aktivieren/deaktivieren. Meldung sichtbar; gespeicherte Portaloption unverändert; kein `GetDirectory failed`.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "AUTO-07",
+      "action": "XCMate vollständig zu Kodi-Home verlassen und erneut bewusst öffnen. Genau ein neuer Start; kein Start durch Hintergrunddienst allein.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "AUTO-08",
+      "action": "Hintergrund-Widgets aktualisieren und danach App bewusst öffnen. Widget startet nichts und verbraucht den bewussten Einstieg nicht.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "RAIL-01",
+      "action": "Live-Vollbild: fünfmal Links → Mini → Gruppen → kompakt → erweitert → Vollbild. Video läuft ohne Tune/Stop. 20 Zyklen.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "RAIL-02",
+      "action": "Erweitert → Back/Rechts → kompakt → Gruppen → gleiche Mini-Position → Vollbild. Keine übersprungene Gruppenebene.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "RAIL-03",
+      "action": "Beide Rails bildschirmhoch im nutzbaren Bereich, Icons lesbar, Fokus klar; Hoch/Runter/OK und native Klicks führen genau eine Aktion aus.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "RAIL-04",
+      "action": "Suche/Favoriten/Live/Filme/Serien/großer EPG/Einstellungen/Home aus Rail öffnen; kein fremder Modal-Owner geschlossen, kein Busy-Hänger.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "RAIL-05",
+      "action": "Filme/Serien am linken Kategorienrand: Rail öffnen, Back. Kategorie, Titel und Fokus unverändert. Detail-Linksmenü bleibt verfügbar. 20 Zyklen.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "RAIL-06",
+      "action": "Großes EPG: Links weiterhin Zeit-/Sender-/Gruppenlogik; vom Gruppenrand Rail öffnen, zurück: Gruppe/Zeit/Sender/Fokus erhalten. 20 Zyklen.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "RAIL-07",
+      "action": "Home-Kontextaktion „Navigation“ öffnet gemeinsame Rail; Back kehrt ins Home zurück. Dies ist keine dauerhaft eingebaute Rail im Kodi-Verzeichnis.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "RAIL-08",
+      "action": "„Aktueller Sender als Startsender“: Abbruch ändert nichts; bestätigter eigener Sender ändert nur Sender/Gruppe des aktiven Portals, nicht Autostart.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "RAIL-09",
+      "action": "Rubrik wechseln und zurück: Scroll-/Fokusposition dokumentieren. Vollständige rubrikübergreifende Wiederherstellung bleibt offen, wenn Kodi Fenster neu erzeugt.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "MINI-01",
+      "action": "Sender markieren: rechts reale Vorher/Jetzt/Danach-Titel; laufender Sender bleibt unverändert.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "MINI-02",
+      "action": "Rechts fokussiert rechte Spalte ohne Popup/Tune. Hoch/Runter bewegt reale Programme, OK zeigt vorhandene Details.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "MINI-03",
+      "action": "Links/Back aus rechter Spalte kehrt zuerst links zurück; nächstes Links öffnet Gruppen.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "MINI-04",
+      "action": "Sender ohne lokale EPG-Daten: keine erfundenen Programme, keine falsche Jetzt-Markierung.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "MINI-05",
+      "action": "Mit lokal gespeicherter Historie vergangene Sendung anzeigen; ohne Historie keine künstliche Vorher-Zeile.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "MINI-06",
+      "action": "Zukunft/Mitternacht: reale Datums-/Zeitfolge, keine Rückwärtssortierung.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "MINI-07",
+      "action": "Schnell 30 Sender markieren. Begrenzte Worker-Abfragen; UI bleibt bedienbar, kein HTTP/SQL im IR-Callback.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "MINI-08",
+      "action": "Gruppenwechsel und Rückkehr: richtiger Sender/Programme, keine ungefragte Wiedergabe.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "MINI-09",
+      "action": "Großen EPG aus OSD öffnen, Senderstart und Rückkehr testen. Genau ein gültiger Start, keine Kodi-Beendigung.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "MINI-10",
+      "action": "Manuelle vorhandene EPG-Zuordnungen bleiben wirksam; keine Änderung von Quelle oder Priorität durch bloßes Vorschauen.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "LIVE-01",
+      "action": "Einmal OK zeigt Logo, Jetzt/Danach/Fortschritt; zweimal OK oder Runter zeigt große echte Buttons mit Fokus.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "LIVE-02",
+      "action": "Back schließt sichtbare Controls/Info/Rail stufenweise, Video läuft. Bestehendes Back aus bereits geschlossenem Live-Vollbild bleibt bewusster App-Exit; diesen separat dokumentieren.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "LIVE-03",
+      "action": "Play/Pause nur bei echter Fähigkeit; Seek/Timeshift nur wenn Kodi für diesen Stream Seek unterstützt. Keine erfundenen Qualitäts-/Codecwerte.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "LIVE-04",
+      "action": "Audio, Untertitel, Bild/Ton, Information öffnen native Dialoge. Fremder Dialog bleibt Owner; Back schließt keine fremden Fenster durch XCMate.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "LIVE-05",
+      "action": "Stop/ausdrückliches Home: eigener Player genau einmal asynchron beendet, GUI bedienbar; fremde Wiedergabe wird nicht gestoppt.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "VOD-01",
+      "action": "Film und Episode: echte Play/Pause/Stop/Spulen/unterstützte Sprünge, Timeline/Position/Gesamt-/Restzeit. Keine neue Player-Engine.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "VOD-02",
+      "action": "Back bei sichtbarem und verborgenem VOD-OSD beendet nicht die Wiedergabe/Autoplay-Kette. Stop beendet bewusst.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "VOD-03",
+      "action": "Pause/Seek ohne Fähigkeit deaktiviert; Sprung am Anfang/Ende begrenzt; Rewind/Forward über Kodi VideoPlayer.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "VOD-04",
+      "action": "Serienende → nächste gültige Episode und Staffelwechsel; Resume/Gesehen-Status richtig.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "VOD-05",
+      "action": "Stop/Fehler/fremdes Portal: keine nächste Episode, kein Doppelstart, kein Fokusfang nach Stop.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "VOD-06",
+      "action": "Audio/Untertitel/Bild/Info mit IR bedienen. Danach Fokus wieder auf eigener OSD-Aktion; keine Übernahme fremder Fenster.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "ART-01",
+      "action": "Dynamische Film-/Seriencover je mindestens zwei Minuten ansehen; mindestens drei 30-s-Grenzen, kein Platzhalterblitzen bei erfolgreicher Revalidierung. Keine Speicherung/Migration auf B auslösen.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "ART-02",
+      "action": "Scrollen, zurückscrollen, Detailansicht und Neustart: dynamische Providerbilder wieder sichtbar. Erfolg nicht als internes XCMate-Archiv ausgeben.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "ART-03",
+      "action": "Optional kontrollierte DNS-/Netzunterbrechung im Testprofil: neue ungeprüfte URL nicht freigeben, endgültig unsichere Quelle nicht dauerhaft anzeigen. Kein privates Netzwerk ändern.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "ART-04",
+      "action": "Lesende Diagnose: physische interne Bildanzahl/-bytes getrennt von Jobs und Kodi-Texturecache; fehlende DB ≠ bewiesene Nullbilder. Keine Speicherprobe starten.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "ART-05",
+      "action": "Box-A-Inventur und Sicherung abgleichen, vorhandene interne Bilder weiter anzeigen. Keine Umstellung.",
+      "box_a": "NOT_TESTED",
+      "box_b": "BLOCKED_BY_USER_STOP"
+    },
+    {
+      "id": "ART-06",
+      "action": "Reale USB/SD/SMB-Migration: vorbereiten → Test → Inventur → Kopie → Hash → Darstellung → explizit aktivieren. Nur A, erst nach gesonderter Freigabe; keine interne Löschung.",
+      "box_a": "NOT_TESTED; APPROVAL_REQUIRED",
+      "box_b": "BLOCKED_BY_USER_STOP"
+    },
+    {
+      "id": "ART-07",
+      "action": "Optionale interne Bereinigung in Dynamisch: nur eigens freigegebenes Testprofil, Inventur + zwei Bestätigungen; Abbruch/Neustart schützt restliche Dateien. Auf A erst später gesondert freigeben.",
+      "box_a": "NOT_TESTED; APPROVAL_REQUIRED",
+      "box_b": "BLOCKED_BY_USER_STOP"
+    },
+    {
+      "id": "ART-08",
+      "action": "Nach freigegebener Migration/optionaler späterer Löschung tatsächliche Bytes/Freiraum und Bilder getrennt prüfen; Kodi-Texturen/DBs bleiben erhalten.",
+      "box_a": "NOT_TESTED; APPROVAL_REQUIRED",
+      "box_b": "BLOCKED_BY_USER_STOP"
+    },
+    {
+      "id": "DB-01",
+      "action": "Wartung/Artwork-Status mehrfach öffnen; datensparsame BUSY/TIMEOUT/SCHEMA-Diagnose statt Erfolg mit Nullwerten. Kein Rebuild/Reset.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "FOCUS-01",
+      "action": "Filmsuche und Detailansicht mehrfach öffnen/zurück; verborgener Control 300 bekommt keinen Fokus. Native Sichtbarkeit/Bedienbarkeit prüfen.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "REG-01",
+      "action": "Dreigeteilte Suche Live/Film/Serie optisch unverändert; Programmtitel, Sender, Genre, Cover, IR und Back funktionsfähig.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "REG-02",
+      "action": "Favoriten, Portale, Sendergruppen, Startgruppe und großer EPG erhalten. Bestehende .37-BINGIE-Widget-Routen unverändert nutzbar.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "REG-03",
+      "action": "Wizard bestehendes Profil öffnen/abbrechen, Nachimport aktivierter Gruppen und EPG-Fortschritt nur in freigegebenem Testprofil prüfen; kein Box-A-Profil überschreiben.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "REG-04",
+      "action": "Geräteinformationen/Startdauer/Infoleiste beobachten, keine GUI-Blockade bei Katalog-/Artwork-Arbeit. Messzeiten aufschreiben.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "REG-05",
+      "action": "Je 20 Live-/Film-/Serien-Exitzyklen, fremde Wiedergabe, Stop-Fehler und erneuter bewusster Stop; kein Hänger/Doppelstart.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    },
+    {
+      "id": "REG-06",
+      "action": "Mehrstündiger Alltagstest mit IR, Such-/EPG-/Rubrikwechsel und Serien-Autoplay; RAM/Fehler anonymisiert beobachten.",
+      "box_a": "NOT_TESTED",
+      "box_b": "NOT_TESTED"
+    }
+  ]
+}
