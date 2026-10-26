@@ -7,6 +7,7 @@ from urllib.parse import quote
 
 KINDS=('live','vod','series')
 PAGE=48
+_PREPARED={}  # One bounded local publication, never a shared result cursor.
 
 
 def _short_client(portal):
@@ -24,7 +25,7 @@ def _now_events(pid,identifiers,now,cancel=lambda:False):
     if not os.path.exists(path()):return events,aliases,code,0
     try:
         db=sqlite3.connect('file:'+quote(path(),safe='/')+'?mode=ro',uri=True,timeout=.075)
-        db.row_factory=sqlite3.Row;db.execute('PRAGMA query_only=ON')
+        db.row_factory=sqlite3.Row;db.execute('PRAGMA query_only=ON');db.execute('BEGIN')
         deadline=time.monotonic()+1
         db.set_progress_handler(lambda:int(cancel() or time.monotonic()>deadline),1000)
         ids=sorted(identifiers)
@@ -32,7 +33,7 @@ def _now_events(pid,identifiers,now,cancel=lambda:False):
             chunk=ids[offset:offset+256];marks=','.join('?' for _ in chunk)
             aliases.update(db.execute('SELECT alias,cid FROM guide_alias WHERE pid=? AND alias IN ('+marks+')',[pid]+chunk))
         ids=sorted({aliases.get(ident,ident) for ident in identifiers})
-        examined=0
+        examined=0;by_channel={}
         for offset in range(0,len(ids),256):
             chunk=ids[offset:offset+256];marks=','.join('?' for _ in chunk)
             # No descriptions/full guide hydration, and unrelated channels cannot
@@ -41,7 +42,13 @@ def _now_events(pid,identifiers,now,cancel=lambda:False):
             for row in cursor:
                 examined+=1
                 if examined>100000:raise ValueError('SEARCH_GUIDE_LIMIT')
-                events.setdefault(row['cid'],dict(row));sources.add(row['source'])
+                event=dict(row);event['_source_index']=row['source']
+                by_channel.setdefault(row['cid'],[]).append(event);sources.add(row['source'])
+        # Same normalization/current-event policy as local grid/live/widgets.
+        from epg_views import guide_for_channel
+        for cid,rows in by_channel.items():
+            info=guide_for_channel({'v':rows},'v',now=now)
+            if info['now']:events[cid]=dict(cid=cid,title=info['now'],start=info['start'],stop=info['stop'],source=info['source_index'])
         code='READY' if events else 'NO_CURRENT_EPG'
     except (sqlite3.Error,OSError,ValueError):events={};aliases={};code='EPG_UNAVAILABLE';sources.clear()
     finally:
@@ -122,7 +129,10 @@ class LiveSearch:
     def valid(self):
         if self.cancel() or self.done and (time.time()<self.now or time.time()>=self.expires):return False
         current=revision(self.portal['id'])
-        if current[2:4]!=self.stamp[2:4] or current[6]!=self.stamp[6]:return False
+        if current[2:4]!=self.stamp[2:4]:return False
+        # Short-cache telemetry may advance while this cursor is scanning it.
+        # Never restart all channels for each tab/worker completion. Actual
+        # event ends and a bounded refresh deadline expire the current view.
         if (current[0],current[4])!=(self.stamp[0],self.stamp[4]):
             state=self.reader.state('live') or {}
             if (state.get('revision'),state.get('updated'))!=self.catalogue_revision:return False
@@ -150,7 +160,17 @@ class LiveSearch:
 
     def _prepare(self):
         from epg_sources import configuration
+        from guide_store import path as guide_path
         reader=self.reader
+        publication=_guide_revision(self.portal['id'])
+        key=(guide_path(),str(self.portal['id']),self.catalogue_revision,self.stamp[2:4],publication)
+        cached=_PREPARED.get('value')
+        if cached and cached['key']==key and self.now<cached['expires']:
+            self.channels=cached['channels'];self.mappings=cached['mappings']
+            self.events=cached['events'];self.aliases=cached['aliases'];self.code=cached['code']
+            self.guide_revision=publication;self.expires=min(self.expires,cached['expires'])
+            self.counts['source_count']=cached['sources'];self.phase='xml'
+            self.profile.emit('PREPARED_CACHE_HIT',once=True,channels=len(self.channels));return
         with self.profile.span('INDEX_QUERY'):
             where='pid=? AND kind=?'+reader._filter('live')
             raw=reader._query('SELECT payload FROM titles WHERE '+where+' GROUP BY sid ORDER BY ordinal LIMIT 50001',
@@ -166,11 +186,15 @@ class LiveSearch:
                 identifiers.update([str(manual)] if manual else [row['sid'],str(row.get('epg_channel_id') or '')])
             identifiers.discard('')
         with self.profile.span('EPG_NOW_SQL'):
-            self.guide_revision=_guide_revision(self.portal['id'])
+            self.guide_revision=publication
             self.events,self.aliases,self.code,count=_now_events(self.portal['id'],identifiers,self.now,self.cancel)
         self.counts['source_count']=count
         stops=[event['stop'] for event in self.events.values() if event.get('stop',0)>self.now]
-        if stops:self.expires=min(self.expires,min(stops))
+        self.expires=min(self.expires,self.now+30,min(stops) if stops else self.now+30)
+        # At most one portal and <=4 MiB serialized live payload, never VOD.
+        if len(self.channels)<=6000 and sum(len(row['payload']) for row in raw)<=4*1024*1024:
+            _PREPARED['value']=dict(key=key,expires=self.expires,channels=self.channels,mappings=self.mappings,
+                                    events=self.events,aliases=self.aliases,code=self.code,sources=count)
         self.phase='xml'
 
     def _match(self,row,title,short=False):
@@ -273,7 +297,7 @@ def search(portal,query,kind='vod',offset=0,now=None,incremental=False,continuat
         if section!='live' and cursor is not None and cache_key in cursor.media_cache:
             result[section]=cursor.media_cache[cache_key];continue
         # The first Live request publishes names before any EPG or media SQL.
-        if section!='live' and incremental and kind=='live' and cursor is not None and cursor.phase=='prepare' and cursor.slices==0:
+        if section!='live' and incremental and cursor is not None and cursor.phase=='prepare' and cursor.slices==0:
             result[section]=dict(rows=[],total=None,code='INDEX_PENDING');continue
         try:
             state=reader.state(section)
