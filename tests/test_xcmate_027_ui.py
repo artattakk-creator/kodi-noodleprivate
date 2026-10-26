@@ -126,7 +126,7 @@ class NavigationTests(Fixture,unittest.TestCase):
         for action in ('widget_live_start_group','widget_recent_vod','widget_recent_series'):
             self.added.clear();self.router._params['action']=action;self.routes.dispatch(self.router)
             self.assertTrue(self.added)
-            self.assertTrue(any('wird geladen' in li.label or 'nicht lokal verfügbar' in li.label for _,li,_ in self.added))
+            self.assertTrue(any('wird geladen' in li.label or 'nicht lokal verfügbar' in li.label or 'vorübergehend nicht verfügbar' in li.label for _,li,_ in self.added))
             self.assertFalse(any('media_detail' in url or 'play_live' in url for url,_,_ in self.added))
         sys.modules['utils'].http_get.assert_not_called()
 

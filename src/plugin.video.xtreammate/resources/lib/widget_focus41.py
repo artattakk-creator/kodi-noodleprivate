@@ -27,7 +27,9 @@ def poll():
     import xbmc,xbmcgui
     if time.monotonic()<_next:return
     _next=time.monotonic()+1
-    if not xbmc.getCondVisibility('Skin.HasSetting(xcmate41.adapter.enabled)'):return
+    try:enabled=xbmc.getCondVisibility('Skin.HasSetting(xcmate41.adapter.enabled)')
+    except (AttributeError,RuntimeError):return
+    if not enabled:return
     marker=xbmcgui.Window(10000)
     current=xbmc.getInfoLabel('Container(90241).ListItem.Property(XCMate.WidgetToken41)') if xbmc.getCondVisibility('Control.HasFocus(90241)') else ''
     try:

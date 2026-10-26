@@ -48,3 +48,6 @@ class WidgetAdapter41(Fixture,unittest.TestCase):
         self.assertFalse(report['installation_performed']);self.assertFalse(report['skin_changed']);self.assertIn('CONTROL_ID_COLLISION',report['errors'])
         self.assertTrue(any(isinstance(v,dict) and v['code']=='SKIN_XML_INVALID' for v in report['errors']))
         self.assertEqual({p.name:p.read_bytes() for p in skin.iterdir()},before)
+    def test_optional_focus_binding_failure_does_not_break_background_service(self):
+        with mock.patch.object(sys.modules['xbmc'],'getCondVisibility',side_effect=RuntimeError('GUI shutting down')):self.focus.poll()
+        self.assertFalse(self.builtins)

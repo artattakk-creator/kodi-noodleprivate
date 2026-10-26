@@ -26,7 +26,11 @@ def read():
     try:
         with open(os.path.join(root(),'xcmate_update_notice.json'),encoding='utf-8') as f:raw=f.read(8193)
         value=json.loads(raw) if len(raw)<=8192 else None
-        return value if isinstance(value,dict) and version(value.get('current')) and isinstance(value.get('seen',[]),list) else None
+        if not isinstance(value,dict) or not version(value.get('current')) or not isinstance(value.get('seen',[]),list):return None
+        value['seen']=[v for v in value.get('seen',[]) if version(v)][-16:]
+        if not version(value.get('pending')):value['pending']=''
+        if not isinstance(value.get('retry_at',0),(int,float)):value['retry_at']=0
+        return value
     except (OSError,ValueError,TypeError):return None
 
 def save(value):

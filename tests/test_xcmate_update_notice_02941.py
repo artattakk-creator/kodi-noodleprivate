@@ -61,3 +61,6 @@ class UpdateNotice41(Fixture,unittest.TestCase):
         with self.notice.lease() as acquired:
             self.assertTrue(acquired);self.assertFalse(self.notice.show())
         self.dialog.ok.assert_not_called();self.assertTrue(self.notice.show())
+    def test_valid_json_with_invalid_optional_marker_fields_is_safe_and_not_spam(self):
+        self.notice.save(dict(current=self.current,pending=['bad'],seen=[None,{},'bad'],retry_at='invalid'))
+        self.assertFalse(self.notice.detect());self.assertFalse(self.notice.show());self.dialog.ok.assert_not_called()
