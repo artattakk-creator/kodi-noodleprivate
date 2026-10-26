@@ -70,7 +70,7 @@ class Router:
 
         R = {
             'root'               : self._root,
-            'app_open'           : self._root,
+            'app_open'           : self._app_open,
             'import_legacy_settings': self._import_legacy_settings,
             'portal_manager'     : self._portal_manager,
             'portal_home'        : self._portal_home,
@@ -341,6 +341,11 @@ class Router:
         if extra:
             lines += ['', extra]
         return '\n'.join(lines)
+
+    def _app_open(self):
+        if self._handle>=0:return self._root()
+        self._end_directory(cacheToDisc=False)
+        xbmc.executebuiltin('ActivateWindow(Videos,'+self.url(action='root')+',return)')
 
     def _root(self):
         import portals as P

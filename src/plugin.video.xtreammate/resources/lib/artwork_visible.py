@@ -36,7 +36,7 @@ def public_dns(url):
     p=urlsplit(url);key=(p.hostname,p.port or (443 if p.scheme=='https' else 80))
     with _lock:
         prior=_dns_cache.get(key)
-        if prior and prior[0]>time.monotonic():return prior[1]
+        if prior and prior[0]>time.monotonic()+(10 if prior[1] else 0):return prior[1]
     try:
         values=socket.getaddrinfo(key[0],key[1],type=socket.SOCK_STREAM)
         approved=bool(values) and all(ipaddress.ip_address(value[4][0]).is_global for value in values)
@@ -51,8 +51,6 @@ def public_dns(url):
 def _process(kind,key,payload):
     if kind=='dynamic':
         approved=public_dns(payload)
-        from art_diagnostics import publish
-        publish('transfer','DYNAMIC_URL_APPROVED' if approved else 'DYNAMIC_SOURCE_UNAVAILABLE')
         return payload+KODI_OPTIONS if approved else ''
     storage,ident=payload
     from artwork_vfs import image_valid
@@ -73,11 +71,20 @@ def _run(kind):
             try:value=_process(kind,key,payload)
             except Exception:value=''
             with _lock:
+                fresh=key not in _values
                 previous=_values.get(key,(0,''))[1]
-                _values[key]=(time.monotonic()+(30 if value else 5),value)
+                expires=time.monotonic()+(30 if value else 5)
+                if kind=='dynamic' and value:
+                    parsed=urlsplit(payload);dns=_dns_cache.get((parsed.hostname,parsed.port or (443 if parsed.scheme=='https' else 80)))
+                    if not dns or not dns[1]:value=''
+                    else:expires=min(expires,dns[0])
+                _values[key]=(expires,value)
                 _values.move_to_end(key);_pending.discard(key)
                 if previous!=value:_revision+=1
                 while len(_values)>512:_values.popitem(last=False)
+            if kind=='dynamic' and (fresh or previous!=value):
+                from art_diagnostics import publish
+                publish('transfer','DYNAMIC_URL_APPROVED' if value else 'DYNAMIC_SOURCE_UNAVAILABLE')
         finally:work.task_done()
 
 

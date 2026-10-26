@@ -6,6 +6,8 @@ from xcmate027_fixture import Fixture
 class Entry38(Fixture,unittest.TestCase):
     def setUp(self):
         super().setUp();self.entry=importlib.import_module('app_entry')
+        previous=sys.modules['xbmc'].getCondVisibility
+        sys.modules['xbmc'].getCondVisibility=lambda c:c=='Window.IsActive(videos)' or previous(c)
         self.portal['autoplay_start']=True;self.options['autoplay_diagnostics_safe']=True
         sys.modules['xbmc'].Player=lambda:types.SimpleNamespace(isPlayingVideo=lambda:False,isPlaying=lambda:False)
 
@@ -26,7 +28,7 @@ class Entry38(Fixture,unittest.TestCase):
                 self.assertTrue(self.entry.enter(self.router,self.portal));self.assertFalse(self.entry.enter(self.router,self.portal));self.assertEqual(len(self.builtins),1)
 
     def test_disabled_or_unconfigured_portal_does_not_start(self):
-        for change in ({'autoplay_start':False},{'enabled':False},{'start_stream_id':''}):
+        for change in ({'autoplay_start':False},{'enabled':False},{'include_live':False},{'start_stream_id':''}):
             self.properties.clear();self.assertFalse(self.entry.enter(self.router,dict(self.portal,**change)))
         self.assertFalse(self.builtins)
 
@@ -64,7 +66,14 @@ class Entry38(Fixture,unittest.TestCase):
 
     def test_diagnostic_directory_route_finishes_without_opening_root_or_player(self):
         self.router._params={'action':'autoplay_diagnostic_mode'}
-        from main import Router
-        router=Router(['plugin://plugin.video.xtreammate','7','?action=autoplay_diagnostic_mode'])
+        import importlib.util
+        from xcmate027_fixture import ADDON
+        spec=importlib.util.spec_from_file_location('main38_entry_test',ADDON/'resources/lib/main.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+        router=module.Router(['plugin://plugin.video.xtreammate','7','?action=autoplay_diagnostic_mode'])
         with mock.patch.object(self.entry,'toggle_pause') as toggle:router.dispatch()
         toggle.assert_called_once();self.assertEqual(len(self.ends),1);self.assertFalse(self.added);self.assertFalse(self.builtins)
+
+    def test_background_root_widget_does_not_consume_the_next_explicit_entry(self):
+        with mock.patch.object(sys.modules['xbmc'],'getCondVisibility',return_value=False):
+            self.assertFalse(self.entry.enter(self.router,self.portal));self.assertIsNone(self.entry.read())
+        self.assertTrue(self.entry.enter(self.router,self.portal))

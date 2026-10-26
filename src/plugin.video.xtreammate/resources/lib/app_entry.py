@@ -47,6 +47,16 @@ def enter(router,portal):
     if any(params.get(k) for k in ('nav','widget','background')) or params.get('entry')=='return':return False
     from setup_navigation import active
     if active():return False
+    # A skin background widget is not a deliberate foreground app opening.
+    if router._handle<0 or not getattr(xbmc,'getCondVisibility',lambda c:False)('Window.IsActive(videos)'):return False
+    if read():return False
+    value=dict(nonce=uuid.uuid4().hex,phase='consumed',pid=str(portal['id']),seen=False,outside=0)
+    player=xbmc.Player()
+    from live_exit import state
+    if (paused() or state() or portal.get('type')!='xtream' or not portal.get('enabled',True)
+        or not portal.get('include_live',True) or not portal.get('include_live',True) or not portal.get('autoplay_start') or not portal.get('start_stream_id')
+        or getattr(player,'isPlaying',player.isPlayingVideo)()):
+        marker().setProperty(KEY,json.dumps(value));return False
     from profile_transaction import writing
     try:
         with writing(timeout=.05):
@@ -56,7 +66,7 @@ def enter(router,portal):
             player=xbmc.Player()
             from live_exit import state
             if (paused() or state() or portal.get('type')!='xtream' or not portal.get('enabled',True)
-                or not portal.get('autoplay_start') or not portal.get('start_stream_id')
+                or not portal.get('include_live',True) or not portal.get('autoplay_start') or not portal.get('start_stream_id')
                 or getattr(player,'isPlaying',player.isPlayingVideo)()):return False
             value['phase']='queued';marker().setProperty(KEY,json.dumps(value))
     except (OSError,RuntimeError):return False
@@ -74,7 +84,7 @@ def accept_play(params):
         value=read();portal=get_by_id(params.get('pid',''));player=xbmc.Player()
         if not value or value['nonce']!=nonce or value['phase']!='queued':return False
         value['phase']='consumed';marker().setProperty(KEY,json.dumps(value))
-        return bool(portal and portal.get('enabled',True) and portal.get('autoplay_start') and not paused()
+        return bool(portal and portal.get('enabled',True) and portal.get('include_live',True) and portal.get('autoplay_start') and not paused()
                     and not getattr(player,'isPlaying',player.isPlayingVideo)())
 
 
