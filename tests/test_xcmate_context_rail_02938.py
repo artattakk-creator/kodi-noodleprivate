@@ -52,3 +52,15 @@ class ContextRail38(model.Fixture,unittest.TestCase):
     def test_invalid_navigation_destination_is_rejected(self):
         nav=importlib.import_module('navigation_dispatch')
         self.assertFalse(nav.dispatch('System.Exec(unsafe)','p'));self.assertFalse(self.builtins)
+
+    def test_hidden_detail_control_300_is_never_focused_from_search(self):
+        window=self.media_window();window.mode='search';window._show('search');window._mode_focus['search']=300
+        self.assertFalse(window.getControl(300).isVisible());window.setFocusId(300)
+        self.assertNotEqual(window.getFocusId(),300);self.assertIn(window.getFocusId(),window._valid_focus())
+
+    def test_native_detail_menu_edges_have_visibility_and_enabled_conditions(self):
+        import xml.etree.ElementTree as ET
+        node=ET.parse(model.ADDON/'resources/skins/Default/720p/XCMateMedia.xml').find(".//control[@id='820']")
+        for name in ('onleft','ondown'):
+            routes=node.findall(name);self.assertEqual([r.text for r in routes],['300','400'])
+            self.assertTrue(all(r.get('condition') for r in routes))

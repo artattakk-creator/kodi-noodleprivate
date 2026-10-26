@@ -49,6 +49,8 @@ jobs:
         run: python tools/build_repository.py
       - name: Validate Kodi gettext languages
         run: python tools/validate_kodi_po.py
+      - name: Validate pinned navigation icons and license
+        run: python tools/build_xcmate_nav_icons.py --check
       - name: Check Python syntax
         run: python -m compileall -q src
       - name: Run Noodle Private regression tests
