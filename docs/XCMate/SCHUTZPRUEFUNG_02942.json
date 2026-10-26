@@ -1,0 +1,30 @@
+{
+  "base": "354afc1cc524ec3b01001770e6afe6aec5fea70c",
+  "head": "48d188bcc0664f2ce64fcdc6845852a62f6ab7f7",
+  "allowed_source_paths": [
+    "src/plugin.video.xtreammate/addon.xml",
+    "src/plugin.video.xtreammate/changelog.txt",
+    "src/plugin.video.xtreammate/resources/language/resource.language.de_de/strings.po",
+    "src/plugin.video.xtreammate/resources/language/resource.language.en_gb/strings.po",
+    "src/plugin.video.xtreammate/resources/lib/exit_jobs.py",
+    "src/plugin.video.xtreammate/resources/lib/live_exit.py",
+    "src/plugin.video.xtreammate/resources/lib/live_stop42.py",
+    "src/plugin.video.xtreammate/resources/lib/native_stop41.py",
+    "src/plugin.video.xtreammate/resources/settings.xml",
+    "src/plugin.video.xtreammate/service.py"
+  ],
+  "unchanged_source_files": 381,
+  "retained_041_tests": 1479,
+  "other_wip_files": 62,
+  "player_vod_series_resume_autoplay": "BYTE_IDENTICAL",
+  "mini_epg_widgets_update_notice": "BYTE_IDENTICAL",
+  "overlay_back_and_remote_keymaps": "BYTE_IDENTICAL",
+  "portals_epg_artwork_and_modes": "BYTE_IDENTICAL",
+  "all_skin_files_and_original_art": "BYTE_IDENTICAL",
+  "repository_indexes_publish_workflow_041_zip": "BYTE_IDENTICAL",
+  "compatibility_default": false,
+  "native_deadlock_fixed": "NOT_PROVEN",
+  "android": "NOT_TESTED",
+  "device_actions": 0,
+  "profile_migrations": 0
+}

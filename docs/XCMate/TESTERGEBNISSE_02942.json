@@ -1,0 +1,50 @@
+{
+  "version": "0.1.29.42",
+  "base": "354afc1cc524ec3b01001770e6afe6aec5fea70c",
+  "tested_commit": "48d188bcc0664f2ce64fcdc6845852a62f6ab7f7",
+  "host": {
+    "tests": 1514,
+    "pass_count": 1514,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 229.99,
+    "retained": 1479,
+    "new": 35
+  },
+  "package": {
+    "files": 391,
+    "bytes": 2660129,
+    "sha256": "d28675d19671871d0370e5c538c0cac35783ec7c9a61cb71a82b32d9919b2d80",
+    "crc": "PASS",
+    "source_bytes": "PASS",
+    "paths": "PASS",
+    "ast": "PASS",
+    "independent_rebuild": "BYTE_IDENTICAL"
+  },
+  "languages": {
+    "de_de": 948,
+    "en_gb": 948,
+    "validation": "PASS"
+  },
+  "icons": 92,
+  "protected_source_files": 381,
+  "android": "NOT_TESTED",
+  "native_root_cause": "UNPROVEN",
+  "native_deadlock_fixed": "NOT_PROVEN",
+  "compatibility_default": false,
+  "production_publish": false,
+  "ci": "SEE_FINAL_PR_BODY",
+  "tests": 1514,
+  "seconds": 229.99,
+  "failures": 0,
+  "errors": 0,
+  "files": 391,
+  "bytes": 2660129,
+  "sha256": "d28675d19671871d0370e5c538c0cac35783ec7c9a61cb71a82b32d9919b2d80",
+  "crc": "PASS",
+  "paths": "PASS",
+  "source_bytes": "PASS",
+  "reproducible_zip": "PASS",
+  "python_ast": "PASS"
+}

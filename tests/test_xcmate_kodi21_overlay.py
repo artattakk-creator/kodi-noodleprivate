@@ -158,6 +158,7 @@ class OverlayLifecycleTests(unittest.TestCase):
         utils = types.ModuleType('utils')
         utils.info = utils.warn = lambda *a:None
         utils.setting=lambda key,default='':default
+        utils.setting_bool=lambda key,default=False:default
         xtream = types.ModuleType('xtream')
         xtream.XtreamClient = lambda *a:self.client
         iptv = types.ModuleType('iptv')
