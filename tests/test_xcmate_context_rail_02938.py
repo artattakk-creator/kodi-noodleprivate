@@ -64,3 +64,14 @@ class ContextRail38(model.Fixture,unittest.TestCase):
         for name in ('onleft','ondown'):
             routes=node.findall(name);self.assertEqual([r.text for r in routes],['300','400'])
             self.assertTrue(all(r.get('condition') for r in routes))
+
+    def test_large_guide_group_edge_rail_restores_context_twenty_times(self):
+        import test_xcmate_guide_navigation_02922 as guide_model
+        case=guide_model.GuideNavigationTests(methodName='runTest');case.setUp();self.addCleanup(case.doCleanups)
+        gui=sys.modules['xbmcgui'];gui.ControlButton=native.ControlButton;gui.ControlImage=native.ControlImage
+        window=case.window();window._show_groups();before=(window.category,window.offset,window.origin,window.cursor,window.row)
+        for _ in range(20):
+            window.onAction(types.SimpleNamespace(getId=lambda:1));self.assertTrue(window._navigation_rail.active)
+            window.onAction(types.SimpleNamespace(getId=lambda:92));self.assertFalse(window._navigation_rail.active)
+            self.assertEqual((window.category,window.offset,window.origin,window.cursor,window.row),before)
+            self.assertEqual(window.mode,'groups')
