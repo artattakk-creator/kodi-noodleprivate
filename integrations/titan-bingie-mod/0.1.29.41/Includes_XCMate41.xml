@@ -1,0 +1,182 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<includes>
+  <include name="XCMate41.CompactWidgets">
+    <control type="group">
+      <visible>Skin.HasSetting(xcmate41.adapter.enabled)</visible>
+      <control type="label">
+        <left>64</left>
+        <top>270</top>
+        <width>1120</width>
+        <height>32</height>
+        <label>XCMate · Jetzt im TV</label>
+        <font>font13</font>
+      </control>
+      <control type="panel" id="90241">
+        <left>64</left>
+        <top>310</top>
+        <width>1152</width>
+        <height>112</height>
+        <orientation>horizontal</orientation>
+        <onup>90243</onup>
+        <ondown>90242</ondown>
+        <content limit="12">plugin://plugin.video.xtreammate/?action=widget_live_start_group</content>
+        <itemlayout width="176" height="108">
+          <control type="image">
+            <width>160</width>
+            <height>90</height>
+            <texture>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texture>
+          </control>
+          <control type="image">
+            <left>40</left>
+            <top>22</top>
+            <width>80</width>
+            <height>45</height>
+            <aspectratio>keep</aspectratio>
+            <texture>$INFO[ListItem.Art(icon)]</texture>
+          </control>
+          <control type="label">
+            <top>90</top>
+            <width>160</width>
+            <height>18</height>
+            <align>center</align>
+            <label>$INFO[ListItem.Label]</label>
+            <font>font12</font>
+          </control>
+        </itemlayout>
+        <focusedlayout width="176" height="108">
+          <control type="image">
+            <width>160</width>
+            <height>90</height>
+            <texture>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texture>
+          </control>
+          <control type="image">
+            <left>40</left>
+            <top>22</top>
+            <width>80</width>
+            <height>45</height>
+            <aspectratio>keep</aspectratio>
+            <texture>$INFO[ListItem.Art(icon)]</texture>
+          </control>
+          <control type="label">
+            <top>90</top>
+            <width>160</width>
+            <height>18</height>
+            <align>center</align>
+            <label>$INFO[ListItem.Label]</label>
+            <font>font12</font>
+          </control>
+        </focusedlayout>
+      </control>
+      <control type="group">
+        <visible>Control.HasFocus(90241)</visible>
+        <control type="label">
+          <left>64</left>
+          <top>432</top>
+          <width>1152</width>
+          <height>26</height>
+          <label>JETZT: $INFO[Window(Home).Property(XCMate.Widget41.Now)] · $INFO[Window(Home).Property(XCMate.Widget41.Times)]</label>
+          <font>font12</font>
+        </control>
+        <control type="progress">
+          <left>64</left>
+          <top>462</top>
+          <width>1152</width>
+          <height>6</height>
+          <info>Window(Home).Property(XCMate.Widget41.Progress)</info>
+        </control>
+        <control type="label">
+          <left>64</left>
+          <top>474</top>
+          <width>1152</width>
+          <height>26</height>
+          <label>DANACH: $INFO[Window(Home).Property(XCMate.Widget41.NextTime)] · $INFO[Window(Home).Property(XCMate.Widget41.Next)]</label>
+          <font>font12</font>
+        </control>
+      </control>
+      <control type="label">
+        <left>64</left>
+        <top>510</top>
+        <width>550</width>
+        <height>28</height>
+        <label>XCMate · Neueste Filme</label>
+        <font>font13</font>
+      </control>
+      <control type="panel" id="90242">
+        <left>64</left>
+        <top>542</top>
+        <width>550</width>
+        <height>142</height>
+        <orientation>horizontal</orientation>
+        <onup>90241</onup>
+        <onright>90243</onright>
+        <ondown>90241</ondown>
+        <content limit="24">plugin://plugin.video.xtreammate/?action=widget_recent_vod</content>
+        <itemlayout width="92" height="138">
+          <control type="image">
+            <width>84</width>
+            <height>126</height>
+            <aspectratio>keep</aspectratio>
+            <texture>$INFO[ListItem.Art(poster)]</texture>
+          </control>
+        </itemlayout>
+        <focusedlayout width="92" height="138">
+          <control type="image">
+            <width>90</width>
+            <height>132</height>
+            <texture>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texture>
+          </control>
+          <control type="image">
+            <width>84</width>
+            <height>126</height>
+            <aspectratio>keep</aspectratio>
+            <texture>$INFO[ListItem.Art(poster)]</texture>
+            <left>3</left>
+            <top>3</top>
+          </control>
+        </focusedlayout>
+      </control>
+      <control type="label">
+        <left>650</left>
+        <top>510</top>
+        <width>566</width>
+        <height>28</height>
+        <label>XCMate · Neueste Serien</label>
+        <font>font13</font>
+      </control>
+      <control type="panel" id="90243">
+        <left>650</left>
+        <top>542</top>
+        <width>566</width>
+        <height>142</height>
+        <orientation>horizontal</orientation>
+        <onup>90241</onup>
+        <onleft>90242</onleft>
+        <ondown>90241</ondown>
+        <content limit="24">plugin://plugin.video.xtreammate/?action=widget_recent_series</content>
+        <itemlayout width="92" height="138">
+          <control type="image">
+            <width>84</width>
+            <height>126</height>
+            <aspectratio>keep</aspectratio>
+            <texture>$INFO[ListItem.Art(poster)]</texture>
+          </control>
+        </itemlayout>
+        <focusedlayout width="92" height="138">
+          <control type="image">
+            <width>90</width>
+            <height>132</height>
+            <texture>special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texture>
+          </control>
+          <control type="image">
+            <width>84</width>
+            <height>126</height>
+            <aspectratio>keep</aspectratio>
+            <texture>$INFO[ListItem.Art(poster)]</texture>
+            <left>3</left>
+            <top>3</top>
+          </control>
+        </focusedlayout>
+      </control>
+    </control>
+  </include>
+</includes>

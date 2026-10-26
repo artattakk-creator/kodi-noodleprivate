@@ -53,7 +53,7 @@ class Navigation38(unittest.TestCase):
     def test_real_previous_now_next_order_and_no_invalid_times(self):
         module=importlib.import_module('mini_epg')
         events=[dict(title='After',start=110,stop=130),dict(title='Before',start=70,stop=90),dict(title='Now',start=90,stop=110),dict(title='Invalid',start=110,stop=100)]
-        rows,pos=module.programme_rows(events,100);self.assertEqual([e['title'] for e in rows],['Before','Now','After']);self.assertEqual(pos,1)
+        rows,pos=module.programme_rows(events,100);self.assertEqual([e['title'] for e in rows],['Now','After']);self.assertEqual(pos,0)
 
     def test_worker_reads_previous_current_next_from_real_guide_sqlite(self):
         import sqlite3,tempfile,sys,types
@@ -69,7 +69,7 @@ class Navigation38(unittest.TestCase):
         helpers=dict(epg=types.SimpleNamespace(load_cache=lambda pid:{},_mem_clear=lambda pid:None),epg_sources=types.SimpleNamespace(configuration=lambda pid:{'mappings':{}}),epg_status=types.SimpleNamespace(revision=lambda pid:'local-fixture'),logo_cache=types.SimpleNamespace(request=lambda channels:None))
         with mock.patch.dict(sys.modules,helpers),mock.patch.object(store,'path',return_value=str(path)),mock.patch.object(sys.modules['utils'],'addon_data_dir',return_value=temp.name):self.o._guide.refresh()
         result=self.o._guide.get(self.sid)
-        self.assertEqual([e['title'] for e in result['programme_events']],['Previous','Current','Next'])
+        self.assertEqual([e['title'] for e in result['programme_events']],['Current','Next'])
         self.assertEqual(result['now'],'Current');self.assertEqual(self.o.sid,self.sid)
 
     def test_midnight_rows_show_real_date_without_changing_chronological_order(self):

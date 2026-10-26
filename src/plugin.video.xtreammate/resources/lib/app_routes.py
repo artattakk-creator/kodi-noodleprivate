@@ -1,7 +1,7 @@
 """New routes only. Legacy provider/player entry points remain compatible."""
 from localization import tr
 
-ACTIONS=('navigation_rail','artwork_manage','device_info', 'live_guide','search_continue','download_target_test','stability_test','download_folder','download_capabilities','theme_manager','branding_status','xcmate_licenses','guide_grid','playlist_editor','source_live','source_play','source_start','art_status','art_retry','art_db_health','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
+ACTIONS=('update_notice','navigation_rail','artwork_manage','device_info', 'live_guide','search_continue','download_target_test','stability_test','download_folder','download_capabilities','theme_manager','branding_status','xcmate_licenses','guide_grid','playlist_editor','source_live','source_play','source_start','art_status','art_retry','art_db_health','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
          'movies_home','series_home','media_detail','media_favourites','global_search','search_section',
          'widget_live_start_group','widget_recent_vod','widget_recent_series','widget_setup',
          'record_now','recordings_manage','recording_folder','recording_capabilities','about_xcmate','guide_browser','media_play','guide_timers','guide_status')
@@ -25,6 +25,9 @@ def dispatch(router):
     import xbmc,xbmcgui,xbmcaddon
     from home_menu import settings,show,recording_folder
     action=router._params.get('action','xcmate_home')
+    if action=='update_notice':
+        from update_notice41 import show as show_notice
+        show_notice();return
     if action=='live_guide':
         _end(router)
         if router._handle<0:
@@ -307,6 +310,12 @@ def add_index_item(router,portal,kind,item,epg=None,recent=False,widget=False):
     from theme_render import snapshot
     from theme_store import asset
     theme=snapshot();art=local_art(item,theme)
+    if widget:
+        li.setProperty('XCMate.WidgetKind41',kind)
+        if kind=='live':
+            li.setProperty('XCMate.LogoScale41','0.5')
+            from widget_focus41 import token
+            li.setProperty('XCMate.WidgetToken41',token(portal,item))
     if widget and theme:
         if art['landscape'].startswith(str(theme['folder'])+'/'):
             art['landscape']=asset('widget.live' if kind=='live' else 'widget.series' if kind=='series' else 'widget.movie',art['landscape'],snapshot=theme)
@@ -316,6 +325,8 @@ def add_index_item(router,portal,kind,item,epg=None,recent=False,widget=False):
                         'mediatype':{'vod':'movie','series':'tvshow','live':'video'}[kind]})
     if epg:
         for name,value in epg.items(): li.setProperty('XtreamMate.'+name,str(value))
+        progress=epg.get('Progress')
+        li.setProperty('XCMate.EpgPercent41',str(round(max(0,min(1,float(progress)))*100)) if isinstance(progress,(int,float)) else '')
     li.setProperty('XCMate.PortalId',str(portal['id']))
     li.setProperty('XCMate.MediaId',item['sid'])
     li.setProperty('XCMate.Account',portal.get('name',''))
@@ -336,18 +347,17 @@ def add_index_item(router,portal,kind,item,epg=None,recent=False,widget=False):
 
 def widget(router,portal,action):
     import xbmcplugin
-    from library_index import Reader,initial_group
-    reader=Reader(portal['id'],timeout=0.05,query_seconds=0.35)
+    from widget_data41 import snapshot
+    kind='live' if action=='widget_live_start_group' else 'vod' if action=='widget_recent_vod' else 'series'
+    rows,code=snapshot(portal,kind)
     if action=='widget_live_start_group':
-        start=reader.get('live',str(portal.get('start_stream_id') or ''))
-        cid=initial_group(portal,reader.groups('live'),start)
-        rows,total=reader.page('live',category=cid,offset=page_offset(router),limit=12,
-                               pin=start['sid'] if start else None) if cid else ([],0)
         from epg_sources import configuration
         from local_epg import now_next
         mappings=configuration(portal['id'])['mappings']
         # Existing widget routes, no skin mutation or full-cache hydration.
         snapshot=now_next(portal['id'],rows,mappings,client=router._xc(portal))
+        from widget_focus41 import publish
+        publish(portal,rows,snapshot)
         xbmcplugin.setContent(router._handle,'videos')
         for row in rows:
             info=snapshot[row['sid']]
@@ -356,19 +366,16 @@ def widget(router,portal,action):
                 plot=guide_plot(info)),widget=True)
         # Home stays bounded; ordinary directory browsing remains unrestricted.
         if not rows:
-            router._add_dir(tr(32478) if not reader.state('live')
-                            else tr(32479),
+            router._add_dir(tr(35853) if code not in ('READY','CACHE') else tr(32479),
                             router.url(action='settings_section',pid=portal['id'],section='maintenance'))
     else:
         kind='vod' if action=='widget_recent_vod' else 'series'
         xbmcplugin.setContent(router._handle,'movies' if kind=='vod' else 'tvshows')
-        from utils import setting_int
-        rows,total=reader.rail(kind,limit=24,keep=setting_int('recent_keep',100))
         for row in rows: add_index_item(router,portal,kind,row,recent=True,widget=True)
-        if not rows and not reader.state(kind):
-            router._add_dir(tr(32480),
+        if not rows and code not in ('READY','CACHE'):
+            router._add_dir(tr(35853),
                             router.url(action='movies_home' if kind=='vod' else 'series_home',pid=portal['id']))
-        router._add_dir(tr(32481)+(' · '+str(total)+tr(32482) if total else ''),
+        router._add_dir(tr(32481),
                         router.url(action='movies_home' if kind=='vod' else 'series_home',pid=portal['id']))
     _end(router)
 

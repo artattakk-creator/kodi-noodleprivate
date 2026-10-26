@@ -1,3 +1,11 @@
+0.1.29.41 (cumulative stabilization test candidate; not released)
+- P0 Live Back stays enabled. Own Live Stop uses Kodi non-waiting main queue instead of synchronous Player.stop SendMsg; a second FIFO property barrier confirms native return. Posting/early callbacks/timeouts never mean completion; no replay after timeout. VOD stop/checkpoint path remains unchanged.
+- Mini EPG has one visible custom text layer with a visible/focusable blank native navigation list. Only current/future programmes selected before SQL/list limits, five two-line rows, independent NOW/focus. Late old viewport/refresh cannot replace newer selection.
+- Widget first pages omit full-catalogue counts/group/expression sorts, use read-only bounded SQL, cross-interpreter single-flight and short last-good cache. SQLite failures get fixed diagnostic codes; no reset or reindex repair.
+- Version notice reads actual installed version, persists its own profile marker, schedules a safe plugin/GUI popup once per upgrade. First install gets a baseline; known pre-.41 service-build evidence recognizes existing .40 upgrades. No playback interruption or modal service dialog.
+- Optional versioned BINGIE adapter proposal: half-tile logos and focused RAM-only Now/Next/progress. Not auto-installed/enabled; no existing skin, shortcuts or widget mutation. Foreign SkinShortcuts/XML errors remain separately blocked pending compatible review.
+- All Android gates NOT_TESTED; Box A untouched, Box B Dynamic. No merge, release, downgrade, data/cache deletion or storage/migration action.
+
 0.1.29.40 (cumulative stabilization test candidate; not released)
 - P0: transient fullscreen loss and native media re-init no longer authorize Stop or resolver cancellation. Explicit own Back/Stop/Home and cancellation carry whitelisted reason codes.
 - P0: wait for real native modal release before one Stop worker. Timeout quarantines the still-running native call across interpreters; no retry or player-mutex probes from service/return during Stop. Actual Android native deadlock remains an acceptance gate.

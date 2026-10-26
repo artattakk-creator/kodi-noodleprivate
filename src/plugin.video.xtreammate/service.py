@@ -3,7 +3,7 @@ import xbmc, xbmcaddon, xbmcgui
 
 ADDON    = xbmcaddon.Addon()
 LIB_PATH = os.path.join(os.path.dirname(__file__), 'resources', 'lib')
-SERVICE_BUILD = 40
+SERVICE_BUILD = 41
 if LIB_PATH not in sys.path:
     sys.path.insert(0, LIB_PATH)
 
@@ -145,6 +145,9 @@ class IPTVMasterService(xbmc.Monitor):
         loops = 0
         next_input_flush = 0
         heartbeat(marker, instance, loops, phase='gestartet')
+        from update_notice41 import detect as detect_update
+        try:detect_update()
+        except (OSError,RuntimeError,ValueError):pass
         diagnostic('service','STARTED',running=True,count=loops,build=SERVICE_BUILD)
         note(marker, LAST_ERROR, 'keine gemeldet')
         while not self.abortRequested():
@@ -162,6 +165,10 @@ class IPTVMasterService(xbmc.Monitor):
             if stop_blocked():
                 self.waitForAbort(.2)
                 continue  # Native Stop may hold Kodi's player lock; no player queries.
+            from update_notice41 import schedule as schedule_notice
+            schedule_notice()
+            from widget_focus41 import poll as poll_widget_focus
+            poll_widget_focus()
             from live_guide_navigation import poll as poll_live_guide, preserves_player,consume_resume
             from navigation_dispatch import poll as poll_navigation,holding
             poll_navigation()

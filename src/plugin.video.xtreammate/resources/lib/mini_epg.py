@@ -5,7 +5,7 @@ from localization import tr
 
 def programme_rows(events,now=None):
     now=time.time() if now is None else now
-    rows=[e for e in events if isinstance(e,dict) and e.get('title') and isinstance(e.get('start'),(int,float)) and isinstance(e.get('stop'),(int,float)) and e['stop']>e['start']]
+    rows=[e for e in events if isinstance(e,dict) and e.get('title') and isinstance(e.get('start'),(int,float)) and isinstance(e.get('stop'),(int,float)) and e['stop']>e['start'] and e['stop']>now]
     rows=sorted(rows,key=lambda e:(e['start'],e['stop']))[:256]
     current=next((i for i,e in enumerate(rows) if e['start']<=now<e['stop']),None)
     if current is None:current=next((i for i,e in enumerate(rows) if e['start']>now),max(0,len(rows)-1))
@@ -25,7 +25,7 @@ class MiniProgramme:
         w,h=owner._width,owner._height;x=int(w*.36);width=int(w*.32)
         self.heading=xbmcgui.ControlLabel(x,48,width,30,'','font13','0xFFF4F6F9')
         self.hint=xbmcgui.ControlLabel(x,86,width,28,tr(35610),'font12','0xFFBEC4CD')
-        self.list=xbmcgui.ControlList(x,122,width,min(376,h-190),font='font12',textColor='0xFFF4F6F9',selectedColor='0xFFFFFFFF',buttonTexture=owner._media+'/remote_clear.png',buttonFocusTexture=owner._media+'/remote_clear.png',_itemHeight=66,_space=4)
+        self.list=xbmcgui.ControlList(x,122,width,min(376,h-190),font='font12',textColor='0x00000000',selectedColor='0x00000000',buttonTexture=owner._media+'/remote_clear.png',buttonFocusTexture=owner._media+'/remote_clear.png',_itemHeight=66,_space=4)
         owner.addControls([self.heading,self.hint,self.list]);self.list.controlLeft(self.list);self.list.controlRight(self.list)
         self.rows=[]
         for row in range(5):
@@ -39,7 +39,9 @@ class MiniProgramme:
 
     def visible(self,value):
         for c in (self.heading,self.hint,self.list,*[c for row in self.rows for c in row]):c.setVisible(value)
-        if not value:self.focused=False
+        if not value:
+            self.focused=False
+            for _,stamp,title in self.rows:stamp.setLabel('');title.setText('')
 
     def render(self):
         owner=self.owner;index=owner._highlight['channels']
@@ -50,15 +52,15 @@ class MiniProgramme:
         self.heading.setLabel(channel.name if channel else tr(35611))
         self.hint.setLabel(tr(35830) if self.focused else tr(35610))
         if signature!=self.signature:
+            previous=self.events[self.selected] if self.focused and self.selected<len(self.events) else None
             changed=sid!=self.sid;self.sid=sid;self.events=events;self.signature=signature
-            self.list.reset();labels=[];now=time.time()
-            for e in events:
-                active=e['start']<=now<e['stop']
-                label=('● '+tr(35612)+'  ' if active else '')+time_label(e,now)+'  '+e['title'][:160]
-                if active:label='[COLOR FF55DD99][B]'+label+'[/B][/COLOR]'
-                labels.append(label)
-            self.list.addItems(labels or [tr(35611)])
-            self.selected=current if changed or not self.focused else min(self.selected,max(0,len(events)-1));self.list.selectItem(self.selected)
+            self.list.reset()
+            # Visible native control owns keys/scroll/OK, but NEVER a text layer.
+            self.list.addItems(['']*len(events) or [''])
+            self.selected=current if changed or not self.focused else min(self.selected,max(0,len(events)-1));
+            if previous and not changed and self.focused:
+                self.selected=next((i for i,e in enumerate(events) if (e['start'],e['stop'],e['title'])==(previous['start'],previous['stop'],previous['title'])),self.selected)
+            self.list.selectItem(self.selected)
         self.visible(True);self._paint()
 
     def _paint(self):
@@ -72,7 +74,9 @@ class MiniProgramme:
                 label=('● '+tr(35612)+'  ' if active else '')+time_label(event,now)
                 stamp.setLabel('[COLOR FF55DD99]'+label+'[/COLOR]' if active else label)
                 title.setText(wrap_title(event['title'],self.column_width))
-            else:stamp.setLabel('');title.setText('')
+            else:
+                stamp.setLabel('');title.setText(tr(35611) if not self.events and slot==0 else '')
+                if not self.events and slot==0:title.setVisible(True)
 
     def focus(self):
         self.render()

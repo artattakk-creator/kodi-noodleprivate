@@ -68,6 +68,8 @@ class Exit37(unittest.TestCase):
         m.exit.request(m.nav);m.ready();m.exit._poll(m.nav)
         self.assertTrue(m.nav._closed);self.assertEqual(m.stops,0)
         value=jobs.state();value['not_before']=0;jobs.save(value);jobs.poll();jobs._thread.join(2)
+        from exit37_fixture import process_native_live_stop
+        process_native_live_stop()
         self.assertEqual(m.stops,1)
 
     def test_busy_exit_checkpoint_retries_are_finite_and_preserve_existing_bookmark(self):

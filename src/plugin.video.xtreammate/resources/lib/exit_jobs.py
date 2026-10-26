@@ -54,7 +54,7 @@ def trace(stage,token,reason=None):
     digest=hashlib.sha256(json.dumps([token[0],token[1].get('nonce')]).encode()).hexdigest()[:12]
     reason=reason or (state() or {}).get('reason','USER_STOP')
     reason=reason if reason in REASONS else 'STARTUP_ABORT'
-    try:xbmc.log('[XCMate][PLAYER_EXIT] stage='+stage+' reason='+reason+' kind='+token[0]+' session='+digest+' window='+str(xbmcgui.getCurrentWindowId()),xbmc.LOGINFO)
+    try:xbmc.log('[XCMate][PLAYER_EXIT] stage='+stage+' reason='+reason+' kind='+token[0]+' session='+digest+' thread='+str(threading.get_ident())+' ms='+str(int(time.monotonic()*1000))+' window='+str(xbmcgui.getCurrentWindowId())+' dialog='+str(getattr(xbmcgui,'getCurrentWindowDialogId',lambda:9999)()),xbmc.LOGINFO)
     except (AttributeError,RuntimeError):pass
 
 
@@ -85,16 +85,24 @@ def request(player=None,pid=None,expected=None,manual=False,reason='USER_STOP'):
 
 def _run(token):
     from playback_exit import stop_owned,_same
-    try:ok=stop_owned(expected=token)
+    try:
+        if token[0]=='live':
+            from native_stop41 import post
+            if post(token):return  # Completion requires the native main-queue barrier.
+            ok=False
+        else:ok=stop_owned(expected=token)
     except Exception:ok=False
     with _lock:
         current=state()
         if current and _same(tuple(current['token']),token) and current['phase'] in ('running','timeout'):
-            current['worker_done']=True
-            current['result']='complete' if ok else 'failed'
-            if current['phase']=='running':current['phase']=current['result']
+            ambiguous=token[0]=='live' and current.get('native_posted')
+            current['worker_done']=not ambiguous
+            current['result']='POST_UNCONFIRMED' if ambiguous else 'complete' if ok else 'failed'
+            if ambiguous:current['phase']='timeout'
+            elif current['phase']=='running':current['phase']=current['result']
             save(current)
-    trace('PLAYER_STOP_DONE' if ok else 'STOP_REJECTED',token)
+        else:ambiguous=False
+    trace('STOP_POST_UNCONFIRMED' if ambiguous else 'PLAYER_STOP_DONE' if ok else 'STOP_REJECTED',token)
 
 
 def poll():
@@ -103,6 +111,13 @@ def poll():
     with _lock:
         value=state()
         if not value:return False
+        if value.get('native_posted') and not value.get('worker_done'):
+            from native_stop41 import returned,finish
+            if returned(value):
+                finish(value);value['worker_done']=True;value['result']='complete'
+                late=value['phase']=='timeout'
+                if not late:value['phase']='complete'
+                save(value);trace('LATE_NATIVE_RETURN' if late else 'PLAYER_STOP_DONE',tuple(value['token']))
         if value['phase']=='running' and 'stop_started' not in value:
             value['stop_started']=True  # In-flight legacy job: timeout never proves completion.
         if value['phase'] in ('pending','running') and time.monotonic()>value['deadline']:
