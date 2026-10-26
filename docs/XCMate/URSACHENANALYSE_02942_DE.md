@@ -34,6 +34,8 @@ Alle nativen Referenzen unten sind auf exakt Kodis Gerätebuild `a3a448d26b8d560
 
 Der alternative Ablauf verändert **die native Lifecycle-Reihenfolge**. Er ist weder ein weiterer Python-Thread noch eine neue Bezeichnung für denselben direkten Queuepost. Er stellt aber keinen anderen nativen Decoder bereit: Wenn dessen Stop auch nach Fullscreen-Deinit hängt, kann Add-on-Python den fremden nativen Code nicht entklemmen.
 
+Der Startsenderpfad `_startup_playable` fordert im vorhandenen Xtream-Code eine `.ts`-Adresse an. `build_playable_item` verwendet für erkanntes HLS/DASH gegebenenfalls InputStream Adaptive, für diesen TS-Pfad den bisherigen nativen Player. Eine Dateiendung beweist den tatsächlichen Inhalt nach Providerweiterleitung nicht. Ein anderes Demuxer-Add-on garantiert zudem keinen anderen Android-Videoausgabecodec. Deshalb keine spekulative `.ts`→`.m3u8`-URLumschreibung, kein neuer Providerrequest und keine ungefragte Installation von InputStream FFmpegDirect. Ein echter Transport-/Codecvergleich bleibt ohne Geräte-/Streamnachweis offen.
+
 ## 3. Konkrete Implementierung
 
 `live_stop42.py`, Schalter `live_exit_fullscreen42`, Standard **false**. Lesen der Option schreibt keine bestehenden Einstellungen um. Aktivierung ausdrücklich nur auf Box B. Gültig für Android/Kodi21.3, nur per unveränderlicher Item-Identität verifiziertes eigenes Live-TV; Filme/Serien und Fremdplayer verwenden diesen Zweig nicht.

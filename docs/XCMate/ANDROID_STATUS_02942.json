@@ -1,0 +1,23 @@
+{
+  "version": "0.1.29.42",
+  "device": "Box B Android RK3528 ARM32 Kodi21.3",
+  "box_a": "EXCLUDED",
+  "compatibility_must_enable": true,
+  "gates": {
+    "PREP42-01": "NOT_TESTED",
+    "START42-01": "NOT_TESTED",
+    "LIVE42-01": "NOT_TESTED",
+    "VOD42-01": "NOT_TESTED",
+    "REG42-01": "NOT_TESTED",
+    "LIVE42-05": "NOT_TESTED",
+    "LIVE42-20": "NOT_TESTED"
+  },
+  "historical_issue215": {
+    "version": "0.1.29.41",
+    "startsender_partial": "PASS",
+    "live_back": "FAIL",
+    "five_twenty": "BLOCKED",
+    "others": "NOT_TESTED"
+  },
+  "device_actions": 0
+}

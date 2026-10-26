@@ -1,0 +1,177 @@
+[
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_explicit_opt_in_defaults_false_without_writing_existing_settings"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_strategy_a_041_native_stop_in_fullscreen_reproduces_no_return"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_strategy_b_native_fullscreen_deinit_precedes_stop_and_completion"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_prepare_ack_is_not_stop_done_or_permission_to_return_home"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_home_and_focus_return_only_after_confirmed_stop_and_no_playback"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_native_deadlock_after_deinit_stays_failure_no_fake_success"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_main_queue_never_free_no_stop_no_retry_and_late_prepare_no_success"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_unmatched_prepare_nonce_never_releases_pending_job"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_ack_while_fullscreen_still_visible_does_not_start_stop"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_foreign_modal_before_prepare_is_never_closed"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_foreign_modal_after_prepare_barrier_holds_stop"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_modal_arriving_while_main_queue_waits_vetoes_native_window_change"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_foreign_item_before_preparation_receives_no_window_or_stop"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_owner_change_after_prepare_barrier_prevents_stop"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_post_guard_rechecks_gui_between_preparation_and_stop_worker"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_unrelated_window_after_deinit_prevents_stop_and_home"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_pending_prepare_blocks_new_foreign_or_media_requests"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_queue_post_raises_after_first_command_stays_quarantined"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_early_playback_callback_cannot_replace_native_stop_barrier"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_late_native_stop_return_remains_timeout_no_auto_home"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_repeated_back_cannot_double_stop_or_reset_deadline"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_kodi_shutdown_does_not_post_a_prepare_or_stop"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_unsupported_host_is_rejected_without_global_decoder_write"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_settings_read_failure_no_native_call_or_profile_write"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_media_job_keeps_original_synchronous_owned_exit_implementation"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_diagnostics_never_contain_private_item_ids_or_urls"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_strategy_does_not_change_when_setting_is_toggled_in_flight"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_already_safe_gui_needs_no_fullscreen_action"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_twenty_opt_in_native_lifecycle_cycles_each_stop_once"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_failed_prepare_never_becomes_live_home_success_on_early_callback"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_no_player_mutex_queries_during_native_hang_or_after_timeout"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_memory_pressure_before_prepare_posts_no_native_command"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_deadline_passed_before_poll_never_accepts_native_ack_as_on_time"
+  },
+  {
+    "file": "test_xcmate_live_stop_02942.py",
+    "case": "LiveStop42",
+    "method": "test_prepare_survives_interpreter_restart_without_duplicate_gui_action"
+  },
+  {
+    "file": "test_xcmate_scope_02942.py",
+    "case": "Scope42",
+    "method": "test_041_protected_source_bytes_and_all_1479_previous_methods_retained"
+  }
+]
