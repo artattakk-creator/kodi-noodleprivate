@@ -149,6 +149,7 @@ class LocalizationTests(Fixture,unittest.TestCase):
         self.assertIn('Show all',self.labels()[-1])
         self.added.clear();self.router._params['action']='widget_live_start_group'
         self.cache={'xml':[dict(name='Originaltitel',start_timestamp=self.now-100,stop_timestamp=self.now+100)]}
+        importlib.import_module('guide_store').import_cache('p',self.cache)
         self.routes.dispatch(self.router)
         self.assertIn('Now ',self.added[0][1].info['plot'])
         self.assertIn('Originaltitel',self.added[0][1].info['plot'])

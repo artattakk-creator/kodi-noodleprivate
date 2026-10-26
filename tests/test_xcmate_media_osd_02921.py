@@ -37,8 +37,7 @@ class MediaOSDTests(Fixture,unittest.TestCase):
 
     def test_back_hides_osd_without_stop_then_hidden_back_exits_owned_media_with_resume(self):
         self.window.show_bar();self.key(92);self.assertFalse(self.window.visible);self.player.stop.assert_not_called()
-        self.key(92);self.player.stop.assert_not_called();self.assertFalse(self.window.closed)
-        self.key(13)
+        self.key(92);self.player.stop.assert_not_called();self.assertTrue(self.window.closed)
         from exit37_fixture import drain_stop
         drain_stop();self.player.stop.assert_called_once();self.assertTrue(self.window.closed)
         self.assertEqual(self.state.progress('p','vod','2')['position'],600)
@@ -128,7 +127,7 @@ class MediaOSDTests(Fixture,unittest.TestCase):
         self.properties['XCMate.MediaSession']=json.dumps(self.session)
         self.properties[STATE]=json.dumps(dict(root='root',nonce='next',pid='p',phase='STARTING',enabled=True,at=time.time()))
         self.player.isPlayingVideo.return_value=False
-        self.key(92);self.assertFalse(cancelled('root','p'));self.key(13);self.assertTrue(cancelled('root','p'));self.assertTrue(self.window.closed);self.player.stop.assert_not_called()
+        self.key(92);self.assertTrue(cancelled('root','p'));self.assertTrue(self.window.closed);self.player.stop.assert_not_called()
 
     def test_stop_before_owner_consumes_end_callback_cancels_playing_marker(self):
         from media_autoplay import STATE,cancelled
@@ -145,4 +144,4 @@ class MediaOSDTests(Fixture,unittest.TestCase):
         self.properties[STATE]=json.dumps(dict(root='root',nonce='ours',pid='p',phase='PLAYING',enabled=True,at=time.time()))
         self.window.show_bar();self.player.isPlayingVideo.return_value=False
         self.key(92);self.assertFalse(self.window.visible);self.assertFalse(cancelled('root','p'));self.assertFalse(self.window.closed)
-        self.key(92);self.assertFalse(cancelled('root','p'));self.key(13);self.assertTrue(cancelled('root','p'));self.assertTrue(self.window.closed)
+        self.key(92);self.assertTrue(cancelled('root','p'));self.assertTrue(self.window.closed)

@@ -315,7 +315,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         trace('dialog','CLOSED',video=xbmc.Player().isPlayingVideo())
         try:
             from live_diagnostics import checkpoint
-            checkpoint(background=True)
+            checkpoint(defer=True)
         except Exception: pass
 
     def owns_playback(self):

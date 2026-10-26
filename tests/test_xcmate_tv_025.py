@@ -136,7 +136,7 @@ class SnapshotTests(unittest.TestCase):
     def test_mapping_revision_invalidates_snapshot_and_service_request_is_queued_only(self):
         self.snapshot.request([self.channel])
         self.snapshot.refresh()
-        self.assertIn('XtreamMate.ShortGuideRequest',self.props)
+        self.assertNotIn('XtreamMate.ShortGuideRequest',self.props)  # .39 viewport is strictly local.
         self.assertTrue(all(c.kwargs.get('cached_only') for c in self.client._get_json.call_args_list))
         now=time.time()
         self.cache={'manual':[dict(name='Mapped',start_timestamp=now-60,stop_timestamp=now+60)]}

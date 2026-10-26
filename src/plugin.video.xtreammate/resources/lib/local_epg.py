@@ -24,8 +24,8 @@ class View(dict):
 
 
 def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,budget=.4):
-    from guide_store import path
-    filename=path()
+    import guide_store
+    filename=getattr(guide_store,'path',lambda:'')()
     if not filename or not os.path.isfile(filename):return None
     db=None
     try:
@@ -71,3 +71,25 @@ def now_next(pid,channels,mappings,now=None,client=None):
         info['snapshot_revision']=cache.revision if cache is not None else None
         result[sid]=info
     return result
+
+
+def next_start(pid,identifiers,now):
+    """Search expiry at a real upcoming local event, not a fixed tab timer."""
+    import guide_store
+    filename=getattr(guide_store,'path',lambda:'')()
+    ids=sorted(set(str(i) for i in identifiers if i))
+    if not filename or not os.path.isfile(filename) or len(ids)>6000:return None
+    db=None
+    try:
+        db=sqlite3.connect('file:'+quote(filename,safe='/')+'?mode=ro',uri=True,timeout=.05)
+        db.execute('PRAGMA query_only=ON');db.execute('BEGIN')
+        deadline=time.monotonic()+.2;db.set_progress_handler(lambda:int(time.monotonic()>deadline),1000)
+        starts=[]
+        for offset in range(0,len(ids),256):
+            chunk=ids[offset:offset+256];marks=','.join('?' for _ in chunk)
+            row=db.execute('SELECT min(start) FROM programmes WHERE pid=? AND cid IN ('+marks+') AND start>?',[pid]+chunk+[now]).fetchone()
+            if row and row[0]:starts.append(row[0])
+        return min(starts) if starts else None
+    except (sqlite3.Error,OSError):return None
+    finally:
+        if db is not None:db.close()

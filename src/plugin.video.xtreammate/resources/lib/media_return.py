@@ -33,6 +33,10 @@ def capture(view,nonce):
         except (AttributeError,RuntimeError,KeyError):pass
     view._playback_origin39=dict(values={k:copy.deepcopy(getattr(view,k)) for k in FIELDS if hasattr(view,k)},
                                  positions=positions,focus=view.getFocusId(),native=native_reference(view))
+    if view.mode=='episodes':
+        # Explicit Next can cross a season before Kodi shows the target row.
+        positions[330]=view._episode_cursor.get(view.season,positions.get(330,0))
+        view._playback_origin39['focus']=330
     value=dict(pid=str(view.portal['id']),nonce=nonce,owner=view._native_owner,at=time.time(),requested=False)
     marker().setProperty(KEY,json.dumps(value))
 
@@ -82,10 +86,20 @@ def restore(view,natural=False):
         if not active(origin['native'],native):view.show()
         view._show(view.mode)
         if view.mode=='search' and getattr(view,'_search_data',None):view._search_ready(view._search_data,resume=True)
+        elif view.mode=='detail':view._detail_ready((view.selected,{'episodes':view._episode_raw()}))
+        elif view.mode=='episodes':view._show_episodes()
+        elif view.mode=='seasons':view._fill(330,view._season_rows())
         else:view._refresh_art()
         for cid,pos in origin['positions'].items():view.getControl(cid).selectItem(pos)
         view.setFocusId(origin['focus'])
         if view.mode=='episodes':view._sync_episode_next()
+        marker().setProperty('XCMate.MediaReturn39.Status','RESTORED')
+    except (AttributeError,RuntimeError,TypeError,ValueError,KeyError):
+        marker().setProperty('XCMate.MediaReturn39.Status','NATIVE_RESTORE_FAILED')
+        from owner_dispatch import dispose_unshown
+        dispose_unshown(view)  # Release only our pump; never pop a foreign window.
+        from localization import tr
+        xbmcgui.Dialog().notification('XCMate',tr(35840));return False
     finally:view._returning39=False
     return True
 

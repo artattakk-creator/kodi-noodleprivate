@@ -116,10 +116,8 @@ def record(stage, code, **fields):
     entry=_clean(dict(fields, stage=stage, code=code, at=time.time()))
     if entry is None: return
     if stage=='epg' and 'last_success' not in entry:
-        for prior in reversed(_disk(stage)):
-            if 'last_success' in prior:
-                entry['last_success']=prior['last_success']
-                break
+        prior=_WRITTEN.get(stage,{})
+        if 'last_success' in prior:entry['last_success']=prior['last_success']
     try:
         import xbmcgui
         xbmcgui.Window(10000).setProperty(PREFIX+stage,json.dumps(entry))
@@ -130,13 +128,7 @@ def record(stage, code, **fields):
         # no profile reads, fsync or JSON-file rewrite for each remote press.
         with _INPUT_LOCK: _INPUT_PENDING.append(entry)
         return
-    if stage in ('focus','ownership','performance'):
-        with _INPUT_LOCK:_GUI_PENDING[stage]=entry
-        return  # No diagnostic file IO on a native GUI callback.
-    previous=_WRITTEN.get(stage)
-    if previous and previous['code']==code and entry['at']-previous['at']<2:
-        return
-    _save(entry)
+    with _INPUT_LOCK:_GUI_PENDING[stage]=entry
 
 
 def _save(entry, batch=None):
@@ -145,6 +137,9 @@ def _save(entry, batch=None):
     try:
         target=_path(stage)
         entries=_disk(stage)
+        if stage=='epg' and 'last_success' not in entry:
+            prior=next((e for e in reversed(entries) if 'last_success' in e),{})
+            if 'last_success' in prior:entry['last_success']=prior['last_success']
         entries.extend(batch if batch is not None else [entry])
         fd,temp=tempfile.mkstemp(prefix='.xcmate-diag-', dir=os.path.dirname(target))
         with os.fdopen(fd,'w',encoding='utf-8') as f:
@@ -160,8 +155,9 @@ def _save(entry, batch=None):
             except OSError: pass
 
 
-def checkpoint(background=False):
+def checkpoint(background=False,defer=False):
     """Flush the newest throttled input/focus state before the dialog closes."""
+    if defer:return  # Service timer owns flushing, no new worker on GUI close.
     if background:return flush_input(background=True)
     flush_input()
     for entry in snapshots().values():

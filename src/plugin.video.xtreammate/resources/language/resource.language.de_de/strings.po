@@ -3828,3 +3828,7 @@ msgstr "Untertitelsprache"
 msgctxt "#35830"
 msgid "▶ Programmfokus · Links: Sender"
 msgstr "▶ Programmfokus · Links: Sender"
+
+msgctxt "#35840"
+msgid "Die vorherige XCMate-Ansicht ist nicht mehr verfügbar. Bitte den Medienbereich erneut öffnen."
+msgstr "Die vorherige XCMate-Ansicht ist nicht mehr verfügbar. Bitte den Medienbereich erneut öffnen."

@@ -54,6 +54,38 @@ class Return39(model.Fixture,unittest.TestCase):
             self.assertFalse(self.returning.request(('media',dict(pid=pid,sid='1',nonce=nonce,at=time.time(),kind='vod'))))
         w.close();self.assertIsNone(self.returning.read())
 
+    def test_twenty_episode_returns_preserve_target_season_and_manual_next_state(self):
+        w=self.media_window('series');w.native(7);self.settle(w)
+        w.getControl(300).selectItem(next(i for i,a in enumerate(w.actions) if a[1]=='seasons'));w.onClick(300)
+        w.getControl(330).selectItem(w.seasons.index(2));w.onClick(330)
+        for _ in range(20):
+            w._play(w.visible_episodes[0],'episode');nonce=w._play_intent
+            token=('media',dict(pid='p',sid='21',nonce=nonce,at=time.time(),kind='episode',autoplay_chain=nonce))
+            self.assertTrue(self.returning.request(token));value=self.returning.read();value['not_before']=0;self.properties[self.returning.KEY]=json.dumps(value)
+            self.assertTrue(self.returning.restore(w));self.assertEqual((w.mode,w.season,w.getFocusId()),('episodes',2,330))
+            self.assertEqual(w.visible_episodes[w.getControl(330).getSelectedPosition()]['sid'],'21');self.assertIsNone(w.next_episode)
+
+    def test_actual_search_dialog_is_reshown_without_root_reload(self):
+        def run(w):w.show();w._owner_tick();self.settle(w)
+        with mock.patch.object(self.media.MediaView,'run',run):w=self.media.open_search(self.router,self.portal,'House')
+        self.addCleanup(w.close);w._search_click(701);self.settle(w);w.setFocusId(710)
+        self.returning.capture(w,'dialog');self.returning.request(('media',dict(pid='p',sid='1',nonce='dialog',at=time.time(),kind='vod')))
+        value=self.returning.read();value['not_before']=0;self.properties[self.returning.KEY]=json.dumps(value)
+        life=importlib.import_module('window_lifecycle')
+        with mock.patch.object(life,'state',return_value=dict(window=10000,dialog=9999,modal=False,updating=False)):
+            self.assertTrue(self.returning.restore(w))
+        self.assertTrue(w.shown);self.assertEqual((w.mode,w._search_query,w._search_kind,w.getFocusId()),('search','House','vod',710))
+        self.assertFalse(self.builtins)
+
+    def test_failed_native_restore_releases_own_pump_without_changing_foreign_window(self):
+        w=self.media_window();self.returning.capture(w,'failed')
+        self.returning.request(('media',dict(pid='p',sid='1',nonce='failed',at=time.time(),kind='vod')))
+        value=self.returning.read();value['not_before']=0;self.properties[self.returning.KEY]=json.dumps(value)
+        life=importlib.import_module('window_lifecycle')
+        with mock.patch.object(life,'state',return_value=dict(window=10000,dialog=9999,modal=False,updating=False)),mock.patch.object(w,'show',side_effect=RuntimeError('native unavailable')):
+            self.assertFalse(self.returning.restore(w))
+        self.assertTrue(w._closed);self.assertEqual(self.properties['XCMate.MediaReturn39.Status'],'NATIVE_RESTORE_FAILED');self.assertFalse(self.builtins)
+
 
 class FullscreenBack39(unittest.TestCase):
     def setUp(self):

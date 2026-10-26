@@ -130,6 +130,7 @@ class LiveSearch:
         if self.cancel() or self.done and (time.time()<self.now or time.time()>=self.expires):return False
         current=revision(self.portal['id'])
         if current[2:4]!=self.stamp[2:4]:return False
+        if self.done and current[6]!=self.stamp[6]:return False
         # Short-cache telemetry may advance while this cursor is scanning it.
         # Never restart all channels for each tab/worker completion. Actual
         # event ends and a bounded refresh deadline expire the current view.
@@ -190,10 +191,12 @@ class LiveSearch:
             self.events,self.aliases,self.code,count=_now_events(self.portal['id'],identifiers,self.now,self.cancel)
         self.counts['source_count']=count
         stops=[event['stop'] for event in self.events.values() if event.get('stop',0)>self.now]
-        self.expires=min(self.expires,self.now+30,min(stops) if stops else self.now+30)
+        from local_epg import next_start
+        boundary=next_start(self.portal['id'],{self.aliases.get(i,i) for i in identifiers},self.now)
+        self.expires=min(self.expires,min(stops) if stops else self.expires,boundary or self.expires)
         # At most one portal and <=4 MiB serialized live payload, never VOD.
         if len(self.channels)<=6000 and sum(len(row['payload']) for row in raw)<=4*1024*1024:
-            _PREPARED['value']=dict(key=key,expires=self.expires,channels=self.channels,mappings=self.mappings,
+            _PREPARED['value']=dict(key=key,expires=min(self.expires,self.now+30),channels=self.channels,mappings=self.mappings,
                                     events=self.events,aliases=self.aliases,code=self.code,sources=count)
         self.phase='xml'
 

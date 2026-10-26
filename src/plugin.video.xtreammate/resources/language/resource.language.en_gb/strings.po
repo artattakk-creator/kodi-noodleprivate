@@ -3828,3 +3828,7 @@ msgstr "Subtitle language"
 msgctxt "#35830"
 msgid "▶ Programme focus · Left: channels"
 msgstr "▶ Programme focus · Left: channels"
+
+msgctxt "#35840"
+msgid "The previous XCMate view is no longer available. Please reopen the media section."
+msgstr "The previous XCMate view is no longer available. Please reopen the media section."
