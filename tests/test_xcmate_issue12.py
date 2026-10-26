@@ -143,6 +143,7 @@ class DiagnosticTests(unittest.TestCase):
     def test_epg_last_success_survives_failed_followup(self):
         self.d.record('epg','READY',last_success=1234,channels=5)
         self.d.record('epg','REFRESH_FAILED',running=False)
+        self.d.flush_input()  # .39 data worker persists the queued transition.
         self.props.clear()
         self.assertEqual(self.d.snapshots()['epg']['last_success'],1234)
 
@@ -184,6 +185,7 @@ class DiagnosticTests(unittest.TestCase):
         self.d.record('epg','PROVIDER_LIMIT',failure_stage='PARSE',exception_class='XMLTVLimitError',
                       limit_kind='channels',limit_value=10000)
         self.d.record('epg','NO_NEW_GUIDE',running=False)
+        self.d.flush_input()  # Model the service flush before a fresh interpreter.
         self.props.clear()
         restarted=module('issue12_failure_restart','live_diagnostics.py')
         text='\n'.join(restarted.report())

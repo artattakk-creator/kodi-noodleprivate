@@ -171,8 +171,12 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
 
     @native_init
     def onInit(self):
+        if getattr(self,'_returning39',False):return
         self.getControl(400).setLabel(tr(32586))
         self.getControl(501).setLabel(tr(32587))
+        if self._ready and getattr(self,'_playback_origin39',None):
+            # Fullscreen/Stop races must not reset the still-owned native view.
+            self._poll_playback_return();return
         if self._ready and getattr(self,'_search_prompt',False):return
         if self._ready and self.mode=='search':
             from media_search import mark
@@ -322,20 +326,32 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
             elif status and status[0]['code']=='INDEXING':
                 self.getControl(102).setLabel(tr(32612,status[0]['stored'],status[0]['received']))
 
+    def _display_art39(self,row):
+        from collections import OrderedDict
+        from media_art import local_art,sources
+        from artwork_visible import retain_displayed
+        if not hasattr(self,'_art_history39'):self._art_history39=OrderedDict()
+        key=(str(row.get('kind',self.kind)),str(row.get('sid','')),sources(row))
+        history=self._art_history39
+        current=retain_displayed(row,history.get(key,{}),local_art(row,self._theme))
+        history[key]=current;history.move_to_end(key)
+        while len(history)>256:history.popitem(last=False)
+        return current
+
     def _fill(self,control_id,rows):
         from media_art import local_art
         control=self.getControl(control_id);control.reset()
         items=[]
         for row in rows:
+            art=self._display_art39(row)
             if control_id==710:
                 from search_results import item
-                li=item(row,self._theme)
+                li=item(row,self._theme,art=art)
             else:
                 li=xbmcgui.ListItem(str(row.get('name','')))
-                art=local_art(row,self._theme)
                 li.setArt(art)
-                if not hasattr(self,'_shown_art'):self._shown_art={}
-                self._shown_art[(control_id,len(items))]=art
+            if not hasattr(self,'_shown_art'):self._shown_art={}
+            self._shown_art[(control_id,len(items))]=art
             if control_id in (300,330):
                 from theme_render import action_art
                 li.setArt(action_art(row.get('sid','') if control_id==300 else 'next_episode' if self.mode=='episodes' else 'seasons',self._theme,row.get('favourite',getattr(self,'_theme_favourite',False))))
@@ -359,14 +375,14 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
                 if not hasattr(self,'_shown_art'):self._shown_art={}
                 for pos,row in enumerate(rows):
                     key=(cid,pos);prior=self._shown_art.get(key,{})
-                    art=retain_displayed(row,prior,local_art(row,self._theme))
+                    art=self._display_art39(row)
                     if art!=prior:
                         self.getControl(cid).getListItem(pos).setArt(art)
                         self._shown_art[key]=art
             if self.selected:
                 from artwork_visible import retain_displayed
                 prior=getattr(self,'_selected_art',{})
-                art=retain_displayed(self.selected,prior,local_art(self.selected,self._theme))
+                art=self._display_art39(self.selected)
                 from theme_render import media_background
                 if art.get('fanart')!=prior.get('fanart'):self.getControl(100).setImage(media_background(self,art['fanart']))
                 if self.mode=='detail' and art.get('poster')!=prior.get('poster'):self.getControl(310).setImage(art['poster'])
@@ -503,7 +519,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         self._art_selected=dict(item)
         self.getControl(501).setLabel(tr(32587))
         from media_art import local_art
-        art=local_art(item,self._theme)
+        art=self._display_art39(item)
         from theme_render import media_background
         self.getControl(100).setImage(media_background(self,art['fanart']))
         try: self._art.put_nowait(dict(item))
@@ -567,7 +583,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
             if key in info: meta.append('{}: {}'.format(name,info[key]))
         if 'duration' in info: meta.append(tr(32510).format(info['duration']//60))
         self.getControl(102).setLabel(' · '.join(meta))
-        self.getControl(310).setImage(local_art(item,self._theme)['poster'])
+        self.getControl(310).setImage(self._display_art39(item)['poster'])
         self.getControl(320).setText(info['plot'] or tr(32511))
         self._queue_art(item)
         self.actions=[]
@@ -608,6 +624,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         self.setFocusId(old_focus if old_focus in (300,400) else 300)
 
     def _play(self,item,kind,resume=False):
+        if self._playback_waiting:return  # IR repeats cannot queue competing resolvers.
         self._cancel_chain()
         if kind=='episode':
             from media_sequence import match
@@ -625,6 +642,8 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         self._pending_future=None;self._pending_apply=None
         from media_intent import begin
         self._play_intent=begin(self.portal['id'],kind,item['sid'])
+        from media_return import capture as capture_origin
+        capture_origin(self,self._play_intent)
         self._autoplay_root=self._play_intent if kind=='episode' else ''
         url=self.router.url(action='media_play',pid=self.portal['id'],kind=kind,sid=item['sid'],
             series_id=item.get('series_id'),season=item.get('season'),episode=item.get('episode'),intent=self._play_intent,resume='1' if resume else '0',
@@ -820,6 +839,10 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
                 cancel(self.portal['id'],self._play_intent)
                 from exit_jobs import request as stop_owned
                 if self._stop_media_only(): return
+                if self._playback_waiting:
+                    self._playback_waiting=False;self._playback_seen=False
+                    from media_return import discard
+                    discard(self)  # Explicit Back also cancels an unresolved start.
                 self._generation+=1
                 if self.mode=='episodes':
                     self.mode='seasons';self._show('seasons');self._fill(330,self._season_rows())
@@ -1012,7 +1035,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         if direction>0:
             items=[]
             for row in rows:
-                li=xbmcgui.ListItem(row['name']);li.setArt(local_art(row,self._theme));li.setInfo('video',{'title':row['name']});items.append(li)
+                li=xbmcgui.ListItem(row['name']);li.setArt(self._display_art39(row));li.setInfo('video',{'title':row['name']});items.append(li)
             panel.addItems(items);self.rows+=rows
             if len(self.rows)>WINDOW_ITEMS:
                 trim=((len(self.rows)-WINDOW_ITEMS+PAGE-1)//PAGE)*PAGE
@@ -1057,14 +1080,27 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
     def _poll_playback_return(self):
         if not self._playback_waiting or self._leaving or self._closed:return
         if self._chain_active():return
+        if getattr(self,'_playback_origin39',None):
+            from media_return import restore
+            if restore(self):return
         player=xbmc.Player()
         try:
             if player.isPlayingVideo():
                 from media_progress import UNIQUE_ID
                 if player.getVideoInfoTag().getUniqueID(UNIQUE_ID)==self._play_intent:self._playback_seen=True
+                if self._playback_seen and not xbmc.getCondVisibility('Window.IsVisible(fullscreenvideo)'):
+                    from playback_exit import identity
+                    from media_return import request as return_to_origin
+                    from exit_jobs import request as stop
+                    token=identity(player)
+                    if token and token[0]=='media' and token[1]['nonce']==self._play_intent:
+                        return_to_origin(token);stop(player,expected=token)
                 return
             if not self._playback_seen or xbmc.getCondVisibility('Window.IsVisible(fullscreenvideo)') or xbmc.getCondVisibility('System.HasActiveModalDialog'):return
         except (AttributeError,RuntimeError):return
+        if getattr(self,'_playback_origin39',None):
+            from media_return import restore
+            if restore(self,natural=True):return
         # Some Kodi skins reveal WindowXML without delivering another onInit.
         # Restore through the owner pump, never a player/worker callback.
         self._playback_waiting=False;self._playback_seen=False
@@ -1082,6 +1118,8 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
     def close(self):
         self._gui()
         if self._closed: return
+        from media_return import discard
+        discard(self)
         self._cancel_chain()
         from media_intent import cancel
         cancel(self.portal['id'],self._play_intent)

@@ -193,9 +193,23 @@ class OverlayLifecycleTests(unittest.TestCase):
         spec = importlib.util.spec_from_file_location('omega_overlay_test',LIB/'live_overlay.py')
         self.module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(self.module)
+        # Deterministic completed data Future; cold pending IO is tested in .39.
+        import live_catalog
+        from concurrent.futures import Future
+        def prepared(portal,client,force=False):
+            f=Future();f.set_result(live_catalog.read(portal,client));return f
+        prepare_patch=mock.patch.object(live_catalog,'prepare',side_effect=prepared)
+        prepare_patch.start();self.addCleanup(prepare_patch.stop)
         self.overlay = self.module.LiveNavigator(self.portal,'1')
         self.overlay.show()
-        self.addCleanup(self.overlay.close)
+        def close_overlay():
+            self.overlay.close()
+            # Data-only diagnostics must finish before native module stubs are
+            # removed; production keeps the Kodi interpreter modules alive.
+            import live_diagnostics
+            worker=getattr(live_diagnostics,'_flush_thread',None)
+            if worker is not None:worker.join(2)
+        self.addCleanup(close_overlay)
         self.overlay.handle_command('left')
 
     def finish_owned_exit(self):
@@ -365,8 +379,7 @@ class OverlayLifecycleTests(unittest.TestCase):
                   (174,659,1060,24)]
         self.assertEqual([tuple(c.options[k] for k in ('x','y','width','height'))
                           for c in o._info_controls],expected)
-        self.assertEqual(o.info_hint.options['label'],
-                         'OK / Runter: Bedienung    Links: Sender    Zurück: TV')
+        self.assertEqual(o.info_hint.options['label'],'')  # .39 actual stream fields occupy this line.
         self.assertEqual(o.info_now.options['textColor'],'0xFFF0F2F5')
         self.assertTrue(o.info_bg.options['filename'].endswith('tv_panel.png'))
         self.assertTrue(o.info_progress.options['filename'].endswith('tv_progress.png'))

@@ -333,20 +333,20 @@ def widget(router,portal,action):
     if action=='widget_live_start_group':
         start=reader.get('live',str(portal.get('start_stream_id') or ''))
         cid=initial_group(portal,reader.groups('live'),start)
-        rows,total=reader.page('live',category=cid,offset=page_offset(router),limit=48,
+        rows,total=reader.page('live',category=cid,offset=page_offset(router),limit=12,
                                pin=start['sid'] if start else None) if cid else ([],0)
-        from epg import load_cache
         from epg_sources import configuration
-        from epg_views import resolve_guide
-        cache=load_cache(portal['id']); mappings=configuration(portal['id'])['mappings']
+        from local_epg import now_next
+        mappings=configuration(portal['id'])['mappings']
+        # Existing widget routes, no skin mutation or full-cache hydration.
+        snapshot=now_next(portal['id'],rows,mappings,client=router._xc(portal))
         xbmcplugin.setContent(router._handle,'videos')
         for row in rows:
-            info=resolve_guide(cache,row.get('epg_channel_id',''),row['sid'],
-                               client=router._xc(portal),mappings=mappings)
+            info=snapshot[row['sid']]
             add_index_item(router,portal,'live',row,dict(Now=info['now'],Next=info['next'],
                 Start=info['start'],Stop=info['stop'],Progress=info['progress'] if info['progress'] is not None else '',
                 plot=guide_plot(info)),widget=True)
-        paging(router,total,page_offset(router),action=action)
+        # Home stays bounded; ordinary directory browsing remains unrestricted.
         if not rows:
             router._add_dir(tr(32478) if not reader.state('live')
                             else tr(32479),

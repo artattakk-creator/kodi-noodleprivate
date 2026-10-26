@@ -20,19 +20,21 @@ def _session(raw):
 
 
 def identity(player):
-    import xbmcgui
-    if not player.isPlayingVideo(): return None
-    tag=player.getVideoInfoTag()
-    from media_progress import PROPERTY,UNIQUE_ID
-    value=_session(xbmcgui.Window(10000).getProperty(PROPERTY))
-    if value and value.get('kind') in ('vod','episode','series_item') and tag.getUniqueID(UNIQUE_ID)==value['nonce']:
-        return 'media',value
-    # Live dialog Back can clear the announcement while the item remains live.
-    # Its immutable item identity is still the ownership evidence.
-    from live_recovery import ITEM_ID
-    value=_session(tag.getUniqueID(ITEM_ID))
-    if value: return 'live',value
-    return None
+    try:
+        import xbmcgui
+        if not player.isPlayingVideo(): return None
+        tag=player.getVideoInfoTag()
+        from media_progress import PROPERTY,UNIQUE_ID
+        value=_session(xbmcgui.Window(10000).getProperty(PROPERTY))
+        if value and value.get('kind') in ('vod','episode','series_item') and tag.getUniqueID(UNIQUE_ID)==value['nonce']:
+            return 'media',value
+        # Live dialog Back can clear the announcement while the item remains live.
+        # Its immutable item identity is still the ownership evidence.
+        from live_recovery import ITEM_ID
+        value=_session(tag.getUniqueID(ITEM_ID))
+        if value: return 'live',value
+        return None
+    except (AttributeError,RuntimeError,TypeError,ValueError):return None
 
 
 def _same(a,b):

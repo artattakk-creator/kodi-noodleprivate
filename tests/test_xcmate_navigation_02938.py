@@ -11,19 +11,18 @@ class Navigation38(unittest.TestCase):
 
     def test_five_left_levels_twenty_cycles_never_stop_or_retune(self):
         for _ in range(20):
-            for wanted in ('channels','groups','nav_icons','nav_expanded','hidden'):
+            for wanted in ('channels','groups','nav_expanded','hidden'):
                 self.o.handle_command('left');self.assertEqual(self.o.mode,wanted)
             self.assertEqual(self.o.sid,self.sid)
         self.m.player.stop.assert_not_called()
 
     def test_reverse_rail_levels_restore_groups_then_same_mini_focus(self):
         for _ in range(3):self.o.handle_command('left')
-        self.o.handle_command('left');self.o.handle_command('back');self.assertEqual(self.o.mode,'nav_icons')
-        self.o.handle_command('right');self.assertEqual(self.o.mode,'groups')
+        self.o.handle_command('back');self.assertEqual(self.o.mode,'groups')
         self.o.handle_command('right');self.assertEqual(self.o.mode,'channels');self.assertEqual(self.o.sid,self.sid)
 
     def test_compact_expanded_full_height_buttons_and_local_icons(self):
-        for _ in range(3):self.o.handle_command('left')
+        for _ in range(2):self.o.handle_command('left')
         rail=self.o._nav_rail;self.assertEqual(rail.panel.options['height'],self.o._height-48)
         before=rail.panel.options['height'];self.o.handle_command('left');self.assertEqual(rail.panel.options['height'],before)
         actions=[e[3] for e in rail.items]

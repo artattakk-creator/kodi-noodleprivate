@@ -1,0 +1,12 @@
+{
+  "A": {
+    "file": "A.png",
+    "sha256": "1c88ba97fe27e03f2338eb30ab373e76da300c03747006519ecc5546f104eceb",
+    "status": "DESIGN_NOT_APPROVED; NOT_A_DEVICE_SCREENSHOT; SAMPLE_DATA"
+  },
+  "B": {
+    "file": "B.png",
+    "sha256": "2c83275af1b2017b080a7c9b06c8584a7ebd19aa150da9cebf0a24e87f6b83f4",
+    "status": "DESIGN_NOT_APPROVED; NOT_A_DEVICE_SCREENSHOT; SAMPLE_DATA"
+  }
+}

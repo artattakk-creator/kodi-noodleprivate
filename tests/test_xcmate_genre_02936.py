@@ -177,12 +177,13 @@ class Genre36(Fixture,unittest.TestCase):
 
     def test_ready_transition_during_page_does_not_cache_incomplete_genre_result(self):
         search=importlib.import_module('search_data')
+        first=search.search(self.portal,'Western',kind='vod',incremental=True)
         with mock.patch.object(self.genre,'status',side_effect=lambda reader,kind,query:'PENDING' if not hasattr(self,'_genre_raced') else 'READY'):
             original=self.index.Reader.page
             def page(reader,*a,**kw):
                 result=original(reader,*a,**kw);self._genre_raced=True;return result
             with mock.patch.object(self.index.Reader,'page',page):
-                result=search.search(self.portal,'Western',kind='vod',incremental=True)
+                result=search.search(self.portal,'Western',kind='vod',incremental=True,continuation=first['_cursor'])
         self.assertEqual(result['vod']['code'],'GENRE_PENDING')
         self.assertNotIn(('vod',0),result['_cursor'].media_cache)
 

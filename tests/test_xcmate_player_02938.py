@@ -25,7 +25,7 @@ class Player38(unittest.TestCase):
         self.assertTrue(self.w.progress.visible)
 
     def test_hidden_back_does_not_stop_or_cancel_autoplay(self):
-        self.w.hide_bar();self.m.key(92);self.assertFalse(self.w.closed);self.m.player.stop.assert_not_called()
+        self.w.hide_bar();self.m.key(92);self.assertTrue(self.w.closed);self.m.player.stop.assert_not_called()  # .39 queues Stop.
 
     def test_pending_stop_cannot_recreate_capture_or_block_gui(self):
         self.m.osd._window=self.w

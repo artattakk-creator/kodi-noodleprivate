@@ -1,0 +1,43 @@
+{
+  "version": "0.1.29.39",
+  "tests": 1403,
+  "seconds": 226.498,
+  "failures": 0,
+  "errors": 0,
+  "files": 385,
+  "bytes": 2643329,
+  "sha256": "5448d21b2c93761fd7ec2d6293879ea988cc15ed48e5e177c5e2ceed4f91d7f8",
+  "crc": "PASS",
+  "paths": "PASS",
+  "source_bytes": "PASS",
+  "reproducible_zip": "PASS",
+  "python_ast": "PASS",
+  "android": "NOT_TESTED",
+  "production_publish": false,
+  "base": "d8a20a2b7887878c3d5192e355b5c642a2bdebd5",
+  "source_commit": "2fc71dbc78c11399a16a1f07566c01983a871829",
+  "test_commit": "81cd2d4c9e4d767c7ece9294e0c2b0bbb8240c46",
+  "historical_tests_retained": 1357,
+  "new_tests": 46,
+  "skipped": 0,
+  "po_contexts_per_language": 939,
+  "python": "3.12.14",
+  "level": "HOST: modeled Kodi21 native APIs; real temporary SQLite/HTTP/SMB fixtures; no Android execution",
+  "box_a": "BLOCKED_BY_USER_PROTECTION; no update or intervention",
+  "box_b": "NOT_TESTED; Dynamic retained; no storage/copy/migration/delete/mass-download tests",
+  "release_approved": false,
+  "ci": "See Draft PR for actual run and artifact verification; production publish not authorized",
+  "source_warning": "Unchanged SMBProtocol vendor docstring invalid escape SyntaxWarning; compilation successful",
+  "test_log_normalization": "Trailing whitespace removed; results unchanged",
+  "open_acceptance": [
+    "BINGIE cached Home widget rollover/real rendering and optional skin binding",
+    "Actual native Return, OSD trigger and IR focus on Android",
+    "Android 19-49 second phase attribution and Rockchip MediaCodec root cause",
+    "Actual Kodi21 stream field availability and visual design approval"
+  ],
+  "inherited_blockers": [
+    "Physical metadata payload offload #171",
+    "Durable uncommitted Wizard scan resume after process death #43/#164",
+    "Source-safe manual mapping #98 and architecture #161 remain separate"
+  ]
+}

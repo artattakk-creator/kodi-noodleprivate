@@ -83,7 +83,10 @@ class IntegrationTests(Fixture,unittest.TestCase):
     def test_uncancelled_pending_start_is_not_stopped_and_superseded_request_is_rejected(self):
         window=self.media_window();self.requested(window)
         first=dict(self.router._params)
-        self.requested(window)
+        # .39 deduplicates identical pending UI clicks. A distinct explicit
+        # intent can still supersede the resolver, including from another route.
+        from media_intent import begin
+        begin('p','vod','1')
         self.router._params=first;self.progress.play(self.router,self.portal)
         self.assertFalse(sys.modules['xbmcplugin'].setResolvedUrl.call_args.args[1])
         from media_intent import _read,REQUEST

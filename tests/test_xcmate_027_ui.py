@@ -99,6 +99,7 @@ class NavigationTests(Fixture,unittest.TestCase):
         self.router._params['action']='widget_live_start_group'
         self.cache={'xml':[dict(name='Actual Now',start_timestamp=self.now-100,stop_timestamp=self.now+100),
                            dict(name='Actual Next',start_timestamp=self.now+100,stop_timestamp=self.now+400)]}
+        importlib.import_module('guide_store').import_cache('p',self.cache)
         self.routes.dispatch(self.router)
         self.assertEqual(len(self.added),3)
         self.assertIn('sid=1',self.added[0][0])
@@ -116,6 +117,7 @@ class NavigationTests(Fixture,unittest.TestCase):
         self.cache={'1':[dict(name='Wrong',start_timestamp=self.now-100,stop_timestamp=self.now+100)],
                     'right':[dict(name='Mapped',start_timestamp=self.now-100,stop_timestamp=self.now+100)]}
         sys.modules['epg_sources'].configuration=lambda pid:{'mappings':{'1':'right'},'sources':[]}
+        importlib.import_module('guide_store').import_cache('p',self.cache)
         self.router._params['action']='widget_live_start_group';self.routes.dispatch(self.router)
         self.assertEqual(self.added[0][1].props['XtreamMate.Now'],'Mapped')
 

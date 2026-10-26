@@ -3,7 +3,7 @@ import xbmc, xbmcaddon, xbmcgui
 
 ADDON    = xbmcaddon.Addon()
 LIB_PATH = os.path.join(os.path.dirname(__file__), 'resources', 'lib')
-SERVICE_BUILD = 38
+SERVICE_BUILD = 39
 if LIB_PATH not in sys.path:
     sys.path.insert(0, LIB_PATH)
 
@@ -153,7 +153,7 @@ class IPTVMasterService(xbmc.Monitor):
             if time.monotonic()>=next_input_flush:
                 next_input_flush=time.monotonic()+1
                 from live_diagnostics import flush_input
-                flush_input()
+                flush_input(background=True)
             if time.monotonic()>=self._next_diagnostic:
                 self._next_diagnostic=time.monotonic()+30
                 diagnostic('service','RUNNING',running=True,count=loops,build=SERVICE_BUILD)
@@ -187,7 +187,8 @@ class IPTVMasterService(xbmc.Monitor):
             # jobs. They are independent of opt-in bulk catalogue prefetch.
             try:
                 from app_services import poll as poll_app_features
-                poll_app_features()
+                from ui_latency39 import service_poll
+                service_poll(poll_app_features)
             except Exception as exc:
                 error('XCMate optional app service: '+type(exc).__name__)
             try:
@@ -202,8 +203,8 @@ class IPTVMasterService(xbmc.Monitor):
                 diagnostic('epg','REFRESH_REQUEST_FAILED')
             # Safe mode: heavy Xtream catalog and XMLTV downloads stay off
             # unless explicitly enabled. The player/remote service still runs.
+            self._maybe_refresh_epg()  # Own saved EPG-auto-refresh preference.
             if setting_bool('xc_background_prefetch', False):
-                self._maybe_refresh_epg()
                 self._maybe_warm_catalogs()
             if exiting:
                 self.waitForAbort(.2)
@@ -349,8 +350,7 @@ class IPTVMasterService(xbmc.Monitor):
                                      'TV-Dialog-Fehler: ' + type(exc).__name__)
                                 marker.setProperty('XtreamMate.AutoPopupStatus',
                                                    'Fehler: ' + type(exc).__name__)
-                                error('XCMate WindowDialog startup failed: {} {}'.format(
-                                    type(exc).__name__, str(exc)[:240]))
+                                error('XCMate WindowDialog startup failed: '+type(exc).__name__)
                                 if not self._overlay_failure_reported:
                                     xbmcgui.Dialog().notification('XCMate',
                                          'TV-Navigation konnte nicht geöffnet werden')

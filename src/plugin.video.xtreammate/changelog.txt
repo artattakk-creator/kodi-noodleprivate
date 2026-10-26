@@ -1,3 +1,14 @@
+0.1.29.39 (cumulative Android test candidate; not released)
+- Shared read-only published guide_v1 snapshot for large grid, live/mini snapshots and bounded 12-channel widgets; manual mappings win. Viewport selection never queues provider HTTP. Existing three BINGIE routes and cache-only compatibility retained; EPG background refresh respects its own saved preference.
+- Kodi21 stream fields are owner-bound, sampled at most every two seconds while visible, never guessed from channel names. No v22-only live bitrate fields, no fake SDR/progressive values. Large transport buttons and secondary settings; two design diagrams, no visual acceptance claimed.
+- Recover only Kodi standard VideoOSD 12901 over a verified own session, never foreign dialogs/players. Tag acquisition tolerates native Stop races; no decoder/driver replacement.
+- Hidden VOD Back and explicit Stop queue one owned async exit and return to the same native media/search/episode origin. Visible OSD Back only hides it. Origin/focus/scroll/query remain in owner RAM; foreign playback cancels return.
+- Live Left: full screen -> mini -> groups WITH compact rail -> full navigation. Hide clears labels/images/focusability; compact Mini shows distinct permanent NOW and independent native focus.
+- Dynamic displayed-row art references retained across tab/category/player rebuilds in bounded RAM, with exact source identity and unchanged URL/DNS/TTL admission. No new archive, mass download or cache reset.
+- Live names publish before EPG/media enrichment; short-cache telemetry no longer restarts active scans. One <=4-MiB prepared live publication shared across queries with revision/event-boundary expiry.
+- Catalogue preparation and frequent diagnostic file IO move off GUI; bounded phase marks separate owner, RAM, controls, native show and GUI application. First decoded frame and actual Android 19-49s root cause remain unverified.
+- All new Android gates NOT_TESTED. Box A untouched, Box B Dynamic, no device storage/migration/delete tests. No widget/skin overwrite, no main merge or production release. Static BINGIE items need supported skin refresh for continuous Home rollover; no unapproved adapter installation.
+
 0.1.29.38 (cumulative Android test candidate; not released)
 - Startup: saved portal preference governs explicit foreground root/Home/app_open entry. Session intent deduplicates refreshes and resolver calls; background widgets/foreign playback do not start TV. Historical diagnostic default is replaced by an explicit 15-minute pause action; no portal setting is reset.
 - Dynamic artwork: proactive DNS-bounded revalidation, no expired URI admission to new rows, retain already displayed textures only while their exact source is pending. Definitive failures show placeholders. Repaint only changed artwork; no new archive jobs or texture-cache reset.

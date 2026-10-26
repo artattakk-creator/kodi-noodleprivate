@@ -1,0 +1,174 @@
+{
+  "date": "2026-10-26",
+  "issues": [
+    {
+      "number": 182,
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/182",
+      "status": "PARTIAL_DEVICE_BINDING",
+      "evidence": "Shared published guide reader, bounded widgets and no viewport HTTP implemented/host tested. Actual BINGIE rendering/continuous Home rollover requires existing refresh or opt-in skin binding; NOT_TESTED.",
+      "android_039": "NOT_TESTED",
+      "issue_closed": false
+    },
+    {
+      "number": 183,
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/183",
+      "status": "IMPLEMENTED_HOST",
+      "evidence": "Owner-bound Kodi21 stream fields and two-second visible sampling. Missing fields remain unknown; real decoder availability NOT_TESTED.",
+      "android_039": "NOT_TESTED",
+      "issue_closed": false
+    },
+    {
+      "number": 185,
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/185",
+      "status": "IMPLEMENTED_HOST",
+      "evidence": "Visible Back hides; hidden Back/Stop queue own exit and native origin return. Search/detail/grid/episode state and manual Next tested; Android Return NOT_TESTED.",
+      "android_039": "NOT_TESTED",
+      "issue_closed": false
+    },
+    {
+      "number": 186,
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/186",
+      "status": "PARTIAL",
+      "evidence": "Large transport controls and two visual proposals. Exact standard VideoOSD recovery replay tested; actual sporadic trigger/design/IR NOT_TESTED.",
+      "android_039": "NOT_TESTED",
+      "issue_closed": false
+    },
+    {
+      "number": 187,
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/187",
+      "status": "IMPLEMENTED_HOST",
+      "evidence": "Compact right programme rows, permanent NOW mark independent from focus; 720/1080 geometry modelled. Real appearance NOT_TESTED.",
+      "android_039": "NOT_TESTED",
+      "issue_closed": false
+    },
+    {
+      "number": 188,
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/188",
+      "status": "IMPLEMENTED_HOST",
+      "evidence": "Groups with compact rail, next Left expanded navigation. Explicit label/image/focus reset and 20 cycles; actual native repaint NOT_TESTED.",
+      "android_039": "NOT_TESTED",
+      "issue_closed": false
+    },
+    {
+      "number": 189,
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/189",
+      "status": "IMPLEMENTED_HOST",
+      "evidence": "Bounded already-seen row artwork survives rebuilds at 30/60/120s with strict source/TTL/DNS rules. Real Kodi transport and rendering NOT_TESTED.",
+      "android_039": "NOT_TESTED",
+      "issue_closed": false
+    },
+    {
+      "number": 190,
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/190",
+      "status": "IMPLEMENTED_HOST",
+      "evidence": "Names first, stable in-flight cursor, prepared snapshot reuse, real event-boundary expiry. Host comparison supplied; Android first-visible latency NOT_TESTED.",
+      "android_039": "NOT_TESTED",
+      "issue_closed": false
+    },
+    {
+      "number": 191,
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/191",
+      "status": "PARTIAL",
+      "evidence": "Catalogue/diagnostic disk IO removed from GUI path, single-flight and numeric phase telemetry. Actual 19-49s dominant cause/physical frame latency unconfirmed.",
+      "android_039": "NOT_TESTED",
+      "issue_closed": false
+    },
+    {
+      "number": 192,
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/192",
+      "status": "PARTIAL",
+      "evidence": "Stop/tag races guarded, identical pending VOD starts deduplicated, start abort releases guard; no proven MediaCodec driver fix.",
+      "android_039": "NOT_TESTED",
+      "issue_closed": false
+    },
+    {
+      "number": 193,
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/193",
+      "status": "HOST_READY_ANDROID_OPEN",
+      "evidence": "Cumulative candidate, complete retained host suite, ZIP/SHA, CI and explicit device gates. No merge/release/issue closure.",
+      "android_039": "NOT_TESTED",
+      "issue_closed": false
+    },
+    {
+      "number": 173,
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/173",
+      "status": "RETAINED_HOST",
+      "evidence": "Legacy/fresh artwork mode gate byte-identical; Box A untouched, Box B remains Dynamic.",
+      "android_039": "NOT_TESTED",
+      "issue_closed": false
+    },
+    {
+      "number": 43,
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/43",
+      "status": "RETAINED_WITH_BLOCKER",
+      "evidence": "Existing Wizard tests retained; durable unsaved scan resume after process death still BLOCKED.",
+      "android_039": "NOT_TESTED",
+      "issue_closed": false
+    },
+    {
+      "number": 164,
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/164",
+      "status": "RETAINED_WITH_BLOCKER",
+      "evidence": "Existing EPG progress retained; durable uncommitted scan resume remains BLOCKED.",
+      "android_039": "NOT_TESTED",
+      "issue_closed": false
+    },
+    {
+      "number": 165,
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/165",
+      "status": "RETAINED_HOST",
+      "evidence": "Existing Wizard save protections and tests retained; no new device claim.",
+      "android_039": "NOT_TESTED",
+      "issue_closed": false
+    },
+    {
+      "number": 166,
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/166",
+      "status": "RETAINED_HOST",
+      "evidence": "Existing late group indexing tests retained; real device revalidation not performed.",
+      "android_039": "NOT_TESTED",
+      "issue_closed": false
+    },
+    {
+      "number": 171,
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/171",
+      "status": "BLOCKED_INHERITED",
+      "evidence": "Physical external metadata payload offload not implemented; existing export is not offload.",
+      "android_039": "NOT_TESTED",
+      "issue_closed": false
+    },
+    {
+      "number": 98,
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/98",
+      "status": "SEPARATE_OPEN",
+      "evidence": "No new source-ID-safe guide assignment; existing manual mappings preserved and prioritized.",
+      "android_039": "NOT_TESTED",
+      "issue_closed": false
+    },
+    {
+      "number": 161,
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/161",
+      "status": "DEFERRED_ARCHITECTURE",
+      "evidence": "No central multi-feed interval merger/hub in .39.",
+      "android_039": "NOT_TESTED",
+      "issue_closed": false
+    },
+    {
+      "number": 135,
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/135",
+      "status": "DEFERRED",
+      "evidence": "No download repair or device download/storage test in .39.",
+      "android_039": "NOT_TESTED",
+      "issue_closed": false
+    },
+    {
+      "number": 126,
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/126",
+      "status": "DEFERRED",
+      "evidence": "No recording repair or device storage test in .39.",
+      "android_039": "NOT_TESTED",
+      "issue_closed": false
+    }
+  ],
+  "device_mutation": false
+}

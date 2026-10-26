@@ -126,7 +126,7 @@ class LiveGuide35(Fixture,unittest.TestCase):
         import ast
         source=(ADDON/'service.py').read_text()
         ast.parse(source)
-        self.assertLess(source.index('poll_app_features()'),source.index('if guide_active:'))
+        self.assertLess(source.index('service_poll(poll_app_features)'),source.index('if guide_active:'))
         self.assertLess(source.index('poll_preplay(self._overlay)'),source.index('if guide_active:'))
         self.assertLess(source.index('if guide_active:'),source.index('recover_from_player_path'))
         self.assertIn('if not exiting and not preserves_player():poll_playback_exit()',source)

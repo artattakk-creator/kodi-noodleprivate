@@ -1,0 +1,58 @@
+{
+  "baseline": "d8a20a2b7887878c3d5192e355b5c642a2bdebd5",
+  "fixture": {
+    "channels": 2905,
+    "epg_aliases": 456,
+    "synthetic": true
+  },
+  "measurements": [
+    {
+      "version": ".38",
+      "timings": [
+        {
+          "phase": "cold",
+          "first_names_ms": 5.081,
+          "total_ms": 38.168,
+          "names": 5,
+          "programmes": 1,
+          "results": 6
+        },
+        {
+          "phase": "warm",
+          "first_names_ms": 4.019,
+          "total_ms": 34.136,
+          "names": 5,
+          "programmes": 1,
+          "results": 6
+        }
+      ],
+      "now_snapshots_for_two_queries": 2,
+      "cursor_generations_during_twenty_inflight_short_revisions": 21
+    },
+    {
+      "version": ".39",
+      "timings": [
+        {
+          "phase": "cold",
+          "first_names_ms": 4.015,
+          "total_ms": 37.419,
+          "names": 5,
+          "programmes": 1,
+          "results": 6
+        },
+        {
+          "phase": "warm",
+          "first_names_ms": 4.42,
+          "total_ms": 15.336,
+          "names": 5,
+          "programmes": 1,
+          "results": 6
+        }
+      ],
+      "now_snapshots_for_two_queries": 1,
+      "cursor_generations_during_twenty_inflight_short_revisions": 1
+    }
+  ],
+  "level": "HOST_DATA_PUBLICATION; no GUI/frame/device timing",
+  "android": "NOT_TESTED"
+}

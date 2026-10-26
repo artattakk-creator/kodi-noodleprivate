@@ -62,7 +62,10 @@ class SearchMixin:
         # Update existing ListItems; never reset selection/focus for an image.
         control=self.getControl(710)
         for pos,row in enumerate(getattr(self,'_search_rows',[])):
-            if pos<control.size():control.getListItem(pos).setArt(local_art(dict(row,kind=self._search_kind),self._theme))
+            if pos<control.size():
+                art=self._display_art39(dict(row,kind=self._search_kind));key=(710,pos)
+                if art!=getattr(self,'_shown_art',{}).get(key):
+                    control.getListItem(pos).setArt(art);self._shown_art[key]=art
 
     def _open_search(self,query=None):
         if self._closed or self._leaving or getattr(self,'_search_prompt',False):return
@@ -152,7 +155,7 @@ class SearchMixin:
             self._search_tab_labels=tuple(labels)
         section=value[self._search_kind];self._search_rows=section['rows']
         rows=[dict(row,kind=self._search_kind) for row in self._search_rows]
-        signature=tuple((str(row.get('sid','')),row.get('name',''),row.get('_now_title','')) for row in rows)
+        signature=(self._search_kind,tuple((str(row.get('sid','')),row.get('name',''),row.get('_now_title','')) for row in rows))
         changed=resume or signature!=getattr(self,'_search_rendered',None)
         if changed:
             with self._search_profile.span('ROW_RENDER',rows=len(rows)):
@@ -186,10 +189,12 @@ class SearchMixin:
         if cid==710 and self.getFocusId()!=710:
             mark('SEARCH_CLICK_IGNORED',self._search_correlation);return True
         if cid in (700,701,702):
+            if not hasattr(self,'_search_positions39'):self._search_positions39={}
+            self._search_positions39[self._search_kind]=(self._search_offset,self.getControl(710).getSelectedPosition())
             changed=self._search_kind!=KINDS[cid-700]
             self._search_kind=KINDS[cid-700]
             if cid==700:self._search_profile.emit('TAB_LIVE_SELECTED')
-            if changed:self._search_offset=0;self._search_selected=0
+            if changed:self._search_offset,self._search_selected=self._search_positions39.get(self._search_kind,(0,0))
             self.setFocusId(cid)
             view=getattr(self,'_search_view',None)
             if self._search_data and (view is None or view[0]!=self._search_kind or view[1]==self._search_offset):

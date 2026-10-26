@@ -50,10 +50,14 @@ class Search36(Fixture,unittest.TestCase):
         self.assertEqual(states[0][1],'EPG_PARTIAL')
 
     def test_empty_inventory_stops_without_any_cache_read_or_network(self):
+        diag=importlib.import_module('live_diagnostics')
+        with diag._INPUT_LOCK:diag._GUI_PENDING.clear();diag._INPUT_PENDING.clear()
         before=set(self.folder.iterdir())
         with mock.patch('epg_views.cached_short_guide') as cached:
             cursor,states=self.finish('Absent programme')
         cached.assert_not_called();self.assertTrue(cursor.done);self.assertEqual(states[-1][0],[])
+        self.assertEqual(set(self.folder.iterdir())-before,set())  # GUI/search producer queues only.
+        diag.flush_input()
         self.assertEqual(set(self.folder.iterdir())-before,{self.folder/'xcmate_diagnostic_epg_search.json'})
 
     def test_private_and_custom_cache_roots_are_both_considered(self):

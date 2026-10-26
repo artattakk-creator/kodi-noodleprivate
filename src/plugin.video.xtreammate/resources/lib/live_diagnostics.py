@@ -55,6 +55,9 @@ TEXT_FIELDS = {
 _WRITTEN = {}
 _INPUT_PENDING = deque(maxlen=64)
 _INPUT_LOCK = threading.RLock()
+_GUI_PENDING={}
+_flush_thread=None
+_flush_guard=threading.Lock()
 PREFIX = 'XtreamMate.Diagnostic.'
 EXPLANATIONS={
     'URL_NOT_VERIFIED':'Player-Pfad passt nicht; keine passende aktuelle ListItem-Kennung.',
@@ -113,10 +116,9 @@ def record(stage, code, **fields):
     entry=_clean(dict(fields, stage=stage, code=code, at=time.time()))
     if entry is None: return
     if stage=='epg' and 'last_success' not in entry:
-        for prior in reversed(_disk(stage)):
-            if 'last_success' in prior:
-                entry['last_success']=prior['last_success']
-                break
+        with _INPUT_LOCK:pending=list(_GUI_PENDING.get(stage,()))
+        prior=next((e for e in reversed(pending) if 'last_success' in e),_WRITTEN.get(stage,{}))
+        if 'last_success' in prior:entry['last_success']=prior['last_success']
     try:
         import xbmcgui
         xbmcgui.Window(10000).setProperty(PREFIX+stage,json.dumps(entry))
@@ -127,10 +129,10 @@ def record(stage, code, **fields):
         # no profile reads, fsync or JSON-file rewrite for each remote press.
         with _INPUT_LOCK: _INPUT_PENDING.append(entry)
         return
-    previous=_WRITTEN.get(stage)
-    if previous and previous['code']==code and entry['at']-previous['at']<2:
-        return
-    _save(entry)
+    with _INPUT_LOCK:
+        pending=_GUI_PENDING.setdefault(stage,deque(maxlen=16))
+        if pending and pending[-1]['code']==code:pending[-1]=entry
+        else:pending.append(entry)
 
 
 def _save(entry, batch=None):
@@ -139,6 +141,9 @@ def _save(entry, batch=None):
     try:
         target=_path(stage)
         entries=_disk(stage)
+        if stage=='epg' and 'last_success' not in entry:
+            prior=next((e for e in reversed(entries) if 'last_success' in e),{})
+            if 'last_success' in prior:entry['last_success']=prior['last_success']
         entries.extend(batch if batch is not None else [entry])
         fd,temp=tempfile.mkstemp(prefix='.xcmate-diag-', dir=os.path.dirname(target))
         with os.fdopen(fd,'w',encoding='utf-8') as f:
@@ -154,18 +159,36 @@ def _save(entry, batch=None):
             except OSError: pass
 
 
-def checkpoint():
+def checkpoint(background=False,defer=False):
     """Flush the newest throttled input/focus state before the dialog closes."""
+    if defer:return  # Service timer owns flushing, no new worker on GUI close.
+    if background:return flush_input(background=True)
     flush_input()
     for entry in snapshots().values():
         if entry!=_WRITTEN.get(entry['stage']): _save(entry)
 
 
-def flush_input():
+def flush_input(background=False):
     """Called by the service timer and on close; retain a 64-event input trail."""
+    global _flush_thread
+    if background:
+        with _flush_guard:
+            if _flush_thread is None or not _flush_thread.is_alive():
+                _flush_thread=threading.Thread(target=flush_input,name='XCMate-diagnostics',daemon=True)
+                _flush_thread.start()
+        return
     with _INPUT_LOCK:
-        if _INPUT_PENDING and _save(_INPUT_PENDING[-1], list(_INPUT_PENDING)):
-            _INPUT_PENDING.clear()
+        batch=list(_INPUT_PENDING);_INPUT_PENDING.clear()
+        staged={stage:list(entries) for stage,entries in _GUI_PENDING.items()};_GUI_PENDING.clear()
+    # Never hold the callback inbox lock while flash/NAS-backed profiles stall.
+    if batch and not _save(batch[-1],batch):
+        with _INPUT_LOCK:
+            newer=list(_INPUT_PENDING);_INPUT_PENDING.clear();_INPUT_PENDING.extend((batch+newer)[-64:])
+    for stage,entries in staged.items():
+        if entries and not _save(entries[-1],entries):
+            with _INPUT_LOCK:
+                newer=list(_GUI_PENDING.get(stage,()))
+                _GUI_PENDING[stage]=deque((entries+newer)[-16:],maxlen=16)
 
 
 def snapshots():

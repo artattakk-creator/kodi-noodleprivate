@@ -16,6 +16,7 @@ from playback_exit import identity,_same
 from exit_jobs import request as stop_owned
 
 _window=None
+_standard_recovery=False
 
 
 def _dialog_id():
@@ -41,14 +42,15 @@ class MediaOSD(xbmcgui.WindowDialog):
         setter=getattr(self,'setProperty',None)
         if setter:setter('XCMate.VodOSDOwner',self._owner_nonce)
         self.native_id=9999;self.buttons={};self.icons={};self.decor=[];self._last=0;self._signature=();self.actions=[]
+        self._details=__import__('stream_details').Details()
         self._theme=__import__('theme_render').snapshot()
         self.media=os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media')
         self.width,self.height=max(960,self.getWidth()),max(640,self.getHeight())
         clear=os.path.join(self.media,'remote_clear.png')
         self.capture=xbmcgui.ControlButton(8,8,8,8,'',focusTexture=clear,noFocusTexture=clear)
         self.addControl(self.capture);self.capture.setNavigation(self.capture,self.capture,self.capture,self.capture)
-        y=self.height-264
-        self.panel=xbmcgui.ControlImage(32,y,self.width-64,232,__import__('theme_render').texture(self,os.path.join(self.media,'tv_panel.png'),'panel.player.controls'))
+        y=self.height-336
+        self.panel=xbmcgui.ControlImage(32,y,self.width-64,304,__import__('theme_render').texture(self,os.path.join(self.media,'tv_panel.png'),'panel.player.controls'))
         self.poster=xbmcgui.ControlImage(48,y+14,88,132,token[1].get('poster') or os.path.join(self.media,'vod.png'),aspectRatio=2)
         self.title=xbmcgui.ControlLabel(156,y+10,self.width-208,34,'','font16','0xFFF4F7F9')
         self.position=xbmcgui.ControlLabel(156,y+48,self.width-208,26,'','font13','0xFFDCE2EA')
@@ -88,17 +90,22 @@ class MediaOSD(xbmcgui.WindowDialog):
         old=self.focus_action();self._signature=signature;self.actions=entries
         for control in [*self.buttons.values(),*self.icons.values()]:self.removeControl(control)
         self.buttons={};self.icons={}
-        for group,y in (('transport',self.height-162),('settings',self.height-108)):
-            row=[entry for entry in entries if entry[2]==group];step=(self.width-208)//max(1,len(row))
+        for group,y in (('transport',self.height-206),('settings',self.height-98)):
+            row=[entry for entry in entries if entry[2]==group]
+            if group=='transport':
+                order=('rewind','back30','back','pause','stop','forward','forward10','fastforward')
+                row.sort(key=lambda e:order.index(e[0]) if e[0] in order else 99)
+            step=(self.width-96)//max(1,len(row))
             for i,(name,label,_) in enumerate(row):
-                control=xbmcgui.ControlButton(156+i*step,y,step-8,46,tr(label),
+                control=xbmcgui.ControlButton(48+i*step,y,step-8,88 if group=='transport' else 42,tr(label),
                     focusTexture=__import__('theme_render').texture(self,os.path.join(self.media,'xcmate_focus_neon.png'),'focus.default'),
-                    noFocusTexture=__import__('theme_render').texture(self,os.path.join(self.media,'tv_normal.png'),'panel.default'),textOffsetX=36,font='font13',textColor='0xFFF4F7F9',focusedColor='0xFFFFFFFF')
+                    noFocusTexture=__import__('theme_render').texture(self,os.path.join(self.media,'tv_normal.png'),'panel.default'),textOffsetX=0 if group=='transport' else 30,textOffsetY=25 if group=='transport' else 2,alignment=6 if group=='transport' else 4,font='font12',textColor='0xFFF4F7F9',focusedColor='0xFFFFFFFF')
                 self.buttons[name]=control;self.addControl(control)
                 icon={'autoplay':'more','subtitle_toggle':'subtitle','subtitles':'subtitle','audio_settings':'audio','info':'more','video':'video'}.get(name,'pause' if name=='pause' else name)
-                self.icons[name]=xbmcgui.ControlImage(164+i*step,y+12,22,22,__import__('player_controls').texture(name))
+                size=48 if group=='transport' else 22
+                self.icons[name]=xbmcgui.ControlImage(48+i*step+(step-size)//2 if group=='transport' else 52+i*step,y+7 if group=='transport' else y+10,size,size,__import__('player_controls').texture(name))
                 self.addControl(self.icons[name])
-        rows=[[e[0] for e in entries if e[2]==group] for group in ('transport','settings')]
+        rows=[[name for name in self.buttons if next(e[2] for e in entries if e[0]==name)==group] for group in ('transport','settings')]
         for r,names in enumerate(rows):
             for i,name in enumerate(names):
                 other=rows[1-r];target=other[min(i,len(other)-1)] if other else name
@@ -156,6 +163,8 @@ class MediaOSD(xbmcgui.WindowDialog):
         if name=='stop' and (self.owned() or self.token[1].get('autoplay_chain')):
             from media_autoplay import request_cancel
             request_cancel(self.token[1].get('autoplay_chain',''),self.token[1]['pid'])
+            from media_return import request as return_to_origin
+            return_to_origin(self.token)
             result=stop_owned(self.player,expected=self.token,manual=True) if self.owned() else True
             self.dispose();return result
         if not self.owned():self.dispose();return False
@@ -183,7 +192,7 @@ class MediaOSD(xbmcgui.WindowDialog):
             elif name in ('video','audio_settings'):
                 self.hide_bar();self.suspended=True;self._suspend_until=time.monotonic()+.5;self.close()
                 xbmc.executebuiltin('ActivateWindow('+('osdvideosettings' if name=='video' else 'osdaudiosettings')+')')
-            elif name=='info':xbmcgui.Dialog().textviewer(tr(33010),(self.token[1].get('title') or tr(33012))+'\n'+__import__('player_controls').status())
+            elif name=='info':xbmcgui.Dialog().textviewer(tr(33010),(self.token[1].get('title') or tr(33012))+'\n'+__import__('stream_details').text(self._details.read(self.player,self.token)))
             else:
                 if self.owned():return extension(name,self.token[1])
             self.update();return True
@@ -198,12 +207,12 @@ class MediaOSD(xbmcgui.WindowDialog):
             if self.transition() or self.token[1].get('autoplay_chain'):
                 if key in (9,10,92):
                     if self.visible:self.hide_bar()
-                    else:self.hide_bar()
+                    else:self.invoke('stop')
                 return
             self.dispose();return
         if key in (9,10,92):
             if self.visible:self.hide_bar()
-            else:self.hide_bar()
+            else:self.invoke('stop')
         # Native buttons call onControl BEFORE onAction(7), exactly once.
         elif key==7:return
         elif key in (12,79,229):self.invoke('pause')
@@ -221,15 +230,18 @@ class MediaOSD(xbmcgui.WindowDialog):
 
 
 def poll(player=None):
-    global _window
+    global _window,_standard_recovery
     player=player or xbmc.Player()
     token=identity(player)
     if not token or token[0]!='media' or not _fullscreen():
+        _standard_recovery=False
         if _window and _window.transition():
             _window.update();return
         if _window:_window.dispose();_window=None
         return
     current=_dialog_id()
+    from osd_ownership import recover
+    if recover(player,token):_standard_recovery=True;return
     from exit_jobs import state as exit_state
     pending=exit_state()
     if pending and pending['phase'] in ('pending','running') and _same(tuple(pending['token']),token):
@@ -244,6 +256,9 @@ def poll(player=None):
     if _window is None:
         if current not in (0,9999):return # never steal a foreign dialog
         _window=MediaOSD(token,player);_window.show_capture()
+        if _standard_recovery:_window.show_bar();_standard_recovery=False
     elif _window.suspended:
         if current in (0,9999) and time.monotonic()>=_window._suspend_until:_window.suspended=False;_window.show_capture()
-    elif current in (0,9999,_window.native_id):_window.update()
+    elif current in (0,9999,_window.native_id):
+        if _standard_recovery:_window.show_capture();_window.show_bar();_standard_recovery=False
+        _window.update()

@@ -1,0 +1,99 @@
+{
+  "date": "2026-10-26",
+  "base": "d8a20a2b7887878c3d5192e355b5c642a2bdebd5",
+  "merged_pr": 184,
+  "master": 193,
+  "issues": [
+    {
+      "number": 182,
+      "title": "[PLAN][XCMate 0.1.29.39] BINGIE-Widgets: einheitliche lokale EPG-Daten, Jetzt/Danach und Hintergrundaktualisierung",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/182",
+      "state": "open",
+      "comments_read": 4,
+      "updated_at": "2026-10-26T12:16:19Z"
+    },
+    {
+      "number": 183,
+      "title": "[PLAN][XCMate 0.1.29.39] Infobar mit echten Stream-, Bild-, Ton- und Untertiteldaten",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/183",
+      "state": "open",
+      "comments_read": 2,
+      "updated_at": "2026-10-26T12:16:22Z"
+    },
+    {
+      "number": 185,
+      "title": "[P1][.39][Android .38] VOD-Zurück: eigenen Stream beenden und zur Ursprungsansicht zurückkehren",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/185",
+      "state": "open",
+      "comments_read": 1,
+      "updated_at": "2026-10-26T12:16:25Z"
+    },
+    {
+      "number": 186,
+      "title": "[P1][.39][Android .38] VOD/Live Player-Leiste: prominente Transportbuttons, kein zufälliges Kodi-OSD",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/186",
+      "state": "open",
+      "comments_read": 1,
+      "updated_at": "2026-10-26T12:16:30Z"
+    },
+    {
+      "number": 187,
+      "title": "[P2][.39][Android .38] Mini-EPG schmaler: laufende Sendung und rechter Fokus getrennt markieren",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/187",
+      "state": "open",
+      "comments_read": 1,
+      "updated_at": "2026-10-26T12:16:36Z"
+    },
+    {
+      "number": 188,
+      "title": "[P1][.39][Android .38] Sendergruppen samt Icon-Leiste; Rail-Beschriftungen dürfen nicht stehen bleiben",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/188",
+      "state": "open",
+      "comments_read": 1,
+      "updated_at": "2026-10-26T12:16:39Z"
+    },
+    {
+      "number": 189,
+      "title": "[P1][.39][Android .38] Poster bei Suche-/Kategorie-Wechsel und Player-Rückkehr dauerhaft sichtbar halten",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/189",
+      "state": "open",
+      "comments_read": 1,
+      "updated_at": "2026-10-26T12:16:45Z"
+    },
+    {
+      "number": 190,
+      "title": "[P1][.39][Android .38] Sender-Treffer in globaler Suche früher anzeigen und Tabwechsel responsiv halten",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/190",
+      "state": "open",
+      "comments_read": 1,
+      "updated_at": "2026-10-26T12:16:48Z"
+    },
+    {
+      "number": 191,
+      "title": "[P1][Android .38 → .39] Live-Overlay und Mini-EPG zeitweise 19–49 Sekunden verzögert",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/191",
+      "state": "open",
+      "comments_read": 1,
+      "updated_at": "2026-10-26T12:16:50Z"
+    },
+    {
+      "number": 192,
+      "title": "[P2][Android .38 → .39] Rockchip MediaCodec-Timeouts und Player-Stop-Races reproduzieren",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/192",
+      "state": "open",
+      "comments_read": 1,
+      "updated_at": "2026-10-26T12:16:53Z"
+    },
+    {
+      "number": 193,
+      "title": "[MASTER][XCMate 0.1.29.39] Codex: lokale EPG-Widgets, Stream-Infobar und alle Android-.38-Fehler",
+      "url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/193",
+      "state": "open",
+      "comments_read": 0,
+      "updated_at": "2026-10-26T12:14:52Z"
+    }
+  ],
+  "private_raw_logs_read": false,
+  "device_mutation": false,
+  "scope_frozen": true
+}
