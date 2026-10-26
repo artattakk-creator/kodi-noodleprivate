@@ -129,3 +129,17 @@ class FailedStartup40(base.Fixture,unittest.TestCase):
         importlib.import_module('media_intent').failed(w._play_intent,'p');w._poll_playback_return()
         self.assertTrue(w.shown);self.assertFalse(w._playback_waiting);self.assertEqual(w._search_query,'House')
         self.player.stop.assert_not_called()
+
+    def test_pending_native_stop_blocks_new_vod_and_live_handshake(self):
+        w=self.media_window();jobs=importlib.import_module('exit_jobs')
+        with mock.patch.object(jobs,'blocked',return_value=True):
+            w._play(w.rows[0],'vod')
+            self.assertFalse(importlib.import_module('play_intent').before_play(dict(nonce='new')))
+        self.assertFalse(self.builtins);self.assertFalse(w._playback_waiting);self.player.stop.assert_not_called()
+
+    def test_old_service_running_stop_without_completion_fields_stays_quarantined(self):
+        jobs=importlib.import_module('exit_jobs')
+        token=('media',dict(pid='p',sid='1',nonce='old-job',at=time.time(),kind='vod'))
+        jobs.save(dict(token=token,phase='running',at=time.time(),deadline=0,not_before=0))
+        jobs.poll();self.assertEqual(jobs.state()['phase'],'timeout');self.assertTrue(jobs.blocked())
+        self.player.stop.assert_not_called()

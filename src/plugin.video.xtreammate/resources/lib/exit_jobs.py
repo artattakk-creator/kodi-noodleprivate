@@ -103,6 +103,8 @@ def poll():
     with _lock:
         value=state()
         if not value:return False
+        if value['phase']=='running' and 'stop_started' not in value:
+            value['stop_started']=True  # In-flight legacy job: timeout never proves completion.
         if value['phase'] in ('pending','running') and time.monotonic()>value['deadline']:
             value['phase']='timeout'
             if not value.get('stop_started'):value['worker_done']=True

@@ -802,6 +802,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 self._tune(c)
 
     def _tune(self, channel):
+        from exit_jobs import blocked
+        if blocked():return
         from player import build_playable_item
         sid = str(channel.extra.get('stream_id', ''))
         if not sid:

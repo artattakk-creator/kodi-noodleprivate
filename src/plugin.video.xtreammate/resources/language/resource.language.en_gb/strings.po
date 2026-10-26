@@ -3848,3 +3848,7 @@ msgstr "Subtitles"
 msgctxt "#35844"
 msgid "Resolution"
 msgstr "Resolution"
+
+msgctxt "#35845"
+msgid "Playback is still stopping. Please wait."
+msgstr "Playback is still stopping. Please wait."

@@ -100,6 +100,17 @@
         "defaultSkin",
         "defaultRes"
       ]
+    },
+    "ControlTextBox": {
+      "signature": "ControlTextBox(long x, long y, long width, long height, const char* font = NULL, const char* textColor = NULL);",
+      "parameters": [
+        "x",
+        "y",
+        "width",
+        "height",
+        "font",
+        "textColor"
+      ]
     }
   },
   "lifecycle": {

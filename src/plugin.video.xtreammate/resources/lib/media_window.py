@@ -621,6 +621,9 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         self.setFocusId(old_focus if old_focus in (300,400) else 300)
 
     def _play(self,item,kind,resume=False):
+        from exit_jobs import blocked
+        if blocked():
+            xbmcgui.Dialog().notification('XCMate',tr(35845));return
         if self._playback_waiting:return  # IR repeats cannot queue competing resolvers.
         self._cancel_chain()
         if kind=='episode':
