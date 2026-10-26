@@ -22,10 +22,10 @@ class MiniProgramme:
     def __init__(self,owner):
         import xbmcgui
         self.owner=owner;self.focused=False;self.sid='';self.selected=0;self.events=[];self.signature=None
-        w,h=owner._width,owner._height;x=int(w*.43);width=w-x-48
-        self.heading=xbmcgui.ControlLabel(x,42,width,38,'','font16','0xFFF4F6F9')
-        self.hint=xbmcgui.ControlLabel(x,86,width,30,tr(35610),'font12','0xFFBEC4CD')
-        self.list=xbmcgui.ControlList(x,126,width,h-210,font='font13',textColor='0xFFF4F6F9',selectedColor='0xFFFFFFFF',buttonTexture=owner._media+'/tv_normal.png',buttonFocusTexture=owner._media+'/tv_focus.png',_itemHeight=58,_space=8)
+        w,h=owner._width,owner._height;x=int(w*.36);width=int(w*.38)
+        self.heading=xbmcgui.ControlLabel(x,48,width,30,'','font13','0xFFF4F6F9')
+        self.hint=xbmcgui.ControlLabel(x,86,width,28,tr(35610),'font12','0xFFBEC4CD')
+        self.list=xbmcgui.ControlList(x,122,width,min(376,h-190),font='font12',textColor='0xFFF4F6F9',selectedColor='0xFFFFFFFF',buttonTexture=owner._media+'/tv_normal.png',buttonFocusTexture=owner._media+'/xcmate_focus_neon.png',_itemHeight=40,_space=4)
         owner.addControls([self.heading,self.hint,self.list]);self.list.controlLeft(self.list);self.list.controlRight(self.list)
         self.visible(False)
 
@@ -40,11 +40,14 @@ class MiniProgramme:
         info=owner._guide.get(sid);events,current=programme_rows(info.get('programme_events',info.get('events',[])))
         signature=(sid,tuple((e['start'],e['stop'],e['title']) for e in events),current)
         self.heading.setLabel(channel.name if channel else tr(35611))
+        self.hint.setLabel(tr(35830) if self.focused else tr(35610))
         if signature!=self.signature:
             changed=sid!=self.sid;self.sid=sid;self.events=events;self.signature=signature
             self.list.reset();labels=[];now=time.time()
             for e in events:
-                label=('[B]'+tr(35612)+'[/B]  ' if e['start']<=now<e['stop'] else '')+time_label(e,now)+'  '+e['title']
+                active=e['start']<=now<e['stop']
+                label=('● '+tr(35612)+'  ' if active else '')+time_label(e,now)+'  '+e['title'][:160]
+                if active:label='[COLOR FF55DD99][B]'+label+'[/B][/COLOR]'
                 labels.append(label)
             self.list.addItems(labels or [tr(35611)])
             self.selected=current if changed or not self.focused else min(self.selected,max(0,len(events)-1));self.list.selectItem(self.selected)
@@ -54,11 +57,13 @@ class MiniProgramme:
         self.render()
         if not self.events:return
         self.focused=True;self.selected=programme_rows(self.events)[1];self.list.selectItem(self.selected);self.owner.setFocus(self.list)
+        self.hint.setLabel(tr(35830))
 
     def command(self,command,native=False):
         if not self.focused:return False
         if command in ('left','back'):
             self.focused=False;self.owner.setFocus(self.owner.control)
+            self.hint.setLabel(tr(35610))
         elif command in ('up','down'):
             pos=self.list.getSelectedPosition()
             target=pos if native and pos!=self.selected else self.selected+(-1 if command=='up' else 1)

@@ -3824,3 +3824,7 @@ msgstr "Sample rate"
 msgctxt "#35823"
 msgid "Subtitle language"
 msgstr "Subtitle language"
+
+msgctxt "#35830"
+msgid "▶ Programme focus · Left: channels"
+msgstr "▶ Programme focus · Left: channels"

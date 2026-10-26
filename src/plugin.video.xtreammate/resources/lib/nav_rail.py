@@ -43,7 +43,11 @@ class RailView:
         if focus:self.owner.setFocus(self.buttons[self.position])
 
     def hide(self):
-        self.active=False
+        self.active=False;self.expanded=False
+        # Kodi can retain the expanded button label in a native render cache.
+        # Clear content and focusability as well as visibility on every exit.
+        for button in self.buttons:button.setLabel('');button.setEnabled(False)
+        for image in self.icons:image.setImage('')
         for c in [self.panel,*self.buttons,*self.icons]:c.setVisible(False)
 
     def command(self,command):

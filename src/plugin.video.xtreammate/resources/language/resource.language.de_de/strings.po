@@ -3824,3 +3824,7 @@ msgstr "Abtastrate"
 msgctxt "#35823"
 msgid "Untertitelsprache"
 msgstr "Untertitelsprache"
+
+msgctxt "#35830"
+msgid "▶ Programmfokus · Links: Sender"
+msgstr "▶ Programmfokus · Links: Sender"

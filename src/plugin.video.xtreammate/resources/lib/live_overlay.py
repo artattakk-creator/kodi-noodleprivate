@@ -517,7 +517,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
                     info = self._guide.get(sid)
                     self._snapshot_ms=getattr(self,'_snapshot_ms',0)+(time.perf_counter()-before)*1000
                     label = ('LIVE  ' if sid==self.sid else '')+channel.name
-                    subtitle = '{}-{}  {}'.format(info['now_time'],info['now_end_time'],info['now']) if info['now'] else 'Keine aktuellen EPG-Daten'
+                    subtitle = '{}-{}  {}'.format(info['now_time'],info['now_end_time'],info['now'][:40]) if info['now'] else 'Keine aktuellen EPG-Daten'
                     if i==selected and info['next']:
                         self.footer.setLabel('Danach {}: {}'.format(info['next_time'],info['next']))
             elif self.mode == 'guide' and i<len(self._programme_events):
@@ -564,15 +564,23 @@ class LiveNavigator(xbmcgui.WindowDialog):
         for button,image in self._button_icons:
             image.setVisible(osd)
         self._mini.visible(self.mode=='channels')
-        if self.mode not in ('nav_icons','nav_expanded'):self._nav_rail.hide()
+        if self.mode=='groups':self._nav_rail.show(False,focus=False)
+        elif self.mode not in ('nav_icons','nav_expanded'):self._nav_rail.hide()
         if self.mode in ('nav_icons','nav_expanded'):
             self._nav_rail.show(self.mode=='nav_expanded',focus=focus)
             return
         # Both mini columns share the existing panel; groups retain old geometry.
-        left=int(self._width*.40) if self.mode=='channels' else self._sidebar
-        self.bg.setWidth(self._width-48 if self.mode=='channels' else self._sidebar)
+        left=int(self._width*.32) if self.mode=='channels' else self._sidebar
+        self.bg.setWidth(int(self._width*.76) if self.mode=='channels' else self._sidebar)
+        shift=92 if self.mode=='groups' else 0
+        self.bg.setPosition(24+shift,24);self.heading.setPosition(48+shift,38)
+        self.sub.setPosition(48+shift,78);self.control.setPosition(44+shift,116)
+        self.footer.setPosition(48+shift,self._height-73)
         self.control.setWidth(left-40)
-        for background,logo,title,detail in self._row_controls:
+        for row,(background,logo,title,detail) in enumerate(self._row_controls):
+            y=116+row*((self._height-210)//8)
+            background.setPosition(44+shift,y);logo.setPosition(52+shift,y+7)
+            title.setPosition(106+shift,y+1);detail.setPosition(106+shift,y+28)
             background.setWidth(left-40);title.setWidth(left-128);detail.setWidth(left-128)
         target = self.capture
         if self.mode=='info': self._render_info()
@@ -879,6 +887,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
     def _handle_command(self, command):
         """XCMate-local TV commands; never open Kodi's own player OSD."""
         self._intro_deadline = None
+        if self.mode=='nav_expanded' and command in ('right','back'):
+            self._switch('groups');return
         if self.mode in ('nav_icons','nav_expanded'):
             if self._nav_rail.command(command):
                 if self._nav_rail.active:self.mode='nav_expanded' if self._nav_rail.expanded else 'nav_icons'
@@ -895,7 +905,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             elif self.mode == 'channels':
                 self._switch('groups')
             elif self.mode == 'groups':
-                self._switch('nav_icons')
+                self._switch('nav_expanded')
             else:
                 if self.mode in ('hidden','info'):self._focus_playing_channel()
                 self._switch('channels')
