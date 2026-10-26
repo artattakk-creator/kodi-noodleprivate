@@ -94,6 +94,13 @@
       "function": "std::unique_ptr<CDVDVideoCodec> CDVDFactoryCodec::CreateVideoCodec(",
       "line": 44,
       "snippet": "std::unique_ptr<CDVDVideoCodec> CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo& hint,\n                                                                   CProcessInfo& processInfo)\n{\n  std::unique_lock<CCriticalSection> lock(videoCodecSection);\n\n  std::unique_ptr<CDVDVideoCodec> pCodec;\n  CDVDCodecOptions options;\n\n  // addon handler for this stream ?\n\n  if (hint.externalInterfaces)\n  {\n    ADDON::AddonInfoPtr addonInfo;\n    KODI_HANDLE parentInstance;\n    hint.externalInterfaces->GetAddonInstance(ADDON::IAddonProvider::INSTANCE_VIDEOCODEC, addonInfo, parentInstance);\n    if (addonInfo && parentInstance)\n    {\n      pCodec = std::make_unique<CAddonVideoCodec>(processInfo, addonInfo, parentInstance);\n      if (pCodec->Open(hint, options))\n      {\n        return pCodec;\n      }\n    }\n    return nullptr;\n  }\n\n  // platform specifig video decoders\n  if (!(hint.codecOptions & CODEC_FORCE_SOFTWARE))\n  {\n    for (auto &codec : m_hwVideoCodecs)\n    {\n      pCodec = CreateVideoCodecHW(codec.first, processInfo);\n      if (pCodec && pCodec->Open(hint, options))\n      {\n        return pCodec;\n      }\n    }\n    if (!(hint.codecOptions & CODEC_ALLOW_FALLBACK))\n      return nullptr;\n  }\n\n  pCodec = std::make_unique<CDVDVideoCodecFFmpeg>(processInfo);\n  if (pCodec->Open(hint, options))\n  {\n    return pCodec;\n  }\n\n  return nullptr;\n}"
+    },
+    {
+      "path": "xbmc/cores/VideoPlayer/VideoPlayerVideo.cpp",
+      "url": "https://github.com/xbmc/xbmc/blob/a3a448d26b8d560a65655dab2cd122994dc4e146/xbmc/cores/VideoPlayer/VideoPlayerVideo.cpp",
+      "function": "void CVideoPlayerVideo::CloseStream",
+      "line": 239,
+      "snippet": "void CVideoPlayerVideo::CloseStream(bool bWaitForBuffers)\n{\n  // wait until buffers are empty\n  if (bWaitForBuffers && m_speed > 0)\n  {\n    SendMessage(std::make_shared<CDVDMsg>(CDVDMsg::VIDEO_DRAIN), 0);\n    m_messageQueue.WaitUntilEmpty();\n  }\n\n  m_messageQueue.Abort();\n\n  // wait for decode_video thread to end\n  CLog::Log(LOGINFO, \"waiting for video thread to exit\");\n\n  m_bAbortOutput = true;\n  StopThread();\n\n  m_messageQueue.End();\n\n  CLog::Log(LOGINFO, \"deleting video codec\");\n  m_pVideoCodec.reset();\n\n  if (m_picture.videoBuffer)\n  {\n    m_picture.videoBuffer->Release();\n    m_picture.videoBuffer = nullptr;\n  }\n}"
     }
   ]
 }
