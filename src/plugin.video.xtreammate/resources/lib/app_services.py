@@ -11,6 +11,8 @@ _stop=threading.Event()
 
 
 def refresh_local(cancel=lambda:False):
+    from widget_hooks45 import prepare as prepare_widget_bindings
+    prepare_widget_bindings()
     if cancel():return
     from portals import get_active
     from xtream import XtreamClient
