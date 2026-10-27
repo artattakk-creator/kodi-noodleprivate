@@ -659,6 +659,8 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         self._pending_future=None;self._pending_apply=None
         from media_intent import begin
         self._play_intent=begin(self.portal['id'],kind,item['sid'])
+        from media_portal44 import trace as trace_media
+        trace_media('INTENT',origin='search' if getattr(self,'_search_detail',False) else 'catalog')
         from media_return import capture as capture_origin
         capture_origin(self,self._play_intent)
         if getattr(self,'_native_surface','window')=='dialog':
@@ -668,7 +670,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         self._autoplay_root=self._play_intent if kind=='episode' else ''
         url=self.router.url(action='media_play',pid=self.portal['id'],kind=kind,sid=item['sid'],
             series_id=item.get('series_id'),season=item.get('season'),episode=item.get('episode'),intent=self._play_intent,resume='1' if resume else '0',
-            autoplay='1' if kind=='episode' else '0',autoplay_chain=self._autoplay_root)
+            autoplay='1' if kind=='episode' else '0',autoplay_chain=self._autoplay_root,origin44='search' if getattr(self,'_search_detail',False) else 'catalog')
         xbmc.executebuiltin('PlayMedia('+url+')')
 
     def onClick(self,controlId):

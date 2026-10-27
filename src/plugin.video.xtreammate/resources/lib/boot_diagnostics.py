@@ -12,7 +12,7 @@ PHASES = frozenset(('ARTWORK_PROFILE','HOME_PORTALS','HOME_FAST','HOME_SUBMITTED
 ROUTES = frozenset(('home_start','play_start','play_start_direct','root', 'portal_home', 'xcmate_home', 'portal_manager',
     'setup_wizard', 'import_legacy_settings', 'widget_live_start_group',
     'widget_recent_vod', 'widget_recent_series'))
-ROUTES=ROUTES|frozenset(('movies_home','series_home','media_detail','media_favourites',
+ROUTES=ROUTES|frozenset(('media_play','epg_sources','guide_backup44','movies_home','series_home','media_detail','media_favourites',
     'guide_browser','guide_grid','art_status','art_retry','art_db_health','recording_capabilities',
     'appearance_settings','global_search','settings_section','settings'))
 ERRORS = frozenset(('RuntimeError', 'OSError', 'PermissionError', 'ValueError',

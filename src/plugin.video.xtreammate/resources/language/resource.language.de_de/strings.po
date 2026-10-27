@@ -4048,3 +4048,7 @@ msgstr "Aktualisierung angefordert. Quellenstatus zeigt das geprüfte Ergebnis."
 msgctxt "#35966"
 msgid "EPG protected: first create a verified backup under Maintenance."
 msgstr "EPG geschützt: zuerst unter Wartung eine geprüfte Sicherung erstellen."
+
+msgctxt "#35968"
+msgid "Account temporarily unavailable. Please retry. Your search and data are preserved."
+msgstr "Konto vorübergehend nicht verfügbar. Bitte erneut versuchen. Suche und Daten bleiben erhalten."

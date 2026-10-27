@@ -2,7 +2,10 @@
 import copy,os,stat,threading,time
 
 
-class PortalReadError(RuntimeError):pass
+class PortalReadError(RuntimeError):
+    def __init__(self,message='Portale vorübergehend nicht verfügbar.',reason='UNKNOWN'):
+        self.reason=reason;super().__init__(message)
+
 
 
 class Snapshot:
@@ -28,7 +31,7 @@ class Snapshot:
         with self.lock,reading():
             key=self.version(path)
             if key!=self.key:self.value=None;self.retry=0;self.failures=0;self.key=key
-            if time.monotonic()<self.retry:raise PortalReadError('Portale: Speicherpause aktiv. Bitte kurz warten und erneut öffnen.')
+            if time.monotonic()<self.retry:raise PortalReadError('Portale: Speicherpause aktiv. Bitte kurz warten und erneut öffnen.',reason='MEMORY_PAUSE')
             try:
                 if self.value is None:
                     with phase('PORTALS_LOAD'):
@@ -38,23 +41,23 @@ class Snapshot:
                             fd=os.open(path,os.O_RDONLY|getattr(os,'O_NONBLOCK',0))
                             with os.fdopen(fd,'rb') as stream:
                                 actual=os.fstat(stream.fileno())
-                                if not stat.S_ISREG(actual.st_mode):raise ValueError('Not a regular profile')
-                                if actual.st_size>4*1024*1024:raise ValueError('Profile budget')
+                                if not stat.S_ISREG(actual.st_mode):raise PortalReadError(reason='INVALID_PROFILE')
+                                if actual.st_size>4*1024*1024:raise PortalReadError('Portalliste überschreitet das sichere Leselimit.',reason='PROFILE_BUDGET')
                                 raw=stream.read(4*1024*1024+1)
-                            if len(raw)>4*1024*1024:raise ValueError('Profile budget')
+                            if len(raw)>4*1024*1024:raise PortalReadError('Portalliste überschreitet das sichere Leselimit.',reason='PROFILE_BUDGET')
                             import json
                             value=json.loads(raw)
-                            if not isinstance(value,list) or any(not isinstance(p,dict) or not isinstance(p.get('id'),str) or not p['id'] or p.get('type') not in types for p in value):raise ValueError('Invalid profile')
+                            if not isinstance(value,list) or any(not isinstance(p,dict) or not isinstance(p.get('id'),str) or not p['id'] or p.get('type') not in types for p in value):raise PortalReadError(reason='INVALID_PROFILE')
                             if self.version(path)!=key:continue
                             self.key=key;self.value=value;portal_read(len(raw));break
-                        else:raise PortalReadError('Portale wurden gleichzeitig geändert. Bitte erneut öffnen.')
+                        else:raise PortalReadError('Portale wurden gleichzeitig geändert. Bitte erneut öffnen.',reason='PROFILE_RACE')
                 # Never expose cached credentials/groups to mutable callers.
                 result=copy.deepcopy(select(self.value));self.failures=0;self.retry=0
                 return result
             except MemoryError:
                 self.value=None;self.failures=min(5,self.failures+1);self.retry=time.monotonic()+min(30,2**self.failures)
                 portal_failure('OOM');note_pressure()
-                raise PortalReadError('Portale konnten wegen Speicherknappheit nicht gelesen werden. Daten unverändert; kurz warten und erneut öffnen.') from None
+                raise PortalReadError('Portale konnten wegen Speicherknappheit nicht gelesen werden. Daten unverändert; kurz warten und erneut öffnen.',reason='MEMORY') from None
             except Exception:
                 self.value=None;portal_failure('READ_ERROR')
                 raise

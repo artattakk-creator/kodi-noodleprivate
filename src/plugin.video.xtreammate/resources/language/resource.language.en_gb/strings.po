@@ -4048,3 +4048,7 @@ msgstr "Update requested. Source status reports the verified result."
 msgctxt "#35966"
 msgid "EPG protected: first create a verified backup under Maintenance."
 msgstr "EPG protected: first create a verified backup under Maintenance."
+
+msgctxt "#35968"
+msgid "Account temporarily unavailable. Please retry. Your search and data are preserved."
+msgstr "Account temporarily unavailable. Please retry. Your search and data are preserved."

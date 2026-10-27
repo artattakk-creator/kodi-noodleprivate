@@ -11,9 +11,11 @@ LABELS={'live':32460,'vod':32461,'series':32462}
 def portal_for(router):
     from portals import get_active
     from home_menu import active_portal
-    active=get_active();requested=router._params.get('pid','')
-    if requested: return next((p for p in active if str(p['id'])==requested),None)
-    return active_portal(active)
+    requested=router._params.get('pid','')
+    if requested:
+        from media_portal44 import selected
+        return selected(router)
+    return active_portal(get_active())
 
 
 def _end(router,ok=True):
@@ -38,7 +40,20 @@ def dispatch(router):
         _end(router)
         from search_handoff import run
         run(router._params.get('token',''));return
-    portal=portal_for(router)
+    from portal_snapshot import PortalReadError
+    try:portal=portal_for(router)
+    except PortalReadError:
+        if action!='media_play':raise
+        from media_intent import failed
+        failed(str(router._params.get('intent') or ''),str(router._params.get('pid') or ''))
+        import xbmcplugin
+        xbmcplugin.setResolvedUrl(router._handle,False,xbmcgui.ListItem())
+        xbmcgui.Dialog().notification('XCMate',tr(35968));return
+    if action=='media_play' and not portal:
+        from media_intent import failed
+        failed(str(router._params.get('intent') or ''),str(router._params.get('pid') or ''))
+        import xbmcplugin
+        xbmcplugin.setResolvedUrl(router._handle,False,xbmcgui.ListItem());return
     if action in ('guide_timers','guide_status','widget_setup') and not portal:
         _end(router,False)
         xbmcgui.Dialog().notification('XCMate',tr(32466));return

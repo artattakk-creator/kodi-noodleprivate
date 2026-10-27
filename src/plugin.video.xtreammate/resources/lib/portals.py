@@ -31,7 +31,8 @@ def _read(select=lambda rows:rows):
     try:return _snapshot.read(_db_path(),PORTAL_TYPES,select)
     except PortalReadError:raise
     except Exception as exc:
-        raise PortalReadError('Portalliste kann nicht gelesen werden. Daten wurden nicht verändert.') from exc
+        reason='PROFILE_BUSY' if isinstance(exc,TimeoutError) else 'INVALID_PROFILE' if isinstance(exc,ValueError) else 'READ_IO' if isinstance(exc,OSError) else 'UNKNOWN'
+        raise PortalReadError('Portalliste kann nicht gelesen werden. Daten wurden nicht verändert.',reason=reason) from exc
 
 
 def load_all() -> list:
