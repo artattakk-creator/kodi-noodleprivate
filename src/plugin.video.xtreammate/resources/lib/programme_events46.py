@@ -16,8 +16,13 @@ def describe(portal,channel,event=None,canonical='',revision=None,guide=None):
  from programme_store46 import read
  event=dict(event or {});pid=str(portal['id']);sid=str(channel.get('sid',channel.get('stream_id','')))
  value=dict(pid=pid,sid=sid,channel=str(channel.get('name','')),start=int(event.get('start',0)),stop=int(event.get('stop',0)),title=str(event.get('title') or event.get('name') or '')[:512],description=str(event.get('description') or event.get('descr') or '')[:8192],source=int(event.get('source',event.get('_source_index',0))),canonical=str(canonical),revision=revision)
+ for name in ('source_key46','fact_revision46'):
+  if event.get(name):value[name]=event[name]
+ value['key']=key(pid,sid,value)
  if value['start']>0 and value['stop']>value['start'] and value['title']:
-  value.update(read(pid,canonical,value,guide,verify_source=revision is not None))
+  from programme_index46 import event as prepared_event46,metadata as prepared_metadata46
+  prepared46=prepared_event46(value) if guide is None else None
+  value.update(prepared46 or prepared_metadata46(pid,canonical,value,guide) or read(pid,canonical,value,guide,verify_source=revision is not None))
   if not value.get('metadata_code46') and not any(value.get(k) for k in ('xmltv_image','provider_image','subtitle','season')):value.update(legacy_metadata(pid,sid,canonical,value))
   value['code']='LOCAL_EVENT'
  else:value.update(start=0,stop=0,title='',code='NO_EPG')
@@ -43,7 +48,7 @@ def load(portal,channel,selected=None,now=None):
    if not rows:continue
    canonical=view.canonical.get(ident,ident)
    for raw in rows:
-    candidate=dict(title=raw['name'],description=raw['descr'],start=raw['start_timestamp'],stop=raw['stop_timestamp'],source=raw.get('source',raw.get('_source_index',0)))
+    candidate=dict(raw,title=raw['name'],description=raw['descr'],start=raw['start_timestamp'],stop=raw['stop_timestamp'],source=raw.get('source',raw.get('_source_index',0)))
     if selected:
      if candidate['start']==int(selected.get('start',0)) and candidate['stop']==int(selected.get('stop',0)) and (not selected.get('title') or candidate['title']==selected['title']):event=candidate;break
     elif candidate['start']<=now<candidate['stop']:event=candidate;break

@@ -78,9 +78,13 @@ def publish(portal,kind,rows,code='READY'):
         cursor=_art_cursor46.get(str(portal['id']),0)%max(1,len(items))
         positions={(cursor+i)%len(items) for i in range(min(16,len(items)))}
         _art_cursor46[str(portal['id'])]=(cursor+16)%max(1,len(items))
+        records46=[]
         for pos,value in enumerate(items):
             event=value.pop('_programme46',None)
             if event and pos in positions:enqueue(event)
+            if event:records46.append(event)
+        from programme_index46 import publish as publish_records46
+        publish_records46(records46)
     frame=dict(pid=str(portal['id']),kind=kind,policy=policy(portal,kind),at=time.time(),items=items)
     signature_items=[]
     for value in items:

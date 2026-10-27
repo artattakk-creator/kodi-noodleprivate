@@ -63,10 +63,14 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
      from programme_events46 import load
      from media_art import local_art,request as request_logos
      value=load(self.portal,self.channel,self.selected)
+     from programme_index46 import event as publish_event46
+     publish_event46(value,write=True)
      value['logo']=local_art(self.channel)['thumb'];request_logos([self.channel])
      if not self._cancel.is_set():
       from programme_art46 import enqueue
       enqueue(value)
+      from programme_index46 import publish as publish_records46
+      publish_records46([value])
      future.set_result(value)
     except Exception:future.set_exception(RuntimeError('PROGRAMME_READ_FAILED'))
    finally:_slots.release()

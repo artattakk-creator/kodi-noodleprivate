@@ -60,11 +60,14 @@ def publish(portal,rows,approved):
     try:
         check_space(filename,MAX_PAGE*2)
         for offset in range(0,len(rows),16):
-            batch=rows[offset:offset+16];epg=infos(portal,batch);items=[]
+            batch=rows[offset:offset+16];epg=infos(portal,batch);items=[];records=[]
             for index,row in enumerate(batch):
                 value=describe(portal,'live',row,approved,epg.get(row['sid']));event=value.pop('_programme46',None)
                 if event and offset+index in wanted:enqueue(event)
+                if event:records.append(event)
                 items.append(value)
+            from programme_index46 import publish as publish_records46
+            publish_records46(records)
             digest.update(json.dumps(items,sort_keys=True).encode())
             data=json.dumps(dict(generation46=generation,items=items)).encode()
             if len(data)>MAX_PAGE:trace('BAD_FRAME','live');return False

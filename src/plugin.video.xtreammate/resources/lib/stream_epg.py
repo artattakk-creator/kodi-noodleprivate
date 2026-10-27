@@ -55,7 +55,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         names.setdefault(key,[]).append(sid)
     from programme_store46 import Stage as ProgrammeStage46
     metadata46=ProgrammeStage46(pid,generation,source_index,filename,source_identity=__import__('guide_publish44').source_id(source,source_index))
-    batch=[];stored=0;now=time.time();keep_stage=False
+    batch=[];stored=0;now=time.time();keep_stage=False;right46=__import__('programme_index46').bounds(now)[1]
     def flush():
         if not batch: return
         check_space(target,sum(len(r[-1])+len(r[-2]) for r in batch)*4)
@@ -71,10 +71,12 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
             ids.add(cid)
     def programme(event):
         nonlocal stored
-        if event['channel'] not in ids or event['stop_timestamp']<=__import__('guide_store').day_window(-7,now)[0] or event['start_timestamp']>=now+10*86400: return
+        if event['channel'] not in ids or event['stop_timestamp']<=__import__('guide_store').day_window(-7,now)[0]: return
         if not event['name']: return
+        if event['start_timestamp']>=right46:return
+        metadata46.add(event)  # Independent cache may keep real feed days11–20.
+        if event['start_timestamp']>=now+10*86400:return
         batch.append((generation,event['channel'],event['start_timestamp'],event['stop_timestamp'],event['name'],event['descr']))
-        metadata46.add(event)
         stored+=1
         if len(batch)>=256: flush()
     try:
@@ -106,7 +108,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         with db:
             from epg_events import clean_stage
             clean_stage(db,'xml_stage',' WHERE generation=?',(generation,))
-        stage=dict(generation=generation,source=source,index=source_index,aliases=aliases,meta_pid46=str(pid),metadata_ok46=not metadata46.failed,
+        stage=dict(generation=generation,source=source,index=source_index,aliases=aliases,meta_pid46=str(pid),metadata_ok46=not metadata46.failed,index_ok46=not metadata46.facts46.failed,
                    now=now,counts=dict(counts,stored=stored))
         if stage_only:
             keep_stage=True
@@ -167,7 +169,7 @@ def publish_stages44(pid,stages,filename=None,cancel=lambda:False):
                 db.execute('INSERT OR REPLACE INTO guide44_outcomes VALUES(?,?,?)',(pid,code,json.dumps(totals)))
             if cancel():raise InterruptedError('EPG import cancelled')
         from programme_store46 import finish as finish_metadata46
-        for stage in stages:finish_metadata46(pid,stage['generation'],stage.get('metadata_ok46',True),filename)
+        for stage in stages:finish_metadata46(pid,stage['generation'],stage.get('metadata_ok46',True),filename,index_ok46=stage.get('index_ok46',True),index_publish46=True)
         return outcomes
     finally:db.close()
 
