@@ -45,9 +45,7 @@ class LocalEPG39(model.Fixture,unittest.TestCase):
         for _ in range(20):self.local.now_next('p',self.channels,{},self.now)
         after={p.name:p.read_bytes() for p in self.folder.iterdir() if p.is_file()}
         self.assertTrue(all(after[k]==v for k,v in before.items()))
-        self.assertTrue(set(after)-set(before)<={
-            'guide_v1.sqlite-wal','guide_v1.sqlite-shm',
-            'programme_artwork.sqlite-wal','programme_artwork.sqlite-shm'})
+        self.assertTrue(set(after)-set(before)<={'guide_v1.sqlite-wal','guide_v1.sqlite-shm'})
 
     def test_failed_publication_preserves_last_successful_revision(self):
         self.assertFalse(self.store.import_cache('p',{},revision='failed'))
