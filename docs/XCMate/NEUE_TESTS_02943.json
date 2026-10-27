@@ -1,0 +1,86 @@
+{
+  "baseline_methods_retained": 1514,
+  "new_methods": 68,
+  "files": {
+    "tests/test_xcmate_catalog_edges_02943.py": [
+      "Catalogue43.test_empty_single_partial_and_large_pages_preserve_exact_unique_totals",
+      "Catalogue43.test_catalogue_generation_changed_before_append_is_rejected",
+      "Catalogue43.test_change_during_page_read_is_rejected_instead_of_mixed_rows",
+      "Catalogue43.test_shrunken_catalogue_restores_last_real_page_instead_of_empty_group",
+      "Catalogue43.test_restore_selected_identity_uses_actual_new_position_not_old_offset",
+      "Catalogue43.test_optional_search_metadata_never_invents_quality_language_seasons_or_portal"
+    ],
+    "tests/test_xcmate_media_choices_02943.py": [
+      "MediaChoices43.test_existing_profile_read_and_candidate_cancel_create_no_choices_store",
+      "MediaChoices43.test_selected_image_persists_after_reload_without_changing_provider_or_other_ids",
+      "MediaChoices43.test_manual_image_has_priority_in_dynamic_and_internal_modes",
+      "MediaChoices43.test_reset_and_replacement_preserve_all_original_and_previous_image_files",
+      "MediaChoices43.test_only_confirmed_metadata_fields_change_ids_and_provider_payload_stay_original",
+      "MediaChoices43.test_metadata_reset_does_not_remove_image_and_image_reset_does_not_remove_metadata",
+      "MediaChoices43.test_invalid_or_truncated_image_never_replaces_current_choice",
+      "MediaChoices43.test_failed_atomic_manifest_commit_keeps_previous_mapping_and_image",
+      "MediaChoices43.test_corrupt_manifest_retains_last_good_ram_choice_and_save_refuses_data_loss",
+      "MediaChoices43.test_cold_corrupted_manual_image_falls_back_without_deleting_the_file",
+      "MediaChoices43.test_cached_presentation_has_no_filesystem_network_or_sql_calls",
+      "MediaChoices43.test_bounded_ram_eviction_does_not_make_an_already_displayed_cover_disappear",
+      "MediaChoices43.test_one_page_does_not_hash_all_manual_images_on_every_read",
+      "MediaChoices43.test_provenance_is_preserved_separately_for_image_and_metadata",
+      "MediaChoices43.test_symlink_manifest_and_image_store_are_refused_without_foreign_write",
+      "MediaChoices43.test_provider_refresh_does_not_override_manual_fields_and_new_provider_art_is_kept_for_reset"
+    ],
+    "tests/test_xcmate_media_picker_02943.py": [
+      "Picker43.test_cancel_preview_and_return_to_source_do_not_create_profile_or_change_parent",
+      "Picker43.test_image_requires_use_then_explicit_save_and_has_separate_metadata",
+      "Picker43.test_every_visible_button_is_remote_reachable_without_hidden_focus_targets",
+      "Picker43.test_role_change_disarms_save_without_writing_or_touching_metadata",
+      "Picker43.test_metadata_fields_are_selected_and_confirmed_separately_without_identity_change",
+      "Picker43.test_actor_or_cancelled_metadata_never_auto_replace_work_metadata",
+      "Picker43.test_closed_owner_ignores_late_worker_result",
+      "Picker43.test_owner_guard_rejects_foreign_thread_gui_calls",
+      "Picker43.test_request_is_deferred_and_does_not_open_in_callback",
+      "Picker43.test_stale_portal_identity_and_foreign_dialog_never_open_picker",
+      "Picker43.test_failure_displays_fixed_code_and_keeps_sources_available",
+      "Picker43.test_local_import_validates_on_worker_preserves_original_and_requires_save",
+      "Picker43.test_provider_rating_text_is_converted_to_validated_numeric_field",
+      "Picker43.test_completed_result_must_be_consumed_before_a_new_source_can_replace_it"
+    ],
+    "tests/test_xcmate_media_sources_02943.py": [
+      "Sources43.test_fixed_api_host_only_tls_and_no_userinfo_or_pipe_options",
+      "Sources43.test_checked_ip_is_passed_directly_to_transport_without_redirect_following",
+      "Sources43.test_api_bearer_never_reused_for_images",
+      "Sources43.test_redirect_and_http_classification_are_fixed_codes_not_sensitive_messages",
+      "Sources43.test_mime_compression_and_byte_limits_do_not_decode_or_save_untrusted_input",
+      "Sources43.test_cancellation_before_connection_or_during_read_never_returns_partial_data",
+      "Sources43.test_dns_and_tls_failures_do_not_expose_url_or_query",
+      "Sources43.test_bad_token_cannot_leak_semaphore_slots_or_inject_http_headers",
+      "Sources43.test_network_slots_bound_research_even_after_other_windows_are_closed",
+      "Sources43.test_png_jpeg_require_full_decode_not_only_header_and_dimensions",
+      "Sources43.test_optional_missing_decoder_is_explicit_blocked_without_unvalidated_success",
+      "Sources43.test_tmdb_disabled_or_missing_token_never_issues_a_request",
+      "Sources43.test_tmdb_results_distinguish_same_title_year_and_actor_without_free_metadata",
+      "Sources43.test_tmdb_image_path_cannot_escape_fixed_cdn_or_carry_tokens",
+      "Sources43.test_tmdb_metadata_does_not_change_work_identity_and_rejects_wrong_remote_id",
+      "Sources43.test_commons_only_known_licenses_and_cdn_images_no_metadata_or_html_scraping",
+      "Sources43.test_automatic_fallback_requires_opt_in_exact_title_and_year_and_unique_work",
+      "Sources43.test_rate_limit_has_global_backoff_without_retry_loop"
+    ],
+    "tests/test_xcmate_mini_flicker_02943.py": [
+      "MiniFlicker43.test_miniflicker01_show_never_exposes_all_highlights_even_between_setters",
+      "MiniFlicker43.test_miniflicker02_200_identical_worker_ticks_do_not_rebuild_or_repaint",
+      "MiniFlicker43.test_miniflicker03_now_rollover_preserves_selected_identity",
+      "MiniFlicker43.test_miniflicker04_sender_changes_during_refresh_keep_one_focus",
+      "MiniFlicker43.test_miniflicker05_twenty_open_close_cycles_clear_text_and_borders",
+      "MiniFlicker43.test_reverse_focus_order_hides_previous_before_showing_new",
+      "MiniFlicker43.test_same_length_title_or_description_change_does_not_reset_native_rows",
+      "MiniFlicker43.test_overlapping_provider_events_show_only_one_now_marker",
+      "MiniFlicker43.test_focus_scrolls_to_last_event_and_back_retains_native_channel_focus",
+      "MiniFlicker43.test_empty_and_historical_only_have_no_now_or_focus"
+    ],
+    "tests/test_xcmate_scope_02943.py": [
+      "Scope43.test_every_previous_source_file_retained_only_exact_authorized_hooks_differ",
+      "Scope43.test_all_1514_existing_test_methods_still_run",
+      "Scope43.test_four_exit_sources_exactly_frozen_and_compatibility_default_false_no_keymap_changes",
+      "Scope43.test_approved_search_layout_and_icon_remain_byte_identical"
+    ]
+  }
+}

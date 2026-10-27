@@ -1,0 +1,32 @@
+{
+  "version": "0.1.29.43",
+  "tests": 1582,
+  "seconds": 239.216,
+  "failures": 0,
+  "errors": 0,
+  "files": 399,
+  "bytes": 2681507,
+  "sha256": "cc4d955fd4bf58ac8dee3d1924459921327ed034d0adb46a4303329aa6c6a117",
+  "crc": "PASS",
+  "paths": "PASS",
+  "source_bytes": "PASS",
+  "reproducible_zip": "PASS",
+  "python_ast": "PASS",
+  "android": "NOT_TESTED",
+  "production_publish": false,
+  "source_commit": "c022d8f",
+  "base": "451f4cf0995cc09ada4b9eb4090906320d36a9fb",
+  "skipped": 0,
+  "retained_test_methods": 1514,
+  "new_test_methods": 68,
+  "language_contexts": {
+    "de_de": 986,
+    "en_gb": 986
+  },
+  "navigation_textures": 92,
+  "live_exit_four_source_files": "BYTE_IDENTICAL",
+  "original_icon": "BYTE_IDENTICAL",
+  "search_media_xml": "BYTE_IDENTICAL",
+  "compatibility_default": false,
+  "existing_box_b_setting_preserved": true
+}
