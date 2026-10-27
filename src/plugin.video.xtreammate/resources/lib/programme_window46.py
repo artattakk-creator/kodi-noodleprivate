@@ -124,6 +124,22 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   if self._future:self._future.cancel()
   if self._shown:super().close()
 
+def launch_standalone(portal,channel,selected=None):
+ """Serialize root dispatches; wait briefly for natural modal release only.
+
+This runs in the plugin interpreter, never in a parent's GUI callback. Parent
+children use the exact parent identity path instead and retain its owner lease.
+"""
+ from window_navigation import ownership
+ with ownership() as acquired:
+  if not acquired:xbmcgui.Dialog().notification('XCMate',tr(36105));return
+  deadline=time.monotonic()+2;monitor=xbmc.Monitor()
+  while not permitted():
+   if time.monotonic()>=deadline or monitor.waitForAbort(.05):
+    xbmcgui.Dialog().notification('XCMate',tr(36105));return
+  return show(portal,channel,selected)
+
+
 def route(router,portal):
  from boot_diagnostics import finish_directory
  if router._handle>=0:finish_directory(router,succeeded=False,cacheToDisc=False)
@@ -134,5 +150,5 @@ def route(router,portal):
   channel=Reader(portal['id']).get('live',str(params.get('sid','')))
   if not channel:return
   selected=dict(start=int(params.get('start',0)),stop=int(params.get('stop',0)),key=str(params.get('event','')))
-  return show(portal,channel,selected if selected['start'] else None)
+  return launch_standalone(portal,channel,selected if selected['start'] else None)
  except (ValueError,TypeError):xbmcgui.Dialog().notification('XCMate',tr(36107))

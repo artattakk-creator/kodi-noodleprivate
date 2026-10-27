@@ -42,7 +42,7 @@ class ProgrammeArt46(Fixture,unittest.TestCase):
   from media_sources43 import SourceError
   value=self.prepare(fetch=mock.Mock(return_value=b'not png'));self.assertNotEqual(value['code'],'READY');self.assertEqual(value['image'],self.event['placeholder'])
  def test_cancelled_fetch_never_publishes_ready_picture(self):
-  v=self.a.prepare(self.event,cancel=lambda:True,fetch=mock.Mock(return_value=self.png));self.assertEqual(v['code'],'CANCELLED');self.assertFalse(list(Path(self.a.root()).glob('*.img')) if Path(self.a.root()).exists() else [])
+  v=self.a.prepare(self.event,cancel=lambda:True,fetch=mock.Mock(return_value=self.png));self.assertEqual(v['code'],'CANCELLED');self.assertFalse([p for p in Path(self.a.root()).iterdir() if p.suffix in ('.png','.jpg','.img')] if Path(self.a.root()).exists() else [])
  def test_full_budget_does_not_download_or_remove_existing_files(self):
   old=self.prepare();from art_storage import ArtworkFailure
   fetch=mock.Mock()
@@ -81,3 +81,10 @@ class ProgrammeArt46(Fixture,unittest.TestCase):
  def test_internal_programme_budget_is_distinguished_from_real_disk_full(self):
   with mock.patch.object(self.a,'space',side_effect=self.a.CacheBudget('PROGRAMME_CACHE_BUDGET')):value=self.prepare()
   self.assertEqual(value['code'],'PROGRAMME_CACHE_BUDGET');self.assertNotEqual(value['code'],'DISK_FULL');self.assertEqual(value['budget46'],64*1024*1024)
+
+ def test_large_source_becomes_bounded_display_derivative_without_crop_or_logo(self):
+  from PIL import Image
+  b=io.BytesIO();Image.new('RGB',(2560,1440),(20,40,60)).save(b,'PNG');original=b.getvalue()
+  value=self.prepare(fetch=mock.Mock(return_value=original));self.assertEqual(value['code'],'READY')
+  with Image.open(value['image']) as image:self.assertEqual(image.size,(1280,720))
+  self.assertNotEqual(value['sha256'],value['original_sha256']);self.assertEqual(value['original_sha256'],__import__('hashlib').sha256(original).hexdigest());self.assertTrue(value['image'].endswith('.png'))

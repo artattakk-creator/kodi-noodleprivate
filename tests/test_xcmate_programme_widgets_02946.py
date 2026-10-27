@@ -79,3 +79,16 @@ class ProgrammeWindow46(Fixture,unittest.TestCase):
  def test_gui_thread_ownership_is_enforced(self):
   w=self.m.ProgrammeWindow46('XCMateProgramme46.xml',str(ADDON),'Default','720p');w.configure(self.portal,dict(sid='1',name='Station'));w._owner=-1
   with self.assertRaisesRegex(RuntimeError,'OWNER_THREAD'):w.pump()
+
+ def test_standalone_info_waits_for_natural_modal_release_without_home_navigation(self):
+  import contextlib
+  row=dict(sid='1',name='Station')
+  with mock.patch('window_navigation.ownership',return_value=contextlib.nullcontext(True)),mock.patch.object(self.m,'permitted',side_effect=[False,True]),mock.patch.object(self.m,'show',return_value='shown') as show:
+   self.assertEqual(self.m.launch_standalone(self.portal,row),'shown');show.assert_called_once()
+  self.assertFalse(self.builtins)
+ def test_duplicate_standalone_owner_and_persistent_foreign_dialog_are_refused(self):
+  import contextlib
+  row=dict(sid='1',name='Station')
+  with mock.patch('window_navigation.ownership',return_value=contextlib.nullcontext(False)),mock.patch.object(self.m,'show') as show:self.m.launch_standalone(self.portal,row);show.assert_not_called()
+  with mock.patch('window_navigation.ownership',return_value=contextlib.nullcontext(True)),mock.patch.object(self.m,'permitted',return_value=False),mock.patch.object(self.m.time,'monotonic',side_effect=[0,3]),mock.patch.object(self.m,'show') as show:self.m.launch_standalone(self.portal,row);show.assert_not_called()
+  self.assertFalse(self.builtins)
