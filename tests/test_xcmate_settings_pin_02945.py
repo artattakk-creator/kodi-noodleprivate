@@ -84,3 +84,11 @@ class SettingsPIN45(Fixture,unittest.TestCase):
  def test_manual_timer_entry_does_not_create_database_without_pin(self):
   m=importlib.import_module('guide_timers')
   with mock.patch.object(m,'add',side_effect=AssertionError('ungated timer')):m.request_add45('p',{})
+ def test_nested_native_option_action_uses_released_handle_and_restores_parameters(self):
+  editor=importlib.import_module('settings_options45');before=dict(self.router._params);self.router._handle=17
+  self.dialog.select.side_effect=[0,-1];observed=[]
+  row=dict(id='synthetic_action',type='action',label='36017',action='RunPlugin(plugin://plugin.video.xtreammate/?action=guide_status&pid=p)')
+  addon=sys.modules['xbmcaddon'].Addon();addon.getSetting=lambda key:self.options.get(key,'')
+  with mock.patch.object(sys.modules['xbmcaddon'],'Addon',return_value=addon),mock.patch.object(editor,'definitions',return_value=[row]),mock.patch.object(self.router,'dispatch',create=True,side_effect=lambda:observed.append((self.router._handle,dict(self.router._params)))):
+   editor.show(self.router,'epg')
+  self.assertEqual(observed,[(-1,dict(action='guide_status',pid='p'))]);self.assertEqual(self.router._handle,17);self.assertEqual(self.router._params,before);self.assertFalse(self.options)
