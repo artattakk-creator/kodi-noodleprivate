@@ -1,0 +1,505 @@
+{
+  "new_portal_name": {
+    "id": "new_portal_name",
+    "type": "text",
+    "label": "32271",
+    "default": "My IPTV"
+  },
+  "new_portal_type": {
+    "id": "new_portal_type",
+    "type": "enum",
+    "label": "32272",
+    "default": "0",
+    "values": "M3U URL|M3U Datei|Xtream Codes|STB / Stalker"
+  },
+  "new_portal_m3u_url": {
+    "id": "new_portal_m3u_url",
+    "type": "text",
+    "label": "32274",
+    "default": "",
+    "visible": "eq(-1,0)|eq(-1,1)"
+  },
+  "new_portal_xc_host": {
+    "id": "new_portal_xc_host",
+    "type": "text",
+    "label": "32275",
+    "default": "",
+    "visible": "eq(-2,2)"
+  },
+  "new_portal_xc_user": {
+    "id": "new_portal_xc_user",
+    "type": "text",
+    "label": "32276",
+    "default": "",
+    "visible": "eq(-3,2)"
+  },
+  "new_portal_xc_pass": {
+    "id": "new_portal_xc_pass",
+    "type": "text",
+    "label": "32277",
+    "default": "",
+    "option": "hidden",
+    "visible": "eq(-4,2)"
+  },
+  "new_portal_stb_url": {
+    "id": "new_portal_stb_url",
+    "type": "text",
+    "label": "32278",
+    "default": "",
+    "visible": "eq(-5,3)"
+  },
+  "new_portal_stb_mac": {
+    "id": "new_portal_stb_mac",
+    "type": "text",
+    "label": "32279",
+    "default": "00:1A:79:00:00:00",
+    "visible": "eq(-6,3)"
+  },
+  "new_portal_epg_url": {
+    "id": "new_portal_epg_url",
+    "type": "text",
+    "label": "32280",
+    "default": ""
+  },
+  "new_portal_epg_show": {
+    "id": "new_portal_epg_show",
+    "type": "bool",
+    "label": "32281",
+    "default": "true"
+  },
+  "new_portal_enabled": {
+    "id": "new_portal_enabled",
+    "type": "bool",
+    "label": "32091",
+    "default": "true"
+  },
+  "new_portal_add": {
+    "id": "new_portal_add",
+    "type": "action",
+    "label": "32282",
+    "action": "RunPlugin(plugin://plugin.video.xtreammate/?action=add_portal_from_settings)"
+  },
+  "tv_infobar_seconds": {
+    "id": "tv_infobar_seconds",
+    "type": "number",
+    "label": "TV-Infoleiste: Ausblendzeit (3-30 Sekunden)",
+    "default": "8"
+  },
+  "open_portal_manager": {
+    "id": "open_portal_manager",
+    "type": "action",
+    "label": "32201",
+    "action": "RunPlugin(plugin://plugin.video.xtreammate/?action=portal_manager)"
+  },
+  "autoplay_diagnostics_safe": {
+    "id": "autoplay_diagnostics_safe",
+    "type": "bool",
+    "label": "Legacy diagnostic flag",
+    "default": "false",
+    "visible": "false"
+  },
+  "autoplay_pause_action": {
+    "id": "autoplay_pause_action",
+    "type": "action",
+    "label": "35503",
+    "action": "RunPlugin(plugin://plugin.video.xtreammate/?action=autoplay_diagnostic_mode)"
+  },
+  "popup_xtream_diagnostic": {
+    "id": "popup_xtream_diagnostic",
+    "type": "action",
+    "label": "XCMate: Popup- und Fernbedienungstest OHNE TV",
+    "action": "RunPlugin(plugin://plugin.video.xtreammate/?action=popup_probe)"
+  },
+  "startup_xtream": {
+    "id": "startup_xtream",
+    "type": "action",
+    "label": "XCMate: Startsender / Startgruppe",
+    "action": "RunPlugin(plugin://plugin.video.xtreammate/?action=startup_settings)"
+  },
+  "xc_remote_keymap_fallback": {
+    "id": "xc_remote_keymap_fallback",
+    "type": "bool",
+    "label": "XCMate: Alternative Vollbild-Keymap (nur bei Bedarf)",
+    "default": "false"
+  },
+  "remote_xtream": {
+    "id": "remote_xtream",
+    "type": "action",
+    "label": "XCMate: Links / OK Fernbedienung aktivieren",
+    "action": "RunPlugin(plugin://plugin.video.xtreammate/?action=remote_setup)"
+  },
+  "remote_learn": {
+    "id": "remote_learn",
+    "type": "action",
+    "label": "XCMate: Android-Fernbedienung anlernen",
+    "action": "RunPlugin(plugin://plugin.video.xtreammate/?action=remote_learn)"
+  },
+  "manage_xtream_groups": {
+    "id": "manage_xtream_groups",
+    "type": "action",
+    "label": "XCMate: Live-TV-, Film- und Seriengruppen verwalten",
+    "action": "RunPlugin(plugin://plugin.video.xtreammate/?action=groups_manager)"
+  },
+  "portal_count_info": {
+    "id": "portal_count_info",
+    "type": "lsep",
+    "label": ""
+  },
+  "lang_priority": {
+    "id": "lang_priority",
+    "type": "text",
+    "label": "32211",
+    "default": ""
+  },
+  "lang_filter_info": {
+    "id": "lang_filter_info",
+    "type": "lsep",
+    "label": "32212"
+  },
+  "lang_match_name": {
+    "id": "lang_match_name",
+    "type": "bool",
+    "label": "32213",
+    "default": "true"
+  },
+  "lang_match_group": {
+    "id": "lang_match_group",
+    "type": "bool",
+    "label": "32214",
+    "default": "true"
+  },
+  "tmdb_research43": {
+    "id": "tmdb_research43",
+    "type": "bool",
+    "label": "35940",
+    "default": "false"
+  },
+  "tmdb_read_token43": {
+    "id": "tmdb_read_token43",
+    "type": "text",
+    "label": "35941",
+    "default": "",
+    "option": "hidden"
+  },
+  "tmdb_fallback43": {
+    "id": "tmdb_fallback43",
+    "type": "bool",
+    "label": "35942",
+    "default": "false"
+  },
+  "live_exit_fullscreen42": {
+    "id": "live_exit_fullscreen42",
+    "type": "bool",
+    "label": "35854",
+    "default": "false"
+  },
+  "player_default": {
+    "id": "player_default",
+    "type": "enum",
+    "label": "32221",
+    "values": "32222",
+    "default": "0"
+  },
+  "user_agent": {
+    "id": "user_agent",
+    "type": "text",
+    "label": "32223",
+    "default": "Mozilla/5.0 (Linux; Android 11; TV) AppleWebKit/537.36"
+  },
+  "http_timeout": {
+    "id": "http_timeout",
+    "type": "slider",
+    "label": "32224",
+    "default": "15",
+    "range": "5,1,60"
+  },
+  "max_retries": {
+    "id": "max_retries",
+    "type": "slider",
+    "label": "32225",
+    "default": "3",
+    "range": "0,1,10"
+  },
+  "use_inputstream_hls": {
+    "id": "use_inputstream_hls",
+    "type": "bool",
+    "label": "32226",
+    "default": "true"
+  },
+  "use_inputstream_dash": {
+    "id": "use_inputstream_dash",
+    "type": "bool",
+    "label": "32227",
+    "default": "true"
+  },
+  "stream_quality": {
+    "id": "stream_quality",
+    "type": "enum",
+    "label": "32228",
+    "values": "32229",
+    "default": "0"
+  },
+  "epg_sources_manager": {
+    "id": "epg_sources_manager",
+    "type": "action",
+    "label": "XCMate: EPG-Quellen und Senderzuordnung",
+    "action": "RunPlugin(plugin://plugin.video.xtreammate/?action=epg_sources)"
+  },
+  "epg_enabled": {
+    "id": "epg_enabled",
+    "type": "bool",
+    "label": "32236",
+    "default": "true"
+  },
+  "epg_lines": {
+    "id": "epg_lines",
+    "type": "slider",
+    "label": "32237",
+    "default": "3",
+    "range": "0,1,5"
+  },
+  "xc_background_prefetch": {
+    "id": "xc_background_prefetch",
+    "type": "bool",
+    "label": "XCMate: Automatische Hintergrund-Downloads (EPG/Kataloge) erlauben",
+    "default": "false"
+  },
+  "epg_auto_refresh": {
+    "id": "epg_auto_refresh",
+    "type": "bool",
+    "label": "32231",
+    "default": "true"
+  },
+  "epg_refresh_hours": {
+    "id": "epg_refresh_hours",
+    "type": "slider",
+    "label": "32232",
+    "default": "12",
+    "range": "1,1,48"
+  },
+  "epg_hours_ahead": {
+    "id": "epg_hours_ahead",
+    "type": "slider",
+    "label": "32233",
+    "default": "12",
+    "range": "2,2,24"
+  },
+  "epg_hours_back": {
+    "id": "epg_hours_back",
+    "type": "slider",
+    "label": "32234",
+    "default": "3",
+    "range": "0,1,72"
+  },
+  "epg_show_thumbnails": {
+    "id": "epg_show_thumbnails",
+    "type": "bool",
+    "label": "32235",
+    "default": "true"
+  },
+  "show_channel_logos": {
+    "id": "show_channel_logos",
+    "type": "bool",
+    "label": "32241",
+    "default": "true"
+  },
+  "items_per_page": {
+    "id": "items_per_page",
+    "type": "slider",
+    "label": "32242",
+    "default": "50",
+    "range": "20,10,200"
+  },
+  "sort_channels": {
+    "id": "sort_channels",
+    "type": "enum",
+    "label": "32243",
+    "values": "32244",
+    "default": "0"
+  },
+  "sort_groups": {
+    "id": "sort_groups",
+    "type": "enum",
+    "label": "32245",
+    "values": "32246",
+    "default": "0"
+  },
+  "view_mode": {
+    "id": "view_mode",
+    "type": "enum",
+    "label": "32247",
+    "values": "32248",
+    "default": "0"
+  },
+  "cache_playlists": {
+    "id": "cache_playlists",
+    "type": "bool",
+    "label": "32251",
+    "default": "true"
+  },
+  "cache_epg": {
+    "id": "cache_epg",
+    "type": "bool",
+    "label": "32252",
+    "default": "true"
+  },
+  "cache_dir": {
+    "id": "cache_dir",
+    "type": "folder",
+    "label": "32253",
+    "source": "auto",
+    "option": "writeable",
+    "default": ""
+  },
+  "clear_cache": {
+    "id": "clear_cache",
+    "type": "action",
+    "label": "32254",
+    "action": "RunPlugin(plugin://plugin.video.xtreammate/?action=clear_cache)"
+  },
+  "favourites_file": {
+    "id": "favourites_file",
+    "type": "text",
+    "label": "32255",
+    "default": ""
+  },
+  "recordings_folder": {
+    "id": "recordings_folder",
+    "type": "folder",
+    "label": "32256",
+    "source": "auto",
+    "option": "writeable",
+    "default": ""
+  },
+  "dropbox_token": {
+    "id": "dropbox_token",
+    "type": "text",
+    "label": "32299",
+    "default": "",
+    "option": "hidden"
+  },
+  "dropbox_backup_path": {
+    "id": "dropbox_backup_path",
+    "type": "text",
+    "label": "32300",
+    "default": "/portals_backup.json"
+  },
+  "proxy_url": {
+    "id": "proxy_url",
+    "type": "text",
+    "label": "32261",
+    "default": ""
+  },
+  "proxy_user": {
+    "id": "proxy_user",
+    "type": "text",
+    "label": "32262",
+    "default": ""
+  },
+  "proxy_pass": {
+    "id": "proxy_pass",
+    "type": "text",
+    "label": "32263",
+    "default": "",
+    "option": "hidden"
+  },
+  "ssl_verify": {
+    "id": "ssl_verify",
+    "type": "bool",
+    "label": "32264",
+    "default": "true"
+  },
+  "debug_logging": {
+    "id": "debug_logging",
+    "type": "bool",
+    "label": "32265",
+    "default": "false"
+  },
+  "catchup_format": {
+    "id": "catchup_format",
+    "type": "text",
+    "label": "32266",
+    "default": "{url}?utc={utc}&lutc={lutc}"
+  },
+  "artwork_manage": {
+    "id": "artwork_manage",
+    "type": "action",
+    "label": "35200",
+    "action": "RunPlugin(plugin://plugin.video.xtreammate/?action=artwork_manage)"
+  },
+  "device_info": {
+    "id": "device_info",
+    "type": "action",
+    "label": "35300",
+    "action": "RunPlugin(plugin://plugin.video.xtreammate/?action=device_info)"
+  },
+  "xcmate_ui_language": {
+    "id": "xcmate_ui_language",
+    "type": "text",
+    "label": "32620",
+    "default": "kodi",
+    "visible": "false"
+  },
+  "active_portal_id": {
+    "id": "active_portal_id",
+    "type": "text",
+    "label": "32593",
+    "default": "",
+    "visible": "false"
+  },
+  "media_art_budget_mb": {
+    "id": "media_art_budget_mb",
+    "type": "number",
+    "label": "33403",
+    "default": "0"
+  },
+  "media_art_paused": {
+    "id": "media_art_paused",
+    "type": "bool",
+    "label": "33426",
+    "default": "false"
+  },
+  "media_art_reserve_mb": {
+    "id": "media_art_reserve_mb",
+    "type": "number",
+    "label": "33404",
+    "default": "1024"
+  },
+  "recent_days": {
+    "id": "recent_days",
+    "type": "number",
+    "label": "32594",
+    "default": "10"
+  },
+  "recent_keep": {
+    "id": "recent_keep",
+    "type": "number",
+    "label": "32595",
+    "default": "100"
+  },
+  "epg_days": {
+    "id": "epg_days",
+    "type": "number",
+    "label": "32596",
+    "default": "7"
+  },
+  "downloads_folder_enabled": {
+    "id": "downloads_folder_enabled",
+    "type": "text",
+    "default": "",
+    "visible": "false"
+  },
+  "downloads_folder": {
+    "id": "downloads_folder",
+    "type": "text",
+    "label": "34700",
+    "default": "",
+    "visible": "false"
+  },
+  "downloads_max_gib": {
+    "id": "downloads_max_gib",
+    "type": "number",
+    "label": "34719",
+    "default": "64"
+  }
+}

@@ -66,8 +66,13 @@ def manage(pid):
     import xbmcgui
     rows=list_timers(pid)
     labels={'pending':32600,'notified':32601,'cancelled':32602,'missed':32603}
-    selected=xbmcgui.Dialog().select(tr(32570),[
+    selected=__import__('menu_icons45').select(xbmcgui.Dialog(),tr(32570),[
         '{} · {} · {}'.format(tr(labels[r['state']]) if r['state'] in labels else r['state'],
-                              time.strftime(tr(32584),time.localtime(r['start'])),r['title']) for r in rows])
+                              time.strftime(tr(32584),time.localtime(r['start'])),r['title']) for r in rows],default='clock')
     if 0<=selected<len(rows) and rows[selected]['state']=='pending' and xbmcgui.Dialog().yesno('XCMate',tr(32571)):
         cancel(rows[selected]['id'])
+
+
+def request_add45(*args,**kwargs):
+    from experimental45 import run
+    return run(lambda:add(*args,**kwargs))

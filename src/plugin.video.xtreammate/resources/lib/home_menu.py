@@ -7,11 +7,7 @@ import uuid
 HOME = ((32400,'home_start','tv.png'), (32401,'home_live','tv.png'),
         (32402,'guide_grid','epg.png'), (32403,'movies_home','vod.png'),
         (32404,'series_home','series.png'), (32405,'settings_home','settings.png'))
-SETTINGS = ((32406,'accounts'), (32407,'startup'),
-            (32402,'epg'), (32408,'groups'),
-            (32409,'remote'), (32410,'player'),
-            (32411,'storage'), (32412,'appearance'),
-            (32413,'maintenance'), (32414,'about'))
+from settings_sections45 import SECTIONS as SETTINGS
 
 
 def active_portal(portals, preferred=''):
@@ -64,98 +60,8 @@ def probe_directory(folder, vfs):
 
 
 def settings(router, portal, section=''):
-    import xbmc, xbmcgui, xbmcplugin, xbmcaddon
-    from boot_diagnostics import finish_directory
-    pid=portal['id'] if portal else ''
-    from theme_render import snapshot,lightweight_background
-    from theme_store import asset
-    theme=snapshot()
-    def add(label,action,**params):
-        from window_navigation import WINDOW_ACTIONS,DIALOG_ACTIONS,add_action
-        url=router.url(action=action,pid=pid,**params)
-        key=section or params.get('section','')
-        key={'storage':'recordings','startup':'start-channel','designs':'appearance'}.get(key,key)
-        art=dict(icon=asset('icon.settings.'+key,os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources/media/settings.png'),snapshot=theme),fanart=asset('background.settings.'+key,asset('background.settings',lightweight_background(),snapshot=theme),snapshot=theme))
-        if action in WINDOW_ACTIONS|DIALOG_ACTIONS or action in ('global_search','download_folder','download_capabilities','download_target_test','stability_test'):
-            add_action(router,label,url,**art)
-        else:router._add_dir(label,url,**art)
-    if not section:
-        for label_id,key in SETTINGS: add(tr(label_id),'settings_section',section=key)
-    elif section=='accounts':
-        from portals import get_active
-        add(tr(32416),'account_select')
-        for p in get_active():
-            add('{} · {}'.format(p.get('name',tr(32417)),p.get('type','')),'account_select',selected=p['id'])
-            account_action={'xtream':'xtream_account','stb':'stb_account','m3u':'m3u_account'}.get(p.get('type'))
-            if account_action:
-                router._add_dir(tr(32418)+p.get('name',tr(32417)),
-                                router.url(action=account_action,pid=p['id']))
-        add(tr(32419),'portal_manager')
-        add(tr(32420),'setup_wizard')
-    elif section=='startup':
-        add(tr(32421),'startup_settings')
-        add(tr(32422),'autoplay_diagnostic_mode')
-    elif section=='epg':
-        add(tr(32423),'guide_browser')
-        add(tr(32424),'epg_sources')
-        add(tr(32425),'epg_status')
-        add(tr(32426),'guide_status')
-        add(tr(32427),'guide_timers')
-        add(tr(32428),'refresh_epg')
-        add(tr(32429),'settings')
-    elif section=='groups':
-        if portal and portal.get('type')=='m3u': add(tr(32746),'playlist_editor')
-        add(tr(32430),'groups_manager')
-        add(tr(32431),'favourites')
-        add(tr(32432),'media_favourites',kind='vod')
-        add(tr(32433),'media_favourites',kind='series')
-        add(tr(32434),'global_search')
-    elif section=='remote':
-        add(tr(32435),'remote_learn')
-        add(tr(32436),'remote_setup')
-    elif section=='player':
-        add(tr(32437),'settings')
-    elif section=='storage':
-        add(tr(35200),'artwork_manage')
-        add(tr(34700),'download_folder')
-        add(tr(34701),'download_capabilities')
-        add(tr(35007),'download_target_test')
-        add(tr(34013),'record_now')
-        add(tr(34008),'recordings_manage')
-        add(tr(32900),'art_db_health')
-        add(tr(32661),'art_status')
-        add(tr(32662),'art_retry')
-        add(tr(32438),'recording_folder')
-        add(tr(32439),'recording_folder',check='1')
-        add(tr(32440),'settings')
-        add(tr(32441),'recording_capabilities')
-    elif section=='designs':
-        add(tr(33813),'theme_manager')
-    elif section=='appearance':
-        add(tr(33800),'settings_section',section='designs')
-        add(tr(32620),'ui_language')
-        add(tr(32622),'appearance_settings')
-        add(tr(32442),'settings')
-        add(tr(32443),'widget_setup')
-        add(tr(32444),'widget_live_start_group')
-        add(tr(32445),'widget_recent_vod')
-        add(tr(32446),'widget_recent_series')
-    elif section=='maintenance':
-        add(tr(35960),'guide_backup44')
-        add(tr(35300),'device_info')
-        from app_entry import paused
-        add(tr(35501) if paused() else tr(35503),'autoplay_diagnostic_mode')
-        add(tr(34800),'stability_test')
-        for label,action in ((tr(32447),'global_search'),(tr(32448),'refresh_portal'),
-            (tr(32425),'epg_status'),(tr(32449),'remote_diagnostics'),
-            (tr(32450),'service_recover'),(tr(32451),'popup_probe'),
-            (tr(32452),'clear_cache'),(tr(32453),'settings')):
-            add(label,action)
-    elif section=='about':
-        add(tr(33701),'branding_status')
-        add(tr(32454),'about_xcmate')
-        add(tr(33405),'xcmate_licenses')
-    finish_directory(router,cacheToDisc=False)
+    from settings_sections45 import render
+    return render(router,portal,section)
 
 
 def recording_folder(check_only=False):

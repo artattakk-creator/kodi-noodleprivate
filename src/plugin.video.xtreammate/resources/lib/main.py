@@ -54,6 +54,8 @@ class Router:
         )
 
     def dispatch(self):
+        from experimental45 import protected,active,route
+        if protected(self._params) and not active():return route(self,self.dispatch)
         from boot_diagnostics import phase, mark
         action = self._params.get('action', 'root')
         from setup_navigation import active as wizard_active
@@ -665,7 +667,7 @@ class Router:
             if not candidates:
                 xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
                 return
-            idx=xbmcgui.Dialog().select('XCMate – Portal', [x['name'] for x in candidates])
+            idx=__import__('menu_icons45').select(xbmcgui.Dialog(),'XCMate – Portal', [x['name'] for x in candidates],default='settings')
             if idx<0:
                 xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
                 return
@@ -791,8 +793,8 @@ class Router:
                 xbmcgui.Dialog().ok('XCMate', 'Zuerst einen Xtream-Codes-Zugang einrichten.')
                 xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
                 return
-            idx = xbmcgui.Dialog().select('XCMate – Portal auswählen',
-                                         [item['name'] for item in options])
+            idx = __import__('menu_icons45').select(xbmcgui.Dialog(),'XCMate – Portal auswählen',
+                                         [item['name'] for item in options],default='settings')
             if idx < 0:
                 xbmcplugin.endOfDirectory(self._handle, cacheToDisc=False)
                 return
@@ -2454,6 +2456,8 @@ class Router:
         notify('XCMate', 'EPG-Aktualisierung im Hintergrund gestartet')
 
     def _do_clear_cache(self):
+        from experimental45 import confirm
+        if not confirm():return
         cache_clear()
         notify('XCMate', 'Cache cleared')
 
@@ -2627,7 +2631,8 @@ class Router:
 
     def _add_dir(self, label, url, icon=None, is_folder=True, plot='', fanart=None):
         li = xbmcgui.ListItem(label)
-        _icon = icon if icon else ADDON_ICON
+        from menu_icons45 import for_url
+        _icon = for_url(url,icon)
         li.setArt({
             'icon':      _icon,
             'thumb':     _icon,

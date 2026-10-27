@@ -22,9 +22,9 @@ def _start(portal):
     if result is None:return
     channels,total=result
     if not channels:dialog.ok('XCMate',tr(33907));return
-    choice=dialog.select(tr(34001),[c['name'] for c in channels])
+    choice=__import__('menu_icons45').select(dialog,tr(34001),[c['name'] for c in channels],default='record')
     if not 0<=choice<len(channels):return
-    duration=dialog.select(tr(34002),[tr(34003,n) for n in (2,5,30,60,120)])
+    duration=__import__('menu_icons45').select(dialog,tr(34002),[tr(34003,n) for n in (2,5,30,60,120)],default='record')
     if duration not in range(5):return
     # A second provider connection is always explicit, even with no player.
     if not dialog.yesno('XCMate',tr(34004)):return
@@ -59,7 +59,7 @@ def _manage():
     values=work(rows)
     if not values:xbmcgui.Dialog().ok('XCMate',tr(34007));return
     status_ids={'pending':34420,'starting':34421,'recording':34422,'complete':34423,'failed':34424,'partial':34425}
-    choice=xbmcgui.Dialog().select(tr(34008),[r['label']+' · '+tr(status_ids.get(r['status'],34424))+' · '+format(r['bytes']/1048576,'.2f')+' MiB ('+str(r['bytes'])+' Bytes)'+(' · '+r['code'] if r['code'] else '') for r in values])
+    choice=__import__('menu_icons45').select(xbmcgui.Dialog(),tr(34008),[r['label']+' · '+tr(status_ids.get(r['status'],34424))+' · '+format(r['bytes']/1048576,'.2f')+' MiB ('+str(r['bytes'])+' Bytes)'+(' · '+r['code'] if r['code'] else '') for r in values],default='record')
     if not 0<=choice<len(values):return
     item=values[choice]
     if item['status'] in ('pending','starting','recording'):
@@ -87,6 +87,11 @@ def report():
 
 
 def start(portal):
+    from experimental45 import run
+    return run(lambda:_start45(portal))
+
+
+def _start45(portal):
     try:_start(portal)
     except Exception as exc:
         from transfer_diagnostics import describe
@@ -94,6 +99,11 @@ def start(portal):
 
 
 def manage():
+    from experimental45 import run
+    return run(lambda:_manage45())
+
+
+def _manage45():
     try:_manage()
     except Exception as exc:
         from transfer_diagnostics import describe

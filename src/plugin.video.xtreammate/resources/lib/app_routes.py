@@ -1,7 +1,7 @@
 """New routes only. Legacy provider/player entry points remain compatible."""
 from localization import tr
 
-ACTIONS=('guide_backup44','update_notice','navigation_rail','artwork_manage','device_info', 'live_guide','search_continue','download_target_test','stability_test','download_folder','download_capabilities','theme_manager','branding_status','xcmate_licenses','guide_grid','playlist_editor','source_live','source_play','source_start','art_status','art_retry','art_db_health','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
+ACTIONS=('native_options45','downloads_manage45','guide_backup44','update_notice','navigation_rail','artwork_manage','device_info', 'live_guide','search_continue','download_target_test','stability_test','download_folder','download_capabilities','theme_manager','branding_status','xcmate_licenses','guide_grid','playlist_editor','source_live','source_play','source_start','art_status','art_retry','art_db_health','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
          'movies_home','series_home','media_detail','media_favourites','global_search','search_section',
          'widget_live_start_group','widget_recent_vod','widget_recent_series','widget_setup',
          'record_now','recordings_manage','recording_folder','recording_capabilities','about_xcmate','guide_browser','media_play','guide_timers','guide_status')
@@ -24,6 +24,8 @@ def _end(router,ok=True):
 
 
 def dispatch(router):
+    from experimental45 import protected,active,route
+    if protected(router._params) and not active():return route(router,lambda:dispatch(router))
     import xbmc,xbmcgui,xbmcaddon
     from home_menu import settings,show,recording_folder
     action=router._params.get('action','xcmate_home')
@@ -57,6 +59,14 @@ def dispatch(router):
     if action in ('guide_timers','guide_status','widget_setup') and not portal:
         _end(router,False)
         xbmcgui.Dialog().notification('XCMate',tr(32466));return
+    if action=='native_options45':
+        _end(router)
+        from settings_options45 import show
+        show(router,router._params.get('group','system'));return
+    if action=='downloads_manage45':
+        _end(router)
+        from downloads_ui import manage
+        manage();return
     if action=='navigation_rail':
         _end(router)
         if portal:
@@ -101,7 +111,10 @@ def dispatch(router):
     if action in ('art_status','art_retry'):
         _end(router)
         from art_store import status,retry
-        if action=='art_retry': retry()
+        if action=='art_retry':
+            from experimental45 import confirm
+            if not confirm():return
+            retry()
         from artwork_health_ui import show_status
         show_status();return
     if action=='ui_language':
@@ -127,7 +140,7 @@ def dispatch(router):
         selected=router._params.get('selected','')
         _end(router)
         if not selected:
-            i=xbmcgui.Dialog().select(tr(32463),[p.get('name',tr(32417)) for p in rows])
+            i=__import__('menu_icons45').select(xbmcgui.Dialog(),tr(32463),[p.get('name',tr(32417)) for p in rows],default='user')
             if i<0 or i>=len(rows): return
             selected=str(rows[i]['id'])
         if selected not in {str(p['id']) for p in rows}: return
