@@ -1,0 +1,17 @@
+{
+  "base": "451f4cf0995cc09ada4b9eb4090906320d36a9fb",
+  "host_model_only": true,
+  "kodi_gpu_or_android_proof": false,
+  "before": {
+    "identical_render_ticks": 200,
+    "native_setter_calls": 9000,
+    "list_reset_calls": 0,
+    "maximum_simultaneously_visible_focus_frames": 5
+  },
+  "after": {
+    "identical_render_ticks": 200,
+    "native_setter_calls": 0,
+    "list_reset_calls": 0,
+    "maximum_simultaneously_visible_focus_frames": 1
+  }
+}

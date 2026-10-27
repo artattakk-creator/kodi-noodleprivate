@@ -22,6 +22,7 @@ class MiniProgramme:
     def __init__(self,owner):
         import xbmcgui
         self.owner=owner;self.focused=False;self.sid='';self.selected=0;self.events=[];self.signature=None
+        self._visible=False;self._native_count=0;self._painted={}
         w,h=owner._width,owner._height;x=int(w*.36);width=int(w*.32)
         self.heading=xbmcgui.ControlLabel(x,48,width,30,'','font13','0xFFF4F6F9')
         self.hint=xbmcgui.ControlLabel(x,86,width,28,tr(35610),'font12','0xFFBEC4CD')
@@ -37,62 +38,89 @@ class MiniProgramme:
         self.column_width=width
         self.visible(False)
 
+    def _set(self,control,method,value):
+        key=(id(control),method)
+        if key not in self._painted or self._painted[key]!=value:
+            getattr(control,method)(value);self._painted[key]=value
+
     def visible(self,value):
-        for c in (self.heading,self.hint,self.list,*[c for row in self.rows for c in row]):c.setVisible(value)
-        if not value:
+        self._visible=bool(value)
+        if value:
+            # Prepare text/row visibility first. Never bulk-show the highlights.
+            self._paint()
+            for control in (self.heading,self.hint,self.list):self._set(control,'setVisible',True)
+        else:
             self.focused=False
-            for _,stamp,title in self.rows:stamp.setLabel('');title.setText('')
+            for control in (self.heading,self.hint,self.list,*[c for row in self.rows for c in row]):
+                self._set(control,'setVisible',False)
+            self._set(self.heading,'setLabel','')
+            for _,stamp,title in self.rows:
+                self._set(stamp,'setLabel','');self._set(title,'setText','')
 
     def render(self):
         owner=self.owner;index=owner._highlight['channels']
         channel=owner.visible_channels[index] if 0<=index<len(owner.visible_channels) else None
         sid=str(channel.extra.get('stream_id','')) if channel else ''
         info=owner._guide.get(sid);events,current=programme_rows(info.get('programme_events',info.get('events',[])))
-        signature=(sid,tuple((e['start'],e['stop'],e['title']) for e in events),current)
-        self.heading.setLabel(channel.name if channel else tr(35611))
-        self.hint.setLabel(tr(35830) if self.focused else tr(35610))
+        identity=lambda event:(event['start'],event['stop'])
+        signature=(sid,tuple(identity(e) for e in events))
+        self._set(self.heading,'setLabel',channel.name if channel else tr(35611))
+        self._set(self.hint,'setLabel',tr(35830) if self.focused else tr(35610))
+        previous=identity(self.events[self.selected]) if self.focused and self.selected<len(self.events) else None
+        changed=sid!=self.sid
+        self.sid=sid;self.events=events
+        if changed or not self.focused:self.selected=current
+        else:
+            self.selected=next((i for i,e in enumerate(events) if identity(e)==previous),min(self.selected,max(0,len(events)-1)))
         if signature!=self.signature:
-            previous=self.events[self.selected] if self.focused and self.selected<len(self.events) else None
-            changed=sid!=self.sid;self.sid=sid;self.events=events;self.signature=signature
-            self.list.reset()
-            # Visible native control owns keys/scroll/OK, but NEVER a text layer.
-            self.list.addItems(['']*len(events) or [''])
-            self.selected=current if changed or not self.focused else min(self.selected,max(0,len(events)-1));
-            if previous and not changed and self.focused:
-                self.selected=next((i for i,e in enumerate(events) if (e['start'],e['stop'],e['title'])==(previous['start'],previous['stop'],previous['title'])),self.selected)
-            self.list.selectItem(self.selected)
-        self.visible(True);self._paint()
+            self.signature=signature
+            # Native rows carry no text/identity. Equal-sized snapshots require
+            # no reset at all, including title corrections and NOW rollover.
+            count=max(1,len(events))
+            if count!=self._native_count:
+                self.list.reset();self.list.addItems(['']*count);self._native_count=count
+        if self.list.getSelectedPosition()!=self.selected:self.list.selectItem(self.selected)
+        self.visible(True)
 
     def _paint(self):
+        if not self._visible:return
         now=time.time();first=self.selected//5*5
+        current=next((i for i,e in enumerate(self.events) if e['start']<=now<e['stop']),None)
+        desired=[]
         for slot,(highlight,stamp,title) in enumerate(self.rows):
             index=first+slot;event=self.events[index] if index<len(self.events) else None
-            highlight.setVisible(bool(event and self.focused and index==self.selected))
-            stamp.setVisible(bool(event));title.setVisible(bool(event))
-            if event:
-                active=event['start']<=now<event['stop']
-                label=('● '+tr(35612)+'  ' if active else '')+time_label(event,now)
-                stamp.setLabel('[COLOR FF55DD99]'+label+'[/COLOR]' if active else label)
-                title.setText(wrap_title(event['title'],self.column_width))
-            else:
-                stamp.setLabel('');title.setText(tr(35611) if not self.events and slot==0 else '')
-                if not self.events and slot==0:title.setVisible(True)
+            focused=bool(event and self.focused and index==self.selected)
+            active=bool(event and index==current)
+            label=(('● '+tr(35612)+'  ' if active else '')+time_label(event,now)) if event else ''
+            label='[COLOR FF55DD99]'+label+'[/COLOR]' if active else label
+            text=wrap_title(event['title'],self.column_width) if event else tr(35611) if not self.events and slot==0 else ''
+            desired.append((highlight,stamp,title,focused,bool(event),label,text))
+        # Disable every old/ineligible focus BEFORE showing the next focus.
+        # This invariant holds after each individual Kodi setter, not just at
+        # the end of a Python method (there is no atomic GUI batch API).
+        for highlight,_,_,focused,_,_,_ in desired:
+            if not focused:self._set(highlight,'setVisible',False)
+        for highlight,stamp,title,focused,present,label,text in desired:
+            self._set(stamp,'setLabel',label);self._set(title,'setText',text)
+            self._set(stamp,'setVisible',present);self._set(title,'setVisible',bool(text))
+            if focused:self._set(highlight,'setVisible',True)
 
     def focus(self):
         self.render()
         if not self.events:return
         self.focused=True;self.selected=programme_rows(self.events)[1];self.list.selectItem(self.selected);self.owner.setFocus(self.list)
-        self.hint.setLabel(tr(35830));self._paint()
+        self._set(self.hint,'setLabel',tr(35830));self._paint()
 
     def command(self,command,native=False):
         if not self.focused:return False
         if command in ('left','back'):
             self.focused=False;self.owner.setFocus(self.owner.control)
-            self.hint.setLabel(tr(35610))
+            self._set(self.hint,'setLabel',tr(35610))
         elif command in ('up','down'):
             pos=self.list.getSelectedPosition()
             target=pos if native and pos!=self.selected else self.selected+(-1 if command=='up' else 1)
-            self.selected=min(max(0,target),max(0,len(self.events)-1));self.list.selectItem(self.selected)
+            self.selected=min(max(0,target),max(0,len(self.events)-1))
+            if self.list.getSelectedPosition()!=self.selected:self.list.selectItem(self.selected)
         elif command=='ok':
             if self.events:
                 import xbmcgui
