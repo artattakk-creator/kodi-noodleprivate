@@ -50,8 +50,12 @@ def import_cache(pid,cache,revision='',now=None,filename=None,*,trusted_feed=Fal
     from epg_views import _as_int
     from epg_events import deduplicate
     now=int(time.time() if now is None else now)
+    right46=__import__('programme_index46').bounds(now)[1]
     if not isinstance(cache,dict) or not cache: return False
     db=connect(filename,write=True)
+    from programme_store46 import Stage as ProgrammeStage46
+    metadata46=ProgrammeStage46(pid,__import__('uuid').uuid4().hex,0,filename,source_records=(source_records or {}) if trusted_feed else None)
+    committed46=False
     try:
         from guide_publish44 import require
         require(db)
@@ -64,7 +68,9 @@ def import_cache(pid,cache,revision='',now=None,filename=None,*,trusted_feed=Fal
                     if not isinstance(event,dict): continue
                     start=_as_int(event.get('start_timestamp'));stop=_as_int(event.get('stop_timestamp'))
                     title=str(event.get('name') or event.get('title') or '')[:512]
-                    if start<=0 or stop<=start or stop<=day_window(-7,now)[0] or start>=now+10*86400 or not title: continue
+                    if start<=0 or stop<=start or stop<=day_window(-7,now)[0] or not title: continue
+                    if start<right46:metadata46.add(dict(event,channel=str(event.get('channel') or alias)))
+                    if start>=now+10*86400:continue
                     cid=str(event.get('channel') or alias)
                     canonical=cid
                     try: source=int(event.get('_source_index',0))
@@ -86,11 +92,15 @@ def import_cache(pid,cache,revision='',now=None,filename=None,*,trusted_feed=Fal
                     record=(source_records or {}).get(index,{})
                     publish(db,pid,'incoming','source=?',(index,),source=source_id(record,index),rank=index,revision=revision,now=now)
             else:publish(db,pid,'incoming',revision=revision,now=now)
+        committed46=True
         return True
-    finally: db.close()
+    finally:
+        db.close();metadata46.finish(committed46)
 
 
 def refresh(portal,filename=None):
+    from epg_gate46 import access as refresh_access46
+    if refresh_access46(filename or path()) not in ('READY','NOT_CREATED'):return False
     from epg import load_cache
     from epg_status import revision,read
     rev=revision(portal['id'])+'|'+str(read(portal['id']).get('cache',{}).get('last_success',0))

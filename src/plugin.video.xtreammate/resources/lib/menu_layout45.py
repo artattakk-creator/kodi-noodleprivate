@@ -27,6 +27,7 @@ def apply(tree,filename):
  from menu_icons45 import icon
  maps={'XCMateMedia.xml':{'120':'list','400':'search','700':'tv','701':'movie','702':'series','820':'image'},'XCMateArtwork43.xml':{'401':'tv','402':'info','403':'image','404':'drive','405':'back','501':'image','502':'image','503':'check','504':'check','505':'back','506':'refresh','507':'info','508':'back'},'XCMateGuideGrid.xml':{'310':'back','311':'calendar','312':'calendar','313':'clock','314':'list','315':'search'},'XCMateGuide.xml':{'310':'back','311':'calendar','312':'activity'}}
  maps['XCMateSetup.xml']={'10':'tv','11':'movie','12':'series','13':'check','14':'back','15':'database','16':'image','17':'check','18':'back'}
+ maps['XCMateArtwork43.xml'].update({'406':'grid','407':'image','408':'image'})
  maps['XCMatePlaylistEditor.xml']={'10':'search','11':'list','12':'plus','13':'link','14':'download','16':'back','17':'play','18':'back'}
  fallback='wand' if filename=='XCMateSetup.xml' else 'list' if filename=='XCMatePlaylistEditor.xml' else 'activity'
  parents={child:parent for parent in root.iter() for child in parent}

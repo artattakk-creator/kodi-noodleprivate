@@ -53,7 +53,9 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         if eid: ids.add(eid);aliases[sid]=eid
         key=_channel_name_key(row.get('name'))
         names.setdefault(key,[]).append(sid)
-    batch=[];stored=0;now=time.time();keep_stage=False
+    from programme_store46 import Stage as ProgrammeStage46
+    metadata46=ProgrammeStage46(pid,generation,source_index,filename,source_identity=__import__('guide_publish44').source_id(source,source_index))
+    batch=[];stored=0;now=time.time();keep_stage=False;right46=__import__('programme_index46').bounds(now)[1]
     def flush():
         if not batch: return
         check_space(target,sum(len(r[-1])+len(r[-2]) for r in batch)*4)
@@ -69,8 +71,11 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
             ids.add(cid)
     def programme(event):
         nonlocal stored
-        if event['channel'] not in ids or event['stop_timestamp']<=__import__('guide_store').day_window(-7,now)[0] or event['start_timestamp']>=now+10*86400: return
+        if event['channel'] not in ids or event['stop_timestamp']<=__import__('guide_store').day_window(-7,now)[0]: return
         if not event['name']: return
+        if event['start_timestamp']>=right46:return
+        metadata46.add(event)  # Independent cache may keep real feed days11–20.
+        if event['start_timestamp']>=now+10*86400:return
         batch.append((generation,event['channel'],event['start_timestamp'],event['stop_timestamp'],event['name'],event['descr']))
         stored+=1
         if len(batch)>=256: flush()
@@ -87,7 +92,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
             try: exc.xcmate_stage=phase
             except Exception: pass
             raise
-        flush()
+        flush();metadata46.flush()
         if not stored:
             from epg_errors import EmptyGuideError
             raise EmptyGuideError('No matching current programmes')
@@ -103,7 +108,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         with db:
             from epg_events import clean_stage
             clean_stage(db,'xml_stage',' WHERE generation=?',(generation,))
-        stage=dict(generation=generation,source=source,index=source_index,aliases=aliases,
+        stage=dict(generation=generation,source=source,index=source_index,aliases=aliases,meta_pid46=str(pid),metadata_ok46=not metadata46.failed,index_ok46=not metadata46.facts46.failed,
                    now=now,counts=dict(counts,stored=stored))
         if stage_only:
             keep_stage=True
@@ -115,6 +120,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         # SQL rollback restores the complete previous guide on ENOSPC or error.
         db.rollback()
         if not keep_stage:
+            metadata46.finish(False)
             try:
                 with db: db.execute('DELETE FROM xml_stage WHERE generation=?',(generation,))
             except Exception: pass
@@ -128,6 +134,8 @@ def discard_stages44(stages,filename=None):
     try:
         with db:
             for stage in stages:db.execute('DELETE FROM xml_stage WHERE generation=?',(stage['generation'],))
+        from programme_store46 import finish as finish_metadata46
+        for stage in stages:finish_metadata46(stage.get('meta_pid46',''),stage['generation'],False,filename)
     finally:db.close()
 
 
@@ -160,6 +168,8 @@ def publish_stages44(pid,stages,filename=None,cancel=lambda:False):
                 code='PARTIAL_PRESERVED' if totals['conflicts'] else 'VERIFIED' if totals['added'] or totals['corrected'] else 'UNCHANGED'
                 db.execute('INSERT OR REPLACE INTO guide44_outcomes VALUES(?,?,?)',(pid,code,json.dumps(totals)))
             if cancel():raise InterruptedError('EPG import cancelled')
+        from programme_store46 import finish as finish_metadata46
+        for stage in stages:finish_metadata46(pid,stage['generation'],stage.get('metadata_ok46',True),filename,index_ok46=stage.get('index_ok46',True),index_publish46=True)
         return outcomes
     finally:db.close()
 
@@ -210,6 +220,13 @@ def refresh(portal,force=False,cancel=lambda:False):
 
 
 def _refresh44(portal,force=False,cancel=lambda:False):
+    from guide_store import path as guide_path46
+    from epg_gate46 import access as refresh_access46
+    state46=refresh_access46(guide_path46())
+    if state46 not in ('READY','NOT_CREATED'):
+        from epg_status import update
+        update(portal['id'],'refresh',state46,running=False)
+        return {}
     from epg_sources import configuration
     from epg_status import update,source_key
     from epg_errors import failure_details

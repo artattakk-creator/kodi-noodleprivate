@@ -197,7 +197,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         if candidates:self.cursor=min(candidates) if step>0 else max(self.origin,max(candidates))
         else:self.cursor+=step*1800
         from guide_store import day_window
-        if not day_window(-7)[0]<=self.cursor<day_window(10)[0]:
+        if not day_window(-7)[0]<=self.cursor<day_window(21)[0]:
             self.cursor=previous_cursor;return
         if not self.origin<=self.cursor<self.origin+SPAN:
             self.origin=self.cursor//1800*1800;self._load()
@@ -207,7 +207,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         date=datetime.datetime.fromtimestamp(self.cursor)+datetime.timedelta(days=step)
         # The local calendar decides the UTC delta across 23/25-hour DST days.
         target=int(time.mktime(date.timetuple()))
-        if not -7<=(date.date()-datetime.date.today()).days<=9:return
+        if not -7<=(date.date()-datetime.date.today()).days<=20:return
         self.cursor=target;self.origin=target//1800*1800;self._load()
 
     def _actions(self,channel_only=False):
@@ -219,9 +219,8 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
             choices.append(tr(33113))
         choice=__import__('menu_icons45').select(xbmcgui.Dialog(),channel['name'] if channel_only or not event else event['title'],__import__('theme_render').epg_choices(choices,self._theme),useDetails=bool(self._theme),default='calendar')
         if choice==0:
-            text=channel['name']+'\n'+tr(33114,row['mapping'])
-            if event:text+='\n'+event['title']+'\n'+str(event.get('description') or tr(32553))
-            xbmcgui.Dialog().textviewer(tr(33112),text)
+            from programme_window46 import request
+            request(self,channel,event)
         elif choice==1:
             # Only record the selected channel. No close/PlayMedia in a native
             # callback: the owner pump closes after this callback has returned.
@@ -419,6 +418,9 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         elif cid==313:self._show_groups()
 
     def _owner_tick(self):
+        if getattr(self,'_programme_request46',None):
+            from programme_window46 import open_pending
+            open_pending(self)
         if not self._leaving:self._resume_focus()
         if self._leaving:
             if time.monotonic()>=self._leave_after:self.close()

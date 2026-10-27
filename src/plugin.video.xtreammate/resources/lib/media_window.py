@@ -560,6 +560,8 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
             request([item],priority=0)
 
     def _details(self,item):
+        from flow46 import selected as select_flow46
+        select_flow46(self.portal['id'],item['sid'])
         if self.mode in ('grid','groups'):
             self._grid_return=(self.mode,self.category,self.offset,list(self.rows),self.total,self._last_position,self._cols)
         self._previous=(self.mode,self.category,self.offset,self._last_position)
@@ -596,6 +598,9 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         from metadata_views import trailer_id
         from media_state import read,key as state_key,progress_key,resume_position
         item,data=value;self.selected=item
+        from flow46 import mark
+        mark('DETAIL_READY',pid=self.portal['id'],sid=item['sid'])
+        if data:mark('DETAIL_METADATA_READY',pid=self.portal['id'],sid=item['sid'])
         try:
             state=read();self._state_ready=True
         except (ValueError,OSError,sqlite3.Error):

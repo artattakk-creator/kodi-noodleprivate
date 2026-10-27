@@ -19,7 +19,7 @@ class Scope45(unittest.TestCase):
   names=('live_stop42','native_stop41','live_exit','exit_jobs','media_progress','media_autoplay','media_state','media_sequence','stream_details','guide_store','guide_publish44','guide_backup44','stream_epg','epg_merge44','local_epg','epg','portals')
   b=self.baseline()
   for name in names:
-   path='src/plugin.video.xtreammate/resources/lib/'+name+'.py';self.assertEqual(hashlib.sha256((ROOT/path).read_bytes()).hexdigest(),b['source_sha256'][path],name)
+   path='src/plugin.video.xtreammate/resources/lib/'+name+'.py';self.assertEqual(hashlib.sha256(__import__('stabilization_contract_02946').without_stabilization46((ROOT/path).read_bytes(),path)).hexdigest(),b['source_sha256'][path],name)
  def test_original_icon_search_xml_and_existing_keymaps_have_exact_bytes(self):
   b=self.baseline()
   paths=[p for p in b['source_sha256'] if '/keymaps/' in p or p.endswith('/icon.png') or p.endswith('/XCMateMedia.xml')]

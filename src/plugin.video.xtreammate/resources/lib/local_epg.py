@@ -45,12 +45,15 @@ def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,
                 alias=db.execute('SELECT cid FROM guide_alias WHERE pid=? AND alias=?',(pid,ident)).fetchone()
                 cid=alias[0] if alias else ident;view.canonical[ident]=cid
                 left=start  # Current/future before SQL LIMIT; no unsolicited history.
-                right=start+10*86400 if history and sid==focus_sid else stop
+                right=start+21*86400 if history and sid==focus_sid else stop
                 cap=256 if history and sid==focus_sid else min(256,limit)
                 rows=db.execute('SELECT substr(title,1,512) AS title,substr(description,1,8192) AS description,start,stop,source FROM programmes WHERE pid=? AND cid=? AND stop>? AND start<? ORDER BY start,source,stop LIMIT ?',
                                 (pid,cid,left,right,cap)).fetchall()
                 view[ident]=[dict(name=r['title'],descr=r['description'],start_timestamp=r['start'],
                                   stop_timestamp=r['stop'],source=r['source'],_source_index=r['source']) for r in rows]
+                from programme_index46 import window as prepared_window46
+                extra46=prepared_window46(pid,cid,left,right,primary=view[ident],limit=cap)
+                view[ident]=sorted(view[ident]+extra46,key=lambda e:e['start_timestamp'])[:cap]
         return view
     except (OSError,sqlite3.Error):return None
     finally:
@@ -69,6 +72,7 @@ def now_next(pid,channels,mappings,now=None,client=None):
         provider=str(getattr(channel,'tvg_id',extra.get('epg_channel_id','')) or '')
         info=resolve_guide(cache if cache is not None else {},provider,sid,ts,None if cache is not None else client,mappings)
         info['snapshot_revision']=cache.revision if cache is not None else None
+        info['canonical46']=cache.canonical.get(info.get('epg_id',''),'') if cache is not None else ''
         result[sid]=info
     return result
 

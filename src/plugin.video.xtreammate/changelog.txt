@@ -1,3 +1,38 @@
+0.1.29.46 (cumulative review candidate; Android .46 NOT_TESTED)
+- Latest direct user instruction includes the already implemented shared
+  programme_artwork.sqlite conversion in .46 after complete regression checks.
+  Own WAL/app-ID cache, incremental facts/DTOs/art references and real feed
+  history through day-7/day+20; no expansion/reset of the primary guide schema.
+- Verified 16:9 local artwork, source confidence/positive and negative TTL,
+  content reuse, crash rollback and distinct cache/budget diagnostics.
+- #241/#240: preserve native Stop timeout as failure; recover the GUI once a
+  matching late FIFO return is verified, no second Stop or foreign navigation.
+- Skip fully superseded/empty legacy movie groups before the bounded widget
+  query; preserve policy-valid LastGood on Busy/Budget, with safe stage codes.
+- Full Live start group, generation-pinned keyset reads and 16-channel EPG
+  batches; paged atomic Home publications and bounded rotating/focus artwork.
+- Prime optional service imports outside the input owner; RAM-only widget
+  notifications, fast stable-profile reads and early start-group snapshots.
+- Real graphical cover/metadata candidate grid with local validated thumbnails,
+  role filters and larger preview; explicit Save/persist/cancel kept.
+- Verify actual EPG backup receipt before auto/manual refresh of a populated
+  guide. Read-only diagnosis stays available without migration or data reset.
+- Anonymous route/video/mini/group and media/detail/resolve phase markers;
+  Android cold/warm p50/p95 remain NOT_TESTED, native deadlock not claimed fixed.
+- Shared local programme details and Live widget event identity, metadata, image
+  provenance and neutral fallbacks. Station-logo overlays remain separate images.
+- Graphical programme view from the large guide and existing mini/programme info
+  paths; exact Live widget context-info target, unchanged sender OK targets.
+- Rich XMLTV event facts retained in a bounded separate staged cache, published
+  only after the authoritative source commit. No guide schema migration/reset.
+- Bounded asynchronous event-art cache; exact opt-in TMDb title/year/episode
+  matching, negative TTLs and verified persistent local images.
+- Optional hash-guarded BINGIE programme-card adapter prepared with per-card
+  logo/title/times/progress and focused description. Never applied automatically.
+  Missing reload/overlay/focus hooks remain BLOCKED, not full widget acceptance.
+- Existing movie/series widget routes, seven settings, PIN 6666, reference
+  infobar, live compatibility stop, autoplay/resume and all user data retained.
+
 0.1.29.45 (cumulative review candidate; Android .45 NOT_TESTED)
 - Existing Home widget rows refresh from atomic local data publications without
   rebinding URLs, changing skin files or scanning unrelated Kodi libraries.

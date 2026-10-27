@@ -7,8 +7,8 @@ retains its DirectoryProvider and exact native click behavior. Missing hooks
 are explicitly blocked until an optional separately confirmed adapter is used.
 """
 import hashlib,json,os,tempfile,time
-MAX_BYTES=768*1024
-_next=0;_seen={};_last_code={}
+MAX_BYTES=16*1024*1024
+_next=0;_seen={};_last_code={};_art_cursor46={}
 
 
 def trace(code,kind='',rows=0):
@@ -18,7 +18,7 @@ def trace(code,kind='',rows=0):
     _last_code[kind]=state
     try:
         import xbmc
-        xbmc.log('[XCMate][WIDGET45] code='+code+' kind='+(kind if kind in ('live','vod','series') else 'all')+' rows='+str(min(24,max(0,rows))),xbmc.LOGINFO)
+        xbmc.log('[XCMate][WIDGET45] code='+code+' kind='+(kind if kind in ('live','vod','series') else 'all')+' rows='+str(max(0,rows)),xbmc.LOGINFO)
     except (AttributeError,RuntimeError):pass
 
 
@@ -34,8 +34,16 @@ def read(pid,kind):
         frame=json.loads(raw)
         if not isinstance(frame,dict) or frame.get('pid')!=str(pid) or frame.get('kind')!=kind:return None
         if not isinstance(frame.get('at'),(int,float)) or not 0<=time.time()-frame['at']<600:return None
-        values=frame.get('items')
-        if not isinstance(values,list) or not 0<len(values)<= (12 if kind=='live' else 24):return None
+        if kind=='live' and isinstance(frame.get('pages46'),list):
+            from widget_pages46 import Items
+            pages=frame['pages46']
+            if (not isinstance(frame.get('count46'),int) or frame['count46']<=0
+                    or not pages or any(not isinstance(p,dict) or not isinstance(p.get('count'),int) or not 0<p['count']<=16 for p in pages)
+                    or sum(p['count'] for p in pages)!=frame['count46']):return None
+            values=frame['items']=Items(path(pid,kind),frame)
+        else:
+            values=frame.get('items')
+            if not isinstance(values,list) or not values or kind!='live' and len(values)>24:return None
         from urllib.parse import urlsplit,parse_qs
         for value in values:
             if not isinstance(value,dict) or not all(isinstance(value.get(k),dict) for k in ('props','art','info')) or not isinstance(value.get('label'),str):return None
@@ -47,7 +55,7 @@ def read(pid,kind):
             allowed=('play_live','source_play') if kind=='live' else ('media_detail',)
             if q.get('action',[''])[0] not in allowed or (kind!='live' and q.get('kind')!=[kind]):return None
         return frame
-    except (OSError,ValueError,TypeError):return None
+    except (OSError,ValueError,TypeError,KeyError,AttributeError):return None
 
 
 def publish(portal,kind,rows,code='READY'):
@@ -56,11 +64,27 @@ def publish(portal,kind,rows,code='READY'):
     from widget_art44 import read as approved
     from widget_data41 import policy
     values=approved(portal['id']);epg={}
+    if kind=='live' and len(rows)>64:
+        from widget_pages46 import publish as publish_pages46
+        return publish_pages46(portal,rows,values)
     if kind=='live':
         from local_epg import now_next
         from epg_sources import configuration
-        epg=now_next(portal['id'],rows,configuration(portal['id'])['mappings'])
-    items=[describe(portal,kind,row,values,epg.get(row['sid'])) for row in rows[:12 if kind=='live' else 24]]
+        from widget_group46 import infos as group_infos46
+        epg=group_infos46(portal,rows)
+    items=[describe(portal,kind,row,values,epg.get(row['sid'])) for row in (rows if kind=='live' else rows[:24])]
+    if kind=='live':
+        from programme_art46 import enqueue
+        cursor=_art_cursor46.get(str(portal['id']),0)%max(1,len(items))
+        positions={(cursor+i)%len(items) for i in range(min(16,len(items)))}
+        _art_cursor46[str(portal['id'])]=(cursor+16)%max(1,len(items))
+        records46=[]
+        for pos,value in enumerate(items):
+            event=value.pop('_programme46',None)
+            if event and pos in positions:enqueue(event)
+            if event:records46.append(event)
+        from programme_index46 import publish as publish_records46
+        publish_records46(records46)
     frame=dict(pid=str(portal['id']),kind=kind,policy=policy(portal,kind),at=time.time(),items=items)
     signature_items=[]
     for value in items:
@@ -77,6 +101,8 @@ def publish(portal,kind,rows,code='READY'):
         os.replace(temp,path(portal['id'],kind))
     finally:
         if os.path.exists(temp):os.unlink(temp)
+    from widget_notice46 import prepare as prepare_notice46
+    prepare_notice46(portal,kind,frame['signature'],len(items))
     trace('PUBLISHED',kind,len(items));return True
 
 

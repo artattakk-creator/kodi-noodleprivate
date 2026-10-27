@@ -124,7 +124,9 @@ class MiniProgramme:
         elif command=='ok':
             if self.events:
                 import xbmcgui
-                event=self.events[self.selected];xbmcgui.Dialog().textviewer(event['title'],event.get('description') or tr(35613))
+                event=self.events[self.selected]
+                from programme_window46 import request
+                request(self.owner,self.owner.index.by_sid.get(self.sid),event)
         elif command=='right':pass
         else:return False
         self._paint()

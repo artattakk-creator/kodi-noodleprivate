@@ -14,6 +14,13 @@ def manage(router,portal):
     result=probe();rows=result.get('bindings',[])
     text='Status: '+result['code']+'\n'+str(len(rows))+' erkannte XCMate-Quellen; '+str(sum(bool(r['hooks']) for r in rows))+' mit vorhandenem Aktualisierungsauslöser.\n'
     text+='Bestehende Widgets nicht neu einrichten. Ohne Aktualisierungsauslöser bleibt automatischer sichtbarer Refresh blockiert. Ein optionaler Adapter erfordert PIN und gesonderte Freigabe; keine automatische Skinänderung.'
+    from widget_capabilities46 import probe as programme_capabilities46
+    capability=programme_capabilities46()
+    text+='\n\nProgrammbild / Logo / Fokus: '+capability['code']
+    text+='\nStatische Bindings sind keine Android-Darstellungsabnahme. Fehlende Darstellung bleibt gesperrt; ein Adapter wird hier nicht automatisch angewandt.'
+    from programme_index46 import status as programme_status46
+    local46=programme_status46()
+    text+='\n\nLokale Sendungs-/Artwork-Datenbank: '+local46['code']+' · '+str(local46.get('bytes',0))+' Bytes. Ein Status READY bestätigt keine vollständigen20Tage oder Android-Abnahme.'
    except Exception:text='Status: READ_ERROR'
    dialog.textviewer('XCMate Widgets',text)
   elif choice==1:
@@ -21,5 +28,5 @@ def manage(router,portal):
    dialog.textviewer('XCMate Widgets',widget_instructions(router,portal))
   else:
    from experimental45 import run
-   from widget_adapter45 import show
+   from widget_adapter46 import show
    run(show)

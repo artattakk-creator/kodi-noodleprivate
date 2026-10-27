@@ -38,10 +38,32 @@ def small(reader,kind,category=None,limit=24,pin=None):
     if category is not None:where+=' AND i.cid=?';args.append(str(category))
     v2index='group_order_v2' if kind=='live' and category is not None else 'recent_v2'
     order='i.ordinal' if kind=='live' else 'i.added DESC'
-    v2=reader._query('''/* direct44 */ SELECT i.sid,i.cid,i.generation,i.added,i.ordinal FROM items_v2 i INDEXED BY '''+v2index+''' JOIN heads h USING(pid,kind,cid,generation) WHERE '''+where+' ORDER BY '+order+' LIMIT ?',args+[cap],kind)
+    heads=reader._query('SELECT cid FROM heads WHERE pid=? AND kind=?',(reader.pid,kind))
+    headed={r['cid'] for r in heads}
+    v2=reader._query('''/* direct44 */ SELECT i.sid,i.cid,i.generation,i.added,i.ordinal FROM items_v2 i INDEXED BY '''+v2index+''' JOIN heads h USING(pid,kind,cid,generation) WHERE '''+where+' ORDER BY '+order+' LIMIT ?',args+[cap],kind) if headed.intersection(allowed) else []
     legacy_where=where.replace('i.','t.')
     order='t.ordinal' if kind=='live' else 't.added DESC,t.ordinal'
-    old=reader._query('''/* direct44 */ SELECT t.sid,t.cid,t.added,t.ordinal FROM titles t WHERE '''+legacy_where+''' AND NOT EXISTS(SELECT 1 FROM heads h WHERE h.pid=t.pid AND h.kind=t.kind AND h.cid=t.cid) ORDER BY '''+order+' LIMIT ?',args+[cap],kind)
+    # Retained legacy payloads are deliberately not deleted by v2 sync. A
+    # global anti-join can scan that entire archive to prove there are no
+    # eligible old rows, exhausting every widget invocation's same budget.
+    # Exclude replaced groups BEFORE touching titles; force the matching
+    # ordering index to avoid sorting a large legacy movie catalogue.
+    legacy_groups=set(allowed)-headed
+    if category is not None:legacy_groups.intersection_update((str(category),))
+    if legacy_groups:
+        # Configured groups can be empty or not imported. Prove existence by
+        # one category-index seek per group, rather than scanning every old
+        # movie to discover that those groups have no retained rows.
+        populated=reader._query('''/* direct44 */ SELECT g.cid FROM groups g WHERE g.pid=? AND g.kind=?
+          AND g.cid IN(SELECT cid FROM selected_categories)
+          AND NOT EXISTS(SELECT 1 FROM heads h WHERE h.pid=g.pid AND h.kind=g.kind AND h.cid=g.cid)
+          AND EXISTS(SELECT 1 FROM titles t INDEXED BY category_titles WHERE t.pid=g.pid AND t.kind=g.kind AND t.cid=g.cid LIMIT 1)''',(reader.pid,kind),kind)
+        legacy_groups.intersection_update(r['cid'] for r in populated)
+    old=[]
+    if legacy_groups:
+        index='category_titles' if kind=='live' and category is not None else 'recent_titles'
+        legacy_where+=' AND t.cid NOT IN(SELECT cid FROM heads WHERE pid=? AND kind=?)'
+        old=reader._query('''/* direct44 */ SELECT t.sid,t.cid,t.added,t.ordinal FROM titles t INDEXED BY '''+index+' WHERE '+legacy_where+' ORDER BY '+order+' LIMIT ?',args+[reader.pid,kind,cap],kind)
     keys=[dict(r,_table='items_v2') for r in v2]+[dict(r,_table='titles') for r in old]
     keys.sort(key=lambda r:(r['ordinal'],r['sid'],r['cid']) if kind=='live' else (r['added'] is None,-(r['added'] or 0),r['ordinal'],r['sid'],r['cid']))
     chosen=[];seen=set()

@@ -27,13 +27,22 @@ def prepare(portal,client,force=False):
                 if other!=key and task.done():_prepared.pop(other)
         def load():
             if not future.set_running_or_notify_cancel():return
-            try:future.set_result(read(portal,client))
+            try:
+                from live_catalog46 import read as indexed46
+                value=indexed46(portal,lambda first:setattr(future,'first46',first),client.get_cached_catalog('get_live_categories')) if portal.get('type')=='xtream' else None
+                future.set_result(value if value is not None else read(portal,client))
             except BaseException as error:future.set_exception(error)
         threading.Thread(target=load,name='XCMate-live-catalog',daemon=True).start()
         return future
 
 
 def read(portal,client):
+    if portal.get('type')=='xtream':
+        from live_catalog46 import read as indexed46
+        from library_index import IndexReadError
+        try:value=indexed46(portal,categories=client.get_cached_catalog('get_live_categories'))
+        except IndexReadError:return None,None
+        if value is not None:return value
     categories=client.get_cached_catalog('get_live_categories')
     if portal.get('type')=='xtream':
         from library_index import Reader, IndexReadError

@@ -43,6 +43,8 @@ def begin(router,menu=False):
 def bind(value,session):
     import xbmcgui
     xbmcgui.Window(10000).setProperty(KEY,json.dumps(dict(value,nonce=session['nonce'])))
+    from flow46 import bind as bind_flow46
+    bind_flow46('live',session)
 
 
 def current():
@@ -57,6 +59,8 @@ def current():
 
 def observe():
     """Service-only sampling; verify immutable item identity before attributing AV."""
+    from flow46 import observe as observe_flow46
+    observe_flow46()
     value=current()
     if not value or value.get('video'):return
     try:
@@ -82,6 +86,8 @@ def nav_ready(navigator):
     navigator._latency=current() or dict(id=uuid.uuid4().hex,started=time.monotonic_ns())
     navigator._latency_seen=set()
     emit(navigator._latency,'LIVE_NAV_READY',rows=len(navigator.channels))
+    from flow46 import mark
+    if navigator.channels and hasattr(navigator,'portal'):mark('GROUPS_READY',pid=navigator.portal['id'],sid=navigator.sid)
 
 
 def remote(navigator,command):
@@ -94,6 +100,9 @@ def remote(navigator,command):
 def visible(navigator):
     phase={'info':'INFO_WINDOW_VISIBLE','channels':'MINI_CHANNELS_VISIBLE'}.get(navigator.mode)
     if phase:
+        if navigator.mode=='channels' and getattr(navigator,'visible_channels',[]) and hasattr(navigator,'portal'):
+            from flow46 import mark
+            mark('MINI_EPG_VISIBLE',pid=navigator.portal['id'],sid=navigator.sid)
         seen=getattr(navigator,'_latency_seen',set())
         emit(getattr(navigator,'_latency',None),phase,cold=phase not in seen)
         seen.add(phase);navigator._latency_seen=seen

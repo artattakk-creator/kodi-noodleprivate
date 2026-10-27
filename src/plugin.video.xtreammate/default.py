@@ -11,6 +11,8 @@ if LIB_PATH not in sys.path:
 def run():
     from boot_diagnostics import phase, mark, finish_directory
     mark('ENTRY')
+    from flow46 import entry as timing_entry46
+    timing_entry46(sys.argv)
     router = None
     try:
         from artwork_config import initialize
@@ -21,6 +23,9 @@ def run():
         router=HomeRouter(sys.argv)
         with phase('HOME_FAST'):
             if home_dispatch(sys.argv,router=router):return
+        from widget_entry46 import dispatch as widget_dispatch46
+        with phase('WIDGET_FAST'):
+            if widget_dispatch46(router):return
         with phase('MAIN_IMPORT'):
             from main import Router
         with phase('ROUTER_INIT'):

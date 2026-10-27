@@ -40,6 +40,8 @@ def _retry_exit_checkpoint(now):
 
 
 def play(router,portal):
+    from flow46 import mark as mark_flow46,bind as bind_flow46
+    mark_flow46('RESOLVE_BEGIN',pid=portal['id'])
     import xbmcgui,xbmcplugin
     from player import build_playable_item
     from library_index import Reader
@@ -105,6 +107,7 @@ def play(router,portal):
         from media_continue import reveal
         try:reveal(portal['id'],sid)
         except (OSError,sqlite3.Error):pass  # Playback remains available on read-only/full storage.
+    bind_flow46('media',session)
     xbmcplugin.setResolvedUrl(router._handle,True,item)
 
 

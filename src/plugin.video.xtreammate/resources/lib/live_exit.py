@@ -23,7 +23,7 @@ def _save(value):_marker().setProperty(KEY,json.dumps(value))
 
 def _trace(stage,session=None):
     # Stable correlation without clear portal, sender, nonce or URL in the log.
-    digest=hashlib.sha256(json.dumps({k:(session or {}).get(k) for k in ('pid','sid','nonce')},sort_keys=True).encode()).hexdigest()[:12]
+    digest=hashlib.sha256(json.dumps(['live',(session or {}).get('nonce')]).encode()).hexdigest()[:12]
     try:
         xbmc.log('[XCMate][LIVE_EXIT] stage='+stage+' session='+digest+
                  ' window='+str(int(xbmcgui.getCurrentWindowId())),xbmc.LOGINFO)
@@ -81,10 +81,15 @@ def _poll(navigator=None):
     from exit_jobs import state as job_state
     job=job_state()
     if job and job['phase'] in ('failed','timeout') and job['token'][1]['nonce']==session['nonce']:
-        if value['phase']!='failed':
-            value['phase']='failed';_save(value);_trace('STOP_TIMEOUT' if job['phase']=='timeout' else 'STOP_REJECTED',session)
-            if navigator is not None and not navigator._closed:navigator.close()
-        return True  # Late native return is not an on-time successful exit.
+        from live_recovery46 import resume
+        if resume(value,job):return True
+        if value.get('recovery46')=='LATE_ACK_VERIFIED':
+            pass  # Continue the existing Stop-done/Home path, never repost Stop.
+        else:
+            if value['phase']!='failed':
+                value['phase']='failed';_save(value);_trace('STOP_TIMEOUT' if job['phase']=='timeout' else 'STOP_REJECTED',session)
+                if navigator is not None and not navigator._closed:navigator.close()
+            return True  # Native timeout remains a recorded failure.
     player=xbmc.Player()
     from playback_exit import identity,_same
     from exit_jobs import request as stop_owned
@@ -126,6 +131,9 @@ def _poll(navigator=None):
             if key=='XtreamMate.RemoteCommand' or raw in [item['nonce'] for item in allowed] or (session_from_property(raw) or {}).get('nonce') in [item['nonce'] for item in allowed]:marker.clearProperty(key)
         value['phase']='home';_save(value);_trace('STOP_DONE',session)
         return True  # Native close returns before navigation on a later tick.
+    if value.get('recovery46')=='LATE_ACK_VERIFIED':
+        from live_recovery46 import gui_available
+        if not gui_available():return True
     if xbmc.getCondVisibility('System.HasActiveModalDialog'):
         if time.monotonic()>value['deadline']:value['phase']='failed';_save(value);_trace('RETURN_BLOCKED',session)
         return True

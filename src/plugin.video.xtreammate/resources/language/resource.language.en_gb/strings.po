@@ -4280,3 +4280,103 @@ msgstr "English"
 msgctxt "#36043"
 msgid "French"
 msgstr "French"
+
+msgctxt "#36100"
+msgid "Programme details"
+msgstr "Programme details"
+
+msgctxt "#36101"
+msgid "Back"
+msgstr "Back"
+
+msgctxt "#36102"
+msgid "No programme information available"
+msgstr "No programme information available"
+
+msgctxt "#36103"
+msgid "Season {0} · Episode {1}"
+msgstr "Season {0} · Episode {1}"
+
+msgctxt "#36104"
+msgid "Cast"
+msgstr "Cast"
+
+msgctxt "#36105"
+msgid "Another dialog is active. Please close it first."
+msgstr "Another dialog is active. Please close it first."
+
+msgctxt "#36106"
+msgid "Loading saved programme information…"
+msgstr "Loading saved programme information…"
+
+msgctxt "#36107"
+msgid "Saved programme information is currently unavailable."
+msgstr "Saved programme information is currently unavailable."
+
+msgctxt "#36108"
+msgid "Neutral placeholder · no verified programme image"
+msgstr "Neutral placeholder · no verified programme image"
+
+msgctxt "#36109"
+msgid "Image source"
+msgstr "Image source"
+
+msgctxt "#36110"
+msgid "Optional programme artwork via TMDb (own configured token)"
+msgstr "Optional programme artwork via TMDb (own configured token)"
+
+msgctxt "#36111"
+msgid "Programme widgets: optional BINGIE adapter (PIN)"
+msgstr "Programme widgets: optional BINGIE adapter (PIN)"
+
+msgctxt "#36112"
+msgid "No automatic skin changes. A separate explicit confirmation is required."
+msgstr "No automatic skin changes. A separate explicit confirmation is required."
+
+msgctxt "#36113"
+msgid "TEST – Prepare programme cards and logo overlay"
+msgstr "TEST – Prepare programme cards and logo overlay"
+
+msgctxt "#36114"
+msgid "TEST – Restore verified original layout"
+msgstr "TEST – Restore verified original layout"
+
+msgctxt "#36115"
+msgid "TEST – Check the existing reload adapter"
+msgstr "TEST – Check the existing reload adapter"
+
+msgctxt "#36116"
+msgid "Only XCMate Live cards, logo overlay and text; widget assignments stay unchanged. A verified original copy exists. A missing reload hook remains a separate gate."
+msgstr "Only XCMate Live cards, logo overlay and text; widget assignments stay unchanged. A verified original copy exists. A missing reload hook remains a separate gate."
+
+msgctxt "#36117"
+msgid "Explicit approval"
+msgstr "Explicit approval"
+
+msgctxt "#36118"
+msgid "Yes, modify this single layout file"
+msgstr "Yes, modify this single layout file"
+
+msgctxt "#36119"
+msgid "Up/Down: read description · Back: close details"
+msgstr "Up/Down: read description · Back: close details"
+
+msgctxt "#36120"
+msgid "Programme image cache budget (MiB)"
+msgstr "Programme image cache budget (MiB)"
+
+msgctxt "#36121"
+msgid "All candidates"
+msgstr "All candidates"
+
+msgctxt "#36122"
+msgid "Loading preview…"
+msgstr "Loading preview…"
+
+msgctxt "#36123"
+msgid "Local preview · OK to enlarge"
+msgstr "Local preview · OK to enlarge"
+
+msgctxt "#36124"
+msgid "No image available"
+msgstr "No image available"

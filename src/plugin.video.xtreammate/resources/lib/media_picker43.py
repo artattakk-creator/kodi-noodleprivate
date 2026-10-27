@@ -29,7 +29,8 @@ def open_pending(parent):
         from picker_status44 import mark,message
         mark('OPEN_REJECTED',code='FOREIGN_MODAL')
         xbmcgui.Dialog().notification('XCMate',message('FOREIGN_MODAL'));return
-    picker=ArtworkPicker('XCMateArtwork43.xml',xbmcaddon.Addon().getAddonInfo('path'),'Default','720p')
+    from appearance import window_source
+    picker=ArtworkPicker('XCMateArtwork43.xml',window_source('XCMateArtwork43.xml',parent.kind),'Default','720p')
     picker.configure(parent)
     initial_mode=parent.mode
     from picker_status44 import mark
@@ -60,6 +61,8 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
         self.rows=[];self.selected=None;self.preview=None;self.image=None
         self.mode='list';self.role='poster';self.armed=False;self.changed=False
         self.query=str(self.record.get('name',''))[:200]
+        from picker_thumbs46 import Thumbnails
+        self._thumbs46=Thumbnails(self);self._all_rows46=[];self._filter46='all'
 
     def _gui(self):
         if threading.get_ident()!=self._owner:raise RuntimeError('CHOICE_OWNER_THREAD')
@@ -70,7 +73,7 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
         from hashlib import sha256
         with self._io_lock:
             if self._cancel.is_set():return None
-            path=os.path.join(self._temp.name,sha256(data).hexdigest()+'.img')
+            path=os.path.join(self._temp.name,sha256(data).hexdigest()+('.png' if data.startswith(b'\x89PNG\r\n\x1a\n') else '.jpg'))
             if path not in self._stage_paths:
                 from import_budget import check_space
                 check_space(path,len(data))
@@ -103,6 +106,7 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
     def pump(self):
         self._gui()
         if self._closed:return
+        self._thumbs46.pump()
         future=self._future
         if future is not None and future.done():
             apply=self._apply;self._future=self._apply=None
@@ -134,6 +138,7 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
                           (501,35910),(502,35911),(503,35912),(504,35913),(505,35914),(506,35915),(507,35916),(508,35917)):
             self.getControl(cid).setLabel(tr(label))
         self.getControl(101).setLabel(tr(35982 if self._metadata_mode44 else 35918));self.getControl(102).setLabel(self.query)
+        for cid,label in ((406,36121),(407,35931),(408,35932)):self.getControl(cid).setLabel(tr(label))
         self._show_list();self.setFocusId(401);self._source('provider')
 
     def _show_list(self):
@@ -141,13 +146,15 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
         self.getControl(200).setVisible(True);self.getControl(600).setVisible(False)
         for cid in range(501,509):self.getControl(cid).setVisible(False)
         self.getControl(300).setVisible(False);self.getControl(301).setVisible(False)
+        for cid in (406,407,408):self.getControl(cid).setVisible(not self._metadata_mode44)
+        self._thumbs46.resume()
         self._navigation()
 
     def _navigation(self):
         # Wire only visible buttons; Kodi XML neighbors can otherwise strand
         # an IR remote on the hidden Save/reset buttons.
         buttons=[cid for cid in range(501,509) if self.getControl(cid).isVisible()]
-        target=buttons[0] if buttons else 200
+        target=buttons[0] if buttons else 200 if self._metadata_mode44 else 406
         for cid in range(401,406):
             self.getControl(cid).setNavigation(self.getControl(cid),self.getControl(target),
                 self.getControl(405 if cid==401 else cid-1),self.getControl(401 if cid==405 else cid+1))
@@ -201,23 +208,37 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
     def _results(self,rows):
         code=rows.get('code','') if isinstance(rows,dict) else ''
         rows=rows.get('rows',[]) if isinstance(rows,dict) else rows
-        self.rows=rows[:24];control=self.getControl(200);control.reset()
+        self._all_rows46=rows[:24];self._filter46='all'
+        self._thumbs46.reset(self._all_rows46)
+        self._render_results46()
+        values=self.rows
+        from picker_status44 import mark,message
+        mark('RESULTS',self._source44,code or ('OK' if values else 'NO_RESULTS'),len(values))
+        self.getControl(200).setVisible(True)
+        self._status(tr(35906,code)+' · '+tr(35923,len(values)) if code else tr(35923,len(values)) if values else message('NO_RESULTS',self._source44))
+        if values:self.setFocusId(200)
+
+    def _render_results46(self):
+        from picker_thumbs46 import key
+        self.rows=[r for r in self._all_rows46 if self._filter46=='all' or r.get('role')==self._filter46]
+        control=self.getControl(200);control.reset()
         values=[]
         for row in self.rows:
             li=xbmcgui.ListItem(str(row['name']),label2=str(row['attribution'])[:200])
-            # Only already validated local previews become thumbnails. No
-            # uncontrolled provider URL is passed into Kodi's texture loader.
+            path=self._thumbs46.paths.get(key(row))
+            if path:li.setArt({'thumb':path})
+            li.setProperty('XCMate.Preview46',self._thumbs46.codes.get(key(row),'PENDING' if row.get('url') else 'NO_IMAGE'))
+            li.setProperty('XCMate.PreviewLabel46',tr(36123) if path else tr(36122) if row.get('url') else tr(36124))
             values.append(li)
-        from picker_status44 import mark,message
-        mark('RESULTS',self._source44,code or ('OK' if values else 'NO_RESULTS'),len(values))
-        control.addItems(values);self._status(tr(35906,code)+' · '+tr(35923,len(values)) if code else tr(35923,len(values)) if values else message('NO_RESULTS',self._source44))
-        if values:self.setFocusId(200)
+        control.addItems(values)
 
     def _preview(self,fetch=True):
         pos=self.getControl(200).getSelectedPosition()
         if not 0<=pos<len(self.rows):return
         candidate=dict(self.rows[pos]);self.selected=candidate;self.role=candidate['role'];self.armed=False
         self.mode='preview';self.getControl(200).setVisible(False)
+        self._thumbs46.cancel.set()
+        for cid in (406,407,408):self.getControl(cid).setVisible(False)
         for cid in range(501,509):self.getControl(cid).setVisible(True)
         self.getControl(503).setVisible(False);self.getControl(508).setVisible(bool(self.record.get('_metadata_override43')))
         self.getControl(300).setVisible(True);self.getControl(301).setVisible(True)
@@ -227,6 +248,9 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
         mark('PREVIEW',self._source44,'OK')
         if self._metadata_mode44:
             for cid in (300,501,502,503,505):self.getControl(cid).setVisible(False)
+            from picker_thumbs46 import key
+            thumbnail=self._thumbs46.paths.get(key(candidate))
+            if thumbnail:self.getControl(300).setVisible(True);self.getControl(300).setImage(thumbnail,useCache=False)
             self._navigation();self.setFocusId(507);self._status(tr(35983));return
         self._navigation();self.setFocusId(501)
         def load():
@@ -278,6 +302,10 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
 
     def onClick(self,cid):
         self._gui()
+        if cid in (406,407,408) and self.mode=='list':
+            self._filter46={406:'all',407:'poster',408:'fanart'}[cid];self._render_results46()
+            if self.rows:self.setFocusId(200)
+            return
         if cid in (401,402,403):self._source({401:'provider',402:'tmdb',403:'commons'}[cid]);return
         if cid==404:
             if self._metadata_mode44:
@@ -336,6 +364,7 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
     def close(self):
         if self._closed:return
         self._closed=True;self._cancel.set()
+        self._thumbs46.close()
         if self._future:self._future.cancel()
         def cleanup():
             with self._io_lock:self._temp.cleanup()

@@ -39,6 +39,8 @@ def refresh_local(cancel=lambda:False):
                 _bootstrapped.add(portal['id'])
             from guide_store import refresh as refresh_guide
             if cancel():return
+            from programme_index46 import prepare_local as prepare_programmes46
+            prepare_programmes46(portal,cancel)
             try:refresh_guide(portal)
             except Exception:
                 from utils import warn
@@ -79,6 +81,10 @@ def _run():
             if runtime.wait_abort(monitor,.5,_stop):break
             continue
         worked=False
+        try:
+            from widget_notice46 import focused
+            focused()
+        except Exception:pass
         prepare_now=time.monotonic()>=next_prepare
         if prepare_now:
             next_prepare=time.monotonic()+5
@@ -141,7 +147,10 @@ def _run():
 
 
 def poll():
-    from widget_refresh45 import poll as poll_widget_lists
+    if _stop.is_set():return
+    from app_imports46 import ensure as imports_ready46
+    if not imports_ready46():return
+    from widget_notice46 import poll as poll_widget_lists
     poll_widget_lists()
     from guide_backup44 import poll as poll_guide_backup
     poll_guide_backup()
@@ -177,6 +186,8 @@ def shutdown():
     limitation is reported explicitly, rather than claiming a forced stop.
     """
     _stop.set()
+    from programme_art46 import shutdown as shutdown_programme46
+    shutdown_programme46()
     for name in ('downloads','capture_service','media_art'):
         event=getattr(__import__(name),'_stop',None)
         if event is not None:event.set()

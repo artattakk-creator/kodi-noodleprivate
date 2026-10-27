@@ -3,7 +3,7 @@ import xbmc, xbmcaddon, xbmcgui
 
 ADDON    = xbmcaddon.Addon()
 LIB_PATH = os.path.join(os.path.dirname(__file__), 'resources', 'lib')
-SERVICE_BUILD = 45
+SERVICE_BUILD = 46
 if LIB_PATH not in sys.path:
     sys.path.insert(0, LIB_PATH)
 
@@ -82,6 +82,11 @@ class IPTVMasterService(xbmc.Monitor):
         if time.time() - self._last_epg < interval:
             return
         self._last_epg = time.time()
+        from guide_store import path as guide_path46
+        from epg_gate46 import access as refresh_access46
+        if refresh_access46(guide_path46()) not in ('READY','NOT_CREATED'):
+            info('Service: background EPG blocked BACKUP_REQUIRED')
+            return
         info('Service: scheduling background EPG refresh')
         if self._epg_worker and self._epg_worker.is_alive():
             return

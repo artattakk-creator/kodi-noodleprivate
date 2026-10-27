@@ -1,7 +1,7 @@
 """New routes only. Legacy provider/player entry points remain compatible."""
 from localization import tr
 
-ACTIONS=('widget_adapter45','native_options45','downloads_manage45','guide_backup44','update_notice','navigation_rail','artwork_manage','device_info', 'live_guide','search_continue','download_target_test','stability_test','download_folder','download_capabilities','theme_manager','branding_status','xcmate_licenses','guide_grid','playlist_editor','source_live','source_play','source_start','art_status','art_retry','art_db_health','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
+ACTIONS=('programme_details46','widget_adapter46','widget_adapter45','native_options45','downloads_manage45','guide_backup44','update_notice','navigation_rail','artwork_manage','device_info', 'live_guide','search_continue','download_target_test','stability_test','download_folder','download_capabilities','theme_manager','branding_status','xcmate_licenses','guide_grid','playlist_editor','source_live','source_play','source_start','art_status','art_retry','art_db_health','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
          'movies_home','series_home','media_detail','media_favourites','global_search','search_section',
          'widget_live_start_group','widget_recent_vod','widget_recent_series','widget_setup',
          'record_now','recordings_manage','recording_folder','recording_capabilities','about_xcmate','guide_browser','media_play','guide_timers','guide_status')
@@ -59,6 +59,13 @@ def dispatch(router):
     if action in ('guide_timers','guide_status','widget_setup') and not portal:
         _end(router,False)
         xbmcgui.Dialog().notification('XCMate',tr(32466));return
+    if action=='programme_details46':
+        from programme_window46 import route as programme_route
+        programme_route(router,portal);return
+    if action=='widget_adapter46':
+        _end(router)
+        from widget_adapter46 import show
+        show();return
     if action=='widget_adapter45':
         _end(router)
         from widget_adapter45 import show
@@ -350,6 +357,8 @@ def add_index_item(router,portal,kind,item,epg=None,recent=False,widget=False):
         info=None
         if epg:
             info=dict(now=epg.get('Now',''),next=epg.get('Next',''),start=epg.get('Start',0),stop=epg.get('Stop',0),progress=epg.get('Progress') if isinstance(epg.get('Progress'),(int,float)) else None,now_time='',next_time='',description='',_plot45=epg.get('plot',''))
+        if epg and isinstance(epg.get('_event46'),dict):
+            info=dict(epg['_event46']);info['_plot45']=epg.get('plot','')
         value=describe(portal,kind,item,getattr(router,'_widget_art44',{}),info)
         xbmcplugin.addDirectoryItem(router._handle,value['url'],native_item(value),isFolder=False)
         return
@@ -414,16 +423,21 @@ def widget(router,portal,action):
         from local_epg import now_next
         mappings=configuration(portal['id'])['mappings']
         # Existing widget routes, no skin mutation or full-cache hydration.
-        snapshot=now_next(portal['id'],rows,mappings,client=router._xc(portal))
+        from widget_group46 import infos as group_infos46
+        snapshot=group_infos46(portal,rows[:16])
         from widget_focus41 import publish
         publish(portal,rows,snapshot)
         xbmcplugin.setContent(router._handle,'videos')
-        for row in rows:
-            info=snapshot[row['sid']]
-            add_index_item(router,portal,'live',row,dict(Now=info['now'],Next=info['next'],
-                Start=info['start'],Stop=info['stop'],Progress=info['progress'] if info['progress'] is not None else '',
-                plot=guide_plot(info)),widget=True)
-        # Home stays bounded; ordinary directory browsing remains unrestricted.
+        for offset46 in range(0,len(rows),16):
+            batch46=rows[offset46:offset46+16]
+            info46=snapshot if offset46==0 else group_infos46(portal,batch46)
+            for row in batch46:
+                info=info46[row['sid']]
+                add_index_item(router,portal,'live',row,dict(Now=info['now'],Next=info['next'],
+                    Start=info['start'],Stop=info['stop'],Progress=info['progress'] if info['progress'] is not None else '',
+                    plot=guide_plot(info),_event46=info),widget=True)
+        # Complete group; Kodi's native container scrolls horizontally and
+        # requests textures as needed. EPG IO uses batches of sixteen.
         if not rows:
             router._add_dir(tr(35853) if code not in ('READY','CACHE') else tr(32479),
                             router.url(action='settings_section',pid=portal['id'],section='maintenance'))

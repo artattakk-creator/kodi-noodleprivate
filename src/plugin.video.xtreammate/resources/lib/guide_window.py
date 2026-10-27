@@ -27,6 +27,8 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         self._short_revision='';self._short_poll=0
         from utils import setting_int
         self.days=10 if setting_int('epg_days',7)==10 else 7
+        from programme_index46 import available_days
+        self.days=max(self.days,available_days(portal['id']))
 
     def _query_failed(self,exc):
         __import__('theme_render').guide_status(self,'error')
@@ -103,6 +105,9 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
             prefetch_short_guides(self.portal,self.channels)
 
     def _owner_tick(self):
+        if getattr(self,'_programme_request46',None):
+            from programme_window46 import open_pending
+            open_pending(self)
         if self._leaving:
             if time.monotonic()>=self._leave_after:self.close()
             return
@@ -140,12 +145,25 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
             if not rows and not self.mappings.get(channel['sid']):
                 rows,total=events(self.portal['id'],channel.get('epg_channel_id',''),start,stop,page)
                 eid=channel.get('epg_channel_id','')
+            if day>=10:
+                from local_epg import window,channel_keys
+                from epg_events import deduplicate
+                prepared46=window(self.portal['id'],[channel],self.mappings,start,stop,limit=256)
+                if prepared46 is not None:
+                    for ident46 in channel_keys(channel,self.mappings)[1]:
+                        values46=deduplicate(prepared46.get(ident46,[]),channel=ident46)
+                        if values46:
+                            total=len(values46);rows=values46[page:page+100];break
             if day==0 and page==0 and info.get('mapping')=='SHORT_EPG':
                 rows=[dict(e,title=e['title'],description=e.get('description',''),source=-1) for e in info['events']]+[
                     e for e in rows if not info.get('stop') or e['start']>=info['stop']]
                 from epg_events import deduplicate
                 rows=deduplicate(rows,channel=channel['sid'])[:100];total=max(total,len(rows))
-            return rows,total,horizon(self.portal['id'],eid),info
+            coverage46=horizon(self.portal['id'],eid)
+            from programme_index46 import last_event as last_prepared46
+            last46=last_prepared46(self.portal['id'],eid)
+            if last46:coverage46['last_event']=max(coverage46.get('last_event') or 0,last46)
+            return rows,total,coverage46,info
         self._request(load,self._events_ready)
 
     def _events_ready(self,value):
@@ -227,11 +245,8 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
             if event['start']>time.time(): choices.append(tr(32551))
             selected=__import__('menu_icons45').select(xbmcgui.Dialog(),event['title'],__import__('theme_render').epg_choices(choices,self._theme),useDetails=bool(self._theme),default='calendar')
             if selected==0:
-                text=tr(32552).format(
-                    self.channel['name'],time.strftime(tr(32584),time.localtime(event['start'])),
-                    time.strftime(tr(32584),time.localtime(event['stop'])),event.get('description') or tr(32553),
-                    tr(32554) if event.get('source')==-1 else tr(32555) if not event.get('source') else tr(32556)+str(event['source']))
-                xbmcgui.Dialog().textviewer(event['title'],text)
+                from programme_window46 import request
+                request(self,self.channel,event)
             elif selected==1:
                 self.close()
                 xbmc.executebuiltin('PlayMedia('+self.router.url(action='play_live',pid=self.portal['id'],sid=self.sid,name=self.channel['name'])+')')

@@ -188,9 +188,15 @@ class LiveNavigator(xbmcgui.WindowDialog):
         if self.portal.get('type')=='xtream':
             future=getattr(self,'_catalog_future39',None)
             if future is None:future=self._catalog_future39=prepare(self.portal,self.xc)
-            if not future.done():return False
-            try:categories,streams=future.result()
-            except Exception:categories,streams=None,None
+            if not future.done():
+                if getattr(self,'_catalog_partial46',False):return False
+                first46=getattr(future,'first46',None)
+                if first46 is None:return False
+                categories,streams=first46;self._catalog_partial46=True
+            else:
+                self._catalog_partial46=False
+                try:categories,streams=future.result()
+                except Exception:categories,streams=None,None
             if categories is None or streams is None:self._catalog_future39=None
         else:categories,streams = read(self.portal,self.xc)
         loaded=time.perf_counter()
@@ -221,13 +227,15 @@ class LiveNavigator(xbmcgui.WindowDialog):
         trace('catalog_performance','CATALOG_READY',cache_ms=(loaded-started)*1000,
               index_ms=(time.perf_counter()-loaded)*1000,channels=len(channels))
         self._catalog_ready = True
+        from flow46 import mark as mark_flow46
+        if channels:mark_flow46('GROUPS_READY',pid=self.portal['id'],sid=self.sid)
         from ui_latency39 import mark
         mark(self,'CATALOG_READY')
         return True
 
     def refresh_from_cache(self):
         """Service polls only until initial background warming has completed."""
-        if self._catalog_ready or not self._load_catalog_from_disk():
+        if self._catalog_ready and not getattr(self,'_catalog_partial46',False) or not self._load_catalog_from_disk():
             self.tick()
             return False
         self.rows = category_rows(self.groups, self.enabled)
@@ -670,6 +678,9 @@ class LiveNavigator(xbmcgui.WindowDialog):
 
     def tick(self):
         if self._closed or not self._drawn: return
+        if getattr(self,'_programme_request46',None):
+            from programme_window46 import open_pending
+            open_pending(self)
         from playback_exit import identity
         from osd_ownership import recover
         player=xbmc.Player();token=identity(player)
@@ -789,7 +800,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
             i = self.control.getSelectedPosition()
             if 0<=i<len(self._programme_events):
                 event=self._programme_events[i]
-                xbmcgui.Dialog().textviewer('XCMate - '+event['title'],event.get('description') or 'Keine Beschreibung vorhanden.')
+                from programme_window46 import request
+                request(self,self.index.by_sid.get(self._guide_sid),event)
         elif self.mode == 'channels':
             row = self.control.getSelectedPosition()
             i = self._page_start + row - self._row_offset

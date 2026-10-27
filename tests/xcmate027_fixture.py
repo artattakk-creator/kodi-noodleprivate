@@ -24,6 +24,7 @@ class ListItem:
     def setLabel(self,label): self.label=label
     def setArt(self,dictionary): self.art.update(dictionary)
     def setInfo(self,type,infoLabels): self.info.update(infoLabels)
+    def addContextMenuItems(self,items,replaceItems=False):self.context=list(items)
     def setProperty(self,key,value): self.props[key]=value
     def getProperty(self,key): return self.props.get(key,'')
 
@@ -53,6 +54,7 @@ class Control:
             node.text=control.node.get('id')
     def setLabel(self,label='',font=None,textColor=None,disabledColor=None,shadowColor=None,focusedColor=None,label2=''): self.label=label
     def setText(self,text): self.text=text
+    def scroll(self,position):self.scroll_position=position
     def setWidth(self,width): self.width=width
     def setHeight(self,height):self.height=height
     def setPosition(self,x,y): self.x,self.y=x,y

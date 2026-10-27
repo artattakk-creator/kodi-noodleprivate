@@ -45,7 +45,9 @@ class LocalEPG39(model.Fixture,unittest.TestCase):
         for _ in range(20):self.local.now_next('p',self.channels,{},self.now)
         after={p.name:p.read_bytes() for p in self.folder.iterdir() if p.is_file()}
         self.assertTrue(all(after[k]==v for k,v in before.items()))
-        self.assertTrue(set(after)-set(before)<={'guide_v1.sqlite-wal','guide_v1.sqlite-shm'})
+        self.assertTrue(set(after)-set(before)<={
+            'guide_v1.sqlite-wal','guide_v1.sqlite-shm',
+            'programme_artwork.sqlite-wal','programme_artwork.sqlite-shm'})
 
     def test_failed_publication_preserves_last_successful_revision(self):
         self.assertFalse(self.store.import_cache('p',{},revision='failed'))
@@ -75,7 +77,8 @@ class LocalEPG39(model.Fixture,unittest.TestCase):
         self.portal['start_stream_id']='1000';self.router._params['action']='widget_live_start_group'
         with mock.patch.object(sys.modules['epg'],'load_cache',side_effect=AssertionError('global hydrate')):
             self.routes.dispatch(self.router)
-        self.assertEqual(len(self.added),12);self.assertIn('sid=1000',self.added[0][0])
+        # #241 expressly replaces the former twelve-sender UI contract.
+        self.assertEqual(len(self.added),1001);self.assertIn('sid=1000',self.added[0][0])
         self.assertFalse(self.builtins)
 
     def test_missing_and_corrupt_guide_are_not_created_or_reset_by_widget_reads(self):

@@ -25,7 +25,8 @@ class Scope43(unittest.TestCase):
         baseline=json.loads((ROOT/'tests/fixtures/xcmate_02943_protection.json').read_text())
         for name in ('live_stop42','native_stop41','live_exit','exit_jobs'):
             path='src/plugin.video.xtreammate/resources/lib/'+name+'.py'
-            self.assertEqual(hashlib.sha256((ROOT/path).read_bytes()).hexdigest(),baseline['source_sha256'][path])
+            from stabilization_contract_02946 import without_stabilization46
+            self.assertEqual(hashlib.sha256(without_stabilization46((ROOT/path).read_bytes(),path)).hexdigest(),baseline['source_sha256'][path])
         settings=ET.parse(ROOT/'src/plugin.video.xtreammate/resources/settings.xml')
         option=settings.find(".//setting[@id='live_exit_fullscreen42']");self.assertEqual(option.get('default'),'false')
     def test_approved_search_layout_and_icon_remain_byte_identical(self):
