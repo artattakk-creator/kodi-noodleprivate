@@ -219,9 +219,8 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
             choices.append(tr(33113))
         choice=__import__('menu_icons45').select(xbmcgui.Dialog(),channel['name'] if channel_only or not event else event['title'],__import__('theme_render').epg_choices(choices,self._theme),useDetails=bool(self._theme),default='calendar')
         if choice==0:
-            text=channel['name']+'\n'+tr(33114,row['mapping'])
-            if event:text+='\n'+event['title']+'\n'+str(event.get('description') or tr(32553))
-            xbmcgui.Dialog().textviewer(tr(33112),text)
+            from programme_window46 import request
+            request(self,channel,event)
         elif choice==1:
             # Only record the selected channel. No close/PlayMedia in a native
             # callback: the owner pump closes after this callback has returned.
@@ -419,6 +418,8 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         elif cid==313:self._show_groups()
 
     def _owner_tick(self):
+        from programme_window46 import open_pending
+        open_pending(self)
         if not self._leaving:self._resume_focus()
         if self._leaving:
             if time.monotonic()>=self._leave_after:self.close()

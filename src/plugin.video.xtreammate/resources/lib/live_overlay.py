@@ -670,6 +670,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
 
     def tick(self):
         if self._closed or not self._drawn: return
+        from programme_window46 import open_pending
+        open_pending(self)
         from playback_exit import identity
         from osd_ownership import recover
         player=xbmc.Player();token=identity(player)
@@ -789,7 +791,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
             i = self.control.getSelectedPosition()
             if 0<=i<len(self._programme_events):
                 event=self._programme_events[i]
-                xbmcgui.Dialog().textviewer('XCMate - '+event['title'],event.get('description') or 'Keine Beschreibung vorhanden.')
+                from programme_window46 import request
+                request(self,self.index.by_sid.get(self._guide_sid),event)
         elif self.mode == 'channels':
             row = self.control.getSelectedPosition()
             i = self._page_start + row - self._row_offset

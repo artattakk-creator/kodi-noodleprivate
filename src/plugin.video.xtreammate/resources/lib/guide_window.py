@@ -103,6 +103,8 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
             prefetch_short_guides(self.portal,self.channels)
 
     def _owner_tick(self):
+        from programme_window46 import open_pending
+        open_pending(self)
         if self._leaving:
             if time.monotonic()>=self._leave_after:self.close()
             return
@@ -227,11 +229,8 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
             if event['start']>time.time(): choices.append(tr(32551))
             selected=__import__('menu_icons45').select(xbmcgui.Dialog(),event['title'],__import__('theme_render').epg_choices(choices,self._theme),useDetails=bool(self._theme),default='calendar')
             if selected==0:
-                text=tr(32552).format(
-                    self.channel['name'],time.strftime(tr(32584),time.localtime(event['start'])),
-                    time.strftime(tr(32584),time.localtime(event['stop'])),event.get('description') or tr(32553),
-                    tr(32554) if event.get('source')==-1 else tr(32555) if not event.get('source') else tr(32556)+str(event['source']))
-                xbmcgui.Dialog().textviewer(event['title'],text)
+                from programme_window46 import request
+                request(self,self.channel,event)
             elif selected==1:
                 self.close()
                 xbmc.executebuiltin('PlayMedia('+self.router.url(action='play_live',pid=self.portal['id'],sid=self.sid,name=self.channel['name'])+')')
