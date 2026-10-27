@@ -4112,3 +4112,7 @@ msgstr "Search and assign metadata"
 msgctxt "#35983"
 msgid "Choose metadata fields to preview and confirm. No image download is required."
 msgstr "Choose metadata fields to preview and confirm. No image download is required."
+
+msgctxt "#35984"
+msgid "Local guide: {0}/7 historical days available"
+msgstr "Local guide: {0}/7 historical days available"

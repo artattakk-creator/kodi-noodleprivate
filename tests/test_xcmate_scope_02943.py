@@ -11,7 +11,8 @@ class Scope43(unittest.TestCase):
         baseline=json.loads((ROOT/'tests/fixtures/xcmate_02943_protection.json').read_text())
         self.assertEqual(baseline['base'],BASE)
         for path,digest in baseline['source_sha256'].items():
-            actual=(ROOT/path).read_bytes()
+            from stabilization_contract_02944 import without_stabilization44
+            actual=without_stabilization44((ROOT/path).read_bytes(),path)
             if path in baseline['allowed_source_changes']:actual=without_stabilization43(actual,path)
             self.assertEqual(hashlib.sha256(actual).hexdigest(),digest,path)
     def test_all_1514_existing_test_methods_still_run(self):

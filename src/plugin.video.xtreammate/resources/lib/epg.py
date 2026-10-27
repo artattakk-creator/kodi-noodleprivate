@@ -148,12 +148,12 @@ def request_refresh(portal_id,p,force=False):
     """Persist intent in Kodi, then let the long-lived service own the worker."""
     import uuid,xbmcgui
     from guide_store import path
-    from guide_publish44 import diagnose
-    state=diagnose(path(),str(portal_id))
-    if state['code']=='BACKUP_REQUIRED':
+    from guide_publish44 import access
+    state=access(path())
+    if state not in ('READY','NOT_CREATED'):
         from epg_status import update
-        update(portal_id,'refresh','BACKUP_REQUIRED',running=False)
-        diagnostic('BACKUP_REQUIRED',running=False)
+        update(portal_id,'refresh',state,running=False)
+        diagnostic(state,running=False)
         return False
     xbmcgui.Window(10000).setProperty('XtreamMate.EPGRefreshRequest' ,json.dumps({
         'pid':str(portal_id),'force':bool(force),'at':time.time(),'nonce':uuid.uuid4().hex}))
@@ -525,10 +525,11 @@ def _refresh_portal_epg_inner(portal_id, p, force=False):
         cancel = xbmc.Monitor().abortRequested if hasattr(xbmc,'Monitor') else lambda: False
         return refresh(p,force=force,cancel=cancel)
     from guide_store import path
-    from guide_publish44 import diagnose
-    if diagnose(path(),str(portal_id))['code']=='BACKUP_REQUIRED':
+    from guide_publish44 import access
+    state=access(path())
+    if state not in ('READY','NOT_CREATED'):
         from epg_status import update
-        update(portal_id,'refresh','BACKUP_REQUIRED',running=False)
+        update(portal_id,'refresh',state,running=False)
         return {}
     short_only44=False
     epg_url = p.get('epg_url', '')

@@ -115,3 +115,36 @@ def diagnose(filename,pid):
         return dict(code='READY' if ready(db) else 'BACKUP_REQUIRED',revision=hashlib.sha256(str(meta).encode()).hexdigest()[:16],
                     groups=[dict(source_rank=r[0],utc_day=r[1],events=r[2],first=r[3],last=r[4]) for r in rows],events=sum(r[2] for r in rows))
     finally:db.close()
+
+
+def history_days(pid,filename,now=None):
+    """Actual local calendar coverage, seven bounded read-only existence queries."""
+    if not os.path.isfile(filename):return None
+    from guide_store import day_window
+    from urllib.parse import quote
+    db=sqlite3.connect('file:'+quote(filename,safe='/')+'?mode=ro',uri=True,timeout=.05)
+    try:
+        db.execute('PRAGMA query_only=ON');db.execute('BEGIN')
+        deadline=time.monotonic()+.15;db.set_progress_handler(lambda:int(time.monotonic()>deadline),1000)
+        days=[]
+        for day in range(-7,0):
+            start,stop=day_window(day,now)
+            if db.execute('SELECT 1 FROM programmes WHERE pid=? AND start<? AND stop>? LIMIT 1',(pid,stop,start)).fetchone():days.append(day)
+        return days
+    except sqlite3.Error:return None  # Unknown is not a false empty history.
+    finally:db.close()
+
+
+def access(filename):
+    """Cheap read-only gate, no coverage scan in a user-action callback."""
+    if not os.path.isfile(filename):return 'NOT_CREATED'
+    from urllib.parse import quote
+    db=None
+    try:
+        db=sqlite3.connect('file:'+quote(filename,safe='/')+'?mode=ro',uri=True,timeout=.05)
+        db.execute('PRAGMA query_only=ON')
+        return 'READY' if ready(db) else 'BACKUP_REQUIRED'
+    except sqlite3.Error as exc:
+        return 'GUIDE_BUSY' if isinstance(exc,sqlite3.OperationalError) else 'GUIDE_UNAVAILABLE'
+    finally:
+        if db is not None:db.close()

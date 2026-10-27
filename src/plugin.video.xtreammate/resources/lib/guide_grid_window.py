@@ -106,6 +106,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         self._loading=False;self.rows=value['rows'];self.total=value['total'];self.groups=value['groups']
         if self.groups and self.category not in {g['cid'] for g in self.groups}:
             self.category=self.groups[0]['cid'];self.offset=self.row=0;self._load();return
+        self._history44=value.get('history44')
         self.row=min(self.row,max(0,len(self.rows)-1));self._render()
         from epg_views import prefetch_short_guides
         if self.rows:prefetch_short_guides(self.portal,[row['channel'] for row in self.rows],limit=ROWS)
@@ -160,7 +161,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         group=next((g['title'] for g in self.groups if g['cid']==self.category),'')
         self.getControl(101).setLabel(tr(33100)+' · '+group+' · '+time.strftime('%a %d.%m.%Y',time.localtime(self.origin)))
         available=sum(bool(r['events']) for r in self.rows)
-        self.getControl(102).setLabel(tr(33111,self.offset+1 if self.rows else 0,min(self.total,self.offset+len(self.rows)),self.total,available,len(self.rows))+(' · '+tr(33120) if any(len(r['events'])>CELLS for r in self.rows) else ''))
+        self.getControl(102).setLabel(tr(33111,self.offset+1 if self.rows else 0,min(self.total,self.offset+len(self.rows)),self.total,available,len(self.rows))+(' · '+tr(33120) if any(len(r['events'])>CELLS for r in self.rows) else '')+(' · '+tr(35984,len(self._history44)) if getattr(self,'_history44',None) is not None else ''))
         self._focus_cell(target)
 
     def _refresh_logos(self):

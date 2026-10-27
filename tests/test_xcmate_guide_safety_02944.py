@@ -133,3 +133,7 @@ class GuideSafety44(Fixture,unittest.TestCase):
         from epg_merge44 import extend
         result,added=extend([self.event(self.now,self.now+1800,'A')],[self.event(self.now,self.now+1800,'Conflict'),self.event(self.now+1800,self.now+3600,'B')],1)
         self.assertEqual(added,1);self.assertEqual([r['name'] for r in result],['A','B'])
+    def test_history_indicator_counts_only_real_days_not_empty_calendar_slots(self):
+        first,last=self.g.day_window(-7,self.now),self.g.day_window(-2,self.now)
+        self.put_cache([self.event(first[0]+10,first[0]+100,'Oldest'),self.event(last[0]+10,last[0]+100,'Two days ago')])
+        self.assertEqual(self.pub.history_days('p',self.g.path(),self.now),[-7,-2])
