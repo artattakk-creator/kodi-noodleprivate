@@ -148,7 +148,7 @@ def request_refresh(portal_id,p,force=False):
     """Persist intent in Kodi, then let the long-lived service own the worker."""
     import uuid,xbmcgui
     from guide_store import path
-    from guide_publish44 import access
+    from epg_gate46 import access
     state=access(path())
     if state not in ('READY','NOT_CREATED'):
         from epg_status import update
@@ -525,7 +525,7 @@ def _refresh_portal_epg_inner(portal_id, p, force=False):
         cancel = xbmc.Monitor().abortRequested if hasattr(xbmc,'Monitor') else lambda: False
         return refresh(p,force=force,cancel=cancel)
     from guide_store import path
-    from guide_publish44 import access
+    from epg_gate46 import access
     state=access(path())
     if state not in ('READY','NOT_CREATED'):
         from epg_status import update

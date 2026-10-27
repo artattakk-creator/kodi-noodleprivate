@@ -218,6 +218,13 @@ def refresh(portal,force=False,cancel=lambda:False):
 
 
 def _refresh44(portal,force=False,cancel=lambda:False):
+    from guide_store import path as guide_path46
+    from epg_gate46 import access as refresh_access46
+    state46=refresh_access46(guide_path46())
+    if state46 not in ('READY','NOT_CREATED'):
+        from epg_status import update
+        update(portal['id'],'refresh',state46,running=False)
+        return {}
     from epg_sources import configuration
     from epg_status import update,source_key
     from epg_errors import failure_details

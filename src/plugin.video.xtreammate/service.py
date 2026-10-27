@@ -82,6 +82,11 @@ class IPTVMasterService(xbmc.Monitor):
         if time.time() - self._last_epg < interval:
             return
         self._last_epg = time.time()
+        from guide_store import path as guide_path46
+        from epg_gate46 import access as refresh_access46
+        if refresh_access46(guide_path46()) not in ('READY','NOT_CREATED'):
+            info('Service: background EPG blocked BACKUP_REQUIRED')
+            return
         info('Service: scheduling background EPG refresh')
         if self._epg_worker and self._epg_worker.is_alive():
             return
