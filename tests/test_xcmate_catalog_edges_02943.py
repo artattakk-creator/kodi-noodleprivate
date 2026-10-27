@@ -9,7 +9,7 @@ class Catalogue43(Fixture,unittest.TestCase):
     def test_empty_single_partial_and_large_pages_preserve_exact_unique_totals(self):
         for kind in ('vod','series'):
             for n in (0,1,23,24,25,48,49,500,1703):
-                
+
                 if n:self.index.import_group('p',kind,'edge',self.records(n))
                 reader=self.index.Reader('p');seen=[]
                 for start in range(0,max(1,n),24):
