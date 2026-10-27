@@ -24,6 +24,8 @@ class MenuIcons45(Fixture,unittest.TestCase):
   expected={'home_start':'tv','movies_home':'movie','series_home':'series','global_search':'search','favourites':'star','epg_sources':'database','refresh_epg':'refresh','portal_manager':'user','add_portal_from_settings':'plus','groups_manager':'list','ui_language':'globe','widget_setup':'grid','record_now':'record','download_folder':'drive','guide_backup44':'shield','xcmate_licenses':'document'}
   for action,role in expected.items():self.assertEqual(self.m.role(action),role)
   self.assertEqual(self.m.role('settings_section',{'section':'experimental'}),'flask-lock')
+  self.assertEqual(self.m.role('settings_section',{'section':'information'}),'info')
+  self.assertEqual(self.m.role('media_favourites',{'kind':'vod'}),'movie');self.assertEqual(self.m.role('media_favourites',{'kind':'series'}),'series')
  def test_native_select_adds_glyphs_without_focus_entries_or_network(self):
   dialog=mock.Mock();dialog.select.return_value=1
   result=self.m.select(dialog,'Actions',['Hinzufügen','Bearbeiten','Zurück'])

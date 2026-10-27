@@ -2,7 +2,7 @@
 import os
 from urllib.parse import urlsplit,parse_qs
 ROLES=('tv','movie','series','search','star','calendar','database','refresh','user','plus','pencil','link','list','play','speaker','cc','globe','remote','image','grid','palette','drive','shield','info','flask-lock','record','download','activity','clock','document','settings','trash','back','wand','check')
-SECTIONS={'accounts':'user','live':'tv','epg':'calendar','media':'play','appearance':'palette','system':'drive','experimental':'flask-lock','downloads':'download','recordings':'record','diagnostics':'activity','about':'info','remote':'remote','storage':'drive','groups':'list','startup':'tv','player':'play','maintenance':'activity','designs':'palette'}
+SECTIONS={'accounts':'user','live':'tv','epg':'calendar','media':'play','appearance':'palette','system':'drive','experimental':'flask-lock','downloads':'download','recordings':'record','diagnostics':'activity','about':'info','information':'info','remote':'remote','storage':'drive','groups':'list','startup':'tv','player':'play','maintenance':'activity','designs':'palette'}
 ACTIONS={
  'home_start':'tv','home_live':'tv','play_start':'tv','play_start_direct':'tv','source_start':'tv','source_live':'tv','play_live':'tv','source_play':'tv','root':'tv','xcmate_home':'tv','portal_home':'user',
  'movies_home':'movie','vod_categories':'movie','vod_list':'movie','m3u_movies':'movie','m3u_movie_list':'movie','series_home':'series','series_categories':'series','series_list':'series','series_seasons':'series','series_episodes':'series',
@@ -18,7 +18,7 @@ def role(action,params=None):
  params=params or {}
  if action in ROLES:return action
  if action in ('settings_section','native_options45'):return SECTIONS.get(params.get('section') or params.get('group'),'settings')
- if action=='media_detail':return 'series' if params.get('kind')=='series' else 'movie'
+ if action in ('media_detail','media_favourites'):return 'series' if params.get('kind')=='series' else 'movie'
  if action in ACTIONS:return ACTIONS[action]
  for words,value in [(('download',),'download'),(('record',),'record'),(('epg','guide'),'calendar'),(('series','season','episode'),'series'),(('vod','movie','film'),'movie'),(('group','channel'),'list'),(('portal','account'),'user'),(('refresh','retry'),'refresh'),(('remote',),'remote'),(('play',),'play'),(('theme','appearance'),'palette'),(('diagnos','status','probe','test'),'activity'),(('setting',),'settings')]:
   if any(word in action for word in words):return value
