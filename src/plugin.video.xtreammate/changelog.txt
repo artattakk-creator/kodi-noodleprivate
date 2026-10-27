@@ -1,7 +1,10 @@
 0.1.29.46 (cumulative review candidate; Android .46 NOT_TESTED)
-- Latest user scope correction in #241/#242: the large shared persistent
-  SQLite/20-day architecture is reserved for .47. Existing graphical programme
-  details, bounded artwork and complete Live widgets remain in this candidate.
+- Latest direct user instruction includes the already implemented shared
+  programme_artwork.sqlite conversion in .46 after complete regression checks.
+  Own WAL/app-ID cache, incremental facts/DTOs/art references and real feed
+  history through day-7/day+20; no expansion/reset of the primary guide schema.
+- Verified 16:9 local artwork, source confidence/positive and negative TTL,
+  content reuse, crash rollback and distinct cache/budget diagnostics.
 - #241/#240: preserve native Stop timeout as failure; recover the GUI once a
   matching late FIFO return is verified, no second Stop or foreign navigation.
 - Skip fully superseded/empty legacy movie groups before the bounded widget
