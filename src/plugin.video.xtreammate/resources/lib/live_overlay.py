@@ -529,19 +529,25 @@ class LiveNavigator(xbmcgui.WindowDialog):
         labels = [c.name for c in page]
         return labels or ['Senderkatalog wird vorbereitet' if not self._catalog_ready else 'Keine aktivierten Sender']
 
+    def _row_value44(self,control,method,*values):
+        from render_diff44 import write
+        write(self,control,method,*values)
+
     def _render_rows(self):
         selected = max(0,self.control.getSelectedPosition())
         first = selected//8*8
-        self.footer.setLabel('OK: auswählen    Links: Gruppen    Zurück: TV')
+        footer_text='OK: auswählen    Links: Gruppen    Zurück: TV'
         wanted = []
         playing = self.index.by_sid.get(self.sid)
         if playing: wanted.append(playing)
+        for slot,(background,_,_,_) in enumerate(self._row_controls):
+            if first+slot!=selected:self._row_value44(background,'setVisible',False)
         for row,(background,logo,title,detail) in enumerate(self._row_controls):
             i = first+row
             available = i<len(self._labels)
-            for c in (logo,title,detail): c.setVisible(available)
-            background.setVisible(available and i==selected)
-            if not available:title.setLabel('');detail.setLabel('');continue
+            if not available:
+                for c in (background,logo,title,detail):self._row_value44(c,'setVisible',False)
+                self._row_value44(title,'setLabel','');self._row_value44(detail,'setLabel','');continue
             label,subtitle,channel = self._labels[i],'',None
             if self.mode == 'channels':
                 absolute = self._page_start+i-self._row_offset
@@ -555,12 +561,14 @@ class LiveNavigator(xbmcgui.WindowDialog):
                     label = ('LIVE  ' if sid==self.sid else '')+channel.name
                     subtitle = '{}-{}  {}'.format(info['now_time'],info['now_end_time'],info['now'][:40]) if info['now'] else 'Keine aktuellen EPG-Daten'
                     if i==selected and info['next']:
-                        self.footer.setLabel('Danach {}: {}'.format(info['next_time'],info['next']))
+                        footer_text='Danach {}: {}'.format(info['next_time'],info['next'])
             elif self.mode == 'guide' and i<len(self._programme_events):
                 subtitle = self._programme_events[i].get('description','')[:100]
-            title.setLabel(label)
-            detail.setLabel(subtitle)
-            logo.setImage(self._local_logo(channel))
+            self._row_value44(title,'setLabel',label)
+            self._row_value44(detail,'setLabel',subtitle)
+            self._row_value44(logo,'setImage',self._local_logo(channel))
+            for c in (logo,title,detail):self._row_value44(c,'setVisible',True)
+            self._row_value44(background,'setVisible',i==selected)
         if self.mode == 'guide':
             channel = self.index.by_sid.get(self._guide_sid)
             if channel: wanted.append(channel)
@@ -570,6 +578,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             if selected is not None and selected not in wanted:wanted.append(selected)
             request_programme=getattr(self._guide,'request_programme',None)
             if request_programme:request_programme(self._mini.sid)
+        self._row_value44(self.footer,'setLabel',footer_text)
         self._guide.request(wanted)
 
     def _render(self, focus=True):
@@ -581,11 +590,13 @@ class LiveNavigator(xbmcgui.WindowDialog):
         osd = self.mode in ('controls','extras')
         for c in (self.bg,self.heading,self.sub,self.control,self.footer): c.setVisible(listing)
         if not listing:
-            for c in (self.heading,self.sub,self.footer):c.setLabel('')
-            for _,_,title,detail in self._row_controls:title.setLabel('');detail.setLabel('')
+            for c in (self.heading,self.sub):c.setLabel('')
+            self._row_value44(self.footer,'setLabel','')
+            for _,_,title,detail in self._row_controls:self._row_value44(title,'setLabel','');self._row_value44(detail,'setLabel','')
         if not osd:self.osd_title.setLabel('')
-        for row in self._row_controls:
-            for c in row: c.setVisible(False)
+        if not listing:
+            for row in self._row_controls:
+                for c in row:self._row_value44(c,'setVisible',False)
         for c in self._info_controls: c.setVisible(self.mode=='info')
         for c in (self.osd_bg,self.osd_title): c.setVisible(osd)
         seek = self._can_seek() if osd else False
@@ -619,9 +630,9 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self.control.setWidth(left-40)
         for row,(background,logo,title,detail) in enumerate(self._row_controls):
             y=116+row*((self._height-210)//8)
-            background.setPosition(44+shift,y);logo.setPosition(52+shift,y+7)
-            title.setPosition(106+shift,y+1);detail.setPosition(106+shift,y+28)
-            background.setWidth(left-40);title.setWidth(left-128);detail.setWidth(left-128)
+            self._row_value44(background,'setPosition',44+shift,y);self._row_value44(logo,'setPosition',52+shift,y+7)
+            self._row_value44(title,'setPosition',106+shift,y+1);self._row_value44(detail,'setPosition',106+shift,y+28)
+            self._row_value44(background,'setWidth',left-40);self._row_value44(title,'setWidth',left-128);self._row_value44(detail,'setWidth',left-128)
         target = self.capture
         if self.mode=='info': self._render_info()
         elif osd:
@@ -660,7 +671,6 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 ch=self.index.by_sid.get(self._guide_sid)
                 self.sub.setLabel(ch.name if ch else 'Programmübersicht')
             else: self.sub.setLabel('OK: öffnen    Menü: Gruppen verwalten')
-            self.footer.setLabel('OK: auswählen    Links: Gruppen    Zurück: TV')
             self._render_rows()
             target = self._mini.list if self.mode=='channels' and self._mini.focused else self.control
         render_end = time.perf_counter()
