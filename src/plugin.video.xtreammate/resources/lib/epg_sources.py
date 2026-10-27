@@ -449,8 +449,9 @@ def manage(portal=None):
                                    type=xbmcgui.INPUT_ALPHANUM)
                     add_source(portal['id'], name, uri, local=True)
             elif choice == 3:
-                request_refresh(portal['id'], portal, force=True)
-                d.notification('XCMate EPG', 'Aktualisierung im Hintergrund gestartet')
+                accepted=request_refresh(portal['id'], portal, force=True)
+                from localization import tr
+                d.notification('XCMate EPG',tr(35965) if accepted else tr(35966))
             elif choice == 4:
                 _choose_mapping(portal)
             else:

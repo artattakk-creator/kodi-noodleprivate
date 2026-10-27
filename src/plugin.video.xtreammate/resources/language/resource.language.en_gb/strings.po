@@ -4020,3 +4020,31 @@ msgstr "End of catalogue"
 msgctxt "#35951"
 msgid "{} seasons"
 msgstr "{} seasons"
+
+msgctxt "#35960"
+msgid "Back up EPG safely (no refresh)"
+msgstr "Back up EPG safely (no refresh)"
+
+msgctxt "#35961"
+msgid "Create a consistent local SQLite/WAL backup and prepare the protected EPG import? Existing data is preserved. No EPG update will be started."
+msgstr "Create a consistent local SQLite/WAL backup and prepare the protected EPG import? Existing data is preserved. No EPG update will be started."
+
+msgctxt "#35962"
+msgid "Create backup"
+msgstr "Create backup"
+
+msgctxt "#35963"
+msgid "Last backup status"
+msgstr "Last backup status"
+
+msgctxt "#35964"
+msgid "Backup requested. Check its status here before updating EPG."
+msgstr "Backup requested. Check its status here before updating EPG."
+
+msgctxt "#35965"
+msgid "Update requested. Source status reports the verified result."
+msgstr "Update requested. Source status reports the verified result."
+
+msgctxt "#35966"
+msgid "EPG protected: first create a verified backup under Maintenance."
+msgstr "EPG protected: first create a verified backup under Maintenance."

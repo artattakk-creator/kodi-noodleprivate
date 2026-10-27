@@ -187,6 +187,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
                 self.offset=offset;self.row=ROWS-1 if direction==3 else 0;self._load()
             return
         if not self.rows:return
+        previous_cursor=self.cursor
         events=self.rows[self.row]['events'];selected=self._selected();step=-1 if direction==1 else 1
         # Adjacent array entries can overlap or be nearest to a gap. Their
         # start may be behind the cursor: never let Right repeat/jump backwards.
@@ -194,6 +195,9 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         candidates=[e['start'] for e in events if (e['start']>boundary if step>0 else e['start']<boundary)]
         if candidates:self.cursor=min(candidates) if step>0 else max(self.origin,max(candidates))
         else:self.cursor+=step*1800
+        from guide_store import day_window
+        if not day_window(-7)[0]<=self.cursor<day_window(10)[0]:
+            self.cursor=previous_cursor;return
         if not self.origin<=self.cursor<self.origin+SPAN:
             self.origin=self.cursor//1800*1800;self._load()
         else:self._render()
@@ -202,7 +206,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         date=datetime.datetime.fromtimestamp(self.cursor)+datetime.timedelta(days=step)
         # The local calendar decides the UTC delta across 23/25-hour DST days.
         target=int(time.mktime(date.timetuple()))
-        if not 0<=(date.date()-datetime.date.today()).days<=9:return
+        if not -7<=(date.date()-datetime.date.today()).days<=9:return
         self.cursor=target;self.origin=target//1800*1800;self._load()
 
     def _actions(self,channel_only=False):

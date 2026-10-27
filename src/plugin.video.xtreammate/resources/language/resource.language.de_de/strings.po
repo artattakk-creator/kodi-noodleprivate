@@ -4020,3 +4020,31 @@ msgstr "Katalogende"
 msgctxt "#35951"
 msgid "{} seasons"
 msgstr "{} Staffeln"
+
+msgctxt "#35960"
+msgid "Back up EPG safely (no refresh)"
+msgstr "EPG-Bestand sicher sichern (ohne Aktualisierung)"
+
+msgctxt "#35961"
+msgid "Create a consistent local SQLite/WAL backup and prepare the protected EPG import? Existing data is preserved. No EPG update will be started."
+msgstr "Konsistente lokale SQLite/WAL-Sicherung erstellen und den geschützten EPG-Import vorbereiten? Vorhandene Daten bleiben erhalten. Es wird keine EPG-Aktualisierung gestartet."
+
+msgctxt "#35962"
+msgid "Create backup"
+msgstr "Sicherung erstellen"
+
+msgctxt "#35963"
+msgid "Last backup status"
+msgstr "Letzter Sicherungsstatus"
+
+msgctxt "#35964"
+msgid "Backup requested. Check its status here before updating EPG."
+msgstr "Sicherung angefordert. Status hier vor einer EPG-Aktualisierung prüfen."
+
+msgctxt "#35965"
+msgid "Update requested. Source status reports the verified result."
+msgstr "Aktualisierung angefordert. Quellenstatus zeigt das geprüfte Ergebnis."
+
+msgctxt "#35966"
+msgid "EPG protected: first create a verified backup under Maintenance."
+msgstr "EPG geschützt: zuerst unter Wartung eine geprüfte Sicherung erstellen."

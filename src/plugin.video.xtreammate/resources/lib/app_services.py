@@ -136,6 +136,8 @@ def _run():
 
 
 def poll():
+    from guide_backup44 import poll as poll_guide_backup
+    poll_guide_backup()
     from app_entry import observe
     observe()
     global _worker

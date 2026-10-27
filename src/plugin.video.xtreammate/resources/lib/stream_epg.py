@@ -41,6 +41,9 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
     from xmltv_stream import parse
     from import_budget import check_space
     db=connect(filename,write=True);target=filename or path();generation=uuid.uuid4().hex
+    from guide_publish44 import require
+    try:require(db)
+    except Exception:db.close();raise
     db.execute('''CREATE TABLE IF NOT EXISTS xml_stage(generation TEXT,cid TEXT,start INTEGER,stop INTEGER,
         title TEXT,description TEXT,PRIMARY KEY(generation,cid,start,stop))''')
     # No executable source content, URLs or provider credentials enter SQLite.
@@ -66,7 +69,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
             ids.add(cid)
     def programme(event):
         nonlocal stored
-        if event['channel'] not in ids or event['stop_timestamp']<=now or event['start_timestamp']>=now+10*86400: return
+        if event['channel'] not in ids or event['stop_timestamp']<=__import__('guide_store').day_window(-7,now)[0] or event['start_timestamp']>=now+10*86400: return
         if not event['name']: return
         batch.append((generation,event['channel'],event['start_timestamp'],event['stop_timestamp'],event['name'],event['descr']))
         stored+=1
@@ -74,7 +77,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
     try:
         # A previous interrupted stage is invisible. Cleanup affects staging
         # only, never a published programme or user's source configuration.
-        with db: db.execute('DELETE FROM xml_stage')
+        # Each import owns only its generation; no deletion of another stage.
         phase='DOWNLOAD'
         try:
             with source_stream(source,cancel=cancel) as stream:
@@ -100,25 +103,18 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         with db:
             from epg_events import clean_stage
             clean_stage(db,'xml_stage',' WHERE generation=?',(generation,))
-            # The atomic publication can use disk journals but never builds
-            # Python lists of all events. Prior future days outside coverage
-            # survive shorter successful feeds.
-            for cid,begin,end in db.execute('SELECT cid,min(start),max(stop) FROM xml_stage WHERE generation=? GROUP BY cid',(generation,)):
-                db.execute('DELETE FROM programmes WHERE pid=? AND source=? AND cid=? AND start<? AND stop>?',
-                           (pid,source_index,cid,end,begin))
-            # Provider / earlier external source wins an overlapping interval.
-            db.execute('''INSERT OR REPLACE INTO programmes
-              SELECT ?,s.cid,s.start,s.stop,s.title,s.description,? FROM xml_stage s
-              WHERE generation=? AND NOT EXISTS (SELECT 1 FROM programmes p
-                WHERE p.pid=? AND p.cid=s.cid AND p.source<?)''',
-                (pid,source_index,generation,pid,source_index))
+            from guide_publish44 import publish,source_id
+            outcome=publish(db,pid,'xml_stage','generation=?',(generation,),
+                            source=source_id(source,source_index),rank=source_index,
+                            revision='stream-'+generation,now=now,cancel=cancel)
+            before_aliases=db.total_changes
             for alias,cid in aliases.items():
                 if db.execute('SELECT 1 FROM xml_stage WHERE generation=? AND cid=? LIMIT 1',(generation,cid)).fetchone():
-                    db.execute('INSERT OR REPLACE INTO guide_alias VALUES(?,?,?)',(pid,alias,cid))
-            db.execute('DELETE FROM programmes WHERE stop<?',(now-86400,))
-            db.execute('INSERT OR REPLACE INTO guide_meta VALUES(?,?,?)',(pid,'stream-'+generation,time.time()))
+                    db.execute('INSERT OR IGNORE INTO guide_alias VALUES(?,?,?)',(pid,alias,cid))
+            if db.total_changes!=before_aliases:
+                db.execute('INSERT OR REPLACE INTO guide_meta VALUES(?,?,?)',(pid,'stream-'+generation,time.time()))
             db.execute('DELETE FROM xml_stage WHERE generation=?',(generation,))
-        counts['stored']=stored
+        counts.update(stored=stored,publish_code=outcome['code'],added=outcome['added'],conflicts=outcome['conflicts'])
         return counts
     finally:
         # SQL rollback restores the complete previous guide on ENOSPC or error.
@@ -149,7 +145,16 @@ def refresh(portal,force=False,cancel=lambda:False):
     from epg_errors import failure_details
     from source_adapters import for_portal
     from epg import _save_disk,_mem_set
-    pid=portal['id'];streams=list(active_streams(portal));config=configuration(pid)
+    pid=portal['id']
+    from guide_store import connect
+    from guide_publish44 import ready
+    db=connect()
+    try:allowed=ready(db)
+    finally:db.close()
+    if not allowed:
+        update(pid,'refresh','BACKUP_REQUIRED',running=False)
+        return {}
+    streams=list(active_streams(portal));config=configuration(pid)
     if not streams:
         update(pid,'cache','WAIT_ACTIVE_CATALOG',running=False)
         from catalog_sync import request
@@ -165,7 +170,7 @@ def refresh(portal,force=False,cancel=lambda:False):
         update(pid,key,'RUNNING',running=True,source_index=index)
         try:
             counts=import_source(pid,source,index,streams,config['mappings'],cancel=cancel)
-            update(pid,key,'READY',running=False,source_index=index,channels=counts['channels'],programmes=counts['stored'],bytes=counts['bytes'])
+            update(pid,key,'PARTIAL_PRESERVED' if counts.get('publish_code')=='PARTIAL_PRESERVED' else 'READY',running=False,source_index=index,channels=counts['channels'],programmes=counts['stored'],bytes=counts['bytes'])
             successes+=1
         except Exception as exc:
             code,fields=failure_details(exc,getattr(exc,'xcmate_stage','MERGE'))
