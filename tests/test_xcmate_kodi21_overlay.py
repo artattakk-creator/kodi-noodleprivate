@@ -381,16 +381,14 @@ class OverlayLifecycleTests(unittest.TestCase):
 
     def test_frozen_025_infobar_geometry_assets_and_text(self):
         o=self.overlay
-        expected=[(32,472,1216,216),(54,506,96,96),(174,486,1060,32),
-                  (174,527,815,29),(1000,527,230,29),(174,567,820,8),
-                  (174,567,820,8),(174,589,1060,27),(174,621,1060,29),
-                  (174,659,1060,24)]
-        self.assertEqual([tuple(c.options[k] for k in ('x','y','width','height'))
-                          for c in o._info_controls],expected)
-        self.assertEqual(o.info_hint.options['label'],'')  # .39 actual stream fields occupy this line.
-        self.assertEqual(o.info_now.options['textColor'],'0xFFF0F2F5')
-        self.assertTrue(o.info_bg.options['filename'].endswith('tv_panel.png'))
-        self.assertTrue(o.info_progress.options['filename'].endswith('tv_progress.png'))
+        # .45's explicit user reference supersedes the historical .025 geometry.
+        self.assertEqual(tuple(o.info_bg.options[k] for k in ('x','y','width','height')),(17,447,1245,241))
+        self.assertEqual(tuple(o.info_logo.options[k] for k in ('x','y','width','height')),(52,480,139,92))
+        self.assertEqual(tuple(o.info_now.options[k] for k in ('x','y','width','height')),(356,516,559,53))
+        self.assertEqual(o.info_hint.options['label'],'')
+        self.assertEqual(o.info_now.options['textColor'],'0xFFF5F7F8')
+        self.assertTrue(o.info_bg.options['filename'].endswith('infobar45/glass.png'))
+        self.assertTrue(o.info_progress.options['filename'].endswith('infobar45/progress.png'))
 
     def test_down_and_up_change_levels_without_executing_transport(self):
         o=self.overlay

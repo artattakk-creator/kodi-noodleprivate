@@ -409,21 +409,15 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 xbmcgui.ControlImage(52,y+7,42,42,__import__('theme_render').texture(self,os.path.join(media,'tv.png'),'icon.live'),aspectRatio=2),
                 xbmcgui.ControlLabel(106,y+1,sidebar-128,27,'','font13','0xFFF0F2F5'),
                 xbmcgui.ControlLabel(106,y+28,sidebar-128,25,'','font12','0xFFB6BCC6')))
-        self.info_bg = xbmcgui.ControlImage(32,height-248,width-64,216,__import__('theme_render').texture(self,panel,'panel.player.infobar'))
-        self.info_logo = xbmcgui.ControlImage(54,height-214,96,96,__import__('theme_render').texture(self,os.path.join(media,'tv.png'),'icon.live'),aspectRatio=2)
-        self.info_name = xbmcgui.ControlLabel(174,height-234,width-220,32,'','font16','0xFFF0F2F5')
-        self.info_now = xbmcgui.ControlLabel(174,height-193,width-465,29,'','font13','0xFFF0F2F5')
-        self.info_times = xbmcgui.ControlLabel(width-280,height-193,230,29,'','font13','0xFFD2D8E0')
-        self._progress_width = width-460
-        self.info_track = xbmcgui.ControlImage(174,height-153,self._progress_width,8,__import__('theme_render').texture(self,normal,'panel.player.progress-track'))
-        self.info_progress = xbmcgui.ControlImage(174,height-153,self._progress_width,8,os.path.join(media,'tv_progress.png'))
-        self.info_duration = xbmcgui.ControlLabel(174,height-131,width-220,27,'','font12','0xFFB6BCC6')
-        self.info_next = xbmcgui.ControlLabel(174,height-99,width-220,29,'','font13','0xFFF0F2F5')
-        self.info_hint = xbmcgui.ControlLabel(174,height-61,width-220,24,'','font12','0xFFB6BCC6')
-        from stream_micro44 import MicroLine
-        self._micro44=MicroLine(self,media,width,height)
-        self._info_controls = [self.info_bg,self.info_logo,self.info_name,self.info_now,self.info_times,
-                              self.info_track,self.info_progress,self.info_duration,self.info_next,self.info_hint]
+        from infobar45 import InfoBar
+        self._infobar45=InfoBar(self,media,width,height)
+        bar=self._infobar45
+        self.info_bg,self.info_logo,self.info_name=bar.bg,bar.logo,bar.name
+        self.info_now,self.info_times,self.info_next=bar.now,bar.start,bar.next
+        self.info_track,self.info_progress,self.info_duration,self.info_hint=bar.track,bar.progress,bar.duration,bar.hint
+        self._progress_width=bar.g['track'][2]
+        self._micro44=bar.technology
+        self._info_controls=bar.controls
         self.osd_bg = xbmcgui.ControlImage(32,height-330,width-64,298,__import__('theme_render').texture(self,panel,'panel.player.controls'))
         self.osd_title = xbmcgui.ControlLabel(52,height-318,width-104,30,'XCMate','font13','0xFFF0F2F5')
         self.main_buttons,self.extra_buttons,self._button_icons = [],[],[]
@@ -490,24 +484,13 @@ class LiveNavigator(xbmcgui.WindowDialog):
         from ui_latency39 import mark
         mark(self,'RAM_SNAPSHOT')
         self._snapshot_ms=getattr(self,'_snapshot_ms',0)+(time.perf_counter()-before)*1000
-        self.info_logo.setImage(self._local_logo(channel))
-        self.info_name.setLabel(channel.name if channel else 'Live-TV')
-        self.info_now.setLabel('JETZT: '+info['now'] if info['now'] else 'Für diesen Sender keine EPG-Daten verfügbar')
-        self.info_times.setLabel('{} - {} Uhr'.format(info['now_time'],info['now_end_time']) if info['now'] else '')
-        for control in (self.info_track,self.info_progress,self.info_duration): control.setVisible(bool(info['now']))
-        if info['now']:
-            self.info_progress.setWidth(max(1,int(self._progress_width*info['progress'])))
-            self.info_progress.setVisible(info['progress']>0)
-            self.info_duration.setLabel('{} / {} Min. vergangen    Noch {} Minuten'.format(
-                int(info['elapsed']//60),max(1,int((info['stop']-info['start']+59)//60)),
-                max(1,int((info['remaining']+59)//60))))
+        self._guide.request_infobar45(self.sid)
         from playback_exit import identity
         player=xbmc.Player();token=identity(player)
         details=self._stream_details.read(player,token if token and token[0]=='live' and token[1]['pid']==str(self.portal['id']) and token[1]['sid']==self.sid else None)
-        self.info_hint.setVisible(False)
-        self._micro44.render(details)
-        self.info_next.setLabel('DANACH: {}    ab {} Uhr'.format(info['next'],info['next_time'])
-                                if info['next'] else 'DANACH: Keine Programmdaten verfügbar')
+        date=xbmc.getInfoLabel('System.Date(ddd, d. mmm yyyy)') or time.strftime('%a, %d. %b. %Y')
+        clock=xbmc.getInfoLabel('System.Time(hh:mm)') or time.strftime('%H:%M')
+        self._infobar45.render(channel.name if channel else 'Live-TV',self._local_logo(channel),info,details,date,clock)
 
     def _list_content(self):
         if self.mode == 'groups':
@@ -600,7 +583,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         if not listing:
             for row in self._row_controls:
                 for c in row:self._row_value44(c,'setVisible',False)
-        for c in self._info_controls:c.setVisible(self.mode=='info' and c is not self.info_hint)
+        for c in self._info_controls:c.setVisible(self.mode=='info' and c not in (self.info_hint,self.info_duration))
         if self.mode!='info':self._micro44.hide()
         for c in (self.osd_bg,self.osd_title): c.setVisible(osd)
         seek = self._can_seek() if osd else False

@@ -28,7 +28,7 @@ class LiveTextureTests(unittest.TestCase):
 
     def test_approved_textures_are_used_by_real_controls_and_native_events_stay_identical(self):
         themed=self.module.LiveNavigator(self.portal,'1');themed.show();self.addCleanup(themed.close)
-        self.assertTrue(themed.info_bg.options['filename'].endswith('assets/player/panel-infobar.png'))
+        self.assertTrue(themed.info_bg.options['filename'].endswith('infobar45/glass.png'))
         self.assertTrue(themed.bg.options['filename'].endswith('assets/shared/sidebar-bg.png'))
         self.assertTrue(themed.info_track.options['filename'].endswith('assets/player/panel-progress-track.png'))
         # Fresh core navigator with no theme; same inputs and same Kodi-native
