@@ -25,7 +25,7 @@ def get(url,*,api=False,token='',cancel=lambda:False,transport=None):
         raise SourceError('UNSAFE_SOURCE')
     if cancel():raise SourceError('CANCELLED')
     deadline=time.monotonic()+12
-    headers={'User-Agent':'XCMate/0.1.29.45 (manual artwork research)','Accept-Encoding':'identity',
+    headers={'User-Agent':'XCMate/0.1.29.46 (manual artwork research)','Accept-Encoding':'identity',
              'Accept':'application/json' if api else 'image/jpeg,image/png'}
     if token:
         if p.hostname!='api.themoviedb.org' or any(ord(c)<33 or ord(c)>126 for c in token):raise SourceError('INVALID_TOKEN')

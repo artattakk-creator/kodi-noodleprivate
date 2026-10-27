@@ -1,3 +1,18 @@
+0.1.29.46 (cumulative review candidate; Android .46 NOT_TESTED)
+- Shared local programme details and Live widget event identity, metadata, image
+  provenance and neutral fallbacks. Station-logo overlays remain separate images.
+- Graphical programme view from the large guide and existing mini/programme info
+  paths; exact Live widget context-info target, unchanged sender OK targets.
+- Rich XMLTV event facts retained in a bounded separate staged cache, published
+  only after the authoritative source commit. No guide schema migration/reset.
+- Bounded asynchronous event-art cache; exact opt-in TMDb title/year/episode
+  matching, negative TTLs and verified persistent local images.
+- Optional hash-guarded BINGIE programme-card adapter prepared with per-card
+  logo/title/times/progress and focused description. Never applied automatically.
+  Missing reload/overlay/focus hooks remain BLOCKED, not full widget acceptance.
+- Existing movie/series widget routes, seven settings, PIN 6666, reference
+  infobar, live compatibility stop, autoplay/resume and all user data retained.
+
 0.1.29.45 (cumulative review candidate; Android .45 NOT_TESTED)
 - Existing Home widget rows refresh from atomic local data publications without
   rebinding URLs, changing skin files or scanning unrelated Kodi libraries.
