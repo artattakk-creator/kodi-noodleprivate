@@ -71,7 +71,7 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
 
     def _submit(self,fn,apply):
         self._gui()
-        if self._future is not None and not self._future.done():
+        if self._future is not None:
             self._status(tr(35905));return
         if not _research_slots.acquire(blocking=False):self._status(tr(35906,'RESEARCH_BUSY'));return
         future=Future();self._future=future;self._apply=apply
@@ -144,7 +144,7 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
                 self.getControl(previous),self.getControl(following))
 
     def _source(self,source):
-        if self._future is not None and not self._future.done():return
+        if self._future is not None:return
         self._show_list()
         from media_sources43 import provider,tmdb,commons
         if source!='provider':
@@ -244,6 +244,7 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
         self._gui()
         if cid in (401,402,403):self._source({401:'provider',402:'tmdb',403:'commons'}[cid]);return
         if cid==404:
+            if self._future is not None:return
             path=xbmcgui.Dialog().browseSingle(1,tr(35903),'files','.jpg|.jpeg|.png')
             if not path:return
             import xbmcvfs
@@ -269,7 +270,7 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
             if self._future is None or self._future.done():self._submit(local,ready)
             return
         if cid==405:self.close();return
-        if self._future is not None and not self._future.done():return
+        if self._future is not None:return
         if cid==200:self._preview()
         elif cid==501:
             if self.image:self.armed=True;self.getControl(503).setVisible(True);self._navigation();self.setFocusId(503)

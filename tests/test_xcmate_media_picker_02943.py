@@ -94,3 +94,8 @@ class Picker43(Fixture,unittest.TestCase):
         from media_sources43 import provider
         values=provider(dict(self.parent.selected,rating='8.5',plot='Text'))
         self.assertEqual(values[0]['metadata']['rating'],8.5)
+    def test_completed_result_must_be_consumed_before_a_new_source_can_replace_it(self):
+        future=Future();future.set_result(True);self.p._future=future;ready=mock.Mock();self.p._apply=ready
+        with mock.patch.object(self.p,'_show_list') as show:
+            self.p._source('provider');show.assert_not_called()
+        self.p.pump();ready.assert_called_once_with(True);self.assertIsNone(self.p._future)
