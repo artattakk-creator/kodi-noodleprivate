@@ -23,7 +23,8 @@ class PlaylistEditor(WorkWindow):
         self.work(read,self.ready)
     def ready(self,rows):
         self.rows=rows;self.getControl(100).reset()
-        self.getControl(100).addItems([xbmcgui.ListItem(('☑ ' if r['enabled'] else '☐ ')+r['name']+' · '+r['group_name']) for r in rows])
+        from menu_icons45 import decorate
+        self.getControl(100).addItems([decorate(xbmcgui.ListItem(('☑ ' if r['enabled'] else '☐ ')+r['name']+' · '+r['group_name']),'list',full=True) for r in rows])
         self.status(0,tr(32754,self.offset+1,self.offset+len(rows),len(rows)));self.setFocusId(100)
     def change(self,operation):
         def job():
@@ -50,14 +51,14 @@ class PlaylistEditor(WorkWindow):
     def choose_group(self):
         from m3u_store import categories
         groups=categories(self.filename)
-        selected=xbmcgui.Dialog().select(tr(32728),[g['name']+' · '+g['kind'] for g in groups])
+        selected=__import__('menu_icons45').select(xbmcgui.Dialog(),tr(32728),[g['name']+' · '+g['kind'] for g in groups],default='list')
         return groups[selected] if 0<=selected<len(groups) else None
     def edit_row(self):
         from m3u_store import edit,reorder
         pos=self.getControl(100).getSelectedPosition()
         if not 0<=pos<len(self.rows): return
         row=self.rows[pos];dlg=xbmcgui.Dialog()
-        choice=dlg.select(tr(32746),[tr(n) for n in (32727,32728,32729,32730,32731,32732,32733,32734)])
+        choice=__import__('menu_icons45').select(dlg,tr(32746),[tr(n) for n in (32727,32728,32729,32730,32731,32732,32733,32734)],default='list')
         values={}
         if choice in (0,2,3):
             field={0:'name',2:'logo',3:'epg'}[choice];value=dlg.input(tr({0:32727,2:32729,3:32730}[choice]),defaultt=row[field]).strip()
@@ -72,12 +73,12 @@ class PlaylistEditor(WorkWindow):
     def groups(self):
         from m3u_store import categories,group
         dlg=xbmcgui.Dialog();groups=categories(self.filename)
-        choice=dlg.select(tr(32723),[tr(32735)]+[g['name']+' · '+g['kind'] for g in groups])
+        choice=__import__('menu_icons45').select(dlg,tr(32723),[tr(32735)]+[g['name']+' · '+g['kind'] for g in groups],default='list')
         if choice<0: return
         selected=groups[choice-1] if choice else None
         name=dlg.input(tr(32738),defaultt=selected['name'] if selected else '').strip()
         if not name: return
-        kind=dlg.select(tr(32736),[tr(32701),tr(32702),tr(32703)])
+        kind=__import__('menu_icons45').select(dlg,tr(32736),[tr(32701),tr(32702),tr(32703)],default='list')
         if kind<0: return
         self.change(lambda:group(self.filename,name,('live','vod','series')[kind],selected['gid'] if selected else None))
     def export(self):

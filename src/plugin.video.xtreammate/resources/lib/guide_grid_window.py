@@ -217,7 +217,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         if event and not channel_only:
             if event['start']>time.time():choices.append(tr(32551))
             choices.append(tr(33113))
-        choice=xbmcgui.Dialog().select(channel['name'] if channel_only or not event else event['title'],__import__('theme_render').epg_choices(choices,self._theme),useDetails=bool(self._theme))
+        choice=__import__('menu_icons45').select(xbmcgui.Dialog(),channel['name'] if channel_only or not event else event['title'],__import__('theme_render').epg_choices(choices,self._theme),useDetails=bool(self._theme),default='calendar')
         if choice==0:
             text=channel['name']+'\n'+tr(33114,row['mapping'])
             if event:text+='\n'+event['title']+'\n'+str(event.get('description') or tr(32553))
@@ -240,7 +240,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
             text='\n'.join(time.strftime('%d.%m. %H:%M',time.localtime(e['start']))+' · '+e['title'] for e in entries)
             xbmcgui.Dialog().textviewer(tr(33118),text or tr(33119))
         elif 0<=choice<len(choices) and choices[choice]==tr(32551):
-            from guide_timers import add
+            from guide_timers import request_add45 as add
             if add(self.portal['id'],channel['sid'],channel['name'],event):xbmcgui.Dialog().notification('XCMate',tr(32557))
         elif 0<=choice<len(choices) and choices[choice]==tr(33113):
             if xbmcgui.Dialog().yesno('XCMate',tr(33115)):
@@ -292,7 +292,8 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
     def _fill_groups(self,selected=None):
         if self.mode!='groups':return
         panel=self.getControl(200);panel.reset()
-        panel.addItems([xbmcgui.ListItem(g['title']) for g in self.groups])
+        from menu_icons45 import decorate
+        panel.addItems([decorate(xbmcgui.ListItem(g['title']),'list',full=True) for g in self.groups])
         selected=self.category if selected is None else selected
         panel.selectItem(next((i for i,g in enumerate(self.groups) if g['cid']==selected),0))
         self.getControl(200).setVisible(bool(self.groups));self.getControl(201).setVisible(not self.groups)

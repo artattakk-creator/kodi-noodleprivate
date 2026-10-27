@@ -58,6 +58,6 @@ def show_sleep_timer_dialog():
     options = ['Off', '15 minutes', '30 minutes',
                '45 minutes', '60 minutes', '90 minutes', '2 hours']
     minutes = [0, 15, 30, 45, 60, 90, 120]
-    idx = xbmcgui.Dialog().select('Sleep Timer', options)
+    idx = __import__('menu_icons45').select(xbmcgui.Dialog(),'Sleep Timer', options,default='clock')
     if idx >= 0:
         set_sleep_timer(minutes[idx])

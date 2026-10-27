@@ -153,9 +153,9 @@ def _checkbox_selection(dialog, kind, categories, ids, current, new_ids):
         suffix = ' [COLOR yellow](NEU)[/COLOR]' if cid in new_ids else ''
         labels.append(name + suffix)
     initial = [index for index, cid in enumerate(ids) if cid in current]
-    selected = dialog.multiselect(
+    selected = __import__('menu_icons45').multiselect(dialog,
         'XCMate – {} (Haken setzen, unten OK = speichern)'.format(LABELS[kind]),
-        labels, preselect=initial)
+        labels, preselect=initial,default='list')
     if selected is None:
         return None
     return {ids[index] for index in selected if isinstance(index, int)
@@ -206,10 +206,10 @@ def choose_groups(portal, kind='live',categories=None,allow_refresh=True):
     while True:
         options = _menu_items(kind, current, ids, old_known, auto_new)
         try:
-            choice = dlg.select('XCMate – {}'.format(LABELS[kind]),
-                                options, preselect=0)
+            choice = __import__('menu_icons45').select(dlg,'XCMate – {}'.format(LABELS[kind]),
+                                options, preselect=0,default='list')
         except TypeError:
-            choice = dlg.select('XCMate – {}'.format(LABELS[kind]), options)
+            choice = __import__('menu_icons45').select(dlg,'XCMate – {}'.format(LABELS[kind]), options,default='list')
         if choice in (-1, 7):
             return False
         if choice == 0:
@@ -258,9 +258,9 @@ def manage_groups(portal):
         return
     dlg = xbmcgui.Dialog()
     while True:
-        choice = dlg.select('XCMate – Gruppen verwalten', [
+        choice = __import__('menu_icons45').select(dlg,'XCMate – Gruppen verwalten', [
             'Live-TV: Sendergruppen', 'Filme: Filmgruppen', 'Serien: Seriengruppen',
-            'Zurück'])
+            'Zurück'],default='list')
         if choice < 0 or choice == 3:
             return
         try:

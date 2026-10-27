@@ -36,7 +36,7 @@ def _dropbox_remote_path():
 def show_menu():
     dlg = xbmcgui.Dialog()
     options = [_L(32291), _L(32292), _L(32295), _L(32296)]
-    idx = dlg.select(_L(32290), options)
+    idx = __import__('menu_icons45').select(dlg,_L(32290), options,default='shield')
     if idx == 0:
         export_local()
     elif idx == 1:
@@ -49,7 +49,7 @@ def show_menu():
 
 def _pick_path(title, default='', is_save=True):
     dlg = xbmcgui.Dialog()
-    method = dlg.select(title, [_L(32314), _L(32315)])
+    method = __import__('menu_icons45').select(dlg,title, [_L(32314), _L(32315)],default='shield')
     if method < 0:
         return None
     if method == 0:
@@ -118,7 +118,7 @@ def _do_import(path):
 
 def _apply_import(data):
     dlg = xbmcgui.Dialog()
-    mode = dlg.select(_L(32308), [_L(32309), _L(32310)])
+    mode = __import__('menu_icons45').select(dlg,_L(32308), [_L(32309), _L(32310)],default='shield')
     if mode < 0:
         return
     if mode == 1:

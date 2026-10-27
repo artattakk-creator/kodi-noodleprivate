@@ -98,9 +98,9 @@ def show(portal, preview_first=False):
         dialog.textviewer('XCMate - EPG-Status & Vorschau', '\n'.join(status_lines(
             portal,cache,streams,config,read(portal['id']))))
     while True:
-        option = dialog.select('XCMate - Programmvorschau',
+        option = __import__('menu_icons45').select(dialog,'XCMate - Programmvorschau',
             ['Sender suchen', 'Sender auswählen (erste 200)', 'Aktualisierung im Hintergrund anfordern',
-             'Lokalen Status / Cache neu einlesen', 'Zurück'])
+             'Lokalen Status / Cache neu einlesen', 'Zurück'],default='calendar')
         if option not in (0,1,2,3): return
         if option == 3:
             from epg import _mem_clear
@@ -123,8 +123,8 @@ def show(portal, preview_first=False):
         if not choices:
             dialog.ok('XCMate EPG','Kein passender Sender im lokalen Katalog. Katalog zuerst laden.')
             continue
-        selected = dialog.select('Sender (max. 200; Suche zum Eingrenzen)',
-                                 [str(s.get('name','')) for s in choices])
+        selected = __import__('menu_icons45').select(dialog,'Sender (max. 200; Suche zum Eingrenzen)',
+                                 [str(s.get('name','')) for s in choices],default='calendar')
         if 0 <= selected < len(choices):
             s = choices[selected]
             info = resolve_guide(cache,str(s.get('epg_channel_id') or ''),str(s.get('stream_id') or ''),

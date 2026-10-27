@@ -183,7 +183,7 @@ class MediaOSD(xbmcgui.WindowDialog):
                 result=stop_owned(self.player,expected=self.token,manual=True,reason=reason);self.dispose();return result
             elif name in ('audio','subtitles'):
                 streams=self.player.getAvailableAudioStreams() if name=='audio' else self.player.getAvailableSubtitleStreams()
-                choice=xbmcgui.Dialog().select(tr(33005 if name=='audio' else 33006),list(streams))
+                choice=__import__('menu_icons45').select(xbmcgui.Dialog(),tr(33005 if name=='audio' else 33006),list(streams),default='play')
                 if 0<=choice<len(streams) and self.owned():
                     if name=='audio':self.player.setAudioStream(choice)
                     else:self.player.setSubtitleStream(choice);self.player.showSubtitles(True)

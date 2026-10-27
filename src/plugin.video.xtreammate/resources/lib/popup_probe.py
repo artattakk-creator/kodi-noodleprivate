@@ -116,10 +116,9 @@ def run_popup_test():
     home.setProperty(KEY_COUNT, '0')
     home.setProperty(LAST_KEY, 'noch keine')
     home.setProperty(FOCUS, 'Kodi-Auswahlfenster')
-    selection = xbmcgui.Dialog().select(
-        'XCMate – SICHTBARER POPUP-TEST',
+    selection = __import__('menu_icons45').select(xbmcgui.Dialog(),'XCMate – SICHTBARER POPUP-TEST',
         ['Eigenes XCMate-XML-Fenster jetzt öffnen',
-         'Nur Kodi-Popup bestätigen und zurück zum Menü'])
+         'Nur Kodi-Popup bestätigen und zurück zum Menü'],default='remote')
     if selection < 0:
         home.setProperty(STATUS, 'KODI-DIALOG MIT ZURÜCK GESCHLOSSEN')
         return

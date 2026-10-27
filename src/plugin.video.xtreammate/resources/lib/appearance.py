@@ -19,7 +19,7 @@ DEFAULT=dict(theme='core',background_opacity=100,panel_opacity=90,icon_opacity=1
 COLOURS=('background','accent','focus','text','secondary')
 OPACITY=('background_opacity','panel_opacity','icon_opacity')
 FONTS={'small':'font12','normal':'font13','large':'font16'}
-RENDER_REVISION='02933-safe-native-focus'
+RENDER_REVISION='02945-local-menu-icons'
 
 
 def path():
@@ -75,10 +75,12 @@ def window_source(xml_filename, kind='vod'):
     from theme_render import snapshot,apply_xml
     theme=snapshot()
     if theme:values.update({k:v.upper() for k,v in theme['spec']['palette'].items()})
-    if values==DEFAULT and not theme: return original
+    from menu_layout45 import FILES,apply as menu_layout
+    if values==DEFAULT and not theme and xml_filename not in FILES:return original
     source=Path(original)/'resources/skins/Default/720p'/xml_filename
     tree=ET.parse(source)
     if theme:apply_xml(tree,theme,xml_filename,kind)
+    menu_layout(tree,xml_filename)
     for node in tree.getroot().iter():
         if node.tag=='font': node.text=FONTS[values['font']]
         elif node.tag=='textcolor' and xml_filename!='XCMateGuideGrid.xml':
@@ -158,17 +160,17 @@ def configure():
             (32630,'background'),(32631,'accent'),(32632,'focus'),(32633,'text'),(32634,'secondary'),(32635,'font')]
     while True:
         labels=[tr(32636)]+[tr(label)+': '+str(draft[key]) for label,key in fields]+[tr(32626),tr(32623),tr(32624),tr(32625)]
-        choice=dialog.select(tr(32622),labels)
+        choice=__import__('menu_icons45').select(dialog,tr(32622),labels,default='palette')
         if choice<0 or choice==len(fields)+3: return False
         if choice==0:
             dialog.ok('XCMate',tr(32642));continue
         if 1<=choice<=len(fields):
             _,key=fields[choice-1]
             if key in OPACITY:
-                number=dialog.select(tr(fields[choice-1][0]),[str(n)+'%' for n in range(0,101,10)])
+                number=__import__('menu_icons45').select(dialog,tr(fields[choice-1][0]),[str(n)+'%' for n in range(0,101,10)],default='palette')
                 if number>=0: draft[key]=number*10
             elif key=='font':
-                scale=dialog.select(tr(32635),[tr(32637),tr(32638),tr(32639)])
+                scale=__import__('menu_icons45').select(dialog,tr(32635),[tr(32637),tr(32638),tr(32639)],default='palette')
                 if scale>=0: draft[key]=('small','normal','large')[scale]
             else:
                 colour=dialog.input(tr(fields[choice-1][0]),defaultt=draft[key]).upper().lstrip('#')

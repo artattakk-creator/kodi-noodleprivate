@@ -55,11 +55,11 @@ def switch(mode,strategy='demand'):
 def _pick():
     import xbmcgui
     from storage_sources import external_sources,kodi_sources
-    dialog=xbmcgui.Dialog();kind=dialog.select(tr(35204),[tr(35224),tr(35225)])
+    dialog=xbmcgui.Dialog();kind=__import__('menu_icons45').select(dialog,tr(35204),[tr(35224),tr(35225)],default='image')
     if kind not in (0,1):return None
     values=job(lambda cancel,progress:external_sources() if kind==0 else [row for row in kodi_sources() if row['path'].startswith('smb://')]) or []
     values.append(dict(label=tr(35226),path='/storage/' if kind==0 else 'smb://'))
-    index=dialog.select(tr(35204),[v['label'] for v in values])
+    index=__import__('menu_icons45').select(dialog,tr(35204),[v['label'] for v in values],default='image')
     if not 0<=index<len(values):return None
     return dialog.browseSingle(0,tr(35204),'files',defaultt=values[index]['path']) or None
 
@@ -73,7 +73,7 @@ def _manage():
     while True:
         value=read()
         labels=[tr(i) for i in (35201,35202,35203,35204,35205,35206,35207,35208,35209,35210,35211,35212,35213,35232,35700,35701)]
-        choice=dialog.select(tr(35200)+' · '+value['mode'],labels)
+        choice=__import__('menu_icons45').select(dialog,tr(35200)+' · '+value['mode'],labels,default='image')
         if choice<0:return
         try:
             if choice==0:

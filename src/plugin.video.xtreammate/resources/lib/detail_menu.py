@@ -46,9 +46,7 @@ class DetailMenuMixin:
         self._detail_menu_context=str(self.selected['sid'])
         self._detail_menu_open=True;self.setProperty('XCMate.DetailMenu','true')
         self.getControl(802).setLabel('XCMate')
-        self._fill(810,[dict(name=tr(34200 if self.kind=='vod' else 34201)),
-                        dict(name=tr(34202)),dict(name=tr(34203)),
-                        dict(name=tr(33703)),dict(name=tr(34204)),dict(name=tr(35918)),dict(name=tr(35982))])
+        self._fill(810,[dict(name=tr(label),menu45=role) for label,role in ((34200 if self.kind=='vod' else 34201,'download'),(34202,'downloads'),(34203,'poster_retry'),(33703,'info'),(34204,'back'),(35918,'image_search'),(35982,'metadata'))])
         # Explicit parent visibility, independent of an info-label used as an
         # XML boolean condition. Both entry methods use this same native panel.
         self.getControl(800).setVisible(True);self.getControl(810).setVisible(True)

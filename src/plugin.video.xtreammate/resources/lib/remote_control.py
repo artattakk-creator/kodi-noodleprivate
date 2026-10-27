@@ -165,10 +165,10 @@ def ensure_for_live_tv():
 def configure():
     dialog = xbmcgui.Dialog()
     active = is_enabled()
-    choice = dialog.select('XCMate – TV-Fernbedienung', [
+    choice = __import__('menu_icons45').select(dialog,'XCMate – TV-Fernbedienung', [
         'Alternative globale Vollbild-Keymap ' + ('deaktivieren' if active else 'aktivieren'),
         'Bedienung und Diagnose anzeigen',
-    ])
+    ],default='remote')
     if choice == 1:
         dialog.ok('XCMate', 'Bei XCMate-Live-TV: Links Senderliste, nochmal Links Gruppen. '
                   'Hoch nächster Sender, Runter vorheriger. OK XCMate-Bedienleiste, '

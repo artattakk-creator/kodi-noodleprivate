@@ -40,6 +40,8 @@ def trace(event,mode='',key=0,dispatch=''):
 
 def add_action(router,label,url,icon=None,plot='',fanart=None):
     import xbmcplugin
+    from menu_icons45 import for_url
+    icon=for_url(url,icon)
     item=xbmcgui.ListItem(label)
     item.setProperty('IsPlayable','false')
     item.setInfo('video',{'title':label,'plot':plot or label})
