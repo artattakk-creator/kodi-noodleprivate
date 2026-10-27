@@ -423,16 +423,21 @@ def widget(router,portal,action):
         from local_epg import now_next
         mappings=configuration(portal['id'])['mappings']
         # Existing widget routes, no skin mutation or full-cache hydration.
-        snapshot=now_next(portal['id'],rows,mappings,client=router._xc(portal))
+        from widget_group46 import infos as group_infos46
+        snapshot=group_infos46(portal,rows[:16])
         from widget_focus41 import publish
         publish(portal,rows,snapshot)
         xbmcplugin.setContent(router._handle,'videos')
-        for row in rows:
-            info=snapshot[row['sid']]
-            add_index_item(router,portal,'live',row,dict(Now=info['now'],Next=info['next'],
-                Start=info['start'],Stop=info['stop'],Progress=info['progress'] if info['progress'] is not None else '',
-                plot=guide_plot(info),_event46=info),widget=True)
-        # Home stays bounded; ordinary directory browsing remains unrestricted.
+        for offset46 in range(0,len(rows),16):
+            batch46=rows[offset46:offset46+16]
+            info46=snapshot if offset46==0 else group_infos46(portal,batch46)
+            for row in batch46:
+                info=info46[row['sid']]
+                add_index_item(router,portal,'live',row,dict(Now=info['now'],Next=info['next'],
+                    Start=info['start'],Stop=info['stop'],Progress=info['progress'] if info['progress'] is not None else '',
+                    plot=guide_plot(info),_event46=info),widget=True)
+        # Complete group; Kodi's native container scrolls horizontally and
+        # requests textures as needed. EPG IO uses batches of sixteen.
         if not rows:
             router._add_dir(tr(35853) if code not in ('READY','CACHE') else tr(32479),
                             router.url(action='settings_section',pid=portal['id'],section='maintenance'))

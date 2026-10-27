@@ -75,7 +75,8 @@ class LocalEPG39(model.Fixture,unittest.TestCase):
         self.portal['start_stream_id']='1000';self.router._params['action']='widget_live_start_group'
         with mock.patch.object(sys.modules['epg'],'load_cache',side_effect=AssertionError('global hydrate')):
             self.routes.dispatch(self.router)
-        self.assertEqual(len(self.added),12);self.assertIn('sid=1000',self.added[0][0])
+        # #241 expressly replaces the former twelve-sender UI contract.
+        self.assertEqual(len(self.added),1001);self.assertIn('sid=1000',self.added[0][0])
         self.assertFalse(self.builtins)
 
     def test_missing_and_corrupt_guide_are_not_created_or_reset_by_widget_reads(self):
