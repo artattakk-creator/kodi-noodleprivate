@@ -1,3 +1,14 @@
+0.1.29.45 (cumulative review candidate; Android .45 NOT_TESTED)
+- Existing Home widget rows refresh from atomic local data publications without
+  rebinding URLs, changing skin files or scanning unrelated Kodi libraries.
+- Seven settings sections; exact PIN 6666 for each experimental entry and deep
+  links. Legacy setting IDs/values and safe route aliases retained.
+- Local central menu icons across owned menus/dialogs; unchanged focus IDs.
+- Reference three-column first infobar: channel/date/time, previous/current/next
+  EPG and six actual stream fields. Existing owner-bound 2s sampler unchanged.
+- .44 EPG backup/import protection, live compatibility stop, search, media,
+  autoplay and resume retained. No device access, data reset or auto-merge.
+
 0.1.29.44 (Android A-H review candidate; all .44 Android gates NOT_TESTED)
 - P0 EPG: sparse feeds add coverage instead of deleting min/max envelopes;
   compatibility snapshots never replace published long-guide records. Sources
