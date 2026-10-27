@@ -28,9 +28,9 @@ class LiveTextureTests(unittest.TestCase):
 
     def test_approved_textures_are_used_by_real_controls_and_native_events_stay_identical(self):
         themed=self.module.LiveNavigator(self.portal,'1');themed.show();self.addCleanup(themed.close)
-        self.assertTrue(themed.info_bg.options['filename'].endswith('assets/player/panel-infobar.png'))
+        self.assertTrue(themed.info_bg.options['filename'].endswith('infobar45/glass.png'))
         self.assertTrue(themed.bg.options['filename'].endswith('assets/shared/sidebar-bg.png'))
-        self.assertTrue(themed.info_track.options['filename'].endswith('assets/player/panel-progress-track.png'))
+        self.assertTrue(themed.info_track.options['filename'].endswith('infobar45/track.png'))
         # Fresh core navigator with no theme; same inputs and same Kodi-native
         # callbacks/focus movement, no reimplementation of the state machine.
         with mock.patch.object(importlib.import_module('theme_render'),'snapshot',return_value=None):
@@ -65,11 +65,11 @@ class WindowAndDiagnosticTests(Fixture,unittest.TestCase):
             with mock.patch.object(store,'playing',return_value=False):store.select(revision)
             window=self.media_window();window._details(window.rows[0]);window._pool.drain()
             actions=window.getControl(300).items
-            self.assertTrue(any(item.art.get('icon','').endswith('assets/media/icon-play.png') for item in actions))
+            self.assertTrue(any(item.art.get('icon','').endswith('menu45/full/play.png') for item in actions))
             favourite=next(i for i,pair in enumerate(window.actions) if pair[1]=='favourite')
-            self.assertTrue(actions[favourite].art['icon'].endswith('assets/media/icon-favorite-add.png'))
+            self.assertTrue(actions[favourite].art['icon'].endswith('menu45/full/star.png'))
             window.getControl(300).selectItem(favourite);window.native(7);window._pool.drain()
-            self.assertTrue(window.getControl(300).items[favourite].art['icon'].endswith('assets/media/icon-favorite-remove.png'))
+            self.assertTrue(window.getControl(300).items[favourite].art['icon'].endswith('menu45/full/star.png'))
             self.routes.add_index_item(self.router,self.portal,'vod',window.selected,widget=True)
             self.assertTrue(self.added[-1][1].art['landscape'].endswith('assets/widgets/widget-movie-fallback.png'))
             art=importlib.import_module('media_art')

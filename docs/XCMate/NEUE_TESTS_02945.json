@@ -1,0 +1,294 @@
+[
+  {
+    "file": "tests/test_xcmate_infobar_reference_02945.py",
+    "test": "ReferenceInfo45.test_reference_panel_and_three_columns_match_measured_1080_geometry"
+  },
+  {
+    "file": "tests/test_xcmate_infobar_reference_02945.py",
+    "test": "ReferenceInfo45.test_720_geometry_scales_without_clipping_or_text_column_overlap"
+  },
+  {
+    "file": "tests/test_xcmate_infobar_reference_02945.py",
+    "test": "ReferenceInfo45.test_all_six_reference_cells_use_actual_resolution_codec_audio_language_subtitles_fps"
+  },
+  {
+    "file": "tests/test_xcmate_infobar_reference_02945.py",
+    "test": "ReferenceInfo45.test_unknown_metadata_and_track_change_never_infer_quality_dolby_language"
+  },
+  {
+    "file": "tests/test_xcmate_infobar_reference_02945.py",
+    "test": "ReferenceInfo45.test_registered_skin_fonts_are_selected_by_declared_sizes"
+  },
+  {
+    "file": "tests/test_xcmate_infobar_reference_02945.py",
+    "test": "ReferenceInfo45.test_unchanged_technology_snapshot_has_no_repeated_setters"
+  },
+  {
+    "file": "tests/test_xcmate_infobar_reference_02945.py",
+    "test": "ReferenceInfo45.test_reference_now_next_progress_and_clock_fields_are_dynamic"
+  },
+  {
+    "file": "tests/test_xcmate_infobar_reference_02945.py",
+    "test": "ReferenceInfo45.test_clear_and_reopen_restores_now_next_badges_without_ghost_text"
+  },
+  {
+    "file": "tests/test_xcmate_infobar_reference_02945.py",
+    "test": "ReferenceInfo45.test_first_second_ok_back_and_20_cycles_do_not_invoke_transport"
+  },
+  {
+    "file": "tests/test_xcmate_infobar_reference_02945.py",
+    "test": "ReferenceInfo45.test_existing_owner_throttled_stream_reader_remains_single_acquisition"
+  },
+  {
+    "file": "tests/test_xcmate_infobar_reference_02945.py",
+    "test": "PreviousEPG45.test_previous_event_from_same_published_revision_is_readonly"
+  },
+  {
+    "file": "tests/test_xcmate_infobar_reference_02945.py",
+    "test": "PreviousEPG45.test_revision_change_or_no_real_history_never_fabricates_previous_title"
+  },
+  {
+    "file": "tests/test_xcmate_infobar_reference_02945.py",
+    "test": "PreviousEPG45.test_previous_event_honors_manual_mapping_before_provider_alias"
+  },
+  {
+    "file": "tests/test_xcmate_menu_icons_02945.py",
+    "test": "MenuIcons45.test_every_semantic_role_has_distinct_nonempty_local_transparent_png"
+  },
+  {
+    "file": "tests/test_xcmate_menu_icons_02945.py",
+    "test": "MenuIcons45.test_seven_settings_and_every_nested_row_have_function_icons"
+  },
+  {
+    "file": "tests/test_xcmate_menu_icons_02945.py",
+    "test": "MenuIcons45.test_function_mapping_matches_user_table_in_multiple_contexts"
+  },
+  {
+    "file": "tests/test_xcmate_menu_icons_02945.py",
+    "test": "MenuIcons45.test_native_select_adds_glyphs_without_focus_entries_or_network"
+  },
+  {
+    "file": "tests/test_xcmate_menu_icons_02945.py",
+    "test": "MenuIcons45.test_existing_listitem_and_real_media_poster_are_not_overwritten"
+  },
+  {
+    "file": "tests/test_xcmate_menu_icons_02945.py",
+    "test": "MenuIcons45.test_owned_xml_icons_preserve_every_control_id_navigation_and_hit_rectangle"
+  },
+  {
+    "file": "tests/test_xcmate_menu_icons_02945.py",
+    "test": "MenuIcons45.test_original_search_xml_and_app_icon_bytes_unchanged"
+  },
+  {
+    "file": "tests/test_xcmate_menu_icons_02945.py",
+    "test": "MenuIcons45.test_media_detail_submenu_and_actions_expose_icons_without_new_focus_ids"
+  },
+  {
+    "file": "tests/test_xcmate_menu_icons_02945.py",
+    "test": "MenuIcons45.test_all_owned_native_select_calls_are_decorated_or_already_icon_listitems"
+  },
+  {
+    "file": "tests/test_xcmate_scope_02945.py",
+    "test": "Scope45.test_every_412_previous_source_file_retained_only_exact_reviewed_hooks_change"
+  },
+  {
+    "file": "tests/test_xcmate_scope_02945.py",
+    "test": "Scope45.test_all_1652_previous_test_methods_retained_without_skip"
+  },
+  {
+    "file": "tests/test_xcmate_scope_02945.py",
+    "test": "Scope45.test_live_stop_media_progress_and_epg_publish_core_remain_byte_identical"
+  },
+  {
+    "file": "tests/test_xcmate_scope_02945.py",
+    "test": "Scope45.test_original_icon_search_xml_and_existing_keymaps_have_exact_bytes"
+  },
+  {
+    "file": "tests/test_xcmate_scope_02945.py",
+    "test": "Scope45.test_comp_mode_default_and_every_setting_id_type_default_value_preserved"
+  },
+  {
+    "file": "tests/test_xcmate_scope_02945.py",
+    "test": "Scope45.test_native_relative_visibility_expressions_still_reference_same_setting_ids"
+  },
+  {
+    "file": "tests/test_xcmate_settings_pin_02945.py",
+    "test": "SettingsPIN45.test_seven_canonical_sections_exactly_match_native_categories"
+  },
+  {
+    "file": "tests/test_xcmate_settings_pin_02945.py",
+    "test": "SettingsPIN45.test_only_four_sixes_allow_entry_and_nested_calls_prompt_once"
+  },
+  {
+    "file": "tests/test_xcmate_settings_pin_02945.py",
+    "test": "SettingsPIN45.test_three_wrong_pins_cancel_spaces_and_three_sixes_never_call_action"
+  },
+  {
+    "file": "tests/test_xcmate_settings_pin_02945.py",
+    "test": "SettingsPIN45.test_reentry_always_prompts_again_and_never_persists_pin"
+  },
+  {
+    "file": "tests/test_xcmate_settings_pin_02945.py",
+    "test": "SettingsPIN45.test_exception_does_not_leave_an_unlocked_context"
+  },
+  {
+    "file": "tests/test_xcmate_settings_pin_02945.py",
+    "test": "SettingsPIN45.test_every_protected_direct_route_stops_before_portal_read"
+  },
+  {
+    "file": "tests/test_xcmate_settings_pin_02945.py",
+    "test": "SettingsPIN45.test_legacy_router_guard_covers_clear_cache_and_old_diagnostics"
+  },
+  {
+    "file": "tests/test_xcmate_settings_pin_02945.py",
+    "test": "SettingsPIN45.test_pin_is_not_bypassed_by_query_flags_or_experimental_native_group"
+  },
+  {
+    "file": "tests/test_xcmate_settings_pin_02945.py",
+    "test": "SettingsPIN45.test_bookmarked_directory_is_released_before_pin_and_handle_restored"
+  },
+  {
+    "file": "tests/test_xcmate_settings_pin_02945.py",
+    "test": "SettingsPIN45.test_cancel_returns_without_container_update_or_data_files"
+  },
+  {
+    "file": "tests/test_xcmate_settings_pin_02945.py",
+    "test": "SettingsPIN45.test_unreleased_actions_only_in_pin_submenus_and_aliases_are_safe"
+  },
+  {
+    "file": "tests/test_xcmate_settings_pin_02945.py",
+    "test": "SettingsPIN45.test_native_experimental_fields_are_hidden_and_open_action_is_gated"
+  },
+  {
+    "file": "tests/test_xcmate_settings_pin_02945.py",
+    "test": "SettingsPIN45.test_clear_or_global_retry_requires_separate_nondefault_confirmation"
+  },
+  {
+    "file": "tests/test_xcmate_settings_pin_02945.py",
+    "test": "SettingsPIN45.test_existing_native_setting_ids_types_defaults_are_exact"
+  },
+  {
+    "file": "tests/test_xcmate_settings_pin_02945.py",
+    "test": "SettingsPIN45.test_normal_settings_navigation_does_not_prompt_or_write_values"
+  },
+  {
+    "file": "tests/test_xcmate_settings_pin_02945.py",
+    "test": "SettingsPIN45.test_direct_download_ui_and_recording_ui_are_gated_before_any_jobs"
+  },
+  {
+    "file": "tests/test_xcmate_settings_pin_02945.py",
+    "test": "SettingsPIN45.test_manual_timer_entry_does_not_create_database_without_pin"
+  },
+  {
+    "file": "tests/test_xcmate_settings_pin_02945.py",
+    "test": "SettingsPIN45.test_nested_native_option_action_uses_released_handle_and_restores_parameters"
+  },
+  {
+    "file": "tests/test_xcmate_widget_adapter_02945.py",
+    "test": "WidgetAdapter45.test_prepare_is_readonly_for_foreign_skin_and_stored_shortcuts"
+  },
+  {
+    "file": "tests/test_xcmate_widget_adapter_02945.py",
+    "test": "WidgetAdapter45.test_patch_only_exact_own_widget_source_urls_and_preserves_other_bytes"
+  },
+  {
+    "file": "tests/test_xcmate_widget_adapter_02945.py",
+    "test": "WidgetAdapter45.test_apply_without_separate_explicit_confirmation_refuses_write"
+  },
+  {
+    "file": "tests/test_xcmate_widget_adapter_02945.py",
+    "test": "WidgetAdapter45.test_explicit_apply_and_hash_guarded_restore_are_exact"
+  },
+  {
+    "file": "tests/test_xcmate_widget_adapter_02945.py",
+    "test": "WidgetAdapter45.test_concurrent_changed_layout_or_skin_update_never_overwritten"
+  },
+  {
+    "file": "tests/test_xcmate_widget_adapter_02945.py",
+    "test": "WidgetAdapter45.test_unverified_skin_version_or_metadata_blocked_before_backup"
+  },
+  {
+    "file": "tests/test_xcmate_widget_adapter_02945.py",
+    "test": "WidgetAdapter45.test_unsafe_path_symlink_and_source_entities_rejected"
+  },
+  {
+    "file": "tests/test_xcmate_widget_adapter_02945.py",
+    "test": "WidgetAdapter45.test_backup_tamper_blocks_apply_and_never_touches_target"
+  },
+  {
+    "file": "tests/test_xcmate_widget_adapter_02945.py",
+    "test": "WidgetAdapter45.test_other_widget_ids_actions_and_direct_item_click_urls_are_not_patched"
+  },
+  {
+    "file": "tests/test_xcmate_widget_adapter_02945.py",
+    "test": "WidgetAdapter45.test_existing_native_hook_does_not_need_patch_or_shortcut_rebind"
+  },
+  {
+    "file": "tests/test_xcmate_widget_adapter_02945.py",
+    "test": "WidgetAdapter45.test_adapter_is_pin_protected_and_not_invoked_by_service_or_widget_render"
+  },
+  {
+    "file": "tests/test_xcmate_widget_adapter_02945.py",
+    "test": "WidgetAdapter45.test_private_backups_are_verified_and_permission_restricted"
+  },
+  {
+    "file": "tests/test_xcmate_widget_refresh_02945.py",
+    "test": "WidgetRefresh45.test_existing_home_binding_updates_new_title_without_new_shortcut_or_root"
+  },
+  {
+    "file": "tests/test_xcmate_widget_refresh_02945.py",
+    "test": "WidgetRefresh45.test_identical_frame_never_resets_or_reassigns_items_or_focus"
+  },
+  {
+    "file": "tests/test_xcmate_widget_refresh_02945.py",
+    "test": "WidgetRefresh45.test_epg_and_art_delta_update_in_place_without_list_reset"
+  },
+  {
+    "file": "tests/test_xcmate_widget_refresh_02945.py",
+    "test": "WidgetRefresh45.test_foreign_item_portal_or_url_prevents_entire_container_write"
+  },
+  {
+    "file": "tests/test_xcmate_widget_refresh_02945.py",
+    "test": "WidgetRefresh45.test_only_verified_legacy_all_titles_footer_is_removed"
+  },
+  {
+    "file": "tests/test_xcmate_widget_refresh_02945.py",
+    "test": "WidgetRefresh45.test_wrong_footer_is_not_mistaken_for_own_widget"
+  },
+  {
+    "file": "tests/test_xcmate_widget_refresh_02945.py",
+    "test": "WidgetRefresh45.test_failed_or_zero_worker_result_keeps_last_good_publication"
+  },
+  {
+    "file": "tests/test_xcmate_widget_refresh_02945.py",
+    "test": "WidgetRefresh45.test_new_interpreter_reads_atomic_published_frame"
+  },
+  {
+    "file": "tests/test_xcmate_widget_refresh_02945.py",
+    "test": "WidgetRefresh45.test_cancelled_foreign_modal_or_active_player_defers_gui_publication"
+  },
+  {
+    "file": "tests/test_xcmate_widget_refresh_02945.py",
+    "test": "WidgetRefresh45.test_three_existing_source_urls_have_only_real_title_tiles_and_exact_clicks"
+  },
+  {
+    "file": "tests/test_xcmate_widget_refresh_02945.py",
+    "test": "WidgetRefresh45.test_live_publication_uses_actual_local_epg_and_guide_progress"
+  },
+  {
+    "file": "tests/test_xcmate_widget_refresh_02945.py",
+    "test": "WidgetRefresh45.test_corrupt_oversized_or_expired_frame_is_not_published_to_home"
+  },
+  {
+    "file": "tests/test_xcmate_widget_refresh_02945.py",
+    "test": "WidgetRefresh45.test_missing_existing_reload_hook_is_explicitly_blocked_without_faking_success"
+  },
+  {
+    "file": "tests/test_xcmate_widget_refresh_02945.py",
+    "test": "WidgetRefresh45.test_native_container_unsupported_python_wrapper_never_used"
+  },
+  {
+    "file": "tests/test_xcmate_widget_refresh_02945.py",
+    "test": "WidgetRefresh45.test_changed_publications_coalesce_and_rate_limit_existing_skin_hook"
+  }
+]

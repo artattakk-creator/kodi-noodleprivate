@@ -34,7 +34,7 @@ def configure_startup(portal):
     prev=str(portal.get('start_group_id') or '*')
     options=['Alle aktivierten Gruppen']+[str(g.get('category_name',g.get('category_id'))) for g in visible]
     initial=1+next((i for i,g in enumerate(visible) if str(g.get('category_id'))==prev),-1)
-    position=dlg.select('XCMate – Start-Sendergruppe', options, preselect=max(0,initial))
+    position=__import__('menu_icons45').select(dlg,'XCMate – Start-Sendergruppe', options, preselect=max(0,initial),default='tv')
     if position<0: return False
     group='*' if position==0 else str(visible[position-1]['category_id'])
     streams=[x for x in (xc.get_live_streams() if portal.get('type')=='xtream' else xc.get_cached_catalog('get_live_streams')) if isinstance(x,dict) and x.get('stream_id')]
@@ -46,8 +46,8 @@ def configure_startup(portal):
         return False
     old_sid=str(portal.get('start_stream_id') or '')
     initial=next((i for i,ch in enumerate(available) if str(ch['stream_id'])==old_sid),0)
-    chosen=dlg.select('XCMate – Startsender',
-        [str(c.get('name','Sender')) for c in available],preselect=initial)
+    chosen=__import__('menu_icons45').select(dlg,'XCMate – Startsender',
+        [str(c.get('name','Sender')) for c in available],preselect=initial,default='tv')
     if chosen<0: return False
     channel=available[chosen]
     autoplay=portal.get('type')=='xtream' and dlg.yesno('XCMate – Automatischer Start',

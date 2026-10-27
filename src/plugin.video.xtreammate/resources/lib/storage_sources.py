@@ -37,7 +37,7 @@ def choose(action='DOWNLOAD'):
     from capture_ui import work
     mark(action,'PICKER_ACTION');dialog=xbmcgui.Dialog()
     mark(action,'PICKER_ROOT_LISTED',count=3)
-    category=dialog.select(tr(34900 if action=='DOWNLOAD' else 34901),[tr(34902),tr(34903),tr(34904)])
+    category=__import__('menu_icons45').select(dialog,tr(34900 if action=='DOWNLOAD' else 34901),[tr(34902),tr(34903),tr(34904)],default='drive')
     if category not in (0,1,2):return None
     target=('LOCAL','USB','SMB')[category];mark(action,'SOURCE_CATEGORY',target)
     if category==0:
@@ -50,7 +50,7 @@ def choose(action='DOWNLOAD'):
         values=work(lambda:[v for v in kodi_sources() if v['path'].startswith('smb://')]) or []
         if not values:dialog.ok('XCMate',tr(34906))
         values.append(dict(label=tr(34912),path='smb://'))
-    index=dialog.select(tr(34900 if action=='DOWNLOAD' else 34901),[v['label'] for v in values])
+    index=__import__('menu_icons45').select(dialog,tr(34900 if action=='DOWNLOAD' else 34901),[v['label'] for v in values],default='drive')
     if not 0<=index<len(values):return None
     # Never initialize to the previous internal target. This root was just
     # selected explicitly from the relevant class/source list.

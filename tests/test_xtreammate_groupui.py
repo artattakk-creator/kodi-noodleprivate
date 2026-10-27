@@ -51,6 +51,8 @@ class GroupUITests(unittest.TestCase):
         self_test = self
         gui = types.ModuleType('xbmcgui')
         gui.Dialog = Dialog
+        from menu45_fixture import install
+        install(gui)
         with mock.patch.dict(sys.modules, {'xbmcgui': gui}):
             self.assertTrue(self.groups.choose_groups(self.portal,'live'))
         self.assertEqual(self.groups.load('p'),{'30','70','105'})
@@ -65,6 +67,8 @@ class GroupUITests(unittest.TestCase):
             def notification(self,*a): pass
         gui=types.ModuleType('xbmcgui')
         gui.Dialog=Dialog
+        from menu45_fixture import install
+        install(gui)
         with mock.patch.dict(sys.modules,{'xbmcgui':gui}):
             self.assertFalse(self.groups.choose_groups(self.portal))
         self.assertEqual(self.groups.load('p'),{'5'})

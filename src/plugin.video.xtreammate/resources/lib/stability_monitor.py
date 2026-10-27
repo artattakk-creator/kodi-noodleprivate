@@ -88,10 +88,10 @@ def show():
     import xbmcgui
     from localization import tr
     from capture_ui import work
-    dialog=xbmcgui.Dialog();choice=dialog.select(tr(34800),[tr(n) for n in (34801,34802,34803,34804,34805)])
+    dialog=xbmcgui.Dialog();choice=__import__('menu_icons45').select(dialog,tr(34800),[tr(n) for n in (34801,34802,34803,34804,34805)],default='activity')
     if choice in (0,1):work(lambda:start(4 if choice==0 else 8));dialog.ok('XCMate',tr(34806))
     elif choice==2:
-        phase=dialog.select(tr(34803),list(PHASES))
+        phase=__import__('menu_icons45').select(dialog,tr(34803),list(PHASES),default='activity')
         if 0<=phase<len(PHASES):
             value=work(config)
             if value:value['phase']=PHASES[phase];work(lambda:save(value))

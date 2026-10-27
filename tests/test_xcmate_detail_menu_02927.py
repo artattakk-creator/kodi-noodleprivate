@@ -7,6 +7,7 @@ from xcmate027_fixture import Fixture
 class DetailMenuTests(Fixture,unittest.TestCase):
     def setUp(self):
         super().setUp()
+        self.dialog.input.return_value='6666'  # Explicit .45 experimental authorization for legacy behavior tests.
         for name in ('download_sources','downloads','downloads_ui','download_store','capture_target','direct_ts'):
             sys.modules.pop(name,None)
 

@@ -72,7 +72,7 @@ def setup():
     from setup_window import open_setup
     dlg=xbmcgui.Dialog()
     try:
-        choice=dlg.select(tr(32771),[tr(32761),tr(32762),tr(32763),'Xtream Codes'])
+        choice=__import__('menu_icons45').select(dlg,tr(32771),[tr(32761),tr(32762),tr(32763),'Xtream Codes'],default='wand')
         if choice<0: return None
         data=input_data(dlg,choice)
         title=dlg.input(tr(32772),defaultt=data['name']).strip()

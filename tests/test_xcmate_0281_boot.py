@@ -234,7 +234,7 @@ else: raise AssertionError('FIFO accepted')
             self.assertEqual(len(self.ends),12);self.assertEqual(len({a[0] for a,_ in self.ends}),12)
             for handle,action in enumerate(actions,10):
                 rows=[li for h,_,li in self.items if h==handle]
-                self.assertEqual(len(rows),6 if action=='root' else 1 if action=='widget_live_start_group' else 2)
+                self.assertEqual(len(rows),6 if action=='root' else 1)
                 self.assertTrue(all('Uncommitted' not in li.label for li in rows))
         finally: db.rollback();db.close()
 

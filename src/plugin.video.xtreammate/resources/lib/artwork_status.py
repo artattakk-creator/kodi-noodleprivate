@@ -68,7 +68,7 @@ def cleanup():
     if not snapshot['files'] and not resume:dialog.ok('XCMate',tr(35731));return
     options=[tr(35732),tr(35733),tr(35734)]
     if resume:options.append(tr(35735,resume['files'],size(resume['bytes'])))
-    selected=dialog.select(tr(35700),options,preselect=0)
+    selected=__import__('menu_icons45').select(dialog,tr(35700),options,preselect=0,default='image')
     if selected==1:dialog.ok('XCMate',tr(35736));return
     if selected not in (2,3) or selected==3 and not resume:return
     count=resume['files'] if selected==3 else snapshot['files'];amount=resume['bytes'] if selected==3 else snapshot['bytes']

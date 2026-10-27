@@ -4116,3 +4116,167 @@ msgstr "Choose metadata fields to preview and confirm. No image download is requ
 msgctxt "#35984"
 msgid "Local guide: {0}/7 historical days available"
 msgstr "Local guide: {0}/7 historical days available"
+
+msgctxt "#36000"
+msgid "Accounts & portals"
+msgstr "Accounts & portals"
+
+msgctxt "#36001"
+msgid "Live TV & channels"
+msgstr "Live TV & channels"
+
+msgctxt "#36002"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#36003"
+msgid "Media & playback"
+msgstr "Media & playback"
+
+msgctxt "#36004"
+msgid "Appearance & controls"
+msgstr "Appearance & controls"
+
+msgctxt "#36005"
+msgid "System & storage"
+msgstr "System & storage"
+
+msgctxt "#36006"
+msgid "Experimental"
+msgstr "Experimental"
+
+msgctxt "#36010"
+msgid "Experimental – enter PIN"
+msgstr "Experimental – enter PIN"
+
+msgctxt "#36011"
+msgid "Wrong PIN – access denied"
+msgstr "Wrong PIN – access denied"
+
+msgctxt "#36012"
+msgid "Cancel"
+msgstr "Cancel"
+
+msgctxt "#36013"
+msgid "Explicitly confirm action"
+msgstr "Explicitly confirm action"
+
+msgctxt "#36014"
+msgid "TEST – not approved for regular use"
+msgstr "TEST – not approved for regular use"
+
+msgctxt "#36015"
+msgid "Portal options"
+msgstr "Portal options"
+
+msgctxt "#36016"
+msgid "Channel options"
+msgstr "Channel options"
+
+msgctxt "#36017"
+msgid "EPG options"
+msgstr "EPG options"
+
+msgctxt "#36018"
+msgid "Playback and media options"
+msgstr "Playback and media options"
+
+msgctxt "#36019"
+msgid "Control options"
+msgstr "Control options"
+
+msgctxt "#36020"
+msgid "System options and backup"
+msgstr "System options and backup"
+
+msgctxt "#36021"
+msgid "TEST – downloads"
+msgstr "TEST – downloads"
+
+msgctxt "#36022"
+msgid "TEST – recordings and timers"
+msgstr "TEST – recordings and timers"
+
+msgctxt "#36023"
+msgid "TEST – developer diagnostics and maintenance"
+msgstr "TEST – developer diagnostics and maintenance"
+
+msgctxt "#36024"
+msgid "TEST – additional experimental options"
+msgstr "TEST – additional experimental options"
+
+msgctxt "#36025"
+msgid "Save"
+msgstr "Save"
+
+msgctxt "#36026"
+msgid "Invalid value – previous setting retained"
+msgstr "Invalid value – previous setting retained"
+
+msgctxt "#36027"
+msgid "Setting saved"
+msgstr "Setting saved"
+
+msgctxt "#36028"
+msgid "Off"
+msgstr "Off"
+
+msgctxt "#36029"
+msgid "On"
+msgstr "On"
+
+msgctxt "#36030"
+msgid "PREVIOUS"
+msgstr "PREVIOUS"
+
+msgctxt "#36031"
+msgid "NOW"
+msgstr "NOW"
+
+msgctxt "#36032"
+msgid "NEXT"
+msgstr "NEXT"
+
+msgctxt "#36033"
+msgid "Resolution"
+msgstr "Resolution"
+
+msgctxt "#36034"
+msgid "Video"
+msgstr "Video"
+
+msgctxt "#36035"
+msgid "Audio"
+msgstr "Audio"
+
+msgctxt "#36036"
+msgid "Language"
+msgstr "Language"
+
+msgctxt "#36037"
+msgid "Subtitles"
+msgstr "Subtitles"
+
+msgctxt "#36038"
+msgid "Frame rate"
+msgstr "Frame rate"
+
+msgctxt "#36039"
+msgid "Subtitles off"
+msgstr "Subtitles off"
+
+msgctxt "#36040"
+msgid "Unknown"
+msgstr "Unknown"
+
+msgctxt "#36041"
+msgid "German"
+msgstr "German"
+
+msgctxt "#36042"
+msgid "English"
+msgstr "English"
+
+msgctxt "#36043"
+msgid "French"
+msgstr "French"

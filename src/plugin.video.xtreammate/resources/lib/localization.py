@@ -63,8 +63,8 @@ def choose_language():
     from utils import setting
     values=('de_de','en_gb','kodi')
     current=setting('xcmate_ui_language','kodi')
-    choice=xbmcgui.Dialog().select(tr(32620),['Deutsch','English',tr(32621)],
-                                preselect=values.index(current) if current in values else 2)
+    choice=__import__('menu_icons45').select(xbmcgui.Dialog(),tr(32620),['Deutsch','English',tr(32621)],
+                                preselect=values.index(current) if current in values else 2,default='globe')
     if 0<=choice<len(values):
         xbmcaddon.Addon().setSetting('xcmate_ui_language',values[choice])
         # Only reopen XCMate windows. Kodi-native addon settings remain in

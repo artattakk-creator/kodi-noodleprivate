@@ -12,7 +12,7 @@ def approve(row):
     if not value:return False
     text=tr(35001)+'\n'+value['source']+' → '+value['target']
     # Default/cancel keeps the host blocked. Origin presence is not verification.
-    choice=xbmcgui.Dialog().select(text,[tr(35002),tr(35003)])
+    choice=__import__('menu_icons45').select(xbmcgui.Dialog(),text,[tr(35002),tr(35003)],default='shield')
     if choice!=1:return False
     if not xbmcgui.Dialog().yesno('XCMate',tr(34601)+'\n'+value['source']+' → '+value['target']):return False
     lan=False
@@ -43,6 +43,6 @@ def manage(pid):
     from download_trust import grants,revoke
     values=work(lambda:grants(pid))
     if not values:xbmcgui.Dialog().ok('XCMate',tr(34606));return
-    index=xbmcgui.Dialog().select(tr(34604),[v['source']+' → '+v['target']+(' · LAN' if v['lan'] else '') for v in values])
+    index=__import__('menu_icons45').select(xbmcgui.Dialog(),tr(34604),[v['source']+' → '+v['target']+(' · LAN' if v['lan'] else '') for v in values],default='shield')
     if not 0<=index<len(values):return
     if xbmcgui.Dialog().yesno('XCMate',tr(34605)):work(lambda:revoke(values[index]))

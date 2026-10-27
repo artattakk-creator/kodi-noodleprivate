@@ -31,12 +31,15 @@ class NavigationTests(Fixture,unittest.TestCase):
     def test_settings_ten_categories_and_maintenance_only_diagnostics(self):
         home=importlib.import_module('home_menu')
         home.settings(self.router,self.portal)
-        self.assertEqual(len(self.added),10)
+        self.assertEqual(len(self.added),7)
         self.assertFalse(any('popup_probe' in url for url,_,_ in self.added))
         self.added.clear();home.settings(self.router,self.portal,'maintenance')
-        self.assertTrue(any('popup_probe' in url for url,_,_ in self.added))
+        self.assertFalse(any('popup_probe' in url for url,_,_ in self.added))
+        from settings_sections45 import EXPERIMENTAL
+        self.assertIn('popup_probe',[a for _,a,_ in EXPERIMENTAL['diagnostics']])
         self.added.clear();home.settings(self.router,self.portal,'remote')
-        self.assertTrue(any('remote_learn' in url for url,_,_ in self.added))
+        self.assertTrue(any('remote_setup' in url for url,_,_ in self.added))
+        self.assertIn('remote_learn',[a for _,a,_ in EXPERIMENTAL['diagnostics']])
 
     def test_explicit_disabled_or_unknown_portal_never_falls_into_another_account(self):
         self.router._params['pid']='unknown'
@@ -109,7 +112,7 @@ class NavigationTests(Fixture,unittest.TestCase):
         for action,kind in (('widget_recent_vod','vod'),('widget_recent_series','series')):
             self.added.clear();self.router._params['action']=action;self.routes.dispatch(self.router)
             self.assertIn('action=media_detail',self.added[0][0]);self.assertIn('kind='+kind,self.added[0][0])
-        self.assertFalse(self.added[0][2]);self.assertTrue(any('Alle anzeigen' in li.label for _,li,_ in self.added))
+        self.assertFalse(self.added[0][2]);self.assertTrue(all('action=media_detail' in u for u,_,_ in self.added))
         self.assertTrue(all('SECRET' not in url and 'https%3A' not in url for url,_,_ in self.added))
         sys.modules['utils'].http_get.assert_not_called()
 
@@ -377,7 +380,7 @@ class FreezeTests(unittest.TestCase):
                     if name not in allowed:
                         self.assertEqual(hashlib.sha256(ast.dump(functions[name],include_attributes=False).encode()).hexdigest(),original,name)
             else:
-                self.assertEqual(hashlib.sha256((ROOT/file).read_bytes()).hexdigest(),digest,file)
+                self.assertEqual(hashlib.sha256(__import__('stabilization_contract_02945').without_stabilization45((ROOT/file).read_text(),Path(file).stem).encode()).hexdigest(),digest,file)
         from stabilization_contract_02936 import without_stabilization36
         source=without_stabilization36((LIB/'main.py').read_text(),'main')
         additions=[

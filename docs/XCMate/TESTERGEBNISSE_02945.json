@@ -1,0 +1,22 @@
+{
+  "version": "0.1.29.45",
+  "tests": 1725,
+  "seconds": 288.134,
+  "failures": 0,
+  "errors": 0,
+  "files": 510,
+  "bytes": 2969898,
+  "sha256": "641b3ed82e4290711e606efaafc42de68c537add77615af4ce50d8204fec5e8a",
+  "crc": "PASS",
+  "paths": "PASS",
+  "source_bytes": "PASS",
+  "reproducible_zip": "PASS",
+  "python_ast": "PASS",
+  "android": "NOT_TESTED",
+  "production_publish": false,
+  "implementation_commit": "5e31f75ab56c865df0fadec51118c1bbbee9c1e5",
+  "retained_methods": 1652,
+  "new_methods": 73,
+  "po_contexts_per_language": 1051,
+  "pinned_navigation_textures": 92
+}

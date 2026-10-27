@@ -25,7 +25,7 @@ def show():
         export_idx = len(rows) + 1
         rows.append(f'[+]  {_L(32060)}')
         rows.append(f'[\u21c5]  {_L(32290)}')
-        choice = xbmcgui.Dialog().select(_L(32012), rows)
+        choice = __import__('menu_icons45').select(xbmcgui.Dialog(),_L(32012), rows,default='user')
         if choice < 0:
             break
         elif choice == add_idx:
@@ -56,7 +56,7 @@ def _portal_menu(p: dict):
             'Refresh cache',
             _L(32076),
         ]
-        idx = xbmcgui.Dialog().select(f'{_L(32012)}: {name}', options)
+        idx = __import__('menu_icons45').select(xbmcgui.Dialog(),f'{_L(32012)}: {name}', options,default='user')
         if idx < 0:
             break
         elif idx == 0:
@@ -76,8 +76,8 @@ def _portal_menu(p: dict):
             options = [('include_live', 'Live-TV'), ('include_vod', 'Filme / VOD'),
                        ('include_series', 'Serien')]
             current = [i for i, (key, label) in enumerate(options) if p.get(key, True)]
-            choice = xbmcgui.Dialog().multiselect('XCMate – Inhaltsbereiche',
-                        [label for key, label in options], preselect=current)
+            choice = __import__('menu_icons45').multiselect(xbmcgui.Dialog(),'XCMate – Inhaltsbereiche',
+                        [label for key, label in options], preselect=current,default='list')
             if choice is not None and choice:
                 update(p['id'], {key: i in choice for i, (key, _) in enumerate(options)})
                 p = portals.get_by_id(p['id']) or p
@@ -113,7 +113,7 @@ def _wizard_edit(p: dict) -> bool:
         rows.append('[Save & Close]')
         rows.append('[Cancel]')
 
-        idx = dlg.select(_L(32074, p['name']), rows)
+        idx = __import__('menu_icons45').select(dlg,_L(32074, p['name']), rows,default='user')
         if idx < 0 or idx == len(fields) + 1:
             return False
         if idx == len(fields):
@@ -124,7 +124,7 @@ def _wizard_edit(p: dict) -> bool:
 
         key, label = fields[idx]
         if key == 'type':
-            t_idx = dlg.select(_L(32062), PORTAL_LABELS)
+            t_idx = __import__('menu_icons45').select(dlg,_L(32062), PORTAL_LABELS,default='user')
             if t_idx >= 0:
                 p['type'] = PORTAL_TYPES[t_idx]
                 fields = _get_editable_fields(p)

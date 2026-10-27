@@ -294,6 +294,8 @@ class ThemeTests(unittest.TestCase):
 
     def test_native_zip_browser_cancel_and_remove_confirmation_have_no_side_effects(self):
         dialog=mock.Mock();gui=types.ModuleType('xbmcgui');gui.Dialog=lambda:dialog
+        from menu45_fixture import install
+        install(gui)
         with mock.patch.dict(sys.modules,xbmcgui=gui):
             ui=importlib.import_module('theme_ui')
             dialog.select.side_effect=[3,-1];dialog.browseSingle.return_value=''
@@ -327,7 +329,7 @@ class ThemeTests(unittest.TestCase):
             # Only decorative, unfocusable image nodes may be added. Existing
             # focus targets retain exact geometry and all navigation links.
             original_controls=list(source.iter('control'))
-            generated=[n for n in rendered.iter('control') if n.get('xcmate-decoration')!='true']
+            generated=[n for n in rendered.iter('control') if n.get('xcmate-decoration')!='true' and n.get('xcmate-menu45')!='true']
             self.assertEqual(len(original_controls),len(generated))
             for a,b in zip(original_controls,generated):
                 self.assertEqual(a.attrib,b.attrib)
@@ -335,7 +337,7 @@ class ThemeTests(unittest.TestCase):
                 for tag in tags:
                     self.assertEqual(a.findtext(tag),b.findtext(tag))
             for node in rendered.iter('control'):
-                if node.get('xcmate-decoration')=='true':
+                if node.get('xcmate-decoration')=='true' or node.get('xcmate-menu45')=='true':
                     self.assertEqual(node.get('type'),'image');self.assertIsNone(node.get('id'))
             self.assertEqual([n.text for n in source.iter('texture') if (n.text or '').startswith('$INFO[ListItem.Art')],
                 [n.text for node in generated for n in node.findall('texture') if (n.text or '').startswith('$') and n.text.startswith('$INFO[ListItem.Art')])
@@ -430,13 +432,15 @@ class ThemeTests(unittest.TestCase):
 
     def test_online_native_selection_lists_multiple_themes_and_cancel_does_not_download(self):
         gui=types.ModuleType('xbmcgui');dialog=mock.Mock();gui.Dialog=lambda:dialog
+        from menu45_fixture import install
+        install(gui)
         rows=[dict(id='blue',name='Blue',version='1.0.0'),dict(id='gold',name='Gold',version='2.0.0')]
         dialog.select.side_effect=[2,-1,-1]
         with mock.patch.dict(sys.modules,xbmcgui=gui):
             ui=importlib.import_module('theme_ui')
             with mock.patch.object(ui,'job',side_effect=lambda fn:fn(lambda:False)),mock.patch.object(self.catalog,'catalogue',return_value=rows),mock.patch.object(self.catalog,'download') as download:
                 ui.manage();download.assert_not_called()
-        self.assertEqual(dialog.select.call_args_list[1].args[1],['Blue 1.0.0','Gold 2.0.0'])
+        self.assertEqual([v.getLabel() for v in dialog.select.call_args_list[1].args[1]],['Blue 1.0.0','Gold 2.0.0'])
 
     def test_draft_workflow_cannot_publish_and_theme_is_not_in_core(self):
         workflow=(ROOT/'.github/workflows/publish.yml').read_text()

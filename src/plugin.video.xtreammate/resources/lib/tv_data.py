@@ -70,6 +70,11 @@ class GuideSnapshot:
                 self._wanted = wanted
                 self._wake.set()
 
+    def request_infobar45(self,sid):
+        with self._lock:
+            if getattr(self,'_infobar_sid45','')!=str(sid):
+                self._infobar_sid45=str(sid);self._wake.set()
+
     def get(self, sid, now=None):
         ts = time.time() if now is None else now
         with self._lock: base = self._values.get(str(sid))
@@ -84,6 +89,7 @@ class GuideSnapshot:
         # Re-evaluate only a bounded, already normalized programme list in RAM.
         info = guide_for_channel({'v':[dict(name=e['title'], start_timestamp=e['start'],
             stop_timestamp=e['stop'], descr=e.get('description','')) for e in base.get('programme_events',base['events'])]}, 'v', now=ts)
+        info['previous']=base.get('now') if base.get('now') and base.get('stop',0)<=ts else base.get('previous','')
         info.update(epg_id=base.get('epg_id',''), mapping=base.get('mapping',''),
                     source_index=base.get('source_index'),snapshot_revision=base.get('snapshot_revision'))
         if base.get('programme_events'):info['programme_events']=base['programme_events']
@@ -146,6 +152,9 @@ class GuideSnapshot:
                 from epg_events import deduplicate
                 raw=self._cache.get(info.get('epg_id',''),[])
                 info['programme_events']=[e for e in deduplicate(raw,channel=info.get('epg_id','')) if e['stop']>now][:256] if raw else info.get('events',[])
+            if sid==getattr(self,'_infobar_sid45',''):
+                from infobar_epg45 import previous
+                info['previous']=previous(self.portal['id'],c,self._mappings,now,info.get('snapshot_revision'))
             values[sid] = info
             if not info['now'] and sid not in self._mappings: missing.append(c)
         with self._lock:

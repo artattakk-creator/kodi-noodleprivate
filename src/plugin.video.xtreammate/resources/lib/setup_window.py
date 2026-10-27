@@ -193,8 +193,7 @@ class SetupWindow(WorkWindow):
     def _item_state(self,item,selected):
         import os,xbmcaddon
         item.setProperty('setup_selected','true' if selected else 'false')
-        image=os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media',
-                           'setup_checked.png' if selected else 'setup_unchecked.png')
+        image=__import__('menu_icons45').state_icon(selected)
         item.setArt({'icon':image})
     def _groups(self):
         if getattr(self,'_groups_loaded',False): return
@@ -239,7 +238,7 @@ class SetupWindow(WorkWindow):
         if self.draft.data.get('epg_url'): choices.append((tr(32718),'configured'))
         choices.extend((title,uri) for key,title,uri in PRESET_FEEDS)
         choices.append((tr(32719),'custom'))
-        selected=xbmcgui.Dialog().multiselect(tr(32706),[c[0] for c in choices],preselect=[i for i,(_,uri) in enumerate(choices) if (uri=='provider' and self.draft.provider_epg) or any(s['uri']==uri for s in self.draft.epg_sources)])
+        selected=__import__('menu_icons45').multiselect(xbmcgui.Dialog(),tr(32706),[c[0] for c in choices],preselect=[i for i,(_,uri) in enumerate(choices) if (uri=='provider' and self.draft.provider_epg) or any(s['uri']==uri for s in self.draft.epg_sources)],default='list')
         if selected is None: return
         sources=[];self.draft.provider_epg=False
         for i in selected:
@@ -295,7 +294,7 @@ class SetupWindow(WorkWindow):
         if action.getId()==117 and not self.busy and self.stage=='groups' and self.draft.data['type']=='m3u':
             pos=self.getControl(self.list_id).getSelectedPosition()
             if not 0<=pos<len(self._entries): return
-            target=xbmcgui.Dialog().select(tr(32736),[tr(32701),tr(32702),tr(32703)])
+            target=__import__('menu_icons45').select(xbmcgui.Dialog(),tr(32736),[tr(32701),tr(32702),tr(32703)],default='wand')
             if target<0: return
             group=self._entries[pos];cid=str(group['category_id']);kind=('live','vod','series')[target]
             from m3u_store import group as update_group

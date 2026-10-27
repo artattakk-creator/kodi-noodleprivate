@@ -85,7 +85,9 @@ class Targets29Tests(TargetsFixture,unittest.TestCase):
         import home_menu
         home_menu.settings(self.router,self.portal,'storage')
         selected=[(url,item,folder) for url,item,folder in self.added if 'action=download_folder' in url or 'action=download_capabilities' in url]
-        self.assertEqual(len(selected),2)
+        self.assertEqual(len(selected),0)
+        from settings_sections45 import EXPERIMENTAL
+        self.assertIn('download_folder',[a for _,a,_ in EXPERIMENTAL['downloads']]);self.assertIn('download_capabilities',[a for _,a,_ in EXPERIMENTAL['downloads']])
         for url,item,folder in selected:self.assertFalse(folder);self.assertEqual(item.getProperty('IsPlayable'),'false')
 
     def test_usb_staged_backend_uses_exclusive_copy_hash_and_keeps_recovery_stage(self):

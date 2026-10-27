@@ -114,7 +114,7 @@ def configure():
         labels = ['{}  [Kodi-Aktion {}]'.format(NAMES[k], bindings[k])
                   for k in COMMANDS]
         items = labels + ['Alle Tasten zurücksetzen', 'Zurück']
-        choice = d.select('XCMate – Android-Fernbedienung anlernen', items)
+        choice = __import__('menu_icons45').select(d,'XCMate – Android-Fernbedienung anlernen', items,default='remote')
         if choice < 0 or choice == len(items)-1:
             return
         if choice == len(COMMANDS):

@@ -81,12 +81,14 @@ class XtreamMateV011Tests(unittest.TestCase):
         xtream.XtreamClient=XC
         gui = types.ModuleType('xbmcgui')
         gui.Dialog=lambda:dialog
+        from menu45_fixture import install
+        install(gui)
         with mock.patch.dict(sys.modules,{'xbmcgui':gui,'xtream':xtream}):
             result=self.groups.choose_groups({'id':'p','type':'xtream', 'xc_host':'h', 'xc_user':'u','xc_pass':'pw'})
         self.assertTrue(result)
         # 2 -> all disabled, checkbox dialog checks the second category and saves.
         self.assertEqual(self.groups.load('p','live'),{'11'})
-        self.assertTrue(any('Alle deaktivieren' in row for row in dialog.messages[0]))
+        self.assertTrue(any('Alle deaktivieren' in row.getLabel() for row in dialog.messages[0]))
         self.assertEqual(len(dialog.messages),2)
 
     def test_new_groups_opt_in_and_disabled_stay_disabled(self):
@@ -108,6 +110,8 @@ class XtreamMateV011Tests(unittest.TestCase):
         self.groups.save('p',['1'],'live',known=['1','2'])
         dlg=types.SimpleNamespace(select=lambda *_:-1,ok=lambda *_:None)
         gui=types.ModuleType('xbmcgui');gui.Dialog=lambda:dlg
+        from menu45_fixture import install
+        install(gui)
         xtream=types.ModuleType('xtream')
         class XC:
             def __init__(self,*args):pass

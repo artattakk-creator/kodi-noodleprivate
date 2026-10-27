@@ -178,7 +178,7 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
             self.query=query.strip()[:200];self.getControl(102).setLabel(self.query)
         person=False
         if source=='tmdb':
-            choice=xbmcgui.Dialog().select(tr(35920),[tr(35921),tr(35922)])
+            choice=__import__('menu_icons45').select(xbmcgui.Dialog(),tr(35920),[tr(35921),tr(35922)],default='image')
             if choice not in (0,1):return
             person=choice==1
         item=dict(self.record.get('_provider43',self.record))
@@ -257,7 +257,7 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
             if not fields:self._status(tr(35924));return
             keys=list(fields)
             labels=[key+': '+str(self.record.get(key,'—'))[:80]+' → '+str(fields[key])[:300] for key in keys]
-            selected=xbmcgui.Dialog().multiselect(tr(35916),labels,preselect=[])
+            selected=__import__('menu_icons45').multiselect(xbmcgui.Dialog(),tr(35916),labels,preselect=[],default='list')
             if not selected:return
             selected={keys[i]:fields[keys[i]] for i in selected if 0<=i<len(keys)}
             if not selected or not xbmcgui.Dialog().yesno('XCMate',tr(35927)+'\n'+', '.join(selected)):return
@@ -314,7 +314,7 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
         elif cid==501:
             if self.image:self.armed=True;self.getControl(503).setVisible(True);self._navigation();self.setFocusId(503)
         elif cid==502:
-            choice=xbmcgui.Dialog().select(tr(35930),[tr(35931),tr(35932),tr(35933)])
+            choice=__import__('menu_icons45').select(xbmcgui.Dialog(),tr(35930),[tr(35931),tr(35932),tr(35933)],default='image')
             if choice in (0,1,2):self.role=('poster','fanart','replacement')[choice];self.armed=False;self.getControl(503).setVisible(False);self._navigation();self._status(tr(35926,self.role))
         elif cid==503 and self.armed and self.image:
             from media_overrides43 import save

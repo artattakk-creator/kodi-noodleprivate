@@ -124,7 +124,9 @@ class SafeModeRegression(unittest.TestCase):
         rows.clear()
         from home_menu import settings
         settings(self.router,self.portal,'maintenance')
-        self.assertTrue(any('popup_probe' in url for _,url in rows))
+        self.assertFalse(any('popup_probe' in url for _,url in rows))
+        from settings_sections45 import EXPERIMENTAL
+        self.assertIn('popup_probe',[a for _,a,_ in EXPERIMENTAL['diagnostics']])
 
     def test_kodi_settings_have_two_recovery_entrances(self):
         root = ET.parse(SETTINGS).getroot()

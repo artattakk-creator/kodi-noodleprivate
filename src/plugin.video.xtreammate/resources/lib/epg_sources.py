@@ -324,7 +324,7 @@ def _choose_portal():
         return None
     if len(active) == 1:
         return active[0]
-    i = xbmcgui.Dialog().select('EPG: TV-Liste wählen', [p['name'] for p in active])
+    i = __import__('menu_icons45').select(xbmcgui.Dialog(),'EPG: TV-Liste wählen', [p['name'] for p in active],default='database')
     return active[i] if 0 <= i < len(active) else None
 
 
@@ -337,7 +337,7 @@ def _choose_preset(portal):
     labels = [('✓ ' if uri in existing else '＋ ') + title
               for _, title, uri in PRESET_FEEDS]
     labels.append('＋ DACH-Paket: Deutschland (2), Österreich, Schweiz')
-    selection = dialog.select('XCMate – EPG-Pakete auswählen', labels)
+    selection = __import__('menu_icons45').select(dialog,'XCMate – EPG-Pakete auswählen', labels,default='database')
     if selection < 0:
         return False
     keys = ([PRESET_FEEDS[selection][0]] if selection < len(PRESET_FEEDS)
@@ -355,10 +355,10 @@ def _choose_preset(portal):
 def _manage_source(portal, source):
     import xbmcgui
     d = xbmcgui.Dialog()
-    choice = d.select(str(source.get('name') or 'XMLTV'), [
+    choice = __import__('menu_icons45').select(d,str(source.get('name') or 'XMLTV'), [
         'Quelle ' + ('deaktivieren' if source.get('enabled', True) else 'aktivieren'),
         'Priorität erhöhen', 'Priorität senken',
-        'Quelle löschen', 'Zurück'])
+        'Quelle löschen', 'Zurück'],default='database')
     operations = ('toggle', 'up', 'down', 'delete')
     if choice < 0 or choice >= len(operations):
         return False
@@ -391,7 +391,7 @@ def _choose_mapping(portal):
         sid = str(s['stream_id'])
         eid = state['mappings'].get(sid, '')
         labels.append(str(s.get('name') or sid) + (('  →  ' + eid) if eid else ''))
-    i = d.select('Xtream-Sender zuordnen', labels)
+    i = __import__('menu_icons45').select(d,'Xtream-Sender zuordnen', labels,default='database')
     if i < 0:
         return
     sid = str(streams[i]['stream_id'])
@@ -401,7 +401,7 @@ def _choose_mapping(portal):
     selected = state['mappings'].get(sid, '')
     preselect = next((j + 1 for j, (cid, _) in enumerate(channels)
                       if cid == selected), 0)
-    j = d.select('XMLTV-Kanal wählen', options, preselect=preselect)
+    j = __import__('menu_icons45').select(d,'XMLTV-Kanal wählen', options, preselect=preselect,default='database')
     if j >= 0:
         set_mapping(portal['id'], sid, channels[j - 1][0] if j else '')
         d.notification('XCMate EPG', 'Zuordnung gespeichert – EPG bitte aktualisieren')
@@ -427,7 +427,7 @@ def manage(portal=None):
             '↻ EPG-Quellen jetzt aktualisieren',
             '↔ Xtream-Sender einem XMLTV-Kanal zuordnen',
         ] + source_labels + ['Zurück']
-        choice = d.select('XCMate – EPG-Verwaltung · ' + portal['name'], options)
+        choice = __import__('menu_icons45').select(d,'XCMate – EPG-Verwaltung · ' + portal['name'], options,default='database')
         if choice < 0 or choice == len(options) - 1:
             return
         try:

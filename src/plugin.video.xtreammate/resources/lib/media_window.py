@@ -366,6 +366,9 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
             if control_id in (300,330):
                 from theme_render import action_art
                 li.setArt(action_art(row.get('sid','') if control_id==300 else 'next_episode' if self.mode=='episodes' else 'seasons',self._theme,row.get('favourite',getattr(self,'_theme_favourite',False))))
+            if control_id in (200,300,330,810):
+                from menu_icons45 import decorate
+                decorate(li,row.get('menu45') or row.get('sid','') if control_id==300 else row.get('menu45') or ('list' if control_id==200 else 'series'),full=True)
             li.setInfo('video',{'title':str(row.get('name',''))})
             if '_watched' in row:
                 icon='eye_watched.png' if row['_watched'] else 'eye_unseen.png'
@@ -760,7 +763,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         def show(report):
             from media_art import diagnostic_label
             text=diagnostic_label(report['status'])+'\n'+', '.join(k+': '+str(v) for k,v in report.items() if k!='status')
-            choice=xbmcgui.Dialog().select(tr(33703),[text,tr(33704)])
+            choice=__import__('menu_icons45').select(xbmcgui.Dialog(),tr(33703),[text,tr(33704)],default='play')
             if choice==1:
                 def retry():
                     from media_art import retry_poster
@@ -917,7 +920,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
                 if self.mode=='episodes':
                     pos=self.getControl(330).getSelectedPosition()
                     if 0<=pos<len(self.visible_episodes):
-                        choice=xbmcgui.Dialog().select(tr(32528),[tr(32529),tr(32530),tr(32531)])
+                        choice=__import__('menu_icons45').select(xbmcgui.Dialog(),tr(32528),[tr(32529),tr(32530),tr(32531)],default='play')
                         if choice in (0,1,2) and (choice!=2 or xbmcgui.Dialog().yesno('XCMate',tr(32532))):
                             from media_state import mark_episode
                             mark_episode(self.portal['id'],self.visible_episodes[pos],True if choice==0 else False if choice==1 else None)
@@ -926,7 +929,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
                 focus=self.getFocusId()
                 if self.mode=='landing' and focus==112 and self.kind=='vod':
                     pos=self.getControl(112).getSelectedPosition();rows=self.rails[112]
-                    if 0<=pos<len(rows) and xbmcgui.Dialog().select('XCMate',[tr(33202)])==0:
+                    if 0<=pos<len(rows) and __import__('menu_icons45').select(xbmcgui.Dialog(),'XCMate',[tr(33202)],default='play')==0:
                         from media_continue import hide
                         pid,sid=self.portal['id'],rows[pos]['sid']
                         def saved(_):

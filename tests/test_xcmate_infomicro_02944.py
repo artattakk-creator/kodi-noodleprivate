@@ -32,14 +32,14 @@ class InfoMicro44(unittest.TestCase):
         self.o._micro44.render({});self.assertTrue(all(not c.visible for c in self.o._micro44.controls));self.assertTrue(all(not c.label for c in self.o._micro44.text.values()))
     def test_infomicro05_track_change_updates_audio_without_new_acquisition_path(self):
         self.o._stream_details.read=mock.Mock(side_effect=[dict(audio='aac',channels='2.0'),dict(audio='ac3',channels='5.1'),{}])
-        for expected in ('AAC · 2.0','AC3 · 5.1',''):
+        for expected in ('AAC 2.0','AC3 5.1',''):
             self.o._render_info();self.assertEqual(self.o._micro44.text['audio'].label,expected)
         self.assertEqual(self.o._stream_details.read.call_count,3);self.assertFalse(self.o.info_hint.visible);self.assertFalse(getattr(self.o.info_hint,'label',''))
     def test_infomicro06_same_snapshot_has_no_extra_native_setters_or_long_duplicate_line(self):
         values=dict(width='1920',height='1080',audio='aac',channels='2.0');self.o._micro44.render(values)
         with mock.patch.object(self.o._micro44.text['video'],'setLabel',side_effect=AssertionError('unchanged repaint')):
             for _ in range(200):self.o._micro44.render(values)
-        self.assertEqual(self.o._micro44.text['video'].label,'1920×1080');self.assertFalse(getattr(self.o.info_hint,'label',''))
+        self.assertEqual(self.o._micro44.text['video'].label,'1920 × 1080');self.assertFalse(getattr(self.o.info_hint,'label',''))
     def test_infomicro07_ok1_ok2_back_and_left_keep_native_levels_and_never_stop(self):
         o=self.o;o._switch('hidden')
         for _ in range(20):
@@ -53,4 +53,4 @@ class InfoMicro44(unittest.TestCase):
         with mock.patch.dict(sys.modules,xbmcvfs=vfs):self.assertEqual(self.micro.choose_font(),'known-small')
         with mock.patch.dict(sys.modules,xbmcvfs=types.SimpleNamespace()):self.assertEqual(self.micro.choose_font(),'font12')
         for control in self.o._micro44.icons.values():
-            self.assertIn('infomicro44',control.options['filename']);self.assertTrue(Path(control.options['filename']).is_file())
+            self.assertIn('infobar45',control.options['filename']);self.assertTrue(Path(control.options['filename']).is_file())

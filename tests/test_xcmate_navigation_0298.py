@@ -160,7 +160,10 @@ class Navigation298(Fixture,unittest.TestCase):
                     self.router._handle=handle;self.router._params['action']=action
                     self.routes.dispatch(self.router)
                     self.assertEqual(len(self.ends),int(handle>=0))
-                    if self.ends:self.assertTrue(self.ends[0][0][1])
+                    if self.ends:
+                        from experimental45 import ACTIONS
+                        args,kwargs=self.ends[0]
+                        self.assertEqual(args[1] if len(args)>1 else kwargs.get('succeeded',True),action not in ACTIONS)
 
     def test_invalid_media_route_still_reports_real_failure(self):
         self.router._params.update(action='media_detail',kind='bogus')

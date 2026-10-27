@@ -88,6 +88,8 @@ class PopupTest(unittest.TestCase):
         gui.WindowXMLDialog = XMLDialog
         gui.Window = Window
         gui.Dialog = NativeDialog
+        from menu45_fixture import install
+        install(gui)
         addon = types.ModuleType('xbmcaddon')
         addon.Addon = lambda: types.SimpleNamespace(
             getAddonInfo=lambda k: '/tmp/fixture-xcmate')

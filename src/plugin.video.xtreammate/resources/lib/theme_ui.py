@@ -91,7 +91,7 @@ def manage():
         rows=job(lambda cancel:catalogue(core_version(),cancel))
         if ident:rows=[r for r in rows if r['id']==ident]
         if not rows:dialog.ok(tr(32800),tr(32812));return
-        selected=0 if ident and len(rows)==1 else dialog.select(tr(32802),[r['name']+' '+r['version'] for r in rows])
+        selected=0 if ident and len(rows)==1 else __import__('menu_icons45').select(dialog,tr(32802),[r['name']+' '+r['version'] for r in rows],default='palette')
         if selected<0:return
         row=rows[selected]
         if not dialog.yesno(tr(33807),row['name']+' '+row['version']):return
@@ -103,11 +103,11 @@ def manage():
             active=bool(theme and theme['spec']['id']=='space-premium')
             status=33805 if active else 33804 if premium else 33803
             labels=[tr(33801)+(' · '+tr(33805) if not theme else ''),tr(33802)+' · '+tr(status),tr(32823),tr(32803),tr(33810)]
-            choice=dialog.select(tr(33813),choice_items(labels,['icon.start','icon.shared.info','icon.shared.search','icon.shared.forward','icon.shared.clear'],theme),useDetails=bool(theme))
+            choice=__import__('menu_icons45').select(dialog,tr(33813),choice_items(labels,['icon.start','icon.shared.info','icon.shared.search','icon.shared.forward','icon.shared.clear'],theme),useDetails=bool(theme),default='palette')
             if choice<0:return
             if choice==0:activate('')
             elif choice==1:
-                action=dialog.select(tr(33802),choice_items([tr(i) for i in (33806,33807,33808,33809,33810)],['icon.shared.info','icon.shared.forward','icon.shared.check','icon.shared.close','icon.shared.clear'],theme),useDetails=bool(theme))
+                action=__import__('menu_icons45').select(dialog,tr(33802),choice_items([tr(i) for i in (33806,33807,33808,33809,33810)],['icon.shared.info','icon.shared.forward','icon.shared.check','icon.shared.close','icon.shared.clear'],theme),useDetails=bool(theme),default='palette')
                 if action==0:preview()
                 elif action==1:online('space-premium')
                 elif action==2:
@@ -123,7 +123,7 @@ def manage():
                 if uri:job(lambda cancel:local_import(uri,cancel));dialog.ok(tr(32800),tr(32811))
             elif choice==4:
                 if not rows:dialog.ok(tr(32800),tr(32813));continue
-                selected=dialog.select(tr(33810),[r['spec']['name']+' '+r['spec']['version'] for r in rows])
+                selected=__import__('menu_icons45').select(dialog,tr(33810),[r['spec']['name']+' '+r['spec']['version'] for r in rows],default='palette')
                 if selected>=0 and dialog.yesno(tr(33810),rows[selected]['spec']['name']):remove(rows[selected]['spec']['id'])
         except ThemeError as error:
             if str(error)!='CANCELLED':_message(str(error))

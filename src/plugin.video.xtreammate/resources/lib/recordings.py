@@ -171,9 +171,7 @@ def show_record_dialog(stream_url: str, channel_name: str,
                '2 hours', '3 hours', 'Custom…']
     durations = [30, 60, 90, 120, 180, 0]
 
-    idx = xbmcgui.Dialog().select(
-        f'Record: {channel_name}', options
-    )
+    idx = __import__('menu_icons45').select(xbmcgui.Dialog(),f'Record: {channel_name}', options,default='record')
     if idx < 0:
         return
     mins = durations[idx]

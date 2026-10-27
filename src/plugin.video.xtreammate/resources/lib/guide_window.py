@@ -58,7 +58,9 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         self._request(load,self._initial_ready)
 
     def _fill(self,cid,labels):
-        control=self.getControl(cid);control.reset();control.addItems([xbmcgui.ListItem(label) for label in labels])
+        control=self.getControl(cid);control.reset()
+        from menu_icons45 import decorate
+        control.addItems([decorate(xbmcgui.ListItem(label),'calendar' if cid==220 else 'list',full=True) for label in labels])
 
     def _initial_ready(self,value):
         self.reader,self.mappings,self.groups,self.category=value
@@ -223,7 +225,7 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
             event=self.programmes[pos]
             choices=[tr(32549),tr(32550)]
             if event['start']>time.time(): choices.append(tr(32551))
-            selected=xbmcgui.Dialog().select(event['title'],__import__('theme_render').epg_choices(choices,self._theme),useDetails=bool(self._theme))
+            selected=__import__('menu_icons45').select(xbmcgui.Dialog(),event['title'],__import__('theme_render').epg_choices(choices,self._theme),useDetails=bool(self._theme),default='calendar')
             if selected==0:
                 text=tr(32552).format(
                     self.channel['name'],time.strftime(tr(32584),time.localtime(event['start'])),
@@ -234,7 +236,7 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
                 self.close()
                 xbmc.executebuiltin('PlayMedia('+self.router.url(action='play_live',pid=self.portal['id'],sid=self.sid,name=self.channel['name'])+')')
             elif selected==2:
-                from guide_timers import add
+                from guide_timers import request_add45 as add
                 if add(self.portal['id'],self.sid,self.channel['name'],event):
                     xbmcgui.Dialog().notification('XCMate',tr(32557))
 

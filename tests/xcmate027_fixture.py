@@ -17,6 +17,8 @@ LIB=ADDON/'resources/lib'
 
 
 class ListItem:
+    def getLabel(self):return self.label
+
     def __init__(self,label='',label2='',path='',offscreen=False):
         self.label,self.path=label,path;self.art={};self.props={};self.info={}
     def setLabel(self,label): self.label=label
