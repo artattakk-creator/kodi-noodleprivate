@@ -1,0 +1,37 @@
+{
+  "baseline_published": "d9afbc309bd809587013238dfc638cd339c10ee9",
+  "candidate_code_build": "a9a29e35d08e133a5b90db161a05e86a062b6946",
+  "baseline": {
+    "version": "0.1.29.46",
+    "measurement": "Synthetic host; fresh readers and published local data, warm OS cache; no Android/cold-device inference",
+    "live88": {
+      "n": 25,
+      "p50_ms": 138.42,
+      "p95_ms": 159.712,
+      "sqlite_connections_min": 458,
+      "sqlite_connections_max": 458
+    },
+    "movies60000": {
+      "n": 25,
+      "p50_ms": 88.82,
+      "p95_ms": 106.227
+    }
+  },
+  "candidate": {
+    "version": "0.1.29.47",
+    "measurement": "Synthetic host; fresh readers and published local data, warm OS cache; no Android/cold-device inference",
+    "live88": {
+      "n": 25,
+      "p50_ms": 71.77,
+      "p95_ms": 77.463,
+      "sqlite_connections_min": 31,
+      "sqlite_connections_max": 31
+    },
+    "movies60000": {
+      "n": 25,
+      "p50_ms": 0.924,
+      "p95_ms": 2.141
+    }
+  },
+  "android": "NOT_TESTED"
+}

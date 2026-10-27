@@ -1,0 +1,380 @@
+{
+  "count": 75,
+  "tests": [
+    {
+      "path": "tests/test_xcmate_flow_analysis_02947.py",
+      "class_name": "FlowAnalysis47",
+      "method": "test_correlated_live_prepare_and_player_intervals_have_correct_real_counts"
+    },
+    {
+      "path": "tests/test_xcmate_flow_analysis_02947.py",
+      "class_name": "FlowAnalysis47",
+      "method": "test_private_lines_and_identifiers_are_never_exported"
+    },
+    {
+      "path": "tests/test_xcmate_flow_analysis_02947.py",
+      "class_name": "FlowAnalysis47",
+      "method": "test_unknown_log_codes_cannot_export_a_private_token"
+    },
+    {
+      "path": "tests/test_xcmate_live_return_02947.py",
+      "class_name": "LiveReturn47",
+      "method": "test_committed_home_is_not_overwritten_by_a_stale_modal_blocked_poll"
+    },
+    {
+      "path": "tests/test_xcmate_live_return_02947.py",
+      "class_name": "LiveReturn47",
+      "method": "test_new_selection_between_stop_done_and_return_never_gets_old_home"
+    },
+    {
+      "path": "tests/test_xcmate_live_return_02947.py",
+      "class_name": "LiveReturn47",
+      "method": "test_foreign_modal_is_not_closed_or_ignored_before_one_home_request"
+    },
+    {
+      "path": "tests/test_xcmate_live_return_02947.py",
+      "class_name": "LiveReturn47",
+      "method": "test_confirmed_stop_with_transient_playing_flag_and_no_tag_waits_without_second_stop"
+    },
+    {
+      "path": "tests/test_xcmate_live_return_02947.py",
+      "class_name": "LiveReturn47",
+      "method": "test_genuinely_foreign_playback_after_stop_is_still_protected"
+    },
+    {
+      "path": "tests/test_xcmate_live_return_02947.py",
+      "class_name": "LiveReturn47",
+      "method": "test_background_catalog_model_is_reused_without_building_channels_on_gui"
+    },
+    {
+      "path": "tests/test_xcmate_programme_assets_02947.py",
+      "class_name": "ProgrammeAssets47",
+      "method": "test_additive_tables_keep_existing_application_schema_and_committed_events"
+    },
+    {
+      "path": "tests/test_xcmate_programme_assets_02947.py",
+      "class_name": "ProgrammeAssets47",
+      "method": "test_unknown_future_schema_is_not_modified"
+    },
+    {
+      "path": "tests/test_xcmate_programme_assets_02947.py",
+      "class_name": "ProgrammeAssets47",
+      "method": "test_wrong_optional_table_schema_rolls_back_without_erasing_existing_data"
+    },
+    {
+      "path": "tests/test_xcmate_programme_assets_02947.py",
+      "class_name": "ProgrammeAssets47",
+      "method": "test_read_only_asset_query_never_initializes_or_fetches"
+    },
+    {
+      "path": "tests/test_xcmate_programme_assets_02947.py",
+      "class_name": "ProgrammeAssets47",
+      "method": "test_real_special_and_file_android_paths_preserve_spaces_and_unicode"
+    },
+    {
+      "path": "tests/test_xcmate_programme_assets_02947.py",
+      "class_name": "ProgrammeAssets47",
+      "method": "test_symlink_and_missing_cached_image_are_not_rendered"
+    },
+    {
+      "path": "tests/test_xcmate_programme_assets_02947.py",
+      "class_name": "ProgrammeAssets47",
+      "method": "test_real_station_tv_png_is_not_confused_with_our_bundled_placeholder"
+    },
+    {
+      "path": "tests/test_xcmate_programme_assets_02947.py",
+      "class_name": "ProgrammeAssets47",
+      "method": "test_dynamic_start_group_approves_sender_137_without_image_archive"
+    },
+    {
+      "path": "tests/test_xcmate_programme_assets_02947.py",
+      "class_name": "ProgrammeAssets47",
+      "method": "test_dynamic_references_retain_expiry_and_safe_kodi_options"
+    },
+    {
+      "path": "tests/test_xcmate_programme_assets_02947.py",
+      "class_name": "ProgrammeAssets47",
+      "method": "test_portal_and_changed_provider_image_cannot_reuse_foreign_asset"
+    },
+    {
+      "path": "tests/test_xcmate_programme_assets_02947.py",
+      "class_name": "ProgrammeAssets47",
+      "method": "test_unsafe_or_failed_dns_never_reaches_native_texture"
+    },
+    {
+      "path": "tests/test_xcmate_programme_assets_02947.py",
+      "class_name": "ProgrammeAssets47",
+      "method": "test_internal_image_uses_real_validated_local_path"
+    },
+    {
+      "path": "tests/test_xcmate_programme_assets_02947.py",
+      "class_name": "ProgrammeAssets47",
+      "method": "test_background_asset_approval_does_not_alter_successful_series_pipeline"
+    },
+    {
+      "path": "tests/test_xcmate_programme_assets_02947.py",
+      "class_name": "ProgrammeAssets47",
+      "method": "test_manual_save_keeps_original_and_registers_verified_extension_copy"
+    },
+    {
+      "path": "tests/test_xcmate_programme_assets_02947.py",
+      "class_name": "ProgrammeAssets47",
+      "method": "test_manual_selection_is_shared_after_module_restart_and_cannot_cross_portal"
+    },
+    {
+      "path": "tests/test_xcmate_programme_assets_02947.py",
+      "class_name": "ProgrammeAssets47",
+      "method": "test_optional_shared_copy_failure_does_not_destroy_explicit_original_choice"
+    },
+    {
+      "path": "tests/test_xcmate_programme_assets_02947.py",
+      "class_name": "ProgrammeAssets47",
+      "method": "test_corrupt_display_copy_falls_back_to_verified_original_without_deletion"
+    },
+    {
+      "path": "tests/test_xcmate_programme_assets_02947.py",
+      "class_name": "ProgrammeAssets47",
+      "method": "test_asset_transaction_rolls_back_new_reference_and_preserves_previous"
+    },
+    {
+      "path": "tests/test_xcmate_programme_assets_02947.py",
+      "class_name": "ProgrammeAssets47",
+      "method": "test_concurrent_connections_read_committed_old_snapshot_during_writer"
+    },
+    {
+      "path": "tests/test_xcmate_programme_assets_02947.py",
+      "class_name": "ProgrammeAssets47",
+      "method": "test_additive_asset_preparation_never_modifies_existing_guide_payload"
+    },
+    {
+      "path": "tests/test_xcmate_programme_integration_02947.py",
+      "class_name": "ProgrammeIntegration47",
+      "method": "test_large_guide_mini_infobar_and_widget_use_the_same_actual_event_key"
+    },
+    {
+      "path": "tests/test_xcmate_programme_integration_02947.py",
+      "class_name": "ProgrammeIntegration47",
+      "method": "test_programme_picture_persisted_once_is_used_by_real_widget_and_detail"
+    },
+    {
+      "path": "tests/test_xcmate_programme_integration_02947.py",
+      "class_name": "ProgrammeIntegration47",
+      "method": "test_directory_header_hit_does_not_skip_first_worker_hash_verification"
+    },
+    {
+      "path": "tests/test_xcmate_programme_integration_02947.py",
+      "class_name": "ProgrammeIntegration47",
+      "method": "test_missing_local_programme_image_is_not_presented_as_a_valid_texture"
+    },
+    {
+      "path": "tests/test_xcmate_programme_integration_02947.py",
+      "class_name": "ProgrammeIntegration47",
+      "method": "test_now_next_rollover_keeps_canonical_source_metadata_and_correct_key_in_ram"
+    },
+    {
+      "path": "tests/test_xcmate_programme_integration_02947.py",
+      "class_name": "ProgrammeIntegration47",
+      "method": "test_shared_lastgood_is_read_when_primary_guide_is_temporarily_absent"
+    },
+    {
+      "path": "tests/test_xcmate_programme_integration_02947.py",
+      "class_name": "ProgrammeIntegration47",
+      "method": "test_asset_only_database_does_not_hide_legacy_cache_only_short_epg"
+    },
+    {
+      "path": "tests/test_xcmate_programme_integration_02947.py",
+      "class_name": "ProgrammeIntegration47",
+      "method": "test_manual_mapping_wins_over_shared_provider_data_across_views"
+    },
+    {
+      "path": "tests/test_xcmate_programme_integration_02947.py",
+      "class_name": "ProgrammeIntegration47",
+      "method": "test_negative_or_ambiguous_art_is_not_a_programme_picture"
+    },
+    {
+      "path": "tests/test_xcmate_programme_integration_02947.py",
+      "class_name": "ProgrammeIntegration47",
+      "method": "test_no_logo_still_has_actual_station_name_without_claiming_image_success"
+    },
+    {
+      "path": "tests/test_xcmate_programme_integration_02947.py",
+      "class_name": "ProgrammeIntegration47",
+      "method": "test_native_sender_logo_fallback_and_programme_overlay_are_separate_references"
+    },
+    {
+      "path": "tests/test_xcmate_programme_integration_02947.py",
+      "class_name": "ProgrammeIntegration47",
+      "method": "test_population_status_distinguishes_empty_database_from_text_without_pictures"
+    },
+    {
+      "path": "tests/test_xcmate_programme_integration_02947.py",
+      "class_name": "ProgrammeIntegration47",
+      "method": "test_readonly_page_reuses_connections_and_closes_them_on_exception"
+    },
+    {
+      "path": "tests/test_xcmate_programme_integration_02947.py",
+      "class_name": "ProgrammeIntegration47",
+      "method": "test_thread_scoped_reads_do_not_share_sqlite_connection_between_workers"
+    },
+    {
+      "path": "tests/test_xcmate_programme_integration_02947.py",
+      "class_name": "ProgrammeIntegration47",
+      "method": "test_missing_reload_and_overlay_capability_are_not_reported_as_visible_pass"
+    },
+    {
+      "path": "tests/test_xcmate_programme_integration_02947.py",
+      "class_name": "ProgrammeIntegration47",
+      "method": "test_actual_88_channel_publication_uses_bounded_page_connections"
+    },
+    {
+      "path": "tests/test_xcmate_scope_02947.py",
+      "class_name": "Scope47",
+      "method": "test_every_published_46_source_file_is_preserved_except_exact_reviewed_hooks"
+    },
+    {
+      "path": "tests/test_xcmate_scope_02947.py",
+      "class_name": "Scope47",
+      "method": "test_all_1877_previous_test_methods_remain_without_skips"
+    },
+    {
+      "path": "tests/test_xcmate_scope_02947.py",
+      "class_name": "Scope47",
+      "method": "test_native_42_engine_series_autoplay_profile_settings_icons_and_keymaps_are_exact"
+    },
+    {
+      "path": "tests/test_xcmate_scope_02947.py",
+      "class_name": "Scope47",
+      "method": "test_new_reader_snapshot_and_asset_helpers_never_trigger_guide_reset_or_skin_write"
+    },
+    {
+      "path": "tests/test_xcmate_widget_live_gate_02947.py",
+      "class_name": "LiveGate47",
+      "method": "test_unchanged_live_rows_do_not_rebuild_before_next_real_boundary"
+    },
+    {
+      "path": "tests/test_xcmate_widget_live_gate_02947.py",
+      "class_name": "LiveGate47",
+      "method": "test_next_event_boundary_invalidates_inside_the_same_progress_minute"
+    },
+    {
+      "path": "tests/test_xcmate_widget_live_gate_02947.py",
+      "class_name": "LiveGate47",
+      "method": "test_art_completion_during_publication_is_not_swallowed_by_post_stamp"
+    },
+    {
+      "path": "tests/test_xcmate_widget_live_gate_02947.py",
+      "class_name": "LiveGate47",
+      "method": "test_series_successful_publication_is_never_gated"
+    },
+    {
+      "path": "tests/test_xcmate_widget_live_gate_02947.py",
+      "class_name": "LiveGate47",
+      "method": "test_real_start_group_or_logo_change_invalidates_existing_live_frame"
+    },
+    {
+      "path": "tests/test_xcmate_widget_pipeline_02947.py",
+      "class_name": "WidgetPipeline47",
+      "method": "test_real_v2_payload_query_is_primary_key_search_not_whole_movie_scan"
+    },
+    {
+      "path": "tests/test_xcmate_widget_pipeline_02947.py",
+      "class_name": "WidgetPipeline47",
+      "method": "test_old_or_payload_exceeds_opcode_budget_new_point_reads_do_not"
+    },
+    {
+      "path": "tests/test_xcmate_widget_pipeline_02947.py",
+      "class_name": "WidgetPipeline47",
+      "method": "test_legacy_movie_point_reads_keep_order_and_exact_ids"
+    },
+    {
+      "path": "tests/test_xcmate_widget_pipeline_02947.py",
+      "class_name": "WidgetPipeline47",
+      "method": "test_mixed_legacy_and_v2_movies_keep_distinct_click_targets"
+    },
+    {
+      "path": "tests/test_xcmate_widget_pipeline_02947.py",
+      "class_name": "WidgetPipeline47",
+      "method": "test_real_native_movie_item_receives_typed_numeric_metadata"
+    },
+    {
+      "path": "tests/test_xcmate_widget_pipeline_02947.py",
+      "class_name": "WidgetPipeline47",
+      "method": "test_invalid_movie_numbers_are_omitted_not_native_exceptions"
+    },
+    {
+      "path": "tests/test_xcmate_widget_pipeline_02947.py",
+      "class_name": "WidgetPipeline47",
+      "method": "test_true_empty_movie_directory_has_no_fake_icon_movie"
+    },
+    {
+      "path": "tests/test_xcmate_widget_pipeline_02947.py",
+      "class_name": "WidgetPipeline47",
+      "method": "test_failed_movie_directory_has_no_fake_icon_movie"
+    },
+    {
+      "path": "tests/test_xcmate_widget_pipeline_02947.py",
+      "class_name": "WidgetPipeline47",
+      "method": "test_vod_policy_invalidates_old_empty_cache_without_touching_series_cache"
+    },
+    {
+      "path": "tests/test_xcmate_widget_pipeline_02947.py",
+      "class_name": "WidgetPipeline47",
+      "method": "test_successful_series_reader_does_not_use_new_movie_payload_code"
+    },
+    {
+      "path": "tests/test_xcmate_widget_pipeline_02947.py",
+      "class_name": "WidgetPipeline47",
+      "method": "test_directory_stage_is_recorded_only_after_real_end_of_directory"
+    },
+    {
+      "path": "tests/test_xcmate_widget_pipeline_02947.py",
+      "class_name": "WidgetPipeline47",
+      "method": "test_one_widget_preparation_error_does_not_starve_movie_or_series_publication"
+    },
+    {
+      "path": "tests/test_xcmate_widget_pipeline_02947.py",
+      "class_name": "WidgetPipeline47",
+      "method": "test_safe_diagnostics_never_log_titles_provider_urls_or_private_ids"
+    },
+    {
+      "path": "tests/test_xcmate_widget_pipeline_02947.py",
+      "class_name": "WidgetPipeline47",
+      "method": "test_full_live_group_native_navigation_still_has_137_exact_sender_targets"
+    },
+    {
+      "path": "tests/test_xcmate_widget_pipeline_02947.py",
+      "class_name": "WidgetPipeline47",
+      "method": "test_movie_snapshot_uses_one_readonly_connection_and_closes_it"
+    },
+    {
+      "path": "tests/test_xcmate_widget_pipeline_02947.py",
+      "class_name": "WidgetPipeline47",
+      "method": "test_many_enabled_movie_groups_do_not_force_4096_key_overscan"
+    },
+    {
+      "path": "tests/test_xcmate_widget_pipeline_02947.py",
+      "class_name": "WidgetPipeline47",
+      "method": "test_actual_duplicate_movies_across_groups_expand_only_when_needed"
+    },
+    {
+      "path": "tests/test_xcmate_widget_pipeline_02947.py",
+      "class_name": "WidgetPipeline47",
+      "method": "test_movie_query_budget_does_not_expire_during_non_sql_cold_import_gap"
+    },
+    {
+      "path": "tests/test_xcmate_widget_pipeline_02947.py",
+      "class_name": "WidgetPipeline47",
+      "method": "test_movie_state_keys_and_payload_share_one_pinned_catalog_generation"
+    },
+    {
+      "path": "tests/test_xcmate_widget_pipeline_02947.py",
+      "class_name": "WidgetPipeline47",
+      "method": "test_movie_sql_error_closes_pinned_connection_and_keeps_lastgood"
+    },
+    {
+      "path": "tests/test_xcmate_widget_pipeline_02947.py",
+      "class_name": "WidgetPipeline47",
+      "method": "test_live_start_model_uses_local_group_names_without_loading_provider_json"
+    }
+  ]
+}

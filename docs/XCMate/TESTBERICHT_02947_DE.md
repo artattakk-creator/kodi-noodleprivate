@@ -2,6 +2,8 @@
 
 Entwicklung kumulativ ab veröffentlichter .46/main d9afbc309bd809587013238dfc638cd339c10ee9, unveränderter vereinbarter Branch. #244 und #245 sind gemeinsamer Umfang. Exakte abschließende Testzahl, Laufzeit, Codecommit und Paketdaten stehen nach dem sauberen Lauf in TESTERGEBNISSE_02947.json; TESTLOG_02947.txt enthält ausschließlich den Hostlauf mit synthetischen Daten.
 
+**Abschließender sauberer Hostlauf: 1.952 Tests PASS in 276,646 s; 0 Failures, 0 Errors, 0 Skips.** Codecommit `a9a29e35d08e133a5b90db161a05e86a062b6946`. Sämtliche 1.877 bisherigen Methoden und 75 neue wurden ausgeführt. Paketprüfung mit 550 Dateien/3.045.774 Bytes, CRC, sicheren Pfaden, vollständigem Quellvergleich, AST und unabhängiger bytegleicher Reproduktion PASS. SHA256: `9e233d927616e4552e808e0bdb518cd897436cabb78dbb3f0dc6a9955a6f724d`.
+
 ## Was geprüft wird
 
 Alle1.877 bisherigen Methoden bleiben erhalten. Neue Tests prüfen unter anderem tatsächliche SQL-Abfragepläne/Opcodegrenzen, adaptive Kandidaten, konsistente Read-Transaktionen, kalte parallele Widgetaufrufe, typisierte Kodi-Filminformationen,88/137 und bestehende1001 Sender, geschützte Serienabfragen, gültige dynamische Referenzen und Android-/special-/file-Pfade.
@@ -31,3 +33,15 @@ ZIP-Prüfung: vollständiges Add-on, richtige ID/Version, CRC, eindeutige sicher
 PERFORMANCE_02947.json dokumentiert25 synthetische Hoststichproben pro Vergleich, frische Reader/Datensätze mit warmem OS-Cache. Vergleich:60.000 Filme und88 Live-Sender. Keine extrapolierten Android-Kaltstartwerte. Die nachgelagerte Kategorieprüfung wahrt noch nicht importierte aktivierte Gruppen; der erste Startgruppenpfad wird davor bereitgestellt.
 
 Alle .47-Androidfälle bleiben NOT_TESTED. Tatsächliche Senderlogos/Programmbilder/Filmposter, Kodi-/EGL-Decodierung, vorhandene BINGIE-Bindings/Reload-Hooks, echte Cold/Warm-p50/p95 und sicherer Einzel-Live-Back werden ausschließlich durch den Nutzer auf Box B abgenommen. Fehlende Hooks/Decoder/Feeddaten und eine dauerhaft blockierte native Queue sind keine bestandenen Gates. Kein Skinpatch/Refresh/Reset als verdeckte Testvoraussetzung. Box A ohne Aktionen.
+
+## Vergleichswerte am eingefrorenen Code
+
+Je 25 synthetische Hoststichproben; frische Reader, warmer OS-Cache.
+
+| Messung | .46 p50 / p95 | .47 p50 / p95 |
+|---|---|---|
+| Film-Reader, 60.000 Filme | 88,820 / 106,227 ms | 0,924 / 2,141 ms |
+| Publikation, 88 Live-Sender | 138,420 / 159,712 ms | 71,770 / 77,463 ms |
+| SQLite-Verbindungen pro 88er-Publikation | 458 | 31 |
+
+Diese Zahlen sind keine Kodi-/Android-Zeiten. Reproduktion: `python tools/benchmark_xcmate_02947.py --project /pfad/zum/jeweiligen/Quellstand --samples 25`.
