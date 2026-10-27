@@ -357,6 +357,8 @@ def add_index_item(router,portal,kind,item,epg=None,recent=False,widget=False):
         info=None
         if epg:
             info=dict(now=epg.get('Now',''),next=epg.get('Next',''),start=epg.get('Start',0),stop=epg.get('Stop',0),progress=epg.get('Progress') if isinstance(epg.get('Progress'),(int,float)) else None,now_time='',next_time='',description='',_plot45=epg.get('plot',''))
+        if epg and isinstance(epg.get('_event46'),dict):
+            info=dict(epg['_event46']);info['_plot45']=epg.get('plot','')
         value=describe(portal,kind,item,getattr(router,'_widget_art44',{}),info)
         xbmcplugin.addDirectoryItem(router._handle,value['url'],native_item(value),isFolder=False)
         return
@@ -429,7 +431,7 @@ def widget(router,portal,action):
             info=snapshot[row['sid']]
             add_index_item(router,portal,'live',row,dict(Now=info['now'],Next=info['next'],
                 Start=info['start'],Stop=info['stop'],Progress=info['progress'] if info['progress'] is not None else '',
-                plot=guide_plot(info)),widget=True)
+                plot=guide_plot(info),_event46=info),widget=True)
         # Home stays bounded; ordinary directory browsing remains unrestricted.
         if not rows:
             router._add_dir(tr(35853) if code not in ('READY','CACHE') else tr(32479),

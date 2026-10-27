@@ -670,8 +670,9 @@ class LiveNavigator(xbmcgui.WindowDialog):
 
     def tick(self):
         if self._closed or not self._drawn: return
-        from programme_window46 import open_pending
-        open_pending(self)
+        if getattr(self,'_programme_request46',None):
+            from programme_window46 import open_pending
+            open_pending(self)
         from playback_exit import identity
         from osd_ownership import recover
         player=xbmc.Player();token=identity(player)

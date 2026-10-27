@@ -34,6 +34,7 @@ class BootTests(unittest.TestCase):
             start_stream_id='1',start_group_id='a',autoplay_start=False)
         self.portal_file=self.profile/'portals.json';self.portal_file.write_text(json.dumps([self.portal]))
         class ListItem:
+            def addContextMenuItems(self,items,replaceItems=False):self.context=list(items)
             def __init__(inner,label='',path=''): inner.label=label;inner.props={}
             def setArt(inner,art): pass
             def setInfo(inner,kind,values): pass

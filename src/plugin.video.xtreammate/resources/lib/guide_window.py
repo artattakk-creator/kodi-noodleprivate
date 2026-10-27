@@ -103,8 +103,9 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
             prefetch_short_guides(self.portal,self.channels)
 
     def _owner_tick(self):
-        from programme_window46 import open_pending
-        open_pending(self)
+        if getattr(self,'_programme_request46',None):
+            from programme_window46 import open_pending
+            open_pending(self)
         if self._leaving:
             if time.monotonic()>=self._leave_after:self.close()
             return

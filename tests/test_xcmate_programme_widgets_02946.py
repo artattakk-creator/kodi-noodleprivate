@@ -41,6 +41,17 @@ class ProgrammeWidgets46(Fixture,unittest.TestCase):
    for _ in range(20):self.value()
   self.assertEqual(self.options,before);self.assertFalse(self.builtins)
 
+ def test_real_plugin_route_and_background_frame_publish_identical_current_event(self):
+  guide=importlib.import_module('guide_store')
+  guide.import_cache('p',{'xml':[dict(name='Actual current programme',descr='Actual saved text',channel='xml',start_timestamp=self.now-60,stop_timestamp=self.now+600)]},'route-proof46',now=self.now)
+  self.index.import_group('p','live','a',[dict(stream_id='1',name='Real station',epg_channel_id='xml',category_id='a')])
+  self.router._params=dict(action='widget_live_start_group',pid='p');self.added.clear();self.routes.dispatch(self.router)
+  actual=self.added[0][1];self.assertEqual(actual.props['XCMate.ProgrammeTitle46'],'Actual current programme');self.assertIn('Actual saved text',actual.info['plot'])
+  from widget_data41 import snapshot
+  rows,code=snapshot(self.portal,'live',background=True)
+  refresh=importlib.import_module('widget_refresh45');self.assertTrue(refresh.publish(self.portal,'live',rows,code));frame=refresh.read('p','live')
+  self.assertEqual(actual.props['XCMate.ProgrammeKey46'],frame['items'][0]['props']['XCMate.ProgrammeKey46']);self.assertEqual(actual.props['XCMate.ProgrammeTimes46'],frame['items'][0]['props']['XCMate.ProgrammeTimes46'])
+
 class ProgrammeWindow46(Fixture,unittest.TestCase):
  def setUp(self):super().setUp();self.m=importlib.import_module('programme_window46')
  def test_grid_callback_only_queues_and_does_not_open_a_window(self):

@@ -57,7 +57,9 @@ class GridTests(Fixture,unittest.TestCase):
 
     def test_selected_event_details_context_back_keeps_grid_and_cursor(self):
         w=self.window();cursor=w.cursor;self.dialog.select.return_value=0
-        w.onClick(w.getFocusId());self.dialog.textviewer.assert_called_once();self.assertFalse(w._closed);self.assertEqual(w.cursor,cursor)
+        w.onClick(w.getFocusId());self.assertIsNotNone(w._programme_request46);self.dialog.textviewer.assert_not_called()
+        with mock.patch('programme_window46.show') as details:w._owner_tick();details.assert_called_once()
+        self.assertFalse(w._closed);self.assertEqual(w.cursor,cursor)
         self.dialog.select.return_value=-1;self.key(w,117);self.assertFalse(w._closed)
         self.key(w,92);self.assertTrue(w._closed)
 

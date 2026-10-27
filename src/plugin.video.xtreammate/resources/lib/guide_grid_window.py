@@ -418,8 +418,9 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         elif cid==313:self._show_groups()
 
     def _owner_tick(self):
-        from programme_window46 import open_pending
-        open_pending(self)
+        if getattr(self,'_programme_request46',None):
+            from programme_window46 import open_pending
+            open_pending(self)
         if not self._leaving:self._resume_focus()
         if self._leaving:
             if time.monotonic()>=self._leave_after:self.close()
