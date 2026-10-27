@@ -17,7 +17,7 @@ class DetailMenuTests(Fixture,unittest.TestCase):
         for back in (92,2):
             w=self.detail();before=dict(w.selected);focus=w.getFocusId()
             w.native(1);self.assertTrue(w._detail_menu_open);self.assertEqual(w.getFocusId(),810)
-            self.assertEqual(w._valid_focus(),[810]);self.assertEqual(w.getControl(810).size(),5)
+            self.assertEqual(w._valid_focus(),[810]);self.assertEqual(w.getControl(810).size(),6)
             w.native(back);self.assertFalse(w._detail_menu_open);self.assertEqual(w.getFocusId(),focus)
             self.assertEqual(w.selected,before);self.assertEqual(w.mode,'detail');self.assertFalse(self.builtins)
 

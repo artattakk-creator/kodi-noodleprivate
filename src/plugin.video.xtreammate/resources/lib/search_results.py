@@ -16,6 +16,16 @@ def secondary(row):
         if year.isdigit() and 1880<=int(year)<=2100:parts.append(year)
         genre=row.get('genre')
         if isinstance(genre,str) and genre.strip():parts.append(genre.strip()[:100])
+        language=row.get('languages') or row.get('language')
+        if isinstance(language,list):language=', '.join(v[:20] for v in language[:4] if isinstance(v,str))
+        if isinstance(language,str) and language.strip():parts.append(language.strip()[:60])
+        quality=str(row.get('quality') or row.get('video_quality') or '').strip().upper()
+        if quality in ('SD','HD','FHD','UHD','4K','720P','1080P','2160P'):parts.append(quality)
+        if kind=='series':
+            seasons=row.get('num_seasons',row.get('season_count',row.get('seasons_count')))
+            if isinstance(seasons,int) and not isinstance(seasons,bool) and 0<seasons<=1000:parts.append(tr(35951,seasons))
+        source=row.get('_portal_name43')
+        if isinstance(source,str) and source.strip():parts.append(source.strip()[:80])
     return ' · '.join(parts)
 
 

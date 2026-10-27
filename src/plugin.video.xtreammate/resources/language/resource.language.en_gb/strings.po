@@ -3868,3 +3868,155 @@ msgstr "Widget data temporarily unavailable. Existing data is preserved."
 msgctxt "#35854"
 msgid "Live TV: release fullscreen before stopping (Android 21.3 compatibility test)"
 msgstr "Live TV: release fullscreen before stopping (Android 21.3 compatibility test)"
+
+msgctxt "#35900"
+msgid "Provider"
+msgstr "Provider"
+
+msgctxt "#35901"
+msgid "TMDb"
+msgstr "TMDb"
+
+msgctxt "#35902"
+msgid "Image search (Wikimedia Commons)"
+msgstr "Image search (Wikimedia Commons)"
+
+msgctxt "#35903"
+msgid "Import local image"
+msgstr "Import local image"
+
+msgctxt "#35904"
+msgid "Close"
+msgstr "Close"
+
+msgctxt "#35905"
+msgid "Loading…"
+msgstr "Loading…"
+
+msgctxt "#35906"
+msgid "Source unavailable: {}"
+msgstr "Source unavailable: {}"
+
+msgctxt "#35910"
+msgid "Use this image"
+msgstr "Use this image"
+
+msgctxt "#35911"
+msgid "Select image role"
+msgstr "Select image role"
+
+msgctxt "#35912"
+msgid "Save choice"
+msgstr "Save choice"
+
+msgctxt "#35913"
+msgid "Back to results"
+msgstr "Back to results"
+
+msgctxt "#35914"
+msgid "Restore provider image"
+msgstr "Restore provider image"
+
+msgctxt "#35915"
+msgid "Cancel"
+msgstr "Cancel"
+
+msgctxt "#35916"
+msgid "Select metadata fields"
+msgstr "Select metadata fields"
+
+msgctxt "#35917"
+msgid "Reset manual metadata"
+msgstr "Reset manual metadata"
+
+msgctxt "#35918"
+msgid "Find and assign artwork / metadata"
+msgstr "Find and assign artwork / metadata"
+
+msgctxt "#35919"
+msgid "Search term"
+msgstr "Search term"
+
+msgctxt "#35920"
+msgid "Search TMDb for"
+msgstr "Search TMDb for"
+
+msgctxt "#35921"
+msgid "Movie / series"
+msgstr "Movie / series"
+
+msgctxt "#35922"
+msgid "Person / actor image"
+msgstr "Person / actor image"
+
+msgctxt "#35923"
+msgid "{} results – OK opens preview"
+msgstr "{} results – OK opens preview"
+
+msgctxt "#35924"
+msgid "No verified result available"
+msgstr "No verified result available"
+
+msgctxt "#35925"
+msgid "Check the work, year, image role and attribution before saving."
+msgstr "Check the work, year, image role and attribution before saving."
+
+msgctxt "#35926"
+msgid "Preview · role: {}"
+msgstr "Preview · role: {}"
+
+msgctxt "#35927"
+msgid "Save only the selected metadata fields?"
+msgstr "Save only the selected metadata fields?"
+
+msgctxt "#35928"
+msgid "Saved"
+msgstr "Saved"
+
+msgctxt "#35929"
+msgid "Local import – use only images you may use."
+msgstr "Local import – use only images you may use."
+
+msgctxt "#35930"
+msgid "Assign image as"
+msgstr "Assign image as"
+
+msgctxt "#35931"
+msgid "Poster"
+msgstr "Poster"
+
+msgctxt "#35932"
+msgid "Background"
+msgstr "Background"
+
+msgctxt "#35933"
+msgid "Person / replacement image"
+msgstr "Person / replacement image"
+
+msgctxt "#35934"
+msgid "Remove this manual assignment? Original images are retained."
+msgstr "Remove this manual assignment? Original images are retained."
+
+msgctxt "#35935"
+msgid "Image verification unavailable: Pillow is missing. Nothing was saved."
+msgstr "Image verification unavailable: Pillow is missing. Nothing was saved."
+
+msgctxt "#35940"
+msgid "TMDb: enable manual research with your own API read token"
+msgstr "TMDb: enable manual research with your own API read token"
+
+msgctxt "#35941"
+msgid "TMDb API read access token (private)"
+msgstr "TMDb API read access token (private)"
+
+msgctxt "#35942"
+msgid "TMDb: fill missing artwork in identified details (opt-in)"
+msgstr "TMDb: fill missing artwork in identified details (opt-in)"
+
+msgctxt "#35950"
+msgid "End of catalogue"
+msgstr "End of catalogue"
+
+msgctxt "#35951"
+msgid "{} seasons"
+msgstr "{} seasons"

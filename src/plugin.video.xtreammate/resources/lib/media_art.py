@@ -171,7 +171,13 @@ def local_art(item,theme=None):
     if theme and not backdrop:
         from theme_store import asset
         backdrop=asset('placeholder.series.backdrop' if item.get('kind')=='series' else 'placeholder.movie.backdrop',snapshot=theme)
-    return dict(poster=poster,thumb=poster,icon=poster,fanart=backdrop,landscape=provider_landscape or backdrop or poster)
+    result=dict(poster=poster,thumb=poster,icon=poster,fanart=backdrop,landscape=provider_landscape or backdrop or poster)
+    from media_overrides43 import cached_art
+    manual=cached_art(item)
+    if manual.get('poster'):
+        for key in ('poster','thumb','icon'):result[key]=manual['poster']
+    if manual.get('fanart'):result['fanart']=result['landscape']=manual['fanart']
+    return result
 
 
 def request(items,priority=0):
@@ -345,6 +351,9 @@ def diagnose(item,_snapshot=None):
             with _queue_lock:waiting=url in _inbox
             code=db_code if db_code not in ('OK','NOT_CREATED') else ('PENDING' if _enqueue_code=='NOT_REQUESTED' else _enqueue_code) if waiting else _enqueue_code
         result[name]=code
+    from media_overrides43 import cached_art
+    for role,path in cached_art(item).items():
+        if path and role in result:result[role]='READY'
     return result
 
 
@@ -361,6 +370,8 @@ def diagnostic_label(code):
 
 def retry_poster(item):
     """Explicit one-poster retry, with alternatives from this exact record only."""
+    from media_overrides43 import cached_art
+    if cached_art(item).get('poster'):return 'READY'
     from artwork_config import persistent
     if not persistent():return 'NOT_REQUESTED'
     from art_store import retry_one,key
@@ -390,6 +401,9 @@ def retry_poster(item):
 
 
 def poster_report(item):
+    from media_overrides43 import cached_art
+    if cached_art(item).get('poster'):
+        return dict(source_field='MANUAL43',candidate_count=len(poster_candidates(item)),status='READY',attempts=0,updated=0,next_at=0,database='NOT_USED')
     from art_store import key
     snapshot=_image_snapshot(item)
     status=diagnose(item,_snapshot=snapshot)['poster']

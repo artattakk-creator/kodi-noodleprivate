@@ -224,7 +224,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         self.getControl(102).setLabel(tr(32610))
 
     def _initial(self):
-        from library_index import Reader
+        from media_catalog43 import Reader
         from catalog_sync import request
         reader=Reader(self.portal['id'])
         groups=reader.groups(self.kind)
@@ -245,10 +245,12 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
             return
         self.getControl(120).setLabel((tr(32403) if self.kind=='vod' else tr(32404))+tr(32492))
         if self.initial_sid:
-            # Fetching the one ID is local, still on the data worker callback.
-            item=self.reader.get(self.kind,self.initial_sid)
+            # The completion callback owns GUI, not SQL/profile IO. Widgets
+            # resolve their one verified media ID on the existing data worker.
+            reader,kind,sid=self.reader,self.kind,self.initial_sid
             self.initial_sid=''
-            if item: self._details(item);return
+            self._request(lambda:reader.get(kind,sid),lambda item:self._details(item) if item else self._page('landing',0))
+            return
         self._page('landing',0)
 
     def _start_watch(self):
@@ -265,7 +267,8 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         from media_art import revision
         if revision()!=self._art_revision:
             self._art_revision=revision()
-        from library_index import Reader,sync_state
+        from library_index import sync_state
+        from media_catalog43 import Reader
         reader=Reader(self.portal['id'])
         state=reader.state(self.kind)
         revision=(state or {}).get('revision','')
@@ -285,6 +288,10 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
 
     def _owner_tick(self):
         self._gui()
+        if getattr(self,'_picker_requested43',None):
+            from media_picker43 import open_pending
+            open_pending(self)
+            if self._closed:return
         self._search_tick()
         self._resume_focus()
         self._poll_playback_return()
@@ -312,6 +319,8 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
                         absolute=self.offset+self.getControl(210).getSelectedPosition()
                         start=absolute//PAGE*PAGE
                         self._positions[(self.mode,self.category,start)]=absolute-start
+                        pos=self.getControl(210).getSelectedPosition()
+                        if 0<=pos<len(self.rows):self._catalog_restore43=self.rows[pos]['sid']
                     self._page(self.mode,start)
             if status and status[0]['code'] in ('FAILED','CANCELLED'):
                 self.getControl(102).setLabel(tr(32610))
@@ -416,6 +425,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         self.rows=[];self.getControl(110 if mode=='landing' else 210).reset()
         self.getControl(102).setLabel(tr(32496))
         kind,category,page=self.kind,self.category,self.offset
+        reader=self.reader;restore=getattr(self,'_catalog_restore43',None);self._catalog_restore43=None
         def load():
             if self.favourites_only:
                 from media_state import read
@@ -425,16 +435,20 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
             if mode=='landing':
                 from utils import setting_int
                 return self.reader.rail(kind,offset=page,limit=PAGE,keep=setting_int('recent_keep',100))
-            return self.reader.page(kind,category=category,offset=page,limit=PAGE)
+            from media_page43 import read
+            return read(reader,kind,category,page,PAGE,restore=restore)
         self._request(load,self._page_ready)
 
     def _page_ready(self,value):
         old_focus=self.getFocusId()
+        if hasattr(value,'offset'):self.offset=value.offset
+        if hasattr(value,'revision'):self._catalog_token43=value.revision
         self.rows,self.total=value
         cid=110 if self.mode=='landing' else 210
         self._fill(cid,self.rows)
         if self.mode=='landing': self._refresh_rails()
         pos=min(self._positions.get((self.mode,self.category,self.offset),0),max(0,len(self.rows)-1))
+        if getattr(value,'selected',None):pos=next((i for i,r in enumerate(self.rows) if r['sid']==value.selected),pos)
         self.getControl(cid).selectItem(pos);self._last_position=pos
         self.getControl(102).setLabel(tr(32497).format(
             tr(32498) if self.mode=='landing' else tr(32499),self.offset+1 if self.rows else 0,
@@ -550,10 +564,13 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
             from media_data import details
             from metadata_views import enrich
             data=details(self.router._xc(self.portal),self.kind,item['sid'])
-            merged=enrich(item,data)
+            merged=enrich(item.get('_provider43',item),data)
+            from media_metadata43 import fallback
+            merged=fallback(merged,self.kind)
             for k in ('sid','kind','category_id'):
                 if k in item: merged[k]=item[k]
-            return merged,data
+            from media_overrides43 import apply_many
+            return apply_many(self.portal['id'],[merged])[0],data
         self._request(load,self._detail_ready)
 
     def _detail_ready(self,value):
@@ -982,6 +999,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         name=next((g['title'] for g in self.groups if g['cid']==self.category),tr(32499))
         self._page_status=tr(33200,name,self.offset+len(self.rows),self.total)
         if self.offset:self._page_status=tr(33203,name,self.offset+1,self.offset+len(self.rows),self.total)
+        if self.total and self.offset+len(self.rows)>=self.total:self._page_status+=' · '+tr(35950)
         self.getControl(102).setLabel(self._page_status)
 
     def _prefetch(self,direction=1,force=False,advance=None):
@@ -1001,13 +1019,17 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         limit=PAGE if direction>0 else self.offset-start
         self._append_failed=False;self._append_context=(context,start,direction)
         favourites=self.favourites_only;pid=self.portal['id']
+        expected=getattr(self,'_catalog_token43',None)
         def load():
             if favourites:
                 from media_state import read
                 ids=[json.loads(k)[2] for k in read()['favourites'] if json.loads(k)[:2]==[str(pid),kind]]
                 available=[r for sid in ids if (r:=reader.get(kind,sid))]
                 rows,total=available[start:start+limit],len(available)
-            else:rows,total=reader.page(kind,category=category,offset=start,limit=limit)
+            else:
+                from media_page43 import read
+                result=read(reader,kind,category,start,limit,expected=expected)
+                rows,total=result
             from media_art import request
             request(rows,priority=0)
             return rows,total
@@ -1026,8 +1048,13 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
                 if not rows and start<total:raise ValueError('Empty catalogue batch')
                 if set(r['sid'] for r in self.rows)&set(r['sid'] for r in rows):raise ValueError('Catalogue changed')
                 self._append_rows(rows,total,start,direction)
-            except Exception:
+            except Exception as error:
                 self._append_failed=True;self._append_advance=None
+                from media_page43 import CatalogueChanged
+                if isinstance(error,CatalogueChanged):
+                    pos=self.getControl(210).getSelectedPosition()
+                    self._catalog_restore43=self.rows[pos]['sid'] if 0<=pos<len(self.rows) else None
+                    self._page(self.mode,self.offset);return
                 self.getControl(102).setLabel(tr(32610))
         if self.mode=='grid' and self.getFocusId()==210 and self.rows:
             self._prefetch()

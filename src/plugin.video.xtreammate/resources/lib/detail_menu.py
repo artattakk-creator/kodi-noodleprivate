@@ -48,7 +48,7 @@ class DetailMenuMixin:
         self.getControl(802).setLabel('XCMate')
         self._fill(810,[dict(name=tr(34200 if self.kind=='vod' else 34201)),
                         dict(name=tr(34202)),dict(name=tr(34203)),
-                        dict(name=tr(33703)),dict(name=tr(34204))])
+                        dict(name=tr(33703)),dict(name=tr(34204)),dict(name=tr(35918))])
         # Explicit parent visibility, independent of an info-label used as an
         # XML boolean condition. Both entry methods use this same native panel.
         self.getControl(800).setVisible(True);self.getControl(810).setVisible(True)
@@ -81,6 +81,10 @@ class DetailMenuMixin:
             from downloads_ui import manage
             manage()
         elif choice==2:
+            from artwork_config import persistent
+            if not persistent():
+                from media_picker43 import request
+                request(self);return True
             item=dict(self.selected)
             def retry():
                 from media_art import retry_poster,poster_report
@@ -94,4 +98,7 @@ class DetailMenuMixin:
                 xbmcgui.Dialog().notification('XCMate',text)
             self._request(retry,ready)
         elif choice==3:self._poster_status()
+        elif choice==5:
+            from media_picker43 import request
+            request(self)
         return True
