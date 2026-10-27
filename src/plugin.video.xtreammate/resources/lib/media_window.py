@@ -425,7 +425,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
     def _page(self,mode,offset=0):
         if self._append_future is not None:self._append_future.cancel()
         self._append_future=None;self._append_context=None;self._append_failed=False;self._append_advance=None
-        preserve=bool(self.rows) and getattr(self,'_display_context44',None)==(self.kind,self.category,mode,max(0,offset))
+        preserve=self.mode==mode and bool(self.rows) and getattr(self,'_display_context44',None)==(self.kind,self.category,mode,max(0,offset))
         self.mode=mode;self.offset=max(0,offset)
         if not preserve:self._show(mode)
         if not preserve:self.rows=[];self.getControl(110 if mode=='landing' else 210).reset()

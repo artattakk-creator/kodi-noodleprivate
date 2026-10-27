@@ -323,7 +323,7 @@ def paging(router,total,offset,**params):
 
 
 def add_index_item(router,portal,kind,item,epg=None,recent=False,widget=False):
-    import xbmcgui,xbmcplugin
+    import os,xbmcaddon,xbmcgui,xbmcplugin
     from media_art import local_art
     li=xbmcgui.ListItem(item['name'])
     from theme_render import snapshot
@@ -340,7 +340,7 @@ def add_index_item(router,portal,kind,item,epg=None,recent=False,widget=False):
             from widget_focus41 import token
             li.setProperty('XCMate.WidgetToken41',token(portal,item))
     if widget and theme:
-        if art['landscape'].startswith(str(theme['folder'])+'/'):
+        if art['landscape'].startswith(str(theme['folder'])+'/') or art['landscape']==os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media',{'live':'tv','series':'series'}.get(kind,'vod')+'.png'):
             art['landscape']=asset('widget.live' if kind=='live' else 'widget.series' if kind=='series' else 'widget.movie',art['landscape'],snapshot=theme)
         art['banner']=asset('widget.header',snapshot=theme)
     li.setArt(art)

@@ -35,7 +35,7 @@ def source_stream(source,cancel=lambda:False):
         with http_stream(uri,cancel=cancel) as stream: yield stream
 
 
-def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=lambda:False):
+def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=lambda:False,stage_only=False):
     from guide_store import connect,path
     from epg_sources import _channel_name_key
     from xmltv_stream import parse
@@ -53,7 +53,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         if eid: ids.add(eid);aliases[sid]=eid
         key=_channel_name_key(row.get('name'))
         names.setdefault(key,[]).append(sid)
-    batch=[];stored=0;now=time.time()
+    batch=[];stored=0;now=time.time();keep_stage=False
     def flush():
         if not batch: return
         check_space(target,sum(len(r[-1])+len(r[-2]) for r in batch)*4)
@@ -103,26 +103,87 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         with db:
             from epg_events import clean_stage
             clean_stage(db,'xml_stage',' WHERE generation=?',(generation,))
-            from guide_publish44 import publish,source_id
-            outcome=publish(db,pid,'xml_stage','generation=?',(generation,),
-                            source=source_id(source,source_index),rank=source_index,
-                            revision='stream-'+generation,now=now,cancel=cancel)
-            before_aliases=db.total_changes
-            for alias,cid in aliases.items():
-                if db.execute('SELECT 1 FROM xml_stage WHERE generation=? AND cid=? LIMIT 1',(generation,cid)).fetchone():
-                    db.execute('INSERT OR IGNORE INTO guide_alias VALUES(?,?,?)',(pid,alias,cid))
-            if db.total_changes!=before_aliases:
-                db.execute('INSERT OR REPLACE INTO guide_meta VALUES(?,?,?)',(pid,'stream-'+generation,time.time()))
-            db.execute('DELETE FROM xml_stage WHERE generation=?',(generation,))
+        stage=dict(generation=generation,source=source,index=source_index,aliases=aliases,
+                   now=now,counts=dict(counts,stored=stored))
+        if stage_only:
+            keep_stage=True
+            return stage
+        outcome=publish_stages44(pid,[stage],filename,cancel)[0]
         counts.update(stored=stored,publish_code=outcome['code'],added=outcome['added'],conflicts=outcome['conflicts'])
         return counts
     finally:
         # SQL rollback restores the complete previous guide on ENOSPC or error.
         db.rollback()
-        try:
-            with db: db.execute('DELETE FROM xml_stage WHERE generation=?',(generation,))
-        except Exception: pass
+        if not keep_stage:
+            try:
+                with db: db.execute('DELETE FROM xml_stage WHERE generation=?',(generation,))
+            except Exception: pass
         db.close()
+
+
+def discard_stages44(stages,filename=None):
+    if not stages:return
+    from guide_store import connect
+    db=connect(filename,write=True)
+    try:
+        with db:
+            for stage in stages:db.execute('DELETE FROM xml_stage WHERE generation=?',(stage['generation'],))
+    finally:db.close()
+
+
+def publish_stages44(pid,stages,filename=None,cancel=lambda:False):
+    """All verified sources become visible at one commit/revision, never midway."""
+    from guide_store import connect
+    from guide_publish44 import publish,source_id
+    db=connect(filename,write=True);outcomes=[];revision='stream-'+uuid.uuid4().hex
+    try:
+        with db:
+            old=db.execute('SELECT revision FROM guide_meta WHERE pid=?',(pid,)).fetchone()
+            changed=False
+            for stage in stages:
+                if cancel():raise InterruptedError('EPG import cancelled')
+                generation=stage['generation']
+                outcome=publish(db,pid,'xml_stage','generation=?',(generation,),source=source_id(stage['source'],stage['index']),
+                    rank=stage['index'],revision=revision,now=stage['now'],cancel=cancel)
+                outcomes.append(outcome)
+                before=db.total_changes
+                for alias,cid in stage['aliases'].items():
+                    if db.execute('SELECT 1 FROM xml_stage WHERE generation=? AND cid=? LIMIT 1',(generation,cid)).fetchone():
+                        db.execute('INSERT OR IGNORE INTO guide_alias VALUES(?,?,?)',(pid,alias,cid))
+                changed=changed or db.total_changes!=before
+                db.execute('DELETE FROM xml_stage WHERE generation=?',(generation,))
+            current=db.execute('SELECT revision FROM guide_meta WHERE pid=?',(pid,)).fetchone()
+            if changed or current!=old:db.execute('INSERT OR REPLACE INTO guide_meta VALUES(?,?,?)',(pid,revision,time.time()))
+            if outcomes:
+                import json
+                totals={k:sum(o[k] for o in outcomes) for k in ('incoming','added','corrected','conflicts')}
+                code='PARTIAL_PRESERVED' if totals['conflicts'] else 'VERIFIED' if totals['added'] or totals['corrected'] else 'UNCHANGED'
+                db.execute('INSERT OR REPLACE INTO guide44_outcomes VALUES(?,?,?)',(pid,code,json.dumps(totals)))
+            if cancel():raise InterruptedError('EPG import cancelled')
+        return outcomes
+    finally:db.close()
+
+
+@contextmanager
+def portal_lease44(pid):
+    """OS releases this nonblocking advisory lease even after interpreter death."""
+    import hashlib
+    from guide_store import path
+    filename=path()+'.refresh44-'+hashlib.sha256(str(pid).encode()).hexdigest()[:24]+'.lock'
+    os.makedirs(os.path.dirname(filename),exist_ok=True)
+    f=open(filename,'a+b');locked=False
+    try:
+        try:
+            import fcntl
+            fcntl.flock(f.fileno(),fcntl.LOCK_EX|fcntl.LOCK_NB);locked=True
+        except ImportError:
+            # No unsafe parallel importer on unsupported platforms.
+            pass
+        except (OSError,BlockingIOError):pass
+        yield locked
+    finally:
+        if locked:fcntl.flock(f.fileno(),fcntl.LOCK_UN)
+        f.close()
 
 
 def fast_snapshot(pid,streams,mappings):
@@ -140,6 +201,15 @@ def fast_snapshot(pid,streams,mappings):
 
 
 def refresh(portal,force=False,cancel=lambda:False):
+    from epg_status import update
+    with portal_lease44(portal['id']) as held:
+        if not held:
+            update(portal['id'],'refresh','IMPORT_BUSY_OR_LOCK_UNAVAILABLE',running=False)
+            return {}
+        return _refresh44(portal,force,cancel)
+
+
+def _refresh44(portal,force=False,cancel=lambda:False):
     from epg_sources import configuration
     from epg_status import update,source_key
     from epg_errors import failure_details
@@ -164,17 +234,34 @@ def refresh(portal,force=False,cancel=lambda:False):
     xc=for_portal(portal);uri=portal.get('epg_url') or xc.get_xmltv_epg_url()
     provider=dict(uri=uri,local=not uri.startswith(('http://','https://')))
     sources=([('provider',provider,0)] if uri and portal.get('provider_epg_enabled',True) else [])+[(source_key(s),s,i) for i,s in enumerate(config['sources'],1) if s.get('enabled',True)]
-    successes=failures=0
+    successes=failures=0;stages=[]
     for key,source,index in sources:
         if cancel(): break
         update(pid,key,'RUNNING',running=True,source_index=index)
         try:
-            counts=import_source(pid,source,index,streams,config['mappings'],cancel=cancel)
-            update(pid,key,'PARTIAL_PRESERVED' if counts.get('publish_code')=='PARTIAL_PRESERVED' else 'READY',running=False,source_index=index,channels=counts['channels'],programmes=counts['stored'],bytes=counts['bytes'])
-            successes+=1
+            stage=import_source(pid,source,index,streams,config['mappings'],cancel=cancel,stage_only=True)
+            stage['key']=key;stages.append(stage)
+            update(pid,key,'VERIFIED',running=True,source_index=index)
         except Exception as exc:
             code,fields=failure_details(exc,getattr(exc,'xcmate_stage','MERGE'))
             update(pid,key,code,running=False,source_index=index,**fields);failures+=1
+    if cancel():
+        discard_stages44(stages)
+        for stage in stages:update(pid,stage['key'],'CANCELLED',running=False)
+        update(pid,'refresh','CANCELLED',running=False)
+        return {}
+    try:
+        outcomes=publish_stages44(pid,stages,cancel=cancel) if stages else []
+    except Exception as exc:
+        discard_stages44(stages)
+        code,fields=failure_details(exc,'MERGE')
+        for stage in stages:update(pid,stage['key'],code,running=False,**fields)
+        update(pid,'refresh',code,running=False,**fields)
+        return {}
+    for stage,outcome in zip(stages,outcomes):
+        counts=stage['counts'];successes+=1
+        update(pid,stage['key'],'PARTIAL_PRESERVED' if outcome['code']=='PARTIAL_PRESERVED' else 'READY',running=False,
+            source_index=stage['index'],channels=counts['channels'],programmes=counts['stored'],bytes=counts['bytes'])
     result=fast_snapshot(pid,streams,config['mappings'])
     if successes and result:
         _save_disk(pid,result);_mem_set(pid,result)

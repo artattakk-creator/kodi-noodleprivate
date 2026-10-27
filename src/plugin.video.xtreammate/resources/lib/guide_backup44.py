@@ -14,6 +14,8 @@ def authorize(filename,cancel=lambda:False):
     if folder.is_symlink():raise ValueError('UNSAFE_BACKUP_PATH')
     check_space(str(source),source.stat().st_size*2+32*1048576)
     destination=folder/('guide-'+str(time.time_ns())+'.sqlite')
+    fd=os.open(destination,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+    os.close(fd)
     config=source.parent/'xtreammate_epg_sources.json'
     config_bytes=None;config_stamp=None
     if config.exists():

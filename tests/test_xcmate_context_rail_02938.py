@@ -7,7 +7,7 @@ import test_xcmate_kodi21_overlay as native
 class ContextRail38(model.Fixture,unittest.TestCase):
     def setUp(self):
         super().setUp();gui=sys.modules['xbmcgui']
-        gui.ControlButton=native.ControlButton;gui.ControlImage=native.ControlImage
+        gui.ControlButton=native.ControlButton;gui.ControlImage=native.ControlImage;gui.ControlLabel=native.ControlLabel
         original=model.WindowXML.getControl
         def add(window,control):
             if not hasattr(window,'extra_controls'):window.extra_controls={}
@@ -68,7 +68,7 @@ class ContextRail38(model.Fixture,unittest.TestCase):
     def test_large_guide_group_edge_rail_restores_context_twenty_times(self):
         import test_xcmate_guide_navigation_02922 as guide_model
         case=guide_model.GuideNavigationTests(methodName='runTest');case.setUp();self.addCleanup(case.doCleanups)
-        gui=sys.modules['xbmcgui'];gui.ControlButton=native.ControlButton;gui.ControlImage=native.ControlImage
+        gui=sys.modules['xbmcgui'];gui.ControlButton=native.ControlButton;gui.ControlImage=native.ControlImage;gui.ControlLabel=native.ControlLabel
         window=case.window();window._show_groups();before=(window.category,window.offset,window.origin,window.cursor,window.row)
         for _ in range(20):
             window.onAction(types.SimpleNamespace(getId=lambda:1));self.assertTrue(window._navigation_rail.active)

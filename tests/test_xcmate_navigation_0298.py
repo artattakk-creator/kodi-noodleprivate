@@ -104,7 +104,7 @@ class Navigation298(Fixture,unittest.TestCase):
 
     def test_full_posterwall_back_restores_groups_then_landing_then_home(self):
         w=self.media_window();w.setFocusId(120);w.native(7);self.settle(w)
-        w.setFocusId(200);w.native(2)
+        w.setFocusId(200);w.native(2);self.assertEqual(w._cols,4);w.native(2)
         self.assertEqual(w._cols,6)
         w.native(92);self.assertEqual(w.mode,'groups');self.assertEqual(w.getFocusId(),200)
         w.native(92);self.settle(w);self.assertEqual(w.mode,'landing')

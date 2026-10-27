@@ -17,13 +17,13 @@ class GuideSafety44(Fixture,unittest.TestCase):
         db=sqlite3.connect(self.g.path())
         try:return db.execute('SELECT pid,cid,start,stop,title,source FROM programmes ORDER BY pid,cid,start,stop').fetchall()
         finally:db.close()
-    def xml(self,events,index=0,source='source-a',cancel=lambda:False):
+    def xml(self,events,index=0,source='source-a',cancel=lambda:False,stage_only=False):
         def stamp(ts):return time.strftime('%Y%m%d%H%M%S +0000',time.gmtime(ts))
         raw='<tv><channel id="x"><display-name>Channel</display-name></channel>'+''.join('<programme channel="x" start="'+stamp(a)+'" stop="'+stamp(b)+'"><title>'+t+'</title></programme>' for a,b,t in events)+'</tv>'
         @contextlib.contextmanager
         def stream(*a,**kw):yield io.BytesIO(raw.encode())
         with mock.patch.object(self.stream,'source_stream',stream):
-            return self.stream.import_source('p',dict(id=source,uri='https://redacted.invalid'),index,[dict(sid='1',name='Channel',epg_channel_id='x')],{},cancel=cancel)
+            return self.stream.import_source('p',dict(id=source,uri='https://redacted.invalid'),index,[dict(sid='1',name='Channel',epg_channel_id='x')],{},cancel=cancel,stage_only=stage_only)
     def legacy(self):
         self.put_cache([self.event(self.now-30,self.now+300)])
         db=sqlite3.connect(self.g.path())
@@ -137,3 +137,34 @@ class GuideSafety44(Fixture,unittest.TestCase):
         first,last=self.g.day_window(-7,self.now),self.g.day_window(-2,self.now)
         self.put_cache([self.event(first[0]+10,first[0]+100,'Oldest'),self.event(last[0]+10,last[0]+100,'Two days ago')])
         self.assertEqual(self.pub.history_days('p',self.g.path(),self.now),[-7,-2])
+
+    def test_all_sources_publish_in_one_atomic_revision_after_staging(self):
+        self.xml([(self.now,self.now+1800,'Before')]);before=self.rows()
+        first=self.xml([(self.now,self.now+1800,'Corrected')],stage_only=True)
+        second=self.xml([(self.now+1800,self.now+3600,'Next source')],1,'other',stage_only=True)
+        self.assertEqual(self.rows(),before)
+        original=self.pub.publish;observed=[]
+        def observe(*a,**kw):
+            result=original(*a,**kw);observed.append(self.rows());return result
+        with mock.patch.object(self.pub,'publish',side_effect=observe):
+            self.stream.publish_stages44('p',[first,second])
+        self.assertEqual(observed,[before,before]);self.assertEqual([r[4] for r in self.rows()],['Corrected','Next source'])
+        db=sqlite3.connect(self.g.path());self.assertEqual(db.execute('SELECT count(*) FROM xml_stage').fetchone()[0],0);db.close()
+
+    def test_second_source_failure_rolls_back_first_source_and_whole_revision(self):
+        self.xml([(self.now,self.now+1800,'Before')]);before=self.rows()
+        stages=[self.xml([(self.now,self.now+1800,'Correction')],stage_only=True),self.xml([(self.now+1800,self.now+3600,'Next')],1,'other',stage_only=True)]
+        original=self.pub.publish;calls=[]
+        def fail(*a,**kw):
+            calls.append(True)
+            if len(calls)==2:raise OSError(28,'synthetic full')
+            return original(*a,**kw)
+        with mock.patch.object(self.pub,'publish',side_effect=fail),self.assertRaises(OSError):self.stream.publish_stages44('p',stages)
+        self.assertEqual(self.rows(),before);self.stream.discard_stages44(stages)
+
+    def test_nonblocking_portal_lease_prevents_concurrent_refresh_and_releases(self):
+        with self.stream.portal_lease44('p') as first:
+            self.assertTrue(first)
+            with self.stream.portal_lease44('p') as second:self.assertFalse(second)
+            with self.stream.portal_lease44('different') as other:self.assertTrue(other)
+        with self.stream.portal_lease44('p') as again:self.assertTrue(again)
