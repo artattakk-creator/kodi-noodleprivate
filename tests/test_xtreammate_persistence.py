@@ -88,7 +88,7 @@ class XtreamMateV011Tests(unittest.TestCase):
         self.assertTrue(result)
         # 2 -> all disabled, checkbox dialog checks the second category and saves.
         self.assertEqual(self.groups.load('p','live'),{'11'})
-        self.assertTrue(any('Alle deaktivieren' in row for row in dialog.messages[0]))
+        self.assertTrue(any('Alle deaktivieren' in row.getLabel() for row in dialog.messages[0]))
         self.assertEqual(len(dialog.messages),2)
 
     def test_new_groups_opt_in_and_disabled_stay_disabled(self):
