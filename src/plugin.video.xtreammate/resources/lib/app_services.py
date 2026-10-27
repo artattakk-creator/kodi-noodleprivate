@@ -37,19 +37,20 @@ def refresh_local(cancel=lambda:False):
                 _bootstrapped.add(portal['id'])
             from guide_store import refresh as refresh_guide
             if cancel():return
-            refresh_guide(portal)
+            try:refresh_guide(portal)
+            except Exception:
+                from utils import warn
+                warn('GUIDE_PREWARM_UNAVAILABLE')
             if cancel():return
-            from library_index import Reader,initial_group
-            from media_art import request
-            reader=Reader(portal['id'])
-            for kind in ('vod','series'):
-                rows,_=reader.rail(kind,limit=12)
-                request(rows)
-            start=reader.get('live',str(portal.get('start_stream_id') or ''))
-            cid=initial_group(portal,reader.groups('live'),start)
-            if cid:
-                rows,_=reader.page('live',category=cid,limit=12,pin=start['sid'] if start else None)
-                request(rows)
+            # Bounded indexed widget pages replace full-catalogue rail COUNTs.
+            # Prepare references in this long-lived data worker, not IR/render.
+            from widget_data41 import snapshot
+            from widget_art44 import prepare
+            from media_overrides43 import apply_many
+            for kind in ('live','vod','series'):
+                if cancel():return
+                rows,code=snapshot(portal,kind)
+                prepare(portal['id'],apply_many(portal['id'],rows))
             _retry_after.pop(portal['id'],None)
         except Exception as exc:
             # A disk-full/over-budget/corrupt import must not reparse the same

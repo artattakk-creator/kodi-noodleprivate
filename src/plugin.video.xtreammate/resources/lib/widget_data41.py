@@ -22,7 +22,7 @@ class WidgetReader(Reader):
             db.row_factory=sqlite3.Row
             deadline=min(self.until,time.monotonic()+.25)
             db.set_progress_handler(lambda:int(time.monotonic()>=deadline),1000)
-            if 'titles' in sql and db.execute("SELECT 1 FROM sqlite_master WHERE name='readable_titles'").fetchone():sql=sql.replace('FROM titles','FROM readable_titles')
+            if '/* direct44 */' not in sql and 'titles' in sql and db.execute("SELECT 1 FROM sqlite_master WHERE name='readable_titles'").fetchone():sql=sql.replace('FROM titles','FROM readable_titles')
             if kind is not None:
                 # TEMP only; the library itself is opened mode=ro.
                 db.execute('CREATE TEMP TABLE selected_categories(cid TEXT PRIMARY KEY)')
@@ -35,23 +35,15 @@ class WidgetReader(Reader):
             error=IndexReadError(code);error.code=code;error.sqlite_type=type(exc).__name__;raise error from None
         finally:
             if db is not None:db.close()
+    def groups(self,kind):
+        from widget_query44 import groups
+        return groups(self,kind)
+    def get(self,kind,sid):
+        from widget_query44 import get
+        return get(self,kind,sid)
     def small(self,kind,category=None,limit=24,pin=None):
-        where='pid=? AND kind=?'+self._filter(kind);args=[self.pid,kind]
-        if category is not None:where+=' AND cid=?';args.append(str(category))
-        # DESC already puts NULL last. No GROUP BY, COUNT or expression sort
-        # over hundreds of thousands of titles for a 12/24-tile Home row.
-        order='ordinal' if kind=='live' else 'added DESC'
-        raw=self._query('SELECT payload FROM titles WHERE '+where+' ORDER BY '+order+' LIMIT ?',args+[min(96,limit*4)],kind)
-        rows=[];seen=set()
-        if pin:
-            item=self.get(kind,pin)
-            if item and (category is None or str(item.get('category_id',''))==str(category)):
-                rows.append(item);seen.add(str(item['sid']))
-        for value in raw:
-            item=json.loads(value['payload']);sid=str(item.get('sid',''))
-            if sid and sid not in seen:rows.append(item);seen.add(sid)
-            if len(rows)>=limit:break
-        return rows
+        from widget_query44 import small
+        return small(self,kind,category,limit,pin)
 
 def files(pid,kind):
     from utils import addon_data_dir

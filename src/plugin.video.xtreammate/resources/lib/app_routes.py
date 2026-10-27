@@ -313,7 +313,11 @@ def add_index_item(router,portal,kind,item,epg=None,recent=False,widget=False):
     li=xbmcgui.ListItem(item['name'])
     from theme_render import snapshot
     from theme_store import asset
-    theme=snapshot();art=local_art(item,theme)
+    theme=snapshot()
+    if widget:
+        from widget_art44 import art as widget_art
+        art=widget_art(item,getattr(router,'_widget_art44',{}))
+    else:art=local_art(item,theme)
     if widget:
         li.setProperty('XCMate.WidgetKind41',kind)
         if kind=='live':
@@ -346,6 +350,7 @@ def add_index_item(router,portal,kind,item,epg=None,recent=False,widget=False):
     else:
         url=router.url(action='media_detail',pid=portal['id'],kind=kind,sid=item['sid'])
     if kind!='live':li.setProperty('IsPlayable','false')
+    if widget:li.setProperty('XCMate.ClickTarget44',url)
     xbmcplugin.addDirectoryItem(router._handle,url,li,isFolder=False)
 
 
@@ -354,6 +359,8 @@ def widget(router,portal,action):
     from widget_data41 import snapshot
     kind='live' if action=='widget_live_start_group' else 'vod' if action=='widget_recent_vod' else 'series'
     rows,code=snapshot(portal,kind)
+    from widget_art44 import read as read_widget_art
+    router._widget_art44=read_widget_art(portal['id'])
     if kind in ('vod','series'):
         from media_overrides43 import apply_many
         rows=apply_many(portal['id'],rows)
