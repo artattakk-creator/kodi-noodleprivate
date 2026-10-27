@@ -61,6 +61,11 @@ def publish(portal,kind,rows,code='READY'):
         from epg_sources import configuration
         epg=now_next(portal['id'],rows,configuration(portal['id'])['mappings'])
     items=[describe(portal,kind,row,values,epg.get(row['sid'])) for row in rows[:12 if kind=='live' else 24]]
+    if kind=='live':
+        from programme_art46 import enqueue
+        for value in items:
+            event=value.pop('_programme46',None)
+            if event:enqueue(event)
     frame=dict(pid=str(portal['id']),kind=kind,policy=policy(portal,kind),at=time.time(),items=items)
     signature_items=[]
     for value in items:

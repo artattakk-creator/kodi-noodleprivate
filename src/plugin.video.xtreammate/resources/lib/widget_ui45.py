@@ -21,5 +21,5 @@ def manage(router,portal):
    dialog.textviewer('XCMate Widgets',widget_instructions(router,portal))
   else:
    from experimental45 import run
-   from widget_adapter45 import show
+   from widget_adapter46 import show
    run(show)

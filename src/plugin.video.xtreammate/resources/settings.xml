@@ -30,6 +30,8 @@
     <setting id="view_mode" type="enum" label="32247" values="32248" default="0" />
   </category>
   <category label="36002">
+    <setting id="programme_art_budget46" type="enum" label="36120" values="32|64|128|256" default="1"/>
+    <setting id="programme_tmdb46" type="bool" label="36110" default="false"/>
     <setting id="epg_sources_manager" type="action" label="XCMate: EPG-Quellen und Senderzuordnung" action="RunPlugin(plugin://plugin.video.xtreammate/?action=epg_sources)" />
     <setting id="epg_enabled" type="bool" label="32236" default="true" />
     <setting id="epg_lines" type="slider" label="32237" default="3" range="0,1,5" />

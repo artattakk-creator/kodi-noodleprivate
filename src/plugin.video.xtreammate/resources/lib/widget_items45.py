@@ -38,7 +38,11 @@ def describe(portal,kind,row,approved,epg=None):
     if kind!='live':
         label=recent_label(row,setting_int('recent_days',10));props['XCMate.AddedStatus']=label
         info['plot']=label+'\n'+info['plot']
-    return dict(label=str(row['name']),url=url,art=image,info=info,props=props)
+    value=dict(label=str(row['name']),url=url,art=image,info=info,props=props)
+    if kind=='live':
+        from programme_widgets46 import decorate
+        value=decorate(value,portal,row,epg or {})
+    return value
 
 
 def item(value):
@@ -46,4 +50,5 @@ def item(value):
     li=xbmcgui.ListItem(value['label'],path=value['url'])
     li.setArt(value['art']);li.setInfo('video',value['info'])
     for key,text in value['props'].items():li.setProperty(key,str(text))
+    if value.get('menus46'):li.addContextMenuItems(value['menus46'])
     return li
