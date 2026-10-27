@@ -21,6 +21,11 @@ def manage(router,portal):
     from programme_index46 import status as programme_status46
     local46=programme_status46()
     text+='\n\nLokale Sendungs-/Artwork-Datenbank: '+local46['code']+' · '+str(local46.get('bytes',0))+' Bytes. Ein Status READY bestätigt keine vollständigen20Tage oder Android-Abnahme.'
+    if portal:
+     import json
+     from widget_diagnostics47 import status as widget_status47
+     text+='\n\nDatenfluss .47 (−1 = nicht im Budget ermittelbar):\n'+json.dumps(widget_status47(portal['id']),ensure_ascii=False,indent=2)
+     text+='\nBildreferenzen sind kein Beleg für Kodi-/EGL-Decodierung. Sichtbarkeit und echtes Dekodieren bleiben Geräteabnahme.'
    except Exception:text='Status: READ_ERROR'
    dialog.textviewer('XCMate Widgets',text)
   elif choice==1:

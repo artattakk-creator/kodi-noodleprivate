@@ -9,6 +9,7 @@ import sqlite3
 import time
 
 from epg_views import guide_for_channel
+from programme_read47 import scoped
 
 
 class CatalogIndex:
@@ -87,14 +88,15 @@ class GuideSnapshot:
         if not base.get('now') and base.get('next_start',0)>ts:
             return dict(base)
         # Re-evaluate only a bounded, already normalized programme list in RAM.
-        info = guide_for_channel({'v':[dict(name=e['title'], start_timestamp=e['start'],
+        info = guide_for_channel({'v':[dict(e,name=e['title'], start_timestamp=e['start'],
             stop_timestamp=e['stop'], descr=e.get('description','')) for e in base.get('programme_events',base['events'])]}, 'v', now=ts)
         info['previous']=base.get('now') if base.get('now') and base.get('stop',0)<=ts else base.get('previous','')
         info.update(epg_id=base.get('epg_id',''), mapping=base.get('mapping',''),
-                    source_index=base.get('source_index'),snapshot_revision=base.get('snapshot_revision'))
+                    source_index=base.get('source_index'),snapshot_revision=base.get('snapshot_revision'),canonical46=base.get('canonical46',''))
         if base.get('programme_events'):info['programme_events']=base['programme_events']
         if not info['events']: info['reason'] = base.get('reason','NO_DATA')
-        return info
+        from programme_snapshot47 import bind
+        return bind(self.portal['id'],dict(sid=str(sid)),info)
 
     def request_programme(self,sid):
         with self._lock:
@@ -102,6 +104,7 @@ class GuideSnapshot:
                 self._request_generation+=1
                 self._programme_sid=str(sid);self._wake.set()
 
+    @scoped
     def refresh(self):
         """One worker iteration, also usable deterministically in integration tests."""
         from epg import load_cache, _mem_clear
@@ -133,7 +136,8 @@ class GuideSnapshot:
         values, missing = {}, []
         for c in wanted:
             sid = str(c.extra.get('stream_id',''))
-            info = resolve_guide(self._cache, c.tvg_id, sid, now, None if self._indexed else self.client, self._mappings)
+            compatibility47=not self._indexed or getattr(local,'code','')=='SHARED_LASTGOOD47'
+            info = resolve_guide(self._cache, c.tvg_id, sid, now, self.client if compatibility47 else None, self._mappings)
             info['snapshot_revision']=getattr(local,'revision',None)
             if not info['now'] and not self._indexed:
                 # A saved ten-day guide outlives its small compatibility
@@ -155,7 +159,9 @@ class GuideSnapshot:
             if sid==getattr(self,'_infobar_sid45',''):
                 from infobar_epg45 import previous
                 info['previous']=previous(self.portal['id'],c,self._mappings,now,info.get('snapshot_revision'))
-            values[sid] = info
+            info['canonical46']=getattr(local,'canonical',{}).get(info.get('epg_id',''),info.get('epg_id',''))
+            from programme_snapshot47 import bind
+            values[sid] = bind(self.portal['id'],c,info)
             if not info['now'] and sid not in self._mappings: missing.append(c)
         with self._lock:
             if generation!=self._request_generation or serial!=self._refresh_serial:return  # Late old viewport cannot publish.

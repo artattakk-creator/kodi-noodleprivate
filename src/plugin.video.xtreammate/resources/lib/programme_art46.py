@@ -7,6 +7,7 @@ from collections import OrderedDict
 import hashlib,json,os,threading,time,tempfile
 _lock=threading.Lock();_queue=OrderedDict();_memory=OrderedDict();_pending=set();_workers=[];_stop=threading.Event();_wake=threading.Event()
 MAX_DISK=64*1024*1024
+_visual_revision47=0
 
 class CacheBudget(OSError):pass
 
@@ -28,11 +29,16 @@ def fingerprint(event):
 
 def peek(event):
  with _lock:value=_memory.get(event['key'])
- return dict(value) if value and value.get('fingerprint')==fingerprint(event) else dict(code='PENDING',image=event['placeholder'],source='placeholder',match='NONE')
+ return {k:v for k,v in value.items() if k not in ('_verified47','_checked47')} if value and value.get('fingerprint')==fingerprint(event) else dict(code='PENDING',image=event['placeholder'],source='placeholder',match='NONE')
 
-def remember(key,value):
+def remember(key,value,verified47=False):
+ global _visual_revision47
  with _lock:
-  _memory[key]=dict(value);_memory.move_to_end(key)
+  old=_memory.get(key,{})
+  if verified47 and any(old.get(k)!=value.get(k) for k in ('fingerprint','image','code','source','sha256')):_visual_revision47+=1
+  inherited=bool(old.get('_verified47') and all(old.get(k)==value.get(k) for k in ('fingerprint','image','sha256')))
+  checked=time.monotonic() if verified47 else old.get('_checked47',0) if inherited else 0
+  _memory[key]=dict(value,_verified47=verified47 or inherited,_checked47=checked);_memory.move_to_end(key)
   while len(_memory)>128:_memory.popitem(last=False)
 
 def enqueue(event):
@@ -40,7 +46,7 @@ def enqueue(event):
  from utils import setting_bool
  key=event['key'];fp=fingerprint(event)
  with _lock:old=_memory.get(key)
- if old and old.get('fingerprint')==fp and old.get('until',0)>time.time() and not (old.get('code')=='PROGRAMME_CACHE_BUDGET' and old.get('budget46')!=limit()):return False
+ if old and old.get('fingerprint')==fp and old.get('until',0)>time.time() and (old.get('source')=='placeholder' or old.get('_verified47') and time.monotonic()-old.get('_checked47',0)<300) and not (old.get('code')=='PROGRAMME_CACHE_BUDGET' and old.get('budget46')!=limit()):return False
  if not event.get('xmltv_image') and not event.get('provider_image') and not setting_bool('programme_tmdb46',False):
   from programme_index46 import art as persisted_art46
   prior=persisted_art46(event)
@@ -50,7 +56,7 @@ def enqueue(event):
   return False
  with _lock:
   old=_memory.get(key)
-  if old and old.get('fingerprint')==fp and old.get('until',0)>time.time() and not (old.get('code')=='PROGRAMME_CACHE_BUDGET' and old.get('budget46')!=limit()):return False
+  if old and old.get('fingerprint')==fp and old.get('until',0)>time.time() and (old.get('source')=='placeholder' or old.get('_verified47') and time.monotonic()-old.get('_checked47',0)<300) and not (old.get('code')=='PROGRAMME_CACHE_BUDGET' and old.get('budget46')!=limit()):return False
   if key in _pending or len(_pending)>=24:return False
   _pending.add(key);_queue[key]=dict(event)
  ensure();_wake.set();return True
@@ -128,7 +134,7 @@ def prepare(event,cancel=lambda:False,fetch=None,match=None):
  from media_sources43 import get,validate_image,SourceError
  from programme_match46 import candidate
  key=event['key'];fp=fingerprint(event);old=indexed(event,verify=True) or persisted(event)
- if old and old.get('until',0)>time.time() and not (old.get('code')=='PROGRAMME_CACHE_BUDGET' and old.get('budget46')!=limit()):remember(key,old);return old
+ if old and old.get('until',0)>time.time() and not (old.get('code')=='PROGRAMME_CACHE_BUDGET' and old.get('budget46')!=limit()):remember(key,old,verified47=True);return old
  value=dict(key=key,fingerprint=fp,code='NO_IMAGE',image=event['placeholder'],source='placeholder',match='NONE',until=time.time()+6*3600)
  if old and old.get('source')!='placeholder':value=dict(old,code='READY_STALE',until=time.time()+300)
  try:
@@ -167,7 +173,7 @@ def prepare(event,cancel=lambda:False,fetch=None,match=None):
   from art_storage import ArtworkFailure
   value.update(code=error.code if isinstance(error,ArtworkFailure) else 'PROGRAMME_CACHE_BUDGET' if isinstance(error,CacheBudget) else 'CACHE_IO_ERROR',until=time.time()+900,budget46=limit())
  # Only fixed classes are reported; never URLs, IDs, tokens or exception text.
- remember(key,value)
+ remember(key,value,verified47=True)
  from programme_index46 import event as publish_event46,art as publish_art46
  publish_event46(event,write=True)
  if publish_art46(event,value) is None:
@@ -213,7 +219,12 @@ bytes on startup; directory readers never decode 12 full pictures in RAM.
  value=persisted(event,verify=False)
  if value:
   remember(event['key'],value);return value
- return peek(event)
+ value=peek(event)
+ if value.get('source')!='placeholder' and not os.path.isfile(value.get('image','')):
+  with _lock:
+   if event['key'] in _memory:_memory[event['key']]['_verified47']=False
+  return dict(code='LOCAL_IMAGE_MISSING',image=event['placeholder'],source='placeholder',match='NONE')
+ return value
 
 
 def indexed(event,verify=False):

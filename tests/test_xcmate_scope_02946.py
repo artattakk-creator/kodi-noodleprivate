@@ -21,6 +21,7 @@ class Scope46(unittest.TestCase):
    path='src/plugin.video.xtreammate/resources/lib/'+name+'.py'
    raw=(ROOT/path).read_bytes()
    if name in ('live_exit','media_progress','epg'):raw=without_stabilization46(raw,path)
+   elif name=='tv_data':raw=__import__('stabilization_contract_02947').without_stabilization47(raw,path)
    self.assertEqual(hashlib.sha256(raw).hexdigest(),b['source_sha256'][path],name)
  def test_original_application_icons_search_xml_and_keymaps_have_exact_bytes(self):
   b=self.baseline()

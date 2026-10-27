@@ -60,14 +60,17 @@ def publish(portal,rows,approved):
     try:
         check_space(filename,MAX_PAGE*2)
         for offset in range(0,len(rows),16):
-            batch=rows[offset:offset+16];epg=infos(portal,batch);items=[];records=[]
-            for index,row in enumerate(batch):
-                value=describe(portal,'live',row,approved,epg.get(row['sid']));event=value.pop('_programme46',None)
+            batch=rows[offset:offset+16];items=[];records=[]
+            from programme_assets47 import channels as channels47
+            from widget_render47 import values as render47
+            for index,value in enumerate(render47(portal,'live',batch,approved)):
+                event=value.pop('_programme46',None)
                 if event and offset+index in wanted:enqueue(event)
                 if event:records.append(event)
                 items.append(value)
             from programme_index46 import publish as publish_records46
             publish_records46(records)
+            channels47(portal,records)
             digest.update(json.dumps(items,sort_keys=True).encode())
             data=json.dumps(dict(generation46=generation,items=items)).encode()
             if len(data)>MAX_PAGE:trace('BAD_FRAME','live');return False
@@ -77,6 +80,8 @@ def publish(portal,rows,approved):
         frame['signature']=digest.hexdigest();data=json.dumps(frame).encode()
         if len(data)>256*1024:trace('BAD_FRAME','live');return False
         atomic(filename,data);_art_cursor46[str(portal['id'])]=(cursor+16)%len(rows)
+        from widget_diagnostics47 import note,save
+        save(portal['id'],'live','ITEMS',note(portal['id'],'live','ITEMS',items=len(rows)))
         from widget_notice46 import prepare
         prepare(portal,'live',frame['signature'],len(rows));trace('PUBLISHED','live',len(rows));return True
     except (OSError,ValueError,TypeError):trace('READ_ERROR','live');return False

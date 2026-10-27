@@ -33,14 +33,16 @@ def small(reader,kind,category=None,limit=24,pin=None):
     if category is not None and str(category) not in allowed:return []
     # A title can be in many enabled groups. Bound thin candidates by that
     # multiplicity, not a fixed 4x payload limit which can yield only 2 titles.
-    cap=min(4096,limit*max(1,len(allowed)))
+    cap=limit if kind=='vod' else min(4096,limit*max(1,len(allowed)))
     where='i.pid=? AND i.kind=? AND i.cid IN(SELECT cid FROM selected_categories)';args=[reader.pid,kind]
     if category is not None:where+=' AND i.cid=?';args.append(str(category))
     v2index='group_order_v2' if kind=='live' and category is not None else 'recent_v2'
     order='i.ordinal' if kind=='live' else 'i.added DESC'
     heads=reader._query('SELECT cid FROM heads WHERE pid=? AND kind=?',(reader.pid,kind))
     headed={r['cid'] for r in heads}
-    v2=reader._query('''/* direct44 */ SELECT i.sid,i.cid,i.generation,i.added,i.ordinal FROM items_v2 i INDEXED BY '''+v2index+''' JOIN heads h USING(pid,kind,cid,generation) WHERE '''+where+' ORDER BY '+order+' LIMIT ?',args+[cap],kind) if headed.intersection(allowed) else []
+    v2sql='''/* direct44 */ SELECT i.sid,i.cid,i.generation,i.added,i.ordinal FROM items_v2 i INDEXED BY '''+v2index+''' JOIN heads h USING(pid,kind,cid,generation) WHERE '''+where+' ORDER BY '+order+' LIMIT ?'
+    def fetch_v2(wanted):return reader._query(v2sql,args+[wanted],kind) if headed.intersection(allowed) else []
+    v2=fetch_v2(cap)
     legacy_where=where.replace('i.','t.')
     order='t.ordinal' if kind=='live' else 't.added DESC,t.ordinal'
     # Retained legacy payloads are deliberately not deleted by v2 sync. A
@@ -60,10 +62,16 @@ def small(reader,kind,category=None,limit=24,pin=None):
           AND EXISTS(SELECT 1 FROM titles t INDEXED BY category_titles WHERE t.pid=g.pid AND t.kind=g.kind AND t.cid=g.cid LIMIT 1)''',(reader.pid,kind),kind)
         legacy_groups.intersection_update(r['cid'] for r in populated)
     old=[]
+    oldsql=None
     if legacy_groups:
         index='category_titles' if kind=='live' and category is not None else 'recent_titles'
         legacy_where+=' AND t.cid NOT IN(SELECT cid FROM heads WHERE pid=? AND kind=?)'
-        old=reader._query('''/* direct44 */ SELECT t.sid,t.cid,t.added,t.ordinal FROM titles t INDEXED BY '''+index+' WHERE '+legacy_where+' ORDER BY '+order+' LIMIT ?',args+[reader.pid,kind,cap],kind)
+        oldsql='''/* direct44 */ SELECT t.sid,t.cid,t.added,t.ordinal FROM titles t INDEXED BY '''+index+' WHERE '+legacy_where+' ORDER BY '+order+' LIMIT ?'
+        old=reader._query(oldsql,args+[reader.pid,kind,cap],kind)
+    if kind=='vod':
+        from widget_sql47 import expand_keys
+        def fetch_old(wanted):return reader._query(oldsql,args+[reader.pid,kind,wanted],kind) if oldsql else []
+        v2,old=expand_keys(v2,old,limit,cap,fetch_v2,fetch_old)
     keys=[dict(r,_table='items_v2') for r in v2]+[dict(r,_table='titles') for r in old]
     keys.sort(key=lambda r:(r['ordinal'],r['sid'],r['cid']) if kind=='live' else (r['added'] is None,-(r['added'] or 0),r['ordinal'],r['sid'],r['cid']))
     chosen=[];seen=set()
@@ -75,6 +83,10 @@ def small(reader,kind,category=None,limit=24,pin=None):
     for table in ('items_v2','titles'):
         records=[r for r in chosen if r['_table']==table]
         if not records:continue
+        if kind=='vod':
+            from widget_sql47 import payloads as movie_payloads47
+            payloads.update(movie_payloads47(reader,records,table))
+            continue
         clauses=[];parameters=[reader.pid,kind]
         for record in records:
             if table=='items_v2':clauses.append('(cid=? AND generation=? AND sid=?)');parameters.extend((record['cid'],record['generation'],record['sid']))

@@ -185,6 +185,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         from iptv import Channel
         started=time.perf_counter()
         from live_catalog import read,prepare
+        prepared47=None
         if self.portal.get('type')=='xtream':
             future=getattr(self,'_catalog_future39',None)
             if future is None:future=self._catalog_future39=prepare(self.portal,self.xc)
@@ -193,15 +194,27 @@ class LiveNavigator(xbmcgui.WindowDialog):
                 first46=getattr(future,'first46',None)
                 if first46 is None:return False
                 categories,streams=first46;self._catalog_partial46=True
+                prepared47=getattr(future,'first_model47',None)
             else:
                 self._catalog_partial46=False
                 try:categories,streams=future.result()
                 except Exception:categories,streams=None,None
+                prepared47=getattr(future,'model47',None)
             if categories is None or streams is None:self._catalog_future39=None
         else:categories,streams = read(self.portal,self.xc)
         loaded=time.perf_counter()
         if categories is None or streams is None:
             return False
+        if prepared47 is not None:
+            self.groups,self.channels=prepared47['groups'],prepared47['channels']
+            self.enabled,self.index=prepared47['enabled'],prepared47['index']
+            self._catalog_ready=True
+            from flow46 import mark as mark_flow47
+            if self.channels:mark_flow47('GROUPS_READY',pid=self.portal['id'],sid=self.sid)
+            trace('catalog_performance','MODEL_REUSED47',cache_ms=(loaded-started)*1000,index_ms=0,channels=len(self.channels))
+            from ui_latency39 import mark
+            mark(self,'CATALOG_READY')
+            return True
         groups = [c for c in categories if isinstance(c, dict)]
         names = {str(c.get('category_id')): c.get('category_name', '')
                  for c in groups}

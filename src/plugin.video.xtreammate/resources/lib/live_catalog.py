@@ -17,6 +17,7 @@ def prepare(portal,client,force=False):
         if previous and not force:
             future,started=previous
             if not future.done():return future
+            if future.exception() and time.monotonic()-started<2:return future
             if not future.exception() and future.result()[1] is not None and time.monotonic()-started<10:return future
         # Bound concurrent cold portals as well as completed snapshots.
         if key not in _prepared and sum(not f.done() for f,_ in _prepared.values())>=4:
@@ -29,8 +30,27 @@ def prepare(portal,client,force=False):
             if not future.set_running_or_notify_cancel():return
             try:
                 from live_catalog46 import read as indexed46
-                value=indexed46(portal,lambda first:setattr(future,'first46',first),client.get_cached_catalog('get_live_categories')) if portal.get('type')=='xtream' else None
-                future.set_result(value if value is not None else read(portal,client))
+                from live_prepare47 import model,trace as trace47
+                trace47(portal,'LOCAL_READ_BEGIN')
+                def first47(first):
+                    future.first_model47=model(portal,client,*first)
+                    future.first46=first
+                    trace47(portal,'START_GROUP_MODEL_READY',len(future.first_model47['channels']))
+                # The local index already contains the configured category
+                # names. Do not deserialize provider JSON before first group.
+                value=indexed46(portal,first47) if portal.get('type')=='xtream' else None
+                if value is not None:
+                    # Discover newly enabled, not-yet-indexed categories only
+                    # after the fast start-group model is already available.
+                    from group_selection import enabled_ids
+                    categories47=client.get_cached_catalog('get_live_categories')
+                    if isinstance(categories47,list) and not enabled_ids(portal['id'],'live',categories47).issubset({str(g['category_id']) for g in value[0]}):
+                        value=read(portal,client)
+                value=value if value is not None else read(portal,client)
+                if value[0] is not None and value[1] is not None:
+                    future.model47=model(portal,client,*value)
+                    trace47(portal,'FULL_MODEL_READY',len(future.model47['channels']))
+                future.set_result(value)
             except BaseException as error:future.set_exception(error)
         threading.Thread(target=load,name='XCMate-live-catalog',daemon=True).start()
         return future

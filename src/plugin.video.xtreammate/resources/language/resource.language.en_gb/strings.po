@@ -4380,3 +4380,11 @@ msgstr "Local preview · OK to enlarge"
 msgctxt "#36124"
 msgid "No image available"
 msgstr "No image available"
+
+msgctxt "#36200"
+msgid "No movies in the selected local catalog"
+msgstr "No movies in the selected local catalog"
+
+msgctxt "#36201"
+msgid "Movie index unavailable – see Widgets status"
+msgstr "Movie index unavailable – see Widgets status"

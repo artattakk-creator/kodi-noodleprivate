@@ -60,6 +60,7 @@ def policy(portal,kind,offset=0):
     except OSError:stamp=None
     values=[str(portal['id']),kind,portal.get('start_stream_id'),portal.get('start_group_id'),portal.get('include_'+kind,True),stamp,offset,setting_int('recent_keep',100)]
     if kind=='live':values.append('FULL_GROUP46')
+    if kind=='vod':values.append('POINT_PAYLOAD47')  # Reject old empty/error-derived movie snapshots only.
     return hashlib.sha256(json.dumps(values,sort_keys=True).encode()).hexdigest()
 
 def read(filename,key):
@@ -98,14 +99,17 @@ def snapshot(portal,kind,background=False):
     if not portal.get('include_'+kind,True):return [],'DISABLED'
     old=read(filename,key)
     if old and time.time()-old['at']<15 and not background:trace(kind,'CACHE',len(old['rows']),started);return old['rows'],'CACHE'
-    stream=None;code='UNAVAILABLE';stage46=''
+    stream=None;reader=None;code='UNAVAILABLE';stage46=''
     try:
         import fcntl
         stream=open(lock,'a');fcntl.flock(stream,fcntl.LOCK_EX|fcntl.LOCK_NB)
         # Another interpreter may have published while this one waited to run.
         fresh=read(filename,key)
         if fresh and time.time()-fresh['at']<15 and not background:return fresh['rows'],'CACHE'
-        reader=WidgetReader(portal['id'])
+        if kind=='vod':
+            from widget_movie47 import MovieReader
+            reader=MovieReader(portal['id'])
+        else:reader=WidgetReader(portal['id'])
         state=reader.state(kind)
         if not state:return (old['rows'],'INDEX_MISSING') if old else ([], 'INDEX_MISSING')
         revision=[state.get('revision'),state.get('updated')]
@@ -122,5 +126,10 @@ def snapshot(portal,kind,background=False):
     except BlockingIOError:code='LOCKED'
     except (IndexReadError,sqlite3.Error,OSError,ValueError,TypeError,ImportError) as exc:code=getattr(exc,'code','UNAVAILABLE');stage46=getattr(exc,'stage46','')
     finally:
+        if reader is not None and hasattr(reader,'close'):reader.close()
         if stream:stream.close()
+    if code=='LOCKED' and kind=='vod' and not old:
+        from widget_movie47 import cold_read
+        rows,code=cold_read(portal)
+        trace(kind,code,len(rows),started);return rows,code
     rows=old['rows'] if old else [];trace(kind,code,len(rows),started,bool(old),stage46);return rows,code

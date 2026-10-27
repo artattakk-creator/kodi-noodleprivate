@@ -67,12 +67,12 @@ def publish(portal,kind,rows,code='READY'):
     if kind=='live' and len(rows)>64:
         from widget_pages46 import publish as publish_pages46
         return publish_pages46(portal,rows,values)
-    if kind=='live':
-        from local_epg import now_next
-        from epg_sources import configuration
-        from widget_group46 import infos as group_infos46
-        epg=group_infos46(portal,rows)
-    items=[describe(portal,kind,row,values,epg.get(row['sid'])) for row in (rows if kind=='live' else rows[:24])]
+    if kind in ('live','vod'):
+        from widget_render47 import values as render47
+        items=render47(portal,kind,rows if kind=='live' else rows[:24],values)
+    else:items=[describe(portal,kind,row,values) for row in rows[:24]]
+    from widget_diagnostics47 import describe as describe47,save as save47
+    save47(portal['id'],kind,'ITEMS',describe47(portal['id'],kind,items))
     if kind=='live':
         from programme_art46 import enqueue
         cursor=_art_cursor46.get(str(portal['id']),0)%max(1,len(items))
@@ -85,6 +85,8 @@ def publish(portal,kind,rows,code='READY'):
             if event:records46.append(event)
         from programme_index46 import publish as publish_records46
         publish_records46(records46)
+        from programme_assets47 import channels as channels47
+        channels47(portal,records46)
     frame=dict(pid=str(portal['id']),kind=kind,policy=policy(portal,kind),at=time.time(),items=items)
     signature_items=[]
     for value in items:

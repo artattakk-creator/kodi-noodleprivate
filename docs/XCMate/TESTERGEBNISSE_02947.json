@@ -1,0 +1,29 @@
+{
+  "version": "0.1.29.47",
+  "tests": 1952,
+  "seconds": 276.646,
+  "failures": 0,
+  "errors": 0,
+  "files": 550,
+  "bytes": 3045774,
+  "sha256": "9e233d927616e4552e808e0bdb518cd897436cabb78dbb3f0dc6a9955a6f724d",
+  "crc": "PASS",
+  "paths": "PASS",
+  "source_bytes": "PASS",
+  "reproducible_zip": "PASS",
+  "python_ast": "PASS",
+  "android": "NOT_TESTED",
+  "production_publish": false,
+  "base": "d9afbc309bd809587013238dfc638cd339c10ee9",
+  "code_build": "a9a29e35d08e133a5b90db161a05e86a062b6946",
+  "retained_tests": 1877,
+  "new_tests": 75,
+  "skipped": 0,
+  "branch": "freeze/xcmate-02944-box-b-baseline-20261027",
+  "device_actions": 0,
+  "merge": false,
+  "issues": [
+    244,
+    245
+  ]
+}
