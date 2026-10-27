@@ -1,4 +1,18 @@
 0.1.29.46 (cumulative review candidate; Android .46 NOT_TESTED)
+- #241/#240: preserve native Stop timeout as failure; recover the GUI once a
+  matching late FIFO return is verified, no second Stop or foreign navigation.
+- Skip fully superseded/empty legacy movie groups before the bounded widget
+  query; preserve policy-valid LastGood on Busy/Budget, with safe stage codes.
+- Full Live start group, generation-pinned keyset reads and 16-channel EPG
+  batches; paged atomic Home publications and bounded rotating/focus artwork.
+- Prime optional service imports outside the input owner; RAM-only widget
+  notifications, fast stable-profile reads and early start-group snapshots.
+- Real graphical cover/metadata candidate grid with local validated thumbnails,
+  role filters and larger preview; explicit Save/persist/cancel kept.
+- Verify actual EPG backup receipt before auto/manual refresh of a populated
+  guide. Read-only diagnosis stays available without migration or data reset.
+- Anonymous route/video/mini/group and media/detail/resolve phase markers;
+  Android cold/warm p50/p95 remain NOT_TESTED, native deadlock not claimed fixed.
 - Shared local programme details and Live widget event identity, metadata, image
   provenance and neutral fallbacks. Station-logo overlays remain separate images.
 - Graphical programme view from the large guide and existing mini/programme info
