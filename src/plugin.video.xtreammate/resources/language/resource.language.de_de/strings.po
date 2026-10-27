@@ -4364,3 +4364,19 @@ msgstr "Hoch/Runter: Beschreibung lesen · Zurück: Details schließen"
 msgctxt "#36120"
 msgid "Programme image cache budget (MiB)"
 msgstr "Cachebudget für Sendungsbilder (MiB)"
+
+msgctxt "#36121"
+msgid "All candidates"
+msgstr "Alle Vorschläge"
+
+msgctxt "#36122"
+msgid "Loading preview…"
+msgstr "Vorschau wird geladen…"
+
+msgctxt "#36123"
+msgid "Local preview · OK to enlarge"
+msgstr "Lokale Vorschau · OK zum Vergrößern"
+
+msgctxt "#36124"
+msgid "No image available"
+msgstr "Kein Bild vorhanden"

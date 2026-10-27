@@ -4364,3 +4364,19 @@ msgstr "Up/Down: read description · Back: close details"
 msgctxt "#36120"
 msgid "Programme image cache budget (MiB)"
 msgstr "Programme image cache budget (MiB)"
+
+msgctxt "#36121"
+msgid "All candidates"
+msgstr "All candidates"
+
+msgctxt "#36122"
+msgid "Loading preview…"
+msgstr "Loading preview…"
+
+msgctxt "#36123"
+msgid "Local preview · OK to enlarge"
+msgstr "Local preview · OK to enlarge"
+
+msgctxt "#36124"
+msgid "No image available"
+msgstr "No image available"
