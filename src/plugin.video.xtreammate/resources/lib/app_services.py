@@ -177,6 +177,8 @@ def shutdown():
     limitation is reported explicitly, rather than claiming a forced stop.
     """
     _stop.set()
+    from programme_art46 import shutdown as shutdown_programme46
+    shutdown_programme46()
     for name in ('downloads','capture_service','media_art'):
         event=getattr(__import__(name),'_stop',None)
         if event is not None:event.set()
