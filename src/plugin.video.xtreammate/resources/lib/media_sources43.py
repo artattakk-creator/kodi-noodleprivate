@@ -138,11 +138,14 @@ def tmdb(query,kind,person=False,cancel=lambda:False):
         if not person:
             if isinstance(row.get('overview'),str) and row['overview']:meta['plot']=row['overview'][:6000]
             if date.isdigit() and 1880<=int(date)<=2100:meta['year']=int(date)
+        before=len(result)
         for field,role in (('profile_path','replacement'),) if person else (('poster_path','poster'),('backdrop_path','fanart')):
             url=_tmdb_image(row.get(field))
             if url:result.append(dict(source='tmdb',url=url,name=title+(' · '+date if date else '')+' · '+endpoint,
                 title=title,year=date,remote_id=row['id'],media_type=endpoint,role=role,
                 attribution='TMDb · https://www.themoviedb.org/'+endpoint+'/'+str(row['id'])+' · API-/Bildnutzungsbedingungen beachten; nicht von TMDb zertifiziert.',metadata=meta))
+        if not person and len(result)==before:
+            result.append(dict(source='tmdb',url='',name=title+(' · '+date if date else '')+' · '+endpoint,title=title,year=date,remote_id=row['id'],media_type=endpoint,role='poster',attribution='TMDb · https://www.themoviedb.org/'+endpoint+'/'+str(row['id']),metadata=meta))
     return result[:24]
 
 

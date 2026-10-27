@@ -23,8 +23,8 @@ class DetailMenuMixin:
         if was_open:mark('MENU_CLOSED')
 
     def _detail_menu_prepare(self,mode):
-        self.getControl(820).setLabel(tr(34300))
-        self.getControl(820).setVisible(mode=='detail')
+        self.getControl(820).setLabel(tr(35969))
+        self.getControl(820).setVisible(mode in ('detail','seasons','episodes'))
         context=str((self.selected or {}).get('sid',''))
         if mode!='detail' or context!=getattr(self,'_detail_menu_context',None):
             self._detail_menu_hide()
@@ -37,18 +37,18 @@ class DetailMenuMixin:
 
     def _detail_menu_show(self,button=False):
         ready=bool(self.actions);waiting=bool(self._playback_waiting)
-        reason='WRONG_MODE' if self.mode!='detail' else 'NO_ITEM' if not self.selected or not self.selected.get('sid') else 'OPEN'
+        reason='WRONG_MODE' if self.mode not in ('detail','seasons','episodes') else 'NO_ITEM' if not self.selected or not self.selected.get('sid') else 'OPEN'
         mark('DETAIL_MENU_ELIGIBILITY',reason,ready,waiting)
         if reason!='OPEN':return False
         self._detail_menu_focus=self.getFocusId() if button else getattr(self,'_action_focus',self.getFocusId())
-        if self._detail_menu_focus not in (300,400,820):self._detail_menu_focus=300
+        if self._detail_menu_focus not in (300,330,340,400,820):self._detail_menu_focus=300
         self._detail_menu_row=self.getControl(300).getSelectedPosition()
         self._detail_menu_context=str(self.selected['sid'])
         self._detail_menu_open=True;self.setProperty('XCMate.DetailMenu','true')
         self.getControl(802).setLabel('XCMate')
         self._fill(810,[dict(name=tr(34200 if self.kind=='vod' else 34201)),
                         dict(name=tr(34202)),dict(name=tr(34203)),
-                        dict(name=tr(33703)),dict(name=tr(34204)),dict(name=tr(35918))])
+                        dict(name=tr(33703)),dict(name=tr(34204)),dict(name=tr(35918)),dict(name=tr(35982))])
         # Explicit parent visibility, independent of an info-label used as an
         # XML boolean condition. Both entry methods use this same native panel.
         self.getControl(800).setVisible(True);self.getControl(810).setVisible(True)
@@ -61,15 +61,15 @@ class DetailMenuMixin:
         if getattr(self,'_detail_menu_open',False):
             if key in (1,2,9,10,92):self._detail_menu_close()
             return True
-        if key==1:
+        if key==1 and self.mode in ('detail','seasons','episodes'):
             mark('DETAIL_LEFT_RECEIVED')
             return self._detail_menu_show()
-        if self.mode=='detail' and key==2 and getattr(self,'_action_focus',self.getFocusId())==300:
+        if self.mode in ('detail','seasons','episodes') and key==2 and getattr(self,'_action_focus',self.getFocusId())==300:
             self.setFocusId(820);return True
         return False
 
     def _detail_menu_click(self,cid):
-        if cid==820 and self.mode=='detail':
+        if cid==820 and self.mode in ('detail','seasons','episodes'):
             mark('DETAIL_ACTIONS_BUTTON');self._detail_menu_show(button=True);return True
         if not getattr(self,'_detail_menu_open',False):return False
         if cid!=810:return True
@@ -98,7 +98,7 @@ class DetailMenuMixin:
                 xbmcgui.Dialog().notification('XCMate',text)
             self._request(retry,ready)
         elif choice==3:self._poster_status()
-        elif choice==5:
+        elif choice in (5,6):
             from media_picker43 import request
-            request(self)
+            request(self,metadata=choice==6)
         return True

@@ -19,7 +19,7 @@ class Menu28Tests(Fixture,unittest.TestCase):
             w.native(92);self.assertFalse(w.getControl(800).visible);self.assertFalse(w.getControl(810).visible)
 
     def test_visible_actions_button_uses_same_panel_without_any_left_event(self):
-        w=self.detail();self.assertTrue(w.getControl(820).visible);self.assertEqual(w.getControl(820).label,'Aktionen')
+        w=self.detail();self.assertTrue(w.getControl(820).visible);self.assertEqual(w.getControl(820).label,'Cover & Metadaten')
         w.setFocusId(820);w.native(7)
         self.assertTrue(w._detail_menu_open);self.assertTrue(w.getControl(800).visible)
         self.assertEqual(w.getFocusId(),810)
@@ -45,7 +45,7 @@ class Menu28Tests(Fixture,unittest.TestCase):
 
     def test_missing_action_metadata_does_not_hide_menu_when_media_identity_is_known(self):
         w=self.detail();w.actions=[];w.setFocusId(820);w.native(7)
-        self.assertTrue(w._detail_menu_open);self.assertEqual(w.getControl(810).size(),6)
+        self.assertTrue(w._detail_menu_open);self.assertEqual(w.getControl(810).size(),7)
 
     def test_anonymous_trace_carries_eligibility_without_title_or_provider(self):
         w=self.detail()
