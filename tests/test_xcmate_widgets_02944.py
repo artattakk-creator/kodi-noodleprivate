@@ -64,3 +64,11 @@ class Widgets44(Fixture,unittest.TestCase):
         items=[li for _,li,_ in self.added if li.props.get('XCMate.WidgetKind41')=='live']
         self.assertTrue(any(li.props.get('XtreamMate.Now')=='Real programme' for li in items))
         self.assertTrue(all(li.props.get('XtreamMate.Progress')!='' for li in items))
+    def test_background_revision_invalidates_a_fresh_row_cache_without_waiting_for_ttl(self):
+        old,_=self.w.snapshot(self.portal,'vod')
+        self.index.import_group('p','vod','a',[dict(stream_id='new-'+str(i),category_id='a',name='New '+str(i),added=self.now+100+i) for i in range(30)])
+        new,code=self.w.snapshot(self.portal,'vod',background=True)
+        self.assertEqual(code,'READY');self.assertEqual(len(new),24);self.assertTrue(all(row['sid'].startswith('new-') for row in new));self.assertNotEqual(new,old)
+        with mock.patch.object(self.w.WidgetReader,'small',side_effect=AssertionError('unchanged catalogue should reuse snapshot')):
+            again,code=self.w.snapshot(self.portal,'vod',background=True)
+        self.assertEqual(again,new);self.assertEqual(code,'CACHE')

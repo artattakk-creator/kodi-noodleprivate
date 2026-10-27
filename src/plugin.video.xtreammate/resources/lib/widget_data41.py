@@ -64,10 +64,10 @@ def read(filename,key):
     except (OSError,ValueError,TypeError):pass
     return None
 
-def store(filename,key,rows):
+def store(filename,key,rows,revision=None):
     temp=None
     try:
-        data=json.dumps(dict(policy=key,at=time.time(),rows=rows))
+        data=json.dumps(dict(policy=key,at=time.time(),rows=rows,revision44=revision))
         if len(data.encode())>MAX_BYTES:return
         fd,temp=tempfile.mkstemp(prefix='.widget41-',dir=os.path.dirname(filename))
         with os.fdopen(fd,'w',encoding='utf-8') as f:f.write(data)
@@ -83,26 +83,31 @@ def trace(kind,code,rows,started,stale=False):
     try:xbmc.log('[XCMate][WIDGET41] kind='+kind+' code='+code+' rows='+str(rows)+' stale='+str(int(stale))+' ms='+str(int((time.monotonic()-started)*1000)),xbmc.LOGINFO)
     except (AttributeError,RuntimeError):pass
 
-def snapshot(portal,kind):
+def snapshot(portal,kind,background=False):
     started=time.monotonic();filename,lock=files(portal['id'],kind);key=policy(portal,kind)
     if not portal.get('include_'+kind,True):return [],'DISABLED'
     old=read(filename,key)
-    if old and time.time()-old['at']<15:trace(kind,'CACHE',len(old['rows']),started);return old['rows'],'CACHE'
+    if old and time.time()-old['at']<15 and not background:trace(kind,'CACHE',len(old['rows']),started);return old['rows'],'CACHE'
     stream=None;code='UNAVAILABLE'
     try:
         import fcntl
         stream=open(lock,'a');fcntl.flock(stream,fcntl.LOCK_EX|fcntl.LOCK_NB)
         # Another interpreter may have published while this one waited to run.
         fresh=read(filename,key)
-        if fresh and time.time()-fresh['at']<15:return fresh['rows'],'CACHE'
+        if fresh and time.time()-fresh['at']<15 and not background:return fresh['rows'],'CACHE'
         reader=WidgetReader(portal['id'])
-        if not reader.state(kind):return (old['rows'],'INDEX_MISSING') if old else ([], 'INDEX_MISSING')
+        state=reader.state(kind)
+        if not state:return (old['rows'],'INDEX_MISSING') if old else ([], 'INDEX_MISSING')
+        revision=[state.get('revision'),state.get('updated')]
+        if background and old and old.get('revision44')==revision:
+            if time.time()-old['at']>=15:store(filename,key,old['rows'],revision)
+            return old['rows'],'CACHE'
         if kind=='live':
             start=reader.get('live',str(portal.get('start_stream_id') or ''))
             cid=initial_group(portal,reader.groups('live'),start)
             rows=reader.small(kind,category=cid,limit=12,pin=start['sid'] if start else None) if cid else []
         else:rows=reader.small(kind,limit=24)
-        store(filename,key,rows);trace(kind,'READY',len(rows),started);return rows,'READY'
+        store(filename,key,rows,revision);trace(kind,'READY',len(rows),started);return rows,'READY'
     except BlockingIOError:code='LOCKED'
     except (IndexReadError,sqlite3.Error,OSError,ValueError,TypeError,ImportError) as exc:code=getattr(exc,'code','UNAVAILABLE')
     finally:

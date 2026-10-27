@@ -49,7 +49,7 @@ def refresh_local(cancel=lambda:False):
             from media_overrides43 import apply_many
             for kind in ('live','vod','series'):
                 if cancel():return
-                rows,code=snapshot(portal,kind)
+                rows,code=snapshot(portal,kind,background=True)
                 prepare(portal['id'],apply_many(portal['id'],rows))
             _retry_after.pop(portal['id'],None)
         except Exception as exc:
