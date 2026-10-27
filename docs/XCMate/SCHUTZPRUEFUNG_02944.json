@@ -1,0 +1,35 @@
+{
+  "base": "efaaf429b55f6db0e59344d3502de9125bd535ae",
+  "critical_exact": {
+    "src/plugin.video.xtreammate/resources/lib/live_stop42.py": "34848709c896a3c370b94b499c140868859a9df1820cb8da3542fd845f98fec2",
+    "src/plugin.video.xtreammate/resources/lib/native_stop41.py": "ea16bc4afdc1ea0fcfa5e90606047ef337cc58345d569547209ea5d6868bfc8b",
+    "src/plugin.video.xtreammate/resources/lib/live_exit.py": "6013c67a373602c7d5b9132d9223f6adb770479655200454ca82536b85422037",
+    "src/plugin.video.xtreammate/resources/lib/exit_jobs.py": "9fa91f51f4ec8a1c7be72f99b084c32fb9a56607cc0cb83bed5c0a1d9cdd748c",
+    "src/plugin.video.xtreammate/resources/lib/media_progress.py": "007d3dd06f69e3f4b62f19815d743392d1600781dfe6b3b2f56b1abe8b218a15",
+    "src/plugin.video.xtreammate/resources/lib/media_autoplay.py": "e81baac249e4272c1d782143471ca3381a4b5258884ae0fba10af00cd75fc588",
+    "src/plugin.video.xtreammate/resources/lib/media_state.py": "5f68590896c402ac193a88cc2ded4c1618958f913831ca38013ff0207b47800b",
+    "src/plugin.video.xtreammate/resources/lib/media_sequence.py": "07dff55b3ea3abe6805e679ccc3e91158f7bf9a677e0de4a3c84201c97e0f259",
+    "src/plugin.video.xtreammate/resources/lib/stream_details.py": "0b627c7a2bc037343f90b488f7b9f944f879dd782b9ecfb319392c54915e7127"
+  },
+  "protected_original_files": 399,
+  "retained_old_test_methods": 1582,
+  "other_worktrees": {
+    "other_pr50": {
+      "files": 35,
+      "status": "UNCHANGED"
+    },
+    "other_download25": {
+      "files": 27,
+      "status": "UNCHANGED"
+    }
+  },
+  "production_files_unchanged": [
+    "addons.xml",
+    "addons.xml.md5",
+    "plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.43.zip"
+  ],
+  "device_actions": 0,
+  "skin_keymap_changes": 0,
+  "main_merge": false,
+  "release": false
+}

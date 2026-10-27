@@ -1,0 +1,60 @@
+{
+  "records": 20005,
+  "fixture": "same v2 active group; new reader each sample; synthetic shared host; not Android",
+  "samples": {
+    "before43": [
+      {
+        "ms": 70.347,
+        "rows": 24,
+        "code": "READY"
+      },
+      {
+        "ms": 68.125,
+        "rows": 24,
+        "code": "READY"
+      },
+      {
+        "ms": 67.683,
+        "rows": 24,
+        "code": "READY"
+      },
+      {
+        "ms": 67.61,
+        "rows": 24,
+        "code": "READY"
+      },
+      {
+        "ms": 64.331,
+        "rows": 24,
+        "code": "READY"
+      }
+    ],
+    "after44": [
+      {
+        "ms": 29.567,
+        "rows": 24,
+        "code": "READY"
+      },
+      {
+        "ms": 33.439,
+        "rows": 24,
+        "code": "READY"
+      },
+      {
+        "ms": 30.942,
+        "rows": 24,
+        "code": "READY"
+      },
+      {
+        "ms": 33.891,
+        "rows": 24,
+        "code": "READY"
+      },
+      {
+        "ms": 33.504,
+        "rows": 24,
+        "code": "READY"
+      }
+    ]
+  }
+}

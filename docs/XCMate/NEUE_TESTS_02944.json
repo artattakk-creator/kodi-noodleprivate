@@ -1,0 +1,282 @@
+[
+  {
+    "file": "tests/test_xcmate_infomicro_02944.py",
+    "case": "InfoMicro44.test_infomicro01_bottom_right_inside_panel_at_720_and_1080"
+  },
+  {
+    "file": "tests/test_xcmate_infomicro_02944.py",
+    "case": "InfoMicro44.test_infomicro02_real_resolution_and_aac_layout_without_quality_or_dolby_guesses"
+  },
+  {
+    "file": "tests/test_xcmate_infomicro_02944.py",
+    "case": "InfoMicro44.test_infomicro03_dd_layout_uses_reported_codec_and_channels_exactly"
+  },
+  {
+    "file": "tests/test_xcmate_infomicro_02944.py",
+    "case": "InfoMicro44.test_infomicro04_unknown_empty_and_late_fields_have_no_stale_icons_or_values"
+  },
+  {
+    "file": "tests/test_xcmate_infomicro_02944.py",
+    "case": "InfoMicro44.test_infomicro05_track_change_updates_audio_without_new_acquisition_path"
+  },
+  {
+    "file": "tests/test_xcmate_infomicro_02944.py",
+    "case": "InfoMicro44.test_infomicro06_same_snapshot_has_no_extra_native_setters_or_long_duplicate_line"
+  },
+  {
+    "file": "tests/test_xcmate_infomicro_02944.py",
+    "case": "InfoMicro44.test_infomicro07_ok1_ok2_back_and_left_keep_native_levels_and_never_stop"
+  },
+  {
+    "file": "tests/test_xcmate_infomicro_02944.py",
+    "case": "InfoMicro44.test_infomicro08_font_is_registered_or_existing_fallback_and_symbols_are_local"
+  },
+  {
+    "file": "tests/test_xcmate_picker_access_02944.py",
+    "case": "PickerAccess44.test_separate_metadata_menu_is_visible_and_request_is_owner_deferred"
+  },
+  {
+    "file": "tests/test_xcmate_picker_access_02944.py",
+    "case": "PickerAccess44.test_metadata_preview_works_with_no_image_and_requires_separate_confirmation"
+  },
+  {
+    "file": "tests/test_xcmate_picker_access_02944.py",
+    "case": "PickerAccess44.test_tmdb_disabled_and_missing_token_are_distinct_before_keyboard_or_network"
+  },
+  {
+    "file": "tests/test_xcmate_picker_access_02944.py",
+    "case": "PickerAccess44.test_commons_and_local_images_explain_no_metadata_without_download_or_browse"
+  },
+  {
+    "file": "tests/test_xcmate_picker_access_02944.py",
+    "case": "PickerAccess44.test_metadata_candidate_without_poster_is_available_and_never_automatic_cover"
+  },
+  {
+    "file": "tests/test_xcmate_picker_access_02944.py",
+    "case": "PickerAccess44.test_source_failure_messages_are_distinct_and_never_expose_exception_text"
+  },
+  {
+    "file": "tests/test_xcmate_picker_access_02944.py",
+    "case": "PickerAccess44.test_episode_details_allow_series_art_and_restore_valid_episode_focus"
+  },
+  {
+    "file": "tests/test_xcmate_picker_access_02944.py",
+    "case": "PickerAccess44.test_normal_grid_left_is_not_misreported_as_broken_detail_menu"
+  },
+  {
+    "file": "tests/test_xcmate_search_play_02944.py",
+    "case": "SearchPlay44.test_requested_account_never_materializes_all_active_accounts"
+  },
+  {
+    "file": "tests/test_xcmate_search_play_02944.py",
+    "case": "SearchPlay44.test_temporary_profile_transaction_retry_is_once_and_intent_bound"
+  },
+  {
+    "file": "tests/test_xcmate_search_play_02944.py",
+    "case": "SearchPlay44.test_cancelled_intent_cannot_retry_or_resolve_after_profile_race"
+  },
+  {
+    "file": "tests/test_xcmate_search_play_02944.py",
+    "case": "SearchPlay44.test_memory_or_invalid_profile_is_not_blindly_retried_and_returns_control"
+  },
+  {
+    "file": "tests/test_xcmate_search_play_02944.py",
+    "case": "SearchPlay44.test_missing_or_disabled_requested_account_never_falls_back_to_another"
+  },
+  {
+    "file": "tests/test_xcmate_search_play_02944.py",
+    "case": "SearchPlay44.test_fixed_reason_and_origin_logs_never_include_private_ids_or_errors"
+  },
+  {
+    "file": "tests/test_xcmate_search_play_02944.py",
+    "case": "SearchPlay44.test_movie_search_result_reaches_exact_valid_resolver_once"
+  },
+  {
+    "file": "tests/test_xcmate_search_play_02944.py",
+    "case": "SearchPlay44.test_series_search_episode_reaches_exact_valid_resolver_once"
+  },
+  {
+    "file": "tests/test_xcmate_scope_02944.py",
+    "case": "Scope44.test_every_previous_source_file_retained_only_exact_authorized_hooks_differ"
+  },
+  {
+    "file": "tests/test_xcmate_scope_02944.py",
+    "case": "Scope44.test_all_1582_existing_test_methods_still_run"
+  },
+  {
+    "file": "tests/test_xcmate_scope_02944.py",
+    "case": "Scope44.test_four_exit_sources_exactly_frozen_and_compatibility_default_false_no_keymap_changes"
+  },
+  {
+    "file": "tests/test_xcmate_scope_02944.py",
+    "case": "Scope44.test_approved_search_layout_and_icon_remain_byte_identical"
+  },
+  {
+    "file": "tests/test_xcmate_navigation_02944.py",
+    "case": "MediaNavigation44.test_up_down_only_moves_category_focus_until_ok_confirms_it"
+  },
+  {
+    "file": "tests/test_xcmate_navigation_02944.py",
+    "case": "MediaNavigation44.test_first_right_poster_one_with_sidebar_second_right_poster_two_full_width"
+  },
+  {
+    "file": "tests/test_xcmate_navigation_02944.py",
+    "case": "MediaNavigation44.test_additional_left_at_gallery_edge_restores_category_without_reloading"
+  },
+  {
+    "file": "tests/test_xcmate_navigation_02944.py",
+    "case": "MediaNavigation44.test_identical_background_page_keeps_native_items_and_focus"
+  },
+  {
+    "file": "tests/test_xcmate_navigation_02944.py",
+    "case": "MediaNavigation44.test_detail_back_preserves_confirmed_category_and_sidebar_layout"
+  },
+  {
+    "file": "tests/test_xcmate_navigation_02944.py",
+    "case": "MediaNavigation44.test_unchanged_guide_worker_ticks_do_not_increment_visible_generation"
+  },
+  {
+    "file": "tests/test_xcmate_navigation_02944.py",
+    "case": "LiveRendering44.test_200_identical_left_row_renders_have_no_hide_show_label_or_image_writes"
+  },
+  {
+    "file": "tests/test_xcmate_navigation_02944.py",
+    "case": "LiveRendering44.test_expanded_to_groups_collapses_separate_text_controls_before_width_change"
+  },
+  {
+    "file": "tests/test_xcmate_navigation_02944.py",
+    "case": "LiveRendering44.test_hide_then_show_restores_cached_rows_without_ghosting"
+  },
+  {
+    "file": "tests/test_xcmate_guide_safety_02944.py",
+    "case": "GuideSafety44.test_sparse_new_feed_keeps_every_valid_gap_and_future_interval"
+  },
+  {
+    "file": "tests/test_xcmate_guide_safety_02944.py",
+    "case": "GuideSafety44.test_short_compatibility_snapshot_cannot_replace_published_long_guide"
+  },
+  {
+    "file": "tests/test_xcmate_guide_safety_02944.py",
+    "case": "GuideSafety44.test_zero_source_keeps_rows_and_revision"
+  },
+  {
+    "file": "tests/test_xcmate_guide_safety_02944.py",
+    "case": "GuideSafety44.test_three_sources_fill_real_gaps_without_whole_channel_priority_suppression"
+  },
+  {
+    "file": "tests/test_xcmate_guide_safety_02944.py",
+    "case": "GuideSafety44.test_source_ids_survive_equal_channel_and_rank_changes_without_raw_collision"
+  },
+  {
+    "file": "tests/test_xcmate_guide_safety_02944.py",
+    "case": "GuideSafety44.test_shifted_conflict_preserves_old_full_coverage_instead_of_trimming"
+  },
+  {
+    "file": "tests/test_xcmate_guide_safety_02944.py",
+    "case": "GuideSafety44.test_identical_source_refresh_does_not_change_published_revision"
+  },
+  {
+    "file": "tests/test_xcmate_guide_safety_02944.py",
+    "case": "GuideSafety44.test_seven_calendar_days_are_imported_and_oldest_day_is_not_pruned"
+  },
+  {
+    "file": "tests/test_xcmate_guide_safety_02944.py",
+    "case": "GuideSafety44.test_legacy_store_requires_explicit_backup_before_any_write_or_network"
+  },
+  {
+    "file": "tests/test_xcmate_guide_safety_02944.py",
+    "case": "GuideSafety44.test_opening_legacy_guide_never_reimports_four_event_cache"
+  },
+  {
+    "file": "tests/test_xcmate_guide_safety_02944.py",
+    "case": "GuideSafety44.test_verified_backup_contains_uncheckpointed_wal_and_preserves_original"
+  },
+  {
+    "file": "tests/test_xcmate_guide_safety_02944.py",
+    "case": "GuideSafety44.test_cancelled_or_disk_full_backup_never_authorizes_or_changes_legacy_rows"
+  },
+  {
+    "file": "tests/test_xcmate_guide_safety_02944.py",
+    "case": "GuideSafety44.test_interrupted_publication_rolls_back_all_rows_and_revision"
+  },
+  {
+    "file": "tests/test_xcmate_guide_safety_02944.py",
+    "case": "GuideSafety44.test_busy_store_reports_failure_without_publishing_partial_rows"
+  },
+  {
+    "file": "tests/test_xcmate_guide_safety_02944.py",
+    "case": "GuideSafety44.test_readonly_diagnostic_does_not_mutate_data_or_include_titles_urls_ids"
+  },
+  {
+    "file": "tests/test_xcmate_guide_safety_02944.py",
+    "case": "GuideSafety44.test_calendar_window_handles_23_and_25_hour_days"
+  },
+  {
+    "file": "tests/test_xcmate_guide_safety_02944.py",
+    "case": "GuideSafety44.test_day_minus_seven_is_allowed_but_minus_eight_is_not"
+  },
+  {
+    "file": "tests/test_xcmate_guide_safety_02944.py",
+    "case": "GuideSafety44.test_private_source_configuration_is_backed_up_but_never_logged"
+  },
+  {
+    "file": "tests/test_xcmate_guide_safety_02944.py",
+    "case": "GuideSafety44.test_verified_full_legacy_feed_can_correct_exact_interval_but_short_cache_cannot"
+  },
+  {
+    "file": "tests/test_xcmate_guide_safety_02944.py",
+    "case": "GuideSafety44.test_legacy_external_feed_fills_only_real_nonoverlapping_gaps"
+  },
+  {
+    "file": "tests/test_xcmate_guide_safety_02944.py",
+    "case": "GuideSafety44.test_history_indicator_counts_only_real_days_not_empty_calendar_slots"
+  },
+  {
+    "file": "tests/test_xcmate_guide_safety_02944.py",
+    "case": "GuideSafety44.test_all_sources_publish_in_one_atomic_revision_after_staging"
+  },
+  {
+    "file": "tests/test_xcmate_guide_safety_02944.py",
+    "case": "GuideSafety44.test_second_source_failure_rolls_back_first_source_and_whole_revision"
+  },
+  {
+    "file": "tests/test_xcmate_guide_safety_02944.py",
+    "case": "GuideSafety44.test_nonblocking_portal_lease_prevents_concurrent_refresh_and_releases"
+  },
+  {
+    "file": "tests/test_xcmate_widgets_02944.py",
+    "case": "Widgets44.test_duplicate_titles_in_40_groups_still_fill_24_unique_tiles"
+  },
+  {
+    "file": "tests/test_xcmate_widgets_02944.py",
+    "case": "Widgets44.test_real_v2_index_returns_24_without_union_view_sort_or_full_payload_scan"
+  },
+  {
+    "file": "tests/test_xcmate_widgets_02944.py",
+    "case": "Widgets44.test_undated_provider_uses_deterministic_local_order_without_fake_new_date"
+  },
+  {
+    "file": "tests/test_xcmate_widgets_02944.py",
+    "case": "Widgets44.test_shared_dynamic_reference_survives_new_interpreter_ram_without_image_archive"
+  },
+  {
+    "file": "tests/test_xcmate_widgets_02944.py",
+    "case": "Widgets44.test_expired_or_changed_source_reference_cannot_bypass_dns_policy"
+  },
+  {
+    "file": "tests/test_xcmate_widgets_02944.py",
+    "case": "Widgets44.test_metadata_limit_and_other_portal_cannot_supply_unrelated_art"
+  },
+  {
+    "file": "tests/test_xcmate_widgets_02944.py",
+    "case": "Widgets44.test_widget_click_targets_stay_exact_and_no_tile_focus_starts_playback"
+  },
+  {
+    "file": "tests/test_xcmate_widgets_02944.py",
+    "case": "Widgets44.test_authoritative_guide_revision_and_actual_progress_are_exposed_to_widget"
+  },
+  {
+    "file": "tests/test_xcmate_widgets_02944.py",
+    "case": "Widgets44.test_background_revision_invalidates_a_fresh_row_cache_without_waiting_for_ttl"
+  }
+]
