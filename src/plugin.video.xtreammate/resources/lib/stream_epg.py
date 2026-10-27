@@ -53,6 +53,8 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         if eid: ids.add(eid);aliases[sid]=eid
         key=_channel_name_key(row.get('name'))
         names.setdefault(key,[]).append(sid)
+    from programme_store46 import Stage as ProgrammeStage46
+    metadata46=ProgrammeStage46(pid,generation,source_index,filename,source_identity=__import__('guide_publish44').source_id(source,source_index))
     batch=[];stored=0;now=time.time();keep_stage=False
     def flush():
         if not batch: return
@@ -72,6 +74,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         if event['channel'] not in ids or event['stop_timestamp']<=__import__('guide_store').day_window(-7,now)[0] or event['start_timestamp']>=now+10*86400: return
         if not event['name']: return
         batch.append((generation,event['channel'],event['start_timestamp'],event['stop_timestamp'],event['name'],event['descr']))
+        metadata46.add(event)
         stored+=1
         if len(batch)>=256: flush()
     try:
@@ -87,7 +90,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
             try: exc.xcmate_stage=phase
             except Exception: pass
             raise
-        flush()
+        flush();metadata46.flush()
         if not stored:
             from epg_errors import EmptyGuideError
             raise EmptyGuideError('No matching current programmes')
@@ -103,7 +106,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         with db:
             from epg_events import clean_stage
             clean_stage(db,'xml_stage',' WHERE generation=?',(generation,))
-        stage=dict(generation=generation,source=source,index=source_index,aliases=aliases,
+        stage=dict(generation=generation,source=source,index=source_index,aliases=aliases,meta_pid46=str(pid),metadata_ok46=not metadata46.failed,
                    now=now,counts=dict(counts,stored=stored))
         if stage_only:
             keep_stage=True
@@ -115,6 +118,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         # SQL rollback restores the complete previous guide on ENOSPC or error.
         db.rollback()
         if not keep_stage:
+            metadata46.finish(False)
             try:
                 with db: db.execute('DELETE FROM xml_stage WHERE generation=?',(generation,))
             except Exception: pass
@@ -128,6 +132,8 @@ def discard_stages44(stages,filename=None):
     try:
         with db:
             for stage in stages:db.execute('DELETE FROM xml_stage WHERE generation=?',(stage['generation'],))
+        from programme_store46 import finish as finish_metadata46
+        for stage in stages:finish_metadata46(stage.get('meta_pid46',''),stage['generation'],False,filename)
     finally:db.close()
 
 
@@ -160,6 +166,8 @@ def publish_stages44(pid,stages,filename=None,cancel=lambda:False):
                 code='PARTIAL_PRESERVED' if totals['conflicts'] else 'VERIFIED' if totals['added'] or totals['corrected'] else 'UNCHANGED'
                 db.execute('INSERT OR REPLACE INTO guide44_outcomes VALUES(?,?,?)',(pid,code,json.dumps(totals)))
             if cancel():raise InterruptedError('EPG import cancelled')
+        from programme_store46 import finish as finish_metadata46
+        for stage in stages:finish_metadata46(pid,stage['generation'],stage.get('metadata_ok46',True),filename)
         return outcomes
     finally:db.close()
 

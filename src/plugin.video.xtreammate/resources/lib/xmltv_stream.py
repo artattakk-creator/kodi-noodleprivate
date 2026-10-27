@@ -62,7 +62,7 @@ def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None):
         if not stack and tag!='tv': raise XMLTVSyntaxError('Expected XMLTV tv root')
         stack.append(tag)
         if len(stack)==2 and tag in ('channel','programme'):
-            record=dict(attributes);record['type']=tag
+            record=dict(attributes);record['type']=tag;record['cast']=[]
         if record is not None:
             text=[];text_length=0;attrs=attributes
             if tag=='icon': record['icon']=str(attributes.get('src',''))[:2048]
@@ -78,13 +78,15 @@ def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None):
         nonlocal record,text,text_length
         if record is not None:
             value=''.join(text).strip()[:4096]
-            if tag in ('display-name','title','desc','category','value') and tag not in record: record[tag]=value
+            if tag in ('display-name','title','sub-title','date','desc','category','value') and tag not in record: record[tag]=value
+            if tag=='actor' and value and len(record.setdefault('cast',[]))<24:record['cast'].append(value[:120])
             if tag=='episode-num':
                 if record.get('_episode_system')=='onscreen': record['episode']=value[:128]
                 elif record.get('_episode_system')=='xmltv_ns':
                     parts=value.split('.')
                     if len(parts)>1 and parts[0].strip().isdigit() and parts[1].strip().isdigit():
                         record['episode']='S{:02d}E{:02d}'.format(int(parts[0])+1,int(parts[1])+1)
+                        record['season']=int(parts[0])+1;record['episode_number']=int(parts[1])+1
             if len(stack)==2:
                 if tag=='channel':
                     counts['channels']+=1
@@ -98,7 +100,9 @@ def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None):
                         counts['programmes']+=1
                         on_programme(dict(channel=str(record['channel']),start_timestamp=begin,stop_timestamp=stop,
                             name=str(record.get('title',''))[:512],descr=record.get('desc',''),category=record.get('category',''),
-                            screenshot_uri=record.get('icon',''),episode=record.get('episode',''),rating=record.get('value','')))
+                            screenshot_uri=record.get('icon',''),episode=record.get('episode',''),rating=record.get('value',''),
+                            sub_title=record.get('sub-title',''),date=record.get('date',''),cast=record.get('cast',[]),
+                            season=record.get('season'),episode_number=record.get('episode_number')))
                 record=None
         stack.pop();text=[];text_length=0
     parser.StartElementHandler=start;parser.CharacterDataHandler=characters;parser.EndElementHandler=end

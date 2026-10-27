@@ -52,6 +52,9 @@ def import_cache(pid,cache,revision='',now=None,filename=None,*,trusted_feed=Fal
     now=int(time.time() if now is None else now)
     if not isinstance(cache,dict) or not cache: return False
     db=connect(filename,write=True)
+    from programme_store46 import Stage as ProgrammeStage46
+    metadata46=ProgrammeStage46(pid,__import__('uuid').uuid4().hex,0,filename,source_records=(source_records or {}) if trusted_feed else None)
+    committed46=False
     try:
         from guide_publish44 import require
         require(db)
@@ -69,6 +72,7 @@ def import_cache(pid,cache,revision='',now=None,filename=None,*,trusted_feed=Fal
                     canonical=cid
                     try: source=int(event.get('_source_index',0))
                     except (ValueError,TypeError): source=0
+                    metadata46.add(dict(event,channel=cid,_source_index=source))
                     # Canonical XMLTV rows win over a stale stream alias with
                     # the same channel/time, independent of dict iteration.
                     db.execute(('INSERT OR REPLACE' if str(alias)==cid else 'INSERT OR IGNORE')+' INTO incoming VALUES(?,?,?,?,?,?)',
@@ -86,8 +90,10 @@ def import_cache(pid,cache,revision='',now=None,filename=None,*,trusted_feed=Fal
                     record=(source_records or {}).get(index,{})
                     publish(db,pid,'incoming','source=?',(index,),source=source_id(record,index),rank=index,revision=revision,now=now)
             else:publish(db,pid,'incoming',revision=revision,now=now)
+        committed46=True
         return True
-    finally: db.close()
+    finally:
+        db.close();metadata46.finish(committed46)
 
 
 def refresh(portal,filename=None):
