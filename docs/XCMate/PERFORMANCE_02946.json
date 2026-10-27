@@ -1,0 +1,23 @@
+{
+  "kind": "HOST_SYNTHETIC_FRESH_READER_CONNECTIONS_WARM_OS_CACHE",
+  "legacy_rows": 40005,
+  "active_v2_rows": 30,
+  "box_b_cold": "NOT_TESTED",
+  "box_b_warm": "NOT_TESTED",
+  "results": [
+    {
+      "code": "published45",
+      "returned": 24,
+      "n": 25,
+      "p50_ms": 16.696,
+      "p95_ms": 20.287
+    },
+    {
+      "code": "candidate46",
+      "returned": 24,
+      "n": 25,
+      "p50_ms": 1.693,
+      "p95_ms": 4.169
+    }
+  ]
+}
