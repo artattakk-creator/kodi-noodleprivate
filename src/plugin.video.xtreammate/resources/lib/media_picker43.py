@@ -10,8 +10,11 @@ from localization import tr
 _research_slots=threading.BoundedSemaphore(2)
 
 
-def request(parent):
-    if parent.mode=='detail' and parent.selected and parent.kind in ('vod','series'):
+def request(parent,metadata=False):
+    if parent.mode in ('detail','seasons','episodes') and parent.selected and parent.kind in ('vod','series'):
+        parent._picker_mode44=bool(metadata)
+        from picker_status44 import mark
+        mark('REQUEST','metadata' if metadata else 'art','OK')
         parent._picker_requested43=(str(parent.portal['id']),parent.kind,str(parent.selected['sid']))
 
 
@@ -19,25 +22,34 @@ def open_pending(parent):
     wanted=getattr(parent,'_picker_requested43',None)
     if not wanted:return
     parent._picker_requested43=None
-    if parent._closed or parent._leaving or parent._playback_waiting or parent.mode!='detail':return
+    if parent._closed or parent._leaving or parent._playback_waiting or parent.mode not in ('detail','seasons','episodes'):return
     if wanted!=(str(parent.portal['id']),parent.kind,str(parent.selected['sid'])):return
     dialog=int(xbmcgui.getCurrentWindowDialogId())
-    if dialog not in (0,9999,getattr(parent,'_native_dialog_id',None)):return
+    if dialog not in (0,9999,getattr(parent,'_native_dialog_id',None)):
+        from picker_status44 import mark,message
+        mark('OPEN_REJECTED',code='FOREIGN_MODAL')
+        xbmcgui.Dialog().notification('XCMate',message('FOREIGN_MODAL'));return
     picker=ArtworkPicker('XCMateArtwork43.xml',xbmcaddon.Addon().getAddonInfo('path'),'Default','720p')
     picker.configure(parent)
+    initial_mode=parent.mode
+    from picker_status44 import mark
+    mark('OPEN','metadata' if picker._metadata_mode44 else 'art','OK')
     changed=picker.run()
-    if not changed or parent._closed or parent.mode!='detail' or wanted!=(str(parent.portal['id']),parent.kind,str(parent.selected['sid'])):return
+    if not changed or parent._closed or parent.mode not in ('detail','seasons','episodes') or wanted!=(str(parent.portal['id']),parent.kind,str(parent.selected['sid'])):return
     item=dict(parent.selected)
     def load():
         from media_overrides43 import apply_many
         return apply_many(wanted[0],[item])[0]
     def ready(item):
-        parent._detail_ready((item,{'episodes':parent._episode_raw()}));parent._refresh_art()
+        if initial_mode=='detail':parent._detail_ready((item,{'episodes':parent._episode_raw()}))
+        else:parent.selected=item
+        parent._refresh_art()
     parent._request(load,ready)
 
 
 class ArtworkPicker(xbmcgui.WindowXMLDialog):
     def configure(self,parent):
+        self._metadata_mode44=bool(getattr(parent,'_picker_mode44',False));self._source44='provider'
         self.parent=parent;self.pid=str(parent.portal['id']);self.kind=parent.kind
         self.record=dict(parent.selected);self.sid=str(self.record['sid'])
         self._owner=threading.get_ident();self._closed=False;self._ready=False
@@ -100,7 +112,9 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
                 from media_sources43 import SourceError
                 from art_storage import ArtworkFailure
                 code=exc.code if isinstance(exc,SourceError) else (exc.code+(':'+exc.reason if exc.reason else '')) if isinstance(exc,ArtworkFailure) else 'SAVE_FAILED' if isinstance(exc,OSError) else 'UNAVAILABLE'
-                self._status(tr(35935) if code=='IMAGE_DECODER_MISSING' else tr(35906,code))
+                from picker_status44 import mark,message
+                mark('ERROR',self._source44,code)
+                self._status(message(code,self._source44))
             else:apply(value)
 
     def run(self):
@@ -119,7 +133,7 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
         for cid,label in ((401,35900),(402,35901),(403,35902),(404,35903),(405,35904),
                           (501,35910),(502,35911),(503,35912),(504,35913),(505,35914),(506,35915),(507,35916),(508,35917)):
             self.getControl(cid).setLabel(tr(label))
-        self.getControl(101).setLabel(tr(35918));self.getControl(102).setLabel(self.query)
+        self.getControl(101).setLabel(tr(35982 if self._metadata_mode44 else 35918));self.getControl(102).setLabel(self.query)
         self._show_list();self.setFocusId(401);self._source('provider')
 
     def _show_list(self):
@@ -145,6 +159,17 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
 
     def _source(self,source):
         if self._future is not None:return
+        if source=='commons' and self._metadata_mode44:
+            from picker_status44 import message
+            self._status(message('NO_METADATA','commons'));return
+        self._source44=source
+        from picker_status44 import mark,message
+        mark('SOURCE',source,'OK')
+        if source=='tmdb':
+            from media_sources43 import tmdb_token,SourceError
+            try:tmdb_token()
+            except SourceError as exc:
+                mark('ERROR',source,exc.code);self._status(message(exc.code,source));return
         self._show_list()
         from media_sources43 import provider,tmdb,commons
         if source!='provider':
@@ -183,7 +208,9 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
             # Only already validated local previews become thumbnails. No
             # uncontrolled provider URL is passed into Kodi's texture loader.
             values.append(li)
-        control.addItems(values);self._status(tr(35906,code)+' · '+tr(35923,len(values)) if code else tr(35923,len(values)) if values else tr(35924))
+        from picker_status44 import mark,message
+        mark('RESULTS',self._source44,code or ('OK' if values else 'NO_RESULTS'),len(values))
+        control.addItems(values);self._status(tr(35906,code)+' · '+tr(35923,len(values)) if code else tr(35923,len(values)) if values else message('NO_RESULTS',self._source44))
         if values:self.setFocusId(200)
 
     def _preview(self,fetch=True):
@@ -195,7 +222,13 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
         self.getControl(503).setVisible(False);self.getControl(508).setVisible(bool(self.record.get('_metadata_override43')))
         self.getControl(300).setVisible(True);self.getControl(301).setVisible(True)
         self.getControl(301).setText(candidate['name']+'\n'+candidate['attribution']+'\n'+tr(35925))
-        self.image=None;self.getControl(300).setImage('');self._navigation();self.setFocusId(501)
+        self.image=None;self.getControl(300).setImage('')
+        from picker_status44 import mark
+        mark('PREVIEW',self._source44,'OK')
+        if self._metadata_mode44:
+            for cid in (300,501,502,503,505):self.getControl(cid).setVisible(False)
+            self._navigation();self.setFocusId(507);self._status(tr(35983));return
+        self._navigation();self.setFocusId(501)
         def load():
             from media_sources43 import get,validate_image
             data=get(candidate['url'],cancel=self._cancel.is_set) if candidate.get('url') else None
@@ -233,7 +266,10 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
         self._submit(load,ready)
 
     def _saved(self,result):
-        if result:self.changed=True;self._status(tr(35928));self.close()
+        if result:
+            from picker_status44 import mark
+            mark('SAVE',self._source44,'OK')
+            self.changed=True;self._status(tr(35928));self.close()
 
     def _provenance(self,candidate):
         from hashlib import sha256
@@ -244,6 +280,9 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
         self._gui()
         if cid in (401,402,403):self._source({401:'provider',402:'tmdb',403:'commons'}[cid]);return
         if cid==404:
+            if self._metadata_mode44:
+                from picker_status44 import message
+                self._status(message('NO_METADATA','local'));return
             if self._future is not None:return
             path=xbmcgui.Dialog().browseSingle(1,tr(35903),'files','.jpg|.jpeg|.png')
             if not path:return

@@ -141,6 +141,7 @@ def settings(router, portal, section=''):
         add(tr(32445),'widget_recent_vod')
         add(tr(32446),'widget_recent_series')
     elif section=='maintenance':
+        add(tr(35960),'guide_backup44')
         add(tr(35300),'device_info')
         from app_entry import paused
         add(tr(35501) if paused() else tr(35503),'autoplay_diagnostic_mode')

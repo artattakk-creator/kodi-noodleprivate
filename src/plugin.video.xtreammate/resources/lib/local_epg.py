@@ -67,7 +67,7 @@ def now_next(pid,channels,mappings,now=None,client=None):
         sid,keys=channel_keys(channel,mappings)
         extra=channel.extra if hasattr(channel,'extra') else channel
         provider=str(getattr(channel,'tvg_id',extra.get('epg_channel_id','')) or '')
-        info=resolve_guide(cache or {},provider,sid,ts,client,mappings)
+        info=resolve_guide(cache if cache is not None else {},provider,sid,ts,None if cache is not None else client,mappings)
         info['snapshot_revision']=cache.revision if cache is not None else None
         result[sid]=info
     return result

@@ -28,7 +28,7 @@ def fallback(item,kind,failed=False):
                 _cache[key]=(time.monotonic()+60,[])
                 _next=time.monotonic()+(300 if error.code in ('HTTP_AUTH','HTTP_RATE_LIMIT') else 15)
             return item
-        rows=[r for r in rows if r['role']=='poster' and r['media_type']==('movie' if kind=='vod' else 'tv')
+        rows=[r for r in rows if r.get('url') and r['role']=='poster' and r['media_type']==('movie' if kind=='vod' else 'tv')
               and normalized(r['title'])==title and r['year']==year]
         # Same title/year can still be ambiguous. Only ONE distinct work is safe.
         if len({r['remote_id'] for r in rows})!=1:rows=[]

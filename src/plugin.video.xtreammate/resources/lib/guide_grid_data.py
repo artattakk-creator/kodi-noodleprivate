@@ -44,7 +44,10 @@ def page(portal,offset,origin,category=None,client=None):
     # No remote texture ever reaches the GUI and no cache path is changed.
     from media_art import request
     request(channels)
-    return dict(rows=result,total=total,groups=reader.groups('live'),code=state,origin=origin,offset=offset)
+    from guide_publish44 import history_days
+    from guide_store import path
+    history=history_days(portal['id'],path()) if origin<__import__('guide_store').day_window(0)[0] else None
+    return dict(rows=result,total=total,groups=reader.groups('live'),code=state,origin=origin,offset=offset,revision=getattr(snapshot,'revision',None),history44=history)
 
 
 def initial(portal,origin,client=None):

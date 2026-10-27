@@ -135,20 +135,22 @@ class NavigationTests(Fixture,unittest.TestCase):
         self.assertEqual(w.mode,'landing');self.assertEqual(w.total,100)
         w.native(3);self.assertEqual(w.focus,120);w.native(7);self.settle(w)
         self.assertEqual((w.mode,w.category),('grid','a'))
-        w.native(1);self.assertEqual(w.mode,'groups');self.assertEqual(w.focus,200)
-        w.native(2);self.assertEqual(w.mode,'grid');self.assertEqual(w._cols,6)
+        self.assertEqual(w.focus,200)
+        w.native(2);self.assertEqual(w.mode,'grid');self.assertEqual(w._cols,4)
+        self.assertEqual(w.getControl(210).selected,0);self.assertTrue(w.getControl(200).visible)
+        w.native(2);self.assertEqual(w._cols,6)
         self.assertFalse(w.getControl(200).visible)
-        w.native(2);self.assertEqual(w._last_position,1)
+        self.assertEqual(w._last_position,1)
         w.native(1);self.assertEqual(w._last_position,0);self.assertEqual(w.mode,'grid')
         w.native(1);self.assertEqual(w.mode,'groups')
 
     def test_left_edge_after_first_grid_row_preserves_identity_despite_native_wrap(self):
         w=self.media_window();w.native(3);w.native(7);self.settle(w)
-        w.native(1);w.native(2)
+        w.native(2);w.native(2)
         w.getControl(210).selectItem(6);w._last_position=6
         w.native(1)  # Native panel can move to 5 before Python handles the edge.
         self.assertEqual(w.mode,'groups');self.assertEqual(w.getControl(210).selected,6)
-        w.native(2);self.assertEqual(w.getControl(210).selected,6)
+        w.native(2);self.assertEqual(w.getControl(210).selected,0)
 
     def test_empty_group_keeps_group_focus_and_recovers_with_another_group(self):
         w=self.media_window();w.native(3);w.native(7);self.settle(w)

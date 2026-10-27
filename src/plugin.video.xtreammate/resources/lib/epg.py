@@ -147,9 +147,18 @@ def diagnostic(code,**fields):
 def request_refresh(portal_id,p,force=False):
     """Persist intent in Kodi, then let the long-lived service own the worker."""
     import uuid,xbmcgui
-    xbmcgui.Window(10000).setProperty('XtreamMate.EPGRefreshRequest',json.dumps({
+    from guide_store import path
+    from guide_publish44 import access
+    state=access(path())
+    if state not in ('READY','NOT_CREATED'):
+        from epg_status import update
+        update(portal_id,'refresh',state,running=False)
+        diagnostic(state,running=False)
+        return False
+    xbmcgui.Window(10000).setProperty('XtreamMate.EPGRefreshRequest' ,json.dumps({
         'pid':str(portal_id),'force':bool(force),'at':time.time(),'nonce':uuid.uuid4().hex}))
     diagnostic('REQUESTED',running=False,requested=True)
+    return True
 
 
 _LAST_REFRESH_REQUEST=''
@@ -515,6 +524,14 @@ def _refresh_portal_epg_inner(portal_id, p, force=False):
         import xbmc
         cancel = xbmc.Monitor().abortRequested if hasattr(xbmc,'Monitor') else lambda: False
         return refresh(p,force=force,cancel=cancel)
+    from guide_store import path
+    from guide_publish44 import access
+    state=access(path())
+    if state not in ('READY','NOT_CREATED'):
+        from epg_status import update
+        update(portal_id,'refresh',state,running=False)
+        return {}
+    short_only44=False
     epg_url = p.get('epg_url', '')
     if not epg_url:
         ptype = p.get('type', 'm3u')
@@ -561,6 +578,7 @@ def _refresh_portal_epg_inner(portal_id, p, force=False):
         warn('[EPG] bulk leer – verwende get_short_epg im EPG-Worker')
         # Already running in an EPG worker; do not spawn an untracked second
         # refresh that can race the next request or bypass the memory gate.
+        short_only44=True
         programmes, channels = _fetch_stb_short_epg(p)
 
     # Preserve native Xtream/M3U/STB EPG, then overlay configured XMLTV feeds.
@@ -587,6 +605,10 @@ def _refresh_portal_epg_inner(portal_id, p, force=False):
             update(portal_id,'cache','NO_CURRENT_WINDOW',running=False)
             diagnostic('NO_CURRENT_WINDOW',running=True)
             return {}
+        from guide_store import import_cache
+        from epg_sources import configuration
+        records={i:source for i,source in enumerate(configuration(portal_id).get('sources',[]),1)}
+        import_cache(portal_id,programmes,'legacy44-'+str(time.time_ns()),trusted_feed=not short_only44,source_records=records)
         _save_disk(portal_id, programmes)
         _mem_set(portal_id, programmes)
         info(f'[EPG] {portal_id}: {len(programmes)} channels saved')

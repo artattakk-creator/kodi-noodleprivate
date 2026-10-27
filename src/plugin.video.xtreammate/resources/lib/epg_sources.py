@@ -280,16 +280,14 @@ def merge_sources(portal_id, builtin_programmes, parse_xmltv):
                 from epg_errors import EmptyGuideError
                 raise EmptyGuideError('XMLTV enthält keine gültigen Sendungen')
             stage = 'MERGE'
-            additions = {cid: entries for cid, entries in programmes.items()
-                         if entries and not merged.get(cid)}
-            added_count = sum(len(entries) for entries in additions.values())
-            if programme_count + added_count > MAX_PROGRAMMES:
-                raise XMLTVLimitError('Combined XMLTV programme limit exceeded','programmes')
-            programme_count += added_count
+            from epg_merge44 import extend
+            for channel_id,entries in programmes.items():
+                combined,added_count=extend(merged.get(channel_id,[]),entries,source_index)
+                if programme_count+added_count>MAX_PROGRAMMES:
+                    raise XMLTVLimitError('Combined XMLTV programme limit exceeded','programmes')
+                programme_count+=added_count
+                if combined:merged[channel_id]=combined
             index.update(channels)
-            for channel_id, entries in programmes.items():
-                if entries and not merged.get(channel_id):
-                    merged[channel_id] = [dict(e, _source_index=source_index) for e in entries]
             successes += 1
             record('epg_source','READY',channels=len(channels),
                    programmes=sum(len(v) for v in programmes.values()),loaded=successes,
@@ -449,8 +447,9 @@ def manage(portal=None):
                                    type=xbmcgui.INPUT_ALPHANUM)
                     add_source(portal['id'], name, uri, local=True)
             elif choice == 3:
-                request_refresh(portal['id'], portal, force=True)
-                d.notification('XCMate EPG', 'Aktualisierung im Hintergrund gestartet')
+                accepted=request_refresh(portal['id'], portal, force=True)
+                from localization import tr
+                d.notification('XCMate EPG',tr(35965) if accepted else tr(35966))
             elif choice == 4:
                 _choose_mapping(portal)
             else:

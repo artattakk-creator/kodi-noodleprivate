@@ -4020,3 +4020,99 @@ msgstr "End of catalogue"
 msgctxt "#35951"
 msgid "{} seasons"
 msgstr "{} seasons"
+
+msgctxt "#35960"
+msgid "Back up EPG and enable import protection"
+msgstr "Back up EPG and enable import protection"
+
+msgctxt "#35961"
+msgid "Create a consistent local SQLite/WAL backup and then enable the new protected EPG import? Existing programmes and sources are preserved. No EPG update will be started."
+msgstr "Create a consistent local SQLite/WAL backup and then enable the new protected EPG import? Existing programmes and sources are preserved. No EPG update will be started."
+
+msgctxt "#35962"
+msgid "Back up and enable protection"
+msgstr "Back up and enable protection"
+
+msgctxt "#35963"
+msgid "Last backup status"
+msgstr "Last backup status"
+
+msgctxt "#35964"
+msgid "Backup requested. Check its status here before updating EPG."
+msgstr "Backup requested. Check its status here before updating EPG."
+
+msgctxt "#35965"
+msgid "Update requested. Source status reports the verified result."
+msgstr "Update requested. Source status reports the verified result."
+
+msgctxt "#35966"
+msgid "EPG protected: first create a verified backup under Maintenance."
+msgstr "EPG protected: first create a verified backup under Maintenance."
+
+msgctxt "#35968"
+msgid "Account temporarily unavailable. Please retry. Your search and data are preserved."
+msgstr "Account temporarily unavailable. Please retry. Your search and data are preserved."
+
+msgctxt "#35969"
+msgid "Cover & metadata"
+msgstr "Cover & metadata"
+
+msgctxt "#35970"
+msgid "This source supplies images only. Choose Provider or TMDb for metadata."
+msgstr "This source supplies images only. Choose Provider or TMDb for metadata."
+
+msgctxt "#35971"
+msgid "TMDb research is disabled. Enable it in Player settings if desired."
+msgstr "TMDb research is disabled. Enable it in Player settings if desired."
+
+msgctxt "#35972"
+msgid "TMDb needs your private read token in Player settings."
+msgstr "TMDb needs your private read token in Player settings."
+
+msgctxt "#35973"
+msgid "Access denied. Check this source and, for TMDb, your token."
+msgstr "Access denied. Check this source and, for TMDb, your token."
+
+msgctxt "#35974"
+msgid "Source rate limit reached. Try later; no automatic retry loop."
+msgstr "Source rate limit reached. Try later; no automatic retry loop."
+
+msgctxt "#35975"
+msgid "Network, DNS, TLS or timeout error. Try another source."
+msgstr "Network, DNS, TLS or timeout error. Try another source."
+
+msgctxt "#35976"
+msgid "The selected file is not a valid supported image."
+msgstr "The selected file is not a valid supported image."
+
+msgctxt "#35977"
+msgid "No matching results. Try another name, year or source."
+msgstr "No matching results. Try another name, year or source."
+
+msgctxt "#35978"
+msgid "Close the other dialog before opening this manager."
+msgstr "Close the other dialog before opening this manager."
+
+msgctxt "#35979"
+msgid "Open film or series details first."
+msgstr "Open film or series details first."
+
+msgctxt "#35980"
+msgid "Not saved. Existing choices remain unchanged."
+msgstr "Not saved. Existing choices remain unchanged."
+
+msgctxt "#35981"
+msgid "Provider refresh failed. Showing existing candidates."
+msgstr "Provider refresh failed. Showing existing candidates."
+
+msgctxt "#35982"
+msgid "Search and assign metadata"
+msgstr "Search and assign metadata"
+
+msgctxt "#35983"
+msgid "Choose metadata fields to preview and confirm. No image download is required."
+msgstr "Choose metadata fields to preview and confirm. No image download is required."
+
+msgctxt "#35984"
+msgid "Local guide: {0}/7 historical days available"
+msgstr "Local guide: {0}/7 historical days available"

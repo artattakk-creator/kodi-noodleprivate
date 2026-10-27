@@ -1,3 +1,26 @@
+0.1.29.44 (Android A-H review candidate; all .44 Android gates NOT_TESTED)
+- P0 EPG: sparse feeds add coverage instead of deleting min/max envelopes;
+  compatibility snapshots never replace published long-guide records. Sources
+  retain separate stable provenance. Non-exact conflicts preserve last good.
+- Existing EPG databases require an explicit verified SQLite/WAL backup before
+  activating new protected imports. No automatic migration or refresh on Box B.
+- Keep seven real historical calendar days, permit yesterday through day -7;
+  no invented EPG/Catch-up or automatic published-data cleanup.
+- Widgets: direct index-backed thin keys, at most 24 full media payloads,
+  cross-interpreter short-lived Dynamic art approvals and revision-aware prewarm.
+- Search playback: read exactly the requested account; distinguish temporary
+  profile races, lock, memory, invalid/budget errors; bound resolver retry once.
+- Separate accessible metadata entry, source-specific errors and metadata-only
+  preview independent of images; explicit image/field Save remains mandatory.
+- Stable Mini left rows, separate collapsible rail captions; category selection
+  requires OK, first Right keeps sidebar, second Right expands gallery.
+- Tiny original monitor/audio icons at infobar bottom-right from existing
+  owner-bound 2s stream snapshot; old long text hidden, no new player query.
+- Preserve .42 compatibility sources/settings, catalogue player, Resume/Autoplay,
+  original graphics, frozen search layout, profiles, data, skins and keymaps.
+- BINGIE renderer/adapter integration and full source-specific manual mapping
+  remain separately gated. Native Android acceptance required; no merge/release.
+
 0.1.29.43 (cumulative review candidate; all .43 Android gates NOT_TESTED)
 - Mini-EPG: never expose unselected green borders; prepare rows before showing,
   skip unchanged native writes, retain event focus through updates and rollover.

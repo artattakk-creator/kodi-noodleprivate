@@ -339,7 +339,7 @@ class CacheAndEPGTests(unittest.TestCase):
         self.sources.set_mapping('p','1','native')
         with mock.patch.object(self.sources,'_read_source',side_effect=[b'a',b'b']), mock.patch.object(self.sources,'MAX_PROGRAMMES',2):
             result,ok,failed=self.sources.merge_sources('p',{'native':[{'name':'provider'}]},
-                lambda raw:({raw.decode():raw.decode()},{raw.decode():[{'name':'external'}]}))
+                lambda raw:({raw.decode():raw.decode()},{raw.decode():[{'name':'external','start_timestamp':100,'stop_timestamp':200}]}))
         self.assertEqual((ok,failed),(1,1))
         self.assertEqual(result['1'][0]['name'],'provider')
         self.assertNotIn('b',result)

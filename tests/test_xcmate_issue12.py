@@ -300,7 +300,7 @@ class RefreshJobTests(unittest.TestCase):
         ns=dict(json=json,time=time,_LAST_REFRESH_REQUEST='',diagnostic=lambda *a,**kw:None,
                 warmup_async=lambda *a,**kw:started.append((a,kw)))
         exec(compile(ast.Module(body=nodes,type_ignores=[]),'epg jobs','exec'),ns)
-        with mock.patch.dict(sys.modules,dict(xbmcgui=gui,portals=portals)):
+        with mock.patch.dict(sys.modules,dict(xbmcgui=gui,portals=portals,guide_store=types.SimpleNamespace(path=lambda:'/fixture/missing-guide.sqlite'),guide_publish44=types.SimpleNamespace(access=lambda _: 'NOT_CREATED'))):
             ns['request_refresh']('p',{'id':'p'},force=True)
             self.assertEqual(started,[])
             ns['poll_refresh_request']();ns['poll_refresh_request']()

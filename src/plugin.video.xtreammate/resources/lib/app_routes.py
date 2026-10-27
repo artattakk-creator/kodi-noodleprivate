@@ -1,7 +1,7 @@
 """New routes only. Legacy provider/player entry points remain compatible."""
 from localization import tr
 
-ACTIONS=('update_notice','navigation_rail','artwork_manage','device_info', 'live_guide','search_continue','download_target_test','stability_test','download_folder','download_capabilities','theme_manager','branding_status','xcmate_licenses','guide_grid','playlist_editor','source_live','source_play','source_start','art_status','art_retry','art_db_health','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
+ACTIONS=('guide_backup44','update_notice','navigation_rail','artwork_manage','device_info', 'live_guide','search_continue','download_target_test','stability_test','download_folder','download_capabilities','theme_manager','branding_status','xcmate_licenses','guide_grid','playlist_editor','source_live','source_play','source_start','art_status','art_retry','art_db_health','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
          'movies_home','series_home','media_detail','media_favourites','global_search','search_section',
          'widget_live_start_group','widget_recent_vod','widget_recent_series','widget_setup',
          'record_now','recordings_manage','recording_folder','recording_capabilities','about_xcmate','guide_browser','media_play','guide_timers','guide_status')
@@ -11,9 +11,11 @@ LABELS={'live':32460,'vod':32461,'series':32462}
 def portal_for(router):
     from portals import get_active
     from home_menu import active_portal
-    active=get_active();requested=router._params.get('pid','')
-    if requested: return next((p for p in active if str(p['id'])==requested),None)
-    return active_portal(active)
+    requested=router._params.get('pid','')
+    if requested:
+        from media_portal44 import selected
+        return selected(router)
+    return active_portal(get_active())
 
 
 def _end(router,ok=True):
@@ -38,7 +40,20 @@ def dispatch(router):
         _end(router)
         from search_handoff import run
         run(router._params.get('token',''));return
-    portal=portal_for(router)
+    from portal_snapshot import PortalReadError
+    try:portal=portal_for(router)
+    except PortalReadError:
+        if action!='media_play':raise
+        from media_intent import failed
+        failed(str(router._params.get('intent') or ''),str(router._params.get('pid') or ''))
+        import xbmcplugin
+        xbmcplugin.setResolvedUrl(router._handle,False,xbmcgui.ListItem())
+        xbmcgui.Dialog().notification('XCMate',tr(35968));return
+    if action=='media_play' and not portal:
+        from media_intent import failed
+        failed(str(router._params.get('intent') or ''),str(router._params.get('pid') or ''))
+        import xbmcplugin
+        xbmcplugin.setResolvedUrl(router._handle,False,xbmcgui.ListItem());return
     if action in ('guide_timers','guide_status','widget_setup') and not portal:
         _end(router,False)
         xbmcgui.Dialog().notification('XCMate',tr(32466));return
@@ -52,6 +67,10 @@ def dispatch(router):
         _end(router)
         from artwork_ui import manage
         manage();return
+    if action=='guide_backup44':
+        _end(router)
+        from guide_backup44 import show
+        show();return
     if action=='device_info':
         _end(router)
         from device_info import show
@@ -304,12 +323,16 @@ def paging(router,total,offset,**params):
 
 
 def add_index_item(router,portal,kind,item,epg=None,recent=False,widget=False):
-    import xbmcgui,xbmcplugin
+    import os,xbmcaddon,xbmcgui,xbmcplugin
     from media_art import local_art
     li=xbmcgui.ListItem(item['name'])
     from theme_render import snapshot
     from theme_store import asset
-    theme=snapshot();art=local_art(item,theme)
+    theme=snapshot()
+    if widget:
+        from widget_art44 import art as widget_art
+        art=widget_art(item,getattr(router,'_widget_art44',{}))
+    else:art=local_art(item,theme)
     if widget:
         li.setProperty('XCMate.WidgetKind41',kind)
         if kind=='live':
@@ -317,7 +340,7 @@ def add_index_item(router,portal,kind,item,epg=None,recent=False,widget=False):
             from widget_focus41 import token
             li.setProperty('XCMate.WidgetToken41',token(portal,item))
     if widget and theme:
-        if art['landscape'].startswith(str(theme['folder'])+'/'):
+        if art['landscape'].startswith(str(theme['folder'])+'/') or art['landscape']==os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media',{'live':'tv','series':'series'}.get(kind,'vod')+'.png'):
             art['landscape']=asset('widget.live' if kind=='live' else 'widget.series' if kind=='series' else 'widget.movie',art['landscape'],snapshot=theme)
         art['banner']=asset('widget.header',snapshot=theme)
     li.setArt(art)
@@ -342,6 +365,7 @@ def add_index_item(router,portal,kind,item,epg=None,recent=False,widget=False):
     else:
         url=router.url(action='media_detail',pid=portal['id'],kind=kind,sid=item['sid'])
     if kind!='live':li.setProperty('IsPlayable','false')
+    if widget:li.setProperty('XCMate.ClickTarget44',url)
     xbmcplugin.addDirectoryItem(router._handle,url,li,isFolder=False)
 
 
@@ -350,6 +374,8 @@ def widget(router,portal,action):
     from widget_data41 import snapshot
     kind='live' if action=='widget_live_start_group' else 'vod' if action=='widget_recent_vod' else 'series'
     rows,code=snapshot(portal,kind)
+    from widget_art44 import read as read_widget_art
+    router._widget_art44=read_widget_art(portal['id'])
     if kind in ('vod','series'):
         from media_overrides43 import apply_many
         rows=apply_many(portal['id'],rows)

@@ -1,0 +1,26 @@
+{
+  "version": "0.1.29.44",
+  "tests": 1652,
+  "seconds": 261.197,
+  "failures": 0,
+  "errors": 0,
+  "files": 412,
+  "bytes": 2709640,
+  "sha256": "0497979676b72cf6907ffdb6204920a3f0636dd029c71df17c64847520261fa8",
+  "crc": "PASS",
+  "paths": "PASS",
+  "source_bytes": "PASS",
+  "reproducible_zip": "PASS",
+  "python_ast": "PASS",
+  "android": "NOT_TESTED",
+  "production_publish": false,
+  "retained_previous_methods": 1582,
+  "new_methods": 70,
+  "languages": {
+    "de_de": 1010,
+    "en_gb": 1010
+  },
+  "navigation_textures": 92,
+  "code_commit": "686705c2eddf24b175332c731d32c205b979d7f7",
+  "ci": "See PR for independently verified final GitHub run/artifact"
+}

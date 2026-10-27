@@ -25,7 +25,7 @@ def get(url,*,api=False,token='',cancel=lambda:False,transport=None):
         raise SourceError('UNSAFE_SOURCE')
     if cancel():raise SourceError('CANCELLED')
     deadline=time.monotonic()+12
-    headers={'User-Agent':'XCMate/0.1.29.43 (manual artwork research)','Accept-Encoding':'identity',
+    headers={'User-Agent':'XCMate/0.1.29.44 (manual artwork research)','Accept-Encoding':'identity',
              'Accept':'application/json' if api else 'image/jpeg,image/png'}
     if token:
         if p.hostname!='api.themoviedb.org' or any(ord(c)<33 or ord(c)>126 for c in token):raise SourceError('INVALID_TOKEN')
@@ -138,11 +138,14 @@ def tmdb(query,kind,person=False,cancel=lambda:False):
         if not person:
             if isinstance(row.get('overview'),str) and row['overview']:meta['plot']=row['overview'][:6000]
             if date.isdigit() and 1880<=int(date)<=2100:meta['year']=int(date)
+        before=len(result)
         for field,role in (('profile_path','replacement'),) if person else (('poster_path','poster'),('backdrop_path','fanart')):
             url=_tmdb_image(row.get(field))
             if url:result.append(dict(source='tmdb',url=url,name=title+(' · '+date if date else '')+' · '+endpoint,
                 title=title,year=date,remote_id=row['id'],media_type=endpoint,role=role,
                 attribution='TMDb · https://www.themoviedb.org/'+endpoint+'/'+str(row['id'])+' · API-/Bildnutzungsbedingungen beachten; nicht von TMDb zertifiziert.',metadata=meta))
+        if not person and len(result)==before:
+            result.append(dict(source='tmdb',url='',name=title+(' · '+date if date else '')+' · '+endpoint,title=title,year=date,remote_id=row['id'],media_type=endpoint,role='poster',attribution='TMDb · https://www.themoviedb.org/'+endpoint+'/'+str(row['id']),metadata=meta))
     return result[:24]
 
 

@@ -130,8 +130,8 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
             # Use precisely the shared mapping/short-EPG resolver for the
             # current programme; the day DB supplies the uncapped remainder.
             client=self.router._xc(self.portal)
-            info=resolve_guide(load_cache(self.portal['id']),channel.get('epg_channel_id',''),channel['sid'],
-                               client=client,mappings=self.mappings)
+            from local_epg import now_next
+            info=now_next(self.portal['id'],[channel],self.mappings,client=client).get(channel['sid'],{})
             eid=self.mappings.get(channel['sid']) or channel['sid']
             start,stop=day_window(day)
             rows,total=events(self.portal['id'],eid,start,stop,page)
@@ -174,7 +174,7 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
 
     def _day(self,step):
         target=self.day+step
-        if 0<=target<self.days:
+        if -7<=target<self.days:
             self.day=target
             if self.channels: self._load_events(max(0,self.getControl(210).getSelectedPosition()))
 

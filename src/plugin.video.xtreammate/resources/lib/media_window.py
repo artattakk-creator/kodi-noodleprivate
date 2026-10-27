@@ -311,8 +311,13 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
             if state and revision!=self._seen_revision:
                 self._seen_revision=revision
                 if self.mode in ('landing','grid','groups'):
+                    position=self.getControl(200).getSelectedPosition()
+                    focused_category=self.groups[position]['cid'] if 0<=position<len(self.groups) else self.category
+                    changed_groups=self.groups!=groups
                     self.reader=reader;self.groups=groups;self._catalog_missing=False
-                    self._fill(200,[dict(name=g['title'],sid=g['cid']) for g in self.groups])
+                    if changed_groups:
+                        self._fill(200,[dict(name=g['title'],sid=g['cid']) for g in self.groups])
+                        self.getControl(200).selectItem(next((i for i,g in enumerate(self.groups) if g['cid']==focused_category),0))
                     if not self.category and self.groups: self.category=self.groups[0]['cid']
                     start=self.offset
                     if self.mode=='grid' and self.rows:
@@ -420,9 +425,10 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
     def _page(self,mode,offset=0):
         if self._append_future is not None:self._append_future.cancel()
         self._append_future=None;self._append_context=None;self._append_failed=False;self._append_advance=None
+        preserve=self.mode==mode and bool(self.rows) and getattr(self,'_display_context44',None)==(self.kind,self.category,mode,max(0,offset))
         self.mode=mode;self.offset=max(0,offset)
-        self._show(mode)
-        self.rows=[];self.getControl(110 if mode=='landing' else 210).reset()
+        if not preserve:self._show(mode)
+        if not preserve:self.rows=[];self.getControl(110 if mode=='landing' else 210).reset()
         self.getControl(102).setLabel(tr(32496))
         kind,category,page=self.kind,self.category,self.offset
         reader=self.reader;restore=getattr(self,'_catalog_restore43',None);self._catalog_restore43=None
@@ -441,11 +447,14 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
 
     def _page_ready(self,value):
         old_focus=self.getFocusId()
+        if getattr(self,'_category_focus44',False) and self.mode in ('grid','groups'):old_focus=200
         if hasattr(value,'offset'):self.offset=value.offset
         if hasattr(value,'revision'):self._catalog_token43=value.revision
+        previous_rows=self.rows
         self.rows,self.total=value
+        self._display_context44=(self.kind,self.category,self.mode,self.offset)
         cid=110 if self.mode=='landing' else 210
-        self._fill(cid,self.rows)
+        if previous_rows!=self.rows or self.getControl(cid).size()!=len(self.rows):self._fill(cid,self.rows)
         if self.mode=='landing': self._refresh_rails()
         pos=min(self._positions.get((self.mode,self.category,self.offset),0),max(0,len(self.rows)-1))
         if getattr(value,'selected',None):pos=next((i for i,r in enumerate(self.rows) if r['sid']==value.selected),pos)
@@ -458,7 +467,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         if self.mode in ('grid','groups'):self._grid_status()
         if not self.rows and self.mode=='grid':
             self.mode='groups' if self.groups else 'landing';self._show(self.mode)
-        target=200 if self.mode=='groups' else cid if self.rows else 120
+        target=200 if self.mode=='groups' or self.mode=='grid' and getattr(self,'_category_focus44',False) else cid if self.rows else 120
         if self.mode=='landing':
             valid=self._valid_focus()
             target=old_focus if self._landing_loaded and old_focus in valid else next((c for c in (112,111,110) if c in valid),120)
@@ -659,6 +668,8 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         self._pending_future=None;self._pending_apply=None
         from media_intent import begin
         self._play_intent=begin(self.portal['id'],kind,item['sid'])
+        from media_portal44 import trace as trace_media
+        trace_media('INTENT',origin='search' if getattr(self,'_search_detail',False) else 'catalog')
         from media_return import capture as capture_origin
         capture_origin(self,self._play_intent)
         if getattr(self,'_native_surface','window')=='dialog':
@@ -668,7 +679,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         self._autoplay_root=self._play_intent if kind=='episode' else ''
         url=self.router.url(action='media_play',pid=self.portal['id'],kind=kind,sid=item['sid'],
             series_id=item.get('series_id'),season=item.get('season'),episode=item.get('episode'),intent=self._play_intent,resume='1' if resume else '0',
-            autoplay='1' if kind=='episode' else '0',autoplay_chain=self._autoplay_root)
+            autoplay='1' if kind=='episode' else '0',autoplay_chain=self._autoplay_root,origin44='search' if getattr(self,'_search_detail',False) else 'catalog')
         xbmc.executebuiltin('PlayMedia('+url+')')
 
     def onClick(self,controlId):
@@ -690,6 +701,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
                     request(self.portal,self.kind,self.category,priority=1,force=True)
                     self._request(self._initial,self._initial_ready)
                     return
+                self._category_focus44=True;self._mode_focus['grid']=200
                 self._cols=4;self._page('grid',0)
             elif controlId in (110,210):
                 pos=self.getControl(controlId).getSelectedPosition()
@@ -703,6 +715,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
                 pos=self.getControl(200).getSelectedPosition()
                 if 0<=pos<len(self.groups):
                     self.category=self.groups[pos]['cid']
+                    self._category_focus44=True;self._mode_focus['grid']=200;self._cols=4
                     from catalog_sync import request
                     request(self.portal,self.kind,self.category,priority=1)
                     self._page('grid',0)
@@ -852,6 +865,8 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         with self._lock:
             if self._detail_menu_action(key):return
             if self._search_action(key):return
+            from media_navigation44 import handle as category_navigation
+            if category_navigation(self,key,getattr(self,'_action_focus',self.getFocusId())):return
             if key in (9,10,92):
                 from window_navigation import trace
                 trace('BACK',self.mode,key,self._dispatch)

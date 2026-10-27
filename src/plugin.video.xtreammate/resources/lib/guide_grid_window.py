@@ -106,6 +106,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         self._loading=False;self.rows=value['rows'];self.total=value['total'];self.groups=value['groups']
         if self.groups and self.category not in {g['cid'] for g in self.groups}:
             self.category=self.groups[0]['cid'];self.offset=self.row=0;self._load();return
+        self._history44=value.get('history44')
         self.row=min(self.row,max(0,len(self.rows)-1));self._render()
         from epg_views import prefetch_short_guides
         if self.rows:prefetch_short_guides(self.portal,[row['channel'] for row in self.rows],limit=ROWS)
@@ -160,7 +161,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         group=next((g['title'] for g in self.groups if g['cid']==self.category),'')
         self.getControl(101).setLabel(tr(33100)+' · '+group+' · '+time.strftime('%a %d.%m.%Y',time.localtime(self.origin)))
         available=sum(bool(r['events']) for r in self.rows)
-        self.getControl(102).setLabel(tr(33111,self.offset+1 if self.rows else 0,min(self.total,self.offset+len(self.rows)),self.total,available,len(self.rows))+(' · '+tr(33120) if any(len(r['events'])>CELLS for r in self.rows) else ''))
+        self.getControl(102).setLabel(tr(33111,self.offset+1 if self.rows else 0,min(self.total,self.offset+len(self.rows)),self.total,available,len(self.rows))+(' · '+tr(33120) if any(len(r['events'])>CELLS for r in self.rows) else '')+(' · '+tr(35984,len(self._history44)) if getattr(self,'_history44',None) is not None else ''))
         self._focus_cell(target)
 
     def _refresh_logos(self):
@@ -187,6 +188,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
                 self.offset=offset;self.row=ROWS-1 if direction==3 else 0;self._load()
             return
         if not self.rows:return
+        previous_cursor=self.cursor
         events=self.rows[self.row]['events'];selected=self._selected();step=-1 if direction==1 else 1
         # Adjacent array entries can overlap or be nearest to a gap. Their
         # start may be behind the cursor: never let Right repeat/jump backwards.
@@ -194,6 +196,9 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         candidates=[e['start'] for e in events if (e['start']>boundary if step>0 else e['start']<boundary)]
         if candidates:self.cursor=min(candidates) if step>0 else max(self.origin,max(candidates))
         else:self.cursor+=step*1800
+        from guide_store import day_window
+        if not day_window(-7)[0]<=self.cursor<day_window(10)[0]:
+            self.cursor=previous_cursor;return
         if not self.origin<=self.cursor<self.origin+SPAN:
             self.origin=self.cursor//1800*1800;self._load()
         else:self._render()
@@ -202,7 +207,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         date=datetime.datetime.fromtimestamp(self.cursor)+datetime.timedelta(days=step)
         # The local calendar decides the UTC delta across 23/25-hour DST days.
         target=int(time.mktime(date.timetuple()))
-        if not 0<=(date.date()-datetime.date.today()).days<=9:return
+        if not -7<=(date.date()-datetime.date.today()).days<=9:return
         self.cursor=target;self.origin=target//1800*1800;self._load()
 
     def _actions(self,channel_only=False):

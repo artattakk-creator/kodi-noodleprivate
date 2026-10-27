@@ -22,7 +22,7 @@ class WidgetReader(Reader):
             db.row_factory=sqlite3.Row
             deadline=min(self.until,time.monotonic()+.25)
             db.set_progress_handler(lambda:int(time.monotonic()>=deadline),1000)
-            if 'titles' in sql and db.execute("SELECT 1 FROM sqlite_master WHERE name='readable_titles'").fetchone():sql=sql.replace('FROM titles','FROM readable_titles')
+            if '/* direct44 */' not in sql and 'titles' in sql and db.execute("SELECT 1 FROM sqlite_master WHERE name='readable_titles'").fetchone():sql=sql.replace('FROM titles','FROM readable_titles')
             if kind is not None:
                 # TEMP only; the library itself is opened mode=ro.
                 db.execute('CREATE TEMP TABLE selected_categories(cid TEXT PRIMARY KEY)')
@@ -35,23 +35,15 @@ class WidgetReader(Reader):
             error=IndexReadError(code);error.code=code;error.sqlite_type=type(exc).__name__;raise error from None
         finally:
             if db is not None:db.close()
+    def groups(self,kind):
+        from widget_query44 import groups
+        return groups(self,kind)
+    def get(self,kind,sid):
+        from widget_query44 import get
+        return get(self,kind,sid)
     def small(self,kind,category=None,limit=24,pin=None):
-        where='pid=? AND kind=?'+self._filter(kind);args=[self.pid,kind]
-        if category is not None:where+=' AND cid=?';args.append(str(category))
-        # DESC already puts NULL last. No GROUP BY, COUNT or expression sort
-        # over hundreds of thousands of titles for a 12/24-tile Home row.
-        order='ordinal' if kind=='live' else 'added DESC'
-        raw=self._query('SELECT payload FROM titles WHERE '+where+' ORDER BY '+order+' LIMIT ?',args+[min(96,limit*4)],kind)
-        rows=[];seen=set()
-        if pin:
-            item=self.get(kind,pin)
-            if item and (category is None or str(item.get('category_id',''))==str(category)):
-                rows.append(item);seen.add(str(item['sid']))
-        for value in raw:
-            item=json.loads(value['payload']);sid=str(item.get('sid',''))
-            if sid and sid not in seen:rows.append(item);seen.add(sid)
-            if len(rows)>=limit:break
-        return rows
+        from widget_query44 import small
+        return small(self,kind,category,limit,pin)
 
 def files(pid,kind):
     from utils import addon_data_dir
@@ -72,10 +64,10 @@ def read(filename,key):
     except (OSError,ValueError,TypeError):pass
     return None
 
-def store(filename,key,rows):
+def store(filename,key,rows,revision=None):
     temp=None
     try:
-        data=json.dumps(dict(policy=key,at=time.time(),rows=rows))
+        data=json.dumps(dict(policy=key,at=time.time(),rows=rows,revision44=revision))
         if len(data.encode())>MAX_BYTES:return
         fd,temp=tempfile.mkstemp(prefix='.widget41-',dir=os.path.dirname(filename))
         with os.fdopen(fd,'w',encoding='utf-8') as f:f.write(data)
@@ -91,26 +83,31 @@ def trace(kind,code,rows,started,stale=False):
     try:xbmc.log('[XCMate][WIDGET41] kind='+kind+' code='+code+' rows='+str(rows)+' stale='+str(int(stale))+' ms='+str(int((time.monotonic()-started)*1000)),xbmc.LOGINFO)
     except (AttributeError,RuntimeError):pass
 
-def snapshot(portal,kind):
+def snapshot(portal,kind,background=False):
     started=time.monotonic();filename,lock=files(portal['id'],kind);key=policy(portal,kind)
     if not portal.get('include_'+kind,True):return [],'DISABLED'
     old=read(filename,key)
-    if old and time.time()-old['at']<15:trace(kind,'CACHE',len(old['rows']),started);return old['rows'],'CACHE'
+    if old and time.time()-old['at']<15 and not background:trace(kind,'CACHE',len(old['rows']),started);return old['rows'],'CACHE'
     stream=None;code='UNAVAILABLE'
     try:
         import fcntl
         stream=open(lock,'a');fcntl.flock(stream,fcntl.LOCK_EX|fcntl.LOCK_NB)
         # Another interpreter may have published while this one waited to run.
         fresh=read(filename,key)
-        if fresh and time.time()-fresh['at']<15:return fresh['rows'],'CACHE'
+        if fresh and time.time()-fresh['at']<15 and not background:return fresh['rows'],'CACHE'
         reader=WidgetReader(portal['id'])
-        if not reader.state(kind):return (old['rows'],'INDEX_MISSING') if old else ([], 'INDEX_MISSING')
+        state=reader.state(kind)
+        if not state:return (old['rows'],'INDEX_MISSING') if old else ([], 'INDEX_MISSING')
+        revision=[state.get('revision'),state.get('updated')]
+        if background and old and old.get('revision44')==revision:
+            if time.time()-old['at']>=15:store(filename,key,old['rows'],revision)
+            return old['rows'],'CACHE'
         if kind=='live':
             start=reader.get('live',str(portal.get('start_stream_id') or ''))
             cid=initial_group(portal,reader.groups('live'),start)
             rows=reader.small(kind,category=cid,limit=12,pin=start['sid'] if start else None) if cid else []
         else:rows=reader.small(kind,limit=24)
-        store(filename,key,rows);trace(kind,'READY',len(rows),started);return rows,'READY'
+        store(filename,key,rows,revision);trace(kind,'READY',len(rows),started);return rows,'READY'
     except BlockingIOError:code='LOCKED'
     except (IndexReadError,sqlite3.Error,OSError,ValueError,TypeError,ImportError) as exc:code=getattr(exc,'code','UNAVAILABLE')
     finally:

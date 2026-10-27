@@ -23,7 +23,12 @@ def connect(filename=None,write=False):
     existed=os.path.isfile(filename or path())
     db=sqlite3.connect(filename or path(),timeout=2)
     db.row_factory=sqlite3.Row
-    if existed and not write: return db
+    if existed:
+        if write:
+            from guide_publish44 import require
+            try:require(db)
+            except Exception:db.close();raise
+        return db
     from import_budget import check_space
     check_space(filename or path())
     db.execute('PRAGMA journal_mode=WAL')
@@ -35,18 +40,22 @@ def connect(filename=None,write=False):
       CREATE INDEX IF NOT EXISTS guide_window ON programmes(pid,cid,start);
       CREATE INDEX IF NOT EXISTS guide_source ON programmes(pid,cid,source,start);
       CREATE INDEX IF NOT EXISTS guide_expiry ON programmes(stop);''')
+    if not existed:
+        from guide_publish44 import initialize
+        initialize(db)
     return db
 
 
-def import_cache(pid,cache,revision='',now=None,filename=None):
+def import_cache(pid,cache,revision='',now=None,filename=None,*,trusted_feed=False,source_records=None):
     from epg_views import _as_int
     from epg_events import deduplicate
     now=int(time.time() if now is None else now)
     if not isinstance(cache,dict) or not cache: return False
     db=connect(filename,write=True)
     try:
+        from guide_publish44 import require
+        require(db)
         with db:
-            db.execute('DELETE FROM programmes WHERE stop<?',(now-86400,))
             db.execute('CREATE TEMP TABLE incoming(cid TEXT,start INTEGER,stop INTEGER,title TEXT,description TEXT,source INTEGER,PRIMARY KEY(cid,start,stop))')
             for alias,events in cache.items():
                 if not isinstance(events,list): continue
@@ -55,7 +64,7 @@ def import_cache(pid,cache,revision='',now=None,filename=None):
                     if not isinstance(event,dict): continue
                     start=_as_int(event.get('start_timestamp'));stop=_as_int(event.get('stop_timestamp'))
                     title=str(event.get('name') or event.get('title') or '')[:512]
-                    if start<=0 or stop<=max(start,now) or start>=now+10*86400 or not title: continue
+                    if start<=0 or stop<=start or stop<=day_window(-7,now)[0] or start>=now+10*86400 or not title: continue
                     cid=str(event.get('channel') or alias)
                     canonical=cid
                     try: source=int(event.get('_source_index',0))
@@ -64,21 +73,19 @@ def import_cache(pid,cache,revision='',now=None,filename=None):
                     # the same channel/time, independent of dict iteration.
                     db.execute(('INSERT OR REPLACE' if str(alias)==cid else 'INSERT OR IGNORE')+' INTO incoming VALUES(?,?,?,?,?,?)',
                         (cid,start,stop,title,str(event.get('descr') or event.get('description') or '')[:4096],source))
-                if canonical: db.execute('INSERT OR REPLACE INTO guide_alias VALUES(?,?,?)',(pid,str(alias),canonical))
+                if canonical: db.execute('INSERT OR IGNORE INTO guide_alias VALUES(?,?,?)',(pid,str(alias),canonical))
             from epg_events import clean_stage
             clean_stage(db,'incoming')
             count=db.execute('SELECT count(*) FROM incoming').fetchone()[0]
             if not count: return False
             if count>MAX_EVENTS: raise ValueError('guide index budget')
-            # Replace only newly covered channel intervals. Keep a previously
-            # downloaded +7/+9 day even when the next import contains only 24h.
-            for row in db.execute('SELECT cid,min(start),max(stop) FROM incoming GROUP BY cid').fetchall():
-                db.execute('DELETE FROM programmes WHERE pid=? AND cid=? AND start<? AND stop>?',
-                           (pid,row[0],row[2],row[1]))
-            db.execute('INSERT OR REPLACE INTO programmes SELECT ?,cid,start,stop,title,description,source FROM incoming',(pid,))
-            # The bounded incoming cache is only a compatibility step, not
-            # a cap on all ten days already imported by the streaming reader.
-            db.execute('INSERT OR REPLACE INTO guide_meta VALUES(?,?,?)',(pid,revision,time.time()))
+            from guide_publish44 import publish
+            if trusted_feed:
+                from guide_publish44 import source_id
+                for (index,) in db.execute('SELECT DISTINCT source FROM incoming ORDER BY source').fetchall():
+                    record=(source_records or {}).get(index,{})
+                    publish(db,pid,'incoming','source=?',(index,),source=source_id(record,index),rank=index,revision=revision,now=now)
+            else:publish(db,pid,'incoming',revision=revision,now=now)
         return True
     finally: db.close()
 
@@ -92,7 +99,7 @@ def refresh(portal,filename=None):
     db=connect(filename)
     try: prior=db.execute('SELECT revision FROM guide_meta WHERE pid=?',(portal['id'],)).fetchone()
     finally: db.close()
-    if prior and prior[0]==rev: return False
+    if prior:return False
     return import_cache(portal['id'],load_cache(portal['id']),rev,filename=filename)
 
 
@@ -165,10 +172,11 @@ def status_lines(portal,filename=None):
                 tr(32564)+(time.strftime(tr(32585),time.localtime(success)) if success else tr(32565)),
                 tr(32566)+str(entry.get('code',tr(32567)))]
     if not rows: lines.append(tr(32568))
+    from guide_publish44 import diagnose
+    lines+=['',json.dumps(diagnose(filename or path(),portal['id']),ensure_ascii=False)]
     from epg_dedup_diagnostics import read as dedup_reports
     reports=dedup_reports()
     if reports:
-        import json
         lines+=['',tr(32787),json.dumps(reports[-8:],ensure_ascii=False,indent=2)]
     return lines
 

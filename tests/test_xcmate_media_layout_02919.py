@@ -63,7 +63,9 @@ class CompactPosterTests(Fixture,unittest.TestCase):
         w.setFocusId(120);w.native(7);self.settle(w)
         self.assertEqual((w._cols,w.getControl(210).width),(4,916))
         w.setFocusId(200);w.native(2)
-        self.assertEqual((w._cols,w.getControl(210).width),(6,1192))
+        self.assertEqual((w._cols,w.getControl(210).width),(4,916));self.assertEqual(w.getControl(210).selected,0)
+        w.native(2)
+        self.assertEqual((w._cols,w.getControl(210).width),(6,1192));self.assertEqual(w.getControl(210).selected,1)
 
 
 if __name__=='__main__':unittest.main()

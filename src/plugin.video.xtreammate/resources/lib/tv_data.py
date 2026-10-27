@@ -85,7 +85,7 @@ class GuideSnapshot:
         info = guide_for_channel({'v':[dict(name=e['title'], start_timestamp=e['start'],
             stop_timestamp=e['stop'], descr=e.get('description','')) for e in base.get('programme_events',base['events'])]}, 'v', now=ts)
         info.update(epg_id=base.get('epg_id',''), mapping=base.get('mapping',''),
-                    source_index=base.get('source_index'))
+                    source_index=base.get('source_index'),snapshot_revision=base.get('snapshot_revision'))
         if base.get('programme_events'):info['programme_events']=base['programme_events']
         if not info['events']: info['reason'] = base.get('reason','NO_DATA')
         return info
@@ -127,7 +127,8 @@ class GuideSnapshot:
         values, missing = {}, []
         for c in wanted:
             sid = str(c.extra.get('stream_id',''))
-            info = resolve_guide(self._cache, c.tvg_id, sid, now, self.client, self._mappings)
+            info = resolve_guide(self._cache, c.tvg_id, sid, now, None if self._indexed else self.client, self._mappings)
+            info['snapshot_revision']=getattr(local,'revision',None)
             if not info['now'] and not self._indexed:
                 # A saved ten-day guide outlives its small compatibility
                 # snapshot. Read only this worker's bounded visible viewport.
@@ -149,10 +150,12 @@ class GuideSnapshot:
             if not info['now'] and sid not in self._mappings: missing.append(c)
         with self._lock:
             if generation!=self._request_generation or serial!=self._refresh_serial:return  # Late old viewport cannot publish.
+            from render_diff44 import signature
+            changed=signature(values)!=signature({sid:self._values[sid] for sid in values if sid in self._values})
             self._values.update(values)
             for sid in values: self._values.move_to_end(sid)
             while len(self._values) > 128: self._values.popitem(last=False)
-            self.generation += 1
+            if changed:self.generation += 1
         # Visible selection is a read request, never a per-channel network job.
         # Configured imports run independently on the background service timer.
         from live_diagnostics import record

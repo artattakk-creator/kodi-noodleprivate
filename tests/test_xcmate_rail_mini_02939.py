@@ -24,7 +24,7 @@ class RailMini39(unittest.TestCase):
     def test_hide_clears_all_native_labels_images_and_button_focusability(self):
         rail=self.o._nav_rail
         for _ in range(20):
-            rail.show(True);self.assertTrue(any(b.label for b in rail.buttons))
+            rail.show(True);self.assertTrue(any(c.label for c in rail.captions));self.assertTrue(all(not b.label for b in rail.buttons))
             rail.hide()
             self.assertTrue(all(not b.label and not b.visible and not b.enabled for b in rail.buttons))
             self.assertTrue(all(not im.visible and not im.image for im in rail.icons));self.assertFalse(rail.panel.visible)

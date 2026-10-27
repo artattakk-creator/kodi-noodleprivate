@@ -58,7 +58,7 @@ class EpgSourceTests(unittest.TestCase):
         own = {'zdf.de': [{'name': 'ZDF Heute'}],
                'welt.de': [{'name': 'veraltet'}]}
         def parse(raw):
-            return ({'welt.de': 'WELT HD', 'sky.de': 'Sky Cinema'}, {'welt.de': [{'name':'WELT News'}], 'sky.de': [{'name': 'Sky News'}]})
+            return ({'welt.de': 'WELT HD', 'sky.de': 'Sky Cinema'}, {'welt.de': [{'name':'WELT News','start_timestamp':100,'stop_timestamp':200}], 'sky.de': [{'name': 'Sky News','start_timestamp':100,'stop_timestamp':200}]})
         result, ok, fails = self.module.merge_sources('p', own, parse)
         self.assertEqual((ok, fails), (1, 0))
         self.assertEqual(result['zdf.de'][0]['name'], 'ZDF Heute')
