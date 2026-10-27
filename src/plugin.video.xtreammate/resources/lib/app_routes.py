@@ -323,6 +323,15 @@ def paging(router,total,offset,**params):
 
 
 def add_index_item(router,portal,kind,item,epg=None,recent=False,widget=False):
+    if widget:
+        from widget_items45 import describe,item as native_item
+        import xbmcplugin
+        info=None
+        if epg:
+            info=dict(now=epg.get('Now',''),next=epg.get('Next',''),start=epg.get('Start',0),stop=epg.get('Stop',0),progress=epg.get('Progress') if isinstance(epg.get('Progress'),(int,float)) else None,now_time='',next_time='',description='',_plot45=epg.get('plot',''))
+        value=describe(portal,kind,item,getattr(router,'_widget_art44',{}),info)
+        xbmcplugin.addDirectoryItem(router._handle,value['url'],native_item(value),isFolder=False)
+        return
     import os,xbmcaddon,xbmcgui,xbmcplugin
     from media_art import local_art
     li=xbmcgui.ListItem(item['name'])
@@ -404,8 +413,8 @@ def widget(router,portal,action):
         if not rows and code not in ('READY','CACHE'):
             router._add_dir(tr(35853),
                             router.url(action='movies_home' if kind=='vod' else 'series_home',pid=portal['id']))
-        router._add_dir(tr(32481),
-                        router.url(action='movies_home' if kind=='vod' else 'series_home',pid=portal['id']))
+        # A poster row contains titles only. Old movies_home/series_home URLs
+        # remain valid, but are not disguised as an extra film tile.
     _end(router)
 
 

@@ -51,6 +51,8 @@ def refresh_local(cancel=lambda:False):
                 if cancel():return
                 rows,code=snapshot(portal,kind,background=True)
                 prepare(portal['id'],apply_many(portal['id'],rows))
+                from widget_refresh45 import publish
+                publish(portal,kind,apply_many(portal['id'],rows),code)
             _retry_after.pop(portal['id'],None)
         except Exception as exc:
             # A disk-full/over-budget/corrupt import must not reparse the same
@@ -137,6 +139,8 @@ def _run():
 
 
 def poll():
+    from widget_refresh45 import poll as poll_widget_lists
+    poll_widget_lists()
     from guide_backup44 import poll as poll_guide_backup
     poll_guide_backup()
     from app_entry import observe
