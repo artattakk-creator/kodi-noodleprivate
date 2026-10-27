@@ -113,3 +113,8 @@ class WidgetMaster46(Fixture,unittest.TestCase):
    return original(filename,data)
   with mock.patch.object(pages,'atomic',side_effect=fail):self.assertFalse(refresh.publish(self.portal,'live',rows,code))
   self.assertEqual(Path(refresh.path('p','live')).read_bytes(),before);self.assertEqual(len(refresh.read('p','live')['items']),137)
+ def test_real_widget_manager_reports_missing_overlay_in_addition_to_reload_hook(self):
+  ui=importlib.import_module('widget_ui45');self.dialog.select.side_effect=[0,3]
+  with mock.patch('widget_hooks45.probe',return_value=dict(code='READY',bindings=[])),mock.patch('widget_capabilities46.probe',return_value=dict(code='BLOCKED_NO_OVERLAY_FOCUS_BINDING')):
+   ui.manage(self.router,self.portal)
+  self.assertIn('BLOCKED_NO_OVERLAY_FOCUS_BINDING',self.dialog.textviewer.call_args.args[1]);self.assertFalse(self.builtins)
