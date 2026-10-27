@@ -1,0 +1,3 @@
+Original GS Media / XCMate generic monitor and speaker geometry.
+Created by tools/build_xcmate_infomicro44.py; project GPL-2.0-only license.
+No external logos, fonts or third-party image source.

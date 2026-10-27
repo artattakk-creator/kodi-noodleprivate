@@ -303,6 +303,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
     def _clear_surface40(self):
         if not self._drawn:return
         self._nav_rail.hide();self._mini.visible(False)
+        self._micro44.hide();self._row_paint44={}
         for control in (self.heading,self.sub,self.footer,self.osd_title,*self._info_controls):
             if hasattr(control,'setLabel'):control.setLabel('')
             control.setVisible(False)
@@ -419,6 +420,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self.info_duration = xbmcgui.ControlLabel(174,height-131,width-220,27,'','font12','0xFFB6BCC6')
         self.info_next = xbmcgui.ControlLabel(174,height-99,width-220,29,'','font13','0xFFF0F2F5')
         self.info_hint = xbmcgui.ControlLabel(174,height-61,width-220,24,'','font12','0xFFB6BCC6')
+        from stream_micro44 import MicroLine
+        self._micro44=MicroLine(self,media,width,height)
         self._info_controls = [self.info_bg,self.info_logo,self.info_name,self.info_now,self.info_times,
                               self.info_track,self.info_progress,self.info_duration,self.info_next,self.info_hint]
         self.osd_bg = xbmcgui.ControlImage(32,height-330,width-64,298,__import__('theme_render').texture(self,panel,'panel.player.controls'))
@@ -434,7 +437,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
                     focusTexture=focused,noFocusTexture=normal,textOffsetX=0 if buttons is self.main_buttons else 36,textOffsetY=26 if buttons is self.main_buttons else 2,alignment=6 if buttons is self.main_buttons else 4,font='font12',disabledColor='0xFF6F7780'))
                 self._button_icons.append((buttons[-1],xbmcgui.ControlImage(52+i*space+(space-48)//2 if buttons is self.main_buttons else 60+i*space,y+6,48 if buttons is self.main_buttons else 26,48 if buttons is self.main_buttons else 26,__import__('player_controls').texture(icon))))
         all_controls = [self.bg,self.heading,self.sub,self.control,self.footer,self.capture,
-            *[c for row in self._row_controls for c in row],*self._info_controls,
+            *[c for row in self._row_controls for c in row],*self._info_controls,*self._micro44.controls,
             self.osd_bg,self.osd_title,*self.main_buttons,*self.extra_buttons,
             *[image for _,image in self._button_icons]]
         for control in all_controls: self.addControl(control)
@@ -501,8 +504,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
         from playback_exit import identity
         player=xbmc.Player();token=identity(player)
         details=self._stream_details.read(player,token if token and token[0]=='live' and token[1]['pid']==str(self.portal['id']) and token[1]['sid']==self.sid else None)
-        label=__import__('stream_details').compact(details)
-        if label!=getattr(self,'_stream_label',None):self.info_hint.setLabel(label);self._stream_label=label
+        self.info_hint.setVisible(False)
+        self._micro44.render(details)
         self.info_next.setLabel('DANACH: {}    ab {} Uhr'.format(info['next'],info['next_time'])
                                 if info['next'] else 'DANACH: Keine Programmdaten verfügbar')
 
@@ -597,7 +600,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
         if not listing:
             for row in self._row_controls:
                 for c in row:self._row_value44(c,'setVisible',False)
-        for c in self._info_controls: c.setVisible(self.mode=='info')
+        for c in self._info_controls:c.setVisible(self.mode=='info' and c is not self.info_hint)
+        if self.mode!='info':self._micro44.hide()
         for c in (self.osd_bg,self.osd_title): c.setVisible(osd)
         seek = self._can_seek() if osd else False
         transport = [1,0,2,5,3,4]
