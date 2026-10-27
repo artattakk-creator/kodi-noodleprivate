@@ -26,9 +26,11 @@ def show(router,group):
    from urllib.parse import urlsplit,parse_qsl
    raw=row.get('action','')
    if raw.startswith('RunPlugin(plugin://plugin.video.xtreammate/?') and raw.endswith(')'):
-    previous=router._params
-    try:router._params=dict(parse_qsl(urlsplit(raw[10:-1]).query));router.dispatch()
-    finally:router._params=previous
+    previous=router._params;handle=router._handle
+    try:
+     router._handle=-1
+     router._params=dict(parse_qsl(urlsplit(raw[10:-1]).query));router.dispatch()
+    finally:router._params=previous;router._handle=handle
    continue
   if kind=='bool':
    value=select(dialog,label(row.get('label')),[tr(36028),tr(36029)],actions=['back','check'],preselect=1 if old=='true' else 0)

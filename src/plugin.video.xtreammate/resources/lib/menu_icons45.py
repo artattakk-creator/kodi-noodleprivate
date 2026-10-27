@@ -10,7 +10,7 @@ ACTIONS={
  'guide_grid':'calendar','guide_browser':'calendar','guide_timers':'clock','epg_sources':'database','epg_status':'activity','guide_status':'activity','guide_backup44':'shield','refresh_epg':'refresh','refresh_portal':'refresh','epg_now':'calendar','epg_channel':'calendar','catchup_list':'clock','play_catchup':'play',
  'account_select':'check','portal_manager':'user','xtream_account':'user','m3u_account':'user','stb_account':'user','add_portal_from_settings':'plus','setup_wizard':'wand','import_legacy_settings':'shield','groups_manager':'list','group_settings':'list','startup_settings':'tv','playlist_editor':'pencil',
  'settings_home':'settings','settings':'settings','native_options45':'settings','remote_setup':'remote','remote_learn':'remote','remote_diagnostics':'activity','service_recover':'refresh','popup_probe':'activity','stability_test':'activity','autoplay_diagnostic_mode':'activity','clear_cache':'trash',
- 'artwork_manage':'image','art_status':'activity','art_retry':'refresh','art_db_health':'shield','theme_manager':'palette','appearance_settings':'palette','ui_language':'globe','widget_setup':'grid','widget_live_start_group':'grid','widget_recent_vod':'grid','widget_recent_series':'grid','device_info':'info','branding_status':'info','about_xcmate':'info','xcmate_licenses':'document',
+ 'artwork_manage':'image','art_status':'activity','art_retry':'refresh','art_db_health':'shield','theme_manager':'palette','appearance_settings':'palette','ui_language':'globe','widget_adapter45':'grid','widget_setup':'grid','widget_live_start_group':'grid','widget_recent_vod':'grid','widget_recent_series':'grid','device_info':'info','branding_status':'info','about_xcmate':'info','xcmate_licenses':'document',
  'record_now':'record','recordings_manage':'record','recording_folder':'drive','recording_capabilities':'info','download_folder':'drive','download_capabilities':'info','download_target_test':'activity','downloads_manage45':'download','experimental_options45':'flask-lock',
  'metadata':'info','image_search':'image','poster_retry':'refresh','download':'download','downloads':'download','back':'back','previous':'back','delete':'trash','remove':'trash','add':'plus','edit':'pencil','select':'check','audio':'speaker','language':'globe','subtitle':'cc','video':'tv','info':'info','episodes':'series'}
 
@@ -25,11 +25,8 @@ def role(action,params=None):
  return 'info'
 
 def icon(action='info',params=None,full=False):
- import xbmcaddon
  key=role(action,params)
- fallback=os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media','menu45',*(['full'] if full else []),key+'.png')
- from theme_store import asset
- return asset('icon.menu.'+key,fallback)
+ return os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),'resources','media','menu45',*(['full'] if full else []),key+'.png')
 
 def for_url(url,existing=None):
  p={k:v[0] for k,v in parse_qs(urlsplit(url).query).items()};action=p.get('action','root')

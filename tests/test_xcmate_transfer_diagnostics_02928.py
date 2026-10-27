@@ -8,6 +8,7 @@ from xcmate027_fixture import Fixture
 class Diagnostics28Tests(Fixture,unittest.TestCase):
     def setUp(self):
         super().setUp()
+        self.dialog.input.return_value='6666'  # Explicit .45 experimental authorization for legacy behavior tests.
         for name in ('capture_ui','capture_target','download_store','download_worker','downloads_ui','transfer_diagnostics'):
             sys.modules.pop(name,None)
         self.diag=importlib.import_module('transfer_diagnostics')
@@ -41,7 +42,7 @@ class Diagnostics28Tests(Fixture,unittest.TestCase):
         ident=store.add(self.portal,dict(sid='1'),str(self.folder),120)
         store.update(ident,status='recording',bytes=32768);self.dialog.select.return_value=-1
         with mock.patch.object(ui,'work',side_effect=lambda fn:fn()):ui.manage()
-        label=self.dialog.select.call_args.args[1][0]
+        label=self.dialog.select.call_args.args[1][0].getLabel()
         self.assertIn('32768 Bytes',label);self.assertIn('Aufnahme läuft',label)
 
     def test_direct_movie_download_succeeds_even_when_recorder_format_gate_rejects_hls(self):

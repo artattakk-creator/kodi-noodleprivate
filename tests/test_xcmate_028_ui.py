@@ -48,7 +48,7 @@ class NewUITests(Fixture,unittest.TestCase):
         script=appearance.window_source('XCMateMedia.xml')
         generated=ET.parse(Path(script)/'resources/skins/Default/720p/XCMateMedia.xml')
         source=ET.fromstring(original)
-        for a,b in zip(source.iter('control'),generated.getroot().iter('control')):
+        for a,b in zip(source.iter('control'),(n for n in generated.getroot().iter('control') if n.get('xcmate-menu45')!='true')):
             self.assertEqual(a.get('id'),b.get('id'))
             for key in ('onleft','onright','onup','ondown'): self.assertEqual(a.findtext(key),b.findtext(key))
         self.assertEqual(generated.findtext("./controls/control[@id='101']/textcolor"),'FF112233')

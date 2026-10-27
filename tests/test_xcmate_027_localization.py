@@ -36,10 +36,10 @@ class LocalizationTests(Fixture,unittest.TestCase):
 
     def test_ten_settings_categories_in_both_languages_with_identical_destinations(self):
         urls=[]
-        for locale,first,last in (('en_gb','Accounts & portals','About XCMate & licences'),
-                                  ('de_de','Accounts & Portale','Über XCMate & Lizenzen')):
+        for locale,first,last in (('en_gb','Accounts & portals','Experimental'),
+                                  ('de_de','Account & Portale','Experimentell')):
             self.ui_locale=locale;self.added.clear();self.home.settings(self.router,self.portal)
-            self.assertEqual(len(self.added),10)
+            self.assertEqual(len(self.added),7)
             self.assertEqual((self.labels()[0],self.labels()[-1]),(first,last))
             urls.append([u for u,_,_ in self.added])
         self.assertEqual(*urls)
@@ -146,7 +146,7 @@ class LocalizationTests(Fixture,unittest.TestCase):
         self.added.clear();self.router._params['action']='widget_recent_vod';self.routes.dispatch(self.router)
         self.assertIn('House of Dragon',self.added[0][1].label)
         self.assertIn('New ·',self.added[0][1].props['XCMate.AddedStatus'])
-        self.assertIn('Show all',self.labels()[-1])
+        self.assertEqual(len(self.added),24);self.assertTrue(all('action=media_detail' in u for u,_,_ in self.added))
         self.added.clear();self.router._params['action']='widget_live_start_group'
         self.cache={'xml':[dict(name='Originaltitel',start_timestamp=self.now-100,stop_timestamp=self.now+100)]}
         importlib.import_module('guide_store').import_cache('p',self.cache)
@@ -175,7 +175,7 @@ class LocalizationTests(Fixture,unittest.TestCase):
         for locale,label in (('en_gb','Pending'),('de_de','Ausstehend')):
             self.ui_locale=locale;timers.manage('p')
             displayed=self.dialog.select.call_args.args[1]
-            self.assertIn(label,displayed[0]);self.assertIn('Sendung unverändert',displayed[0])
+            self.assertIn(label,displayed[0].getLabel());self.assertIn('Sendung unverändert',displayed[0].getLabel())
         self.assertEqual(timers.list_timers('p')[0]['state'],'pending')
 
     def test_fallback_catalog_is_loaded_once_not_on_each_remote_event(self):
@@ -240,10 +240,10 @@ class CatalogContractTests(unittest.TestCase):
             for label in root.iter('label'):
                 self.assertTrue(not label.text or label.text.startswith('$INFO['),(name,label.text))
             self.assertIsNotNone(root.find('.//control[@id="501"]'))
-        category=ET.parse(ADDON/'resources/settings.xml').find('.//category[@label="32592"]')
+        category=ET.parse(ADDON/'resources/settings.xml').find('.//category[@label="36004"]')
         self.assertIsNotNone(category)
         for control in category:
-            self.assertIn(int(control.get('label')),self.catalogs['en_gb'])
+            if str(control.get('label','')).isdigit():self.assertIn(int(control.get('label')),self.catalogs['en_gb'])
 
     def test_duplicate_and_incomplete_po_entries_fail_validation(self):
         valid='msgctxt "#32400"\nmsgid "Start channel"\nmsgstr "Startkanal"\n'

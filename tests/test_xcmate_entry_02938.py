@@ -5,7 +5,8 @@ from xcmate027_fixture import Fixture
 
 class Entry38(Fixture,unittest.TestCase):
     def setUp(self):
-        super().setUp();self.entry=importlib.import_module('app_entry')
+        super().setUp()
+        self.dialog.input.return_value='6666'  # Explicit .45 experimental authorization for legacy behavior tests.;self.entry=importlib.import_module('app_entry')
         previous=sys.modules['xbmc'].getCondVisibility
         sys.modules['xbmc'].getCondVisibility=lambda c:c=='Window.IsActive(videos)' or previous(c)
         self.portal['autoplay_start']=True;self.options['autoplay_diagnostics_safe']=True

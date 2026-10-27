@@ -3,6 +3,14 @@ import os,time
 from localization import tr
 
 
+def _image(rect,path,aspectRatio=0):
+ import xbmcgui
+ return xbmcgui.ControlImage(rect[0],rect[1],rect[2],rect[3],path,aspectRatio=aspectRatio)
+
+def _label(rect,text,font,color,alignment=0):
+ import xbmcgui
+ return xbmcgui.ControlLabel(rect[0],rect[1],rect[2],rect[3],text,font,color,alignment=alignment)
+
 def layout(width,height):
  s=min(width/1920.,height/1080.);dx=(width-1920*s)/2;dy=height-1080*s
  def box(x,y,w,h):return (round(dx+x*s),round(dy+y*s),max(1,round(w*s)),max(1,round(h*s)))
@@ -57,10 +65,10 @@ class Technology:
   self.owner=owner;self.geom=geom;self.font=font;self.icons={};self.text={};self.captions={};self.frames={};self.controls=[]
   roles=(('video','resolution',36033,1450,715),('codec','codec',36034,1692,715),('audio','audio',36035,1450,814),('language','language',36036,1692,814),('subtitle','subtitle',36037,1450,914),('fps','fps',36038,1692,914))
   for key,image,label,x,y in roles:
-   box=geom['box'];frame=xbmcgui.ControlImage(*box(x,y,64,64),os.path.join(media,'infobar45','cell.png'))
-   icon=xbmcgui.ControlImage(*box(x+14,y+14,36,36),os.path.join(media,'infobar45',image+'.png'))
-   value=xbmcgui.ControlLabel(*box(x+86,y+1,151 if x==1450 else 106,33),'',font['resolution'] if key=='video' else font['language'] if key=='language' else font['value'],'0xFFF5F7F8')
-   caption=xbmcgui.ControlLabel(*box(x+86,y+36,154 if x==1450 else 114,29),tr(label),font['caption'],'0xFF929BA2')
+   box=geom['box'];frame=_image(box(x,y,64,64),os.path.join(media,'infobar45','cell.png'))
+   icon=_image(box(x+14,y+14,36,36),os.path.join(media,'infobar45',image+'.png'))
+   value=_label(box(x+86,y+1,151 if x==1450 else 106,33),'',font['resolution'] if key=='video' else font['language'] if key=='language' else font['value'],'0xFFF5F7F8')
+   caption=_label(box(x+86,y+36,154 if x==1450 else 114,29),tr(label),font['caption'],'0xFF929BA2')
    self.icons[key]=icon;self.text[key]=value;self.captions[key]=caption;self.frames[key]=frame;self.controls.extend((frame,icon,value,caption))
  def write(self,control,method,*args):
   from render_diff44 import write
@@ -80,11 +88,11 @@ class InfoBar:
   import xbmcgui
   self.owner=owner;self.g=layout(width,height);self.font=fonts(self.g['scale']);g=self.g;self.controls=[]
   def image(key,name):
-   c=xbmcgui.ControlImage(*g[key],os.path.join(media,'infobar45',name+'.png'));self.controls.append(c);return c
+   c=_image(g[key],os.path.join(media,'infobar45',name+'.png'));self.controls.append(c);return c
   def label(key,font,color='0xFFF5F7F8',text=''):
-   c=xbmcgui.ControlLabel(*g[key],text,self.font[font],color,alignment=2 if key in ('badge_now','badge_next') else 0);self.controls.append(c);return c
+   c=_label(g[key],text,self.font[font],color,alignment=2 if key in ('badge_now','badge_next') else 0);self.controls.append(c);return c
   self.bg=image('panel','glass');self.left_sep=image('left_sep','separator');self.right_sep=image('right_sep','separator')
-  self.logo=xbmcgui.ControlImage(*g['logo'],os.path.join(media,'tv.png'),aspectRatio=2);self.controls.append(self.logo)
+  self.logo=_image(g['logo'],os.path.join(media,'tv.png'),aspectRatio=2);self.controls.append(self.logo)
   self.name=label('name','name');self.date=label('date','date','0xFF919AA2');self.clock=label('clock','clock','0xFFB9C2CC')
   self.previous=label('previous','previous','0xFFBAC1C7')
   self.badge_now=image('badge_now','now');self.badge_next=image('badge_next','next')

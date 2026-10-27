@@ -208,6 +208,8 @@ class ProgrammePreviewTests(unittest.TestCase):
             def input(self,heading,defaultt='',type=0,option=0,autoclose=0):return 'Station'
             def textviewer(self,heading,text,usemono=False):outputs.append(text)
         gui=types.ModuleType('xbmcgui');gui.Dialog=Dialog
+        from menu45_fixture import install
+        install(gui)
         epg=types.ModuleType('epg')
         epg.load_cache=lambda _:cache
         epg.request_refresh=mock.Mock(side_effect=AssertionError('opening preview must not refresh'))
@@ -258,6 +260,8 @@ class ProgrammePreviewTests(unittest.TestCase):
         outputs=[]
         gui=types.ModuleType('xbmcgui')
         gui.Dialog=lambda:types.SimpleNamespace(textviewer=lambda heading,text:outputs.append(text))
+        from menu45_fixture import install
+        install(gui)
         plugin=types.SimpleNamespace(endOfDirectory=mock.Mock())
         tree=ast.parse((LIB/'main.py').read_text())
         router=next(n for n in tree.body if isinstance(n,ast.ClassDef) and n.name=='Router')

@@ -81,6 +81,8 @@ class XtreamMateV011Tests(unittest.TestCase):
         xtream.XtreamClient=XC
         gui = types.ModuleType('xbmcgui')
         gui.Dialog=lambda:dialog
+        from menu45_fixture import install
+        install(gui)
         with mock.patch.dict(sys.modules,{'xbmcgui':gui,'xtream':xtream}):
             result=self.groups.choose_groups({'id':'p','type':'xtream', 'xc_host':'h', 'xc_user':'u','xc_pass':'pw'})
         self.assertTrue(result)
@@ -108,6 +110,8 @@ class XtreamMateV011Tests(unittest.TestCase):
         self.groups.save('p',['1'],'live',known=['1','2'])
         dlg=types.SimpleNamespace(select=lambda *_:-1,ok=lambda *_:None)
         gui=types.ModuleType('xbmcgui');gui.Dialog=lambda:dlg
+        from menu45_fixture import install
+        install(gui)
         xtream=types.ModuleType('xtream')
         class XC:
             def __init__(self,*args):pass

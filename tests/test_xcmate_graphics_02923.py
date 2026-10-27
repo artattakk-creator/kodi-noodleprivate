@@ -37,7 +37,7 @@ class GraphicsTests(Fixture,unittest.TestCase):
         import home_menu
         with mock.patch.object(self.router,'_add_dir',create=True,wraps=self.router._add_dir) as add:
             home_menu.show(self.router,self.portal)
-        self.assertTrue(any(Path(li.art.get('icon','')).name=='icon-81da1003a2753ec6.png' for _,li,_ in self.added))
+        self.assertTrue(any(Path(li.art.get('icon','')).name=='tv.png' for _,li,_ in self.added))
         self.router._params.update(action='branding_status');self.routes.dispatch(self.router)
         self.dialog.textviewer.assert_called_once();self.http.assert_not_called()
 

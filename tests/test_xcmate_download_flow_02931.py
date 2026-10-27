@@ -8,6 +8,7 @@ from test_xcmate_download_targets_02929 import TargetsFixture,SMB_FIXTURE
 class DownloadFlow31Tests(TargetsFixture,unittest.TestCase):
     def setUp(self):
         super().setUp()
+        self.dialog.input.return_value='6666'  # Explicit .45 experimental authorization for legacy behavior tests.
         for name in ('download_trust','download_trust_ui','download_target_test'):sys.modules.pop(name,None)
         self.trust=importlib.import_module('download_trust');self.ui=importlib.import_module('download_trust_ui')
         self.source='https://provider.invalid';self.cdn='https://cdn.invalid'
@@ -68,8 +69,8 @@ class DownloadFlow31Tests(TargetsFixture,unittest.TestCase):
         importlib.import_module('downloads_ui').manage()
         options=self.dialog.select.call_args_list[-1].args[1]
         tr=importlib.import_module('localization').tr
-        self.assertEqual(options[0],tr(34600));self.assertEqual(options[1],tr(34215))
-        self.assertIn(tr(35000),self.dialog.select.call_args_list[0].args[1][0])
+        self.assertEqual(options[0].getLabel(),tr(34600));self.assertEqual(options[1].getLabel(),tr(34215))
+        self.assertIn(tr(35000),self.dialog.select.call_args_list[0].args[1][0].getLabel())
 
     def test_tiny_local_target_proves_actual_bytes_and_hash_and_preserves_existing_files(self):
         root=self.folder/'target';root.mkdir();foreign=root/'keep.mp4';foreign.write_bytes(b'KEEP')
