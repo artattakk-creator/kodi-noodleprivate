@@ -46,7 +46,7 @@ def connect(filename=None,write=False):
     return db
 
 
-def import_cache(pid,cache,revision='',now=None,filename=None):
+def import_cache(pid,cache,revision='',now=None,filename=None,*,trusted_feed=False,source_records=None):
     from epg_views import _as_int
     from epg_events import deduplicate
     now=int(time.time() if now is None else now)
@@ -73,14 +73,19 @@ def import_cache(pid,cache,revision='',now=None,filename=None):
                     # the same channel/time, independent of dict iteration.
                     db.execute(('INSERT OR REPLACE' if str(alias)==cid else 'INSERT OR IGNORE')+' INTO incoming VALUES(?,?,?,?,?,?)',
                         (cid,start,stop,title,str(event.get('descr') or event.get('description') or '')[:4096],source))
-                if canonical: db.execute('INSERT OR REPLACE INTO guide_alias VALUES(?,?,?)',(pid,str(alias),canonical))
+                if canonical: db.execute('INSERT OR IGNORE INTO guide_alias VALUES(?,?,?)',(pid,str(alias),canonical))
             from epg_events import clean_stage
             clean_stage(db,'incoming')
             count=db.execute('SELECT count(*) FROM incoming').fetchone()[0]
             if not count: return False
             if count>MAX_EVENTS: raise ValueError('guide index budget')
             from guide_publish44 import publish
-            publish(db,pid,'incoming',revision=revision,now=now)
+            if trusted_feed:
+                from guide_publish44 import source_id
+                for (index,) in db.execute('SELECT DISTINCT source FROM incoming ORDER BY source').fetchall():
+                    record=(source_records or {}).get(index,{})
+                    publish(db,pid,'incoming','source=?',(index,),source=source_id(record,index),rank=index,revision=revision,now=now)
+            else:publish(db,pid,'incoming',revision=revision,now=now)
         return True
     finally: db.close()
 

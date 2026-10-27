@@ -4022,16 +4022,16 @@ msgid "{} seasons"
 msgstr "{} seasons"
 
 msgctxt "#35960"
-msgid "Back up EPG safely (no refresh)"
-msgstr "Back up EPG safely (no refresh)"
+msgid "Back up EPG and enable import protection"
+msgstr "Back up EPG and enable import protection"
 
 msgctxt "#35961"
-msgid "Create a consistent local SQLite/WAL backup and prepare the protected EPG import? Existing data is preserved. No EPG update will be started."
-msgstr "Create a consistent local SQLite/WAL backup and prepare the protected EPG import? Existing data is preserved. No EPG update will be started."
+msgid "Create a consistent local SQLite/WAL backup and then enable the new protected EPG import? Existing programmes and sources are preserved. No EPG update will be started."
+msgstr "Create a consistent local SQLite/WAL backup and then enable the new protected EPG import? Existing programmes and sources are preserved. No EPG update will be started."
 
 msgctxt "#35962"
-msgid "Create backup"
-msgstr "Create backup"
+msgid "Back up and enable protection"
+msgstr "Back up and enable protection"
 
 msgctxt "#35963"
 msgid "Last backup status"

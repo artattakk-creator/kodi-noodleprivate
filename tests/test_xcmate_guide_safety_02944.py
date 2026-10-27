@@ -124,3 +124,12 @@ class GuideSafety44(Fixture,unittest.TestCase):
         saved=self.folder/'guide_backups44'/(result['backup']+'.sources.json')
         self.assertEqual(saved.read_bytes(),data);self.assertEqual(config.read_bytes(),data)
         self.assertNotIn('SECRET',str(result));self.assertEqual(saved.stat().st_mode&0o777,0o600)
+    def test_verified_full_legacy_feed_can_correct_exact_interval_but_short_cache_cannot(self):
+        self.put_cache([self.event(self.now,self.now+1800,'Old')])
+        self.g.import_cache('p',{'x':[self.event(self.now,self.now+1800,'Verified')]},trusted_feed=True)
+        self.assertEqual(self.rows()[0][4],'Verified')
+        self.put_cache([self.event(self.now,self.now+1800,'Short')]);self.assertEqual(self.rows()[0][4],'Verified')
+    def test_legacy_external_feed_fills_only_real_nonoverlapping_gaps(self):
+        from epg_merge44 import extend
+        result,added=extend([self.event(self.now,self.now+1800,'A')],[self.event(self.now,self.now+1800,'Conflict'),self.event(self.now+1800,self.now+3600,'B')],1)
+        self.assertEqual(added,1);self.assertEqual([r['name'] for r in result],['A','B'])

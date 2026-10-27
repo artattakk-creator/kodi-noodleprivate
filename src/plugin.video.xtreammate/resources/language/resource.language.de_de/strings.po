@@ -4022,16 +4022,16 @@ msgid "{} seasons"
 msgstr "{} Staffeln"
 
 msgctxt "#35960"
-msgid "Back up EPG safely (no refresh)"
-msgstr "EPG-Bestand sicher sichern (ohne Aktualisierung)"
+msgid "Back up EPG and enable import protection"
+msgstr "EPG sichern und Importschutz aktivieren"
 
 msgctxt "#35961"
-msgid "Create a consistent local SQLite/WAL backup and prepare the protected EPG import? Existing data is preserved. No EPG update will be started."
-msgstr "Konsistente lokale SQLite/WAL-Sicherung erstellen und den geschützten EPG-Import vorbereiten? Vorhandene Daten bleiben erhalten. Es wird keine EPG-Aktualisierung gestartet."
+msgid "Create a consistent local SQLite/WAL backup and then enable the new protected EPG import? Existing programmes and sources are preserved. No EPG update will be started."
+msgstr "Konsistente lokale SQLite/WAL-Sicherung erstellen und danach den neuen EPG-Importschutz aktivieren? Vorhandene Programme und Quellen bleiben erhalten. Es wird keine EPG-Aktualisierung gestartet."
 
 msgctxt "#35962"
-msgid "Create backup"
-msgstr "Sicherung erstellen"
+msgid "Back up and enable protection"
+msgstr "Sichern und Schutz aktivieren"
 
 msgctxt "#35963"
 msgid "Last backup status"

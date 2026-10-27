@@ -280,16 +280,14 @@ def merge_sources(portal_id, builtin_programmes, parse_xmltv):
                 from epg_errors import EmptyGuideError
                 raise EmptyGuideError('XMLTV enthält keine gültigen Sendungen')
             stage = 'MERGE'
-            additions = {cid: entries for cid, entries in programmes.items()
-                         if entries and not merged.get(cid)}
-            added_count = sum(len(entries) for entries in additions.values())
-            if programme_count + added_count > MAX_PROGRAMMES:
-                raise XMLTVLimitError('Combined XMLTV programme limit exceeded','programmes')
-            programme_count += added_count
+            from epg_merge44 import extend
+            for channel_id,entries in programmes.items():
+                combined,added_count=extend(merged.get(channel_id,[]),entries,source_index)
+                if programme_count+added_count>MAX_PROGRAMMES:
+                    raise XMLTVLimitError('Combined XMLTV programme limit exceeded','programmes')
+                programme_count+=added_count
+                if combined:merged[channel_id]=combined
             index.update(channels)
-            for channel_id, entries in programmes.items():
-                if entries and not merged.get(channel_id):
-                    merged[channel_id] = [dict(e, _source_index=source_index) for e in entries]
             successes += 1
             record('epg_source','READY',channels=len(channels),
                    programmes=sum(len(v) for v in programmes.values()),loaded=successes,
