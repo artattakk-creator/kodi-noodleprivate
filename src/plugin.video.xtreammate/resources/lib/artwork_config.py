@@ -11,6 +11,7 @@ import os
 import tempfile
 import time
 import uuid
+import sys
 
 VERSION=1
 NAME='artwork_config_v1.json'
@@ -19,8 +20,14 @@ _cache=None
 
 
 def root():
-    from utils import addon_data_dir
-    return addon_data_dir()
+    # Avoid importing the general utility/network/logging tree merely to read
+    # a stable profile marker in every cold widget interpreter.
+    utilities=sys.modules.get('utils')
+    if utilities is not None:return utilities.addon_data_dir()
+    import xbmcaddon,xbmcvfs
+    folder=xbmcvfs.translatePath('special://userdata/addon_data/'+xbmcaddon.Addon().getAddonInfo('id')+'/')
+    if not os.path.isdir(folder):os.makedirs(folder,exist_ok=True)
+    return folder
 
 
 def read():
@@ -67,6 +74,10 @@ def _write(value):
 
 def initialize():
     """Run BEFORE setup/data workers. Any unknown/legacy signal fails internal."""
+    # Existing installations need one bounded read, not an exclusive lock on
+    # every widget/plugin interpreter. The locked recheck still owns creation.
+    current=read()
+    if current['version']==VERSION:return current
     with locked():
         value=read()
         if value['version']==VERSION:return value

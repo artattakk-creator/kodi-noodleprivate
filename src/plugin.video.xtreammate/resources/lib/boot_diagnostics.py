@@ -6,7 +6,7 @@ source lines, portal identity or provider URL is ever logged.
 import time
 from contextlib import contextmanager
 
-PHASES = frozenset(('ARTWORK_PROFILE','HOME_PORTALS','HOME_FAST','HOME_SUBMITTED','APP_WORKER_STOPPED', 'APP_WORKER_STOP_PENDING', 'ENTRY', 'MAIN_IMPORT', 'ROUTER_INIT', 'DISPATCH',
+PHASES = frozenset(('WIDGET_FAST','ARTWORK_PROFILE','HOME_PORTALS','HOME_FAST','HOME_SUBMITTED','APP_WORKER_STOPPED', 'APP_WORKER_STOP_PENDING', 'ENTRY', 'MAIN_IMPORT', 'ROUTER_INIT', 'DISPATCH',
     'PORTALS_IMPORT', 'PORTALS_LOAD', 'PORTALS_MIGRATION', 'ROOT_MENU',
     'HOME_MENU', 'ART_STATUS_COUNTS', 'ROUTE', 'DIRECTORY_DONE', 'START_FAILED'))
 ROUTES = frozenset(('home_start','play_start','play_start_direct','root', 'portal_home', 'xcmate_home', 'portal_manager',
