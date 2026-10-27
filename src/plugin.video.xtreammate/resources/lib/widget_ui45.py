@@ -18,9 +18,6 @@ def manage(router,portal):
     capability=programme_capabilities46()
     text+='\n\nProgrammbild / Logo / Fokus: '+capability['code']
     text+='\nStatische Bindings sind keine Android-Darstellungsabnahme. Fehlende Darstellung bleibt gesperrt; ein Adapter wird hier nicht automatisch angewandt.'
-    from programme_index46 import status as programme_status46
-    local46=programme_status46()
-    text+='\n\nLokale Sendungs-/Artwork-Datenbank: '+local46['code']+' · '+str(local46.get('bytes',0))+' Bytes. Ein Status READY bestätigt keine vollständigen20Tage oder Android-Abnahme.'
    except Exception:text='Status: READ_ERROR'
    dialog.textviewer('XCMate Widgets',text)
   elif choice==1:

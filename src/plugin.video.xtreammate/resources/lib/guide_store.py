@@ -50,7 +50,6 @@ def import_cache(pid,cache,revision='',now=None,filename=None,*,trusted_feed=Fal
     from epg_views import _as_int
     from epg_events import deduplicate
     now=int(time.time() if now is None else now)
-    right46=__import__('programme_index46').bounds(now)[1]
     if not isinstance(cache,dict) or not cache: return False
     db=connect(filename,write=True)
     from programme_store46 import Stage as ProgrammeStage46
@@ -68,13 +67,12 @@ def import_cache(pid,cache,revision='',now=None,filename=None,*,trusted_feed=Fal
                     if not isinstance(event,dict): continue
                     start=_as_int(event.get('start_timestamp'));stop=_as_int(event.get('stop_timestamp'))
                     title=str(event.get('name') or event.get('title') or '')[:512]
-                    if start<=0 or stop<=start or stop<=day_window(-7,now)[0] or not title: continue
-                    if start<right46:metadata46.add(dict(event,channel=str(event.get('channel') or alias)))
-                    if start>=now+10*86400:continue
+                    if start<=0 or stop<=start or stop<=day_window(-7,now)[0] or start>=now+10*86400 or not title: continue
                     cid=str(event.get('channel') or alias)
                     canonical=cid
                     try: source=int(event.get('_source_index',0))
                     except (ValueError,TypeError): source=0
+                    metadata46.add(dict(event,channel=cid,_source_index=source))
                     # Canonical XMLTV rows win over a stale stream alias with
                     # the same channel/time, independent of dict iteration.
                     db.execute(('INSERT OR REPLACE' if str(alias)==cid else 'INSERT OR IGNORE')+' INTO incoming VALUES(?,?,?,?,?,?)',
@@ -99,8 +97,6 @@ def import_cache(pid,cache,revision='',now=None,filename=None,*,trusted_feed=Fal
 
 
 def refresh(portal,filename=None):
-    from epg_gate46 import access as refresh_access46
-    if refresh_access46(filename or path()) not in ('READY','NOT_CREATED'):return False
     from epg import load_cache
     from epg_status import revision,read
     rev=revision(portal['id'])+'|'+str(read(portal['id']).get('cache',{}).get('last_success',0))

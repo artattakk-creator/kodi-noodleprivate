@@ -14,13 +14,6 @@ class ProgrammeArt46(Fixture,unittest.TestCase):
   Path(self.a.root()).mkdir(mode=0o700)
   patch=mock.patch.object(self.a,'space');patch.start();self.addCleanup(patch.stop)
   self.addCleanup(self.a.shutdown)
- def expire(self):
-  db=importlib.import_module('programme_index46').connect(True)
-  try:
-   value=json.loads(db.execute('SELECT data FROM artwork WHERE event_key=?',(self.event['key'],)).fetchone()[0]);value['until']=1
-   with db:db.execute('UPDATE artwork SET data=?,expires=1 WHERE event_key=?',(json.dumps(value),self.event['key']))
-   with db:db.execute('UPDATE image_sources SET data=?,expires=1',(json.dumps(value),))
-  finally:db.close()
  def prepare(self,event=None,fetch=None,match=None):return self.a.prepare(event or self.event,fetch=fetch or mock.Mock(return_value=self.png),match=match or mock.Mock(return_value=None))
  def test_exact_xmltv_image_is_persistent_separate_and_never_burns_logo(self):
   value=self.prepare();self.assertEqual(value['code'],'READY');self.assertEqual(value['match'],'EXACT_EVENT');self.assertEqual(Path(value['image']).read_bytes(),self.png)
@@ -38,13 +31,13 @@ class ProgrammeArt46(Fixture,unittest.TestCase):
   self.prepare(fetch=fetch);self.assertEqual(fetch.call_count,1)
  def test_failed_refresh_keeps_only_same_event_last_good(self):
   from media_sources43 import SourceError
-  old=self.prepare();self.expire()
+  old=self.prepare();manifest=Path(self.a.root())/(self.event['key']+'.json');data=json.loads(manifest.read_text());data['until']=1;manifest.write_text(json.dumps(data))
   value=self.prepare(fetch=mock.Mock(side_effect=SourceError('TIMEOUT')));self.assertEqual(value['image'],old['image']);self.assertEqual(value['code'],'READY_STALE')
  def test_different_event_or_changed_source_cannot_inherit_old_picture(self):
   self.prepare();other=dict(self.event,start=self.event['stop'],stop=self.event['stop']+600,title='Next');other['key']=self.e.key('p','1',other)
   self.assertIsNone(self.a.persisted(other));self.assertIsNone(self.a.persisted(dict(self.event,xmltv_image='https://other.invalid/changed.png')))
  def test_tampered_or_symlink_cache_is_rejected(self):
-  value=self.prepare();self.assertEqual(value['code'],'READY');self.assertTrue(Path(value['image']).is_relative_to(self.folder));Path(value['image']).write_bytes(b'not an image');self.assertIsNone(self.a.indexed(self.event,verify=True))
+  value=self.prepare();self.assertEqual(value['code'],'READY');self.assertTrue(Path(value['image']).is_relative_to(self.folder));Path(value['image']).write_bytes(b'not an image');self.assertIsNone(self.a.persisted(self.event))
  def test_invalid_image_never_replaces_cached_good_event(self):
   from media_sources43 import SourceError
   value=self.prepare(fetch=mock.Mock(return_value=b'not png'));self.assertNotEqual(value['code'],'READY');self.assertEqual(value['image'],self.event['placeholder'])

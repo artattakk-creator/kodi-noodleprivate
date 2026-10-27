@@ -39,8 +39,6 @@ def refresh_local(cancel=lambda:False):
                 _bootstrapped.add(portal['id'])
             from guide_store import refresh as refresh_guide
             if cancel():return
-            from programme_index46 import prepare_local as prepare_programmes46
-            prepare_programmes46(portal,cancel)
             try:refresh_guide(portal)
             except Exception:
                 from utils import warn

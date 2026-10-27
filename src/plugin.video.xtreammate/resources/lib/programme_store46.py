@@ -50,25 +50,20 @@ def connect(write=False,guide=None):
  except Exception:db.close();raise
 
 class Stage:
- def __init__(self,pid,generation,source,guide=None,source_identity='compatibility',source_records=None):
-  self.source_records=source_records;self.pid=str(pid);self.generation=generation;self.source=source;self.guide=guide;self.source_identity=source_identity;self.rows=[];self.failed=False
-  from programme_index46 import Stage as IndexStage46
-  self.facts46=IndexStage46(pid,generation,guide)
+ def __init__(self,pid,generation,source,guide=None,source_identity='compatibility',source_records=None):self.source_records=source_records;self.pid=str(pid);self.generation=generation;self.source=source;self.guide=guide;self.source_identity=source_identity;self.rows=[];self.failed=False
  def add(self,event):
+  if self.failed:return
   value=metadata(event)
-  try:source=int(event.get('_source_index',self.source))
-  except (ValueError,TypeError):source=self.source
+  if not value:return
+  source=int(event.get('_source_index',self.source))
   value['epg_source46']=__import__('guide_publish44').source_id(self.source_records.get(source,{}),source) if self.source_records is not None else self.source_identity
   value['epg_text46']=hashlib.sha256(str(event.get('descr') or event.get('description') or '')[:4096].encode()).hexdigest()
-  self.facts46.add(event,value,value['epg_source46'])
-  if self.failed or len(value)==2:return
   try:
    self.rows.append((self.generation,self.pid,str(event.get('channel') or event.get('cid') or ''),int(event.get('start_timestamp',event.get('start',0))),int(event.get('stop_timestamp',event.get('stop',0))),title_hash(event.get('name') or event.get('title')),int(event.get('_source_index',self.source)),json.dumps(value,ensure_ascii=False)))
    if len(self.rows)>=128:self.flush()
   except (ValueError,TypeError):pass
   except MemoryError:self.failed=True;self.rows.clear()
  def flush(self):
-  self.facts46.flush()
   if not self.rows:return
   db=None
   try:
@@ -79,11 +74,9 @@ class Stage:
    if db is not None:db.close()
    self.rows.clear()
  def finish(self,publish=False):
-  self.flush();finish(self.pid,self.generation,publish and not self.failed,self.guide,index_ok46=not self.facts46.failed,index_publish46=publish)
+  self.flush();finish(self.pid,self.generation,publish and not self.failed,self.guide)
 
-def finish(pid,generation,publish,guide=None,*,index_ok46=True,index_publish46=None):
- from programme_index46 import finish as finish_index46
- finish_index46(pid,generation,(publish if index_publish46 is None else index_publish46) and index_ok46,guide)
+def finish(pid,generation,publish,guide=None):
  if not os.path.isfile(path(guide)):return
  db=None
  try:
