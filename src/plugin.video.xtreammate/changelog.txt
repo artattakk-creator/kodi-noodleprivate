@@ -1,4 +1,12 @@
 0.1.29.46 (cumulative review candidate; Android .46 NOT_TESTED)
+- #241 architecture addendum: shared programme_artwork.sqlite (own WAL cache)
+  for prepared local event details, source/TTL/negative artwork references and
+  real 16:9 thumbnails. Reuse verified content without redownloading every event.
+- Retain seven complete local calendar days and actual feed events through day20
+  in the additive cache; primary guide horizon/schema are not expanded. Empty
+  future days stay empty; no raw-guide or existing-image deletion.
+- Incremental source staging and read-only local backfill, per-channel versions,
+  crash rollback, schema identity guards and separate cache write diagnostics.
 - #241/#240: preserve native Stop timeout as failure; recover the GUI once a
   matching late FIFO return is verified, no second Stop or foreign navigation.
 - Skip fully superseded/empty legacy movie groups before the bounded widget
