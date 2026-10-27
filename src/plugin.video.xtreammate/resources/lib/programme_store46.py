@@ -37,8 +37,11 @@ def connect(write=False,guide=None):
  filename=path(guide)
  if os.path.islink(filename):raise OSError('SIDECAR_UNSAFE')
  if not write:
+  from programme_read47 import borrowed,retain
+  old=borrowed(filename)
+  if old is not None:return old
   if not os.path.isfile(filename):return None
-  db=sqlite3.connect('file:'+quote(filename,safe='/')+'?mode=ro',uri=True,timeout=.03);db.execute('PRAGMA query_only=ON');return db
+  db=sqlite3.connect('file:'+quote(filename,safe='/')+'?mode=ro',uri=True,timeout=.03);db.execute('PRAGMA query_only=ON');return retain(filename,db)
  from import_budget import check_space
  check_space(filename,32768)
  db=sqlite3.connect(filename,timeout=.05)
@@ -129,7 +132,11 @@ def origin_matches(pid,cid,event,identity,guide=None):
  try:
   from guide_store import path as guide_path
   filename=guide or guide_path()
-  db=sqlite3.connect('file:'+quote(filename,safe='/')+'?mode=ro',uri=True,timeout=.02)
+  from programme_read47 import borrowed,retain
+  db=borrowed(filename)
+  if db is None:
+   db=sqlite3.connect('file:'+quote(filename,safe='/')+'?mode=ro',uri=True,timeout=.02)
+   db.execute('PRAGMA query_only=ON');db=retain(filename,db)
   deadline=time.monotonic()+.02;db.set_progress_handler(lambda:int(time.monotonic()>deadline),1000)
   rows=db.execute('SELECT DISTINCT source_id FROM guide44_inputs WHERE pid=? AND cid=? AND start=? AND stop=? AND title=? AND rank=? LIMIT 2',(str(pid),str(cid),event['start'],event['stop'],event['title'],event.get('source',0))).fetchall()
   return rows==[(identity,)]

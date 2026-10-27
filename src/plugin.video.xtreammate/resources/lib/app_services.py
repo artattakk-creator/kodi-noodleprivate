@@ -53,10 +53,26 @@ def refresh_local(cancel=lambda:False):
             from media_overrides43 import apply_many
             for kind in ('live','vod','series'):
                 if cancel():return
-                rows,code=snapshot(portal,kind,background=True)
-                prepare(portal['id'],apply_many(portal['id'],rows))
-                from widget_refresh45 import publish
-                publish(portal,kind,apply_many(portal['id'],rows),code)
+                try:
+                    rows,code=snapshot(portal,kind,background=True)
+                    from widget_diagnostics47 import inspect_index
+                    inspect_index(portal,kind,rows,code)
+                    rows=apply_many(portal['id'],rows)
+                    try:
+                        prepare(portal['id'],rows)
+                        from programme_assets47 import prepare as prepare_assets47
+                        prepare_assets47(portal,kind,rows,cancel)
+                    except Exception:
+                        from widget_diagnostics47 import note
+                        note(portal['id'],kind,'ASSETS','PREPARE_UNAVAILABLE')
+                    if cancel():return
+                    from widget_refresh45 import publish
+                    publish(portal,kind,rows,code)
+                except Exception:
+                    # A failed Live/film preparation must not starve the
+                    # successful series row or another independent widget.
+                    from widget_diagnostics47 import note
+                    note(portal['id'],kind,'SELECT','WORKER_UNAVAILABLE')
             _retry_after.pop(portal['id'],None)
         except Exception as exc:
             # A disk-full/over-budget/corrupt import must not reparse the same

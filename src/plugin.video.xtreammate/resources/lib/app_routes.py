@@ -359,7 +359,12 @@ def add_index_item(router,portal,kind,item,epg=None,recent=False,widget=False):
             info=dict(now=epg.get('Now',''),next=epg.get('Next',''),start=epg.get('Start',0),stop=epg.get('Stop',0),progress=epg.get('Progress') if isinstance(epg.get('Progress'),(int,float)) else None,now_time='',next_time='',description='',_plot45=epg.get('plot',''))
         if epg and isinstance(epg.get('_event46'),dict):
             info=dict(epg['_event46']);info['_plot45']=epg.get('plot','')
-        value=describe(portal,kind,item,getattr(router,'_widget_art44',{}),info)
+        value=describe(portal,kind,item,getattr(router,'_widget_art44',{}),info,
+            assets47=getattr(router,'_widget_assets47',{}).get(str(item['sid'])))
+        from widget_diagnostics47 import counts as widget_counts47
+        counters=getattr(router,'_widget_counts47',{})
+        for key,count in widget_counts47([value]).items():counters[key]=counters.get(key,0)+count
+        router._widget_counts47=counters
         xbmcplugin.addDirectoryItem(router._handle,value['url'],native_item(value),isFolder=False)
         return
     import os,xbmcaddon,xbmcgui,xbmcplugin
@@ -413,29 +418,36 @@ def widget(router,portal,action):
     from widget_data41 import snapshot
     kind='live' if action=='widget_live_start_group' else 'vod' if action=='widget_recent_vod' else 'series'
     rows,code=snapshot(portal,kind)
+    from widget_diagnostics47 import note as widget_note47
+    widget_note47(portal['id'],kind,'SELECT',code,selected=len(rows))
+    router._widget_counts47={}
     from widget_art44 import read as read_widget_art
     router._widget_art44=read_widget_art(portal['id'])
     if kind in ('vod','series'):
         from media_overrides43 import apply_many
         rows=apply_many(portal['id'],rows)
+    if kind in ('live','vod'):
+        from programme_assets47 import read_many
+        router._widget_assets47=read_many(portal['id'],kind,rows)
     if action=='widget_live_start_group':
         from epg_sources import configuration
         from local_epg import now_next
         mappings=configuration(portal['id'])['mappings']
         # Existing widget routes, no skin mutation or full-cache hydration.
         from widget_group46 import infos as group_infos46
-        snapshot=group_infos46(portal,rows[:16])
         from widget_focus41 import publish
-        publish(portal,rows,snapshot)
         xbmcplugin.setContent(router._handle,'videos')
         for offset46 in range(0,len(rows),16):
-            batch46=rows[offset46:offset46+16]
-            info46=snapshot if offset46==0 else group_infos46(portal,batch46)
-            for row in batch46:
-                info=info46[row['sid']]
-                add_index_item(router,portal,'live',row,dict(Now=info['now'],Next=info['next'],
-                    Start=info['start'],Stop=info['stop'],Progress=info['progress'] if info['progress'] is not None else '',
-                    plot=guide_plot(info),_event46=info),widget=True)
+            from programme_read47 import session as read_session47
+            with read_session47():
+                batch46=rows[offset46:offset46+16]
+                info46=group_infos46(portal,batch46)
+                if offset46==0:publish(portal,rows,info46)
+                for row in batch46:
+                    info=info46[row['sid']]
+                    add_index_item(router,portal,'live',row,dict(Now=info['now'],Next=info['next'],
+                        Start=info['start'],Stop=info['stop'],Progress=info['progress'] if info['progress'] is not None else '',
+                        plot=guide_plot(info),_event46=info),widget=True)
         # Complete group; Kodi's native container scrolls horizontally and
         # requests textures as needed. EPG IO uses batches of sixteen.
         if not rows:
@@ -445,12 +457,17 @@ def widget(router,portal,action):
         kind='vod' if action=='widget_recent_vod' else 'series'
         xbmcplugin.setContent(router._handle,'movies' if kind=='vod' else 'tvshows')
         for row in rows: add_index_item(router,portal,kind,row,recent=True,widget=True)
-        if not rows and code not in ('READY','CACHE'):
+        if not rows and kind=='vod':
+            # An unavailable/empty directory is not a dummy XCMate movie tile.
+            xbmcplugin.setPluginCategory(router._handle,tr(36200) if code in ('READY','CACHE') else tr(36201))
+        elif not rows and code not in ('READY','CACHE'):
             router._add_dir(tr(35853),
                             router.url(action='movies_home' if kind=='vod' else 'series_home',pid=portal['id']))
         # A poster row contains titles only. Old movies_home/series_home URLs
         # remain valid, but are not disguised as an extra film tile.
+    widget_note47(portal['id'],kind,'ITEMS',code,**router._widget_counts47)
     _end(router)
+    widget_note47(portal['id'],kind,'DIRECTORY',code,items=len(rows),directory_ok=1)
 
 
 def guide_plot(info):

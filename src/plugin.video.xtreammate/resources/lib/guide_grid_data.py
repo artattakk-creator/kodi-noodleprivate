@@ -38,6 +38,8 @@ def page(portal,offset,origin,category=None,client=None):
             short=cached_short_guide(client,sid)
             events=[dict(e,source=-1) for e in short.get('events',[]) if e['start']<origin+SPAN and e['stop']>origin]
             if events:mapping='SHORT_EPG'
+        from programme_snapshot47 import identify
+        events=identify(portal['id'],sid,resolved,events)
         result.append(dict(channel=channel,events=events,mapping=mapping,epg_id=resolved,
                            truncated=len(events)>CELLS))
     # Original persistent artwork cache, queued from this viewport worker.

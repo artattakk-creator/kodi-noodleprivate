@@ -3,7 +3,7 @@ import os
 from urllib.parse import urlencode
 
 
-def describe(portal,kind,row,approved,epg=None):
+def describe(portal,kind,row,approved,epg=None,assets47=None):
     from widget_art44 import art
     from theme_render import snapshot
     from theme_store import asset
@@ -11,6 +11,11 @@ def describe(portal,kind,row,approved,epg=None):
     from utils import setting_int
     import xbmcaddon
     image=art(row,approved);theme=snapshot()
+    if kind in ('live','vod') and assets47:
+        poster=assets47.get('poster');fanart=assets47.get('fanart')
+        if poster:image.update(poster=poster,thumb=poster,icon=poster)
+        if fanart:image.update(fanart=fanart,landscape=fanart)
+        elif poster:image['landscape']=poster
     placeholder=os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media',{'live':'tv','series':'series'}.get(kind,'vod')+'.png')
     if theme:
         if image['landscape']==placeholder or image['landscape'].startswith(str(theme['folder'])+'/'):
@@ -28,6 +33,14 @@ def describe(portal,kind,row,approved,epg=None):
     info=dict(title=str(row['name']),plot=str(row.get('plot') or '')[:8192],mediatype={'vod':'movie','series':'tvshow','live':'video'}[kind])
     for key in ('genre','year','rating','duration'):
         if row.get(key) is not None:info[key]=row[key]
+    if kind=='vod':
+        # Provider numeric strings/duration text are not Kodi InfoTag values.
+        # Reuse the normal movie contract; leave the successful series path.
+        from media_data import video_info
+        normalized=video_info(row)
+        for key in ('genre','year','rating','duration'):
+            info.pop(key,None)
+            if key in normalized:info[key]=normalized[key]
     if epg:
         from app_routes import guide_plot
         info['plot']=epg.get('_plot45') or guide_plot(epg)

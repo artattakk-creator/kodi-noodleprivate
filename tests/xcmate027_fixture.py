@@ -154,6 +154,7 @@ class Fixture:
             _cache_key=lambda a,extra=None:a+json.dumps(extra or {},sort_keys=True),
             _get_json=mock.Mock(side_effect=lambda action,**kw:self.details.get(action,{}) if kw.get('cached_only') else (_ for _ in ()).throw(AssertionError('HTTP on GUI'))),
             vod_stream_url=lambda sid,ext:'https://provider.invalid/movie/user/SECRET/'+sid+'.'+ext,
+            live_stream_url=lambda sid,ext:'https://provider.invalid/live/user/SECRET/'+str(sid)+'.'+ext,
             series_episode_url=lambda sid,ext:'https://provider.invalid/series/user/SECRET/'+sid+'.'+ext)
         utils=types.ModuleType('utils')
         for name in ('info','warn','debug','error','notify','cache_clear','toggle_favourite','load_favourites','is_favourite','apply_lang_sort'):
@@ -166,6 +167,13 @@ class Fixture:
         utils.cache_dir=utils._private_cache_dir=lambda:str(self.folder)
         utils.http_get=mock.Mock(side_effect=AssertionError('unexpected HTTP'))
         utils.cache_set=mock.Mock(return_value=True)
+        utils.cache_get=mock.Mock(return_value=None)
+        utils.cache_key=lambda value:__import__('hashlib').sha256(str(value).encode()).hexdigest()
+        def number(kind,value,default=0):
+            try:return kind(value)
+            except (ValueError,TypeError,OverflowError):return default
+        utils.safe_int=lambda value,default=0:number(int,value,default)
+        utils.safe_float=lambda value,default=0.:number(float,value,default)
         addon=types.ModuleType('xbmcaddon')
         addon.Addon=lambda *args:types.SimpleNamespace(getAddonInfo=lambda k: {'path':str(ADDON),'id':'plugin.video.xtreammate','version':'0.1.27'}.get(k,''),
             setSetting=lambda k,v:self.options.__setitem__(k,v),

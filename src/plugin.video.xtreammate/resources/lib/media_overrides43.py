@@ -129,6 +129,11 @@ def apply_many(pid,rows):
                     if hashlib.sha256(path.read_bytes()).hexdigest()==digest:images[role]=str(path)
                 except OSError:continue
             with _lock:entry.update(art=images,resolved=True)
+        if entry.get('image_refs'):
+            from programme_assets47 import choice as shared_choice47
+            for role,digest in entry['image_refs'].items():
+                display47=shared_choice47(pid,row['kind'],str(row['sid']),role,digest)
+                if display47:entry.setdefault('art',{})[role]=display47
         item.update(entry.get('metadata',{}));item['_metadata_override43']=bool(entry.get('metadata'))
         item['_manual_art43']=dict(entry.get('art',{}));result.append(item)
     return result
@@ -206,6 +211,15 @@ def save(pid,kind,sid,*,image=None,role='poster',metadata=None,source='',attribu
         from import_budget import check_space
         check_space(str(filename),len(data))
         _atomic(filename,data);_snapshot(root,pid,value)
+    if image is not None:
+        try:
+            from programme_assets47 import remember_choice
+            remember_choice(pid,kind,sid,role,image)
+        except Exception:
+            # Original verified choice remains valid even if the optional
+            # common display reference is unavailable/budget-blocked.
+            from widget_diagnostics47 import note
+            note(pid,kind,'ASSETS','CHOICE_REFERENCE_UNAVAILABLE')
     return True
 
 

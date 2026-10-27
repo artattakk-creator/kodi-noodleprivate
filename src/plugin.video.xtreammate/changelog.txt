@@ -1,3 +1,28 @@
+0.1.29.47 (cumulative review candidate; Android .47 NOT_TESTED)
+- #244/#245: movie payloads use complete primary-key seeks, with one pinned
+  read-only transaction and a strict active-SQL budget. Cold imports no longer
+  consume a query deadline; the successful series SQL/data contract is retained.
+- Reject only superseded derived movie snapshots; real Empty/Unavailable is
+  not rendered as a fake XCMate film tile. Numeric movie InfoTags normalized.
+- Keep genuine station images in native Live tiles when programme artwork is
+  absent; preserve the separate programme picture/logo properties and all
+  88 Android-confirmed start-group senders. No automatic BINGIE skin changes.
+- Shared .46 SQLite gains additive channel/asset/diagnostic references. Existing
+  guide, settings, mappings, images and manual-choice manifests remain intact.
+  Dynamic movie covers stay dynamic; no new persistent provider cover archive.
+- Page-scoped thread-local read snapshots and background channel/index models
+  remove repeated database reconnections and GUI catalog construction.
+- Common event IDs survive Guide/Mini/Infobar/Widget reads and RAM Now/Next
+  rollover. Verified existing programme facts remain available as LastGood.
+- Explicit cover Save mirrors an extension-correct verified display reference
+  into the common layer while preserving the original chosen image.
+- Independent widget failure handling, private count/stage diagnostics and
+  exact population/decoder limitations. References are not a rendering PASS.
+- Re-check the committed return latch before Home; transient missing InfoTag
+  after confirmed native Stop cannot authorize a second Stop or foreign exit.
+- Native .42 Stop/compatibility engine, autoplay, resume, IR/keymaps, seven
+  settings and PIN 6666 retained. No refresh without verified EPG backup.
+
 0.1.29.46 (cumulative review candidate; Android .46 NOT_TESTED)
 - Latest direct user instruction includes the already implemented shared
   programme_artwork.sqlite conversion in .46 after complete regression checks.

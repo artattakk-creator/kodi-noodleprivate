@@ -8,6 +8,7 @@ import os
 import sqlite3
 import time
 from urllib.parse import quote
+from programme_read47 import scoped
 
 
 def channel_keys(channel, mappings):
@@ -26,7 +27,9 @@ class View(dict):
 def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,budget=.4):
     import guide_store
     filename=getattr(guide_store,'path',lambda:'')()
-    if not filename or not os.path.isfile(filename):return None
+    if not filename or not os.path.isfile(filename):
+        from programme_snapshot47 import fallback_window
+        return fallback_window(pid,channels,mappings,start,stop,limit)
     db=None
     try:
         db=sqlite3.connect('file:'+quote(filename,safe='/')+'?mode=ro',uri=True,timeout=.05)
@@ -35,7 +38,9 @@ def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,
         db.set_progress_handler(lambda:int(time.monotonic()>deadline),1000)
         db.execute('BEGIN')
         meta=db.execute('SELECT * FROM guide_meta WHERE pid=?',(pid,)).fetchone()
-        if not meta:return None
+        if not meta:
+            from programme_snapshot47 import fallback_window
+            return fallback_window(pid,channels,mappings,start,stop,limit)
         view=View();view.code='OK';record=dict(meta)
         view.revision=(record.get('revision'),record.get('updated'))
         for channel in channels[:16]:
@@ -60,6 +65,7 @@ def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,
         if db is not None:db.close()
 
 
+@scoped
 def now_next(pid,channels,mappings,now=None,client=None):
     """Bounded local batch, including strictly cache-only short-EPG fallback."""
     from epg_views import resolve_guide
@@ -73,7 +79,8 @@ def now_next(pid,channels,mappings,now=None,client=None):
         info=resolve_guide(cache if cache is not None else {},provider,sid,ts,None if cache is not None else client,mappings)
         info['snapshot_revision']=cache.revision if cache is not None else None
         info['canonical46']=cache.canonical.get(info.get('epg_id',''),'') if cache is not None else ''
-        result[sid]=info
+        from programme_snapshot47 import bind
+        result[sid]=bind(pid,channel,info)
     return result
 
 

@@ -99,6 +99,14 @@ def _poll(navigator=None):
         return not player.isPlayingVideo() or any(_same(identity(player),('live',item)) for item in allowed)
     token=identity(player)
     playing=player.isPlaying() if hasattr(player,'isPlaying') else player.isPlayingVideo()
+    if playing and token is None and value['phase']=='stopping' and job and job.get('worker_done') and job.get('result')=='complete' and job['token'][1]['nonce']==session['nonce']:
+        # Kodi can invalidate its InfoTag during a real Stop. Unknown state is
+        # not evidence of foreign playback, and never authorizes another Stop.
+        if time.monotonic()>value['deadline']:
+            value['phase']='failed';_save(value);_trace('PLAYER_UNAVAILABLE',session)
+        elif not value.get('player_wait47'):
+            value['player_wait47']=True;_save(value);_trace('PLAYER_STATE_PENDING47',session)
+        return True
     if playing and not any(_same(token,('live',item)) for item in allowed):
         # Foreign playback must neither receive stop nor a GUI navigation.
         if navigator is not None and getattr(navigator,'_exiting',False):navigator.close()
@@ -134,6 +142,12 @@ def _poll(navigator=None):
     if value.get('recovery46')=='LATE_ACK_VERIFIED':
         from live_recovery46 import gui_available
         if not gui_available():return True
+    from live_return47 import guard as return_guard47
+    status47,fresh47=return_guard47(value)
+    if status47!='READY':
+        _trace('RETURN_'+status47+'47',session)
+        return True
+    value=fresh47
     if xbmc.getCondVisibility('System.HasActiveModalDialog'):
         if time.monotonic()>value['deadline']:value['phase']='failed';_save(value);_trace('RETURN_BLOCKED',session)
         return True

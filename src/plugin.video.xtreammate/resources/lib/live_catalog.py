@@ -29,8 +29,20 @@ def prepare(portal,client,force=False):
             if not future.set_running_or_notify_cancel():return
             try:
                 from live_catalog46 import read as indexed46
-                value=indexed46(portal,lambda first:setattr(future,'first46',first),client.get_cached_catalog('get_live_categories')) if portal.get('type')=='xtream' else None
-                future.set_result(value if value is not None else read(portal,client))
+                from live_prepare47 import model,trace as trace47
+                trace47(portal,'LOCAL_READ_BEGIN')
+                def first47(first):
+                    future.first_model47=model(portal,client,*first)
+                    future.first46=first
+                    trace47(portal,'START_GROUP_MODEL_READY',len(future.first_model47['channels']))
+                # The local index already contains the configured category
+                # names. Do not deserialize provider JSON before first group.
+                value=indexed46(portal,first47) if portal.get('type')=='xtream' else None
+                value=value if value is not None else read(portal,client)
+                if value[0] is not None and value[1] is not None:
+                    future.model47=model(portal,client,*value)
+                    trace47(portal,'FULL_MODEL_READY',len(future.model47['channels']))
+                future.set_result(value)
             except BaseException as error:future.set_exception(error)
         threading.Thread(target=load,name='XCMate-live-catalog',daemon=True).start()
         return future
@@ -40,7 +52,7 @@ def read(portal,client):
     if portal.get('type')=='xtream':
         from live_catalog46 import read as indexed46
         from library_index import IndexReadError
-        try:value=indexed46(portal,categories=client.get_cached_catalog('get_live_categories'))
+        try:value=indexed46(portal)
         except IndexReadError:return None,None
         if value is not None:return value
     categories=client.get_cached_catalog('get_live_categories')

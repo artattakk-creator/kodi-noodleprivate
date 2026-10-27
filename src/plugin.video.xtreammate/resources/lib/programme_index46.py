@@ -6,6 +6,7 @@ or published guide retention/deletion is performed by this cache.
 """
 import hashlib,json,os,sqlite3,time,tempfile
 from urllib.parse import quote
+from programme_read47 import scoped
 MAX_BYTES=128*1024*1024
 APPLICATION_ID=0x58434D46
 _scans={};_reports={};_pauses={}
@@ -56,12 +57,15 @@ def connect(write=False,guide=None):
     filename=path(guide)
     if os.path.islink(filename):raise OSError('PROGRAMME_DB_UNSAFE')
     if not write:
+        from programme_read47 import borrowed,retain
+        old=borrowed(filename)
+        if old is not None:return old
         if not os.path.isfile(filename):return None
         db=sqlite3.connect('file:'+quote(filename,safe='/')+'?mode=ro',uri=True,timeout=.02)
         db.execute('PRAGMA query_only=ON')
         if db.execute('PRAGMA application_id').fetchone()[0]!=APPLICATION_ID or db.execute('PRAGMA user_version').fetchone()[0]!=1:
             db.close();raise ValueError('UNSUPPORTED_PROGRAMME_SCHEMA')
-        return db
+        return retain(filename,db)
     from import_budget import check_space
     check_space(filename,65536)
     db=sqlite3.connect(filename,timeout=.05)
@@ -157,6 +161,11 @@ def finish(pid,generation,publish,guide=None):
 
 
 def ranks(pid):
+    from programme_read47 import memo
+    return memo(('ranks47',str(pid)),lambda:_ranks47(pid))
+
+
+def _ranks47(pid):
     from epg_sources import configuration
     from guide_publish44 import source_id
     result={'provider':0,'compatibility':0}
@@ -279,6 +288,7 @@ def publish(records):
         if db is not None:db.close()
 
 
+@scoped
 def prepare_local(portal,cancel=lambda:False):
     """Incremental 32-record copy from a read-only stable guide transaction."""
     import uuid
