@@ -1,0 +1,863 @@
+{
+  "base": "aace7f0f85cea8b9d132b0090563e28c9941bc4a",
+  "files": [
+    {
+      "path": "src/plugin.video.xtreammate/addon.xml",
+      "status": "M",
+      "sha256": "ece6ef714c27c7adee3cc064407ce0d66333bf26bcaf6ae496f18d54137a9382",
+      "bytes": 2119
+    },
+    {
+      "path": "src/plugin.video.xtreammate/changelog.txt",
+      "status": "M",
+      "sha256": "e2cb1fb18cec57b532d6b362cddef290595298c258df7fe9ee62347d649d4811",
+      "bytes": 45390
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/language/resource.language.de_de/strings.po",
+      "status": "M",
+      "sha256": "6f94a89b4e160b45c9401e9e05a82280e8e5104f3c3f9449d1406423826e2713",
+      "bytes": 119996
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/language/resource.language.en_gb/strings.po",
+      "status": "M",
+      "sha256": "340e550a4ff574cb6a6d8a81929c8e6977d38e911a9b193556374ee9b0b13a01",
+      "bytes": 113817
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/app_routes.py",
+      "status": "M",
+      "sha256": "2b1496b608a72bb3a3accde27c13261205ff32a37e804ef26fef89d527bebb17",
+      "bytes": 21764
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/app_services.py",
+      "status": "M",
+      "sha256": "6631934455f8c51ff01f4d402d0803c8c34d0e709c2f14ce78aa085216d68a8e",
+      "bytes": 8072
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/appearance.py",
+      "status": "M",
+      "sha256": "81b8513b2f6d611c8185d6e87fe77c0e3daba998e2316bbb32f03e20cd08b99e",
+      "bytes": 9194
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/artwork_status.py",
+      "status": "M",
+      "sha256": "f5dab9b5590e1d6dc500c5b22c95954bd404113910b048d0e4ea349d5ba05c2c",
+      "bytes": 5199
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/artwork_ui.py",
+      "status": "M",
+      "sha256": "81d0b87d3e782aaebff4b873a3d68bc163100335d7fcabadc72cec9890be6d38",
+      "bytes": 9556
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/capture_ui.py",
+      "status": "M",
+      "sha256": "7994b1322b38233ee2faea5cb24d334e67bf83eff08f4b6dae6eba917bc74a27",
+      "bytes": 4385
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/detail_menu.py",
+      "status": "M",
+      "sha256": "ae7ac58a126d49bd943efe68942a9cd044a1f707764dc470912d72425d756cbe",
+      "bytes": 5249
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/download_trust_ui.py",
+      "status": "M",
+      "sha256": "9d711aedeb8cb474d208ba0e450da72cb5df335401d1306aea6396d604c3dd3e",
+      "bytes": 2444
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/downloads_ui.py",
+      "status": "M",
+      "sha256": "ec4f13d131ded5a56441cb1db93050446e4e9e3377beca3ea6f54f930d450503",
+      "bytes": 4369
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/epg_preview.py",
+      "status": "M",
+      "sha256": "9506d75028ea569a08988468f8974b9f09880ffa747159a7048f1aaed52be190",
+      "bytes": 7532
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/epg_sources.py",
+      "status": "M",
+      "sha256": "3ff48d9b03e9624e15247a7b14924690f070e9123a0d6c48ac15c21f8f19625c",
+      "bytes": 19364
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/experimental45.py",
+      "status": "A",
+      "sha256": "8fb49d51c1aca6671c4caacbba352a827fb245b7be6cf3be6eb8dcdf0fdfe35b",
+      "bytes": 2591
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/export_import.py",
+      "status": "M",
+      "sha256": "ef1e19b2ca07be8e31894a0e9eb7e91105065d3e4f5f094998301f53c52a7f39",
+      "bytes": 6514
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/group_selection.py",
+      "status": "M",
+      "sha256": "d52b496cffb6e482826e75f4f0334e9587c0b3edf9288532554c1ca573627591",
+      "bytes": 11453
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/guide_grid_window.py",
+      "status": "M",
+      "sha256": "dc7052cf0d0f1bb5f3cfd65d3eb2bc46815657d649fe609fb761931f5a15bda9",
+      "bytes": 26042
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/guide_timers.py",
+      "status": "M",
+      "sha256": "909100055a6c9f9a05e2c282287a6369c36093580967e1ef5dc2e9bcdc4470b2",
+      "bytes": 3121
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/guide_window.py",
+      "status": "M",
+      "sha256": "35c435e097a7a0b700754768c69e5ce885cb03dc2f566dc5f15224f92311f47c",
+      "bytes": 13186
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/home_menu.py",
+      "status": "M",
+      "sha256": "f17184e98da7a255124fe427beb59a4519b0efd1debfd565ad6268df1dc1dad4",
+      "bytes": 3946
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/infobar45.py",
+      "status": "A",
+      "sha256": "2a88710ced073bf4605c2f41b9e71e738dc9ae9f208d6fdd1868064edf4dbd7c",
+      "bytes": 8690
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/infobar_epg45.py",
+      "status": "A",
+      "sha256": "6c366e5ad90726e8e3a40e2715e8fe0a370e705c1e1c1aaa44ff31fed753809a",
+      "bytes": 1244
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/live_overlay.py",
+      "status": "M",
+      "sha256": "df5a2988c1d345595b3ab14fb61ee64c9e82440fb8f857cd206c598bb2dde92d",
+      "bytes": 58620
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/localization.py",
+      "status": "M",
+      "sha256": "846ea41334389b6f2a8ea572c8653ce2763a84ef6b0b40445c9e9efa82c582d1",
+      "bytes": 4018
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/main.py",
+      "status": "M",
+      "sha256": "65d17811a6b1b13ca955444e197206a283dd5b65a69df657577ac44bf56a3a6d",
+      "bytes": 121810
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/media_osd.py",
+      "status": "M",
+      "sha256": "878be3338e6d354c208fd443d3ea24d5a1808443c0ad62267b049679a84bb173",
+      "bytes": 15095
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/media_picker43.py",
+      "status": "M",
+      "sha256": "5a293eba7e44d15da927d0324d6bb161d5324dadb7d892c95ed0fa59446fc8be",
+      "bytes": 18221
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/media_sources43.py",
+      "status": "M",
+      "sha256": "cbff5847cc75513d6e4c1b68f1c4a3a35c626f9c7f648d7636c2c84b2b9270a8",
+      "bytes": 10971
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/media_window.py",
+      "status": "M",
+      "sha256": "7bfcbeb078d2e3b2ba8f1765095f5b718897913831ac5668c68cd11d85ccd5a8",
+      "bytes": 67829
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/menu_icons45.py",
+      "status": "A",
+      "sha256": "a9205c8f183f0cf3c9af38347392f80381e87d71d0190e9c83c8a15684510c98",
+      "bytes": 6869
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/menu_layout45.py",
+      "status": "A",
+      "sha256": "ec4e6206631de41e7d8543412eb93c76dee68737fe455709c2555b09410c98f7",
+      "bytes": 3537
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/playlist_editor.py",
+      "status": "M",
+      "sha256": "95897b6d0d6359f809db86081c357ef0a3e898ea60bc9b10a5eae6edf59ff56c",
+      "bytes": 7391
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/popup_probe.py",
+      "status": "M",
+      "sha256": "f573cd2a118640b145dda0ea4e4077e5af5fb6ba80e37f91fd70570fbfdc86ec",
+      "bytes": 5547
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/portal_manager.py",
+      "status": "M",
+      "sha256": "7d3f1b1b2c175608af97a5752b7e8b80edb40cb7c127ee667ec8f8954a752a66",
+      "bytes": 10114
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/recordings.py",
+      "status": "M",
+      "sha256": "6522bf82e0a594ddab712f04db7c4e23b8879ad837c847281b089f50de84e19f",
+      "bytes": 5261
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/remote_control.py",
+      "status": "M",
+      "sha256": "fac4d491aa0485d0a3ef75f3c1f22a52757ea6105c5df8ff783fd7b00a77a6d2",
+      "bytes": 8263
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/remote_profiles.py",
+      "status": "M",
+      "sha256": "c56eda88d19070d8ca20a24b2d07cafac28c33cee369c2e528bf68a1c93b2de6",
+      "bytes": 5798
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/settings_options45.py",
+      "status": "A",
+      "sha256": "0be4b91d6f3b136f1f7fd1aeaa1b436bcbac75bca417896188d66da14a4f2040",
+      "bytes": 3253
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/settings_sections45.py",
+      "status": "A",
+      "sha256": "d1729bfeba87f10c583cfa74ab6a35d59c03096a423b3158f67dca599e695b49",
+      "bytes": 3601
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/setup_window.py",
+      "status": "M",
+      "sha256": "e77d90a8796b79a9cee05eaf26e39cc98435b991be9fd0dc510bc2dbe6009bbd",
+      "bytes": 17005
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/setup_wizard.py",
+      "status": "M",
+      "sha256": "ce930d5cec56862dd1063c07dd9779c01b30f674d0c46cbfef4af0d2cab4b0bd",
+      "bytes": 3891
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/sleep_timer.py",
+      "status": "M",
+      "sha256": "7a12ad294ed06f092b6ada855b415a5bd93714bc1591e202a11bf36f870e9192",
+      "bytes": 1687
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/stability_monitor.py",
+      "status": "M",
+      "sha256": "ca131f0130d32cccb9017d1d826f11b040cead5b4036658409a82cb7d54ccf26",
+      "bytes": 4535
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/startup_preferences.py",
+      "status": "M",
+      "sha256": "261180370a6c64884bceaa8d8925266b464ad43d34f05456d479e389bcbc6b07",
+      "bytes": 3295
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/storage_sources.py",
+      "status": "M",
+      "sha256": "808ce3d1894a3d0efa16c86a6991423141af747a38db2fefe17c67609883f121",
+      "bytes": 3033
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/theme_ui.py",
+      "status": "M",
+      "sha256": "91be991759bd48d65e254446d7dd8df341476fd24873fed4e86d5ce587421330",
+      "bytes": 6402
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/tv_data.py",
+      "status": "M",
+      "sha256": "d7f8f3b2110d0118f428088ffab1677ae066b1bd3f07333f272ce9e0b5969cfc",
+      "bytes": 9338
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/widget_adapter45.py",
+      "status": "A",
+      "sha256": "17d31a5a3be2e38e3cd6d4043f5c50092c9454a2de7da233fbd8456ed65f8f6a",
+      "bytes": 6828
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/widget_hooks45.py",
+      "status": "A",
+      "sha256": "ef2edc52cd559ade49d53debfdea6352ea94b66fcfb974e333a4f16e272ce8fb",
+      "bytes": 3439
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/widget_items45.py",
+      "status": "A",
+      "sha256": "b4a19c9a8634cc3b3062f373dc6d3c2ec106e80ff8318e062e73d5fada0b9e7c",
+      "bytes": 2894
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/widget_refresh45.py",
+      "status": "A",
+      "sha256": "97d660d4a6f3e2c99a626c6eaa1da7a00baa06f6f894f34ef62533176a2d716e",
+      "bytes": 6328
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/widget_ui45.py",
+      "status": "A",
+      "sha256": "08d4c0e1c2a24e0b25f532ad9ed5d6d98250e45db4994dedaabfd706f8312d50",
+      "bytes": 1314
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/lib/window_navigation.py",
+      "status": "M",
+      "sha256": "7122bc8ef27ab9432da005c12b182fe27a09375e90440d4980118014b527e53c",
+      "bytes": 6272
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/infobar45/ORIGIN.txt",
+      "status": "A",
+      "sha256": "46feba0b8e36b8cd64db018640d5006d68dd649d23d9ae15f6a3d0b7a76790a0",
+      "bytes": 268
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/infobar45/audio.png",
+      "status": "A",
+      "sha256": "4b23aff2b8b625ef94cc092bf779526d27e943e363e5f42a8c60bdce27fe8a5a",
+      "bytes": 3958
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/infobar45/cell.png",
+      "status": "A",
+      "sha256": "99d118e7121f29ded13f33daf8bbdfdaff104580fe1b6bf93eff7cffa0c9cd1c",
+      "bytes": 1693
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/infobar45/codec.png",
+      "status": "A",
+      "sha256": "f63fc63613abbd0aea5cbc9fe91a748ba4db31026c0fb7a6ca4076039a54d51e",
+      "bytes": 2171
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/infobar45/fps.png",
+      "status": "A",
+      "sha256": "164e6028f92649c328722cc5e7c7ae0b04d7a180085406d424f6ceb9c2594679",
+      "bytes": 2399
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/infobar45/glass.png",
+      "status": "A",
+      "sha256": "e1fa48c373c85510247ce56027eeeb79159bb16d701c225aec44e1b75e0d2f69",
+      "bytes": 8660
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/infobar45/knob.png",
+      "status": "A",
+      "sha256": "0981cc177fba13b2b58320a44e8a86ecc116dbba7ff85e0be8a136624af629b2",
+      "bytes": 935
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/infobar45/language.png",
+      "status": "A",
+      "sha256": "12c5203cd0fdc8b685b79829203d027f6184be416247b23b734fc320fbb04a59",
+      "bytes": 9970
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/infobar45/next.png",
+      "status": "A",
+      "sha256": "b94c79afa96bc5f84efa18470bc1d096e74453c119e6d63012303a3ac055b04b",
+      "bytes": 1025
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/infobar45/now.png",
+      "status": "A",
+      "sha256": "56846f5376e9c013af528bd565c7c8d3a8bcdfd3e2a90731544df24362361ead",
+      "bytes": 1096
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/infobar45/progress.png",
+      "status": "A",
+      "sha256": "ace59d02fcc9cffc728921f34bd70acc95235ce2cb3586eb2a74d8ac5eb175c2",
+      "bytes": 666
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/infobar45/resolution.png",
+      "status": "A",
+      "sha256": "87de4e62c1d6ba47101c93b9001fe631daf0722dc5cf6967fa749ade7e95af48",
+      "bytes": 1517
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/infobar45/separator.png",
+      "status": "A",
+      "sha256": "469b100f644720dedec02f6d1a5dfaae103b1d6bf5ba6d5cb14bc83cde072fe8",
+      "bytes": 97
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/infobar45/subtitle.png",
+      "status": "A",
+      "sha256": "217cf56c563e330942b8ad8ce5b95258af1f9497f9418f2201a5ee9e428b596a",
+      "bytes": 2894
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/infobar45/track.png",
+      "status": "A",
+      "sha256": "845392a421d42df262c6a0bcf0731c8cbdea695dabdf9f79f6829057fb613d0b",
+      "bytes": 630
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/ORIGIN.txt",
+      "status": "A",
+      "sha256": "91005a2814d0ddd9d448fbb2094705b1754f96d909c9975c86bab87a08369daf",
+      "bytes": 252
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/activity.png",
+      "status": "A",
+      "sha256": "efc3e2e09db36212df98b7efad7c144a0408b88984ae7bdb3935f53842166583",
+      "bytes": 1317
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/back.png",
+      "status": "A",
+      "sha256": "bc60e616c9689415873142c68912aa7c401d2c5ab563d5ce0157c4505e2900ab",
+      "bytes": 970
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/calendar.png",
+      "status": "A",
+      "sha256": "391278693dc16f2d3f858c32360bf2fb9eff6e9995a043a14fedf445ae226122",
+      "bytes": 1317
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/cc.png",
+      "status": "A",
+      "sha256": "03c2388d537e3ac9a02fd8548391cda884151ecf31e406e6570d55ca813c604a",
+      "bytes": 1377
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/check.png",
+      "status": "A",
+      "sha256": "d1b1c2ee2ab5eb5b5d6d613defe89bf7e8f521389e720798bbc8170c4fe60c90",
+      "bytes": 778
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/clock.png",
+      "status": "A",
+      "sha256": "fc3791787aa6d104c8634beb9bb976d340d58a78e1099cb4343dc5b746efa0f1",
+      "bytes": 1900
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/database.png",
+      "status": "A",
+      "sha256": "04007a96e15fb4fc06bf4125dd44ab8f33f1b26fd081b9d78e5d21068c0838dc",
+      "bytes": 2081
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/document.png",
+      "status": "A",
+      "sha256": "970e4f57c484e9f25ff23e1bab2668e3e8394ba036ce9d9d1f8183fb8116154c",
+      "bytes": 1128
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/download.png",
+      "status": "A",
+      "sha256": "56a2f8074994ba09408fea1c318bbee37a9679e759c9de66815a5fad7faafba9",
+      "bytes": 883
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/drive.png",
+      "status": "A",
+      "sha256": "866ef57e0efacfebadbc4e1adc2a2af64cccaae5d65414ee15827263634a365a",
+      "bytes": 967
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/flask-lock.png",
+      "status": "A",
+      "sha256": "0ff5b98841ecfbf5f2978fdc9054daa15ec0b0e027d661c278c1285bd8a856ef",
+      "bytes": 1644
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/activity.png",
+      "status": "A",
+      "sha256": "f30ef990d5e5466b52371cb9b41e0757aef570a3470f27ef4edfbab0717f8f3a",
+      "bytes": 3224
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/back.png",
+      "status": "A",
+      "sha256": "39238fe141492f2c2ebf743ee4d55da78b8f9e1757032a8887b9a715cadc853a",
+      "bytes": 1657
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/calendar.png",
+      "status": "A",
+      "sha256": "d2573909aa08427e09d8e48f1c1a630d97b5b4ef3c996e616df0104673a5dbf1",
+      "bytes": 1956
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/cc.png",
+      "status": "A",
+      "sha256": "217cf56c563e330942b8ad8ce5b95258af1f9497f9418f2201a5ee9e428b596a",
+      "bytes": 2894
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/check.png",
+      "status": "A",
+      "sha256": "476ef28c82170c555a11ad1e3ee0186b7e0aefc74317158f32c8f0e8c38d27a0",
+      "bytes": 2647
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/clock.png",
+      "status": "A",
+      "sha256": "9ded473fce7b6e668fcdd024f6798e51ab688c5a0f52566e16d5bc4d32c164d4",
+      "bytes": 6251
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/database.png",
+      "status": "A",
+      "sha256": "1cec7d3d6e44f49aaac5254fd600d412ac9bc27eeca3b5f1184262fb847ccaf0",
+      "bytes": 5911
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/document.png",
+      "status": "A",
+      "sha256": "82c5137b8abbc36e0ceb0ee8e17ff3942deedcc12061a7b798dd3578ad4831f7",
+      "bytes": 1674
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/download.png",
+      "status": "A",
+      "sha256": "4e4f66769795730add5e0f4833578e342127412dcf3396f5ec20b79045772c8d",
+      "bytes": 1564
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/drive.png",
+      "status": "A",
+      "sha256": "ce0b750ba87ff2e986920ac99d1498ec26476c9c4628fcae807b1f4502873d82",
+      "bytes": 1772
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/flask-lock.png",
+      "status": "A",
+      "sha256": "3b8b3baa49510662d40340546bbbebc7ac397d403be1dd0e4d9b5f9664094069",
+      "bytes": 4741
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/globe.png",
+      "status": "A",
+      "sha256": "12c5203cd0fdc8b685b79829203d027f6184be416247b23b734fc320fbb04a59",
+      "bytes": 9970
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/grid.png",
+      "status": "A",
+      "sha256": "bc4faf83e8ab0e59ce418d05cf4367451d96567a3efb4834be344bc557e27abc",
+      "bytes": 1203
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/image.png",
+      "status": "A",
+      "sha256": "1f7b10610e2ebac351f3ba7f7e5cedc41a8e9e5c5e80cc9cd995502a356adcc2",
+      "bytes": 4054
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/info.png",
+      "status": "A",
+      "sha256": "ea575c56519693679599b83e0e9b6b0a6af17a267277089b5783825844dad482",
+      "bytes": 5766
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/link.png",
+      "status": "A",
+      "sha256": "c2c80d35df87d8ae00755ed215560fae3bae91aa7a47d23a16953d10abbe2724",
+      "bytes": 5181
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/list.png",
+      "status": "A",
+      "sha256": "6dd0393cd70faf34b3c0e976f1dc5e61e02a56cf83bdc2350c0095de52ca0f63",
+      "bytes": 652
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/movie.png",
+      "status": "A",
+      "sha256": "1c4ae8e2bdce265eaf8c194f8c8d0ff82b4ba117677f33060bf2bfba43a9abd1",
+      "bytes": 1936
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/palette.png",
+      "status": "A",
+      "sha256": "f33255dd031e213d16a1d6d10f952285d9d6822e059fbdd7e84f69560af71088",
+      "bytes": 7948
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/pencil.png",
+      "status": "A",
+      "sha256": "96f8fcf8bad57c18963bad850aa3f5062d92ed194d40ffbaab88f024e309b254",
+      "bytes": 1949
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/play.png",
+      "status": "A",
+      "sha256": "03096ad904bc6cfcbefff2ddc150f2050fc9762de5bd5ef9c94c0044fa1d62f9",
+      "bytes": 6839
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/plus.png",
+      "status": "A",
+      "sha256": "308327259865c7966a1ad56d78fe5ec3d1b763d2f569f463ac40c2ca568f4dd6",
+      "bytes": 872
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/record.png",
+      "status": "A",
+      "sha256": "71a25a1957a5b51d19c106bb0252fa1f9b4b07ce327af71baaacd201997e058f",
+      "bytes": 6976
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/refresh.png",
+      "status": "A",
+      "sha256": "1d51d57cc026b141bc8f33053bb8ee85af0dc65e68dc4e2f541f1ec07511c7be",
+      "bytes": 5070
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/remote.png",
+      "status": "A",
+      "sha256": "50af88a2ea97a71f4030fbbeec494b4933b007e84127fd05c29c1a529de67aee",
+      "bytes": 3911
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/search.png",
+      "status": "A",
+      "sha256": "b64e843505f628a026aee2eeaf4c0411b3d53d9a475d48b0d732419ea6bec89c",
+      "bytes": 4352
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/series.png",
+      "status": "A",
+      "sha256": "53216ea1ef016d467689eb44b60c5f5e7907017a49664af38c373bfdc6259e49",
+      "bytes": 1583
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/settings.png",
+      "status": "A",
+      "sha256": "82c53e4e70ac31c573c6b372d7e0400634b8c06369ae259bbb8c2aa67abfefa4",
+      "bytes": 6872
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/shield.png",
+      "status": "A",
+      "sha256": "3adb3c254ab93c0071d4c535dae611d2e42344b706d0338faf29c26792664398",
+      "bytes": 6017
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/speaker.png",
+      "status": "A",
+      "sha256": "4b23aff2b8b625ef94cc092bf779526d27e943e363e5f42a8c60bdce27fe8a5a",
+      "bytes": 3958
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/star.png",
+      "status": "A",
+      "sha256": "eedb7ba4ee8a19e7972e629013681ae778e3ae373dc9a6cdfa468a44a118eb22",
+      "bytes": 5734
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/trash.png",
+      "status": "A",
+      "sha256": "6a838e9714558dc1fecbcb1d2daa0be3dc8f51b4cc858c8be61bd677d511cd4b",
+      "bytes": 1537
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/tv.png",
+      "status": "A",
+      "sha256": "87de4e62c1d6ba47101c93b9001fe631daf0722dc5cf6967fa749ade7e95af48",
+      "bytes": 1517
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/user.png",
+      "status": "A",
+      "sha256": "1e38832906053e1bf3bb82e12620d7a4f553b260be11c87813dffeebe51dd970",
+      "bytes": 4840
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/full/wand.png",
+      "status": "A",
+      "sha256": "223766539136a8471156ccb164f8681a235e3b72ee321115cf6316dd836654a8",
+      "bytes": 1367
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/globe.png",
+      "status": "A",
+      "sha256": "57287b9ad6a5be94435b99ccbc4da9710d55b4b80b71215411c1571d343de775",
+      "bytes": 2803
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/grid.png",
+      "status": "A",
+      "sha256": "244143c30de33c3179932a0ac43f569f16796d22b4fc9bd686c73da2b68271fd",
+      "bytes": 612
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/image.png",
+      "status": "A",
+      "sha256": "bc4d6930196f592316e1e8f87732dff59f351245fb568b07bd69df6cc33868b9",
+      "bytes": 1604
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/info.png",
+      "status": "A",
+      "sha256": "436a7918e0886f773ed75ef7c31aa46599141f969699e79456673b5e7a2ed9bd",
+      "bytes": 1700
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/link.png",
+      "status": "A",
+      "sha256": "732a6df4f42de72bdd8d613cf3ed33a2094950a3cac70bcb8d2f055e0db4134e",
+      "bytes": 1902
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/list.png",
+      "status": "A",
+      "sha256": "e28a1696f88ae145a57aae72ff1d4ec94bc34cc86a1d3cc2a4631effffd55fb3",
+      "bytes": 331
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/movie.png",
+      "status": "A",
+      "sha256": "c50d5ae6f9515b88cbfefeb5e56ce8411ab087d92744eb7d456964550b63d0e1",
+      "bytes": 1129
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/palette.png",
+      "status": "A",
+      "sha256": "91456f18383394b863050862c15163ed58fbce1533531349823d6aa9963beb24",
+      "bytes": 2274
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/pencil.png",
+      "status": "A",
+      "sha256": "9bed7d36d169d8c0a69549a2ff0d7f2bcfb1beb4be3a218718f8bdeaf150a5fc",
+      "bytes": 1047
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/play.png",
+      "status": "A",
+      "sha256": "5fd8deae31fc382ca0d1b14b2999f730825978d362dfacf4778223af95308fdc",
+      "bytes": 2187
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/plus.png",
+      "status": "A",
+      "sha256": "68a7d6c590e02e89f35d52b132be78d35f1099b132c4780d4748ad6e45ce36e0",
+      "bytes": 478
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/record.png",
+      "status": "A",
+      "sha256": "087cd58379b494a20d0d3b6c5977341e85a5b4af7ea45747676e11171948c50c",
+      "bytes": 2163
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/refresh.png",
+      "status": "A",
+      "sha256": "d3dcdd56e599a243b82204463a820219b6bbf8f0895c468995fa8c6dbc11efdb",
+      "bytes": 1649
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/remote.png",
+      "status": "A",
+      "sha256": "7dbf9eec989f4622c974f9b0ae064a2857f7c6320c716f5c5120b24809847c0f",
+      "bytes": 1596
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/search.png",
+      "status": "A",
+      "sha256": "d7cafd802db061b53a7145a0899a2e5e1ccf92c98651bdd1654617806fe575a6",
+      "bytes": 1362
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/series.png",
+      "status": "A",
+      "sha256": "5850a86dce472cadb2079ef1d56ab4e3bf7992e767e6b2215cff8d4d87af8dd4",
+      "bytes": 987
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/settings.png",
+      "status": "A",
+      "sha256": "7d33fd81749b7b79c1b9d2bd2570635985b0ba997a834dfd8c1683f6f9971d17",
+      "bytes": 1909
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/shield.png",
+      "status": "A",
+      "sha256": "b2b67357098b13cb4e4e431040e2dd5e26c2f9bef8df0b11920c63aeff5c8661",
+      "bytes": 2008
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/speaker.png",
+      "status": "A",
+      "sha256": "5e970c218d3f2f38aae569e7533e62728fa2692a36a1845756409ffec87bc299",
+      "bytes": 1428
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/star.png",
+      "status": "A",
+      "sha256": "070c205a2cb87a1e494cc70374e83bfa9ca6df1d762ddd0e4eaef4b71d4425e5",
+      "bytes": 1845
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/trash.png",
+      "status": "A",
+      "sha256": "3d26e4e609ec58929bb11484d17e73e09ac6c0af67d5f5cd58ee9811bf204e91",
+      "bytes": 1027
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/tv.png",
+      "status": "A",
+      "sha256": "41751eb9a62cbc5f56f6f86f98e4196e92817437a7110ab4d9dfd9c15153d5a4",
+      "bytes": 872
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/user.png",
+      "status": "A",
+      "sha256": "83d7c310316f9958162658945e98743b7b3b99a3fe9c44eae949849f3ff256c8",
+      "bytes": 1536
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/media/menu45/wand.png",
+      "status": "A",
+      "sha256": "f3d72cfb13a76b21943eddcbe2ea9e6367386d811bac413815387fe712faa862",
+      "bytes": 870
+    },
+    {
+      "path": "src/plugin.video.xtreammate/resources/settings.xml",
+      "status": "M",
+      "sha256": "a7f7f0211bf31e2fdfaa89aff7c6dc671aa563bc8b33a9f190e46e7c9e190d07",
+      "bytes": 8527
+    },
+    {
+      "path": "src/plugin.video.xtreammate/service.py",
+      "status": "M",
+      "sha256": "a283d5caba114fb09c9aad76c83ebfe40751f785e00859b3987cc169f482e9c3",
+      "bytes": 22329
+    }
+  ]
+}
