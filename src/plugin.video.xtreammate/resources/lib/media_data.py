@@ -14,11 +14,11 @@ def recent_label(item,days=10,now=None):
     return (tr(32536) if now-stamp<=max(1,min(days,30))*86400 else tr(32537).format(days))+date
 
 
-def details(client,kind,sid):
+def details(client,kind,sid,refresh=False):
     if hasattr(client,'details'): return client.details(kind,sid)
     action='get_vod_info' if kind=='vod' else 'get_series_info'
     extra={'vod_id' if kind=='vod' else 'series_id':str(sid)}
-    data=client._get_json(action,extra=extra,cached_only=True)
+    data=client._get_json(action,extra=extra,cached_only=True) if not refresh else None
     if isinstance(data,dict) and data: return data
     from utils import http_get,cache_set
     raw,_=http_get(client._api_url(),params={**client._base_params(),'action':action,**extra},

@@ -1,3 +1,19 @@
+0.1.29.43 (cumulative review candidate; all .43 Android gates NOT_TESTED)
+- Mini-EPG: never expose unselected green borders; prepare rows before showing,
+  skip unchanged native writes, retain event focus through updates and rollover.
+- Keep .42 Live-TV Back compatibility implementation and per-box defaults intact.
+- Guard media page generations; restore focus by ID and report real catalogue end.
+- Preserve the approved three-tab search UI and accepted 108x162 cover layout;
+  display optional language/quality/season/source metadata only when provided.
+- Explicit provider/TMDb/Commons/local artwork choice with validated local preview,
+  two-step image Save and separately confirmed metadata fields, profile isolation.
+- Optional exact-title/year TMDb detail fallback (off by default, own API token).
+- Persistent manual choices override refreshed media/search/widget art; resetting
+  a choice never deletes images, providers, caches, progress or databases.
+- No storage migration, skin adapter installation, keymap or player rewrite.
+- Follow-ups: full manual metadata search indexing, proactive candidate thumbnails,
+  EPG image assignment and external BINGIE Skinshortcuts integration.
+
 0.1.29.42 (P0 Live lifecycle compatibility/diagnostic candidate; Android NOT_TESTED)
 - Optional Android Kodi 21.3 Live-only fullscreen-deinit BEFORE Stop. Enable explicitly under Player settings; default off, existing preferences unchanged. Own overlay release, native modal-aware Videos activation/fullscreen deinit and a distinct prepare barrier must complete before the existing native Stop/return barrier. No increased timeout, repeated stop, new synchronous Stop or decoder-global setting.
 - Pending GUI preparation is single-flight across interpreters and remains quarantined after an ambiguous post/timeout. Late prepare or Stop return cannot report on-time success or navigate Home. Failed preparation cannot become success after an early playback callback.

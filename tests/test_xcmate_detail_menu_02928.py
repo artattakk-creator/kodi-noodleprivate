@@ -45,7 +45,7 @@ class Menu28Tests(Fixture,unittest.TestCase):
 
     def test_missing_action_metadata_does_not_hide_menu_when_media_identity_is_known(self):
         w=self.detail();w.actions=[];w.setFocusId(820);w.native(7)
-        self.assertTrue(w._detail_menu_open);self.assertEqual(w.getControl(810).size(),5)
+        self.assertTrue(w._detail_menu_open);self.assertEqual(w.getControl(810).size(),6)
 
     def test_anonymous_trace_carries_eligibility_without_title_or_provider(self):
         w=self.detail()

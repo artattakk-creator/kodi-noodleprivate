@@ -4,6 +4,8 @@ from pathlib import Path
 
 
 def without_stabilization42(source, module):
+    from stabilization_contract_02943 import without_stabilization43
+    source=without_stabilization43(source,module)
     binary = isinstance(source, bytes)
     changes = json.loads((Path(__file__).parent/'fixtures/xcmate_02942_reviewed_hooks.json').read_text())['modules']
     paths = [p for p in changes if p == str(module) or p.endswith('/'+str(module).removesuffix('.py')+'.py')]

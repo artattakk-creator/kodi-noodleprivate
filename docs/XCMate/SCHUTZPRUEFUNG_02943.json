@@ -1,0 +1,20 @@
+{
+  "base": "451f4cf0995cc09ada4b9eb4090906320d36a9fb",
+  "other_worktrees": [
+    {
+      "worktree": "/workspace/kodi-noodleprivate",
+      "files": 35,
+      "sha256_unchanged": true
+    },
+    {
+      "worktree": "/workspace/xcmate-downloads-02925",
+      "files": 27,
+      "sha256_unchanged": true
+    }
+  ],
+  "box_a_access": false,
+  "device_installation": false,
+  "profile_reset": false,
+  "cache_or_image_deletion": false,
+  "skin_or_keymap_installation": false
+}

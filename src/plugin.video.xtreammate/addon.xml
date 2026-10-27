@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon id="plugin.video.xtreammate"
        name="XCMate"
-       version="0.1.29.42"
+       version="0.1.29.43"
        provider-name="GS Media">
 
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
+    <import addon="script.module.pil" version="5.1.0" optional="true"/>
     <import addon="script.module.requests" version="2.27.0" optional="true"/>
 
 </requires>

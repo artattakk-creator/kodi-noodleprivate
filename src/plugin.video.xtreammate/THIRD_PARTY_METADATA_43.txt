@@ -1,0 +1,27 @@
+Optional image and metadata research in XCMate
+
+TMDb: This product uses the TMDb API but is not endorsed or certified by TMDb.
+https://www.themoviedb.org/terms-of-use
+https://developer.themoviedb.org/docs/attribution
+TMDb access is disabled by default and requires the operator's own API read
+access token and applicable API/image-use rights. Commercial-use requirements
+remain the operator's responsibility. No shared API key is bundled.
+
+Wikimedia Commons: image research uses the official MediaWiki API. Only results
+with an explicitly recognized CC0, Public domain, CC BY or CC BY-SA license are
+offered. The chosen author's attribution, license label and original file page
+are retained with the local assignment. Search is not proof of image identity.
+https://commons.wikimedia.org/wiki/Commons:Reusing_content_outside_Wikimedia
+
+Free image results do not supply movie metadata. A person/replacement image is
+never automatically treated as proof of movie identity. No Google HTML scraping
+or Google Custom Search registration is used.
+
+Image decoding uses Kodi's bundled script.module.pil (Pillow/Python Image
+Library). Kodi21.3 declares that Python3 module as version5.1.0. The optional
+dependency exposes it to XCMate; no Pillow binary is bundled by XCMate. If a
+custom Kodi build omits it, image import fails closed with IMAGE_DECODER_MISSING.
+https://github.com/python-pillow/Pillow/blob/main/LICENSE
+
+Only deliberately chosen images/fields are saved in XCMate's own manual-choice
+store. Reset removes the assignment, not the original image or old cache files.

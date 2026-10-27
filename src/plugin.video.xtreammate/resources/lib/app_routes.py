@@ -72,7 +72,7 @@ def dispatch(router):
         from pathlib import Path
         root=Path(xbmcaddon.Addon().getAddonInfo('path'))
         text='XCMate · GS Media\nhttps://github.com/artattakk-creator/kodi-noodleprivate\n\n'
-        for name in ('ORIGIN_AND_CHANGES.txt','LICENSE','THIRD_PARTY_SMB.txt','THIRD_PARTY_TABLER.txt'):
+        for name in ('ORIGIN_AND_CHANGES.txt','LICENSE','THIRD_PARTY_SMB.txt','THIRD_PARTY_TABLER.txt','THIRD_PARTY_METADATA_43.txt'):
             text+=name+'\n'+(root/name).read_text(encoding='utf-8')+'\n\n'
         xbmcgui.Dialog().textviewer(tr(33406),text);return
     if action=='art_db_health':
@@ -350,6 +350,9 @@ def widget(router,portal,action):
     from widget_data41 import snapshot
     kind='live' if action=='widget_live_start_group' else 'vod' if action=='widget_recent_vod' else 'series'
     rows,code=snapshot(portal,kind)
+    if kind in ('vod','series'):
+        from media_overrides43 import apply_many
+        rows=apply_many(portal['id'],rows)
     if action=='widget_live_start_group':
         from epg_sources import configuration
         from local_epg import now_next

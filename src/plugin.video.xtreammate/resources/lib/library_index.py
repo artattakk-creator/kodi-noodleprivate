@@ -15,7 +15,9 @@ CATALOGS={'live':('get_live_streams','get_live_categories','stream_id'),
           'series':('get_series','get_series_categories','series_id')}
 FIELDS=('name','stream_icon','cover','cover_big','movie_image','backdrop_path','plot','description',
         'year','releaseDate','genre','rating','rating_5based','duration','duration_secs',
-        'container_extension','epg_channel_id','source_key','series_flat')
+        'container_extension','epg_channel_id','source_key','series_flat',
+        'language','languages','quality','video_quality','width','height',
+        'num_seasons','season_count','seasons_count','original_name','original_title')
 BATCH_ROWS=256
 
 

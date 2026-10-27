@@ -283,7 +283,8 @@ def live_matches(portal,query,reader,now):
 
 
 def search(portal,query,kind='vod',offset=0,now=None,incremental=False,continuation=None,correlation='',profile=None,cancel=lambda:False):
-    from library_index import Reader,IndexReadError
+    from library_index import IndexReadError
+    from media_catalog43 import Reader
     from catalog_sync import request
     reader=Reader(portal['id'],timeout=.15,query_seconds=1)
     query=str(query).strip()[:200];result={};cursor=continuation
@@ -300,7 +301,9 @@ def search(portal,query,kind='vod',offset=0,now=None,incremental=False,continuat
         start=max(0,offset) if section==kind else 0
         cache_key=(section,start)
         if section!='live' and cursor is not None and cache_key in cursor.media_cache:
-            result[section]=cursor.media_cache[cache_key];continue
+            from media_overrides43 import apply_many
+            cached=cursor.media_cache[cache_key]
+            result[section]=dict(cached,rows=[dict(r,_portal_name43=portal.get('name','')) for r in apply_many(portal['id'],cached['rows'])]);continue
         # The first Live request publishes names before any EPG or media SQL.
         if section!='live' and names_first and incremental and cursor is not None and cursor.phase=='prepare' and cursor.slices==0:
             result[section]=dict(rows=[],total=None,code='INDEX_PENDING');continue
@@ -326,6 +329,7 @@ def search(portal,query,kind='vod',offset=0,now=None,incremental=False,continuat
                 after_genre=genre_status(reader,section,query) if before_genre!='UNUSED' else 'UNUSED'
                 changed=before_genre!='UNUSED' and reader.state(section)!=state
                 code='GENRE_PENDING' if 'PENDING' in (before_genre,after_genre) or changed else 'READY'
+            if section!='live':rows=[dict(r,_portal_name43=portal.get('name','')) for r in rows]
             result[section]=dict(rows=rows,total=total,code=code,partial=section=='live' and '_continuation' in result)
             if section!='live' and cursor is not None and code!='GENRE_PENDING':
                 cursor.media_revisions[section]=(state.get('revision'),state.get('updated'))

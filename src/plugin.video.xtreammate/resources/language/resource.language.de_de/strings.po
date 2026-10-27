@@ -3868,3 +3868,155 @@ msgstr "Widget-Daten vorübergehend nicht verfügbar. Vorhandene Daten bleiben e
 msgctxt "#35854"
 msgid "Live TV: release fullscreen before stopping (Android 21.3 compatibility test)"
 msgstr "Live-TV: Vollbild vor Stop freigeben (Android 21.3-Kompatibilitätstest)"
+
+msgctxt "#35900"
+msgid "Provider"
+msgstr "Anbieter"
+
+msgctxt "#35901"
+msgid "TMDb"
+msgstr "TMDb"
+
+msgctxt "#35902"
+msgid "Image search (Wikimedia Commons)"
+msgstr "Bildsuche (Wikimedia Commons)"
+
+msgctxt "#35903"
+msgid "Import local image"
+msgstr "Lokales Bild importieren"
+
+msgctxt "#35904"
+msgid "Close"
+msgstr "Schließen"
+
+msgctxt "#35905"
+msgid "Loading…"
+msgstr "Wird geladen …"
+
+msgctxt "#35906"
+msgid "Source unavailable: {}"
+msgstr "Quelle nicht verfügbar: {}"
+
+msgctxt "#35910"
+msgid "Use this image"
+msgstr "Dieses Bild übernehmen"
+
+msgctxt "#35911"
+msgid "Select image role"
+msgstr "Bildrolle wählen"
+
+msgctxt "#35912"
+msgid "Save choice"
+msgstr "Zuordnung speichern"
+
+msgctxt "#35913"
+msgid "Back to results"
+msgstr "Zur Ergebnisliste"
+
+msgctxt "#35914"
+msgid "Restore provider image"
+msgstr "Zum Anbieterbild zurück"
+
+msgctxt "#35915"
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgctxt "#35916"
+msgid "Select metadata fields"
+msgstr "Informationen auswählen"
+
+msgctxt "#35917"
+msgid "Reset manual metadata"
+msgstr "Manuelle Informationen zurücksetzen"
+
+msgctxt "#35918"
+msgid "Find and assign artwork / metadata"
+msgstr "Cover/Bild suchen und zuordnen"
+
+msgctxt "#35919"
+msgid "Search term"
+msgstr "Suchbegriff"
+
+msgctxt "#35920"
+msgid "Search TMDb for"
+msgstr "TMDb durchsuchen nach"
+
+msgctxt "#35921"
+msgid "Movie / series"
+msgstr "Film / Serie"
+
+msgctxt "#35922"
+msgid "Person / actor image"
+msgstr "Person / Darstellerbild"
+
+msgctxt "#35923"
+msgid "{} results – OK opens preview"
+msgstr "{} Treffer – OK öffnet Vorschau"
+
+msgctxt "#35924"
+msgid "No verified result available"
+msgstr "Kein bestätigter Treffer verfügbar"
+
+msgctxt "#35925"
+msgid "Check the work, year, image role and attribution before saving."
+msgstr "Werk, Jahr, Bildrolle und Herkunft vor dem Speichern prüfen."
+
+msgctxt "#35926"
+msgid "Preview · role: {}"
+msgstr "Vorschau · Bildrolle: {}"
+
+msgctxt "#35927"
+msgid "Save only the selected metadata fields?"
+msgstr "Nur die ausgewählten Informationsfelder speichern?"
+
+msgctxt "#35928"
+msgid "Saved"
+msgstr "Gespeichert"
+
+msgctxt "#35929"
+msgid "Local import – use only images you may use."
+msgstr "Lokaler Import – nur Bilder verwenden, für die Nutzungsrechte bestehen."
+
+msgctxt "#35930"
+msgid "Assign image as"
+msgstr "Bild zuordnen als"
+
+msgctxt "#35931"
+msgid "Poster"
+msgstr "Poster"
+
+msgctxt "#35932"
+msgid "Background"
+msgstr "Hintergrund"
+
+msgctxt "#35933"
+msgid "Person / replacement image"
+msgstr "Personen- / Ersatzbild"
+
+msgctxt "#35934"
+msgid "Remove this manual assignment? Original images are retained."
+msgstr "Diese manuelle Zuordnung entfernen? Originalbilder bleiben erhalten."
+
+msgctxt "#35935"
+msgid "Image verification unavailable: Pillow is missing. Nothing was saved."
+msgstr "Bildprüfung nicht verfügbar: Pillow fehlt. Es wurde nichts gespeichert."
+
+msgctxt "#35940"
+msgid "TMDb: enable manual research with your own API read token"
+msgstr "TMDb: manuelle Recherche mit eigenem API-Lesetoken erlauben"
+
+msgctxt "#35941"
+msgid "TMDb API read access token (private)"
+msgstr "TMDb-API-Lesetoken (privat)"
+
+msgctxt "#35942"
+msgid "TMDb: fill missing artwork in identified details (opt-in)"
+msgstr "TMDb: fehlende Bilder bei eindeutigem Werk ergänzen (optional)"
+
+msgctxt "#35950"
+msgid "End of catalogue"
+msgstr "Katalogende"
+
+msgctxt "#35951"
+msgid "{} seasons"
+msgstr "{} Staffeln"
