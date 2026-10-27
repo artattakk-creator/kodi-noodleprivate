@@ -6,7 +6,8 @@ def decorate(value,portal,channel,info):
  from programme_events46 import from_info,summary
  from programme_art46 import cached
  event=from_info(portal,channel,info or {});art=cached(event)
- logo=value['art'].get('thumb','');real=bool(logo) and os.path.basename(logo) not in ('tv.png','icon.png','icon-81da1003a2753ec6.png')
+ from programme_assets47 import station_image
+ logo=value['art'].get('thumb','');real=station_image(logo)
  image=art.get('image') or event['placeholder']
  # Native BINGIE layouts do not consume our optional logo-overlay property.
  # Keep a real station image visible when no verified programme image exists.
@@ -17,6 +18,7 @@ def decorate(value,portal,channel,info):
  props=value['props'];props.update({'XCMate.ProgrammeKey46':event['key'],'XCMate.ProgrammeImage46':image,'XCMate.ProgrammeLogo46':logo if real else '', 'XCMate.ProgrammeChannel46':event['channel'], 'XCMate.ProgrammeTitle46':event['title'] or tr(36102), 'XCMate.ProgrammeTimes46':((info.get('now_time','')+' – '+info.get('now_end_time','')) if event['title'] else ''),'XCMate.ProgrammeNext46':info.get('next',''),'XCMate.ProgrammeDescription46':event.get('description',''),'XCMate.ProgrammePercent46':str(round(info['progress']*100)) if event['title'] and isinstance(info.get('progress'),(int,float)) else '0', 'XCMate.ProgrammeDetails46':event['details_url'], 'XCMate.ProgrammeArtCode46':art.get('code','PENDING')})
  if event['title']:value['info']['title']=event['title']
  props['XCMate.ProgrammeKey47']=event['key']
+ props['XCMate.ProgrammeNextStart47']=str(info.get('next_start',0))
  props['XCMate.ProgrammeDisplay47']='PROGRAMME_IMAGE' if actual else 'STATION_LOGO' if real else 'NEUTRAL_NO_LOGO'
  props['channellogo']=logo if real else ''
  value['info']['plot']=summary(event)+'\n\n'+value['info']['plot']

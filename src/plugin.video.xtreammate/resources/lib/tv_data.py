@@ -136,7 +136,8 @@ class GuideSnapshot:
         values, missing = {}, []
         for c in wanted:
             sid = str(c.extra.get('stream_id',''))
-            info = resolve_guide(self._cache, c.tvg_id, sid, now, None if self._indexed else self.client, self._mappings)
+            compatibility47=not self._indexed or getattr(local,'code','')=='SHARED_LASTGOOD47'
+            info = resolve_guide(self._cache, c.tvg_id, sid, now, self.client if compatibility47 else None, self._mappings)
             info['snapshot_revision']=getattr(local,'revision',None)
             if not info['now'] and not self._indexed:
                 # A saved ten-day guide outlives its small compatibility

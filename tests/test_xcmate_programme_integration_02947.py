@@ -60,6 +60,31 @@ class ProgrammeIntegration47(Fixture,unittest.TestCase):
         self.assertEqual(widget['props']['XCMate.ProgrammeImage46'],loaded['image'])
         self.assertEqual(Path(loaded['image']).read_bytes(),data)
 
+    def prepared_art(self):
+        self.save_guide();event=self.events.load(self.portal,self.row,now=self.now)
+        out=io.BytesIO();Image.new('RGB',(320,180),(30,90,120)).save(out,'PNG')
+        art=importlib.import_module('programme_art46');Path(art.root()).mkdir(exist_ok=True)
+        with mock.patch.object(art,'space'):value=art.prepare(event,fetch=lambda *a,**kw:out.getvalue(),match=lambda *a,**kw:None)
+        return art,event,value
+
+    def test_directory_header_hit_does_not_skip_first_worker_hash_verification(self):
+        art,event,value=self.prepared_art();art._memory.clear();was_stopped=art._stop.is_set();art._stop.clear()
+        def cleanup():
+            with art._lock:art._queue.pop(event['key'],None);art._pending.discard(event['key'])
+            if was_stopped:art._stop.set()
+        self.addCleanup(cleanup)
+        self.assertEqual(art.cached(event)['code'],'READY')
+        with mock.patch.object(art,'ensure'):
+            self.assertTrue(art.enqueue(event))
+        self.assertNotIn('_verified47',art.peek(event))
+
+    def test_missing_local_programme_image_is_not_presented_as_a_valid_texture(self):
+        art,event,value=self.prepared_art()
+        Path(value['image']).unlink()  # Synthetic host-owned file only.
+        result=art.cached(event)
+        self.assertEqual(result['code'],'LOCAL_IMAGE_MISSING')
+        self.assertEqual(result['image'],event['placeholder'])
+
     def test_now_next_rollover_keeps_canonical_source_metadata_and_correct_key_in_ram(self):
         self.save_guide();tv=importlib.import_module('tv_data').GuideSnapshot(self.portal,self.client)
         tv.request([self.channel()]);tv.refresh();before=tv.get('1',now=self.now)
@@ -80,6 +105,15 @@ class ProgrammeIntegration47(Fixture,unittest.TestCase):
         self.assertEqual(info['now'],'Real programme')
         self.assertFalse(Path(self.guide.path()).exists())
         self.assertLessEqual({p.name for p in set(self.folder.iterdir())-before},{'programme_artwork.sqlite-wal','programme_artwork.sqlite-shm'})
+
+    def test_asset_only_database_does_not_hide_legacy_cache_only_short_epg(self):
+        db=self.shared.connect(True);db.close()
+        raw={'epg_listings':[dict(title='Cached short programme',start_timestamp=self.now-60,stop_timestamp=self.now+600)]}
+        self.client._get_json=mock.Mock(return_value=raw)
+        info=self.local.now_next('p',[self.row],{},self.now,client=self.client)['1']
+        self.assertEqual(info['now'],'Cached short programme')
+        self.assertFalse(Path(self.guide.path()).exists())
+        self.assertTrue(all(call.kwargs['cached_only'] for call in self.client._get_json.call_args_list))
 
     def test_manual_mapping_wins_over_shared_provider_data_across_views(self):
         manual=dict(self.current,channel='manual',name='Manual mapped programme')

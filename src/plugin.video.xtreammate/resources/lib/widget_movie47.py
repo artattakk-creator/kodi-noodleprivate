@@ -13,6 +13,21 @@ from widget_data41 import WidgetReader
 from library_index import IndexReadError, path
 
 
+def cold_read(portal):
+    """Concurrent cache publication does not lock the read-only movie catalog.
+
+    Used only when no valid LastGood exists. Never publish without the cache
+    lease, and never wait for its owner or start an importer.
+    """
+    reader=MovieReader(portal['id'])
+    try:
+        if reader.state('vod') is None:return [],'INDEX_MISSING'
+        return reader.small('vod',limit=24),'READY'
+    except (IndexReadError,OSError,ValueError,sqlite3.Error) as error:
+        return [],getattr(error,'code','UNAVAILABLE')
+    finally:reader.close()
+
+
 class MovieReader(WidgetReader):
     def __init__(self,pid,filename=None):
         super().__init__(pid)

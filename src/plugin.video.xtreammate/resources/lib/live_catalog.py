@@ -17,6 +17,7 @@ def prepare(portal,client,force=False):
         if previous and not force:
             future,started=previous
             if not future.done():return future
+            if future.exception() and time.monotonic()-started<2:return future
             if not future.exception() and future.result()[1] is not None and time.monotonic()-started<10:return future
         # Bound concurrent cold portals as well as completed snapshots.
         if key not in _prepared and sum(not f.done() for f,_ in _prepared.values())>=4:
@@ -38,6 +39,13 @@ def prepare(portal,client,force=False):
                 # The local index already contains the configured category
                 # names. Do not deserialize provider JSON before first group.
                 value=indexed46(portal,first47) if portal.get('type')=='xtream' else None
+                if value is not None:
+                    # Discover newly enabled, not-yet-indexed categories only
+                    # after the fast start-group model is already available.
+                    from group_selection import enabled_ids
+                    categories47=client.get_cached_catalog('get_live_categories')
+                    if isinstance(categories47,list) and not enabled_ids(portal['id'],'live',categories47).issubset({str(g['category_id']) for g in value[0]}):
+                        value=read(portal,client)
                 value=value if value is not None else read(portal,client)
                 if value[0] is not None and value[1] is not None:
                     future.model47=model(portal,client,*value)
@@ -52,7 +60,7 @@ def read(portal,client):
     if portal.get('type')=='xtream':
         from live_catalog46 import read as indexed46
         from library_index import IndexReadError
-        try:value=indexed46(portal)
+        try:value=indexed46(portal,categories=client.get_cached_catalog('get_live_categories'))
         except IndexReadError:return None,None
         if value is not None:return value
     categories=client.get_cached_catalog('get_live_categories')

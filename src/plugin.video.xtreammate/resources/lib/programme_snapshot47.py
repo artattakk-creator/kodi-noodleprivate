@@ -44,7 +44,7 @@ def fallback_window(pid, channels, mappings, start, stop, limit=48):
         db = connect(False)
         if db is None:
             return None
-    except (OSError, ValueError, sqlite3.Error):
+    except (OSError, ValueError, sqlite3.Error,ImportError,AttributeError):
         return None
     finally:
         if db is not None:
@@ -56,7 +56,7 @@ def fallback_window(pid, channels, mappings, start, stop, limit=48):
         for ident in keys:
             view.canonical[ident] = ident
             view[ident] = window(pid, ident, start, stop, limit=limit)
-    return view
+    return view if any(view.values()) else None
 
 
 def status(pid):
@@ -65,7 +65,8 @@ def status(pid):
     import sqlite3,time
     db=None
     value=dict(facts=-1,prepared_events=-1,channels=-1,asset_references=-1,
-               artwork_sample=0,artwork_sample_ready=0,image_decoder='UNAVAILABLE')
+               artwork_sample=0,artwork_sample_ready=0,artwork_sample_local_files=0,artwork_sample_missing_files=0,
+               artwork_sample_codes={},asset_sample_codes={},image_decoder='UNAVAILABLE')
     try:
         import PIL.Image
         value['image_decoder']='PIL_AVAILABLE_ANDROID_DECODE_NOT_TESTED'
@@ -81,10 +82,29 @@ def status(pid):
             try:value[name]=db.execute('SELECT count(*) FROM '+table+' WHERE pid=?',(str(pid),)).fetchone()[0]
             except sqlite3.Error:pass
         import json
+        from art_errors import CODES
+        codes=set(CODES)|{'READY','READY_STALE','NO_IMAGE','PENDING','MEMORY_PRESSURE','CACHE_ERROR',
+            'PROGRAMME_CACHE_BUDGET','IMAGE_DECODER_MISSING','UNSAFE_SOURCE','REDIRECT_BLOCKED','CONTENT_TYPE',
+            'CONTENT_ENCODING','IMAGE_LIMIT','RESPONSE_LIMIT','RESEARCH_BUSY','DYNAMIC_APPROVED','DNS_UNAVAILABLE',
+            'INVALID_LOCAL_IMAGE','PENDING_LOCAL_DOWNLOAD','LOCAL_HEADER_VALID','INVALID_SOURCE','NO_SOURCE'}
+        def count_code(bucket,data):
+            code=data.get('code','');code=code if code in codes else 'OTHER_CODE'
+            bucket[code]=bucket.get(code,0)+1
         for raw, in db.execute('SELECT a.data FROM events e JOIN artwork a ON a.event_key=e.event_key WHERE e.pid=? LIMIT 128',(str(pid),)):
             if len(raw)>16384:continue
             art=json.loads(raw);value['artwork_sample']+=1
-            if art.get('code') in ('READY','READY_STALE') and art.get('source')!='placeholder':value['artwork_sample_ready']+=1
+            count_code(value['artwork_sample_codes'],art)
+            if art.get('code') in ('READY','READY_STALE') and art.get('source')!='placeholder':
+                value['artwork_sample_ready']+=1
+                import os
+                from programme_art46 import root
+                found=os.path.dirname(art.get('image',''))==root() and os.path.isfile(art.get('image',''))
+                value['artwork_sample_local_files']+=int(found)
+                value['artwork_sample_missing_files']+=int(not found)
+        try:
+            for raw, in db.execute('SELECT data FROM asset_refs47 WHERE pid=? LIMIT 128',(str(pid),)):
+                if len(raw)<=16384:count_code(value['asset_sample_codes'],json.loads(raw))
+        except sqlite3.Error:pass
         code='DATA_EMPTY' if value['facts']==value['prepared_events']==0 else 'LOCAL_TEXT_AND_ART_REFERENCES' if value['artwork_sample_ready'] else 'LOCAL_TEXT_WITHOUT_MATCHED_ART'
         return dict(value,code=code)
     except (OSError,sqlite3.Error,ValueError,TypeError):

@@ -12,7 +12,7 @@ import unittest
 from unittest import mock
 from urllib.parse import urlsplit
 from PIL import Image
-from xcmate027_fixture import Fixture
+from xcmate027_fixture import Fixture,ADDON
 
 
 class ProgrammeAssets47(Fixture,unittest.TestCase):
@@ -76,6 +76,12 @@ class ProgrammeAssets47(Fixture,unittest.TestCase):
         path=self.folder/'logo.png';path.write_bytes(self.png());link=self.folder/'linked.png';link.symlink_to(path)
         self.assertEqual(self.assets.local_uri(str(link)),'')
         self.assertEqual(self.assets.local_uri(str(self.folder/'absent.png')),'')
+
+    def test_real_station_tv_png_is_not_confused_with_our_bundled_placeholder(self):
+        self.assertTrue(self.assets.station_image('/storage/channel logos/tv.png'))
+        self.assertTrue(self.assets.station_image('https://images.example.test/icon.png|redirect-limit=0'))
+        self.assertFalse(self.assets.station_image(str(ADDON/'resources/media/tv.png')))
+        self.assertFalse(self.assets.station_image(str(ADDON/'icon.png')))
 
     def test_dynamic_start_group_approves_sender_137_without_image_archive(self):
         rows=[self.row(str(i)) for i in range(137)]
@@ -148,6 +154,16 @@ class ProgrammeAssets47(Fixture,unittest.TestCase):
             self.assertTrue(choices.save('p','vod','1',image=data))
         row=choices.apply_many('p',[dict(sid='1',kind='vod',name='Film')])[0]
         self.assertEqual(Path(choices.cached_art(row)['poster']).read_bytes(),data)
+
+    def test_corrupt_display_copy_falls_back_to_verified_original_without_deletion(self):
+        choices=importlib.import_module('media_overrides43');data=self.png()
+        choices.save('p','vod','1',image=data)
+        digest=hashlib.sha256(data).hexdigest();copy=Path(self.assets.choice('p','vod','1','poster',digest));copy.write_bytes(b'broken')
+        choices._cache.clear();choices._versions.clear()
+        row=choices.apply_many('p',[dict(sid='1',kind='vod',name='Film')])[0]
+        original=Path(choices.cached_art(row)['poster'])
+        self.assertEqual(original.suffix,'.img');self.assertEqual(original.read_bytes(),data)
+        self.assertTrue(copy.exists())
 
     def test_asset_transaction_rolls_back_new_reference_and_preserves_previous(self):
         db=self.assets.writer()

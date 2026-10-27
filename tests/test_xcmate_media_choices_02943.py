@@ -92,7 +92,10 @@ class MediaChoices43(Fixture,unittest.TestCase):
 
     def test_cold_corrupted_manual_image_falls_back_without_deleting_the_file(self):
         self.store.save('p','vod','1',image=image());row=self.store.apply_many('p',[self.row])[0]
-        path=Path(self.store.cached_art(row)['poster']);path.write_bytes(b'bad')
+        # The original manifest/file remains authoritative; .47 may return
+        # an additional verified display copy from the shared asset layer.
+        digest=__import__('hashlib').sha256(image()).hexdigest()
+        path=self.folder/'media_choices43/images'/(digest+'.img');path.write_bytes(b'bad')
         self.store._cache.clear();self.store._versions.clear()
         self.assertFalse(self.store.cached_art(self.store.apply_many('p',[self.row])[0]));self.assertTrue(path.exists())
 

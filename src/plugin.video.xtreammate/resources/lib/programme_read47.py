@@ -50,7 +50,10 @@ def borrowed(filename):
 def retain(filename,db):
     state=getattr(_local,'state',None)
     if state is None:return db
-    db.execute('BEGIN')
+    try:db.execute('BEGIN')
+    except Exception:
+        db.close()
+        raise
     state['connections'][str(filename)]=db
     return Borrowed(db)
 

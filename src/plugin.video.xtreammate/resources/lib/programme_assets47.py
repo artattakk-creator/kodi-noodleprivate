@@ -13,6 +13,7 @@ import time
 from urllib.parse import unquote, urlsplit
 
 _cursor = {}
+_visual_revision47=0
 TABLES = {
     'asset_refs47': '''CREATE TABLE IF NOT EXISTS asset_refs47(
         pid TEXT,kind TEXT,sid TEXT,role TEXT,fingerprint TEXT,data TEXT,expires REAL,
@@ -27,6 +28,17 @@ COLUMNS = {
     'channels47': ('pid','sid','canonical','data','updated'),
     'widget_diagnostics47': ('pid','kind','stage','data','updated'),
 }
+
+
+def station_image(uri):
+    """Only our actual bundled placeholders are non-logos, not any tv.png."""
+    if not isinstance(uri,str) or not uri:return False
+    root=os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    if uri.startswith('special://home/addons/plugin.video.xtreammate/'):
+        uri=os.path.join(root,uri[len('special://home/addons/plugin.video.xtreammate/'):])
+    placeholders={os.path.join(root,'resources','media',name) for name in ('tv.png','vod.png','series.png')}
+    placeholders.update(os.path.join(root,name) for name in ('icon.png','icon-81da1003a2753ec6.png'))
+    return uri not in placeholders
 
 
 def writer():
@@ -84,14 +96,22 @@ def fingerprint(source):
 
 
 def _store(pid, kind, records):
+    global _visual_revision47
     from programme_index46 import encoded, report
     db = None
     try:
         db = writer()
         with db:
+            changed=False
+            for sid,role,fp,data in records[:128]:
+                old=db.execute('SELECT fingerprint,data FROM asset_refs47 WHERE pid=? AND kind=? AND sid=? AND role=?',
+                               (str(pid),kind,str(sid),role)).fetchone()
+                prior=json.loads(old[1]) if old and len(old[1])<=16384 else {}
+                if not old or old[0]!=fp or prior.get('uri')!=data.get('uri') or prior.get('code')!=data.get('code'):changed=True
             db.executemany('INSERT OR REPLACE INTO asset_refs47 VALUES(?,?,?,?,?,?,?)',
                 [(str(pid),kind,str(sid),role,fp,encoded(data),data['until'])
                  for sid,role,fp,data in records[:128]])
+        if changed:_visual_revision47+=1
         return True
     except (OSError, sqlite3.Error, ValueError) as error:
         report('art',error)
@@ -200,6 +220,15 @@ def prepare(portal, kind, rows, cancel=lambda:False):
     _cursor[key]=(cursor+processed)%len(rows)
     if len(_cursor)>16:
         _cursor.pop(next(iter(_cursor)))
+    from widget_diagnostics47 import note,save
+    refs=read_many(portal['id'],kind,selected[:processed])
+    available=[uri for values in refs.values() for uri in values.values() if uri]
+    value=note(portal['id'],kind,'ASSETS','REFERENCES_READY' if available else 'NO_RENDERABLE_REFERENCE',
+        selected=processed,poster_sources=sum(bool(sources(r)['poster']) for r in selected[:processed]),
+        logo_sources=sum(bool(sources(r)['poster']) for r in selected[:processed]) if kind=='live' else 0,
+        dynamic_images=sum(uri.startswith(('http://','https://')) for uri in available),
+        local_images=sum(not uri.startswith(('http://','https://')) for uri in available))
+    save(portal['id'],kind,'ASSETS',value)
 
 
 def channels(portal, records):
@@ -265,7 +294,10 @@ def choice(pid, kind, sid, role, digest):
         if row and row[0]==digest and len(row[1])<16384:
             value=json.loads(row[1])
             if value.get('sha256')==digest:
-                return local_uri(value.get('uri',''))
+                filename=local_uri(value.get('uri',''))
+                if filename:
+                    with open(filename,'rb') as stream:
+                        if hashlib.sha256(stream.read(3*1024*1024+1)).hexdigest()==digest:return filename
     except (OSError, sqlite3.Error, ValueError, TypeError):
         pass
     finally:

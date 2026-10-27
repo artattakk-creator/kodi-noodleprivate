@@ -126,14 +126,11 @@ def apply_many(pid,rows):
                 path=root/'images'/(digest+'.img')
                 try:
                     if path.is_symlink() or (root/'images').is_symlink() or not path.is_file() or path.stat().st_size>3*1024*1024:continue
-                    if hashlib.sha256(path.read_bytes()).hexdigest()==digest:images[role]=str(path)
+                    if hashlib.sha256(path.read_bytes()).hexdigest()==digest:
+                        from programme_assets47 import choice as shared_choice47
+                        images[role]=shared_choice47(pid,row['kind'],str(row['sid']),role,digest) or str(path)
                 except OSError:continue
             with _lock:entry.update(art=images,resolved=True)
-        if entry.get('image_refs'):
-            from programme_assets47 import choice as shared_choice47
-            for role,digest in entry['image_refs'].items():
-                display47=shared_choice47(pid,row['kind'],str(row['sid']),role,digest)
-                if display47:entry.setdefault('art',{})[role]=display47
         item.update(entry.get('metadata',{}));item['_metadata_override43']=bool(entry.get('metadata'))
         item['_manual_art43']=dict(entry.get('art',{}));result.append(item)
     return result
@@ -151,9 +148,11 @@ def cached_art(item):
     # Another portal may evict the bounded RAM cache while an old row remains
     # displayed. Its worker-verified local asset still has stable identity.
     prefix=str(key[0])+os.sep+'images'+os.sep
+    shared_prefix=os.path.dirname(str(key[0]))+os.sep+'programme_images46'+os.sep
     return {role:path for role,path in item.get('_manual_art43',{}).items()
-            if role in ('poster','fanart') and isinstance(path,str) and path.startswith(prefix)
-            and re.fullmatch('[a-f0-9]{64}\\.img',path[len(prefix):])}
+            if role in ('poster','fanart') and isinstance(path,str) and (
+                path.startswith(prefix) and re.fullmatch('[a-f0-9]{64}\\.img',path[len(prefix):]) or
+                path.startswith(shared_prefix) and re.fullmatch('choice47-[a-f0-9]{64}\\.(png|jpg)',path[len(shared_prefix):]))}
 
 
 def _atomic(filename,data):

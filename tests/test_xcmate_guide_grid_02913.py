@@ -78,8 +78,13 @@ class GridTests(Fixture,unittest.TestCase):
         self.assertTrue(result['rows'][0]['events']);self.assertEqual(Path(self.store.path()).read_bytes(),before)
 
     def test_missing_database_is_not_created_and_no_programmes_are_invented(self):
+        expected=[[ (e['start'],e['stop'],e['title']) for e in row['events']] for row in self.data.page(self.portal,0,self.origin)['rows']]
         Path(self.store.path()).unlink();result=self.data.page(self.portal,0,self.origin)
-        self.assertFalse(Path(self.store.path()).exists());self.assertTrue(all(not r['events'] for r in result['rows']))
+        # .47 may show only the exact previously committed shared LastGood.
+        self.assertFalse(Path(self.store.path()).exists())
+        self.assertEqual([[(e['start'],e['stop'],e['title']) for e in row['events']] for row in result['rows']],expected)
+        with mock.patch('programme_snapshot47.fallback_window',return_value=None):
+            self.assertTrue(all(not row['events'] for row in self.data.page(self.portal,0,self.origin)['rows']))
 
     def test_new_home_epg_route_is_action_and_legacy_route_still_exists(self):
         import home_menu

@@ -87,7 +87,8 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
    else:
     from programme_events46 import summary
     self.getControl(101).setLabel(self.event.get('title') or tr(36102));self.getControl(103).setText(summary(self.event))
-    logo=self.event.get('logo','');real=bool(logo) and os.path.basename(logo) not in ('tv.png','icon.png','icon-81da1003a2753ec6.png')
+    from programme_assets47 import station_image
+    logo=self.event.get('logo','');real=station_image(logo)
     self.getControl(111).setImage(logo if real else '');self.getControl(111).setVisible(real)
     self.getControl(112).setLabel('' if real else self.event['channel']);self.getControl(112).setVisible(not real)
   if self.event and time.monotonic()>=self._next:

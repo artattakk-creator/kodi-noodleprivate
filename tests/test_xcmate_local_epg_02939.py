@@ -84,6 +84,9 @@ class LocalEPG39(model.Fixture,unittest.TestCase):
     def test_missing_and_corrupt_guide_are_not_created_or_reset_by_widget_reads(self):
         from pathlib import Path
         p=Path(self.store.path());p.unlink()
-        self.assertIsNone(self.local.window('p',self.channels,{},self.now,self.now+300));self.assertFalse(p.exists())
+        view=self.local.window('p',self.channels,{},self.now,self.now+300)
+        self.assertEqual(view.code,'SHARED_LASTGOOD47');self.assertEqual(view['xml'][0]['name'],'Provider');self.assertFalse(p.exists())
+        with mock.patch('programme_snapshot47.fallback_window',return_value=None):
+            self.assertIsNone(self.local.window('p',self.channels,{},self.now,self.now+300))
         p.write_bytes(b'broken')
         self.assertIsNone(self.local.window('p',self.channels,{},self.now,self.now+300));self.assertEqual(p.read_bytes(),b'broken')

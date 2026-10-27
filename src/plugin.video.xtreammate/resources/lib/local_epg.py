@@ -76,7 +76,8 @@ def now_next(pid,channels,mappings,now=None,client=None):
         sid,keys=channel_keys(channel,mappings)
         extra=channel.extra if hasattr(channel,'extra') else channel
         provider=str(getattr(channel,'tvg_id',extra.get('epg_channel_id','')) or '')
-        info=resolve_guide(cache if cache is not None else {},provider,sid,ts,None if cache is not None else client,mappings)
+        compatibility47=cache is None or getattr(cache,'code','')=='SHARED_LASTGOOD47'
+        info=resolve_guide(cache if cache is not None else {},provider,sid,ts,client if compatibility47 else None,mappings)
         info['snapshot_revision']=cache.revision if cache is not None else None
         info['canonical46']=cache.canonical.get(info.get('epg_id',''),'') if cache is not None else ''
         from programme_snapshot47 import bind

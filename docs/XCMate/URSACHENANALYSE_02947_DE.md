@@ -58,6 +58,10 @@ Seitenweise, threadlokale read-only SQLite-Sitzungen ersetzen wiederholte Verbin
 
 Der Live-Katalogfastpfad liest die vorhandenen lokalen Gruppennamen, bevor irgendeine Provider-Kategorie-JSON-Datei deserialisiert wird. Senderobjekte und CatalogIndex werden im vorhandenen Hintergrundworker erstellt; der GUI-Owner übernimmt ein fertiges Modell. Die Startgruppe wird vor dem Rest angeboten. Ein fehlerhafter Live-/Film-Artworkschritt darf die24 erfolgreichen Serien nicht mehr am Publizieren hindern.
 
+Eine nachgelagerte, rein lokale Kategorieprüfung erhält bereits aktivierte, noch nicht indexierte Gruppen; sie findet erst nach Bereitstellung des Startgruppenmodells statt. Fehlgeschlagene Katalog-Futures werden kurz wiederverwendet, statt bei jedem GUI-Tick neue Worker zu starten.
+
+Der Hintergrunddienst baut identische Live-Reihen nicht mehr alle fünf Sekunden vollständig neu. Guide-/Quellkonfiguration, Bild-/Assetänderung, natürliche nächste Eventgrenze und minutengenaue Fortschrittsanzeige invalidieren die begrenzte RAM-Publikationsprüfung. Die eigentlichen nativen Verzeichnisrouten, Seitenformate und Serienpublikationen bleiben unverändert. Eine während einer Publikation abgeschlossene Bildsuche wird nicht durch einen nachträglich übernommenen Revisionsstempel verschluckt.
+
 Neue PREPARE47-Marker trennen lokalen Lesebeginn, vorbereitetes Startgruppenmodell und vollständiges Modell. FLOW46/LIVE_TIMING bleiben für Klick/Playback/Video/Mini/Gruppen erhalten. Dies sind Add-on-/Playerzustandsmessungen, keine Messung eines physischen IR-Signals oder tatsächlich decodierten Displayframes. Hostzahlen erklären keine exakt bestimmte Android-Millisekundenlücke; echte Cold/Warm-p50/p95 bleiben offen.
 
 ## Live-Rückkehr und Player-State-Race
@@ -71,3 +75,7 @@ Nach nachweislich abgeschlossener eigener nativer Stop-Arbeit gilt ein kurzzeiti
 WIDGET47 protokolliert pseudonymisierte Korrelation, feste Stufen und Zählwerte: Sync-Received/Stored, im Budget ermittelbare Indexanzahl, ausgewählte Titel, tatsächliche ListItems, lokales/dynamisches Bild beziehungsweise Platzhalter und erfolgreich abgeschlossenes Kodi-Verzeichnis. Importzähler sind ausdrücklich keine Zahl eindeutiger Providerfilme. Unbekannte Zahlen werden als−1 ausgewiesen; kein synchroner Providerabruf zur Zählung.
 
 Die Statusansicht unterscheidet leere neue DB, lokale Texte ohne passende Bilder, Bildreferenzen und fehlenden Bilddecoder. Kodi-/EGL-Texturedecode und tatsächlich sichtbare Pixel sind über ListItem nicht belegbar und bleiben Geräteabnahme. Alle neuen .47-Androidfälle NOT_TESTED. Historische .46-FAIL/PASS bleiben im Testplan getrennt erhalten.
+
+Vorhandene positive Programm-Bildreferenzen werden nach Neustart im begrenzten Worker erneut per Hash/Decoder verifiziert; ein reiner Directory-Stat darf diese Prüfung nicht bis zum TTL-Ende überspringen. Fehlende Dateien werden als LOCAL_IMAGE_MISSING getrennt vom Sender-/Programmplatzhalter ausgegeben. Eine beschädigte zusätzliche Cover-Anzeigekopie fällt auf die verifizierte Originalwahl zurück; kein Bild wird gelöscht.
+
+`tools/analyse_xcmate_flow47.py` erzeugt aus privat gehaltenen Logs ausschließlich freigegebene Aggregatfelder, Stichprobenzahlen und p50/p95. Keine Rohzeile, Portal-/Sessionkennung, unbekannten Codes oder privaten URLs werden exportiert. Kalt-/Warmläufe werden vom Benutzer separat bezeichnet, nicht aus Logs erraten.

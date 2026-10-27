@@ -128,4 +128,8 @@ def snapshot(portal,kind,background=False):
     finally:
         if reader is not None and hasattr(reader,'close'):reader.close()
         if stream:stream.close()
+    if code=='LOCKED' and kind=='vod' and not old:
+        from widget_movie47 import cold_read
+        rows,code=cold_read(portal)
+        trace(kind,code,len(rows),started);return rows,code
     rows=old['rows'] if old else [];trace(kind,code,len(rows),started,bool(old),stage46);return rows,code

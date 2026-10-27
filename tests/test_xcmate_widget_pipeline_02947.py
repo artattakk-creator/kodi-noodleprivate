@@ -110,11 +110,12 @@ class WidgetPipeline47(Fixture, unittest.TestCase):
             key=self.widgets.policy(portal,kind)
             self.widgets.store(self.widgets.files('p',kind)[0],key,[])
         series_before=Path(self.widgets.files('p','series')[0]).read_bytes()
-        # .46 used this same fingerprint without POINT_PAYLOAD47.
+        # Actual .46 policy/unchanged index revision, not an arbitrary bad key.
         import hashlib
-        old=json.loads(Path(self.widgets.files('p','vod')[0]).read_text())
-        old['policy']='prior46-policy'
-        Path(self.widgets.files('p','vod')[0]).write_text(json.dumps(old))
+        legacy_policy=hashlib.sha256(json.dumps([str(portal['id']),'vod',portal.get('start_stream_id'),
+            portal.get('start_group_id'),portal.get('include_vod',True),None,0,100],sort_keys=True).encode()).hexdigest()
+        state=self.index.Reader('p').state('vod')
+        self.widgets.store(self.widgets.files('p','vod')[0],legacy_policy,[],[state['revision'],state['updated']])
         rows,code=self.widgets.snapshot(portal,'vod',background=True)
         self.assertEqual(len(rows),24)
         self.assertEqual(Path(self.widgets.files('p','series')[0]).read_bytes(),series_before)
@@ -227,7 +228,12 @@ class WidgetPipeline47(Fixture, unittest.TestCase):
 
     def test_live_start_model_uses_local_group_names_without_loading_provider_json(self):
         catalog=importlib.import_module('live_catalog')
-        with mock.patch.object(self.client,'get_cached_catalog',side_effect=AssertionError('provider JSON before first group')):
+        prepared=[];builder=importlib.import_module('live_prepare47');original_model=builder.model;original_cached=self.client.get_cached_catalog
+        def model(*a,**kw):value=original_model(*a,**kw);prepared.append(value);return value
+        def cached(action):
+            self.assertTrue(prepared,'provider JSON before first start-group model')
+            return original_cached(action)
+        with mock.patch.object(builder,'model',side_effect=model),mock.patch.object(self.client,'get_cached_catalog',side_effect=cached):
             future=catalog.prepare(self.portal,self.client,force=True)
             value=future.result(timeout=5)
         self.assertEqual(len(value[1]),3)

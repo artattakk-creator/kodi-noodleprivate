@@ -66,7 +66,7 @@ def refresh_local(cancel=lambda:False):
                         from widget_diagnostics47 import note
                         note(portal['id'],kind,'ASSETS','PREPARE_UNAVAILABLE')
                     if cancel():return
-                    from widget_refresh45 import publish
+                    from widget_live47 import publish
                     publish(portal,kind,rows,code)
                 except Exception:
                     # A failed Live/film preparation must not starve the
