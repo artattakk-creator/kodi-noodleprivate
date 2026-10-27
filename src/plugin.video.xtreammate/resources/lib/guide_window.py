@@ -27,6 +27,8 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         self._short_revision='';self._short_poll=0
         from utils import setting_int
         self.days=10 if setting_int('epg_days',7)==10 else 7
+        from programme_index46 import available_days
+        self.days=max(self.days,available_days(portal['id']))
 
     def _query_failed(self,exc):
         __import__('theme_render').guide_status(self,'error')
@@ -143,12 +145,25 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
             if not rows and not self.mappings.get(channel['sid']):
                 rows,total=events(self.portal['id'],channel.get('epg_channel_id',''),start,stop,page)
                 eid=channel.get('epg_channel_id','')
+            if day>=10:
+                from local_epg import window,channel_keys
+                from epg_events import deduplicate
+                prepared46=window(self.portal['id'],[channel],self.mappings,start,stop,limit=256)
+                if prepared46 is not None:
+                    for ident46 in channel_keys(channel,self.mappings)[1]:
+                        values46=deduplicate(prepared46.get(ident46,[]),channel=ident46)
+                        if values46:
+                            total=len(values46);rows=values46[page:page+100];break
             if day==0 and page==0 and info.get('mapping')=='SHORT_EPG':
                 rows=[dict(e,title=e['title'],description=e.get('description',''),source=-1) for e in info['events']]+[
                     e for e in rows if not info.get('stop') or e['start']>=info['stop']]
                 from epg_events import deduplicate
                 rows=deduplicate(rows,channel=channel['sid'])[:100];total=max(total,len(rows))
-            return rows,total,horizon(self.portal['id'],eid),info
+            coverage46=horizon(self.portal['id'],eid)
+            from programme_index46 import last_event as last_prepared46
+            last46=last_prepared46(self.portal['id'],eid)
+            if last46:coverage46['last_event']=max(coverage46.get('last_event') or 0,last46)
+            return rows,total,coverage46,info
         self._request(load,self._events_ready)
 
     def _events_ready(self,value):
