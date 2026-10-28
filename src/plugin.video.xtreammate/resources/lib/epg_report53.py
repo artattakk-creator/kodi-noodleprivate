@@ -20,7 +20,7 @@ def history(pid):
     try:
         with open(path(pid),encoding='utf-8') as f:raw=f.read(MAX_BYTES+1)
         value=json.loads(raw) if len(raw)<=MAX_BYTES else {}
-        return value['runs'][-16:] if value.get('version')==1 and isinstance(value.get('runs'),list) else []
+        return [r for r in value['runs'] if isinstance(r,dict)][-16:] if isinstance(value,dict) and value.get('version')==1 and isinstance(value.get('runs'),list) else []
     except (OSError,ValueError,KeyError,TypeError):return []
 
 
@@ -104,7 +104,9 @@ def observing(pid,automatic=False):
                 if identity in stored:row['saved']=stored[identity]
                 if row['code']=='RUNNING':row['code']='CANCELLED'
             run['sources']=list(run['sources'].values());run.pop('pid',None);run.pop('result',None)
-            store(pid,run)
+            if not store(pid,run):
+                from utils import warn
+                warn('EPG53_REPORT_WRITE_FAILED')
         except Exception:pass  # Telemetry never converts a successful import to failure.
         finally:_local.run=previous
 

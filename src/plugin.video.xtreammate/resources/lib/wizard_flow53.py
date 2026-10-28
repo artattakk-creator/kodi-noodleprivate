@@ -62,7 +62,11 @@ def run(dialog,input_data,open_setup,cancelled):
             session.input(data,'name');edit=None
             with using(session):result=open_setup(data)
             if session.action=='back':
-                session.action='';data=dict(session.data);edit='xc_user' if choice==3 else 'stb_url' if choice==0 else 'm3u_url';continue
+                session.action='';data=dict(session.data)
+                fields=[('Serveradresse','xc_host'),('Benutzername','xc_user'),('Passwort neu eingeben','xc_pass'),('Name','name')] if choice==3 else [('Serveradresse','stb_url'),('MAC-Adresse','stb_mac'),('Name','name')] if choice==0 else [('M3U-Quelle','m3u_url'),('EPG-Adresse','epg_url'),('Name','name')]
+                selected=dialog.select('Eingaben korrigieren · Gruppen bleiben erhalten',[label for label,key in fields]+['Später fortsetzen'])
+                if not 0<=selected<len(fields):return None
+                edit=fields[selected][1];continue
             return result
         except cancelled as exc:
             data=dict(session.data)

@@ -2,6 +2,7 @@
 import ast,hashlib,json,unittest
 from pathlib import Path
 from stabilization_contract_02952 import without_stabilization52
+from stabilization_contract_02953 import without_stabilization53
 ROOT=Path(__file__).resolve().parents[1]
 
 class Scope52(unittest.TestCase):
@@ -12,7 +13,7 @@ class Scope52(unittest.TestCase):
         self.assertEqual(len(baseline['source_sha256']),577);self.assertEqual(len(hooks),19)
         self.assertEqual({Path(p).name for p in hooks},set(['addon.xml', 'app_services.py', 'catalog_delta.py', 'changelog.txt', 'epg.py', 'group_selection.py', 'guide_grid_diagnostics.py', 'guide_publish44.py', 'guide_store.py', 'guide_window.py', 'infobar45.py', 'library_index.py', 'local_epg.py', 'media_window.py', 'programme_flow48.py', 'programme_index46.py', 'programme_snapshot47.py', 'stream_details.py', 'stream_epg.py']))
         for path,digest in baseline['source_sha256'].items():
-            raw=(ROOT/path).read_bytes()
+            raw=without_stabilization53((ROOT/path).read_bytes(),path)
             self.assertEqual(hashlib.sha256(without_stabilization52(raw,path)).hexdigest(),digest,path)
             if path not in hooks:self.assertEqual(hashlib.sha256(raw).hexdigest(),digest,path)
     def test_all_2116_old_methods_retained_without_new_skips(self):

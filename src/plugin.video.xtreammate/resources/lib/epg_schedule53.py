@@ -14,6 +14,10 @@ def plan(portal,now=None):
     now=time.time() if now is None else now;period=interval();runs=history(portal['id']);state=read(portal['id']);wanted=[]
     fallback=max([row.get('last_success',0) for key,row in state.items() if key not in ('cache','refresh')]+[0])
     if not runs and not fallback:
+        try:
+            from epg import _is_fresh
+            if _is_fresh(portal['id']):return []
+        except (ImportError,AttributeError,OSError,ValueError):pass
         # Existing populated LastGood is a valid restart anchor, without
         # treating mere future coverage as permission to skip forever.
         try:

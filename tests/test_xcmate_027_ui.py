@@ -70,11 +70,13 @@ class NavigationTests(Fixture,unittest.TestCase):
         service=types.SimpleNamespace(_last_epg=0,_epg_worker=None,abortRequested=lambda:False)
         refresh=mock.Mock();sys.modules['epg'].ensure_epg_loaded_for_portal=refresh
         self.cache={'xml':[dict(name='Full guide',start_timestamp=self.now-10,stop_timestamp=self.now+10*86400)]}
+        # .53 uses download freshness, not future coverage, as the periodic gate.
+        fresh=[True];sys.modules['epg']._is_fresh=lambda pid:fresh[0]
         namespace['_maybe_refresh_epg'](service)
         refresh.assert_not_called();self.assertEqual(len(targets),1)
         targets[0]();refresh.assert_not_called()
-        self.cache['xml'][0]['stop_timestamp']=self.now+3600
-        targets[0]();refresh.assert_called_once_with(self.portal,force=False)
+        fresh[0]=False
+        targets[0]();refresh.assert_called_once_with(dict(self.portal,_epg_auto53=True,_epg_sources53=['provider']),force=True)
 
     def test_failed_background_index_has_retry_backoff_instead_of_reparsing_every_tick(self):
         services=importlib.import_module('app_services')

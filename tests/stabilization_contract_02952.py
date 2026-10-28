@@ -15,6 +15,8 @@ def data52():
     return hooks,hashes
 
 def without_stabilization52(source,module):
+    from stabilization_contract_02953 import without_stabilization53
+    source=without_stabilization53(source,module)
     binary=isinstance(source,bytes);raw=source if binary else source.encode()
     hooks,hashes=data52()
     paths=[p for p in hooks if p==str(module) or p.endswith('/'+str(module).removesuffix('.py')+'.py')]

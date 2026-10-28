@@ -34,6 +34,8 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
         self.original={k:getattr(parent,k) for k in ('rows','total','groups','row','offset','cursor','origin','category','_focus_zone','_header')}
         self._parent_focus48=parent.getFocusId()
         self._saving53=False;self.scroll53=0;self.detail_offset53=0
+        from epg_candidate53 import Candidates
+        self.cold53=Candidates()
     def _gui(self):
         if threading.get_ident()!=self.owner:raise RuntimeError('MAPPING_OWNER_THREAD')
     def _submit(self,call,apply):
@@ -75,10 +77,18 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
             self.getControl(405).setEnabled(False);self.getControl(404).setEnabled(False)
             control=self.getControl(200);control.reset()
             control.addItems([xbmcgui.ListItem(r['name'],label2='EPG-ID: '+r['id']) for r in rows])
-            self.getControl(103).setText(self.source['name']+' · '+str(len(rows))+' Kanäle · nur lokal gespeichert. Kein Import.')
+            self.getControl(103).setText(self.source['name']+' · '+str(len(rows))+' Kanäle · Auswahl ändert keine gespeicherten Daten.')
             self.setFocusId(200 if rows else 401)
         source=self.source['id'];query=self.query;offset=self.offset
-        self._submit(lambda:channels(self.portal['id'],source,query,offset),ready)
+        def load():
+            rows=channels(self.portal['id'],source,query,offset)
+            if not rows and offset==0:
+                rows=self.cold53.channels(self.portal,source,query,offset,self.cancel.is_set)
+            elif self.cold53.catalogue is not None and self.cold53.catalogue[0]==source:
+                rows=self.cold53.channels(self.portal,source,query,offset,self.cancel.is_set)
+            return rows
+        self._submit(load,ready)
+        self.getControl(103).setText('Kanäle werden gelesen; fehlender Katalog wird begrenzt in den Arbeitsspeicher geladen. Abbrechen bleibt möglich.')
     def _preview(self):
         if not self.candidate or not self.source:return
         candidate=dict(self.candidate);source=self.source['id'];parent=self.parent
@@ -93,6 +103,14 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
             start=self.original['origin']+offset*3*3600
             detail=window(self.portal['id'],[self.channel],mappings,start,start+2*86400,limit=96)
             value['details53']=list((detail or {}).get(candidate['id'],[]))
+            selected=next((r for r in value['rows'] if str(r['channel']['sid'])==str(self.channel['sid'])),None)
+            if selected is not None and not selected['events'] and not value['details53']:
+                events=self.cold53.programmes(self.portal,source,candidate['id'],self.cancel.is_set)
+                from epg_events import deduplicate
+                from programme_snapshot47 import identify
+                selected['events']=identify(self.portal['id'],self.channel['sid'],candidate['id'],deduplicate([e for e in events if e['start_timestamp']<self.original['origin']+10800 and e['stop_timestamp']>self.original['origin']],channel=candidate['id']))
+                selected['epg_id']=candidate['id'];selected['mapping']='PREVIEW_RAM53'
+                value['details53']=[e for e in events if e['start_timestamp']<start+2*86400 and e['stop_timestamp']>start][:96]
             return value
         def ready(value):
             if self.parent._closed:return
@@ -110,13 +128,14 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
                 lines.append(time.strftime('%d.%m. %H:%M',time.localtime(event['start_timestamp']))+' – '+time.strftime('%H:%M',time.localtime(event['stop_timestamp']))+'  '+str(event['name']))
                 if event.get('descr'):lines.append(str(event['descr'])[:2000])
                 lines.append('')
-            self.getControl(301).setText('\n'.join(lines) or 'Keine gespeicherten Sendungen in diesem Zeitraum.')
+            self.getControl(301).setText('\n'.join(lines) or 'Keine Sendungen in diesem Zeitraum; Quelle und Kanal prüfen.')
             self.scroll53=0;self.getControl(301).scroll(0)
             self.previewed=True;self.getControl(405).setEnabled(True)
             count=sum(len(row['events']) for row in parent.rows if str(row['channel']['sid'])==str(self.channel['sid']))
-            self.getControl(103).setText('Vorschau: '+str(count)+' gespeicherte Sendungen. Speichern oder Abbrechen.' if count else 'Keine gespeicherten Sendungen in diesem Zeitfenster. Kein Import. Zuordnung nur auf Wunsch speichern.')
+            self.getControl(103).setText('Vorschau: '+str(count)+' Sendungen. Erst Speichern übernimmt die Zuordnung.' if count else 'Keine Sendungen in diesem Zeitfenster. Andere Quelle oder Zeitraum prüfen.')
             self.setFocusId(200 if self.rows else 401)
         self._submit(load,ready)
+        self.getControl(103).setText('Vorschau wird gelesen. Fehlende Sendungen werden begrenzt nur in RAM geladen. Abbrechen bleibt möglich.')
     def pump(self):
         self._gui()
         if self._closed:return
@@ -125,7 +144,7 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
             if future.cancelled():return
             self._saving53=False
             try:value=future.result()
-            except Exception:self.getControl(103).setText('Lokaler EPG-Zugriff nicht verfügbar. Zuordnung unverändert.')
+            except Exception:self.getControl(103).setText('EPG-Zugriff nicht verfügbar oder Vorschau-Limit erreicht. Zuordnung unverändert; Quelle und Bericht prüfen.')
             else:apply(value)
     def onClick(self,cid):
         self._gui()
@@ -149,6 +168,18 @@ class MappingWindow48(xbmcgui.WindowXMLDialog):
         elif cid==404:self._preview()
         elif cid==405 and self.previewed:
             from epg_binding48 import save
+            identity=self.source['id'];cid=self.candidate['id'];name=self.candidate.get('name',cid)
+            events=list(self.cold53.selected(identity,cid));portal=dict(self.portal);sid=self.channel['sid']
+            if events:
+                from epg_candidate53 import publish
+                def commit():
+                    publish(portal,identity,cid,name,events)
+                    return save(portal,sid,cid,identity)
+                def committed(ok):
+                    if ok:self.saved=True;self.close()
+                self._saving53=True;self._submit(commit,committed)
+                self.getControl(103).setText('Explizites Speichern: ausgewählte Sendungen prüfen und Zuordnung übernehmen …')
+                return
             # A single explicit atomic configuration write is linearized on
             # the owner: Back cannot race a queued Save after the panel closed.
             try:ok=save(self.portal,self.channel['sid'],self.candidate['id'],self.source['id'])

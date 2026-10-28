@@ -4564,3 +4564,7 @@ msgstr "Saving setup: transferring data in verified batches …"
 msgctxt "#36506"
 msgid "Saving setup: verifying saved data and index …"
 msgstr "Saving setup: verifying saved data and index …"
+
+msgctxt "#36510"
+msgid "XCMate {0} is installed.\n\n• EPG manager: source comparison and live preview in the guide.\n• Automatic EPG updates every 24 hours by default, with readable reports.\n• Wizard: keep inputs and selected groups when errors occur.\n• Password remains available during Back and Retry in the current setup.\n\nAfter restarting Kodi, an unsaved password must be entered again. Existing portals and widgets are preserved."
+msgstr "XCMate {0} is installed.\n\n• EPG manager: source comparison and live preview in the guide.\n• Automatic EPG updates every 24 hours by default, with readable reports.\n• Wizard: keep inputs and selected groups when errors occur.\n• Password remains available during Back and Retry in the current setup.\n\nAfter restarting Kodi, an unsaved password must be entered again. Existing portals and widgets are preserved."

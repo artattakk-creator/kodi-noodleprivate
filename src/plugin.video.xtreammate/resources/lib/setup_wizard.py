@@ -71,17 +71,17 @@ def input_data(dlg, choice, initial=None, checkpoint=None):
         data['m3u_url'] = value if urlsplit(value).scheme in ('http','https') and urlsplit(value).hostname else ''
         if not data['m3u_url']:
             raise Cancelled()
-        data['epg_url'] = data.get('epg_url') or dlg.input(tr(32767)).strip()
+        data['epg_url'] = (dlg.input(tr(32767),defaultt=data.get('epg_url','')).strip() if edit=='epg_url' else data.get('epg_url') or dlg.input(tr(32767)).strip())
     elif choice == 1:
         data['type'] = 'm3u'
         data['m3u_url'] = data.get('m3u_url') or dlg.browseSingle(1, tr(32768), 'files', mask='.m3u|.m3u8')
         if not data['m3u_url']:
             raise Cancelled()
-        data['epg_url'] = data.get('epg_url') or dlg.input(tr(32767)).strip()
+        data['epg_url'] = (dlg.input(tr(32767),defaultt=data.get('epg_url','')).strip() if edit=='epg_url' else data.get('epg_url') or dlg.input(tr(32767)).strip())
     elif choice == 0:
         data['type'] = 'stb'
         data['stb_url'] = server('stb_url', tr(32769))
-        data['stb_mac'] = data.get('stb_mac') or dlg.input(tr(32770), defaultt='00:1A:79:00:00:00').strip()
+        data['stb_mac'] = (dlg.input(tr(32770),defaultt=data.get('stb_mac','')).strip() if edit=='stb_mac' else data.get('stb_mac') or dlg.input(tr(32770), defaultt='00:1A:79:00:00:00').strip())
         remember('stb_mac',data['stb_mac'])
         for field,title in (('stb_serial',tr(32759)),('stb_device_id',tr(32760))):
             if data.get(field):continue

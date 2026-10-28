@@ -170,3 +170,15 @@ class Resume53(unittest.TestCase):
         self.s.state['staging53'].append(dict(folder=unrelated.name,pid='not-owned'))
         self.s.discard(confirmed=True);self.d.dispose()
         self.assertEqual((unrelated/'keep').read_text(),'keep');self.assertFalse(Path(self.d.folder).exists())
+
+    def test_back_allows_correcting_password_without_showing_previous_value(self):
+        wizard=importlib.import_module('setup_wizard');self.m.dialog.select.side_effect=[0,2]
+        self.m.dialog.yesno.return_value=False;self.m.dialog.input.side_effect=['first-new','second-new']
+        calls=[]
+        def opened(data):
+            calls.append(dict(data));s=self.mod.current()
+            if len(calls)==1:s.action='back';return None
+            return {'id':'new'}
+        with mock.patch('setup_window.open_setup',side_effect=opened):self.assertEqual(wizard.setup(),{'id':'new'})
+        self.assertEqual(calls[-1]['xc_pass'],'second-new')
+        for call in self.m.dialog.input.call_args_list:self.assertNotIn('SECRET',str(call))
