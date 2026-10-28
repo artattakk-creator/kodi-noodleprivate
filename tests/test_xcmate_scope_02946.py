@@ -28,7 +28,7 @@ class Scope46(unittest.TestCase):
   for p,digest in b['source_sha256'].items():
    if '/keymaps/' in p or p.endswith('/icon.png') or p.endswith('/icon-81da1003a2753ec6.png') or p.endswith('/XCMateMedia.xml'):self.assertEqual(hashlib.sha256((ROOT/p).read_bytes()).hexdigest(),digest,p)
  def test_every_existing_native_setting_id_type_default_and_action_is_preserved(self):
-  old=json.loads((ROOT/'tests/fixtures/xcmate_02946_settings_baseline.json').read_text());current={n.get('id'):dict(n.attrib) for n in ET.parse(ROOT/'src/plugin.video.xtreammate/resources/settings.xml').iter('setting') if n.get('id')}
+  old=json.loads((ROOT/'tests/fixtures/xcmate_02946_settings_baseline.json').read_text());current={n.get('id'):dict(n.attrib) for n in ET.fromstring(__import__('stabilization_contract_02953').without_stabilization53((ROOT/'src/plugin.video.xtreammate/resources/settings.xml').read_bytes(),'src/plugin.video.xtreammate/resources/settings.xml')).iter('setting') if n.get('id')}
   self.assertTrue(old.keys()<=current.keys());self.assertEqual(current['programme_tmdb46']['default'],'false')
   for key,value in old.items():
    for attribute in ('type','default','values','range','option','action'):self.assertEqual(current[key].get(attribute),value.get(attribute),(key,attribute))

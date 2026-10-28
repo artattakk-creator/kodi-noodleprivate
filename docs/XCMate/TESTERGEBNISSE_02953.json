@@ -1,0 +1,34 @@
+{
+  "version": "0.1.29.53",
+  "source_commit": "0be8e076cb9409ba3bdd12d2462a90a2c67eeb46",
+  "files": 590,
+  "bytes": 3126953,
+  "sha256": "f2db23aa383212ba42a26c0022d49a41b22d029d868fbf93bacd9a6fc97bcd37",
+  "crc": "PASS",
+  "safe_paths": "PASS",
+  "all_source_bytes": "PASS",
+  "python_ast": "PASS",
+  "independent_deterministic_rebuild": "PASS",
+  "android": {
+    "not_tested": 72,
+    "passed": 0,
+    "boxes": [
+      "A Kodi 21.2",
+      "B Kodi 21.3"
+    ]
+  },
+  "production_publish": false,
+  "tests": 2240,
+  "seconds": 314.586,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "previous_tests_retained": 2168,
+  "new_tests": 72,
+  "public_feed_checks": "BLOCKED_NETWORK: HTTPS tunnel denied by workspace proxy, not a source or Android failure",
+  "new_skin_activation": "BLOCKED_SKIN_APPROVAL: no device or external skin write performed",
+  "ci": "Final delivery HEAD, run/job URLs, exact outcome and artifact SHA documented in Draft-PR checks/body",
+  "raw_host_log_sha256": "58e788fbcd0aca495d7812e38822ec89ba601306f801b0be7d77a9629294486d",
+  "published_host_log_sha256": "b56bfa8257a6b55fdb771fd2aba0f02fb34d560b10c295d2ae498c8f1a4e3a4d",
+  "verified_at": "2026-10-28T22:25:39.981267+01:00"
+}

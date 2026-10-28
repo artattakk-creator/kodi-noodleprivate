@@ -37,7 +37,7 @@
     <setting id="epg_lines" type="slider" label="32237" default="3" range="0,1,5" />
     <setting id="xc_background_prefetch" type="bool" label="XCMate: Automatische Hintergrund-Downloads (EPG/Kataloge) erlauben" default="false" />
     <setting id="epg_auto_refresh" type="bool" label="32231" default="true" />
-    <setting id="epg_refresh_hours" type="slider" label="32232" default="12" range="1,1,48" />
+    <setting id="epg_refresh_hours" type="slider" label="32232" default="24" range="1,1,48" />
     <setting id="epg_hours_ahead" type="slider" label="32233" default="12" range="2,2,24" />
     <setting id="epg_hours_back" type="slider" label="32234" default="3" range="0,1,72" />
     <setting id="epg_show_thumbnails" type="bool" label="32235" default="true" />

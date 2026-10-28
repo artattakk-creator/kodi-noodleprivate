@@ -1,185 +1,254 @@
 <?xml version='1.0' encoding='utf-8'?>
 <window>
-  <defaultcontrol always="true">401</defaultcontrol>
+  <defaultcontrol>401</defaultcontrol>
   <allowoverlay>yes</allowoverlay>
   <controls>
     <control type="group" id="900">
-      <left>0</left>
-      <top>0</top>
-      <width>1280</width>
-      <height>720</height>
+      <left>760</left>
+      <top>18</top>
+      <width>500</width>
+      <height>684</height>
       <control type="image">
-        <left>80</left>
-        <top>125</top>
-        <width>1120</width>
-        <height>500</height>
-        <texture>special://home/addons/plugin.video.xtreammate/resources/media/programme46/panel.png</texture>
+        <left>0</left>
+        <top>0</top>
+        <width>500</width>
+        <height>684</height>
+        <texture colordiffuse="F8182331">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texture>
+      </control>
+      <control type="label" id="101">
+        <left>14</left>
+        <top>8</top>
+        <width>474</width>
+        <height>42</height>
+        <font>font13</font>
+        <textcolor>FFF5F7FA</textcolor>
+        <label>EPG zuweisen</label>
+      </control>
+      <control type="textbox" id="103">
+        <left>14</left>
+        <top>54</top>
+        <width>474</width>
+        <height>55</height>
+        <font>font13</font>
+        <textcolor>FFF5F7FA</textcolor>
+        <text />
       </control>
       <control type="list" id="200">
-        <left>100</left>
-        <top>145</top>
-        <width>1080</width>
-        <height>460</height>
-        <onup>401</onup>
-        <ondown>401</ondown>
+        <left>14</left>
+        <top>116</top>
+        <width>472</width>
+        <height>186</height>
         <onleft>401</onleft>
         <onright>404</onright>
-        <itemlayout width="1080" height="46">
+        <onup>401</onup>
+        <ondown>401</ondown>
+        <itemlayout width="472" height="62">
           <control type="label">
             <left>12</left>
             <top>0</top>
-            <width>650</width>
-            <height>46</height>
+            <width>448</width>
+            <height>31</height>
             <font>font13</font>
-            <textcolor>FFD5DEE9</textcolor>
+            <textcolor>FFF5F7FA</textcolor>
             <label>$INFO[ListItem.Label]</label>
           </control>
           <control type="label">
-            <left>670</left>
-            <top>0</top>
-            <width>390</width>
-            <height>46</height>
+            <left>12</left>
+            <top>30</top>
+            <width>448</width>
+            <height>29</height>
             <font>font13</font>
-            <textcolor>FFD5DEE9</textcolor>
+            <textcolor>FFF5F7FA</textcolor>
             <label>$INFO[ListItem.Label2]</label>
           </control>
         </itemlayout>
-        <focusedlayout width="1080" height="46">
+        <focusedlayout width="472" height="62">
           <control type="image">
             <left>0</left>
             <top>0</top>
-            <width>1080</width>
-            <height>46</height>
-            <texture>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texture>
+            <width>472</width>
+            <height>62</height>
+            <texture colordiffuse="FF26634B">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texture>
           </control>
           <control type="label">
             <left>12</left>
             <top>0</top>
-            <width>650</width>
-            <height>46</height>
+            <width>448</width>
+            <height>31</height>
             <font>font13</font>
-            <textcolor>FFFFFFFF</textcolor>
+            <textcolor>FFF5F7FA</textcolor>
             <label>$INFO[ListItem.Label]</label>
           </control>
           <control type="label">
-            <left>670</left>
-            <top>0</top>
-            <width>390</width>
-            <height>46</height>
+            <left>12</left>
+            <top>30</top>
+            <width>448</width>
+            <height>29</height>
             <font>font13</font>
-            <textcolor>FFFFFFFF</textcolor>
+            <textcolor>FFF5F7FA</textcolor>
             <label>$INFO[ListItem.Label2]</label>
           </control>
         </focusedlayout>
       </control>
-    </control>
-    <control type="label" id="101">
-      <left>100</left>
-      <top>92</top>
-      <width>1080</width>
-      <height>30</height>
-      <font>font13</font>
-      <label>EPG zuweisen</label>
-      <textcolor>FFFFFFFF</textcolor>
-    </control>
-    <control type="label" id="103">
-      <left>44</left>
-      <top>630</top>
-      <width>1190</width>
-      <height>26</height>
-      <font>font12</font>
-      <textcolor>FFFFFFFF</textcolor>
-      <label />
-    </control>
-    <control type="button" id="401">
-      <left>44</left>
-      <top>668</top>
-      <width>188</width>
-      <height>42</height>
-      <label>Quelle wählen</label>
-      <font>font12</font>
-      <textcolor>FFFFFFFF</textcolor>
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texturefocus>
-      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
-      <onleft>406</onleft>
-      <onright>402</onright>
-      <onup>200</onup>
-      <ondown>200</ondown>
-    </control>
-    <control type="button" id="402">
-      <left>244</left>
-      <top>668</top>
-      <width>188</width>
-      <height>42</height>
-      <label>Kanal suchen</label>
-      <font>font12</font>
-      <textcolor>FFFFFFFF</textcolor>
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texturefocus>
-      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
-      <onleft>401</onleft>
-      <onright>403</onright>
-      <onup>200</onup>
-      <ondown>200</ondown>
-    </control>
-    <control type="button" id="403">
-      <left>444</left>
-      <top>668</top>
-      <width>188</width>
-      <height>42</height>
-      <label>Weitere Kanäle</label>
-      <font>font12</font>
-      <textcolor>FFFFFFFF</textcolor>
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texturefocus>
-      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
-      <onleft>402</onleft>
-      <onright>404</onright>
-      <onup>200</onup>
-      <ondown>200</ondown>
-    </control>
-    <control type="button" id="404">
-      <left>644</left>
-      <top>668</top>
-      <width>188</width>
-      <height>42</height>
-      <label>Vorschau</label>
-      <font>font12</font>
-      <textcolor>FFFFFFFF</textcolor>
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texturefocus>
-      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
-      <onleft>403</onleft>
-      <onright>405</onright>
-      <onup>200</onup>
-      <ondown>200</ondown>
-    </control>
-    <control type="button" id="405">
-      <left>844</left>
-      <top>668</top>
-      <width>188</width>
-      <height>42</height>
-      <label>Speichern</label>
-      <font>font12</font>
-      <textcolor>FFFFFFFF</textcolor>
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texturefocus>
-      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
-      <onleft>404</onleft>
-      <onright>406</onright>
-      <onup>200</onup>
-      <ondown>200</ondown>
-    </control>
-    <control type="button" id="406">
-      <left>1044</left>
-      <top>668</top>
-      <width>188</width>
-      <height>42</height>
-      <label>Abbrechen</label>
-      <font>font12</font>
-      <textcolor>FFFFFFFF</textcolor>
-      <texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_focus.png</texturefocus>
-      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
-      <onleft>405</onleft>
-      <onright>401</onright>
-      <onup>200</onup>
-      <ondown>200</ondown>
+      <control type="textbox" id="301">
+        <left>14</left>
+        <top>314</top>
+        <width>472</width>
+        <height>164</height>
+        <font>font13</font>
+        <textcolor>FFF5F7FA</textcolor>
+        <text />
+      </control>
+      <control type="button" id="401">
+        <left>14</left>
+        <top>488</top>
+        <width>232</width>
+        <height>32</height>
+        <font>font13</font>
+        <textcolor>FFF5F7FA</textcolor>
+        <text>Quelle wählen</text>
+        <texturefocus colordiffuse="FF26634B">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturefocus>
+        <texturenofocus colordiffuse="FF263142">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturenofocus>
+        <onleft>410</onleft>
+        <onright>402</onright>
+        <onup>200</onup>
+        <ondown>403</ondown>
+      </control>
+      <control type="button" id="402">
+        <left>254</left>
+        <top>488</top>
+        <width>232</width>
+        <height>32</height>
+        <font>font13</font>
+        <textcolor>FFF5F7FA</textcolor>
+        <text>Kanal suchen</text>
+        <texturefocus colordiffuse="FF26634B">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturefocus>
+        <texturenofocus colordiffuse="FF263142">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturenofocus>
+        <onleft>401</onleft>
+        <onright>403</onright>
+        <onup>200</onup>
+        <ondown>404</ondown>
+      </control>
+      <control type="button" id="403">
+        <left>14</left>
+        <top>524</top>
+        <width>232</width>
+        <height>32</height>
+        <font>font13</font>
+        <textcolor>FFF5F7FA</textcolor>
+        <text>Weitere Kanäle</text>
+        <texturefocus colordiffuse="FF26634B">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturefocus>
+        <texturenofocus colordiffuse="FF263142">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturenofocus>
+        <onleft>402</onleft>
+        <onright>404</onright>
+        <onup>401</onup>
+        <ondown>405</ondown>
+      </control>
+      <control type="button" id="404">
+        <left>254</left>
+        <top>524</top>
+        <width>232</width>
+        <height>32</height>
+        <font>font13</font>
+        <textcolor>FFF5F7FA</textcolor>
+        <text>Vorschau</text>
+        <texturefocus colordiffuse="FF26634B">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturefocus>
+        <texturenofocus colordiffuse="FF263142">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturenofocus>
+        <onleft>403</onleft>
+        <onright>405</onright>
+        <onup>402</onup>
+        <ondown>406</ondown>
+      </control>
+      <control type="button" id="405">
+        <left>14</left>
+        <top>560</top>
+        <width>232</width>
+        <height>32</height>
+        <font>font13</font>
+        <textcolor>FFF5F7FA</textcolor>
+        <text>Speichern</text>
+        <texturefocus colordiffuse="FF26634B">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturefocus>
+        <texturenofocus colordiffuse="FF263142">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturenofocus>
+        <onleft>404</onleft>
+        <onright>406</onright>
+        <onup>403</onup>
+        <ondown>407</ondown>
+      </control>
+      <control type="button" id="406">
+        <left>254</left>
+        <top>560</top>
+        <width>232</width>
+        <height>32</height>
+        <font>font13</font>
+        <textcolor>FFF5F7FA</textcolor>
+        <text>Abbrechen</text>
+        <texturefocus colordiffuse="FF26634B">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturefocus>
+        <texturenofocus colordiffuse="FF263142">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturenofocus>
+        <onleft>405</onleft>
+        <onright>407</onright>
+        <onup>404</onup>
+        <ondown>408</ondown>
+      </control>
+      <control type="button" id="407">
+        <left>14</left>
+        <top>596</top>
+        <width>232</width>
+        <height>32</height>
+        <font>font13</font>
+        <textcolor>FFF5F7FA</textcolor>
+        <text>Vorige Kanäle</text>
+        <texturefocus colordiffuse="FF26634B">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturefocus>
+        <texturenofocus colordiffuse="FF263142">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturenofocus>
+        <onleft>406</onleft>
+        <onright>408</onright>
+        <onup>405</onup>
+        <ondown>409</ondown>
+      </control>
+      <control type="button" id="408">
+        <left>254</left>
+        <top>596</top>
+        <width>232</width>
+        <height>32</height>
+        <font>font13</font>
+        <textcolor>FFF5F7FA</textcolor>
+        <text>Sendungen hoch</text>
+        <texturefocus colordiffuse="FF26634B">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturefocus>
+        <texturenofocus colordiffuse="FF263142">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturenofocus>
+        <onleft>407</onleft>
+        <onright>409</onright>
+        <onup>406</onup>
+        <ondown>200</ondown>
+      </control>
+      <control type="button" id="409">
+        <left>14</left>
+        <top>632</top>
+        <width>232</width>
+        <height>32</height>
+        <font>font13</font>
+        <textcolor>FFF5F7FA</textcolor>
+        <text>Sendungen runter</text>
+        <texturefocus colordiffuse="FF26634B">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturefocus>
+        <texturenofocus colordiffuse="FF263142">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturenofocus>
+        <onleft>408</onleft>
+        <onright>410</onright>
+        <onup>407</onup>
+        <ondown>200</ondown>
+      </control>
+      <control type="button" id="410">
+        <left>254</left>
+        <top>632</top>
+        <width>232</width>
+        <height>32</height>
+        <font>font13</font>
+        <textcolor>FFF5F7FA</textcolor>
+        <text>Nächster Zeitraum</text>
+        <texturefocus colordiffuse="FF26634B">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturefocus>
+        <texturenofocus colordiffuse="FF263142">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturenofocus>
+        <onleft>409</onleft>
+        <onright>401</onright>
+        <onup>408</onup>
+        <ondown>200</ondown>
+      </control>
     </control>
   </controls>
 </window>

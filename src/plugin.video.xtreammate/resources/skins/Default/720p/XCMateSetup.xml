@@ -197,7 +197,7 @@
     <control type="button" id="16">
       <left>45</left>
       <top>645</top>
-      <width>385</width>
+      <width>285</width>
       <height>50</height>
       <font>font13</font>
       <textcolor>FFFFFFFF</textcolor>
@@ -205,15 +205,15 @@
       <texturefocus colordiffuse="FF72D7F4">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturefocus>
       <texturenofocus colordiffuse="FF303D4B">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturenofocus>
       <label>$LOCALIZE[32710]</label>
-      <onleft>17</onleft>
+      <onleft>19</onleft>
       <onright>18</onright>
       <onup>13</onup>
       <ondown>10</ondown>
     </control>
     <control type="button" id="17">
-      <left>845</left>
+      <left>645</left>
       <top>645</top>
-      <width>385</width>
+      <width>285</width>
       <height>50</height>
       <font>font13</font>
       <textcolor>FFFFFFFF</textcolor>
@@ -222,14 +222,14 @@
       <texturenofocus colordiffuse="FF303D4B">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturenofocus>
       <label>$LOCALIZE[32707]</label>
       <onleft>18</onleft>
-      <onright>16</onright>
+      <onright>19</onright>
       <onup>13</onup>
       <ondown>10</ondown>
     </control>
     <control type="button" id="18">
-      <left>445</left>
+      <left>345</left>
       <top>645</top>
-      <width>385</width>
+      <width>285</width>
       <height>50</height>
       <font>font13</font>
       <textcolor>FFFFFFFF</textcolor>
@@ -403,6 +403,22 @@
       <height>100</height>
       <aspectratio>keep</aspectratio>
       <texture>special://home/addons/plugin.video.xtreammate/icon-81da1003a2753ec6.png</texture>
+    </control>
+    <control type="button" id="19">
+      <left>945</left>
+      <top>645</top>
+      <width>285</width>
+      <height>50</height>
+      <font>font13</font>
+      <textcolor>FFFFFFFF</textcolor>
+      <focusedcolor>FF061820</focusedcolor>
+      <texturefocus colordiffuse="FF72D7F4">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturefocus>
+      <texturenofocus colordiffuse="FF303D4B">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturenofocus>
+      <label>Entwurf verwerfen</label>
+      <onleft>17</onleft>
+      <onright>16</onright>
+      <onup>13</onup>
+      <ondown>10</ondown>
     </control>
   </controls>
 </window>

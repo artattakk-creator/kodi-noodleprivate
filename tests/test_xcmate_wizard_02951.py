@@ -49,7 +49,8 @@ class Settings51(Fixture,unittest.TestCase):
         choice,data=self.settings.proposal();self.dialog.input.return_value='synthetic-completion'
         result=self.wizard.input_data(self.dialog,choice,data)
         self.assertEqual(self.dialog.input.call_count,1)
-        self.assertEqual(self.dialog.input.call_args.kwargs,{'option':2})
+        # .53: only the missing NEW password is visible by default; saved values never open.
+        self.assertEqual(self.dialog.input.call_args.kwargs,{'option':0})
         self.assertEqual(result['xc_user'],'synthetic-user')
 
     def test_confirmation_contains_no_values_and_default_is_no(self):

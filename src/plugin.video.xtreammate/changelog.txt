@@ -1,3 +1,14 @@
+0.1.29.53
+- Update-Popup zeigt die konkreten EPG-/Wizard-Änderungen und das tatsächliche Passwortverhalten.
+- Zentraler EPG-Manager: Quellen, echte Zeiträume und lesbare Aktualisierungsberichte.
+- Quellqualifizierte Live-Vorschau im originalen Raster bei offenem Auswahlpanel.
+- 24 Stunden Standardrefresh; bestehende Intervalle und LastGood bleiben erhalten.
+- Gezielte, begrenzte Quellen-Retries statt permanentem Überspringen oder Voll-Neustart.
+- Wiederaufnehmbarer Wizard mit privaten Zwischenständen, Zurück, Retry und bestätigtem Verwerfen.
+- Neue Passworteingabe sichtbar oder verdeckt; gespeicherte Passwörter niemals vorzeigen.
+- .50/.52-Widgets und Pixelanzeige erhalten; BINGIE-Skinpatch nur separat freigegeben.
+- Android-Abnahme offen; kein automatischer Merge, Geräteupdate oder Datenreset.
+
 0.1.29.52
 - EPG: einheitliches 7/20-Kalendertage-Fenster im Master und gemeinsamen Datenbestand.
 - Quellqualifizierte Lücken-/Metadaten-Ergänzung mit bewahrtem Last-Good-Bestand.

@@ -141,7 +141,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
             selected=self._selected() if r==self.row else None
             # If an unusually dense schedule exceeds the native pool, pan to
             # the selected event rather than silently making it unreachable.
-            if selected and selected in candidates and candidates.index(selected)>=CELLS:
+            if selected and selected in candidates and candidates.index(selected)>=CELLS and not getattr(self,'_preview53',False):
                 self.origin=selected['start'];self._load();return
             for c in range(CELLS):
                 cid=1000+r*CELLS+c;control=self.getControl(cid);event=candidates[c] if c<len(candidates) else None

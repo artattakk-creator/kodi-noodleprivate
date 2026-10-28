@@ -109,7 +109,8 @@ def show():
         if time.time()<value.get('retry_at',0):return False
         try:
             # This is the explicitly dispatched plugin/GUI interpreter, never service.run.
-            xbmcgui.Dialog().ok(tr(35850),tr(35851,current))
+            from update_notes53 import message
+            xbmcgui.Dialog().ok(tr(35850),message(current))
         except (AttributeError,RuntimeError):
             value['retry_at']=time.time()+60;save(value);return False
         marker.setProperty(ACK,current);marker.clearProperty(PENDING)
