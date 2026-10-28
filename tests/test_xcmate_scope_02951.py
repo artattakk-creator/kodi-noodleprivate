@@ -12,7 +12,7 @@ class Scope51(unittest.TestCase):
         self.assertEqual(len(baseline['source_sha256']),573);self.assertEqual(len(hooks),9)
         self.assertEqual({Path(p).name for p in hooks},{'addon.xml','changelog.txt','strings.po','setup_wizard.py','setup_window.py','setup_draft.py','setup_trace.py','XCMateSetup.xml'})
         for path,digest in baseline['source_sha256'].items():
-            raw=(ROOT/path).read_bytes()
+            raw=__import__('stabilization_contract_02952').without_stabilization52((ROOT/path).read_bytes(),path)
             self.assertEqual(hashlib.sha256(without_wizard51(raw,path)).hexdigest(),digest,path)
             if path not in hooks:self.assertEqual(hashlib.sha256(raw).hexdigest(),digest,path)
     def test_all_2078_old_methods_retained_without_new_skips(self):

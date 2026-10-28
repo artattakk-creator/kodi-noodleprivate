@@ -145,14 +145,14 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
             if not rows and not self.mappings.get(channel['sid']):
                 rows,total=events(self.portal['id'],channel.get('epg_channel_id',''),start,stop,page)
                 eid=channel.get('epg_channel_id','')
-            if day>=10:
+            if day>=-7:
                 from local_epg import window,channel_keys
                 from epg_events import deduplicate
                 prepared46=window(self.portal['id'],[channel],self.mappings,start,stop,limit=256)
                 if prepared46 is not None:
                     for ident46 in channel_keys(channel,self.mappings)[1]:
                         values46=deduplicate(prepared46.get(ident46,[]),channel=ident46)
-                        if values46:
+                        if values46 and (len(values46)>=total or __import__('epg_binding48').binding(self.mappings,channel['sid'])):
                             total=len(values46);rows=values46[page:page+100];break
             if day==0 and page==0 and info.get('mapping')=='SHORT_EPG':
                 rows=[dict(e,title=e['title'],description=e.get('description',''),source=-1) for e in info['events']]+[

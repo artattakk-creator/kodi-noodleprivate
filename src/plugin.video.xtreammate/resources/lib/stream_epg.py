@@ -52,7 +52,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         sid=row['sid'];eid=str(mappings.get(sid) or row.get('epg_channel_id') or '')
         if eid: ids.add(eid);aliases[sid]=eid
         key=_channel_name_key(row.get('name'))
-        names.setdefault(key,[]).append(sid)
+        if key:names.setdefault(key,[]).append(sid)
     from programme_store46 import Stage as ProgrammeStage46
     metadata46=ProgrammeStage46(pid,generation,source_index,filename,source_identity=__import__('guide_publish44').source_id(source,source_index))
     batch=[];stored=0;now=time.time();keep_stage=False;right46=__import__('programme_index46').bounds(now)[1]
@@ -76,7 +76,6 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         if not event['name']: return
         if event['start_timestamp']>=right46:return
         metadata46.add(event)  # Independent cache may keep real feed days11–20.
-        if event['start_timestamp']>=now+10*86400:return
         batch.append((generation,event['channel'],event['start_timestamp'],event['stop_timestamp'],event['name'],event['descr']))
         stored+=1
         if len(batch)>=256: flush()
@@ -110,7 +109,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
             from epg_events import clean_stage
             clean_stage(db,'xml_stage',' WHERE generation=?',(generation,))
         stage=dict(generation=generation,source=source,index=source_index,aliases=aliases,meta_pid46=str(pid),metadata_ok46=not metadata46.failed,index_ok46=not metadata46.facts46.failed,
-                   now=now,counts=dict(counts,stored=stored))
+                   now=now,counts=dict(counts,stored=stored),streams52=streams,mappings52=mappings,names52=channel_names)
         if stage_only:
             keep_stage=True
             return stage
@@ -170,7 +169,10 @@ def publish_stages44(pid,stages,filename=None,cancel=lambda:False):
                 db.execute('INSERT OR REPLACE INTO guide44_outcomes VALUES(?,?,?)',(pid,code,json.dumps(totals)))
             if cancel():raise InterruptedError('EPG import cancelled')
         from programme_store46 import finish as finish_metadata46
-        for stage in stages:finish_metadata46(pid,stage['generation'],stage.get('metadata_ok46',True),filename,index_ok46=stage.get('index_ok46',True),index_publish46=True)
+        for stage in stages:
+            finish_metadata46(pid,stage['generation'],stage.get('metadata_ok46',True),filename,index_ok46=stage.get('index_ok46',True),index_publish46=True)
+            from epg_merge52 import publish_aliases
+            publish_aliases(pid,source_id(stage['source'],stage['index']),stage['aliases'],stage.get('streams52',()),stage.get('mappings52',{}),filename,names=stage.get('names52'))
         return outcomes
     finally:db.close()
 
@@ -249,10 +251,15 @@ def _refresh44(portal,force=False,cancel=lambda:False):
         request(portal,'live',portal.get('start_group_id',''),priority=0)
         return {}
     if not portal.get('epg_show',True): return {}
-    xc=for_portal(portal);uri=portal.get('epg_url') or xc.get_xmltv_epg_url()
+    provider_failure52=0;uri=''
+    if portal.get('provider_epg_enabled',True):
+        try:uri=portal.get('epg_url') or for_portal(portal).get_xmltv_epg_url() or ''
+        except Exception as exc:
+            code,fields=failure_details(exc,'DOWNLOAD')
+            update(pid,'provider',code,running=False,**fields);provider_failure52=1
     provider=dict(uri=uri,local=not uri.startswith(('http://','https://')))
     sources=([('provider',provider,0)] if uri and portal.get('provider_epg_enabled',True) else [])+[(source_key(s),s,i) for i,s in enumerate(config['sources'],1) if s.get('enabled',True)]
-    successes=failures=0;stages=[]
+    successes=0;failures=provider_failure52;stages=[]
     for key,source,index in sources:
         if cancel(): break
         update(pid,key,'RUNNING',running=True,source_index=index)
@@ -291,5 +298,5 @@ def _refresh44(portal,force=False,cancel=lambda:False):
             for r in streams for e in result.get(r['sid'],[])[:1]})
         update(pid,'refresh','READY' if not failures else 'PARTIAL_SUCCESS',running=False,loaded=successes,failed=failures)
         return result
-    update(pid,'refresh','NO_NEW_GUIDE',running=False,loaded=successes,failed=failures)
+    update(pid,'refresh','READY_NO_NOW' if successes else 'NO_NEW_GUIDE',running=False,loaded=successes,failed=failures)
     return {}

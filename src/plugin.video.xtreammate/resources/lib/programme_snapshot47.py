@@ -57,7 +57,10 @@ def fallback_window(pid, channels, mappings, start, stop, limit=48):
         selected48=binding(mappings,sid)
         for ident in keys:
             view.canonical[ident] = ident
-            view[ident] = window(pid, ident, start, stop, limit=limit,**({'source48':selected48['source']} if selected48 else {}))
+            if selected48:view[ident] = window(pid, ident, start, stop, limit=limit,source48=selected48['source'])
+            else:
+                from epg_merge52 import window as merged_window52
+                view[ident]=merged_window52(pid,sid,ident,start,stop,limit=limit,manual=bool(mappings.get(sid)))
     return view if any(view.values()) else None
 
 

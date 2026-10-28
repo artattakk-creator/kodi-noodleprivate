@@ -31,13 +31,13 @@ def number(value,ceiling):
 
 
 class Details:
-    def __init__(self):self.token=None;self.values={};self.next_sample=0
+    def __init__(self):self.token=None;self.values={};self.next_sample=0;self.pixel_candidate52=None
 
     def read(self,player,token):
         from playback_exit import _same
         if not token or not own(player,token):
-            self.token=None;self.values={};self.next_sample=0;return {}
-        if not _same(token,self.token):self.token=token;self.values={};self.next_sample=0
+            self.token=None;self.values={};self.next_sample=0;self.pixel_candidate52=None;return {}
+        if not _same(token,self.token):self.token=token;self.values={};self.next_sample=0;self.pixel_candidate52=None
         if time.monotonic()<self.next_sample:return dict(self.values)
         import xbmc
         values={}
@@ -47,8 +47,18 @@ class Details:
             if isinstance(value,str) and value.strip() and '://' not in value:values[key]=value.strip()[:80]
         for key,limit in (('width',16384),('height',16384),('fps',240)):
             n=number(values.get(key),limit)
-            if n is None:values.pop(key,None)
+            if n is None or key in ('width','height') and not n.is_integer():values.pop(key,None)
             else:values[key]=format(n,'g')
+        pair=(values.get('width'),values.get('height'))
+        if not all(pair):
+            values.pop('width',None);values.pop('height',None);self.pixel_candidate52=None
+        elif token[0]=='live':
+            # Kodi may expose the previous decoder's labels while a newly
+            # tagged item starts. Require two equal existing 2s samples; do
+            # not add RPC/player calls or present a previous session's pair.
+            if self.pixel_candidate52!=pair:
+                values.pop('width',None);values.pop('height',None)
+            self.pixel_candidate52=pair
         # Missing HDR/scan is unknown, never inferred SDR/progressive.
         try:values['subtitle_enabled']=bool(xbmc.getCondVisibility('VideoPlayer.SubtitlesEnabled'))
         except (AttributeError,RuntimeError):pass

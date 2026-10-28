@@ -10,7 +10,7 @@ from programme_read47 import scoped
 MAX_BYTES=128*1024*1024
 APPLICATION_ID=0x58434D46
 _scans={};_reports={};_pauses={}
-FIELDS=('pid','sid','canonical','key','start','stop','title','description','source','revision','code','subtitle','genre','episode_label','year','season','episode','cast','director','xmltv_image','provider_image','epg_source46','epg_text46','placeholder','source_key46','fact_revision46')
+FIELDS=('pid','sid','canonical','key','start','stop','title','description','source','revision','code','subtitle','genre','episode_label','year','season','episode','cast','director','xmltv_image','provider_image','epg_source46','epg_text46','placeholder','source_key46','fact_revision46','field_sources52','updated52')
 
 
 def path(guide=None):
@@ -147,6 +147,19 @@ def finish(pid,generation,publish,guide=None):
                 if not rows:break
                 db.executemany('DELETE FROM pending46 WHERE generation=? AND pid=? AND cid=? AND start=? AND stop=? AND source_id=?',[(generation,*r[:5]) for r in rows])
                 if publish:
+                    # A partial observation of the same event cannot erase
+                    # already verified description/image/episode facts.
+                    marks=','.join('(?,?,?,?)' for _ in rows)
+                    old={tuple(r[:4]):json.loads(r[4]) for r in db.execute('SELECT cid,start,stop,source_id,data FROM facts WHERE pid=? AND (cid,start,stop,source_id) IN ('+marks+')',[str(pid)]+[v for row in rows for v in row[1:5]])}
+                    from epg_merge52 import retained
+                    merged=[]
+                    for row in rows:
+                        prior=old.get(tuple(row[1:5]))
+                        if prior:
+                            value=retained(prior,json.loads(row[7]));data=encoded(value)
+                            row=(*row[:6],hashlib.sha256(data.encode()).hexdigest(),data)
+                        merged.append(row)
+                    rows=merged
                     for cid in {r[1] for r in rows}:
                         count=db.executemany('''INSERT INTO facts VALUES(?,?,?,?,?,?,?,?,?) ON CONFLICT(pid,cid,start,stop,source_id) DO UPDATE SET titlehash=excluded.titlehash,fingerprint=excluded.fingerprint,data=excluded.data,updated=excluded.updated WHERE facts.fingerprint!=excluded.fingerprint''',[(*r,time.time()) for r in rows if r[1]==cid]).rowcount
                         if count:db.execute('INSERT INTO fact_versions VALUES(?,?,1) ON CONFLICT(pid,cid) DO UPDATE SET version=version+1',(str(pid),cid))
