@@ -145,10 +145,10 @@ test_restart_offline_previous_index_and_immediate_disabled_filter (test_xcmate_0
 test_same_stream_in_two_groups_counted_once_globally_but_available_in_each (test_xcmate_028_streaming.IndexTests.test_same_stream_in_two_groups_counted_once_globally_but_available_in_each) ... ok
 test_streaming_group_publishes_only_after_complete_json (test_xcmate_028_streaming.IndexTests.test_streaming_group_publishes_only_after_complete_json) ... ok
 test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update (test_xcmate_028_streaming.LargeGuideTests.test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update) ... 
-LARGE_XMLTV {"parsed": 160005, "stored": 160005, "xml_bytes": 95571948, "sqlite_bytes": 303685632, "seconds": 30.255}
+LARGE_XMLTV {"parsed": 160005, "stored": 160005, "xml_bytes": 95571948, "sqlite_bytes": 303685632, "seconds": 38.5}
 ok
 test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib (test_xcmate_028_streaming.LargeHTTPTests.test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib) ... 
-LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 309526528, "seconds": 24.118, "peak_rss_kib": 74308}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 621731840, "seconds": 25.226, "peak_rss_kib": 74308}]
+LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 309526528, "seconds": 39.089, "peak_rss_kib": 75068}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 621731840, "seconds": 35.029, "peak_rss_kib": 75068}]
 ok
 test_cache_envelope_and_trailing_data_validated (test_xcmate_028_streaming.ParserTests.test_cache_envelope_and_trailing_data_validated) ... ok
 test_chunked_http_gzip_and_truncated_compression (test_xcmate_028_streaming.ParserTests.test_chunked_http_gzip_and_truncated_compression) ... ok
@@ -355,6 +355,24 @@ test_successor_av_start_adopts_nonce_and_does_not_reload_series (test_xcmate_aut
 test_three_natural_ends_then_number_gap_and_next_season_without_confirmation (test_xcmate_autoplay_02921.AutoplayTests.test_three_natural_ends_then_number_gap_and_next_season_without_confirmation) ... ok
 test_toggle_off_and_on_during_playback_is_session_local (test_xcmate_autoplay_02921.AutoplayTests.test_toggle_off_and_on_during_playback_is_session_local) ... ok
 test_toggle_off_cancels_queued_transition_and_does_not_write_settings (test_xcmate_autoplay_02921.AutoplayTests.test_toggle_off_cancels_queued_transition_and_does_not_write_settings) ... ok
+test_checked_reference_files_and_archive_have_explicit_provenance (test_xcmate_bingie_skin_02950.Skin50.test_checked_reference_files_and_archive_have_explicit_provenance) ... ok
+test_failure_before_or_after_each_native_file_replace_rolls_back_without_loss (test_xcmate_bingie_skin_02950.Skin50.test_failure_before_or_after_each_native_file_replace_rolls_back_without_loss) ... ok
+test_foreign_skin_change_blocks_entire_apply_or_restore_without_overwrite (test_xcmate_bingie_skin_02950.Skin50.test_foreign_skin_change_blocks_entire_apply_or_restore_without_overwrite) ... ok
+test_home_hero_uses_native_focused_item_properties_above_small_logos_without_player_hooks (test_xcmate_bingie_skin_02950.Skin50.test_home_hero_uses_native_focused_item_properties_above_small_logos_without_player_hooks) ... ok
+test_known_previous_programme_card_adapter_is_preserved_as_an_additive_variant (test_xcmate_bingie_skin_02950.Skin50.test_known_previous_programme_card_adapter_is_preserved_as_an_additive_variant) ... ok
+test_no_skin_changes_are_applied_when_user_declines_reviewed_preview (test_xcmate_bingie_skin_02950.Skin50.test_no_skin_changes_are_applied_when_user_declines_reviewed_preview) ... ok
+test_original_native_template_compiler_keeps_media_parameters_and_registers_live_in_all_eight_slots (test_xcmate_bingie_skin_02950.Skin50.test_original_native_template_compiler_keeps_media_parameters_and_registers_live_in_all_eight_slots) ... /opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/simpleeval.py:362: DeprecationWarning: ast.Num is deprecated and will be removed in Python 3.14; use ast.Constant instead
+  ast.Num: self._eval_num,
+/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/simpleeval.py:363: DeprecationWarning: ast.Str is deprecated and will be removed in Python 3.14; use ast.Constant instead
+  ast.Str: self._eval_str,
+/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/simpleeval.py:379: DeprecationWarning: ast.NameConstant is deprecated and will be removed in Python 3.14; use ast.Constant instead
+  if hasattr(ast, "NameConstant"):
+ok
+test_original_native_widget_registry_exposes_three_direct_candidates_with_real_urls (test_xcmate_bingie_skin_02950.Skin50.test_original_native_widget_registry_exposes_three_direct_candidates_with_real_urls) ... ok
+test_preparation_never_changes_installed_skin_and_tests_backup_restore_privately (test_xcmate_bingie_skin_02950.Skin50.test_preparation_never_changes_installed_skin_and_tests_backup_restore_privately) ... ok
+test_process_interruption_between_files_remains_explicitly_recoverable (test_xcmate_bingie_skin_02950.Skin50.test_process_interruption_between_files_remains_explicitly_recoverable) ... ok
+test_skin_apply_needs_explicit_approval_and_restores_all_four_originals (test_xcmate_bingie_skin_02950.Skin50.test_skin_apply_needs_explicit_approval_and_restores_all_four_originals) ... ok
+test_unknown_layout_or_skin_version_does_not_get_a_best_guess_patch (test_xcmate_bingie_skin_02950.Skin50.test_unknown_layout_or_skin_version_does_not_get_a_best_guess_patch) ... ok
 test_display_name_and_version (test_xcmate_branding.XCMateBrandingTests.test_display_name_and_version) ... ok
 test_internal_communication_and_saved_ids_unchanged (test_xcmate_branding.XCMateBrandingTests.test_internal_communication_and_saved_ids_unchanged) ... ok
 test_kodi_settings_and_languages (test_xcmate_branding.XCMateBrandingTests.test_kodi_settings_and_languages) ... ok
@@ -897,6 +915,12 @@ test_real_guide_owner_back_returns_without_home_or_restarting_player (test_xcmat
 test_resume_waits_for_foreign_modal_and_never_replaces_new_session (test_xcmate_live_guide_02935.LiveGuide35.test_resume_waits_for_foreign_modal_and_never_replaces_new_session) ... ok
 test_selected_channel_reaches_existing_resolver_only_after_unlock (test_xcmate_live_guide_02935.LiveGuide35.test_selected_channel_reaches_existing_resolver_only_after_unlock) ... ok
 test_service_keeps_autoplay_background_and_preplay_before_guide_overlay_guard (test_xcmate_live_guide_02935.LiveGuide35.test_service_keeps_autoplay_background_and_preplay_before_guide_overlay_guard) ... ok
+test_empty_source_has_no_placeholder_group_rows_or_forced_provider_fetch (test_xcmate_live_home_02950.LiveHome50.test_empty_source_has_no_placeholder_group_rows_or_forced_provider_fetch) ... ok
+test_explicit_start_group_wins_over_start_channel_in_another_group_and_all_88_are_returned (test_xcmate_live_home_02950.LiveHome50.test_explicit_start_group_wins_over_start_channel_in_another_group_and_all_88_are_returned) ... ok
+test_home_route_has_no_group_folders_and_exactly_one_proven_player_target_per_station (test_xcmate_live_home_02950.LiveHome50.test_home_route_has_no_group_folders_and_exactly_one_proven_player_target_per_station) ... ok
+test_missing_or_unavailable_start_group_never_falls_back_to_all_enabled_groups (test_xcmate_live_home_02950.LiveHome50.test_missing_or_unavailable_start_group_never_falls_back_to_all_enabled_groups) ... ok
+test_native_fast_entry_and_full_router_use_same_strict_source (test_xcmate_live_home_02950.LiveHome50.test_native_fast_entry_and_full_router_use_same_strict_source) ... ok
+test_shared_now_next_event_and_honest_programme_placeholder_are_reused_without_network (test_xcmate_live_home_02950.LiveHome50.test_shared_now_next_event_and_honest_programme_placeholder_are_reused_without_network) ... ok
 test_ack_tamper_cannot_recover_stale_worker_done (test_xcmate_live_recovery_02946.LateReturn46.test_ack_tamper_cannot_recover_stale_worker_done) ... ok
 test_confirmed_late_queue_return_recovers_home_once_without_second_stop (test_xcmate_live_recovery_02946.LateReturn46.test_confirmed_late_queue_return_recovers_home_once_without_second_stop) ... ok
 test_foreign_media_after_native_return_never_receives_stop_or_home (test_xcmate_live_recovery_02946.LateReturn46.test_foreign_media_after_native_return_never_receives_stop_or_home) ... ok
@@ -1189,33 +1213,9 @@ test_playback_debug_does_not_log_stream_url (test_xcmate_p0_playback.StartupKodi
 test_runplugin_autoplay_uses_direct_player_only (test_xcmate_p0_playback.StartupKodiContractTests.test_runplugin_autoplay_uses_direct_player_only) ... ok
 test_confirmed_overlay_is_cleaned_on_stop (test_xcmate_p0_session_grace.PendingLiveSessionTests.test_confirmed_overlay_is_cleaned_on_stop) ... ok
 test_future_or_malformed_announcement_is_not_preserved (test_xcmate_p0_session_grace.PendingLiveSessionTests.test_future_or_malformed_announcement_is_not_preserved) ... ok
-test_new_session_survives_existing_idle_timer (test_xcmate_p0_session_grace.PendingLiveSessionTests.test_new_session_survives_existing_idle_timer) ... Exception in thread XCMate-import46:
-Traceback (most recent call last):
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/threading.py", line 1075, in _bootstrap_inner
-ok
+test_new_session_survives_existing_idle_timer (test_xcmate_p0_session_grace.PendingLiveSessionTests.test_new_session_survives_existing_idle_timer) ... ok
 test_old_session_is_cleaned_after_grace (test_xcmate_p0_session_grace.PendingLiveSessionTests.test_old_session_is_cleaned_after_grace) ... ok
-test_commons_and_local_images_explain_no_metadata_without_download_or_browse (test_xcmate_picker_access_02944.PickerAccess44.test_commons_and_local_images_explain_no_metadata_without_download_or_browse) ...     self.run()
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/threading.py", line 1012, in run
-    self._target(*self._args, **self._kwargs)
-  File "/home/runner/work/kodi-noodleprivate/kodi-noodleprivate/src/plugin.video.xtreammate/resources/lib/app_imports46.py", line 21, in _prime
-    for name in MODULES:importlib.import_module(name)
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/importlib/__init__.py", line 90, in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
-  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
-  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
-  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
-  File "/home/runner/work/kodi-noodleprivate/kodi-noodleprivate/src/plugin.video.xtreammate/resources/lib/media_osd.py", line 14, in <module>
-    from media_actions import available,extension
-  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 946, in _load_unlocked
-KeyError: 'media_actions'
-ok
+test_commons_and_local_images_explain_no_metadata_without_download_or_browse (test_xcmate_picker_access_02944.PickerAccess44.test_commons_and_local_images_explain_no_metadata_without_download_or_browse) ... ok
 test_episode_details_allow_series_art_and_restore_valid_episode_focus (test_xcmate_picker_access_02944.PickerAccess44.test_episode_details_allow_series_art_and_restore_valid_episode_focus) ... ok
 test_metadata_candidate_without_poster_is_available_and_never_automatic_cover (test_xcmate_picker_access_02944.PickerAccess44.test_metadata_candidate_without_poster_is_available_and_never_automatic_cover) ... ok
 test_metadata_preview_works_with_no_image_and_requires_separate_confirmation (test_xcmate_picker_access_02944.PickerAccess44.test_metadata_preview_works_with_no_image_and_requires_separate_confirmation) ... ok
@@ -1478,6 +1478,8 @@ test_new_modules_have_no_skin_installer_reset_or_native_decoder_override (test_x
 test_private_logs_databases_and_android_profiles_are_not_delivery_sources (test_xcmate_scope_02948.Scope48.test_private_logs_databases_and_android_profiles_are_not_delivery_sources) ... ok
 test_all_2021_existing_tests_retained_without_any_new_skip (test_xcmate_scope_02949.Scope49.test_all_2021_existing_tests_retained_without_any_new_skip) ... ok
 test_all_565_published_sources_retained_with_only_seven_exact_routing_and_label_changes (test_xcmate_scope_02949.Scope49.test_all_565_published_sources_retained_with_only_seven_exact_routing_and_label_changes) ... ok
+test_all_2035_existing_methods_remain_without_new_skips (test_xcmate_scope_02950.Scope50.test_all_2035_existing_methods_remain_without_new_skips) ... ok
+test_all_566_published_files_are_retained_and_560_remain_byte_identical (test_xcmate_scope_02950.Scope50.test_all_566_published_files_are_retained_and_560_remain_byte_identical) ... ok
 test_action_route_opens_one_owner_without_search_container_update (test_xcmate_search_02926.SearchTests.test_action_route_opens_one_owner_without_search_container_update) ... ok
 test_cancel_and_repeated_search_keep_owner_and_do_not_apply_stale_results (test_xcmate_search_02926.SearchTests.test_cancel_and_repeated_search_keep_owner_and_do_not_apply_stale_results) ... ok
 test_explicit_manual_mapping_does_not_fall_back_to_wrong_provider_epg (test_xcmate_search_02926.SearchTests.test_explicit_manual_mapping_does_not_fall_back_to_wrong_provider_epg) ... ok
@@ -1902,6 +1904,29 @@ test_separate_explicit_confirmation_is_mandatory_even_after_pin (test_xcmate_wid
 test_single_file_atomic_apply_and_exact_hash_guarded_restore (test_xcmate_widget_adapter_02946.ProgrammeAdapter46.test_single_file_atomic_apply_and_exact_hash_guarded_restore) ... ok
 test_tampered_backup_or_candidate_cannot_be_applied (test_xcmate_widget_adapter_02946.ProgrammeAdapter46.test_tampered_backup_or_candidate_cannot_be_applied) ... ok
 test_unknown_skin_version_fonts_or_layout_shapes_block_before_write (test_xcmate_widget_adapter_02946.ProgrammeAdapter46.test_unknown_skin_version_fonts_or_layout_shapes_block_before_write) ... ok
+test_existing_movie_and_series_slots_cannot_be_replaced (test_xcmate_widget_binding_02950.Binding50.test_existing_movie_and_series_slots_cannot_be_replaced) ... ok
+test_existing_own_movie_and_series_keep_custom_names_and_reload_hooks (test_xcmate_widget_binding_02950.Binding50.test_existing_own_movie_and_series_keep_custom_names_and_reload_hooks) ... ok
+test_explicit_approval_is_required_and_prepare_only_creates_private_backups (test_xcmate_widget_binding_02950.Binding50.test_explicit_approval_is_required_and_prepare_only_creates_private_backups) ... ok
+test_explicit_legacy_live_group_binding_can_be_replaced_but_no_other_account (test_xcmate_widget_binding_02950.Binding50.test_explicit_legacy_live_group_binding_can_be_replaced_but_no_other_account) ... ok
+test_later_foreign_profile_change_is_never_overwritten_by_restore (test_xcmate_widget_binding_02950.Binding50.test_later_foreign_profile_change_is_never_overwritten_by_restore) ... ok
+test_live_binding_without_active_approved_layout_is_not_silently_saved (test_xcmate_widget_binding_02950.Binding50.test_live_binding_without_active_approved_layout_is_not_silently_saved) ... ok
+test_mainmenu_change_invalidates_the_profile_plan_before_any_write (test_xcmate_widget_binding_02950.Binding50.test_mainmenu_change_invalidates_the_profile_plan_before_any_write) ... ok
+test_native_assistance_is_only_opened_after_explicit_confirmation (test_xcmate_widget_binding_02950.Binding50.test_native_assistance_is_only_opened_after_explicit_confirmation) ... ok
+test_native_runtime_guards_foreign_skin_player_and_busy_editor_before_writes (test_xcmate_widget_binding_02950.Binding50.test_native_runtime_guards_foreign_skin_player_and_busy_editor_before_writes) ... ok
+test_new_slot_saves_and_fresh_original_native_reader_loads_exact_widget_binding (test_xcmate_widget_binding_02950.Binding50.test_new_slot_saves_and_fresh_original_native_reader_loads_exact_widget_binding) ... ok
+test_non_ascii_prefix_and_comments_preserve_exact_unrelated_native_values (test_xcmate_widget_binding_02950.Binding50.test_non_ascii_prefix_and_comments_preserve_exact_unrelated_native_values) ... ok
+test_only_explicit_own_live_upgrade_is_allowed_and_custom_title_is_kept (test_xcmate_widget_binding_02950.Binding50.test_only_explicit_own_live_upgrade_is_allowed_and_custom_title_is_kept) ... ok
+test_original_bytes_are_restored_exactly_after_verified_save (test_xcmate_widget_binding_02950.Binding50.test_original_bytes_are_restored_exactly_after_verified_save) ... ok
+test_profile_race_between_preview_and_save_is_rejected (test_xcmate_widget_binding_02950.Binding50.test_profile_race_between_preview_and_save_is_rejected) ... ok
+test_restore_cannot_write_a_profile_that_is_no_longer_active (test_xcmate_widget_binding_02950.Binding50.test_restore_cannot_write_a_profile_that_is_no_longer_active) ... ok
+test_saved_profile_is_required_and_skin_defaults_are_never_created_automatically (test_xcmate_widget_binding_02950.Binding50.test_saved_profile_is_required_and_skin_defaults_are_never_created_automatically) ... ok
+test_single_widget_home_is_not_silently_changed_to_multiple_widgets (test_xcmate_widget_binding_02950.Binding50.test_single_widget_home_is_not_silently_changed_to_multiple_widgets) ... ok
+test_symlink_profile_target_and_unknown_skin_are_blocked (test_xcmate_widget_binding_02950.Binding50.test_symlink_profile_target_and_unknown_skin_are_blocked) ... ok
+test_tampered_original_or_candidate_is_rejected (test_xcmate_widget_binding_02950.Binding50.test_tampered_original_or_candidate_is_rejected) ... ok
+test_three_choices_are_actions_not_group_folder_fallbacks (test_xcmate_widget_binding_02950.Binding50.test_three_choices_are_actions_not_group_folder_fallbacks) ... ok
+test_ui_cancel_does_not_write_binding_or_rebuild_home (test_xcmate_widget_binding_02950.Binding50.test_ui_cancel_does_not_write_binding_or_rebuild_home) ... ok
+test_ui_confirmation_saves_only_one_slot_and_requests_the_original_native_builder (test_xcmate_widget_binding_02950.Binding50.test_ui_confirmation_saves_only_one_slot_and_requests_the_original_native_builder) ... ok
+test_unknown_home_id_duplicate_properties_and_code_in_properties_are_blocked (test_xcmate_widget_binding_02950.Binding50.test_unknown_home_id_duplicate_properties_and_code_in_properties_are_blocked) ... ok
 test_art_completion_during_publication_is_not_swallowed_by_post_stamp (test_xcmate_widget_live_gate_02947.LiveGate47.test_art_completion_during_publication_is_not_swallowed_by_post_stamp) ... ok
 test_next_event_boundary_invalidates_inside_the_same_progress_minute (test_xcmate_widget_live_gate_02947.LiveGate47.test_next_event_boundary_invalidates_inside_the_same_progress_minute) ... ok
 test_real_start_group_or_logo_change_invalidates_existing_live_frame (test_xcmate_widget_live_gate_02947.LiveGate47.test_real_start_group_or_logo_change_invalidates_existing_live_frame) ... ok
@@ -2066,16 +2091,16 @@ test_widget_route_and_no_cached_credentials_in_link (test_xtreammate_widgets.Wid
 test_youtube_whitelist (test_xtreammate_widgets.WidgetsTest.test_youtube_whitelist) ... ok
 
 ----------------------------------------------------------------------
-Ran 2035 tests in 361.802s
+Ran 2078 tests in 527.843s
 
 OK
 
-MODEL_COLD_WINDOW_MS 6.316
-SEARCH39_HOST [{'query_kind': 'cold', 'first_names_ms': 5.347, 'total_ms': 44.335, 'scanned': 2905, 'results': 6}, {'query_kind': 'warm', 'first_names_ms': 4.669, 'total_ms': 16.617, 'scanned': 2905, 'results': 6}]
+MODEL_COLD_WINDOW_MS 6.542
+SEARCH39_HOST [{'query_kind': 'cold', 'first_names_ms': 5.836, 'total_ms': 46.518, 'scanned': 2905, 'results': 6}, {'query_kind': 'warm', 'first_names_ms': 5.223, 'total_ms': 17.907, 'scanned': 2905, 'results': 6}]
 
 SELECTIVE_XMLTV {"bytes": 400, "parsed": 2, "stored": 1}
 
 LARGE_M3U {"parsed": 20005, "active": 5002, "bytes": 1727118}
-WIDGET46_RETAINED_ARCHIVE {"legacy_rows": 40005, "old_opcode_budget": "INTERRUPTED", "new_rows": 24, "new_ms": 2.619}
-WIDGET41_HOST {'rows': 20005, 'returned': 24, 'code': 'READY', 'ms': 2.329}
-WIDGET44_V2_HOST {"records": 20005, "returned": 24, "ms": 3.003, "plan": "(9, 0, 0, 'SEARCH i USING INDEX recent_v2 (pid=? AND kind=?)') (19, 0, 0, 'USING INDEX sqlite_autoindex_selected_categories_1 FOR IN-OPERATOR') (25, 0, 0, 'SEARCH h USING INDEX sqlite_autoindex_heads_1 (pid=? AND kind=? AND cid=?)')"}
+WIDGET46_RETAINED_ARCHIVE {"legacy_rows": 40005, "old_opcode_budget": "INTERRUPTED", "new_rows": 24, "new_ms": 3.144}
+WIDGET41_HOST {'rows': 20005, 'returned': 24, 'code': 'READY', 'ms': 2.442}
+WIDGET44_V2_HOST {"records": 20005, "returned": 24, "ms": 3.628, "plan": "(9, 0, 0, 'SEARCH i USING INDEX recent_v2 (pid=? AND kind=?)') (19, 0, 0, 'USING INDEX sqlite_autoindex_selected_categories_1 FOR IN-OPERATOR') (25, 0, 0, 'SEARCH h USING INDEX sqlite_autoindex_heads_1 (pid=? AND kind=? AND cid=?)')"}
