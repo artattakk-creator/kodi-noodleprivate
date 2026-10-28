@@ -145,10 +145,10 @@ test_restart_offline_previous_index_and_immediate_disabled_filter (test_xcmate_0
 test_same_stream_in_two_groups_counted_once_globally_but_available_in_each (test_xcmate_028_streaming.IndexTests.test_same_stream_in_two_groups_counted_once_globally_but_available_in_each) ... ok
 test_streaming_group_publishes_only_after_complete_json (test_xcmate_028_streaming.IndexTests.test_streaming_group_publishes_only_after_complete_json) ... ok
 test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update (test_xcmate_028_streaming.LargeGuideTests.test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update) ... 
-LARGE_XMLTV {"parsed": 160005, "stored": 160005, "xml_bytes": 95571948, "sqlite_bytes": 303685632, "seconds": 32.677}
+LARGE_XMLTV {"parsed": 160005, "stored": 160005, "xml_bytes": 95571948, "sqlite_bytes": 303685632, "seconds": 40.836}
 ok
 test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib (test_xcmate_028_streaming.LargeHTTPTests.test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib) ... 
-LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 309526528, "seconds": 38.82, "peak_rss_kib": 74720}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 621731840, "seconds": 34.676, "peak_rss_kib": 74720}]
+LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 309526528, "seconds": 40.502, "peak_rss_kib": 74640}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 621731840, "seconds": 40.519, "peak_rss_kib": 74640}]
 ok
 test_cache_envelope_and_trailing_data_validated (test_xcmate_028_streaming.ParserTests.test_cache_envelope_and_trailing_data_validated) ... ok
 test_chunked_http_gzip_and_truncated_compression (test_xcmate_028_streaming.ParserTests.test_chunked_http_gzip_and_truncated_compression) ... ok
@@ -511,6 +511,24 @@ test_observed_departure_rearms_next_explicit_open_not_background_service (test_x
 test_replayed_queued_resolver_and_player_race_are_rejected (test_xcmate_entry_02938.Entry38.test_replayed_queued_resolver_and_player_race_are_rejected) ... ok
 test_temporary_pause_expires_without_changing_saved_flags (test_xcmate_entry_02938.Entry38.test_temporary_pause_expires_without_changing_saved_flags) ... ok
 test_twenty_refreshes_and_more_than_old_cooldown_still_start_once (test_xcmate_entry_02938.Entry38.test_twenty_refreshes_and_more_than_old_cooldown_still_start_once) ... ok
+test_common_resolver_requires_source_proof_even_for_non_mini_callers (test_xcmate_epg_binding_02948.Binding48.test_common_resolver_requires_source_proof_even_for_non_mini_callers) ... ok
+test_disabled_or_foreign_source_cannot_be_saved (test_xcmate_epg_binding_02948.Binding48.test_disabled_or_foreign_source_cannot_be_saved) ... ok
+test_empty_programme_sender_has_visible_mapping_button_and_context_action (test_xcmate_epg_binding_02948.Binding48.test_empty_programme_sender_has_visible_mapping_button_and_context_action) ... ok
+test_equal_channel_ids_remain_unambiguously_bound_to_different_sources (test_xcmate_epg_binding_02948.Binding48.test_equal_channel_ids_remain_unambiguously_bound_to_different_sources) ... ok
+test_explicit_save_changes_only_selected_sender_and_keeps_source_priority (test_xcmate_epg_binding_02948.Binding48.test_explicit_save_changes_only_selected_sender_and_keeps_source_priority) ... ok
+test_legacy_set_mapping_clears_only_that_senders_source_binding (test_xcmate_epg_binding_02948.Binding48.test_legacy_set_mapping_clears_only_that_senders_source_binding) ... ok
+test_locally_available_source_channel_ids_are_searchable_without_http (test_xcmate_epg_binding_02948.Binding48.test_locally_available_source_channel_ids_are_searchable_without_http) ... ok
+test_mini_does_not_use_an_unqualified_legacy_cache_when_selected_source_is_missing (test_xcmate_epg_binding_02948.Binding48.test_mini_does_not_use_an_unqualified_legacy_cache_when_selected_source_is_missing) ... ok
+test_missing_selected_source_does_not_silently_show_provider (test_xcmate_epg_binding_02948.Binding48.test_missing_selected_source_does_not_silently_show_provider) ... ok
+test_preparation_does_not_publish_old_data_with_a_new_mapping_stamp (test_xcmate_epg_binding_02948.Binding48.test_preparation_does_not_publish_old_data_with_a_new_mapping_stamp) ... ok
+test_prepared_start_data_rolls_now_next_forward_in_ram_without_stale_title (test_xcmate_epg_binding_02948.Binding48.test_prepared_start_data_rolls_now_next_forward_in_ram_without_stale_title) ... ok
+test_prepared_startup_snapshot_is_invalidated_on_mapping_change (test_xcmate_epg_binding_02948.Binding48.test_prepared_startup_snapshot_is_invalidated_on_mapping_change) ... ok
+test_preview_preserves_json_guide_and_existing_mapping_bytes (test_xcmate_epg_binding_02948.Binding48.test_preview_preserves_json_guide_and_existing_mapping_bytes) ... ok
+test_preview_uses_real_grid_and_cancel_restores_exact_snapshot (test_xcmate_epg_binding_02948.Binding48.test_preview_uses_real_grid_and_cancel_restores_exact_snapshot) ... ok
+test_saved_binding_is_identical_in_grid_widget_and_mini_snapshot (test_xcmate_epg_binding_02948.Binding48.test_saved_binding_is_identical_in_grid_widget_and_mini_snapshot) ... ok
+test_source_channel_display_names_are_committed_only_with_source_generation (test_xcmate_epg_binding_02948.Binding48.test_source_channel_display_names_are_committed_only_with_source_generation) ... ok
+test_visible_header_button_is_reachable_with_normal_remote_arrows_and_ok (test_xcmate_epg_binding_02948.Binding48.test_visible_header_button_is_reachable_with_normal_remote_arrows_and_ok) ... ok
+test_visible_mapping_button_does_not_cover_time_axis_or_first_grid_row (test_xcmate_epg_binding_02948.Binding48.test_visible_mapping_button_does_not_cover_time_axis_or_first_grid_row) ... ok
 test_authoritative_missing_manual_mapping_is_distinguished_from_provider_coverage (test_xcmate_epg_diagnostics_02916.DiagnosticsTests.test_authoritative_missing_manual_mapping_is_distinguished_from_provider_coverage) ... ok
 test_diagnostic_reads_whole_selected_channel_horizon_without_mutation_or_network (test_xcmate_epg_diagnostics_02916.DiagnosticsTests.test_diagnostic_reads_whole_selected_channel_horizon_without_mutation_or_network) ... ok
 test_fully_empty_and_short_only_sender_can_cross_empty_future_windows (test_xcmate_epg_diagnostics_02916.DiagnosticsTests.test_fully_empty_and_short_only_sender_can_cross_empty_future_windows) ... ok
@@ -596,6 +614,9 @@ test_two_expiry_rounds_do_not_change_url_or_revision_on_success (test_xcmate_fli
 test_correlated_live_prepare_and_player_intervals_have_correct_real_counts (test_xcmate_flow_analysis_02947.FlowAnalysis47.test_correlated_live_prepare_and_player_intervals_have_correct_real_counts) ... ok
 test_private_lines_and_identifiers_are_never_exported (test_xcmate_flow_analysis_02947.FlowAnalysis47.test_private_lines_and_identifiers_are_never_exported) ... ok
 test_unknown_log_codes_cannot_export_a_private_token (test_xcmate_flow_analysis_02947.FlowAnalysis47.test_unknown_log_codes_cannot_export_a_private_token) ... ok
+test_no_log_samples_are_not_fabricated_pass_or_timings (test_xcmate_flow_analysis_02948.Flow48.test_no_log_samples_are_not_fabricated_pass_or_timings) ... ok
+test_private_urls_tokens_unknown_codes_and_ids_are_never_output (test_xcmate_flow_analysis_02948.Flow48.test_private_urls_tokens_unknown_codes_and_ids_are_never_output) ... ok
+test_wizard_discovery_elapsed_and_startup_p50_p95_are_actual_samples (test_xcmate_flow_analysis_02948.Flow48.test_wizard_discovery_elapsed_and_startup_p50_p95_are_actual_samples) ... ok
 test_delayed_detail_visibility_never_commits_search_and_recovers_on_owner (test_xcmate_focus_02925.FocusTests.test_delayed_detail_visibility_never_commits_search_and_recovers_on_owner) ... ok
 test_late_detail_focus_is_cancelled_by_back_without_reopening (test_xcmate_focus_02925.FocusTests.test_late_detail_focus_is_cancelled_by_back_without_reopening) ... ok
 test_metadata_refresh_keeps_explicit_search_and_down_returns_to_actions (test_xcmate_focus_02925.FocusTests.test_metadata_refresh_keeps_explicit_search_and_down_returns_to_actions) ... ok
@@ -746,6 +767,19 @@ test_three_sources_fill_real_gaps_without_whole_channel_priority_suppression (te
 test_verified_backup_contains_uncheckpointed_wal_and_preserves_original (test_xcmate_guide_safety_02944.GuideSafety44.test_verified_backup_contains_uncheckpointed_wal_and_preserves_original) ... ok
 test_verified_full_legacy_feed_can_correct_exact_interval_but_short_cache_cannot (test_xcmate_guide_safety_02944.GuideSafety44.test_verified_full_legacy_feed_can_correct_exact_interval_but_short_cache_cannot) ... ok
 test_zero_source_keeps_rows_and_revision (test_xcmate_guide_safety_02944.GuideSafety44.test_zero_source_keeps_rows_and_revision) ... ok
+test_bingie_review_include_has_no_movies_series_rebinding_or_auto_apply (test_xcmate_images_hero_02948.ImagesHero48.test_bingie_review_include_has_no_movies_series_rebinding_or_auto_apply) ... ok
+test_cancelled_prefetch_does_not_touch_source_or_create_picture_jobs (test_xcmate_images_hero_02948.ImagesHero48.test_cancelled_prefetch_does_not_touch_source_or_create_picture_jobs) ... ok
+test_decoder_verified_offline_manual_choice_is_a_real_preview (test_xcmate_images_hero_02948.ImagesHero48.test_decoder_verified_offline_manual_choice_is_a_real_preview) ... ok
+test_hero_includes_small_station_buttons_with_focus_only_local_bindings (test_xcmate_images_hero_02948.ImagesHero48.test_hero_includes_small_station_buttons_with_focus_only_local_bindings) ... ok
+test_hero_lists_all_88_and_focus_does_not_start_a_stream (test_xcmate_images_hero_02948.ImagesHero48.test_hero_lists_all_88_and_focus_does_not_start_a_stream) ... ok
+test_https_downgrade_and_url_credentials_are_blocked_before_destination_request (test_xcmate_images_hero_02948.ImagesHero48.test_https_downgrade_and_url_credentials_are_blocked_before_destination_request) ... ok
+test_offline_preview_cannot_read_an_arbitrary_file_or_symlink (test_xcmate_images_hero_02948.ImagesHero48.test_offline_preview_cannot_read_an_arbitrary_file_or_symlink) ... ok
+test_private_dns_answer_is_rejected_by_existing_pinned_address_resolver (test_xcmate_images_hero_02948.ImagesHero48.test_private_dns_answer_is_rejected_by_existing_pinned_address_resolver) ... ok
+test_programme_prefetch_rotates_beyond_first_sixteen_without_widget_repaint (test_xcmate_images_hero_02948.ImagesHero48.test_programme_prefetch_rotates_beyond_first_sixteen_without_widget_repaint) ... ok
+test_public_cdn_redirect_revalidates_dns_and_never_forwards_credentials (test_xcmate_images_hero_02948.ImagesHero48.test_public_cdn_redirect_revalidates_dns_and_never_forwards_credentials) ... ok
+test_redirect_chain_has_strict_three_hop_limit_and_no_retry_loop (test_xcmate_images_hero_02948.ImagesHero48.test_redirect_chain_has_strict_three_hop_limit_and_no_retry_loop) ... ok
+test_redirect_loop_and_cancel_never_start_unbounded_worker_or_request (test_xcmate_images_hero_02948.ImagesHero48.test_redirect_loop_and_cancel_never_start_unbounded_worker_or_request) ... ok
+test_xmltv_rating_icon_cannot_replace_the_actual_programme_image (test_xcmate_images_hero_02948.ImagesHero48.test_xmltv_rating_icon_cannot_replace_the_actual_programme_image) ... ok
 test_previous_event_from_same_published_revision_is_readonly (test_xcmate_infobar_reference_02945.PreviousEPG45.test_previous_event_from_same_published_revision_is_readonly) ... ok
 test_previous_event_honors_manual_mapping_before_provider_alias (test_xcmate_infobar_reference_02945.PreviousEPG45.test_previous_event_honors_manual_mapping_before_provider_alias) ... ok
 test_revision_change_or_no_real_history_never_fabricates_previous_title (test_xcmate_infobar_reference_02945.PreviousEPG45.test_revision_change_or_no_real_history_never_fabricates_previous_title) ... ok
@@ -841,6 +875,15 @@ test_post_and_early_callback_do_not_claim_done_before_native_queue_barrier (test
 test_timeout_never_reposts_stop_and_late_barrier_stays_timeout (test_xcmate_live_exit_02941.LiveExit41.test_timeout_never_reposts_stop_and_late_barrier_stays_timeout) ... ok
 test_twenty_live_back_cycles_release_overlay_then_stop_then_home_once (test_xcmate_live_exit_02941.LiveExit41.test_twenty_live_back_cycles_release_overlay_then_stop_then_home_once) ... ok
 test_wrong_or_previous_barrier_cannot_complete_current_session (test_xcmate_live_exit_02941.LiveExit41.test_wrong_or_previous_barrier_cannot_complete_current_session) ... ok
+test_actual_home_needs_no_reentering_root_or_container_reload (test_xcmate_live_exit_02948.LiveExit48.test_actual_home_needs_no_reentering_root_or_container_reload) ... ok
+test_background_suspension_during_exit_never_queries_locked_player (test_xcmate_live_exit_02948.LiveExit48.test_background_suspension_during_exit_never_queries_locked_player) ... ok
+test_completed_live_exit_does_not_suspend_movie_widget_refresh_or_optional_jobs (test_xcmate_live_exit_02948.LiveExit48.test_completed_live_exit_does_not_suspend_movie_widget_refresh_or_optional_jobs) ... ok
+test_exit_diagnostics_whitelist_and_hash_private_identifiers (test_xcmate_live_exit_02948.LiveExit48.test_exit_diagnostics_whitelist_and_hash_private_identifiers) ... ok
+test_foreign_modal_still_blocks_home_transition (test_xcmate_live_exit_02948.LiveExit48.test_foreign_modal_still_blocks_home_transition) ... ok
+test_foreign_native_window_holds_home_without_stopping_or_closing_it (test_xcmate_live_exit_02948.LiveExit48.test_foreign_native_window_holds_home_without_stopping_or_closing_it) ... ok
+test_home_widget_stop_returns_to_existing_kodi_home_exactly_once (test_xcmate_live_exit_02948.LiveExit48.test_home_widget_stop_returns_to_existing_kodi_home_exactly_once) ... ok
+test_normal_app_entry_retains_original_xcmate_return_path (test_xcmate_live_exit_02948.LiveExit48.test_normal_app_entry_retains_original_xcmate_return_path) ... ok
+test_stop_request_after_twenty_minutes_remains_same_session_not_new_autoplay (test_xcmate_live_exit_02948.LiveExit48.test_stop_request_after_twenty_minutes_remains_same_session_not_new_autoplay) ... ok
 test_left_keeps_the_mini_list_then_groups_and_configured_epg_key_stays_mini (test_xcmate_live_guide_02935.InfoButton35.test_left_keeps_the_mini_list_then_groups_and_configured_epg_key_stays_mini) ... ok
 test_only_extra_epg_button_queues_one_request_after_native_double_delivery (test_xcmate_live_guide_02935.InfoButton35.test_only_extra_epg_button_queues_one_request_after_native_double_delivery) ... ok
 test_action_route_does_not_anchor_home_or_enumerate_portals (test_xcmate_live_guide_02935.LiveGuide35.test_action_route_does_not_anchor_home_or_enumerate_portals) ... ok
@@ -1144,76 +1187,10 @@ test_invalid_start_returns_failed_playable_not_empty_directory (test_xcmate_p0_p
 test_manual_playable_uses_resolver_and_never_direct_player (test_xcmate_p0_playback.StartupKodiContractTests.test_manual_playable_uses_resolver_and_never_direct_player) ... ok
 test_playback_debug_does_not_log_stream_url (test_xcmate_p0_playback.StartupKodiContractTests.test_playback_debug_does_not_log_stream_url) ... ok
 test_runplugin_autoplay_uses_direct_player_only (test_xcmate_p0_playback.StartupKodiContractTests.test_runplugin_autoplay_uses_direct_player_only) ... ok
-test_confirmed_overlay_is_cleaned_on_stop (test_xcmate_p0_session_grace.PendingLiveSessionTests.test_confirmed_overlay_is_cleaned_on_stop) ... Exception in thread XCMate-import46:
-Traceback (most recent call last):
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/threading.py", line 1075, in _bootstrap_inner
-    self.run()
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/threading.py", line 1012, in run
-    self._target(*self._args, **self._kwargs)
-  File "/home/runner/work/kodi-noodleprivate/kodi-noodleprivate/src/plugin.video.xtreammate/resources/lib/app_imports46.py", line 21, in _prime
-    for name in MODULES:importlib.import_module(name)
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/importlib/__init__.py", line 90, in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
-  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
-  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
-  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
-  File "/home/runner/work/kodi-noodleprivate/kodi-noodleprivate/src/plugin.video.xtreammate/resources/lib/media_osd.py", line 38, in <module>
-    class MediaOSD(xbmcgui.WindowDialog):
-                   ^^^^^^^^^^^^^^^^^^^^
-AttributeError: module 'xbmcgui' has no attribute 'WindowDialog'
-ok
+test_confirmed_overlay_is_cleaned_on_stop (test_xcmate_p0_session_grace.PendingLiveSessionTests.test_confirmed_overlay_is_cleaned_on_stop) ... ok
 test_future_or_malformed_announcement_is_not_preserved (test_xcmate_p0_session_grace.PendingLiveSessionTests.test_future_or_malformed_announcement_is_not_preserved) ... ok
-test_new_session_survives_existing_idle_timer (test_xcmate_p0_session_grace.PendingLiveSessionTests.test_new_session_survives_existing_idle_timer) ... Exception in thread XCMate-import46:
-Traceback (most recent call last):
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/threading.py", line 1075, in _bootstrap_inner
-    self.run()
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/threading.py", line 1012, in run
-    self._target(*self._args, **self._kwargs)
-  File "/home/runner/work/kodi-noodleprivate/kodi-noodleprivate/src/plugin.video.xtreammate/resources/lib/app_imports46.py", line 21, in _prime
-    for name in MODULES:importlib.import_module(name)
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/importlib/__init__.py", line 90, in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
-  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
-  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
-  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
-  File "/home/runner/work/kodi-noodleprivate/kodi-noodleprivate/src/plugin.video.xtreammate/resources/lib/media_osd.py", line 38, in <module>
-    class MediaOSD(xbmcgui.WindowDialog):
-                   ^^^^^^^^^^^^^^^^^^^^
-AttributeError: module 'xbmcgui' has no attribute 'WindowDialog'
-ok
-test_old_session_is_cleaned_after_grace (test_xcmate_p0_session_grace.PendingLiveSessionTests.test_old_session_is_cleaned_after_grace) ... Exception in thread XCMate-import46:
-Traceback (most recent call last):
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/threading.py", line 1075, in _bootstrap_inner
-    self.run()
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/threading.py", line 1012, in run
-    self._target(*self._args, **self._kwargs)
-  File "/home/runner/work/kodi-noodleprivate/kodi-noodleprivate/src/plugin.video.xtreammate/resources/lib/app_imports46.py", line 21, in _prime
-    for name in MODULES:importlib.import_module(name)
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/importlib/__init__.py", line 90, in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
-  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
-  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
-  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
-  File "/home/runner/work/kodi-noodleprivate/kodi-noodleprivate/src/plugin.video.xtreammate/resources/lib/media_osd.py", line 38, in <module>
-    class MediaOSD(xbmcgui.WindowDialog):
-                   ^^^^^^^^^^^^^^^^^^^^
-AttributeError: module 'xbmcgui' has no attribute 'WindowDialog'
-ok
+test_new_session_survives_existing_idle_timer (test_xcmate_p0_session_grace.PendingLiveSessionTests.test_new_session_survives_existing_idle_timer) ... ok
+test_old_session_is_cleaned_after_grace (test_xcmate_p0_session_grace.PendingLiveSessionTests.test_old_session_is_cleaned_after_grace) ... ok
 test_commons_and_local_images_explain_no_metadata_without_download_or_browse (test_xcmate_picker_access_02944.PickerAccess44.test_commons_and_local_images_explain_no_metadata_without_download_or_browse) ... ok
 test_episode_details_allow_series_art_and_restore_valid_episode_focus (test_xcmate_picker_access_02944.PickerAccess44.test_episode_details_allow_series_art_and_restore_valid_episode_focus) ... ok
 test_metadata_candidate_without_poster_is_available_and_never_automatic_cover (test_xcmate_picker_access_02944.PickerAccess44.test_metadata_candidate_without_poster_is_available_and_never_automatic_cover) ... ok
@@ -1470,6 +1447,11 @@ test_all_1877_previous_test_methods_remain_without_skips (test_xcmate_scope_0294
 test_every_published_46_source_file_is_preserved_except_exact_reviewed_hooks (test_xcmate_scope_02947.Scope47.test_every_published_46_source_file_is_preserved_except_exact_reviewed_hooks) ... ok
 test_native_42_engine_series_autoplay_profile_settings_icons_and_keymaps_are_exact (test_xcmate_scope_02947.Scope47.test_native_42_engine_series_autoplay_profile_settings_icons_and_keymaps_are_exact) ... ok
 test_new_reader_snapshot_and_asset_helpers_never_trigger_guide_reset_or_skin_write (test_xcmate_scope_02947.Scope47.test_new_reader_snapshot_and_asset_helpers_never_trigger_guide_reset_or_skin_write) ... ok
+test_all_1952_existing_methods_remain_and_none_is_skipped (test_xcmate_scope_02948.Scope48.test_all_1952_existing_methods_remain_and_none_is_skipped) ... ok
+test_all_550_published_source_files_are_preserved_with_exact_reviewed_differences (test_xcmate_scope_02948.Scope48.test_all_550_published_source_files_are_preserved_with_exact_reviewed_differences) ... ok
+test_native_42_media_widgets_autoplay_resume_mappings_and_skin_adapters_frozen (test_xcmate_scope_02948.Scope48.test_native_42_media_widgets_autoplay_resume_mappings_and_skin_adapters_frozen) ... ok
+test_new_modules_have_no_skin_installer_reset_or_native_decoder_override (test_xcmate_scope_02948.Scope48.test_new_modules_have_no_skin_installer_reset_or_native_decoder_override) ... ok
+test_private_logs_databases_and_android_profiles_are_not_delivery_sources (test_xcmate_scope_02948.Scope48.test_private_logs_databases_and_android_profiles_are_not_delivery_sources) ... ok
 test_action_route_opens_one_owner_without_search_container_update (test_xcmate_search_02926.SearchTests.test_action_route_opens_one_owner_without_search_container_update) ... ok
 test_cancel_and_repeated_search_keep_owner_and_do_not_apply_stale_results (test_xcmate_search_02926.SearchTests.test_cancel_and_repeated_search_keep_owner_and_do_not_apply_stale_results) ... ok
 test_explicit_manual_mapping_does_not_fall_back_to_wrong_provider_epg (test_xcmate_search_02926.SearchTests.test_explicit_manual_mapping_does_not_fall_back_to_wrong_provider_epg) ... ok
@@ -1686,6 +1668,24 @@ test_home_validation_passes_metadata_to_resolver_without_second_lookup (test_xcm
 test_locked_index_does_not_start_expensive_catalog_fallback (test_xcmate_startup_02936.Startup36.test_locked_index_does_not_start_expensive_catalog_fallback) ... ok
 test_manual_resolver_and_direct_start_keep_their_native_player_contracts (test_xcmate_startup_02936.Startup36.test_manual_resolver_and_direct_start_keep_their_native_player_contracts) ... ok
 test_ready_index_uses_one_sender_without_full_catalog_read (test_xcmate_startup_02936.Startup36.test_ready_index_uses_one_sender_without_full_catalog_read) ... ok
+test_cancelled_dns_worker_cannot_create_unbounded_parallel_discoveries (test_xcmate_startup_wizard_02948.StartupWizard48.test_cancelled_dns_worker_cannot_create_unbounded_parallel_discoveries) ... ok
+test_cold_service_defers_auto_scan_images_and_maintenance_but_serves_explicit_jobs (test_xcmate_startup_wizard_02948.StartupWizard48.test_cold_service_defers_auto_scan_images_and_maintenance_but_serves_explicit_jobs) ... ok
+test_deadline_expiry_is_error_not_auth_or_success (test_xcmate_startup_wizard_02948.StartupWizard48.test_deadline_expiry_is_error_not_auth_or_success) ... ok
+test_direct_wizard_continuation_still_waits_for_foreign_modal (test_xcmate_startup_wizard_02948.StartupWizard48.test_direct_wizard_continuation_still_waits_for_foreign_modal) ... ok
+test_discovery_cancelled_before_network_never_calls_adapter (test_xcmate_startup_wizard_02948.StartupWizard48.test_discovery_cancelled_before_network_never_calls_adapter) ... ok
+test_discovery_context_limits_timeout_retries_and_restores_normal_policy (test_xcmate_startup_wizard_02948.StartupWizard48.test_discovery_context_limits_timeout_retries_and_restores_normal_policy) ... ok
+test_fresh_and_legacy_artwork_modes_are_not_changed_by_singleton (test_xcmate_startup_wizard_02948.StartupWizard48.test_fresh_and_legacy_artwork_modes_are_not_changed_by_singleton) ... ok
+test_legacy_epg_configuration_dictionary_contract_remains_compatible (test_xcmate_startup_wizard_02948.StartupWizard48.test_legacy_epg_configuration_dictionary_contract_remains_compatible) ... ok
+test_maintenance_has_no_every_tick_rescan_and_timer_is_finite (test_xcmate_startup_wizard_02948.StartupWizard48.test_maintenance_has_no_every_tick_rescan_and_timer_is_finite) ... ok
+test_manual_wizard_directory_continues_from_settings_without_root_reload (test_xcmate_startup_wizard_02948.StartupWizard48.test_manual_wizard_directory_continues_from_settings_without_root_reload) ... ok
+test_required_image_decoder_is_declared_on_clean_kodi_install (test_xcmate_startup_wizard_02948.StartupWizard48.test_required_image_decoder_is_declared_on_clean_kodi_install) ... ok
+test_service_singleton_is_os_held_and_releases_without_deleting_any_profile (test_xcmate_startup_wizard_02948.StartupWizard48.test_service_singleton_is_os_held_and_releases_without_deleting_any_profile) ... ok
+test_setup_has_finite_native_window_initialization_deadline (test_xcmate_startup_wizard_02948.StartupWizard48.test_setup_has_finite_native_window_initialization_deadline) ... ok
+test_stale_wizard_timestamp_without_owner_does_not_block_restart (test_xcmate_startup_wizard_02948.StartupWizard48.test_stale_wizard_timestamp_without_owner_does_not_block_restart) ... ok
+test_startup_network_is_deferred_and_setup_and_stop_hold_it (test_xcmate_startup_wizard_02948.StartupWizard48.test_startup_network_is_deferred_and_setup_and_stop_hold_it) ... ok
+test_wizard_action_entry_calls_existing_owner_flow (test_xcmate_startup_wizard_02948.StartupWizard48.test_wizard_action_entry_calls_existing_owner_flow) ... ok
+test_wizard_directory_entry_does_not_import_router_or_reenter_root (test_xcmate_startup_wizard_02948.StartupWizard48.test_wizard_directory_entry_does_not_import_router_or_reenter_root) ... ok
+test_xtream_authentication_performs_exactly_one_actual_request (test_xcmate_startup_wizard_02948.StartupWizard48.test_xtream_authentication_performs_exactly_one_actual_request) ... ok
 test_already_active_matching_home_needs_no_directory_request (test_xcmate_stop_02936.Stop36.test_already_active_matching_home_needs_no_directory_request) ... ok
 test_existing_home_is_revealed_without_reloading_its_plugin_url (test_xcmate_stop_02936.Stop36.test_existing_home_is_revealed_without_reloading_its_plugin_url) ... ok
 test_foreign_portal_home_is_not_mistaken_for_requested_home (test_xcmate_stop_02936.Stop36.test_foreign_portal_home_is_not_mistaken_for_requested_home) ... ok
@@ -1965,6 +1965,9 @@ test_modal_timeout_never_closes_or_forces_another_kodi_window (test_xcmate_windo
 test_native_init_exception_is_logged_and_raised_on_owner_without_credentials (test_xcmate_window_start_0296.WindowStartTests.test_native_init_exception_is_logged_and_raised_on_owner_without_credentials) ... ok
 test_show_error_is_not_replaced_by_close_error (test_xcmate_window_start_0296.WindowStartTests.test_show_error_is_not_replaced_by_close_error) ... ok
 test_thread_guard_is_kept_and_logged_without_native_close_from_worker (test_xcmate_window_start_0296.WindowStartTests.test_thread_guard_is_kept_and_logged_without_native_close_from_worker) ... ok
+test_existing_unbacked_guide_blocks_save_without_mutating_its_bytes (test_xcmate_wizard_epg_02948.WizardEPG48.test_existing_unbacked_guide_blocks_save_without_mutating_its_bytes) ... ok
+test_external_only_wizard_preserves_source_rank_images_cast_and_name_after_save (test_xcmate_wizard_epg_02948.WizardEPG48.test_external_only_wizard_preserves_source_rank_images_cast_and_name_after_save) ... ok
+test_failed_save_removes_only_unpublished_new_id_rich_facts (test_xcmate_wizard_epg_02948.WizardEPG48.test_failed_save_removes_only_unpublished_new_id_rich_facts) ... ok
 test_home_does_not_wait_for_account_call (test_xtreammate_016.V016Checks.test_home_does_not_wait_for_account_call) ... ok
 test_live_guide_only_prefetches_off_ui_thread (test_xtreammate_016.V016Checks.test_live_guide_only_prefetches_off_ui_thread) ... ok
 test_remote_diag_records_last_pressed_and_handled_key (test_xtreammate_016.V016Checks.test_remote_diag_records_last_pressed_and_handled_key) ... ok
@@ -2025,16 +2028,16 @@ test_widget_route_and_no_cached_credentials_in_link (test_xtreammate_widgets.Wid
 test_youtube_whitelist (test_xtreammate_widgets.WidgetsTest.test_youtube_whitelist) ... ok
 
 ----------------------------------------------------------------------
-Ran 1952 tests in 443.598s
+Ran 2021 tests in 460.612s
 
 OK
 
-MODEL_COLD_WINDOW_MS 6.332
-SEARCH39_HOST [{'query_kind': 'cold', 'first_names_ms': 5.936, 'total_ms': 48.826, 'scanned': 2905, 'results': 6}, {'query_kind': 'warm', 'first_names_ms': 5.588, 'total_ms': 18.944, 'scanned': 2905, 'results': 6}]
+MODEL_COLD_WINDOW_MS 8.259
+SEARCH39_HOST [{'query_kind': 'cold', 'first_names_ms': 7.153, 'total_ms': 78.902, 'scanned': 2905, 'results': 6}, {'query_kind': 'warm', 'first_names_ms': 6.769, 'total_ms': 23.733, 'scanned': 2905, 'results': 6}]
 
 SELECTIVE_XMLTV {"bytes": 400, "parsed": 2, "stored": 1}
 
 LARGE_M3U {"parsed": 20005, "active": 5002, "bytes": 1727118}
-WIDGET46_RETAINED_ARCHIVE {"legacy_rows": 40005, "old_opcode_budget": "INTERRUPTED", "new_rows": 24, "new_ms": 3.028}
-WIDGET41_HOST {'rows': 20005, 'returned': 24, 'code': 'READY', 'ms': 2.362}
-WIDGET44_V2_HOST {"records": 20005, "returned": 24, "ms": 3.398, "plan": "(9, 0, 0, 'SEARCH i USING INDEX recent_v2 (pid=? AND kind=?)') (19, 0, 0, 'USING INDEX sqlite_autoindex_selected_categories_1 FOR IN-OPERATOR') (25, 0, 0, 'SEARCH h USING INDEX sqlite_autoindex_heads_1 (pid=? AND kind=? AND cid=?)')"}
+WIDGET46_RETAINED_ARCHIVE {"legacy_rows": 40005, "old_opcode_budget": "INTERRUPTED", "new_rows": 24, "new_ms": 3.844}
+WIDGET41_HOST {'rows': 20005, 'returned': 24, 'code': 'READY', 'ms': 2.818}
+WIDGET44_V2_HOST {"records": 20005, "returned": 24, "ms": 4.043, "plan": "(9, 0, 0, 'SEARCH i USING INDEX recent_v2 (pid=? AND kind=?)') (19, 0, 0, 'USING INDEX sqlite_autoindex_selected_categories_1 FOR IN-OPERATOR') (25, 0, 0, 'SEARCH h USING INDEX sqlite_autoindex_heads_1 (pid=? AND kind=? AND cid=?)')"}
