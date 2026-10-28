@@ -36,7 +36,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install host test dependencies
-        run: python -m pip install 'Pillow>=11,<13' 'impacket==0.13.0'
+        run: python -m pip install 'Pillow>=11,<13' 'impacket==0.13.0' 'simpleeval==0.9.13'
       - name: Bootstrap pinned XtreamMate GPL source
         run: python tools/bootstrap_xtreammate.py
       - name: Apply XtreamMate 0.1.1 fix

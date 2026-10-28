@@ -3,7 +3,7 @@ from localization import tr
 
 ACTIONS=('live_hero48','programme_details46','widget_adapter46','widget_adapter45','native_options45','downloads_manage45','guide_backup44','update_notice','navigation_rail','artwork_manage','device_info', 'live_guide','search_continue','download_target_test','stability_test','download_folder','download_capabilities','theme_manager','branding_status','xcmate_licenses','guide_grid','playlist_editor','source_live','source_play','source_start','art_status','art_retry','art_db_health','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
          'movies_home','series_home','media_detail','media_favourites','global_search','search_section',
-         'widget_live_start_group','widget_recent_vod','widget_recent_series','widget_setup','widget_manage49','widget_help49',
+         'widget_live_start_group','widget_recent_vod','widget_recent_series','widget_setup','widget_manage49','widget_help49','widget_link50','widget_skin50','widget_restore50','widget_sources49',
          'record_now','recordings_manage','recording_folder','recording_capabilities','about_xcmate','guide_browser','media_play','guide_timers','guide_status')
 LABELS={'live':32460,'vod':32461,'series':32462}
 
@@ -56,7 +56,7 @@ def dispatch(router):
         failed(str(router._params.get('intent') or ''),str(router._params.get('pid') or ''))
         import xbmcplugin
         xbmcplugin.setResolvedUrl(router._handle,False,xbmcgui.ListItem());return
-    if action in ('guide_timers','guide_status','widget_setup','widget_manage49') and not portal:
+    if action in ('guide_timers','guide_status','widget_setup','widget_manage49','widget_link50','widget_sources49') and not portal:
         _end(router,False)
         xbmcgui.Dialog().notification('XCMate',tr(32466));return
     if action=='live_hero48':
@@ -75,8 +75,18 @@ def dispatch(router):
         from widget_adapter45 import show
         show();return
     if action=='widget_setup':
+        from widget_manager50 import show as widget_manager
+        widget_manager(router,portal);return
+    if action=='widget_sources49':
         from widget_sources49 import show as widget_sources
         widget_sources(router,portal);return
+    if action in ('widget_link50','widget_skin50','widget_restore50'):
+        _end(router)
+        from widget_manager50 import link,skin_setup,restore
+        if action=='widget_link50':link(router,portal)
+        elif action=='widget_skin50':skin_setup()
+        else:restore()
+        return
     if action=='widget_help49':
         _end(router)
         from widget_sources49 import help as widget_help
@@ -263,6 +273,9 @@ def dispatch(router):
         from search_navigation import anchor,open_root
         open_route(router,portal,lambda:open_root(router,portal),after_close=handoff,anchor=anchor)
     elif action=='search_section': search(router,portal)
+    elif action=='widget_live_start_group' and router._params.get('home50')=='1':
+        from widget_home50 import render
+        render(router,portal)
     elif action.startswith('widget_'): widget(router,portal,action)
     elif action in ('movies_home','series_home','media_detail','media_favourites'):
         kind=router._params.get('kind','series' if action=='series_home' else 'vod')

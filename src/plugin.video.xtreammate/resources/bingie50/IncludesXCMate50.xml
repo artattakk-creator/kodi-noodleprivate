@@ -1,0 +1,159 @@
+<?xml version='1.0' encoding='utf-8'?>
+<includes>
+  <include name="XCMate50.LiveRow">
+    <control type="list" id="$PARAM[widgetid]">
+      <left>80</left>
+      <height>112</height>
+      <width>1760</width>
+      <orientation>horizontal</orientation>
+      <preloaditems>2</preloaditems>
+      <scrolltime>150</scrolltime>
+      <onback>900</onback>
+      <onleft>900</onleft>
+      <visible>$PARAM[visibility] + [String.IsEqual(Container(900).ListItem.Property(submenuVisibility),$PARAM[submenuid]) | Skin.HasSetting(ShowAllWidgets)]</visible>
+      <include content="SetFixedVerticalNavigationProps">
+        <param name="widgetid" value="$PARAM[widgetid]" />
+      </include>
+      <itemlayout width="142" height="108">
+        <control type="image">
+          <left>4</left>
+          <top>3</top>
+          <width>134</width>
+          <height>98</height>
+          <texture>special://home/addons/plugin.video.xtreammate/resources/media/programme46/logo-back.png</texture>
+          <aspectratio>stretch</aspectratio>
+        </control>
+        <control type="image">
+          <left>36</left>
+          <top>10</top>
+          <width>70</width>
+          <height>42</height>
+          <texture>$INFO[ListItem.Property(XCMate.ProgrammeLogo46)]</texture>
+          <aspectratio>keep</aspectratio>
+        </control>
+        <control type="label">
+          <left>8</left>
+          <top>58</top>
+          <width>126</width>
+          <height>32</height>
+          <label>$INFO[ListItem.Property(XCMate.ProgrammeChannel46)]</label>
+          <font>Reg18</font>
+          <textcolor>FFFFFFFF</textcolor>
+          <align>center</align>
+        </control>
+      </itemlayout>
+      <focusedlayout width="142" height="108">
+        <control type="image">
+          <left>4</left>
+          <top>3</top>
+          <width>134</width>
+          <height>98</height>
+          <texture>special://home/addons/plugin.video.xtreammate/resources/media/programme46/logo-back.png</texture>
+          <aspectratio>stretch</aspectratio>
+        </control>
+        <control type="image">
+          <left>4</left>
+          <top>100</top>
+          <width>134</width>
+          <height>5</height>
+          <texture>special://home/addons/plugin.video.xtreammate/resources/media/programme46/progress.png</texture>
+          <aspectratio>stretch</aspectratio>
+        </control>
+        <control type="image">
+          <left>36</left>
+          <top>10</top>
+          <width>70</width>
+          <height>42</height>
+          <texture>$INFO[ListItem.Property(XCMate.ProgrammeLogo46)]</texture>
+          <aspectratio>keep</aspectratio>
+        </control>
+        <control type="label">
+          <left>8</left>
+          <top>58</top>
+          <width>126</width>
+          <height>32</height>
+          <label>$INFO[ListItem.Property(XCMate.ProgrammeChannel46)]</label>
+          <font>Reg18</font>
+          <textcolor>FFFFFFFF</textcolor>
+          <align>center</align>
+        </control>
+      </focusedlayout>
+      <content target="videos" browse="never">$PARAM[widgetPath]</content>
+    </control>
+  </include>
+  <include name="XCMate50.Hero">
+    <control type="group">
+      <visible>Window.IsActive(Home) + ControlGroup(77777).HasFocus() + String.IsEqual(ListItem.Property(XCMate.Home50),true) + !$EXP[IsMainMenuOpened]</visible>
+      <control type="image">
+        <left>80</left>
+        <top>28</top>
+        <width>1760</width>
+        <height>516</height>
+        <texture>special://home/addons/plugin.video.xtreammate/resources/media/programme46/panel.png</texture>
+        <aspectratio>stretch</aspectratio>
+      </control>
+      <control type="image">
+        <left>96</left>
+        <top>44</top>
+        <width>840</width>
+        <height>472</height>
+        <texture>$INFO[ListItem.Property(XCMate.ProgrammeImage46)]</texture>
+        <aspectratio>keep</aspectratio>
+      </control>
+      <control type="label">
+        <left>970</left>
+        <top>48</top>
+        <width>830</width>
+        <height>38</height>
+        <label>$INFO[ListItem.Property(XCMate.ProgrammeChannel46)]</label>
+        <font>Bold22</font>
+        <textcolor>FFFFFFFF</textcolor>
+      </control>
+      <control type="textbox">
+        <left>970</left>
+        <top>100</top>
+        <width>830</width>
+        <height>110</height>
+        <label>$INFO[ListItem.Property(XCMate.ProgrammeTitle46)]</label>
+        <font>Bold40</font>
+        <textcolor>FFFFFFFF</textcolor>
+      </control>
+      <control type="label">
+        <left>970</left>
+        <top>216</top>
+        <width>830</width>
+        <height>32</height>
+        <label>$INFO[ListItem.Property(XCMate.ProgrammeTimes46)]</label>
+        <font>Reg18</font>
+        <textcolor>FFFFFFFF</textcolor>
+      </control>
+      <control type="textbox">
+        <left>970</left>
+        <top>258</top>
+        <width>830</width>
+        <height>138</height>
+        <label>$INFO[ListItem.Property(XCMate.ProgrammeDescription46)]</label>
+        <font>Reg18</font>
+        <textcolor>FFFFFFFF</textcolor>
+      </control>
+      <control type="textbox">
+        <left>970</left>
+        <top>412</top>
+        <width>830</width>
+        <height>62</height>
+        <label>$ADDON[plugin.video.xtreammate 36405] $INFO[ListItem.Property(XCMate.ProgrammeNext46)] · $INFO[ListItem.Property(XCMate.ProgrammeNextTimes48)]</label>
+        <font>Reg18</font>
+        <textcolor>FFFFFFFF</textcolor>
+      </control>
+      <control type="progress">
+        <left>970</left>
+        <top>496</top>
+        <width>830</width>
+        <height>8</height>
+        <info>ListItem.Property(XCMate.ProgrammePercent46)</info>
+        <texturebg>special://home/addons/plugin.video.xtreammate/resources/media/programme46/track.png</texturebg>
+        <midtexture>special://home/addons/plugin.video.xtreammate/resources/media/programme46/progress.png</midtexture>
+      </control>
+    </control>
+  </include>
+</includes>

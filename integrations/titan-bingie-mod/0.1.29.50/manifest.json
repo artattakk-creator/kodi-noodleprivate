@@ -1,0 +1,51 @@
+{
+  "version": "0.1.29.50",
+  "status": "REVIEW_ONLY_NOT_APPLIED",
+  "automatic_apply": false,
+  "reference": {
+    "version": "2.2.3",
+    "skin": "skin.titan.bingie.mod",
+    "shortcuts_version": "2.1.0",
+    "repository": "AchillesPunks/repository.titan.bingie.mod",
+    "archive_path": "omega/skin.titan.bingie.mod/skin.titan.bingie.mod-2.2.3.zip",
+    "archive_sha256": "7216dcf7efeac7cb668cde97bdde45b681ed77b5e9007368d3b46c3c98e52e8b",
+    "shortcuts_archive_sha256": "865ee5ea5bf0accee27b82539caabce1c8a9fbb8f94b2900fe5ace4f82c80b23",
+    "files": {
+      "shortcuts/template.xml": [
+        "e4cbf772a7bfc77f0638fced5c286a46f86fef4b602379c68dab8ce9986fd454"
+      ],
+      "shortcuts/overrides.xml": [
+        "77e89f48abbf9985b770a6a9af94e5a1e0a982c763dbe23c1228923bc91c8ab6"
+      ],
+      "xml/IncludesHomeWidgets.xml": [
+        "ff009f30b53d803e47a857cfdca23cc6400698416bdc70d0858e51f5bec4c51d",
+        "95eb73a3485f4942ba167dae1fa014f7c6d4d874b8cebffe0409a86a38526b3d"
+      ],
+      "xml/IncludesHomeBingie.xml": [
+        "cb50e1274b80f1869545963aa5d767c92e9a1eaf94e57208d652a2479bf677b7"
+      ]
+    }
+  },
+  "files": {
+    "xml/IncludesHomeWidgets.xml": {
+      "before": "ff009f30b53d803e47a857cfdca23cc6400698416bdc70d0858e51f5bec4c51d",
+      "after": "3cc13448928c554cf46b03091bdbdc256b7b90c73097f3311d105536ab403109",
+      "bytes": 135251
+    },
+    "xml/IncludesHomeBingie.xml": {
+      "before": "cb50e1274b80f1869545963aa5d767c92e9a1eaf94e57208d652a2479bf677b7",
+      "after": "66dea642c7d18e9b16f8c87d1fdcf242dfa70223720e371cc5b2a8b85f6210bd",
+      "bytes": 45689
+    },
+    "shortcuts/overrides.xml": {
+      "before": "77e89f48abbf9985b770a6a9af94e5a1e0a982c763dbe23c1228923bc91c8ab6",
+      "after": "46cb76481e2a92b5739e6f927da2c15acda1bd88e2d3886fb72ab3fbb06cd412",
+      "bytes": 26631
+    },
+    "shortcuts/template.xml": {
+      "before": "e4cbf772a7bfc77f0638fced5c286a46f86fef4b602379c68dab8ce9986fd454",
+      "after": "bd755fe87c822c6b1b0c8cedeb461ff680c93759ab487e74758595e31f671487",
+      "bytes": 87397
+    }
+  }
+}

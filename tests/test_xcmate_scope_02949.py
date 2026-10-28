@@ -12,7 +12,7 @@ class Scope49(unittest.TestCase):
         self.assertEqual({Path(p).name for p in hooks},{'addon.xml','changelog.txt','strings.po','app_routes.py','widget_ui45.py','window_navigation.py'})
         self.assertEqual(len(hooks),7)
         for path,digest in data['source_sha256'].items():
-            raw=(ROOT/path).read_bytes()
+            raw=__import__('stabilization_contract_02950').without_widget50((ROOT/path).read_bytes(),path)
             self.assertEqual(hashlib.sha256(without_widget49(raw,path)).hexdigest(),digest,path)
             if path not in hooks:self.assertEqual(hashlib.sha256(raw).hexdigest(),digest,path)
     def test_all_2021_existing_tests_retained_without_any_new_skip(self):

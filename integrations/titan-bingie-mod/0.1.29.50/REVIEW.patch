@@ -1,0 +1,484 @@
+--- before/xml/IncludesHomeWidgets.xml
++++ candidate/xml/IncludesHomeWidgets.xml
+@@ -2079,4 +2079,163 @@
+             </item>
+         </content>
+     </include>
++
++<include name="XCMate50.LiveRow">
++    <control type="list" id="$PARAM[widgetid]">
++      <left>80</left>
++      <height>112</height>
++      <width>1760</width>
++      <orientation>horizontal</orientation>
++      <preloaditems>2</preloaditems>
++      <scrolltime>150</scrolltime>
++      <onback>900</onback>
++      <onleft>900</onleft>
++      <visible>$PARAM[visibility] + [String.IsEqual(Container(900).ListItem.Property(submenuVisibility),$PARAM[submenuid]) | Skin.HasSetting(ShowAllWidgets)]</visible>
++      <include content="SetFixedVerticalNavigationProps">
++        <param name="widgetid" value="$PARAM[widgetid]" />
++      </include>
++      <itemlayout width="142" height="108">
++        <control type="image">
++          <left>4</left>
++          <top>3</top>
++          <width>134</width>
++          <height>98</height>
++          <texture>special://home/addons/plugin.video.xtreammate/resources/media/programme46/logo-back.png</texture>
++          <aspectratio>stretch</aspectratio>
++        </control>
++        <control type="image">
++          <left>36</left>
++          <top>10</top>
++          <width>70</width>
++          <height>42</height>
++          <texture>$INFO[ListItem.Property(XCMate.ProgrammeLogo46)]</texture>
++          <aspectratio>keep</aspectratio>
++        </control>
++        <control type="label">
++          <left>8</left>
++          <top>58</top>
++          <width>126</width>
++          <height>32</height>
++          <label>$INFO[ListItem.Property(XCMate.ProgrammeChannel46)]</label>
++          <font>Reg18</font>
++          <textcolor>FFFFFFFF</textcolor>
++          <align>center</align>
++        </control>
++      </itemlayout>
++      <focusedlayout width="142" height="108">
++        <control type="image">
++          <left>4</left>
++          <top>3</top>
++          <width>134</width>
++          <height>98</height>
++          <texture>special://home/addons/plugin.video.xtreammate/resources/media/programme46/logo-back.png</texture>
++          <aspectratio>stretch</aspectratio>
++        </control>
++        <control type="image">
++          <left>4</left>
++          <top>100</top>
++          <width>134</width>
++          <height>5</height>
++          <texture>special://home/addons/plugin.video.xtreammate/resources/media/programme46/progress.png</texture>
++          <aspectratio>stretch</aspectratio>
++        </control>
++        <control type="image">
++          <left>36</left>
++          <top>10</top>
++          <width>70</width>
++          <height>42</height>
++          <texture>$INFO[ListItem.Property(XCMate.ProgrammeLogo46)]</texture>
++          <aspectratio>keep</aspectratio>
++        </control>
++        <control type="label">
++          <left>8</left>
++          <top>58</top>
++          <width>126</width>
++          <height>32</height>
++          <label>$INFO[ListItem.Property(XCMate.ProgrammeChannel46)]</label>
++          <font>Reg18</font>
++          <textcolor>FFFFFFFF</textcolor>
++          <align>center</align>
++        </control>
++      </focusedlayout>
++      <content target="videos" browse="never">$PARAM[widgetPath]</content>
++    </control>
++  </include>
++  
++<include name="XCMate50.Hero">
++    <control type="group">
++      <visible>Window.IsActive(Home) + ControlGroup(77777).HasFocus() + String.IsEqual(ListItem.Property(XCMate.Home50),true) + !$EXP[IsMainMenuOpened]</visible>
++      <control type="image">
++        <left>80</left>
++        <top>28</top>
++        <width>1760</width>
++        <height>516</height>
++        <texture>special://home/addons/plugin.video.xtreammate/resources/media/programme46/panel.png</texture>
++        <aspectratio>stretch</aspectratio>
++      </control>
++      <control type="image">
++        <left>96</left>
++        <top>44</top>
++        <width>840</width>
++        <height>472</height>
++        <texture>$INFO[ListItem.Property(XCMate.ProgrammeImage46)]</texture>
++        <aspectratio>keep</aspectratio>
++      </control>
++      <control type="label">
++        <left>970</left>
++        <top>48</top>
++        <width>830</width>
++        <height>38</height>
++        <label>$INFO[ListItem.Property(XCMate.ProgrammeChannel46)]</label>
++        <font>Bold22</font>
++        <textcolor>FFFFFFFF</textcolor>
++      </control>
++      <control type="textbox">
++        <left>970</left>
++        <top>100</top>
++        <width>830</width>
++        <height>110</height>
++        <label>$INFO[ListItem.Property(XCMate.ProgrammeTitle46)]</label>
++        <font>Bold40</font>
++        <textcolor>FFFFFFFF</textcolor>
++      </control>
++      <control type="label">
++        <left>970</left>
++        <top>216</top>
++        <width>830</width>
++        <height>32</height>
++        <label>$INFO[ListItem.Property(XCMate.ProgrammeTimes46)]</label>
++        <font>Reg18</font>
++        <textcolor>FFFFFFFF</textcolor>
++      </control>
++      <control type="textbox">
++        <left>970</left>
++        <top>258</top>
++        <width>830</width>
++        <height>138</height>
++        <label>$INFO[ListItem.Property(XCMate.ProgrammeDescription46)]</label>
++        <font>Reg18</font>
++        <textcolor>FFFFFFFF</textcolor>
++      </control>
++      <control type="textbox">
++        <left>970</left>
++        <top>412</top>
++        <width>830</width>
++        <height>62</height>
++        <label>$ADDON[plugin.video.xtreammate 36405] $INFO[ListItem.Property(XCMate.ProgrammeNext46)] · $INFO[ListItem.Property(XCMate.ProgrammeNextTimes48)]</label>
++        <font>Reg18</font>
++        <textcolor>FFFFFFFF</textcolor>
++      </control>
++      <control type="progress">
++        <left>970</left>
++        <top>496</top>
++        <width>830</width>
++        <height>8</height>
++        <info>ListItem.Property(XCMate.ProgrammePercent46)</info>
++        <texturebg>special://home/addons/plugin.video.xtreammate/resources/media/programme46/track.png</texturebg>
++        <midtexture>special://home/addons/plugin.video.xtreammate/resources/media/programme46/progress.png</midtexture>
++      </control>
++    </control>
++  </include>
++
+ </includes>
+--- before/xml/IncludesHomeBingie.xml
++++ candidate/xml/IncludesHomeBingie.xml
+@@ -70,7 +70,7 @@
+             </control>
+ 
+             <!-- Details Section -->
+-            <control type="group">
++            <control type="group"><visible>![ControlGroup(77777).HasFocus() + String.IsEqual(ListItem.Property(XCMate.Home50),true)]</visible>
+                 <width>1920</width>
+                 <height>525</height>
+                 <include content="Preview_Window">
+@@ -595,7 +595,7 @@
+ 			
+ 			<control type="group">
+ 				<top>-481</top>
+-				<visible>!Window.IsActive(DialogVideoInfo.xml)</visible>
++				<visible>[!Window.IsActive(DialogVideoInfo.xml)] + ![ControlGroup(77777).HasFocus() + String.IsEqual(ListItem.Property(XCMate.Home50),true)]</visible>
+ 				<include>Animation_Right_Home_2</include>
+ 				<include condition="Skin.HasSetting(EnableFixedFrameWidgets) + $EXP[IsSupportedFixedFrameLayout] + Window.IsActive(Home) + Skin.HasSetting(LockHubWidgets)">Bingie_Screens_Fixed_Focus_Frame_Highlight_2</include>
+ 			</control>
+@@ -637,14 +637,14 @@
+          			
+ 			<!-- Fixed Focus Frame -->
+ 			<control type="group">
+-				<visible>!Window.IsActive(DialogVideoInfo.xml)</visible>
++				<visible>[!Window.IsActive(DialogVideoInfo.xml)] + ![ControlGroup(77777).HasFocus() + String.IsEqual(ListItem.Property(XCMate.Home50),true)]</visible>
+ 				<include>Animation_Right_Home</include>
+ 				<include condition="Skin.HasSetting(EnableFixedFrameWidgets) + $EXP[IsSupportedFixedFrameLayout] + [Window.IsActive(Home) | [$EXP[IsBingieHubsActive2] | [Window.IsActive(1114) + Skin.HasSetting(AddToWatchlist)]] + Skin.HasSetting(LockHubWidgets)]">Bingie_Screens_Fixed_Focus_Frame</include>
+ 				<animation effect="slide" end="0,40" time="0" condition="!$EXP[IsCurrentWidgetSpotlight] + [String.IsEqual(Skin.String(widgetstyle),landscape)]">Conditional</animation>
+ 			</control>
+ 			<control type="group">
+ 				<top>-481</top>
+-				<visible>!Window.IsActive(DialogVideoInfo.xml)</visible>
++				<visible>[!Window.IsActive(DialogVideoInfo.xml)] + ![ControlGroup(77777).HasFocus() + String.IsEqual(ListItem.Property(XCMate.Home50),true)]</visible>
+ 				<include>Animation_Right_Home</include>
+ 				<include condition="Skin.HasSetting(EnableFixedFrameWidgets) + $EXP[IsSupportedFixedFrameLayout] + Window.IsActive(Home) + Skin.HasSetting(LockHubWidgets)">Bingie_Screens_Fixed_Focus_Frame_Highlight</include>
+ 			</control>
+@@ -726,7 +726,9 @@
+ 				<label>$VAR[HubNames]</label>
+ 			</control>
+ 			</control>								
+-        </control>
++        
++<include>XCMate50.Hero</include>
++</control>
+ 
+ 		<include>Header</include>
+ 
+--- before/shortcuts/overrides.xml
++++ candidate/shortcuts/overrides.xml
+@@ -359,6 +359,9 @@
+ 		<action>ReplaceWindow(home)</action>
+ 		<action>RunPlugin(plugin://script.globalsearch)</action>
+ 	</override>
++<widget label="XCMate · Live-TV" name="Live-TV" type="videos" target="videos" path="plugin://plugin.video.xtreammate/?action=widget_live_start_group&amp;home50=1&amp;reload=$INFO[Window(Home).Property(XCMate.Widget45.Reload.live)]&amp;clock50=$INFO[System.Time(hh:mm)]">xcmate50.live</widget>
++<widget label="XCMate · Filme" name="Filme" type="movies" target="videos" path="plugin://plugin.video.xtreammate/?action=widget_recent_vod&amp;reload=$INFO[Window(Home).Property(XCMate.Widget45.Reload.vod)]&amp;clock50=$INFO[System.Time(hh:mm)]">xcmate50.vod</widget>
++<widget label="XCMate · Serien" name="Serien" type="tvshows" target="videos" path="plugin://plugin.video.xtreammate/?action=widget_recent_series&amp;reload=$INFO[Window(Home).Property(XCMate.Widget45.Reload.series)]&amp;clock50=$INFO[System.Time(hh:mm)]">xcmate50.series</widget>
+ </overrides>
+ 
+ 
+--- before/shortcuts/template.xml
++++ candidate/shortcuts/template.xml
+@@ -239,7 +239,7 @@
+                 <param name="submenuid" value="$SKINSHORTCUTS[submenuid]" />
+                 <param name="widgetName" value="$SKINSHORTCUTS[widgetName1]" />
+             </include>
+-            <include content="widget_base" condition="$PYTHON['true' if widgetPath1 else 'false']">
++            <include content="widget_base" condition="[$PYTHON[&#x27;true&#x27; if widgetPath1 else &#x27;false&#x27;]] + ![String.StartsWith($SKINSHORTCUTS[widgetPath1],plugin://plugin.video.xtreammate/) + String.Contains($SKINSHORTCUTS[widgetPath1],action=widget_live_start_group) + String.Contains($SKINSHORTCUTS[widgetPath1],&amp;home50=1&amp;)]">
+                 <param name="containerType" value="$PYTHON['fixedlist' if widgetStyle1 in 'details' or 'enabled' in widgetFixedFocus1 else 'panel']" />
+                 <param name="contentStyle" value="$SKINSHORTCUTS[contentStyle1]" />
+                 <param name="widgetid" value="$SKINSHORTCUTS[id]510" />
+@@ -255,6 +255,22 @@
+                 <param name="widgetInfoPanel" value="$SKINSHORTCUTS[widgetInfoPanel1]" />
+                 <param name="visibility" value="[$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] | [![$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] + [Skin.String(widgetvalue-$SKINSHORTCUTS[submenuid],0) | String.IsEmpty(Skin.String(widgetvalue-$SKINSHORTCUTS[submenuid]))]]" />
+             </include>
++<include content="XCMate50.LiveRow" condition="[$PYTHON[&#x27;true&#x27; if widgetPath1 else &#x27;false&#x27;]] + [String.StartsWith($SKINSHORTCUTS[widgetPath1],plugin://plugin.video.xtreammate/) + String.Contains($SKINSHORTCUTS[widgetPath1],action=widget_live_start_group) + String.Contains($SKINSHORTCUTS[widgetPath1],&amp;home50=1&amp;)]">
++                <param name="containerType" value="$PYTHON['fixedlist' if widgetStyle1 in 'details' or 'enabled' in widgetFixedFocus1 else 'panel']" />
++                <param name="contentStyle" value="$SKINSHORTCUTS[contentStyle1]" />
++                <param name="widgetid" value="$SKINSHORTCUTS[id]510" />
++                <param name="widgetName" value="$SKINSHORTCUTS[widgetName1]" />
++                <param name="submenuid" value="$SKINSHORTCUTS[submenuid]" />
++                <param name="widgetTags" value="$SKINSHORTCUTS[widgetTags1]" />
++                <param name="widgetTarget" value="$SKINSHORTCUTS[widgetTarget1]" />
++                <param name="widgetPath" value="$SKINSHORTCUTS[widgetPath1]" />
++                <param name="widgetStyle" value="widget_layout_$SKINSHORTCUTS[widgetStyle1]" />
++                <param name="widgetSortBy" value="$SKINSHORTCUTS[widgetSortBy1]" />
++                <param name="widgetSortOrder" value="$SKINSHORTCUTS[widgetSortOrder1]" />
++                <param name="widgetLimit" value="$SKINSHORTCUTS[widgetLimit1]" />
++                <param name="widgetInfoPanel" value="$SKINSHORTCUTS[widgetInfoPanel1]" />
++                <param name="visibility" value="[$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] | [![$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] + [Skin.String(widgetvalue-$SKINSHORTCUTS[submenuid],0) | String.IsEmpty(Skin.String(widgetvalue-$SKINSHORTCUTS[submenuid]))]]" />
++            </include>
+ 
+             <!-- widget 2 -->
+             <include content="widget_header_multi" condition="$SKINSHORTCUTS[multiWidgets] + $PYTHON['true' if widgetPath2 else 'false'] + String.IsEqual(Skin.String(HomeLayout),bingie)">
+@@ -262,7 +278,7 @@
+                 <param name="submenuid" value="$SKINSHORTCUTS[submenuid]" />
+                 <param name="widgetName" value="$SKINSHORTCUTS[widgetName2]" />
+             </include>
+-            <include content="widget_base" condition="$PYTHON['true' if widgetPath2 else 'false']">
++            <include content="widget_base" condition="[$PYTHON[&#x27;true&#x27; if widgetPath2 else &#x27;false&#x27;]] + ![String.StartsWith($SKINSHORTCUTS[widgetPath2],plugin://plugin.video.xtreammate/) + String.Contains($SKINSHORTCUTS[widgetPath2],action=widget_live_start_group) + String.Contains($SKINSHORTCUTS[widgetPath2],&amp;home50=1&amp;)]">
+                 <param name="containerType" value="$PYTHON['fixedlist' if widgetStyle2 in 'details' or 'enabled' in widgetFixedFocus2 else 'panel']" />
+                 <param name="contentStyle" value="$SKINSHORTCUTS[contentStyle2]" />
+                 <param name="widgetid" value="$SKINSHORTCUTS[id]520" />
+@@ -278,6 +294,22 @@
+                 <param name="widgetInfoPanel" value="$SKINSHORTCUTS[widgetInfoPanel2]" />
+                 <param name="visibility" value="[$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] | [![$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] + Skin.String(widgetvalue-$SKINSHORTCUTS[submenuid],1)]" />
+             </include>
++<include content="XCMate50.LiveRow" condition="[$PYTHON[&#x27;true&#x27; if widgetPath2 else &#x27;false&#x27;]] + [String.StartsWith($SKINSHORTCUTS[widgetPath2],plugin://plugin.video.xtreammate/) + String.Contains($SKINSHORTCUTS[widgetPath2],action=widget_live_start_group) + String.Contains($SKINSHORTCUTS[widgetPath2],&amp;home50=1&amp;)]">
++                <param name="containerType" value="$PYTHON['fixedlist' if widgetStyle2 in 'details' or 'enabled' in widgetFixedFocus2 else 'panel']" />
++                <param name="contentStyle" value="$SKINSHORTCUTS[contentStyle2]" />
++                <param name="widgetid" value="$SKINSHORTCUTS[id]520" />
++                <param name="widgetName" value="$SKINSHORTCUTS[widgetName2]" />
++                <param name="submenuid" value="$SKINSHORTCUTS[submenuid]" />
++                <param name="widgetTags" value="$SKINSHORTCUTS[widgetTags2]" />
++                <param name="widgetTarget" value="$SKINSHORTCUTS[widgetTarget2]" />
++                <param name="widgetPath" value="$SKINSHORTCUTS[widgetPath2]" />
++                <param name="widgetStyle" value="widget_layout_$SKINSHORTCUTS[widgetStyle2]" />
++                <param name="widgetSortBy" value="$SKINSHORTCUTS[widgetSortBy2]" />
++                <param name="widgetSortOrder" value="$SKINSHORTCUTS[widgetSortOrder2]" />
++                <param name="widgetLimit" value="$SKINSHORTCUTS[widgetLimit2]" />
++                <param name="widgetInfoPanel" value="$SKINSHORTCUTS[widgetInfoPanel2]" />
++                <param name="visibility" value="[$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] | [![$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] + Skin.String(widgetvalue-$SKINSHORTCUTS[submenuid],1)]" />
++            </include>
+             
+             <!-- widget 3 -->
+             <include content="widget_header_multi" condition="$SKINSHORTCUTS[multiWidgets] + $PYTHON['true' if widgetPath3 else 'false'] + String.IsEqual(Skin.String(HomeLayout),bingie)">
+@@ -285,7 +317,7 @@
+                 <param name="submenuid" value="$SKINSHORTCUTS[submenuid]" />
+                 <param name="widgetName" value="$SKINSHORTCUTS[widgetName3]" />
+             </include>
+-            <include content="widget_base" condition="$PYTHON['true' if widgetPath3 else 'false']">
++            <include content="widget_base" condition="[$PYTHON[&#x27;true&#x27; if widgetPath3 else &#x27;false&#x27;]] + ![String.StartsWith($SKINSHORTCUTS[widgetPath3],plugin://plugin.video.xtreammate/) + String.Contains($SKINSHORTCUTS[widgetPath3],action=widget_live_start_group) + String.Contains($SKINSHORTCUTS[widgetPath3],&amp;home50=1&amp;)]">
+                 <param name="containerType" value="$PYTHON['fixedlist' if widgetStyle3 in 'details' or 'enabled' in widgetFixedFocus3 else 'panel']" />
+                 <param name="contentStyle" value="$SKINSHORTCUTS[contentStyle3]" />
+                 <param name="widgetid" value="$SKINSHORTCUTS[id]530" />
+@@ -301,6 +333,22 @@
+                 <param name="widgetInfoPanel" value="$SKINSHORTCUTS[widgetInfoPanel3]" />
+                 <param name="visibility" value="[$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] | [![$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] + Skin.String(widgetvalue-$SKINSHORTCUTS[submenuid],2)]" />
+             </include>
++<include content="XCMate50.LiveRow" condition="[$PYTHON[&#x27;true&#x27; if widgetPath3 else &#x27;false&#x27;]] + [String.StartsWith($SKINSHORTCUTS[widgetPath3],plugin://plugin.video.xtreammate/) + String.Contains($SKINSHORTCUTS[widgetPath3],action=widget_live_start_group) + String.Contains($SKINSHORTCUTS[widgetPath3],&amp;home50=1&amp;)]">
++                <param name="containerType" value="$PYTHON['fixedlist' if widgetStyle3 in 'details' or 'enabled' in widgetFixedFocus3 else 'panel']" />
++                <param name="contentStyle" value="$SKINSHORTCUTS[contentStyle3]" />
++                <param name="widgetid" value="$SKINSHORTCUTS[id]530" />
++                <param name="widgetName" value="$SKINSHORTCUTS[widgetName3]" />
++                <param name="submenuid" value="$SKINSHORTCUTS[submenuid]" />
++                <param name="widgetTags" value="$SKINSHORTCUTS[widgetTags3]" />
++                <param name="widgetTarget" value="$SKINSHORTCUTS[widgetTarget3]" />
++                <param name="widgetPath" value="$SKINSHORTCUTS[widgetPath3]" />
++                <param name="widgetStyle" value="widget_layout_$SKINSHORTCUTS[widgetStyle3]" />
++                <param name="widgetSortBy" value="$SKINSHORTCUTS[widgetSortBy3]" />
++                <param name="widgetSortOrder" value="$SKINSHORTCUTS[widgetSortOrder3]" />
++                <param name="widgetLimit" value="$SKINSHORTCUTS[widgetLimit3]" />
++                <param name="widgetInfoPanel" value="$SKINSHORTCUTS[widgetInfoPanel3]" />
++                <param name="visibility" value="[$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] | [![$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] + Skin.String(widgetvalue-$SKINSHORTCUTS[submenuid],2)]" />
++            </include>
+             
+             <!-- widget 4 -->
+             <include content="widget_header_multi" condition="$SKINSHORTCUTS[multiWidgets] + $PYTHON['true' if widgetPath4 else 'false'] + String.IsEqual(Skin.String(HomeLayout),bingie)">
+@@ -308,7 +356,7 @@
+                 <param name="submenuid" value="$SKINSHORTCUTS[submenuid]" />
+                 <param name="widgetName" value="$SKINSHORTCUTS[widgetName4]" />
+             </include>
+-            <include content="widget_base" condition="$PYTHON['true' if widgetPath4 else 'false']">
++            <include content="widget_base" condition="[$PYTHON[&#x27;true&#x27; if widgetPath4 else &#x27;false&#x27;]] + ![String.StartsWith($SKINSHORTCUTS[widgetPath4],plugin://plugin.video.xtreammate/) + String.Contains($SKINSHORTCUTS[widgetPath4],action=widget_live_start_group) + String.Contains($SKINSHORTCUTS[widgetPath4],&amp;home50=1&amp;)]">
+                 <param name="containerType" value="$PYTHON['fixedlist' if widgetStyle4 in 'details' or 'enabled' in widgetFixedFocus4 else 'panel']" />
+                 <param name="contentStyle" value="$SKINSHORTCUTS[contentStyle4]" />
+                 <param name="widgetid" value="$SKINSHORTCUTS[id]540" />
+@@ -324,6 +372,22 @@
+                 <param name="widgetInfoPanel" value="$SKINSHORTCUTS[widgetInfoPanel4]" />
+                 <param name="visibility" value="[$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] | [![$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] + Skin.String(widgetvalue-$SKINSHORTCUTS[submenuid],3)]" />
+             </include>
++<include content="XCMate50.LiveRow" condition="[$PYTHON[&#x27;true&#x27; if widgetPath4 else &#x27;false&#x27;]] + [String.StartsWith($SKINSHORTCUTS[widgetPath4],plugin://plugin.video.xtreammate/) + String.Contains($SKINSHORTCUTS[widgetPath4],action=widget_live_start_group) + String.Contains($SKINSHORTCUTS[widgetPath4],&amp;home50=1&amp;)]">
++                <param name="containerType" value="$PYTHON['fixedlist' if widgetStyle4 in 'details' or 'enabled' in widgetFixedFocus4 else 'panel']" />
++                <param name="contentStyle" value="$SKINSHORTCUTS[contentStyle4]" />
++                <param name="widgetid" value="$SKINSHORTCUTS[id]540" />
++                <param name="widgetName" value="$SKINSHORTCUTS[widgetName4]" />
++                <param name="submenuid" value="$SKINSHORTCUTS[submenuid]" />
++                <param name="widgetTags" value="$SKINSHORTCUTS[widgetTags4]" />
++                <param name="widgetTarget" value="$SKINSHORTCUTS[widgetTarget4]" />
++                <param name="widgetPath" value="$SKINSHORTCUTS[widgetPath4]" />
++                <param name="widgetStyle" value="widget_layout_$SKINSHORTCUTS[widgetStyle4]" />
++                <param name="widgetSortBy" value="$SKINSHORTCUTS[widgetSortBy4]" />
++                <param name="widgetSortOrder" value="$SKINSHORTCUTS[widgetSortOrder4]" />
++                <param name="widgetLimit" value="$SKINSHORTCUTS[widgetLimit4]" />
++                <param name="widgetInfoPanel" value="$SKINSHORTCUTS[widgetInfoPanel4]" />
++                <param name="visibility" value="[$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] | [![$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] + Skin.String(widgetvalue-$SKINSHORTCUTS[submenuid],3)]" />
++            </include>
+             
+             <!-- widget 5 -->
+             <include content="widget_header_multi" condition="$SKINSHORTCUTS[multiWidgets] + $PYTHON['true' if widgetPath5 else 'false'] + String.IsEqual(Skin.String(HomeLayout),bingie)">
+@@ -331,7 +395,7 @@
+                 <param name="submenuid" value="$SKINSHORTCUTS[submenuid]" />
+                 <param name="widgetName" value="$SKINSHORTCUTS[widgetName5]" />
+             </include>
+-            <include content="widget_base" condition="$PYTHON['true' if widgetPath5 else 'false']">
++            <include content="widget_base" condition="[$PYTHON[&#x27;true&#x27; if widgetPath5 else &#x27;false&#x27;]] + ![String.StartsWith($SKINSHORTCUTS[widgetPath5],plugin://plugin.video.xtreammate/) + String.Contains($SKINSHORTCUTS[widgetPath5],action=widget_live_start_group) + String.Contains($SKINSHORTCUTS[widgetPath5],&amp;home50=1&amp;)]">
+                 <param name="containerType" value="$PYTHON['fixedlist' if widgetStyle5 in 'details' or 'enabled' in widgetFixedFocus5 else 'panel']" />
+                 <param name="contentStyle" value="$SKINSHORTCUTS[contentStyle5]" />
+                 <param name="widgetid" value="$SKINSHORTCUTS[id]550" />
+@@ -347,6 +411,22 @@
+                 <param name="widgetInfoPanel" value="$SKINSHORTCUTS[widgetInfoPanel5]" />
+                 <param name="visibility" value="[$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] | [![$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] + Skin.String(widgetvalue-$SKINSHORTCUTS[submenuid],4)]" />
+             </include>
++<include content="XCMate50.LiveRow" condition="[$PYTHON[&#x27;true&#x27; if widgetPath5 else &#x27;false&#x27;]] + [String.StartsWith($SKINSHORTCUTS[widgetPath5],plugin://plugin.video.xtreammate/) + String.Contains($SKINSHORTCUTS[widgetPath5],action=widget_live_start_group) + String.Contains($SKINSHORTCUTS[widgetPath5],&amp;home50=1&amp;)]">
++                <param name="containerType" value="$PYTHON['fixedlist' if widgetStyle5 in 'details' or 'enabled' in widgetFixedFocus5 else 'panel']" />
++                <param name="contentStyle" value="$SKINSHORTCUTS[contentStyle5]" />
++                <param name="widgetid" value="$SKINSHORTCUTS[id]550" />
++                <param name="widgetName" value="$SKINSHORTCUTS[widgetName5]" />
++                <param name="submenuid" value="$SKINSHORTCUTS[submenuid]" />
++                <param name="widgetTags" value="$SKINSHORTCUTS[widgetTags5]" />
++                <param name="widgetTarget" value="$SKINSHORTCUTS[widgetTarget5]" />
++                <param name="widgetPath" value="$SKINSHORTCUTS[widgetPath5]" />
++                <param name="widgetStyle" value="widget_layout_$SKINSHORTCUTS[widgetStyle5]" />
++                <param name="widgetSortBy" value="$SKINSHORTCUTS[widgetSortBy5]" />
++                <param name="widgetSortOrder" value="$SKINSHORTCUTS[widgetSortOrder5]" />
++                <param name="widgetLimit" value="$SKINSHORTCUTS[widgetLimit5]" />
++                <param name="widgetInfoPanel" value="$SKINSHORTCUTS[widgetInfoPanel5]" />
++                <param name="visibility" value="[$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] | [![$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] + Skin.String(widgetvalue-$SKINSHORTCUTS[submenuid],4)]" />
++            </include>
+             
+             <!-- widget 6 -->
+             <include content="widget_header_multi" condition="$SKINSHORTCUTS[multiWidgets] + $PYTHON['true' if widgetPath6 else 'false'] + String.IsEqual(Skin.String(HomeLayout),bingie)">
+@@ -354,7 +434,7 @@
+                 <param name="submenuid" value="$SKINSHORTCUTS[submenuid]" />
+                 <param name="widgetName" value="$SKINSHORTCUTS[widgetName6]" />
+             </include>
+-            <include content="widget_base" condition="$PYTHON['true' if widgetPath6 else 'false']">
++            <include content="widget_base" condition="[$PYTHON[&#x27;true&#x27; if widgetPath6 else &#x27;false&#x27;]] + ![String.StartsWith($SKINSHORTCUTS[widgetPath6],plugin://plugin.video.xtreammate/) + String.Contains($SKINSHORTCUTS[widgetPath6],action=widget_live_start_group) + String.Contains($SKINSHORTCUTS[widgetPath6],&amp;home50=1&amp;)]">
+                 <param name="containerType" value="$PYTHON['fixedlist' if widgetStyle6 in 'details' or 'enabled' in widgetFixedFocus6 else 'panel']" />
+                 <param name="contentStyle" value="$SKINSHORTCUTS[contentStyle6]" />
+                 <param name="widgetid" value="$SKINSHORTCUTS[id]560" />
+@@ -370,6 +450,22 @@
+                 <param name="widgetInfoPanel" value="$SKINSHORTCUTS[widgetInfoPanel6]" />
+                 <param name="visibility" value="[$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] | [![$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] + Skin.String(widgetvalue-$SKINSHORTCUTS[submenuid],5)]" />
+             </include>
++<include content="XCMate50.LiveRow" condition="[$PYTHON[&#x27;true&#x27; if widgetPath6 else &#x27;false&#x27;]] + [String.StartsWith($SKINSHORTCUTS[widgetPath6],plugin://plugin.video.xtreammate/) + String.Contains($SKINSHORTCUTS[widgetPath6],action=widget_live_start_group) + String.Contains($SKINSHORTCUTS[widgetPath6],&amp;home50=1&amp;)]">
++                <param name="containerType" value="$PYTHON['fixedlist' if widgetStyle6 in 'details' or 'enabled' in widgetFixedFocus6 else 'panel']" />
++                <param name="contentStyle" value="$SKINSHORTCUTS[contentStyle6]" />
++                <param name="widgetid" value="$SKINSHORTCUTS[id]560" />
++                <param name="widgetName" value="$SKINSHORTCUTS[widgetName6]" />
++                <param name="submenuid" value="$SKINSHORTCUTS[submenuid]" />
++                <param name="widgetTags" value="$SKINSHORTCUTS[widgetTags6]" />
++                <param name="widgetTarget" value="$SKINSHORTCUTS[widgetTarget6]" />
++                <param name="widgetPath" value="$SKINSHORTCUTS[widgetPath6]" />
++                <param name="widgetStyle" value="widget_layout_$SKINSHORTCUTS[widgetStyle6]" />
++                <param name="widgetSortBy" value="$SKINSHORTCUTS[widgetSortBy6]" />
++                <param name="widgetSortOrder" value="$SKINSHORTCUTS[widgetSortOrder6]" />
++                <param name="widgetLimit" value="$SKINSHORTCUTS[widgetLimit6]" />
++                <param name="widgetInfoPanel" value="$SKINSHORTCUTS[widgetInfoPanel6]" />
++                <param name="visibility" value="[$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] | [![$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] + Skin.String(widgetvalue-$SKINSHORTCUTS[submenuid],5)]" />
++            </include>
+ 
+             <!-- widget 7 -->
+             <include content="widget_header_multi" condition="$SKINSHORTCUTS[multiWidgets] + $PYTHON['true' if widgetPath7 else 'false'] + String.IsEqual(Skin.String(HomeLayout),bingie)">
+@@ -377,7 +473,7 @@
+                 <param name="submenuid" value="$SKINSHORTCUTS[submenuid]" />
+                 <param name="widgetName" value="$SKINSHORTCUTS[widgetName7]" />
+             </include>
+-            <include content="widget_base" condition="$PYTHON['true' if widgetPath7 else 'false']">
++            <include content="widget_base" condition="[$PYTHON[&#x27;true&#x27; if widgetPath7 else &#x27;false&#x27;]] + ![String.StartsWith($SKINSHORTCUTS[widgetPath7],plugin://plugin.video.xtreammate/) + String.Contains($SKINSHORTCUTS[widgetPath7],action=widget_live_start_group) + String.Contains($SKINSHORTCUTS[widgetPath7],&amp;home50=1&amp;)]">
+                 <param name="containerType" value="$PYTHON['fixedlist' if widgetStyle7 in 'details' or 'enabled' in widgetFixedFocus7 else 'panel']" />
+                 <param name="contentStyle" value="$SKINSHORTCUTS[contentStyle7]" />
+                 <param name="widgetid" value="$SKINSHORTCUTS[id]570" />
+@@ -393,6 +489,22 @@
+                 <param name="widgetInfoPanel" value="$SKINSHORTCUTS[widgetInfoPanel7]" />
+                 <param name="visibility" value="[$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] | [![$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] + Skin.String(widgetvalue-$SKINSHORTCUTS[submenuid],6)]" />
+             </include>
++<include content="XCMate50.LiveRow" condition="[$PYTHON[&#x27;true&#x27; if widgetPath7 else &#x27;false&#x27;]] + [String.StartsWith($SKINSHORTCUTS[widgetPath7],plugin://plugin.video.xtreammate/) + String.Contains($SKINSHORTCUTS[widgetPath7],action=widget_live_start_group) + String.Contains($SKINSHORTCUTS[widgetPath7],&amp;home50=1&amp;)]">
++                <param name="containerType" value="$PYTHON['fixedlist' if widgetStyle7 in 'details' or 'enabled' in widgetFixedFocus7 else 'panel']" />
++                <param name="contentStyle" value="$SKINSHORTCUTS[contentStyle7]" />
++                <param name="widgetid" value="$SKINSHORTCUTS[id]570" />
++                <param name="widgetName" value="$SKINSHORTCUTS[widgetName7]" />
++                <param name="submenuid" value="$SKINSHORTCUTS[submenuid]" />
++                <param name="widgetTags" value="$SKINSHORTCUTS[widgetTags7]" />
++                <param name="widgetTarget" value="$SKINSHORTCUTS[widgetTarget7]" />
++                <param name="widgetPath" value="$SKINSHORTCUTS[widgetPath7]" />
++                <param name="widgetStyle" value="widget_layout_$SKINSHORTCUTS[widgetStyle7]" />
++                <param name="widgetSortBy" value="$SKINSHORTCUTS[widgetSortBy7]" />
++                <param name="widgetSortOrder" value="$SKINSHORTCUTS[widgetSortOrder7]" />
++                <param name="widgetLimit" value="$SKINSHORTCUTS[widgetLimit7]" />
++                <param name="widgetInfoPanel" value="$SKINSHORTCUTS[widgetInfoPanel7]" />
++                <param name="visibility" value="[$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] | [![$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] + Skin.String(widgetvalue-$SKINSHORTCUTS[submenuid],6)]" />
++            </include>
+             
+             <!-- widget 8 -->
+             <include content="widget_header_multi" condition="$SKINSHORTCUTS[multiWidgets] + $PYTHON['true' if widgetPath8 else 'false'] + String.IsEqual(Skin.String(HomeLayout),bingie)">
+@@ -400,7 +512,7 @@
+                 <param name="submenuid" value="$SKINSHORTCUTS[submenuid]" />
+                 <param name="widgetName" value="$SKINSHORTCUTS[widgetName8]" />
+             </include>
+-            <include content="widget_base" condition="$PYTHON['true' if widgetPath8 else 'false']">
++            <include content="widget_base" condition="[$PYTHON[&#x27;true&#x27; if widgetPath8 else &#x27;false&#x27;]] + ![String.StartsWith($SKINSHORTCUTS[widgetPath8],plugin://plugin.video.xtreammate/) + String.Contains($SKINSHORTCUTS[widgetPath8],action=widget_live_start_group) + String.Contains($SKINSHORTCUTS[widgetPath8],&amp;home50=1&amp;)]">
+                 <param name="containerType" value="$PYTHON['fixedlist' if widgetStyle8 in 'details' or 'enabled' in widgetFixedFocus8 else 'panel']" />
+                 <param name="contentStyle" value="$SKINSHORTCUTS[contentStyle8]" />
+                 <param name="widgetid" value="$SKINSHORTCUTS[id]580" />
+@@ -416,6 +528,22 @@
+                 <param name="widgetInfoPanel" value="$SKINSHORTCUTS[widgetInfoPanel8]" />
+                 <param name="visibility" value="[$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] | [![$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] + Skin.String(widgetvalue-$SKINSHORTCUTS[submenuid],7)]" />
+             </include>
++<include content="XCMate50.LiveRow" condition="[$PYTHON[&#x27;true&#x27; if widgetPath8 else &#x27;false&#x27;]] + [String.StartsWith($SKINSHORTCUTS[widgetPath8],plugin://plugin.video.xtreammate/) + String.Contains($SKINSHORTCUTS[widgetPath8],action=widget_live_start_group) + String.Contains($SKINSHORTCUTS[widgetPath8],&amp;home50=1&amp;)]">
++                <param name="containerType" value="$PYTHON['fixedlist' if widgetStyle8 in 'details' or 'enabled' in widgetFixedFocus8 else 'panel']" />
++                <param name="contentStyle" value="$SKINSHORTCUTS[contentStyle8]" />
++                <param name="widgetid" value="$SKINSHORTCUTS[id]580" />
++                <param name="widgetName" value="$SKINSHORTCUTS[widgetName8]" />
++                <param name="submenuid" value="$SKINSHORTCUTS[submenuid]" />
++                <param name="widgetTags" value="$SKINSHORTCUTS[widgetTags8]" />
++                <param name="widgetTarget" value="$SKINSHORTCUTS[widgetTarget8]" />
++                <param name="widgetPath" value="$SKINSHORTCUTS[widgetPath8]" />
++                <param name="widgetStyle" value="widget_layout_$SKINSHORTCUTS[widgetStyle8]" />
++                <param name="widgetSortBy" value="$SKINSHORTCUTS[widgetSortBy8]" />
++                <param name="widgetSortOrder" value="$SKINSHORTCUTS[widgetSortOrder8]" />
++                <param name="widgetLimit" value="$SKINSHORTCUTS[widgetLimit8]" />
++                <param name="widgetInfoPanel" value="$SKINSHORTCUTS[widgetInfoPanel8]" />
++                <param name="visibility" value="[$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] | [![$SKINSHORTCUTS[multiWidgets] + String.IsEqual(Skin.String(HomeLayout),bingie)] + Skin.String(widgetvalue-$SKINSHORTCUTS[submenuid],7)]" />
++            </include>
+         </controls>
+         <variables>
+             

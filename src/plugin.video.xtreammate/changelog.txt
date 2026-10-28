@@ -1,3 +1,14 @@
+0.1.29.50 (explicit BINGIE Home integration; Android NOT_TESTED)
+- #252: three direct Live TV / Movies / Series choices prepare a verified native
+  Skinshortcuts Home slot. Preserve occupied movie/series bindings and reload hooks.
+  Explicit confirmation, private original/candidate SHA256, safe restore.
+- Four-file opt-in BINGIE 2.2.3 adapter: real Home programme Hero and small
+  horizontal station logos, plus direct native widget candidates. No automatic
+  skin/profile modification, startup apply or native player rewrite.
+- Live Home reads only the explicitly configured start group from the shared local
+  EPG/artwork data. Full group, no provider/category fallback, focus never tunes.
+- Prior widget source folders and .48 preview remain compatibility functions.
+
 0.1.29.49 (widget selection hotfix #252; Android NOT_TESTED)
 - Settings > Appearance and display > Widgets lists three real folders:
   Live TV - start group, Movies - latest movies, Series - latest series.
