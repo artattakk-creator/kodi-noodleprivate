@@ -1,0 +1,32 @@
+{
+  "version": "0.1.29.52",
+  "source_commit": "05c7a96d0dc8984443f8c9d9c1be62a866d26794",
+  "files": 580,
+  "bytes": 3103751,
+  "sha256": "1117593818b2d29d5b170fee25397c1c31a3ade6f264139371e67a784ef11644",
+  "crc": "PASS",
+  "safe_paths": "PASS",
+  "all_source_bytes": "PASS",
+  "python_ast": "PASS",
+  "independent_deterministic_rebuild": "PASS",
+  "android": {
+    "not_tested": 48,
+    "passed": 0,
+    "boxes": [
+      "A Kodi 21.2",
+      "B Kodi 21.3"
+    ]
+  },
+  "production_publish": false,
+  "tests": 2168,
+  "seconds": 313.338,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "previous_tests_retained": 2116,
+  "new_tests": 52,
+  "ci": "Final delivery HEAD, run URL, exact outcome and artifact SHA in Draft-PR checks/body; no automatic merge/release",
+  "raw_host_log_sha256": "f848538eeacfc1a8b1acabbf913b3b2f72965869906ab5809d72f072bff28695",
+  "published_host_log_sha256": "7a65ba397890eaa622617590367986b78e4f41dd2a62fa848efaf39ed42bc04c",
+  "verified_at": "2026-10-28T20:06:29.084810+01:00"
+}

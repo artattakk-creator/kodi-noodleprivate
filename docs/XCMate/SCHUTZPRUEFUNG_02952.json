@@ -1,0 +1,35 @@
+{
+  "base": "2a9a47736384e6af8e1384fddd5d719092cea9cb",
+  "previous_source_files": 577,
+  "byte_identical": 558,
+  "exact_reviewed_deltas": [
+    "src/plugin.video.xtreammate/addon.xml",
+    "src/plugin.video.xtreammate/changelog.txt",
+    "src/plugin.video.xtreammate/resources/lib/app_services.py",
+    "src/plugin.video.xtreammate/resources/lib/catalog_delta.py",
+    "src/plugin.video.xtreammate/resources/lib/epg.py",
+    "src/plugin.video.xtreammate/resources/lib/group_selection.py",
+    "src/plugin.video.xtreammate/resources/lib/guide_grid_diagnostics.py",
+    "src/plugin.video.xtreammate/resources/lib/guide_publish44.py",
+    "src/plugin.video.xtreammate/resources/lib/guide_store.py",
+    "src/plugin.video.xtreammate/resources/lib/guide_window.py",
+    "src/plugin.video.xtreammate/resources/lib/infobar45.py",
+    "src/plugin.video.xtreammate/resources/lib/library_index.py",
+    "src/plugin.video.xtreammate/resources/lib/local_epg.py",
+    "src/plugin.video.xtreammate/resources/lib/media_window.py",
+    "src/plugin.video.xtreammate/resources/lib/programme_flow48.py",
+    "src/plugin.video.xtreammate/resources/lib/programme_index46.py",
+    "src/plugin.video.xtreammate/resources/lib/programme_snapshot47.py",
+    "src/plugin.video.xtreammate/resources/lib/stream_details.py",
+    "src/plugin.video.xtreammate/resources/lib/stream_epg.py"
+  ],
+  "additive_files": [
+    "src/plugin.video.xtreammate/resources/lib/catalog_delta52.py",
+    "src/plugin.video.xtreammate/resources/lib/epg_merge52.py",
+    "src/plugin.video.xtreammate/resources/lib/guide_coverage52.py"
+  ],
+  "foreign_wip_unchanged": 62,
+  "box_a_changed": false,
+  "box_b_changed": false,
+  "skin_files_changed": false
+}
