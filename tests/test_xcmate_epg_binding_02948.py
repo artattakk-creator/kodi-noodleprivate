@@ -100,3 +100,15 @@ class Binding48(Fixture,unittest.TestCase):
         widget=importlib.import_module('widget_items45').describe(self.portal,'live',self.row(),{},info)
         self.assertEqual(grid['rows'][0]['events'][0]['title'],'Source 2')
         self.assertEqual({grid['rows'][0]['events'][0]['programme_key47'],widget['props']['XCMate.ProgrammeKey47'],info['programme_key47']},{event['key']})
+
+    def test_visible_mapping_button_does_not_cover_time_axis_or_first_grid_row(self):
+        import xml.etree.ElementTree as E
+        tree=E.parse(ADDON/'resources/skins/Default/720p/XCMateGuideGrid.xml')
+        def rectangle(cid):
+            node=tree.find("controls/control[@id='%s']"%cid)
+            return tuple(int(node.findtext(k)) for k in ('left','top','width','height'))
+        x,y,w,h=rectangle(316)
+        for cid in range(600,606):
+            a,b,c,d=rectangle(cid)
+            self.assertFalse(x<a+c and x+w>a and y<b+d and y+h>b,cid)
+        self.assertLessEqual(y+h,168)
