@@ -112,3 +112,13 @@ class Binding48(Fixture,unittest.TestCase):
             a,b,c,d=rectangle(cid)
             self.assertFalse(x<a+c and x+w>a and y<b+d and y+h>b,cid)
         self.assertLessEqual(y+h,168)
+
+    def test_mini_does_not_use_an_unqualified_legacy_cache_when_selected_source_is_missing(self):
+        self.binding.save(self.portal,'1','xml',self.bid)
+        self.cache={'xml':[dict(channel='xml',name='WRONG PROVIDER',descr='Unqualified',start_timestamp=self.now-60,stop_timestamp=self.now+600)]}
+        sys.modules['epg'].load_cache=lambda pid:self.cache
+        channel=types.SimpleNamespace(extra={'stream_id':'1','category_id':'a'},tvg_id='xml',logo='',name='Station')
+        snapshot=importlib.import_module('tv_data').GuideSnapshot(self.portal,self.client);snapshot.request([channel])
+        with mock.patch('guide_viewport.cache',return_value=None):snapshot.refresh()
+        self.assertFalse(snapshot.get('1',self.now)['now'])
+        self.assertEqual(snapshot.get('1',self.now)['mapping'],'MANUAL')

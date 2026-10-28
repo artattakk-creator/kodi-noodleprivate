@@ -135,9 +135,14 @@ class GuideSnapshot:
         for c in wanted:
             sid = str(c.extra.get('stream_id',''))
             compatibility47=not self._indexed or getattr(local,'code','')=='SHARED_LASTGOOD47'
-            info = resolve_guide(self._cache, c.tvg_id, sid, now, self.client if compatibility47 else None, self._mappings)
+            from epg_binding48 import binding as source_binding48
+            qualified48=source_binding48(self._mappings,sid)
+            # A legacy flattened cache cannot prove source identity. Never
+            # silently replace a qualified manual source with another feed.
+            selected_cache48={} if qualified48 and not self._indexed else self._cache
+            info = resolve_guide(selected_cache48, c.tvg_id, sid, now, self.client if compatibility47 else None, self._mappings)
             info['snapshot_revision']=getattr(local,'revision',None)
-            if not info['now'] and not self._indexed:
+            if not info['now'] and not self._indexed and not qualified48:
                 # A saved ten-day guide outlives its small compatibility
                 # snapshot. Read only this worker's bounded visible viewport.
                 try:
