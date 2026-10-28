@@ -1,0 +1,25 @@
+{
+  "base": "54759f965aef97b45c846042010d5ae1aa1f8ff3",
+  "previous_source_files": 573,
+  "byte_identical": 564,
+  "exact_wizard_deltas": [
+    "src/plugin.video.xtreammate/addon.xml",
+    "src/plugin.video.xtreammate/changelog.txt",
+    "src/plugin.video.xtreammate/resources/language/resource.language.de_de/strings.po",
+    "src/plugin.video.xtreammate/resources/language/resource.language.en_gb/strings.po",
+    "src/plugin.video.xtreammate/resources/lib/setup_draft.py",
+    "src/plugin.video.xtreammate/resources/lib/setup_trace.py",
+    "src/plugin.video.xtreammate/resources/lib/setup_window.py",
+    "src/plugin.video.xtreammate/resources/lib/setup_wizard.py",
+    "src/plugin.video.xtreammate/resources/skins/Default/720p/XCMateSetup.xml"
+  ],
+  "additive_files": [
+    "src/plugin.video.xtreammate/resources/lib/wizard_groups51.py",
+    "src/plugin.video.xtreammate/resources/lib/wizard_session51.py",
+    "src/plugin.video.xtreammate/resources/lib/wizard_settings51.py",
+    "src/plugin.video.xtreammate/resources/media/wizard_plain51.png"
+  ],
+  "foreign_wip_unchanged": 62,
+  "box_a_changed": false,
+  "skin_files_changed": false
+}
