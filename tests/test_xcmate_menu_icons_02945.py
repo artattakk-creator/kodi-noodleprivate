@@ -55,7 +55,11 @@ class MenuIcons45(Fixture,unittest.TestCase):
  def test_all_owned_native_select_calls_are_decorated_or_already_icon_listitems(self):
   exceptions={'menu_icons45.py','stream_details.py'}
   # #255 explicitly requires the three wizard pickers to stay plain text.
-  neutral={('setup_wizard.py','select','tr(32771)'),('setup_window.py','multiselect','tr(32706)'),('setup_window.py','select','tr(32736)')};found=set()
+  neutral={('setup_wizard.py','select','tr(32771)'),('setup_window.py','multiselect','tr(32706)'),('setup_window.py','select','tr(32736)')}
+  # .53 resume/error menus retain the explicitly requested neutral wizard.
+  neutral.remove(('setup_wizard.py','select','tr(32771)'))  # moved, unchanged neutral picker, into .53 flow
+  neutral.update({('wizard_flow53.py', 'select', "'Einrichtungsstand bleibt erhalten'"), ('wizard_flow53.py', 'select', 'tr(32771)'), ('wizard_flow53.py', 'select', "'Vorhandener Einrichtungsentwurf kann nicht sicher gelesen werden.'"), ('wizard_flow53.py', 'select', "'Eingaben korrigieren · Gruppen bleiben erhalten'"), ('wizard_flow53.py', 'select', "message + ' [' + code + ']'"), ('wizard_flow53.py', 'select', "'Einrichtung fortsetzen'")})
+  found=set()
   for p in LIB.glob('*.py'):
    if p.name in exceptions:continue
    for n in ast.walk(ast.parse(p.read_text())):

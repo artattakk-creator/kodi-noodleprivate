@@ -2,6 +2,7 @@
 import time
 from concurrent.futures import ThreadPoolExecutor
 import xbmcgui
+from menu_icons45 import select
 from owner_dispatch import OwnerDispatch,native_init
 
 
@@ -46,7 +47,7 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
         def ready(runs):
             if not runs:self.getControl(102).setLabel('Noch kein abgeschlossener Aktualisierungsbericht vorhanden.');return
             from epg_report53 import stamp,meaning,describe
-            choice=xbmcgui.Dialog().select('Aktualisierungsbericht anzeigen',[stamp(r.get('started'))+' · '+meaning(r.get('code')) for r in reversed(runs)])
+            choice=select(xbmcgui.Dialog(),'Aktualisierungsbericht anzeigen',[stamp(r.get('started'))+' · '+meaning(r.get('code')) for r in reversed(runs)])
             if not 0<=choice<len(runs):return
             self.mode='report';self.scroll=0;self.getControl(200).setVisible(False);self.getControl(103).setText('')
             self.getControl(300).setVisible(True);self.getControl(300).setText(describe(runs[-1-choice],self.portal));self.getControl(300).scroll(0)
@@ -61,7 +62,7 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
         if self._pending_future:return
         import epg_sources as sources
         if cid==401:
-            choice=xbmcgui.Dialog().select('EPG-Quelle hinzufügen',['Deutschland / Österreich / Schweiz','XMLTV-Adresse','XMLTV-Datei','Zurück'])
+            choice=select(xbmcgui.Dialog(),'EPG-Quelle hinzufügen',['Deutschland / Österreich / Schweiz','XMLTV-Adresse','XMLTV-Datei','Zurück'])
             if choice==0:sources._choose_preset(self.portal)
             elif choice in (1,2):
                 uri=xbmcgui.Dialog().input('XMLTV-Adresse (HTTP/HTTPS)') if choice==1 else xbmcgui.Dialog().browse(1,'XMLTV-Datei auswählen','files','.xml|.gz|.xml.gz',False,False,'')
@@ -78,7 +79,7 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
         elif cid==404:self._load()
         elif cid==405:self.next_action='guide';self.close()
         elif cid==407:
-            values=[24,6,12,48];choice=xbmcgui.Dialog().select('Automatischer EPG-Download',[str(h)+' Stunden' for h in values])
+            values=[24,6,12,48];choice=select(xbmcgui.Dialog(),'Automatischer EPG-Download',[str(h)+' Stunden' for h in values])
             if 0<=choice<len(values):
                 import xbmcaddon
                 xbmcaddon.Addon().setSetting('epg_refresh_hours',str(values[choice]))

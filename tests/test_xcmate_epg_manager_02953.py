@@ -20,6 +20,8 @@ class Manager53Tests(unittest.TestCase):
                     before=dict(programmes=0),after=self.report.statistics('p'),
                     sources=[dict(id=self.identity,key='safe',rank=1,started=now,finished=now+1,code=source_code or code,channels=1,stored=1)])
     def test_twenty_four_hour_default_and_existing_explicit_interval_preserved(self):
+        import xml.etree.ElementTree as ET
+        self.assertEqual(ET.parse(ADDON/'resources/settings.xml').find(".//setting[@id='epg_refresh_hours']").get('default'),'24')
         self.assertEqual(self.schedule.interval(),86400)
         for hours in (6,12,36,48):
             self.m.options['epg_refresh_hours']=str(hours);self.assertEqual(self.schedule.interval(),hours*3600)

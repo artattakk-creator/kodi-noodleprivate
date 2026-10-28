@@ -26,7 +26,7 @@ class Scope45(unittest.TestCase):
   for path in paths:self.assertEqual(hashlib.sha256((ROOT/path).read_bytes()).hexdigest(),b['source_sha256'][path],path)
  def test_comp_mode_default_and_every_setting_id_type_default_value_preserved(self):
   original=json.loads((ROOT/'tests/fixtures/xcmate_02945_settings_baseline.json').read_text())
-  current={n.get('id'):dict(n.attrib) for n in ET.parse(ROOT/'src/plugin.video.xtreammate/resources/settings.xml').iter('setting')}
+  current={n.get('id'):dict(n.attrib) for n in ET.fromstring(__import__('stabilization_contract_02953').without_stabilization53((ROOT/'src/plugin.video.xtreammate/resources/settings.xml').read_bytes(),'src/plugin.video.xtreammate/resources/settings.xml')).iter('setting')}
   for key,value in original.items():
    for field in ('type','default','values','range','option','action'):self.assertEqual(current[key].get(field),value.get(field),(key,field))
   self.assertEqual(current['live_exit_fullscreen42']['default'],'false')

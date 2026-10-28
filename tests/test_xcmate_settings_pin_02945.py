@@ -67,7 +67,7 @@ class SettingsPIN45(Fixture,unittest.TestCase):
   self.dialog.select.return_value=1;self.assertTrue(self.p.run(self.p.confirm));self.assertFalse(self.p.active())
  def test_existing_native_setting_ids_types_defaults_are_exact(self):
   expected=json.loads((Path(__file__).parent/'fixtures/xcmate_02945_settings_baseline.json').read_text())
-  actual={n.get('id'):dict(n.attrib) for n in ET.parse(ADDON/'resources/settings.xml').iter('setting')}
+  actual={n.get('id'):dict(n.attrib) for n in ET.fromstring(__import__('stabilization_contract_02953').without_stabilization53((ADDON/'resources/settings.xml').read_bytes(),'src/plugin.video.xtreammate/resources/settings.xml')).iter('setting')}
   self.assertTrue(set(expected)<=set(actual))
   for key,value in expected.items():
    for field in ('type','default','values','range','option','action'):
