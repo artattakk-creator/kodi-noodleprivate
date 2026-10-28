@@ -519,7 +519,17 @@ def _refresh_portal_epg(portal_id, p, force=False):
 
 
 def _refresh_portal_epg_inner(portal_id, p, force=False):
-    if p.get('type')=='xtream' or p.get('source_schema')==1:
+    indexed_xmltv52=False
+    if p.get('type') in ('m3u','stb') and p.get('source_schema')!=1:
+        # Reuse the same source-qualified streaming importer for already
+        # indexed legacy playlists/MAG portals with configured XMLTV sources.
+        # Unindexed STB bulk/short fallback keeps its existing entry path.
+        from epg_sources import configuration
+        configured=bool(p.get('epg_url')) or any(s.get('enabled',True) for s in configuration(portal_id).get('sources',[]))
+        if configured:
+            from library_index import Reader
+            indexed_xmltv52=bool(Reader(portal_id).page('live',limit=1)[0])
+    if p.get('type')=='xtream' or p.get('source_schema')==1 or indexed_xmltv52:
         from stream_epg import refresh
         import xbmc
         cancel = xbmc.Monitor().abortRequested if hasattr(xbmc,'Monitor') else lambda: False
@@ -595,9 +605,10 @@ def _refresh_portal_epg_inner(portal_id, p, force=False):
     if programmes:
         from epg_views import _as_int
         now=time.time()
+        left52,right52=__import__('programme_index46').bounds(now)
         usable=sum(1 for entries in programmes.values() for e in entries if isinstance(e,dict)
-                   and _as_int(e.get('stop_timestamp'))>max(now,_as_int(e.get('start_timestamp')))
-                   and 0<_as_int(e.get('start_timestamp'))<now+10*86400)
+                   and _as_int(e.get('stop_timestamp'))>max(left52,_as_int(e.get('start_timestamp')))
+                   and 0<_as_int(e.get('start_timestamp'))<right52)
         if not usable:
             # A syntactically valid but obsolete feed must not replace a good
             # guide. Parsing success is distinct from usable cache publication.

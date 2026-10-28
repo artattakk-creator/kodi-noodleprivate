@@ -1,3 +1,10 @@
+0.1.29.52
+- EPG: einheitliches 7/20-Kalendertage-Fenster im Master und gemeinsamen Datenbestand.
+- Quellqualifizierte Lücken-/Metadaten-Ergänzung mit bewahrtem Last-Good-Bestand.
+- Nachträglicher Seriengruppenimport mit Wiederanlauf, Fortschritt und Abbruch.
+- Gerahmte echte Stream-Pixelauflösung; Übergangswerte bleiben unbekannt.
+- Keine Daten-/Profilresets, keine Skinmodifikation; Android-Abnahme offen.
+
 0.1.29.51
 - Wizard: bestätigte Übernahme der neuen Portal-Settings, fehlende Angaben ergänzen.
 - Gruppenlisten lazy und in begrenzten Owner-Pump-Schritten; Auswahl ohne Add-on-Abfragen pro Zeile.

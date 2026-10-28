@@ -57,7 +57,7 @@ def publish(db,pid,table,where='',args=(),*,source='compatibility',rank=None,rev
     # No destructive historical/source-retention operation is part of .44.
     db.execute('''INSERT INTO guide44_inputs SELECT ?,?,cid,start,stop,title,description,'''+('source' if compatibility else '?')+' FROM '+table+selector+'''
       ON CONFLICT(pid,source_id,cid,start,stop) DO UPDATE SET
-      title=excluded.title,description=excluded.description,rank=excluded.rank''',
+      title=excluded.title,description=CASE WHEN excluded.title=guide44_inputs.title AND trim(excluded.description)='' THEN guide44_inputs.description ELSE excluded.description END,rank=excluded.rank''',
       [pid,source]+([] if compatibility else [rank])+list(args))
     if db.execute('SELECT count(*) FROM guide44_inputs WHERE pid=?',(pid,)).fetchone()[0]>2000000:
         raise ValueError('GUIDE_SOURCE_BUDGET')
@@ -81,6 +81,8 @@ def publish(db,pid,table,where='',args=(),*,source='compatibility',rank=None,rev
         cid,start,stop,title,description,priority=row
         exact=db.execute('SELECT source,title,description FROM programmes WHERE pid=? AND cid=? AND start=? AND stop=?',(pid,cid,start,stop)).fetchone()
         if exact:
+            from epg_events import title_key
+            if not description and title_key(title)==title_key(exact[1]):description=exact[2]
             if not compatibility and priority<=exact[0] and (title,description,priority)!=(exact[1],exact[2],exact[0]):
                 db.execute('UPDATE programmes SET title=?,description=?,source=? WHERE pid=? AND cid=? AND start=? AND stop=?',(title,description,priority,pid,cid,start,stop));corrected+=1
             continue

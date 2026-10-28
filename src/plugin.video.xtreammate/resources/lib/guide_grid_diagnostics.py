@@ -72,4 +72,7 @@ def inspect(portal,row,origin,cursor,focus,client=None,snapshot=None):
         events=short.get('events',[])
         lines.append(str(len(events))+' | '+_stamp(min((e['start'] for e in events),default=None))+' → '+_stamp(max((e['stop'] for e in events),default=None)))
     else:lines.append('NOT_AVAILABLE')
+    from guide_coverage52 import inspect as coverage52
+    import json
+    lines+=['','Quellen-/Tagesabdeckung (lokal, read-only):',json.dumps(coverage52(portal['id'],channel['sid'],row.get('epg_id') or channel.get('epg_channel_id') or channel['sid']),ensure_ascii=False)]
     return '\n'.join(lines)

@@ -1,0 +1,61 @@
+{
+  "environment": "isolated synthetic host fixtures; not Android",
+  "baseline_commit": "2a9a47736384e6af8e1384fddd5d719092cea9cb",
+  "before": {
+    "source": "main-0.1.29.51",
+    "epg": {
+      "initial": [
+        "Programme -7",
+        "Programme 0"
+      ],
+      "after_shorter": [
+        "Programme -7",
+        "Programme 0"
+      ],
+      "now_description": "",
+      "shown_events": [
+        "Programme 0"
+      ],
+      "elapsed_ms": 29.187
+    },
+    "series": {
+      "job": "FAILED",
+      "catalogue": 0,
+      "widget": 0,
+      "widget_code": "INDEX_MISSING",
+      "provider_groups": []
+    }
+  },
+  "after": {
+    "source": "candidate-0.1.29.52",
+    "epg": {
+      "initial": [
+        "Programme -7",
+        "Programme 0",
+        "Programme 11",
+        "Programme 20"
+      ],
+      "after_shorter": [
+        "Programme -7",
+        "Programme 0",
+        "Programme 11",
+        "Programme 20"
+      ],
+      "now_description": "Rich details",
+      "shown_events": [
+        "Programme 0",
+        "Programme 1"
+      ],
+      "elapsed_ms": 29.043
+    },
+    "series": {
+      "job": "READY",
+      "catalogue": 7,
+      "widget": 7,
+      "widget_code": "READY",
+      "provider_groups": [
+        "b"
+      ]
+    }
+  }
+}

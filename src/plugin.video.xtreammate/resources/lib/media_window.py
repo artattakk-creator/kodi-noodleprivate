@@ -331,7 +331,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
                 self.getControl(102).setLabel(tr(32610))
                 if self._catalog_missing: self.getControl(120).setLabel(tr(32611))
             elif status and status[0]['code'] in ('PENDING','RUNNING'):
-                self.getControl(102).setLabel(tr(35400))
+                self.getControl(102).setLabel(tr(32612,status[0]['stored'],status[0]['received']) if status[0].get('received') else tr(35400))
             elif status and status[0]['code']=='EMPTY_SOURCE':
                 self.getControl(102).setLabel(tr(35401))
             elif status and status[0]['code']=='INDEXING':

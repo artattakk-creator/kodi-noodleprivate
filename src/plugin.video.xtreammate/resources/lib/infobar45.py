@@ -69,7 +69,11 @@ class Technology:
    icon=_image(box(x+14,y+14,36,36),os.path.join(media,'infobar45',image+'.png'))
    value=_label(box(x+86,y+1,151 if x==1450 else 106,33),'',font['resolution'] if key=='video' else font['language'] if key=='language' else font['value'],'0xFFF5F7F8')
    caption=_label(box(x+86,y+36,154 if x==1450 else 114,29),tr(label),font['caption'],'0xFF929BA2')
-   self.icons[key]=icon;self.text[key]=value;self.captions[key]=caption;self.frames[key]=frame;self.controls.extend((frame,icon,value,caption))
+   self.icons[key]=icon;self.text[key]=value;self.captions[key]=caption;self.frames[key]=frame
+   if key=='video':
+    self.resolution_frame52=_image(box(x+78,y-4,160,44),os.path.join(media,'infobar45','cell.png'))
+    self.controls.extend((frame,icon,self.resolution_frame52,value,caption))
+   else:self.controls.extend((frame,icon,value,caption))
  def write(self,control,method,*args):
   from render_diff44 import write
   write(self.owner,control,method,*args)
@@ -81,6 +85,7 @@ class Technology:
   for key,text in data.items():
    self.write(self.text[key],'setLabel',text)
    for c in (self.frames[key],self.icons[key],self.text[key],self.captions[key]):self.write(c,'setVisible',bool(text))
+  self.write(self.resolution_frame52,'setVisible',bool(data['video']))
 
 
 class InfoBar:

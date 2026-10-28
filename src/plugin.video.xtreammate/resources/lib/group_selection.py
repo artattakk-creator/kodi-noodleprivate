@@ -133,7 +133,7 @@ def _categories(portal, kind, force=False):
 def _menu_items(kind, current, ids, old_known, auto_new):
     """Group management shortcuts; individual toggling uses Kodi native checkboxes."""
     newly_found = set(ids) - old_known
-    return [
+    entries = [
         '[B]☑ Gruppen mit Checkboxen auswählen ({} / {})[/B]'.format(len(current), len(ids)),
         'Alle aktivieren',
         'Alle deaktivieren',
@@ -143,6 +143,8 @@ def _menu_items(kind, current, ids, old_known, auto_new):
         '[COLOR lime][B]✓ Auswahl speichern ({} / {})[/B][/COLOR]'.format(len(current), len(ids)),
         'Abbrechen – Änderungen verwerfen',
     ]
+    if kind=='series':entries.append('Nachimport: Status / Wiederholen / Abbrechen')
+    return entries
 
 
 def _checkbox_selection(dialog, kind, categories, ids, current, new_ids):
@@ -195,10 +197,15 @@ def choose_groups(portal, kind='live',categories=None,allow_refresh=True):
             portal['include_'+kind]=bool(current)
             # Existing sync_kind skips already complete groups. Only added
             # group heads are requested; no force/full-provider restart.
-            from catalog_delta import request
+            from catalog_delta import request,request_many
             previous=state['enabled'] if state else set()
             added=current-set(previous)
-            for cid in sorted(added):request(portal,kind,cid)
+            if kind=='series':
+                request_many(portal,kind,sorted(added),retry=True)
+                from catalog_delta52 import cancel_jobs
+                cancel_jobs(portal['id'],kind,keep=current)
+            else:
+                for cid in sorted(added):request(portal,kind,cid)
         dlg.notification('XCMate', '{}: {} von {} aktiv'.format(
             LABELS[kind], len(current), len(ids)))
         return True
@@ -247,6 +254,9 @@ def choose_groups(portal, kind='live',categories=None,allow_refresh=True):
                        'Die bisherige Auswahl bleibt erhalten.')
         elif choice == 6:
             return commit()
+        elif choice == 8 and kind=='series':
+            from catalog_delta52 import manage
+            manage(portal,kind)
         else:
             return False
 

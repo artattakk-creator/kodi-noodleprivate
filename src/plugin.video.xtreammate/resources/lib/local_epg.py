@@ -64,9 +64,8 @@ def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,
                                 (pid,cid,left,right,cap)).fetchall()
                 view[ident]=[dict(name=r['title'],descr=r['description'],start_timestamp=r['start'],
                                   stop_timestamp=r['stop'],source=r['source'],_source_index=r['source']) for r in rows]
-                from programme_index46 import window as prepared_window46
-                extra46=prepared_window46(pid,cid,left,right,primary=view[ident],limit=cap)
-                view[ident]=sorted(view[ident]+extra46,key=lambda e:e['start_timestamp'])[:cap]
+                from epg_merge52 import window as merged_window52
+                view[ident]=merged_window52(pid,sid,cid,left,right,primary=view[ident],limit=cap,manual=bool(mappings.get(sid)))
                 from programme_flow48 import enrich
                 view[ident]=enrich(pid,cid,view[ident][:4],sid48=sid,revision48=view.revision)+view[ident][4:]
         return view

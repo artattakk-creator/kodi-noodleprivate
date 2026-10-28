@@ -29,6 +29,8 @@ def refresh_local(cancel=lambda:False):
             else:
                 from source_adapters import for_portal
                 client=for_portal(portal)
+            from catalog_delta52 import reconcile_series
+            reconcile_series(portal)
             if portal['type']=='xtream' and not hasattr(client,'iter_catalog'):
                 refresh(portal,client)
             elif portal['id'] not in _bootstrapped:
@@ -161,7 +163,7 @@ def _run():
         except Exception:pass
         try:
             from catalog_sync import run_next
-            worked=run_next(cancelled)
+            worked=run_next(cancelled) or worked
         except MemoryError:runtime.note_pressure()
         except Exception: pass
         if cancelled():break

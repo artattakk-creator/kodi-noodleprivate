@@ -1,4 +1,4 @@
-"""Persistent 10-day guide, separate from the frozen fast Now/Next resolver.
+"""Persistent 7-calendar-day history / up-to-20-future-day master guide.
 
 Only local normalized cache is imported. Failed/shorter imports retain future
 programmes outside the new source window. No GUI callback performs an import.
@@ -69,8 +69,8 @@ def import_cache(pid,cache,revision='',now=None,filename=None,*,trusted_feed=Fal
                     start=_as_int(event.get('start_timestamp'));stop=_as_int(event.get('stop_timestamp'))
                     title=str(event.get('name') or event.get('title') or '')[:512]
                     if start<=0 or stop<=start or stop<=day_window(-7,now)[0] or not title: continue
-                    if start<right46:metadata46.add(dict(event,channel=str(event.get('channel') or alias)))
-                    if start>=now+10*86400:continue
+                    if start>=right46:continue
+                    metadata46.add(dict(event,channel=str(event.get('channel') or alias)))
                     cid=str(event.get('channel') or alias)
                     canonical=cid
                     try: source=int(event.get('_source_index',0))

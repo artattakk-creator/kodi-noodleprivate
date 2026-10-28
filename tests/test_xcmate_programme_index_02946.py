@@ -29,7 +29,8 @@ class ProgrammeIndex46(Fixture,unittest.TestCase):
   self.assertFalse(Path(self.db.path()).exists())
  def test_real_20day_feed_is_preserved_separately_without_extending_primary_guide(self):
   rows=self.populate();db=sqlite3.connect(self.guide.path())
-  self.assertEqual(db.execute('SELECT count(*) FROM programmes').fetchone()[0],1);db.close()
+  # .52 removes the obsolete ten-day master cap; same two retained events in both stores.
+  self.assertEqual(db.execute('SELECT count(*) FROM programmes').fetchone()[0],2);db.close()
   self.assertEqual(len(self.rows()),2);before=Path(self.guide.path()).read_bytes()
   from local_epg import window
   result=window('p',[self.channel],{},rows[1]['start_timestamp'],rows[1]['stop_timestamp'])
@@ -154,7 +155,7 @@ class ProgrammeIndex46(Fixture,unittest.TestCase):
   with mock.patch.object(stream,'source_stream',source):stream.import_source('p',dict(uri='https://synthetic.invalid/feed'),0,[self.channel],{})
   self.assertEqual(len(self.rows()),2)
   db=sqlite3.connect(self.guide.path())
-  try:self.assertEqual(db.execute('SELECT count(*) FROM programmes').fetchone()[0],1)
+  try:self.assertEqual(db.execute('SELECT count(*) FROM programmes').fetchone()[0],2)
   finally:db.close()
  def test_day_guide_can_open_real_day20_and_uses_cache_coverage(self):
   self.populate();module=importlib.import_module('guide_window')

@@ -376,6 +376,13 @@ def sync_kind(portal,client,kind,preferred='',force=False,cancel=lambda:False,fi
         if not isinstance(groups,list) and not cached_only:
             groups=client._get_json(group_action)
         if not isinstance(groups,list): raise FileNotFoundError('Category metadata unavailable')
+        if only_categories is not None:
+            missing=set(map(str,only_categories))-{str(g.get('category_id')) for g in groups}
+            if missing and not cached_only:
+                fresh=client._get_json(group_action,force_refresh=True)
+                if isinstance(fresh,list):groups=fresh
+                missing=set(map(str,only_categories))-{str(g.get('category_id')) for g in groups}
+            if missing:raise FileNotFoundError('Requested category metadata unavailable')
         allowed=enabled_ids(pid,kind,groups)
         if only_categories is not None:allowed=set(allowed)&set(only_categories)
         active=[g for g in groups if str(g.get('category_id')) in allowed and (only_categories is None or str(g.get('category_id')) in only_categories)]
