@@ -412,52 +412,8 @@ def _choose_mapping(portal):
 
 
 def manage(portal=None):
-    """Kodi-native remote navigable EPG settings, including Android file picker."""
-    import xbmcgui
-    from epg import request_refresh
-    portal = portal or _choose_portal()
-    if not portal:
-        return
-    d = xbmcgui.Dialog()
-    while True:
-        state = configuration(portal['id'])
-        source_labels = [('✓  ' if s.get('enabled', True) else '○  ') +
-                         '[{}] {}'.format(i, s.get('name') or 'XMLTV')
-                         for i, s in enumerate(state['sources'], 1)]
-        options = [
-            '➕ EPG-Paket Deutschland / Österreich / Schweiz / NL',
-            '➕ XMLTV-Adresse (HTTP/HTTPS) hinzufügen',
-            '➕ XMLTV-Datei (.xml / .gz) auswählen',
-            '↻ EPG-Quellen jetzt aktualisieren',
-            '↔ Xtream-Sender einem XMLTV-Kanal zuordnen',
-        ] + source_labels + ['Zurück']
-        choice = __import__('menu_icons45').select(d,'XCMate – EPG-Verwaltung · ' + portal['name'], options,default='database')
-        if choice < 0 or choice == len(options) - 1:
-            return
-        try:
-            if choice == 0:
-                _choose_preset(portal)
-            elif choice == 1:
-                url = d.input('XMLTV-URL eingeben', type=xbmcgui.INPUT_ALPHANUM)
-                if url:
-                    name = d.input('Name dieser EPG-Quelle', defaultt='XMLTV URL',
-                                   type=xbmcgui.INPUT_ALPHANUM)
-                    add_source(portal['id'], name, url)
-            elif choice == 2:
-                uri = d.browse(1, 'XMLTV-Datei auswählen', 'files',
-                               '.xml|.gz|.xml.gz', False, False, '')
-                if uri:
-                    name = d.input('Name dieser EPG-Quelle', defaultt='Lokales XMLTV',
-                                   type=xbmcgui.INPUT_ALPHANUM)
-                    add_source(portal['id'], name, uri, local=True)
-            elif choice == 3:
-                accepted=request_refresh(portal['id'], portal, force=True)
-                from localization import tr
-                d.notification('XCMate EPG',tr(35965) if accepted else tr(35966))
-            elif choice == 4:
-                _choose_mapping(portal)
-            else:
-                _manage_source(portal, state['sources'][choice - 5])
-        except Exception as exc:
-            error('EPG manager action failed: {}'.format(type(exc).__name__))
-            d.ok('XCMate EPG', 'Aktion fehlgeschlagen: ' + str(exc)[:160])
+    """One central manager; retain existing source editing and binding services."""
+    portal=portal or _choose_portal()
+    if not portal:return
+    from epg_manager53 import manage as open_manager
+    return open_manager(portal)

@@ -76,38 +76,26 @@ class IPTVMasterService(xbmc.Monitor):
             error(f'reminder monitor: {e}')
 
     def _maybe_refresh_epg(self):
-        if not setting_bool('epg_auto_refresh', True):
-            return
-        interval = setting_int('epg_refresh_hours', 12) * 3600
-        if time.time() - self._last_epg < interval:
-            return
-        self._last_epg = time.time()
-        from guide_store import path as guide_path46
-        from epg_gate46 import access as refresh_access46
-        if refresh_access46(guide_path46()) not in ('READY','NOT_CREATED'):
-            info('Service: background EPG blocked BACKUP_REQUIRED')
-            return
-        info('Service: scheduling background EPG refresh')
-        if self._epg_worker and self._epg_worker.is_alive():
-            return
+        if not setting_bool('epg_auto_refresh', True):return
+        if time.time()-self._last_epg<60:return
+        if self._epg_worker and self._epg_worker.is_alive():return
+        self._last_epg=time.time()
         def refresh():
             try:
                 import portals as P
-                from epg import ensure_epg_loaded_for_portal, load_cache
-                from epg_cache_policy import enough_coverage
+                from epg_schedule53 import plan
+                from epg import ensure_epg_loaded_for_portal
                 for portal in P.get_active():
-                    if self.abortRequested():
-                        return
-                    # Only this background worker scans the saved guide. A
-                    # downloaded multi-day guide need not be fetched every
-                    # interval/restart while it still covers the next day.
-                    from guide_store import covers_active
-                    if enough_coverage(load_cache(portal['id'])) or covers_active(portal):
-                        continue
-                    ensure_epg_loaded_for_portal(portal, force=False)
+                    if self.abortRequested():return
+                    selected=plan(portal)
+                    if not selected:continue
+                    # Force bypasses the short-cache age, not the existing
+                    # backup/schema/worker gates. Retry only failed sources.
+                    job=dict(portal,_epg_auto53=True,_epg_sources53=selected)
+                    ensure_epg_loaded_for_portal(job,force=True)
             except Exception as exc:
-                error('Service EPG refresh: {}'.format(type(exc).__name__))
-        self._epg_worker = threading.Thread(target=refresh, name='XCMateEPG', daemon=True)
+                error('Service EPG refresh: '+type(exc).__name__)
+        self._epg_worker=threading.Thread(target=refresh,name='XCMateEPG',daemon=True)
         self._epg_worker.start()
 
     def _maybe_warm_catalogs(self):

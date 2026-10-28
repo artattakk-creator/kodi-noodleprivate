@@ -47,7 +47,8 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
     db.execute('''CREATE TABLE IF NOT EXISTS xml_stage(generation TEXT,cid TEXT,start INTEGER,stop INTEGER,
         title TEXT,description TEXT,PRIMARY KEY(generation,cid,start,stop))''')
     # No executable source content, URLs or provider credentials enter SQLite.
-    ids=set();names={};aliases={};channel_names={}
+    ids=set();names={};aliases={};channel_names={};variant_names53={}
+    stream_rows53={str(row['sid']):row for row in streams}
     for row in streams:
         sid=row['sid'];eid=str(mappings.get(sid) or row.get('epg_channel_id') or '')
         if eid: ids.add(eid);aliases[sid]=eid
@@ -67,6 +68,9 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         # Only requested names are remembered. Ambiguous XMLTV names do not
         # overwrite provider/manual IDs; match conservatively at source end.
         if key in names:
+            from epg_variant53 import compatible
+            if not any(compatible(stream_rows53[str(sid)].get('name'),stream_rows53[str(sid)].get('epg_channel_id'),name,cid) for sid in names[key]):return
+            variant_names53[cid]=name
             if key in channel_names and channel_names[key]!=cid: channel_names[key]=None
             elif key not in channel_names: channel_names[key]=cid
             ids.add(cid)
@@ -100,6 +104,8 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
             cid=channel_names.get(key)
             if cid:
                 for sid in sids:
+                    from epg_variant53 import compatible
+                    if not compatible(stream_rows53[str(sid)].get('name'),stream_rows53[str(sid)].get('epg_channel_id'),variant_names53.get(cid,''),cid):continue
                     if sid not in mappings and (sid not in aliases or aliases[sid] not in ids): aliases[sid]=cid
                     # An absent provider EPG ID can be repaired by an exact,
                     # unambiguous source name; manual mapping always wins.
@@ -109,7 +115,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
             from epg_events import clean_stage
             clean_stage(db,'xml_stage',' WHERE generation=?',(generation,))
         stage=dict(generation=generation,source=source,index=source_index,aliases=aliases,meta_pid46=str(pid),metadata_ok46=not metadata46.failed,index_ok46=not metadata46.facts46.failed,
-                   now=now,counts=dict(counts,stored=stored),streams52=streams,mappings52=mappings,proofs52={str(row['sid']):('manual' if str(row['sid']) in mappings else 'name' if channel_names.get(_channel_name_key(row.get('name')))==aliases.get(str(row['sid'])) else 'provider_id') for row in streams})
+                   now=now,counts=dict(counts,stored=stored),streams52=streams,mappings52=mappings,proofs52={str(row['sid']):('manual' if str(row['sid']) in mappings else 'name' if channel_names.get(_channel_name_key(row.get('name')))==aliases.get(str(row['sid'])) and __import__('epg_variant53').compatible(row.get('name'),row.get('epg_channel_id'),variant_names53.get(aliases.get(str(row['sid'])),''),aliases.get(str(row['sid']))) else 'provider_id') for row in streams})
         if stage_only:
             keep_stage=True
             return stage
@@ -251,17 +257,25 @@ def _refresh44(portal,force=False,cancel=lambda:False):
         request(portal,'live',portal.get('start_group_id',''),priority=0)
         return {}
     if not portal.get('epg_show',True): return {}
+    from epg_report53 import started as source_started53,source_done as source_done53
+    selected53=portal.get('_epg_sources53')
     provider_failure52=0;uri=''
-    if portal.get('provider_epg_enabled',True):
+    if portal.get('provider_epg_enabled',True) and (selected53 is None or 'provider' in selected53):
         try:uri=portal.get('epg_url') or for_portal(portal).get_xmltv_epg_url() or ''
         except Exception as exc:
             code,fields=failure_details(exc,'DOWNLOAD')
             update(pid,'provider',code,running=False,**fields);provider_failure52=1
+            source_started53(pid,'provider','provider',0);source_done53(pid,'provider',code)
     provider=dict(uri=uri,local=not uri.startswith(('http://','https://')))
     sources=([('provider',provider,0)] if uri and portal.get('provider_epg_enabled',True) else [])+[(source_key(s),s,i) for i,s in enumerate(config['sources'],1) if s.get('enabled',True)]
+    if selected53 is not None:
+        from guide_publish44 import source_id
+        sources=[s for s in sources if source_id(s[1],s[2]) in selected53]
     successes=0;failures=provider_failure52;stages=[]
     for key,source,index in sources:
         if cancel(): break
+        identity53=__import__('guide_publish44').source_id(source,index)
+        source_started53(pid,key,identity53,index)
         update(pid,key,'RUNNING',running=True,source_index=index)
         try:
             stage=import_source(pid,source,index,streams,config['mappings'],cancel=cancel,stage_only=True)
@@ -270,6 +284,7 @@ def _refresh44(portal,force=False,cancel=lambda:False):
         except Exception as exc:
             code,fields=failure_details(exc,getattr(exc,'xcmate_stage','MERGE'))
             update(pid,key,code,running=False,source_index=index,**fields);failures+=1
+            source_done53(pid,identity53,code)
     if cancel():
         discard_stages44(stages)
         for stage in stages:update(pid,stage['key'],'CANCELLED',running=False)
@@ -285,6 +300,7 @@ def _refresh44(portal,force=False,cancel=lambda:False):
         return {}
     for stage,outcome in zip(stages,outcomes):
         counts=stage['counts'];successes+=1
+        source_done53(pid,__import__('guide_publish44').source_id(stage['source'],stage['index']),'PARTIAL_PRESERVED' if outcome['code']=='PARTIAL_PRESERVED' else 'READY',counts,outcome)
         update(pid,stage['key'],'PARTIAL_PRESERVED' if outcome['code']=='PARTIAL_PRESERVED' else 'READY',running=False,
             source_index=stage['index'],channels=counts['channels'],programmes=counts['stored'],bytes=counts['bytes'])
     result=fast_snapshot(pid,streams,config['mappings'])

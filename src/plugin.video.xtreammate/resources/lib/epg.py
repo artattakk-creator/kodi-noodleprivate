@@ -222,7 +222,7 @@ def load_cache(portal_id):
     cached = _mem_get(portal_id)
     if cached is not None:
         return cached
-    age_s   = setting_int('epg_refresh_hours', 12) * 3600
+    age_s   = setting_int('epg_refresh_hours', 24) * 3600
     on_disk = _load_disk(portal_id, max_age=age_s)
     if not isinstance(on_disk, dict):
         # A failed refresh must not hide still-current/future programmes from
@@ -235,7 +235,7 @@ def load_cache(portal_id):
 
 
 def _is_fresh(portal_id):
-    age_s = setting_int('epg_refresh_hours', 12) * 3600
+    age_s = setting_int('epg_refresh_hours', 24) * 3600
     return bool(_load_disk(portal_id, max_age=age_s))
 
 
@@ -491,7 +491,10 @@ def _refresh_portal_epg(portal_id, p, force=False):
     try:
         diagnostic('RUNNING',running=True)
         try:
-            result=_refresh_portal_epg_inner(portal_id,p,force=force)
+            from epg_report53 import observing
+            with observing(portal_id,automatic=p.get('_epg_auto53',False)) as run53:
+                result=_refresh_portal_epg_inner(portal_id,p,force=force)
+                run53['result']=bool(result)
             if result:
                 diagnostic('READY',running=False,channels=len(result),
                            programmes=sum(len(v) for v in result.values()),last_success=time.time())
