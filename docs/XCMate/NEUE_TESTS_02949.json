@@ -1,0 +1,65 @@
+{
+  "new_tests": 14,
+  "methods": {
+    "tests/test_xcmate_widget_picker_02949.py": [
+      [
+        "WidgetPicker49",
+        "test_requested_german_path_and_first_three_sources_are_actual_folders"
+      ],
+      [
+        "WidgetPicker49",
+        "test_source_management_does_not_run_player_scan_or_mutate_profile_or_skin"
+      ],
+      [
+        "WidgetPicker49",
+        "test_three_existing_leaf_routes_return_real_items_and_native_content"
+      ],
+      [
+        "WidgetPicker49",
+        "test_old_nonfolder_runplugin_entry_opens_directory_once_without_fake_completion"
+      ],
+      [
+        "WidgetPicker49",
+        "test_disabled_or_missing_explicit_portal_does_not_choose_another_portal"
+      ],
+      [
+        "WidgetPicker49",
+        "test_legacy_widget_urls_without_pid_and_with_refresh_parameter_still_load"
+      ],
+      [
+        "WidgetPicker49",
+        "test_help_explains_actual_consumer_save_and_never_claims_xcmate_saved"
+      ],
+      [
+        "WidgetPicker49",
+        "test_english_labels_and_save_instructions_use_bundled_catalogue"
+      ],
+      [
+        "WidgetPicker49",
+        "test_optional_status_and_hero_keep_their_existing_manager_entry"
+      ],
+      [
+        "WidgetPicker49",
+        "test_pinned_upstream_explorer_browses_all_three_sources_and_creates_exact_bindings"
+      ],
+      [
+        "WidgetPicker49",
+        "test_pinned_upstream_picker_cancel_returns_no_new_binding"
+      ],
+      [
+        "WidgetPicker49",
+        "test_reference_excerpt_and_license_are_pinned_and_device_gap_is_explicit"
+      ]
+    ],
+    "tests/test_xcmate_scope_02949.py": [
+      [
+        "Scope49",
+        "test_all_565_published_sources_retained_with_only_seven_exact_routing_and_label_changes"
+      ],
+      [
+        "Scope49",
+        "test_all_2021_existing_tests_retained_without_any_new_skip"
+      ]
+    ]
+  }
+}

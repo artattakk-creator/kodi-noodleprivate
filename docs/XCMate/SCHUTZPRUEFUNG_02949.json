@@ -1,0 +1,24 @@
+{
+  "base": "0f825fbd8b7280aea6dae6c236c23533b6dc3f02",
+  "source_commit": "a83df5293829939df58160b6c87531a55400c194",
+  "original_files": 565,
+  "unchanged": 558,
+  "exact_reviewed_changes": [
+    "src/plugin.video.xtreammate/addon.xml",
+    "src/plugin.video.xtreammate/changelog.txt",
+    "src/plugin.video.xtreammate/resources/language/resource.language.de_de/strings.po",
+    "src/plugin.video.xtreammate/resources/language/resource.language.en_gb/strings.po",
+    "src/plugin.video.xtreammate/resources/lib/app_routes.py",
+    "src/plugin.video.xtreammate/resources/lib/widget_ui45.py",
+    "src/plugin.video.xtreammate/resources/lib/window_navigation.py"
+  ],
+  "added": [
+    "src/plugin.video.xtreammate/resources/lib/widget_sources49.py"
+  ],
+  "removed": [],
+  "retained_test_methods": 2021,
+  "skin_writes": 0,
+  "device_actions": 0,
+  "foreign_wip_unchanged": 62,
+  "android": "NOT_TESTED"
+}
