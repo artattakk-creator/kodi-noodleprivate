@@ -1,0 +1,27 @@
+{
+  "version": "0.1.29.49",
+  "source_commit": "a83df5293829939df58160b6c87531a55400c194",
+  "files": 566,
+  "bytes": 3071999,
+  "sha256": "2b0dc58c60355c2c70cdf91589c571ee7cd12eb3e40fe7c70f66d1f9f12ab7ff",
+  "crc": "PASS",
+  "safe_paths": "PASS",
+  "all_source_bytes": "PASS",
+  "python_ast": "PASS",
+  "independent_deterministic_rebuild": "PASS",
+  "android": {
+    "not_tested": 3,
+    "passed": 0
+  },
+  "production_publish": false,
+  "tests": 2035,
+  "seconds": 296.641,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "previous_tests_retained": 2021,
+  "new_tests": 14,
+  "ci": "Exact final delivery HEAD/run and outcome in Draft-PR checks/body; no production publishing",
+  "raw_host_log_sha256": "786f285fe575e6a87cb3bd630e47e78c20d454e4b2b1635e864b677a4aa8df1b",
+  "published_host_log_sha256": "9cba7d62e9dc3e6a8ed42925dfb0a36dd516ca48b1e7b7f703301b8e2636644d"
+}

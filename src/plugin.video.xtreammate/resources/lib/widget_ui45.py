@@ -7,7 +7,7 @@ def manage(router,portal):
  from widget_hooks45 import probe
  dialog=xbmcgui.Dialog()
  while True:
-  choice=select(dialog,tr(32443),['Status vorhandener Widgetverknüpfungen','Widgetquellen für einmalige Einrichtung anzeigen','TEST – optionaler BINGIE-Adapter (PIN)','Zurück','Live-TV: Senderleiste und große Vorschau (.48)'],actions=['info','grid','flask-lock','back','tv'])
+  choice=select(dialog,tr(32443),['Status vorhandener Widgetverknüpfungen',tr(36305),'TEST – optionaler BINGIE-Adapter (PIN)','Zurück','Live-TV: Senderleiste und große Vorschau (.48)'],actions=['info','grid','flask-lock','back','tv'])
   if choice<0 or choice==3:return
   if choice==4:
    from live_hero48 import launch
@@ -32,8 +32,8 @@ def manage(router,portal):
    except Exception:text='Status: READ_ERROR'
    dialog.textviewer('XCMate Widgets',text)
   elif choice==1:
-   from app_routes import widget_instructions
-   dialog.textviewer('XCMate Widgets',widget_instructions(router,portal))
+   from widget_sources49 import help as widget_help
+   widget_help()
   else:
    from experimental45 import run
    from widget_adapter46 import show

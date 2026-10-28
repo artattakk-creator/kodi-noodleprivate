@@ -1,3 +1,13 @@
+0.1.29.49 (widget selection hotfix #252; Android NOT_TESTED)
+- Settings > Appearance and display > Widgets lists three real folders:
+  Live TV - start group, Movies - latest movies, Series - latest series.
+- BINGIE/skinshortcuts can browse and select the existing widget endpoints;
+  the skin's own picker saves the binding. No plugin-URL textviewer substitute.
+- Correct German menu names, explicit native save instructions, and compatibility
+  for bookmarked RunPlugin entries. Existing status/Hero preview remain separate.
+- No skin/profile edits or widget URL/reload-hook changes; preserve all .48 data,
+  media widgets and their automatic refresh. No automatic installation or merge.
+
 0.1.29.48 (cumulative review candidate; Android .48 NOT_TESTED)
 - #250/#249: OS-held service singleton, local-first startup phases, bounded
   maintenance and optional network prefetch. No claim of a proven native

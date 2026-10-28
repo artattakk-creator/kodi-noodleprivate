@@ -3,7 +3,7 @@ from localization import tr
 
 ACTIONS=('live_hero48','programme_details46','widget_adapter46','widget_adapter45','native_options45','downloads_manage45','guide_backup44','update_notice','navigation_rail','artwork_manage','device_info', 'live_guide','search_continue','download_target_test','stability_test','download_folder','download_capabilities','theme_manager','branding_status','xcmate_licenses','guide_grid','playlist_editor','source_live','source_play','source_start','art_status','art_retry','art_db_health','ui_language','appearance_settings','xcmate_home','settings_home','settings_section','account_select','home_start','home_live',
          'movies_home','series_home','media_detail','media_favourites','global_search','search_section',
-         'widget_live_start_group','widget_recent_vod','widget_recent_series','widget_setup',
+         'widget_live_start_group','widget_recent_vod','widget_recent_series','widget_setup','widget_manage49','widget_help49',
          'record_now','recordings_manage','recording_folder','recording_capabilities','about_xcmate','guide_browser','media_play','guide_timers','guide_status')
 LABELS={'live':32460,'vod':32461,'series':32462}
 
@@ -56,7 +56,7 @@ def dispatch(router):
         failed(str(router._params.get('intent') or ''),str(router._params.get('pid') or ''))
         import xbmcplugin
         xbmcplugin.setResolvedUrl(router._handle,False,xbmcgui.ListItem());return
-    if action in ('guide_timers','guide_status','widget_setup') and not portal:
+    if action in ('guide_timers','guide_status','widget_setup','widget_manage49') and not portal:
         _end(router,False)
         xbmcgui.Dialog().notification('XCMate',tr(32466));return
     if action=='live_hero48':
@@ -75,6 +75,13 @@ def dispatch(router):
         from widget_adapter45 import show
         show();return
     if action=='widget_setup':
+        from widget_sources49 import show as widget_sources
+        widget_sources(router,portal);return
+    if action=='widget_help49':
+        _end(router)
+        from widget_sources49 import help as widget_help
+        widget_help();return
+    if action=='widget_manage49':
         _end(router)
         from widget_ui45 import manage
         manage(router,portal);return
