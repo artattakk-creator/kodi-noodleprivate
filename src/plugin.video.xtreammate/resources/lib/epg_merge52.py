@@ -18,6 +18,7 @@ def same(a,b,cid):
 def retained(previous,incoming):
     """A shorter refresh of the very same source event is not a metadata wipe."""
     if not same(previous,incoming,incoming.get('channel','')):return incoming
+    if previous.get('descr') and incoming.get('descr') and previous['descr'].strip()!=incoming['descr'].strip():return incoming
     value=dict(incoming)
     for field in DETAILS:
         if not value.get(field) and previous.get(field):value[field]=previous[field]
@@ -120,11 +121,19 @@ def window(pid,sid,cid,start,stop,primary=(),limit=256,manual=False,guide=None):
             if source:sql+=' AND source_id=?';args.append(source)
             sql+=' ORDER BY start,stop LIMIT ?';args.append(min(1024,max(128,limit*4)))
             for identity,fingerprint,data,updated in db.execute(sql,args):
-                # Compatibility facts have no independently verified source
-                # identity. Preserve the existing text/origin verifier rather
-                # than treating them as qualified metadata donors.
-                if identity not in allowed or identity=='compatibility' and primary or len(data)>24576:continue
-                value=json.loads(data);value.update(_source_index=allowed[identity],source=allowed[identity],source_key46=identity,fact_revision46=fingerprint,updated52=updated)
+                if identity not in allowed or len(data)>24576:continue
+                value=json.loads(data)
+                if identity=='compatibility' and primary:
+                    # Legacy facts still require exact authoritative text and
+                    # one unambiguous archived origin. This also preserves
+                    # their fingerprint when a previously sidecar-only day
+                    # now becomes part of the repaired master horizon.
+                    peer=next((p for p in primary if p['start_timestamp']==value['start_timestamp'] and p['stop_timestamp']==value['stop_timestamp'] and p['name']==value['name'] and p['descr']==value['descr']),None)
+                    if peer is None:continue
+                    from programme_store46 import origin_matches
+                    event=dict(start=peer['start_timestamp'],stop=peer['stop_timestamp'],title=peer['name'],source=peer.get('source',0))
+                    if not origin_matches(pid,channel,event,identity,guide):continue
+                value.update(_source_index=allowed[identity],source=allowed[identity],source_key46=identity,fact_revision46=fingerprint,updated52=updated)
                 donors.append(value)
         return merge(primary,donors,str(cid),limit)
     except (OSError,sqlite3.Error,ValueError,KeyError,TypeError):return list(primary)

@@ -60,6 +60,12 @@ class EPG52(Fixture,unittest.TestCase):
         row=self.view()['a'][0]
         self.assertEqual(row['descr'],'Verified description');self.assertEqual(row['xmltv_image'],'https://images.invalid/real.png')
 
+    def test_same_source_changed_episode_text_does_not_retain_previous_image(self):
+        self.put('a',[dict(self.event(),description='Episode A',extra='<icon src="https://images.invalid/old.png"/>')])
+        self.put('a',[dict(self.event(),description='Episode B')])
+        row=self.view()['a'][0]
+        self.assertEqual(row['descr'],'Episode B');self.assertFalse(row.get('xmltv_image'))
+
     def test_same_slot_different_title_never_inherits_old_episode_image(self):
         event=self.event();event['extra']='<icon src="https://images.invalid/old.png"/>'
         self.put('a',[event]);self.put('a',[self.event(title='Different programme')])
