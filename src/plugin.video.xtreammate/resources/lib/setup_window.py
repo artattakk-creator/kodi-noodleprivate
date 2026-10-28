@@ -164,6 +164,10 @@ class WorkWindow(xbmcgui.WindowXML):
 from wizard_groups51 import GroupRows
 
 
+from wizard_ui53 import resumable
+
+
+@resumable
 class SetupWindow(GroupRows,WorkWindow):
     def configure(self,draft):
         self.configure_work();self.draft=draft;self._data_state.cleanup=draft.dispose;self.kind='live';self.stage='discover';self.result=None
@@ -240,7 +244,8 @@ class SetupWindow(GroupRows,WorkWindow):
         else:
             r=self.draft.report
             lines=[self.draft.data['name'],tr(32714,r['live'],r['vod'],r['series'],r['epg'])]
-            for source in r['sources']: lines.append(tr(32748)+': '+str(source))
+            from epg_report53 import meaning
+            for source in r['sources']:lines.append(tr(32748)+': '+meaning(source.get('code'))+' · '+str(source.get('stored',0))+' Sendungen')
             if r['warnings']: lines.append(tr(32752,len(r['warnings'])))
             self.status(100,'\n'.join(lines));self.setFocusId(17)
     def choose_epg(self):
@@ -337,7 +342,11 @@ def open_setup(data):
     import xbmcaddon
     from wizard_session51 import acquire
     release=acquire()
-    try:draft=Draft(data)
+    from wizard_resume53 import current
+    session53=current()
+    try:
+        draft=session53.restore(data) if session53 else Draft(data)
+        if session53:draft.resume53=session53
     except BaseException:release();raise
     def cleanup():
         try:draft.dispose()

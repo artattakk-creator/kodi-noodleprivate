@@ -8,7 +8,7 @@ import os
 import sqlite3
 
 GUIDE_TABLES=('guide_meta','guide_alias','programmes','guide44_inputs','guide44_ranges','guide44_outcomes')
-FACT_TABLES=('facts','fact_versions','source_channels48')
+FACT_TABLES=('facts','fact_versions','source_channels48','source_aliases52')
 
 
 def gate():
@@ -27,6 +27,7 @@ def promote(draft,cancel):
         try:
             # Additive source-name table; no guide migration/cleanup.
             db.execute('CREATE TABLE IF NOT EXISTS source_channels48(pid TEXT,source_id TEXT,cid TEXT,name TEXT,PRIMARY KEY(pid,source_id,cid))');db.commit()
+            db.execute('CREATE TABLE IF NOT EXISTS source_aliases52(pid TEXT,sid TEXT,source_id TEXT,cid TEXT,proof TEXT,PRIMARY KEY(pid,sid,source_id))');db.commit()
             draft._copy(index_path(draft.guide),db,FACT_TABLES,cancel)
         finally:db.close()
     if os.path.isfile(meta_path(draft.guide)):

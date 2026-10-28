@@ -342,4 +342,7 @@ class Draft:
             from setup_epg48 import rollback as rollback_epg48
             rollback_epg48(self)
 
-    def dispose(self): shutil.rmtree(self.folder,ignore_errors=True)
+    def dispose(self):
+        session=getattr(self,'resume53',None)
+        if session:session.detached(self)
+        else:shutil.rmtree(self.folder,ignore_errors=True)
