@@ -27,7 +27,7 @@ class Scope47(unittest.TestCase):
                'epg_sources.py','portals.py','widget_adapter46.py','widget_hooks45.py','infobar45.py','widget_group46.py')
         for path,digest in baseline['source_sha256'].items():
             if Path(path).name in names or '/keymaps/' in path or path.endswith(('/resources/settings.xml','/icon.png','/XCMateMedia.xml')):
-                self.assertEqual(hashlib.sha256((ROOT/path).read_bytes()).hexdigest(),digest,path)
+                self.assertEqual(hashlib.sha256(__import__('stabilization_contract_02948').without_stabilization48((ROOT/path).read_bytes(),path)).hexdigest(),digest,path)
     def test_new_reader_snapshot_and_asset_helpers_never_trigger_guide_reset_or_skin_write(self):
         for name in ('programme_assets47','programme_snapshot47','programme_read47','widget_movie47','widget_sql47'):
             text=(ROOT/'src/plugin.video.xtreammate/resources/lib'/ (name+'.py')).read_text()

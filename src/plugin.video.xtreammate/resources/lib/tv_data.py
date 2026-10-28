@@ -107,7 +107,6 @@ class GuideSnapshot:
     @scoped
     def refresh(self):
         """One worker iteration, also usable deterministically in integration tests."""
-        from epg import load_cache, _mem_clear
         from epg_sources import configuration
         from epg_status import revision
         from epg_views import resolve_guide
@@ -123,6 +122,7 @@ class GuideSnapshot:
         selected=getattr(self,'_programme_sid','')
         local=viewport_cache(self.portal['id'],wanted,self._mappings,now,focus_sid=selected) if selected else viewport_cache(self.portal['id'],wanted,self._mappings,now)
         if local is None:
+            from epg import load_cache, _mem_clear
             if reloaded or getattr(self,'_indexed',False):
                 _mem_clear(self.portal['id'])
                 self._cache = load_cache(self.portal['id'])
@@ -131,15 +131,18 @@ class GuideSnapshot:
             self._cache=local;self._indexed=True
         self._revision = rev
         cache_ms=(time.perf_counter()-started)*1000
-        from logo_cache import request as request_logos
-        request_logos(wanted)
         values, missing = {}, []
         for c in wanted:
             sid = str(c.extra.get('stream_id',''))
             compatibility47=not self._indexed or getattr(local,'code','')=='SHARED_LASTGOOD47'
-            info = resolve_guide(self._cache, c.tvg_id, sid, now, self.client if compatibility47 else None, self._mappings)
+            from epg_binding48 import binding as source_binding48
+            qualified48=source_binding48(self._mappings,sid)
+            # A legacy flattened cache cannot prove source identity. Never
+            # silently replace a qualified manual source with another feed.
+            selected_cache48={} if qualified48 and not self._indexed else self._cache
+            info = resolve_guide(selected_cache48, c.tvg_id, sid, now, self.client if compatibility47 else None, self._mappings)
             info['snapshot_revision']=getattr(local,'revision',None)
-            if not info['now'] and not self._indexed:
+            if not info['now'] and not self._indexed and not qualified48:
                 # A saved ten-day guide outlives its small compatibility
                 # snapshot. Read only this worker's bounded visible viewport.
                 try:
@@ -171,6 +174,11 @@ class GuideSnapshot:
             for sid in values: self._values.move_to_end(sid)
             while len(self._values) > 128: self._values.popitem(last=False)
             if changed:self.generation += 1
+        from logo_cache import request as request_logos
+        request_logos(wanted)
+        from programme_flow48 import trace
+        for info48 in values.values():
+            trace('MINI',dict(key=info48.get('programme_key47','')),'READY' if info48.get('now') else 'NO_EPG',duration_ms=(time.perf_counter()-started)*1000)
         # Visible selection is a read request, never a per-channel network job.
         # Configured imports run independently on the background service timer.
         from live_diagnostics import record

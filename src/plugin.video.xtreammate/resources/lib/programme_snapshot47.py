@@ -53,9 +53,11 @@ def fallback_window(pid, channels, mappings, start, stop, limit=48):
     view.code = 'SHARED_LASTGOOD47'
     for channel in channels[:16]:
         sid, keys = channel_keys(channel, mappings)
+        from epg_binding48 import binding
+        selected48=binding(mappings,sid)
         for ident in keys:
             view.canonical[ident] = ident
-            view[ident] = window(pid, ident, start, stop, limit=limit)
+            view[ident] = window(pid, ident, start, stop, limit=limit,**({'source48':selected48['source']} if selected48 else {}))
     return view if any(view.values()) else None
 
 

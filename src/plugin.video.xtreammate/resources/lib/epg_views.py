@@ -72,7 +72,8 @@ def resolve_guide(cache, epg_id='', stream_id='', now=None, client=None, mapping
     sid = str(stream_id or '')
     mapped = (mappings or {}).get(sid)
     if mapped:
-        result = guide_for_channel(cache, str(mapped), now=now)
+        from epg_binding48 import qualified_cache
+        result = guide_for_channel(qualified_cache(cache,mappings,sid), str(mapped), now=now)
         result['epg_id'] = str(mapped)
         result['mapping'] = 'MANUAL'
         if not result['events']: result['reason'] = 'MANUAL_ID_MISSING'

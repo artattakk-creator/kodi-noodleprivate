@@ -22,10 +22,19 @@ def describe(portal,channel,event=None,canonical='',revision=None,guide=None):
  if value['start']>0 and value['stop']>value['start'] and value['title']:
   from programme_index46 import event as prepared_event46,metadata as prepared_metadata46
   prepared46=prepared_event46(value) if guide is None else None
-  value.update(prepared46 or prepared_metadata46(pid,canonical,value,guide) or read(pid,canonical,value,guide,verify_source=revision is not None))
+  if prepared46:value.update(prepared46)
+  else:
+   from programme_flow48 import source_metadata
+   value.update(source_metadata(event))
+   if not event.get('_metadata_verified48'):
+    value.update(prepared_metadata46(pid,canonical,value,guide) or read(pid,canonical,value,guide,verify_source=revision is not None))
   if not value.get('metadata_code46') and not any(value.get(k) for k in ('xmltv_image','provider_image','subtitle','season')):value.update(legacy_metadata(pid,sid,canonical,value))
   value['code']='LOCAL_EVENT'
  else:value.update(start=0,stop=0,title='',code='NO_EPG')
+ from programme_flow48 import trace
+ trace('LOCAL_EVENT',value,value.get('code','NO_EPG'))
+ trace('MATCH',value,'READY' if value.get('epg_source46') else 'NO_SOURCE_FACTS')
+ trace('SOURCE',value,'READY' if value.get('xmltv_image') or value.get('provider_image') else 'NO_SOURCE_FACTS')
  value['key']=key(pid,sid,value);value['placeholder']=placeholder(value)
  value['details_url']='plugin://plugin.video.xtreammate/?'+urlencode(dict(action='programme_details46',pid=pid,sid=sid,start=value['start'],stop=value['stop'],event=value['key']))
  return value
@@ -70,7 +79,7 @@ def summary(event,now=None):
  if event.get('subtitle'):lines.append(event['subtitle'])
  if event.get('season') and event.get('episode'):lines.append(tr(36103,event['season'],event['episode']))
  elif event.get('episode_label'):lines.append(event['episode_label'])
- for name in ('genre','year'):
+ for name in ('genre','year','director'):
   if event.get(name):lines.append(str(event[name]))
  if event.get('cast'):lines.append(tr(36104)+': '+', '.join(event['cast']))
  if event.get('description'):lines+=['',event['description']]

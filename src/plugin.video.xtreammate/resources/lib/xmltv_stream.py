@@ -62,10 +62,10 @@ def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None):
         if not stack and tag!='tv': raise XMLTVSyntaxError('Expected XMLTV tv root')
         stack.append(tag)
         if len(stack)==2 and tag in ('channel','programme'):
-            record=dict(attributes);record['type']=tag;record['cast']=[]
+            record=dict(attributes);record['type']=tag;record['cast']=[];record['director']=[]
         if record is not None:
             text=[];text_length=0;attrs=attributes
-            if tag=='icon': record['icon']=str(attributes.get('src',''))[:2048]
+            if tag=='icon' and len(stack)==3 and not record.get('icon'): record['icon']=str(attributes.get('src',''))[:2048]
             if tag=='episode-num': record['_episode_system']=attributes.get('system','')
     def characters(value):
         nonlocal text_length
@@ -79,6 +79,7 @@ def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None):
         if record is not None:
             value=''.join(text).strip()[:4096]
             if tag in ('display-name','title','sub-title','date','desc','category','value') and tag not in record: record[tag]=value
+            if tag=='director' and value and len(record.setdefault('director',[]))<8:record['director'].append(value[:120])
             if tag=='actor' and value and len(record.setdefault('cast',[]))<24:record['cast'].append(value[:120])
             if tag=='episode-num':
                 if record.get('_episode_system')=='onscreen': record['episode']=value[:128]
@@ -101,7 +102,7 @@ def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None):
                         on_programme(dict(channel=str(record['channel']),start_timestamp=begin,stop_timestamp=stop,
                             name=str(record.get('title',''))[:512],descr=record.get('desc',''),category=record.get('category',''),
                             screenshot_uri=record.get('icon',''),episode=record.get('episode',''),rating=record.get('value',''),
-                            sub_title=record.get('sub-title',''),date=record.get('date',''),cast=record.get('cast',[]),
+                            sub_title=record.get('sub-title',''),date=record.get('date',''),cast=record.get('cast',[]),director=record.get('director',[]),
                             season=record.get('season'),episode_number=record.get('episode_number')))
                 record=None
         stack.pop();text=[];text_length=0

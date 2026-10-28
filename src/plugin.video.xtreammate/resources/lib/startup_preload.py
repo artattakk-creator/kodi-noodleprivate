@@ -8,6 +8,14 @@ _next={}
 _offsets={}
 
 
+def mapping_stamp48():
+    from utils import addon_data_dir
+    try:
+        value=os.stat(os.path.join(addon_data_dir(),'xtreammate_epg_sources.json'))
+        return [value.st_mtime_ns,value.st_size,value.st_ino]
+    except FileNotFoundError:return None
+
+
 def path(pid):
     import hashlib
     from utils import addon_data_dir
@@ -18,10 +26,17 @@ def read(pid,sid):
     try:
         with open(path(pid),encoding='utf-8') as stream: raw=stream.read(262145)
         data=json.loads(raw) if len(raw)<=262144 else {}
-        if not isinstance(data,dict) or time.time()-float(data.get('at',0))>86400: return {}
+        if not isinstance(data,dict) or data.get('schema48')!=1 or data.get('mapping48')!=mapping_stamp48() or time.time()-float(data.get('at',0))>86400: return {}
         rows=data.get('rows',[])
         if not isinstance(rows,list): return {}
-        return next((r for r in rows[:16] if isinstance(r,dict) and r.get('sid')==str(sid)),{})
+        row=next((r for r in rows[:16] if isinstance(r,dict) and r.get('sid')==str(sid)),{})
+        if row:
+            from epg_views import guide_for_channel
+            from programme_snapshot47 import bind
+            previous=row.get('guide',{});guide=guide_for_channel({'saved':previous.get('events',[])},'saved')
+            guide.update(canonical46=previous.get('canonical46',''),snapshot_revision=previous.get('snapshot_revision'))
+            row=dict(row,guide=bind(pid,dict(sid=str(sid)),guide))
+        return row
     except (OSError,ValueError,TypeError): return {}
 
 
@@ -29,7 +44,6 @@ def prepare(cancel=lambda:False):
     from portals import get_active
     from library_index import Reader,initial_group
     from xtream import XtreamClient
-    from epg import load_cache
     from epg_sources import configuration
     from epg_views import resolve_guide,_start_short_guides
     from media_art import request,local_art
@@ -43,16 +57,22 @@ def prepare(cancel=lambda:False):
         if not cid: continue
         visible,total=reader.page('live',category=cid,limit=16,pin=start['sid'] if start else None)
         client=XtreamClient(portal['xc_host'],portal['xc_user'],portal['xc_pass'])
+        stamp48=mapping_stamp48()
         mappings=configuration(pid)['mappings']
         from guide_viewport import cache as viewport_cache
         from types import SimpleNamespace
         channels=[SimpleNamespace(tvg_id=r.get('epg_channel_id',''),extra={'stream_id':r['sid']}) for r in visible]
         cache=viewport_cache(pid,channels,mappings,time.time())
-        if cache is None:cache=load_cache(pid)
+        if cache is None:
+            from epg import load_cache
+            cache=load_cache(pid)
         rows=[];missing=[]
         for row in visible:
             if cancel(): return
             guide=resolve_guide(cache,row.get('epg_channel_id',''),row['sid'],client=client,mappings=mappings)
+            guide.update(snapshot_revision=getattr(cache,'revision',None),canonical46=getattr(cache,'canonical',{}).get(guide.get('epg_id',''),guide.get('epg_id','')))
+            from programme_snapshot47 import bind
+            guide=bind(pid,row,guide)
             rows.append(dict(sid=row['sid'],name=row['name'],logo=local_art(row).get('thumb',''),guide=guide))
             if not guide.get('now'): missing.append(row['sid'])
         request(visible)
@@ -70,10 +90,11 @@ def prepare(cancel=lambda:False):
                     page,_=reader.page('live',category=others[(offset//16)%len(others)]['cid'],limit=16)
                     _start_short_guides(portal,[r['sid'] for r in page])
                 _offsets[pid]=16
+        if stamp48!=mapping_stamp48():continue  # Never stamp old data with a new mapping revision.
         filename=path(pid);fd,temp=tempfile.mkstemp(prefix='.startup-',dir=os.path.dirname(filename))
         try:
             with os.fdopen(fd,'w',encoding='utf-8') as stream:
-                json.dump(dict(at=time.time(),category=cid,rows=rows),stream,ensure_ascii=False)
+                json.dump(dict(at=time.time(),category=cid,rows=rows,schema48=1,mapping48=stamp48),stream,ensure_ascii=False)
             os.replace(temp,filename)
         finally:
             if os.path.exists(temp): os.unlink(temp)

@@ -92,10 +92,13 @@ def configuration(portal_id):
     entry = _load_all().get(str(portal_id), {})
     if not isinstance(entry, dict):
         raise ValueError('Ungültige Portal-EPG-Konfiguration')
-    return {
+    from epg_binding48 import Mappings
+    result = {
         'sources': [dict(s) for s in entry.get('sources', []) if isinstance(s, dict)],
-        'mappings': dict(entry.get('mappings', {})),
+        'mappings': Mappings(entry.get('mappings', {}),entry.get('source_mappings48',{})),
     }
+    if entry.get('source_mappings48'):result['source_mappings48']=dict(entry['source_mappings48'])
+    return result
 
 
 @serialized
@@ -158,6 +161,7 @@ def set_mapping(portal_id, stream_id, epg_id):
     eid = str(epg_id).strip()
     if not sid:
         raise ValueError('Sender-ID fehlt')
+    state.get('source_mappings48',{}).pop(sid,None)
     if eid:
         state['mappings'][sid] = eid
     else:

@@ -62,6 +62,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         with db: db.executemany('''INSERT INTO xml_stage VALUES(?,?,?,?,?,?) ON CONFLICT(generation,cid,start,stop) DO UPDATE SET title=excluded.title,description=excluded.description WHERE length(excluded.description)>length(xml_stage.description)''',batch)
         batch.clear()
     def channel(cid,name):
+        metadata46.channel48(cid,name)
         key=_channel_name_key(name)
         # Only requested names are remembered. Ambiguous XMLTV names do not
         # overwrite provider/manual IDs; match conservatively at source end.

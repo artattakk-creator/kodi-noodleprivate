@@ -7,7 +7,7 @@ CODES={'TMDB_DISABLED':35971,'TMDB_TOKEN_MISSING':35972,'HTTP_AUTH':35973,'HTTP_
 
 
 def mark(stage,source='',code='',rows=None):
-    if stage not in ('REQUEST','OPEN','OPEN_REJECTED','SOURCE','RESULTS','PREVIEW','SAVE','ERROR','CLOSED'):return
+    if stage not in ('REQUEST','OPEN','OPEN_REJECTED','SOURCE','RESULTS','PREVIEW','PREVIEW_READY48','SAVE','ERROR','CLOSED'):return
     source=source if source in ('provider','tmdb','commons','local','metadata','art') else 'other'
     allowed=set(CODES)|{'OK','BUSY','CANCELLED','INVALID_JSON','UNSAFE_SOURCE','HTTP_NOT_FOUND','HTTP_SERVER','HTTP_CLIENT','CONTENT_TYPE','CONTENT_ENCODING','RESPONSE_LIMIT','IMAGE_LIMIT','RESEARCH_BUSY','INVALID_TOKEN','WORKER_UNAVAILABLE','LOCAL_FILE_REQUIRED','UNAVAILABLE','BUDGET_FULL','DISK_FULL','WRONG_ITEM','PLAYBACK_BUSY','WINDOW_CLOSED'}
     code=code.partition(':')[0] if isinstance(code,str) else ''

@@ -1,0 +1,47 @@
+{
+  "measurement": "Synthetic host only; 25 runs per version, fresh readers/local fixtures, warm OS cache; not Android",
+  "before": {
+    "version": "0.1.29.47",
+    "measurement": "Synthetic host; fresh readers and published local data, warm OS cache; no Android/cold-device inference",
+    "live88": {
+      "n": 25,
+      "p50_ms": 55.176,
+      "p95_ms": 61.267,
+      "sqlite_connections_min": 31,
+      "sqlite_connections_max": 31
+    },
+    "movies60000": {
+      "n": 25,
+      "p50_ms": 0.819,
+      "p95_ms": 1.097
+    }
+  },
+  "after": {
+    "version": "0.1.29.48",
+    "measurement": "Synthetic host; fresh readers and published local data, warm OS cache; no Android/cold-device inference",
+    "live88": {
+      "n": 25,
+      "p50_ms": 59.477,
+      "p95_ms": 71.782,
+      "sqlite_connections_min": 31,
+      "sqlite_connections_max": 31
+    },
+    "movies60000": {
+      "n": 25,
+      "p50_ms": 0.77,
+      "p95_ms": 1.019
+    }
+  },
+  "deterministic_changes": {
+    "xtream_auth_requests_before": 2,
+    "xtream_auth_requests_after": 1,
+    "discovery_request_timeout_max_seconds": 3,
+    "discovery_aggregate_budget_seconds": 25,
+    "discovery_retries": 0,
+    "discovery_response_max_bytes": 2097152,
+    "maintenance_interval_before_seconds": 5,
+    "maintenance_interval_after_seconds": 300
+  },
+  "android": "NOT_TESTED",
+  "interpretation": "Live88 worker p50/p95 slightly higher with rich propagation; movie differences small. No claim of improved real 180s cold boot from this host measurement."
+}

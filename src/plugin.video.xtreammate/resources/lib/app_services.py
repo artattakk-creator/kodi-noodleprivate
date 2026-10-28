@@ -7,10 +7,13 @@ _worker=None
 _guard=threading.Lock()
 _retry_after={}
 _bootstrapped=set()
+_local_once48=set()
 _stop=threading.Event()
 
 
 def refresh_local(cancel=lambda:False):
+    from startup48 import suspended
+    if suspended():return
     from widget_hooks45 import prepare as prepare_widget_bindings
     prepare_widget_bindings()
     if cancel():return
@@ -41,7 +44,9 @@ def refresh_local(cancel=lambda:False):
             if cancel():return
             from programme_index46 import prepare_local as prepare_programmes46
             prepare_programmes46(portal,cancel)
-            try:refresh_guide(portal)
+            try:
+                if portal['id'] not in _local_once48:
+                    refresh_guide(portal);_local_once48.add(portal['id'])
             except Exception:
                 from utils import warn
                 warn('GUIDE_PREWARM_UNAVAILABLE')
@@ -58,6 +63,9 @@ def refresh_local(cancel=lambda:False):
                     from widget_diagnostics47 import inspect_index
                     inspect_index(portal,kind,rows,code)
                     rows=apply_many(portal['id'],rows)
+                    if kind=='live':
+                        from programme_prefetch48 import prepare as prefetch_events48
+                        prefetch_events48(portal,rows,cancel)
                     try:
                         prepare(portal['id'],rows)
                         from programme_assets47 import prepare as prepare_assets47
@@ -88,9 +96,14 @@ def _run():
     import xbmc
     monitor=xbmc.Monitor()
     cancelled=lambda:_stop.is_set() or monitor.abortRequested()
+    from startup48 import Phases,suspended,mark
+    phases48=Phases()
     next_prepare=0
     while not cancelled():
         runtime.emit()
+        if suspended():
+            if runtime.wait_abort(monitor,.1,_stop):break
+            continue
         if runtime.pressure():
             from art_diagnostics import publish
             publish('service','MEMORY_PRESSURE')
@@ -102,7 +115,7 @@ def _run():
             focused()
         except Exception:pass
         prepare_now=time.monotonic()>=next_prepare
-        if prepare_now:
+        if phases48.network() and phases48.due('maintenance',300):
             next_prepare=time.monotonic()+5
             try:
                 from artwork_db import maintain
@@ -114,26 +127,30 @@ def _run():
         # or no fresh media window requests an enrolment. Data worker only.
         try:
             from media_art import ensure_worker
-            ensure_worker()
+            if phases48.network():ensure_worker()
         except MemoryError:runtime.note_pressure()
         except Exception:pass
         if cancelled():break
-        if prepare_now:
+        if prepare_now and phases48.network():
+            next_prepare=time.monotonic()+5
             # Optional guide/art preparation may fail independently. It must not
             # starve an otherwise valid movie/series sync request.
-            try: refresh_local(cancelled)
+            started48=time.monotonic()
+            try:
+                refresh_local(cancelled)
+                mark('LOCAL',duration_ms=(time.monotonic()-started48)*1000)
             except MemoryError:runtime.note_pressure()
             except Exception: pass
             if cancelled():break
             try:
                 from art_store import prefetch_selected
-                prefetch_selected()
+                if phases48.network() and phases48.due('prefetch',300):prefetch_selected()
             except MemoryError:runtime.note_pressure()
             except Exception: pass
             if cancelled():break
             try:
                 from startup_preload import prepare
-                prepare(cancel=cancelled)
+                if phases48.network():prepare(cancel=cancelled)
             except MemoryError:runtime.note_pressure()
             except Exception: pass
             if cancelled():break

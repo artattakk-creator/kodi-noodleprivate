@@ -1,3 +1,29 @@
+0.1.29.48 (cumulative review candidate; Android .48 NOT_TESTED)
+- #250/#249: OS-held service singleton, local-first startup phases, bounded
+  maintenance and optional network prefetch. No claim of a proven native
+  Android crash fix without a crash/ANR trace and device acceptance.
+- Wizard: direct setup entry without full router/root reloading; stale owner
+  protection, finite native-init/discovery deadlines, 3s request timeout and no
+  discovery retries. Xtream authentication now makes one request, not two.
+- Wizard Save preserves committed EPG source archive, XMLTV images, cast,
+  director and additive common facts; external-only sources retain correct rank.
+  Existing populated guides remain behind the verified-backup gate.
+- Preserve the .42 native Live Stop strategy. Pending exit has service priority;
+  completed exits do not starve movie/widget refresh. Home-origin playback
+  returns to Kodi Home without recursively dispatching the plugin root.
+- Source-qualified EPG assignment directly from Guide context or visible button:
+  real grid preview in RAM, explicit Save/Cancel, legacy mapping compatibility.
+- Propagate verified rich event data, protect direct XMLTV icons from nested
+  rating icons, rotate event-art jobs independently of widget repaint, require
+  the image decoder dependency and add bounded privacy-safe evidence.
+- Covermanager uses existing candidates immediately, supports verified offline
+  choices and explicit provider refresh; safe credentialless public image
+  redirects revalidate DNS/TLS, deny downgrade/private hosts and limit hops.
+- Native Live-only sender-strip/large-Hero preview. Optional BINGIE include is
+  REVIEW_ONLY / BLOCKED_SKIN_INTEGRATION pending actual skin review/approval.
+  Working movie/series widgets, native click paths and reload hooks unchanged.
+- No reset, no existing image deletion, no device action, no auto-merge/release.
+
 0.1.29.47 (cumulative review candidate; Android .47 NOT_TESTED)
 - #244/#245: movie payloads use complete primary-key seeks, with one pinned
   read-only transaction and a strict active-SQL budget. Cold imports no longer

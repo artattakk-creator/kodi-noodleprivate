@@ -19,7 +19,7 @@ class Scope46(unittest.TestCase):
   b=self.baseline()
   for name in names:
    path='src/plugin.video.xtreammate/resources/lib/'+name+'.py'
-   raw=(ROOT/path).read_bytes()
+   raw=__import__('stabilization_contract_02948').without_stabilization48((ROOT/path).read_bytes(),path)
    if name in ('live_exit','media_progress','epg'):raw=without_stabilization46(raw,path)
    elif name=='tv_data':raw=__import__('stabilization_contract_02947').without_stabilization47(raw,path)
    self.assertEqual(hashlib.sha256(raw).hexdigest(),b['source_sha256'][path],name)

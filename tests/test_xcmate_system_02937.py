@@ -26,7 +26,10 @@ class System37(Fixture,unittest.TestCase):
         nav=importlib.import_module('setup_navigation')
         self.properties[nav.ACTIVE]=str(time.time())
         router=module.Router(['plugin://plugin.video.xtreammate','7','?action=root'])
-        router.dispatch();self.assertEqual(len(self.ends),1);self.assertFalse(self.added);self.assertFalse(self.builtins)
+        # .48 requires the real cross-interpreter owner, not a stale timestamp.
+        with importlib.import_module('window_navigation').ownership() as acquired:
+            self.assertTrue(acquired);router.dispatch()
+        self.assertEqual(len(self.ends),1);self.assertFalse(self.added);self.assertFalse(self.builtins)
 
     def test_saved_wizard_cannot_navigate_before_native_release_or_foreign_modal(self):
         nav=importlib.import_module('setup_navigation');nav._queue('return',pid='p',closed='13001')

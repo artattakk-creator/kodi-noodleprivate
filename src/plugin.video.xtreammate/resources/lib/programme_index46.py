@@ -10,7 +10,7 @@ from programme_read47 import scoped
 MAX_BYTES=128*1024*1024
 APPLICATION_ID=0x58434D46
 _scans={};_reports={};_pauses={}
-FIELDS=('pid','sid','canonical','key','start','stop','title','description','source','revision','code','subtitle','genre','episode_label','year','season','episode','cast','xmltv_image','provider_image','epg_source46','epg_text46','placeholder','source_key46','fact_revision46')
+FIELDS=('pid','sid','canonical','key','start','stop','title','description','source','revision','code','subtitle','genre','episode_label','year','season','episode','cast','director','xmltv_image','provider_image','epg_source46','epg_text46','placeholder','source_key46','fact_revision46')
 
 
 def path(guide=None):
@@ -174,7 +174,7 @@ def _ranks47(pid):
     return result
 
 
-def window(pid,cid,start,stop,primary=(),limit=256,guide=None):
+def window(pid,cid,start,stop,primary=(),limit=256,guide=None,source48=None):
     db=None
     try:
         db=connect(False,guide)
@@ -182,7 +182,7 @@ def window(pid,cid,start,stop,primary=(),limit=256,guide=None):
         left,right=bounds();start=max(left,start);stop=min(right,stop)
         end=time.monotonic()+.03;db.set_progress_handler(lambda:int(time.monotonic()>end),1000)
         allowed=ranks(pid);values=[]
-        for source,fingerprint,data,updated in db.execute('SELECT source_id,fingerprint,data,updated FROM facts WHERE pid=? AND cid=? AND start<? AND stop>? ORDER BY start,stop LIMIT ?',(str(pid),str(cid),stop,start,min(512,limit*4))):
+        for source,fingerprint,data,updated in db.execute('SELECT source_id,fingerprint,data,updated FROM facts WHERE pid=? AND cid=? AND start<? AND stop>?'+(' AND source_id=?' if source48 else '')+' ORDER BY start,stop LIMIT ?',tuple([str(pid),str(cid),stop,start]+([source48] if source48 else [])+[min(512,limit*4)])):
             if source not in allowed or len(data)>24576:continue
             value=json.loads(data);value['_source_index']=value['source']=allowed[source];value['fact_revision46']=fingerprint;value['_updated46']=updated
             values.append(value)
