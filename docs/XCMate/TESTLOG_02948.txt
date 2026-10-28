@@ -145,10 +145,10 @@ test_restart_offline_previous_index_and_immediate_disabled_filter (test_xcmate_0
 test_same_stream_in_two_groups_counted_once_globally_but_available_in_each (test_xcmate_028_streaming.IndexTests.test_same_stream_in_two_groups_counted_once_globally_but_available_in_each) ... ok
 test_streaming_group_publishes_only_after_complete_json (test_xcmate_028_streaming.IndexTests.test_streaming_group_publishes_only_after_complete_json) ... ok
 test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update (test_xcmate_028_streaming.LargeGuideTests.test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update) ...
-LARGE_XMLTV {"parsed": 160005, "stored": 160005, "xml_bytes": 95571948, "sqlite_bytes": 303685632, "seconds": 19.62}
+LARGE_XMLTV {"parsed": 160005, "stored": 160005, "xml_bytes": 95571948, "sqlite_bytes": 303685632, "seconds": 21.219}
 ok
 test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib (test_xcmate_028_streaming.LargeHTTPTests.test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib) ...
-LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 309526528, "seconds": 27.36, "peak_rss_kib": 63696}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 621731840, "seconds": 28.767, "peak_rss_kib": 63696}]
+LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 309526528, "seconds": 27.034, "peak_rss_kib": 63632}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 621731840, "seconds": 27.093, "peak_rss_kib": 63632}]
 ok
 test_cache_envelope_and_trailing_data_validated (test_xcmate_028_streaming.ParserTests.test_cache_envelope_and_trailing_data_validated) ... ok
 test_chunked_http_gzip_and_truncated_compression (test_xcmate_028_streaming.ParserTests.test_chunked_http_gzip_and_truncated_compression) ... ok
@@ -511,6 +511,7 @@ test_observed_departure_rearms_next_explicit_open_not_background_service (test_x
 test_replayed_queued_resolver_and_player_race_are_rejected (test_xcmate_entry_02938.Entry38.test_replayed_queued_resolver_and_player_race_are_rejected) ... ok
 test_temporary_pause_expires_without_changing_saved_flags (test_xcmate_entry_02938.Entry38.test_temporary_pause_expires_without_changing_saved_flags) ... ok
 test_twenty_refreshes_and_more_than_old_cooldown_still_start_once (test_xcmate_entry_02938.Entry38.test_twenty_refreshes_and_more_than_old_cooldown_still_start_once) ... ok
+test_common_resolver_requires_source_proof_even_for_non_mini_callers (test_xcmate_epg_binding_02948.Binding48.test_common_resolver_requires_source_proof_even_for_non_mini_callers) ... ok
 test_disabled_or_foreign_source_cannot_be_saved (test_xcmate_epg_binding_02948.Binding48.test_disabled_or_foreign_source_cannot_be_saved) ... ok
 test_empty_programme_sender_has_visible_mapping_button_and_context_action (test_xcmate_epg_binding_02948.Binding48.test_empty_programme_sender_has_visible_mapping_button_and_context_action) ... ok
 test_equal_channel_ids_remain_unambiguously_bound_to_different_sources (test_xcmate_epg_binding_02948.Binding48.test_equal_channel_ids_remain_unambiguously_bound_to_different_sources) ... ok
@@ -519,6 +520,9 @@ test_legacy_set_mapping_clears_only_that_senders_source_binding (test_xcmate_epg
 test_locally_available_source_channel_ids_are_searchable_without_http (test_xcmate_epg_binding_02948.Binding48.test_locally_available_source_channel_ids_are_searchable_without_http) ... ok
 test_mini_does_not_use_an_unqualified_legacy_cache_when_selected_source_is_missing (test_xcmate_epg_binding_02948.Binding48.test_mini_does_not_use_an_unqualified_legacy_cache_when_selected_source_is_missing) ... ok
 test_missing_selected_source_does_not_silently_show_provider (test_xcmate_epg_binding_02948.Binding48.test_missing_selected_source_does_not_silently_show_provider) ... ok
+test_preparation_does_not_publish_old_data_with_a_new_mapping_stamp (test_xcmate_epg_binding_02948.Binding48.test_preparation_does_not_publish_old_data_with_a_new_mapping_stamp) ... ok
+test_prepared_start_data_rolls_now_next_forward_in_ram_without_stale_title (test_xcmate_epg_binding_02948.Binding48.test_prepared_start_data_rolls_now_next_forward_in_ram_without_stale_title) ... ok
+test_prepared_startup_snapshot_is_invalidated_on_mapping_change (test_xcmate_epg_binding_02948.Binding48.test_prepared_startup_snapshot_is_invalidated_on_mapping_change) ... ok
 test_preview_preserves_json_guide_and_existing_mapping_bytes (test_xcmate_epg_binding_02948.Binding48.test_preview_preserves_json_guide_and_existing_mapping_bytes) ... ok
 test_preview_uses_real_grid_and_cancel_restores_exact_snapshot (test_xcmate_epg_binding_02948.Binding48.test_preview_uses_real_grid_and_cancel_restores_exact_snapshot) ... ok
 test_saved_binding_is_identical_in_grid_widget_and_mini_snapshot (test_xcmate_epg_binding_02948.Binding48.test_saved_binding_is_identical_in_grid_widget_and_mini_snapshot) ... ok
@@ -2024,16 +2028,16 @@ test_widget_route_and_no_cached_credentials_in_link (test_xtreammate_widgets.Wid
 test_youtube_whitelist (test_xtreammate_widgets.WidgetsTest.test_youtube_whitelist) ... ok
 
 ----------------------------------------------------------------------
-Ran 2017 tests in 296.230s
+Ran 2021 tests in 293.247s
 
 OK
 
-MODEL_COLD_WINDOW_MS 5.022
-SEARCH39_HOST [{'query_kind': 'cold', 'first_names_ms': 5.48, 'total_ms': 42.003, 'scanned': 2905, 'results': 6}, {'query_kind': 'warm', 'first_names_ms': 4.954, 'total_ms': 17.821, 'scanned': 2905, 'results': 6}]
+MODEL_COLD_WINDOW_MS 7.025
+SEARCH39_HOST [{'query_kind': 'cold', 'first_names_ms': 4.487, 'total_ms': 39.21, 'scanned': 2905, 'results': 6}, {'query_kind': 'warm', 'first_names_ms': 4.746, 'total_ms': 15.406, 'scanned': 2905, 'results': 6}]
 
 SELECTIVE_XMLTV {"bytes": 400, "parsed": 2, "stored": 1}
 
 LARGE_M3U {"parsed": 20005, "active": 5002, "bytes": 1727118}
-WIDGET46_RETAINED_ARCHIVE {"legacy_rows": 40005, "old_opcode_budget": "INTERRUPTED", "new_rows": 24, "new_ms": 2.597}
-WIDGET41_HOST {'rows': 20005, 'returned': 24, 'code': 'READY', 'ms': 2.25}
-WIDGET44_V2_HOST {"records": 20005, "returned": 24, "ms": 2.731, "plan": "(7, 0, 61, 'SEARCH i USING INDEX recent_v2 (pid=? AND kind=?)') (17, 0, 0, 'USING INDEX sqlite_autoindex_selected_categories_1 FOR IN-OPERATOR') (23, 0, 47, 'SEARCH h USING INDEX sqlite_autoindex_heads_1 (pid=? AND kind=? AND cid=?)')"}
+WIDGET46_RETAINED_ARCHIVE {"legacy_rows": 40005, "old_opcode_budget": "INTERRUPTED", "new_rows": 24, "new_ms": 2.45}
+WIDGET41_HOST {'rows': 20005, 'returned': 24, 'code': 'READY', 'ms': 2.344}
+WIDGET44_V2_HOST {"records": 20005, "returned": 24, "ms": 3.05, "plan": "(7, 0, 61, 'SEARCH i USING INDEX recent_v2 (pid=? AND kind=?)') (17, 0, 0, 'USING INDEX sqlite_autoindex_selected_categories_1 FOR IN-OPERATOR') (23, 0, 47, 'SEARCH h USING INDEX sqlite_autoindex_heads_1 (pid=? AND kind=? AND cid=?)')"}

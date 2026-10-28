@@ -1,8 +1,8 @@
 {
   "base": "b047ffe7fc26a02f1ae74d99cb3546ce42735275",
-  "source_commit": "15e3f7f58cfd4b4eb77016b164af2414f8263cd2",
+  "source_commit": "3929968409aadbf7e9b2093f208ba89d9c860e76",
   "original_files": 550,
-  "unchanged": 513,
+  "unchanged": 512,
   "exact_reviewed_changes": [
     "src/plugin.video.xtreammate/addon.xml",
     "src/plugin.video.xtreammate/changelog.txt",
@@ -11,6 +11,7 @@
     "src/plugin.video.xtreammate/resources/lib/app_routes.py",
     "src/plugin.video.xtreammate/resources/lib/app_services.py",
     "src/plugin.video.xtreammate/resources/lib/epg_sources.py",
+    "src/plugin.video.xtreammate/resources/lib/epg_views.py",
     "src/plugin.video.xtreammate/resources/lib/guide_grid_data.py",
     "src/plugin.video.xtreammate/resources/lib/guide_grid_window.py",
     "src/plugin.video.xtreammate/resources/lib/live_exit.py",

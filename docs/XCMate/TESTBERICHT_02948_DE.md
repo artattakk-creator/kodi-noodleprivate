@@ -1,10 +1,10 @@
 # XCMate .48 – vollständiger Host-/Paketbericht
 
-Datum: 28.10.2026. Basis `main` `.47`, `b047ffe7fc26a02f1ae74d99cb3546ce42735275`. Finaler Quellbuild: `15e3f7f58cfd4b4eb77016b164af2414f8263cd2`. Derselbe vereinbarte Entwicklungsbranch; kein neuer Branch, Merge oder produktiver Release.
+Datum: 28.10.2026. Basis `main` `.47`, `b047ffe7fc26a02f1ae74d99cb3546ce42735275`. Finaler Quellbuild: `3929968409aadbf7e9b2093f208ba89d9c860e76`. Derselbe vereinbarte Entwicklungsbranch; kein neuer Branch, Merge oder produktiver Release.
 
 ## Ergebnis
 
-**2.017 Tests PASS in 296.230 s, 0 Fehler, 0 Failures, 0 übersprungene Tests.** Alle 1.952 bisherigen Testmethoden erhalten, 65 neue. Sauberer `git archive`-Checkout; unveränderte Bootstrap-/Buildschritte, PO-Validierung, Icon-/Lizenzprüfung und Python-Syntaxprüfung. Danach vollständige Tests mit freigegebenem Host-Loopback/SMB-Testnetz, synthetischen Daten und Kodi-API-Fixtures. Kein Kodi-/Android-Prozess und keine Nutzerbox wurde damit getestet.
+**2.021 Tests PASS in 293.247 s, 0 Fehler, 0 Failures, 0 übersprungene Tests.** Alle 1.952 bisherigen Testmethoden erhalten, 69 neue. Sauberer `git archive`-Checkout; unveränderte Bootstrap-/Buildschritte, PO-Validierung, Icon-/Lizenzprüfung und Python-Syntaxprüfung. Danach vollständige Tests mit freigegebenem Host-Loopback/SMB-Testnetz, synthetischen Daten und Kodi-API-Fixtures. Kein Kodi-/Android-Prozess und keine Nutzerbox wurde damit getestet.
 
 Deutsch/Englisch: jeweils **1.078 gettext-Kontexte gültig**. **92 Original-Navigationstexturen** samt Herkunft/Lizenz gültig. Bekannte unveränderte `SMBProtocol.py`-SyntaxWarning im vendorten Modul; kein neuer Syntaxfehler. Testprotokoll `TESTLOG_02948.txt` vollständig; nur abschließende Zeilen-Leerzeichen normalisiert, beide Log-SHA256 in `TESTERGEBNISSE_02948.json`.
 
@@ -13,6 +13,7 @@ Deutsch/Englisch: jeweils **1.078 gettext-Kontexte gültig**. **92 Original-Navi
 - OS-Singleton auch über zweiten Prozess, Legacy-Modus unverändert; kalte automatische Vorbereitung zurückgestellt, explizite Jobs/Timer weiter bedienbar.
 - Echter Xtream-Client mit einem Auth-Request, Discovery-Deadline/Retry-/Bytebudget, Cancel/Slot, verwaiste Wizardmarker, native Initgrenze, manuelle Directory-Fortsetzung ohne Root-Kreislauf und Schutz fremder Modals.
 - Echte XMLTV-Datei durch Wizard Scan/Save: Source-Archiv, Quellrang, Kanalname, Bildadresse, Synopsis, Cast und Regie nach Veröffentlichung vorhanden; Rollback ausschließlich neuer ID; vorhandener ungesicherter Guide unverändert/blockiert.
+- Gemeinsamer Now/Next-Resolver weist bei quellgebundenen Mappings fremde/unbelegte Cacheevents ab; vorbereitete Startdaten sind an die Mappingrevision gebunden und rollen Jetzt/Danach ohne Netzwerk in RAM fort. Race zwischen Vorbereitung und Mapping-Speichern veröffentlicht keinen falsch gestempelten Snapshot.
 - Quellkollision mit identischer Kanal-ID, echte Rastervorschau ohne JSON-/Guideänderung, Cancel/Save, Legacy-Mappings, sichtbarer Button/Kontext und freie Zeitachse.
 - Bildredirects mit öffentlicher DNS-/TLS-Prüfung, Hop-/Loop-/Downgrade-/Credential-/Privathost-Schutz; offline gespeicherte Originalbilder und reale Thumbnaildateien, kein Placeholder-PASS.
 - Volle 88-Sender-Heroauswahl, kein Streamstart bei Fokus, exakter OK-Handoff; Artworkrotation über die erste 16er-Seite hinaus, XMLTV-Programmeicon statt Ratinglogo, dieselben Eventkeys zwischen Oberflächen.
@@ -24,12 +25,12 @@ Frühere Arbeitsläufe waren keine Abnahme: Sie deckten u.a. notwendige exakte F
 ## Paket
 
 - `plugin.video.xtreammate-0.1.29.48.zip`
-- **3,069,297 Bytes**, **565 Dateien**.
-- SHA256: `b4f96a1fdbac3c4ee2816c00298c149dde9c979d58738dbe8655c332d01a95f1`
+- **3,069,848 Bytes**, **565 Dateien**.
+- SHA256: `1e835520da2a69127f72df0e4a6a799b232b3feb2852ac53f3f2c4c959004ce1`
 - CRC, eindeutige/sichere Pfade, keine Symlinks, keine Benutzerprofile/DBs/Rohlogs/Bytecode: PASS.
 - **Alle 565 enthaltenen Dateien bytegleich zum finalen Quellstand.** Unabhängige deterministische ZIP-Rekonstruktion mit eigenen ZipInfo-Einträgen ergibt exakt dieselben Bytes: PASS.
 
-`DATEIKATALOG_02948.json`, `PAKETPRUEFUNG_02948.json` und `SCHUTZPRUEFUNG_02948.json` enthalten Prüfnachweise. 550 vorherige Quelldateien erhalten: **513 unverändert, 37 exakt überprüfte Änderungen, 15 additive Dateien, keine entfernte Datei**. Die 62 gesicherten fremden WIP-Dateien sind unverändert. Produktionsindex und alte Pakete bleiben im Branch unverändert.
+`DATEIKATALOG_02948.json`, `PAKETPRUEFUNG_02948.json` und `SCHUTZPRUEFUNG_02948.json` enthalten Prüfnachweise. 550 vorherige Quelldateien erhalten: **512 unverändert, 38 exakt überprüfte Änderungen, 15 additive Dateien, keine entfernte Datei**. Die 62 gesicherten fremden WIP-Dateien sind unverändert. Produktionsindex und alte Pakete bleiben im Branch unverändert.
 
 ## Messwerte, keine Android-Prognose
 

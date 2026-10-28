@@ -1,5 +1,5 @@
 {
-  "source_commit": "15e3f7f58cfd4b4eb77016b164af2414f8263cd2",
+  "source_commit": "3929968409aadbf7e9b2093f208ba89d9c860e76",
   "files": {
     "src/plugin.video.xtreammate/README.md": "3b3c02221c50835e689354f2849c1d891903df5c3f8e7af99871fd1f2a194ff3",
     "src/plugin.video.xtreammate/changelog.txt": "7649e2899775d6cfd86ab952e0db3118d9f7f434828a1b3ed17e37cfb43c4c07",
@@ -90,8 +90,8 @@
     "src/plugin.video.xtreammate/resources/lib/programme_index46.py": "f8018c3c7bb46a10f8b692d22d244cd16b267c4d1fa20a5cdb476ddd9af36be4",
     "src/plugin.video.xtreammate/resources/lib/playlist_editor.py": "95897b6d0d6359f809db86081c357ef0a3e898ea60bc9b10a5eae6edf59ff56c",
     "src/plugin.video.xtreammate/resources/lib/epg_cache_policy.py": "46e2fcf54d872faf3d0a14a0336d3fc71c202cf6c0b84714b8f8070845994d47",
-    "src/plugin.video.xtreammate/resources/lib/epg_views.py": "abd04cca95d03dc8cc4d8ce313e3b6fbdc7cd1577a8320b18a2fa591e29a2c37",
-    "src/plugin.video.xtreammate/resources/lib/epg_binding48.py": "9db47109b07e52316d2a7c374af1cb5109fb542646559da7e9032a22a34888ef",
+    "src/plugin.video.xtreammate/resources/lib/epg_views.py": "410bf78133fe71301a2df54666ac07e0fcde4143e9bd127f8a573c6ec7f7bce0",
+    "src/plugin.video.xtreammate/resources/lib/epg_binding48.py": "fa70841d1b7232c07156ef2e9d6ebed64ec1e13e927de8fed92d6c80b1ae1037",
     "src/plugin.video.xtreammate/resources/lib/artwork_vfs.py": "7a1b2faf3aae0a845db3f027899fbe700b4df8891de4c8defc7eb9bd71392ac9",
     "src/plugin.video.xtreammate/resources/lib/portal_manager.py": "7d3f1b1b2c175608af97a5752b7e8b80edb40cb7c127ee667ec8f8954a752a66",
     "src/plugin.video.xtreammate/resources/lib/media_autoplay.py": "e81baac249e4272c1d782143471ca3381a4b5258884ae0fba10af00cd75fc588",
@@ -203,7 +203,7 @@
     "src/plugin.video.xtreammate/resources/lib/artwork_status.py": "f5dab9b5590e1d6dc500c5b22c95954bd404113910b048d0e4ea349d5ba05c2c",
     "src/plugin.video.xtreammate/resources/lib/media_page43.py": "f1aeddf2936fb92c974cd6bcc519ee3f51554fb7d5c86f8d0ae04ac2e0439258",
     "src/plugin.video.xtreammate/resources/lib/guide_grid_window.py": "53389b6905a63dd8adf40abeeb9d569f44d7d717a4d1fb267fdeac69ab6d01de",
-    "src/plugin.video.xtreammate/resources/lib/startup_preload.py": "9e515851469cca9ecd0291419068c23a6ce6bbfa3f47ec14f5dd45fa94d6dea2",
+    "src/plugin.video.xtreammate/resources/lib/startup_preload.py": "8db821be816d7a1d91f6d20f77f83688f56ad4468f95cfa09ae3142022f82e60",
     "src/plugin.video.xtreammate/resources/lib/export_import.py": "ef1e19b2ca07be8e31894a0e9eb7e91105065d3e4f5f094998301f53c52a7f39",
     "src/plugin.video.xtreammate/resources/lib/widget_render47.py": "f4b275695ad5aba5e1ad2c9f85e287d2d342778df6c5e32ca983b5b0848ea5e0",
     "src/plugin.video.xtreammate/resources/lib/popup_probe.py": "f573cd2a118640b145dda0ea4e4077e5af5fb6ba80e37f91fd70570fbfdc86ec",

@@ -1,5 +1,5 @@
 {
-  "new_tests": 65,
+  "new_tests": 69,
   "methods": {
     "tests/test_xcmate_startup_wizard_02948.py": [
       [
@@ -145,6 +145,22 @@
       [
         "Binding48",
         "test_mini_does_not_use_an_unqualified_legacy_cache_when_selected_source_is_missing"
+      ],
+      [
+        "Binding48",
+        "test_common_resolver_requires_source_proof_even_for_non_mini_callers"
+      ],
+      [
+        "Binding48",
+        "test_prepared_startup_snapshot_is_invalidated_on_mapping_change"
+      ],
+      [
+        "Binding48",
+        "test_prepared_start_data_rolls_now_next_forward_in_ram_without_stale_title"
+      ],
+      [
+        "Binding48",
+        "test_preparation_does_not_publish_old_data_with_a_new_mapping_stamp"
       ]
     ],
     "tests/test_xcmate_flow_analysis_02948.py": [
