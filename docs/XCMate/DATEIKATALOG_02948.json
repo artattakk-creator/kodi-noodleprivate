@@ -1,5 +1,5 @@
 {
-  "source_commit": "d76f481fdd31f5553b7a7531438ff9b6a5713979",
+  "source_commit": "15e3f7f58cfd4b4eb77016b164af2414f8263cd2",
   "files": {
     "src/plugin.video.xtreammate/README.md": "3b3c02221c50835e689354f2849c1d891903df5c3f8e7af99871fd1f2a194ff3",
     "src/plugin.video.xtreammate/changelog.txt": "7649e2899775d6cfd86ab952e0db3118d9f7f434828a1b3ed17e37cfb43c4c07",
@@ -111,7 +111,7 @@
     "src/plugin.video.xtreammate/resources/lib/live_diagnostics.py": "0831e96d93b9a162b2127cfc1c954fd883cdd49660c5f685bbe586261fb66785",
     "src/plugin.video.xtreammate/resources/lib/library_index.py": "90b702a6c36b3136f0c14d08b64257271769e9b6aab03476484ca656a90c82e9",
     "src/plugin.video.xtreammate/resources/lib/downloads.py": "02dfa9f3f95a7a71496d9e53df9a20cbb461b8d3a38e978d4406c82c65876c57",
-    "src/plugin.video.xtreammate/resources/lib/tv_data.py": "2bd1c94a87ca4dfb65c4f71d19b7282a655029a51f6881247b48a1504fc53184",
+    "src/plugin.video.xtreammate/resources/lib/tv_data.py": "95e4baccd0a900c13bfad43232be5fd400ac5c299056dde40ddb25e49558c85a",
     "src/plugin.video.xtreammate/resources/lib/download_worker.py": "70d6f1d8c1833df96ab7033bf1ef369b4df62b7b8e6a07c6846e191d37f4c60b",
     "src/plugin.video.xtreammate/resources/lib/update_notice41.py": "320e2ae6ee27833a9582d20851bb58922be91e43d1605a86a72896770a5b7990",
     "src/plugin.video.xtreammate/resources/lib/media_portal44.py": "0cff26cf7e329469311f1ebd1e13733d8d5ff5ed6fe8aeb68d5d3e7b8310a484",

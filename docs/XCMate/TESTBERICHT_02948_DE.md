@@ -1,10 +1,10 @@
 # XCMate .48 – vollständiger Host-/Paketbericht
 
-Datum: 28.10.2026. Basis `main` `.47`, `b047ffe7fc26a02f1ae74d99cb3546ce42735275`. Finaler Quellbuild: `d76f481fdd31f5553b7a7531438ff9b6a5713979`. Derselbe vereinbarte Entwicklungsbranch; kein neuer Branch, Merge oder produktiver Release.
+Datum: 28.10.2026. Basis `main` `.47`, `b047ffe7fc26a02f1ae74d99cb3546ce42735275`. Finaler Quellbuild: `15e3f7f58cfd4b4eb77016b164af2414f8263cd2`. Derselbe vereinbarte Entwicklungsbranch; kein neuer Branch, Merge oder produktiver Release.
 
 ## Ergebnis
 
-**2.016 Tests PASS in 298.280 s, 0 Fehler, 0 Failures, 0 übersprungene Tests.** Alle 1.952 bisherigen Testmethoden erhalten, 64 neue. Sauberer `git archive`-Checkout; unveränderte Bootstrap-/Buildschritte, PO-Validierung, Icon-/Lizenzprüfung und Python-Syntaxprüfung. Danach vollständige Tests mit freigegebenem Host-Loopback/SMB-Testnetz, synthetischen Daten und Kodi-API-Fixtures. Kein Kodi-/Android-Prozess und keine Nutzerbox wurde damit getestet.
+**2.017 Tests PASS in 296.230 s, 0 Fehler, 0 Failures, 0 übersprungene Tests.** Alle 1.952 bisherigen Testmethoden erhalten, 65 neue. Sauberer `git archive`-Checkout; unveränderte Bootstrap-/Buildschritte, PO-Validierung, Icon-/Lizenzprüfung und Python-Syntaxprüfung. Danach vollständige Tests mit freigegebenem Host-Loopback/SMB-Testnetz, synthetischen Daten und Kodi-API-Fixtures. Kein Kodi-/Android-Prozess und keine Nutzerbox wurde damit getestet.
 
 Deutsch/Englisch: jeweils **1.078 gettext-Kontexte gültig**. **92 Original-Navigationstexturen** samt Herkunft/Lizenz gültig. Bekannte unveränderte `SMBProtocol.py`-SyntaxWarning im vendorten Modul; kein neuer Syntaxfehler. Testprotokoll `TESTLOG_02948.txt` vollständig; nur abschließende Zeilen-Leerzeichen normalisiert, beide Log-SHA256 in `TESTERGEBNISSE_02948.json`.
 
@@ -24,8 +24,8 @@ Frühere Arbeitsläufe waren keine Abnahme: Sie deckten u.a. notwendige exakte F
 ## Paket
 
 - `plugin.video.xtreammate-0.1.29.48.zip`
-- **3,069,168 Bytes**, **565 Dateien**.
-- SHA256: `169ed963476e9aa04336cf047a47586e9421edb1b987f13d9a5e02aecd01f9b4`
+- **3,069,297 Bytes**, **565 Dateien**.
+- SHA256: `b4f96a1fdbac3c4ee2816c00298c149dde9c979d58738dbe8655c332d01a95f1`
 - CRC, eindeutige/sichere Pfade, keine Symlinks, keine Benutzerprofile/DBs/Rohlogs/Bytecode: PASS.
 - **Alle 565 enthaltenen Dateien bytegleich zum finalen Quellstand.** Unabhängige deterministische ZIP-Rekonstruktion mit eigenen ZipInfo-Einträgen ergibt exakt dieselben Bytes: PASS.
 

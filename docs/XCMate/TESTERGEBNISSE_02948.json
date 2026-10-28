@@ -1,9 +1,9 @@
 {
   "version": "0.1.29.48",
-  "source_commit": "d76f481fdd31f5553b7a7531438ff9b6a5713979",
+  "source_commit": "15e3f7f58cfd4b4eb77016b164af2414f8263cd2",
   "files": 565,
-  "bytes": 3069168,
-  "sha256": "169ed963476e9aa04336cf047a47586e9421edb1b987f13d9a5e02aecd01f9b4",
+  "bytes": 3069297,
+  "sha256": "b4f96a1fdbac3c4ee2816c00298c149dde9c979d58738dbe8655c332d01a95f1",
   "crc": "PASS",
   "safe_paths": "PASS",
   "all_source_bytes": "PASS",
@@ -11,13 +11,13 @@
   "independent_deterministic_rebuild": "PASS",
   "android": "NOT_TESTED",
   "production_publish": false,
-  "tests": 2016,
-  "seconds": 298.28,
+  "tests": 2017,
+  "seconds": 296.23,
   "failures": 0,
   "errors": 0,
   "skipped": 0,
   "previous_tests_retained": 1952,
-  "new_tests": 64,
+  "new_tests": 65,
   "host_build": "clean git archive + bootstrap/build/PO/icon/syntax checks",
   "android_cases": {
     "not_tested": 49,
@@ -25,6 +25,6 @@
     "passed": 0
   },
   "ci": "Exact delivery HEAD and independent CI result are recorded in the Draft-PR checks/body",
-  "raw_host_log_sha256": "7ea98490b00560326eb58d99e94f5452e9394168631a1dcdc65c5964dba44588",
-  "published_host_log_sha256": "a6313a1b5696162b2f9f0b7ebacf908e3cd0f9c04f0607f446a6a0d10bd56581"
+  "raw_host_log_sha256": "dc64d0bd19cf2d010d82bc8ab1b575d1fec5e2d36c40dd74e1e966a4c402d0fd",
+  "published_host_log_sha256": "46eddfca5fcde5c5e3914aa9e75051aacc321f6442286f5596e53b0994aa67bd"
 }

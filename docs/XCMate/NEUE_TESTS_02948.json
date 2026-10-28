@@ -1,5 +1,5 @@
 {
-  "new_tests": 64,
+  "new_tests": 65,
   "methods": {
     "tests/test_xcmate_startup_wizard_02948.py": [
       [
@@ -141,6 +141,10 @@
       [
         "Binding48",
         "test_visible_mapping_button_does_not_cover_time_axis_or_first_grid_row"
+      ],
+      [
+        "Binding48",
+        "test_mini_does_not_use_an_unqualified_legacy_cache_when_selected_source_is_missing"
       ]
     ],
     "tests/test_xcmate_flow_analysis_02948.py": [
