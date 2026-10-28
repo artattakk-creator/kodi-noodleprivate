@@ -48,6 +48,9 @@ def merge(primary,donors,cid,limit=256):
         lo=bisect.bisect_left(starts,a-120);hi=bisect.bisect_right(starts,a+120)
         peer=next((p for p in accepted[lo:hi] if same(p,donor,cid)),None)
         if peer is not None:
+            # Same title/time with contradictory nonempty descriptions may be
+            # a different episode. Keep the authoritative text/source guard.
+            if peer.get('descr') and donor.get('descr') and peer['descr'].strip()!=donor['descr'].strip():continue
             source=donor.get('source_key46') or donor.get('epg_source46')
             if not source:continue
             origins=dict(peer.get('field_sources52',{}))
@@ -75,7 +78,7 @@ def merge(primary,donors,cid,limit=256):
     return sorted(accepted,key=lambda e:(e['start_timestamp'],e['stop_timestamp']))[:min(256,max(1,limit))]
 
 
-def publish_aliases(pid,source,aliases,streams,mappings,guide=None,names=None):
+def publish_aliases(pid,source,aliases,streams,mappings,guide=None,proofs=None):
     """Worker-only additive SID/source/CID proof; no master schema migration."""
     from programme_index46 import connect
     db=None
@@ -89,8 +92,7 @@ def publish_aliases(pid,source,aliases,streams,mappings,guide=None,names=None):
                 if not cid:continue
                 # Automatic different-CID aliases are produced only by the
                 # existing unambiguous exact normalized channel-name matcher.
-                from epg_sources import _channel_name_key
-                proof='manual' if mappings.get(sid) else 'name' if (names or {}).get(_channel_name_key(row.get('name')))==cid else 'provider_id'
+                proof=(proofs or {}).get(sid,'manual' if mappings.get(sid) else 'provider_id')
                 records.append((str(pid),sid,source,str(cid),proof))
             db.executemany('INSERT OR REPLACE INTO source_aliases52 VALUES(?,?,?,?,?)',records)
         return True
@@ -118,7 +120,10 @@ def window(pid,sid,cid,start,stop,primary=(),limit=256,manual=False,guide=None):
             if source:sql+=' AND source_id=?';args.append(source)
             sql+=' ORDER BY start,stop LIMIT ?';args.append(min(1024,max(128,limit*4)))
             for identity,fingerprint,data,updated in db.execute(sql,args):
-                if identity not in allowed or len(data)>24576:continue
+                # Compatibility facts have no independently verified source
+                # identity. Preserve the existing text/origin verifier rather
+                # than treating them as qualified metadata donors.
+                if identity not in allowed or identity=='compatibility' and primary or len(data)>24576:continue
                 value=json.loads(data);value.update(_source_index=allowed[identity],source=allowed[identity],source_key46=identity,fact_revision46=fingerprint,updated52=updated)
                 donors.append(value)
         return merge(primary,donors,str(cid),limit)

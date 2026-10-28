@@ -117,6 +117,13 @@ class EPG52(Fixture,unittest.TestCase):
         result=self.merge.merge([base],[donor],'a')
         self.assertEqual(len(result),1);self.assertFalse(result[0].get('xmltv_image'))
 
+    def test_conflicting_nonempty_episode_description_cannot_donate_an_image(self):
+        one=dict(self.event(),description='Episode A')
+        two=dict(self.event(),description='Episode B',extra='<episode-num system="xmltv_ns">0.7.</episode-num><icon src="https://images.invalid/wrong.png"/>')
+        self.put('a',[one]);self.put('b',[two],1)
+        row=self.view()['a'][0]
+        self.assertEqual(row['descr'],'Episode A');self.assertFalse(row.get('xmltv_image'))
+
     def test_source_reordering_keeps_stable_alias_identity(self):
         self.put('a',[self.event()]);later=self.event(1,'Later');self.put('b',[later],1)
         self.config['sources'].reverse()

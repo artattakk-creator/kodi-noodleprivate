@@ -109,7 +109,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
             from epg_events import clean_stage
             clean_stage(db,'xml_stage',' WHERE generation=?',(generation,))
         stage=dict(generation=generation,source=source,index=source_index,aliases=aliases,meta_pid46=str(pid),metadata_ok46=not metadata46.failed,index_ok46=not metadata46.facts46.failed,
-                   now=now,counts=dict(counts,stored=stored),streams52=streams,mappings52=mappings,names52=channel_names)
+                   now=now,counts=dict(counts,stored=stored),streams52=streams,mappings52=mappings,proofs52={str(row['sid']):('manual' if str(row['sid']) in mappings else 'name' if channel_names.get(_channel_name_key(row.get('name')))==aliases.get(str(row['sid'])) else 'provider_id') for row in streams})
         if stage_only:
             keep_stage=True
             return stage
@@ -172,7 +172,7 @@ def publish_stages44(pid,stages,filename=None,cancel=lambda:False):
         for stage in stages:
             finish_metadata46(pid,stage['generation'],stage.get('metadata_ok46',True),filename,index_ok46=stage.get('index_ok46',True),index_publish46=True)
             from epg_merge52 import publish_aliases
-            publish_aliases(pid,source_id(stage['source'],stage['index']),stage['aliases'],stage.get('streams52',()),stage.get('mappings52',{}),filename,names=stage.get('names52'))
+            publish_aliases(pid,source_id(stage['source'],stage['index']),stage['aliases'],stage.get('streams52',()),stage.get('mappings52',{}),filename,proofs=stage.get('proofs52'))
         return outcomes
     finally:db.close()
 

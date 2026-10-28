@@ -1,4 +1,4 @@
-"""Normalize only the exact reviewed wizard deltas; keep old scope checks live."""
+"""Normalize only the exact reviewed .52 deltas; keep old scope checks live."""
 import hashlib,json
 from pathlib import Path
 from functools import lru_cache

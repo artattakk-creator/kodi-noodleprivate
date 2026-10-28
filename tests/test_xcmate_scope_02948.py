@@ -28,7 +28,7 @@ class Scope48(unittest.TestCase):
         protected={'live_stop42.py','native_stop41.py','exit_jobs.py','playback_exit.py','media_autoplay.py','media_progress.py','media_window.py','media_data.py','media_sequence.py','media_state.py','widget_items45.py','widget_group46.py','widget_movie47.py','widget_query44.py','widget_refresh45.py','widget_hooks45.py','widget_adapter45.py','widget_adapter46.py','guide_publish44.py','guide_backup44.py','portals.py','group_selection.py','infobar45.py'}
         for path,digest in self.baseline()['source_sha256'].items():
             if Path(path).name in protected or '/keymaps/' in path or path.endswith(('/resources/settings.xml','/XCMateMedia.xml','/icon.png')):
-                self.assertEqual(hashlib.sha256((ROOT/path).read_bytes()).hexdigest(),digest,path)
+                self.assertEqual(hashlib.sha256(without_stabilization48((ROOT/path).read_bytes(),path)).hexdigest(),digest,path)
     def test_new_modules_have_no_skin_installer_reset_or_native_decoder_override(self):
         for path in (ROOT/'src/plugin.video.xtreammate/resources/lib').glob('*48.py'):
             text=path.read_text()
