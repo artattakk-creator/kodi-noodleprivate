@@ -121,7 +121,7 @@ def stamp(value):return time.strftime('%d.%m.%Y %H:%M',time.localtime(value)) if
 
 
 def meaning(code):
-    return {'READY':'Erfolgreich gespeichert','READY_NO_NOW':'Gespeichert; aktuell keine laufende Sendung','PARTIAL_SUCCESS':'Teilweise erfolgreich','PARTIAL_PRESERVED':'Gespeichert; widersprüchliche Einträge geschützt','UNCHANGED':'Unverändert bestätigt','BACKUP_REQUIRED':'Verifizierte EPG-Sicherung erforderlich','WAIT_ACTIVE_CATALOG':'Senderkatalog noch nicht bereit','NO_NEW_GUIDE':'Keine neue gültige Programmliste','CANCELLED':'Abgebrochen; bisherige Daten bleiben erhalten','IMPORT_BUSY_OR_LOCK_UNAVAILABLE':'Ein EPG-Import läuft bereits','RUNNING':'Wird aktualisiert','DISABLED':'Deaktiviert','WAITING':'Noch kein Lauf bestätigt'}.get(code,'Aktualisierung fehlgeschlagen; bisherige Daten bleiben erhalten')
+    return {'STATUS_UNVERIFIED':'Früherer Status nicht durch gespeicherte Daten bestätigt','NO_SAVED_PROGRAMMES':'Noch keine gespeicherten Sendungen bestätigt','READY':'Erfolgreich gespeichert','READY_NO_NOW':'Gespeichert; aktuell keine laufende Sendung','PARTIAL_SUCCESS':'Teilweise erfolgreich','PARTIAL_PRESERVED':'Gespeichert; widersprüchliche Einträge geschützt','UNCHANGED':'Unverändert bestätigt','BACKUP_REQUIRED':'Verifizierte EPG-Sicherung erforderlich','WAIT_ACTIVE_CATALOG':'Senderkatalog noch nicht bereit','NO_NEW_GUIDE':'Keine neue gültige Programmliste','CANCELLED':'Abgebrochen; bisherige Daten bleiben erhalten','IMPORT_BUSY_OR_LOCK_UNAVAILABLE':'Ein EPG-Import läuft bereits','RUNNING':'Wird aktualisiert','DISABLED':'Deaktiviert','WAITING':'Noch kein Lauf bestätigt'}.get(code,'Aktualisierung fehlgeschlagen; bisherige Daten bleiben erhalten')
 
 
 def advice(code):
@@ -149,6 +149,9 @@ def overview(portal):
         saved=next((s for s in stats['sources'] if s['id']==item['id']),{})
         legacy=state.get(item['key'],{});last=events[-1] if events else legacy
         row.update(code=last.get('code','WAITING') if item['enabled'] else 'DISABLED',saved=saved,statistics_code=stats['code'])
+        if row['code'] in SUCCESS:
+            if stats['code']!='READY':row['code']='STATUS_UNVERIFIED'
+            elif not saved.get('programmes'):row['code']='NO_SAVED_PROGRAMMES'
         row['last_success']=max([s.get('finished',0) for s in events if s.get('code') in SUCCESS]+[legacy.get('last_success',0)])
         row['last_failure']=max([s.get('finished',0) for s in events if s.get('code') not in SUCCESS]+[0])
         rows.append(row)

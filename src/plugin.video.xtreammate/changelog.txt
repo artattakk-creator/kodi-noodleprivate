@@ -1,3 +1,14 @@
+0.1.29.54
+- Installation erfolgreich: Popup zeigt installierte Version und konkrete Änderungen.
+- Wizard prüft die Verbindung getrennt und bestätigt gültige Zugangsdaten.
+- Geprüfte Kataloggruppen inkrementell sichern und beim Retry wiederverwenden.
+- Portal vor optionalem EPG speichern; Inhalte bleiben bei EPG-Fehlern nutzbar.
+- EPG-Quellen einzeln validieren, speichern und im Manager fortsetzen.
+- Keine feste Gesamtdauer aktiver EPG-Importe; echte Byte-/Sendungszähler.
+- Neue RAM-Passwörter nach Fehlern anzeigen/ausblenden und bearbeiten.
+- Lesbare Gruppenzähler, größere Fortschrittsanzeige und reguläres Add-on-Fanart.
+- Android-Startcrash nicht ursächlich geklärt; Geräteabnahme weiterhin offen.
+
 0.1.29.53
 - Update-Popup zeigt die konkreten EPG-/Wizard-Änderungen und das tatsächliche Passwortverhalten.
 - Zentraler EPG-Manager: Quellen, echte Zeiträume und lesbare Aktualisierungsberichte.

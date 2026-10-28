@@ -45,7 +45,10 @@ def input_data(dlg, choice, initial=None, checkpoint=None):
         if value and (secret or value.strip()) and edit!=key:return value
         if secret:
             hidden=dlg.yesno('Passworteingabe','Das neue Passwort ist nur während der Eingabe sichtbar. Für geteilte TV-Geräte verdeckt eingeben?',yeslabel='Verdeckt',nolabel='Sichtbar',defaultbutton=getattr(xbmcgui,'DLG_YESNO_NO_BTN',0))
-            value=dlg.input(title,option=getattr(xbmcgui,'ALPHANUM_HIDE_INPUT',0) if hidden else 0)
+            options={'option':getattr(xbmcgui,'ALPHANUM_HIDE_INPUT',0) if hidden else 0}
+            if value and data.get('_password_new54'):options['defaultt']=value
+            value=dlg.input(title,**options)
+            data['_password_new54']=True
         elif edit==key or data.get(key+'_public53'):value=dlg.input(title,defaultt=value or data.get(key+'_public53',''))
         else:value=dlg.input(title)
         if not value:raise Cancelled(key)

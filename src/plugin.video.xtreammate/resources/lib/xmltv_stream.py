@@ -38,10 +38,12 @@ class PrefixReader:
         self.stream=stream;self.prefix=stream.read(2)
     def read(self,size=65536):
         data=self.prefix[:size];self.prefix=self.prefix[len(data):]
-        return data+self.stream.read(min(65536,size-len(data)))
+        remaining=min(65536,size-len(data))
+        # Kodi VFS can interpret zero bytes as a request for the whole file.
+        return data+(self.stream.read(remaining) if remaining>0 else b'')
 
 
-def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None):
+def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None,progress=None):
     stream=PrefixReader(stream)
     data=gzip.GzipFile(fileobj=stream) if stream.prefix==b'\x1f\x8b' else stream
     parser=expat.ParserCreate()
@@ -113,6 +115,7 @@ def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None):
             if deadline is not None and time.monotonic()>deadline: raise TimeoutError('XMLTV streaming deadline')
             chunk=data.read(32768);counts['bytes']+=len(chunk)
             parser.Parse(chunk,not chunk)
+            if progress:progress(counts)
             if not chunk: break
     except expat.ExpatError as exc:
         raise XMLTVSyntaxError('Malformed XMLTV') from exc

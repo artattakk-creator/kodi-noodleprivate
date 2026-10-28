@@ -2440,7 +2440,11 @@ class Router:
         import portals as P
         from epg_sources import manage
         portal = P.get_by_id(self._params.get('pid', ''))
-        if manage(portal)=='guide' and portal:
+        action54=manage(portal)
+        if action54=='resume_epg54' and portal:
+            from wizard_ui54 import open_published
+            open_published(portal)
+        elif action54=='guide' and portal:
             from guide_grid_window import open_grid
             open_grid(self,portal)
 

@@ -4568,3 +4568,11 @@ msgstr "Saving setup: verifying saved data and index …"
 msgctxt "#36510"
 msgid "XCMate {0} is installed.\n\n• EPG manager: source comparison and live preview in the guide.\n• Automatic EPG updates every 24 hours by default, with readable reports.\n• Wizard: keep inputs and selected groups when errors occur.\n• Password remains available during Back and Retry in the current setup.\n\nAfter restarting Kodi, an unsaved password must be entered again. Existing portals and widgets are preserved."
 msgstr "XCMate {0} is installed.\n\n• EPG manager: source comparison and live preview in the guide.\n• Automatic EPG updates every 24 hours by default, with readable reports.\n• Wizard: keep inputs and selected groups when errors occur.\n• Password remains available during Back and Retry in the current setup.\n\nAfter restarting Kodi, an unsaved password must be entered again. Existing portals and widgets are preserved."
+
+msgctxt "#36520"
+msgid "Installation successful"
+msgstr "Installation successful"
+
+msgctxt "#36521"
+msgid "Version {0}\n\nChanges:\n• Connection checked separately, with a clear success message.\n• Completed catalogue groups survive retries.\n• Portal saved before optional EPG imports.\n• EPG sources resume separately, with real progress and no total runtime limit.\n• New passwords remain editable during the running setup.\n• Clearer group counts and the regular XCMate background.\n\nAfter a new Kodi/Python session, an unsaved password must be entered again. Existing portals and settings are preserved."
+msgstr "Version {0}\n\nChanges:\n• Connection checked separately, with a clear success message.\n• Completed catalogue groups survive retries.\n• Portal saved before optional EPG imports.\n• EPG sources resume separately, with real progress and no total runtime limit.\n• New passwords remain editable during the running setup.\n• Clearer group counts and the regular XCMate background.\n\nAfter a new Kodi/Python session, an unsaved password must be entered again. Existing portals and settings are preserved."

@@ -118,6 +118,7 @@ class Session:
                 selected={k:sorted(draft.selected[k]) for k in KINDS},provider_epg=bool(draft.provider_epg),
                 epg_sources=[dict(s) for s in draft.epg_sources],scanned=bool(draft.scanned),signature=draft._scan_signature,
                 report={k:draft.report.get(k,0) for k in ('groups','live','vod','series','epg')})
+            if getattr(draft,'phased54',False):self.state.update(phased54=True,published54=bool(draft.saved))
             try:
                 private_folder(draft.folder)
                 stages=list(self.state.get('staging53',[]));record=dict(folder=os.path.basename(draft.folder),pid=draft.pid)
@@ -160,7 +161,7 @@ class Session:
                 if prior.data.get('xc_pass')!=data.get('xc_pass'):self.authenticated53=False
                 prior.data.update(data);prior.adapter=for_portal(prior.data,filename=prior.index,playlist=prior.playlist);return prior
         if len(self.state.get('staging53',[]))>=4 and prior is not None:raise ValueError('DRAFT_STAGE_BUDGET')
-        draft=Draft(data);folder=self.folder()
+        draft=Draft(data);draft.phased54=bool(self.state.get('phased54'));folder=self.folder()
         if prior is not None:
             draft.selected={k:set(prior.selected[k]) for k in KINDS}
             draft.epg_sources=list(prior.epg_sources);draft.provider_epg=prior.provider_epg
@@ -211,7 +212,12 @@ class Session:
             if self.live is None:self._cleanup_stages()
             return ok
     def detached(self,draft):
-        if draft.saved:self.completed();self._cleanup_stages();self.live=None
+        if draft.saved and getattr(draft,'phased54',False):
+            from wizard_epg54 import pending
+            if pending(draft.data):
+                self.checkpoint(draft,'epg_pending');self.live=None;return
+            self.completed();self._cleanup_stages();self.live=None
+        elif draft.saved:self.completed();self._cleanup_stages();self.live=None
         elif self.state.get('status')=='DISCARDED':self._cleanup_stages();self.live=None
         else:self.checkpoint(draft)
 

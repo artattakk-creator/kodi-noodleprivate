@@ -4568,3 +4568,11 @@ msgstr "Einrichtung speichern: gespeicherte Daten und Index prüfen …"
 msgctxt "#36510"
 msgid "XCMate {0} is installed.\n\n• EPG manager: source comparison and live preview in the guide.\n• Automatic EPG updates every 24 hours by default, with readable reports.\n• Wizard: keep inputs and selected groups when errors occur.\n• Password remains available during Back and Retry in the current setup.\n\nAfter restarting Kodi, an unsaved password must be entered again. Existing portals and widgets are preserved."
 msgstr "XCMate {0} ist installiert.\n\n• EPG-Manager: Quellenvergleich und Live-Vorschau im Raster.\n• EPG automatisch alle 24 Stunden als Standard, mit lesbaren Berichten.\n• Wizard: Eingaben und gewählte Gruppen bleiben bei Fehlern erhalten.\n• Das Passwort bleibt bei Zurück und Wiederholen in der laufenden Einrichtung erhalten.\n\nNach einem Kodi-Neustart muss ein nicht gespeichertes Passwort erneut eingegeben werden. Bestehende Portale und Widgets bleiben erhalten."
+
+msgctxt "#36520"
+msgid "Installation successful"
+msgstr "Installation erfolgreich"
+
+msgctxt "#36521"
+msgid "Version {0}\n\nChanges:\n• Connection checked separately, with a clear success message.\n• Completed catalogue groups survive retries.\n• Portal saved before optional EPG imports.\n• EPG sources resume separately, with real progress and no total runtime limit.\n• New passwords remain editable during the running setup.\n• Clearer group counts and the regular XCMate background.\n\nAfter a new Kodi/Python session, an unsaved password must be entered again. Existing portals and settings are preserved."
+msgstr "Version {0}\n\nÄnderungen:\n• Verbindung getrennt prüfen und Erfolg klar bestätigen.\n• Abgeschlossene Kataloggruppen bei Wiederholung erhalten.\n• Portal vor dem optionalen EPG-Import speichern.\n• EPG-Quellen einzeln fortsetzen, mit echtem Fortschritt und ohne Gesamtlaufzeitgrenze.\n• Neue Passwörter bleiben in der laufenden Einrichtung bearbeitbar.\n• Lesbare Gruppenzahlen und regulärer XCMate-Hintergrund.\n\nNach einer neuen Kodi-/Python-Sitzung muss ein ungespeichertes Passwort erneut eingegeben werden. Bestehende Portale und Einstellungen bleiben erhalten."

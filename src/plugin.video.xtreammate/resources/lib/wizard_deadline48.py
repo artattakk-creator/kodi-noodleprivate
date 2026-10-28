@@ -17,13 +17,13 @@ def active():return getattr(_local,'deadline',None) is not None
 def check():
     if not active():return
     if _local.cancel():raise InterruptedError('WIZARD_CANCELLED')
-    if time.monotonic()>=_local.deadline:raise TimeoutError('WIZARD_DISCOVERY_DEADLINE')
+    # No aggregate discovery duration: each HTTP operation retains its own limit.
 
 
 def policy(timeout,seconds,retries):
     if not active():return timeout,seconds,retries
-    check();remaining=max(.05,_local.deadline-time.monotonic())
-    return min(timeout,3,remaining),min(seconds,remaining),0
+    check()
+    return min(timeout,15),min(seconds,60),min(retries,1)
 
 
 def byte_limit(value):return min(value,2*1024*1024) if active() else value
@@ -34,7 +34,7 @@ def discovery(function):
     def run(self,cancel=lambda:False,status=lambda *a:None):
         if not _slot.acquire(blocking=False):raise OSError('WIZARD_DISCOVERY_BUSY')
         previous=(getattr(_local,'deadline',None),getattr(_local,'cancel',None))
-        _local.deadline=time.monotonic()+25;_local.cancel=cancel
+        _local.deadline=float('inf');_local.cancel=cancel
         from setup_trace import mark
         mark('DISCOVER_BEGIN',getattr(self,'pid',''))
         try:

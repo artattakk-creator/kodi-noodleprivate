@@ -21,7 +21,8 @@ def run(dialog,input_data,open_setup,cancelled):
     except Busy:
         dialog.ok('XCMate','Ein vorheriger Einrichtungsvorgang wird noch beendet. Der Zwischenstand bleibt erhalten. Bitte danach erneut öffnen.');return None
     else:release()
-    session=Session.load();initial=None;choice=None
+    from wizard_memory54 import current as current_ram54
+    session=current_ram54() or Session.load();initial=None;choice=None
     from wizard_resume53 import unreadable_intent,write_file,root
     if session is None and unreadable_intent():
         option=dialog.select('Vorhandener Einrichtungsentwurf kann nicht sicher gelesen werden.',['Später fortsetzen','Entwurf verwerfen'])
@@ -41,7 +42,13 @@ def run(dialog,input_data,open_setup,cancelled):
             # portal. The prior source's own UUID is the publication marker.
             from portals import get_by_id
             existing=get_by_id(session.state.get('pid',''))
-            if existing is not None:session.completed();return existing
+            if existing is not None:
+                if session.state.get('phased54'):
+                    from wizard_ui54 import open_published
+                    open_published(existing)
+                    from wizard_epg54 import pending
+                    if pending(existing):return existing
+                session.completed();return existing
     if session is None:
         from wizard_settings51 import proposal
         proposed=proposal()
@@ -50,6 +57,8 @@ def run(dialog,input_data,open_setup,cancelled):
         else:choice=dialog.select(tr(32771),[tr(32761),tr(32762),tr(32763),'Xtream Codes'])
         if choice<0:return None
         session=Session();session.state['choice']=choice;session.data=dict(initial or {});session.persist()
+    from wizard_memory54 import remember
+    remember(session)
     data=dict(initial or session.data);edit=None
     while True:
         try:
@@ -61,9 +70,11 @@ def run(dialog,input_data,open_setup,cancelled):
                 if key.endswith(('_needs_input53','_public53')):data.pop(key,None)
             session.input(data,'name');edit=None
             with using(session):result=open_setup(data)
+            if session.action=='password54':
+                session.action='';data=dict(session.data);edit='xc_pass';continue
             if session.action=='back':
                 session.action='';data=dict(session.data)
-                fields=[('Serveradresse','xc_host'),('Benutzername','xc_user'),('Passwort neu eingeben','xc_pass'),('Name','name')] if choice==3 else [('Serveradresse','stb_url'),('MAC-Adresse','stb_mac'),('Name','name')] if choice==0 else [('M3U-Quelle','m3u_url'),('EPG-Adresse','epg_url'),('Name','name')]
+                fields=[('Serveradresse','xc_host'),('Benutzername','xc_user'),('Passwort anzeigen/ausblenden oder bearbeiten','xc_pass'),('Name','name')] if choice==3 else [('Serveradresse','stb_url'),('MAC-Adresse','stb_mac'),('Name','name')] if choice==0 else [('M3U-Quelle','m3u_url'),('EPG-Adresse','epg_url'),('Name','name')]
                 selected=dialog.select('Eingaben korrigieren · Gruppen bleiben erhalten',[label for label,key in fields]+['Später fortsetzen'])
                 if not 0<=selected<len(fields):return None
                 edit=fields[selected][1];continue

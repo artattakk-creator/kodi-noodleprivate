@@ -72,7 +72,7 @@ def detect():
         value=read()
         if value is None:
             old=legacy()
-            value=dict(current=current,seen=[],pending=current if version(old) and version(old)<version(current) else '',previous=old)
+            value=dict(current=current,seen=[],pending=current if version(current)>=(0,1,29,54) or (version(old) and version(old)<version(current)) else '',previous=old)
         elif value['current']!=current:
             old=value['current'];value.update(current=current,previous=old,pending=current if version(old)<version(current) and current not in value.get('seen',[]) else '')
         if not save(value):return False
@@ -110,7 +110,7 @@ def show():
         try:
             # This is the explicitly dispatched plugin/GUI interpreter, never service.run.
             from update_notes53 import message
-            xbmcgui.Dialog().ok(tr(35850),message(current))
+            xbmcgui.Dialog().ok(tr(36520) if version(current)>=(0,1,29,54) else tr(35850),message(current))
         except (AttributeError,RuntimeError):
             value['retry_at']=time.time()+60;save(value);return False
         marker.setProperty(ACK,current);marker.clearProperty(PENDING)

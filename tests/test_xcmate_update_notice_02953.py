@@ -28,6 +28,6 @@ class Notice53(unittest.TestCase):
 
     def test_future_installed_release_automatically_uses_its_local_changelog_only(self):
         module=importlib.import_module('update_notes53');file=self.m.folder/'changes.txt'
-        file.write_text('0.1.29.54\n- Neue freigegebene Funktion\n\n0.1.29.53\n- Nicht als .54 ausgeben\n')
-        with mock.patch.object(module,'changelog_path',return_value=file):text=module.message('0.1.29.54')
-        self.assertIn('Neue freigegebene Funktion',text);self.assertNotIn('Nicht als .54',text)
+        file.write_text('0.1.29.55\n- Neue freigegebene Funktion\n\n0.1.29.53\n- Nicht als .55 ausgeben\n')
+        with mock.patch.object(module,'changelog_path',return_value=file):text=module.message('0.1.29.55')
+        self.assertIn('Neue freigegebene Funktion',text);self.assertNotIn('Nicht als .55',text)

@@ -11,6 +11,8 @@ def plan(portal,now=None):
     from epg_report53 import configured,history,SUCCESS,BLOCKED
     from epg_status import read
     if not portal.get('epg_show',True):return []
+    from wizard_epg54 import pending
+    if pending(portal):return []  # Explicit setup-resume owns unfinished sources.
     now=time.time() if now is None else now;period=interval();runs=history(portal['id']);state=read(portal['id']);wanted=[]
     fallback=max([row.get('last_success',0) for key,row in state.items() if key not in ('cache','refresh')]+[0])
     if not runs and not fallback:
