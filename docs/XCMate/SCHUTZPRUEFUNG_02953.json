@@ -1,0 +1,42 @@
+{
+  "base": "e17c2b2311481fa83f6f9f8ee560837eb369ce6e",
+  "previous_source_files": 580,
+  "byte_identical": 561,
+  "exact_reviewed_deltas": [
+    "src/plugin.video.xtreammate/changelog.txt",
+    "src/plugin.video.xtreammate/service.py",
+    "src/plugin.video.xtreammate/addon.xml",
+    "src/plugin.video.xtreammate/resources/settings.xml",
+    "src/plugin.video.xtreammate/resources/lib/setup_draft.py",
+    "src/plugin.video.xtreammate/resources/lib/update_notice41.py",
+    "src/plugin.video.xtreammate/resources/lib/setup_window.py",
+    "src/plugin.video.xtreammate/resources/lib/setup_wizard.py",
+    "src/plugin.video.xtreammate/resources/lib/epg.py",
+    "src/plugin.video.xtreammate/resources/lib/setup_epg48.py",
+    "src/plugin.video.xtreammate/resources/lib/main.py",
+    "src/plugin.video.xtreammate/resources/lib/guide_grid_window.py",
+    "src/plugin.video.xtreammate/resources/lib/stream_epg.py",
+    "src/plugin.video.xtreammate/resources/lib/guide_mapping48.py",
+    "src/plugin.video.xtreammate/resources/lib/epg_sources.py",
+    "src/plugin.video.xtreammate/resources/language/resource.language.de_de/strings.po",
+    "src/plugin.video.xtreammate/resources/language/resource.language.en_gb/strings.po",
+    "src/plugin.video.xtreammate/resources/skins/Default/720p/XCMateMapping48.xml",
+    "src/plugin.video.xtreammate/resources/skins/Default/720p/XCMateSetup.xml"
+  ],
+  "additive_files": [
+    "src/plugin.video.xtreammate/resources/lib/epg_candidate53.py",
+    "src/plugin.video.xtreammate/resources/lib/epg_manager53.py",
+    "src/plugin.video.xtreammate/resources/lib/epg_report53.py",
+    "src/plugin.video.xtreammate/resources/lib/epg_schedule53.py",
+    "src/plugin.video.xtreammate/resources/lib/epg_variant53.py",
+    "src/plugin.video.xtreammate/resources/lib/update_notes53.py",
+    "src/plugin.video.xtreammate/resources/lib/wizard_flow53.py",
+    "src/plugin.video.xtreammate/resources/lib/wizard_resume53.py",
+    "src/plugin.video.xtreammate/resources/lib/wizard_ui53.py",
+    "src/plugin.video.xtreammate/resources/skins/Default/720p/XCMateEPGManager53.xml"
+  ],
+  "foreign_wip_unchanged": 62,
+  "box_a_changed": false,
+  "box_b_changed": false,
+  "external_skin_files_changed": false
+}
