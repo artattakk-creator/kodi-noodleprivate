@@ -122,3 +122,37 @@ class Binding48(Fixture,unittest.TestCase):
         with mock.patch('guide_viewport.cache',return_value=None):snapshot.refresh()
         self.assertFalse(snapshot.get('1',self.now)['now'])
         self.assertEqual(snapshot.get('1',self.now)['mapping'],'MANUAL')
+
+    def test_common_resolver_requires_source_proof_even_for_non_mini_callers(self):
+        from epg_views import resolve_guide
+        mappings=self.binding.preview({},'1','xml',self.bid)
+        raw=dict(channel='xml',name='Candidate',descr='Text',start_timestamp=self.now-60,stop_timestamp=self.now+600)
+        for source in (None,self.aid,self.bid):
+            row=dict(raw)
+            if source:row['source_key46']=source
+            result=resolve_guide({'xml':[row]},'xml','1',self.now,mappings=mappings)
+            self.assertEqual(bool(result['now']),source==self.bid)
+    def test_prepared_startup_snapshot_is_invalidated_on_mapping_change(self):
+        import startup_preload
+        filename=Path(startup_preload.path('p'))
+        filename.write_text(json.dumps(dict(at=time.time(),schema48=1,mapping48=startup_preload.mapping_stamp48(),rows=[dict(sid='1',name='Before',guide={'now':'Before','events':[dict(name='Before',title='Before',start=self.now-60,stop=self.now+600)]})])))
+        self.assertEqual(startup_preload.read('p','1')['guide']['now'],'Before')
+        self.binding.save(self.portal,'1','xml',self.bid)
+        self.assertEqual(startup_preload.read('p','1'),{})
+
+    def test_prepared_start_data_rolls_now_next_forward_in_ram_without_stale_title(self):
+        import startup_preload
+        filename=Path(startup_preload.path('p'))
+        filename.write_text(json.dumps(dict(at=time.time()-120,schema48=1,mapping48=startup_preload.mapping_stamp48(),rows=[dict(sid='1',guide=dict(now='Ended',events=[dict(title='Ended',start=self.now-120,stop=self.now-30),dict(title='Current',start=self.now-30,stop=self.now+600)]))])))
+        result=startup_preload.read('p','1')
+        self.assertEqual(result['guide']['now'],'Current')
+        self.assertTrue(result['guide']['programme_key47'])
+    def test_preparation_does_not_publish_old_data_with_a_new_mapping_stamp(self):
+        import startup_preload,epg_views
+        startup_preload._next.clear();original=epg_views.resolve_guide;changed=[]
+        def interleaved(*args,**kwargs):
+            if not changed:self.binding.save(self.portal,'1','xml',self.bid);changed.append(True)
+            return original(*args,**kwargs)
+        with mock.patch.object(epg_views,'resolve_guide',side_effect=interleaved),mock.patch.object(epg_views,'_start_short_guides'):
+            startup_preload.prepare()
+        self.assertTrue(changed);self.assertFalse(Path(startup_preload.path('p')).exists())

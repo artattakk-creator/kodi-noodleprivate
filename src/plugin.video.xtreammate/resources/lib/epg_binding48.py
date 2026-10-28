@@ -135,3 +135,13 @@ def named_channels(pid,source,query='',offset=0):
     except (OSError,sqlite3.Error,ValueError):return []
     finally:
         if db is not None:db.close()
+
+
+def qualified_cache(cache,mappings,sid):
+    """Pure source proof for every Now/Next caller, including startup preload."""
+    selected=binding(mappings,sid)
+    if not selected:return cache
+    cid=selected['channel'];source=selected['source']
+    rows=cache.get(cid,[]) if isinstance(cache,dict) else []
+    return {cid:[row for row in rows if isinstance(row,dict) and
+        (row.get('source_key46') or row.get('epg_source46'))==source]}
