@@ -139,6 +139,7 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
             self.getControl(cid).setLabel(tr(label))
         self.getControl(101).setLabel(tr(35982 if self._metadata_mode44 else 35918));self.getControl(102).setLabel(self.query)
         for cid,label in ((406,36121),(407,35931),(408,35932)):self.getControl(cid).setLabel(tr(label))
+        self.getControl(409).setLabel('Anbieter aktualisieren')
         self._show_list();self.setFocusId(401);self._source('provider')
 
     def _show_list(self):
@@ -146,6 +147,7 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
         self.getControl(200).setVisible(True);self.getControl(600).setVisible(False)
         for cid in range(501,509):self.getControl(cid).setVisible(False)
         self.getControl(300).setVisible(False);self.getControl(301).setVisible(False)
+        self.getControl(409).setVisible(True)
         for cid in (406,407,408):self.getControl(cid).setVisible(not self._metadata_mode44)
         self._thumbs46.resume()
         self._navigation()
@@ -164,7 +166,7 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
             self.getControl(cid).setNavigation(self.getControl(previous),self.getControl(following),
                 self.getControl(previous),self.getControl(following))
 
-    def _source(self,source):
+    def _source(self,source,refresh48=False):
         if self._future is not None:return
         if source=='commons' and self._metadata_mode44:
             from picker_status44 import message
@@ -191,6 +193,9 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
         item=dict(self.record.get('_provider43',self.record))
         def query():
             if source=='provider':
+                from media_preview48 import candidates
+                local48=candidates(self.pid,self.record)
+                if local48 and not refresh48:return local48
                 from media_data import details
                 from metadata_views import enrich
                 try:
@@ -226,6 +231,7 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
         for row in self.rows:
             li=xbmcgui.ListItem(str(row['name']),label2=str(row['attribution'])[:200])
             path=self._thumbs46.paths.get(key(row))
+            if row.get('local_path48'):path=row['local_path48']
             if path:li.setArt({'thumb':path})
             li.setProperty('XCMate.Preview46',self._thumbs46.codes.get(key(row),'PENDING' if row.get('url') else 'NO_IMAGE'))
             li.setProperty('XCMate.PreviewLabel46',tr(36123) if path else tr(36122) if row.get('url') else tr(36124))
@@ -238,6 +244,7 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
         candidate=dict(self.rows[pos]);self.selected=candidate;self.role=candidate['role'];self.armed=False
         self.mode='preview';self.getControl(200).setVisible(False)
         self._thumbs46.cancel.set()
+        self.getControl(409).setVisible(False)
         for cid in (406,407,408):self.getControl(cid).setVisible(False)
         for cid in range(501,509):self.getControl(cid).setVisible(True)
         self.getControl(503).setVisible(False);self.getControl(508).setVisible(bool(self.record.get('_metadata_override43')))
@@ -255,7 +262,10 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
         self._navigation();self.setFocusId(501)
         def load():
             from media_sources43 import get,validate_image
-            data=get(candidate['url'],cancel=self._cancel.is_set) if candidate.get('url') else None
+            if candidate.get('local_path48'):
+                from media_preview48 import local_bytes
+                data=local_bytes(self.pid,candidate['local_path48'])
+            else:data=get(candidate['url'],cancel=self._cancel.is_set) if candidate.get('url') else None
             if data is None:return None,None
             validate_image(data)
             path=self._stage(data)
@@ -266,6 +276,8 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
             if path:
                 self.getControl(300).setImage(path,useCache=False)
                 self.getControl(200).getListItem(pos).setArt({'thumb':path})
+            from picker_status44 import mark
+            mark('PREVIEW_READY48',self._source44,'OK' if path else 'NO_RESULTS')
             self._status(tr(35926,self.role))
         if fetch:self._submit(load,ready)
 
@@ -306,6 +318,7 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
             self._filter46={406:'all',407:'poster',408:'fanart'}[cid];self._render_results46()
             if self.rows:self.setFocusId(200)
             return
+        if cid==409 and self.mode=='list':self._source('provider',refresh48=True);return
         if cid in (401,402,403):self._source({401:'provider',402:'tmdb',403:'commons'}[cid]);return
         if cid==404:
             if self._metadata_mode44:

@@ -3,7 +3,7 @@ import xbmc, xbmcaddon, xbmcgui
 
 ADDON    = xbmcaddon.Addon()
 LIB_PATH = os.path.join(os.path.dirname(__file__), 'resources', 'lib')
-SERVICE_BUILD = 47
+SERVICE_BUILD = 48
 if LIB_PATH not in sys.path:
     sys.path.insert(0, LIB_PATH)
 
@@ -66,7 +66,7 @@ class IPTVMasterService(xbmc.Monitor):
                 info('XCMate legacy fullscreen keymap safely retired')
         except Exception as exc:
             error('XCMate keymap safety check failed: ' + type(exc).__name__)
-        self._start_reminders()
+        # Reminders start only after the service singleton is held.
 
     def _start_reminders(self):
         try:
@@ -143,9 +143,13 @@ class IPTVMasterService(xbmc.Monitor):
                                     PHASE, LAST_ERROR, LAST_LIVE,
                                     LAST_OVERLAY, LAST_INPUT)
         marker = xbmcgui.Window(10000)
-        if inspect(marker)['alive']:
+        if inspect(marker)['alive'] and not getattr(self,'_singleton48',False):
             info('XCMate service: another worker already reports healthy; skipping duplicate')
             return
+        from startup48 import Phases,mark as startup_mark48
+        phases48=Phases()
+        self._start_reminders()
+        startup_mark48('SERVICE')
         instance = uuid.uuid4().hex
         loops = 0
         next_input_flush = 0
@@ -198,6 +202,10 @@ class IPTVMasterService(xbmc.Monitor):
                 if not exiting and not preserves_player():poll_playback_exit()
             except Exception:
                 diagnostic('ownership','EXIT_CHECK_FAILED')
+            from startup48 import suspended as exit_pending48
+            if exiting and exit_pending48():
+                self.waitForAbort(.05)
+                continue  # Pending Stop/Home only; completed latches must not starve widget refresh.
             # Explicit visible-page/manual EPG requests are small, service-owned
             # jobs. They are independent of opt-in bulk catalogue prefetch.
             try:
@@ -218,9 +226,9 @@ class IPTVMasterService(xbmc.Monitor):
                 diagnostic('epg','REFRESH_REQUEST_FAILED')
             # Safe mode: heavy Xtream catalog and XMLTV downloads stay off
             # unless explicitly enabled. The player/remote service still runs.
-            self._maybe_refresh_epg()  # Own saved EPG-auto-refresh preference.
+            if phases48.network():self._maybe_refresh_epg()  # Own saved EPG-auto-refresh preference.
             if setting_bool('xc_background_prefetch', False):
-                self._maybe_warm_catalogs()
+                if phases48.network():self._maybe_warm_catalogs()
             if exiting:
                 self.waitForAbort(.2)
                 continue  # Background jobs above still run; live recovery stays cancelled.
@@ -412,5 +420,16 @@ class IPTVMasterService(xbmc.Monitor):
         info('XCMate service stopped')
 
 
+def start():
+    from artwork_config import initialize
+    try:initialize()
+    except OSError:pass
+    from startup48 import singleton,mark
+    with singleton() as acquired:
+        if not acquired:
+            mark('DUPLICATE','SKIPPED');return
+        service=IPTVMasterService();service._singleton48=True;service.run()
+
+
 if __name__ == '__main__':
-    IPTVMasterService().run()
+    start()

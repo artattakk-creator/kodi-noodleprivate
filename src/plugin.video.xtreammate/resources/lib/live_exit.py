@@ -57,6 +57,7 @@ def request(navigator,reason='USER_BACK'):
         navigator._exiting=True;navigator._exit_nonce=token[1]['nonce']
         return True
     value=dict(session={k:token[1][k] for k in ('pid','sid','nonce','at')},phase='requested',at=time.time(),deadline=time.monotonic()+5,not_before=time.monotonic()+.15)
+    if token[1].get('origin_window48')==10000:value['origin_window48']=10000
     value['pending']=pending;value['reason']=reason if reason in ('USER_BACK','USER_STOP','USER_HOME') else 'USER_BACK'
     _save(value);navigator._exiting=True;navigator._exit_nonce=token[1]['nonce']
     _marker().setProperty('XCMate.PrePlay.Cancel',(pending or token[1])['nonce'])
@@ -80,6 +81,8 @@ def _poll(navigator=None):
     if blocked():return True
     from exit_jobs import state as job_state
     job=job_state()
+    from live_trace48 import observe as observe_return48
+    observe_return48(value,job)
     if job and job['phase'] in ('failed','timeout') and job['token'][1]['nonce']==session['nonce']:
         from live_recovery46 import resume
         if resume(value,job):return True
@@ -152,7 +155,12 @@ def _poll(navigator=None):
         if time.monotonic()>value['deadline']:value['phase']='failed';_save(value);_trace('RETURN_BLOCKED',session)
         return True
     if getattr(xbmc.Monitor(),'abortRequested',lambda:False)():return True
+    from live_trace48 import return_home as widget_return48
+    returned48=widget_return48(value)
+    if returned48 is None:return True
     value['phase']='complete';_save(value)
+    if returned48:
+        _trace('HOME_WIDGET_RETURN48',session);return True
     url='plugin://plugin.video.xtreammate/?'+urlencode(dict(action='xcmate_home',pid=session['pid']))
     from urllib.parse import urlsplit,parse_qs
     folder=urlsplit(xbmc.getInfoLabel('Container.FolderPath'))

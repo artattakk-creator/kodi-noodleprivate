@@ -9,6 +9,7 @@ def _failure_details(exc):
     """Show only preapproved failure reasons: never echo provider URLs or credentials."""
     codes={'XM-SETUP-VERIFY':32782,'XM-SETUP-SAVE-BUSY':32783,'XM-SETUP-RESCAN':32785,'XM-SETUP-ROLLBACK':32786}
     code=getattr(exc,'code',None)
+    if code=='XM-SETUP-EPG-BACKUP':return code,'Bestehenden EPG zuerst über die Sicherungsfunktion verifizieren (BACKUP_VERIFIED). Keine Daten wurden ersetzt.'
     if code in codes: return code,tr(codes[code])
     if isinstance(exc, ValueError):
         reason = str(exc)
@@ -105,10 +106,13 @@ class WorkWindow(xbmcgui.WindowXML):
         except Exception as exc: self.failed_work(exc)
     def run(self):
         import xbmc
-        self._gui();monitor=xbmc.Monitor()
+        self._gui();monitor=xbmc.Monitor();started48=__import__('time').monotonic()
         try:
             self.show()  # Kodi dispatches WindowXML.onInit; never call it here.
             while not self._closed:
+                if not self._initialized and __import__('time').monotonic()-started48>=10:
+                    from setup_trace import mark
+                    mark('NATIVE_INIT_TIMEOUT48');self.close();break
                 self.pump()
                 if monitor.waitForAbort(.05): self.close()
         finally: self.close()

@@ -1,7 +1,7 @@
 """Explicit provider/TMDb/Commons research. No scraping, logging or bulk jobs.
 
-Uses the existing verified-IP/TLS transport without changing downloads. Redirects
-are refused; API bearer credentials are never sent with image requests.
+Uses the existing verified-IP/TLS transport without changing downloads. API redirects
+are refused; public image redirects are bounded/pinned; bearer credentials are never sent with image requests.
 """
 import io,json,time,threading
 from urllib.parse import urlencode,urlsplit
@@ -35,7 +35,10 @@ def get(url,*,api=False,token='',cancel=lambda:False,transport=None):
     try:
         # Every DNS answer must be public, then the selected IP is connected
         # directly with original hostname TLS/SNI. Never resolve a second time.
-        response=(transport or _connect)(url,addresses(url),headers)
+        if api:response=(transport or _connect)(url,addresses(url),headers)
+        else:
+            from image_redirect48 import open_image
+            response=open_image(url,headers,transport or _connect,addresses,cancel,deadline)
         status=response.status
         if 300<=status<400:raise SourceError('REDIRECT_BLOCKED')
         if status in (401,403):raise SourceError('HTTP_AUTH')

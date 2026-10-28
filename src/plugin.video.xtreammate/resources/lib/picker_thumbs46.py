@@ -17,12 +17,12 @@ class Thumbnails:
 
     def reset(self,rows):
         self.cancel.set();self.generation+=1;self.paths={};self.codes={}
-        self.pending=(self.generation,[dict(r) for r in rows[:24] if r.get('url')])
+        self.pending=(self.generation,[dict(r) for r in rows[:24] if (r.get('url') or r.get('local_path48'))])
 
     def close(self):self.cancel.set();self.pending=None
 
     def resume(self):
-        remaining=[dict(r) for r in self.picker._all_rows46 if r.get('url') and key(r) not in self.paths and key(r) not in self.codes]
+        remaining=[dict(r) for r in self.picker._all_rows46 if (r.get('url') or r.get('local_path48')) and key(r) not in self.paths and key(r) not in self.codes]
         if remaining:self.pending=(self.generation,remaining)
 
     def pump(self):
@@ -55,7 +55,11 @@ class Thumbnails:
                 try:
                     from media_sources43 import get,validate_image,SourceError
                     from PIL import Image
-                    data=get(row['url'],cancel=cancel.is_set);validate_image(data)
+                    if row.get('local_path48'):
+                        from media_preview48 import local_bytes
+                        data=local_bytes(self.picker.pid,row['local_path48'])
+                    else:data=get(row['url'],cancel=cancel.is_set)
+                    validate_image(data)
                     with Image.open(io.BytesIO(data)) as image:
                         image.thumbnail((320,480));buffer=io.BytesIO();image.convert('RGBA').save(buffer,'PNG');thumb=buffer.getvalue()
                     with self.picker._io_lock:

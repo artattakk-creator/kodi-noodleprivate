@@ -1,0 +1,11 @@
+{
+  "version": "0.1.29.48",
+  "target_skin": "skin.titan.bingie.mod",
+  "target_version": "2.2.3",
+  "status": "BLOCKED_SKIN_INTEGRATION",
+  "auto_install": false,
+  "auto_apply": false,
+  "requires_explicit_approval": true,
+  "existing_movies_series_untouched": true,
+  "sha256": "4f057c7bfa0d44a04e27dc395af5106cce6ad37129a6a8a05b67f19f49142e7e"
+}

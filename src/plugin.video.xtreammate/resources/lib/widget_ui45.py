@@ -7,8 +7,11 @@ def manage(router,portal):
  from widget_hooks45 import probe
  dialog=xbmcgui.Dialog()
  while True:
-  choice=select(dialog,tr(32443),['Status vorhandener Widgetverknüpfungen','Widgetquellen für einmalige Einrichtung anzeigen','TEST – optionaler BINGIE-Adapter (PIN)','Zurück'],actions=['info','grid','flask-lock','back'])
+  choice=select(dialog,tr(32443),['Status vorhandener Widgetverknüpfungen','Widgetquellen für einmalige Einrichtung anzeigen','TEST – optionaler BINGIE-Adapter (PIN)','Zurück','Live-TV: Senderleiste und große Vorschau (.48)'],actions=['info','grid','flask-lock','back','tv'])
   if choice<0 or choice==3:return
+  if choice==4:
+   from live_hero48 import launch
+   launch(router,portal);return
   if choice==0:
    try:
     result=probe();rows=result.get('bindings',[])

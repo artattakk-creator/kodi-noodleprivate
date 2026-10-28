@@ -18,6 +18,8 @@ def catalogues():
 
 
 def without_stabilization47(source,module):
+    from stabilization_contract_02948 import without_stabilization48
+    source=without_stabilization48(source,module)
     binary=isinstance(source,bytes)
     raw=source if binary else source.encode()
     hooks,hashes=catalogues()

@@ -213,7 +213,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
     def _actions(self,channel_only=False):
         if self._closed or self._leaving or self._loading or not self.rows:return
         row=self.rows[self.row];channel=row['channel'];event=self._selected()
-        choices=[tr(33112),tr(32550),tr(33118),tr(33121)]
+        choices=[tr(33112),tr(32550),tr(33118),tr(33121),'EPG zuweisen']
         if event and not channel_only:
             if event['start']>time.time():choices.append(tr(32551))
             choices.append(tr(33113))
@@ -231,6 +231,9 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
             self._generation+=1
             if self._pending_future is not None:self._pending_future.cancel()
             self._pending_future=None;self._pending_apply=None
+        elif 0<=choice<len(choices) and choices[choice]=='EPG zuweisen':
+            from guide_mapping48 import request
+            request(self)
         elif 0<=choice<len(choices) and choices[choice]==tr(33121):
             self._diagnose()
         elif 0<=choice<len(choices) and choices[choice]==tr(33118):
@@ -266,7 +269,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         if not self._leaving:xbmcgui.Dialog().textviewer(tr(33121),text)
 
     def _grid_visibility(self,visible):
-        for cid in list(range(310,316))+list(range(600,606))+list(range(700,708))+list(range(720,728))+list(range(730,738))+list(range(750,758))+list(self._cells):
+        for cid in list(range(310,317))+list(range(600,606))+list(range(700,708))+list(range(720,728))+list(range(730,738))+list(range(750,758))+list(self._cells):
             self.getControl(cid).setVisible(visible or cid==314)
         self.getControl(500).setVisible(False)
         self.getControl(200).setVisible(not visible and bool(self.groups))
@@ -369,7 +372,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
             elif time.monotonic()>=self._group_back_after:self._return_to_grid()
             return
         if self.mode=='groups':return
-        if 310<=focus<=315:self._focus_zone='header';self._header=focus
+        if 310<=focus<=316:self._focus_zone='header';self._header=focus
         elif 730<=focus<730+ROWS:self._focus_zone='sender';self.row=focus-730
         elif focus in self._cells:self._focus_zone='grid'
         if key==117:self._actions(channel_only=True);return
@@ -388,7 +391,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
             elif key in (3,4):
                 if key==3 and self.row==0 and self.offset==0:self._header_focus()
                 else:self._step(key)
-        elif 310<=focus<=315:
+        elif 310<=focus<=316:
             if key==4:self._focus_zone='grid';self._focus_cell()
             elif key==3 and self.offset>=ROWS:
                 self.offset-=ROWS;self.row=ROWS-1;self._focus_zone='grid';self._load()
@@ -397,6 +400,9 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         rail=getattr(self,'_navigation_rail',None)
         if rail and rail.click(cid):return
         if self._closed or self._leaving or self._search_prompt or self._focus_pending is not None:return
+        if cid==316:
+            from guide_mapping48 import request
+            request(self);return
         if cid==314:
             from search_navigation import queue
             queue(self,'grid');return
@@ -418,6 +424,9 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         elif cid==313:self._show_groups()
 
     def _owner_tick(self):
+        if getattr(self,'_mapping_request48',False):
+            from guide_mapping48 import open_pending
+            open_pending(self)
         if getattr(self,'_programme_request46',None):
             from programme_window46 import open_pending
             open_pending(self)

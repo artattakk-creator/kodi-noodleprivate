@@ -13,7 +13,11 @@ def _home():
 
 
 def active():
-    try:return 0<=time.time()-float(_home().getProperty(ACTIVE))<7200
+    try:
+        recent=0<=time.time()-float(_home().getProperty(ACTIVE))<7200
+        if not recent:return False
+        from setup_liveness48 import owner_alive
+        return owner_alive()
     except (ValueError,TypeError):return False
 
 
@@ -45,7 +49,11 @@ def run(router):
         _queue('launch',url=router.url(action='setup_wizard'));return
     finish_directory(router,cacheToDisc=False)
     with ownership() as acquired:
-        if not acquired or active():return
+        if not acquired:return
+        from window_lifecycle import state as native_state48
+        native48=native_state48()
+        if native48['modal'] or (native48['window'] or 0)>=13000:return
+        # The acquired OS lock proves any previous ACTIVE timestamp is stale.
         _home().setProperty(ACTIVE,str(time.time()))
         _home().clearProperty('XCMate.SetupClosedId37')
         try:
@@ -68,14 +76,19 @@ def poll():
     except ValueError:return
     if not isinstance(value,dict) or value.get('stage') not in ('launch','return'):return
     if time.monotonic()>value.get('deadline',0):
-        _home().clearProperty(KEY);return
+        _home().clearProperty(KEY)
+        from setup_trace import mark
+        mark('HANDOFF_TIMEOUT48')
+        import xbmcgui
+        xbmcgui.Dialog().notification('XCMate','Einrichtung nicht gestartet: Kodi-Fenster noch belegt. Erneut öffnen, sobald es frei ist.')
+        return
     if active() or lease():return
     native=state()
     if native['modal'] or native['updating']:return
     try:closed=int(value.get('closed') or 0)
     except (ValueError,TypeError):closed=0
     if closed>=13000 and native['window']==closed:return
-    if value['stage']=='launch':
+    if value['stage']=='launch' and not value.get('direct48'):
         from urllib.parse import urlsplit,parse_qs
         current=urlsplit(xbmc.getInfoLabel('Container.FolderPath'))
         if current.netloc!='plugin.video.xtreammate' or parse_qs(current.query).get('action',['root'])[0]!='root':return

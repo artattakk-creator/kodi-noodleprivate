@@ -25,6 +25,7 @@ class SaveError(ValueError):
 class Draft:
     def __init__(self,data):
         from utils import addon_data_dir
+        self._guide_publish48=False
         self._save_guard=threading.Lock();self._scan_signature=None;self.verification=None
         self.pid=str(uuid.uuid4());self.data=dict(data,id=self.pid,source_schema=1)
         self.folder=tempfile.mkdtemp(prefix='xcmate-setup-',dir=addon_data_dir())
@@ -36,6 +37,8 @@ class Draft:
         from source_adapters import for_portal
         self.adapter=for_portal(self.data,filename=self.index,playlist=self.playlist)
 
+    from wizard_deadline48 import discovery
+    @discovery
     def discover(self,cancel=lambda:False,status=lambda *a:None):
         status(None,tr(32711))
         self.adapter.authenticate(cancel,lambda count:status(0,tr(32773,count)))
@@ -104,11 +107,13 @@ class Draft:
         sources=list(self.epg_sources)
         uri=self.adapter.get_xmltv_epg_url()
         if self.provider_epg and uri: sources.insert(0,dict(uri=uri,local=not uri.startswith(('http://','https://'))))
+        provider_inserted48=bool(self.provider_epg and uri)
         for index,source in enumerate(sources):
             if cancel(): raise InterruptedError('setup cancelled')
             status(None,tr(32706)+' '+str(index+1)+'/'+str(len(sources)))
             try:
-                counts=import_source(self.pid,source,index,streams,{},filename=self.guide,cancel=cancel)
+                rank48=index if provider_inserted48 else index+1
+                counts=import_source(self.pid,source,rank48,streams,{},filename=self.guide,cancel=cancel)
                 self.report['epg']+=counts['stored'];self.report['sources'].append(dict(code='READY',bytes=counts['bytes'],stored=counts['stored']))
                 status(None,tr(32706)+' '+str(index+1)+'/'+str(len(sources))+' READY · '+str(counts['stored'])+' · '+str(counts['bytes'])+' Bytes')
             except InterruptedError: raise
@@ -212,12 +217,18 @@ class Draft:
                 self._copy(self.index,db,('groups','items_v2','heads','catalog','source_payloads'),cancel)
             finally: db.close()
             if os.path.isfile(self.guide):
+                from setup_epg48 import gate as epg_gate48
+                epg_gate48()
                 from guide_store import connect as guide_connect
                 db=guide_connect(write=True)
                 try:
                     mark('COPY_GUIDE',self.pid)
-                    self._copy(self.guide,db,('guide_meta','guide_alias','programmes'),cancel)
+                    from setup_epg48 import GUIDE_TABLES
+                    self._guide_publish48=True
+                    self._copy(self.guide,db,GUIDE_TABLES,cancel)
                 finally: db.close()
+                from setup_epg48 import promote as promote_epg48
+                promote_epg48(self,cancel)
             if self.data['type']=='m3u':
                 from m3u_store import path,export_lines
                 target=path(self.pid)
@@ -265,6 +276,9 @@ class Draft:
                             self._files.add(os.path.join(folder,_disk_ck(self.pid)+'.json'))
                         _save_disk(self.pid,snapshot,notify=False);_mem_set(self.pid,snapshot)
                 self._verify()
+                if self._guide_publish48:
+                    from setup_epg48 import verify as verify_epg48
+                    verify_epg48(self)
                 if cancel(): raise InterruptedError('setup save cancelled')
                 mark('CONFIG_PUBLISH',self.pid)
                 portal=portals.add(self.data,portal_id=self.pid)
@@ -312,14 +326,17 @@ class Draft:
                     if xbmcvfs.exists(filename) and not xbmcvfs.delete(filename): raise OSError('new cache rollback failed')
                 elif os.path.isfile(filename): os.unlink(filename)
         self._files.clear()
-        if os.path.isfile(self.guide):
+        if self._guide_publish48:
             from epg import _mem_clear
             _mem_clear(self.pid)
             from guide_store import connect as guide_connect
             db=guide_connect(write=True)
             try:
-                for table in ('guide_meta','guide_alias','programmes'):
+                from setup_epg48 import GUIDE_TABLES
+                for table in GUIDE_TABLES:
                     with db: db.execute('DELETE FROM '+table+' WHERE pid=?',(self.pid,))
             finally: db.close()
+            from setup_epg48 import rollback as rollback_epg48
+            rollback_epg48(self)
 
     def dispose(self): shutil.rmtree(self.folder,ignore_errors=True)

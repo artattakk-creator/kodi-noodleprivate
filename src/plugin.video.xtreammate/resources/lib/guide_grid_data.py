@@ -13,12 +13,12 @@ def rectangle(start,stop,origin,span=SPAN,width=896):
     return x,max(1,end-x)
 
 
-def page(portal,offset,origin,category=None,client=None):
+def page(portal,offset,origin,category=None,client=None,mappings48=None):
     from library_index import Reader
     from epg_sources import configuration
     from epg_events import deduplicate
     reader=Reader(portal['id']);channels,total=reader.page('live',category=category,offset=offset,limit=ROWS)
-    mappings=configuration(portal['id']).get('mappings',{});result=[]
+    mappings=configuration(portal['id']).get('mappings',{}) if mappings48 is None else mappings48;result=[]
     from local_epg import window,channel_keys
     snapshot=window(portal['id'],channels,mappings,origin,origin+SPAN,limit=101)
     state='OK' if snapshot is not None else 'NOT_CREATED'
@@ -45,7 +45,7 @@ def page(portal,offset,origin,category=None,client=None):
     # Original persistent artwork cache, queued from this viewport worker.
     # No remote texture ever reaches the GUI and no cache path is changed.
     from media_art import request
-    request(channels)
+    if mappings48 is None:request(channels)
     from guide_publish44 import history_days
     from guide_store import path
     history=history_days(portal['id'],path()) if origin<__import__('guide_store').day_window(0)[0] else None

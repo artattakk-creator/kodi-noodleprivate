@@ -84,7 +84,7 @@ class Stability30Tests(unittest.TestCase):
         maintenance=mock.Mock();prefetch=mock.Mock();prepare=mock.Mock();catalog=mock.Mock(return_value=True)
         for name,value in [('artwork_db',types.SimpleNamespace(maintain=maintenance)),('art_store',types.SimpleNamespace(prefetch_selected=prefetch)),('startup_preload',types.SimpleNamespace(prepare=prepare)),('catalog_sync',types.SimpleNamespace(run_next=catalog)),('guide_timers',types.SimpleNamespace(poll=lambda:None))]:sys.modules[name]=value
         service=importlib.import_module('app_services')
-        with mock.patch.object(service,'refresh_local') as refresh,mock.patch.object(self.runtime,'pressure',return_value=False),mock.patch.object(self.runtime,'emit'),mock.patch.object(self.runtime.time,'monotonic',side_effect=lambda:ticks[0]*.1):service._run()
+        with mock.patch('startup48.suspended',return_value=False),mock.patch('startup48.Phases.network',return_value=True),mock.patch.object(service,'refresh_local') as refresh,mock.patch.object(self.runtime,'pressure',return_value=False),mock.patch.object(self.runtime,'emit'),mock.patch.object(self.runtime.time,'monotonic',side_effect=lambda:ticks[0]*.1):service._run()
         self.assertEqual(maintenance.call_count,1);self.assertEqual(prefetch.call_count,1);self.assertEqual(prepare.call_count,1);self.assertEqual(refresh.call_count,1)
         self.assertGreaterEqual(catalog.call_count,10)
 

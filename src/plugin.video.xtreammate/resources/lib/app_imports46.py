@@ -19,5 +19,5 @@ def _prime():
     global _retry
     try:
         for name in MODULES:importlib.import_module(name)
-    except (ImportError,RuntimeError,MemoryError):_retry=time.monotonic()+5
+    except (ImportError,RuntimeError,MemoryError,AttributeError,OSError,ValueError):_retry=time.monotonic()+5
     else:_ready.set()

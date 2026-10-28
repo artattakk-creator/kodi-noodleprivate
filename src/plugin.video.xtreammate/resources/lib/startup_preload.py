@@ -29,7 +29,6 @@ def prepare(cancel=lambda:False):
     from portals import get_active
     from library_index import Reader,initial_group
     from xtream import XtreamClient
-    from epg import load_cache
     from epg_sources import configuration
     from epg_views import resolve_guide,_start_short_guides
     from media_art import request,local_art
@@ -48,7 +47,9 @@ def prepare(cancel=lambda:False):
         from types import SimpleNamespace
         channels=[SimpleNamespace(tvg_id=r.get('epg_channel_id',''),extra={'stream_id':r['sid']}) for r in visible]
         cache=viewport_cache(pid,channels,mappings,time.time())
-        if cache is None:cache=load_cache(pid)
+        if cache is None:
+            from epg import load_cache
+            cache=load_cache(pid)
         rows=[];missing=[]
         for row in visible:
             if cancel(): return

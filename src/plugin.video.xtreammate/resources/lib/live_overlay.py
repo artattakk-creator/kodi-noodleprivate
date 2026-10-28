@@ -52,6 +52,8 @@ def announce(portal_id, stream_id, channel_name=''):
     value = {'pid': str(portal_id), 'sid': str(stream_id),
              'name': str(channel_name)[:160], 'at': time.time(),
              'nonce': uuid.uuid4().hex}
+    try:value['origin_window48']=int(xbmcgui.getCurrentWindowId())
+    except (AttributeError,RuntimeError,ValueError):pass
     xbmcgui.Window(10000).setProperty(SESSION_KEY, json.dumps(value))
     trace('session','ANNOUNCED',marker=True)
     return value

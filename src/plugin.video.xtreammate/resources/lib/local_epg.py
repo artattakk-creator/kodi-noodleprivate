@@ -47,6 +47,14 @@ def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,
             sid,keys=channel_keys(channel,mappings)
             for ident in keys:
                 if ident in view:continue
+                from epg_binding48 import binding,read as read_source48
+                selected48=binding(mappings,sid)
+                if selected48:
+                    cid=selected48['channel'];view.canonical[ident]=cid
+                    values48=read_source48(db,pid,cid,selected48['source'],start,stop,limit)
+                    from programme_flow48 import enrich
+                    view[ident]=enrich(pid,cid,values48,selected48['source'],sid48=sid,revision48=view.revision)
+                    continue
                 alias=db.execute('SELECT cid FROM guide_alias WHERE pid=? AND alias=?',(pid,ident)).fetchone()
                 cid=alias[0] if alias else ident;view.canonical[ident]=cid
                 left=start  # Current/future before SQL LIMIT; no unsolicited history.
@@ -59,6 +67,8 @@ def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,
                 from programme_index46 import window as prepared_window46
                 extra46=prepared_window46(pid,cid,left,right,primary=view[ident],limit=cap)
                 view[ident]=sorted(view[ident]+extra46,key=lambda e:e['start_timestamp'])[:cap]
+                from programme_flow48 import enrich
+                view[ident]=enrich(pid,cid,view[ident][:4],sid48=sid,revision48=view.revision)+view[ident][4:]
         return view
     except (OSError,sqlite3.Error):return None
     finally:

@@ -142,6 +142,10 @@ def http_get(url, params=None, headers=None, timeout=None, stream=False,
     from network_io import service_cancelled,service_timeout
     to=service_timeout(timeout or setting_int('http_timeout',15))
     retries = setting_int('max_retries', 3) if retry_limit is None else max(0,min(3,int(retry_limit)))
+    wizard48=sys.modules.get('wizard_deadline48')
+    if wizard48 is not None:
+        to,max_seconds,retries=wizard48.policy(to,max_seconds,retries)
+        max_bytes=wizard48.byte_limit(max_bytes)
     verify  = setting_bool('ssl_verify', True)
     hdrs    = {**_default_headers(), **(headers or {})}
 

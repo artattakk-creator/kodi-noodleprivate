@@ -117,8 +117,8 @@ class GuideNavigationTests(Fixture,unittest.TestCase):
         self.large(start=1976);w=self.window();cell=w.getFocusId()
         self.key(w,3);self.assertEqual(w.getFocusId(),312)
         visited={w.getFocusId()}
-        for _ in range(6):self.key(w,2);visited.add(w.getFocusId())
-        self.assertEqual(visited,set(range(310,316)))
+        for _ in range(7):self.key(w,2);visited.add(w.getFocusId())
+        self.assertEqual(visited,set(range(310,317)))
         self.key(w,4);self.assertEqual(w.getFocusId(),cell);self.assertEqual(w.offset,1976)
 
     def test_header_up_can_page_to_previous_channels_and_sender_column_can_scroll_up(self):
@@ -145,6 +145,7 @@ class GuideNavigationTests(Fixture,unittest.TestCase):
         for _ in range(3):self.key(w,2)
         self.assertEqual(w.getFocusId(),315);self.key(w,7)
         local=datetime.datetime.fromtimestamp(w.cursor);self.assertEqual((local.hour,local.minute),(20,15));self.assertEqual(w.getFocusId(),315)
+        self.key(w,2);self.assertEqual(w.getFocusId(),316)  # New explicit mapping action.
         self.key(w,2);self.assertEqual(w.getFocusId(),310);self.key(w,2);self.assertEqual(w.getFocusId(),311)
         day=local.date();self.key(w,7);self.assertEqual(datetime.datetime.fromtimestamp(w.cursor).date(),day+datetime.timedelta(days=1))
         self.key(w,1);self.key(w,7);self.assertEqual(datetime.datetime.fromtimestamp(w.cursor).date(),day)

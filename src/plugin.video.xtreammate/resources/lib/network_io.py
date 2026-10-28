@@ -6,6 +6,8 @@ import sys
 
 
 def service_cancelled():
+    wizard48=sys.modules.get('wizard_deadline48')
+    if wizard48 is not None:wizard48.check()
     runtime=sys.modules.get('service_runtime')
     return bool(runtime and runtime.cancelled())
 

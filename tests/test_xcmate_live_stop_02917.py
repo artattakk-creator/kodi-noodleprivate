@@ -106,7 +106,8 @@ class StopTests(Fixture,unittest.TestCase):
         source=source.replace(hook,'if not exiting:poll_playback_exit()')
         self.assertLess(source.index('exiting=poll_live_exit'),source.index('if not exiting:poll_playback_exit'))
         self.assertLess(source.index('if exiting:'),source.index('poll_preplay(self._overlay)'))
-        self.assertLess(source.index('service_poll(poll_app_features)'),source.index('if exiting:'))
+        # .48 explicitly gives the confirmed exit handoff priority over optional work.
+        self.assertLess(source.index('if exiting and exit_pending48():'),source.index('service_poll(poll_app_features)'))
     def test_exit_blocks_root_autoplay_until_explicit_selection(self):
         spec=importlib.util.spec_from_file_location('main_stop17',LIB/'main.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
         router=module.Router(['plugin://plugin.video.xtreammate','7','?action=root'])

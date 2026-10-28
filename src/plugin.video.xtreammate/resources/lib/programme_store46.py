@@ -29,6 +29,9 @@ def metadata(event):
    value=int(str(raw)[:4] if target=='year' else raw)
    if (1880<=value<=2200 if target=='year' else 0<value<10000):result[target]=value
   except (TypeError,ValueError):pass
+ director=event.get('director')
+ if isinstance(director,str) and director.strip():result['director']=director[:512]
+ elif isinstance(director,list):result['director']=' / '.join(str(v)[:120] for v in director[:8] if isinstance(v,str))
  cast=event.get('cast')
  if isinstance(cast,list) and any(isinstance(v,str) and v.strip() for v in cast):result['cast']=[v[:120] for v in cast[:24] if isinstance(v,str) and v.strip()]
  return result
@@ -54,9 +57,18 @@ def connect(write=False,guide=None):
 
 class Stage:
  def __init__(self,pid,generation,source,guide=None,source_identity='compatibility',source_records=None):
+  self.channel_rows48=[]
   self.source_records=source_records;self.pid=str(pid);self.generation=generation;self.source=source;self.guide=guide;self.source_identity=source_identity;self.rows=[];self.failed=False
   from programme_index46 import Stage as IndexStage46
   self.facts46=IndexStage46(pid,generation,guide)
+ def channel48(self,cid,name):
+  self.channel_rows48.append((cid,name))
+  if len(self.channel_rows48)>=128:self.flush_channels48()
+ def flush_channels48(self):
+  if self.channel_rows48:
+   from epg_binding48 import stage_channels
+   if not stage_channels(self.pid,self.generation,self.source_identity,self.channel_rows48,self.guide):self.failed=True
+   self.channel_rows48.clear()
  def add(self,event):
   value=metadata(event)
   try:source=int(event.get('_source_index',self.source))
@@ -71,6 +83,7 @@ class Stage:
   except (ValueError,TypeError):pass
   except MemoryError:self.failed=True;self.rows.clear()
  def flush(self):
+  self.flush_channels48()
   self.facts46.flush()
   if not self.rows:return
   db=None
@@ -85,6 +98,8 @@ class Stage:
   self.flush();finish(self.pid,self.generation,publish and not self.failed,self.guide,index_ok46=not self.facts46.failed,index_publish46=publish)
 
 def finish(pid,generation,publish,guide=None,*,index_ok46=True,index_publish46=None):
+ from epg_binding48 import finish_channels
+ finish_channels(pid,generation,publish,guide)
  from programme_index46 import finish as finish_index46
  finish_index46(pid,generation,(publish if index_publish46 is None else index_publish46) and index_ok46,guide)
  if not os.path.isfile(path(guide)):return

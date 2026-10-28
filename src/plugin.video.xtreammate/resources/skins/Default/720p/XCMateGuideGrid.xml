@@ -149,7 +149,7 @@
       <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/guide_focus_frame.png</texturefocus>
       <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
       <onleft>314</onleft>
-      <onright>310</onright>
+      <onright>316</onright>
       <onup>315</onup>
       <ondown>315</ondown>
       <textcolor>FFF4F7F9</textcolor>
@@ -4255,6 +4255,24 @@
       <ondown>202</ondown>
       <onleft>202</onleft>
       <onright>202</onright>
+    </control>
+    <control type="button" id="316">
+      <left>970</left>
+      <top>124</top>
+      <width>266</width>
+      <height>42</height>
+      <label>EPG zuweisen</label>
+      <font>font12</font>
+      <textcolor>FFF4F7F9</textcolor>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/guide_focus_frame.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+      <onleft>315</onleft>
+      <onright>310</onright>
+      <onup>315</onup>
+      <ondown>1000</ondown>
+      <focusedcolor>FFFFFFFF</focusedcolor>
+      <disabledcolor>FFB6BCC6</disabledcolor>
+      <shadowcolor>FF000000</shadowcolor>
     </control>
   </controls>
 </window>

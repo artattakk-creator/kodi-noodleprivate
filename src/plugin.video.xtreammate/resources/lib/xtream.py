@@ -79,6 +79,8 @@ class XtreamClient:
                         warn('Xtream recent catalog update: {}'.format(type(exc).__name__))
             return data
         except Exception as exc:
+            from wizard_deadline48 import active
+            if active():raise
             error('Xtream API {} request failed: {}'.format(action, type(exc).__name__))
             return None
 
@@ -177,13 +179,14 @@ class XtreamClient:
     def authenticate(self):
         if self._info:
             return self._info
-        data = self._get_json('', extra={})
         try:
             params = self._base_params()
             raw, _ = http_get(self._api_url(), params=params)
             self._info = json.loads(raw)
             return self._info
         except Exception as e:
+            from wizard_deadline48 import active
+            if active():raise
             error('Xtream authentication request failed: {}'.format(type(e).__name__))
             return None
 

@@ -174,6 +174,8 @@ def prepare(event,cancel=lambda:False,fetch=None,match=None):
   value.update(code=error.code if isinstance(error,ArtworkFailure) else 'PROGRAMME_CACHE_BUDGET' if isinstance(error,CacheBudget) else 'CACHE_IO_ERROR',until=time.time()+900,budget46=limit())
  # Only fixed classes are reported; never URLs, IDs, tokens or exception text.
  remember(key,value,verified47=True)
+ from programme_flow48 import trace
+ trace('IMAGE',event,value['code'])
  from programme_index46 import event as publish_event46,art as publish_art46
  publish_event46(event,write=True)
  if publish_art46(event,value) is None:
