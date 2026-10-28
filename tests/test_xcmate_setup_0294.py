@@ -42,7 +42,7 @@ class SetupThreadTests(Fixture,unittest.TestCase):
             self.worker_threads.append(threading.get_ident());status(None,'Discovery');return self.data.categories
         self.data.discover=discover
         self.data.scan=lambda cancel,status:self.data.report
-        self.data.save=lambda cancel:dict(id='new',type='xtream')
+        self.data.save=lambda cancel,status:dict(id='new',type='xtream')
         self.window=self.ui.SetupWindow('XCMateSetup.xml',str(ADDON),'Default','720p');self.window.configure(self.data)
         self.addCleanup(self.window._pool.shutdown,wait=True,cancel_futures=True)
         self.addCleanup(self.window.close)
@@ -53,6 +53,10 @@ class SetupThreadTests(Fixture,unittest.TestCase):
         self.window.pump()
     def show(self):
         self.window.show();self.finish()
+        # .51 intentionally renders bounded batches in the owner pump.
+        for _ in range(100):
+            if self.window._rendered[self.window.kind]==len(self.window._entries):break
+            self.window.pump()
     def test_worker_progress_completion_scan_save_and_close_only_touch_gui_on_owner(self):
         self.show();self.assertEqual(self.window.stage,'groups')
         self.window.setFocusId(17);self.window.native(7);self.finish()
@@ -116,7 +120,8 @@ class SetupThreadTests(Fixture,unittest.TestCase):
         tree=ET.parse(ADDON/'resources/skins/Default/720p/XCMateSetup.xml')
         for ident in (100,101,102):
             node=tree.find("./controls/control[@id='"+str(ident)+"']")
-            self.assertEqual(node.find('focusedlayout/control/texture').text.rsplit('/',1)[-1],'setup_focus.png')
+            self.assertEqual(node.find('focusedlayout/control/texture').text.rsplit('/',1)[-1],'wizard_plain51.png')
+            self.assertEqual(node.find('focusedlayout/control/texture').get('colordiffuse'),'FF72D7F4')
             self.assertIn('ListItem.Art(icon)',ET.tostring(node).decode())
             self.assertNotIn('☐',ET.tostring(node).decode())
         for ident in (110,111,112):self.assertIn('Window.Property(XCMate.SetupKind)',tree.find("./controls/control[@id='"+str(ident)+"']/visible").text)

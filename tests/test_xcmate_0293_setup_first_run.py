@@ -74,9 +74,10 @@ class SetupFirstRunTests(unittest.TestCase):
         fake_gui.WindowXML = FakeWindowXML
         from xcmate027_fixture import ListItem
         fake_gui.ListItem = ListItem
+        cls.fake_gui = fake_gui
         localization = types.ModuleType("localization")
         localization.tr = lambda key, *a: "localized:{}:{}".format(key, a)
-        with patch.dict(sys.modules, {"xbmcgui": fake_gui,
+        with patch.object(sys, 'path', [str(SOURCE.parent)] + sys.path), patch.dict(sys.modules, {"xbmcgui": fake_gui,
                                       "localization": localization}):
             spec = importlib.util.spec_from_file_location(
                 "_xcmate_first_run_test_module", SOURCE)
@@ -84,17 +85,20 @@ class SetupFirstRunTests(unittest.TestCase):
             spec.loader.exec_module(cls.module)
 
     def new_window(self):
+        self.addCleanup(patch.stopall)
+        addon=types.ModuleType('xbmcaddon')
+        addon.Addon=lambda:types.SimpleNamespace(getAddonInfo=lambda _:str(ROOT/'src/plugin.video.xtreammate'))
+        patch.dict(sys.modules,xbmcaddon=addon,xbmcgui=self.fake_gui,
+                   xbmc=types.SimpleNamespace(log=lambda *a:None,LOGINFO=1),
+                   localization=types.SimpleNamespace(tr=self.module.tr)).start()
+        patch.object(sys,'path',[str(SOURCE.parent)]+sys.path).start()
         window = self.module.SetupWindow()
         window.configure(FakeDraft())
         self.addCleanup(window._pool.shutdown, wait=False, cancel_futures=True)
         # Simulate queued async tasks without network/GUI thread races.
-        self.addCleanup(patch.stopall)
         patcher = patch.object(self.module.WorkWindow, "work",
                                lambda win, job, apply: setattr(win, "_test_job", job))
         patcher.start()
-        addon=types.ModuleType('xbmcaddon')
-        addon.Addon=lambda:types.SimpleNamespace(getAddonInfo=lambda _:str(ROOT/'src/plugin.video.xtreammate'))
-        patcher=patch.dict(sys.modules,xbmcaddon=addon);patcher.start()
         return window
 
     def test_discovery_has_visible_cancel_focus_not_empty_list(self):
@@ -187,7 +191,8 @@ class SetupFirstRunTests(unittest.TestCase):
         lst = root.find("./controls/control[@id='100']")
         self.assertIsNotNone(lst)
         focused = lst.find("focusedlayout")
-        self.assertTrue(focused.find(".//texture").text.endswith("setup_focus.png"))
+        self.assertTrue(focused.find(".//texture").text.endswith("wizard_plain51.png"))
+        self.assertEqual(focused.find(".//texture").get('colordiffuse'),'FF72D7F4')
         self.assertNotIn("▶", ET.tostring(focused).decode())
         button = root.find("./controls/control[@id='17']")
         self.assertEqual(button.findtext("focusedcolor"), "FF061820")

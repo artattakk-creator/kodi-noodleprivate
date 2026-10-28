@@ -1,5 +1,6 @@
 """One native XML setup flow. All source work runs on a cancellable worker."""
 import threading
+import time
 from concurrent.futures import ThreadPoolExecutor
 import xbmcgui
 from localization import tr
@@ -9,6 +10,8 @@ def _failure_details(exc):
     """Show only preapproved failure reasons: never echo provider URLs or credentials."""
     codes={'XM-SETUP-VERIFY':32782,'XM-SETUP-SAVE-BUSY':32783,'XM-SETUP-RESCAN':32785,'XM-SETUP-ROLLBACK':32786}
     code=getattr(exc,'code',None)
+    if code=='XM-SETUP-WORKER-BUSY':return code,tr(36501)
+    if isinstance(exc, TimeoutError):return 'XM-SETUP-TIMEOUT',tr(36502)
     if code=='XM-SETUP-EPG-BACKUP':return code,'Bestehenden EPG zuerst über die Sicherungsfunktion verifizieren (BACKUP_VERIFIED). Keine Daten wurden ersetzt.'
     if code in codes: return code,tr(codes[code])
     if isinstance(exc, ValueError):
@@ -41,10 +44,11 @@ class _WorkState:
     """Pure data referenced by workers; never retain a native Kodi window."""
     def __init__(self,cancel):
         self.cancel=cancel;self.lock=threading.RLock();self.latest=None
-        self.cleanup=lambda:None;self.disposed=False
+        self.cleanup=lambda:None;self.disposed=False;self.progress_at=time.monotonic()
     def status(self,percent,text):
         with self.lock:
-            if not self.cancel.is_set():self.latest=(percent,str(text))
+            if not self.cancel.is_set():
+                self.latest=(percent,str(text));self.progress_at=time.monotonic()
     def finished(self,future=None):
         with self.lock:
             if not self.cancel.is_set() or self.disposed:return
@@ -83,6 +87,7 @@ class WorkWindow(xbmcgui.WindowXML):
         self._gui()
         if self.busy or self._closed: return
         self.busy=True;self._apply=apply
+        self._job_started=time.monotonic();self._data_state.progress_at=self._job_started
         self.working()
         self._future=self._pool.submit(job)
         # This callback never reads or changes a Kodi control or closes a GUI.
@@ -99,6 +104,18 @@ class WorkWindow(xbmcgui.WindowXML):
             frame=('·','··','···')[int(__import__('time').monotonic()*2)%3]
             self.getControl(3).setText(self._activity_text+' '+frame)
         future=self._future
+        if future is not None and not future.done():
+            # Platform DNS cannot be killed safely. Close the responsive UI,
+            # cancel cooperatively, retain the worker lease until cleanup.
+            now=time.monotonic()
+            expired=(now-self._job_started>35 if getattr(self,'stage','')=='discover'
+                     else now-self._data_state.progress_at>180)
+            if expired:
+                from setup_trace import mark
+                mark('WORK_TIMEOUT',getattr(getattr(self,'draft',None),'pid',''))
+                self.close()
+                xbmcgui.Dialog().ok('XCMate',tr(36502)+' [XM-SETUP-TIMEOUT]')
+                return
         if future is None or not future.done(): return
         apply=self._apply;self._future=None;self._apply=None;self.busy=False
         try: apply(future.result())
@@ -144,10 +161,13 @@ class WorkWindow(xbmcgui.WindowXML):
         if action.getId() in (9,10,92): self.close()
         # Native arrows/OK are never replayed.
 
-class SetupWindow(WorkWindow):
+from wizard_groups51 import GroupRows
+
+
+class SetupWindow(GroupRows,WorkWindow):
     def configure(self,draft):
         self.configure_work();self.draft=draft;self._data_state.cleanup=draft.dispose;self.kind='live';self.stage='discover';self.result=None
-        self._entries=[]
+        self._entries=[];self.configure_rows()
     def _show_discover_ui(self):
         self.getControl(2).setLabel(tr(32700))
         for ident in (5,6,10,11,12,13,14,15,16,17,100,101,102):
@@ -165,6 +185,7 @@ class SetupWindow(WorkWindow):
         self.work(lambda:draft.discover(cancel,status),self.discovered)
 
     def onInit(self):
+        if self._initialized:return  # Re-activation must not submit discovery twice.
         self._initialized=True
         if self.stage!='discover': self.render();return
         self._start_discovery()
@@ -186,6 +207,7 @@ class SetupWindow(WorkWindow):
             self.setFocusId(17)
 
     def discovered(self,result):
+        self._mark51('SETUP_DISCOVER_DONE',total=sum(len(v) for v in self.draft.categories.values()))
         self.stage='groups'
         self.kind=next((kind for kind in ('live','vod','series')
                         if self.draft.categories.get(kind)), 'live')
@@ -194,22 +216,8 @@ class SetupWindow(WorkWindow):
     def working(self):
         for ident in (10,11,12,13,14,15,16,17,100,101,102): self.getControl(ident).setVisible(False)
         self.getControl(18).setVisible(True);self.setFocusId(18)
-    def _item_state(self,item,selected):
-        import os,xbmcaddon
-        item.setProperty('setup_selected','true' if selected else 'false')
-        image=__import__('menu_icons45').state_icon(selected)
-        item.setArt({'icon':image})
-    def _groups(self):
-        if getattr(self,'_groups_loaded',False): return
-        for number,kind in enumerate(('live','vod','series')):
-            control=self.getControl(100+number);control.reset();items=[]
-            for group in self.draft.categories[kind]:
-                item=xbmcgui.ListItem(str(group['category_name']))
-                self._item_state(item,str(group['category_id']) in self.draft.selected[kind]);items.append(item)
-            control.addItems(items)
-        self._groups_loaded=True
     def _selection_status(self):
-        self.getControl(5).setLabel(tr(32780,len(self.draft.selected[self.kind]),len(self._entries)))
+        self.getControl(5).setLabel(self._row_labels[32780].format(len(self.draft.selected[self.kind]),len(self._entries)))
     @property
     def list_id(self): return 100+('live','vod','series').index(self.kind)
     def render(self):
@@ -228,7 +236,7 @@ class SetupWindow(WorkWindow):
         self.getControl(3).setHeight(80 if groups else 240)
         self.getControl(4).setPosition(45,170 if groups else 330)
         if groups:
-            self.status(None,tr(32712));self._selection_status()
+            self._render_status();self._selection_status()
         else:
             r=self.draft.report
             lines=[self.draft.data['name'],tr(32714,r['live'],r['vod'],r['series'],r['epg'])]
@@ -242,7 +250,7 @@ class SetupWindow(WorkWindow):
         if self.draft.data.get('epg_url'): choices.append((tr(32718),'configured'))
         choices.extend((title,uri) for key,title,uri in PRESET_FEEDS)
         choices.append((tr(32719),'custom'))
-        selected=__import__('menu_icons45').multiselect(xbmcgui.Dialog(),tr(32706),[c[0] for c in choices],preselect=[i for i,(_,uri) in enumerate(choices) if (uri=='provider' and self.draft.provider_epg) or any(s['uri']==uri for s in self.draft.epg_sources)],default='list')
+        selected=xbmcgui.Dialog().multiselect(tr(32706),[c[0] for c in choices],preselect=[i for i,(_,uri) in enumerate(choices) if (uri=='provider' and self.draft.provider_epg) or any(s['uri']==uri for s in self.draft.epg_sources)])
         if selected is None: return
         sources=[];self.draft.provider_epg=False
         for i in selected:
@@ -269,19 +277,17 @@ class SetupWindow(WorkWindow):
                     self.render()
                     self.setFocusId(self.list_id if self._entries else 17)
                 elif controlId in (100,101,102):
+                    if controlId!=self.list_id:return
                     pos=self.getControl(self.list_id).getSelectedPosition()
-                    if 0<=pos<len(self._entries):
+                    if 0<=pos<(self._rendered[self.kind] or 0):
                         cid=str(self._entries[pos]['category_id']);selected=self.draft.selected[self.kind]
                         selected.remove(cid) if cid in selected else selected.add(cid)
                         self.draft.scanned=False
                         self._item_state(self.getControl(self.list_id).getListItem(pos),cid in selected)
                         self._selection_status()
+                        self._mark51('GROUP_TOGGLE',kind=self.kind,total=len(selected))
                 elif controlId in (13,14):
-                    self.draft.selected[self.kind]={str(g['category_id']) for g in self._entries} if controlId==13 else set()
-                    self.draft.scanned=False
-                    for pos,group in enumerate(self._entries):
-                        self._item_state(self.getControl(self.list_id).getListItem(pos),str(group['category_id']) in self.draft.selected[self.kind])
-                    self._selection_status()
+                    self.bulk_selection(controlId==13)
                 elif controlId==15: self.choose_epg()
                 elif controlId==16: self.close()
                 elif controlId==17:
@@ -292,24 +298,29 @@ class SetupWindow(WorkWindow):
                 self.stage='groups';self.render();self.setFocusId(self.list_id if self._entries else 17)
             elif self.stage=='summary' and controlId==17:
                 self.status(0,tr(32716));draft=self.draft;cancel=self.cancel.is_set
-                self.work(lambda:draft.save(cancel),self.saved)
+                self._mark51('SETUP_SAVE_BEGIN')
+                status=self._data_state.status
+                self.work(lambda:draft.save(cancel,status),self.saved)
         except (ValueError,OSError) as exc: self.status(0,tr(32743,type(exc).__name__))
     def onAction(self,action):
         if action.getId()==117 and not self.busy and self.stage=='groups' and self.draft.data['type']=='m3u':
             pos=self.getControl(self.list_id).getSelectedPosition()
             if not 0<=pos<len(self._entries): return
-            target=__import__('menu_icons45').select(xbmcgui.Dialog(),tr(32736),[tr(32701),tr(32702),tr(32703)],default='wand')
+            target=xbmcgui.Dialog().select(tr(32736),[tr(32701),tr(32702),tr(32703)])
             if target<0: return
             group=self._entries[pos];cid=str(group['category_id']);kind=('live','vod','series')[target]
             from m3u_store import group as update_group
             update_group(self.draft.playlist,group['category_name'],kind,cid)
             self.draft.selected[self.kind].discard(cid)
             self.draft.categories[self.kind].remove(group);self.draft.categories[kind].append(group);self._groups_loaded=False;self.draft.scanned=False;self.render()
+            self.setFocusId(self.list_id if self._entries else 17)
             return
         super().onAction(action)
+        if action.getId() in (1,2,3,4) and self.stage=='groups':self.onFocus(self.getFocusId())
     def scanned(self,result): self.stage='summary';self.render()
     def saved(self,portal):
         self._gui()
+        self._mark51('SETUP_SAVE_END')
         from setup_trace import mark
         mark('GUI_CLOSE_BEGIN',getattr(self.draft,'pid',''))
         self.result=portal
@@ -324,9 +335,17 @@ class SetupWindow(WorkWindow):
 def open_setup(data):
     from setup_draft import Draft
     import xbmcaddon
-    draft=Draft(data)
+    from wizard_session51 import acquire
+    release=acquire()
+    try:draft=Draft(data)
+    except BaseException:release();raise
+    def cleanup():
+        try:draft.dispose()
+        finally:release()
+    configured=False
     try:
         window=SetupWindow('XCMateSetup.xml',xbmcaddon.Addon().getAddonInfo('path'),'Default','720p')
-        window.configure(draft);window.run();return window.result
+        window.configure(draft);window._data_state.cleanup=cleanup;configured=True
+        window.run();return window.result
     finally:
-        if 'window' not in locals(): draft.dispose()
+        if not configured:cleanup()
