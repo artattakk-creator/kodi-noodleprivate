@@ -54,10 +54,16 @@ class MenuIcons45(Fixture,unittest.TestCase):
   self.assertEqual(len(w.getControl(810).items),7);self.assertTrue(all(v.art.get('icon') for v in w.getControl(810).items));self.assertEqual(w.getFocusId(),810)
  def test_all_owned_native_select_calls_are_decorated_or_already_icon_listitems(self):
   exceptions={'menu_icons45.py','stream_details.py'}
+  # #255 explicitly requires the three wizard pickers to stay plain text.
+  neutral={('setup_wizard.py','select','tr(32771)'),('setup_window.py','multiselect','tr(32706)'),('setup_window.py','select','tr(32736)')};found=set()
   for p in LIB.glob('*.py'):
    if p.name in exceptions:continue
    for n in ast.walk(ast.parse(p.read_text())):
     if not isinstance(n,ast.Call) or not isinstance(n.func,ast.Attribute) or n.func.attr not in ('select','multiselect'):continue
     v=n.func.value
     own=isinstance(v,ast.Call) and isinstance(v.func,ast.Attribute) and v.func.attr=='Dialog' or isinstance(v,ast.Name) and v.id in ('d','dialog','dlg')
+    signature=(p.name,n.func.attr,ast.unparse(n.args[0]) if n.args else '')
+    if own and signature in neutral:
+     self.assertNotIn(signature,found);found.add(signature);continue
     self.assertFalse(own,(p.name,n.lineno))
+  self.assertEqual(found,neutral)

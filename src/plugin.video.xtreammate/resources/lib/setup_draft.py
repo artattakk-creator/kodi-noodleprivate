@@ -137,15 +137,17 @@ class Draft:
                     from import_budget import check_space
                     check_space(destination.execute('PRAGMA database_list').fetchone()[2],sum(sum(len(str(v)) for v in row) for row in batch)*4)
                     with destination: destination.executemany(query,[tuple(row) for row in batch])
+                    self._save_status(None,self._save_copy_text)
         finally: db.close()
 
     def _signature(self):
         return json.dumps([sorted((kind,sorted(self.selected[kind])) for kind in KINDS),
                            self.provider_epg,self.epg_sources],sort_keys=True)
 
-    def save(self,cancel=lambda:False):
+    def save(self,cancel=lambda:False,status=lambda *a:None):
         if not self._save_guard.acquire(blocking=False): raise SaveError('XM-SETUP-SAVE-BUSY')
         try:
+            self._save_status=status;self._save_copy_text=tr(36505);status(0,tr(32716))
             if self.saved: raise SaveError('XM-SETUP-SAVE-BUSY')
             if not self.scanned or self._scan_signature!=self._signature(): raise SaveError('XM-SETUP-RESCAN')
             return self._save(cancel)
@@ -275,6 +277,7 @@ class Draft:
                         for folder in set((cache_dir(),_private_cache_dir())):
                             self._files.add(os.path.join(folder,_disk_ck(self.pid)+'.json'))
                         _save_disk(self.pid,snapshot,notify=False);_mem_set(self.pid,snapshot)
+                self._save_status(None,tr(36506))
                 self._verify()
                 if self._guide_publish48:
                     from setup_epg48 import verify as verify_epg48

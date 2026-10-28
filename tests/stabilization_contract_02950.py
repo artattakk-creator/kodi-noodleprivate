@@ -15,6 +15,8 @@ def data50():
     return hooks,hashes
 
 def without_widget50(source,module):
+    from stabilization_contract_02951 import without_wizard51
+    source=without_wizard51(source,module)
     binary=isinstance(source,bytes);raw=source if binary else source.encode()
     hooks,hashes=data50()
     paths=[p for p in hooks if p==str(module) or p.endswith('/'+str(module).removesuffix('.py')+'.py')]

@@ -1,3 +1,9 @@
+0.1.29.51
+- Wizard: bestätigte Übernahme der neuen Portal-Settings, fehlende Angaben ergänzen.
+- Gruppenlisten lazy und in begrenzten Owner-Pump-Schritten; Auswahl ohne Add-on-Abfragen pro Zeile.
+- Neutrale Wizard-Schaltflächen, sichtbarer Fortschritt, sichere Abbruch-/Worker-Sperre.
+- Bestehende Portale, Daten und Live-TV-/BINGIE-Funktionen unverändert. Android-Abnahme offen.
+
 0.1.29.50 (explicit BINGIE Home integration; Android NOT_TESTED)
 - #252: three direct Live TV / Movies / Series choices prepare a verified native
   Skinshortcuts Home slot. Preserve occupied movie/series bindings and reload hooks.

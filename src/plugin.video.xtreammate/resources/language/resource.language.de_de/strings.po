@@ -4536,3 +4536,31 @@ msgstr "Dieses Home-Profil lässt sich nicht sicher direkt bearbeiten (noch nich
 msgctxt "#36429"
 msgid "Open native BINGIE setup"
 msgstr "Native BINGIE-Einrichtung öffnen"
+
+msgctxt "#36500"
+msgid "Use the configured credentials? Values from XCMate → Configure will be used for a new setup without displaying them here. Existing portals are preserved. Missing values can be completed."
+msgstr "Vorhandene Zugangsdaten verwenden? Die Angaben aus XCMate → Konfigurieren werden für eine neue Einrichtung übernommen, ohne sie hier anzuzeigen. Bestehende Portale bleiben erhalten. Fehlende Angaben können ergänzt werden."
+
+msgctxt "#36501"
+msgid "A previous setup job is still closing. Please wait briefly and reopen the wizard."
+msgstr "Ein vorheriger Einrichtungsauftrag wird noch beendet. Bitte kurz warten und den Assistenten erneut öffnen."
+
+msgctxt "#36502"
+msgid "Setup timed out. Cancellation has been requested. Existing portals are preserved. Check your connection and reopen; a running job will not be started twice."
+msgstr "Zeitüberschreitung bei der Einrichtung. Der Auftrag wurde zum Abbruch aufgefordert. Bereits gespeicherte Portale bleiben erhalten. Bitte Verbindung prüfen und erneut öffnen; ein noch laufender Auftrag wird nicht doppelt gestartet."
+
+msgctxt "#36503"
+msgid "Displaying groups: {0} / {1}"
+msgstr "Gruppen anzeigen: {0} / {1}"
+
+msgctxt "#36504"
+msgid "Updating selection markers …"
+msgstr "Auswahlmarkierungen werden aktualisiert …"
+
+msgctxt "#36505"
+msgid "Saving setup: transferring data in verified batches …"
+msgstr "Einrichtung speichern: Daten werden in geprüften Blöcken übertragen …"
+
+msgctxt "#36506"
+msgid "Saving setup: verifying saved data and index …"
+msgstr "Einrichtung speichern: gespeicherte Daten und Index prüfen …"
