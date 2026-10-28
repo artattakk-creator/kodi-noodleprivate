@@ -4414,5 +4414,125 @@ msgid "Save widgets in BINGIE: instructions"
 msgstr "Widgets in BINGIE speichern: Anleitung"
 
 msgctxt "#36306"
-msgid "1. Open the desired home row in BINGIE widget configuration. Keep existing working rows. 2. Browse Video add-ons > XCMate > Settings > Appearance and display > Widgets and open Live TV, Movies or Series. 3. Choose Use as widget for the opened source and confirm the BINGIE configuration. BINGIE saves the binding; browsing XCMate alone does not save it."
-msgstr "1. In der BINGIE-Widget-Konfiguration die gewünschte Startseitenreihe öffnen. Bestehende funktionierende Reihen beibehalten. 2. Unter Video-Add-ons > XCMate > Einstellungen > Aussehen und Darstellung > Widgets die Quelle Live-TV, Filme oder Serien öffnen. 3. Für den geöffneten Quellordner Als Widget verwenden wählen und die BINGIE-Konfiguration bestätigen. BINGIE speichert die Verknüpfung; das Durchstöbern von XCMate allein speichert sie noch nicht."
+msgid "1. Open the desired home row in BINGIE widget configuration. Keep existing working rows. 2. For legacy folders, use the context menu Legacy widget source folders under XCMate > Settings > Appearance and display > Widgets, and open the source in BINGIE. 3. Choose Use as widget for the opened source and confirm the BINGIE configuration. BINGIE saves the binding; browsing XCMate alone does not save it."
+msgstr "1. In der BINGIE-Widget-Konfiguration die gewünschte Startseitenreihe öffnen. Bestehende funktionierende Reihen beibehalten. 2. Für bisherige Quellordner unter XCMate > Einstellungen > Aussehen und Darstellung > Widgets das Kontextmenü Bisherige Widget-Quellordner nutzen und die Quelle in BINGIE öffnen. 3. Für den geöffneten Quellordner Als Widget verwenden wählen und die BINGIE-Konfiguration bestätigen. BINGIE speichert die Verknüpfung; das Durchstöbern von XCMate allein speichert sie noch nicht."
+
+msgctxt "#36400"
+msgid "Choose a widget, select a free BINGIE Home position, review the backup and explicitly save. Existing rows are kept."
+msgstr "Widget wählen, freie BINGIE-Home-Position auswählen, Sicherung prüfen und ausdrücklich speichern. Vorhandene Reihen bleiben erhalten."
+
+msgctxt "#36401"
+msgid "Prepare BINGIE Home layout"
+msgstr "BINGIE-Home-Layout prüfen/vorbereiten"
+
+msgctxt "#36402"
+msgid "Restore a verified widget backup"
+msgstr "Verifizierte Widget-Sicherung zurückrollen"
+
+msgctxt "#36403"
+msgid "Legacy widget source folders"
+msgstr "Bisherige Widget-Quellordner"
+
+msgctxt "#36404"
+msgid "The Live Home layout has not been activated. Prepare and review the four-file skin patch first. Nothing is applied without a separate explicit confirmation. After the native rebuild, choose Live TV again to link the Home row."
+msgstr "Das Live-Home-Layout ist noch nicht aktiviert. Zuerst den Skinpatch für vier Dateien vorbereiten und prüfen. Ohne separate ausdrückliche Bestätigung wird nichts angewandt. Nach dem nativen Neuaufbau Live-TV erneut wählen und die Home-Reihe verknüpfen."
+
+msgctxt "#36405"
+msgid "Next:"
+msgstr "Danach:"
+
+msgctxt "#36406"
+msgid "This widget is already linked at Home position {0}. Existing title and refresh hooks are kept."
+msgstr "Dieses Widget ist bereits auf Home-Position {0} verknüpft. Vorhandener Titel und Aktualisierungsauslöser bleiben erhalten."
+
+msgctxt "#36407"
+msgid "No free Home position is available. No existing widget was overwritten. Manage the desired row in BINGIE first."
+msgstr "Keine freie Home-Position verfügbar. Kein vorhandenes Widget wurde überschrieben. Die gewünschte Reihe zuerst in BINGIE verwalten."
+
+msgctxt "#36408"
+msgid "Home position {0}"
+msgstr "Home-Position {0}"
+
+msgctxt "#36409"
+msgid "explicitly upgrade existing XCMate Live TV"
+msgstr "vorhandenes XCMate-Live-TV ausdrücklich umstellen"
+
+msgctxt "#36410"
+msgid "Change not confirmed: {0}. Unknown profiles and later external changes are not overwritten. After an interruption, use the verified backup rollback."
+msgstr "Änderung nicht bestätigt: {0}. Unbekannte Profile und spätere fremde Änderungen werden nicht überschrieben. Nach einer Unterbrechung die verifizierte Sicherung zurückrollen."
+
+msgctxt "#36411"
+msgid "Choose the BINGIE Home destination"
+msgstr "BINGIE-Home-Ziel auswählen"
+
+msgctxt "#36412"
+msgid "{0} → Home position {1}. A private original backup and rollback roundtrip have been verified. Only this selected slot is changed. Before SHA256: {2} After SHA256: {3}. Save this binding now?"
+msgstr "{0} → Home-Position {1}. Private Originalsicherung und Rücksicherungsprüfung sind verifiziert. Nur diese ausgewählte Position wird verändert. SHA256 vorher: {2} SHA256 nachher: {3}. Diese Verknüpfung jetzt speichern?"
+
+msgctxt "#36413"
+msgid "Explicit approval for this reviewed change"
+msgstr "Ausdrückliche Freigabe dieser geprüften Änderung"
+
+msgctxt "#36414"
+msgid "Yes, save this binding"
+msgstr "Ja, diese Verknüpfung speichern"
+
+msgctxt "#36415"
+msgid "Saved and verified; native BINGIE rebuild requested. Home display still needs device acceptance."
+msgstr "Gespeichert und verifiziert; nativer BINGIE-Neuaufbau angefordert. Home-Anzeige muss noch am Gerät geprüft werden."
+
+msgctxt "#36416"
+msgid "The verified Live Home patch is already active. Choose Live TV in Widgets to link a Home position."
+msgstr "Der verifizierte Live-Home-Patch ist bereits aktiv. Unter Widgets Live-TV wählen und eine Home-Position verknüpfen."
+
+msgctxt "#36417"
+msgid "Review only: four known BINGIE 2.2.3 files receive the Home Hero/station strip and native widget candidates. Movie/series rendering, bindings and settings remain unchanged. Exact originals, candidates and rollback tests are saved privately. File checksums follow. Nothing has been applied yet."
+msgstr "Nur Vorschau: Vier bekannte BINGIE-2.2.3-Dateien erhalten Home-Hero/Senderleiste und native Widgetkandidaten. Film-/Seriendarstellung, Verknüpfungen und Einstellungen bleiben erhalten. Exakte Originale, Kandidaten und Rücksicherungsprüfungen sind privat gesichert. Danach folgen die Datei-Prüfsummen. Es wurde noch nichts angewandt."
+
+msgctxt "#36418"
+msgid "Apply only these four reviewed skin changes now? Verified backups remain available for rollback. The native BINGIE builder will rebuild Home; no reset or profile cleanup is performed. Cancel keeps the current skin intact."
+msgstr "Nur diese vier geprüften Skinänderungen jetzt anwenden? Verifizierte Sicherungen bleiben zum Rückrollen verfügbar. Der native BINGIE-Generator baut Home neu; kein Reset und keine Profilbereinigung. Abbrechen lässt den aktuellen Skin unverändert."
+
+msgctxt "#36419"
+msgid "Yes, approve these four skin files"
+msgstr "Ja, diese vier Skindateien freigeben"
+
+msgctxt "#36420"
+msgid "Widget binding backup"
+msgstr "Widgetverknüpfung"
+
+msgctxt "#36421"
+msgid "Home skin backup"
+msgstr "Home-Skinanpassung"
+
+msgctxt "#36422"
+msgid "No applied or interrupted .50 change is available to restore."
+msgstr "Keine angewandte oder unterbrochene .50-Änderung zum Rückrollen vorhanden."
+
+msgctxt "#36423"
+msgid "Restore the verified original only if all target files still match this plan? Later external changes are never overwritten."
+msgstr "Verifiziertes Original nur wiederherstellen, wenn alle Zieldateien noch zu diesem Plan passen? Spätere fremde Änderungen werden niemals überschrieben."
+
+msgctxt "#36424"
+msgid "Yes, restore this original"
+msgstr "Ja, dieses Original wiederherstellen"
+
+msgctxt "#36425"
+msgid "Original restored and verified; native BINGIE rebuild requested."
+msgstr "Original wiederhergestellt und verifiziert; nativer BINGIE-Neuaufbau angefordert."
+
+msgctxt "#36426"
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgctxt "#36427"
+msgid "Save the reviewed {0} binding to Home position {1} now? The verified original remains available for rollback."
+msgstr "Die geprüfte Verknüpfung {0} jetzt auf Home-Position {1} speichern? Das verifizierte Original bleibt zum Rückrollen verfügbar."
+
+msgctxt "#36428"
+msgid "This Home profile cannot safely be edited directly (not yet saved, renamed Home or single-widget mode). Open the native BINGIE editor? Choose the desired Home widget position there. After the separately approved Home patch, the direct XCMate candidates appear in its widget selector. No reset is needed."
+msgstr "Dieses Home-Profil lässt sich nicht sicher direkt bearbeiten (noch nicht gespeichert, Home umbenannt oder Einzelwidget-Modus). Den nativen BINGIE-Editor öffnen? Dort die gewünschte Home-Position wählen. Nach dem separat freigegebenen Home-Patch stehen die direkten XCMate-Kandidaten in seiner Widgetauswahl bereit. Kein Reset erforderlich."
+
+msgctxt "#36429"
+msgid "Open native BINGIE setup"
+msgstr "Native BINGIE-Einrichtung öffnen"

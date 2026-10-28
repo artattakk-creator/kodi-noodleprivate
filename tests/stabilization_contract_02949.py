@@ -9,11 +9,14 @@ def data49():
     hooks=json.loads((root/'xcmate_02949_reviewed_hooks.json').read_text())['modules']
     hashes={}
     for file in root.glob('xcmate_029*_protection.json'):
+        if file.name>'xcmate_02949_protection.json':continue
         for path,digest in json.loads(file.read_text()).get('source_sha256',{}).items():
             hashes.setdefault(path,set()).add(digest)
     return hooks,hashes
 
 def without_widget49(source,module):
+    from stabilization_contract_02950 import without_widget50
+    source=without_widget50(source,module)
     binary=isinstance(source,bytes);raw=source if binary else source.encode()
     hooks,hashes=data49()
     paths=[p for p in hooks if p==str(module) or p.endswith('/'+str(module).removesuffix('.py')+'.py')]

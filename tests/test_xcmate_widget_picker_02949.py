@@ -27,7 +27,7 @@ class WidgetPicker49(Fixture,unittest.TestCase):
         return list(self.added)
 
     def source_directory(self):
-        return self.directory(self.router.url(action='widget_setup',pid='p'))
+        return self.directory(self.router.url(action='widget_sources49',pid='p'))
 
     def test_requested_german_path_and_first_three_sources_are_actual_folders(self):
         from settings_sections45 import render
@@ -141,7 +141,8 @@ class WidgetPicker49(Fixture,unittest.TestCase):
         def create(values):
             item=ListItem(values[1]);item.setProperty('path',values[0]);return item
         explorer.create=create
-        root='plugin://plugin.video.xtreammate/'
+        # .50 preserves the .49 source browser as an explicit compatibility route.
+        root='plugin://plugin.video.xtreammate/?action=widget_sources49&pid=p'
         result=explorer.explorer([root],root,['XCMate'],[''],'32014',is_widget=True)
         self.assertFalse(pending)
         return result
@@ -149,7 +150,7 @@ class WidgetPicker49(Fixture,unittest.TestCase):
     def test_pinned_upstream_explorer_browses_all_three_sources_and_creates_exact_bindings(self):
         for _,action,_ in self.sources.SOURCES:
             with self.subTest(action=action):
-                result=self.reference_explorer(['settings_home','appearance','widget_setup',action,'::CREATE::'])
+                result=self.reference_explorer([action,'::CREATE::'])
                 expected=self.router.url(action=action,pid='p')
                 self.assertEqual(result.getProperty('widgetPath'),expected)
                 self.assertEqual(result.getProperty('widget'),'Addon')
@@ -163,7 +164,7 @@ class WidgetPicker49(Fixture,unittest.TestCase):
                 self.assertNotIn('SECRET',json.dumps(saved));self.assertFalse(self.builtins)
 
     def test_pinned_upstream_picker_cancel_returns_no_new_binding(self):
-        self.assertIsNone(self.reference_explorer(['settings_home','appearance','widget_setup',None]))
+        self.assertIsNone(self.reference_explorer([None]))
         self.assertFalse(self.options);self.assertFalse(self.builtins)
 
     def test_reference_excerpt_and_license_are_pinned_and_device_gap_is_explicit(self):
