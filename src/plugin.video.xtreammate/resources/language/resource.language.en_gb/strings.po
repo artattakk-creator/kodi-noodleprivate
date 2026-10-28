@@ -914,8 +914,8 @@ msgid "Language / appearance / content filters"
 msgstr "Language / appearance / content filters"
 
 msgctxt "#32443"
-msgid "Set up BINGIE MOD widgets"
-msgstr "Set up BINGIE MOD widgets"
+msgid "Widgets"
+msgstr "Widgets"
 
 msgctxt "#32444"
 msgid "Widget source 1: live TV from start channel group"
@@ -4134,8 +4134,8 @@ msgid "Media & playback"
 msgstr "Media & playback"
 
 msgctxt "#36004"
-msgid "Appearance & controls"
-msgstr "Appearance & controls"
+msgid "Appearance and display"
+msgstr "Appearance and display"
 
 msgctxt "#36005"
 msgid "System & storage"
@@ -4388,3 +4388,31 @@ msgstr "No movies in the selected local catalog"
 msgctxt "#36201"
 msgid "Movie index unavailable – see Widgets status"
 msgstr "Movie index unavailable – see Widgets status"
+
+msgctxt "#36300"
+msgid "Live TV - start group"
+msgstr "Live TV - start group"
+
+msgctxt "#36301"
+msgid "Movies - latest movies"
+msgstr "Movies - latest movies"
+
+msgctxt "#36302"
+msgid "Series - latest series"
+msgstr "Series - latest series"
+
+msgctxt "#36303"
+msgid "Existing widget status and additional functions"
+msgstr "Existing widget status and additional functions"
+
+msgctxt "#36304"
+msgid "Open this source in BINGIE widget configuration, then choose Use as widget and confirm the skin configuration. Existing bindings are not overwritten by XCMate."
+msgstr "Open this source in BINGIE widget configuration, then choose Use as widget and confirm the skin configuration. Existing bindings are not overwritten by XCMate."
+
+msgctxt "#36305"
+msgid "Save widgets in BINGIE: instructions"
+msgstr "Save widgets in BINGIE: instructions"
+
+msgctxt "#36306"
+msgid "1. Open the desired home row in BINGIE widget configuration. Keep existing working rows. 2. Browse Video add-ons > XCMate > Settings > Appearance and display > Widgets and open Live TV, Movies or Series. 3. Choose Use as widget for the opened source and confirm the BINGIE configuration. BINGIE saves the binding; browsing XCMate alone does not save it."
+msgstr "1. Open the desired home row in BINGIE widget configuration. Keep existing working rows. 2. Browse Video add-ons > XCMate > Settings > Appearance and display > Widgets and open Live TV, Movies or Series. 3. Choose Use as widget for the opened source and confirm the BINGIE configuration. BINGIE saves the binding; browsing XCMate alone does not save it."

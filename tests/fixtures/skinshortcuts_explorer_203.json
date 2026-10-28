@@ -1,0 +1,21 @@
+{
+  "repository": "MikeSiLVO/script.skinshortcuts",
+  "commit": "3816843a8069d237d38f13f3d0cbd991677dff28",
+  "path": "resources/lib/skinshorcuts/library.py",
+  "source_sha256": "5e236f9ecef06bd91cd5df21f34e701d8bc0614cf9f6d4c4fb074ad3e06cabab",
+  "excerpt_sha256": "0bffb6fe15dc81d4eda0214b5ee4be02c63aff256fcba8147b274d08f8371943",
+  "methods": [
+    "explorer",
+    "_detect_plugin_content"
+  ],
+  "license": "GPL-2.0-only",
+  "android": "NOT_TESTED",
+  "skin_reference": {
+    "repository": "AchillesPunks/skin.titan.bingie.mod",
+    "commit": "1197a8e421b2836a1c18ea7223b5b6a1f4f2d7ff",
+    "version": "2.2.2",
+    "device_version": "2.2.3",
+    "same_installed_files": false
+  },
+  "license_file_sha256": "4202d4fb329f58c83ba921b56d7071e37f7df3f15b3820a3a04ef8eee49f54d2"
+}
