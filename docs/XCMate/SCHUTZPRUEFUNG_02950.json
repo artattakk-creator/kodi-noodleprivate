@@ -1,0 +1,30 @@
+{
+  "base": "bc278a32a0e9a3bc8763189c09ffa9195d4dddf3",
+  "source_commit": "7015628534fc7a96afb363480c692cd3df640f38",
+  "original_files": 566,
+  "unchanged": 560,
+  "exact_reviewed_changes": [
+    "src/plugin.video.xtreammate/addon.xml",
+    "src/plugin.video.xtreammate/changelog.txt",
+    "src/plugin.video.xtreammate/resources/language/resource.language.de_de/strings.po",
+    "src/plugin.video.xtreammate/resources/language/resource.language.en_gb/strings.po",
+    "src/plugin.video.xtreammate/resources/lib/app_routes.py",
+    "src/plugin.video.xtreammate/resources/lib/widget_entry46.py"
+  ],
+  "added": [
+    "src/plugin.video.xtreammate/resources/bingie50/IncludesXCMate50.xml",
+    "src/plugin.video.xtreammate/resources/bingie50_reference.json",
+    "src/plugin.video.xtreammate/resources/lib/widget_binding50.py",
+    "src/plugin.video.xtreammate/resources/lib/widget_home50.py",
+    "src/plugin.video.xtreammate/resources/lib/widget_manager50.py",
+    "src/plugin.video.xtreammate/resources/lib/widget_skin50.py",
+    "src/plugin.video.xtreammate/resources/lib/widget_transaction50.py"
+  ],
+  "removed": [],
+  "retained_test_methods": 2035,
+  "development_device_actions": 0,
+  "development_skin_writes": 0,
+  "application": "Runtime only after explicit local user approval, private backup and hash verification",
+  "foreign_wip_unchanged": 62,
+  "android": "NOT_TESTED"
+}

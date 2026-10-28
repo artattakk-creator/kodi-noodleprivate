@@ -1,0 +1,31 @@
+{
+  "version": "0.1.29.50",
+  "source_commit": "7015628534fc7a96afb363480c692cd3df640f38",
+  "files": 573,
+  "bytes": 3090209,
+  "sha256": "399e5d98bd3cd940cf4073afe899abc40f5b9f5c359c5ac177f17eb70acb59a8",
+  "crc": "PASS",
+  "safe_paths": "PASS",
+  "all_source_bytes": "PASS",
+  "python_ast": "PASS",
+  "independent_deterministic_rebuild": "PASS",
+  "android": {
+    "not_tested": 12,
+    "passed": 0
+  },
+  "production_publish": false,
+  "tests": 2078,
+  "seconds": 318.062,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "previous_tests_retained": 2035,
+  "new_tests": 43,
+  "historical_049_android": "FAIL per user issue #252",
+  "skin_activation": "Not applied on any device; separate explicit user confirmation required",
+  "skin_review_sha256": "b09e3203c6ae9f613ed62e0148177884c18eaf14ccbf9497dedff9b049c14600",
+  "ci": "Exact final delivery HEAD/run and outcome in Draft-PR checks/body; no automatic merge/release",
+  "raw_host_log_sha256": "1948ada36fcd2d9e0a13e57c47258b45c8bedec28e18e642029adcaca816c0dd",
+  "published_host_log_sha256": "b988ad28db7452dd5b8b5a9d15c0172861dad49e6372c3018a8b90d61b646b51",
+  "independent_skin_review_rebuild": "PASS"
+}

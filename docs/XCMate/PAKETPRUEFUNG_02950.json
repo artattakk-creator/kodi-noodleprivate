@@ -1,0 +1,14 @@
+{
+  "version": "0.1.29.50",
+  "source_commit": "7015628534fc7a96afb363480c692cd3df640f38",
+  "files": 573,
+  "bytes": 3090209,
+  "sha256": "399e5d98bd3cd940cf4073afe899abc40f5b9f5c359c5ac177f17eb70acb59a8",
+  "crc": "PASS",
+  "safe_paths": "PASS",
+  "all_source_bytes": "PASS",
+  "python_ast": "PASS",
+  "independent_deterministic_rebuild": "PASS",
+  "android": "NOT_TESTED",
+  "production_publish": false
+}
