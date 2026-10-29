@@ -1,3 +1,10 @@
+0.1.29.57
+- Sendungsbilder automatisch über den installierten TMDb Helper vorbereiten, ohne eigenen XCMate-API-Token.
+- Eindeutige Film-/Serienidentität prüfen; vorhandene Katalogbilder bevorzugen, Episodenbilder und gekennzeichneten Serienbild-Ersatz unterscheiden.
+- Dieselbe gespeicherte Bildadresse für EPG-Details und Live-Hero; keine Metadatensuche bei Fokus, Home oder Detailaufruf.
+- Begrenzte Hintergrundabfragen, feste Fehlercodes und Schutz vor parallelen Timeout-Jobs.
+- Widget-Ordner und Routing, Wizard .54, Portale, Passwörter, EPG-Zuordnungen und Player-Einstellungen bleiben erhalten.
+
 0.1.29.56
 - Bestehender Ordner Widgets und sämtliche Widget-Routen/URLs bleiben erhalten.
 - Film-/Serienwidgets lesen Kataloge auch bei blockierter Snapshot-Speicherung; typgerechte Serienmetadaten und Poster.

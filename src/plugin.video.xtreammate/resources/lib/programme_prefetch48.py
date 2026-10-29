@@ -40,8 +40,14 @@ def prepare(portal,rows,cancel=lambda:False):
             upcoming=[v for v in info.get('events',[]) if v.get('start',0)>event.get('start',0)]
             selected=upcoming[:1]
             if len(upcoming)>1:
-                cursor=(key,str(row['sid']));pos56=_future56.get(cursor,0)%(len(upcoming)-1)
-                selected.append(upcoming[1+pos56]);_future56[cursor]=pos56+1
+                # The already-read bounded local page, not a second feed scan:
+                # prepare explicitly classified announced films/episodes first.
+                def priority57(value):
+                    genre=str(value.get('genre') or value.get('category') or '').casefold()
+                    return 0 if any(v in genre for v in ('spielfilm','movie','film')) else 1 if value.get('season') and value.get('episode') else 2
+                later57=sorted(upcoming[1:],key=priority57)
+                cursor=(key,str(row['sid']));pos56=_future56.get(cursor,0)%len(later57)
+                selected.append(later57[pos56]);_future56[cursor]=pos56+1
                 if len(_future56)>1024:_future56.pop(next(iter(_future56)))
             for following in selected:
                 future=describe(portal,row,following,event.get('canonical',''),revision)

@@ -4588,3 +4588,15 @@ msgstr "NOW"
 msgctxt "#36532"
 msgid "Changes:"
 msgstr "Changes:"
+
+msgctxt "#36540"
+msgid "Programme images from installed TMDb Helper (no personal API token)"
+msgstr "Programme images from installed TMDb Helper (no personal API token)"
+
+msgctxt "#36541"
+msgid "Reuse safely matched images from existing media catalogues"
+msgstr "Reuse safely matched images from existing media catalogues"
+
+msgctxt "#36542"
+msgid "Series image (not an episode still)"
+msgstr "Series image (not an episode still)"

@@ -4588,3 +4588,15 @@ msgstr "JETZT"
 msgctxt "#36532"
 msgid "Changes:"
 msgstr "Änderungen:"
+
+msgctxt "#36540"
+msgid "Programme images from installed TMDb Helper (no personal API token)"
+msgstr "Sendungsbilder über installierten TMDb Helper (ohne eigenen API-Token)"
+
+msgctxt "#36541"
+msgid "Reuse safely matched images from existing media catalogues"
+msgstr "Sicher zugeordnete Bilder aus vorhandenen Medienkatalogen verwenden"
+
+msgctxt "#36542"
+msgid "Series image (not an episode still)"
+msgstr "Serienbild (kein Episodenbild)"

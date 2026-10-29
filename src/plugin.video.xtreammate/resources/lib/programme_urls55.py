@@ -65,7 +65,10 @@ def display(event,value):
     if not isinstance(until,(int,float)) or not time.time()<until<time.time()+8*86400:return None
     if value.get('source')=='placeholder':return dict(value,image=event['placeholder'])
     url=value.get('source_url','')
-    if not safe(url) or value.get('match') not in ('EXACT_EVENT','EXACT_TITLE_YEAR','EXACT_SEASON_EPISODE','EXACT_UNIQUE_FILM_TITLE'):return None
+    from programme_sources57 import PROOFS,policy
+    if value.get('source')=='tmdb_helper' and not policy()[0]:return None
+    if value.get('source') in ('xcmate_catalog','kodi_library') and not policy()[1]:return None
+    if not safe(url) or value.get('match') not in ('EXACT_EVENT','EXACT_TITLE_YEAR','EXACT_SEASON_EPISODE','EXACT_UNIQUE_FILM_TITLE')+PROOFS:return None
     return dict(value,image=url+OPTIONS,thumbnail=url+OPTIONS)
 
 
@@ -113,10 +116,12 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None):
     from programme_index46 import art,event as save_event
     from programme_art46 import fingerprint,remember
     from media_sources43 import SourceError
+    from programme_sources57 import PROOFS,policy,attempts,trace as source_trace
+    from helper_rpc57 import Error as HelperError
     old=art(event)
     current=display(event,old)
     if current and not (allow_lookup and current.get('source')=='placeholder' and
-            (current.get('code')=='AWAITING_BACKGROUND_REFRESH' or not current.get('matching_policy56'))):return current
+            (current.get('code')=='AWAITING_BACKGROUND_REFRESH' or not current.get('matching_policy57') or current.get('source_policy57')!=policy())):return current
     if cancel():return None
     now=time.time()
     value=dict(key=event['key'],fingerprint=fingerprint(event),binding55=binding(event),url_version55=1,
@@ -124,26 +129,48 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None):
                resolved_at55=now,until=now+300,tvspielfilm55='BLOCKED_NO_AUTHORIZED_API')
     value.update(hosts55=sorted(hosts()),profile55=profile())
     value['matching_policy56']=1
+    value.update(matching_policy57=1,source_policy57=policy())
     candidates=[dict(url=event[field],source=source,match='EXACT_EVENT',attribution=credit)
                 for field,source,credit in (('xmltv_image','xmltv_event','XMLTV – konfigurierte Eventquelle'),
                     ('provider_image','provider_event','Anbieter – konfigurierte Eventquelle')) if event.get(field)]
-    if old and old.get('source_url') and old.get('source') in ('xmltv_event','provider_event','tmdb_movie','tmdb_episode'):
-        candidates.append(dict(url=old['source_url'],source=old['source'],match=old.get('match','NONE'),attribution=old.get('attribution','')))
-    for candidate in candidates+[None]:
+    if old and old.get('source_url') and old.get('source') in ('xmltv_event','provider_event','tmdb_movie','tmdb_episode','tmdb_helper','xcmate_catalog','kodi_library'):
+        source=old.get('source')
+        enabled=source!='tmdb_helper' or policy()[0]
+        enabled=enabled and (source not in ('xcmate_catalog','kodi_library') or policy()[1])
+        if enabled:candidates.append(dict(url=old['source_url'],source=source,match=old.get('match','NONE'),attribution=old.get('attribution',''),
+            **{k:old[k] for k in ('image_scope57','helper_version57','matched_year56','provider_id') if k in old}))
+    def failed(reason):
+        if value['code']=='NO_IMAGE':value['code']=reason
+        else:value['lookup_code56']=reason
+        source_trace(event,reason)
+    def supplied():
+        yield from candidates
+        if not allow_lookup:return
+        deferred=[]
+        steps=[lambda:match(event,cancel=cancel)] if match else attempts(event,cancel)
+        for find in steps:
+            if cancel():return
+            started=time.monotonic()
+            try:found=find()
+            except (SourceError,HelperError) as exc:
+                failed(exc.code);continue
+            if found:
+                if found.get('source')=='tmdb_helper':source_trace(event,'HELPER_LOOKUP_OK',duration_ms=(time.monotonic()-started)*1000)
+                fallback=found.get('series_fallback57')
+                if isinstance(fallback,dict):deferred.append(fallback)
+                if event.get('season') and event.get('episode') and found.get('image_scope57')=='series_fallback':
+                    deferred.append(found);continue
+                yield found
+                for alternate in found.get('alternate_urls57',[])[:2]:yield dict(found,url=alternate)
+        for found in deferred:  # generic series art never masks an exact still
+            yield found
+            for alternate in found.get('alternate_urls57',[])[:2]:yield dict(found,url=alternate)
+        from programme_match46 import diagnose
+        if value['code']=='NO_IMAGE':failed(diagnose(event))
+        elif 'lookup_code56' not in value:value['lookup_code56']=diagnose(event)
+    for candidate in supplied():
         if cancel():return None
-        if candidate is None:
-            if not allow_lookup:continue
-            try:
-                from programme_match46 import candidate as lookup
-                candidate=(match or lookup)(event,cancel=cancel)
-            except SourceError as exc:value['code']=exc.code;continue
-            if not candidate:
-                from programme_match46 import diagnose
-                reason=diagnose(event)
-                if value['code']=='NO_IMAGE':value['code']=reason
-                else:value['lookup_code56']=reason
-                continue
-        if candidate.get('match') not in ('EXACT_EVENT','EXACT_TITLE_YEAR','EXACT_SEASON_EPISODE','EXACT_UNIQUE_FILM_TITLE'):continue
+        if candidate.get('match') not in ('EXACT_EVENT','EXACT_TITLE_YEAR','EXACT_SEASON_EPISODE','EXACT_UNIQUE_FILM_TITLE')+PROOFS:continue
         url=candidate.get('url','')
         if not safe(url):value['code']='BLOCKED_IMAGE_HOST_OR_URL';continue
         from portals import get_by_id
@@ -159,12 +186,17 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None):
             source_url=url,image=url+OPTIONS,thumbnail=url+OPTIONS,
             attribution=candidate.get('attribution',''),until=min(now+86400,max(now+300,event['stop']+3600)))
         if candidate.get('matched_year56'):value['matched_year56']=candidate['matched_year56']
-        if candidate.get('remote_id'):value['provider_id']=candidate['remote_id']
+        if candidate.get('remote_id') or candidate.get('provider_id'):value['provider_id']=candidate.get('remote_id') or candidate['provider_id']
+        for field in ('image_scope57','helper_version57'):
+            if candidate.get(field):value[field]=candidate[field]
+        source_trace(event,'IMAGE_URL_VERIFIED')
         break
     if not candidates and not allow_lookup:value['code']='AWAITING_BACKGROUND_REFRESH'
+    if cancel():return None
     # A transient network failure may never extend or bless an expired URL.
     save_event(event,write=True)
     saved=art(event,value)
+    if saved is not None and value.get('code')=='READY':source_trace(event,'IMAGE_SHARED_EVENT')
     if saved is not None:remember(event['key'],value,verified47=True)
     return value if saved is not None else dict(value,code='PROGRAMME_DB_UNAVAILABLE',image=event['placeholder'],source='placeholder')
 
