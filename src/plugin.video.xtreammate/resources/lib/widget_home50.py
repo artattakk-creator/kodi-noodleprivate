@@ -3,15 +3,18 @@ from widget_items45 import item
 
 
 def rows(portal):
-    from widget_data41 import WidgetReader
+    from widget_movie47 import MovieReader
     from widget_group46 import pages
     from library_index import IndexReadError
     if not portal.get('include_live',True):return [],'DISABLED'
     cid=str(portal.get('start_group_id') or '')
     if not cid:return [],'START_GROUP_MISSING'
-    reader=WidgetReader(portal['id']);groups=reader.groups('live')
-    if cid not in {str(g.get('cid',g.get('category_id',''))) for g in groups}:return [],'START_GROUP_UNAVAILABLE'
-    start=reader.get('live',str(portal.get('start_stream_id') or ''))
+    reader=MovieReader(portal['id'],kind='live')
+    try:
+        groups=reader.groups('live')
+        if cid not in {str(g.get('cid',g.get('category_id',''))) for g in groups}:return [],'START_GROUP_UNAVAILABLE'
+        start=reader.get('live',str(portal.get('start_stream_id') or ''))
+    finally:reader.close()
     scoped=dict(portal,start_stream_id=str(start['sid']) if start and str(start.get('category_id'))==cid else '')
     values=[r for batch in pages(scoped) for r in batch]
     if any(str(r.get('category_id',''))!=cid for r in values):raise IndexReadError('FOREIGN_GROUP')
@@ -26,6 +29,12 @@ def values(portal):
         for value in render(portal,'live',selected[offset:offset+16],approved):
             value.pop('_programme46',None);value['props']['XCMate.Home50']='true'
             value['label']=value['props'].get('XCMate.ProgrammeChannel46') or value['label']
+            # The unpatched native source is a station row, even when no event
+            # image exists. Hero/details retain their shared ProgrammeImage46.
+            import os,xbmcaddon
+            logo=value['props'].get('XCMate.ProgrammeLogo46') or os.path.join(
+                xbmcaddon.Addon().getAddonInfo('path'),'resources','media','tv.png')
+            value['art'].update(poster=logo,thumb=logo,landscape=logo,icon=logo)
             result.append(value)
     return result,code
 

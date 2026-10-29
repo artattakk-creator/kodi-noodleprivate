@@ -124,9 +124,14 @@ class ProgrammeAssets47(Fixture,unittest.TestCase):
         path.unlink();self.assertFalse(self.assets.read_many('p','live',[row]).get('1'))
 
     def test_background_asset_approval_does_not_alter_successful_series_pipeline(self):
-        with mock.patch('artwork_visible.public_dns',side_effect=AssertionError('series changed')):
-            self.assets.prepare(self.portal,'series',[dict(self.row(),kind='series')])
-        self.assertFalse(Path(self.db.path()).exists())
+        # .56 shares optional series references too; existing local covers
+        # remain authoritative and neither require DNS nor get replaced.
+        path=self.folder/'existing series.png';path.write_bytes(self.png())
+        row=dict(self.row(),kind='series')
+        with mock.patch('artwork_config.persistent',return_value=True),mock.patch('media_art.cached',return_value=str(path)),mock.patch('artwork_visible.public_dns',side_effect=AssertionError('local series DNS')):
+            self.assets.prepare(self.portal,'series',[row])
+        self.assertEqual(self.assets.read_many('p','series',[row])['1']['poster'],str(path))
+        self.assertEqual(path.read_bytes(),self.png())
 
     def test_manual_save_keeps_original_and_registers_verified_extension_copy(self):
         choices=importlib.import_module('media_overrides43');data=self.png()

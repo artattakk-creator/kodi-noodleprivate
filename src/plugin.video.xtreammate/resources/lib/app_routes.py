@@ -450,7 +450,7 @@ def widget(router,portal,action):
     if kind in ('vod','series'):
         from media_overrides43 import apply_many
         rows=apply_many(portal['id'],rows)
-    if kind in ('live','vod'):
+    if kind in ('live','vod','series'):
         from programme_assets47 import read_many
         router._widget_assets47=read_many(portal['id'],kind,rows)
     if action=='widget_live_start_group':
@@ -484,9 +484,6 @@ def widget(router,portal,action):
         if not rows and kind=='vod':
             # An unavailable/empty directory is not a dummy XCMate movie tile.
             xbmcplugin.setPluginCategory(router._handle,tr(36200) if code in ('READY','CACHE') else tr(36201))
-        elif not rows and code not in ('READY','CACHE'):
-            router._add_dir(tr(35853),
-                            router.url(action='movies_home' if kind=='vod' else 'series_home',pid=portal['id']))
         # A poster row contains titles only. Old movies_home/series_home URLs
         # remain valid, but are not disguised as an extra film tile.
     widget_note47(portal['id'],kind,'ITEMS',code,**router._widget_counts47)

@@ -33,7 +33,8 @@ def small(reader,kind,category=None,limit=24,pin=None):
     if category is not None and str(category) not in allowed:return []
     # A title can be in many enabled groups. Bound thin candidates by that
     # multiplicity, not a fixed 4x payload limit which can yield only 2 titles.
-    cap=limit if kind=='vod' else min(4096,limit*max(1,len(allowed)))
+    points=kind=='vod' or kind=='series' and getattr(reader,'kind47','')=='series'
+    cap=limit if points else min(4096,limit*max(1,len(allowed)))
     where='i.pid=? AND i.kind=? AND i.cid IN(SELECT cid FROM selected_categories)';args=[reader.pid,kind]
     if category is not None:where+=' AND i.cid=?';args.append(str(category))
     v2index='group_order_v2' if kind=='live' and category is not None else 'recent_v2'
@@ -68,7 +69,7 @@ def small(reader,kind,category=None,limit=24,pin=None):
         legacy_where+=' AND t.cid NOT IN(SELECT cid FROM heads WHERE pid=? AND kind=?)'
         oldsql='''/* direct44 */ SELECT t.sid,t.cid,t.added,t.ordinal FROM titles t INDEXED BY '''+index+' WHERE '+legacy_where+' ORDER BY '+order+' LIMIT ?'
         old=reader._query(oldsql,args+[reader.pid,kind,cap],kind)
-    if kind=='vod':
+    if points:
         from widget_sql47 import expand_keys
         def fetch_old(wanted):return reader._query(oldsql,args+[reader.pid,kind,wanted],kind) if oldsql else []
         v2,old=expand_keys(v2,old,limit,cap,fetch_v2,fetch_old)
@@ -83,9 +84,9 @@ def small(reader,kind,category=None,limit=24,pin=None):
     for table in ('items_v2','titles'):
         records=[r for r in chosen if r['_table']==table]
         if not records:continue
-        if kind=='vod':
+        if points:
             from widget_sql47 import payloads as movie_payloads47
-            payloads.update(movie_payloads47(reader,records,table))
+            payloads.update(movie_payloads47(reader,records,table,kind=kind))
             continue
         clauses=[];parameters=[reader.pid,kind]
         for record in records:

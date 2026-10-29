@@ -11,7 +11,7 @@ def describe(portal,kind,row,approved,epg=None,assets47=None):
     from utils import setting_int
     import xbmcaddon
     image=art(row,approved);theme=snapshot()
-    if kind in ('live','vod') and assets47:
+    if kind in ('live','vod','series') and assets47:
         poster=assets47.get('poster');fanart=assets47.get('fanart')
         if poster:image.update(poster=poster,thumb=poster,icon=poster)
         if fanart:image.update(fanart=fanart,landscape=fanart)
@@ -33,7 +33,7 @@ def describe(portal,kind,row,approved,epg=None,assets47=None):
     info=dict(title=str(row['name']),plot=str(row.get('plot') or '')[:8192],mediatype={'vod':'movie','series':'tvshow','live':'video'}[kind])
     for key in ('genre','year','rating','duration'):
         if row.get(key) is not None:info[key]=row[key]
-    if kind=='vod':
+    if kind in ('vod','series'):
         # Provider numeric strings/duration text are not Kodi InfoTag values.
         # Reuse the normal movie contract; leave the successful series path.
         from media_data import video_info
@@ -41,6 +41,9 @@ def describe(portal,kind,row,approved,epg=None,assets47=None):
         for key in ('genre','year','rating','duration'):
             info.pop(key,None)
             if key in normalized:info[key]=normalized[key]
+        genre=info.get('genre')
+        if genre is not None and not (isinstance(genre,str) or isinstance(genre,list) and all(isinstance(g,str) for g in genre)):
+            info.pop('genre',None)
     if epg:
         from app_routes import guide_plot
         info['plot']=epg.get('_plot45') or guide_plot(epg)

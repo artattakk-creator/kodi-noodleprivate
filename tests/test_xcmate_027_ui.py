@@ -136,6 +136,11 @@ class NavigationTests(Fixture,unittest.TestCase):
                 self.assertFalse(self.added)
                 self.assertIn('Filmindex',sys.modules['xbmcplugin'].setPluginCategory.call_args.args[1])
                 continue
+            if action=='widget_recent_series':
+                # .56: an unavailable series index also stays honestly empty;
+                # no Settings icon masquerading as a series in a poster row.
+                self.assertFalse(self.added)
+                continue
             self.assertTrue(self.added)
             self.assertTrue(any('wird geladen' in li.label or 'nicht lokal verfügbar' in li.label or 'vorübergehend nicht verfügbar' in li.label for _,li,_ in self.added))
             self.assertFalse(any('media_detail' in url or 'play_live' in url for url,_,_ in self.added))

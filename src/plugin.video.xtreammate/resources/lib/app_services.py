@@ -62,6 +62,10 @@ def refresh_local(cancel=lambda:False):
                 if cancel():return
                 try:
                     rows,code=snapshot(portal,kind,background=True)
+                    if kind=='live':
+                        from widget_home50 import rows as start_group_rows56
+                        previous_code56=code;rows,code=start_group_rows56(portal)
+                        if previous_code56=='READ_ONLY' and code=='READY':code='READ_ONLY'
                     from widget_diagnostics47 import inspect_index
                     inspect_index(portal,kind,rows,code)
                     rows=apply_many(portal['id'],rows)

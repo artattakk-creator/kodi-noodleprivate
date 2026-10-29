@@ -170,7 +170,7 @@ def prepare(portal, kind, rows, cancel=lambda:False):
     Existing dynamic DNS expiry and redirect policy are kept. No expired remote
     URI is admitted to a new item; Kodi remains the dynamic texture consumer.
     """
-    if not rows or kind not in ('live','vod'):
+    if not rows or kind not in ('live','vod','series'):
         return
     from artwork_config import persistent
     from media_art import cached, dimensions

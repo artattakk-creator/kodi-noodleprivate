@@ -67,6 +67,9 @@ class PendingLiveSessionTests(unittest.TestCase):
             'xbmc': xbmc, 'xbmcaddon': xbmcaddon, 'xbmcgui': xbmcgui,
             'utils': utils, 'live_overlay': live_overlay,
             'remote_control': remote,
+            # This fixture tests idle-session grace, not additive app workers.
+            # A real import daemon must not outlive these replaced Kodi stubs.
+            'app_services': types.SimpleNamespace(poll=lambda: None, shutdown=lambda: True),
         })
         p.start()
         self.addCleanup(p.stop)

@@ -10,6 +10,7 @@ from urllib.parse import urlsplit,unquote
 
 _lock=threading.Lock();_queue=OrderedDict();_pending=set();_thread=None
 _stop=threading.Event();_wake=threading.Event();_revisions={}
+_observed56={}
 OPTIONS='|redirect-limit=0&connection-timeout=3&failonerror=true'
 
 
@@ -64,7 +65,7 @@ def display(event,value):
     if not isinstance(until,(int,float)) or not time.time()<until<time.time()+8*86400:return None
     if value.get('source')=='placeholder':return dict(value,image=event['placeholder'])
     url=value.get('source_url','')
-    if not safe(url) or value.get('match') not in ('EXACT_EVENT','EXACT_TITLE_YEAR','EXACT_SEASON_EPISODE'):return None
+    if not safe(url) or value.get('match') not in ('EXACT_EVENT','EXACT_TITLE_YEAR','EXACT_SEASON_EPISODE','EXACT_UNIQUE_FILM_TITLE'):return None
     return dict(value,image=url+OPTIONS,thumbnail=url+OPTIONS)
 
 
@@ -114,13 +115,15 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None):
     from media_sources43 import SourceError
     old=art(event)
     current=display(event,old)
-    if current and not (allow_lookup and current.get('code')=='AWAITING_BACKGROUND_REFRESH'):return current
+    if current and not (allow_lookup and current.get('source')=='placeholder' and
+            (current.get('code')=='AWAITING_BACKGROUND_REFRESH' or not current.get('matching_policy56'))):return current
     if cancel():return None
     now=time.time()
     value=dict(key=event['key'],fingerprint=fingerprint(event),binding55=binding(event),url_version55=1,
                code='NO_IMAGE',source='placeholder',match='NONE',image=event['placeholder'],
                resolved_at55=now,until=now+300,tvspielfilm55='BLOCKED_NO_AUTHORIZED_API')
     value.update(hosts55=sorted(hosts()),profile55=profile())
+    value['matching_policy56']=1
     candidates=[dict(url=event[field],source=source,match='EXACT_EVENT',attribution=credit)
                 for field,source,credit in (('xmltv_image','xmltv_event','XMLTV – konfigurierte Eventquelle'),
                     ('provider_image','provider_event','Anbieter – konfigurierte Eventquelle')) if event.get(field)]
@@ -134,8 +137,13 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None):
                 from programme_match46 import candidate as lookup
                 candidate=(match or lookup)(event,cancel=cancel)
             except SourceError as exc:value['code']=exc.code;continue
-            if not candidate:continue
-        if candidate.get('match') not in ('EXACT_EVENT','EXACT_TITLE_YEAR','EXACT_SEASON_EPISODE'):continue
+            if not candidate:
+                from programme_match46 import diagnose
+                reason=diagnose(event)
+                if value['code']=='NO_IMAGE':value['code']=reason
+                else:value['lookup_code56']=reason
+                continue
+        if candidate.get('match') not in ('EXACT_EVENT','EXACT_TITLE_YEAR','EXACT_SEASON_EPISODE','EXACT_UNIQUE_FILM_TITLE'):continue
         url=candidate.get('url','')
         if not safe(url):value['code']='BLOCKED_IMAGE_HOST_OR_URL';continue
         from portals import get_by_id
@@ -150,6 +158,8 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None):
         value.update(code='READY',source=candidate['source'],match=candidate['match'],
             source_url=url,image=url+OPTIONS,thumbnail=url+OPTIONS,
             attribution=candidate.get('attribution',''),until=min(now+86400,max(now+300,event['stop']+3600)))
+        if candidate.get('matched_year56'):value['matched_year56']=candidate['matched_year56']
+        if candidate.get('remote_id'):value['provider_id']=candidate['remote_id']
         break
     if not candidates and not allow_lookup:value['code']='AWAITING_BACKGROUND_REFRESH'
     # A transient network failure may never extend or bless an expired URL.
@@ -161,10 +171,18 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None):
 
 def refreshed(pid,revision):
     """The first observation is a boot baseline, never a metadata lookup trigger."""
-    key=str(pid);previous=_revisions.get(key)
-    eligible=bool(previous and previous[0] is not None and revision is not None and (previous[0]!=revision or previous[1]))
+    key=(profile(),str(pid));previous=_revisions.get(key)
+    # Existing background schedule may repair missing images even if no new
+    # guide revision arrives. Initial startup stays quiet; neither Home nor
+    # focus/detail readers call this scheduler or enqueue metadata lookups.
+    now=time.monotonic()
+    if previous is None:_observed56.pop(key,None)
+    if revision is not None:_observed56.setdefault(key,now)
+    periodic=revision is not None and now-_observed56.get(key,now)>=60
+    eligible=bool(previous and previous[0] is not None and revision is not None and (previous[0]!=revision or previous[1] or periodic))
     _revisions[key]=(revision,eligible)
-    if len(_revisions)>8:_revisions.pop(next(iter(_revisions)))
+    if len(_revisions)>8:
+        old=next(iter(_revisions));_revisions.pop(old);_observed56.pop(old,None)
     return eligible
 
 
