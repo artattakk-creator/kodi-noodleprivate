@@ -6,7 +6,7 @@ Basis: `main` .55, `c1e5816f5f24f2ebc703205bb543fd4f449a2951`. Fortsetzung aussc
 
 Der nachträgliche ausdrückliche Nutzerwunsch hat Vorrang: **Video-Add-ons → XCMate → Widgets** bleibt bestehen. Die drei bestehenden Quellen, deren URLs, Portalparameter, Picker, Dispatch und Klickziele werden nicht geändert. Keine neue Einstellungsseite, kein Widgetmanager und keine Umleitung vorhandener Verknüpfungen.
 
-`app_routes.py` enthält nur zwei Änderungen innerhalb der bestehenden Widgetausgabe: Serien erhalten ebenfalls gemeinsame Artworkreferenzen; eine leere/fehlerhafte Serienquelle erzeugt keine falsche Settings-Kachel mehr. Alle anderen Top-Level-AST-Knoten einschließlich vollständigem Dispatch sind identisch. `widget_home50.render()` ist ebenfalls AST-identisch; Picker-, Bindungs-, Entry-, Home- und Navigationsdateien sind direkt byteidentisch geprüft.
+`app_routes.py` enthält nur zwei Änderungen innerhalb der bestehenden Widgetausgabe: Serien erhalten ebenfalls gemeinsame Artworkreferenzen; eine leere/fehlerhafte Serienquelle erzeugt keine falsche Navigationskachel mehr. Alle anderen Top-Level-AST-Knoten einschließlich vollständigem Dispatch sind identisch. `widget_home50.render()` ist ebenfalls AST-identisch; Picker-, Bindungs-, Entry-, Home- und Navigationsdateien sind direkt byteidentisch geprüft.
 
 ## Reproduzierte Hostdefekte
 

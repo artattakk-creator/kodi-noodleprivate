@@ -1,0 +1,35 @@
+{
+  "version": "0.1.29.56",
+  "source_commit": "8393abf5b70cd3cd0eafdba5e79460d403d9ea6c",
+  "files": 602,
+  "bytes": 3152719,
+  "sha256": "6164dba454738a63f65958afba0ff58fdd87aa1e5d87d26578f23f54bf71b204",
+  "crc": "PASS",
+  "safe_paths": "PASS",
+  "all_source_bytes": "PASS",
+  "python_ast": "PASS",
+  "independent_deterministic_rebuild": "PASS",
+  "android": {
+    "not_tested": 11,
+    "passed": 0,
+    "boxes": [
+      "B Kodi 21.3 BINGIE 2.2.3"
+    ],
+    "box_a": "UNTOUCHED"
+  },
+  "production_publish": false,
+  "tests": 2369,
+  "seconds": 326.589,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "previous_tests_retained": 2339,
+  "new_tests": 30,
+  "real_images": "NOT_TESTED: exact event imagery must be visually verified on Android",
+  "tvspielfilm": "BLOCKED_NO_AUTHORIZED_API: license not demonstrated",
+  "additional_image_hosts": "explicit exact trusted host approval required; default official TMDb CDN only",
+  "ci": "Final delivery HEAD: run/job links, complete counts and artifact SHA documented in Draft-PR checks/body; no main publish",
+  "raw_host_log_sha256": "5d6d5a69eabbeee0725e9b0c8d8c5c793fcf149a225544ada3072ffaca6b8709",
+  "published_host_log_sha256": "6cf7db7b181ddac3e0bc732ab248627c84054567b81a02f591b946bc280a304b",
+  "verified_at": "2026-10-29T20:01:33.221297+00:00"
+}
