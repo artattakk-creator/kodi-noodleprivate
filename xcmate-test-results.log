@@ -145,10 +145,10 @@ test_restart_offline_previous_index_and_immediate_disabled_filter (test_xcmate_0
 test_same_stream_in_two_groups_counted_once_globally_but_available_in_each (test_xcmate_028_streaming.IndexTests.test_same_stream_in_two_groups_counted_once_globally_but_available_in_each) ... ok
 test_streaming_group_publishes_only_after_complete_json (test_xcmate_028_streaming.IndexTests.test_streaming_group_publishes_only_after_complete_json) ... ok
 test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update (test_xcmate_028_streaming.LargeGuideTests.test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update) ... 
-LARGE_XMLTV {"parsed": 160005, "stored": 160005, "xml_bytes": 95571948, "sqlite_bytes": 303685632, "seconds": 27.346}
+LARGE_XMLTV {"parsed": 160005, "stored": 160005, "xml_bytes": 95571948, "sqlite_bytes": 303685632, "seconds": 41.805}
 ok
 test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib (test_xcmate_028_streaming.LargeHTTPTests.test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib) ... 
-LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 309526528, "seconds": 21.195, "peak_rss_kib": 87552}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 621731840, "seconds": 22.115, "peak_rss_kib": 87552}]
+LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 309526528, "seconds": 39.767, "peak_rss_kib": 90880}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 621731840, "seconds": 40.035, "peak_rss_kib": 90880}]
 ok
 test_cache_envelope_and_trailing_data_validated (test_xcmate_028_streaming.ParserTests.test_cache_envelope_and_trailing_data_validated) ... ok
 test_chunked_http_gzip_and_truncated_compression (test_xcmate_028_streaming.ParserTests.test_chunked_http_gzip_and_truncated_compression) ... ok
@@ -1426,6 +1426,19 @@ test_sidecar_capacity_failure_never_rolls_back_epg_text (test_xcmate_programme_0
 test_stale_widget_detail_key_never_opens_another_programme (test_xcmate_programme_02946.ProgrammeEvents46.test_stale_widget_detail_key_never_opens_another_programme) ... ok
 test_title_interval_and_source_must_match_before_using_picture (test_xcmate_programme_02946.ProgrammeEvents46.test_title_interval_and_source_must_match_before_using_picture) ... ok
 test_unpublished_metadata_never_visible (test_xcmate_programme_02946.ProgrammeEvents46.test_unpublished_metadata_never_visible) ... ok
+test_background_rotates_announced_films_beyond_next_without_new_revision (test_xcmate_programme_02956.Programme56.test_background_rotates_announced_films_beyond_next_without_new_revision) ... ok
+test_disabled_optional_provider_is_diagnosed_without_api_request (test_xcmate_programme_02956.Programme56.test_disabled_optional_provider_is_diagnosed_without_api_request) ... ok
+test_existing_revision_gets_periodic_background_preparation_after_quiet_startup (test_xcmate_programme_02956.Programme56.test_existing_revision_gets_periodic_background_preparation_after_quiet_startup) ... ok
+test_explicit_wrong_year_cannot_enter_the_yearless_recovery_path (test_xcmate_programme_02956.Programme56.test_explicit_wrong_year_cannot_enter_the_yearless_recovery_path) ... ok
+test_future_detail_and_hero_use_one_url_only_when_that_event_is_actually_now (test_xcmate_programme_02956.Programme56.test_future_detail_and_hero_use_one_url_only_when_that_event_is_actually_now) ... ok
+test_future_preparation_survives_a_gap_with_no_current_programme (test_xcmate_programme_02956.Programme56.test_future_preparation_survives_a_gap_with_no_current_programme) ... ok
+test_missing_backdrop_is_no_valid_url_not_image_success (test_xcmate_programme_02956.Programme56.test_missing_backdrop_is_no_valid_url_not_image_success) ... ok
+test_partial_search_page_cannot_prove_unique_movie (test_xcmate_programme_02956.Programme56.test_partial_search_page_cannot_prove_unique_movie) ... ok
+test_prepared_url_survives_restart_and_readers_start_no_metadata_search (test_xcmate_programme_02956.Programme56.test_prepared_url_survives_restart_and_readers_start_no_metadata_search) ... ok
+test_remakes_with_same_title_do_not_get_a_guessed_year (test_xcmate_programme_02956.Programme56.test_remakes_with_same_title_do_not_get_a_guessed_year) ... ok
+test_unclassified_event_does_not_become_a_movie_by_title_guess (test_xcmate_programme_02956.Programme56.test_unclassified_event_does_not_become_a_movie_by_title_guess) ... ok
+test_wrong_sequel_or_changed_details_year_is_not_the_exact_event (test_xcmate_programme_02956.Programme56.test_wrong_sequel_or_changed_details_year_is_not_the_exact_event) ... ok
+test_yearless_explicit_movie_requires_complete_unique_search_and_independent_details (test_xcmate_programme_02956.Programme56.test_yearless_explicit_movie_requires_complete_unique_search_and_independent_details) ... ok
 test_cancelled_fetch_never_publishes_ready_picture (test_xcmate_programme_art_02946.ProgrammeArt46.test_cancelled_fetch_never_publishes_ready_picture) ... ok
 test_default_tmdb_is_disabled_and_requires_existing_user_opt_in (test_xcmate_programme_art_02946.ProgrammeArt46.test_default_tmdb_is_disabled_and_requires_existing_user_opt_in) ... ok
 test_different_event_or_changed_source_cannot_inherit_old_picture (test_xcmate_programme_art_02946.ProgrammeArt46.test_different_event_or_changed_source_cannot_inherit_old_picture) ... ok
@@ -1667,6 +1680,10 @@ test_all_590_existing_files_retained_with_only_reviewed_epg_preview_wizard_delta
 test_all_2294_existing_test_methods_retained_without_additional_skips (test_xcmate_scope_02955.Scope55.test_all_2294_existing_test_methods_retained_without_additional_skips) ... ok
 test_all_596_sources_have_only_exact_reviewed_home_url_and_input_deltas (test_xcmate_scope_02955.Scope55.test_all_596_sources_have_only_exact_reviewed_home_url_and_input_deltas) ... ok
 test_wizard_and_epg_import_freeze_is_raw_byte_exact_without_normalization (test_xcmate_scope_02955.Scope55.test_wizard_and_epg_import_freeze_is_raw_byte_exact_without_normalization) ... ok
+test_all_2339_previous_methods_are_retained_without_new_skips (test_xcmate_scope_02956.Scope56.test_all_2339_previous_methods_are_retained_without_new_skips) ... ok
+test_all_600_prior_sources_are_retained_with_only_reviewed_deltas (test_xcmate_scope_02956.Scope56.test_all_600_prior_sources_are_retained_with_only_reviewed_deltas) ... ok
+test_picker_urls_sources_folders_and_routing_entry_points_are_raw_identical (test_xcmate_scope_02956.Scope56.test_picker_urls_sources_folders_and_routing_entry_points_are_raw_identical) ... ok
+test_wizard_import_live_exit_player_and_skin_patcher_stay_raw_frozen (test_xcmate_scope_02956.Scope56.test_wizard_import_live_exit_player_and_skin_patcher_stay_raw_frozen) ... ok
 test_action_route_opens_one_owner_without_search_container_update (test_xcmate_search_02926.SearchTests.test_action_route_opens_one_owner_without_search_container_update) ... ok
 test_cancel_and_repeated_search_keep_owner_and_do_not_apply_stale_results (test_xcmate_search_02926.SearchTests.test_cancel_and_repeated_search_keep_owner_and_do_not_apply_stale_results) ... ok
 test_explicit_manual_mapping_does_not_fall_back_to_wrong_provider_epg (test_xcmate_search_02926.SearchTests.test_explicit_manual_mapping_does_not_fall_back_to_wrong_provider_epg) ... ok
@@ -2135,6 +2152,19 @@ test_three_choices_are_actions_not_group_folder_fallbacks (test_xcmate_widget_bi
 test_ui_cancel_does_not_write_binding_or_rebuild_home (test_xcmate_widget_binding_02950.Binding50.test_ui_cancel_does_not_write_binding_or_rebuild_home) ... ok
 test_ui_confirmation_saves_only_one_slot_and_requests_the_original_native_builder (test_xcmate_widget_binding_02950.Binding50.test_ui_confirmation_saves_only_one_slot_and_requests_the_original_native_builder) ... ok
 test_unknown_home_id_duplicate_properties_and_code_in_properties_are_blocked (test_xcmate_widget_binding_02950.Binding50.test_unknown_home_id_duplicate_properties_and_code_in_properties_are_blocked) ... ok
+test_all_kinds_have_readonly_access_during_snapshot_lock_contention (test_xcmate_widget_data_02956.WidgetData56.test_all_kinds_have_readonly_access_during_snapshot_lock_contention) ... ok
+test_disabled_and_true_empty_series_are_not_fake_settings_tiles (test_xcmate_widget_data_02956.WidgetData56.test_disabled_and_true_empty_series_are_not_fake_settings_tiles) ... ok
+test_existing_unchanged_routes_emit_real_items_under_readonly_cache (test_xcmate_widget_data_02956.WidgetData56.test_existing_unchanged_routes_emit_real_items_under_readonly_cache) ... ok
+test_missing_event_images_leave_station_names_and_icons_in_native_basic_feed (test_xcmate_widget_data_02956.WidgetData56.test_missing_event_images_leave_station_names_and_icons_in_native_basic_feed) ... ok
+test_missing_explicit_portal_never_silently_uses_another_account (test_xcmate_widget_data_02956.WidgetData56.test_missing_explicit_portal_never_silently_uses_another_account) ... ok
+test_movie_and_series_native_items_have_ten_distinct_covers_and_unchanged_targets (test_xcmate_widget_data_02956.WidgetData56.test_movie_and_series_native_items_have_ten_distinct_covers_and_unchanged_targets) ... ok
+test_optional_epg_failure_does_not_remove_the_150_station_base_row (test_xcmate_widget_data_02956.WidgetData56.test_optional_epg_failure_does_not_remove_the_150_station_base_row) ... ok
+test_readable_movies_and_series_survive_unwritable_snapshot_lock_without_writes (test_xcmate_widget_data_02956.WidgetData56.test_readable_movies_and_series_survive_unwritable_snapshot_lock_without_writes) ... ok
+test_readonly_queries_respect_disabled_media_groups (test_xcmate_widget_data_02956.WidgetData56.test_readonly_queries_respect_disabled_media_groups) ... ok
+test_readonly_reader_observes_committed_rows_during_an_uncommitted_wal_writer (test_xcmate_widget_data_02956.WidgetData56.test_readonly_reader_observes_committed_rows_during_an_uncommitted_wal_writer) ... ok
+test_readonly_reload_uses_existing_hook_without_disk_or_skin_writes (test_xcmate_widget_data_02956.WidgetData56.test_readonly_reload_uses_existing_hook_without_disk_or_skin_writes) ... ok
+test_series_metadata_is_kodi_typed_like_the_working_native_media_view (test_xcmate_widget_data_02956.WidgetData56.test_series_metadata_is_kodi_typed_like_the_working_native_media_view) ... ok
+test_series_point_reads_are_bounded_primary_key_seeks (test_xcmate_widget_data_02956.WidgetData56.test_series_point_reads_are_bounded_primary_key_seeks) ... ok
 test_art_completion_during_publication_is_not_swallowed_by_post_stamp (test_xcmate_widget_live_gate_02947.LiveGate47.test_art_completion_during_publication_is_not_swallowed_by_post_stamp) ... ok
 test_next_event_boundary_invalidates_inside_the_same_progress_minute (test_xcmate_widget_live_gate_02947.LiveGate47.test_next_event_boundary_invalidates_inside_the_same_progress_minute) ... ok
 test_real_start_group_or_logo_change_invalidates_existing_live_frame (test_xcmate_widget_live_gate_02947.LiveGate47.test_real_start_group_or_logo_change_invalidates_existing_live_frame) ... ok
@@ -2352,16 +2382,16 @@ test_widget_route_and_no_cached_credentials_in_link (test_xtreammate_widgets.Wid
 test_youtube_whitelist (test_xtreammate_widgets.WidgetsTest.test_youtube_whitelist) ... ok
 
 ----------------------------------------------------------------------
-Ran 2339 tests in 351.515s
+Ran 2369 tests in 508.402s
 
 OK
 
-MODEL_COLD_WINDOW_MS 6.352
-SEARCH39_HOST [{'query_kind': 'cold', 'first_names_ms': 5.068, 'total_ms': 40.765, 'scanned': 2905, 'results': 6}, {'query_kind': 'warm', 'first_names_ms': 4.786, 'total_ms': 15.223, 'scanned': 2905, 'results': 6}]
+MODEL_COLD_WINDOW_MS 8.192
+SEARCH39_HOST [{'query_kind': 'cold', 'first_names_ms': 7.269, 'total_ms': 61.136, 'scanned': 2905, 'results': 6}, {'query_kind': 'warm', 'first_names_ms': 6.65, 'total_ms': 23.502, 'scanned': 2905, 'results': 6}]
 
 SELECTIVE_XMLTV {"bytes": 400, "parsed": 2, "stored": 1}
 
 LARGE_M3U {"parsed": 20005, "active": 5002, "bytes": 1727118}
-WIDGET46_RETAINED_ARCHIVE {"legacy_rows": 40005, "old_opcode_budget": "INTERRUPTED", "new_rows": 24, "new_ms": 2.826}
-WIDGET41_HOST {'rows': 20005, 'returned': 24, 'code': 'READY', 'ms': 2.398}
-WIDGET44_V2_HOST {"records": 20005, "returned": 24, "ms": 3.215, "plan": "(9, 0, 0, 'SEARCH i USING INDEX recent_v2 (pid=? AND kind=?)') (19, 0, 0, 'USING INDEX sqlite_autoindex_selected_categories_1 FOR IN-OPERATOR') (25, 0, 0, 'SEARCH h USING INDEX sqlite_autoindex_heads_1 (pid=? AND kind=? AND cid=?)')"}
+WIDGET46_RETAINED_ARCHIVE {"legacy_rows": 40005, "old_opcode_budget": "INTERRUPTED", "new_rows": 24, "new_ms": 4.047}
+WIDGET41_HOST {'rows': 20005, 'returned': 24, 'code': 'READY', 'ms': 3.375}
+WIDGET44_V2_HOST {"records": 20005, "returned": 24, "ms": 4.468, "plan": "(9, 0, 0, 'SEARCH i USING INDEX recent_v2 (pid=? AND kind=?)') (19, 0, 0, 'USING INDEX sqlite_autoindex_selected_categories_1 FOR IN-OPERATOR') (25, 0, 0, 'SEARCH h USING INDEX sqlite_autoindex_heads_1 (pid=? AND kind=? AND cid=?)')"}
