@@ -43,7 +43,7 @@ def probe():
 def path():
  from utils import addon_data_dir
  return os.path.join(addon_data_dir(),'widget_bindings45.json')
-_next=0
+_next=0;_memory56={}
 
 def prepare():
  global _next
@@ -53,6 +53,8 @@ def prepare():
   value=probe();value.pop('text',None);value.pop('uri',None);value['at']=time.time()
   data=json.dumps(value).encode()
   if len(data)>65536:return
+  _memory56[path()]=value
+  while len(_memory56)>8:_memory56.pop(next(iter(_memory56)))
   fd,temp=tempfile.mkstemp(prefix='.widget-bindings45-',dir=os.path.dirname(path()))
   try:
    with os.fdopen(fd,'wb') as f:f.write(data)
@@ -65,6 +67,7 @@ def read():
  try:
   with open(path(),encoding='utf-8') as f:data=f.read(65537)
   value=json.loads(data) if len(data)<=65536 else {}
-  if not isinstance(value,dict) or not 0<=time.time()-value.get('at',0)<180:return {}
-  return value
- except (OSError,ValueError,TypeError):return {}
+  if isinstance(value,dict) and 0<=time.time()-value.get('at',0)<180:return value
+ except (OSError,ValueError,TypeError):pass
+ value=_memory56.get(path(),{})
+ return value if 0<=time.time()-value.get('at',0)<180 else {}

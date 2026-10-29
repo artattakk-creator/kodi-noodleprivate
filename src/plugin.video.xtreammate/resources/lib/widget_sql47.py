@@ -21,18 +21,18 @@ def expand_keys(v2,legacy,limit,cap,fetch_v2,fetch_legacy):
     return v2,legacy
 
 
-def payloads(reader, records, table):
-    if table not in ('items_v2', 'titles'):
+def payloads(reader, records, table,kind='vod'):
+    if table not in ('items_v2', 'titles') or kind not in ('vod','series'):
         raise ValueError('WIDGET_TABLE')
     statements, args = [], []
     for record in records[:24]:
         if table == 'items_v2':
             statements.append('SELECT sid,payload FROM items_v2 '
                               'WHERE pid=? AND kind=? AND cid=? AND generation=? AND sid=?')
-            args.extend((reader.pid, 'vod', record['cid'], record['generation'], record['sid']))
+            args.extend((reader.pid, kind, record['cid'], record['generation'], record['sid']))
         else:
             statements.append('SELECT sid,payload FROM titles WHERE pid=? AND kind=? AND sid=?')
-            args.extend((reader.pid, 'vod', record['sid']))
+            args.extend((reader.pid, kind, record['sid']))
     if not statements:
         return {}
     rows = reader._query('/* direct44 */ ' + ' UNION ALL '.join(statements), args)

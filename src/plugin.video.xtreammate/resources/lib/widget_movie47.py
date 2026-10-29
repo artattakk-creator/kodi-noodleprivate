@@ -29,9 +29,10 @@ def cold_read(portal):
 
 
 class MovieReader(WidgetReader):
-    def __init__(self,pid,filename=None):
+    def __init__(self,pid,filename=None,kind='vod'):
         super().__init__(pid)
         self.filename=filename
+        self.kind47=kind
         self._connection47=None
         self._selected47=None
         self._remaining47=.35
@@ -48,6 +49,7 @@ class MovieReader(WidgetReader):
                 if not os.path.isfile(filename):return []
                 self._connection47=sqlite3.connect('file:'+quote(filename,safe='/')+'?mode=ro',uri=True,timeout=.02)
                 self._connection47.row_factory=sqlite3.Row
+                self._connection47.execute('PRAGMA temp_store=MEMORY')
                 self._connection47.execute('BEGIN')
             db=self._connection47
             if self._remaining47<=0:raise sqlite3.OperationalError('interrupted')
@@ -77,7 +79,7 @@ class MovieReader(WidgetReader):
     def close(self):
         from widget_diagnostics47 import note
         for stage,values in self.stats47.items():
-            note(self.pid,'vod','SQL_'+stage,selected=values['rows'],queries=values['queries'],query_ms=values['query_ms'])
+            note(self.pid,self.kind47,'SQL_'+stage,selected=values['rows'],queries=values['queries'],query_ms=values['query_ms'])
         if self._connection47 is not None:
             self._connection47.close()
             self._connection47=None

@@ -125,8 +125,8 @@ class WidgetPipeline47(Fixture, unittest.TestCase):
             rows=self.widgets.WidgetReader('p').small('series')
         self.assertEqual([r['sid'] for r in rows],['1','2','3'])
         value=self.items.describe(self.portal,'series',dict(rows[0],year='2024',rating='8.2'),{})
-        self.assertEqual(value['info']['year'],'2024')
-        self.assertEqual(value['info']['rating'],'8.2')
+        self.assertEqual(value['info']['year'],2024)
+        self.assertEqual(value['info']['rating'],8.2)
         self.assertNotIn('XCMate.ProgrammeKey47',value['props'])
 
     def test_directory_stage_is_recorded_only_after_real_end_of_directory(self):

@@ -12,11 +12,14 @@ PAGE=64
 
 
 def pages(portal):
-    from widget_data41 import WidgetReader
+    from widget_movie47 import MovieReader
     from library_index import path,initial_group,IndexReadError
     from widget_query44 import groups,get
-    reader=WidgetReader(portal['id']);start=get(reader,'live',str(portal.get('start_stream_id') or ''))
-    cid=initial_group(portal,groups(reader,'live'),start)
+    reader=MovieReader(portal['id'],kind='live')
+    try:
+        start=get(reader,'live',str(portal.get('start_stream_id') or ''))
+        cid=initial_group(portal,groups(reader,'live'),start)
+    finally:reader.close()
     if not cid:return
     db=sqlite3.connect('file:'+quote(reader.filename or path(),safe='/')+'?mode=ro',uri=True,timeout=.05)
     db.row_factory=sqlite3.Row

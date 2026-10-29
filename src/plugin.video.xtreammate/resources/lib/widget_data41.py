@@ -23,7 +23,7 @@ class WidgetReader(Reader):
             filename=self.filename or path()
             if not os.path.isfile(filename):return []
             db=sqlite3.connect('file:'+quote(filename,safe='/')+'?mode=ro',uri=True,timeout=min(.05,max(.001,self.until-time.monotonic())))
-            db.row_factory=sqlite3.Row
+            db.row_factory=sqlite3.Row;db.execute('PRAGMA temp_store=MEMORY')
             deadline=min(self.until,time.monotonic()+.25)
             db.set_progress_handler(lambda:int(time.monotonic()>=deadline),1000)
             if '/* direct44 */' not in sql and 'titles' in sql and db.execute("SELECT 1 FROM sqlite_master WHERE name='readable_titles'").fetchone():sql=sql.replace('FROM titles','FROM readable_titles')
@@ -85,7 +85,7 @@ def store(filename,key,rows,revision=None):
 
 def trace(kind,code,rows,started,stale=False,stage=''):
     import xbmc
-    allowed=('READY','CACHE','LOCKED','BUDGET','SQLITE_BUSY','SQLITE_LOCKED','SQLITE_INTERRUPT','SQLITE_CORRUPT','SQLITE_NOTADB','SQLITE_CANTOPEN','SQLITE_IOERR','INDEX_MISSING','UNAVAILABLE','DISABLED')
+    allowed=('READY','CACHE','READ_ONLY','CACHE_UNWRITABLE','CACHE_STORAGE_FULL','LOCKED','BUDGET','SQLITE_BUSY','SQLITE_LOCKED','SQLITE_INTERRUPT','SQLITE_CORRUPT','SQLITE_NOTADB','SQLITE_CANTOPEN','SQLITE_IOERR','INDEX_MISSING','UNAVAILABLE','DISABLED')
     code=code if code in allowed else 'UNAVAILABLE'
     key=(code,rows,bool(stale),stage);now=time.monotonic();prior=_last_trace46.get(kind)
     if prior and prior[0]==key and now-prior[1]<60:return
@@ -96,7 +96,7 @@ def trace(kind,code,rows,started,stale=False,stage=''):
 
 def snapshot(portal,kind,background=False):
     started=time.monotonic();filename,lock=files(portal['id'],kind);key=policy(portal,kind)
-    if not portal.get('include_'+kind,True):return [],'DISABLED'
+    if not portal.get('include_'+kind,True):trace(kind,'DISABLED',0,started);return [],'DISABLED'
     old=read(filename,key)
     if old and time.time()-old['at']<15 and not background:trace(kind,'CACHE',len(old['rows']),started);return old['rows'],'CACHE'
     stream=None;reader=None;code='UNAVAILABLE';stage46=''
@@ -106,9 +106,9 @@ def snapshot(portal,kind,background=False):
         # Another interpreter may have published while this one waited to run.
         fresh=read(filename,key)
         if fresh and time.time()-fresh['at']<15 and not background:return fresh['rows'],'CACHE'
-        if kind=='vod':
+        if kind in ('vod','series'):
             from widget_movie47 import MovieReader
-            reader=MovieReader(portal['id'])
+            reader=MovieReader(portal['id'],kind=kind)
         else:reader=WidgetReader(portal['id'])
         state=reader.state(kind)
         if not state:return (old['rows'],'INDEX_MISSING') if old else ([], 'INDEX_MISSING')
@@ -124,12 +124,16 @@ def snapshot(portal,kind,background=False):
         else:rows=reader.small(kind,limit=24)
         store(filename,key,rows,revision);trace(kind,'READY',len(rows),started);return rows,'READY'
     except BlockingIOError:code='LOCKED'
-    except (IndexReadError,sqlite3.Error,OSError,ValueError,TypeError,ImportError) as exc:code=getattr(exc,'code','UNAVAILABLE');stage46=getattr(exc,'stage46','')
+    except OSError as exc:
+        import errno
+        code='CACHE_STORAGE_FULL' if exc.errno==errno.ENOSPC else 'CACHE_UNWRITABLE'
+    except (IndexReadError,sqlite3.Error,ValueError,TypeError,ImportError) as exc:code=getattr(exc,'code','UNAVAILABLE');stage46=getattr(exc,'stage46','')
     finally:
         if reader is not None and hasattr(reader,'close'):reader.close()
         if stream:stream.close()
-    if code=='LOCKED' and kind=='vod' and not old:
-        from widget_movie47 import cold_read
-        rows,code=cold_read(portal)
+    if code in ('LOCKED','CACHE_UNWRITABLE','CACHE_STORAGE_FULL') and (not old or not old['rows']):
+        trace(kind,code,0,started)
+        from widget_read56 import read as read_catalogue
+        rows,code=read_catalogue(portal,kind)
         trace(kind,code,len(rows),started);return rows,code
     rows=old['rows'] if old else [];trace(kind,code,len(rows),started,bool(old),stage46);return rows,code

@@ -28,6 +28,9 @@ def signature(portal,rows):
 
 
 def publish(portal,kind,rows,code='READY'):
+    if code=='READ_ONLY' and rows:
+        from widget_readonly56 import publish as readonly
+        return readonly(portal,kind,rows)
     from widget_refresh45 import publish as publish_all,read,trace
     if kind!='live' or code not in ('READY','CACHE') or not rows:
         return publish_all(portal,kind,rows,code)
