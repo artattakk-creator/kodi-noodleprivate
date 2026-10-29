@@ -1,0 +1,14 @@
+{
+  "device": "Box B: user-reported Android TV 13 / Kodi 21.3 / ARM32",
+  "device_access": "BLOCKED_DEVICE_ACCESS",
+  "configured_endpoint": false,
+  "configured_credentials": false,
+  "configured_vpn": false,
+  "helper_installed": "USER_CONFIRMED_NOT_INDEPENDENTLY_VERIFIED",
+  "actual_helper_version": "NOT_TESTED",
+  "android_gates": {"H57-01":"NOT_TESTED","H57-02":"NOT_TESTED","H57-03":"NOT_TESTED","H57-04":"NOT_TESTED","H57-05":"NOT_TESTED","H57-06":"NOT_TESTED","H57-07":"NOT_TESTED","H57-08":"NOT_TESTED"},
+  "box_a": "UNTOUCHED",
+  "device_installation": false,
+  "skin_modified": false,
+  "real_images_or_screenshots": "NOT_TESTED"
+}
