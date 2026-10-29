@@ -1,3 +1,10 @@
+0.1.29.56
+- Bestehender Ordner Widgets und sämtliche Widget-Routen/URLs bleiben erhalten.
+- Film-/Serienwidgets lesen Kataloge auch bei blockierter Snapshot-Speicherung; typgerechte Serienmetadaten und Poster.
+- Live-Grundreihe bleibt bei fehlenden Sendungsbildern und EPG-Fehlern mit Sendernamen/Logos sichtbar.
+- Gemeinsame Sendungsbilder: auch angekündigte Filme vorab vorbereiten; dieselbe gespeicherte Bildadresse für EPG und Hero.
+- Klare Bilddiagnose; eingefrorener Wizard, Passwörter, Portale, Fortschritte und Live-TV-Zurück bleiben erhalten.
+
 0.1.29.55
 - Widgets: drei direkte Quellen im nativen BINGIE-Picker unter XCMate > Widgets.
 - Live-Home: schmale blaue Senderleiste und Hero nach freigegebener Layoutvorlage (Skinadapter separat freigeben).
