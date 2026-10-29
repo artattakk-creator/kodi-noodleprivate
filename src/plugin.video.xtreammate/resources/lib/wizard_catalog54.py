@@ -27,7 +27,34 @@ def open_db(draft):
     db.execute('CREATE TABLE IF NOT EXISTS wizard_attempts54(pid TEXT,kind TEXT,cid TEXT,state TEXT,received INTEGER,updated REAL,PRIMARY KEY(pid,kind,cid))');db.commit()
     os.chmod(draft.index,0o600)
     if db.execute('PRAGMA quick_check').fetchone()[0]!='ok':db.close();raise ValueError('staging catalogue requires verification')
+    if getattr(draft,'_trusted_legacy54',False):adopt_legacy(db,draft)
     return db
+
+
+def adopt_legacy(db,draft):
+    """Owned .53 atomic heads prove complete import even if EPG later failed.
+
+    Revalidate the exact account-owned generation, original selection, category
+    label, age, every normalized payload and SQLite before recording a digest.
+    No provider request and no published user database is changed.
+    """
+    for kind in KINDS:
+        original=getattr(draft,'_legacy_selected54',{}).get(kind,set())
+        for group in draft.categories[kind]:
+            cid=str(group['category_id'])
+            if cid not in draft.selected[kind] or cid not in original:continue
+            if db.execute('SELECT 1 FROM wizard_units54 WHERE pid=? AND kind=? AND cid=?',(draft.pid,kind,cid)).fetchone():continue
+            row=db.execute('SELECT h.generation,h.updated,g.title FROM heads h JOIN groups g USING(pid,kind,cid) WHERE h.pid=? AND h.kind=? AND h.cid=?',(draft.pid,kind,cid)).fetchone()
+            if not row or row[2]!=str(group['category_name']) or not 0<=time.time()-row[1]<86400:continue
+            valid=True
+            for item in db.execute('SELECT sid,payload FROM items_v2 WHERE pid=? AND kind=? AND cid=? AND generation=?',(draft.pid,kind,cid,row[0])):
+                try:value=json.loads(item[1])
+                except (ValueError,TypeError):valid=False;break
+                if not isinstance(value,dict) or value.get('sid')!=item[0] or value.get('category_id')!=cid or value.get('kind')!=kind or not value.get('name'):valid=False;break
+            if not valid:continue
+            count,sha=digest_rows(db,draft.pid,kind,cid,row[0])
+            if count:
+                with db:db.execute('INSERT INTO wizard_units54 VALUES(?,?,?,?,?,?,?,?)',(draft.pid,kind,cid,fingerprint(draft,kind,group),row[0],count,sha,row[1]))
 
 
 def checkpoint(draft):

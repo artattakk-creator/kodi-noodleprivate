@@ -4,7 +4,7 @@ Same cross-interpreter portal lease, import budget, backup gate and source
 publisher as regular refresh. No fixed job duration. Receipts contain no URLs
 or secrets; only completely validated and re-read sources can be skipped.
 """
-import hashlib,json,os,sqlite3,time
+import hashlib,json,os,sqlite3,time,uuid
 from urllib.parse import quote
 
 
@@ -151,14 +151,23 @@ def _run(portal,cancel,status):
                         state.update(phase='PARTIAL',code=authorized);write(portal,state)
                         update(portal['id'],'refresh',authorized,running=False)
                         return state
-                state['sources'][identity]=dict(code='RUNNING',fingerprint=fingerprint);write(portal,state)
+                previous_generation=old.get('generation','')
+                if isinstance(previous_generation,str) and len(previous_generation)==32 and all(c in '0123456789abcdef' for c in previous_generation):
+                    exists=False
+                    if os.path.isfile(guide_path()):
+                        db=sqlite3.connect('file:'+quote(guide_path(),safe='/')+'?mode=ro',uri=True,timeout=.1)
+                        try:exists=bool(db.execute("SELECT 1 FROM sqlite_master WHERE name='xml_stage'").fetchone())
+                        finally:db.close()
+                    if exists:discard_stages44([dict(generation=previous_generation,meta_pid46=str(portal['id']))])
+                generation=uuid.uuid4().hex
+                state['sources'][identity]=dict(code='RUNNING',fingerprint=fingerprint,generation=generation);write(portal,state)
                 started(portal['id'],key,identity,rank);stage=None
                 def progress(value):
                     phase={'DOWNLOAD':'Download läuft','PARSE':'XMLTV-Datei wird verarbeitet und Sendern zugeordnet','SAVING':'EPG-Daten werden gespeichert'}.get(value['phase'],'Quelle wird geprüft')
                     status(None,prefix+'\n'+phase+'\n'+str(value.get('bytes',0))+' Bytes · '+str(value.get('programmes',0))+' Sendungen gelesen · '+str(value.get('stored',0))+' zugeordnet')
                 status(None,prefix+'\nDownload läuft')
                 try:
-                    stage=import_source(portal['id'],source,rank,streams,mappings,cancel=cancel,stage_only=True,progress=progress)
+                    stage=import_source(portal['id'],source,rank,streams,mappings,cancel=cancel,stage_only=True,progress=progress,generation54=generation)
                     status(None,prefix+'\nEPG-Daten werden gespeichert')
                     outcome=publish_stages44(portal['id'],[stage],cancel=cancel)[0]
                     actual=stored(portal,identity,cancel,status)

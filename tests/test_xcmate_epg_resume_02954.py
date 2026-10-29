@@ -143,3 +143,44 @@ class EPG54(unittest.TestCase):
                 return stream.read(n)
         result=parse(VFS(),lambda *a:None,events.append)
         self.assertEqual(result['programmes'],1);self.assertEqual(len(events),1);self.assertNotIn(0,requested)
+    def test_crash_recovery_cleans_only_recorded_invisible_generation_not_other_work(self):
+        self.mod.run(self.portal);self.backup();state=self.mod.read(self.portal);identity=list(state['sources'])[0]
+        abandoned='a'*32;other='b'*32;state['phase']='PARTIAL';state['sources'][identity]=dict(code='RUNNING',generation=abandoned);self.mod.write(self.portal,state)
+        from guide_store import path
+        db=sqlite3.connect(path())
+        with db:
+            for gen in (abandoned,other):db.execute('INSERT INTO xml_stage VALUES(?,?,?,?,?,?)',(gen,'invisible',self.m.now,self.m.now+100,'Incomplete','Never publish'))
+        db.close();self.assertEqual(self.mod.run(self.portal)['phase'],'READY')
+        db=sqlite3.connect(path())
+        try:self.assertEqual(db.execute('SELECT generation FROM xml_stage').fetchall(),[(other,)])
+        finally:db.close()
+    def test_crash_after_running_marker_before_first_sqlite_table_can_resume(self):
+        state=self.mod.read(self.portal);state['phase']='RUNNING';state['sources']['external:any']=dict(code='RUNNING',generation='a'*32);self.mod.write(self.portal,state)
+        # Use the real configured source identity with a pre-import marker.
+        from guide_publish44 import source_id
+        state['sources']={source_id(self.d.epg_sources[0],1):dict(code='RUNNING',generation='a'*32)};self.mod.write(self.portal,state)
+        self.assertEqual(self.mod.run(self.portal)['phase'],'READY')
+    def test_two_large_active_sources_exceed_five_minutes_each_without_total_timeout(self):
+        stamp=lambda n:time.strftime('%Y%m%d%H%M%S +0000',time.gmtime(n))
+        for file in self.files:
+            with file.open('w') as f:
+                f.write('<tv><channel id="xml"><display-name>Station</display-name></channel>')
+                for i in range(6000):
+                    start=self.m.now-60+i*300
+                    f.write('<programme channel="xml" start="'+stamp(start)+'" stop="'+stamp(start+300)+'"><title>Programme '+str(i)+'</title><desc>Real parsed source row</desc></programme>')
+                f.write('</tv>')
+        original=self.stream.source_stream;clock=[0];elapsed=[]
+        @contextmanager
+        def delayed(source,cancel=lambda:False):
+            begin=clock[0]
+            with original(source,cancel) as stream:
+                class Slow:
+                    def read(self,n):clock[0]+=75;return stream.read(min(n,4096))
+                yield Slow()
+            elapsed.append(clock[0]-begin)
+        messages=[]
+        with mock.patch.object(self.stream,'source_stream',delayed),mock.patch('time.monotonic',side_effect=lambda:clock[0]):
+            state=self.mod.run(self.portal,status=lambda *args:messages.append(args))
+        self.assertEqual(state['phase'],'READY');self.assertEqual(len(elapsed),2);self.assertTrue(all(t>300 for t in elapsed))
+        self.assertTrue(all(s['verified']['rows']>5000 for s in state['sources'].values()))
+        self.assertTrue(any('Sendungen gelesen' in text for p,text in messages));self.assertTrue(any('EPG-Quelle 2 von 2' in text for p,text in messages))

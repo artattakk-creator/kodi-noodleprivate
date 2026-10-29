@@ -83,3 +83,18 @@ class Catalog54(unittest.TestCase):
         self.d.adapter.entries=lambda *a,**k:iter([{}])
         with self.assertRaises(ValueError):self.d.scan()
         self.assertFalse(self.d.scanned);self.assertEqual(self.m.portals.load_all(),[self.m.portal])
+    def test_owned_partial_53_draft_adopts_valid_atomic_heads_without_reimport(self):
+        resume=importlib.import_module('wizard_resume53');s=resume.Session();s.live=self.d;self.d.resume53=s
+        self.d.scan();db=sqlite3.connect(self.d.index)
+        with db:db.execute('DROP TABLE wizard_units54');db.execute('DROP TABLE wizard_attempts54')
+        db.close();self.d.scanned=False;self.d._scan_signature=None;s.checkpoint(self.d,'groups',categories=True)
+        restarted=resume.Session.load();d=restarted.restore(dict(restarted.data,xc_pass='synthetic reentry'));d.resume53=restarted;d.phased54=True;d.adapter=self.d.adapter
+        self.calls.clear();d.scan();self.assertEqual(self.calls,[]);self.assertEqual(d.report['live'],90)
+    def test_unproven_legacy_head_is_not_trusted_without_owned_resume(self):
+        self.d.scan();db=sqlite3.connect(self.d.index)
+        with db:db.execute('DROP TABLE wizard_units54');db.execute('DROP TABLE wizard_attempts54')
+        db.close();self.calls.clear();self.d.scan();self.assertEqual(len(self.calls),45)
+    def test_old_unpublished_53_epg_is_retained_even_after_catalog_setup_completion(self):
+        resume=importlib.import_module('wizard_resume53');s=resume.Session();s.live=self.d;self.d.resume53=s
+        Path(self.d.guide).write_bytes(b'preserved old EPG work');self.d.scan();self.d.save();s.checkpoint(self.d,'epg_ready');self.d.dispose()
+        self.assertTrue(Path(self.d.guide).is_file());self.assertEqual(Path(self.d.guide).read_bytes(),b'preserved old EPG work')

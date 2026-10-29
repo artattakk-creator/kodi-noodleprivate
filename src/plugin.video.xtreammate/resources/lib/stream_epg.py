@@ -35,14 +35,15 @@ def source_stream(source,cancel=lambda:False):
         with http_stream(uri,cancel=cancel) as stream: yield stream
 
 
-def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=lambda:False,stage_only=False,progress=None):
+def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=lambda:False,stage_only=False,progress=None,generation54=None):
     from epg_progress54 import Progress
     progress54=Progress(progress)
     from guide_store import connect,path
     from epg_sources import _channel_name_key
     from xmltv_stream import parse
     from import_budget import check_space
-    db=connect(filename,write=True);target=filename or path();generation=uuid.uuid4().hex
+    db=connect(filename,write=True);target=filename or path();generation=generation54 or uuid.uuid4().hex
+    if len(generation)!=32 or any(c not in '0123456789abcdef' for c in generation):db.close();raise ValueError('INVALID_IMPORT_GENERATION')
     from guide_publish44 import require
     try:require(db)
     except Exception:db.close();raise
@@ -94,7 +95,8 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         try:
             with source_stream(source,cancel=cancel) as stream:
                 phase='PARSE'
-                counts=parse(progress54.wrap(stream) if progress else stream,channel,programme,cancel,progress=progress54.parsed if progress else None)
+                if progress:counts=parse(progress54.wrap(stream),channel,programme,cancel,progress=progress54.parsed)
+                else:counts=parse(stream,channel,programme,cancel)
         except Exception as exc:
             try: exc.xcmate_stage=phase
             except Exception: pass
