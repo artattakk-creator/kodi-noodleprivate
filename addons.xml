@@ -20,7 +20,7 @@
 </addon>
 <addon id="plugin.video.xtreammate"
        name="XCMate"
-       version="0.1.29.53"
+       version="0.1.29.54"
        provider-name="GS Media">
 
   <requires>
@@ -60,7 +60,7 @@
     <news>German and English language support; Language filter; Xtream auto-detection; Parallel search</news>
     <assets>
       <icon>icon-81da1003a2753ec6.png</icon>
-      <fanart>fanart.jpg</fanart>
+      <fanart>resources/media/lightweight_splash.jpg</fanart>
     </assets>
   </extension>
 
