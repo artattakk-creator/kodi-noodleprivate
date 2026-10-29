@@ -33,17 +33,19 @@ class WidgetPicker49(Fixture,unittest.TestCase):
         from settings_sections45 import render
         from localization import tr
         self.assertEqual(tr(36004),'Aussehen und Darstellung');self.assertEqual(tr(32443),'Widgets')
-        for action,section in [('settings_home',''),('settings_section','appearance')]:
-            url=self.router.url(action=action,pid='p',**({'section':section} if section else {}))
-            rows=self.directory(url)
-            target=next(row for row in rows if ('section=appearance' in row[0] if not section else 'action=widget_setup' in row[0]))
-            self.assertTrue(target[2]);self.assertNotEqual(target[1].getProperty('IsPlayable'),'true')
+        rows=self.directory(self.router.url(action='root'))
+        target=next(row for row in rows if 'action=widget_sources49' in row[0])
+        self.assertTrue(target[2]);self.assertNotEqual(target[1].getProperty('IsPlayable'),'true')
+        rows=self.directory(self.router.url(action='settings_section',pid='p',section='appearance'))
+        self.assertFalse(any('action=widget_setup' in row[0] for row in rows))
         rows=self.source_directory()
-        self.assertEqual([li.label for _,li,_ in rows[:3]],['Live-TV – Startgruppe','Filme – Neueste Filme','Serien – Neueste Serien'])
+        self.assertEqual([li.label for _,li,_ in rows[:3]],['Live-TV – Startgruppe','Neueste Filme','Neueste Serien'])
         self.assertEqual(sum(folder for _,_,folder in rows),3)
         for (url,item,folder),(_,action,_) in zip(rows,self.sources.SOURCES):
             self.assertTrue(folder);self.assertEqual(item.getProperty('IsPlayable'),'false')
-            self.assertEqual(parse_qs(urlsplit(url).query),dict(action=[action],pid=['p']))
+            self.assertEqual(parse_qs(urlsplit(url).query)['action'],[action]);self.assertEqual(parse_qs(urlsplit(url).query)['pid'],['p'])
+            self.assertIn('reload=',url)
+            if action=='widget_live_start_group':self.assertIn('home50=1',url)
         self.dialog.textviewer.assert_not_called();self.dialog.select.assert_not_called()
 
     def test_source_management_does_not_run_player_scan_or_mutate_profile_or_skin(self):
@@ -96,7 +98,7 @@ class WidgetPicker49(Fixture,unittest.TestCase):
 
     def test_english_labels_and_save_instructions_use_bundled_catalogue(self):
         self.ui_locale='en_gb';rows=self.source_directory()
-        self.assertEqual([li.label for _,li,_ in rows[:3]],['Live TV - start group','Movies - latest movies','Series - latest series'])
+        self.assertEqual([li.label for _,li,_ in rows[:3]],['Live TV - start group','Latest movies','Latest series'])
         self.sources.help();text=self.dialog.ok.call_args.args[1]
         self.assertIn('Use as widget',text);self.assertIn('BINGIE saves',text)
 
@@ -151,7 +153,7 @@ class WidgetPicker49(Fixture,unittest.TestCase):
         for _,action,_ in self.sources.SOURCES:
             with self.subTest(action=action):
                 result=self.reference_explorer([action,'::CREATE::'])
-                expected=self.router.url(action=action,pid='p')
+                expected=__import__('widget_binding50').source('live' if action.endswith('start_group') else 'vod' if action.endswith('vod') else 'series','p')
                 self.assertEqual(result.getProperty('widgetPath'),expected)
                 self.assertEqual(result.getProperty('widget'),'Addon')
                 self.assertEqual(result.getProperty('widgetTarget'),'videos')

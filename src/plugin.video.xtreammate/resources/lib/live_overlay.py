@@ -381,6 +381,8 @@ class LiveNavigator(xbmcgui.WindowDialog):
             return False
 
     def _accept_input(self):
+        from live_guide_navigation import reconcile_input
+        reconcile_input(self)
         from ui_latency39 import mark
         mark(self,'OWNER_BEGIN')
         if self._closed or getattr(self,'_exiting',False) or getattr(self,'_guide_handoff',False):
@@ -1076,6 +1078,9 @@ class LiveNavigator(xbmcgui.WindowDialog):
             raw = 0
         if key==ACTION_STOP and not self._closed and not getattr(self,'_exiting',False):
             self._request_exit('USER_STOP');return
+        if key in BACK_ACTIONS and getattr(self,'_guide_handoff',False):
+            from live_guide_navigation import cancel_pending
+            if cancel_pending(self):return
         was_closed=getattr(self,'_closed',False)
         if not self._accept_input():
             trace('input','ACTION_IGNORED_CLOSED' if was_closed else 'ACTION_REJECTED',

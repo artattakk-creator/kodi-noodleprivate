@@ -27,4 +27,4 @@ def message(installed):
     if installed=='0.1.29.54':return tr(36521,installed)
     if installed=='0.1.29.53':return tr(36510,installed)
     changes=entries(installed)
-    return tr(35851,installed)+('\n\n'+'\n'.join('• '+line for line in changes) if changes else '')
+    return tr(35851,installed)+('\n\n'+tr(36532)+'\n'+'\n'.join('• '+line for line in changes) if changes else '')

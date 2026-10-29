@@ -34,7 +34,7 @@ def _save(value):_home().setProperty(KEY,json.dumps(value,separators=(',',':')))
 
 
 def _mark(stage):
-    if stage not in ('REQUESTED','SUSPENDED','DISPATCHED','OPEN','RETURN','SWITCH','REJECTED','TIMEOUT'):return
+    if stage not in ('REQUESTED','SUSPENDED','DISPATCHED','OPEN','RETURN','SWITCH','REJECTED','TIMEOUT','INPUT_RECOVERED','CANCELLED'):return
     from window_lifecycle import state
     snapshot=state()
     try:xbmc.log('[XCMate][LIVE_GUIDE] stage={} window={} dialog={}'.format(stage,snapshot['window'],snapshot['dialog']),xbmc.LOGINFO)
@@ -56,7 +56,8 @@ def _announced(value):
 def _finish(value,navigator=None,notify=False):
     current=_state()
     if current and current['token']==value['token']:_home().clearProperty(KEY)
-    if navigator is not None:navigator._guide_handoff=False
+    if navigator is not None:
+        navigator._guide_handoff=False;navigator._guide_token55=''
     if _same_player(value) and _announced(value) and (navigator is None or navigator._closed):
         _home().setProperty(RESUME,json.dumps(dict(nonce=value['session']['nonce'],at=time.monotonic())))
     if notify:
@@ -64,23 +65,60 @@ def _finish(value,navigator=None,notify=False):
         xbmcgui.Dialog().notification('XCMate',tr(32910))
 
 
+def reconcile_input(navigator):
+    """Release an orphaned *local* gate; never clear another owner's intent.
+
+    Window properties disappear on interpreter/service restarts and may be
+    rejected by the bounded parser. The Python boolean is not a durable lease.
+    A valid pending excursion still suppresses duplicate native callbacks.
+    """
+    if not getattr(navigator,'_guide_handoff',False):return
+    value=_state()
+    if (value and value.get('owner')==navigator._window_nonce and
+            value['token']==getattr(navigator,'_guide_token55',value['token'])):return
+    navigator._guide_handoff=False;navigator._guide_token55=''
+    _mark('INPUT_RECOVERED')
+
+
+def cancel_pending(navigator):
+    """Back cancels only our queued, still visible navigation request."""
+    value=_state()
+    if not value or value['phase']!='QUEUED' or value.get('owner')!=navigator._window_nonce:return False
+    from window_lifecycle import state
+    if (navigator._closed or state()['dialog']!=value.get('dialog') or
+            value['token']!=getattr(navigator,'_guide_token55',value['token'])):return False
+    _finish(value,navigator);_mark('CANCELLED');return True
+
+
+def _reject55(reason):
+    # Fixed vocabulary only. No portal IDs, labels, stream paths or exceptions.
+    if reason in ('DESTINATION','PENDING','CLOSED','LOCAL_GATE','OWNERSHIP','NATIVE_OWNER','SESSION','API'):
+        try:xbmc.log('[XCMate][LIVE_GUIDE] stage=REQUEST_REJECTED reason='+reason,xbmc.LOGINFO)
+        except (AttributeError,RuntimeError):pass
+    return False
+
+
 def request(navigator,destination='guide_grid'):
     """Native callback only creates an intent; never closes/navigates/plays."""
-    if destination not in ('guide_grid','global_search','movies_home','series_home','favourites','settings_home','startup_current'):return False
-    if _state() or navigator._closed or getattr(navigator,'_guide_handoff',False):return False
+    if destination not in ('guide_grid','global_search','movies_home','series_home','favourites','settings_home','startup_current'):return _reject55('DESTINATION')
+    reconcile_input(navigator)
+    if _state():return _reject55('PENDING')
+    if navigator._closed:return _reject55('CLOSED')
+    if getattr(navigator,'_guide_handoff',False):return _reject55('LOCAL_GATE')
     from playback_exit import identity
     from window_lifecycle import state
     try:
         owned=identity(xbmc.Player());dialog=state()['dialog']
         if (not owned or owned[0]!='live' or owned[1]['pid']!=str(navigator.portal['id']) or
-                not navigator.owns_playback() or dialog is None or dialog<13000 or
-                xbmcgui.Window(dialog).getProperty('XtreamMate.NavigatorIdentity')!=navigator._window_nonce):return False
+                not navigator.owns_playback()):return _reject55('OWNERSHIP')
+        if (dialog is None or dialog<13000 or
+                xbmcgui.Window(dialog).getProperty('XtreamMate.NavigatorIdentity')!=navigator._window_nonce):return _reject55('NATIVE_OWNER')
         session={k:owned[1][k] for k in ('pid','sid','nonce','at')}
         value=dict(token=uuid.uuid4().hex,phase='QUEUED',session=session,owner=navigator._window_nonce,
                    dialog=dialog,created=time.monotonic(),deadline=time.monotonic()+5,destination=destination)
-        if not _announced(value):return False
-        _save(value);navigator._guide_handoff=True;_mark('REQUESTED');return True
-    except (AttributeError,RuntimeError,TypeError,KeyError):return False
+        if not _announced(value):return _reject55('SESSION')
+        _save(value);navigator._guide_token55=value['token'];navigator._guide_handoff=True;_mark('REQUESTED');return True
+    except (AttributeError,RuntimeError,TypeError,KeyError):return _reject55('API')
 
 
 def preserves_player():
@@ -92,6 +130,7 @@ def preserves_player():
 def _poll(navigator=None):
     """Service owner tick, with no native work on the callback stack."""
     value=_state()
+    if navigator is not None:reconcile_input(navigator)
     if value is None:return False
     from window_lifecycle import state,lease
     snapshot=state();now=time.monotonic();phase=value['phase']

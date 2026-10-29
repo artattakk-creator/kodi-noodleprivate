@@ -222,6 +222,9 @@ bytes on startup; directory readers never decode 12 full pictures in RAM.
  if value:
   remember(event['key'],value);return value
  value=peek(event)
+ if value.get('url_version55')==1:
+  from programme_urls55 import display
+  return display(event,value) or dict(code='URL_EXPIRED',image=event['placeholder'],source='placeholder',match='NONE')
  if value.get('source')!='placeholder' and not os.path.isfile(value.get('image','')):
   with _lock:
    if event['key'] in _memory:_memory[event['key']]['_verified47']=False
@@ -233,6 +236,9 @@ def indexed(event,verify=False):
  from programme_index46 import art as read_art46
  value=read_art46(event)
  if not value:return None
+ if value.get('url_version55')==1:
+  from programme_urls55 import display
+  return display(event,value)
  if value.get('source')=='placeholder':value['image']=event['placeholder'];return value
  try:
   name=value.get('image','')

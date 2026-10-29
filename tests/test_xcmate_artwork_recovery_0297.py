@@ -237,7 +237,7 @@ class StartRouteTests(Fixture,unittest.TestCase):
         self.router._params['action']='home_start'
         def play():
             self.assertEqual(self.ends,[((7,),{'cacheToDisc':False})])
-            self.assertEqual(len(self.added),6)
+            self.assertEqual(len(self.added),7)
             self.assertIn('action=xcmate_home',self.builtins[-1])
         self.router._play_start_direct=mock.Mock(side_effect=play)
         self.routes.dispatch(self.router)

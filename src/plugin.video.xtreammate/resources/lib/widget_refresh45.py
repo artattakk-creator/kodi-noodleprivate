@@ -74,7 +74,7 @@ def publish(portal,kind,rows,code='READY'):
     from widget_diagnostics47 import describe as describe47,save as save47
     save47(portal['id'],kind,'ITEMS',describe47(portal['id'],kind,items))
     if kind=='live':
-        from programme_art46 import enqueue
+        from programme_urls55 import enqueue
         cursor=_art_cursor46.get(str(portal['id']),0)%max(1,len(items))
         positions={(cursor+i)%len(items) for i in range(min(16,len(items)))}
         _art_cursor46[str(portal['id'])]=(cursor+16)%max(1,len(items))

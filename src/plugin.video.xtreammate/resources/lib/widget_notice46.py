@@ -41,21 +41,10 @@ def poll():
 
 
 def focused():
+    """Drain the legacy hint; focused ListItems already contain the final URL.
+
+    Focus must not become a second metadata resolver, even on a worker. The
+    rotating background prefetcher handles NOW/NEXT independently of input.
+    """
     global _focus
-    with _lock:value=_focus;_focus=None
-    if not value:return
-    from urllib.parse import parse_qs,urlsplit
-    q=parse_qs(urlsplit(value).query)
-    if q.get('action')!=['programme_details46']:return
-    from portals import get_by_id
-    portal=get_by_id(q.get('pid',[''])[0])
-    if not portal or not portal.get('enabled',True):return
-    from programme_events46 import load
-    from programme_art46 import enqueue
-    from widget_data41 import WidgetReader
-    row=WidgetReader(portal['id']).get('live',q.get('sid',[''])[0])
-    if not row:return
-    try:selected=dict(start=int(q.get('start',['0'])[0]),stop=int(q.get('stop',['0'])[0]),key=q.get('event',[''])[0])
-    except (TypeError,ValueError):return
-    event=load(portal,row,selected=selected)
-    if event and event['key']==selected['key']:enqueue(event)
+    with _lock:_focus=None

@@ -47,7 +47,7 @@ def publish(portal,rows,approved):
     from widget_items45 import describe
     from widget_group46 import infos
     from widget_data41 import policy
-    from programme_art46 import enqueue
+    from programme_urls55 import enqueue
     filename=path(portal['id'],'live');old={}
     try:
         with open(filename,encoding='utf-8') as f:old=json.loads(f.read(256*1024))

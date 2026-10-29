@@ -38,6 +38,15 @@ def edit(data,changes):
 
 
 def patch(path,data):
+    previous=json.loads(read(Path(__file__).parents[1]/'bingie55_previous.json'))
+    if sha(data)==previous['files'].get(path):
+        # Exact known .50 adapter only. No pattern-based edits of unknown skins.
+        if path!='xml/IncludesHomeWidgets.xml':return data
+        old=previous['includes'].encode()
+        if data.count(old)!=1:raise ValueError('UNVERIFIED_PREVIOUS_ADAPTER')
+        root=xml(read(Path(__file__).parents[1]/'bingie50/IncludesXCMate50.xml'))
+        new=b'\n'.join(ET.tostring(n,encoding='utf-8') for n in root)
+        return edit(data,[(data.index(old),data.index(old)+len(old),new)])
     expected=reference()['files'][path]
     if sha(data) not in expected:raise ValueError('UNVERIFIED_SKIN_FILE')
     if path=='shortcuts/template.xml':
@@ -122,7 +131,9 @@ def applied(skin):
             if not p.is_dir() or len(p.name)!=32:continue
             try:
                 plan=load(p.name,'skin')
-                if [str(t.resolve()) for t in paths]==[v['target'] for v in plan['entries']] and all(sha(read(t))==v['after'] for t,v in zip(paths,plan['entries'])):return True
+                if ([str(t.resolve()) for t in paths]==[v['target'] for v in plan['entries']] and
+                        all(sha(read(t))==v['after'] for t,v in zip(paths,plan['entries'])) and
+                        all(patch(name,read(p/('original.'+str(i))))==read(t) for i,(name,t) in enumerate(zip(FILES,paths)))):return True
             except (OSError,ValueError,KeyError):pass
     except (OSError,ValueError,ET.ParseError):pass
     return False

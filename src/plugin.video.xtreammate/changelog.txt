@@ -1,3 +1,10 @@
+0.1.29.55
+- Widgets: drei direkte Quellen im nativen BINGIE-Picker unter XCMate > Widgets.
+- Live-Home: schmale blaue Senderleiste und Hero nach freigegebener Layoutvorlage (Skinadapter separat freigeben).
+- Sendungsbilder: HTTPS-URL vorab im gemeinsamen Event-Index sichern; keine Bilderrecherche bei Fokus oder Details.
+- Live-Navigation: verwaiste Übergabesperre lösen und wartende eigene Übergabe mit Zurück abbrechen.
+- Wizard .54 und gespeicherte Passwörter, Portale, EPG, Cover und Profile bleiben erhalten.
+
 0.1.29.54
 - Installation erfolgreich: Popup zeigt installierte Version und konkrete Änderungen.
 - Wizard prüft die Verbindung getrennt und bestätigt gültige Zugangsdaten.

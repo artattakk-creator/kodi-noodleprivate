@@ -63,14 +63,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
      from programme_events46 import load
      from media_art import local_art,request as request_logos
      value=load(self.portal,self.channel,self.selected)
-     from programme_index46 import event as publish_event46
-     publish_event46(value,write=True)
      value['logo']=local_art(self.channel)['thumb'];request_logos([self.channel])
-     if not self._cancel.is_set():
-      from programme_art46 import enqueue
-      enqueue(value)
-      from programme_index46 import publish as publish_records46
-      publish_records46([value])
      future.set_result(value)
     except Exception:future.set_exception(RuntimeError('PROGRAMME_READ_FAILED'))
    finally:_slots.release()
@@ -93,8 +86,8 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
     self.getControl(112).setLabel('' if real else self.event['channel']);self.getControl(112).setVisible(not real)
   if self.event and time.monotonic()>=self._next:
    self._next=time.monotonic()+.5
-   from programme_art46 import peek
-   art=peek(self.event);signature=(art.get('image'),art.get('code'),art.get('source'),art.get('match'))
+   from programme_art46 import cached
+   art=cached(self.event);signature=(art.get('image'),art.get('code'),art.get('source'),art.get('match'))
    if signature!=self._art_signature:
     self._art_signature=signature;self.getControl(110).setImage(art.get('image') or self.event['placeholder'])
     self.getControl(104).setLabel(tr(36108)+' · '+str(art.get('code','PENDING')) if art.get('source')=='placeholder' else tr(36109)+': '+str(art.get('source',''))+' · '+str(art.get('match','')))
