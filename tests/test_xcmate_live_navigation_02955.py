@@ -57,6 +57,13 @@ class LiveGate55(guide_model.LiveGuideFixture,unittest.TestCase):
         self.assertFalse(self.nav._guide_handoff)
         self.player.stop.assert_not_called();self.player.play.assert_not_called()
 
+    def test_missing_active_owner_lease_is_not_a_permanent_successful_ownership_match(self):
+        self.module.request(self.nav);self.module.poll(self.nav)
+        value=self.module._state();value.update(phase='ACTIVE',lease='');self.module._save(value)
+        self.assertFalse(self.module.poll(self.nav));self.assertIsNone(self.module._state())
+        self.assertEqual(self.module.consume_resume(),'own')
+        self.player.stop.assert_not_called();self.player.play.assert_not_called()
+
     def test_fullscreen_stop_and_movie_exit_implementations_are_not_changed(self):
         from pathlib import Path
         import hashlib,json

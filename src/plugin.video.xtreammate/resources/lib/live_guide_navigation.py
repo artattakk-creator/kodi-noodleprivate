@@ -159,7 +159,9 @@ def _poll(navigator=None):
         if now>value['deadline']:_mark('TIMEOUT');_finish(value,navigator,notify=True);return False
         return True
     if phase=='ACTIVE':
-        if value.get('lease')==lease():return True
+        # lease() returns '' after ownership disappears. Two missing owners
+        # are not a valid lease and must not preserve an ACTIVE intent forever.
+        if value.get('lease') and value['lease']==lease():return True
         # Plugin failure/return released its lease. Never force any dialog shut.
         value.update(phase='RETURN',deadline=now+15);_save(value)
     elif phase=='SWITCH':
