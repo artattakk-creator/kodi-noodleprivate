@@ -71,7 +71,7 @@ def status(pid):
     db=None
     value=dict(facts=-1,prepared_events=-1,channels=-1,asset_references=-1,
                artwork_sample=0,artwork_sample_ready=0,artwork_sample_local_files=0,artwork_sample_missing_files=0,
-               artwork_sample_codes={},asset_sample_codes={},image_decoder='UNAVAILABLE')
+               artwork_sample_codes={},asset_sample_codes={},image_decoder='UNAVAILABLE',artwork_sample_online_urls55=0)
     try:
         import PIL.Image
         value['image_decoder']='PIL_AVAILABLE_ANDROID_DECODE_NOT_TESTED'
@@ -91,7 +91,9 @@ def status(pid):
         codes=set(CODES)|{'READY','READY_STALE','NO_IMAGE','PENDING','MEMORY_PRESSURE','CACHE_ERROR',
             'PROGRAMME_CACHE_BUDGET','IMAGE_DECODER_MISSING','UNSAFE_SOURCE','REDIRECT_BLOCKED','CONTENT_TYPE',
             'CONTENT_ENCODING','IMAGE_LIMIT','RESPONSE_LIMIT','RESEARCH_BUSY','DYNAMIC_APPROVED','DNS_UNAVAILABLE',
-            'INVALID_LOCAL_IMAGE','PENDING_LOCAL_DOWNLOAD','LOCAL_HEADER_VALID','INVALID_SOURCE','NO_SOURCE'}
+            'INVALID_LOCAL_IMAGE','PENDING_LOCAL_DOWNLOAD','LOCAL_HEADER_VALID','INVALID_SOURCE','NO_SOURCE',
+            'URL_EXPIRED','BLOCKED_IMAGE_HOST_OR_URL','BLOCKED_CREDENTIAL_URL','AWAITING_BACKGROUND_REFRESH',
+            'IMAGE_PREFLIGHT_FAILED','BLOCKED_NO_AUTHORIZED_API','PROGRAMME_DB_UNAVAILABLE'}
         def count_code(bucket,data):
             code=data.get('code','');code=code if code in codes else 'OTHER_CODE'
             bucket[code]=bucket.get(code,0)+1
@@ -103,9 +105,11 @@ def status(pid):
                 value['artwork_sample_ready']+=1
                 import os
                 from programme_art46 import root
+                online=bool(art.get('url_version55')==1 and art.get('source_url'))
+                value['artwork_sample_online_urls55']+=int(online)
                 found=os.path.dirname(art.get('image',''))==root() and os.path.isfile(art.get('image',''))
                 value['artwork_sample_local_files']+=int(found)
-                value['artwork_sample_missing_files']+=int(not found)
+                value['artwork_sample_missing_files']+=int(not found and not online)
         try:
             for raw, in db.execute('SELECT data FROM asset_refs47 WHERE pid=? LIMIT 128',(str(pid),)):
                 if len(raw)<=16384:count_code(value['asset_sample_codes'],json.loads(raw))

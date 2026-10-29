@@ -55,7 +55,7 @@ class SearchNavigation32(Fixture,unittest.TestCase):
         with mock.patch.object(plugin,'endOfDirectory',side_effect=done),mock.patch.object(xbmc,'Monitor',return_value=types.SimpleNamespace(waitForAbort=tick)),mock.patch.object(self.media,'open_search',side_effect=opened):
             self.routes.dispatch(self.router)
         self.assertEqual(events,['directory','search']);self.assertEqual(len(self.ends),1);self.assertFalse(self.builtins)
-        self.assertEqual(len(self.added),6);self.assertTrue(self.added[0][1].art['icon'])
+        self.assertEqual(len(self.added),7);self.assertTrue(self.added[0][1].art['icon'])
         self.assertTrue(all(item.art['fanart'] for _,item,folder in self.added if not folder))
 
     def test_directory_timeout_and_busy_owner_never_open_or_recurse(self):

@@ -4395,11 +4395,11 @@ msgstr "Live TV - start group"
 
 msgctxt "#36301"
 msgid "Movies - latest movies"
-msgstr "Movies - latest movies"
+msgstr "Latest movies"
 
 msgctxt "#36302"
 msgid "Series - latest series"
-msgstr "Series - latest series"
+msgstr "Latest series"
 
 msgctxt "#36303"
 msgid "Existing widget status and additional functions"
@@ -4576,3 +4576,15 @@ msgstr "Installation successful"
 msgctxt "#36521"
 msgid "Version {0}\n\nChanges:\n• Connection checked separately, with a clear success message.\n• Completed catalogue groups survive retries.\n• Portal saved before optional EPG imports.\n• EPG sources resume separately, with real progress and no total runtime limit.\n• New passwords remain editable during the running setup.\n• Clearer group counts and the regular XCMate background.\n\nAfter a new Kodi/Python session, an unsaved password must be entered again. Existing portals and settings are preserved."
 msgstr "Version {0}\n\nChanges:\n• Connection checked separately, with a clear success message.\n• Completed catalogue groups survive retries.\n• Portal saved before optional EPG imports.\n• EPG sources resume separately, with real progress and no total runtime limit.\n• New passwords remain editable during the running setup.\n• Clearer group counts and the regular XCMate background.\n\nAfter a new Kodi/Python session, an unsaved password must be entered again. Existing portals and settings are preserved."
+
+msgctxt "#36530"
+msgid "Approved programme image hosts (exact names, comma separated)"
+msgstr "Approved programme image hosts (exact names, comma separated)"
+
+msgctxt "#36531"
+msgid "NOW"
+msgstr "NOW"
+
+msgctxt "#36532"
+msgid "Changes:"
+msgstr "Changes:"

@@ -200,7 +200,7 @@ class ProgrammeIntegration47(Fixture,unittest.TestCase):
         rows,_=importlib.import_module('widget_data41').snapshot(self.portal,'live')
         refresh=importlib.import_module('widget_refresh45');original=sqlite3.connect;opened=[]
         def connect(*a,**kw):opened.append(a[0]);return original(*a,**kw)
-        with mock.patch.object(sqlite3,'connect',side_effect=connect),mock.patch('programme_art46.enqueue'):
+        with mock.patch.object(sqlite3,'connect',side_effect=connect),mock.patch('programme_urls55.enqueue'):
             self.assertTrue(refresh.publish(self.portal,'live',rows))
         self.assertLessEqual(len(opened),40)
         self.assertEqual(len(refresh.read('p','live')['items']),88)

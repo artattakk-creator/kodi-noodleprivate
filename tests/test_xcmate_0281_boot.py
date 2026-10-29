@@ -85,7 +85,7 @@ class BootTests(unittest.TestCase):
             seen.append(name);return original(name,*a,**kw)
         before=self.portal_file.read_bytes()
         with mock.patch('builtins.__import__',side_effect=guarded): self.run_entry()
-        self.assertEqual(len(self.items),6);self.assertEqual(len(self.ends),1)
+        self.assertEqual(len(self.items),7);self.assertEqual(len(self.ends),1)
         self.assertEqual(self.portal_file.read_bytes(),before)
         for phase in ('ARTWORK_PROFILE','HOME_FAST','HOME_PORTALS','PORTALS_LOAD','ROOT_MENU','HOME_MENU'):
             self.assertTrue(any(phase+'_BEGIN' in s for s in self.logs),phase)
@@ -172,7 +172,7 @@ else: raise AssertionError('FIFO accepted')
             utils=importlib.import_module('utils')
             with mock.patch.object(utils,'http_get',side_effect=AssertionError('provider on root')):
                 self.run_entry()
-            self.assertEqual(len(self.items),6);self.assertEqual(len(self.ends),1)
+            self.assertEqual(len(self.items),7);self.assertEqual(len(self.ends),1)
         finally:
             for db in locks: db.close()
 
@@ -184,7 +184,7 @@ else: raise AssertionError('FIFO accepted')
                 self.ends.clear();self.run_entry(action);self.assertEqual(len(self.ends),1)
                 # .41: explicit temporarily-unavailable row, valid directory.
                 self.assertTrue(self.ends[0][0][1])
-            self.items.clear();self.ends.clear();self.run_entry();self.assertEqual(len(self.items),6)
+            self.items.clear();self.ends.clear();self.run_entry();self.assertEqual(len(self.items),7)
         finally: db.close()
 
     def test_widget_expensive_query_is_interrupted_and_leaves_database_intact(self):
@@ -235,7 +235,7 @@ else: raise AssertionError('FIFO accepted')
             self.assertEqual(len(self.ends),12);self.assertEqual(len({a[0] for a,_ in self.ends}),12)
             for handle,action in enumerate(actions,10):
                 rows=[li for h,_,li in self.items if h==handle]
-                self.assertEqual(len(rows),6 if action=='root' else 1)
+                self.assertEqual(len(rows),7 if action=='root' else 1)
                 self.assertTrue(all('Uncommitted' not in li.label for li in rows))
         finally: db.rollback();db.close()
 
@@ -246,7 +246,7 @@ else: raise AssertionError('FIFO accepted')
             started=time.monotonic()
             self.assertIsNone(epg._refresh_portal_epg('p',self.portal))
             self.assertLess(time.monotonic()-started,.5)
-            self.items.clear();self.run_entry();self.assertEqual(len(self.items),6)
+            self.items.clear();self.run_entry();self.assertEqual(len(self.items),7)
         finally: epg._REFRESH_LOCK.release()
 
     def test_active_epg_worker_receives_abort_and_root_is_independent(self):
@@ -264,7 +264,7 @@ else: raise AssertionError('FIFO accepted')
         with mock.patch.object(stream,'refresh',side_effect=slow_provider):
             worker=threading.Thread(target=work);worker.start()
             try:
-                self.assertTrue(entered.wait(1));self.run_entry();self.assertEqual(len(self.items),6)
+                self.assertTrue(entered.wait(1));self.run_entry();self.assertEqual(len(self.items),7)
             finally: abort.set();worker.join(1)
         self.assertFalse(worker.is_alive());self.assertTrue(finished.is_set());self.assertFalse(errors)
 
@@ -298,7 +298,7 @@ else: raise AssertionError('FIFO accepted')
         first=self.portal_file.read_bytes();portals.import_from_settings()
         self.assertEqual(self.portal_file.read_bytes(),first)
         self.assertEqual([p['type'] for p in portals.load_all()],['m3u','xtream','stb'])
-        self.allow_legacy=False;self.run_entry();self.assertEqual(len(self.items),6)
+        self.allow_legacy=False;self.run_entry();self.assertEqual(len(self.items),7)
 
 
 if __name__=='__main__': unittest.main()

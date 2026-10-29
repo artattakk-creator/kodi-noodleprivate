@@ -1,0 +1,196 @@
+"""Pre-resolved event image URLs in the existing programme/artwork index.
+
+Only producers enqueue. Home, focus and programme details perform local reads.
+No image archive, new database, guide writes or TV-Spielfilm scraping. Public
+image hosts require explicit approval; Kodi redirects are disabled at rendering.
+"""
+from collections import OrderedDict
+import ipaddress,re,threading,time
+from urllib.parse import urlsplit,unquote
+
+_lock=threading.Lock();_queue=OrderedDict();_pending=set();_thread=None
+_stop=threading.Event();_wake=threading.Event();_revisions={}
+OPTIONS='|redirect-limit=0&connection-timeout=3&failonerror=true'
+
+
+def hosts():
+    from utils import setting
+    values={'image.tmdb.org'}
+    for host in str(setting('programme_image_hosts55','')).lower().split(',')[:20]:
+        host=host.strip()
+        if re.fullmatch(r'[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?',host) and '.' in host:
+            values.add(host)
+    return values
+
+
+def safe(url):
+    """Pure validation only: no DNS, IO, normalization or discovery in readers."""
+    if not isinstance(url,str) or not 1<len(url)<=2048:return False
+    if any(ord(c)<33 or ord(c)>126 for c in url) or any(c in url for c in ('\\','|')):return False
+    try:
+        p=urlsplit(url)
+        if (p.scheme!='https' or p.port not in (None,443) or p.username is not None or
+                p.password is not None or p.query or p.fragment or p.hostname not in hosts()):return False
+        if p.hostname.endswith(('.local','.localhost','.internal','.invalid')) or p.hostname=='localhost':return False
+        try:
+            ipaddress.ip_address(p.hostname)
+            return False  # Literal IPs are never an approved image CDN.
+        except ValueError:pass
+        decoded=unquote(p.path)
+        if any(ord(c)<32 for c in decoded) or any(c in decoded for c in ('\\','|','@')):return False
+        if any(part in ('.','..') for part in decoded.split('/')):return False
+        if p.hostname=='image.tmdb.org' and not re.fullmatch(r'/t/p/(?:w\d{2,4}|original)/[A-Za-z0-9_-]+\.(?:jpg|png)',p.path):return False
+        return bool(p.path and p.path!='/')
+    except (ValueError,TypeError,AttributeError):return False
+
+
+def binding(event):
+    from programme_store46 import title_hash
+    return [str(event.get(k,'')) for k in ('pid','sid','canonical','source_key46','epg_source46','start','stop')]+[title_hash(event.get('title',''))]
+
+
+def profile():
+    import hashlib
+    from programme_index46 import path
+    return hashlib.sha256(path().encode()).hexdigest()
+
+
+def display(event,value):
+    """A persisted URL is not proof that Android displayed the right picture."""
+    if not isinstance(value,dict) or value.get('url_version55')!=1:return None
+    if value.get('hosts55')!=sorted(hosts()) or value.get('profile55')!=profile():return None
+    if value.get('binding55')!=binding(event) or value.get('key')!=event.get('key'):return None
+    until=value.get('until',0)
+    if not isinstance(until,(int,float)) or not time.time()<until<time.time()+8*86400:return None
+    if value.get('source')=='placeholder':return dict(value,image=event['placeholder'])
+    url=value.get('source_url','')
+    if not safe(url) or value.get('match') not in ('EXACT_EVENT','EXACT_TITLE_YEAR','EXACT_SEASON_EPISODE'):return None
+    return dict(value,image=url+OPTIONS,thumbnail=url+OPTIONS)
+
+
+def probe(url,cancel=lambda:False):
+    """Bounded credentialless preflight, pinned public DNS/TLS, no redirects.
+
+    Validates response type and header dimensions without archiving image bytes.
+    Kodi performs the actual rendering download later; a later 404 is harmless.
+    """
+    from media_sources43 import SourceError
+    from download_redirect import addresses,_connect
+    from media_art import dimensions,MAX_PIXELS
+    response=None
+    try:
+        if cancel():raise SourceError('CANCELLED')
+        response=_connect(url,addresses(url),{'User-Agent':'XCMate programme image preflight','Accept':'image/jpeg,image/png','Accept-Encoding':'identity'})
+        code=response.status
+        if code in (404,410):raise SourceError('HTTP_NOT_FOUND')
+        if code!=200:raise SourceError('REDIRECT_BLOCKED' if 300<=code<400 else 'HTTP_CLIENT')
+        if response.headers.get('Content-Type','').partition(';')[0].lower() not in ('image/jpeg','image/png'):raise SourceError('CONTENT_TYPE')
+        if response.headers.get('Content-Encoding','identity').lower() not in ('identity',''):raise SourceError('CONTENT_ENCODING')
+        data=b'';deadline=time.monotonic()+3
+        while len(data)<65536:
+            if cancel():raise SourceError('CANCELLED')
+            if time.monotonic()>deadline:raise SourceError('TIMEOUT')
+            part=response.read(min(4096,65536-len(data)))
+            if not part:break
+            data+=part
+            try:
+                width,height=dimensions(data)
+                if not 0<width<=4096 or not 0<height<=4096 or width*height>MAX_PIXELS:raise SourceError('IMAGE_LIMIT')
+                return
+            except (ValueError,IndexError):pass
+        raise SourceError('INVALID_IMAGE')
+    except SourceError:raise
+    except Exception:
+        # Private host, TLS error text and connection credentials never escape.
+        raise SourceError('IMAGE_PREFLIGHT_FAILED') from None
+    finally:
+        if response is not None:response.close()
+
+
+def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None):
+    """Worker only. No full image download, no image file and no guide writes."""
+    from programme_index46 import art,event as save_event
+    from programme_art46 import fingerprint,remember
+    from media_sources43 import SourceError
+    old=art(event)
+    current=display(event,old)
+    if current and not (allow_lookup and current.get('code')=='AWAITING_BACKGROUND_REFRESH'):return current
+    if cancel():return None
+    now=time.time()
+    value=dict(key=event['key'],fingerprint=fingerprint(event),binding55=binding(event),url_version55=1,
+               code='NO_IMAGE',source='placeholder',match='NONE',image=event['placeholder'],
+               resolved_at55=now,until=now+300,tvspielfilm55='BLOCKED_NO_AUTHORIZED_API')
+    value.update(hosts55=sorted(hosts()),profile55=profile())
+    candidates=[dict(url=event[field],source=source,match='EXACT_EVENT',attribution=credit)
+                for field,source,credit in (('xmltv_image','xmltv_event','XMLTV – konfigurierte Eventquelle'),
+                    ('provider_image','provider_event','Anbieter – konfigurierte Eventquelle')) if event.get(field)]
+    if old and old.get('source_url') and old.get('source') in ('xmltv_event','provider_event','tmdb_movie','tmdb_episode'):
+        candidates.append(dict(url=old['source_url'],source=old['source'],match=old.get('match','NONE'),attribution=old.get('attribution','')))
+    for candidate in candidates+[None]:
+        if cancel():return None
+        if candidate is None:
+            if not allow_lookup:continue
+            try:
+                from programme_match46 import candidate as lookup
+                candidate=(match or lookup)(event,cancel=cancel)
+            except SourceError as exc:value['code']=exc.code;continue
+            if not candidate:continue
+        if candidate.get('match') not in ('EXACT_EVENT','EXACT_TITLE_YEAR','EXACT_SEASON_EPISODE'):continue
+        url=candidate.get('url','')
+        if not safe(url):value['code']='BLOCKED_IMAGE_HOST_OR_URL';continue
+        from portals import get_by_id
+        portal=get_by_id(str(event.get('pid',''))) or {}
+        path=unquote(urlsplit(url).path)
+        secrets=[str(portal.get(k) or '') for k in ('xc_user','xc_pass')]
+        if any(secret and (secret in path.split('/') or len(secret)>=4 and secret in path) for secret in secrets):
+            value['code']='BLOCKED_CREDENTIAL_URL';continue
+        try:(check or probe)(url,cancel=cancel)
+        except SourceError as exc:value['code']=exc.code;continue
+        if cancel():return None
+        value.update(code='READY',source=candidate['source'],match=candidate['match'],
+            source_url=url,image=url+OPTIONS,thumbnail=url+OPTIONS,
+            attribution=candidate.get('attribution',''),until=min(now+86400,max(now+300,event['stop']+3600)))
+        break
+    if not candidates and not allow_lookup:value['code']='AWAITING_BACKGROUND_REFRESH'
+    # A transient network failure may never extend or bless an expired URL.
+    save_event(event,write=True)
+    saved=art(event,value)
+    if saved is not None:remember(event['key'],value,verified47=True)
+    return value if saved is not None else dict(value,code='PROGRAMME_DB_UNAVAILABLE',image=event['placeholder'],source='placeholder')
+
+
+def refreshed(pid,revision):
+    """The first observation is a boot baseline, never a metadata lookup trigger."""
+    key=str(pid);previous=_revisions.get(key)
+    eligible=bool(previous and previous[0] is not None and revision is not None and (previous[0]!=revision or previous[1]))
+    _revisions[key]=(revision,eligible)
+    if len(_revisions)>8:_revisions.pop(next(iter(_revisions)))
+    return eligible
+
+
+def enqueue(event,allow_lookup=False):
+    """Called only by existing background producers, never by focus/details."""
+    global _thread
+    if _stop.is_set() or not event.get('title'):return False
+    with _lock:
+        key=event['key']
+        if key in _pending or len(_pending)>=24:return False
+        _pending.add(key);_queue[key]=(dict(event),allow_lookup)
+        if _thread is None or not _thread.is_alive():
+            _thread=threading.Thread(target=_run,name='XCMate-programme-URL55',daemon=True);_thread.start()
+    _wake.set();return True
+
+
+def _run():
+    while not _stop.is_set():
+        with _lock:pair=_queue.popitem(last=False) if _queue else None
+        if pair is None:_wake.wait(.5);_wake.clear();continue
+        key,(event,allow)=pair
+        try:
+            try:resolve(event,cancel=_stop.is_set,allow_lookup=allow)
+            except Exception:pass  # No private exception text, keep worker alive.
+        finally:
+            with _lock:_pending.discard(key)
+
+
+def shutdown():_stop.set();_wake.set()

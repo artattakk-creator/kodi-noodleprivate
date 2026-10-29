@@ -282,7 +282,7 @@ def reused(candidate):
         if db is not None:db.close()
 
 
-def publish(records):
+def publish(records,include_art=True):
     """One transaction for a bounded worker page, including negative art TTL."""
     db=None
     try:
@@ -292,7 +292,10 @@ def publish(records):
             for record in records[:64]:
                 data=encoded({k:record[k] for k in FIELDS if k in record})
                 db.execute('''INSERT INTO events VALUES(?,?,?,?,?,?,?,?,1,?) ON CONFLICT(event_key) DO UPDATE SET base_hash=excluded.base_hash,data=excluded.data,updated=excluded.updated WHERE events.base_hash!=excluded.base_hash OR events.data!=excluded.data''',(record['key'],record['pid'],record['sid'],record.get('canonical',''),record['start'],record['stop'],base_hash(record,fact_version(db,record)),data,time.time()))
-                value=peek(record)
+                # URL55 has its own committed writer. A producer may have read
+                # an older RAM manifest before that commit; it must not replace
+                # the newer durable reference with that stale observation.
+                value=peek(record) if include_art else {}
                 if value.get('until'):
                     db.execute('''INSERT INTO artwork VALUES(?,?,?,1,?,?) ON CONFLICT(event_key) DO UPDATE SET fingerprint=excluded.fingerprint,data=excluded.data,checked=excluded.checked,expires=excluded.expires WHERE artwork.fingerprint!=excluded.fingerprint OR artwork.data!=excluded.data''',(record['key'],fingerprint(record),encoded(value),time.time(),value['until']))
         report('events');return True

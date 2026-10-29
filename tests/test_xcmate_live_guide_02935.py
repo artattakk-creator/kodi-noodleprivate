@@ -9,7 +9,7 @@ class InfoButton35(unittest.TestCase):
     setUp=_overlay_model.OverlayLifecycleTests.setUp
     def test_only_extra_epg_button_queues_one_request_after_native_double_delivery(self):
         self.overlay._switch('extras');self.overlay._focus_extra=3;self.overlay._render()
-        helper=types.SimpleNamespace(request=mock.Mock(side_effect=lambda nav:setattr(nav,'_guide_handoff',True)))
+        helper=types.SimpleNamespace(reconcile_input=lambda nav:None,request=mock.Mock(side_effect=lambda nav:setattr(nav,'_guide_handoff',True)))
         with mock.patch.dict(sys.modules,live_guide_navigation=helper):
             self.overlay.native(7);self.overlay.native(7)
         helper.request.assert_called_once_with(self.overlay)
@@ -23,7 +23,7 @@ class InfoButton35(unittest.TestCase):
         self.player.stop.assert_not_called()
 
 
-class LiveGuide35(Fixture,unittest.TestCase):
+class LiveGuideFixture(Fixture):
     def setUp(self):
         super().setUp()
         for name in ('live_overlay','live_guide_navigation','playback_exit','guide_grid_window'):
@@ -51,6 +51,8 @@ class LiveGuide35(Fixture,unittest.TestCase):
         self.grid=importlib.import_module('guide_grid_window')
         patch=mock.patch.object(self.grid,'ThreadPoolExecutor',QueuedPool);patch.start();self.addCleanup(patch.stop)
 
+
+class LiveGuide35(LiveGuideFixture,unittest.TestCase):
     def dispatch(self):
         self.assertTrue(self.module.request(self.nav));self.assertTrue(self.module.poll(self.nav))
         self.assertTrue(self.module.poll(self.nav));return self.module._state()['token']

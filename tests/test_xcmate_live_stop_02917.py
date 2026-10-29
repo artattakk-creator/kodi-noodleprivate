@@ -85,7 +85,7 @@ class StopTests(Fixture,unittest.TestCase):
     def test_legacy_start_folder_anchors_home_before_play_and_new_action_keeps_home(self):
         self.router._params['action']='home_start';self.router._play_start_direct=mock.Mock()
         self.routes.dispatch(self.router);self.assertIn('action=xcmate_home',self.current_folder)
-        self.assertEqual(len(self.added),6);self.assertEqual(sum('action=home_start' in x[0] for x in self.added),1)
+        self.assertEqual(len(self.added),7);self.assertEqual(sum('action=home_start' in x[0] for x in self.added),1)
         self.assertEqual(self.router._play_start_direct.call_count,1)
         self.router._handle=-1;self.builtins.clear();self.routes.dispatch(self.router)
         self.assertFalse(self.builtins);self.assertEqual(self.router._play_start_direct.call_count,2)

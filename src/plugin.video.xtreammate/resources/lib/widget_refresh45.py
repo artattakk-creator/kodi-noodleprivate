@@ -74,7 +74,7 @@ def publish(portal,kind,rows,code='READY'):
     from widget_diagnostics47 import describe as describe47,save as save47
     save47(portal['id'],kind,'ITEMS',describe47(portal['id'],kind,items))
     if kind=='live':
-        from programme_art46 import enqueue
+        from programme_urls55 import enqueue
         cursor=_art_cursor46.get(str(portal['id']),0)%max(1,len(items))
         positions={(cursor+i)%len(items) for i in range(min(16,len(items)))}
         _art_cursor46[str(portal['id'])]=(cursor+16)%max(1,len(items))
@@ -84,7 +84,7 @@ def publish(portal,kind,rows,code='READY'):
             if event and pos in positions:enqueue(event)
             if event:records46.append(event)
         from programme_index46 import publish as publish_records46
-        publish_records46(records46)
+        publish_records46(records46,include_art=False)
         from programme_assets47 import channels as channels47
         channels47(portal,records46)
     frame=dict(pid=str(portal['id']),kind=kind,policy=policy(portal,kind),at=time.time(),items=items)

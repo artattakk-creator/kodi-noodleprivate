@@ -22,10 +22,10 @@ class NavigationTests(Fixture,unittest.TestCase):
         router=module.Router(['plugin://plugin.video.xtreammate','7','?action=root'])
         for accounts in ([self.portal],[self.portal,dict(self.portal,id='other',name='Other')]):
             self.portals=accounts;self.added.clear();router._root()
-            self.assertEqual([li.label for _,li,_ in self.added],['Startkanal','Live-TV','EPG','Filme','Serien','Einstellungen'])
+            self.assertEqual([li.label for _,li,_ in self.added],['Startkanal','Live-TV','EPG','Filme','Serien','Einstellungen','Widgets'])
             self.assertFalse(self.builtins)
         self.portals=[];self.added.clear();router._root()
-        self.assertNotEqual(len(self.added),6)
+        self.assertNotEqual(len(self.added),7)
         self.assertTrue(any('setup_wizard' in url for url,_,_ in self.added))
 
     def test_settings_ten_categories_and_maintenance_only_diagnostics(self):

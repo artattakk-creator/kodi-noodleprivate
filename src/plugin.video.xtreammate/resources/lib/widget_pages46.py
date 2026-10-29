@@ -47,7 +47,7 @@ def publish(portal,rows,approved):
     from widget_items45 import describe
     from widget_group46 import infos
     from widget_data41 import policy
-    from programme_art46 import enqueue
+    from programme_urls55 import enqueue
     filename=path(portal['id'],'live');old={}
     try:
         with open(filename,encoding='utf-8') as f:old=json.loads(f.read(256*1024))
@@ -69,7 +69,7 @@ def publish(portal,rows,approved):
                 if event:records.append(event)
                 items.append(value)
             from programme_index46 import publish as publish_records46
-            publish_records46(records)
+            publish_records46(records,include_art=False)
             channels47(portal,records)
             digest.update(json.dumps(items,sort_keys=True).encode())
             data=json.dumps(dict(generation46=generation,items=items)).encode()

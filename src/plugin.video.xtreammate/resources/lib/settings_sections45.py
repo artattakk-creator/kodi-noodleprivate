@@ -7,7 +7,7 @@ ROWS={
 'live':[(32421,'startup_settings',{}),(32430,'groups_manager',{}),(32431,'favourites',{}),(36016,'native_options45',{'group':'live'})],
 'epg':[(32423,'guide_browser',{}),(32424,'epg_sources',{}),(32426,'guide_status',{}),(35960,'guide_backup44',{}),(32428,'refresh_epg',{}),(36017,'native_options45',{'group':'epg'})],
 'media':[(36018,'native_options45',{'group':'media'}),(32432,'media_favourites',{'kind':'vod'}),(32433,'media_favourites',{'kind':'series'})],
-'appearance':[(33813,'theme_manager',{}),(32620,'ui_language',{}),(32622,'appearance_settings',{}),(32436,'remote_setup',{}),(32443,'widget_setup',{}),(36019,'native_options45',{'group':'appearance'})],
+'appearance':[(33813,'theme_manager',{}),(32620,'ui_language',{}),(32622,'appearance_settings',{}),(32436,'remote_setup',{}),(36019,'native_options45',{'group':'appearance'})],
 'system':[(35200,'artwork_manage',{}),(32661,'art_status',{}),(36020,'native_options45',{'group':'system'}),(32414,'settings_section',{'section':'information'}),(32429,'settings',{})],
 'information':[(35300,'device_info',{}),(33701,'branding_status',{}),(32454,'about_xcmate',{}),(33405,'xcmate_licenses',{})]}
 EXPERIMENTAL={

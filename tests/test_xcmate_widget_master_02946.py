@@ -41,13 +41,13 @@ class WidgetMaster46(Fixture,unittest.TestCase):
   self.assertEqual(li.props['XCMate.ProgrammeTitle46'],'Actual final programme')
  def test_full_group_publication_survives_new_interpreter_and_bounds_artwork_queue(self):
   self.large();rows,code=self.w.snapshot(self.portal,'live');refresh=importlib.import_module('widget_refresh45')
-  with mock.patch('programme_art46.enqueue') as enqueue:self.assertTrue(refresh.publish(self.portal,'live',rows,code))
+  with mock.patch('programme_urls55.enqueue') as enqueue:self.assertTrue(refresh.publish(self.portal,'live',rows,code))
   self.assertLessEqual(enqueue.call_count,16);self.assertEqual(len(refresh.read('p','live')['items']),137)
   manifest=json.loads(Path(refresh.path('p','live')).read_text());self.assertEqual(manifest['count46'],137)
   self.assertTrue(all(p['count']<=16 for p in manifest['pages46']));self.assertNotIn('items',manifest)
  def test_cyclic_background_artwork_reaches_later_group_pages(self):
   self.large(40);rows,code=self.w.snapshot(self.portal,'live');refresh=importlib.import_module('widget_refresh45');seen=set()
-  with mock.patch('programme_art46.enqueue',side_effect=lambda e:seen.add(e['sid'])):
+  with mock.patch('programme_urls55.enqueue',side_effect=lambda e:seen.add(e['sid'])):
    for _ in range(3):refresh.publish(self.portal,'live',rows,code)
   self.assertEqual(seen,set(map(str,range(40))))
  def test_retained_legacy_archive_reproduces_old_budget_but_new_query_skips_it(self):
