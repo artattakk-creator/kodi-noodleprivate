@@ -11,7 +11,7 @@
   "native_image_wrapper_roundtrip": "PASS",
   "nested_python_worker_rpc": "PASS",
   "distinct_series_episode_ids": "PASS",
-  "concurrent_ping_ms": 233,
+  "concurrent_ping_ms": 208,
   "gui_and_dialog_unchanged": "PASS",
   "no_player_start": "PASS",
   "actual_tmdb_helper": "NOT_TESTED",
