@@ -69,7 +69,7 @@ class StartupWizard48(Fixture,unittest.TestCase):
                 assert self_bytes==2*1024*1024
                 return 'ready'
         self.assertEqual(Draft().discover(),'ready')
-        self.assertLessEqual(seen[0][0],3);self.assertLessEqual(seen[0][1],25);self.assertEqual(seen[0][2],0)
+        self.assertLessEqual(seen[0][0],15);self.assertLessEqual(seen[0][1],60);self.assertEqual(seen[0][2],1)
         self.assertEqual(wizard.policy(30,60,3),(30,60,3));self.assertFalse(wizard.active())
     def test_discovery_cancelled_before_network_never_calls_adapter(self):
         wizard=importlib.import_module('wizard_deadline48');called=[]
@@ -84,7 +84,8 @@ class StartupWizard48(Fixture,unittest.TestCase):
             @wizard.discovery
             def discover(self,*args):
                 wizard._local.deadline=0;wizard.check()
-        with self.assertRaises(TimeoutError):Draft().discover()
+        # .54 deliberately removes the aggregate deadline; request limits remain.
+        Draft().discover()
         self.assertFalse(wizard.active())
     def test_cancelled_dns_worker_cannot_create_unbounded_parallel_discoveries(self):
         wizard=importlib.import_module('wizard_deadline48');wizard._slot.acquire()

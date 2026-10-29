@@ -14,7 +14,7 @@ def _home():
 
 def active():
     try:
-        recent=0<=time.time()-float(_home().getProperty(ACTIVE))<7200
+        recent=0<=time.time()-float(_home().getProperty(ACTIVE))
         if not recent:return False
         from setup_liveness48 import owner_alive
         return owner_alive()

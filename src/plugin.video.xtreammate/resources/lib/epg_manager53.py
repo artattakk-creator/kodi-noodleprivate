@@ -20,7 +20,12 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
         from epg_report53 import overview
         self.mode='sources';self.getControl(300).setVisible(False);self.getControl(200).setVisible(True)
         self.getControl(102).setLabel('Gespeicherte Quellen werden gelesen …')
-        self._request(lambda:overview(self.portal),self._loaded)
+        def load():
+            from wizard_epg54 import pending
+            return overview(self.portal),pending(self.portal)
+        def ready(value):
+            rows,self._setup_pending54=value;self._loaded(rows)
+        self._request(load,ready)
     def _loaded(self,rows):
         from epg_report53 import meaning
         self.rows=rows;control=self.getControl(200);pos=control.getSelectedPosition();control.reset()
@@ -32,6 +37,7 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
         if items:control.selectItem(min(pos,len(items)-1))
         from epg_schedule53 import interval
         self.getControl(102).setLabel('Automatisch alle '+str(interval()//3600)+' Stunden · OK: Quelle verwalten · Einzelzuordnung im großen EPG')
+        self.getControl(402).setLabel('EPG-Einrichtung fortsetzen' if getattr(self,'_setup_pending54',False) else 'Jetzt aktualisieren')
         self._detail()
     def _detail(self):
         if self.mode!='sources' or not self.rows:return
@@ -72,6 +78,8 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
                     except (OSError,ValueError):xbmcgui.Dialog().ok('XCMate EPG','Quelle nicht hinzugefügt. Adresse, Dateityp und Schreibrechte prüfen.')
             self._load()
         elif cid==402:
+            if getattr(self,'_setup_pending54',False):
+                self.next_action='resume_epg54';self.close();return
             from epg import request_refresh
             ok=request_refresh(self.portal['id'],self.portal,force=True)
             self.getControl(102).setLabel('Aktualisierung angefordert; Speicherung noch nicht bestätigt.' if ok else 'Aktualisierung blockiert. Bestehende EPG-Sicherung und laufende Importe prüfen.')

@@ -315,8 +315,8 @@ class WorkerLifetime51(Fixture,unittest.TestCase):
         def job():entered.set();end.wait(2);return 'late'
         window.work(job,applied);self.assertTrue(entered.wait(1))
         try:
-            window._job_started-=36;window.pump();self.assertTrue(window._closed)
-            self.dialog.ok.assert_called_once();cleaned.assert_not_called()
+            window._job_started-=36;window.pump();self.assertFalse(window._closed)
+            self.dialog.ok.assert_not_called();window.close();cleaned.assert_not_called()
             with self.assertRaises(session.Busy):session.acquire()
         finally:end.set();window._pool.shutdown(wait=True)
         applied.assert_not_called();cleaned.assert_called_once();again=session.acquire();again()

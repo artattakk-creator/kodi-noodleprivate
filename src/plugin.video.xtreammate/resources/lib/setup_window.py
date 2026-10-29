@@ -8,6 +8,9 @@ from localization import tr
 
 def _failure_details(exc):
     """Show only preapproved failure reasons: never echo provider URLs or credentials."""
+    from wizard_fault54 import describe
+    network=describe(exc)
+    if network:return network
     codes={'XM-SETUP-VERIFY':32782,'XM-SETUP-SAVE-BUSY':32783,'XM-SETUP-RESCAN':32785,'XM-SETUP-ROLLBACK':32786}
     code=getattr(exc,'code',None)
     if code=='XM-SETUP-WORKER-BUSY':return code,tr(36501)
@@ -99,23 +102,18 @@ class WorkWindow(xbmcgui.WindowXML):
         self._gui()
         if self._closed or not self._initialized: return
         self._paint_status()
+        self.getControl(20).setVisible(self.busy)
         if self.busy and getattr(self,'_activity_text',''):
             # Activity, not an invented byte/time percentage.
             frame=('·','··','···')[int(__import__('time').monotonic()*2)%3]
             self.getControl(3).setText(self._activity_text+' '+frame)
         future=self._future
         if future is not None and not future.done():
-            # Platform DNS cannot be killed safely. Close the responsive UI,
-            # cancel cooperatively, retain the worker lease until cleanup.
-            now=time.monotonic()
-            expired=(now-self._job_started>35 if getattr(self,'stage','')=='discover'
-                     else now-self._data_state.progress_at>180)
-            if expired:
-                from setup_trace import mark
-                mark('WORK_TIMEOUT',getattr(getattr(self,'draft',None),'pid',''))
-                self.close()
-                xbmcgui.Dialog().ok('XCMate',tr(36502)+' [XM-SETUP-TIMEOUT]')
-                return
+            # A responsive owner must not cancel active downloads/parsing or
+            # catalog writes on an aggregate stopwatch. HTTP/socket operations
+            # retain their existing limits; explicit Back still cancels.
+            idle=max(0,int(time.monotonic()-self._data_state.progress_at))
+            self.getControl(20).setLabel('Letzte messbare Aktivität vor '+str(idle)+' s · Abbrechen bleibt möglich')
         if future is None or not future.done(): return
         apply=self._apply;self._future=None;self._apply=None;self.busy=False
         try: apply(future.result())
@@ -165,8 +163,10 @@ from wizard_groups51 import GroupRows
 
 
 from wizard_ui53 import resumable
+from wizard_ui54 import phased
 
 
+@phased
 @resumable
 class SetupWindow(GroupRows,WorkWindow):
     def configure(self,draft):
@@ -346,6 +346,7 @@ def open_setup(data):
     session53=current()
     try:
         draft=session53.restore(data) if session53 else Draft(data)
+        draft.phased54=True
         if session53:draft.resume53=session53
     except BaseException:release();raise
     def cleanup():

@@ -50,50 +50,8 @@ class Draft:
         return self.categories
 
     def scan(self,cancel=lambda:False,status=lambda *a:None):
-        from library_index import connect,import_group
-        groups=[(kind,g) for kind in KINDS for g in self.categories[kind] if str(g['category_id']) in self.selected[kind]]
-        if not groups: raise ValueError('select at least one category')
-        self.scanned=False;self._scan_signature=None
-        for filename in (self.index,self.guide):
-            for suffix in ('','-wal','-shm'):
-                if os.path.isfile(filename+suffix): os.unlink(filename+suffix)
-        self.report=dict(groups=len(groups),live=0,vod=0,series=0,epg=0,sources=[],warnings=[])
-        db=connect(self.index,write=True)
-        try:
-            with db:
-                for kind in KINDS:
-                    db.executemany('INSERT OR REPLACE INTO groups VALUES(?,?,?,?,?)',[(self.pid,kind,str(g['category_id']),str(g['category_name']),i) for i,g in enumerate(self.categories[kind])])
-        finally: db.close()
-        completed={k:set() for k in KINDS}
-        for number,(kind,group) in enumerate(groups):
-            cid=str(group['category_id'])
-            if cid in completed[kind]: continue
-            if cancel(): raise InterruptedError('setup cancelled')
-            state={'done':False,'received':0}
-            def rows():
-                for row in self.adapter.entries(kind,cid,cancel,allowed=self.selected[kind]):
-                    state['received']+=1;yield row
-                state['done']=True
-            def progress(received,stored,discarded):
-                status(None,tr(32784,kind,number+1,len(groups),str(group['category_name']),received,stored))
-            status(None,tr(32784,kind,number+1,len(groups),str(group['category_name']),0,0))
-            try:
-                counts=import_group(self.pid,kind,cid,rows(),filename=self.index,cancel=cancel,
-                    progress=progress,allowed=self.selected[kind])
-                completed[kind].update(counts['categories'])
-            except ValueError:
-                if not state['done']: raise
-                self.report['warnings'].append(kind+': leere ausgewählte Kategorie')
-        from library_index import Reader
-        reader=Reader(self.pid,self.index)
-        for kind in KINDS:
-            # Staging contains no entries from disabled categories. No global
-            # profile selection is written before the explicit save operation.
-            self.report[kind]=reader.page(kind,limit=1)[1]
-        if not sum(self.report[k] for k in KINDS): raise ValueError('no selected content imported')
-        self._scan_epg(cancel,status)
-        self._scan_signature=self._signature();self.scanned=True;status(100,tr(32742))
-        return self.report
+        from wizard_catalog54 import scan
+        return scan(self,cancel,status,include_epg=not getattr(self,'phased54',False))
 
     def _scan_epg(self,cancel,status):
         from library_index import Reader
@@ -141,6 +99,7 @@ class Draft:
         finally: db.close()
 
     def _signature(self):
+        if getattr(self,'phased54',False):return json.dumps([sorted((kind,sorted(self.selected[kind])) for kind in KINDS),54],sort_keys=True)
         return json.dumps([sorted((kind,sorted(self.selected[kind])) for kind in KINDS),
                            self.provider_epg,self.epg_sources],sort_keys=True)
 
@@ -148,7 +107,12 @@ class Draft:
         if not self._save_guard.acquire(blocking=False): raise SaveError('XM-SETUP-SAVE-BUSY')
         try:
             self._save_status=status;self._save_copy_text=tr(36505);status(0,tr(32716))
-            if self.saved: raise SaveError('XM-SETUP-SAVE-BUSY')
+            if self.saved:
+                if getattr(self,'phased54',False):
+                    import portals
+                    existing=portals.get_by_id(self.pid)
+                    if existing is not None:self._verify(existing);return existing
+                raise SaveError('XM-SETUP-SAVE-BUSY')
             if not self.scanned or self._scan_signature!=self._signature(): raise SaveError('XM-SETUP-RESCAN')
             return self._save(cancel)
         finally: self._save_guard.release()
@@ -175,7 +139,7 @@ class Draft:
             if state is None or state['enabled']!=self.selected[kind] or state['auto_new'] or state['known']!={str(g['category_id']) for g in self.categories[kind]}: raise SaveError('XM-SETUP-VERIFY')
             if Reader(self.pid).page(kind,limit=1)[1]!=counts[kind]: raise SaveError('XM-SETUP-VERIFY')
         if configuration(self.pid)!=dict(sources=self.epg_sources,mappings={}): raise SaveError('XM-SETUP-VERIFY')
-        if os.path.isfile(self.guide):
+        if os.path.isfile(self.guide) and not getattr(self,'phased54',False):
             from guide_store import connect as guide_connect
             source=sqlite3.connect(self.guide);target=guide_connect()
             try:
@@ -218,7 +182,7 @@ class Draft:
                 mark('COPY_CATALOG',self.pid)
                 self._copy(self.index,db,('groups','items_v2','heads','catalog','source_payloads'),cancel)
             finally: db.close()
-            if os.path.isfile(self.guide):
+            if os.path.isfile(self.guide) and not getattr(self,'phased54',False):
                 from setup_epg48 import gate as epg_gate48
                 epg_gate48()
                 from guide_store import connect as guide_connect
@@ -261,7 +225,7 @@ class Draft:
                 self.data['epg_show']=bool(self.provider_epg or self.epg_sources)
                 # A new unpublished portal has no GUI cache to invalidate.
                 sources=_load_all();sources[self.pid]=dict(sources=self.epg_sources,mappings={});_write_all(sources)
-                if os.path.isfile(self.guide):
+                if os.path.isfile(self.guide) and not getattr(self,'phased54',False):
                     from stream_epg import fast_snapshot,active_streams
                     from epg import _save_disk,_mem_set,_disk_ck
                     from utils import cache_dir,_private_cache_dir
@@ -284,6 +248,9 @@ class Draft:
                     verify_epg48(self)
                 if cancel(): raise InterruptedError('setup save cancelled')
                 mark('CONFIG_PUBLISH',self.pid)
+                if getattr(self,'phased54',False):
+                    from wizard_epg54 import prepare
+                    prepare(self.data)
                 portal=portals.add(self.data,portal_id=self.pid)
                 mark('VERIFY',self.pid)
                 self.verification=self._verify(portal)

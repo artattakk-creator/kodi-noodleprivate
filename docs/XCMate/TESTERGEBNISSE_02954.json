@@ -1,0 +1,35 @@
+{
+  "version": "0.1.29.54",
+  "source_commit": "ed6cb5a978970ff5e4274b43d735f35a13593096",
+  "files": 596,
+  "bytes": 3140773,
+  "sha256": "6616abc7ee28479a722ae8b98ffcff70ab8a050c965fa6781bffbc49a4981bf5",
+  "crc": "PASS",
+  "safe_paths": "PASS",
+  "all_source_bytes": "PASS",
+  "python_ast": "PASS",
+  "independent_deterministic_rebuild": "PASS",
+  "android": {
+    "not_tested": 24,
+    "passed": 0,
+    "boxes": [
+      "B Kodi 21.3 Estuary"
+    ],
+    "box_a": "UNTOUCHED"
+  },
+  "production_publish": false,
+  "tests": 2294,
+  "seconds": 313.728,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "previous_tests_retained": 2240,
+  "new_tests": 54,
+  "native_start_crash": "BLOCKED_LOG_EVIDENCE",
+  "slideshow": "BLOCKED_APPROVED_ASSETS",
+  "real_feed_checks": "NOT_TESTED: host tests synthetic/local; feed hosts not allowed in workspace network policy",
+  "ci": "Final delivery HEAD, run/job URLs, test totals and CI artifact SHA documented in Draft-PR body/checks",
+  "raw_host_log_sha256": "b3e62e9125712afffe347e5e0b34dc7082d4b3e55f0f487401960e09c5ee5257",
+  "published_host_log_sha256": "949a44b20a326f418aaf54606ae69bda7def1417998137161c28d20aa5be94e7",
+  "verified_at": "2026-10-29T01:12:29.501882+01:00"
+}

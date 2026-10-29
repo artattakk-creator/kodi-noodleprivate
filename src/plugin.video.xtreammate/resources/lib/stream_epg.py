@@ -26,7 +26,7 @@ def source_stream(source,cancel=lambda:False):
         import xbmcvfs
         class Reader:
             def __init__(self): self.file=xbmcvfs.File(uri)
-            def read(self,n): return bytes(self.file.readBytes(n))
+            def read(self,n): return b'' if n==0 else bytes(self.file.readBytes(n))
         stream=Reader()
         try: yield stream
         finally: stream.file.close()
@@ -35,12 +35,15 @@ def source_stream(source,cancel=lambda:False):
         with http_stream(uri,cancel=cancel) as stream: yield stream
 
 
-def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=lambda:False,stage_only=False):
+def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=lambda:False,stage_only=False,progress=None,generation54=None):
+    from epg_progress54 import Progress
+    progress54=Progress(progress)
     from guide_store import connect,path
     from epg_sources import _channel_name_key
     from xmltv_stream import parse
     from import_budget import check_space
-    db=connect(filename,write=True);target=filename or path();generation=uuid.uuid4().hex
+    db=connect(filename,write=True);target=filename or path();generation=generation54 or uuid.uuid4().hex
+    if len(generation)!=32 or any(c not in '0123456789abcdef' for c in generation):db.close();raise ValueError('INVALID_IMPORT_GENERATION')
     from guide_publish44 import require
     try:require(db)
     except Exception:db.close();raise
@@ -62,6 +65,7 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         check_space(target,sum(len(r[-1])+len(r[-2]) for r in batch)*4)
         with db: db.executemany('''INSERT INTO xml_stage VALUES(?,?,?,?,?,?) ON CONFLICT(generation,cid,start,stop) DO UPDATE SET title=excluded.title,description=excluded.description WHERE length(excluded.description)>length(xml_stage.description)''',batch)
         batch.clear()
+        progress54.emit('SAVING',stored=stored)
     def channel(cid,name):
         metadata46.channel48(cid,name)
         key=_channel_name_key(name)
@@ -91,12 +95,14 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         try:
             with source_stream(source,cancel=cancel) as stream:
                 phase='PARSE'
-                counts=parse(stream,channel,programme,cancel)
+                if progress:counts=parse(progress54.wrap(stream),channel,programme,cancel,progress=progress54.parsed)
+                else:counts=parse(stream,channel,programme,cancel)
         except Exception as exc:
             try: exc.xcmate_stage=phase
             except Exception: pass
             raise
         flush();metadata46.flush()
+        progress54.emit('SAVING',force=True,stored=stored)
         if not stored:
             from epg_errors import EmptyGuideError
             raise EmptyGuideError('No matching current programmes')
