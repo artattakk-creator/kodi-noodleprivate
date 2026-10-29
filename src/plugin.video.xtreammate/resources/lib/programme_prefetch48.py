@@ -5,7 +5,7 @@ repaint, so only its first sixteen events were prepared until the next minute.
 This lane never scans the source archive and uses the existing 24-job queue.
 """
 import time
-_positions={};_next={}
+_positions={};_next={};_future56={}
 
 
 def prepare(portal,rows,cancel=lambda:False):
@@ -33,12 +33,18 @@ def prepare(portal,rows,cancel=lambda:False):
             event=from_info(portal,row,infos.get(str(row['sid']),{}))
             if event.get('title'):
                 records.append(event);enqueue(event,allow_lookup=allow_lookup)
-                # NEXT is resolved ahead of its transition, with the same local
-                # canonical/source identity as NOW; never borrow NOW's picture.
-                from programme_events46 import describe
-                for following in infos.get(str(row['sid']),{}).get('events',[]):
-                    if following.get('start')==infos.get(str(row['sid']),{}).get('next_start'):
-                        future=describe(portal,row,following,event.get('canonical',''),revision)
-                        if future.get('title'):records.append(future);enqueue(future,allow_lookup=allow_lookup)
+            # NEXT is resolved ahead of its transition, with the same local
+            # canonical/source identity as NOW; never borrow NOW's picture.
+            from programme_events46 import describe
+            info=infos.get(str(row['sid']),{})
+            upcoming=[v for v in info.get('events',[]) if v.get('start',0)>event.get('start',0)]
+            selected=upcoming[:1]
+            if len(upcoming)>1:
+                cursor=(key,str(row['sid']));pos56=_future56.get(cursor,0)%(len(upcoming)-1)
+                selected.append(upcoming[1+pos56]);_future56[cursor]=pos56+1
+                if len(_future56)>1024:_future56.pop(next(iter(_future56)))
+            for following in selected:
+                future=describe(portal,row,following,event.get('canonical',''),revision)
+                if future.get('title'):records.append(future);enqueue(future,allow_lookup=allow_lookup)
     if records:publish(records,include_art=False)
     return bool(records)
