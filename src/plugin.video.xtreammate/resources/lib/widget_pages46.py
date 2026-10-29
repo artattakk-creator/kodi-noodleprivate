@@ -69,7 +69,7 @@ def publish(portal,rows,approved):
                 if event:records.append(event)
                 items.append(value)
             from programme_index46 import publish as publish_records46
-            publish_records46(records)
+            publish_records46(records,include_art=False)
             channels47(portal,records)
             digest.update(json.dumps(items,sort_keys=True).encode())
             data=json.dumps(dict(generation46=generation,items=items)).encode()

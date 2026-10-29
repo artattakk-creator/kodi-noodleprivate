@@ -84,7 +84,7 @@ def publish(portal,kind,rows,code='READY'):
             if event and pos in positions:enqueue(event)
             if event:records46.append(event)
         from programme_index46 import publish as publish_records46
-        publish_records46(records46)
+        publish_records46(records46,include_art=False)
         from programme_assets47 import channels as channels47
         channels47(portal,records46)
     frame=dict(pid=str(portal['id']),kind=kind,policy=policy(portal,kind),at=time.time(),items=items)

@@ -40,5 +40,5 @@ def prepare(portal,rows,cancel=lambda:False):
                     if following.get('start')==infos.get(str(row['sid']),{}).get('next_start'):
                         future=describe(portal,row,following,event.get('canonical',''),revision)
                         if future.get('title'):records.append(future);enqueue(future,allow_lookup=allow_lookup)
-    if records:publish(records)
+    if records:publish(records,include_art=False)
     return bool(records)

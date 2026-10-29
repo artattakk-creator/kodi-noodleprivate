@@ -146,3 +146,11 @@ class URLs55(Fixture,unittest.TestCase):
         for i in range(50):queue.enqueue(dict(self.event,key=str(i)))
         self.assertEqual(len(queue._pending),24);self.assertEqual(len(queue._queue),24)
         self.assertFalse(queue.enqueue(dict(self.event,key='0')))
+
+    def test_stale_producer_ram_cannot_replace_a_newer_committed_online_reference(self):
+        saved=self.resolve()
+        stale=dict(saved,source='placeholder',code='NO_IMAGE',image=self.event['placeholder'])
+        self.art.remember(self.event['key'],stale)
+        self.assertTrue(self.db.publish([self.event],include_art=False))
+        current=self.db.art(self.event)
+        self.assertEqual(current['code'],'READY');self.assertEqual(current['source_url'],saved['source_url'])
