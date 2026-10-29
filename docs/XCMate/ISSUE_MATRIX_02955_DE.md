@@ -4,7 +4,7 @@ Keine Issues schließen. Code-/Host-PASS ist keine Android-Abnahme; alle 24 neue
 
 | Referenz | Umsetzung | Status / offene Abnahme |
 |---|---|---|
-| #266 Master / aktueller Chat-P0 | gleiche .55: verwaisten Live-Handoff lösen, Settings erneut ermöglichen, eigenes Queuing per Back abbrechbar, feste Diagnosegründe; Stop-Kern erhalten | TEILWEISE: Host-Reproduktion korrigiert, konkreter Geräteauslöser/20 Zyklen NOT_TESTED |
+| #266 Master / aktueller Chat-P0 | gleiche .55: verwaisten Live-Handoff und leere aktive Owner-Lease lösen, Settings erneut ermöglichen, eigenes Queuing per Back abbrechbar, feste Diagnosegründe; Stop-Kern erhalten | TEILWEISE: Host-Reproduktion korrigiert, konkreter Geräteauslöser/20 Zyklen NOT_TESTED |
 | #267 Quellnavigation | passiver nativer Widgets-Ordner mit genau drei Quellen, keine neue Verwaltung; vollständige gespeicherte Startgruppe, Reload-Hooks | TEILWEISE: originaler Picker-/Reader-/150-Sender-Hostnachweis PASS; echtes Speichern/Neustart auf BINGIE NOT_TESTED |
 | #239 gemeinsame Sendungsbilder | vorab persistierte HTTPS-URL im vorhandenen Eventindex, starke Quellenbindung, readonly Hero/EPG-Detail; keine Fokus-/Detailrecherche; Hintergrundpflege | TEILWEISE: automatische Tests PASS, echte Film-/Episode-/Eventbilder und URLgleichheit sichtbar NOT_TESTED |
 | #252 Widget-/BINGIE-UX | bestehende Live-/Recent-Routen, Poster-/Detailziele, Legacy-URLs, Medien und Refresh erhalten | TEILWEISE: Hostregressionen PASS, drei echte Home-Reihen und Autorefresh NOT_TESTED |

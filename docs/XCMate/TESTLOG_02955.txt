@@ -145,10 +145,10 @@ test_restart_offline_previous_index_and_immediate_disabled_filter (test_xcmate_0
 test_same_stream_in_two_groups_counted_once_globally_but_available_in_each (test_xcmate_028_streaming.IndexTests.test_same_stream_in_two_groups_counted_once_globally_but_available_in_each) ... ok
 test_streaming_group_publishes_only_after_complete_json (test_xcmate_028_streaming.IndexTests.test_streaming_group_publishes_only_after_complete_json) ... ok
 test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update (test_xcmate_028_streaming.LargeGuideTests.test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update) ...
-LARGE_XMLTV {"parsed": 160005, "stored": 160005, "xml_bytes": 95571948, "sqlite_bytes": 303685632, "seconds": 20.585}
+LARGE_XMLTV {"parsed": 160005, "stored": 160005, "xml_bytes": 95571948, "sqlite_bytes": 303685632, "seconds": 19.802}
 ok
 test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib (test_xcmate_028_streaming.LargeHTTPTests.test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib) ...
-LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 309526528, "seconds": 27.248, "peak_rss_kib": 75596}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 621731840, "seconds": 27.073, "peak_rss_kib": 75596}]
+LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 309526528, "seconds": 26.637, "peak_rss_kib": 75580}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 621731840, "seconds": 28.938, "peak_rss_kib": 75580}]
 ok
 test_cache_envelope_and_trailing_data_validated (test_xcmate_028_streaming.ParserTests.test_cache_envelope_and_trailing_data_validated) ... ok
 test_chunked_http_gzip_and_truncated_compression (test_xcmate_028_streaming.ParserTests.test_chunked_http_gzip_and_truncated_compression) ... ok
@@ -1026,6 +1026,7 @@ test_back_never_cancels_foreign_modal_or_already_dispatched_window (test_xcmate_
 test_corrupt_or_oversized_state_does_not_permanently_disable_input (test_xcmate_live_navigation_02955.LiveGate55.test_corrupt_or_oversized_state_does_not_permanently_disable_input) ... ok
 test_disappearing_intent_releases_service_gate_without_player_or_gui_work (test_xcmate_live_navigation_02955.LiveGate55.test_disappearing_intent_releases_service_gate_without_player_or_gui_work) ... ok
 test_fullscreen_stop_and_movie_exit_implementations_are_not_changed (test_xcmate_live_navigation_02955.LiveGate55.test_fullscreen_stop_and_movie_exit_implementations_are_not_changed) ... ok
+test_missing_active_owner_lease_is_not_a_permanent_successful_ownership_match (test_xcmate_live_navigation_02955.LiveGate55.test_missing_active_owner_lease_is_not_a_permanent_successful_ownership_match) ... ok
 test_new_owner_cannot_clear_another_owners_intent (test_xcmate_live_navigation_02955.LiveGate55.test_new_owner_cannot_clear_another_owners_intent) ... ok
 test_settings_after_lost_request_can_be_queued_again_once (test_xcmate_live_navigation_02955.LiveGate55.test_settings_after_lost_request_can_be_queued_again_once) ... ok
 test_valid_queue_still_rejects_double_click_and_select (test_xcmate_live_navigation_02955.LiveGate55.test_valid_queue_still_rejects_double_click_and_select) ... ok
@@ -2351,16 +2352,16 @@ test_widget_route_and_no_cached_credentials_in_link (test_xtreammate_widgets.Wid
 test_youtube_whitelist (test_xtreammate_widgets.WidgetsTest.test_youtube_whitelist) ... ok
 
 ----------------------------------------------------------------------
-Ran 2338 tests in 318.570s
+Ran 2339 tests in 321.431s
 
 OK
 
-MODEL_COLD_WINDOW_MS 5.104
-SEARCH39_HOST [{'query_kind': 'cold', 'first_names_ms': 4.664, 'total_ms': 39.785, 'scanned': 2905, 'results': 6}, {'query_kind': 'warm', 'first_names_ms': 4.735, 'total_ms': 15.844, 'scanned': 2905, 'results': 6}]
+MODEL_COLD_WINDOW_MS 5.457
+SEARCH39_HOST [{'query_kind': 'cold', 'first_names_ms': 6.32, 'total_ms': 51.545, 'scanned': 2905, 'results': 6}, {'query_kind': 'warm', 'first_names_ms': 4.999, 'total_ms': 16.901, 'scanned': 2905, 'results': 6}]
 
 SELECTIVE_XMLTV {"bytes": 400, "parsed": 2, "stored": 1}
 
 LARGE_M3U {"parsed": 20005, "active": 5002, "bytes": 1727118}
-WIDGET46_RETAINED_ARCHIVE {"legacy_rows": 40005, "old_opcode_budget": "INTERRUPTED", "new_rows": 24, "new_ms": 3.156}
-WIDGET41_HOST {'rows': 20005, 'returned': 24, 'code': 'READY', 'ms': 2.255}
-WIDGET44_V2_HOST {"records": 20005, "returned": 24, "ms": 4.113, "plan": "(7, 0, 61, 'SEARCH i USING INDEX recent_v2 (pid=? AND kind=?)') (17, 0, 0, 'USING INDEX sqlite_autoindex_selected_categories_1 FOR IN-OPERATOR') (23, 0, 47, 'SEARCH h USING INDEX sqlite_autoindex_heads_1 (pid=? AND kind=? AND cid=?)')"}
+WIDGET46_RETAINED_ARCHIVE {"legacy_rows": 40005, "old_opcode_budget": "INTERRUPTED", "new_rows": 24, "new_ms": 2.445}
+WIDGET41_HOST {'rows': 20005, 'returned': 24, 'code': 'READY', 'ms': 2.394}
+WIDGET44_V2_HOST {"records": 20005, "returned": 24, "ms": 2.72, "plan": "(7, 0, 61, 'SEARCH i USING INDEX recent_v2 (pid=? AND kind=?)') (17, 0, 0, 'USING INDEX sqlite_autoindex_selected_categories_1 FOR IN-OPERATOR') (23, 0, 47, 'SEARCH h USING INDEX sqlite_autoindex_heads_1 (pid=? AND kind=? AND cid=?)')"}

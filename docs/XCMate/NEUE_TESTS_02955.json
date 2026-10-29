@@ -1,5 +1,5 @@
 {
-  "new_tests": 44,
+  "new_tests": 45,
   "methods": {
     "tests/test_xcmate_programme_urls_02955.py": [
       [
@@ -181,6 +181,10 @@
       [
         "LiveGate55",
         "test_actual_overlay_input_gate_recovers_before_remote_and_control_dispatch"
+      ],
+      [
+        "LiveGate55",
+        "test_missing_active_owner_lease_is_not_a_permanent_successful_ownership_match"
       ],
       [
         "LiveGate55",
