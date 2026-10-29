@@ -127,3 +127,22 @@ class URLs55(Fixture,unittest.TestCase):
         with mock.patch('download_redirect.addresses',return_value=['93.184.216.34']),mock.patch('download_redirect._connect',return_value=response):
             with self.assertRaises(SourceError) as error:self.urls.probe(self.event['xmltv_image'])
         self.assertEqual(error.exception.code,'HTTP_NOT_FOUND');response.read.assert_not_called();response.close.assert_called_once()
+
+    def test_positive_png_and_jpeg_headers_are_validated_without_archiving(self):
+        import io
+        from PIL import Image
+        for kind,mime in [('PNG','image/png'),('JPEG','image/jpeg')]:
+            output=io.BytesIO();Image.new('RGB',(160,90)).save(output,kind);stream=io.BytesIO(output.getvalue())
+            response=mock.Mock(status=200,headers={'Content-Type':mime});response.read.side_effect=stream.read
+            with mock.patch('download_redirect.addresses',return_value=['93.184.216.34']),mock.patch('download_redirect._connect',return_value=response):
+                self.urls.probe(self.event['xmltv_image'])
+            response.close.assert_called_once();self.assertFalse(Path(self.art.root()).exists())
+
+    def test_real_queue_deduplicates_and_bounds_pending_events_without_native_threads(self):
+        import importlib.util,types
+        spec=importlib.util.spec_from_file_location('isolated_url_queue55',self.urls.__file__)
+        queue=importlib.util.module_from_spec(spec);spec.loader.exec_module(queue)
+        queue._thread=types.SimpleNamespace(is_alive=lambda:True)
+        for i in range(50):queue.enqueue(dict(self.event,key=str(i)))
+        self.assertEqual(len(queue._pending),24);self.assertEqual(len(queue._queue),24)
+        self.assertFalse(queue.enqueue(dict(self.event,key='0')))
