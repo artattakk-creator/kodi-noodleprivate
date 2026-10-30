@@ -173,6 +173,20 @@ class TMDB60(Fixture, unittest.TestCase):
 
 
 class Home60(Fixture50, unittest.TestCase):
+    def test_nested_xtream_url_does_not_select_live_layout_for_foreign_plugin(self):
+        import xml.etree.ElementTree as E
+        compiler = self.native_reference().Template()
+        data = self.skinmod.patch('shortcuts/template.xml', (self.skin / 'shortcuts/template.xml').read_bytes())
+        tree = E.fromstring(data)
+        live = next(n for n in tree.iter('include') if n.get('content') == 'XCMate50.LiveRow')
+        props = dict(widgetPath1='plugin://foreign.addon/?url=plugin://plugin.video.xtreammate/?action=widget_live_start_group&pid=p')
+        # Evaluate the exact selection expression with the same native
+        # Skinshortcuts compiler. No binding or source URL is edited.
+        target = E.Element('controls')
+        condition = E.SubElement(target, 'include', content='XCMate50.LiveRow', condition=live.get('condition'))
+        compiler.replaceElements(target, None, None, [], props)
+        self.assertIn('[false]', condition.get('condition'))
+
     def test_complete_start_group_preserves_order_without_pinning_or_foreign_group(self):
         home = importlib.import_module('widget_home50')
         self.portal['start_stream_id'] = '50'

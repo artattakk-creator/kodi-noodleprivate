@@ -23,7 +23,7 @@ def candidate(path, data, legacy):
             raise ValueError('UNVERIFIED_TEMPLATE')
         def compiled(match):
             n = match.group(1).decode()
-            expression = "$PYTHON['true' if 'plugin://plugin.video.xtreammate/' in widgetPath" + n + " and 'action=widget_live_start_group&' in (widgetPath" + n + " + '&') else 'false']"
+            expression = "$PYTHON['true' if widgetPath" + n + ".startswith('plugin://plugin.video.xtreammate/') and 'action=widget_live_start_group&' in (widgetPath" + n + " + '&') else 'false']"
             return html.escape(expression, quote=True).encode()
         data, compiled_count = re.subn(rb'String.StartsWith\(\$SKINSHORTCUTS\[widgetPath([1-8])\],plugin://plugin.video.xtreammate/\) \+ String.Contains\(\$SKINSHORTCUTS\[widgetPath[1-8]\],action=widget_live_start_group\)', compiled, data)
         if compiled_count != 16:
