@@ -145,10 +145,10 @@ test_restart_offline_previous_index_and_immediate_disabled_filter (test_xcmate_0
 test_same_stream_in_two_groups_counted_once_globally_but_available_in_each (test_xcmate_028_streaming.IndexTests.test_same_stream_in_two_groups_counted_once_globally_but_available_in_each) ... ok
 test_streaming_group_publishes_only_after_complete_json (test_xcmate_028_streaming.IndexTests.test_streaming_group_publishes_only_after_complete_json) ... ok
 test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update (test_xcmate_028_streaming.LargeGuideTests.test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update) ... 
-LARGE_XMLTV {"parsed": 160005, "stored": 160005, "xml_bytes": 95571948, "sqlite_bytes": 303685632, "seconds": 64.201}
+LARGE_XMLTV {"parsed": 160005, "stored": 160005, "xml_bytes": 95571948, "sqlite_bytes": 303685632, "seconds": 42.021}
 ok
 test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib (test_xcmate_028_streaming.LargeHTTPTests.test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib) ... 
-LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 309526528, "seconds": 46.223, "peak_rss_kib": 91596}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 621731840, "seconds": 48.736, "peak_rss_kib": 91596}]
+LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 309526528, "seconds": 40.331, "peak_rss_kib": 95484}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 621731840, "seconds": 40.021, "peak_rss_kib": 95484}]
 ok
 test_cache_envelope_and_trailing_data_validated (test_xcmate_028_streaming.ParserTests.test_cache_envelope_and_trailing_data_validated) ... ok
 test_chunked_http_gzip_and_truncated_compression (test_xcmate_028_streaming.ParserTests.test_chunked_http_gzip_and_truncated_compression) ... ok
@@ -1396,6 +1396,28 @@ test_native_movies_and_series_do_not_apply_saved_non_provider_metadata (test_xcm
 test_shared_asset_source_has_explicit_provider_only_boundary (test_xcmate_p0_02958.WidgetProvider58.test_shared_asset_source_has_explicit_provider_only_boundary) ... ok
 test_widget_art_ignores_manual_choice_but_keeps_provider_cached_image (test_xcmate_p0_02958.WidgetProvider58.test_widget_art_ignores_manual_choice_but_keeps_provider_cached_image) ... ok
 test_widget_renderer_never_queries_helper_or_tmdb (test_xcmate_p0_02958.WidgetProvider58.test_widget_renderer_never_queries_helper_or_tmdb) ... ok
+test_actual_home_samples_do_not_do_file_network_sql_or_player_work (test_xcmate_p0_02959.HomeProbe59.test_actual_home_samples_do_not_do_file_network_sql_or_player_work) ... ok
+test_empty_hidden_and_unobservable_are_distinct (test_xcmate_p0_02959.HomeProbe59.test_empty_hidden_and_unobservable_are_distinct) ... ok
+test_foreign_dialog_is_not_measured_as_hidden_home (test_xcmate_p0_02959.HomeProbe59.test_foreign_dialog_is_not_measured_as_hidden_home) ... ok
+test_missing_event_and_missing_image_are_different (test_xcmate_p0_02959.Images59.test_missing_event_and_missing_image_are_different) ... ok
+test_present_but_blocked_url_explains_safe_source_policy (test_xcmate_p0_02959.Images59.test_present_but_blocked_url_explains_safe_source_policy) ... ok
+test_reference_ready_is_not_pixel_success (test_xcmate_p0_02959.Images59.test_reference_ready_is_not_pixel_success) ... ok
+test_http_status_is_kept_without_exception_url_or_password (test_xcmate_p0_02959.Provider59.test_http_status_is_kept_without_exception_url_or_password) ... ok
+test_no_matching_channels_is_not_empty_feed_or_invalid_xml (test_xcmate_p0_02959.Provider59.test_no_matching_channels_is_not_empty_feed_or_invalid_xml) ... ok
+test_pending_setup_does_not_replace_explicit_regular_refresh (test_xcmate_p0_02959.Provider59.test_pending_setup_does_not_replace_explicit_regular_refresh) ... ok
+test_progress_is_newer_than_old_success_not_overwritten_by_history (test_xcmate_p0_02959.Provider59.test_progress_is_newer_than_old_success_not_overwritten_by_history) ... ok
+test_resume_button_disabled_without_pending_setup (test_xcmate_p0_02959.Provider59.test_resume_button_disabled_without_pending_setup) ... ok
+test_resume_remains_explicit_and_separate (test_xcmate_p0_02959.Provider59.test_resume_remains_explicit_and_separate) ... ok
+test_stage_messages_distinguish_source_network_xml_and_mapping (test_xcmate_p0_02959.Provider59.test_stage_messages_distinguish_source_network_xml_and_mapping) ... ok
+test_busy_existing_worker_does_not_consume_a_new_explicit_refresh (test_xcmate_p0_02959.RefreshQueue59.test_busy_existing_worker_does_not_consume_a_new_explicit_refresh) ... ok
+test_regular_service_refresh_rereads_latest_saved_provider_activation (test_xcmate_p0_02959.RefreshQueue59.test_regular_service_refresh_rereads_latest_saved_provider_activation) ... ok
+test_competing_home_commit_during_gui_probe_is_not_overwritten (test_xcmate_p0_02959.Return59.test_competing_home_commit_during_gui_probe_is_not_overwritten) ... ok
+test_confirmed_stop_invalidated_player_api_does_not_become_permanent_failure (test_xcmate_p0_02959.Return59.test_confirmed_stop_invalidated_player_api_does_not_become_permanent_failure) ... ok
+test_confirmed_stop_then_modal_after_original_deadline_resumes_once (test_xcmate_p0_02959.Return59.test_confirmed_stop_then_modal_after_original_deadline_resumes_once) ... ok
+test_foreign_dialog_id_blocks_even_when_modal_boolean_temporarily_false (test_xcmate_p0_02959.Return59.test_foreign_dialog_id_blocks_even_when_modal_boolean_temporarily_false) ... ok
+test_missing_actual_ack_remains_unconfirmed (test_xcmate_p0_02959.Return59.test_missing_actual_ack_remains_unconfirmed) ... ok
+test_new_player_during_gui_wait_does_not_receive_old_return_or_stop (test_xcmate_p0_02959.Return59.test_new_player_during_gui_wait_does_not_receive_old_return_or_stop) ... ok
+test_owner_lease_is_not_cleared_or_ignored (test_xcmate_p0_02959.Return59.test_owner_lease_is_not_cleared_or_ignored) ... ok
 test_autoplay_diagnostic_safe_by_default_keeps_manual_play (test_xcmate_p0_playback.StartupKodiContractTests.test_autoplay_diagnostic_safe_by_default_keeps_manual_play) ... ok
 test_invalid_start_returns_failed_playable_not_empty_directory (test_xcmate_p0_playback.StartupKodiContractTests.test_invalid_start_returns_failed_playable_not_empty_directory) ... ok
 test_manual_playable_uses_resolver_and_never_direct_player (test_xcmate_p0_playback.StartupKodiContractTests.test_manual_playable_uses_resolver_and_never_direct_player) ... ok
@@ -1778,6 +1800,12 @@ test_all_606_prior_source_files_survive_only_exact_reviewed_edits (test_xcmate_s
 test_app_route_dispatch_and_all_other_route_functions_are_unchanged (test_xcmate_scope_02958.Scope58.test_app_route_dispatch_and_all_other_route_functions_are_unchanged) ... ok
 test_new_modules_do_not_delete_profiles_reset_caches_or_write_skins (test_xcmate_scope_02958.Scope58.test_new_modules_do_not_delete_profiles_reset_caches_or_write_skins) ... ok
 test_widget_folder_saved_urls_player_exit_modes_wizard_and_skin_writers_are_raw_frozen (test_xcmate_scope_02958.Scope58.test_widget_folder_saved_urls_player_exit_modes_wizard_and_skin_writers_are_raw_frozen) ... ok
+test_all_2463_prior_test_methods_and_skip_conditions_remain (test_xcmate_scope_02959.Scope59.test_all_2463_prior_test_methods_and_skip_conditions_remain) ... ok
+test_all_609_prior_source_files_remain_with_exact_reviewed_deltas (test_xcmate_scope_02959.Scope59.test_all_609_prior_source_files_remain_with_exact_reviewed_deltas) ... ok
+test_new_helper_modules_never_delete_profiles_or_write_skin_settings (test_xcmate_scope_02959.Scope59.test_new_helper_modules_never_delete_profiles_or_write_skin_settings) ... ok
+test_saved_widget_urls_root_routing_native_stop_wizard_and_skin_writers_raw_unchanged (test_xcmate_scope_02959.Scope59.test_saved_widget_urls_root_routing_native_stop_wizard_and_skin_writers_raw_unchanged) ... ok
+test_tvmaze_experiment_is_not_included_in_candidate (test_xcmate_scope_02959.Scope59.test_tvmaze_experiment_is_not_included_in_candidate) ... ok
+test_widget_dispatch_adds_only_safe_entry_log_without_route_changes (test_xcmate_scope_02959.Scope59.test_widget_dispatch_adds_only_safe_entry_log_without_route_changes) ... ok
 test_action_route_opens_one_owner_without_search_container_update (test_xcmate_search_02926.SearchTests.test_action_route_opens_one_owner_without_search_container_update) ... ok
 test_cancel_and_repeated_search_keep_owner_and_do_not_apply_stale_results (test_xcmate_search_02926.SearchTests.test_cancel_and_repeated_search_keep_owner_and_do_not_apply_stale_results) ... ok
 test_explicit_manual_mapping_does_not_fall_back_to_wrong_provider_epg (test_xcmate_search_02926.SearchTests.test_explicit_manual_mapping_does_not_fall_back_to_wrong_provider_epg) ... ok
@@ -2476,16 +2504,16 @@ test_widget_route_and_no_cached_credentials_in_link (test_xtreammate_widgets.Wid
 test_youtube_whitelist (test_xtreammate_widgets.WidgetsTest.test_youtube_whitelist) ... ok
 
 ----------------------------------------------------------------------
-Ran 2463 tests in 651.043s
+Ran 2491 tests in 522.404s
 
 OK
 
-MODEL_COLD_WINDOW_MS 6.601
-SEARCH39_HOST [{'query_kind': 'cold', 'first_names_ms': 6.008, 'total_ms': 53.315, 'scanned': 2905, 'results': 6}, {'query_kind': 'warm', 'first_names_ms': 5.611, 'total_ms': 19.812, 'scanned': 2905, 'results': 6}]
+MODEL_COLD_WINDOW_MS 8.373
+SEARCH39_HOST [{'query_kind': 'cold', 'first_names_ms': 7.327, 'total_ms': 60.503, 'scanned': 2905, 'results': 6}, {'query_kind': 'warm', 'first_names_ms': 6.807, 'total_ms': 23.874, 'scanned': 2905, 'results': 6}]
 
 SELECTIVE_XMLTV {"bytes": 400, "parsed": 2, "stored": 1}
 
 LARGE_M3U {"parsed": 20005, "active": 5002, "bytes": 1727118}
-WIDGET46_RETAINED_ARCHIVE {"legacy_rows": 40005, "old_opcode_budget": "INTERRUPTED", "new_rows": 24, "new_ms": 3.191}
-WIDGET41_HOST {'rows': 20005, 'returned': 24, 'code': 'READY', 'ms': 2.389}
-WIDGET44_V2_HOST {"records": 20005, "returned": 24, "ms": 3.247, "plan": "(9, 0, 0, 'SEARCH i USING INDEX recent_v2 (pid=? AND kind=?)') (19, 0, 0, 'USING INDEX sqlite_autoindex_selected_categories_1 FOR IN-OPERATOR') (25, 0, 0, 'SEARCH h USING INDEX sqlite_autoindex_heads_1 (pid=? AND kind=? AND cid=?)')"}
+WIDGET46_RETAINED_ARCHIVE {"legacy_rows": 40005, "old_opcode_budget": "INTERRUPTED", "new_rows": 24, "new_ms": 3.987}
+WIDGET41_HOST {'rows': 20005, 'returned': 24, 'code': 'READY', 'ms': 3.112}
+WIDGET44_V2_HOST {"records": 20005, "returned": 24, "ms": 4.095, "plan": "(9, 0, 0, 'SEARCH i USING INDEX recent_v2 (pid=? AND kind=?)') (19, 0, 0, 'USING INDEX sqlite_autoindex_selected_categories_1 FOR IN-OPERATOR') (25, 0, 0, 'SEARCH h USING INDEX sqlite_autoindex_heads_1 (pid=? AND kind=? AND cid=?)')"}
