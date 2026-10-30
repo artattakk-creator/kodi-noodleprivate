@@ -14,11 +14,13 @@ Kodi **21.2 Linux**, echte **BINGIE MOD 2.2.3 Home.xml** und Ressourcen, native 
 
 88 echte Directory-ListItems und unterschiedliche vorhandene play_live-Ziele; komplette Startgruppe und letzter Sender erreichbar. Kleine Logos, zwei unterschiedliche dekodierte Hero-Flächen, drei passende fokussierte Logos, Neutralbild ohne EPG, passende Titel/Beschreibung/Now/Next. Kein Playerstart. Die vorhandene gespeicherte Live-Quellenfactory wird unverändert benutzt. Ein zusätzlicher Directory-Test führt die historische URL ohne home50 aus. Bildnachweise prüfen fertige PNGs und tatsächliche Pixel; kein PASS aus PUBLISHED oder Containeranzahl allein.
 
-Host-Bildbereitschaft inklusive Screenshot/Animation: Fokus 0 **2958 ms**, Fokus 1 **852 ms**. Dies sind keine IR-/Android-Latenzwerte. Der Test startet Kodi real mit dem gespeicherten Skin neu und findet vorher lokal gespeicherte Bilder wieder. Anfängliche Capture-/Fade-Frames werden nicht als endgültiger Screenshot gewertet. Vorheriger Adapterdefekt ist separat durch reale false/true-Auswertung der alten URL-Bedingungen belegt; neuer Compiler erzeugt passende konstante Bedingungen und schützt fremde verschachtelte Pluginquellen.
+Host-Bildbereitschaft inklusive Screenshot/Animation: Fokus 0 **3588 ms**, Fokus 1 **787 ms**. Dies sind keine IR-/Android-Latenzwerte. Der Test startet Kodi real mit dem gespeicherten Skin neu und findet vorher lokal gespeicherte Bilder wieder. Anfängliche Capture-/Fade-Frames werden nicht als endgültiger Screenshot gewertet. Vorheriger Adapterdefekt ist separat durch reale false/true-Auswertung der alten URL-Bedingungen belegt; neuer Compiler erzeugt passende konstante Bedingungen und schützt fremde verschachtelte Pluginquellen.
 
 Zusätzlich beide unveränderten Medien-Verzeichnisse: 24 VOD- und 24 Serien-Items, exakte pid/kind/sid-Ziele und Provider-URL-Posterhashes; je zehn tatsächlich dekodierte unterschiedliche synthetische Providerposter im nativen Kodi-Testfenster. Diese Medienpixel sind ausdrücklich keine volle Android-BINGIE-Abnahme. Alle Nachweise sind getrennt beschriftet.
 
-Auch der bestehende echte Kodi-Transportvertrag besteht: verschachtelte Worker-RPCs, korrekte Film-/Episodenidentitäten, unveränderte GUI/Dialoge und kein Playerstart. Der parallele Host-Ping dauerte 209 ms. Das ist kein Test eines echten TMDB-Kontos oder externen Helpers. KODI_TRANSPORT_02960.json liegt bei.
+Auch der bestehende echte Kodi-Transportvertrag besteht: verschachtelte Worker-RPCs, richtige Film-/Episodenidentitäten, unveränderte GUI/Dialoge und kein Playerstart. Paralleler Host-Ping 209 ms; kein Test eines echten externen Helpers oder TMDB-Kontos. KODI_TRANSPORT_02960.json liegt bei.
+
+Die drei Home-Screenshots werden mit eindeutigen Capture-Dateien erzeugt. Exakt die bereits dekodierten und geprüften Bytes werden atomar als Testnachweis übernommen; SHA256 steht im JSON und wird nach dem Kopieren verglichen. Dadurch überschreibt kein späterer asynchroner Kodi-Capture den geprüften Frame.
 
 ## TMDB / Skin / Bestand
 

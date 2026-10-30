@@ -1,4 +1,5 @@
 """Native BINGIE 2.2.3 Home, synthetic provider. Never Android PASS."""
+import hashlib
 import json
 import time
 import urllib.request
@@ -102,5 +103,6 @@ for i, rgb in ((0, (20,80,130)), (1, (130,50,30))):
 assert pictures[87].getpixel((700,250)) not in ((20,80,130), (130,50,30))
 assert rpc('Player.GetActivePlayers') == []
 report = dict(kodi=version, skin='BINGIE MOD 2.2.3', native_home=10000, synthetic_provider=True, native_directory=88, last_station_reachable=True,
-              focused_hero=samples, decoded_hero_images=2, decoded_focused_logos=3, neutral_no_epg_pixels='PASS', no_player_start=True, android='NOT_TESTED', external_helpers='NO_OP_HOST_FIXTURES')
+              focused_hero=samples, decoded_hero_images=2, decoded_focused_logos=3, neutral_no_epg_pixels='PASS', no_player_start=True, android='NOT_TESTED', external_helpers='NO_OP_HOST_FIXTURES',
+              screenshot_sha256={str(i): hashlib.sha256(Path('/root/home60-' + str(i) + '.png').read_bytes()).hexdigest() for i in (0,1,87)})
 print(json.dumps(report, indent=2))

@@ -56,6 +56,7 @@ def main():
         result = json.loads((report / 'home.json').read_text())
         for i in (0, 1, 87):
             run('cp', name + ':/root/home60-' + str(i) + '.png', str(report / ('home60-' + str(i) + '.png')))
+            assert hashlib.sha256((report / ('home60-' + str(i) + '.png')).read_bytes()).hexdigest() == result['screenshot_sha256'][str(i)]
         print(json.dumps(result))
     finally:
         if not args.keep_container:

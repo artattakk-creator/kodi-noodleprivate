@@ -23,7 +23,7 @@
       "hero_condition": true,
       "window": 10000,
       "focus": 2510,
-      "host_ready_ms": 2958
+      "host_ready_ms": 3588
     },
     "1": {
       "ProgrammeChannel46": "Station 1",
@@ -37,7 +37,7 @@
       "hero_condition": true,
       "window": 10000,
       "focus": 2510,
-      "host_ready_ms": 852
+      "host_ready_ms": 787
     },
     "87": {
       "ProgrammeChannel46": "Station 87",
@@ -51,7 +51,7 @@
       "hero_condition": true,
       "window": 10000,
       "focus": 2510,
-      "host_ready_ms": 1764
+      "host_ready_ms": 805
     }
   },
   "decoded_hero_images": 2,
@@ -59,5 +59,10 @@
   "neutral_no_epg_pixels": "PASS",
   "no_player_start": true,
   "android": "NOT_TESTED",
-  "external_helpers": "NO_OP_HOST_FIXTURES"
+  "external_helpers": "NO_OP_HOST_FIXTURES",
+  "screenshot_sha256": {
+    "0": "ba9cdc87a163b1c6a7a26f0449a305e8fd86ba48582396b04fe76e72c978abff",
+    "1": "62143980f1fd7045386f471b2b67483c5c4a5560a845f359d976a499b13a0d11",
+    "87": "73df938ea13ef9aa317b58dd000a7da1754ea3413fe05d48ba8ea7e996376b8f"
+  }
 }
