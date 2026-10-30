@@ -119,9 +119,8 @@ def candidate(event, cancel=lambda: False, transport=None):
     showid = show['id']
     if not 0 < showid < 100000000:
         return None
-    source_page = show.get('url')
-    if not isinstance(source_page, str) or not source_page.startswith('https://www.tvmaze.com/shows/'):
-        source_page = 'https://www.tvmaze.com/shows/' + str(showid)
+    # Derive attribution from the validated numeric ID, never arbitrary API text.
+    source_page = 'https://www.tvmaze.com/shows/' + str(showid)
     credit = 'TVmaze (CC BY-SA) · ' + source_page
     season, episode = event.get('season'), event.get('episode')
     if bool(season) != bool(episode):
