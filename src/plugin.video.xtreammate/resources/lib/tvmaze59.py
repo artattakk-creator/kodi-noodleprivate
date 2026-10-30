@@ -41,7 +41,7 @@ def _get(path, params=None, *, cancel=lambda: False, transport=None):
     global _retry_after
     if cancel():
         raise _error('CANCELLED')
-    if not path.startswith(('search/shows', 'shows/')) or '/' in path.split('?')[0].replace('search/shows', '', 1) and path.startswith('search/'):
+    if not (path == 'search/shows' or re.fullmatch(r'shows/[1-9][0-9]{0,7}/episodebynumber', path)):
         raise _error('TVMAZE_PATH_BLOCKED')
     url = BASE + path + ('?' + urlencode(params) if params else '')
     if transport is not None:
