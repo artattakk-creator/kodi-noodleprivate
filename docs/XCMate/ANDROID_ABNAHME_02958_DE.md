@@ -26,6 +26,12 @@ PUBLISHED ist nur interner Snapshot. DIRECTORY/ITEMS stammt aus dem Pluginaufruf
 
 STOP58 unterscheidet vorbereitende Queue und native Stop-Queue. Die gespeicherte Session wird nur als Hash ausgegeben. Bei Freeze existiert möglicherweise keine bedienbare Diagnoseansicht; dann erst nach sicherem Neustart den privaten Kodi-Log untersuchen. Keine weiteren Starts bei unbestätigtem nativem Stop erzwingen.
 
+## Optionaler, ausdrücklich manueller .42-Kompatibilitätsvergleich
+
+Nur wenn der Nutzer einen separaten Vergleich auf Box B durchführen möchte: Kodi muss nach einem vorausgegangenen Freeze erst wieder vollständig bedienbar sein. Keine weiteren Versuche in einer hängenden Sitzung. Aktuellen Wert zuerst notieren. Die bestehende XCMate-Einstellung heißt „Live-TV: Vollbild vor Stop freigeben (Android 21.3-Kompatibilitätstest)“ unter Konfigurieren → Medien & Wiedergabe. Technische ID: live_exit_fullscreen42. Nur auf bestätigtem Android/Kodi 21.3; Box A bleibt ausgeschlossen.
+
+Falls diese Option bisher aus war, kann der Nutzer sie für genau einen neuen Startsender→Back-Test einschalten. Dies ist eine freiwillige, reversible Änderung genau dieser Add-on-Option; der Build schaltet sie nie selbst um und ändert keine Kodi-Decoderoptionen. Falls sie bereits an war, ist ein weiterer gleicher Versuch kein neuer Reparaturnachweis. STOP58 muss fullscreen42 und die echte native Rückkehr zeigen. Ein erneuter Freeze beendet auch diesen Vergleich sofort; nach sicherem Neustart ursprünglichen Wert wiederherstellen, wenn der Vergleich verworfen wird. Kein erzwungenes Beenden als PASS, keine automatischen Lastzyklen. Bei PASS zunächst nur die gestufte Abnahme oben fortsetzen. Dieser Vergleich beweist ohne Gerätebeobachtung keine native Fehlerursache.
+
 ## Ergebnisvorlage
 
 Für jedes Gate genau PASS / FAIL / NOT_TESTED, installierte Version, Kodi-Version, Uhrzeit/Zeitzone und kurze Beobachtung eintragen. Für Live-Exit zusätzlich aktuellen Kompatibilitätsmodus, Zyklenzahl und ACK-Code; für Widgets sichtbare Anzahl und Bildquelle. Keine Rohlogs oder Screenshots mit Provider-URLs/Passwörtern veröffentlichen. Keine automatische Freigabe oder Issue-Schließung.
