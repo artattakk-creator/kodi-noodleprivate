@@ -4,7 +4,8 @@ import time
 _backoff={}
 
 PROOFS=('EXACT_HELPER_MOVIE57','EXACT_HELPER_EPISODE57','EXACT_HELPER_SERIES57',
-        'EXACT_CATALOG_MOVIE57','EXACT_CATALOG_EPISODE57','EXACT_CATALOG_SERIES57')
+        'EXACT_CATALOG_MOVIE57','EXACT_CATALOG_EPISODE57','EXACT_CATALOG_SERIES57',
+        'EXACT_TVMAZE_SERIES59','EXACT_TVMAZE_EPISODE59')
 
 
 def policy():
@@ -20,6 +21,10 @@ def attempts(event,cancel=lambda:False):
     if catalog:
         yield lambda:xcmate(event,cancel)
         yield lambda:kodi(event,cancel)
+    # Explicitly opt-in; only live EPG events, never the VOD/Series catalog.
+    from tvmaze59 import enabled as tvmaze_enabled, candidate as tvmaze_candidate
+    if tvmaze_enabled():
+        yield lambda:tvmaze_candidate(event,cancel)
     if helper:
         def helper_lookup():
             from programme_urls55 import profile
