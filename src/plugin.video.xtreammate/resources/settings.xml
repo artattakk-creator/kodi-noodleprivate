@@ -87,6 +87,7 @@
     <setting id="media_art_reserve_mb" type="number" label="33404" default="1024" />
   </category>
   <category label="36006">
+    <setting id="programme_tvmaze59" type="bool" label="36680" default="false" />
     <setting id="autoplay_diagnostics_safe" type="bool" label="Legacy diagnostic flag" default="false" visible="false" />
     <setting id="autoplay_pause_action" type="action" label="35503" action="RunPlugin(plugin://plugin.video.xtreammate/?action=autoplay_diagnostic_mode)" visible="false" />
     <setting id="popup_xtream_diagnostic" type="action" label="XCMate: Popup- und Fernbedienungstest OHNE TV" action="RunPlugin(plugin://plugin.video.xtreammate/?action=popup_probe)" visible="false" />
