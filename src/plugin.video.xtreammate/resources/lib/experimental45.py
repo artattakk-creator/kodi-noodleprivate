@@ -2,7 +2,7 @@
 from contextvars import ContextVar
 from localization import tr
 _active=ContextVar('xcmate_experimental45',default=False)
-ACTIONS=frozenset(('widget_adapter46','widget_adapter45','record_now','recordings_manage','recording_folder','recording_capabilities','guide_timers','download_folder','download_capabilities','download_target_test','downloads_manage45','experimental_options45','stability_test','popup_probe','remote_diagnostics','service_recover','clear_cache','art_retry','art_db_health','autoplay_diagnostic_mode','remote_learn'))
+ACTIONS=frozenset(('live_view60','widget_adapter46','widget_adapter45','record_now','recordings_manage','recording_folder','recording_capabilities','guide_timers','download_folder','download_capabilities','download_target_test','downloads_manage45','experimental_options45','stability_test','popup_probe','remote_diagnostics','service_recover','clear_cache','art_retry','art_db_health','autoplay_diagnostic_mode','remote_learn'))
 
 def protected(params):
  return params.get('action') in ACTIONS or params.get('action')=='settings_section' and params.get('section') in ('experimental','downloads','recordings','diagnostics') or params.get('action')=='native_options45' and params.get('group')=='experimental'
