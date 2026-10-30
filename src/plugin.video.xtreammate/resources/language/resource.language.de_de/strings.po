@@ -4600,3 +4600,7 @@ msgstr "Sicher zugeordnete Bilder aus vorhandenen Medienkatalogen verwenden"
 msgctxt "#36542"
 msgid "Series image (not an episode still)"
 msgstr "Serienbild (kein Episodenbild)"
+
+msgctxt "#36720"
+msgid "Live TV view – safe preview (experimental)"
+msgstr "Live-TV-Ansicht – sichere Vorschau (Experimentell)"
