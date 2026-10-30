@@ -55,6 +55,8 @@ def refresh_local(cancel=lambda:False):
             if cancel():return
             # Bounded indexed widget pages replace full-catalogue rail COUNTs.
             # Prepare references in this long-lived data worker, not IR/render.
+            from widget_home_probe59 import prepare as prepare_home59
+            prepare_home59(portal['id'])
             from widget_data41 import snapshot
             from widget_art44 import prepare
             for kind in ('live','vod','series'):

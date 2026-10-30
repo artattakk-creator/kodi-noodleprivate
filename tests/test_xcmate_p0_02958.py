@@ -174,7 +174,7 @@ class Consumer58(Fixture,unittest.TestCase):
         self.generated.write_bytes(self.generated.read_bytes().replace(b'pid=p',b'pid=other'))
         self.assertEqual(self.inspect()['kinds']['vod']['generated_consumers'],0)
     def test_invalid_widget_type_is_identified_without_repairing_profile(self):
-        self.rows[2][3]='videos';self.prop.write_text(repr(self.rows));before=self.prop.read_bytes()
+        self.rows[2][3]='music';self.prop.write_text(repr(self.rows));before=self.prop.read_bytes()
         self.assertEqual(self.inspect()['kinds']['vod']['binding'],'BINDING_INVALID');self.assertEqual(before,self.prop.read_bytes())
     def test_stock_bingie_parametric_consumer_is_resolved_without_skin_edits(self):
         import zipfile

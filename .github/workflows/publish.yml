@@ -36,6 +36,8 @@ jobs:
           python-version: "3.12"
       - name: Verify real Kodi 21 Linux plugin and worker RPC transport
         run: python tools/run_kodi_helper57_contract.py --report-dir kodi-helper57-evidence
+      - name: Verify native XCMate widget directories and synthetic poster pixels
+        run: python tools/run_kodi_widget59_contract.py --report-dir kodi-widget59-evidence
       - name: Upload isolated Kodi transport evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -44,6 +46,9 @@ jobs:
           path: |
             kodi-helper57-evidence/transport.json
             kodi-helper57-evidence/build.log
+            kodi-widget59-evidence/widgets.json
+            kodi-widget59-evidence/native-widget59.png
+            kodi-widget59-evidence/build.log
           if-no-files-found: error
           retention-days: 14
   publish:

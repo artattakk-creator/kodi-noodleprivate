@@ -1,0 +1,10 @@
+{
+  "date": "2026-10-30",
+  "observations_current": true,
+  "capabilities": [],
+  "device_access": "BLOCKED_DEVICE_ACCESS",
+  "android_tests_executed": 0,
+  "box_a": "UNTOUCHED",
+  "box_b": "UNTOUCHED",
+  "native_fixture": "DISPOSABLE_KODI21_2_LINUX_ONLY"
+}

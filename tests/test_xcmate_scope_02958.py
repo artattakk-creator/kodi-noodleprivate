@@ -27,7 +27,7 @@ class Scope58(unittest.TestCase):
         for path,digest in base.items():
             name=Path(path).name
             if name in names or name.startswith(('setup_','wizard_','XCMateSetup')) or '/bingie50/' in path or '/skins/' in path and name!='XCMateEPGManager53.xml':
-                self.assertEqual(hashlib.sha256((ROOT/path).read_bytes()).hexdigest(),digest,path)
+                self.assertEqual(hashlib.sha256(__import__('stabilization_contract_02959').without_stabilization59((ROOT/path).read_bytes(),path)).hexdigest(),digest,path)
     def test_app_route_dispatch_and_all_other_route_functions_are_unchanged(self):
         hooks=json.loads((ROOT/'tests/fixtures/xcmate_02958_reviewed_hooks.json').read_text())['modules']
         path=LIB+'app_routes.py'

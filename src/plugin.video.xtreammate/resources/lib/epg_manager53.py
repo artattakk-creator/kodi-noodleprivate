@@ -41,14 +41,18 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
         if items:control.selectItem(min(pos,len(items)-1))
         from epg_schedule53 import interval
         self.getControl(102).setLabel('Automatisch alle '+str(interval()//3600)+' Stunden · OK: Quelle verwalten · Einzelzuordnung im großen EPG')
-        self.getControl(402).setLabel('EPG-Einrichtung fortsetzen' if getattr(self,'_setup_pending54',False) else 'Jetzt aktualisieren')
+        self.getControl(402).setLabel('Jetzt aktualisieren')
+        self.getControl(411).setEnabled(bool(getattr(self,'_setup_pending54',False)))
         self._detail()
     def _detail(self):
         if self.mode!='sources' or not self.rows:return
         row=self.rows[min(self.getControl(200).getSelectedPosition(),len(self.rows)-1)]
         from epg_report53 import stamp
         saved=row['saved']
-        self.getControl(103).setText('Letzter Erfolg: '+stamp(row['last_success'])+'\nLetzter protokollierter Fehler: '+stamp(row['last_failure'])+'\nGespeicherter Zeitraum: '+stamp(saved.get('first'))+' bis '+stamp(saved.get('last')))
+        progress=row.get('progress59',{})
+        details=('Download/Import: '+str(progress.get('bytes',0))+' Bytes · '+str(progress.get('programmes',0))+' gelesen · '+str(progress.get('count',0))+' zugeordnet\n') if row.get('code') in ('RUNNING','DOWNLOADING','PARSING','SAVING','VERIFIED') else ''
+        if progress.get('http_status'):details+='HTTP-Status: '+str(progress['http_status'])+'\n'
+        self.getControl(103).setText(details+'Letzter Erfolg: '+stamp(row['last_success'])+'\nLetzter protokollierter Fehler: '+stamp(row['last_failure'])+'\nGespeicherter Zeitraum: '+stamp(saved.get('first'))+' bis '+stamp(saved.get('last')))
     def onFocus(self,cid):
         if cid==200:self._detail()
     def _query_failed(self,exc):self.getControl(102).setLabel('EPG-Zugriff oder Speichern nicht bestätigt. Daten bleiben erhalten.')
@@ -85,9 +89,9 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
                         add_source(self.portal,name,uri,local=choice==2)
                     except (OSError,ValueError) as exc:xbmcgui.Dialog().ok('XCMate EPG','Diese Adresse ist bereits der Anbieter-EPG. Anbieter-EPG aktivieren und Jetzt aktualisieren wählen.' if str(exc)=='DUPLICATE_PROVIDER_FEED' else 'Quelle nicht hinzugefügt. Adresse, Dateityp und Schreibrechte prüfen.')
             self._load()
+        elif cid==411 and getattr(self,'_setup_pending54',False):
+            self.next_action='resume_epg54';self.close();return
         elif cid==402:
-            if getattr(self,'_setup_pending54',False):
-                self.next_action='resume_epg54';self.close();return
             from portals import get_by_id
             self.portal=get_by_id(self.portal['id']) or self.portal
             from epg import request_refresh

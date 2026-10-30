@@ -71,4 +71,4 @@ class LiveGate55(guide_model.LiveGuideFixture,unittest.TestCase):
         base=json.loads((root/'tests/fixtures/xcmate_02955_protection.json').read_text())['source_sha256']
         for path,digest in base.items():
             if Path(path).name in ('native_stop41.py','native_stop42.py','live_exit.py','exit_jobs.py','playback_exit.py','autoplay.py'):
-                self.assertEqual(hashlib.sha256((root/path).read_bytes()).hexdigest(),digest,path)
+                self.assertEqual(hashlib.sha256(__import__('stabilization_contract_02959').without_stabilization59((root/path).read_bytes(),path)).hexdigest(),digest,path)

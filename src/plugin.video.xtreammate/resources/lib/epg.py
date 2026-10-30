@@ -157,6 +157,8 @@ def request_refresh(portal_id,p,force=False):
         return False
     xbmcgui.Window(10000).setProperty('XtreamMate.EPGRefreshRequest' ,json.dumps({
         'pid':str(portal_id),'force':bool(force),'at':time.time(),'nonce':uuid.uuid4().hex}))
+    from epg_status import update
+    update(portal_id,'refresh','REQUESTED',running=False,requested=True)
     diagnostic('REQUESTED',running=False,requested=True)
     return True
 
@@ -177,7 +179,7 @@ def poll_refresh_request():
     except (ValueError,TypeError): return
     p=portals.get_by_id(value.get('pid'))
     if not p or not p.get('enabled',True): return
-    warmup_async(p['id'],p,force=bool(value.get('force')))
+    if warmup_async(p['id'],p,force=bool(value.get('force'))) is False:return
     _LAST_REFRESH_REQUEST=value.get('nonce')
 
 
@@ -502,14 +504,6 @@ def _refresh_portal_epg(portal_id, p, force=False):
                 refresh_visible_page(portal_id)
             else:
                 diagnostic('NO_NEW_GUIDE',running=False)
-            if force:
-                try:
-                    import xbmcgui
-                    from epg_status import read
-                    state=read(portal_id).get('refresh',{})
-                    code=state.get('code','READY' if result else 'NO_NEW_GUIDE')
-                    xbmcgui.Dialog().notification('XCMate EPG',code+' · '+str(state.get('loaded',0))+' / '+str(state.get('failed',0)))
-                except Exception: pass
             return result
         except Exception:
             diagnostic('REFRESH_FAILED',running=False)
@@ -698,11 +692,11 @@ def cache_has_data(portal_id) -> bool:
 
 def warmup_async(portal_id, p, force=False):
     if not force and _is_fresh(portal_id):
-        return
+        return True
     with _WARMUP_LOCK:
         t = _WARMUP_THREADS.get(portal_id)
         if t and t.is_alive():
-            return
+            return False
 
         def _run():
             import xbmc
@@ -715,6 +709,7 @@ def warmup_async(portal_id, p, force=False):
         t = threading.Thread(target=_run, daemon=True, name=f'epg_warmup_{portal_id}')
         t.start()
         _WARMUP_THREADS[portal_id] = t
+        return True
 
 
 def ensure_epg_loaded_for_portal(p: dict, force: bool = False):

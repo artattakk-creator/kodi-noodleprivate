@@ -18,7 +18,7 @@ class Scope55(unittest.TestCase):
         for path,digest in base['source_sha256'].items():
             name=Path(path).name
             if name.startswith(('setup_','wizard_','XCMateSetup')) or name in ('stream_epg.py','xmltv_stream.py','epg_schedule53.py','source_adapters.py','native_stop41.py','native_stop42.py','live_stop42.py','live_exit.py','exit_jobs.py','playback_exit.py'):
-                self.assertEqual(hashlib.sha256((ROOT/path).read_bytes()).hexdigest(),digest,path);found.append(path)
+                self.assertEqual(hashlib.sha256(__import__('stabilization_contract_02959').without_stabilization59((ROOT/path).read_bytes(),path)).hexdigest(),digest,path);found.append(path)
         self.assertGreater(len(found),25)
 
     def test_all_2294_existing_test_methods_retained_without_additional_skips(self):

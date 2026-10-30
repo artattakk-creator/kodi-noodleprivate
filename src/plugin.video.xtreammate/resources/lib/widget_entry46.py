@@ -5,6 +5,8 @@ ROUTES=frozenset(('widget_live_start_group','widget_recent_vod','widget_recent_s
 def dispatch(router):
     action=router._params.get('action','')
     if action not in ROUTES or router._handle<0:return False
+    from boot_diagnostics import mark
+    mark('ROUTE',action=action)
     from portals import get_by_id
     pid=router._params.get('pid','')
     if pid:portal=get_by_id(pid)

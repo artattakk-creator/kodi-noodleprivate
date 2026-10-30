@@ -23,7 +23,7 @@ def failure_details(exc, stage):
         prefix = 'HTTP_' if isinstance(exc, ResponseLimitError) else 'XMLTV_'
         code = prefix + kind.upper() + '_LIMIT'
     elif isinstance(exc, EmptyGuideError):
-        code = 'EMPTY_GUIDE'
+        code = 'NO_CHANNEL_MATCH' if getattr(exc,'xcmate_no_match59',False) else 'EMPTY_GUIDE'
     elif isinstance(exc, (gzip.BadGzipFile, EOFError, zlib.error, HTTPCompressionError)):
         code = 'GZIP_INVALID' if stage == 'PARSE' else 'HTTP_COMPRESSION_FAILED'
     elif type(exc).__name__ == 'UnsafeXMLTV':
