@@ -1,0 +1,20 @@
+{
+  "purpose": "REAL_KODI_SYNTHETIC_PLUGIN_TRANSPORT_ONLY",
+  "kodi": {
+    "major": 21,
+    "minor": 2,
+    "revision": "20250330-nogitfound",
+    "tag": "stable"
+  },
+  "rpc_directory": "PASS",
+  "native_movie_id_year": "PASS",
+  "native_image_wrapper_roundtrip": "PASS",
+  "nested_python_worker_rpc": "PASS",
+  "distinct_series_episode_ids": "PASS",
+  "concurrent_ping_ms": 208,
+  "gui_and_dialog_unchanged": "PASS",
+  "no_player_start": "PASS",
+  "actual_tmdb_helper": "NOT_TESTED",
+  "real_image_download": "NOT_TESTED",
+  "android": "BLOCKED_DEVICE_ACCESS"
+}

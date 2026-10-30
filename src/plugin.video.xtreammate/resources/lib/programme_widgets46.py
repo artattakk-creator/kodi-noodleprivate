@@ -23,6 +23,13 @@ def decorate(value,portal,channel,info):
  props['XCMate.ProgrammeKey47']=event['key']
  props['XCMate.ProgrammeNextStart47']=str(info.get('next_start',0))
  props['XCMate.ProgrammeDisplay47']='PROGRAMME_IMAGE' if actual else 'STATION_LOGO' if real else 'NEUTRAL_NO_LOGO'
+ props['XCMate.ProgrammeArtSource57']=str(art.get('source',''))
+ props['XCMate.ProgrammeArtCredit57']=str(art.get('attribution',''))
+ props['XCMate.ProgrammeImageScope57']=str(art.get('image_scope57',''))
+ if actual and art.get('image_scope57')=='series_fallback':
+  note=tr(36542)
+  props['XCMate.ProgrammeDescription46']=note+'\n'+props['XCMate.ProgrammeDescription46']
+  value['info']['plot']=note+'\n'+value['info']['plot']
  props['channellogo']=logo if real else ''
  value['info']['plot']=summary(event)+'\n\n'+value['info']['plot']
  value['menus46']=[(tr(36100),'RunPlugin('+event['details_url']+')')]

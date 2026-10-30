@@ -1,0 +1,32 @@
+{
+  "version": "0.1.29.57",
+  "source_commit": "4a882d813c962a4fdd2a96f556dc73b8013ca34a",
+  "files": 606,
+  "bytes": 3162223,
+  "sha256": "4fdb7de5292632cf8b4f29ec73680014429f85bfadc30e731c0606b6e40a1b09",
+  "crc": "PASS",
+  "safe_paths": "PASS",
+  "all_source_bytes": "PASS",
+  "python_ast": "PASS",
+  "independent_deterministic_rebuild": "PASS",
+  "android": {
+    "not_tested": 8,
+    "passed": 0,
+    "access": "BLOCKED_DEVICE_ACCESS",
+    "box_a": "UNTOUCHED"
+  },
+  "production_publish": false,
+  "tests": 2418,
+  "seconds": 326.144,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "previous_tests_retained": 2369,
+  "new_tests": 49,
+  "actual_helper_and_images": "NOT_TESTED: installed version / real API / real pixels require authorized Box B access",
+  "kodi_native_transport": "PASS: real Kodi 21.2 Linux with synthetic provider, explicitly not real Helper metadata or Android",
+  "ci": "Final Draft-PR HEAD: mandatory native Kodi transport and full host/build jobs, links and independent package SHA in PR body",
+  "raw_host_log_sha256": "624b48b92bd756d147cc57fd3dea84c2d44df4ad1fb3ea8291caa72f56c6381b",
+  "published_host_log_sha256": "76a50c070580d3d82103c8c09c2726bbce4a5a6e28fe64f22ec279419ef84816",
+  "verified_at": "2026-10-29T22:53:19.319450+00:00"
+}

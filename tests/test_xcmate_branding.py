@@ -9,7 +9,7 @@ class XCMateBrandingTests(unittest.TestCase):
     def test_display_name_and_version(self):
         addon=ET.parse(ROOT/"addon.xml").getroot()
         self.assertEqual(addon.get("name"),"XCMate")
-        self.assertEqual(addon.get("version"),"0.1.29.56")
+        self.assertEqual(addon.get("version"),"0.1.29.57")
         self.assertEqual(addon.get("id"),"plugin.video.xtreammate")
         self.assertTrue(all("XCMate" in (node.text or "")
                             for node in addon.findall(".//summary")))

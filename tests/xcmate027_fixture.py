@@ -163,7 +163,9 @@ class Fixture:
         utils.addon_data_dir=lambda:str(self.folder)
         utils.setting=lambda k,default='':self.options.get(k,default)
         utils.setting_int=lambda k,default=0:int(self.options.get(k,default))
-        utils.setting_bool=lambda k,default=False:self.options.get(k,default)
+        # Unrelated legacy GUI fixtures do not have a Helper/Kodi-library
+        # backend. Isolate the new optional supplier without inventing writes.
+        utils.setting_bool=lambda k,default=False:self.options.get(k,False if k in ('programme_helper57','programme_catalog57') else default)
         utils.cache_dir=utils._private_cache_dir=lambda:str(self.folder)
         utils.http_get=mock.Mock(side_effect=AssertionError('unexpected HTTP'))
         utils.cache_set=mock.Mock(return_value=True)

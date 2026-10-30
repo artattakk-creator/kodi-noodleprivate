@@ -26,7 +26,28 @@ on:
 permissions:
   contents: write
 jobs:
+  kodi-helper57-transport:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify real Kodi 21 Linux plugin and worker RPC transport
+        run: python tools/run_kodi_helper57_contract.py --report-dir kodi-helper57-evidence
+      - name: Upload isolated Kodi transport evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kodi21-helper57-transport-${{ github.sha }}
+          path: |
+            kodi-helper57-evidence/transport.json
+            kodi-helper57-evidence/build.log
+          if-no-files-found: error
+          retention-days: 14
   publish:
+    needs: kodi-helper57-transport
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
