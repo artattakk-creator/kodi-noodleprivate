@@ -1,0 +1,8 @@
+{
+  "android": "NOT_TESTED",
+  "box_a_access": false,
+  "box_b_access": false,
+  "device_credentials_available": false,
+  "device_actions": [],
+  "tmdb_credentials_available": false
+}

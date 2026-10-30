@@ -1,0 +1,23 @@
+{
+  "skin_version": "2.2.3",
+  "shortcuts": "2.1.0",
+  "files": {
+    "xml/IncludesHomeWidgets.xml": {
+      "before": "ff009f30b53d803e47a857cfdca23cc6400698416bdc70d0858e51f5bec4c51d",
+      "after": "032f509e593720a5e6b813f0a40d0096ff801ac317a263ba74031338f3307085"
+    },
+    "xml/IncludesHomeBingie.xml": {
+      "before": "cb50e1274b80f1869545963aa5d767c92e9a1eaf94e57208d652a2479bf677b7",
+      "after": "66dea642c7d18e9b16f8c87d1fdcf242dfa70223720e371cc5b2a8b85f6210bd"
+    },
+    "shortcuts/overrides.xml": {
+      "before": "77e89f48abbf9985b770a6a9af94e5a1e0a982c763dbe23c1228923bc91c8ab6",
+      "after": "46cb76481e2a92b5739e6f927da2c15acda1bd88e2d3886fb72ab3fbb06cd412"
+    },
+    "shortcuts/template.xml": {
+      "before": "e4cbf772a7bfc77f0638fced5c286a46f86fef4b602379c68dab8ce9986fd454",
+      "after": "e531f9bf71a8479c315da9cb135ff0961476a4b846c1c978469aa1a330935881"
+    }
+  },
+  "android": "NOT_TESTED"
+}

@@ -1,0 +1,31 @@
+{
+  "kodi": {
+    "major": 21,
+    "minor": 2,
+    "revision": "20250330-nogitfound",
+    "tag": "stable"
+  },
+  "synthetic_provider": true,
+  "android": "NOT_TESTED",
+  "bingie_home": "UNVERIFIED",
+  "directories": {
+    "vod": {
+      "items": 24,
+      "distinct_posters": 24,
+      "native_directory": "PASS"
+    },
+    "series": {
+      "items": 24,
+      "distinct_posters": 24,
+      "native_directory": "PASS"
+    }
+  },
+  "gui_containers": {
+    "vod": 24,
+    "series": 24,
+    "window": 13000
+  },
+  "decoded_provider_posters": 20,
+  "gui_pixels": "PASS_SYNTHETIC_NATIVE_KODI_ONLY",
+  "no_player_start": true
+}
