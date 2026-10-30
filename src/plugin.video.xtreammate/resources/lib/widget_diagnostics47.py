@@ -136,5 +136,6 @@ def status(pid):
         if db is not None:
             db.close()
     from programme_snapshot47 import status as programme_status
-    return dict(stages=values,programme=programme_status(pid),skin_render='ANDROID_NOT_TESTED',
+    from widget_consumer58 import status as consumer58
+    return dict(stages=values,programme=programme_status(pid),consumer58=consumer58(pid),skin_render='ANDROID_NOT_TESTED',
         texture_decode='NOT_OBSERVABLE_VIA_LISTITEM',unknown_count=-1)

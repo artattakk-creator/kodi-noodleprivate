@@ -159,6 +159,9 @@ class IPTVMasterService(xbmc.Monitor):
                 diagnostic('service','RUNNING',running=True,count=loops,build=SERVICE_BUILD)
             from exit_jobs import poll as poll_stop_jobs,blocked as stop_blocked
             poll_stop_jobs()
+            from live_stop58 import observe as observe_stop58
+            from exit_jobs import state as stop_state58
+            observe_stop58(stop_state58())
             if stop_blocked():
                 self.waitForAbort(.2)
                 continue  # Native Stop may hold Kodi's player lock; no player queries.

@@ -1,0 +1,30 @@
+{
+  "base": "cb58e38ff450a56a97178708db193ad0ad8b670f",
+  "previous_source_files": 606,
+  "byte_identical": 594,
+  "exact_reviewed_deltas": [
+    "src/plugin.video.xtreammate/changelog.txt",
+    "src/plugin.video.xtreammate/service.py",
+    "src/plugin.video.xtreammate/addon.xml",
+    "src/plugin.video.xtreammate/resources/lib/epg_manager53.py",
+    "src/plugin.video.xtreammate/resources/lib/app_routes.py",
+    "src/plugin.video.xtreammate/resources/lib/programme_assets47.py",
+    "src/plugin.video.xtreammate/resources/lib/widget_diagnostics47.py",
+    "src/plugin.video.xtreammate/resources/lib/widget_render47.py",
+    "src/plugin.video.xtreammate/resources/lib/app_services.py",
+    "src/plugin.video.xtreammate/resources/lib/widget_items45.py",
+    "src/plugin.video.xtreammate/resources/lib/widget_art44.py",
+    "src/plugin.video.xtreammate/resources/skins/Default/720p/XCMateEPGManager53.xml"
+  ],
+  "additive_files": [
+    "src/plugin.video.xtreammate/resources/lib/live_stop58.py",
+    "src/plugin.video.xtreammate/resources/lib/provider_epg58.py",
+    "src/plugin.video.xtreammate/resources/lib/widget_consumer58.py"
+  ],
+  "foreign_wip_unchanged": 62,
+  "box_a_changed": false,
+  "box_b_changed": false,
+  "external_skin_files_changed": false,
+  "routing": "AST identical except widget content function; saved source modules raw identical",
+  "native_stop_and_settings": "raw identical"
+}

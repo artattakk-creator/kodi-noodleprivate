@@ -1,3 +1,11 @@
+0.1.29.58
+- EPG-Manager: sichtbarer Anbieter-Schalter; Portalstatus vor und nach dem Speichern prüfen.
+- Anbieter-Aktivierung und Importstatus getrennt; vorhandene XMLTV-Quellen und Zuordnungen bleiben erhalten.
+- Film-/Serienwidgets: ausschließlich Provider-Metadaten und -Bilder, gespeicherte manuelle Korrekturen bleiben erhalten.
+- Widgetdiagnose trennt gespeicherte Bindung, generierten Home-Verbraucher und tatsächliche Sichtbarkeit.
+- Live-Stop: getrennte Timeout-Diagnose für native Warteschlange und Vollbildfreigabe; kein bestätigter Rockchip-Fix.
+- Android-Abnahme ausstehend. Widgets-Ordner, gespeicherte URLs, Kompatibilitätsmodus und Passwörter bleiben erhalten.
+
 0.1.29.57
 - Sendungsbilder automatisch über den installierten TMDb Helper vorbereiten, ohne eigenen XCMate-API-Token.
 - Eindeutige Film-/Serienidentität prüfen; vorhandene Katalogbilder bevorzugen, Episodenbilder und gekennzeichneten Serienbild-Ersatz unterscheiden.

@@ -83,11 +83,11 @@ def local_uri(uri):
     return ''
 
 
-def sources(row):
+def sources(row,provider_only=False):
     from media_art import sources as provider
     from media_overrides43 import cached_art
     poster, fanart = provider(row)
-    manual = cached_art(row)
+    manual = {} if provider_only else cached_art(row)
     return {'poster': manual.get('poster') or poster, 'fanart': manual.get('fanart') or fanart}
 
 
@@ -121,7 +121,7 @@ def _store(pid, kind, records):
             db.close()
 
 
-def read_many(pid, kind, rows):
+def read_many(pid, kind, rows,provider_only=False):
     """Bounded RO batches. Missing old schema means no optional references."""
     from programme_index46 import connect
     db = None
@@ -142,7 +142,7 @@ def read_many(pid, kind, rows):
                     [str(pid),kind]+chunk):
                 if role not in ('poster','fanart') or expires<=time.time() or len(raw)>16384:
                     continue
-                source = sources(by_sid[sid]).get(role,'')
+                source = sources(by_sid[sid],provider_only).get(role,'')
                 if not source or fingerprint(source)!=fp:
                     continue
                 value = json.loads(raw)
@@ -164,7 +164,7 @@ def read_many(pid, kind, rows):
             db.close()
 
 
-def prepare(portal, kind, rows, cancel=lambda:False):
+def prepare(portal, kind, rows, cancel=lambda:False,provider_only=False):
     """Finite background approval, including logos beyond the old first 24.
 
     Existing dynamic DNS expiry and redirect policy are kept. No expired remote
@@ -179,7 +179,7 @@ def prepare(portal, kind, rows, cancel=lambda:False):
     cursor = _cursor.get(key,0)%len(rows)
     cap = min(256 if kind=='live' else 24,len(rows))
     selected = [rows[(cursor+i)%len(rows)] for i in range(cap)]
-    existing = read_many(portal['id'],kind,selected)
+    existing = read_many(portal['id'],kind,selected,provider_only=provider_only)
     records = []
     deadline = time.monotonic()+1
     processed = 0
@@ -187,7 +187,7 @@ def prepare(portal, kind, rows, cancel=lambda:False):
         if cancel() or time.monotonic()>deadline:
             break
         processed += 1
-        for role,source in sources(row).items():
+        for role,source in sources(row,provider_only=provider_only).items():
             prior=existing.get(str(row['sid']),{}).get(role,'')
             if not source or prior and not prior.startswith(('http://','https://')):
                 continue
@@ -221,11 +221,11 @@ def prepare(portal, kind, rows, cancel=lambda:False):
     if len(_cursor)>16:
         _cursor.pop(next(iter(_cursor)))
     from widget_diagnostics47 import note,save
-    refs=read_many(portal['id'],kind,selected[:processed])
+    refs=read_many(portal['id'],kind,selected[:processed],provider_only=provider_only)
     available=[uri for values in refs.values() for uri in values.values() if uri]
     value=note(portal['id'],kind,'ASSETS','REFERENCES_READY' if available else 'NO_RENDERABLE_REFERENCE',
-        selected=processed,poster_sources=sum(bool(sources(r)['poster']) for r in selected[:processed]),
-        logo_sources=sum(bool(sources(r)['poster']) for r in selected[:processed]) if kind=='live' else 0,
+        selected=processed,poster_sources=sum(bool(sources(r,provider_only=provider_only)['poster']) for r in selected[:processed]),
+        logo_sources=sum(bool(sources(r,provider_only=provider_only)['poster']) for r in selected[:processed]) if kind=='live' else 0,
         dynamic_images=sum(uri.startswith(('http://','https://')) for uri in available),
         local_images=sum(not uri.startswith(('http://','https://')) for uri in available))
     save(portal['id'],kind,'ASSETS',value)

@@ -15,19 +15,23 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
     def onInit(self):
         self.getControl(101).setLabel('XCMate · EPG-Manager')
         for cid,label in [(401,'Quellen hinzufügen'),(402,'Jetzt aktualisieren'),(403,'Aktualisierungsbericht anzeigen'),(404,'Quellenliste'),(405,'Großes EPG / Senderzuordnung'),(406,'Zurück'),(407,'Automatisches Intervall'),(408,'Bericht nach oben'),(409,'Bericht nach unten')]:self.getControl(cid).setLabel(label)
-        self._load();self.setFocusId(401)
+        self._load();self.setFocusId(410 if self.portal.get('type')=='xtream' else 401)
     def _load(self):
         from epg_report53 import overview
         self.mode='sources';self.getControl(300).setVisible(False);self.getControl(200).setVisible(True)
         self.getControl(102).setLabel('Gespeicherte Quellen werden gelesen …')
         def load():
             from wizard_epg54 import pending
-            return overview(self.portal),pending(self.portal)
+            from portals import get_by_id
+            portal=get_by_id(self.portal['id']) or self.portal
+            return portal,overview(portal),pending(portal)
         def ready(value):
-            rows,self._setup_pending54=value;self._loaded(rows)
+            self.portal,rows,self._setup_pending54=value;self._loaded(rows)
         self._request(load,ready)
     def _loaded(self,rows):
         from epg_report53 import meaning
+        self.getControl(410).setLabel('Anbieter-EPG deaktivieren' if self.portal.get('provider_epg_enabled',True) else 'Anbieter-EPG aktivieren')
+        self.getControl(410).setEnabled(self.portal.get('type')=='xtream')
         self.rows=rows;control=self.getControl(200);pos=control.getSelectedPosition();control.reset()
         items=[]
         for row in rows:
@@ -47,7 +51,7 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
         self.getControl(103).setText('Letzter Erfolg: '+stamp(row['last_success'])+'\nLetzter protokollierter Fehler: '+stamp(row['last_failure'])+'\nGespeicherter Zeitraum: '+stamp(saved.get('first'))+' bis '+stamp(saved.get('last')))
     def onFocus(self,cid):
         if cid==200:self._detail()
-    def _query_failed(self,exc):self.getControl(102).setLabel('Lokaler EPG-Zugriff derzeit nicht möglich. Daten bleiben erhalten.')
+    def _query_failed(self,exc):self.getControl(102).setLabel('EPG-Zugriff oder Speichern nicht bestätigt. Daten bleiben erhalten.')
     def _reports(self):
         from epg_report53 import history
         def ready(runs):
@@ -67,21 +71,28 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
             return
         if self._pending_future:return
         import epg_sources as sources
-        if cid==401:
+        if cid==410:
+            self._toggle_provider58()
+        elif cid==401:
             choice=select(xbmcgui.Dialog(),'EPG-Quelle hinzufügen',['Deutschland / Österreich / Schweiz','XMLTV-Adresse','XMLTV-Datei','Zurück'])
             if choice==0:sources._choose_preset(self.portal)
             elif choice in (1,2):
                 uri=xbmcgui.Dialog().input('XMLTV-Adresse (HTTP/HTTPS)') if choice==1 else xbmcgui.Dialog().browse(1,'XMLTV-Datei auswählen','files','.xml|.gz|.xml.gz',False,False,'')
                 if uri:
                     name=xbmcgui.Dialog().input('Name dieser EPG-Quelle',defaultt='XMLTV')
-                    try:sources.add_source(self.portal['id'],name,uri,local=choice==2)
-                    except (OSError,ValueError):xbmcgui.Dialog().ok('XCMate EPG','Quelle nicht hinzugefügt. Adresse, Dateityp und Schreibrechte prüfen.')
+                    try:
+                        from provider_epg58 import add_source
+                        add_source(self.portal,name,uri,local=choice==2)
+                    except (OSError,ValueError) as exc:xbmcgui.Dialog().ok('XCMate EPG','Diese Adresse ist bereits der Anbieter-EPG. Anbieter-EPG aktivieren und Jetzt aktualisieren wählen.' if str(exc)=='DUPLICATE_PROVIDER_FEED' else 'Quelle nicht hinzugefügt. Adresse, Dateityp und Schreibrechte prüfen.')
             self._load()
         elif cid==402:
             if getattr(self,'_setup_pending54',False):
                 self.next_action='resume_epg54';self.close();return
+            from portals import get_by_id
+            self.portal=get_by_id(self.portal['id']) or self.portal
             from epg import request_refresh
             ok=request_refresh(self.portal['id'],self.portal,force=True)
+            if ok:self._refresh_until58=time.monotonic()+600;self._next_status58=time.monotonic()+2
             self.getControl(102).setLabel('Aktualisierung angefordert; Speicherung noch nicht bestätigt.' if ok else 'Aktualisierung blockiert. Bestehende EPG-Sicherung und laufende Importe prüfen.')
         elif cid==403:self._reports()
         elif cid==404:self._load()
@@ -98,10 +109,23 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
             row=self.rows[self.getControl(200).getSelectedPosition()]
             if row['id']=='provider':
                 if xbmcgui.Dialog().yesno('Anbieter-EPG','Anbieter-EPG '+('deaktivieren?' if row['enabled'] else 'aktivieren?')):
-                    import portals
-                    portals.update(self.portal['id'],dict(provider_epg_enabled=not row['enabled']));self.portal=dict(self.portal,provider_epg_enabled=not row['enabled'])
+                    self._toggle_provider58()
+                return
             else:sources._manage_source(self.portal,row['record'])
             self._load()
+    def pump(self):
+        super().pump()
+        now=time.monotonic()
+        if not self._closed and self.mode=='sources' and not self._pending_future and now<getattr(self,'_refresh_until58',0) and now>=getattr(self,'_next_status58',0):
+            self._next_status58=now+2;self._load()
+    def _toggle_provider58(self):
+        from provider_epg58 import toggle
+        def ready(portal):
+            self.portal=portal
+            self._load()
+            self.getControl(410).setLabel('Anbieter-EPG deaktivieren' if portal.get('provider_epg_enabled',True) else 'Anbieter-EPG aktivieren')
+            self.getControl(102).setLabel('Einstellung gespeichert. Aktiviert ist noch kein erfolgreicher Import. Jetzt aktualisieren wählen.' if portal.get('provider_epg_enabled',True) else 'Anbieter-EPG deaktiviert. Externe Quellen und gespeicherte Daten bleiben erhalten.')
+        self._request(lambda:toggle(self.portal),ready)
     def onAction(self,action):
         if action.getId() in (9,10,92):self.onClick(406)
         elif action.getId() in (3,4) and self.mode=='sources':self._detail()

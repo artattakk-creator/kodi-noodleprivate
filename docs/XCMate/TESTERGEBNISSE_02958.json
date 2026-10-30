@@ -1,0 +1,30 @@
+{
+  "version": "0.1.29.58",
+  "source_commit": "6b8c08717e88d4109d994e509c1d77ebfd27e990",
+  "files": 609,
+  "bytes": 3167746,
+  "sha256": "1ba592c4f4761db4d608784a8a59bfc3ebf41c96b1afc8528b5b7fe9a9286590",
+  "crc": "PASS",
+  "safe_paths": "PASS",
+  "all_source_bytes": "PASS",
+  "python_ast": "PASS",
+  "independent_deterministic_rebuild": "PASS",
+  "android": {
+    "not_tested": 8,
+    "passed": 0,
+    "access": "BLOCKED_DEVICE_ACCESS"
+  },
+  "production_publish": false,
+  "tests": 2463,
+  "seconds": 329.688,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "previous_tests_retained": 2418,
+  "new_tests": 45,
+  "p0_provider": "IMPLEMENTED_HOST_VERIFIED_ANDROID_NOT_TESTED",
+  "p0_widget_sources": "PROVIDER_ONLY_HOST_VERIFIED",
+  "p0_actual_home_invisibility": "BLOCKED_DEVICE_ACCESS_CAUSE_UNVERIFIED",
+  "p0_native_live_freeze": "BLOCKED_DEVICE_ACCESS_NOT_FIXED",
+  "ci": "Exact final Draft-PR HEAD run, jobs and artifact proof linked in PR body; no main publication"
+}
