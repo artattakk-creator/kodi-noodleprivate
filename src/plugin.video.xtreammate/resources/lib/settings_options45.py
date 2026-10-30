@@ -15,6 +15,9 @@ def definitions(group):
  return [dict(n.attrib) for n in cat if n.get('id') and n.get('type')!='lsep' and n.get('id') not in hidden] if cat is not None else []
 
 def show(router,group):
+ if group=='tmdb_test60':
+  from tmdb_connection60 import launch
+  launch();return
  import xbmcaddon,xbmcgui
  from menu_icons45 import select
  addon=xbmcaddon.Addon();dialog=xbmcgui.Dialog();rows=definitions(group)

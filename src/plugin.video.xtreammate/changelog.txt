@@ -1,3 +1,8 @@
+0.1.29.60
+- Live-TV-Startgruppenquelle: vollständige Senderreihenfolge auch bei älteren Widget-URLs; BINGIE-Adapter nur nach ausdrücklicher Bestätigung mit Sicherung und Rücknahme.
+- TMDB-Verbindung privat testen; optionale eindeutige Film-/Episodenbilder, Rate-Limit-Pause und bestehender gemeinsamer EPG-Bildcache.
+- Film-/Serienwidgets, gespeicherte Quellen, EPG-Import und bestätigte Stop-Rückkehr aus .59 bleiben erhalten.
+
 0.1.29.59
 - Anbieter-EPG: Jetzt aktualisieren bleibt unabhängig von offener Wizard-Einrichtung erreichbar.
 - EPG-Fortschritt und Fehlerstufen getrennt anzeigen; wiederholte Aktualisierungs-Popups entfallen.

@@ -43,7 +43,11 @@ def get(url,*,api=False,token='',cancel=lambda:False,transport=None):
         if 300<=status<400:raise SourceError('REDIRECT_BLOCKED')
         if status in (401,403):raise SourceError('HTTP_AUTH')
         if status in (404,410):raise SourceError('HTTP_NOT_FOUND')
-        if status==429:raise SourceError('HTTP_RATE_LIMIT')
+        if status==429:
+            from art_errors import retry_after
+            error=SourceError('HTTP_RATE_LIMIT')
+            error.retry_after60=retry_after(response)
+            raise error
         if status>=500:raise SourceError('HTTP_SERVER')
         if status!=200:raise SourceError('HTTP_CLIENT')
         mime=response.headers.get('Content-Type','').partition(';')[0].strip().lower()

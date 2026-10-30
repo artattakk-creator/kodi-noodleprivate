@@ -13,9 +13,8 @@ def rows(portal):
     try:
         groups=reader.groups('live')
         if cid not in {str(g.get('cid',g.get('category_id',''))) for g in groups}:return [],'START_GROUP_UNAVAILABLE'
-        start=reader.get('live',str(portal.get('start_stream_id') or ''))
     finally:reader.close()
-    scoped=dict(portal,start_stream_id=str(start['sid']) if start and str(start.get('category_id'))==cid else '')
+    scoped=dict(portal,start_stream_id='')  # Preserve catalogue order; never pin/reorder the configured start station.
     values=[r for batch in pages(scoped) for r in batch]
     if any(str(r.get('category_id',''))!=cid for r in values):raise IndexReadError('FOREIGN_GROUP')
     return values,'READY'
@@ -43,6 +42,8 @@ def render(router,portal):
     import xbmc,xbmcplugin
     from boot_diagnostics import finish_directory
     from library_index import IndexReadError
+    from widget_diagnostics47 import note
+    note(portal['id'],'live','DIRECTORY','DIRECTORY_INVOKED')
     try:items,code=values(portal)
     except (OSError,ValueError,IndexReadError):items,code=[],'LOCAL_UNAVAILABLE'
     xbmcplugin.setContent(router._handle,'videos')
@@ -50,4 +51,5 @@ def render(router,portal):
     for value in items:xbmcplugin.addDirectoryItem(router._handle,value['url'],item(value),isFolder=False)
     try:xbmc.log('[XCMate][HOME50] source=LIVE_START_GROUP code='+code+' rows='+str(len(items)),xbmc.LOGINFO)
     except (AttributeError,RuntimeError):pass
+    note(portal['id'],'live','ITEMS','ITEMS_READY',items=len(items))
     finish_directory(router,succeeded=True,cacheToDisc=False)

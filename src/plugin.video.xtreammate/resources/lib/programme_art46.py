@@ -129,18 +129,19 @@ def display_image(data):
  result=out.getvalue();validate_image(result);return result
 
 
-def prepare(event,cancel=lambda:False,fetch=None,match=None):
+def prepare(event,cancel=lambda:False,fetch=None,match=None,resolved60=None):
  """Worker-only operation; also callable with synthetic transports in tests."""
  from media_sources43 import get,validate_image,SourceError
  from programme_match46 import candidate
  key=event['key'];fp=fingerprint(event);old=indexed(event,verify=True) or persisted(event)
- if old and old.get('until',0)>time.time() and not (old.get('code')=='PROGRAMME_CACHE_BUDGET' and old.get('budget46')!=limit()):remember(key,old,verified47=True);return old
+ if resolved60 is None and old and old.get('until',0)>time.time() and not (old.get('code')=='PROGRAMME_CACHE_BUDGET' and old.get('budget46')!=limit()):remember(key,old,verified47=True);return old
  value=dict(key=key,fingerprint=fp,code='NO_IMAGE',image=event['placeholder'],source='placeholder',match='NONE',until=time.time()+6*3600)
  if old and old.get('source')!='placeholder':value=dict(old,code='READY_STALE',until=time.time()+300)
  try:
   candidates=[dict(url=event[k],source=source,match='EXACT_EVENT',attribution='XMLTV' if source=='xmltv_event' else 'Provider') for k,source in (('xmltv_image','xmltv_event'),('provider_image','provider_event')) if event.get(k)]
   failure=None
-  for c in candidates+[None]:
+  if resolved60 is not None:candidates=[resolved60]
+  for c in candidates+([None] if resolved60 is None else []):
    if cancel():return dict(value,code='CANCELLED')
    if c is None:
     try:c=(match or candidate)(event,cancel=cancel)
@@ -166,6 +167,9 @@ def prepare(event,cancel=lambda:False,fetch=None,match=None):
     if not os.path.isfile(filename):space(len(data));atomic(filename,data)
     reused46=bool(prior46 and prior46.get('sha256')==digest)
     value=dict(key=key,fingerprint=fp,code='READY',image=filename,thumbnail=filename,sha256=digest,original_sha256=original_sha,source=c['source'],source_url=c['url'],provider_id=c.get('remote_id',''),match=c['match'],attribution=c.get('attribution',''),checked46=prior46.get('checked46',time.time()-86400) if reused46 else time.time(),until=min(time.time()+86400,prior46['until']) if reused46 else time.time()+86400)
+    for field60 in ('matched_year56','image_scope57'):
+     if c.get(field60):value[field60]=c[field60]
+    if resolved60 is not None:value['tvspielfilm55']='BLOCKED_NO_AUTHORIZED_API'
     break
    except SourceError as error:failure=error.code
   if value['code']=='NO_IMAGE' and failure:value.update(code=failure,until=time.time()+300)

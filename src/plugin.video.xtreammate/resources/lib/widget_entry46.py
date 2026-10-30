@@ -16,7 +16,7 @@ def dispatch(router):
     if not portal or not portal.get('enabled',True):
         from boot_diagnostics import finish_directory
         finish_directory(router,False,cacheToDisc=False);return True
-    if action=='widget_live_start_group' and router._params.get('home50')=='1':
+    if action=='widget_live_start_group':  # Same saved URL, complete logo row with or without the legacy flag.
         from widget_home50 import render
         render(router,portal);return True
     from app_routes import widget

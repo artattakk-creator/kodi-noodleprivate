@@ -4600,3 +4600,7 @@ msgstr "Sicher zugeordnete Bilder aus vorhandenen Medienkatalogen verwenden"
 msgctxt "#36542"
 msgid "Series image (not an episode still)"
 msgstr "Serienbild (kein Episodenbild)"
+
+msgctxt "#36600"
+msgid "Test TMDB connection"
+msgstr "TMDB-Verbindung testen"

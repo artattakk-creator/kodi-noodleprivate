@@ -1,0 +1,6 @@
+TMDB attribution logo. Trademark and artwork rights remain with TMDB.
+This product uses the TMDB API but is not endorsed or certified by TMDB.
+Optional personal Developer API use only; no shared token or assumption of commercial permission.
+Original branding guidance: https://www.themoviedb.org/about/logos-attribution
+Pinned mirror: https://github.com/selfhst/icons/blob/02dd039d62a8e7132f4828e69162fca30bd43bb5/png/tmdb.png
+SHA256: dc8e0a6c6cf1fc6ab232b1f330c9a7cfa484b18954194f1303d4dedebe7b8530
