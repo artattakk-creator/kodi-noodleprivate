@@ -126,7 +126,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None):
     from tvmaze59 import enabled as tvmaze_enabled
     old=art(event)
     current=display(event,old)
-    if current and current.get('source_policy59',False)==tvmaze_enabled() and not (allow_lookup and current.get('source')=='placeholder' and
+    if current and (current.get('source') not in ('placeholder','tvmaze_series','tvmaze_episode') or current.get('source_policy59',False)==tvmaze_enabled()) and not (allow_lookup and current.get('source')=='placeholder' and
             (current.get('code')=='AWAITING_BACKGROUND_REFRESH' or not current.get('matching_policy57') or current.get('source_policy57')!=policy())):return current
     if cancel():return None
     now=time.time()
