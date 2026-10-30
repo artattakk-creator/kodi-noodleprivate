@@ -97,7 +97,7 @@ class SafeLiveView60(xbmcgui.WindowXMLDialog):
         image = prop('ProgrammeImage46')
         self.getControl(110).setImage(image or logo)
         self.getControl(111).setImage(logo or '')
-        self.getControl(112).setLabel(prop('ProgrammeTitle46') or 'Keine EPG-Daten')
+        self.getControl(112).setText(prop('ProgrammeTitle46') or 'Keine EPG-Daten')
         self.getControl(113).setLabel(prop('ProgrammeNext46'))
         self.getControl(114).setLabel(prop('ProgrammeChannel46'))
         self.getControl(115).setText(prop('ProgrammeDescription46'))
