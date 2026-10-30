@@ -1,4 +1,4 @@
-"""Optional TVmaze show/episode artwork for live EPG events only.
+"""Optional TVmaze artwork for verified live EPG titles, regardless of genre.
 
 TVmaze's public API is CC BY-SA; keep source attribution attached to the
 individual result. No account, token, VOD lookup, scraping or new EPG DB.
@@ -89,10 +89,32 @@ def _art(value):
     return url if safe(url) else None
 
 
-def _series(event):
+def _movie(event):
     genre = str(event.get('genre') or '').casefold()
-    return bool((event.get('season') and event.get('episode')) or
-                any(tag in genre for tag in ('serie', 'series', 'tv series', 'fernsehreihe', 'sitcom')))
+    return any(word in genre for word in ('spielfilm', 'kinofilm', 'movie', 'feature film'))
+
+
+def _compatible(event, show):
+    """Never confuse a theatrical movie or classified broadcast with a TV series."""
+    name = str(show.get('type') or '').casefold().strip()
+    genre = str(event.get('genre') or '').casefold()
+    if _movie(event):
+        # TVmaze is a TV-show API, not a feature-film catalog. TV movies
+        # count only with explicit movie classification AND matching year.
+        if name not in ('movie', 'tv movie', 'television movie'):
+            return False
+        year = str(event.get('year') or '')
+        premiered = str(show.get('premiered') or '')[:4]
+        return len(year) == 4 and year.isdigit() and premiered == year
+    for needle, allowed in (
+        (('nachricht', 'news'), ('news',)),
+        (('dokumentation', 'documentary'), ('documentary',)),
+        (('sport',), ('sports', 'sport')),
+        (('talkshow', 'talk show'), ('talk show',)),
+    ):
+        if any(part in genre for part in needle) and name and not any(part in name for part in allowed):
+            return False
+    return True
 
 
 def search_title(title, *, cancel=lambda: False, transport=None):
@@ -104,17 +126,22 @@ def search_title(title, *, cancel=lambda: False, transport=None):
 
 
 def candidate(event, cancel=lambda: False, transport=None):
-    """A unique exact TV series plus optional precise episode, never a fuzzy guess."""
-    if not enabled() or cancel() or not _series(event) or not event.get('title'):
+    """All live EPG genres are eligible; only uniquely proven TVmaze art is used."""
+    if not enabled() or cancel() or not event.get('title'):
         return None
     raw = str(event.get('title', '')).strip()
     if not 2 <= len(raw) <= 120:
         return None
     matches = [row for row in search_title(raw, cancel=cancel, transport=transport)
                if _title(row.get('name')) == _title(raw) and isinstance(row.get('id'), int)]
-    # Multiple series with the same name require user mapping; never take first.
-    if len({x['id'] for x in matches}) != 1:
-        return None
+    if not matches:
+        raise _error('TVMAZE_NO_MATCH')
+    compatible = [row for row in matches if _compatible(event, row)]
+    if not compatible:
+        raise _error('TVMAZE_MOVIE_UNAVAILABLE' if _movie(event) else 'TVMAZE_TYPE_MISMATCH')
+    # Multiple show IDs require manual association, never take the first search hit.
+    if len({row['id'] for row in compatible}) != 1:
+        raise _error('TVMAZE_AMBIGUOUS')
     show = matches[0]
     showid = show['id']
     if not 0 < showid < 100000000:
@@ -124,28 +151,31 @@ def candidate(event, cancel=lambda: False, transport=None):
     credit = 'TVmaze (CC BY-SA) · ' + source_page
     season, episode = event.get('season'), event.get('episode')
     if bool(season) != bool(episode):
-        return None
+        raise _error('TVMAZE_EPISODE_UNCERTAIN')
     if season and episode:
         try:
             season, episode = int(season), int(episode)
         except (ValueError, TypeError):
-            return None
+            raise _error('TVMAZE_EPISODE_UNCERTAIN') from None
         if not 0 < season <= 250 or not 0 < episode <= 2000:
-            return None
+            raise _error('TVMAZE_EPISODE_UNCERTAIN')
         data = _get('shows/%d/episodebynumber' % showid,
                     {'season': season, 'number': episode}, cancel=cancel, transport=transport)
         if not isinstance(data, dict) or data.get('season') != season or data.get('number') != episode:
-            return None
+            raise _error('TVMAZE_EPISODE_UNCERTAIN')
         subtitle = str(event.get('subtitle') or '').strip()
         if subtitle and _title(subtitle) != _title(data.get('name')):
-            return None
+            raise _error('TVMAZE_EPISODE_UNCERTAIN')
         url = _art(data)
         if url:
             return dict(url=url, source='tvmaze_episode', match='EXACT_TVMAZE_EPISODE59',
                         image_scope57='episode', remote_id=showid, attribution=credit)
-    # Only a generic show illustration, never mislabelled as an episode still.
+    # A TVmaze programme image is distinct from an episode image.
     url = _art(show)
     if not url:
-        return None
-    return dict(url=url, source='tvmaze_series', match='EXACT_TVMAZE_SERIES59',
-                image_scope57='series_fallback', remote_id=showid, attribution=credit)
+        raise _error('TVMAZE_NO_IMAGE')
+    if season and episode:
+        return dict(url=url, source='tvmaze_series', match='EXACT_TVMAZE_SERIES59',
+                    image_scope57='series_fallback', remote_id=showid, attribution=credit)
+    return dict(url=url, source='tvmaze_programme', match='EXACT_TVMAZE_PROGRAMME59',
+                image_scope57='programme', remote_id=showid, attribution=credit)
