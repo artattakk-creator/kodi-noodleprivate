@@ -24,7 +24,8 @@ def fingerprint(event):
  if not event.get('xmltv_image') and not event.get('provider_image'):
   from utils import setting_bool,setting
   enabled=setting_bool('programme_tmdb46',False)
-  values.append([enabled,setting_bool('tmdb_research43',False) if enabled else False,hashlib.sha256(str(setting('tmdb_read_token43','')).encode()).hexdigest() if enabled else '',setting_bool('programme_tvmaze59',False)])
+  values.append([enabled,setting_bool('tmdb_research43',False) if enabled else False,hashlib.sha256(str(setting('tmdb_read_token43','')).encode()).hexdigest() if enabled else ''])
+  if setting_bool('programme_tvmaze59',False):values.append(['TVMAZE59',True])
  return hashlib.sha256(json.dumps(values,sort_keys=True).encode()).hexdigest()
 
 def peek(event):
