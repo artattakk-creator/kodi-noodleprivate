@@ -24,7 +24,7 @@ def fingerprint(event):
  if not event.get('xmltv_image') and not event.get('provider_image'):
   from utils import setting_bool,setting
   enabled=setting_bool('programme_tmdb46',False)
-  values.append([enabled,setting_bool('tmdb_research43',False) if enabled else False,hashlib.sha256(str(setting('tmdb_read_token43','')).encode()).hexdigest() if enabled else ''])
+  values.append([enabled,setting_bool('tmdb_research43',False) if enabled else False,hashlib.sha256(str(setting('tmdb_read_token43','')).encode()).hexdigest() if enabled else '',setting_bool('programme_tvmaze59',False)])
  return hashlib.sha256(json.dumps(values,sort_keys=True).encode()).hexdigest()
 
 def peek(event):
@@ -47,7 +47,7 @@ def enqueue(event):
  key=event['key'];fp=fingerprint(event)
  with _lock:old=_memory.get(key)
  if old and old.get('fingerprint')==fp and old.get('until',0)>time.time() and (old.get('source')=='placeholder' or old.get('_verified47') and time.monotonic()-old.get('_checked47',0)<300) and not (old.get('code')=='PROGRAMME_CACHE_BUDGET' and old.get('budget46')!=limit()):return False
- if not event.get('xmltv_image') and not event.get('provider_image') and not setting_bool('programme_tmdb46',False):
+ if not event.get('xmltv_image') and not event.get('provider_image') and not setting_bool('programme_tmdb46',False) and not setting_bool('programme_tvmaze59',False):
   from programme_index46 import art as persisted_art46
   prior=persisted_art46(event)
   if prior and prior.get('until',0)>time.time():remember(key,prior);return False
