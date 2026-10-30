@@ -4636,3 +4636,39 @@ msgstr "Externe TVmaze-Abfragen für Live-TV-Sendungstitel aktivieren?"
 msgctxt "#36688"
 msgid "TVmaze is disabled. Enable it first."
 msgstr "TVmaze ist deaktiviert. Bitte zuerst aktivieren."
+
+msgctxt "#36689"
+msgid "TVmaze: No matching programme found"
+msgstr "TVmaze: Keine passende Sendung gefunden"
+
+msgctxt "#36690"
+msgid "TVmaze: No image available for this programme"
+msgstr "TVmaze: Für diese Sendung ist kein Bild verfügbar"
+
+msgctxt "#36691"
+msgid "TVmaze: Several possible programmes – no image assigned"
+msgstr "TVmaze: Mehrere mögliche Treffer – kein Bild zugeordnet"
+
+msgctxt "#36692"
+msgid "TVmaze: No verified movie available (TV show database)"
+msgstr "TVmaze: Kein bestätigter Film verfügbar (TV-Sendungsdatenbank)"
+
+msgctxt "#36693"
+msgid "TVmaze: Programme type does not match"
+msgstr "TVmaze: Sendungstyp stimmt nicht überein"
+
+msgctxt "#36694"
+msgid "TVmaze: Episode could not be identified safely"
+msgstr "TVmaze: Folge konnte nicht sicher zugeordnet werden"
+
+msgctxt "#36695"
+msgid "TVmaze: Too many requests, please retry later"
+msgstr "TVmaze: Zu viele Anfragen – später erneut versuchen"
+
+msgctxt "#36696"
+msgid "TVmaze: API temporarily unavailable"
+msgstr "TVmaze: API vorübergehend nicht erreichbar"
+
+msgctxt "#36697"
+msgid "TVmaze: No suitable image found"
+msgstr "TVmaze: Kein geeignetes Bild gefunden"
