@@ -71,7 +71,7 @@ def display(event,value):
     from programme_sources57 import PROOFS,policy
     if value.get('source')=='tmdb_helper' and not policy()[0]:return None
     from tvmaze59 import enabled as tvmaze_enabled
-    if value.get('source') in ('tvmaze_episode','tvmaze_series') and not tvmaze_enabled():return None
+    if value.get('source') in ('tvmaze_episode','tvmaze_series','tvmaze_programme') and not tvmaze_enabled():return None
     if value.get('source') in ('xcmate_catalog','kodi_library') and not policy()[1]:return None
     if not safe(url) or value.get('match') not in ('EXACT_EVENT','EXACT_TITLE_YEAR','EXACT_SEASON_EPISODE','EXACT_UNIQUE_FILM_TITLE')+PROOFS:return None
     return dict(value,image=url+OPTIONS,thumbnail=url+OPTIONS)
@@ -126,7 +126,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None):
     from tvmaze59 import enabled as tvmaze_enabled
     old=art(event)
     current=display(event,old)
-    if current and (current.get('source') not in ('placeholder','tvmaze_series','tvmaze_episode') or current.get('source_policy59',False)==tvmaze_enabled()) and not (allow_lookup and current.get('source')=='placeholder' and
+    if current and (current.get('source') not in ('placeholder','tvmaze_series','tvmaze_episode','tvmaze_programme') or current.get('source_policy59',False)==tvmaze_enabled()) and not (allow_lookup and current.get('source')=='placeholder' and
             (current.get('code')=='AWAITING_BACKGROUND_REFRESH' or not current.get('matching_policy57') or current.get('source_policy57')!=policy())):return current
     if cancel():return None
     now=time.time()
@@ -139,11 +139,11 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None):
     candidates=[dict(url=event[field],source=source,match='EXACT_EVENT',attribution=credit)
                 for field,source,credit in (('xmltv_image','xmltv_event','XMLTV – konfigurierte Eventquelle'),
                     ('provider_image','provider_event','Anbieter – konfigurierte Eventquelle')) if event.get(field)]
-    if old and old.get('source_url') and old.get('source') in ('xmltv_event','provider_event','tmdb_movie','tmdb_episode','tmdb_helper','xcmate_catalog','kodi_library','tvmaze_episode','tvmaze_series'):
+    if old and old.get('source_url') and old.get('source') in ('xmltv_event','provider_event','tmdb_movie','tmdb_episode','tmdb_helper','xcmate_catalog','kodi_library','tvmaze_episode','tvmaze_series','tvmaze_programme'):
         source=old.get('source')
         enabled=source!='tmdb_helper' or policy()[0]
         enabled=enabled and (source not in ('xcmate_catalog','kodi_library') or policy()[1])
-        enabled=enabled and (source not in ('tvmaze_episode','tvmaze_series') or tvmaze_enabled())
+        enabled=enabled and (source not in ('tvmaze_episode','tvmaze_series','tvmaze_programme') or tvmaze_enabled())
         if enabled:candidates.append(dict(url=old['source_url'],source=source,match=old.get('match','NONE'),attribution=old.get('attribution',''),
             **{k:old[k] for k in ('image_scope57','helper_version57','matched_year56','provider_id') if k in old}))
     def failed(reason):
