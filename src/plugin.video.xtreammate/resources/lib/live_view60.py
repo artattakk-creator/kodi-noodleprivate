@@ -145,7 +145,7 @@ class SafeLiveView60(xbmcgui.WindowXMLDialog):
             self._focus_requested = now + SAMPLE_DELAY
             self.getControl(114).setLabel(str(self.rows[index].get('name', '')))
             self.getControl(117).setLabel('EPG-Vorschau wird geladen …')
-        if self._focus_future and self._focus_future.done():
+        if self._focus_future and self._focus_future[0].done():
             f, wanted = self._focus_future
             self._focus_future = None
             try:
