@@ -4600,3 +4600,7 @@ msgstr "Reuse safely matched images from existing media catalogues"
 msgctxt "#36542"
 msgid "Series image (not an episode still)"
 msgstr "Series image (not an episode still)"
+
+msgctxt "#36720"
+msgid "Live TV view – safe preview (experimental)"
+msgstr "Live TV view – safe preview (experimental)"

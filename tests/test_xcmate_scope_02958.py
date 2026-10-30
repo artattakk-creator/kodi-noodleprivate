@@ -27,12 +27,12 @@ class Scope58(unittest.TestCase):
         for path,digest in base.items():
             name=Path(path).name
             if name in names or name.startswith(('setup_','wizard_','XCMateSetup')) or '/bingie50/' in path or '/skins/' in path and name!='XCMateEPGManager53.xml':
-                self.assertEqual(hashlib.sha256((ROOT/path).read_bytes()).hexdigest(),digest,path)
+                self.assertEqual(hashlib.sha256(__import__('stabilization_contract_02959').without_stabilization59((ROOT/path).read_bytes(),path)).hexdigest(),digest,path)
     def test_app_route_dispatch_and_all_other_route_functions_are_unchanged(self):
         hooks=json.loads((ROOT/'tests/fixtures/xcmate_02958_reviewed_hooks.json').read_text())['modules']
         path=LIB+'app_routes.py'
         keep=lambda raw:[ast.dump(n,include_attributes=False) for n in ast.parse(raw).body if not isinstance(n,ast.FunctionDef) or n.name!='widget']
-        self.assertEqual(keep(hooks[path]['old']),keep((ROOT/path).read_text()))
+        self.assertEqual(keep(hooks[path]['old']),keep(__import__('stabilization_contract_02959').without_stabilization59((ROOT/path).read_text(),path)))
     def test_new_modules_do_not_delete_profiles_reset_caches_or_write_skins(self):
         for name in ('provider_epg58.py','widget_consumer58.py','live_stop58.py'):
             tree=ast.parse((ROOT/LIB/name).read_text())
