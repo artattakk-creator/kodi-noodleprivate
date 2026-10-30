@@ -16,7 +16,9 @@ OPTIONS='|redirect-limit=0&connection-timeout=3&failonerror=true'
 
 def hosts():
     from utils import setting
-    values={'image.tmdb.org','static.tvmaze.com'}
+    values={'image.tmdb.org'}
+    from tvmaze59 import enabled as tvmaze_enabled
+    if tvmaze_enabled():values.add('static.tvmaze.com')
     for host in str(setting('programme_image_hosts55','')).lower().split(',')[:20]:
         host=host.strip()
         if re.fullmatch(r'[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?',host) and '.' in host:
