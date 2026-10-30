@@ -13,6 +13,6 @@ def values(portal,kind,rows,approved):
                 from widget_diagnostics47 import note
                 note(portal['id'],kind,'ASSETS','LOCAL_EPG_UNAVAILABLE',selected=len(rows))
         else:epg={}
-        assets=read_many(portal['id'],kind,rows)
+        assets=read_many(portal['id'],kind,rows,provider_only=kind in ('vod','series'))
         return [describe(portal,kind,row,approved,epg.get(row['sid']),
                          assets47=assets.get(str(row['sid']))) for row in rows]

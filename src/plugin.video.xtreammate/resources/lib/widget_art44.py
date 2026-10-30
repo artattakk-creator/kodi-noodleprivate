@@ -67,7 +67,7 @@ def art(item,approved):
         value=approved.get(hashlib.sha256(url.encode()).hexdigest(),{})
         remaining=value.get('until',0)-time.time()
         return value.get('uri','') if 0<remaining<=30 and value.get('uri')==url+KODI_OPTIONS else ''
-    poster,fanart=sources(item);manual=cached_art(item)
+    poster,fanart=sources(item);manual={} if item.get('kind') in ('vod','series') else cached_art(item)
     poster=manual.get('poster') or resolve(poster) or placeholder
     fanart=manual.get('fanart') or resolve(fanart)
     return dict(poster=poster,thumb=poster,icon=poster,fanart=fanart,landscape=fanart or poster)

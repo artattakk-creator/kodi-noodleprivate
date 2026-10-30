@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <window>
-  <defaultcontrol>401</defaultcontrol>
+  <defaultcontrol>410</defaultcontrol>
   <allowoverlay>yes</allowoverlay>
   <controls>
     <control type="image">
@@ -23,19 +23,19 @@
       <left>44</left>
       <top>78</top>
       <width>1180</width>
-      <height>52</height>
+      <height>40</height>
       <font>font13</font>
       <textcolor>FFF5F7FA</textcolor>
       <label />
     </control>
     <control type="list" id="200">
       <left>44</left>
-      <top>142</top>
+      <top>178</top>
       <width>1190</width>
-      <height>318</height>
-      <onleft>401</onleft>
+      <height>282</height>
+      <onleft>410</onleft>
       <onright>404</onright>
-      <onup>401</onup>
+      <onup>410</onup>
       <ondown>401</ondown>
       <itemlayout width="1190" height="62">
         <control type="label">
@@ -115,7 +115,7 @@
       <texturenofocus colordiffuse="FF263142">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturenofocus>
       <onleft>409</onleft>
       <onright>402</onright>
-      <onup>407</onup>
+      <onup>200</onup>
       <ondown>404</ondown>
     </control>
     <control type="button" id="402">
@@ -237,6 +237,13 @@
       <onright>401</onright>
       <onup>406</onup>
       <ondown>403</ondown>
+    </control>
+    <control type="button" id="410">
+      <left>44</left><top>128</top><width>1190</width><height>42</height>
+      <font>font13</font><textcolor>FFF5F7FA</textcolor><label>Anbieter-EPG aktivieren/deaktivieren</label>
+      <texturefocus colordiffuse="FF26634B">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturefocus>
+      <texturenofocus colordiffuse="FF263142">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturenofocus>
+      <onleft>409</onleft><onright>401</onright><onup>407</onup><ondown>200</ondown>
     </control>
   </controls>
 </window>

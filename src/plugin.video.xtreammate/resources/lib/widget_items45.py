@@ -10,7 +10,7 @@ def describe(portal,kind,row,approved,epg=None,assets47=None):
     from media_data import recent_label
     from utils import setting_int
     import xbmcaddon
-    image=art(row,approved);theme=snapshot()
+    image=art(dict(row,kind=kind),approved);theme=snapshot()
     if kind in ('live','vod','series') and assets47:
         poster=assets47.get('poster');fanart=assets47.get('fanart')
         if poster:image.update(poster=poster,thumb=poster,icon=poster)

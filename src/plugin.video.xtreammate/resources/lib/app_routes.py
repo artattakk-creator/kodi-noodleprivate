@@ -447,12 +447,9 @@ def widget(router,portal,action):
     router._widget_counts47={}
     from widget_art44 import read as read_widget_art
     router._widget_art44=read_widget_art(portal['id'])
-    if kind in ('vod','series'):
-        from media_overrides43 import apply_many
-        rows=apply_many(portal['id'],rows)
     if kind in ('live','vod','series'):
         from programme_assets47 import read_many
-        router._widget_assets47=read_many(portal['id'],kind,rows)
+        router._widget_assets47=read_many(portal['id'],kind,rows,provider_only=kind in ('vod','series'))
     if action=='widget_live_start_group':
         from epg_sources import configuration
         from local_epg import now_next

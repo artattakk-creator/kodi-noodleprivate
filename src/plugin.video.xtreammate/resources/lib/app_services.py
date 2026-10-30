@@ -57,7 +57,6 @@ def refresh_local(cancel=lambda:False):
             # Prepare references in this long-lived data worker, not IR/render.
             from widget_data41 import snapshot
             from widget_art44 import prepare
-            from media_overrides43 import apply_many
             for kind in ('live','vod','series'):
                 if cancel():return
                 try:
@@ -68,14 +67,13 @@ def refresh_local(cancel=lambda:False):
                         if previous_code56=='READ_ONLY' and code=='READY':code='READ_ONLY'
                     from widget_diagnostics47 import inspect_index
                     inspect_index(portal,kind,rows,code)
-                    rows=apply_many(portal['id'],rows)
                     if kind=='live':
                         from programme_prefetch48 import prepare as prefetch_events48
                         prefetch_events48(portal,rows,cancel)
                     try:
                         prepare(portal['id'],rows)
                         from programme_assets47 import prepare as prepare_assets47
-                        prepare_assets47(portal,kind,rows,cancel)
+                        prepare_assets47(portal,kind,rows,cancel,provider_only=kind in ('vod','series'))
                     except Exception:
                         from widget_diagnostics47 import note
                         note(portal['id'],kind,'ASSETS','PREPARE_UNAVAILABLE')

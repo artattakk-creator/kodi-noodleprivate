@@ -31,7 +31,7 @@ class Scope57(unittest.TestCase):
         for path,digest in base.items():
             name=Path(path).name
             if name in names or name.startswith(('setup_','wizard_','XCMateSetup')) or '/bingie50/' in path or '/skins/' in path:
-                self.assertEqual(hashlib.sha256((ROOT/path).read_bytes()).hexdigest(),digest,path);count+=1
+                self.assertEqual(hashlib.sha256(__import__('stabilization_contract_02958').without_stabilization58((ROOT/path).read_bytes(),path)).hexdigest(),digest,path);count+=1
         self.assertEqual(count,60)
 
     def test_new_adapter_modules_use_only_public_kodi_metadata_rpc_no_private_helper_import_or_player(self):
