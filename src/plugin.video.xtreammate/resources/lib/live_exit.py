@@ -101,11 +101,13 @@ def _poll(navigator=None):
         # a later movie or a foreign add-on. Keep the root-autoplay tombstone.
         return not player.isPlayingVideo() or any(_same(identity(player),('live',item)) for item in allowed)
     token=identity(player)
+    from live_return59 import stop_confirmed
+    confirmed59=stop_confirmed(value,job)
     playing=player.isPlaying() if hasattr(player,'isPlaying') else player.isPlayingVideo()
     if playing and token is None and value['phase']=='stopping' and job and job.get('worker_done') and job.get('result')=='complete' and job['token'][1]['nonce']==session['nonce']:
         # Kodi can invalidate its InfoTag during a real Stop. Unknown state is
         # not evidence of foreign playback, and never authorizes another Stop.
-        if time.monotonic()>value['deadline']:
+        if time.monotonic()>value['deadline'] and not confirmed59:
             value['phase']='failed';_save(value);_trace('PLAYER_UNAVAILABLE',session)
         elif not value.get('player_wait47'):
             value['player_wait47']=True;_save(value);_trace('PLAYER_STATE_PENDING47',session)
@@ -151,9 +153,11 @@ def _poll(navigator=None):
         _trace('RETURN_'+status47+'47',session)
         return True
     value=fresh47
-    if xbmc.getCondVisibility('System.HasActiveModalDialog'):
-        if time.monotonic()>value['deadline']:value['phase']='failed';_save(value);_trace('RETURN_BLOCKED',session)
-        return True
+    from live_return59 import ready as return_ready59
+    if not return_ready59(value):return True
+    status47,fresh47=return_guard47(value)
+    if status47!='READY':return True
+    value=fresh47
     if getattr(xbmc.Monitor(),'abortRequested',lambda:False)():return True
     from live_trace48 import return_home as widget_return48
     returned48=widget_return48(value)
@@ -186,7 +190,9 @@ def poll(navigator=None):
         # Hold this exit while pending; never terminate the background service.
         value=state()
         if not value:return False
-        if time.monotonic()>value['deadline']:
+        from live_return59 import stop_confirmed
+        from exit_jobs import state as job_state59
+        if time.monotonic()>value['deadline'] and not stop_confirmed(value,job_state59()):
             value['phase']='failed';_save(value)
             if navigator is not None and not navigator._closed:navigator.close()
         _trace('PLAYER_UNAVAILABLE',value['session']);return True

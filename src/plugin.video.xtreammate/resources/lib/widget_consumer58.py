@@ -81,8 +81,8 @@ def inspect(profile,skin,generated,pid,probe=None):
                 suffix=row[2][len('widgetPath'):]
                 values={r[2]:r[3] for r in rows if r[:2]==row[:2]}
                 required=('widget','widgetName','widgetType','widgetTarget')
-                saved.append(all(values.get(key+suffix) for key in required) and values.get('widgetType'+suffix)=={'live':'videos','vod':'movies','series':'tvshows'}[kind] and values.get('widgetTarget'+suffix)=='videos')
-        ids=sorted(set(consumers[kind]));state=dict(binding='BINDING_PRESENT' if saved and all(saved) else 'BINDING_INVALID' if saved else 'BINDING_NOT_FOUND',saved_slots=len(saved),generated_consumers=len(ids),include_declarations=declarations[kind],consumer='SKIN_CONSUMER_UNVERIFIED',home='NOT_OBSERVED',pixels='NOT_TESTED')
+                saved.append(all(values.get(key+suffix) for key in required) and values.get('widgetType'+suffix) in ({'live':'videos','vod':'movies','series':'tvshows'}[kind],'video','videos','mixed') and values.get('widgetTarget'+suffix)=='videos')
+        ids=sorted(set(consumers[kind]));state=dict(binding='BINDING_PRESENT' if saved and all(saved) else 'BINDING_INVALID' if saved else 'BINDING_NOT_FOUND',saved_slots=len(saved),generated_consumers=len(ids),control_ids59=ids,include_declarations=declarations[kind],consumer='SKIN_CONSUMER_UNVERIFIED',home='NOT_OBSERVED',pixels='NOT_TESTED')
         if saved and not ids and not declarations[kind]:state['consumer']='SKIN_CONSUMER_MISSING'
         elif ids:state['consumer']='GENERATED_CONSUMER_PRESENT'
         if ids and probe is not None:

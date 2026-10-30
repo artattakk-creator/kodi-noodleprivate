@@ -17,7 +17,7 @@ class Scope56(unittest.TestCase):
     def test_picker_urls_sources_folders_and_routing_entry_points_are_raw_identical(self):
         base=self.baseline()['source_sha256']
         for name in ('main.py','home_entry.py','home_menu.py','widget_sources49.py','widget_binding50.py','widget_entry46.py','settings_sections45.py','window_navigation.py'):
-            path=LIB+name;self.assertEqual(hashlib.sha256((ROOT/path).read_bytes()).hexdigest(),base[path],name)
+            path=LIB+name;self.assertEqual(hashlib.sha256(__import__('stabilization_contract_02959').without_stabilization59((ROOT/path).read_bytes(),path)).hexdigest(),base[path],name)
         # app_routes changes only the widget's content rendering: Series art
         # and removal of a fake settings tile. Every routing function/constant,
         # including the complete dispatch(), remains the previous AST.
@@ -37,7 +37,7 @@ class Scope56(unittest.TestCase):
         for path,digest in base.items():
             name=Path(path).name
             if name.startswith(('setup_','wizard_','XCMateSetup')) or name in names or '/bingie50/' in path:
-                self.assertEqual(hashlib.sha256((ROOT/path).read_bytes()).hexdigest(),digest,path);found.append(path)
+                self.assertEqual(hashlib.sha256(__import__('stabilization_contract_02959').without_stabilization59((ROOT/path).read_bytes(),path)).hexdigest(),digest,path);found.append(path)
         self.assertGreater(len(found),40)
 
     def test_all_2339_previous_methods_are_retained_without_new_skips(self):

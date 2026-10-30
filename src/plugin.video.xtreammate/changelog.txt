@@ -1,3 +1,11 @@
+0.1.29.59
+- Anbieter-EPG: Jetzt aktualisieren bleibt unabhängig von offener Wizard-Einrichtung erreichbar.
+- EPG-Fortschritt und Fehlerstufen getrennt anzeigen; wiederholte Aktualisierungs-Popups entfallen.
+- Live-TV: nach bestätigtem Stop auf sichere GUI-Freigabe warten; kein dauerhafter Rückkehrfehler durch abgelaufene Stop-Frist.
+- Medienwidgets bleiben ausschließlich beim Provider; native Aufrufe und Home-Container getrennt prüfen.
+- Sendungsbilder: fehlendes EPG, fehlendes Bild und blockierte Bildadresse verständlich unterscheiden.
+- Android-Abnahme ausstehend. Portale, Passwörter, EPG-Zuordnungen, Widgets-Ordner und gespeicherte Verknüpfungen bleiben erhalten.
+
 0.1.29.58
 - EPG-Manager: sichtbarer Anbieter-Schalter; Portalstatus vor und nach dem Speichern prüfen.
 - Anbieter-Aktivierung und Importstatus getrennt; vorhandene XMLTV-Quellen und Zuordnungen bleiben erhalten.

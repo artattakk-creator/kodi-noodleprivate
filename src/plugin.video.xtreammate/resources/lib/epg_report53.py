@@ -121,12 +121,15 @@ def stamp(value):return time.strftime('%d.%m.%Y %H:%M',time.localtime(value)) if
 
 
 def meaning(code):
-    return {'STATUS_UNVERIFIED':'Früherer Status nicht durch gespeicherte Daten bestätigt','NO_SAVED_PROGRAMMES':'Noch keine gespeicherten Sendungen bestätigt','READY':'Erfolgreich gespeichert','READY_NO_NOW':'Gespeichert; aktuell keine laufende Sendung','PARTIAL_SUCCESS':'Teilweise erfolgreich','PARTIAL_PRESERVED':'Gespeichert; widersprüchliche Einträge geschützt','UNCHANGED':'Unverändert bestätigt','BACKUP_REQUIRED':'Verifizierte EPG-Sicherung erforderlich','WAIT_ACTIVE_CATALOG':'Senderkatalog noch nicht bereit','NO_NEW_GUIDE':'Keine neue gültige Programmliste','CANCELLED':'Abgebrochen; bisherige Daten bleiben erhalten','IMPORT_BUSY_OR_LOCK_UNAVAILABLE':'Ein EPG-Import läuft bereits','RUNNING':'Wird aktualisiert','DISABLED':'Deaktiviert','WAITING':'Noch kein Lauf bestätigt'}.get(code,'Aktualisierung fehlgeschlagen; bisherige Daten bleiben erhalten')
+    return {'REQUESTED':'Auftrag gespeichert; Übernahme durch den Dienst ausstehend','SERVICE_NOT_CONFIRMED':'Dienstübernahme noch nicht bestätigt; Dienststatus prüfen','DOWNLOADING':'XMLTV wird heruntergeladen','PARSING':'XMLTV wird gelesen und Sendern zugeordnet','SAVING':'EPG wird gespeichert','SOURCE_UNAVAILABLE':'Anbieter liefert keine XMLTV-Adresse','EMPTY_GUIDE':'Keine nutzbaren Sendungen im gelieferten XMLTV','NO_CHANNEL_MATCH':'XMLTV enthält Sendungen, aber keine passende eindeutige Senderzuordnung','INVALID_XMLTV':'Ungültiges XMLTV; Import verworfen','DOWNLOAD_TIMEOUT':'Zeitüberschreitung beim Download','DOWNLOAD_FAILED':'Download nicht möglich; Verbindung oder HTTP-Status prüfen','PARSE_TIMEOUT':'Zeitüberschreitung beim XMLTV-Lesen','PARSE_FAILED':'XMLTV konnte nicht verarbeitet werden','GZIP_INVALID':'Komprimierte XMLTV-Datei ungültig','CACHE_WRITE_FAILED':'Lokaler EPG-Cache konnte nicht gespeichert werden','STATUS_UNVERIFIED':'Früherer Status nicht durch gespeicherte Daten bestätigt','NO_SAVED_PROGRAMMES':'Noch keine gespeicherten Sendungen bestätigt','READY':'Erfolgreich gespeichert','READY_NO_NOW':'Gespeichert; aktuell keine laufende Sendung','PARTIAL_SUCCESS':'Teilweise erfolgreich','PARTIAL_PRESERVED':'Gespeichert; widersprüchliche Einträge geschützt','UNCHANGED':'Unverändert bestätigt','BACKUP_REQUIRED':'Verifizierte EPG-Sicherung erforderlich','WAIT_ACTIVE_CATALOG':'Senderkatalog noch nicht bereit','NO_NEW_GUIDE':'Keine neue gültige Programmliste','CANCELLED':'Abgebrochen; bisherige Daten bleiben erhalten','IMPORT_BUSY_OR_LOCK_UNAVAILABLE':'Ein EPG-Import läuft bereits','RUNNING':'Wird aktualisiert','DISABLED':'Deaktiviert','WAITING':'Noch kein Lauf bestätigt'}.get(code,'Aktualisierung fehlgeschlagen; bisherige Daten bleiben erhalten')
 
 
 def advice(code):
     if code in SUCCESS:return 'Fehlende Tage oder Bilder können von der Quelle fehlen. Gespeicherten Zeitraum unten prüfen.'
     if code=='BACKUP_REQUIRED':return 'Die vorhandene EPG-Sicherungsfunktion ausführen und BACKUP_VERIFIED abwarten. Keine Datenbank löschen.'
+    if code=='NO_CHANNEL_MATCH':return 'EPG-ID und Quellenzuordnung im großen EPG prüfen. Vorschau verwenden; bisherige Zuordnungen bleiben erhalten.'
+    if code=='EMPTY_GUIDE':return 'Die Quelle enthält keine nutzbaren Sendungen im gespeicherten Zeitfenster. Andere konfigurierte Quelle prüfen.'
+    if code=='SOURCE_UNAVAILABLE':return 'Anbieteradresse oder eine tatsächlich verfügbare eigene XMLTV-Adresse prüfen; keine Adresse erraten.'
     if code=='WAIT_ACTIVE_CATALOG':return 'Zuerst den vorhandenen Senderkatalog fertig laden lassen.'
     if code=='IMPORT_BUSY_OR_LOCK_UNAVAILABLE':return 'Laufenden Import abwarten; keine zweite Aktualisierung starten.'
     return 'Quelle, Internetverbindung und freien Speicher prüfen. Später gezielt erneut versuchen; keine Daten zurücksetzen.'
@@ -148,10 +151,19 @@ def overview(portal):
         row=dict(item);events=[s for run in runs for s in run.get('sources',[]) if s.get('id')==item['id']]
         saved=next((s for s in stats['sources'] if s['id']==item['id']),{})
         legacy=state.get(item['key'],{});last=events[-1] if events else legacy
+        if legacy.get('at',0)>last.get('finished',last.get('at',0)):last=legacy
+        refresh=state.get('refresh',{})
+        cache=state.get('cache',{})
+        if item['id']=='provider' and item['enabled']:
+            if cache.get('code')=='WAIT_ACTIVE_CATALOG' and cache.get('at',0)>last.get('finished',last.get('at',0)):last=cache
+            if refresh.get('code')=='REQUESTED' and refresh.get('at',0)>last.get('finished',last.get('at',0)):
+                last=dict(refresh)
+                if time.time()-refresh.get('at',0)>15:last['code']='SERVICE_NOT_CONFIRMED'
         row.update(code=last.get('code','WAITING') if item['enabled'] else 'DISABLED',saved=saved,statistics_code=stats['code'])
         if row['code'] in SUCCESS:
             if stats['code']!='READY':row['code']='STATUS_UNVERIFIED'
             elif not saved.get('programmes'):row['code']='NO_SAVED_PROGRAMMES'
+        row['progress59']={k:last[k] for k in ('bytes','programmes','count','http_status','failure_stage') if k in last}
         row['last_success']=max([s.get('finished',0) for s in events if s.get('code') in SUCCESS]+[legacy.get('last_success',0)])
         row['last_failure']=max([s.get('finished',0) for s in events if s.get('code') not in SUCCESS]+[0])
         rows.append(row)

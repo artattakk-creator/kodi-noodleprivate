@@ -130,7 +130,7 @@ class EPG54(unittest.TestCase):
         with mock.patch.object(manager,'ThreadPoolExecutor',QueuedPool):
             w=manager.Manager53('XCMateEPGManager53.xml',str(ADDON),'Default','720p');w.configure(self.portal)
         self.addCleanup(w.close);w.show();w._pool.drain();w.pump()
-        self.assertEqual(w.getControl(402).label,'EPG-Einrichtung fortsetzen');w.onClick(402)
+        self.assertEqual(w.getControl(402).label,'Jetzt aktualisieren');self.assertTrue(w.getControl(411).enabled);w.onClick(411)
         self.assertTrue(w._closed);self.assertEqual(w.next_action,'resume_epg54')
     def test_gzip_prefix_reader_never_asks_kodi_vfs_for_zero_bytes_or_entire_file(self):
         import gzip

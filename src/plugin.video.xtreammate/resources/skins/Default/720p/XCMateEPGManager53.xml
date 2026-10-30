@@ -239,11 +239,19 @@
       <ondown>403</ondown>
     </control>
     <control type="button" id="410">
-      <left>44</left><top>128</top><width>1190</width><height>42</height>
+      <left>44</left><top>128</top><width>588</width><height>42</height>
       <font>font13</font><textcolor>FFF5F7FA</textcolor><label>Anbieter-EPG aktivieren/deaktivieren</label>
       <texturefocus colordiffuse="FF26634B">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturefocus>
       <texturenofocus colordiffuse="FF263142">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturenofocus>
-      <onleft>409</onleft><onright>401</onright><onup>407</onup><ondown>200</ondown>
+      <onleft>409</onleft><onright>411</onright><onup>407</onup><ondown>200</ondown>
+    </control>
+    <control type="button" id="411">
+      <left>644</left><top>128</top><width>588</width><height>42</height>
+      <font>font13</font><textcolor>FFF5F7FA</textcolor><disabledcolor>FF84929F</disabledcolor>
+      <label>EPG-Einrichtung fortsetzen</label>
+      <texturefocus colordiffuse="FF26634B">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturefocus>
+      <texturenofocus colordiffuse="FF263142">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturenofocus>
+      <onleft>410</onleft><onright>401</onright><onup>408</onup><ondown>200</ondown>
     </control>
   </controls>
 </window>

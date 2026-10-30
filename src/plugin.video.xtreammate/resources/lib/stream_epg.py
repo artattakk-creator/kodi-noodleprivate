@@ -105,7 +105,9 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         progress54.emit('SAVING',force=True,stored=stored)
         if not stored:
             from epg_errors import EmptyGuideError
-            raise EmptyGuideError('No matching current programmes')
+            error=EmptyGuideError('No matching current programmes')
+            error.xcmate_no_match59=bool(counts.get('programmes'))
+            raise error
         for key,sids in names.items():
             cid=channel_names.get(key)
             if cid:
@@ -272,6 +274,10 @@ def _refresh44(portal,force=False,cancel=lambda:False):
             code,fields=failure_details(exc,'DOWNLOAD')
             update(pid,'provider',code,running=False,**fields);provider_failure52=1
             source_started53(pid,'provider','provider',0);source_done53(pid,'provider',code)
+    if portal.get('provider_epg_enabled',True) and (selected53 is None or 'provider' in selected53) and not uri and not provider_failure52:
+        provider_failure52=1
+        update(pid,'provider','SOURCE_UNAVAILABLE',running=False)
+        source_started53(pid,'provider','provider',0);source_done53(pid,'provider','SOURCE_UNAVAILABLE')
     provider=dict(uri=uri,local=not uri.startswith(('http://','https://')))
     sources=([('provider',provider,0)] if uri and portal.get('provider_epg_enabled',True) else [])+[(source_key(s),s,i) for i,s in enumerate(config['sources'],1) if s.get('enabled',True)]
     if selected53 is not None:
@@ -284,7 +290,14 @@ def _refresh44(portal,force=False,cancel=lambda:False):
         source_started53(pid,key,identity53,index)
         update(pid,key,'RUNNING',running=True,source_index=index)
         try:
-            stage=import_source(pid,source,index,streams,config['mappings'],cancel=cancel,stage_only=True)
+            last_progress59=[0]
+            def progress59(value):
+                now59=time.monotonic()
+                if now59-last_progress59[0]<1:return
+                last_progress59[0]=now59
+                code59={'DOWNLOAD':'DOWNLOADING','PARSE':'PARSING','SAVING':'SAVING'}.get(value.get('phase'),'RUNNING')
+                update(pid,key,code59,running=True,source_index=index,bytes=value.get('bytes',0),programmes=value.get('programmes',0),channels=value.get('channels',0),count=value.get('stored',0))
+            stage=import_source(pid,source,index,streams,config['mappings'],cancel=cancel,stage_only=True,progress=progress59)
             stage['key']=key;stages.append(stage)
             update(pid,key,'VERIFIED',running=True,source_index=index)
         except Exception as exc:
