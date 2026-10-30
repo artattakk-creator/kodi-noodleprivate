@@ -4,7 +4,7 @@ from urllib.parse import urlsplit,parse_qs
 ROLES=('tv','movie','series','search','star','calendar','database','refresh','user','plus','pencil','link','list','play','speaker','cc','globe','remote','image','grid','palette','drive','shield','info','flask-lock','record','download','activity','clock','document','settings','trash','back','wand','check')
 SECTIONS={'accounts':'user','live':'tv','epg':'calendar','media':'play','appearance':'palette','system':'drive','experimental':'flask-lock','downloads':'download','recordings':'record','diagnostics':'activity','about':'info','information':'info','remote':'remote','storage':'drive','groups':'list','startup':'tv','player':'play','maintenance':'activity','designs':'palette'}
 ACTIONS={
- 'programme_details46':'calendar','widget_adapter46':'grid',
+ 'live_view60':'tv','programme_details46':'calendar','widget_adapter46':'grid',
  'home_start':'tv','home_live':'tv','play_start':'tv','play_start_direct':'tv','source_start':'tv','source_live':'tv','play_live':'tv','source_play':'tv','root':'tv','xcmate_home':'tv','portal_home':'user',
  'movies_home':'movie','vod_categories':'movie','vod_list':'movie','m3u_movies':'movie','m3u_movie_list':'movie','series_home':'series','series_categories':'series','series_list':'series','series_seasons':'series','series_episodes':'series',
  'global_search':'search','search':'search','search_results':'search','search_section':'search','favourites':'star','media_favourites':'star','toggle_favourite':'star','favourite':'star','resume':'clock','restart':'refresh','continue_episode':'clock','next_episode':'series','seasons':'series','play':'play','trailer':'movie',
