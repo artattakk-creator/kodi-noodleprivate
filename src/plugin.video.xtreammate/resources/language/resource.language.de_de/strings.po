@@ -4604,3 +4604,27 @@ msgstr "Serienbild (kein Episodenbild)"
 msgctxt "#36600"
 msgid "Test TMDB connection"
 msgstr "TMDB-Verbindung testen"
+
+msgctxt "#36610"
+msgid "Set up BINGIE Home widgets"
+msgstr "BINGIE-Startseiten-Widgets einrichten"
+
+msgctxt "#36611"
+msgid "Widget setup"
+msgstr "Widget-Einrichtung"
+
+msgctxt "#36612"
+msgid "Native BINGIE widget management. Review and explicitly approve layout changes; existing sources and media rows are preserved."
+msgstr "Echte BINGIE-Widgetverwaltung. Layout nur nach Vorschau und ausdrücklicher Bestätigung ändern; vorhandene Quellen und Medienreihen bleiben erhalten."
+
+msgctxt "#36613"
+msgid "Check / prepare BINGIE Home layout"
+msgstr "BINGIE-Home-Layout prüfen/vorbereiten"
+
+msgctxt "#36614"
+msgid "The verified adapter is already installed. If the live row is absent, rebuild Skinshortcuts once now? Saved widget bindings will stay unchanged."
+msgstr "Der verifizierte Layoutadapter ist bereits vorhanden. Falls die Live-TV-Reihe fehlt: Skinshortcuts jetzt einmal neu generieren? Gespeicherte Widgetverknüpfungen werden nicht geändert."
+
+msgctxt "#36615"
+msgid "Rebuild once"
+msgstr "Einmal neu generieren"

@@ -1,0 +1,12 @@
+{
+  "phase": "A_P0",
+  "files": 619,
+  "bytes": 3193200,
+  "sha256": "5d5778c18148f61f14b1bfbf5a734b758b1342039f069ffb553a3047b5fdab93",
+  "source_bytes": "PASS",
+  "crc": "PASS",
+  "deterministic_rebuild": "PASS",
+  "targeted_tests": 49,
+  "full_regression": "RUN_AGAIN_AFTER_UPDATED_MENU_EXPECTATIONS",
+  "android": "ANDROID_NOT_TESTED"
+}

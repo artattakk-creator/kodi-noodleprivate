@@ -37,7 +37,7 @@ class WidgetPicker49(Fixture,unittest.TestCase):
         target=next(row for row in rows if 'action=widget_sources49' in row[0])
         self.assertTrue(target[2]);self.assertNotEqual(target[1].getProperty('IsPlayable'),'true')
         rows=self.directory(self.router.url(action='settings_section',pid='p',section='appearance'))
-        self.assertFalse(any('action=widget_setup' in row[0] for row in rows))
+        self.assertEqual(sum('action=widget_setup' in row[0] for row in rows),1)
         rows=self.source_directory()
         self.assertEqual([li.label for _,li,_ in rows[:3]],['Live-TV – Startgruppe','Neueste Filme','Neueste Serien'])
         self.assertEqual(sum(folder for _,_,folder in rows),3)

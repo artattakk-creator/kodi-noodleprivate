@@ -52,7 +52,7 @@ class System37(Fixture,unittest.TestCase):
         home=importlib.import_module('home_entry')
         with mock.patch.dict(sys.modules,{'main':None}):
             self.assertTrue(home.dispatch(['plugin://plugin.video.xtreammate','7','?action=xcmate_home&pid=p']))
-        self.assertEqual(len(self.added),7);self.assertEqual(len(self.ends),1)
+        self.assertEqual(len(self.added),8);self.assertEqual(len(self.ends),1)
         self.assertTrue(any('action=guide_grid' in row[0] for row in self.added))
         self.assertTrue(any('action=home_start' in row[0] for row in self.added));self.client._get_json.assert_not_called()
 

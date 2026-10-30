@@ -119,7 +119,7 @@ class SafeModeRegression(unittest.TestCase):
         self.router._add_dir=lambda label,url,**kw:rows.append((label,url))
         self.router._show_portal_home(self.portal)
         # Window actions now use native non-folder/non-playable plugin items.
-        self.assertEqual(len(rows)+len(self.added),7)
+        self.assertEqual(len(rows)+len(self.added),8)
         self.assertFalse(any('popup_probe' in url for _,url in rows))
         rows.clear()
         from home_menu import settings

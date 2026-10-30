@@ -1,3 +1,9 @@
+0.1.29.61
+- Sichtbarer Zugang zur BINGIE-Widgetverwaltung in Aussehen und Darstellung.
+- Layoutvorschau, ausdrückliche Zustimmung und Wiederherstellung direkt mit OK.
+- Kontrollierte einmalige Skinshortcuts-Neugenerierung bei vorhandenem Adapter.
+- Gespeicherte Widgetquellen, Film-/Serienreihen und Live-TV-Kompatibilitätsmodus erhalten.
+
 0.1.29.60
 - Live-TV-Startgruppenquelle: vollständige Senderreihenfolge auch bei älteren Widget-URLs; BINGIE-Adapter nur nach ausdrücklicher Bestätigung mit Sicherung und Rücknahme.
 - TMDB-Verbindung privat testen; optionale eindeutige Film-/Episodenbilder, Rate-Limit-Pause und bestehender gemeinsamer EPG-Bildcache.

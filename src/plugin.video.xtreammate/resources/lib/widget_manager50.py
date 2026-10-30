@@ -61,6 +61,11 @@ def show(router,portal):
                (tr(36403),'ActivateWindow(Videos,'+router.url(action='widget_sources49',pid=portal['id'])+',return)')]
         item.addContextMenuItems(menus)
         xbmcplugin.addDirectoryItem(router._handle,router.url(action='widget_link50',pid=portal['id'],kind=kind),item,isFolder=False)
+    for label,action in ((36613,'widget_skin50'),(36402,'widget_restore50')):
+        item=xbmcgui.ListItem(tr(label));item.setProperty('IsPlayable','false')
+        item.setInfo('video',dict(title=tr(label),plot=tr(36612)))
+        item.setArt(dict(icon=icon('widget_setup')))
+        xbmcplugin.addDirectoryItem(router._handle,router.url(action=action,pid=portal['id']),item,isFolder=False)
     finish_directory(router,succeeded=True,cacheToDisc=False)
 
 
@@ -100,7 +105,15 @@ def skin_setup():
     from widget_skin50 import prepare,apply,applied,FILES
     try:
         profile,skin=runtime()
-        if applied(skin):xbmcgui.Dialog().ok('XCMate',tr(36416));return
+        if applied(skin):
+            # Never reapply or rebuild on opening this directory. Recovery of a
+            # stale generated include is a separate, explicit user action.
+            xbmcgui.Dialog().ok('XCMate',tr(36416))
+            if xbmcgui.Dialog().yesno('XCMate',tr(36614),nolabel=tr(36426),yeslabel=tr(36615),defaultbutton=getattr(xbmcgui,'DLG_YESNO_NO_BTN',10)):
+                current_profile,current_skin=runtime()
+                if current_profile!=profile or current_skin!=skin:raise ValueError('PROFILE_CHANGED')
+                rebuild();xbmcgui.Dialog().notification('XCMate',tr(36415))
+            return
         plan=prepare(skin)
         hashes='\n'.join(name+'\n'+e['before']+' → '+e['after'] for name,e in zip(FILES,plan['entries']))
         from widget_skin60 import preview

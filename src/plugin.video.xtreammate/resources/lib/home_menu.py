@@ -41,6 +41,9 @@ def show(router, portal):
     router._add_dir(tr(32443),router.url(action='widget_sources49',pid=portal['id']),
                     icon=__import__('menu_icons45').icon('widget_setup'),plot=tr(36304),
                     fanart=lightweight_background())
+    router._add_dir(tr(36611),router.url(action='widget_setup',pid=portal['id']),
+                    icon=__import__('menu_icons45').icon('widget_setup'),plot=tr(36612),
+                    fanart=lightweight_background())
     finish_directory(router,cacheToDisc=False)
 
 

@@ -33,7 +33,7 @@ class Widgets53(unittest.TestCase):
         self.assertFalse(self.m.builtins)
     def test_three_existing_direct_widget_actions_are_preserved(self):
         self.m.router._params.update(action='widget_setup');self.m.routes.dispatch(self.m.router)
-        self.assertEqual([item.label for _,item,_ in self.m.added],['Live-TV','Filme','Serien'])
+        self.assertEqual([item.label for _,item,_ in self.m.added[:3]],['Live-TV','Filme','Serien'])
         self.assertTrue(all('action=widget_link50' in url for url,_,_ in self.m.added))
     def test_skin_writers_reload_bridge_and_52_pixel_implementation_are_byte_identical(self):
         root=Path(__file__).resolve().parents[1];baseline=json.loads((root/'tests/fixtures/xcmate_02953_protection.json').read_text())['source_sha256']
