@@ -1,0 +1,34 @@
+{
+  "base": "5fa6166e884ecced4c28ae303c7f88fc374a0446",
+  "previous_source_files": 609,
+  "byte_identical": 594,
+  "exact_reviewed_deltas": [
+    "src/plugin.video.xtreammate/changelog.txt",
+    "src/plugin.video.xtreammate/addon.xml",
+    "src/plugin.video.xtreammate/resources/lib/widget_notice46.py",
+    "src/plugin.video.xtreammate/resources/lib/epg_manager53.py",
+    "src/plugin.video.xtreammate/resources/lib/widget_consumer58.py",
+    "src/plugin.video.xtreammate/resources/lib/live_diagnostics.py",
+    "src/plugin.video.xtreammate/resources/lib/epg.py",
+    "src/plugin.video.xtreammate/resources/lib/epg_errors.py",
+    "src/plugin.video.xtreammate/resources/lib/widget_entry46.py",
+    "src/plugin.video.xtreammate/resources/lib/app_services.py",
+    "src/plugin.video.xtreammate/resources/lib/live_exit.py",
+    "src/plugin.video.xtreammate/resources/lib/stream_epg.py",
+    "src/plugin.video.xtreammate/resources/lib/epg_report53.py",
+    "src/plugin.video.xtreammate/resources/lib/programme_window46.py",
+    "src/plugin.video.xtreammate/resources/skins/Default/720p/XCMateEPGManager53.xml"
+  ],
+  "additive_files": [
+    "src/plugin.video.xtreammate/resources/lib/live_return59.py",
+    "src/plugin.video.xtreammate/resources/lib/programme_diagnostics59.py",
+    "src/plugin.video.xtreammate/resources/lib/widget_home_probe59.py"
+  ],
+  "foreign_wip_unchanged": 62,
+  "box_a_changed": false,
+  "box_b_changed": false,
+  "external_skin_files_changed": false,
+  "routing": "saved paths/root/raw source modules unchanged; fast widget entry adds only allowlisted BOOT log",
+  "native_stop_and_settings": "raw identical",
+  "wizard": "raw identical"
+}

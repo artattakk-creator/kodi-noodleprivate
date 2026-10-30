@@ -18,7 +18,7 @@ if p.get('fixture59')==['seed']:
   for i in range(24):
    uri='https://provider.example.test/'+kind+'/'+str(i)+'.png'
    item=dict(name='Provider '+kind+' '+str(i),stream_id=str(i),series_id=str(i),category_id='a',added=int(time.time())-i,cover=uri,stream_icon=uri,plot='Synthetic provider metadata',year='2026')
-   rows.append(item);image=Image.new('RGB',(120,180),((40+i*19)%240,(70+i*31)%240,(120+i*13)%240));ImageDraw.Draw(image).text((15,80),kind+' '+str(i),fill='white');image.save(art/(hashlib.sha256(uri.encode()).hexdigest()+'.img'),format='PNG')
+   rows.append(item);base=(40,70,120) if kind=='vod' else (100,50,20);image=Image.new('RGB',(120,180),tuple((v+i*step)%240 for v,step in zip(base,(19,31,13))));ImageDraw.Draw(image).text((15,80),kind+' '+str(i),fill='white');image.save(art/(hashlib.sha256(uri.encode()).hexdigest()+'.img'),format='PNG')
   replace_catalog(portal['id'],kind,rows,[dict(category_id='a',category_name='Synthetic group')])
  li=xbmcgui.ListItem('Seeded');xbmcplugin.addDirectoryItem(handle,'fixture',li,False);xbmcplugin.endOfDirectory(handle)
 

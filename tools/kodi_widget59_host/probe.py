@@ -1,5 +1,6 @@
 """Real native directory invocation; synthetic provider, never Android PASS."""
-import json,time,urllib.request
+import hashlib,json,time,urllib.request
+from urllib.parse import parse_qs,urlsplit
 opener=urllib.request.build_opener(urllib.request.ProxyHandler({})) # local container loopback only
 
 def rpc(method,params=None):
@@ -19,7 +20,11 @@ for kind in ('vod','series'):
  value=rpc('Files.GetDirectory',dict(directory='plugin://plugin.video.xtreammate/?action=widget_recent_'+kind+'&pid=fixture59',media='video',properties=['title','art'],limits=dict(start=0,end=24)))
  rows=value['files'];assert len(rows)==24
  assert len({r['art'].get('poster') for r in rows})==24
- assert all('action=media_detail' in r['file'] for r in rows)
+ for row in rows:
+  query=parse_qs(urlsplit(row['file']).query)
+  assert query['action']==['media_detail'] and query['kind']==[kind] and query['pid']==['fixture59']
+  uri='https://provider.example.test/'+kind+'/'+query['sid'][0]+'.png'
+  assert hashlib.sha256(uri.encode()).hexdigest() in row['art']['poster']
  report['directories'][kind]=dict(items=len(rows),distinct_posters=len({r['art'].get('poster') for r in rows}),native_directory='PASS')
 
 # The disposable, freshly created test profile shows Kodi's own disabled-addons
@@ -44,20 +49,25 @@ for i in range(300):
  time.sleep(.1)
 else:raise RuntimeError('NATIVE_GUI_CONTAINERS_NOT_READY')
 from pathlib import Path
+from PIL import Image,UnidentifiedImageError
+# Kodi encodes screenshots asynchronously. Existence is not a complete PNG.
 for i in range(100):
- if Path('/root/native-widget59.png').exists():break
- time.sleep(.1)
-else:raise RuntimeError('NATIVE_SCREENSHOT_MISSING')
-from PIL import Image
-picture=Image.open('/root/native-widget59.png').convert('RGB');w,h=picture.size
+ try:
+  with Image.open('/root/native-widget59.png') as loaded:
+   loaded.load();picture=loaded.convert('RGB')
+  break
+ except (OSError,UnidentifiedImageError):time.sleep(.1)
+else:raise RuntimeError('NATIVE_SCREENSHOT_NOT_COMPLETE')
+w,h=picture.size
 # Ten distinct provider textures from each row, decoded into real Kodi pixels.
 verified=[]
-for y in (70,350):
+for y,base in ((70,(40,70,120)),(350,(100,50,20))):
  for i in range(10):
-  expected=((40+i*19)%240,(70+i*31)%240,(120+i*13)%240)
+  expected=tuple((v+i*step)%240 for v,step in zip(base,(19,31,13)))
   actual=picture.getpixel((int((30+2+120*i+20)*w/1280),int((y+30)*h/720)))
   if max(abs(a-b) for a,b in zip(expected,actual))>8:raise RuntimeError('POSTER_PIXEL_MISMATCH '+str((i,y,actual,expected)))
   verified.append(actual)
+assert len(set(verified))==20
 report['decoded_provider_posters']=len(verified)
 report['gui_pixels']='PASS_SYNTHETIC_NATIVE_KODI_ONLY'
 report['no_player_start']=rpc('Player.GetActivePlayers')==[]

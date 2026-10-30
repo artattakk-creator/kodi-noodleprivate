@@ -1,0 +1,31 @@
+{
+  "version": "0.1.29.59",
+  "source_commit": "5c620642723312bd6a348f255dbd3f061a9edd8c",
+  "files": 612,
+  "bytes": 3171981,
+  "sha256": "b6d6969ee9a424f5a4f65c7e57f1668402e13bd5bd043dab356f56400ec57280",
+  "crc": "PASS",
+  "safe_paths": "PASS",
+  "all_source_bytes": "PASS",
+  "python_ast": "PASS",
+  "independent_deterministic_rebuild": "PASS",
+  "android": {
+    "not_tested": 4,
+    "passed": 0,
+    "access": "BLOCKED_DEVICE_ACCESS"
+  },
+  "production_publish": false,
+  "tests": 2491,
+  "seconds": 336.153,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "previous_tests_retained": 2463,
+  "new_tests": 28,
+  "widget_box_b_root_cause": "UNVERIFIED",
+  "provider_import": "REGULAR_REFRESH_AND_BUSY_QUEUE_FIXED_HOST_VERIFIED",
+  "epg_images": "STAGE_MESSAGES_FIXED_REAL_DATA_UNVERIFIED",
+  "live_return": "POST_ACK_TRANSIENT_MODAL_FAILURE_FIXED_HOST_VERIFIED",
+  "native_unacknowledged_stop": "SEPARATE_OPEN_DEVICE_FINDING",
+  "ci": "Final Draft-PR HEAD workflow, native runtime and artifact proof linked in PR body"
+}
