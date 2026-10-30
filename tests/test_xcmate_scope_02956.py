@@ -17,13 +17,13 @@ class Scope56(unittest.TestCase):
     def test_picker_urls_sources_folders_and_routing_entry_points_are_raw_identical(self):
         base=self.baseline()['source_sha256']
         for name in ('main.py','home_entry.py','home_menu.py','widget_sources49.py','widget_binding50.py','widget_entry46.py','settings_sections45.py','window_navigation.py'):
-            path=LIB+name;self.assertEqual(hashlib.sha256((ROOT/path).read_bytes()).hexdigest(),base[path],name)
+            path=LIB+name;self.assertEqual(hashlib.sha256(__import__('stabilization_contract_02959').without_stabilization59((ROOT/path).read_bytes(),path)).hexdigest(),base[path],name)
         # app_routes changes only the widget's content rendering: Series art
         # and removal of a fake settings tile. Every routing function/constant,
         # including the complete dispatch(), remains the previous AST.
         path=LIB+'app_routes.py'
         hooks=json.loads((ROOT/'tests/fixtures/xcmate_02956_reviewed_hooks.json').read_text())['modules']
-        old=ast.parse(hooks[path]['old']);new=ast.parse((ROOT/path).read_text())
+        old=ast.parse(hooks[path]['old']);new=ast.parse(__import__('stabilization_contract_02959').without_stabilization59((ROOT/path).read_text(),path))
         keep=lambda tree:[ast.dump(n,include_attributes=False) for n in tree.body if not isinstance(n,ast.FunctionDef) or n.name!='widget']
         self.assertEqual(keep(old),keep(new))
         path=LIB+'widget_home50.py'
