@@ -90,8 +90,8 @@ def _art(value):
 
 
 def _movie(event):
-    genre = str(event.get('genre') or '').casefold()
-    return any(word in genre for word in ('spielfilm', 'kinofilm', 'movie', 'feature film'))
+    genre = ' '.join(str(event.get(k) or '') for k in ('genre', 'category', 'kind', 'type')).casefold()
+    return any(word in genre for word in ('film', 'movie'))
 
 
 def _compatible(event, show):
@@ -142,7 +142,7 @@ def candidate(event, cancel=lambda: False, transport=None):
     # Multiple show IDs require manual association, never take the first search hit.
     if len({row['id'] for row in compatible}) != 1:
         raise _error('TVMAZE_AMBIGUOUS')
-    show = matches[0]
+    show = compatible[0]
     showid = show['id']
     if not 0 < showid < 100000000:
         return None
