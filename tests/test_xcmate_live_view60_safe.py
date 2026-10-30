@@ -79,6 +79,27 @@ class SafeLiveViewTests(unittest.TestCase):
         view.onClick(200)
         self.assertIn('deaktiviert',c.value)
 
+    def test_focus_future_tuple_completed_without_attributeerror(self):
+        import concurrent.futures
+        view=self.mod.SafeLiveView60()
+        view.rows=[{'sid':'101','name':'Das Erste'}]
+        view._focus_index=0
+        view._focus_key=(0,'101')
+        view._focus_requested=0.0
+        view._shown=None
+        view._focus_refresh=0.0
+        view._rows_future=None
+        done=concurrent.futures.Future()
+        done.set_result(({'XCMate.ProgrammeTitle46':'Test'},{}))
+        view._focus_future=(done,(0,'101'))
+        view.getControl=lambda cid:types.SimpleNamespace(getSelectedPosition=lambda:0,
+                                    setLabel=lambda v:None,setText=lambda v:None,
+                                    setImage=lambda v:None,setPercent=lambda v:None)
+        view._render_preview=lambda data:setattr(view,'_shown',(0,'101'))
+        view.pump()
+        self.assertIsNone(view._focus_future)
+        self.assertEqual(view._shown,(0,'101'))
+
     def test_all_required_kodi_controls_exist(self):
         root=ET.parse(XML).getroot()
         found={n.get('id') for n in root.iter('control') if n.get('id')}
