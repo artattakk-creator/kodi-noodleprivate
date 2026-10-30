@@ -4600,3 +4600,39 @@ msgstr "Sicher zugeordnete Bilder aus vorhandenen Medienkatalogen verwenden"
 msgctxt "#36542"
 msgid "Series image (not an episode still)"
 msgstr "Serienbild (kein Episodenbild)"
+
+msgctxt "#36680"
+msgid "TVmaze programme artwork (experimental; no token)"
+msgstr "TVmaze-Sendungsbilder (experimentell; ohne Token)"
+
+msgctxt "#36681"
+msgid "TVmaze – live TV artwork (experimental)"
+msgstr "TVmaze – Live-TV-Sendungsbilder (Experimentell)"
+
+msgctxt "#36682"
+msgid "TVmaze enabled – disable"
+msgstr "TVmaze aktiviert – deaktivieren"
+
+msgctxt "#36683"
+msgid "TVmaze disabled – enable"
+msgstr "TVmaze deaktiviert – aktivieren"
+
+msgctxt "#36684"
+msgid "Test TVmaze API with Tatort"
+msgstr "TVmaze-API mit Tatort testen"
+
+msgctxt "#36685"
+msgid "TVmaze source and license"
+msgstr "TVmaze-Quelle und Lizenz"
+
+msgctxt "#36686"
+msgid "Disable TVmaze external requests?"
+msgstr "Externe TVmaze-Abfragen deaktivieren?"
+
+msgctxt "#36687"
+msgid "Enable external TVmaze requests for live TV programme titles?"
+msgstr "Externe TVmaze-Abfragen für Live-TV-Sendungstitel aktivieren?"
+
+msgctxt "#36688"
+msgid "TVmaze is disabled. Enable it first."
+msgstr "TVmaze ist deaktiviert. Bitte zuerst aktivieren."
