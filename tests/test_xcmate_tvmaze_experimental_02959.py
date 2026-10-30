@@ -61,24 +61,60 @@ class TVmaze59(unittest.TestCase):
         self.assertEqual(found['image_scope57'], 'episode')
 
     def test_duplicate_series_rejected(self):
-        found = self.source.candidate(dict(title='Tatort', season=1, episode=1),
-                                      transport=self.transport('unused', duplicates=True))
-        self.assertIsNone(found)
+        with self.assertRaises(FakeSourceError) as raised:
+            self.source.candidate(dict(title='Tatort', season=1, episode=1),
+                                  transport=self.transport('unused', duplicates=True))
+        self.assertEqual(raised.exception.code, 'TVMAZE_AMBIGUOUS')
 
     def test_inconsistent_episode_number_rejected(self):
-        found = self.source.candidate(dict(title='Tatort', season=1, episode=1),
-                                      transport=self.transport('unused', bad_episode=True))
-        self.assertIsNone(found)
+        with self.assertRaises(FakeSourceError) as raised:
+            self.source.candidate(dict(title='Tatort', season=1, episode=1),
+                                  transport=self.transport('unused', bad_episode=True))
+        self.assertEqual(raised.exception.code, 'TVMAZE_EPISODE_UNCERTAIN')
 
     def test_episode_subtitle_mismatch_rejected(self):
-        found = self.source.candidate(dict(title='Tatort', season=1, episode=1, subtitle='Wrong'),
-                                      transport=self.transport('unused'))
-        self.assertIsNone(found)
+        with self.assertRaises(FakeSourceError) as raised:
+            self.source.candidate(dict(title='Tatort', season=1, episode=1, subtitle='Wrong'),
+                                  transport=self.transport('unused'))
+        self.assertEqual(raised.exception.code, 'TVMAZE_EPISODE_UNCERTAIN')
 
-    def test_no_series_evidence_does_not_search(self):
-        def fail(_):
-            raise AssertionError('no external search for unclassified events')
-        self.assertIsNone(self.source.candidate(dict(title='Tatort', genre='News'), transport=fail))
+    def test_general_epg_programme_without_season_is_searched(self):
+        found = self.source.candidate(dict(title='Tatort', genre='Fernsehreihe'),
+                                      transport=self.transport('unused'))
+        self.assertEqual(found['source'], 'tvmaze_programme')
+        self.assertEqual(found['match'], 'EXACT_TVMAZE_PROGRAMME59')
+
+    def test_explicit_film_never_matches_a_tv_series(self):
+        with self.assertRaises(FakeSourceError) as raised:
+            self.source.candidate(dict(title='Tatort', genre='Spielfilm', year='1979'),
+                                  transport=self.transport('unused'))
+        self.assertEqual(raised.exception.code, 'TVMAZE_MOVIE_UNAVAILABLE')
+
+    def test_tv_movie_if_genuinely_classified_and_year_matches(self):
+        def fake(url):
+            row = self.show()['show']
+            row.update(type='TV Movie', premiered='1979-05-25')
+            return [{'show': row}]
+        found = self.source.candidate(dict(title='Tatort', genre='Spielfilm', year='1979'), transport=fake)
+        self.assertEqual(found['source'], 'tvmaze_programme')
+
+    def test_mismatched_movie_year_is_not_accepted(self):
+        def fake(url):
+            row = self.show()['show']
+            row.update(type='TV Movie', premiered='1980-05-25')
+            return [{'show': row}]
+        with self.assertRaises(FakeSourceError) as raised:
+            self.source.candidate(dict(title='Tatort', genre='Spielfilm', year='1979'), transport=fake)
+        self.assertEqual(raised.exception.code, 'TVMAZE_MOVIE_UNAVAILABLE')
+
+    def test_no_matching_movie_never_uses_alien_earth(self):
+        def fake(url):
+            row = self.show()['show']
+            row.update(name='Alien: Earth', type='Scripted')
+            return [{'show': row}]
+        with self.assertRaises(FakeSourceError) as raised:
+            self.source.candidate(dict(title='Alien', genre='Spielfilm', year='1979'), transport=fake)
+        self.assertEqual(raised.exception.code, 'TVMAZE_NO_MATCH')
 
     def test_explicit_opt_in_required(self):
         with mock.patch.object(self.source, 'enabled', return_value=False):
@@ -107,6 +143,7 @@ class TVmaze59(unittest.TestCase):
         urls = (LIB / 'programme_urls55.py').read_text(encoding='utf-8')
         assert 'tvmaze_experiment59' in routes and 'tvmaze_experiment59' in menu and 'tvmaze_experiment59' in pin
         self.assertIn('EXACT_TVMAZE_EPISODE59', source)
+        self.assertIn('EXACT_TVMAZE_PROGRAMME59', source)
         self.assertIn('static.tvmaze.com', urls)
         self.assertIn("source_policy59", urls)
 
