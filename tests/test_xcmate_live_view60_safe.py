@@ -82,6 +82,7 @@ class SafeLiveViewTests(unittest.TestCase):
     def test_focus_future_tuple_completed_without_attributeerror(self):
         import concurrent.futures
         view=self.mod.SafeLiveView60()
+        view.owner=__import__('threading').get_ident()
         view.rows=[{'sid':'101','name':'Das Erste'}]
         view._focus_index=0
         view._focus_key=(0,'101')
