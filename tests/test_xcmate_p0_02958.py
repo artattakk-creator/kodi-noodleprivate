@@ -59,6 +59,11 @@ class Provider58(Fixture,unittest.TestCase):
         with mock.patch('source_adapters.for_portal',side_effect=OSError('synthetic provider failure')),mock.patch.object(sys.modules['epg_sources'],'add_source',add,create=True):
             self.provider.add_source(self.portal,'extra','https://extra.invalid/given.xml')
         add.assert_called_once()
+    def test_non_xtream_portals_keep_existing_external_xmltv_addition(self):
+        self.portal['type']='m3u';add=mock.Mock()
+        with mock.patch('source_adapters.for_portal',side_effect=AssertionError('Xtream URL for M3U')),mock.patch.object(sys.modules['epg_sources'],'add_source',add,create=True):
+            self.provider.add_source(self.portal,'extra','https://extra.invalid/given.xml')
+        add.assert_called_once_with('p','extra','https://extra.invalid/given.xml',False)
     def manager(self):
         module=importlib.import_module('epg_manager53')
         with mock.patch.object(module,'ThreadPoolExecutor',QueuedPool):

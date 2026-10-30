@@ -2,10 +2,10 @@
 from profile_transaction import writing
 
 
-def current(portal):
+def current(portal,xtream_only=True):
     from portals import get_by_id
     value=get_by_id(str(portal['id']))
-    if not value or value.get('type')!='xtream':
+    if not value or xtream_only and value.get('type')!='xtream':
         raise ValueError('PROVIDER_PORTAL_UNAVAILABLE')
     return value
 
@@ -38,8 +38,8 @@ def same_feed(left,right):
 
 def add_source(portal,name,uri,local=False):
     from epg_sources import add_source as add
-    value=current(portal)
-    if not local:
+    value=current(portal,xtream_only=False)
+    if not local and value.get('type')=='xtream':
         from source_adapters import for_portal
         try:provider=value.get('epg_url') or for_portal(value).get_xmltv_epg_url()
         except (AttributeError,OSError,ValueError,RuntimeError):provider=''  # No known feed to compare; preserve external-source support.
