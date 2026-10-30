@@ -6,6 +6,7 @@ Runs only in the existing background programme URL worker after explicit opt-in.
 https://www.tvmaze.com/api
 """
 import json
+import re
 import threading
 import time
 from collections import deque
