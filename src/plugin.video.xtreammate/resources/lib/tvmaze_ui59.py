@@ -44,3 +44,19 @@ def show():
                 'Episode images require an exact series and episode match.\n'
                 'TVmaze is optional; existing provider/XMLTV EPG always takes precedence.\n'
                 'No TVmaze metadata is requested for provider VOD or series widgets.')
+
+
+def status_label(code):
+    """Human-readable EPG image status; never a disruptive popup."""
+    ids = {
+        'TVMAZE_NO_MATCH': 36689,
+        'TVMAZE_NO_IMAGE': 36690,
+        'TVMAZE_AMBIGUOUS': 36691,
+        'TVMAZE_MOVIE_UNAVAILABLE': 36692,
+        'TVMAZE_TYPE_MISMATCH': 36693,
+        'TVMAZE_EPISODE_UNCERTAIN': 36694,
+        'TVMAZE_RATE_LIMIT': 36695,
+        'TVMAZE_NETWORK_ERROR': 36696,
+        'TVMAZE_NOT_FOUND': 36689,
+    }
+    return tr(ids.get(code, 36697)) if str(code).startswith('TVMAZE_') else str(code)
