@@ -38,6 +38,11 @@ def edit(data,changes):
 
 
 def patch(path,data):
+    from widget_skin60 import candidate
+    return candidate(path,data,legacy_patch60)
+
+
+def legacy_patch60(path,data):
     previous=json.loads(read(Path(__file__).parents[1]/'bingie55_previous.json'))
     if sha(data)==previous['files'].get(path):
         # Exact known .50 adapter only. No pattern-based edits of unknown skins.
@@ -119,7 +124,10 @@ def apply(token,skin,*,confirmed=False,restore=False):
     if plan['metadata']!=dict(skin=str(Path(skin).resolve()),meta_sha=sha(read(Path(skin)/'addon.xml'))):raise ValueError('SKIN_CHANGED')
     for i,name in enumerate(FILES):
         root=folder()/token
-        if patch(name,read(root/('original.'+str(i))))!=read(root/('candidate.'+str(i))):raise ValueError('CANDIDATE_VERIFY_FAILED')
+        original60=read(root/('original.'+str(i)));candidate60=read(root/('candidate.'+str(i)))
+        expected60=patch(name,original60)
+        if expected60!=candidate60:
+            if not restore or legacy_patch60(name,original60)!=candidate60:raise ValueError('CANDIDATE_VERIFY_FAILED')
     return transaction(token,'skin',paths,confirmed=confirmed,restore=restore)
 
 

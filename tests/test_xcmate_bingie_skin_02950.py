@@ -91,7 +91,7 @@ class Skin50(Fixture50,unittest.TestCase):
                 self.assertEqual([E.tostring(p) for p in original],[E.tostring(p) for p in kept])
                 self.assertIn(original.get('condition'),kept.get('condition'))
             chosen=live[live_position-1];self.assertIn('home50=1',chosen.find("param[@name='widgetPath']").get('value'))
-            self.assertIn('String.StartsWith',chosen.get('condition'));self.assertIn('XCMate50.LiveRow',[n.get('content') for n in b])
+            self.assertIn('[true]',chosen.get('condition'));self.assertIn('XCMate50.LiveRow',[n.get('content') for n in b])
     def test_home_hero_uses_native_focused_item_properties_above_small_logos_without_player_hooks(self):
         from widget_skin50 import reference
         data=(ROOT/'src/plugin.video.xtreammate/resources/bingie50/IncludesXCMate50.xml').read_bytes();root=E.fromstring(data)

@@ -17,5 +17,6 @@
   <control type="label" id="106"><left>622</left><top>580</top><width>584</width><height>28</height><font>font12</font><textcolor>FF99A9B8</textcolor></control>
   <control type="button" id="501"><left>56</left><top>610</top><width>240</width><height>48</height><font>font13</font><textoffsetx>40</textoffsetx><textcolor>FFFFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor><texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/programme46/progress.png</texturefocus><texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/programme46/logo-back.png</texturenofocus><onleft>501</onleft><onright>501</onright><onup>501</onup><ondown>501</ondown></control>
   <control type="image" id="881"><left>68</left><top>624</top><width>20</width><height>20</height><texture/></control>
+  <control type="image" id="130"><left>622</left><top>615</top><width>64</width><height>48</height><aspectratio>keep</aspectratio><texture>special://home/addons/plugin.video.xtreammate/resources/media/tmdb60/tmdb.png</texture><visible>false</visible></control>
  </controls>
 </window>

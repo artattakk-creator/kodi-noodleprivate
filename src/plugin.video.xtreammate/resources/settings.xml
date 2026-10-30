@@ -33,6 +33,7 @@
     <setting id="programme_art_budget46" type="enum" label="36120" values="32|64|128|256" default="1"/>
     <setting id="programme_helper57" type="bool" label="36540" default="true"/>
     <setting id="programme_catalog57" type="bool" label="36541" default="true"/>
+    <setting id="tmdb_test60" type="action" label="36600" action="RunPlugin(plugin://plugin.video.xtreammate/?action=native_options45&amp;group=tmdb_test60)" />
     <setting id="programme_tmdb46" type="bool" label="36110" default="false"/>
     <setting id="programme_image_hosts55" type="text" label="36530" default=""/>
     <setting id="epg_sources_manager" type="action" label="XCMate: EPG-Quellen und Senderzuordnung" action="RunPlugin(plugin://plugin.video.xtreammate/?action=epg_sources)" />

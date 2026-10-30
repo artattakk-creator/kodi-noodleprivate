@@ -81,7 +81,11 @@ class URLs55(Fixture,unittest.TestCase):
         candidate=dict(url='https://image.tmdb.org/t/p/w780/exact.jpg',source='tmdb_episode',match='EXACT_SEASON_EPISODE',attribution='TMDb · synthetic exact-episode proof')
         self.event.update(season=2,episode=3,subtitle='Exact episode')
         match=mock.Mock(return_value=candidate)
-        value=self.resolve(allow_lookup=True,match=match)
+        import io
+        from PIL import Image
+        png=io.BytesIO();Image.new('RGB',(160,90),(15,45,90)).save(png,'PNG')
+        Path(self.art.root()).mkdir(exist_ok=True)
+        with mock.patch.object(self.art,'space'),mock.patch('media_sources43.get',return_value=png.getvalue()):value=self.resolve(allow_lookup=True,match=match)
         match.assert_called_once();self.assertEqual(value['match'],'EXACT_SEASON_EPISODE')
         self.assertEqual(value['tvspielfilm55'],'BLOCKED_NO_AUTHORIZED_API')
 

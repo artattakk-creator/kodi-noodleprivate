@@ -103,7 +103,8 @@ def skin_setup():
         if applied(skin):xbmcgui.Dialog().ok('XCMate',tr(36416));return
         plan=prepare(skin)
         hashes='\n'.join(name+'\n'+e['before']+' → '+e['after'] for name,e in zip(FILES,plan['entries']))
-        xbmcgui.Dialog().textviewer(tr(36401),tr(36417)+'\n\n'+hashes)
+        from widget_skin60 import preview
+        xbmcgui.Dialog().textviewer(tr(36401),tr(36417)+'\n\n'+hashes+'\n\n'+preview(plan))
         if not xbmcgui.Dialog().yesno(tr(36413),tr(36418),nolabel=tr(36426),yeslabel=tr(36419),defaultbutton=getattr(xbmcgui,'DLG_YESNO_NO_BTN',10)):return
         current_profile,current_skin=runtime()
         if current_profile!=profile or current_skin!=skin:raise ValueError('PROFILE_CHANGED')

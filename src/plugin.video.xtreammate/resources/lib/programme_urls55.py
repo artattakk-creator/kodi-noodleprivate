@@ -59,6 +59,8 @@ def profile():
 def display(event,value):
     """A persisted URL is not proof that Android displayed the right picture."""
     if not isinstance(value,dict) or value.get('url_version55')!=1:return None
+    from programme_art46 import fingerprint
+    if value.get('fingerprint')!=fingerprint(event):return None
     if value.get('hosts55')!=sorted(hosts()) or value.get('profile55')!=profile():return None
     if value.get('binding55')!=binding(event) or value.get('key')!=event.get('key'):return None
     until=value.get('until',0)
@@ -119,6 +121,10 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None):
     from programme_sources57 import PROOFS,policy,attempts,trace as source_trace
     from helper_rpc57 import Error as HelperError
     old=art(event)
+    if old and not old.get('url_version55') and old.get('source') in ('tmdb_movie','tmdb_episode') and old.get('fingerprint')==fingerprint(event) and old.get('until',0)>time.time():
+        from programme_art46 import indexed
+        local60=indexed(event,verify=True)
+        if local60:return local60
     current=display(event,old)
     if current and not (allow_lookup and current.get('source')=='placeholder' and
             (current.get('code')=='AWAITING_BACKGROUND_REFRESH' or not current.get('matching_policy57') or current.get('source_policy57')!=policy())):return current
@@ -179,6 +185,9 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None):
         secrets=[str(portal.get(k) or '') for k in ('xc_user','xc_pass')]
         if any(secret and (secret in path.split('/') or len(secret)>=4 and secret in path) for secret in secrets):
             value['code']='BLOCKED_CREDENTIAL_URL';continue
+        if candidate.get('source') in ('tmdb_movie','tmdb_episode'):
+            from programme_art46 import prepare as materialize60
+            return materialize60(event,cancel=cancel,resolved60=candidate)
         try:(check or probe)(url,cancel=cancel)
         except SourceError as exc:value['code']=exc.code;continue
         if cancel():return None

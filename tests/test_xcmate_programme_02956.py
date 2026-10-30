@@ -18,14 +18,19 @@ class Programme56(Fixture,unittest.TestCase):
         self.details=dict(id=9123456,title=self.TITLE,release_date='2002-11-14',adult=False,backdrop_path='/synthetic_HP_event.jpg')
 
     def resolve(self,search=None,details=None):
-        with mock.patch('media_sources43.get',side_effect=[search or self.search,details or self.details]):
+        import io
+        from PIL import Image
+        from pathlib import Path
+        data=io.BytesIO();Image.new('RGB',(160,90),(20,80,130)).save(data,'PNG')
+        Path(self.art.root()).mkdir(exist_ok=True)
+        with mock.patch.object(self.art,'space'),mock.patch('media_sources43.get',side_effect=[search or self.search,details or self.details,data.getvalue()]):
             return self.urls.resolve(self.event,allow_lookup=True,check=mock.Mock())
 
     def test_yearless_explicit_movie_requires_complete_unique_search_and_independent_details(self):
         value=self.resolve();self.assertEqual(value['code'],'READY')
         self.assertEqual(value['match'],'EXACT_UNIQUE_FILM_TITLE');self.assertEqual(value['matched_year56'],2002)
         self.assertNotIn('year',self.event)
-        self.assertNotIn('SYNTHETIC_TEST_TOKEN',value['image']);self.assertIn('/synthetic_HP_event.jpg',value['image'])
+        self.assertNotIn('SYNTHETIC_TEST_TOKEN',value['image']);self.assertIn('/synthetic_HP_event.jpg',value['source_url']);self.assertTrue(__import__('os').path.isfile(value['image']))
 
     def test_remakes_with_same_title_do_not_get_a_guessed_year(self):
         search=dict(self.search,total_results=2,results=self.search['results']+[dict(id=77,title=self.TITLE,release_date='2020-01-01')])
@@ -43,7 +48,7 @@ class Programme56(Fixture,unittest.TestCase):
     def test_explicit_wrong_year_cannot_enter_the_yearless_recovery_path(self):
         event=dict(self.event,year=2003)
         row=dict(remote_id=9123456,title=self.TITLE,year='2002',url='https://image.tmdb.org/t/p/w500/synthetic_HP_event.jpg',role='fanart')
-        with mock.patch('media_sources43.tmdb',return_value=[row]),mock.patch('media_sources43.get',side_effect=AssertionError('yearless fallback')):
+        with mock.patch('programme_match46.unique_movie56',side_effect=AssertionError('yearless fallback')),mock.patch('media_sources43.get',return_value=self.search):
             self.assertIsNone(self.match.candidate(event))
 
     def test_disabled_optional_provider_is_diagnosed_without_api_request(self):

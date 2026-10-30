@@ -1,0 +1,9 @@
+{
+  "version": "2.2.3",
+  "files": {
+    "xml/IncludesHomeWidgets.xml": "fb56f71af0f350937fa104c59567d588efe6b29f4db4a00770930d4c5b424ca6",
+    "xml/IncludesHomeBingie.xml": "66dea642c7d18e9b16f8c87d1fdcf242dfa70223720e371cc5b2a8b85f6210bd",
+    "shortcuts/template.xml": "bd755fe87c822c6b1b0c8cedeb461ff680c93759ab487e74758595e31f671487",
+    "shortcuts/overrides.xml": "46cb76481e2a92b5739e6f927da2c15acda1bd88e2d3886fb72ab3fbb06cd412"
+  }
+}

@@ -183,7 +183,8 @@ else: raise AssertionError('FIFO accepted')
             for action in ('widget_live_start_group','widget_recent_vod','widget_recent_series'):
                 self.ends.clear();self.run_entry(action);self.assertEqual(len(self.ends),1)
                 # .41: explicit temporarily-unavailable row, valid directory.
-                self.assertTrue(self.ends[0][0][1])
+                args,kwargs=self.ends[0]
+                self.assertTrue(kwargs.get('succeeded',args[1] if len(args)>1 else False))
             self.items.clear();self.ends.clear();self.run_entry();self.assertEqual(len(self.items),7)
         finally: db.close()
 

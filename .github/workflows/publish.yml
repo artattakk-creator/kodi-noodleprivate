@@ -38,6 +38,10 @@ jobs:
         run: python tools/run_kodi_helper57_contract.py --report-dir kodi-helper57-evidence
       - name: Verify native XCMate widget directories and synthetic poster pixels
         run: python tools/run_kodi_widget59_contract.py --report-dir kodi-widget59-evidence
+      - name: Install native Skinshortcuts compiler dependency
+        run: python -m pip install 'simpleeval==0.9.13'
+      - name: Verify BINGIE 2.2.3 native Home, complete Live row and cached Hero pixels
+        run: python tools/run_kodi_home60_contract.py --report-dir kodi-home60-evidence
       - name: Upload isolated Kodi transport evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -49,6 +53,11 @@ jobs:
             kodi-widget59-evidence/widgets.json
             kodi-widget59-evidence/native-widget59.png
             kodi-widget59-evidence/build.log
+            kodi-home60-evidence/home.json
+            kodi-home60-evidence/home60-0.png
+            kodi-home60-evidence/home60-1.png
+            kodi-home60-evidence/home60-87.png
+            kodi-home60-evidence/build.log
           if-no-files-found: error
           retention-days: 14
   publish:

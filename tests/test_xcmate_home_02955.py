@@ -14,7 +14,8 @@ class Home55(Fixture50,unittest.TestCase):
 
     def test_all_150_stations_are_scrollable_and_only_ok_uses_original_player_url(self):
         values,code=self.home.values(self.portal);self.assertEqual(code,'READY');self.assertEqual(len(values),150)
-        self.assertEqual(values[0]['props']['XCMate.MediaId'],'149')
+        self.assertEqual(values[0]['props']['XCMate.MediaId'],'0')
+        self.assertEqual(values[-1]['props']['XCMate.MediaId'],'149')
         self.assertEqual(len({v['url'] for v in values}),150)
         self.assertTrue(all(v['props']['XCMate.Home50']=='true' for v in values))
         self.assertTrue(all('action=play_live' in v['url'] for v in values))
@@ -34,7 +35,7 @@ class Home55(Fixture50,unittest.TestCase):
         self.assertEqual(resolve(event,check=mock.Mock())['code'],'READY');_memory.clear()
         with mock.patch('programme_urls55.probe',side_effect=AssertionError('Home network')):
             values,_=self.home.values(self.portal)
-            item=values[0];detail=cached(load(self.portal,channel,now=self.now))
+            item=next(v for v in values if v['props']['XCMate.MediaId']=='149');detail=cached(load(self.portal,channel,now=self.now))
         self.assertEqual(item['props']['XCMate.ProgrammeKey46'],event['key'])
         self.assertEqual(item['props']['XCMate.ProgrammeImage46'],detail['image'])
         self.assertEqual(detail['source_url'],raw['screenshot_uri'])
@@ -45,7 +46,7 @@ class Home55(Fixture50,unittest.TestCase):
     def test_missing_image_retains_local_epg_and_is_never_counted_as_real_image(self):
         from guide_store import import_cache
         import_cache('p',{'xml149':[dict(channel='xml149',name='News without picture',descr='Local description',start_timestamp=self.now-60,stop_timestamp=self.now+600)]})
-        values,_=self.home.values(self.portal);item=values[0]
+        values,_=self.home.values(self.portal);item=next(v for v in values if v['props']['XCMate.MediaId']=='149')
         self.assertEqual(item['props']['XCMate.ProgrammeTitle46'],'News without picture')
         self.assertNotEqual(item['props']['XCMate.ProgrammeDisplay47'],'PROGRAMME_IMAGE')
 

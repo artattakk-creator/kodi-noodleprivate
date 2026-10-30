@@ -93,6 +93,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
     from programme_diagnostics59 import message
     self.getControl(104).setLabel(message(self.event,art))
     self.getControl(105).setText(str(art.get('attribution',''))[:500])
+    self.getControl(130).setVisible(str(art.get('source','')).startswith('tmdb'))
    now=time.time();e=self.event;current=e.get('start',0)<=now<e.get('stop',0)
    self.getControl(120).setVisible(current);self.getControl(121).setVisible(current)
    if current:self.getControl(121).setWidth(max(1,int(536*(now-e['start'])/(e['stop']-e['start']))))

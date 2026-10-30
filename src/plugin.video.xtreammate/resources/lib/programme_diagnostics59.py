@@ -14,6 +14,10 @@ def message(event,art):
         'URL_EXPIRED':'Gespeicherte Bildadresse abgelaufen; Hintergrundaktualisierung ausstehend.',
         'AWAITING_BACKGROUND_REFRESH':'Sendungsdaten vorhanden; Bildprüfung im Hintergrund ausstehend.',
         'NO_IMAGE':'Sendungsdaten vorhanden; keine passende Bildquelle bestätigt.',
+        'TMDB_DISABLED':'TMDB-Bildsuche nicht aktiviert. Optional beide TMDB-Schalter und privaten Token prüfen.',
+        'TMDB_TOKEN_MISSING':'Kein privater TMDB Read Access Token hinterlegt. Verbindungstest in den EPG-Einstellungen verwenden.',
+        'HTTP_AUTH':'TMDB-Zugriff verweigert. Privaten Token mit dem Verbindungstest prüfen.',
+        'HTTP_RATE_LIMIT':'Anfragelimit erreicht. Hintergrundsuche pausiert; später erneut prüfen.',
         'NO_MATCH':'Sendungsdaten vorhanden; kein eindeutiger Bildtreffer.',
         'PENDING':'Sendungsdaten vorhanden; Bildstatus noch nicht bestätigt.',
     }.get(code,'Kein bestätigtes Sendungsbild ('+str(code)+'). Programmdaten bleiben verfügbar.')

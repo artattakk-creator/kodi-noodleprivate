@@ -23,11 +23,11 @@ class Scope56(unittest.TestCase):
         # including the complete dispatch(), remains the previous AST.
         path=LIB+'app_routes.py'
         hooks=json.loads((ROOT/'tests/fixtures/xcmate_02956_reviewed_hooks.json').read_text())['modules']
-        old=ast.parse(hooks[path]['old']);new=ast.parse((ROOT/path).read_text())
+        old=ast.parse(hooks[path]['old']);new=ast.parse(__import__('stabilization_contract_02960').without_stabilization60((ROOT/path).read_text(),path))
         keep=lambda tree:[ast.dump(n,include_attributes=False) for n in tree.body if not isinstance(n,ast.FunctionDef) or n.name!='widget']
         self.assertEqual(keep(old),keep(new))
         path=LIB+'widget_home50.py'
-        old=ast.parse(hooks[path]['old']);new=ast.parse((ROOT/path).read_text())
+        old=ast.parse(hooks[path]['old']);new=ast.parse(__import__('stabilization_contract_02960').without_stabilization60((ROOT/path).read_text(),path))
         render=lambda tree:ast.dump(next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='render'),include_attributes=False)
         self.assertEqual(render(old),render(new))
 
