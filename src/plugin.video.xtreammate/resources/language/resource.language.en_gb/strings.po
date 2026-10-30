@@ -4600,3 +4600,75 @@ msgstr "Reuse safely matched images from existing media catalogues"
 msgctxt "#36542"
 msgid "Series image (not an episode still)"
 msgstr "Series image (not an episode still)"
+
+msgctxt "#36680"
+msgid "TVmaze programme artwork (experimental; no token)"
+msgstr "TVmaze programme artwork (experimental; no token)"
+
+msgctxt "#36681"
+msgid "TVmaze – live TV artwork (experimental)"
+msgstr "TVmaze – live TV artwork (experimental)"
+
+msgctxt "#36682"
+msgid "TVmaze enabled – disable"
+msgstr "TVmaze enabled – disable"
+
+msgctxt "#36683"
+msgid "TVmaze disabled – enable"
+msgstr "TVmaze disabled – enable"
+
+msgctxt "#36684"
+msgid "Test TVmaze API with Tatort"
+msgstr "Test TVmaze API with Tatort"
+
+msgctxt "#36685"
+msgid "TVmaze source and license"
+msgstr "TVmaze source and license"
+
+msgctxt "#36686"
+msgid "Disable TVmaze external requests?"
+msgstr "Disable TVmaze external requests?"
+
+msgctxt "#36687"
+msgid "Enable external TVmaze requests for live TV programme titles?"
+msgstr "Enable external TVmaze requests for live TV programme titles?"
+
+msgctxt "#36688"
+msgid "TVmaze is disabled. Enable it first."
+msgstr "TVmaze is disabled. Enable it first."
+
+msgctxt "#36689"
+msgid "TVmaze: No matching programme found"
+msgstr "TVmaze: No matching programme found"
+
+msgctxt "#36690"
+msgid "TVmaze: No image available for this programme"
+msgstr "TVmaze: No image available for this programme"
+
+msgctxt "#36691"
+msgid "TVmaze: Several possible programmes – no image assigned"
+msgstr "TVmaze: Several possible programmes – no image assigned"
+
+msgctxt "#36692"
+msgid "TVmaze: No verified movie available (TV show database)"
+msgstr "TVmaze: No verified movie available (TV show database)"
+
+msgctxt "#36693"
+msgid "TVmaze: Programme type does not match"
+msgstr "TVmaze: Programme type does not match"
+
+msgctxt "#36694"
+msgid "TVmaze: Episode could not be identified safely"
+msgstr "TVmaze: Episode could not be identified safely"
+
+msgctxt "#36695"
+msgid "TVmaze: Too many requests, please retry later"
+msgstr "TVmaze: Too many requests, please retry later"
+
+msgctxt "#36696"
+msgid "TVmaze: API temporarily unavailable"
+msgstr "TVmaze: API temporarily unavailable"
+
+msgctxt "#36697"
+msgid "TVmaze: No suitable image found"
+msgstr "TVmaze: No suitable image found"

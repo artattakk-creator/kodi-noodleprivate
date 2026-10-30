@@ -1,3 +1,14 @@
+TVmaze (optional experimental live EPG series/episode artwork):
+https://www.tvmaze.com/api
+The TVmaze public JSON API needs no token. API data is offered under
+Creative Commons Attribution-ShareAlike (CC BY-SA); each displayed result
+retains the original TVmaze show URL and attribution. Respect ShareAlike
+on any reused/adapted TVmaze data. Image-link availability does not imply
+ownership of all third-party artwork. TVmaze lookups are disabled by default,
+operate only after explicit opt-in, and must not replace programme times,
+provider-EPG data, or VOD/series catalogue artwork. No TVmaze code or key
+is bundled, and no TVmaze data is republished as an archive.
+
 Optional image and metadata research in XCMate
 
 TMDb: This product uses the TMDb API but is not endorsed or certified by TMDb.
