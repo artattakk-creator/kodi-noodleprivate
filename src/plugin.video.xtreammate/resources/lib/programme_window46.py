@@ -88,9 +88,10 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
    self._next=time.monotonic()+.5
    from programme_art46 import cached
    art=cached(self.event);signature=(art.get('image'),art.get('code'),art.get('source'),art.get('match'))
+   from tvmaze_ui59 import status_label
    if signature!=self._art_signature:
     self._art_signature=signature;self.getControl(110).setImage(art.get('image') or self.event['placeholder'])
-    self.getControl(104).setLabel(tr(36108)+' · '+str(art.get('code','PENDING')) if art.get('source')=='placeholder' else tr(36109)+': '+str(art.get('source',''))+' · '+str(art.get('match','')))
+    self.getControl(104).setLabel(tr(36108)+' · '+status_label(art.get('code','PENDING')) if art.get('source')=='placeholder' else tr(36109)+': '+str(art.get('source',''))+' · '+str(art.get('match','')))
     self.getControl(105).setText(str(art.get('attribution',''))[:500])
    now=time.time();e=self.event;current=e.get('start',0)<=now<e.get('stop',0)
    self.getControl(120).setVisible(current);self.getControl(121).setVisible(current)
