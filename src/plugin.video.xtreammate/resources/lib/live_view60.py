@@ -144,6 +144,12 @@ class SafeLiveView60(xbmcgui.WindowXMLDialog):
             self._focus_key = (index, str(self.rows[index].get('sid')))
             self._focus_requested = now + SAMPLE_DELAY
             self.getControl(114).setLabel(str(self.rows[index].get('name', '')))
+            # Clear the previous channel's hero immediately. Never show stale art.
+            self.getControl(110).setImage('')
+            self.getControl(111).setImage(logo_for(self.rows[index]))
+            self.getControl(112).setText('EPG-Vorschau wird geladen …')
+            self.getControl(113).setLabel('')
+            self.getControl(115).setText('')
             self.getControl(117).setLabel('EPG-Vorschau wird geladen …')
         if self._focus_future and self._focus_future[0].done():
             f, wanted = self._focus_future
