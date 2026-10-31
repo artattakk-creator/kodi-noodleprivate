@@ -47,6 +47,17 @@ def main():
     if any(name.startswith(n) for n in names):
      evidence.append(dict(file=path.name,name=name,xml=E.tostring(node,encoding='unicode')))
   print('BINGIE64_DEFINITIONS '+json.dumps(evidence))
+  contexts=[]
+  for path in sorted(skin.rglob('*')):
+   if not path.is_file() or path.stat().st_size>4*1024*1024 or path.suffix.lower() not in ('.xml','.template'):continue
+   text=path.read_text(errors='replace')
+   for name in ('Fixed_Focus','FixedFocus','VerticalNavigation'):
+    start=0
+    for _ in range(6):
+     pos=text.lower().find(name.lower(),start)
+     if pos<0:break
+     contexts.append(dict(file=str(path.relative_to(skin)),keyword=name,text=text[max(0,pos-350):pos+5500]));start=pos+len(name)
+  print('BINGIE64_FOCUS_CONTEXTS '+json.dumps(contexts))
  value=baseline();print('BASELINE64_JSON '+json.dumps(value,separators=(',',':')))
  print('BASELINE64_COUNTS '+json.dumps(dict(files=len(value['source_sha256']),tests=sum(map(len,value['test_methods'].values())))))
 if __name__=='__main__':main()

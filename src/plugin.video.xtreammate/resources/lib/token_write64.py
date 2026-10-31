@@ -13,6 +13,9 @@ def read_destination(tokens,path):
  try:return tokens.read(path,missing=True)
  except tokens.TokenError as error:
   error.stage='PRIVATE_DESTINATION_READ';note(error.stage,'FAILED');raise
+ except OSError as error:
+  failure=tokens.TokenError('TOKEN_UNREADABLE');failure.stage='PRIVATE_DESTINATION_READ'
+  note(failure.stage,'FAILED',error.errno or 0);raise failure from None
 
 def diagnostic(tokens):
  try:

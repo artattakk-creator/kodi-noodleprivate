@@ -55,12 +55,12 @@ class Write64(Fixture,unittest.TestCase):
   with self.assertRaises(self.t.TokenError) as result:self.t.import_bytes(FIXTURE,None,target=str(outside))
   self.assertEqual(result.exception.code,'TOKEN_CHANGED');self.assertFalse(self.path.exists())
  def test_private_target_read_error_is_not_hidden_by_ui(self):
-  ui=importlib.import_module('tmdb_access61');self.dialog.select.side_effect=[0,-1];self.dialog.browseSingle.return_value='smb://fixture/share/source.txt'
+  ui=importlib.import_module('tmdb_access61');self.dialog.select.side_effect=[0,-1];self.dialog.browseSingle=mock.Mock(return_value='smb://fixture/share/source.txt')
   with mock.patch('tmdb_import63.selected',return_value=FIXTURE),mock.patch.object(self.w,'read_destination',side_effect=self.t.TokenError('TOKEN_UNREADABLE')):ui.show()
   text=str(self.dialog.ok.call_args_list);self.assertIn('TOKEN_UNREADABLE',text);self.assertNotIn('TOKEN_WRITE',text);self.assertNotIn(FIXTURE.decode(),text)
  def test_diagnostics_never_log_token_fragment_hash_path_or_raw_exception(self):
   logs=[]
-  with mock.patch('xbmc.log',side_effect=lambda text,*a:logs.append(text),create=True):
+  with mock.patch('xbmc.log',side_effect=lambda text,*a:logs.append(text),create=True),mock.patch('xbmc.LOGINFO',1,create=True):
    self.w.note('ATOMIC_RENAME','OK',committed=True);self.w.note('not-a-valid-stage',FIXTURE.decode(),13)
   text=' '.join(logs);self.assertNotIn(FIXTURE.decode(),text);self.assertNotIn(hashlib.sha256(FIXTURE).hexdigest(),text);self.assertNotIn(str(self.path),text)
   self.assertIn('ATOMIC_RENAME',text);self.assertEqual(len(logs),1)
