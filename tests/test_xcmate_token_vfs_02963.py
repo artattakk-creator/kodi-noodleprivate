@@ -30,7 +30,7 @@ class TokenVfs63(Fixture,unittest.TestCase):
   h=self.handle();h.size.return_value=5000
   with mock.patch('xbmcvfs.File',return_value=h,create=True),self.assertRaises(self.tokens.TokenError) as exc:self.reader.selected('smb://fixture/a')
   self.assertEqual(exc.exception.code,'TOKEN_SIZE');h.readBytes.assert_not_called();h.close.assert_called_once()
-  for raw,eof in ((b'A'*4098,b''),(FIXTURE,b'x')):
+  for raw,eof in ((b'A'*4098,b''),(b'A'*self.tokens.MAX_BYTES,b'x')):
    h=self.handle();h.size.return_value=0;h.readBytes.side_effect=[raw,eof]
    with mock.patch('xbmcvfs.File',return_value=h,create=True),self.assertRaises(self.tokens.TokenError) as exc:self.reader.selected('smb://fixture/a')
    self.assertEqual(exc.exception.code,'TOKEN_SIZE')

@@ -2,11 +2,15 @@
 import os,time
 from urllib.parse import urlencode
 
-def apply(item,portal,row,info,event=None):
+def apply(item,portal,row,info,event=None,labels=None):
     from epg_handoff63 import profile_scope
     item['props']['XCMate.EpgProfile63']=profile_scope()
+    if labels is None:
+        from localization import tr
+        labels=(tr(36102),tr(36668,'{0}'))
+    item['props']['XCMate.NoEpg63']=labels[0]
+    item['props']['XCMate.RemainingFormat63']=labels[1]
     if not isinstance(info,dict):return item
-    from localization import tr
     import xbmcaddon
     props=item['props'];key=str(info.get('programme_key47') or '')
     # An optional renderer may straddle a programme transition. Never combine
@@ -18,13 +22,13 @@ def apply(item,portal,row,info,event=None):
     subtitle=str(event.get('subtitle') or '')
     if type(event.get('season')) is int and type(event.get('episode')) is int:
         subtitle=('S%02d E%02d'%(event['season'],event['episode']))+(' – '+subtitle if subtitle else '')
-    props.update({'XCMate.ProgrammeTitle46':str(info.get('now') or tr(36102)),
+    props.update({'XCMate.ProgrammeTitle46':str(info.get('now') or labels[0]),
         'XCMate.ProgrammeTimes46':(info.get('now_time','')+' – '+info.get('now_end_time','')) if now else '',
         'XCMate.ProgrammeNext46':str(info.get('next') or ''),
         'XCMate.ProgrammeNextTimes48':(info.get('next_time','')+' – '+info.get('next_end_time','')) if info.get('next') else '',
         'XCMate.ProgrammeDescription46':str(info.get('description') or event.get('description') or '')[:8192],
         'XCMate.ProgrammePercent46':str(round(info['progress']*100)) if now and type(info.get('progress')) in (int,float) else '0',
-        'XCMate.ProgrammeRemaining63':tr(36668,max(0,int(info.get('remaining',0)+59)//60)) if now else '',
+        'XCMate.ProgrammeRemaining63':labels[1].format(max(0,int(info.get('remaining',0)+59)//60)) if now else '',
         'XCMate.ProgrammeSubtitle63':subtitle,
         'XCMate.ProgrammeKey46':key,'XCMate.ProgrammeKey47':key,
         'XCMate.ProgrammeStart63':str(info.get('start',0)),'XCMate.ProgrammeStop63':str(info.get('stop',0))})

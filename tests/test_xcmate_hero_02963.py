@@ -33,7 +33,7 @@ class Hero63(Fixture50,unittest.TestCase):
   legacy=self.skin_bytes();self.assertTrue(skin63.previously_applied(self.skin));self.assertFalse(self.skinmod.applied(self.skin))
   plan=self.skinmod.prepare(self.skin)
   self.assertEqual(self.skin_bytes(),legacy)
-  with self.assertRaises(ValueError):self.skinmod.apply(plan['id'],self.skin,confirmed=False)
+  with self.assertRaises(PermissionError):self.skinmod.apply(plan['id'],self.skin,confirmed=False)
   self.skinmod.apply(plan['id'],self.skin,confirmed=True)
   self.assertTrue(self.skinmod.applied(self.skin));self.assertEqual(self.prop.read_bytes(),saved);self.assertEqual(self.menu.read_bytes(),menu)
   self.skinmod.apply(plan['id'],self.skin,confirmed=True,restore=True);self.assertEqual(self.skin_bytes(),legacy)

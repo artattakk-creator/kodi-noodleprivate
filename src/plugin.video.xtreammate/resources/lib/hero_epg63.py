@@ -1,6 +1,6 @@
 """RAM-only focus; the worker reads the existing exact event/art cache, never HTTP."""
 import os,threading,time
-_lock=threading.Lock();_focus=None;_art=None;_next=0;_last=None;_focused_at=0.
+_lock=threading.Lock();_focus=None;_art=None;_next=0;_last=None;_focused_at=0.;_labels=None
 
 def poll():
     global _focus,_next,_last,_focused_at
@@ -27,7 +27,10 @@ def poll():
     key=label('XCMate.ProgrammeKey47')
     props={'XCMate.ProgrammeKey47':key,'XCMate.ProgrammeImage46':label('XCMate.ProgrammeImage46') or neutral,
            'XCMate.ProgrammeArtSource57':label('XCMate.ProgrammeArtSource57')}
-    apply(dict(props=props),dict(id=pid),dict(sid=sid),info)
+    labels=(label('XCMate.NoEpg63'),label('XCMate.RemainingFormat63'))
+    if not all(labels):labels=_labels
+    if not labels:return  # Static native ListItem remains usable until the worker warms labels.
+    apply(dict(props=props),dict(id=pid),dict(sid=sid),info,labels=labels)
     event_key=info.get('programme_key47','')
     if art.get('profile63')==scope and art.get('key')==event_key and art.get('code') in ('READY','READY_STALE') and art.get('source')!='placeholder':
         props['XCMate.ProgrammeImage46']=art['image'];props['XCMate.ProgrammeArtSource57']=art.get('source','')
@@ -53,7 +56,9 @@ def poll():
         note('HOME_NOW_NEXT_READY',pid,sid,'READY' if info.get('now') else 'EPG_DATA_MISSING',(time.monotonic()-_focused_at)*1000)
 
 def prepare(pid):
-    global _art
+    global _art,_labels
+    from localization import tr
+    _labels=(tr(36102),tr(36668,'{0}'))
     with _lock:focus=_focus
     if not focus or focus[0]!=str(pid):return
     from epg_handoff63 import get

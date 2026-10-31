@@ -60,7 +60,8 @@ class Handoff63(Fixture,unittest.TestCase):
  def test_focus_publishes_complete_inactive_bank_then_switches_atomically_without_gui_io(self):
   self.read();hero=importlib.import_module('hero_epg63')
   hero._next=0;hero._last=None;hero._focus=None;hero._art=None
-  selected={'XCMate.Home50':'true','XCMate.PortalId':'p','XCMate.MediaId':'1','XCMate.WidgetToken41':'1'*32}
+  from localization import tr
+  selected={'XCMate.NoEpg63':tr(36102),'XCMate.RemainingFormat63':tr(36668,'{0}'),'XCMate.Home50':'true','XCMate.PortalId':'p','XCMate.MediaId':'1','XCMate.WidgetToken41':'1'*32}
   info=lambda expr:selected.get(expr.removeprefix('ListItem.Property(').removesuffix(')'),'')
   writes=[]
   win=types.SimpleNamespace(getProperty=lambda k:self.properties.get(k,''),setProperty=lambda k,v:(writes.append(k),self.properties.__setitem__(k,v)),clearProperty=mock.Mock(side_effect=AssertionError('blank frame')))
@@ -71,7 +72,7 @@ class Handoff63(Fixture,unittest.TestCase):
    self.assertEqual(self.properties['XCMate.Hero63.'+bank+'.Identity'],'1'*32)
    previous=len(writes);hero._next=0;hero.poll();self.assertEqual(len(writes),previous)
  def test_new_database_publication_invalidates_warm_dto_on_worker_without_gui_sql(self):
-  before=self.read();updated={'xml':[dict(name='New committed local event',start_timestamp=self.now-30,stop_timestamp=self.now+200)]}
+  before=self.read();updated={'xml':[dict(name='New committed local event',start_timestamp=self.now-60,stop_timestamp=self.now+120)]}
   importlib.import_module('guide_store').import_cache('p',updated,'fixture63-new',now=self.now+1,trusted_feed=True)
   after=self.read();self.assertEqual(after['now'],'New committed local event');self.assertNotEqual(before['snapshot_revision'],after['snapshot_revision'])
  def test_same_portal_and_station_in_another_kodi_profile_never_reuse_cached_data(self):
