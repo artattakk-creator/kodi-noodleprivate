@@ -4680,3 +4680,43 @@ msgstr "Explicitly enable TMDB research and programme images? Provider movie and
 msgctxt "#36632"
 msgid "Disable TMDB research and programme images? The private token file is retained."
 msgstr "Disable TMDB research and programme images? The private token file is retained."
+
+msgctxt "#36640"
+msgid "Back"
+msgstr "Back"
+
+msgctxt "#36641"
+msgid "Skinshortcuts: check / repair Python compatibility"
+msgstr "Skinshortcuts: check / repair Python compatibility"
+
+msgctxt "#36642"
+msgid "Restore Skinshortcuts backup"
+msgstr "Restore Skinshortcuts backup"
+
+msgctxt "#36643"
+msgid "Replace only the two shown getiterator calls with iter in the verified Skinshortcuts 2.1.0 file? A backup is retained; bindings and skin settings remain unchanged."
+msgstr "Replace only the two shown getiterator calls with iter in the verified Skinshortcuts 2.1.0 file? A backup is retained; bindings and skin settings remain unchanged."
+
+msgctxt "#36644"
+msgid "Restore the verified original file from this backup? Later external changes will not be overwritten."
+msgstr "Restore the verified original file from this backup? Later external changes will not be overwritten."
+
+msgctxt "#36645"
+msgid "Compatibility check blocked. Requires the unmodified official Skinshortcuts 2.1.0, BINGIE 2.2.3, no playback or shortcut editor. Unknown or changed files are never overwritten."
+msgstr "Compatibility check blocked. Requires the unmodified official Skinshortcuts 2.1.0, BINGIE 2.2.3, no playback or shortcut editor. Unknown or changed files are never overwritten."
+
+msgctxt "#36646"
+msgid "File verified and saved. Restart Kodi normally so Python loads the change. Do not delete caches. Then explicitly rebuild BINGIE Home once if needed."
+msgstr "File verified and saved. Restart Kodi normally so Python loads the change. Do not delete caches. Then explicitly rebuild BINGIE Home once if needed."
+
+msgctxt "#36647"
+msgid "No matching verifiable Skinshortcuts backup found."
+msgstr "No matching verifiable Skinshortcuts backup found."
+
+msgctxt "#36648"
+msgid "Restore affects only library.py; user profiles, widget bindings and skin files are retained."
+msgstr "Restore affects only library.py; user profiles, widget bindings and skin files are retained."
+
+msgctxt "#36649"
+msgid "The verified Skinshortcuts file is already Python compatible. No change needed."
+msgstr "The verified Skinshortcuts file is already Python compatible. No change needed."

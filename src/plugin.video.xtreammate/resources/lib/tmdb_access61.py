@@ -9,13 +9,14 @@ def show():
     dialog=xbmcgui.Dialog();addon=xbmcaddon.Addon()
     while True:
         state=tokens.status()
-        labels=[tr(36621),tr({'FILE_VALID':36622,'FILE_MISSING':36623}.get(state,36624)),tr(36600),tr(36625),tr(36626)]
-        choice=select(dialog,tr(36620),labels,actions=['settings','information','settings','check','back'])
-        if not isinstance(choice,int) or not 0<=choice<len(labels):return
+        labels=[tr(36621),tr({'FILE_VALID':36622,'FILE_MISSING':36623}.get(state,36624)),tr(36600),tr(36625),tr(36640),tr(36626)]
+        choice=select(dialog,tr(36620),labels,actions=['settings','information','settings','check','back','check'])
+        if not isinstance(choice,int) or not 0<=choice<len(labels) or choice==4:return
         if choice==0:
             source=dialog.browseSingle(1,tr(36621),'files','.txt',False,False)
             if not source:continue
             try:
+                source=tokens.import_source_path(source)
                 tokens.validate(tokens.read(source))
                 old=tokens.read(tokens.location(),missing=True)
                 expected=hashlib.sha256(old).hexdigest() if old is not None else None

@@ -1,3 +1,11 @@
+0.1.29.62
+- Live-TV-Home liest die konfigurierte Startgruppe direkt aus einer lokalen Kataloggeneration.
+- Senderbuttons bleiben bei fehlendem EPG, Artwork-Fehlern und beschädigten Zusatzmetadaten bedienbar.
+- Stufendiagnose und streng auf die aktuelle Gruppe beschränkter LastGood-Fallback.
+- TMDB-Menü: sichtbares Zurück ohne Einstellungsänderung; Aktivieren und Deaktivieren getrennt.
+- Sicherer Import lokaler Kodi-/Datei-URIs; Token und Passwörter bleiben privat erhalten.
+- Skinshortcuts-Python-Kompatibilität nur nach gesonderter Vorschau und Bestätigung reparierbar.
+
 0.1.29.61
 - Sichtbarer Zugang zur BINGIE-Widgetverwaltung in Aussehen und Darstellung.
 - Layoutvorschau, ausdrückliche Zustimmung und Wiederherstellung direkt mit OK.

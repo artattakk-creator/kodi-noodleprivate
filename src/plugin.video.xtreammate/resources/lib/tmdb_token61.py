@@ -34,6 +34,24 @@ def location():
     import xbmcvfs
     return xbmcvfs.translatePath('special://profile/addon_data/plugin.video.xtreammate/'+NAME)
 
+def import_source_path(path):
+    """Translate supported local Kodi/file URIs, then retain descriptor safety."""
+    from urllib.parse import urlsplit,unquote
+    if not isinstance(path,str) or not path or len(path)>8192 or any(ord(c)<32 for c in path):raise TokenError('TOKEN_PATH')
+    if path.startswith('special://'):
+        if not path.startswith(('special://profile/','special://home/','special://masterprofile/','special://temp/')):raise TokenError('TOKEN_PATH')
+        import xbmcvfs
+        path=xbmcvfs.translatePath(path)
+    elif path.startswith('file:'):
+        parsed=urlsplit(path)
+        if parsed.netloc or parsed.query or parsed.fragment:raise TokenError('TOKEN_PATH')
+        path=unquote(parsed.path)
+    # Do not realpath /sdcard or follow a selected symlink to a different file.
+    # Android sources must resolve to an actual mounted local USB/Downloads path.
+    fd,name=parent(path)
+    os.close(fd)
+    return path
+
 def parent(path):
     """Walk with openat/O_NOFOLLOW: no symlink component, even during races."""
     if not isinstance(path,str) or not os.path.isabs(path) or '\x00' in path or '://' in path or '..' in path.split('/'):raise TokenError('TOKEN_PATH')

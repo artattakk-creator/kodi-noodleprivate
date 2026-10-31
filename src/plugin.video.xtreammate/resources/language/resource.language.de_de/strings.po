@@ -4680,3 +4680,43 @@ msgstr "TMDB-Recherche und Sendungsbilder ausdrücklich aktivieren? Provider-Met
 msgctxt "#36632"
 msgid "Disable TMDB research and programme images? The private token file is retained."
 msgstr "TMDB-Recherche und Sendungsbilder deaktivieren? Die private Token-Datei bleibt erhalten."
+
+msgctxt "#36640"
+msgid "Back"
+msgstr "Zurück"
+
+msgctxt "#36641"
+msgid "Skinshortcuts: check / repair Python compatibility"
+msgstr "Skinshortcuts: Python-Kompatibilität prüfen/reparieren"
+
+msgctxt "#36642"
+msgid "Restore Skinshortcuts backup"
+msgstr "Skinshortcuts-Sicherung wiederherstellen"
+
+msgctxt "#36643"
+msgid "Replace only the two shown getiterator calls with iter in the verified Skinshortcuts 2.1.0 file? A backup is retained; bindings and skin settings remain unchanged."
+msgstr "Nur die zwei gezeigten getiterator-Aufrufe in der verifizierten Skinshortcuts-2.1.0-Datei durch iter ersetzen? Sicherung bleibt erhalten; keine Bindungen oder Skin-Einstellungen werden geändert."
+
+msgctxt "#36644"
+msgid "Restore the verified original file from this backup? Later external changes will not be overwritten."
+msgstr "Die verifizierte Originaldatei aus der eigenen Sicherung wiederherstellen? Zwischenzeitliche fremde Änderungen werden nicht überschrieben."
+
+msgctxt "#36645"
+msgid "Compatibility check blocked. Requires the unmodified official Skinshortcuts 2.1.0, BINGIE 2.2.3, no playback or shortcut editor. Unknown or changed files are never overwritten."
+msgstr "Kompatibilitätsprüfung blockiert. Erwartet werden die unveränderte offizielle Skinshortcuts-Version 2.1.0, BINGIE 2.2.3 und keine laufende Wiedergabe/Shortcut-Bearbeitung. Unbekannte oder geänderte Dateien werden nicht überschrieben."
+
+msgctxt "#36646"
+msgid "File verified and saved. Restart Kodi normally so Python loads the change. Do not delete caches. Then explicitly rebuild BINGIE Home once if needed."
+msgstr "Datei verifiziert gespeichert. Kodi regulär neu starten, damit Python die Änderung lädt. Keine Caches löschen. Danach bei Bedarf das BINGIE-Home-Layout einmal ausdrücklich neu generieren."
+
+msgctxt "#36647"
+msgid "No matching verifiable Skinshortcuts backup found."
+msgstr "Keine passende verifizierbare Skinshortcuts-Sicherung gefunden."
+
+msgctxt "#36648"
+msgid "Restore affects only library.py; user profiles, widget bindings and skin files are retained."
+msgstr "Wiederherstellung betrifft ausschließlich library.py; Benutzerprofile, Widgetbindungen und Skin-Dateien bleiben erhalten."
+
+msgctxt "#36649"
+msgid "The verified Skinshortcuts file is already Python compatible. No change needed."
+msgstr "Die verifizierte Skinshortcuts-Datei ist bereits Python-kompatibel. Keine Änderung erforderlich."

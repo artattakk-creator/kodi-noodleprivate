@@ -182,9 +182,10 @@ else: raise AssertionError('FIFO accepted')
         try:
             for action in ('widget_live_start_group','widget_recent_vod','widget_recent_series'):
                 self.ends.clear();self.run_entry(action);self.assertEqual(len(self.ends),1)
-                # .41: explicit temporarily-unavailable row, valid directory.
+                # .62: Live fails an empty transient directory rather than caching
+                # zero senders; working movie/series fallback stays successful.
                 args,kwargs=self.ends[0]
-                self.assertTrue(kwargs.get('succeeded',args[1] if len(args)>1 else False))
+                self.assertEqual(kwargs.get('succeeded',args[1] if len(args)>1 else False),action!='widget_live_start_group')
             self.items.clear();self.ends.clear();self.run_entry();self.assertEqual(len(self.items),8)
         finally: db.close()
 

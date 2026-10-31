@@ -44,6 +44,11 @@ def error(exc):
 
 
 def show(router,portal):
+    if router._params.get('shortcuts62') in ('check','restore'):
+        from boot_diagnostics import finish_directory
+        finish_directory(router,succeeded=False,cacheToDisc=False)
+        from shortcuts62 import show as compatibility
+        compatibility(restore=router._params['shortcuts62']=='restore');return
     if router._handle<0:
         import xbmc
         xbmc.executebuiltin('ActivateWindow(Videos,'+router.url(action='widget_setup',pid=portal['id'])+',return)');return
@@ -66,6 +71,9 @@ def show(router,portal):
         item.setInfo('video',dict(title=tr(label),plot=tr(36612)))
         item.setArt(dict(icon=icon('widget_setup')))
         xbmcplugin.addDirectoryItem(router._handle,router.url(action=action,pid=portal['id']),item,isFolder=False)
+    for label,mode in ((36641,'check'),(36642,'restore')):
+        item=xbmcgui.ListItem(tr(label));item.setProperty('IsPlayable','false')
+        xbmcplugin.addDirectoryItem(router._handle,router.url(action='widget_setup',pid=portal['id'],shortcuts62=mode),item,isFolder=False)
     finish_directory(router,succeeded=True,cacheToDisc=False)
 
 
