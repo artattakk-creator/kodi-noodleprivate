@@ -56,6 +56,8 @@ def main():
                 run('exec', name, 'python3', '/work/probe.py', stdout=output)
         except subprocess.CalledProcessError:
             # Preserve synthetic native pixels even when a visual assertion fails.
+            # This disposable profile contains synthetic fixtures only.
+            run('exec',name,'python3','-c',"import json; from pathlib import Path; files=list(Path('/root').glob('series64-*.json')); print('SYNTHETIC_SERIES64_DIAG '+json.dumps({p.name:json.loads(p.read_text()) for p in files})); log=Path('/root/.kodi/temp/kodi.log').read_text(errors='replace'); print('SYNTHETIC_KODI64_ERRORS\\n'+'\\n'.join(v for v in log.splitlines() if 'error' in v.lower() or 'Traceback' in v or 'File \\"' in v)[-16000:])")
             import base64
             for index in (0, 1, 87):
                 target = report / ('home64-' + str(index) + '.png')
