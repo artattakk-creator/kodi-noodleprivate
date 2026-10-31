@@ -67,11 +67,14 @@ def read(path,missing=False):
     finally:os.close(fd)
 
 def publish_revision(code,token=''):
-    try:
-        import xbmcgui
-        value=hashlib.sha256((code+'\0'+token).encode()).hexdigest()
-        xbmcgui.Window(10000).setProperty('XCMate.TMDB61.Revision',value)
-    except (ImportError,AttributeError,RuntimeError):pass
+    # Persist only non-secret file identity. Kodi keeps this hidden setting in
+    # its RAM settings cache and restores it before any Home directory runs.
+    # Missing file: the original .60 legacy fingerprint stays byte-identical.
+    from utils import setting
+    import xbmcaddon
+    value='' if code=='FILE_MISSING' else code+':'+hashlib.sha256(token.encode()).hexdigest()
+    if setting('tmdb_token_revision61','')!=value:
+        xbmcaddon.Addon().setSetting('tmdb_token_revision61',value)
 
 def effective_tmdb_read_token(force=False):
     """File wins; invalid/unreadable file blocks legacy fallback. No HTTP."""
@@ -93,14 +96,11 @@ def effective_tmdb_read_token(force=False):
         return token
 
 def token_fingerprint():
-    """RAM / Kodi-property lookup only; provider art never depends on token."""
+    """Only Kodi's RAM settings cache; stable across interpreter/Kodi restart."""
     from utils import setting
-    legacy=hashlib.sha256(setting('tmdb_read_token43','').encode()).hexdigest()
-    try:
-        import xbmcgui
-        revision=xbmcgui.Window(10000).getProperty('XCMate.TMDB61.Revision')
-    except (ImportError,AttributeError,RuntimeError):revision=''
-    return hashlib.sha256((revision+'|'+legacy).encode()).hexdigest()
+    revision=setting('tmdb_token_revision61','')
+    if revision:return hashlib.sha256(revision.encode()).hexdigest()
+    return hashlib.sha256(setting('tmdb_read_token43','').encode()).hexdigest()
 
 def status():
     try:effective_tmdb_read_token(force=True)

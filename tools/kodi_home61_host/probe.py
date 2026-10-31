@@ -68,7 +68,14 @@ for _ in range(100):
 from urllib.parse import urlsplit,parse_qs
 path='plugin://plugin.video.xtreammate/?action=settings_home&pid=fixture59'
 visited=[]
+rpc('GUI.ActivateWindow',{'window':'videos','parameters':[path,'return']})
 for target in ('appearance','widget_setup','widget_skin50'):
+    for _ in range(100):
+        labels=rpc('XBMC.GetInfoLabels',{'labels':['Container.FolderPath']})
+        current=rpc('GUI.GetProperties',{'properties':['currentwindow','currentcontrol']})
+        if labels['Container.FolderPath']==path and current['currentwindow']['id']==10025:break
+        time.sleep(.1)
+    else:raise RuntimeError('MENU_DIRECTORY_NOT_READY '+repr((path,labels,current)))
     rows=rpc('Files.GetDirectory',dict(directory=path,media='files'))['files']
     def matches(row):
         query=parse_qs(urlsplit(row['file']).query)
@@ -76,10 +83,14 @@ for target in ('appearance','widget_setup','widget_skin50'):
     found=[row for row in rows if matches(row)]
     assert len(found)==1,(target,rows)
     visited.append(dict(label=found[0]['label'],url=found[0]['file']))
-    rpc('GUI.ActivateWindow',{'window':'videos','parameters':[path,'return']})
-    time.sleep(.5)
+    # Actual remote selection, including native directory completion/handoff.
+    for _ in range(14):
+        current=rpc('GUI.GetProperties',{'properties':['currentwindow','currentcontrol']})
+        if current['currentcontrol']['label'].strip('[]')==found[0]['label']:
+            rpc('Input.Select');time.sleep(.3);break
+        rpc('Input.Down');time.sleep(.2)
+    else:raise RuntimeError('VISIBLE_MENU_ACTION_NOT_FOCUSABLE '+repr((target,current,found[0]['label'])))
     path=found[0]['file']
-rpc('Addons.ExecuteAddon',{'addonid':'plugin.video.xtreammate','params':'?'+urlsplit(path).query})
 seen_preview=False;approved=False;states=[]
 for _ in range(200):
     current=rpc('GUI.GetProperties',{'properties':['currentwindow','currentcontrol']})
@@ -91,9 +102,9 @@ for _ in range(200):
         if not current['currentcontrol']['label'].lower().startswith(('yes','ja')):
             rpc('Input.Left');time.sleep(.5)
         rpc('Input.Select');time.sleep(.6);approved=True
-    if Path('/root/builder61-called').exists():break
+    if Path('/root/builder61-complete').exists():break
     time.sleep(.15)
-assert seen_preview and approved and Path('/root/builder61-called').exists(),states
+assert seen_preview and approved and Path('/root/builder61-complete').exists(),states
 rpc('GUI.ActivateWindow',{'window':'home'})
 rpc('Addons.ExecuteAddon', {'addonid': 'script.xcmate.guicontract59'})
 for _ in range(1200):
@@ -128,9 +139,15 @@ for i in (0, 1, 87):
         raise RuntimeError('SCREENSHOT_NOT_COMPLETE')
     assert pictures[i].size == (1920, 1080)
     logo = ((20 + i * 17) % 230, (90 + i * 23) % 230, (150 + i * 13) % 230)
-    assert max(abs(a-b) for a,b in zip(pictures[i].getpixel((330, 645)), logo)) <= 5
+    if i<87:
+        assert max(abs(a-b) for a,b in zip(pictures[i].getpixel((330,645)),logo))<=5
+        assert max(abs(a-b) for a,b in zip(pictures[i].getpixel((1400,40)),logo))<=5
+    else:
+        assert sum(1 for r,g,b in pictures[i].crop((285,617,405,675)).getdata() if min(r,g,b)>170)>20
+    neutral=Image.open('/root/.kodi/addons/plugin.video.xtreammate/resources/media/programme46/neutral.png').convert('RGB').resize((1008,567))
+    assert max(abs(a-b) for a,b in zip(pictures[i].getpixel((700,250)),neutral.getpixel((430,250))))<=3
 assert rpc('Player.GetActivePlayers') == []
 report = dict(kodi=version, skin='BINGIE MOD 2.2.3', native_home=10000, synthetic_provider=True, native_directory=88, last_station_reachable=True,
-              focused_hero=samples, decoded_hero_images=0, decoded_focused_logos=3, neutral_no_epg_pixels='PASS', no_player_start=True, android='NOT_TESTED', menu_path=visited,explicit_preview_and_approval=True,external_helpers='NO_OP; builder copies pinned native Template output after approval',epg=False,token=False,
+              focused_hero=samples, decoded_hero_images=0, decoded_focused_logos=2, missing_logo_text_pixels=True, neutral_no_epg_pixels='PASS', no_player_start=True, android='NOT_TESTED', menu_path=visited,explicit_preview_and_approval=True,external_helpers='NO_OP; builder copies pinned native Template output after approval',epg=False,token=False,
               screenshot_sha256={str(i): hashlib.sha256(Path('/root/home61-' + str(i) + '.png').read_bytes()).hexdigest() for i in (0,1,87)})
 print(json.dumps(report, indent=2))

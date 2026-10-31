@@ -27,7 +27,7 @@ if p.get('fixture59')==['seed']:
  stations=[];events={};now=int(time.time())
  for i in range(88):
   uri='https://provider.example.test/logo/'+str(i)+'.png'
-  stations.append(dict(stream_id=str(i),name='Station '+str(i),category_id='a',epg_channel_id='xml'+str(i),stream_icon=uri))
+  stations.append(dict(stream_id=str(i),name='Station '+str(i),category_id='a',epg_channel_id='xml'+str(i),stream_icon=uri if i<87 else ''))
   Image.new('RGB',(120,60),((20+i*17)%230,(90+i*23)%230,(150+i*13)%230)).save(art/(hashlib.sha256(uri.encode()).hexdigest()+'.img'),format='PNG')
   if i<87:events['xml'+str(i)]=[dict(name='Synthetic film '+str(i),title='Synthetic film '+str(i),channel='xml'+str(i),descr='Exact local description '+str(i),category='Spielfilm',year=2024,start_timestamp=now-600,stop_timestamp=now+1200),dict(name='Next '+str(i),channel='xml'+str(i),descr='Next event',start_timestamp=now+1200,stop_timestamp=now+2400)]
  replace_catalog(portal['id'],'live',stations,[dict(category_id='a',category_name='Synthetic start group')])
@@ -36,6 +36,7 @@ if p.get('fixture59')==['seed']:
  li=xbmcgui.ListItem('Seeded');xbmcplugin.addDirectoryItem(handle,'fixture',li,False);xbmcplugin.endOfDirectory(handle)
 
 else:
+ Path('/root/argv61.json').write_text(json.dumps(sys.argv))
  import widget_manager50,traceback
  original_error=widget_manager50.error
  def fixture_error(exc):

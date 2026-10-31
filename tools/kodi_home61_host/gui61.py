@@ -20,21 +20,23 @@ for index in (0, 1, 87):
     started = time.monotonic()
     from PIL import Image, UnidentifiedImageError
     expected = ((20 + index * 17) % 230, (90 + index * 23) % 230, (150 + index * 13) % 230)
-    for attempt in range(30):
+    for attempt in range(10):
         # Kodi encodes asynchronously. Never let a later pending capture
         # overwrite the already verified evidence filename.
         capture = Path('/root/capture61-' + str(index) + '-' + str(attempt) + '.png')
         xbmc.executebuiltin('TakeScreenshot(' + str(capture) + ')', wait=False)
-        xbmc.sleep(350)
+        for pending in range(40):
+            if capture.exists() and capture.stat().st_size>1000:break
+            xbmc.sleep(100)
         try:
             import io
             captured_bytes = capture.read_bytes()
             with Image.open(io.BytesIO(captured_bytes)) as frame:
                 frame.load()
                 rgb = frame.convert('RGB')
-            hero = (20,80,130) if index == 0 else (130,50,30)
-            if (max(abs(a-b) for a,b in zip(rgb.getpixel((330,645)), expected)) <= 5 and
-                    True):
+            text_pixels=sum(1 for r,g,b in rgb.crop((285,617,405,675)).getdata() if min(r,g,b)>170)
+            logo_ready=max(abs(a-b) for a,b in zip(rgb.getpixel((330,645)), expected))<=5 if index<87 else text_pixels>20
+            if logo_ready:
                 Path('/root/home61-' + str(index) + '.png').write_bytes(captured_bytes)
                 break
         except (OSError, UnidentifiedImageError):

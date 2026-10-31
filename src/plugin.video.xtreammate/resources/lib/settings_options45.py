@@ -11,7 +11,7 @@ def definitions(group):
  target=dict((key,str(ident)) for ident,key in SECTIONS).get(group)
  root=ET.parse(os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources/settings.xml')).getroot()
  cat=next((c for c in root if c.get('label')==target),None)
- hidden={'experimental_open45','active_portal_id','xcmate_ui_language','autoplay_diagnostics_safe','downloads_folder_enabled'}
+ hidden={'tmdb_token_revision61','experimental_open45','active_portal_id','xcmate_ui_language','autoplay_diagnostics_safe','downloads_folder_enabled'}
  return [dict(n.attrib) for n in cat if n.get('id') and n.get('type')!='lsep' and n.get('id') not in hidden] if cat is not None else []
 
 def show(router,group):

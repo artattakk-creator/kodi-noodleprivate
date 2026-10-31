@@ -43,7 +43,7 @@ class Token61(Fixture,unittest.TestCase):
   before=dict(self.options);protected=self.folder/'portals.json';protected.write_bytes(b'keep')
   self.assertEqual(self.t.import_file(str(self.source),None),'IMPORTED')
   self.assertEqual(self.path.read_bytes(),FIXTURE+b'\n');self.assertEqual(self.path.stat().st_mode&0o777,0o600)
-  self.assertEqual(self.source.read_bytes(),FIXTURE);self.assertEqual(protected.read_bytes(),b'keep');self.assertEqual(self.options,before)
+  self.assertEqual(self.source.read_bytes(),FIXTURE);self.assertEqual(protected.read_bytes(),b'keep');self.assertEqual({k:v for k,v in self.options.items() if k!='tmdb_token_revision61'},before)
   self.assertFalse(list(self.folder.glob('.tmdb61-*')))
  def test_existing_file_requires_exact_reviewed_digest_and_changed_file_is_protected(self):
   self.path.write_bytes(b'old')
@@ -74,13 +74,30 @@ class Token61(Fixture,unittest.TestCase):
  def test_import_ui_cancel_and_overwrite_decline_preserve_bytes(self):
   ui=importlib.import_module('tmdb_access61');self.path.write_bytes(FIXTURE+b'\n');before=self.path.read_bytes()
   self.dialog.browseSingle=mock.Mock(return_value=str(self.source));self.dialog.select.side_effect=[0,-1];self.dialog.yesno.return_value=False
-  ui.show();self.assertEqual(self.path.read_bytes(),before);self.assertFalse(self.options)
+  ui.show();self.assertEqual(self.path.read_bytes(),before);self.assertFalse(set(self.options)-{'tmdb_token_revision61'})
  def test_exact_epg_submenu_and_import_does_not_enable_artwork(self):
   sections=importlib.import_module('settings_sections45');self.assertIn((36620,'native_options45',{'group':'tmdb_access61'}),sections.ROWS['epg'])
   ui=importlib.import_module('tmdb_access61');self.dialog.browseSingle=mock.Mock(return_value=str(self.source));self.dialog.select.side_effect=[0,-1]
-  ui.show();self.assertEqual(self.path.read_bytes(),FIXTURE+b'\n');self.assertFalse(self.options)
+  ui.show();self.assertEqual(self.path.read_bytes(),FIXTURE+b'\n');self.assertFalse(set(self.options)-{'tmdb_token_revision61'})
   self.assertNotIn(FIXTURE.decode(),str(self.dialog.ok.call_args_list))
  def test_restart_reloads_valid_file_and_invalid_replacement_blocks_fallback(self):
   self.t.import_file(str(self.source),None);self.t._cache=None;self.assertEqual(self.t.effective_tmdb_read_token(),FIXTURE.decode())
   self.path.write_bytes(b'broken');self.options['tmdb_read_token43']='legacy'
   with self.assertRaises(self.t.TokenError):self.t.effective_tmdb_read_token(True)
+
+ def test_legacy_fingerprint_is_byte_identical_to_60_across_kodi_restart(self):
+  self.options['tmdb_read_token43']='legacy-syntax-fixture'
+  expected=hashlib.sha256(b'legacy-syntax-fixture').hexdigest()
+  self.assertEqual(self.t.token_fingerprint(),expected)
+  self.t.effective_tmdb_read_token(True);self.assertEqual(self.t.token_fingerprint(),expected)
+  self.properties.clear();self.t._cache=None
+  self.assertEqual(self.t.token_fingerprint(),expected)
+ def test_file_fingerprint_persists_across_kodi_restart_without_focus_disk_io(self):
+  self.t.import_file(str(self.source),None);expected=self.t.token_fingerprint()
+  self.assertIn('tmdb_token_revision61',self.options)
+  self.assertNotIn(FIXTURE.decode(),repr(self.options))
+  self.properties.clear();self.t._cache=None
+  with mock.patch.object(self.t,'read',side_effect=AssertionError('focus disk IO')):
+   self.assertEqual(self.t.token_fingerprint(),expected)
+   self.options['tmdb_read_token43']='irrelevant-legacy-edit'
+   self.assertEqual(self.t.token_fingerprint(),expected)
