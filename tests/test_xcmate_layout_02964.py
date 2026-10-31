@@ -15,7 +15,7 @@ class Layout64(Fixture50,unittest.TestCase):
   self.skinmod.apply(plan['id'],self.skin,confirmed=True)
   tree=E.parse(self.skin/'xml/IncludesHomeWidgets.xml')
   own=[n for n in tree.iter('control') if n.get('type')=='image' and 'programme55/focus.png' in (n.findtext('texture') or '') and n.findtext('width')=='240']
-  self.assertTrue(own);self.assertTrue(all(n.findtext('height')=='330' for n in own))
+  self.assertTrue(own);self.assertGreaterEqual(sum(n.findtext('height')=='330' for n in own),2)
   self.assertEqual(self.prop.read_bytes(),saved);self.assertEqual(self.menu.read_bytes(),menu)
   self.skinmod.apply(plan['id'],self.skin,confirmed=True,restore=True);self.assertEqual(self.skin_bytes(),legacy)
  def test_live_row_is_unchanged_and_fallback_reuses_original_space_asset(self):

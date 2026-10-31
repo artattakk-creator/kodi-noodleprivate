@@ -62,14 +62,16 @@ def main():
                 copied = subprocess.run(docker + ['cp', name + ':/root/home64-' + str(index) + '.png', str(target)], env=env, check=False, stdout=subprocess.DEVNULL)
                 if copied.returncode == 0 and index == 0:
                     print('HERO64_FAILURE_PREVIEW_BASE64 ' + base64.b64encode(target.read_bytes()).decode(), flush=True)
+            media = report/'media64-last.png'
+            copied = subprocess.run(docker+['cp',name+':/root/media64-last.png',str(media)],env=env,check=False,stdout=subprocess.DEVNULL)
+            if copied.returncode==0:print('MEDIA64_FAILURE_PREVIEW_BASE64 '+base64.b64encode(media.read_bytes()).decode(),flush=True)
             raise
         result = json.loads((report / 'home.json').read_text())
         for i in (0, 1, 87):
             run('cp', name + ':/root/home64-' + str(i) + '.png', str(report / ('home64-' + str(i) + '.png')))
             assert hashlib.sha256((report / ('home64-' + str(i) + '.png')).read_bytes()).hexdigest() == result['screenshot_sha256'][str(i)]
-        name_container64=name
-        for name in ('media64-vod-0.png','media64-vod-5.png','media64-series-0.png','media64-series-5.png','media64-series-9.png','media64.json'):
-            run('cp',name if False else name,stdout=subprocess.DEVNULL) if False else run('cp', name_container64 + ':/root/' + name, str(report/name))
+        for asset_name in ('media64-vod-0.png','media64-vod-5.png','media64-series-0.png','media64-series-5.png','media64-series-9.png','media64.json'):
+            run('cp', name + ':/root/' + asset_name, str(report/asset_name))
         print(json.dumps(result))
         # Synthetic fixture only, explicitly watermarked. Enables remote visual
         # review when the managed executor is unavailable; never a device log.

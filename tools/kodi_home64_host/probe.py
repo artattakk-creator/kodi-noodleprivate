@@ -114,6 +114,7 @@ rpc('GUI.ActivateWindow',{'window':'home'})
 rpc('Addons.ExecuteAddon', {'addonid': 'script.xcmate.guicontract59'})
 for _ in range(1200):
     fixture_prompt()
+    if Path('/root/media64-error.json').exists():raise RuntimeError('MEDIA64_FAILURE '+Path('/root/media64-error.json').read_text())
     if Path('/root/media64.json').exists():
         break
     time.sleep(.1)
