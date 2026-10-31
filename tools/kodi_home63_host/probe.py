@@ -146,14 +146,15 @@ for i in (0, 1, 87):
     logo = ((20 + i * 17) % 230, (90 + i * 23) % 230, (150 + i * 13) % 230)
     if i<87:
         assert max(abs(a-b) for a,b in zip(pictures[i].getpixel((330,645)),logo))<=5
-        assert max(abs(a-b) for a,b in zip(pictures[i].getpixel((366,50)),logo))<=5
+        assert max(abs(a-b) for a,b in zip(pictures[i].getpixel((366,106)),logo))<=5
     else:
         assert sum(1 for r,g,b in pictures[i].crop((285,617,405,675)).getdata() if min(r,g,b)>170)>20
     if i in (0,1):
         expected=(20,80,130) if i==0 else (130,50,30)
         for point in ((1450,180),(1700,180),(1880,180)):
             assert max(abs(a-b) for a,b in zip(pictures[i].getpixel(point),expected))<=5
-        assert sum(1 for r,g,b in pictures[i].crop((280,80,1200,190)).getdata() if min(r,g,b)>180)>200
+        assert sum(1 for r,g,b in pictures[i].crop((280,150,1285,275)).getdata() if min(r,g,b)>180)>200
+        assert sum(1 for y in range(358,378) if pictures[i].getpixel((500,y))[0]<40 and pictures[i].getpixel((500,y))[1]>120 and pictures[i].getpixel((500,y))[2]>200)>=6
         assert samples[str(i)]['warm_now']==samples[str(i)]['ProgrammeTitle46'] and samples[str(i)]['warm_next']==samples[str(i)]['ProgrammeNext46']
         assert samples[str(i)]['warm_seed_ms']<1000
     else:

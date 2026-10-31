@@ -15,7 +15,7 @@ class Hero63(Fixture50,unittest.TestCase):
   hero=new.find("include[@name='XCMate50.Hero']")
   images=[n for n in hero.iter('control') if n.get('type')=='image']
   background=next(n for n in images if n.findtext('width')=='1920')
-  self.assertEqual(background.findtext('left'),'0');self.assertEqual(background.findtext('height'),'540');self.assertEqual(background.findtext('aspectratio'),'scale')
+  self.assertEqual(background.findtext('left'),'0');self.assertEqual(background.findtext('height'),'570');self.assertEqual(background.findtext('aspectratio'),'scale')
   self.assertEqual(background.find('aspectratio').get('aligny'),'top')
   labels=[n for n in hero.iter('control') if n.get('type') in ('label','textbox')]
   self.assertTrue(any(n.findtext('label')=='$VAR[XCMate63.Title]' and int(n.findtext('left'))<400 for n in labels))

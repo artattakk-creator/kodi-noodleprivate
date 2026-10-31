@@ -48,16 +48,16 @@ def register(pid,value,expected_revision=None):
     if value is None:return
     from epg_status import revision
     if expected_revision is not None and expected_revision!=revision(pid):return
-    import xbmcgui
-    window=xbmcgui.Window(10000);key=meta_key(pid)
     try:
+        import xbmcgui
+        window=xbmcgui.Window(10000);key=meta_key(pid)
         old=window.getProperty(key)
         prior=json.loads(old) if old else None
         if isinstance(prior,list) and len(prior)==2 and isinstance(value,(list,tuple)) and len(value)==2:
             if type(prior[1]) in (int,float) and type(value[1]) in (int,float) and value[1]<prior[1]:return
         tag=revision_tag(value)
         if old!=tag:window.setProperty(key,tag)
-    except (AttributeError,RuntimeError,ValueError,TypeError):pass
+    except (ImportError,AttributeError,RuntimeError,ValueError,TypeError):pass
 
 
 def note(stage,pid='',sid='',code='READY',duration_ms=0,facts=None):

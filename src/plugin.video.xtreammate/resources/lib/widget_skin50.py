@@ -106,7 +106,7 @@ def guard(skin):
     root=Path(skin).resolve();meta=xml(read(root/'addon.xml'))
     if meta.get('id')!='skin.titan.bingie.mod' or meta.get('version')!='2.2.3':raise ValueError('UNVERIFIED_SKIN_VERSION')
     fonts={e.findtext('name') for e in xml(read(root/'xml/Font.xml')).iter('font')}
-    if not {'Reg18','Bold22','Bold40'}<=fonts:raise ValueError('UNVERIFIED_FONTS')
+    if not {'Reg18','Reg22','Bold22','Bold40','Bold60'}<=fonts:raise ValueError('UNVERIFIED_FONTS')
     paths=[root/name for name in FILES]
     if any(p.is_symlink() or root not in p.resolve().parents for p in paths):raise ValueError('UNSAFE_TARGET')
     return paths

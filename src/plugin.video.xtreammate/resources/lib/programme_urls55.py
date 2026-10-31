@@ -113,22 +113,22 @@ def probe(url,cancel=lambda:False):
         if response is not None:response.close()
 
 
-def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None):
-    """Worker only. No full image download, no image file and no guide writes."""
+def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,local_image63=False):
+    """Worker-only URL mode or explicit bounded materialization in the existing cache."""
     from programme_index46 import art,event as save_event
     from programme_art46 import fingerprint,remember
     from media_sources43 import SourceError
     from programme_sources57 import PROOFS,policy,attempts,trace as source_trace
     from helper_rpc57 import Error as HelperError
     old=art(event)
-    if old and not old.get('url_version55') and old.get('source') in ('tmdb_movie','tmdb_episode') and old.get('fingerprint')==fingerprint(event) and old.get('until',0)>time.time():
+    if old and not old.get('url_version55') and (local_image63 or old.get('source') in ('tmdb_movie','tmdb_episode')) and old.get('source')!='placeholder' and old.get('fingerprint')==fingerprint(event) and old.get('until',0)>time.time():
         from programme_art46 import indexed
         local60=indexed(event,verify=True)
         if local60:return local60
     current=display(event,old)
     from programme_refresh63 import retry as retry63
     explicit63=allow_lookup and retry63(event,old)
-    if current and not explicit63 and not (allow_lookup and current.get('source')=='placeholder' and
+    if current and not (local_image63 and current.get('source')!='placeholder') and not explicit63 and not (allow_lookup and current.get('source')=='placeholder' and
             (current.get('code')=='AWAITING_BACKGROUND_REFRESH' or not current.get('matching_policy57') or current.get('source_policy57')!=policy())):return current
     if cancel():return None
     now=time.time()
@@ -187,7 +187,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None):
         secrets=[str(portal.get(k) or '') for k in ('xc_user','xc_pass')]
         if any(secret and (secret in path.split('/') or len(secret)>=4 and secret in path) for secret in secrets):
             value['code']='BLOCKED_CREDENTIAL_URL';continue
-        if candidate.get('source') in ('tmdb_movie','tmdb_episode'):
+        if local_image63 or candidate.get('source') in ('tmdb_movie','tmdb_episode'):
             from programme_art46 import prepare as materialize60
             return materialize60(event,cancel=cancel,resolved60=candidate)
         try:(check or probe)(url,cancel=cancel)
@@ -229,14 +229,14 @@ def refreshed(pid,revision):
     return eligible
 
 
-def enqueue(event,allow_lookup=False):
+def enqueue(event,allow_lookup=False,local_image63=False):
     """Called only by existing background producers, never by focus/details."""
     global _thread
     if _stop.is_set() or not event.get('title'):return False
     with _lock:
         key=event['key']
         if key in _pending or len(_pending)>=24:return False
-        _pending.add(key);_queue[key]=(dict(event),allow_lookup)
+        _pending.add(key);_queue[key]=(dict(event),allow_lookup,True) if local_image63 else (dict(event),allow_lookup)
         if _thread is None or not _thread.is_alive():
             _thread=threading.Thread(target=_run,name='XCMate-programme-URL55',daemon=True);_thread.start()
     _wake.set();return True
@@ -246,9 +246,11 @@ def _run():
     while not _stop.is_set():
         with _lock:pair=_queue.popitem(last=False) if _queue else None
         if pair is None:_wake.wait(.5);_wake.clear();continue
-        key,(event,allow)=pair
+        key,job=pair;event,allow=job[:2];local63=len(job)>2 and job[2]
         try:
-            try:resolve(event,cancel=_stop.is_set,allow_lookup=allow)
+            try:
+                if local63:resolve(event,cancel=_stop.is_set,allow_lookup=allow,local_image63=True)
+                else:resolve(event,cancel=_stop.is_set,allow_lookup=allow)
             except Exception:pass  # No private exception text, keep worker alive.
         finally:
             with _lock:_pending.discard(key)

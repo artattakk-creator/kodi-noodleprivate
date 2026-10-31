@@ -99,3 +99,7 @@ class Handoff63(Fixture,unittest.TestCase):
   self.assertGreaterEqual(len(second['events']),10)
   self.assertEqual([e['title'] for e in first['events']],[e['title'] for e in second['events']])
   self.assertLessEqual(len(self.bridge.get('p','1',now=self.now)['events']),4)
+ def test_headless_worker_keeps_local_data_when_no_kodi_window_bridge_is_available(self):
+  with mock.patch('xbmcgui.Window',None):
+   value=self.read()
+  self.assertEqual(value['now'],'Current local event');self.assertEqual(value['next'],'Following local event')

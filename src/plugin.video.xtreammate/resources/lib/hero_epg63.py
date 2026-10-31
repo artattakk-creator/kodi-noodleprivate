@@ -17,7 +17,7 @@ def poll():
     if not pid or not sid or len(token)!=32:return
     from epg_handoff63 import get,note,profile_scope,state
     from epg_views import guide_for_channel
-    from live_text63 import apply
+    from live_text63 import apply,local_image
     scope=profile_scope();current=(pid,sid,token,scope)
     with _lock:
         changed=_focus!=current;_focus=current;art=dict(_art) if _art else {}
@@ -26,14 +26,19 @@ def poll():
     neutral=os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media','programme46','neutral.png')
     key=label('XCMate.ProgrammeKey47')
     props={'XCMate.ProgrammeKey47':key,'XCMate.ProgrammeImage46':label('XCMate.ProgrammeImage46') or neutral,
-           'XCMate.ProgrammeArtSource57':label('XCMate.ProgrammeArtSource57')}
+           'XCMate.ProgrammeArtSource57':label('XCMate.ProgrammeArtSource57'),
+           'XCMate.ProgrammeImageScope57':label('XCMate.ProgrammeImageScope57'),
+           'XCMate.FallbackLabel63':label('XCMate.FallbackLabel63')}
     labels=(label('XCMate.NoEpg63'),label('XCMate.RemainingFormat63'))
     if not all(labels):labels=_labels
     if not labels:return  # Static native ListItem remains usable until the worker warms labels.
     apply(dict(props=props),dict(id=pid),dict(sid=sid),info,labels=labels)
     event_key=info.get('programme_key47','')
-    if art.get('profile63')==scope and art.get('key')==event_key and art.get('code') in ('READY','READY_STALE') and art.get('source')!='placeholder':
+    if art.get('profile63')==scope and art.get('key')==event_key and art.get('code') in ('READY','READY_STALE') and art.get('source')!='placeholder' and local_image(art.get('image','')):
         props['XCMate.ProgrammeImage46']=art['image'];props['XCMate.ProgrammeArtSource57']=art.get('source','')
+        if art.get('image_scope57')=='series_fallback' and props.get('XCMate.FallbackLabel63'):
+            note63=props['XCMate.FallbackLabel63']
+            if not props['XCMate.ProgrammeDescription46'].startswith(note63):props['XCMate.ProgrammeDescription46']=note63+'\n'+props['XCMate.ProgrammeDescription46']
     values=dict(Title=props['XCMate.ProgrammeTitle46'],Times=props['XCMate.ProgrammeTimes46'],
         Next=props['XCMate.ProgrammeNext46'],NextTimes=props['XCMate.ProgrammeNextTimes48'],
         Description=props['XCMate.ProgrammeDescription46'],Remaining=props['XCMate.ProgrammeRemaining63'],
