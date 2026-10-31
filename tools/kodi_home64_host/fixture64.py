@@ -63,6 +63,19 @@ if p.get('fixture59')==['seed']:
  li=xbmcgui.ListItem('Seeded');xbmcplugin.addDirectoryItem(handle,'fixture',li,False);xbmcplugin.endOfDirectory(handle)
 
 else:
+ import programme_assets47
+ original_assets64=programme_assets47.read_many
+ def diagnose_assets64(pid,kind,rows,**kwargs):
+  started=time.monotonic();value=original_assets64(pid,kind,rows,**kwargs)
+  if kind=='series':
+   import programme_index46
+   db=programme_index46.connect(False)
+   raw=list(db.execute("SELECT sid,fingerprint,data,expires FROM asset_refs47 WHERE pid=? AND kind='series'",(str(pid),))) if db is not None else []
+   if db is not None:db.close()
+   first=rows[0] if rows else {}
+   Path('/root/series64-route.json').write_text(json.dumps(dict(rows=len(rows),ready=len(value),raw=len(raw),first=first,source=programme_assets47.sources(first,provider_only=True),record=raw[0] if raw else None,ms=round((time.monotonic()-started)*1000,2))))
+  return value
+ programme_assets47.read_many=diagnose_assets64
  import programme_events46
  original_describe60=programme_events46.describe
  def diagnostic_describe60(*a,**kw):

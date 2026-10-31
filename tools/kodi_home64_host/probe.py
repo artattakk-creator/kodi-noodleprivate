@@ -44,7 +44,8 @@ assert len({r['file'] for r in directory['files']}) == 88
 assert all('action=play_live' in r['file'] for r in directory['files'])
 series64=rpc('Files.GetDirectory', dict(directory='plugin://plugin.video.xtreammate/?action=widget_recent_series&pid=fixture59',media='video',properties=['art'],limits=dict(start=0,end=24)))
 assert series64['limits']['total']==24
-assert all('/series64/poster-' in row['art'].get('poster','') for row in series64['files']),series64
+from urllib.parse import unquote
+assert all('/series64/poster-' in unquote(row['art'].get('poster','')) for row in series64['files']),[json.loads(Path('/root/series64-'+stage+'.json').read_text()) for stage in ('stored','after-guide','route')]
 rpc('Addons.SetAddonEnabled', {'addonid':'script.skinshortcuts','enabled':True})
 rpc('Addons.SetAddonEnabled', {'addonid': 'skin.titan.bingie.mod', 'enabled': True})
 rpc('Addons.SetAddonEnabled', {'addonid': 'script.xcmate.guicontract59', 'enabled': True})
