@@ -29,3 +29,5 @@ Für den vollständigen Stand ist der im PR verlinkte abschließende grüne CI-L
 Die verwaltete Entwicklungsumgebung fiel vor nutzbarem Start mit ERS-Readiness-Timeout aus. Ausführbare Verifikation erfolgt über GitHub Actions. Alle realen Android-/Box-B- sowie privaten TMDB-Verbindungsprüfungen bleiben ANDROID_NOT_TESTED. Keine privaten Dateien oder Kodi-Rohlogs verwendet, kein Gerät verändert, Box A unangetastet.
 
 Paket-SHA256 und genaue Abschlusswerte werden im Abschlusskommentar desselben Draft-PR #294 aus dem erfolgreichen aktuellen CI-Artefakt angegeben. [Testbericht](TESTBERICHT_02963_DE.md) und [Android-Abnahmeplan](ANDROID_ABNAHME_02963_DE.md) trennen Hostbelege und echte Gerätegates.
+
+Native Prüfung des Fortschritts: Kodi21 kann Window.Property als Text, aber nicht über den GetInt-Pfad eines Progress-Controls lesen. Deshalb bekommen die zwei eigenen inaktiven Hero-Balken numerische setPercent-Nachrichten vor dem atomaren Bankwechsel; nur der statische native ListItem-Fallback verwendet ein unterstütztes numerisches Info-Label. Beide Bankwechsel und die tatsächlichen cyanfarbenen Pixel werden geprüft.

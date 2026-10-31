@@ -47,16 +47,21 @@ def poll():
         ArtSource=props.get('XCMate.ProgrammeArtSource57',''))
     signature=(current,tuple(values.items()))
     if signature==_last:return
-    previous=_last;_last=signature
+    previous=_last
     window=xbmcgui.Window(10000)
     bank='B' if window.getProperty('XCMate.Hero63.Active')=='A' else 'A'
     # Double-buffer the entire presentation. Switch only after all fields and
     # identity are ready; no blank frame or previous station's mixed text.
     prefix='XCMate.Hero63.'+bank+'.'
+    # Kodi21 GetInt does not support Window.Property info labels. Send a
+    # numeric message to the inactive own progress control before bank commit.
+    try:window.getControl(296301 if bank=='A' else 296302).setPercent(float(values['Percent']))
+    except (AttributeError,RuntimeError,ValueError):return  # Layout is not ready; retry next UI tick.
     for name,value in values.items():window.setProperty(prefix+name,str(value))
     window.setProperty(prefix+'Profile',scope)
     window.setProperty(prefix+'Identity',token)
     window.setProperty('XCMate.Hero63.Active',bank)
+    _last=signature
     if changed or previous is None or previous[1][0]!=signature[1][0]:
         note('HOME_NOW_NEXT_READY',pid,sid,'READY' if info.get('now') else state(pid,sid),(time.monotonic()-_focused_at)*1000,facts=info)
 

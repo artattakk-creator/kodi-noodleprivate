@@ -63,3 +63,11 @@ class Hero63(Fixture50,unittest.TestCase):
    with mock.patch('xbmcgui.getCurrentWindowId',return_value=10000),mock.patch('xbmcgui.getCurrentWindowDialogId',return_value=0),mock.patch('xbmc.getCondVisibility',return_value=False),mock.patch('epg_handoff63.profile_scope',return_value='different-profile'):upgrade.poll()
    self.dialog.yesno.assert_not_called();self.assertNotIn('bingie_hero63_notice',self.options);self.assertFalse(upgrade._done)
   finally:upgrade._pending=None;upgrade._done=False;upgrade._next=0
+
+ def test_native_progress_banks_use_control_messages_and_static_fallback_is_listitem_numeric(self):
+  hero=E.parse(ADDON/'resources/bingie63/IncludesXCMate63.xml').find("include[@name='XCMate50.Hero']")
+  controls=[n for n in hero.iter('control') if n.get('type')=='progress']
+  self.assertEqual([n.get('id') for n in controls[:2]],['296301','296302'])
+  self.assertTrue(all(n.findtext('info')=='' for n in controls[:2]))
+  self.assertEqual(controls[2].findtext('info'),'ListItem.Property(XCMate.ProgrammePercent46)')
+  self.assertTrue(all(n.find('lefttexture') is not None and n.find('righttexture') is not None and n.find('overlaytexture') is not None for n in controls))

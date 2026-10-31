@@ -38,3 +38,5 @@ Die verwaltete lokale Umgebung scheiterte beim Start; ausführbare Tests laufen 
 Reale Box B/Kodi21.3/ARM32, USB-/SMB-Treiberverhalten, eigener echter TMDB-Token und die sichtbare warme 1-Sekunden-Grenze bleiben ANDROID_NOT_TESTED. Keine Nutzerdatei/-Tokenwerte/-Fragmente/-Tokenhashes und keine privaten Kodi-Rohlogs in den Testbelegen. Keine Änderungen an Box A/B.
 
 [Android-Testplan B63-01 bis B63-19](ANDROID_ABNAHME_02963_DE.md) · [Issue-Matrix](ISSUE_ABNAHMEMATRIX_02963_DE.md).
+
+Native Prüfung des Fortschritts: Kodi21 kann Window.Property als Text, aber nicht über den GetInt-Pfad eines Progress-Controls lesen. Deshalb bekommen die zwei eigenen inaktiven Hero-Balken numerische setPercent-Nachrichten vor dem atomaren Bankwechsel; nur der statische native ListItem-Fallback verwendet ein unterstütztes numerisches Info-Label. Beide Bankwechsel und die tatsächlichen cyanfarbenen Pixel werden geprüft.
