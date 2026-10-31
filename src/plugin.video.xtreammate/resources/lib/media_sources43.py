@@ -120,7 +120,9 @@ def provider(item):
 def tmdb_token():
     from utils import setting_bool,setting
     if not setting_bool('tmdb_research43',False):raise SourceError('TMDB_DISABLED')
-    token=setting('tmdb_read_token43','').strip()
+    from tmdb_token61 import effective_tmdb_read_token,TokenError
+    try:token=effective_tmdb_read_token()
+    except TokenError:raise SourceError('TMDB_TOKEN_FILE_INVALID') from None
     if not token:raise SourceError('TMDB_TOKEN_MISSING')
     return token
 

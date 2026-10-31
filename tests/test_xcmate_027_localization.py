@@ -28,11 +28,11 @@ class LocalizationTests(Fixture,unittest.TestCase):
 
     def test_english_and_german_have_exact_six_home_items(self):
         for locale,expected in (
-            ('en_gb',['Start channel','Live TV','EPG','Movies','Series','Settings','Widgets']),
-            ('de_de',['Startkanal','Live-TV','EPG','Filme','Serien','Einstellungen','Widgets'])):
+            ('en_gb',['Start channel','Live TV','EPG','Movies','Series','Settings','Widgets','Widget setup']),
+            ('de_de',['Startkanal','Live-TV','EPG','Filme','Serien','Einstellungen','Widgets','Widget-Einrichtung'])):
             self.ui_locale=locale
             self.assertEqual(self.show_home(),expected)
-            self.assertEqual(len({url for url,_,_ in self.added}),7)
+            self.assertEqual(len({url for url,_,_ in self.added}),8)
 
     def test_ten_settings_categories_in_both_languages_with_identical_destinations(self):
         urls=[]
@@ -68,7 +68,7 @@ class LocalizationTests(Fixture,unittest.TestCase):
 
     def test_missing_one_german_translation_falls_back_only_that_message(self):
         self.translations['de_de'].pop(32403)
-        self.assertEqual(self.show_home(),['Startkanal','Live-TV','EPG','Movies','Serien','Einstellungen','Widgets'])
+        self.assertEqual(self.show_home(),['Startkanal','Live-TV','EPG','Movies','Serien','Einstellungen','Widgets','Widget-Einrichtung'])
         self.assertEqual(self.ui_locale,'de_de');self.assertFalse(self.options)
 
     def test_unavailable_kodi_translation_uses_bundled_english_without_language_change(self):

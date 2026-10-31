@@ -36,7 +36,9 @@ def request(url, *, api=True, token='', cancel=lambda: False):
 def test_connection(cancel=lambda: False):
     from utils import setting
     from media_sources43 import SourceError, TMDB
-    token = setting('tmdb_read_token43', '').strip()
+    from tmdb_token61 import effective_tmdb_read_token, TokenError
+    try:token = effective_tmdb_read_token(force=True)
+    except TokenError:return 'TOKEN_FILE_INVALID'
     if not token:
         return 'TOKEN_MISSING'
     try:
@@ -63,7 +65,8 @@ def launch():
     result = []
     cancelled = threading.Event()
     messages = {'TMDB_OK': 'TMDB-Verbindung erfolgreich. Authentifizierung und Antwort bestätigt.',
-                'TOKEN_MISSING': 'Kein API Read Access Token hinterlegt. Unter Medien & Wiedergabe privat eintragen.',
+                'TOKEN_MISSING': 'Kein API Read Access Token hinterlegt. Einstellungen → EPG → TMDB-Zugang öffnen.',
+                'TOKEN_FILE_INVALID': 'Vorhandene Token-Datei ist ungültig oder nicht sicher lesbar. Unter EPG → TMDB-Zugang prüfen; kein Rückfall auf das alte Feld.',
                 'HTTP_AUTH': 'Token ungültig oder Zugriff verweigert.', 'HTTP_RATE_LIMIT': 'Anfragelimit erreicht. Mindestens fünf Minuten warten.',
                 'TIMEOUT': 'Zeitüberschreitung.', 'NETWORK_ERROR': 'DNS-, TLS- oder Netzwerkfehler.',
                 'INVALID_RESPONSE': 'TMDB-Antwort nicht auswertbar.', 'CANCELLED': 'Abgebrochen.'}

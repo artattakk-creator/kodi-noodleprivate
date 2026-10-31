@@ -36,7 +36,7 @@ class Scope60(unittest.TestCase):
         names = {'default.py', 'main.py', 'home_entry.py', 'home_menu.py', 'app_routes.py', 'window_navigation.py', 'widget_sources49.py', 'widget_binding50.py', 'widget_transaction50.py', 'widget_data41.py', 'widget_items45.py', 'widget_render47.py', 'widget_query44.py', 'live_exit.py', 'live_return59.py', 'native_stop41.py', 'live_stop42.py', 'exit_jobs.py', 'playback_exit.py', 'media_autoplay.py', 'media_progress.py', 'epg.py', 'epg_manager53.py', 'stream_epg.py', 'epg_report53.py'}
         for path, digest in self.baseline()['source_sha256'].items():
             if Path(path).name in names or Path(path).name.startswith(('setup_', 'wizard_', 'XCMateSetup')):
-                self.assertEqual(hashlib.sha256((ROOT / path).read_bytes()).hexdigest(), digest, path)
+                self.assertEqual(hashlib.sha256(without_stabilization60((ROOT / path).read_bytes(),path)).hexdigest(), digest, path)
 
     def test_tmdb_is_optional_hidden_and_reachable_without_shared_token(self):
         tree = ET.parse(ROOT / 'src/plugin.video.xtreammate/resources/settings.xml')

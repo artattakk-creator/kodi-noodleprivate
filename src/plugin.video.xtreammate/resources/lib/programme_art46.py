@@ -24,7 +24,7 @@ def fingerprint(event):
  if not event.get('xmltv_image') and not event.get('provider_image'):
   from utils import setting_bool,setting
   enabled=setting_bool('programme_tmdb46',False)
-  values.append([enabled,setting_bool('tmdb_research43',False) if enabled else False,hashlib.sha256(str(setting('tmdb_read_token43','')).encode()).hexdigest() if enabled else ''])
+  values.append([enabled,setting_bool('tmdb_research43',False) if enabled else False,__import__('tmdb_token61').token_fingerprint() if enabled else ''])
  return hashlib.sha256(json.dumps(values,sort_keys=True).encode()).hexdigest()
 
 def peek(event):
@@ -133,6 +133,11 @@ def prepare(event,cancel=lambda:False,fetch=None,match=None,resolved60=None):
  """Worker-only operation; also callable with synthetic transports in tests."""
  from media_sources43 import get,validate_image,SourceError
  from programme_match46 import candidate
+ # Worker-only private-file refresh; GUI fingerprint() remains RAM-only.
+ if not event.get('xmltv_image') and not event.get('provider_image'):
+  from tmdb_token61 import effective_tmdb_read_token,TokenError
+  try:effective_tmdb_read_token()
+  except TokenError:pass
  key=event['key'];fp=fingerprint(event);old=indexed(event,verify=True) or persisted(event)
  if resolved60 is None and old and old.get('until',0)>time.time() and not (old.get('code')=='PROGRAMME_CACHE_BUDGET' and old.get('budget46')!=limit()):remember(key,old,verified47=True);return old
  value=dict(key=key,fingerprint=fp,code='NO_IMAGE',image=event['placeholder'],source='placeholder',match='NONE',until=time.time()+6*3600)

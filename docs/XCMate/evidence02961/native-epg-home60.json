@@ -1,0 +1,68 @@
+{
+  "kodi": {
+    "major": 21,
+    "minor": 2,
+    "revision": "20250330-nogitfound",
+    "tag": "stable"
+  },
+  "skin": "BINGIE MOD 2.2.3",
+  "native_home": 10000,
+  "synthetic_provider": true,
+  "native_directory": 88,
+  "last_station_reachable": true,
+  "focused_hero": {
+    "0": {
+      "ProgrammeChannel46": "Station 0",
+      "ProgrammeTitle46": "Synthetic film 0",
+      "ProgrammeNext46": "Next 0",
+      "ProgrammeDescription46": "Exact local description 0",
+      "ProgrammeImage46": "/root/.kodi/userdata/addon_data/plugin.video.xtreammate/programme_images46/blob46-ce99300b5c6699c428c046f1d44379b0b4f9a3302ae5720b3eafc5b1cd33f1fc.png",
+      "Home50": "true",
+      "items": "88",
+      "visible": true,
+      "hero_condition": true,
+      "window": 10000,
+      "focus": 2510,
+      "host_ready_ms": 3181
+    },
+    "1": {
+      "ProgrammeChannel46": "Station 1",
+      "ProgrammeTitle46": "Synthetic film 1",
+      "ProgrammeNext46": "Next 1",
+      "ProgrammeDescription46": "Exact local description 1",
+      "ProgrammeImage46": "/root/.kodi/userdata/addon_data/plugin.video.xtreammate/programme_images46/blob46-ef1804cda3c8a5181dd96664d662f382c4425d21f0d5fb6a3fd8c676e0fd4ab3.png",
+      "Home50": "true",
+      "items": "88",
+      "visible": true,
+      "hero_condition": true,
+      "window": 10000,
+      "focus": 2510,
+      "host_ready_ms": 764
+    },
+    "87": {
+      "ProgrammeChannel46": "Station 87",
+      "ProgrammeTitle46": "No programme information available",
+      "ProgrammeNext46": "",
+      "ProgrammeDescription46": "",
+      "ProgrammeImage46": "/root/.kodi/addons/plugin.video.xtreammate/resources/media/programme46/neutral.png",
+      "Home50": "true",
+      "items": "88",
+      "visible": true,
+      "hero_condition": true,
+      "window": 10000,
+      "focus": 2510,
+      "host_ready_ms": 805
+    }
+  },
+  "decoded_hero_images": 2,
+  "decoded_focused_logos": 3,
+  "neutral_no_epg_pixels": "PASS",
+  "no_player_start": true,
+  "android": "NOT_TESTED",
+  "external_helpers": "NO_OP_HOST_FIXTURES",
+  "screenshot_sha256": {
+    "0": "34a0a865404107b7f4d6ff4ce70a42119332312f720af2512dbad381c3091671",
+    "1": "fc89f3e58385cb55cb7b88eb5731b568f62dc18acd2e68631bdfcd58d62693ca",
+    "87": "73df938ea13ef9aa317b58dd000a7da1754ea3413fe05d48ba8ea7e996376b8f"
+  }
+}

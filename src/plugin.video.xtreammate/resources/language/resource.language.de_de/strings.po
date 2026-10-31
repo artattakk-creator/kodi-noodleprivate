@@ -4604,3 +4604,79 @@ msgstr "Serienbild (kein Episodenbild)"
 msgctxt "#36600"
 msgid "Test TMDB connection"
 msgstr "TMDB-Verbindung testen"
+
+msgctxt "#36610"
+msgid "Set up BINGIE Home widgets"
+msgstr "BINGIE-Startseiten-Widgets einrichten"
+
+msgctxt "#36611"
+msgid "Widget setup"
+msgstr "Widget-Einrichtung"
+
+msgctxt "#36612"
+msgid "Native BINGIE widget management. Review and explicitly approve layout changes; existing sources and media rows are preserved."
+msgstr "Echte BINGIE-Widgetverwaltung. Layout nur nach Vorschau und ausdrücklicher Bestätigung ändern; vorhandene Quellen und Medienreihen bleiben erhalten."
+
+msgctxt "#36613"
+msgid "Check / prepare BINGIE Home layout"
+msgstr "BINGIE-Home-Layout prüfen/vorbereiten"
+
+msgctxt "#36614"
+msgid "The verified adapter is already installed. If the live row is absent, rebuild Skinshortcuts once now? Saved widget bindings will stay unchanged."
+msgstr "Der verifizierte Layoutadapter ist bereits vorhanden. Falls die Live-TV-Reihe fehlt: Skinshortcuts jetzt einmal neu generieren? Gespeicherte Widgetverknüpfungen werden nicht geändert."
+
+msgctxt "#36615"
+msgid "Rebuild once"
+msgstr "Einmal neu generieren"
+
+msgctxt "#36620"
+msgid "TMDB access"
+msgstr "TMDB-Zugang"
+
+msgctxt "#36621"
+msgid "Import token file"
+msgstr "Token-Datei importieren"
+
+msgctxt "#36622"
+msgid "Token file present · valid format"
+msgstr "Token-Datei vorhanden · Format gültig"
+
+msgctxt "#36623"
+msgid "Token file absent · legacy setting remains available"
+msgstr "Token-Datei nicht vorhanden · bisheriges Einstellungsfeld bleibt verfügbar"
+
+msgctxt "#36624"
+msgid "Token file invalid or unsafe · no fallback"
+msgstr "Token-Datei ungültig oder nicht sicher lesbar · kein Fallback"
+
+msgctxt "#36625"
+msgid "Enable TMDB programme images"
+msgstr "TMDB-Sendungsbilder aktivieren"
+
+msgctxt "#36626"
+msgid "Disable TMDB programme images"
+msgstr "TMDB-Sendungsbilder deaktivieren"
+
+msgctxt "#36627"
+msgid "Replace private token file? The existing file will be atomically replaced. The import source is retained."
+msgstr "Private Token-Datei ersetzen? Die bisherige Datei wird atomar überschrieben. Die Importdatei bleibt erhalten."
+
+msgctxt "#36628"
+msgid "Token file imported. Artwork options remain unchanged until separately enabled."
+msgstr "Token-Datei importiert. Bilder bleiben bis zur gesonderten Aktivierung unverändert."
+
+msgctxt "#36629"
+msgid "Import rejected: {0}. Choose a UTF-8 text file with one API Read Access Token without Bearer, quotes or JSON."
+msgstr "Import abgelehnt: {0}. Eine UTF-8-Textdatei mit genau einem API Read Access Token ohne Bearer, Anführungszeichen oder JSON wählen."
+
+msgctxt "#36630"
+msgid "Private profile file: tmdb_read_access_token.txt. The token is never displayed. Use the separate connection test to check authentication."
+msgstr "Privater Profilordner: tmdb_read_access_token.txt. Der Token wird niemals angezeigt. Die Verbindung wird nur über den eigenen Testeintrag geprüft."
+
+msgctxt "#36631"
+msgid "Explicitly enable TMDB research and programme images? Provider movie and series metadata remain unchanged."
+msgstr "TMDB-Recherche und Sendungsbilder ausdrücklich aktivieren? Provider-Metadaten von Filmen und Serien bleiben erhalten."
+
+msgctxt "#36632"
+msgid "Disable TMDB research and programme images? The private token file is retained."
+msgstr "TMDB-Recherche und Sendungsbilder deaktivieren? Die private Token-Datei bleibt erhalten."

@@ -8,7 +8,10 @@ def diagnose(event):
  """Fixed reasons, no network, text disclosure or EPG modification."""
  from utils import setting_bool,setting
  if not setting_bool('programme_tmdb46',False) or not setting_bool('tmdb_research43',False):return 'TMDB_DISABLED'
- if not setting('tmdb_read_token43','').strip():return 'TMDB_TOKEN_MISSING'
+ from tmdb_token61 import effective_tmdb_read_token,TokenError
+ try:token=effective_tmdb_read_token()
+ except TokenError:return 'TMDB_TOKEN_FILE_INVALID'
+ if not token:return 'TMDB_TOKEN_MISSING'
  series=bool(event.get('season') and event.get('episode'))
  if not series and not any(v in str(event.get('genre','')).casefold() for v in ('spielfilm','film','movie')):return 'NOT_CLASSIFIED_MOVIE'
  if not series and not event.get('year'):return 'NO_YEAR'
@@ -23,7 +26,7 @@ def unique_movie56(event,cancel=lambda:False):
  The inferred year is an artwork proof, never a replacement of local EPG text.
  """
  from utils import setting_bool,setting
- if not setting_bool('tmdb_research43',False) or not setting('tmdb_read_token43','').strip():return None
+ if not setting_bool('tmdb_research43',False):return None
  from media_sources43 import TMDB,tmdb_token,_tmdb_image,SourceError
  from tmdb_connection60 import request as get
  from epg_events import title_key
