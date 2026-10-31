@@ -92,3 +92,10 @@ class Handoff63(Fixture,unittest.TestCase):
   nav=types.SimpleNamespace(portal=self.portal,sid='1',_guide=types.SimpleNamespace(get=lambda sid:dict(info,_published_at63=wall-5)),_epg_visible63=('1',wall-2,mono-2))
   with mock.patch.object(self.bridge,'note') as note:self.bridge.visible(nav)
   self.assertEqual(note.call_args.args[3],'EPG_UI_UPDATE_DELAY')
+ def test_thin_gui_dto_does_not_truncate_worker_future_programmes(self):
+  raw=[dict(name='Future sample '+str(i),start_timestamp=self.now-60+i*600,stop_timestamp=self.now-60+(i+1)*600) for i in range(10)]
+  importlib.import_module('guide_store').import_cache('p',{'xml':raw},'fixture63-long',now=self.now+1,trusted_feed=True)
+  first=self.read();second=self.read()
+  self.assertGreaterEqual(len(second['events']),10)
+  self.assertEqual([e['title'] for e in first['events']],[e['title'] for e in second['events']])
+  self.assertLessEqual(len(self.bridge.get('p','1',now=self.now)['events']),4)

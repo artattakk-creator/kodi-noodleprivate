@@ -5,6 +5,8 @@ _lock=threading.Lock();_pending=None;_done=False;_next=0
 def prepare():
     global _pending,_next
     if _done or time.monotonic()<_next:return
+    with _lock:
+        if _pending is not None:return
     _next=time.monotonic()+60
     try:
         from utils import setting
@@ -17,7 +19,8 @@ def prepare():
         plan=make(skin)
         from widget_skin60 import preview
         text=preview(plan).replace('(.60)','(.63)')
-        with _lock:_pending=dict(profile=profile,skin=skin,plan=plan,text=text)
+        from epg_handoff63 import profile_scope
+        with _lock:_pending=dict(profile=profile,skin=skin,plan=plan,text=text,scope=profile_scope())
     except (OSError,ValueError,KeyError,TypeError,RuntimeError):pass
 
 def poll():
@@ -27,11 +30,14 @@ def poll():
     if xbmc.getCondVisibility('Player.HasMedia'):return
     with _lock:pending=_pending;_pending=None
     if pending is None:return
+    from epg_handoff63 import profile_scope
+    if pending.get('scope')!=profile_scope():return
     _done=True
     from localization import tr
     dialog=xbmcgui.Dialog()
     dialog.textviewer(tr(36669),tr(36670)+'\n\n'+pending['text'])
     confirmed=dialog.yesno(tr(36669),tr(36671),defaultbutton=getattr(xbmcgui,'DLG_YESNO_NO_BTN',10))
+    if pending.get('scope')!=profile_scope():return
     xbmcaddon.Addon().setSetting('bingie_hero63_notice','0.1.29.63')
     if not confirmed:return
     from widget_manager50 import runtime,rebuild,trace,error

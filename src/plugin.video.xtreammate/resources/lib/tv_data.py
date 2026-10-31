@@ -151,6 +151,8 @@ class GuideSnapshot:
             self._indexed=False
         else:
             self._cache=local;self._indexed=True
+        from epg_handoff63 import register as register63
+        if local is not None:register63(self.portal['id'],getattr(local,'revision',None),expected_revision=rev)
         self._revision = rev
         cache_ms=(time.perf_counter()-started)*1000
         values, missing = {}, []

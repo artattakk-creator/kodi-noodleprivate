@@ -43,30 +43,21 @@ def revision_tag(value):
     return json.dumps(value,separators=(',',':'),allow_nan=False)
 
 
-def observe(pid):
-    """Worker-only point read: a DB publication cannot hide behind a warm DTO."""
-    import os,sqlite3
-    from urllib.parse import quote
+def register(pid,value,expected_revision=None):
+    """Publish the metadata already read in the SAME guide transaction."""
+    if value is None:return
+    from epg_status import revision
+    if expected_revision is not None and expected_revision!=revision(pid):return
     import xbmcgui
-    import guide_store
-    window=xbmcgui.Window(10000);db=None
+    window=xbmcgui.Window(10000);key=meta_key(pid)
     try:
-        filename=guide_store.path()
-        if not filename or not os.path.isfile(filename):value=None
-        else:
-            db=sqlite3.connect('file:'+quote(filename,safe='/')+'?mode=ro',uri=True,timeout=.03)
-            db.execute('PRAGMA query_only=ON')
-            deadline=time.monotonic()+.03
-            db.set_progress_handler(lambda:int(time.monotonic()>deadline),1000)
-            row=db.execute('SELECT revision,updated FROM guide_meta WHERE pid=?',(str(pid),)).fetchone()
-            value=tuple(row) if row else None
+        old=window.getProperty(key)
+        prior=json.loads(old) if old else None
+        if isinstance(prior,list) and len(prior)==2 and isinstance(value,(list,tuple)) and len(value)==2:
+            if type(prior[1]) in (int,float) and type(value[1]) in (int,float) and value[1]<prior[1]:return
         tag=revision_tag(value)
-        if window.getProperty(meta_key(pid))!=tag:window.setProperty(meta_key(pid),tag)
-        return tag
-    except (OSError,sqlite3.Error,ValueError,TypeError):
-        return window.getProperty(meta_key(pid))
-    finally:
-        if db is not None:db.close()
+        if old!=tag:window.setProperty(key,tag)
+    except (AttributeError,RuntimeError,ValueError,TypeError):pass
 
 
 def note(stage,pid='',sid='',code='READY',duration_ms=0,facts=None):

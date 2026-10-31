@@ -6,6 +6,8 @@ Der verbindliche Abschlussnachweis ist der grüne CI-Lauf am exakten aktuellen H
 
 [Ausführliche Analyse](ENTWICKLUNG_02963_DE.md). Die bisherigen Grundfehler lassen sich am Code zeigen: getrennter Hero-Bild-/Textaufbau, leere neue Overlay-Snapshots trotz schon gelesener Daten, EPG-Textverlust bei optionalem Artworkfehler und Ablehnung von SMB-/Android-Mountpfaden vor der Tokenformatprüfung.
 
+Die vollständige erste Regression hat außerdem die erhaltene Zukunftsrotation und das unveränderte 40-Verbindungen-Limit geprüft. Beide gemeldeten Rückwirkungen werden im Produktcode korrigiert: die vier Ereignisse des GUI-Snapshots ersetzen kein vollständiges Worker-Fenster; die vorhandene Transaktionsmetadatenzeile wird ohne zusätzliche Verbindung publiziert. Die unabhängige EPG-/Bilddarstellung teilt pro 16er-Seite dieselben vorbereiteten Informationen. Keine Erhöhung des Testlimits und keine Entfernung des Zukunftstests.
+
 Neue Tests unterscheiden den tatsächlichen Publikationszeitpunkt eines Snapshots vom abgefragten EPG-Zeitpunkt. Ein festgehaltener ganzzahliger Batch-Zeitstempel darf einen gerade publizierten Datensatz nicht als aus der Zukunft verwerfen. Laufende Datenpublikationen, manuelle Quellenbindung, Profilwechsel und Ereigniswechsel werden getrennt validiert.
 
 Der GUI-Pfad übernimmt vorbereitete lokalisierte Beschriftungen aus nativen ListItem-Properties/RAM und verarbeitet nur begrenzte DTOs. Ein noch nicht vorbereiteter Labelcache löst keinen Sprachdatei-Lesevorgang im Fokuscallback aus. Die native Darstellung bleibt währenddessen bedienbar.
@@ -13,7 +15,7 @@ Der GUI-Pfad übernimmt vorbereitete lokalisierte Beschriftungen aus nativen Lis
 ## Automatisierte Prüfstrecke
 
 - Alle 2.553 bisherigen Testmethoden einschließlich ihrer Skip-Bedingungen bleiben erhalten.
-- Alle 624 bisherigen Quelldateien bleiben vorhanden. Genau dokumentierte, hashgenaue Änderungen werden gegen den tatsächlichen .62-Bestand normalisiert; alle anderen Dateien bleiben roh unverändert. 606 bisherige Dateien sind byteidentisch. Original-Icon, VOD-/Serien-Widgetpfade, Providerposter, Skinshortcuts-Bindings, Player-Stop/.42-Modus, Portale, Favoriten, Resume und Autoplay werden nicht pauschal umgeschrieben.
+- Alle 624 bisherigen Quelldateien bleiben vorhanden. Genau dokumentierte, hashgenaue Änderungen werden gegen den tatsächlichen .62-Bestand normalisiert; alle anderen Dateien bleiben roh unverändert. 605 bisherige Dateien sind byteidentisch. Original-Icon, VOD-/Serien-Widgetpfade, Providerposter, Skinshortcuts-Bindings, Player-Stop/.42-Modus, Portale, Favoriten, Resume und Autoplay werden nicht pauschal umgeschrieben.
 - Native Kodi21.2/Linux/BINGIE2.2.3-Prüfungen: echter Home10000/Container2510, unveränderte 88-Sender-Reihe, Fokus0/1/87, vollständige Scrollreichweite, zwei verifizierte Ereignisbilder, korrektes Neutralmotiv ohne EPG/Logo, keine Fokuswiedergabe, tatsächliche Pixel an mehreren rechten Vollflächenpunkten und weiße Titelpixel im linken Overlay.
 - Warme Snapshot-Übergabe im nativen Kodi-Host: dieselben Now/Next-Titel und Ereignisschlüssel; SQLite-/HTTP-Zugriff während der Übernahme gesperrt. Dies ist eine RAM-/Frontendprüfung, kein nativer AV-Startnachweis auf Android.
 - VFS-Matrix: explizite SMB-/Android-USB-/Downloads-Quellen, sichere lokale Pfade, URI-/Scheme-/Traversal-Sperren, Teilreads, EOF/Größe, unbekannte Stat-Fähigkeit, physisches Zeilenformat, CRLF, BOM/JSON/Bearer/Leerzeichen, Berechtigungs-/Lesefehler und begrenzte blockierte Aufrufe.

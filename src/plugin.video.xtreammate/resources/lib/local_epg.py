@@ -85,16 +85,21 @@ def now_next(pid,channels,mappings,now=None,client=None):
     """Bounded local batch, including strictly cache-only short-EPG fallback."""
     from epg_views import resolve_guide
     ts=time.time() if now is None else now
-    from epg_handoff63 import get as warm63,remember as remember63,note as note63,observe as observe63
-    observe63(pid)
-    warm={str((c.extra if hasattr(c,'extra') else c).get('stream_id',(c.extra if hasattr(c,'extra') else c).get('sid',''))):warm63(pid,str((c.extra if hasattr(c,'extra') else c).get('stream_id',(c.extra if hasattr(c,'extra') else c).get('sid',''))),now=ts,mappings=mappings) for c in channels[:16]}
-    if warm and all(v and v.get('now') for v in warm.values()):return warm
+    from epg_handoff63 import get as warm63,remember as remember63,note as note63,register as register63
     from epg_status import revision as revision63
     revision_before63=revision63(pid)
     started63=time.perf_counter()
     cache=window(pid,channels,mappings,ts,ts+2*86400)
-    observe63(pid)
+    if cache is not None:register63(pid,getattr(cache,'revision',None),expected_revision=revision_before63)
     db_ms63=(time.perf_counter()-started63)*1000
+    # Workers retain the complete bounded future window. The thin four-event
+    # RAM DTO is only a transient-read fallback and the GUI handoff, not a
+    # replacement for catalogue/programme preparation.
+    warm={}
+    if cache is None:
+        for c63 in channels[:16]:
+            sid63=channel_keys(c63,mappings)[0]
+            warm[sid63]=warm63(pid,sid63,now=ts,mappings=mappings)
     result={}
     for channel in channels[:16]:
         sid,keys=channel_keys(channel,mappings)

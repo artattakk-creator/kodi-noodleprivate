@@ -56,6 +56,15 @@ def snapshot(portal):
 
 
 def infos(portal,rows):
+    from programme_read47 import memo
+    from epg_status import revision
+    from epg_handoff63 import profile_scope
+    key=('live-text63',profile_scope(),str(portal['id']),str(revision(portal['id'])),
+         tuple((str(r.get('sid','')),str(r.get('epg_channel_id',''))) for r in rows))
+    return memo(key,lambda:_infos63(portal,rows))
+
+
+def _infos63(portal,rows):
     from local_epg import now_next
     from epg_sources import configuration
     mappings=configuration(portal['id'])['mappings'];result={}

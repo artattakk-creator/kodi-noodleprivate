@@ -54,3 +54,12 @@ class Hero63(Fixture50,unittest.TestCase):
   with mock.patch('programme_catalog57.xcmate',side_effect=method('local-xcmate')),mock.patch('programme_catalog57.kodi',side_effect=method('local-kodi')),mock.patch('programme_helper57.lookup',side_effect=method('helper')),mock.patch('programme_match46.candidate',side_effect=method('own-tmdb')),mock.patch('programme_urls55.profile',return_value='fixture63'):
    for attempt in sources.attempts(dict(title='Synthetic event')):attempt()
   self.assertEqual(seen,['local-xcmate','local-kodi','helper','own-tmdb'])
+
+ def test_pending_upgrade_is_not_reprepared_and_another_profile_never_gets_its_dialog(self):
+  upgrade=importlib.import_module('skin_upgrade63');upgrade._done=False;upgrade._next=0;upgrade._pending=dict(scope='old-profile')
+  try:
+   with mock.patch('widget_skin50.prepare') as prepare:upgrade.prepare()
+   prepare.assert_not_called()
+   with mock.patch('xbmcgui.getCurrentWindowId',return_value=10000),mock.patch('xbmcgui.getCurrentWindowDialogId',return_value=0),mock.patch('xbmc.getCondVisibility',return_value=False),mock.patch('epg_handoff63.profile_scope',return_value='different-profile'):upgrade.poll()
+   self.dialog.yesno.assert_not_called();self.assertNotIn('bingie_hero63_notice',self.options);self.assertFalse(upgrade._done)
+  finally:upgrade._pending=None;upgrade._done=False;upgrade._next=0
