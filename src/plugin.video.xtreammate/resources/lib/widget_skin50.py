@@ -38,7 +38,7 @@ def edit(data,changes):
 
 
 def patch(path,data):
-    from widget_skin63 import candidate,previous_candidate
+    from widget_skin64 import candidate,previous_candidate
     return candidate(path,data,previous_candidate)
 
 
@@ -128,7 +128,8 @@ def apply(token,skin,*,confirmed=False,restore=False):
         expected60=patch(name,original60)
         if expected60!=candidate60:
             from widget_skin63 import previous_candidate
-            if not restore or candidate60 not in (legacy_patch60(name,original60),previous_candidate(name,original60)):raise ValueError('CANDIDATE_VERIFY_FAILED')
+            from widget_skin64 import previous_candidate as previous63
+            if not restore or candidate60 not in (legacy_patch60(name,original60),previous_candidate(name,original60),previous63(name,original60)):raise ValueError('CANDIDATE_VERIFY_FAILED')
     return transaction(token,'skin',paths,confirmed=confirmed,restore=restore)
 
 

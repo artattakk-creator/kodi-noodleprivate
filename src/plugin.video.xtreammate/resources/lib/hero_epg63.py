@@ -55,7 +55,7 @@ def poll():
         Description=props['XCMate.ProgrammeDescription46'],Remaining=props['XCMate.ProgrammeRemaining63'],
         Subtitle=label('XCMate.ProgrammeSubtitle63') if key==event_key else '',
         Percent=props['XCMate.ProgrammePercent46'],Image=props.get('XCMate.HeroImage63',neutral),
-        ArtSource=props.get('XCMate.HeroArtSource63',''))
+        ArtSource=props.get('XCMate.HeroArtSource63',''),LongTitle='true' if len(props['XCMate.ProgrammeTitle46'])>26 else 'false')
     signature=(current,tuple(values.items()))
     if signature==_last:return
     previous=_last
