@@ -18,6 +18,7 @@ class Layout64(Fixture50,unittest.TestCase):
   self.assertTrue(own);self.assertGreaterEqual(sum(n.findtext('height')=='330' for n in own),2)
   self.assertEqual(self.prop.read_bytes(),saved);self.assertEqual(self.menu.read_bytes(),menu)
   self.skinmod.apply(plan['id'],self.skin,confirmed=True,restore=True);self.assertEqual(self.skin_bytes(),legacy)
+  self.skinmod.apply(old['id'],self.skin,confirmed=True,restore=True);self.assertEqual(self.skin_bytes(),original)
  def test_live_row_is_unchanged_and_fallback_reuses_original_space_asset(self):
   a=E.parse(ADDON/'resources/bingie64/IncludesXCMate64.xml').find("include[@name='XCMate50.LiveRow']")
   b=E.parse(ADDON/'resources/bingie63/IncludesXCMate63.xml').find("include[@name='XCMate50.LiveRow']")
