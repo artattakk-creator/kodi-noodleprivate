@@ -139,6 +139,9 @@ def prepare(event,cancel=lambda:False,fetch=None,match=None,resolved60=None):
   try:effective_tmdb_read_token()
   except TokenError:pass
  key=event['key'];fp=fingerprint(event);old=indexed(event,verify=True) or persisted(event)
+ # A URL-only approval is not a stale local picture. The explicit .63
+ # materialization lane must report its real download failure, not READY_STALE.
+ if resolved60 is not None and resolved60.get('_local_only63') and old and old.get('url_version55')==1:old=None
  if resolved60 is None and old and old.get('until',0)>time.time() and not (old.get('code')=='PROGRAMME_CACHE_BUDGET' and old.get('budget46')!=limit()):remember(key,old,verified47=True);return old
  value=dict(key=key,fingerprint=fp,code='NO_IMAGE',image=event['placeholder'],source='placeholder',match='NONE',until=time.time()+6*3600)
  if old and old.get('source')!='placeholder':value=dict(old,code='READY_STALE',until=time.time()+300)

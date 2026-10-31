@@ -28,16 +28,27 @@ def values(portal,rows):
     except (OSError,ValueError,TypeError):approved={}
     result=[]
     for offset in range(0,len(rows),16):
-        batch=rows[offset:offset+16];base=[basic(portal,row,approved) for row in batch]
-        try:
-            from widget_render47 import values as decorate
-            enriched=decorate(portal,'live',batch,approved)
-            if len(enriched)!=len(base):raise ValueError()
-            for item,value in zip(base,enriched):
-                if value['props'].get('XCMate.MediaId')!=item['props']['XCMate.MediaId']:raise ValueError()
-                item['props'].update({k:v for k,v in value['props'].items() if k.startswith(('XCMate.Programme','XtreamMate.'))})
-                if isinstance(value.get('info',{}).get('plot'),str):item['info']['plot']=value['info']['plot'][:8192]
-                if value.get('menus46'):item['menus46']=value['menus46']
-        except (OSError,ValueError,TypeError,KeyError,RuntimeError,sqlite3.Error):trace('RENDER','ENRICHMENT_UNAVAILABLE',len(batch))
-        result.extend(base)
+        from programme_read47 import session as session63
+        with session63():
+            batch=rows[offset:offset+16];base=[basic(portal,row,approved) for row in batch]
+            # Text has its own read path; artwork exceptions must not erase EPG.
+            try:
+                from widget_group46 import infos
+                text63=infos(portal,batch)
+            except (OSError,ValueError,TypeError,KeyError,RuntimeError,sqlite3.Error):text63={}
+            events63={}
+            try:
+                from widget_render47 import values as decorate
+                enriched=decorate(portal,'live',batch,approved)
+                if len(enriched)!=len(base):raise ValueError()
+                for item,value in zip(base,enriched):
+                    if value['props'].get('XCMate.MediaId')!=item['props']['XCMate.MediaId']:raise ValueError()
+                    item['props'].update({k:v for k,v in value['props'].items() if k.startswith(('XCMate.Programme','XtreamMate.'))})
+                    if isinstance(value.get('info',{}).get('plot'),str):item['info']['plot']=value['info']['plot'][:8192]
+                    if value.get('menus46'):item['menus46']=value['menus46']
+                    events63[item['props']['XCMate.MediaId']]=value.get('_programme46')
+            except (OSError,ValueError,TypeError,KeyError,RuntimeError,sqlite3.Error):trace('RENDER','ENRICHMENT_UNAVAILABLE',len(batch))
+            from live_text63 import apply as text_apply63
+            for row,item in zip(batch,base):text_apply63(item,portal,row,text63.get(str(row['sid'])),events63.get(str(row['sid'])))
+            result.extend(base)
     trace('RENDER','READY',len(result));return result

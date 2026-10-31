@@ -56,6 +56,8 @@ def announce(portal_id, stream_id, channel_name=''):
     except (AttributeError,RuntimeError,ValueError):pass
     xbmcgui.Window(10000).setProperty(SESSION_KEY, json.dumps(value))
     trace('session','ANNOUNCED',marker=True)
+    from epg_handoff63 import note as epg63_note
+    epg63_note('OK_CLICK',portal_id,stream_id)
     return value
 
 
@@ -177,7 +179,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             from utils import setting_int
             self._info_timeout = min(30,max(3,setting_int('tv_infobar_seconds',8)))
         except Exception: self._info_timeout = 8
-        self._guide = GuideSnapshot(portal,self.xc)
+        self._guide = GuideSnapshot(portal,self.xc,initial_sid=self.sid)
         self._guide.request([selected_stream] if selected_stream else [])
         self._guide.start()
         from live_timing import nav_ready

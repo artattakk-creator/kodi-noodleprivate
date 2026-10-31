@@ -27,12 +27,13 @@ def prepare(portal,rows,cancel=lambda:False):
         infos=now_next(portal['id'],batch,configuration(portal['id'])['mappings'])
         records=[]
         revision=next((info.get('snapshot_revision') for info in infos.values()),None)
-        allow_lookup=refreshed(portal['id'],revision)
+        from programme_refresh63 import active as explicit63
+        allow_lookup=refreshed(portal['id'],revision) or explicit63(portal['id'])
         for row in batch:
             if cancel():return False
             event=from_info(portal,row,infos.get(str(row['sid']),{}))
             if event.get('title'):
-                records.append(event);enqueue(event,allow_lookup=allow_lookup)
+                records.append(event);enqueue(event,allow_lookup=allow_lookup,local_image63=True)
             # NEXT is resolved ahead of its transition, with the same local
             # canonical/source identity as NOW; never borrow NOW's picture.
             from programme_events46 import describe
@@ -51,6 +52,6 @@ def prepare(portal,rows,cancel=lambda:False):
                 if len(_future56)>1024:_future56.pop(next(iter(_future56)))
             for following in selected:
                 future=describe(portal,row,following,event.get('canonical',''),revision)
-                if future.get('title'):records.append(future);enqueue(future,allow_lookup=allow_lookup)
+                if future.get('title'):records.append(future);enqueue(future,allow_lookup=allow_lookup,local_image63=True)
     if records:publish(records,include_art=False)
     return bool(records)

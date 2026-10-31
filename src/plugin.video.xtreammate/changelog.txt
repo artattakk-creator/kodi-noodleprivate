@@ -1,3 +1,12 @@
+0.1.29.63
+- BINGIE-Hero: bildfüllendes Breitbild mit transparentem Textoverlay gemäß bestätigtem Layout.
+- Jetzt/Danach wird aus der gemeinsamen lokalen EPG-Datenbank geladen und warm an den Player übergeben.
+- EPG-Text bleibt unabhängig von optionalen Bild-/Metadatenfehlern sichtbar.
+- TMDB-Tokendateien können ausdrücklich über Kodi-VFS von USB/SMB lokal importiert werden.
+- Getrennte Aktion für Import mit freiwilliger Aktivierung der Sendungsbilder; maskierte Eingabe als Alternative.
+- Token, Passwörter, Portale und bestehende Widgets bleiben über das Update erhalten.
+- Bekanntes BINGIE-Layout mit Vorschau, Zustimmung, Backup und Wiederherstellung aktualisierbar.
+
 0.1.29.62
 - Live-TV-Home liest die konfigurierte Startgruppe direkt aus einer lokalen Kataloggeneration.
 - Senderbuttons bleiben bei fehlendem EPG, Artwork-Fehlern und beschädigten Zusatzmetadaten bedienbar.

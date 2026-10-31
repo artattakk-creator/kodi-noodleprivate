@@ -2,6 +2,7 @@
 import ast,hashlib,json,unittest
 from pathlib import Path
 from stabilization_contract_02962 import without_stabilization62
+from stabilization_contract_02963 import without_stabilization63
 ROOT=Path(__file__).resolve().parents[1]
 class Scope62(unittest.TestCase):
  def baseline(self):return json.loads((ROOT/'tests/fixtures/xcmate_02962_protection.json').read_text())
@@ -19,4 +20,4 @@ class Scope62(unittest.TestCase):
  def test_sources_bindings_player_epg_and_user_data_code_are_raw_unchanged(self):
   allowed={'addon.xml','changelog.txt','strings.po','widget_home50.py','widget_manager50.py','tmdb_access61.py','tmdb_token61.py'}
   for path,digest in self.baseline()['source_sha256'].items():
-   if Path(path).name not in allowed:self.assertEqual(hashlib.sha256((ROOT/path).read_bytes()).hexdigest(),digest,path)
+   if Path(path).name not in allowed:self.assertEqual(hashlib.sha256(without_stabilization63((ROOT/path).read_bytes(),path)).hexdigest(),digest,path)

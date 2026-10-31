@@ -16,6 +16,9 @@ def prepare(portal,kind,signature,count):
 
 def poll():
     global _next,_focus
+    from hero_epg63 import poll as hero63
+    from skin_upgrade63 import poll as upgrade63
+    hero63();upgrade63()
     import xbmc,xbmcgui
     if time.monotonic()<_next:return
     _next=time.monotonic()+1

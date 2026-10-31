@@ -4720,3 +4720,51 @@ msgstr "Restore affects only library.py; user profiles, widget bindings and skin
 msgctxt "#36649"
 msgid "The verified Skinshortcuts file is already Python compatible. No change needed."
 msgstr "The verified Skinshortcuts file is already Python compatible. No change needed."
+
+msgctxt "#36660"
+msgid "Import token and enable TMDB programme images"
+msgstr "Import token and enable TMDB programme images"
+
+msgctxt "#36661"
+msgid "Enter/change token privately"
+msgstr "Enter/change token privately"
+
+msgctxt "#36662"
+msgid "A private token file takes precedence. Your entry replaces it only after explicit confirmation; no silent fallback to the legacy setting."
+msgstr "A private token file takes precedence. Your entry replaces it only after explicit confirmation; no silent fallback to the legacy setting."
+
+msgctxt "#36663"
+msgid "Reading selected file within limits …"
+msgstr "Reading selected file within limits …"
+
+msgctxt "#36664"
+msgid "Save token only in this local Kodi profile and explicitly enable TMDB programme images? The token is never distributed."
+msgstr "Save token only in this local Kodi profile and explicitly enable TMDB programme images? The token is never distributed."
+
+msgctxt "#36665"
+msgid "TMDB programme images are enabled. Preparation runs in the background. Connection testing remains a separate action."
+msgstr "TMDB programme images are enabled. Preparation runs in the background. Connection testing remains a separate action."
+
+msgctxt "#36666"
+msgid "Token stored privately. Image lookup was not enabled automatically."
+msgstr "Token stored privately. Image lookup was not enabled automatically."
+
+msgctxt "#36667"
+msgid "The file must contain one complete token on exactly one physical UTF-8 line. Visual editor wrapping is allowed; Bearer, JSON, BOM and extra lines are not. TOKEN_UNREADABLE can also indicate a VFS time budget or missing permission."
+msgstr "The file must contain one complete token on exactly one physical UTF-8 line. Visual editor wrapping is allowed; Bearer, JSON, BOM and extra lines are not. TOKEN_UNREADABLE can also indicate a VFS time budget or missing permission."
+
+msgctxt "#36668"
+msgid "{0} min. remaining"
+msgstr "{0} min. remaining"
+
+msgctxt "#36669"
+msgid "XCMate: update BINGIE Hero"
+msgstr "XCMate: update BINGIE Hero"
+
+msgctxt "#36670"
+msgid "Your previously approved, unchanged BINGIE layout can be upgraded to the full-bleed Hero. Existing widget sources and station buttons remain. Review the changes and then explicitly confirm."
+msgstr "Your previously approved, unchanged BINGIE layout can be upgraded to the full-bleed Hero. Existing widget sources and station buttons remain. Review the changes and then explicitly confirm."
+
+msgctxt "#36671"
+msgid "Apply the verified Hero layout now, retain the verified backup and request the native Skinshortcuts rebuild? Cancel leaves skin files unchanged."
+msgstr "Apply the verified Hero layout now, retain the verified backup and request the native Skinshortcuts rebuild? Cancel leaves skin files unchanged."

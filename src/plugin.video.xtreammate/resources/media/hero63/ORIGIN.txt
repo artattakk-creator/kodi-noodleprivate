@@ -1,0 +1,1 @@
+XCMate .63: original procedural RGBA gradients, dark to transparent, no third-party image. Native neutral fallback and station logos remain existing assets. Layout follows the user-approved visual reference; no sample programme titles are shipped.

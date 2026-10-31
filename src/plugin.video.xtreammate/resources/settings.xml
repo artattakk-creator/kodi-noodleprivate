@@ -100,5 +100,6 @@
     <setting id="downloads_folder" type="text" label="34700" default="" visible="false" />
     <setting id="downloads_max_gib" type="number" label="34719" default="64" visible="false" />
     <setting id="experimental_open45" type="action" label="36006" action="RunPlugin(plugin://plugin.video.xtreammate/?action=settings_section&amp;section=experimental)" />
+      <setting id="bingie_hero63_notice" type="text" default="" visible="false" label="36669" />
   </category>
 </settings>
