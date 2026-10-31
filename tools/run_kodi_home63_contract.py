@@ -51,8 +51,18 @@ def main():
             '--mount', 'type=bind,src=' + str(skin / 'skin.titan.bingie.mod') + ',dst=/skin,readonly',
             '--mount', 'type=bind,src=' + str(candidate) + ',dst=/candidate,readonly', image, 'sh', '/work/start.sh', stdout=subprocess.DEVNULL)
         print('HOST_CONTAINER', name, flush=True)
-        with (report / 'home.json').open('w') as output:
-            run('exec', name, 'python3', '/work/probe.py', stdout=output)
+        try:
+            with (report / 'home.json').open('w') as output:
+                run('exec', name, 'python3', '/work/probe.py', stdout=output)
+        except subprocess.CalledProcessError:
+            # Preserve synthetic native pixels even when a visual assertion fails.
+            import base64
+            for index in (0, 1, 87):
+                target = report / ('home63-' + str(index) + '.png')
+                copied = subprocess.run(docker + ['cp', name + ':/root/home63-' + str(index) + '.png', str(target)], env=env, check=False, stdout=subprocess.DEVNULL)
+                if copied.returncode == 0 and index == 0:
+                    print('HERO63_FAILURE_PREVIEW_BASE64 ' + base64.b64encode(target.read_bytes()).decode(), flush=True)
+            raise
         result = json.loads((report / 'home.json').read_text())
         for i in (0, 1, 87):
             run('cp', name + ':/root/home63-' + str(i) + '.png', str(report / ('home63-' + str(i) + '.png')))

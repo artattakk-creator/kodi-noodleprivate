@@ -154,7 +154,7 @@ for i in (0, 1, 87):
         for point in ((1450,180),(1700,180),(1880,180)):
             assert max(abs(a-b) for a,b in zip(pictures[i].getpixel(point),expected))<=5
         assert sum(1 for r,g,b in pictures[i].crop((280,150,1285,275)).getdata() if min(r,g,b)>180)>200
-        assert sum(1 for y in range(358,378) if pictures[i].getpixel((500,y))[0]<40 and pictures[i].getpixel((500,y))[1]>120 and pictures[i].getpixel((500,y))[2]>200)>=6
+        assert sum(1 for y in range(358,378) if pictures[i].getpixel((500,y))[0]<40 and pictures[i].getpixel((500,y))[1]>120 and pictures[i].getpixel((500,y))[2]>200)>=6, (i, [pictures[i].getpixel((500,y)) for y in range(350,390)], samples[str(i)])
         assert samples[str(i)]['warm_now']==samples[str(i)]['ProgrammeTitle46'] and samples[str(i)]['warm_next']==samples[str(i)]['ProgrammeNext46']
         assert samples[str(i)]['warm_seed_ms']<1000
     else:
