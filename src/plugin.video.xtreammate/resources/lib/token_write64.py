@@ -61,7 +61,7 @@ def import_bytes(raw,expected,target=None):
   if tokens.location()!=path or tokens.effective_tmdb_read_token(force=True)!=value:raise tokens.TokenError('TOKEN_COMMIT_UNVERIFIED')
   note(stage,'VERIFIED',committed=True)
   return 'IMPORTED_SYNC_WARNING' if sync_error else 'IMPORTED'
- except (tokens.TokenError,OSError,NotImplementedError) as error:
+ except (tokens.TokenError,OSError,NotImplementedError,RuntimeError) as error:
   code=error.code if isinstance(error,tokens.TokenError) else 'TOKEN_WRITE'
   if committed and code!='TOKEN_CHANGED':code='TOKEN_COMMIT_UNVERIFIED'
   failure=tokens.TokenError(code);failure.stage=stage;failure.committed=committed

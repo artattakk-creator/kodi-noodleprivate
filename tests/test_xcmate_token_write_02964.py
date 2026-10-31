@@ -64,3 +64,10 @@ class Write64(Fixture,unittest.TestCase):
    self.w.note('ATOMIC_RENAME','OK',committed=True);self.w.note('not-a-valid-stage',FIXTURE.decode(),13)
   text=' '.join(logs);self.assertNotIn(FIXTURE.decode(),text);self.assertNotIn(hashlib.sha256(FIXTURE).hexdigest(),text);self.assertNotIn(str(self.path),text)
   self.assertIn('ATOMIC_RENAME',text);self.assertEqual(len(logs),1)
+ def test_status_exception_after_atomic_copy_is_reported_as_committed_unverified(self):
+  with mock.patch.object(self.t,'effective_tmdb_read_token',side_effect=RuntimeError('private settings failure')),self.assertRaises(self.t.TokenError) as result:self.t.import_bytes(FIXTURE,None)
+  self.assertEqual(result.exception.code,'TOKEN_COMMIT_UNVERIFIED');self.assertEqual(result.exception.stage,'STATUS_VERIFY');self.assertTrue(result.exception.committed)
+  self.assertEqual(self.path.read_bytes(),FIXTURE+b'\n')
+ def test_private_parent_preserves_permission_errno_for_stage_diagnosis(self):
+  with mock.patch.object(self.t,'parent',side_effect=FileNotFoundError()),mock.patch.object(self.t.os,'mkdir',side_effect=OSError(errno.EACCES,'private path')),self.assertRaises(self.t.TokenError) as result:self.t.private_parent(str(self.path))
+  self.assertEqual(result.exception.code,'TOKEN_WRITE');self.assertEqual(result.exception.errno,errno.EACCES)

@@ -159,7 +159,9 @@ def private_parent(path):
             os.close(fd);fd=nxt
         result=fd;fd=None
         return result,NAME
-    except (OSError,TokenError):raise TokenError('TOKEN_WRITE') from None
+    except (OSError,TokenError) as error:
+        failure=TokenError('TOKEN_WRITE');failure.errno=getattr(error,'errno',0) or 0
+        raise failure from None
     finally:
         if fd is not None:os.close(fd)
 
