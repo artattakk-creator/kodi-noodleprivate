@@ -1,55 +1,28 @@
-"""Opt-in Live Home source: explicit start group only, no group/menu fallback."""
-from widget_items45 import item
-
-
+"""Live-only native start-group source; saved URLs and media widgets unchanged."""
 def rows(portal):
-    from widget_movie47 import MovieReader
-    from widget_group46 import pages
-    from library_index import IndexReadError
-    if not portal.get('include_live',True):return [],'DISABLED'
-    cid=str(portal.get('start_group_id') or '')
-    if not cid:return [],'START_GROUP_MISSING'
-    reader=MovieReader(portal['id'],kind='live')
-    try:
-        groups=reader.groups('live')
-        if cid not in {str(g.get('cid',g.get('category_id',''))) for g in groups}:return [],'START_GROUP_UNAVAILABLE'
-    finally:reader.close()
-    scoped=dict(portal,start_stream_id='')  # Preserve catalogue order; never pin/reorder the configured start station.
-    values=[r for batch in pages(scoped) for r in batch]
-    if any(str(r.get('category_id',''))!=cid for r in values):raise IndexReadError('FOREIGN_GROUP')
-    return values,'READY'
+    from live_home62 import rows as read
+    return read(portal)
 
 
 def values(portal):
-    from widget_render47 import values as render
-    from widget_art44 import read
-    selected,code=rows(portal);approved=read(portal['id']);result=[]
-    for offset in range(0,len(selected),16):
-        for value in render(portal,'live',selected[offset:offset+16],approved):
-            value.pop('_programme46',None);value['props']['XCMate.Home50']='true'
-            value['label']=value['props'].get('XCMate.ProgrammeChannel46') or value['label']
-            # The unpatched native source is a station row, even when no event
-            # image exists. Hero/details retain their shared ProgrammeImage46.
-            import os,xbmcaddon
-            logo=value['props'].get('XCMate.ProgrammeLogo46') or os.path.join(
-                xbmcaddon.Addon().getAddonInfo('path'),'resources','media','tv.png')
-            value['art'].update(poster=logo,thumb=logo,landscape=logo,icon=logo)
-            result.append(value)
-    return result,code
+    from live_items62 import values as decorate
+    selected,code=rows(portal)
+    return decorate(portal,selected),code
 
 
 def render(router,portal):
     import xbmc,xbmcplugin
     from boot_diagnostics import finish_directory
-    from library_index import IndexReadError
+    from widget_items45 import item
+    from live_home62 import trace,CODES
     from widget_diagnostics47 import note
     note(portal['id'],'live','DIRECTORY','DIRECTORY_INVOKED')
-    try:items,code=values(portal)
-    except (OSError,ValueError,IndexReadError):items,code=[],'LOCAL_UNAVAILABLE'
+    items,code=values(portal)
     xbmcplugin.setContent(router._handle,'videos')
     xbmcplugin.setPluginCategory(router._handle,'XCMate Live-TV · '+code)
     for value in items:xbmcplugin.addDirectoryItem(router._handle,value['url'],item(value),isFolder=False)
-    try:xbmc.log('[XCMate][HOME50] source=LIVE_START_GROUP code='+code+' rows='+str(len(items)),xbmc.LOGINFO)
+    try:xbmc.log('[XCMate][HOME50] source=LIVE_START_GROUP code='+(code if code in CODES else 'INTERNAL_ERROR')+' rows='+str(len(items)),xbmc.LOGINFO)
     except (AttributeError,RuntimeError):pass
-    note(portal['id'],'live','ITEMS','ITEMS_READY',items=len(items))
-    finish_directory(router,succeeded=True,cacheToDisc=False)
+    stage='ITEMS_READY' if items else 'DIRECTORY_EMPTY'
+    note(portal['id'],'live','ITEMS',stage,items=len(items));trace('DIRECTORY','READY' if items else code,len(items))
+    finish_directory(router,succeeded=bool(items) or code in ('DISABLED','EMPTY_GROUP'),cacheToDisc=False)

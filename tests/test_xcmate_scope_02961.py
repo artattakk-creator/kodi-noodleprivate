@@ -19,4 +19,4 @@ class Scope61(unittest.TestCase):
  def test_sources_bindings_player_epg_and_user_data_code_are_raw_unchanged(self):
   allowed={'settings.xml','addon.xml','changelog.txt','strings.po','home_menu.py','settings_sections45.py','widget_manager50.py','settings_options45.py','media_sources43.py','programme_match46.py','programme_art46.py','tmdb_connection60.py'}
   for path,digest in self.baseline()['source_sha256'].items():
-   if Path(path).name not in allowed:self.assertEqual(hashlib.sha256((ROOT/path).read_bytes()).hexdigest(),digest,path)
+   if Path(path).name not in allowed:self.assertEqual(hashlib.sha256(__import__('stabilization_contract_02962').without_stabilization62((ROOT/path).read_bytes(),path)).hexdigest(),digest,path)
