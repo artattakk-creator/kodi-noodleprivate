@@ -21,6 +21,9 @@ class ProgrammeBuffer63(Fixture,unittest.TestCase):
   self.assertTrue(Path(value['image']).is_file());self.assertEqual(Path(value['image']).read_bytes(),raw)
   self.assertEqual(get.call_count,1);self.assertEqual(again['image'],value['image'])
   self.assertEqual(art.cached(event)['image'],value['image'])
+  props={'XCMate.ProgrammeImage46':value['image'],'XCMate.ProgrammeArtSource57':value['source']}
+  importlib.import_module('live_text63')._hero(props)
+  self.assertEqual(props['XCMate.HeroImage63'],art.cached(event)['image'])
  def test_pending_remote_image_is_neutral_without_losing_epg_or_starting_network(self):
   text=importlib.import_module('live_text63');views=importlib.import_module('epg_views')
   info=views.guide_for_channel({'x':[dict(name='Actual local text',start_timestamp=self.now-60,stop_timestamp=self.now+600)]},'x',now=self.now)
@@ -28,7 +31,9 @@ class ProgrammeBuffer63(Fixture,unittest.TestCase):
   item=dict(props={'XCMate.ProgrammeKey47':info['programme_key47'],'XCMate.ProgrammeImage46':'https://image.tmdb.org/t/p/w780/provider63.png','XCMate.ProgrammeArtSource57':'xmltv_event'})
   with mock.patch('media_sources43.get',side_effect=AssertionError('focus network')):text.apply(item,self.portal,dict(sid='1'),info)
   self.assertEqual(item['props']['XCMate.ProgrammeTitle46'],'Actual local text')
-  self.assertIn('neutral.png',item['props']['XCMate.ProgrammeImage46']);self.assertEqual(item['props']['XCMate.ProgrammeArtSource57'],'')
+  self.assertIn('neutral.png',item['props']['XCMate.HeroImage63']);self.assertEqual(item['props']['XCMate.HeroArtSource63'],'')
+  self.assertEqual(item['props']['XCMate.ProgrammeImage46'],'https://image.tmdb.org/t/p/w780/provider63.png')
+  self.assertEqual(item['props']['XCMate.ProgrammeArtSource57'],'xmltv_event')
  def test_local_generic_series_image_keeps_its_honest_fallback_label(self):
   text=importlib.import_module('live_text63');views=importlib.import_module('epg_views')
   info=views.guide_for_channel({'x':[dict(name='Actual local series',start_timestamp=self.now-60,stop_timestamp=self.now+600,descr='Actual local description')]},'x',now=self.now)

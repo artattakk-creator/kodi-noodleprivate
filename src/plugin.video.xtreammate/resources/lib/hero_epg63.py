@@ -35,7 +35,7 @@ def poll():
     apply(dict(props=props),dict(id=pid),dict(sid=sid),info,labels=labels)
     event_key=info.get('programme_key47','')
     if art.get('profile63')==scope and art.get('key')==event_key and art.get('code') in ('READY','READY_STALE') and art.get('source')!='placeholder' and local_image(art.get('image','')):
-        props['XCMate.ProgrammeImage46']=art['image'];props['XCMate.ProgrammeArtSource57']=art.get('source','')
+        props['XCMate.ProgrammeImage46']=props['XCMate.HeroImage63']=art['image'];props['XCMate.ProgrammeArtSource57']=props['XCMate.HeroArtSource63']=art.get('source','')
         if art.get('image_scope57')=='series_fallback' and props.get('XCMate.FallbackLabel63'):
             note63=props['XCMate.FallbackLabel63']
             if not props['XCMate.ProgrammeDescription46'].startswith(note63):props['XCMate.ProgrammeDescription46']=note63+'\n'+props['XCMate.ProgrammeDescription46']
@@ -43,8 +43,8 @@ def poll():
         Next=props['XCMate.ProgrammeNext46'],NextTimes=props['XCMate.ProgrammeNextTimes48'],
         Description=props['XCMate.ProgrammeDescription46'],Remaining=props['XCMate.ProgrammeRemaining63'],
         Subtitle=label('XCMate.ProgrammeSubtitle63') if key==event_key else '',
-        Percent=props['XCMate.ProgrammePercent46'],Image=props.get('XCMate.ProgrammeImage46',neutral),
-        ArtSource=props.get('XCMate.ProgrammeArtSource57',''))
+        Percent=props['XCMate.ProgrammePercent46'],Image=props.get('XCMate.HeroImage63',neutral),
+        ArtSource=props.get('XCMate.HeroArtSource63',''))
     signature=(current,tuple(values.items()))
     if signature==_last:return
     previous=_last

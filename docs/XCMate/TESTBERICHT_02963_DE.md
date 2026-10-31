@@ -40,3 +40,5 @@ Reale Box B/Kodi21.3/ARM32, USB-/SMB-Treiberverhalten, eigener echter TMDB-Token
 [Android-Testplan B63-01 bis B63-19](ANDROID_ABNAHME_02963_DE.md) · [Issue-Matrix](ISSUE_ABNAHMEMATRIX_02963_DE.md).
 
 Native Prüfung des Fortschritts: Kodi21 kann Window.Property als Text, aber nicht über den GetInt-Pfad eines Progress-Controls lesen. Deshalb bekommen die zwei eigenen inaktiven Hero-Balken numerische setPercent-Nachrichten vor dem atomaren Bankwechsel; nur der statische native ListItem-Fallback verwendet ein unterstütztes numerisches Info-Label. Beide Bankwechsel und die tatsächlichen cyanfarbenen Pixel werden geprüft.
+
+Bestandsschutz der .55-Bild-API: Die vollständige Regression verlangt weiterhin dieselbe freigegebene Bildreferenz in ProgrammeImage46 und dem gemeinsamen Detail-Cache. Diese API bleibt erhalten. Der neue native Hero verwendet additive HeroImage63/HeroArtSource63-Properties: bis zur Materialisierung neutral, danach dieselbe verifizierte lokale Datei. Kein Remote-Bild/Fremd-Credit kann über den statischen XML-Fallback in den neuen Hero gelangen. Die alte .55-Gleichheitsprüfung bleibt unverändert; neue Tests prüfen zusätzlich den lokalen Hero-Pfad.

@@ -71,3 +71,10 @@ class Hero63(Fixture50,unittest.TestCase):
   self.assertTrue(all(n.findtext('info')=='' for n in controls[:2]))
   self.assertEqual(controls[2].findtext('info'),'ListItem.Property(XCMate.ProgrammePercent46)')
   self.assertTrue(all(n.find('lefttexture') is not None and n.find('righttexture') is not None and n.find('overlaytexture') is not None for n in controls))
+
+ def test_native_hero_never_uses_legacy_online_image_or_credit_fallbacks(self):
+  xml=(ADDON/'resources/bingie63/IncludesXCMate63.xml').read_text()
+  self.assertIn('ListItem.Property(XCMate.HeroImage63)',xml)
+  self.assertIn('ListItem.Property(XCMate.HeroArtSource63)',xml)
+  self.assertNotIn('ListItem.Property(XCMate.ProgrammeImage46)',xml)
+  self.assertNotIn('ListItem.Property(XCMate.ProgrammeArtSource57)',xml)

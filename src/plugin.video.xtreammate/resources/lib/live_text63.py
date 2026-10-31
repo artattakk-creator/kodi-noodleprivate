@@ -16,11 +16,9 @@ def apply(item,portal,row,info,event=None,labels=None):
     item['props']['XCMate.NoEpg63']=labels[0]
     item['props']['XCMate.RemainingFormat63']=labels[1]
     import xbmcaddon
-    if not local_image(item['props'].get('XCMate.ProgrammeImage46','')):
-        item['props']['XCMate.ProgrammeArtCode46']='PENDING_LOCAL_DOWNLOAD' if str(item['props'].get('XCMate.ProgrammeImage46','')).startswith(('http://','https://','image://')) else 'NO_IMAGE'
-        item['props']['XCMate.ProgrammeImage46']=os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media','programme46','neutral.png')
-        for name in ('XCMate.ProgrammeArtSource57','XCMate.ProgrammeArtCredit57','XCMate.ProgrammeImageScope57'):item['props'][name]=''
-    if not isinstance(info,dict):return item
+    if not isinstance(info,dict):
+        _hero(item['props'])
+        return item
     props=item['props'];key=str(info.get('programme_key47') or '')
     # An optional renderer may straddle a programme transition. Never combine
     # the old text with a different programme's picture.
@@ -46,4 +44,16 @@ def apply(item,portal,row,info,event=None,labels=None):
         'XCMate.ProgrammeStart63':str(info.get('start',0)),'XCMate.ProgrammeStop63':str(info.get('stop',0))})
     if now:
         props['XCMate.ProgrammeDetails46']='plugin://plugin.video.xtreammate/?'+urlencode(dict(action='programme_details46',pid=portal['id'],sid=row['sid'],start=info['start'],stop=info['stop'],event=key))
+    _hero(props)
     return item
+
+
+def _hero(props):
+    # Preserve the public .55 ProgrammeImage46 API used by legacy/details.
+    # The new native Hero consumes its own local-only presentation reference.
+    import xbmcaddon
+    image=props.get('XCMate.ProgrammeImage46','')
+    local=local_image(image)
+    props['XCMate.HeroImage63']=image if local else os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media','programme46','neutral.png')
+    props['XCMate.HeroArtSource63']=props.get('XCMate.ProgrammeArtSource57','') if local else ''
+    props['XCMate.HeroArtCode63']=props.get('XCMate.ProgrammeArtCode46','') if local else 'PENDING_LOCAL_DOWNLOAD' if str(image).startswith(('http://','https://','image://')) else 'NO_IMAGE'

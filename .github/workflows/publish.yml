@@ -39,6 +39,7 @@ jobs:
           python -m pip install 'Pillow>=11,<13' 'impacket==0.13.0' 'simpleeval==0.9.13'
           python -m compileall -q src
           python -m unittest discover -s tests -p '*02963.py' -v
+          python -m unittest discover -s tests -p 'test_xcmate_home_02955.py' -v
       - name: Verify real Kodi 21 Linux plugin and worker RPC transport
         run: python tools/run_kodi_helper57_contract.py --report-dir kodi-helper57-evidence
       - name: Verify native XCMate widget directories and synthetic poster pixels
