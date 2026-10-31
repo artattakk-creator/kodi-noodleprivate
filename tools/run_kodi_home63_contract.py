@@ -58,6 +58,10 @@ def main():
             run('cp', name + ':/root/home63-' + str(i) + '.png', str(report / ('home63-' + str(i) + '.png')))
             assert hashlib.sha256((report / ('home63-' + str(i) + '.png')).read_bytes()).hexdigest() == result['screenshot_sha256'][str(i)]
         print(json.dumps(result))
+        # Synthetic fixture only, explicitly watermarked. Enables remote visual
+        # review when the managed executor is unavailable; never a device log.
+        import base64
+        print('HERO63_PREVIEW_BASE64 '+base64.b64encode((report/'home63-0.png').read_bytes()).decode())
     finally:
         if not args.keep_container:
             subprocess.run(docker + ['rm', '-f', name], env=env, check=False, stdout=subprocess.DEVNULL)

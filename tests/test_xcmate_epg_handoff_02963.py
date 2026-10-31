@@ -83,3 +83,12 @@ class Handoff63(Fixture,unittest.TestCase):
   with mock.patch('xbmcvfs.translatePath',side_effect=lambda p:'/different-local-profile/' if p=='special://profile/' else translate(p)):
    self.assertIsNone(self.bridge.get('p','1',now=self.now))
   self.assertIsNotNone(self.bridge.get('p','1',now=self.now))
+ def test_safe_reason_codes_distinguish_missing_mapping_stale_cache_and_late_ui(self):
+  self.assertIsNone(self.bridge.get('p','unprepared'));self.assertEqual(self.bridge.state('p','unprepared'),'EPG_CACHE_UNAVAILABLE')
+  info=self.read()
+  with mock.patch('epg_status.revision',return_value='changed'):
+   self.assertIsNone(self.bridge.get('p','1'));self.assertEqual(self.bridge.state('p','1'),'EPG_CACHE_STALE')
+  wall=time.time();mono=time.monotonic()
+  nav=types.SimpleNamespace(portal=self.portal,sid='1',_guide=types.SimpleNamespace(get=lambda sid:dict(info,_published_at63=wall-5)),_epg_visible63=('1',wall-2,mono-2))
+  with mock.patch.object(self.bridge,'note') as note:self.bridge.visible(nav)
+  self.assertEqual(note.call_args.args[3],'EPG_UI_UPDATE_DELAY')

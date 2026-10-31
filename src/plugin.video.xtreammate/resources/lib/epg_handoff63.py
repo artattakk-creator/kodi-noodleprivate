@@ -14,6 +14,7 @@ PREFIX='XCMate.NowNext63.'
 MAX_BYTES=24576
 _lock=threading.RLock()
 _seen={}
+_states={}
 _FIELDS=('now','next','description','image','now_time','now_end_time','next_time','next_end_time',
     'start','stop','next_start','next_stop','progress','elapsed','remaining','epg_id','mapping',
     'source_index','reason','snapshot_revision','canonical46','programme_key47')
@@ -68,7 +69,7 @@ def observe(pid):
         if db is not None:db.close()
 
 
-def note(stage,pid='',sid='',code='READY',duration_ms=0):
+def note(stage,pid='',sid='',code='READY',duration_ms=0,facts=None):
     if stage not in ('HOME_FOCUS','HOME_NOW_NEXT_READY','OK_CLICK','FIRST_VIDEO','INFO_VISIBLE',
                      'PLAYER_NOW_NEXT_READY','DB_READ','SNAPSHOT_SEEDED'):return
     codes=('READY','EPG_DATA_MISSING','EPG_MAPPING_MISSING','EPG_CACHE_UNAVAILABLE','EPG_CACHE_STALE',
@@ -81,8 +82,15 @@ def note(stage,pid='',sid='',code='READY',duration_ms=0):
             _seen[key]=now
             while len(_seen)>256:_seen.pop(next(iter(_seen)))
         import xbmc
+        extra=''
+        if isinstance(facts,dict):
+            mode=facts.get('mapping')
+            if mode in ('MANUAL','PROVIDER_ID','STREAM_ALIAS','SHORT_EPG'):extra+=' mapping='+mode
+            source=[facts.get('canonical46',''),facts.get('epg_id',''),facts.get('source_index')]
+            extra+=' source='+hashlib.sha256(json.dumps(source,sort_keys=True).encode()).hexdigest()[:12]
+            extra+=' revision='+hashlib.sha256(json.dumps(facts.get('snapshot_revision'),sort_keys=True).encode()).hexdigest()[:12]
         xbmc.log('[XCMate][EPG63] stage='+stage+' channel='+key[1][:12]+' code='+code+
-                 ' at_ms='+str(int(now*1000))+' duration_ms='+str(max(0,min(300000,int(duration_ms)))),xbmc.LOGINFO)
+                 ' at_ms='+str(int(now*1000))+' duration_ms='+str(max(0,min(300000,int(duration_ms))))+extra,xbmc.LOGINFO)
     except (ImportError,AttributeError,RuntimeError,ValueError,TypeError):pass
 
 
@@ -130,6 +138,11 @@ def remember(pid,channel,info,mappings=None,expected_revision=None):
 def get(pid,sid,now=None,mappings=None):
     ts=time.time() if now is None else now
     key=identity(pid,sid)
+    def result(code,value=None):
+        with _lock:
+            _states[key]=code
+            while len(_states)>128:_states.pop(next(iter(_states)))
+        return value
     try:
         import xbmcgui
         from epg_status import revision
@@ -139,27 +152,52 @@ def get(pid,sid,now=None,mappings=None):
             if not raw or len(raw.encode())>MAX_BYTES:continue
             value=json.loads(raw)
             if isinstance(value,dict) and value.get('key')==key:record=value;break
-        if record is None:return None
-        if record.get('version')!=1 or record.get('key')!=key or record.get('revision')!=revision(pid):return None
+        if record is None:return result('EPG_CACHE_UNAVAILABLE')
+        if record.get('version')!=1 or record.get('key')!=key:return result('EPG_CACHE_UNAVAILABLE')
+        if record.get('revision')!=revision(pid):return result('EPG_CACHE_STALE')
         tag=window.getProperty(meta_key(pid))
-        if tag and record.get('guide_tag')!=tag:return None
-        if mappings is not None and record.get('binding')!=selector(mappings,sid):return None
+        if tag and record.get('guide_tag')!=tag:return result('EPG_CACHE_STALE')
+        if mappings is not None and record.get('binding')!=selector(mappings,sid):return result('EPG_MAPPING_MISSING')
         # Record freshness uses the real publication clock. The requested
         # EPG moment may be a fixed batch timestamp or a rollover probe.
         age=time.time()-float(record['at'])
-        if not math.isfinite(age) or not 0<=age<300:return None
+        if not math.isfinite(age) or not 0<=age<300:return result('EPG_CACHE_STALE')
         info=record['info']
-        if not isinstance(info,dict) or not isinstance(info.get('events'),list) or len(info['events'])>4:return None
+        if not isinstance(info,dict) or not isinstance(info.get('events'),list) or len(info['events'])>4:return result('EPG_CACHE_UNAVAILABLE')
         for e in info['events']:
-            if not isinstance(e,dict) or not isinstance(e.get('title'),str):return None
-            if any(type(e.get(k)) not in (int,float) or not math.isfinite(e[k]) for k in ('start','stop')):return None
-            if not 0<e['start']<e['stop']:return None
+            if not isinstance(e,dict) or not isinstance(e.get('title'),str):return result('EPG_CACHE_UNAVAILABLE')
+            if any(type(e.get(k)) not in (int,float) or not math.isfinite(e[k]) for k in ('start','stop')):return result('EPG_CACHE_UNAVAILABLE')
+            if not 0<e['start']<e['stop']:return result('EPG_CACHE_UNAVAILABLE')
         from epg_views import guide_for_channel
         from programme_snapshot47 import bind
         current=guide_for_channel({'v':info['events']},'v',now=ts)
         if isinstance(info.get('snapshot_revision'),list):info['snapshot_revision']=tuple(info['snapshot_revision'])
         for k in ('epg_id','mapping','snapshot_revision','canonical46'):
             if k in info:current[k]=info[k]
-        if not current['now'] and not current['next']:return None
-        return bind(pid,dict(sid=str(sid)),current)
-    except (ImportError,AttributeError,RuntimeError,ValueError,TypeError,KeyError,OverflowError):return None
+        if not current['now'] and not current['next']:return result('EPG_MAPPING_MISSING' if info.get('reason')=='MANUAL_ID_MISSING' else 'EPG_DATA_MISSING')
+        current['_published_at63']=float(record['at'])
+        return result('READY' if current['now'] else 'EPG_DATA_MISSING',bind(pid,dict(sid=str(sid)),current))
+    except (ImportError,AttributeError,RuntimeError,ValueError,TypeError,KeyError,OverflowError):return result('EPG_CACHE_UNAVAILABLE')
+
+def state(pid,sid):
+    with _lock:return _states.get(identity(pid,sid),'EPG_CACHE_UNAVAILABLE')
+
+
+def visible(navigator):
+    """Numeric UI/publication timing, separate from physical Android pixels."""
+    try:
+        pid=navigator.portal['id'];sid=str(navigator.sid)
+        moment=time.monotonic();wall=time.time()
+        prior=getattr(navigator,'_epg_visible63',None)
+        if not prior or prior[0]!=sid:
+            prior=(sid,wall,moment);navigator._epg_visible63=prior
+        note('INFO_VISIBLE',pid,sid)
+        info=navigator._guide.get(sid)
+        elapsed=(moment-prior[2])*1000
+        code='READY' if info.get('now') else state(pid,sid)
+        if info.get('now') and elapsed>1000:
+            code='EPG_UI_UPDATE_DELAY' if info.get('_published_at63',wall)<=prior[1] else 'EPG_SNAPSHOT_SCHEDULE_DELAY'
+        elif not info.get('now') and code=='EPG_CACHE_UNAVAILABLE' and elapsed>1000:
+            code='EPG_SNAPSHOT_SCHEDULE_DELAY'
+        note('PLAYER_NOW_NEXT_READY',pid,sid,code,elapsed,facts=info)
+    except (AttributeError,RuntimeError,KeyError,ValueError,TypeError):pass

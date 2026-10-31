@@ -161,7 +161,7 @@ for i in (0, 1, 87):
         assert max(abs(a-b) for a,b in zip(pictures[i].getpixel((1700,180)),neutral.getpixel((1700,180))))<=3
 assert rpc('Player.GetActivePlayers') == []
 stress=json.loads(Path('/root/stress63.json').read_text());assert stress['groups']==803 and stress['stations']==88
-report = dict(catalog_groups=803,enrichment_failure_injected=True,kodi=version, skin='BINGIE MOD 2.2.3', native_home=10000, synthetic_provider=True, native_directory=88, last_station_reachable=True,
+report = dict(catalog_groups=803,enrichment_failure_injected=False,kodi=version, skin='BINGIE MOD 2.2.3', native_home=10000, synthetic_provider=True, native_directory=88, last_station_reachable=True,
               focused_hero=samples, decoded_hero_images=2, decoded_focused_logos=2, missing_logo_text_pixels=True, full_bleed_pixels='PASS',text_overlay_pixels='PASS',warm_shared_snapshot='PASS',neutral_no_epg_pixels='PASS', no_player_start=True, android='NOT_TESTED', menu_path=visited,explicit_preview_and_approval=True,external_helpers='NO_OP; builder copies pinned native Template output after approval',epg=True,token='SYNTHETIC_FIXTURE_ONLY',
               screenshot_sha256={str(i): hashlib.sha256(Path('/root/home63-' + str(i) + '.png').read_bytes()).hexdigest() for i in (0,1,87)})
 print(json.dumps(report, indent=2))

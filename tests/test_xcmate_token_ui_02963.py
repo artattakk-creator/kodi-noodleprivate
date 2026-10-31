@@ -50,3 +50,14 @@ class TokenUi63(Fixture,unittest.TestCase):
  def test_profile_change_before_confirmation_is_not_written_to_another_profile(self):
   with self.assertRaises(self.t.TokenError) as exc:self.t.import_bytes(FIXTURE,None,target=str(self.folder/'other-profile'/self.t.NAME))
   self.assertEqual(exc.exception.code,'TOKEN_CHANGED');self.assertFalse(self.path.exists())
+ def test_explicit_activation_retries_one_negative_event_without_flushing_positives_or_other_profiles(self):
+  refresh=importlib.import_module('programme_refresh63');refresh._retries.clear();refresh.request()
+  event=dict(pid='p',key='e'*64)
+  self.assertTrue(refresh.retry(event,dict(source='placeholder',code='TMDB_DISABLED')))
+  self.assertFalse(refresh.retry(event,dict(source='placeholder',code='TMDB_DISABLED')))
+  self.assertFalse(refresh.retry(dict(event,key='f'*64),dict(source='tmdb_movie',code='READY')))
+  self.assertFalse(refresh.retry(dict(event,key='d'*64),dict(source='placeholder',code='HTTP_RATE_LIMIT')))
+  import xbmcvfs
+  translate=xbmcvfs.translatePath
+  with mock.patch('xbmcvfs.translatePath',side_effect=lambda p:'/other-profile/' if p=='special://profile/' else translate(p)):
+   self.assertFalse(refresh.retry(dict(event,key='c'*64),dict(source='placeholder',code='NO_IMAGE')))

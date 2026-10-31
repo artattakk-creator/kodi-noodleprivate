@@ -31,7 +31,9 @@ if p.get('fixture59')==['seed']:
   Image.new('RGB',(120,60),((20+i*17)%230,(90+i*23)%230,(150+i*13)%230)).save(art/(hashlib.sha256(uri.encode()).hexdigest()+'.img'),format='PNG')
   if i<87:events['xml'+str(i)]=[dict(name='Synthetic film '+str(i),title='Synthetic film '+str(i),channel='xml'+str(i),descr='Exact local description '+str(i),category='Spielfilm',year=2024,start_timestamp=now-600,stop_timestamp=now+1200),dict(name='Next '+str(i),channel='xml'+str(i),descr='Next event',start_timestamp=now+1200,stop_timestamp=now+2400)]
  replace_catalog(portal['id'],'live',stations,[dict(category_id='a',category_name='Synthetic start group')]+[dict(category_id='unused'+str(i),category_name='Unused group '+str(i)) for i in range(802)])
- Path('/root/stress63.json').write_text(json.dumps(dict(groups=803,stations=len(stations))))
+ import sqlite3,library_index
+ db=sqlite3.connect(library_index.path());groups63=db.execute("SELECT count(*) FROM groups WHERE pid=? AND kind='live'",(portal['id'],)).fetchone()[0];db.close();assert groups63==803
+ Path('/root/stress63.json').write_text(json.dumps(dict(groups=groups63,stations=len(stations))))
  import_cache(portal['id'],events,'synthetic-home60',now=now,trusted_feed=True)
  addon=xbmcaddon.Addon();addon.setSetting('programme_tmdb46','true');addon.setSetting('tmdb_research43','true');addon.setSetting('tmdb_read_token43','SYNTHETIC_FIXTURE_NOT_A_TOKEN');addon.setSetting('programme_helper57','false');addon.setSetting('programme_catalog57','false')
  import io

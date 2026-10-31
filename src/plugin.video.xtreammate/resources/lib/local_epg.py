@@ -110,7 +110,7 @@ def now_next(pid,channels,mappings,now=None,client=None):
             result[sid]=warm[sid]
         remember63(pid,channel,result[sid],mappings,expected_revision=revision_before63)
         code63=('READY' if info.get('now') else 'EPG_CACHE_UNAVAILABLE' if cache is None else 'EPG_MAPPING_MISSING' if info.get('reason')=='MANUAL_ID_MISSING' else 'EPG_DATA_MISSING')
-        note63('DB_READ',pid,sid,code63,db_ms63)
+        note63('DB_READ',pid,sid,code63,db_ms63,facts=info)
     return result
 
 

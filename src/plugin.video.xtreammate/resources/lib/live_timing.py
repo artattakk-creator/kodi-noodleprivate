@@ -102,10 +102,9 @@ def remote(navigator,command):
 def visible(navigator):
     phase={'info':'INFO_WINDOW_VISIBLE','channels':'MINI_CHANNELS_VISIBLE'}.get(navigator.mode)
     if phase:
-        from epg_handoff63 import note as epg63_note
-        if phase=='INFO_WINDOW_VISIBLE' and getattr(navigator,'portal',{}).get('id') and hasattr(navigator,'_guide'):
-            epg63_note('INFO_VISIBLE',navigator.portal['id'],navigator.sid)
-            if navigator._guide.get(navigator.sid).get('now'):epg63_note('PLAYER_NOW_NEXT_READY',navigator.portal['id'],navigator.sid)
+        if phase=='INFO_WINDOW_VISIBLE':
+            from epg_handoff63 import visible as epg63_visible
+            epg63_visible(navigator)
         if navigator.mode=='channels' and getattr(navigator,'visible_channels',[]) and hasattr(navigator,'portal'):
             from flow46 import mark
             mark('MINI_EPG_VISIBLE',pid=navigator.portal['id'],sid=navigator.sid)

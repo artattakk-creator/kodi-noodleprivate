@@ -126,7 +126,9 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None):
         local60=indexed(event,verify=True)
         if local60:return local60
     current=display(event,old)
-    if current and not (allow_lookup and current.get('source')=='placeholder' and
+    from programme_refresh63 import retry as retry63
+    explicit63=allow_lookup and retry63(event,old)
+    if current and not explicit63 and not (allow_lookup and current.get('source')=='placeholder' and
             (current.get('code')=='AWAITING_BACKGROUND_REFRESH' or not current.get('matching_policy57') or current.get('source_policy57')!=policy())):return current
     if cancel():return None
     now=time.time()

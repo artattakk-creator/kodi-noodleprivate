@@ -15,7 +15,7 @@ def poll():
     if label('XCMate.Home50')!='true':return
     pid,sid,token=label('XCMate.PortalId'),label('XCMate.MediaId'),label('XCMate.WidgetToken41')
     if not pid or not sid or len(token)!=32:return
-    from epg_handoff63 import get,note,profile_scope
+    from epg_handoff63 import get,note,profile_scope,state
     from epg_views import guide_for_channel
     from live_text63 import apply
     scope=profile_scope();current=(pid,sid,token,scope)
@@ -53,7 +53,7 @@ def poll():
     window.setProperty(prefix+'Identity',token)
     window.setProperty('XCMate.Hero63.Active',bank)
     if changed or previous is None or previous[1][0]!=signature[1][0]:
-        note('HOME_NOW_NEXT_READY',pid,sid,'READY' if info.get('now') else 'EPG_DATA_MISSING',(time.monotonic()-_focused_at)*1000)
+        note('HOME_NOW_NEXT_READY',pid,sid,'READY' if info.get('now') else state(pid,sid),(time.monotonic()-_focused_at)*1000,facts=info)
 
 def prepare(pid):
     global _art,_labels
