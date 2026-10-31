@@ -133,6 +133,7 @@ for i, sample in samples.items():
     assert sample['Home50'] == 'true' and sample['hero_condition'], sample
 assert samples['0']['ProgrammeImage46'] != samples['1']['ProgrammeImage46']
 assert samples['0']['ProgrammeNext46']=='Next 0'
+assert len(samples['1']['ProgrammeTitle46'])>26
 assert samples['87']['ProgrammeChannel46'] != samples['0']['ProgrammeChannel46']
 from PIL import Image, UnidentifiedImageError
 pictures = {}

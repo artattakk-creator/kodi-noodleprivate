@@ -7,6 +7,8 @@ sys.path.insert(0,'/root/.kodi/addons/plugin.video.xtreammate/resources/lib')
 import xbmc
 import xbmcgui
 
+def check64(condition,detail='NATIVE_GUI64_CONTRACT'):
+    if not condition:raise RuntimeError(str(detail))
 home = xbmcgui.Window(10000)
 for _ in range(200):
     if xbmcgui.getCurrentWindowId() == 10000 and xbmc.getInfoLabel('Container(2510).NumItems') == '88':
@@ -85,8 +87,8 @@ for index in (0, 1, 87):
     props['warm_now']=warm.get('now','');props['warm_next']=warm.get('next','');props['warm_key']=warm.get('programme_key47','')
     props['warm_phase']='HOST_RAM_SNAPSHOT_ONLY_NOT_NATIVE_AV'
     if index<87:
-        assert warm['now']==props['ProgrammeTitle46'] and warm['next']==props['ProgrammeNext46']
-        assert props['warm_seed_ms']<1000 and warm['programme_key47']
+        check64(warm['now']==props['ProgrammeTitle46'] and warm['next']==props['ProgrammeNext46'],'WARM64_TEXT_MISMATCH')
+        check64(props['warm_seed_ms']<1000 and warm['programme_key47'],'WARM64_SEED_BUDGET')
     Path('/root/home64-' + str(index) + '.json').write_text(json.dumps(props))
 home.setProperty('Home64.Complete', 'true')
 
@@ -123,7 +125,7 @@ for ident,kind,indices in ((2520,'vod',(0,5)),(2530,'series',tuple(range(10))),(
     if len(boxes)!=1:continue
     x1,y1,x2,y2=box=boxes[0]
     expected=tuple((v+index*step)%240 for v,step in zip((40,70,120) if kind=='vod' else (100,50,20),(19,31,13)))
-    actual=rgb.getpixel(((x1+x2)//2,(y1+y2)//2))
+    actual=rgb.getpixel(((x1+x2)//2,y1+(y2-y1)//4))
     if 210<=x2-x1<=260 and 300<=y2-y1<=345 and max(abs(a-b) for a,b in zip(actual,expected))<=8:
      break
    except (OSError,UnidentifiedImageError):pass
@@ -131,12 +133,12 @@ for ident,kind,indices in ((2520,'vod',(0,5)),(2530,'series',tuple(range(10))),(
    Path('/root/media64-error.json').write_text(json.dumps(dict(id=ident,kind=kind,index=index,boxes=boxes,focus=home.getFocusId())))
    raise RuntimeError('MEDIA64_FOCUS_OR_POSTER_PIXELS '+repr((ident,kind,index,boxes)))
   props={name:xbmc.getInfoLabel('Container('+str(ident)+').ListItem.Property('+name+')') for name in ('XCMate.MediaId','XCMate.WidgetKind41','XCMate.SeriesArt64','XCMate.Home50')}
-  assert home.getFocusId()==ident and props['XCMate.WidgetKind41']==kind and props['XCMate.MediaId']==str(index),props
-  assert props['XCMate.Home50']!='true'
+  check64(home.getFocusId()==ident and props['XCMate.WidgetKind41']==kind and props['XCMate.MediaId']==str(index),props)
+  check64(props['XCMate.Home50']!='true','MEDIA64_FOREIGN_HERO')
   item=dict(kind=kind,index=index,focus=ident,bounds=box,poster_pixels='PASS',selected=props['XCMate.MediaId'])
-  if kind=='series':assert props['XCMate.SeriesArt64']=='SERIES_ART_URI_READY',props
+  if kind=='series':check64(props['XCMate.SeriesArt64']=='SERIES_ART_URI_READY',props)
   media64.append(item)
   if index in (0,5,9):Path('/root/media64-'+kind+'-'+str(index)+'.png').write_bytes(raw)
 home.setFocusId(2510);xbmc.sleep(500)
-assert home.getFocusId()==2510
+check64(home.getFocusId()==2510,'LIVE64_FOCUS_RETURN')
 Path('/root/media64.json').write_text(json.dumps(dict(cases=media64,series_posters=10,film_series_live_return=True,global_fixed_frames=True,android='NOT_TESTED')))

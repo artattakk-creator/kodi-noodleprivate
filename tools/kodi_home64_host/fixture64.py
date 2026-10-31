@@ -3,6 +3,8 @@ import os,sys,json,time,hashlib
 from pathlib import Path
 from urllib.parse import parse_qs
 import xbmc,xbmcgui,xbmcplugin,xbmcaddon
+def check64(condition,detail='NATIVE_FIXTURE64_CONTRACT'):
+ if not condition:raise RuntimeError(str(detail))
 root=Path(__file__).parent;sys.path.insert(0,str(root/'resources/lib'))
 p=parse_qs(sys.argv[2].lstrip('?'));handle=int(sys.argv[1])
 if p.get('fixture59')==['seed']:
@@ -23,13 +25,13 @@ if p.get('fixture59')==['seed']:
    if kind=='series':records64.append((str(i),'poster',hashlib.sha256(uri.encode()).hexdigest(),dict(uri=str(destination64),mode='local',code='LOCAL_HEADER_VALID',until=time.time()+86400)))
   replace_catalog(portal['id'],kind,rows,[dict(category_id='a',category_name='Synthetic group')])
  from programme_assets47 import _store
- assert _store(portal['id'],'series',records64)
+ check64(_store(portal['id'],'series',records64),'SERIES64_STORE_FAILED')
  from programme_assets47 import read_many
  from widget_data41 import snapshot
  def check_series64(stage):
   rows,code=snapshot(portal,'series');refs=read_many(portal['id'],'series',rows,provider_only=True)
   Path('/root/series64-'+stage+'.json').write_text(json.dumps(dict(stage=stage,rows=len(rows),refs=len(refs),code=code,sids=[r['sid'] for r in rows],sources=[r.get('cover','') for r in rows])))
-  assert len(rows)==24 and len(refs)==24,(stage,code,len(rows),len(refs))
+  check64(len(rows)==24 and len(refs)==24,(stage,code,len(rows),len(refs)))
  check_series64('stored')
  from guide_store import import_cache
  from programme_events46 import load
@@ -41,9 +43,10 @@ if p.get('fixture59')==['seed']:
   stations.append(dict(stream_id=str(i),name='Station '+str(i),category_id='a',epg_channel_id='xml'+str(i),stream_icon=uri if i<87 else ''))
   Image.new('RGB',(120,60),((20+i*17)%230,(90+i*23)%230,(150+i*13)%230)).save(art/(hashlib.sha256(uri.encode()).hexdigest()+'.img'),format='PNG')
   if i<87:events['xml'+str(i)]=[dict(name='Synthetic film '+str(i),title='Synthetic film '+str(i),channel='xml'+str(i),descr='Exact local description '+str(i),category='Spielfilm',year=2024,start_timestamp=now-600,stop_timestamp=now+1200),dict(name='Next '+str(i),channel='xml'+str(i),descr='Next event',start_timestamp=now+1200,stop_timestamp=now+2400)]
+ events['xml1'][0]['name']=events['xml1'][0]['title']='Synthetic long programme title with enough words for the two-line Hero layout'
  replace_catalog(portal['id'],'live',stations,[dict(category_id='a',category_name='Synthetic start group')]+[dict(category_id='unused'+str(i),category_name='Unused group '+str(i)) for i in range(802)])
  import sqlite3,library_index
- db=sqlite3.connect(library_index.path());groups63=db.execute("SELECT count(*) FROM groups WHERE pid=? AND kind='live'",(portal['id'],)).fetchone()[0];db.close();assert groups63==803
+ db=sqlite3.connect(library_index.path());groups63=db.execute("SELECT count(*) FROM groups WHERE pid=? AND kind='live'",(portal['id'],)).fetchone()[0];db.close();check64(groups63==803,'GROUP64_COUNT')
  Path('/root/stress64.json').write_text(json.dumps(dict(groups=groups63,stations=len(stations))))
  import_cache(portal['id'],events,'synthetic-home60',now=now,trusted_feed=True)
  addon=xbmcaddon.Addon();addon.setSetting('programme_tmdb46','true');addon.setSetting('tmdb_research43','true');addon.setSetting('tmdb_read_token43','SYNTHETIC_FIXTURE_NOT_A_TOKEN');addon.setSetting('programme_helper57','false');addon.setSetting('programme_catalog57','false')
@@ -57,7 +60,7 @@ if p.get('fixture59')==['seed']:
    media_sources43.get=lambda *a,**kw:next(replies)
    value=resolve(event,allow_lookup=True)
    Path('/root/seed60-'+str(i)+'.json').write_text(json.dumps(dict(event=event,art=value)))
-   assert value['code']=='READY' and Path(value['image']).is_file(),value.get('code')
+   check64(value['code']=='READY' and Path(value['image']).is_file(),value.get('code'))
   finally:media_sources43.get=original
  check_series64('after-guide')
  li=xbmcgui.ListItem('Seeded');xbmcplugin.addDirectoryItem(handle,'fixture',li,False);xbmcplugin.endOfDirectory(handle)
