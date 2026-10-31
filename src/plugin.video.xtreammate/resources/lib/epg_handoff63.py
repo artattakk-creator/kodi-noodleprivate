@@ -144,8 +144,10 @@ def get(pid,sid,now=None,mappings=None):
         tag=window.getProperty(meta_key(pid))
         if tag and record.get('guide_tag')!=tag:return None
         if mappings is not None and record.get('binding')!=selector(mappings,sid):return None
-        age=ts-float(record['at'])
-        if not math.isfinite(age) or not -1<=age<300:return None
+        # Record freshness uses the real publication clock. The requested
+        # EPG moment may be a fixed batch timestamp or a rollover probe.
+        age=time.time()-float(record['at'])
+        if not math.isfinite(age) or not 0<=age<300:return None
         info=record['info']
         if not isinstance(info,dict) or not isinstance(info.get('events'),list) or len(info['events'])>4:return None
         for e in info['events']:

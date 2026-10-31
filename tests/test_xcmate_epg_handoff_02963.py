@@ -50,7 +50,8 @@ class Handoff63(Fixture,unittest.TestCase):
   info=self.read()
   for i in range(88):
    row=dict(self.row,sid=str(i));self.bridge.remember('p',row,info,{})
-  for i in range(88):self.assertEqual(self.bridge.get('p',str(i),now=self.now)['now'],'Current local event')
+  for i in range(88):
+   value=self.bridge.get('p',str(i),now=self.now);self.assertIsNotNone(value,'warm station '+str(i));self.assertEqual(value['now'],'Current local event')
   self.assertLessEqual(sum(k.startswith(self.bridge.PREFIX) for k in self.properties),512)
  def test_revision_changed_during_read_cannot_stamp_old_data_as_new(self):
   info=self.read();self.properties.clear()
