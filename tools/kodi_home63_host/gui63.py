@@ -22,9 +22,17 @@ for index in (0, 1, 87):
     started = time.monotonic()
     import hero_epg63
     for ready in range(30):
+        # Simulate the production 100-ms UI pump after Kodi has propagated
+        # focus to its global ListItem; selecting the container alone is earlier.
         hero_epg63._next=0;hero_epg63.poll()
-        if xbmc.getInfoLabel('Container(2510).ListItem.Property(XCMate.MediaId)')==str(index):break
+        selected=xbmc.getInfoLabel('Container(2510).ListItem.Property(XCMate.MediaId)')
+        token=xbmc.getInfoLabel('Container(2510).ListItem.Property(XCMate.WidgetToken41)')
+        bank=home.getProperty('XCMate.Hero63.Active')
+        if selected==str(index) and home.getProperty('XCMate.Hero63.'+bank+'.Identity')==token:
+            break
         xbmc.sleep(50)
+    else:
+        raise RuntimeError('FOCUS_PUMP_NOT_PUBLISHED '+repr((selected,bank,token)))
     # Wait for the existing source's native clock, if its initial bounded
     # local read returned a placeholder. No manual reset or URL change.
     for attempt in range(375):
@@ -63,6 +71,10 @@ for index in (0, 1, 87):
     props['hero_condition'] = xbmc.getCondVisibility('Window.IsActive(Home) + ControlGroup(77777).HasFocus() + String.IsEqual(ListItem.Property(XCMate.Home50),true)')
     props['window'] = xbmcgui.getCurrentWindowId()
     props['focus'] = home.getFocusId()
+    bank=home.getProperty('XCMate.Hero63.Active')
+    props['hero_active_bank']=bank
+    props['hero_percent']=home.getProperty('XCMate.Hero63.'+bank+'.Percent')
+    props['row_percent']=xbmc.getInfoLabel('Container(2510).ListItem.Property(XCMate.ProgrammePercent46)')
     props['host_ready_ms'] = round((time.monotonic() - started) * 1000)
     from tv_data import GuideSnapshot
     from unittest import mock
