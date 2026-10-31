@@ -38,3 +38,12 @@ class ProgrammeBuffer63(Fixture,unittest.TestCase):
   from localization import tr
   self.assertTrue(item['props']['XCMate.ProgrammeDescription46'].startswith(tr(36542)))
   self.assertIn('Actual local description',item['props']['XCMate.ProgrammeDescription46'])
+ def test_failed_download_does_not_mislabel_an_old_url_as_a_stale_local_image(self):
+  urls=importlib.import_module('programme_urls55');event=self.event()
+  legacy=urls.resolve(event,check=lambda *a,**kw:None)
+  self.assertEqual(legacy['code'],'READY');self.assertTrue(legacy['image'].startswith('https://'))
+  from media_sources43 import SourceError
+  with mock.patch('media_sources43.get',side_effect=SourceError('HTTP_TIMEOUT')):
+   blocked=urls.resolve(event,local_image63=True)
+  self.assertEqual(blocked['code'],'HTTP_TIMEOUT');self.assertEqual(blocked['source'],'placeholder')
+  self.assertEqual(blocked['image'],event['placeholder'])

@@ -189,7 +189,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             value['code']='BLOCKED_CREDENTIAL_URL';continue
         if local_image63 or candidate.get('source') in ('tmdb_movie','tmdb_episode'):
             from programme_art46 import prepare as materialize60
-            return materialize60(event,cancel=cancel,resolved60=candidate)
+            return materialize60(event,cancel=cancel,resolved60=dict(candidate,_local_only63=True) if local_image63 else candidate)
         try:(check or probe)(url,cancel=cancel)
         except SourceError as exc:value['code']=exc.code;continue
         if cancel():return None
