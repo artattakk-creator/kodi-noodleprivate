@@ -37,6 +37,11 @@ def candidate(path,data,previous):
      for tag,value in (('width',width),('height',height)):
       for v in list(own.findall(tag)):own.remove(v)
       E.SubElement(own,tag).text=value
+     for inc in list(own.findall('include')):
+      if inc.text and ('FO_Defs' in inc.text or inc.text=='thumbsborder_focused'):own.remove(inc)
+     texture=E.SubElement(own,'texture',border='9');texture.text='special://home/addons/plugin.video.xtreammate/resources/media/programme55/focus.png'
+     E.SubElement(own,'aspectratio').text='stretch'
+     E.SubElement(own,'colordiffuse').text='FFFFFFFF'
      E.SubElement(original,'visible').text='!'+OWN
      changes.append((image['start'],stop,E.tostring(original,encoding='utf-8')+E.tostring(own,encoding='utf-8')));count+=1
   if not 2<=count<=32:raise ValueError('UNVERIFIED_FOCUS_REGIONS')

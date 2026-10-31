@@ -158,7 +158,7 @@ for i in (0, 1, 87):
         assert samples[str(i)]['warm_now']==samples[str(i)]['ProgrammeTitle46'] and samples[str(i)]['warm_next']==samples[str(i)]['ProgrammeNext46']
         assert samples[str(i)]['warm_seed_ms']<1000
     else:
-        neutral=Image.open('/root/.kodi/addons/plugin.video.xtreammate/resources/media/programme46/neutral.png').convert('RGB').resize((1920,1080))
+        neutral=Image.open('/root/.kodi/addons/plugin.video.xtreammate/resources/media/lightweight_splash.jpg').convert('RGB').resize((1920,1080))
         assert max(abs(a-b) for a,b in zip(pictures[i].getpixel((1700,180)),neutral.getpixel((1700,180))))<=3
 assert rpc('Player.GetActivePlayers') == []
 stress=json.loads(Path('/root/stress63.json').read_text());assert stress['groups']==803 and stress['stations']==88
