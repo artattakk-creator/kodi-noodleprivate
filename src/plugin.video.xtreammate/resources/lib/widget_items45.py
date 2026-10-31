@@ -54,6 +54,9 @@ def describe(portal,kind,row,approved,epg=None,assets47=None):
     if kind!='live':
         label=recent_label(row,setting_int('recent_days',10));props['XCMate.AddedStatus']=label
         info['plot']=label+'\n'+info['plot']
+    if kind=='series':
+        from series_art64 import inspect,note
+        props['XCMate.SeriesArt64']=inspect(row,image);note(props['XCMate.SeriesArt64'])
     value=dict(label=str(row['name']),url=url,art=image,info=info,props=props)
     if kind=='live':
         from programme_widgets46 import decorate
