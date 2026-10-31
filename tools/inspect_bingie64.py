@@ -39,10 +39,10 @@ def main():
   print('MANIFEST63_JSON '+(target/'candidate/manifest.json').read_text().replace('\n',''))
   names=('Bingie_Screens_Fixed_Focus_Frame','Fixed_Focus_','PosterThumbFO_DefsBingie','PosterThumbBingieLayout','SetFixedVerticalNavigationProps')
   evidence=[]
-  for path in sorted((skin/'xml').glob('*.xml')):
+  for path in sorted(skin.rglob('*.xml')):
    try:tree=E.parse(path)
    except E.ParseError:continue
-   for node in tree.getroot():
+   for node in tree.getroot().iter():
     name=node.get('name','')
     if any(name.startswith(n) for n in names):
      evidence.append(dict(file=path.name,name=name,xml=E.tostring(node,encoding='unicode')))

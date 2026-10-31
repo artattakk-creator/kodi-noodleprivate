@@ -4768,3 +4768,15 @@ msgstr "Ihr bereits bestätigtes, unverändertes BINGIE-Layout kann auf den voll
 msgctxt "#36671"
 msgid "Apply the verified Hero layout now, retain the verified backup and request the native Skinshortcuts rebuild? Cancel leaves skin files unchanged."
 msgstr "Geprüftes Hero-Layout jetzt anwenden, verifizierte Sicherung behalten und den nativen Skinshortcuts-Neuaufbau starten? Abbrechen lässt die Skin-Dateien unverändert."
+
+msgctxt "#36672"
+msgid "Token copied locally and verified. Directory synchronization is unconfirmed; check persistence after restarting Kodi."
+msgstr "Token lokal übernommen und geprüft. Die Verzeichnissynchronisierung ist nicht bestätigt; Persistenz nach Kodi-Neustart separat prüfen."
+
+msgctxt "#36673"
+msgid "Stage: {0}"
+msgstr "Phase: {0}"
+
+msgctxt "#36674"
+msgid "Write already committed; final status unconfirmed: {0}"
+msgstr "Schreibvorgang bereits erfolgt; endgültiger Status unbestätigt: {0}"

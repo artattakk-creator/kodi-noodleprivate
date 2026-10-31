@@ -1,3 +1,9 @@
+0.1.29.64
+- TMDB-Import: Quelle, privates Ziel, atomare Übernahme und Inhaltsprüfung getrennt diagnostiziert.
+- Synchronisierungswarnungen nach erfolgreicher Übernahme nicht mehr als garantiert gescheiterten Import melden.
+- Zugangsdaten, bestehende Portale und Widgetverknüpfungen bleiben erhalten.
+- Android-Abnahme offen; gezielte Home-/EPG-Prüfung gemäß B64-Testplan.
+
 0.1.29.63
 - BINGIE-Hero: bildfüllendes Breitbild mit transparentem Textoverlay gemäß bestätigtem Layout.
 - Jetzt/Danach wird aus der gemeinsamen lokalen EPG-Datenbank geladen und warm an den Player übergeben.
