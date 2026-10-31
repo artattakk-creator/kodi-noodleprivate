@@ -4720,3 +4720,51 @@ msgstr "Wiederherstellung betrifft ausschließlich library.py; Benutzerprofile, 
 msgctxt "#36649"
 msgid "The verified Skinshortcuts file is already Python compatible. No change needed."
 msgstr "Die verifizierte Skinshortcuts-Datei ist bereits Python-kompatibel. Keine Änderung erforderlich."
+
+msgctxt "#36660"
+msgid "Import token and enable TMDB programme images"
+msgstr "Token importieren und TMDB-Sendungsbilder aktivieren"
+
+msgctxt "#36661"
+msgid "Enter/change token privately"
+msgstr "Token geschützt eingeben/ändern"
+
+msgctxt "#36662"
+msgid "A private token file takes precedence. Your entry replaces it only after explicit confirmation; no silent fallback to the legacy setting."
+msgstr "Eine private Token-Datei hat Vorrang. Die Eingabe ersetzt diese Datei erst nach Ihrer ausdrücklichen Bestätigung; kein stiller Wechsel zur alten Einstellung."
+
+msgctxt "#36663"
+msgid "Reading selected file within limits …"
+msgstr "Ausgewählte Datei kontrolliert einlesen …"
+
+msgctxt "#36664"
+msgid "Save token only in this local Kodi profile and explicitly enable TMDB programme images? The token is never distributed."
+msgstr "Token nur in diesem lokalen Kodi-Profil speichern und TMDB-Sendungsbilder ausdrücklich aktivieren? Es wird kein Token weitergegeben."
+
+msgctxt "#36665"
+msgid "TMDB programme images are enabled. Preparation runs in the background. Connection testing remains a separate action."
+msgstr "TMDB-Sendungsbilder sind aktiviert. Die Vorbereitung läuft im Hintergrund. Der Verbindungstest ist separat erreichbar."
+
+msgctxt "#36666"
+msgid "Token stored privately. Image lookup was not enabled automatically."
+msgstr "Token privat gespeichert. Die Bildsuche wurde nicht automatisch aktiviert."
+
+msgctxt "#36667"
+msgid "The file must contain one complete token on exactly one physical UTF-8 line. Visual editor wrapping is allowed; Bearer, JSON, BOM and extra lines are not. TOKEN_UNREADABLE can also indicate a VFS time budget or missing permission."
+msgstr "Die Datei muss einen vollständigen Token in genau einer physischen UTF-8-Zeile enthalten. Ein visueller Editor-Umbruch ist erlaubt; Bearer, JSON, BOM und zusätzliche Zeilen nicht. TOKEN_UNREADABLE kann auch ein VFS-Zeitbudget oder fehlende Berechtigung bedeuten."
+
+msgctxt "#36668"
+msgid "{0} min. remaining"
+msgstr "Noch {0} Min."
+
+msgctxt "#36669"
+msgid "XCMate: update BINGIE Hero"
+msgstr "XCMate: BINGIE-Hero aktualisieren"
+
+msgctxt "#36670"
+msgid "Your previously approved, unchanged BINGIE layout can be upgraded to the full-bleed Hero. Existing widget sources and station buttons remain. Review the changes and then explicitly confirm."
+msgstr "Ihr bereits bestätigtes, unverändertes BINGIE-Layout kann auf den vollflächigen Hero umgestellt werden. Die bestehenden Widgetquellen und Senderbuttons bleiben erhalten. Prüfen Sie die Änderungen und bestätigen Sie anschließend ausdrücklich."
+
+msgctxt "#36671"
+msgid "Apply the verified Hero layout now, retain the verified backup and request the native Skinshortcuts rebuild? Cancel leaves skin files unchanged."
+msgstr "Geprüftes Hero-Layout jetzt anwenden, verifizierte Sicherung behalten und den nativen Skinshortcuts-Neuaufbau starten? Abbrechen lässt die Skin-Dateien unverändert."

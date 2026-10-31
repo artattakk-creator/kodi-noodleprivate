@@ -27,7 +27,8 @@ def prepare(portal,rows,cancel=lambda:False):
         infos=now_next(portal['id'],batch,configuration(portal['id'])['mappings'])
         records=[]
         revision=next((info.get('snapshot_revision') for info in infos.values()),None)
-        allow_lookup=refreshed(portal['id'],revision)
+        from programme_refresh63 import active as explicit63
+        allow_lookup=refreshed(portal['id'],revision) or explicit63(portal['id'])
         for row in batch:
             if cancel():return False
             event=from_info(portal,row,infos.get(str(row['sid']),{}))

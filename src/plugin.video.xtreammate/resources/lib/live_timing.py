@@ -72,6 +72,8 @@ def observe():
             value['player']=True;emit(value,'PLAYER_STARTED')
         player.getTime()
         value['video']=True;emit(value,'FIRST_VIDEO_DETECTED',ready=1)
+        from epg_handoff63 import note as epg63_note
+        epg63_note('FIRST_VIDEO',owned[1]['pid'],owned[1]['sid'])  # Native player-state proxy, not a decoded-frame proof.
         xbmcgui.Window(10000).setProperty(KEY,json.dumps(value))
     except (AttributeError,RuntimeError,TypeError,ValueError):
         # A stop can invalidate InfoTags after isPlayingVideo. Rate limit this
@@ -100,6 +102,10 @@ def remote(navigator,command):
 def visible(navigator):
     phase={'info':'INFO_WINDOW_VISIBLE','channels':'MINI_CHANNELS_VISIBLE'}.get(navigator.mode)
     if phase:
+        from epg_handoff63 import note as epg63_note
+        if phase=='INFO_WINDOW_VISIBLE' and getattr(navigator,'portal',{}).get('id') and hasattr(navigator,'_guide'):
+            epg63_note('INFO_VISIBLE',navigator.portal['id'],navigator.sid)
+            if navigator._guide.get(navigator.sid).get('now'):epg63_note('PLAYER_NOW_NEXT_READY',navigator.portal['id'],navigator.sid)
         if navigator.mode=='channels' and getattr(navigator,'visible_channels',[]) and hasattr(navigator,'portal'):
             from flow46 import mark
             mark('MINI_EPG_VISIBLE',pid=navigator.portal['id'],sid=navigator.sid)

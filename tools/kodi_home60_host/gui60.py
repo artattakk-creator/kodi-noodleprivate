@@ -43,7 +43,7 @@ for index in (0, 1, 87):
                 rgb = frame.convert('RGB')
             hero = (20,80,130) if index == 0 else (130,50,30)
             if (max(abs(a-b) for a,b in zip(rgb.getpixel((330,645)), expected)) <= 5 and
-                    (index == 87 or max(abs(a-b) for a,b in zip(rgb.getpixel((700,250)), hero)) <= 5)):
+                    (index == 87 or max(abs(a-b) for a,b in zip(rgb.getpixel((1700,180)), hero)) <= 5)):
                 Path('/root/home60-' + str(index) + '.png').write_bytes(captured_bytes)
                 break
         except (OSError, UnidentifiedImageError):

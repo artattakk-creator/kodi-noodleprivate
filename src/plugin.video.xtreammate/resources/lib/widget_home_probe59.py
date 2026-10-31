@@ -4,6 +4,13 @@ _lock=threading.Lock();_plans={};_observed={}
 
 
 def prepare(pid):
+    from hero_epg63 import prepare as hero63
+    from skin_upgrade63 import prepare as upgrade63
+    import sqlite3
+    try:hero63(pid)
+    except (OSError,ValueError,TypeError,KeyError,RuntimeError,AttributeError,sqlite3.Error):pass
+    try:upgrade63()
+    except (OSError,ValueError,TypeError,KeyError,RuntimeError,AttributeError,sqlite3.Error):pass
     from widget_consumer58 import status
     with _lock:prior=_plans.get(str(pid))
     if not prior or time.monotonic()-prior[0]>=60:

@@ -57,3 +57,10 @@ class TokenVfs63(Fixture,unittest.TestCase):
    for _ in range(100):
     if not self.reader._busy.locked():break
     time.sleep(.01)
+
+ def test_short_vfs_packets_unknown_stat_and_cancel_are_bounded_without_writes(self):
+  h=self.handle();h.size.side_effect=RuntimeError('fixture stat unavailable');h.readBytes.side_effect=[FIXTURE[:9],FIXTURE[9:31],FIXTURE[31:],b'']
+  with mock.patch('xbmcvfs.File',return_value=h,create=True):self.assertEqual(self.reader.selected('smb://fixture/a'),FIXTURE)
+  self.assertEqual(h.readBytes.call_count,4);h.close.assert_called_once()
+  with mock.patch('xbmcvfs.File',create=True) as opened,self.assertRaises(self.tokens.TokenError):self.reader.selected('smb://fixture/a',cancel=lambda:True)
+  opened.assert_not_called()

@@ -17,7 +17,6 @@ def attempts(event,cancel=lambda:False):
     from programme_helper57 import lookup
     from programme_match46 import candidate
     helper,catalog=policy()
-    yield lambda:candidate(event,cancel)  # explicit own-token option before helper fallback
     if catalog:
         yield lambda:xcmate(event,cancel)
         yield lambda:kodi(event,cancel)
@@ -35,6 +34,8 @@ def attempts(event,cancel=lambda:False):
             _backoff.pop(key,None)
             return result
         yield helper_lookup
+    # Existing local catalogue/library and helper before optional own-token HTTP.
+    yield lambda:candidate(event,cancel)
 
 
 def trace(event,code,duration_ms=0):

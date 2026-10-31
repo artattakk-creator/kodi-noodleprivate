@@ -99,8 +99,8 @@ for i in (0, 1, 87):
     logo = ((20 + i * 17) % 230, (90 + i * 23) % 230, (150 + i * 13) % 230)
     assert max(abs(a-b) for a,b in zip(pictures[i].getpixel((330, 645)), logo)) <= 5
 for i, rgb in ((0, (20,80,130)), (1, (130,50,30))):
-    assert max(abs(a-b) for a,b in zip(pictures[i].getpixel((700,250)), rgb)) <= 5
-assert pictures[87].getpixel((700,250)) not in ((20,80,130), (130,50,30))
+    assert max(abs(a-b) for a,b in zip(pictures[i].getpixel((1700,180)), rgb)) <= 5
+assert pictures[87].getpixel((1700,180)) not in ((20,80,130), (130,50,30))
 assert rpc('Player.GetActivePlayers') == []
 report = dict(kodi=version, skin='BINGIE MOD 2.2.3', native_home=10000, synthetic_provider=True, native_directory=88, last_station_reachable=True,
               focused_hero=samples, decoded_hero_images=2, decoded_focused_logos=3, neutral_no_epg_pixels='PASS', no_player_start=True, android='NOT_TESTED', external_helpers='NO_OP_HOST_FIXTURES',

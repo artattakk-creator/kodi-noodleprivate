@@ -53,13 +53,19 @@ def _vfs(path):
     handle=None
     try:
         handle=xbmcvfs.File(path,'rb')
-        size=handle.size()
+        try:size=handle.size()
+        except Exception:size=-1
         if isinstance(size,int) and size>MAX_BYTES:raise TokenError('TOKEN_SIZE')
-        raw=handle.readBytes(MAX_BYTES+1)
-        if not isinstance(raw,(bytes,bytearray)):raise TokenError('TOKEN_UNREADABLE')
-        raw=bytes(raw)
-        if len(raw)>MAX_BYTES or handle.readBytes(1):raise TokenError('TOKEN_SIZE')
-        return raw
+        raw=bytearray();request=MAX_BYTES+1
+        while True:
+            chunk=handle.readBytes(request)
+            if not isinstance(chunk,(bytes,bytearray)):raise TokenError('TOKEN_UNREADABLE')
+            if not chunk:return bytes(raw)
+            raw.extend(chunk)
+            if len(raw)>MAX_BYTES:raise TokenError('TOKEN_SIZE')
+            # VFS/network reads may be short. Accumulate to the byte ceiling,
+            # then demand EOF; never mistake a valid partial packet for size.
+            request=1 if isinstance(size,int) and size>0 and len(raw)>=size else MAX_BYTES+1-len(raw)
     except TokenError:raise
     except Exception:raise TokenError('TOKEN_UNREADABLE') from None
     finally:
@@ -71,15 +77,18 @@ def _vfs(path):
 def selected(path,cancel=lambda:False,budget=5.):
     """Call only after the user selected a concrete file. No writes here."""
     path,vfs=source(path)
+    if cancel():raise TokenError('TOKEN_UNREADABLE')
     if not vfs:
         from tmdb_token61 import read
-        return read(path)
+        raw=read(path)
+        if cancel():raise TokenError('TOKEN_UNREADABLE')
+        return raw
     if not _busy.acquire(False):raise TokenError('TOKEN_UNREADABLE')
     complete=threading.Event();box={}
     def run():
         try:box['raw']=_vfs(path)
         except TokenError as exc:box['code']=exc.code
-        finally:complete.set();_busy.release()
+        finally:_busy.release();complete.set()
     try:threading.Thread(target=run,name='XCMateTokenImport',daemon=True).start()
     except RuntimeError:
         _busy.release();raise TokenError('TOKEN_UNREADABLE') from None

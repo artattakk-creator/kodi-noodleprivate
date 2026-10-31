@@ -43,7 +43,7 @@ class CatalogIndex:
 
 
 class GuideSnapshot:
-    def __init__(self, portal, client):
+    def __init__(self, portal, client, initial_sid=''):
         self.portal, self.client = portal, client
         self._lock = threading.Lock()
         self._wake, self._stop = threading.Event(), threading.Event()
@@ -52,6 +52,19 @@ class GuideSnapshot:
         self._revision, self._cache, self._mappings = None, {}, {}
         self._thread = None
         self._request_generation=0;self._refresh_serial=0
+        self._seeded63={}
+        if initial_sid:self.seed63(initial_sid)
+
+    def seed63(self,sid):
+        from epg_handoff63 import get,note
+        from epg_status import revision
+        value=get(self.portal['id'],str(sid))
+        if value is None:return
+        with self._lock:
+            self._values[str(sid)]=value;self._seeded63[str(sid)]=revision(self.portal['id'])
+            self.generation+=1
+        note('SNAPSHOT_SEEDED',self.portal['id'],sid)
+
 
     def start(self):
         if self._thread is None:
@@ -65,6 +78,8 @@ class GuideSnapshot:
     def request(self, channels):
         unique = {str(c.extra.get('stream_id','')):c for c in channels}
         wanted = tuple(unique.values())[:16]
+        for sid in tuple(unique)[:16]:
+            if sid not in self._values:self.seed63(sid)
         with self._lock:
             if wanted != self._wanted:
                 self._request_generation+=1
@@ -79,6 +94,13 @@ class GuideSnapshot:
     def get(self, sid, now=None):
         ts = time.time() if now is None else now
         with self._lock: base = self._values.get(str(sid))
+        if str(sid) in self._seeded63:
+            from epg_status import revision
+            if self._seeded63[str(sid)]!=revision(self.portal['id']):
+                base=None;self._wake.set()
+        if base is None:
+            from epg_handoff63 import get
+            base=get(self.portal['id'],str(sid),now=ts)
         if base is None: return guide_for_channel({}, now=ts)
         if base.get('start',0) <= ts < base.get('stop',0):
             info = dict(base)
@@ -165,12 +187,18 @@ class GuideSnapshot:
             info['canonical46']=getattr(local,'canonical',{}).get(info.get('epg_id',''),info.get('epg_id',''))
             from programme_snapshot47 import bind
             values[sid] = bind(self.portal['id'],c,info)
+            from epg_handoff63 import remember,get as warm63
+            if local is None and not values[sid].get('now'):
+                prior63=warm63(self.portal['id'],sid,now=now,mappings=self._mappings)
+                if prior63 and prior63.get('now'):values[sid]=prior63
+            remember(self.portal['id'],c,values[sid],self._mappings,expected_revision=rev)
             if not info['now'] and sid not in self._mappings: missing.append(c)
         with self._lock:
             if generation!=self._request_generation or serial!=self._refresh_serial:return  # Late old viewport cannot publish.
             from render_diff44 import signature
             changed=signature(values)!=signature({sid:self._values[sid] for sid in values if sid in self._values})
             self._values.update(values)
+            for sid in values:self._seeded63.pop(sid,None)
             for sid in values: self._values.move_to_end(sid)
             while len(self._values) > 128: self._values.popitem(last=False)
             if changed:self.generation += 1

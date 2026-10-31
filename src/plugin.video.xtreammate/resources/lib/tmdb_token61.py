@@ -32,7 +32,15 @@ def validate(raw):
 
 def location():
     import xbmcvfs
-    return xbmcvfs.translatePath('special://profile/addon_data/plugin.video.xtreammate/'+NAME)
+    path=xbmcvfs.translatePath('special://profile/addon_data/plugin.video.xtreammate/'+NAME)
+    suffix='/addon_data/plugin.video.xtreammate/'+NAME
+    if isinstance(path,str) and path.startswith(('/storage/','/sdcard/','/mnt/media_rw/','/mnt/runtime/')) and path.endswith(suffix):
+        # Only Kodi's authoritative profile anchor may be an Android mount
+        # alias. Never resolve selected sources or private child/file symlinks.
+        profile=path[:-len(suffix)];physical=os.path.realpath(profile)
+        if not os.path.isabs(physical) or physical=='/' or '://' in physical:raise TokenError('TOKEN_PATH')
+        path=physical+suffix
+    return path
 
 def import_source_path(path):
     """Translate supported local Kodi/file URIs, then retain descriptor safety."""
@@ -64,17 +72,22 @@ def parent(path):
             nxt=os.open(part,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW,dir_fd=fd)
             os.close(fd);fd=nxt
         return fd,parts[-1]
-    except OSError:
-        os.close(fd);raise TokenError('TOKEN_PATH') from None
+    except FileNotFoundError:
+        os.close(fd);raise
+    except OSError as exc:
+        os.close(fd);raise TokenError('TOKEN_UNREADABLE' if exc.errno in (errno.EACCES,errno.EPERM,errno.EIO) else 'TOKEN_PATH') from None
 
 def read(path,missing=False):
-    fd,name=parent(path)
+    try:fd,name=parent(path)
+    except FileNotFoundError:
+        if missing:return None
+        raise TokenError('TOKEN_UNREADABLE') from None
     try:
         try:source=os.open(name,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK,dir_fd=fd)
         except FileNotFoundError:
             if missing:return None
             raise TokenError('TOKEN_UNREADABLE') from None
-        except OSError:raise TokenError('TOKEN_PATH') from None
+        except OSError as exc:raise TokenError('TOKEN_UNREADABLE' if exc.errno in (errno.EACCES,errno.EPERM,errno.EIO) else 'TOKEN_PATH') from None
         try:
             if not stat.S_ISREG(os.fstat(source).st_mode):raise TokenError('TOKEN_PATH')
             raw=os.read(source,MAX_BYTES+1)
@@ -127,8 +140,36 @@ def status():
 
 def import_file(source,expected):
     """expected raw digest comes from the explicit overwrite confirmation."""
-    raw=read(source);value=validate(raw)
-    path=location();fd,name=parent(path);temp='.tmdb61-'+uuid.uuid4().hex
+    return import_bytes(read(source),expected)
+
+def private_parent(path):
+    """Create only our two private children below an existing Kodi profile."""
+    try:return parent(path)
+    except FileNotFoundError:pass
+    suffix='/addon_data/plugin.video.xtreammate/'+NAME
+    if not isinstance(path,str) or not path.endswith(suffix):raise TokenError('TOKEN_WRITE')
+    profile=path[:-len(suffix)]
+    fd=None
+    try:
+        fd,_=parent(profile+'/.tmdb-profile-anchor63')
+        for child in ('addon_data','plugin.video.xtreammate'):
+            try:os.mkdir(child,0o700,dir_fd=fd)
+            except FileExistsError:pass
+            nxt=os.open(child,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW,dir_fd=fd)
+            os.close(fd);fd=nxt
+        result=fd;fd=None
+        return result,NAME
+    except (OSError,TokenError):raise TokenError('TOKEN_WRITE') from None
+    finally:
+        if fd is not None:os.close(fd)
+
+
+def import_bytes(raw,expected,target=None):
+    """VFS sources are read once; private destination guards stay identical."""
+    value=validate(raw)
+    path=location()
+    if target is not None and target!=path:raise TokenError('TOKEN_CHANGED')
+    fd,name=private_parent(path);temp='.tmdb61-'+uuid.uuid4().hex
     try:
         before=read(path,missing=True)
         digest=hashlib.sha256(before).hexdigest() if before is not None else None
@@ -138,6 +179,7 @@ def import_file(source,expected):
             stream.write((value+'\n').encode());stream.flush();os.fsync(stream.fileno())
         current=read(path,missing=True)
         if (hashlib.sha256(current).hexdigest() if current is not None else None)!=expected:raise TokenError('TOKEN_CHANGED')
+        if location()!=path:raise TokenError('TOKEN_CHANGED')
         os.replace(temp,name,src_dir_fd=fd,dst_dir_fd=fd);os.fsync(fd)
     except OSError:raise TokenError('TOKEN_WRITE') from None
     finally:

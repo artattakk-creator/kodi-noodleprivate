@@ -31,6 +31,7 @@ def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,
         from programme_snapshot47 import fallback_window
         return fallback_window(pid,channels,mappings,start,stop,limit)
     db=None
+    started63=time.perf_counter()
     try:
         db=sqlite3.connect('file:'+quote(filename,safe='/')+'?mode=ro',uri=True,timeout=.05)
         db.row_factory=sqlite3.Row;db.execute('PRAGMA query_only=ON')
@@ -69,7 +70,12 @@ def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,
                 from programme_flow48 import enrich
                 view[ident]=enrich(pid,cid,view[ident][:4],sid48=sid,revision48=view.revision)+view[ident][4:]
         return view
-    except (OSError,sqlite3.Error):return None
+    except (OSError,sqlite3.Error) as error63:
+        from epg_handoff63 import note
+        first63=channels[0] if channels else {}
+        sid63=channel_keys(first63,mappings)[0]
+        note('DB_READ',pid,sid63,'EPG_DB_BUDGET' if getattr(error63,'sqlite_errorname','')=='SQLITE_INTERRUPT' else 'EPG_CACHE_UNAVAILABLE',(time.perf_counter()-started63)*1000)
+        return None
     finally:
         if db is not None:db.close()
 
@@ -79,7 +85,16 @@ def now_next(pid,channels,mappings,now=None,client=None):
     """Bounded local batch, including strictly cache-only short-EPG fallback."""
     from epg_views import resolve_guide
     ts=time.time() if now is None else now
+    from epg_handoff63 import get as warm63,remember as remember63,note as note63,observe as observe63
+    observe63(pid)
+    warm={str((c.extra if hasattr(c,'extra') else c).get('stream_id',(c.extra if hasattr(c,'extra') else c).get('sid',''))):warm63(pid,str((c.extra if hasattr(c,'extra') else c).get('stream_id',(c.extra if hasattr(c,'extra') else c).get('sid',''))),now=ts,mappings=mappings) for c in channels[:16]}
+    if warm and all(v and v.get('now') for v in warm.values()):return warm
+    from epg_status import revision as revision63
+    revision_before63=revision63(pid)
+    started63=time.perf_counter()
     cache=window(pid,channels,mappings,ts,ts+2*86400)
+    observe63(pid)
+    db_ms63=(time.perf_counter()-started63)*1000
     result={}
     for channel in channels[:16]:
         sid,keys=channel_keys(channel,mappings)
@@ -91,6 +106,11 @@ def now_next(pid,channels,mappings,now=None,client=None):
         info['canonical46']=cache.canonical.get(info.get('epg_id',''),'') if cache is not None else ''
         from programme_snapshot47 import bind
         result[sid]=bind(pid,channel,info)
+        if not result[sid].get('now') and warm.get(sid) and warm[sid].get('now') and cache is None:
+            result[sid]=warm[sid]
+        remember63(pid,channel,result[sid],mappings,expected_revision=revision_before63)
+        code63=('READY' if info.get('now') else 'EPG_CACHE_UNAVAILABLE' if cache is None else 'EPG_MAPPING_MISSING' if info.get('reason')=='MANUAL_ID_MISSING' else 'EPG_DATA_MISSING')
+        note63('DB_READ',pid,sid,code63,db_ms63)
     return result
 
 

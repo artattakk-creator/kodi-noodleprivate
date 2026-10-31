@@ -1,0 +1,9 @@
+{
+  "skin_version": "2.2.3",
+  "files": {
+    "xml/IncludesHomeWidgets.xml": "032f509e593720a5e6b813f0a40d0096ff801ac317a263ba74031338f3307085",
+    "xml/IncludesHomeBingie.xml": "66dea642c7d18e9b16f8c87d1fdcf242dfa70223720e371cc5b2a8b85f6210bd",
+    "shortcuts/overrides.xml": "46cb76481e2a92b5739e6f927da2c15acda1bd88e2d3886fb72ab3fbb06cd412",
+    "shortcuts/template.xml": "e531f9bf71a8479c315da9cb135ff0961476a4b846c1c978469aa1a330935881"
+  }
+}
