@@ -13,8 +13,13 @@ def prepare(portal,rows,cancel=lambda:False):
     if not rows or now<_next.get(key,0) or cancel():return False
     _next[key]=now+5
     pos=_positions.get(key,0)%len(rows)
-    batch=[rows[(pos+i)%len(rows)] for i in range(min(8,len(rows)))]
-    _positions[key]=(pos+len(batch))%len(rows)
+    from hero_epg63 import focused64
+    sid64=focused64(key);preferred=next((row for row in rows if str(row.get('sid',''))==sid64),None) if sid64 else None
+    batch=[preferred] if preferred is not None else [];seen64={sid64} if batch else set();advance64=0
+    while len(batch)<min(8,len(rows)) and advance64<len(rows):
+        row=rows[(pos+advance64)%len(rows)];advance64+=1
+        if str(row.get('sid','')) not in seen64:batch.append(row);seen64.add(str(row.get('sid','')))
+    _positions[key]=(pos+advance64)%len(rows)
     if len(_positions)>8:
         old=next(iter(_positions));_positions.pop(old);_next.pop(old,None)
     from local_epg import now_next

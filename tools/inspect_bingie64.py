@@ -58,6 +58,14 @@ def main():
      if pos<0:break
      contexts.append(dict(file=str(path.relative_to(skin)),keyword=name,text=text[max(0,pos-350):pos+5500]));start=pos+len(name)
   print('BINGIE64_FOCUS_CONTEXTS '+json.dumps(contexts))
+  import re
+  defs=[]
+  for path in skin.rglob('*.xml'):
+   text=path.read_text(errors='replace');nodes=list(re.finditer(r'<include\\s+name="([^"]+)"',text))
+   for i,m in enumerate(nodes):
+    if m[1].startswith(('Bingie_Screens_Fixed_Focus_Frame','Fixed_Focus_Bottom','Fixed_Focus_Itemgap','SetFixedVerticalNavigationProps')):
+     defs.append(dict(file=str(path.relative_to(skin)),name=m[1],xml=text[m.start():nodes[i+1].start() if i+1<len(nodes) else len(text)]))
+  print('BINGIE64_RAW_DEFINITIONS '+json.dumps(defs))
  value=baseline();print('BASELINE64_JSON '+json.dumps(value,separators=(',',':')))
  print('BASELINE64_COUNTS '+json.dumps(dict(files=len(value['source_sha256']),tests=sum(map(len,value['test_methods'].values())))))
 if __name__=='__main__':main()

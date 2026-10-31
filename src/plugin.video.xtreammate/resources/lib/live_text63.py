@@ -16,6 +16,8 @@ def apply(item,portal,row,info,event=None,labels=None):
     item['props']['XCMate.NoEpg63']=labels[0]
     item['props']['XCMate.RemainingFormat63']=labels[1]
     import xbmcaddon
+    from epg_row64 import stamp
+    stamp(item['props'],portal['id'],info)
     if not isinstance(info,dict):
         _hero(item['props'])
         return item

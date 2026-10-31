@@ -22,7 +22,18 @@ def poll():
     with _lock:
         changed=_focus!=current;_focus=current;art=dict(_art) if _art else {}
     if changed:_focused_at=time.monotonic();note('HOME_FOCUS',pid,sid)
-    info=get(pid,sid) or guide_for_channel({})
+    info=get(pid,sid)
+    if not info:
+        from epg_row64 import valid as row_valid64
+        fallback_window=xbmcgui.Window(10000)
+        if row_valid64(label,fallback_window,pid,sid,scope):
+            # Do not replace an already verified local row by a cache-miss label.
+            # Native row fields remain current; no other sender/profile is read.
+            if fallback_window.getProperty('XCMate.Hero63.Active'):fallback_window.setProperty('XCMate.Hero63.Active','')
+            _last=None
+            note('HOME_NOW_NEXT_READY',pid,sid,'READY',(time.monotonic()-_focused_at)*1000)
+            return
+    info=info or guide_for_channel({})
     neutral=os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media','programme46','neutral.png')
     key=label('XCMate.ProgrammeKey47')
     props={'XCMate.ProgrammeKey47':key,'XCMate.ProgrammeImage46':label('XCMate.ProgrammeImage46') or neutral,
@@ -80,3 +91,9 @@ def prepare(pid):
     art=cached(event)
     with _lock:
         if _focus==focus:_art=dict(art,key=event['key'],profile63=focus[3])
+
+
+def focused64(pid):
+    from epg_handoff63 import profile_scope
+    with _lock:focus=_focus
+    return focus[1] if focus and focus[0]==str(pid) and focus[3]==profile_scope() else ''
