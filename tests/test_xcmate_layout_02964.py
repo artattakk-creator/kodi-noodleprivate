@@ -19,10 +19,13 @@ class Layout64(Fixture50,unittest.TestCase):
   self.assertEqual(self.prop.read_bytes(),saved);self.assertEqual(self.menu.read_bytes(),menu)
   self.skinmod.apply(plan['id'],self.skin,confirmed=True,restore=True);self.assertEqual(self.skin_bytes(),legacy)
   self.skinmod.apply(old['id'],self.skin,confirmed=True,restore=True);self.assertEqual(self.skin_bytes(),original)
- def test_live_row_is_unchanged_and_fallback_reuses_original_space_asset(self):
+ def test_live_row_only_hides_inactive_frame_and_reuses_original_space_asset(self):
   a=E.parse(ADDON/'resources/bingie64/IncludesXCMate64.xml').find("include[@name='XCMate50.LiveRow']")
   b=E.parse(ADDON/'resources/bingie63/IncludesXCMate63.xml').find("include[@name='XCMate50.LiveRow']")
-  a.tail=b.tail=None;self.assertEqual(E.tostring(a),E.tostring(b))
+  frames=[n for n in a.iter('control') if 'programme55/focus.png' in (n.findtext('texture') or '')]
+  self.assertEqual(len(frames),1);visible=frames[0].find('visible')
+  self.assertEqual(visible.text,'Control.HasFocus($PARAM[widgetid])');frames[0].remove(visible)
+  a.tail=b.tail=None;E.indent(a);E.indent(b);self.assertEqual(E.tostring(a),E.tostring(b))
   tree=E.parse(ADDON/'resources/bingie64/IncludesXCMate64.xml')
   image=tree.find("variable[@name='XCMate64.Image']")
   self.assertTrue(image[-1].text.endswith('resources/media/lightweight_splash.jpg'))

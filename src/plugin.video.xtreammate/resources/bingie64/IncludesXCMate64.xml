@@ -58,6 +58,7 @@
           <top>0</top>
           <width>142</width>
           <height>72</height>
+          <visible>Control.HasFocus($PARAM[widgetid])</visible>
           <texture border="9">special://home/addons/plugin.video.xtreammate/resources/media/programme55/focus.png</texture>
           <aspectratio>stretch</aspectratio>
         </control>

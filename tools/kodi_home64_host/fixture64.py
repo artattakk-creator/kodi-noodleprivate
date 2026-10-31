@@ -24,6 +24,13 @@ if p.get('fixture59')==['seed']:
   replace_catalog(portal['id'],kind,rows,[dict(category_id='a',category_name='Synthetic group')])
  from programme_assets47 import _store
  assert _store(portal['id'],'series',records64)
+ from programme_assets47 import read_many
+ from widget_data41 import snapshot
+ def check_series64(stage):
+  rows,code=snapshot(portal,'series');refs=read_many(portal['id'],'series',rows,provider_only=True)
+  Path('/root/series64-'+stage+'.json').write_text(json.dumps(dict(stage=stage,rows=len(rows),refs=len(refs),code=code,sids=[r['sid'] for r in rows],sources=[r.get('cover','') for r in rows])))
+  assert len(rows)==24 and len(refs)==24,(stage,code,len(rows),len(refs))
+ check_series64('stored')
  from guide_store import import_cache
  from programme_events46 import load
  from programme_urls55 import resolve
@@ -52,6 +59,7 @@ if p.get('fixture59')==['seed']:
    Path('/root/seed60-'+str(i)+'.json').write_text(json.dumps(dict(event=event,art=value)))
    assert value['code']=='READY' and Path(value['image']).is_file(),value.get('code')
   finally:media_sources43.get=original
+ check_series64('after-guide')
  li=xbmcgui.ListItem('Seeded');xbmcplugin.addDirectoryItem(handle,'fixture',li,False);xbmcplugin.endOfDirectory(handle)
 
 else:

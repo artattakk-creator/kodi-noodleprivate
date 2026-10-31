@@ -6,7 +6,7 @@ Verbindlicher Abschlussnachweis: grüner CI-Lauf am exakten aktuellen HEAD von D
 - Neue Tokenfälle: reale synthetische private Datei, 0600, EROFS/EACCES/EINVAL/ENOTSUP/EIO, file-fsync, rename, Directory-fsync nach Commit, fehlerhafter Readback, Symlink, Profilwechsel, sichere UI und Log-Redaktion.
 - EPG: echte gespeicherte DMAX-Testzeile, RAM-Verdrängung ohne GUI-SQL/HTTP, Profil-/Revisions-/Zeitprüfung, Fokuspriorität ohne Verhungern der Startgruppe.
 - Serien: getrennte freigegebene Provider-Assetdatei im gemeinsamen Index, leerer Altcache, Signatur-/Referenzwechsel ohne Metadatenänderung, keine TTL-Verlängerung, getrennte Diagnosen. Kein TMDB/TVmaze.
-- Layout: bekannte .63→.64-Transaktion nur mit Bestätigung, exakt reversible Sicherungen, unbekannte Skins blockiert, LiveRow byteidentisch, originale Grafik unverändert.
+- Layout: bekannte .63→.64-Transaktion nur mit Bestätigung, exakt reversible Sicherungen, unbekannte Skins blockiert, LiveRow mit unveränderter Geometrie; ausschließlich der inaktive Fokusrahmen wird ausgeblendet, originale Grafik unverändert.
 - Native Kodi21.2/Linux+BINGIE2.2.3: alle bisherigen sechs Strecken plus neue .64-Strecke mit EnableFixedFrameWidgets und LockHubWidgets, echte eigene Fokus-/Selected-IDs, aktive Rahmenbounds/Pixels, erste zehn Serienposter, erste/mittlere Filmkachel, Rückkehr zu Live. Synthetische Providerbilder, keine Userdaten.
 - Paket: vollständige Quell-/Assetdateien, ZIP-CRC, eindeutige sichere Pfade, Manifest/Version, PO/Icon/Python und SHA256 geprüft. Produktionspublish im PR SKIPPED.
 

@@ -96,7 +96,7 @@ from PIL import ImageChops
 def frames64(rgb):
  data=rgb.tobytes();width,height=rgb.size;points=set()
  for y in range(height):
-  for x in range(250,width):
+  for x in range(100,width):
    offset=(y*width+x)*3;r,g,b=data[offset:offset+3]
    if r<100 and g>100 and b>180 and g-r>40 and b-r>60:points.add(y*width+x)
  boxes=[]

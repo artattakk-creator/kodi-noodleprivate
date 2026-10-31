@@ -21,6 +21,11 @@ def candidate(path,data,previous):
   node=matches[0];changes.append((node['start'],node['end']+len(b'</include>'),E.tostring(definition,encoding='utf-8')))
   extra=definitions.find("variable[@name='XCMate64.Image']")
   end=data.rfind(b'</includes>');changes.append((end,end,E.tostring(extra,encoding='utf-8')+b'\n'))
+  live=[n for n in nodes if n['tag']=='include' and n['attrs'].get('name')=='XCMate50.LiveRow']
+  if len(live)!=1:raise ValueError('UNVERIFIED_LIVE_REGION')
+  focus=[n for n in nodes if n['tag']=='control' and n['attrs'].get('type')=='image' and live[0]['start']<n['start']<n['end']<live[0]['end'] and b'programme55/focus.png' in data[n['start']:n['end']]]
+  if len(focus)!=1:raise ValueError('UNVERIFIED_LIVE_FOCUS')
+  changes.append((focus[0]['open'],focus[0]['open'],b'<visible>Control.HasFocus($PARAM[widgetid])</visible>'))
   count=0
   for layout in [n for n in nodes if n['tag']=='focusedlayout']:
    for group in [g for g in nodes if g['tag']=='control' and g['attrs'].get('type')=='group' and layout['start']<g['start']<g['end']<layout['end']]:
