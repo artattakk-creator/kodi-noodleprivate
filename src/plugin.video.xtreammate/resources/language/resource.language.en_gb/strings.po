@@ -4628,3 +4628,55 @@ msgstr "The verified adapter is already installed. If the live row is absent, re
 msgctxt "#36615"
 msgid "Rebuild once"
 msgstr "Rebuild once"
+
+msgctxt "#36620"
+msgid "TMDB access"
+msgstr "TMDB access"
+
+msgctxt "#36621"
+msgid "Import token file"
+msgstr "Import token file"
+
+msgctxt "#36622"
+msgid "Token file present · valid format"
+msgstr "Token file present · valid format"
+
+msgctxt "#36623"
+msgid "Token file absent · legacy setting remains available"
+msgstr "Token file absent · legacy setting remains available"
+
+msgctxt "#36624"
+msgid "Token file invalid or unsafe · no fallback"
+msgstr "Token file invalid or unsafe · no fallback"
+
+msgctxt "#36625"
+msgid "Enable TMDB programme images"
+msgstr "Enable TMDB programme images"
+
+msgctxt "#36626"
+msgid "Disable TMDB programme images"
+msgstr "Disable TMDB programme images"
+
+msgctxt "#36627"
+msgid "Replace private token file? The existing file will be atomically replaced. The import source is retained."
+msgstr "Replace private token file? The existing file will be atomically replaced. The import source is retained."
+
+msgctxt "#36628"
+msgid "Token file imported. Artwork options remain unchanged until separately enabled."
+msgstr "Token file imported. Artwork options remain unchanged until separately enabled."
+
+msgctxt "#36629"
+msgid "Import rejected: {0}. Choose a UTF-8 text file with one API Read Access Token without Bearer, quotes or JSON."
+msgstr "Import rejected: {0}. Choose a UTF-8 text file with one API Read Access Token without Bearer, quotes or JSON."
+
+msgctxt "#36630"
+msgid "Private profile file: tmdb_read_access_token.txt. The token is never displayed. Use the separate connection test to check authentication."
+msgstr "Private profile file: tmdb_read_access_token.txt. The token is never displayed. Use the separate connection test to check authentication."
+
+msgctxt "#36631"
+msgid "Explicitly enable TMDB research and programme images? Provider movie and series metadata remain unchanged."
+msgstr "Explicitly enable TMDB research and programme images? Provider movie and series metadata remain unchanged."
+
+msgctxt "#36632"
+msgid "Disable TMDB research and programme images? The private token file is retained."
+msgstr "Disable TMDB research and programme images? The private token file is retained."

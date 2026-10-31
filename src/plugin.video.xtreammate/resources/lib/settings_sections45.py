@@ -5,7 +5,7 @@ ALIASES={'startup':'live','groups':'live','remote':'appearance','player':'media'
 ROWS={
 'accounts':[(32416,'account_select',{}),(32419,'portal_manager',{}),(32420,'setup_wizard',{}),(36015,'native_options45',{'group':'accounts'})],
 'live':[(32421,'startup_settings',{}),(32430,'groups_manager',{}),(32431,'favourites',{}),(36016,'native_options45',{'group':'live'})],
-'epg':[(36600,'native_options45',{'group':'tmdb_test60'}),(32423,'guide_browser',{}),(32424,'epg_sources',{}),(32426,'guide_status',{}),(35960,'guide_backup44',{}),(32428,'refresh_epg',{}),(36017,'native_options45',{'group':'epg'})],
+'epg':[(36620,'native_options45',{'group':'tmdb_access61'}),(32423,'guide_browser',{}),(32424,'epg_sources',{}),(32426,'guide_status',{}),(35960,'guide_backup44',{}),(32428,'refresh_epg',{}),(36017,'native_options45',{'group':'epg'})],
 'media':[(36018,'native_options45',{'group':'media'}),(32432,'media_favourites',{'kind':'vod'}),(32433,'media_favourites',{'kind':'series'})],
 'appearance':[(36610,'widget_setup',{}),(33813,'theme_manager',{}),(32620,'ui_language',{}),(32622,'appearance_settings',{}),(32436,'remote_setup',{}),(36019,'native_options45',{'group':'appearance'})],
 'system':[(35200,'artwork_manage',{}),(32661,'art_status',{}),(36020,'native_options45',{'group':'system'}),(32414,'settings_section',{'section':'information'}),(32429,'settings',{})],
