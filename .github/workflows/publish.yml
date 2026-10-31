@@ -41,6 +41,8 @@ jobs:
           python -m unittest discover -s tests -p '*02964.py' -v
           python -m unittest discover -s tests -p '*02963.py' -v
           python -m unittest discover -s tests -p 'test_xcmate_home_02955.py' -v
+      - name: Verify .64 native movie and series focus, ten provider posters and Live return
+        run: python tools/run_kodi_home64_contract.py --report-dir kodi-home64-evidence
       - name: Verify real Kodi 21 Linux plugin and worker RPC transport
         run: python tools/run_kodi_helper57_contract.py --report-dir kodi-helper57-evidence
       - name: Verify native XCMate widget directories and synthetic poster pixels
@@ -55,8 +57,6 @@ jobs:
         run: python tools/run_kodi_home62_contract.py --report-dir kodi-home62-evidence
       - name: Verify .63 full-bleed Hero, text pixels and warm local snapshot
         run: python tools/run_kodi_home63_contract.py --report-dir kodi-home63-evidence
-      - name: Verify .64 native movie and series focus, ten provider posters and Live return
-        run: python tools/run_kodi_home64_contract.py --report-dir kodi-home64-evidence
       - name: Upload isolated Kodi transport evidence
         if: always()
         uses: actions/upload-artifact@v4
