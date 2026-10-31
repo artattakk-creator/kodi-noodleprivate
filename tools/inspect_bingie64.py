@@ -61,7 +61,7 @@ def main():
   import re
   defs=[]
   for path in skin.rglob('*.xml'):
-   text=path.read_text(errors='replace');nodes=list(re.finditer(r'<include\\s+name="([^"]+)"',text))
+   text=path.read_text(errors='replace');nodes=list(re.finditer(r'<include\s+name="([^"]+)"',text))
    for i,m in enumerate(nodes):
     if m[1].startswith(('Bingie_Screens_Fixed_Focus_Frame','Fixed_Focus_Bottom','Fixed_Focus_Itemgap','SetFixedVerticalNavigationProps')):
      defs.append(dict(file=str(path.relative_to(skin)),name=m[1],xml=text[m.start():nodes[i+1].start() if i+1<len(nodes) else len(text)]))
