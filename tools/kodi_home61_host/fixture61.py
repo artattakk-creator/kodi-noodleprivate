@@ -56,4 +56,7 @@ else:
  def no_gui_metadata(*a,**kw):raise AssertionError('DIRECTORY_METADATA_NETWORK')
  media_sources43.get=no_gui_metadata
  import importlib.util
- spec=importlib.util.spec_from_file_location('real_xcmate_default59',root/'default.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);module.run()
+ spec=importlib.util.spec_from_file_location('real_xcmate_default59',root/'default.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+ try:module.run()
+ finally:
+  if p.get('action')==['widget_skin50']:Path('/root/layout61-invocation-finished').write_text('done')

@@ -105,6 +105,11 @@ for _ in range(200):
     if Path('/root/builder61-complete').exists():break
     time.sleep(.15)
 assert seen_preview and approved and Path('/root/builder61-complete').exists(),states
+for _ in range(100):
+    if Path('/root/layout61-invocation-finished').exists():break
+    time.sleep(.1)
+else:raise RuntimeError('LAYOUT_ACTION_NOT_RELEASED')
+time.sleep(.5)
 rpc('GUI.ActivateWindow',{'window':'home'})
 rpc('Addons.ExecuteAddon', {'addonid': 'script.xcmate.guicontract59'})
 for _ in range(1200):
