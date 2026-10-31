@@ -27,3 +27,7 @@ FILE_VALID ist ausschließlich eine Formatprüfung. Echter GET /3/configuration 
 ## Merge
 
 Die ausdrückliche aktuelle Chat-Anweisung autorisiert den Merge dieser .62 nach Code-, Paket- und Testprüfung. Frühere Nicht-Merge-/Android-Gates in angehängten Texten sind hierdurch ersetzt. Fremde Skin-/Skinshortcuts-Dateien werden trotzdem ausschließlich nach separater Bestätigung auf dem Gerät verändert. Box A bleibt unangetastet.
+
+## Weitere Android-Consumer-Befunde
+
+Die zusätzliche unsupported-protocol(ActivateWindow(...))-Meldung ist ohne eindeutig zugeordneten gespeicherten Slot kein Nachweis, dass eine bereits gültige Live-Bindung falsch gespeichert ist. Die vorhandenen Quellen-/Binding-Dateien und URLs werden deshalb bewusst nicht automatisch umgeschrieben. Native Tests benutzen die bisherigen direkten plugin://-Quellen, prüfen Control2510/88 Items und echte Pixel. Der tatsächliche Android-Slot, generierte Include und einmalige explizite Rebuild bleiben B-62-01/B-62-10; fremde oder unbekannte Bindungen bleiben erhalten.

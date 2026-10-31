@@ -1,0 +1,88 @@
+{
+  "catalog_groups": 803,
+  "enrichment_failure_injected": true,
+  "kodi": {
+    "major": 21,
+    "minor": 2,
+    "revision": "20250330-nogitfound",
+    "tag": "stable"
+  },
+  "skin": "BINGIE MOD 2.2.3",
+  "native_home": 10000,
+  "synthetic_provider": true,
+  "native_directory": 88,
+  "last_station_reachable": true,
+  "focused_hero": {
+    "0": {
+      "ProgrammeChannel46": "Station 0",
+      "ProgrammeTitle46": "No programme information available",
+      "ProgrammeNext46": "",
+      "ProgrammeDescription46": "",
+      "ProgrammeImage46": "/root/.kodi/addons/plugin.video.xtreammate/resources/media/programme46/neutral.png",
+      "Home50": "true",
+      "items": "88",
+      "visible": true,
+      "hero_condition": true,
+      "window": 10000,
+      "focus": 2510,
+      "host_ready_ms": 847
+    },
+    "1": {
+      "ProgrammeChannel46": "Station 1",
+      "ProgrammeTitle46": "No programme information available",
+      "ProgrammeNext46": "",
+      "ProgrammeDescription46": "",
+      "ProgrammeImage46": "/root/.kodi/addons/plugin.video.xtreammate/resources/media/programme46/neutral.png",
+      "Home50": "true",
+      "items": "88",
+      "visible": true,
+      "hero_condition": true,
+      "window": 10000,
+      "focus": 2510,
+      "host_ready_ms": 846
+    },
+    "87": {
+      "ProgrammeChannel46": "Station 87",
+      "ProgrammeTitle46": "No programme information available",
+      "ProgrammeNext46": "",
+      "ProgrammeDescription46": "",
+      "ProgrammeImage46": "/root/.kodi/addons/plugin.video.xtreammate/resources/media/programme46/neutral.png",
+      "Home50": "true",
+      "items": "88",
+      "visible": true,
+      "hero_condition": true,
+      "window": 10000,
+      "focus": 2510,
+      "host_ready_ms": 720
+    }
+  },
+  "decoded_hero_images": 0,
+  "decoded_focused_logos": 2,
+  "missing_logo_text_pixels": true,
+  "neutral_no_epg_pixels": "PASS",
+  "no_player_start": true,
+  "android": "NOT_TESTED",
+  "menu_path": [
+    {
+      "label": "Appearance and display",
+      "url": "plugin://plugin.video.xtreammate/?action=settings_section&pid=fixture59&section=appearance"
+    },
+    {
+      "label": "Set up BINGIE Home widgets",
+      "url": "plugin://plugin.video.xtreammate/?action=widget_setup&pid=fixture59"
+    },
+    {
+      "label": "Check / prepare BINGIE Home layout",
+      "url": "plugin://plugin.video.xtreammate/?action=widget_skin50&pid=fixture59"
+    }
+  ],
+  "explicit_preview_and_approval": true,
+  "external_helpers": "NO_OP; builder copies pinned native Template output after approval",
+  "epg": false,
+  "token": false,
+  "screenshot_sha256": {
+    "0": "cb7e695b9345eebf5f3bf2fe34ab1f99b3cc7cab39f94ce5864eb726be4a1a7b",
+    "1": "83ef0795daf68343d130ff7f9e9b0c6b712e2013b8e2ee86df127583a872cbea",
+    "87": "f9351a7f89e273ecf889f91adabb74698f90b91b144aa6fbe82f0400bf31bbdc"
+  }
+}
