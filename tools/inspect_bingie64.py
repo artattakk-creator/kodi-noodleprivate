@@ -25,7 +25,8 @@ def baseline():
  return value
 def main():
  from run_kodi_home63_contract import SKIN_SHA,SKIN_URL
- with urllib.request.urlopen(SKIN_URL,timeout=60) as response:raw=response.read(64*1024*1024)
+ with urllib.request.urlopen(SKIN_URL,timeout=60) as response:raw=response.read(512*1024*1024+1)
+ assert len(raw)<=512*1024*1024
  assert hashlib.sha256(raw).hexdigest()==SKIN_SHA
  with tempfile.TemporaryDirectory() as folder:
   target=Path(folder)
