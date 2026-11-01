@@ -76,9 +76,11 @@ def source_done(pid,identity,code,counts=None,outcome=None):
     row=run['sources'].get(identity)
     if row is None:return
     row.update(code=code,finished=time.time());row['seconds']=round(row['finished']-row['started'],3)
-    for key in ('channels','stored','bytes'):
+    for key in ('channels','stored','bytes','min_start66','max_end66','mapped_channels66','stored_unique66','selected_streams66','matched_streams66'):
         value=(counts or {}).get(key)
         if isinstance(value,(int,float)) and value>=0:row[key]=value
+    revision66=(counts or {}).get('revision66','')
+    if re.fullmatch(r'[0-9a-f]{64}',revision66):row['revision66']=revision66
     for key in ('added','corrected','conflicts'):
         value=(outcome or {}).get(key)
         if isinstance(value,int) and value>=0:row[key]=value
@@ -166,6 +168,9 @@ def overview(portal):
         row['progress59']={k:last[k] for k in ('bytes','programmes','count','http_status','failure_stage') if k in last}
         row['last_success']=max([s.get('finished',0) for s in events if s.get('code') in SUCCESS]+[legacy.get('last_success',0)])
         row['last_failure']=max([s.get('finished',0) for s in events if s.get('code') not in SUCCESS]+[0])
+        row['last_attempt66']=max([s.get('started',0) for s in events]+[legacy.get('at',0)])
+        row['revision66']=next((s.get('revision66','') for s in reversed(events) if s.get('revision66')),'')
+        row['next_refresh66']=row['last_success']+min(__import__('epg_schedule53').interval(),86400) if row['last_success'] else 0
         rows.append(row)
     return rows
 
@@ -185,6 +190,9 @@ def describe(run,portal):
         lines+=['','[B]'+names.get(s['id'],'Früher konfigurierte Quelle')+'[/B]',meaning(s.get('code')),
                 'Geladen: '+str(s.get('channels',0))+' Sender / '+str(s.get('stored',0))+' passende Sendungen',
                 'Dauer: '+str(s.get('seconds',0))+' Sekunden']
+        if s.get('selected_streams66'):lines.append('Zugeordnete Sender: '+str(s.get('matched_streams66',0))+' / '+str(s['selected_streams66']))
+        if s.get('revision66'):lines.append('Quellrevision: '+s['revision66'][:16])
+        if s.get('min_start66') and s.get('max_end66'):lines.append('Tatsächlich gelieferte Abdeckung: '+stamp(s['min_start66'])+' bis '+stamp(s['max_end66']))
         saved=s.get('saved',{})
         if saved:lines+=['Gespeichert: '+str(saved.get('channels',0))+' Sender / '+str(saved.get('programmes',0))+' Sendungen',stamp(saved.get('first'))+' bis '+stamp(saved.get('last'))]
         if any(k in s for k in ('added','corrected','conflicts')):lines.append('Neu: '+str(s.get('added',0))+' · aktualisiert: '+str(s.get('corrected',0))+' · Konflikte bewahrt: '+str(s.get('conflicts',0)))

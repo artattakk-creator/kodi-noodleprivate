@@ -16,7 +16,8 @@ def candidate(event, cancel=lambda: False):
     series = type(season) is int and type(episode) is int and 0 <= season <= 100 and 1 <= episode <= 2000
     movie = any(v in str(event.get('genre', '')).casefold() for v in ('spielfilm', 'film', 'movie'))
     if not series and not movie:
-        return None
+        from programme_tv66 import candidate as television66
+        return television66(event,cancel)
     year = str(event.get('year') or '')
     if year and (not year.isdigit() or not 1880 <= int(year) <= 2100):
         return None

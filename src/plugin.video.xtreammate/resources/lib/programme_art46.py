@@ -24,6 +24,7 @@ def fingerprint(event):
  if not event.get('xmltv_image') and not event.get('provider_image'):
   from utils import setting_bool,setting
   enabled=setting_bool('programme_tmdb46',False)
+  values.append('tv-artwork66-v1')
   values.append([enabled,setting_bool('tmdb_research43',False) if enabled else False,__import__('tmdb_token61').token_fingerprint() if enabled else ''])
  return hashlib.sha256(json.dumps(values,sort_keys=True).encode()).hexdigest()
 
@@ -169,6 +170,8 @@ def prepare(event,cancel=lambda:False,fetch=None,match=None,resolved60=None):
     if data is None:
      space(3*1024*1024)
      original=(fetch or get)(c['url'],cancel=cancel);original_sha=hashlib.sha256(original).hexdigest();data=display_image(original)
+     from programme_flow48 import trace as evidence66
+     evidence66('FETCH',event,'READY')
     else:original_sha=prior46.get('original_sha256',prior46['sha256'])
     if cancel():return dict(value,code='CANCELLED')
     digest=hashlib.sha256(data).hexdigest();name='blob46-'+digest+('.png' if data.startswith(b'\x89PNG') else '.jpg');filename=os.path.join(root(),name)
@@ -179,7 +182,10 @@ def prepare(event,cancel=lambda:False,fetch=None,match=None,resolved60=None):
      if c.get(field60):value[field60]=c[field60]
     if resolved60 is not None:value['tvspielfilm55']='BLOCKED_NO_AUTHORIZED_API'
     break
-   except SourceError as error:failure=error.code
+   except SourceError as error:
+    failure=error.code
+    from programme_flow48 import trace as evidence66
+    evidence66('FETCH',event,error.code)
   if value['code']=='NO_IMAGE' and failure:value.update(code=failure,until=time.time()+300)
  except OSError as error:
   from art_storage import ArtworkFailure
@@ -190,14 +196,20 @@ def prepare(event,cancel=lambda:False,fetch=None,match=None,resolved60=None):
  trace('IMAGE',event,value['code'])
  from programme_index46 import event as publish_event46,art as publish_art46
  publish_event46(event,write=True)
- if publish_art46(event,value) is None:
+ saved66=publish_art46(event,value) is not None
+ if not saved66:
   # Conservative fallback only when the additive SQLite cache is unavailable;
   # existing old manifests remain readable and are never erased.
   try:
    out=dict(value);out['image']=os.path.basename(value['image']) if value.get('source')!='placeholder' else ''
    os.makedirs(root(),mode=0o700,exist_ok=True)
-   if not os.path.islink(root()):atomic(os.path.join(root(),key+'.json'),json.dumps(out).encode())
+   if not os.path.islink(root()):
+    atomic(os.path.join(root(),key+'.json'),json.dumps(out).encode());saved66=True
   except OSError:pass
+ if not saved66:
+  value.update(code='CACHE_ERROR',until=time.time()+300)
+  remember(key,value,verified47=True)
+ trace('CACHE',event,value['code'] if saved66 else 'CACHE_ERROR')
  return value
 
 def run():

@@ -1,0 +1,19 @@
+name: Inspect fixed .65 baseline for .66
+on:
+  push:
+    branches: [fix/xcmate-02966-epg-artwork-focus]
+    paths: ['tools/inspect_xcmate66.py', '.github/workflows/xcmate66.yml']
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'simpleeval==0.9.13'
+      - run: PYTHONPATH=src/plugin.video.xtreammate/resources/lib:tools python tools/inspect_xcmate66.py

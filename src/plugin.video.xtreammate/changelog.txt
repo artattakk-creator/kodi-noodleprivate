@@ -1,3 +1,10 @@
+0.1.29.66
+- EPG: quellenbezogener Neustart-/24-Stunden-Refresh, vollständige lokale Senderabdeckung und lesbare Diagnose.
+- Sendungsbilder: konservative Serienauflösung ohne erfundene Folgenangaben; mehrdeutige Treffer und fehlende Bilder klar unterscheiden.
+- BINGIE: kontrollierte lokale Fokusrahmen auch für fremde Widgetreihen; Textbereich begrenzen. Skinänderung nur nach Vorschau und ausdrücklicher Zustimmung.
+- Portale, Passwörter, EPG-Zuordnungen, Widgets, Cover und Wiedergabefortschritte bleiben erhalten.
+- Testkandidat; reale Android-Abnahme noch offen.
+
 0.1.29.65
 - Sicherer Token-Zielzugriff über Kodis Profilanker, präzise Fehlercodes und ausdrückliche Wiederherstellung.
 - Vollständige Film-/Seriengruppen, nachvollziehbarer Indexstatus und robuste Importwarteschlange.

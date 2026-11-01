@@ -122,13 +122,17 @@ def import_source(pid,source,source_index,streams,mappings,filename=None,cancel=
         with db:
             from epg_events import clean_stage
             clean_stage(db,'xml_stage',' WHERE generation=?',(generation,))
+        from epg_source66 import receipt
+        counts.update(receipt(db,generation))
+        counts['selected_streams66']=len(streams)
+        counts['matched_streams66']=sum(bool(db.execute('SELECT 1 FROM xml_stage WHERE generation=? AND cid=? LIMIT 1',(generation,cid)).fetchone()) for cid in aliases.values())
         stage=dict(generation=generation,source=source,index=source_index,aliases=aliases,meta_pid46=str(pid),metadata_ok46=not metadata46.failed,index_ok46=not metadata46.facts46.failed,
                    now=now,counts=dict(counts,stored=stored),streams52=streams,mappings52=mappings,proofs52={str(row['sid']):('manual' if str(row['sid']) in mappings else 'name' if channel_names.get(_channel_name_key(row.get('name')))==aliases.get(str(row['sid'])) and __import__('epg_variant53').compatible(row.get('name'),row.get('epg_channel_id'),variant_names53.get(aliases.get(str(row['sid'])),''),aliases.get(str(row['sid']))) else 'provider_id') for row in streams})
         if stage_only:
             keep_stage=True
             return stage
         outcome=publish_stages44(pid,[stage],filename,cancel)[0]
-        counts.update(stored=stored,publish_code=outcome['code'],added=outcome['added'],conflicts=outcome['conflicts'])
+        counts.update(stored=stored,publish_code=outcome['code'],added=outcome['added'],corrected=outcome['corrected'],conflicts=outcome['conflicts'])
         return counts
     finally:
         # SQL rollback restores the complete previous guide on ENOSPC or error.
@@ -166,7 +170,7 @@ def publish_stages44(pid,stages,filename=None,cancel=lambda:False):
                 if cancel():raise InterruptedError('EPG import cancelled')
                 generation=stage['generation']
                 outcome=publish(db,pid,'xml_stage','generation=?',(generation,),source=source_id(stage['source'],stage['index']),
-                    rank=stage['index'],revision=revision,now=stage['now'],cancel=cancel)
+                    rank=stage['index'],revision=revision,now=stage['now'],cancel=cancel,correct_times66=True)
                 outcomes.append(outcome)
                 before=db.total_changes
                 for alias,cid in stage['aliases'].items():

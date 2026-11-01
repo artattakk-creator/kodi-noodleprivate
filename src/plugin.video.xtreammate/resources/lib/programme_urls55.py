@@ -121,7 +121,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     from programme_sources57 import PROOFS,policy,attempts,trace as source_trace
     from helper_rpc57 import Error as HelperError
     old=art(event)
-    if old and not old.get('url_version55') and (local_image63 or old.get('source') in ('tmdb_movie','tmdb_episode')) and old.get('source')!='placeholder' and old.get('fingerprint')==fingerprint(event) and old.get('until',0)>time.time():
+    if old and not old.get('url_version55') and (local_image63 or old.get('source') in ('tmdb_movie','tmdb_episode','tmdb_series')) and old.get('source')!='placeholder' and old.get('fingerprint')==fingerprint(event) and old.get('until',0)>time.time():
         from programme_art46 import indexed
         local60=indexed(event,verify=True)
         if local60:return local60
@@ -141,14 +141,14 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     candidates=[dict(url=event[field],source=source,match='EXACT_EVENT',attribution=credit)
                 for field,source,credit in (('xmltv_image','xmltv_event','XMLTV – konfigurierte Eventquelle'),
                     ('provider_image','provider_event','Anbieter – konfigurierte Eventquelle')) if event.get(field)]
-    if old and old.get('source_url') and old.get('source') in ('xmltv_event','provider_event','tmdb_movie','tmdb_episode','tmdb_helper','xcmate_catalog','kodi_library'):
+    if old and old.get('source_url') and old.get('source') in ('xmltv_event','provider_event','tmdb_movie','tmdb_episode','tmdb_series','tmdb_helper','xcmate_catalog','kodi_library'):
         source=old.get('source')
         enabled=source!='tmdb_helper' or policy()[0]
         enabled=enabled and (source not in ('xcmate_catalog','kodi_library') or policy()[1])
         if enabled:candidates.append(dict(url=old['source_url'],source=source,match=old.get('match','NONE'),attribution=old.get('attribution',''),
             **{k:old[k] for k in ('image_scope57','helper_version57','matched_year56','provider_id') if k in old}))
     def failed(reason):
-        if value['code']=='NO_IMAGE':value['code']=reason
+        if value['code']=='NO_IMAGE' or reason in ('NO_MATCH_AMBIGUOUS','NO_ARTWORK'):value['code']=reason
         else:value['lookup_code56']=reason
         source_trace(event,reason)
     def supplied():
@@ -187,7 +187,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         secrets=[str(portal.get(k) or '') for k in ('xc_user','xc_pass')]
         if any(secret and (secret in path.split('/') or len(secret)>=4 and secret in path) for secret in secrets):
             value['code']='BLOCKED_CREDENTIAL_URL';continue
-        if local_image63 or candidate.get('source') in ('tmdb_movie','tmdb_episode'):
+        if local_image63 or candidate.get('source') in ('tmdb_movie','tmdb_episode','tmdb_series'):
             from programme_art46 import prepare as materialize60
             return materialize60(event,cancel=cancel,resolved60=dict(candidate,_local_only63=True) if local_image63 else candidate)
         try:(check or probe)(url,cancel=cancel)

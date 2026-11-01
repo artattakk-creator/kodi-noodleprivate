@@ -26,7 +26,7 @@ class Manager53Tests(unittest.TestCase):
         for hours in (6,12,36,48):
             self.m.options['epg_refresh_hours']=str(hours);self.assertEqual(self.schedule.interval(),hours*3600)
     def test_existing_lastgood_prevents_restart_download_but_not_next_day_refresh(self):
-        self.m.put('a',[self.m.event()]);now=time.time()
+        self.m.put('a',[self.m.event()],1);now=time.time()
         self.assertEqual(self.schedule.plan(self.portal,now),[])
         self.assertEqual(self.schedule.plan(self.portal,now+86410),[self.identity])
     def test_successful_source_not_retried_with_failed_source(self):

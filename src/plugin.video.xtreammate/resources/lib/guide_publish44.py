@@ -39,7 +39,7 @@ def source_id(source,index):
     return 'external:'+hashlib.sha256(str(ident or 'legacy-index-'+str(index)).encode()).hexdigest()[:24]
 
 
-def publish(db,pid,table,where='',args=(),*,source='compatibility',rank=None,revision='',now=None,cancel=lambda:False):
+def publish(db,pid,table,where='',args=(),*,source='compatibility',rank=None,revision='',now=None,cancel=lambda:False,correct_times66=False):
     """Caller owns one transaction, including revision and aliases.
 
     'table' and SQL clause are internal constants, never source input. Preserve
@@ -53,6 +53,10 @@ def publish(db,pid,table,where='',args=(),*,source='compatibility',rank=None,rev
     count=db.execute('SELECT count(*) FROM '+table+selector,args).fetchone()[0]
     if not count:return dict(code='NO_NEW_GUIDE',incoming=0,added=0,corrected=0,conflicts=0)
     compatibility=rank is None
+    corrected_times66=0
+    if correct_times66 and not compatibility:
+        from guide_corrections66 import apply as correct66
+        corrected_times66=correct66(db,pid,table,where,args,source,rank,cancel)
     # Raw per-source records survive source reordering and equal channel IDs.
     # No destructive historical/source-retention operation is part of .44.
     db.execute('''INSERT INTO guide44_inputs SELECT ?,?,cid,start,stop,title,description,'''+('source' if compatibility else '?')+' FROM '+table+selector+'''
@@ -74,7 +78,7 @@ def publish(db,pid,table,where='',args=(),*,source='compatibility',rank=None,rev
             if previous:db.execute('INSERT INTO guide44_ranges VALUES(?,?,?,?)',(pid,*previous))
             previous=(cid,start,stop)
     if previous:db.execute('INSERT INTO guide44_ranges VALUES(?,?,?,?)',(pid,*previous))
-    added=corrected=conflicts=0
+    added=conflicts=0;corrected=corrected_times66
     query='SELECT cid,start,stop,title,description,'+('source' if compatibility else '?')+' FROM '+table+selector+' ORDER BY cid,start,stop'
     for n,row in enumerate(db.execute(query,([] if compatibility else [rank])+list(args))):
         if n%256==0 and cancel():raise InterruptedError('CANCELLED')
