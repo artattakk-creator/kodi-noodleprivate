@@ -180,7 +180,7 @@ for ident,kind,indices in ((2540,'poster',(0,1,2,23)),(2550,'music',(0,1,23)),(2
     plot=plot_bbox66(rgb,tile[1])
     collision=bool(plot and plot[3]>tile[1]-30)
     detail=dict(frame=frame,tile=tile,plot=plot,collision=collision,focus=home.getFocusId(),selected=xbmc.getInfoLabel('Container('+str(ident)+').ListItem.Property('+('XCMate.MediaId' if kind.startswith('own-') else 'Fixture66.Index')+')'))
-    if correct and not collision and detail['selected']==str(index):break
+    if correct and not collision and (plot is not None or kind=='music') and detail['selected']==str(index):break
    except (OSError,UnidentifiedImageError):pass
   else:
    Path('/root/media66-last.png').write_bytes(raw)
@@ -188,6 +188,7 @@ for ident,kind,indices in ((2540,'poster',(0,1,2,23)),(2550,'music',(0,1,23)),(2
    raise RuntimeError('FOREIGN66_CONTOUR_OR_PLOT '+repr((kind,index,detail)))
   Path('/root/foreign66-'+kind+'-'+str(index)+'.png').write_bytes(raw)
   foreign66.append(dict(kind=kind,index=index,geometry=detail,contour='PASS',plot_collision='ABSENT'))
+  print('NATIVE66_CASE '+json.dumps(foreign66[-1]),flush=True)
 
 # Materialized TV artwork is the same event/file in actual Home and details.
 home.setFocusId(2510);home.getControl(2510).selectItem(2);xbmc.sleep(800)
