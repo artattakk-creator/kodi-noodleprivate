@@ -86,7 +86,8 @@ def build_playable_item(url: str,
         from live_format67 import configure
         configure(li,url,stype)
 
-    if (is_hls or is_dash) and player_pref in (0, 1) and _isa_available():
+    native67=live67 and (is_hls and not setting_bool('use_inputstream_hls',True) or is_dash and not setting_bool('use_inputstream_dash',True))
+    if (is_hls or is_dash) and not native67 and player_pref in (0, 1) and _isa_available():
         use_isa = True
 
     if use_isa:

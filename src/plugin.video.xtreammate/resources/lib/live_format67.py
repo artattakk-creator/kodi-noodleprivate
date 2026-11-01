@@ -15,3 +15,7 @@ def configure(item,url,kind):
   if callable(getattr(item,'setMimeType',None)):item.setMimeType(mime)
   if callable(getattr(item,'setContentLookup',None)):item.setContentLookup(False)
  item.setProperty('XCMate.LiveTransport67',kind)
+
+def extension():
+ from utils import setting_int
+ return 'm3u8' if setting_int('live_stream_format67',0)==2 else 'ts'

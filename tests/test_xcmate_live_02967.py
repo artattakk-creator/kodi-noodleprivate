@@ -10,9 +10,9 @@ class Item67(ListItem):
 class Live67(Fixture,unittest.TestCase):
  def setUp(self):
   super().setUp();self.player=importlib.import_module('player')
-  import importlib.util
+  from importlib import util as import_util67
   from xcmate027_fixture import LIB
-  spec=importlib.util.spec_from_file_location('actual_xtream67',LIB/'xtream.py');self.xcmod=importlib.util.module_from_spec(spec);spec.loader.exec_module(self.xcmod)
+  spec=import_util67.spec_from_file_location('actual_xtream67',LIB/'xtream.py');self.xcmod=import_util67.module_from_spec(spec);spec.loader.exec_module(self.xcmod)
   self.client=self.xcmod.XtreamClient('https://provider.example.test','synthetic','fixture')
  def item(self,url,live=True):
   with mock.patch.object(self.player.xbmcgui,'ListItem',Item67),mock.patch.object(self.player,'_isa_available',return_value=True):

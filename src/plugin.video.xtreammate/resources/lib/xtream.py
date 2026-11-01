@@ -229,8 +229,9 @@ class XtreamClient:
         return self._get_json('get_live_streams', extra=extra,
                               force_refresh=force_refresh) or []
 
-    def live_stream_url(self, stream_id, ext='ts'):
+    def live_stream_url(self, stream_id, ext=None):
         from urllib.parse import quote
+        if ext is None:ext=__import__('live_format67').extension()
         return self.host+'live/'+quote(str(self.username),safe='')+'/'+quote(str(self.password),safe='')+'/'+quote(str(stream_id),safe='')+'.'+str(ext)
 
     def get_vod_categories(self, force_refresh=False):

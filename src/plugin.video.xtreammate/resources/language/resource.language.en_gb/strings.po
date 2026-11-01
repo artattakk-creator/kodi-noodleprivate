@@ -4812,3 +4812,11 @@ msgstr "Check live stream without playback"
 msgctxt "#36721"
 msgid "Optional TVmaze programme artwork fallback"
 msgstr "Optional TVmaze programme artwork fallback"
+
+msgctxt "#36722"
+msgid "Xtream live format (explicit choice, no automatic retries)"
+msgstr "Xtream live format (explicit choice, no automatic retries)"
+
+msgctxt "#36723"
+msgid "Default (TS)|MPEG-TS|HLS"
+msgstr "Default (TS)|MPEG-TS|HLS"

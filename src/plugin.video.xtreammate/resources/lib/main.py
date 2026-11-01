@@ -704,7 +704,7 @@ class Router:
             notify('XCMate', 'Startsender ist nicht im aktivierten lokalen Katalog verfügbar.')
             return None
         emit(timing,'START_SID_RESOLVED',ready=1)
-        url = xc.live_stream_url(sid, 'ts')
+        url = xc.live_stream_url(sid, __import__('live_format67').extension())
         if not url:
             notify('XCMate', 'Die Startsender-Adresse konnte nicht ermittelt werden.')
             return None

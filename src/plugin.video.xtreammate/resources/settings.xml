@@ -58,6 +58,7 @@
     <setting id="user_agent" type="text" label="32223" default="Mozilla/5.0 (Linux; Android 11; TV) AppleWebKit/537.36" />
     <setting id="http_timeout" type="slider" label="32224" default="15" range="5,1,60" />
     <setting id="max_retries" type="slider" label="32225" default="3" range="0,1,10" />
+    <setting id="live_stream_format67" type="enum" label="36722" values="36723" default="0"/>
     <setting id="use_inputstream_hls" type="bool" label="32226" default="true" />
     <setting id="use_inputstream_dash" type="bool" label="32227" default="true" />
     <setting id="stream_quality" type="enum" label="32228" values="32229" default="0" />
