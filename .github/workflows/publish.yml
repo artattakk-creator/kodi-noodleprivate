@@ -146,7 +146,7 @@ jobs:
           for f in tests/test_addon.py tests/test_site.py tests/test_providers.py; do
             sed -i "s@'..', 'plugin.video.noodleprivate'@'..', 'src', 'plugin.video.noodleprivate'@g" "$f"
           done
-          python -m unittest discover -s tests -v 2>&1 | tee xcmate-test-results.log
+          python -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/xcmate65-test-results.log"
       - name: Prepare XCMate pull request test package
         id: xcmate_package
         if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
@@ -203,10 +203,11 @@ jobs:
               for node in manifest.findall('.//assets/*'):
                   if node.tag in ('icon', 'fanart', 'screenshot'):
                       assert 'plugin.video.xtreammate/' + node.text in archive.namelist(), node.text
-          log = Path('xcmate-test-results.log').read_text()
+          testlog = Path(os.environ['RUNNER_TEMP']) / 'xcmate65-test-results.log'
+          log = testlog.read_text()
           match = re.search(r'Ran (\d+) tests? in ([0-9.]+)s', log)
           assert match and '\nOK' in log and '\nFAILED' not in log
-          shutil.copyfile('xcmate-test-results.log', output / 'test-results.log')
+          shutil.copyfile(testlog, output / 'test-results.log')
           (output / 'build-verification.json').write_text(json.dumps(dict(
               commit=os.environ['GITHUB_SHA'], version=addon.attrib['version'],
               tests=int(match.group(1)), seconds=float(match.group(2)),
@@ -252,6 +253,6 @@ jobs:
           PY
           if ! git diff --cached --quiet; then
             git commit -m "Publish GS Media Kodi repository"
-            git pull --rebase origin main
+            git -c rebase.autoStash=true pull --rebase origin main
             git push origin HEAD:main
           fi
