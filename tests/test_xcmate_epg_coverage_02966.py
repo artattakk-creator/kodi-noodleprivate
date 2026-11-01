@@ -41,7 +41,7 @@ class Coverage66(Fixture,unittest.TestCase):
   self.assertEqual(len(infos),88)
   self.assertEqual({sid:value['now'] for sid,value in infos.items()},{str(i):'Imported '+str(i) for i in range(88)})
  def test_utc_offsets_keep_repeated_dst_wall_clock_times_distinct(self):
-  from epg import _parse_xmltv_ts
+  from xmltv_stream import timestamp as _parse_xmltv_ts
   one=_parse_xmltv_ts('20261025023000 +0200');two=_parse_xmltv_ts('20261025023000 +0100')
   self.assertEqual(two-one,3600)
  def test_mapping_and_profile_invalidation_cannot_reuse_another_sender(self):
@@ -68,18 +68,18 @@ class Publication66(unittest.TestCase):
   self.assertEqual(counts['mapped_channels66'],1);self.assertEqual(counts['stored_unique66'],2)
   self.assertEqual(len(counts['revision66']),64);self.assertGreater(counts['max_end66'],self.m.now+86400);self.assertLess(counts['max_end66'],self.m.now+3*86400)
  def test_verified_same_source_time_correction_keeps_other_valid_events(self):
-  old=self.m.event(title='MacGyver fixture',description='Unique episode identity fixture')
+  old=dict(self.m.event(title='MacGyver fixture'),description='Unique episode identity fixture')
   future=self.m.event(2,'Other valid programme');self.m.put('a',[old,future],1)
   changed=dict(old,start=old['start']+120,stop=old['stop']+120)
   result=self.m.put('a',[changed],1);rows=self.m.master()
   self.assertEqual(len(rows),2);self.assertEqual(rows[0][1:3],(changed['start'],changed['stop']));self.assertEqual(rows[1][3],'Other valid programme');self.assertGreaterEqual(result['corrected'],1)
  def test_short_or_ambiguous_description_does_not_shift_published_slot(self):
-  old=self.m.event(title='Repeated episode',description='Generic')
+  old=dict(self.m.event(title='Repeated episode'),description='Generic')
   self.m.put('a',[old],1);before=self.m.master()
   self.m.put('a',[dict(old,start=old['start']+120,stop=old['stop']+120)],1)
   self.assertEqual(self.m.master(),before)
  def test_adjacent_same_title_episodes_are_distinct_and_not_collapsed(self):
-  one=self.m.event(title='MacGyver',description='First legitimate episode')
+  one=dict(self.m.event(title='MacGyver'),description='First legitimate episode')
   two=dict(one,start=one['stop'],stop=one['stop']+1800,description='Second legitimate episode')
   self.m.put('a',[one,two],1);self.assertEqual(len(self.m.master()),2)
  def test_failed_source_does_not_erase_committed_multisource_guide(self):
@@ -90,7 +90,7 @@ class Publication66(unittest.TestCase):
    with self.assertRaises(Exception):self.m.stream.import_source('p',dict(self.m.config['sources'][1]),2,[self.m.channel],{})
   self.assertEqual(self.m.master(),before)
  def test_cancelled_time_correction_rolls_back_every_published_row(self):
-  old=self.m.event(title='Episode',description='Unique episode identity fixture')
+  old=dict(self.m.event(title='Episode'),description='Unique episode identity fixture')
   self.m.put('a',[old],1);before=self.m.master()
   db=sqlite3.connect(self.m.g.path());generation='a'*32
   try:

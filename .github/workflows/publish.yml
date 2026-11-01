@@ -59,6 +59,8 @@ jobs:
         run: python tools/benchmark_xcmate65.py --output xcmate65-host-evidence.json
       - name: Measure .66 persistent cold and warm coverage of all 88 channels
         run: python tools/benchmark_xcmate66.py --output xcmate66-host-evidence.json
+      - name: Verify native .66 mixed third-party poster music focus and shared TV artwork
+        run: python tools/run_kodi_home66_contract.py --report-dir kodi-home66-evidence
       - name: Verify .64 native movie and series focus, ten provider posters and Live return
         run: python tools/run_kodi_home64_contract.py --report-dir kodi-home64-evidence
       - name: Verify real Kodi 21 Linux plugin and worker RPC transport
@@ -83,6 +85,10 @@ jobs:
           path: |
             xcmate65-host-evidence.json
             xcmate66-host-evidence.json
+            kodi-home66-evidence/home.json
+            kodi-home66-evidence/*.png
+            kodi-home66-evidence/media66.json
+            kodi-home66-evidence/build.log
             kodi-helper57-evidence/transport.json
             kodi-helper57-evidence/build.log
             kodi-widget59-evidence/widgets.json

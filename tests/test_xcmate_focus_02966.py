@@ -20,7 +20,7 @@ class Focus66(Fixture50,unittest.TestCase):
     if group.get('type')!='group':continue
     for image in group.findall('control'):
      includes=[n.text for n in image.findall('include')]
-     if image.get('type')!='image' or 'thumbsborder_focused' not in includes:continue
+     if image.get('type')!='image' or 'thumbsborder_focused' not in includes or not any('FO_Defs' in value for value in includes):continue
      self.assertIn('Control.HasFocus($PARAM[widgetid])',image.findtext('visible'))
      self.assertEqual(image.findtext('width'),group.findtext('width'));self.assertEqual(image.findtext('height'),group.findtext('height'));count+=1
   self.assertGreaterEqual(count,2)

@@ -16,7 +16,10 @@ def warm(portal,rows):
  if prior and prior[0]==signature and now-prior[1]<30:return False
  from widget_group46 import _infos63
  _infos63(portal,rows)
- _seen[key]=(signature,now)
+ # Reading may initialize/checkpoint the existing WAL sidecar. Cache the
+ # post-read file signature, while never hiding a concurrent mapping change.
+ if revision(portal['id'])==signature[0]:_seen[key]=((signature[0],stamp(filename),stamp(filename+'-wal'),signature[3]),now)
+ else:_seen.pop(key,None)
  if len(_seen)>8:_seen.pop(next(iter(_seen)))
  return True
 def classify(info,has_mapping,first=None,last=None,now=None,readable=True):

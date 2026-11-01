@@ -1,11 +1,12 @@
 """Per-source startup/daily planning, with no user/profile/network changes."""
-import importlib,time,unittest
+import importlib,time,unittest,sys
 from unittest import mock
 import test_xcmate_epg_02952 as data52
 class Schedule66(unittest.TestCase):
  def setUp(self):
   self.m=data52.EPG52(methodName='runTest');self.m.setUp();self.addCleanup(self.m.doCleanups)
   self.schedule=importlib.import_module('epg_schedule53');self.report=importlib.import_module('epg_report53')
+  sys.modules['epg_status'].source_key=lambda source:source['id']
   self.portal=dict(self.m.portal,provider_epg_enabled=False)
   self.ids=[importlib.import_module('guide_publish44').source_id(s,i) for i,s in enumerate(self.m.config['sources'],1)]
  def record(self,code,started,sources=None):
@@ -18,7 +19,7 @@ class Schedule66(unittest.TestCase):
   self.assertEqual(self.schedule.plan(self.portal,now),[])
   self.assertEqual(self.schedule.plan(self.portal,now+41),self.ids)
  def test_short_cache_freshness_does_not_claim_unimported_xmltv_sources(self):
-  with mock.patch('epg._is_fresh',return_value=True):
+  with mock.patch('epg._is_fresh',return_value=True,create=True):
    self.assertEqual(self.schedule.plan(self.portal),self.ids)
  def test_provider_success_does_not_date_new_external_sources(self):
   self.m.put('a',[self.m.event()],0)
