@@ -13,7 +13,7 @@ class RepositoryLayoutTests(unittest.TestCase):
     def test_gs_media_only_update_origin(self):
         manifest = ET.parse(SRC / "repository.gsmedia" / "addon.xml").getroot()
         self.assertEqual(manifest.get("id"), "repository.gsmedia")
-        self.assertEqual(manifest.get("version"), "1.7.0")
+        self.assertEqual(manifest.get("version"), "1.8.0")
         dirs = manifest.findall("./extension[@point='xbmc.addon.repository']/dir")
         self.assertEqual(len(dirs), 8)
         self.assertIn("/kodi-noodleprivate/main/addons.xml", dirs[0].findtext("info"))
@@ -32,6 +32,13 @@ class RepositoryLayoutTests(unittest.TestCase):
         self.assertTrue(dirs[7].findtext("checksum").endswith("/main/addons.xml.md5"))
         self.assertTrue(dirs[7].findtext("datadir").endswith("/kodi-media-repo/main/"))
         self.assertEqual(dirs[7].findtext("hashes"), "false")
+    def test_repo_icon_renders_before_publish(self):
+        # Repository icon is a first-class package asset, never a placeholder.
+        source = (ROOT / "tools" / "render_gsmedia_icon.py")
+        self.assertTrue(source.is_file(), "GS Media icon renderer must be versioned")
+        manifest = ET.parse(SRC / "repository.gsmedia" / "addon.xml").getroot()
+        self.assertEqual(manifest.findtext("./extension[@point='xbmc.addon.metadata']/assets/icon"), "icon.png")
+
     def test_no_legacy_repository_in_generated_index(self):
         xml = ET.parse(ROOT / "addons.xml").getroot()
         ids = [entry.get("id") for entry in xml.findall("addon")]
