@@ -226,7 +226,30 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
+          python - <<'PY'
+          import subprocess
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          # Stage only builder-owned repository outputs. CI logs, test fixtures,
+          # review artifacts and working-tree source edits are never published.
+          outputs=['addons.xml','addons.xml.md5']
+          for manifest in sorted(Path('src').glob('*/addon.xml')):
+              addon=ET.parse(manifest).getroot()
+              ident=addon.attrib['id'];version=addon.attrib['version']
+              package=ident+'-'+version+'.zip'
+              outputs.append(str(Path(ident)/package))
+              if ident=='plugin.video.xtreammate':
+                  outputs.append(str(Path(ident)/(package+'.sha256')))
+              for icon in addon.findall("extension[@point='xbmc.addon.metadata']/assets/icon"):
+                  relative=Path(icon.text or '')
+                  if relative.is_absolute() or '..' in relative.parts:raise ValueError('UNSAFE_REPO_ASSET')
+                  target=Path(ident)/relative
+                  if target.is_file():outputs.append(str(target))
+              if ident.startswith('repository.'):
+                  outputs.append(package)
+                  if ident=='repository.gsmedia':outputs.append(str(Path('repository-programme')/package))
+          subprocess.run(['git','add','--',*outputs],check=True)
+          PY
           if ! git diff --cached --quiet; then
             git commit -m "Publish GS Media Kodi repository"
             git pull --rebase origin main
