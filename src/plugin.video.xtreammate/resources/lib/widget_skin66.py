@@ -45,7 +45,7 @@ def candidate(path,data):
   plot=plots[0];stop=plot['end']+len(b'</control>');node=E.fromstring(data[plot['start']:stop])
   for tag in ('height','autoscroll','font','aligny'):
    for value in list(node.findall(tag)):node.remove(value)
-  E.SubElement(node,'height').text='84';E.SubElement(node,'autoscroll').text='false';E.SubElement(node,'font').text='Reg22';E.SubElement(node,'aligny').text='top'
+  E.SubElement(node,'height').text='48';E.SubElement(node,'autoscroll').text='false';E.SubElement(node,'font').text='Reg22';E.SubElement(node,'aligny').text='top'
   changes.append((plot['start'],stop,E.tostring(node,encoding='utf-8')))
  return edit(data,changes) if changes else data
 def previously_applied(skin):

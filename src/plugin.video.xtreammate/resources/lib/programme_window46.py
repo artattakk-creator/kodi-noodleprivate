@@ -91,7 +91,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
    if signature!=self._art_signature:
     self._art_signature=signature;self.getControl(110).setImage(art.get('image') or self.event['placeholder'])
     from programme_flow48 import trace
-    trace('IMAGE',self.event,'GUI_IMAGE_REQUESTED' if art.get('source')!='placeholder' else art.get('code','PENDING'))
+    trace('GUI',self.event,'GUI_IMAGE_REQUESTED' if art.get('source')!='placeholder' else art.get('code','PENDING'))
     from programme_diagnostics59 import message
     self.getControl(104).setLabel(message(self.event,art))
     self.getControl(105).setText(str(art.get('attribution',''))[:500])

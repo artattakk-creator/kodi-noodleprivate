@@ -76,3 +76,30 @@ class Artwork66(Fixture,unittest.TestCase):
   from programme_diagnostics59 import message
   for code,word in [('NO_MATCH_AMBIGUOUS','Mehrere'),('NO_ARTWORK','kein geeignetes'),('CACHE_IO_ERROR','Bildspeicherung'),('GUI_NOT_UPDATED','Kodi-Ausgabe')]:
    self.assertIn(word,message(self.event,dict(code=code,source='placeholder')))
+
+ def test_failure_of_both_persistent_stores_is_cache_error_and_preserves_image_bytes(self):
+  import hashlib
+  from PIL import Image
+  import programme_art46 as art
+  from programme_events46 import describe
+  from programme_urls55 import resolve
+  event=describe(self.portal,dict(sid='1',name='Synthetic NITRO'),dict(self.event,year=2016),'xml');event.update(genre='Krimiserie',year=2016)
+  out=io.BytesIO();Image.new('RGB',(160,90),(25,90,150)).save(out,'PNG');data=out.getvalue()
+  Path(art.root()).mkdir(parents=True,exist_ok=True)
+  image=Path(art.root())/('blob46-'+hashlib.sha256(data).hexdigest()+'.png');image.write_bytes(data)
+  with mock.patch('tmdb_connection60.request',side_effect=self.replies()),mock.patch.object(self.sources,'get',return_value=data),mock.patch.object(art,'space'),mock.patch('programme_index46.art',return_value=None),mock.patch.object(art,'atomic',side_effect=OSError(13,'synthetic cache denied')):
+   result=resolve(event,allow_lookup=True,match=self.tv.candidate,local_image63=True)
+  self.assertEqual(result['code'],'CACHE_ERROR');self.assertEqual(image.read_bytes(),data)
+  self.assertEqual(art.peek(event)['code'],'CACHE_ERROR')
+ def test_match_and_fetch_failure_have_distinct_fixed_evidence_stages(self):
+  from PIL import Image
+  import programme_art46 as art
+  from programme_events46 import describe
+  from programme_urls55 import resolve
+  event=describe(self.portal,dict(sid='1',name='Synthetic NITRO'),dict(self.event,year=2016),'xml');event.update(genre='Krimiserie',year=2016)
+  Path(art.root()).mkdir(parents=True,exist_ok=True)
+  with mock.patch('tmdb_connection60.request',side_effect=self.replies()),mock.patch.object(self.sources,'get',side_effect=self.sources.SourceError('HTTP_NOT_FOUND')),mock.patch.object(art,'space'),mock.patch('programme_flow48.trace') as trace:
+   result=resolve(event,allow_lookup=True,match=self.tv.candidate,local_image63=True)
+  self.assertEqual(result['code'],'HTTP_NOT_FOUND')
+  self.assertTrue(any(call.args[0]=='MATCH' and call.args[2]=='READY' for call in trace.call_args_list))
+  self.assertTrue(any(call.args[0]=='FETCH' and call.args[2]=='HTTP_NOT_FOUND' for call in trace.call_args_list))

@@ -29,6 +29,8 @@ def candidate(event,cancel=lambda:False):
  if details.get('id')!=remote or details.get('adult') or title not in (title_key(details.get('name','')),title_key(details.get('original_name',''))):raise SourceError('NO_MATCH')
  actual=str(details.get('first_air_date',''))[:4]
  if not actual.isdigit() or actual!=str(row.get('first_air_date',''))[:4] or year and year!=actual:raise SourceError('NO_MATCH')
+ from programme_flow48 import trace
+ trace('MATCH',event,'READY')
  url=_tmdb_image(details.get('backdrop_path'))
  if not url:raise SourceError('NO_ARTWORK')
  return dict(url=url,source='tmdb_series',match='EXACT_TV_TITLE_YEAR66' if year else 'EXACT_UNIQUE_TV_TITLE66',remote_id=remote,matched_year56=int(actual),image_scope57='series_fallback',attribution='TMDB · https://www.themoviedb.org/tv/'+str(remote)+' · Serienbild (kein Episodenbild) · '+ATTRIBUTION)

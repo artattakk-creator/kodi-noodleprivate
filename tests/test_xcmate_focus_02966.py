@@ -39,7 +39,7 @@ class Focus66(Fixture50,unittest.TestCase):
  def test_native_plot_has_bounded_height_without_autogrowing_into_next_heading(self):
   self.prepare66();root=E.parse(self.skin/'xml/IncludesHomeBingie.xml').getroot()
   plot=root.find(".//control[@id='90009']")
-  self.assertEqual(plot.findtext('height'),'84');self.assertNotIn('max',plot.find('height').attrib)
+  self.assertEqual(plot.findtext('height'),'48');self.assertNotIn('max',plot.find('height').attrib)
   self.assertEqual(plot.findtext('autoscroll'),'false')
  def test_065_upgrade_requires_new_consent_and_restores_065_exactly(self):
   from widget_skin66 import previous_candidate
