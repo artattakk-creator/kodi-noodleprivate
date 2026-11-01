@@ -160,11 +160,11 @@ def plot_bbox66(rgb,bottom):
  red,green,blue=crop.split()
  mask=ImageChops.multiply(ImageChops.multiply(red.point(lambda v:255 if v>245 else 0),blue.point(lambda v:255 if v>245 else 0)),green.point(lambda v:255 if v<10 else 0))
  return mask.getbbox()
-for ident,kind,indices in ((2540,'poster',(0,1,2,23)),(2550,'music',(0,1,23)),(2560,'television',(0,1,2,23)),(2540,'poster',(2,))):
+for ident,kind,indices in ((2540,'poster',(0,1,2,23)),(2550,'music',(0,1,23)),(2560,'television',(0,1,2,23)),(2540,'poster',(2,)),(2520,'own-vod',(0,)),(2530,'own-series',(0,9))):
  home.setFocusId(ident);xbmc.sleep(700)
  for index in indices:
   home.getControl(ident).selectItem(index);xbmc.sleep(500)
-  expected=((60+index*7)%180+20,(90+index*5)%140+40,(40+index*11)%150+30)
+  expected=tuple((v+index*step)%240 for v,step in zip((40,70,120) if kind=='own-vod' else (100,50,20),(19,31,13))) if kind.startswith('own-') else ((60+index*7)%180+20,(90+index*5)%140+40,(40+index*11)%150+30)
   detail={}
   for attempt in range(12):
    capture=Path('/root/foreign66-last.png');xbmc.executebuiltin('TakeScreenshot('+str(capture)+')',wait=False);xbmc.sleep(350)
@@ -179,7 +179,7 @@ for ident,kind,indices in ((2540,'poster',(0,1,2,23)),(2550,'music',(0,1,23)),(2
     correct=correct and (195<=height<=270 if kind=='music' else 295<=height<=350)
     plot=plot_bbox66(rgb,tile[1])
     collision=bool(plot and plot[3]>tile[1]-30)
-    detail=dict(frame=frame,tile=tile,plot=plot,collision=collision,focus=home.getFocusId(),selected=xbmc.getInfoLabel('Container('+str(ident)+').ListItem.Property(Fixture66.Index)'))
+    detail=dict(frame=frame,tile=tile,plot=plot,collision=collision,focus=home.getFocusId(),selected=xbmc.getInfoLabel('Container('+str(ident)+').ListItem.Property('+('XCMate.MediaId' if kind.startswith('own-') else 'Fixture66.Index')+')'))
     if correct and not collision and detail['selected']==str(index):break
    except (OSError,UnidentifiedImageError):pass
   else:

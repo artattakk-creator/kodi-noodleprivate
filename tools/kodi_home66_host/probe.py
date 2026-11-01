@@ -173,6 +173,6 @@ report = dict(catalog_groups=803,enrichment_failure_injected=False,kodi=version,
               screenshot_sha256={str(i): hashlib.sha256(Path('/root/home66-' + str(i) + '.png').read_bytes()).hexdigest() for i in (0,1,87)})
 report['media66']=json.loads(Path('/root/media66.json').read_text())
 assert report['media66']['series_posters']==10 and len(report['media66']['cases'])==13
-assert len(report['media66']['foreign66'])==12
+assert len(report['media66']['foreign66'])==15
 assert report['media66']['tv_artwork66']['detail_pixels']=='PASS'
 print(json.dumps(report, indent=2))

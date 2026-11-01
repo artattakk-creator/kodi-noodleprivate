@@ -54,3 +54,12 @@ class Focus66(Fixture50,unittest.TestCase):
   before=self.skin_bytes()
   with self.assertRaises(ValueError):self.skinmod.prepare(self.skin)
   self.assertEqual(self.skin_bytes(),before)
+
+ def test_native_header_metadata_and_plot_have_one_bounded_flow_budget(self):
+  self.prepare66();root=E.parse(self.skin/'xml/IncludesHomeBingie.xml').getroot()
+  parent={child:node for node in root.iter() for child in node}
+  plot=root.find(".//control[@id='90009']");outer=parent[plot]
+  self.assertEqual(outer.findtext('height'),'310')
+  self.assertEqual([node.findtext('height') for node in outer.findall('control')],['186','44','48'])
+  self.assertLessEqual(186+44+48+20,310)
+  self.assertFalse(any(n.get('end') in ('0,130','0,180') for n in outer.findall('animation')))

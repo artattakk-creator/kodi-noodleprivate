@@ -40,13 +40,29 @@ def candidate(path,data):
    if any(n['tag']=='include' and (n['attrs'].get('content','') or n['text']).startswith('Bingie_Screens_Fixed_Focus_Frame') for n in group['children']):
     changes.append((group['open'],group['open'],b'<visible>!ControlGroup(77777).HasFocus()</visible>'));count+=1
   if not 2<=count<=8:raise ValueError('UNVERIFIED_FOCUS_REGIONS')
-  plots=[n for n in nodes if n['tag']=='control' and n['attrs'].get('id')=='90009']
-  if len(plots)!=1:raise ValueError('UNVERIFIED_PLOT_REGION')
-  plot=plots[0];stop=plot['end']+len(b'</control>');node=E.fromstring(data[plot['start']:stop])
-  for tag in ('height','autoscroll','font','aligny'):
-   for value in list(node.findall(tag)):node.remove(value)
-  E.SubElement(node,'height').text='48';E.SubElement(node,'autoscroll').text='false';E.SubElement(node,'font').text='Reg22';E.SubElement(node,'aligny').text='top'
-  changes.append((plot['start'],stop,E.tostring(node,encoding='utf-8')))
+  regions=[n for n in nodes if n['tag']=='control' and n['attrs'].get('type')=='grouplist' and any(v['tag']=='include' and v['attrs'].get('content')=='Bingie_Headline_Item' for v in n['children'])]
+  if len(regions)!=1:raise ValueError('UNVERIFIED_PLOT_REGION')
+  region=regions[0];stop=region['end']+len(b'</control>');outer=E.fromstring(data[region['start']:stop])
+  headline=outer.find("include[@content='Bingie_Headline_Item']")
+  plot=outer.find(".//control[@id='90009']")
+  if headline is None or plot is None:raise ValueError('UNVERIFIED_PLOT_REGION')
+  parents={child:parent for parent in outer.iter() for child in parent};metadata=parents[plot]
+  if metadata.get('type')!='grouplist' or parents.get(metadata) is not outer:raise ValueError('UNVERIFIED_PLOT_REGION')
+  def field(node,tag,value):
+   for old in list(node.findall(tag)):node.remove(old)
+   E.SubElement(node,tag).text=value
+  metadata.remove(plot);outer.remove(headline);outer.remove(metadata)
+  # Native blocks, bounded relative flow. No global frame offset or copied
+  # provider text: long title/extra metadata cannot displace the plot/heading.
+  title=E.Element('control',type='grouplist')
+  for tag,value in (('width','1500'),('height','186'),('orientation','vertical'),('usecontrolcoords','true'),('itemgap','0')):E.SubElement(title,tag).text=value
+  title.append(headline);field(metadata,'height','44')
+  for tag,value in (('height','48'),('autoscroll','false'),('font','Reg22'),('aligny','top')):field(plot,tag,value)
+  field(outer,'height','310')
+  for animation in list(outer.findall('animation')):
+   if animation.get('effect','').lower()=='slide' and animation.get('end') in ('0,130','0,180'):outer.remove(animation)
+  outer.extend((title,metadata,plot))
+  changes.append((region['start'],stop,E.tostring(outer,encoding='utf-8')))
  return edit(data,changes) if changes else data
 def previously_applied(skin):
  from widget_skin50 import guard,FILES

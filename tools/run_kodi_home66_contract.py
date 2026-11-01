@@ -74,7 +74,7 @@ def main():
             assert hashlib.sha256((report / ('home66-' + str(i) + '.png')).read_bytes()).hexdigest() == result['screenshot_sha256'][str(i)]
         for asset_name in ('media66-vod-0.png','media66-vod-5.png','media66-series-0.png','media66-series-5.png','media66-series-9.png','media66.json'):
             run('cp', name + ':/root/' + asset_name, str(report/asset_name))
-        for asset66 in ('detail66.png','foreign66-poster-0.png','foreign66-poster-23.png','foreign66-music-0.png','foreign66-television-0.png'):
+        for asset66 in ('detail66.png','foreign66-poster-0.png','foreign66-poster-23.png','foreign66-music-0.png','foreign66-television-0.png','foreign66-own-vod-0.png','foreign66-own-series-0.png','foreign66-own-series-9.png'):
             run('cp',name+':/root/'+asset66,str(report/asset66))
         print('NATIVE66_VERIFIED_JSON '+json.dumps(dict(kodi=result['kodi'],foreign=result['media66']['foreign66'],art=result['media66']['tv_artwork66'],android='NOT_TESTED')))
         print(json.dumps(result))
