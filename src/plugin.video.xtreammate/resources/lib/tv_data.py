@@ -195,9 +195,9 @@ class GuideSnapshot:
             values[sid] = bind(self.portal['id'],c,info)
             from epg_handoff63 import remember,get as warm63
             if local is None and not values[sid].get('now'):
-                prior63=warm63(self.portal['id'],sid,now=now,mappings=self._mappings)
+                prior63=warm63(self.portal['id'],sid,now=now,mappings=self._mappings,_previous_guide67=True)
                 if prior63 and prior63.get('now'):values[sid]=prior63
-            if getattr(local,'code','')!='RAM_LASTGOOD67':remember(self.portal['id'],c,values[sid],self._mappings,expected_revision=rev)
+            if local is not None and getattr(local,'code','')!='RAM_LASTGOOD67':remember(self.portal['id'],c,values[sid],self._mappings,expected_revision=rev)
             values[sid]['_published_at63']=time.time()
             if not info['now'] and sid not in self._mappings: missing.append(c)
         with self._lock:

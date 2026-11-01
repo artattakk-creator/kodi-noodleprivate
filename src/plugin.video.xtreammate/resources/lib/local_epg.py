@@ -90,8 +90,7 @@ def _full_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
         first63=channels[0] if channels else {}
         sid63=channel_keys(first63,mappings)[0]
         note('DB_READ',pid,sid63,'EPG_DB_BUDGET' if getattr(error63,'sqlite_errorname','')=='SQLITE_INTERRUPT' else 'EPG_CACHE_UNAVAILABLE',(time.perf_counter()-started63)*1000)
-        from epg_fallback67 import window as fallback67
-        return fallback67(pid,channels,mappings,start,stop,limit)
+        return None
     finally:
         if db is not None:db.close()
 
@@ -177,6 +176,9 @@ def now_next(pid,channels,mappings,now=None,client=None,display_only65=False):
     revision_before63=revision63(pid)
     started63=time.perf_counter()
     cache=window(pid,channels,mappings,ts,ts+2*86400,**({'text_only65':True} if display_only65 else {}))
+    if cache is None:
+        from epg_fallback67 import window as fallback67
+        cache=fallback67(pid,channels,mappings,ts,ts+2*86400,48)
     if cache is not None:register63(pid,getattr(cache,'revision',None),expected_revision=revision_before63)
     db_ms63=(time.perf_counter()-started63)*1000
     # Workers retain the complete bounded future window. The thin four-event

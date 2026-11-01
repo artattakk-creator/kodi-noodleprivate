@@ -44,3 +44,19 @@ class Resilience67(unittest.TestCase):
   event=dict(start_timestamp=m.now-60,stop_timestamp=m.now+1800)
   result=resolve_guide({'1':[dict(event,name='Verified alias')],'provider':[dict(event,name='Provider alternative')]},'provider','1',m.now)
   self.assertEqual(result['now'],'Verified alias');self.assertEqual(result['mapping'],'STREAM_ALIAS')
+
+ def test_primary_sql_failure_keeps_validated_lastgood_without_blessing_revision(self):
+  from local_epg import now_next
+  from epg_handoff63 import register,get
+  m=self.fixture;before=now_next('p',[m.channel],{},m.now)
+  register('p',('newer-known-guide',m.now+1))
+  self.assertIsNone(get('p','1',now=m.now,mappings={}))
+  with mock.patch('local_epg.sqlite3.connect',side_effect=sqlite3.OperationalError('synthetic lock')):
+   after=now_next('p',[m.channel],{},m.now)
+  self.assertEqual(after['1']['now'],before['1']['now'])
+  self.assertIsNone(get('p','1',now=m.now,mappings={}))
+ def test_fallback_rejects_changed_manual_mapping(self):
+  from local_epg import now_next
+  from epg_fallback67 import window
+  m=self.fixture;now_next('p',[m.channel],{},m.now)
+  self.assertIsNone(window('p',[m.channel],{'1':'different'},m.now,m.now+3600,4))

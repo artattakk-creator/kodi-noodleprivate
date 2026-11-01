@@ -17,6 +17,8 @@ OPTIONS='|redirect-limit=0&connection-timeout=3&failonerror=true'
 def hosts():
     from utils import setting
     values={'image.tmdb.org'}
+    from utils import setting_bool
+    if setting_bool('programme_tvmaze67',False):values.add('static.tvmaze.com')
     for host in str(setting('programme_image_hosts55','')).lower().split(',')[:20]:
         host=host.strip()
         if re.fullmatch(r'[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?',host) and '.' in host:
@@ -121,7 +123,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     from programme_sources57 import PROOFS,policy,attempts,trace as source_trace
     from helper_rpc57 import Error as HelperError
     old=art(event)
-    if old and not old.get('url_version55') and (local_image63 or old.get('source') in ('tmdb_movie','tmdb_episode','tmdb_series')) and old.get('source')!='placeholder' and old.get('fingerprint')==fingerprint(event) and old.get('until',0)>time.time():
+    if old and not old.get('url_version55') and (local_image63 or old.get('source') in ('tmdb_movie','tmdb_episode','tmdb_series','tvmaze_series','tvmaze_episode')) and old.get('source')!='placeholder' and old.get('fingerprint')==fingerprint(event) and old.get('until',0)>time.time():
         from programme_art46 import indexed
         local60=indexed(event,verify=True)
         if local60:return local60

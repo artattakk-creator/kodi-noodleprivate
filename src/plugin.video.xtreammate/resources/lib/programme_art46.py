@@ -25,6 +25,7 @@ def fingerprint(event):
   from utils import setting_bool,setting
   enabled=setting_bool('programme_tmdb46',False)
   values.append('tv-artwork66-v1')
+  if setting_bool('programme_tvmaze67',False):values.append('tvmaze-opt-in67')
   values.append([enabled,setting_bool('tmdb_research43',False) if enabled else False,__import__('tmdb_token61').token_fingerprint() if enabled else ''])
  return hashlib.sha256(json.dumps(values,sort_keys=True).encode()).hexdigest()
 
