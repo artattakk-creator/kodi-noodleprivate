@@ -26,7 +26,11 @@ try:
  manual=epg_views.resolve_guide(cache,'provider','1',case.now,mappings={'1':'1'})
  print('EPG67_ALIAS_REPRO '+json.dumps(dict(current=current['now'],provider_event_available=True,explicit_manual_preserved=not manual['now'])),flush=True)
  import player
- with mock.patch.object(player,'_isa_available',return_value=True):
+ from xcmate027_fixture import ListItem
+ class PlayItem67(ListItem):
+  def setPath(self,value):self.path=value
+  def getPath(self):return self.path
+ with mock.patch.object(player.xbmcgui,'ListItem',PlayItem67),mock.patch.object(player,'_isa_available',return_value=True):
   item=player.build_playable_item('https://provider.example.test/live/synthetic/fixture/1')
  print('LIVE67_TYPE_REPRO '+json.dumps(dict(detected=player.detect_stream_type('https://provider.example.test/live/synthetic/fixture/1'),properties=item.properties if hasattr(item,'properties') else getattr(item,'props',{}))),flush=True)
 except Exception:
