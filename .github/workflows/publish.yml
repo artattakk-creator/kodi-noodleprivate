@@ -244,6 +244,14 @@ jobs:
           # Stage only builder-owned repository outputs. CI logs, test fixtures,
           # review artifacts and working-tree source edits are never published.
           outputs=['addons.xml','addons.xml.md5']
+          # Explicit allowlist: only reviewed third-party ZIPs plus their hashes.
+          # Never stage runtime user data, CI fixtures or an entire upstream repo.
+          for addon_id, version in (
+              ('plugin.audio.m3sr2019','2026.1.0'),
+              ('plugin.audio.shoutcast','2.5.2+matrix.1'),
+              ('plugin.video.plutotv','1.6.2')):
+              name=f'{addon_id}-{version}.zip'
+              outputs.extend((str(Path(addon_id)/name),str(Path(addon_id)/(name+'.sha256'))))
           for manifest in sorted(Path('src').glob('*/addon.xml')):
               addon=ET.parse(manifest).getroot()
               ident=addon.attrib['id'];version=addon.attrib['version']
