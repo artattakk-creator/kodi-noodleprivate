@@ -32,7 +32,10 @@ def _directory(path,dir_fd=None):
 def descriptor(path,create=False):
  import tmdb_token61 as tokens
  suffix='/addon_data/plugin.video.xtreammate/'+tokens.NAME
- if not isinstance(path,str) or not path.endswith(suffix) or path!=tokens.location():return None
+ if not isinstance(path,str) or not path.endswith(suffix):return None
+ if path!=tokens.location():
+  if create:raise failure('TOKEN_CHANGED',detail='PROFILE_CHANGED')
+  return None
  anchor=path[:-len(suffix)]
  if not os.path.isabs(anchor) or anchor=='/' or '..' in anchor.split('/'):raise failure('TOKEN_PATH',detail='UNSAFE_PATH')
  # location() canonicalizes only Kodi's authoritative profile anchor.

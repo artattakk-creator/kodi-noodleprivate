@@ -14,6 +14,9 @@ def note(stage,code='OK',error=0,committed=False,subcode='NONE'):
 def read_destination(tokens,path,initialize=False):
  try:
   if initialize:
+   if path!=tokens.location():
+    from token_destination65 import failure
+    raise failure('TOKEN_CHANGED',detail='PROFILE_CHANGED')
    fd,_=tokens.private_parent(path);os.close(fd);note('PRIVATE_DIRECTORY')
   return tokens.read(path,missing=True)
  except tokens.TokenError as error:

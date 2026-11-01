@@ -93,3 +93,7 @@ class Destination65(Fixture,unittest.TestCase):
   ui=importlib.import_module('tmdb_access61')
   ui.imported(7,self.dialog,sys.modules['xbmcaddon'].Addon(),sys.modules['xbmcgui'],self.tokens)
   self.assertEqual(self.options.get('tmdb_read_token43'),FIXTURE.decode());self.assertFalse(self.path.exists())
+ def test_profile_switch_before_prepare_cannot_create_children_in_old_profile(self):
+  target=str(self.path)
+  with mock.patch.object(self.tokens,'location',return_value=str(self.folder/'other-profile'/'addon_data'/'plugin.video.xtreammate'/self.tokens.NAME)),self.assertRaises(self.tokens.TokenError) as raised:self.writer.read_destination(self.tokens,target,initialize=True)
+  self.assertEqual(raised.exception.code,'TOKEN_CHANGED');self.assertEqual(raised.exception.subcode,'PROFILE_CHANGED');self.assertFalse(self.path.parent.exists())

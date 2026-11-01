@@ -65,12 +65,16 @@ def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,
                     rows=db.execute('SELECT substr(title,1,512) AS title,substr(description,1,8192) AS description,start,stop,source FROM programmes WHERE pid=? AND cid=? AND stop>? AND start<? ORDER BY start,source,stop LIMIT ?',(pid,cid,left,right,cap)).fetchall()
                     values=[dict(name=row['title'],descr=row['description'],start_timestamp=row['start'],stop_timestamp=row['stop'],source=row['source'],_source_index=row['source']) for row in rows]
                 prepared[key]=values;view[ident]=values;tasks.append((key,cid,sid,source48,left,right,cap))
+        # Source fusion is text work. Prefer gaps before optional rich fields.
+        fusion65=sorted(tasks,key=lambda task:any(value['start_timestamp']<=start<value['stop_timestamp'] for value in prepared[task[0]]))
+        for key,cid,sid,source48,left,right,cap in fusion65:
+            if time.monotonic()>deadline:break
+            if not source48:
+                from epg_merge52 import window as merged_window52
+                prepared[key][:]=merged_window52(pid,sid,cid,left,right,primary=prepared[key],limit=cap,manual=key[3])
         for key,cid,sid,source48,left,right,cap in tasks:
             if time.monotonic()>deadline:break
             values=prepared[key]
-            if not source48:
-                from epg_merge52 import window as merged_window52
-                values=merged_window52(pid,sid,cid,left,right,primary=values,limit=cap,manual=key[3])
             from programme_flow48 import enrich
             enriched=[]
             for index,value in enumerate(values):
