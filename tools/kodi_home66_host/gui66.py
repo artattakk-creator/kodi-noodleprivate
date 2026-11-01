@@ -152,7 +152,7 @@ xbmc.sleep(500)
 foreign66=[]
 def colored_bbox66(rgb,color):
  from PIL import ImageChops
- masks=[band.point(lambda value,c=expected:255 if abs(value-c)<=8 else 0) for band,expected in zip(rgb.split(),color)]
+ masks=[band.point(lambda value,c=expected:255 if abs(value-c)<=3 else 0) for band,expected in zip(rgb.split(),color)]
  return ImageChops.multiply(ImageChops.multiply(masks[0],masks[1]),masks[2]).getbbox()
 def plot_bbox66(rgb,bottom):
  from PIL import ImageChops
@@ -164,7 +164,7 @@ for ident,kind,indices in ((2540,'poster',(0,1,2,23)),(2550,'music',(0,1,23)),(2
  home.setFocusId(ident);xbmc.sleep(700)
  for index in indices:
   home.getControl(ident).selectItem(index);xbmc.sleep(500)
-  expected=tuple((v+index*step)%240 for v,step in zip((40,70,120) if kind=='own-vod' else (100,50,20),(19,31,13))) if kind.startswith('own-') else ((60+index*7)%180+20,(90+index*5)%140+40,(40+index*11)%150+30)
+  expected=tuple((v+index*step)%240 for v,step in zip((40,70,120) if kind=='own-vod' else (100,50,20),(19,31,13))) if kind.startswith('own-') else (40+(index%6)*30,60+(index//6)*40,{'poster':45,'music':135,'television':225}[kind])
   detail={}
   for attempt in range(12):
    capture=Path('/root/foreign66-last.png');xbmc.executebuiltin('TakeScreenshot('+str(capture)+')',wait=False);xbmc.sleep(350)

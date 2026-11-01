@@ -82,7 +82,7 @@ elif p.get('fixture66'):
  kind=p['fixture66'][0];folder=root/'foreign66';folder.mkdir(exist_ok=True)
  titles=('HOPE','Coco','Lupin')
  for i in range(24):
-  color=((60+i*7)%180+20,(90+i*5)%140+40,(40+i*11)%150+30)
+  color=(40+(i%6)*30,60+(i//6)*40,{'poster':45,'music':135,'television':225}[kind])
   filename=folder/(kind+'-'+str(i)+'.png')
   size=(180,180) if kind=='music' else (120,180)
   image=Image.new('RGB',size,color);ImageDraw.Draw(image).text((12,65),titles[i%3],fill='white');image.save(filename)
