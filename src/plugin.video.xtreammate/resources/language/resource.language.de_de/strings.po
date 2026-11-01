@@ -4780,3 +4780,7 @@ msgstr "Phase: {0}"
 msgctxt "#36674"
 msgid "Write already committed; final status unconfirmed: {0}"
 msgstr "Schreibvorgang bereits erfolgt; endgültiger Status unbestätigt: {0}"
+
+msgctxt "#36700"
+msgid "Preserve the unreadable token entry and import a new private file?"
+msgstr "Der vorhandene Token-Dateieintrag kann nicht sicher gelesen werden. Den Eintrag unverändert im privaten Profil sichern und anschließend eine neue Token-Datei importieren? Das Symlink-Ziel und andere Profildaten bleiben unberührt."

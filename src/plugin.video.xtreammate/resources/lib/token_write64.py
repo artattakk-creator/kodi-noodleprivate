@@ -1,18 +1,23 @@
 """Staged private token transaction; fixed diagnostics contain no secret data."""
 import errno,hashlib,os,uuid
 STAGES=frozenset(('SOURCE_SELECTION','VFS_READ','UTF8_FORMAT_VALIDATION','PROFILE_ANCHOR','PRIVATE_DESTINATION_READ','PRIVATE_DIRECTORY','TEMP_CREATE','TEMP_WRITE','FILE_FSYNC','ATOMIC_RENAME','DIRECTORY_FSYNC','POSTWRITE_VERIFY','STATUS_VERIFY','TEMP_CLEANUP'))
-def note(stage,code='OK',error=0,committed=False):
+def note(stage,code='OK',error=0,committed=False,subcode='NONE'):
  if stage not in STAGES:return
  if code not in ('OK','FAILED','UNSUPPORTED','SYNC_WARNING','VERIFIED','CANCELLED'):code='FAILED'
  try:
   import xbmc
-  xbmc.log('[XCMate][TOKEN64] stage='+stage+' code='+code+' errno='+str(error if type(error) is int and 0<=error<4096 else 0)+' committed='+str(int(bool(committed))),xbmc.LOGINFO)
+  from token_destination65 import SUBCODES
+  subcode=subcode if subcode in SUBCODES else 'UNSAFE_PATH'
+  xbmc.log('[XCMate][TOKEN64] schema=65 subcode='+subcode+' stage='+stage+' code='+code+' errno='+str(error if type(error) is int and 0<=error<4096 else 0)+' committed='+str(int(bool(committed))),xbmc.LOGINFO)
  except (ImportError,AttributeError,RuntimeError):pass
 
-def read_destination(tokens,path):
- try:return tokens.read(path,missing=True)
+def read_destination(tokens,path,initialize=False):
+ try:
+  if initialize:
+   fd,_=tokens.private_parent(path);os.close(fd);note('PRIVATE_DIRECTORY')
+  return tokens.read(path,missing=True)
  except tokens.TokenError as error:
-  error.stage='PRIVATE_DESTINATION_READ';note(error.stage,'FAILED');raise
+  error.stage='PRIVATE_DESTINATION_READ';note(error.stage,'FAILED',getattr(error,'errno',0),subcode=getattr(error,'subcode','UNSAFE_PATH'));raise
  except OSError as error:
   failure=tokens.TokenError('TOKEN_UNREADABLE');failure.stage='PRIVATE_DESTINATION_READ'
   note(failure.stage,'FAILED',error.errno or 0);raise failure from None
@@ -66,7 +71,8 @@ def import_bytes(raw,expected,target=None):
   if committed and code!='TOKEN_CHANGED':code='TOKEN_COMMIT_UNVERIFIED'
   failure=tokens.TokenError(code);failure.stage=stage;failure.committed=committed
   failure.errno=getattr(error,'errno',0) or 0
-  note(stage,'FAILED',failure.errno,committed)
+  failure.subcode=getattr(error,'subcode','UNSAFE_PATH')
+  note(stage,'FAILED',failure.errno,committed,subcode=failure.subcode)
   raise failure from None
  finally:
   if fd is not None:
