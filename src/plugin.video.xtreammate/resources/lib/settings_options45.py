@@ -15,6 +15,9 @@ def definitions(group):
  return [dict(n.attrib) for n in cat if n.get('id') and n.get('type')!='lsep' and n.get('id') not in hidden] if cat is not None else []
 
 def show(router,group):
+ if group=='live_probe67':
+  from live_probe67 import launch
+  launch(router);return
  if group=='tmdb_access61':
   from tmdb_access61 import show as access
   access();return

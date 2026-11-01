@@ -65,10 +65,16 @@ class XtreamClient:
                 return stale
         if cached_only:
             return None
+        if action=='get_short_epg':
+            from short_epg67 import permit
+            if not permit(self):return None
         try:
-            limits=dict(timeout=3,max_bytes=2*1024*1024,max_seconds=8) if action=='get_short_epg' else {}
+            limits=dict(timeout=3,max_bytes=2*1024*1024,max_seconds=8,retry_limit=0) if action=='get_short_epg' else {}
             raw, _ = http_get(self._api_url(), params=params,**limits)
             data = json.loads(raw)
+            if action=='get_short_epg':
+                from short_epg67 import success
+                success(self)
             if data is not None:
                 cache_set(ck, data)
                 if action in ('get_vod_streams', 'get_series') and not extra and isinstance(data, list):
@@ -81,7 +87,10 @@ class XtreamClient:
         except Exception as exc:
             from wizard_deadline48 import active
             if active():raise
-            error('Xtream API {} request failed: {}'.format(action, type(exc).__name__))
+            if action=='get_short_epg':
+                from short_epg67 import failed
+                failed(self,exc)
+            else:error('Xtream API {} request failed: {}'.format(action, type(exc).__name__))
             return None
 
     def iter_catalog(self, action, category_id=None, cached_only=False, cancel=lambda:False):
@@ -221,7 +230,8 @@ class XtreamClient:
                               force_refresh=force_refresh) or []
 
     def live_stream_url(self, stream_id, ext='ts'):
-        return f'{self.host}live/{self.username}/{self.password}/{stream_id}.{ext}'
+        from urllib.parse import quote
+        return self.host+'live/'+quote(str(self.username),safe='')+'/'+quote(str(self.password),safe='')+'/'+quote(str(stream_id),safe='')+'.'+str(ext)
 
     def get_vod_categories(self, force_refresh=False):
         return self._get_json('get_vod_categories', force_refresh=force_refresh) or []

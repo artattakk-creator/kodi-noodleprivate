@@ -710,7 +710,7 @@ class Router:
             return None
         title = channel.get('name') or 'Startsender'
         item = build_playable_item(url, title=title,
-                                   logo=channel.get('stream_icon', ''))
+                                   logo=channel.get('stream_icon', ''),live67=True)
         return p, sid, title, item
 
     def _play_start(self):

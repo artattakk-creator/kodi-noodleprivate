@@ -58,7 +58,7 @@ def build_playable_item(url: str,
                         title: str = '',
                         logo:  str = '',
                         headers: dict = None,
-                        drm_info: dict = None) -> xbmcgui.ListItem:
+                        drm_info: dict = None, live67: bool = False) -> xbmcgui.ListItem:
     """
     Return a fully configured ListItem ready for setResolvedUrl.
     Automatically picks InputStream Adaptive for HLS/DASH when available.
@@ -67,7 +67,7 @@ def build_playable_item(url: str,
         error('build_playable_item: empty URL')
         return xbmcgui.ListItem(title)
 
-    stype      = detect_stream_type(url)
+    stype      = __import__('live_format67').kind(url) if live67 else detect_stream_type(url)
     is_hls     = (stype == 'hls')
     is_dash    = (stype == 'dash')
     is_rtmp    = (stype == 'rtmp')
@@ -82,6 +82,9 @@ def build_playable_item(url: str,
     li.setArt({'icon': logo, 'thumb': logo})
     li.setInfo('video', {'title': title, 'mediatype': 'video'})
     li.setProperty('IsPlayable', 'true')
+    if live67:
+        from live_format67 import configure
+        configure(li,url,stype)
 
     if (is_hls or is_dash) and player_pref in (0, 1) and _isa_available():
         use_isa = True
@@ -127,7 +130,7 @@ def play_stream(handle: int, url: str,
         return
     info('play_stream: URL redacted')
     li = build_playable_item(url, title=title, logo=logo,
-                             headers=headers, drm_info=drm_info)
+                             headers=headers, drm_info=drm_info, **({'live67':True} if live_session else {}))
     if live_session:
         from live_recovery import tag_live_item
         from live_overlay import trace

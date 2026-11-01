@@ -90,7 +90,8 @@ def _full_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
         first63=channels[0] if channels else {}
         sid63=channel_keys(first63,mappings)[0]
         note('DB_READ',pid,sid63,'EPG_DB_BUDGET' if getattr(error63,'sqlite_errorname','')=='SQLITE_INTERRUPT' else 'EPG_CACHE_UNAVAILABLE',(time.perf_counter()-started63)*1000)
-        return None
+        from epg_fallback67 import window as fallback67
+        return fallback67(pid,channels,mappings,start,stop,limit)
     finally:
         if db is not None:db.close()
 
@@ -199,7 +200,7 @@ def now_next(pid,channels,mappings,now=None,client=None,display_only65=False):
         result[sid]=bind(pid,channel,info)
         if not result[sid].get('now') and warm.get(sid) and warm[sid].get('now') and cache is None:
             result[sid]=warm[sid]
-        remember63(pid,channel,result[sid],mappings,expected_revision=revision_before63)
+        if getattr(cache,'code','')!='RAM_LASTGOOD67':remember63(pid,channel,result[sid],mappings,expected_revision=revision_before63)
         code63=('READY' if info.get('now') else 'EPG_CACHE_UNAVAILABLE' if cache is None else 'EPG_MAPPING_MISSING' if info.get('reason')=='MANUAL_ID_MISSING' else 'EPG_DATA_MISSING')
         note63('DB_READ',pid,sid,code63,db_ms63,facts=info)
     return result

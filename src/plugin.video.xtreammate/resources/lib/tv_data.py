@@ -197,7 +197,7 @@ class GuideSnapshot:
             if local is None and not values[sid].get('now'):
                 prior63=warm63(self.portal['id'],sid,now=now,mappings=self._mappings)
                 if prior63 and prior63.get('now'):values[sid]=prior63
-            remember(self.portal['id'],c,values[sid],self._mappings,expected_revision=rev)
+            if getattr(local,'code','')!='RAM_LASTGOOD67':remember(self.portal['id'],c,values[sid],self._mappings,expected_revision=rev)
             values[sid]['_published_at63']=time.time()
             if not info['now'] and sid not in self._mappings: missing.append(c)
         with self._lock:
