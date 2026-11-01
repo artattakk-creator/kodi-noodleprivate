@@ -35,6 +35,9 @@ class MiniProgramme:
             stamp=xbmcgui.ControlLabel(x+8,y+2,width-16,20,'','font12','0xFFBEC4CD')
             title=xbmcgui.ControlTextBox(x+8,y+22,width-16,40,font='font12',textColor='0xFFF4F6F9')
             owner.addControls([highlight,stamp,title]);self.rows.append((highlight,stamp,title))
+        from programme_preview67 import Preview
+        self.preview67=Preview(owner,(int(w*.70),122,int(w*.27),int(w*.27*9/16)))
+        self._preview_channel67=None
         self.column_width=width
         self.visible(False)
 
@@ -50,6 +53,7 @@ class MiniProgramme:
             self._paint()
             for control in (self.heading,self.hint,self.list):self._set(control,'setVisible',True)
         else:
+            self.preview67.hide()
             self.focused=False
             for control in (self.heading,self.hint,self.list,*[c for row in self.rows for c in row]):
                 self._set(control,'setVisible',False)
@@ -60,6 +64,7 @@ class MiniProgramme:
     def render(self):
         owner=self.owner;index=owner._highlight['channels']
         channel=owner.visible_channels[index] if 0<=index<len(owner.visible_channels) else None
+        self._preview_channel67=channel
         sid=str(channel.extra.get('stream_id','')) if channel else ''
         info=owner._guide.get(sid);events,current=programme_rows(info.get('programme_events',info.get('events',[])))
         identity=lambda event:(event['start'],event['stop'])
@@ -104,6 +109,9 @@ class MiniProgramme:
             self._set(stamp,'setLabel',label);self._set(title,'setText',text)
             self._set(stamp,'setVisible',present);self._set(title,'setVisible',bool(text))
             if focused:self._set(highlight,'setVisible',True)
+
+        selected67=self.events[self.selected] if self.selected<len(self.events) else None
+        self.preview67.render(self.owner.portal,self._preview_channel67,selected67)
 
     def focus(self):
         self.render()
