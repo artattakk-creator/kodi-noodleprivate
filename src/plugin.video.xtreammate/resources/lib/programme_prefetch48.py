@@ -22,6 +22,8 @@ def prepare(portal,rows,cancel=lambda:False):
     _positions[key]=(pos+advance64)%len(rows)
     if len(_positions)>8:
         old=next(iter(_positions));_positions.pop(old);_next.pop(old,None)
+    from epg_coverage66 import warm
+    warm(portal,rows)
     from local_epg import now_next
     from epg_sources import configuration
     from programme_events46 import from_info

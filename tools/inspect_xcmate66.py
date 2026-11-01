@@ -20,6 +20,13 @@ def build(skin,target):
         if node.get('type')=='textbox':plots.append(E.tostring(node,encoding='unicode'))
     print('BINGIE66_LOCAL_DEFINITIONS '+json.dumps(definitions))
     print('BINGIE66_TEXTBOXES '+json.dumps(plots))
+    parents={child:parent for parent in home.iter() for child in parent}
+    target66=next(n for n in home.iter('control') if n.get('id')=='90009')
+    chain=[]
+    while target66 in parents:
+        target66=parents[target66]
+        chain.append(dict(tag=target66.tag,attrs=target66.attrib,fields=[dict(tag=n.tag,attrs=n.attrib,text=n.text) for n in target66 if n.tag!='control']))
+    print('BINGIE66_PLOT_ANCESTORS '+json.dumps(chain))
     return result
 review.build=build
 inspect64.BASE='5dfc989a6cf71cb61f43b5c3645797e4825b28fc'

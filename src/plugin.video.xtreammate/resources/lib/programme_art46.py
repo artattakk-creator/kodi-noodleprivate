@@ -24,6 +24,7 @@ def fingerprint(event):
  if not event.get('xmltv_image') and not event.get('provider_image'):
   from utils import setting_bool,setting
   enabled=setting_bool('programme_tmdb46',False)
+  values.append('tv-artwork66-v1')
   values.append([enabled,setting_bool('tmdb_research43',False) if enabled else False,__import__('tmdb_token61').token_fingerprint() if enabled else ''])
  return hashlib.sha256(json.dumps(values,sort_keys=True).encode()).hexdigest()
 
