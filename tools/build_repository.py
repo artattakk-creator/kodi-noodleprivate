@@ -94,7 +94,7 @@ def main():
     render_noodle_artwork()
     image(SRC/"plugin.video.noodleprivate/resources/icon.png",256,256)
     image(SRC/"plugin.video.noodleprivate/resources/fanart.png",1280,720)
-    # GS Media 1.8 branding: always replace legacy placeholder in source staging.\n    from render_gsmedia_icon import render as render_gsmedia_icon\n    render_gsmedia_icon(SRC / "repository.gsmedia" / "icon.png")
+    # GS Media 1.8 branding: always replace legacy placeholder in source staging.\n    from render_gsmedia_icon import render as render_gsmedia_icon\n    render_gsmedia_icon(SRC / "repository.gsmedia" / "icon-1.8.png")
     for addon in IDS:
         if addon.startswith("repository."):
             image(SRC/addon/"icon.png",256,256)
