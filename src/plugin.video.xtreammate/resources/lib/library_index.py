@@ -439,7 +439,7 @@ def sync_kind(portal,client,kind,preferred='',force=False,cancel=lambda:False,fi
                 code65=str(exc) if isinstance(exc,EmptyCategory65) else 'CANCELLED' if isinstance(exc,InterruptedError) else 'FAILED'
                 counts65=dict(received=exc.received,stored=0,discarded=exc.discarded) if isinstance(exc,EmptyCategory65) else {}
                 _sync_note(pid,kind,cid,code65,counts65,exc=exc,filename=filename)
-                evidence65(pid,kind,cid,code65,counts65,filename=filename)
+                evidence65(pid,kind,cid,code65,counts65,filename=filename,error=exc)
                 # Other enabled groups can succeed independently.
     finally:
         with db: db.execute('DELETE FROM sync_leases WHERE pid=? AND kind=? AND owner=?',(pid,kind,owner))

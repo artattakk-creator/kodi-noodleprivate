@@ -21,5 +21,6 @@ index=(root/'addons.xml').read_bytes();md5=hashlib.md5(index).hexdigest()
 if (root/'addons.xml.md5').read_text().strip().split()[0]!=md5:raise ValueError('INDEX_MD5')
 entries=[item for item in E.fromstring(index) if item.get('id')=='plugin.video.xtreammate']
 if not entries or not any(item.get('version')==version for item in entries):raise ValueError('INDEX_VERSION')
-value=dict(version=version,sha256=hashlib.sha256(archive.read_bytes()).hexdigest(),files=len(expected),bytes=archive.stat().st_size,index_md5=md5,crc='PASS',paths='PASS',source_bytes='PASS',private_files='ABSENT')
+archive_bytes65=archive.read_bytes();blob65=hashlib.sha1(b'blob '+str(len(archive_bytes65)).encode()+b'\0'+archive_bytes65).hexdigest()
+value=dict(version=version,git_blob_sha1=blob65,sha256=hashlib.sha256(archive_bytes65).hexdigest(),files=len(expected),bytes=archive.stat().st_size,index_md5=md5,crc='PASS',paths='PASS',source_bytes='PASS',private_files='ABSENT')
 print('PACKAGE65_VERIFIED_JSON '+json.dumps(value,sort_keys=True))

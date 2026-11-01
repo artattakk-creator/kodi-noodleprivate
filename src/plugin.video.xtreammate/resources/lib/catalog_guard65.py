@@ -1,16 +1,26 @@
 """Fixed-code category evidence and conservative cache fallback, no title traces."""
-import json,sqlite3,time
+import errno,json,sqlite3,time
 class EmptyCategory65(ValueError):
  def __init__(self,received=0,discarded=0):
   self.received=received;self.discarded=discarded
   super().__init__('SOURCE_EMPTY' if not received else 'SOURCE_FILTERED')
-def note(pid,kind,cid,code,counts=None,transport='REMOTE',filename=None):
+def reason(error):
+ if error is None:return 'NONE'
+ if isinstance(error,TimeoutError):return 'NETWORK_TIMEOUT'
+ if isinstance(error,ConnectionError):return 'CONNECTION_ERROR'
+ number=getattr(error,'errno',0)
+ if number==errno.ENOSPC:return 'DISK_FULL'
+ if number in (errno.EACCES,errno.EPERM):return 'ACCESS_DENIED'
+ if number==errno.EROFS:return 'READ_ONLY'
+ if isinstance(error,sqlite3.Error):return 'DATABASE_ERROR'
+ return 'SOURCE_OR_IO_FAILURE'
+def note(pid,kind,cid,code,counts=None,transport='REMOTE',filename=None,error=None):
  from library_index import connect
  db=None
  try:
   db=connect(filename,write=True,timeout=.05)
   data={key:max(0,int((counts or {}).get(key,0))) for key in ('received','stored','discarded')}
-  data.update(code=code if code in ('READY','SOURCE_EMPTY','SOURCE_FILTERED','CACHED','FAILED','CANCELLED') else 'FAILED',transport=transport if transport in ('REMOTE','LOCAL_CACHE') else 'REMOTE',at=time.time())
+  data.update(error_code=reason(error),code=code if code in ('READY','SOURCE_EMPTY','SOURCE_FILTERED','CACHED','FAILED','CANCELLED') else 'FAILED',transport=transport if transport in ('REMOTE','LOCAL_CACHE') else 'REMOTE',at=time.time())
   with db:
    db.execute('CREATE TABLE IF NOT EXISTS catalog_evidence65(pid TEXT,kind TEXT,cid TEXT,data TEXT,PRIMARY KEY(pid,kind,cid))')
    db.execute('INSERT OR REPLACE INTO catalog_evidence65 VALUES(?,?,?,?)',(str(pid),kind,str(cid),json.dumps(data)))
