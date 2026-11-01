@@ -9,7 +9,11 @@ class Item67(ListItem):
  def setContentLookup(self,v):self.lookup=v
 class Live67(Fixture,unittest.TestCase):
  def setUp(self):
-  super().setUp();self.player=importlib.import_module('player');self.client=importlib.import_module('xtream').XtreamClient('https://provider.example.test','synthetic','fixture')
+  super().setUp();self.player=importlib.import_module('player')
+  import importlib.util
+  from xcmate027_fixture import LIB
+  spec=importlib.util.spec_from_file_location('actual_xtream67',LIB/'xtream.py');self.xcmod=importlib.util.module_from_spec(spec);spec.loader.exec_module(self.xcmod)
+  self.client=self.xcmod.XtreamClient('https://provider.example.test','synthetic','fixture')
  def item(self,url,live=True):
   with mock.patch.object(self.player.xbmcgui,'ListItem',Item67),mock.patch.object(self.player,'_isa_available',return_value=True):
    return self.player.build_playable_item(url,live67=live)
@@ -35,7 +39,7 @@ class Live67(Fixture,unittest.TestCase):
   import short_epg67
   short_epg67._state.clear()
   error=urllib.error.HTTPError('https://secret.invalid/user/pass',504,'secret',{},None)
-  with mock.patch('xtream.http_get',side_effect=error) as get:
+  with mock.patch.object(self.xcmod,'http_get',side_effect=error) as get:
    for sid in range(24):self.client.get_short_epg(str(sid),force_refresh=True)
   self.assertEqual(get.call_count,1);self.assertEqual(get.call_args.kwargs['retry_limit'],0)
   self.assertIn('live/',self.client.live_stream_url('1'))

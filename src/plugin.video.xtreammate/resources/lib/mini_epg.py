@@ -111,7 +111,7 @@ class MiniProgramme:
             if focused:self._set(highlight,'setVisible',True)
 
         selected67=self.events[self.selected] if self.selected<len(self.events) else None
-        self.preview67.render(self.owner.portal,self._preview_channel67,selected67)
+        self.preview67.render(getattr(self.owner,'portal',None),self._preview_channel67,selected67)
 
     def focus(self):
         self.render()

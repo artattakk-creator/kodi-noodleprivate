@@ -21,7 +21,9 @@ def _work():
 class Preview:
  def __init__(self,owner,rect):
   import xbmcgui,xbmcaddon
+  self.controls=();self.available=callable(getattr(owner,'addControls',None))
   self.token=uuid.uuid4().hex;self._next=0;self._key=None;self.owner=owner
+  if not self.available:return
   x,y,w,h=rect;root=xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('path')
   self.image=xbmcgui.ControlImage(x,y,w,h,'',aspectRatio=2)
   self.logo=xbmcgui.ControlImage(x+w-46,y+h-24,42,20,os.path.join(root,'resources/media/tmdb60/tmdb.png'),aspectRatio=2)
@@ -33,7 +35,7 @@ class Preview:
   self._key=None
  def render(self,portal,channel,event):
   global _thread
-  if not event or not channel:self.hide();return
+  if not self.available or not portal or not event or not channel:self.hide();return
   from programme_events46 import key
   row=dict(channel.extra,sid=str(channel.extra.get('stream_id','')),name=channel.name) if hasattr(channel,'extra') else dict(channel)
   identity=key(portal['id'],row.get('sid',row.get('stream_id','')),event)

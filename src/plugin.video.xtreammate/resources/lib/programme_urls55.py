@@ -129,7 +129,8 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         if local60:return local60
     current=display(event,old)
     from programme_refresh63 import retry as retry63
-    explicit63=allow_lookup and retry63(event,old)
+    from programme_refresh63 import retry67
+    explicit63=allow_lookup and (retry63(event,old) or retry67(event,old))
     if current and not (local_image63 and current.get('source')!='placeholder') and not explicit63 and not (allow_lookup and current.get('source')=='placeholder' and
             (current.get('code')=='AWAITING_BACKGROUND_REFRESH' or not current.get('matching_policy57') or current.get('source_policy57')!=policy())):return current
     if cancel():return None
