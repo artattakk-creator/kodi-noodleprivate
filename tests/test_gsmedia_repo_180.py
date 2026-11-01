@@ -45,7 +45,7 @@ class GsMediaRepo180Tests(unittest.TestCase):
 
     def test_repository_icon_is_first_class_asset(self):
         self.assertEqual(self.manifest.findtext(
-            "./extension[@point='xbmc.addon.metadata']/assets/icon"), "icon.png")
+            "./extension[@point='xbmc.addon.metadata']/assets/icon"), "icon-1.8.png")
         self.assertEqual(self.manifest.findtext(
             "./extension[@point='xbmc.addon.metadata']/assets/fanart"), "fanart.png")
 
