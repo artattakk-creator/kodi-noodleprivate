@@ -2,7 +2,7 @@ name: Inspect fixed .66 baseline and .67 P0 reproductions
 on:
   push:
     branches: [hotfix/xcmate-02967-live-epg-android]
-    paths: ['tools/inspect_xcmate67.py', '.github/workflows/xcmate67-inspect.yml']
+    paths: ['tools/inspect_xcmate67.py', '.github/workflows/xcmate67-inspect.yml', 'tests/*02967.py', 'src/plugin.video.xtreammate/resources/lib/**']
 permissions:
   contents: read
 jobs:
@@ -17,3 +17,4 @@ jobs:
           python-version: '3.12'
       - run: python -m pip install 'Pillow>=11,<13'
       - run: python tools/inspect_xcmate67.py
+      - run: python -m unittest discover -s tests -p '*02967.py' -v

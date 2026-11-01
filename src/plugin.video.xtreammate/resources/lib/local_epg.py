@@ -51,6 +51,7 @@ def _full_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
             return fallback_window(pid,channels,mappings,start,stop,limit)
         view=View();view.code='OK';record=dict(meta)
         view.revision=(record.get('revision'),record.get('updated'))
+        tasks67=[]
         for channel in channels[:16]:
             sid,keys=channel_keys(channel,mappings)
             for ident in keys:
@@ -60,8 +61,8 @@ def _full_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
                 if selected48:
                     cid=selected48['channel'];view.canonical[ident]=cid
                     values48=read_source48(db,pid,cid,selected48['source'],start,stop,limit)
-                    from programme_flow48 import enrich
-                    view[ident]=enrich(pid,cid,values48,selected48['source'],sid48=sid,revision48=view.revision)
+                    view[ident]=values48
+                    tasks67.append((ident,cid,sid,selected48['source'],start,stop,limit))
                     continue
                 alias=db.execute('SELECT cid FROM guide_alias WHERE pid=? AND alias=?',(pid,ident)).fetchone()
                 cid=alias[0] if alias else ident;view.canonical[ident]=cid
@@ -72,10 +73,17 @@ def _full_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
                                 (pid,cid,left,right,cap)).fetchall()
                 view[ident]=[dict(name=r['title'],descr=r['description'],start_timestamp=r['start'],
                                   stop_timestamp=r['stop'],source=r['source'],_source_index=r['source']) for r in rows]
-                from epg_merge52 import window as merged_window52
-                view[ident]=merged_window52(pid,sid,cid,left,right,primary=view[ident],limit=cap,manual=bool(mappings.get(sid)))
-                from programme_flow48 import enrich
-                view[ident]=enrich(pid,cid,view[ident][:4],sid48=sid,revision48=view.revision)+view[ident][4:]
+                tasks67.append((ident,cid,sid,None,left,right,cap))
+        # Commit all bounded core text before optional sidecar/schema work.
+        from epg_resilience67 import optional
+        from epg_merge52 import window as merged_window52
+        from programme_flow48 import enrich
+        for ident,cid,sid,source67,left,right,cap in tasks67:
+            if time.monotonic()>deadline:break
+            values67=view[ident]
+            if source67 is None:
+                values67=optional(pid,sid,values67,lambda:merged_window52(pid,sid,cid,left,right,primary=values67,limit=cap,manual=bool(mappings.get(sid))))
+            view[ident]=optional(pid,sid,values67,lambda:enrich(pid,cid,values67[:4],source67,sid48=sid,revision48=view.revision)+values67[4:])
         return view
     except (OSError,sqlite3.Error) as error63:
         from epg_handoff63 import note
@@ -134,7 +142,9 @@ def _text_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
             if text_only65 and time.monotonic()>deadline:break
             if not source48:
                 from epg_merge52 import window as merged_window52
-                prepared[key][:]=merged_window52(pid,sid,cid,left,right,primary=prepared[key],limit=cap,manual=key[3])
+                from epg_resilience67 import optional
+                original67=prepared[key][:]
+                prepared[key][:]=optional(pid,sid,original67,lambda:merged_window52(pid,sid,cid,left,right,primary=original67,limit=cap,manual=key[3]))
         for key,cid,sid,source48,left,right,cap in tasks:
             if time.monotonic()>deadline:break
             values=prepared[key]
@@ -143,7 +153,8 @@ def _text_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
             for index,value in enumerate(values):
                 if index>=4 or text_only65 and time.monotonic()>deadline:
                     enriched.extend(values[index:]);break
-                enriched.extend(enrich(pid,cid,[value],source48,sid48=sid,revision48=view.revision))
+                from epg_resilience67 import optional
+                enriched.extend(optional(pid,sid,[value],lambda:enrich(pid,cid,[value],source48,sid48=sid,revision48=view.revision)))
             prepared[key][:]=enriched
         return view
     except (OSError,sqlite3.Error) as error63:
