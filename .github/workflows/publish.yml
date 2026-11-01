@@ -50,7 +50,7 @@ jobs:
           python - <<'PY'
           import sys,unittest
           sys.path.insert(0,'tests')
-          modules=['test_xcmate_catalog_02954','test_xcmate_programme_index_02946','test_xcmate_series_02952','test_xcmate_tv_025','test_xcmate_027_ui','test_xcmate_028_streaming','test_xcmate_media_layout_02919','test_xcmate_media_rails_0299','test_xcmate_menu_icons_02945','test_xcmate_scope_02943','test_xcmate_scope_02944','test_xcmate_scope_02945','test_xcmate_scope_02946']
+          modules=['test_xcmate_programme_index_02946.ProgrammeIndex46.test_stale_fact_metadata_cannot_survive_source_image_revision','test_xcmate_catalog_02954','test_xcmate_programme_index_02946','test_xcmate_series_02952','test_xcmate_tv_025','test_xcmate_027_ui','test_xcmate_028_streaming','test_xcmate_media_layout_02919','test_xcmate_media_rails_0299','test_xcmate_menu_icons_02945','test_xcmate_scope_02943','test_xcmate_scope_02944','test_xcmate_scope_02945','test_xcmate_scope_02946']
           result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromNames(modules))
           if not result.wasSuccessful():raise SystemExit(1)
           PY
