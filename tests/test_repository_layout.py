@@ -37,7 +37,7 @@ class RepositoryLayoutTests(unittest.TestCase):
         source = (ROOT / "tools" / "render_gsmedia_icon.py")
         self.assertTrue(source.is_file(), "GS Media icon renderer must be versioned")
         manifest = ET.parse(SRC / "repository.gsmedia" / "addon.xml").getroot()
-        self.assertEqual(manifest.findtext("./extension[@point='xbmc.addon.metadata']/assets/icon"), "icon.png")
+        self.assertEqual(manifest.findtext("./extension[@point='xbmc.addon.metadata']/assets/icon"), "icon-1.8.png")
 
     def test_no_legacy_repository_in_generated_index(self):
         xml = ET.parse(ROOT / "addons.xml").getroot()
