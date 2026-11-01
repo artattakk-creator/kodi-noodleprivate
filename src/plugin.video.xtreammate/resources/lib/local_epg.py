@@ -24,56 +24,64 @@ class View(dict):
         super().__init__();self.canonical={};self.revision=None;self.code='NOT_CREATED'
 
 
+@scoped
 def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,budget=.4):
+    """Pin one RO guide; core text first, bounded optional metadata second."""
     import guide_store
+    from programme_read47 import borrowed,retain
     filename=getattr(guide_store,'path',lambda:'')()
     if not filename or not os.path.isfile(filename):
         from programme_snapshot47 import fallback_window
         return fallback_window(pid,channels,mappings,start,stop,limit)
-    db=None
-    started63=time.perf_counter()
+    db=None;started63=time.perf_counter();deadline=time.monotonic()+budget
     try:
-        db=sqlite3.connect('file:'+quote(filename,safe='/')+'?mode=ro',uri=True,timeout=.05)
-        db.row_factory=sqlite3.Row;db.execute('PRAGMA query_only=ON')
-        deadline=time.monotonic()+budget
+        db=borrowed(filename)
+        if db is None:
+            raw=sqlite3.connect('file:'+quote(filename,safe='/')+'?mode=ro',uri=True,timeout=.05)
+            raw.row_factory=sqlite3.Row;raw.execute('PRAGMA query_only=ON');db=retain(filename,raw)
         db.set_progress_handler(lambda:int(time.monotonic()>deadline),1000)
-        db.execute('BEGIN')
         meta=db.execute('SELECT * FROM guide_meta WHERE pid=?',(pid,)).fetchone()
         if not meta:
             from programme_snapshot47 import fallback_window
             return fallback_window(pid,channels,mappings,start,stop,limit)
-        view=View();view.code='OK';record=dict(meta)
-        view.revision=(record.get('revision'),record.get('updated'))
+        view=View();view.code='OK';record=dict(meta);view.revision=(record.get('revision'),record.get('updated'))
+        prepared={};tasks=[]
+        # Core text first; an expensive sidecar cannot erase another sender.
         for channel in channels[:16]:
             sid,keys=channel_keys(channel,mappings)
             for ident in keys:
                 if ident in view:continue
                 from epg_binding48 import binding,read as read_source48
                 selected48=binding(mappings,sid)
-                if selected48:
-                    cid=selected48['channel'];view.canonical[ident]=cid
-                    values48=read_source48(db,pid,cid,selected48['source'],start,stop,limit)
-                    from programme_flow48 import enrich
-                    view[ident]=enrich(pid,cid,values48,selected48['source'],sid48=sid,revision48=view.revision)
-                    continue
-                alias=db.execute('SELECT cid FROM guide_alias WHERE pid=? AND alias=?',(pid,ident)).fetchone()
-                cid=alias[0] if alias else ident;view.canonical[ident]=cid
-                left=start  # Current/future before SQL LIMIT; no unsolicited history.
-                right=start+21*86400 if history and sid==focus_sid else stop
+                alias=None if selected48 else db.execute('SELECT cid FROM guide_alias WHERE pid=? AND alias=?',(pid,ident)).fetchone()
+                cid=selected48['channel'] if selected48 else alias[0] if alias else ident
+                view.canonical[ident]=cid;source48=selected48['source'] if selected48 else None
+                left=start;right=start+21*86400 if history and sid==focus_sid else stop
                 cap=256 if history and sid==focus_sid else min(256,limit)
-                rows=db.execute('SELECT substr(title,1,512) AS title,substr(description,1,8192) AS description,start,stop,source FROM programmes WHERE pid=? AND cid=? AND stop>? AND start<? ORDER BY start,source,stop LIMIT ?',
-                                (pid,cid,left,right,cap)).fetchall()
-                view[ident]=[dict(name=r['title'],descr=r['description'],start_timestamp=r['start'],
-                                  stop_timestamp=r['stop'],source=r['source'],_source_index=r['source']) for r in rows]
+                key=(str(sid),cid,source48,bool(mappings.get(sid)),right,cap)
+                if key in prepared:view[ident]=prepared[key];continue
+                if selected48:values=read_source48(db,pid,cid,source48,left,right,cap)
+                else:
+                    rows=db.execute('SELECT substr(title,1,512) AS title,substr(description,1,8192) AS description,start,stop,source FROM programmes WHERE pid=? AND cid=? AND stop>? AND start<? ORDER BY start,source,stop LIMIT ?',(pid,cid,left,right,cap)).fetchall()
+                    values=[dict(name=row['title'],descr=row['description'],start_timestamp=row['start'],stop_timestamp=row['stop'],source=row['source'],_source_index=row['source']) for row in rows]
+                prepared[key]=values;view[ident]=values;tasks.append((key,cid,sid,source48,left,right,cap))
+        for key,cid,sid,source48,left,right,cap in tasks:
+            if time.monotonic()>deadline:break
+            values=prepared[key]
+            if not source48:
                 from epg_merge52 import window as merged_window52
-                view[ident]=merged_window52(pid,sid,cid,left,right,primary=view[ident],limit=cap,manual=bool(mappings.get(sid)))
-                from programme_flow48 import enrich
-                view[ident]=enrich(pid,cid,view[ident][:4],sid48=sid,revision48=view.revision)+view[ident][4:]
+                values=merged_window52(pid,sid,cid,left,right,primary=values,limit=cap,manual=key[3])
+            from programme_flow48 import enrich
+            enriched=[]
+            for index,value in enumerate(values):
+                if index>=4 or time.monotonic()>deadline:
+                    enriched.extend(values[index:]);break
+                enriched.extend(enrich(pid,cid,[value],source48,sid48=sid,revision48=view.revision))
+            prepared[key][:]=enriched
         return view
     except (OSError,sqlite3.Error) as error63:
         from epg_handoff63 import note
-        first63=channels[0] if channels else {}
-        sid63=channel_keys(first63,mappings)[0]
+        first63=channels[0] if channels else {};sid63=channel_keys(first63,mappings)[0]
         note('DB_READ',pid,sid63,'EPG_DB_BUDGET' if getattr(error63,'sqlite_errorname','')=='SQLITE_INTERRUPT' else 'EPG_CACHE_UNAVAILABLE',(time.perf_counter()-started63)*1000)
         return None
     finally:

@@ -4784,3 +4784,23 @@ msgstr "Write already committed; final status unconfirmed: {0}"
 msgctxt "#36700"
 msgid "Preserve the unreadable token entry and import a new private file?"
 msgstr "The existing token entry cannot be read safely. Preserve that entry in the private profile and import a new token file? The symlink target and other profile data remain untouched."
+
+msgctxt "#36701"
+msgid "Check groups and index status"
+msgstr "Check groups and index status"
+
+msgctxt "#36706"
+msgid "Import this group again / retry"
+msgstr "Import this group again / retry"
+
+msgctxt "#36707"
+msgid "Cancel import of this group"
+msgstr "Cancel import of this group"
+
+msgctxt "#36708"
+msgid "Back"
+msgstr "Back"
+
+msgctxt "#36710"
+msgid "Status is unavailable. Existing data remains unchanged."
+msgstr "Status is unavailable. Existing data remains unchanged."

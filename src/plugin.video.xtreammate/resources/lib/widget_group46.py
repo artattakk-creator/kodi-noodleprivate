@@ -68,5 +68,16 @@ def _infos63(portal,rows):
     from local_epg import now_next
     from epg_sources import configuration
     mappings=configuration(portal['id'])['mappings'];result={}
-    for offset in range(0,len(rows),16):result.update(now_next(portal['id'],rows[offset:offset+16],mappings))
+    from epg_handoff63 import get,meta_key
+    from epg_status import revision
+    import xbmcgui
+    config_revision65=revision(portal['id']);guide_revision65=xbmcgui.Window(10000).getProperty(meta_key(portal['id']))
+    missing=[]
+    for row in rows:
+        sid=str(row['sid']);value=get(portal['id'],sid,mappings=mappings)
+        if value is not None:result[sid]=value
+        else:missing.append(row)
+    if revision(portal['id'])!=config_revision65 or xbmcgui.Window(10000).getProperty(meta_key(portal['id']))!=guide_revision65:
+        result={};missing=list(rows)
+    for offset in range(0,len(missing),16):result.update(now_next(portal['id'],missing[offset:offset+16],mappings))
     return result

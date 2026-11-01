@@ -64,7 +64,7 @@
       <height>44</height>
       <font>font13</font>
       <label />
-      <onleft>120</onleft>
+      <onleft>121</onleft>
       <onright>400</onright>
       <onup>400</onup>
       <ondown>112</ondown>
@@ -79,6 +79,20 @@
       <font>font13</font>
       <label />
       <onup>120</onup>
+      <ondown>112</ondown>
+      <onleft>120</onleft>
+      <onright>121</onright>
+      <texturefocus border="4">special://home/addons/plugin.video.xtreammate/resources/media/xcmate_focus_neon.png</texturefocus>
+      <texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/tv_normal.png</texturenofocus>
+    </control>
+    <control type="button" id="121">
+      <left>360</left>
+      <top>80</top>
+      <width>660</width>
+      <height>44</height>
+      <font>font13</font>
+      <label />
+      <onup>121</onup>
       <ondown>112</ondown>
       <onleft>120</onleft>
       <onright>400</onright>

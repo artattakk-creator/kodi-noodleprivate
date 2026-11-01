@@ -148,7 +148,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
     def _valid_focus(self,native=True):
         if getattr(self,'_detail_menu_open',False):
             return [810] if not native or self.getControl(800).isVisible() and self.getControl(810).isVisible() else []
-        candidates=([120,400,112,111,110] if self.mode=='landing' else
+        candidates=([120,121,400,112,111,110] if self.mode=='landing' else
                     [200,210,400] if self.mode in ('grid','groups') else
                     [300,820,400] if self.mode=='detail' else [700,701,702,710,720,721,400] if self.mode=='search' else [330,340,400] if self.mode=='episodes' else [330,400])
         result=[]
@@ -173,6 +173,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
     def onInit(self):
         if getattr(self,'_returning39',False):return
         self.getControl(400).setLabel(tr(32586))
+        self.getControl(121).setLabel(tr(36701))
         self.getControl(501).setLabel(tr(32587))
         if self._ready and getattr(self,'_playback_origin39',None):
             # Fullscreen/Stop races must not reset the still-owned native view.
@@ -506,8 +507,8 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         self.getControl(620).setVisible(mode=='landing')
         self.getControl(103).setVisible(mode!='landing')
         self.getControl(400).setPosition(1050,80 if mode=='landing' else 32)
-        for cid in (110,111,112,113,114,115,120,200,210,300,310,320,330):
-            visible=(cid in (110,111,112,113,114,115,120) if mode=='landing' else cid in (200,210) if mode in ('grid','groups')
+        for cid in (110,111,112,113,114,115,120,121,200,210,300,310,320,330):
+            visible=(cid in (110,111,112,113,114,115,120,121) if mode=='landing' else cid in (200,210) if mode in ('grid','groups')
                      else cid in (300,310,320) if mode=='detail' else cid==330)
             self.getControl(cid).setVisible(visible)
         if mode in ('grid','groups'):
@@ -699,6 +700,8 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
             self._resume_focus()
             if self._focus_pending is not None:return
             if self._search_click(controlId):return
+            if controlId==121 and self.mode=='landing':
+                self._index_status65();return
             if controlId==400:
                 if self.getFocusId()==400 and self._mode_focus.get(self.mode)==400:self._search()
                 return
@@ -989,6 +992,11 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
                 index=order.index(previous_focus) if previous_focus in order else 0
                 self.setFocusId(order[max(0,min(len(order)-1,index+(-1 if key==3 else 1)))])
                 return
+            if self.mode=='landing' and previous_focus in (120,121,400) and key in (1,2):
+                order65=[120,121,400];position65=order65.index(previous_focus)
+                self.setFocusId(order65[max(0,min(2,position65+(-1 if key==1 else 1)))]);return
+            if focus==121 and key==4:
+                self.setFocusId(next((v for v in (112,111,110) if v in self._valid_focus()),120));return
             if focus==400 and key==4:
                 target=next((c for c in (112,111,110) if c in self._valid_focus()),120) if self.mode=='landing' else 120
                 if self.mode in ('grid','groups'): target=210 if self.rows else 200
@@ -1017,6 +1025,14 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
             if key==1 and self._last_position==0 and self.offset and focus==110:
                 self._page(self.mode,self.offset-PAGE);return
             if 0<=pos<len(self.rows): self._focus_item(pos)
+
+    def _index_status65(self,offset=0):
+        from catalog_status65 import snapshot,manage
+        def ready(value):
+            next_offset=manage(self.portal,self.kind,value)
+            if next_offset is not None and not self._closed:self._index_status65(next_offset)
+            elif not self._closed:self.setFocusId(121)
+        self._request(lambda:snapshot(self.portal,self.kind,offset),ready)
 
     def _grid_status(self):
         name=next((g['title'] for g in self.groups if g['cid']==self.category),tr(32499))
