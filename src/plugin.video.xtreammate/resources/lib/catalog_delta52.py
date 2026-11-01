@@ -86,7 +86,7 @@ def manage(portal,kind):
     for row in rows:counts[row['code']]=counts.get(row['code'],0)+1
     text=' · '.join(code+': '+str(n) for code,n in sorted(counts.items())) or 'Keine Importaufträge'
     stored=sum(r.get('stored',0) for r in rows);received=sum(r.get('received',0) for r in rows)
-    choice=select(xbmcgui.Dialog(),'Serien-Nachimport · '+text,
+    choice=select(xbmcgui.Dialog(),('Film-' if kind=='vod' else 'Serien-')+'Nachimport · '+text,
         ['Status: '+str(stored)+' gespeichert / '+str(received)+' empfangen','Fehlgeschlagene/abgebrochene Gruppen erneut versuchen','Nachimport abbrechen','Zurück'],default='list')
     if choice==1:
         allowed=load(portal['id'],kind)
