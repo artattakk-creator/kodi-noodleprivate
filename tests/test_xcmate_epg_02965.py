@@ -4,7 +4,9 @@ from unittest import mock
 from xcmate027_fixture import Fixture
 class EPG65(Fixture,unittest.TestCase):
  def setUp(self):
-  super().setUp();self.local=importlib.import_module('local_epg');self.store=importlib.import_module('guide_store')
+  super().setUp();self.mappings={}
+  patch=mock.patch('epg_sources.configuration',side_effect=lambda pid:dict(mappings=self.mappings,sources=[]));patch.start();self.addCleanup(patch.stop)
+  self.local=importlib.import_module('local_epg');self.store=importlib.import_module('guide_store')
   names=('DMAX','WELT','VOX','Nitro')
   self.channels=[dict(sid=str(i),stream_id=str(i),name=name,epg_channel_id='fixture.'+str(i)) for i,name in enumerate(names,1)]
   events={row['epg_channel_id']:[dict(name='Stored fixture '+row['name'],channel=row['epg_channel_id'],start_timestamp=self.now-60,stop_timestamp=self.now+600),dict(name='Next fixture '+row['name'],channel=row['epg_channel_id'],start_timestamp=self.now+600,stop_timestamp=self.now+1200)] for row in self.channels}
