@@ -65,6 +65,6 @@
     <disclaimer lang="de_DE">Eigenständiges Drittanbieter-Repository. Externe Projekte (Cumination, SMR, xVAULT, BINGIE MOD, EZ Maintenance+, mr-evil1 Kodi Media) werden unveraendert von ihren Urhebern gepflegt; xVAULT-Support nur ueber das offizielle Repository. Nicht mit Team Kodi verbunden.</disclaimer>
     <platform>all</platform>
     <license>MIT</license>
-    <assets><icon>icon.png</icon><fanart>fanart.png</fanart></assets>
+    <assets><icon>icon-1.8.png</icon><fanart>fanart.png</fanart></assets>
   </extension>
 </addon>
