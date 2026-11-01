@@ -79,7 +79,7 @@ def run_next(cancel=lambda:False):
     with writing(timeout=.1):
         value=_read();selected=next(((key,row) for key,row in value['jobs'].items() if row['code'] in ('PENDING','RUNNING','FAILED') and row['attempts']<3 and row['next_at']<=now),None)
         if selected is None:return False
-        key,job=selected;job=dict(job,code='RUNNING',next_at=now+330,updated=now,owner=uuid.uuid4().hex);value['jobs'][key]=job;_save(value)
+        key,job=selected;job=dict(job,requested65=job.get('requested65',job['updated']),code='RUNNING',next_at=now+330,updated=now,owner=uuid.uuid4().hex);value['jobs'][key]=job;_save(value)
     from catalog_delta52 import cancellation
     stopped=cancellation(key,job['owner'],cancel)
     try:
@@ -93,13 +93,13 @@ def run_next(cancel=lambda:False):
         if enabled is not None and job['cid'] not in enabled:
             job.update(code='CANCELLED',attempts=3);raise InterruptedError()
         client=XtreamClient(portal['xc_host'],portal['xc_user'],portal['xc_pass'])
-        deferred65=sync_kind(portal,client,job['kind'],job['cid'],force=True,cancel=stopped,max_groups=1,requested_at=job['updated'],only_categories={job['cid']})
+        deferred65=sync_kind(portal,client,job['kind'],job['cid'],force=True,cancel=stopped,max_groups=1,requested_at=job['requested65'],only_categories={job['cid']})
         if deferred65:
             raise BlockingIOError('LEASE_DEFERRED')
         statuses=sync_state(job['pid'],job['kind'])
         state=next((row for row in statuses if row['cid']==job['cid']),None)
         if stopped():raise InterruptedError()
-        if state and state['updated']>=job['updated'] and state['code'] in ('SOURCE_EMPTY','SOURCE_FILTERED'):
+        if state and state['updated']>=job['requested65'] and state['code'] in ('SOURCE_EMPTY','SOURCE_FILTERED'):
             job.update(code='EMPTY_SOURCE',stored=0,received=state.get('received',0),updated=time.time(),attempts=3)
         elif state and state['updated']>=job['updated'] and state['code'] in ('FAILED','CANCELLED'):raise OSError('IMPORT_PENDING')
         if job['code']!='EMPTY_SOURCE':
@@ -107,7 +107,7 @@ def run_next(cancel=lambda:False):
             if not reader._query('SELECT generation FROM heads WHERE pid=? AND kind=? AND cid=?',(job['pid'],job['kind'],job['cid'])):raise OSError('IMPORT_PENDING')
             rows,total=reader.page(job['kind'],category=job['cid'],limit=1)
             if job['code']!='EMPTY_SOURCE':
-                if not state or state['updated']<job['updated'] or state['code'] not in ('READY','CACHED'):raise OSError('IMPORT_NOT_VERIFIED')
+                if not state or state['updated']<job['requested65'] or state['code'] not in ('READY','CACHED'):raise OSError('IMPORT_NOT_VERIFIED')
                 job.update(code='READY',stored=total,received=state.get('received',total),updated=time.time())
     except BlockingIOError:job.update(code='PENDING',next_at=time.time()+5,updated=time.time())
     except InterruptedError:job.update(code='CANCELLED',attempts=3,updated=time.time())

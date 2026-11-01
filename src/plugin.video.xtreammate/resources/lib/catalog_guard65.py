@@ -21,11 +21,12 @@ def cold_categories(db,pid,kind,allowed):
  return {str(cid) for cid in allowed if not db.execute('SELECT 1 FROM heads WHERE pid=? AND kind=? AND cid=?',(pid,kind,str(cid))).fetchone() and not db.execute('SELECT 1 FROM titles WHERE pid=? AND kind=? AND cid=? LIMIT 1',(pid,kind,str(cid))).fetchone()}
 def selected_cancel(pid,kind,groups,cid,upstream):
  next_check=0;stopped=False
- def check():
+ def check(force=False):
   nonlocal next_check,stopped
   if upstream():return True
-  if time.monotonic()>=next_check:
+  if force or time.monotonic()>=next_check:
    from group_selection import enabled_ids
    stopped=str(cid) not in enabled_ids(pid,kind,groups);next_check=time.monotonic()+.5
   return stopped
+ check.verify=lambda:check(True)
  return check

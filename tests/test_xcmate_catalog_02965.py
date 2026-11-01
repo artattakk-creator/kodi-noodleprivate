@@ -111,3 +111,30 @@ class Catalog65(Fixture,unittest.TestCase):
   delta=importlib.import_module('catalog_delta');delta.request(self.portal,'vod','10')
   with mock.patch('xtream.XtreamClient',return_value=self.client65([])):self.assertTrue(delta.run_next())
   self.assertEqual(delta.states('p','vod')[0]['code'],'EMPTY_SOURCE');self.assertEqual(self.total(),0)
+ def test_restart_after_head_commit_does_not_download_same_completed_intent_again(self):
+  delta=importlib.import_module('catalog_delta');delta.request(self.portal,'vod','10')
+  self.index.sync_kind(self.portal,self.client65(self.rows(48)),'vod',force=True,only_categories={'10'})
+  key=json.dumps(['p','vod','10'])
+  value=delta._read();value['jobs'][key].update(code='RUNNING',next_at=0);delta._save(value)
+  client=self.client65(self.rows(100));client.iter_catalog=mock.Mock(wraps=client.iter_catalog)
+  with mock.patch('xtream.XtreamClient',return_value=client):self.assertTrue(delta.run_next())
+  client.iter_catalog.assert_not_called();self.assertEqual(self.total(),48);self.assertEqual(delta.states('p','vod')[0]['code'],'READY')
+ def test_deactivation_during_fast_import_is_checked_again_before_head_swap(self):
+  self.seed(1)
+  def changed():
+   yield from self.rows(48)
+   self.selection.save('p',[],kind='vod',known=['10','20'])
+  self.index.sync_kind(self.portal,self.client65(changed()),'vod',force=True,only_categories={'10'})
+  db=self.index.connect()
+  try:self.assertEqual(db.execute("SELECT count(*) FROM items_v2 i JOIN heads h USING(pid,kind,cid,generation) WHERE pid='p' AND kind='vod' AND cid='10'").fetchone()[0],1)
+  finally:db.close()
+  self.assertEqual(self.index.sync_state('p','vod')[0]['code'],'CANCELLED')
+ def test_explicit_retry_really_calls_source_again_after_failed_attempt(self):
+  delta=importlib.import_module('catalog_delta');delta.request(self.portal,'vod','10')
+  client=self.client65(OSError('synthetic offline'));client.iter_catalog=mock.Mock(wraps=client.iter_catalog)
+  with mock.patch('xtream.XtreamClient',return_value=client):
+   delta.run_next();before=client.iter_catalog.call_count
+   value=delta._read()
+   for row in value['jobs'].values():row['next_at']=0
+   delta._save(value);delta.run_next()
+  self.assertGreater(client.iter_catalog.call_count,before);self.assertEqual(delta.states('p','vod')[0]['attempts'],2)

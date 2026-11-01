@@ -309,7 +309,7 @@ def import_group(pid,kind,cid,entries,filename=None,cancel=lambda:False,progress
             # Empty/filtered/error responses never erase a working group.
             from catalog_guard65 import EmptyCategory65
             raise EmptyCategory65(received,discarded)
-        if cancel(): raise InterruptedError('catalogue import cancelled')
+        if cancel() or getattr(cancel,'verify',lambda:False)(): raise InterruptedError('catalogue import cancelled')
         check_space(target)
         with db:
             for category in touched:
@@ -401,7 +401,7 @@ def sync_kind(portal,client,kind,preferred='',force=False,cancel=lambda:False,fi
             if head and ((not force and time.time()-head[0]<12*3600) or
                          (requested_at is not None and head[0]>=requested_at)): continue
             prior=db.execute('SELECT code,updated FROM sync_status WHERE pid=? AND kind=? AND cid=?',(pid,kind,cid)).fetchone()
-            if requested_at is not None and prior and prior[0] in ('FAILED','CANCELLED','SOURCE_EMPTY','SOURCE_FILTERED') and prior[1]>=requested_at: continue
+            if requested_at is not None and only_categories is None and prior and prior[0] in ('FAILED','CANCELLED','SOURCE_EMPTY','SOURCE_FILTERED') and prior[1]>=requested_at: continue
             if max_groups is not None and processed>=max_groups: return True
             processed+=1
             with db: db.execute('UPDATE sync_leases SET until=? WHERE pid=? AND kind=? AND owner=?',(time.time()+330,pid,kind,owner))

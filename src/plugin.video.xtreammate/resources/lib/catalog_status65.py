@@ -56,6 +56,8 @@ def manage(portal,kind,data):
  from menu_icons45 import select
  from localization import tr
  dialog=xbmcgui.Dialog();rows=data['rows']
+ if data['code']=='READ_UNAVAILABLE':dialog.ok('XCMate',tr(36710));return
+ if not rows:dialog.ok('XCMate','Noch keine bekannten Gruppen. Bitte die gewünschten Gruppen zuerst in der vorhandenen Gruppenverwaltung auswählen.');return
  labels=[('Aktiv · ' if row['enabled'] else 'Deaktiviert · ')+row['name']+' · Lokal '+str(row['local_count'] if row['local_count'] is not None else '?') for row in rows]
  commands=[]
  if data['offset']:commands.append(('Vorherige Gruppen','previous'))
@@ -68,9 +70,9 @@ def manage(portal,kind,data):
   action=commands[chosen-len(rows)][1] if chosen-len(rows)<len(commands) else 'back'
   return max(0,data['offset']-PAGE) if action=='previous' else data['offset']+PAGE if action=='next' else None
  row=rows[chosen];dialog.textviewer(row['name'],details(row))
- action=select(dialog,tr(36701),[tr(36706) if row['enabled'] else 'Gruppe ist deaktiviert – Auswahl zuerst ausdrücklich ändern',tr(36707),tr(36708)],default='list')
+ action=select(dialog,tr(36701),[tr(36706) if row['enabled'] and portal.get('type')=='xtream' else 'Gruppe ist deaktiviert – Auswahl zuerst ausdrücklich ändern',tr(36707),tr(36708)],default='list')
  try:
-  if action==0 and row['enabled']:
+  if action==0 and row['enabled'] and portal.get('type')=='xtream':
    from catalog_delta import request_many
    request_many(portal,kind,[row['cid']],retry=True,missing=True)
   elif action==1:cancel_one(portal['id'],kind,row['cid'])
