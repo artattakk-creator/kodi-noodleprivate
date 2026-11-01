@@ -38,7 +38,7 @@ def candidate(path,data):
   count=0
   for group in [n for n in nodes if n['tag']=='control' and n['attrs'].get('type')=='group']:
    if any(n['tag']=='include' and (n['attrs'].get('content','') or n['text']).startswith('Bingie_Screens_Fixed_Focus_Frame') for n in group['children']):
-    changes.append((group['open'],group['open'],b'<visible>!ControlGroup(77777).HasFocus()</visible>'));count+=1
+    changes.append((group['open'],group['open'],b'<visible>!ControlGroup(77777).HasFocus() | String.IsEqual(Window(Home).Property(widgetstyle),highlight)</visible>'));count+=1
   if not 2<=count<=8:raise ValueError('UNVERIFIED_FOCUS_REGIONS')
   regions=[n for n in nodes if n['tag']=='control' and n['attrs'].get('type')=='grouplist' and any(v['tag']=='include' and v['attrs'].get('content')=='Bingie_Headline_Item' for v in n['children'])]
   if len(regions)!=1:raise ValueError('UNVERIFIED_PLOT_REGION')
@@ -62,8 +62,8 @@ def candidate(path,data):
   for control in list(outer.findall('control')):
    outer.remove(control);field(control,'height','44');rows.append(control)
   field(metadata,'height','44');rows.append(metadata)
-  for tag,value in (('height','48'),('autoscroll','false'),('font','Reg22'),('aligny','top')):field(plot,tag,value)
-  field(outer,'height','310')
+  for tag,value in (('height','56'),('autoscroll','false'),('font','Reg22'),('aligny','top')):field(plot,tag,value)
+  field(outer,'height','320')
   for animation in list(outer.findall('animation')):
    if animation.get('effect','').lower()=='slide' and animation.get('end') in ('0,130','0,180'):outer.remove(animation)
   outer.extend((title,rows,plot))

@@ -6,6 +6,13 @@ import sys
 sys.path.insert(0,'/root/.kodi/addons/plugin.video.xtreammate/resources/lib')
 import xbmc
 import xbmcgui
+import xbmcaddon
+# The production programme dialog normally runs inside the plugin interpreter.
+# This external GUI harness must use that SAME addon context for local DB/settings.
+_native_addon66=xbmcaddon.Addon
+def _plugin_context66(*args,**kwargs):
+ return _native_addon66(*args,**kwargs) if args or kwargs else _native_addon66('plugin.video.xtreammate')
+xbmcaddon.Addon=_plugin_context66
 
 def check64(condition,detail='NATIVE_GUI64_CONTRACT'):
     if not condition:raise RuntimeError(str(detail))
@@ -217,7 +224,7 @@ for _ in range(100):
  window66.pump()
  if window66.event:break
  xbmc.sleep(50)
-check64(window66.event and window66.event['key']==art66['key'],'ART66_DETAIL_IDENTITY')
+check64(window66.event and window66.event['key']==art66['key'],dict(code='ART66_DETAIL_IDENTITY',ready=window66._ready,event=window66.event,expected=art66['key']))
 for attempt in range(30):
  window66.pump();capture=Path('/root/detail66-last.png');xbmc.executebuiltin('TakeScreenshot('+str(capture)+')',wait=False);xbmc.sleep(350)
  try:
