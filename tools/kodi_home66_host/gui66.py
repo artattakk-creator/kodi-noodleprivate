@@ -144,7 +144,7 @@ check64(home.getFocusId()==2510,'LIVE64_FOCUS_RETURN')
 Path('/root/media66-base.json').write_text(json.dumps(dict(cases=media66,series_posters=10,film_series_live_return=True,global_fixed_frames=True,android='NOT_TESTED')))
 
 
-# Missing .64 cases: third-party poster and square music layouts with no
+# Missing .64 cases: third-party poster and native album layouts with no
 # XCMate.WidgetKind41; compare contour against actual colored item pixels.
 xbmc.executebuiltin('Skin.SetString(ViewDetailsBorderFocusColor,FF00BBFF)')
 xbmc.executebuiltin('Skin.SetString(BingiePlotTextColor,FFFF00FF)')
@@ -195,6 +195,19 @@ home.setFocusId(2510);home.getControl(2510).selectItem(2);xbmc.sleep(800)
 for _ in range(30):
  hero_epg63._next=0;hero_epg63.poll();xbmc.sleep(50)
 art66=json.loads(Path('/root/art66.json').read_text())
+for attempt in range(30):
+ hero_epg63._next=0;hero_epg63.poll()
+ capture=Path('/root/tv66-home-last.png');xbmc.executebuiltin('TakeScreenshot('+str(capture)+')',wait=False);xbmc.sleep(350)
+ try:
+  raw=capture.read_bytes()
+  with Image.open(io.BytesIO(raw)) as source:source.load();rgb=source.convert('RGB')
+  bank=home.getProperty('XCMate.Hero63.Active')
+  identity=home.getProperty('XCMate.Hero63.'+bank+'.Identity')
+  token=xbmc.getInfoLabel('Container(2510).ListItem.Property(XCMate.WidgetToken41)')
+  if identity==token and all(max(abs(a-b) for a,b in zip(rgb.getpixel(point),(40,120,160)))<=6 for point in ((1450,180),(1700,180),(1880,180))):break
+ except (OSError,UnidentifiedImageError):pass
+else:raise RuntimeError('ART66_HOME_TEXTURE_NOT_RENDERED')
+Path('/root/home66-tv.png').write_bytes(raw)
 from programme_window46 import ProgrammeWindow46
 import xbmcaddon
 window66=ProgrammeWindow46('XCMateProgramme46.xml',xbmcaddon.Addon().getAddonInfo('path'),'Default','720p')
@@ -217,5 +230,5 @@ else:raise RuntimeError('ART66_DETAIL_TEXTURE_NOT_RENDERED')
 Path('/root/detail66.png').write_bytes(raw)
 window66.close();home.setFocusId(2510);xbmc.sleep(500)
 result66=json.loads(Path('/root/media66-base.json').read_text())
-result66.update(foreign66=foreign66,tv_artwork66=dict(source=art66['source'],scope=art66['scope'],same_event=True,local_file=True,detail_pixels='PASS'),android='NOT_TESTED')
+result66.update(foreign66=foreign66,tv_artwork66=dict(source=art66['source'],scope=art66['scope'],same_event=True,local_file=True,home_pixels='PASS',detail_pixels='PASS'),android='NOT_TESTED')
 Path('/root/media66.json').write_text(json.dumps(result66))

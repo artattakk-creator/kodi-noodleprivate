@@ -177,4 +177,5 @@ report['media66']=json.loads(Path('/root/media66.json').read_text())
 assert report['media66']['series_posters']==10 and len(report['media66']['cases'])==13
 assert len(report['media66']['foreign66'])==15
 assert report['media66']['tv_artwork66']['detail_pixels']=='PASS'
+assert report['media66']['tv_artwork66']['home_pixels']=='PASS'
 print(json.dumps(report, indent=2))
