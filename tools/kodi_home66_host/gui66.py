@@ -210,7 +210,7 @@ else:raise RuntimeError('ART66_HOME_TEXTURE_NOT_RENDERED')
 Path('/root/home66-tv.png').write_bytes(raw)
 from programme_window46 import ProgrammeWindow46
 import xbmcaddon
-window66=ProgrammeWindow46('XCMateProgramme46.xml',xbmcaddon.Addon().getAddonInfo('path'),'Default','720p')
+window66=ProgrammeWindow46('XCMateProgramme46.xml',xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('path'),'Default','720p')
 window66.configure(dict(id='fixture59'),dict(sid='2',name='NITRO fixture',epg_channel_id='xml2'))
 window66.show()
 for _ in range(100):

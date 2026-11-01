@@ -72,6 +72,13 @@ class Artwork66(Fixture,unittest.TestCase):
    cached=art.indexed(event,verify=True)
   self.assertEqual(cached['image'],result['image']);self.assertEqual(cached['sha256'],result['sha256'])
   self.assertEqual(cached['image_scope57'],'series_fallback')
+  info=dict(start=event['start'],stop=event['stop'],now=event['title'],events=[dict(event)],canonical46='xml')
+  card=decorate(dict(art={},props={},info=dict(plot='Fixture card')),self.portal,dict(sid='1',name='NITRO fixture'),info)
+  self.assertEqual(card['props']['XCMate.ProgrammeKey47'],event['key'])
+  self.assertEqual(card['props']['XCMate.ProgrammeImage46'],result['image'])
+  self.assertEqual(card['props']['XCMate.ProgrammeArtSource57'],'tmdb_series')
+  self.assertEqual(card['props']['XCMate.ProgrammeImageScope57'],'series_fallback')
+
  def test_readable_status_distinguishes_match_artwork_and_cache_failures(self):
   from programme_diagnostics59 import message
   for code,word in [('NO_MATCH_AMBIGUOUS','Mehrere'),('NO_ARTWORK','kein geeignetes'),('CACHE_IO_ERROR','Bildspeicherung'),('GUI_NOT_UPDATED','Kodi-Ausgabe')]:
