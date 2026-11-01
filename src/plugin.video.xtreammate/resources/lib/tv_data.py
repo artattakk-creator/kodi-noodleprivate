@@ -143,7 +143,11 @@ class GuideSnapshot:
         from guide_viewport import cache as viewport_cache
         selected=getattr(self,'_programme_sid','')
         local=viewport_cache(self.portal['id'],wanted,self._mappings,now,focus_sid=selected) if selected else viewport_cache(self.portal['id'],wanted,self._mappings,now)
-        if local is None:
+        import guide_store,os
+        guide_path65=getattr(guide_store,'path',lambda:'')()
+        contended65=local is None and bool(guide_path65) and os.path.isfile(guide_path65)
+        if contended65:self._cache={};self._indexed=False
+        elif local is None:
             from epg import load_cache, _mem_clear
             if reloaded or getattr(self,'_indexed',False):
                 _mem_clear(self.portal['id'])
@@ -158,7 +162,7 @@ class GuideSnapshot:
         values, missing = {}, []
         for c in wanted:
             sid = str(c.extra.get('stream_id',''))
-            compatibility47=not self._indexed or getattr(local,'code','')=='SHARED_LASTGOOD47'
+            compatibility47=not contended65 and (not self._indexed or getattr(local,'code','')=='SHARED_LASTGOOD47')
             from epg_binding48 import binding as source_binding48
             qualified48=source_binding48(self._mappings,sid)
             # A legacy flattened cache cannot prove source identity. Never
@@ -166,7 +170,7 @@ class GuideSnapshot:
             selected_cache48={} if qualified48 and not self._indexed else self._cache
             info = resolve_guide(selected_cache48, c.tvg_id, sid, now, self.client if compatibility47 else None, self._mappings)
             info['snapshot_revision']=getattr(local,'revision',None)
-            if not info['now'] and not self._indexed and not qualified48:
+            if not info['now'] and not self._indexed and not qualified48 and not contended65:
                 # A saved ten-day guide outlives its small compatibility
                 # snapshot. Read only this worker's bounded visible viewport.
                 try:

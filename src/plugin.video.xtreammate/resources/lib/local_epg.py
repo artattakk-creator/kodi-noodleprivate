@@ -24,7 +24,14 @@ class View(dict):
         super().__init__();self.canonical={};self.revision=None;self.code='NOT_CREATED'
 
 
-def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,budget=.4):
+def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,budget=.4,text_only65=False):
+    # The exact full .64 metadata path stays authoritative for matching/art.
+    # Only an explicit display request uses the RAM/text latency projection.
+    if text_only65:
+        return _text_window65(pid,channels,mappings,start,stop,limit,focus_sid,history,budget,True)
+    return _full_window65(pid,channels,mappings,start,stop,limit,focus_sid,history,budget)
+
+def _full_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,budget=.4):
     import guide_store
     filename=getattr(guide_store,'path',lambda:'')()
     if not filename or not os.path.isfile(filename):
@@ -81,7 +88,75 @@ def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,
 
 
 @scoped
-def now_next(pid,channels,mappings,now=None,client=None):
+def _text_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,budget=.4,text_only65=False):
+    """Pin one RO guide; core text first, bounded optional metadata second."""
+    import guide_store
+    from programme_read47 import borrowed,retain
+    filename=getattr(guide_store,'path',lambda:'')()
+    if not filename or not os.path.isfile(filename):
+        from programme_snapshot47 import fallback_window
+        return fallback_window(pid,channels,mappings,start,stop,limit)
+    db=None;started63=time.perf_counter();deadline=time.monotonic()+budget
+    try:
+        db=borrowed(filename)
+        if db is None:
+            raw=sqlite3.connect('file:'+quote(filename,safe='/')+'?mode=ro',uri=True,timeout=.05)
+            raw.row_factory=sqlite3.Row;raw.execute('PRAGMA query_only=ON');db=retain(filename,raw)
+        db.set_progress_handler(lambda:int(time.monotonic()>deadline),1000)
+        meta=db.execute('SELECT * FROM guide_meta WHERE pid=?',(pid,)).fetchone()
+        if not meta:
+            from programme_snapshot47 import fallback_window
+            return fallback_window(pid,channels,mappings,start,stop,limit)
+        view=View();view.code='OK';record=dict(meta);view.revision=(record.get('revision'),record.get('updated'))
+        prepared={};tasks=[]
+        # Core text first; an expensive sidecar cannot erase another sender.
+        for channel in channels[:16]:
+            sid,keys=channel_keys(channel,mappings)
+            for ident in keys:
+                if ident in view:continue
+                from epg_binding48 import binding,read as read_source48
+                selected48=binding(mappings,sid)
+                alias=None if selected48 else db.execute('SELECT cid FROM guide_alias WHERE pid=? AND alias=?',(pid,ident)).fetchone()
+                cid=selected48['channel'] if selected48 else alias[0] if alias else ident
+                view.canonical[ident]=cid;source48=selected48['source'] if selected48 else None
+                left=start;right=start+21*86400 if history and sid==focus_sid else stop
+                cap=256 if history and sid==focus_sid else min(256,limit)
+                key=(str(sid),cid,source48,bool(mappings.get(sid)),right,cap)
+                if key in prepared:view[ident]=prepared[key];continue
+                if selected48:values=read_source48(db,pid,cid,source48,left,right,cap)
+                else:
+                    rows=db.execute('SELECT substr(title,1,512) AS title,substr(description,1,8192) AS description,start,stop,source FROM programmes WHERE pid=? AND cid=? AND stop>? AND start<? ORDER BY start,source,stop LIMIT ?',(pid,cid,left,right,cap)).fetchall()
+                    values=[dict(name=row['title'],descr=row['description'],start_timestamp=row['start'],stop_timestamp=row['stop'],source=row['source'],_source_index=row['source']) for row in rows]
+                prepared[key]=values;view[ident]=values;tasks.append((key,cid,sid,source48,left,right,cap))
+        # Source fusion is text work. Prefer gaps before optional rich fields.
+        fusion65=sorted(tasks,key=lambda task:any(value['start_timestamp']<=start<value['stop_timestamp'] for value in prepared[task[0]]))
+        for key,cid,sid,source48,left,right,cap in fusion65:
+            if text_only65 and time.monotonic()>deadline:break
+            if not source48:
+                from epg_merge52 import window as merged_window52
+                prepared[key][:]=merged_window52(pid,sid,cid,left,right,primary=prepared[key],limit=cap,manual=key[3])
+        for key,cid,sid,source48,left,right,cap in tasks:
+            if time.monotonic()>deadline:break
+            values=prepared[key]
+            from programme_flow48 import enrich
+            enriched=[]
+            for index,value in enumerate(values):
+                if index>=4 or text_only65 and time.monotonic()>deadline:
+                    enriched.extend(values[index:]);break
+                enriched.extend(enrich(pid,cid,[value],source48,sid48=sid,revision48=view.revision))
+            prepared[key][:]=enriched
+        return view
+    except (OSError,sqlite3.Error) as error63:
+        from epg_handoff63 import note
+        first63=channels[0] if channels else {};sid63=channel_keys(first63,mappings)[0]
+        note('DB_READ',pid,sid63,'EPG_DB_BUDGET' if getattr(error63,'sqlite_errorname','')=='SQLITE_INTERRUPT' else 'EPG_CACHE_UNAVAILABLE',(time.perf_counter()-started63)*1000)
+        return None
+    finally:
+        if db is not None:db.close()
+
+
+@scoped
+def now_next(pid,channels,mappings,now=None,client=None,display_only65=False):
     """Bounded local batch, including strictly cache-only short-EPG fallback."""
     from epg_views import resolve_guide
     ts=time.time() if now is None else now
@@ -89,7 +164,7 @@ def now_next(pid,channels,mappings,now=None,client=None):
     from epg_status import revision as revision63
     revision_before63=revision63(pid)
     started63=time.perf_counter()
-    cache=window(pid,channels,mappings,ts,ts+2*86400)
+    cache=window(pid,channels,mappings,ts,ts+2*86400,**({'text_only65':True} if display_only65 else {}))
     if cache is not None:register63(pid,getattr(cache,'revision',None),expected_revision=revision_before63)
     db_ms63=(time.perf_counter()-started63)*1000
     # Workers retain the complete bounded future window. The thin four-event

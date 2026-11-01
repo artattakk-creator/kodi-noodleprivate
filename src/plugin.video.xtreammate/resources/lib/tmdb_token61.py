@@ -63,6 +63,9 @@ def import_source_path(path):
 def parent(path):
     """Walk with openat/O_NOFOLLOW: no symlink component, even during races."""
     if not isinstance(path,str) or not os.path.isabs(path) or '\x00' in path or '://' in path or '..' in path.split('/'):raise TokenError('TOKEN_PATH')
+    from token_destination65 import descriptor
+    anchored=descriptor(path)
+    if anchored is not None:return anchored
     parts=path.split('/')[1:]
     if not parts or not parts[-1]:raise TokenError('TOKEN_PATH')
     fd=os.open('/',os.O_RDONLY|os.O_DIRECTORY)
@@ -75,7 +78,8 @@ def parent(path):
     except FileNotFoundError:
         os.close(fd);raise
     except OSError as exc:
-        os.close(fd);raise TokenError('TOKEN_UNREADABLE' if exc.errno in (errno.EACCES,errno.EPERM,errno.EIO) else 'TOKEN_PATH') from None
+        from token_destination65 import failure
+        os.close(fd);raise failure('TOKEN_UNREADABLE' if exc.errno in (errno.EACCES,errno.EPERM,errno.EIO) else 'TOKEN_PATH',exc) from None
 
 def read(path,missing=False):
     try:fd,name=parent(path)
@@ -87,9 +91,13 @@ def read(path,missing=False):
         except FileNotFoundError:
             if missing:return None
             raise TokenError('TOKEN_UNREADABLE') from None
-        except OSError as exc:raise TokenError('TOKEN_UNREADABLE' if exc.errno in (errno.EACCES,errno.EPERM,errno.EIO) else 'TOKEN_PATH') from None
+        except OSError as exc:
+            from token_destination65 import failure
+            raise failure('TOKEN_UNREADABLE' if exc.errno in (errno.EACCES,errno.EPERM,errno.EIO) else 'TOKEN_PATH',exc) from None
         try:
-            if not stat.S_ISREG(os.fstat(source).st_mode):raise TokenError('TOKEN_PATH')
+            if not stat.S_ISREG(os.fstat(source).st_mode):
+                from token_destination65 import failure
+                raise failure('TOKEN_PATH',detail='NOT_REGULAR')
             raw=os.read(source,MAX_BYTES+1)
             # A bounded second read detects concurrent growth and short reads.
             if os.read(source,1):raise TokenError('TOKEN_SIZE')
@@ -144,6 +152,9 @@ def import_file(source,expected):
 
 def private_parent(path):
     """Create only our two private children below an existing Kodi profile."""
+    from token_destination65 import descriptor
+    anchored=descriptor(path,create=True)
+    if anchored is not None:return anchored
     try:return parent(path)
     except FileNotFoundError:pass
     suffix='/addon_data/plugin.video.xtreammate/'+NAME

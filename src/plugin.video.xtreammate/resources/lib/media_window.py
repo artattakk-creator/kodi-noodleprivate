@@ -922,6 +922,11 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
             if key in (1,2,3,4) and self.getFocusId() in self._valid_focus():
                 self._mode_focus[self.mode]=self.getFocusId()
             if key==117:
+                if self.mode in ('landing','groups','grid') and self.getFocusId() in (120,200):
+                    choice65=__import__('menu_icons45').select(xbmcgui.Dialog(),'XCMate',[tr(36701),tr(32586),tr(36708)],default='list')
+                    if choice65==0:self._index_status65()
+                    elif choice65==1:self._search()
+                    return
                 if self.mode=='episodes':
                     pos=self.getControl(330).getSelectedPosition()
                     if 0<=pos<len(self.visible_episodes):
@@ -1017,6 +1022,15 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
             if key==1 and self._last_position==0 and self.offset and focus==110:
                 self._page(self.mode,self.offset-PAGE);return
             if 0<=pos<len(self.rows): self._focus_item(pos)
+
+    def _index_status65(self,offset=0):
+        from catalog_status65 import snapshot,manage
+        origin65=self.getFocusId()
+        def ready(value):
+            next_offset=manage(self.portal,self.kind,value)
+            if next_offset is not None and not self._closed:self._index_status65(next_offset)
+            elif not self._closed:self.setFocusId(origin65 if origin65 in self._valid_focus() else 120)
+        self._request(lambda:snapshot(self.portal,self.kind,offset),ready)
 
     def _grid_status(self):
         name=next((g['title'] for g in self.groups if g['cid']==self.category),tr(32499))

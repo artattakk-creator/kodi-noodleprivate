@@ -87,7 +87,7 @@ def revision(client, actions):
     return hashlib.sha256(json.dumps(sorted(values)).encode()).hexdigest()
 
 
-def replace_catalog(pid,kind,entries,groups,allowed=None,seen=None,revision_id='',filename=None):
+def replace_catalog(pid,kind,entries,groups,allowed=None,seen=None,revision_id='',filename=None,authoritative=True):
     from latest_media import added_timestamp
     if entries is None or isinstance(entries,(str,bytes,dict)): return False
     _,_,id_key=CATALOGS[kind]
@@ -96,7 +96,7 @@ def replace_catalog(pid,kind,entries,groups,allowed=None,seen=None,revision_id='
         unique=set()
         for ordinal,item in enumerate(entries):
             if not isinstance(item,dict): continue
-            sid=str(item.get(id_key) or ''); cid=str(item.get('category_id') or '')
+            sid=str(item.get(id_key) if item.get(id_key) is not None else ''); cid=str(item.get('category_id') if item.get('category_id') is not None else '')
             if not sid or sid in unique or (allowed is not None and cid not in allowed): continue
             unique.add(sid)
             title=str(item.get('name') or sid)[:512]
@@ -109,11 +109,11 @@ def replace_catalog(pid,kind,entries,groups,allowed=None,seen=None,revision_id='
     db=connect(filename,write=True)
     try:
         with db:
-            db.execute('DELETE FROM heads WHERE pid=? AND kind=?',(pid,kind))
-            db.execute('DELETE FROM items_v2 WHERE pid=? AND kind=?',(pid,kind))
-            db.execute('DELETE FROM titles WHERE pid=? AND kind=?',(pid,kind))
-            db.execute('DELETE FROM groups WHERE pid=? AND kind=?',(pid,kind))
-            db.executemany('INSERT INTO titles VALUES(?,?,?,?,?,?,?,?,?)',rows())
+            # A legacy cache bridge may not invalidate published generations.
+            if authoritative:
+                db.execute('DELETE FROM titles WHERE pid=? AND kind=? AND NOT EXISTS(SELECT 1 FROM heads h WHERE h.pid=titles.pid AND h.kind=titles.kind AND h.cid=titles.cid)',(pid,kind))
+                db.execute('DELETE FROM groups WHERE pid=? AND kind=? AND NOT EXISTS(SELECT 1 FROM heads h WHERE h.pid=groups.pid AND h.kind=groups.kind AND h.cid=groups.cid)',(pid,kind))
+            db.executemany('INSERT OR REPLACE INTO titles VALUES(?,?,?,?,?,?,?,?,?)',rows())
             db.executemany('INSERT OR IGNORE INTO groups VALUES(?,?,?,?,?)',[
                 (pid,kind,str(g['category_id']),str(g.get('category_name') or g['category_id']),i)
                 for i,g in enumerate(groups or []) if isinstance(g,dict) and g.get('category_id') is not None
@@ -129,7 +129,7 @@ def refresh(portal,client,kinds=None):
     for kind in (kinds or CATALOGS):
         action,group_action,_=CATALOGS[kind]
         if not portal.get({'live':'include_live','vod':'include_vod','series':'include_series'}[kind],True):
-            replace_catalog(portal['id'],kind,[],[])
+            replace_catalog(portal['id'],kind,[],[],authoritative=False)
             continue
         rev=revision(client,(action,group_action))
         state=Reader(portal['id']).state(kind)
@@ -143,7 +143,7 @@ def refresh(portal,client,kinds=None):
                 str(e.get('category_id') or '') for e in entries if isinstance(e,dict))]
         allowed=enabled_ids(portal['id'],kind,groups)
         seen=first_seen(client._cache_key(action),action,entries) if kind!='live' else {}
-        replace_catalog(portal['id'],kind,entries,groups,allowed,seen,rev)
+        replace_catalog(portal['id'],kind,entries,groups,allowed,seen,rev,authoritative=False)
 
 
 class IndexReadError(RuntimeError):
@@ -284,9 +284,9 @@ def import_group(pid,kind,cid,entries,filename=None,cancel=lambda:False,progress
             received+=1
             if progress and received % BATCH_ROWS == 0: progress(received,stored,discarded)
             if not isinstance(item,dict): continue
-            category=str(item.get('category_id') or '')
+            category=str(item.get('category_id') if item.get('category_id') is not None else '')
             if category not in allowed: discarded+=1;continue
-            sid=str(item.get(id_key) or '')[:256]
+            sid=str(item.get(id_key) if item.get(id_key) is not None else '')[:256]
             if not sid: continue
             title=str(item.get('name') or sid)[:512]
             payload={}
@@ -307,8 +307,9 @@ def import_group(pid,kind,cid,entries,filename=None,cancel=lambda:False,progress
         flush()
         if not stored:
             # Empty/filtered/error responses never erase a working group.
-            raise ValueError('category response contains no usable entries')
-        if cancel(): raise InterruptedError('catalogue import cancelled')
+            from catalog_guard65 import EmptyCategory65
+            raise EmptyCategory65(received,discarded)
+        if cancel() or getattr(cancel,'verify',lambda:False)(): raise InterruptedError('catalogue import cancelled')
         check_space(target)
         with db:
             for category in touched:
@@ -316,7 +317,8 @@ def import_group(pid,kind,cid,entries,filename=None,cancel=lambda:False,progress
                 db.execute('INSERT OR REPLACE INTO heads VALUES(?,?,?,?,?)',(pid,kind,category,generation,time.time()))
             db.execute('INSERT OR REPLACE INTO catalog VALUES(?,?,?,?)',(pid,kind,generation,time.time()))
         for category in touched: _prune(db,pid,kind,category)
-        return dict(received=received,stored=stored,discarded=discarded,categories=sorted(touched))
+        category_counts65={category:db.execute('SELECT count(*) FROM items_v2 WHERE pid=? AND kind=? AND cid=? AND generation=?',(pid,kind,category,generation)).fetchone()[0] for category in touched}
+        return dict(received=received,stored=stored,discarded=discarded,categories=sorted(touched),category_counts65=category_counts65)
     except BaseException:
         # Keep the previous head; remove only our uncommitted generation.
         try:
@@ -366,11 +368,12 @@ def sync_kind(portal,client,kind,preferred='',force=False,cancel=lambda:False,fi
     db=connect(filename,write=True);owner=uuid.uuid4().hex
     try:
         with db:
+            db.execute('BEGIN IMMEDIATE')
             lease=db.execute('SELECT until FROM sync_leases WHERE pid=? AND kind=?',(pid,kind)).fetchone()
-            if lease and lease[0]>time.time(): return
+            if lease and lease[0]>time.time(): return True  # Work remains; never consume the queued intent.
             db.execute('INSERT OR REPLACE INTO sync_leases VALUES(?,?,?,?)',(pid,kind,owner,time.time()+330))
         groups=client.get_cached_catalog(group_action)
-        if force and not cached_only:
+        if force and not cached_only and only_categories is None:
             fresh=client._get_json(group_action,force_refresh=True)
             if isinstance(fresh,list) and fresh: groups=fresh
         if not isinstance(groups,list) and not cached_only:
@@ -399,28 +402,47 @@ def sync_kind(portal,client,kind,preferred='',force=False,cancel=lambda:False,fi
             if head and ((not force and time.time()-head[0]<12*3600) or
                          (requested_at is not None and head[0]>=requested_at)): continue
             prior=db.execute('SELECT code,updated FROM sync_status WHERE pid=? AND kind=? AND cid=?',(pid,kind,cid)).fetchone()
-            if requested_at is not None and prior and prior[0] in ('FAILED','CANCELLED') and prior[1]>=requested_at: continue
+            if requested_at is not None and only_categories is None and prior and prior[0] in ('FAILED','CANCELLED','SOURCE_EMPTY','SOURCE_FILTERED') and prior[1]>=requested_at: continue
             if max_groups is not None and processed>=max_groups: return True
             processed+=1
             with db: db.execute('UPDATE sync_leases SET until=? WHERE pid=? AND kind=? AND owner=?',(time.time()+330,pid,kind,owner))
             _sync_note(pid,kind,cid,'INDEXING',filename=filename)
+            from catalog_guard65 import EmptyCategory65,note as evidence65,cold_categories,selected_cancel
+            group_cancel65=selected_cancel(pid,kind,groups,cid,cancel)
+            transport65='LOCAL_CACHE' if cached_only else 'REMOTE'
             try:
                 def progress(received,stored,discarded):
+                    with db:db.execute('UPDATE sync_leases SET until=? WHERE pid=? AND kind=? AND owner=?',(time.time()+330,pid,kind,owner))
                     _sync_note(pid,kind,cid,'INDEXING',dict(received=received,stored=stored,discarded=discarded),filename=filename)
                 try:
                     entries=client.iter_catalog(action,cid,cached_only=cached_only,cancel=cancel)
-                    counts=import_group(pid,kind,cid,entries,filename,cancel,progress,allowed)
-                except (OSError,ConnectionError,TimeoutError):
+                    counts=import_group(pid,kind,cid,entries,filename,group_cancel65,progress,{cid} if only_categories is not None else allowed)
+                except (OSError,ConnectionError,TimeoutError,EmptyCategory65) as source_error65:
+                    if isinstance(source_error65,EmptyCategory65):
+                        source_counts65=dict(received=source_error65.received,stored=0,discarded=source_error65.discarded)
+                        evidence65(pid,kind,cid,source_error65.code,source_counts65,filename=filename)
                     if cached_only or head: raise
+                    fallback65=cold_categories(db,pid,kind,allowed)
+                    if not fallback65:raise
+                    transport65='LOCAL_CACHE'
                     # Cold/offline upgrade only. A global cached array is
                     # scanned once for ALL active groups, never once per group.
-                    counts=import_group(pid,kind,cid,client.iter_catalog(action,cid,cached_only=True,cancel=cancel),
-                                        filename,cancel,progress,allowed)
+                    try:
+                        counts=import_group(pid,kind,cid,client.iter_catalog(action,cid,cached_only=True,cancel=cancel),filename,group_cancel65,progress,fallback65)
+                    except InterruptedError:raise
+                    except (OSError,ValueError):
+                        if isinstance(source_error65,EmptyCategory65):raise source_error65
+                        raise OSError('CACHE_UNAVAILABLE') from None
                 completed.update(counts['categories'])
                 for category in counts['categories']:
-                    _sync_note(pid,kind,category,'READY',counts,filename=filename)
+                    _sync_note(pid,kind,category,'READY' if transport65=='REMOTE' else 'CACHED',counts,filename=filename)
+                    category_counts65=dict(counts,stored=counts.get('category_counts65',{}).get(category,counts['stored']))
+                    evidence65(pid,kind,category,'READY' if transport65=='REMOTE' else 'CACHED',category_counts65,transport65,filename)
             except Exception as exc:
-                _sync_note(pid,kind,cid,'CANCELLED' if isinstance(exc,InterruptedError) else 'FAILED',exc=exc,filename=filename)
+                code65=exc.code if isinstance(exc,EmptyCategory65) else 'CANCELLED' if isinstance(exc,InterruptedError) else 'FAILED'
+                counts65=dict(received=exc.received,stored=0,discarded=exc.discarded) if isinstance(exc,EmptyCategory65) else {}
+                _sync_note(pid,kind,cid,code65,counts65,exc=exc,filename=filename)
+                evidence65(pid,kind,cid,code65,counts65,filename=filename,error=exc)
                 # Other enabled groups can succeed independently.
     finally:
         with db: db.execute('DELETE FROM sync_leases WHERE pid=? AND kind=? AND owner=?',(pid,kind,owner))

@@ -1,3 +1,9 @@
+0.1.29.65
+- Sicherer Token-Zielzugriff über Kodis Profilanker, präzise Fehlercodes und ausdrückliche Wiederherstellung.
+- Vollständige Film-/Seriengruppen, nachvollziehbarer Indexstatus und robuste Importwarteschlange.
+- Schnellere lokale EPG-Textanzeige und Schutz gültiger Now/Next-Snapshots.
+- Portale, Passwörter, Widgets, Bilder, EPG-Zuordnungen und Fortschritte bleiben erhalten.
+
 0.1.29.64
 - BINGIE: Film-/Serienfokus an die jeweilige Kachel gebunden; Live-Senderleiste bleibt erhalten.
 - Serien-Veröffentlichung nutzt die gemeinsame Provider-Bildreferenz und löst Aktualisierungen bei fertigen Postern aus.

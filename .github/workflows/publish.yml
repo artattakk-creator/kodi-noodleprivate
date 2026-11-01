@@ -25,6 +25,9 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+concurrency:
+  group: gs-kodi-${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   kodi-helper57-transport:
     runs-on: ubuntu-latest
@@ -34,13 +37,25 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Check .64 source syntax and focused regression contracts
+      - name: Check .65 source syntax and focused regression contracts
         run: |
           python -m pip install 'Pillow>=11,<13' 'impacket==0.13.0' 'simpleeval==0.9.13'
           python -m compileall -q src tools/kodi_home64_host tools/run_kodi_home64_contract.py
+          python -m unittest discover -s tests -p '*02965.py' -v
           python -m unittest discover -s tests -p '*02964.py' -v
           python -m unittest discover -s tests -p '*02963.py' -v
           python -m unittest discover -s tests -p 'test_xcmate_home_02955.py' -v
+      - name: Verify historic affected wizard, metadata, remote and frozen-search contracts
+        run: |
+          python - <<'PY'
+          import sys,unittest
+          sys.path.insert(0,'tests')
+          modules=['test_xcmate_programme_index_02946.ProgrammeIndex46.test_stale_fact_metadata_cannot_survive_source_image_revision','test_xcmate_catalog_02954','test_xcmate_programme_index_02946','test_xcmate_series_02952','test_xcmate_tv_025','test_xcmate_027_ui','test_xcmate_028_streaming','test_xcmate_media_layout_02919','test_xcmate_media_rails_0299','test_xcmate_menu_icons_02945','test_xcmate_scope_02943','test_xcmate_scope_02944','test_xcmate_scope_02945','test_xcmate_scope_02946']
+          result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromNames(modules))
+          if not result.wasSuccessful():raise SystemExit(1)
+          PY
+      - name: Measure frozen .64 versus .65 target access and warm EPG
+        run: python tools/benchmark_xcmate65.py --output xcmate65-host-evidence.json
       - name: Verify .64 native movie and series focus, ten provider posters and Live return
         run: python tools/run_kodi_home64_contract.py --report-dir kodi-home64-evidence
       - name: Verify real Kodi 21 Linux plugin and worker RPC transport
@@ -63,6 +78,7 @@ jobs:
         with:
           name: kodi21-helper57-transport-${{ github.sha }}
           path: |
+            xcmate65-host-evidence.json
             kodi-helper57-evidence/transport.json
             kodi-helper57-evidence/build.log
             kodi-widget59-evidence/widgets.json
@@ -116,6 +132,8 @@ jobs:
         run: python tools/apply_xtreammate_015.py
       - name: Build all Kodi addon packages and index
         run: python tools/build_repository.py
+      - name: Verify canonical XCMate source ZIP and regular Kodi index
+        run: python tools/verify_xcmate65_package.py
       - name: Validate Kodi gettext languages
         run: python tools/validate_kodi_po.py
       - name: Validate pinned navigation icons and license
@@ -128,7 +146,7 @@ jobs:
           for f in tests/test_addon.py tests/test_site.py tests/test_providers.py; do
             sed -i "s@'..', 'plugin.video.noodleprivate'@'..', 'src', 'plugin.video.noodleprivate'@g" "$f"
           done
-          python -m unittest discover -s tests -v 2>&1 | tee xcmate-test-results.log
+          python -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/xcmate65-test-results.log"
       - name: Prepare XCMate pull request test package
         id: xcmate_package
         if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
@@ -185,10 +203,11 @@ jobs:
               for node in manifest.findall('.//assets/*'):
                   if node.tag in ('icon', 'fanart', 'screenshot'):
                       assert 'plugin.video.xtreammate/' + node.text in archive.namelist(), node.text
-          log = Path('xcmate-test-results.log').read_text()
+          testlog = Path(os.environ['RUNNER_TEMP']) / 'xcmate65-test-results.log'
+          log = testlog.read_text()
           match = re.search(r'Ran (\d+) tests? in ([0-9.]+)s', log)
           assert match and '\nOK' in log and '\nFAILED' not in log
-          shutil.copyfile('xcmate-test-results.log', output / 'test-results.log')
+          shutil.copyfile(testlog, output / 'test-results.log')
           (output / 'build-verification.json').write_text(json.dumps(dict(
               commit=os.environ['GITHUB_SHA'], version=addon.attrib['version'],
               tests=int(match.group(1)), seconds=float(match.group(2)),
@@ -208,9 +227,32 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
+          python - <<'PY'
+          import subprocess
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          # Stage only builder-owned repository outputs. CI logs, test fixtures,
+          # review artifacts and working-tree source edits are never published.
+          outputs=['addons.xml','addons.xml.md5']
+          for manifest in sorted(Path('src').glob('*/addon.xml')):
+              addon=ET.parse(manifest).getroot()
+              ident=addon.attrib['id'];version=addon.attrib['version']
+              package=ident+'-'+version+'.zip'
+              outputs.append(str(Path(ident)/package))
+              if ident=='plugin.video.xtreammate':
+                  outputs.append(str(Path(ident)/(package+'.sha256')))
+              for icon in addon.findall("extension[@point='xbmc.addon.metadata']/assets/icon"):
+                  relative=Path(icon.text or '')
+                  if relative.is_absolute() or '..' in relative.parts:raise ValueError('UNSAFE_REPO_ASSET')
+                  target=Path(ident)/relative
+                  if target.is_file():outputs.append(str(target))
+              if ident.startswith('repository.'):
+                  outputs.append(package)
+                  if ident=='repository.gsmedia':outputs.append(str(Path('repository-programme')/package))
+          subprocess.run(['git','add','--',*outputs],check=True)
+          PY
           if ! git diff --cached --quiet; then
             git commit -m "Publish GS Media Kodi repository"
-            git pull --rebase origin main
+            git -c rebase.autoStash=true pull --rebase origin main
             git push origin HEAD:main
           fi

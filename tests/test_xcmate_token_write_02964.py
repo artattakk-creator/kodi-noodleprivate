@@ -70,5 +70,5 @@ class Write64(Fixture,unittest.TestCase):
   self.assertEqual(self.path.read_bytes(),FIXTURE+b'\n')
  def test_private_parent_preserves_permission_errno_for_stage_diagnosis(self):
   profile=self.folder/'new-private-profile64';profile.mkdir();target=profile/'addon_data'/'plugin.video.xtreammate'/self.t.NAME
-  with mock.patch.object(self.t.os,'mkdir',side_effect=OSError(errno.EACCES,'private path')),self.assertRaises(self.t.TokenError) as result:self.t.private_parent(str(target))
+  with mock.patch.object(self.t,'location',return_value=str(target)),mock.patch.object(self.t.os,'mkdir',side_effect=OSError(errno.EACCES,'private path')),self.assertRaises(self.t.TokenError) as result:self.t.private_parent(str(target))
   self.assertEqual(result.exception.code,'TOKEN_WRITE');self.assertEqual(result.exception.errno,errno.EACCES)

@@ -143,7 +143,7 @@ def _menu_items(kind, current, ids, old_known, auto_new):
         '[COLOR lime][B]✓ Auswahl speichern ({} / {})[/B][/COLOR]'.format(len(current), len(ids)),
         'Abbrechen – Änderungen verwerfen',
     ]
-    if kind=='series':entries.append('Nachimport: Status / Wiederholen / Abbrechen')
+    if kind in ('vod','series'):entries.append('Nachimport: Status / Wiederholen / Abbrechen')
     return entries
 
 
@@ -254,7 +254,7 @@ def choose_groups(portal, kind='live',categories=None,allow_refresh=True):
                        'Die bisherige Auswahl bleibt erhalten.')
         elif choice == 6:
             return commit()
-        elif choice == 8 and kind=='series':
+        elif choice == 8 and kind in ('vod','series'):
             from catalog_delta52 import manage
             manage(portal,kind)
         else:

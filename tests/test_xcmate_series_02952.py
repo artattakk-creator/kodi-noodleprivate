@@ -81,7 +81,7 @@ class Series52(Fixture,unittest.TestCase):
 
     def test_empty_source_never_reports_success_or_erases_working_catalogues(self):
         self.empty=True;before=self.other_rows();self.select(['b']);self.delta.run_next()
-        self.assertEqual(self.delta.states('p','series')[0]['code'],'FAILED');self.assertEqual(self.other_rows(),before)
+        self.assertEqual(self.delta.states('p','series')[0]['code'],'EMPTY_SOURCE');self.assertEqual(self.other_rows(),before)  # Typed empty response remains a non-success; other data must survive.
 
     def test_cancel_pending_jobs_does_not_run_provider_and_allows_explicit_retry(self):
         self.select(['a','b']);self.control.cancel_jobs('p','series')

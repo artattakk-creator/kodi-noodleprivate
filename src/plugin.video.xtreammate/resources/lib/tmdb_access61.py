@@ -15,11 +15,6 @@ def imported(choice,dialog,addon,gui,tokens):
         raw=dialog.input(tr(36661),type=getattr(gui,'INPUT_ALPHANUM',0),option=getattr(gui,'ALPHANUM_HIDE_INPUT',1))
         if not raw:return
         raw=raw.encode('utf-8');value=tokens.validate(raw)
-        if read_destination(tokens,tokens.location()) is None:
-            addon.setSetting('tmdb_read_token43',value)
-            tokens.effective_tmdb_read_token(force=True)
-            dialog.ok(tr(36620),tr(36628));return
-        dialog.ok(tr(36620),tr(36662))
     else:
         source=dialog.browseSingle(1,tr(36621),'files','.txt',False,False)
         if not source:return
@@ -38,7 +33,15 @@ def imported(choice,dialog,addon,gui,tokens):
             if progress:progress.close()
         tokens.validate(raw);note('UTF8_FORMAT_VALIDATION')
     target=tokens.location()
-    old=read_destination(tokens,target)
+    from token_destination65 import pre_read,Cancelled65
+    try:old=pre_read(tokens,target,dialog,gui)
+    except Cancelled65:return
+    if choice==7:
+        if old is None:
+            addon.setSetting('tmdb_read_token43',value)
+            tokens.effective_tmdb_read_token(force=True)
+            dialog.ok(tr(36620),tr(36628));return
+        dialog.ok(tr(36620),tr(36662))
     expected=hashlib.sha256(old).hexdigest() if old is not None else None
     if old is not None and not dialog.yesno(tr(36620),tr(36627),defaultbutton=getattr(gui,'DLG_YESNO_NO_BTN',10)):return
     if choice==6 and not dialog.yesno(tr(36620),tr(36664),defaultbutton=getattr(gui,'DLG_YESNO_NO_BTN',10)):return
@@ -62,7 +65,7 @@ def show():
             except (tokens.TokenError,OSError,UnicodeError) as exc:
                 code=exc.code if isinstance(exc,tokens.TokenError) else 'TOKEN_UNREADABLE'
                 stage=getattr(exc,'stage','UTF8_FORMAT_VALIDATION' if code=='TOKEN_FORMAT' else 'SOURCE_SELECTION')
-                dialog.ok(tr(36620),tr(36674 if getattr(exc,'committed',False) else 36629,code)+'\n'+tr(36673,stage)+'\n'+tr(36667))
+                dialog.ok(tr(36620),tr(36674 if getattr(exc,'committed',False) else 36629,code)+'\n'+tr(36673,stage)+' / '+getattr(exc,'subcode','NONE')+'\n'+tr(36667))
         elif choice==1:
             from token_write64 import diagnostic
             detail=diagnostic(tokens)
