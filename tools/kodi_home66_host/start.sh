@@ -17,7 +17,7 @@ plugin.find('provides').text='video audio'  # synthetic music source is a real a
 t.write(p,encoding='utf-8',xml_declaration=True)
 script=Path('/root/.kodi/addons/script.xcmate.guicontract59');script.mkdir(exist_ok=True)
 (script/'addon.xml').write_text('<addon id="script.xcmate.guicontract59" version="1.0.0" name="Synthetic GUI contract" provider-name="Test"><requires><import addon="xbmc.python" version="3.0.1"/></requires><extension point="xbmc.python.script" library="main.py"/><extension point="xbmc.addon.metadata"><summary lang="en_GB">Test</summary><description lang="en_GB">Test only</description><platform>all</platform><license>GPL-2.0-only</license></extension></addon>')
-(script/'main.py').write_text("import runpy;runpy.run_path('/work/gui66.py')")
+(script/'main.py').write_text("import runpy,traceback\nfrom pathlib import Path\ntry: runpy.run_path('/work/gui66.py')\nexcept Exception:\n Path('/root/gui66-error.txt').write_text(traceback.format_exc())\n raise\n")
 PY
 cp /work/fixture66.py /root/.kodi/addons/plugin.video.xtreammate/
 cat > /root/.kodi/userdata/guisettings.xml <<'EOF'

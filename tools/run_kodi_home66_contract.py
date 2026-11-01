@@ -67,6 +67,10 @@ def main():
             media = report/'media66-last.png'
             copied = subprocess.run(docker+['cp',name+':/root/media66-last.png',str(media)],env=env,check=False,stdout=subprocess.DEVNULL)
             if copied.returncode==0:print('MEDIA64_FAILURE_PREVIEW_BASE64 '+base64.b64encode(media.read_bytes()).decode(),flush=True)
+            for stage66 in ('tv66-home-last','detail66-last'):
+                picture66=report/(stage66+'.png')
+                copied66=subprocess.run(docker+['cp',name+':/root/'+stage66+'.png',str(picture66)],env=env,check=False,stdout=subprocess.DEVNULL)
+                if copied66.returncode==0:print('NATIVE66_'+stage66.upper().replace('-','_')+'_BASE64 '+base64.b64encode(picture66.read_bytes()).decode(),flush=True)
             raise
         result = json.loads((report / 'home.json').read_text())
         for i in (0, 1, 87):

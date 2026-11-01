@@ -118,8 +118,9 @@ else:raise RuntimeError('LAYOUT_ACTION_NOT_RELEASED')
 time.sleep(.5)
 rpc('GUI.ActivateWindow',{'window':'home'})
 rpc('Addons.ExecuteAddon', {'addonid': 'script.xcmate.guicontract59'})
-for _ in range(1200):
+for _ in range(2400):  # 28 contour/caption cases plus Home/detail texture checks
     fixture_prompt()
+    if Path('/root/gui66-error.txt').exists():raise RuntimeError('NATIVE66_SCRIPT_FAILED '+Path('/root/gui66-error.txt').read_text())
     if Path('/root/media66-error.json').exists():raise RuntimeError('MEDIA64_FAILURE '+Path('/root/media66-error.json').read_text())
     if Path('/root/media66.json').exists():
         break
