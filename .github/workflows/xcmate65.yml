@@ -1,0 +1,21 @@
+name: Inspect fixed .64 baseline for .65
+on:
+  pull_request:
+    branches: [main]
+    paths: ["tools/inspect_xcmate65.py", ".github/workflows/xcmate65.yml"]
+permissions:
+  contents: read
+concurrency:
+  group: inspect65-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python tools/inspect_xcmate65.py
