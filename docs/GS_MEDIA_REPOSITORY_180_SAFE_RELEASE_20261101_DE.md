@@ -6,7 +6,7 @@ Stand: 01.11.2026 · Basis: `main` mit XCMate 0.1.29.66 · Scope: **nur Reposito
 
 - `repository.gsmedia` bleibt dieselbe installierte Kodi-Add-on-ID.
 - Versionsnummer von 1.7.0 auf 1.8.0; Kodi erkennt die höhere Version regulär über die Add-on-Verwaltung.
-- Neues Icon (Neon-Cinema/GS Media) wird bei jedem Paketbau aus `tools/render_gsmedia_icon.py` erzeugt, als `repository.gsmedia/icon.png` veröffentlicht und in `repository.gsmedia-1.8.0.zip` mitgeliefert.
+- Neues Icon (Neon-Cinema/GS Media) wird bei jedem Paketbau aus `tools/render_gsmedia_icon.py` erzeugt, als `repository.gsmedia/icon-1.8.png` veröffentlicht und in `repository.gsmedia-1.8.0.zip` mitgeliefert.
 - Alle **acht** zuvor vorhandenen Katalog-URLs, ihre ZIP-Quellen und der Omega-Skin-Zweig bleiben exakt unverändert.
 - XCMate bleibt **0.1.29.66**, Noodle Private unverändert. Kein Wizard-/Skin-/Addon-Update wird durch dieses Release zwangsinstalliert.
 - Durch das vorhandene GitHub-Actions-Publishing werden ZIP und `addons.xml` zusammen auf `main` veröffentlicht; das im Add-on definierte `addons.xml.md5` und der Versionseintrag machen 1.8.0 im Kodi-Repository erkennbar.
