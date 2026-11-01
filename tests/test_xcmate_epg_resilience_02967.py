@@ -1,10 +1,10 @@
 """Reproduce actual .66 data loss with committed local guide, no device/network."""
 import importlib,sqlite3,unittest
 from unittest import mock
-from test_xcmate_epg_02952 import EPG52 as Case52
+import test_xcmate_epg_02952 as data52
 class Resilience67(unittest.TestCase):
  def setUp(self):
-  self.fixture=Case52();self.fixture.setUp();self.addCleanup(self.fixture.doCleanups)
+  self.fixture=data52.EPG52();self.fixture.setUp();self.addCleanup(self.fixture.doCleanups)
   self.fixture.put('a',[self.fixture.event(title='Committed programme')])
  def test_optional_schema_failure_preserves_full_guide_text(self):
   from local_epg import window
