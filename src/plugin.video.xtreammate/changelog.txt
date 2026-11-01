@@ -1,3 +1,12 @@
+0.1.29.64
+- BINGIE: Film-/Serienfokus an die jeweilige Kachel gebunden; Live-Senderleiste bleibt erhalten.
+- Serien-Veröffentlichung nutzt die gemeinsame Provider-Bildreferenz und löst Aktualisierungen bei fertigen Postern aus.
+- Hero: längere Titel lesbar; originales Space-Motiv bei fehlendem Sendungsbild.
+- Bereits vorbereitete lokale EPG-Texte bleiben bei RAM-Cache-Verdrängung erhalten; Fokus im bestehenden Vorladen priorisiert.
+- TMDB-Import mit getrennten Schreibphasen und Inhaltsprüfung nach atomarer Übernahme; Synchronisierungswarnungen verständlich melden.
+- Token, Passwörter, Portale, Widgets, Cover und Wiedergabefortschritte bleiben erhalten.
+- Android-Abnahme für Box B noch offen; keine Änderungen an Box A.
+
 0.1.29.63
 - BINGIE-Hero: bildfüllendes Breitbild mit transparentem Textoverlay gemäß bestätigtem Layout.
 - Jetzt/Danach wird aus der gemeinsamen lokalen EPG-Datenbank geladen und warm an den Player übergeben.

@@ -16,6 +16,8 @@ def apply(item,portal,row,info,event=None,labels=None):
     item['props']['XCMate.NoEpg63']=labels[0]
     item['props']['XCMate.RemainingFormat63']=labels[1]
     import xbmcaddon
+    from epg_row64 import stamp
+    stamp(item['props'],portal['id'],info)
     if not isinstance(info,dict):
         _hero(item['props'])
         return item
@@ -52,6 +54,7 @@ def _hero(props):
     # Preserve the public .55 ProgrammeImage46 API used by legacy/details.
     # The new native Hero consumes its own local-only presentation reference.
     import xbmcaddon
+    props['XCMate.HeroLong64']='true' if len(props.get('XCMate.ProgrammeTitle46',''))>26 else 'false'
     image=props.get('XCMate.ProgrammeImage46','')
     local=local_image(image)
     props['XCMate.HeroImage63']=image if local else os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media','programme46','neutral.png')

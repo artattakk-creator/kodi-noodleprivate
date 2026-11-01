@@ -9,11 +9,13 @@ def activate(addon):
     request()
 
 def imported(choice,dialog,addon,gui,tokens):
+    from token_write64 import note,read_destination
+    note('SOURCE_SELECTION')
     if choice==7:
         raw=dialog.input(tr(36661),type=getattr(gui,'INPUT_ALPHANUM',0),option=getattr(gui,'ALPHANUM_HIDE_INPUT',1))
         if not raw:return
         raw=raw.encode('utf-8');value=tokens.validate(raw)
-        if tokens.read(tokens.location(),missing=True) is None:
+        if read_destination(tokens,tokens.location()) is None:
             addon.setSetting('tmdb_read_token43',value)
             tokens.effective_tmdb_read_token(force=True)
             dialog.ok(tr(36620),tr(36628));return
@@ -27,19 +29,23 @@ def imported(choice,dialog,addon,gui,tokens):
             factory=getattr(gui,'DialogProgress',None)
             if factory is not None:
                 progress=factory();progress.create(tr(36620),tr(36663))
-            raw=selected(source,cancel=(lambda:progress.iscanceled()) if progress else lambda:False)
+            try:
+                raw=selected(source,cancel=(lambda:progress.iscanceled()) if progress else lambda:False)
+            except tokens.TokenError as error:
+                error.stage='VFS_READ';note('VFS_READ','FAILED');raise
+            note('VFS_READ')
         finally:
             if progress:progress.close()
-        tokens.validate(raw)
+        tokens.validate(raw);note('UTF8_FORMAT_VALIDATION')
     target=tokens.location()
-    try:old=tokens.read(target,missing=True)
-    except tokens.TokenError:raise tokens.TokenError('TOKEN_WRITE') from None
+    old=read_destination(tokens,target)
     expected=hashlib.sha256(old).hexdigest() if old is not None else None
     if old is not None and not dialog.yesno(tr(36620),tr(36627),defaultbutton=getattr(gui,'DLG_YESNO_NO_BTN',10)):return
     if choice==6 and not dialog.yesno(tr(36620),tr(36664),defaultbutton=getattr(gui,'DLG_YESNO_NO_BTN',10)):return
-    tokens.import_bytes(raw,expected,target=target)
+    result=tokens.import_bytes(raw,expected,target=target)
+    if tokens.location()!=target:raise tokens.TokenError('TOKEN_CHANGED')
     if choice==6:activate(addon)
-    dialog.ok(tr(36620),tr(36628)+'\n'+tr(36665 if choice==6 else 36666))
+    dialog.ok(tr(36620),tr(36628)+'\n'+tr(36665 if choice==6 else 36666)+('\n'+tr(36672) if result=='IMPORTED_SYNC_WARNING' else ''))
 
 def show():
     import xbmcaddon,xbmcgui
@@ -55,8 +61,12 @@ def show():
             try:imported(choice,dialog,addon,xbmcgui,tokens)
             except (tokens.TokenError,OSError,UnicodeError) as exc:
                 code=exc.code if isinstance(exc,tokens.TokenError) else 'TOKEN_UNREADABLE'
-                dialog.ok(tr(36620),tr(36629,code)+'\n'+tr(36667))
-        elif choice==1:dialog.ok(tr(36620),labels[1]+'\n'+tr(36630))
+                stage=getattr(exc,'stage','UTF8_FORMAT_VALIDATION' if code=='TOKEN_FORMAT' else 'SOURCE_SELECTION')
+                dialog.ok(tr(36620),tr(36674 if getattr(exc,'committed',False) else 36629,code)+'\n'+tr(36673,stage)+'\n'+tr(36667))
+        elif choice==1:
+            from token_write64 import diagnostic
+            detail=diagnostic(tokens)
+            dialog.ok(tr(36620),labels[1]+'\n'+detail['code']+' / '+detail['stage']+'\n'+tr(36630))
         elif choice==2:
             from tmdb_connection60 import launch
             launch()

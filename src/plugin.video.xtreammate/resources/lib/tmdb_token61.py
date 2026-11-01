@@ -159,32 +159,14 @@ def private_parent(path):
             os.close(fd);fd=nxt
         result=fd;fd=None
         return result,NAME
-    except (OSError,TokenError):raise TokenError('TOKEN_WRITE') from None
+    except (OSError,TokenError) as error:
+        failure=TokenError('TOKEN_WRITE');failure.errno=getattr(error,'errno',0) or 0
+        raise failure from None
     finally:
         if fd is not None:os.close(fd)
 
 
 def import_bytes(raw,expected,target=None):
-    """VFS sources are read once; private destination guards stay identical."""
-    value=validate(raw)
-    path=location()
-    if target is not None and target!=path:raise TokenError('TOKEN_CHANGED')
-    fd,name=private_parent(path);temp='.tmdb61-'+uuid.uuid4().hex
-    try:
-        before=read(path,missing=True)
-        digest=hashlib.sha256(before).hexdigest() if before is not None else None
-        if digest!=expected:raise TokenError('TOKEN_CHANGED')
-        out=os.open(temp,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600,dir_fd=fd)
-        with os.fdopen(out,'wb') as stream:
-            stream.write((value+'\n').encode());stream.flush();os.fsync(stream.fileno())
-        current=read(path,missing=True)
-        if (hashlib.sha256(current).hexdigest() if current is not None else None)!=expected:raise TokenError('TOKEN_CHANGED')
-        if location()!=path:raise TokenError('TOKEN_CHANGED')
-        os.replace(temp,name,src_dir_fd=fd,dst_dir_fd=fd);os.fsync(fd)
-    except OSError:raise TokenError('TOKEN_WRITE') from None
-    finally:
-        try:os.unlink(temp,dir_fd=fd)
-        except FileNotFoundError:pass
-        os.close(fd)
-    effective_tmdb_read_token(force=True)
-    return 'IMPORTED'
+    """Private staged writer; VFS sources and strict destination guards stay separate."""
+    from token_write64 import import_bytes as write64
+    return write64(raw,expected,target)

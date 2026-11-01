@@ -67,7 +67,7 @@ def publish(portal,kind,rows,code='READY'):
     if kind=='live' and len(rows)>64:
         from widget_pages46 import publish as publish_pages46
         return publish_pages46(portal,rows,values)
-    if kind in ('live','vod'):
+    if kind in ('live','vod','series'):
         from widget_render47 import values as render47
         items=render47(portal,kind,rows if kind=='live' else rows[:24],values)
     else:items=[describe(portal,kind,row,values) for row in rows[:24]]

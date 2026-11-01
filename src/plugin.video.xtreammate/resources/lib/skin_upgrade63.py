@@ -10,15 +10,15 @@ def prepare():
     _next=time.monotonic()+60
     try:
         from utils import setting
-        if setting('bingie_hero63_notice','')=='0.1.29.63':return
+        if setting('bingie_hero63_notice','')=='0.1.29.64':return
         from widget_manager50 import runtime
         from widget_skin50 import applied,prepare as make
-        from widget_skin63 import previously_applied
+        from widget_skin64 import previously_applied
         profile,skin=runtime()
         if applied(skin) or not previously_applied(skin):return
         plan=make(skin)
         from widget_skin60 import preview
-        text=preview(plan).replace('(.60)','(.63)')
+        text=preview(plan).replace('(.60)','(.64)')
         from epg_handoff63 import profile_scope
         with _lock:_pending=dict(profile=profile,skin=skin,plan=plan,text=text,scope=profile_scope())
     except (OSError,ValueError,KeyError,TypeError,RuntimeError):pass
@@ -38,7 +38,7 @@ def poll():
     dialog.textviewer(tr(36669),tr(36670)+'\n\n'+pending['text'])
     confirmed=dialog.yesno(tr(36669),tr(36671),defaultbutton=getattr(xbmcgui,'DLG_YESNO_NO_BTN',10))
     if pending.get('scope')!=profile_scope():return
-    xbmcaddon.Addon().setSetting('bingie_hero63_notice','0.1.29.63')
+    xbmcaddon.Addon().setSetting('bingie_hero63_notice','0.1.29.64')
     if not confirmed:return
     from widget_manager50 import runtime,rebuild,trace,error
     try:

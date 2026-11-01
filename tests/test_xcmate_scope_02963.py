@@ -20,7 +20,8 @@ class Scope63(unittest.TestCase):
  def test_unreviewed_edits_are_rejected_and_nonhook_sources_are_raw_unchanged(self):
   hooks=json.loads((ROOT/'tests/fixtures/xcmate_02963_reviewed_hooks.json').read_text())['modules']
   for path,digest in self.data()['source_sha256'].items():
-   raw=(ROOT/path).read_bytes()
+   from stabilization_contract_02964 import without_stabilization64
+   raw=without_stabilization64((ROOT/path).read_bytes(),path)
    if path not in hooks:self.assertEqual(hashlib.sha256(raw).hexdigest(),digest,path)
    else:
     with self.assertRaises(AssertionError):without_stabilization63(raw+b'\nunreviewed63\n',path)

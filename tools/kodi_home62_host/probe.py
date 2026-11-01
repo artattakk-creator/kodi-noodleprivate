@@ -149,7 +149,7 @@ for i in (0, 1, 87):
         assert max(abs(a-b) for a,b in zip(pictures[i].getpixel((366,106)),logo))<=5
     else:
         assert sum(1 for r,g,b in pictures[i].crop((285,617,405,675)).getdata() if min(r,g,b)>170)>20
-    neutral=Image.open('/root/.kodi/addons/plugin.video.xtreammate/resources/media/programme46/neutral.png').convert('RGB').resize((1920,1080))
+    neutral=Image.open('/root/.kodi/addons/plugin.video.xtreammate/resources/media/lightweight_splash.jpg').convert('RGB').resize((1920,1080))
     assert max(abs(a-b) for a,b in zip(pictures[i].getpixel((1700,180)),neutral.getpixel((1700,180))))<=3
 assert rpc('Player.GetActivePlayers') == []
 stress=json.loads(Path('/root/stress62.json').read_text());assert stress['groups']==803 and stress['stations']==88

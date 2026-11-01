@@ -15,6 +15,8 @@ def data63():
     return hooks,hashes
 
 def without_stabilization63(source,module):
+    from stabilization_contract_02964 import without_stabilization64
+    source=without_stabilization64(source,module)
     binary=isinstance(source,bytes);raw=source if binary else source.encode()
     hooks,hashes=data63()
     paths=[p for p in hooks if p==str(module) or p.endswith('/'+str(module).removesuffix('.py')+'.py')]
