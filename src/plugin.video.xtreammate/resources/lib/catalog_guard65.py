@@ -6,6 +6,7 @@ class EmptyCategory65(ValueError):
   super().__init__('SOURCE_EMPTY' if not received else 'SOURCE_FILTERED')
 def reason(error):
  if error is None:return 'NONE'
+ if isinstance(error,EmptyCategory65):return str(error)
  if isinstance(error,TimeoutError):return 'NETWORK_TIMEOUT'
  if isinstance(error,ConnectionError):return 'CONNECTION_ERROR'
  number=getattr(error,'errno',0)

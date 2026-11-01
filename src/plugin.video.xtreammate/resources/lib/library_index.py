@@ -411,6 +411,7 @@ def sync_kind(portal,client,kind,preferred='',force=False,cancel=lambda:False,fi
             transport65='LOCAL_CACHE' if cached_only else 'REMOTE'
             try:
                 def progress(received,stored,discarded):
+                    with db:db.execute('UPDATE sync_leases SET until=? WHERE pid=? AND kind=? AND owner=?',(time.time()+330,pid,kind,owner))
                     _sync_note(pid,kind,cid,'INDEXING',dict(received=received,stored=stored,discarded=discarded),filename=filename)
                 try:
                     entries=client.iter_catalog(action,cid,cached_only=cached_only,cancel=cancel)

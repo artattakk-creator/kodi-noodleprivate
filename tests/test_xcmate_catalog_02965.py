@@ -138,3 +138,15 @@ class Catalog65(Fixture,unittest.TestCase):
    for row in value['jobs'].values():row['next_at']=0
    delta._save(value);delta.run_next()
   self.assertGreater(client.iter_catalog.call_count,before);self.assertEqual(delta.states('p','vod')[0]['attempts'],2)
+ def test_large_group_progress_keeps_its_lease_alive(self):
+  clock=[time.time()];observed=[]
+  def records():
+   for index,row in enumerate(self.rows(600)):
+    if index==200:clock[0]+=300
+    if index==300:
+     db=self.index.connect()
+     try:observed.append(db.execute("SELECT until FROM sync_leases WHERE pid='p' AND kind='vod'").fetchone()[0])
+     finally:db.close()
+    yield row
+  with mock.patch('library_index.time.time',side_effect=lambda:clock[0]):self.index.sync_kind(self.portal,self.client65(records()),'vod',force=True,only_categories={'10'})
+  self.assertEqual(self.total(),600);self.assertGreaterEqual(observed[0],clock[0]+329)
