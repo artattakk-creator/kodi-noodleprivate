@@ -176,7 +176,7 @@ for ident,kind,indices in ((2540,'poster',(0,1,2,23)),(2550,'music',(0,1,23)),(2
     if len(boxes)!=1 or not tile:detail=dict(boxes=boxes,tile=tile);continue
     frame=boxes[0];width=frame[2]-frame[0];height=frame[3]-frame[1]
     correct=abs(frame[0]-tile[0])<=14 and abs(frame[1]-tile[1])<=14 and abs(width-(tile[2]-tile[0]))<=28
-    correct=correct and (195<=height<=270 if kind=='music' else 295<=height<=350)
+    correct=correct and 295<=height<=350  # pinned native poster layout also hosts albums
     plot=plot_bbox66(rgb,tile[1])
     collision=bool(plot and plot[3]>tile[1]-30)
     detail=dict(frame=frame,tile=tile,plot=plot,collision=collision,focus=home.getFocusId(),selected=xbmc.getInfoLabel('Container('+str(ident)+').ListItem.Property('+('XCMate.MediaId' if kind.startswith('own-') else 'Fixture66.Index')+')'))
