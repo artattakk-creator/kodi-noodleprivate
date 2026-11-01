@@ -31,7 +31,7 @@ class EPG65(Fixture,unittest.TestCase):
   def metadata(pid,cid,values,*args,**kwargs):
    calls.append(cid);clock[0]+=.6;return values
   with mock.patch('local_epg.time.monotonic',side_effect=lambda:clock[0]),mock.patch('programme_flow48.enrich',side_effect=metadata):
-   view=self.local.window('p',self.channels,{},self.now,self.now+3600,budget=.4)
+   view=self.local.window('p',self.channels,{},self.now,self.now+3600,budget=.4,text_only65=True)
   self.assertIsNotNone(view);self.assertEqual(len(calls),1)
   for row in self.channels:self.assertEqual(view[row['epg_channel_id']][0]['name'],'Stored fixture '+row['name'])
  def test_sqlite_exclusive_contention_is_bounded_and_warm_handoff_remains_usable(self):

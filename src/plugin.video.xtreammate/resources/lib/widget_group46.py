@@ -79,5 +79,5 @@ def _infos63(portal,rows):
         else:missing.append(row)
     if revision(portal['id'])!=config_revision65 or xbmcgui.Window(10000).getProperty(meta_key(portal['id']))!=guide_revision65:
         result={};missing=list(rows)
-    for offset in range(0,len(missing),16):result.update(now_next(portal['id'],missing[offset:offset+16],mappings))
+    for offset in range(0,len(missing),16):result.update(now_next(portal['id'],missing[offset:offset+16],mappings,display_only65=True))
     return result

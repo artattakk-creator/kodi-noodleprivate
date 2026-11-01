@@ -18,11 +18,11 @@ Belegter Codepfad: catalog_sync löschte den Auftrag vor Arbeit und Lease-Prüfu
 
 Expliziter Kategorie-Nachimport übersprang durch 12h-TTL teilweise einen bereits vorhandenen Head und konnte diesen alten Head als Erfolg melden. .65 fordert die konkrete Kategorie erneut an und verlangt neuen verifizierten Status; eine Lease-Wartephase verbraucht keinen Retry. Source-empty, filtered, cached, failed, cancelled und ready bleiben unterscheidbar.
 
-Kategorie-Endpunktantworten werden ausschließlich für die angeforderte aktivierte ID veröffentlicht. Ein ignorierter category_id-Parameter darf keine andere Gruppe als angeblichen Erfolg ersetzen. Leere/ausgefilterte Antworten erhalten den vorherigen Head. Kalter Offline-Fallback importiert nur ausdrücklich erlaubte Kategorien ohne bereits vorhandene brauchbare Generation/Legacy-Daten; Herkunft CACHED bleibt sichtbar, niemals als aktuelle Remote-Verfügbarkeit ausgeben.
+Gezielte Nachimporte veröffentlichen ausschließlich die angeforderte aktivierte ID. Ein regulärer Gesamtauftrag kann weitere ebenfalls aktivierte Gruppen aus derselben vollständig gelieferten Antwort übernehmen; die Counts bleiben je Kategorie getrennt. Ein ignorierter category_id-Parameter darf keine andere Gruppe als angeblichen Erfolg ersetzen. Leere/ausgefilterte Antworten erhalten den vorherigen Head. Kalter Offline-Fallback importiert nur ausdrücklich erlaubte Kategorien ohne bereits vorhandene brauchbare Generation/Legacy-Daten; Herkunft CACHED bleibt sichtbar, niemals als aktuelle Remote-Verfügbarkeit ausgeben.
 
 Legacy-Refresh aus lokalen Cachedateien kann veröffentlichte heads/items_v2 nicht mehr löschen. Nicht autoritative Teilsnapshots ergänzen Legacy-Zeilen statt gültige übrige Titel zu verdrängen. IDs 0 werden nicht mit fehlenden IDs verwechselt. Keine Filterung nach Kategoriebezeichnungen; Adult Zone ist im Test nur ein fiktiver Kategoriename. Die echte Menge des Anbieterbestands ist unbekannt.
 
-Filme/Serien erhalten einen sichtbaren Gruppen-/Indexstatus: Auswahl aktiv/deaktiviert, lokaler Count, vorhandene Providerbelege, Generation/Datum, Import-/Verwerfungszahlen und Jobstatus. Gezielter Nachimport und Abbruch pro Gruppe, ohne Portalreset. Statuslesen läuft im vorhandenen Medienarbeiter; GUI zeigt lesbaren Text und paginierte Gruppen.
+Filme/Serien erhalten einen sichtbaren Gruppen-/Indexstatus im bestehenden Kontextmenü: Auswahl aktiv/deaktiviert, lokaler Count, vorhandene Providerbelege, Generation/Datum, Import-/Verwerfungszahlen und Jobstatus. Gezielter Nachimport und Abbruch pro Gruppe, ohne Portalreset. Statuslesen läuft im vorhandenen Medienarbeiter; GUI zeigt lesbaren Text und paginierte Gruppen.
 
 ## EPG
 

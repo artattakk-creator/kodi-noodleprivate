@@ -25,7 +25,7 @@ class View(dict):
 
 
 @scoped
-def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,budget=.4):
+def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,budget=.4,text_only65=False):
     """Pin one RO guide; core text first, bounded optional metadata second."""
     import guide_store
     from programme_read47 import borrowed,retain
@@ -68,7 +68,7 @@ def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,
         # Source fusion is text work. Prefer gaps before optional rich fields.
         fusion65=sorted(tasks,key=lambda task:any(value['start_timestamp']<=start<value['stop_timestamp'] for value in prepared[task[0]]))
         for key,cid,sid,source48,left,right,cap in fusion65:
-            if time.monotonic()>deadline:break
+            if text_only65 and time.monotonic()>deadline:break
             if not source48:
                 from epg_merge52 import window as merged_window52
                 prepared[key][:]=merged_window52(pid,sid,cid,left,right,primary=prepared[key],limit=cap,manual=key[3])
@@ -78,7 +78,7 @@ def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,
             from programme_flow48 import enrich
             enriched=[]
             for index,value in enumerate(values):
-                if index>=4 or time.monotonic()>deadline:
+                if index>=4 or text_only65 and time.monotonic()>deadline:
                     enriched.extend(values[index:]);break
                 enriched.extend(enrich(pid,cid,[value],source48,sid48=sid,revision48=view.revision))
             prepared[key][:]=enriched
@@ -93,7 +93,7 @@ def window(pid,channels,mappings,start,stop,limit=48,focus_sid='',history=False,
 
 
 @scoped
-def now_next(pid,channels,mappings,now=None,client=None):
+def now_next(pid,channels,mappings,now=None,client=None,display_only65=False):
     """Bounded local batch, including strictly cache-only short-EPG fallback."""
     from epg_views import resolve_guide
     ts=time.time() if now is None else now
@@ -101,7 +101,7 @@ def now_next(pid,channels,mappings,now=None,client=None):
     from epg_status import revision as revision63
     revision_before63=revision63(pid)
     started63=time.perf_counter()
-    cache=window(pid,channels,mappings,ts,ts+2*86400)
+    cache=window(pid,channels,mappings,ts,ts+2*86400,**({'text_only65':True} if display_only65 else {}))
     if cache is not None:register63(pid,getattr(cache,'revision',None),expected_revision=revision_before63)
     db_ms63=(time.perf_counter()-started63)*1000
     # Workers retain the complete bounded future window. The thin four-event

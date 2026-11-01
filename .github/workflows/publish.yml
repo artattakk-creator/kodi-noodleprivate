@@ -45,6 +45,15 @@ jobs:
           python -m unittest discover -s tests -p '*02964.py' -v
           python -m unittest discover -s tests -p '*02963.py' -v
           python -m unittest discover -s tests -p 'test_xcmate_home_02955.py' -v
+      - name: Verify historic affected wizard, metadata, remote and frozen-search contracts
+        run: |
+          python - <<'PY'
+          import sys,unittest
+          sys.path.insert(0,'tests')
+          modules=['test_xcmate_catalog_02954','test_xcmate_programme_index_02946','test_xcmate_series_02952','test_xcmate_tv_025','test_xcmate_027_ui','test_xcmate_028_streaming','test_xcmate_media_layout_02919','test_xcmate_media_rails_0299','test_xcmate_menu_icons_02945','test_xcmate_scope_02943','test_xcmate_scope_02944','test_xcmate_scope_02945','test_xcmate_scope_02946']
+          result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromNames(modules))
+          if not result.wasSuccessful():raise SystemExit(1)
+          PY
       - name: Measure frozen .64 versus .65 target access and warm EPG
         run: python tools/benchmark_xcmate65.py --output xcmate65-host-evidence.json
       - name: Verify .64 native movie and series focus, ten provider posters and Live return

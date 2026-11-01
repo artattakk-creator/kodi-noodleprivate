@@ -3,10 +3,11 @@ import errno,json,sqlite3,time
 class EmptyCategory65(ValueError):
  def __init__(self,received=0,discarded=0):
   self.received=received;self.discarded=discarded
-  super().__init__('SOURCE_EMPTY' if not received else 'SOURCE_FILTERED')
+  self.code='SOURCE_EMPTY' if not received else 'SOURCE_FILTERED'
+  super().__init__('category response contains no usable entries')
 def reason(error):
  if error is None:return 'NONE'
- if isinstance(error,EmptyCategory65):return str(error)
+ if isinstance(error,EmptyCategory65):return error.code
  if isinstance(error,TimeoutError):return 'NETWORK_TIMEOUT'
  if isinstance(error,ConnectionError):return 'CONNECTION_ERROR'
  number=getattr(error,'errno',0)

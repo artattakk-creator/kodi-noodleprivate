@@ -20,12 +20,16 @@ def _directory(path,dir_fd=None):
  if hasattr(os,'O_PATH'):attempts.append(os.O_PATH|os.O_NOFOLLOW|directory)
  if directory:attempts.append(flags)
  for index,mode in enumerate(dict.fromkeys(attempts)):
+  fd=None
   try:
    fd=os.open(path,mode,dir_fd=dir_fd)
    if not stat.S_ISDIR(os.fstat(fd).st_mode):
     os.close(fd);raise failure('TOKEN_PATH',detail='SYMLINK_OR_NOT_DIRECTORY')
    return fd
   except OSError as error:
+   if fd is not None:
+    try:os.close(fd)
+    except OSError:pass
    retry=error.errno in (errno.EINVAL,errno.ENOTSUP,errno.ENOSYS,errno.EACCES,errno.EPERM)
    if not retry or index==len(dict.fromkeys(attempts))-1:raise failure('TOKEN_UNREADABLE',error) from None
  raise failure('TOKEN_PATH',detail='DIRECTORY_UNSUPPORTED')

@@ -143,9 +143,9 @@ class GuideSnapshot:
         from guide_viewport import cache as viewport_cache
         selected=getattr(self,'_programme_sid','')
         local=viewport_cache(self.portal['id'],wanted,self._mappings,now,focus_sid=selected) if selected else viewport_cache(self.portal['id'],wanted,self._mappings,now)
-        from guide_store import path as guide_path65
-        import os
-        contended65=local is None and os.path.isfile(guide_path65())
+        import guide_store,os
+        guide_path65=getattr(guide_store,'path',lambda:'')()
+        contended65=local is None and bool(guide_path65) and os.path.isfile(guide_path65)
         if contended65:self._cache={};self._indexed=False
         elif local is None:
             from epg import load_cache, _mem_clear

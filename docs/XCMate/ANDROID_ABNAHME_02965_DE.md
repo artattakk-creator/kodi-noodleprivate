@@ -17,7 +17,7 @@ Alle folgenden Gates zunächst ANDROID_NOT_TESTED. Frühere .64-Fehler bleiben O
 
 ## Statusoberfläche
 
-In Filme und Serien ist der zusätzliche Knopf oben zwischen Kategorieöffnung und Suche. Er liest ohne Provider-Netzaufruf. Kategorien sind paginiert; ausgewählte Gruppe zeigt lesbare Herkunfts-, Auswahl-, Import- und Bestandswerte. Providerzahl „nicht ermittelt“ bedeutet keine verifizierte aktuelle Remoteantwort. Ein vorhandener lokaler/offline Cache beweist keine aktuelle Providerverfügbarkeit.
+In Filme und Serien auf der Kategorieöffnung oder einer Kategorie das vorhandene Kontextmenü (Menütaste/Lang-OK) öffnen und „Gruppen- und Indexstatus prüfen“ wählen. Suchmaske und XML bleiben bytegleich. Er liest ohne Provider-Netzaufruf. Kategorien sind paginiert; ausgewählte Gruppe zeigt lesbare Herkunfts-, Auswahl-, Import- und Bestandswerte. Providerzahl „nicht ermittelt“ bedeutet keine verifizierte aktuelle Remoteantwort. Ein vorhandener lokaler/offline Cache beweist keine aktuelle Providerverfügbarkeit.
 
 „Gezielt nachimportieren / wiederholen“ beauftragt nur die bewusst ausgewählte aktive Xtream-Gruppe. Deaktivierte Gruppen werden nicht still aktiviert. „Nachimport dieser Gruppe abbrechen“ erhält alle anderen Jobs und den letzten gültigen Bestand. Bei Speicher-/Zugriffsfehlern kein Datenreset.
 

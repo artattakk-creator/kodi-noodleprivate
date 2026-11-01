@@ -97,3 +97,16 @@ class Destination65(Fixture,unittest.TestCase):
   target=str(self.path)
   with mock.patch.object(self.tokens,'location',return_value=str(self.folder/'other-profile'/'addon_data'/'plugin.video.xtreammate'/self.tokens.NAME)),self.assertRaises(self.tokens.TokenError) as raised:self.writer.read_destination(self.tokens,target,initialize=True)
   self.assertEqual(raised.exception.code,'TOKEN_CHANGED');self.assertEqual(raised.exception.subcode,'PROFILE_CHANGED');self.assertFalse(self.path.parent.exists())
+ def test_real_private_anchor_open_failures_keep_errno_subcode_and_create_nothing(self):
+  for number,detail in ((errno.EACCES,'ACCESS_DENIED'),(errno.EPERM,'ACCESS_DENIED'),(errno.EIO,'IO_ERROR'),(errno.EROFS,'READ_ONLY')):
+   with self.subTest(errno=number),mock.patch.object(self.dest.os,'open',side_effect=OSError(number,'synthetic private failure')),self.assertRaises(self.tokens.TokenError) as raised:self.prepare()
+   self.assertEqual(raised.exception.errno,number);self.assertEqual(raised.exception.subcode,detail);self.assertEqual(raised.exception.stage,'PRIVATE_DESTINATION_READ');self.assertFalse(self.path.parent.exists())
+ def test_fstat_io_failure_closes_the_new_directory_descriptor(self):
+  opened=[];original_open=os.open;original_stat=os.fstat
+  def tracked(*args,**kwargs):
+   fd=original_open(*args,**kwargs);opened.append(fd);return fd
+  with mock.patch.object(self.dest.os,'open',side_effect=tracked),mock.patch.object(self.dest.os,'fstat',side_effect=OSError(errno.EIO,'synthetic metadata read failure')),self.assertRaises(self.tokens.TokenError) as raised:self.prepare()
+  self.assertEqual(raised.exception.errno,errno.EIO);self.assertTrue(opened)
+  for fd in opened:
+   with self.assertRaises(OSError) as closed:original_stat(fd)
+   self.assertEqual(closed.exception.errno,errno.EBADF)

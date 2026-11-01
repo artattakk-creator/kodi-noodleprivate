@@ -5,14 +5,13 @@ from xcmate027_fixture import Fixture
 class IndexUI65(Fixture,unittest.TestCase):
  def setUp(self):
   super().setUp();self.status65=importlib.import_module('catalog_status65')
- def test_film_and_series_root_show_focusable_index_status_without_routing_change(self):
+ def test_film_and_series_root_expose_index_status_in_existing_context_menu(self):
+  import types
   for kind in ('vod','series'):
-   window=self.media_window(kind);self.assertIn(121,window._valid_focus());self.assertTrue(window.getControl(121).isVisible())
-   self.assertIn('Indexstatus',window.getControl(121).label)
-   window.setFocusId(121)
-   with mock.patch('catalog_status65.manage',return_value=None) as shown:
-    window.onClick(121);self.settle(window);shown.assert_called_once()
-   self.assertEqual(window.getFocusId(),121);window.close()
+   window=self.media_window(kind);window.setFocusId(120)
+   with mock.patch('menu_icons45.select',return_value=0),mock.patch('catalog_status65.manage',return_value=None) as shown:
+    window.onAction(types.SimpleNamespace(getId=lambda:117));self.settle(window);shown.assert_called_once()
+   self.assertEqual(window.getFocusId(),120);window.close()
  def test_disabled_is_distinct_from_zero_and_does_not_reenable_by_category_name(self):
   self.index.replace_catalog('p','vod',[dict(stream_id='fixture',category_id='10',name='Fixture title')],[dict(category_id='10',category_name='Adult Zone')],authoritative=False)
   importlib.import_module('group_selection').save('p',[],kind='vod',known=['10'])

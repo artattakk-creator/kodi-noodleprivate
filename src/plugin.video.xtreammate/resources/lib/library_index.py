@@ -317,7 +317,8 @@ def import_group(pid,kind,cid,entries,filename=None,cancel=lambda:False,progress
                 db.execute('INSERT OR REPLACE INTO heads VALUES(?,?,?,?,?)',(pid,kind,category,generation,time.time()))
             db.execute('INSERT OR REPLACE INTO catalog VALUES(?,?,?,?)',(pid,kind,generation,time.time()))
         for category in touched: _prune(db,pid,kind,category)
-        return dict(received=received,stored=stored,discarded=discarded,categories=sorted(touched))
+        category_counts65={category:db.execute('SELECT count(*) FROM items_v2 WHERE pid=? AND kind=? AND cid=? AND generation=?',(pid,kind,category,generation)).fetchone()[0] for category in touched}
+        return dict(received=received,stored=stored,discarded=discarded,categories=sorted(touched),category_counts65=category_counts65)
     except BaseException:
         # Keep the previous head; remove only our uncommitted generation.
         try:
@@ -415,11 +416,11 @@ def sync_kind(portal,client,kind,preferred='',force=False,cancel=lambda:False,fi
                     _sync_note(pid,kind,cid,'INDEXING',dict(received=received,stored=stored,discarded=discarded),filename=filename)
                 try:
                     entries=client.iter_catalog(action,cid,cached_only=cached_only,cancel=cancel)
-                    counts=import_group(pid,kind,cid,entries,filename,group_cancel65,progress,{cid})
+                    counts=import_group(pid,kind,cid,entries,filename,group_cancel65,progress,{cid} if only_categories is not None else allowed)
                 except (OSError,ConnectionError,TimeoutError,EmptyCategory65) as source_error65:
                     if isinstance(source_error65,EmptyCategory65):
                         source_counts65=dict(received=source_error65.received,stored=0,discarded=source_error65.discarded)
-                        evidence65(pid,kind,cid,str(source_error65),source_counts65,filename=filename)
+                        evidence65(pid,kind,cid,source_error65.code,source_counts65,filename=filename)
                     if cached_only or head: raise
                     fallback65=cold_categories(db,pid,kind,allowed)
                     if not fallback65:raise
@@ -435,9 +436,10 @@ def sync_kind(portal,client,kind,preferred='',force=False,cancel=lambda:False,fi
                 completed.update(counts['categories'])
                 for category in counts['categories']:
                     _sync_note(pid,kind,category,'READY' if transport65=='REMOTE' else 'CACHED',counts,filename=filename)
-                    evidence65(pid,kind,category,'READY' if transport65=='REMOTE' else 'CACHED',counts,transport65,filename)
+                    category_counts65=dict(counts,stored=counts.get('category_counts65',{}).get(category,counts['stored']))
+                    evidence65(pid,kind,category,'READY' if transport65=='REMOTE' else 'CACHED',category_counts65,transport65,filename)
             except Exception as exc:
-                code65=str(exc) if isinstance(exc,EmptyCategory65) else 'CANCELLED' if isinstance(exc,InterruptedError) else 'FAILED'
+                code65=exc.code if isinstance(exc,EmptyCategory65) else 'CANCELLED' if isinstance(exc,InterruptedError) else 'FAILED'
                 counts65=dict(received=exc.received,stored=0,discarded=exc.discarded) if isinstance(exc,EmptyCategory65) else {}
                 _sync_note(pid,kind,cid,code65,counts65,exc=exc,filename=filename)
                 evidence65(pid,kind,cid,code65,counts65,filename=filename,error=exc)
