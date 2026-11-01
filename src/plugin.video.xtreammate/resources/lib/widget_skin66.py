@@ -52,16 +52,21 @@ def candidate(path,data):
    for old in list(node.findall(tag)):node.remove(old)
    E.SubElement(node,tag).text=value
   metadata.remove(plot);outer.remove(headline);outer.remove(metadata)
-  # Native blocks, bounded relative flow. No global frame offset or copied
-  # provider text: long title/extra metadata cannot displace the plot/heading.
+  # Bound the complete native caption flow, including conditional episode,
+  # music and resume rows. Preserve each native binding and visibility.
   title=E.Element('control',type='grouplist')
-  for tag,value in (('width','1500'),('height','186'),('orientation','vertical'),('usecontrolcoords','true'),('itemgap','0')):E.SubElement(title,tag).text=value
-  title.append(headline);field(metadata,'height','44')
+  for tag,value in (('width','1500'),('height','140'),('orientation','vertical'),('usecontrolcoords','true'),('itemgap','0')):E.SubElement(title,tag).text=value
+  title.append(headline)
+  rows=E.Element('control',type='grouplist')
+  for tag,value in (('width','1500'),('height','100'),('orientation','vertical'),('usecontrolcoords','true'),('itemgap','2')):E.SubElement(rows,tag).text=value
+  for control in list(outer.findall('control')):
+   outer.remove(control);field(control,'height','44');rows.append(control)
+  field(metadata,'height','44');rows.append(metadata)
   for tag,value in (('height','48'),('autoscroll','false'),('font','Reg22'),('aligny','top')):field(plot,tag,value)
   field(outer,'height','310')
   for animation in list(outer.findall('animation')):
    if animation.get('effect','').lower()=='slide' and animation.get('end') in ('0,130','0,180'):outer.remove(animation)
-  outer.extend((title,metadata,plot))
+  outer.extend((title,rows,plot))
   changes.append((region['start'],stop,E.tostring(outer,encoding='utf-8')))
  return edit(data,changes) if changes else data
 def previously_applied(skin):
