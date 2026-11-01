@@ -12,7 +12,8 @@ for n in list(r.findall('extension')):
  if n.get('point')=='xbmc.service':r.remove(n)
 for n in list(r.find('requires')):
  if n.get('addon')!='xbmc.python':r.find('requires').remove(n)
-r.find("extension[@point='xbmc.python.pluginsource']").set('library','fixture66.py')
+plugin=r.find("extension[@point='xbmc.python.pluginsource']");plugin.set('library','fixture66.py')
+plugin.find('provides').text='video audio'  # synthetic music source is a real audio-capable plugin
 t.write(p,encoding='utf-8',xml_declaration=True)
 script=Path('/root/.kodi/addons/script.xcmate.guicontract59');script.mkdir(exist_ok=True)
 (script/'addon.xml').write_text('<addon id="script.xcmate.guicontract59" version="1.0.0" name="Synthetic GUI contract" provider-name="Test"><requires><import addon="xbmc.python" version="3.0.1"/></requires><extension point="xbmc.python.script" library="main.py"/><extension point="xbmc.addon.metadata"><summary lang="en_GB">Test</summary><description lang="en_GB">Test only</description><platform>all</platform><license>GPL-2.0-only</license></extension></addon>')

@@ -87,11 +87,11 @@ elif p.get('fixture66'):
   size=(180,180) if kind=='music' else (120,180)
   image=Image.new('RGB',size,color);ImageDraw.Draw(image).text((12,65),titles[i%3],fill='white');image.save(filename)
   title=titles[i%3] if i<3 else 'Long title fixture with six bounded title lines and missing fanart '+str(i)
-  item=xbmcgui.ListItem(title);item.setInfo('music' if kind=='music' else 'video',dict(title=title,plot='Synthetic foreign description. '*40,year=2026,mediatype='album' if kind=='music' else 'movie'))
+  item=xbmcgui.ListItem(title);item.setInfo('music' if kind=='music' else 'video',dict(title=title,**({'album':title,'artist':['Synthetic musician'],'comment':'Synthetic foreign description. '*40,'mediatype':'album'} if kind=='music' else {'plot':'Synthetic foreign description. '*40,'year':2026,'mediatype':'movie'})))
   item.setArt(dict(poster=str(filename),thumb=str(filename),icon=str(filename)))
   item.setProperty('Fixture66.Index',str(i));item.setProperty('Fixture66.Kind',kind)
   xbmcplugin.addDirectoryItem(handle,'plugin://plugin.video.xtreammate/?fixture66=play-disabled&id='+str(i),item,False)
- xbmcplugin.setContent(handle,'songs' if kind=='music' else 'movies');xbmcplugin.endOfDirectory(handle)
+ xbmcplugin.setContent(handle,'albums' if kind=='music' else 'movies');xbmcplugin.endOfDirectory(handle)
 
 else:
  import programme_assets47
