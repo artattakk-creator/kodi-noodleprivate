@@ -45,12 +45,23 @@ def cancel_one(pid,kind,cid):
    if row['code']=='RUNNING':row['cancel_requested']=True
    elif row['code'] in ('PENDING','FAILED'):row.update(code='CANCELLED',attempts=3,updated=time.time())
   _save(value)
+def acceptance66(row):
+ if not row.get('enabled'):return 'DISABLED'
+ proof=row.get('evidence',{});job=row.get('job',{});code=proof.get('code')
+ if code in ('SOURCE_EMPTY','SOURCE_FILTERED'):return code
+ if proof.get('transport')=='LOCAL_CACHE' or code=='CACHED':return 'CACHED'
+ if job.get('code')=='FAILED' or code=='FAILED':return 'FAILED'
+ expected=proof.get('stored');local=row.get('local_count')
+ if proof.get('transport')=='REMOTE' and code=='READY' and type(expected) is int and type(local) is int:
+  return 'INDEX_INCOMPLETE' if local<expected else 'READY'
+ return job.get('code') if job.get('code') in ('PENDING','RUNNING','CANCELLED') else 'NOT_VERIFIED'
+
 def details(row):
  proof=row['evidence'];source=proof.get('transport')
  remote=str(proof.get('stored',0)) if source=='REMOTE' and proof.get('code')=='READY' else '0' if source=='REMOTE' and proof.get('code')=='SOURCE_EMPTY' else 'nicht ermittelt'
  stamp=time.strftime('%d.%m.%Y %H:%M',time.localtime(row['updated'])) if row['updated'] else 'noch kein erfolgreicher Gruppenimport'
  count=str(row['local_count']) if row['local_count'] is not None else 'nicht lesbar'
- return '\n\n'.join([row['name'],'Gruppe: '+('Aktiv' if row['enabled'] else 'Deaktiviert'),'Provider-Titelzahl: '+remote,'Lokal gespeichert: '+count,'Letzter erfolgreicher Import: '+stamp,'Letzte veröffentlichte Generation: '+str(row.get('generation') or 'unbekannt')[:32],'Quelle/Ergebnis: '+str(source or 'unbekannt')+' / '+str(proof.get('code','nicht geprüft')),'Empfangen / gespeichert / verworfen: '+str(proof.get('received','?'))+' / '+str(proof.get('stored','?'))+' / '+str(proof.get('discarded','?')),'Importauftrag: '+str(row['job'].get('code','kein Auftrag')),'Fehlergrund: '+str(proof.get('error_code','nicht ermittelt')),'Lokaler Cache oder letzter guter Bestand beweist keine aktuelle Provider-Verfügbarkeit. Bei SOURCE_FILTERED passt die Antwort nicht zur angeforderten Kategorie.'])
+ return '\n\n'.join([row['name'],'Prüfstatus: '+acceptance66(row),'Gruppe: '+('Aktiv' if row['enabled'] else 'Deaktiviert'),'Provider-Titelzahl: '+remote,'Lokal gespeichert: '+count,'Letzter erfolgreicher Import: '+stamp,'Letzte veröffentlichte Generation: '+str(row.get('generation') or 'unbekannt')[:32],'Quelle/Ergebnis: '+str(source or 'unbekannt')+' / '+str(proof.get('code','nicht geprüft')),'Empfangen / gespeichert / verworfen: '+str(proof.get('received','?'))+' / '+str(proof.get('stored','?'))+' / '+str(proof.get('discarded','?')),'Importauftrag: '+str(row['job'].get('code','kein Auftrag')),'Fehlergrund: '+str(proof.get('error_code','nicht ermittelt')),'Lokaler Cache oder letzter guter Bestand beweist keine aktuelle Provider-Verfügbarkeit. Bei SOURCE_FILTERED passt die Antwort nicht zur angeforderten Kategorie.'])
 def manage(portal,kind,data):
  import xbmcgui
  from menu_icons45 import select

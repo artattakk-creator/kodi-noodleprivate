@@ -70,8 +70,8 @@ class NavigationTests(Fixture,unittest.TestCase):
         service=types.SimpleNamespace(_last_epg=0,_epg_worker=None,abortRequested=lambda:False)
         refresh=mock.Mock();sys.modules['epg'].ensure_epg_loaded_for_portal=refresh
         self.cache={'xml':[dict(name='Full guide',start_timestamp=self.now-10,stop_timestamp=self.now+10*86400)]}
-        # .53 uses download freshness, not future coverage, as the periodic gate.
-        fresh=[True];sys.modules['epg']._is_fresh=lambda pid:fresh[0]
+        # .66 requires a verified success for this source, not a short-cache clock.
+        fresh=[True];sys.modules['epg_status'].read=lambda pid:{'provider':dict(last_success=time.time() if fresh[0] else 0)}
         namespace['_maybe_refresh_epg'](service)
         refresh.assert_not_called();self.assertEqual(len(targets),1)
         targets[0]();refresh.assert_not_called()
