@@ -76,7 +76,7 @@ def source_done(pid,identity,code,counts=None,outcome=None):
     row=run['sources'].get(identity)
     if row is None:return
     row.update(code=code,finished=time.time());row['seconds']=round(row['finished']-row['started'],3)
-    for key in ('channels','stored','bytes','min_start66','max_end66','mapped_channels66','stored_unique66'):
+    for key in ('channels','stored','bytes','min_start66','max_end66','mapped_channels66','stored_unique66','selected_streams66','matched_streams66'):
         value=(counts or {}).get(key)
         if isinstance(value,(int,float)) and value>=0:row[key]=value
     revision66=(counts or {}).get('revision66','')
@@ -190,6 +190,7 @@ def describe(run,portal):
         lines+=['','[B]'+names.get(s['id'],'Früher konfigurierte Quelle')+'[/B]',meaning(s.get('code')),
                 'Geladen: '+str(s.get('channels',0))+' Sender / '+str(s.get('stored',0))+' passende Sendungen',
                 'Dauer: '+str(s.get('seconds',0))+' Sekunden']
+        if s.get('selected_streams66'):lines.append('Zugeordnete Sender: '+str(s.get('matched_streams66',0))+' / '+str(s['selected_streams66']))
         if s.get('revision66'):lines.append('Quellrevision: '+s['revision66'][:16])
         if s.get('min_start66') and s.get('max_end66'):lines.append('Tatsächlich gelieferte Abdeckung: '+stamp(s['min_start66'])+' bis '+stamp(s['max_end66']))
         saved=s.get('saved',{})

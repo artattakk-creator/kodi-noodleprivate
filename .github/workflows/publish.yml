@@ -40,7 +40,7 @@ jobs:
       - name: Check .66 source syntax and cumulative regression contracts
         run: |
           python -m pip install 'Pillow>=11,<13' 'impacket==0.13.0' 'simpleeval==0.9.13'
-          python -m compileall -q src tools/kodi_home64_host tools/run_kodi_home64_contract.py
+          python -m compileall -q src tools/kodi_home64_host tools/run_kodi_home64_contract.py tools/kodi_home66_host tools/run_kodi_home66_contract.py tools/build_bingie66_review.py
           python -m unittest discover -s tests -p '*02966.py' -v
           python -m unittest discover -s tests -p '*02965.py' -v
           python -m unittest discover -s tests -p '*02964.py' -v
