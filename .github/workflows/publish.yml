@@ -45,6 +45,8 @@ jobs:
           python -m unittest discover -s tests -p '*02964.py' -v
           python -m unittest discover -s tests -p '*02963.py' -v
           python -m unittest discover -s tests -p 'test_xcmate_home_02955.py' -v
+      - name: Measure frozen .64 versus .65 target access and warm EPG
+        run: python tools/benchmark_xcmate65.py --output xcmate65-host-evidence.json
       - name: Verify .64 native movie and series focus, ten provider posters and Live return
         run: python tools/run_kodi_home64_contract.py --report-dir kodi-home64-evidence
       - name: Verify real Kodi 21 Linux plugin and worker RPC transport
@@ -67,6 +69,7 @@ jobs:
         with:
           name: kodi21-helper57-transport-${{ github.sha }}
           path: |
+            xcmate65-host-evidence.json
             kodi-helper57-evidence/transport.json
             kodi-helper57-evidence/build.log
             kodi-widget59-evidence/widgets.json
