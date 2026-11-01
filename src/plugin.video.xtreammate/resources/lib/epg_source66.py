@@ -11,7 +11,9 @@ def restart_anchors(pid):
   deadline=time.monotonic()+.25;db.set_progress_handler(lambda:int(time.monotonic()>deadline),1000)
   meta=db.execute('SELECT updated FROM guide_meta WHERE pid=?',(str(pid),)).fetchone()
   if not meta:return {}
-  return {str(row[0]):float(meta[0]) for row in db.execute('SELECT DISTINCT source_id FROM guide44_inputs WHERE pid=?',(str(pid),))}
+  identities=[str(row[0]) for row in db.execute('SELECT DISTINCT source_id FROM guide44_inputs WHERE pid=?',(str(pid),))]
+  # A shared guide timestamp cannot date several independent sources.
+  return {identities[0]:float(meta[0])} if len(identities)==1 else {}
  except (OSError,sqlite3.Error,ValueError):return {}
  finally:
   if db is not None:db.close()

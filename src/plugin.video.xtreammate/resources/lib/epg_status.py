@@ -45,7 +45,7 @@ def update(pid, key, code, **fields):
                 safe.setdefault('last_success', previous['last_success'])
             for field in ('last_channels','last_programmes'):
                 if field in previous: safe[field]=previous[field]
-            if code == 'READY':
+            if code in ('READY','PARTIAL_PRESERVED','UNCHANGED','READY_NO_NOW'):
                 safe['last_success'] = safe['at']
                 for field in ('channels','programmes'):
                     if field in safe: safe['last_'+field]=safe[field]

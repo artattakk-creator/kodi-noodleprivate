@@ -168,7 +168,7 @@ def publish_stages44(pid,stages,filename=None,cancel=lambda:False):
                 if cancel():raise InterruptedError('EPG import cancelled')
                 generation=stage['generation']
                 outcome=publish(db,pid,'xml_stage','generation=?',(generation,),source=source_id(stage['source'],stage['index']),
-                    rank=stage['index'],revision=revision,now=stage['now'],cancel=cancel)
+                    rank=stage['index'],revision=revision,now=stage['now'],cancel=cancel,correct_times66=True)
                 outcomes.append(outcome)
                 before=db.total_changes
                 for alias,cid in stage['aliases'].items():

@@ -148,7 +148,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         if enabled:candidates.append(dict(url=old['source_url'],source=source,match=old.get('match','NONE'),attribution=old.get('attribution',''),
             **{k:old[k] for k in ('image_scope57','helper_version57','matched_year56','provider_id') if k in old}))
     def failed(reason):
-        if value['code']=='NO_IMAGE':value['code']=reason
+        if value['code']=='NO_IMAGE' or reason in ('NO_MATCH_AMBIGUOUS','NO_ARTWORK'):value['code']=reason
         else:value['lookup_code56']=reason
         source_trace(event,reason)
     def supplied():

@@ -31,16 +31,17 @@ concurrency:
 jobs:
   kodi-helper57-transport:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Check .65 source syntax and focused regression contracts
+      - name: Check .66 source syntax and cumulative regression contracts
         run: |
           python -m pip install 'Pillow>=11,<13' 'impacket==0.13.0' 'simpleeval==0.9.13'
           python -m compileall -q src tools/kodi_home64_host tools/run_kodi_home64_contract.py
+          python -m unittest discover -s tests -p '*02966.py' -v
           python -m unittest discover -s tests -p '*02965.py' -v
           python -m unittest discover -s tests -p '*02964.py' -v
           python -m unittest discover -s tests -p '*02963.py' -v
@@ -56,6 +57,8 @@ jobs:
           PY
       - name: Measure frozen .64 versus .65 target access and warm EPG
         run: python tools/benchmark_xcmate65.py --output xcmate65-host-evidence.json
+      - name: Measure .66 persistent cold and warm coverage of all 88 channels
+        run: python tools/benchmark_xcmate66.py --output xcmate66-host-evidence.json
       - name: Verify .64 native movie and series focus, ten provider posters and Live return
         run: python tools/run_kodi_home64_contract.py --report-dir kodi-home64-evidence
       - name: Verify real Kodi 21 Linux plugin and worker RPC transport
@@ -79,6 +82,7 @@ jobs:
           name: kodi21-helper57-transport-${{ github.sha }}
           path: |
             xcmate65-host-evidence.json
+            xcmate66-host-evidence.json
             kodi-helper57-evidence/transport.json
             kodi-helper57-evidence/build.log
             kodi-widget59-evidence/widgets.json
@@ -133,7 +137,7 @@ jobs:
       - name: Build all Kodi addon packages and index
         run: python tools/build_repository.py
       - name: Verify canonical XCMate source ZIP and regular Kodi index
-        run: python tools/verify_xcmate65_package.py
+        run: python tools/verify_xcmate66_package.py
       - name: Validate Kodi gettext languages
         run: python tools/validate_kodi_po.py
       - name: Validate pinned navigation icons and license
@@ -146,7 +150,7 @@ jobs:
           for f in tests/test_addon.py tests/test_site.py tests/test_providers.py; do
             sed -i "s@'..', 'plugin.video.noodleprivate'@'..', 'src', 'plugin.video.noodleprivate'@g" "$f"
           done
-          python -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/xcmate65-test-results.log"
+          python -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/xcmate66-test-results.log"
       - name: Prepare XCMate pull request test package
         id: xcmate_package
         if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
@@ -203,7 +207,7 @@ jobs:
               for node in manifest.findall('.//assets/*'):
                   if node.tag in ('icon', 'fanart', 'screenshot'):
                       assert 'plugin.video.xtreammate/' + node.text in archive.namelist(), node.text
-          testlog = Path(os.environ['RUNNER_TEMP']) / 'xcmate65-test-results.log'
+          testlog = Path(os.environ['RUNNER_TEMP']) / 'xcmate66-test-results.log'
           log = testlog.read_text()
           match = re.search(r'Ran (\d+) tests? in ([0-9.]+)s', log)
           assert match and '\nOK' in log and '\nFAILED' not in log

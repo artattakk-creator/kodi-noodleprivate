@@ -46,7 +46,7 @@ def report(portal,rows,now=None):
     if selected:bounds=db.execute('SELECT min(start),max(stop) FROM guide44_inputs WHERE pid=? AND source_id=? AND cid=?',(str(portal['id']),selected['source'],selected['channel'])).fetchone()
     else:bounds=db.execute('SELECT min(start),max(stop) FROM programmes WHERE pid=? AND cid=?',(str(portal['id']),cid)).fetchone()
     first,last=bounds
-   result.append(dict(sid=sid,code=classify(info,bool(cid),first,last,now,readable),first=first,last=last,revision=info.get('snapshot_revision'),source=selected['source'] if selected else 'merged'))
+   result.append(dict(sid=sid,name=str(row.get('name',''))[:256],code=classify(info,bool(cid),first,last,now,readable),first=first,last=last,revision=info.get('snapshot_revision'),source=selected['source'] if selected else 'merged'))
  except (OSError,sqlite3.Error):
   return [dict(sid=str(row.get('sid','')),code='DB_UNAVAILABLE') for row in rows]
  finally:

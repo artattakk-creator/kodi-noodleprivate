@@ -40,7 +40,7 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
         control.addItems(items)
         if items:control.selectItem(min(pos,len(items)-1))
         from epg_schedule53 import interval
-        self.getControl(102).setLabel('Automatisch alle '+str(interval()//3600)+' Stunden · OK: Quelle verwalten · Einzelzuordnung im großen EPG')
+        self.getControl(102).setLabel('Automatisch alle '+str(min(interval(),86400)//3600)+' Stunden · OK: Quelle verwalten · Einzelzuordnung im großen EPG · Menü: Senderabdeckung')
         self.getControl(402).setLabel('Jetzt aktualisieren')
         self.getControl(411).setEnabled(bool(getattr(self,'_setup_pending54',False)))
         self._detail()
@@ -52,7 +52,7 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
         progress=row.get('progress59',{})
         details=('Download/Import: '+str(progress.get('bytes',0))+' Bytes · '+str(progress.get('programmes',0))+' gelesen · '+str(progress.get('count',0))+' zugeordnet\n') if row.get('code') in ('RUNNING','DOWNLOADING','PARSING','SAVING','VERIFIED') else ''
         if progress.get('http_status'):details+='HTTP-Status: '+str(progress['http_status'])+'\n'
-        self.getControl(103).setText(details+'Letzter Erfolg: '+stamp(row['last_success'])+'\nLetzter protokollierter Fehler: '+stamp(row['last_failure'])+'\nGespeicherter Zeitraum: '+stamp(saved.get('first'))+' bis '+stamp(saved.get('last')))
+        self.getControl(103).setText(details+'Letzter Versuch: '+stamp(row.get('last_attempt66'))+'\n'+'Letzter Erfolg: '+stamp(row['last_success'])+'\nLetzter protokollierter Fehler: '+stamp(row['last_failure'])+'\nGespeicherter Zeitraum: '+stamp(saved.get('first'))+' bis '+stamp(saved.get('last')))
     def onFocus(self,cid):
         if cid==200:self._detail()
     def _query_failed(self,exc):self.getControl(102).setLabel('EPG-Zugriff oder Speichern nicht bestätigt. Daten bleiben erhalten.')
@@ -102,7 +102,7 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
         elif cid==404:self._load()
         elif cid==405:self.next_action='guide';self.close()
         elif cid==407:
-            values=[24,6,12,48];choice=select(xbmcgui.Dialog(),'Automatischer EPG-Download',[str(h)+' Stunden' for h in values])
+            values=[24,6,12];choice=select(xbmcgui.Dialog(),'Automatischer EPG-Download',[str(h)+' Stunden' for h in values])
             if 0<=choice<len(values):
                 import xbmcaddon
                 xbmcaddon.Addon().setSetting('epg_refresh_hours',str(values[choice]))
@@ -122,6 +122,19 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
         now=time.monotonic()
         if not self._closed and self.mode=='sources' and not self._pending_future and now<getattr(self,'_refresh_until58',0) and now>=getattr(self,'_next_status58',0):
             self._next_status58=now+2;self._load()
+    def _coverage66(self):
+        from epg_coverage66 import report
+        from stream_epg import active_streams
+        from itertools import islice
+        def ready(rows):
+            from epg_report53 import stamp
+            self.mode='report';self.scroll=0;self.getControl(200).setVisible(False);self.getControl(103).setText('');self.getControl(300).setVisible(True)
+            meanings={'READY':'Jetzt/Danach lokal bereit','UNMAPPED':'Keine eindeutige Zuordnung','SOURCE_EMPTY':'Keine gespeicherten Quellereignisse','EVENT_OUT_OF_WINDOW':'Lücke oder Ereignis außerhalb der aktuellen Zeit','STALE':'Gespeicherte Abdeckung abgelaufen','DB_UNAVAILABLE':'Datenbank momentan nicht lesbar'}
+            lines=['Lokale Senderabdeckung · kein Netzabruf']
+            for row in rows:lines.extend(['',row.get('name') or 'Sender '+row['sid'],meanings.get(row['code'],row['code']),stamp(row.get('first'))+' bis '+stamp(row.get('last'))])
+            self.getControl(300).setText('\n'.join(lines));self.getControl(300).scroll(0);self.getControl(102).setLabel('Lokale Prüfung der ersten bis zu 512 aktivierten Sender · Zurück: Quellenliste');self.setFocusId(409)
+        self._request(lambda:report(self.portal,list(islice(active_streams(self.portal),512))),ready)
+
     def _toggle_provider58(self):
         from provider_epg58 import toggle
         def ready(portal):
@@ -132,6 +145,7 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
         self._request(lambda:toggle(self.portal),ready)
     def onAction(self,action):
         if action.getId() in (9,10,92):self.onClick(406)
+        elif action.getId()==117 and self.mode=='sources' and not self._pending_future:self._coverage66()
         elif action.getId() in (3,4) and self.mode=='sources':self._detail()
     def close(self):
         self._gui()
