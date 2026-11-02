@@ -1,0 +1,57 @@
+name: GS Media Repository Lite release gate
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/repository.gsmedia/**"
+      - "tools/build_repository.py"
+      - "tools/render_gsmedia_icon.py"
+      - "tests/test_gsmedia_repo_180.py"
+      - "tests/test_repository_layout.py"
+      - "docs/GS_MEDIA_REPOSITORY_CANDIDATES_BACKLOG_DE.md"
+      - ".github/workflows/gsmedia-lite-policy.yml"
+  push:
+    branches: [main]
+    paths:
+      - "src/repository.gsmedia/**"
+      - "tools/build_repository.py"
+      - "tests/test_gsmedia_repo_180.py"
+      - "tests/test_repository_layout.py"
+      - ".github/workflows/gsmedia-lite-policy.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  allowlist:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install image test dependency
+        run: python -m pip install 'Pillow>=11,<13'
+      - name: Verify Lite allowlist and existing addon identities
+        run: |
+          python -m unittest discover -s tests -p 'test_repository_layout.py' -v
+          python -m unittest discover -s tests -p 'test_gsmedia_repo_180.py' -v
+      - name: Verify repo version, isolated source, and published index entries
+        run: |
+          python - <<'PY'
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+          allowed = {'plugin.video.xtreammate', 'plugin.video.noodleprivate', 'repository.gsmedia'}
+          repo = ET.parse('src/repository.gsmedia/addon.xml').getroot()
+          assert repo.get('version') == '1.8.1', repo.attrib
+          directory = repo.findall("./extension[@point='xbmc.addon.repository']/dir")
+          assert len(directory) == 1, len(directory)
+          assert directory[0].findtext('info').endswith('/kodi-noodleprivate/main/addons.xml')
+          ids = {x.parent.name for x in Path('src').glob('*/addon.xml')}
+          assert ids == allowed, ids
+          index = ET.parse('addons.xml').getroot()
+          listed = {x.get('id') for x in index.findall('addon')}
+          assert listed <= allowed, listed - allowed
+          PY
