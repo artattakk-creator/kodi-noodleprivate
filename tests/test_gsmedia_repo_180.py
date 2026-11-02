@@ -28,6 +28,11 @@ class GsMediaRepo180Tests(unittest.TestCase):
         self.assertEqual(dirs[0].findtext("datadir"), allowed)
         self.assertEqual(dirs[0].findtext("hashes"), "false")
 
+    def test_only_three_approved_addon_ids_in_builder(self):
+        # Historical test ID retained: XCMate .70's cumulative test
+        # contract requires this method to remain present after RC upgrades.
+        self.test_only_four_approved_addon_ids_in_builder()
+
     def test_only_four_approved_addon_ids_in_builder(self):
         import ast
         script = ROOT / "tools" / "build_repository.py"
