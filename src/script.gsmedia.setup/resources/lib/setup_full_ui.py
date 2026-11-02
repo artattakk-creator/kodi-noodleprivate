@@ -61,6 +61,11 @@ def _record(profile, state):
 
 def run():
     dialog = xbmcgui.Dialog()
+    if not (xbmc.getInfoLabel("System.BuildVersion") or "").startswith("21."):
+        _info(dialog, "GS Media – Kodi 21 erforderlich",
+              "Dieser Installer ist ausschließlich für Kodi 21 Omega freigegeben. "
+              "Für Kodi 22/20 oder unbekannte Version wird nichts verändert.")
+        return
     try:
         profile = _profile()
         state = load(profile)
