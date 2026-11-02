@@ -126,7 +126,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     if url_mode69:
         from programme_session69 import get as session69
         prior69=session69(event)
-        if prior69:return prior69
+        if prior69 and not (allow_lookup and __import__('programme_status70').retry(event,prior69)):return prior69
     old=art(event)
     if old and not old.get('url_version55') and (local_image63 or old.get('source') in ('tmdb_movie','tmdb_episode','tmdb_series','tvmaze_series','tvmaze_episode')) and old.get('source')!='placeholder' and old.get('fingerprint')==fingerprint(event) and old.get('until',0)>time.time():
         from programme_art46 import indexed
@@ -140,7 +140,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     if url_mode69 and current and current.get('source')!='placeholder' and not current.get('url_verified69'):current=None
     from programme_refresh63 import retry as retry63
     from programme_refresh63 import retry67
-    explicit63=allow_lookup and (retry63(event,old) or retry67(event,old))
+    explicit63=allow_lookup and (__import__('programme_status70').retry(event,prior69 if url_mode69 and prior69 else old) or retry63(event,old) or retry67(event,old))
     from programme_policy68 import negative_scope
     negative68=negative_scope(event)
     if old and old.get('source')=='placeholder' and old.get('negative_scope68')==negative68 and old.get('until',0)>time.time() and not explicit63:
@@ -154,7 +154,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
                resolved_at55=now,until=now+300,tvspielfilm55='BLOCKED_NO_AUTHORIZED_API')
     value.update(hosts55=sorted(hosts()),profile55=profile())
     value['matching_policy56']=1
-    value.update(matching_policy57=1,source_policy57=policy())
+    value.update(matching_policy57=1,source_policy57=policy(),sources70=[],lookup70=__import__('programme_outcomes70').settings())
     candidates=[dict(url=event[field],source=source,match='EXACT_EVENT',attribution=credit)
                 for field,source,credit in (('xmltv_image','xmltv_event','XMLTV – konfigurierte Eventquelle'),
                     ('provider_image','provider_event','Anbieter – konfigurierte Eventquelle')) if event.get(field)]
@@ -176,9 +176,12 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         for find in steps:
             if cancel():return
             started=time.monotonic()
+            from programme_outcomes70 import add as outcome70
+            source70=getattr(find,'source70','injected')
             try:found=find()
             except (SourceError,HelperError) as exc:
-                failed(exc.code);continue
+                outcome70(value,source70,exc.code);failed(exc.code);continue
+            outcome70(value,source70,'FOUND' if found else 'DISABLED' if source70=='tmdb' and not value['lookup70']['own'] else 'NO_CONFIRMED_IMAGE')
             if found:
                 if found.get('source')=='tmdb_helper':source_trace(event,'HELPER_LOOKUP_OK',duration_ms=(time.monotonic()-started)*1000)
                 fallback=found.get('series_fallback57')
@@ -269,7 +272,7 @@ def enqueue(event,allow_lookup=False,local_image63=False,priority68=False):
         if not local_image63 and not setting_bool('programme_art_local69',False):
             from programme_session69 import get as session69
             available69=session69(event)
-            if available69:
+            if available69 and not (allow_lookup and __import__('programme_status70').retry(event,available69)):
                 from programme_requests68 import completed
                 completed(event,available69);return False
         if key in _pending:

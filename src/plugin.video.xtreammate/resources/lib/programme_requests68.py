@@ -9,7 +9,7 @@ PREFIX='XCMate.Programme68.'
 SLOTS=64
 MAX_BYTES=8192
 _FIELDS=('pid','sid','start','stop','title','canonical','revision','source_key46','fact_revision46','epg_source46')
-_ART=('key','fingerprint','code','source','match','image','thumbnail','sha256','attribution','image_scope57','until','failure_reason68','storage68','source_url','url_version55','url_verified69','scope69','profile69','persisted69','storage69','storage_code69','policy69')
+_ART=('key','fingerprint','code','source','match','image','thumbnail','sha256','attribution','image_scope57','until','failure_reason68','storage68','source_url','url_version55','url_verified69','scope69','profile69','persisted69','storage69','storage_code69','policy69','resolved_at55','sources70','lookup70')
 _lock=threading.Lock()
 _thread=None
 _stop=threading.Event()
@@ -72,6 +72,8 @@ def status(event,code,art=None):
   tags=[identity(event)]
   with _lock:tags+=list(_aliases.get(tags[0],()))
   payload={k:art[k] for k in _ART if art and k in art}
+  if 'sources70' in payload:payload['sources70']=__import__('programme_outcomes70').clean(payload['sources70'])
+  if 'lookup70' in payload:payload['lookup70']={k:bool(v) for k,v in payload['lookup70'].items() if k in ('own','helper','catalog','tvmaze')} if isinstance(payload['lookup70'],dict) else {}
   if payload.get('source_url') or str(payload.get('image','')).startswith(('http://','https://','smb://')):
    from programme_image69 import url as public_url69
    if not public_url69(payload):
@@ -90,14 +92,15 @@ def result(event,previous=None):
  """UI-safe status/art, bound to exact profile, event and source revision."""
  try:
   tag=identity(event);value=_read('status.'+str(int(tag[:8],16)%SLOTS))
-  if value.get('tag')!=tag or value.get('scope')!=scope() or not 0<=time.time()-float(value.get('at',0))<300:return previous or {}
+  from programme_status70 import valid,waiting
+  if value.get('tag')!=tag or value.get('scope')!=scope() or not valid(value):return waiting(event,previous)
   art=value.get('art') or {}
   if art.get('code') in ('READY','READY_STALE') and art.get('source') not in (None,'','placeholder') and art.get('image'):
    if art.get('until',0)<=time.time():return dict(code='CACHE_MISMATCH',source='placeholder')
    from programme_image69 import eligible
    if not eligible(art,event):return dict(code='CACHE_MISMATCH',source='placeholder')
    return dict(art,status68=value['code'])
-  return dict(previous or {},**{k:art[k] for k in ('failure_reason68','storage68','until','storage69','storage_code69') if k in art},code=value['code'],status68=value['code'])
+  return dict(previous or {},**{k:art[k] for k in ('failure_reason68','storage68','until','storage69','storage_code69','sources70','lookup70','resolved_at55') if k in art},code=value['code'],status68=value['code'])
  except (ImportError,AttributeError,RuntimeError,ValueError,TypeError,KeyError):return previous or {}
 
 def completed(event,value):
@@ -134,7 +137,8 @@ def drain(cancel=lambda:False):
    if previous69.get('tag')==value['tag'] and previous69.get('scope')==scope():
     artifact69=previous69.get('art') or {}
     from programme_policy68 import negative_scope
-    if artifact69.get('until',0)>time.time() and artifact69.get('policy69')==negative_scope({}):continue
+    from programme_status70 import retry as retry70,valid as valid70
+    if valid70(previous69) and artifact69.get('until',0)>time.time() and artifact69.get('policy69')==negative_scope({}) and not retry70(event,artifact69):continue
     if previous69.get('code') in ('QUEUED','RUNNING') and 0<=time.time()-previous69.get('at',0)<60:continue
    portal=get_by_id(str(event.get('pid','')))
    if not portal or not portal.get('enabled',True) or not portal.get('include_live',True):continue
