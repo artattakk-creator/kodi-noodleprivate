@@ -51,7 +51,7 @@
       "id": "plugin.audio.m3sr2019",
       "name": "MP3 Streams Echoed",
       "version": "2026.1.0",
-      "status": "blocked_upstream_404",
+      "status": "historical_backup_source_found_not_packaged",
       "source_kind": "upstream_github",
       "artifact": "https://raw.githubusercontent.com/Echo-Storm/MP3-Streams-2026-Kodi/master/plugin_audio_m3sr2019-2026.1.0.zip",
       "required": [
@@ -61,7 +61,7 @@
         "script.module.routing"
       ],
       "optional": [],
-      "notes": "Repository upstream / ZIP returned 404; DO NOT create a fake ZIP, downgrade installed current 2026.1.0, or publish before verified source recovery."
+      "notes": "2026.1.0 GPL-3.0 installed addon source located in user's private 2026-10-21 Google Drive backup (addon.xml, default.py, LICENSE, resources); upstream Echo-Storm GitHub remains 404. Source must be reconstructed from complete resources, scanned for user data, licensed, CRC/hash-tested and tested on Kodi 21.3 ARM32 before rehosting. No raw backup or addon_data in public GitHub."
     },
     {
       "id": "plugin.audio.shoutcast",
