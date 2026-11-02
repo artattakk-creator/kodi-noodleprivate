@@ -189,7 +189,11 @@ class Pipeline68(Fixture,unittest.TestCase):
   self.assertTrue(request.call_args.kwargs['priority'])
 
  def test_partial_empty_catalogue_is_loading_until_full_snapshot_finishes(self):
-  from live_overlay import LiveNavigator
+  import importlib.util
+  spec=importlib.util.spec_from_file_location('isolated_loading68',ADDON/'resources/lib/live_overlay.py')
+  module=importlib.util.module_from_spec(spec)
+  with mock.patch.object(sys.modules['xbmcgui'],'WindowDialog',object,create=True):spec.loader.exec_module(module)
+  LiveNavigator=module.LiveNavigator
   owner=types.SimpleNamespace(mode='channels',index=types.SimpleNamespace(selection=lambda *args:([],{})),category_id='a',enabled={'a'},_highlight={'channels':0},_scroll_to_current=False,_catalog_ready=True,_catalog_partial46=True)
   self.assertEqual(LiveNavigator._list_content(owner),['Senderkatalog wird vorbereitet'])
   owner._catalog_partial46=False
