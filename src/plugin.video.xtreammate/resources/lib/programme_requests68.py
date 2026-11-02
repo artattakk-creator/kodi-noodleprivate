@@ -9,7 +9,7 @@ PREFIX='XCMate.Programme68.'
 SLOTS=64
 MAX_BYTES=8192
 _FIELDS=('pid','sid','start','stop','title','canonical','revision','source_key46','fact_revision46','epg_source46')
-_ART=('key','fingerprint','code','source','match','image','thumbnail','sha256','attribution','image_scope57','until','failure_reason68','storage68','source_url','url_version55','url_verified69','scope69','profile69','persisted69','storage69','storage_code69')
+_ART=('key','fingerprint','code','source','match','image','thumbnail','sha256','attribution','image_scope57','until','failure_reason68','storage68','source_url','url_version55','url_verified69','scope69','profile69','persisted69','storage69','storage_code69','policy69')
 _lock=threading.Lock()
 _thread=None
 _stop=threading.Event()
@@ -133,7 +133,8 @@ def drain(cancel=lambda:False):
    previous69=_read('status.'+str(int(value['tag'][:8],16)%SLOTS))
    if previous69.get('tag')==value['tag'] and previous69.get('scope')==scope():
     artifact69=previous69.get('art') or {}
-    if artifact69.get('until',0)>time.time():continue
+    from programme_policy68 import negative_scope
+    if artifact69.get('until',0)>time.time() and artifact69.get('policy69')==negative_scope({}):continue
     if previous69.get('code') in ('QUEUED','RUNNING') and 0<=time.time()-previous69.get('at',0)<60:continue
    portal=get_by_id(str(event.get('pid','')))
    if not portal or not portal.get('enabled',True) or not portal.get('include_live',True):continue

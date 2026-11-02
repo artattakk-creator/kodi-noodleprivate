@@ -102,3 +102,17 @@ class Capacity69(Fixture,unittest.TestCase):
   self.assertTrue(publish_result69(first,dict(code='NO_MATCH',source='placeholder',until=time.time()+300)))
   self.assertTrue(publish_result69(second,dict(code='NO_ARTWORK',source='placeholder',until=time.time()+300)))
   self.assertEqual(art(first)['code'],'NO_MATCH');self.assertEqual(art(second)['code'],'NO_ARTWORK')
+
+ def test_reserve_diagnostic_is_available_before_db_creation(self):
+  from programme_storage68 import inspect
+  with mock.patch('programme_storage68.shutil.disk_usage',return_value=types.SimpleNamespace(free=16*1024*1024)):
+   value=inspect()
+  self.assertEqual(value['code'],'NOT_CREATED');self.assertEqual(value['capacity_code69'],'SAFE_RESERVE_BLOCKED')
+ def test_remote_proof_is_revoked_by_source_policy_change_without_io(self):
+  from programme_urls55 import resolve
+  from programme_image69 import eligible
+  event=self.event();found=dict(url='https://image.tmdb.org/t/p/w500/SYNTHETIC.jpg',source='tmdb_movie',match='EXACT_TITLE_YEAR',attribution='TMDB')
+  with mock.patch('programme_index46.publish_result69',return_value=False):
+   art=resolve(event,allow_lookup=True,url_mode69=True,match=lambda *a,**kw:found,check=mock.Mock())
+  self.assertTrue(eligible(art,event));self.options['programme_tvmaze67']=True
+  with mock.patch('builtins.open',side_effect=AssertionError('GUI_IO')),mock.patch('sqlite3.connect',side_effect=AssertionError('GUI_SQL')):self.assertFalse(eligible(art,event))

@@ -24,6 +24,9 @@ def inspect(guide=None):
   for suffix,field in (('','db_bytes'),('-wal','wal_bytes'),('-shm','shm_bytes')):
    try:result[field]=os.stat(filename+suffix,follow_symlinks=False).st_size
    except FileNotFoundError:pass
+  from programme_writes69 import state
+  result['write_circuit69']=state(filename)
+  result['capacity_code69']='SAFE_RESERVE_BLOCKED' if result['disk_free_bytes']<result['programme_db_reserve_bytes']+65536 else 'RESERVE_AVAILABLE'
   if not os.path.isfile(filename):return result
   if os.path.islink(filename):return dict(result,code='UNSAFE_PATH')
   db=sqlite3.connect('file:'+quote(filename,safe='/')+'?mode=ro',uri=True,timeout=.02)

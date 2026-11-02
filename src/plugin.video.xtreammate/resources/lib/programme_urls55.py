@@ -219,7 +219,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             if candidate.get(field):value[field]=candidate[field]
         if url_mode69:
             from programme_requests68 import identity,scope
-            value.update(url_verified69=True,scope69=identity(event),profile69=scope())
+            value.update(url_verified69=True,scope69=identity(event),profile69=scope(),policy69=negative_scope({}))
         source_trace(event,'IMAGE_URL_VERIFIED')
         break
     if not candidates and not allow_lookup:value['code']='AWAITING_BACKGROUND_REFRESH'

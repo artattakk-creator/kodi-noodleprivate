@@ -1,6 +1,6 @@
 """Pure display admission for verified public URL references and local images."""
 import json,math,os,time
-FIELDS=('key','fingerprint','code','source','match','image','thumbnail','source_url','url_version55','url_verified69','scope69','profile69','until','image_scope57','persisted69','storage69','storage_code69')
+FIELDS=('key','fingerprint','code','source','match','image','thumbnail','source_url','url_version55','url_verified69','scope69','profile69','until','image_scope57','persisted69','storage69','storage_code69','policy69')
 def url(art):
  from programme_urls55 import safe,OPTIONS
  value=art.get('source_url','') if isinstance(art,dict) else ''
@@ -16,6 +16,8 @@ def eligible(art,event=None):
   if art['scope69']!=identity(event):return False
  if os.path.isabs(image) and not art.get('url_version55'):return True
  if not url(art):return False
+ from programme_policy68 import negative_scope
+ if art.get('policy69')!=negative_scope({}):return False
  until=art.get('until',0)
  if type(until) not in (int,float) or not math.isfinite(until) or not time.time()<until<=time.time()+86400:return False
  from epg_handoff63 import profile_scope
@@ -40,4 +42,4 @@ def adopt(event,value):
  valid=display(event,value)
  if not valid or valid.get('code') not in ('READY','READY_STALE') or valid.get('source')=='placeholder':return value
  from programme_requests68 import identity,scope
- return dict(valid,url_verified69=True,scope69=identity(event),profile69=scope(),until=min(valid['until'],time.time()+86400))
+ return dict(valid,url_verified69=True,scope69=identity(event),profile69=scope(),policy69=__import__('programme_policy68').negative_scope({}),until=min(valid['until'],time.time()+86400))
