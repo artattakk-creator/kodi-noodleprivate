@@ -37,3 +37,12 @@ jobs:
           path: xcmate69-host-evidence.json
           if-no-files-found: warn
           retention-days: 14
+      - name: Recheck affected historical widget and branding contracts
+        run: |
+          python - <<'PY'
+          import sys,unittest
+          sys.path[:0]=['tests','src/plugin.video.xtreammate/resources/lib']
+          modules=['test_gsmedia_repo_180','test_repository_layout','test_xcmate_branding','test_xcmate_cumulative_02922','test_xcmate_helper_02957','test_xcmate_live_home_02950','test_xcmate_live_reader_02962','test_xcmate_p0_02958','test_xcmate_programme_integration_02947','test_xcmate_programme_widgets_02946','test_xcmate_series_02952','test_xcmate_viewport_02936','test_xcmate_widget_master_02946','test_xcmate_widget_pipeline_02947','test_xcmate_widget_refresh_02945','test_xcmate_widgets_02941']
+          result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromNames(modules))
+          if not result.wasSuccessful():raise SystemExit(1)
+          PY

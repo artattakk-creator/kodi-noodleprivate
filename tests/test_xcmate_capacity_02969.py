@@ -116,3 +116,15 @@ class Capacity69(Fixture,unittest.TestCase):
    art=resolve(event,allow_lookup=True,url_mode69=True,match=lambda *a,**kw:found,check=mock.Mock())
   self.assertTrue(eligible(art,event));self.options['programme_tvmaze67']=True
   with mock.patch('builtins.open',side_effect=AssertionError('GUI_IO')),mock.patch('sqlite3.connect',side_effect=AssertionError('GUI_SQL')):self.assertFalse(eligible(art,event))
+
+ def test_preview_preserves_authoritative_canonical_and_revision(self):
+  import programme_preview67 as preview
+  event=self.event()
+  found=dict(url='https://image.tmdb.org/t/p/w500/SYNTHETIC.jpg',source='tmdb_movie',match='EXACT_TITLE_YEAR',attribution='TMDB')
+  from programme_urls55 import resolve
+  with mock.patch('programme_index46.publish_result69',return_value=False):
+   art=resolve(event,allow_lookup=True,url_mode69=True,match=lambda *a,**kw:found,check=mock.Mock())
+  key=event['key'];monitor=types.SimpleNamespace(abortRequested=mock.Mock(side_effect=[False,True]),waitForAbort=lambda timeout:False)
+  with mock.patch('xbmc.Monitor',return_value=monitor),mock.patch.dict(preview._wanted,{'test69':(key,self.portal,dict(sid='1',name='Synthetic'),event)},clear=True),mock.patch.dict(preview._done,{'test69':(key,{})},clear=True),mock.patch('programme_art46.cached',return_value=art) as cached,mock.patch('programme_requests68.result',return_value=art):
+   preview._work();self.assertEqual(cached.call_args.args[0],event)
+   self.assertEqual(preview._done['test69'][1]['image'],art['image'])
