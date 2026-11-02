@@ -16,7 +16,7 @@ class Pipeline68(Fixture,unittest.TestCase):
  def test_ui_intent_and_status_do_no_disk_sql_or_network(self):
   e=self.event()
   with mock.patch('builtins.open',side_effect=AssertionError('GUI_FILE')),mock.patch('sqlite3.connect',side_effect=AssertionError('GUI_SQL')),mock.patch('media_sources43.get',side_effect=AssertionError('GUI_HTTP')):
-   self.assertTrue(self.b.request(e,priority=True));self.assertEqual(self.b.result(e),{})
+   self.assertTrue(self.b.request(e,priority=True));self.assertEqual(self.b.result(e)['code'],'REQUESTED')  # .70: intent submitted, no worker ACK yet
   self.assertTrue(any('request.' in k for k in self.properties))
  def test_mapping_preview_cannot_create_a_persistent_image_job(self):
   self.assertFalse(self.b.request(self.event(_no_art_request68=True),priority=True))

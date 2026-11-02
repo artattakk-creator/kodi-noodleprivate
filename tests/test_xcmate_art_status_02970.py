@@ -95,3 +95,14 @@ class ArtStatus70(Fixture,unittest.TestCase):
    first=self.q.resolve(event,allow_lookup=True,url_mode69=True,match=lookup,check=mock.Mock())
    second=self.q.resolve(event,allow_lookup=True,url_mode69=True,match=lookup,check=mock.Mock())
   self.assertEqual(first['code'],'READY');self.assertEqual(first['image'],second['image']);self.assertEqual(lookup.call_count,1)
+
+ def test_real_supplier_chain_keeps_own_api_reason_before_helper_error(self):
+  from media_sources43 import SourceError
+  from helper_rpc57 import Error
+  self.options.update(programme_tmdb46=True,tmdb_research43=True,programme_helper57=True,programme_catalog57=False)
+  event=self.event()
+  with mock.patch('programme_match46.candidate',side_effect=SourceError('HTTP_AUTH')),mock.patch('programme_tvmaze67.candidate',return_value=None),mock.patch('programme_helper57.lookup',side_effect=Error('HELPER_TIMEOUT')),mock.patch('programme_index46.publish_result69',return_value=False):
+   value=self.q.resolve(event,allow_lookup=True,url_mode69=True,check=mock.Mock())
+  self.assertIn(dict(source='tmdb',code='HTTP_AUTH'),value['sources70'])
+  self.assertIn(dict(source='helper',code='HELPER_TIMEOUT'),value['sources70'])
+  self.assertIn('Zugriff abgewiesen',__import__('programme_diagnostics59').message(event,value))
