@@ -136,10 +136,10 @@ def run():
                      "Der Status wird NICHT als installiert gemeldet. "
                      "Später ausdrücklich erneut anfordern.")
             return
-        _message(dialog, "Kodi-Installationsanfrage für " + addon_id + " gesendet.\n"
-                 "Dies bedeutet NOCH KEINEN INSTALLATIONSERFOLG. "
-                 "Kodi-Dialoge beachten und danach den Installationspilot "
-                 "erneut starten, um den installierten Status nachzuprüfen.")
+        # Notification cannot obscure Kodi's native installation UI.
+        dialog.notification("GS Media Setup", "InstallAddon: " + addon_id +
+                            " – Kodi-Dialoge beachten, danach erneut prüfen.",
+                            time=5500)
         return
 
     if code == "PILOT_DONE_NOT_FULL_SETUP":
