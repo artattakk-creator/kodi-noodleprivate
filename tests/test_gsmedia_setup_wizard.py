@@ -248,7 +248,11 @@ class SetupPreflightTests(unittest.TestCase):
             for bad in ("InstallAddon(", "UninstallAddon(", "EnableAddon(",
                         "SetAddonEnabled", "shutil.rmtree(", "addon_data",
                         "xbmc.executebuiltin(", "open("):
-                # "open(" would block safe code if these modules read local files; they do not.
+                # The TMDB player proposal may name the documented target folder
+                # without ever opening it or changing any user profile.
+                if bad == "addon_data" and path.name == "setup_tmdb_player.py":
+                    self.assertIn("special://profile/addon_data/", value)
+                    continue
                 self.assertNotIn(bad, value, (path.name, bad))
 
 if __name__ == "__main__":
