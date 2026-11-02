@@ -88,7 +88,49 @@ class FullSetupTests(unittest.TestCase):
         self.assertEqual(full.verify_complete(state, inv, True, True, False)["code"], "PACKAGE_PROVENANCE_NOT_VERIFIED")
         self.assertEqual(full.verify_complete(state, inv, False, True, True)["code"], "BINGIE_NOT_VERIFIED")
         self.assertEqual(full.verify_complete(state, inv, True, False, True)["code"], "TMDB_PLAYER_NOT_VERIFIED")
+        blocked = full.verify_complete(state, inv, True, True, True)
+        self.assertEqual(blocked["code"], "MANDATORY_STAGES_UNVERIFIED")
+        self.assertIn("postinstall_health_passed", blocked["stages"])
+        self.assertIn("repositories_verified", blocked["stages"])
+        # A separate audited provenance + live device health-gate can
+        # explicitly supply evidence later. No fabricated success by advance().
+        from setup_handoff import REQUIRED_STAGES
+        state["steps"].update({key: True for key in REQUIRED_STAGES})
         self.assertEqual(full.verify_complete(state, inv, True, True, True)["code"], "READY_FOR_RESTART")
+
+    def test_inventory_does_not_fabricate_dependency_or_repo_verification(self):
+        inv = inventory_for(*[r["id"] for r in full.manifest()])
+        state = full.advance(full.new_session(442), "apps", inv)
+        self.assertTrue(state["steps"]["all_mandatory_apps_enabled"])
+        self.assertFalse(state["steps"]["all_dependencies_installed"])
+        self.assertFalse(state["steps"]["repositories_verified"])
+        self.assertFalse(state["steps"]["packages_verified"])
+
+    def test_corrupt_and_credential_bearing_journal_fails_closed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            profile = Path(tmp) / "script.gsmedia.setup"
+            valid = full.new_session(125)
+            bad = dict(valid, token="PRIVATE-SECRET")
+            with self.assertRaises(ValueError):
+                full.save(profile, bad)
+            for changes in (
+                {"phase": "restart_pending", "setup_attempted": True},
+                {"phase": "handoff_attempted", "setup_attempted": False},
+                {"boot_pid": 0},
+                {"steps": {"packages_verified": "yes"}},
+                {"pending": ["plugin.video.xtreammate"]},
+                {"pending": "plugin.video.xtreammate"},
+                {"attempted": ["plugin.video.xtreammate", "plugin.video.xtreammate"]},
+            ):
+                with self.subTest(changes=changes):
+                    with self.assertRaises(ValueError):
+                        full.save(profile, dict(valid, **changes))
+            full.save(profile, valid)
+            (profile / full.JOURNAL).write_text(
+                '{"schema":1,"origin":"GS_MEDIA_NEW_INSTALL","phase":"restart_pending"}',
+                encoding="utf-8")
+            with self.assertRaises(ValueError):
+                full.load(profile)
 
     def test_restart_journal_atomic_and_credentialless(self):
         with tempfile.TemporaryDirectory() as root:
@@ -173,10 +215,13 @@ class BingieLayoutTests(unittest.TestCase):
             inv = self._installed()
             inv["addons"]["skin.titan.bingie.mod"]["version"] = "2.2.3"
             inv["addons"]["script.skinshortcuts"]["version"] = "2.1.0"
+            self.assertEqual(bingie.inspect_new_profile(folder, inv), "READY")
             self.assertEqual(bingie.apply_new_profile(folder, inv, True), "APPLIED")
+            self.assertEqual(bingie.inspect_new_profile(folder, inv), "ALREADY_APPLIED")
             self.assertEqual(bingie.apply_new_profile(folder, inv, True), "ALREADY_APPLIED")
             path = folder / bingie.MENU_FILENAME
             path.write_bytes(b"<shortcuts/>")
+            self.assertEqual(bingie.inspect_new_profile(folder, inv), "EXISTING_SKIN_DATA_PRESERVED")
             self.assertEqual(bingie.apply_new_profile(folder, inv, True), "EXISTING_SKIN_DATA_PRESERVED")
             self.assertEqual(path.read_bytes(), b"<shortcuts/>")
 
@@ -199,6 +244,10 @@ class TmdbApplyTests(unittest.TestCase):
             self.assertEqual(player.apply(xvault, tmdb, addon, fresh_profile=True, user_approved=True), "APPLIED")
             self.assertTrue(player.verify(xvault, tmdb, addon))
             addon.setSetting("default_player_movies", "other.player")
+            self.assertEqual(player.apply(xvault, tmdb, addon, fresh_profile=True, user_approved=True), "EXISTING_DEFAULTS_PRESERVED")
+            # Swapping the movie/episode defaults is also a customization.
+            addon.setSetting("default_player_movies", player.EPISODE_PLAYER)
+            addon.setSetting("default_player_episodes", player.MOVIE_PLAYER)
             self.assertEqual(player.apply(xvault, tmdb, addon, fresh_profile=True, user_approved=True), "EXISTING_DEFAULTS_PRESERVED")
 
 
