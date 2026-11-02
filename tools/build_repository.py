@@ -14,6 +14,7 @@ APPROVED_ADDON_IDS = frozenset((
     "plugin.video.xtreammate",
     "plugin.video.noodleprivate",
     "repository.gsmedia",
+    "script.gsmedia.setup",
 ))
 if set(IDS) != APPROVED_ADDON_IDS:
     unreviewed = sorted(set(IDS) - APPROVED_ADDON_IDS)

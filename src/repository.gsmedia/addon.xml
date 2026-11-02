@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="repository.gsmedia" name="GS Media Repository" version="1.8.1" provider-name="GS Media">
+<addon id="repository.gsmedia" name="GS Media Repository" version="1.8.2" provider-name="GS Media">
   <extension point="xbmc.addon.repository">
     <dir>
       <info compressed="false">https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/addons.xml</info>
@@ -7,15 +7,15 @@
       <datadir zip="true">https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/</datadir>
       <hashes>false</hashes>
     </dir>
-    <!-- Only our first-party Kodi catalogue is enabled in Lite 1.8.1.
+    <!-- Only verified first-party Kodi catalogue entries are enabled in GS Media 1.8.2.
          Third-party source candidates are documented in the review backlog.
          Removing catalogue references never uninstalls existing add-ons. -->
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="de_DE">GS Media Repository 1.8.1 – geprüfter Katalog</summary>
-    <description lang="de_DE">GS Media 1.8.1 Lite mit Freigabeliste: ausschliesslich GS Media Repository, XCMate und Noodle Private werden im eigenen Katalog angeboten. Ungepruefte Fremdquellen sind nicht enthalten. Bereits installierte Add-ons und Kodi-Nutzerdaten bleiben unveraendert.</description>
-    <summary lang="en_GB">GS Media Repository 1.8.1 – approved catalog</summary>
-    <description lang="en_GB">GS Media 1.8.1 Lite with allowlisted repository, XCMate and Noodle Private. Unapproved external catalogues are excluded. Installed add-ons and Kodi user data remain untouched.</description>
+    <summary lang="de_DE">GS Media Repository 1.8.2 – geprüfter Katalog</summary>
+    <description lang="de_DE">GS Media 1.8.2 Lite mit Freigabeliste: GS Media Repository, XCMate, Noodle Private und GS Media Setup 0.4.0 werden im eigenen Katalog angeboten. Ungepruefte Fremdquellen sind nicht enthalten. Bereits installierte Add-ons und Kodi-Nutzerdaten bleiben unveraendert.</description>
+    <summary lang="en_GB">GS Media Repository 1.8.2 – approved catalog</summary>
+    <description lang="en_GB">GS Media 1.8.2 Lite with allowlisted repository, XCMate and Noodle Private. Unapproved third-party catalogues are not automatically mirrored. Installed add-ons and Kodi user data remain untouched.</description>
     <disclaimer lang="de_DE">Eigenstaendiges GS Media Repository. Externe Projekte sind nicht Teil des Lite-Katalogs und werden gegebenenfalls separat durch ihre Urheber gepflegt. Keine Verbindung mit Team Kodi.</disclaimer>
     <platform>all</platform>
     <license>MIT</license>
