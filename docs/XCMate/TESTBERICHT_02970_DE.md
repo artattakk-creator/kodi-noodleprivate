@@ -24,6 +24,22 @@ Die endgültigen Zahlen, Commit, Laufzeit und Prüfsumme stehen nach erfolgreich
 | Request geschrieben, noch kein ACK | leeres Ergebnis / missverständliches NOT_SCHEDULED | REQUESTED / WAITING_SERVICE |
 | Helper-Fehler nur im RAM | „Ergebnis für Sitzung vorgemerkt“ | kein bestätigtes Bild, Helper-/eigene API-/Speicherursache getrennt |
 
+## Vollständige Testserie: Isolation und deterministische Eingaben
+
+Im ersten vollständigen Lauf: 2868 Tests, drei FAIL. Zwei alte Suchtests hielten einen Reader aus einer vorherigen Test-Fixture fest: media_catalog43 erbte den durch sys.modules noch referenzierten alten library_index.Reader. Die gemeinsame Fixture lädt diesen Wrapper jetzt zusammen mit seiner Basisklasse neu; Fehler- und Query-Count-Prüfungen bleiben unverändert. Kein Such-Produktionscode wurde dafür geändert.
+
+Der Hero-Idempotenztest wiederholte die Abfrage bei real fortschreitender Uhr, obwohl sich der erwartete Fortschrittswert dadurch ändern darf. Er fixiert jetzt ausdrücklich die Zeit für identische Eingaben; alle atomaren Bankwechsel-, Fokus- und Datei-/SQL-Verbote bleiben erhalten. Ein kombinierter Lauf nach den neuen Artwork-Tests prüft diese drei Alt-Testmodule zusätzlich im selben Interpreter.
+
+## Abnahmematrix
+
+| Bereich | Code-/Hostabnahme | Geräteabnahme |
+|---|---|---|
+| Status nach fünf Minuten und expliziter Retry | automatisierte Reproduktion, finale CI maßgeblich | NOT_TESTED |
+| Helper-/eigene API-/lokale Katalogdiagnose | Quellen getrennt, keine Zugangsdaten | NOT_TESTED |
+| BINGIE/Details: gültige Bildreferenz weiter anzeigen | native synthetische Bild-/Statusprüfung | NOT_TESTED |
+| Tatsächlicher externer Helper-/TMDB-Zustand dieser Box | OPEN, private Anhänge derzeit nicht lesbar | NOT_TESTED |
+| Legacy-Archiv-/Speichermodi | unverändert geerbt, kein globaler Umbau in diesem Status-Hotfix | NOT_TESTED |
+
 ## Geräte- und Logstatus
 
 Die angehängten kodi.log und kodi.old.log können wegen der ausgefallenen Arbeitsumgebung nicht gelesen werden. **Analyse dieser privaten Anhänge: BLOCKED.** Es wurden keine Zeilen, Zeitpunkte, Fehlerhäufigkeiten oder privaten Inhalte daraus behauptet oder veröffentlicht.
