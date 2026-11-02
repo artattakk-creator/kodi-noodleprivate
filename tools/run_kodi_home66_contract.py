@@ -55,6 +55,7 @@ def main():
             with (report / 'home.json').open('w') as output:
                 run('exec', name, 'python3', '/work/probe.py', stdout=output)
         except subprocess.CalledProcessError:
+            run('exec',name,'python3','-c',"from pathlib import Path; p=Path('/root/tls69-requests.jsonl'); print('SYNTHETIC_TLS69_REQUESTS '+(p.read_text() if p.exists() else 'NONE'))")
             # Preserve synthetic native pixels even when a visual assertion fails.
             # This disposable profile contains synthetic fixtures only.
             run('exec',name,'python3','-c',"import json; from pathlib import Path; files=list(Path('/root').glob('series66-*.json')); print('SYNTHETIC_SERIES64_DIAG '+json.dumps({p.name:json.loads(p.read_text()) for p in files})); log=Path('/root/.kodi/temp/kodi.log').read_text(errors='replace'); print('SYNTHETIC_KODI64_ERRORS\\n'+'\\n'.join(v for v in log.splitlines() if 'error' in v.lower() or 'Traceback' in v or 'NATIVE66_CASE' in v)[-16000:])")

@@ -7,12 +7,16 @@ cert=Path('/usr/local/share/ca-certificates/xcmate-synthetic69.crt');key=Path('/
 if args.prepare:
  subprocess.run(['openssl','req','-x509','-newkey','rsa:2048','-nodes','-keyout',str(key),'-out',str(cert),'-days','1','-subj','/CN=image.tmdb.org','-addext','subjectAltName=DNS:image.tmdb.org','-addext','basicConstraints=critical,CA:TRUE'],check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
  subprocess.run(['update-ca-certificates'],check=True,stdout=subprocess.DEVNULL)
+ # Some Kodi packages select a bundled CA file instead of system defaults.
+ for bundle in (Path('/usr/share/kodi/system/certs/cacert.pem'),Path('/usr/lib/x86_64-linux-gnu/kodi/system/certs/cacert.pem')):
+  if bundle.is_file() and not bundle.is_symlink():
+   with bundle.open('a') as out:out.write('\n'+cert.read_text())
  with Path('/etc/hosts').open('a') as out:out.write('\n127.0.0.1 image.tmdb.org\n')
  raise SystemExit(0)
 from PIL import Image
 images={}
 for sid,format_,color in (('5','PNG',(25,145,100)),('6','JPEG',(145,70,120))):
- image=io.BytesIO();Image.new('RGB',(160,90),color).save(image,format_);images['/t/p/w780/url69-'+sid+'.jpg']=(image.getvalue(),'image/png' if format_=='PNG' else 'image/jpeg')
+ image=io.BytesIO();Image.new('RGB',(160,90),color).save(image,format_);images['/t/p/w500/url69-'+sid+'.jpg']=(image.getvalue(),'image/png' if format_=='PNG' else 'image/jpeg')
 class Handler(BaseHTTPRequestHandler):
  def do_GET(self):
   data,kind=images.get(self.path,(b'','text/plain'))
