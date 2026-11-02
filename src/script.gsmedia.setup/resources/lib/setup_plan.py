@@ -65,15 +65,15 @@ PROFILES = (
         "skin.titan.bingie.mod", "plugin.video.xtreammate",
     )),
     ("media", "Medien: Basis + xVAULT + Cumination", (
-        "plugin.video.xtreammate", "skin.titan.bingie.mod",
+        "skin.titan.bingie.mod", "plugin.video.xtreammate",
         "plugin.video.xvault", "plugin.video.cumination",
     )),
     ("music", "Musik: Basis + MP3 Streams + SHOUTcast", (
-        "plugin.video.xtreammate", "skin.titan.bingie.mod",
+        "skin.titan.bingie.mod", "plugin.video.xtreammate",
         "plugin.audio.m3sr2019", "plugin.audio.shoutcast",
     )),
     ("all", "Medien und Musik kombiniert", (
-        "plugin.video.xtreammate", "skin.titan.bingie.mod",
+        "skin.titan.bingie.mod", "plugin.video.xtreammate",
         "plugin.video.xvault", "plugin.video.cumination",
         "plugin.audio.m3sr2019", "plugin.audio.shoutcast",
     )),
