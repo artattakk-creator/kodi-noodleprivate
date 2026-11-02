@@ -7,6 +7,22 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "src"
 IDS = tuple(d.name for d in sorted(SRC.iterdir()) if d.is_dir() and (d / "addon.xml").is_file())
+# Release allowlist: additional addon source trees MUST NOT become published
+# just because a contributor adds another src/<addon-id> directory.
+# Every new ID requires a reviewed policy change and Kodi compatibility tests.
+APPROVED_ADDON_IDS = frozenset((
+    "plugin.video.xtreammate",
+    "plugin.video.noodleprivate",
+    "repository.gsmedia",
+))
+if set(IDS) != APPROVED_ADDON_IDS:
+    unreviewed = sorted(set(IDS) - APPROVED_ADDON_IDS)
+    missing = sorted(APPROVED_ADDON_IDS - set(IDS))
+    raise RuntimeError(
+        "Repository allowlist violated; review required: unreviewed="
+        + repr(unreviewed) + " missing=" + repr(missing)
+    )
+
 # The former repository.noodleprivate is retired. Refuse to republish competing
 # Kodi repositories, so Noodle Private has exactly one managed update source.
 if "repository.gsmedia" not in IDS:
