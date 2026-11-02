@@ -17,7 +17,7 @@ def _work():
     from programme_art46 import cached
     value=describe(portal,channel,event,event.get('canonical46',''),event.get('revision68'));art=cached(value)
     from programme_requests68 import request,result
-    if not eligible(art):request(value,priority=True)
+    if not eligible(art) and not event.get('_no_art_request68'):request(value,priority=True)
     art=result(value,art)
     art=dict(art) if eligible(art) else {}
    except Exception:art={}

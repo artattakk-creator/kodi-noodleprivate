@@ -43,6 +43,7 @@ def page(portal,offset,origin,category=None,client=None,mappings48=None):
             if events:mapping='SHORT_EPG'
         from programme_snapshot47 import identify
         events=identify(portal['id'],sid,resolved,events)
+        if mappings48 is not None:events=[dict(event,_no_art_request68=True) for event in events]
         result.append(dict(channel=channel,events=events,mapping=mapping,epg_id=resolved,
                            truncated=len(events)>CELLS))
     # Original persistent artwork cache, queued from this viewport worker.

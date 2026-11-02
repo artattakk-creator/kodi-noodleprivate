@@ -40,7 +40,7 @@ def _read(key):
 def request(event,priority=False):
  """A bounded intent only; callers already possess the displayed local event."""
  try:
-  if not event.get('pid') or not event.get('sid') or not event.get('title'):return False
+  if event.get('_no_art_request68') or not event.get('pid') or not event.get('sid') or not event.get('title'):return False
   if not 0<int(event['start'])<int(event['stop']):return False
   value={k:event[k] for k in _FIELDS if k in event}
   if any(isinstance(v,str) and len(v)>1024 for v in value.values()):return False

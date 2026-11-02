@@ -18,6 +18,9 @@ class Pipeline68(Fixture,unittest.TestCase):
   with mock.patch('builtins.open',side_effect=AssertionError('GUI_FILE')),mock.patch('sqlite3.connect',side_effect=AssertionError('GUI_SQL')),mock.patch('media_sources43.get',side_effect=AssertionError('GUI_HTTP')):
    self.assertTrue(self.b.request(e,priority=True));self.assertEqual(self.b.result(e),{})
   self.assertTrue(any('request.' in k for k in self.properties))
+ def test_mapping_preview_cannot_create_a_persistent_image_job(self):
+  self.assertFalse(self.b.request(self.event(_no_art_request68=True),priority=True))
+  self.assertEqual(self.properties,{})
  def test_all_intents_are_bounded_to_64_slots(self):
   for i in range(1000):self.b.request(self.event(sid=str(i)),priority=True)
   requests=[v for k,v in self.properties.items() if 'Programme68.request.' in k]

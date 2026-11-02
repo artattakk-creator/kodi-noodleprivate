@@ -64,6 +64,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
      from programme_events46 import load
      from media_art import local_art,request as request_logos
      value=load(self.portal,self.channel,self.selected)
+     if self.selected and self.selected.get('_no_art_request68'):value['_no_art_request68']=True
      value['logo']=local_art(self.channel)['thumb'];request_logos([self.channel])
      from programme_art46 import cached
      from programme_requests68 import request
