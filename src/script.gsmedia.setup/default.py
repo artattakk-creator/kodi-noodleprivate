@@ -56,7 +56,7 @@ def _report(key, title, inventory):
         "Noch nicht freigegebene Installationsschritte: " + str(result["blocking"]),
         "Nächste Phase: verifizierte Pakete, Benutzerfreigabe,",
         "Kodi-Installation und Fortsetzen nach einem Neustart.",
-        "Die VOLLE Installation ist in 0.4.0 noch NICHT implementiert.",
+        "Geführte Installationsschritte sind im Menü Komplettinstallation verfügbar.",
         "",
         "Referenz: GitHub issue #317 / GS Media.",
     ]
@@ -99,7 +99,7 @@ def run():
                 "3. Ergebnis prüfen, vor Neustart als erledigt markieren.",
                 "4. ERST nach gesamter Installation Neustart → XCMate Wizard.",
                 "", "Status: " + report["status"],
-                "Im Entwicklungsstand 0.4.0 noch kein Anwenden.",
+                "Dies ist nur die Vorprüfung; die Komplettinstallation bietet den geschützten Anwenden-Schritt.",
                 "Vorhandene Player-Einstellungen bleiben unangetastet.",
             ]
             dialog.textviewer("TMDB Helper – xVAULT Standardplayer", "\n".join(lines), usemono=True)
