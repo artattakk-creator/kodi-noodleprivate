@@ -1,4 +1,4 @@
-name: GS Media Setup 0.2.2 preflight
+name: GS Media Setup 0.2.3 preflight
 on:
   pull_request:
     paths:
@@ -31,8 +31,8 @@ jobs:
       - name: Upload test artifact
         uses: actions/upload-artifact@v4
         with:
-          name: gsmedia-setup-0.2.2-preview
+          name: gsmedia-setup-0.2.3-preview
           path: |
-            .build/gsmedia-setup/script.gsmedia.setup-0.2.2.zip
-            .build/gsmedia-setup/script.gsmedia.setup-0.2.2.zip.sha256
+            .build/gsmedia-setup/script.gsmedia.setup-0.2.3.zip
+            .build/gsmedia-setup/script.gsmedia.setup-0.2.3.zip.sha256
           if-no-files-found: error
