@@ -175,7 +175,7 @@ def run():
         if layout_preflight not in ("READY", "ALREADY_APPLIED"):
             _info(dialog, "GS Media – Skin-Konfiguration geschützt",
                   "Menü-/Widget-Vorprüfung: " + layout_preflight +
-                  "\\nKeine BINGIE-XML verändert. Bestehende Benutzerdaten bleiben erhalten.")
+                  "\nKeine BINGIE-XML verändert. Bestehende Benutzerdaten bleiben erhalten.")
             return
         if not dialog.yesno("GS Media – BINGIE patchen",
                             "BINGIE 2.2.3 auf exakt geprüfte XCMate-XMLs patchen? "
