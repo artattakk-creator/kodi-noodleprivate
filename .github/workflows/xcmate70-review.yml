@@ -27,6 +27,9 @@ jobs:
         run: |
           python -m compileall -q src tools
           python -m unittest discover -s tests -p '*02970.py' -v
+      - name: Verify historical fixture isolation after new artwork tests
+        run: |
+          PYTHONPATH=tests python -m unittest test_xcmate_art_status_02970 test_xcmate_epg_handoff_02963 test_xcmate_search_02926 test_xcmate_search_performance_02935 -v
       - name: Recheck source matching and prior recovery
         run: |
           python -m unittest discover -s tests -p '*02969.py' -v
