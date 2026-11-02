@@ -157,9 +157,9 @@ jobs:
             kodi-home64-evidence/build.log
           if-no-files-found: error
           retention-days: 14
-  publish:
-    needs: [kodi-helper57-transport, kodi-live67-playback]
+  xcmate67-host-regression:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with:
@@ -194,6 +194,48 @@ jobs:
             sed -i "s@'..', 'plugin.video.noodleprivate'@'..', 'src', 'plugin.video.noodleprivate'@g" "$f"
           done
           python -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/xcmate67-test-results.log"
+      - name: Upload exact-commit complete host test log
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcmate67-host-${{ github.sha }}
+          path: ${{ runner.temp }}/xcmate67-test-results.log
+          if-no-files-found: error
+          retention-days: 14
+  publish:
+    needs: [kodi-helper57-transport, kodi-live67-playback, xcmate67-host-regression]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install host test dependencies
+        run: python -m pip install 'Pillow>=11,<13' 'impacket==0.13.0' 'simpleeval==0.9.13'
+      - name: Bootstrap pinned XtreamMate GPL source
+        run: python tools/bootstrap_xtreammate.py
+      - name: Apply XtreamMate 0.1.1 fix
+        run: python tools/apply_xtreammate_upgrade.py
+      - name: Apply XtreamMate 0.1.2 remote and startup functions
+        run: python tools/apply_xtreammate_012.py
+      - name: Apply XtreamMate 0.1.5 TV navigation, EPG, metadata and widgets
+        run: python tools/apply_xtreammate_015.py
+      - name: Build all Kodi addon packages and index
+        run: python tools/build_repository.py
+      - name: Verify canonical XCMate source ZIP and regular Kodi index
+        run: python tools/verify_xcmate67_package.py
+      - name: Validate Kodi gettext languages
+        run: python tools/validate_kodi_po.py
+      - name: Validate pinned navigation icons and license
+        run: python tools/build_xcmate_nav_icons.py --check
+      - name: Check Python syntax
+        run: python -m compileall -q src
+      - name: Read complete host test log from this exact workflow commit
+        uses: actions/download-artifact@v4
+        with:
+          name: xcmate67-host-${{ github.sha }}
+          path: ${{ runner.temp }}
       - name: Prepare XCMate pull request test package
         id: xcmate_package
         if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'

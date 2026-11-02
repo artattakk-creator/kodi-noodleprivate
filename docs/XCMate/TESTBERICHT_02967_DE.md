@@ -45,3 +45,8 @@ Der erste vollständige .67-Lauf am Head 75c68a7 führte 2766 Methoden aus und f
 Zwei alte Scope-Prüfungen wurden an den ausdrücklich autorisierten Auftrag angepasst: Der AST-Routingvergleich normalisiert ausschließlich die vollständig gepinnten .67-Deltas, prüft danach weiterhin sämtliche anderen Routen; die frühere experimentelle programme_tvmaze59.py bleibt verboten, ausschließlich die neue opt-in programme_tvmaze67.py ist zugelassen. Keine alten Methoden oder Skip-Dekoratoren entfernt. Das minimale Startup-Player-Testdouble akzeptiert den neuen expliziten Live-Parameter; seine ursprünglichen Resolver-/Direktstart-Assertions bleiben erhalten. Die betroffenen Modelle und Datenintegritätsfälle werden zusätzlich vor den langen nativen Läufen geprüft.
 
 Die fortgeltenden Fokus-/Hero-Sichtbefunde aus #300 und die vier konkreten EPG-Kanalfälle aus #291 stehen im kumulativen Box-B-Androidplan weiterhin auf NOT_TESTED.
+
+
+## CI-Reihenfolge
+
+Die vollständige Host-/Paketvorprüfung läuft parallel zu den nativen Kodi-Prüfungen in einem eigenen Job. Alle ursprünglichen Testbefehle bleiben erhalten. Der abschließende Paket-/Publish-Job hängt zwingend von **beiden nativen Gates und der kompletten Hostsuite** ab und liest deren Testprotokoll ausschließlich aus demselben Workflow-Commit. Das reguläre main-Publish-Gate bleibt bestehen; auf einem PR werden ausschließlich Testartefakte erstellt. So werden Regressionsfehler früher sichtbar, ohne Tests zu überspringen oder ein Paket vor vollständigem Erfolg freizugeben.
