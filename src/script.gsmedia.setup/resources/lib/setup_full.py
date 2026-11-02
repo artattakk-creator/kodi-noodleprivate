@@ -250,7 +250,7 @@ def validate_state(data):
     if data["phase"] == "handoff_attempted" and not data["setup_attempted"]:
         raise ValueError("Missing one-shot marker")
     allowed = {r["id"] for r in manifest()}
-    if data.get("pending") not in allowed | {""}:
+    if not isinstance(data.get("pending"), str) or data["pending"] not in allowed | {""}:
         raise ValueError("Invalid pending addon")
     for name in ("attempted", "success"):
         ids = data.get(name)
