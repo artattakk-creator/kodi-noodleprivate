@@ -69,6 +69,8 @@ jobs:
             echo 'Repository already published'
           else
             git commit -m 'Publish XCMate 0.1.29.70 in GS Media Repository 1.8.1'
-            git pull --rebase origin main
+            # This commit is based on the checked-out main HEAD. A plain
+            # fast-forward push is safe; Git rejects concurrent main changes.
+            # Do not rebase with untracked/generated build outputs present.
             git push origin HEAD:main
           fi
