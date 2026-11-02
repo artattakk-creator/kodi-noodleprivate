@@ -5,10 +5,13 @@ import json
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
+from types import ModuleType
 
 BASE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(BASE / "src" / "script.gsmedia.setup" / "resources" / "lib"))
 flow = importlib.import_module("setup_install_pilot")
+ui = importlib.import_module("setup_install_ui")
 from setup_plan import MANDATORY
 
 
@@ -88,6 +91,58 @@ class InstallerPilotTests(unittest.TestCase):
         state = flow.blank_state()
         state["pending"] = "plugin.video.evil"
         self.assertEqual(flow.assess(state, sample_inventory())["code"], "INVALID_PENDING")
+
+    def test_existing_bingie_box_guard(self):
+        inv = sample_inventory(present=flow.APPROVED_IDS)
+        inv["addons"]["skin.titan.bingie.mod"] = {"version": "2.2.3", "enabled": True}
+        self.assertEqual(flow.protected_existing(inv), ("skin.titan.bingie.mod",))
+        self.assertEqual(flow.protected_existing({"code": "UNKNOWN"}), ("INVENTORY_UNKNOWN",))
+
+    def test_actual_kodi_builtin_once_only_after_explicit_confirmation(self):
+        with tempfile.TemporaryDirectory() as root:
+            profile = Path(root) / "script.gsmedia.setup"
+            calls = []
+            class Dialog:
+                def yesno(self, *args, **kwargs):
+                    return True
+                def notification(self, *args, **kwargs):
+                    calls.append("notification")
+                def textviewer(self, *args, **kwargs):
+                    calls.append("textviewer")
+            fake_xbmc = ModuleType("xbmc")
+            fake_gui = ModuleType("xbmcgui")
+            fake_xbmc.executebuiltin = lambda command: calls.append(command)
+            fake_gui.Dialog = lambda: Dialog()
+            with patch.dict(sys.modules, {"xbmc": fake_xbmc, "xbmcgui": fake_gui}):
+                with patch.object(ui, "_profile", return_value=str(profile)), patch.object(ui, "snapshot", return_value=sample_inventory()):
+                    ui.run()
+            self.assertEqual([x for x in calls if x.startswith("InstallAddon")], ["InstallAddon(script.cabertoss)"])
+            self.assertIn("notification", calls)
+            self.assertNotIn("textviewer", calls)
+            saved = flow.load(profile)
+            self.assertEqual(saved["pending"], "script.cabertoss")
+            self.assertFalse(saved["completed"])
+
+    def test_no_kodi_request_on_existing_bingie_profile(self):
+        with tempfile.TemporaryDirectory() as root:
+            profile = Path(root) / "script.gsmedia.setup"
+            calls = []
+            class Dialog:
+                def yesno(self, *args, **kwargs):
+                    raise AssertionError("Should not confirm install on existing profile")
+                def textviewer(self, *args, **kwargs):
+                    calls.append("blocked")
+            fake_xbmc = ModuleType("xbmc")
+            fake_gui = ModuleType("xbmcgui")
+            fake_xbmc.executebuiltin = lambda cmd: calls.append(cmd)
+            fake_gui.Dialog = lambda: Dialog()
+            inv = sample_inventory()
+            inv["addons"]["skin.titan.bingie.mod"] = {"version": "2.2.3", "enabled": True}
+            with patch.dict(sys.modules, {"xbmc": fake_xbmc, "xbmcgui": fake_gui}):
+                with patch.object(ui, "_profile", return_value=str(profile)), patch.object(ui, "snapshot", return_value=inv):
+                    ui.run()
+            self.assertEqual(calls, ["blocked"])
+            self.assertIsNone(flow.load(profile))
 
     def test_atomic_journal_restart_and_repeat(self):
         with tempfile.TemporaryDirectory() as root:
