@@ -40,7 +40,7 @@ jobs:
           found={a.attrib['id']:a.attrib['version'] for a in idx.findall('addon')}
           assert found['repository.gsmedia']=='1.8.2',found
           assert found['script.gsmedia.setup']=='0.4.0',found
-          assert found['plugin.video.xtreammate'].startswith('0.1.29.'),found
+          assert found['plugin.video.xtreammate']=='0.1.29.70',found
           for ident,version in found.items():
               path=Path(ident)/f'{ident}-{version}.zip'
               assert path.is_file(),path
