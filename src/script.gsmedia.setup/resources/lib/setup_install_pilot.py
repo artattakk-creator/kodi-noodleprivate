@@ -121,6 +121,8 @@ def _safe_location(profile):
 
 def load(profile):
     target = _safe_location(profile)
+    if target.is_symlink():
+        raise ValueError("Symlink journal denied")
     if not target.exists():
         return None
     if target.stat().st_size > MAX_JOURNAL:
@@ -139,6 +141,8 @@ def save(profile, state):
     target = _safe_location(profile)
     if state.get("schema") != JOURNAL_VERSION:
         raise ValueError("Invalid journal schema")
+    if target.is_symlink():
+        raise ValueError("Symlink journal denied")
     if not set(state.get("attempted", ())).issubset(APPROVED_IDS):
         raise ValueError("Unapproved journal contents")
     if not set(state.get("completed", ())).issubset(APPROVED_IDS):
