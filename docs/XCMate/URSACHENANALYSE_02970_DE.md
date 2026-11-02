@@ -47,3 +47,7 @@ Ein Helper-Timeout beweist weder einen ungültigen eigenen Token noch fehlende E
 Die neue Version behebt nachgewiesene interne Abruf-/Retry- und Diagnosefehler. Sie kann ohne private Gerätebelege nicht garantieren, dass der externe Helper antwortet oder TMDB für die konkrete Sendung einen eindeutigen Treffer hat. Echter API-Zugriff und Bildanzeige auf Android bleiben NOT_TESTED.
 
 Live-TV-Exit/Kompatibilitätsmodus, Kodi-/Skin-/Widget-Routen, Portale, EPG-Mappings, bestehende Bilder, Token/Passwörter, Resume und Autoplay bleiben erhalten. Keine Neuinstallation, Resets, Datenlöschung oder automatische Änderungen auf Box A.
+
+## Zusätzlicher Integrationsbefund
+
+Der native Regressionstest erkannte während der .70-Entwicklung, dass der neue REQUESTED-Status ein bereits gültiges lokales Bild im Detaildialog überdecken konnte. Der Statuspfad ist korrigiert: fehlendes ACK beziehungsweise QUEUED/RUNNING verdrängen kein zur gleichen Sendung gültiges vorhandenes Bild. Ein unpassendes fremdes Ereignisbild wird weiterhin abgewiesen. Zwei zusätzliche Regressionen schützen beide Fälle.

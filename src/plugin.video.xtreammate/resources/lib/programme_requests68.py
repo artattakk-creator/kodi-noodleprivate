@@ -97,6 +97,7 @@ def result(event,previous=None):
   from programme_status70 import valid,waiting
   if value.get('tag')!=tag or value.get('scope')!=scope() or not valid(value):return waiting(event,previous)
   art=value.get('art') or {}
+  if value.get('code') in ('QUEUED','RUNNING') and __import__('programme_image69').eligible(previous,event):return previous
   if art.get('code') in ('READY','READY_STALE') and art.get('source') not in (None,'','placeholder') and art.get('image'):
    if art.get('until',0)<=time.time():return dict(code='CACHE_MISMATCH',source='placeholder')
    from programme_image69 import eligible

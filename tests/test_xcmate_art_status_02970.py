@@ -121,3 +121,15 @@ class ArtStatus70(Fixture,unittest.TestCase):
   text=log.call_args.args[0]
   self.assertIn('source=tmdb code=HTTP_AUTH',text)
   for private in ('Synthetic film','SECRET','provider.invalid'):self.assertNotIn(private,text)
+
+ def test_waiting_or_queued_request_does_not_hide_valid_previous_image(self):
+  event=self.event();art=self.art(event)
+  self.b.request(event)
+  self.assertEqual(self.b.result(event,art)['image'],art['image'])
+  self.assertEqual(self.b.result(event,art)['code'],'READY')
+  self.b.status(event,'QUEUED')
+  self.assertEqual(self.b.result(event,art)['code'],'READY')
+ def test_pending_request_does_not_resurrect_wrong_event_image(self):
+  event=self.event();art=self.art(event)
+  other=dict(event,sid='different');self.b.request(other)
+  self.assertEqual(self.b.result(other,art)['code'],'REQUESTED')

@@ -25,6 +25,8 @@ def retry(event,previous):
   return marker.get('profile')==profile_scope() and isinstance(marker.get('id'),str) and len(marker['id'])==32 and 0<=time.time()-float(marker['at'])<90 and float(previous.get('resolved_at55',0))<float(marker['at'])
  except (ImportError,AttributeError,RuntimeError,ValueError,TypeError,KeyError):return False
 def waiting(event,previous=None):
+ from programme_image69 import eligible
+ if eligible(previous,event):return previous
  from programme_requests68 import identity,_read,SLOTS
  value=_read('request.'+str(int(identity(event)[:8],16)%SLOTS))
  if value.get('tag')!=identity(event) or not 0<=time.time()-value.get('at',0)<20:return previous or {}
