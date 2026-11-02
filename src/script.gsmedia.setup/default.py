@@ -56,7 +56,7 @@ def _report(key, title, inventory):
         "Noch nicht freigegebene Installationsschritte: " + str(result["blocking"]),
         "Nächste Phase: verifizierte Pakete, Benutzerfreigabe,",
         "Kodi-Installation und Fortsetzen nach einem Neustart.",
-        "Diese Funktionen sind in 0.3.0 noch NICHT implementiert.",
+        "Die VOLLE Installation ist in 0.3.0 noch NICHT implementiert.",
         "",
         "Referenz: GitHub issue #317 / GS Media.",
     ]
@@ -81,9 +81,9 @@ def run():
             "Installationspilot: Kodi/GS Media (3 Pakete)",
             "Beenden",
         ])
-        if choice in (-1, 6):
+        if choice in (-1, 7):
             return
-        if choice == 2:
+        if choice == 3:
             report = tmdb_xvault_proposal(snapshot(), player_file_verified=False, fresh_install=False)
             lines = [
                 "TMDB HELPER → xVAULT PLAYER (VORPRÜFUNG)",
@@ -103,7 +103,7 @@ def run():
             ]
             dialog.textviewer("TMDB Helper – xVAULT Standardplayer", "\n".join(lines), usemono=True)
             continue
-        if choice == 3:
+        if choice == 2:
             layout = verify_bingie_layout()
             lines = ["BINGIE MOD – GS-MEDIA-VORLAGE", layout["note"],
                      "Noch KEINE Schreibfreigabe für Skin/Shortcuts/Widgets.",
@@ -138,18 +138,18 @@ def run():
                 "und sämtliche erforderlichen Add-on-Abhängigkeiten.",
                 "Bereits eingerichtete Boxen bleiben unverändert.",
                 "",
-                "GS Media Setup 0.3.0: NUR VORSCHAU.",
-                "Automatische Installation und Neustart-Start noch NICHT aktiv.",
+                "GS Media Setup 0.3.0: HIER NUR ABLAUFVORSCHAU.",
+                "Nur 3er-Pilot installiert Add-ons nach expliziter Freigabe;\n                "Automatischer Neustart-Start noch NICHT aktiv.",
             ])
             dialog.textviewer("XCMate – Erst nach kompletter Installation", "\n".join(lines), usemono=True)
             continue
-        if choice == 5:
+        if choice == 6:
             from setup_install_ui import run as run_install_pilot
             run_install_pilot()
             continue
-        if choice == 4:
+        if choice == 5:
             dialog.ok("GS Media Setup 0.3.0", "Vorprüfung und opt-in Pilotinstallation (3 Pakete). "
-                      "Neue Kodi-Box und bestehende Profile bleiben unverändert. "
+                      "Bestandsprofile werden nicht zurückgesetzt. "
                       "Nicht geprüfte Drittanbieterinstallationen und Skinänderungen bleiben gesperrt.")
             continue
         inventory = snapshot()
