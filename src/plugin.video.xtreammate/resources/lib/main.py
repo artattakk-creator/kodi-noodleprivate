@@ -2250,7 +2250,7 @@ class Router:
             xbmcplugin.setResolvedUrl(self._handle, False, xbmcgui.ListItem())
             return
         from player import play_stream
-        play_stream(self._handle, url, title=name, logo=logo,live_session=session)
+        play_stream(self._handle, url, title=name, logo=logo,live_session=session,live67=True)
 
     def _play_vod(self):
         p   = self._portal()

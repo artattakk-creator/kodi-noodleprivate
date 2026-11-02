@@ -123,7 +123,7 @@ def _apply_drm(li, drm_info: dict, hdr_str: str = ''):
 
 def play_stream(handle: int, url: str,
                 title: str = '', logo: str = '',
-                headers: dict = None, drm_info: dict = None, live_session=None):
+                headers: dict = None, drm_info: dict = None, live_session=None, live67=False):
 
     if not url:
         error('play_stream: no URL provided')
@@ -131,7 +131,7 @@ def play_stream(handle: int, url: str,
         return
     info('play_stream: URL redacted')
     li = build_playable_item(url, title=title, logo=logo,
-                             headers=headers, drm_info=drm_info, **({'live67':True} if live_session else {}))
+                             headers=headers, drm_info=drm_info, **({'live67':True} if live_session or live67 else {}))
     if live_session:
         from live_recovery import tag_live_item
         from live_overlay import trace

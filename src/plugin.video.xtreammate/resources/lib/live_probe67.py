@@ -36,7 +36,8 @@ def launch(router):
  portal=get_by_id(router._params.get('pid',''))
  if not portal or not portal.get('enabled',True):return
  rows,_=Reader(portal['id']).page('live',category=portal.get('start_group_id') or None,limit=200)
- i=xbmcgui.Dialog().select('Live-Stream prüfen – kein Wiedergabestart',[r['name'] for r in rows])
+ from menu_icons45 import select
+ i=select(xbmcgui.Dialog(),'Live-Stream prüfen – kein Wiedergabestart',[r['name'] for r in rows],default='live')
  if not isinstance(i,int) or not 0<=i<len(rows) or not _gate.acquire(blocking=False):return
  result=[];progress=xbmcgui.DialogProgress()
  def work():

@@ -1,3 +1,12 @@
+0.1.29.67
+- Live-TV: native TS-/HLS-Erkennung, bewusst wählbares Streamformat und begrenzter, privater Stream-Präfixtest.
+- EPG: vorhandener Programmtext bleibt bei optionalen Metadatenfehlern erhalten; gültige Alias- und RAM-Fallbacks quellen- und profilgebunden.
+- Kurzes Anbieter-EPG: begrenzte Fehlerabkühlung statt fortlaufender Wiederholungen.
+- Sendungsbilder: direkte eigene TMDB-Anbindung, optionaler TVmaze-Fallback und lokale Vorschau im großen und kleinen EPG.
+- Offizielles TMDB-Logo nur an tatsächlichen TMDB-Bildern; vollständige Attribution in Credits.
+- Portale, Passwörter, Widgets, manuelle Zuordnungen, Cover und Fortschritte bleiben erhalten.
+- Android-Abnahme und Ursache des gerätespezifischen HTTP-504-Befunds noch offen; .42-Stop-Modus bleibt erhalten.
+
 0.1.29.66
 - EPG: quellenbezogener Neustart-/24-Stunden-Refresh, vollständige lokale Senderabdeckung und lesbare Diagnose.
 - Sendungsbilder: konservative Serienauflösung ohne erfundene Folgenangaben; mehrdeutige Treffer und fehlende Bilder klar unterscheiden.
