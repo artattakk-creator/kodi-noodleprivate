@@ -95,7 +95,7 @@ class InstallerPilotTests(unittest.TestCase):
     def test_existing_bingie_box_guard(self):
         inv = sample_inventory(present=flow.APPROVED_IDS)
         inv["addons"]["skin.titan.bingie.mod"] = {"version": "2.2.3", "enabled": True}
-        self.assertEqual(flow.protected_existing(inv), ("skin.titan.bingie.mod",))
+        self.assertEqual(flow.protected_existing(inv), ("skin.titan.bingie.mod", "plugin.video.xtreammate"))
         self.assertEqual(flow.protected_existing({"code": "UNKNOWN"}), ("INVENTORY_UNKNOWN",))
 
     def test_actual_kodi_builtin_once_only_after_explicit_confirmation(self):
