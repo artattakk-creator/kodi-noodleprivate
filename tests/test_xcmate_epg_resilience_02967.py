@@ -49,7 +49,7 @@ class Resilience67(unittest.TestCase):
   from local_epg import now_next
   from epg_handoff63 import register,get
   m=self.fixture;before=now_next('p',[m.channel],{},m.now)
-  register('p',('newer-known-guide',m.now+1))
+  register('p',('newer-known-guide',before['1']['snapshot_revision'][1]+1))
   self.assertIsNone(get('p','1',now=m.now,mappings={}))
   with mock.patch('local_epg.sqlite3.connect',side_effect=sqlite3.OperationalError('synthetic lock')):
    after=now_next('p',[m.channel],{},m.now)
