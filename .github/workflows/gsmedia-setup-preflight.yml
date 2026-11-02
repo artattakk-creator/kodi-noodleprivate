@@ -1,11 +1,9 @@
-name: GS Media Setup 0.3.0 preflight
+name: GS Media Setup 0.3.0 installer pilot
 on:
   pull_request:
     paths:
       - 'src/script.gsmedia.setup/**'
       - 'tests/test_gsmedia_setup_wizard.py'
-    - 'tests/test_gsmedia_setup_installer.py'
-    - 'tools/build_gsmedia_setup.py'
       - 'tests/test_gsmedia_setup_installer.py'
       - 'tools/build_gsmedia_setup.py'
       - '.github/workflows/gsmedia-setup-preflight.yml'
@@ -15,6 +13,8 @@ on:
     paths:
       - 'src/script.gsmedia.setup/**'
       - 'tests/test_gsmedia_setup_wizard.py'
+      - 'tests/test_gsmedia_setup_installer.py'
+      - 'tools/build_gsmedia_setup.py'
       - '.github/workflows/gsmedia-setup-preflight.yml'
 jobs:
   offline-preflight:
@@ -26,16 +26,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Unit tests
+      - name: All Wizard and installer pilot unit tests
         run: python -m unittest discover -s tests -p 'test_gsmedia_setup*.py' -v
-      - name: Syntax
+      - name: Python syntax
         run: python -m compileall -q src/script.gsmedia.setup
-      - name: Build installable read-only wizard preview ZIP
+      - name: Build installable Kodi pilot ZIP
         run: python tools/build_gsmedia_setup.py .build/gsmedia-setup
-      - name: Upload test artifact
+      - name: Upload verified test artifact
         uses: actions/upload-artifact@v4
         with:
-          name: gsmedia-setup-0.3.0-preview
+          name: gsmedia-setup-0.3.0-pilot
           path: |
             .build/gsmedia-setup/script.gsmedia.setup-0.3.0.zip
             .build/gsmedia-setup/script.gsmedia.setup-0.3.0.zip.sha256
