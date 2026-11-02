@@ -17,5 +17,7 @@ def configure(item,url,kind):
  item.setProperty('XCMate.LiveTransport67',kind)
 
 def extension():
- from utils import setting_int
- return 'm3u8' if setting_int('live_stream_format67',0)==2 else 'ts'
+ from utils import setting
+ try:value=int(setting('live_stream_format67','0'))
+ except (ValueError,TypeError):value=0
+ return 'm3u8' if value==2 else 'ts'

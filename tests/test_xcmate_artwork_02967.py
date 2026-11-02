@@ -48,7 +48,8 @@ class Artwork67(Fixture,unittest.TestCase):
  def preview(self):
   from programme_preview67 import Preview
   gui=sys.modules['xbmcgui'];owner=types.SimpleNamespace(addControls=mock.Mock())
-  with mock.patch.object(gui,'ControlImage',Control67,create=True),mock.patch.object(gui,'ControlLabel',Control67,create=True):return Preview(owner,(0,0,160,90))
+  monitor=types.SimpleNamespace(abortRequested=lambda:False,waitForAbort=lambda delay:False)
+  with mock.patch.object(sys.modules['xbmc'],'Monitor',return_value=monitor),mock.patch.object(gui,'ControlImage',Control67,create=True),mock.patch.object(gui,'ControlLabel',Control67,create=True):return Preview(owner,(0,0,160,90))
  def test_preview_gui_does_no_sql_file_read_or_http_and_marks_only_real_tmdb(self):
   import programme_preview67 as m
   preview=self.preview();e=self.event();row=dict(sid='1',name='Synthetic')
@@ -93,3 +94,18 @@ class Artwork67(Fixture,unittest.TestCase):
   for name in ('XCMateCredits67.xml','XCMateProgramme46.xml'):
    logo=E.parse(ADDON/'resources/skins/Default/720p'/name).getroot().find(".//control[@id='130']")
    self.assertIsNotNone(logo);self.assertIsNone(logo.find('visible'))
+ def test_preview_requires_abortable_native_monitor_and_keeps_legacy_controls_usable(self):
+  from programme_preview67 import Preview
+  with mock.patch.object(sys.modules['xbmc'],'Monitor',return_value=types.SimpleNamespace(abortRequested=lambda:False)):
+   preview=Preview(types.SimpleNamespace(addControls=mock.Mock()),(0,0,160,90))
+  self.assertFalse(preview.available);preview.render(None,None,None);preview.hide_source()
+ def test_unchanged_preview_does_not_repeat_native_visibility_setters(self):
+  import programme_preview67 as m
+  preview=self.preview();e=self.event();m._thread=mock.Mock();m._thread.is_alive.return_value=True
+  preview._key='same';preview._next=time.monotonic()+60
+  m._done[preview.token]=('same',dict(code='READY',source='tmdb_series',image='/cached.png'))
+  with mock.patch('programme_events46.key',return_value='same'):
+   preview.render(self.portal,dict(sid='1',name='Synthetic'),e)
+   with mock.patch.object(preview.image,'setVisible',wraps=preview.image.setVisible) as setter:
+    for _ in range(200):preview.render(self.portal,dict(sid='1',name='Synthetic'),e)
+    setter.assert_not_called()
