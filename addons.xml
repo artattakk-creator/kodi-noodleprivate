@@ -65,7 +65,7 @@
   </extension>
 
 </addon>
-<addon id="repository.gsmedia" name="GS Media Repository" version="1.8.0" provider-name="GS Media">
+<addon id="repository.gsmedia" name="GS Media Repository" version="1.8.1" provider-name="GS Media">
   <extension point="xbmc.addon.repository">
     <dir>
       <info compressed="false">https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/addons.xml</info>
@@ -73,62 +73,16 @@
       <datadir zip="true">https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/</datadir>
       <hashes>false</hashes>
     </dir>
-    <!-- Original Cumination add-on repository; Kodi resolves and updates it upstream. -->
-    <dir>
-      <info compressed="false">https://raw.githubusercontent.com/dobbelina/repository.dobbelina/master/addons.xml</info>
-      <checksum>https://raw.githubusercontent.com/dobbelina/repository.dobbelina/master/addons.xml.md5</checksum>
-      <datadir zip="true">https://raw.githubusercontent.com/dobbelina/repository.dobbelina/master/</datadir>
-    </dir>
-    <!-- Dependencies, including ResolveURL provider packages, as listed by upstream. -->
-    <dir>
-      <info compressed="false">https://raw.githubusercontent.com/Gujal00/smrzips/master/addons.xml</info>
-      <checksum>https://raw.githubusercontent.com/Gujal00/smrzips/master/addons.xml.md5</checksum>
-      <datadir zip="true">https://raw.githubusercontent.com/Gujal00/smrzips/master/zips/</datadir>
-    </dir>
-    <!-- Original xVAULT add-on and xVAULT Repository: original upstream GitHub, HTTPS. -->
-    <dir>
-      <info compressed="false">https://raw.githubusercontent.com/mojomedia1812/xVAULT/main/docs/addons.xml</info>
-      <checksum>https://raw.githubusercontent.com/mojomedia1812/xVAULT/main/docs/addons.xml.md5</checksum>
-      <datadir zip="true">https://raw.githubusercontent.com/mojomedia1812/xVAULT/main/docs/</datadir>
-      <hashes>false</hashes>
-    </dir>
-    <!-- AchillesPunks Titan BINGIE MOD: Kodi 20 Nexus, unmodified upstream index -->
-    <dir minversion="20.0.0" maxversion="20.9.0">
-      <info compressed="false">https://raw.githubusercontent.com/AchillesPunks/repository.titan.bingie.mod/master/nexus/addons.xml</info>
-      <checksum>https://raw.githubusercontent.com/AchillesPunks/repository.titan.bingie.mod/master/nexus/addons.xml.md5</checksum>
-      <datadir zip="true">https://raw.githubusercontent.com/AchillesPunks/repository.titan.bingie.mod/master/nexus/</datadir>
-      <hashes>false</hashes>
-    </dir>
-    <!-- Omega upstream checksum is stale; use source XML as change marker -->
-    <dir minversion="20.9.1">
-      <info compressed="false">https://raw.githubusercontent.com/AchillesPunks/repository.titan.bingie.mod/master/omega/addons.xml</info>
-      <checksum>https://raw.githubusercontent.com/AchillesPunks/repository.titan.bingie.mod/master/omega/addons.xml</checksum>
-      <datadir zip="true">https://raw.githubusercontent.com/AchillesPunks/repository.titan.bingie.mod/master/omega/</datadir>
-      <hashes>false</hashes>
-    </dir>
-    <!-- Upstream peno64: EZ Maintenance+ and other utilities. Kodi dependencies resolve normally. -->
-    <dir>
-      <info compressed="false">https://raw.githubusercontent.com/peno64/repository.peno64/master/repo/zips/addons.xml</info>
-      <checksum>https://raw.githubusercontent.com/peno64/repository.peno64/master/repo/zips/addons.xml.md5</checksum>
-      <datadir zip="true">https://raw.githubusercontent.com/peno64/repository.peno64/master/repo/zips/</datadir>
-      <hashes>false</hashes>
-    </dir>
-    <!-- Maintainer mr-evil1: complete Kodi Media add-on catalog (includes TiViMate Kodi).
-         Index and ZIPs are loaded live from upstream over HTTPS, not copied here.
-         TiViMate requires repository.kodi.media; Kodi may install that dependency. -->
-    <dir>
-      <info compressed="false">https://raw.githubusercontent.com/mr-evil1/kodi-media-repo/main/addons.xml</info>
-      <checksum>https://raw.githubusercontent.com/mr-evil1/kodi-media-repo/main/addons.xml.md5</checksum>
-      <datadir zip="true">https://raw.githubusercontent.com/mr-evil1/kodi-media-repo/main/</datadir>
-      <hashes>false</hashes>
-    </dir>
+    <!-- Only our first-party Kodi catalogue is enabled in Lite 1.8.1.
+         Third-party source candidates are documented in the review backlog.
+         Removing catalogue references never uninstalls existing add-ons. -->
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="de_DE">GS Media Repository 1.8 – zentrale Kodi-Updates</summary>
-    <description lang="de_DE">Zentrale GS Media 1.8 Updatequelle fuer XCMate und Noodle Private. Bestehende, kuratierte Quellen fuer Cumination, SMR, xVAULT, Titan BINGIE MOD, EZ Maintenance+ und mr-evil1 Kodi Media bleiben unveraendert. Updates erfolgen ueber den Kodi-Addon-Manager; installierte Nutzerdaten und Profile bleiben unberuehrt.</description>
-    <summary lang="en_GB">GS Media Repository 1.8 – Kodi updates</summary>
-    <description lang="en_GB">GS Media 1.8 update catalog for XCMate and Noodle Private. Preserves the existing curated Cumination, SMR, xVAULT, Titan BINGIE MOD, EZ Maintenance+ and mr-evil1 Kodi Media sources. No changes to user settings or Kodi profiles.</description>
-    <disclaimer lang="de_DE">Eigenständiges Drittanbieter-Repository. Externe Projekte (Cumination, SMR, xVAULT, BINGIE MOD, EZ Maintenance+, mr-evil1 Kodi Media) werden unveraendert von ihren Urhebern gepflegt; xVAULT-Support nur ueber das offizielle Repository. Nicht mit Team Kodi verbunden.</disclaimer>
+    <summary lang="de_DE">GS Media Repository 1.8.1 – geprüfter Katalog</summary>
+    <description lang="de_DE">GS Media 1.8.1 Lite mit Freigabeliste: ausschliesslich GS Media Repository, XCMate und Noodle Private werden im eigenen Katalog angeboten. Ungepruefte Fremdquellen sind nicht enthalten. Bereits installierte Add-ons und Kodi-Nutzerdaten bleiben unveraendert.</description>
+    <summary lang="en_GB">GS Media Repository 1.8.1 – approved catalog</summary>
+    <description lang="en_GB">GS Media 1.8.1 Lite with allowlisted repository, XCMate and Noodle Private. Unapproved external catalogues are excluded. Installed add-ons and Kodi user data remain untouched.</description>
+    <disclaimer lang="de_DE">Eigenstaendiges GS Media Repository. Externe Projekte sind nicht Teil des Lite-Katalogs und werden gegebenenfalls separat durch ihre Urheber gepflegt. Keine Verbindung mit Team Kodi.</disclaimer>
     <platform>all</platform>
     <license>MIT</license>
     <assets><icon>icon-1.8.png</icon><fanart>fanart.png</fanart></assets>
