@@ -41,3 +41,26 @@ class Session69(Fixture,unittest.TestCase):
   from widget_assets69 import renderable
   for uri in ('','/synthetic/resources/media/vod.png','/synthetic/resources/media/series.png','/synthetic/resources/media/programme46/tv.png'):self.assertFalse(renderable(uri))
   self.assertTrue(renderable('https://images.example.org/cover.jpg'))
+
+ def test_dynamic_provider_refs_work_without_programme_db_and_expire(self):
+  import hashlib,json
+  from widget_assets69 import identity,_slot,read
+  from artwork_visible import KODI_OPTIONS
+  from epg_handoff63 import profile_scope
+  row=dict(sid='1',name='Synthetic',cover='https://images.example.org/cover.jpg')
+  # Same approval payload that the worker publishes, then a GUI-only read.
+  from programme_assets47 import sources
+  for role,source in sources(row,provider_only=True).items():
+   key=identity(self.portal,'vod',row,role,source)
+   self.properties[_slot(key)]=json.dumps(dict(key=key,profile=profile_scope(),uri=source+KODI_OPTIONS,until=time.time()+20))
+  with mock.patch('artwork_config.persistent',return_value=False),mock.patch('sqlite3.connect',side_effect=AssertionError('GUI_SQL')),mock.patch('builtins.open',side_effect=AssertionError('GUI_IO')):
+   refs=read(self.portal,'vod',[row])
+  self.assertTrue(refs.get('1'));self.assertTrue(all(uri.startswith('https://images.example.org/') for uri in refs['1'].values()))
+  with mock.patch('widget_assets69.time.time',return_value=time.time()+31),mock.patch('artwork_config.persistent',return_value=False):self.assertEqual(read(self.portal,'vod',[row]),{})
+ def test_dynamic_provider_refs_are_bound_to_portal_and_credentials(self):
+  from widget_assets69 import identity
+  row=dict(sid='1')
+  uri='https://images.example.org/cover.jpg'
+  first=identity(self.portal,'vod',row,'poster',uri)
+  self.assertNotEqual(first,identity(dict(self.portal,id='other'),'vod',row,'poster',uri))
+  self.assertNotEqual(first,identity(dict(self.portal,xc_pass='OTHER'),'vod',row,'poster',uri))

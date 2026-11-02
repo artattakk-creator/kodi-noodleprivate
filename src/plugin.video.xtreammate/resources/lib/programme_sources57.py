@@ -30,7 +30,6 @@ def attempts(event,cancel=lambda:False):
     if catalog:
         yield lambda:xcmate(event,cancel)
         yield lambda:kodi(event,cancel)
-    if not own67:yield lambda:candidate(event,cancel)
     from programme_tvmaze67 import candidate as maze67
     yield lambda:maze67(event,cancel)
     if helper:
@@ -47,6 +46,7 @@ def attempts(event,cancel=lambda:False):
             _backoff.pop(key,None)
             return result
         yield helper_lookup
+    if not own67:yield lambda:candidate(event,cancel)
 
 
 def trace(event,code,duration_ms=0):

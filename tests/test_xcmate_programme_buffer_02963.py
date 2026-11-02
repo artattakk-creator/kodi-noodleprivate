@@ -31,7 +31,8 @@ class ProgrammeBuffer63(Fixture,unittest.TestCase):
   item=dict(props={'XCMate.ProgrammeKey47':info['programme_key47'],'XCMate.ProgrammeImage46':'https://image.tmdb.org/t/p/w780/provider63.png','XCMate.ProgrammeArtSource57':'xmltv_event'})
   with mock.patch('media_sources43.get',side_effect=AssertionError('focus network')):text.apply(item,self.portal,dict(sid='1'),info)
   self.assertEqual(item['props']['XCMate.ProgrammeTitle46'],'Actual local text')
-  self.assertIn('neutral.png',item['props']['XCMate.HeroImage63']);self.assertEqual(item['props']['XCMate.HeroArtSource63'],'')
+  self.assertEqual(item['props']['XCMate.HeroImage63'],'')  # .69 renders neutral skin surface without placeholder texture
+  self.assertEqual(item['props']['XCMate.HeroArtSource63'],'')
   self.assertEqual(item['props']['XCMate.ProgrammeImage46'],'https://image.tmdb.org/t/p/w780/provider63.png')
   self.assertEqual(item['props']['XCMate.ProgrammeArtSource57'],'xmltv_event')
  def test_local_generic_series_image_keeps_its_honest_fallback_label(self):
