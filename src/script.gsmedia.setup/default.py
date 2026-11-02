@@ -139,7 +139,8 @@ def run():
                 "Bereits eingerichtete Boxen bleiben unverändert.",
                 "",
                 "GS Media Setup 0.3.0: HIER NUR ABLAUFVORSCHAU.",
-                "Nur 3er-Pilot installiert Add-ons nach expliziter Freigabe;\n                "Automatischer Neustart-Start noch NICHT aktiv.",
+                "Nur 3er-Pilot installiert Add-ons nach expliziter Freigabe.",
+                "Automatischer Neustart-Start noch NICHT aktiv.",
             ])
             dialog.textviewer("XCMate – Erst nach kompletter Installation", "\n".join(lines), usemono=True)
             continue
