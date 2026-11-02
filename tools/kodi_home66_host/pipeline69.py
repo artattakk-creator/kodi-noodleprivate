@@ -66,6 +66,11 @@ for sid,format_,color in (('5','PNG',(25,145,100)),('6','JPEG',(145,70,120))):
  while not finished.is_set() and time.monotonic()-started<25:xbmc.sleep(50)
  if not finished.is_set() or holder.get('error'):raise RuntimeError(holder.get('error','URL69_WORKER_TIMEOUT'))
  event=holder['event'];art=holder['art']
+ # .70 regression: the valid RAM-only URL must remain consumable after the
+ # old five-minute envelope cutoff. Age only this synthetic broker record.
+ marker_key=broker.PREFIX+'status.'+str(int(broker.identity(event)[:8],16)%broker.SLOTS)
+ envelope=json.loads(home.getProperty(marker_key));envelope['at']-=360;home.setProperty(marker_key,json.dumps(envelope))
+ if broker.result(event).get('image')!=art['image']:raise RuntimeError('STATUS70_EXPIRED_BEFORE_ART_TTL')
  capture('pipeline69-preview-'+sid,[(1260,70)],color,lambda:preview.render(portal,dict(sid=sid,name='Station '+sid,epg_channel_id='xml'+sid),event))
  if not preview.logo.isVisible():raise RuntimeError('URL69_TMDB_LOGO')
  preview.hide();home.removeControls(list(preview.controls))
@@ -80,7 +85,7 @@ for sid,format_,color in (('5','PNG',(25,145,100)),('6','JPEG',(145,70,120))):
  window=ProgrammeWindow46('XCMateProgramme46.xml',addon.getAddonInfo('path'),'Default','720p');window.configure(portal,dict(sid=sid,name='Station '+sid,epg_channel_id='xml'+sid));window.show()
  try:capture('pipeline69-detail-'+sid,[(500,400)],color,window.pump)
  finally:window.close()
- results.append(dict(sid=sid,format=format_,source=art['source'],code=art['code'],storage=art['storage69'],reason=art['storage_code69'],matching_calls=calls,repeated_requests=18,lookup_repeat=0,ready_ms=holder['ready_ms'],total_with_captures_ms=round((time.monotonic()-started)*1000),preview_pixels='PASS',home_pixels='PASS',detail_pixels='PASS',android='NOT_TESTED'))
+ results.append(dict(sid=sid,format=format_,source=art['source'],code=art['code'],storage=art['storage69'],reason=art['storage_code69'],matching_calls=calls,repeated_requests=18,lookup_repeat=0,status_age_seconds=360,status_lifetime70='PASS',ready_ms=holder['ready_ms'],total_with_captures_ms=round((time.monotonic()-started)*1000),preview_pixels='PASS',home_pixels='PASS',detail_pixels='PASS',android='NOT_TESTED'))
 if before!=files():raise RuntimeError('URL69_ADDED_ARCHIVE_FILE')
 requests=[json.loads(s) for s in Path('/root/tls69-requests.jsonl').read_text().splitlines()]
 if not requests or any(r['authorization'] or r['cookie'] for r in requests):raise RuntimeError('URL69_CREDENTIAL_LEAK')

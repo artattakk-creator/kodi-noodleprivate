@@ -24,14 +24,15 @@ def attempts(event,cancel=lambda:False):
     from programme_helper57 import lookup
     from programme_match46 import candidate
     helper,catalog=policy()
+    from programme_outcomes70 import label
     from utils import setting_bool
     own67=setting_bool('programme_tmdb46',False) and setting_bool('tmdb_research43',False)
-    if own67:yield lambda:candidate(event,cancel)
+    if own67:yield label(lambda:candidate(event,cancel),'tmdb')
     if catalog:
-        yield lambda:xcmate(event,cancel)
-        yield lambda:kodi(event,cancel)
+        yield label(lambda:xcmate(event,cancel),'catalog')
+        yield label(lambda:kodi(event,cancel),'kodi')
     from programme_tvmaze67 import candidate as maze67
-    yield lambda:maze67(event,cancel)
+    yield label(lambda:maze67(event,cancel),'tvmaze')
     if helper:
         def helper_lookup():
             from programme_urls55 import profile
@@ -45,8 +46,8 @@ def attempts(event,cancel=lambda:False):
                 raise
             _backoff.pop(key,None)
             return result
-        yield helper_lookup
-    if not own67:yield lambda:candidate(event,cancel)
+        yield label(helper_lookup,'helper')
+    if not own67:yield label(lambda:candidate(event,cancel),'tmdb')
 
 
 def trace(event,code,duration_ms=0):

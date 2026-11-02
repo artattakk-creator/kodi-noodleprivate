@@ -1,0 +1,37 @@
+name: XCMate .70 EPG artwork review
+on:
+  pull_request:
+    branches: [main]
+    paths: ["src/**", "tests/**", "tools/**", ".github/workflows/xcmate70-review.yml"]
+permissions:
+  contents: read
+concurrency:
+  group: xcmate70-review-${{ github.head_ref }}
+  cancel-in-progress: true
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Read pinned .69 inventory
+        run: |
+          git fetch --no-tags --depth=1 origin ebf12b3667df65f865d1e617457551ff9327f303
+          python tools/inspect_xcmate70.py
+      - name: Install host dependencies
+        run: python -m pip install 'Pillow>=11,<13' 'impacket==0.13.0' 'simpleeval==0.9.13'
+      - name: Compile and run .70 regressions
+        run: |
+          python -m compileall -q src tools
+          python -m unittest discover -s tests -p '*02970.py' -v
+      - name: Verify historical fixture isolation after new artwork tests
+        run: |
+          PYTHONPATH=tests python -m unittest test_xcmate_art_status_02970 test_xcmate_epg_handoff_02963 test_xcmate_search_02926 test_xcmate_search_performance_02935 -v
+      - name: Recheck source matching and prior recovery
+        run: |
+          python -m unittest discover -s tests -p '*02969.py' -v
+          python -m unittest discover -s tests -p '*02968.py' -v
+          python -m unittest discover -s tests -p '*02967.py' -v
