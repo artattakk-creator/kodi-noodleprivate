@@ -1,0 +1,28 @@
+name: GS Media Setup 0.2 preflight
+on:
+  pull_request:
+    paths:
+      - 'src/script.gsmedia.setup/**'
+      - 'tests/test_gsmedia_setup_wizard.py'
+      - '.github/workflows/gsmedia-setup-preflight.yml'
+  push:
+    branches:
+      - 'feat/gsmedia-setup-020-preflight-20261102'
+    paths:
+      - 'src/script.gsmedia.setup/**'
+      - 'tests/test_gsmedia_setup_wizard.py'
+      - '.github/workflows/gsmedia-setup-preflight.yml'
+jobs:
+  offline-preflight:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Unit tests
+        run: python -m unittest discover -s tests -p 'test_gsmedia_setup_wizard.py' -v
+      - name: Syntax
+        run: python -m compileall -q src/script.gsmedia.setup
