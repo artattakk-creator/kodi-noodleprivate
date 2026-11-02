@@ -133,3 +133,9 @@ class ArtStatus70(Fixture,unittest.TestCase):
   event=self.event();art=self.art(event)
   other=dict(event,sid='different');self.b.request(other)
   self.assertEqual(self.b.result(other,art)['code'],'REQUESTED')
+
+ def test_shared_rpc_error_does_not_misidentify_kodi_library_as_tmdb_helper(self):
+  from programme_diagnostics59 import message
+  value=dict(code='HELPER_BACKGROUND_UNAVAILABLE',source='placeholder',sources70=[dict(source='kodi',code='HELPER_BACKGROUND_UNAVAILABLE')])
+  text=message(self.event(),value)
+  self.assertIn('Kodi-Katalogabfrage',text);self.assertNotIn('TMDB Helper',text)

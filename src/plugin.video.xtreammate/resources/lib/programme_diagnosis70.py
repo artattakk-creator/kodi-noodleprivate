@@ -17,6 +17,10 @@ def explain(art):
  text=reasons.get(code,'Kein bestätigtes Sendungsbild ('+str(code)+').')
  from programme_outcomes70 import clean
  outcomes=clean(art.get('sources70',[]));own=next((v for v in outcomes if v['source']=='tmdb'),None)
+ failed70=next((v for v in reversed(outcomes) if v['code']==code),{})
+ if code in ('HELPER_TIMEOUT','HELPER_BACKGROUND_UNAVAILABLE') and failed70.get('source') in ('kodi','catalog'):
+  label70='lokale Kodi-Katalogabfrage' if failed70['source']=='kodi' else 'lokale XCMate-Katalogabfrage'
+  text='Die '+label70+(' hat nicht rechtzeitig geantwortet.' if code=='HELPER_TIMEOUT' else ' konnte im Hintergrund keine Auskunft liefern.')+' Kein Sendungsbild bestätigt.'
  config=art.get('lookup70') if isinstance(art.get('lookup70'),dict) else {}
  if own and own['code'] not in ('FOUND','DISABLED'):
   own_reasons={'NO_CONFIRMED_IMAGE':'keine eindeutige Bildzuordnung bestätigt','HTTP_AUTH':'Zugriff abgewiesen; bestehenden Zugang testen','HTTP_RATE_LIMIT':'Anfragelimit erreicht','TMDB_TOKEN_FILE_INVALID':'vorhandener Zugang derzeit nicht sicher lesbar','TMDB_TOKEN_MISSING':'kein verwendbarer Zugang gemeldet'}

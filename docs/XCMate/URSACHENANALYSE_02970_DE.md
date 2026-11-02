@@ -51,3 +51,5 @@ Live-TV-Exit/Kompatibilitätsmodus, Kodi-/Skin-/Widget-Routen, Portale, EPG-Mapp
 ## Zusätzlicher Integrationsbefund
 
 Der native Regressionstest erkannte während der .70-Entwicklung, dass der neue REQUESTED-Status ein bereits gültiges lokales Bild im Detaildialog überdecken konnte. Der Statuspfad ist korrigiert: fehlendes ACK beziehungsweise QUEUED/RUNNING verdrängen kein zur gleichen Sendung gültiges vorhandenes Bild. Ein unpassendes fremdes Ereignisbild wird weiterhin abgewiesen. Zwei zusätzliche Regressionen schützen beide Fälle.
+
+Die lokalen Kodi-Katalogabfragen verwenden denselben RPC-Adapter wie TMDB Helper und konnten deshalb ebenfalls HELPER_BACKGROUND_UNAVAILABLE liefern. Die neue Quellenzuordnung verhindert, dass ein nachgewiesener Kodi-Katalogfehler pauschal dem externen TMDB Helper zugeschrieben wird.
