@@ -182,7 +182,7 @@ class Pipeline68(Fixture,unittest.TestCase):
   xbmc.getInfoLabel=lambda name:fields.get(name[len('ListItem.Property('):-1],'')
   event=dict(title='Synthetic Programme',start=self.now-60,stop=self.now+600,source_key46='provider')
   info=dict(now=event['title'],start=event['start'],stop=event['stop'],events=[event],canonical46='a',snapshot_revision=['guide',1])
-  hero_epg63._next=0
+  hero_epg63._next=0;hero_epg63._labels=None
   with mock.patch('epg_handoff63.get',return_value=info),mock.patch('programme_requests68.request',return_value=True) as request,mock.patch('programme_requests68.result',return_value={}),mock.patch('hero_epg63.prepare',side_effect=AssertionError('BULK_DEPENDENCE')),mock.patch('sqlite3.connect',side_effect=AssertionError('GUI_SQL')),mock.patch('builtins.open',side_effect=AssertionError('GUI_FILE')),mock.patch('media_sources43.get',side_effect=AssertionError('GUI_HTTP')):
    hero_epg63.poll()
   self.assertEqual(request.call_count,1);self.assertEqual(request.call_args.args[0]['sid'],'1');self.assertEqual(request.call_args.args[0]['canonical'],'a')
