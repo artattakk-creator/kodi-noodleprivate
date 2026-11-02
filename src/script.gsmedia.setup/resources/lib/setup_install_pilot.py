@@ -21,7 +21,8 @@ APPROVED_IDS = tuple(x[0] for x in APPROVED)
 JOURNAL_FILE = "install-pilot-030.json"
 JOURNAL_VERSION = 1
 MAX_JOURNAL = 8192
-PROTECTED_EXISTING = ("skin.titan.bingie.mod", "plugin.video.xvault",
+PROTECTED_EXISTING = ("skin.titan.bingie.mod", "plugin.video.xtreammate",
+                      "plugin.video.themoviedb.helper", "plugin.video.xvault",
                       "plugin.video.cumination", "plugin.audio.m3sr2019")
 
 
