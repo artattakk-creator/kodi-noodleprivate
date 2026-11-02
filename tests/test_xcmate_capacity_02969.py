@@ -77,3 +77,28 @@ class Capacity69(Fixture,unittest.TestCase):
   from programme_urls55 import safe
   for url in ('https://user:secret@image.tmdb.org/t/p/w500/a.jpg','https://127.0.0.1/a.jpg','http://image.tmdb.org/t/p/w500/a.jpg','https://image.tmdb.org/t/p/w500/a.jpg?token=secret'):
    self.assertFalse(safe(url))
+
+ def test_real_sqlite_exclusive_lock_is_classified_without_reset(self):
+  from programme_writes69 import classify
+  path=str(self.folder/'locked.sqlite')
+  first=sqlite3.connect(path);second=sqlite3.connect(path,timeout=.01)
+  try:
+   first.execute('CREATE TABLE protected(value TEXT)');first.commit();first.execute('BEGIN EXCLUSIVE')
+   with self.assertRaises(sqlite3.OperationalError) as caught:second.execute('INSERT INTO protected VALUES(?)',('keep',))
+   self.assertEqual(classify(caught.exception,path),'SQLITE_BUSY_LOCKED')
+  finally:first.rollback();first.close();second.close()
+ def test_real_sqlite_full_is_not_misreported_as_filesystem_enospc(self):
+  from programme_writes69 import classify
+  path=str(self.folder/'full.sqlite');db=sqlite3.connect(path)
+  try:
+   db.execute('PRAGMA max_page_count=2');db.execute('CREATE TABLE protected(value BLOB)')
+   with self.assertRaises(sqlite3.OperationalError) as caught:db.execute('INSERT INTO protected VALUES(?)',(b'a'*32768,))
+   self.assertEqual(caught.exception.sqlite_errorname,'SQLITE_FULL')
+   self.assertEqual(classify(caught.exception,path),'SQLITE_FULL_UNKNOWN')
+  finally:db.close()
+ def test_real_atomic_result_persistence_keeps_existing_rows(self):
+  from programme_index46 import publish_result69,art
+  first=self.event();second=dict(first,key='synthetic-second',sid='2')
+  self.assertTrue(publish_result69(first,dict(code='NO_MATCH',source='placeholder',until=time.time()+300)))
+  self.assertTrue(publish_result69(second,dict(code='NO_ARTWORK',source='placeholder',until=time.time()+300)))
+  self.assertEqual(art(first)['code'],'NO_MATCH');self.assertEqual(art(second)['code'],'NO_ARTWORK')

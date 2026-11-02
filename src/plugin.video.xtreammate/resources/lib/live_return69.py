@@ -49,6 +49,11 @@ def poll():
  if not value or value['phase'] not in ('home','complete') or value.get('return_stage69') in ('COMPLETE','FAILED'):return False
  begin(value);value=state()
  if not value:return False
+ from live_return59 import stop_confirmed
+ from exit_jobs import state as stop_job69
+ if not stop_confirmed(value,stop_job69()):
+  if time.monotonic()>=value.get('return_deadline69',time.monotonic()):_commit(value,'FAILED','STOP_ACK_UNCONFIRMED')
+  return False
  import xbmc
  from window_lifecycle import state as native,lease
  snapshot=native()

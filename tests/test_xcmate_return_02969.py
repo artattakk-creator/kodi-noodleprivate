@@ -11,7 +11,7 @@ class Return69(Fixture,unittest.TestCase):
   self.value=dict(session=dict(pid='p',sid='1',nonce='a'*32,at=time.time()),at=time.time(),phase='home',return_started69=10.,return_deadline69=18.,return_attempts69=0,return_stage69='BEGIN')
   self.snap=dict(window=10025,dialog=9999,modal=False,updating=False)
   self.clock=mock.patch('live_return69.time.monotonic',return_value=12.);self.clock.start();self.addCleanup(self.clock.stop)
-  for target,kw in [('live_exit.state',dict(side_effect=lambda:self.value)),('live_exit._save',dict(side_effect=lambda v:setattr(self,'value',copy.deepcopy(v)))),('window_lifecycle.state',dict(side_effect=lambda:self.snap)),('window_lifecycle.lease',dict(return_value='')),('live_overlay.session_from_property',dict(return_value=None))]:
+  for target,kw in [('live_exit.state',dict(side_effect=lambda:self.value)),('live_exit._save',dict(side_effect=lambda v:setattr(self,'value',copy.deepcopy(v)))),('window_lifecycle.state',dict(side_effect=lambda:self.snap)),('live_return59.stop_confirmed',dict(return_value=True)),('exit_jobs.state',dict(return_value={})),('window_lifecycle.lease',dict(return_value='')),('live_overlay.session_from_property',dict(return_value=None))]:
    p=mock.patch(target,**kw);p.start();self.addCleanup(p.stop)
  def test_complete_requires_usable_visible_home(self):
   self.assertTrue(self.ret.poll());self.assertEqual(self.value['return_stage69'],'COMPLETE');self.assertEqual(self.builtins,[])
@@ -40,6 +40,10 @@ class Return69(Fixture,unittest.TestCase):
   self.current_folder='plugin://plugin.video.xtreammate/?action=guide_grid&pid=p'
   with mock.patch('live_return69.time.monotonic',return_value=19.):self.ret.poll()
   self.assertEqual(len(self.builtins),2);self.assertEqual(self.value['return_stage69'],'FAILED')
+ def test_native_stop_ack_is_required_before_recovery(self):
+  self.current_folder='plugin://plugin.video.xtreammate/?action=guide_grid&pid=p'
+  with mock.patch('live_return59.stop_confirmed',return_value=False):self.ret.poll()
+  self.assertEqual(self.builtins,[])
  def test_foreign_window_is_not_replaced(self):
   self.snap['window']=10001;self.ret.poll()
   self.assertEqual(self.builtins,[]);self.assertEqual(self.value['return_stage69'],'FAILED')

@@ -59,7 +59,7 @@ def _hero(props):
     from programme_image69 import unpack
     approved69=unpack(props.get('XCMate.ArtProof69',''))
     local=local_image(image) and not '/resources/media/programme46/' in image
-    if approved69 and approved69.get('key')==props.get('XCMate.ProgrammeKey47'):local=True
+    if approved69 and approved69.get('key')==props.get('XCMate.ProgrammeKey47') and approved69.get('image')==image:local=True
     if not local:image=''
     props['XCMate.HeroImage63']=image if local else ''
     props['XCMate.HeroArtSource63']=props.get('XCMate.ProgrammeArtSource57','') if local else ''

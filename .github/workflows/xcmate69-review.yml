@@ -27,3 +27,13 @@ jobs:
         run: |
           python -m compileall -q src tools
           python -m unittest discover -s tests -p '*02969.py' -v
+      - name: Measure pinned .68 versus .69 under failed persistence
+        run: python tools/benchmark_xcmate69.py --output xcmate69-host-evidence.json
+      - name: Upload replay measurement
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcmate69-performance-${{ github.sha }}
+          path: xcmate69-host-evidence.json
+          if-no-files-found: warn
+          retention-days: 14
