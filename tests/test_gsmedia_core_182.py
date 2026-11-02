@@ -37,9 +37,9 @@ class CoreInstallPlanTests(unittest.TestCase):
                           "script.module.xmltodict"})
         self.assertIn("mirrors.kodi.tv/addons/omega",x["artifact"])
 
-    def test_mp3_does_not_declare_missing_source_published(self):
+    def test_mp3_backup_source_does_not_become_unreviewed_release(self):
         x=next(r for r in self.data["core"] if r["id"]=="plugin.audio.m3sr2019")
-        self.assertEqual(x["status"],"blocked_upstream_404")
+        self.assertEqual(x["status"],"historical_backup_source_found_not_packaged")
         self.assertNotIn(x["id"],gate.check_publication_eligibility(self.data))
 
     def test_incomplete_core_fails_closed(self):
