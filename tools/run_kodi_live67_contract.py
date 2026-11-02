@@ -11,8 +11,8 @@ for k in ('DOCKER_HOST','DOCKER_CONTEXT','DOCKER_TLS','DOCKER_TLS_VERIFY','DOCKE
 env['BUILDX_CONFIG']=str(report/'buildx')
 docker=['docker','--host=unix:///var/run/docker.sock']
 def run(*cmd,**kw):return subprocess.run(docker+list(cmd),env=env,check=True,**kw)
-image='xcmate-kodi21-helper57-contract';name='xcmate-live67-'+uuid.uuid4().hex[:12]
-with (report/'build.log').open('w') as log:run('build','--secret','id=system_ca,src=/etc/ssl/certs/ca-certificates.crt','-t',image,str(root/'tools/kodi_helper57_host'),stdout=log,stderr=subprocess.STDOUT)
+image='xcmate-kodi21-live67-contract';name='xcmate-live67-'+uuid.uuid4().hex[:12]
+with (report/'build.log').open('w') as log:run('build','--secret','id=system_ca,src=/etc/ssl/certs/ca-certificates.crt','-t',image,str(root/'tools/kodi_live67_host'),stdout=log,stderr=subprocess.STDOUT)
 try:
  run('run','-d','--name',name,'--mount','type=bind,src='+str(root/'tools/kodi_live67_host')+',dst=/work,readonly','--mount','type=bind,src='+str(root/'src/plugin.video.xtreammate')+',dst=/xcmate,readonly','--mount','type=bind,src='+str(media)+',dst=/root/media,readonly',image,'sh','/work/start.sh',stdout=subprocess.DEVNULL)
  with (report/'live.json').open('w') as out:run('exec',name,'python3','/work/probe.py',stdout=out,timeout=180)

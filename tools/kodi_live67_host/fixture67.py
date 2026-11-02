@@ -17,6 +17,8 @@ if params.get('fixture67')==['seed']:
  xbmcplugin.endOfDirectory(handle)
 elif params.get('fixture67')==['configure']:
  xbmcaddon.Addon().setSetting('live_stream_format67',params['format'][0]);xbmcaddon.Addon().setSetting('use_inputstream_hls','false')
- xbmcplugin.endOfDirectory(handle)
+ actual=xbmcaddon.Addon().getSetting('live_stream_format67')
+ if actual!=params['format'][0]:raise RuntimeError('NATIVE_FORMAT_SETTING_NOT_APPLIED '+repr(actual))
+ xbmcplugin.endOfDirectory(handle,cacheToDisc=False)
 else:
  spec=importlib.util.spec_from_file_location('actual_default67',root/'default.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);module.run()

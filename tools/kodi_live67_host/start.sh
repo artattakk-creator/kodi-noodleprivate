@@ -18,12 +18,11 @@ s=Path('/root/.kodi/addons/script.xcmate.live67');s.mkdir(exist_ok=True)
 PY
 cp /work/fixture67.py /root/.kodi/addons/plugin.video.xtreammate/
 cat > /root/.kodi/userdata/guisettings.xml <<'EOF'
-<settings version="2"><setting id="services.webserver">true</setting><setting id="services.webserverport">18080</setting><setting id="services.webserverauthentication">false</setting><setting id="audiooutput.audiodevice">ALSA:default</setting><setting id="audiooutput.passthrough">false</setting><setting id="services.zeroconf">false</setting><setting id="services.upnpserver">false</setting><setting id="general.addonupdates">2</setting></settings>
+<settings version="2"><setting id="services.webserver">true</setting><setting id="services.webserverport">18080</setting><setting id="services.webserverauthentication">false</setting><setting id="audiooutput.audiodevice">PULSE:Default</setting><setting id="audiooutput.passthrough">false</setting><setting id="services.zeroconf">false</setting><setting id="services.upnpserver">false</setting><setting id="general.addonupdates">2</setting></settings>
 EOF
-# Synthetic CI audio sink only; no host hardware or user settings are touched.
-cat > /root/.asoundrc <<'EOF'
-pcm.!default { type null }
-EOF
+# Isolated real-time audio sink; no host audio device is exposed.
+pulseaudio --system --daemonize=yes --disallow-exit --exit-idle-time=-1 -n --load="module-native-protocol-unix auth-anonymous=1 socket=/tmp/pulse67.sock" --load="module-null-sink sink_name=ci67"
+export PULSE_SERVER=unix:/tmp/pulse67.sock
 python3 /work/server.py &
 Xvfb :99 -screen 0 1920x1080x24 -nolisten tcp -ac &
 python3 -c 'import time;time.sleep(1)'

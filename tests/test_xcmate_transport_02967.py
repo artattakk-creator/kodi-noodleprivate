@@ -49,3 +49,8 @@ class Transport67(Fixture,unittest.TestCase):
    events.onPlayBackError();m.poll();m.poll()
    self.assertEqual(self.dialog.notification.call_count,1)
   self.assertFalse(self.builtins);self.assertFalse(self.native_builtins)
+ def test_native_format_enum_exposes_three_real_options(self):
+  import xml.etree.ElementTree as E
+  from xcmate027_fixture import ADDON
+  node=E.parse(ADDON/'resources/settings.xml').getroot().find(".//setting[@id='live_stream_format67']")
+  self.assertEqual(len(node.get('values').split('|')),3);self.assertEqual(node.get('default'),'0')
