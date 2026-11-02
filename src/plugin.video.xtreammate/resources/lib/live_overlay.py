@@ -540,7 +540,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self._row_offset = 0
         page = self.visible_channels[self._page_start:self._page_start+CHANNEL_PAGE_SIZE]
         labels = [c.name for c in page]
-        return labels or ['Senderkatalog wird vorbereitet' if not self._catalog_ready else 'Keine aktivierten Sender']
+        return labels or ['Senderkatalog wird vorbereitet' if not self._catalog_ready or getattr(self,'_catalog_partial46',False) else 'Keine aktivierten Sender']
 
     def _row_value44(self,control,method,*values):
         from render_diff44 import write
