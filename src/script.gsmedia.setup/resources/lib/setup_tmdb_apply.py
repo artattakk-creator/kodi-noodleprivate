@@ -46,7 +46,10 @@ def apply(xvault_addon_root, tmdb_addon_profile, tmdb_addon,
     # Do not override non-empty current personal settings unless already
     # equivalent to the original xVAULT values. This is important even when
     # a caller claims a profile is fresh.
-    if any(value not in ("", MOVIE_PLAYER, EPISODE_PLAYER) for value in before):
+    # The two setting IDs are not interchangeable. A swapped value is
+    # an existing custom choice, not authorization to overwrite it.
+    if (before[0] not in ("", MOVIE_PLAYER) or
+            before[1] not in ("", EPISODE_PLAYER)):
         return "EXISTING_DEFAULTS_PRESERVED"
     created = False
     try:
