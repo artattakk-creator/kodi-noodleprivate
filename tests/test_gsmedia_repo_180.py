@@ -16,7 +16,7 @@ class GsMediaRepo180Tests(unittest.TestCase):
 
     def test_repo_id_and_incremental_update(self):
         self.assertEqual(self.manifest.get("id"), "repository.gsmedia")
-        self.assertEqual(self.manifest.get("version"), "1.8.1")
+        self.assertEqual(self.manifest.get("version"), "1.8.2")
         self.assertEqual(self.manifest.get("provider-name"), "GS Media")
 
     def test_only_first_party_catalogue_is_exposed(self):
@@ -28,7 +28,7 @@ class GsMediaRepo180Tests(unittest.TestCase):
         self.assertEqual(dirs[0].findtext("datadir"), allowed)
         self.assertEqual(dirs[0].findtext("hashes"), "false")
 
-    def test_only_three_approved_addon_ids_in_builder(self):
+    def test_only_four_approved_addon_ids_in_builder(self):
         import ast
         script = ROOT / "tools" / "build_repository.py"
         module = ast.parse(script.read_text(encoding="utf-8"))
@@ -41,7 +41,8 @@ class GsMediaRepo180Tests(unittest.TestCase):
         self.assertEqual(expr.func.id, "frozenset")
         approved = set(ast.literal_eval(expr.args[0]))
         self.assertEqual(approved, {
-            "repository.gsmedia", "plugin.video.xtreammate", "plugin.video.noodleprivate"
+            "repository.gsmedia", "plugin.video.xtreammate", "plugin.video.noodleprivate",
+            "script.gsmedia.setup"
         })
         source_ids = {p.parent.name for p in (ROOT / "src").glob("*/addon.xml")}
         self.assertEqual(source_ids, approved)
