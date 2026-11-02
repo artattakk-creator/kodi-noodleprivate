@@ -1,3 +1,11 @@
+0.1.29.69 (Test-Build)
+- EPG-Bilder: geprüfte öffentliche HTTPS-Referenzen direkt anzeigen; lokales Bildarchiv optional.
+- Speicherfehler unterscheiden; begrenzte Wiederholungen und Sitzungspuffer statt endloser Bildsuche.
+- BINGIE: lokale Texte/Logos und Provider-Cover früher bereitstellen; fehlende Bilder neutral behandeln.
+- Live-TV: begrenzte Home-Rückkehr nach bestätigtem Stop; eigene EPG-Detailfenster gezielt freigeben.
+- Bestehende Portale, Passwörter/TMDB-Zugang, EPG-Zuordnungen, Cover und Fortschritte bleiben erhalten.
+- Android-Geräteabnahme noch NOT_TESTED; kein produktives Release.
+
 0.1.29.68
 - Sichtbare EPG-Sendungen und Details erhalten priorisierte Bildaufträge im Service.
 - Bildsuche: nachvollziehbare Auftragszustände und quellensicherer Negativcache.

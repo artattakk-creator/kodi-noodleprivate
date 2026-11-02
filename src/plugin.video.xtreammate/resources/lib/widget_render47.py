@@ -14,5 +14,9 @@ def values(portal,kind,rows,approved):
                 note(portal['id'],kind,'ASSETS','LOCAL_EPG_UNAVAILABLE',selected=len(rows))
         else:epg={}
         assets=read_many(portal['id'],kind,rows,provider_only=kind in ('vod','series'))
-        return [describe(portal,kind,row,approved,epg.get(row['sid']),
+        values=[describe(portal,kind,row,approved,epg.get(row['sid']),
                          assets47=assets.get(str(row['sid']))) for row in rows]
+        if kind in ('vod','series') and __import__('widget_assets69').home():
+            from widget_assets69 import renderable
+            values=[value for value in values if renderable(value['art'].get('poster'))]
+        return values

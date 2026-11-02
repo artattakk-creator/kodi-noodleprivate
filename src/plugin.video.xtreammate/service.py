@@ -188,6 +188,8 @@ class IPTVMasterService(xbmc.Monitor):
             except Exception:diagnostic('dialog','SETUP_RETURN_FAILED')
             from live_exit import poll as poll_live_exit
             exiting=poll_live_exit(self._overlay)
+            try:__import__('live_return69').poll()
+            except (AttributeError,RuntimeError,ValueError,TypeError):diagnostic('ownership','RETURN69_CHECK_FAILED')
             if self._overlay is not None and self._overlay._closed:self._overlay=None
             # Fullscreen-to-navigation transition, independent of slow workers.
             # The live overlay itself and its Back hierarchy remain unchanged.
@@ -202,7 +204,9 @@ class IPTVMasterService(xbmc.Monitor):
                 continue  # Pending Stop/Home only; completed latches must not starve widget refresh.
             # Visible event artwork has its own bounded intake, independent
             # of slow catalogue startup and the optional bulk warmup phase.
-            try:__import__('programme_requests68').poll()
+            try:
+                __import__('programme_requests68').poll()
+                __import__('widget_fast69').poll()
             except (ImportError,AttributeError,RuntimeError):pass
             # Explicit visible-page/manual EPG requests are small, service-owned
             # jobs. They are independent of opt-in bulk catalogue prefetch.

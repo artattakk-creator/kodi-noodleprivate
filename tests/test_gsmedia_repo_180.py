@@ -69,7 +69,7 @@ class GsMediaRepo180Tests(unittest.TestCase):
 
     def test_xcmate_release_unchanged(self):
         addon = ET.parse(ROOT / "src" / "plugin.video.xtreammate" / "addon.xml").getroot()
-        self.assertEqual(addon.get("version"), "0.1.29.68")
+        self.assertEqual(addon.get("version"), "0.1.29.69")
         self.assertEqual(addon.get("id"), "plugin.video.xtreammate")
 
 

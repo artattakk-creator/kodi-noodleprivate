@@ -26,6 +26,9 @@ class WidgetRefresh45(Fixture,unittest.TestCase):
  def control(self,rows,kind='vod'):
   return NativeProvider([self.i.item(self.i.describe(self.portal,kind,r,{})) for r in rows])
  def home(self,control,kind='vod',hooks=None):
+  # Reload/navigation contract uses approved synthetic provider references.
+  # Missing-art suppression has its own .69 contract; no pixel PASS implied.
+  p=mock.patch('programme_assets47.read_many',side_effect=lambda pid,kind,rows,**kw:{str(r['sid']):dict(poster='/synthetic/approved-provider-poster.jpg') for r in rows});p.start();self.addCleanup(p.stop)
   action={'live':'widget_live_start_group','vod':'widget_recent_vod','series':'widget_recent_series'}[kind]
   hook='XCMate.Widget45.Reload.'+kind
   self.bindings={'bindings':[dict(pid='p',kind=kind,hooks=[hook] if hooks is None else hooks)]}

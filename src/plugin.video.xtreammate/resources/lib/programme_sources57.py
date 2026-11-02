@@ -13,7 +13,13 @@ def policy():
     return [setting_bool('programme_helper57',True),setting_bool('programme_catalog57',True)]
 
 
+def unsuitable69(event):
+    genre=str(event.get('genre','')).casefold()
+    title=' '.join(str(event.get('title','')).casefold().split())
+    return any(word in genre for word in ('nachricht','news','sport','wetter','teleshopping')) or title in ('sendepause','programmhinweis','nachrichten','news','wetter')
+
 def attempts(event,cancel=lambda:False):
+    if unsuitable69(event):return
     from programme_catalog57 import xcmate,kodi
     from programme_helper57 import lookup
     from programme_match46 import candidate
@@ -24,6 +30,8 @@ def attempts(event,cancel=lambda:False):
     if catalog:
         yield lambda:xcmate(event,cancel)
         yield lambda:kodi(event,cancel)
+    from programme_tvmaze67 import candidate as maze67
+    yield lambda:maze67(event,cancel)
     if helper:
         def helper_lookup():
             from programme_urls55 import profile
@@ -38,10 +46,7 @@ def attempts(event,cancel=lambda:False):
             _backoff.pop(key,None)
             return result
         yield helper_lookup
-    # Existing local catalogue/library and helper before optional own-token HTTP.
     if not own67:yield lambda:candidate(event,cancel)
-    from programme_tvmaze67 import candidate as maze67
-    yield lambda:maze67(event,cancel)
 
 
 def trace(event,code,duration_ms=0):

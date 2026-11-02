@@ -12,7 +12,7 @@ class ProgrammeWidgets46(Fixture,unittest.TestCase):
   value=self.value();event=self.events.from_info(self.portal,self.row,self.info)
   self.assertEqual(value['props']['XCMate.ProgrammeKey46'],event['key']);self.assertEqual(value['art']['landscape'],event['placeholder']);self.assertIn(event['description'],value['info']['plot'])
  def test_actual_station_logo_is_separate_from_programme_image(self):
-  cached=dict(image='/own/actual-programme.png',code='READY')
+  cached=dict(image='/own/actual-programme.png',code='READY',source='xmltv_event',match='EXACT_EVENT')
   value=dict(art={'thumb':'/own/actual-station-logo.png'},props={},info={'plot':'local plot'})
   with mock.patch('programme_art46.cached',return_value=cached):result=self.decorate.decorate(value,self.portal,self.row,self.info)
   self.assertEqual(result['props']['XCMate.ProgrammeLogo46'],'/own/actual-station-logo.png');self.assertEqual(result['art']['landscape'],'/own/actual-programme.png')

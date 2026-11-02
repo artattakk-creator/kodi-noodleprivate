@@ -8,6 +8,8 @@ def stop_confirmed(value,job):
 
 
 def ready(value):
+    from live_return69 import begin
+    begin(value)
     from window_lifecycle import state,lease
     snapshot=state()
     if snapshot['modal'] or snapshot['dialog'] not in (0,-1,9999):code='MODAL'

@@ -1,5 +1,5 @@
 """Authoritative local EPG text survives any optional artwork/metadata failure."""
-import os,time
+import os,time,json
 from urllib.parse import urlencode
 
 def local_image(path):
@@ -26,7 +26,7 @@ def apply(item,portal,row,info,event=None,labels=None):
     # the old text with a different programme's picture.
     if props.get('XCMate.ProgrammeKey47','')!=key:
         props['XCMate.ProgrammeImage46']=os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media','programme46','neutral.png')
-        for field in ('XCMate.ProgrammeArtSource57','XCMate.ProgrammeArtCredit57','XCMate.ProgrammeImageScope57'):props[field]=''
+        for field in ('XCMate.ProgrammeArtSource57','XCMate.ProgrammeArtCredit57','XCMate.ProgrammeImageScope57','XCMate.ArtProof69'):props[field]=''
     now=bool(info.get('now'));event=event if isinstance(event,dict) and event.get('key')==key else {}
     subtitle=str(event.get('subtitle') or '')
     if type(event.get('season')) is int and type(event.get('episode')) is int:
@@ -56,7 +56,11 @@ def _hero(props):
     import xbmcaddon
     props['XCMate.HeroLong64']='true' if len(props.get('XCMate.ProgrammeTitle46',''))>26 else 'false'
     image=props.get('XCMate.ProgrammeImage46','')
-    local=local_image(image)
-    props['XCMate.HeroImage63']=image if local else os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media','programme46','neutral.png')
+    from programme_image69 import unpack
+    approved69=unpack(props.get('XCMate.ArtProof69',''))
+    local=local_image(image) and not '/resources/media/programme46/' in image
+    if approved69 and approved69.get('key')==props.get('XCMate.ProgrammeKey47') and approved69.get('image')==image:local=True
+    if not local:image=''
+    props['XCMate.HeroImage63']=image if local else ''
     props['XCMate.HeroArtSource63']=props.get('XCMate.ProgrammeArtSource57','') if local else ''
     props['XCMate.HeroArtCode63']=props.get('XCMate.ProgrammeArtCode46','') if local else 'PENDING_LOCAL_DOWNLOAD' if str(image).startswith(('http://','https://','image://')) else 'NO_IMAGE'

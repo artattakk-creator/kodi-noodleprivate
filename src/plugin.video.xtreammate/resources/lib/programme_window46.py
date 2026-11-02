@@ -43,10 +43,11 @@ def show(portal,channel,event=None,parent=None):
 class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
  def configure(self,portal,channel,event=None,parent=None):
   self.portal,self.channel,self.selected,self.parent=portal,dict(channel),event,parent
-  self._owner=threading.get_ident();self._closed=False;self._ready=False;self._shown=False
+  self._owner=threading.get_ident();self._closed=False;self._ready=False;self._shown=False;self._init_error69=False;self._read_deadline69=0
   self._cancel=threading.Event();self._future=None;self.event=None;self._art_signature=None;self._next=0;self._scroll46=0;self._art68={}
  def _gui(self):
   if threading.get_ident()!=self._owner:raise RuntimeError('PROGRAMME_OWNER_THREAD')
+ @__import__('programme_lifecycle69').initialized
  def onInit(self):
   self._gui()
   if self._ready:return
@@ -56,7 +57,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   self.getControl(881).setImage(icon('back',full=True));self.setFocusId(501)
   self.getControl(103).setText(tr(36106));self.getControl(106).setLabel(tr(36119))
   if not _slots.acquire(blocking=False):self.getControl(103).setText(tr(36107));return
-  future=Future();self._future=future
+  future=Future();self._future=future;self._read_deadline69=time.monotonic()+5
   def work():
    try:
     if not future.set_running_or_notify_cancel():return
@@ -78,7 +79,12 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
  def pump(self):
   self._gui()
   if self._closed:return
+  if __import__('programme_lifecycle69').pulse(self):return
   if self.parent is not None and self.parent._closed:self.close();return
+  if self._future is not None and not self._future.done() and time.monotonic()>self._read_deadline69:
+   self._cancel.set();self._future.cancel();self._future=None
+   self.getControl(103).setText('EPG_READ_TIMEOUT: Daten momentan nicht verfügbar. Zurück bleibt bedienbar.')
+   __import__('programme_lifecycle69').mark(self,'READ_TIMEOUT')
   if self._future is not None and self._future.done():
    future=self._future;self._future=None
    try:self.event=future.result()
@@ -100,13 +106,14 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
     request(self.event,priority=True)
    signature=(art.get('image'),art.get('code'),art.get('source'),art.get('match'))
    if signature!=self._art_signature:
-    self._art_signature=signature;self.getControl(110).setImage(art.get('image') or self.event['placeholder'])
+    self._art_signature=signature;self.getControl(110).setImage(art.get('image') if __import__('programme_image69').eligible(art,self.event) else '')
+    self.getControl(110).setVisible(__import__('programme_image69').eligible(art,self.event))
     from programme_flow48 import trace
     trace('GUI',self.event,'GUI_IMAGE_REQUESTED' if art.get('source')!='placeholder' else art.get('code','PENDING'))
     from programme_diagnostics59 import message
     self.getControl(104).setLabel(message(self.event,art))
     self.getControl(105).setText(str(art.get('attribution',''))[:500])
-    self.getControl(130).setVisible(str(art.get('source','')).startswith('tmdb'))
+    self.getControl(130).setVisible(__import__('programme_image69').eligible(art,self.event) and str(art.get('source','')).startswith('tmdb'))
    now=time.time();e=self.event;current=e.get('start',0)<=now<e.get('stop',0)
    self.getControl(120).setVisible(current);self.getControl(121).setVisible(current)
    if current:self.getControl(121).setWidth(max(1,int(536*(now-e['start'])/(e['stop']-e['start']))))
@@ -116,6 +123,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
    if not permitted(self.parent):return
    self.show()
    while not self._closed:
+    if self._init_error69:break
     if self._ready:self.pump()
     elif time.monotonic()-start>10:break
     if monitor.waitForAbort(.05):break
@@ -134,6 +142,8 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   self._gui()
   if self._closed:return
   self._closed=True;self._cancel.set()
+  __import__('programme_lifecycle69').mark(self,'CLOSE')
+  __import__('programme_lifecycle69').unregister(self)
   if self._future:self._future.cancel()
   if self._shown:super().close()
 

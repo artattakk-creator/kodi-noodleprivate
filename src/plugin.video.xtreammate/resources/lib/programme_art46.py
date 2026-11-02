@@ -245,11 +245,16 @@ def cached(event):
 The producer verified digest/decoder before publication. Workers reverify full
 bytes on startup; directory readers never decode 12 full pictures in RAM.
 """
+ from programme_requests68 import result as shared69
+ value=shared69(event)
+ if value.get('until',0)>time.time() and (value.get('source')=='placeholder' or __import__('programme_image69').eligible(value,event)):return value
  value=indexed(event)
  if value:
+  value=__import__('programme_image69').adopt(event,value)
   remember(event['key'],value);return value
  value=persisted(event,verify=False)
  if value:
+  value=__import__('programme_image69').adopt(event,value)
   remember(event['key'],value);return value
  value=peek(event)
  if value.get('url_version55')==1:

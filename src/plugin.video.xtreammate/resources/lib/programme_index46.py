@@ -21,6 +21,9 @@ def path(guide=None):
 
 def report(category,error=None,guide=None):
     """Fixed write status only; never exception text, source IDs or URLs."""
+    from programme_writes69 import record,success
+    if error is None:success(path(guide),category)
+    else:record(path(guide),error,category)
     code='READY' if error is None else 'PROGRAMME_DATA_BUDGET' if getattr(error,'sqlite_errorname','')=='SQLITE_FULL' else 'DISK_FULL' if getattr(error,'errno',None)==28 else 'PROGRAMME_DB_BUSY' if getattr(error,'sqlite_errorname','') in ('SQLITE_BUSY','SQLITE_LOCKED') else 'PROGRAMME_DB_IO'
     filename=path(guide)+'.status.json';key=(filename,category);old=_reports.get(key);now=time.time()
     if old and old[0]==code and now-old[1]<60:return
@@ -66,6 +69,8 @@ def connect(write=False,guide=None):
         if db.execute('PRAGMA application_id').fetchone()[0]!=APPLICATION_ID or db.execute('PRAGMA user_version').fetchone()[0]!=1:
             db.close();raise ValueError('UNSUPPORTED_PROGRAMME_SCHEMA')
         return retain(filename,db)
+    from programme_writes69 import guard
+    guard(filename)
     from import_budget import check_space
     check_space(filename,65536)
     db=sqlite3.connect(filename,timeout=.05)
@@ -388,5 +393,26 @@ def status():
         return dict(code=next(iter(failures.values())) if failures else 'PROGRAMME_DATA_BUDGET' if page-free>=MAX_BYTES else 'READY' if version==1 else 'UNSUPPORTED_SCHEMA',bytes=page,used=page-free,version=version,last_write_failures=failures)
     except ValueError:return dict(code='BLOCKED_SCHEMA')
     except (OSError,sqlite3.Error):return dict(code='PROGRAMME_DB_UNAVAILABLE')
+    finally:
+        if db is not None:db.close()
+
+
+def publish_result69(record,value):
+    """One bounded result transaction. Storage failure never erases RAM proof."""
+    db=None
+    try:
+        from programme_art46 import fingerprint
+        db=connect(True)
+        with db:
+            event_data=encoded({k:record[k] for k in FIELDS if k in record})
+            db.execute('''INSERT INTO events VALUES(?,?,?,?,?,?,?,?,1,?) ON CONFLICT(event_key) DO UPDATE SET base_hash=excluded.base_hash,data=excluded.data,updated=excluded.updated''',
+                (record['key'],record['pid'],record['sid'],record.get('canonical',''),record['start'],record['stop'],base_hash(record,fact_version(db,record)),event_data,time.time()))
+            data=encoded(value)
+            db.execute('''INSERT INTO artwork VALUES(?,?,?,1,?,?) ON CONFLICT(event_key) DO UPDATE SET fingerprint=excluded.fingerprint,data=excluded.data,checked=excluded.checked,expires=excluded.expires''',
+                (record['key'],fingerprint(record),data,time.time(),value.get('until',0)))
+            if value.get('source_url') and value.get('code')=='READY':
+                db.execute('INSERT OR REPLACE INTO image_sources VALUES(?,?,?)',(digest([value['source'],value['source_url']]),data,value.get('until',0)))
+        report('art');return True
+    except (OSError,sqlite3.Error,ValueError,TypeError,KeyError) as exc:report('art',exc);return False
     finally:
         if db is not None:db.close()

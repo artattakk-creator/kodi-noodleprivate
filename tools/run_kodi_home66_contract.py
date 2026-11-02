@@ -55,6 +55,7 @@ def main():
             with (report / 'home.json').open('w') as output:
                 run('exec', name, 'python3', '/work/probe.py', stdout=output)
         except subprocess.CalledProcessError:
+            run('exec',name,'python3','-c',"from pathlib import Path; p=Path('/root/tls69-requests.jsonl'); print('SYNTHETIC_TLS69_REQUESTS '+(p.read_text() if p.exists() else 'NONE'))")
             # Preserve synthetic native pixels even when a visual assertion fails.
             # This disposable profile contains synthetic fixtures only.
             run('exec',name,'python3','-c',"import json; from pathlib import Path; files=list(Path('/root').glob('series66-*.json')); print('SYNTHETIC_SERIES64_DIAG '+json.dumps({p.name:json.loads(p.read_text()) for p in files})); log=Path('/root/.kodi/temp/kodi.log').read_text(errors='replace'); print('SYNTHETIC_KODI64_ERRORS\\n'+'\\n'.join(v for v in log.splitlines() if 'error' in v.lower() or 'Traceback' in v or 'NATIVE66_CASE' in v)[-16000:])")
@@ -76,7 +77,7 @@ def main():
         for i in (0, 1, 87):
             run('cp', name + ':/root/home66-' + str(i) + '.png', str(report / ('home66-' + str(i) + '.png')))
             assert hashlib.sha256((report / ('home66-' + str(i) + '.png')).read_bytes()).hexdigest() == result['screenshot_sha256'][str(i)]
-        for asset_name in ('media66-vod-0.png','media66-vod-5.png','media66-series-0.png','media66-series-5.png','media66-series-9.png','media66.json','preview67.png','credits67.png','pipeline68.json','pipeline68-preview-3.png','pipeline68-preview-4.png','pipeline68-home-3.png','pipeline68-home-4.png','pipeline68-detail-3.png','pipeline68-detail-4.png'):
+        for asset_name in ('media66-vod-0.png','media66-vod-5.png','media66-series-0.png','media66-series-5.png','media66-series-9.png','media66.json','preview67.png','credits67.png','pipeline68.json','pipeline68-preview-3.png','pipeline68-preview-4.png','pipeline68-home-3.png','pipeline68-home-4.png','pipeline68-detail-3.png','pipeline68-detail-4.png','pipeline69.json','pipeline69-preview-5.png','pipeline69-preview-6.png','pipeline69-home-5.png','pipeline69-home-6.png','pipeline69-detail-5.png','pipeline69-detail-6.png'):
             run('cp', name + ':/root/' + asset_name, str(report/asset_name))
         for asset66 in ('home66-tv.png','detail66.png','foreign66-poster-0.png','foreign66-poster-23.png','foreign66-music-0.png','foreign66-television-0.png','foreign66-own-vod-0.png','foreign66-own-series-0.png','foreign66-own-series-9.png'):
             run('cp',name+':/root/'+asset66,str(report/asset66))

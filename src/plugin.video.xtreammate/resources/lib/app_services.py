@@ -145,6 +145,7 @@ def _run():
             try:
                 refresh_local(cancelled)
                 mark('LOCAL',duration_ms=(time.monotonic()-started48)*1000)
+                next_prepare=time.monotonic()+30  # Finish + cooldown, never an already elapsed start deadline.
             except MemoryError:runtime.note_pressure()
             except Exception: pass
             if cancelled():break
@@ -225,6 +226,8 @@ def shutdown():
     limitation is reported explicitly, rather than claiming a forced stop.
     """
     _stop.set()
+    from widget_fast69 import shutdown as shutdown_widgets69
+    shutdown_widgets69()
     from programme_requests68 import shutdown as shutdown_visible68
     shutdown_visible68()
     from programme_art46 import shutdown as shutdown_programme46
