@@ -26,6 +26,8 @@ EOF
 cp -R /skin/. /root/.kodi/addons/skin.titan.bingie.mod/
 
 
+python3 /work/tls69.py --prepare
+python3 /work/tls69.py &
 python3 /work/skin_fixture66.py
 Xvfb :99 -screen 0 1920x1080x24 -nolisten tcp -ac &
 python3 -c 'import time;time.sleep(1)'

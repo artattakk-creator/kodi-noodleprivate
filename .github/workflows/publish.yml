@@ -128,6 +128,7 @@ jobs:
             kodi-home66-evidence/*.png
             kodi-home66-evidence/media66.json
             kodi-home66-evidence/pipeline68.json
+            kodi-home66-evidence/pipeline69.json
             kodi-home66-evidence/build.log
             kodi-helper57-evidence/transport.json
             kodi-helper57-evidence/build.log

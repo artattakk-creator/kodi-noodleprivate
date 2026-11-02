@@ -6,6 +6,7 @@ class Return69(Fixture,unittest.TestCase):
  def setUp(self):
   super().setUp()
   for name in ('live_return69','programme_lifecycle69'):sys.modules.pop(name,None)
+  overlay=mock.patch.dict(sys.modules,live_overlay=types.SimpleNamespace(session_from_property=lambda value:None));overlay.start();self.addCleanup(overlay.stop)
   self.ret=importlib.import_module('live_return69')
   self.value=dict(session=dict(pid='p',sid='1',nonce='a'*32,at=time.time()),at=time.time(),phase='home',return_started69=10.,return_deadline69=18.,return_attempts69=0,return_stage69='BEGIN')
   self.snap=dict(window=10025,dialog=9999,modal=False,updating=False)

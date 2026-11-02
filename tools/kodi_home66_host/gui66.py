@@ -289,4 +289,6 @@ finally:credits67.close()
 import runpy
 runpy.run_path('/work/pipeline68.py')
 result66['pipeline68']=json.loads(Path('/root/pipeline68.json').read_text())
+runpy.run_path('/work/pipeline69.py')
+result66['pipeline69']=json.loads(Path('/root/pipeline69.json').read_text())
 Path('/root/media66.json').write_text(json.dumps(result66))

@@ -91,4 +91,5 @@ for sid,format68,color in (('3','PNG',(120,35,80)),('4','JPEG',(75,130,25))):
  finally:window.close()
  results.append(dict(sid=sid,format=format68,initial='CACHE_MISS',transport=calls,status='LOCAL_IMAGE_READY',same_event=True,sha256=art['sha256'],preview_pixels='PASS',home_pixels='PASS',detail_pixels='PASS',tmdb_logo='VISIBLE',android='NOT_TESTED'))
 programme_urls55.shutdown()
+if programme_urls55._thread:programme_urls55._thread.join(timeout=2)
 Path('/root/pipeline68.json').write_text(json.dumps(dict(cases=results,transport='synthetic credentialless API responses; real production matching/queue/cache',gui='native Kodi 21.2 Linux / BINGIE 2.2.3',android='NOT_TESTED')))
