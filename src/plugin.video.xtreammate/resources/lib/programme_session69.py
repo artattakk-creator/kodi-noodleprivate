@@ -28,6 +28,8 @@ def get(event):
 def remember(event,value,persisted=False,update=False):
  global _outcome_bytes
  now=time.time();value=dict(value)
+ from programme_policy68 import negative_scope
+ value.setdefault('policy69',negative_scope({}))
  if not isinstance(value.get('until'),(float,int)) or not now<value['until']<=now+86400:value['until']=now+300
  k=key(event)
  if value.get('source')=='placeholder' and not update:

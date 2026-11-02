@@ -105,7 +105,7 @@ class Capacity69(Fixture,unittest.TestCase):
 
  def test_reserve_diagnostic_is_available_before_db_creation(self):
   from programme_storage68 import inspect
-  with mock.patch('programme_storage68.shutil.disk_usage',return_value=types.SimpleNamespace(free=16*1024*1024)):
+  with mock.patch('programme_storage68.shutil.disk_usage',return_value=types.SimpleNamespace(free=16*1024*1024,total=64*1024*1024,used=48*1024*1024)):
    value=inspect()
   self.assertEqual(value['code'],'NOT_CREATED');self.assertEqual(value['capacity_code69'],'SAFE_RESERVE_BLOCKED')
  def test_remote_proof_is_revoked_by_source_policy_change_without_io(self):
