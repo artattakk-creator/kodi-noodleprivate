@@ -26,7 +26,7 @@ def _tmdb_provider(provider_id):
 # Mainmenu links are user-supplied historical mappings, not automatically
 # implemented skin patches. The source paths are never read from userdata.
 MENU = (
-    ("Live-TV", "plugin://plugin.video.xtreammate/", "ROUTE_REVIEW"),
+    ("Live-TV (XCMate)", "plugin://plugin.video.xtreammate/", "VERIFIED_ADDON_ROOT"),
     ("Filme", TMDB + "?info=dir_movie&tmdb_type=None&widget=true&reload=" + RELOAD, "ARCHIVED"),
     ("Serien", TMDB + "?info=dir_tv&tmdb_type=None&widget=true&reload=" + RELOAD, "ARCHIVED"),
 ) + tuple((label, _tmdb_provider(pid), "ARCHIVED") for label, pid in PROVIDERS) + (
@@ -42,6 +42,11 @@ MENU = (
 # Actual widget paths from skinshortcuts "properties" backup.
 # Older Kodi installations may not support a historical URL exactly.
 WIDGETS = (
+    # Verified in current main: widget_entry46.py and app_routes.py.
+    # Provider-neutral URLs resolve the active portal when opened.
+    ("XCMate", "XCMate Live-TV", "plugin://plugin.video.xtreammate/?action=widget_live_start_group", "ROUTE_VERIFIED_RENDER_PENDING"),
+    ("XCMate", "XCMate Filme", "plugin://plugin.video.xtreammate/?action=widget_recent_vod", "ROUTE_VERIFIED_RENDER_PENDING"),
+    ("XCMate", "XCMate Serien", "plugin://plugin.video.xtreammate/?action=widget_recent_series", "ROUTE_VERIFIED_RENDER_PENDING"),
     ("Filme", "Im Kino",
      TMDB + "?info=now_playing&tmdb_type=movie&widget=true&reload=" + RELOAD, "ARCHIVED"),
     ("Serien", "Diese Woche im Trend",
@@ -76,5 +81,7 @@ def verify():
             raise ValueError("Unverified widget dependency")
         if parsed.netloc == "plugin.video.themoviedb.helper" and parse_qs(parsed.query).get("watch_region", ["DE"])[0] != "DE":
             raise ValueError("Wrong backup region")
+    if tuple(x[2].split("action=")[-1] for x in WIDGETS[:3]) != ("widget_live_start_group", "widget_recent_vod", "widget_recent_series"):
+        raise ValueError("XCMate first three widgets must remain first")
     return {"menu": tuple(valid), "widgets": WIDGETS, "note": ARCHIVE_NOTE,
             "hero": PLANNED_XCMATE_HERO, "apply_enabled": False}
