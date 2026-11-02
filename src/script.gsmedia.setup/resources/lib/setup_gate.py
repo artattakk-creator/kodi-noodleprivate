@@ -1,4 +1,4 @@
-"""Fail-closed preflight for GS Media Setup 0.2.1.
+"""Fail-closed preflight for GS Media Setup 0.2.2.
 
 No package installation is enabled by this development version.
 Source availability and licence checks are evidence, not assumptions.
@@ -15,11 +15,13 @@ SOURCE_EVIDENCE = {
     "plugin.audio.m3sr2019": ("BLOCKED_SOURCE_404", "Echoed 2026.1.0 source must be reconstructed and audited"),
     "plugin.audio.shoutcast": ("OFFICIAL_KODI_REVIEW", "Kodi Omega source requires xbmcswift2 and xmltodict; verify exact ZIP"),
     "plugin.video.themoviedb.helper": ("ORIGINAL_REPO_REVIEW", "Archived 5.4.16 with 7 direct imports; verify original Kodi21-compatible build"),
-    "slyguy.trailers": ("UPSTREAM_REVIEW", "Archived 0.2.1 depends on script.module.slyguy, slyguy.dependencies and repository.slyguy; test trailer playback"),
+    "slyguy.trailers": ("UPSTREAM_REVIEW", "Archived 0.2.2 depends on script.module.slyguy, slyguy.dependencies and repository.slyguy; test trailer playback"),
     "script.module.slyguy": ("UPSTREAM_REVIEW", "SlyGuy common from official SlyGuy repository"),
     "slyguy.dependencies": ("UPSTREAM_REVIEW", "SlyGuy dependency package"),
     "repository.slyguy": ("UPSTREAM_REVIEW", "Official SlyGuy repository provenance and ZIP still need verification"),
     "plugin.video.youtube": ("YOUTUBE_VARIANT_REVIEW", "Archived wrapper imports repository.slyguy.youtube; verify official Kodi vs SlyGuy variant, avoid provider-switch"),
+    "script.ezmaintenanceplus": ("UPSTREAM_REVIEW", "Backup addon.xml confirms 2026.04.05.0 and requests >=1.0.0; verify ZIP/source, disable destructive auto-maintenance"),
+    "script.cabertoss": ("OFFICIAL_KODI_REVIEW", "Official Kodi 21 Omega repo, script.cabertoss 1.0.2; manifest and target-folder security still need verification"),
     "script.module.resolveurl": ("UPSTREAM_REVIEW", "ResolveURL original source; do not mirror blindly"),
     "script.module.resolveurl.xxx": ("UPSTREAM_REVIEW", "Adult Resolver SMR Extension; verify exact original and license"),
 }

@@ -1,21 +1,21 @@
-# GS Media Setup 0.2.1 – Stand 02.11.2026 – nur Vorprüfung
+# GS Media Setup 0.2.2 – Stand 02.11.2026 – nur Vorprüfung
 
 **Wichtig:** Development Draft PR #318 / Master #317 / keine installierende Funktion.
 Build basiert auf main XCMate .68; keine Änderungen am produktiven Repository.
 
 ## Verbindliches GS-Media-Standardprofil
-Im Oktober-2026-Backup nachgewiesene Add-on-IDs, **alle neun zwingend**:
+Im Oktober-2026-Backup nachgewiesene Add-on-IDs, **alle elf zwingend**:
 1. skin.titan.bingie.mod (Backup 2.2.3; 13 direkte Imports)
 2. plugin.video.xtreammate (aktuell main .68; Hotfix .69 getrennt in #315)
 3. plugin.video.cumination (Backup 1.1.204; 8 direkte Imports)
 4. plugin.video.xvault (Backup 2026.10.20.1, 1 Pflicht-/12 optionale Manifestimports)
 5. plugin.video.themoviedb.helper (Backup 5.4.16; 7 Imports)
-6. slyguy.trailers (Backup 0.2.1, benötigt SlyGuy Common)
+6. slyguy.trailers (Backup 0.2.2, benötigt SlyGuy Common)
 7. plugin.video.youtube (im Backup eine SlyGuy-YouTube-Repository-Variante; Quelle vergleichen)
 8. plugin.audio.m3sr2019 (MP3 Streams Echoed 2026.1.0; 3 Module)
 9. plugin.audio.shoutcast (Kodi offizielles Paket; xbmcswift2/xmltodict)
 
-Alle neun gehören ins Standardprofil, nicht nur als Medien/Musik-Zusatzoption.
+Alle elf gehören ins Standardprofil, nicht nur als Medien/Musik-Zusatzoption.
 
 ## Tatsächlich aus den addon.xml-Dateien des entpackten Backups
 - **Cumination**: script.module.six, script.module.kodi-six, script.module.resolveurl >=5.0.00, script.module.resolveurl.xxx >=2.0.1, script.common.plugin.cache, script.module.websocket >=0.50.0, script.module.inputstreamhelper, script.module.requests.
@@ -34,8 +34,8 @@ EZ Maintenance+, Last Played, Global Search, TV Spielfilm, Stalker Mod,
 xShip, Vavoo, SlyGuy Pluto Provider, weitere Dritt-Repository-IDs.
 Sie sind eine Inventur, keine implizite Installationsfreigabe.
 
-## Version 0.2.1 kann
-- In Kodi ein Standardprofil mit allen neun Apps darstellen.
+## Version 0.2.2 kann
+- In Kodi ein Standardprofil mit allen elf Apps darstellen.
 - Über read-only JSONRPC den Bestand und deaktivierte Add-ons erkennen.
 - Bekannte Abhängigkeiten vor den konsumierenden Apps sortieren.
 - Pflichtprogramme im Report kennzeichnen und optionale xVAULT-Imports benennen.
@@ -45,3 +45,39 @@ Sie sind eine Inventur, keine implizite Installationsfreigabe.
 **Noch nicht implementiert**: Freigegebene Drittanbieter-ZIPs und deren Hash-/Lizenzliste, echte InstallAddon-Ausführung, automatische Skin-Patches, Kodi-Neustart/Resume und Android-Tests. Keine Downloads, Schreiboperationen, Profilveränderungen oder Auto-Installation.
 
 Verbindlicher Folgeauftrag: #317, #315 sowie PR #312 und PR #318.
+
+
+## Neues BINGIE-Layout: userbestätigter Entwicklungsauftrag
+Aus dem archivierten 21.10.2026-Backup wurden folgende Daten rekonstruiert:
+`skin.titan.bingie.mod-mainmenu.DATA.xml`,
+`skin.titan.bingie.mod.properties`, `settings.xml`.
+Dies belegt **historische** Menüs/Widgetverweise, nicht die gegenwärtige
+Konfiguration der produktiven Box A. Die Sicherung enthält teils
+Datei-Zeitstempel von Juni 2025.
+
+**Zwingende zusätzliche Add-ons:**
+`script.ezmaintenanceplus` (Backup 2026.04.05.0; requests >=1.0.0)
+und `script.cabertoss` (offizielles Kodi-Omega-Repo; 1.0.2).
+EZ Maintenance darf niemals selbsttätig Cache, Datenbanken oder Kodi-Profil
+löschen. Caber Toss soll per Kodi-eigenen Addon eingerichtet werden, sein
+Zielordner z.B. SMB/USB ist pro Gerät auszuwählen (keine Pfade mit Geheimnissen
+aus altem Backup kopieren).
+
+**Portable Vorschau in `setup_layout.py`:**
+Live-TV/XCMate, Filme, Serien, Netflix (Provider 8), Amazon Prime (9),
+Disney+ (337), Paramount+ (531), Apple TV (2), XXX/Cumination, Radio/
+SHOUTcast, MP3 Streams Echoed, xVAULT, Wartung und Caber Toss.
+TMDB Discover-Verknüpfungen aus deutschem `watch_region=DE`-Profil.
+Echte Backup-Widgetpfade: Im Kino, Diese Woche im Trend, Disney Plus,
+MP3 Streams Echoed Top World Albums (Musikroute muss aktuell geprüft werden).
+Weitere historische Widgets (TV Spielfilm etc.) nur bei installierter
+Zusatz-App und mit separater Zustimmung ergänzen.
+
+**Noch NICHT angewendet:** Die BINGIE-Konfiguration wird aktuell ausschließlich
+als read-only Vorschau angezeigt. Vor Installation/Geräteabnahme müssen
+Skinshortcuts-Schema und existierende Userkonfiguration sicher migriert
+werden. Neue Geräte dürfen nach Zustimmung GS-Media-Standardlayout erhalten.
+Bestehende Geräte bekommen Diff/Backup/Merge statt ungefragtem Überschreiben.
+Die Live-EPG-Hero-Quelle wird erst mit XCMate-Hotfix #315 stabil verfügbar;
+keine erfundene Plugin-Route hinterlegen. Das Layout ist ohne echte
+TMDB-API-/Widget-/Fernbedienungsprüfung nicht als Android-PASS zu markieren.

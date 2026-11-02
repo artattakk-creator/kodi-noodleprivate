@@ -67,22 +67,24 @@ DEPENDENCIES = {
     # as a *variant-specific* import. The official Kodi YouTube app does not.
     # It must not be forced in a fresh-box portable plan before source choice.
     "plugin.video.youtube": (),
+    "script.ezmaintenanceplus": (("script.module.requests", "1.0.0"),),
 
 }
 # The Kodi built-in requirements are verified by Kodi itself, not downloaded.
 BUILTINS = frozenset(("xbmc.python", "xbmc.gui"))
 
-# Nine user-confirmed mandatory apps; the single standard profile must never
+# Eleven user-confirmed mandatory apps; the single standard profile must never
 # silently omit an app even when the source of its ZIP is still blocked.
 MANDATORY = (
     "skin.titan.bingie.mod", "plugin.video.xtreammate",
     "plugin.video.cumination", "plugin.video.xvault",
     "plugin.video.themoviedb.helper", "slyguy.trailers",
     "plugin.video.youtube", "plugin.audio.m3sr2019",
-    "plugin.audio.shoutcast",
+    "plugin.audio.shoutcast", "script.ezmaintenanceplus",
+    "script.cabertoss",
 )
 PROFILES = (
-    ("standard", "Standard: alle 9 Pflichtprogramme", MANDATORY),
+    ("standard", "Standard: alle 11 Pflichtprogramme", MANDATORY),
 )
 
 # Only optional imports from the exact archived 21 Oct manifests. These are

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""GS Media Setup 0.2.1 — active, read-only device preflight.
+"""GS Media Setup 0.2.2 — active, read-only device preflight.
 
 The installation executor is intentionally NOT enabled until repositories,
 source hashes, full dependencies and Kodi 21 ARM32 have been verified.
@@ -12,6 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent / "resources" / "lib"))
 from setup_plan import profile_names
 from setup_inventory import snapshot
 from setup_gate import inspect
+from setup_layout import verify as verify_bingie_layout
 
 
 def _device_label():
@@ -25,7 +26,7 @@ def _device_label():
 def _report(key, title, inventory):
     result = inspect(key, inventory)
     lines = [
-        "GS MEDIA SETUP 0.2.1 — SYSTEMPRÜFUNG",
+        "GS MEDIA SETUP 0.2.2 — SYSTEMPRÜFUNG",
         "=" * 46,
         "Kodi: " + _device_label(),
         "Installationsprofil: " + title,
@@ -53,7 +54,7 @@ def _report(key, title, inventory):
         "Noch nicht freigegebene Installationsschritte: " + str(result["blocking"]),
         "Nächste Phase: verifizierte Pakete, Benutzerfreigabe,",
         "Kodi-Installation und Fortsetzen nach einem Neustart.",
-        "Diese Funktionen sind in 0.2.1 noch NICHT implementiert.",
+        "Diese Funktionen sind in 0.2.2 noch NICHT implementiert.",
         "",
         "Referenz: GitHub issue #317 / GS Media.",
     ]
@@ -68,16 +69,36 @@ def run():
     dialog = xbmcgui.Dialog()
     profiles = profile_names()
     while True:
-        choice = dialog.select("GS Media Setup 0.2.1 – Entwicklung", [
+        choice = dialog.select("GS Media Setup 0.2.2 – Entwicklung", [
             "Installationsprofil und Abhängigkeiten prüfen",
             "Aktuelle Kodi-Add-ons inventarisieren",
+            "BINGIE-Menüs und Widgets prüfen",
             "Sicherheits- und Entwicklungsstatus",
             "Beenden",
         ])
-        if choice in (-1, 3):
+        if choice in (-1, 4):
             return
         if choice == 2:
-            dialog.ok("GS Media Setup 0.2.1", "Aktive Vorprüfung ohne Installation. "
+            layout = verify_bingie_layout()
+            lines = ["BINGIE MOD – GS-MEDIA-VORLAGE", layout["note"],
+                     "Noch KEINE Schreibfreigabe für Skin/Shortcuts/Widgets.",
+                     "Vorhandene Einstellungen werden nicht verändert.", "",
+                     "Vorgesehene Menüeinträge:"]
+            for item in layout["menu"]:
+                lines.append("- {} [{}]".format(item["label"], item["status"]))
+                lines.append("  " + item["target"])
+            lines.append("")
+            lines.append("Aus dem Backup erkannte Widgets:")
+            for menu, title, target, status in layout["widgets"]:
+                lines.append("- {}: {} [{}]".format(menu, title, status))
+                lines.append("  " + target)
+            lines.append("")
+            lines.append("Live-Hero: " + layout["hero"])
+            lines.append("Übernahme bei Neuinstallation erst nach Bestätigung und Android-Test.")
+            dialog.textviewer("BINGIE-Menüs und Widgets", "\n".join(lines), usemono=True)
+            continue
+        if choice == 3:
+            dialog.ok("GS Media Setup 0.2.2", "Aktive Vorprüfung ohne Installation. "
                       "Neue Kodi-Box und bestehende Profile bleiben unverändert. "
                       "Fehlende oder ungeprüfte Paketquellen blockieren spätere Installationsschritte.")
             continue

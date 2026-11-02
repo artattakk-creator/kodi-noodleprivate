@@ -1,4 +1,4 @@
-"""Safe, offline GS Media Setup 0.2.1 tests; no Kodi runtime needed."""
+"""Safe, offline GS Media Setup 0.2.2 tests; no Kodi runtime needed."""
 import importlib
 import json
 from pathlib import Path
@@ -13,13 +13,14 @@ sys.path.insert(0, str(LIB))
 planner = importlib.import_module("setup_plan")
 inventory = importlib.import_module("setup_inventory")
 gate = importlib.import_module("setup_gate")
+layout = importlib.import_module("setup_layout")
 
 
 class SetupPreflightTests(unittest.TestCase):
     def test_manifest_script_only(self):
         addon = ET.parse(ADDON / "addon.xml").getroot()
         self.assertEqual(addon.get("id"), "script.gsmedia.setup")
-        self.assertEqual(addon.get("version"), "0.2.1")
+        self.assertEqual(addon.get("version"), "0.2.2")
         self.assertIsNotNone(addon.find("./extension[@point='xbmc.python.script']"))
         self.assertIsNone(addon.find("./extension[@point='xbmc.service']"))
         self.assertEqual([e.get("addon") for e in addon.findall("./requires/import")], ["xbmc.python"])
@@ -54,7 +55,7 @@ class SetupPreflightTests(unittest.TestCase):
     def test_all_nine_mandatory_apps_and_cumination_imports(self):
         rows = planner.plan_for("standard")
         ids = {r["addon_id"] for r in rows}
-        self.assertEqual(len(planner.MANDATORY), 9)
+        self.assertEqual(len(planner.MANDATORY), 11)
         self.assertEqual({x["addon_id"] for x in rows if x["mandatory"]}, set(planner.MANDATORY))
         self.assertTrue(set(planner.MANDATORY) <= ids)
         for dep in ("script.module.six", "script.module.kodi-six",
@@ -78,6 +79,36 @@ class SetupPreflightTests(unittest.TestCase):
         ids = {r["addon_id"] for r in planner.plan_for("standard")}
         for addon_id in planner.BACKUP_EXTRAS_FOR_REVIEW:
             self.assertNotIn(addon_id, ids)
+
+    def test_maintenance_and_log_tools_are_mandatory(self):
+        ids = {row["addon_id"] for row in planner.plan_for("standard")}
+        self.assertIn("script.ezmaintenanceplus", ids)
+        self.assertIn("script.cabertoss", ids)
+        self.assertIn("script.module.requests", ids)
+        self.assertEqual(planner.DEPENDENCIES["script.ezmaintenanceplus"][0][0], "script.module.requests")
+        report = gate.inspect("standard", {"code": "READY", "addons": {}})
+        self.assertEqual(next(r for r in report["rows"] if r["addon_id"] == "script.cabertoss")["source"], "OFFICIAL_KODI_REVIEW")
+        self.assertFalse(report["installation_enabled"])
+
+    def test_bingie_menu_from_archived_user_shortcuts(self):
+        report = layout.verify()
+        menu = {x["label"]: x["target"] for x in report["menu"]}
+        self.assertIn("plugin.video.cumination", menu["XXX"])
+        self.assertIn("plugin.audio.shoutcast", menu["Radio"])
+        self.assertIn("plugin.audio.m3sr2019", menu["MP3 Streams Echoed"])
+        self.assertNotIn("plugin.audio.mp3streams", str(report))
+        for label, pid in layout.PROVIDERS:
+            self.assertIn("with_watch_providers=" + pid, menu[label])
+            self.assertIn("watch_region=DE", menu[label])
+        self.assertEqual(report["hero"], "PENDING_XCMATE_069_ROUTE_AND_ARTWORK")
+        self.assertFalse(report["apply_enabled"])
+
+    def test_bingie_widgets_are_source_verified_only(self):
+        widgets = layout.verify()["widgets"]
+        self.assertTrue(any(title == "Im Kino" and "now_playing" in path for _menu,title,path,_ in widgets))
+        self.assertTrue(any(title == "Diese Woche im Trend" and "trending_week" in path for _menu,title,path,_ in widgets))
+        self.assertTrue(any(title == "Disney Plus" and "with_watch_providers=337" in path for _menu,title,path,_ in widgets))
+        self.assertTrue(any("m3sr2019" in path for _menu,title,path,_ in widgets))
 
     def test_inventory_reads_only_installed_state(self):
         def stub(arg):
@@ -118,7 +149,7 @@ class SetupPreflightTests(unittest.TestCase):
             planner.plan_for("../delete")
 
     def test_no_mutating_kodi_calls_or_userdata_access(self):
-        sources = [ADDON / "default.py", LIB / "setup_inventory.py", LIB / "setup_gate.py", LIB / "setup_plan.py"]
+        sources = [ADDON / "default.py", LIB / "setup_inventory.py", LIB / "setup_gate.py", LIB / "setup_plan.py", LIB / "setup_layout.py"]
         for path in sources:
             value = path.read_text("utf-8")
             for bad in ("InstallAddon(", "UninstallAddon(", "EnableAddon(",
