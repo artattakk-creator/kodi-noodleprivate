@@ -73,10 +73,16 @@ for sid,format68,color in (('3','PNG',(120,35,80)),('4','JPEG',(75,130,25))):
  # Home focus reload is a worker, its GUI pump stays property/RAM-only.
  home.setFocusId(2510);home.getControl(2510).selectItem(int(sid));xbmc.sleep(700)
  for _ in range(5):hero_epg63._next=0;hero_epg63.poll();xbmc.sleep(50)
- task=threading.Thread(target=lambda:hero_epg63.prepare('fixture59'),daemon=True);task.start()
- while task.is_alive():xbmc.sleep(25)
+ intake_stop=threading.Event()
+ def intake():
+  while not intake_stop.is_set():
+   broker.drain(cancel=intake_stop.is_set);xbmc.sleep(50)
+ task=threading.Thread(target=intake,daemon=True);task.start()
  def pump_home():hero_epg63._next=0;hero_epg63.poll()
- capture('pipeline68-home-'+sid,[(1450,180),(1700,180),(1880,180)],color,pump_home)
+ try:
+  with mock.patch('hero_epg63.prepare',side_effect=AssertionError('HOME68_MUST_NOT_WAIT_FOR_BULK_PREPARE')):
+   capture('pipeline68-home-'+sid,[(1450,180),(1700,180),(1880,180)],color,pump_home)
+ finally:intake_stop.set();task.join(timeout=1)
  window=ProgrammeWindow46('XCMateProgramme46.xml',xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('path'),'Default','720p')
  window.configure(portal,dict(sid=sid,name='Station '+sid,epg_channel_id='xml'+sid));window.show()
  try:

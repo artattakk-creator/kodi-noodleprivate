@@ -172,6 +172,22 @@ class Pipeline68(Fixture,unittest.TestCase):
    page(self.portal,0,self.now,category='a',mappings48={})
   request.assert_not_called();logos.assert_not_called()
 
+ def test_home_focus_enqueues_ram_event_without_bulk_prepare_sql_or_http(self):
+  import hero_epg63
+  home=sys.modules['xbmcgui'].Window(10000)
+  xbmc=sys.modules['xbmc'];xbmc.getSkinDir=lambda:'skin.titan.bingie.mod'
+  sys.modules['xbmcgui'].getCurrentWindowId=lambda:10000
+  sys.modules['xbmcgui'].getCurrentWindowDialogId=lambda:9999
+  fields={'XCMate.Home50':'true','XCMate.PortalId':'p','XCMate.MediaId':'1','XCMate.WidgetToken41':'1'*32}
+  xbmc.getInfoLabel=lambda name:fields.get(name[len('ListItem.Property('):-1],'')
+  event=dict(title='Synthetic Programme',start=self.now-60,stop=self.now+600,source_key46='provider')
+  info=dict(now=event['title'],start=event['start'],stop=event['stop'],events=[event],canonical46='a',snapshot_revision=['guide',1])
+  hero_epg63._next=0
+  with mock.patch('epg_handoff63.get',return_value=info),mock.patch('programme_requests68.request',return_value=True) as request,mock.patch('programme_requests68.result',return_value={}),mock.patch('hero_epg63.prepare',side_effect=AssertionError('BULK_DEPENDENCE')),mock.patch('sqlite3.connect',side_effect=AssertionError('GUI_SQL')),mock.patch('builtins.open',side_effect=AssertionError('GUI_FILE')),mock.patch('media_sources43.get',side_effect=AssertionError('GUI_HTTP')):
+   hero_epg63.poll()
+  self.assertEqual(request.call_count,1);self.assertEqual(request.call_args.args[0]['sid'],'1');self.assertEqual(request.call_args.args[0]['canonical'],'a')
+  self.assertTrue(request.call_args.kwargs['priority'])
+
 class Dynamic68(Fixture,unittest.TestCase):
  def setUp(self):
   super().setUp();self.dbfile=str(self.folder/'live68.sqlite')

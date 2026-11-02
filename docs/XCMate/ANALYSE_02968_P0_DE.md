@@ -10,6 +10,7 @@ Basis: main `4d8ba5ef2c7bf997af437e230ef1ec52e1e747e8`, XCMate .67, GS Media Rep
 - Acht sichtbare Guide-Zeilen liefern höchstens acht ausgewählte Ereignisse. Der lokale Preview-Worker fordert das tatsächlich fokussierte Ereignis nach. Temporäre manuelle Mapping-Vorschauen erzeugen keine Jobs.
 - Vor einer Suche lädt der Service das Ereignis erneut aus der lokalen EPG-Basis. Profil, SID, Canonical, Quelle, Quellrevision und Zeitintervall dürfen nicht auf ein anderes Ereignis wechseln. Veraltete Bindungen melden CACHE_MISMATCH.
 - Fokussierte Jobs werden priorisiert; nach drei bevorzugten Jobs kommt ein wartender Hintergrundjob zum Zug. Ein bereits wartender Job wird hochgestuft, kein Duplikat erzeugt. Bei voller Queue darf ein noch nicht gestarteter, nicht priorisierter RAM-Auftrag verdrängt werden; er wird beim regulären Warmup erneut erfasst. Keine persistenten Bilder oder Jobs werden gelöscht.
+- Der Hero-Fokus erzeugt seinen begrenzten Auftrag direkt aus dem bereits angezeigten RAM-Ereignis und übernimmt fertige Property-Ergebnisse. Er wartet weder für die Erzeugung noch für die Anzeige auf den langsamen Bulk-Publisher. Der native Test verbietet ausdrücklich einen Aufruf von hero.prepare in diesem Bildpfad.
 - Der Detail-GUI-Pump führt keine Cache-/SQLite-/Dateileser mehr aus. Sein initialer Worker lädt den Cache; spätere Zustände und fertige Bildreferenzen kommen über begrenzte Properties. Der gemeinsame Preview-Renderer bleibt lokal und behält das offizielle TMDB-Logo als eigene Ebene.
 
 ## Zustände und negative Ergebnisse
