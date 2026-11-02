@@ -286,4 +286,7 @@ try:
  result66['credits67']=dict(native_logo='VISIBLE',pixels='PASS',android='NOT_TESTED')
 finally:credits67.close()
 
+import runpy
+runpy.run_path('/work/pipeline68.py')
+result66['pipeline68']=json.loads(Path('/root/pipeline68.json').read_text())
 Path('/root/media66.json').write_text(json.dumps(result66))

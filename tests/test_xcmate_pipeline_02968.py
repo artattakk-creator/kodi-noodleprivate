@@ -111,6 +111,32 @@ class Pipeline68(Fixture,unittest.TestCase):
   from pathlib import Path
   self.assertEqual(inspect()['code'],'NOT_CREATED');self.assertFalse(Path(path()).exists())
 
+ def test_negative_scope_changes_only_with_exact_event_source_profile_or_policy(self):
+  from programme_policy68 import negative_scope
+  e=self.event();a=negative_scope(e)
+  self.assertNotEqual(a,negative_scope(dict(e,revision=['guide',2])))
+  self.assertNotEqual(a,negative_scope(dict(e,source_key46='external:another')))
+  self.options['programme_tmdb46']=True;self.assertNotEqual(a,negative_scope(e))
+ def test_queue_priority_serves_background_after_three_urgent_jobs(self):
+  import programme_urls55 as q
+  q._thread=mock.Mock();q._thread.is_alive.return_value=True
+  for name in ('a','b','c','d'):q.enqueue(dict(self.event(),key=name),priority68=True)
+  q.enqueue(dict(self.event(),key='background'))
+  order=[]
+  def resolved(event,**kw):
+   order.append(event['key'])
+   if len(order)==5:q._stop.set()
+   return dict(code='NO_MATCH',source='placeholder')
+  with mock.patch('programme_urls55.resolve',side_effect=resolved):q._run()
+  self.assertEqual(order,['a','b','c','background','d'])
+ def test_legacy_profile_consent_is_not_automatically_migrated(self):
+  from programme_settings68 import state
+  for own,access in ((False,False),(True,False),(False,True),(True,True)):
+   self.options.update(programme_tmdb46=own,tmdb_research43=access)
+   before=dict(self.options)
+   with mock.patch('tmdb_token61.status',return_value='FILE_VALID'):state()
+   self.assertEqual(self.options,before)
+
 class Dynamic68(Fixture,unittest.TestCase):
  def setUp(self):
   super().setUp();self.dbfile=str(self.folder/'live68.sqlite')
@@ -161,3 +187,33 @@ class Dynamic68(Fixture,unittest.TestCase):
   self.assertNotEqual(a,policy(dict(self.portal,xc_host='https://different.invalid'),'live'))
   with mock.patch('widget_data41.path',return_value=self.dbfile):
    b=policy(self.portal,'live');self.group('p','a',5);self.assertNotEqual(b,policy(self.portal,'live'))
+
+class EventChain68(unittest.TestCase):
+ def setUp(self):
+  from test_xcmate_epg_02952 import EPG52
+  self.m=EPG52();self.m.setUp();self.addCleanup(self.m.doCleanups)
+ def test_uncached_sqlite_event_reaches_token_matching_valid_png_and_exact_status(self):
+  import io,importlib,threading
+  from PIL import Image
+  m=self.m;m.options.update(programme_tmdb46=True,tmdb_research43=True,tmdb_read_token43='SYNTHETIC_NOT_A_SECRET')
+  m.put('a',[m.event(title='Synthetic movie')])
+  from programme_events46 import load
+  event=load(m.portal,m.channel)
+  import programme_requests68,programme_urls55
+  b=importlib.reload(programme_requests68);q=importlib.reload(programme_urls55)
+  self.addCleanup(q.shutdown)
+  png=io.BytesIO();Image.new('RGB',(160,90),(30,80,120)).save(png,'PNG')
+  responses=iter([dict(total_pages=1,total_results=1,results=[dict(id=6801,name='Synthetic movie',title='Synthetic movie',first_air_date='2024-01-01',release_date='2024-01-01')]),dict(id=6801,name='Synthetic movie',title='Synthetic movie',first_air_date='2024-01-01',release_date='2024-01-01',backdrop_path='/pipeline68.png'),png.getvalue()])
+  reader=types.SimpleNamespace(get=lambda *a:m.channel,close=lambda:None)
+  with mock.patch('library_index.Reader',return_value=reader),mock.patch('media_sources43.get',side_effect=lambda *a,**kw:next(responses)):
+   self.assertTrue(b.request(event,priority=True));self.assertEqual(b.drain(),1)
+   deadline=time.monotonic()+5
+   while time.monotonic()<deadline and b.result(event).get('status68')!='LOCAL_IMAGE_READY':time.sleep(.01)
+  result=b.result(event)
+  self.assertEqual(result.get('status68'),'LOCAL_IMAGE_READY',result)
+  from pathlib import Path
+  self.assertTrue(Path(result['image']).is_file())
+  with Image.open(result['image']) as picture:self.assertEqual(picture.convert('RGB').getpixel((20,20)),(30,80,120))
+  self.assertEqual(result['key'],event['key'])
+  q.shutdown()
+  if q._thread:q._thread.join(timeout=1)
