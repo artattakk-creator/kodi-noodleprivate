@@ -53,30 +53,57 @@ DEPENDENCIES = {
     ),
     "slyguy.dependencies": (("repository.slyguy", ""),),
     "plugin.audio.shoutcast": (("xbmc.python", "3.0.0"), ("script.module.xbmcswift2", "19.0.0"), ("script.module.xmltodict", "0.12.0")),
-    "plugin.audio.m3sr2019": (("xbmc.python", "3.0.0"), ("script.module.beautifulsoup4", "4.9.3"), ("script.module.requests", "2.9.1"), ("script.module.routing", "0.2.0")),
+    "plugin.audio.m3sr2019": (("xbmc.python", "3.0.0"), ("script.module.beautifulsoup4", ""), ("script.module.requests", ""), ("script.module.routing", "")),
+    "plugin.video.cumination": (
+        ("script.module.six", ""), ("script.module.kodi-six", ""),
+        ("script.module.resolveurl", "5.0.00"),
+        ("script.module.resolveurl.xxx", "2.0.1"),
+        ("script.common.plugin.cache", ""), ("script.module.websocket", "0.50.0"),
+        ("script.module.inputstreamhelper", ""), ("script.module.requests", ""),
+    ),
+    "plugin.video.xvault": (("xbmc.python", "3.0.0"),),
+    "slyguy.trailers": (("script.module.slyguy", "0.86.96"),),
+    # The installed SlyGuy YouTube wrapper has repository.slyguy.youtube
+    # as a *variant-specific* import. The official Kodi YouTube app does not.
+    # It must not be forced in a fresh-box portable plan before source choice.
+    "plugin.video.youtube": (),
+
 }
 # The Kodi built-in requirements are verified by Kodi itself, not downloaded.
 BUILTINS = frozenset(("xbmc.python", "xbmc.gui"))
 
-# These are previews of intended modules. Membership does not imply the
-# corresponding addon exists on every device or in GS Media 1.8 already.
+# Nine user-confirmed mandatory apps; the single standard profile must never
+# silently omit an app even when the source of its ZIP is still blocked.
+MANDATORY = (
+    "skin.titan.bingie.mod", "plugin.video.xtreammate",
+    "plugin.video.cumination", "plugin.video.xvault",
+    "plugin.video.themoviedb.helper", "slyguy.trailers",
+    "plugin.video.youtube", "plugin.audio.m3sr2019",
+    "plugin.audio.shoutcast",
+)
 PROFILES = (
-    ("core", "Basis: XCMate + BINGIE", (
-        "skin.titan.bingie.mod", "plugin.video.xtreammate",
-    )),
-    ("media", "Medien: Basis + xVAULT + Cumination", (
-        "skin.titan.bingie.mod", "plugin.video.xtreammate",
-        "plugin.video.xvault", "plugin.video.cumination",
-    )),
-    ("music", "Musik: Basis + MP3 Streams + SHOUTcast", (
-        "skin.titan.bingie.mod", "plugin.video.xtreammate",
-        "plugin.audio.m3sr2019", "plugin.audio.shoutcast",
-    )),
-    ("all", "Medien und Musik kombiniert", (
-        "skin.titan.bingie.mod", "plugin.video.xtreammate",
-        "plugin.video.xvault", "plugin.video.cumination",
-        "plugin.audio.m3sr2019", "plugin.audio.shoutcast",
-    )),
+    ("standard", "Standard: alle 9 Pflichtprogramme", MANDATORY),
+)
+
+# Only optional imports from the exact archived 21 Oct manifests. These are
+# displayed for review, NOT automatically treated as mandatory ZIPs.
+OPTIONAL_DEPENDENCIES = {
+    "plugin.video.xvault": (
+        "script.module.requests", "script.module.download-m3u8",
+        "script.module.six", "script.module.pyaes",
+        "script.module.pyqrcode", "script.module.infotagger",
+        "script.module.resolveurl", "inputstream.adaptive",
+        "inputstream.ffmpegdirect", "inputstream.rtmp",
+        "plugin.video.youtube", "script.module.pydevd",
+    ),
+}
+# These were present in the old backup, but the user has NOT made them
+# mandatory. Never auto-install from a historical directory alone.
+BACKUP_EXTRAS_FOR_REVIEW = (
+    "script.ezmaintenanceplus", "plugin.video.last_played",
+    "script.globalsearch", "plugin.video.tvspielfilm_de",
+    "plugin.video.stalkermod", "plugin.video.xship",
+    "plugin.video.vavooto", "slyguy.pluto.tv.provider",
 )
 
 
@@ -132,6 +159,8 @@ def plan_for(profile_id):
             "minimum": minimum,
             "builtin": addon_id in BUILTINS,
             "manifest_known": addon_id in DEPENDENCIES or addon_id in BUILTINS,
+            "mandatory": addon_id in MANDATORY,
+            "optional_imports": OPTIONAL_DEPENDENCIES.get(addon_id, ()),
         }
         for addon_id in installed_order
         for minimum in (result[addon_id],)

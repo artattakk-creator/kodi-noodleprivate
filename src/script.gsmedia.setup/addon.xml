@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.gsmedia.setup" name="GS Media Setup – Entwicklungsstand" version="0.2.0" provider-name="GS Media">
+<addon id="script.gsmedia.setup" name="GS Media Setup – Entwicklungsstand" version="0.2.1" provider-name="GS Media">
   <requires><import addon="xbmc.python" version="3.0.0"/></requires>
   <extension point="xbmc.python.script" library="default.py"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="de_DE">GS Media Komplettinstaller: sichere Geräte- und Abhängigkeitsprüfung</summary>
-    <description lang="de_DE">Wählt Installationsprofile, erkennt über Kodi JSON-RPC tatsächlich installierte und deaktivierte Add-ons, erstellt einen Abhängigkeitsplan und blockiert ungeprüfte Installationsquellen. Version 0.2.0 ist nur eine technische Vorprüfung: keine Installations- oder Änderungsaktionen.</description>
+    <description lang="de_DE">Zeigt das Standardprofil mit neun Pflichtprogrammen, erkennt über Kodi JSON-RPC tatsächlich installierte und deaktivierte Add-ons, erstellt einen Abhängigkeitsplan und blockiert ungeprüfte Installationsquellen. Version 0.2.1 ist nur eine technische Vorprüfung: keine Installations- oder Änderungsaktionen.</description>
     <summary lang="en_GB">GS Media Setup: safe install preflight</summary>
-    <description lang="en_GB">Read-only Kodi device inventory and dependency-first installation preflight. No installation or profile changes.</description>
+    <description lang="en_GB">Read-only nine-app standard package, device inventory and dependency-first installation preflight. No installation or profile changes.</description>
     <disclaimer lang="de_DE">Entwicklungsstand ohne Installation. Keine Änderungen an Kodi, Skin oder Benutzerdaten.</disclaimer>
     <platform>all</platform>
     <license>MIT</license>

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""GS Media Setup 0.2.0 — active, read-only device preflight.
+"""GS Media Setup 0.2.1 — active, read-only device preflight.
 
 The installation executor is intentionally NOT enabled until repositories,
 source hashes, full dependencies and Kodi 21 ARM32 have been verified.
@@ -25,7 +25,7 @@ def _device_label():
 def _report(key, title, inventory):
     result = inspect(key, inventory)
     lines = [
-        "GS MEDIA SETUP 0.2.0 — SYSTEMPRÜFUNG",
+        "GS MEDIA SETUP 0.2.1 — SYSTEMPRÜFUNG",
         "=" * 46,
         "Kodi: " + _device_label(),
         "Installationsprofil: " + title,
@@ -46,12 +46,14 @@ def _report(key, title, inventory):
         lines.append("    Quelle: " + row["source"])
         if row["install_blocked"] or not row["manifest_known"]:
             lines.append("    PRÜFUNG NÖTIG: " + row["note"])
+        if row["optional_imports"]:
+            lines.append("    OPTIONAL (nicht automatisch): " + ", ".join(row["optional_imports"]))
     lines += [
         "",
         "Noch nicht freigegebene Installationsschritte: " + str(result["blocking"]),
         "Nächste Phase: verifizierte Pakete, Benutzerfreigabe,",
         "Kodi-Installation und Fortsetzen nach einem Neustart.",
-        "Diese Funktionen sind in 0.2.0 noch NICHT implementiert.",
+        "Diese Funktionen sind in 0.2.1 noch NICHT implementiert.",
         "",
         "Referenz: GitHub issue #317 / GS Media.",
     ]
@@ -66,7 +68,7 @@ def run():
     dialog = xbmcgui.Dialog()
     profiles = profile_names()
     while True:
-        choice = dialog.select("GS Media Setup 0.2.0 – Entwicklung", [
+        choice = dialog.select("GS Media Setup 0.2.1 – Entwicklung", [
             "Installationsprofil und Abhängigkeiten prüfen",
             "Aktuelle Kodi-Add-ons inventarisieren",
             "Sicherheits- und Entwicklungsstatus",
@@ -75,7 +77,7 @@ def run():
         if choice in (-1, 3):
             return
         if choice == 2:
-            dialog.ok("GS Media Setup 0.2.0", "Aktive Vorprüfung ohne Installation. "
+            dialog.ok("GS Media Setup 0.2.1", "Aktive Vorprüfung ohne Installation. "
                       "Neue Kodi-Box und bestehende Profile bleiben unverändert. "
                       "Fehlende oder ungeprüfte Paketquellen blockieren spätere Installationsschritte.")
             continue
