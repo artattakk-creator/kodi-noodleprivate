@@ -16,32 +16,35 @@ class GsMediaRepo180Tests(unittest.TestCase):
 
     def test_repo_id_and_incremental_update(self):
         self.assertEqual(self.manifest.get("id"), "repository.gsmedia")
-        self.assertEqual(self.manifest.get("version"), "1.8.0")
+        self.assertEqual(self.manifest.get("version"), "1.8.1")
         self.assertEqual(self.manifest.get("provider-name"), "GS Media")
 
-    def test_upstreams_unchanged_in_safe_upgrade(self):
+    def test_only_first_party_catalogue_is_exposed(self):
         dirs = self.manifest.findall("./extension[@point='xbmc.addon.repository']/dir")
-        self.assertEqual(len(dirs), 8)
-        info = [d.findtext("info") for d in dirs]
-        self.assertEqual(len(set(info)), 8)
-        expected_sources = (
-            "artattakk-creator/kodi-noodleprivate/main/addons.xml",
-            "dobbelina/repository.dobbelina/master/addons.xml",
-            "Gujal00/smrzips/master/addons.xml",
-            "mojomedia1812/xVAULT/main/docs/addons.xml",
-            "AchillesPunks/repository.titan.bingie.mod/master/nexus/addons.xml",
-            "AchillesPunks/repository.titan.bingie.mod/master/omega/addons.xml",
-            "peno64/repository.peno64/master/repo/zips/addons.xml",
-            "mr-evil1/kodi-media-repo/main/addons.xml",
+        self.assertEqual(len(dirs), 1)
+        allowed = "https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/"
+        self.assertEqual(dirs[0].findtext("info"), allowed + "addons.xml")
+        self.assertEqual(dirs[0].findtext("checksum"), allowed + "addons.xml.md5")
+        self.assertEqual(dirs[0].findtext("datadir"), allowed)
+        self.assertEqual(dirs[0].findtext("hashes"), "false")
+
+    def test_only_three_approved_addon_ids_in_builder(self):
+        import ast
+        script = ROOT / "tools" / "build_repository.py"
+        module = ast.parse(script.read_text(encoding="utf-8"))
+        expr = next(
+            n.value for n in module.body
+            if isinstance(n, ast.Assign)
+            and any(isinstance(t, ast.Name) and t.id == "APPROVED_ADDON_IDS" for t in n.targets)
         )
-        for actual, expected in zip(info, expected_sources):
-            self.assertTrue(actual.startswith("https://raw.githubusercontent.com/"))
-            self.assertTrue(actual.endswith(expected), (actual, expected))
-        self.assertEqual(dirs[5].get("minversion"), "20.9.1")
-        self.assertEqual(dirs[5].findtext("checksum"), dirs[5].findtext("info"))
-        for d in dirs:
-            self.assertTrue(d.findtext("datadir").startswith("https://"))
-            self.assertTrue(d.findtext("checksum").startswith("https://"))
+        self.assertIsInstance(expr, ast.Call)
+        self.assertEqual(expr.func.id, "frozenset")
+        approved = set(ast.literal_eval(expr.args[0]))
+        self.assertEqual(approved, {
+            "repository.gsmedia", "plugin.video.xtreammate", "plugin.video.noodleprivate"
+        })
+        source_ids = {p.parent.name for p in (ROOT / "src").glob("*/addon.xml")}
+        self.assertEqual(source_ids, approved)
 
     def test_repository_icon_is_first_class_asset(self):
         self.assertEqual(self.manifest.findtext(
