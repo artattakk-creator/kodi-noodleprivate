@@ -11,7 +11,7 @@ class Artwork67(Fixture,unittest.TestCase):
  def setUp(self):
   super().setUp()
   for name in ('programme_preview67','programme_tvmaze67','programme_refresh63','live_feedback67'):sys.modules.pop(name,None)
- def details(self,**kw):return dict(dict(id=67,name='Synthetic Series',premiered='2020-01-01',image=dict(original='https://static.tvmaze.com/uploads/images/original_untouched/1/67.jpg')),**kw)
+ def show_data67(self,**kw):return dict(dict(id=67,name='Synthetic Series',premiered='2020-01-01',image=dict(original='https://static.tvmaze.com/uploads/images/original_untouched/1/67.jpg')),**kw)
  def event(self):return dict(pid='p',sid='1',key='synthetic',title='Synthetic Series',genre='Serie',year=2020,start=self.now-60,stop=self.now+600)
  def lookup(self,responses,event=None):
   from programme_tvmaze67 import candidate
@@ -19,18 +19,18 @@ class Artwork67(Fixture,unittest.TestCase):
   with mock.patch('media_sources43.get',side_effect=responses):return candidate(event or self.event())
  def test_tvmaze_ambiguous_exact_names_do_not_guess(self):
   from media_sources43 import SourceError
-  with self.assertRaises(SourceError):self.lookup([[dict(show=self.details()),dict(show=self.details(id=68))]])
+  with self.assertRaises(SourceError):self.lookup([[dict(show=self.show_data67()),dict(show=self.show_data67(id=68))]])
  def test_tvmaze_details_cannot_substitute_another_id(self):
   from media_sources43 import SourceError
-  with self.assertRaises(SourceError):self.lookup([[dict(show=self.details())],self.details(id=68)])
+  with self.assertRaises(SourceError):self.lookup([[dict(show=self.show_data67())],self.show_data67(id=68)])
  def test_tvmaze_image_host_and_directory_are_pinned(self):
   from media_sources43 import SourceError
   for uri in ('https://private.invalid/1.jpg','http://static.tvmaze.com/uploads/images/original_untouched/1/67.jpg','https://static.tvmaze.com/../../1.jpg'):
-   with self.subTest(uri=uri),self.assertRaises(SourceError):self.lookup([[dict(show=self.details())],self.details(image=dict(original=uri))])
+   with self.subTest(uri=uri),self.assertRaises(SourceError):self.lookup([[dict(show=self.show_data67())],self.show_data67(image=dict(original=uri))])
  def test_tvmaze_unverified_episode_does_not_receive_a_guessed_image(self):
   from media_sources43 import SourceError
   e=dict(self.event(),season=1,episode=2,subtitle='Exact episode')
-  with self.assertRaises(SourceError):self.lookup([[dict(show=self.details())],self.details(),dict(season=1,number=3,name='Other',image=self.details()['image'])],e)
+  with self.assertRaises(SourceError):self.lookup([[dict(show=self.show_data67())],self.show_data67(),dict(season=1,number=3,name='Other',image=self.show_data67()['image'])],e)
  def test_tvmaze_news_and_sport_do_not_send_title_to_network(self):
   from programme_tvmaze67 import candidate
   self.options['programme_tvmaze67']=True
