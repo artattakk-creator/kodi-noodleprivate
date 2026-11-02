@@ -22,7 +22,7 @@ def poll():
     with _lock:
         changed=_focus!=current;_focus=current;art=dict(_art) if _art else {}
     if changed:_focused_at=time.monotonic();note('HOME_FOCUS',pid,sid)
-    info=get(pid,sid)
+    info=get(pid,sid);intent68=None
     if info:
         # The displayed RAM event is sufficient for a small intent. Do not
         # wait for the optional bulk publisher/prepare() to get a timeslice.
@@ -45,18 +45,18 @@ def poll():
             note('HOME_NOW_NEXT_READY',pid,sid,'READY',(time.monotonic()-_focused_at)*1000)
             return
     info=info or guide_for_channel({})
-    neutral=os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media','programme46','neutral.png')
+    neutral=''
     key=label('XCMate.ProgrammeKey47')
     props={'XCMate.ProgrammeKey47':key,'XCMate.ProgrammeImage46':label('XCMate.ProgrammeImage46') or neutral,
            'XCMate.ProgrammeArtSource57':label('XCMate.ProgrammeArtSource57'),
            'XCMate.ProgrammeImageScope57':label('XCMate.ProgrammeImageScope57'),
-           'XCMate.FallbackLabel63':label('XCMate.FallbackLabel63')}
+           'XCMate.FallbackLabel63':label('XCMate.FallbackLabel63'),'XCMate.ArtProof69':label('XCMate.ArtProof69')}
     labels=(label('XCMate.NoEpg63'),label('XCMate.RemainingFormat63'))
     if not all(labels):labels=_labels
     if not labels:return  # Static native ListItem remains usable until the worker warms labels.
     apply(dict(props=props),dict(id=pid),dict(sid=sid),info,labels=labels)
     event_key=info.get('programme_key47','')
-    if art.get('profile63')==scope and art.get('key')==event_key and art.get('code') in ('READY','READY_STALE') and art.get('source')!='placeholder' and __import__('programme_image69').eligible(art):
+    if art.get('profile63')==scope and art.get('key')==event_key and art.get('code') in ('READY','READY_STALE') and art.get('source')!='placeholder' and __import__('programme_image69').eligible(art,intent68):
         props['XCMate.ProgrammeImage46']=props['XCMate.HeroImage63']=art['image'];props['XCMate.ProgrammeArtSource57']=props['XCMate.HeroArtSource63']=art.get('source','')
         if art.get('image_scope57')=='series_fallback' and props.get('XCMate.FallbackLabel63'):
             note63=props['XCMate.FallbackLabel63']
@@ -104,7 +104,7 @@ def prepare(pid):
     request(event,priority=True)
     art=result(event,art)
     with _lock:
-        if _focus==focus:_art=dict(art,key=event['key'],profile63=focus[3])
+        if _focus==focus:_art=dict(art,key=event['key'],profile63=focus[3],scope69=__import__('programme_requests68').identity(event))
 
 
 def focused64(pid):

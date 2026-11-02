@@ -28,6 +28,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
     def onInit(self):
         if self._ready:return
         self._ready=True
+        __import__('programme_lifecycle69').register(self,'GUIDE')
         for cid in range(1000,1000+ROWS*CELLS):self.getControl(cid).setVisible(False)
         for cid,ident in ((310,33101),(311,33102),(312,33103),(313,33104),(314,33105),(315,33106),(501,33602)):
             self.getControl(cid).setLabel(tr(ident))
@@ -428,6 +429,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         elif cid==313:self._show_groups()
 
     def _owner_tick(self):
+        if __import__('programme_lifecycle69').pulse(self):return
         if getattr(self,'_mapping_request48',False):
             from guide_mapping48 import open_pending
             open_pending(self)
@@ -468,6 +470,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         self._gui()
         if self._closed:return
         self._closed=True;self._generation+=1
+        __import__('programme_lifecycle69').unregister(self)
         if self._pending_future is not None:self._pending_future.cancel()
         self._pending_future=None;self._pending_apply=None
         self._pool.shutdown(wait=False,cancel_futures=True);super().close()

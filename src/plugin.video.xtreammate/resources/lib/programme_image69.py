@@ -4,11 +4,16 @@ FIELDS=('key','fingerprint','code','source','match','image','thumbnail','source_
 def url(art):
  from programme_urls55 import safe,OPTIONS
  value=art.get('source_url','') if isinstance(art,dict) else ''
- return bool(art.get('url_version55')==1 and art.get('url_verified69') is True and safe(value) and art.get('image')==value+OPTIONS)
+ from programme_sources57 import PROOFS
+ match69=art.get('match') in ('EXACT_EVENT','EXACT_TITLE_YEAR','EXACT_SEASON_EPISODE','EXACT_UNIQUE_FILM_TITLE')+PROOFS
+ return bool(match69 and art.get('url_version55')==1 and art.get('url_verified69') is True and safe(value) and art.get('image')==value+OPTIONS)
 def eligible(art,event=None):
  if not isinstance(art,dict) or art.get('code') not in ('READY','READY_STALE') or art.get('source') in (None,'','placeholder'):return False
  image=art.get('image')
  if not isinstance(image,str) or not image:return False
+ if event is not None and art.get('scope69'):
+  from programme_requests68 import identity
+  if art['scope69']!=identity(event):return False
  if os.path.isabs(image) and not art.get('url_version55'):return True
  if not url(art):return False
  until=art.get('until',0)
@@ -27,3 +32,12 @@ def unpack(raw,event=None):
  try:value=json.loads(raw)
  except (ValueError,TypeError):return {}
  return value if eligible(value,event) else {}
+
+def adopt(event,value):
+ """Upgrade an unexpired legacy reference only after its complete binding check."""
+ if not isinstance(value,dict) or value.get('url_version55')!=1:return value
+ from programme_urls55 import display
+ valid=display(event,value)
+ if not valid or valid.get('code') not in ('READY','READY_STALE') or valid.get('source')=='placeholder':return value
+ from programme_requests68 import identity,scope
+ return dict(valid,url_verified69=True,scope69=identity(event),profile69=scope(),until=min(valid['until'],time.time()+86400))

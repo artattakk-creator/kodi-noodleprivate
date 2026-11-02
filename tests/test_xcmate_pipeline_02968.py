@@ -5,7 +5,7 @@ from xcmate027_fixture import Fixture,ADDON
 
 class Pipeline68(Fixture,unittest.TestCase):
  def setUp(self):
-  super().setUp()
+  super().setUp();self.options['programme_art_local69']=True  # Explicit optional-local contract retained.
   for name in ('programme_requests68','live_group68','live_warm68','programme_storage68','programme_settings68','programme_urls55'):
    sys.modules.pop(name,None)
   import programme_requests68
@@ -257,7 +257,7 @@ class EventChain68(unittest.TestCase):
  def test_uncached_sqlite_event_reaches_token_matching_valid_png_and_exact_status(self):
   import io,importlib,threading
   from PIL import Image
-  m=self.m;m.options.update(programme_tmdb46=True,tmdb_research43=True,tmdb_read_token43='SYNTHETIC_NOT_A_SECRET')
+  m=self.m;m.options.update(programme_tmdb46=True,tmdb_research43=True,programme_art_local69=True,tmdb_read_token43='SYNTHETIC_NOT_A_SECRET')
   m.put('a',[m.event(title='Synthetic movie',extra='<category>Spielfilm</category><date>2024</date>')])
   from programme_events46 import load
   event=load(m.portal,m.channel)

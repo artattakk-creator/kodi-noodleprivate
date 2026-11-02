@@ -54,6 +54,10 @@ def read(pid,kind):
             if parsed.scheme!='plugin' or parsed.netloc!='plugin.video.xtreammate':return None
             allowed=('play_live','source_play') if kind=='live' else ('media_detail',)
             if q.get('action',[''])[0] not in allowed or (kind!='live' and q.get('kind')!=[kind]):return None
+        if kind in ('vod','series') and __import__('widget_assets69').home():
+            from widget_assets69 import renderable
+            frame['items']=[v for v in frame['items'] if renderable(v['art'].get('poster'))]
+            if not frame['items']:return None
         return frame
     except (OSError,ValueError,TypeError,KeyError,AttributeError):return None
 
@@ -71,6 +75,7 @@ def publish(portal,kind,rows,code='READY'):
         from widget_render47 import values as render47
         items=render47(portal,kind,rows if kind=='live' else rows[:24],values)
     else:items=[describe(portal,kind,row,values) for row in rows[:24]]
+    if kind in ('vod','series') and not items:return False
     from widget_diagnostics47 import describe as describe47,save as save47
     save47(portal['id'],kind,'ITEMS',describe47(portal['id'],kind,items))
     if kind=='live':

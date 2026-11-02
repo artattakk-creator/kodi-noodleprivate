@@ -160,6 +160,13 @@ def read_many(pid, kind, rows,provider_only=False):
     except (OSError, sqlite3.Error, ValueError, TypeError, KeyError):
         return result
     finally:
+        # Mutate the returned dictionary even after a read-only DB miss.
+        from portals import get_by_id
+        from widget_assets69 import read as volatile69
+        portal69=get_by_id(str(pid))
+        if portal69:
+            for sid69,roles69 in volatile69(portal69,kind,rows).items():
+                for role69,uri69 in roles69.items():result.setdefault(sid69,{}).setdefault(role69,uri69)
         if db is not None:
             db.close()
 
@@ -172,6 +179,8 @@ def prepare(portal, kind, rows, cancel=lambda:False,provider_only=False):
     """
     if not rows or kind not in ('live','vod','series'):
         return
+    from widget_assets69 import prepare as provider_refs69
+    provider_refs69(portal,kind,rows,cancel)
     from artwork_config import persistent
     from media_art import cached, dimensions
     from artwork_visible import public_dns, syntactic, KODI_OPTIONS, _dns_cache, _lock

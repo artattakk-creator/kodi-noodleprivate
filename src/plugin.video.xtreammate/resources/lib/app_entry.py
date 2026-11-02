@@ -115,7 +115,7 @@ def _observe_locked():
                 marker().clearProperty(KEY)
                 from live_exit import state as exit_state,KEY as exit_key
                 prior=exit_state()
-                if prior and prior['phase'] in ('complete','failed'):marker().clearProperty(exit_key)
+                if prior and prior['phase'] in ('complete','failed') and prior.get('return_stage69') in (None,'COMPLETE','FAILED'):marker().clearProperty(exit_key)
                 return
         if value!=before:marker().setProperty(KEY,json.dumps(value))
     except (AttributeError,RuntimeError,TypeError,ValueError):return

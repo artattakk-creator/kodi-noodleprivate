@@ -11,7 +11,7 @@ def state():
              lookup='TMDB_LOOKUP_ENABLED' if guide and access else 'TMDB_LOOKUP_DISABLED',
              programme_enabled=guide,token_access_enabled=access,
              helper=setting_bool('programme_helper57',True),
-             catalog=setting_bool('programme_catalog57',True),tvmaze=setting_bool('programme_tvmaze67',False))
+             catalog=setting_bool('programme_catalog57',True),tvmaze=setting_bool('programme_tvmaze67',False),local_cache=setting_bool('programme_art_local69',False))
 
 def show():
  import json,xbmcaddon,xbmcgui
@@ -32,9 +32,10 @@ def show():
            'Speicherdiagnose (nur lesen)',
            'Externe Skin-/Helper-Kompatibilität (nur lesen)',
            'Lizenzen und Bildquellen',
+           'Lokaler Sendungsbildcache (optional): '+('AN' if value['local_cache'] else 'AUS'),
            'Zurück']
   choice=select(dialog,'XCMate – EPG / Sendungsbilder',entries,default='settings')
-  if not isinstance(choice,int) or not 0<=choice<len(entries) or choice==12:return
+  if not isinstance(choice,int) or not 0<=choice<len(entries) or choice==13:return
   if choice==0:dialog.ok('XCMate',json.dumps(value,ensure_ascii=False,indent=2)+'\nToken vorhanden und Verbindung OK bestätigen noch kein Sendungsbild.')
   elif choice==1:
    from tmdb_access61 import show as tokens
@@ -65,6 +66,9 @@ def show():
   elif choice==10:
    from programme_external68 import inspect
    dialog.ok('XCMate – externe Komponenten',json.dumps(inspect(),ensure_ascii=False,indent=2))
+  elif choice==12:
+   if dialog.yesno('XCMate','Optionalen lokalen Sendungsbildcache '+('deaktivieren?' if value['local_cache'] else 'aktivieren? Bereits vorhandene Dateien bleiben erhalten.'),defaultbutton=getattr(xbmcgui,'DLG_YESNO_NO_BTN',10)):
+    addon.setSetting('programme_art_local69','false' if value['local_cache'] else 'true')
   elif choice==11:
    from credits67 import show as credits
    credits('Sendungsbilder: TMDB / konfigurierte EPG-Quellen. Ein vorhandener Token belegt keine erfolgreiche Bildsuche.')

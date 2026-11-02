@@ -50,7 +50,7 @@ if p.get('fixture59')==['seed']:
  Path('/root/stress66.json').write_text(json.dumps(dict(groups=groups63,stations=len(stations))))
  events['xml2'][0].update(name='MacGyver',title='MacGyver',category='Krimiserie',year=2016)
  import_cache(portal['id'],events,'synthetic-home60',now=now,trusted_feed=True)
- addon=xbmcaddon.Addon();addon.setSetting('programme_tmdb46','true');addon.setSetting('tmdb_research43','true');addon.setSetting('tmdb_read_token43','SYNTHETIC_FIXTURE_NOT_A_TOKEN');addon.setSetting('programme_helper57','false');addon.setSetting('programme_catalog57','false')
+ addon=xbmcaddon.Addon();addon.setSetting('programme_art_local69','true');addon.setSetting('programme_tmdb46','true');addon.setSetting('tmdb_research43','true');addon.setSetting('tmdb_read_token43','SYNTHETIC_FIXTURE_NOT_A_TOKEN');addon.setSetting('programme_helper57','false');addon.setSetting('programme_catalog57','false')
  import io
  for i in (0,1):
   event=load(portal,dict(stations[i],sid=str(i)));event.update(genre='Spielfilm',year=2024)

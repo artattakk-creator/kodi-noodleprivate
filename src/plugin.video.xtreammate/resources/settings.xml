@@ -30,6 +30,7 @@
     <setting id="view_mode" type="enum" label="32247" values="32248" default="0" />
   </category>
   <category label="36002">
+    <setting id="programme_art_local69" type="bool" label="Sendungsbilder zusätzlich lokal speichern (optional)" default="false"/>
     <setting id="programme_settings68" type="action" label="EPG / Sendungsbilder: Einstellungen und Status" action="RunPlugin(plugin://plugin.video.xtreammate/?action=native_options45&amp;group=tmdb_access61)"/>
     <setting id="programme_art_budget46" type="enum" label="36120" values="32|64|128|256" default="1"/>
     <setting id="programme_helper57" type="bool" label="36540" default="true"/>

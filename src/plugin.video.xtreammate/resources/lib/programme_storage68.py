@@ -6,7 +6,7 @@ def inspect(guide=None):
  from programme_index46 import path,MAX_BYTES
  filename=path(guide);db=None
  result=dict(code='NOT_CREATED',policy_bytes=MAX_BYTES,policy_max_pages=32768,
-             page_count=None,page_size=None,freelist_count=None,db_bytes=0,wal_bytes=0,
+             page_count=None,page_size=None,freelist_count=None,db_bytes=0,wal_bytes=0,shm_bytes=0,
              disk_free_bytes=None,write_probe='NOT_PERFORMED')
  try:
   parent=os.path.dirname(filename)
@@ -21,7 +21,7 @@ def inspect(guide=None):
    result['artwork_capacity']={k:cap[k] for k in ('free','total','reserve','budget','external','storage_availability') if k in cap}
    result['artwork_capacity']['reason']=explain(cap,3*1024*1024)
   except (OSError,ValueError,RuntimeError):result['artwork_capacity']=dict(reason='UNCONFIRMED')
-  for suffix,field in (('','db_bytes'),('-wal','wal_bytes')):
+  for suffix,field in (('','db_bytes'),('-wal','wal_bytes'),('-shm','shm_bytes')):
    try:result[field]=os.stat(filename+suffix,follow_symlinks=False).st_size
    except FileNotFoundError:pass
   if not os.path.isfile(filename):return result
@@ -36,6 +36,10 @@ def inspect(guide=None):
   if result['disk_free_bytes']<65536:result['code']='FILESYSTEM_SPACE_LOW'
   elif result['logical_bytes']>=MAX_BYTES and result['reusable_bytes']<65536:result['code']='INTERNAL_DB_LIMIT'
   else:result['code']='READABLE_WRITE_CAPACITY_UNCONFIRMED'
+  from programme_writes69 import state
+  result['write_circuit69']=state(filename)
+  if result['disk_free_bytes']<result['programme_db_reserve_bytes']+65536:result['capacity_code69']='SAFE_RESERVE_BLOCKED'
+  else:result['capacity_code69']='RESERVE_AVAILABLE'
   from programme_index46 import status
   result['last_writes']=status().get('last_write_failures',{}) if guide is None else {}
   return result

@@ -72,6 +72,10 @@ def status(event,code,art=None):
   tags=[identity(event)]
   with _lock:tags+=list(_aliases.get(tags[0],()))
   payload={k:art[k] for k in _ART if art and k in art}
+  if payload.get('source_url') or str(payload.get('image','')).startswith(('http://','https://','smb://')):
+   from programme_image69 import url as public_url69
+   if not public_url69(payload):
+    for field69 in ('source_url','image','thumbnail','url_verified69','url_version55'):payload.pop(field69,None)
   for tag in set(tags):
    adjusted=dict(payload,scope69=tag) if payload.get('url_verified69') else dict(payload)
    value=dict(tag=tag,scope=scope(),at=time.time(),code=code,art=adjusted)
@@ -150,7 +154,8 @@ def drain(cancel=lambda:False):
    current=load(portal,channel,event)
    # No cached-short fallback may override an explicit source/guide binding.
    if current.get('code')!='LOCAL_EVENT' or any(event.get(k) and event.get(k)!=current.get(k) for k in ('canonical','source_key46','fact_revision46')) or event.get('revision') is not None and json.dumps(event['revision'])!=json.dumps(current.get('revision')):
-    status(event,'CACHE_MISMATCH')
+    code69=current.get('read_code69') or 'CACHE_MISMATCH'
+    status(event,code69,dict(source='placeholder',code=code69,until=time.time()+30))
     mark_seen(tag,policy,now)
     continue
    with _lock:

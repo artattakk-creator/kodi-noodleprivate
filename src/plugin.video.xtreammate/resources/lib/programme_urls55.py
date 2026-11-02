@@ -131,7 +131,11 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     if old and not old.get('url_version55') and (local_image63 or old.get('source') in ('tmdb_movie','tmdb_episode','tmdb_series','tvmaze_series','tvmaze_episode')) and old.get('source')!='placeholder' and old.get('fingerprint')==fingerprint(event) and old.get('until',0)>time.time():
         from programme_art46 import indexed
         local60=indexed(event,verify=True)
-        if local60:return local60
+        if local60:
+            if url_mode69:
+                from programme_session69 import remember as local_session69
+                local_session69(event,local60,persisted=True)
+            return local60
     current=display(event,old)
     if url_mode69 and current and current.get('source')!='placeholder' and not current.get('url_verified69'):current=None
     from programme_refresh63 import retry as retry63
@@ -310,14 +314,23 @@ def _run():
             try:
                 from epg_handoff63 import profile_scope
                 from programme_requests68 import status,completed
-                cancelled=lambda:_stop.is_set() or len(job)>3 and job[3]!=profile_scope()
+                deadline69=time.monotonic()+45
+                stopped69=lambda:_stop.is_set() or len(job)>3 and job[3]!=profile_scope()
+                cancelled=lambda:stopped69() or time.monotonic()>deadline69
                 if cancelled():continue
                 status(event,'RUNNING')
                 if local63:value=resolve(event,cancel=cancelled,allow_lookup=allow,local_image63=True)
                 else:value=resolve(event,cancel=cancelled,allow_lookup=allow,url_mode69=True)
-                if not cancelled():completed(event,value)
+                if not stopped69():
+                    if time.monotonic()>deadline69:
+                        from programme_session69 import remember as failed69
+                        value=failed69(event,dict(key=event['key'],code='IMAGE_LOOKUP_TIMEOUT',source='placeholder',image=event['placeholder'],until=time.time()+60))
+                    completed(event,value)
             except Exception:
-                try:status(event,'FETCH_FAILED')
+                try:
+                    from programme_session69 import remember as failed69
+                    value=failed69(event,dict(key=event['key'],code='FETCH_FAILED',source='placeholder',image=event['placeholder'],until=time.time()+60))
+                    completed(event,value)
                 except (NameError,AttributeError,RuntimeError):pass
         finally:
             with _lock:_pending.discard(key)

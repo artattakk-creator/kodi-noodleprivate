@@ -13,8 +13,9 @@ class ReserveBlocked(OSError):
 
 def check_space(filename, upcoming=0):
     folder = os.path.dirname(os.path.abspath(filename))
-    if shutil.disk_usage(folder).free < RESERVE + max(0, upcoming):
-        raise ReserveBlocked(shutil.disk_usage(folder).free, RESERVE, max(0, upcoming))
+    free=shutil.disk_usage(folder).free
+    if free < RESERVE + max(0, upcoming):
+        raise ReserveBlocked(free, RESERVE, max(0, upcoming))
 
 
 def safe_failure(exc):

@@ -66,7 +66,8 @@ def load(portal,channel,selected=None,now=None):
  if event is None and selected and selected.get('title') and int(selected.get('stop',0))>int(selected.get('start',0)):
   event=dict(selected);canonical='';view=None
  result=describe(portal,channel,event,canonical,getattr(view,'revision',None))
- if event and view is None:result['code']='CACHED_EVENT'
+ if event and view is None:
+  result['code']='CACHED_EVENT';result['read_code69']=__import__('epg_read69').last(portal['id'],sid)
  if selected and selected.get('key') and selected['key']!=result['key']:return describe(portal,channel)
  return result
 

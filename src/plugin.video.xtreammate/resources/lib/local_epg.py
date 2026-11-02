@@ -90,6 +90,7 @@ def _full_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
         first63=channels[0] if channels else {}
         sid63=channel_keys(first63,mappings)[0]
         note('DB_READ',pid,sid63,'EPG_DB_BUDGET' if getattr(error63,'sqlite_errorname','')=='SQLITE_INTERRUPT' else 'EPG_CACHE_UNAVAILABLE',(time.perf_counter()-started63)*1000)
+        __import__('epg_read69').record(error63,pid,sid63,(time.perf_counter()-started63)*1000)
         return None
     finally:
         if db is not None:db.close()
@@ -161,6 +162,7 @@ def _text_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
         from epg_handoff63 import note
         first63=channels[0] if channels else {};sid63=channel_keys(first63,mappings)[0]
         note('DB_READ',pid,sid63,'EPG_DB_BUDGET' if getattr(error63,'sqlite_errorname','')=='SQLITE_INTERRUPT' else 'EPG_CACHE_UNAVAILABLE',(time.perf_counter()-started63)*1000)
+        __import__('epg_read69').record(error63,pid,sid63,(time.perf_counter()-started63)*1000)
         return None
     finally:
         if db is not None:db.close()

@@ -37,8 +37,9 @@ def _save(filename,value):
 
 def classify(error,filename=None,read=False):
  specific=getattr(error,'code69','')
- if specific:return specific
- name=getattr(error,'sqlite_errorname','')
+ if isinstance(specific,str) and specific:return specific
+ name=getattr(error,'sqlite_errorname','') or ''
+ if not isinstance(name,str):name=''
  if name.startswith(('SQLITE_BUSY','SQLITE_LOCKED')):return 'SQLITE_BUSY_LOCKED'
  if name=='SQLITE_INTERRUPT' or isinstance(error,TimeoutError):return 'EPG_READ_TIMEOUT' if read else 'SQLITE_WRITE_TIMEOUT'
  if getattr(error,'errno',None)==errno.ENOSPC:return 'REAL_ENOSPC'

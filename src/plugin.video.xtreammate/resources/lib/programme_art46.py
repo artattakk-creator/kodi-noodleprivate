@@ -250,9 +250,11 @@ bytes on startup; directory readers never decode 12 full pictures in RAM.
  if value.get('until',0)>time.time() and (value.get('source')=='placeholder' or __import__('programme_image69').eligible(value,event)):return value
  value=indexed(event)
  if value:
+  value=__import__('programme_image69').adopt(event,value)
   remember(event['key'],value);return value
  value=persisted(event,verify=False)
  if value:
+  value=__import__('programme_image69').adopt(event,value)
   remember(event['key'],value);return value
  value=peek(event)
  if value.get('url_version55')==1:
