@@ -100,13 +100,14 @@ def compatible(inventory):
             shortcuts.get("enabled") is True)
 
 
-def apply_new_profile(folder, inventory, user_approved=False):
-    """Idempotent if our exact files already exist. Never replace user files."""
-    if not user_approved:
-        return "NOT_AUTHORIZED"
+def inspect_new_profile(folder, inventory):
+    """Read-only safety check BEFORE touching any BINGIE XML files."""
     if not compatible(inventory):
         return "VERSION_OR_SKIN_NOT_SUPPORTED"
-    dest = Path(folder).resolve()
+    original = Path(folder)
+    if original.is_symlink():
+        return "SYMLINK_BLOCKED"
+    dest = original.resolve()
     if dest.name != "script.skinshortcuts":
         return "UNTRUSTED_PATH"
     payload = render()
@@ -114,11 +115,31 @@ def apply_new_profile(folder, inventory, user_approved=False):
         return "INVALID_TEMPLATE"
     if any((dest / name).is_symlink() for name in payload):
         return "SYMLINK_BLOCKED"
-    for name, raw in payload.items():
-        target = dest / name
-        if target.exists() and target.read_bytes() != raw:
-            return "EXISTING_SKIN_DATA_PRESERVED"
-    dest.mkdir(parents=True, exist_ok=True)
+    try:
+        for name, raw in payload.items():
+            target = dest / name
+            if target.exists() and (not target.is_file() or target.read_bytes() != raw):
+                return "EXISTING_SKIN_DATA_PRESERVED"
+        return "ALREADY_APPLIED" if all((dest / name).exists() for name in payload) else "READY"
+    except (OSError, ValueError):
+        return "INSPECTION_FAILED"
+
+
+def apply_new_profile(folder, inventory, user_approved=False):
+    """Idempotent if our exact files already exist. Never replace user files."""
+    if not user_approved:
+        return "NOT_AUTHORIZED"
+    status = inspect_new_profile(folder, inventory)
+    if status == "ALREADY_APPLIED":
+        return status
+    if status != "READY":
+        return status
+    dest = Path(folder).resolve()
+    payload = render()
+    try:
+        dest.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        return "WRITE_FAILED"
     to_write = [(dest / name, raw) for name, raw in payload.items()
                 if not (dest / name).exists()]
     created = []
