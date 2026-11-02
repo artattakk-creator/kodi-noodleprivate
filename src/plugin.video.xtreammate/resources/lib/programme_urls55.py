@@ -182,8 +182,8 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             source70=getattr(find,'source70','injected')
             try:found=find()
             except (SourceError,HelperError) as exc:
-                outcome70(value,source70,exc.code);failed(exc.code);continue
-            outcome70(value,source70,'FOUND' if found else 'DISABLED' if source70=='tmdb' and not value['lookup70']['own'] else 'NO_CONFIRMED_IMAGE')
+                outcome70(value,source70,exc.code,event);failed(exc.code);continue
+            outcome70(value,source70,'FOUND' if found else 'DISABLED' if source70=='tmdb' and not value['lookup70']['own'] else 'NO_CONFIRMED_IMAGE',event)
             if found:
                 if found.get('source')=='tmdb_helper':source_trace(event,'HELPER_LOOKUP_OK',duration_ms=(time.monotonic()-started)*1000)
                 fallback=found.get('series_fallback57')

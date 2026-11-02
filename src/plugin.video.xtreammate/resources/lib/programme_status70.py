@@ -28,9 +28,17 @@ def waiting(event,previous=None):
  from programme_requests68 import identity,_read,SLOTS
  value=_read('request.'+str(int(identity(event)[:8],16)%SLOTS))
  if value.get('tag')!=identity(event) or not 0<=time.time()-value.get('at',0)<20:return previous or {}
- code='WAITING_SERVICE' if time.time()-value['at']>=15 else 'REQUESTED'
+ code='WAITING_SERVICE' if time.time()-value.get('since70',value['at'])>=15 else 'REQUESTED'
  return dict(previous or {},code=code,status68=code)
 
 def legacy_negative(value):
  # Lazy one-event upgrade of affected .69 negatives, never a global reset.
  return isinstance(value,dict) and value.get('source')=='placeholder' and value.get('code') in ('HELPER_TIMEOUT','HELPER_BACKGROUND_UNAVAILABLE','NOT_SCHEDULED') and 'sources70' not in value
+
+def since(previous,tag):
+ now=time.time()
+ try:
+  first=float(previous.get('since70',previous.get('at',now)))
+  if previous.get('tag')==tag and previous.get('scope')==__import__('programme_requests68').scope() and 0<=now-float(previous.get('at',0))<20 and math.isfinite(first) and 0<=now-first<86400:return first
+ except (ValueError,TypeError,OverflowError):pass
+ return now

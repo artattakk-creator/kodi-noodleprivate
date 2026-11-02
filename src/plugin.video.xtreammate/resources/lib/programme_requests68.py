@@ -45,7 +45,9 @@ def request(event,priority=False):
   value={k:event[k] for k in _FIELDS if k in event}
   if any(isinstance(v,str) and len(v)>1024 for v in value.values()):return False
   tag=identity(value);slot=str(int(tag[:8],16)%SLOTS)
-  record=dict(event=value,tag=tag,scope=scope(),at=int(time.time()//5)*5,priority=bool(priority))
+  from programme_status70 import since
+  prior70=_read('request.'+slot)
+  record=dict(event=value,tag=tag,scope=scope(),at=int(time.time()//5)*5,priority=bool(priority),since70=since(prior70,tag))
   raw=json.dumps(record,separators=(',',':'),allow_nan=False)
   if len(raw.encode())>MAX_BYTES:return False
   marker=_window();key=PREFIX+'request.'+slot

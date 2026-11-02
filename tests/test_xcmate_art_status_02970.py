@@ -106,3 +106,18 @@ class ArtStatus70(Fixture,unittest.TestCase):
   self.assertIn(dict(source='tmdb',code='HTTP_AUTH'),value['sources70'])
   self.assertIn(dict(source='helper',code='HELPER_TIMEOUT'),value['sources70'])
   self.assertIn('Zugriff abgewiesen',__import__('programme_diagnostics59').message(event,value))
+
+ def test_repeated_focus_does_not_reset_waiting_service_age(self):
+  event=self.event()
+  with mock.patch('time.time',return_value=1000):self.b.request(event)
+  with mock.patch('time.time',return_value=1005):self.b.request(event)
+  with mock.patch('time.time',return_value=1016):
+   self.b.request(event);self.assertEqual(self.b.result(event)['code'],'WAITING_SERVICE')
+ def test_supplier_trace_is_pseudonymized_and_fixed_code_only(self):
+  import programme_outcomes70 as outcomes
+  xbmc=sys.modules['xbmc']
+  with mock.patch.object(xbmc,'log',create=True) as log,mock.patch.object(xbmc,'LOGINFO',1,create=True):
+   outcomes.trace(self.event(),'tmdb','HTTP_AUTH')
+  text=log.call_args.args[0]
+  self.assertIn('source=tmdb code=HTTP_AUTH',text)
+  for private in ('Synthetic film','SECRET','provider.invalid'):self.assertNotIn(private,text)

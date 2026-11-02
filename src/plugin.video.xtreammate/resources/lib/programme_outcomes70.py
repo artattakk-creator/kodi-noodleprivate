@@ -5,9 +5,23 @@ def label(fn,source):fn.source70=source;return fn
 def clean(values):
  if not isinstance(values,list):return []
  return [dict(source=v['source'],code=v['code'] if v.get('code') in CODES else 'REMOTE_ERROR') for v in values[:8] if isinstance(v,dict) and v.get('source') in SOURCES]
-def add(value,source,code):
+def add(value,source,code,event=None):
  if source not in SOURCES:return
  value['sources70']=clean(value.get('sources70',[])+[dict(source=source,code=code)])
+ if event is not None:trace(event,source,value['sources70'][-1]['code'])
 def settings():
  from utils import setting_bool
  return dict(own=setting_bool('programme_tmdb46',False) and setting_bool('tmdb_research43',False),helper=setting_bool('programme_helper57',True),catalog=setting_bool('programme_catalog57',True),tvmaze=setting_bool('programme_tvmaze67',False))
+
+_traces={}
+def trace(event,source,code):
+ if source not in SOURCES or code not in CODES:return
+ try:
+  import time,xbmc
+  from programme_requests68 import identity
+  token=identity(event)[:12];key=(token,source,code);now=time.monotonic()
+  if now-_traces.get(key,-1e9)<60:return
+  _traces[key]=now
+  while len(_traces)>256:_traces.pop(next(iter(_traces)))
+  xbmc.log('[XCMate][ART70] event='+token+' source='+source+' code='+code,xbmc.LOGINFO)
+ except (ImportError,AttributeError,RuntimeError,ValueError,TypeError,KeyError):pass
