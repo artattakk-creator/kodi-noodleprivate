@@ -6,7 +6,7 @@ InstallAddon as success, never imports arbitrary ZIPs, and never edits skin.
 """
 from setup_install_pilot import (
     APPROVED, APPROVED_IDS, blank_state, load, save, assess, after_request,
-    after_confirm, retry_explicitly, plan,
+    after_confirm, retry_explicitly, plan, protected_existing,
 )
 from setup_inventory import snapshot
 
@@ -39,6 +39,14 @@ def run():
         _message(dialog, "Kodi Add-on Inventur nicht verfügbar. Installationspilot blockiert.")
         return
     if state is None:
+        protected = protected_existing(inventory)
+        if protected:
+            _message(dialog, "BESTANDSBOX-SCHUTZ: Der Installationspilot verweigert "
+                     "eine erste Installation, weil bestehende Add-ons erkannt "
+                     "wurden: " + ", ".join(protected) + ".\n"
+                     "Vorhandene Konfigurationen dürfen nicht überschrieben "
+                     "werden. Nur neue, noch nicht eingerichtete Testbox verwenden.")
+            return
         rows = plan(inventory)
         if not dialog.yesno(
             "GS Media – begrenzter Installationspilot",
