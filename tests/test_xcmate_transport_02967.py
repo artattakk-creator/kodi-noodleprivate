@@ -30,3 +30,21 @@ class Transport67(Fixture,unittest.TestCase):
   opener=mock.Mock()
   self.assertEqual(probe('https://synthetic.invalid/stream',{'Referer':'bad\r\nX-Token: private'},opener)['code'],'UNSAFE_HEADER')
   opener.open.assert_not_called()
+ def test_native_error_callback_never_stops_or_retries_and_ignores_changed_session(self):
+  import json,time
+  import live_feedback67 as m
+  from live_overlay import SESSION_KEY
+  class Native:
+   def isPlayingVideo(self):return False
+  xbmc=sys.modules['xbmc'];m._seen.clear();m._pending=None
+  first=dict(pid='p',sid='1',nonce='first',at=time.time())
+  self.properties[SESSION_KEY]=json.dumps(first)
+  with mock.patch.object(xbmc,'Player',Native),mock.patch.object(xbmc,'log',mock.Mock(),create=True),mock.patch.object(xbmc,'LOGWARNING',2,create=True):
+   events=m.monitor();events.onPlayBackError()
+   self.assertIsNotNone(m._pending)
+   self.properties[SESSION_KEY]=json.dumps(dict(first,nonce='changed'))
+   m.poll();self.dialog.notification.assert_not_called()
+   self.properties[SESSION_KEY]=json.dumps(first)
+   events.onPlayBackError();m.poll();m.poll()
+   self.assertEqual(self.dialog.notification.call_count,1)
+  self.assertFalse(self.builtins);self.assertFalse(self.native_builtins)

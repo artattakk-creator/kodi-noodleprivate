@@ -33,6 +33,8 @@ class Preview:
   for control in self.controls:control.setVisible(False)
   with _lock:_wanted.pop(self.token,None);_done.pop(self.token,None)
   self._key=None
+ def hide_source(self):
+  if self.available:self.source.setVisible(False)
  def render(self,portal,channel,event):
   global _thread
   if not self.available or not portal or not event or not channel:self.hide();return

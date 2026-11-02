@@ -179,7 +179,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         from programme_preview67 import Preview
         if not hasattr(self,'_preview67'):self._preview67=Preview(self,(1140,620,96,54))
         self._preview67.render(self.portal,self.rows[self.row]['channel'] if self.rows and self.mode=='grid' else None,event)
-        self._preview67.source.setVisible(False)
+        self._preview67.hide_source()
         self.getControl(103).setLabel((self.rows[self.row]['channel']['name']+' · ' if self.rows else '')+(time.strftime('%H:%M',time.localtime(event['start']))+' – '+time.strftime('%H:%M',time.localtime(event['stop']))+' · '+event['title']) if event else tr(33110))
 
     def _step(self,direction):
@@ -450,7 +450,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         if now-self._last_refresh<2:return
         self._last_refresh=now
         if hasattr(self,'_preview67') and self.mode=='grid':
-            self._preview67.render(self.portal,self.rows[self.row]['channel'] if self.rows else None,self._selected());self._preview67.source.setVisible(False)
+            self._preview67.render(self.portal,self.rows[self.row]['channel'] if self.rows else None,self._selected());self._preview67.hide_source()
         from media_art import revision as art_revision
         value=art_revision()
         if value!=self._art_revision:self._art_revision=value;self._refresh_logos()

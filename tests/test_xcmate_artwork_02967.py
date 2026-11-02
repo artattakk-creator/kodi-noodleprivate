@@ -83,3 +83,7 @@ class Artwork67(Fixture,unittest.TestCase):
   self.assertEqual(ATTRIBUTION,'This product uses the TMDB API but is not endorsed or certified by TMDB.')
   xml=(ADDON/'resources/skins/Default/720p/XCMateCredits67.xml').read_text()
   self.assertIn('tmdb60/tmdb.png',xml)
+ def test_preview_keeps_older_strict_window_models_safe_when_dynamic_controls_absent(self):
+  from programme_preview67 import Preview
+  preview=Preview(object(),(0,0,160,90));preview.hide_source();preview.render(None,None,None)
+  self.assertFalse(preview.available)
