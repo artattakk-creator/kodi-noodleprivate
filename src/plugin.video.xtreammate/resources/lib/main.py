@@ -704,13 +704,13 @@ class Router:
             notify('XCMate', 'Startsender ist nicht im aktivierten lokalen Katalog verfügbar.')
             return None
         emit(timing,'START_SID_RESOLVED',ready=1)
-        url = xc.live_stream_url(sid, 'ts')
+        url = xc.live_stream_url(sid, __import__('live_format67').extension())
         if not url:
             notify('XCMate', 'Die Startsender-Adresse konnte nicht ermittelt werden.')
             return None
         title = channel.get('name') or 'Startsender'
         item = build_playable_item(url, title=title,
-                                   logo=channel.get('stream_icon', ''))
+                                   logo=channel.get('stream_icon', ''),live67=True)
         return p, sid, title, item
 
     def _play_start(self):
@@ -2250,7 +2250,7 @@ class Router:
             xbmcplugin.setResolvedUrl(self._handle, False, xbmcgui.ListItem())
             return
         from player import play_stream
-        play_stream(self._handle, url, title=name, logo=logo,live_session=session)
+        play_stream(self._handle, url, title=name, logo=logo,live_session=session,live67=True)
 
     def _play_vod(self):
         p   = self._portal()

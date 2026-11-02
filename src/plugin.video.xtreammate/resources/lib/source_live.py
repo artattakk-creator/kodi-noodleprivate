@@ -57,7 +57,7 @@ def play(router,portal,direct=False):
     try:
         url,headers=for_portal(portal).play_uri('live',record['sid'])
         session=announce(portal['id'],record['sid'],record['name'])
-        item=build_playable_item(url,title=record['name'],logo='',headers=headers)
+        item=build_playable_item(url,title=record['name'],logo='',headers=headers,live67=True)
         if not tag_live_item(item,session): raise RuntimeError('Kodi live identity unavailable')
         if direct:
             from app_routes import _end
@@ -138,7 +138,7 @@ class SourceNavigator(LiveNavigator):
                     uri,headers=link;sid=str(channel.extra['stream_id'])
                     # Base _tune retains established switching, tagging and input
                     # behavior. Pass the prepared URL including Kodi headers.
-                    prepared=build_playable_item(uri,title=channel.name,logo='',headers=headers)
+                    prepared=build_playable_item(uri,title=channel.name,logo='',headers=headers,live67=True)
                     channel.url=prepared.getPath()
                     super()._tune(channel)
         super().tick()

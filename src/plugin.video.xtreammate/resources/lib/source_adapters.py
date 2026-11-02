@@ -198,7 +198,7 @@ class Adapter:
 
     def play_uri(self,kind,sid):
         if self.portal['type']=='xtream':
-            return (self.provider.live_stream_url(sid,'ts') if kind=='live' else self.provider.vod_stream_url(sid,'mkv')),{}
+            return (self.provider.live_stream_url(sid,__import__('live_format67').extension()) if kind=='live' else self.provider.vod_stream_url(sid,'mkv')),{}
         row=self._record(kind,sid)
         if self.portal['type']=='m3u': return row['url'],{}
         cmd=str(row.get('cmd') or '')

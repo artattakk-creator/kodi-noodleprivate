@@ -234,8 +234,56 @@ for attempt in range(30):
   if max(abs(a-b) for a,b in zip(rgb.getpixel((500,400)),(40,120,160)))<=6:break
  except (OSError,UnidentifiedImageError):pass
 else:raise RuntimeError('ART66_DETAIL_TEXTURE_NOT_RENDERED')
+check64(window66.getControl(130).isVisible(),'ART67_DETAIL_LOGO_NOT_VISIBLE')
 Path('/root/detail66.png').write_bytes(raw)
 window66.close();home.setFocusId(2510);xbmc.sleep(500)
 result66=json.loads(Path('/root/media66-base.json').read_text())
 result66.update(foreign66=foreign66,tv_artwork66=dict(source=art66['source'],scope=art66['scope'],same_event=True,local_file=True,home_pixels='PASS',detail_pixels='PASS'),android='NOT_TESTED')
+
+# .67 addition: the exact shared Guide/Mini preview renderer with actual
+# cached event data and native ControlImage, without a substitute HTTP image.
+from programme_preview67 import Preview
+from programme_events46 import load as load67
+event67=load67(dict(id='fixture59'),dict(sid='2',name='NITRO fixture',epg_channel_id='xml2'))
+preview67=Preview(home,(1240,50,480,270))
+try:
+ for attempt67 in range(60):
+  preview67.render(dict(id='fixture59'),dict(sid='2',name='NITRO fixture',epg_channel_id='xml2'),event67)
+  xbmc.sleep(100)
+  if not preview67.image.isVisible() or not preview67.logo.isVisible():continue
+  capture67=Path('/root/preview67-last.png');xbmc.executebuiltin('TakeScreenshot('+str(capture67)+')',wait=False);xbmc.sleep(350)
+  try:
+   with Image.open(capture67) as frame67:
+    frame67.load();pixel67=frame67.convert('RGB').getpixel((1260,70))
+   if max(abs(a-b) for a,b in zip(pixel67,(40,120,160)))<=6:break
+  except (OSError,UnidentifiedImageError):pass
+ else:raise RuntimeError('PREVIEW67_LOCAL_TEXTURE_OR_OFFICIAL_LOGO_NOT_VISIBLE')
+ Path('/root/preview67.png').write_bytes(capture67.read_bytes())
+ preview67.hide()
+ check64(not preview67.logo.isVisible() and not preview67.image.isVisible(),'PREVIEW67_HIDE')
+ result66['preview67']=dict(renderer='production shared Guide/Mini Preview',same_event=event67['key']==art66['key'],local_pixels='PASS',native_tmdb_logo='VISIBLE',hide='PASS',android='NOT_TESTED',scope='native renderer on Home; Guide/Mini remote navigation remains Android NOT_TESTED')
+ check64(result66['preview67']['same_event'],'PREVIEW67_IDENTITY')
+finally:
+ preview67.hide();home.removeControls(list(preview67.controls))
+
+
+# Credits must show the unchanged official logo as native pixels, not just text.
+from credits67 import Credits
+credits67=Credits('XCMateCredits67.xml',xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('path'),'Default','720p')
+credits67.text='Synthetic attribution verification';credits67.show()
+try:
+ for attempt67 in range(30):
+  xbmc.sleep(200)
+  if not credits67.getControl(130).isVisible():continue
+  capture67=Path('/root/credits67-last.png');xbmc.executebuiltin('TakeScreenshot('+str(capture67)+')',wait=False);xbmc.sleep(350)
+  try:
+   with Image.open(capture67) as frame67:
+    colorful67=sum(1 for r,g,b in frame67.convert('RGB').crop((84,120,324,216)).getdata() if r<120 and g>120 and b>60)
+   if colorful67>100:break
+  except (OSError,UnidentifiedImageError):pass
+ else:raise RuntimeError('CREDITS67_OFFICIAL_LOGO_NOT_RENDERED')
+ Path('/root/credits67.png').write_bytes(capture67.read_bytes())
+ result66['credits67']=dict(native_logo='VISIBLE',pixels='PASS',android='NOT_TESTED')
+finally:credits67.close()
+
 Path('/root/media66.json').write_text(json.dumps(result66))

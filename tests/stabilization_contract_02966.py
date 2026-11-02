@@ -13,6 +13,8 @@ def data66():
   for path,digest in json.loads(file.read_text()).get('source_sha256',{}).items():hashes.setdefault(path,set()).add(digest)
  return hooks,hashes
 def without_stabilization66(source,module):
+ from stabilization_contract_02967 import without_stabilization67
+ source=without_stabilization67(source,module)
  binary=isinstance(source,bytes);raw=source if binary else source.encode()
  hooks,hashes=data66();paths=[p for p in hooks if p==str(module) or p.endswith('/'+str(module).removesuffix('.py')+'.py')]
  assert len(paths)<=1,module

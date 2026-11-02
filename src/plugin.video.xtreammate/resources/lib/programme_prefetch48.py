@@ -35,7 +35,9 @@ def prepare(portal,rows,cancel=lambda:False):
         records=[]
         revision=next((info.get('snapshot_revision') for info in infos.values()),None)
         from programme_refresh63 import active as explicit63
-        allow_lookup=refreshed(portal['id'],revision) or explicit63(portal['id'])
+        from utils import setting_bool
+        opted67=setting_bool('programme_tmdb46',False) and setting_bool('tmdb_research43',False) or setting_bool('programme_tvmaze67',False)
+        allow_lookup=refreshed(portal['id'],revision) or explicit63(portal['id']) or opted67
         for row in batch:
             if cancel():return False
             event=from_info(portal,row,infos.get(str(row['sid']),{}))

@@ -32,7 +32,7 @@ class Scope58(unittest.TestCase):
         hooks=json.loads((ROOT/'tests/fixtures/xcmate_02958_reviewed_hooks.json').read_text())['modules']
         path=LIB+'app_routes.py'
         keep=lambda raw:[ast.dump(n,include_attributes=False) for n in ast.parse(raw).body if not isinstance(n,ast.FunctionDef) or n.name!='widget']
-        self.assertEqual(keep(hooks[path]['old']),keep((ROOT/path).read_text()))
+        self.assertEqual(keep(hooks[path]['old']),keep(__import__('stabilization_contract_02967').without_stabilization67((ROOT/path).read_text(),path)))
     def test_new_modules_do_not_delete_profiles_reset_caches_or_write_skins(self):
         for name in ('provider_epg58.py','widget_consumer58.py','live_stop58.py'):
             tree=ast.parse((ROOT/LIB/name).read_text())

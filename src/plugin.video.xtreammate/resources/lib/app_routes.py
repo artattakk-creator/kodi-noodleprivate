@@ -212,6 +212,8 @@ def dispatch(router):
         _end(router)
         if action=='about_xcmate':
             text='XCMate '+xbmcaddon.Addon().getAddonInfo('version')+tr(32465)
+            from credits67 import show as credits67
+            credits67(text);return
         elif action=='recording_capabilities':
             from capture_ui import report
             text=report()

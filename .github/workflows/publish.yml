@@ -29,6 +29,34 @@ concurrency:
   group: gs-kodi-${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
+  kodi-live67-playback:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check synthetic native playback harness syntax
+        run: python -m compileall -q tools/kodi_live67_host tools/run_kodi_live67_contract.py
+      - name: Install synthetic media generator
+        run: |
+          if ! command -v ffmpeg >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg
+          fi
+      - name: Decode TS, HLS and automatic live streams through native Kodi
+        run: python tools/run_kodi_live67_contract.py --report-dir kodi-live67-evidence
+      - name: Upload isolated playback evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kodi21-live67-playback-${{ github.sha }}
+          path: |
+            kodi-live67-evidence/live.json
+            kodi-live67-evidence/build.log
+          if-no-files-found: error
+          retention-days: 14
   kodi-helper57-transport:
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -37,15 +65,24 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Check .66 source syntax and cumulative regression contracts
+      - name: Check .67 source syntax and cumulative regression contracts
         run: |
           python -m pip install 'Pillow>=11,<13' 'impacket==0.13.0' 'simpleeval==0.9.13'
           python -m compileall -q src tools/kodi_home64_host tools/run_kodi_home64_contract.py tools/kodi_home66_host tools/run_kodi_home66_contract.py tools/build_bingie66_review.py
+          python -m unittest discover -s tests -p '*02967.py' -v
           python -m unittest discover -s tests -p '*02966.py' -v
           python -m unittest discover -s tests -p '*02965.py' -v
           python -m unittest discover -s tests -p '*02964.py' -v
           python -m unittest discover -s tests -p '*02963.py' -v
           python -m unittest discover -s tests -p 'test_xcmate_home_02955.py' -v
+      - name: Recheck affected legacy live models, source isolation and frozen routes
+        run: |
+          python - <<'PY'
+          import sys,unittest
+          sys.path[:0]=['tests','src/plugin.video.xtreammate/resources/lib']
+          result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromNames(["test_xcmate_028_ui","test_xcmate_kodi21_overlay","test_xcmate_continuous_live_037_042","test_xcmate_mini_02941","test_xcmate_mini_flicker_02943","test_xcmate_navigation_02944","test_xcmate_live_return_02947","test_xcmate_p0_playback","test_xcmate_universal_sources_043","test_xcmate_widget_master_02946","test_xcmate_widget_pipeline_02947","test_xcmate_widgets_02941","test_xcmate_viewport_02936","test_xcmate_scope_02958","test_xcmate_scope_02959","test_xtreammate_persistence"]))
+          if not result.wasSuccessful():raise SystemExit(1)
+          PY
       - name: Verify native .66 mixed third-party poster music focus and shared TV artwork
         run: python tools/run_kodi_home66_contract.py --report-dir kodi-home66-evidence
       - name: Verify historic affected wizard, metadata, remote and frozen-search contracts
@@ -120,8 +157,52 @@ jobs:
             kodi-home64-evidence/build.log
           if-no-files-found: error
           retention-days: 14
+  xcmate67-host-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install host test dependencies
+        run: python -m pip install 'Pillow>=11,<13' 'impacket==0.13.0' 'simpleeval==0.9.13'
+      - name: Bootstrap pinned XtreamMate GPL source
+        run: python tools/bootstrap_xtreammate.py
+      - name: Apply XtreamMate 0.1.1 fix
+        run: python tools/apply_xtreammate_upgrade.py
+      - name: Apply XtreamMate 0.1.2 remote and startup functions
+        run: python tools/apply_xtreammate_012.py
+      - name: Apply XtreamMate 0.1.5 TV navigation, EPG, metadata and widgets
+        run: python tools/apply_xtreammate_015.py
+      - name: Build all Kodi addon packages and index
+        run: python tools/build_repository.py
+      - name: Verify canonical XCMate source ZIP and regular Kodi index
+        run: python tools/verify_xcmate67_package.py
+      - name: Validate Kodi gettext languages
+        run: python tools/validate_kodi_po.py
+      - name: Validate pinned navigation icons and license
+        run: python tools/build_xcmate_nav_icons.py --check
+      - name: Check Python syntax
+        run: python -m compileall -q src
+      - name: Run Noodle Private regression tests
+        run: |
+          set -o pipefail
+          for f in tests/test_addon.py tests/test_site.py tests/test_providers.py; do
+            sed -i "s@'..', 'plugin.video.noodleprivate'@'..', 'src', 'plugin.video.noodleprivate'@g" "$f"
+          done
+          python -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/xcmate67-test-results.log"
+      - name: Upload exact-commit complete host test log
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcmate67-host-${{ github.sha }}
+          path: ${{ runner.temp }}/xcmate67-test-results.log
+          if-no-files-found: error
+          retention-days: 14
   publish:
-    needs: kodi-helper57-transport
+    needs: [kodi-helper57-transport, kodi-live67-playback, xcmate67-host-regression]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -143,20 +224,18 @@ jobs:
       - name: Build all Kodi addon packages and index
         run: python tools/build_repository.py
       - name: Verify canonical XCMate source ZIP and regular Kodi index
-        run: python tools/verify_xcmate66_package.py
+        run: python tools/verify_xcmate67_package.py
       - name: Validate Kodi gettext languages
         run: python tools/validate_kodi_po.py
       - name: Validate pinned navigation icons and license
         run: python tools/build_xcmate_nav_icons.py --check
       - name: Check Python syntax
         run: python -m compileall -q src
-      - name: Run Noodle Private regression tests
-        run: |
-          set -o pipefail
-          for f in tests/test_addon.py tests/test_site.py tests/test_providers.py; do
-            sed -i "s@'..', 'plugin.video.noodleprivate'@'..', 'src', 'plugin.video.noodleprivate'@g" "$f"
-          done
-          python -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/xcmate66-test-results.log"
+      - name: Read complete host test log from this exact workflow commit
+        uses: actions/download-artifact@v4
+        with:
+          name: xcmate67-host-${{ github.sha }}
+          path: ${{ runner.temp }}
       - name: Prepare XCMate pull request test package
         id: xcmate_package
         if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
@@ -213,7 +292,7 @@ jobs:
               for node in manifest.findall('.//assets/*'):
                   if node.tag in ('icon', 'fanart', 'screenshot'):
                       assert 'plugin.video.xtreammate/' + node.text in archive.namelist(), node.text
-          testlog = Path(os.environ['RUNNER_TEMP']) / 'xcmate66-test-results.log'
+          testlog = Path(os.environ['RUNNER_TEMP']) / 'xcmate67-test-results.log'
           log = testlog.read_text()
           match = re.search(r'Ran (\d+) tests? in ([0-9.]+)s', log)
           assert match and '\nOK' in log and '\nFAILED' not in log

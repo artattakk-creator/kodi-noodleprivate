@@ -846,7 +846,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self._previous_session=session_from_property(xbmcgui.Window(10000).getProperty(SESSION_KEY))
         session=announce(self.portal['id'], sid, channel.name)
         self._switch('hidden')
-        item = build_playable_item(channel.url, title=channel.name, logo=channel.logo)
+        item = build_playable_item(channel.url, title=channel.name, logo=channel.logo,live67=True)
         from live_recovery import tag_live_item
         trace('session','ITEM_TAGGED' if tag_live_item(item,session) else 'ITEM_TAG_UNAVAILABLE',marker=True)
         xbmc.Player().play(item.getPath(), item)

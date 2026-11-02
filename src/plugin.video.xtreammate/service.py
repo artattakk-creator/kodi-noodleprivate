@@ -47,6 +47,8 @@ class IPTVMasterService(xbmc.Monitor):
         self._epg_worker = None
         self._stopped_since = None
         info('XCMate service started')
+        try:self._live_errors67=__import__('live_feedback67').monitor()
+        except (TypeError,AttributeError,RuntimeError):self._live_errors67=None
         self._overlay = None
         self._last_session_nonce = ''
         self._last_command_nonce = ''
@@ -159,6 +161,7 @@ class IPTVMasterService(xbmc.Monitor):
                 diagnostic('service','RUNNING',running=True,count=loops,build=SERVICE_BUILD)
             from exit_jobs import poll as poll_stop_jobs,blocked as stop_blocked
             poll_stop_jobs()
+            __import__('live_feedback67').poll()
             from live_stop58 import observe as observe_stop58
             from exit_jobs import state as stop_state58
             observe_stop58(stop_state58())

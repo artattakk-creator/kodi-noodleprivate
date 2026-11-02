@@ -79,6 +79,11 @@ def resolve_guide(cache, epg_id='', stream_id='', now=None, client=None, mapping
         if not result['events']: result['reason'] = 'MANUAL_ID_MISSING'
         return result
     result = guide_for_channel(cache, epg_id, sid, now)
+    # A nonempty but expired/future SID alias must not mask a valid NOW
+    # at this same channel's provider ID. Explicit mappings returned above.
+    if not result['now'] and epg_id and str(epg_id)!=sid:
+        provider67=guide_for_channel(cache,str(epg_id),now=now)
+        if provider67['now']:result=provider67
     result['mapping'] = 'STREAM_ALIAS' if result['epg_id'] == sid and sid else 'PROVIDER_ID'
     if not result['now'] and client is not None and sid:
         short = cached_short_guide(client, sid, now)

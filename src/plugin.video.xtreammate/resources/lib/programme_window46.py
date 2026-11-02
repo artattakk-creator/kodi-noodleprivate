@@ -50,6 +50,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
  def onInit(self):
   self._gui()
   if self._ready:return
+  self.getControl(130).setVisible(False)
   self._shown=True;self._ready=True;self.getControl(501).setLabel(tr(36101));self.getControl(101).setLabel(tr(36100))
   from menu_icons45 import icon
   self.getControl(881).setImage(icon('back',full=True));self.setFocusId(501)

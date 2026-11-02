@@ -126,7 +126,7 @@ def remember(pid,channel,info,mappings=None,expected_revision=None):
     except (ImportError,AttributeError,RuntimeError,ValueError,TypeError):pass
 
 
-def get(pid,sid,now=None,mappings=None):
+def get(pid,sid,now=None,mappings=None,_previous_guide67=False):
     ts=time.time() if now is None else now
     key=identity(pid,sid)
     def result(code,value=None):
@@ -147,7 +147,7 @@ def get(pid,sid,now=None,mappings=None):
         if record.get('version')!=1 or record.get('key')!=key:return result('EPG_CACHE_UNAVAILABLE')
         if record.get('revision')!=revision(pid):return result('EPG_CACHE_STALE')
         tag=window.getProperty(meta_key(pid))
-        if tag and record.get('guide_tag')!=tag:return result('EPG_CACHE_STALE')
+        if tag and record.get('guide_tag')!=tag and not _previous_guide67:return result('EPG_CACHE_STALE')
         if mappings is not None and record.get('binding')!=selector(mappings,sid):return result('EPG_MAPPING_MISSING')
         # Record freshness uses the real publication clock. The requested
         # EPG moment may be a fixed batch timestamp or a rollover probe.

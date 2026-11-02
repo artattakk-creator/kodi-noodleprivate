@@ -35,6 +35,7 @@
     <setting id="programme_catalog57" type="bool" label="36541" default="true"/>
     <setting id="tmdb_test60" type="action" label="36600" action="RunPlugin(plugin://plugin.video.xtreammate/?action=native_options45&amp;group=tmdb_test60)" />
     <setting id="tmdb_token_revision61" type="text" label="36620" default="" visible="false"/>
+    <setting id="programme_tvmaze67" type="bool" label="36721" default="false"/>
     <setting id="programme_tmdb46" type="bool" label="36110" default="false"/>
     <setting id="programme_image_hosts55" type="text" label="36530" default=""/>
     <setting id="epg_sources_manager" type="action" label="XCMate: EPG-Quellen und Senderzuordnung" action="RunPlugin(plugin://plugin.video.xtreammate/?action=epg_sources)" />
@@ -57,6 +58,7 @@
     <setting id="user_agent" type="text" label="32223" default="Mozilla/5.0 (Linux; Android 11; TV) AppleWebKit/537.36" />
     <setting id="http_timeout" type="slider" label="32224" default="15" range="5,1,60" />
     <setting id="max_retries" type="slider" label="32225" default="3" range="0,1,10" />
+    <setting id="live_stream_format67" type="enum" label="36722" values="Standard (TS)|MPEG-TS|HLS" default="0"/>
     <setting id="use_inputstream_hls" type="bool" label="32226" default="true" />
     <setting id="use_inputstream_dash" type="bool" label="32227" default="true" />
     <setting id="stream_quality" type="enum" label="32228" values="32229" default="0" />

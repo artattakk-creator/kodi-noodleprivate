@@ -4804,3 +4804,19 @@ msgstr "Zurück"
 msgctxt "#36710"
 msgid "Status is unavailable. Existing data remains unchanged."
 msgstr "Status derzeit nicht verfügbar. Bestehende Daten bleiben erhalten."
+
+msgctxt "#36720"
+msgid "Check live stream without playback"
+msgstr "Live-Stream prüfen (ohne Wiedergabe)"
+
+msgctxt "#36721"
+msgid "Optional TVmaze programme artwork fallback"
+msgstr "Optionaler TVmaze-Fallback für Sendungsbilder"
+
+msgctxt "#36722"
+msgid "Xtream live format (explicit choice, no automatic retries)"
+msgstr "Xtream-Live-Format (bewusste Auswahl, keine automatischen Retries)"
+
+msgctxt "#36723"
+msgid "Default (TS)|MPEG-TS|HLS"
+msgstr "Standard (TS)|MPEG-TS|HLS"

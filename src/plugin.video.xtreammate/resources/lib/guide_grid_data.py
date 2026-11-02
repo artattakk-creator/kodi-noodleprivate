@@ -21,6 +21,9 @@ def page(portal,offset,origin,category=None,client=None,mappings48=None):
     mappings=configuration(portal['id']).get('mappings',{}) if mappings48 is None else mappings48;result=[]
     from local_epg import window,channel_keys
     snapshot=window(portal['id'],channels,mappings,origin,origin+SPAN,limit=101)
+    if snapshot is None:
+        from epg_fallback67 import window as fallback67
+        snapshot=fallback67(portal['id'],channels,mappings,origin,origin+SPAN,101)
     state='OK' if snapshot is not None else 'NOT_CREATED'
     for channel in channels:
         sid,ids=channel_keys(channel,mappings);manual=mappings.get(sid)

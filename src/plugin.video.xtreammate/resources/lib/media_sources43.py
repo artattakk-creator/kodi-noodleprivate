@@ -16,12 +16,12 @@ class SourceError(Exception):
     def __init__(self,code):self.code=code;super().__init__(code)
 
 
-def get(url,*,api=False,token='',cancel=lambda:False,transport=None):
+def get(url,*,api=False,token='',cancel=lambda:False,transport=None,json_list67=False):
     from artwork_visible import syntactic
     from download_redirect import addresses,_connect
     if not syntactic(url):raise SourceError('UNSAFE_SOURCE')
     p=urlsplit(url)
-    if api and (p.scheme!='https' or p.port not in (None,443) or p.hostname not in ('api.themoviedb.org','commons.wikimedia.org')):
+    if api and (p.scheme!='https' or p.port not in (None,443) or p.hostname not in ('api.themoviedb.org','commons.wikimedia.org','api.tvmaze.com')):
         raise SourceError('UNSAFE_SOURCE')
     if cancel():raise SourceError('CANCELLED')
     deadline=time.monotonic()+12
@@ -66,7 +66,7 @@ def get(url,*,api=False,token='',cancel=lambda:False,transport=None):
         if api:
             try:value=json.loads(data)
             except (ValueError,RecursionError):raise SourceError('INVALID_JSON') from None
-            if not isinstance(value,dict):raise SourceError('INVALID_JSON')
+            if not isinstance(value,dict) and not (json_list67 and isinstance(value,list)):raise SourceError('INVALID_JSON')
             return value
         validate_image(data);return data
     except SourceError:raise

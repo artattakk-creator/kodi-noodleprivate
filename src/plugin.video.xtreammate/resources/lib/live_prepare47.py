@@ -29,7 +29,7 @@ def model(portal,client,categories,streams):
             continue
         cid=str(stream.get('category_id',''))
         channels.append(Channel(name=stream.get('name',''),
-            url=client.live_stream_url(stream['stream_id'],'ts'),logo=stream.get('stream_icon',''),
+            url=client.live_stream_url(stream['stream_id'],__import__('live_format67').extension()),logo=stream.get('stream_icon',''),
             group=str(names.get(cid,cid)),tvg_id=str(stream.get('epg_channel_id') or ''),
             extra={'category_id':cid,'stream_id':str(stream['stream_id'])}))
     enabled=enabled_ids(portal['id'],'live',groups)
