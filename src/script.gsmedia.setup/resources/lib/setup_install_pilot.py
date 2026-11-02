@@ -21,6 +21,15 @@ APPROVED_IDS = tuple(x[0] for x in APPROVED)
 JOURNAL_FILE = "install-pilot-030.json"
 JOURNAL_VERSION = 1
 MAX_JOURNAL = 8192
+PROTECTED_EXISTING = ("skin.titan.bingie.mod", "plugin.video.xvault",
+                      "plugin.video.cumination", "plugin.audio.m3sr2019")
+
+
+def protected_existing(inventory):
+    """Guard from accidental installation into an established BINGIE box."""
+    if not isinstance(inventory, dict) or inventory.get("code") != "READY":
+        return ("INVENTORY_UNKNOWN",)
+    return tuple(x for x in PROTECTED_EXISTING if x in inventory.get("addons", {}))
 
 
 def _version(value):
