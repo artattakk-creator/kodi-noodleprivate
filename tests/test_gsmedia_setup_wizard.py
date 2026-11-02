@@ -1,4 +1,4 @@
-"""Safe, offline GS Media Setup 0.2.2 tests; no Kodi runtime needed."""
+"""Safe, offline GS Media Setup 0.2.3 tests; no Kodi runtime needed."""
 import importlib
 import json
 from pathlib import Path
@@ -14,13 +14,14 @@ planner = importlib.import_module("setup_plan")
 inventory = importlib.import_module("setup_inventory")
 gate = importlib.import_module("setup_gate")
 layout = importlib.import_module("setup_layout")
+handoff = importlib.import_module("setup_handoff")
 
 
 class SetupPreflightTests(unittest.TestCase):
     def test_manifest_script_only(self):
         addon = ET.parse(ADDON / "addon.xml").getroot()
         self.assertEqual(addon.get("id"), "script.gsmedia.setup")
-        self.assertEqual(addon.get("version"), "0.2.2")
+        self.assertEqual(addon.get("version"), "0.2.3")
         self.assertIsNotNone(addon.find("./extension[@point='xbmc.python.script']"))
         self.assertIsNone(addon.find("./extension[@point='xbmc.service']"))
         self.assertEqual([e.get("addon") for e in addon.findall("./requires/import")], ["xbmc.python"])
@@ -110,6 +111,66 @@ class SetupPreflightTests(unittest.TestCase):
         self.assertTrue(any(title == "Disney Plus" and "with_watch_providers=337" in path for _menu,title,path,_ in widgets))
         self.assertTrue(any("m3sr2019" in path for _menu,title,path,_ in widgets))
 
+    def test_xcmate_first_three_widget_routes(self):
+        rows = layout.verify()["widgets"]
+        self.assertEqual(tuple(r[1] for r in rows[:3]),
+                         ("XCMate Live-TV", "XCMate Filme", "XCMate Serien"))
+        self.assertEqual(tuple(r[2] for r in rows[:3]),
+                         ("plugin://plugin.video.xtreammate/?action=widget_live_start_group",
+                          "plugin://plugin.video.xtreammate/?action=widget_recent_vod",
+                          "plugin://plugin.video.xtreammate/?action=widget_recent_series"))
+        self.assertEqual(layout.verify()["menu"][0]["label"], "Live-TV (XCMate)")
+
+    def _fixture_handoff(self):
+        inventory = {"code": "READY", "addons": {}}
+        for row in planner.plan_for("standard"):
+            if not row["builtin"]:
+                inventory["addons"][row["addon_id"]] = {
+                    "version": row["minimum"] or "999.0", "enabled": True,
+                }
+        marker = {
+            "origin": "GS_MEDIA_NEW_INSTALL",
+            "phase": "RESTART_PENDING",
+            "user_confirmed": True,
+            "stages": {x: True for x in handoff.REQUIRED_STAGES},
+            "before_restart_boot": "first-boot",
+            "wizard_launch_attempted": False,
+        }
+        return marker, inventory
+
+    def test_handoff_waits_for_restart_and_all_packages(self):
+        marker, inventory = self._fixture_handoff()
+        self.assertEqual(handoff.assess(marker, inventory, "first-boot")["code"],
+                         "WAIT_FOR_NEW_KODI_BOOT")
+        ready = handoff.assess(marker, inventory, "second-boot")
+        self.assertTrue(ready["launch_allowed"])
+        self.assertEqual(ready["target"], "plugin://plugin.video.xtreammate/?action=setup_wizard")
+        self.assertFalse(handoff.launch_contract()["autorun_implemented"])
+        self.assertTrue(handoff.launch_contract()["write_one_shot_attempt_before_launch"])
+
+    def test_handoff_blocks_missing_stage_and_missing_dependency(self):
+        marker, inventory = self._fixture_handoff()
+        marker["stages"]["bingie_widgets_applied"] = False
+        self.assertEqual(handoff.assess(marker, inventory, "second-boot")["code"],
+                         "MANDATORY_STAGE_MISSING")
+        marker["stages"]["bingie_widgets_applied"] = True
+        del inventory["addons"]["script.module.slyguy"]
+        result = handoff.assess(marker, inventory, "second-boot")
+        self.assertEqual(result["code"], "DEPENDENCY_NOT_READY")
+        self.assertIn("script.module.slyguy", result["unready_addons"])
+
+    def test_handoff_never_relaunches_on_existing_box(self):
+        marker, inventory = self._fixture_handoff()
+        self.assertEqual(handoff.assess(None, inventory, "second-boot")["code"],
+                         "NO_NEW_INSTALL_HANDOFF")
+        self.assertEqual(handoff.assess(marker, inventory, "second-boot", True)["code"],
+                         "ALREADY_CONFIGURED")
+        self.assertEqual(handoff.assess(marker, {"code": "UNKNOWN"}, "second-boot")["code"],
+                         "INVENTORY_UNAVAILABLE")
+        marker["wizard_launch_attempted"] = True
+        self.assertEqual(handoff.assess(marker, inventory, "second-boot")["code"],
+                         "ALREADY_ATTEMPTED")
+
     def test_inventory_reads_only_installed_state(self):
         def stub(arg):
             request = json.loads(arg)
@@ -149,7 +210,7 @@ class SetupPreflightTests(unittest.TestCase):
             planner.plan_for("../delete")
 
     def test_no_mutating_kodi_calls_or_userdata_access(self):
-        sources = [ADDON / "default.py", LIB / "setup_inventory.py", LIB / "setup_gate.py", LIB / "setup_plan.py", LIB / "setup_layout.py"]
+        sources = [ADDON / "default.py", LIB / "setup_inventory.py", LIB / "setup_gate.py", LIB / "setup_plan.py", LIB / "setup_layout.py", LIB / "setup_handoff.py"]
         for path in sources:
             value = path.read_text("utf-8")
             for bad in ("InstallAddon(", "UninstallAddon(", "EnableAddon(",
