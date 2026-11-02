@@ -87,3 +87,9 @@ class Artwork67(Fixture,unittest.TestCase):
   from programme_preview67 import Preview
   preview=Preview(object(),(0,0,160,90));preview.hide_source();preview.render(None,None,None)
   self.assertFalse(preview.available)
+ def test_python_controlled_tmdb_logo_has_no_permanently_false_xml_condition(self):
+  import xml.etree.ElementTree as E
+  from xcmate027_fixture import ADDON
+  for name in ('XCMateCredits67.xml','XCMateProgramme46.xml'):
+   logo=E.parse(ADDON/'resources/skins/Default/720p'/name).getroot().find(".//control[@id='130']")
+   self.assertIsNotNone(logo);self.assertIsNone(logo.find('visible'))
