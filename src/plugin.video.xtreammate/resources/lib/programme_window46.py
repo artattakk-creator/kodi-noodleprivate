@@ -100,13 +100,14 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
     request(self.event,priority=True)
    signature=(art.get('image'),art.get('code'),art.get('source'),art.get('match'))
    if signature!=self._art_signature:
-    self._art_signature=signature;self.getControl(110).setImage(art.get('image') or self.event['placeholder'])
+    self._art_signature=signature;self.getControl(110).setImage(art.get('image') if __import__('programme_image69').eligible(art,self.event) else '')
+    self.getControl(110).setVisible(__import__('programme_image69').eligible(art,self.event))
     from programme_flow48 import trace
     trace('GUI',self.event,'GUI_IMAGE_REQUESTED' if art.get('source')!='placeholder' else art.get('code','PENDING'))
     from programme_diagnostics59 import message
     self.getControl(104).setLabel(message(self.event,art))
     self.getControl(105).setText(str(art.get('attribution',''))[:500])
-    self.getControl(130).setVisible(str(art.get('source','')).startswith('tmdb'))
+    self.getControl(130).setVisible(__import__('programme_image69').eligible(art,self.event) and str(art.get('source','')).startswith('tmdb'))
    now=time.time();e=self.event;current=e.get('start',0)<=now<e.get('stop',0)
    self.getControl(120).setVisible(current);self.getControl(121).setVisible(current)
    if current:self.getControl(121).setWidth(max(1,int(536*(now-e['start'])/(e['stop']-e['start']))))

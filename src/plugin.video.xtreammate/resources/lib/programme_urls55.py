@@ -116,19 +116,24 @@ def probe(url,cancel=lambda:False):
         if response is not None:response.close()
 
 
-def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,local_image63=False):
+def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,local_image63=False,url_mode69=False):
     """Worker-only URL mode or explicit bounded materialization in the existing cache."""
     from programme_index46 import art,event as save_event
     from programme_art46 import fingerprint,remember
     from media_sources43 import SourceError
     from programme_sources57 import PROOFS,policy,attempts,trace as source_trace
     from helper_rpc57 import Error as HelperError
+    if url_mode69:
+        from programme_session69 import get as session69
+        prior69=session69(event)
+        if prior69:return prior69
     old=art(event)
     if old and not old.get('url_version55') and (local_image63 or old.get('source') in ('tmdb_movie','tmdb_episode','tmdb_series','tvmaze_series','tvmaze_episode')) and old.get('source')!='placeholder' and old.get('fingerprint')==fingerprint(event) and old.get('until',0)>time.time():
         from programme_art46 import indexed
         local60=indexed(event,verify=True)
         if local60:return local60
     current=display(event,old)
+    if url_mode69 and current and current.get('source')!='placeholder' and not current.get('url_verified69'):current=None
     from programme_refresh63 import retry as retry63
     from programme_refresh63 import retry67
     explicit63=allow_lookup and (retry63(event,old) or retry67(event,old))
@@ -195,7 +200,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         secrets=[str(portal.get(k) or '') for k in ('xc_user','xc_pass')]
         if any(secret and (secret in path.split('/') or len(secret)>=4 and secret in path) for secret in secrets):
             value['code']='BLOCKED_CREDENTIAL_URL';continue
-        if local_image63 or candidate.get('source') in ('tmdb_movie','tmdb_episode','tmdb_series'):
+        if local_image63 or not url_mode69 and candidate.get('source') in ('tmdb_movie','tmdb_episode','tmdb_series'):
             from programme_art46 import prepare as materialize60
             return materialize60(event,cancel=cancel,resolved60=dict(candidate,_local_only63=True) if local_image63 else candidate)
         try:(check or probe)(url,cancel=cancel)
@@ -208,11 +213,21 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         if candidate.get('remote_id') or candidate.get('provider_id'):value['provider_id']=candidate.get('remote_id') or candidate['provider_id']
         for field in ('image_scope57','helper_version57'):
             if candidate.get(field):value[field]=candidate[field]
+        if url_mode69:
+            from programme_requests68 import identity,scope
+            value.update(url_verified69=True,scope69=identity(event),profile69=scope())
         source_trace(event,'IMAGE_URL_VERIFIED')
         break
     if not candidates and not allow_lookup:value['code']='AWAITING_BACKGROUND_REFRESH'
     if cancel():return None
     if value.get('source')=='placeholder':value['negative_scope68']=negative68
+    if url_mode69:
+        from programme_session69 import remember as session_save69,persist as persist69
+        value=session_save69(event,value)
+        value=persist69(event,value)
+        session_save69(event,value,persisted=value.get('persisted69',False),update=True)
+        remember(event['key'],value,verified47=True)
+        return value
     # A transient network failure may never extend or bless an expired URL.
     save_event(event,write=True)
     saved=art(event,value)
@@ -244,9 +259,16 @@ def enqueue(event,allow_lookup=False,local_image63=False,priority68=False):
     if _stop.is_set() or not event.get('title'):return False
     with _lock:
         key=event['key']
+        from utils import setting_bool
+        if not local_image63 and not setting_bool('programme_art_local69',False):
+            from programme_session69 import get as session69
+            available69=session69(event)
+            if available69:
+                from programme_requests68 import completed
+                completed(event,available69);return False
         if key in _pending:
             if priority68 and key in _queue:
-                old=_queue[key];_queue[key]=(old[0],old[1] or allow_lookup,True,old[3])
+                old=_queue[key];_queue[key]=(old[0],old[1] or allow_lookup,old[2] or local_image63,old[3])
                 _urgent68.add(key)
             return False
         if len(_pending)>=24:
@@ -277,7 +299,12 @@ def _run():
                 pair=(background,_queue.pop(background)) if background is not None else _queue.popitem(last=False) if _queue else None
                 _burst68=0
             if pair:_urgent68.discard(pair[0])
-        if pair is None:_wake.wait(.5);_wake.clear();continue
+        if pair is None:
+            try:
+                from programme_session69 import flush
+                flush(_stop.is_set)
+            except Exception:pass
+            _wake.wait(.5);_wake.clear();continue
         key,job=pair;event,allow=job[:2];local63=len(job)>2 and job[2]
         try:
             try:
@@ -287,7 +314,7 @@ def _run():
                 if cancelled():continue
                 status(event,'RUNNING')
                 if local63:value=resolve(event,cancel=cancelled,allow_lookup=allow,local_image63=True)
-                else:value=resolve(event,cancel=cancelled,allow_lookup=allow)
+                else:value=resolve(event,cancel=cancelled,allow_lookup=allow,url_mode69=True)
                 if not cancelled():completed(event,value)
             except Exception:
                 try:status(event,'FETCH_FAILED')

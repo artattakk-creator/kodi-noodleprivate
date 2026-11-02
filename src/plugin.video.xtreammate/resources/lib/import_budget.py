@@ -5,10 +5,16 @@ import shutil
 RESERVE = 32 * 1024 * 1024
 
 
+class ReserveBlocked(OSError):
+    code69='SAFE_RESERVE_BLOCKED'
+    def __init__(self,free,reserve,upcoming):
+        self.free_bytes69=free;self.reserve_bytes69=reserve;self.upcoming_bytes69=upcoming
+        super().__init__(28,'Insufficient free space for safe import')
+
 def check_space(filename, upcoming=0):
     folder = os.path.dirname(os.path.abspath(filename))
     if shutil.disk_usage(folder).free < RESERVE + max(0, upcoming):
-        raise OSError(28, 'Insufficient free space for safe import')
+        raise ReserveBlocked(shutil.disk_usage(folder).free, RESERVE, max(0, upcoming))
 
 
 def safe_failure(exc):

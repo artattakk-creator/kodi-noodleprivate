@@ -9,7 +9,7 @@ PREFIX='XCMate.Programme68.'
 SLOTS=64
 MAX_BYTES=8192
 _FIELDS=('pid','sid','start','stop','title','canonical','revision','source_key46','fact_revision46','epg_source46')
-_ART=('key','fingerprint','code','source','match','image','thumbnail','sha256','attribution','image_scope57','until','failure_reason68','storage68')
+_ART=('key','fingerprint','code','source','match','image','thumbnail','sha256','attribution','image_scope57','until','failure_reason68','storage68','source_url','url_version55','url_verified69','scope69','profile69','persisted69','storage69','storage_code69')
 _lock=threading.Lock()
 _thread=None
 _stop=threading.Event()
@@ -54,7 +54,7 @@ def request(event,priority=False):
  except (ImportError,AttributeError,RuntimeError,ValueError,TypeError,KeyError,OverflowError):return False
 
 def trace(event,code):
- codes={'QUEUED','RUNNING','LOCAL_IMAGE_READY','IMAGE_READY','NOT_SCHEDULED','NO_MATCH','NO_ARTWORK','CACHE_MISS','CACHE_MISMATCH','DB_FULL','FETCH_FAILED','CANCELLED','HTTP_AUTH','HTTP_RATE_LIMIT','TIMEOUT','PROGRAMME_DB_UNAVAILABLE','CACHE_ERROR','CACHE_IO_ERROR','PROGRAMME_CACHE_BUDGET','TMDB_DISABLED','TMDB_TOKEN_MISSING','BLOCKED_IMAGE_HOST_OR_URL','NO_MATCH_AMBIGUOUS','HELPER_TIMEOUT','HELPER_BACKGROUND_UNAVAILABLE','NO_UNIQUE_MATCH','NO_IMAGE','NO_YEAR','NOT_CLASSIFIED_MOVIE','AWAITING_BACKGROUND_REFRESH','RESERVE_BLOCKED','DISK_FULL','BUDGET_FULL'}
+ codes={'QUEUED','RUNNING','LOCAL_IMAGE_READY','IMAGE_READY','NOT_SCHEDULED','NO_MATCH','NO_ARTWORK','CACHE_MISS','CACHE_MISMATCH','DB_FULL','FETCH_FAILED','CANCELLED','HTTP_AUTH','HTTP_RATE_LIMIT','TIMEOUT','PROGRAMME_DB_UNAVAILABLE','CACHE_ERROR','CACHE_IO_ERROR','PROGRAMME_CACHE_BUDGET','TMDB_DISABLED','TMDB_TOKEN_MISSING','BLOCKED_IMAGE_HOST_OR_URL','NO_MATCH_AMBIGUOUS','HELPER_TIMEOUT','HELPER_BACKGROUND_UNAVAILABLE','NO_UNIQUE_MATCH','NO_IMAGE','NO_YEAR','NOT_CLASSIFIED_MOVIE','AWAITING_BACKGROUND_REFRESH','RESERVE_BLOCKED','DISK_FULL','BUDGET_FULL','IMAGE_URL_READY_RAM','IMAGE_URL_READY','SAFE_RESERVE_BLOCKED','REAL_ENOSPC','SQLITE_FULL_POLICY','SQLITE_FULL_STORAGE','SQLITE_FULL_UNKNOWN','SQLITE_BUSY_LOCKED','SQLITE_IO','EPG_READ_TIMEOUT','IMAGE_LOOKUP_TIMEOUT'}
  fixed=code if code in codes else 'FETCH_FAILED'
  key=(identity(event),fixed);now=time.monotonic()
  with _lock:
@@ -73,7 +73,8 @@ def status(event,code,art=None):
   with _lock:tags+=list(_aliases.get(tags[0],()))
   payload={k:art[k] for k in _ART if art and k in art}
   for tag in set(tags):
-   value=dict(tag=tag,scope=scope(),at=time.time(),code=code,art=payload)
+   adjusted=dict(payload,scope69=tag) if payload.get('url_verified69') else dict(payload)
+   value=dict(tag=tag,scope=scope(),at=time.time(),code=code,art=adjusted)
    raw=json.dumps(value,separators=(',',':'),allow_nan=False)
    if len(raw.encode())<=MAX_BYTES:_window().setProperty(PREFIX+'status.'+str(int(tag[:8],16)%SLOTS),raw)
  except (ImportError,AttributeError,RuntimeError,ValueError,TypeError,KeyError):pass
@@ -86,8 +87,10 @@ def result(event,previous=None):
   art=value.get('art') or {}
   if art.get('code') in ('READY','READY_STALE') and art.get('source') not in (None,'','placeholder') and art.get('image'):
    if art.get('until',0)<=time.time():return dict(code='CACHE_MISMATCH',source='placeholder')
+   from programme_image69 import eligible
+   if not eligible(art,event):return dict(code='CACHE_MISMATCH',source='placeholder')
    return dict(art,status68=value['code'])
-  return dict(previous or {},**{k:art[k] for k in ('failure_reason68','storage68') if k in art},code=value['code'],status68=value['code'])
+  return dict(previous or {},**{k:art[k] for k in ('failure_reason68','storage68','until','storage69','storage_code69') if k in art},code=value['code'],status68=value['code'])
  except (ImportError,AttributeError,RuntimeError,ValueError,TypeError,KeyError):return previous or {}
 
 def completed(event,value):
@@ -95,7 +98,7 @@ def completed(event,value):
  code=value.get('code','FETCH_FAILED')
  if code in ('READY','READY_STALE') and value.get('source')!='placeholder':
   import os
-  code='LOCAL_IMAGE_READY' if os.path.isabs(value.get('image','')) and not value.get('url_version55') else 'IMAGE_READY'
+  code='LOCAL_IMAGE_READY' if os.path.isabs(value.get('image','')) and not value.get('url_version55') else 'IMAGE_URL_READY_RAM' if value.get('storage69')=='RAM_ONLY' else 'IMAGE_URL_READY'
  elif code=='PROGRAMME_DATA_BUDGET':code='DB_FULL'
  elif code=='DISK_FULL' and value.get('failure_reason68')=='RESERVE_BLOCKED':code='RESERVE_BLOCKED'
  status(event,code,value)
@@ -120,6 +123,11 @@ def drain(cancel=lambda:False):
    value=_read('request.'+str(slot));event=value.get('event')
    if not isinstance(event,dict) or value.get('scope')!=scope() or value.get('tag')!=identity(event):continue
    if not 0<=time.time()-float(value.get('at',0))<20:continue
+   previous69=_read('status.'+str(int(value['tag'][:8],16)%SLOTS))
+   if previous69.get('tag')==value['tag'] and previous69.get('scope')==scope():
+    artifact69=previous69.get('art') or {}
+    if artifact69.get('until',0)>time.time():continue
+    if previous69.get('code') in ('QUEUED','RUNNING') and 0<=time.time()-previous69.get('at',0)<60:continue
    portal=get_by_id(str(event.get('pid','')))
    if not portal or not portal.get('enabled',True) or not portal.get('include_live',True):continue
    # Token refresh/file access is deliberately in this worker, never focus.
@@ -155,7 +163,7 @@ def drain(cancel=lambda:False):
     status(current,'TMDB_LOOKUP_DISABLED')
     mark_seen(tag,policy,now)
     continue
-   accepted=enqueue(current,allow_lookup=allow,local_image63=True,priority68=bool(value.get('priority')))
+   accepted=enqueue(current,allow_lookup=allow,local_image63=setting_bool('programme_art_local69',False),priority68=bool(value.get('priority')))
    mark_seen(tag,policy,now if accepted else now-8)
    processed+=1
    if processed>=9:_cursor=(slot+1)%SLOTS;break

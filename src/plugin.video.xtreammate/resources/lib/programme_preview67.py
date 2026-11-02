@@ -2,7 +2,8 @@
 import os,threading,time,uuid
 _lock=threading.Lock();_wanted={};_done={};_wake=threading.Event();_thread=None
 def eligible(art):
- return bool(art and art.get('code') in ('READY','READY_STALE') and art.get('source') not in ('placeholder','') and isinstance(art.get('image'),str) and os.path.isabs(art['image']) and not art.get('url_version55'))
+ from programme_image69 import eligible as admit69
+ return admit69(art)
 def _work():
  import xbmc
  monitor=xbmc.Monitor()

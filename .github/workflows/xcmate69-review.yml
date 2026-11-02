@@ -1,0 +1,29 @@
+name: XCMate .69 focused review
+on:
+  pull_request:
+    branches: [main]
+    paths: ["src/**", "tests/**", "tools/**", ".github/workflows/xcmate69-review.yml"]
+permissions:
+  contents: read
+concurrency:
+  group: xcmate69-review-${{ github.head_ref }}
+  cancel-in-progress: true
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Read pinned .68 inventory
+        run: |
+          git fetch --no-tags --depth=1 origin cf62f5d554634acca5c2676c6af3d524747f8f40
+          python tools/inspect_xcmate69.py
+      - name: Install test dependencies
+        run: python -m pip install 'Pillow>=11,<13' 'impacket==0.13.0' 'simpleeval==0.9.13'
+      - name: Compile and run .69 regression cases
+        run: |
+          python -m compileall -q src tools
+          python -m unittest discover -s tests -p '*02969.py' -v

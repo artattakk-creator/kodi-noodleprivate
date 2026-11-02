@@ -56,7 +56,7 @@ def poll():
     if not labels:return  # Static native ListItem remains usable until the worker warms labels.
     apply(dict(props=props),dict(id=pid),dict(sid=sid),info,labels=labels)
     event_key=info.get('programme_key47','')
-    if art.get('profile63')==scope and art.get('key')==event_key and art.get('code') in ('READY','READY_STALE') and art.get('source')!='placeholder' and local_image(art.get('image','')):
+    if art.get('profile63')==scope and art.get('key')==event_key and art.get('code') in ('READY','READY_STALE') and art.get('source')!='placeholder' and __import__('programme_image69').eligible(art):
         props['XCMate.ProgrammeImage46']=props['XCMate.HeroImage63']=art['image'];props['XCMate.ProgrammeArtSource57']=props['XCMate.HeroArtSource63']=art.get('source','')
         if art.get('image_scope57')=='series_fallback' and props.get('XCMate.FallbackLabel63'):
             note63=props['XCMate.FallbackLabel63']

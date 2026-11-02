@@ -145,6 +145,7 @@ def _run():
             try:
                 refresh_local(cancelled)
                 mark('LOCAL',duration_ms=(time.monotonic()-started48)*1000)
+                next_prepare=time.monotonic()+30  # Finish + cooldown, never an already elapsed start deadline.
             except MemoryError:runtime.note_pressure()
             except Exception: pass
             if cancelled():break
