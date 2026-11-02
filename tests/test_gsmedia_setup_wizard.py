@@ -1,4 +1,4 @@
-"""Safe, offline GS Media Setup 0.2.0 tests; no Kodi runtime needed."""
+"""Safe, offline GS Media Setup 0.2.1 tests; no Kodi runtime needed."""
 import importlib
 import json
 from pathlib import Path
@@ -19,23 +19,25 @@ class SetupPreflightTests(unittest.TestCase):
     def test_manifest_script_only(self):
         addon = ET.parse(ADDON / "addon.xml").getroot()
         self.assertEqual(addon.get("id"), "script.gsmedia.setup")
-        self.assertEqual(addon.get("version"), "0.2.0")
+        self.assertEqual(addon.get("version"), "0.2.1")
         self.assertIsNotNone(addon.find("./extension[@point='xbmc.python.script']"))
         self.assertIsNone(addon.find("./extension[@point='xbmc.service']"))
         self.assertEqual([e.get("addon") for e in addon.findall("./requires/import")], ["xbmc.python"])
 
     def test_profiles_preserved(self):
-        self.assertEqual({x[0] for x in planner.profile_names()}, {"core", "media", "music", "all"})
+        self.assertEqual({x[0] for x in planner.profile_names()}, {"standard"})
 
     def test_core_contains_needed_bingie_dependencies(self):
-        ids = {r["addon_id"] for r in planner.plan_for("core")}
+        ids = {r["addon_id"] for r in planner.plan_for("standard")}
         self.assertTrue({"skin.titan.bingie.mod", "plugin.video.xtreammate",
                          "script.skinshortcuts", "script.module.simplejson",
                          "script.module.pil", "script.module.jurialmunkey"} <= ids)
-        self.assertNotIn("repository.slyguy", ids)
+        self.assertIn("repository.slyguy", ids)
+        self.assertIn("slyguy.trailers", ids)
+        self.assertIn("plugin.video.cumination", ids)
 
     def test_install_order_is_dependency_first(self):
-        rows = planner.plan_for("all")
+        rows = planner.plan_for("standard")
         ids = [r["addon_id"] for r in rows]
         self.assertEqual(len(ids), len(set(ids)))
         index = {name: i for i, name in enumerate(ids)}
@@ -45,9 +47,37 @@ class SetupPreflightTests(unittest.TestCase):
         self.assertLess(index["skin.titan.bingie.mod"], index["plugin.video.xtreammate"])
 
     def test_xcmate_pil_and_music_deps(self):
-        ids = {r["addon_id"] for r in planner.plan_for("music")}
+        ids = {r["addon_id"] for r in planner.plan_for("standard")}
         self.assertTrue({"script.module.pil", "script.module.xbmcswift2",
                          "script.module.xmltodict", "script.module.routing"} <= ids)
+
+    def test_all_nine_mandatory_apps_and_cumination_imports(self):
+        rows = planner.plan_for("standard")
+        ids = {r["addon_id"] for r in rows}
+        self.assertEqual(len(planner.MANDATORY), 9)
+        self.assertEqual({x["addon_id"] for x in rows if x["mandatory"]}, set(planner.MANDATORY))
+        self.assertTrue(set(planner.MANDATORY) <= ids)
+        for dep in ("script.module.six", "script.module.kodi-six",
+                    "script.module.resolveurl", "script.module.resolveurl.xxx",
+                    "script.common.plugin.cache", "script.module.websocket",
+                    "script.module.inputstreamhelper", "script.module.requests"):
+            self.assertIn(dep, ids)
+        for dep in ("slyguy.dependencies", "script.module.slyguy", "repository.slyguy"):
+            self.assertIn(dep, ids)
+        self.assertNotIn("repository.slyguy.youtube", ids)
+
+    def test_xvault_optional_imports_are_not_falsely_required(self):
+        rows = planner.plan_for("standard")
+        xvault = next(r for r in rows if r["addon_id"] == "plugin.video.xvault")
+        self.assertIn("script.module.download-m3u8", xvault["optional_imports"])
+        self.assertIn("script.module.pyqrcode", xvault["optional_imports"])
+        self.assertIn("script.module.pydevd", xvault["optional_imports"])
+        self.assertNotIn("script.module.pydevd", {r["addon_id"] for r in rows})
+
+    def test_extras_not_implicitly_installed(self):
+        ids = {r["addon_id"] for r in planner.plan_for("standard")}
+        for addon_id in planner.BACKUP_EXTRAS_FOR_REVIEW:
+            self.assertNotIn(addon_id, ids)
 
     def test_inventory_reads_only_installed_state(self):
         def stub(arg):
