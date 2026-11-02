@@ -59,7 +59,15 @@ def policy(portal,kind,offset=0):
     try:s=os.stat(os.path.join(addon_data_dir(),'xtreammate_groups.json'));stamp=[s.st_mtime_ns,s.st_size]
     except OSError:stamp=None
     values=[str(portal['id']),kind,portal.get('start_stream_id'),portal.get('start_group_id'),portal.get('include_'+kind,True),stamp,offset,setting_int('recent_keep',100)]
-    if kind=='live':values.append('FULL_GROUP46')
+    if kind=='live':
+        from epg_handoff63 import profile_scope
+        stamps68=[]
+        for filename68 in (path(),path()+'-wal'):
+            try:
+                stat68=os.stat(filename68);stamps68.append([stat68.st_ino,stat68.st_mtime_ns,stat68.st_size])
+            except OSError:stamps68.append(None)
+        identity68=[portal.get(k) for k in ('type','xc_host','xc_user','xc_pass','enabled')]
+        values.extend(['FULL_GROUP68',profile_scope(),hashlib.sha256(json.dumps(identity68).encode()).hexdigest(),stamps68])
     if kind=='vod':values.append('POINT_PAYLOAD47')  # Reject old empty/error-derived movie snapshots only.
     return hashlib.sha256(json.dumps(values,sort_keys=True).encode()).hexdigest()
 

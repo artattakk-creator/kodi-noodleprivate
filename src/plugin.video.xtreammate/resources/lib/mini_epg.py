@@ -37,7 +37,7 @@ class MiniProgramme:
             owner.addControls([highlight,stamp,title]);self.rows.append((highlight,stamp,title))
         from programme_preview67 import Preview
         self.preview67=Preview(owner,(int(w*.70),122,int(w*.27),int(w*.27*9/16)))
-        self._preview_channel67=None
+        self._preview_channel67=None;self._loading68=True
         self.column_width=width
         self.visible(False)
 
@@ -69,7 +69,8 @@ class MiniProgramme:
         info=owner._guide.get(sid);events,current=programme_rows(info.get('programme_events',info.get('events',[])))
         identity=lambda event:(event['start'],event['stop'])
         signature=(sid,tuple(identity(e) for e in events))
-        self._set(self.heading,'setLabel',channel.name if channel else tr(35611))
+        self._loading68=bool(info.get('loading68',False) or channel is None and not getattr(owner,'_catalog_ready',True))
+        self._set(self.heading,'setLabel',channel.name if channel else 'Senderliste wird geladen …' if self._loading68 else tr(35611))
         self._set(self.hint,'setLabel',tr(35830) if self.focused else tr(35610))
         previous=identity(self.events[self.selected]) if self.focused and self.selected<len(self.events) else None
         changed=sid!=self.sid
@@ -98,7 +99,7 @@ class MiniProgramme:
             active=bool(event and index==current)
             label=(('● '+tr(35612)+'  ' if active else '')+time_label(event,now)) if event else ''
             label='[COLOR FF55DD99]'+label+'[/COLOR]' if active else label
-            text=wrap_title(event['title'],self.column_width) if event else tr(35611) if not self.events and slot==0 else ''
+            text=wrap_title(event['title'],self.column_width) if event else ('EPG wird geladen …' if self._loading68 else tr(35611)) if not self.events and slot==0 else ''
             desired.append((highlight,stamp,title,focused,bool(event),label,text))
         # Disable every old/ineligible focus BEFORE showing the next focus.
         # This invariant holds after each individual Kodi setter, not just at

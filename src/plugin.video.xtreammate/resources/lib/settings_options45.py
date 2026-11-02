@@ -11,7 +11,7 @@ def definitions(group):
  target=dict((key,str(ident)) for ident,key in SECTIONS).get(group)
  root=ET.parse(os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources/settings.xml')).getroot()
  cat=next((c for c in root if c.get('label')==target),None)
- hidden={'tmdb_token_revision61','experimental_open45','active_portal_id','xcmate_ui_language','autoplay_diagnostics_safe','downloads_folder_enabled'}
+ hidden={'tmdb_token_revision61','experimental_open45','active_portal_id','xcmate_ui_language','autoplay_diagnostics_safe','downloads_folder_enabled','programme_tmdb46','tmdb_research43','programme_art_budget46','programme_helper57','programme_catalog57','programme_tvmaze67','programme_image_hosts55','programme_settings68'}
  return [dict(n.attrib) for n in cat if n.get('id') and n.get('type')!='lsep' and n.get('id') not in hidden] if cat is not None else []
 
 def show(router,group):
@@ -19,7 +19,7 @@ def show(router,group):
   from live_probe67 import launch
   launch(router);return
  if group=='tmdb_access61':
-  from tmdb_access61 import show as access
+  from programme_settings68 import show as access
   access();return
  if group=='tmdb_test60':
   from tmdb_connection60 import launch

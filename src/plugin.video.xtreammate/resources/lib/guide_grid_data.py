@@ -48,7 +48,20 @@ def page(portal,offset,origin,category=None,client=None,mappings48=None):
     # Original persistent artwork cache, queued from this viewport worker.
     # No remote texture ever reaches the GUI and no cache path is changed.
     from media_art import request
-    if mappings48 is None:request(channels)
+    if mappings48 is None:
+        request(channels)
+        from programme_events46 import describe
+        from programme_requests68 import request as request_event68
+        revision68=getattr(snapshot,'revision',None)
+        for item68 in result[:ROWS]:
+            for event68 in item68['events']:event68['revision68']=revision68
+            # One currently visible/first future event per row; a focused
+            # different event uses the same broker through Preview's worker.
+            raw68=next((v for v in item68['events'] if v['start']<=time.time()<v['stop']),
+                       next((v for v in item68['events'] if v['stop']>origin),None))
+            if raw68:
+                value68=describe(portal,item68['channel'],raw68,item68['epg_id'],revision68)
+                request_event68(value68,priority=True)
     from guide_publish44 import history_days
     from guide_store import path
     history=history_days(portal['id'],path()) if origin<__import__('guide_store').day_window(0)[0] else None

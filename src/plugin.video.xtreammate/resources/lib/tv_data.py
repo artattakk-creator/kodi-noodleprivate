@@ -101,7 +101,8 @@ class GuideSnapshot:
         if base is None:
             from epg_handoff63 import get
             base=get(self.portal['id'],str(sid),now=ts)
-        if base is None: return guide_for_channel({}, now=ts)
+        if base is None:
+            value=guide_for_channel({},now=ts);value['loading68']=True;return value
         if base.get('start',0) <= ts < base.get('stop',0):
             info = dict(base)
             info.update(elapsed=ts-info['start'], remaining=info['stop']-ts,
@@ -198,7 +199,8 @@ class GuideSnapshot:
                 prior63=warm63(self.portal['id'],sid,now=now,mappings=self._mappings,_previous_guide67=True)
                 if prior63 and prior63.get('now'):values[sid]=prior63
             if local is not None and getattr(local,'code','')!='RAM_LASTGOOD67':remember(self.portal['id'],c,values[sid],self._mappings,expected_revision=rev)
-            values[sid]['_published_at63']=time.time()
+            values[sid]['loading68']=local is None and not values[sid].get('now') and not values[sid].get('next')
+            if not values[sid].get('_published_at63'):values[sid]['_published_at63']=time.time()
             if not info['now'] and sid not in self._mappings: missing.append(c)
         with self._lock:
             if generation!=self._request_generation or serial!=self._refresh_serial:return  # Late old viewport cannot publish.

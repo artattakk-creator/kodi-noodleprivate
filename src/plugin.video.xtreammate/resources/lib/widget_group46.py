@@ -12,6 +12,12 @@ PAGE=64
 
 
 def pages(portal):
+    saved68=str(portal.get('start_group_id') or '')
+    if saved68:
+        from live_home62 import read as start_group68
+        selected68,_=start_group68(portal)
+        for offset68 in range(0,len(selected68),PAGE):yield selected68[offset68:offset68+PAGE]
+        return
     from widget_movie47 import MovieReader
     from library_index import path,initial_group,IndexReadError
     from widget_query44 import groups,get
