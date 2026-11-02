@@ -1,0 +1,74 @@
+name: Publish verified XCMate 0.1.29.70 to GS Media 1.8.1
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/publish-xcmate-02970-repository.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: gsmedia-xcmate-02970-publish
+  cancel-in-progress: false
+jobs:
+  release-02970:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install versioned renderer dependency
+        run: python -m pip install 'Pillow>=11,<13'
+      - name: Build repository and exact XCMate 0.1.29.70 source ZIP
+        run: python tools/build_repository.py
+      - name: Prove canonical ZIP identity, no private state, and unchanged catalogue scope
+        run: |
+          python tools/verify_xcmate70_package.py
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib, subprocess, zipfile, xml.etree.ElementTree as ET
+          version='0.1.29.70'
+          expected_sha='90b90042b02d8b0e27a7b7c014d993b1dfb6f7a0dae493bf6bf80b0f4eaee07f'
+          manifest=ET.parse('src/repository.gsmedia/addon.xml').getroot()
+          assert manifest.get('version')=='1.8.1', 'Repository must not update to 1.8.2'
+          current=ET.parse('src/plugin.video.xtreammate/addon.xml').getroot()
+          assert current.get('version')==version
+          path=Path('plugin.video.xtreammate')/('plugin.video.xtreammate-'+version+'.zip')
+          assert path.is_file()
+          assert path.stat().st_size==3302277, 'Unexpected archive length'
+          assert hashlib.sha256(path.read_bytes()).hexdigest()==expected_sha, 'Not the approved 2868-test RC'
+          assert expected_sha in path.with_name(path.name+'.sha256').read_text()
+          with zipfile.ZipFile(path) as z:
+              assert z.testzip() is None
+              assert len(z.namelist())==681
+              assert ET.fromstring(z.read('plugin.video.xtreammate/addon.xml')).get('version')==version
+          before=subprocess.run(['git','show','HEAD:addons.xml'],capture_output=True,check=True).stdout
+          old={a.get('id'):a.get('version') for a in ET.fromstring(before)}
+          new={a.get('id'):a.get('version') for a in ET.parse('addons.xml').getroot()}
+          assert set(old)==set(new)=={'plugin.video.noodleprivate','plugin.video.xtreammate','repository.gsmedia'}
+          assert old['plugin.video.xtreammate'] in ('0.1.29.69',version)
+          assert new['plugin.video.xtreammate']==version
+          for k in old:
+              if k!='plugin.video.xtreammate': assert old[k]==new[k],k
+          assert new['repository.gsmedia']=='1.8.1'
+          digest=hashlib.md5(Path('addons.xml').read_bytes()).hexdigest()
+          assert Path('addons.xml.md5').read_text().strip()==digest
+          print('XCMate .70 original release ZIP and Repository 1.8.1 index: PASS')
+          PY
+      - name: Publish exactly XCMate ZIP and Kodi repository metadata
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- addons.xml addons.xml.md5 plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.70.zip plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.70.zip.sha256
+          if git diff --cached --quiet; then
+            echo 'Repository already published'
+          else
+            git commit -m 'Publish XCMate 0.1.29.70 in GS Media Repository 1.8.1'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
