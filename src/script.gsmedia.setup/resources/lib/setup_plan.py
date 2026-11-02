@@ -102,7 +102,7 @@ OPTIONAL_DEPENDENCIES = {
 # These were present in the old backup, but the user has NOT made them
 # mandatory. Never auto-install from a historical directory alone.
 BACKUP_EXTRAS_FOR_REVIEW = (
-    "script.ezmaintenanceplus", "plugin.video.last_played",
+    "plugin.video.last_played",
     "script.globalsearch", "plugin.video.tvspielfilm_de",
     "plugin.video.stalkermod", "plugin.video.xship",
     "plugin.video.vavooto", "slyguy.pluto.tv.provider",
