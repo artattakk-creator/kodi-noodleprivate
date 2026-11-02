@@ -4,12 +4,12 @@
   <extension point="xbmc.python.script" library="default.py"/>
   <extension point="xbmc.service" library="service.py" start="startup"/>
   <extension point="xbmc.addon.metadata">
-    <summary lang="de_DE">GS Media Komplettinstaller: Geräte- und Abhängigkeitsprüfung mit freigegebenem Installationspiloten</summary>
-    <description lang="de_DE">Zeigt das Standardprofil mit neun Pflichtprogrammen, erkennt über Kodi JSON-RPC tatsächlich installierte und deaktivierte Add-ons, erstellt einen Abhängigkeitsplan und blockiert ungeprüfte Installationsquellen. Version 0.4.0 ist nur eine technische Vorprüfung: keine Installations- oder Änderungsaktionen.</description>
-    <summary lang="en_GB">GS Media Setup: safe install preflight</summary>
-    <description lang="en_GB">Read-only nine-app standard package, device inventory and dependency-first installation preflight. No installation or profile changes.</description>
-    <disclaimer lang="de_DE">Entwicklungsstand ohne Installation. Keine Änderungen an Kodi, Skin oder Benutzerdaten.</disclaimer>
+    <summary lang="de_DE">GS Media Installationsassistent für Kodi 21 – elf Pflicht-Add-ons und BINGIE</summary>
+    <description lang="de_DE">Geführter Installationskandidat für elf Pflichtprogramme und deren Abhängigkeiten. Nutzt Kodi-Repository-Installationen nach Zustimmung, gesichertes Fortschrittsjournal, BINGIE-2.2.3-Patch mit Original-Hashprüfung, Menüs/Widgets und TMDB-xVAULT-Player. Ungeprüfte Paketquellen und der automatische Abschluss bleiben bis zur echten Android-Abnahme gesperrt.</description>
+    <summary lang="en_GB">GS Media Setup: guided eleven-addon installation candidate</summary>
+    <description lang="en_GB">Guided 11-addon installation with Kodi repository prompts, private progress journal, pinned BINGIE patch and TMDB player configuration. Full auto-completion is blocked until package provenance and Android device testing pass.</description>
+    <disclaimer lang="de_DE">Entwicklungskandidat. Installationen und Skinänderungen erfolgen nur nach expliziter Zustimmung auf einer neuen Kodi-Box. Android-Abnahme fehlt; auf produktiven Boxen nicht ausführen.</disclaimer>
     <platform>all</platform>
-    <license>MIT</license>
+    <license>MIT (Wizard), GPL-2.0-only (bundled BINGIE source patch)</license>
   </extension>
 </addon>
