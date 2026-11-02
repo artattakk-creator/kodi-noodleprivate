@@ -7,6 +7,7 @@ No downloader, arbitrary ZIP, skin edits, or wizard autorun is implemented.
 """
 import json
 import os
+import tempfile
 from pathlib import Path
 
 # Verified as published in Kodi Omega or the GS Media 1.8.1 catalogue.
@@ -131,8 +132,15 @@ def load(profile):
         s = json.load(stream)
     if not isinstance(s, dict) or s.get("schema") != JOURNAL_VERSION:
         raise ValueError("Invalid journal")
+    if s.get("phase") not in ("ACTIVE", "PILOT_DONE"):
+        raise ValueError("Invalid journal phase")
     if not isinstance(s.get("attempted"), list) or not isinstance(s.get("completed"), list):
         raise ValueError("Invalid journal shape")
+    for key in ("attempted", "completed"):
+        if not set(s[key]).issubset(APPROVED_IDS):
+            raise ValueError("Journal contains unapproved package")
+    if s.get("pending") not in ("",) + APPROVED_IDS:
+        raise ValueError("Invalid pending package")
     return s
 
 
@@ -141,6 +149,8 @@ def save(profile, state):
     target = _safe_location(profile)
     if state.get("schema") != JOURNAL_VERSION:
         raise ValueError("Invalid journal schema")
+    if state.get("phase") not in ("ACTIVE", "PILOT_DONE"):
+        raise ValueError("Invalid journal phase")
     if target.is_symlink():
         raise ValueError("Symlink journal denied")
     if not set(state.get("attempted", ())).issubset(APPROVED_IDS):
@@ -153,9 +163,10 @@ def save(profile, state):
     if len(raw) > MAX_JOURNAL:
         raise ValueError("Journal too big")
     target.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
-    temp = target.with_name(JOURNAL_FILE + ".tmp." + str(os.getpid()))
+    fd, temp_name = tempfile.mkstemp(prefix=JOURNAL_FILE + ".tmp.", dir=str(target.parent))
+    temp = Path(temp_name)
     try:
-        with os.fdopen(os.open(str(temp), os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), "wb") as fh:
+        with os.fdopen(fd, "wb") as fh:
             fh.write(raw)
             fh.flush()
             os.fsync(fh.fileno())
