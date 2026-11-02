@@ -96,19 +96,19 @@ class SetupPreflightTests(unittest.TestCase):
     def test_failed_inventory_does_not_mark_missing(self):
         failed = inventory.collect(lambda _msg: '{"error":{"message":"not ready"}}')
         self.assertEqual(failed["code"], "UNKNOWN")
-        result = gate.inspect("core", failed)
+        result = gate.inspect("standard", failed)
         self.assertEqual(next(r for r in result["rows"] if r["addon_id"] == "skin.titan.bingie.mod")["state"], "INVENTORY_UNKNOWN")
 
     def test_missing_addons_blocked_and_installer_off(self):
         snap = inventory.collect(lambda _: '{"result":{"addons":[]}}')
-        report = gate.inspect("all", snap)
+        report = gate.inspect("standard", snap)
         self.assertFalse(report["installation_enabled"])
         self.assertGreater(report["blocking"], 0)
         self.assertEqual(next(r for r in report["rows"] if r["addon_id"] == "plugin.audio.m3sr2019")["source"], "BLOCKED_SOURCE_404")
 
     def test_disabled_skin_never_marked_ready(self):
         data = {"code": "READY", "addons": {"skin.titan.bingie.mod": {"version": "2.2.3", "enabled": False}}}
-        report = gate.inspect("core", data)
+        report = gate.inspect("standard", data)
         skin = next(x for x in report["rows"] if x["addon_id"] == "skin.titan.bingie.mod")
         self.assertEqual(skin["state"], "INSTALLED_DISABLED")
         self.assertTrue(skin["install_blocked"])
