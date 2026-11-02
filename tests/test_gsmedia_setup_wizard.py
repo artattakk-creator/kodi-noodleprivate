@@ -1,4 +1,4 @@
-"""Safe, offline GS Media Setup 0.3.0 tests; no Kodi runtime needed."""
+"""Safe, offline GS Media Setup 0.4.0 tests; no Kodi runtime needed."""
 import importlib
 import json
 from pathlib import Path
@@ -22,9 +22,9 @@ class SetupPreflightTests(unittest.TestCase):
     def test_manifest_script_only(self):
         addon = ET.parse(ADDON / "addon.xml").getroot()
         self.assertEqual(addon.get("id"), "script.gsmedia.setup")
-        self.assertEqual(addon.get("version"), "0.3.0")
+        self.assertEqual(addon.get("version"), "0.4.0")
         self.assertIsNotNone(addon.find("./extension[@point='xbmc.python.script']"))
-        self.assertIsNone(addon.find("./extension[@point='xbmc.service']"))
+        self.assertIsNotNone(addon.find("./extension[@point='xbmc.service']"))
         self.assertEqual([e.get("addon") for e in addon.findall("./requires/import")], ["xbmc.python"])
 
     def test_profiles_preserved(self):

@@ -1,10 +1,11 @@
-name: GS Media Setup 0.3.0 installer pilot
+name: GS Media Setup 0.4.0 installer pilot
 on:
   pull_request:
     paths:
       - 'src/script.gsmedia.setup/**'
       - 'tests/test_gsmedia_setup_wizard.py'
       - 'tests/test_gsmedia_setup_installer.py'
+      - 'tests/test_gsmedia_setup_full.py'
       - 'tools/build_gsmedia_setup.py'
       - '.github/workflows/gsmedia-setup-preflight.yml'
   push:
@@ -14,6 +15,7 @@ on:
       - 'src/script.gsmedia.setup/**'
       - 'tests/test_gsmedia_setup_wizard.py'
       - 'tests/test_gsmedia_setup_installer.py'
+      - 'tests/test_gsmedia_setup_full.py'
       - 'tools/build_gsmedia_setup.py'
       - '.github/workflows/gsmedia-setup-preflight.yml'
 jobs:
@@ -35,8 +37,8 @@ jobs:
       - name: Upload verified test artifact
         uses: actions/upload-artifact@v4
         with:
-          name: gsmedia-setup-0.3.0-pilot
+          name: gsmedia-setup-0.4.0-pilot
           path: |
-            .build/gsmedia-setup/script.gsmedia.setup-0.3.0.zip
-            .build/gsmedia-setup/script.gsmedia.setup-0.3.0.zip.sha256
+            .build/gsmedia-setup/script.gsmedia.setup-0.4.0.zip
+            .build/gsmedia-setup/script.gsmedia.setup-0.4.0.zip.sha256
           if-no-files-found: error
