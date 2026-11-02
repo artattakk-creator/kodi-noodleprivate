@@ -15,7 +15,7 @@ from pathlib import Path
 APPROVED = (
     ("script.cabertoss", "repository.xbmc.org", "1.0.2"),
     ("plugin.audio.shoutcast", "repository.xbmc.org", "2.5.2"),
-    ("plugin.video.xtreammate", "repository.gsmedia", "0.1.29.69"),
+    ("plugin.video.xtreammate", "repository.gsmedia", "0.1.29.70"),
 )
 APPROVED_IDS = tuple(x[0] for x in APPROVED)
 JOURNAL_FILE = "install-pilot-030.json"
