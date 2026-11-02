@@ -165,9 +165,12 @@ def advance(state, stage, inventory):
         if code != "ALL_APPS_PRESENT":
             raise ValueError("Mandatory apps still missing")
         s["phase"] = "bingie"
+        # Inventory proves that add-ons are present and enabled; it does NOT
+        # prove the full transitive manifests, trusted sources or ZIP hashes.
+        # These gates require separate evidence before any auto-handoff.
         s["steps"] = dict(s.get("steps", ()), all_mandatory_apps_enabled=True,
-                          all_dependencies_installed=True,
-                          repositories_verified=True, packages_verified=False)
+                          all_dependencies_installed=False,
+                          repositories_verified=False, packages_verified=False)
     elif stage == "bingie":
         if s.get("phase") != "bingie":
             raise ValueError("Wrong sequence")
@@ -199,6 +202,13 @@ def verify_complete(state, inventory, skin_ok, player_ok, packages_verified):
         return {"code": "PACKAGE_PROVENANCE_NOT_VERIFIED"}
     if state.get("steps", {}).get("bingie_patches_applied") is not True:
         return {"code": "BINGIE_PATCHES_UNVERIFIED"}
+    # Never accept a Boolean argument alone as proof that the other
+    # independent release/health gates were performed.
+    from setup_handoff import REQUIRED_STAGES
+    unverified = tuple(sorted(key for key in REQUIRED_STAGES
+                              if state.get("steps", {}).get(key) is not True))
+    if unverified:
+        return {"code": "MANDATORY_STAGES_UNVERIFIED", "stages": unverified}
     return {"code": "READY_FOR_RESTART"}
 
 
@@ -209,9 +219,57 @@ def _location(profile):
     return p / JOURNAL
 
 
+ALLOWED_PHASES = frozenset(("apps", "bingie", "tmdb_xvault",
+                            "verification", "restart_pending", "handoff_attempted"))
+ALLOWED_STEPS = frozenset(("repositories_verified", "packages_verified",
+                           "all_dependencies_installed",
+                           "all_mandatory_apps_enabled",
+                           "bingie_patches_applied", "bingie_menus_applied",
+                           "bingie_widgets_applied",
+                           "tmdb_xvault_default_player_configured",
+                           "postinstall_health_passed"))
+STATE_FIELDS = frozenset(("schema", "origin", "phase", "pending", "attempted",
+                           "success", "steps", "boot_pid", "confirmed",
+                           "setup_attempted"))
+
+
+def validate_state(data):
+    """Reject corrupt, forged and credential-bearing journals on load/save."""
+    if not isinstance(data, dict) or set(data) != STATE_FIELDS:
+        raise ValueError("Invalid journal keys")
+    if data.get("schema") != SCHEMA or data.get("origin") != "GS_MEDIA_NEW_INSTALL":
+        raise ValueError("Invalid journal identity")
+    if data.get("phase") not in ALLOWED_PHASES:
+        raise ValueError("Invalid journal phase")
+    if type(data.get("boot_pid")) is not int or data["boot_pid"] <= 0:
+        raise ValueError("Invalid boot marker")
+    if data.get("confirmed") is not True or type(data.get("setup_attempted")) is not bool:
+        raise ValueError("Invalid confirmation")
+    if data["phase"] == "restart_pending" and data["setup_attempted"]:
+        raise ValueError("Restart already attempted")
+    if data["phase"] == "handoff_attempted" and not data["setup_attempted"]:
+        raise ValueError("Missing one-shot marker")
+    allowed = {r["id"] for r in manifest()}
+    if data.get("pending") not in allowed | {""}:
+        raise ValueError("Invalid pending addon")
+    for name in ("attempted", "success"):
+        ids = data.get(name)
+        if (not isinstance(ids, list) or
+                any(not isinstance(value, str) for value in ids) or
+                len(ids) != len(set(ids)) or not set(ids).issubset(allowed)):
+            raise ValueError("Invalid journal addon list")
+    if data["pending"] and data["pending"] not in data["attempted"]:
+        raise ValueError("Untracked pending request")
+    steps = data.get("steps")
+    if (not isinstance(steps, dict) or
+            not set(steps).issubset(ALLOWED_STEPS) or
+            any(type(value) is not bool for value in steps.values())):
+        raise ValueError("Invalid journal stage evidence")
+    return data
+
+
 def save(profile, data):
-    if not isinstance(data, dict) or data.get("schema") != SCHEMA:
-        raise ValueError("Invalid state")
+    validate_state(data)
     raw = json.dumps(data, ensure_ascii=True, separators=(",", ":")).encode("utf-8")
     if len(raw) > 20000:
         raise ValueError("Journal exceeds size limit")
@@ -241,13 +299,4 @@ def load(profile):
         raise ValueError("Oversized journal")
     with path.open("r", encoding="utf-8") as stream:
         data = json.load(stream)
-    if not isinstance(data, dict) or data.get("schema") != SCHEMA:
-        raise ValueError("Invalid journal")
-    if data.get("origin") != "GS_MEDIA_NEW_INSTALL":
-        raise ValueError("Invalid origin")
-    if data.get("pending") not in ("",) + tuple(r["id"] for r in manifest()):
-        raise ValueError("Invalid pending ID")
-    for name in ("attempted", "success"):
-        if not isinstance(data.get(name), list) or not set(data[name]).issubset({r["id"] for r in manifest()}):
-            raise ValueError("Invalid journal contents")
-    return data
+    return validate_state(data)
