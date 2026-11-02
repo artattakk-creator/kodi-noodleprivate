@@ -126,6 +126,7 @@ jobs:
             kodi-home66-evidence/home.json
             kodi-home66-evidence/*.png
             kodi-home66-evidence/media66.json
+            kodi-home66-evidence/pipeline68.json
             kodi-home66-evidence/build.log
             kodi-helper57-evidence/transport.json
             kodi-helper57-evidence/build.log
@@ -293,6 +294,8 @@ jobs:
               for node in manifest.findall('.//assets/*'):
                   if node.tag in ('icon', 'fanart', 'screenshot'):
                       assert 'plugin.video.xtreammate/' + node.text in archive.namelist(), node.text
+          for document in Path('docs/XCMate').glob('*02968*.md'):
+              shutil.copyfile(document, output / document.name)
           testlog = Path(os.environ['RUNNER_TEMP']) / 'xcmate68-test-results.log'
           log = testlog.read_text()
           match = re.search(r'Ran (\d+) tests? in ([0-9.]+)s', log)

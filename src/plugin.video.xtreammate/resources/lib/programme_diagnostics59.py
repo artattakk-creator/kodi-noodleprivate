@@ -3,6 +3,7 @@ def message(event,art):
     if not event.get('title') or not event.get('start') or not event.get('stop'):
         return 'Keine Programmdaten: Anbieter-EPG laden und Senderzuordnung prüfen. Sender bleibt auswählbar.'
     code=art.get('code','PENDING')
+    if art.get('failure_reason68'):return str(art['failure_reason68'])+': '+str(art.get('storage68',{}))+' – keine Sicherheitsreserve automatisch verändert.'
     if art.get('code') in ('READY','READY_STALE') and art.get('source')!='placeholder' and art.get('image'):return str(art.get('status68','LOCAL_IMAGE_READY' if not art.get('url_version55') else 'IMAGE_READY'))+': Bildreferenz bereit; sichtbare Kodi-Texture separat prüfen. Quelle: '+str(art.get('source',''))
     return {
         'BLOCKED_IMAGE_HOST_OR_URL':'Bildadresse vorhanden, aber Host oder URL nicht freigegeben. Zulässige Bildquelle prüfen.',

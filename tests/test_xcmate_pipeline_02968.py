@@ -1,7 +1,7 @@
 """Visible-event producer, exact source isolation, UI and storage regressions."""
 import importlib,json,sqlite3,sys,time,types,unittest
 from unittest import mock
-from xcmate027_fixture import Fixture
+from xcmate027_fixture import Fixture,ADDON
 
 class Pipeline68(Fixture,unittest.TestCase):
  def setUp(self):
@@ -139,7 +139,7 @@ class Pipeline68(Fixture,unittest.TestCase):
 
  def test_detail_pump_reads_only_properties_and_completed_worker_result(self):
   from programme_window46 import ProgrammeWindow46
-  window=ProgrammeWindow46('XCMateProgramme46.xml',str(self.folder),'Default','720p')
+  window=ProgrammeWindow46('XCMateProgramme46.xml',str(ADDON),'Default','720p')
   window.configure(self.portal,dict(sid='1',name='Station'));window._ready=True
   window.event=dict(self.event(),key='event',channel='Station',placeholder='/synthetic/placeholder.png')
   with mock.patch('programme_art46.cached',side_effect=AssertionError('GUI_SQL_FILE')),mock.patch('sqlite3.connect',side_effect=AssertionError('GUI_SQL')),mock.patch('builtins.open',side_effect=AssertionError('GUI_FILE')),mock.patch('media_sources43.get',side_effect=AssertionError('GUI_HTTP')):

@@ -27,5 +27,11 @@ jobs:
         run: |
           python -m compileall -q src tests
           python -m unittest discover -s tests -p '*02968.py' -v
-      - name: Complete cumulative regression
-        run: python -m unittest discover -s tests -v
+      - name: Measure cold local EPG and warm RAM seed
+        run: python tools/benchmark_xcmate68.py xcmate68-host-evidence.json
+      - name: Upload timing evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcmate68-focused-${{ github.sha }}
+          path: xcmate68-host-evidence.json
+          if-no-files-found: error

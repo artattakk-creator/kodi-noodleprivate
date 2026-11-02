@@ -190,6 +190,9 @@ def prepare(event,cancel=lambda:False,fetch=None,match=None,resolved60=None):
  except OSError as error:
   from art_storage import ArtworkFailure
   value.update(code=error.code if isinstance(error,ArtworkFailure) else 'PROGRAMME_CACHE_BUDGET' if isinstance(error,CacheBudget) else 'CACHE_IO_ERROR',until=time.time()+900,budget46=limit())
+  if isinstance(error,ArtworkFailure):
+   value['failure_reason68']=error.reason if error.reason in ('BLOCKED_REAL_DISK','RESERVE_BLOCKED','BUDGET_FULL','CAPACITY_UNKNOWN') else 'STORAGE_UNAVAILABLE'
+   value['storage68']={k:error.storage[k] for k in ('free','total','reserve','budget') if isinstance(error.storage.get(k),(int,float))}
  if value.get('source')=='placeholder':
   from programme_policy68 import negative_scope
   value['negative_scope68']=negative_scope(event)

@@ -9,7 +9,7 @@ PREFIX='XCMate.Programme68.'
 SLOTS=64
 MAX_BYTES=8192
 _FIELDS=('pid','sid','start','stop','title','canonical','revision','source_key46','fact_revision46','epg_source46')
-_ART=('key','fingerprint','code','source','match','image','thumbnail','sha256','attribution','image_scope57','until')
+_ART=('key','fingerprint','code','source','match','image','thumbnail','sha256','attribution','image_scope57','until','failure_reason68','storage68')
 _lock=threading.Lock()
 _thread=None
 _stop=threading.Event()
@@ -54,7 +54,7 @@ def request(event,priority=False):
  except (ImportError,AttributeError,RuntimeError,ValueError,TypeError,KeyError,OverflowError):return False
 
 def trace(event,code):
- codes={'QUEUED','RUNNING','LOCAL_IMAGE_READY','IMAGE_READY','NOT_SCHEDULED','NO_MATCH','NO_ARTWORK','CACHE_MISS','CACHE_MISMATCH','DB_FULL','FETCH_FAILED','CANCELLED','HTTP_AUTH','HTTP_RATE_LIMIT','TIMEOUT','PROGRAMME_DB_UNAVAILABLE','CACHE_ERROR','CACHE_IO_ERROR','PROGRAMME_CACHE_BUDGET','TMDB_DISABLED','TMDB_TOKEN_MISSING','BLOCKED_IMAGE_HOST_OR_URL','NO_MATCH_AMBIGUOUS','HELPER_TIMEOUT','HELPER_BACKGROUND_UNAVAILABLE','NO_UNIQUE_MATCH','NO_IMAGE','NO_YEAR','NOT_CLASSIFIED_MOVIE','AWAITING_BACKGROUND_REFRESH'}
+ codes={'QUEUED','RUNNING','LOCAL_IMAGE_READY','IMAGE_READY','NOT_SCHEDULED','NO_MATCH','NO_ARTWORK','CACHE_MISS','CACHE_MISMATCH','DB_FULL','FETCH_FAILED','CANCELLED','HTTP_AUTH','HTTP_RATE_LIMIT','TIMEOUT','PROGRAMME_DB_UNAVAILABLE','CACHE_ERROR','CACHE_IO_ERROR','PROGRAMME_CACHE_BUDGET','TMDB_DISABLED','TMDB_TOKEN_MISSING','BLOCKED_IMAGE_HOST_OR_URL','NO_MATCH_AMBIGUOUS','HELPER_TIMEOUT','HELPER_BACKGROUND_UNAVAILABLE','NO_UNIQUE_MATCH','NO_IMAGE','NO_YEAR','NOT_CLASSIFIED_MOVIE','AWAITING_BACKGROUND_REFRESH','RESERVE_BLOCKED','DISK_FULL','BUDGET_FULL'}
  fixed=code if code in codes else 'FETCH_FAILED'
  key=(identity(event),fixed);now=time.monotonic()
  with _lock:
@@ -87,7 +87,7 @@ def result(event,previous=None):
   if art.get('code') in ('READY','READY_STALE') and art.get('source') not in (None,'','placeholder') and art.get('image'):
    if art.get('until',0)<=time.time():return dict(code='CACHE_MISMATCH',source='placeholder')
    return dict(art,status68=value['code'])
-  return dict(previous or {},code=value['code'],status68=value['code'])
+  return dict(previous or {},**{k:art[k] for k in ('failure_reason68','storage68') if k in art},code=value['code'],status68=value['code'])
  except (ImportError,AttributeError,RuntimeError,ValueError,TypeError,KeyError):return previous or {}
 
 def completed(event,value):
@@ -96,8 +96,14 @@ def completed(event,value):
  if code in ('READY','READY_STALE') and value.get('source')!='placeholder':
   import os
   code='LOCAL_IMAGE_READY' if os.path.isabs(value.get('image','')) and not value.get('url_version55') else 'IMAGE_READY'
- elif code in ('PROGRAMME_DATA_BUDGET','DISK_FULL','PROGRAMME_DB_UNAVAILABLE'):code='DB_FULL' if code!='PROGRAMME_DB_UNAVAILABLE' else code
+ elif code=='PROGRAMME_DATA_BUDGET':code='DB_FULL'
+ elif code=='DISK_FULL' and value.get('failure_reason68')=='RESERVE_BLOCKED':code='RESERVE_BLOCKED'
  status(event,code,value)
+
+def mark_seen(tag,policy,now):
+ with _lock:
+  _seen[(tag,policy)]=now
+  while len(_seen)>256:_seen.pop(next(iter(_seen)))
 
 def drain(cancel=lambda:False):
  """Worker-only bounded intake, fair cyclic slots and authoritative re-read."""
@@ -131,13 +137,13 @@ def drain(cancel=lambda:False):
     if close:close()
    if not channel:
     status(event,'CACHE_MISS')
-    with _lock:_seen[(tag,policy)]=now
+    mark_seen(tag,policy,now)
     continue
    current=load(portal,channel,event)
    # No cached-short fallback may override an explicit source/guide binding.
    if current.get('code')!='LOCAL_EVENT' or any(event.get(k) and event.get(k)!=current.get(k) for k in ('canonical','source_key46','fact_revision46')) or event.get('revision') is not None and json.dumps(event['revision'])!=json.dumps(current.get('revision')):
     status(event,'CACHE_MISMATCH')
-    with _lock:_seen[(tag,policy)]=now
+    mark_seen(tag,policy,now)
     continue
    with _lock:
     aliases=_aliases.setdefault(identity(current),set());aliases.add(tag)
@@ -147,13 +153,10 @@ def drain(cancel=lambda:False):
    allow=own or setting_bool('programme_tvmaze67',False) or setting_bool('programme_helper57',True) or setting_bool('programme_catalog57',True)
    if not allow and not current.get('xmltv_image') and not current.get('provider_image'):
     status(current,'TMDB_LOOKUP_DISABLED')
-    with _lock:_seen[(tag,policy)]=now
+    mark_seen(tag,policy,now)
     continue
    accepted=enqueue(current,allow_lookup=allow,local_image63=True,priority68=bool(value.get('priority')))
-   if accepted:
-    with _lock:
-     _seen[(tag,policy)]=now
-     while len(_seen)>256:_seen.pop(next(iter(_seen)))
+   mark_seen(tag,policy,now if accepted else now-8)
    processed+=1
    if processed>=9:_cursor=(slot+1)%SLOTS;break
   except Exception:

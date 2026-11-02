@@ -11,6 +11,16 @@ def inspect(guide=None):
  try:
   parent=os.path.dirname(filename)
   result['disk_free_bytes']=shutil.disk_usage(parent).free
+  from import_budget import RESERVE
+  result['programme_db_reserve_bytes']=RESERVE
+  from programme_art46 import root,limit
+  result['programme_image_budget_bytes']=limit()
+  try:
+   from art_storage import capacity,explain
+   cap=capacity(location=root())
+   result['artwork_capacity']={k:cap[k] for k in ('free','total','reserve','budget','external','storage_availability') if k in cap}
+   result['artwork_capacity']['reason']=explain(cap,3*1024*1024)
+  except (OSError,ValueError,RuntimeError):result['artwork_capacity']=dict(reason='UNCONFIRMED')
   for suffix,field in (('','db_bytes'),('-wal','wal_bytes')):
    try:result[field]=os.stat(filename+suffix,follow_symlinks=False).st_size
    except FileNotFoundError:pass
