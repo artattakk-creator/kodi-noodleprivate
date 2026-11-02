@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "target_repository": "1.8.2",
+  "base_repository": "1.8.1",
+  "device_target": "Kodi 21.3 Omega / Android ARM32",
+  "release_policy": "NO_PUBLISH_UNTIL_VERIFIED_ZIP_DEPENDENCIES_CI_AND_ANDROID",
+  "core": [
+    {
+      "id": "plugin.video.xtreammate",
+      "name": "XCMate",
+      "version": "0.1.29.66",
+      "status": "already_published",
+      "source_kind": "gsmedia_main",
+      "required": [
+        "xbmc.python",
+        "script.module.pil"
+      ],
+      "optional": [
+        "script.module.requests"
+      ],
+      "notes": "Playback/EPG P0 #307 open; 0.1.29.67 separate work"
+    },
+    {
+      "id": "plugin.video.xvault",
+      "name": "xVAULT",
+      "version": "2026.11.01.1",
+      "status": "upstream_confirmed_not_approved_for_mirroring",
+      "source_kind": "official_xvault_repo",
+      "official_repo": "https://xvault.repowork.de/",
+      "artifact": "https://raw.githubusercontent.com/mojomedia1812/xVAULT/main/docs/plugin.video.xvault/plugin.video.xvault-2026.11.01.1.zip",
+      "required": [
+        "xbmc.python",
+        "script.module.requests",
+        "script.module.six",
+        "script.module.pyaes",
+        "script.module.infotagger",
+        "script.module.resolveurl"
+      ],
+      "optional": [
+        "script.module.download-m3u8",
+        "script.module.pyqrcode",
+        "inputstream.adaptive",
+        "inputstream.ffmpegdirect",
+        "inputstream.rtmp",
+        "plugin.video.youtube",
+        "visualization.xvault"
+      ],
+      "notes": "Official author warns third-party mirrored ZIPs have no upstream support. Prefer official repo handoff; ResolveURL must be verified."
+    },
+    {
+      "id": "plugin.audio.m3sr2019",
+      "name": "MP3 Streams Echoed",
+      "version": "2026.1.0",
+      "status": "blocked_upstream_404",
+      "source_kind": "upstream_github",
+      "artifact": "https://raw.githubusercontent.com/Echo-Storm/MP3-Streams-2026-Kodi/master/plugin_audio_m3sr2019-2026.1.0.zip",
+      "required": [
+        "xbmc.python",
+        "script.module.beautifulsoup4",
+        "script.module.requests",
+        "script.module.routing"
+      ],
+      "optional": [],
+      "notes": "Repository upstream / ZIP returned 404; DO NOT create a fake ZIP, downgrade installed current 2026.1.0, or publish before verified source recovery."
+    },
+    {
+      "id": "plugin.audio.shoutcast",
+      "name": "SHOUTcast",
+      "version": "2.5.2+matrix.1",
+      "status": "official_kodi_source_found_not_packaged",
+      "source_kind": "official_kodi_omega_repo",
+      "artifact": "https://mirrors.kodi.tv/addons/omega/plugin.audio.shoutcast/plugin.audio.shoutcast-2.5.2+matrix.1.zip",
+      "required": [
+        "xbmc.python",
+        "script.module.xbmcswift2",
+        "script.module.xmltodict"
+      ],
+      "optional": [],
+      "notes": "Published Kodi repository provides SHOUTcast on Kodi 21; a GS Media copy needs checksum, immutable source and packaging review."
+    }
+  ],
+  "dependency_origins": {
+    "xbmc.python": "Kodi runtime built-in",
+    "script.module.pil": "official Kodi repository",
+    "script.module.requests": "official Kodi repository",
+    "script.module.six": "official Kodi repository",
+    "script.module.pyaes": "official Kodi repository",
+    "script.module.infotagger": "jurialmunkey original / compatible installed module",
+    "script.module.resolveurl": "official Gujal00 ResolveURL source (not in official Kodi repository)",
+    "script.module.beautifulsoup4": "official Kodi repository",
+    "script.module.routing": "official Kodi repository",
+    "script.module.xbmcswift2": "official Kodi repository",
+    "script.module.xmltodict": "official Kodi repository",
+    "script.module.download-m3u8": "chrisklietsch original source / optional",
+    "script.module.pyqrcode": "optional Kodi module",
+    "inputstream.adaptive": "Kodi 21 / Android ARM32 platform addon (optional)",
+    "inputstream.ffmpegdirect": "Kodi 21 / Android ARM32 platform addon (optional)",
+    "inputstream.rtmp": "Kodi platform addon (optional)",
+    "plugin.video.youtube": "optional external addon",
+    "visualization.xvault": "official xVAULT native ARM32 channel (optional)"
+  }
+}
