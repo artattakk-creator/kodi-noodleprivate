@@ -1,209 +1,109 @@
-# GS Media Setup 0.4.0 – Stand 02.11.2026 – nur Vorprüfung
+# GS Media Setup 0.4.0 – Integrationskandidat für ein frisches Kodi 21.3
 
-**Wichtig:** Development Draft PR #318 / Master #317 / keine installierende Funktion.
-Build basiert auf main XCMate .68; keine Änderungen am produktiven Repository.
+**Stand: 02.11.2026. Entwicklungsbranch / PR #320, nicht produktiv freigegeben.**
+Die Codebasis enthält den von `main` übernommenen XCMate-Stand **0.1.29.70**.
+Das separate GS Media Repository 1.8.2 und dieser Wizard liegen weiterhin im
+Draft. **Box A und ihre Einstellungen dürfen nicht verändert werden.**
 
-## Verbindliches GS-Media-Standardprofil
-Im Oktober-2026-Backup nachgewiesene Add-on-IDs, **alle elf zwingend**:
-1. skin.titan.bingie.mod (Backup 2.2.3; 13 direkte Imports)
-2. plugin.video.xtreammate (aktuell main .68; Hotfix .69 getrennt in #315)
-3. plugin.video.cumination (Backup 1.1.204; 8 direkte Imports)
-4. plugin.video.xvault (Backup 2026.10.20.1, 1 Pflicht-/12 optionale Manifestimports)
-5. plugin.video.themoviedb.helper (Backup 5.4.16; 7 Imports)
-6. slyguy.trailers (Backup 0.4.0, benötigt SlyGuy Common)
-7. plugin.video.youtube (im Backup eine SlyGuy-YouTube-Repository-Variante; Quelle vergleichen)
-8. plugin.audio.m3sr2019 (MP3 Streams Echoed 2026.1.0; 3 Module)
-9. plugin.audio.shoutcast (Kodi offizielles Paket; xbmcswift2/xmltodict)
+## Verbindliches Zielbild
 
-Alle elf gehören ins Standardprofil, nicht nur als Medien/Musik-Zusatzoption.
+Auf einer neu installierten Android-/Kodi-21.3-Box soll nach Installation des
+GS-Media-Repository-ZIPs ein einzelner geführter Wizard die vollständige
+Ersteinrichtung übernehmen. Kodi-eigene Sicherheits-, Fremdquellen- und
+Skinwechsel-Dialoge benötigen weiterhin ausdrückliche Benutzerfreigabe.
 
-## Tatsächlich aus den addon.xml-Dateien des entpackten Backups
-- **Cumination**: script.module.six, script.module.kodi-six, script.module.resolveurl >=5.0.00, script.module.resolveurl.xxx >=2.0.1, script.common.plugin.cache, script.module.websocket >=0.50.0, script.module.inputstreamhelper, script.module.requests.
-- **SlyGuy Trailers**: script.module.slyguy >=0.86.96; Common benötigt slyguy.dependencies >=0.0.30 und repository.slyguy >=0.0.9; slyguy.dependencies setzt repository.slyguy voraus.
-- **BINGIE**: 13 direkte Abhängigkeiten im setup_plan.py, darunter Skin Helper Service/Widgets/Backgrounds, TMDB Helper, YouTube und Skinshortcuts.
-- **TMDB Helper**: xbmc.python, requests, PIL, addon.signals, jurialmunkey, infotagger, beautifulsoup4.
-- **MP3 Echoed**: xbmc.python, beautifulsoup4, requests, routing.
-- **xVAULT**: laut gesichertem addon.xml nur xbmc.python *zwingend deklariert*; 12 weitere Module/Player sind **optional deklarierte Imports**, nicht pauschal installpflichtig. Für benutzte Funktionen kann eine Laufzeitprüfung nötig sein; ResolveURL wird bereits über Cumination verpflichtend.
-- **YouTube-Variante**: im Backup war ein Wrapper mit import auf repository.slyguy.youtube. Der offizielle Kodi-YouTube-Plugin-Stand kann andere Abhängigkeiten besitzen. Diese Paket-Variante nicht unbemerkt überschreiben.
-- **SHOUTcast**: laut offiziellem Kodi-/PR#312-Plan benötigt script.module.xbmcswift2 und script.module.xmltodict.
+**Alle elf Pflichtanwendungen** sind im Standardplan enthalten:
 
-**Die vollständige rekursive Dependency-Closure ist noch nicht für jedes Third-Party-Addon nachgewiesen.** Bei jedem Unknown oder unbestätigtem ZIP/SHA führt der Installer später FAIL-CLOSED aus.
+1. Titan BINGIE MOD (`skin.titan.bingie.mod`, vorläufig nur 2.2.3)
+2. XCMate (`plugin.video.xtreammate`, Mindestversion 0.1.29.70)
+3. Cumination (`plugin.video.cumination`)
+4. xVAULT (`plugin.video.xvault`)
+5. TMDB Helper (`plugin.video.themoviedb.helper`)
+6. SlyGuy Trailers (`slyguy.trailers`)
+7. YouTube (`plugin.video.youtube`, originale Variante bewusst prüfen)
+8. MP3 Streams Echoed (`plugin.audio.m3sr2019`, nicht altes MP3 Streams)
+9. SHOUTcast (`plugin.audio.shoutcast`)
+10. EZ Maintenance+ (`script.ezmaintenanceplus`; **keine automatische Reinigung**)
+11. Caber Toss (`script.cabertoss`)
 
-## Andere im Backup gefundene Add-ons – vorerst NICHT Pflicht
-EZ Maintenance+, Last Played, Global Search, TV Spielfilm, Stalker Mod,
-xShip, Vavoo, SlyGuy Pluto Provider, weitere Dritt-Repository-IDs.
-Sie sind eine Inventur, keine implizite Installationsfreigabe.
+Rekursive Abhängigkeiten, Original-Repositories, feste Paketversionen,
+Lizenzen und SHA256 müssen vor einer Freigabe vollständig geprüft werden.
+Eine installierte Add-on-ID allein belegt **keine** freigegebene Herkunft.
 
-## Version 0.4.0 kann
-- In Kodi ein Standardprofil mit allen elf Apps darstellen.
-- Über read-only JSONRPC den Bestand und deaktivierte Add-ons erkennen.
-- Bekannte Abhängigkeiten vor den konsumierenden Apps sortieren.
-- Pflichtprogramme im Report kennzeichnen und optionale xVAULT-Imports benennen.
-- Fehlende/veraltete/ungeprüfte Quellen sicher blockieren.
-- Ein testbares Kodi-ZIP samt SHA256 per GitHub Actions bauen.
+## Was der RC tatsächlich implementiert
 
-**Noch nicht implementiert**: Freigegebene Drittanbieter-ZIPs und deren Hash-/Lizenzliste, echte InstallAddon-Ausführung, automatische Skin-Patches, Kodi-Neustart/Resume und Android-Tests. Keine Downloads, Schreiboperationen, Profilveränderungen oder Auto-Installation.
+- Read-only Kodi-JSON-RPC-Inventur, geordneter Abhängigkeitsplan, einzelne
+  ausdrücklich bestätigte `InstallAddon`-Aufträge, Status erneut aus Kodi
+  auslesen, atomisches lokales Journal, Unterbrechung und manuelle Wiederholung.
+- Kein ungeprüfter automatischer Download von Drittanbieter-ZIPs; unbekannte
+  Quellen bleiben manuell und der Abschluss bleibt gesperrt.
+- BINGIE-2.2.3-Patch für exakt vier per SHA256 verglichene XML-Dateien,
+  ursprüngliche BINGIE-Lizenzangaben, privates Backup und Rollback bei Fehler.
+  **Vor** dem Skin-Patch prüft der Wizard jetzt auch, ob die vorhandenen
+  Skinshortcuts-Dateien konfliktfrei übernommen werden können.
+- Hauptmenü Live-TV/XCMate zuerst, darunter in Reihenfolge die drei Widgets
+  XCMate Live-TV, XCMate Filme, XCMate Serien; nachfolgend TMDB-, Provider-,
+  Musik- und sonstige Menüpunkte aus der historisch belegten Layoutvorlage.
+  Konfiguration nur bei frischer Installation, Skinshortcuts-v2-Schema.
+- Die Original-xVAULT-Playerdefinition wird für Filme **und** Serien in
+  TMDB Helper übernommen, ohne fremde oder vertauschte Player-Einstellungen
+  zu überschreiben.
+- Einmaliger XCMate-Wizard **erst nach** nachgewiesenem Komplettabschluss,
+  Kodi-Neustart und erneut verifizierter Installationsinventur.
+  Der Service speichert vor einem eventuellen RunPlugin den One-shot-Marker.
+- Journal-Validierung verweigert unzulässige Phasen, Fremd-IDs,
+  doppelte Installationsschritte, ungeprüfte Stage-Flags und zusätzliche
+  Felder (z. B. Zugangsdaten). Keine privaten Portale/Tokens in GitHub.
 
-Verbindlicher Folgeauftrag: #317, #315 sowie PR #312 und PR #318.
+## Was ausdrücklich NICHT als fertig gilt
 
+**Blocker A – Paketnachweise:** xVAULT, MP3 Streams Echoed und EZ Maintenance+
+sowie weitere externe Pakete brauchen originale, tatsächlich erreichbare
+Kodi-kompatible ZIPs, feste SHA256, Lizenz-/Quellfreigabe und einen geprüften
+Lieferweg. Das ZIP von GS Media darf nicht unerlaubt Drittanbieter rehosten.
+Bekannte Abhängigkeitslisten ersetzen keine vollständige transitive Prüfung.
 
-## Neues BINGIE-Layout: userbestätigter Entwicklungsauftrag
-Aus dem archivierten 21.10.2026-Backup wurden folgende Daten rekonstruiert:
-`skin.titan.bingie.mod-mainmenu.DATA.xml`,
-`skin.titan.bingie.mod.properties`, `settings.xml`.
-Dies belegt **historische** Menüs/Widgetverweise, nicht die gegenwärtige
-Konfiguration der produktiven Box A. Die Sicherung enthält teils
-Datei-Zeitstempel von Juni 2025.
+**Blocker B – BINGIE-Gerätetest:** Original-XML-Hashes des wirklich neu
+installierten Titan BINGIE MOD 2.2.3 prüfen; Skinshortcuts 2.x,
+Menüstruktur, Navigation, Fokusrahmen, XCMate-Live-Hero und alle drei Widgets
+visuell und funktional auf Android testen. BINGIE v3 niemals als v2 behandeln.
 
-**Zwingende zusätzliche Add-ons:**
-`script.ezmaintenanceplus` (Backup 2026.04.05.0; requests >=1.0.0)
-und `script.cabertoss` (offizielles Kodi-Omega-Repo; 1.0.2).
-EZ Maintenance darf niemals selbsttätig Cache, Datenbanken oder Kodi-Profil
-löschen. Caber Toss soll per Kodi-eigenen Addon eingerichtet werden, sein
-Zielordner z.B. SMB/USB ist pro Gerät auszuwählen (keine Pfade mit Geheimnissen
-aus altem Backup kopieren).
+**Blocker C – Medien- und Boot-Healthcheck:** Echtes xVAULT-Film- und
+Episoden-Playback, Provider/EPG/Artwork, Kodi-Neustart, einmaligen
+XCMate-Handoff, unterbrochenen Installationslauf und Wiederaufnahme prüfen.
+Dieser Test wurde auf der neuen Android-Box **noch nicht durchgeführt**.
 
-**Portable Vorschau in `setup_layout.py`:**
-Live-TV/XCMate, Filme, Serien, Netflix (Provider 8), Amazon Prime (9),
-Disney+ (337), Paramount+ (531), Apple TV (2), XXX/Cumination, Radio/
-SHOUTcast, MP3 Streams Echoed, xVAULT, Wartung und Caber Toss.
-TMDB Discover-Verknüpfungen aus deutschem `watch_region=DE`-Profil.
-Echte Backup-Widgetpfade: Im Kino, Diese Woche im Trend, Disney Plus,
-MP3 Streams Echoed Top World Albums (Musikroute muss aktuell geprüft werden).
-Weitere historische Widgets (TV Spielfilm etc.) nur bei installierter
-Zusatz-App und mit separater Zustimmung ergänzen.
+Daher hält `setup_full.py` die Herkunfts-, Abhängigkeits- und
+Health-Stufen ausdrücklich auf **unverifiziert**. Die
+Abschlussanzeige meldet keine erfolgreiche Vollinstallation, solange die
+Quellen- und Gerätetests fehlen. **Kein automatischer XCMate-Wizard.**
 
-**Noch NICHT angewendet:** Die BINGIE-Konfiguration wird aktuell ausschließlich
-als read-only Vorschau angezeigt. Vor Installation/Geräteabnahme müssen
-Skinshortcuts-Schema und existierende Userkonfiguration sicher migriert
-werden. Neue Geräte dürfen nach Zustimmung GS-Media-Standardlayout erhalten.
-Bestehende Geräte bekommen Diff/Backup/Merge statt ungefragtem Überschreiben.
-Die Live-EPG-Hero-Quelle wird erst mit XCMate-Hotfix #315 stabil verfügbar;
-keine erfundene Plugin-Route hinterlegen. Das Layout ist ohne echte
-TMDB-API-/Widget-/Fernbedienungsprüfung nicht als Android-PASS zu markieren.
+## Verbindliche Abnahme auf Testbox B
 
+1. Android-Box mit blankem Kodi 21.3 vorbereiten; Kodi-Profil sichern,
+   keine Bestandsdaten und keine alten Skinshortcuts importieren.
+2. GS Media Repository 1.8.2 RC und GS Media Setup 0.4.0 **nur aus dem
+   GitHub-Actions-Testartefakt von PR #320** testweise installieren.
+3. Read-only Inventur und Quellenübersicht zuerst prüfen.
+   Jeden Installationsauftrag/Repository-Dialog separat bestätigen.
+4. Beim ersten Test nur eindeutig freigegebene Originalquellen verwenden.
+   404, Paket-/Lizenz-/Hashabweichung und inkompatible Version müssen
+   nachvollziehbar blockieren, nicht übersprungen werden.
+5. Kodi-21.3-ARM32-Kernbetrieb, BINGIE-Patch + Sicherung, Live-TV-/Film-/
+   Serien-Widgets, xVAULT-Player und konkrete Wiedergabe abnehmen.
+6. Kodi-Neustart, Journal-Wiederaufnahme und One-shot-XCMate-Wizard nur
+   **nach** erfolgreicher vollständiger Provenienz- und Healthprüfung testen.
+7. Fehlgeschlagene Schritte dürfen weder Nutzerdaten zerstören noch
+   Installations-Erfolg fingieren. Testbericht mit PASS/FAIL/NOT_TESTED.
 
-## Verbindliche Vorgabe: BINGIE zuerst XCMate + drei XCMate-Homewidgets
-Die ersten drei Home-Widgets müssen lauten:
-1. XCMate Live-TV: `plugin://plugin.video.xtreammate/?action=widget_live_start_group`
-2. XCMate Filme: `plugin://plugin.video.xtreammate/?action=widget_recent_vod`
-3. XCMate Serien: `plugin://plugin.video.xtreammate/?action=widget_recent_series`
+## GitHub
 
-Beleg aus aktuellem XCMate-main: `widget_entry46.py`, `app_routes.py`
-und `setup_entry48.py`. Der erste Hauptmenüpunkt ist XCMate Live-TV.
-Der Live-TV-Hero muss aus #315 URL-only korrekt mit der gewählten Sendung
-versorgt werden; ohne echtes Artwork keinen generischen Platzhalter
-einblenden. Die ursprünglichen TMDB-, Musik- und Anbieterwidgets kommen
-erst nach den XCMate-Zeilen. Die Widget-Routen sind im Code geprüft, aber
-noch nicht in BINGIE auf Android gerendert.
+- Masteranforderungen: Issue #317
+- Vollinstaller-Integrationsbranch: PR #320 (Draft)
+- XCMate-EPG/Artwork-Integration: Issue #315, Release .70 über PR #319
+- Stand vor Integration: PR #318 (Pilot .3.0)
+- Provenienz- und Abhängigkeitsvorarbeiten: PR #312
 
-## Erst komplette GS-Media-Installation, dann Neustart und XCMate-Einrichtung
-Zwingende Reihenfolge für die künftige Installer-Implementierung:
-- Alle 11 Pflichtprogramme und deren echte rekursive Abhängigkeiten erfolgreich
-  installieren/aktivieren; Quellen/Versionen/ZIP-Hashes verifizieren.
-- BINGIE-MOD-Patches, Menüdefinitionen und sämtliche vorgesehenen Widgets
-  auf dem neuen Gerät erfolgreich übernehmen und nachprüfen.
-- Kodi-/Skin-Healthcheck vollständig bestanden; nur nach ausdrücklicher
-  Setup-Bestätigung und neuer frischer GS-Media-Installation.
-- Erst DANACH Abschlussmarker persistieren und Kodi kontrolliert neustarten.
-- Nach verifiziertem neuem Kodi-Boot **erneut** den Add-on-/Dependency-
-  Installationsstatus kontrollieren; bei Lücke, deaktivierten Add-ons oder
-  gescheitertem Skin-/Widget-Apply nichts automatisch öffnen.
-- Nur dann EINMAL `RunPlugin(plugin://plugin.video.xtreammate/?action=setup_wizard)`
-  über die vorhandene XCMate-Wizardroute auslösen. Die später zuständige
-  Kodi-Startkomponente muss den Handoff `attempted` *atomar vor* dem
-  RunPlugin-Aufruf setzen, um Boot-Loops zu vermeiden.
-- Bei abgebrochenem Wizard kein unendliches Autostart-Verhalten; Nutzer kann
-  die XCMate-Einrichtung manuell fortsetzen. Bereits eingerichtete Kodi-
-  Boxen niemals ungefragt in eine neue Ersteinrichtung schicken.
-
-`setup_handoff.py` modelliert die reine read-only Gate-Entscheidung mit
-Unit-Tests. **GS Media Setup 0.4.0 selbst ist weiterhin keine installierende
-oder automatisch startende Service-Komponente**; es schreibt noch keinen
-Handoff-Marker und startet XCMate beim Boot nicht tatsächlich. Erst beim
-vollständigen Installer mit Bestandsdatensicherung und Android-Test aktivieren.
-
-
-## TMDB Helper: xVAULT als voreingestellter Player (unverbindliche Preview)
-Im Google-Drive-Kodi-Backup vom 21.10.2026 liegen bereits `plugin.video.themoviedb.helper/players/xvault_stable.json` und die TMDB-Helper-Einstellungen `default_player_movies=xvault_stable.json play_movie` sowie `default_player_episodes=xvault_stable.json play_episode`. Die xVAULT-Quelle enthält ihr eigenes `resources/tmdbhelper/xvault.json`; das `tmdbhelper_integration.py` aus dem gesicherten xVAULT-Stand kopiert bei Bedarf nach `xvault_stable.json`. Der Kodi-xVAULT-Router unterstützt `action=playTMDbHelper` für Filme und Serien. **Nicht blind an Player-Konfiguration anderer Geräte arbeiten.** Der künftige Installer soll bei *frischer, bestätigter GS-Media-Komplettinstallation* nach Installation/Aktivierung von TMDB Helper und xVAULT die Playerdatei aus dem geprüften Original xVAULT-Paket bereitstellen/verifizieren und beide TMDB-Helper-Standardwerte setzen; dabei vorherige Werte sichern und nach der Konfiguration einen echten Film-/Serien-Playbacktest ausführen. Auf eingerichteten Bestandsboxen keinerlei ungefragte Änderungen. Danach erst Installationsabschluss markieren, Kodi neu starten und XCMate-Wizard einmalig öffnen. Solange auch nur einer der Player-Gates nicht bestätigt ist, kein Setup-Handoff. Die neue Datei `setup_tmdb_player.py` beschreibt diese Prüfung bisher ausschließlich **read-only** und schreibt keine TMDB-Helper-Einstellungen.
-
-
-## Pilotinstaller 0.4.0 – echtes, aber bewusst begrenztes Installieren
-`default.py` bietet den neuen Menüpunkt **Installationspilot: Kodi/GS Media
-(3 Pakete)**. Die Installation wird erst durch ausdrückliche Benutzerfreigabe
-gestartet und ist auf eine feste Allowlist eingeschränkt:
-- `script.cabertoss` >= 1.0.2 aus bereits vorhandenem `repository.xbmc.org`
-- `plugin.audio.shoutcast` >= 2.5.2 aus `repository.xbmc.org`
-- `plugin.video.xtreammate` >= 0.1.29.69 aus `repository.gsmedia`
-
-Die Original-Repositories müssen bereits installiert/aktiviert sein. Die
-beiden offiziellen Add-ons sind nachweislich im Kodi-21-(Omega)-Katalog; das
-XCMate-ZIP 0.1.29.69 steht derzeit im veröffentlichten GS-Media-Katalog.
-
-**Technischer Ablauf:** Kodi `InstallAddon(id)` ist asynchron. Je Aufruf
-maximal eine Installation auslösen. Nach Rückkehr in den Wizard muss die
-Kodi-Inventur die Add-on-ID **aktiv und in Mindestversion** bestätigen;
-erst dann wird sie im privaten, atomaren,
-`special://profile/addon_data/script.gsmedia.setup/install-pilot-030.json`
-Journal als erfolgreich erfasst. Keine parallelen Installationen, keine
-Endlos-Retries, keine ZIP-Downloads durch GS Media, kein Sideloading
-und keine automatische Aktivierung deaktivierter Add-ons. Gerätedaten,
-Portale und Tokens werden nie im Journal abgelegt. Der Anwender kann nach
-einer fehlgeschlagenen Installation ausdrücklich neu versuchen.
-
-**WICHTIGE GRENZE:** Dieses Pilotpaket stellt noch keinen vollständigen
-GS-Media-Kodi-Installer dar. Die acht weiteren Pflicht-Apps, alle fremden
-Repos/Module, BINGIE-Patches, Skinshortcuts-/Widgetmigration, TMDB Player-
-Einstellung, Neustart, Resume des Hauptinstallers und automatisch XCMate
-Setup können noch nicht als fertig gelten. Das erfolgreiche Ende des
-3er-Piloten löst ausdrücklich **keinen Kodi-Neustart und keinen XCMate-
-Ersteinrichtungs-Wizard** aus. Eine Android-Laufzeitabnahme steht noch aus.
-Eigene Installation zuerst NUR auf leerer Testbox B testen.
-
-**Bekannte Limitationen vor Kodi-Abnahme:** `InstallAddon` lässt Kodi aus
-den eingerichteten Repository-Quellen auswählen; der Pilot führt keinen
-kryptografischen Vergleich des tatsächlich installierten ZIPs und der
-Provenienz durch. Deshalb muss der Nutzer den angezeigten Quellhinweis
-kontrollieren, und der Pilot darf **nicht** als vollständig nach SHA256
-freigegebener Deploymentprozess bezeichnet werden. Unverifizierte weitere
-Repos, insbesondere Drittanbieter, sind nicht Teil der Allowlist.
-
-**Testablauf Box B:** Frisches Kodi 21.3 → GS-Media-Repo-1.8.1 installieren →
-das von CI erzeugte `script.gsmedia.setup-0.4.0.zip` unter
-Kodi Add-ons/aus ZIP installieren → GS Media Setup starten → Installations-
-und Inventaransicht prüfen → Pilotinstallation bestätigen → Kodi-Dialoge
-beachten → Setup erneut öffnen, um die nächste verifizierte Installation
-zu erlauben → nach drei Apps einen BLOCKIERTEN Vollsetup-Status erwarten.
-Prüfen, dass sich BINGIE, TMDB, EPG, Player und Nutzerprofile nicht ändern.
-
-
-## GS Media Komplettinstaller 0.4.0 – Entwicklungskandidat
-Neuer Menüpunkt **Komplettinstallation (11 Apps + BINGIE + TMDB)**.
-Der Wizard arbeitet alle elf Pflichtprogramme und bekannte Abhängigkeiten
-in einer gesicherten Reihenfolge ab. Kodi installiert Add-ons über die
-bereits eingerichteten Repositories. Externe Original-Repositories,
-MP3-Streams-Echoed- und EZ-Maintenance-ZIPs müssen zunächst über Kodi
-explizit hinzugefügt werden; fehlende Quellen blockieren die Installation.
-
-Der BINGIE-2.2.3-Integrator bündelt vier bestehende XCMate-.60-REVIEW-
-Quellpatchdateien mit vollständigem GPLv2-Lizenztext sowie den aus
-GitHub geprüften SHA256-Original-/Ziel-Hashes. Er patcht nur die exakten
-Originaldateien mit privatem Backup und Rollback. Kein Überschreiben
-veränderter Skin-Dateien. Die neue Skinshortcuts-Konfiguration basiert
-auf dem Nutzerbackup und wird nur für frische Profile mit
-script.skinshortcuts 2.x geschrieben. Drei XCMate-Widgets zuerst, danach
-TMDB-Anbieter, Musik und andere Links. Ein TMDB-Player-Integrator nimmt
-die vorhandene xVAULT-JSON-Playerdatei und stellt Film- und Episoden-
-Defaultplayer nur nach expliziter Zustimmung bei frischer Installation ein.
-
-**NICHT ALS KOMPLETT-FERTIG VERÖFFENTLICHEN:** Paket-ZIP-Provenienz und
-Hashprüfung sowie Android-Abnahme sind für die übrigen Fremdpakete offen.
-Darüber hinaus stammt der XCMate-BINGIE-Patch aus dem .60-Reviewstand und
-ist für .69 im echten BINGIE-Gerät noch nicht abgenommen. Die
-Abschlussprüfung gibt deshalb PACKAGE_PROVENANCE_NOT_VERIFIED aus;
-die vorbereitete service.py ruft den XCMate-Wizard nur nach einem
-künftig verifizierten Abschlussmarker nach Kodi-Neustart einmalig auf.
-Kein vollständiger Abschlussmarker wird in dieser Kandidatenversion erzeugt.
-
-Kodi 21.3 ARM32 Box B Test erforderlich; niemals Box A überschreiben.
-Draft PR #318, GitHub Masterauftrag #317.
+**Release-Regel:** Kein Merge des GS Media Setup nach `main`, keine
+Freigabe für produktive Kodi-Boxen und keine Behauptung einer vollständigen
+Ein-Klick-Installation ohne Paket-/Lizenz-/Hash- und reale Android-Abnahme.
