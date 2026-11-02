@@ -82,8 +82,12 @@ Quellen- und Gerätetests fehlen. **Kein automatischer XCMate-Wizard.**
 
 1. Android-Box mit blankem Kodi 21.3 vorbereiten; Kodi-Profil sichern,
    keine Bestandsdaten und keine alten Skinshortcuts importieren.
-2. GS Media Repository 1.8.2 RC und GS Media Setup 0.4.0 **nur aus dem
-   GitHub-Actions-Testartefakt von PR #320** testweise installieren.
+2. GS Media Repository 1.8.2 RC und Setup 0.4.0 ausschließlich aus
+   dem GitHub-Actions-Testartefakt von PR #320 testweise installieren.
+   **Achtung:** Das Repository-Manifest verweist weiterhin auf den
+   veröffentlichten `main`-Katalog (der derzeit noch 1.8.1 ist).
+   Daher den Setup-Wizard als separate ZIP aus dem RC-Artefakt installieren;
+   nicht annehmen, dass Repo 1.8.2 bereits als offizielles Update verfügbar ist.
 3. Read-only Inventur und Quellenübersicht zuerst prüfen.
    Jeden Installationsauftrag/Repository-Dialog separat bestätigen.
 4. Beim ersten Test nur eindeutig freigegebene Originalquellen verwenden.
