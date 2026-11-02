@@ -1,4 +1,4 @@
-# GS Media Setup 0.2.2 – Stand 02.11.2026 – nur Vorprüfung
+# GS Media Setup 0.2.3 – Stand 02.11.2026 – nur Vorprüfung
 
 **Wichtig:** Development Draft PR #318 / Master #317 / keine installierende Funktion.
 Build basiert auf main XCMate .68; keine Änderungen am produktiven Repository.
@@ -10,7 +10,7 @@ Im Oktober-2026-Backup nachgewiesene Add-on-IDs, **alle elf zwingend**:
 3. plugin.video.cumination (Backup 1.1.204; 8 direkte Imports)
 4. plugin.video.xvault (Backup 2026.10.20.1, 1 Pflicht-/12 optionale Manifestimports)
 5. plugin.video.themoviedb.helper (Backup 5.4.16; 7 Imports)
-6. slyguy.trailers (Backup 0.2.2, benötigt SlyGuy Common)
+6. slyguy.trailers (Backup 0.2.3, benötigt SlyGuy Common)
 7. plugin.video.youtube (im Backup eine SlyGuy-YouTube-Repository-Variante; Quelle vergleichen)
 8. plugin.audio.m3sr2019 (MP3 Streams Echoed 2026.1.0; 3 Module)
 9. plugin.audio.shoutcast (Kodi offizielles Paket; xbmcswift2/xmltodict)
@@ -34,7 +34,7 @@ EZ Maintenance+, Last Played, Global Search, TV Spielfilm, Stalker Mod,
 xShip, Vavoo, SlyGuy Pluto Provider, weitere Dritt-Repository-IDs.
 Sie sind eine Inventur, keine implizite Installationsfreigabe.
 
-## Version 0.2.2 kann
+## Version 0.2.3 kann
 - In Kodi ein Standardprofil mit allen elf Apps darstellen.
 - Über read-only JSONRPC den Bestand und deaktivierte Add-ons erkennen.
 - Bekannte Abhängigkeiten vor den konsumierenden Apps sortieren.
@@ -81,3 +81,44 @@ Bestehende Geräte bekommen Diff/Backup/Merge statt ungefragtem Überschreiben.
 Die Live-EPG-Hero-Quelle wird erst mit XCMate-Hotfix #315 stabil verfügbar;
 keine erfundene Plugin-Route hinterlegen. Das Layout ist ohne echte
 TMDB-API-/Widget-/Fernbedienungsprüfung nicht als Android-PASS zu markieren.
+
+
+## Verbindliche Vorgabe: BINGIE zuerst XCMate + drei XCMate-Homewidgets
+Die ersten drei Home-Widgets müssen lauten:
+1. XCMate Live-TV: `plugin://plugin.video.xtreammate/?action=widget_live_start_group`
+2. XCMate Filme: `plugin://plugin.video.xtreammate/?action=widget_recent_vod`
+3. XCMate Serien: `plugin://plugin.video.xtreammate/?action=widget_recent_series`
+
+Beleg aus aktuellem XCMate-main: `widget_entry46.py`, `app_routes.py`
+und `setup_entry48.py`. Der erste Hauptmenüpunkt ist XCMate Live-TV.
+Der Live-TV-Hero muss aus #315 URL-only korrekt mit der gewählten Sendung
+versorgt werden; ohne echtes Artwork keinen generischen Platzhalter
+einblenden. Die ursprünglichen TMDB-, Musik- und Anbieterwidgets kommen
+erst nach den XCMate-Zeilen. Die Widget-Routen sind im Code geprüft, aber
+noch nicht in BINGIE auf Android gerendert.
+
+## Erst komplette GS-Media-Installation, dann Neustart und XCMate-Einrichtung
+Zwingende Reihenfolge für die künftige Installer-Implementierung:
+- Alle 11 Pflichtprogramme und deren echte rekursive Abhängigkeiten erfolgreich
+  installieren/aktivieren; Quellen/Versionen/ZIP-Hashes verifizieren.
+- BINGIE-MOD-Patches, Menüdefinitionen und sämtliche vorgesehenen Widgets
+  auf dem neuen Gerät erfolgreich übernehmen und nachprüfen.
+- Kodi-/Skin-Healthcheck vollständig bestanden; nur nach ausdrücklicher
+  Setup-Bestätigung und neuer frischer GS-Media-Installation.
+- Erst DANACH Abschlussmarker persistieren und Kodi kontrolliert neustarten.
+- Nach verifiziertem neuem Kodi-Boot **erneut** den Add-on-/Dependency-
+  Installationsstatus kontrollieren; bei Lücke, deaktivierten Add-ons oder
+  gescheitertem Skin-/Widget-Apply nichts automatisch öffnen.
+- Nur dann EINMAL `RunPlugin(plugin://plugin.video.xtreammate/?action=setup_wizard)`
+  über die vorhandene XCMate-Wizardroute auslösen. Die später zuständige
+  Kodi-Startkomponente muss den Handoff `attempted` *atomar vor* dem
+  RunPlugin-Aufruf setzen, um Boot-Loops zu vermeiden.
+- Bei abgebrochenem Wizard kein unendliches Autostart-Verhalten; Nutzer kann
+  die XCMate-Einrichtung manuell fortsetzen. Bereits eingerichtete Kodi-
+  Boxen niemals ungefragt in eine neue Ersteinrichtung schicken.
+
+`setup_handoff.py` modelliert die reine read-only Gate-Entscheidung mit
+Unit-Tests. **GS Media Setup 0.2.3 selbst ist weiterhin keine installierende
+oder automatisch startende Service-Komponente**; es schreibt noch keinen
+Handoff-Marker und startet XCMate beim Boot nicht tatsächlich. Erst beim
+vollständigen Installer mit Bestandsdatensicherung und Android-Test aktivieren.
