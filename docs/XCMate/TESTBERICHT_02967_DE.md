@@ -17,7 +17,7 @@ Arbeitsstand: Draft-PR #308, kumulative Basis .66. Maßgeblich ist der erfolgrei
 
 Das Artefakt `xcmate-review-308-<sha256>` enthält `plugin.video.xtreammate-0.1.29.67.zip`, zugehörige `.sha256`, `test-results.log` und `build-verification.json`. Diese JSON enthält den tatsächlich getesteten Commit, Testanzahl, Dauer, Dateianzahl, ZIP-Größe und SHA256. Kodi-Evidenz liegt in den getrennten Artefakten `kodi21-live67-playback-<commit>` und `kodi21-helper57-transport-<commit>`. Prüflauf und konkrete Ergebnisse werden im PR verlinkt. Ein fehlgeschlagener oder veralteter Lauf ist keine Abnahme.
 
-Bisherige Zwischennachweise: 19 gezielte neue Hosttests PASS. Der frühere vollständige Vorlauf fand den fehlenden Icon-Wrapper des neuen Diagnose-Senderdialogs; korrigiert und erneut zu prüfen. Der erste neue native Wiedergabelauf brach im isolierten Container ab; weitere native Diagnose ist erforderlich und wird nicht als PASS gezählt.
+Bisherige Zwischennachweise: 19 gezielte neue Hosttests PASS. Der frühere vollständige Vorlauf fand den fehlenden Icon-Wrapper des neuen Diagnose-Senderdialogs; korrigiert und erneut zu prüfen. Der erste neue native Wiedergabelauf brach im isolierten Container ab; ein solcher Zwischenlauf zählt nicht als PASS. Entscheidend ist der abschließende grüne Nachweis am PR-Head.
 
 ## Issue-Abnahmematrix
 
@@ -31,3 +31,8 @@ Bisherige Zwischennachweise: 19 gezielte neue Hosttests PASS. Der frühere volls
 | #303/#306 Repository/Wizard | Außerhalb dieses Hotfixes, nicht übernommen | NOT_TESTED |
 
 Box A bleibt unverändert. Kein Merge, kein produktives Release, kein Geräteeingriff und keine Datenlöschung. Abschlussbericht und tatsächliche CI-Ergebnisse haben Vorrang vor Planwerten.
+
+
+## Zwischenzeitlicher main-Fortschritt
+
+Repository 1.8.1 Lite wurde während dieser Arbeit außerhalb dieses PR nach main gemergt (eb8aae1557eb221fe7601b00d64adc7e401530c4). Der Hotfix entwickelt dessen Repository-/Wizard-Funktionen nicht weiter und übernimmt keinen experimentellen Wizard-Branch. Die bereits veröffentlichten main-Änderungen bleiben kumulativ erhalten. Die neue Repository-Versionsprüfung wird lediglich auf den ausdrücklich beauftragten XCMate-Stand .67 aktualisiert; alle ursprünglichen Methoden bleiben bestehen.

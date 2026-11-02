@@ -44,3 +44,6 @@ Früher gezielter Lauf: 19 neue .67-Hosttests PASS; die erste vollständige Vorp
 Native Linux-Kodi-Prüfungen verwenden ausschließlich eine isolierte synthetische Installation. TS, HLS und extensionlose URL, vier Produktions-Startkerne, fehlendes Short-EPG, absichtlich defekter Guide, 504 und HTML werden geprüft. Guide-Owner/Mini-Controller werden dort synthetisch bereitgestellt; Android-IR, Rockchip-MediaCodec und tatsächliche Box-B-Startwege sind damit **nicht** abgenommen. Native BINGIE-/Artwork-Regressionsprüfungen bleiben erhalten.
 
 Aktuelle Ergebnisse und Paketprüfsumme stehen im exakten PR-CI-Artefakt, siehe TESTBERICHT_02967_DE.md. Alle echten Android-Gates bleiben NOT_TESTED. Keine privaten Rohlogs oder realen Zugangsdaten im Repository.
+
+
+Aktuelle kumulative Basis umfasst außerdem den zwischenzeitlich separat gemergten main-Stand eb8aae1557eb221fe7601b00d64adc7e401530c4 (Repository 1.8.1 Lite). Dieser Hotfix verändert dessen Repository-/Wizard-Funktionen nicht.

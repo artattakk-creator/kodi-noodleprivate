@@ -17,10 +17,16 @@ rpc('Addons.SetAddonEnabled',dict(addonid='script.xcmate.live67',enabled=True))
 rpc('Files.GetDirectory',dict(directory='plugin://plugin.video.xtreammate/?fixture67=seed',media='files'))
 def configured(value):rpc('Files.GetDirectory',dict(directory='plugin://plugin.video.xtreammate/?fixture67=configure&format='+value,media='files'))
 def active():return [p for p in rpc('Player.GetActivePlayers') if p['type']=='video']
+def idle():
+ for _ in range(100):
+  state=rpc('XBMC.GetInfoBooleans',dict(booleans=['Window.IsActive(10138)','Window.IsActive(10160)','System.HasModalDialog']))
+  if not any(state.values()):return
+  time.sleep(.1)
+ raise RuntimeError('NATIVE_GUI_NOT_IDLE')
 def stop():
  for p in active():rpc('Player.Stop',dict(playerid=p['playerid']))
  for _ in range(100):
-  if not active():time.sleep(.3);return
+  if not active():time.sleep(.3);idle();return
   time.sleep(.1)
  raise RuntimeError('NATIVE_STOP_NOT_RETURNED')
 def wait_video():
@@ -56,10 +62,17 @@ for sid in ('5','6'):
   with opener.open('http://127.0.0.1:18081/stats') as response:stats=json.loads(response.read())
   if stats.get(sid+'.ts',0):break
   time.sleep(.1)
- else:raise RuntimeError('ERROR_SOURCE_NOT_REQUESTED')
- time.sleep(2)
+ else:raise RuntimeError('ERROR_SOURCE_NOT_REQUESTED '+sid+' '+json.dumps(stats))
+ for _ in range(100):
+  state=rpc('XBMC.GetInfoBooleans',dict(booleans=['Window.IsActive(10138)','Window.IsActive(10160)','System.HasModalDialog']))
+  if not active() and not state.get('Window.IsActive(10138)') and not state.get('Window.IsActive(10160)'):break
+  time.sleep(.1)
+ else:raise RuntimeError('NATIVE_ERROR_NOT_RELEASED '+sid)
+ if state.get('System.HasModalDialog'):rpc('Input.Select')
+ idle();time.sleep(.3)
  assert not active(),('INVALID_SOURCE_ACCEPTED',sid)
- rpc('Input.Back');errors.append(dict(sid=sid,native_rejected=True))
+ assert Path('/root/kodi67-start-count').read_text()==start_count,'NATIVE_KODI_RESTARTED_AFTER_ERROR'
+ errors.append(dict(sid=sid,native_rejected=True))
 with opener.open('http://127.0.0.1:18081/stats') as response:stats=json.loads(response.read())
 assert stats.get('api',0)==0,stats
 assert stats.get('2.m3u8',0)>0,('HLS_NOT_REQUESTED',stats)
