@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""GS Media Setup 0.2.2 — active, read-only device preflight.
+"""GS Media Setup 0.2.3 — active, read-only device preflight.
 
 The installation executor is intentionally NOT enabled until repositories,
 source hashes, full dependencies and Kodi 21 ARM32 have been verified.
@@ -13,6 +13,7 @@ from setup_plan import profile_names
 from setup_inventory import snapshot
 from setup_gate import inspect
 from setup_layout import verify as verify_bingie_layout
+from setup_handoff import REQUIRED_STAGES, WIZARD_URL
 
 
 def _device_label():
@@ -26,7 +27,7 @@ def _device_label():
 def _report(key, title, inventory):
     result = inspect(key, inventory)
     lines = [
-        "GS MEDIA SETUP 0.2.2 — SYSTEMPRÜFUNG",
+        "GS MEDIA SETUP 0.2.3 — SYSTEMPRÜFUNG",
         "=" * 46,
         "Kodi: " + _device_label(),
         "Installationsprofil: " + title,
@@ -54,7 +55,7 @@ def _report(key, title, inventory):
         "Noch nicht freigegebene Installationsschritte: " + str(result["blocking"]),
         "Nächste Phase: verifizierte Pakete, Benutzerfreigabe,",
         "Kodi-Installation und Fortsetzen nach einem Neustart.",
-        "Diese Funktionen sind in 0.2.2 noch NICHT implementiert.",
+        "Diese Funktionen sind in 0.2.3 noch NICHT implementiert.",
         "",
         "Referenz: GitHub issue #317 / GS Media.",
     ]
@@ -69,14 +70,15 @@ def run():
     dialog = xbmcgui.Dialog()
     profiles = profile_names()
     while True:
-        choice = dialog.select("GS Media Setup 0.2.2 – Entwicklung", [
+        choice = dialog.select("GS Media Setup 0.2.3 – Entwicklung", [
             "Installationsprofil und Abhängigkeiten prüfen",
             "Aktuelle Kodi-Add-ons inventarisieren",
             "BINGIE-Menüs und Widgets prüfen",
+            "Installationsabschluss und XCMate-Neustart prüfen",
             "Sicherheits- und Entwicklungsstatus",
             "Beenden",
         ])
-        if choice in (-1, 4):
+        if choice in (-1, 5):
             return
         if choice == 2:
             layout = verify_bingie_layout()
@@ -98,7 +100,28 @@ def run():
             dialog.textviewer("BINGIE-Menüs und Widgets", "\n".join(lines), usemono=True)
             continue
         if choice == 3:
-            dialog.ok("GS Media Setup 0.2.2", "Aktive Vorprüfung ohne Installation. "
+            lines = [
+                "ABLAUF: ERST KOMPLETT INSTALLIEREN",
+                "Danach Kodi vollständig neu starten.",
+                "Erst NACH dem Neustart XCMate-Einrichtungsassistent öffnen.",
+                "",
+                "Vor dem Neustart erforderliche bestätigte Abschlüsse:",
+            ]
+            lines.extend("- " + name for name in sorted(REQUIRED_STAGES))
+            lines.extend([
+                "",
+                "XCMate Wizard: " + WIZARD_URL,
+                "Die spätere Startsteuerung kontrolliert alle 11 Programme",
+                "und sämtliche erforderlichen Add-on-Abhängigkeiten.",
+                "Bereits eingerichtete Boxen bleiben unverändert.",
+                "",
+                "GS Media Setup 0.2.3: NUR VORSCHAU.",
+                "Automatische Installation und Neustart-Start noch NICHT aktiv.",
+            ])
+            dialog.textviewer("XCMate – Erst nach kompletter Installation", "\n".join(lines), usemono=True)
+            continue
+        if choice == 4:
+            dialog.ok("GS Media Setup 0.2.3", "Aktive Vorprüfung ohne Installation. "
                       "Neue Kodi-Box und bestehende Profile bleiben unverändert. "
                       "Fehlende oder ungeprüfte Paketquellen blockieren spätere Installationsschritte.")
             continue
