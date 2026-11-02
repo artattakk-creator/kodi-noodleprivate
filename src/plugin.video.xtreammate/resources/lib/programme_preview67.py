@@ -11,7 +11,7 @@ def _work():
   _wake.wait(.5);_wake.clear()
   with _lock:jobs=list(_wanted.items());_wanted.clear()
   for token,(key,portal,channel,event) in jobs:
-   if monitor.waitForAbort(0):return
+   if monitor.waitForAbort(.001):return
    try:
     from programme_events46 import describe
     from programme_art46 import cached
