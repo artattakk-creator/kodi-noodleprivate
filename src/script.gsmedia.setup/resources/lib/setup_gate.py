@@ -8,7 +8,7 @@ from setup_plan import plan_for
 
 # Unverified versions and installers MUST NOT be represented as approved.
 SOURCE_EVIDENCE = {
-    "plugin.video.xtreammate": ("GS_MEDIA_INDEX", "0.1.29.68 is currently published; exact version must be checked again at installation"),
+    "plugin.video.xtreammate": ("GS_MEDIA_INDEX", "0.1.29.69 was published in main on 2026-11-02; exact version must be checked live"),
     "skin.titan.bingie.mod": ("BLOCKED_PATCH_REVIEW", "2.2.3 plus GS Media skin patches not yet released"),
     "plugin.video.xvault": ("UPSTREAM_REVIEW", "Use original xVAULT repository; archived manifest has 12 optional imports; verify playback needs"),
     "plugin.video.cumination": ("UPSTREAM_REVIEW", "Archived 1.1.204 has 8 direct imports; ResolveURL and Adult Resolver SMR Extension required; ZIP hashes and origin unverified"),

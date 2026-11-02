@@ -1,4 +1,4 @@
-# GS Media Setup 0.2.4 – Stand 02.11.2026 – nur Vorprüfung
+# GS Media Setup 0.3.0 – Stand 02.11.2026 – nur Vorprüfung
 
 **Wichtig:** Development Draft PR #318 / Master #317 / keine installierende Funktion.
 Build basiert auf main XCMate .68; keine Änderungen am produktiven Repository.
@@ -10,7 +10,7 @@ Im Oktober-2026-Backup nachgewiesene Add-on-IDs, **alle elf zwingend**:
 3. plugin.video.cumination (Backup 1.1.204; 8 direkte Imports)
 4. plugin.video.xvault (Backup 2026.10.20.1, 1 Pflicht-/12 optionale Manifestimports)
 5. plugin.video.themoviedb.helper (Backup 5.4.16; 7 Imports)
-6. slyguy.trailers (Backup 0.2.4, benötigt SlyGuy Common)
+6. slyguy.trailers (Backup 0.3.0, benötigt SlyGuy Common)
 7. plugin.video.youtube (im Backup eine SlyGuy-YouTube-Repository-Variante; Quelle vergleichen)
 8. plugin.audio.m3sr2019 (MP3 Streams Echoed 2026.1.0; 3 Module)
 9. plugin.audio.shoutcast (Kodi offizielles Paket; xbmcswift2/xmltodict)
@@ -34,7 +34,7 @@ EZ Maintenance+, Last Played, Global Search, TV Spielfilm, Stalker Mod,
 xShip, Vavoo, SlyGuy Pluto Provider, weitere Dritt-Repository-IDs.
 Sie sind eine Inventur, keine implizite Installationsfreigabe.
 
-## Version 0.2.4 kann
+## Version 0.3.0 kann
 - In Kodi ein Standardprofil mit allen elf Apps darstellen.
 - Über read-only JSONRPC den Bestand und deaktivierte Add-ons erkennen.
 - Bekannte Abhängigkeiten vor den konsumierenden Apps sortieren.
@@ -118,7 +118,7 @@ Zwingende Reihenfolge für die künftige Installer-Implementierung:
   Boxen niemals ungefragt in eine neue Ersteinrichtung schicken.
 
 `setup_handoff.py` modelliert die reine read-only Gate-Entscheidung mit
-Unit-Tests. **GS Media Setup 0.2.4 selbst ist weiterhin keine installierende
+Unit-Tests. **GS Media Setup 0.3.0 selbst ist weiterhin keine installierende
 oder automatisch startende Service-Komponente**; es schreibt noch keinen
 Handoff-Marker und startet XCMate beim Boot nicht tatsächlich. Erst beim
 vollständigen Installer mit Bestandsdatensicherung und Android-Test aktivieren.
@@ -126,3 +126,52 @@ vollständigen Installer mit Bestandsdatensicherung und Android-Test aktivieren.
 
 ## TMDB Helper: xVAULT als voreingestellter Player (unverbindliche Preview)
 Im Google-Drive-Kodi-Backup vom 21.10.2026 liegen bereits `plugin.video.themoviedb.helper/players/xvault_stable.json` und die TMDB-Helper-Einstellungen `default_player_movies=xvault_stable.json play_movie` sowie `default_player_episodes=xvault_stable.json play_episode`. Die xVAULT-Quelle enthält ihr eigenes `resources/tmdbhelper/xvault.json`; das `tmdbhelper_integration.py` aus dem gesicherten xVAULT-Stand kopiert bei Bedarf nach `xvault_stable.json`. Der Kodi-xVAULT-Router unterstützt `action=playTMDbHelper` für Filme und Serien. **Nicht blind an Player-Konfiguration anderer Geräte arbeiten.** Der künftige Installer soll bei *frischer, bestätigter GS-Media-Komplettinstallation* nach Installation/Aktivierung von TMDB Helper und xVAULT die Playerdatei aus dem geprüften Original xVAULT-Paket bereitstellen/verifizieren und beide TMDB-Helper-Standardwerte setzen; dabei vorherige Werte sichern und nach der Konfiguration einen echten Film-/Serien-Playbacktest ausführen. Auf eingerichteten Bestandsboxen keinerlei ungefragte Änderungen. Danach erst Installationsabschluss markieren, Kodi neu starten und XCMate-Wizard einmalig öffnen. Solange auch nur einer der Player-Gates nicht bestätigt ist, kein Setup-Handoff. Die neue Datei `setup_tmdb_player.py` beschreibt diese Prüfung bisher ausschließlich **read-only** und schreibt keine TMDB-Helper-Einstellungen.
+
+
+## Pilotinstaller 0.3.0 – echtes, aber bewusst begrenztes Installieren
+`default.py` bietet den neuen Menüpunkt **Installationspilot: Kodi/GS Media
+(3 Pakete)**. Die Installation wird erst durch ausdrückliche Benutzerfreigabe
+gestartet und ist auf eine feste Allowlist eingeschränkt:
+- `script.cabertoss` >= 1.0.2 aus bereits vorhandenem `repository.xbmc.org`
+- `plugin.audio.shoutcast` >= 2.5.2 aus `repository.xbmc.org`
+- `plugin.video.xtreammate` >= 0.1.29.69 aus `repository.gsmedia`
+
+Die Original-Repositories müssen bereits installiert/aktiviert sein. Die
+beiden offiziellen Add-ons sind nachweislich im Kodi-21-(Omega)-Katalog; das
+XCMate-ZIP 0.1.29.69 steht derzeit im veröffentlichten GS-Media-Katalog.
+
+**Technischer Ablauf:** Kodi `InstallAddon(id)` ist asynchron. Je Aufruf
+maximal eine Installation auslösen. Nach Rückkehr in den Wizard muss die
+Kodi-Inventur die Add-on-ID **aktiv und in Mindestversion** bestätigen;
+erst dann wird sie im privaten, atomaren,
+`special://profile/addon_data/script.gsmedia.setup/install-pilot-030.json`
+Journal als erfolgreich erfasst. Keine parallelen Installationen, keine
+Endlos-Retries, keine ZIP-Downloads durch GS Media, kein Sideloading
+und keine automatische Aktivierung deaktivierter Add-ons. Gerätedaten,
+Portale und Tokens werden nie im Journal abgelegt. Der Anwender kann nach
+einer fehlgeschlagenen Installation ausdrücklich neu versuchen.
+
+**WICHTIGE GRENZE:** Dieses Pilotpaket stellt noch keinen vollständigen
+GS-Media-Kodi-Installer dar. Die acht weiteren Pflicht-Apps, alle fremden
+Repos/Module, BINGIE-Patches, Skinshortcuts-/Widgetmigration, TMDB Player-
+Einstellung, Neustart, Resume des Hauptinstallers und automatisch XCMate
+Setup können noch nicht als fertig gelten. Das erfolgreiche Ende des
+3er-Piloten löst ausdrücklich **keinen Kodi-Neustart und keinen XCMate-
+Ersteinrichtungs-Wizard** aus. Eine Android-Laufzeitabnahme steht noch aus.
+Eigene Installation zuerst NUR auf leerer Testbox B testen.
+
+**Bekannte Limitationen vor Kodi-Abnahme:** `InstallAddon` lässt Kodi aus
+den eingerichteten Repository-Quellen auswählen; der Pilot führt keinen
+kryptografischen Vergleich des tatsächlich installierten ZIPs und der
+Provenienz durch. Deshalb muss der Nutzer den angezeigten Quellhinweis
+kontrollieren, und der Pilot darf **nicht** als vollständig nach SHA256
+freigegebener Deploymentprozess bezeichnet werden. Unverifizierte weitere
+Repos, insbesondere Drittanbieter, sind nicht Teil der Allowlist.
+
+**Testablauf Box B:** Frisches Kodi 21.3 → GS-Media-Repo-1.8.1 installieren →
+das von CI erzeugte `script.gsmedia.setup-0.3.0.zip` unter
+Kodi Add-ons/aus ZIP installieren → GS Media Setup starten → Installations-
+und Inventaransicht prüfen → Pilotinstallation bestätigen → Kodi-Dialoge
+beachten → Setup erneut öffnen, um die nächste verifizierte Installation
+zu erlauben → nach drei Apps einen BLOCKIERTEN Vollsetup-Status erwarten.
+Prüfen, dass sich BINGIE, TMDB, EPG, Player und Nutzerprofile nicht ändern.

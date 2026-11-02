@@ -1,9 +1,13 @@
-name: GS Media Setup 0.2.4 preflight
+name: GS Media Setup 0.3.0 preflight
 on:
   pull_request:
     paths:
       - 'src/script.gsmedia.setup/**'
       - 'tests/test_gsmedia_setup_wizard.py'
+    - 'tests/test_gsmedia_setup_installer.py'
+    - 'tools/build_gsmedia_setup.py'
+      - 'tests/test_gsmedia_setup_installer.py'
+      - 'tools/build_gsmedia_setup.py'
       - '.github/workflows/gsmedia-setup-preflight.yml'
   push:
     branches:
@@ -23,7 +27,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Unit tests
-        run: python -m unittest discover -s tests -p 'test_gsmedia_setup_wizard.py' -v
+        run: python -m unittest discover -s tests -p 'test_gsmedia_setup*.py' -v
       - name: Syntax
         run: python -m compileall -q src/script.gsmedia.setup
       - name: Build installable read-only wizard preview ZIP
@@ -31,8 +35,8 @@ jobs:
       - name: Upload test artifact
         uses: actions/upload-artifact@v4
         with:
-          name: gsmedia-setup-0.2.4-preview
+          name: gsmedia-setup-0.3.0-preview
           path: |
-            .build/gsmedia-setup/script.gsmedia.setup-0.2.4.zip
-            .build/gsmedia-setup/script.gsmedia.setup-0.2.4.zip.sha256
+            .build/gsmedia-setup/script.gsmedia.setup-0.3.0.zip
+            .build/gsmedia-setup/script.gsmedia.setup-0.3.0.zip.sha256
           if-no-files-found: error
