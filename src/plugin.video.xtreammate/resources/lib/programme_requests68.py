@@ -75,7 +75,10 @@ def status(event,code,art=None):
   if payload.get('source_url') or str(payload.get('image','')).startswith(('http://','https://','smb://')):
    from programme_image69 import url as public_url69
    if not public_url69(payload):
-    for field69 in ('source_url','image','thumbnail','url_verified69','url_version55'):payload.pop(field69,None)
+    import os
+    local69=os.path.isabs(str(payload.get('image',''))) and not payload.get('url_version55')
+    fields69=('source_url','url_verified69','url_version55') if local69 else ('source_url','image','thumbnail','url_verified69','url_version55')
+    for field69 in fields69:payload.pop(field69,None)
   for tag in set(tags):
    adjusted=dict(payload,scope69=tag) if payload.get('url_verified69') else dict(payload)
    value=dict(tag=tag,scope=scope(),at=time.time(),code=code,art=adjusted)
