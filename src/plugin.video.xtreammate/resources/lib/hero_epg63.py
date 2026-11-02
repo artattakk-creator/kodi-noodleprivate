@@ -89,6 +89,9 @@ def prepare(pid):
     from programme_art46 import cached
     event=from_info(dict(id=str(pid)),dict(sid=focus[1]),info)
     art=cached(event)
+    from programme_requests68 import request,result
+    request(event,priority=True)
+    art=result(event,art)
     with _lock:
         if _focus==focus:_art=dict(art,key=event['key'],profile63=focus[3])
 

@@ -159,5 +159,5 @@ class Dynamic68(Fixture,unittest.TestCase):
   a=policy(self.portal,'live')
   self.assertNotEqual(a,policy(dict(self.portal,start_group_id='b'),'live'))
   self.assertNotEqual(a,policy(dict(self.portal,xc_host='https://different.invalid'),'live'))
-  with mock.patch('library_index.path',return_value=self.dbfile):
+  with mock.patch('widget_data41.path',return_value=self.dbfile):
    b=policy(self.portal,'live');self.group('p','a',5);self.assertNotEqual(b,policy(self.portal,'live'))

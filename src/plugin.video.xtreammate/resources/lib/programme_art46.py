@@ -190,6 +190,9 @@ def prepare(event,cancel=lambda:False,fetch=None,match=None,resolved60=None):
  except OSError as error:
   from art_storage import ArtworkFailure
   value.update(code=error.code if isinstance(error,ArtworkFailure) else 'PROGRAMME_CACHE_BUDGET' if isinstance(error,CacheBudget) else 'CACHE_IO_ERROR',until=time.time()+900,budget46=limit())
+ if value.get('source')=='placeholder':
+  from programme_policy68 import negative_scope
+  value['negative_scope68']=negative_scope(event)
  # Only fixed classes are reported; never URLs, IDs, tokens or exception text.
  remember(key,value,verified47=True)
  from programme_flow48 import trace

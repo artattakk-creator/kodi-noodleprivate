@@ -132,6 +132,10 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     from programme_refresh63 import retry as retry63
     from programme_refresh63 import retry67
     explicit63=allow_lookup and (retry63(event,old) or retry67(event,old))
+    from programme_policy68 import negative_scope
+    negative68=negative_scope(event)
+    if old and old.get('source')=='placeholder' and old.get('negative_scope68')==negative68 and old.get('until',0)>time.time() and not explicit63:
+        return dict(old,image=event['placeholder'])
     if current and not (local_image63 and current.get('source')!='placeholder') and not explicit63 and not (allow_lookup and current.get('source')=='placeholder' and
             (current.get('code')=='AWAITING_BACKGROUND_REFRESH' or not current.get('matching_policy57') or current.get('source_policy57')!=policy())):return current
     if cancel():return None
@@ -208,6 +212,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         break
     if not candidates and not allow_lookup:value['code']='AWAITING_BACKGROUND_REFRESH'
     if cancel():return None
+    if value.get('source')=='placeholder':value['negative_scope68']=negative68
     # A transient network failure may never extend or bless an expired URL.
     save_event(event,write=True)
     saved=art(event,value)
