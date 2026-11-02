@@ -23,7 +23,7 @@ def sample_inventory(*, present=(), repos=("repository.xbmc.org", "repository.gs
         "repository.gsmedia": "1.8.1",
         "script.cabertoss": "1.0.2",
         "plugin.audio.shoutcast": "2.5.2+matrix.1",
-        "plugin.video.xtreammate": "0.1.29.69",
+        "plugin.video.xtreammate": "0.1.29.70",
     }
     addons = {x: {"version": known[x], "enabled": x not in disabled}
               for x in tuple(repos) + tuple(present)}
