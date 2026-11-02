@@ -1,6 +1,6 @@
 """Read-only installed add-on inventory via Kodi JSON-RPC.
 
-Does not inspect secrets or access addon_data; never mutates Kodi state.
+Does not inspect secrets or private profile directories; never mutates Kodi state.
 An RPC failure is UNKNOWN, never equivalent to "not installed".
 """
 import json
