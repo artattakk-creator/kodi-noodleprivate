@@ -12,7 +12,7 @@ if args.prepare:
 from PIL import Image
 images={}
 for sid,format_,color in (('5','PNG',(25,145,100)),('6','JPEG',(145,70,120))):
- image=io.BytesIO();Image.new('RGB',(160,90),color).save(image,format_);images['/t/p/w780/synthetic69-'+sid+'.jpg']=(image.getvalue(),'image/png' if format_=='PNG' else 'image/jpeg')
+ image=io.BytesIO();Image.new('RGB',(160,90),color).save(image,format_);images['/t/p/w780/url69-'+sid+'.jpg']=(image.getvalue(),'image/png' if format_=='PNG' else 'image/jpeg')
 class Handler(BaseHTTPRequestHandler):
  def do_GET(self):
   data,kind=images.get(self.path,(b'','text/plain'))

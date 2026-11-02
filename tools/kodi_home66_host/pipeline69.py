@@ -39,7 +39,7 @@ for sid,format_,color in (('5','PNG',(25,145,100)),('6','JPEG',(145,70,120))):
    calls.append('SYNTHETIC_OWN_TOKEN_SEARCH')
    return dict(total_pages=1,total_results=1,results=[dict(id=6900+int(sid),title=event['title'],name=event['title'],release_date='2024-01-01',first_air_date='2024-01-01')])
   calls.append('SYNTHETIC_OWN_TOKEN_DETAILS')
-  return dict(id=6900+int(sid),title=event['title'],name=event['title'],release_date='2024-01-01',first_air_date='2024-01-01',backdrop_path='/synthetic69-'+sid+'.jpg')
+  return dict(id=6900+int(sid),title=event['title'],name=event['title'],release_date='2024-01-01',first_air_date='2024-01-01',backdrop_path='/url69-'+sid+'.jpg')
  def worker():
   try:
    event=load(portal,dict(sid=sid,name='Station '+sid,epg_channel_id='xml'+sid));holder['event']=event
@@ -50,7 +50,7 @@ for sid,format_,color in (('5','PNG',(25,145,100)),('6','JPEG',(145,70,120))):
     broker.request(event,priority=True);deadline=time.monotonic()+20
     while time.monotonic()<deadline:
      broker.drain();value=broker.result(event)
-     if value.get('status68')=='IMAGE_URL_READY_RAM':holder['art']=value;break
+     if value.get('status68')=='IMAGE_URL_READY_RAM':holder['art']=value;holder['ready_ms']=round((time.monotonic()-started)*1000);break
      xbmc.sleep(25)
     else:raise RuntimeError('URL69_NOT_READY '+json.dumps(broker.result(event)))
     initial=len(calls)
@@ -80,7 +80,7 @@ for sid,format_,color in (('5','PNG',(25,145,100)),('6','JPEG',(145,70,120))):
  window=ProgrammeWindow46('XCMateProgramme46.xml',addon.getAddonInfo('path'),'Default','720p');window.configure(portal,dict(sid=sid,name='Station '+sid,epg_channel_id='xml'+sid));window.show()
  try:capture('pipeline69-detail-'+sid,[(500,400)],color,window.pump)
  finally:window.close()
- results.append(dict(sid=sid,format=format_,source=art['source'],code=art['code'],storage=art['storage69'],reason=art['storage_code69'],matching_calls=calls,repeated_requests=18,lookup_repeat=0,ready_ms=round((time.monotonic()-started)*1000),preview_pixels='PASS',home_pixels='PASS',detail_pixels='PASS',android='NOT_TESTED'))
+ results.append(dict(sid=sid,format=format_,source=art['source'],code=art['code'],storage=art['storage69'],reason=art['storage_code69'],matching_calls=calls,repeated_requests=18,lookup_repeat=0,ready_ms=holder['ready_ms'],total_with_captures_ms=round((time.monotonic()-started)*1000),preview_pixels='PASS',home_pixels='PASS',detail_pixels='PASS',android='NOT_TESTED'))
 if before!=files():raise RuntimeError('URL69_ADDED_ARCHIVE_FILE')
 requests=[json.loads(s) for s in Path('/root/tls69-requests.jsonl').read_text().splitlines()]
 if not requests or any(r['authorization'] or r['cookie'] for r in requests):raise RuntimeError('URL69_CREDENTIAL_LEAK')
