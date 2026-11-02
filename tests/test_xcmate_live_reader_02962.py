@@ -33,7 +33,15 @@ class Live62(Fixture,unittest.TestCase):
      exc=sqlite3.OperationalError('synthetic exhausted ARM SQL budget');exc.sqlite_errorname='SQLITE_INTERRUPT';raise exc
     return super().execute(sql,args)
   with mock.patch('sqlite3.connect',side_effect=lambda *a,**k:original(*a,**dict(k,factory=Budget))):
-   old.render(self.router,self.portal);self.assertEqual(len(self.added),0)
+   # Reproduce the historical bug with its matching historical page reader;
+   # .68 intentionally removed that empty-ID lookup from the current reader.
+   from stabilization_contract_02968 import without_stabilization68
+   legacy_group68=types.ModuleType('legacy_group62')
+   source68=(root/'src/plugin.video.xtreammate/resources/lib/widget_group46.py').read_text()
+   exec(without_stabilization68(source68,'widget_group46'),legacy_group68.__dict__)
+   with mock.patch('widget_group46.pages',legacy_group68.pages):
+    old.render(self.router,self.portal)
+   self.assertEqual(len(self.added),0)
    self.render();self.assertEqual(len(self.added),88);self.assertTrue(self.ends[0][1]['succeeded'])
  def test_concurrent_wal_writer_publishes_new_generation_while_reader_keeps_one_consistent_group(self):
   original=sqlite3.connect;selected=threading.Event();done=threading.Event();errors=[]

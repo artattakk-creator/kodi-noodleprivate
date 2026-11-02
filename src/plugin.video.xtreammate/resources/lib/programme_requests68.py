@@ -16,6 +16,7 @@ _stop=threading.Event()
 _seen={}
 _aliases={}
 _cursor=0
+_traces={}
 
 def scope():
  from epg_handoff63 import profile_scope
@@ -52,9 +53,22 @@ def request(event,priority=False):
   return True
  except (ImportError,AttributeError,RuntimeError,ValueError,TypeError,KeyError,OverflowError):return False
 
+def trace(event,code):
+ codes={'QUEUED','RUNNING','LOCAL_IMAGE_READY','IMAGE_READY','NOT_SCHEDULED','NO_MATCH','NO_ARTWORK','CACHE_MISS','CACHE_MISMATCH','DB_FULL','FETCH_FAILED','CANCELLED','HTTP_AUTH','HTTP_RATE_LIMIT','TIMEOUT','PROGRAMME_DB_UNAVAILABLE','CACHE_ERROR','CACHE_IO_ERROR','PROGRAMME_CACHE_BUDGET','TMDB_DISABLED','TMDB_TOKEN_MISSING','BLOCKED_IMAGE_HOST_OR_URL','NO_MATCH_AMBIGUOUS','HELPER_TIMEOUT','HELPER_BACKGROUND_UNAVAILABLE','NO_UNIQUE_MATCH','NO_IMAGE','NO_YEAR','NOT_CLASSIFIED_MOVIE','AWAITING_BACKGROUND_REFRESH'}
+ fixed=code if code in codes else 'FETCH_FAILED'
+ key=(identity(event),fixed);now=time.monotonic()
+ with _lock:
+  if now-_traces.get(key,-1e9)<60:return
+  _traces[key]=now
+  while len(_traces)>256:_traces.pop(next(iter(_traces)))
+ import xbmc
+ try:xbmc.log('[XCMate][PROGRAMME68] event='+key[0][:12]+' code='+fixed,xbmc.LOGINFO)
+ except (AttributeError,RuntimeError):pass
+
 def status(event,code,art=None):
  """Producer-only publication. Never publish URL credentials or raw errors."""
  try:
+  trace(event,code)
   tags=[identity(event)]
   with _lock:tags+=list(_aliases.get(tags[0],()))
   payload={k:art[k] for k in _ART if art and k in art}
@@ -115,7 +129,10 @@ def drain(cancel=lambda:False):
    finally:
     close=getattr(reader,'close',None)
     if close:close()
-   if not channel:status(event,'CACHE_MISS');continue
+   if not channel:
+    status(event,'CACHE_MISS')
+    with _lock:_seen[(tag,policy)]=now
+    continue
    current=load(portal,channel,event)
    # No cached-short fallback may override an explicit source/guide binding.
    if current.get('code')!='LOCAL_EVENT' or any(event.get(k) and event.get(k)!=current.get(k) for k in ('canonical','source_key46','fact_revision46')) or event.get('revision') is not None and json.dumps(event['revision'])!=json.dumps(current.get('revision')):

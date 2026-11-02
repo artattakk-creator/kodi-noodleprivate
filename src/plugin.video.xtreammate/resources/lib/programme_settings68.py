@@ -30,10 +30,11 @@ def show():
            'Optionaler TVmaze-Abgleich: '+('AN' if value['tvmaze'] else 'AUS'),
            'Internes Sendungsbild-Budget',
            'Speicherdiagnose (nur lesen)',
+           'Externe Skin-/Helper-Kompatibilität (nur lesen)',
            'Lizenzen und Bildquellen',
            'Zurück']
   choice=select(dialog,'XCMate – EPG / Sendungsbilder',entries,default='settings')
-  if not isinstance(choice,int) or not 0<=choice<len(entries) or choice==11:return
+  if not isinstance(choice,int) or not 0<=choice<len(entries) or choice==12:return
   if choice==0:dialog.ok('XCMate',json.dumps(value,ensure_ascii=False,indent=2)+'\nToken vorhanden und Verbindung OK bestätigen noch kein Sendungsbild.')
   elif choice==1:
    from tmdb_access61 import show as tokens
@@ -62,5 +63,8 @@ def show():
    from programme_storage68 import inspect
    dialog.ok('XCMate – Speicherdiagnose',json.dumps(inspect(),ensure_ascii=False,indent=2)+'\nKeine Dateien gelöscht; keine Budgets automatisch erhöht.')
   elif choice==10:
+   from programme_external68 import inspect
+   dialog.ok('XCMate – externe Komponenten',json.dumps(inspect(),ensure_ascii=False,indent=2))
+  elif choice==11:
    from credits67 import show as credits
    credits('Sendungsbilder: TMDB / konfigurierte EPG-Quellen. Ein vorhandener Token belegt keine erfolgreiche Bildsuche.')

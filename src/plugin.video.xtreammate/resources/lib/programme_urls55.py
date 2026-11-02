@@ -273,7 +273,9 @@ def _run():
             if urgent is not None and (_burst68<3 or all(k in _urgent68 for k in _queue)):
                 pair=(urgent,_queue.pop(urgent));_burst68+=1
             else:
-                pair=_queue.popitem(last=False) if _queue else None;_burst68=0
+                background=next((k for k in _queue if k not in _urgent68),None)
+                pair=(background,_queue.pop(background)) if background is not None else _queue.popitem(last=False) if _queue else None
+                _burst68=0
             if pair:_urgent68.discard(pair[0])
         if pair is None:_wake.wait(.5);_wake.clear();continue
         key,job=pair;event,allow=job[:2];local63=len(job)>2 and job[2]

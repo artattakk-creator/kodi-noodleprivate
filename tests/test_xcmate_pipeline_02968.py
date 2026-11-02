@@ -196,7 +196,7 @@ class EventChain68(unittest.TestCase):
   import io,importlib,threading
   from PIL import Image
   m=self.m;m.options.update(programme_tmdb46=True,tmdb_research43=True,tmdb_read_token43='SYNTHETIC_NOT_A_SECRET')
-  m.put('a',[m.event(title='Synthetic movie')])
+  m.put('a',[m.event(title='Synthetic movie',extra='<category>Spielfilm</category><date>2024</date>')])
   from programme_events46 import load
   event=load(m.portal,m.channel)
   import programme_requests68,programme_urls55
