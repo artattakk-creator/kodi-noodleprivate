@@ -18,7 +18,7 @@ from setup_full import (new_session, load, save, decide, mark_requested,
                         mark_installed, clear_retry, advance, SOURCES,
                         requirements, verify_complete, manifest)
 from setup_install_pilot import protected_existing
-from setup_bingie_apply import apply_new_profile
+from setup_bingie_apply import apply_new_profile, inspect_new_profile
 from setup_tmdb_apply import apply as apply_player, verify as verify_player
 from setup_patch import apply as patch_skin, inspect as inspect_patch
 
@@ -168,6 +168,14 @@ def run():
             _info(dialog, "GS Media – BINGIE-Patch blockiert", str(status) +
                   "\nKeine Skin-Datei wurde überschrieben. Unpassende Skinversion/"
                   "Hash → nicht reparieren ohne geprüfte neue Patchbasis.")
+            return
+        # Check the user-data destination FIRST. If the shortcut files are
+        # already customized, do not patch the skin and leave a half-setup.
+        layout_preflight = inspect_new_profile(_shortcuts_folder(), inventory)
+        if layout_preflight not in ("READY", "ALREADY_APPLIED"):
+            _info(dialog, "GS Media – Skin-Konfiguration geschützt",
+                  "Menü-/Widget-Vorprüfung: " + layout_preflight +
+                  "\\nKeine BINGIE-XML verändert. Bestehende Benutzerdaten bleiben erhalten.")
             return
         if not dialog.yesno("GS Media – BINGIE patchen",
                             "BINGIE 2.2.3 auf exakt geprüfte XCMate-XMLs patchen? "
