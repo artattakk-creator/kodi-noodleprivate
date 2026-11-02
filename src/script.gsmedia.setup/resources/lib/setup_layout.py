@@ -35,7 +35,7 @@ MENU = (
     # IMPORTANT: this intentionally replaces plugin.audio.mp3streams from 2025.
     ("MP3 Streams Echoed", "plugin://plugin.audio.m3sr2019/", "MODIFIED_REQUIRED"),
     ("xVAULT", "plugin://plugin.video.xvault/", "ROUTE_REVIEW"),
-    ("EZ Maintenance+", "RunScript(script.ezmaintenanceplus)", "ACTION_REVIEW"),
+    ("EZ Maintenance+", "plugin://script.ezmaintenanceplus/", "ARCHIVED_PLUGIN_ROUTE"),
     ("Caber Toss (Logs)", "RunScript(script.cabertoss)", "KODI_OFFICIAL"),
 )
 
