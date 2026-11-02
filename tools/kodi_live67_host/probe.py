@@ -11,6 +11,7 @@ for _ in range(200):
  try:version=rpc('Application.GetProperties',dict(properties=['version']))['version'];break
  except Exception:time.sleep(.2)
 else:raise RuntimeError('NATIVE_KODI_NOT_AVAILABLE')
+start_count=Path('/root/kodi67-start-count').read_text()
 rpc('Addons.SetAddonEnabled',dict(addonid='plugin.video.xtreammate',enabled=True))
 rpc('Addons.SetAddonEnabled',dict(addonid='script.xcmate.live67',enabled=True))
 rpc('Files.GetDirectory',dict(directory='plugin://plugin.video.xtreammate/?fixture67=seed',media='files'))
@@ -59,5 +60,6 @@ for sid in ('5','6'):
  rpc('Input.Back');errors.append(dict(sid=sid,native_rejected=True))
 with opener.open('http://127.0.0.1:18081/stats') as response:stats=json.loads(response.read())
 assert stats.get('api',0)==0,stats
+assert Path('/root/kodi67-start-count').read_text()==start_count,'NATIVE_KODI_RESTARTED_DURING_TEST'
 report=dict(kodi=version,cases=results,errors=errors,short_epg_calls=0,guide='intentionally corrupt synthetic SQLite',android='NOT_TESTED',private_data='NONE',controller_scope='released handoff and mini tune core; real Android IR/window lifecycle NOT_TESTED')
 Path('/root/live67-result.json').write_text(json.dumps(report,indent=2));print(json.dumps(report,indent=2))

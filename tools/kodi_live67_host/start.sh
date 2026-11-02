@@ -23,4 +23,10 @@ EOF
 python3 /work/server.py &
 Xvfb :99 -screen 0 1920x1080x24 -nolisten tcp -ac &
 python3 -c 'import time;time.sleep(1)'
-env DISPLAY=:99 /usr/lib/x86_64-linux-gnu/kodi/kodi.bin --standalone --windowing=x11
+attempt67=0
+while true; do
+  attempt67=$((attempt67+1))
+  echo "$attempt67" > /root/kodi67-start-count
+  env DISPLAY=:99 /usr/lib/x86_64-linux-gnu/kodi/kodi.bin --standalone --windowing=x11 || true
+  python3 -c 'import time;time.sleep(1)'
+done

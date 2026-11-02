@@ -19,6 +19,11 @@ try:
  result=json.loads((report/'live.json').read_text());assert len(result['cases'])==5 and len(result['errors'])==2
  print('NATIVE67_AV_VERIFIED_JSON '+json.dumps(result,sort_keys=True))
 except Exception:
+ subprocess.run(docker+['logs',name],env=env,check=False)
+ subprocess.run(docker+['inspect',name,'--format','{{json .State}}'],env=env,check=False)
+ subprocess.run(docker+['cp',name+':/root/.kodi/temp/kodi.log',str(report/'synthetic-kodi.log')],env=env,check=False)
+ log=report/'synthetic-kodi.log'
+ if log.exists():print('SYNTHETIC67_FAILURE '+log.read_text(errors='replace')[-25000:])
  run('exec',name,'python3','-c',"from pathlib import Path; p=Path('/root/.kodi/temp/kodi.log'); print('SYNTHETIC67_ERRORS\\n'+'\\n'.join(v for v in p.read_text(errors='replace').splitlines() if any(k in v for k in ('error','Error','Exception','Traceback')))[-18000:])")
  raise
 finally:subprocess.run(docker+['rm','-f',name],env=env,check=False,stdout=subprocess.DEVNULL)
