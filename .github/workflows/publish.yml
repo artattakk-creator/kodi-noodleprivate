@@ -79,7 +79,7 @@ jobs:
         run: |
           python - <<'PY'
           import sys,unittest
-          sys.path.insert(0,'tests')
+          sys.path[:0]=['tests','src/plugin.video.xtreammate/resources/lib']
           result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromNames(["test_xcmate_028_ui","test_xcmate_kodi21_overlay","test_xcmate_continuous_live_037_042","test_xcmate_mini_02941","test_xcmate_mini_flicker_02943","test_xcmate_navigation_02944","test_xcmate_live_return_02947","test_xcmate_p0_playback","test_xcmate_universal_sources_043","test_xcmate_widget_master_02946","test_xcmate_widget_pipeline_02947","test_xcmate_widgets_02941","test_xcmate_viewport_02936","test_xcmate_scope_02958","test_xcmate_scope_02959","test_xtreammate_persistence"]))
           if not result.wasSuccessful():raise SystemExit(1)
           PY

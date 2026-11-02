@@ -102,7 +102,7 @@ class StartupKodiContractTests(unittest.TestCase):
                 return "https://example.invalid/live/stream.ts"
         xtream.XtreamClient = Client
         player_module = types.ModuleType("player")
-        player_module.build_playable_item = lambda url, title, logo: _Item(url)
+        player_module.build_playable_item = lambda url, title, logo, live67=False: _Item(url)
         live = types.ModuleType("live_overlay")
         def announce(pid,sid,title):
             self.announced.append((pid,sid,title))

@@ -36,3 +36,12 @@ Box A bleibt unverändert. Kein Merge, kein produktives Release, kein Geräteein
 ## Zwischenzeitlicher main-Fortschritt
 
 Repository 1.8.1 Lite wurde während dieser Arbeit außerhalb dieses PR nach main gemergt (eb8aae1557eb221fe7601b00d64adc7e401530c4). Der Hotfix entwickelt dessen Repository-/Wizard-Funktionen nicht weiter und übernimmt keinen experimentellen Wizard-Branch. Die bereits veröffentlichten main-Änderungen bleiben kumulativ erhalten. Die neue Repository-Versionsprüfung wird lediglich auf den ausdrücklich beauftragten XCMate-Stand .67 aktualisiert; alle ursprünglichen Methoden bleiben bestehen.
+
+
+## Vollsuite und historische Testmodelle
+
+Der erste vollständige .67-Lauf am Head 75c68a7 führte 2766 Methoden aus und fand Fehler im optionalen Vorschaupfad der alten nativen API-Modelle. Kein PASS dieses Laufs: Die Ergebnisse sind historischer Fehlernachweis, kein freigegebenes Paket. Die Vorschau prüft nun vollständige native Control-/Monitor-Fähigkeiten, bleibt abbrechbar und vermeidet identische Setter bei 200 unveränderten Wiederholungen. Ihr echtes Verhalten wird unabhängig mit vollständiger Kodi-API und sichtbaren Bildpixeln geprüft. Der bestehende Live-Kern und seine alten Assertions werden unverändert ausgeführt.
+
+Zwei alte Scope-Prüfungen wurden an den ausdrücklich autorisierten Auftrag angepasst: Der AST-Routingvergleich normalisiert ausschließlich die vollständig gepinnten .67-Deltas, prüft danach weiterhin sämtliche anderen Routen; die frühere experimentelle programme_tvmaze59.py bleibt verboten, ausschließlich die neue opt-in programme_tvmaze67.py ist zugelassen. Keine alten Methoden oder Skip-Dekoratoren entfernt. Das minimale Startup-Player-Testdouble akzeptiert den neuen expliziten Live-Parameter; seine ursprünglichen Resolver-/Direktstart-Assertions bleiben erhalten. Die betroffenen Modelle und Datenintegritätsfälle werden zusätzlich vor den langen nativen Läufen geprüft.
+
+Die fortgeltenden Fokus-/Hero-Sichtbefunde aus #300 und die vier konkreten EPG-Kanalfälle aus #291 stehen im kumulativen Box-B-Androidplan weiterhin auf NOT_TESTED.
