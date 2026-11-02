@@ -138,7 +138,7 @@ def drain(cancel=lambda:False):
     artifact69=previous69.get('art') or {}
     from programme_policy68 import negative_scope
     from programme_status70 import retry as retry70,valid as valid70
-    if valid70(previous69) and artifact69.get('until',0)>time.time() and artifact69.get('policy69')==negative_scope({}) and not retry70(event,artifact69):continue
+    if valid70(previous69) and artifact69.get('until',0)>time.time() and artifact69.get('policy69')==negative_scope({}) and not retry70(event,artifact69) and not __import__('programme_status70').legacy_negative(artifact69):continue
     if previous69.get('code') in ('QUEUED','RUNNING') and 0<=time.time()-previous69.get('at',0)<60:continue
    portal=get_by_id(str(event.get('pid','')))
    if not portal or not portal.get('enabled',True) or not portal.get('include_live',True):continue

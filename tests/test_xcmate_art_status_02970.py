@@ -86,3 +86,12 @@ class ArtStatus70(Fixture,unittest.TestCase):
   event=self.event();value=self.art(event);self.b.completed(event,value)
   with mock.patch('builtins.open',side_effect=AssertionError('GUI_IO')),mock.patch('sqlite3.connect',side_effect=AssertionError('GUI_SQL')),mock.patch('media_sources43.get',side_effect=AssertionError('GUI_HTTP')):
    self.assertEqual(self.b.result(event)['image'],value['image'])
+
+ def test_legacy_helper_negative_is_lazily_rechecked_once(self):
+  from programme_art46 import fingerprint
+  event=self.event();legacy=dict(key=event['key'],fingerprint=fingerprint(event),url_version55=1,source='placeholder',code='HELPER_TIMEOUT',matching_policy57=1,source_policy57=[False,False],until=time.time()+21600,negative_scope68=__import__('programme_policy68').negative_scope(event))
+  lookup=mock.Mock(return_value=dict(url='https://image.tmdb.org/t/p/w500/SYNTHETIC_ONLY.jpg',source='tmdb_movie',match='EXACT_TITLE_YEAR',attribution='TMDB'))
+  with mock.patch('programme_index46.art',return_value=legacy),mock.patch('programme_index46.publish_result69',return_value=False):
+   first=self.q.resolve(event,allow_lookup=True,url_mode69=True,match=lookup,check=mock.Mock())
+   second=self.q.resolve(event,allow_lookup=True,url_mode69=True,match=lookup,check=mock.Mock())
+  self.assertEqual(first['code'],'READY');self.assertEqual(first['image'],second['image']);self.assertEqual(lookup.call_count,1)

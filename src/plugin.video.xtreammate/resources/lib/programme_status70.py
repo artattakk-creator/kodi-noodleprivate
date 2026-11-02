@@ -30,3 +30,7 @@ def waiting(event,previous=None):
  if value.get('tag')!=identity(event) or not 0<=time.time()-value.get('at',0)<20:return previous or {}
  code='WAITING_SERVICE' if time.time()-value['at']>=15 else 'REQUESTED'
  return dict(previous or {},code=code,status68=code)
+
+def legacy_negative(value):
+ # Lazy one-event upgrade of affected .69 negatives, never a global reset.
+ return isinstance(value,dict) and value.get('source')=='placeholder' and value.get('code') in ('HELPER_TIMEOUT','HELPER_BACKGROUND_UNAVAILABLE','NOT_SCHEDULED') and 'sources70' not in value

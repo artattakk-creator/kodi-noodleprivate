@@ -137,13 +137,15 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
                 local_session69(event,local60,persisted=True)
             return local60
     current=display(event,old)
+    legacy70=__import__('programme_status70').legacy_negative(old)
+    if legacy70:current=None
     if url_mode69 and current and current.get('source')!='placeholder' and not current.get('url_verified69'):current=None
     from programme_refresh63 import retry as retry63
     from programme_refresh63 import retry67
     explicit63=allow_lookup and (__import__('programme_status70').retry(event,prior69 if url_mode69 and prior69 else old) or retry63(event,old) or retry67(event,old))
     from programme_policy68 import negative_scope
     negative68=negative_scope(event)
-    if old and old.get('source')=='placeholder' and old.get('negative_scope68')==negative68 and old.get('until',0)>time.time() and not explicit63:
+    if old and old.get('source')=='placeholder' and old.get('negative_scope68')==negative68 and old.get('until',0)>time.time() and not explicit63 and not legacy70:
         return dict(old,image=event['placeholder'])
     if current and not (local_image63 and current.get('source')!='placeholder') and not explicit63 and not (allow_lookup and current.get('source')=='placeholder' and
             (current.get('code')=='AWAITING_BACKGROUND_REFRESH' or not current.get('matching_policy57') or current.get('source_policy57')!=policy())):return current
