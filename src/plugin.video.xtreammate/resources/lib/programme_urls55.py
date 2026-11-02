@@ -191,7 +191,9 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             yield found
             for alternate in found.get('alternate_urls57',[])[:2]:yield dict(found,url=alternate)
         from programme_match46 import diagnose
-        if value['code']=='NO_IMAGE':failed(diagnose(event))
+        from programme_sources57 import unsuitable69
+        if unsuitable69(event):failed('NO_UNIQUE_MATCH')
+        elif value['code']=='NO_IMAGE':failed(diagnose(event))
         elif 'lookup_code56' not in value:value['lookup_code56']=diagnose(event)
     for candidate in supplied():
         if cancel():return None

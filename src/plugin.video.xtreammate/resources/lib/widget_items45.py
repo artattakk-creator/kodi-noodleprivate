@@ -57,7 +57,7 @@ def describe(portal,kind,row,approved,epg=None,assets47=None):
     if kind=='series':
         from series_art64 import inspect,note
         props['XCMate.SeriesArt64']=inspect(row,image);note(props['XCMate.SeriesArt64'])
-    if kind in ('vod','series'):
+    if kind in ('vod','series') and __import__('widget_assets69').home():
         from widget_assets69 import renderable
         image={k:(v if renderable(v) else '') for k,v in image.items()}
         props['XCMate.ArtPending69']='false' if image.get('poster') else 'true'

@@ -16,7 +16,9 @@ def _work():
    try:
     from programme_events46 import describe
     from programme_art46 import cached
-    value=describe(portal,channel,event,event.get('canonical46',''),event.get('revision68'));art=cached(value)
+    complete69=event.get('pid')==str(portal['id']) and event.get('sid')==str(channel.get('sid',channel.get('stream_id',''))) and event.get('code') in ('LOCAL_EVENT','CACHED_EVENT') and event.get('key')
+    value=dict(event) if complete69 else describe(portal,channel,event,event.get('canonical46',event.get('canonical','')),event.get('revision68',event.get('revision')))
+    art=cached(value)
     from programme_requests68 import request,result
     if not eligible(art) and not event.get('_no_art_request68'):request(value,priority=True)
     art=result(value,art)

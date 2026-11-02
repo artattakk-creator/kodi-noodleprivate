@@ -237,7 +237,8 @@ class Fixture:
             xtream=types.SimpleNamespace(XtreamClient=lambda *args:self.client))
         patch.start();self.addCleanup(patch.stop)
         for name in ('library_index','group_selection','latest_media','home_menu','app_routes','media_art','media_state',
-                     'owner_dispatch','window_lifecycle','window_navigation','media_data','media_progress','media_window','guide_store','guide_window','guide_timers'):
+                     'owner_dispatch','window_lifecycle','window_navigation','media_data','media_progress','media_window','guide_store','guide_window','guide_timers',
+                     'widget_data41','widget_movie47'):
             sys.modules.pop(name,None)
         self.index=importlib.import_module('library_index');self.routes=importlib.import_module('app_routes')
         self.media=importlib.import_module('media_window');self.guide=importlib.import_module('guide_window')

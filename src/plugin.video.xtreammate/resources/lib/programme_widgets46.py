@@ -16,7 +16,6 @@ def decorate(value,portal,channel,info):
  # The graphical view retains the neutral programme image separately.
  from programme_image69 import eligible,proof
  actual=eligible(art,event)
- if not actual:image=''
  display=image if actual else logo if real else image
  value['art'].update(poster=display,thumb=display,landscape=display,fanart=image,icon=logo if real else image)
  props=value['props'];props['XCMate.ArtProof69']=proof(art) if actual else '';props.update({'XCMate.ProgrammeKey46':event['key'],'XCMate.ProgrammeImage46':image,'XCMate.ProgrammeLogo46':logo if real else '', 'XCMate.ProgrammeChannel46':event['channel'], 'XCMate.ProgrammeTitle46':event['title'] or tr(36102), 'XCMate.ProgrammeTimes46':((info.get('now_time','')+' – '+info.get('now_end_time','')) if event['title'] else ''),'XCMate.ProgrammeNext46':info.get('next',''),'XCMate.ProgrammeDescription46':event.get('description',''),'XCMate.ProgrammePercent46':str(round(info['progress']*100)) if event['title'] and isinstance(info.get('progress'),(int,float)) else '0', 'XCMate.ProgrammeDetails46':event['details_url'], 'XCMate.ProgrammeArtCode46':art.get('code','PENDING')})
