@@ -1,3 +1,11 @@
+0.1.29.70 (Test-Build)
+- EPG-Bildstatus bleibt für seine tatsächliche Gültigkeitsdauer abrufbar; keine falsche Fünf-Minuten-Lücke.
+- Angeforderte Bilder von noch nicht bestätigten Hintergrundaufträgen unterscheiden.
+- Ein expliziter Wiederholungsauftrag überwindet negative Sitzungscaches kontrolliert.
+- Helper-Fehler, eigene TMDB-Suche und Speicherstatus verständlich getrennt anzeigen.
+- Portale, Passwörter, TMDB-Zugang, EPG, Cover und Serienfortschritte bleiben erhalten.
+- Private Android-Logs noch nicht lesbar; Geräteabnahme NOT_TESTED.
+
 0.1.29.69 (Test-Build)
 - EPG-Bilder: geprüfte öffentliche HTTPS-Referenzen direkt anzeigen; lokales Bildarchiv optional.
 - Speicherfehler unterscheiden; begrenzte Wiederholungen und Sitzungspuffer statt endloser Bildsuche.

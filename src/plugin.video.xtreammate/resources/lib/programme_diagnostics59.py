@@ -3,8 +3,9 @@ def message(event,art):
     if not event.get('title') or not event.get('start') or not event.get('stop'):
         return 'Keine Programmdaten: Anbieter-EPG laden und Senderzuordnung prüfen. Sender bleibt auswählbar.'
     code=art.get('code','PENDING')
-    if art.get('storage69')=='RAM_ONLY':
-        return str(art.get('status68',code))+': '+('Geprüfte HTTPS-Bildreferenz nur für diese Sitzung; Kodi lädt asynchron.' if art.get('url_verified69') else 'Ergebnis für diese Sitzung vorgemerkt; kein bestätigtes Sendungsbild.')+' Speicherung: '+str(art.get('storage_code69','UNCONFIRMED'))+'. Sichtbare Darstellung separat prüfen.'
+    from programme_diagnosis70 import explain
+    explanation70=explain(art)
+    if explanation70:return explanation70
     if art.get('failure_reason68'):return str(art['failure_reason68'])+': '+str(art.get('storage68',{}))+' – keine Sicherheitsreserve automatisch verändert.'
     if art.get('code') in ('READY','READY_STALE') and art.get('source')!='placeholder' and art.get('image'):return str(art.get('status68','LOCAL_IMAGE_READY' if isinstance(art.get('image'),str) and __import__('os').path.isabs(art['image']) and not art.get('url_version55') else 'IMAGE_READY'))+': Bildreferenz bereit; Darstellung durch Kodi; sichtbare Texture separat prüfen. Quelle: '+str(art.get('source',''))
     return {
