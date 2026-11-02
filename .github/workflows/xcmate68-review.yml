@@ -1,0 +1,37 @@
+name: XCMate .68 implementation review
+on:
+  pull_request:
+    branches: [main]
+    paths: ["src/**", "tests/**", "tools/**", ".github/workflows/xcmate68-review.yml"]
+permissions:
+  contents: read
+concurrency:
+  group: xcmate68-review-${{ github.head_ref }}
+  cancel-in-progress: true
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Read pinned baseline
+        run: |
+          git fetch --no-tags --depth=1 origin 4d8ba5ef2c7bf997af437e230ef1ec52e1e747e8
+          python tools/inspect_xcmate68.py
+      - name: Install test dependencies
+        run: python -m pip install 'Pillow>=11,<13' 'impacket==0.13.0' 'simpleeval==0.9.13'
+      - name: Compile and run .68 regressions
+        run: |
+          python -m compileall -q src tests
+          python -m unittest discover -s tests -p '*02968.py' -v
+      - name: Measure cold local EPG and warm RAM seed
+        run: python tools/benchmark_xcmate68.py xcmate68-host-evidence.json
+      - name: Upload timing evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcmate68-focused-${{ github.sha }}
+          path: xcmate68-host-evidence.json
+          if-no-files-found: error

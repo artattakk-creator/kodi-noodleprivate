@@ -23,6 +23,7 @@ def selection(portal):
     if not portal.get('include_live',True):raise Failure('DISABLED','PORTAL')
     cid=str(portal.get('start_group_id') or '')
     if not cid:raise Failure('START_GROUP_MISSING','GROUP_POLICY')
+    if cid=='*':return cid  # All currently enabled groups, never a literal provider group.
     from group_selection import enabled_ids
     try:allowed=enabled_ids(portal['id'],'live',[{'category_id':cid}])
     except (OSError,ValueError,TypeError,KeyError):raise Failure('GROUP_POLICY_INVALID','GROUP_POLICY') from None
@@ -34,6 +35,9 @@ def read(portal,filename=None):
     from library_index import path
     filename=filename or path()
     if not os.path.isfile(filename):raise Failure('INDEX_MISSING','DATABASE')
+    if cid=='*':
+        from live_group68 import read as all_enabled68
+        return all_enabled68(portal,filename)
     db=None;stage='DATABASE';remaining=1.5;pages=0;recovered=0
     def query(sql,args):
         nonlocal remaining
@@ -92,8 +96,13 @@ def snapshot(portal,code):
     if not value or not value['rows']:return None
     rows=value['rows'];seen=set()
     for row in rows:
-        if str(row.get('category_id',''))!=cid or row['sid'] in seen:return None
+        if cid!='*' and str(row.get('category_id',''))!=cid or row['sid'] in seen:return None
         seen.add(row['sid'])
+    if cid=='*':
+        from group_selection import enabled_ids
+        categories=[dict(category_id=v.get('category_id','')) for v in rows]
+        allowed=enabled_ids(portal['id'],'live',categories)
+        if any(str(v.get('category_id','')) not in allowed for v in rows):return None
     if key!=policy(portal,'live'):return None
     trace('FALLBACK','LAST_GOOD',len(rows));return rows
 

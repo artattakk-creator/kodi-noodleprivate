@@ -1,3 +1,12 @@
+0.1.29.68
+- Sichtbare EPG-Sendungen und Details erhalten priorisierte Bildaufträge im Service.
+- Bildsuche: nachvollziehbare Auftragszustände und quellensicherer Negativcache.
+- EPG-/TMDB-Bildeinstellungen und getrennte Speicherdiagnose zentral erreichbar.
+- Mini-EPG mit lokalem Warmstart und unterscheidbaren Ladezuständen.
+- Live-Startgruppe dynamisch, einschließlich aller aktivierten Gruppen.
+- Portale, Passwörter, TMDB-Zugang und vorhandene Bilder bleiben erhalten.
+- Android-Abnahme auf Box B steht aus.
+
 0.1.29.67
 - Live-TV: native TS-/HLS-Erkennung, bewusst wählbares Streamformat und begrenzter, privater Stream-Präfixtest.
 - EPG: vorhandener Programmtext bleibt bei optionalen Metadatenfehlern erhalten; gültige Alias- und RAM-Fallbacks quellen- und profilgebunden.

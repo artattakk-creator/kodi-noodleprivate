@@ -18,12 +18,12 @@ def attempts(event,cancel=lambda:False):
     from programme_helper57 import lookup
     from programme_match46 import candidate
     helper,catalog=policy()
-    if catalog:
-        yield lambda:xcmate(event,cancel)
-        yield lambda:kodi(event,cancel)
     from utils import setting_bool
     own67=setting_bool('programme_tmdb46',False) and setting_bool('tmdb_research43',False)
     if own67:yield lambda:candidate(event,cancel)
+    if catalog:
+        yield lambda:xcmate(event,cancel)
+        yield lambda:kodi(event,cancel)
     if helper:
         def helper_lookup():
             from programme_urls55 import profile

@@ -23,6 +23,17 @@ def poll():
         changed=_focus!=current;_focus=current;art=dict(_art) if _art else {}
     if changed:_focused_at=time.monotonic();note('HOME_FOCUS',pid,sid)
     info=get(pid,sid)
+    if info:
+        # The displayed RAM event is sufficient for a small intent. Do not
+        # wait for the optional bulk publisher/prepare() to get a timeslice.
+        from programme_requests68 import request,result
+        raw68=next((e for e in info.get('events',[]) if e.get('start')==info.get('start') and e.get('stop')==info.get('stop') and e.get('title')==info.get('now')),None)
+        if raw68:
+            intent68=dict(raw68,pid=pid,sid=sid,canonical=info.get('canonical46') or info.get('epg_id',''),revision=info.get('snapshot_revision'))
+            request(intent68,priority=True)
+            ready68=result(intent68)
+            if ready68.get('code') in ('READY','READY_STALE') and ready68.get('source')!='placeholder':
+                art=dict(ready68,profile63=scope)
     if not info:
         from epg_row64 import valid as row_valid64
         fallback_window=xbmcgui.Window(10000)
@@ -89,6 +100,9 @@ def prepare(pid):
     from programme_art46 import cached
     event=from_info(dict(id=str(pid)),dict(sid=focus[1]),info)
     art=cached(event)
+    from programme_requests68 import request,result
+    request(event,priority=True)
+    art=result(event,art)
     with _lock:
         if _focus==focus:_art=dict(art,key=event['key'],profile63=focus[3])
 

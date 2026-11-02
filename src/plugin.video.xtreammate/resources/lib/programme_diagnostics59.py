@@ -3,7 +3,8 @@ def message(event,art):
     if not event.get('title') or not event.get('start') or not event.get('stop'):
         return 'Keine Programmdaten: Anbieter-EPG laden und Senderzuordnung prüfen. Sender bleibt auswählbar.'
     code=art.get('code','PENDING')
-    if art.get('source')!='placeholder' and art.get('image'):return 'Bildreferenz bereit; Darstellung durch Kodi. Quelle: '+str(art.get('source',''))
+    if art.get('failure_reason68'):return str(art['failure_reason68'])+': '+str(art.get('storage68',{}))+' – keine Sicherheitsreserve automatisch verändert.'
+    if art.get('code') in ('READY','READY_STALE') and art.get('source')!='placeholder' and art.get('image'):return str(art.get('status68','LOCAL_IMAGE_READY' if isinstance(art.get('image'),str) and __import__('os').path.isabs(art['image']) and not art.get('url_version55') else 'IMAGE_READY'))+': Bildreferenz bereit; Darstellung durch Kodi; sichtbare Texture separat prüfen. Quelle: '+str(art.get('source',''))
     return {
         'BLOCKED_IMAGE_HOST_OR_URL':'Bildadresse vorhanden, aber Host oder URL nicht freigegeben. Zulässige Bildquelle prüfen.',
         'BLOCKED_CREDENTIAL_URL':'Bildadresse enthält private Zugangsdaten und wird nicht angezeigt.',
@@ -28,5 +29,14 @@ def message(event,art):
         'TMDB_TOKEN_FILE_INVALID':'Privater TMDB-Zugang ist nicht sicher lesbar. Vorhandenen Zugang prüfen; keinen anderen Token automatisch verwenden.',
         'GUI_NOT_UPDATED':'Lokale Bilddatei vorhanden; sichtbare Kodi-Ausgabe noch nicht bestätigt.',
         'NO_MATCH':'Sendungsdaten vorhanden; kein eindeutiger Bildtreffer.',
-        'PENDING':'Sendungsdaten vorhanden; Bildstatus noch nicht bestätigt.',
+        'PENDING':'NOT_SCHEDULED: Sendungsdaten vorhanden; noch kein Bildauftrag bestätigt.',
+        'NOT_SCHEDULED':'NOT_SCHEDULED: Noch kein Auftrag für diese Sendung bestätigt.',
+        'QUEUED':'QUEUED: Bildprüfung für diese Sendung eingeplant.',
+        'RUNNING':'RUNNING: Bildsuche und Download werden im Hintergrund geprüft.',
+        'CACHE_MISS':'CACHE_MISS: Kein gültiger lokaler Sendungseintrag verfügbar.',
+        'CACHE_MISMATCH':'CACHE_MISMATCH: Quell- oder Sendungsrevision hat sich geändert; kein fremdes Bild übernommen.',
+        'DB_FULL':'DB_FULL: Bild-/Programmdatenbank kann nicht schreiben; internes Limit und freien Speicher getrennt prüfen.',
+        'FETCH_FAILED':'FETCH_FAILED: Hintergrundauftrag fehlgeschlagen; keine Bilddarstellung bestätigt.',
+        'TMDB_LOOKUP_DISABLED':'TMDB_LOOKUP_DISABLED: Bildsuche unter EPG / TMDB-Zugang aktivieren.',
+        'LOCAL_IMAGE_READY':'LOCAL_IMAGE_READY: Lokale Bilddatei geprüft. Sichtbare Kodi-Texture separat abnehmen.',
     }.get(code,'Kein bestätigtes Sendungsbild ('+str(code)+'). Programmdaten bleiben verfügbar.')

@@ -11,6 +11,7 @@ from urllib.parse import urlsplit,unquote
 _lock=threading.Lock();_queue=OrderedDict();_pending=set();_thread=None
 _stop=threading.Event();_wake=threading.Event();_revisions={}
 _observed56={}
+_urgent68=set();_burst68=0
 OPTIONS='|redirect-limit=0&connection-timeout=3&failonerror=true'
 
 
@@ -131,6 +132,10 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     from programme_refresh63 import retry as retry63
     from programme_refresh63 import retry67
     explicit63=allow_lookup and (retry63(event,old) or retry67(event,old))
+    from programme_policy68 import negative_scope
+    negative68=negative_scope(event)
+    if old and old.get('source')=='placeholder' and old.get('negative_scope68')==negative68 and old.get('until',0)>time.time() and not explicit63:
+        return dict(old,image=event['placeholder'])
     if current and not (local_image63 and current.get('source')!='placeholder') and not explicit63 and not (allow_lookup and current.get('source')=='placeholder' and
             (current.get('code')=='AWAITING_BACKGROUND_REFRESH' or not current.get('matching_policy57') or current.get('source_policy57')!=policy())):return current
     if cancel():return None
@@ -207,6 +212,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         break
     if not candidates and not allow_lookup:value['code']='AWAITING_BACKGROUND_REFRESH'
     if cancel():return None
+    if value.get('source')=='placeholder':value['negative_scope68']=negative68
     # A transient network failure may never extend or bless an expired URL.
     save_event(event,write=True)
     saved=art(event,value)
@@ -232,29 +238,60 @@ def refreshed(pid,revision):
     return eligible
 
 
-def enqueue(event,allow_lookup=False,local_image63=False):
+def enqueue(event,allow_lookup=False,local_image63=False,priority68=False):
     """Called only by existing background producers, never by focus/details."""
     global _thread
     if _stop.is_set() or not event.get('title'):return False
     with _lock:
         key=event['key']
-        if key in _pending or len(_pending)>=24:return False
-        _pending.add(key);_queue[key]=(dict(event),allow_lookup,True) if local_image63 else (dict(event),allow_lookup)
+        if key in _pending:
+            if priority68 and key in _queue:
+                old=_queue[key];_queue[key]=(old[0],old[1] or allow_lookup,True,old[3])
+                _urgent68.add(key)
+            return False
+        if len(_pending)>=24:
+            victim=next((k for k in reversed(_queue) if k not in _urgent68),None) if priority68 else None
+            if victim is None:return False
+            _queue.pop(victim);_pending.discard(victim)
+        from epg_handoff63 import profile_scope
+        _pending.add(key);_queue[key]=(dict(event),allow_lookup,bool(local_image63),profile_scope())
+        if priority68:_urgent68.add(key)
+        try:
+            from programme_requests68 import status
+            status(event,'QUEUED')
+        except (ImportError,AttributeError,RuntimeError):pass
         if _thread is None or not _thread.is_alive():
             _thread=threading.Thread(target=_run,name='XCMate-programme-URL55',daemon=True);_thread.start()
     _wake.set();return True
 
 
 def _run():
+    global _burst68
     while not _stop.is_set():
-        with _lock:pair=_queue.popitem(last=False) if _queue else None
+        with _lock:
+            urgent=next((k for k in _queue if k in _urgent68),None)
+            if urgent is not None and (_burst68<3 or all(k in _urgent68 for k in _queue)):
+                pair=(urgent,_queue.pop(urgent));_burst68+=1
+            else:
+                background=next((k for k in _queue if k not in _urgent68),None)
+                pair=(background,_queue.pop(background)) if background is not None else _queue.popitem(last=False) if _queue else None
+                _burst68=0
+            if pair:_urgent68.discard(pair[0])
         if pair is None:_wake.wait(.5);_wake.clear();continue
         key,job=pair;event,allow=job[:2];local63=len(job)>2 and job[2]
         try:
             try:
-                if local63:resolve(event,cancel=_stop.is_set,allow_lookup=allow,local_image63=True)
-                else:resolve(event,cancel=_stop.is_set,allow_lookup=allow)
-            except Exception:pass  # No private exception text, keep worker alive.
+                from epg_handoff63 import profile_scope
+                from programme_requests68 import status,completed
+                cancelled=lambda:_stop.is_set() or len(job)>3 and job[3]!=profile_scope()
+                if cancelled():continue
+                status(event,'RUNNING')
+                if local63:value=resolve(event,cancel=cancelled,allow_lookup=allow,local_image63=True)
+                else:value=resolve(event,cancel=cancelled,allow_lookup=allow)
+                if not cancelled():completed(event,value)
+            except Exception:
+                try:status(event,'FETCH_FAILED')
+                except (NameError,AttributeError,RuntimeError):pass
         finally:
             with _lock:_pending.discard(key)
 

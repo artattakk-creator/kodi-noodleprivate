@@ -540,7 +540,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self._row_offset = 0
         page = self.visible_channels[self._page_start:self._page_start+CHANNEL_PAGE_SIZE]
         labels = [c.name for c in page]
-        return labels or ['Senderkatalog wird vorbereitet' if not self._catalog_ready else 'Keine aktivierten Sender']
+        return labels or ['Senderkatalog wird vorbereitet' if not self._catalog_ready or getattr(self,'_catalog_partial46',False) else 'Keine aktivierten Sender']
 
     def _row_value44(self,control,method,*values):
         from render_diff44 import write
@@ -572,7 +572,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
                     info = self._guide.get(sid)
                     self._snapshot_ms=getattr(self,'_snapshot_ms',0)+(time.perf_counter()-before)*1000
                     label = ('LIVE  ' if sid==self.sid else '')+channel.name
-                    subtitle = '{}-{}  {}'.format(info['now_time'],info['now_end_time'],info['now'][:40]) if info['now'] else 'Keine aktuellen EPG-Daten'
+                    subtitle = '{}-{}  {}'.format(info['now_time'],info['now_end_time'],info['now'][:40]) if info['now'] else 'EPG wird geladen …' if info.get('loading68') else 'Keine aktuellen EPG-Daten'
                     if i==selected and info['next']:
                         footer_text='Danach {}: {}'.format(info['next_time'],info['next'])
             elif self.mode == 'guide' and i<len(self._programme_events):

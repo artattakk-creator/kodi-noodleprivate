@@ -200,6 +200,10 @@ class IPTVMasterService(xbmc.Monitor):
             if exiting and exit_pending48():
                 self.waitForAbort(.05)
                 continue  # Pending Stop/Home only; completed latches must not starve widget refresh.
+            # Visible event artwork has its own bounded intake, independent
+            # of slow catalogue startup and the optional bulk warmup phase.
+            try:__import__('programme_requests68').poll()
+            except (ImportError,AttributeError,RuntimeError):pass
             # Explicit visible-page/manual EPG requests are small, service-owned
             # jobs. They are independent of opt-in bulk catalogue prefetch.
             try:

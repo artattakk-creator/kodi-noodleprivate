@@ -44,7 +44,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
  def configure(self,portal,channel,event=None,parent=None):
   self.portal,self.channel,self.selected,self.parent=portal,dict(channel),event,parent
   self._owner=threading.get_ident();self._closed=False;self._ready=False;self._shown=False
-  self._cancel=threading.Event();self._future=None;self.event=None;self._art_signature=None;self._next=0;self._scroll46=0
+  self._cancel=threading.Event();self._future=None;self.event=None;self._art_signature=None;self._next=0;self._scroll46=0;self._art68={}
  def _gui(self):
   if threading.get_ident()!=self._owner:raise RuntimeError('PROGRAMME_OWNER_THREAD')
  def onInit(self):
@@ -64,7 +64,12 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
      from programme_events46 import load
      from media_art import local_art,request as request_logos
      value=load(self.portal,self.channel,self.selected)
+     if self.selected and self.selected.get('_no_art_request68'):value['_no_art_request68']=True
      value['logo']=local_art(self.channel)['thumb'];request_logos([self.channel])
+     from programme_art46 import cached
+     from programme_requests68 import request
+     value['_art68']=cached(value)
+     if not self._cancel.is_set():request(value,priority=True)
      future.set_result(value)
     except Exception:future.set_exception(RuntimeError('PROGRAMME_READ_FAILED'))
    finally:_slots.release()
@@ -79,6 +84,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
    try:self.event=future.result()
    except Exception:self.getControl(103).setText(tr(36107))
    else:
+    self._art68=self.event.pop('_art68',{})
     from programme_events46 import summary
     self.getControl(101).setLabel(self.event.get('title') or tr(36102));self.getControl(103).setText(summary(self.event))
     from programme_assets47 import station_image
@@ -87,8 +93,12 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
     self.getControl(112).setLabel('' if real else self.event['channel']);self.getControl(112).setVisible(not real)
   if self.event and time.monotonic()>=self._next:
    self._next=time.monotonic()+.5
-   from programme_art46 import cached
-   art=cached(self.event);signature=(art.get('image'),art.get('code'),art.get('source'),art.get('match'))
+   from programme_requests68 import result
+   art=result(self.event,self._art68)
+   if art.get('source') in (None,'','placeholder'):
+    from programme_requests68 import request
+    request(self.event,priority=True)
+   signature=(art.get('image'),art.get('code'),art.get('source'),art.get('match'))
    if signature!=self._art_signature:
     self._art_signature=signature;self.getControl(110).setImage(art.get('image') or self.event['placeholder'])
     from programme_flow48 import trace

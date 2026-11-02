@@ -12,6 +12,20 @@ PAGE=64
 
 
 def pages(portal):
+    saved68=str(portal.get('start_group_id') or '')
+    if saved68:
+        from live_home62 import read as start_group68,Failure
+        try:selected68,_=start_group68(portal)
+        except Failure as failure68:
+            if failure68.code in ('GROUP_DISABLED','START_GROUP_UNAVAILABLE','START_GROUP_MISSING','DISABLED'):return
+            from library_index import IndexReadError
+            error68=IndexReadError(failure68.code);error68.code=failure68.code;raise error68 from None
+        # Preserve the saved legacy widget's start-station pin exactly once.
+        pinned68=str(portal.get('start_stream_id') or '')
+        row68=next((row for row in selected68 if row['sid']==pinned68),None)
+        if row68:selected68=[row68]+[row for row in selected68 if row['sid']!=pinned68]
+        for offset68 in range(0,len(selected68),PAGE):yield selected68[offset68:offset68+PAGE]
+        return
     from widget_movie47 import MovieReader
     from library_index import path,initial_group,IndexReadError
     from widget_query44 import groups,get

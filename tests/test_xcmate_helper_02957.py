@@ -145,7 +145,7 @@ class Helper57(Fixture,unittest.TestCase):
             info=importlib.import_module('local_epg').now_next('p',[self.row],{},self.now)['1']
             widget=importlib.import_module('widget_items45').describe(self.portal,'live',self.row,{},info)
             dialog=importlib.import_module('programme_window46').ProgrammeWindow46('XCMateProgramme46.xml',str(ADDON),'Default','720p')
-            dialog.configure(self.portal,self.row,selected);dialog._ready=True;dialog.event=events.load(self.portal,self.row,selected,now=self.now);dialog.pump()
+            dialog.configure(self.portal,self.row,selected);dialog._ready=True;dialog.event=events.load(self.portal,self.row,selected,now=self.now);__import__('programme_support68').completed_read(dialog);dialog.pump()
         self.assertEqual(widget['props']['XCMate.ProgrammeKey46'],dialog.event['key'])
         self.assertEqual(widget['props']['XCMate.ProgrammeImage46'],dialog.getControl(110).image)
         self.assertEqual(dialog.getControl(110).image,value['image']);self.assertEqual(dialog.event['description'],'LOCAL EPG TEXT')

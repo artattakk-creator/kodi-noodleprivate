@@ -11,6 +11,8 @@ def data67():
   for path,digest in json.loads(file.read_text()).get('source_sha256',{}).items():hashes.setdefault(path,set()).add(digest)
  return hooks,hashes
 def without_stabilization67(source,module):
+ from stabilization_contract_02968 import without_stabilization68
+ source=without_stabilization68(source,module)
  binary=isinstance(source,bytes);raw=source if binary else source.encode()
  final=Path(__file__).parent/'fixtures/xcmate_02967_final_hooks.json'
  if final.exists():

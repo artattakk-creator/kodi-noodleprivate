@@ -30,13 +30,14 @@
     <setting id="view_mode" type="enum" label="32247" values="32248" default="0" />
   </category>
   <category label="36002">
+    <setting id="programme_settings68" type="action" label="EPG / Sendungsbilder: Einstellungen und Status" action="RunPlugin(plugin://plugin.video.xtreammate/?action=native_options45&amp;group=tmdb_access61)"/>
     <setting id="programme_art_budget46" type="enum" label="36120" values="32|64|128|256" default="1"/>
     <setting id="programme_helper57" type="bool" label="36540" default="true"/>
     <setting id="programme_catalog57" type="bool" label="36541" default="true"/>
     <setting id="tmdb_test60" type="action" label="36600" action="RunPlugin(plugin://plugin.video.xtreammate/?action=native_options45&amp;group=tmdb_test60)" />
     <setting id="tmdb_token_revision61" type="text" label="36620" default="" visible="false"/>
     <setting id="programme_tvmaze67" type="bool" label="36721" default="false"/>
-    <setting id="programme_tmdb46" type="bool" label="36110" default="false"/>
+    <setting id="programme_tmdb46" type="bool" label="36110" default="false" visible="false"/>
     <setting id="programme_image_hosts55" type="text" label="36530" default=""/>
     <setting id="epg_sources_manager" type="action" label="XCMate: EPG-Quellen und Senderzuordnung" action="RunPlugin(plugin://plugin.video.xtreammate/?action=epg_sources)" />
     <setting id="epg_enabled" type="bool" label="32236" default="true" />
@@ -50,7 +51,7 @@
     <setting id="epg_days" type="number" label="32596" default="7" />
   </category>
   <category label="36003">
-    <setting id="tmdb_research43" type="bool" label="35940" default="false" />
+    <setting id="tmdb_research43" type="bool" label="35940" default="false" visible="false" />
     <setting id="tmdb_read_token43" type="text" label="35941" default="" option="hidden" />
     <setting id="tmdb_fallback43" type="bool" label="35942" default="false" />
     <setting id="live_exit_fullscreen42" type="bool" label="35854" default="false" />

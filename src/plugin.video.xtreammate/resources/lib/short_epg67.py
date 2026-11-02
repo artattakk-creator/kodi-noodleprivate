@@ -12,6 +12,7 @@ def failed(client,error):
  status=status if type(status) is int and 100<=status<=599 else 0
  with _lock:
   attempt=min(5,_state.get(key(client),(0,0))[1]+1);delay=min(900,30*2**(attempt-1))
+  if status in (404,410):delay=21600  # Unsupported endpoint; local/XMLTV remains authoritative.
   if status==429:
    try:delay=max(delay,min(900,int(getattr(error,'headers',{}).get('Retry-After','300'))))
    except (TypeError,ValueError,AttributeError):delay=max(delay,300)
@@ -19,5 +20,5 @@ def failed(client,error):
   while len(_state)>16:_state.pop(next(iter(_state)))
  try:
   import xbmc
-  xbmc.log('[XCMate][SHORT67] request=GET_SHORT_EPG portal='+key(client)[:12]+' status='+str(status)+' code='+('TIMEOUT' if isinstance(error,TimeoutError) else 'HTTP_FAILURE' if status else 'NETWORK_FAILURE')+' retry_seconds='+str(delay)+' attempts='+str(attempt),xbmc.LOGWARNING)
+  xbmc.log('[XCMate][SHORT67] request=GET_SHORT_EPG portal='+key(client)[:12]+' status='+str(status)+' code='+('TIMEOUT' if isinstance(error,TimeoutError) else 'SHORT_EPG_UNSUPPORTED' if status in (404,410) else 'HTTP_FAILURE' if status else 'NETWORK_FAILURE')+' retry_seconds='+str(delay)+' attempts='+str(attempt),xbmc.LOGWARNING)
  except (ImportError,AttributeError,RuntimeError):pass

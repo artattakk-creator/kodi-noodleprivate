@@ -107,7 +107,7 @@ class Programme56(Fixture,unittest.TestCase):
         with mock.patch('media_sources43.get',side_effect=AssertionError('GUI API')):
             widget=items.describe(self.portal,'live',self.row,{},local.now_next('p',[self.row],{},selected['start']+60)['1'])
             window=importlib.import_module('programme_window46').ProgrammeWindow46('XCMateProgramme46.xml',str(ADDON),'Default','720p')
-            window.configure(self.portal,self.row,selected);window._ready=True;window.event=self.events.load(self.portal,self.row,selected,now=self.now);window.pump()
+            window.configure(self.portal,self.row,selected);window._ready=True;window.event=self.events.load(self.portal,self.row,selected,now=self.now);__import__('programme_support68').completed_read(window);window.pump()
         self.assertEqual(widget['props']['XCMate.ProgrammeKey46'],self.event['key'])
         self.assertEqual(widget['props']['XCMate.ProgrammeImage46'],value['image'])
         self.assertEqual(window.getControl(110).image,value['image'])
