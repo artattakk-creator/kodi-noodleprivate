@@ -1,4 +1,4 @@
-"""Safe, offline GS Media Setup 0.2.3 tests; no Kodi runtime needed."""
+"""Safe, offline GS Media Setup 0.2.4 tests; no Kodi runtime needed."""
 import importlib
 import json
 from pathlib import Path
@@ -15,13 +15,14 @@ inventory = importlib.import_module("setup_inventory")
 gate = importlib.import_module("setup_gate")
 layout = importlib.import_module("setup_layout")
 handoff = importlib.import_module("setup_handoff")
+tmdb_player = importlib.import_module("setup_tmdb_player")
 
 
 class SetupPreflightTests(unittest.TestCase):
     def test_manifest_script_only(self):
         addon = ET.parse(ADDON / "addon.xml").getroot()
         self.assertEqual(addon.get("id"), "script.gsmedia.setup")
-        self.assertEqual(addon.get("version"), "0.2.3")
+        self.assertEqual(addon.get("version"), "0.2.4")
         self.assertIsNotNone(addon.find("./extension[@point='xbmc.python.script']"))
         self.assertIsNone(addon.find("./extension[@point='xbmc.service']"))
         self.assertEqual([e.get("addon") for e in addon.findall("./requires/import")], ["xbmc.python"])
@@ -171,6 +172,37 @@ class SetupPreflightTests(unittest.TestCase):
         self.assertEqual(handoff.assess(marker, inventory, "second-boot")["code"],
                          "ALREADY_ATTEMPTED")
 
+    def test_tmdb_default_player_matches_archived_xvault_settings(self):
+        self.assertEqual(tmdb_player.PLAYER_FILE, "xvault_stable.json")
+        self.assertEqual(tmdb_player.TARGET_SETTINGS, (
+            ("default_player_movies", "xvault_stable.json play_movie"),
+            ("default_player_episodes", "xvault_stable.json play_episode"),
+        ))
+        self.assertIn("tmdb_xvault_default_player_configured", handoff.REQUIRED_STAGES)
+
+    def test_tmdb_player_requires_installed_enabled_and_verification(self):
+        inventory = {"code": "READY", "addons": {
+            "plugin.video.themoviedb.helper": {"version": "5.4.16", "enabled": True},
+            "plugin.video.xvault": {"version": "2026.10.20.1", "enabled": True},
+        }}
+        self.assertEqual(tmdb_player.proposal(inventory)["status"], "EXISTING_PROFILE_UNCHANGED")
+        self.assertEqual(tmdb_player.proposal(inventory, fresh_install=True)["status"], "PLAYER_JSON_NOT_VERIFIED")
+        result = tmdb_player.proposal(inventory, player_file_verified=True, fresh_install=True)
+        self.assertTrue(result["can_apply"])
+        self.assertFalse(result["apply_enabled"])
+        inventory["addons"]["plugin.video.xvault"]["enabled"] = False
+        self.assertFalse(tmdb_player.proposal(inventory, player_file_verified=True, fresh_install=True)["can_apply"])
+
+    def test_tmdb_player_json_route_validation(self):
+        example = {
+            "name": "xVAULT", "plugin": "plugin.video.xvault",
+            "play_movie": "plugin://plugin.video.xvault/?action=playTMDbHelper&title={title_url}&tmdb_id={tmdb}&imdb={imdb}",
+            "play_episode": "plugin://plugin.video.xvault/?action=playTMDbHelper&season={season}&tmdb_id={tmdb}&imdb={imdb}",
+        }
+        self.assertTrue(tmdb_player.verify_source_json(example))
+        example["plugin"] = "another.addon"
+        self.assertFalse(tmdb_player.verify_source_json(example))
+
     def test_inventory_reads_only_installed_state(self):
         def stub(arg):
             request = json.loads(arg)
@@ -210,7 +242,7 @@ class SetupPreflightTests(unittest.TestCase):
             planner.plan_for("../delete")
 
     def test_no_mutating_kodi_calls_or_userdata_access(self):
-        sources = [ADDON / "default.py", LIB / "setup_inventory.py", LIB / "setup_gate.py", LIB / "setup_plan.py", LIB / "setup_layout.py", LIB / "setup_handoff.py"]
+        sources = [ADDON / "default.py", LIB / "setup_inventory.py", LIB / "setup_gate.py", LIB / "setup_plan.py", LIB / "setup_layout.py", LIB / "setup_handoff.py", LIB / "setup_tmdb_player.py"]
         for path in sources:
             value = path.read_text("utf-8")
             for bad in ("InstallAddon(", "UninstallAddon(", "EnableAddon(",

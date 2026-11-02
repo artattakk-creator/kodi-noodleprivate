@@ -13,6 +13,7 @@ REQUIRED_STAGES = frozenset((
     "bingie_patches_applied",
     "bingie_menus_applied",
     "bingie_widgets_applied",
+    "tmdb_xvault_default_player_configured",
     "postinstall_health_passed",
 ))
 WIZARD_URL = "plugin://plugin.video.xtreammate/?action=setup_wizard"
