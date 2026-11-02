@@ -64,11 +64,13 @@ for sid in ('5','6'):
   time.sleep(.1)
  else:raise RuntimeError('ERROR_SOURCE_NOT_REQUESTED '+sid+' '+json.dumps(stats))
  for _ in range(100):
-  state=rpc('XBMC.GetInfoBooleans',dict(booleans=['Window.IsActive(10138)','Window.IsActive(10160)','System.HasModalDialog']))
-  if not active() and not state.get('Window.IsActive(10138)') and not state.get('Window.IsActive(10160)'):break
+  state=rpc('XBMC.GetInfoBooleans',dict(booleans=['Window.IsActive(12002)','Window.IsActive(10138)','Window.IsActive(10160)','System.HasModalDialog']))
+  # Kodi's own error OK dialog can legitimately sit above its busy dialog.
+  # Simulate the user's OK only on that specific error layer.
+  if state.get('Window.IsActive(12002)'):rpc('Input.Select');break
+  if not active() and not any(state.values()):break
   time.sleep(.1)
- else:raise RuntimeError('NATIVE_ERROR_NOT_RELEASED '+sid)
- if state.get('System.HasModalDialog'):rpc('Input.Select')
+ else:raise RuntimeError('NATIVE_ERROR_NOT_RELEASED '+sid+' '+json.dumps(state))
  idle();time.sleep(.3)
  assert not active(),('INVALID_SOURCE_ACCEPTED',sid)
  assert Path('/root/kodi67-start-count').read_text()==start_count,'NATIVE_KODI_RESTARTED_AFTER_ERROR'
