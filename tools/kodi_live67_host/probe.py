@@ -20,16 +20,18 @@ def active():return [p for p in rpc('Player.GetActivePlayers') if p['type']=='vi
 def stop():
  for p in active():rpc('Player.Stop',dict(playerid=p['playerid']))
  for _ in range(100):
-  if not active():return
+  if not active():time.sleep(.3);return
   time.sleep(.1)
  raise RuntimeError('NATIVE_STOP_NOT_RETURNED')
 def wait_video():
  for _ in range(150):
   ids=active()
   if ids:
-   props=rpc('Player.GetProperties',dict(playerid=ids[0]['playerid'],properties=['time','currentvideostream','speed']))
+   props=rpc('Player.GetProperties',dict(playerid=ids[0]['playerid'],properties=['time','currentvideostream','currentaudiostream','speed']))
    video=props.get('currentvideostream') or {}
-   if video.get('width')==320 and props.get('speed')==1:return dict(width=video['width'],height=video.get('height'),codec=video.get('codec'),time=props['time'])
+   elapsed=props['time'].get('seconds',0)+props['time'].get('milliseconds',0)/1000
+   if video.get('width')==320 and props.get('speed')==1 and elapsed>=1:
+    return dict(width=video['width'],height=video.get('height'),codec=video.get('codec'),audio=props.get('currentaudiostream'),time=props['time'])
   time.sleep(.1)
  raise RuntimeError('NATIVE_FRAME_NOT_DECODED')
 results=[]

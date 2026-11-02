@@ -33,7 +33,8 @@ class Transport67(Fixture,unittest.TestCase):
  def test_native_error_callback_never_stops_or_retries_and_ignores_changed_session(self):
   import json,time
   import live_feedback67 as m
-  from live_overlay import SESSION_KEY
+  with mock.patch.object(sys.modules['xbmcgui'],'WindowDialog',object,create=True):
+   SESSION_KEY=importlib.import_module('live_overlay').SESSION_KEY
   class Native:
    def isPlayingVideo(self):return False
   xbmc=sys.modules['xbmc'];m._seen.clear();m._pending=None

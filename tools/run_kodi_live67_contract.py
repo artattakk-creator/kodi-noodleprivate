@@ -15,7 +15,7 @@ image='xcmate-kodi21-helper57-contract';name='xcmate-live67-'+uuid.uuid4().hex[:
 with (report/'build.log').open('w') as log:run('build','--secret','id=system_ca,src=/etc/ssl/certs/ca-certificates.crt','-t',image,str(root/'tools/kodi_helper57_host'),stdout=log,stderr=subprocess.STDOUT)
 try:
  run('run','-d','--name',name,'--mount','type=bind,src='+str(root/'tools/kodi_live67_host')+',dst=/work,readonly','--mount','type=bind,src='+str(root/'src/plugin.video.xtreammate')+',dst=/xcmate,readonly','--mount','type=bind,src='+str(media)+',dst=/root/media,readonly',image,'sh','/work/start.sh',stdout=subprocess.DEVNULL)
- with (report/'live.json').open('w') as out:run('exec',name,'python3','/work/probe.py',stdout=out)
+ with (report/'live.json').open('w') as out:run('exec',name,'python3','/work/probe.py',stdout=out,timeout=180)
  result=json.loads((report/'live.json').read_text());assert len(result['cases'])==5 and len(result['errors'])==2
  print('NATIVE67_AV_VERIFIED_JSON '+json.dumps(result,sort_keys=True))
 except Exception:
