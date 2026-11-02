@@ -137,6 +137,38 @@ class Pipeline68(Fixture,unittest.TestCase):
    with mock.patch('tmdb_token61.status',return_value='FILE_VALID'):state()
    self.assertEqual(self.options,before)
 
+ def test_detail_pump_reads_only_properties_and_completed_worker_result(self):
+  from programme_window46 import ProgrammeWindow46
+  window=ProgrammeWindow46('XCMateProgramme46.xml',str(self.folder),'Default','720p')
+  window.configure(self.portal,dict(sid='1',name='Station'));window._ready=True
+  window.event=dict(self.event(),key='event',channel='Station',placeholder='/synthetic/placeholder.png')
+  with mock.patch('programme_art46.cached',side_effect=AssertionError('GUI_SQL_FILE')),mock.patch('sqlite3.connect',side_effect=AssertionError('GUI_SQL')),mock.patch('builtins.open',side_effect=AssertionError('GUI_FILE')),mock.patch('media_sources43.get',side_effect=AssertionError('GUI_HTTP')):
+   window.pump()
+  self.assertTrue(any('Programme68.request.' in k for k in self.properties))
+ def test_visible_eight_rows_schedule_at_most_eight_current_events(self):
+  from guide_grid_data import page
+  class View(dict):pass
+  view=View();view.canonical={};view.revision=('guide',1)
+  rows=[]
+  for i in range(8):
+   sid=str(i);rows.append(dict(sid=sid,name='Station '+sid,epg_channel_id='xml'+sid))
+   view[sid]=[dict(name='Event '+sid,descr='',start_timestamp=self.now-60,stop_timestamp=self.now+1800)]
+   view.canonical[sid]=sid
+  reader=types.SimpleNamespace(page=lambda *a,**kw:(rows,8),groups=lambda *a:[])
+  def describe(portal,channel,event,canonical,revision):
+   return dict(pid='p',sid=channel['sid'],title=event['title'],start=event['start'],stop=event['stop'],canonical=canonical,revision=revision)
+  with mock.patch('library_index.Reader',return_value=reader),mock.patch('local_epg.window',return_value=view),mock.patch('media_art.request'),mock.patch('programme_events46.describe',side_effect=describe),mock.patch('programme_requests68.request',return_value=True) as request:
+   page(self.portal,0,self.now,category='a')
+  self.assertEqual(request.call_count,8)
+  self.assertEqual({c.args[0]['sid'] for c in request.call_args_list},set(map(str,range(8))))
+  self.assertTrue(all(c.kwargs==dict(priority=True) for c in request.call_args_list))
+ def test_manual_mapping_preview_never_enqueues_or_requests_art(self):
+  from guide_grid_data import page
+  reader=types.SimpleNamespace(page=lambda *a,**kw:([],0),groups=lambda *a:[])
+  with mock.patch('library_index.Reader',return_value=reader),mock.patch('local_epg.window',return_value={}),mock.patch('media_art.request') as logos,mock.patch('programme_requests68.request') as request:
+   page(self.portal,0,self.now,category='a',mappings48={})
+  request.assert_not_called();logos.assert_not_called()
+
 class Dynamic68(Fixture,unittest.TestCase):
  def setUp(self):
   super().setUp();self.dbfile=str(self.folder/'live68.sqlite')

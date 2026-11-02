@@ -84,7 +84,7 @@ def result(event,previous=None):
   tag=identity(event);value=_read('status.'+str(int(tag[:8],16)%SLOTS))
   if value.get('tag')!=tag or value.get('scope')!=scope() or not 0<=time.time()-float(value.get('at',0))<300:return previous or {}
   art=value.get('art') or {}
-  if art.get('source') not in (None,'','placeholder') and art.get('image'):
+  if art.get('code') in ('READY','READY_STALE') and art.get('source') not in (None,'','placeholder') and art.get('image'):
    if art.get('until',0)<=time.time():return dict(code='CACHE_MISMATCH',source='placeholder')
    return dict(art,status68=value['code'])
   return dict(previous or {},code=value['code'],status68=value['code'])
@@ -144,7 +144,11 @@ def drain(cancel=lambda:False):
     while len(_aliases)>128:_aliases.pop(next(iter(_aliases)))
    from utils import setting_bool
    own=setting_bool('programme_tmdb46',False) and setting_bool('tmdb_research43',False)
-   allow=own or setting_bool('programme_tvmaze67',False)
+   allow=own or setting_bool('programme_tvmaze67',False) or setting_bool('programme_helper57',True) or setting_bool('programme_catalog57',True)
+   if not allow and not current.get('xmltv_image') and not current.get('provider_image'):
+    status(current,'TMDB_LOOKUP_DISABLED')
+    with _lock:_seen[(tag,policy)]=now
+    continue
    accepted=enqueue(current,allow_lookup=allow,local_image63=True,priority68=bool(value.get('priority')))
    if accepted:
     with _lock:
@@ -163,6 +167,11 @@ def _run():
  monitor=xbmc.Monitor()
  while not _stop.is_set() and not monitor.abortRequested():
   try:
+   from startup48 import suspended
+   import service_runtime as runtime
+   if suspended() or runtime.pressure():
+    if monitor.waitForAbort(.5):break
+    continue
    from live_warm68 import prepare
    prepare(lambda:_stop.is_set() or monitor.abortRequested())
    drain(lambda:_stop.is_set() or monitor.abortRequested())
@@ -173,6 +182,9 @@ def poll():
  """Only called by the already leased service; never by a plugin GUI."""
  global _thread
  if _stop.is_set():return
+ import xbmc
+ monitor=xbmc.Monitor()
+ if not all(callable(getattr(monitor,name,None)) for name in ('abortRequested','waitForAbort')):return
  with _lock:
   if _thread is None or not _thread.is_alive():
    _thread=threading.Thread(target=_run,name='XCMate-visible-programme68',daemon=True);_thread.start()
