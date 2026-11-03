@@ -25,7 +25,7 @@ jobs:
           mkdir -p "$RUNNER_TEMP/gsmedia-052"
           gh run download 41599322956 --repo artattakk-creator/kodi-noodleprivate --name gsmedia-052-scoped-origin-upgrade-candidate --dir "$RUNNER_TEMP/gsmedia-052"
       - name: Verify and stage isolated Kodi test beta only
-        run: python tools/publish_gsmedia_051_beta.py "$RUNNER_TEMP/gsmedia-052/gsmedia-052-pilot"
+        run: python tools/publish_gsmedia_052_beta.py "$RUNNER_TEMP/gsmedia-052/gsmedia-052-pilot"
       - name: Commit only online-test packages (leave production addon catalog alone)
         run: |
           git config user.name "github-actions[bot]"
