@@ -42,7 +42,7 @@
   },
   "repository": {
     "id": "repository.gsmedia.pilot",
-    "version": "1.9.1"
+    "version": "1.9.2"
   },
   "skin_shortcuts": {
     "license": "GPL-2.0-only",
@@ -63,10 +63,11 @@
   "source_head": "f46d8ddaff419b6d4ca6fefb64fc7d11b203a9f3",
   "source_run_id": 41610990814,
   "wizard": {
+    "fix": "Corrects wizard skinpatch-050 vs verified setup_patch skinpatch-060 mismatch; no changes to user profile journal or installed apps",
     "id": "script.gsmedia.setup",
     "source_gate": "Drive source plus pinned upstream images and original MIT source",
-    "status": "BETA_MP3_ECHOED_EZMAINTENANCE_ANDROID_NOT_VERIFIED",
-    "version": "0.5.8"
+    "status": "BETA_BINGIE_BACKUP_PATH_FIX_ANDROID_NOT_VERIFIED",
+    "version": "0.5.9"
   },
   "xvault": {
     "android_test": "NOT_TESTED",
@@ -82,12 +83,12 @@
     "plugin.video.cumination": "539073d804d6381105698eff054ea77ae1359b658e0f226c3807a7365a0d674c",
     "plugin.video.noodleprivate": "b9d0afe06d6fc956bc0191fd51f4646ae9f54c6272009e7a8819255de7460364",
     "plugin.video.xtreammate": "90b90042b02d8b0e27a7b7c014d993b1dfb6f7a0dae493bf6bf80b0f4eaee07f",
-    "repository.gsmedia.pilot": "d49c0f5a1e0ecd7c47b3bcad3c70fca6476a4fb0274deb267aa8a79038706119",
+    "repository.gsmedia.pilot": "2b998dde0cc0ed17310bdaa3390b17f974920488e0298060272a72987d041c5a",
     "repository.slyguy": "079915885866a5cbb8f17191c5ee8f7d044d7a9e788e96d116c9f1bc8bb4c3c0",
     "repository.titan.bingie.mod": "dba0a2e670e2d93158cb030ea52fe3e237bb19177e0a165d99c8f72a8492ef46",
     "repository.xvault": "df6fd9f40c12c9e0f13f7cb04589286307550cd43376c734eb127aa4e1de27ab",
     "script.ezmaintenanceplus": "08a367b5fd1ee367ead4150b2364063a0760fe9fbf7506c20db845a0126cd2e6",
-    "script.gsmedia.setup": "be294d97ddac8c575caa13396d23b6d55330caffa7ba3116719c3c498cc3afd4",
+    "script.gsmedia.setup": "5c09a1e18ecc6244c58d6a95f0a0cf62e1a37f73df4c1c3d559a7aa77b780502",
     "script.gsmedia.skinshortcuts.bridge": "f84da5931a4159bbf82b78ecf6a05c0b2ce8a6e0c08ebf109d1554eb84d4f72c",
     "script.module.jurialmunkey": "80302314cdbc5a75611b0c2866eb1c7b4e93ccadaf20208ef7eb79b79c1fb749",
     "script.module.resolveurl": "28fb6b2340eccfb1337ba4421b6429aa1c8f2978834853d1229b42b2a947bc59",
