@@ -9,7 +9,7 @@ from setup_install_pilot import _installed
 
 SCHEMA = 2
 STAGES = ("apps", "skin", "player", "check", "done", "stopped")
-REPO_ALLOWLIST = frozenset(("repository.titan.bingie.mod", "repository.xvault"))
+REPO_ALLOWLIST = frozenset(("repository.titan.bingie.mod", "repository.xvault", "repository.slyguy"))
 TEST_CHANNEL = "repository.gsmedia.pilot"
 SAFE_IDS = re.compile(r"^[A-Za-z0-9._-]{3,100}$")
 MAX_ITEMS = 200
@@ -44,6 +44,10 @@ def rows():
         elif ident == "script.module.resolveurl.xxx":
             # Original Gujal00 adult-resolver extension in the same pilot.
             result.append(dict(row, repo=TEST_CHANNEL, minimum="2.1.44"))
+        elif ident == "repository.slyguy":
+            # Exact original SlyGuy repository bootstrap is a pilot-listed
+            # package; do not require a manual ZIP picker.
+            result.append(dict(row, repo=TEST_CHANNEL, minimum="0.0.9"))
         elif ident == "plugin.video.cumination":
             # Exact GPLv2 original package mirrored by CI from upstream SHA.
             result.append(dict(row, repo=TEST_CHANNEL, minimum="1.1.206"))
