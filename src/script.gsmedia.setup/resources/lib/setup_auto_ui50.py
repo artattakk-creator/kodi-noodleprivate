@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 
 from setup_auto50 import (new_state, next_step, after_request, after_confirm,
-                          after_retry, stop, resume, rows, count_done)
+                          after_retry, stop, resume, rows, count_done, advance_stage)
 from setup_auto_store50 import load, save
 from setup_inventory import snapshot
 
@@ -43,6 +43,47 @@ def request_stop():
     """Separate action callable from Kodi's GS Media Setup program menu."""
     window = _lock()
     window.setProperty("GS_MEDIA_050_CANCEL", "1")
+
+
+def _apply_skin(profile, inventory):
+    import xbmcaddon
+    import xbmcvfs
+    from setup_patch import inspect as inspect_skin, apply as apply_skin
+    from setup_bingie_apply import inspect_new_profile, apply_new_profile
+    addon = xbmcaddon.Addon("skin.titan.bingie.mod")
+    skin_root = xbmcvfs.translatePath(addon.getAddonInfo("path"))
+    package_root = os.path.join(
+        xbmcvfs.translatePath(xbmcaddon.Addon("script.gsmedia.setup").getAddonInfo("path")),
+        "resources", "skinpatch")
+    status = inspect_skin(package_root, skin_root, "2.2.3")
+    if status.get("code") != "READY":
+        return "SKIN_PATCH_HASH_OR_VERSION_BLOCKED"
+    shortcut_dir = xbmcvfs.translatePath("special://profile/addon_data/script.skinshortcuts/")
+    if inspect_new_profile(shortcut_dir, inventory) not in ("READY", "ALREADY_APPLIED"):
+        return "SKIN_SHORTCUTS_CONFLICT"
+    backup_root = os.path.join(profile, "skinpatch-050")
+    patched = apply_skin(package_root, skin_root, backup_root, "2.2.3",
+                         user_approved=True)
+    if patched.get("code") not in ("APPLIED_AND_VERIFIED", "ALREADY_PATCHED"):
+        return "SKIN_PATCH_FAILED"
+    layout = apply_new_profile(shortcut_dir, inventory, user_approved=True)
+    if layout not in ("APPLIED", "ALREADY_APPLIED"):
+        return "SKIN_LAYOUT_FAILED"
+    return "OK"
+
+
+def _apply_tmdb_player():
+    import xbmcaddon
+    import xbmcvfs
+    from setup_tmdb_apply import apply as apply_player, verify as verify_player
+    xvault = xbmcaddon.Addon("plugin.video.xvault")
+    tmdb = xbmcaddon.Addon("plugin.video.themoviedb.helper")
+    source = xbmcvfs.translatePath(xvault.getAddonInfo("path"))
+    target = xbmcvfs.translatePath(tmdb.getAddonInfo("profile"))
+    if verify_player(source, target, tmdb):
+        return "OK"
+    code = apply_player(source, target, tmdb, fresh_profile=True, user_approved=True)
+    return "OK" if code == "APPLIED" and verify_player(source, target, tmdb) else "TMDB_PLAYER_" + str(code)[:80]
 
 
 def run():
@@ -80,6 +121,14 @@ def run():
         if not dialog.yesno("GS Media Setup", "Unterbrochene Installation "
                             "ab dem letzten verifizierten Schritt fortsetzen?"):
             return
+        if state["pending"]:
+            pending = state["pending"]
+            if not dialog.yesno("GS Media – unvollständiger Schritt",
+                                "Kodi hat {} nicht als installiert bestätigt. "
+                                "Nur nach Abbruch der vorherigen Installation "
+                                "erneut anfordern?".format(pending)):
+                return
+            state = _persist(profile, after_retry(state, pending))
         state = _persist(profile, resume(state))
 
     window = _lock()
@@ -151,12 +200,48 @@ def run():
                 state = _persist(profile, stop(state, reason[:200]))
                 break
             if code == "APPS_PRESENT":
-                # Complete skin/Player stages still require original hashes,
-                # detailed per-file checks, and author-approved package sources.
-                # Do not auto-enable a broken BINGIE skin or fake final success.
-                progress.update(96, "GS Media: alle Pakete erkannt",
-                                "Skin/Player-/Herkunftsprüfung folgt")
-                reason = "APPS_INSTALLED_SKIN_AND_SOURCE_GATES_PENDING"
+                state = _persist(profile, advance_stage(state, "apps"))
+                continue
+            if code == "STAGE_SKIN":
+                progress.update(96, "GS Media – BINGIE",
+                                "Prüfe originalen Skin und sichere XML-Dateien")
+                if not dialog.yesno(
+                    "GS Media – BINGIE-Konfiguration",
+                    "BINGIE MOD 2.2.3 nur bei exaktem Dateihash sichern "
+                    "und XCMate-Menüs/Widgets einrichten? Bestehende "
+                    "Änderungen werden nicht überschrieben."
+                ):
+                    reason = "SKIN_PATCH_NOT_APPROVED"
+                    state = _persist(profile, stop(state, reason))
+                    break
+                code_ = _apply_skin(profile, inventory)
+                if code_ != "OK":
+                    reason = code_
+                    state = _persist(profile, stop(state, reason))
+                    break
+                state = _persist(profile, advance_stage(state, "skin"))
+                continue
+            if code == "STAGE_PLAYER":
+                progress.update(97, "GS Media – TMDB",
+                                "Prüfe xVAULT-Player für Filme und Serien")
+                if not dialog.yesno("GS Media – Standardplayer",
+                                    "xVAULT als TMDB-Helper-Player für Filme UND "
+                                    "Serien konfigurieren? Vorhandene fremde "
+                                    "Einstellungen bleiben geschützt."):
+                    reason = "TMDB_PLAYER_NOT_APPROVED"
+                    state = _persist(profile, stop(state, reason))
+                    break
+                code_ = _apply_tmdb_player()
+                if code_ != "OK":
+                    reason = code_
+                    state = _persist(profile, stop(state, reason))
+                    break
+                state = _persist(profile, advance_stage(state, "player"))
+                continue
+            if code == "STAGE_CHECK":
+                progress.update(98, "GS Media – Abschlussprüfung",
+                                "Quellen und Android-Gerätetest erforderlich")
+                reason = "RELEASE_SOURCE_AND_ANDROID_GATES_PENDING"
                 break
             reason = "UNEXPECTED_STEP:" + code
             state = _persist(profile, stop(state, reason[:200]))
@@ -176,10 +261,10 @@ def run():
         window.clearProperty("GS_MEDIA_050_CANCEL")
 
     done, total = count_done(snapshot())
-    if reason == "APPS_INSTALLED_SKIN_AND_SOURCE_GATES_PENDING":
+    if reason == "RELEASE_SOURCE_AND_ANDROID_GATES_PENDING":
         dialog.ok("GS Media – Apps installiert",
-                  "{} von {} Komponenten bestätigt. Für Skinpatch, "
-                  "Player und Abschluss bleiben Sicherheitsprüfungen offen."
+                  "{} von {} Komponenten bestätigt. BINGIE und TMDB-Player "
+                  "eingerichtet; Quellnachweis und Android-Abnahme bleiben offen."
                   .format(done, total))
     elif reason:
         dialog.ok("GS Media – sicher angehalten",
