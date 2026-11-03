@@ -15,6 +15,7 @@ VENDOR = ROOT / "vendor/bingie-repository/repository.titan.bingie.mod-2.0.1.zip"
 SHORTCUTS_VENDOR = ROOT / "vendor/bingie-skinshortcuts-210/script.skinshortcuts-2.1.0.zip"
 SHORTCUTS_BLOB_SHA1 = "abb2627aef68e15c40e4a33144b1d4cc7bf4d3e6"
 SHORTCUTS_MD5 = "69d497c8884da6b169b6f9727d29910f"
+SHORTCUTS_SHA256 = "865ee5ea5bf0accee27b82539caabce1c8a9fbb8f94b2900fe5ace4f82c80b23"
 ORIGINAL_GIT_BLOB = "da6e2b22b9bdb3baaf12da362fcbadb0b17628e6"
 ORIGINAL_SHA256 = "dba0a2e670e2d93158cb030ea52fe3e237bb19177e0a165d99c8f72a8492ef46"
 TEST_URL = ("https://raw.githubusercontent.com/artattakk-creator/"
@@ -44,6 +45,7 @@ def build(destination):
 
     shortcuts_bytes = SHORTCUTS_VENDOR.read_bytes()
     assert hashlib.md5(shortcuts_bytes).hexdigest() == SHORTCUTS_MD5, "Skin Shortcuts upstream MD5"
+    assert hashlib.sha256(shortcuts_bytes).hexdigest() == SHORTCUTS_SHA256, "Skin Shortcuts original SHA256"
     actual_blob = hashlib.sha1(
         b"blob " + str(len(shortcuts_bytes)).encode("ascii") + b"\0" + shortcuts_bytes
     ).hexdigest()
