@@ -121,7 +121,7 @@ class OneClickContractTests(unittest.TestCase):
         self.assertEqual(addon.get("provider-name"), "XCMate")
         builder=(ROOT/"tools/build_gsmedia_pilot050.py").read_text(encoding="utf-8")
         self.assertIn('PILOT_ID = "repository.gsmedia.pilot"', builder)
-        self.assertIn('PILOT_VERSION = "1.9.6"', builder)
+        self.assertIn('PILOT_VERSION = "1.9.7"', builder)
         self.assertIn("xcMate Repository", builder)
 
 
