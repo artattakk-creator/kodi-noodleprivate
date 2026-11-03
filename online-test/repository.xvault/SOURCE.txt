@@ -1,0 +1,10 @@
+Official xVAULT Repository 1.0.3 original bootstrap, unchanged.
+Original GPLv3 source: https://github.com/mojomedia1812/xVAULT/tree/35d9f517009b495218c93fed195b7cda05609fae
+Author: xVAULT (mojomedia1812)
+Upstream distribution: https://xvault.repowork.de/repository.xvault/repository.xvault-1.0.3.zip
+Exact upstream Git path: docs/repository.xvault/repository.xvault-1.0.3.zip
+Pinned commit: 35d9f517009b495218c93fed195b7cda05609fae
+Original Git blob SHA-1: 52f4ffdf82234aef742a38a94695e4b373acc0a1
+License: GNU GPL version 3 (LICENSE in original upstream).
+GS Media only mirrors original small repository bootstrap into separate beta.
+Actual plugin.video.xvault is downloaded and updated directly through official xVAULT repository feed. No GS Media rehosting or source modification.

@@ -224,7 +224,25 @@
             <fanart>fanart.jpg</fanart>
         </assets>
     </extension>
-</addon><addon id="script.gsmedia.setup" name="GS Media Setup – GS Media ResolveURL Quellen-Batch" version="0.5.5" provider-name="GS Media">
+</addon><addon id="repository.xvault" name="xVAULT Repository" provider-name="xVAULT" version="1.0.3">
+    <extension point="xbmc.addon.repository" name="xVAULT Repository">
+        <dir>
+            <info compressed="false">https://xvault.repowork.de/addons.xml</info>
+            <checksum>https://xvault.repowork.de/addons.xml.md5</checksum>
+            <datadir zip="true">https://xvault.repowork.de/</datadir>
+        </dir>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="de_DE">Offizielles xVAULT Kodi-Repository</summary>
+        <summary lang="en_GB">Official xVAULT Kodi repository</summary>
+        <description lang="de_DE">Stellt xVAULT-Updates ueber Kodi bereit.</description>
+        <description lang="en_GB">Provides xVAULT updates through Kodi.</description>
+        <platform>all</platform>
+        <assets>
+            <icon>icon.png</icon>
+        </assets>
+    </extension>
+</addon><addon id="script.gsmedia.setup" name="GS Media Setup – GS Media xVAULT Original-Repository" version="0.5.6" provider-name="GS Media">
   <requires><import addon="xbmc.python" version="3.0.0" /></requires>
   <extension point="xbmc.python.script" library="default.py" />
   <extension point="xbmc.service" library="service.py" start="startup" />
@@ -237,7 +255,7 @@
     <platform>all</platform>
     <license>MIT (Wizard), GPL-2.0-only (bundled BINGIE source patch)</license>
   </extension>
-</addon><addon id="repository.gsmedia.pilot" name="GS Media Online-Test 1.8.8" version="1.8.8" provider-name="GS Media">
+</addon><addon id="repository.gsmedia.pilot" name="GS Media Online-Test 1.8.9" version="1.8.9" provider-name="GS Media">
   <extension point="xbmc.addon.repository">
     <dir>
       <info compressed="false">https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/addons.xml</info>
@@ -248,9 +266,9 @@
     
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="de_DE">GS Media Online-Test 1.8.8, nicht produktiv</summary>
+    <summary lang="de_DE">GS Media Online-Test 1.8.9, nicht produktiv</summary>
     <description lang="de_DE">Entwicklungs-Installer mit geprüfter BINGIE-Repository-Vorstufe; keine vollständige Geräteabnahme.</description>
-    <summary lang="en_GB">GS Media Online-Test 1.8.8, nicht produktiv</summary>
+    <summary lang="en_GB">GS Media Online-Test 1.8.9, nicht produktiv</summary>
     <description lang="en_GB">Entwicklungs-Installer mit geprüfter BINGIE-Repository-Vorstufe; keine vollständige Geräteabnahme.</description>
     <disclaimer lang="de_DE">Eigenstaendiges GS Media Repository. Externe Projekte sind nicht Teil des Lite-Katalogs und werden gegebenenfalls separat durch ihre Urheber gepflegt. Keine Verbindung mit Team Kodi.</disclaimer>
     <platform>all</platform>
