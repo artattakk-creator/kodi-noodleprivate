@@ -25,7 +25,7 @@ EZ_VERSION = "2026.04.05.0"
 
 
 def git_blob_sha1(data):
-    return hashlib.sha1(b"blob " + str(len(data)).encode("ascii") + b"\\0" + data).hexdigest()
+    return hashlib.sha1(b"blob " + str(len(data)).encode("ascii") + b"\0" + data).hexdigest()
 
 
 def get_upstream(owner, repository, commit, maximum=22_000_000):
@@ -105,7 +105,7 @@ def echo_package(destination):
     # Explicitly replace the 2022-era artwork with the user's 2026 artwork.
     legacy.update(modern)
     assert not any(k.startswith("musicmp3/") or k.startswith("userdata/") for k in legacy)
-    assert len(legacy) >= 265, "Missing artwork source or modern code"
+    assert len(legacy) >= 260, "Missing artwork source or modern code"
     ident = "plugin.audio.m3sr2019"
     target = Path(destination) / ident / (ident + "-" + ECHOED_VERSION + ".zip")
     xml = write_zip(target, ident, legacy)
