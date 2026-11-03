@@ -175,7 +175,7 @@ def run():
                       "Bestehende Daten bleiben unverändert.")
             return
         if not dialog.yesno(
-            "XCMate – Vollautomatische Einrichtung 0.5.18",
+            "XCMate – Vollautomatische Einrichtung 0.5.19",
             "Gesamte Kodi-Ersteinrichtung jetzt starten? Alle geprüften "
             "Repositories, 48 Komponenten und Abhängigkeiten werden "
             "nacheinander ohne zusätzliche Wizard-Abfragen installiert. "
@@ -276,7 +276,7 @@ def run():
                     and step.get("minimum") == "2.1.0"
                 )
                 native_upgrade = code == "INSTALL_UPGRADE"
-                native_slyguy_bootstrap = (
+                native_slyguy_origin_parent = (
                     code == "INSTALL_ADDON"
                     and ident == "slyguy.dependencies"
                     and step.get("source") == "repository.slyguy"
@@ -295,12 +295,18 @@ def run():
                         break
                 else:
                     install_id = ident
-                    if native_slyguy_bootstrap:
-                        # Kodi dependency resolver installs the ORIGINAL
-                        # SlyGuy Dependencies/Common/Trailers from their own
-                        # already installed official SlyGuy repository.
-                        # Our test repo includes ONLY this inert MIT bridge.
-                        install_id = "script.gsmedia.slyguy.bootstrap"
+                    if native_slyguy_origin_parent:
+                        # Kodi Omega CAddonRepos::FindDependencyByParentRepo
+                        # searches ONLY the parent's repository for non-Kodi
+                        # dependencies. The xcMate 0.5.19 bootstrap originated
+                        # in repository.gsmedia.pilot, so it could not resolve
+                        # slyguy.dependencies from repository.slyguy.
+                        # The ORIGINAL SlyGuy Common has an original requires
+                        # on slyguy.dependencies>=0.0.30 and is hosted in
+                        # repository.slyguy itself. Installing this parent
+                        # first uses Kodi's original same-repository resolver.
+                        # No original SlyGuy binaries are redistributed.
+                        install_id = "script.module.slyguy"
                     # One Kodi-managed parent install resolves BOTH exact,
                     # original BINGIE packages through its immutable requires:
                     # repo 2.0.1 + helper 1.1.2. Neither addon is manually
@@ -316,6 +322,7 @@ def run():
                 from setup_auto50 import installed as confirmed
                 _diag("CATALOG_REFRESH_REQUESTED", install_id)
                 visible = {"code": "NOT_LISTED"}
+                missing_catalog_id = install_id
                 already_complete = False
                 for catalog_attempt in range(6):
                     if monitor.abortRequested() or window.getProperty("GS_MEDIA_050_CANCEL") == "1":
@@ -332,21 +339,45 @@ def run():
                         _diag("INSTALLED_WHILE_WAITING_FOR_CATALOG", ident)
                         already_complete = True
                         break
+                    if native_slyguy_origin_parent and confirmed(
+                            fresh, install_id):
+                        reason = "SLYGUY_PARENT_PRESENT_DEPENDENCY_MISSING:" + ident
+                        _diag("SLYGUY_PARENT_ALREADY_INSTALLED", install_id)
+                        break
                     visible = probe_kodi_catalog(xbmc.executeJSONRPC, install_id)
+                    missing_catalog_id = install_id
+                    if visible["code"] == "AVAILABLE" and native_slyguy_origin_parent:
+                        dependency = probe_kodi_catalog(
+                            xbmc.executeJSONRPC, "slyguy.dependencies")
+                        if dependency["code"] != "AVAILABLE":
+                            visible = dependency
+                            missing_catalog_id = "slyguy.dependencies"
+                            _diag("SLYGUY_ORIGINAL_DEP_NOT_VISIBLE", missing_catalog_id)
+                        elif (_version(visible.get("version", "")) < (0, 87, 6)
+                              or _version(dependency.get("version", "")) < (0, 0, 30)):
+                            reason = "SLYGUY_ORIGINAL_CATALOG_VERSION_TOO_OLD"
+                            _diag("SLYGUY_ORIGINAL_CATALOG_OLD", install_id,
+                                  visible.get("version", ""))
+                            break
+                        else:
+                            _diag("SLYGUY_ORIGINAL_SAME_REPO_PARENT", install_id,
+                                  visible.get("version", ""))
+                            _diag("SLYGUY_ORIGINAL_DEP_VISIBLE", "slyguy.dependencies",
+                                  dependency.get("version", ""))
                     if visible["code"] == "AVAILABLE":
                         _diag("CATALOG_PACKAGE_VISIBLE", install_id,
                               visible.get("version", ""))
                         break
                     _diag("CATALOG_NOT_VISIBLE_TRY_" + str(catalog_attempt + 1),
-                          install_id)
+                          missing_catalog_id)
                 if reason:
                     state = _persist(profile, stop(state, reason))
                     break
                 if already_complete:
                     continue
                 if visible["code"] != "AVAILABLE":
-                    reason = "KODI_CATALOG_NOT_READY:" + install_id
-                    _diag("CATALOG_STOP_NO_INSTALL_REQUEST", install_id)
+                    reason = "KODI_CATALOG_NOT_READY:" + missing_catalog_id
+                    _diag("CATALOG_STOP_NO_INSTALL_REQUEST", missing_catalog_id)
                     state = _persist(profile, stop(state, reason[:200]))
                     break
                 # One-time setup consent (initial or resumed) also covers
@@ -357,9 +388,9 @@ def run():
                 scope = (
                     TemporaryOfficialAddonSource(
                         profile, xbmc.executeJSONRPC,
-                        addon_id="slyguy.dependencies" if native_slyguy_bootstrap
+                        addon_id="slyguy.dependencies" if native_slyguy_origin_parent
                         else "script.skinshortcuts")
-                    if (native_upgrade or native_slyguy_bootstrap)
+                    if (native_upgrade or native_slyguy_origin_parent)
                     else nullcontext()
                 )
                 # Kodi Omega FindDependency explicitly prefers the OFFICIAL
