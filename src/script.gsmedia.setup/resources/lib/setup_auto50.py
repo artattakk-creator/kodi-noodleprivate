@@ -76,6 +76,8 @@ def upgrade_bridges():
     result = []
     for row in rows():
         ident, minimum, source = row["id"], row["minimum"], row["repo"]
+        if ident == "script.skinshortcuts":
+            continue  # The existing, separately reviewed native 2.1.0 bridge.
         if (source not in APPROVED_UPGRADE_SOURCES or
                 not minimum or not VERSIONED_MINIMUM.fullmatch(minimum)):
             continue
