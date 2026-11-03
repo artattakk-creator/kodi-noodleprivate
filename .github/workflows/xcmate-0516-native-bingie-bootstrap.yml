@@ -110,7 +110,8 @@ jobs:
                   assert helper_xml.get('provider-name') == 'XCMate'
           # Native first-party BINGIE parent must bring in both ORIGINAL
           # BINGIE repository and original GPLv3 helper from THIS catalog.
-          from tools.build_gsmedia_pilot050 import BINGIE_HELPER_GIT_BLOB
+          python_path.insert(0, str(Path('tools').resolve()))
+          from build_gsmedia_pilot050 import BINGIE_HELPER_GIT_BLOB
           assert BINGIE_HELPER_GIT_BLOB == "c209ef019b71fc7d89860966cdf1beec082e070f"
           for ident,version in (
             ('script.bingie.helper','1.1.2'),
