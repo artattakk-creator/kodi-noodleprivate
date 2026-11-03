@@ -25,4 +25,13 @@ cat > /root/.kodi/userdata/guisettings.xml <<'EOF'
 EOF
 Xvfb :99 -screen 0 1280x720x24 -nolisten tcp -ac &
 python3 -c 'import time;time.sleep(1)'
+# Let Kodi itself create its schema/register the metadata-only fixtures, then
+# seed their pre-existing Pilot origins while Kodi is stopped. On the final
+# launch the native manager loads those origins normally (no stale cache).
+env DISPLAY=:99 /usr/lib/x86_64-linux-gnu/kodi/kodi.bin --standalone --windowing=x11 &
+kodi_fixture_pid=$!
+python3 /work/seed_origin.py
+wait "$kodi_fixture_pid"
+python3 /work/seed_origin.py --write
+touch /root/pilot354-origin-ready
 exec env DISPLAY=:99 /usr/lib/x86_64-linux-gnu/kodi/kodi.bin --standalone --windowing=x11

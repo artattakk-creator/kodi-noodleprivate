@@ -3,7 +3,6 @@ import json
 import time
 import urllib.request
 from pathlib import Path
-import sqlite3
 
 # Only local JSON-RPC bypasses the outbound HTTP proxy.
 opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
@@ -21,6 +20,12 @@ def rpc(method, params=None):
 
 
 for attempt in range(150):
+    if Path('/root/pilot354-origin-ready').exists():
+        break
+    time.sleep(.2)
+else:
+    raise RuntimeError('FIXTURE_ORIGINS_NOT_READY')
+for attempt in range(150):
     try:
         version = rpc('Application.GetProperties', {'properties': ['version']})['version']
         break
@@ -32,29 +37,34 @@ assert version['major'] == 21
 targets = {'plugin.video.xtreammate': '0.1.29.70', 'script.gsmedia.setup': '0.5.19'}
 for aid in (*targets, 'repository.gsmedia.pilot', 'script.pilot354.check'):
     rpc('Addons.SetAddonEnabled', {'addonid': aid, 'enabled': True})
-# Record origin in the disposable fixture only, matching an installed Pilot
-# package. No user database or production installation is mounted here.
-dbs = list(Path('/root/.kodi/userdata/Database').glob('Addons*.db'))
-assert len(dbs) == 1
-with sqlite3.connect(dbs[0]) as db:
-    columns = {r[1] for r in db.execute('PRAGMA table_info(installed)')}
-    assert {'addonID', 'origin'} <= columns
-    for aid in targets:
-        db.execute('UPDATE installed SET origin=? WHERE addonID=?', ('repository.gsmedia.pilot', aid))
-        assert db.execute('SELECT origin FROM installed WHERE addonID=?', (aid,)).fetchone()[0] == 'repository.gsmedia.pilot'
-# A new profile may show the well-known disabled-addons welcome dialog.
-current = rpc('GUI.GetProperties', {'properties': ['currentwindow', 'currentcontrol']})
-if current['currentwindow']['id'] == 10100:
+# A new profile may show the well-known disabled-addons welcome dialog, once
+# per fixture. Dismiss only that exact dialog, never arbitrary modals.
+for attempt in range(10):
+    current = rpc('GUI.GetProperties', {'properties': ['currentwindow', 'currentcontrol']})
+    if current['currentwindow']['id'] != 10100:
+        break
     heading = rpc('XBMC.GetInfoLabels', {'labels': ['Control.GetLabel(1)']})['Control.GetLabel(1)']
-    if heading == 'Disabled add-ons' and current['currentcontrol']['label'] == 'No':
-        rpc('Input.Select')
+    assert heading == 'Disabled add-ons' and current['currentcontrol']['label'] == 'No'
+    rpc('Input.Select')
+    time.sleep(.2)
 rpc('Addons.ExecuteAddon', {'addonid': 'script.pilot354.check'})
 seen = []
+# addons:// is deliberately unavailable through Files.GetDirectory's remote
+# access guard. Use the genuine native Add-on Browser update list instead.
+rpc('GUI.ActivateWindow', {'window': 'addonbrowser', 'parameters': ['addons://outdated/']})
 for attempt in range(120):
-    listing = rpc('Files.GetDirectory', {'directory': 'addons://outdated/', 'media': 'files'})
-    seen = [row['file'] for row in listing.get('files', [])]
-    if all(any(aid in item for item in seen) for aid in targets):
+    labels = ['Container.NumItems'] + [f'Container.ListItemAbsolute({i}).{prop}'
+                                      for i in range(10) for prop in ('Property(Addon.ID)', 'AddonVersion')]
+    values = rpc('XBMC.GetInfoLabels', {'labels': labels})
+    seen = [dict(id=values[f'Container.ListItemAbsolute({i}).Property(Addon.ID)'],
+                 version=values[f'Container.ListItemAbsolute({i}).AddonVersion']) for i in range(10)]
+    expected = {'plugin.video.xtreammate': '0.1.29.71', 'script.gsmedia.setup': '0.5.20'}
+    if all(any(item['id'] == aid and item['version'] == new for item in seen)
+           for aid, new in expected.items()):
         break
+    if attempt % 5 == 4:
+        rpc('GUI.ActivateWindow', {'window': 'home'})
+        rpc('GUI.ActivateWindow', {'window': 'addonbrowser', 'parameters': ['addons://outdated/']})
     time.sleep(1)
 else:
     raise RuntimeError('NATIVE_UPDATE_DETECTION_FAILED: ' + json.dumps(seen))
@@ -65,7 +75,7 @@ for aid, old in targets.items():
     installed[aid] = details['version']
 assert rpc('Player.GetActivePlayers') == []
 report = dict(kodi=version, native_update_detection='PASS',
-              mechanism='UpdateAddonRepos + Files.GetDirectory(addons://outdated/)',
+              mechanism='UpdateAddonRepos + native AddonBrowser addons://outdated/ (IDs and versions)',
               repository='repository.gsmedia.pilot 1.9.12 (unchanged public URLs)',
               installed_metadata_only_fixtures=installed, outdated_entries=seen,
               installer_executed=False, application_code_executed=False,

@@ -61,8 +61,9 @@ Globale Kodi-/Skin-Einstellungen oder Update-Ursprungsregeln nicht verändern.
 - `python tools/publish_pilot354.py --public` prüft nach dem Push die echten
   URLs ohne Zugangsdaten und ohne abweichende Cache-Busting-URLs.
 - `python tools/run_pilot354_native.py --report-dir /tmp/pilot354-native`
-  prüft Kodis echte Update-Erkennung mit `UpdateAddonRepos` und
-  `addons://outdated/` in einem isolierten Linux-Kodi-21-Profil. Die alten
+  prüft Kodis echte Update-Erkennung mit `UpdateAddonRepos` und der nativen
+  Add-on-Browser-Liste `addons://outdated/` (IDs und Versionen) in einem
+  isolierten Linux-Kodi-21-Profil. Die alten
   .70/.5.19-Installationen sind reine Metadaten-Fixtures ohne ausführbare
   Produktdienste oder Installer. Dies ist keine Android-Geräteabnahme.
 - Workflow: **Verify existing Pilot XCMate 71 and Setup 520 release**.
