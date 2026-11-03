@@ -14,6 +14,17 @@ from gsmedia_058_sources import echo_package, ez_package
 
 ROOT = Path(__file__).resolve().parents[1]
 VENDOR = ROOT / "vendor/bingie-repository/repository.titan.bingie.mod-2.0.1.zip"
+BINGIE_HELPER_UPSTREAM_REV = "d9f334ecc33c7d0e137dd1728af18815c512e577"
+BINGIE_HELPER_UPSTREAM_ZIP = (
+    "https://raw.githubusercontent.com/AchillesPunks/repository.titan.bingie.mod/"
+    + BINGIE_HELPER_UPSTREAM_REV
+    + "/omega/script.bingie.helper/script.bingie.helper-1.1.2.zip"
+)
+BINGIE_HELPER_GIT_BLOB = "c209ef019b71fc7d89860966cdf1beec082e070f"
+BINGIE_HELPER_LENGTH = 121147
+BINGIE_BOOTSTRAP_ID = "script.gsmedia.bingie.bootstrap"
+BINGIE_BOOTSTRAP_VERSION = "0.1.0"
+
 SHORTCUTS_VENDOR = ROOT / "vendor/bingie-skinshortcuts-210/script.skinshortcuts-2.1.0.zip"
 JURIAL_VENDOR = ROOT / "vendor/jurialmunkey-common-0235/script.module.jurialmunkey-0.2.35.zip"
 JURIAL_BLOB_SHA1 = "98556ddadf9ea88db9809728663ddc08fe9a0990"
@@ -118,6 +129,79 @@ def _fetch_slyguy_repo(destination):
     return target, contents
 
 
+def _fetch_bingie_helper(destination):
+    """Fetch the *unchanged* Omega original, pinned to an upstream commit/blob."""
+    target = Path(destination) / "_vendor-cache" / "script.bingie.helper-1.1.2.zip"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    request = urllib.request.Request(
+        BINGIE_HELPER_UPSTREAM_ZIP,
+        headers={"User-Agent": "xcMate-Verified-BINGIE-Omega-Helper/0.5.16"}
+    )
+    with urllib.request.urlopen(request, timeout=45) as response:
+        contents = response.read(BINGIE_HELPER_LENGTH + 1)
+    assert len(contents) == BINGIE_HELPER_LENGTH, "Original BINGIE Helper ZIP size differs"
+    assert _git_blob_sha(contents) == BINGIE_HELPER_GIT_BLOB, "Original BINGIE Helper blob differs"
+    target.write_bytes(contents)
+    xml = _bytes_in_zip(target, "script.bingie.helper")
+    assert xml.get("version") == "1.1.2"
+    assert xml.get("id") == "script.bingie.helper"
+    assert xml.findtext("./extension[@point='xbmc.addon.metadata']/license") == "GPL v3.0"
+    requires = {(x.get("addon"), x.get("version"))
+                for x in xml.findall("./requires/import")}
+    assert ("script.module.simplejson", "3.17.0") in requires
+    assert ("xbmc.python", "3.0.0") in requires
+    return target, xml
+
+
+def _create_bingie_bootstrap(destination):
+    """Inert Kodi-native dependency trigger; no custom installer or userdata edits."""
+    addon = ET.Element("addon", {
+        "id": BINGIE_BOOTSTRAP_ID,
+        "name": "xcMate Native BINGIE Repository & Helper Bootstrap",
+        "version": BINGIE_BOOTSTRAP_VERSION,
+        "provider-name": "xcMate",
+    })
+    required = ET.SubElement(addon, "requires")
+    for ident, version in (
+        ("xbmc.python", "3.0.0"),
+        ("repository.titan.bingie.mod", "2.0.1"),
+        ("script.bingie.helper", "1.1.2"),
+    ):
+        ET.SubElement(required, "import", {"addon": ident, "version": version})
+    ET.SubElement(addon, "extension", {
+        "point": "xbmc.python.script", "library": "default.py"
+    })
+    metadata = ET.SubElement(addon, "extension", {"point": "xbmc.addon.metadata"})
+    ET.SubElement(metadata, "summary", {"lang": "en_GB"}).text = (
+        "First-party one-step original BINGIE dependency installation"
+    )
+    ET.SubElement(metadata, "description", {"lang": "en_GB"}).text = (
+        "Inert addon whose only function is to request Kodi's native dependency "
+        "resolver to install the verified, unmodified BINGIE MOD repository "
+        "2.0.1 and BINGIE Helper 1.1.2 from the xcMate test catalog."
+    )
+    ET.SubElement(metadata, "license").text = "MIT"
+    ET.SubElement(metadata, "platform").text = "all"
+    ET.SubElement(metadata, "source").text = (
+        "https://github.com/artattakk-creator/kodi-noodleprivate"
+    )
+    folder = Path(destination) / BINGIE_BOOTSTRAP_ID
+    folder.mkdir(parents=True, exist_ok=True)
+    zip_path = folder / (BINGIE_BOOTSTRAP_ID + "-" + BINGIE_BOOTSTRAP_VERSION + ".zip")
+    with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr(BINGIE_BOOTSTRAP_ID + "/addon.xml",
+                         ET.tostring(addon, encoding="utf-8", xml_declaration=True))
+        archive.writestr(BINGIE_BOOTSTRAP_ID + "/default.py",
+                         "# Original BINGIE dependency bootstrap; intentionally inert.\n")
+    result = _bytes_in_zip(zip_path, BINGIE_BOOTSTRAP_ID)
+    assert result.get("id") == BINGIE_BOOTSTRAP_ID
+    deps = {(node.get("addon"), node.get("version"))
+            for node in result.findall("./requires/import")}
+    assert ("repository.titan.bingie.mod", "2.0.1") in deps
+    assert ("script.bingie.helper", "1.1.2") in deps
+    return result
+
+
 def build(destination):
     destination = Path(destination)
     destination.mkdir(parents=True, exist_ok=True)
@@ -204,7 +288,32 @@ def build(destination):
     echoed_zip, echoed_xml = echo_package(destination)
     ez_zip, ez_xml = ez_package(destination)
 
-    all_addons = [bridge_xml, echoed_xml, ez_xml]
+    original_bingie_helper_zip, original_bingie_helper = _fetch_bingie_helper(destination)
+    original_bingie_bootstrap = _create_bingie_bootstrap(destination)
+    all_addons = [bridge_xml, echoed_xml, ez_xml,
+                  original_bingie_helper, original_bingie_bootstrap]
+    helper_dir = destination / "script.bingie.helper"
+    helper_dir.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(original_bingie_helper_zip,
+                    helper_dir / "script.bingie.helper-1.1.2.zip")
+    (helper_dir / "SOURCE.txt").write_text(
+        "Original, unmodified BINGIE Helper 1.1.2, GPL v3.0. "
+        "Source: https://github.com/matke-84/script.bingie.helper/ ; "
+        "verbatim ZIP: " + BINGIE_HELPER_UPSTREAM_ZIP + "\n",
+        encoding="utf-8"
+    )
+    with zipfile.ZipFile(original_bingie_helper_zip) as helper_archive:
+        for asset in ("resources/icon.png", "resources/fanart.jpg"):
+            member = "script.bingie.helper/" + asset
+            if member in helper_archive.namelist():
+                dest = helper_dir / asset
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                dest.write_bytes(helper_archive.read(member))
+    (destination / BINGIE_BOOTSTRAP_ID / "SOURCE.txt").write_text(
+        "Original first-party xcMate native BINGIE dependency bridge, MIT. "
+        "https://github.com/artattakk-creator/kodi-noodleprivate\n",
+        encoding="utf-8"
+    )
     # Source-constrained, inert native resolver bridges for EVERY eligible
     # versioned dependency in the 43-component plan (not just Skin Shortcuts).
     # Their only executable is an inert script; no user profile is accessed.
