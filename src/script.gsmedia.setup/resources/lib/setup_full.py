@@ -22,6 +22,13 @@ SOURCES = {
  "script.skin.helper.service": ("repository.titan.bingie.mod", ""),
  "script.skin.helper.widgets": ("repository.titan.bingie.mod", ""),
  "script.skin.helper.backgrounds": ("repository.titan.bingie.mod", ""),
+ # Explicit verified original dependencies, no unknown-source Kodi fallback:
+ "script.module.simplecache": ("repository.titan.bingie.mod", ""),
+ "script.module.metadatautils": ("repository.titan.bingie.mod", ""),
+ "script.module.thetvdb": ("repository.titan.bingie.mod", ""),
+ "script.module.musicbrainz": ("repository.titan.bingie.mod", ""),
+ "script.module.arrow": ("repository.xbmc.org", ""),
+
  "resource.images.skinbackgrounds.titanium": ("repository.titan.bingie.mod", ""),
  "resource.images.skinicons.wide": ("repository.titan.bingie.mod", ""),
  "resource.images.backgroundoverlays.basic": ("repository.titan.bingie.mod", ""),

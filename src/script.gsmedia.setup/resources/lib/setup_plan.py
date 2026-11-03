@@ -28,6 +28,40 @@ DEPENDENCIES = {
         ("xbmc.python", "3.0.0"),
         ("script.module.simplejson", "3.17.0"),
     ),
+    # Verified against AchillesPunks Omega upstream addon.xml. Previously the
+    # wizard relied on Kodi to discover these transitive deps only AFTER the
+    # parent Backgrounds package was requested; failures were opaque/retried.
+    "script.skin.helper.backgrounds": (
+        ("script.module.simplecache", "2.0.2"),
+        ("script.module.metadatautils", "1.30.0"),
+    ),
+    "script.skin.helper.service": (
+        ("script.module.simplejson", "3.17.0"),
+        ("script.module.simplecache", "2.0.2"),
+        ("script.module.metadatautils", "1.30.0"),
+    ),
+    "script.skin.helper.widgets": (
+        ("script.module.metadatautils", "1.30.0"),
+        ("script.module.simplecache", "2.0.2"),
+    ),
+    "script.module.metadatautils": (
+        ("script.module.requests", "2.9.1"),
+        ("script.module.beautifulsoup4", "4.9.3"),
+        ("script.module.thetvdb", "1.0.34"),
+        ("script.module.musicbrainz", "0.7.0"),
+        ("script.module.simplecache", "2.0.2"),
+        ("script.module.arrow", "0.15.5"),
+        ("script.module.infotagger", "0.0.1"),
+    ),
+    "script.module.thetvdb": (
+        ("script.module.requests", "2.9.1"),
+        ("script.module.simplejson", "3.17.0"),
+        ("script.module.simplecache", "2.0.2"),
+        ("script.module.arrow", "1.1.0"),
+    ),
+    "script.module.musicbrainz": (("xbmc.python", "3.0.0"),),
+    "script.module.simplecache": (("xbmc.python", "3.0.0"),),
+
     "script.skinshortcuts": (
         ("xbmc.python", "3.0.0"),
         ("script.module.unidecode", "0.4.14"),
