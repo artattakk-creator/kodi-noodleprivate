@@ -117,6 +117,31 @@ class AutoSetupTests(unittest.TestCase):
             confirmed = setup.after_confirm(requested, present)
             self.assertIn("script.module.jurialmunkey", confirmed["completed"])
 
+    def test_batch_resolveurl_adult_resolver_and_cumination_from_pilot(self):
+        batch = [
+            ("script.module.resolveurl", "5.0.00", "repository.resolveurl", "5.1.212"),
+            ("script.module.resolveurl.xxx", "2.0.1", "repository.dobbelina", "2.1.44"),
+            ("plugin.video.cumination", "", "repository.dobbelina", "1.1.206"),
+        ]
+        rows = [{"id": name, "minimum": old, "repo": repo, "notes": "",
+                 "mandatory": False, "manifest_known": True}
+                for name, old, repo, pinned in batch]
+        with patch.object(setup, "manifest", return_value=rows):
+            for row, (_, _, _, version) in zip(setup.rows(), batch):
+                self.assertEqual(row["repo"], setup.TEST_CHANNEL)
+                self.assertEqual(row["minimum"], version)
+            original = inventory({setup.TEST_CHANNEL: "1.8.8"})
+            state = setup.new_state()
+            for name, _, _, version in batch:
+                step = setup.next_step(state, original)
+                self.assertEqual((step["code"], step["id"]), ("INSTALL_ADDON", name))
+                state = setup.after_request(state, name)
+                original["addons"][name] = {"version": version, "enabled": True}
+                self.assertEqual(setup.next_step(state, original)["code"], "CONFIRM")
+                state = setup.after_confirm(state, original)
+            self.assertEqual(setup.next_step(state, original)["code"], "APPS_PRESENT")
+            self.assertEqual(len(state["completed"]), 3)
+
     def test_unknown_repo_stops_with_no_install(self):
         rows = [dict(self.sample[0], repo="repository.unknown")]
         with patch.object(setup, "manifest", return_value=rows):
