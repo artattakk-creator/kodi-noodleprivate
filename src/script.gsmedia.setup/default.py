@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""GS Media Setup 0.5.0 — active, read-only device preflight.
+"""GS Media Setup 0.5.1 — active, read-only device preflight.
 
 The installation executor is intentionally NOT enabled until repositories,
 source hashes, full dependencies and Kodi 21 ARM32 have been verified.
@@ -28,7 +28,7 @@ def _device_label():
 def _report(key, title, inventory):
     result = inspect(key, inventory)
     lines = [
-        "GS MEDIA SETUP 0.5.0 — SYSTEMPRÜFUNG",
+        "GS MEDIA SETUP 0.5.1 — SYSTEMPRÜFUNG",
         "=" * 46,
         "Kodi: " + _device_label(),
         "Installationsprofil: " + title,
@@ -71,7 +71,7 @@ def run():
     dialog = xbmcgui.Dialog()
     profiles = profile_names()
     while True:
-        choice = dialog.select("GS Media Setup 0.5.0 – Entwicklung", [
+        choice = dialog.select("GS Media Setup 0.5.1 – Entwicklung", [
             "Installationsprofil und Abhängigkeiten prüfen",
             "Aktuelle Kodi-Add-ons inventarisieren",
             "BINGIE-Menüs und Widgets prüfen",
@@ -141,7 +141,7 @@ def run():
                 "und sämtliche erforderlichen Add-on-Abhängigkeiten.",
                 "Bereits eingerichtete Boxen bleiben unverändert.",
                 "",
-                "GS Media Setup 0.5.0: HIER NUR ABLAUFVORSCHAU.",
+                "GS Media Setup 0.5.1: HIER NUR ABLAUFVORSCHAU.",
                 "Die Vollinstallation arbeitet alle 11 Programme Schritt für Schritt ab.",
                 "Neustart/Autostart erst nach vollständiger, überprüfter Installation.",
             ])
@@ -165,7 +165,7 @@ def run():
             dialog.notification("GS Media", "Abbruch angefordert; laufender Schritt wird sicher angehalten.")
             continue
         if choice == 5:
-            dialog.ok("GS Media Setup 0.5.0", "Geführter Vollinstaller (11 Apps) mit Quellprüfung und Diagnosepilot. "
+            dialog.ok("GS Media Setup 0.5.1", "Geführter Vollinstaller (11 Apps) mit Quellprüfung und Diagnosepilot. "
                       "Bestandsprofile werden nicht zurückgesetzt. "
                       "Nicht geprüfte Drittanbieterinstallationen und Skinänderungen bleiben gesperrt.")
             continue
