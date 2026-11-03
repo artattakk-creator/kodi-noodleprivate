@@ -32,7 +32,7 @@ jobs:
           python -m unittest discover -s tests -p 'test_xcmate_setup_0513.py' -v
           python -m unittest discover -s tests -p 'test_xcmate_setup_0514.py' -v
           python -m unittest discover -s tests -p 'test_xcmate_setup_0515.py' -v
-          python -m unittest discover -s tests -p 'test_xcmate_kodi_catalog_0517.py' -v
+          python -m unittest discover -s tests -p 'test_xcmate_kodi_catalog_0516.py' -v
           python -m unittest discover -s tests -p 'test_xcmate_setup_0516.py' -v
           python -m unittest discover -s tests -p 'test_xcmate_package_0517.py' -v
       - name: Verify unchanged resumable source-plan indices
