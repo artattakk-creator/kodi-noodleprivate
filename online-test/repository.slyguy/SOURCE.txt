@@ -1,0 +1,7 @@
+SlyGuy repository 0.0.9 bootstrap provenance.
+Original maintainer: SlyGuy; original source distribution mirror: matthuisman/slyguy.addons.
+Original revision: 42ea97aca5987db6ce3e2cdfa1a129bc8b0b0281.
+Exact original path: repository.slyguy/repository.slyguy-0.0.9.zip.
+Git blob SHA-1: 1551ecb1c2fcf1c5f951c84aa7721412c11c90cb.
+Original license status: not explicitly declared by the Kodi addon manifest. No redistribution rights assumed.
+Only bootstrap repository is considered for the development channel, not the application ZIP files.

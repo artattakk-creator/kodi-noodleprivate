@@ -8,7 +8,7 @@
     "version": "0.2.35"
   },
   "limitations": [
-    "Original xVAULT repository bootstrap and Kodi installed plugin NOT_TESTED on Android",
+    "SlyGuy repository bootstrap and SlyGuy dependency closure NOT_TESTED on Android",
     "Full eleven-app one-click install not yet complete",
     "XCMate .70 EPG/storage/artwork bugs remain"
   ],
@@ -26,7 +26,7 @@
   },
   "repository": {
     "id": "repository.gsmedia.pilot",
-    "version": "1.8.9"
+    "version": "1.9.0"
   },
   "skin_shortcuts": {
     "license": "GPL-2.0-only",
@@ -34,12 +34,22 @@
     "sha256": "865ee5ea5bf0accee27b82539caabce1c8a9fbb8f94b2900fe5ace4f82c80b23",
     "version": "2.1.0"
   },
-  "source_head": "1b24019976d179c3c9319726bdb56021fb69e343",
-  "source_run_id": 41608807153,
+  "slyguy": {
+    "android_test": "NOT_TESTED",
+    "license_disclosed_by_upstream_repo": false,
+    "official_repo_feed": "https://slyguy.uk/.repo/repository.slyguy/addons.xml",
+    "original_source": "matthuisman/slyguy.addons",
+    "repo_id": "repository.slyguy",
+    "sha256": "079915885866a5cbb8f17191c5ee8f7d044d7a9e788e96d116c9f1bc8bb4c3c0",
+    "trailer_and_dependencies_mirrored": false,
+    "version": "0.0.9"
+  },
+  "source_head": "f46d8ddaff419b6d4ca6fefb64fc7d11b203a9f3",
+  "source_run_id": 41610990814,
   "wizard": {
     "id": "script.gsmedia.setup",
-    "status": "BETA_XVAULT_OFFICIAL_REPO_ANDROID_NOT_VERIFIED",
-    "version": "0.5.6"
+    "status": "BETA_SLYGUY_OFFICIAL_REPO_ANDROID_NOT_VERIFIED",
+    "version": "0.5.7"
   },
   "xvault": {
     "android_test": "NOT_TESTED",
@@ -54,10 +64,11 @@
     "plugin.video.cumination": "539073d804d6381105698eff054ea77ae1359b658e0f226c3807a7365a0d674c",
     "plugin.video.noodleprivate": "b9d0afe06d6fc956bc0191fd51f4646ae9f54c6272009e7a8819255de7460364",
     "plugin.video.xtreammate": "90b90042b02d8b0e27a7b7c014d993b1dfb6f7a0dae493bf6bf80b0f4eaee07f",
-    "repository.gsmedia.pilot": "b364fe7f996078c3794c7e6e3dfd69cffc9afa5a017d484ac34375722e03a949",
+    "repository.gsmedia.pilot": "2b079c42d187a09c65d29fb13629b995e5552506c7777fe85b15a0b112936dc9",
+    "repository.slyguy": "079915885866a5cbb8f17191c5ee8f7d044d7a9e788e96d116c9f1bc8bb4c3c0",
     "repository.titan.bingie.mod": "dba0a2e670e2d93158cb030ea52fe3e237bb19177e0a165d99c8f72a8492ef46",
     "repository.xvault": "df6fd9f40c12c9e0f13f7cb04589286307550cd43376c734eb127aa4e1de27ab",
-    "script.gsmedia.setup": "27eb48845f2fab4940be271256d6b8f9e4ab7f0f7454c9e47bae732a6a2d2de5",
+    "script.gsmedia.setup": "226fd05bd1ea9e19e0afe925cc4f7f9a3792abe94ec4cc53999119aad3ff693d",
     "script.gsmedia.skinshortcuts.bridge": "f84da5931a4159bbf82b78ecf6a05c0b2ce8a6e0c08ebf109d1554eb84d4f72c",
     "script.module.jurialmunkey": "80302314cdbc5a75611b0c2866eb1c7b4e93ccadaf20208ef7eb79b79c1fb749",
     "script.module.resolveurl": "28fb6b2340eccfb1337ba4421b6429aa1c8f2978834853d1229b42b2a947bc59",
