@@ -169,6 +169,21 @@ print('COLD_READBACK_PASS')
         self.assertIn('errno=13',output);self.assertIn('stack=',output)
         for private in ('SECRET','private.invalid','secret portal',str(self.m.folder)):self.assertNotIn(private,output)
 
+    def test_nested_portal_write_error_keeps_errno_and_storage_classification(self):
+        try:
+            try:raise PermissionError(errno.EACCES,'SECRET')
+            except PermissionError as source:raise OSError('portal write failed') from source
+        except OSError as exc:
+            self.assertEqual(self.ui._failure_details(exc)[0],'XM-SETUP-STORAGE')
+            with mock.patch('xbmc.log',create=True) as log,mock.patch('xbmc.LOGINFO',0,create=True):
+                importlib.import_module('setup_diagnostics71').emit('FAILED','test',error=exc)
+            self.assertIn('errno=13',log.call_args.args[0]);self.assertNotIn('SECRET',log.call_args.args[0])
+
+    def test_direct_tls_and_connection_failures_are_not_mislabeled_as_local_storage(self):
+        import ssl
+        self.assertEqual(self.ui._failure_details(ssl.SSLError(1,'SECRET'))[0],'XM-SETUP-TLS')
+        self.assertEqual(self.ui._failure_details(ConnectionError(errno.EACCES,'SECRET'))[0],'XM-SETUP-NET')
+
     def test_probe_removes_own_files_and_never_writes_database(self):
         trace=importlib.import_module('setup_diagnostics71')
         import xbmcvfs

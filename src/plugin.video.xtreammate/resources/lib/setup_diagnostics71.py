@@ -40,7 +40,13 @@ def emit(stage, session='', error=None, **fields):
                'OperationalError','DatabaseError','Busy','DiscoveryBusy'}
         name=type(error).__name__
         values.append('type='+(name if name in names else 'OTHER'))
-        number=getattr(error,'errno',None)
+        cause=error;seen=set()
+        for _ in range(4):
+            if cause is None or id(cause) in seen:break
+            seen.add(id(cause))
+            if type(getattr(cause,'errno',None)) is int:break
+            cause=cause.__cause__
+        number=getattr(cause,'errno',None)
         if type(number) is int:
             values.append('errno='+str(number))
         # Hash the traceback's code positions; never emit source text/paths.

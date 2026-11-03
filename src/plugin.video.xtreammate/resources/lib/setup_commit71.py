@@ -15,13 +15,24 @@ def failure(exc):
         'XM-SETUP-DISCOVERY-BUSY':'Eine Anbieterprüfung läuft noch. Abwarten oder abbrechen; es wird kein zweiter Auftrag gestartet.',
         'XM-SETUP-BACKUP':'Die Sicherung konnte nicht vollständig verifiziert werden. Es wurden keine Portal-Einstellungen veröffentlicht.',
         'XM-SETUP-START':'Die Startgruppe muss zu den ausgewählten Sendergruppen gehören.'}
-    if code in messages:return code,messages[code]
-    number=getattr(exc,'errno',None)
-    if isinstance(exc,OSError) and number in (errno.ENOSPC,errno.EDQUOT,errno.EROFS,errno.EACCES,errno.EPERM,errno.ENOSYS):
-        return 'XM-SETUP-STORAGE','Lokaler Datei-/Speicherzugriff fehlgeschlagen. Freien Speicher und Berechtigungen am Kodi-Datenpfad prüfen; keine Daten löschen.'
-    if isinstance(exc,sqlite3.Error):
-        return 'XM-SETUP-DB','Lokale Datenbank konnte nicht geprüft oder geschrieben werden. Auswahl bleibt erhalten; später erneut speichern.'
+    from wizard_fault54 import describe
+    seen=set();cause=exc
+    for _ in range(4):
+        if cause is None or id(cause) in seen:break
+        seen.add(id(cause))
+        code=getattr(cause,'code',None)
+        if code in messages:return code,messages[code]
+        network=describe(cause)
+        if network:return network
+        number=getattr(cause,'errno',None)
+        storage={errno.ENOSPC,errno.EDQUOT,errno.EROFS,errno.EACCES,errno.EPERM,errno.ENOSYS,errno.ENOTSUP,errno.EIO,errno.ENOENT,errno.ENOTDIR,errno.EMFILE,errno.ENFILE,errno.EFBIG}
+        if isinstance(cause,OSError) and number in storage:
+            return 'XM-SETUP-STORAGE','Lokaler Datei-/Speicherzugriff fehlgeschlagen. Freien Speicher und Berechtigungen am Kodi-Datenpfad prüfen; keine Daten löschen.'
+        if isinstance(cause,sqlite3.Error):
+            return 'XM-SETUP-DB','Lokale Datenbank konnte nicht geprüft oder geschrieben werden. Auswahl bleibt erhalten; später erneut speichern.'
+        cause=cause.__cause__
     return None
+
 
 
 def choose_start(window):
