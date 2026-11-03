@@ -107,7 +107,7 @@ jobs:
         run: |
           git fetch origin main
           git worktree add --detach "$RUNNER_TEMP/xcmate-0510-main" origin/main
-          python tools/publish_gsmedia_059_beta.py .build/xcmate-0510-pilot "$RUNNER_TEMP/xcmate-0510-main/online-test"
+          python tools/publish_xcmate_0510_beta.py .build/xcmate-0510-pilot "$RUNNER_TEMP/xcmate-0510-main/online-test"
       - name: Push only test channel; reject concurrent main changes
         run: |
           cd "$RUNNER_TEMP/xcmate-0510-main"
