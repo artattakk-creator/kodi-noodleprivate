@@ -12,6 +12,15 @@ STAGES = ("apps", "skin", "player", "check", "done", "stopped")
 REPO_ALLOWLIST = frozenset(("repository.titan.bingie.mod", "repository.xvault", "repository.slyguy"))
 TEST_CHANNEL = "repository.gsmedia.pilot"
 SAFE_IDS = re.compile(r"^[A-Za-z0-9._-]{3,100}$")
+VERSIONED_MINIMUM = re.compile(r"^[0-9]+(?:\.[0-9]+)*$")
+UPGRADE_BRIDGE_PREFIX = "script.gsmedia.upgrade."
+# Fresh, inert first-party add-on requiring one original dependency >=minimum.
+# Kodi resolves the original package. Never use an unverified/manual ZIP source.
+APPROVED_UPGRADE_SOURCES = frozenset((
+    TEST_CHANNEL, "repository.titan.bingie.mod", "repository.xbmc.org",
+    "repository.slyguy", "repository.xvault",
+))
+
 MAX_ITEMS = 200
 
 
@@ -61,6 +70,52 @@ def rows():
             result.append(row)
     return tuple(result)
 
+
+def upgrade_bridges():
+    """Return deterministic per-dependency Kodi-native upgrade bridges."""
+    result = []
+    for row in rows():
+        ident, minimum, source = row["id"], row["minimum"], row["repo"]
+        if (source not in APPROVED_UPGRADE_SOURCES or
+                not minimum or not VERSIONED_MINIMUM.fullmatch(minimum)):
+            continue
+        bridge = UPGRADE_BRIDGE_PREFIX + ident
+        if not SAFE_IDS.fullmatch(bridge):
+            raise ValueError("Unsupported upgrade bridge ID")
+        result.append({"id": bridge, "target": ident, "minimum": minimum,
+                       "source": source})
+    if len({item["id"] for item in result}) != len(result):
+        raise ValueError("Duplicate upgrade bridge")
+    return tuple(result)
+
+
+def upgrade_bridge_for(ident, source, minimum):
+    for row in upgrade_bridges():
+        if (row["target"], row["source"], row["minimum"]) == (ident, source, minimum):
+            return row["id"]
+    return ""
+
+
+def reconcile_restart(state, inventory):
+    """On consented resume keep confirmed installs, clear only stale attempts.
+
+    When an asynchronous Kodi install completed after a stop, verify and
+    preserve that success instead of issuing the request twice.
+    """
+    validate(state)
+    if not state["stopped"] or state["stage"] != "apps":
+        return state
+    result = dict(state)
+    pending = state["pending"]
+    if pending:
+        minimum = next((r["minimum"] for r in rows() if r["id"] == pending), "")
+        if installed(inventory, pending, minimum):
+            result["pending"] = ""
+            result["completed"] = sorted(set(result["completed"]) | {pending})
+        else:
+            result["pending"] = ""
+    result["attempted"] = sorted(set(result["attempted"]) & set(result["completed"]))
+    return validate(result)
 
 def planned_ids():
     return frozenset(row["id"] for row in rows()) | REPO_ALLOWLIST
@@ -146,8 +201,17 @@ def next_step(state, inventory):
         item = inventory.get("addons", {}).get(ident, {})
         actual = item.get("version", "") if isinstance(item, dict) else ""
         if actual and not installed(inventory, ident, minimum):
-            return {"code": "INSTALL_UPGRADE", "id": ident,
-                    "minimum": minimum, "actual": actual, "source": repo}
+            # A disabled current package is not an outdated package.
+            from setup_install_pilot import _version
+            if minimum and _version(actual) < _version(minimum):
+                bridge = upgrade_bridge_for(ident, repo, minimum)
+                if not bridge and ident != "script.skinshortcuts":
+                    return {"code": "SOURCE_BLOCKED", "id": ident,
+                            "reason": "NO_TRUSTED_UPGRADE_BRIDGE", "repo": repo}
+                return {"code": "INSTALL_UPGRADE", "id": ident,
+                        "minimum": minimum, "actual": actual, "source": repo,
+                        "bridge": bridge}
+            return {"code": "ENABLE_ADDON", "id": ident, "actual": actual}
         return {"code": "INSTALL_ADDON", "id": ident, "minimum": minimum,
                 "source": repo}
     return {"code": "APPS_PRESENT"}
