@@ -30,6 +30,7 @@ jobs:
               curl -L --silent --show-error --connect-timeout 8 --max-time 20 -o /dev/null \
                 -w 'HTTP=%{http_code} CONTENT_TYPE=%{content_type} FINAL=%{url_effective} BYTES=%{size_download}\n' "$url"
           done
+          set -e
           echo "KODI_HTTP_DIRECTORY_PARSER_CHECK"
           curl -LfsS --max-time 20 -H "Cache-Control: no-cache" \
             "https://artattakk-creator.github.io/kodi-noodleprivate/online-test/?verification=${GITHUB_RUN_ID}" -o /tmp/kodi-directory-index.html
@@ -37,10 +38,11 @@ jobs:
           import re
           from pathlib import Path
           html=Path("/tmp/kodi-directory-index.html").read_text(encoding="utf-8")
-          expr=r'<a href="([^"]*)"[^>]*>\\s*(.*?)\\s*</a>(.+?)(?=<a|</tr|$)'
+          expr=r'<a href="([^"]*)"[^>]*>\s*(.*?)\s*</a>(.+?)(?=<a|</tr|$)'
           matches=[(m.group(1),m.group(2),m.group(3)) for m in re.finditer(expr,html,re.I)]
           expected=["repository.gsmedia.pilot-1.9.6.zip", "script.gsmedia.setup-0.5.13.zip"]
           visible=[href for href,name,meta in matches if href==name and meta]
+          print("Public HTML excerpt:", html[:1000])
           print("Kodi HTTPDirectory recognized zip filenames:", visible)
           assert visible==expected, (matches,expected)
           PY
