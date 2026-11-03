@@ -50,9 +50,10 @@
     "script.module.resolveurl": "5.1.212",
     "script.module.resolveurl.xxx": "2.1.44"
   },
+  "packaging_validation": "SOURCE_AND_ARCHIVE_LOCAL_PYTHON_IMPORT_CLOSURE",
   "repository": {
     "id": "repository.gsmedia.pilot",
-    "version": "1.9.9"
+    "version": "1.9.10"
   },
   "skin_shortcuts": {
     "license": "GPL-2.0-only",
@@ -111,11 +112,11 @@
     "script.gsmedia.upgrade.slyguy.dependencies"
   ],
   "wizard": {
-    "fix": "Original unchanged BINGIE Repo 2.0.1 already in test index; new pinned GPLv3 BINGIE Helper 1.1.2 mirrored from immutable upstream Omega ZIP, plus inert MIT bootstrap parent requiring both original add-ons from Kodi's dependency resolver. Pre-install catalog readiness and read-only diagnostics. Preserve 48-step journal. Android runtime not verified.",
+    "fix": "0.5.16 crashed on Kodi 21.3 at startup: ModuleNotFoundError setup_catalog_0516 because the packager FILES omitted this required local Python module. 0.5.17 includes it in the exact ZIP; the builder now AST-verifies all local setup_ imports and archive entries, with actual ZIP regression tests. Original one-step BINGIE bootstrap and all 48 plan steps unchanged; Android retest pending.",
     "id": "script.gsmedia.setup",
     "source_gate": "Drive source plus pinned upstream images and original MIT source",
-    "status": "BETA_ORIGINAL_BINGIE_NATIVE_BOOTSTRAP_ANDROID_NOT_VERIFIED",
-    "version": "0.5.16"
+    "status": "BETA_PACKAGING_IMPORT_CLOSURE_FIXED_ANDROID_NOT_VERIFIED",
+    "version": "0.5.17"
   },
   "xvault": {
     "android_test": "NOT_TESTED",
@@ -131,14 +132,14 @@
     "plugin.video.cumination": "539073d804d6381105698eff054ea77ae1359b658e0f226c3807a7365a0d674c",
     "plugin.video.noodleprivate": "b9d0afe06d6fc956bc0191fd51f4646ae9f54c6272009e7a8819255de7460364",
     "plugin.video.xtreammate": "90b90042b02d8b0e27a7b7c014d993b1dfb6f7a0dae493bf6bf80b0f4eaee07f",
-    "repository.gsmedia.pilot": "7b508f676c676faab1ae42485ce6b4d4834374c1f0f2c68996bc4320067343a7",
+    "repository.gsmedia.pilot": "121e71e336aff2aefe4f54bba7da77d9f7f6c78bc62f91b6a2e7fe74d33cccb3",
     "repository.slyguy": "079915885866a5cbb8f17191c5ee8f7d044d7a9e788e96d116c9f1bc8bb4c3c0",
     "repository.titan.bingie.mod": "dba0a2e670e2d93158cb030ea52fe3e237bb19177e0a165d99c8f72a8492ef46",
     "repository.xvault": "df6fd9f40c12c9e0f13f7cb04589286307550cd43376c734eb127aa4e1de27ab",
     "script.bingie.helper": "653b7391f5012a0a35867ec53e55045842efa02c4dca698ce8da0f5b39549358",
     "script.ezmaintenanceplus": "08a367b5fd1ee367ead4150b2364063a0760fe9fbf7506c20db845a0126cd2e6",
     "script.gsmedia.bingie.bootstrap": "6fa171c7d2e2071240f12302e5feb92546a206ddce88557462e274431ad14f04",
-    "script.gsmedia.setup": "fd60ba6ef85010676d56a1aa0824198d8d3eab051ef87391fb1b8617a46157e4",
+    "script.gsmedia.setup": "30ba1f27311f98a8c42e1b01f6fad093a1ade4f469348658bc6e90bf7fc66f9b",
     "script.gsmedia.skinshortcuts.bridge": "f84da5931a4159bbf82b78ecf6a05c0b2ce8a6e0c08ebf109d1554eb84d4f72c",
     "script.gsmedia.upgrade.plugin.audio.m3sr2019": "d026dabe4e120c3b6b581a613db326ed6cc09458b8db536e158af4a0d753a5cb",
     "script.gsmedia.upgrade.plugin.program.autocompletion": "695ad1e88bfffd3d5353b871ec75a73aaa83c3d80f42eb02ebf4198763a694e4",

@@ -262,7 +262,7 @@
       <fanart>fanart.jpg</fanart>
     </assets>
   </extension>
-</addon><addon id="script.gsmedia.setup" name="XCMate Media Center Setup – v0.5.16 – Kodi 21.3 Omega" version="0.5.16" provider-name="XCMate">
+</addon><addon id="script.gsmedia.setup" name="XCMate Media Center Setup – v0.5.17 – Kodi 21.3 Omega" version="0.5.17" provider-name="XCMate">
   <requires><import addon="xbmc.python" version="3.0.0" /></requires>
   <extension point="xbmc.python.script" library="default.py" />
   <extension point="xbmc.service" library="service.py" start="startup" />
@@ -275,7 +275,7 @@
     <platform>all</platform>
     <license>MIT (Wizard), GPL-2.0-only (bundled BINGIE source patch)</license>
   </extension>
-</addon><addon id="repository.gsmedia.pilot" name="xcMate Repository – Test v1.9.9 – Kodi 21.3 Omega" version="1.9.9" provider-name="xcMate">
+</addon><addon id="repository.gsmedia.pilot" name="xcMate Repository – Test v1.9.10 – Kodi 21.3 Omega" version="1.9.10" provider-name="xcMate">
   <extension point="xbmc.addon.repository">
     <dir>
       <info compressed="false">https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/addons.xml</info>
@@ -286,9 +286,9 @@
     
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="de_DE">xcMate Repository – Test v1.9.9 – Kodi 21.3 Omega (nicht produktiv)</summary>
+    <summary lang="de_DE">xcMate Repository – Test v1.9.10 – Kodi 21.3 Omega (nicht produktiv)</summary>
     <description lang="de_DE">XC Mate – geprüfter Testkatalog für den automatischen Kodi-Installationswizard. Android-Endabnahme am Gerät.</description>
-    <summary lang="en_GB">xcMate Repository – Test v1.9.9 – Kodi 21.3 Omega (nicht produktiv)</summary>
+    <summary lang="en_GB">xcMate Repository – Test v1.9.10 – Kodi 21.3 Omega (nicht produktiv)</summary>
     <description lang="en_GB">XC Mate – geprüfter Testkatalog für den automatischen Kodi-Installationswizard. Android-Endabnahme am Gerät.</description>
     <disclaimer lang="de_DE">Eigenstaendiges GS Media Repository. Externe Projekte sind nicht Teil des Lite-Katalogs und werden gegebenenfalls separat durch ihre Urheber gepflegt. Keine Verbindung mit Team Kodi.</disclaimer>
     <platform>all</platform>
