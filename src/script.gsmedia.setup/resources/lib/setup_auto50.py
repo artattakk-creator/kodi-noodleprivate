@@ -9,7 +9,7 @@ from setup_install_pilot import _installed
 
 SCHEMA = 2
 STAGES = ("apps", "skin", "player", "check", "done", "stopped")
-REPO_ALLOWLIST = frozenset(("repository.titan.bingie.mod", "repository.xvault"))
+REPO_ALLOWLIST = frozenset(("repository.titan.bingie.mod", "repository.xvault", "repository.slyguy"))
 TEST_CHANNEL = "repository.gsmedia.pilot"
 SAFE_IDS = re.compile(r"^[A-Za-z0-9._-]{3,100}$")
 MAX_ITEMS = 200
@@ -44,6 +44,10 @@ def rows():
         elif ident == "script.module.resolveurl.xxx":
             # Original Gujal00 adult-resolver extension in the same pilot.
             result.append(dict(row, repo=TEST_CHANNEL, minimum="2.1.44"))
+        elif ident == "repository.slyguy":
+            # Exact original SlyGuy repository bootstrap is a pilot-listed
+            # package; do not require a manual ZIP picker.
+            result.append(dict(row, repo=TEST_CHANNEL, minimum="0.0.9"))
         elif ident == "plugin.video.cumination":
             # Exact GPLv2 original package mirrored by CI from upstream SHA.
             result.append(dict(row, repo=TEST_CHANNEL, minimum="1.1.206"))
@@ -128,6 +132,11 @@ def next_step(state, inventory):
                     "source": REPO_BOOTSTRAP.get(repo, "")}
         if ident in state["attempted"]:
             return {"code": "RETRY_REQUIRED", "id": ident}
+        if ident in REPO_ALLOWLIST and repo == TEST_CHANNEL:
+            # Explicit original-source bootstrap is still a Kodi repository:
+            # refresh source indices immediately after installation.
+            return {"code": "INSTALL_REPOSITORY", "id": ident,
+                    "source": "GS_MEDIA_APPROVED_TEST_CATALOG"}
         item = inventory.get("addons", {}).get(ident, {})
         actual = item.get("version", "") if isinstance(item, dict) else ""
         if actual and not installed(inventory, ident, minimum):

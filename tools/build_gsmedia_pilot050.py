@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a test-only GS Media 1.8.9 pilot catalog with Apache BINGIE bootstrap.
+"""Build a test-only GS Media 1.9.0 pilot catalog with Apache BINGIE bootstrap.
 
 Never publishes to main. The original BINGIE ZIP is retained byte-for-byte.
 """
@@ -19,6 +19,13 @@ JURIAL_BLOB_SHA1 = "98556ddadf9ea88db9809728663ddc08fe9a0990"
 XVAULT_REPO_VENDOR = ROOT / "vendor/xvault-official-repository-103/repository.xvault-1.0.3.zip"
 XVAULT_REPO_BLOB_SHA1 = "52f4ffdf82234aef742a38a94695e4b373acc0a1"
 XVAULT_OFFICIAL_FEED = "https://xvault.repowork.de/addons.xml"
+SLYGUY_REPOSITORY_REV = "42ea97aca5987db6ce3e2cdfa1a129bc8b0b0281"
+SLYGUY_REPOSITORY_BLOB = "1551ecb1c2fcf1c5f951c84aa7721412c11c90cb"
+SLYGUY_REPOSITORY_URL = (
+    "https://raw.githubusercontent.com/matthuisman/slyguy.addons/"
+    + SLYGUY_REPOSITORY_REV + "/repository.slyguy/repository.slyguy-0.0.9.zip"
+)
+SLYGUY_SOURCE = ROOT / "vendor/slyguy-repository-009/SOURCE.txt"
 RESOLVE_VENDOR = ROOT / "vendor/gsmedia-source-batch-055/script.module.resolveurl-5.1.212.zip"
 RESOLVE_XXX_VENDOR = ROOT / "vendor/gsmedia-source-batch-055/script.module.resolveurl.xxx-2.1.44.zip"
 RESOLVE_BLOB = "307decca19aed7be9f51e501d736f1cd87443a07"
@@ -37,7 +44,7 @@ ORIGINAL_SHA256 = "dba0a2e670e2d93158cb030ea52fe3e237bb19177e0a165d99c8f72a8492e
 TEST_URL = ("https://raw.githubusercontent.com/artattakk-creator/"
             "kodi-noodleprivate/main/online-test/")
 PILOT_ID = "repository.gsmedia.pilot"
-PILOT_VERSION = "1.8.9"
+PILOT_VERSION = "1.9.0"
 
 
 def _bytes_in_zip(data, prefix):
@@ -67,7 +74,7 @@ def _fetch_cumination(destination):
     dest.parent.mkdir(exist_ok=True, parents=True)
     request = urllib.request.Request(
         CUMINATION_URL,
-        headers={"User-Agent": "GS-Media-Original-Package-Verification/0.5.6"}
+        headers={"User-Agent": "GS-Media-Original-Package-Verification/0.5.7"}
     )
     with urllib.request.urlopen(request, timeout=45) as response:
         raw = response.read(8 * 1024 * 1024 + 1)
@@ -80,6 +87,34 @@ def _fetch_cumination(destination):
     assert addon.findtext("./extension[@point='xbmc.addon.metadata']/license") == "GPL 2.0"
     assert CUMINATION_SOURCE.is_file(), "Corresponding GPL source attribution missing"
     return dest, raw
+
+
+def _fetch_slyguy_repo(destination):
+    # Original minimal repository bootstrap from an immutable upstream
+    # revision. All SlyGuy applications and modules are installed later
+    # from its own official feed by Kodi (never mirrored in this build).
+    target = Path(destination) / "_vendor-cache" / "repository.slyguy-0.0.9.zip"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    request = urllib.request.Request(
+        SLYGUY_REPOSITORY_URL,
+        headers={"User-Agent": "GS-Media-Kodi-Pilot-Original-Repo-Check/0.5.7"},
+    )
+    with urllib.request.urlopen(request, timeout=30) as response:
+        contents = response.read(100000)
+    assert len(contents) == 84145, "Original SlyGuy repo length changed"
+    assert _git_blob_sha(contents) == SLYGUY_REPOSITORY_BLOB, "SlyGuy upstream source changed"
+    target.write_bytes(contents)
+    addon = _bytes_in_zip(target, "repository.slyguy")
+    assert addon.get("id") == "repository.slyguy"
+    assert addon.get("version") == "0.0.9"
+    remote = addon.find("./extension[@point='xbmc.addon.repository']/dir")
+    assert remote is not None, "Missing original official SlyGuy feed"
+    info = remote.findtext("info") or ""
+    datadir = remote.findtext("datadir") or ""
+    assert info.startswith("https://slyguy.uk/") or info.startswith("http://slyguy.uk/"), info
+    assert datadir.startswith("https://slyguy.uk/") or datadir.startswith("http://slyguy.uk/"), datadir
+    assert SLYGUY_SOURCE.is_file()
+    return target, contents
 
 
 def build(destination):
@@ -163,17 +198,20 @@ def build(destination):
     assert repo_dir.findtext("datadir") == "https://xvault.repowork.de/"
     assert (ROOT/"vendor/xvault-official-repository-103/SOURCE.txt").is_file()
 
+    slyguy_repo_zip, slyguy_repo_bytes = _fetch_slyguy_repo(destination)
+
     all_addons = [bridge_xml]
     for addon_id, version, package in [
         ("plugin.video.xtreammate", "0.1.29.70",
          ROOT / "plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.70.zip"),
         ("plugin.video.noodleprivate", "0.4.2",
          ROOT / "plugin.video.noodleprivate/plugin.video.noodleprivate-0.4.2.zip"),
-        ("script.gsmedia.setup", "0.5.6",
-         ROOT / ".build/gsmedia-056/script.gsmedia.setup-0.5.6.zip"),
+        ("script.gsmedia.setup", "0.5.7",
+         ROOT / ".build/gsmedia-057/script.gsmedia.setup-0.5.7.zip"),
         ("repository.titan.bingie.mod", "2.0.1", VENDOR),
         ("script.skinshortcuts", "2.1.0", SHORTCUTS_VENDOR),
         ("repository.xvault", "1.0.3", XVAULT_REPO_VENDOR),
+        ("repository.slyguy", "0.0.9", slyguy_repo_zip),
         ("script.module.jurialmunkey", "0.2.35", JURIAL_VENDOR),
         ("script.module.resolveurl", "5.1.212", RESOLVE_VENDOR),
         ("script.module.resolveurl.xxx", "2.1.44", RESOLVE_XXX_VENDOR),
@@ -197,6 +235,13 @@ def build(destination):
                     key = addon_id + "/" + name
                     if key in archive.namelist():
                         (destination/addon_id/name).write_bytes(archive.read(key))
+        if addon_id == "repository.slyguy":
+            shutil.copyfile(SLYGUY_SOURCE, destination/addon_id/"SOURCE.txt")
+            with zipfile.ZipFile(package) as archive:
+                for name in ("icon.png", "fanart.jpg"):
+                    source = addon_id + "/" + name
+                    if source in archive.namelist():
+                        (destination/addon_id/name).write_bytes(archive.read(source))
         if addon_id == "repository.xvault":
             shutil.copyfile(ROOT/"vendor/xvault-official-repository-103/SOURCE.txt",
                             destination/addon_id/"SOURCE.txt")
@@ -237,14 +282,14 @@ def build(destination):
     pilot = ET.parse(repo_source).getroot()
     pilot.set("id", PILOT_ID)
     pilot.set("version", PILOT_VERSION)
-    pilot.set("name", "GS Media Online-Test 1.8.9")
+    pilot.set("name", "GS Media Online-Test 1.9.0")
     dir_ = pilot.find("extension[@point='xbmc.addon.repository']/dir")
     assert dir_ is not None
     dir_.find("info").text = TEST_URL + "addons.xml"
     dir_.find("checksum").text = TEST_URL + "addons.xml.md5"
     dir_.find("datadir").text = TEST_URL
     for node in pilot.findall("extension[@point='xbmc.addon.metadata']/summary"):
-        node.text = "GS Media Online-Test 1.8.9, nicht produktiv"
+        node.text = "GS Media Online-Test 1.9.0, nicht produktiv"
     for node in pilot.findall("extension[@point='xbmc.addon.metadata']/description"):
         node.text = "Entwicklungs-Installer mit geprüfter BINGIE-Repository-Vorstufe; keine vollständige Geräteabnahme."
     pilot_xml = ET.tostring(pilot, encoding="utf-8", xml_declaration=True)
@@ -271,6 +316,7 @@ def build(destination):
     print("VENDOR_SHORTCUTS_SHA256", hashlib.sha256(shortcuts_bytes).hexdigest())
     print("VENDOR_JURIAL_SHA256", hashlib.sha256(jurial_bytes).hexdigest())
     print("VENDOR_XVAULT_REPO_SHA256", hashlib.sha256(xvault_repo_bytes).hexdigest())
+    print("VENDOR_SLYGUY_REPO_SHA256", hashlib.sha256(slyguy_repo_bytes).hexdigest())
     print("VENDOR_RESOLVE_SHA256", hashlib.sha256(resolve_bytes).hexdigest())
     print("VENDOR_RESOLVE_XXX_SHA256", hashlib.sha256(adult_bytes).hexdigest())
     print("VENDOR_CUMINATION_SHA256", hashlib.sha256(cumination_bytes).hexdigest())
@@ -279,4 +325,4 @@ def build(destination):
 
 
 if __name__ == "__main__":
-    build(sys.argv[1] if len(sys.argv)>1 else ROOT/".build/gsmedia-056-pilot")
+    build(sys.argv[1] if len(sys.argv)>1 else ROOT/".build/gsmedia-057-pilot")

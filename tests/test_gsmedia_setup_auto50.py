@@ -164,6 +164,45 @@ class AutoSetupTests(unittest.TestCase):
                 "version": "2026.11.01.1", "enabled": True}
             self.assertEqual(setup.next_step(completed, box)["code"], "APPS_PRESENT")
 
+    def test_slyguy_native_repository_then_dependency_and_trailers(self):
+        sample = [
+            {"id": "repository.slyguy", "minimum": "0.0.9",
+             "repo": "EXTERNAL_REPOSITORY", "notes": "", "mandatory": False,
+             "manifest_known": True},
+            {"id": "slyguy.dependencies", "minimum": "0.0.30",
+             "repo": "repository.slyguy", "notes": "", "mandatory": False,
+             "manifest_known": True},
+            {"id": "script.module.slyguy", "minimum": "0.86.96",
+             "repo": "repository.slyguy", "notes": "", "mandatory": False,
+             "manifest_known": True},
+            {"id": "slyguy.trailers", "minimum": "0.2.2",
+             "repo": "repository.slyguy", "notes": "", "mandatory": True,
+             "manifest_known": True},
+        ]
+        with patch.object(setup, "manifest", return_value=sample):
+            self.assertIn("repository.slyguy", setup.REPO_ALLOWLIST)
+            rows = setup.rows()
+            self.assertEqual(rows[0]["repo"], setup.TEST_CHANNEL)
+            inv = inventory({setup.TEST_CHANNEL: "1.9.0"})
+            state = setup.new_state()
+            result = setup.next_step(state, inv)
+            self.assertEqual(result["id"], "repository.slyguy")
+            self.assertIn(result["code"], ("INSTALL_ADDON", "INSTALL_REPOSITORY"))
+            state = setup.after_request(state, "repository.slyguy")
+            inv["addons"]["repository.slyguy"] = {"version": "0.0.9", "enabled": True}
+            state = setup.after_confirm(state, inv)
+            self.assertEqual(setup.next_step(state, inv)["id"], "slyguy.dependencies")
+            for ident, version in (("slyguy.dependencies", "0.0.30"),
+                                   ("script.module.slyguy", "0.86.96"),
+                                   ("slyguy.trailers", "0.2.2")):
+                nxt = setup.next_step(state, inv)
+                self.assertEqual((nxt["code"], nxt["id"]), ("INSTALL_ADDON", ident))
+                state = setup.after_request(state, ident)
+                inv["addons"][ident] = {"version": version, "enabled": True}
+                state = setup.after_confirm(state, inv)
+            self.assertEqual(setup.next_step(state, inv)["code"], "APPS_PRESENT")
+            self.assertEqual(len(state["completed"]), 4)
+
     def test_unknown_repo_stops_with_no_install(self):
         rows = [dict(self.sample[0], repo="repository.unknown")]
         with patch.object(setup, "manifest", return_value=rows):
