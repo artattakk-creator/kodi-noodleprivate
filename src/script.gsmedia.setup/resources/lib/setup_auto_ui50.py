@@ -11,7 +11,7 @@ from setup_auto50 import (new_state, next_step, after_request, after_confirm,
                           after_retry, stop, resume, rows, count_done, advance_stage)
 from setup_auto_store50 import load, save
 from setup_inventory import snapshot
-from setup_install_pilot import protected_existing
+from setup_install_pilot import protected_existing, _version
 
 
 def _context():
@@ -117,7 +117,7 @@ def run():
                       "Bestehende Daten bleiben unverändert.")
             return
         if not dialog.yesno(
-            "GS Media Setup 0.5.0 – Test",
+            "GS Media Setup 0.5.1 – Test",
             "Alle 11 Apps und ihre Abhängigkeiten aus geprüften Repositories "
             "mit Kodi installieren? Bereits vorhandene Add-ons werden nicht "
             "überschrieben. Fremdquellen und ungeprüfte Pakete bleiben gesperrt. "
@@ -148,7 +148,7 @@ def run():
     window.setProperty("GS_MEDIA_050_RUNNING", "1")
     window.clearProperty("GS_MEDIA_050_CANCEL")
     progress = xbmcgui.DialogProgressBG()
-    progress.create("GS Media Setup 0.5.0", "Systemprüfung")
+    progress.create("GS Media Setup 0.5.1", "Systemprüfung")
     monitor = xbmc.Monitor()
     reason = ""
     try:
@@ -167,7 +167,7 @@ def run():
             if code == "CONFIRM":
                 state = _persist(profile, after_confirm(state, inventory))
                 continue
-            if code in ("INSTALL_REPOSITORY", "INSTALL_ADDON"):
+            if code in ("INSTALL_REPOSITORY", "INSTALL_ADDON", "INSTALL_UPGRADE"):
                 ident = step["id"]
                 if not re.fullmatch(r"[A-Za-z0-9._-]{3,100}", ident):
                     raise ValueError("Invalid add-on ID")
@@ -176,6 +176,7 @@ def run():
                 # This does NOT claim an installation succeeded or report fake
                 # network percentages. Kodi may show its own transfer dialog.
                 wait = 0
+                version_conflict = ""
                 while wait < 240:
                     if monitor.waitForAbort(2):
                         break
@@ -185,12 +186,25 @@ def run():
                     inv = snapshot()
                     if next_step(state, inv)["code"] == "CONFIRM":
                         break
+                    present = inv.get("addons", {}).get(ident, {}) if inv.get("code") == "READY" else {}
+                    required = step.get("minimum", "")
+                    actual = present.get("version", "") if isinstance(present, dict) else ""
+                    if (wait >= 20 and actual and required and
+                            _version(actual) < _version(required)):
+                        version_conflict = ("VERSION_BELOW_REQUIRED: {} "
+                                            "installiert={} benoetigt={}".format(
+                                                ident, actual, required))
+                        break
                     progress.update(percent,
                                     "GS Media: {} / {} Komponenten".format(done, total),
-                                    "{} – Kodi Download/Installation ({} s)".format(ident, wait))
+                                    "{} – warte auf Kodi ({} s)".format(ident, wait))
                 if monitor.abortRequested() or window.getProperty("GS_MEDIA_050_CANCEL") == "1":
                     reason = "CANCELLED_OR_SHUTDOWN"
                     state = _persist(profile, stop(state, reason))
+                    break
+                if version_conflict:
+                    reason = version_conflict
+                    state = _persist(profile, stop(state, reason[:200]))
                     break
                 if next_step(state, snapshot())["code"] != "CONFIRM":
                     reason = "KODI_INSTALL_NOT_CONFIRMED:" + ident
@@ -278,6 +292,15 @@ def run():
                   "{} von {} Komponenten bestätigt. BINGIE und TMDB-Player "
                   "eingerichtet; Quellnachweis und Android-Abnahme bleiben offen."
                   .format(done, total))
+    elif reason.startswith("VERSION_BELOW_REQUIRED:"):
+        dialog.ok("GS Media – Versionskonflikt",
+                  reason + "\n\nKodi verwendet noch eine zu alte Version. "
+                  "Skin Shortcuts 2.1.0 ist im GS Media Test-Katalog hinterlegt. "
+                  "Kodi kann Add-ons aus dem offiziellen Repository an ihre "
+                  "bisherige Quelle binden. In diesem Fall bitte unter "
+                  "Skin Shortcuts → Informationen → Versionen einmalig "
+                  "2.1.0 aus GS Media Online-Test wählen. "
+                  "Keine Daten löschen; danach Setup fortsetzen.")
     elif reason:
         dialog.ok("GS Media – sicher angehalten",
                   "{} von {} Komponenten geprüft. Grund: {}. "
