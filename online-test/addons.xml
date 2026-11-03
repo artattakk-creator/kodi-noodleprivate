@@ -262,12 +262,12 @@
       <fanart>fanart.jpg</fanart>
     </assets>
   </extension>
-</addon><addon id="script.gsmedia.setup" name="XCMate Media Center Setup – v0.5.11 – Kodi 21.3 Omega" version="0.5.11" provider-name="XCMate">
+</addon><addon id="script.gsmedia.setup" name="XCMate Media Center Setup – v0.5.12 – Kodi 21.3 Omega" version="0.5.12" provider-name="XCMate">
   <requires><import addon="xbmc.python" version="3.0.0" /></requires>
   <extension point="xbmc.python.script" library="default.py" />
   <extension point="xbmc.service" library="service.py" start="startup" />
   <extension point="xbmc.addon.metadata">
-    <summary lang="de_DE">XCMate Installationsassistent für Kodi 21 – elf Pflicht-Add-ons und BINGIE</summary>
+    <summary lang="de_DE">XCMate Vollautomatische Mediencenter-Einrichtung für Kodi 21.3 Omega</summary>
     <description lang="de_DE">Automatischer Installationskandidat für elf Pflichtprogramme und deren Abhängigkeiten. Nutzt Kodi-Repository-Installationen nach Zustimmung, gesichertes Fortschrittsjournal, BINGIE-2.2.3-Patch mit Original-Hashprüfung, Menüs/Widgets und TMDB-xVAULT-Player. Ungeprüfte Paketquellen und der automatische Abschluss bleiben bis zur echten Android-Abnahme gesperrt.</description>
     <summary lang="en_GB">XCMate Setup: guided eleven-addon installation candidate</summary>
     <description lang="en_GB">Guided 11-addon installation with Kodi repository prompts, private progress journal, pinned BINGIE patch and TMDB player configuration. Full auto-completion is blocked until package provenance and Android device testing pass.</description>
@@ -275,7 +275,7 @@
     <platform>all</platform>
     <license>MIT (Wizard), GPL-2.0-only (bundled BINGIE source patch)</license>
   </extension>
-</addon><addon id="repository.gsmedia.pilot" name="xcMate Repository – Test v1.9.4 – Kodi 21.3 Omega" version="1.9.4" provider-name="xcMate">
+</addon><addon id="repository.gsmedia.pilot" name="xcMate Repository – Test v1.9.5 – Kodi 21.3 Omega" version="1.9.5" provider-name="xcMate">
   <extension point="xbmc.addon.repository">
     <dir>
       <info compressed="false">https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/addons.xml</info>
@@ -286,9 +286,9 @@
     
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="de_DE">xcMate Repository – Test v1.9.4 – Kodi 21.3 Omega (nicht produktiv)</summary>
+    <summary lang="de_DE">xcMate Repository – Test v1.9.5 – Kodi 21.3 Omega (nicht produktiv)</summary>
     <description lang="de_DE">XC Mate – geprüfter Testkatalog für den automatischen Kodi-Installationswizard. Android-Endabnahme am Gerät.</description>
-    <summary lang="en_GB">xcMate Repository – Test v1.9.4 – Kodi 21.3 Omega (nicht produktiv)</summary>
+    <summary lang="en_GB">xcMate Repository – Test v1.9.5 – Kodi 21.3 Omega (nicht produktiv)</summary>
     <description lang="en_GB">XC Mate – geprüfter Testkatalog für den automatischen Kodi-Installationswizard. Android-Endabnahme am Gerät.</description>
     <disclaimer lang="de_DE">Eigenstaendiges GS Media Repository. Externe Projekte sind nicht Teil des Lite-Katalogs und werden gegebenenfalls separat durch ihre Urheber gepflegt. Keine Verbindung mit Team Kodi.</disclaimer>
     <platform>all</platform>
