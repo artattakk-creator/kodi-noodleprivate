@@ -29,6 +29,11 @@ def rows():
         # The isolated test-channel is an approved source of first-party XCMate.
         if ident == "plugin.video.xtreammate" and row["repo"] == "repository.gsmedia":
             result.append(dict(row, repo=TEST_CHANNEL))
+        elif ident == "script.skinshortcuts":
+            # The BINGIE 2.2.3 manifest requires 2.1.0; Kodi official 2.0.3
+            # is insufficient. A vetted, byte-identical 2.1.0 is supplied in
+            # the independent online pilot catalogue.
+            result.append(dict(row, repo=TEST_CHANNEL, minimum="2.1.0"))
         else:
             result.append(row)
     return tuple(result)
@@ -110,6 +115,11 @@ def next_step(state, inventory):
                     "source": REPO_BOOTSTRAP.get(repo, "")}
         if ident in state["attempted"]:
             return {"code": "RETRY_REQUIRED", "id": ident}
+        item = inventory.get("addons", {}).get(ident, {})
+        actual = item.get("version", "") if isinstance(item, dict) else ""
+        if actual and not installed(inventory, ident, minimum):
+            return {"code": "INSTALL_UPGRADE", "id": ident,
+                    "minimum": minimum, "actual": actual, "source": repo}
         return {"code": "INSTALL_ADDON", "id": ident, "minimum": minimum,
                 "source": repo}
     return {"code": "APPS_PRESENT"}
