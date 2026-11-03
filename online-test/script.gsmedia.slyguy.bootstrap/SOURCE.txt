@@ -1,0 +1,3 @@
+First-party inert dependency bridge; MIT. Only this bootstrap is redistributed by xcMate, not any original SlyGuy code/ZIP.
+Original package author and repository: https://github.com/matthuisman/slyguy.addons
+Official SlyGuy repository: https://slyguy.uk/

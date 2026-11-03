@@ -262,7 +262,7 @@
       <fanart>fanart.jpg</fanart>
     </assets>
   </extension>
-</addon><addon id="script.gsmedia.setup" name="XCMate Media Center Setup – v0.5.17 – Kodi 21.3 Omega" version="0.5.17" provider-name="XCMate">
+</addon><addon id="script.gsmedia.setup" name="XCMate Media Center Setup – v0.5.18 – Kodi 21.3 Omega" version="0.5.18" provider-name="XCMate">
   <requires><import addon="xbmc.python" version="3.0.0" /></requires>
   <extension point="xbmc.python.script" library="default.py" />
   <extension point="xbmc.service" library="service.py" start="startup" />
@@ -275,7 +275,7 @@
     <platform>all</platform>
     <license>MIT (Wizard), GPL-2.0-only (bundled BINGIE source patch)</license>
   </extension>
-</addon><addon id="repository.gsmedia.pilot" name="xcMate Repository – Test v1.9.10 – Kodi 21.3 Omega" version="1.9.10" provider-name="xcMate">
+</addon><addon id="repository.gsmedia.pilot" name="xcMate Repository – Test v1.9.11 – Kodi 21.3 Omega" version="1.9.11" provider-name="xcMate">
   <extension point="xbmc.addon.repository">
     <dir>
       <info compressed="false">https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/addons.xml</info>
@@ -286,9 +286,9 @@
     
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="de_DE">xcMate Repository – Test v1.9.10 – Kodi 21.3 Omega (nicht produktiv)</summary>
+    <summary lang="de_DE">xcMate Repository – Test v1.9.11 – Kodi 21.3 Omega (nicht produktiv)</summary>
     <description lang="de_DE">XC Mate – geprüfter Testkatalog für den automatischen Kodi-Installationswizard. Android-Endabnahme am Gerät.</description>
-    <summary lang="en_GB">xcMate Repository – Test v1.9.10 – Kodi 21.3 Omega (nicht produktiv)</summary>
+    <summary lang="en_GB">xcMate Repository – Test v1.9.11 – Kodi 21.3 Omega (nicht produktiv)</summary>
     <description lang="en_GB">XC Mate – geprüfter Testkatalog für den automatischen Kodi-Installationswizard. Android-Endabnahme am Gerät.</description>
     <disclaimer lang="de_DE">Eigenstaendiges GS Media Repository. Externe Projekte sind nicht Teil des Lite-Katalogs und werden gegebenenfalls separat durch ihre Urheber gepflegt. Keine Verbindung mit Team Kodi.</disclaimer>
     <platform>all</platform>
@@ -386,4 +386,4 @@
 			<fanart>resources/fanart.jpg</fanart>
 		</assets>
 	</extension>
-</addon><addon id="script.gsmedia.bingie.bootstrap" name="xcMate Native BINGIE Repository &amp; Helper Bootstrap" version="0.1.0" provider-name="xcMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="repository.titan.bingie.mod" version="2.0.1" /><import addon="script.bingie.helper" version="1.1.2" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">First-party one-step original BINGIE dependency installation</summary><description lang="en_GB">Inert addon whose only function is to request Kodi's native dependency resolver to install the verified, unmodified BINGIE MOD repository 2.0.1 and BINGIE Helper 1.1.2 from the xcMate test catalog.</description><license>MIT</license><platform>all</platform><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon></addons>
+</addon><addon id="script.gsmedia.bingie.bootstrap" name="xcMate Native BINGIE Repository &amp; Helper Bootstrap" version="0.1.0" provider-name="xcMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="repository.titan.bingie.mod" version="2.0.1" /><import addon="script.bingie.helper" version="1.1.2" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="en_GB">First-party one-step original BINGIE dependency installation</summary><description lang="en_GB">Inert addon whose only function is to request Kodi's native dependency resolver to install the verified, unmodified BINGIE MOD repository 2.0.1 and BINGIE Helper 1.1.2 from the xcMate test catalog.</description><license>MIT</license><platform>all</platform><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon><addon id="script.gsmedia.slyguy.bootstrap" name="xcMate Native Original SlyGuy Dependency Bootstrap" version="0.1.0" provider-name="xcMate"><requires><import addon="xbmc.python" version="3.0.0" /><import addon="repository.slyguy" version="0.0.9" /><import addon="slyguy.dependencies" version="0.0.30" /><import addon="script.module.slyguy" version="0.87.6" /><import addon="slyguy.trailers" version="0.2.2" /></requires><extension point="xbmc.python.script" library="default.py" /><extension point="xbmc.addon.metadata"><summary lang="de_DE">Kodi installiert SlyGuy-Originale aus dem offiziellen SlyGuy-Repository</summary><description lang="de_DE">Erfordert die originalen unveraenderten SlyGuy-Abhaengigkeiten, SlyGuy Common und SlyGuy Trailers aus dem bereits vorhandenen offiziellen Repository. Kein Originalpaket wird von xcMate gespiegelt.</description><license>MIT</license><platform>all</platform><source>https://github.com/artattakk-creator/kodi-noodleprivate</source></extension></addon></addons>
