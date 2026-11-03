@@ -73,6 +73,29 @@ class AutoSetupTests(unittest.TestCase):
             self.assertEqual(installed["pending"], "")
             self.assertIn("repository.titan.bingie.mod", installed["completed"])
 
+    def test_bingie_shortcuts_prefer_approved_210_pilot(self):
+        shortcut = {"id": "script.skinshortcuts", "minimum": "2.1.0",
+                    "repo": "repository.xbmc.org", "notes": "",
+                    "mandatory": False, "manifest_known": True}
+        with patch.object(setup, "manifest", return_value=[shortcut]):
+            entries = setup.rows()
+            self.assertEqual(entries[0]["repo"], setup.TEST_CHANNEL)
+            result = setup.next_step(setup.new_state(), inventory({
+                setup.TEST_CHANNEL: "1.8.4", "script.skinshortcuts": "2.0.3"
+            }))
+            self.assertEqual(result["code"], "INSTALL_UPGRADE")
+            self.assertEqual(result["minimum"], "2.1.0")
+            self.assertEqual(result["actual"], "2.0.3")
+            queued = setup.after_request(setup.new_state(), "script.skinshortcuts")
+            self.assertEqual(setup.next_step(queued, inventory({
+                setup.TEST_CHANNEL: "1.8.4", "script.skinshortcuts": "2.0.3"
+            }))["code"], "WAITING")
+            newer = inventory({setup.TEST_CHANNEL: "1.8.4",
+                               "script.skinshortcuts": "2.1.0"})
+            self.assertEqual(setup.next_step(queued, newer)["code"], "CONFIRM")
+            verified = setup.after_confirm(queued, newer)
+            self.assertIn("script.skinshortcuts", verified["completed"])
+
     def test_unknown_repo_stops_with_no_install(self):
         rows = [dict(self.sample[0], repo="repository.unknown")]
         with patch.object(setup, "manifest", return_value=rows):
