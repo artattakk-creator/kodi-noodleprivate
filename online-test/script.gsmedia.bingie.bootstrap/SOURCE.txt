@@ -1,0 +1,1 @@
+Original first-party xcMate native BINGIE dependency bridge, MIT. https://github.com/artattakk-creator/kodi-noodleprivate

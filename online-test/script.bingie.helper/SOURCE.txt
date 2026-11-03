@@ -1,0 +1,1 @@
+Original, unmodified BINGIE Helper 1.1.2, GPL v3.0. Source: https://github.com/matke-84/script.bingie.helper/ ; verbatim ZIP: https://raw.githubusercontent.com/AchillesPunks/repository.titan.bingie.mod/d9f334ecc33c7d0e137dd1728af18815c512e577/omega/script.bingie.helper/script.bingie.helper-1.1.2.zip
