@@ -196,7 +196,7 @@ def release(source, target):
     # installer anchors. Browser rendering alone does not prove Kodi support.
     import re
     page = (target / "index.html").read_text(encoding="utf-8")
-    links = re.findall(r'<a href="([^"]*)"[^>]*>\\s*(.*?)\\s*</a>(.+?)(?=<a|</tr|$)', page, re.I)
+    links = re.findall(r'<a href="([^"]*)"[^>]*>\s*(.*?)\s*</a>(.+?)(?=<a|</tr|$)', page, re.I)
     expected_filenames = (
         "repository.gsmedia.pilot-1.9.7.zip",
         "script.gsmedia.setup-0.5.14.zip",
