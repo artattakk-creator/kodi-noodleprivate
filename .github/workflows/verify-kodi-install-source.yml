@@ -22,8 +22,8 @@ jobs:
           for url in \
             "https://artattakk-creator.github.io/kodi-noodleprivate/online-test/" \
             "https://artattakk-creator.github.io/kodi-noodleprivate/online-test/index.html" \
-            "https://artattakk-creator.github.io/kodi-noodleprivate/online-test/repository.gsmedia.pilot-1.9.6.zip" \
-            "https://artattakk-creator.github.io/kodi-noodleprivate/online-test/script.gsmedia.setup-0.5.13.zip" \
+            "https://artattakk-creator.github.io/kodi-noodleprivate/online-test/repository.gsmedia.pilot-1.9.7.zip" \
+            "https://artattakk-creator.github.io/kodi-noodleprivate/online-test/script.gsmedia.setup-0.5.14.zip" \
             "https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/index.html" \
             "https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/"; do
               echo "TEST_URL $url"
@@ -40,7 +40,7 @@ jobs:
           html=Path("/tmp/kodi-directory-index.html").read_text(encoding="utf-8")
           expr=r'<a href="([^"]*)"[^>]*>\s*(.*?)\s*</a>(.+?)(?=<a|</tr|$)'
           matches=[(m.group(1),m.group(2),m.group(3)) for m in re.finditer(expr,html,re.I)]
-          expected=["repository.gsmedia.pilot-1.9.6.zip", "script.gsmedia.setup-0.5.13.zip"]
+          expected=["repository.gsmedia.pilot-1.9.7.zip", "script.gsmedia.setup-0.5.14.zip"]
           visible=[href for href,name,meta in matches if href==name and meta]
           print("Public HTML excerpt:", html[:1000])
           print("Kodi HTTPDirectory recognized zip filenames:", visible)
