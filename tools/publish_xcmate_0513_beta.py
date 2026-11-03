@@ -143,17 +143,34 @@ def release(source, target):
     for ident, pack in new_packs.items():
         info["zip_sha256"][ident] = digest(pack.read_bytes())
     (target / "manifest.json").write_text(json.dumps(info, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    # Kodi Omega HTTPDirectory accepts a link only if its visible text is
+    # precisely equal to href (minus a trailing slash). Keep each anchor and
+    # following metadata on one line for the native CRegExp directory parser.
     (target / "index.html").write_text(
-        '<!doctype html><html lang="de"><meta charset="utf-8">'
-        '<title>xcMate Repository – Test v1.9.6 – Kodi 21.3 Omega</title>'
-        '<h1>xcMate Repository – Test v1.9.6 – Kodi 21.3 Omega / Setup 0.5.13</h1>'
-        '<p>Exakter BINGIE 2.2.3 Hashschutz bleibt aktiv. Sicherungspfad '
-        'skinpatch-060 abgeglichen. Bestehende Daten und 43 gepruefte '
-        'Add-ons bleiben erhalten. Fortsetzung nach Update.</p>'
-        '<p><a href="repository.gsmedia.pilot-1.9.6.zip">Repo 1.9.6</a></p>'
-        '<p><a href="script.gsmedia.setup-0.5.13.zip">Wizard 0.5.13</a></p>'
-        '<p>Android-Box-B-Integration und Player-Abnahme stehen aus.</p></html>\n',
+        '<!doctype html>\n'
+        '<html lang="de">\n'
+        '<head><meta charset="utf-8"><title>NeoDark 3 - xcMate Kodi 21.3 Erstinstallation</title></head>\n'
+        '<body>\n'
+        '<h1>xcMate / NeoDark 3 - Kodi 21.3 Omega</h1>\n'
+        '<p>Installationspakete. In Kodi: Add-ons / Aus ZIP-Datei installieren. Zuerst Repository, danach Setup.</p>\n'
+        '<table>\n'
+        '<tr><th>Dateiname</th><th>Groesse</th></tr>\n'
+        '<tr><td><a href="repository.gsmedia.pilot-1.9.6.zip">repository.gsmedia.pilot-1.9.6.zip</a></td><td align="right">7103 B</td></tr>\n'
+        '<tr><td><a href="script.gsmedia.setup-0.5.13.zip">script.gsmedia.setup-0.5.13.zip</a></td><td align="right">95575 B</td></tr>\n'
+        '</table>\n'
+        '<p>Kompatibel mit Kodi 21.3 Omega. Android-Box-Test weiterhin ausstehend.</p>\n'
+        '</body></html>\n',
         encoding="utf-8")
+    # Fail publication if a Kodi native HTTPDirectory regex cannot read both
+    # installer anchors. Browser rendering alone does not prove Kodi support.
+    import re
+    page = (target / "index.html").read_text(encoding="utf-8")
+    links = re.findall(r'<a href="([^"]*)"[^>]*>\\s*(.*?)\\s*</a>(.+?)(?=<a|</tr|$)', page, re.I)
+    expected_filenames = (
+        "repository.gsmedia.pilot-1.9.6.zip",
+        "script.gsmedia.setup-0.5.13.zip",
+    )
+    assert tuple(href for href, name, _ in links if href == name) == expected_filenames
     for ident, version in OLD.items():
         assert zip_path(target, ident, version)[0].is_file()
     print("XCMATE_0513_PUBLICATION_READY", len(ET.fromstring(raw).findall("addon")))
