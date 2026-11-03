@@ -10,6 +10,7 @@ import sys
 import zipfile
 import urllib.request
 import xml.etree.ElementTree as ET
+from gsmedia_058_sources import echo_package, ez_package
 
 ROOT = Path(__file__).resolve().parents[1]
 VENDOR = ROOT / "vendor/bingie-repository/repository.titan.bingie.mod-2.0.1.zip"
@@ -44,7 +45,7 @@ ORIGINAL_SHA256 = "dba0a2e670e2d93158cb030ea52fe3e237bb19177e0a165d99c8f72a8492e
 TEST_URL = ("https://raw.githubusercontent.com/artattakk-creator/"
             "kodi-noodleprivate/main/online-test/")
 PILOT_ID = "repository.gsmedia.pilot"
-PILOT_VERSION = "1.9.0"
+PILOT_VERSION = "1.9.1"
 
 
 def _bytes_in_zip(data, prefix):
@@ -199,15 +200,18 @@ def build(destination):
     assert (ROOT/"vendor/xvault-official-repository-103/SOURCE.txt").is_file()
 
     slyguy_repo_zip, slyguy_repo_bytes = _fetch_slyguy_repo(destination)
+    # Verified, user-authorised modern audio source + original maintenance tool.
+    echoed_zip, echoed_xml = echo_package(destination)
+    ez_zip, ez_xml = ez_package(destination)
 
-    all_addons = [bridge_xml]
+    all_addons = [bridge_xml, echoed_xml, ez_xml]
     for addon_id, version, package in [
         ("plugin.video.xtreammate", "0.1.29.70",
          ROOT / "plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.70.zip"),
         ("plugin.video.noodleprivate", "0.4.2",
          ROOT / "plugin.video.noodleprivate/plugin.video.noodleprivate-0.4.2.zip"),
-        ("script.gsmedia.setup", "0.5.7",
-         ROOT / ".build/gsmedia-057/script.gsmedia.setup-0.5.7.zip"),
+        ("script.gsmedia.setup", "0.5.8",
+         ROOT / ".build/gsmedia-058/script.gsmedia.setup-0.5.8.zip"),
         ("repository.titan.bingie.mod", "2.0.1", VENDOR),
         ("script.skinshortcuts", "2.1.0", SHORTCUTS_VENDOR),
         ("repository.xvault", "1.0.3", XVAULT_REPO_VENDOR),
@@ -282,14 +286,14 @@ def build(destination):
     pilot = ET.parse(repo_source).getroot()
     pilot.set("id", PILOT_ID)
     pilot.set("version", PILOT_VERSION)
-    pilot.set("name", "GS Media Online-Test 1.9.0")
+    pilot.set("name", "GS Media Online-Test 1.9.1")
     dir_ = pilot.find("extension[@point='xbmc.addon.repository']/dir")
     assert dir_ is not None
     dir_.find("info").text = TEST_URL + "addons.xml"
     dir_.find("checksum").text = TEST_URL + "addons.xml.md5"
     dir_.find("datadir").text = TEST_URL
     for node in pilot.findall("extension[@point='xbmc.addon.metadata']/summary"):
-        node.text = "GS Media Online-Test 1.9.0, nicht produktiv"
+        node.text = "GS Media Online-Test 1.9.1, nicht produktiv"
     for node in pilot.findall("extension[@point='xbmc.addon.metadata']/description"):
         node.text = "Entwicklungs-Installer mit geprüfter BINGIE-Repository-Vorstufe; keine vollständige Geräteabnahme."
     pilot_xml = ET.tostring(pilot, encoding="utf-8", xml_declaration=True)
@@ -325,4 +329,4 @@ def build(destination):
 
 
 if __name__ == "__main__":
-    build(sys.argv[1] if len(sys.argv)>1 else ROOT/".build/gsmedia-057-pilot")
+    build(sys.argv[1] if len(sys.argv)>1 else ROOT/".build/gsmedia-058-pilot")
