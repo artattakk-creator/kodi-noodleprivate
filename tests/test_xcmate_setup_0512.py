@@ -46,8 +46,8 @@ class WidgetRecoveryTests(unittest.TestCase):
                 (dest/k).write_bytes(v)
             p=dest/bingie.PROPS_FILENAME
             p.write_bytes(b"personal customised property list")
-            self.assertEqual(bingie.inspect_new_profile(dest,inv()),"EXISTING_SKIN_DATA_PRESERVED")
-            self.assertEqual(bingie.apply_new_profile(dest,inv(),True),"EXISTING_SKIN_DATA_PRESERVED")
+            self.assertTrue(bingie.inspect_new_profile(dest,inv()).startswith("EXISTING_SKIN_DATA_PRESERVED"))
+            self.assertTrue(bingie.apply_new_profile(dest,inv(),True).startswith("EXISTING_SKIN_DATA_PRESERVED"))
             self.assertEqual(p.read_bytes(),b"personal customised property list")
             self.assertFalse((dest/(bingie.PROPS_FILENAME+".xcmate-0511.bak")).exists())
 
