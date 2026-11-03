@@ -48,6 +48,12 @@ def rows():
             # Exact original SlyGuy repository bootstrap is a pilot-listed
             # package; do not require a manual ZIP picker.
             result.append(dict(row, repo=TEST_CHANNEL, minimum="0.0.9"))
+        elif ident == "plugin.audio.m3sr2019":
+            # The authorised 2026 Echoed source is bundled in isolated beta only.
+            result.append(dict(row, repo=TEST_CHANNEL, minimum="2026.1.0"))
+        elif ident == "script.ezmaintenanceplus":
+            # Rebuilt from the pinned original MIT-licensed developer revision.
+            result.append(dict(row, repo=TEST_CHANNEL, minimum="2026.04.05.0"))
         elif ident == "plugin.video.cumination":
             # Exact GPLv2 original package mirrored by CI from upstream SHA.
             result.append(dict(row, repo=TEST_CHANNEL, minimum="1.1.206"))
