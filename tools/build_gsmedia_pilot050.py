@@ -211,7 +211,7 @@ def build(destination):
         ("plugin.video.noodleprivate", "0.4.2",
          ROOT / "plugin.video.noodleprivate/plugin.video.noodleprivate-0.4.2.zip"),
         ("script.gsmedia.setup", "0.5.10",
-         ROOT / ".build/gsmedia-0510/script.gsmedia.setup-0.5.10.zip"),
+         ROOT / ".build/xcmate-0510/script.gsmedia.setup-0.5.10.zip"),
         ("repository.titan.bingie.mod", "2.0.1", VENDOR),
         ("script.skinshortcuts", "2.1.0", SHORTCUTS_VENDOR),
         ("repository.xvault", "1.0.3", XVAULT_REPO_VENDOR),
@@ -286,7 +286,8 @@ def build(destination):
     pilot = ET.parse(repo_source).getroot()
     pilot.set("id", PILOT_ID)
     pilot.set("version", PILOT_VERSION)
-    pilot.set("name", "XC Mate Repository – Test 1.9.3")\n    pilot.set("provider-name", "XC Mate")
+    pilot.set("name", "XC Mate Repository – Test 1.9.3")
+    pilot.set("provider-name", "XC Mate")
     dir_ = pilot.find("extension[@point='xbmc.addon.repository']/dir")
     assert dir_ is not None
     dir_.find("info").text = TEST_URL + "addons.xml"
@@ -329,4 +330,4 @@ def build(destination):
 
 
 if __name__ == "__main__":
-    build(sys.argv[1] if len(sys.argv)>1 else ROOT/".build/gsmedia-0510-pilot")
+    build(sys.argv[1] if len(sys.argv)>1 else ROOT/".build/xcmate-0510-pilot")
