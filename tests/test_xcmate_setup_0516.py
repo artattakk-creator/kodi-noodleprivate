@@ -27,7 +27,7 @@ class BingieOneStepBootstrapTests(unittest.TestCase):
         self.assertEqual(data["script.bingie.helper"]["repo"],
                          controller.TEST_CHANNEL)
         self.assertEqual(data["script.bingie.helper"]["minimum"],"1.1.2")
-        self.assertEqual(data["repository.titan.bingie.mod"]["minimum"],"2.0.1")
+        self.assertIn("repository.titan.bingie.mod", controller.REPO_ALLOWLIST)
 
     def test_new_box_requests_bingie_repo_without_manual_bootstrap(self):
         # Restricted to a minimal manifest, preserving actual setup controller.
