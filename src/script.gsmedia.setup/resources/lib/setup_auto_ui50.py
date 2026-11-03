@@ -11,6 +11,7 @@ from setup_auto50 import (new_state, next_step, after_request, after_confirm,
                           after_retry, stop, resume, rows, count_done, advance_stage)
 from setup_auto_store50 import load, save
 from setup_inventory import snapshot
+from setup_install_pilot import protected_existing
 
 
 def _context():
@@ -107,6 +108,14 @@ def run():
                   "Die Kodi-Inventur ist nicht verfügbar. Keine Installation.")
         return
     if first:
+        protected = protected_existing(inventory)
+        if protected:
+            dialog.ok("GS Media – Bestandsinstallation geschützt",
+                      "Gefundene bereits konfigurierte Add-ons: " +
+                      ", ".join(protected) +
+                      ". Vollautomatische Ersteinrichtung hier nicht gestartet. "
+                      "Bestehende Daten bleiben unverändert.")
+            return
         if not dialog.yesno(
             "GS Media Setup 0.5.0 – Test",
             "Alle 11 Apps und ihre Abhängigkeiten aus geprüften Repositories "
@@ -188,6 +197,9 @@ def run():
                     state = _persist(profile, stop(state, reason[:200]))
                     break
                 state = _persist(profile, after_confirm(state, snapshot()))
+                if code == "INSTALL_REPOSITORY":
+                    xbmc.executebuiltin("UpdateAddonRepos")
+                    monitor.waitForAbort(3)
                 continue
             if code == "WAITING":
                 # A Kodi process may have terminated during a previous request.
