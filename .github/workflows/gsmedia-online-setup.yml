@@ -1,0 +1,173 @@
+name: Publish isolated GS Media 1.8.2 online setup pilot
+on:
+  push:
+    branches: [main]
+    paths: [".github/workflows/gsmedia-online-setup.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: gsmedia-online-setup-pilot
+  cancel-in-progress: false
+jobs:
+  publish-online-pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download frozen and reviewed RC artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/gsmedia-rc"
+          gh run download 41537010401 --repo artattakk-creator/kodi-noodleprivate --name gsmedia-repository-1.8.2-setup-0.4.0-RC --dir "$RUNNER_TEMP/gsmedia-rc"
+      - name: Build independently scoped Kodi HTTPS test channel
+        env:
+          RC_DIR: ${{ runner.temp }}/gsmedia-rc
+        run: |
+          python - <<'PY'
+          import hashlib, os, json, zipfile, io, shutil, xml.etree.ElementTree as ET, html
+          from pathlib import Path
+          root=Path.cwd()
+          rc=Path(os.environ['RC_DIR'])
+          dest=root/'online-test'
+          dest.mkdir(exist_ok=True)
+          repo_source=rc/'repository.gsmedia-1.8.2.zip'
+          wizard_source=rc/'script.gsmedia.setup'/'script.gsmedia.setup-0.4.0.zip'
+          expected={
+              str(repo_source):'3e0e7a28c005b2107b84968ed627620378a115d22337017d91f8259d152439cd',
+              str(wizard_source):'8ac0f76efd6df432a149982b71c4aff07def83710de9829f43942cac4bd62667'
+          }
+          for path,digest in expected.items():
+              assert Path(path).is_file(),path
+              assert hashlib.sha256(Path(path).read_bytes()).hexdigest()==digest,'RC artifact sha changed: '+path
+          with zipfile.ZipFile(repo_source) as z:
+              assert z.testzip() is None
+              old_xml=ET.fromstring(z.read('repository.gsmedia/addon.xml'))
+              assert old_xml.get('id')=='repository.gsmedia' and old_xml.get('version')=='1.8.2'
+              old_xml.set('id','repository.gsmedia.pilot')
+              old_xml.set('name','GS Media Online-Test 1.8.2')
+              directory=old_xml.find("extension[@point='xbmc.addon.repository']/dir")
+              assert directory is not None
+              base='https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/'
+              directory.find('info').text=base+'addons.xml'
+              directory.find('checksum').text=base+'addons.xml.md5'
+              directory.find('datadir').text=base
+              meta=old_xml.find("extension[@point='xbmc.addon.metadata']")
+              assert meta is not None
+              for tag in ('summary','description','disclaimer'):
+                  for v in meta.findall(tag):
+                      if tag=='summary':v.text='GS Media Online-Test 1.8.2 – Wizard 0.4.0'
+                      if tag=='description':v.text='Getrennter, nicht produktiv freigegebener Kodi-Internet-Testkanal für GS Media Setup 0.4.0. Android-Ersttest und fremde Paketquellen offen.'
+                      if tag=='disclaimer':v.text='Nur auf frisch eingerichteter Kodi-Testinstallation. Vollautomatische Installation nicht freigegeben.'
+              repoxml=ET.tostring(old_xml,encoding='utf-8',xml_declaration=True)
+              pilot_zip=dest/'repository.gsmedia.pilot-1.8.2.zip'
+              with zipfile.ZipFile(pilot_zip,'w',compression=zipfile.ZIP_DEFLATED) as target:
+                  for file in z.infolist():
+                      if file.is_dir():continue
+                      filename=file.filename.replace('repository.gsmedia/','repository.gsmedia.pilot/',1)
+                      data=repoxml if filename.endswith('/addon.xml') else z.read(file.filename)
+                      target.writestr(filename,data)
+                  assert target.testzip() is None
+              for asset in ('icon-1.8.png','fanart.png'):
+                  name='repository.gsmedia/'+asset
+                  if name in z.namelist():
+                      path=dest/'repository.gsmedia.pilot'/asset
+                      path.parent.mkdir(exist_ok=True)
+                      path.write_bytes(z.read(name))
+          same=dest/'repository.gsmedia.pilot'/'repository.gsmedia.pilot-1.8.2.zip'
+          same.parent.mkdir(exist_ok=True)
+          shutil.copyfile(pilot_zip,same)
+
+          source_packages={
+              'script.gsmedia.setup':(wizard_source,'0.4.0'),
+              'plugin.video.xtreammate':(root/'plugin.video.xtreammate'/'plugin.video.xtreammate-0.1.29.70.zip','0.1.29.70'),
+              'plugin.video.noodleprivate':(root/'plugin.video.noodleprivate'/'plugin.video.noodleprivate-0.4.2.zip','0.4.2')
+          }
+          for ident,(source,version) in source_packages.items():
+              assert source.is_file(),source
+              with zipfile.ZipFile(source) as z:
+                  assert z.testzip() is None
+                  manifest=ET.fromstring(z.read(ident+'/addon.xml'))
+                  assert manifest.get('id')==ident,(ident,manifest.get('id'))
+                  assert manifest.get('version')==version,(ident,manifest.get('version'))
+              sub=dest/ident
+              sub.mkdir(exist_ok=True)
+              shutil.copyfile(source,sub/(ident+'-'+version+'.zip'))
+          shutil.copyfile(wizard_source,dest/'script.gsmedia.setup-0.4.0.zip')
+
+          official=ET.parse(rc/'addons.xml').getroot()
+          catalog=ET.Element('addons')
+          expected_ids=set(source_packages)|{'repository.gsmedia.pilot'}
+          for addon in official.findall('addon'):
+              if addon.get('id') in source_packages:
+                  catalog.append(addon)
+          catalog.append(ET.fromstring(repoxml))
+          ids={addon.get('id') for addon in catalog}
+          assert ids==expected_ids,(ids,expected_ids)
+          index=b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+ET.tostring(catalog,encoding='utf-8')+b'\n'
+          ET.fromstring(index)
+          (dest/'addons.xml').write_bytes(index)
+          (dest/'addons.xml.md5').write_text(hashlib.md5(index).hexdigest()+'\n',encoding='ascii')
+
+          page='''<!doctype html>
+          <html lang="de"><head><meta charset="utf-8"><title>GS Media Online-Test 1.8.2</title></head>
+          <body><h1>GS Media Online-Test 1.8.2 / Setup 0.4.0</h1>
+          <p>NICHT PRODUKTIV FREIGEGEBEN – Kodi 21.3 Online-Installationspilot. Bestehendes GS Media Repository 1.8.1 bleibt unverändert.</p>
+          <p>In Kodi: Einstellungen &gt; Dateimanager &gt; Quelle hinzufuegen, diese HTTPS-Ordneradresse eingeben und dann Add-ons &gt; Aus ZIP-Datei installieren.</p>
+          <a href="repository.gsmedia.pilot-1.8.2.zip">repository.gsmedia.pilot-1.8.2.zip</a><hr>
+          <a href="script.gsmedia.setup-0.4.0.zip">script.gsmedia.setup-0.4.0.zip</a><hr>
+          <p>Nach Installation des Test-Repositories: Aus Repository installieren &gt; GS Media Online-Test &gt; Programm-Add-ons &gt; GS Media Setup.</p>
+          <p>Der Wizard ist eine Testversion; Quellen/Abhaengigkeiten und Android/BINGIE sind nicht vollstaendig abgenommen. Keine automatische Vollinstallation.</p>
+          </body></html>'''
+          (dest/'index.html').write_text(page,encoding='utf-8')
+          manifest={'status':'ONLINE_PILOT_NOT_PRODUCTIVE','artifact_run_id':41537010401,
+            'source_head':'ba814855fa798df44aa18074651b04097b9bb1b8',
+            'source_pr':320,'wizard':'0.4.0','xcmate':'0.1.29.70',
+            'sha256':{p.relative_to(dest).as_posix():hashlib.sha256(p.read_bytes()).hexdigest()
+                      for p in sorted(dest.rglob('*.zip'))}}
+          (dest/'manifest.json').write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          with zipfile.ZipFile(pilot_zip) as z:
+              assert z.testzip() is None
+              rex=ET.fromstring(z.read('repository.gsmedia.pilot/addon.xml'))
+              assert rex.find("extension[@point='xbmc.addon.repository']/dir/info").text==base+'addons.xml'
+          print('READY: 4 indexed own-addon IDs, hashes verified, HTTP pilot catalog isolated.')
+          print('SITE: https://artattakk-creator.github.io/kodi-noodleprivate/online-test/')
+          print('RAW: '+base+'repository.gsmedia.pilot-1.8.2.zip')
+          PY
+      - name: Commit only isolated online-test files to main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add online-test/
+          if git diff --cached --quiet; then echo "Pilot bytes already published"; exit 0; fi
+          git commit -m "Publish isolated GS Media 1.8.2 online-install pilot"
+          git push origin HEAD:main
+      - name: Verify public Internet ZIP and repository index
+        run: |
+          python - <<'PY'
+          import urllib.request, hashlib, time
+          prefix='https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/'
+          for name in ['repository.gsmedia.pilot-1.8.2.zip','addons.xml','addons.xml.md5']:
+              expected=hashlib.sha256(open('online-test/'+name,'rb').read()).hexdigest()
+              verified=False
+              for attempt in range(8):
+                  try:
+                      with urllib.request.urlopen(prefix+name,timeout=12) as response:data=response.read()
+                      if hashlib.sha256(data).hexdigest()==expected:
+                          verified=True;break
+                  except Exception as e:
+                      print('Internet check attempt',attempt+1,name,type(e).__name__)
+                  time.sleep(5)
+              if not verified:raise SystemExit('NOT VERIFIED from public raw GitHub: '+name)
+              print('PUBLIC_OK',prefix+name,expected)
+          page='https://artattakk-creator.github.io/kodi-noodleprivate/online-test/'
+          try:
+              with urllib.request.urlopen(page,timeout=15) as response:
+                  print('PAGES_STATUS',response.status,response.url)
+          except Exception as e:
+              print('PAGES_NOT_VERIFIED',str(e)[:200])
+          PY
