@@ -139,7 +139,23 @@
     <license>MIT</license>
     <source>https://github.com/artattakk-creator/kodi-noodleprivate</source>
   </extension>
-</addon><addon id="script.gsmedia.setup" name="GS Media Setup – BINGIE Native Abhaengigkeits-Hotfix" version="0.5.3" provider-name="GS Media">
+</addon><addon id="script.module.jurialmunkey" name="jurialmunkey common" provider-name="jurialmunkey" version="0.2.35">
+  <requires>
+    <import addon="xbmc.python" version="3.0.1" />
+    <import addon="script.module.requests" version="2.9.1" />
+    <import addon="script.module.infotagger" version="0.0.5" />
+  </requires>
+  <extension point="xbmc.python.module" library="resources/modules" />
+  <extension point="xbmc.addon.metadata">
+    <description lang="en_GB">Common code required by TMDbHelper and other related jurialmunkey add-ons</description>
+    <description lang="zh_CN">TMDb 助手及其他相关 jurialmunkey 插件所需的通用代码</description>
+    <license>GPL-3.0-or-later</license>
+    <website>https://github.com/jurialmunkey/script.module.jurialmunkey</website>
+    <assets>
+      <icon>icon.png</icon>
+    </assets>
+  </extension>
+</addon><addon id="script.gsmedia.setup" name="GS Media Setup – Kodi Jurialmunkey Quellen-Hotfix" version="0.5.4" provider-name="GS Media">
   <requires><import addon="xbmc.python" version="3.0.0" /></requires>
   <extension point="xbmc.python.script" library="default.py" />
   <extension point="xbmc.service" library="service.py" start="startup" />
@@ -152,7 +168,7 @@
     <platform>all</platform>
     <license>MIT (Wizard), GPL-2.0-only (bundled BINGIE source patch)</license>
   </extension>
-</addon><addon id="repository.gsmedia.pilot" name="GS Media Online-Test 1.8.6" version="1.8.6" provider-name="GS Media">
+</addon><addon id="repository.gsmedia.pilot" name="GS Media Online-Test 1.8.7" version="1.8.7" provider-name="GS Media">
   <extension point="xbmc.addon.repository">
     <dir>
       <info compressed="false">https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/addons.xml</info>
@@ -163,9 +179,9 @@
     
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="de_DE">GS Media Online-Test 1.8.6, nicht produktiv</summary>
+    <summary lang="de_DE">GS Media Online-Test 1.8.7, nicht produktiv</summary>
     <description lang="de_DE">Entwicklungs-Installer mit geprüfter BINGIE-Repository-Vorstufe; keine vollständige Geräteabnahme.</description>
-    <summary lang="en_GB">GS Media Online-Test 1.8.6, nicht produktiv</summary>
+    <summary lang="en_GB">GS Media Online-Test 1.8.7, nicht produktiv</summary>
     <description lang="en_GB">Entwicklungs-Installer mit geprüfter BINGIE-Repository-Vorstufe; keine vollständige Geräteabnahme.</description>
     <disclaimer lang="de_DE">Eigenstaendiges GS Media Repository. Externe Projekte sind nicht Teil des Lite-Katalogs und werden gegebenenfalls separat durch ihre Urheber gepflegt. Keine Verbindung mit Team Kodi.</disclaimer>
     <platform>all</platform>
