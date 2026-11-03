@@ -166,7 +166,15 @@ def inspect_new_profile(folder, inventory):
             legacy = render(legacy=True)
             if mb == legacy[MENU_FILENAME] and pb == legacy[PROPS_FILENAME]:
                 return "OWNED_UPGRADE_READY"
-            return "EXISTING_SKIN_DATA_PRESERVED"
+            from setup_bingie_merge_0513 import plan as plan_merge
+            merge = plan_merge(mb, pb, payload)
+            if merge["code"] == "NO_CHANGE":
+                return "ALREADY_APPLIED"
+            if merge["code"] == "READY":
+                return "SAFE_MERGE_READY"
+            return "EXISTING_SKIN_DATA_PRESERVED:" + (
+                merge.get("code", "UNKNOWN") + ":" +
+                merge.get("detail", "")[:52])
         for name, raw in payload.items():
             target = dest / name
             if target.exists() and (not target.is_file()
@@ -184,10 +192,16 @@ def apply_new_profile(folder, inventory, user_approved=False):
     status = inspect_new_profile(folder, inventory)
     if status == "ALREADY_APPLIED":
         return status
-    if status not in ("READY", "OWNED_UPGRADE_READY"):
+    if status not in ("READY", "OWNED_UPGRADE_READY", "SAFE_MERGE_READY"):
         return status
     dest = Path(folder).resolve()
     payload = render()
+    if status == "SAFE_MERGE_READY":
+        from setup_bingie_merge_0513 import apply as apply_merge
+        result = apply_merge(dest, payload, user_approved=True)
+        if result == "MERGED" and inspect_new_profile(dest, inventory) == "ALREADY_APPLIED":
+            return "MERGED"
+        return result if result != "MERGED" else "POST_MERGE_NOT_VERIFIED"
     try:
         dest.mkdir(parents=True, exist_ok=True)
     except OSError:
