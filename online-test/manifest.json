@@ -8,7 +8,7 @@
     "version": "0.2.35"
   },
   "limitations": [
-    "Jurialmunkey 0.2.35 from copied original GPL package not yet tested on Android",
+    "ResolveURL+XXX+Cumination source batch not yet tested on Android",
     "Full eleven-app one-click install not yet complete",
     "XCMate .70 EPG/storage/artwork bugs remain"
   ],
@@ -18,9 +18,15 @@
     "requires_temporary_user_consented_origin_setting": true,
     "uses_kodi_dependency_manager": true
   },
+  "original_resolver_batch": {
+    "android_test": "NOT_TESTED",
+    "plugin.video.cumination": "1.1.206",
+    "script.module.resolveurl": "5.1.212",
+    "script.module.resolveurl.xxx": "2.1.44"
+  },
   "repository": {
     "id": "repository.gsmedia.pilot",
-    "version": "1.8.7"
+    "version": "1.8.8"
   },
   "skin_shortcuts": {
     "license": "GPL-2.0-only",
@@ -28,21 +34,24 @@
     "sha256": "865ee5ea5bf0accee27b82539caabce1c8a9fbb8f94b2900fe5ace4f82c80b23",
     "version": "2.1.0"
   },
-  "source_head": "be1d89a368b4a19ee515b324f840e732456e2584",
-  "source_run_id": 41602931300,
+  "source_head": "20172aa028606e67133a1ec38c5be92517dc908e",
+  "source_run_id": 41604713830,
   "wizard": {
     "id": "script.gsmedia.setup",
-    "status": "BETA_JURIAL_SOURCE_ANDROID_NOT_VERIFIED",
-    "version": "0.5.4"
+    "status": "BETA_RESOLVEURL_BATCH_ANDROID_NOT_VERIFIED",
+    "version": "0.5.5"
   },
   "zip_sha256": {
+    "plugin.video.cumination": "539073d804d6381105698eff054ea77ae1359b658e0f226c3807a7365a0d674c",
     "plugin.video.noodleprivate": "b9d0afe06d6fc956bc0191fd51f4646ae9f54c6272009e7a8819255de7460364",
     "plugin.video.xtreammate": "90b90042b02d8b0e27a7b7c014d993b1dfb6f7a0dae493bf6bf80b0f4eaee07f",
-    "repository.gsmedia.pilot": "4ca9fc5c2ddd76c1c3e64c98fe2e4d25eb004b774a940619908febd06137f0b8",
+    "repository.gsmedia.pilot": "4b1c42e0febc01e25dc7380725470441e2a503fcd0a2ad7ce8e04f632e2a7edc",
     "repository.titan.bingie.mod": "dba0a2e670e2d93158cb030ea52fe3e237bb19177e0a165d99c8f72a8492ef46",
-    "script.gsmedia.setup": "7a1adbefac0390aa0cd2b94f489bf443ec00aeede5e81f4e79aa9b133e6b33cd",
+    "script.gsmedia.setup": "eceb39314fde06c0277f35c494487cf57197f176c798d01d85ccf0ed35e5a2a0",
     "script.gsmedia.skinshortcuts.bridge": "f84da5931a4159bbf82b78ecf6a05c0b2ce8a6e0c08ebf109d1554eb84d4f72c",
     "script.module.jurialmunkey": "80302314cdbc5a75611b0c2866eb1c7b4e93ccadaf20208ef7eb79b79c1fb749",
+    "script.module.resolveurl": "28fb6b2340eccfb1337ba4421b6429aa1c8f2978834853d1229b42b2a947bc59",
+    "script.module.resolveurl.xxx": "d8bceeae5d492cfa111843cdf71f8681f0c9050fbc0fdd2952f77afe49ea30d5",
     "script.skinshortcuts": "865ee5ea5bf0accee27b82539caabce1c8a9fbb8f94b2900fe5ace4f82c80b23"
   }
 }
