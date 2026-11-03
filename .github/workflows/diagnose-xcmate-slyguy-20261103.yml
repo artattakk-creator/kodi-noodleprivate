@@ -55,6 +55,18 @@ jobs:
                       if t!="datadir" and node.findtext(t):
                           request(node.findtext(t),250_000)
                   base=node.findtext("datadir") or ""
+                  index_url=node.findtext("info") or ""
+                  index_raw=request(index_url,300_000) if index_url else None
+                  if index_raw:
+                      index=ET.fromstring(index_raw)
+                      refs={a.get("id"):a for a in index.findall("addon")}
+                      for ident,ver in pkg[1:]:
+                          item=refs.get(ident)
+                          print("OFFICIAL_INDEX_EXPECTED",ident,ver,
+                                "ACTUAL",item.get("version") if item is not None else "NOT_IN_INDEX",
+                                "MATCH",bool(item is not None and item.get("version")==ver))
+                          if item is not None:
+                              print("INDEX_IMPORTS",ident,[(x.get("addon"),x.get("version")) for x in item.findall("./requires/import")])
                   for ident,ver in pkg[1:]:
                       request(base+ident+"/"+ident+"-"+ver+".zip",4_000_000)
           else: print("NO_REPO_METADATA_NO_CONCLUSION")
