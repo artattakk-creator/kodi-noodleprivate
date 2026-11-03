@@ -1,0 +1,141 @@
+name: Promote GS Media 0.5.0 to isolated Kodi online beta
+on:
+  push:
+    branches: [main]
+    paths: [".github/workflows/gsmedia-050-beta-publish.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: gsmedia-online-beta-publish
+  cancel-in-progress: false
+jobs:
+  beta-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Retrieve PINNED 0.5.0 development candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/gsmedia-050"
+          gh run download 41595263556 --repo artattakk-creator/kodi-noodleprivate --name gsmedia-050-dev-wizard-not-production --dir "$RUNNER_TEMP/gsmedia-050"
+      - name: Verify immutable candidate and stage beta ONLY
+        env:
+          CANDIDATE: ${{ runner.temp }}/gsmedia-050
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from shutil import copy2
+          import hashlib, json, os, xml.etree.ElementTree as ET, zipfile
+          root=Path.cwd()
+          src=Path(os.environ['CANDIDATE'])/"gsmedia-050-pilot"
+          wizard_src=Path(os.environ['CANDIDATE'])/"gsmedia-050"/"script.gsmedia.setup-0.5.0.zip"
+          target=root/"online-test"
+          assert target.is_dir() and (target/"addons.xml").exists(),"Unexpected missing beta channel"
+          old=ET.parse(target/"addons.xml").getroot()
+          known={x.get('id'):x.get('version') for x in old.findall('addon')}
+          assert known.get('repository.gsmedia.pilot') in ("1.8.2","1.8.3"),known
+          assert known.get('script.gsmedia.setup') in ("0.4.0","0.5.0"),known
+          assert src.is_dir() and wizard_src.is_file(),"Missing artifact"
+          pinned={
+            "plugin.video.xtreammate":("0.1.29.70","90b90042b02d8b0e27a7b7c014d993b1dfb6f7a0dae493bf6bf80b0f4eaee07f"),
+            "plugin.video.noodleprivate":("0.4.2","b9d0afe06d6fc956bc0191fd51f4646ae9f54c6272009e7a8819255de7460364"),
+            "script.gsmedia.setup":("0.5.0","4f5f5d32a84f5ca64c71020b700e56e4af77252ddfc4c9028ac591d65fadd5e2"),
+            "repository.titan.bingie.mod":("2.0.1","dba0a2e670e2d93158cb030ea52fe3e237bb19177e0a165d99c8f72a8492ef46"),
+            "repository.gsmedia.pilot":("1.8.3","e0ac9cd042dcdd8a8b6e07d6b87cefefe5f17e23752bfec80fa6e1c12f863bae"),
+          }
+          assert hashlib.sha256(wizard_src.read_bytes()).hexdigest()==pinned["script.gsmedia.setup"][1]
+          idx=ET.parse(src/"addons.xml").getroot()
+          declared={x.get('id'):x.get('version') for x in idx.findall('addon')}
+          assert declared=={k:v[0] for k,v in pinned.items()},(declared,pinned)
+          assert (src/"addons.xml.md5").read_text().strip()==hashlib.md5((src/"addons.xml").read_bytes()).hexdigest()
+          for ident,(version,digest) in pinned.items():
+              path=src/ident/(ident+"-"+version+".zip")
+              assert path.is_file(),path
+              assert hashlib.sha256(path.read_bytes()).hexdigest()==digest,(ident,"SHA256 mismatch")
+              with zipfile.ZipFile(path) as archive:
+                  assert archive.testzip() is None
+                  manifest=ET.fromstring(archive.read(ident+"/addon.xml"))
+                  assert manifest.get("id")==ident and manifest.get("version")==version
+                  if ident=="repository.gsmedia.pilot":
+                      directory=manifest.find("extension[@point='xbmc.addon.repository']/dir")
+                      assert directory.findtext("info")=="https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/addons.xml"
+                      assert directory.findtext("datadir")=="https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/"
+              dest=target/ident/(ident+"-"+version+".zip")
+              dest.parent.mkdir(parents=True,exist_ok=True)
+              copy2(path,dest)
+          # Bootstrap repository ZIP at source root for Kodi's 'Install from ZIP' picker
+          copy2(src/"repository.gsmedia.pilot-1.8.3.zip",target/"repository.gsmedia.pilot-1.8.3.zip")
+          copy2(wizard_src,target/"script.gsmedia.setup-0.5.0.zip")
+          for ident in ("repository.titan.bingie.mod",):
+              for extra in ("LICENSE","SOURCE.txt","icon.png","fanart.jpg"):
+                  p=src/ident/extra
+                  if p.exists():
+                      dest=target/ident/extra
+                      dest.parent.mkdir(parents=True,exist_ok=True)
+                      copy2(p,dest)
+          copy2(src/"addons.xml",target/"addons.xml")
+          copy2(src/"addons.xml.md5",target/"addons.xml.md5")
+          manifest_data={
+            "channel":"GS_MEDIA_ONLINE_BETA_ONLY",
+            "repository":{"id":"repository.gsmedia.pilot","version":"1.8.3"},
+            "wizard":{"id":"script.gsmedia.setup","version":"0.5.0","status":"TEST_ONLY_ANDROID_NOT_VERIFIED"},
+            "source_run_id":41595263556,
+            "source_commit":"da5a31513d669d8b05c73547c72ff3c3e33ea2d4",
+            "known_limitations":["11-app automatic install NOT complete","Unverified third-party sources fail closed","XCMate 0.1.29.70 EPG/storage/artwork issues still open"],
+            "zip_sha256":{ident:values[1] for ident,values in pinned.items()},
+          }
+          (target/"manifest.json").write_text(json.dumps(manifest_data,indent=2,sort_keys=True)+"\n",encoding="utf-8")
+          (target/"index.html").write_text("""<!doctype html>
+          <html lang="de"><head><meta charset="utf-8"><title>GS Media Online-Test 1.8.3</title></head>
+          <body><h1>GS Media Online-Test 1.8.3 / Setup 0.5.0</h1>
+          <strong>ENTWICKLUNGS-BETA – KEIN FREIGEGEBENER 11-APP-VOLLINSTALLER</strong>
+          <p>Kodi &gt; Einstellungen &gt; Dateimanager &gt; Quelle hinzufuegen; diese HTTPS-Ordneradresse als GS-Test eintragen.</p>
+          <p><a href="repository.gsmedia.pilot-1.8.3.zip">repository.gsmedia.pilot-1.8.3.zip</a></p>
+          <p><a href="script.gsmedia.setup-0.5.0.zip">script.gsmedia.setup-0.5.0.zip</a></p>
+          <p>Nach Aktualisierung des bestehenden GS Media Online-Test-Repositories das Programm-Add-on GS Media Setup 0.5.0 ueber das Repository aktualisieren. Die alte 0.4.0 bleibt als archivierte ZIP abrufbar.</p>
+          <p>Der Wizard zeigt Phasen/Installationsschritte und blockiert noch ungepruefte Fremdquellen. Keine behauptete vollstaendige Ein-Knopf-Freigabe.</p>
+          <p>Vorgaengerversionen: <a href="repository.gsmedia.pilot-1.8.2.zip">Repo 1.8.2</a> und <a href="script.gsmedia.setup-0.4.0.zip">Setup 0.4.0</a>.</p>
+          </body></html>""",encoding="utf-8")
+          # Retain rollback ZIPs exactly rather than deleting or overwriting them.
+          assert (target/"repository.gsmedia.pilot-1.8.2.zip").exists()
+          assert (target/"script.gsmedia.setup-0.4.0.zip").exists()
+          print("BETA_READY",sorted(declared.items()))
+          PY
+      - name: Commit isolated test catalogue only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add online-test/
+          if git diff --cached --quiet; then echo "Beta already published"; exit 0; fi
+          git diff --cached --name-only | grep -v '^online-test/' && exit 1 || true
+          git commit -m "Publish GS Media 1.8.3 / Setup 0.5.0 isolated online beta"
+          git push origin HEAD:main
+      - name: Public HTTPS verify exact beta ZIP and Kodi repository index
+        run: |
+          python - <<'PY'
+          import urllib.request, hashlib,time
+          from pathlib import Path
+          base="https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/"
+          names=["addons.xml","addons.xml.md5",
+                 "repository.gsmedia.pilot-1.8.3.zip",
+                 "script.gsmedia.setup/script.gsmedia.setup-0.5.0.zip",
+                 "repository.titan.bingie.mod/repository.titan.bingie.mod-2.0.1.zip"]
+          for name in names:
+              expected=hashlib.sha256((Path("online-test")/name).read_bytes()).hexdigest()
+              for attempt in range(12):
+                  try:
+                      with urllib.request.urlopen(base+name,timeout=10) as response:
+                          data=response.read()
+                      if hashlib.sha256(data).hexdigest()==expected:
+                          print("PUBLIC_OK",name,expected);break
+                  except Exception as e:
+                      print("RETRY",name,attempt,type(e).__name__)
+                  time.sleep(5)
+              else:raise SystemExit("Cannot prove public Kodi update URL: "+name)
+          PY
