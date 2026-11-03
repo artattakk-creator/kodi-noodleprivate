@@ -193,7 +193,7 @@ class AutoSetupTests(unittest.TestCase):
             state = setup.after_confirm(state, inv)
             self.assertEqual(setup.next_step(state, inv)["id"], "slyguy.dependencies")
             for ident, version in (("slyguy.dependencies", "0.0.30"),
-                                   ("script.module.slyguy", "0.86.96"),
+                                   ("script.module.slyguy", "0.87.6"),
                                    ("slyguy.trailers", "0.2.2")):
                 nxt = setup.next_step(state, inv)
                 self.assertEqual((nxt["code"], nxt["id"]), ("INSTALL_ADDON", ident))
