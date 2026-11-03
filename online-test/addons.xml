@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addons><addon id="plugin.video.xtreammate" name="XCMate" version="0.1.29.70" provider-name="GS Media">
+<addons><addon id="plugin.video.xtreammate"
+       name="XCMate"
+       version="0.1.29.71"
+       provider-name="GS Media">
 
   <requires>
-    <import addon="xbmc.python" version="3.0.0" />
-    <import addon="script.module.pil" version="5.1.0" />
-    <import addon="script.module.requests" version="2.27.0" optional="true" />
+    <import addon="xbmc.python" version="3.0.0"/>
+    <import addon="script.module.pil" version="5.1.0"/>
+    <import addon="script.module.requests" version="2.27.0" optional="true"/>
 
 </requires>
 
@@ -12,7 +15,7 @@
     <provides>video audio</provides>
   </extension>
 
-  <extension point="xbmc.service" library="service.py" start="startup" />
+  <extension point="xbmc.service" library="service.py" start="startup"/>
 
   <extension point="xbmc.addon.metadata">
     <summary lang="en_GB">XCMate – TV setup wizard for Xtream, M3U and Stalker</summary>
@@ -262,10 +265,10 @@
       <fanart>fanart.jpg</fanart>
     </assets>
   </extension>
-</addon><addon id="script.gsmedia.setup" name="XCMate Media Center Setup – v0.5.19 – Kodi 21.3 Omega" version="0.5.19" provider-name="XCMate">
-  <requires><import addon="xbmc.python" version="3.0.0" /></requires>
-  <extension point="xbmc.python.script" library="default.py" />
-  <extension point="xbmc.service" library="service.py" start="startup" />
+</addon><addon id="script.gsmedia.setup" name="XCMate Media Center Setup – v0.5.19 – Kodi 21.3 Omega" version="0.5.20" provider-name="XCMate">
+  <requires><import addon="xbmc.python" version="3.0.0"/></requires>
+  <extension point="xbmc.python.script" library="default.py"/>
+  <extension point="xbmc.service" library="service.py" start="startup"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="de_DE">XCMate Vollautomatische Mediencenter-Einrichtung für Kodi 21.3 Omega</summary>
     <description lang="de_DE">Automatischer Installationskandidat für elf Pflichtprogramme und deren Abhängigkeiten. Nutzt Kodi-Repository-Installationen nach Zustimmung, gesichertes Fortschrittsjournal, BINGIE-2.2.3-Patch mit Original-Hashprüfung, Menüs/Widgets und TMDB-xVAULT-Player. Ungeprüfte Paketquellen und der automatische Abschluss bleiben bis zur echten Android-Abnahme gesperrt.</description>

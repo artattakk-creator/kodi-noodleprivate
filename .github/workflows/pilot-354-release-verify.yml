@@ -1,0 +1,41 @@
+name: Verify existing Pilot XCMate 71 and Setup 520 release
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/pilot-354-release-verify.yml'
+      - 'tools/publish_pilot354.py'
+      - 'tools/run_pilot354_native.py'
+      - 'tools/pilot354_host/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: pilot-354-release-verification
+  cancel-in-progress: false
+jobs:
+  channel-and-native-updates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify exact packages, all 54 entries and preservation
+        run: |
+          mkdir -p "$RUNNER_TEMP/pilot354"
+          python tools/pilot354_host/test_release.py 2>&1 | tee "$RUNNER_TEMP/pilot354/release-tests.txt"
+          python tools/publish_pilot354.py > "$RUNNER_TEMP/pilot354/local-channel.json"
+      - name: Verify actual unauthenticated Pilot index, MD5, ZIPs, SHA256 and assets
+        run: python tools/publish_pilot354.py --public > "$RUNNER_TEMP/pilot354/public-channel.json"
+      - name: Kodi 21 native Check for updates with metadata-only old fixtures
+        run: python tools/run_pilot354_native.py --report-dir "$RUNNER_TEMP/pilot354/native"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pilot354-release-verification
+          path: |
+            ${{ runner.temp }}/pilot354/*.json
+            ${{ runner.temp }}/pilot354/*.txt
+            ${{ runner.temp }}/pilot354/native/native-updates.json
+          if-no-files-found: error
