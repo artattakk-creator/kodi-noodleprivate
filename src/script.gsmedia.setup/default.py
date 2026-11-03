@@ -1,193 +1,85 @@
 # -*- coding: utf-8 -*-
-"""XCMate Media Center Setup 0.5.11 — active, read-only device preflight.
+"""XCMate Media Center Setup — minimal Kodi 21.3 installation entrypoint.
 
-The installation executor is intentionally NOT enabled until repositories,
-source hashes, full dependencies and Kodi 21 ARM32 have been verified.
-No automatic start; no profile, skin, repository or userdata modifications.
+Exactly one primary action. A second log action appears only after an actual
+setup/post-restart error. Advanced pilots and diagnostics remain in source but
+are deliberately NOT exposed in the normal installer menu.
 """
-import sys
 from pathlib import Path
+import sys
 
-sys.path.insert(0, str(Path(__file__).resolve().parent / "resources" / "lib"))
-from setup_plan import profile_names
-from setup_inventory import snapshot
-from setup_gate import inspect
-from setup_layout import verify as verify_bingie_layout
-from setup_handoff import REQUIRED_STAGES, WIZARD_URL
-from setup_tmdb_player import proposal as tmdb_xvault_proposal
+LIB = Path(__file__).resolve().parent / "resources" / "lib"
+sys.path.insert(0, str(LIB))
+TITLE = "XCMate Media Center Setup – v0.5.12 – Kodi 21.3 Omega"
 
 
-def _device_label():
-    try:
-        import xbmc
-        return (xbmc.getInfoLabel("System.BuildVersion") or "Kodi-Version nicht ermittelbar")[:80]
-    except (ImportError, AttributeError, RuntimeError):
-        return "Kodi-Version nicht ermittelbar"
+def _profile():
+    import xbmcaddon
+    import xbmcvfs
+    return xbmcvfs.translatePath(
+        xbmcaddon.Addon("script.gsmedia.setup").getAddonInfo("profile"))
 
 
-def _report(key, title, inventory):
-    result = inspect(key, inventory)
-    lines = [
-        "XC MATE SETUP 0.5.11 — SYSTEMPRÜFUNG",
-        "=" * 46,
-        "Kodi: " + _device_label(),
-        "Installationsprofil: " + title,
-        "Inventar: " + result["inventory"],
-        "Bereits installierte Add-ons: " + str(len(inventory.get("addons", {})))
-            if inventory.get("code") == "READY" else "Inventar derzeit nicht verfügbar",
-        "",
-        "INSTALLATION NOCH GESPERRT — REINE VORPRÜFUNG",
-        "Installationsquellen und SHA256 müssen zuerst geprüft werden.",
-        "Nichts wird installiert, deaktiviert, zurückgesetzt oder gelöscht.",
-        "",
-        "Abhängigkeiten in vorgesehener Reihenfolge:",
-    ]
-    for number, row in enumerate(result["rows"], 1):
-        lines.append("{:02d}. {} ({})".format(number, row["addon_id"], row["state"]))
-        lines.append("    Mindestversion (historisch): {} | Gerät: {}".format(
-            row["minimum"] or "offen", row["actual_version"] or "unbekannt"))
-        lines.append("    Quelle: " + row["source"])
-        if row["install_blocked"] or not row["manifest_known"]:
-            lines.append("    PRÜFUNG NÖTIG: " + row["note"])
-        if row["optional_imports"]:
-            lines.append("    OPTIONAL (nicht automatisch): " + ", ".join(row["optional_imports"]))
-    lines += [
-        "",
-        "Noch nicht freigegebene Installationsschritte: " + str(result["blocking"]),
-        "Nächste Phase: verifizierte Pakete, Benutzerfreigabe,",
-        "Kodi-Installation und Fortsetzen nach einem Neustart.",
-        "Geführte Installationsschritte sind im Menü Komplettinstallation verfügbar.",
-        "",
-        "Referenz: GitHub issue #317 / XCMate.",
-    ]
-    return "\n".join(lines)
+def _error(profile):
+    from setup_auto_store50 import load as load_auto
+    from setup_finish_0512 import read as read_handoff
+    state = load_auto(profile)
+    marker = read_handoff(profile)
+    reason = state.get("last_error", "") if state and state.get("stopped") else ""
+    if marker and marker.get("status") == "failed":
+        reason = reason or marker.get("error", "")
+    return reason, state, marker
 
 
 def run():
+    import xbmcgui
+    dlg = xbmcgui.Dialog()
     try:
-        import xbmcgui
-    except ImportError:
-        raise RuntimeError("XCMate Media Center Setup ist nur innerhalb von Kodi ausführbar")
-    dialog = xbmcgui.Dialog()
-    profiles = profile_names()
+        profile = _profile()
+    except (ValueError, OSError, RuntimeError, AttributeError):
+        dlg.ok(TITLE, "Kodi-Profil konnte nicht gelesen werden. Keine Installation gestartet.")
+        return
     while True:
-        choice = dialog.select("XCMate Media Center Setup – v0.5.11 – Kodi 21.3 Omega", [
-            "Installationsprofil und Abhängigkeiten prüfen",
-            "Aktuelle Kodi-Add-ons inventarisieren",
-            "BINGIE-Menüs und Widgets prüfen",
-            "TMDB Helper: xVAULT-Standardplayer prüfen",
-            "Installationsabschluss und XCMate-Neustart prüfen",
-            "Sicherheits- und Entwicklungsstatus",
-            "Automatische Einrichtung mit Fortschritt (NEU)",
-            "Komplettinstallation 0.4.0 (manuell / Diagnose)",
-            "Installationspilot (3 Pakete, Diagnose)",
-            "Laufende Einrichtung abbrechen",
-            "Beenden",
-        ])
-        if choice in (-1, 10):
+        try:
+            reason, state, marker = _error(profile)
+        except (ValueError, OSError, RuntimeError, KeyError):
+            dlg.ok(TITLE, "Installationsprotokoll ist beschädigt oder unzugänglich. "
+                         "Bitte nicht zurücksetzen; Kodi-Log prüfen.")
             return
-        if choice == 3:
-            report = tmdb_xvault_proposal(snapshot(), player_file_verified=False, fresh_install=False)
-            lines = [
-                "TMDB HELPER → xVAULT PLAYER (VORPRÜFUNG)",
-                "Datei: " + report["player_file"],
-                "Quelle: " + report["source_file"],
-                "Speicherort: " + report["target_dir"],
-                "Archivierte Standardplayer-Werte:",
-            ] + [key + " = " + value for key, value in report["settings"]] + [
-                "", "Nach der vollständigen Installation beider Add-ons:",
-                "1. xVAULT-Playerdatei verifizieren.",
-                "2. Film- und Serien-Standardplayer auswählen.",
-                "3. Ergebnis prüfen, vor Neustart als erledigt markieren.",
-                "4. ERST nach gesamter Installation Neustart → XCMate Wizard.",
-                "", "Status: " + report["status"],
-                "Dies ist nur die Vorprüfung; die Komplettinstallation bietet den geschützten Anwenden-Schritt.",
-                "Vorhandene Player-Einstellungen bleiben unangetastet.",
+        choices = ["Installation starten"]
+        if reason:
+            choices.append("Fehlerprotokoll anzeigen")
+        selection = dlg.select(TITLE, choices)
+        if selection == -1:
+            return
+        if selection == 1 and reason:
+            done = len(state.get("completed", [])) if state else 0
+            details = [
+                "XCMate Media Center Setup – Diagnose",
+                "Kodi-Zielversion: 21.3 Omega",
+                "Installationsstatus: " + (state.get("stage", "") if state else "nicht lesbar"),
+                "Bestätigte Einträge im Journal: " + str(done),
+                "Fehler: " + reason,
+                "Kodi-Log: special://logpath/kodi.log",
+                "GitHub: artattakk-creator/kodi-noodleprivate",
+                "Keine Daten gelöscht. Nach Korrektur Installation starten.",
             ]
-            dialog.textviewer("TMDB Helper – xVAULT Standardplayer", "\n".join(lines), usemono=True)
+            if marker and marker.get("error") and marker["error"] != reason:
+                details.append("Neustart-Prüfung: " + marker["error"])
+            dlg.textviewer("XCMate – Fehlerprotokoll", "\n".join(details), usemono=True)
             continue
-        if choice == 2:
-            layout = verify_bingie_layout()
-            lines = ["BINGIE MOD – XC MATE-VORLAGE", layout["note"],
-                     "Noch KEINE Schreibfreigabe für Skin/Shortcuts/Widgets.",
-                     "Vorhandene Einstellungen werden nicht verändert.", "",
-                     "Vorgesehene Menüeinträge:"]
-            for item in layout["menu"]:
-                lines.append("- {} [{}]".format(item["label"], item["status"]))
-                lines.append("  " + item["target"])
-            lines.append("")
-            lines.append("Aus dem Backup erkannte Widgets:")
-            for menu, title, target, status in layout["widgets"]:
-                lines.append("- {}: {} [{}]".format(menu, title, status))
-                lines.append("  " + target)
-            lines.append("")
-            lines.append("Live-Hero: " + layout["hero"])
-            lines.append("Übernahme bei Neuinstallation erst nach Bestätigung und Android-Test.")
-            dialog.textviewer("BINGIE-Menüs und Widgets", "\n".join(lines), usemono=True)
-            continue
-        if choice == 4:
-            lines = [
-                "ABLAUF: ERST KOMPLETT INSTALLIEREN",
-                "Danach Kodi vollständig neu starten.",
-                "Erst NACH dem Neustart XCMate-Einrichtungsassistent öffnen.",
-                "",
-                "Vor dem Neustart erforderliche bestätigte Abschlüsse:",
-            ]
-            lines.extend("- " + name for name in sorted(REQUIRED_STAGES))
-            lines.extend([
-                "",
-                "XCMate Wizard: " + WIZARD_URL,
-                "Die spätere Startsteuerung kontrolliert alle 11 Programme",
-                "und sämtliche erforderlichen Add-on-Abhängigkeiten.",
-                "Bereits eingerichtete Boxen bleiben unverändert.",
-                "",
-                "XCMate Media Center Setup 0.5.11: HIER NUR ABLAUFVORSCHAU.",
-                "Die Vollinstallation arbeitet alle 11 Programme Schritt für Schritt ab.",
-                "Neustart/Autostart erst nach vollständiger, überprüfter Installation.",
-            ])
-            dialog.textviewer("XCMate – Erst nach kompletter Installation", "\n".join(lines), usemono=True)
-            continue
-        if choice == 6:
-            from setup_auto_ui50 import run as run_auto_setup
-            run_auto_setup()
-            continue
-        if choice == 7:
-            from setup_full_ui import run as run_full_setup
-            run_full_setup()
-            continue
-        if choice == 8:
-            from setup_install_ui import run as run_install_pilot
-            run_install_pilot()
-            continue
-        if choice == 9:
-            from setup_auto_ui50 import request_stop
-            request_stop()
-            dialog.notification("XCMate", "Abbruch angefordert; laufender Schritt wird sicher angehalten.")
-            continue
-        if choice == 5:
-            dialog.ok("XCMate Media Center Setup 0.5.11", "Geführter Vollinstaller (11 Apps) mit Quellprüfung und Diagnosepilot. "
-                      "Bestandsprofile werden nicht zurückgesetzt. "
-                      "Nicht geprüfte Drittanbieterinstallationen und Skinänderungen bleiben gesperrt.")
-            continue
-        inventory = snapshot()
-        if choice == 1:
-            lines = ["Geräte-Inventur: " + inventory["code"],
-                     "Kodi: " + _device_label(),
-                     "Installierte Add-ons: " + str(len(inventory.get("addons", {}))), ""]
-            if inventory["code"] == "READY":
-                for addon_id, item in sorted(inventory["addons"].items()):
-                    lines.append("{}  {}  {}".format(addon_id, item["version"],
-                                  "aktiv" if item["enabled"] is True else
-                                  "deaktiviert" if item["enabled"] is False else "Status unbekannt"))
-            else:
-                lines.append("Kodi JSON-RPC nicht verfügbar: Keine fehlenden Add-ons unterstellen.")
-            dialog.textviewer("XCMate – Lokale Inventur", "\n".join(lines), usemono=True)
-            continue
-        selected = dialog.select("XCMate – Profil wählen", [title for _key, title in profiles])
-        if selected < 0:
-            continue
-        key, title = profiles[selected]
-        dialog.textviewer("XCMate – " + title, _report(key, title, inventory), usemono=True)
+        if selection == 0:
+            from setup_auto_ui50 import run as run_auto
+            run_auto()
+            # On failures the menu reopens with a dedicated diagnostic action.
+            # On successful completion the wizard displays one reboot OK dialog.
+            try:
+                reason_after, _state, _marker = _error(profile)
+                if reason_after:
+                    continue
+            except (ValueError, OSError, RuntimeError, KeyError):
+                pass
+            return
 
 
 if __name__ == "__main__":
