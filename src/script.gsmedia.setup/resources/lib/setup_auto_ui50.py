@@ -175,7 +175,7 @@ def run():
                       "Bestehende Daten bleiben unverändert.")
             return
         if not dialog.yesno(
-            "XCMate – Vollautomatische Einrichtung 0.5.16",
+            "XCMate – Vollautomatische Einrichtung 0.5.17",
             "Gesamte Kodi-Ersteinrichtung jetzt starten? Alle geprüften "
             "Repositories, 48 Komponenten und Abhängigkeiten werden "
             "nacheinander ohne zusätzliche Wizard-Abfragen installiert. "
