@@ -16,6 +16,7 @@ BASE = Path(__file__).resolve().parent
 sys.path.insert(0, str(BASE / "resources" / "lib"))
 from setup_full import load, save
 from setup_inventory import snapshot
+from setup_origin_guard52 import restore as restore_origin_policy
 from setup_handoff import assess
 
 
@@ -25,8 +26,13 @@ def main():
         return
     try:
         folder = xbmcvfs.translatePath(xbmcaddon.Addon("script.gsmedia.setup").getAddonInfo("profile"))
+        # Recover global Kodi update restrictions after hard shutdown/crash.
+        # Never hand off to XCMate while a policy restoration is pending.
+        restore_origin_policy(folder, xbmc.executeJSONRPC)
         state = load(folder)
-    except (OSError, KeyError, RuntimeError, ValueError, ImportError):
+    except (OSError, KeyError, RuntimeError, ValueError, ImportError) as exc:
+        xbmc.log("GS Media: setup handoff/recovery blocked: " +
+                 type(exc).__name__, xbmc.LOGERROR)
         return
     if not isinstance(state, dict) or state.get("phase") != "restart_pending":
         return
