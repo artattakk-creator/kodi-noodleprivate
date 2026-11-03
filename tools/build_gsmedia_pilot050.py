@@ -56,7 +56,7 @@ ORIGINAL_SHA256 = "dba0a2e670e2d93158cb030ea52fe3e237bb19177e0a165d99c8f72a8492e
 TEST_URL = ("https://raw.githubusercontent.com/artattakk-creator/"
             "kodi-noodleprivate/main/online-test/")
 PILOT_ID = "repository.gsmedia.pilot"
-PILOT_VERSION = "1.9.9"
+PILOT_VERSION = "1.9.10"
 
 
 def _bytes_in_zip(data, prefix):
@@ -135,7 +135,7 @@ def _fetch_bingie_helper(destination):
     target.parent.mkdir(parents=True, exist_ok=True)
     request = urllib.request.Request(
         BINGIE_HELPER_UPSTREAM_ZIP,
-        headers={"User-Agent": "xcMate-Verified-BINGIE-Omega-Helper/0.5.16"}
+        headers={"User-Agent": "xcMate-Verified-BINGIE-Omega-Helper/0.5.17"}
     )
     with urllib.request.urlopen(request, timeout=45) as response:
         contents = response.read(BINGIE_HELPER_LENGTH + 1)
@@ -371,8 +371,8 @@ def build(destination):
          ROOT / "plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.70.zip"),
         ("plugin.video.noodleprivate", "0.4.2",
          ROOT / "plugin.video.noodleprivate/plugin.video.noodleprivate-0.4.2.zip"),
-        ("script.gsmedia.setup", "0.5.16",
-         ROOT / ".build/xcmate-0516/script.gsmedia.setup-0.5.16.zip"),
+        ("script.gsmedia.setup", "0.5.17",
+         ROOT / ".build/xcmate-0517/script.gsmedia.setup-0.5.17.zip"),
         ("repository.titan.bingie.mod", "2.0.1", VENDOR),
         ("script.skinshortcuts", "2.1.0", SHORTCUTS_VENDOR),
         ("repository.xvault", "1.0.3", XVAULT_REPO_VENDOR),
@@ -447,7 +447,7 @@ def build(destination):
     pilot = ET.parse(repo_source).getroot()
     pilot.set("id", PILOT_ID)
     pilot.set("version", PILOT_VERSION)
-    pilot.set("name", "xcMate Repository – Test v1.9.9 – Kodi 21.3 Omega")
+    pilot.set("name", "xcMate Repository – Test v1.9.10 – Kodi 21.3 Omega")
     pilot.set("provider-name", "xcMate")
     dir_ = pilot.find("extension[@point='xbmc.addon.repository']/dir")
     assert dir_ is not None
@@ -455,7 +455,7 @@ def build(destination):
     dir_.find("checksum").text = TEST_URL + "addons.xml.md5"
     dir_.find("datadir").text = TEST_URL
     for node in pilot.findall("extension[@point='xbmc.addon.metadata']/summary"):
-        node.text = "xcMate Repository – Test v1.9.9 – Kodi 21.3 Omega (nicht produktiv)"
+        node.text = "xcMate Repository – Test v1.9.10 – Kodi 21.3 Omega (nicht produktiv)"
     for node in pilot.findall("extension[@point='xbmc.addon.metadata']/description"):
         node.text = "XC Mate – geprüfter Testkatalog für den automatischen Kodi-Installationswizard. Android-Endabnahme am Gerät."
     pilot_xml = ET.tostring(pilot, encoding="utf-8", xml_declaration=True)
@@ -492,4 +492,4 @@ def build(destination):
 
 
 if __name__ == "__main__":
-    build(sys.argv[1] if len(sys.argv)>1 else ROOT/".build/xcmate-0516-pilot")
+    build(sys.argv[1] if len(sys.argv)>1 else ROOT/".build/xcmate-0517-pilot")

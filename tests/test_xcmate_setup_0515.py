@@ -1,4 +1,4 @@
-"""Kodi 21 Omega 0.5.16 BINGIE backgrounds dependency + stale journal checks."""
+"""Kodi 21 Omega 0.5.17 BINGIE backgrounds dependency + stale journal checks."""
 import sys
 import unittest
 from pathlib import Path
@@ -42,7 +42,7 @@ class BackgroundsRecoveryTests(unittest.TestCase):
         row={"id":"script.skin.helper.backgrounds","minimum":"1.0.36",
              "repo":"repository.titan.bingie.mod","notes":"",
              "mandatory":False,"manifest_known":True}
-        box=invent({setup.TEST_CHANNEL:("1.9.9",True),
+        box=invent({setup.TEST_CHANNEL:("1.9.10",True),
                     "repository.titan.bingie.mod":("2.0.1",True)})
         with patch.object(setup,"manifest",return_value=[row]):
             s=setup.after_request(setup.new_state(),row["id"])
@@ -60,7 +60,7 @@ class BackgroundsRecoveryTests(unittest.TestCase):
         row={"id":"script.skin.helper.backgrounds","minimum":"1.0.36",
              "repo":"repository.titan.bingie.mod","notes":"",
              "mandatory":False,"manifest_known":True}
-        box=invent({setup.TEST_CHANNEL:("1.9.9",True),
+        box=invent({setup.TEST_CHANNEL:("1.9.10",True),
                     "repository.titan.bingie.mod":("2.0.1",True),
                     row["id"]:("1.0.36",True)})
         with patch.object(setup,"manifest",return_value=[row]):
@@ -77,7 +77,7 @@ class BackgroundsRecoveryTests(unittest.TestCase):
         row={"id":"script.skin.helper.backgrounds","minimum":"1.0.36",
              "repo":"repository.titan.bingie.mod","notes":"",
              "mandatory":False,"manifest_known":True}
-        box=invent({setup.TEST_CHANNEL:("1.9.9",True)})
+        box=invent({setup.TEST_CHANNEL:("1.9.10",True)})
         with patch.object(setup,"manifest",return_value=[row]):
             s=setup.new_state()
             s["attempted"]=["repository.titan.bingie.mod"]

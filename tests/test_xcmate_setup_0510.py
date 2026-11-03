@@ -116,12 +116,12 @@ class OneClickContractTests(unittest.TestCase):
     def test_existing_update_ids_retained_while_visible_brand_changes(self):
         addon = ET.parse(ROOT/"src/script.gsmedia.setup/addon.xml").getroot()
         self.assertEqual(addon.get("id"), "script.gsmedia.setup")
-        self.assertEqual(addon.get("version"), "0.5.16")
-        self.assertEqual(addon.get("name"), "XCMate Media Center Setup – v0.5.16 – Kodi 21.3 Omega")
+        self.assertEqual(addon.get("version"), "0.5.17")
+        self.assertEqual(addon.get("name"), "XCMate Media Center Setup – v0.5.17 – Kodi 21.3 Omega")
         self.assertEqual(addon.get("provider-name"), "XCMate")
         builder=(ROOT/"tools/build_gsmedia_pilot050.py").read_text(encoding="utf-8")
         self.assertIn('PILOT_ID = "repository.gsmedia.pilot"', builder)
-        self.assertIn('PILOT_VERSION = "1.9.9"', builder)
+        self.assertIn('PILOT_VERSION = "1.9.10"', builder)
         self.assertIn("xcMate Repository", builder)
 
 

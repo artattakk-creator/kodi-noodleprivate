@@ -1,4 +1,4 @@
-"""xcMate Setup 0.5.16: original BINGIE Repo+Helper one-step bootstrap.
+"""xcMate Setup 0.5.17: original BINGIE Repo+Helper one-step bootstrap.
 
 Kodi 21 Omega must resolve these as ordinary original dependencies from the
 xcMate pilot. Integration on Android requires an actual Kodi runtime.
@@ -38,7 +38,7 @@ class BingieOneStepBootstrapTests(unittest.TestCase):
            "repo":controller.TEST_CHANNEL,"notes":"","manifest_known":True},
         ]
         box=inventory({
-            controller.TEST_CHANNEL:"1.9.9",
+            controller.TEST_CHANNEL:"1.9.10",
             "script.module.simplejson":"3.19.1+matrix.1"
         })
         with patch.object(controller,"manifest",return_value=rows):
@@ -55,7 +55,7 @@ class BingieOneStepBootstrapTests(unittest.TestCase):
            "repo":controller.TEST_CHANNEL,"notes":"","manifest_known":True},
         ]
         box=inventory({
-           controller.TEST_CHANNEL:"1.9.9",
+           controller.TEST_CHANNEL:"1.9.10",
            "script.module.simplejson":"3.19.1+matrix.1"
         })
         with patch.object(controller,"manifest",return_value=rows):
@@ -74,7 +74,7 @@ class BingieOneStepBootstrapTests(unittest.TestCase):
           {"id":"script.bingie.helper","minimum":"1.1.2",
            "repo":controller.TEST_CHANNEL,"notes":"","manifest_known":True},
         ]
-        box=inventory({controller.TEST_CHANNEL:"1.9.9"})
+        box=inventory({controller.TEST_CHANNEL:"1.9.10"})
         with patch.object(controller,"manifest",return_value=rows):
             s=controller.new_state()
             s=controller.after_request(s,"repository.titan.bingie.mod")
