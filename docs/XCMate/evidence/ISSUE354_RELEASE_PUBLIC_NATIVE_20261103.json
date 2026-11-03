@@ -1,0 +1,95 @@
+{
+  "status": "RELEASED",
+  "verified_at_utc": "2026-11-03T22:30:56.959630+00:00",
+  "publication_commit": "1c3505ff4016dccd0dca395ddc9bf53375a34220",
+  "native_verification_commit": "fa62a2901f9ec0d2d3702266b0d93f5718d74ec5",
+  "ci_url": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/41731190574",
+  "ci_conclusion": "success",
+  "host_release_tests": 9,
+  "public_channel": {
+    "index_md5": "32414d457242aab2bca5a048e4f379af",
+    "index_entries": 54,
+    "repository": "repository.gsmedia.pilot 1.9.12 unchanged",
+    "packages": {
+      "plugin.video.xtreammate": {
+        "version": "0.1.29.71",
+        "sha256": "ebebf3c9cdb00b8730da436bfb7bd8909a8a5cdfd23ee36b61afa99f775a9a4d",
+        "bytes": 3310874,
+        "url": "https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.71.zip",
+        "crc": "PASS"
+      },
+      "script.gsmedia.setup": {
+        "version": "0.5.20",
+        "sha256": "568a76b67d80d846ea09176d0ea1b9f6b6fed1fd86c2ace79ca865b4a8ccadbd",
+        "bytes": 101380,
+        "url": "https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.20.zip",
+        "crc": "PASS"
+      }
+    },
+    "android": "NOT_TESTED",
+    "installer_executed": false,
+    "public_channel": "PASS"
+  },
+  "local_native_kodi": {
+    "kodi": {
+      "major": 21,
+      "minor": 2,
+      "revision": "20250330-nogitfound",
+      "tag": "stable"
+    },
+    "native_update_detection": "PASS",
+    "mechanism": "UpdateAddonRepos + native AddonBrowser addons://outdated/ (IDs and versions)",
+    "repository": "repository.gsmedia.pilot 1.9.12 (unchanged public URLs)",
+    "installed_metadata_only_fixtures": {
+      "plugin.video.xtreammate": "0.1.29.70",
+      "script.gsmedia.setup": "0.5.19"
+    },
+    "outdated_entries": [
+      {
+        "id": "",
+        "version": ""
+      },
+      {
+        "id": "",
+        "version": ""
+      },
+      {
+        "id": "plugin.video.xtreammate",
+        "version": "0.1.29.71"
+      },
+      {
+        "id": "script.gsmedia.setup",
+        "version": "0.5.20"
+      },
+      {
+        "id": "",
+        "version": ""
+      },
+      {
+        "id": "",
+        "version": ""
+      },
+      {
+        "id": "",
+        "version": ""
+      },
+      {
+        "id": "",
+        "version": ""
+      },
+      {
+        "id": "",
+        "version": ""
+      },
+      {
+        "id": "",
+        "version": ""
+      }
+    ],
+    "installer_executed": false,
+    "application_code_executed": false,
+    "production_profiles_mounted": false,
+    "android": "NOT_TESTED"
+  },
+  "android_update_and_functional_tests": "NOT_TESTED"
+}

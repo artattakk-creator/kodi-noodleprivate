@@ -1,5 +1,18 @@
 # Pilot-Veröffentlichung XCMate 0.1.29.71 und GS Media Setup 0.5.20 — #354
 
+**Status: RELEASED — 03.11.2026.** Beide Pakete sind über die tatsächlichen
+Kodi-URLs des bestehenden Pilot-Kanals verfügbar und werden von Kodi als
+Aktualisierungen erkannt. Android-Installation/Funktionsabnahme: **NOT_TESTED**.
+
+Veröffentlichungscommit:
+[`1c3505ff4016dccd0dca395ddc9bf53375a34220`](https://github.com/artattakk-creator/kodi-noodleprivate/commit/1c3505ff4016dccd0dca395ddc9bf53375a34220).
+Prüfungscommit: `fa62a2901f9ec0d2d3702266b0d93f5718d74ec5`.
+[GitHub Actions 41731190574: **SUCCESS**](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/41731190574).
+[Prüfarbeitsartefakt](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/41731190574/artifacts/13276292549):
+`pilot354-release-verification`, SHA256
+`4502911a58c83fc3fb7f403d1ea218238a0c4208c099c3b1fc1dd87e06c4ec2d`.
+[Dauerhafter öffentlicher/lokaler Kodi-Prüfnachweis](evidence/ISSUE354_RELEASE_PUBLIC_NATIVE_20261103.json).
+
 ## Kanal und Umfang
 
 Die Veröffentlichung erfolgt im **bestehenden** `repository.gsmedia.pilot` **1.9.12**.
@@ -11,6 +24,8 @@ Quellbasis ist der Merge von PR #353, Commit
 - [Index-MD5](https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/addons.xml.md5)
 - [XCMate 0.1.29.71 ZIP](https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.71.zip)
 - [GS Media Setup 0.5.20 ZIP](https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.20.zip)
+- [XCMate SHA256-Datei](https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.71.zip.sha256)
+- [Setup SHA256-Datei](https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.20.zip.sha256)
 
 | Paket | SHA256 | Bytes |
 |---|---|---:|
@@ -68,8 +83,18 @@ Globale Kodi-/Skin-Einstellungen oder Update-Ursprungsregeln nicht verändern.
   Produktdienste oder Installer. Dies ist keine Android-Geräteabnahme.
 - Workflow: **Verify existing Pilot XCMate 71 and Setup 520 release**.
   Artefakt: `pilot354-release-verification`.
-- Veröffentlichung/öffentliche Abrufprüfung/native Erkennung werden erst nach
-  tatsächlicher Durchführung mit Commit und Action-Link in Issue #354 bestätigt.
+- Öffentlicher Index/MD5, beide Paket-URLs, SHA256/CRC, Paket-/Index-Manifeste
+  und Index-Assets: **PASS**, lokal und in GitHub Actions nach Veröffentlichung.
+  Index-MD5: `32414d457242aab2bca5a048e4f379af`.
+- Native Kodi-21.2-Update-Erkennung: **PASS**, lokal und in GitHub Actions.
+  Die native Update-Liste enthält `plugin.video.xtreammate` **0.1.29.71** und
+  `script.gsmedia.setup` **0.5.20**, während die installierten Test-Fixtures
+  weiterhin .70/.5.19 bleiben. Kein Paket wurde dafür installiert/ausgeführt.
+- Der erste Prüflauf 41730340304 scheiterte an der Testabfrage: Kodi sperrt
+  `Files.GetDirectory(addons://...)` für Remotezugriffe. Der korrigierte Test
+  verwendet die echte Add-on-Browser-Liste und lädt die zuvor gespeicherte
+  Pilot-Herkunft beim Fixture-Neustart. Die veröffentlichten Produkt-ZIPs und
+  ihre Prüfsummen wurden dabei nicht verändert.
 - Beide Android-Updates und Funktionsabnahme auf TX60Pro: **NOT_TESTED**.
 
 Die bestehenden Produktberichte und Android-Schritte aus
