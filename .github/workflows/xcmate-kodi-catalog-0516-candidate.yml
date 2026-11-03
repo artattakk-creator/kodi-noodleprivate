@@ -1,0 +1,24 @@
+name: XCMate Kodi 21 repository readiness candidate (non-publishing)
+on:
+  push:
+    branches: [fix/xcmate-kodi-repository-readiness-20261103]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Static syntax and focused Kodi index/installer regression tests
+        run: |
+          python -m compileall -q src/script.gsmedia.setup/resources/lib src/script.gsmedia.setup/default.py
+          python -m unittest discover -s tests -p 'test_xcmate_kodi_catalog_0516.py' -v
+          python -m unittest discover -s tests -p 'test_xcmate_setup_0514.py' -v
+          python -m unittest discover -s tests -p 'test_xcmate_setup_0515.py' -v
+          python -m unittest discover -s tests -p 'test_gsmedia_setup_auto50.py' -v
+          echo "READY_FOR_DEVICE_DIAGNOSIS_ONLY_NO_PUBLICATION"
