@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""XC Mate Setup 0.5.10 — active, read-only device preflight.
+"""XCMate Media Center Setup 0.5.11 — active, read-only device preflight.
 
 The installation executor is intentionally NOT enabled until repositories,
 source hashes, full dependencies and Kodi 21 ARM32 have been verified.
@@ -28,7 +28,7 @@ def _device_label():
 def _report(key, title, inventory):
     result = inspect(key, inventory)
     lines = [
-        "XC MATE SETUP 0.5.10 — SYSTEMPRÜFUNG",
+        "XC MATE SETUP 0.5.11 — SYSTEMPRÜFUNG",
         "=" * 46,
         "Kodi: " + _device_label(),
         "Installationsprofil: " + title,
@@ -58,7 +58,7 @@ def _report(key, title, inventory):
         "Kodi-Installation und Fortsetzen nach einem Neustart.",
         "Geführte Installationsschritte sind im Menü Komplettinstallation verfügbar.",
         "",
-        "Referenz: GitHub issue #317 / XC Mate.",
+        "Referenz: GitHub issue #317 / XCMate.",
     ]
     return "\n".join(lines)
 
@@ -67,11 +67,11 @@ def run():
     try:
         import xbmcgui
     except ImportError:
-        raise RuntimeError("XC Mate Setup ist nur innerhalb von Kodi ausführbar")
+        raise RuntimeError("XCMate Media Center Setup ist nur innerhalb von Kodi ausführbar")
     dialog = xbmcgui.Dialog()
     profiles = profile_names()
     while True:
-        choice = dialog.select("XC Mate Setup 0.5.10 – Entwicklung", [
+        choice = dialog.select("XCMate Media Center Setup – v0.5.11 – Kodi 21.3 Omega", [
             "Installationsprofil und Abhängigkeiten prüfen",
             "Aktuelle Kodi-Add-ons inventarisieren",
             "BINGIE-Menüs und Widgets prüfen",
@@ -141,7 +141,7 @@ def run():
                 "und sämtliche erforderlichen Add-on-Abhängigkeiten.",
                 "Bereits eingerichtete Boxen bleiben unverändert.",
                 "",
-                "XC Mate Setup 0.5.10: HIER NUR ABLAUFVORSCHAU.",
+                "XCMate Media Center Setup 0.5.11: HIER NUR ABLAUFVORSCHAU.",
                 "Die Vollinstallation arbeitet alle 11 Programme Schritt für Schritt ab.",
                 "Neustart/Autostart erst nach vollständiger, überprüfter Installation.",
             ])
@@ -162,10 +162,10 @@ def run():
         if choice == 9:
             from setup_auto_ui50 import request_stop
             request_stop()
-            dialog.notification("XC Mate", "Abbruch angefordert; laufender Schritt wird sicher angehalten.")
+            dialog.notification("XCMate", "Abbruch angefordert; laufender Schritt wird sicher angehalten.")
             continue
         if choice == 5:
-            dialog.ok("XC Mate Setup 0.5.10", "Geführter Vollinstaller (11 Apps) mit Quellprüfung und Diagnosepilot. "
+            dialog.ok("XCMate Media Center Setup 0.5.11", "Geführter Vollinstaller (11 Apps) mit Quellprüfung und Diagnosepilot. "
                       "Bestandsprofile werden nicht zurückgesetzt. "
                       "Nicht geprüfte Drittanbieterinstallationen und Skinänderungen bleiben gesperrt.")
             continue
@@ -181,13 +181,13 @@ def run():
                                   "deaktiviert" if item["enabled"] is False else "Status unbekannt"))
             else:
                 lines.append("Kodi JSON-RPC nicht verfügbar: Keine fehlenden Add-ons unterstellen.")
-            dialog.textviewer("XC Mate – Lokale Inventur", "\n".join(lines), usemono=True)
+            dialog.textviewer("XCMate – Lokale Inventur", "\n".join(lines), usemono=True)
             continue
-        selected = dialog.select("XC Mate – Profil wählen", [title for _key, title in profiles])
+        selected = dialog.select("XCMate – Profil wählen", [title for _key, title in profiles])
         if selected < 0:
             continue
         key, title = profiles[selected]
-        dialog.textviewer("XC Mate – " + title, _report(key, title, inventory), usemono=True)
+        dialog.textviewer("XCMate – " + title, _report(key, title, inventory), usemono=True)
 
 
 if __name__ == "__main__":
