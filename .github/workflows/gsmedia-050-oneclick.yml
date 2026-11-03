@@ -1,0 +1,49 @@
+name: GS Media Wizard 0.5.0 one-button development
+on:
+  push:
+    branches: [feat/gsmedia-wizard-050-oneclick-20261103]
+  pull_request:
+    paths:
+      - 'src/script.gsmedia.setup/**'
+      - 'tools/build_gsmedia_setup.py'
+      - 'tests/test_gsmedia_setup_auto50.py'
+      - '.github/workflows/gsmedia-050-oneclick.yml'
+permissions:
+  contents: read
+jobs:
+  verify-dev-wizard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile new wizard
+        run: python -m compileall -q src/script.gsmedia.setup
+      - name: Verify one-button pure-state safety tests
+        run: python -m unittest discover -s tests -p 'test_gsmedia_setup_auto50.py' -v
+      - name: Build exact GS Media Setup 0.5.0 zip
+        run: python tools/build_gsmedia_setup.py .build/gsmedia-050
+      - name: Validate test package and SHA
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,zipfile,xml.etree.ElementTree as ET
+          p=Path('.build/gsmedia-050/script.gsmedia.setup-0.5.0.zip')
+          digest=hashlib.sha256(p.read_bytes()).hexdigest()
+          assert digest in p.with_suffix('.zip.sha256').read_text()
+          with zipfile.ZipFile(p) as z:
+              assert z.testzip() is None
+              assert ET.fromstring(z.read('script.gsmedia.setup/addon.xml')).get('version')=='0.5.0'
+              assert 'script.gsmedia.setup/resources/lib/setup_auto_ui50.py' in z.namelist()
+          print('GS Media 0.5.0 TEST ZIP',digest)
+          PY
+      - name: Upload development-only wizard ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: gsmedia-050-dev-wizard-not-production
+          path: |
+            .build/gsmedia-050/script.gsmedia.setup-0.5.0.zip
+            .build/gsmedia-050/script.gsmedia.setup-0.5.0.zip.sha256
+          if-no-files-found: error
