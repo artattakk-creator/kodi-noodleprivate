@@ -175,7 +175,7 @@ def run():
                       "Bestehende Daten bleiben unverändert.")
             return
         if not dialog.yesno(
-            "XCMate – Vollautomatische Einrichtung 0.5.17",
+            "XCMate – Vollautomatische Einrichtung 0.5.18",
             "Gesamte Kodi-Ersteinrichtung jetzt starten? Alle geprüften "
             "Repositories, 48 Komponenten und Abhängigkeiten werden "
             "nacheinander ohne zusätzliche Wizard-Abfragen installiert. "
@@ -276,6 +276,11 @@ def run():
                     and step.get("minimum") == "2.1.0"
                 )
                 native_upgrade = code == "INSTALL_UPGRADE"
+                native_slyguy_bootstrap = (
+                    code == "INSTALL_ADDON"
+                    and ident == "slyguy.dependencies"
+                    and step.get("source") == "repository.slyguy"
+                )
                 if native_upgrade:
                     install_id = ("script.gsmedia.skinshortcuts.bridge"
                                   if native_shortcuts else step.get("bridge", ""))
@@ -290,6 +295,12 @@ def run():
                         break
                 else:
                     install_id = ident
+                    if native_slyguy_bootstrap:
+                        # Kodi dependency resolver installs the ORIGINAL
+                        # SlyGuy Dependencies/Common/Trailers from their own
+                        # already installed official SlyGuy repository.
+                        # Our test repo includes ONLY this inert MIT bridge.
+                        install_id = "script.gsmedia.slyguy.bootstrap"
                     # One Kodi-managed parent install resolves BOTH exact,
                     # original BINGIE packages through its immutable requires:
                     # repo 2.0.1 + helper 1.1.2. Neither addon is manually
@@ -343,8 +354,14 @@ def run():
                 # Kodi's own native system prompts cannot be suppressed.
                 state = _persist(profile, after_request(state, ident))
                 wait = 0
-                scope = (TemporaryOfficialAddonSource(profile, xbmc.executeJSONRPC)
-                         if native_upgrade else nullcontext())
+                scope = (
+                    TemporaryOfficialAddonSource(
+                        profile, xbmc.executeJSONRPC,
+                        addon_id="slyguy.dependencies" if native_slyguy_bootstrap
+                        else "script.skinshortcuts")
+                    if (native_upgrade or native_slyguy_bootstrap)
+                    else nullcontext()
+                )
                 # Kodi Omega FindDependency explicitly prefers the OFFICIAL
                 # 2.0.3, even for a parent installed from our pilot. Both
                 # the temporary consented ANY_REPOSITORY setting AND a fresh

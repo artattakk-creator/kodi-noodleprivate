@@ -10,7 +10,7 @@ import sys
 
 LIB = Path(__file__).resolve().parent / "resources" / "lib"
 sys.path.insert(0, str(LIB))
-TITLE = "XCMate Media Center Setup – v0.5.17 – Kodi 21.3 Omega"
+TITLE = "XCMate Media Center Setup – v0.5.18 – Kodi 21.3 Omega"
 
 
 def _profile():

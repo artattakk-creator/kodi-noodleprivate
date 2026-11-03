@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.gsmedia.setup" name="XCMate Media Center Setup – v0.5.17 – Kodi 21.3 Omega" version="0.5.17" provider-name="XCMate">
+<addon id="script.gsmedia.setup" name="XCMate Media Center Setup – v0.5.18 – Kodi 21.3 Omega" version="0.5.18" provider-name="XCMate">
   <requires><import addon="xbmc.python" version="3.0.0"/></requires>
   <extension point="xbmc.python.script" library="default.py"/>
   <extension point="xbmc.service" library="service.py" start="startup"/>
