@@ -8,7 +8,7 @@ import contextlib,hashlib,json,os,shutil,sqlite3,stat,tempfile,threading,time,uu
 from urllib.parse import urlsplit,urlunsplit,parse_qsl,urlencode
 _local=threading.local()
 KINDS=('live','vod','series');MAX_BYTES=2*1024*1024
-NONSECRET=('type','name','xc_host','xc_user','stb_url','stb_mac','stb_serial','stb_device_id','epg_show','enabled')
+NONSECRET=('type','name','xc_host','xc_user','stb_url','stb_mac','stb_serial','stb_device_id','epg_show','enabled','start_group_id','start_stream_id')
 
 
 def current():return getattr(_local,'session',None)
@@ -29,8 +29,8 @@ def root():
 def private_folder(path):
     if os.path.islink(path):raise OSError('DRAFT_STORAGE_UNSAFE')
     os.makedirs(path,mode=0o700,exist_ok=True)
-    os.chmod(path,0o700)
-    if not stat.S_ISDIR(os.stat(path).st_mode) or stat.S_IMODE(os.stat(path).st_mode)&0o077:raise OSError('DRAFT_STORAGE_UNSAFE')
+    from wizard_storage71 import protect
+    protect(path,directory=True)
 
 
 def write_file(path,value):
@@ -40,8 +40,8 @@ def write_file(path,value):
     if len(raw)>MAX_BYTES:raise ValueError('DRAFT_BUDGET')
     fd,temp=tempfile.mkstemp(prefix='.wizard53-',dir=os.path.dirname(path))
     try:
-        os.fchmod(fd,0o600)
-        if stat.S_IMODE(os.fstat(fd).st_mode)&0o077:raise OSError('DRAFT_STORAGE_UNSAFE')
+        from wizard_storage71 import protect
+        protect(temp,fd=fd)
         with os.fdopen(fd,'wb') as f:f.write(raw);f.flush();os.fsync(f.fileno())
         fd=None;os.replace(temp,path);temp=None
     finally:
@@ -55,7 +55,8 @@ def write_file(path,value):
 
 def read_file(path):
     if os.path.islink(path) or not os.path.isfile(path):return None
-    if stat.S_IMODE(os.stat(path).st_mode)&0o077:return None
+    from wizard_storage71 import readable
+    if not readable(path):return None
     with open(path,encoding='utf-8') as f:raw=f.read(MAX_BYTES+1)
     if len(raw)>MAX_BYTES:raise ValueError('DRAFT_BUDGET')
     return json.loads(raw)
@@ -89,7 +90,8 @@ class Session:
     def load(cls):
         try:
             if os.path.islink(root()) or not os.path.isdir(root()):return None
-            if stat.S_IMODE(os.stat(root()).st_mode)&0o077:return None
+            from wizard_storage71 import readable
+            if not readable(root()):return None
             value=read_file(os.path.join(root(),'current.json'))
             if not isinstance(value,dict) or value.get('version')!=1 or value.get('status')!='ACTIVE':return None
             if not isinstance(value.get('token'),str) or len(value['token'])!=32:return None
@@ -101,7 +103,11 @@ class Session:
         try:
             self.state['data']=safe_data(self.data);self.state['updated']=time.time()
             write_file(os.path.join(root(),'current.json'),self.state);self.error='';return True
-        except (OSError,ValueError,TypeError):self.error='DRAFT_STORAGE_UNAVAILABLE';return False
+        except (OSError,ValueError,TypeError) as exc:
+            self.error='DRAFT_STORAGE_UNAVAILABLE';self.errno71=getattr(exc,'errno',None)
+            from setup_diagnostics71 import emit
+            emit('CHECKPOINT_FAILED',self.state.get('pid',self.state['token']),error=exc,path='ADDON_DATA')
+            return False
     def input(self,data,key=None):
         with self._lock:
             self.data=dict(data);self.state['stage']='input';self.state['input_key']=key or ''
@@ -132,20 +138,29 @@ class Session:
                 for filename in os.scandir(draft.folder):
                     if filename.is_symlink():raise OSError('DRAFT_STORAGE_UNSAFE')
                     if filename.is_file():
-                        os.chmod(filename.path,0o600)
-                        if stat.S_IMODE(filename.stat().st_mode)&0o077:raise OSError('DRAFT_STORAGE_UNSAFE')
+                        from wizard_storage71 import protect
+                        protect(filename.path)
                 if categories:
                     clean={kind:[dict(category_id=str(g['category_id'])[:512],category_name=str(g['category_name'])[:512]) for g in draft.categories[kind]][:20000] for kind in KINDS}
                     if any(len(draft.categories[k])>20000 for k in KINDS):raise ValueError('DRAFT_BUDGET')
                     write_file(os.path.join(draft.folder,'categories53.json'),clean)
-                return self.persist()
-            except (OSError,ValueError,TypeError):self.error='DRAFT_STORAGE_UNAVAILABLE';return False
+                ok=self.persist()
+                if ok:
+                    from setup_diagnostics71 import emit
+                    emit('CHECKPOINT_DONE',draft.pid)
+                return ok
+            except (OSError,ValueError,TypeError) as exc:
+                self.error='DRAFT_STORAGE_UNAVAILABLE';self.errno71=getattr(exc,'errno',None)
+                from setup_diagnostics71 import emit
+                emit('CHECKPOINT_FAILED',draft.pid,error=exc,path='ADDON_DATA')
+                return False
     def folder(self):
         from utils import addon_data_dir
         name=self.state.get('folder','')
         if not isinstance(name,str) or not name.startswith('xcmate-setup-') or os.path.basename(name)!=name:return None
         path=os.path.join(addon_data_dir(),name)
-        if os.path.islink(path) or not os.path.isdir(path) or stat.S_IMODE(os.stat(path).st_mode)&0o077:return None
+        from wizard_storage71 import readable
+        if os.path.islink(path) or not os.path.isdir(path) or not readable(path):return None
         try:owner=read_file(os.path.join(path,'owner53.json'))
         except (OSError,ValueError):return None
         if owner!=dict(token=self.state['token'],pid=self.state.get('pid')):return None
@@ -236,7 +251,8 @@ def unreadable_intent():
     filename=os.path.join(root(),'current.json')
     if not os.path.lexists(filename):return False
     try:
-        if os.path.islink(root()) or stat.S_IMODE(os.stat(root()).st_mode)&0o077:return True
+        from wizard_storage71 import readable
+        if os.path.islink(root()) or not readable(root()):return True
         value=read_file(filename)
         if isinstance(value,dict) and value.get('version')==1 and value.get('status') in ('COMPLETE','DISCARDED'):return False
         return Session.load() is None

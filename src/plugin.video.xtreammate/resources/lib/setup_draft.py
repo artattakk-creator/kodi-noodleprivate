@@ -114,6 +114,10 @@ class Draft:
                     if existing is not None:self._verify(existing);return existing
                 raise SaveError('XM-SETUP-SAVE-BUSY')
             if not self.scanned or self._scan_signature!=self._signature(): raise SaveError('XM-SETUP-RESCAN')
+            from setup_diagnostics71 import emit
+            emit('COMMIT_BEGIN',self.pid,**{k:len(v) for k,v in self.selected.items()})
+            if self.data.get('start_group_id','*')!='*' and self.data['start_group_id'] not in self.selected['live']:
+                raise SaveError('XM-SETUP-START')
             return self._save(cancel)
         finally: self._save_guard.release()
 
@@ -218,6 +222,8 @@ class Draft:
                 self.data['m3u_url']=snapshot
             with writing():
                 if portals.get_by_id(self.pid): raise SaveError('XM-SETUP-SAVE-BUSY')
+                from setup_commit71 import backup
+                self.backup71=backup(self.pid)
                 for kind in KINDS:
                     save_groups(self.pid,self.selected[kind],kind,known=[str(g['category_id']) for g in self.categories[kind]],auto_new=False)
                     self.data['include_'+kind]=bool(self.selected[kind])
@@ -255,6 +261,9 @@ class Draft:
                 mark('VERIFY',self.pid)
                 self.verification=self._verify(portal)
                 self.saved=True
+                from setup_diagnostics71 import emit
+                emit('READBACK_DONE',self.pid,**self.verification['counts'])
+                emit('COMMIT_DONE',self.pid)
                 mark('SAVE_DONE',self.pid)
                 return portal
         except BaseException as failure:

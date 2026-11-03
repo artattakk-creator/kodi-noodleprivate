@@ -158,13 +158,8 @@ class Router:
 
 
     def _import_legacy_settings(self):
-        # Explicit action: release Kodi's directory spinner before migration.
-        self._end_directory(cacheToDisc=False)
-        import portals
-        from boot_diagnostics import phase
-        with phase('PORTALS_MIGRATION'):
-            portals.import_from_settings()
-        xbmc.executebuiltin('Container.Refresh')
+        from legacy_setup71 import run
+        return run(self)
 
 
     def _portal_plot(self, p: dict, extra: str = '', cached_only=False) -> str:
@@ -349,7 +344,7 @@ class Router:
         self._end_directory(cacheToDisc=False)
         xbmc.executebuiltin('ActivateWindow(Videos,'+self.url(action='root')+',return)')
 
-    def _root(self):
+    def _root(self, _legacy71=False):
         import portals as P
         active = P.get_active()
         xbmcplugin.setPluginCategory(self._handle, _L(32000))
@@ -360,7 +355,7 @@ class Router:
             add_action(self,'[+] Einrichtungsassistent starten',
                           self.url(action='setup_wizard'),
                           icon=_ICON_SETTINGS)
-            self._add_dir('Vorhandene Playlists aus Einstellungen übernehmen',
+            add_action(self,'Vorhandene Playlists aus Einstellungen übernehmen',
                           self.url(action='import_legacy_settings'), icon=_ICON_SETTINGS)
             self._add_dir(_L(32060),
                           self.url(action='portal_manager'),
@@ -371,13 +366,13 @@ class Router:
                           plot='Addon-Einstellungen öffnen.')
             self._end_directory()
             from setup_navigation import maybe_fresh
-            maybe_fresh(self)
+            if not _legacy71:maybe_fresh(self)
             return
 
         from home_menu import active_portal
         portal = active_portal(active, self._params.get('pid',''))
         self._show_portal_home(portal)
-        self._maybe_autoplay_start(portal)
+        if not _legacy71:self._maybe_autoplay_start(portal)
 
     def _maybe_autoplay_start(self, portal):
         from home_entry import maybe_autoplay

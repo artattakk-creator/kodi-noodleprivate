@@ -8,7 +8,7 @@ import functools
 
 def phase_panel(w,phase):
     w.stage=phase
-    for cid in (5,6,10,11,12,13,14,15,100,101,102):w.getControl(cid).setVisible(False)
+    for cid in (5,6,10,11,12,13,14,15,21,100,101,102):w.getControl(cid).setVisible(False)
     w.getControl(3).setHeight(380);w.getControl(4).setPosition(45,485)
     w.setProperty('XCMate.SetupKind','')
     for cid in (16,17,18):w.getControl(cid).setVisible(True)
@@ -46,7 +46,12 @@ def phased(cls):
         from wizard_deadline48 import discovery
         draft=w.draft;cancel=w.cancel.is_set;status=w._data_state.status
         @discovery
-        def authenticate(d,cancel,status):return d.adapter.authenticate(cancel,lambda count:status(None,'Verbindung prüfen · '+str(count)+' Datensätze'))
+        def authenticate(d,cancel,status):
+            from setup_diagnostics71 import emit
+            emit('AUTH_BEGIN',d.pid)
+            result=d.adapter.authenticate(cancel,lambda count:status(None,'Verbindung prüfen · '+str(count)+' Datensätze'))
+            emit('AUTH_DONE',d.pid)
+            return result
         w.stage='authenticate';w._show_discover_ui();w.getControl(2).setLabel('Schritt 1/4 · Xtream-Verbindung' if draft.data['type']=='xtream' else 'Schritt 1/4 · Verbindung')
         w.status(None,'Verbindung und Zugangsdaten werden tatsächlich geprüft …')
         w.work(lambda:authenticate(draft,cancel,status),lambda value:authenticated(w,value))
@@ -62,15 +67,23 @@ def phased(cls):
         from wizard_deadline48 import discovery
         @discovery
         def categories(d,cancel,status):
+            from setup_diagnostics71 import emit,probe
+            emit('GROUPS_BEGIN',d.pid)
+            pending={}
             for kind in ('live','vod','series'):
                 if cancel():raise InterruptedError('setup cancelled')
                 from wizard_catalog54 import LABELS
                 status(None,LABELS[kind]+': Gruppen werden geladen')
-                d.categories[kind]=d.adapter.categories(kind,remote=True)
-                status(None,LABELS[kind]+': '+str(len(d.categories[kind]))+' verfügbare Gruppen')
-            if not any(d.categories.values()):raise ValueError('no usable categories')
+                pending[kind]=d.adapter.categories(kind,remote=True)
+                status(None,LABELS[kind]+': '+str(len(pending[kind]))+' verfügbare Gruppen')
+            if not any(pending.values()):raise ValueError('no usable categories')
+            d.categories=pending
+            emit('GROUPS_DONE',d.pid,**{k:len(v) for k,v in pending.items()})
+            if not getattr(d,'probed71',False):
+                probe(d.pid);d.probed71=True
             s=getattr(d,'resume53',None)
-            if s and not s.checkpoint(d,'groups',categories=True):raise OSError('DRAFT_CHECKPOINT_FAILED')
+            from wizard_storage71 import checkpoint
+            checkpoint(s,d,categories=True)
             return d.categories
         w.work(lambda:categories(draft,cancel,status),w.discovered)
     @functools.wraps(old['configure'])
@@ -108,6 +121,9 @@ def phased(cls):
             w.setFocusId(17)
     def click(w,cid):
         if enabled(w):
+            if w.stage=='groups' and cid==21 and not w.busy:
+                from setup_commit71 import choose_start
+                choose_start(w);w.render();w.setFocusId(21);return
             if w.stage.startswith('epg_'):
                 if cid==18:w.close();return
                 if w.busy:return
@@ -120,15 +136,20 @@ def phased(cls):
                 s=getattr(w.draft,'resume53',None)
                 if s:s.checkpoint(w.draft);s.action='password54';w.close()
                 return
-            if w.stage=='groups' and cid==17 and not w.busy:w.getControl(2).setLabel('Schritt 3/4 · Ausgewählte Inhalte importieren')
+            if w.stage=='groups' and cid==17 and not w.busy:
+                w.getControl(2).setLabel('Schritt 3/4 · Ausgewählte Inhalte importieren')
         return old['onClick'](w,cid)
     def action(w,event):
         if enabled(w) and w.stage.startswith('epg_') and event.getId() in (9,10,92):w.close();return
         return old['onAction'](w,event)
     def render(w):
         old['render'](w)
+        w.getControl(21).setVisible(enabled(w) and w.stage=='groups')
         if enabled(w):
             w.getControl(2).setLabel('Schritt 2/4 · Gruppen auswählen' if w.stage=='groups' else 'Schritt 3/4 · Geprüften Katalog speichern')
+            current=w.draft.data.get('start_group_id','*')
+            label=next((str(g['category_name']) for g in w.draft.categories['live'] if str(g['category_id'])==current),'Alle ausgewählten')
+            w.getControl(21).setLabel('Startgruppe: '+label)
     def working(w):
         old['working'](w)
         if enabled(w) and w.stage=='epg_running':w.getControl(18).setLabel('EPG abbrechen / später')

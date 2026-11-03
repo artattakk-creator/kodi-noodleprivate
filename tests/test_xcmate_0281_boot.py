@@ -285,10 +285,13 @@ else: raise AssertionError('FIFO accepted')
         self.portal_file.unlink()
         # Ordinary startup neither reads legacy settings nor writes portals.
         self.run_entry();self.ends.clear()
-        def migrate(): self.assertEqual(len(self.ends),1)
+        # Historical method name retained. The corrected action must finish
+        # its populated result AFTER migration, not an empty directory before.
+        def migrate(): self.assertEqual(len(self.ends),0)
         with mock.patch.object(portals,'import_from_settings',side_effect=migrate) as migration:
             self.run_entry('import_legacy_settings');migration.assert_called_once()
         self.assertEqual(len(self.ends),1)
+        self.assertFalse(any('START_FAILED' in line for line in self.logs))
 
 
     def test_explicit_legacy_migration_is_idempotent_for_all_portal_types(self):

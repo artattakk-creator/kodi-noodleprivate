@@ -69,6 +69,7 @@ jobs:
         run: |
           python -m pip install 'Pillow>=11,<13' 'impacket==0.13.0' 'simpleeval==0.9.13'
           python -m compileall -q src tools/kodi_home64_host tools/run_kodi_home64_contract.py tools/kodi_home66_host tools/run_kodi_home66_contract.py tools/build_bingie66_review.py
+          python -m unittest discover -s tests -p '*02971.py' -v
           python -m unittest discover -s tests -p '*02970.py' -v
           python -m unittest discover -s tests -p '*02969.py' -v
           python -m unittest discover -s tests -p '*02968.py' -v
@@ -162,7 +163,7 @@ jobs:
             kodi-home64-evidence/build.log
           if-no-files-found: error
           retention-days: 14
-  xcmate70-host-regression:
+  xcmate71-host-regression:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -198,22 +199,22 @@ jobs:
           for f in tests/test_addon.py tests/test_site.py tests/test_providers.py; do
             sed -i "s@'..', 'plugin.video.noodleprivate'@'..', 'src', 'plugin.video.noodleprivate'@g" "$f"
           done
-          python -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/xcmate70-test-results.log"
+          python -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/xcmate71-test-results.log"
       - name: Measure exact .69 replay against pinned .68
         run: |
           git fetch --no-tags --depth=1 origin cf62f5d554634acca5c2676c6af3d524747f8f40
-          python tools/benchmark_xcmate69.py --output "$RUNNER_TEMP/xcmate70-host-evidence.json"
+          python tools/benchmark_xcmate69.py --output "$RUNNER_TEMP/xcmate71-host-evidence.json"
       - name: Upload exact-commit complete host test log
         uses: actions/upload-artifact@v4
         with:
-          name: xcmate70-host-${{ github.sha }}
+          name: xcmate71-host-${{ github.sha }}
           path: |
-            ${{ runner.temp }}/xcmate70-test-results.log
-            ${{ runner.temp }}/xcmate70-host-evidence.json
+            ${{ runner.temp }}/xcmate71-test-results.log
+            ${{ runner.temp }}/xcmate71-host-evidence.json
           if-no-files-found: error
           retention-days: 14
   publish:
-    needs: [kodi-helper57-transport, kodi-live67-playback, xcmate70-host-regression]
+    needs: [kodi-helper57-transport, kodi-live67-playback, xcmate71-host-regression]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -245,7 +246,7 @@ jobs:
       - name: Read complete host test log from this exact workflow commit
         uses: actions/download-artifact@v4
         with:
-          name: xcmate70-host-${{ github.sha }}
+          name: xcmate71-host-${{ github.sha }}
           path: ${{ runner.temp }}
       - name: Read exact-commit native evidence
         uses: actions/download-artifact@v4
@@ -285,7 +286,7 @@ jobs:
               with open(os.environ['GITHUB_OUTPUT'], 'a') as result:
                   result.write('sha256=' + digest + '\n')
           shutil.copytree('xcmate-native-evidence', output / 'native-evidence')
-          shutil.copyfile(Path(os.environ['RUNNER_TEMP']) / 'xcmate70-host-evidence.json', output / 'xcmate70-host-evidence.json')
+          shutil.copyfile(Path(os.environ['RUNNER_TEMP']) / 'xcmate71-host-evidence.json', output / 'xcmate71-host-evidence.json')
           source = Path('src/plugin.video.xtreammate')
           expected = {'plugin.video.xtreammate/' + str(p.relative_to(source)): p
                       for p in source.rglob('*') if p.is_file()
@@ -310,9 +311,11 @@ jobs:
               for node in manifest.findall('.//assets/*'):
                   if node.tag in ('icon', 'fanart', 'screenshot'):
                       assert 'plugin.video.xtreammate/' + node.text in archive.namelist(), node.text
-          for document in Path('docs/XCMate').glob('*02970*.md'):
+          from tools.build_setup352_update import build as setup352_build
+          setup352_build(output)
+          for document in Path('docs/XCMate').glob('*02971*.md'):
               shutil.copyfile(document, output / document.name)
-          testlog = Path(os.environ['RUNNER_TEMP']) / 'xcmate70-test-results.log'
+          testlog = Path(os.environ['RUNNER_TEMP']) / 'xcmate71-test-results.log'
           log = testlog.read_text()
           match = re.search(r'Ran (\d+) tests? in ([0-9.]+)s', log)
           assert match and '\nOK' in log and '\nFAILED' not in log
@@ -321,7 +324,7 @@ jobs:
               commit=os.environ['GITHUB_SHA'], version=addon.attrib['version'],
               tests=int(match.group(1)), seconds=float(match.group(2)),
               android='NOT_TESTED', live_private_tmdb_api='NOT_TESTED',
-              historical_tests=2844, native_evidence='native-evidence',
+              historical_tests=2868, native_evidence='native-evidence',
               files=len(expected), bytes=target.stat().st_size, sha256=digest,
               crc='PASS', paths='PASS', source_bytes='PASS', production_publish=False), indent=2) + '\n')
           PY

@@ -1,0 +1,32 @@
+name: XCMate .71 P0 setup and persistence
+on:
+  pull_request:
+    branches: [main]
+    paths: ["src/**", "tests/**", "tools/**", ".github/workflows/**"]
+permissions:
+  contents: read
+concurrency:
+  group: xcmate71-setup-${{ github.head_ref }}
+  cancel-in-progress: true
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install 'Pillow>=11,<13' 'impacket==0.13.0' 'simpleeval==0.9.13'
+      - name: Setup, filesystem capabilities, actual commit and cold readback
+        run: python -m unittest discover -s tests -p '*02971.py' -v
+      - name: Existing wizard, resume, EPG phases and boot regressions
+        run: |
+          PYTHONPATH=tests python -m unittest test_xcmate_wizard_02951 test_xcmate_resume_02953 test_xcmate_wizard_phases_02954 test_xcmate_epg_resume_02954 test_xcmate_0281_boot -v
+      - name: Verify pinned companion update without publishing
+        run: python tools/build_setup352_update.py setup352-review
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gsmedia-setup352-review-${{ github.sha }}
+          path: setup352-review/
+          retention-days: 14

@@ -77,8 +77,7 @@ def get_active() -> list:
     return _read(lambda rows:[p for p in rows if p.get('enabled',True)])
 
 
-@serialized
-def add(portal: dict, portal_id=None) -> dict:
+def _record(portal: dict, portal_id=None) -> dict:
     now = int(time.time())
     extra={k:portal[k] for k in ('source_schema','m3u_original','m3u_origin','provider_epg_enabled','stb_serial','stb_device_id') if k in portal}
     portal = {
@@ -104,6 +103,12 @@ def add(portal: dict, portal_id=None) -> dict:
         'updated' : now,
     }
     portal.update(extra)
+    return portal
+
+
+@serialized
+def add(portal: dict, portal_id=None) -> dict:
+    portal = _record(portal,portal_id)
     portals = load_all()
     if any(p['id']==portal['id'] for p in portals): raise ValueError('portal ID already exists')
     portals.append(portal)
@@ -180,43 +185,8 @@ def _clear_cache_for(portal_id: str):
 
 @serialized
 def import_from_settings():
-    from utils import setting, setting_bool, setting_int
-    portals = load_all()
-    if portals:
-        return
-
-    imported = 0
-    for i in range(1, 4):
-        if not setting_bool(f'playlist{i}_enabled', i == 1):
-            continue
-        ptype_i = setting_int(f'playlist{i}_type', 0)
-        name    = setting(f'playlist{i}_name') or f'Playlist {i}'
-        epg     = setting(f'playlist{i}_epg_url')
-
-        if ptype_i == 0 or ptype_i == 1:
-            url = setting(f'playlist{i}_url')
-            if url:
-                add({'name': name, 'type': 'm3u', 'm3u_url': url, 'epg_url': epg})
-                imported += 1
-        elif ptype_i == 2:
-            host = setting(f'playlist{i}_xc_host')
-            user = setting(f'playlist{i}_xc_user')
-            pwd  = setting(f'playlist{i}_xc_pass')
-            if host and user:
-                add({'name': name, 'type': 'xtream',
-                     'xc_host': host, 'xc_user': user, 'xc_pass': pwd,
-                     'epg_url': epg})
-                imported += 1
-        elif ptype_i == 3:
-            url = setting(f'playlist{i}_stb_url')
-            mac = setting(f'playlist{i}_stb_mac')
-            if url and mac:
-                add({'name': name, 'type': 'stb',
-                     'stb_url': url, 'stb_mac': mac, 'epg_url': epg})
-                imported += 1
-
-    if imported:
-        info(f'Migrated {imported} playlist(s) from settings to portal DB')
+    from legacy_setup71 import import_settings
+    return import_settings()
 
 
 def type_label(ptype: str) -> str:

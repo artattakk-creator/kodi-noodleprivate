@@ -8,6 +8,9 @@ from localization import tr
 
 def _failure_details(exc):
     """Show only preapproved failure reasons: never echo provider URLs or credentials."""
+    from setup_commit71 import failure
+    local=failure(exc)
+    if local:return local
     from wizard_fault54 import describe
     network=describe(exc)
     if network:return network
@@ -134,6 +137,8 @@ class WorkWindow(xbmcgui.WindowXML):
     def failed_work(self,exc):
         self._gui()
         code,message=_failure_details(exc)
+        from setup_diagnostics71 import emit
+        emit('FAILED',getattr(getattr(self,'draft',None),'pid',''),error=exc)
         try:
             from utils import warn
             warn('XCMate setup: stage={} code={} type={}'.format(
@@ -174,7 +179,7 @@ class SetupWindow(GroupRows,WorkWindow):
         self._entries=[];self.configure_rows()
     def _show_discover_ui(self):
         self.getControl(2).setLabel(tr(32700))
-        for ident in (5,6,10,11,12,13,14,15,16,17,100,101,102):
+        for ident in (5,6,10,11,12,13,14,15,16,17,21,100,101,102):
             self.getControl(ident).setVisible(False)
         self.getControl(18).setVisible(True)
         self.getControl(18).setLabel('Abbrechen')
@@ -218,7 +223,7 @@ class SetupWindow(GroupRows,WorkWindow):
         self.render()
         self.setFocusId(self.list_id if self._entries else 17)
     def working(self):
-        for ident in (10,11,12,13,14,15,16,17,100,101,102): self.getControl(ident).setVisible(False)
+        for ident in (10,11,12,13,14,15,16,17,21,100,101,102): self.getControl(ident).setVisible(False)
         self.getControl(18).setVisible(True);self.setFocusId(18)
     def _selection_status(self):
         self.getControl(5).setLabel(self._row_labels[32780].format(len(self.draft.selected[self.kind]),len(self._entries)))
