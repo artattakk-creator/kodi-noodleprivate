@@ -142,6 +142,28 @@ class AutoSetupTests(unittest.TestCase):
             self.assertEqual(setup.next_step(state, original)["code"], "APPS_PRESENT")
             self.assertEqual(len(state["completed"]), 3)
 
+    def test_xvault_official_repository_is_bootstrapped_before_plugin(self):
+        row = {"id": "plugin.video.xvault", "minimum": "",
+               "repo": "repository.xvault", "notes": "https://xvault.repowork.de/",
+               "mandatory": True, "manifest_known": True}
+        with patch.object(setup, "manifest", return_value=[row]):
+            self.assertIn("repository.xvault", setup.REPO_ALLOWLIST)
+            box = inventory({setup.TEST_CHANNEL: "1.8.9"})
+            first = setup.next_step(setup.new_state(), box)
+            self.assertEqual((first["code"], first["id"]),
+                             ("INSTALL_REPOSITORY", "repository.xvault"))
+            request = setup.after_request(setup.new_state(), "repository.xvault")
+            self.assertEqual(setup.next_step(request, box)["code"], "WAITING")
+            box["addons"]["repository.xvault"] = {
+                "version": "1.0.3", "enabled": True}
+            self.assertEqual(setup.next_step(request, box)["code"], "CONFIRM")
+            completed = setup.after_confirm(request, box)
+            self.assertEqual(setup.next_step(completed, box)["code"], "INSTALL_ADDON")
+            self.assertEqual(setup.next_step(completed, box)["id"], "plugin.video.xvault")
+            box["addons"]["plugin.video.xvault"] = {
+                "version": "2026.11.01.1", "enabled": True}
+            self.assertEqual(setup.next_step(completed, box)["code"], "APPS_PRESENT")
+
     def test_unknown_repo_stops_with_no_install(self):
         rows = [dict(self.sample[0], repo="repository.unknown")]
         with patch.object(setup, "manifest", return_value=rows):
