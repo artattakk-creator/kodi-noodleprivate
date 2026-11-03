@@ -2,7 +2,7 @@ name: Publish GS Media 1.9.0 Setup 0.5.7 SlyGuy official source beta
 on:
   push:
     branches: [main]
-    paths: [".github/workflows/gsmedia-057-beta-publish.yml"]
+    paths: [".github/workflows/gsmedia-057-beta-publish.yml", "tools/publish_gsmedia_057_beta.py"]
   workflow_dispatch:
 permissions:
   contents: write
