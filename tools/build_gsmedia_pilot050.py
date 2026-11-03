@@ -12,6 +12,9 @@ import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 VENDOR = ROOT / "vendor/bingie-repository/repository.titan.bingie.mod-2.0.1.zip"
+SHORTCUTS_VENDOR = ROOT / "vendor/bingie-skinshortcuts-210/script.skinshortcuts-2.1.0.zip"
+SHORTCUTS_BLOB_SHA1 = "abb2627aef68e15c40e4a33144b1d4cc7bf4d3e6"
+SHORTCUTS_MD5 = "69d497c8884da6b169b6f9727d29910f"
 ORIGINAL_GIT_BLOB = "da6e2b22b9bdb3baaf12da362fcbadb0b17628e6"
 ORIGINAL_SHA256 = "dba0a2e670e2d93158cb030ea52fe3e237bb19177e0a165d99c8f72a8492ef46"
 TEST_URL = ("https://raw.githubusercontent.com/artattakk-creator/"
@@ -39,6 +42,18 @@ def build(destination):
     assert original.get("version") == "2.0.1"
     assert (ROOT / "vendor/bingie-repository/LICENSE").is_file()
 
+    shortcuts_bytes = SHORTCUTS_VENDOR.read_bytes()
+    assert hashlib.md5(shortcuts_bytes).hexdigest() == SHORTCUTS_MD5, "Skin Shortcuts upstream MD5"
+    actual_blob = hashlib.sha1(
+        b"blob " + str(len(shortcuts_bytes)).encode("ascii") + b"\0" + shortcuts_bytes
+    ).hexdigest()
+    assert actual_blob == SHORTCUTS_BLOB_SHA1, "Skin Shortcuts original Git blob changed"
+    shortcuts_xml = _bytes_in_zip(SHORTCUTS_VENDOR, "script.skinshortcuts")
+    assert shortcuts_xml.get("id") == "script.skinshortcuts"
+    assert shortcuts_xml.get("version") == "2.1.0"
+    assert shortcuts_xml.findtext("./extension[@point='xbmc.addon.metadata']/license") == "GPL-2.0-only"
+    assert (ROOT / "vendor/bingie-skinshortcuts-210/SOURCE.txt").is_file()
+
     all_addons = []
     for addon_id, version, package in [
         ("plugin.video.xtreammate", "0.1.29.70",
@@ -48,6 +63,7 @@ def build(destination):
         ("script.gsmedia.setup", "0.5.1",
          ROOT / ".build/gsmedia-051/script.gsmedia.setup-0.5.1.zip"),
         ("repository.titan.bingie.mod", "2.0.1", VENDOR),
+        ("script.skinshortcuts", "2.1.0", SHORTCUTS_VENDOR),
     ]:
         root = _bytes_in_zip(package, addon_id)
         assert root.get("id") == addon_id and root.get("version") == version
@@ -55,6 +71,14 @@ def build(destination):
         target = destination / addon_id / (addon_id + "-" + version + ".zip")
         target.parent.mkdir(exist_ok=True)
         shutil.copyfile(package, target)
+        if addon_id == "script.skinshortcuts":
+            shutil.copyfile(ROOT/"vendor/bingie-skinshortcuts-210/SOURCE.txt",
+                            destination/addon_id/"SOURCE.txt")
+            with zipfile.ZipFile(package) as archive:
+                for name in ("icon.png", "fanart.jpg"):
+                    source = addon_id + "/" + name
+                    if source in archive.namelist():
+                        (destination/addon_id/name).write_bytes(archive.read(source))
         if addon_id == "repository.titan.bingie.mod":
             # Preserve upstream attribution with the bootstrap.
             shutil.copyfile(ROOT/"vendor/bingie-repository/LICENSE",
@@ -102,6 +126,7 @@ def build(destination):
     (destination/"addons.xml.md5").write_text(
         hashlib.md5(xml).hexdigest()+"\n", encoding="ascii")
     print("VENDOR_BINGIE_SHA256", hashlib.sha256(vendor).hexdigest())
+    print("VENDOR_SHORTCUTS_SHA256", hashlib.sha256(shortcuts_bytes).hexdigest())
     print("TEST_ONLY", destination, "CATALOG", len(all_addons))
     print("NO_PUBLICATION_NO_ANDROID_PASS")
 
