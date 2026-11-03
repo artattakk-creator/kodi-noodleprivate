@@ -1,13 +1,19 @@
 {
   "channel": "GS_MEDIA_ONLINE_BETA_ONLY",
   "limitations": [
-    "One-time temporary official-origin exception requires user confirmation",
+    "One-time native dependency bridge with user-consented official-origin exception not yet tested on Android",
     "Full eleven-app one-click install not yet complete",
     "XCMate .70 EPG/storage/artwork bugs remain"
   ],
+  "native_upgrade": {
+    "bridge_addon": "script.gsmedia.skinshortcuts.bridge",
+    "minimum_skinshortcuts": "2.1.0",
+    "requires_temporary_user_consented_origin_setting": true,
+    "uses_kodi_dependency_manager": true
+  },
   "repository": {
     "id": "repository.gsmedia.pilot",
-    "version": "1.8.5"
+    "version": "1.8.6"
   },
   "skin_shortcuts": {
     "license": "GPL-2.0-only",
@@ -15,19 +21,20 @@
     "sha256": "865ee5ea5bf0accee27b82539caabce1c8a9fbb8f94b2900fe5ace4f82c80b23",
     "version": "2.1.0"
   },
-  "source_head": "fea3e6147ef85a6421321df02e4ca54ee9e8c78e",
-  "source_run_id": 41599322956,
+  "source_head": "31de2f00c0aa9937b8cf06e81b6a15fb98e6aa2d",
+  "source_run_id": 41601516073,
   "wizard": {
     "id": "script.gsmedia.setup",
-    "status": "BETA_TEMPORARY_ORIGIN_CONSENT_ANDROID_NOT_VERIFIED",
-    "version": "0.5.2"
+    "status": "BETA_NATIVE_DEPENDENCY_BRIDGE_ANDROID_NOT_VERIFIED",
+    "version": "0.5.3"
   },
   "zip_sha256": {
     "plugin.video.noodleprivate": "b9d0afe06d6fc956bc0191fd51f4646ae9f54c6272009e7a8819255de7460364",
     "plugin.video.xtreammate": "90b90042b02d8b0e27a7b7c014d993b1dfb6f7a0dae493bf6bf80b0f4eaee07f",
-    "repository.gsmedia.pilot": "206045509f0d91d3539201e7383a7e12db2875c59a1d8be8a5639a1059614948",
+    "repository.gsmedia.pilot": "a2337e4df02b56a98adcb6c7815e8c21e039302532cd3965be191de9c2ab8b2c",
     "repository.titan.bingie.mod": "dba0a2e670e2d93158cb030ea52fe3e237bb19177e0a165d99c8f72a8492ef46",
-    "script.gsmedia.setup": "d83b7e5b7d90c3881e0a9e1e6dcbea7aa7e32e92aea566e1f82447715b4ea9af",
+    "script.gsmedia.setup": "32df50bfe730a412400abf3d3ca47d08c8d5e74254b3d3d961327ac93627ff15",
+    "script.gsmedia.skinshortcuts.bridge": "f84da5931a4159bbf82b78ecf6a05c0b2ce8a6e0c08ebf109d1554eb84d4f72c",
     "script.skinshortcuts": "865ee5ea5bf0accee27b82539caabce1c8a9fbb8f94b2900fe5ace4f82c80b23"
   }
 }

@@ -1,0 +1,1 @@
+First-party GS Media Kodi-native dependency bridge. Source: https://github.com/artattakk-creator/kodi-noodleprivate/tree/fix/gsmedia-wizard-053-native-shortcuts-dependency-20261103/tools/gsmedia_053_shortcuts_bridge
