@@ -5,6 +5,7 @@ Kodi itself handles package transfers and approval dialogs.
 """
 import os
 import re
+from contextlib import nullcontext
 from pathlib import Path
 
 from setup_auto50 import (new_state, next_step, after_request, after_confirm,
@@ -12,6 +13,7 @@ from setup_auto50 import (new_state, next_step, after_request, after_confirm,
 from setup_auto_store50 import load, save
 from setup_inventory import snapshot
 from setup_install_pilot import protected_existing, _version
+from setup_origin_guard52 import TemporaryOfficialAddonSource, restore as restore_origin_policy
 
 
 def _context():
@@ -103,6 +105,15 @@ def run():
         dialog.ok("GS Media – Sicherheitsstopp", "Systemprüfung fehlgeschlagen. "
                   "Keine Installation ausgeführt.")
         return
+    # Crash recovery is mandatory before any other install work.
+    try:
+        restore_origin_policy(profile, xbmc.executeJSONRPC)
+    except (RuntimeError, OSError, ValueError, TypeError):
+        dialog.ok("GS Media – Schutz-Einstellungen",
+                  "Kodi konnte die vorige Quelleneinstellung nicht "
+                  "automatisch zurücksetzen. Keine Installation wird "
+                  "ausgeführt. Details im Kodi-Log.")
+        return
     if inventory.get("code") != "READY":
         dialog.ok("GS Media – Sicherheitsstopp",
                   "Die Kodi-Inventur ist nicht verfügbar. Keine Installation.")
@@ -117,7 +128,7 @@ def run():
                       "Bestehende Daten bleiben unverändert.")
             return
         if not dialog.yesno(
-            "GS Media Setup 0.5.1 – Test",
+            "GS Media Setup 0.5.2 – Test",
             "Alle 11 Apps und ihre Abhängigkeiten aus geprüften Repositories "
             "mit Kodi installieren? Bereits vorhandene Add-ons werden nicht "
             "überschrieben. Fremdquellen und ungeprüfte Pakete bleiben gesperrt. "
@@ -148,7 +159,7 @@ def run():
     window.setProperty("GS_MEDIA_050_RUNNING", "1")
     window.clearProperty("GS_MEDIA_050_CANCEL")
     progress = xbmcgui.DialogProgressBG()
-    progress.create("GS Media Setup 0.5.1", "Systemprüfung")
+    progress.create("GS Media Setup 0.5.2", "Systemprüfung")
     monitor = xbmc.Monitor()
     reason = ""
     try:
@@ -171,34 +182,68 @@ def run():
                 ident = step["id"]
                 if not re.fullmatch(r"[A-Za-z0-9._-]{3,100}", ident):
                     raise ValueError("Invalid add-on ID")
+                # Kodi Omega pins official add-ons to the official source.
+                # For this ONE known 2.0.3 -> 2.1.0 upgrade, ask for explicit
+                # permission to relax its global origin setting TEMPORARILY.
+                source_switch = (code == "INSTALL_UPGRADE" and
+                                 ident == "script.skinshortcuts" and
+                                 step.get("source") == "repository.gsmedia.pilot" and
+                                 _version(step.get("actual", "")) < (2, 1, 0) and
+                                 step.get("minimum") == "2.1.0")
+                if code == "INSTALL_UPGRADE" and not source_switch:
+                    reason = "UNAPPROVED_ADDON_ORIGIN_CHANGE:" + ident
+                    state = _persist(profile, stop(state, reason[:200]))
+                    break
+                if source_switch:
+                    if not dialog.yesno(
+                        "GS Media – einmalige Kodi-Freigabe",
+                        "Kodi schützt die offizielle Skin Shortcuts 2.0.3. "
+                        "Darf GS Media für das geprüfte 2.1.0-Paket "
+                        "vorübergehend 'Alle Repositories' erlauben und "
+                        "automatische Updates pausieren? Beide bisherigen "
+                        "Kodi-Einstellungen werden nach dem Versuch "
+                        "wiederhergestellt."
+                    ):
+                        reason = "OFFICIAL_ORIGIN_CONSENT_DENIED"
+                        state = _persist(profile, stop(state, reason))
+                        break
+                scope = (TemporaryOfficialAddonSource(
+                    profile, xbmc.executeJSONRPC) if source_switch else nullcontext())
                 state = _persist(profile, after_request(state, ident))
-                xbmc.executebuiltin("InstallAddon(" + ident + ")")
-                # This does NOT claim an installation succeeded or report fake
-                # network percentages. Kodi may show its own transfer dialog.
                 wait = 0
                 version_conflict = ""
-                while wait < 240:
-                    if monitor.waitForAbort(2):
-                        break
-                    if window.getProperty("GS_MEDIA_050_CANCEL") == "1":
-                        break
-                    wait += 2
-                    inv = snapshot()
-                    if next_step(state, inv)["code"] == "CONFIRM":
-                        break
-                    present = inv.get("addons", {}).get(ident, {}) if inv.get("code") == "READY" else {}
-                    required = step.get("minimum", "")
-                    actual = present.get("version", "") if isinstance(present, dict) else ""
-                    if (wait >= 20 and actual and required and
-                            _version(actual) < _version(required)):
-                        version_conflict = ("VERSION_BELOW_REQUIRED: {} "
-                                            "installiert={} benoetigt={}".format(
-                                                ident, actual, required))
-                        break
-                    progress.update(percent,
-                                    "GS Media: {} / {} Komponenten".format(done, total),
-                                    "{} – warte auf Kodi ({} s)".format(ident, wait))
-                if monitor.abortRequested() or window.getProperty("GS_MEDIA_050_CANCEL") == "1":
+                with scope:
+                    if source_switch:
+                        xbmc.executebuiltin("UpdateAddonRepos")
+                        if monitor.waitForAbort(3):
+                            reason = "CANCELLED_OR_SHUTDOWN"
+                            break
+                    xbmc.executebuiltin("InstallAddon(" + ident + ")")
+                    # Kodi owns the actual downloads; this is elapsed time.
+                    while wait < 240:
+                        if monitor.waitForAbort(2):
+                            break
+                        if window.getProperty("GS_MEDIA_050_CANCEL") == "1":
+                            break
+                        wait += 2
+                        inv = snapshot()
+                        if next_step(state, inv)["code"] == "CONFIRM":
+                            break
+                        present = inv.get("addons", {}).get(ident, {}) if inv.get("code") == "READY" else {}
+                        required = step.get("minimum", "")
+                        actual = present.get("version", "") if isinstance(present, dict) else ""
+                        if (wait >= 30 and actual and required and
+                                _version(actual) < _version(required)):
+                            version_conflict = (
+                                "VERSION_BELOW_REQUIRED: {} installiert={} benoetigt={}"
+                                .format(ident, actual, required))
+                            break
+                        progress.update(
+                            percent,
+                            "GS Media: {} / {} Komponenten".format(done, total),
+                            "{} – Kodi-Installationsprüfung ({} s)".format(ident, wait))
+                # Scope exit restores BOTH Kodi-wide settings before continuing.
+                if monitor.abortRequested() or window.getProperty("GS_MEDIA_050_CANCEL") == "1" or reason == "CANCELLED_OR_SHUTDOWN":
                     reason = "CANCELLED_OR_SHUTDOWN"
                     state = _persist(profile, stop(state, reason))
                     break
@@ -277,6 +322,12 @@ def run():
             state = _persist(profile, stop(state, reason))
     except (OSError, KeyError, TypeError, ValueError, RuntimeError) as exc:
         reason = "INSTALLER_EXCEPTION:" + type(exc).__name__
+        try:
+            from setup_origin_guard52 import _read_marker
+            if _read_marker(profile) is not None:
+                reason = "KODI_SOURCE_RESTORE_NOT_VERIFIED"
+        except (OSError, ValueError):
+            reason = "KODI_SOURCE_RESTORE_NOT_VERIFIED"
         try:
             state = _persist(profile, stop(state, reason))
         except (OSError, ValueError):
