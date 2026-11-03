@@ -43,7 +43,7 @@ def _lock():
 
 
 def request_stop():
-    """Separate action callable from Kodi's GS Media Setup program menu."""
+    """Separate action callable from Kodi's XC Mate Setup program menu."""
     window = _lock()
     window.setProperty("GS_MEDIA_050_CANCEL", "1")
 
@@ -94,7 +94,7 @@ def run():
     import xbmcgui
     dialog = xbmcgui.Dialog()
     if not (xbmc.getInfoLabel("System.BuildVersion") or "").startswith("21."):
-        dialog.ok("GS Media Setup", "Nur Kodi 21 wird unterstützt.")
+        dialog.ok("XC Mate Setup", "Nur Kodi 21 wird unterstützt.")
         return
     try:
         profile = _context()
@@ -102,48 +102,57 @@ def run():
         first = state is None
         inventory = snapshot()
     except (ValueError, OSError, RuntimeError, KeyError) as exc:
-        dialog.ok("GS Media – Sicherheitsstopp", "Systemprüfung fehlgeschlagen. "
+        dialog.ok("XC Mate – Sicherheitsstopp", "Systemprüfung fehlgeschlagen. "
                   "Keine Installation ausgeführt.")
         return
     # Crash recovery is mandatory before any other install work.
     try:
         restore_origin_policy(profile, xbmc.executeJSONRPC)
     except (RuntimeError, OSError, ValueError, TypeError):
-        dialog.ok("GS Media – Schutz-Einstellungen",
+        dialog.ok("XC Mate – Schutz-Einstellungen",
                   "Kodi konnte die vorige Quelleneinstellung nicht "
                   "automatisch zurücksetzen. Keine Installation wird "
                   "ausgeführt. Details im Kodi-Log.")
         return
     if inventory.get("code") != "READY":
-        dialog.ok("GS Media – Sicherheitsstopp",
+        dialog.ok("XC Mate – Sicherheitsstopp",
                   "Die Kodi-Inventur ist nicht verfügbar. Keine Installation.")
         return
     if first:
         protected = protected_existing(inventory)
         if protected:
-            dialog.ok("GS Media – Bestandsinstallation geschützt",
+            dialog.ok("XC Mate – Bestandsinstallation geschützt",
                       "Gefundene bereits konfigurierte Add-ons: " +
                       ", ".join(protected) +
                       ". Vollautomatische Ersteinrichtung hier nicht gestartet. "
                       "Bestehende Daten bleiben unverändert.")
             return
         if not dialog.yesno(
-            "GS Media Setup 0.5.3 – Test",
-            "Alle 11 Apps und ihre Abhängigkeiten aus geprüften Repositories "
-            "mit Kodi installieren? Bereits vorhandene Add-ons werden nicht "
-            "überschrieben. Fremdquellen und ungeprüfte Pakete bleiben gesperrt. "
-            "Skin/Player erst nach weiterer Bestätigung einrichten?"
+            "XC Mate – Vollautomatische Einrichtung 0.5.10",
+            "Gesamte Kodi-Ersteinrichtung jetzt starten? Alle geprüften "
+            "Repositories, 43 Komponenten und Abhängigkeiten werden "
+            "nacheinander ohne zusätzliche Wizard-Abfragen installiert. "
+            "BINGIE 2.2.3 wird nur bei exaktem Datei-Hash gesichert und "
+            "eingerichtet. xVAULT als TMDB-Standardplayer nur einrichten, "
+            "wenn keine persönlichen Player-Vorgaben überschrieben werden. "
+            "Für Skin Shortcuts kann Kodi die Updatequelle kurzzeitig "
+            "auf alle Repositories setzen; der vorherige Wert wird danach "
+            "wiederhergestellt. Systemfreigaben von Kodi und echte Fehler "
+            "können zusätzliche Eingaben oder einen sicheren Stopp erfordern. "
+            "Jetzt einmalig zustimmen?"
         ):
             return
         state = new_state()
         _persist(profile, state)
     elif state["stopped"]:
-        if not dialog.yesno("GS Media Setup", "Unterbrochene Installation "
-                            "ab dem letzten verifizierten Schritt fortsetzen?"):
+        if not dialog.yesno("XC Mate Setup", "Bisher geprüfte Komponenten "
+                            "behalten und die restliche Einrichtung automatisch "
+                            "fortsetzen? Die Hash-Schutzprüfungen bleiben aktiv; "
+                            "Kodi-Systemfreigaben können separat erscheinen."):
             return
         if state["pending"]:
             pending = state["pending"]
-            if not dialog.yesno("GS Media – unvollständiger Schritt",
+            if not dialog.yesno("XC Mate – unvollständiger Schritt",
                                 "Kodi hat {} nicht als installiert bestätigt. "
                                 "Nur nach Abbruch der vorherigen Installation "
                                 "erneut anfordern?".format(pending)):
@@ -153,13 +162,13 @@ def run():
 
     window = _lock()
     if window.getProperty("GS_MEDIA_050_RUNNING") == "1":
-        dialog.ok("GS Media", "Installation läuft bereits. Keine zweite "
+        dialog.ok("XC Mate", "Installation läuft bereits. Keine zweite "
                   "Instanz starten.")
         return
     window.setProperty("GS_MEDIA_050_RUNNING", "1")
     window.clearProperty("GS_MEDIA_050_CANCEL")
     progress = xbmcgui.DialogProgressBG()
-    progress.create("GS Media Setup 0.5.3", "Systemprüfung")
+    progress.create("XC Mate Setup 0.5.10", "Systemprüfung")
     monitor = xbmc.Monitor()
     reason = ""
     try:
@@ -173,7 +182,7 @@ def run():
             code = step["code"]
             done, total = count_done(inventory)
             percent = min(96, int(95 * done / max(total, 1)))
-            progress.update(percent, "GS Media: {} / {} Komponenten".format(done, total),
+            progress.update(percent, "XC Mate: {} / {} Komponenten".format(done, total),
                             _stage_text(step, done, total))
             if code == "CONFIRM":
                 state = _persist(profile, after_confirm(state, inventory))
@@ -202,22 +211,9 @@ def run():
                     break
 
                 install_id = "script.gsmedia.skinshortcuts.bridge" if native_upgrade else ident
-                if native_upgrade:
-                    if not dialog.yesno(
-                        "GS Media – Skin Shortcuts automatisch aktualisieren",
-                        "Kodi hat Skin Shortcuts 2.0.3 bereits installiert. "
-                        "GS Media wird jetzt den originalen Skin Shortcuts "
-                        "2.1.0 als Pflichtabhaengigkeit eines kleinen "
-                        "GS-Media-Testpakets ueber Kodi installieren. "
-                        "Dafuer wird die Quellenfreigabe kurzzeitig "
-                        "auf 'Alle Repositories' gestellt und werden automatische "
-                        "Updates pausiert. Danach werden beide Einstellungen "
-                        "auf die vorherigen Werte zurueckgesetzt. Fortfahren?"
-                    ):
-                        reason = "NATIVE_UPGRADE_NOT_APPROVED"
-                        state = _persist(profile, stop(state, reason))
-                        break
-
+                # One-time setup consent (initial or resumed) also covers
+                # the allowlisted, temporary Kodi dependency source scope.
+                # Kodi's own native system prompts cannot be suppressed.
                 state = _persist(profile, after_request(state, ident))
                 wait = 0
                 scope = (TemporaryOfficialAddonSource(profile, xbmc.executeJSONRPC)
@@ -242,7 +238,7 @@ def run():
                             break
                         progress.update(
                             percent,
-                            "GS Media: {} / {} Komponenten".format(done, total),
+                            "XC Mate: {} / {} Komponenten".format(done, total),
                             "{} – Kodi-Paketpruefung ({} s)".format(ident, wait))
 
                 if (monitor.abortRequested() or
@@ -281,17 +277,10 @@ def run():
                 state = _persist(profile, advance_stage(state, "apps"))
                 continue
             if code == "STAGE_SKIN":
-                progress.update(96, "GS Media – BINGIE",
+                progress.update(96, "XC Mate – BINGIE",
                                 "Prüfe originalen Skin und sichere XML-Dateien")
-                if not dialog.yesno(
-                    "GS Media – BINGIE-Konfiguration",
-                    "BINGIE MOD 2.2.3 nur bei exaktem Dateihash sichern "
-                    "und XCMate-Menüs/Widgets einrichten? Bestehende "
-                    "Änderungen werden nicht überschrieben."
-                ):
-                    reason = "SKIN_PATCH_NOT_APPROVED"
-                    state = _persist(profile, stop(state, reason))
-                    break
+                # The one-time user approval explicitly covers this
+                # hash-verified, rollback-capable first-install skin patch.
                 code_ = _apply_skin(profile, inventory)
                 if code_ != "OK":
                     reason = code_
@@ -300,16 +289,19 @@ def run():
                 state = _persist(profile, advance_stage(state, "skin"))
                 continue
             if code == "STAGE_PLAYER":
-                progress.update(97, "GS Media – TMDB",
+                progress.update(97, "XC Mate – TMDB",
                                 "Prüfe xVAULT-Player für Filme und Serien")
-                if not dialog.yesno("GS Media – Standardplayer",
-                                    "xVAULT als TMDB-Helper-Player für Filme UND "
-                                    "Serien konfigurieren? Vorhandene fremde "
-                                    "Einstellungen bleiben geschützt."):
-                    reason = "TMDB_PLAYER_NOT_APPROVED"
-                    state = _persist(profile, stop(state, reason))
-                    break
+                # Non-destructive TMDB player configuration is covered by
+                # the single start confirmation. No separate per-step dialog.
                 code_ = _apply_tmdb_player()
+                if code_ in ("TMDB_PLAYER_EXISTING_DEFAULTS_PRESERVED",
+                              "TMDB_PLAYER_EXISTING_PLAYER_PRESERVED"):
+                    # Existing user configuration is not a failed install.
+                    # Continue without lying about a successful xVAULT setup.
+                    preserved = dict(state)
+                    preserved["last_error"] = code_
+                    state = _persist(profile, advance_stage(preserved, "player"))
+                    continue
                 if code_ != "OK":
                     reason = code_
                     state = _persist(profile, stop(state, reason))
@@ -317,7 +309,7 @@ def run():
                 state = _persist(profile, advance_stage(state, "player"))
                 continue
             if code == "STAGE_CHECK":
-                progress.update(98, "GS Media – Abschlussprüfung",
+                progress.update(98, "XC Mate – Abschlussprüfung",
                                 "Quellen und Android-Gerätetest erforderlich")
                 reason = "RELEASE_SOURCE_AND_ANDROID_GATES_PENDING"
                 break
@@ -346,20 +338,29 @@ def run():
 
     done, total = count_done(snapshot())
     if reason == "RELEASE_SOURCE_AND_ANDROID_GATES_PENDING":
-        dialog.ok("GS Media – Apps installiert",
-                  "{} von {} Komponenten bestätigt. BINGIE und TMDB-Player "
-                  "eingerichtet; Quellnachweis und Android-Abnahme bleiben offen."
-                  .format(done, total))
+        if state.get("last_error", "").startswith("TMDB_PLAYER_EXISTING_"):
+            dialog.ok("XC Mate – Installation mit Hinweis",
+                      "{} von {} Komponenten bestätigt. BINGIE eingerichtet. "
+                      "Bestehender TMDB-Standardplayer wurde geschützt und "
+                      "nicht geändert: {}. Kein weiterer Download nötig; "
+                      "TMDB-Player bei Bedarf später manuell wählen."
+                      .format(done, total, state["last_error"]))
+        else:
+            dialog.ok("XC Mate – Einrichtung abgeschlossen",
+                      "{} von {} Komponenten bestätigt. BINGIE und geprüfter "
+                      "TMDB-Player eingerichtet. Die Android-Endabnahme "
+                      "erfolgt am Gerät."
+                      .format(done, total))
     elif reason.startswith("NATIVE_DEPENDENCY_UPGRADE_FAILED:"):
-        dialog.ok("GS Media – Kodi Abhaengigkeitsinstallation blockiert",
+        dialog.ok("XC Mate – Kodi Abhaengigkeitsinstallation blockiert",
                   reason + "\n\nDer BINGIE-kompatible Skin Shortcuts 2.1.0 "
-                  "ist im GS Media Test-Katalog. Kodi hat das native "
+                  "ist im XC Mate Test-Katalog. Kodi hat das native "
                   "Abhaengigkeits-Upgrade nicht abgeschlossen. "
                   "Keine Daten geloescht, alle bisherigen Schritte bleiben "
                   "erhalten. Bitte Kodi-Log fuer genaue Ursache sichern. "
                   "Setup nicht wiederholt ohne neue Diagnose starten.")
     elif reason:
-        dialog.ok("GS Media – sicher angehalten",
+        dialog.ok("XC Mate – sicher angehalten",
                   "{} von {} Komponenten geprüft. Grund: {}. "
                   "Keine Daten gelöscht. Nach Korrektur wiederaufnehmen."
                   .format(done, total, reason))
