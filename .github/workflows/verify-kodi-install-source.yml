@@ -1,0 +1,33 @@
+name: Verify Kodi HTTPS install source
+on:
+  push:
+    branches:
+      - chore/verify-kodi-source-url-20261103
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check published GitHub Pages URL and ZIP locations without mutation
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+          echo "PAGES_CONFIGURATION"
+          gh api repos/artattakk-creator/kodi-noodleprivate/pages --jq '{html_url,status,source,build_type,public}' 2>&1
+          for url in \
+            "https://artattakk-creator.github.io/kodi-noodleprivate/online-test/" \
+            "https://artattakk-creator.github.io/kodi-noodleprivate/online-test/index.html" \
+            "https://artattakk-creator.github.io/kodi-noodleprivate/online-test/repository.gsmedia.pilot-1.9.6.zip" \
+            "https://artattakk-creator.github.io/kodi-noodleprivate/online-test/script.gsmedia.setup-0.5.13.zip" \
+            "https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/index.html" \
+            "https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/"; do
+              echo "TEST_URL $url"
+              curl -L --silent --show-error --connect-timeout 8 --max-time 20 -o /dev/null \
+                -w 'HTTP=%{http_code} CONTENT_TYPE=%{content_type} FINAL=%{url_effective} BYTES=%{size_download}\n' "$url"
+          done
+          exit 0
