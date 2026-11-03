@@ -262,20 +262,20 @@
       <fanart>fanart.jpg</fanart>
     </assets>
   </extension>
-</addon><addon id="script.gsmedia.setup" name="GS Media Setup – GS Media 0.5.9 BINGIE Backup Safety Fix" version="0.5.9" provider-name="GS Media">
+</addon><addon id="script.gsmedia.setup" name="XC Mate Setup" version="0.5.10" provider-name="XC Mate">
   <requires><import addon="xbmc.python" version="3.0.0" /></requires>
   <extension point="xbmc.python.script" library="default.py" />
   <extension point="xbmc.service" library="service.py" start="startup" />
   <extension point="xbmc.addon.metadata">
-    <summary lang="de_DE">GS Media Installationsassistent für Kodi 21 – elf Pflicht-Add-ons und BINGIE</summary>
+    <summary lang="de_DE">XC Mate Installationsassistent für Kodi 21 – elf Pflicht-Add-ons und BINGIE</summary>
     <description lang="de_DE">Automatischer Installationskandidat für elf Pflichtprogramme und deren Abhängigkeiten. Nutzt Kodi-Repository-Installationen nach Zustimmung, gesichertes Fortschrittsjournal, BINGIE-2.2.3-Patch mit Original-Hashprüfung, Menüs/Widgets und TMDB-xVAULT-Player. Ungeprüfte Paketquellen und der automatische Abschluss bleiben bis zur echten Android-Abnahme gesperrt.</description>
-    <summary lang="en_GB">GS Media Setup: guided eleven-addon installation candidate</summary>
+    <summary lang="en_GB">XC Mate Setup: guided eleven-addon installation candidate</summary>
     <description lang="en_GB">Guided 11-addon installation with Kodi repository prompts, private progress journal, pinned BINGIE patch and TMDB player configuration. Full auto-completion is blocked until package provenance and Android device testing pass.</description>
     <disclaimer lang="de_DE">Entwicklungskandidat. Installationen und Skinänderungen erfolgen nur nach expliziter Zustimmung auf einer neuen Kodi-Box. Android-Abnahme fehlt; auf produktiven Boxen nicht ausführen.</disclaimer>
     <platform>all</platform>
     <license>MIT (Wizard), GPL-2.0-only (bundled BINGIE source patch)</license>
   </extension>
-</addon><addon id="repository.gsmedia.pilot" name="GS Media Online-Test 1.9.2" version="1.9.2" provider-name="GS Media">
+</addon><addon id="repository.gsmedia.pilot" name="XC Mate Repository – Test 1.9.3" version="1.9.3" provider-name="XC Mate">
   <extension point="xbmc.addon.repository">
     <dir>
       <info compressed="false">https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/addons.xml</info>
@@ -286,10 +286,10 @@
     
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="de_DE">GS Media Online-Test 1.9.2, nicht produktiv</summary>
-    <description lang="de_DE">Entwicklungs-Installer mit geprüfter BINGIE-Repository-Vorstufe; keine vollständige Geräteabnahme.</description>
-    <summary lang="en_GB">GS Media Online-Test 1.9.2, nicht produktiv</summary>
-    <description lang="en_GB">Entwicklungs-Installer mit geprüfter BINGIE-Repository-Vorstufe; keine vollständige Geräteabnahme.</description>
+    <summary lang="de_DE">XC Mate Repository – Test 1.9.3 (nicht produktiv)</summary>
+    <description lang="de_DE">XC Mate – geprüfter Testkatalog für den automatischen Kodi-Installationswizard. Android-Endabnahme am Gerät.</description>
+    <summary lang="en_GB">XC Mate Repository – Test 1.9.3 (nicht produktiv)</summary>
+    <description lang="en_GB">XC Mate – geprüfter Testkatalog für den automatischen Kodi-Installationswizard. Android-Endabnahme am Gerät.</description>
     <disclaimer lang="de_DE">Eigenstaendiges GS Media Repository. Externe Projekte sind nicht Teil des Lite-Katalogs und werden gegebenenfalls separat durch ihre Urheber gepflegt. Keine Verbindung mit Team Kodi.</disclaimer>
     <platform>all</platform>
     <license>MIT</license>
