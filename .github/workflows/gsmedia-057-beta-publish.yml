@@ -1,0 +1,78 @@
+name: Publish GS Media 1.9.0 Setup 0.5.7 SlyGuy official source beta
+on:
+  push:
+    branches: [main]
+    paths: [".github/workflows/gsmedia-057-beta-publish.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: gsmedia-online-beta-publish
+  cancel-in-progress: false
+jobs:
+  beta-hotfix-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download pinned SlyGuy original repository candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/gsmedia-057"
+          gh run download 41610990814 --repo artattakk-creator/kodi-noodleprivate --name gsmedia-057-slyguy-official-repo-candidate --dir "$RUNNER_TEMP/gsmedia-057"
+      - name: Verify and stage isolated Kodi test beta only
+        run: python tools/publish_gsmedia_057_beta.py "$RUNNER_TEMP/gsmedia-057/gsmedia-057-pilot"
+      - name: Commit only online-test packages (leave production addon catalog alone)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add online-test/
+          if git diff --cached --quiet; then echo "Unchanged tested beta"; exit 0; fi
+          if git diff --cached --name-only | grep -v '^online-test/'; then
+            echo "Refusing unrelated changes"; exit 1
+          fi
+          git commit -m "Publish GS Media 1.9.0 Setup 0.5.7 SlyGuy official source bootstrap"
+          git push origin HEAD:main
+      - name: Verify public Kodi directory, versioned ZIPs, index and checksum
+        run: |
+          python - <<'PY'
+          import hashlib, time, urllib.request
+          from pathlib import Path
+          base="https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/"
+          paths=(
+            "addons.xml","addons.xml.md5",
+            "repository.gsmedia.pilot-1.9.0.zip",
+            "script.gsmedia.setup/script.gsmedia.setup-0.5.7.zip",
+            "script.skinshortcuts/script.skinshortcuts-2.1.0.zip",
+            "script.skinshortcuts/SOURCE.txt",
+            "script.gsmedia.skinshortcuts.bridge/script.gsmedia.skinshortcuts.bridge-0.1.0.zip",
+            "script.module.jurialmunkey/script.module.jurialmunkey-0.2.35.zip",
+            "script.module.jurialmunkey/SOURCE.txt",
+            "script.module.resolveurl/script.module.resolveurl-5.1.212.zip",
+            "script.module.resolveurl.xxx/script.module.resolveurl.xxx-2.1.44.zip",
+            "plugin.video.cumination/plugin.video.cumination-1.1.206.zip",
+            "plugin.video.cumination/SOURCE.txt",
+            "repository.xvault/repository.xvault-1.0.3.zip",
+            "repository.xvault/SOURCE.txt",
+            "repository.slyguy/repository.slyguy-0.0.9.zip",
+            "repository.slyguy/SOURCE.txt",
+          )
+          for filename in paths:
+              local=Path("online-test")/filename
+              wanted=hashlib.sha256(local.read_bytes()).hexdigest()
+              for retry in range(12):
+                  try:
+                      with urllib.request.urlopen(base+filename,timeout=15) as response:
+                          actual=response.read()
+                      if hashlib.sha256(actual).hexdigest()==wanted:
+                          print("PUBLIC_OK",filename,wanted);break
+                  except Exception as ex:
+                      print("RETRY",filename,retry,type(ex).__name__)
+                  time.sleep(4)
+              else:
+                  raise SystemExit("PUBLIC_BETA_NOT_VERIFIED: "+filename)
+          PY
