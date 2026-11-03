@@ -43,7 +43,7 @@ def _lock():
 
 
 def request_stop():
-    """Separate action callable from Kodi's XC Mate Setup program menu."""
+    """Separate action callable from Kodi's XCMate Media Center Setup program menu."""
     window = _lock()
     window.setProperty("GS_MEDIA_050_CANCEL", "1")
 
@@ -89,12 +89,33 @@ def _apply_tmdb_player():
     return "OK" if code == "APPLIED" and verify_player(source, target, tmdb) else "TMDB_PLAYER_" + str(code)[:80]
 
 
+def _activate_bingie_runtime(inventory, monitor):
+    """Verify the installed skin, XML patch and shortcut files before switching."""
+    import xbmc
+    import xbmcaddon
+    import xbmcvfs
+    from setup_patch import inspect as inspect_skin
+    from setup_bingie_apply import inspect_new_profile
+    from setup_skin_activate_0511 import activate
+    skin_root = xbmcvfs.translatePath(xbmcaddon.Addon(
+        "skin.titan.bingie.mod").getAddonInfo("path"))
+    setup_root = xbmcvfs.translatePath(xbmcaddon.Addon(
+        "script.gsmedia.setup").getAddonInfo("path"))
+    package_root = os.path.join(setup_root, "resources", "skinpatch")
+    shortcut_dir = xbmcvfs.translatePath(
+        "special://profile/addon_data/script.skinshortcuts/")
+    patch_status = inspect_skin(package_root, skin_root, "2.2.3")
+    shortcut_status = inspect_new_profile(shortcut_dir, inventory)
+    return activate(xbmc.executeJSONRPC, inventory, patch_status,
+                    shortcut_status, wait=monitor.waitForAbort)
+
+
 def run():
     import xbmc
     import xbmcgui
     dialog = xbmcgui.Dialog()
     if not (xbmc.getInfoLabel("System.BuildVersion") or "").startswith("21."):
-        dialog.ok("XC Mate Setup", "Nur Kodi 21 wird unterstützt.")
+        dialog.ok("XCMate Media Center Setup", "Nur Kodi 21 wird unterstützt.")
         return
     try:
         profile = _context()
@@ -102,33 +123,33 @@ def run():
         first = state is None
         inventory = snapshot()
     except (ValueError, OSError, RuntimeError, KeyError) as exc:
-        dialog.ok("XC Mate – Sicherheitsstopp", "Systemprüfung fehlgeschlagen. "
+        dialog.ok("XCMate – Sicherheitsstopp", "Systemprüfung fehlgeschlagen. "
                   "Keine Installation ausgeführt.")
         return
     # Crash recovery is mandatory before any other install work.
     try:
         restore_origin_policy(profile, xbmc.executeJSONRPC)
     except (RuntimeError, OSError, ValueError, TypeError):
-        dialog.ok("XC Mate – Schutz-Einstellungen",
+        dialog.ok("XCMate – Schutz-Einstellungen",
                   "Kodi konnte die vorige Quelleneinstellung nicht "
                   "automatisch zurücksetzen. Keine Installation wird "
                   "ausgeführt. Details im Kodi-Log.")
         return
     if inventory.get("code") != "READY":
-        dialog.ok("XC Mate – Sicherheitsstopp",
+        dialog.ok("XCMate – Sicherheitsstopp",
                   "Die Kodi-Inventur ist nicht verfügbar. Keine Installation.")
         return
     if first:
         protected = protected_existing(inventory)
         if protected:
-            dialog.ok("XC Mate – Bestandsinstallation geschützt",
+            dialog.ok("XCMate – Bestandsinstallation geschützt",
                       "Gefundene bereits konfigurierte Add-ons: " +
                       ", ".join(protected) +
                       ". Vollautomatische Ersteinrichtung hier nicht gestartet. "
                       "Bestehende Daten bleiben unverändert.")
             return
         if not dialog.yesno(
-            "XC Mate – Vollautomatische Einrichtung 0.5.10",
+            "XCMate – Vollautomatische Einrichtung 0.5.10",
             "Gesamte Kodi-Ersteinrichtung jetzt starten? Alle geprüften "
             "Repositories, 43 Komponenten und Abhängigkeiten werden "
             "nacheinander ohne zusätzliche Wizard-Abfragen installiert. "
@@ -145,14 +166,14 @@ def run():
         state = new_state()
         _persist(profile, state)
     elif state["stopped"]:
-        if not dialog.yesno("XC Mate Setup", "Bisher geprüfte Komponenten "
+        if not dialog.yesno("XCMate Media Center Setup", "Bisher geprüfte Komponenten "
                             "behalten und die restliche Einrichtung automatisch "
                             "fortsetzen? Die Hash-Schutzprüfungen bleiben aktiv; "
                             "Kodi-Systemfreigaben können separat erscheinen."):
             return
         if state["pending"]:
             pending = state["pending"]
-            if not dialog.yesno("XC Mate – unvollständiger Schritt",
+            if not dialog.yesno("XCMate – unvollständiger Schritt",
                                 "Kodi hat {} nicht als installiert bestätigt. "
                                 "Nur nach Abbruch der vorherigen Installation "
                                 "erneut anfordern?".format(pending)):
@@ -168,7 +189,7 @@ def run():
     window.setProperty("GS_MEDIA_050_RUNNING", "1")
     window.clearProperty("GS_MEDIA_050_CANCEL")
     progress = xbmcgui.DialogProgressBG()
-    progress.create("XC Mate Setup 0.5.10", "Systemprüfung")
+    progress.create("XCMate Media Center Setup – v0.5.11 – Kodi 21.3 Omega", "Systemprüfung")
     monitor = xbmc.Monitor()
     reason = ""
     try:
@@ -277,7 +298,7 @@ def run():
                 state = _persist(profile, advance_stage(state, "apps"))
                 continue
             if code == "STAGE_SKIN":
-                progress.update(96, "XC Mate – BINGIE",
+                progress.update(96, "XCMate – BINGIE",
                                 "Prüfe originalen Skin und sichere XML-Dateien")
                 # The one-time user approval explicitly covers this
                 # hash-verified, rollback-capable first-install skin patch.
@@ -289,19 +310,19 @@ def run():
                 state = _persist(profile, advance_stage(state, "skin"))
                 continue
             if code == "STAGE_PLAYER":
-                progress.update(97, "XC Mate – TMDB",
+                progress.update(97, "XCMate – TMDB",
                                 "Prüfe xVAULT-Player für Filme und Serien")
                 # Non-destructive TMDB player configuration is covered by
                 # the single start confirmation. No separate per-step dialog.
                 code_ = _apply_tmdb_player()
                 if code_ in ("TMDB_PLAYER_EXISTING_DEFAULTS_PRESERVED",
                               "TMDB_PLAYER_EXISTING_PLAYER_PRESERVED"):
-                    # Existing user configuration is not a failed install.
-                    # Continue without lying about a successful xVAULT setup.
-                    preserved = dict(state)
-                    preserved["last_error"] = code_
-                    state = _persist(profile, advance_stage(preserved, "player"))
-                    continue
+                    # xVAULT is mandatory, not an optional preference.
+                    # Preserve foreign user defaults, fail closed and allow
+                    # an explicit remedial approval on a later run.
+                    reason = "TMDB_XVAULT_MANDATORY_UNMET:" + code_
+                    state = _persist(profile, stop(state, reason))
+                    break
                 if code_ != "OK":
                     reason = code_
                     state = _persist(profile, stop(state, reason))
@@ -309,8 +330,22 @@ def run():
                 state = _persist(profile, advance_stage(state, "player"))
                 continue
             if code == "STAGE_CHECK":
-                progress.update(98, "XC Mate – Abschlussprüfung",
-                                "Quellen und Android-Gerätetest erforderlich")
+                # Do not mark setup as complete just because Kodi reported
+                # 43 installed/verified addon IDs.
+                player_result = _apply_tmdb_player()
+                if player_result != "OK":
+                    reason = "TMDB_XVAULT_MANDATORY_UNMET:" + player_result
+                    state = _persist(profile, stop(state, reason))
+                    break
+                progress.update(98, "XCMate – BINGIE MOD aktivieren",
+                                "Kodi kann das Beibehalten des Skins bestätigen lassen")
+                skin_result = _activate_bingie_runtime(inventory, monitor)
+                if skin_result not in ("ACTIVE_AND_VERIFIED", "ALREADY_ACTIVE"):
+                    reason = "BINGIE_NOT_ACTIVE:" + skin_result
+                    state = _persist(profile, stop(state, reason))
+                    break
+                progress.update(99, "XCMate – Abschlussprüfung",
+                                "43 Pakete, xVAULT und aktiver BINGIE geprüft")
                 reason = "RELEASE_SOURCE_AND_ANDROID_GATES_PENDING"
                 break
             reason = "UNEXPECTED_STEP:" + code
@@ -338,21 +373,15 @@ def run():
 
     done, total = count_done(snapshot())
     if reason == "RELEASE_SOURCE_AND_ANDROID_GATES_PENDING":
-        if state.get("last_error", "").startswith("TMDB_PLAYER_EXISTING_"):
-            dialog.ok("XC Mate – Installation mit Hinweis",
-                      "{} von {} Komponenten bestätigt. BINGIE eingerichtet. "
-                      "Bestehender TMDB-Standardplayer wurde geschützt und "
-                      "nicht geändert: {}. Kein weiterer Download nötig; "
-                      "TMDB-Player bei Bedarf später manuell wählen."
-                      .format(done, total, state["last_error"]))
-        else:
-            dialog.ok("XC Mate – Einrichtung abgeschlossen",
-                      "{} von {} Komponenten bestätigt. BINGIE und geprüfter "
-                      "TMDB-Player eingerichtet. Die Android-Endabnahme "
-                      "erfolgt am Gerät."
-                      .format(done, total))
+        dialog.ok("XCMate Media Center Setup – Basiskonfiguration bestätigt",
+                  "{} von {} Komponenten bestätigt. xVAULT ist im TMDB Helper "
+                  "als Film- UND Serienplayer verifiziert, BINGIE MOD ist "
+                  "der aktive Kodi-Skin. Die korrekte Anzeige von linker "
+                  "Navigation, Widgets und Live-TV-EPG muss auf dem Gerät "
+                  "noch geprüft werden; nicht mit vollständig abgenommen "
+                  "verwechseln.".format(done, total))
     elif reason.startswith("NATIVE_DEPENDENCY_UPGRADE_FAILED:"):
-        dialog.ok("XC Mate – Kodi Abhaengigkeitsinstallation blockiert",
+        dialog.ok("XCMate – Kodi Abhaengigkeitsinstallation blockiert",
                   reason + "\n\nDer BINGIE-kompatible Skin Shortcuts 2.1.0 "
                   "ist im XC Mate Test-Katalog. Kodi hat das native "
                   "Abhaengigkeits-Upgrade nicht abgeschlossen. "
@@ -360,7 +389,7 @@ def run():
                   "erhalten. Bitte Kodi-Log fuer genaue Ursache sichern. "
                   "Setup nicht wiederholt ohne neue Diagnose starten.")
     elif reason:
-        dialog.ok("XC Mate – sicher angehalten",
+        dialog.ok("XCMate – sicher angehalten",
                   "{} von {} Komponenten geprüft. Grund: {}. "
                   "Keine Daten gelöscht. Nach Korrektur wiederaufnehmen."
                   .format(done, total, reason))
