@@ -102,6 +102,20 @@ class AutoSetupTests(unittest.TestCase):
             self.assertEqual(s["code"], "SOURCE_BLOCKED")
             self.assertEqual(s["reason"], "ORIGIN_UNVERIFIED")
 
+    def test_stage_sequence_cannot_skip(self):
+        with patch.object(setup, "manifest", return_value=self.sample):
+            state = setup.new_state()
+            with self.assertRaises(ValueError):
+                setup.advance_stage(state, "skin")
+            state = setup.advance_stage(state, "apps")
+            self.assertEqual(state["stage"], "skin")
+            state = setup.advance_stage(state, "skin")
+            self.assertEqual(state["stage"], "player")
+            state = setup.advance_stage(state, "player")
+            self.assertEqual(state["stage"], "check")
+            with self.assertRaises(ValueError):
+                setup.advance_stage(state, "check")
+
     def test_no_secrets_in_state(self):
         state = setup.new_state()
         self.assertNotIn("token", state)
