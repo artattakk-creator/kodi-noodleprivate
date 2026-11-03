@@ -1,8 +1,10 @@
-"""Fresh-profile-only TMDbHelper default player setup using xVAULT source.
+"""Non-destructive, verified xVAULT → TMDbHelper default-player installer.
 
-Kodi import happens only within apply(). No credentials or private xVAULT
-state are ever copied. Existing player files and existing configured
-TMDB Helper preferences remain untouched without a separate migration plan.
+A user-supplied file named xvault_stable.json may pre-exist and differ from the
+official, validated source. Keep it untouched and install the approved player
+under a distinct XC Mate alias. Never overwrite an existing customised
+default player; such an installation is reported separately, not mislabelled
+as completed. All paths and source payloads remain validated.
 """
 import json
 from pathlib import Path
@@ -10,6 +12,9 @@ from setup_tmdb_player import PLAYER_FILE, MOVIE_PLAYER, EPISODE_PLAYER, verify_
 
 MOVIE_SETTING = "default_player_movies"
 EPISODE_SETTING = "default_player_episodes"
+ALT_PLAYER_FILE = "xcmate_xvault_verified.json"
+ALT_MOVIE_PLAYER = ALT_PLAYER_FILE + " play_movie"
+ALT_EPISODE_PLAYER = ALT_PLAYER_FILE + " play_episode"
 
 
 def validate_source(raw):
@@ -22,68 +27,102 @@ def validate_source(raw):
     return verify_source_json(doc)
 
 
+def _paths(xvault_addon_root, tmdb_addon_profile):
+    source_root = Path(xvault_addon_root).resolve()
+    dest_root = Path(tmdb_addon_profile).resolve()
+    if (source_root.name != "plugin.video.xvault" or
+            dest_root.name != "plugin.video.themoviedb.helper"):
+        return None
+    source = source_root / "resources" / "tmdbhelper" / "xvault.json"
+    target = dest_root / "players" / PLAYER_FILE
+    alternate = dest_root / "players" / ALT_PLAYER_FILE
+    if source.is_symlink() or target.is_symlink() or alternate.is_symlink():
+        return None
+    return source, target, alternate
+
+
+def _choice(target, alternate, raw):
+    """Never overwrite either player file; alias on primary name collision."""
+    if target.exists():
+        if not target.is_file():
+            return None
+        if target.read_bytes() != raw:
+            if alternate.exists() and (not alternate.is_file() or alternate.read_bytes() != raw):
+                return None
+            return alternate, ALT_MOVIE_PLAYER, ALT_EPISODE_PLAYER
+    return target, MOVIE_PLAYER, EPISODE_PLAYER
+
+
 def apply(xvault_addon_root, tmdb_addon_profile, tmdb_addon,
           fresh_profile=False, user_approved=False):
     if not fresh_profile or not user_approved:
         return "NOT_AUTHORIZED"
-    source_root = Path(xvault_addon_root).resolve()
-    dest_root = Path(tmdb_addon_profile).resolve()
-    if source_root.name != "plugin.video.xvault" or dest_root.name != "plugin.video.themoviedb.helper":
+    paths = _paths(xvault_addon_root, tmdb_addon_profile)
+    if paths is None:
         return "UNTRUSTED_ADDON_PATH"
-    source = source_root / "resources" / "tmdbhelper" / "xvault.json"
-    dest = dest_root / "players" / PLAYER_FILE
-    if source.is_symlink() or dest.is_symlink() or not source.is_file():
+    source, target, alternate = paths
+    if not source.is_file():
         return "PLAYER_SOURCE_MISSING"
-    raw = source.read_bytes()
-    if not validate_source(raw):
-        return "PLAYER_SOURCE_INVALID"
-    if dest.exists() and dest.read_bytes() != raw:
-        return "EXISTING_PLAYER_PRESERVED"
-    before = (
-        tmdb_addon.getSetting(MOVIE_SETTING),
-        tmdb_addon.getSetting(EPISODE_SETTING),
-    )
-    # Do not override non-empty current personal settings unless already
-    # equivalent to the original xVAULT values. This is important even when
-    # a caller claims a profile is fresh.
-    # The two setting IDs are not interchangeable. A swapped value is
-    # an existing custom choice, not authorization to overwrite it.
-    if (before[0] not in ("", MOVIE_PLAYER) or
-            before[1] not in ("", EPISODE_PLAYER)):
-        return "EXISTING_DEFAULTS_PRESERVED"
-    created = False
     try:
-        if not dest.exists():
-            dest.parent.mkdir(parents=True, exist_ok=True)
-            with dest.open("xb") as handle:
-                handle.write(raw)
-            created = True
-        tmdb_addon.setSetting(MOVIE_SETTING, MOVIE_PLAYER)
-        tmdb_addon.setSetting(EPISODE_SETTING, EPISODE_PLAYER)
-        if (tmdb_addon.getSetting(MOVIE_SETTING), tmdb_addon.getSetting(EPISODE_SETTING)) != (MOVIE_PLAYER, EPISODE_PLAYER):
-            raise ValueError("TMDB default settings not persisted")
-    except (OSError, ValueError, RuntimeError, AttributeError):
-        # Never leave a falsely successful half-configuration.
+        raw = source.read_bytes()
+        if not validate_source(raw):
+            return "PLAYER_SOURCE_INVALID"
+        selected = _choice(target, alternate, raw)
+        if selected is None:
+            return "EXISTING_PLAYER_PRESERVED"
+        dest, movie, episode = selected
+        before = (
+            tmdb_addon.getSetting(MOVIE_SETTING),
+            tmdb_addon.getSetting(EPISODE_SETTING),
+        )
+        if (before[0] not in ("", movie) or before[1] not in ("", episode)):
+            return "EXISTING_DEFAULTS_PRESERVED"
+        created = False
         try:
-            tmdb_addon.setSetting(MOVIE_SETTING, before[0])
-            tmdb_addon.setSetting(EPISODE_SETTING, before[1])
-        except (RuntimeError, AttributeError):
-            pass
-        if created:
-            dest.unlink(missing_ok=True)
+            if not dest.exists():
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                with dest.open("xb") as f:
+                    f.write(raw)
+                created = True
+            tmdb_addon.setSetting(MOVIE_SETTING, movie)
+            tmdb_addon.setSetting(EPISODE_SETTING, episode)
+            if (tmdb_addon.getSetting(MOVIE_SETTING), tmdb_addon.getSetting(EPISODE_SETTING)) != (movie, episode):
+                raise ValueError("Player defaults not persisted")
+        except (OSError, ValueError, RuntimeError, AttributeError):
+            try:
+                tmdb_addon.setSetting(MOVIE_SETTING, before[0])
+                tmdb_addon.setSetting(EPISODE_SETTING, before[1])
+            except (RuntimeError, AttributeError):
+                pass
+            if created:
+                dest.unlink(missing_ok=True)
+            return "PLAYER_APPLY_FAILED"
+        return "APPLIED"
+    except (OSError, RuntimeError, AttributeError, ValueError):
         return "PLAYER_APPLY_FAILED"
-    return "APPLIED"
 
 
 def verify(xvault_addon_root, tmdb_addon_profile, tmdb_addon):
-    src = Path(xvault_addon_root).resolve() / "resources" / "tmdbhelper" / "xvault.json"
-    dst = Path(tmdb_addon_profile).resolve() / "players" / PLAYER_FILE
+    paths = _paths(xvault_addon_root, tmdb_addon_profile)
+    if paths is None:
+        return False
+    src, target, alternate = paths
     try:
-        if not src.is_file() or not dst.is_file() or src.read_bytes() != dst.read_bytes():
+        if not src.is_file():
             return False
-        if not validate_source(dst.read_bytes()):
+        raw = src.read_bytes()
+        if not validate_source(raw):
             return False
-        return (tmdb_addon.getSetting(MOVIE_SETTING) == MOVIE_PLAYER and
-                tmdb_addon.getSetting(EPISODE_SETTING) == EPISODE_PLAYER)
-    except (OSError, RuntimeError, AttributeError):
+        actual = (
+            tmdb_addon.getSetting(MOVIE_SETTING),
+            tmdb_addon.getSetting(EPISODE_SETTING),
+        )
+        return any(
+            dst.is_file() and dst.read_bytes() == raw and actual == (movie, episode)
+            for dst, movie, episode in (
+                (target, MOVIE_PLAYER, EPISODE_PLAYER),
+                (alternate, ALT_MOVIE_PLAYER, ALT_EPISODE_PLAYER),
+            )
+        )
+    except (OSError, RuntimeError, AttributeError, ValueError):
         return False
