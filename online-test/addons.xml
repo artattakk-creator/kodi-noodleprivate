@@ -124,7 +124,7 @@
 		</assets>
 		<news>Kodi v19 Matrix + Python 3 compatibility</news>
 	</extension>
-</addon><addon id="script.gsmedia.setup" name="GS Media Setup – BINGIE 2.1.0 Hotfix" version="0.5.1" provider-name="GS Media">
+</addon><addon id="script.gsmedia.setup" name="GS Media Setup – BINGIE Quellenwechsel-Hotfix" version="0.5.2" provider-name="GS Media">
   <requires><import addon="xbmc.python" version="3.0.0" /></requires>
   <extension point="xbmc.python.script" library="default.py" />
   <extension point="xbmc.service" library="service.py" start="startup" />
@@ -137,7 +137,7 @@
     <platform>all</platform>
     <license>MIT (Wizard), GPL-2.0-only (bundled BINGIE source patch)</license>
   </extension>
-</addon><addon id="repository.gsmedia.pilot" name="GS Media Online-Test 1.8.4" version="1.8.4" provider-name="GS Media">
+</addon><addon id="repository.gsmedia.pilot" name="GS Media Online-Test 1.8.5" version="1.8.5" provider-name="GS Media">
   <extension point="xbmc.addon.repository">
     <dir>
       <info compressed="false">https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/addons.xml</info>
@@ -148,9 +148,9 @@
     
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="de_DE">GS Media Online-Test 1.8.4, nicht produktiv</summary>
+    <summary lang="de_DE">GS Media Online-Test 1.8.5, nicht produktiv</summary>
     <description lang="de_DE">Entwicklungs-Installer mit geprüfter BINGIE-Repository-Vorstufe; keine vollständige Geräteabnahme.</description>
-    <summary lang="en_GB">GS Media Online-Test 1.8.4, nicht produktiv</summary>
+    <summary lang="en_GB">GS Media Online-Test 1.8.5, nicht produktiv</summary>
     <description lang="en_GB">Entwicklungs-Installer mit geprüfter BINGIE-Repository-Vorstufe; keine vollständige Geräteabnahme.</description>
     <disclaimer lang="de_DE">Eigenstaendiges GS Media Repository. Externe Projekte sind nicht Teil des Lite-Katalogs und werden gegebenenfalls separat durch ihre Urheber gepflegt. Keine Verbindung mit Team Kodi.</disclaimer>
     <platform>all</platform>

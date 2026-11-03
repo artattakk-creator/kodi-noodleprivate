@@ -1,13 +1,13 @@
 {
   "channel": "GS_MEDIA_ONLINE_BETA_ONLY",
   "limitations": [
-    "Kodi official-origin add-ons may require explicit Versionen selection",
+    "One-time temporary official-origin exception requires user confirmation",
     "Full eleven-app one-click install not yet complete",
     "XCMate .70 EPG/storage/artwork bugs remain"
   ],
   "repository": {
     "id": "repository.gsmedia.pilot",
-    "version": "1.8.4"
+    "version": "1.8.5"
   },
   "skin_shortcuts": {
     "license": "GPL-2.0-only",
@@ -15,19 +15,19 @@
     "sha256": "865ee5ea5bf0accee27b82539caabce1c8a9fbb8f94b2900fe5ace4f82c80b23",
     "version": "2.1.0"
   },
-  "source_head": "a4ed664723f247ce5566b5d786791d736c1c0a65",
-  "source_run_id": 41597546159,
+  "source_head": "fea3e6147ef85a6421321df02e4ca54ee9e8c78e",
+  "source_run_id": 41599322956,
   "wizard": {
     "id": "script.gsmedia.setup",
-    "status": "BETA_ANDROID_INSTALL_NOT_VERIFIED",
-    "version": "0.5.1"
+    "status": "BETA_TEMPORARY_ORIGIN_CONSENT_ANDROID_NOT_VERIFIED",
+    "version": "0.5.2"
   },
   "zip_sha256": {
     "plugin.video.noodleprivate": "b9d0afe06d6fc956bc0191fd51f4646ae9f54c6272009e7a8819255de7460364",
     "plugin.video.xtreammate": "90b90042b02d8b0e27a7b7c014d993b1dfb6f7a0dae493bf6bf80b0f4eaee07f",
-    "repository.gsmedia.pilot": "7cbe8a35076e4524e89c844c7ece2f2da843384ab6b90d926d5d685b3215c8e8",
+    "repository.gsmedia.pilot": "206045509f0d91d3539201e7383a7e12db2875c59a1d8be8a5639a1059614948",
     "repository.titan.bingie.mod": "dba0a2e670e2d93158cb030ea52fe3e237bb19177e0a165d99c8f72a8492ef46",
-    "script.gsmedia.setup": "0dfa6d2b9f17b11a59eea35b9561eb48bbfeaafbeb66a8ca304deeead25f8942",
+    "script.gsmedia.setup": "d83b7e5b7d90c3881e0a9e1e6dcbea7aa7e32e92aea566e1f82447715b4ea9af",
     "script.skinshortcuts": "865ee5ea5bf0accee27b82539caabce1c8a9fbb8f94b2900fe5ace4f82c80b23"
   }
 }
