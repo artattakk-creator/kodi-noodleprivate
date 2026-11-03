@@ -192,7 +192,7 @@ def release(src):
             "repo_id": "repository.xvault", "version": "1.0.3",
             "original_source": "mojomedia1812/xVAULT",
             "authoritative_plugin_feed": "https://xvault.repowork.de/addons.xml",
-            "sha256": NEW["repository.xvault"][1],
+            "sha256": SAME["repository.xvault"][1],
             "android_test": "NOT_TESTED",
             "plugin_zip_mirrored": False
         },
