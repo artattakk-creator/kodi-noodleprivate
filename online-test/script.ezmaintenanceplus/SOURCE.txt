@@ -1,0 +1,1 @@
+Original EZ Maintenance+ source by aenema, peno, from https://github.com/peno64/script.ezmaintenanceplus commit 0e8a5bf26917f25ec79a67de1a896d440708c8e3. All 27 upstream source objects verified against pinned Git blob hashes, original addon.xml and MIT license statement preserved. No userdata or caches.
