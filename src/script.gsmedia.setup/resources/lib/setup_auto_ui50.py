@@ -9,7 +9,8 @@ from contextlib import nullcontext
 from pathlib import Path
 
 from setup_auto50 import (new_state, next_step, after_request, after_confirm,
-                          after_retry, stop, resume, rows, count_done, advance_stage)
+                          after_retry, stop, resume, rows, count_done, advance_stage,
+                          reconcile_restart)
 from setup_auto_store50 import load, save
 from setup_inventory import snapshot
 from setup_install_pilot import protected_existing, _version
@@ -161,7 +162,7 @@ def run():
                       "Bestehende Daten bleiben unverändert.")
             return
         if not dialog.yesno(
-            "XCMate – Vollautomatische Einrichtung 0.5.13",
+            "XCMate – Vollautomatische Einrichtung 0.5.14",
             "Gesamte Kodi-Ersteinrichtung jetzt starten? Alle geprüften "
             "Repositories, 43 Komponenten und Abhängigkeiten werden "
             "nacheinander ohne zusätzliche Wizard-Abfragen installiert. "
@@ -183,14 +184,10 @@ def run():
                             "fortsetzen? Die Hash-Schutzprüfungen bleiben aktiv; "
                             "Kodi-Systemfreigaben können separat erscheinen."):
             return
-        if state["pending"]:
-            pending = state["pending"]
-            if not dialog.yesno("XCMate – unvollständiger Schritt",
-                                "Kodi hat {} nicht als installiert bestätigt. "
-                                "Nur nach Abbruch der vorherigen Installation "
-                                "erneut anfordern?".format(pending)):
-                return
-            state = _persist(profile, after_retry(state, pending))
+        # Recheck fresh Kodi state before retrying any interrupted request.
+        # Already confirmed components are preserved; only failed markers
+        # are cleared after this explicit resume approval.
+        state = _persist(profile, reconcile_restart(state, inventory))
         state = _persist(profile, resume(state))
 
     if state.get("stage") == "done" and not state.get("stopped"):
@@ -206,7 +203,7 @@ def run():
     window.setProperty("GS_MEDIA_050_RUNNING", "1")
     window.clearProperty("GS_MEDIA_050_CANCEL")
     progress = xbmcgui.DialogProgressBG()
-    progress.create("XCMate Media Center Setup – v0.5.13 – Kodi 21.3 Omega", "Systemprüfung")
+    progress.create("XCMate Media Center Setup – v0.5.14 – Kodi 21.3 Omega", "Systemprüfung")
     monitor = xbmc.Monitor()
     reason = ""
     try:
@@ -225,6 +222,28 @@ def run():
             if code == "CONFIRM":
                 state = _persist(profile, after_confirm(state, inventory))
                 continue
+            if code == "ENABLE_ADDON":
+                ident = step["id"]
+                # This operation is consented to only on a fresh test device
+                # and only for an exact, version-compliant required component.
+                import json
+                rpc = json.loads(xbmc.executeJSONRPC(json.dumps({
+                    "jsonrpc": "2.0", "method": "Addons.SetAddonEnabled",
+                    "params": {"addonid": ident, "enabled": True}, "id": 1
+                })))
+                if rpc.get("error") or rpc.get("result") != "OK":
+                    reason = "ENABLE_NOT_CONFIRMED:" + ident
+                    state = _persist(profile, stop(state, reason))
+                    break
+                refreshed = snapshot()
+                minimum = next((row["minimum"] for row in rows()
+                                if row["id"] == ident), "")
+                from setup_auto50 import installed as verified
+                if not verified(refreshed, ident, minimum):
+                    reason = "ENABLE_NOT_CONFIRMED:" + ident
+                    state = _persist(profile, stop(state, reason))
+                    break
+                continue
             if code in ("INSTALL_REPOSITORY", "INSTALL_ADDON", "INSTALL_UPGRADE"):
                 ident = step["id"]
                 if not re.fullmatch(r"[A-Za-z0-9._-]{3,100}", ident):
@@ -236,19 +255,28 @@ def run():
                 # a fresh first-party parent addon whose required dependency
                 # is Skin Shortcuts >=2.1.0. Kodi's native dependency resolver
                 # then installs the newer version from the PARENT repository.
-                native_upgrade = (
+                native_shortcuts = (
                     code == "INSTALL_UPGRADE"
                     and ident == "script.skinshortcuts"
                     and step.get("source") == "repository.gsmedia.pilot"
                     and _version(step.get("actual", "")) < (2, 1, 0)
                     and step.get("minimum") == "2.1.0"
                 )
-                if code == "INSTALL_UPGRADE" and not native_upgrade:
-                    reason = "UNSUPPORTED_UPGRADE:" + ident
-                    state = _persist(profile, stop(state, reason))
-                    break
-
-                install_id = "script.gsmedia.skinshortcuts.bridge" if native_upgrade else ident
+                native_upgrade = code == "INSTALL_UPGRADE"
+                if native_upgrade:
+                    install_id = ("script.gsmedia.skinshortcuts.bridge"
+                                  if native_shortcuts else step.get("bridge", ""))
+                    if (not install_id or
+                            step.get("source") not in (
+                                "repository.gsmedia.pilot",
+                                "repository.titan.bingie.mod",
+                                "repository.xbmc.org",
+                                "repository.slyguy", "repository.xvault")):
+                        reason = "UPGRADE_SOURCE_BLOCKED:" + ident
+                        state = _persist(profile, stop(state, reason))
+                        break
+                else:
+                    install_id = ident
                 # One-time setup consent (initial or resumed) also covers
                 # the allowlisted, temporary Kodi dependency source scope.
                 # Kodi's own native system prompts cannot be suppressed.
@@ -262,10 +290,19 @@ def run():
                 # bridge dependency are necessary. The scope restores the
                 # original Kodi update settings in success, error, and cancel.
                 with scope:
+                    if native_upgrade:
+                        # The bridge's source is this test repository, but Kodi
+                        # resolves its pinned original dependency natively.
+                        # Refresh repository metadata before asking the resolver.
+                        xbmc.executebuiltin("UpdateAddonRepos")
+                        if monitor.waitForAbort(4):
+                            reason = "CANCELLED_OR_SHUTDOWN"
+                            state = _persist(profile, stop(state, reason))
+                            break
                     xbmc.executebuiltin("InstallAddon(" + install_id + ")")
 
                     # Kodi owns native downloads; these seconds are a wait.
-                    while wait < (100 if native_upgrade else 240):
+                    while wait < (150 if native_upgrade else 240):
                         if monitor.waitForAbort(2):
                             break
                         if window.getProperty("GS_MEDIA_050_CANCEL") == "1":
@@ -289,8 +326,9 @@ def run():
                 if next_step(state, final_inventory)["code"] != "CONFIRM":
                     actual = final_inventory.get("addons", {}).get(ident, {}).get("version", "")
                     if native_upgrade:
-                        reason = "NATIVE_DEPENDENCY_UPGRADE_FAILED:{} ist={} soll=2.1.0".format(
-                            ident, actual or "nicht ermittelt")
+                        reason = "NATIVE_DEPENDENCY_UPGRADE_NOT_CONFIRMED:{} ist={} soll={}".format(
+                            ident, actual or "nicht ermittelt",
+                            step.get("minimum", "unbekannt"))
                     else:
                         reason = "KODI_INSTALL_NOT_CONFIRMED:" + ident
                     state = _persist(profile, stop(state, reason[:200]))
@@ -308,7 +346,8 @@ def run():
                 state = _persist(profile, stop(state, reason[:200]))
                 break
             if code in ("SOURCE_BLOCKED", "RETRY_REQUIRED", "INVENTORY_UNAVAILABLE"):
-                reason = code + ":" + step.get("id", "")
+                reason = code + ":" + step.get("id", "") + (
+                    ":" + step.get("reason", "") if step.get("reason") else "")
                 state = _persist(profile, stop(state, reason[:200]))
                 break
             if code == "APPS_PRESENT":

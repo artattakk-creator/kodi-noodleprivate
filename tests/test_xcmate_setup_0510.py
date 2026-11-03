@@ -104,7 +104,7 @@ class PlayerPreservationTests(unittest.TestCase):
 class OneClickContractTests(unittest.TestCase):
     def test_no_extra_wizard_confirmations_between_stages(self):
         ui = (LIB/"setup_auto_ui50.py").read_text(encoding="utf-8")
-        self.assertEqual(ui.count("dialog.yesno("), 3, "only start, resume and retry-on-failed-install")
+        self.assertEqual(ui.count("dialog.yesno("), 2, "only initial consent and one explicit resume; no redundant per-package retry prompt")
         skin = ui[ui.index('if code == "STAGE_SKIN":'):ui.index('if code == "STAGE_PLAYER":')]
         self.assertNotIn("dialog.yesno", skin)
         player_stage = ui[ui.index('if code == "STAGE_PLAYER":'):ui.index('if code == "STAGE_CHECK":')]
@@ -116,12 +116,12 @@ class OneClickContractTests(unittest.TestCase):
     def test_existing_update_ids_retained_while_visible_brand_changes(self):
         addon = ET.parse(ROOT/"src/script.gsmedia.setup/addon.xml").getroot()
         self.assertEqual(addon.get("id"), "script.gsmedia.setup")
-        self.assertEqual(addon.get("version"), "0.5.13")
-        self.assertEqual(addon.get("name"), "XCMate Media Center Setup – v0.5.13 – Kodi 21.3 Omega")
+        self.assertEqual(addon.get("version"), "0.5.14")
+        self.assertEqual(addon.get("name"), "XCMate Media Center Setup – v0.5.14 – Kodi 21.3 Omega")
         self.assertEqual(addon.get("provider-name"), "XCMate")
         builder=(ROOT/"tools/build_gsmedia_pilot050.py").read_text(encoding="utf-8")
         self.assertIn('PILOT_ID = "repository.gsmedia.pilot"', builder)
-        self.assertIn('PILOT_VERSION = "1.9.6"', builder)
+        self.assertIn('PILOT_VERSION = "1.9.7"', builder)
         self.assertIn("xcMate Repository", builder)
 
 
