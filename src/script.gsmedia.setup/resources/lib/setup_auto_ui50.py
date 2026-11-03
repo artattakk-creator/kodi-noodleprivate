@@ -13,8 +13,21 @@ from setup_auto50 import (new_state, next_step, after_request, after_confirm,
                           reconcile_restart)
 from setup_auto_store50 import load, save
 from setup_inventory import snapshot
+from setup_catalog_0516 import probe as probe_kodi_catalog
 from setup_install_pilot import protected_existing, _version
 from setup_origin_guard52 import TemporaryOfficialAddonSource, restore as restore_origin_policy
+
+
+
+def _diag(event, ident, version=""):
+    """Write only allowlisted IDs and short versions, never private Kodi data."""
+    import xbmc
+    if not re.fullmatch(r"[A-Za-z0-9._-]{3,100}", str(ident)):
+        return
+    v = str(version)[:64]
+    v = v if re.fullmatch(r"[A-Za-z0-9._+-]{0,64}", v) else "unknown"
+    xbmc.log("[XC Mate Setup] {} addon={} version={}".format(event, ident, v),
+             xbmc.LOGINFO)
 
 
 def _context():
@@ -277,6 +290,46 @@ def run():
                         break
                 else:
                     install_id = ident
+                # Kodi 21 GetAddons(installed=true) confirms finished installs;
+                # its distinct GetAddons(installed=false) checks the async repo
+                # catalog. UpdateAddonRepos queues a refresh; it does not wait
+                # for completion. Do not call InstallAddon until visible.
+                from setup_auto50 import installed as confirmed
+                _diag("CATALOG_REFRESH_REQUESTED", install_id)
+                visible = {"code": "NOT_LISTED"}
+                already_complete = False
+                for catalog_attempt in range(6):
+                    if monitor.abortRequested() or window.getProperty("GS_MEDIA_050_CANCEL") == "1":
+                        reason = "CANCELLED_OR_SHUTDOWN"
+                        break
+                    if catalog_attempt in (0, 3):
+                        xbmc.executebuiltin("UpdateAddonRepos")
+                    if monitor.waitForAbort(5):
+                        reason = "CANCELLED_OR_SHUTDOWN"
+                        break
+                    fresh = snapshot()
+                    required = step.get("minimum", "")
+                    if confirmed(fresh, ident, required):
+                        _diag("INSTALLED_WHILE_WAITING_FOR_CATALOG", ident)
+                        already_complete = True
+                        break
+                    visible = probe_kodi_catalog(xbmc.executeJSONRPC, install_id)
+                    if visible["code"] == "AVAILABLE":
+                        _diag("CATALOG_PACKAGE_VISIBLE", install_id,
+                              visible.get("version", ""))
+                        break
+                    _diag("CATALOG_NOT_VISIBLE_TRY_" + str(catalog_attempt + 1),
+                          install_id)
+                if reason:
+                    state = _persist(profile, stop(state, reason))
+                    break
+                if already_complete:
+                    continue
+                if visible["code"] != "AVAILABLE":
+                    reason = "KODI_CATALOG_NOT_READY:" + install_id
+                    _diag("CATALOG_STOP_NO_INSTALL_REQUEST", install_id)
+                    state = _persist(profile, stop(state, reason[:200]))
+                    break
                 # One-time setup consent (initial or resumed) also covers
                 # the allowlisted, temporary Kodi dependency source scope.
                 # Kodi's own native system prompts cannot be suppressed.
@@ -299,6 +352,7 @@ def run():
                             reason = "CANCELLED_OR_SHUTDOWN"
                             state = _persist(profile, stop(state, reason))
                             break
+                    _diag("KODI_INSTALL_REQUESTED", install_id)
                     xbmc.executebuiltin("InstallAddon(" + install_id + ")")
 
                     # Kodi owns native downloads; these seconds are a wait.
@@ -331,9 +385,11 @@ def run():
                             step.get("minimum", "unbekannt"))
                     else:
                         reason = "KODI_INSTALL_NOT_CONFIRMED:" + ident
+                    _diag("KODI_INSTALL_NOT_CONFIRMED", ident, actual)
                     state = _persist(profile, stop(state, reason[:200]))
                     break
 
+                _diag("KODI_INSTALL_CONFIRMED", ident)
                 state = _persist(profile, after_confirm(state, final_inventory))
                 if code == "INSTALL_REPOSITORY":
                     xbmc.executebuiltin("UpdateAddonRepos")
