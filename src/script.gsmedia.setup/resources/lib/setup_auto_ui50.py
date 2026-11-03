@@ -64,11 +64,11 @@ def _apply_skin(profile, inventory):
     shortcut_dir = xbmcvfs.translatePath("special://profile/addon_data/script.skinshortcuts/")
     if inspect_new_profile(shortcut_dir, inventory) not in ("READY", "ALREADY_APPLIED"):
         return "SKIN_SHORTCUTS_CONFLICT"
-    backup_root = os.path.join(profile, "skinpatch-050")
+    backup_root = os.path.join(profile, "skinpatch-060")
     patched = apply_skin(package_root, skin_root, backup_root, "2.2.3",
                          user_approved=True)
     if patched.get("code") not in ("APPLIED_AND_VERIFIED", "ALREADY_PATCHED"):
-        return "SKIN_PATCH_FAILED"
+        return "SKIN_PATCH_FAILED:" + patched.get("code", "UNKNOWN")
     layout = apply_new_profile(shortcut_dir, inventory, user_approved=True)
     if layout not in ("APPLIED", "ALREADY_APPLIED"):
         return "SKIN_LAYOUT_FAILED"
