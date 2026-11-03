@@ -99,25 +99,34 @@ def upgrade_bridge_for(ident, source, minimum):
 
 
 def reconcile_restart(state, inventory):
-    """On consented resume keep confirmed installs, clear only stale attempts.
+    """On consented resume trust fresh Kodi inventory, not stale completion flags.
 
-    When an asynchronous Kodi install completed after a stop, verify and
-    preserve that success instead of issuing the request twice.
+    A previously confirmed addon may have been disabled, removed, or partially
+    replaced by Kodi dependency resolution. Never keep its old attempted flag
+    as evidence of still having a valid installation. This fixes the exact
+    RETRY_REQUIRED:script.skin.helper.backgrounds at 14/43 on Android.
     """
     validate(state)
     if not state["stopped"] or state["stage"] != "apps":
         return state
+    if not isinstance(inventory, dict) or inventory.get("code") != "READY":
+        raise ValueError("No trustworthy Kodi inventory to resume")
+    minimums = {row["id"]: row["minimum"] for row in rows()}
     result = dict(state)
-    pending = state["pending"]
+    valid = set()
+    for ident in set(result["attempted"]) | set(result["completed"]):
+        if installed(inventory, ident, minimums.get(ident, "")):
+            valid.add(ident)
+    pending = result["pending"]
     if pending:
-        minimum = next((r["minimum"] for r in rows() if r["id"] == pending), "")
-        if installed(inventory, pending, minimum):
-            result["pending"] = ""
-            result["completed"] = sorted(set(result["completed"]) | {pending})
-        else:
-            result["pending"] = ""
-    result["attempted"] = sorted(set(result["attempted"]) & set(result["completed"]))
+        if installed(inventory, pending, minimums.get(pending, "")):
+            valid.add(pending)
+        result["pending"] = ""
+    result["attempted"] = sorted(valid)
+    result["completed"] = sorted(valid)
     return validate(result)
+
+
 
 def planned_ids():
     return frozenset(row["id"] for row in rows()) | REPO_ALLOWLIST
