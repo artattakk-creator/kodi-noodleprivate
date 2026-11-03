@@ -5,7 +5,6 @@ Kodi itself handles package transfers and approval dialogs.
 """
 import os
 import re
-from contextlib import nullcontext
 from pathlib import Path
 
 from setup_auto50 import (new_state, next_step, after_request, after_confirm,
@@ -13,7 +12,7 @@ from setup_auto50 import (new_state, next_step, after_request, after_confirm,
 from setup_auto_store50 import load, save
 from setup_inventory import snapshot
 from setup_install_pilot import protected_existing, _version
-from setup_origin_guard52 import TemporaryOfficialAddonSource, restore as restore_origin_policy
+from setup_origin_guard52 import restore as restore_origin_policy
 
 
 def _context():
@@ -128,7 +127,7 @@ def run():
                       "Bestehende Daten bleiben unverändert.")
             return
         if not dialog.yesno(
-            "GS Media Setup 0.5.2 – Test",
+            "GS Media Setup 0.5.3 – Test",
             "Alle 11 Apps und ihre Abhängigkeiten aus geprüften Repositories "
             "mit Kodi installieren? Bereits vorhandene Add-ons werden nicht "
             "überschrieben. Fremdquellen und ungeprüfte Pakete bleiben gesperrt. "
@@ -159,7 +158,7 @@ def run():
     window.setProperty("GS_MEDIA_050_RUNNING", "1")
     window.clearProperty("GS_MEDIA_050_CANCEL")
     progress = xbmcgui.DialogProgressBG()
-    progress.create("GS Media Setup 0.5.2", "Systemprüfung")
+    progress.create("GS Media Setup 0.5.3", "Systemprüfung")
     monitor = xbmc.Monitor()
     reason = ""
     try:
@@ -182,80 +181,79 @@ def run():
                 ident = step["id"]
                 if not re.fullmatch(r"[A-Za-z0-9._-]{3,100}", ident):
                     raise ValueError("Invalid add-on ID")
-                # Kodi Omega pins official add-ons to the official source.
-                # For this ONE known 2.0.3 -> 2.1.0 upgrade, ask for explicit
-                # permission to relax its global origin setting TEMPORARILY.
-                source_switch = (code == "INSTALL_UPGRADE" and
-                                 ident == "script.skinshortcuts" and
-                                 step.get("source") == "repository.gsmedia.pilot" and
-                                 _version(step.get("actual", "")) < (2, 1, 0) and
-                                 step.get("minimum") == "2.1.0")
-                if code == "INSTALL_UPGRADE" and not source_switch:
-                    reason = "UNAPPROVED_ADDON_ORIGIN_CHANGE:" + ident
-                    state = _persist(profile, stop(state, reason[:200]))
+
+                # Kodi Omega InstallAddon(id) is INSTALL-ONLY: if an add-on is
+                # already installed, InstallModal returns false without doing
+                # an upgrade. For this exact verified BINGIE requirement use
+                # a fresh first-party parent addon whose required dependency
+                # is Skin Shortcuts >=2.1.0. Kodi's native dependency resolver
+                # then installs the newer version from the PARENT repository.
+                native_upgrade = (
+                    code == "INSTALL_UPGRADE"
+                    and ident == "script.skinshortcuts"
+                    and step.get("source") == "repository.gsmedia.pilot"
+                    and _version(step.get("actual", "")) < (2, 1, 0)
+                    and step.get("minimum") == "2.1.0"
+                )
+                if code == "INSTALL_UPGRADE" and not native_upgrade:
+                    reason = "UNSUPPORTED_UPGRADE:" + ident
+                    state = _persist(profile, stop(state, reason))
                     break
-                if source_switch:
+
+                install_id = "script.gsmedia.skinshortcuts.bridge" if native_upgrade else ident
+                if native_upgrade:
                     if not dialog.yesno(
-                        "GS Media – einmalige Kodi-Freigabe",
-                        "Kodi schützt die offizielle Skin Shortcuts 2.0.3. "
-                        "Darf GS Media für das geprüfte 2.1.0-Paket "
-                        "vorübergehend 'Alle Repositories' erlauben und "
-                        "automatische Updates pausieren? Beide bisherigen "
-                        "Kodi-Einstellungen werden nach dem Versuch "
-                        "wiederhergestellt."
+                        "GS Media – Skin Shortcuts automatisch aktualisieren",
+                        "Kodi hat Skin Shortcuts 2.0.3 bereits installiert. "
+                        "GS Media wird jetzt den originalen Skin Shortcuts "
+                        "2.1.0 als Pflichtabhaengigkeit eines kleinen "
+                        "GS-Media-Testpakets ueber Kodi installieren. "
+                        "Die globale Kodi-Sicherheitsregel bleibt unveraendert. "
+                        "Fortfahren?"
                     ):
-                        reason = "OFFICIAL_ORIGIN_CONSENT_DENIED"
+                        reason = "NATIVE_UPGRADE_NOT_APPROVED"
                         state = _persist(profile, stop(state, reason))
                         break
-                scope = (TemporaryOfficialAddonSource(
-                    profile, xbmc.executeJSONRPC) if source_switch else nullcontext())
+
                 state = _persist(profile, after_request(state, ident))
                 wait = 0
-                version_conflict = ""
-                with scope:
-                    if source_switch:
-                        xbmc.executebuiltin("UpdateAddonRepos")
-                        if monitor.waitForAbort(3):
-                            reason = "CANCELLED_OR_SHUTDOWN"
-                            break
-                    xbmc.executebuiltin("InstallAddon(" + ident + ")")
-                    # Kodi owns the actual downloads; this is elapsed time.
-                    while wait < 240:
-                        if monitor.waitForAbort(2):
-                            break
-                        if window.getProperty("GS_MEDIA_050_CANCEL") == "1":
-                            break
-                        wait += 2
-                        inv = snapshot()
-                        if next_step(state, inv)["code"] == "CONFIRM":
-                            break
-                        present = inv.get("addons", {}).get(ident, {}) if inv.get("code") == "READY" else {}
-                        required = step.get("minimum", "")
-                        actual = present.get("version", "") if isinstance(present, dict) else ""
-                        if (wait >= 30 and actual and required and
-                                _version(actual) < _version(required)):
-                            version_conflict = (
-                                "VERSION_BELOW_REQUIRED: {} installiert={} benoetigt={}"
-                                .format(ident, actual, required))
-                            break
-                        progress.update(
-                            percent,
-                            "GS Media: {} / {} Komponenten".format(done, total),
-                            "{} – Kodi-Installationsprüfung ({} s)".format(ident, wait))
-                # Scope exit restores BOTH Kodi-wide settings before continuing.
-                if monitor.abortRequested() or window.getProperty("GS_MEDIA_050_CANCEL") == "1" or reason == "CANCELLED_OR_SHUTDOWN":
+                xbmc.executebuiltin("InstallAddon(" + install_id + ")")
+
+                # InstallAddon displays a native modal Kodi prompt, and Kodi
+                # owns the actual ZIP download and dependency resolution.
+                # Never claim elapsed time is a download percentage.
+                while wait < (100 if native_upgrade else 240):
+                    if monitor.waitForAbort(2):
+                        break
+                    if window.getProperty("GS_MEDIA_050_CANCEL") == "1":
+                        break
+                    wait += 2
+                    inv = snapshot()
+                    if next_step(state, inv)["code"] == "CONFIRM":
+                        break
+                    progress.update(
+                        percent,
+                        "GS Media: {} / {} Komponenten".format(done, total),
+                        "{} – Kodi-Paketpruefung ({} s)".format(ident, wait))
+
+                if (monitor.abortRequested() or
+                        window.getProperty("GS_MEDIA_050_CANCEL") == "1"):
                     reason = "CANCELLED_OR_SHUTDOWN"
                     state = _persist(profile, stop(state, reason))
                     break
-                if version_conflict:
-                    reason = version_conflict
+
+                final_inventory = snapshot()
+                if next_step(state, final_inventory)["code"] != "CONFIRM":
+                    actual = final_inventory.get("addons", {}).get(ident, {}).get("version", "")
+                    if native_upgrade:
+                        reason = "NATIVE_DEPENDENCY_UPGRADE_FAILED:{} ist={} soll=2.1.0".format(
+                            ident, actual or "nicht ermittelt")
+                    else:
+                        reason = "KODI_INSTALL_NOT_CONFIRMED:" + ident
                     state = _persist(profile, stop(state, reason[:200]))
                     break
-                if next_step(state, snapshot())["code"] != "CONFIRM":
-                    reason = "KODI_INSTALL_NOT_CONFIRMED:" + ident
-                    state = _persist(profile, stop(state, reason[:200]))
-                    break
-                state = _persist(profile, after_confirm(state, snapshot()))
+
+                state = _persist(profile, after_confirm(state, final_inventory))
                 if code == "INSTALL_REPOSITORY":
                     xbmc.executebuiltin("UpdateAddonRepos")
                     monitor.waitForAbort(3)
@@ -343,15 +341,14 @@ def run():
                   "{} von {} Komponenten bestätigt. BINGIE und TMDB-Player "
                   "eingerichtet; Quellnachweis und Android-Abnahme bleiben offen."
                   .format(done, total))
-    elif reason.startswith("VERSION_BELOW_REQUIRED:"):
-        dialog.ok("GS Media – Versionskonflikt",
-                  reason + "\n\nKodi verwendet noch eine zu alte Version. "
-                  "Skin Shortcuts 2.1.0 ist im GS Media Test-Katalog hinterlegt. "
-                  "Kodi kann Add-ons aus dem offiziellen Repository an ihre "
-                  "bisherige Quelle binden. In diesem Fall bitte unter "
-                  "Skin Shortcuts → Informationen → Versionen einmalig "
-                  "2.1.0 aus GS Media Online-Test wählen. "
-                  "Keine Daten löschen; danach Setup fortsetzen.")
+    elif reason.startswith("NATIVE_DEPENDENCY_UPGRADE_FAILED:"):
+        dialog.ok("GS Media – Kodi Abhaengigkeitsinstallation blockiert",
+                  reason + "\n\nDer BINGIE-kompatible Skin Shortcuts 2.1.0 "
+                  "ist im GS Media Test-Katalog. Kodi hat das native "
+                  "Abhaengigkeits-Upgrade nicht abgeschlossen. "
+                  "Keine Daten geloescht, alle bisherigen Schritte bleiben "
+                  "erhalten. Bitte Kodi-Log fuer genaue Ursache sichern. "
+                  "Setup nicht wiederholt ohne neue Diagnose starten.")
     elif reason:
         dialog.ok("GS Media – sicher angehalten",
                   "{} von {} Komponenten geprüft. Grund: {}. "
