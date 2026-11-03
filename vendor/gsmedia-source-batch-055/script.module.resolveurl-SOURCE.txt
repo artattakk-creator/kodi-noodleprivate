@@ -1,0 +1,6 @@
+Original source and ZIP from https://github.com/Gujal00/smrzips
+Original commit: 535d4dcc42145e2bfeaa3e0c6d5ec3d91a449c94
+Original path: zips/script.module.resolveurl/script.module.resolveurl-5.1.212.zip
+Original Git Blob SHA1: 307decca19aed7be9f51e501d736f1cd87443a07
+Original repository LICENSE: GNU GPL version 2
+Unmodified original package from developer gujal. GS Media claims no authorship.

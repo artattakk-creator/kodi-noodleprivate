@@ -1,0 +1,8 @@
+Original plugin.video.cumination 1.1.206 GPL-2.0 package.
+Maintainer and author: Cumination; upstream repository: https://github.com/dobbelina/repository.dobbelina
+Pinned upstream commit: d3dc0c6643bb4ed07a47fdb3c87a84f8c95bffde
+Pinned original Git blob SHA1: 1df112d1129193b53d07496d307ad0e81eafb259
+Original ZIP: plugin.video.cumination/plugin.video.cumination-1.1.206.zip
+Original source addon.xml and LICENSE.txt: https://github.com/dobbelina/repository.dobbelina/tree/d3dc0c6643bb4ed07a47fdb3c87a84f8c95bffde/plugin.video.cumination
+Exact original ZIP copied unchanged from pinned upstream URL by CI, GPL v2, author and notices preserved.
+No GS Media authorship claimed. Test catalog only; source changes none.

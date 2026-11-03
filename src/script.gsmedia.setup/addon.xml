@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.gsmedia.setup" name="GS Media Setup – Kodi Jurialmunkey Quellen-Hotfix" version="0.5.4" provider-name="GS Media">
+<addon id="script.gsmedia.setup" name="GS Media Setup – GS Media ResolveURL Quellen-Batch" version="0.5.5" provider-name="GS Media">
   <requires><import addon="xbmc.python" version="3.0.0"/></requires>
   <extension point="xbmc.python.script" library="default.py"/>
   <extension point="xbmc.service" library="service.py" start="startup"/>

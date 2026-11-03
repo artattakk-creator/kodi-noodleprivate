@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a test-only GS Media 1.8.7 pilot catalog with Apache BINGIE bootstrap.
+"""Build a test-only GS Media 1.8.8 pilot catalog with Apache BINGIE bootstrap.
 
 Never publishes to main. The original BINGIE ZIP is retained byte-for-byte.
 """
@@ -8,6 +8,7 @@ import hashlib
 import shutil
 import sys
 import zipfile
+import urllib.request
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,6 +16,16 @@ VENDOR = ROOT / "vendor/bingie-repository/repository.titan.bingie.mod-2.0.1.zip"
 SHORTCUTS_VENDOR = ROOT / "vendor/bingie-skinshortcuts-210/script.skinshortcuts-2.1.0.zip"
 JURIAL_VENDOR = ROOT / "vendor/jurialmunkey-common-0235/script.module.jurialmunkey-0.2.35.zip"
 JURIAL_BLOB_SHA1 = "98556ddadf9ea88db9809728663ddc08fe9a0990"
+RESOLVE_VENDOR = ROOT / "vendor/gsmedia-source-batch-055/script.module.resolveurl-5.1.212.zip"
+RESOLVE_XXX_VENDOR = ROOT / "vendor/gsmedia-source-batch-055/script.module.resolveurl.xxx-2.1.44.zip"
+RESOLVE_BLOB = "307decca19aed7be9f51e501d736f1cd87443a07"
+RESOLVE_XXX_BLOB = "2081ed1145afded501c99bb515c5c9bf91c96d77"
+CUMINATION_BLOB = "1df112d1129193b53d07496d307ad0e81eafb259"
+CUMINATION_REV = "d3dc0c6643bb4ed07a47fdb3c87a84f8c95bffde"
+CUMINATION_URL = ("https://raw.githubusercontent.com/dobbelina/"
+                  "repository.dobbelina/" + CUMINATION_REV
+                  + "/plugin.video.cumination/plugin.video.cumination-1.1.206.zip")
+CUMINATION_SOURCE = ROOT / "vendor/gsmedia-source-batch-055/plugin.video.cumination-SOURCE.txt"
 SHORTCUTS_BLOB_SHA1 = "abb2627aef68e15c40e4a33144b1d4cc7bf4d3e6"
 SHORTCUTS_MD5 = "69d497c8884da6b169b6f9727d29910f"
 SHORTCUTS_SHA256 = "865ee5ea5bf0accee27b82539caabce1c8a9fbb8f94b2900fe5ace4f82c80b23"
@@ -23,13 +34,49 @@ ORIGINAL_SHA256 = "dba0a2e670e2d93158cb030ea52fe3e237bb19177e0a165d99c8f72a8492e
 TEST_URL = ("https://raw.githubusercontent.com/artattakk-creator/"
             "kodi-noodleprivate/main/online-test/")
 PILOT_ID = "repository.gsmedia.pilot"
-PILOT_VERSION = "1.8.7"
+PILOT_VERSION = "1.8.8"
 
 
 def _bytes_in_zip(data, prefix):
     with zipfile.ZipFile(data) as archive:
         assert archive.testzip() is None
         return ET.fromstring(archive.read(prefix + "/addon.xml"))
+
+
+def _git_blob_sha(data):
+    return hashlib.sha1(
+        b"blob " + str(len(data)).encode("ascii") + b"\0" + data
+    ).hexdigest()
+
+
+def _pin_original(path, sha, ident, version):
+    data = path.read_bytes()
+    assert data and _git_blob_sha(data) == sha, "Original ZIP SHA1 mismatch: " + ident
+    addon = _bytes_in_zip(path, ident)
+    assert addon.get("id") == ident and addon.get("version") == version, ident
+    return data, addon
+
+
+def _fetch_cumination(destination):
+    # Upstream GPLv2 Cumination release is >7MB, so fetch immutable original
+    # release directly during CI rather than store a corrupt/truncated mirror.
+    dest = Path(destination) / "_vendor-cache"/"plugin.video.cumination-1.1.206.zip"
+    dest.parent.mkdir(exist_ok=True, parents=True)
+    request = urllib.request.Request(
+        CUMINATION_URL,
+        headers={"User-Agent": "GS-Media-Original-Package-Verification/0.5.5"}
+    )
+    with urllib.request.urlopen(request, timeout=45) as response:
+        raw = response.read(8 * 1024 * 1024 + 1)
+    assert len(raw) == 7239627, "Upstream Cumination package length mismatch"
+    assert _git_blob_sha(raw) == CUMINATION_BLOB, "Upstream Cumination blob changed"
+    dest.write_bytes(raw)
+    addon = _bytes_in_zip(dest, "plugin.video.cumination")
+    assert addon.get("id") == "plugin.video.cumination"
+    assert addon.get("version") == "1.1.206"
+    assert addon.findtext("./extension[@point='xbmc.addon.metadata']/license") == "GPL 2.0"
+    assert CUMINATION_SOURCE.is_file(), "Corresponding GPL source attribution missing"
+    return dest, raw
 
 
 def build(destination):
@@ -95,17 +142,28 @@ def build(destination):
     assert original_jurial.findtext("./extension[@point='xbmc.addon.metadata']/license") == "GPL-3.0-or-later"
     assert (ROOT / "vendor/jurialmunkey-common-0235/SOURCE.txt").is_file()
 
+    resolve_bytes, resolve_meta = _pin_original(
+        RESOLVE_VENDOR, RESOLVE_BLOB, "script.module.resolveurl", "5.1.212")
+    adult_bytes, adult_meta = _pin_original(
+        RESOLVE_XXX_VENDOR, RESOLVE_XXX_BLOB, "script.module.resolveurl.xxx", "2.1.44")
+    assert (ROOT/"vendor/gsmedia-source-batch-055/script.module.resolveurl-SOURCE.txt").is_file()
+    assert (ROOT/"vendor/gsmedia-source-batch-055/script.module.resolveurl.xxx-SOURCE.txt").is_file()
+    cumination_package, cumination_bytes = _fetch_cumination(destination)
+
     all_addons = [bridge_xml]
     for addon_id, version, package in [
         ("plugin.video.xtreammate", "0.1.29.70",
          ROOT / "plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.70.zip"),
         ("plugin.video.noodleprivate", "0.4.2",
          ROOT / "plugin.video.noodleprivate/plugin.video.noodleprivate-0.4.2.zip"),
-        ("script.gsmedia.setup", "0.5.4",
-         ROOT / ".build/gsmedia-054/script.gsmedia.setup-0.5.4.zip"),
+        ("script.gsmedia.setup", "0.5.5",
+         ROOT / ".build/gsmedia-055/script.gsmedia.setup-0.5.5.zip"),
         ("repository.titan.bingie.mod", "2.0.1", VENDOR),
         ("script.skinshortcuts", "2.1.0", SHORTCUTS_VENDOR),
         ("script.module.jurialmunkey", "0.2.35", JURIAL_VENDOR),
+        ("script.module.resolveurl", "5.1.212", RESOLVE_VENDOR),
+        ("script.module.resolveurl.xxx", "2.1.44", RESOLVE_XXX_VENDOR),
+        ("plugin.video.cumination", "1.1.206", cumination_package),
     ]:
         root = _bytes_in_zip(package, addon_id)
         assert root.get("id") == addon_id and root.get("version") == version
@@ -113,6 +171,18 @@ def build(destination):
         target = destination / addon_id / (addon_id + "-" + version + ".zip")
         target.parent.mkdir(exist_ok=True)
         shutil.copyfile(package, target)
+        if addon_id in (
+            "script.module.resolveurl",
+            "script.module.resolveurl.xxx",
+            "plugin.video.cumination",
+        ):
+            source = ROOT / "vendor/gsmedia-source-batch-055" / (addon_id + "-SOURCE.txt")
+            shutil.copyfile(source, destination/addon_id/"SOURCE.txt")
+            with zipfile.ZipFile(package) as archive:
+                for name in ("icon.png", "fanart.jpg"):
+                    key = addon_id + "/" + name
+                    if key in archive.namelist():
+                        (destination/addon_id/name).write_bytes(archive.read(key))
         if addon_id == "script.module.jurialmunkey":
             shutil.copyfile(ROOT/"vendor/jurialmunkey-common-0235/SOURCE.txt",
                             destination/addon_id/"SOURCE.txt")
@@ -145,14 +215,14 @@ def build(destination):
     pilot = ET.parse(repo_source).getroot()
     pilot.set("id", PILOT_ID)
     pilot.set("version", PILOT_VERSION)
-    pilot.set("name", "GS Media Online-Test 1.8.7")
+    pilot.set("name", "GS Media Online-Test 1.8.8")
     dir_ = pilot.find("extension[@point='xbmc.addon.repository']/dir")
     assert dir_ is not None
     dir_.find("info").text = TEST_URL + "addons.xml"
     dir_.find("checksum").text = TEST_URL + "addons.xml.md5"
     dir_.find("datadir").text = TEST_URL
     for node in pilot.findall("extension[@point='xbmc.addon.metadata']/summary"):
-        node.text = "GS Media Online-Test 1.8.7, nicht produktiv"
+        node.text = "GS Media Online-Test 1.8.8, nicht produktiv"
     for node in pilot.findall("extension[@point='xbmc.addon.metadata']/description"):
         node.text = "Entwicklungs-Installer mit geprüfter BINGIE-Repository-Vorstufe; keine vollständige Geräteabnahme."
     pilot_xml = ET.tostring(pilot, encoding="utf-8", xml_declaration=True)
@@ -178,9 +248,12 @@ def build(destination):
     print("VENDOR_BINGIE_SHA256", hashlib.sha256(vendor).hexdigest())
     print("VENDOR_SHORTCUTS_SHA256", hashlib.sha256(shortcuts_bytes).hexdigest())
     print("VENDOR_JURIAL_SHA256", hashlib.sha256(jurial_bytes).hexdigest())
+    print("VENDOR_RESOLVE_SHA256", hashlib.sha256(resolve_bytes).hexdigest())
+    print("VENDOR_RESOLVE_XXX_SHA256", hashlib.sha256(adult_bytes).hexdigest())
+    print("VENDOR_CUMINATION_SHA256", hashlib.sha256(cumination_bytes).hexdigest())
     print("TEST_ONLY", destination, "CATALOG", len(all_addons))
     print("NO_PUBLICATION_NO_ANDROID_PASS")
 
 
 if __name__ == "__main__":
-    build(sys.argv[1] if len(sys.argv)>1 else ROOT/".build/gsmedia-054-pilot")
+    build(sys.argv[1] if len(sys.argv)>1 else ROOT/".build/gsmedia-055-pilot")
