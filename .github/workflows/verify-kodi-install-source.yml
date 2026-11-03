@@ -22,8 +22,8 @@ jobs:
           for url in \
             "https://artattakk-creator.github.io/kodi-noodleprivate/online-test/" \
             "https://artattakk-creator.github.io/kodi-noodleprivate/online-test/index.html" \
-            "https://artattakk-creator.github.io/kodi-noodleprivate/online-test/repository.gsmedia.pilot-1.9.11.zip" \
-            "https://artattakk-creator.github.io/kodi-noodleprivate/online-test/script.gsmedia.setup-0.5.18.zip" \
+            "https://artattakk-creator.github.io/kodi-noodleprivate/online-test/repository.gsmedia.pilot-1.9.12.zip" \
+            "https://artattakk-creator.github.io/kodi-noodleprivate/online-test/script.gsmedia.setup-0.5.19.zip" \
             "https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/index.html" \
             "https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/"; do
               echo "TEST_URL $url"
@@ -36,14 +36,14 @@ jobs:
           for pass in $(seq 1 10); do
             curl -LfsS --max-time 20 -H "Cache-Control: no-cache" \
               "https://artattakk-creator.github.io/kodi-noodleprivate/online-test/?verification=${GITHUB_RUN_ID}-$pass" -o /tmp/kodi-directory-index.html
-            if grep -q 'repository.gsmedia.pilot-1.9.11.zip' /tmp/kodi-directory-index.html && \
-               grep -q 'script.gsmedia.setup-0.5.18.zip' /tmp/kodi-directory-index.html; then
+            if grep -q 'repository.gsmedia.pilot-1.9.12.zip' /tmp/kodi-directory-index.html && \
+               grep -q 'script.gsmedia.setup-0.5.19.zip' /tmp/kodi-directory-index.html; then
               break
             fi
             echo "Pages CDN still serving stale index (pass=$pass)"
             sleep 12
           done
-          for filename in repository.gsmedia.pilot-1.9.11.zip script.gsmedia.setup-0.5.18.zip; do
+          for filename in repository.gsmedia.pilot-1.9.12.zip script.gsmedia.setup-0.5.19.zip; do
             echo "ZIP_RESPONSE $filename"
             curl -fLsS --connect-timeout 8 --max-time 25 -o /tmp/neodark-checked.zip \
               -w 'HTTP=%{http_code} CONTENT_TYPE=%{content_type} BYTES=%{size_download}\n' \
@@ -61,7 +61,7 @@ jobs:
           html=Path("/tmp/kodi-directory-index.html").read_text(encoding="utf-8")
           expr=r'<a href="([^"]*)"[^>]*>\s*(.*?)\s*</a>(.+?)(?=<a|</tr|$)'
           matches=[(m.group(1),m.group(2),m.group(3)) for m in re.finditer(expr,html,re.I)]
-          expected=["repository.gsmedia.pilot-1.9.11.zip", "script.gsmedia.setup-0.5.18.zip"]
+          expected=["repository.gsmedia.pilot-1.9.12.zip", "script.gsmedia.setup-0.5.19.zip"]
           visible=[href for href,name,meta in matches if href==name and meta]
           print("Public HTML excerpt:", html[:1000])
           print("Kodi HTTPDirectory recognized zip filenames:", visible)
