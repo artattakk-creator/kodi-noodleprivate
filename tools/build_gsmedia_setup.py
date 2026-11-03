@@ -25,6 +25,7 @@ FILES = ("addon.xml", "default.py", "service.py", "README.md",
          "resources/lib/setup_bingie_apply.py", "resources/lib/setup_tmdb_apply.py",
          "resources/lib/setup_skin_activate_0511.py",
          "resources/lib/setup_finish_0512.py",
+         "resources/lib/setup_bingie_merge_0513.py",
          "resources/lib/setup_patch.py",
          "resources/skinpatch/manifest.json",
          "resources/skinpatch/LICENSE.BINGIE",
@@ -35,13 +36,13 @@ FILES = ("addon.xml", "default.py", "service.py", "README.md",
 
 def build(target):
     metadata = ET.parse(SOURCE / "addon.xml").getroot()
-    if metadata.get("id") != "script.gsmedia.setup" or metadata.get("version") != "0.5.12":
+    if metadata.get("id") != "script.gsmedia.setup" or metadata.get("version") != "0.5.13":
         raise ValueError("Unexpected or unreviewed wizard version")
     if any(not (SOURCE / relative).is_file() for relative in FILES):
         raise FileNotFoundError("Missing required GS Media wizard source file")
     target = Path(target)
     target.mkdir(parents=True, exist_ok=True)
-    filename = "script.gsmedia.setup-0.5.12.zip"
+    filename = "script.gsmedia.setup-0.5.13.zip"
     output = target / filename
     with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
         for relative in FILES:
