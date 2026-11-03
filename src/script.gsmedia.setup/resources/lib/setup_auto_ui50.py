@@ -162,9 +162,9 @@ def run():
                       "Bestehende Daten bleiben unverändert.")
             return
         if not dialog.yesno(
-            "XCMate – Vollautomatische Einrichtung 0.5.14",
+            "XCMate – Vollautomatische Einrichtung 0.5.15",
             "Gesamte Kodi-Ersteinrichtung jetzt starten? Alle geprüften "
-            "Repositories, 43 Komponenten und Abhängigkeiten werden "
+            "Repositories, 48 Komponenten und Abhängigkeiten werden "
             "nacheinander ohne zusätzliche Wizard-Abfragen installiert. "
             "BINGIE 2.2.3 wird nur bei exaktem Datei-Hash gesichert und "
             "eingerichtet. xVAULT als TMDB-Standardplayer nur einrichten, "
@@ -203,7 +203,7 @@ def run():
     window.setProperty("GS_MEDIA_050_RUNNING", "1")
     window.clearProperty("GS_MEDIA_050_CANCEL")
     progress = xbmcgui.DialogProgressBG()
-    progress.create("XCMate Media Center Setup – v0.5.14 – Kodi 21.3 Omega", "Systemprüfung")
+    progress.create("XCMate Media Center Setup – v0.5.15 – Kodi 21.3 Omega", "Systemprüfung")
     monitor = xbmc.Monitor()
     reason = ""
     try:
@@ -401,7 +401,7 @@ def run():
                     state = _persist(profile, stop(state, reason))
                     break
                 progress.update(99, "XCMate – Abschlussprüfung",
-                                "43 Pakete, xVAULT und aktiver BINGIE geprüft")
+                                "48 Pakete, xVAULT und aktiver BINGIE geprüft")
                 from setup_finish_0512 import mark_restart_pending
                 # Only once *all* mandatory local checks have passed.
                 completion = dict(state)
@@ -440,7 +440,7 @@ def run():
     done, total = count_done(snapshot())
     if reason == "RESTART_PENDING_VERIFIED":
         dialog.ok("XCMate Media Center Setup – Installation abschließen",
-                  "43 von 43 Komponenten bestätigt. xVAULT für Filme und "
+                  "43 von 48 Komponenten bestätigt. xVAULT für Filme und "
                   "Serien konfiguriert; BINGIE MOD aktiviert. "
                   "Um die Installation abzuschließen, muss Kodi neu "
                   "gestartet werden. Mit OK wird Kodi beendet. "
