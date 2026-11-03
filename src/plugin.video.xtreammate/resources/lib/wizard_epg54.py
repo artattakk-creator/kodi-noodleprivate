@@ -28,10 +28,13 @@ def write(portal,state):
     if len(raw)>1024*1024 or os.path.islink(filename):raise OSError('EPG_CHECKPOINT_UNSAFE')
     fd,temp=tempfile.mkstemp(prefix='.epg-setup54-',dir=os.path.dirname(filename))
     try:
-        os.fchmod(fd,0o600)
-        with os.fdopen(fd,'wb') as f:f.write(raw);f.flush();os.fsync(f.fileno())
+        from wizard_storage71 import protect
+        protect(temp,fd=fd)
+        with os.fdopen(fd,'wb') as f:
+            fd=None;f.write(raw);f.flush();os.fsync(f.fileno())
         os.replace(temp,filename);temp=None
     finally:
+        if fd is not None:os.close(fd)
         if temp:
             try:os.unlink(temp)
             except OSError:pass

@@ -191,7 +191,7 @@
       <label>$LOCALIZE[32706]</label>
       <onleft>14</onleft>
       <onright>13</onright>
-      <onup>12</onup>
+      <onup>21</onup>
       <ondown>18</ondown>
     </control>
     <control type="button" id="16">
@@ -245,7 +245,7 @@
     <control type="label" id="5">
       <left>45</left>
       <top>250</top>
-      <width>1190</width>
+      <width>780</width>
       <height>34</height>
       <font>font13</font>
       <textcolor>FFFFFFFF</textcolor>
@@ -427,6 +427,22 @@
       <height>36</height>
       <font>font13</font>
       <textcolor>FFFFFFFF</textcolor>
+    </control>
+    <control type="button" id="21">
+      <left>845</left>
+      <top>250</top>
+      <width>390</width>
+      <height>34</height>
+      <font>font13</font>
+      <textcolor>FFFFFFFF</textcolor>
+      <focusedcolor>FF061820</focusedcolor>
+      <texturefocus colordiffuse="FF72D7F4">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturefocus>
+      <texturenofocus colordiffuse="FF303D4B">special://home/addons/plugin.video.xtreammate/resources/media/wizard_plain51.png</texturenofocus>
+      <label>Startgruppe wählen</label>
+      <onleft>14</onleft>
+      <onright>10</onright>
+      <onup>12</onup>
+      <ondown>15</ondown>
     </control>
   </controls>
 </window>

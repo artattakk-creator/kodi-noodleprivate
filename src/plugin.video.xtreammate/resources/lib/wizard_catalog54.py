@@ -25,7 +25,8 @@ def open_db(draft):
     db=connect(draft.index,write=True)
     db.execute('CREATE TABLE IF NOT EXISTS wizard_units54(pid TEXT,kind TEXT,cid TEXT,fingerprint TEXT,generation TEXT,rows INTEGER,digest TEXT,completed REAL,PRIMARY KEY(pid,kind,cid))');db.commit()
     db.execute('CREATE TABLE IF NOT EXISTS wizard_attempts54(pid TEXT,kind TEXT,cid TEXT,state TEXT,received INTEGER,updated REAL,PRIMARY KEY(pid,kind,cid))');db.commit()
-    os.chmod(draft.index,0o600)
+    from wizard_storage71 import protect
+    protect(draft.index)
     if db.execute('PRAGMA quick_check').fetchone()[0]!='ok':db.close();raise ValueError('staging catalogue requires verification')
     if getattr(draft,'_trusted_legacy54',False):adopt_legacy(db,draft)
     return db
@@ -59,7 +60,8 @@ def adopt_legacy(db,draft):
 
 def checkpoint(draft):
     session=getattr(draft,'resume53',None)
-    if session and not session.checkpoint(draft,'groups'):raise OSError('DRAFT_CHECKPOINT_FAILED')
+    from wizard_storage71 import checkpoint as verified_checkpoint
+    verified_checkpoint(session,draft)
 
 
 def valid(db,draft,kind,group):

@@ -1,3 +1,11 @@
+0.1.29.71 (Test-Build, Issue #352)
+- Einrichtung: Android-App-Speicher gezielt prüfen; lokale Checkpoint-Fehler nicht als Netzwerkfehler melden.
+- Sendergruppen und ausdrücklich gewählte Startgruppe mit Sicherung und frischem Readback speichern.
+- Alte Playlists einmal atomar übernehmen; keine selbst wiederholende Verzeichnis-Aktualisierung.
+- Diagnose mit anonymem Sitzungscode, errno, sicheren Stackpositionen und freiem Speicher am Kodi-Datenpfad.
+- Portale, Passwörter, EPG, TMDB, Favoriten, Medienfortschritte und vorhandene Komponenten bleiben erhalten.
+- Begleitendes GS-Media-Setup-Update .5.20 separat testen; Android-Abnahme NOT_TESTED.
+
 0.1.29.70 (Test-Build)
 - EPG-Bildstatus bleibt für seine tatsächliche Gültigkeitsdauer abrufbar; keine falsche Fünf-Minuten-Lücke.
 - Angeforderte Bilder von noch nicht bestätigten Hintergrundaufträgen unterscheiden.

@@ -10,6 +10,9 @@ import time
 _local=threading.local()
 _slot=threading.BoundedSemaphore(1)
 
+class DiscoveryBusy(OSError):
+    code='XM-SETUP-DISCOVERY-BUSY'
+
 
 def active():return getattr(_local,'deadline',None) is not None
 
@@ -32,7 +35,7 @@ def byte_limit(value):return min(value,2*1024*1024) if active() else value
 def discovery(function):
     @functools.wraps(function)
     def run(self,cancel=lambda:False,status=lambda *a:None):
-        if not _slot.acquire(blocking=False):raise OSError('WIZARD_DISCOVERY_BUSY')
+        if not _slot.acquire(blocking=False):raise DiscoveryBusy('WIZARD_DISCOVERY_BUSY')
         previous=(getattr(_local,'deadline',None),getattr(_local,'cancel',None))
         _local.deadline=float('inf');_local.cancel=cancel
         from setup_trace import mark
