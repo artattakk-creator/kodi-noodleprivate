@@ -43,6 +43,10 @@ def rows():
             # is insufficient. A vetted, byte-identical 2.1.0 is supplied in
             # the independent online pilot catalogue.
             result.append(dict(row, repo=TEST_CHANNEL, minimum="2.1.0"))
+        elif ident == "script.bingie.helper":
+            # The original GPLv3 1.1.2 ZIP is mirrored unchanged and pinned
+            # in the first-party beta catalog, alongside repository 2.0.1.
+            result.append(dict(row, repo=TEST_CHANNEL, minimum="1.1.2"))
         elif ident == "script.module.jurialmunkey":
             # Original GPL-3.0+ dependency, pinned from Jurialmunkey Omega.
             result.append(dict(row, repo=TEST_CHANNEL, minimum="0.2.35"))
@@ -190,6 +194,22 @@ def next_step(state, inventory):
         ident, repo, minimum = row["id"], row["repo"], row["minimum"]
         if installed(inventory, ident, minimum):
             continue
+        # Native Kodi one-step original BINGIE install. Even though the
+        # Helper original is mirrored in the xcMate pilot, the approved
+        # BINGIE Repository must first be bootstrapped alongside it. It is
+        # intentionally not a counted component of the 48-item dependency
+        # manifest; preserve the original approved repository check.
+        if ident == "script.bingie.helper" and not installed(
+                inventory, "repository.titan.bingie.mod", "2.0.1"):
+            if not installed(inventory, TEST_CHANNEL):
+                return {"code": "SOURCE_BLOCKED", "id": ident,
+                        "reason": "PILOT_CATALOG_NOT_INSTALLED"}
+            if "repository.titan.bingie.mod" in state["attempted"]:
+                return {"code": "RETRY_REQUIRED",
+                        "id": "repository.titan.bingie.mod"}
+            return {"code": "INSTALL_REPOSITORY",
+                    "id": "repository.titan.bingie.mod",
+                    "source": "GS_MEDIA_APPROVED_TEST_CATALOG"}
         if repo in ("ZIP_REQUIRES_PROVENANCE", "EXTERNAL_REPOSITORY"):
             return {"code": "SOURCE_BLOCKED", "id": ident,
                     "reason": "ORIGIN_UNVERIFIED", "source": row.get("notes", "")}

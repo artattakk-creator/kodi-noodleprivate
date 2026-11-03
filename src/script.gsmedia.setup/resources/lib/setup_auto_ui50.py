@@ -175,7 +175,7 @@ def run():
                       "Bestehende Daten bleiben unverändert.")
             return
         if not dialog.yesno(
-            "XCMate – Vollautomatische Einrichtung 0.5.15",
+            "XCMate – Vollautomatische Einrichtung 0.5.16",
             "Gesamte Kodi-Ersteinrichtung jetzt starten? Alle geprüften "
             "Repositories, 48 Komponenten und Abhängigkeiten werden "
             "nacheinander ohne zusätzliche Wizard-Abfragen installiert. "
@@ -290,6 +290,14 @@ def run():
                         break
                 else:
                     install_id = ident
+                    # One Kodi-managed parent install resolves BOTH exact,
+                    # original BINGIE packages through its immutable requires:
+                    # repo 2.0.1 + helper 1.1.2. Neither addon is manually
+                    # installed from a separate source or by an Android APK.
+                    if (code == "INSTALL_REPOSITORY" and
+                            ident == "repository.titan.bingie.mod" and
+                            step.get("source") == "GS_MEDIA_APPROVED_TEST_CATALOG"):
+                        install_id = "script.gsmedia.bingie.bootstrap"
                 # Kodi 21 GetAddons(installed=true) confirms finished installs;
                 # its distinct GetAddons(installed=false) checks the async repo
                 # catalog. UpdateAddonRepos queues a refresh; it does not wait

@@ -204,7 +204,7 @@ class AutoSetupTests(unittest.TestCase):
             self.assertEqual(len(state["completed"]), 4)
 
     def test_unknown_repo_stops_with_no_install(self):
-        rows = [dict(self.sample[0], repo="repository.unknown")]
+        rows = [dict(self.sample[0], id="script.not-approved", repo="repository.unknown")]
         with patch.object(setup, "manifest", return_value=rows):
             result = setup.next_step(setup.new_state(), inventory({setup.TEST_CHANNEL: "1.8.2"}))
             self.assertEqual(result["code"], "SOURCE_BLOCKED")
@@ -227,7 +227,7 @@ class AutoSetupTests(unittest.TestCase):
 
     def test_source_verification_not_bypassed(self):
         with patch.object(setup, "manifest", return_value=[
-            dict(self.sample[0], repo="ZIP_REQUIRES_PROVENANCE")]):
+            dict(self.sample[0], id="script.not-approved", repo="ZIP_REQUIRES_PROVENANCE")]):
             s = setup.next_step(setup.new_state(), inventory({setup.TEST_CHANNEL: "1.8.2"}))
             self.assertEqual(s["code"], "SOURCE_BLOCKED")
             self.assertEqual(s["reason"], "ORIGIN_UNVERIFIED")
