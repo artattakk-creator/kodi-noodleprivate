@@ -46,7 +46,7 @@ def render():
         ident = _group_id(row["label"], index)
         for key, value in (
             ("defaultID", ident), ("label", row["label"]),
-            ("label2", "GS Media"), ("icon", "DefaultShortcut.png"),
+            ("label2", "XC Mate"), ("icon", "DefaultShortcut.png"),
             ("thumb", ""), ("action", _target_action(row["label"], row["target"]))
         ):
             ET.SubElement(shortcut, key).text = value
