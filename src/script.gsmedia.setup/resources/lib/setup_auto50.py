@@ -9,7 +9,7 @@ from setup_install_pilot import _installed
 
 SCHEMA = 2
 STAGES = ("apps", "skin", "player", "check", "done", "stopped")
-REPO_ALLOWLIST = frozenset(("repository.titan.bingie.mod",))
+REPO_ALLOWLIST = frozenset(("repository.titan.bingie.mod", "repository.xvault"))
 TEST_CHANNEL = "repository.gsmedia.pilot"
 SAFE_IDS = re.compile(r"^[A-Za-z0-9._-]{3,100}$")
 MAX_ITEMS = 200
