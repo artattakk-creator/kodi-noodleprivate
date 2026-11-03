@@ -32,8 +32,29 @@ jobs:
           done
           set -e
           echo "KODI_HTTP_DIRECTORY_PARSER_CHECK"
-          curl -LfsS --max-time 20 -H "Cache-Control: no-cache" \
-            "https://artattakk-creator.github.io/kodi-noodleprivate/online-test/?verification=${GITHUB_RUN_ID}" -o /tmp/kodi-directory-index.html
+          # Allow the Pages CDN to converge after a successful deployment.
+          for pass in $(seq 1 10); do
+            curl -LfsS --max-time 20 -H "Cache-Control: no-cache" \
+              "https://artattakk-creator.github.io/kodi-noodleprivate/online-test/?verification=${GITHUB_RUN_ID}-$pass" -o /tmp/kodi-directory-index.html
+            if grep -q 'repository.gsmedia.pilot-1.9.7.zip' /tmp/kodi-directory-index.html && \
+               grep -q 'script.gsmedia.setup-0.5.14.zip' /tmp/kodi-directory-index.html; then
+              break
+            fi
+            echo "Pages CDN still serving stale index (pass=$pass)"
+            sleep 12
+          done
+          for filename in repository.gsmedia.pilot-1.9.7.zip script.gsmedia.setup-0.5.14.zip; do
+            echo "ZIP_RESPONSE $filename"
+            curl -fLsS --connect-timeout 8 --max-time 25 -o /tmp/neodark-checked.zip \
+              -w 'HTTP=%{http_code} CONTENT_TYPE=%{content_type} BYTES=%{size_download}\n' \
+              "https://artattakk-creator.github.io/kodi-noodleprivate/online-test/$filename?verification=${GITHUB_RUN_ID}"
+            python - <<'PY'
+          import zipfile
+          with zipfile.ZipFile('/tmp/neodark-checked.zip') as z:
+              assert z.testzip() is None
+              print('PAGES_PUBLIC_ZIP_OK',len(z.namelist()))
+          PY
+          done
           python - <<'PY'
           import re
           from pathlib import Path
