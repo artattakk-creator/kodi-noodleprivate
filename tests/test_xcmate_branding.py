@@ -1,5 +1,6 @@
 """XCMate is a display-name rebrand; the Kodi addon ID must stay stable."""
 import pathlib
+import ast
 import unittest
 import xml.etree.ElementTree as ET
 
@@ -22,7 +23,8 @@ class XCMateBrandingTests(unittest.TestCase):
         epg=main.split("    def _epg_sources(self):",1)[1].split("    def _refresh_epg(self):",1)[0]
         self.assertIn("xbmcplugin.endOfDirectory",epg)
         self.assertLess(epg.index("xbmcplugin.endOfDirectory"),epg.index("manage(portal)"))
-        root=main.split("    def _root(self):",1)[1].split("    def _maybe_autoplay_start(self",1)[0]
+        root_node=next(node for node in ast.walk(ast.parse(main)) if isinstance(node,ast.FunctionDef) and node.name=='_root')
+        root=ast.get_source_segment(main,root_node)
         self.assertIn("self._maybe_autoplay_start(portal)",root)
 
     def test_kodi_settings_and_languages(self):

@@ -27,6 +27,8 @@ Android-Prüfungen und reale Provider-/TX60Pro-Dateisystemwerte bleiben ohne Ger
 
 Die breite GUI-Regression erkannte zunächst einen neuen direkten Dialog.select-Aufruf im Startgruppen-Dialog. Dieser verwendet jetzt die bestehende menu_icons45-Komponente; die ursprüngliche Menüprüfung bleibt unverändert. Danach bestanden lokal 43 kombinierte Setup-/Legacy-/Menüprüfungen. Der finale vollständige CI-Lauf muss weiterhin grün sein.
 
+Der erste vollständige .71-Lauf führte 2904 Tests aus und traf auf einen alten Branding-Test, der die Methode _root über ihre exakte Textsignatur suchte. Der neue optionale Legacy-Parameter machte diese Extraktion ungültig. Der Test liest jetzt denselben Methodenkörper per AST; die Autoplay-/EPG-/Startfehler-Assertions bleiben bestehen. Eine getrennte Kodi-Modellprüfung traf einmal auf ein fehlendes xbmcvfs-Testmodul; die exakt gleiche Gruppe mit 197 Tests bestand lokal ohne Änderung am Produktcode (mit Freigabe des lokalen HTTP-Testservers). Dieser Vorfall und die abschließende Wiederholung bleiben im CI-Verlauf nachvollziehbar.
+
 | Anforderung | Umsetzung / Prüfstatus | Offene Geräteabnahme |
 |---|---|---|
 | Discovery-OSError / Checkpoint | Reproduzierte Speicher-Fehlerkette behoben; Fehlerklassen, Schutz vor zweitem Job, Retry-Daten erhalten | konkreter Geräte-errno und Backend NOT_TESTED |
