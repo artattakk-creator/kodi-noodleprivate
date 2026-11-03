@@ -727,7 +727,12 @@ class OverlayLifecycleTests(unittest.TestCase):
             if existing:
                 service._overlay=existing
                 service._last_session_nonce=self.module.session_from_property(self.props[self.module.SESSION_KEY])['nonce']
-            service.run()
+            # This fixture models only the frozen live GUI/service lifecycle.
+            # The independent .68/.69 visible-data producers otherwise import
+            # modules on daemon threads after patch.dict has retired Kodi's
+            # stubs. Their real intake/RPC/native pixels have dedicated tests.
+            with mock.patch('programme_requests68.poll'),mock.patch('widget_fast69.poll'):
+                service.run()
         self.assertNotIn('Fehler',self.props.get(health.LAST_ERROR,''))
         return remote
 

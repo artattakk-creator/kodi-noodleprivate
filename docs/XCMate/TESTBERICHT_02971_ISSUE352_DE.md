@@ -29,6 +29,8 @@ Die breite GUI-Regression erkannte zunächst einen neuen direkten Dialog.select-
 
 Der erste vollständige .71-Lauf führte 2904 Tests aus und traf auf einen alten Branding-Test, der die Methode _root über ihre exakte Textsignatur suchte. Der neue optionale Legacy-Parameter machte diese Extraktion ungültig. Der Test liest jetzt denselben Methodenkörper per AST; die Autoplay-/EPG-/Startfehler-Assertions bleiben bestehen. Eine getrennte Kodi-Modellprüfung traf einmal auf ein fehlendes xbmcvfs-Testmodul; die exakt gleiche Gruppe mit 197 Tests bestand lokal ohne Änderung am Produktcode (mit Freigabe des lokalen HTTP-Testservers). Dieser Vorfall und die abschließende Wiederholung bleiben im CI-Verlauf nachvollziehbar.
 
+Nach erneutem Auftreten wurde die Ursache der Legacy-Testisolation eingegrenzt: run_service_once startete zusätzlich zur bereits gemockten app_services-Grenze echte programme_requests68-/widget_fast69-Daemons. Diese konnten Module nach dem Ende der Kodi-Stubs nachladen. Nur in dieser alten GUI-/Service-Fixture sind die beiden unabhängigen poll-Grenzen jetzt modelliert; alle bisherigen Lifecycle-/Player-Assertions bleiben bestehen. Die echten Producer-, Helper-/Worker- und nativen Bildtests bleiben unverändert in ihren eigenen Tests und im CI-Gate. Keine Player-Produktionsänderung und kein Überspringen von Tests.
+
 | Anforderung | Umsetzung / Prüfstatus | Offene Geräteabnahme |
 |---|---|---|
 | Discovery-OSError / Checkpoint | Reproduzierte Speicher-Fehlerkette behoben; Fehlerklassen, Schutz vor zweitem Job, Retry-Daten erhalten | konkreter Geräte-errno und Backend NOT_TESTED |
