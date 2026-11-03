@@ -1,16 +1,26 @@
 {
-  "artifact_run_id": 41537010401,
-  "sha256": {
-    "plugin.video.noodleprivate/plugin.video.noodleprivate-0.4.2.zip": "1c01c42983f4f410e6b55227552fc4e6be9da59b2432227db244883a5ffbfc34",
-    "plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.70.zip": "90b90042b02d8b0e27a7b7c014d993b1dfb6f7a0dae493bf6bf80b0f4eaee07f",
-    "repository.gsmedia.pilot-1.8.2.zip": "20ad483cc8cbe2c723a4c82aeb64b1f1f72b948fe4332f5b3bbbb0348cd0125f",
-    "repository.gsmedia.pilot/repository.gsmedia.pilot-1.8.2.zip": "20ad483cc8cbe2c723a4c82aeb64b1f1f72b948fe4332f5b3bbbb0348cd0125f",
-    "script.gsmedia.setup-0.4.0.zip": "8ac0f76efd6df432a149982b71c4aff07def83710de9829f43942cac4bd62667",
-    "script.gsmedia.setup/script.gsmedia.setup-0.4.0.zip": "8ac0f76efd6df432a149982b71c4aff07def83710de9829f43942cac4bd62667"
+  "channel": "GS_MEDIA_ONLINE_BETA_ONLY",
+  "known_limitations": [
+    "11-app automatic install NOT complete",
+    "Unverified third-party sources fail closed",
+    "XCMate 0.1.29.70 EPG/storage/artwork issues still open"
+  ],
+  "repository": {
+    "id": "repository.gsmedia.pilot",
+    "version": "1.8.3"
   },
-  "source_head": "ba814855fa798df44aa18074651b04097b9bb1b8",
-  "source_pr": 320,
-  "status": "ONLINE_PILOT_NOT_PRODUCTIVE",
-  "wizard": "0.4.0",
-  "xcmate": "0.1.29.70"
+  "source_commit": "da5a31513d669d8b05c73547c72ff3c3e33ea2d4",
+  "source_run_id": 41595263556,
+  "wizard": {
+    "id": "script.gsmedia.setup",
+    "status": "TEST_ONLY_ANDROID_NOT_VERIFIED",
+    "version": "0.5.0"
+  },
+  "zip_sha256": {
+    "plugin.video.noodleprivate": "b9d0afe06d6fc956bc0191fd51f4646ae9f54c6272009e7a8819255de7460364",
+    "plugin.video.xtreammate": "90b90042b02d8b0e27a7b7c014d993b1dfb6f7a0dae493bf6bf80b0f4eaee07f",
+    "repository.gsmedia.pilot": "e0ac9cd042dcdd8a8b6e07d6b87cefefe5f17e23752bfec80fa6e1c12f863bae",
+    "repository.titan.bingie.mod": "dba0a2e670e2d93158cb030ea52fe3e237bb19177e0a165d99c8f72a8492ef46",
+    "script.gsmedia.setup": "4f5f5d32a84f5ca64c71020b700e56e4af77252ddfc4c9028ac591d65fadd5e2"
+  }
 }

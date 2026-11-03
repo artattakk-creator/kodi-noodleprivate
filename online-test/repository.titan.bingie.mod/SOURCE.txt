@@ -1,0 +1,7 @@
+Original project: https://github.com/AchillesPunks/repository.titan.bingie.mod
+Upstream commit: d9f334ecc33c7d0e137dd1728af18815c512e577
+Original binary ZIP path: repository.titan.bingie.mod-2.0.1.zip
+Original Git blob (SHA-1): da6e2b22b9bdb3baaf12da362fcbadb0b17628e6
+Original LICENSE: Apache License 2.0. No authorship claimed by GS Media.
+This repository bootstrap does not include the BINGIE skin or its helper dependencies.
+Do not enable production distribution until all original zip members and licenses are verified.
