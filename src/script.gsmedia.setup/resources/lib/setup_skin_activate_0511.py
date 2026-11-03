@@ -48,24 +48,23 @@ def activate(execute, inventory, patch_status, shortcut_status, wait=None):
     old = get_current_skin(execute)
     if old is None:
         return "SKIN_SETTING_UNREADABLE"
-    if old == SKIN_ID:
-        return "ALREADY_ACTIVE"
-
-    write = _rpc(execute, "Settings.SetSettingValue",
+    already_active = old == SKIN_ID
+    if not already_active:
+        write = _rpc(execute, "Settings.SetSettingValue",
                  {"setting": SETTING, "value": SKIN_ID})
-    if write.get("result") is not True:
-        return "SKIN_SWITCH_REJECTED"
+        if write.get("result") is not True:
+            return "SKIN_SWITCH_REJECTED"
 
-    # Kodi 21 displays its own keep-new-skin confirmation; the installer's
-    # nonmodal progress lets the user answer it. Do not bypass this dialog.
-    if wait is not None:
-        wait(12)
-    if get_current_skin(execute) != SKIN_ID:
-        return "SKIN_SWITCH_NOT_CONFIRMED"
+        # Kodi 21 displays its own keep-new-skin confirmation; the installer's
+        # nonmodal progress lets the user answer it. Do not bypass this dialog.
+        if wait is not None:
+            wait(12)
+        if get_current_skin(execute) != SKIN_ID:
+            return "SKIN_SWITCH_NOT_CONFIRMED"
 
     # Kodi exposes the actual GUI skin independently of the stored setting.
     gui = _rpc(execute, "GUI.GetProperties", {"properties": ["skin"]})
     skin = gui.get("result", {}).get("skin") if isinstance(gui.get("result"), dict) else None
     if not isinstance(skin, dict) or skin.get("id") != SKIN_ID:
         return "SKIN_GUI_NOT_ACTIVE"
-    return "ACTIVE_AND_VERIFIED"
+    return "ALREADY_ACTIVE" if already_active else "ACTIVE_AND_VERIFIED"
