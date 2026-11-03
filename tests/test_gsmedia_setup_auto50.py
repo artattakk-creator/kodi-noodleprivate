@@ -96,6 +96,27 @@ class AutoSetupTests(unittest.TestCase):
             verified = setup.after_confirm(queued, newer)
             self.assertIn("script.skinshortcuts", verified["completed"])
 
+    def test_jurialmunkey_0235_is_reachable_from_pilot_without_extra_repo(self):
+        upstream_row = {"id": "script.module.jurialmunkey", "minimum": "0.2.2",
+                        "repo": "repository.jurialmunkey", "notes": "",
+                        "mandatory": False, "manifest_known": True}
+        with patch.object(setup, "manifest", return_value=[upstream_row]):
+            row = setup.rows()[0]
+            self.assertEqual(row["repo"], setup.TEST_CHANNEL)
+            self.assertEqual(row["minimum"], "0.2.35")
+            current = inventory({setup.TEST_CHANNEL: "1.8.7"})
+            selected = setup.next_step(setup.new_state(), current)
+            self.assertEqual((selected["code"], selected["id"]),
+                             ("INSTALL_ADDON", "script.module.jurialmunkey"))
+            requested = setup.after_request(setup.new_state(),
+                                            "script.module.jurialmunkey")
+            self.assertEqual(setup.next_step(requested, current)["code"], "WAITING")
+            present = inventory({setup.TEST_CHANNEL: "1.8.7",
+                                 "script.module.jurialmunkey": "0.2.35"})
+            self.assertEqual(setup.next_step(requested, present)["code"], "CONFIRM")
+            confirmed = setup.after_confirm(requested, present)
+            self.assertIn("script.module.jurialmunkey", confirmed["completed"])
+
     def test_unknown_repo_stops_with_no_install(self):
         rows = [dict(self.sample[0], repo="repository.unknown")]
         with patch.object(setup, "manifest", return_value=rows):
