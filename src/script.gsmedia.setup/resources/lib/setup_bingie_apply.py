@@ -37,7 +37,7 @@ def _group_id(label, index):
     return MAIN_IDS[index] if index < len(MAIN_IDS) else "gsmedia" + str(index)
 
 
-def render():
+def render(legacy=False):
     source = layout_verify()
     root = ET.Element("shortcuts")
     properties = []
@@ -55,6 +55,12 @@ def render():
         widgets = source["widgets"][:3] if index == 0 else (
             [x for x in source["widgets"][3:] if x[0].lower() == row["label"].lower()]
         )
+        if legacy:
+            # Version 0.5.11 omitted both audio widgets from .properties.
+            # Reconstruct it exactly to recognise OUR generated file, not
+            # arbitrary user customisations.
+            widgets = [w for w in widgets if w[0] not in
+                       ("MP3 Streams Echoed", "Radio")]
         for n, (_category, title, url, _state) in enumerate(widgets):
             suffix = "" if n == 0 else "." + str(n)
             props = (
@@ -100,8 +106,40 @@ def compatible(inventory):
             shortcuts.get("enabled") is True)
 
 
+def _semantic_match(menu, props, payload):
+    """Kodi can reserialize Skin Shortcuts; compare required values, not bytes.
+
+    All mandatory XC Mate shortcut actions and widget paths must be present.
+    Additional unrelated user rows are preserved and never overwritten.
+    """
+    try:
+        existing = ET.fromstring(menu).findall("shortcut")
+        required = ET.fromstring(payload[MENU_FILENAME]).findall("shortcut")
+        def fields(item):
+            return (item.findtext("defaultID"), item.findtext("label"),
+                    item.findtext("action"))
+        actual_menu = {fields(row)[0]: fields(row) for row in existing}
+        if not all(actual_menu.get(fields(r)[0]) == fields(r) for r in required):
+            return False
+        raw_props = ast.literal_eval(props.decode("utf-8"))
+        need_props = ast.literal_eval(payload[PROPS_FILENAME].decode("utf-8"))
+        if not isinstance(raw_props, list):
+            return False
+        stored = {}
+        for item in raw_props:
+            if not isinstance(item, (list, tuple)) or len(item) != 4:
+                return False
+            key = tuple(item[:3])
+            if key in stored and stored[key] != item[3]:
+                return False
+            stored[key] = item[3]
+        return all(stored.get(tuple(p[:3])) == p[3] for p in need_props)
+    except (ValueError, TypeError, SyntaxError, AttributeError, ET.ParseError):
+        return False
+
+
 def inspect_new_profile(folder, inventory):
-    """Read-only safety check BEFORE touching any BINGIE XML files."""
+    """Read-only and fail-closed for any genuinely modified user widgets."""
     if not compatible(inventory):
         return "VERSION_OR_SKIN_NOT_SUPPORTED"
     original = Path(folder)
@@ -116,12 +154,26 @@ def inspect_new_profile(folder, inventory):
     if any((dest / name).is_symlink() for name in payload):
         return "SYMLINK_BLOCKED"
     try:
+        menu = dest / MENU_FILENAME
+        props = dest / PROPS_FILENAME
+        if menu.exists() and props.exists():
+            if not menu.is_file() or not props.is_file():
+                return "EXISTING_SKIN_DATA_PRESERVED"
+            mb, pb = menu.read_bytes(), props.read_bytes()
+            if (mb == payload[MENU_FILENAME] and pb == payload[PROPS_FILENAME]
+                    or _semantic_match(mb, pb, payload)):
+                return "ALREADY_APPLIED"
+            legacy = render(legacy=True)
+            if mb == legacy[MENU_FILENAME] and pb == legacy[PROPS_FILENAME]:
+                return "OWNED_UPGRADE_READY"
+            return "EXISTING_SKIN_DATA_PRESERVED"
         for name, raw in payload.items():
             target = dest / name
-            if target.exists() and (not target.is_file() or target.read_bytes() != raw):
+            if target.exists() and (not target.is_file()
+                                    or target.read_bytes() != raw):
                 return "EXISTING_SKIN_DATA_PRESERVED"
-        return "ALREADY_APPLIED" if all((dest / name).exists() for name in payload) else "READY"
-    except (OSError, ValueError):
+        return "READY"
+    except (OSError, ValueError, UnicodeError):
         return "INSPECTION_FAILED"
 
 
@@ -132,7 +184,7 @@ def apply_new_profile(folder, inventory, user_approved=False):
     status = inspect_new_profile(folder, inventory)
     if status == "ALREADY_APPLIED":
         return status
-    if status != "READY":
+    if status not in ("READY", "OWNED_UPGRADE_READY"):
         return status
     dest = Path(folder).resolve()
     payload = render()
@@ -140,6 +192,46 @@ def apply_new_profile(folder, inventory, user_approved=False):
         dest.mkdir(parents=True, exist_ok=True)
     except OSError:
         return "WRITE_FAILED"
+    if status == "OWNED_UPGRADE_READY":
+        # Only replace the byte-for-byte 0.5.11 file created by XC Mate.
+        # Preserve its exact old bytes first; never replace custom files.
+        original = dest / PROPS_FILENAME
+        backup = dest / (PROPS_FILENAME + ".xcmate-0511.bak")
+        old = render(legacy=True)[PROPS_FILENAME]
+        if backup.is_symlink():
+            return "BACKUP_PATH_BLOCKED"
+        try:
+            if original.read_bytes() != old:
+                return "EXISTING_SKIN_DATA_PRESERVED"
+            if backup.exists():
+                if not backup.is_file() or backup.read_bytes() != old:
+                    return "PREEXISTING_BACKUP_PRESERVED"
+            else:
+                with backup.open("xb") as handle:
+                    handle.write(old)
+                    handle.flush()
+                    os.fsync(handle.fileno())
+            fd, temp = tempfile.mkstemp(dir=str(dest), prefix=".xcmate-widgets-")
+            try:
+                with os.fdopen(fd, "wb") as handle:
+                    handle.write(payload[PROPS_FILENAME])
+                    handle.flush()
+                    os.fsync(handle.fileno())
+                # One last exact byte comparison avoids overwriting races.
+                if original.read_bytes() != old:
+                    return "EXISTING_SKIN_DATA_PRESERVED"
+                os.replace(temp, str(original))
+            finally:
+                if os.path.exists(temp):
+                    os.unlink(temp)
+            if inspect_new_profile(dest, inventory) == "ALREADY_APPLIED":
+                return "UPGRADED"
+            with original.open("wb") as f:
+                f.write(old)
+            return "WRITE_FAILED_ROLLED_BACK"
+        except (OSError, ValueError):
+            return "WRITE_FAILED"
+
     to_write = [(dest / name, raw) for name, raw in payload.items()
                 if not (dest / name).exists()]
     created = []

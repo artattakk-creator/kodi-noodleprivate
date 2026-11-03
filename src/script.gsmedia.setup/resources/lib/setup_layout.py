@@ -53,8 +53,10 @@ WIDGETS = (
      TMDB + "?info=trending_week&tmdb_type=tv&widget=true&reload=" + RELOAD, "ARCHIVED"),
     ("Serien", "Disney Plus",
      _tmdb_provider("337"), "ARCHIVED"),
-    ("Musik", "MP3 Streams Echoed – Top World Albums",
+    ("MP3 Streams Echoed", "MP3 Streams Echoed – Top World Albums",
      "plugin://plugin.audio.m3sr2019/musicmp3/main_albums/main/0/top/0/dir", "ROUTE_REVIEW"),
+    ("Radio", "SHOUTcast Radio", "plugin://plugin.audio.shoutcast/",
+     "KODI_OFFICIAL_ROOT"),
     # XCMate hero artwork is intentionally not an invented plugin URL:
     # requires validated stable route from XCMate #315.
 )
