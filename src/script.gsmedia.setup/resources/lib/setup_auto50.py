@@ -35,10 +35,18 @@ def rows():
             # the independent online pilot catalogue.
             result.append(dict(row, repo=TEST_CHANNEL, minimum="2.1.0"))
         elif ident == "script.module.jurialmunkey":
-            # TMDbHelper dependency: distribute original GPL-3.0-or-later
-            # 0.2.35 package byte-for-byte in the approved test catalogue.
-            # No extra manual jurialmunkey repository bootstrap is needed.
+            # Original GPL-3.0+ dependency, pinned from Jurialmunkey Omega.
             result.append(dict(row, repo=TEST_CHANNEL, minimum="0.2.35"))
+        elif ident == "script.module.resolveurl":
+            # Original Gujal00 GPLv2 ResolveURL build in pilot, no extra
+            # manually configured repository.resolveurl required.
+            result.append(dict(row, repo=TEST_CHANNEL, minimum="5.1.212"))
+        elif ident == "script.module.resolveurl.xxx":
+            # Original Gujal00 adult-resolver extension in the same pilot.
+            result.append(dict(row, repo=TEST_CHANNEL, minimum="2.1.44"))
+        elif ident == "plugin.video.cumination":
+            # Exact GPLv2 original package mirrored by CI from upstream SHA.
+            result.append(dict(row, repo=TEST_CHANNEL, minimum="1.1.206"))
         else:
             result.append(row)
     return tuple(result)
