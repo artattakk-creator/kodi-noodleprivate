@@ -1,0 +1,114 @@
+{
+  "source": "https://github.com/peno64/script.ezmaintenanceplus",
+  "commit": "0e8a5bf26917f25ec79a67de1a896d440708c8e3",
+  "files": {
+    "addon.xml": {
+      "sha1": "ab3887a6ddbc321c2cf2bb26e9b78b80272d891e",
+      "size": 2096
+    },
+    "changelog.txt": {
+      "sha1": "b537699e1ae8d6cf64cdc4aa992098c535db99f6",
+      "size": 1109
+    },
+    "default.py": {
+      "sha1": "fc0a8a232317cc4139febf943cacda7cb0ffaf0d",
+      "size": 12804
+    },
+    "fanart.jpg": {
+      "sha1": "40a4165b54fd75a6b99fea81fef264cf0eac937c",
+      "size": 308304
+    },
+    "icon.png": {
+      "sha1": "a43efcef741f48addeebf213d9771a979c74741b",
+      "size": 69594
+    },
+    "resources/__init__.py": {
+      "sha1": "d3f5a12faa99758192ecc4ed3fc22c9249232e86",
+      "size": 2
+    },
+    "resources/lib/__init__.py": {
+      "sha1": "d3f5a12faa99758192ecc4ed3fc22c9249232e86",
+      "size": 2
+    },
+    "resources/lib/modules/TextViewer.py": {
+      "sha1": "4aa187da45eeefd9e64a5014f2c3a85a95ebc68b",
+      "size": 2923
+    },
+    "resources/lib/modules/__init__.py": {
+      "sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0
+    },
+    "resources/lib/modules/backtothefuture.py": {
+      "sha1": "b02ef36e7b51c3cb72978900a21883007fdd60fb",
+      "size": 595
+    },
+    "resources/lib/modules/control.py": {
+      "sha1": "168546940ec436d5a9d3e9802f1d17fdcb7fb24e",
+      "size": 4614
+    },
+    "resources/lib/modules/logviewer.py": {
+      "sha1": "627a30eb0914b292f91c2b288d8b43126eb86c7a",
+      "size": 3337
+    },
+    "resources/lib/modules/maintenance.py": {
+      "sha1": "f910587777d0661ece95aac9769adabaf75a43e0",
+      "size": 8337
+    },
+    "resources/lib/modules/pastebin.py": {
+      "sha1": "8f9cc6e4bca2a699704d941562019a736e1c3a37",
+      "size": 874
+    },
+    "resources/lib/modules/skinSwitch.py": {
+      "sha1": "41a75c7b3a4001aee52c24001dbb88f8e0b8f6b3",
+      "size": 1690
+    },
+    "resources/lib/modules/speedtest.py": {
+      "sha1": "803eb35b857fcf647105a78eba500a1592a7a6a9",
+      "size": 63049
+    },
+    "resources/lib/modules/tools.py": {
+      "sha1": "e811eacd3db563ca23413ecdddeb77bcd15f3719",
+      "size": 4462
+    },
+    "resources/lib/modules/wiz.py": {
+      "sha1": "1174fd3574e92fd7f1470c36c6063c19415b8e60",
+      "size": 16661
+    },
+    "resources/settings.xml": {
+      "sha1": "b1097de8a71796fb69b250240b3c91c9031a71fc",
+      "size": 3661
+    },
+    "resources/skins/Default/1080i/textview-skin.xml": {
+      "sha1": "6b3451ab05435c30094621ae4225cd73a5c7ec92",
+      "size": 6991
+    },
+    "resources/skins/Default/media/bg-fade.png": {
+      "sha1": "636678df8446476c1749b592a66b29b3e0cae1d6",
+      "size": 26331
+    },
+    "resources/skins/Default/media/close-fo.png": {
+      "sha1": "7ab10bde5eed8cec6b12c4c561b7b9f894bb8ea4",
+      "size": 3803
+    },
+    "resources/skins/Default/media/close-nofo.png": {
+      "sha1": "7a73b9f4963ed82e7a651b97823a2d1142eb28b3",
+      "size": 3984
+    },
+    "resources/skins/Default/media/scrollbar-V-background.png": {
+      "sha1": "2dca2f5f7a1620bd3c7275736b1d29af4b546dba",
+      "size": 103
+    },
+    "resources/skins/Default/media/scrollbar-V-focus.png": {
+      "sha1": "458aa1af06124e8f97f334d18b78ea84aecd7b7d",
+      "size": 103
+    },
+    "resources/skins/Default/media/scrollbar-V.png": {
+      "sha1": "18b6c738631fe1599b6c7135472317a46cdf0f86",
+      "size": 104
+    },
+    "service.py": {
+      "sha1": "74a1c8952a00f7dd7f445a1e0c2d2564d539e574",
+      "size": 4241
+    }
+  }
+}
