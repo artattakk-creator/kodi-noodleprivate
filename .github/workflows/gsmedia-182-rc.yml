@@ -1,0 +1,68 @@
+name: GS Media 1.8.2 + Setup 0.4.0 release candidate
+on:
+  push:
+    branches:
+      - feat/gsmedia-040-integrate-main-20261102
+  pull_request:
+    paths:
+      - 'src/script.gsmedia.setup/**'
+      - 'src/repository.gsmedia/addon.xml'
+      - 'tools/build_repository.py'
+      - 'tools/build_gsmedia_setup.py'
+      - 'tests/test_gsmedia_setup*.py'
+      - '.github/workflows/gsmedia-182-rc.yml'
+jobs:
+  build-release-candidate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install artwork renderer dependency
+        run: python -m pip install pillow
+      - name: Unit regressions
+        run: python -m unittest discover -s tests -p 'test_gsmedia_setup*.py' -v
+      - name: Syntax
+        run: python -m compileall -q src/script.gsmedia.setup
+      - name: Build 1.8.2 repository and all first-party ZIPs
+        run: python tools/build_repository.py
+      - name: Build stand-alone Setup ZIP and SHA
+        run: python tools/build_gsmedia_setup.py .build/gsmedia-setup
+      - name: Verify catalog and ZIP hashes
+        run: |
+          python - <<'PY'
+          import zipfile, hashlib, xml.etree.ElementTree as ET
+          from pathlib import Path
+          idx=ET.parse('addons.xml').getroot()
+          found={a.attrib['id']:a.attrib['version'] for a in idx.findall('addon')}
+          assert found['repository.gsmedia']=='1.8.2',found
+          assert found['script.gsmedia.setup']=='0.4.0',found
+          assert found['plugin.video.xtreammate']=='0.1.29.70',found
+          for ident,version in found.items():
+              path=Path(ident)/f'{ident}-{version}.zip'
+              assert path.is_file(),path
+              with zipfile.ZipFile(path) as z:
+                  assert z.testzip() is None
+                  assert ident+'/addon.xml' in z.namelist()
+          p=Path('.build/gsmedia-setup/script.gsmedia.setup-0.4.0.zip')
+          assert p.is_file()
+          chk=p.with_suffix('.zip.sha256')
+          assert hashlib.sha256(p.read_bytes()).hexdigest() in chk.read_text()
+          print('Candidate ZIPs and repository XML verified:',found)
+          PY
+      - name: Upload 1.8.2 repository and Setup development ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: gsmedia-repository-1.8.2-setup-0.4.0-RC
+          path: |
+            repository.gsmedia-1.8.2.zip
+            repository.gsmedia/repository.gsmedia-1.8.2.zip
+            script.gsmedia.setup/script.gsmedia.setup-0.4.0.zip
+            addons.xml
+            addons.xml.md5
+            .build/gsmedia-setup/script.gsmedia.setup-0.4.0.zip
+            .build/gsmedia-setup/script.gsmedia.setup-0.4.0.zip.sha256
+          if-no-files-found: error
