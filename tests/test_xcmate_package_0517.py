@@ -32,7 +32,7 @@ class KodiModulePackagingTests(unittest.TestCase):
     def test_actual_zip_contains_kodi_catalog_module_and_resolves_local_imports(self):
         with tempfile.TemporaryDirectory() as tmp:
             packager.build(tmp)
-            path = Path(tmp) / "script.gsmedia.setup-0.5.17.zip"
+            path = Path(tmp) / "script.gsmedia.setup-0.5.18.zip"
             self.assertTrue(path.is_file())
             with zipfile.ZipFile(path) as z:
                 self.assertIsNone(z.testzip())
