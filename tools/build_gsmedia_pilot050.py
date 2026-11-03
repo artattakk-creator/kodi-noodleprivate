@@ -45,7 +45,7 @@ ORIGINAL_SHA256 = "dba0a2e670e2d93158cb030ea52fe3e237bb19177e0a165d99c8f72a8492e
 TEST_URL = ("https://raw.githubusercontent.com/artattakk-creator/"
             "kodi-noodleprivate/main/online-test/")
 PILOT_ID = "repository.gsmedia.pilot"
-PILOT_VERSION = "1.9.6"
+PILOT_VERSION = "1.9.7"
 
 
 def _bytes_in_zip(data, prefix):
@@ -205,13 +205,65 @@ def build(destination):
     ez_zip, ez_xml = ez_package(destination)
 
     all_addons = [bridge_xml, echoed_xml, ez_xml]
+    # Source-constrained, inert native resolver bridges for EVERY eligible
+    # versioned dependency in the 43-component plan (not just Skin Shortcuts).
+    # Their only executable is an inert script; no user profile is accessed.
+    sys.path.insert(0, str(ROOT / "src/script.gsmedia.setup/resources/lib"))
+    from setup_auto50 import upgrade_bridges
+    bridge_specs = upgrade_bridges()
+    assert len(bridge_specs) >= 15, "Upgrade bridge registry unexpectedly incomplete"
+    upgrade_addons = []
+    for spec in bridge_specs:
+        helper_id = spec["id"]
+        addon = ET.Element("addon", {
+            "id": helper_id,
+            "name": "XCMate Dependency Upgrade - " + spec["target"],
+            "version": "0.1.0",
+            "provider-name": "XCMate"
+        })
+        imports = ET.SubElement(addon, "requires")
+        ET.SubElement(imports, "import", {"addon": "xbmc.python", "version": "3.0.0"})
+        ET.SubElement(imports, "import", {
+            "addon": spec["target"], "version": spec["minimum"]
+        })
+        ET.SubElement(addon, "extension", {
+            "point": "xbmc.python.script", "library": "default.py"
+        })
+        metadata = ET.SubElement(addon, "extension", {"point": "xbmc.addon.metadata"})
+        ET.SubElement(metadata, "summary", {"lang": "en_GB"}).text = (
+            "One-time original dependency version resolver"
+        )
+        ET.SubElement(metadata, "description", {"lang": "en_GB"}).text = (
+            "First-party inert resolver: asks Kodi's native add-on dependency "
+            "manager to select the original " + spec["target"] +
+            " at minimum " + spec["minimum"] + ". No user data modified."
+        )
+        ET.SubElement(metadata, "platform").text = "all"
+        ET.SubElement(metadata, "license").text = "MIT"
+        ET.SubElement(metadata, "source").text = (
+            "https://github.com/artattakk-creator/kodi-noodleprivate"
+        )
+        target = destination / helper_id / (helper_id + "-0.1.0.zip")
+        target.parent.mkdir(exist_ok=True, parents=True)
+        with zipfile.ZipFile(target, "w", compression=zipfile.ZIP_DEFLATED) as out:
+            out.writestr(helper_id + "/addon.xml",
+                         ET.tostring(addon, encoding="utf-8", xml_declaration=True))
+            out.writestr(helper_id + "/default.py",
+                         "# First-party inert Kodi dependency resolver; no side effects.\n")
+        checked = _bytes_in_zip(target, helper_id)
+        assert checked.get("version") == "0.1.0"
+        requested = checked.findall("./requires/import")
+        assert (spec["target"], spec["minimum"]) in [
+            (node.get("addon"), node.get("version")) for node in requested]
+        upgrade_addons.append(checked)
+    all_addons.extend(upgrade_addons)
     for addon_id, version, package in [
         ("plugin.video.xtreammate", "0.1.29.70",
          ROOT / "plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.70.zip"),
         ("plugin.video.noodleprivate", "0.4.2",
          ROOT / "plugin.video.noodleprivate/plugin.video.noodleprivate-0.4.2.zip"),
-        ("script.gsmedia.setup", "0.5.13",
-         ROOT / ".build/xcmate-0513/script.gsmedia.setup-0.5.13.zip"),
+        ("script.gsmedia.setup", "0.5.14",
+         ROOT / ".build/xcmate-0514/script.gsmedia.setup-0.5.14.zip"),
         ("repository.titan.bingie.mod", "2.0.1", VENDOR),
         ("script.skinshortcuts", "2.1.0", SHORTCUTS_VENDOR),
         ("repository.xvault", "1.0.3", XVAULT_REPO_VENDOR),
@@ -286,7 +338,7 @@ def build(destination):
     pilot = ET.parse(repo_source).getroot()
     pilot.set("id", PILOT_ID)
     pilot.set("version", PILOT_VERSION)
-    pilot.set("name", "xcMate Repository – Test v1.9.6 – Kodi 21.3 Omega")
+    pilot.set("name", "xcMate Repository – Test v1.9.7 – Kodi 21.3 Omega")
     pilot.set("provider-name", "xcMate")
     dir_ = pilot.find("extension[@point='xbmc.addon.repository']/dir")
     assert dir_ is not None
@@ -294,7 +346,7 @@ def build(destination):
     dir_.find("checksum").text = TEST_URL + "addons.xml.md5"
     dir_.find("datadir").text = TEST_URL
     for node in pilot.findall("extension[@point='xbmc.addon.metadata']/summary"):
-        node.text = "xcMate Repository – Test v1.9.6 – Kodi 21.3 Omega (nicht produktiv)"
+        node.text = "xcMate Repository – Test v1.9.7 – Kodi 21.3 Omega (nicht produktiv)"
     for node in pilot.findall("extension[@point='xbmc.addon.metadata']/description"):
         node.text = "XC Mate – geprüfter Testkatalog für den automatischen Kodi-Installationswizard. Android-Endabnahme am Gerät."
     pilot_xml = ET.tostring(pilot, encoding="utf-8", xml_declaration=True)
@@ -326,8 +378,9 @@ def build(destination):
     print("VENDOR_RESOLVE_XXX_SHA256", hashlib.sha256(adult_bytes).hexdigest())
     print("VENDOR_CUMINATION_SHA256", hashlib.sha256(cumination_bytes).hexdigest())
     print("TEST_ONLY", destination, "CATALOG", len(all_addons))
+    print("KODI_UPGRADE_BRIDGES", len(bridge_specs))
     print("NO_PUBLICATION_NO_ANDROID_PASS")
 
 
 if __name__ == "__main__":
-    build(sys.argv[1] if len(sys.argv)>1 else ROOT/".build/xcmate-0513-pilot")
+    build(sys.argv[1] if len(sys.argv)>1 else ROOT/".build/xcmate-0514-pilot")
