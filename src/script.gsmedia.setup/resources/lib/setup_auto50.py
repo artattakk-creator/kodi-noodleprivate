@@ -43,6 +43,10 @@ def rows():
             # is insufficient. A vetted, byte-identical 2.1.0 is supplied in
             # the independent online pilot catalogue.
             result.append(dict(row, repo=TEST_CHANNEL, minimum="2.1.0"))
+        elif ident == "script.bingie.helper":
+            # The original GPLv3 1.1.2 ZIP is mirrored unchanged and pinned
+            # in the first-party beta catalog, alongside repository 2.0.1.
+            result.append(dict(row, repo=TEST_CHANNEL, minimum="1.1.2"))
         elif ident == "script.module.jurialmunkey":
             # Original GPL-3.0+ dependency, pinned from Jurialmunkey Omega.
             result.append(dict(row, repo=TEST_CHANNEL, minimum="0.2.35"))
