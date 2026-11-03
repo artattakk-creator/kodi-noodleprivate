@@ -57,6 +57,15 @@ def rows():
         elif ident == "script.module.resolveurl.xxx":
             # Original Gujal00 adult-resolver extension in the same pilot.
             result.append(dict(row, repo=TEST_CHANNEL, minimum="2.1.44"))
+        elif ident == "slyguy.dependencies":
+            # Original version, SHA1-pinned and licensed, now directly available
+            # in our trusted Kodi repo. No dependence on the live SlyGuy CDN
+            # while provisioning a fresh Android Kodi 21.3 device.
+            result.append(dict(row, repo=TEST_CHANNEL, minimum="0.0.30"))
+        elif ident == "script.module.slyguy":
+            result.append(dict(row, repo=TEST_CHANNEL, minimum="0.87.6"))
+        elif ident == "slyguy.trailers":
+            result.append(dict(row, repo=TEST_CHANNEL, minimum="0.2.2"))
         elif ident == "repository.slyguy":
             # Exact original SlyGuy repository bootstrap is a pilot-listed
             # package; do not require a manual ZIP picker.
