@@ -1,7 +1,7 @@
 name: xcMate Repository 1.9.5 XCMate Setup 0.5.12 Widget Recovery and Reboot
 on:
   push:
-    branches: [fix/xcmate-0512-mandatory-xvault-active-bingie-20261103]
+    branches: [fix/xcmate-0512-bingie-resume-onebutton-restart-20261103]
   workflow_dispatch:
 permissions:
   contents: write
