@@ -1,0 +1,150 @@
+name: XC Mate Repository 1.9.3 Setup 0.5.10 One Click and TMDB Player Safe
+on:
+  push:
+    branches: [fix/xcmate-setup-0510-oneclick-tmdb-branding-20261103]
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: gsmedia-online-beta-publish
+  cancel-in-progress: false
+jobs:
+  verify-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify wizard safety and Kodi 21 Python syntax
+        run: |
+          python -m compileall -q src/script.gsmedia.setup tools/gsmedia_058_sources.py tools/build_gsmedia_pilot050.py tools/publish_xcmate_0510_beta.py
+          python -m unittest discover -s tests -p 'test_gsmedia_setup_auto50.py' -v
+          python -m unittest discover -s tests -p 'test_gsmedia_origin_guard52.py' -v
+          python -m unittest discover -s tests -p 'test_gsmedia_skinpatch_059.py' -v
+          python -m unittest discover -s tests -p 'test_xcmate_setup_0510.py' -v
+      - name: Verify unchanged resumable source-plan indices
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import sys, xml.etree.ElementTree as ET
+          sys.path.insert(0, str(Path('src/script.gsmedia.setup/resources/lib').resolve()))
+          from setup_auto50 import rows,TEST_CHANNEL
+          data={x['id']:x for x in rows()}
+          assert len(data)==43,(len(data),data.keys())
+          assert data['plugin.audio.m3sr2019']['repo']==TEST_CHANNEL
+          assert data['plugin.audio.m3sr2019']['minimum']=='2026.1.0'
+          assert data['script.ezmaintenanceplus']['repo']==TEST_CHANNEL
+          assert data['script.ezmaintenanceplus']['minimum']=='2026.04.05.0'
+          assert data['repository.slyguy']['minimum']=='0.0.9'
+          assert data['plugin.video.xvault']['repo']=='repository.xvault'
+          meta=ET.parse('src/script.gsmedia.setup/addon.xml').getroot()
+          assert meta.get('version')=='0.5.10'
+          print('RESUME_37_OF_43_PLAN_IS_UNCHANGED')
+          PY
+      - name: Build official first-party dependencies and Wizard 0.5.10
+        run: |
+          python -m pip install pillow
+          python tools/build_repository.py
+          python tools/build_gsmedia_setup.py .build/xcmate-0510
+      - name: Build 15-package verified test catalog including original Echoed 2026 and EZ
+        run: python tools/build_gsmedia_pilot050.py .build/xcmate-0510-pilot
+      - name: Check package roots, media completeness, 15-ID index, source and SHA manifests
+        run: |
+          python - <<'PY'
+          import hashlib, zipfile,xml.etree.ElementTree as ET
+          from pathlib import Path
+          root=Path('.build/xcmate-0510-pilot')
+          meta=ET.parse(root/'addons.xml').getroot()
+          ids={x.get('id'):x.get('version') for x in meta.findall('addon')}
+          assert len(ids)==15,ids
+          expected={
+              'repository.gsmedia.pilot':'1.9.3',
+              'script.gsmedia.setup':'0.5.10',
+              'plugin.audio.m3sr2019':'2026.1.0',
+              'script.ezmaintenanceplus':'2026.04.05.0',
+              'repository.slyguy':'0.0.9',
+              'repository.xvault':'1.0.3',
+          }
+          for k,v in expected.items(): assert ids.get(k)==v,(k,ids.get(k))
+          for addon_id,version in ids.items():
+              zpath=root/addon_id/(addon_id+'-'+version+'.zip')
+              assert zpath.is_file(),zpath
+              with zipfile.ZipFile(zpath) as archive:
+                  assert archive.testzip() is None
+                  a=ET.fromstring(archive.read(addon_id+'/addon.xml'))
+                  assert a.get('id')==addon_id and a.get('version')==version
+                  if addon_id=='plugin.audio.m3sr2019':
+                      names=archive.namelist()
+                      assert len(names)>250,len(names)
+                      assert addon_id+'/resources/media/genre/rock/rock.jpg' in names
+                      assert addon_id+'/resources/media/billboard/hot100singles.jpg' in names
+                      assert addon_id+'/resources/lib/musicmp3.py' in names
+                      assert addon_id+'/LICENSE' in names
+                      assert not any('__pycache__' in n or n.endswith('.pyc') or 'cookies.dat' in n or 'tracks.db' in n for n in names)
+                  if addon_id=='script.ezmaintenanceplus':
+                      assert addon_id+'/service.py' in archive.namelist()
+              print('ZIP_OK',addon_id,version,hashlib.sha256(zpath.read_bytes()).hexdigest())
+          assert (root/'addons.xml.md5').read_text().strip()==hashlib.md5((root/'addons.xml').read_bytes()).hexdigest()
+          for n in ('plugin.audio.m3sr2019','script.ezmaintenanceplus'):
+              assert (root/n/'SOURCE.txt').is_file()
+          print('ALL_15_ZIPS_AND_SOURCE_NOTICES_OK')
+          PY
+      - name: Upload inspectable beta candidate, including sha-verified ZIPs
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcmate-0510-echoed-ez-candidate
+          path: |
+            .build/xcmate-0510/script.gsmedia.setup-0.5.10.zip
+            .build/xcmate-0510/script.gsmedia.setup-0.5.10.zip.sha256
+            .build/xcmate-0510-pilot/
+          if-no-files-found: error
+      - name: Create guarded main worktree without touching production catalog
+        run: |
+          git fetch origin main
+          git worktree add --detach "$RUNNER_TEMP/xcmate-0510-main" origin/main
+          python tools/publish_gsmedia_059_beta.py .build/xcmate-0510-pilot "$RUNNER_TEMP/xcmate-0510-main/online-test"
+      - name: Push only test channel; reject concurrent main changes
+        run: |
+          cd "$RUNNER_TEMP/xcmate-0510-main"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add online-test/
+          if git diff --cached --quiet; then echo "Unchanged test release"; exit 0; fi
+          if git diff --cached --name-only | grep -v '^online-test/'; then
+            echo "Refusing changes outside online-test/"; exit 1
+          fi
+          git commit -m "Publish isolated XC Mate 1.9.3 Setup 0.5.10 one-click TMDB player protection"
+          git push origin HEAD:main
+      - name: Independently verify public HTTPS ZIPs, index and checksum
+        run: |
+          python - <<'PY'
+          import hashlib, pathlib, time, urllib.request
+          dest=pathlib.Path(__import__('os').environ['RUNNER_TEMP'])/'xcmate-0510-main'/'online-test'
+          base='https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/'
+          paths=(
+            'addons.xml','addons.xml.md5','manifest.json',
+            'repository.gsmedia.pilot-1.9.3.zip',
+            'script.gsmedia.setup/script.gsmedia.setup-0.5.10.zip',
+            'plugin.audio.m3sr2019/plugin.audio.m3sr2019-2026.1.0.zip',
+            'plugin.audio.m3sr2019/SOURCE.txt',
+            'script.ezmaintenanceplus/script.ezmaintenanceplus-2026.04.05.0.zip',
+            'script.ezmaintenanceplus/SOURCE.txt',
+          )
+          for rel in paths:
+              expected=hashlib.sha256((dest/rel).read_bytes()).hexdigest()
+              for n in range(15):
+                  try:
+                      with urllib.request.urlopen(base+rel,timeout=20) as response:
+                          b=response.read()
+                      if hashlib.sha256(b).hexdigest()==expected:
+                          print('PUBLIC_HTTPS_SHA256_PASS',rel,expected); break
+                  except Exception as ex:
+                      print('RETRY_PUBLIC',rel,n,str(ex))
+                  time.sleep(5)
+              else: raise RuntimeError('PUBLIC_NOT_VERIFIED: '+rel)
+          PY
