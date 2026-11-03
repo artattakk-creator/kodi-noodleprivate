@@ -5,6 +5,7 @@ Kodi itself handles package transfers and approval dialogs.
 """
 import os
 import re
+from contextlib import nullcontext
 from pathlib import Path
 
 from setup_auto50 import (new_state, next_step, after_request, after_confirm,
@@ -12,7 +13,7 @@ from setup_auto50 import (new_state, next_step, after_request, after_confirm,
 from setup_auto_store50 import load, save
 from setup_inventory import snapshot
 from setup_install_pilot import protected_existing, _version
-from setup_origin_guard52 import restore as restore_origin_policy
+from setup_origin_guard52 import TemporaryOfficialAddonSource, restore as restore_origin_policy
 
 
 def _context():
@@ -208,8 +209,10 @@ def run():
                         "GS Media wird jetzt den originalen Skin Shortcuts "
                         "2.1.0 als Pflichtabhaengigkeit eines kleinen "
                         "GS-Media-Testpakets ueber Kodi installieren. "
-                        "Die globale Kodi-Sicherheitsregel bleibt unveraendert. "
-                        "Fortfahren?"
+                        "Dafuer wird die Quellenfreigabe kurzzeitig "
+                        "auf 'Alle Repositories' gestellt und werden automatische "
+                        "Updates pausiert. Danach werden beide Einstellungen "
+                        "auf die vorherigen Werte zurueckgesetzt. Fortfahren?"
                     ):
                         reason = "NATIVE_UPGRADE_NOT_APPROVED"
                         state = _persist(profile, stop(state, reason))
@@ -217,24 +220,30 @@ def run():
 
                 state = _persist(profile, after_request(state, ident))
                 wait = 0
-                xbmc.executebuiltin("InstallAddon(" + install_id + ")")
+                scope = (TemporaryOfficialAddonSource(profile, xbmc.executeJSONRPC)
+                         if native_upgrade else nullcontext())
+                # Kodi Omega FindDependency explicitly prefers the OFFICIAL
+                # 2.0.3, even for a parent installed from our pilot. Both
+                # the temporary consented ANY_REPOSITORY setting AND a fresh
+                # bridge dependency are necessary. The scope restores the
+                # original Kodi update settings in success, error, and cancel.
+                with scope:
+                    xbmc.executebuiltin("InstallAddon(" + install_id + ")")
 
-                # InstallAddon displays a native modal Kodi prompt, and Kodi
-                # owns the actual ZIP download and dependency resolution.
-                # Never claim elapsed time is a download percentage.
-                while wait < (100 if native_upgrade else 240):
-                    if monitor.waitForAbort(2):
-                        break
-                    if window.getProperty("GS_MEDIA_050_CANCEL") == "1":
-                        break
-                    wait += 2
-                    inv = snapshot()
-                    if next_step(state, inv)["code"] == "CONFIRM":
-                        break
-                    progress.update(
-                        percent,
-                        "GS Media: {} / {} Komponenten".format(done, total),
-                        "{} – Kodi-Paketpruefung ({} s)".format(ident, wait))
+                    # Kodi owns native downloads; these seconds are a wait.
+                    while wait < (100 if native_upgrade else 240):
+                        if monitor.waitForAbort(2):
+                            break
+                        if window.getProperty("GS_MEDIA_050_CANCEL") == "1":
+                            break
+                        wait += 2
+                        inv = snapshot()
+                        if next_step(state, inv)["code"] == "CONFIRM":
+                            break
+                        progress.update(
+                            percent,
+                            "GS Media: {} / {} Komponenten".format(done, total),
+                            "{} – Kodi-Paketpruefung ({} s)".format(ident, wait))
 
                 if (monitor.abortRequested() or
                         window.getProperty("GS_MEDIA_050_CANCEL") == "1"):
