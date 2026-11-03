@@ -1,0 +1,62 @@
+name: Diagnose Kodi SlyGuy dependency resolver 0.5.18 (read-only)
+on:
+  push:
+    branches:
+      - diagnose/xcmate-slyguy-20261103
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Inspect exact approved SlyGuy package graph and live official repository URLs
+        shell: bash
+        run: |
+          python - <<'PY'
+          import urllib.request,urllib.error,zipfile,io,xml.etree.ElementTree as ET,hashlib
+          REV="42ea97aca5987db6ce3e2cdfa1a129bc8b0b0281"
+          pkg=[
+              ("repository.slyguy","0.0.9"),
+              ("slyguy.dependencies","0.0.30"),
+              ("script.module.slyguy","0.87.6"),
+              ("slyguy.trailers","0.2.2"),
+          ]
+          def request(url,limit=4_000_000):
+              try:
+                  r=urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0 Kodi Omega xcMate dependency diagnostic"})
+                  with urllib.request.urlopen(r,timeout=12) as f:
+                      content=f.read(limit+1)
+                      print("URL_STATUS",f.status,"URL",url,"BYTES",len(content),"TYPE",f.headers.get("Content-Type"))
+                  return content if len(content)<=limit else None
+              except Exception as ex:
+                  print("URL_ERROR",url,type(ex).__name__,str(ex)[:180])
+                  return None
+          meta={}
+          for ident,version in pkg:
+              url="https://raw.githubusercontent.com/matthuisman/slyguy.addons/"+REV+"/"+ident+"/"+ident+"-"+version+".zip"
+              raw=request(url,4_000_000)
+              if raw is None:continue
+              try:
+                  with zipfile.ZipFile(io.BytesIO(raw)) as z:
+                      a=ET.fromstring(z.read(ident+"/addon.xml"))
+                      imports=[(x.get("addon"),x.get("version"),x.get("optional")) for x in a.findall("./requires/import")]
+                      license=a.findtext("./extension[@point='xbmc.addon.metadata']/license")
+                      print("PACKAGE",ident,"VERSION",a.get("version"),"LICENSE",repr(license),"IMPORTS",imports)
+                      meta[ident]=(a,imports)
+              except Exception as ex:print("PARSE_ERROR",ident,type(ex).__name__,str(ex)[:150])
+          repo=meta.get("repository.slyguy")
+          if repo:
+              node=repo[0].find("./extension[@point='xbmc.addon.repository']/dir")
+              if node is not None:
+                  for t in ("info","checksum","datadir"):
+                      print("ORIGINAL_REPO_ENDPOINT",t,node.findtext(t))
+                      if t!="datadir" and node.findtext(t):
+                          request(node.findtext(t),250_000)
+                  base=node.findtext("datadir") or ""
+                  for ident,ver in pkg[1:]:
+                      request(base+ident+"/"+ident+"-"+ver+".zip",4_000_000)
+          else: print("NO_REPO_METADATA_NO_CONCLUSION")
+          print("NO_USER_DATA_COLLECTED")
+          PY
