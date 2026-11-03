@@ -34,6 +34,11 @@ def rows():
             # is insufficient. A vetted, byte-identical 2.1.0 is supplied in
             # the independent online pilot catalogue.
             result.append(dict(row, repo=TEST_CHANNEL, minimum="2.1.0"))
+        elif ident == "script.module.jurialmunkey":
+            # TMDbHelper dependency: distribute original GPL-3.0-or-later
+            # 0.2.35 package byte-for-byte in the approved test catalogue.
+            # No extra manual jurialmunkey repository bootstrap is needed.
+            result.append(dict(row, repo=TEST_CHANNEL, minimum="0.2.35"))
         else:
             result.append(row)
     return tuple(result)
