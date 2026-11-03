@@ -80,7 +80,9 @@ class OriginalSlyGuyBootstrap(TestCase):
 
     def test_script_uses_native_bridge_and_not_a_direct_unlicensed_mirror(self):
         ui=(LIB/"setup_auto_ui50.py").read_text(encoding="utf-8")
-        self.assertIn('install_id = "script.gsmedia.slyguy.bootstrap"',ui)
+        self.assertIn('install_id = "script.module.slyguy"',ui)
+        self.assertIn('SLYGUY_ORIGINAL_SAME_REPO_PARENT',ui)
+        self.assertNotIn('install_id = "script.gsmedia.slyguy.bootstrap"',ui)
         self.assertIn('addon_id="slyguy.dependencies"',ui)
         self.assertIn('probe_kodi_catalog(xbmc.executeJSONRPC, install_id)',ui)
         pilot=(TOOLS/"build_gsmedia_pilot050.py").read_text(encoding="utf-8")
