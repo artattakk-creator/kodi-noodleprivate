@@ -1,0 +1,14 @@
+GS Media test-channel vendor provenance — Jurialmunkey common module
+Unmodified upstream Kodi 21 Omega distribution, version 0.2.35
+Upstream author/provider: jurialmunkey
+Upstream source repository: https://github.com/jurialmunkey/script.module.jurialmunkey
+Exact upstream source commit: 8f42fb5f4698f3e4552f38955964b2f3843dba69
+Original distribution: https://github.com/jurialmunkey/repository.jurialmunkey
+Exact distribution repository commit: e1ee43587b370382e05decf601f6e9fa08d77559
+Original path: omega/zips/script.module.jurialmunkey/script.module.jurialmunkey-0.2.35.zip
+Unmodified original Git blob SHA1: 98556ddadf9ea88db9809728663ddc08fe9a0990
+License declared in original addon.xml: GPL-3.0-or-later
+License text: https://www.gnu.org/licenses/gpl-3.0.html
+Corresponding GPL source code: https://github.com/jurialmunkey/script.module.jurialmunkey/tree/8f42fb5f4698f3e4552f38955964b2f3843dba69
+This is a verbatim original package, no code modifications; authorship remains with jurialmunkey.
+GS Media beta environment only; no production redistribution approval.
