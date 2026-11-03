@@ -13,6 +13,7 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parents[1]
 VENDOR = ROOT / "vendor/bingie-repository/repository.titan.bingie.mod-2.0.1.zip"
 ORIGINAL_GIT_BLOB = "da6e2b22b9bdb3baaf12da362fcbadb0b17628e6"
+ORIGINAL_SHA256 = "dba0a2e670e2d93158cb030ea52fe3e237bb19177e0a165d99c8f72a8492ef46"
 TEST_URL = ("https://raw.githubusercontent.com/artattakk-creator/"
             "kodi-noodleprivate/main/online-test/")
 PILOT_ID = "repository.gsmedia.pilot"
@@ -32,6 +33,7 @@ def build(destination):
     git_blob = hashlib.sha1(b"blob " + str(len(vendor)).encode("ascii")
                             + b"\0" + vendor).hexdigest()
     assert git_blob == ORIGINAL_GIT_BLOB, "Upstream BINGIE package changed"
+    assert hashlib.sha256(vendor).hexdigest() == ORIGINAL_SHA256, "BINGIE SHA256 mismatch"
     original = _bytes_in_zip(VENDOR, "repository.titan.bingie.mod")
     assert original.get("id") == "repository.titan.bingie.mod"
     assert original.get("version") == "2.0.1"
