@@ -132,6 +132,11 @@ def next_step(state, inventory):
                     "source": REPO_BOOTSTRAP.get(repo, "")}
         if ident in state["attempted"]:
             return {"code": "RETRY_REQUIRED", "id": ident}
+        if ident in REPO_ALLOWLIST and repo == TEST_CHANNEL:
+            # Explicit original-source bootstrap is still a Kodi repository:
+            # refresh source indices immediately after installation.
+            return {"code": "INSTALL_REPOSITORY", "id": ident,
+                    "source": "GS_MEDIA_APPROVED_TEST_CATALOG"}
         item = inventory.get("addons", {}).get(ident, {})
         actual = item.get("version", "") if isinstance(item, dict) else ""
         if actual and not installed(inventory, ident, minimum):
