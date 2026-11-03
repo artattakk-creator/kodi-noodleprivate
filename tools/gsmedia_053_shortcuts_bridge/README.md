@@ -12,7 +12,11 @@ The upstream GPL-2.0-only Skin Shortcuts 2.1.0 package remains byte-identical
 to AchillesPunks and is separately distributed in the pilot catalog with
 full attribution. The bridge itself is MIT-licensed GS Media source.
 
-No global Kodi settings changes, Addons.db modifications, direct ZIP
+Kodi Omega first prefers the official 2.0.3 even when our pilot is the parent.
+The wizard therefore temporarily and explicitly switches official add-on
+updates to ANY_REPOSITORY **during this one native dependency transaction**, then
+restores original values using an atomic recovery journal. No permanent
+Kodi settings changes, Addons.db modifications, direct ZIP
 extraction into the Kodi add-ons folder, or silent modification of user data.
 Kodi prompts for installation. If the native dependency resolution fails,
 the setup must stop with a useful error and preserve all prior installations.
