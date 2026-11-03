@@ -1,0 +1,982 @@
+{
+  "source": "https://github.com/L2501/plugin.audio.m3sr2019",
+  "commit": "2a0f3d44e9d3dfbc853574621682fd377663f541",
+  "files": {
+    "resources/media/addid3tags.jpg": {
+      "sha1": "c4ef04942654718fe1d0de66edd1a978e03b30dc",
+      "size": 36261
+    },
+    "resources/media/allartists.jpg": {
+      "sha1": "7056149dcaf70e6cdb37e058708b0ee4946ce3fe",
+      "size": 34129
+    },
+    "resources/media/allnewalbums.jpg": {
+      "sha1": "8abef7fb3a1f7a0780c7a1f0209eef633d971deb",
+      "size": 36284
+    },
+    "resources/media/alltopalbums.jpg": {
+      "sha1": "bbd1649ae736f50a0675148d32a1a449c26da4b2",
+      "size": 35233
+    },
+    "resources/media/artists.jpg": {
+      "sha1": "efca99d682a0bc325008e965cbfb9573cd7ea96e",
+      "size": 31742
+    },
+    "resources/media/billboard/alternativealbums.jpg": {
+      "sha1": "85124505649b59815c4803d926ac109590bf4e16",
+      "size": 41390
+    },
+    "resources/media/billboard/billboard200.jpg": {
+      "sha1": "e22c231c6e22baeab6bfa5052aa0b2a669562352",
+      "size": 37438
+    },
+    "resources/media/billboard/billboardcharts.jpg": {
+      "sha1": "73c037e5098629c56796dd9d87ac8fc894c07104",
+      "size": 42138
+    },
+    "resources/media/billboard/bluesalbums.jpg": {
+      "sha1": "fb72202717c19159e3bc31d7ec84e6dae988a4b9",
+      "size": 38079
+    },
+    "resources/media/billboard/cataloguealbums.jpg": {
+      "sha1": "a51c546976c05ae0217488a7e7f57df61d6b1305",
+      "size": 40967
+    },
+    "resources/media/billboard/countryalbums.jpg": {
+      "sha1": "db9fcd2604f72b66c6a969207c4df0401b1c4fac",
+      "size": 41064
+    },
+    "resources/media/billboard/danceandelectronic.jpg": {
+      "sha1": "6b149455504a49c17aa07c179c9ce75393ab2771",
+      "size": 46768
+    },
+    "resources/media/billboard/digitalalbums.jpg": {
+      "sha1": "cb644cb73ec7bf9a3c015a30f124d3988d53babc",
+      "size": 40793
+    },
+    "resources/media/billboard/folkalbums.jpg": {
+      "sha1": "cf40e4e052a5f0bdb1f6d497f70077d9c005f9df",
+      "size": 36377
+    },
+    "resources/media/billboard/hardrockalbums.jpg": {
+      "sha1": "ae7e563b5eed6bfc7c5954cce3f3811e7b1c3201",
+      "size": 39912
+    },
+    "resources/media/billboard/heatseekeralbums.jpg": {
+      "sha1": "2ae78609b67cee1609e666e799559119deb9d033",
+      "size": 41277
+    },
+    "resources/media/billboard/hot100singles.jpg": {
+      "sha1": "ab79bc4b4f294308edf013c4796c1d2b3ac7d30f",
+      "size": 38686
+    },
+    "resources/media/billboard/independentalbums.jpg": {
+      "sha1": "6f8d349f795ab0b314944cc5876222db84292fc6",
+      "size": 41333
+    },
+    "resources/media/billboard/randbalbums.jpg": {
+      "sha1": "b21ea2718ddf17442d6556a91a20e611417930c5",
+      "size": 39150
+    },
+    "resources/media/billboard/rockalbums.jpg": {
+      "sha1": "612c318757c87664c3b1cceecdc733d66a312aa0",
+      "size": 38136
+    },
+    "resources/media/billboard/tastemakeralbums.jpg": {
+      "sha1": "13c3f4678f199e089aa2b2bf4d9f61c50907c9bd",
+      "size": 41245
+    },
+    "resources/media/billboard/toprandbandhiphop.jpg": {
+      "sha1": "c04f52d7b65663b9e0e92778890bd19b510c2b4b",
+      "size": 45686
+    },
+    "resources/media/billboard/ukalbumchart.jpg": {
+      "sha1": "068bb697dd35bcf4fa7c2fc40e08b22f8c1d7628",
+      "size": 33944
+    },
+    "resources/media/billboard/uksinglecharttop100.jpg": {
+      "sha1": "0955a7410efed947c7267397e932f645e4ca4464",
+      "size": 43538
+    },
+    "resources/media/billboardcharts.jpg": {
+      "sha1": "73c037e5098629c56796dd9d87ac8fc894c07104",
+      "size": 42138
+    },
+    "resources/media/clearplaylist.jpg": {
+      "sha1": "518e95c968e2f9e494918947fe2863f66d3b7680",
+      "size": 39190
+    },
+    "resources/media/compilations.jpg": {
+      "sha1": "13c6110c489948ee51cdde004b5ea647f78af85f",
+      "size": 36292
+    },
+    "resources/media/fanart.jpg": {
+      "sha1": "6e0a9c93a864fce8213371878e865eaff028405d",
+      "size": 314006
+    },
+    "resources/media/favouritealbums.jpg": {
+      "sha1": "b8d8767ee9f87ba9c86f11e55f7b5423766d5a2b",
+      "size": 39228
+    },
+    "resources/media/favouriteartists.jpg": {
+      "sha1": "df1bd8975cf9d4eaf9880dfdd43b0bf51d02b319",
+      "size": 39909
+    },
+    "resources/media/favouritesongs.jpg": {
+      "sha1": "e351ab65ea761bf91dd61f8902875f9ad5b31667",
+      "size": 38826
+    },
+    "resources/media/genre/alternative.jpg": {
+      "sha1": "083f4a7a489f43f0e8e882b0d1ddee2250d3a9fe",
+      "size": 33816
+    },
+    "resources/media/genre/alternative/alternative.jpg": {
+      "sha1": "083f4a7a489f43f0e8e882b0d1ddee2250d3a9fe",
+      "size": 33816
+    },
+    "resources/media/genre/alternative/britpop.jpg": {
+      "sha1": "ad26c9b9abbfbbacae0bc76a1ddd0611905faf33",
+      "size": 32535
+    },
+    "resources/media/genre/alternative/compilations.jpg": {
+      "sha1": "13c6110c489948ee51cdde004b5ea647f78af85f",
+      "size": 36292
+    },
+    "resources/media/genre/alternative/dreampop.jpg": {
+      "sha1": "084c473efb8d307ae80065b289d2d66d05d1d480",
+      "size": 34827
+    },
+    "resources/media/genre/alternative/emo.jpg": {
+      "sha1": "7369556ccf924e54b502f1b805d85ee2406b15e4",
+      "size": 27659
+    },
+    "resources/media/genre/alternative/garagerock.jpg": {
+      "sha1": "3c3d68b0767564bb2b9b4bf0e8edf41f2a1b72ee",
+      "size": 39448
+    },
+    "resources/media/genre/alternative/grunge.jpg": {
+      "sha1": "0bf6c9a31fb8c5c457855f914da2188dc23626e7",
+      "size": 31713
+    },
+    "resources/media/genre/alternative/indierock.jpg": {
+      "sha1": "e0bea8aac68ca26160b61797e05726079494d572",
+      "size": 34836
+    },
+    "resources/media/genre/alternative/industrialrock.jpg": {
+      "sha1": "d34c898c0e064e3d3db7c7fa5247ce8b7eda6de3",
+      "size": 38490
+    },
+    "resources/media/genre/alternative/latinalternative.jpg": {
+      "sha1": "2b83d9b775f53958881c4e1289948279e9c11bfc",
+      "size": 38700
+    },
+    "resources/media/genre/alternative/post-punk.jpg": {
+      "sha1": "e47c14fd64364408ff3235126bd8fe892c6d2aab",
+      "size": 34702
+    },
+    "resources/media/genre/alternative/punkrock.jpg": {
+      "sha1": "97b52b7ac668df2f1242e613e27cf436f660201a",
+      "size": 34734
+    },
+    "resources/media/genre/alternative/raprock.jpg": {
+      "sha1": "3f28cb7f15802bc01280397177b63ef5ae16e6db",
+      "size": 34324
+    },
+    "resources/media/genre/alternative/topalternative.jpg": {
+      "sha1": "eef49b5a1af08b8a024c8b1fd6d39a67e84b5918",
+      "size": 34577
+    },
+    "resources/media/genre/blues.jpg": {
+      "sha1": "c1534458b9504567ca8b02387435da795bcc7686",
+      "size": 27662
+    },
+    "resources/media/genre/blues/acousticblues.jpg": {
+      "sha1": "6f94aab9b521830594c7210f41022f3b74b592e9",
+      "size": 38915
+    },
+    "resources/media/genre/blues/blues.jpg": {
+      "sha1": "c1534458b9504567ca8b02387435da795bcc7686",
+      "size": 27662
+    },
+    "resources/media/genre/blues/bluesrock.jpg": {
+      "sha1": "c7521c6afc79a91b9d8b3fc0cc8ca5a96fad436a",
+      "size": 35779
+    },
+    "resources/media/genre/blues/compilations.jpg": {
+      "sha1": "13c6110c489948ee51cdde004b5ea647f78af85f",
+      "size": 36292
+    },
+    "resources/media/genre/blues/electricblues.jpg": {
+      "sha1": "b91f0c02937b3659e5f7d630f18c69ef454327b3",
+      "size": 37340
+    },
+    "resources/media/genre/blues/pianoblues.jpg": {
+      "sha1": "6d8315085639be3b2bdf2dd998aba981658333d2",
+      "size": 36329
+    },
+    "resources/media/genre/blues/topblues.jpg": {
+      "sha1": "431df3e02f613bda04d5da68be583a7568dbe616",
+      "size": 32625
+    },
+    "resources/media/genre/classical.jpg": {
+      "sha1": "ec13145981774681e12b8eaeb521b92de2c252fc",
+      "size": 34827
+    },
+    "resources/media/genre/classical/allclassical.jpg": {
+      "sha1": "469462d3e3486fee92273c9ca9264e7f6f62fb36",
+      "size": 34810
+    },
+    "resources/media/genre/classical/baroqueperiod.jpg": {
+      "sha1": "7443667f05d27c369b3737464028a86b683f5210",
+      "size": 42413
+    },
+    "resources/media/genre/classical/chamber.jpg": {
+      "sha1": "7e0ff9d450e1f8041682ca0b75528ffd08925542",
+      "size": 34242
+    },
+    "resources/media/genre/classical/choral.jpg": {
+      "sha1": "05a0e7dd9bc351eaf131b7c3b58819c97fd0d69a",
+      "size": 32740
+    },
+    "resources/media/genre/classical/classical.jpg": {
+      "sha1": "ec13145981774681e12b8eaeb521b92de2c252fc",
+      "size": 34827
+    },
+    "resources/media/genre/classical/classicalcrossover.jpg": {
+      "sha1": "c13e3118a79e664ec995538327e23dbe24886798",
+      "size": 44264
+    },
+    "resources/media/genre/classical/classicalperiod.jpg": {
+      "sha1": "9c9821796569096b3e04ad2226d5fcc656ffec5d",
+      "size": 43404
+    },
+    "resources/media/genre/classical/compilations.jpg": {
+      "sha1": "13c6110c489948ee51cdde004b5ea647f78af85f",
+      "size": 36292
+    },
+    "resources/media/genre/classical/medieval.jpg": {
+      "sha1": "1c1499b17f23805d243f1bc71bec2b3c984629ca",
+      "size": 35188
+    },
+    "resources/media/genre/classical/modernclassical.jpg": {
+      "sha1": "98517eaa9bee088fcd7b7ec2009f484d04890997",
+      "size": 43364
+    },
+    "resources/media/genre/classical/opera.jpg": {
+      "sha1": "cd2b1ca54e320e252841f5077360cb166d746cd4",
+      "size": 31681
+    },
+    "resources/media/genre/classical/orchestral.jpg": {
+      "sha1": "76fd4940a0086606d041f5f2f01ba03091024cd3",
+      "size": 34839
+    },
+    "resources/media/genre/classical/renaissance.jpg": {
+      "sha1": "aefce1f0371aea1b443ab17aefab1eeb8fd1cfc7",
+      "size": 35950
+    },
+    "resources/media/genre/classical/romanticperiod.jpg": {
+      "sha1": "1f4b534f18555d2b70938b281816b4326b651972",
+      "size": 43531
+    },
+    "resources/media/genre/compilations.jpg": {
+      "sha1": "13c6110c489948ee51cdde004b5ea647f78af85f",
+      "size": 36292
+    },
+    "resources/media/genre/country.jpg": {
+      "sha1": "4984e00c059ee6ef34f974809050e4a4e7922f82",
+      "size": 30772
+    },
+    "resources/media/genre/country/alternativecountry.jpg": {
+      "sha1": "1ccb1e032e74175aafc1460edc18640d742b8256",
+      "size": 41082
+    },
+    "resources/media/genre/country/compilations.jpg": {
+      "sha1": "13c6110c489948ee51cdde004b5ea647f78af85f",
+      "size": 36292
+    },
+    "resources/media/genre/country/contemporarycountry.jpg": {
+      "sha1": "ab9da5c3084d574c29ea137b7ac7c3e93a2756e7",
+      "size": 40812
+    },
+    "resources/media/genre/country/country.jpg": {
+      "sha1": "4984e00c059ee6ef34f974809050e4a4e7922f82",
+      "size": 30772
+    },
+    "resources/media/genre/country/countrypop.jpg": {
+      "sha1": "d086c35485a74c9f763cc284d9c7b9e979ef333b",
+      "size": 34861
+    },
+    "resources/media/genre/country/countryrock.jpg": {
+      "sha1": "a6f93d1b6e3b24652b4bc2e2b1e63733c2715248",
+      "size": 37212
+    },
+    "resources/media/genre/country/topcountry.jpg": {
+      "sha1": "7d0a5a123969ea18061cc9c814263624410e1717",
+      "size": 33951
+    },
+    "resources/media/genre/country/traditionalcountry.jpg": {
+      "sha1": "1a859cfd3ecafda0a8e4428d5f49293d69035877",
+      "size": 39688
+    },
+    "resources/media/genre/dance.jpg": {
+      "sha1": "8af629bed14625aabe0417a4eef70c82186996a2",
+      "size": 40854
+    },
+    "resources/media/genre/dance/alternativedance.jpg": {
+      "sha1": "1bcd38d353bfda72a7123f5a3e8923819407c875",
+      "size": 51939
+    },
+    "resources/media/genre/dance/compilations.jpg": {
+      "sha1": "13c6110c489948ee51cdde004b5ea647f78af85f",
+      "size": 36292
+    },
+    "resources/media/genre/dance/dance.jpg": {
+      "sha1": "8af629bed14625aabe0417a4eef70c82186996a2",
+      "size": 40854
+    },
+    "resources/media/genre/dance/dancepop.jpg": {
+      "sha1": "78dbd50bb3822a3986a6c5aa584a3f25c3f3e4a2",
+      "size": 43844
+    },
+    "resources/media/genre/dance/disco.jpg": {
+      "sha1": "78019efac6324fa9e7e6374a172fd095a68f7c1c",
+      "size": 40672
+    },
+    "resources/media/genre/dance/electropop.jpg": {
+      "sha1": "fbeccdf42e99d8e859a78b4ee4d25d01b24987e8",
+      "size": 44576
+    },
+    "resources/media/genre/dance/eurodance.jpg": {
+      "sha1": "3bab5250088cec297a634b0be2ced8ee870889db",
+      "size": 44037
+    },
+    "resources/media/genre/dance/hi-nrg.jpg": {
+      "sha1": "a2e6fd750b3304d658e969c797d72a92e1124357",
+      "size": 40395
+    },
+    "resources/media/genre/dance/teenpop.jpg": {
+      "sha1": "445d41c5aff2335de16dc10df8102673ae73b730",
+      "size": 42348
+    },
+    "resources/media/genre/dance/topdance.jpg": {
+      "sha1": "e6b8de95a8f38729fc080cbd6c27991b9201dc73",
+      "size": 33807
+    },
+    "resources/media/genre/electronic.jpg": {
+      "sha1": "b2added867021254ccdd84973ef008f1eb3fac1e",
+      "size": 31242
+    },
+    "resources/media/genre/electronic/ambient.jpg": {
+      "sha1": "e6fef9ed362dddff5bacbd25be2672cb9521d8ea",
+      "size": 31328
+    },
+    "resources/media/genre/electronic/breakbeat.jpg": {
+      "sha1": "ac4f902e31165acb6d8bd9fa97916e2f53b41240",
+      "size": 30909
+    },
+    "resources/media/genre/electronic/compilations.jpg": {
+      "sha1": "13c6110c489948ee51cdde004b5ea647f78af85f",
+      "size": 36292
+    },
+    "resources/media/genre/electronic/downtempo.jpg": {
+      "sha1": "cd57e481e68d3455445017f5fcf62bfcc9e4c9bf",
+      "size": 31143
+    },
+    "resources/media/genre/electronic/drumandbass.jpg": {
+      "sha1": "5903c92cecece3cfdd8479525d515b8cc360de4c",
+      "size": 31337
+    },
+    "resources/media/genre/electronic/dubstep.jpg": {
+      "sha1": "3c7f46378c2ffae973e627b0c37ae29f67dca908",
+      "size": 30629
+    },
+    "resources/media/genre/electronic/ebm.jpg": {
+      "sha1": "4f8cd5146474a56d59a530a580b24f7bb009a2ea",
+      "size": 26358
+    },
+    "resources/media/genre/electronic/electro.jpg": {
+      "sha1": "5614191416c25ff5fcb67cea862e94fc201c1228",
+      "size": 30507
+    },
+    "resources/media/genre/electronic/electronic.jpg": {
+      "sha1": "b2added867021254ccdd84973ef008f1eb3fac1e",
+      "size": 31242
+    },
+    "resources/media/genre/electronic/hardcoretechno.jpg": {
+      "sha1": "58747e76905b8d656f2b52c564f2a6c12494d9f9",
+      "size": 40380
+    },
+    "resources/media/genre/electronic/house.jpg": {
+      "sha1": "729f55b0310c97b903729a0d10a4601e00fa0413",
+      "size": 28190
+    },
+    "resources/media/genre/electronic/idm.jpg": {
+      "sha1": "5a9c2fefa298e59fb456fc94152fd63648ed658b",
+      "size": 26109
+    },
+    "resources/media/genre/electronic/indieelectronic.jpg": {
+      "sha1": "1e4b85a049180b12cfa74f7d128b8e88ef288a8f",
+      "size": 37645
+    },
+    "resources/media/genre/electronic/techno.jpg": {
+      "sha1": "68c176df5d66d424b80ac3eb625b8c27f302857a",
+      "size": 29436
+    },
+    "resources/media/genre/electronic/topelectronic.jpg": {
+      "sha1": "3400a180dc6c56f547b676b6459ece6248a35513",
+      "size": 34291
+    },
+    "resources/media/genre/electronic/trance.jpg": {
+      "sha1": "2924f0046904022105c6975a2f961d825376a010",
+      "size": 28449
+    },
+    "resources/media/genre/electronic/ukgarage.jpg": {
+      "sha1": "a62290929feaffeffb52156dc11d92b1c7d8444b",
+      "size": 35468
+    },
+    "resources/media/genre/hiphop.jpg": {
+      "sha1": "b1d5d02f3768d83df3bdf3fd1bf5a414a78e056a",
+      "size": 28850
+    },
+    "resources/media/genre/hiphop/alternativehiphop.jpg": {
+      "sha1": "501bbacce012817901d2aad30fa8b2ed0f1401f8",
+      "size": 41205
+    },
+    "resources/media/genre/hiphop/comedyrap.jpg": {
+      "sha1": "2d69e18afe600264441f0582319c94f6961f7137",
+      "size": 35848
+    },
+    "resources/media/genre/hiphop/compilations.jpg": {
+      "sha1": "13c6110c489948ee51cdde004b5ea647f78af85f",
+      "size": 36292
+    },
+    "resources/media/genre/hiphop/eastcoasthiphop.jpg": {
+      "sha1": "29ca9e2a6d82b40ad4c9ae46991ec0db873fccfe",
+      "size": 41148
+    },
+    "resources/media/genre/hiphop/frenchhiphop.jpg": {
+      "sha1": "5e0263c0d6c388a62690c31903e4b66665576617",
+      "size": 40200
+    },
+    "resources/media/genre/hiphop/hardcorehiphop.jpg": {
+      "sha1": "a77961e41f9f406192390bab81142b5709627db4",
+      "size": 39725
+    },
+    "resources/media/genre/hiphop/hiphop.jpg": {
+      "sha1": "b1d5d02f3768d83df3bdf3fd1bf5a414a78e056a",
+      "size": 28850
+    },
+    "resources/media/genre/hiphop/instrumentalhiphop.jpg": {
+      "sha1": "6792e6c391564c03e39e59236d7d0c6ba1ea8188",
+      "size": 39883
+    },
+    "resources/media/genre/hiphop/politicalhiphop.jpg": {
+      "sha1": "8dc7f4f88e1fd6353d3d7da713f55b5dd8449ac1",
+      "size": 40434
+    },
+    "resources/media/genre/hiphop/poprap.jpg": {
+      "sha1": "7e3b27daea6914231d96a143fbdb300227e95f14",
+      "size": 33132
+    },
+    "resources/media/genre/hiphop/religioushiphop.jpg": {
+      "sha1": "44559f63c9873269fb500ccdf067a38b99bbde16",
+      "size": 40973
+    },
+    "resources/media/genre/hiphop/southernhiphop.jpg": {
+      "sha1": "36cfff22f2cd7565d28b5efa50cc3965f70e6933",
+      "size": 40286
+    },
+    "resources/media/genre/hiphop/tophiphop.jpg": {
+      "sha1": "ab83f4ed5e5a1dc7bfd3b718982f231a52e82fd8",
+      "size": 35492
+    },
+    "resources/media/genre/hiphop/ukhiphop.jpg": {
+      "sha1": "e8026c9135a69072d721b6151354f27dfe71cc7d",
+      "size": 34986
+    },
+    "resources/media/genre/hiphop/westcoasthiphop.jpg": {
+      "sha1": "532fcffdbce15a813ee5037f4b0aed5db0085b04",
+      "size": 41665
+    },
+    "resources/media/genre/jazz.jpg": {
+      "sha1": "743706b8100470e8f8c86c0b2be52c35d78eb2b7",
+      "size": 28950
+    },
+    "resources/media/genre/jazz/acidjazz.jpg": {
+      "sha1": "139a0b42521b3b0bc02a139f7b4db6da10bc335a",
+      "size": 32788
+    },
+    "resources/media/genre/jazz/bebop.jpg": {
+      "sha1": "5c575007b83880a6820198cfb342c0346593f86e",
+      "size": 29753
+    },
+    "resources/media/genre/jazz/bigband.jpg": {
+      "sha1": "53604e8410d13f466476b9831dcf24a81cee88ae",
+      "size": 32369
+    },
+    "resources/media/genre/jazz/compilations.jpg": {
+      "sha1": "13c6110c489948ee51cdde004b5ea647f78af85f",
+      "size": 36292
+    },
+    "resources/media/genre/jazz/cooljazz.jpg": {
+      "sha1": "3153d00a93d1103d90b0fdfe521487aeab820037",
+      "size": 33047
+    },
+    "resources/media/genre/jazz/earlyjazz.jpg": {
+      "sha1": "2d9e84e08ef5d7c150d94f635b4e1f47947eeb42",
+      "size": 33744
+    },
+    "resources/media/genre/jazz/freejazz.jpg": {
+      "sha1": "43b707da6747030aacb04b03c541900cb60375cb",
+      "size": 32114
+    },
+    "resources/media/genre/jazz/jazz.jpg": {
+      "sha1": "743706b8100470e8f8c86c0b2be52c35d78eb2b7",
+      "size": 28950
+    },
+    "resources/media/genre/jazz/jazzfusion.jpg": {
+      "sha1": "4f2ee6c6f8697353b78097ffdcf3ce3435eb6c0e",
+      "size": 36101
+    },
+    "resources/media/genre/jazz/souljazz.jpg": {
+      "sha1": "3e8f10b3b540474ba1bf67270c2d00da97c8f0e3",
+      "size": 32983
+    },
+    "resources/media/genre/jazz/swing.jpg": {
+      "sha1": "fb046fa517ea209808b75b9830c4020adfbc183f",
+      "size": 29257
+    },
+    "resources/media/genre/jazz/topjazz.jpg": {
+      "sha1": "05b3dfd913c6f5e8160188be078a0a9654e7ed20",
+      "size": 31097
+    },
+    "resources/media/genre/jazz/vocaljazz.jpg": {
+      "sha1": "caeebef8cb2ae6a8f797c504b931e6648715a371",
+      "size": 35350
+    },
+    "resources/media/genre/jazz/worldjazz.jpg": {
+      "sha1": "4d654aba77cf42f6a9e972839ec9e23338ab810c",
+      "size": 35629
+    },
+    "resources/media/genre/metal.jpg": {
+      "sha1": "f3d3d70f7d2d5be3313b5582c2f66bc67ed41af7",
+      "size": 26795
+    },
+    "resources/media/genre/metal/alternativemetal.jpg": {
+      "sha1": "7632165a69d23e39abc19bd1e83b02e217deb80c",
+      "size": 40727
+    },
+    "resources/media/genre/metal/blackmetal.jpg": {
+      "sha1": "d8afbe90bd689805ff7b619bd6d633e2f91a007e",
+      "size": 37334
+    },
+    "resources/media/genre/metal/compilations.jpg": {
+      "sha1": "13c6110c489948ee51cdde004b5ea647f78af85f",
+      "size": 36292
+    },
+    "resources/media/genre/metal/deathmetal.jpg": {
+      "sha1": "39a883d0b8ae63d119b3545121879f109a9448d7",
+      "size": 37726
+    },
+    "resources/media/genre/metal/doommetal.jpg": {
+      "sha1": "b5703a92d895f3001959096af1781dd2408a0056",
+      "size": 36466
+    },
+    "resources/media/genre/metal/folkmetal.jpg": {
+      "sha1": "39d1b2aa58980b88ab9b19d3a4f1e0beeb709b8e",
+      "size": 34660
+    },
+    "resources/media/genre/metal/glammetal.jpg": {
+      "sha1": "21ea5bc1c19631fd31002b482d6f3e27323acce2",
+      "size": 36311
+    },
+    "resources/media/genre/metal/gothicmetal.jpg": {
+      "sha1": "9a65391fbc95ef18b7c0dfee333db754cf0086c0",
+      "size": 39566
+    },
+    "resources/media/genre/metal/grindcore.jpg": {
+      "sha1": "c235ca2e0295fc65cb786711fc273c593d469bf4",
+      "size": 30871
+    },
+    "resources/media/genre/metal/groovemetal.jpg": {
+      "sha1": "e5e9080cae70de0f9c221c6f1d93c3877ab4f434",
+      "size": 39537
+    },
+    "resources/media/genre/metal/heavymetal.jpg": {
+      "sha1": "bf49a3e008d665cf15b1a3fae9b5816411c3aafe",
+      "size": 37561
+    },
+    "resources/media/genre/metal/industrialmetal.jpg": {
+      "sha1": "63d5b645d0aff0b87a4e2edd5d71e92e503dd910",
+      "size": 39689
+    },
+    "resources/media/genre/metal/metal.jpg": {
+      "sha1": "f3d3d70f7d2d5be3313b5582c2f66bc67ed41af7",
+      "size": 26795
+    },
+    "resources/media/genre/metal/metalcore.jpg": {
+      "sha1": "574f9f899ef4b5a00cfb6717892d2bc60d2a2ff5",
+      "size": 31639
+    },
+    "resources/media/genre/metal/neo-classicalmetal.jpg": {
+      "sha1": "73aa5e1d946a53002b64149cd05bf1bb24cb0f7f",
+      "size": 39323
+    },
+    "resources/media/genre/metal/powermetal.jpg": {
+      "sha1": "3d4d7a58634e13f2dc21d542332a506c4b3d2e58",
+      "size": 37522
+    },
+    "resources/media/genre/metal/progressivemetal.jpg": {
+      "sha1": "d4191ba732ee622eef9985629a4d82eff85165b9",
+      "size": 40976
+    },
+    "resources/media/genre/metal/sludgemetal.jpg": {
+      "sha1": "adaede908e7e293fc36f46046484fc921d5a39c5",
+      "size": 40156
+    },
+    "resources/media/genre/metal/symphonicmetal.jpg": {
+      "sha1": "05e825b4fe9fa880585bc49d9f6c4070a1fb7697",
+      "size": 39921
+    },
+    "resources/media/genre/metal/topmetal.jpg": {
+      "sha1": "a6dc7bac52066fa47e76c42b201d53e4ffb55eea",
+      "size": 33937
+    },
+    "resources/media/genre/metal/transh_speedmetal.jpg": {
+      "sha1": "fdddec9099cb733bceaea16c6ea46bce56dcc0c4",
+      "size": 39875
+    },
+    "resources/media/genre/pop.jpg": {
+      "sha1": "e289fc5779fc8f098d0c6bdf6b051b530867101d",
+      "size": 27719
+    },
+    "resources/media/genre/pop/adultcontemporary.jpg": {
+      "sha1": "ec5e832951de7d84bc9a41d19018c30f8c47f114",
+      "size": 38722
+    },
+    "resources/media/genre/pop/blueeyedsoul.jpg": {
+      "sha1": "41a22f06769ed177c9df0d8d5e58e4c81164bdfd",
+      "size": 37956
+    },
+    "resources/media/genre/pop/ccm.jpg": {
+      "sha1": "90efcd8e7face7d24a3a045b017e867f5316ad44",
+      "size": 29392
+    },
+    "resources/media/genre/pop/compilations.jpg": {
+      "sha1": "13c6110c489948ee51cdde004b5ea647f78af85f",
+      "size": 36292
+    },
+    "resources/media/genre/pop/easylistening.jpg": {
+      "sha1": "e8c7473a564c505b798115c30270cbd5e7aa4408",
+      "size": 38701
+    },
+    "resources/media/genre/pop/europop.jpg": {
+      "sha1": "d36bccd224247a1c76d418e31d5567908e1285bf",
+      "size": 33121
+    },
+    "resources/media/genre/pop/frenchpop.jpg": {
+      "sha1": "c9e5df7629f335cf40692464db5be67052351099",
+      "size": 36007
+    },
+    "resources/media/genre/pop/indiepop.jpg": {
+      "sha1": "c8c2d0ed6d7187858a0c40fcd236bc9fd0ffc02a",
+      "size": 33963
+    },
+    "resources/media/genre/pop/latinpop.jpg": {
+      "sha1": "d979185d899d2b19248cd4cb3307b467da7b7e9b",
+      "size": 34533
+    },
+    "resources/media/genre/pop/newwave.jpg": {
+      "sha1": "5864d3bd9580108eed92974fbeeccc61e5b0c899",
+      "size": 35251
+    },
+    "resources/media/genre/pop/pop.jpg": {
+      "sha1": "e289fc5779fc8f098d0c6bdf6b051b530867101d",
+      "size": 27719
+    },
+    "resources/media/genre/pop/poprock.jpg": {
+      "sha1": "74f3b401318ef6d4c622de5f6a98fcf4cf373459",
+      "size": 34926
+    },
+    "resources/media/genre/pop/toppop.jpg": {
+      "sha1": "8ea3803dfdc5477cce863fc6eaa14f5eecc2ba72",
+      "size": 30722
+    },
+    "resources/media/genre/pop/traditionalpop.jpg": {
+      "sha1": "6bde86e447d802fc15fa8904ca49c5126efbc9b3",
+      "size": 36974
+    },
+    "resources/media/genre/r&b/compilations.jpg": {
+      "sha1": "13c6110c489948ee51cdde004b5ea647f78af85f",
+      "size": 36292
+    },
+    "resources/media/genre/r&b/contemporaryr_b.jpg": {
+      "sha1": "d41052c66dd874d7e2d4335c494baae7f72012d4",
+      "size": 38174
+    },
+    "resources/media/genre/r&b/earlyr_b.jpg": {
+      "sha1": "4fd74a049084cfc51b311f31a84d4978e4cb12b7",
+      "size": 34243
+    },
+    "resources/media/genre/r&b/funk.jpg": {
+      "sha1": "9a4f98cac5a0c1e268d86bc1c50fdec8e06c9008",
+      "size": 28502
+    },
+    "resources/media/genre/r&b/neo-soul.jpg": {
+      "sha1": "30fbd50a2ca8f150850c0007e6c194cc1a783912",
+      "size": 32028
+    },
+    "resources/media/genre/r&b/popsoul.jpg": {
+      "sha1": "2abf0a7cd7ada58e7eab40614147e98cd52b17b2",
+      "size": 32195
+    },
+    "resources/media/genre/r&b/r_b.jpg": {
+      "sha1": "0956cbe11e2d8c6ea3d23dd2c5297670bada1b3b",
+      "size": 28769
+    },
+    "resources/media/genre/r&b/soul.jpg": {
+      "sha1": "b8ebd9a96a908328676bc328f9eed40d6ce038dc",
+      "size": 29127
+    },
+    "resources/media/genre/r&b/topr&b.jpg": {
+      "sha1": "ebebf7e0cdaa9d5ae7f851a655b8bc306760b812",
+      "size": 31849
+    },
+    "resources/media/genre/r_b.jpg": {
+      "sha1": "0956cbe11e2d8c6ea3d23dd2c5297670bada1b3b",
+      "size": 28769
+    },
+    "resources/media/genre/rock.jpg": {
+      "sha1": "0d33b8b71d9704a55f187d62d291701c6b5416c7",
+      "size": 30991
+    },
+    "resources/media/genre/rock/artrock.jpg": {
+      "sha1": "b7383951985f0846bc3970eb824ed4e2c8de181c",
+      "size": 31932
+    },
+    "resources/media/genre/rock/christianrock.jpg": {
+      "sha1": "e8fcd461d99797056dfd998f8f91eaa1e4f166bf",
+      "size": 39118
+    },
+    "resources/media/genre/rock/comedyrock.jpg": {
+      "sha1": "6ee660c9d4b610191ec22648e24a9a8565d96557",
+      "size": 36958
+    },
+    "resources/media/genre/rock/compilations.jpg": {
+      "sha1": "13c6110c489948ee51cdde004b5ea647f78af85f",
+      "size": 36292
+    },
+    "resources/media/genre/rock/folkrock.jpg": {
+      "sha1": "586fb13e8a320e571f82cb076a1ef0b133c8c484",
+      "size": 33825
+    },
+    "resources/media/genre/rock/glamrock.jpg": {
+      "sha1": "027475977d81a9d8087aee44a2078ff9e6f73e79",
+      "size": 35110
+    },
+    "resources/media/genre/rock/hardrock.jpg": {
+      "sha1": "a73052189ffd6898966f7d86307af3ed931197e9",
+      "size": 34349
+    },
+    "resources/media/genre/rock/latinrock.jpg": {
+      "sha1": "8fefaa65da2cb35c5bc9a40913640c5611180ad8",
+      "size": 34779
+    },
+    "resources/media/genre/rock/progressiverock.jpg": {
+      "sha1": "7734a81703911b8a05342f92d778c3ddd7e83e9c",
+      "size": 39773
+    },
+    "resources/media/genre/rock/psychedelicrock.jpg": {
+      "sha1": "12eed53296de34b2d62cdab6ebeaf645bce80a2d",
+      "size": 38626
+    },
+    "resources/media/genre/rock/rock.jpg": {
+      "sha1": "0d33b8b71d9704a55f187d62d291701c6b5416c7",
+      "size": 30991
+    },
+    "resources/media/genre/rock/rock_roll.jpg": {
+      "sha1": "facc2c070e1e5669236b7730d7ba2bc9d8f6863d",
+      "size": 30999
+    },
+    "resources/media/genre/rock/rockabilly.jpg": {
+      "sha1": "53184ced3fd209c08eb016472d2a4ad1f4c2c337",
+      "size": 32336
+    },
+    "resources/media/genre/rock/southernrock.jpg": {
+      "sha1": "a263e593923374672878423983fc9d990d207e0e",
+      "size": 39324
+    },
+    "resources/media/genre/rock/toprock.jpg": {
+      "sha1": "501c247bd574d9dfc9f22d3129276efeac964a3b",
+      "size": 32631
+    },
+    "resources/media/genre/soundtracks.jpg": {
+      "sha1": "efacd5db11fad5ce62a9cee2e91ded700ca267b4",
+      "size": 42660
+    },
+    "resources/media/genre/soundtracks/compilations.jpg": {
+      "sha1": "13c6110c489948ee51cdde004b5ea647f78af85f",
+      "size": 36292
+    },
+    "resources/media/genre/soundtracks/gamesoundtracks.jpg": {
+      "sha1": "57ba06b66e2cc6233d324016df3649ef5fea1214",
+      "size": 39379
+    },
+    "resources/media/genre/soundtracks/moviesoundtracks.jpg": {
+      "sha1": "d359fd913f3031e0d2b05b12ac7df6a282ef5fee",
+      "size": 39835
+    },
+    "resources/media/genre/soundtracks/showtunes.jpg": {
+      "sha1": "897e158e8b198fd99d7a33988bb58e9317c183fc",
+      "size": 36774
+    },
+    "resources/media/genre/soundtracks/soundtracks.jpg": {
+      "sha1": "efacd5db11fad5ce62a9cee2e91ded700ca267b4",
+      "size": 42660
+    },
+    "resources/media/genre/soundtracks/spokenword.jpg": {
+      "sha1": "f26691a36aeea1138f151403e08412b4cdd49ef2",
+      "size": 38990
+    },
+    "resources/media/genre/soundtracks/topsoundtracks.jpg": {
+      "sha1": "f942927cdab6cfc85373da3a2b44d1027e891976",
+      "size": 35126
+    },
+    "resources/media/genre/soundtracks/tvsoundtracks.jpg": {
+      "sha1": "33028f7e99c6a51ccf86165cc7347365387d109b",
+      "size": 35436
+    },
+    "resources/media/genre/world.jpg": {
+      "sha1": "d72a329e5cd2d38d2233e07cd2b364d0c4347af7",
+      "size": 29941
+    },
+    "resources/media/genre/world/african.jpg": {
+      "sha1": "141a95110c822ab37a234109705898bd32bd2a42",
+      "size": 31135
+    },
+    "resources/media/genre/world/allworld.jpg": {
+      "sha1": "553b5bcbe9e4c89a526db554e347a1222a98120a",
+      "size": 32409
+    },
+    "resources/media/genre/world/arabic.jpg": {
+      "sha1": "7d93cb7408cf957ef46ebc5dc2ab2f2a6122dc31",
+      "size": 29692
+    },
+    "resources/media/genre/world/balkanfolk.jpg": {
+      "sha1": "3e628c29b70caae7dbe10735c15815af8924a272",
+      "size": 37216
+    },
+    "resources/media/genre/world/brazilian.jpg": {
+      "sha1": "48b0f036e7b3768eb0d1ce7067db685b6a566f9c",
+      "size": 30573
+    },
+    "resources/media/genre/world/caribbean.jpg": {
+      "sha1": "0bf5100084d5adda707a25accf2026f6f1042cdb",
+      "size": 31150
+    },
+    "resources/media/genre/world/celtic.jpg": {
+      "sha1": "8ec4e104b656a151abee496601168a6f4c6f733c",
+      "size": 29071
+    },
+    "resources/media/genre/world/chinese.jpg": {
+      "sha1": "74024abc3460186e143ca2061a0fa8733b8714e9",
+      "size": 31131
+    },
+    "resources/media/genre/world/compilations.jpg": {
+      "sha1": "13c6110c489948ee51cdde004b5ea647f78af85f",
+      "size": 36292
+    },
+    "resources/media/genre/world/frenchfolk.jpg": {
+      "sha1": "15d72225e029264984b6bb4cd9dcce93d3e52a35",
+      "size": 35896
+    },
+    "resources/media/genre/world/italianfolk.jpg": {
+      "sha1": "571f394f8b1430710d510fa379e73ed341efcc38",
+      "size": 36602
+    },
+    "resources/media/genre/world/japanese.jpg": {
+      "sha1": "6d6bf44f07fa39796e354fe1628fa73de8c996b1",
+      "size": 31373
+    },
+    "resources/media/genre/world/jewish.jpg": {
+      "sha1": "67f6dab8c016890e9c597620bfb095dfae1ada3c",
+      "size": 29614
+    },
+    "resources/media/genre/world/korean.jpg": {
+      "sha1": "9aa8dcdcb556c8eeb2a1634b78e76c7880c0149d",
+      "size": 30763
+    },
+    "resources/media/genre/world/latin.jpg": {
+      "sha1": "0597a4c3b65cf761103f6c923adf88c527237910",
+      "size": 26873
+    },
+    "resources/media/genre/world/polynesian.jpg": {
+      "sha1": "3f196738146f4555910947edf290da64c09f3e06",
+      "size": 31522
+    },
+    "resources/media/genre/world/slavicfolk.jpg": {
+      "sha1": "7f497a4029f1762476a67e41f423968e0101fe65",
+      "size": 35642
+    },
+    "resources/media/genre/world/southamericanfolk.jpg": {
+      "sha1": "a7173f219cca4b0d841cb7e73fce0888919aa03f",
+      "size": 43832
+    },
+    "resources/media/genre/world/southasian.jpg": {
+      "sha1": "246a8764e280b96d3ebbc69763cffdc1f231279d",
+      "size": 37381
+    },
+    "resources/media/genre/world/spanishfolk.jpg": {
+      "sha1": "d5c2757bf71fd23ee0c1a2683026af2b83a50b75",
+      "size": 36140
+    },
+    "resources/media/genre/world/turkish.jpg": {
+      "sha1": "e5651b9825217f6eae108b131c0f22098f0054c8",
+      "size": 30255
+    },
+    "resources/media/genre/world/world.jpg": {
+      "sha1": "d72a329e5cd2d38d2233e07cd2b364d0c4347af7",
+      "size": 29941
+    },
+    "resources/media/icon.jpg": {
+      "sha1": "d3e92ed57358e94cc461564554f2d806ece8c07b",
+      "size": 72565
+    },
+    "resources/media/icon.png": {
+      "sha1": "d3e92ed57358e94cc461564554f2d806ece8c07b",
+      "size": 72565
+    },
+    "resources/media/mixfavouritealbums.jpg": {
+      "sha1": "1ce209d9bfe4fa4c8d056454f655afb60703da0a",
+      "size": 45134
+    },
+    "resources/media/mixfavouritesongs.jpg": {
+      "sha1": "cfded2efc859475b78004f2504bde318f3a0b8b3",
+      "size": 45270
+    },
+    "resources/media/newalbums.jpg": {
+      "sha1": "d052d24c0aff6a79b8deb4996f71764d4bd18d4f",
+      "size": 37833
+    },
+    "resources/media/nextpage.jpg": {
+      "sha1": "3d8f13f1c40fb0198751233fe47701731b7d8b5d",
+      "size": 33937
+    },
+    "resources/media/searchalbums.jpg": {
+      "sha1": "d2becd739b607c8f3913265da363583656477518",
+      "size": 38481
+    },
+    "resources/media/searchartists.jpg": {
+      "sha1": "a4df86119e7de0e02a101fe1f521139e5155a7d6",
+      "size": 39321
+    },
+    "resources/media/searchsongs.jpg": {
+      "sha1": "01e710b2de50792dd8644fcdedb18f79c695159d",
+      "size": 38105
+    },
+    "resources/media/topalbums.jpg": {
+      "sha1": "badc86fc44f1d62b10355586bb682b465cd4bfb6",
+      "size": 37049
+    }
+  }
+}
