@@ -1,26 +1,33 @@
 {
   "channel": "GS_MEDIA_ONLINE_BETA_ONLY",
-  "known_limitations": [
-    "11-app automatic install NOT complete",
-    "Unverified third-party sources fail closed",
-    "XCMate 0.1.29.70 EPG/storage/artwork issues still open"
+  "limitations": [
+    "Kodi official-origin add-ons may require explicit Versionen selection",
+    "Full eleven-app one-click install not yet complete",
+    "XCMate .70 EPG/storage/artwork bugs remain"
   ],
   "repository": {
     "id": "repository.gsmedia.pilot",
-    "version": "1.8.3"
+    "version": "1.8.4"
   },
-  "source_commit": "da5a31513d669d8b05c73547c72ff3c3e33ea2d4",
-  "source_run_id": 41595263556,
+  "skin_shortcuts": {
+    "license": "GPL-2.0-only",
+    "original_source": "AchillesPunks BINGIE MOD Omega",
+    "sha256": "865ee5ea5bf0accee27b82539caabce1c8a9fbb8f94b2900fe5ace4f82c80b23",
+    "version": "2.1.0"
+  },
+  "source_head": "a4ed664723f247ce5566b5d786791d736c1c0a65",
+  "source_run_id": 41597546159,
   "wizard": {
     "id": "script.gsmedia.setup",
-    "status": "TEST_ONLY_ANDROID_NOT_VERIFIED",
-    "version": "0.5.0"
+    "status": "BETA_ANDROID_INSTALL_NOT_VERIFIED",
+    "version": "0.5.1"
   },
   "zip_sha256": {
     "plugin.video.noodleprivate": "b9d0afe06d6fc956bc0191fd51f4646ae9f54c6272009e7a8819255de7460364",
     "plugin.video.xtreammate": "90b90042b02d8b0e27a7b7c014d993b1dfb6f7a0dae493bf6bf80b0f4eaee07f",
-    "repository.gsmedia.pilot": "e0ac9cd042dcdd8a8b6e07d6b87cefefe5f17e23752bfec80fa6e1c12f863bae",
+    "repository.gsmedia.pilot": "7cbe8a35076e4524e89c844c7ece2f2da843384ab6b90d926d5d685b3215c8e8",
     "repository.titan.bingie.mod": "dba0a2e670e2d93158cb030ea52fe3e237bb19177e0a165d99c8f72a8492ef46",
-    "script.gsmedia.setup": "4f5f5d32a84f5ca64c71020b700e56e4af77252ddfc4c9028ac591d65fadd5e2"
+    "script.gsmedia.setup": "0dfa6d2b9f17b11a59eea35b9561eb48bbfeaafbeb66a8ca304deeead25f8942",
+    "script.skinshortcuts": "865ee5ea5bf0accee27b82539caabce1c8a9fbb8f94b2900fe5ace4f82c80b23"
   }
 }

@@ -1,0 +1,11 @@
+Unmodified upstream Skin Shortcuts 2.1.0 package
+Upstream author: BigNoid, marcelveldt, SiLVO
+Upstream project URL (from addon.xml): https://github.com/mikesilvo164/script.skinshortcuts
+Distribution upstream: https://github.com/AchillesPunks/repository.titan.bingie.mod
+Original upstream commit: d9f334ecc33c7d0e137dd1728af18815c512e577
+Original ZIP path: omega/script.skinshortcuts/script.skinshortcuts-2.1.0.zip
+Original Git blob: abb2627aef68e15c40e4a33144b1d4cc7bf4d3e6
+Upstream MD5: 69d497c8884da6b169b6f9727d29910f
+Declared SPDX license: GPL-2.0-only. Original attribution retained in untouched ZIP and addon.xml.
+This package is for a separate, opt-in Kodi test repository only. Do not claim as GS Media source.
+Verify source availability/corresponding source distribution and full license notices before production release.
