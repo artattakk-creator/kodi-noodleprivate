@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a test-only GS Media 1.8.5 pilot catalog with Apache BINGIE bootstrap.
+"""Build a test-only GS Media 1.8.6 pilot catalog with Apache BINGIE bootstrap.
 
 Never publishes to main. The original BINGIE ZIP is retained byte-for-byte.
 """
@@ -21,7 +21,7 @@ ORIGINAL_SHA256 = "dba0a2e670e2d93158cb030ea52fe3e237bb19177e0a165d99c8f72a8492e
 TEST_URL = ("https://raw.githubusercontent.com/artattakk-creator/"
             "kodi-noodleprivate/main/online-test/")
 PILOT_ID = "repository.gsmedia.pilot"
-PILOT_VERSION = "1.8.5"
+PILOT_VERSION = "1.8.6"
 
 
 def _bytes_in_zip(data, prefix):
@@ -56,14 +56,40 @@ def build(destination):
     assert shortcuts_xml.findtext("./extension[@point='xbmc.addon.metadata']/license") == "GPL-2.0-only"
     assert (ROOT / "vendor/bingie-skinshortcuts-210/SOURCE.txt").is_file()
 
-    all_addons = []
+    # Build a tiny native Kodi addon whose required dependency forces Kodi's
+    # official dependency resolver to choose a >=2.1.0 Skin Shortcuts package
+    # from this same GS Media test repository (not InstallAddon of installed id).
+    bridge_dir = ROOT / "tools/gsmedia_053_shortcuts_bridge"
+    bridge_version = "0.1.0"
+    bridge_id = "script.gsmedia.skinshortcuts.bridge"
+    bridge_target = destination / bridge_id / (
+        bridge_id + "-" + bridge_version + ".zip")
+    bridge_target.parent.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(bridge_target, "w", compression=zipfile.ZIP_DEFLATED) as out:
+        out.write(bridge_dir / "addon.xml", bridge_id + "/addon.xml")
+        out.write(bridge_dir / "default.py", bridge_id + "/default.py")
+        out.write(bridge_dir / "README.md", bridge_id + "/README.md")
+    bridge_xml = _bytes_in_zip(bridge_target, bridge_id)
+    assert bridge_xml.get("id") == bridge_id and bridge_xml.get("version") == bridge_version
+    imports = bridge_xml.findall("./requires/import")
+    assert ("script.skinshortcuts", "2.1.0") in [
+        (x.get("addon"), x.get("version")) for x in imports]
+    assert bridge_xml.findtext("./extension[@point='xbmc.addon.metadata']/license") == "MIT"
+    (destination / bridge_id / "SOURCE.txt").write_text(
+        "First-party GS Media Kodi-native dependency bridge. Source: " +
+        "https://github.com/artattakk-creator/kodi-noodleprivate/" +
+        "tree/fix/gsmedia-wizard-053-native-shortcuts-dependency-20261103/" +
+        "tools/gsmedia_053_shortcuts_bridge\n",
+        encoding="utf-8")
+
+    all_addons = [bridge_xml]
     for addon_id, version, package in [
         ("plugin.video.xtreammate", "0.1.29.70",
          ROOT / "plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.70.zip"),
         ("plugin.video.noodleprivate", "0.4.2",
          ROOT / "plugin.video.noodleprivate/plugin.video.noodleprivate-0.4.2.zip"),
-        ("script.gsmedia.setup", "0.5.2",
-         ROOT / ".build/gsmedia-052/script.gsmedia.setup-0.5.2.zip"),
+        ("script.gsmedia.setup", "0.5.3",
+         ROOT / ".build/gsmedia-053/script.gsmedia.setup-0.5.3.zip"),
         ("repository.titan.bingie.mod", "2.0.1", VENDOR),
         ("script.skinshortcuts", "2.1.0", SHORTCUTS_VENDOR),
     ]:
@@ -97,14 +123,14 @@ def build(destination):
     pilot = ET.parse(repo_source).getroot()
     pilot.set("id", PILOT_ID)
     pilot.set("version", PILOT_VERSION)
-    pilot.set("name", "GS Media Online-Test 1.8.5")
+    pilot.set("name", "GS Media Online-Test 1.8.6")
     dir_ = pilot.find("extension[@point='xbmc.addon.repository']/dir")
     assert dir_ is not None
     dir_.find("info").text = TEST_URL + "addons.xml"
     dir_.find("checksum").text = TEST_URL + "addons.xml.md5"
     dir_.find("datadir").text = TEST_URL
     for node in pilot.findall("extension[@point='xbmc.addon.metadata']/summary"):
-        node.text = "GS Media Online-Test 1.8.5, nicht produktiv"
+        node.text = "GS Media Online-Test 1.8.6, nicht produktiv"
     for node in pilot.findall("extension[@point='xbmc.addon.metadata']/description"):
         node.text = "Entwicklungs-Installer mit geprüfter BINGIE-Repository-Vorstufe; keine vollständige Geräteabnahme."
     pilot_xml = ET.tostring(pilot, encoding="utf-8", xml_declaration=True)
@@ -134,4 +160,4 @@ def build(destination):
 
 
 if __name__ == "__main__":
-    build(sys.argv[1] if len(sys.argv)>1 else ROOT/".build/gsmedia-052-pilot")
+    build(sys.argv[1] if len(sys.argv)>1 else ROOT/".build/gsmedia-053-pilot")
