@@ -112,7 +112,7 @@ def release(source, target):
                 skinlayout = a.read("script.gsmedia.setup/resources/lib/setup_bingie_apply.py").decode("utf-8")
                 assert "OWNED_UPGRADE_READY" in skinlayout and "_semantic_match" in skinlayout
                 assert "SAFE_MERGE_READY" in skinlayout
-                merge = a.read("script.gsmedia.setup/resources/lib/setup_bingie_merge_0514.py").decode("utf-8")
+                merge = a.read("script.gsmedia.setup/resources/lib/setup_bingie_merge_0513.py").decode("utf-8")
                 assert "BACKUP_SUFFIX" in merge
                 assert "CONFLICTING_XCMATE_MENU_" in merge
                 assert "xcmate_auto_" in merge
