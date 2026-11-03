@@ -39,6 +39,23 @@ jobs:
               assert 'script.gsmedia.setup/resources/lib/setup_auto_ui50.py' in z.namelist()
           print('GS Media 0.5.0 TEST ZIP',digest)
           PY
+      - name: Build isolated pilot index with vendor-approved BINGIE repo
+        run: python tools/build_gsmedia_pilot050.py .build/gsmedia-050-pilot
+      - name: Validate vendor bootstrap stays separately indexed
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET,zipfile
+          root=Path('.build/gsmedia-050-pilot')
+          idx=ET.parse(root/'addons.xml').getroot()
+          ids={a.get('id') for a in idx.findall('addon')}
+          assert ids == {'repository.gsmedia.pilot','repository.titan.bingie.mod','script.gsmedia.setup','plugin.video.xtreammate','plugin.video.noodleprivate'},ids
+          with zipfile.ZipFile(root/'repository.titan.bingie.mod/repository.titan.bingie.mod-2.0.1.zip') as z:
+              a=ET.fromstring(z.read('repository.titan.bingie.mod/addon.xml'))
+              assert a.get('version')=='2.0.1'
+          assert (root/'repository.titan.bingie.mod/LICENSE').is_file()
+          print('BINGIE ORIGINAL REPO BOOTSTRAP: VERIFIED AND INDEXED')
+          PY
       - name: Upload development-only wizard ZIP
         uses: actions/upload-artifact@v4
         with:
@@ -46,4 +63,5 @@ jobs:
           path: |
             .build/gsmedia-050/script.gsmedia.setup-0.5.0.zip
             .build/gsmedia-050/script.gsmedia.setup-0.5.0.zip.sha256
+            .build/gsmedia-050-pilot/
           if-no-files-found: error
