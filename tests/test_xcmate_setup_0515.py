@@ -33,7 +33,7 @@ class BackgroundsRecoveryTests(unittest.TestCase):
         self.assertEqual(metadata["script.module.thetvdb"]["minimum"],"1.0.34")
         self.assertEqual(metadata["script.module.musicbrainz"]["minimum"],"0.7.0")
         self.assertEqual(metadata["script.module.arrow"]["repo"],"repository.xbmc.org")
-        self.assertEqual(metadata["script.module.arrow"]["minimum"],"0.15.5")
+        self.assertEqual(metadata["script.module.arrow"]["minimum"],"1.1.0")
         for dep in ("script.module.simplecache","script.module.metadatautils",
                     "script.module.thetvdb","script.module.musicbrainz"):
             self.assertEqual(metadata[dep]["repo"],"repository.titan.bingie.mod")
