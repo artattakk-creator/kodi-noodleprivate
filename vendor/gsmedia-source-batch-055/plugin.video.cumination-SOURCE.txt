@@ -1,0 +1,9 @@
+Addon ID plugin.video.cumination, exact version 1.1.206
+Original maintainer repository: https://github.com/dobbelina/repository.dobbelina
+Original distribution commit: d3dc0c6643bb4ed07a47fdb3c87a84f8c95bffde
+Original ZIP path: plugin.video.cumination/plugin.video.cumination-1.1.206.zip
+Original Git blob SHA1: 1df112d1129193b53d07496d307ad0e81eafb259
+Original license reference: GPL-2.0 (upstream addon.xml + LICENSE.txt)
+Unmodified byte-identical original ZIP; no source code changes. Maintain original author name and all license notices.
+Corresponding original source: https://github.com/dobbelina/repository.dobbelina/tree/d3dc0c6643bb4ed07a47fdb3c87a84f8c95bffde
+GS Media online BETA catalog only; no claim of GS Media authorship.
