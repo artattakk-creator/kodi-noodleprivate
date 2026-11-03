@@ -369,8 +369,10 @@ def run():
                 # Only once *all* mandatory local checks have passed.
                 completion = dict(state)
                 completion["stage"] = "done"
-                state = _persist(profile, completion)
+                # Persist the post-boot marker first; if that fails, the
+                # original CHECK stage remains recoverable, never fake DONE.
                 mark_restart_pending(profile)
+                state = _persist(profile, completion)
                 progress.update(100, "XCMate – Einrichtung vollständig",
                                 "Neustart zur Aktivierung der Startoberfläche erforderlich")
                 reason = "RESTART_PENDING_VERIFIED"
