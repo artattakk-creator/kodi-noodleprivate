@@ -40,7 +40,9 @@ jobs:
           code=Path('src/script.gsmedia.setup/resources/lib/setup_auto_ui50.py').read_text()
           assert 'InstallAddon(" + install_id + ")' in code
           assert '"script.gsmedia.skinshortcuts.bridge" if native_upgrade else ident' in code
-          assert 'TemporaryOfficialAddonSource(' not in code
+          assert 'TemporaryOfficialAddonSource(profile, xbmc.executeJSONRPC)' in code
+          assert 'with scope:' in code
+          assert 'restore_origin_policy(profile, xbmc.executeJSONRPC)' in code
           assert 'Versionen einmalig' not in code
           print('NATIVE_DEPENDENCY_BRIDGE_OK')
           PY
