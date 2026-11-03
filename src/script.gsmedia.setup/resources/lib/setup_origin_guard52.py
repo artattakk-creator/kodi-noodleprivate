@@ -25,6 +25,7 @@ ANY_REPOSITORY = 1
 NEVER_AUTO = 2
 JOURNAL_FILE = "origin-policy-restore-052.json"
 MAX_BYTES = 1500
+SUPPORTED_SCOPE_TARGETS = frozenset(("script.skinshortcuts", "slyguy.dependencies"))
 
 
 def _marker(profile):
@@ -46,7 +47,7 @@ def _read_marker(profile):
     data = json.loads(target.read_text(encoding="ascii"))
     if (not isinstance(data, dict) or set(data) !=
             {"schema", "mode", "updates", "addon"} or data["schema"] != 1 or
-            data["addon"] != "script.skinshortcuts" or
+            data["addon"] not in SUPPORTED_SCOPE_TARGETS or
             type(data["mode"]) is not int or data["mode"] not in (0, 1) or
             type(data["updates"]) is not int or data["updates"] not in (0, 1, 2)):
         raise ValueError("Corrupt policy journal")
@@ -126,9 +127,12 @@ def restore(profile, rpc):
 
 
 class TemporaryOfficialAddonSource:
-    def __init__(self, profile, rpc):
+    def __init__(self, profile, rpc, addon_id="script.skinshortcuts"):
+        if addon_id not in SUPPORTED_SCOPE_TARGETS:
+            raise ValueError("Unsupported Kodi source scope")
         self.profile = profile
         self.rpc = rpc
+        self.addon_id = addon_id
         self.active = False
 
     def __enter__(self):
@@ -142,7 +146,7 @@ class TemporaryOfficialAddonSource:
             raise RuntimeError("Unknown Kodi auto-update policy")
         _save_marker(self.profile, {
             "schema": 1, "mode": original_mode, "updates": original_updates,
-            "addon": "script.skinshortcuts"})
+            "addon": self.addon_id})
         try:
             # Prevent unrelated repos auto-updating under the brief global
             # permission window. This is still a global setting.
