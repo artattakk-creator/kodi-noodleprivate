@@ -42,7 +42,7 @@
   },
   "repository": {
     "id": "repository.gsmedia.pilot",
-    "version": "1.9.5"
+    "version": "1.9.6"
   },
   "skin_shortcuts": {
     "license": "GPL-2.0-only",
@@ -63,11 +63,11 @@
   "source_head": "f46d8ddaff419b6d4ca6fefb64fc7d11b203a9f3",
   "source_run_id": 41610990814,
   "wizard": {
-    "fix": "On-demand 0.5.11-owned widget/SHOUTcast migration, semantic SkinShortcuts verification, single Installation starten action, error-only local diagnostics, verified restart handoff and BINGIE home on next Kodi Android launch; all 43/43 component installations preserved",
+    "fix": "Safely reconcile existing Kodi-generated BINGIE SkinShortcuts and widgets by appending missing XCMate entries, preserving all existing menu actions and widget values, using namespaced aliases on collisions and backups. Keep xVAULT mandatory, BINGIE activation and OK reboot handoff; 43/43 app journal retained.",
     "id": "script.gsmedia.setup",
     "source_gate": "Drive source plus pinned upstream images and original MIT source",
-    "status": "BETA_XCMATE_WIDGET_RECOVERY_POSTRESTART_ANDROID_NOT_VERIFIED",
-    "version": "0.5.12"
+    "status": "BETA_XCMATE_BINGIE_SAFE_MERGE_ANDROID_NOT_VERIFIED",
+    "version": "0.5.13"
   },
   "xvault": {
     "android_test": "NOT_TESTED",
@@ -83,12 +83,12 @@
     "plugin.video.cumination": "539073d804d6381105698eff054ea77ae1359b658e0f226c3807a7365a0d674c",
     "plugin.video.noodleprivate": "b9d0afe06d6fc956bc0191fd51f4646ae9f54c6272009e7a8819255de7460364",
     "plugin.video.xtreammate": "90b90042b02d8b0e27a7b7c014d993b1dfb6f7a0dae493bf6bf80b0f4eaee07f",
-    "repository.gsmedia.pilot": "339dedac5d1ada9aa0acc6a51aff91e782053617faa00c0e2b72b21399179403",
+    "repository.gsmedia.pilot": "485bb62e46ab90dc860c5a4235472e30b87993ff016c627806cb3364598c2bf6",
     "repository.slyguy": "079915885866a5cbb8f17191c5ee8f7d044d7a9e788e96d116c9f1bc8bb4c3c0",
     "repository.titan.bingie.mod": "dba0a2e670e2d93158cb030ea52fe3e237bb19177e0a165d99c8f72a8492ef46",
     "repository.xvault": "df6fd9f40c12c9e0f13f7cb04589286307550cd43376c734eb127aa4e1de27ab",
     "script.ezmaintenanceplus": "08a367b5fd1ee367ead4150b2364063a0760fe9fbf7506c20db845a0126cd2e6",
-    "script.gsmedia.setup": "ea18eb0e22070d0730acfdf9f2aff7d31283fdfccc67b6c3fe3fe4f75df0c53e",
+    "script.gsmedia.setup": "6d6b6a1c9919fcd3b506389714dc2a98d4ba39fcf04f9e186efb5e372f8fdae4",
     "script.gsmedia.skinshortcuts.bridge": "f84da5931a4159bbf82b78ecf6a05c0b2ce8a6e0c08ebf109d1554eb84d4f72c",
     "script.module.jurialmunkey": "80302314cdbc5a75611b0c2866eb1c7b4e93ccadaf20208ef7eb79b79c1fb749",
     "script.module.resolveurl": "28fb6b2340eccfb1337ba4421b6429aa1c8f2978834853d1229b42b2a947bc59",
