@@ -38,6 +38,9 @@ SLYGUY_REPOSITORY_URL = (
     + SLYGUY_REPOSITORY_REV + "/repository.slyguy/repository.slyguy-0.0.9.zip"
 )
 SLYGUY_SOURCE = ROOT / "vendor/slyguy-repository-009/SOURCE.txt"
+SLYGUY_NATIVE_BRIDGE_ID = "script.gsmedia.slyguy.bootstrap"
+SLYGUY_NATIVE_BRIDGE_VERSION = "0.1.0"
+
 RESOLVE_VENDOR = ROOT / "vendor/gsmedia-source-batch-055/script.module.resolveurl-5.1.212.zip"
 RESOLVE_XXX_VENDOR = ROOT / "vendor/gsmedia-source-batch-055/script.module.resolveurl.xxx-2.1.44.zip"
 RESOLVE_BLOB = "307decca19aed7be9f51e501d736f1cd87443a07"
@@ -56,7 +59,7 @@ ORIGINAL_SHA256 = "dba0a2e670e2d93158cb030ea52fe3e237bb19177e0a165d99c8f72a8492e
 TEST_URL = ("https://raw.githubusercontent.com/artattakk-creator/"
             "kodi-noodleprivate/main/online-test/")
 PILOT_ID = "repository.gsmedia.pilot"
-PILOT_VERSION = "1.9.10"
+PILOT_VERSION = "1.9.11"
 
 
 def _bytes_in_zip(data, prefix):
@@ -129,13 +132,80 @@ def _fetch_slyguy_repo(destination):
     return target, contents
 
 
+def _create_slyguy_native_bootstrap(destination):
+    """MIT first-party resolver: Kodi fetches ORIGINAL SlyGuy ZIPs itself.
+
+    SlyGuy original 'slyguy.dependencies' has no declared add-on license
+    in metadata. NEVER copy or republish the original ZIP in our repository.
+    """
+    ident = SLYGUY_NATIVE_BRIDGE_ID
+    version = SLYGUY_NATIVE_BRIDGE_VERSION
+    addon = ET.Element("addon", {
+        "id": ident,
+        "name": "xcMate Native Original SlyGuy Dependency Bootstrap",
+        "version": version, "provider-name": "xcMate",
+    })
+    required = ET.SubElement(addon, "requires")
+    for dep, minimum in (
+        ("xbmc.python", "3.0.0"),
+        ("repository.slyguy", "0.0.9"),
+        ("slyguy.dependencies", "0.0.30"),
+        ("script.module.slyguy", "0.87.6"),
+        ("slyguy.trailers", "0.2.2"),
+    ):
+        ET.SubElement(required, "import", {"addon": dep, "version": minimum})
+    ET.SubElement(addon, "extension", {
+        "point": "xbmc.python.script", "library": "default.py",
+    })
+    meta = ET.SubElement(addon, "extension", {
+        "point": "xbmc.addon.metadata",
+    })
+    ET.SubElement(meta, "summary", {"lang": "de_DE"}).text = (
+        "Kodi installiert SlyGuy-Originale aus dem offiziellen SlyGuy-Repository")
+    ET.SubElement(meta, "description", {"lang": "de_DE"}).text = (
+        "Erfordert die originalen unveraenderten SlyGuy-Abhaengigkeiten, "
+        "SlyGuy Common und SlyGuy Trailers aus dem bereits vorhandenen "
+        "offiziellen Repository. Kein Originalpaket wird von xcMate gespiegelt.")
+    ET.SubElement(meta, "license").text = "MIT"
+    ET.SubElement(meta, "platform").text = "all"
+    ET.SubElement(meta, "source").text = (
+        "https://github.com/artattakk-creator/kodi-noodleprivate")
+    folder = Path(destination) / ident
+    folder.mkdir(exist_ok=True, parents=True)
+    pack = folder / (ident + "-" + version + ".zip")
+    with zipfile.ZipFile(pack, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr(ident + "/addon.xml", ET.tostring(
+            addon, encoding="utf-8", xml_declaration=True))
+        archive.writestr(ident + "/default.py",
+                         "# Inert native dependency bridge. No side effects.\n")
+    check = _bytes_in_zip(pack, ident)
+    assert check.get("id") == ident
+    deps = {(x.get("addon"), x.get("version"))
+            for x in check.findall("./requires/import")}
+    assert deps == {
+        ("xbmc.python","3.0.0"),
+        ("repository.slyguy","0.0.9"),
+        ("slyguy.dependencies","0.0.30"),
+        ("script.module.slyguy","0.87.6"),
+        ("slyguy.trailers","0.2.2"),
+    }
+    (folder / "SOURCE.txt").write_text(
+        "First-party inert dependency bridge; MIT. Only this bootstrap "
+        "is redistributed by xcMate, not any original SlyGuy code/ZIP.\n"
+        "Original package author and repository: "
+        "https://github.com/matthuisman/slyguy.addons\n"
+        "Official SlyGuy repository: https://slyguy.uk/\n",
+        encoding="utf-8")
+    return check
+
+
 def _fetch_bingie_helper(destination):
     """Fetch the *unchanged* Omega original, pinned to an upstream commit/blob."""
     target = Path(destination) / "_vendor-cache" / "script.bingie.helper-1.1.2.zip"
     target.parent.mkdir(parents=True, exist_ok=True)
     request = urllib.request.Request(
         BINGIE_HELPER_UPSTREAM_ZIP,
-        headers={"User-Agent": "xcMate-Verified-BINGIE-Omega-Helper/0.5.17"}
+        headers={"User-Agent": "xcMate-Verified-BINGIE-Omega-Helper/0.5.18"}
     )
     with urllib.request.urlopen(request, timeout=45) as response:
         contents = response.read(BINGIE_HELPER_LENGTH + 1)
@@ -284,6 +354,7 @@ def build(destination):
     assert (ROOT/"vendor/xvault-official-repository-103/SOURCE.txt").is_file()
 
     slyguy_repo_zip, slyguy_repo_bytes = _fetch_slyguy_repo(destination)
+    slyguy_bridge_xml = _create_slyguy_native_bootstrap(destination)
     # Verified, user-authorised modern audio source + original maintenance tool.
     echoed_zip, echoed_xml = echo_package(destination)
     ez_zip, ez_xml = ez_package(destination)
@@ -291,7 +362,7 @@ def build(destination):
     original_bingie_helper_zip, original_bingie_helper = _fetch_bingie_helper(destination)
     original_bingie_bootstrap = _create_bingie_bootstrap(destination)
     all_addons = [bridge_xml, echoed_xml, ez_xml,
-                  original_bingie_helper, original_bingie_bootstrap]
+                  original_bingie_helper, original_bingie_bootstrap, slyguy_bridge_xml]
     helper_dir = destination / "script.bingie.helper"
     helper_dir.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(original_bingie_helper_zip,
@@ -371,8 +442,8 @@ def build(destination):
          ROOT / "plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.70.zip"),
         ("plugin.video.noodleprivate", "0.4.2",
          ROOT / "plugin.video.noodleprivate/plugin.video.noodleprivate-0.4.2.zip"),
-        ("script.gsmedia.setup", "0.5.17",
-         ROOT / ".build/xcmate-0517/script.gsmedia.setup-0.5.17.zip"),
+        ("script.gsmedia.setup", "0.5.18",
+         ROOT / ".build/xcmate-0518/script.gsmedia.setup-0.5.18.zip"),
         ("repository.titan.bingie.mod", "2.0.1", VENDOR),
         ("script.skinshortcuts", "2.1.0", SHORTCUTS_VENDOR),
         ("repository.xvault", "1.0.3", XVAULT_REPO_VENDOR),
@@ -447,7 +518,7 @@ def build(destination):
     pilot = ET.parse(repo_source).getroot()
     pilot.set("id", PILOT_ID)
     pilot.set("version", PILOT_VERSION)
-    pilot.set("name", "xcMate Repository – Test v1.9.10 – Kodi 21.3 Omega")
+    pilot.set("name", "xcMate Repository – Test v1.9.11 – Kodi 21.3 Omega")
     pilot.set("provider-name", "xcMate")
     dir_ = pilot.find("extension[@point='xbmc.addon.repository']/dir")
     assert dir_ is not None
@@ -455,7 +526,7 @@ def build(destination):
     dir_.find("checksum").text = TEST_URL + "addons.xml.md5"
     dir_.find("datadir").text = TEST_URL
     for node in pilot.findall("extension[@point='xbmc.addon.metadata']/summary"):
-        node.text = "xcMate Repository – Test v1.9.10 – Kodi 21.3 Omega (nicht produktiv)"
+        node.text = "xcMate Repository – Test v1.9.11 – Kodi 21.3 Omega (nicht produktiv)"
     for node in pilot.findall("extension[@point='xbmc.addon.metadata']/description"):
         node.text = "XC Mate – geprüfter Testkatalog für den automatischen Kodi-Installationswizard. Android-Endabnahme am Gerät."
     pilot_xml = ET.tostring(pilot, encoding="utf-8", xml_declaration=True)
@@ -492,4 +563,4 @@ def build(destination):
 
 
 if __name__ == "__main__":
-    build(sys.argv[1] if len(sys.argv)>1 else ROOT/".build/xcmate-0517-pilot")
+    build(sys.argv[1] if len(sys.argv)>1 else ROOT/".build/xcmate-0518-pilot")
