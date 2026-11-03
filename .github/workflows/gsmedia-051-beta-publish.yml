@@ -1,0 +1,67 @@
+name: Publish GS Media 1.8.4 Setup 0.5.1 Skin Shortcuts hotfix beta
+on:
+  push:
+    branches: [main]
+    paths: [".github/workflows/gsmedia-051-beta-publish.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: gsmedia-online-beta-publish
+  cancel-in-progress: false
+jobs:
+  beta-hotfix-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download exact-commit Skin Shortcuts 2.1.0 hotfix candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/gsmedia-051"
+          gh run download 41597546159 --repo artattakk-creator/kodi-noodleprivate --name gsmedia-051-bingie-shortcuts-hotfix-candidate --dir "$RUNNER_TEMP/gsmedia-051"
+      - name: Verify and stage isolated Kodi test beta only
+        run: python tools/publish_gsmedia_051_beta.py "$RUNNER_TEMP/gsmedia-051/gsmedia-051-pilot"
+      - name: Commit only online-test packages (leave production addon catalog alone)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add online-test/
+          if git diff --cached --quiet; then echo "Unchanged tested beta"; exit 0; fi
+          if git diff --cached --name-only | grep -v '^online-test/'; then
+            echo "Refusing unrelated changes"; exit 1
+          fi
+          git commit -m "Publish GS Media 1.8.4 and Setup 0.5.1 with BINGIE Skin Shortcuts 2.1.0"
+          git push origin HEAD:main
+      - name: Verify public Kodi directory, versioned ZIPs, index and checksum
+        run: |
+          python - <<'PY'
+          import hashlib, time, urllib.request
+          from pathlib import Path
+          base="https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/"
+          paths=(
+            "addons.xml","addons.xml.md5",
+            "repository.gsmedia.pilot-1.8.4.zip",
+            "script.gsmedia.setup/script.gsmedia.setup-0.5.1.zip",
+            "script.skinshortcuts/script.skinshortcuts-2.1.0.zip",
+            "script.skinshortcuts/SOURCE.txt",
+          )
+          for filename in paths:
+              local=Path("online-test")/filename
+              wanted=hashlib.sha256(local.read_bytes()).hexdigest()
+              for retry in range(12):
+                  try:
+                      with urllib.request.urlopen(base+filename,timeout=15) as response:
+                          actual=response.read()
+                      if hashlib.sha256(actual).hexdigest()==wanted:
+                          print("PUBLIC_OK",filename,wanted);break
+                  except Exception as ex:
+                      print("RETRY",filename,retry,type(ex).__name__)
+                  time.sleep(4)
+              else:
+                  raise SystemExit("PUBLIC_BETA_NOT_VERIFIED: "+filename)
+          PY
