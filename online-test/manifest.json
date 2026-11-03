@@ -1,0 +1,16 @@
+{
+  "artifact_run_id": 41537010401,
+  "sha256": {
+    "plugin.video.noodleprivate/plugin.video.noodleprivate-0.4.2.zip": "1c01c42983f4f410e6b55227552fc4e6be9da59b2432227db244883a5ffbfc34",
+    "plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.70.zip": "90b90042b02d8b0e27a7b7c014d993b1dfb6f7a0dae493bf6bf80b0f4eaee07f",
+    "repository.gsmedia.pilot-1.8.2.zip": "20ad483cc8cbe2c723a4c82aeb64b1f1f72b948fe4332f5b3bbbb0348cd0125f",
+    "repository.gsmedia.pilot/repository.gsmedia.pilot-1.8.2.zip": "20ad483cc8cbe2c723a4c82aeb64b1f1f72b948fe4332f5b3bbbb0348cd0125f",
+    "script.gsmedia.setup-0.4.0.zip": "8ac0f76efd6df432a149982b71c4aff07def83710de9829f43942cac4bd62667",
+    "script.gsmedia.setup/script.gsmedia.setup-0.4.0.zip": "8ac0f76efd6df432a149982b71c4aff07def83710de9829f43942cac4bd62667"
+  },
+  "source_head": "ba814855fa798df44aa18074651b04097b9bb1b8",
+  "source_pr": 320,
+  "status": "ONLINE_PILOT_NOT_PRODUCTIVE",
+  "wizard": "0.4.0",
+  "xcmate": "0.1.29.70"
+}
