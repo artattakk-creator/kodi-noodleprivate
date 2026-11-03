@@ -91,12 +91,12 @@ class SkinActivationTests(unittest.TestCase):
         import xml.etree.ElementTree as ET
         addon=ET.parse(ROOT/"src/script.gsmedia.setup/addon.xml").getroot()
         self.assertEqual(addon.get("id"), "script.gsmedia.setup")
-        self.assertEqual(addon.get("version"), "0.5.15")
-        self.assertEqual(addon.get("name"), "XCMate Media Center Setup – v0.5.15 – Kodi 21.3 Omega")
+        self.assertEqual(addon.get("version"), "0.5.16")
+        self.assertEqual(addon.get("name"), "XCMate Media Center Setup – v0.5.16 – Kodi 21.3 Omega")
         b=(ROOT/"tools/build_gsmedia_pilot050.py").read_text(encoding="utf-8")
         self.assertIn('PILOT_ID = "repository.gsmedia.pilot"', b)
-        self.assertIn('PILOT_VERSION = "1.9.8"', b)
-        self.assertIn('xcMate Repository – Test v1.9.8 – Kodi 21.3 Omega',b)
+        self.assertIn('PILOT_VERSION = "1.9.9"', b)
+        self.assertIn('xcMate Repository – Test v1.9.9 – Kodi 21.3 Omega',b)
 
 
 if __name__ == "__main__":
