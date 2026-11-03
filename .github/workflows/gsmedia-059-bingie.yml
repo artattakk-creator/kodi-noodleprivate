@@ -98,15 +98,15 @@ jobs:
         with:
           name: gsmedia-059-echoed-ez-candidate
           path: |
-            .build/gsmedia-058/script.gsmedia.setup-0.5.9.zip
-            .build/gsmedia-058/script.gsmedia.setup-0.5.9.zip.sha256
+            .build/gsmedia-059/script.gsmedia.setup-0.5.9.zip
+            .build/gsmedia-059/script.gsmedia.setup-0.5.9.zip.sha256
             .build/gsmedia-059-pilot/
           if-no-files-found: error
       - name: Create guarded main worktree without touching production catalog
         run: |
           git fetch origin main
           git worktree add --detach "$RUNNER_TEMP/gsmedia-059-main" origin/main
-          python tools/publish_gsmedia_058_beta.py .build/gsmedia-059-pilot "$RUNNER_TEMP/gsmedia-059-main/online-test"
+          python tools/publish_gsmedia_059_beta.py .build/gsmedia-059-pilot "$RUNNER_TEMP/gsmedia-059-main/online-test"
       - name: Push only test channel; reject concurrent main changes
         run: |
           cd "$RUNNER_TEMP/gsmedia-059-main"
@@ -117,7 +117,7 @@ jobs:
           if git diff --cached --name-only | grep -v '^online-test/'; then
             echo "Refusing changes outside online-test/"; exit 1
           fi
-          git commit -m "Publish isolated GS Media 1.9.2 Setup 0.5.9 Echoed + EZ"
+          git commit -m "Publish isolated GS Media 1.9.2 Setup 0.5.9 BINGIE backup path fix"
           git push origin HEAD:main
       - name: Independently verify public HTTPS ZIPs, index and checksum
         run: |
