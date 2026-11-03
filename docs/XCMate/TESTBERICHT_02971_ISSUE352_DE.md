@@ -25,6 +25,8 @@ Lokal bestanden: 124 kombinierte neue/alte Setup-, Resume-, EPG- und Boot-Prüfu
 
 Android-Prüfungen und reale Provider-/TX60Pro-Dateisystemwerte bleiben ohne Geräteversuch NOT_TESTED.
 
+Die breite GUI-Regression erkannte zunächst einen neuen direkten Dialog.select-Aufruf im Startgruppen-Dialog. Dieser verwendet jetzt die bestehende menu_icons45-Komponente; die ursprüngliche Menüprüfung bleibt unverändert. Danach bestanden lokal 43 kombinierte Setup-/Legacy-/Menüprüfungen. Der finale vollständige CI-Lauf muss weiterhin grün sein.
+
 | Anforderung | Umsetzung / Prüfstatus | Offene Geräteabnahme |
 |---|---|---|
 | Discovery-OSError / Checkpoint | Reproduzierte Speicher-Fehlerkette behoben; Fehlerklassen, Schutz vor zweitem Job, Retry-Daten erhalten | konkreter Geräte-errno und Backend NOT_TESTED |

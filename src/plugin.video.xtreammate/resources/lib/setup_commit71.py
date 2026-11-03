@@ -44,7 +44,8 @@ def choose_start(window):
     import xbmcgui
     labels=['Alle ausgewählten Sendergruppen']+[str(g['category_name']) for g in draft.categories['live'] if str(g['category_id']) in draft.selected['live']]
     current=draft.data.get('start_group_id','*')
-    choice=xbmcgui.Dialog().select('Startgruppe für Live-TV',labels,preselect=ids.index(current) if current in ids else 0)
+    from menu_icons45 import select
+    choice=select(xbmcgui.Dialog(),'Startgruppe für Live-TV',labels,preselect=ids.index(current) if current in ids else 0,default='list')
     if type(choice) is not int or not 0<=choice<len(ids):return False
     draft.data['start_group_id']=ids[choice]
     from setup_diagnostics71 import emit
