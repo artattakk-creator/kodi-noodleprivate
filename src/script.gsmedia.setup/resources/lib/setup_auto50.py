@@ -149,6 +149,16 @@ def after_retry(s, ident):
     return validate(result)
 
 
+def advance_stage(s, from_stage):
+    validate(s)
+    graph = {"apps": "skin", "skin": "player", "player": "check"}
+    if s["stage"] != from_stage or from_stage not in graph or s["pending"]:
+        raise ValueError("Cannot skip installation stage")
+    result = dict(s)
+    result["stage"] = graph[from_stage]
+    return validate(result)
+
+
 def stop(s, reason="USER_STOP"):
     validate(s)
     result = dict(s)
