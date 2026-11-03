@@ -71,14 +71,14 @@ def validate_bundled_imports(source=SOURCE, files=FILES):
 
 def build(target):
     metadata = ET.parse(SOURCE / "addon.xml").getroot()
-    if metadata.get("id") != "script.gsmedia.setup" or metadata.get("version") != "0.5.18":
+    if metadata.get("id") != "script.gsmedia.setup" or metadata.get("version") != "0.5.19":
         raise ValueError("Unexpected or unreviewed wizard version")
     if any(not (SOURCE / relative).is_file() for relative in FILES):
         raise FileNotFoundError("Missing required GS Media wizard source file")
     validate_bundled_imports()
     target = Path(target)
     target.mkdir(parents=True, exist_ok=True)
-    filename = "script.gsmedia.setup-0.5.18.zip"
+    filename = "script.gsmedia.setup-0.5.19.zip"
     output = target / filename
     with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
         for relative in FILES:
