@@ -96,7 +96,7 @@ def release(source, target):
                 assert 'ALT_PLAYER_FILE = "xcmate_xvault_verified.json"' in tmdb
                 assert "EXISTING_DEFAULTS_PRESERVED" in tmdb
                 assert "def verify(" in tmdb
-                assert ui.count("dialog.yesno(") == 3
+                assert ui.count("dialog.yesno(") == 2
                 assert "TMDB_XVAULT_MANDATORY_UNMET:" in ui
                 assert "BINGIE_NOT_ACTIVE:" in ui
                 activation = a.read("script.gsmedia.setup/resources/lib/setup_skin_activate_0511.py").decode("utf-8")
