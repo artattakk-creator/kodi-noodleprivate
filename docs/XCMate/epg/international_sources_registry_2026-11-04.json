@@ -1,0 +1,2081 @@
+{
+  "schema": 1,
+  "as_of": "2026-11-04",
+  "scope": "Conservative source registry, not exhaustive 155-region importer",
+  "provider_catalogs": [
+    {
+      "name": "iptv-epg.org",
+      "url": "https://iptv-epg.org/guides",
+      "self_reported_countries": 72
+    },
+    {
+      "name": "free-epg.de",
+      "url": "https://www.free-epg.de/countries",
+      "self_reported_regions": 155,
+      "self_reported_active_feeds": 106
+    },
+    {
+      "name": "epg.pw",
+      "url": "https://epg.pw/xmltv.html",
+      "note": "20 listed per-country guides, overlap and extensions to be dynamically discovered"
+    },
+    {
+      "name": "Open-EPG",
+      "url": "https://www.open-epg.com/app/epgguide.php",
+      "note": "Country feeds, daily refresh; existing coverage must be merged on ISO country code"
+    }
+  ],
+  "classification": "LISTED_DIRECT means provider shows country URL, not successful per-URL GET. FREEEPG endpoint templates untested. Pending entries are metadata only.",
+  "counts": {
+    "listed_direct": 72,
+    "additional_feed_listed": 33,
+    "metadata_pending": 45,
+    "distinct": 150
+  },
+  "entries": [
+    {
+      "code": "AF",
+      "country": "Afghanistan",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "EG",
+      "country": "Ägypten",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/eg.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "AL",
+      "country": "Albanien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-al.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-al.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "DZ",
+      "country": "Algerien",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "AR",
+      "country": "Argentinien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ar.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ar.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "AM",
+      "country": "Armenien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-am.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-am.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "AZ",
+      "country": "Aserbaidschan",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "ET",
+      "country": "Äthiopien",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "AU",
+      "country": "Australien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-au.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-au.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "BS",
+      "country": "Bahamas",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/bs.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "BH",
+      "country": "Bahrain",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "BD",
+      "country": "Bangladesch",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/bd.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "BY",
+      "country": "Belarus",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-by.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-by.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "BE",
+      "country": "Belgien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-be.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-be.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "BJ",
+      "country": "Benin",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "BT",
+      "country": "Bhutan",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "BO",
+      "country": "Bolivien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-bo.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-bo.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "BA",
+      "country": "Bosnien und Herzegowina",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ba.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ba.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "BW",
+      "country": "Botswana",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "BR",
+      "country": "Brasilien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-br.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-br.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        },
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/br.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "BG",
+      "country": "Bulgarien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-bg.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-bg.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "BF",
+      "country": "Burkina Faso",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "BI",
+      "country": "Burundi",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "CL",
+      "country": "Chile",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-cl.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-cl.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "CR",
+      "country": "Costa Rica",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-cr.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-cr.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "CW",
+      "country": "Curaçao",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-cw.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-cw.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "DK",
+      "country": "Dänemark",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-dk.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-dk.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "DE",
+      "country": "Deutschland",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-de.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-de.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "DM",
+      "country": "Dominica",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "DO",
+      "country": "Dominikanische Republik",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-do.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-do.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "EC",
+      "country": "Ecuador",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/ec.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "SV",
+      "country": "El Salvador",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-sv.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-sv.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        },
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/sv.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "CI",
+      "country": "Elfenbeinküste",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/ci.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "EE",
+      "country": "Estland",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/ee.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "FJ",
+      "country": "Fidschi",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "FI",
+      "country": "Finnland",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-fi.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-fi.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "FR",
+      "country": "Frankreich",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-fr.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-fr.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "GE",
+      "country": "Georgien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ge.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ge.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "GH",
+      "country": "Ghana",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-gh.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-gh.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "GR",
+      "country": "Griechenland",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-gr.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-gr.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "GT",
+      "country": "Guatemala",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-gt.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-gt.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "GW",
+      "country": "Guinea-Bissau",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "HN",
+      "country": "Honduras",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-hn.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-hn.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "HK",
+      "country": "Hongkong",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-hk.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-hk.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "IN",
+      "country": "Indien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-in.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-in.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "ID",
+      "country": "Indonesien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-id.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-id.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "IQ",
+      "country": "Irak",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "IR",
+      "country": "Iran",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "IE",
+      "country": "Irland",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/ie.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "IS",
+      "country": "Island",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-is.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-is.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "IL",
+      "country": "Israel",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-il.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-il.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "IT",
+      "country": "Italien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-it.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-it.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "JM",
+      "country": "Jamaika",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-jm.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-jm.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "JP",
+      "country": "Japan",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-jp.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-jp.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "JO",
+      "country": "Jordanien",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "KH",
+      "country": "Kambodscha",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "CM",
+      "country": "Kamerun",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "CA",
+      "country": "Kanada",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ca.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ca.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "KZ",
+      "country": "Kasachstan",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "QA",
+      "country": "Katar",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/qa.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "KE",
+      "country": "Kenia",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/ke.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "KG",
+      "country": "Kirgisistan",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "CO",
+      "country": "Kolumbien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-co.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-co.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "HR",
+      "country": "Kroatien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-hr.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-hr.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "CU",
+      "country": "Kuba",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "KW",
+      "country": "Kuwait",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "LA",
+      "country": "Laos",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "LV",
+      "country": "Lettland",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-lv.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-lv.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "LB",
+      "country": "Libanon",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/lb.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "LT",
+      "country": "Litauen",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-lt.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-lt.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "LU",
+      "country": "Luxemburg",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-lu.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-lu.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "MO",
+      "country": "Macau",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/mo.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "MG",
+      "country": "Madagaskar",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/mg.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "MW",
+      "country": "Malawi",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/mw.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "MY",
+      "country": "Malaysia",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-my.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-my.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "ML",
+      "country": "Mali",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "MT",
+      "country": "Malta",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-mt.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-mt.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "MA",
+      "country": "Marokko",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/ma.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "MR",
+      "country": "Mauretanien",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "MU",
+      "country": "Mauritius",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/mu.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "MX",
+      "country": "Mexiko",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-mx.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-mx.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "MD",
+      "country": "Moldau",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "MC",
+      "country": "Monaco",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "MN",
+      "country": "Mongolei",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/mn.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "ME",
+      "country": "Montenegro",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-me.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-me.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "MZ",
+      "country": "Mosambik",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/mz.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "MM",
+      "country": "Myanmar",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "NA",
+      "country": "Namibia",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/na.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "NR",
+      "country": "Nauru",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "NP",
+      "country": "Nepal",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "NZ",
+      "country": "Neuseeland",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-nz.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-nz.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "NI",
+      "country": "Nicaragua",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ni.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ni.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "NL",
+      "country": "Niederlande",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-nl.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-nl.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "NE",
+      "country": "Niger",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "NG",
+      "country": "Nigeria",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ng.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ng.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "MK",
+      "country": "Nordmazedonien",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/mk.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "NO",
+      "country": "Norwegen",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-no.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-no.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "OM",
+      "country": "Oman",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "AT",
+      "country": "Österreich",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-at.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-at.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "TL",
+      "country": "Osttimor",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "PK",
+      "country": "Pakistan",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/pk.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "PS",
+      "country": "Palästinensische Gebiete",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "PA",
+      "country": "Panama",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-pa.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-pa.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "PG",
+      "country": "Papua-Neuguinea",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "PY",
+      "country": "Paraguay",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-py.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-py.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "PE",
+      "country": "Peru",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-pe.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-pe.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "PH",
+      "country": "Philippinen",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/ph.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "PL",
+      "country": "Polen",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-pl.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-pl.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "PT",
+      "country": "Portugal",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-pt.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-pt.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "PR",
+      "country": "Puerto Rico",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/pr.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "RW",
+      "country": "Ruanda",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "RO",
+      "country": "Rumänien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ro.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ro.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "RU",
+      "country": "Russland",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ru.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ru.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "SB",
+      "country": "Salomonen",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "SA",
+      "country": "Saudi-Arabien",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/sa.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "SE",
+      "country": "Schweden",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-se.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-se.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "CH",
+      "country": "Schweiz",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ch.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ch.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "RS",
+      "country": "Serbien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-rs.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-rs.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "SC",
+      "country": "Seychellen",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "SL",
+      "country": "Sierra Leone",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "ZW",
+      "country": "Simbabwe",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-zw.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-zw.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "SG",
+      "country": "Singapur",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-sg.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-sg.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "SK",
+      "country": "Slowakei",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/sk.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "SI",
+      "country": "Slowenien",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/si.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "ES",
+      "country": "Spanien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-es.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-es.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "LK",
+      "country": "Sri Lanka",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/lk.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "LC",
+      "country": "St. Lucia",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "ZA",
+      "country": "Südafrika",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-za.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-za.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "KR",
+      "country": "Südkorea",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/kr.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "SY",
+      "country": "Syrien",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "TW",
+      "country": "Taiwan",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-tw.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-tw.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "TZ",
+      "country": "Tansania",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "TH",
+      "country": "Thailand",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-th.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-th.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "TO",
+      "country": "Tonga",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "TT",
+      "country": "Trinidad und Tobago",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/tt.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "CZ",
+      "country": "Tschechien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-cz.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-cz.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "TN",
+      "country": "Tunesien",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "TR",
+      "country": "Türkei",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-tr.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-tr.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "UG",
+      "country": "Uganda",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ug.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ug.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "UA",
+      "country": "Ukraine",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/ua.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "HU",
+      "country": "Ungarn",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-hu.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-hu.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "UY",
+      "country": "Uruguay",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-uy.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-uy.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "US",
+      "country": "USA",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-us.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-us.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "UZ",
+      "country": "Usbekistan",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/uz.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "VU",
+      "country": "Vanuatu",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": []
+    },
+    {
+      "code": "VE",
+      "country": "Venezuela",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ve.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ve.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "AE",
+      "country": "Vereinigte Arabische Emirate",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/ae.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "GB",
+      "country": "Vereinigtes Königreich",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-gb.xml",
+          "format": "xml",
+          "verification": "provider_directory"
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-gb.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived"
+        }
+      ]
+    },
+    {
+      "code": "VN",
+      "country": "Vietnam",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/vn.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    },
+    {
+      "code": "CY",
+      "country": "Zypern",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/cy.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked"
+        }
+      ]
+    }
+  ]
+}
