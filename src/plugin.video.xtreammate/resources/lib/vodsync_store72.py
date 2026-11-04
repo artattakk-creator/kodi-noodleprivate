@@ -32,7 +32,7 @@ def group_digest(db, pid, kind, cid, generation=None):
     return count, h.hexdigest()
 
 
-def backup(pid, kinds, filename, folder, selections, cancel=lambda: False):
+def backup(pid, kinds, filename, folder, selections, cancel=lambda: False, allowed=('vod', 'series')):
     """Only this portal's active VOD/series metadata; no account/token files."""
     from library_index import connect
     from wizard_storage71 import protect
@@ -80,7 +80,7 @@ def backup(pid, kinds, filename, folder, selections, cancel=lambda: False):
     with target.open('rb') as stream:
         os.fsync(stream.fileno()); digest = hashlib.file_digest(stream, 'sha256').hexdigest() if hasattr(hashlib, 'file_digest') else _sha(stream)
     write_file(str(target) + '.json', dict(schema=1, sha256=digest, kinds=list(kinds), credentials=False))
-    verify_backup(str(target))
+    verify_backup(str(target), allowed=allowed)
     return str(target)
 
 
@@ -90,7 +90,7 @@ def _sha(stream):
     return h.hexdigest()
 
 
-def verify_backup(filename):
+def verify_backup(filename, allowed=('vod', 'series')):
     from wizard_storage71 import readable
     if not readable(filename) or not readable(filename + '.json'):
         raise SyncError('BACKUP_PRIVACY')
@@ -101,7 +101,8 @@ def verify_backup(filename):
     db = sqlite3.connect('file:' + quote(filename, safe='/') + '?mode=ro', uri=True)
     try:
         if db.execute('PRAGMA integrity_check').fetchone()[0] != 'ok': raise SyncError('BACKUP_VERIFY')
-        if db.execute("SELECT count(*) FROM titles WHERE kind NOT IN ('vod','series')").fetchone()[0]: raise SyncError('BACKUP_SCOPE')
+        if not allowed or set(manifest['kinds']) - set(allowed): raise SyncError('BACKUP_SCOPE')
+        if db.execute('SELECT count(*) FROM titles WHERE kind NOT IN (' + ','.join('?' for _ in allowed) + ')', tuple(allowed)).fetchone()[0]: raise SyncError('BACKUP_SCOPE')
     finally: db.close()
     return manifest
 
@@ -147,14 +148,15 @@ def upsert(session, kind, group, cancel, status):
                 session.heartbeat(db)
             batch.clear()
             status(None, dict(phase=kind.upper() + '_ITEMS', kind=kind, **counts))
-        for item in iterate(session.client, kind, cid=cid, cancel=cancel):
+        contracts = getattr(session, 'contracts', ACTIONS)
+        for item in iterate(session.client, kind, cid=cid, cancel=cancel, contracts=contracts):
             if cancel(): raise SyncError('CANCELLED')
             counts['read'] += 1
             actual = identity(item.get('category_id'))
             if actual != cid:
                 counts['skipped'] += 1
                 continue  # A provider ignoring category_id may not touch peers.
-            sid = identity(item.get(ACTIONS[kind][2]))
+            sid = identity(item.get(contracts[kind][2]))
             try: db.execute('INSERT INTO seen VALUES(?)', (sid,))
             except sqlite3.IntegrityError: raise SyncError('DUPLICATE_ID') from None
             title = item.get('name')

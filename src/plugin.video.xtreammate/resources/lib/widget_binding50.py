@@ -119,7 +119,11 @@ def prepare(ctx,kind,pid,slot,label):
 
 def apply(token,profile,skin,*,confirmed=False,restore=False):
     from widget_transaction50 import load,apply as transaction
-    plan=load(token,'binding');ctx=context(profile,skin);m=plan['metadata']
+    plan=load(token,'binding')
+    if plan.get('metadata',{}).get('repair73'):
+        from widget_repair73 import apply_hook
+        return apply_hook(token,profile,skin,confirmed=confirmed,restore=restore)
+    ctx=context(profile,skin);m=plan['metadata']
     if any(ctx[k]!=m[k] for k in ('profile','skin','menu','menu_sha','meta_sha')):raise ValueError('PROFILE_CHANGED')
     root=__import__('widget_transaction50').folder()/token;old=read(root/'original.0');new=read(root/'candidate.0')
     verify=dict(ctx,data=old,rows=ast.literal_eval(old.decode('utf-8')))

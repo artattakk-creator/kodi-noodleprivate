@@ -117,6 +117,10 @@ def _run():
             continue
         worked=False
         try:
+            from catalog_progress73 import prepare as catalog_progress73
+            catalog_progress73()
+        except Exception:pass
+        try:
             from widget_notice46 import focused
             focused()
         except Exception:pass
@@ -173,11 +177,21 @@ def _run():
         except Exception: pass
         if cancelled():break
         try:
+            from catalog_jobs73 import run_next as catalog_job73
+            worked=catalog_job73(cancelled) or worked
+        except MemoryError:runtime.note_pressure()
+        except Exception:pass
+        if cancelled():break
+        try:
             from genre_search import run_next as index_genres
             worked=index_genres(cancelled) or worked
         except MemoryError:runtime.note_pressure()
         except Exception:pass
         if cancelled():break
+        try:
+            from catalog_progress73 import prepare as catalog_progress73
+            catalog_progress73()
+        except Exception:pass
         try:
             from guide_timers import poll as poll_timers
             poll_timers()
@@ -192,6 +206,8 @@ def poll():
     if not imports_ready46():return
     from widget_notice46 import poll as poll_widget_lists
     poll_widget_lists()
+    from catalog_progress73 import poll as poll_catalog73
+    poll_catalog73()
     from guide_backup44 import poll as poll_guide_backup
     poll_guide_backup()
     from app_entry import observe

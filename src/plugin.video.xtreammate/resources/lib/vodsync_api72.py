@@ -179,12 +179,13 @@ class ArrayResponse:
         return bytes(out)
 
 
-def iterate(client, kind, categories=False, cid=None, cancel=lambda: False):
+def iterate(client, kind, categories=False, cid=None, cancel=lambda: False, contracts=None):
     from utils import http_stream
     from streaming_json import iter_array
-    if kind not in KINDS:
+    contracts = ACTIONS if contracts is None else contracts
+    if kind not in contracts:
         raise SyncError('SCOPE')
-    action = ACTIONS[kind][0 if categories else 1]
+    action = contracts[kind][0 if categories else 1]
     received = 0; page = 1
     try:
         while page <= 10000:

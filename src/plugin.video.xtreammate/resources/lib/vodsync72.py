@@ -33,7 +33,7 @@ def emit(session, phase, kind='', count=0, error=None):
 
 
 class Session:
-    def __init__(self, portal, kinds=KINDS, filename=None):
+    def __init__(self, portal, kinds=KINDS, filename=None, allowed=KINDS):
         from library_index import connect, path
         from wizard_storage71 import protect
         from wizard_resume53 import private_folder
@@ -41,7 +41,7 @@ class Session:
         from vodsync_store72 import schema
         self.fd = None; self.closed = False; self.backup = None
         self.portal = dict(portal); self.pid = str(portal['id'])
-        self.kinds = tuple(k for k in KINDS if k in kinds)
+        self.kinds = tuple(k for k in allowed if k in kinds)
         self.filename = filename or path()
         self.token = uuid.uuid4().hex; self.started = time.monotonic()
         self.anonymous = hashlib.sha256((self.token + self.pid).encode()).hexdigest()[:12]
