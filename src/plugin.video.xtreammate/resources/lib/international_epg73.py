@@ -13,7 +13,6 @@ import tempfile
 import time
 from urllib.parse import urlsplit
 from urllib.request import HTTPRedirectHandler, build_opener, Request
-import xml.etree.ElementTree as ET
 from vodsync_api72 import SyncError
 
 MAX_BYTES=256*1024*1024
@@ -65,36 +64,29 @@ class Redirect(HTTPRedirectHandler):
 
 
 def inspect_xml(stream,cancel=lambda:False):
-    """Full document proof with decompressed size bound and no retained raw feed."""
+    """Use the existing bounded SAX parser, including its inert DTD policy.
+
+    No ElementTree document and no worker-thread _strptime initialization.
+    Internal/external entities remain rejected by the production XMLTV parser.
+    """
     class Bounded:
-        def __init__(self):self.bytes=0;self.tail=b'';self.until=time.monotonic()+30
+        def __init__(self):self.bytes=0;self.until=time.monotonic()+30
         def read(self,n=-1):
             if cancel():raise SyncError('CANCELLED')
             if time.monotonic()>self.until:raise SyncError('TIMEOUT')
             data=stream.read(min(n if n>=0 else 65536,65536));self.bytes+=len(data)
             if self.bytes>MAX_BYTES:raise SyncError('EPG_PROBE_BUDGET')
-            check=(self.tail+data).upper();self.tail=check[-16:]
-            if b'<!DOCTYPE' in check or b'<!ENTITY' in check:raise SyncError('EPG_UNSAFE_XML')
             return data
-    channels=set();count=0;first=None;last=None;root=None
-    from datetime import datetime,timezone
-    def stamp(text):
-        try:return datetime.strptime(text.strip(),'%Y%m%d%H%M%S %z').timestamp()
-        except (ValueError,AttributeError):return None
-    for event,node in ET.iterparse(Bounded(),events=('start','end')):
-        if root is None:
-            if node.tag!='tv':raise SyncError('EPG_NOT_XMLTV')
-            root=node
-        if event!='end':continue
-        if node.tag=='channel':
-            if node.get('id'):channels.add(node.get('id'))
-            root.remove(node)
-        elif node.tag=='programme':
-            start,stop=stamp(node.get('start')),stamp(node.get('stop'))
-            if node.get('channel') and node.findtext('title') and start is not None and stop is not None and stop>start:
-                count+=1;first=start if first is None else min(first,start);last=stop if last is None else max(last,stop)
-            root.remove(node)
-        # Nested display-name/title elements are kept until their parent ends.
+    channels=set();count=0;first=None;last=None
+    def channel(cid,name):
+        if cid:channels.add(cid)
+    def programme(row):
+        nonlocal count,first,last
+        if not row.get('name'):return
+        start,stop=row['start_timestamp'],row['stop_timestamp']
+        count+=1;first=start if first is None else min(first,start);last=stop if last is None else max(last,stop)
+    from xmltv_stream import parse
+    parse(Bounded(),channel,programme,cancel,max_seconds=30)
     if not channels or not count:raise SyncError('EPG_EMPTY_SAMPLE')
     if last < time.time()-86400:raise SyncError('EPG_STALE_FEED')
     return dict(channels=len(channels),programmes=count,first=first,last=last,verified=time.time())

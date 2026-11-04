@@ -47,3 +47,11 @@ class FeedProbe73(Fixture,unittest.TestCase):
         self.status=200;self.body=b'\x1f\x8bbroken'
         with self.assertRaises(Exception):self.epg.verify(self.source)
         self.assertEqual(Path(before).read_bytes(),original)
+
+    def test_inert_xmltv_doctype_uses_existing_parser_without_loading_dtd(self):
+        import io
+        from unittest import mock
+        data=b'<!DOCTYPE tv SYSTEM "xmltv.dtd">'+self.raw
+        with mock.patch.object(sys.modules['utils'],'http_get',side_effect=AssertionError('DTD network forbidden')):
+            result=self.epg.inspect_xml(io.BytesIO(data))
+        self.assertEqual(result['programmes'],1)
