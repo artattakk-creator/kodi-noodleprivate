@@ -169,6 +169,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          # The .72 preservation tests compare the exact pinned main tree.
+          # A merge-only shallow clone cannot supply that parent object.
+          fetch-depth: 0
+        with:
           persist-credentials: true
       - uses: actions/setup-python@v5
         with:
