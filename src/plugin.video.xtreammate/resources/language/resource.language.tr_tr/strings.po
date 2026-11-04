@@ -1,0 +1,210 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: XCMate\n"
+"Language: tr_tr\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+
+msgctxt "#38000"
+msgid "Update entire catalog"
+msgstr "Tüm kataloğu güncelle"
+
+msgctxt "#38002"
+msgid "XCMate · Catalog import"
+msgstr "XCMate · Katalog aktarımı"
+
+msgctxt "#38003"
+msgid "Waiting"
+msgstr "Bekliyor"
+
+msgctxt "#38004"
+msgid "Import running"
+msgstr "Aktarım sürüyor"
+
+msgctxt "#38005"
+msgid "Completed"
+msgstr "Tamamlandı"
+
+msgctxt "#38006"
+msgid "Failed"
+msgstr "Başarısız"
+
+msgctxt "#38007"
+msgid "Interrupted"
+msgstr "Kesildi"
+
+msgctxt "#38011"
+msgid "Status and report"
+msgstr "Durum ve rapor"
+
+msgctxt "#38012"
+msgid "Resume"
+msgstr "Devam et"
+
+msgctxt "#38013"
+msgid "Cancel"
+msgstr "İptal"
+
+msgctxt "#38014"
+msgid "New job"
+msgstr "Yeni görev"
+
+msgctxt "#38015"
+msgid "An existing job is still active. Resume or cancel it first."
+msgstr "Bir görev hâlâ etkin. Önce devam ettirin veya iptal edin."
+
+msgctxt "#38016"
+msgid "EPG (optional)"
+msgstr "EPG (isteğe bağlı)"
+
+msgctxt "#38017"
+msgid "Update Live TV, movies and series in the background? Existing data and group selections are retained."
+msgstr "TV, filmler ve diziler arka planda güncellensin mi? Veriler ve grup seçimleri korunur."
+
+msgctxt "#38018"
+msgid "Queued: {0}"
+msgstr "Sıraya alındı: {0}"
+
+msgctxt "#38019"
+msgid "Diagnostic code: {0}"
+msgstr "Tanı kodu: {0}"
+
+msgctxt "#38020"
+msgid "{0} · Group {1} of {2}"
+msgstr "{0} · Grup {1} / {2}"
+
+msgctxt "#38021"
+msgid "{0} titles processed"
+msgstr "{0} başlık işlendi"
+
+msgctxt "#38022"
+msgid "Stored by area: {0}"
+msgstr "Bölüme göre kaydedilenler: {0}"
+
+msgctxt "#38023"
+msgid "Database readback: {0}"
+msgstr "Veritabanı geri okuması: {0}"
+
+msgctxt "#38024"
+msgid "Already linked at position {0}. Status: {1}. Rebuild the existing Home configuration without moving widgets?"
+msgstr "Zaten {0}. konumda bağlı. Durum: {1}. Widget’ları taşımadan mevcut ana sayfa yeniden oluşturulsun mu?"
+
+msgctxt "#38030"
+msgid "International EPG sources"
+msgstr "Uluslararası EPG kaynakları"
+
+msgctxt "#38031"
+msgid "Unverified · disabled"
+msgstr "Doğrulanmadı · devre dışı"
+
+msgctxt "#38032"
+msgid "No confirmed download source"
+msgstr "Onaylanmış indirme kaynağı yok"
+
+msgctxt "#38033"
+msgid "Source verification failed: {0}"
+msgstr "Kaynak doğrulanamadı: {0}"
+
+msgctxt "#38034"
+msgid "Verify source: {0}"
+msgstr "Kaynağı doğrula: {0}"
+
+msgctxt "#38035"
+msgid "{0} channels and {1} programmes verified"
+msgstr "{0} kanal ve {1} program doğrulandı"
+
+msgctxt "#38036"
+msgid "Enable this source ({0} channels, {1} programmes) for personal use? Automatic updates every 24 hours; existing mappings are retained."
+msgstr "Bu kaynak ({0} kanal, {1} program) kişisel kullanım için etkinleştirilsin mi? Her 24 saatte güncellenir; eşlemeler korunur."
+
+msgctxt "#38037"
+msgid "Source enabled; import requested."
+msgstr "Kaynak etkin; aktarım istendi."
+
+msgctxt "#38038"
+msgid "Source enabled; import deferred. See EPG manager."
+msgstr "Kaynak etkin; aktarım ertelendi. EPG yöneticisine bakın."
+
+msgctxt "#38040"
+msgid "Europe"
+msgstr "Avrupa"
+
+msgctxt "#38041"
+msgid "Asia"
+msgstr "Asya"
+
+msgctxt "#38042"
+msgid "Africa"
+msgstr "Afrika"
+
+msgctxt "#38043"
+msgid "North America"
+msgstr "Kuzey Amerika"
+
+msgctxt "#38044"
+msgid "South America"
+msgstr "Güney Amerika"
+
+msgctxt "#38045"
+msgid "Oceania"
+msgstr "Okyanusya"
+
+msgctxt "#32400"
+msgid "Start channel"
+msgstr "Başlangıç kanalı"
+
+msgctxt "#32401"
+msgid "Live TV"
+msgstr "Canlı TV"
+
+msgctxt "#32402"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#32403"
+msgid "Movies"
+msgstr "Filmler"
+
+msgctxt "#32404"
+msgid "Series"
+msgstr "Diziler"
+
+msgctxt "#32405"
+msgid "Settings"
+msgstr "Ayarlar"
+
+msgctxt "#32406"
+msgid "Accounts & portals"
+msgstr "Hesaplar ve portallar"
+
+msgctxt "#32407"
+msgid "Start channel & group"
+msgstr "Başlangıç kanalı ve grubu"
+
+msgctxt "#32408"
+msgid "Groups & favourites"
+msgstr "Gruplar ve favoriler"
+
+msgctxt "#32443"
+msgid "Widgets"
+msgstr "Widget’lar"
+
+msgctxt "#32461"
+msgid "MOVIES"
+msgstr "FİLMLER"
+
+msgctxt "#32462"
+msgid "SERIES"
+msgstr "DİZİLER"
+
+msgctxt "#32586"
+msgid "Search"
+msgstr "Ara"
+
+msgctxt "#32620"
+msgid "Language → XCMate language"
+msgstr "XCMate dili"
+
+msgctxt "#32621"
+msgid "Follow Kodi language"
+msgstr "Kodi dilini kullan"

@@ -4820,3 +4820,147 @@ msgstr "Xtream live format (explicit choice, no automatic retries)"
 msgctxt "#36723"
 msgid "Default (TS)|MPEG-TS|HLS"
 msgstr "Default (TS)|MPEG-TS|HLS"
+
+msgctxt "#38000"
+msgid "Update entire catalog"
+msgstr "Update entire catalog"
+
+msgctxt "#38002"
+msgid "XCMate · Catalog import"
+msgstr "XCMate · Catalog import"
+
+msgctxt "#38003"
+msgid "Waiting"
+msgstr "Waiting"
+
+msgctxt "#38004"
+msgid "Import running"
+msgstr "Import running"
+
+msgctxt "#38005"
+msgid "Completed"
+msgstr "Completed"
+
+msgctxt "#38006"
+msgid "Failed"
+msgstr "Failed"
+
+msgctxt "#38007"
+msgid "Interrupted"
+msgstr "Interrupted"
+
+msgctxt "#38011"
+msgid "Status and report"
+msgstr "Status and report"
+
+msgctxt "#38012"
+msgid "Resume"
+msgstr "Resume"
+
+msgctxt "#38013"
+msgid "Cancel"
+msgstr "Cancel"
+
+msgctxt "#38014"
+msgid "New job"
+msgstr "New job"
+
+msgctxt "#38015"
+msgid "An existing job is still active. Resume or cancel it first."
+msgstr "An existing job is still active. Resume or cancel it first."
+
+msgctxt "#38016"
+msgid "EPG (optional)"
+msgstr "EPG (optional)"
+
+msgctxt "#38017"
+msgid "Update Live TV, movies and series in the background? Existing data and group selections are retained."
+msgstr "Update Live TV, movies and series in the background? Existing data and group selections are retained."
+
+msgctxt "#38018"
+msgid "Queued: {0}"
+msgstr "Queued: {0}"
+
+msgctxt "#38019"
+msgid "Diagnostic code: {0}"
+msgstr "Diagnostic code: {0}"
+
+msgctxt "#38020"
+msgid "{0} · Group {1} of {2}"
+msgstr "{0} · Group {1} of {2}"
+
+msgctxt "#38021"
+msgid "{0} titles processed"
+msgstr "{0} titles processed"
+
+msgctxt "#38022"
+msgid "Stored by area: {0}"
+msgstr "Stored by area: {0}"
+
+msgctxt "#38023"
+msgid "Database readback: {0}"
+msgstr "Database readback: {0}"
+
+msgctxt "#38024"
+msgid "Already linked at position {0}. Status: {1}. Rebuild the existing Home configuration without moving widgets?"
+msgstr "Already linked at position {0}. Status: {1}. Rebuild the existing Home configuration without moving widgets?"
+
+msgctxt "#38030"
+msgid "International EPG sources"
+msgstr "International EPG sources"
+
+msgctxt "#38031"
+msgid "Unverified · disabled"
+msgstr "Unverified · disabled"
+
+msgctxt "#38032"
+msgid "No confirmed download source"
+msgstr "No confirmed download source"
+
+msgctxt "#38033"
+msgid "Source verification failed: {0}"
+msgstr "Source verification failed: {0}"
+
+msgctxt "#38034"
+msgid "Verify source: {0}"
+msgstr "Verify source: {0}"
+
+msgctxt "#38035"
+msgid "{0} channels and {1} programmes verified"
+msgstr "{0} channels and {1} programmes verified"
+
+msgctxt "#38036"
+msgid "Enable this source ({0} channels, {1} programmes) for personal use? Automatic updates every 24 hours; existing mappings are retained."
+msgstr "Enable this source ({0} channels, {1} programmes) for personal use? Automatic updates every 24 hours; existing mappings are retained."
+
+msgctxt "#38037"
+msgid "Source enabled; import requested."
+msgstr "Source enabled; import requested."
+
+msgctxt "#38038"
+msgid "Source enabled; import deferred. See EPG manager."
+msgstr "Source enabled; import deferred. See EPG manager."
+
+msgctxt "#38040"
+msgid "Europe"
+msgstr "Europe"
+
+msgctxt "#38041"
+msgid "Asia"
+msgstr "Asia"
+
+msgctxt "#38042"
+msgid "Africa"
+msgstr "Africa"
+
+msgctxt "#38043"
+msgid "North America"
+msgstr "North America"
+
+msgctxt "#38044"
+msgid "South America"
+msgstr "South America"
+
+msgctxt "#38045"
+msgid "Oceania"
+msgstr "Oceania"
