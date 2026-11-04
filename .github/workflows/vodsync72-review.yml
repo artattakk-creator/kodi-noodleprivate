@@ -1,0 +1,43 @@
+name: XCMate 72 safe existing-provider VOD rescan review
+on:
+  pull_request:
+    paths: ['src/plugin.video.xtreammate/**', 'tests/**', 'tools/*72*', 'tools/kodi_vod72_host/**', '.github/workflows/vodsync72-review.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: vodsync72-review-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+jobs:
+  focused-and-native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Focused HTTP, catalog, crash, storage, GUI and preservation tests
+        run: |
+          mkdir -p "$RUNNER_TEMP/vod72-review"
+          python -m unittest discover -s tests -p '*02972.py' -v 2>&1 | tee "$RUNNER_TEMP/vod72-review/focused-tests.txt"
+      - name: Verify unchanged current Pilot channel (no publication)
+        run: python tools/publish_pilot354.py > "$RUNNER_TEMP/vod72-review/unchanged-pilot.json"
+      - name: Build deterministic review ZIP only
+        run: |
+          python tools/package_xcmate71.py "$RUNNER_TEMP/vod72-review" > "$RUNNER_TEMP/vod72-review/package.json"
+          cmp "$RUNNER_TEMP/vod72-review/plugin.video.xtreammate-0.1.29.72.zip" docs/XCMate/test-builds/02972/plugin.video.xtreammate-0.1.29.72.zip
+          python tools/validate_kodi_po.py
+      - name: Native Kodi 21 Start, progress, Back and media directory readback
+        run: python tools/run_kodi_vod72_contract.py --report-dir "$RUNNER_TEMP/vod72-review/native"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xcmate72-vodsync-review
+          path: |
+            ${{ runner.temp }}/vod72-review/*.zip
+            ${{ runner.temp }}/vod72-review/*.sha256
+            ${{ runner.temp }}/vod72-review/*.json
+            ${{ runner.temp }}/vod72-review/*.txt
+            ${{ runner.temp }}/vod72-review/native/vod72.json
+          if-no-files-found: error
+          retention-days: 30

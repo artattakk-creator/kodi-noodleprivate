@@ -69,12 +69,16 @@ def phased(cls):
         def categories(d,cancel,status):
             from setup_diagnostics71 import emit,probe
             emit('GROUPS_BEGIN',d.pid)
-            pending={}
+            pending={};d.category_diagnostics72={}
             for kind in ('live','vod','series'):
                 if cancel():raise InterruptedError('setup cancelled')
                 from wizard_catalog54 import LABELS
                 status(None,LABELS[kind]+': Gruppen werden geladen')
-                pending[kind]=d.adapter.categories(kind,remote=True)
+                try:pending[kind]=d.adapter.categories(kind,remote=True)
+                except __import__('vodsync_api72').SyncError as exc:
+                    if kind=='live':raise
+                    d.category_diagnostics72[kind]=exc.code;pending[kind]=[]
+                if kind in ('vod','series') and not pending[kind]:d.category_diagnostics72.setdefault(kind,'SOURCE_EMPTY')
                 status(None,LABELS[kind]+': '+str(len(pending[kind]))+' verfügbare Gruppen')
             if not any(pending.values()):raise ValueError('no usable categories')
             d.categories=pending
@@ -92,6 +96,14 @@ def phased(cls):
         if enabled(w):return auth(w)
         return old['_start_discovery'](w)
     def discovered(w,result):
+        if enabled(w) and result.get('live') and (not result.get('vod') or not result.get('series')):
+            import xbmcgui
+            from vodsync_ui72 import describe,LABELS
+            reasons='\n'.join(LABELS[k]+': '+describe(getattr(w.draft,'category_diagnostics72',{}).get(k,'SOURCE_EMPTY')) for k in ('vod','series') if not result.get(k))
+            if not xbmcgui.Dialog().yesno('XCMate · Filme/Serien noch ungeklärt',
+                reasons+'\nMit den verfügbaren Bereichen fortfahren? Später: bestehender Provider → Katalog aktualisieren.',
+                nolabel='Abbrechen',yeslabel='Bewusst fortfahren'):
+                w.close();return
         old['discovered'](w,result)
         if enabled(w):w.getControl(2).setLabel('Schritt 2/4 · Gruppen auswählen')
     def scanned(w,result):

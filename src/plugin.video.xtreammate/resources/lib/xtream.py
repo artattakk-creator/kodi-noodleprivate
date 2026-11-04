@@ -237,6 +237,11 @@ class XtreamClient:
     def get_vod_categories(self, force_refresh=False):
         return self._get_json('get_vod_categories', force_refresh=force_refresh) or []
 
+    def remote_categories72(self, kind):
+        """An explicit remote discovery must not reuse a stale empty cache."""
+        from vodsync_api72 import categories
+        return categories(self, kind)
+
     def get_vod_streams(self, category_id=None, force_refresh=False):
         if category_id is not None and not force_refresh:
             all_movies = self.get_cached_catalog('get_vod_streams')

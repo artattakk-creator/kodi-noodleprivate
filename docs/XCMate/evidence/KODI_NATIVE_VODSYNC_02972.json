@@ -1,0 +1,29 @@
+{
+  "native_owner_progress_start_back": "PASS",
+  "live_rows": 3357,
+  "live_groups": 53,
+  "live_digest_unchanged": true,
+  "vod_rows": 1,
+  "series_rows": 1,
+  "scope_requests": [
+    "AUTH",
+    "get_vod_categories",
+    "get_series_categories",
+    "get_vod_streams",
+    "get_series"
+  ],
+  "synthetic_dialog_answers": true,
+  "production_profiles": false,
+  "installer_executed": false,
+  "android": "NOT_TESTED",
+  "kodi": {
+    "major": 21,
+    "minor": 2,
+    "revision": "20250330-nogitfound",
+    "tag": "stable"
+  },
+  "native_directories": {
+    "vod": "PASS (1 real Kodi directory item)",
+    "series": "PASS (1 real Kodi directory item)"
+  }
+}
