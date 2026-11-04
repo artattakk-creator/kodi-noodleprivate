@@ -10,6 +10,8 @@ def hooks72():
 
 
 def without_stabilization72(source, module):
+    from stabilization_contract_02973 import without_stabilization73
+    source=without_stabilization73(source,module)
     binary = isinstance(source, bytes); raw = source if binary else source.encode()
     for path, delta in hooks72().items():
         if path == str(module) or path.endswith('/' + str(module).removesuffix('.py') + '.py'):

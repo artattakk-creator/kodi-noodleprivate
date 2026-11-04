@@ -1,0 +1,167 @@
+{
+  "date": "2026-11-04",
+  "scope": "Official FreeEPG XMLTV buttons resolved individually. Connector does not validate gzip/XML; no endpoint is declared download-verified.",
+  "shell_probe": "POLICY_BLOCKED_403",
+  "records": [
+    {
+      "country": "EG",
+      "url": "https://www.free-epg.de/api/epg/eg.xml.gz",
+      "result": "(400) Unsupported content-type: application/gzip"
+    },
+    {
+      "country": "BS",
+      "url": "https://www.free-epg.de/api/epg/bs.xml.gz",
+      "result": "(400) Unsupported content-type: application/gzip"
+    },
+    {
+      "country": "EC",
+      "url": "https://www.free-epg.de/api/epg/ec.xml.gz",
+      "result": "(400) Unsupported content-type: application/gzip"
+    },
+    {
+      "country": "CI",
+      "url": "https://www.free-epg.de/api/epg/ci.xml.gz",
+      "result": "(503) Service Unavailable"
+    },
+    {
+      "country": "EE",
+      "url": "https://www.free-epg.de/api/epg/ee.xml.gz",
+      "result": "(400) Unsupported content-type: application/gzip"
+    },
+    {
+      "country": "IE",
+      "url": "https://www.free-epg.de/api/epg/ie.xml.gz",
+      "result": "(503) Service Unavailable"
+    },
+    {
+      "country": "QA",
+      "url": "https://www.free-epg.de/api/epg/qa.xml.gz",
+      "result": "(503) Service Unavailable"
+    },
+    {
+      "country": "KE",
+      "url": "https://www.free-epg.de/api/epg/ke.xml.gz",
+      "result": "(503) Service Unavailable"
+    },
+    {
+      "country": "LB",
+      "url": "https://www.free-epg.de/api/epg/lb.xml.gz",
+      "result": "(400) Unsupported content-type: application/gzip"
+    },
+    {
+      "country": "MO",
+      "url": "https://www.free-epg.de/api/epg/mo.xml.gz",
+      "result": "(503) Service Unavailable"
+    },
+    {
+      "country": "MG",
+      "url": "https://www.free-epg.de/api/epg/mg.xml.gz",
+      "result": "(400) Unsupported content-type: application/gzip"
+    },
+    {
+      "country": "MW",
+      "url": "https://www.free-epg.de/api/epg/mw.xml.gz",
+      "result": "(400) Unsupported content-type: application/gzip"
+    },
+    {
+      "country": "MA",
+      "url": "https://www.free-epg.de/api/epg/ma.xml.gz",
+      "result": "(503) Service Unavailable"
+    },
+    {
+      "country": "MU",
+      "url": "https://www.free-epg.de/api/epg/mu.xml.gz",
+      "result": "(503) Service Unavailable"
+    },
+    {
+      "country": "MN",
+      "url": "https://www.free-epg.de/api/epg/mn.xml.gz",
+      "result": "(503) Service Unavailable"
+    },
+    {
+      "country": "MZ",
+      "url": "https://www.free-epg.de/api/epg/mz.xml.gz",
+      "result": "(400) Unsupported content-type: application/gzip"
+    },
+    {
+      "country": "NA",
+      "url": "https://www.free-epg.de/api/epg/na.xml.gz",
+      "result": "(503) Service Unavailable"
+    },
+    {
+      "country": "MK",
+      "url": "https://www.free-epg.de/api/epg/mk.xml.gz",
+      "result": "(400) Unsupported content-type: application/gzip"
+    },
+    {
+      "country": "PK",
+      "url": "https://www.free-epg.de/api/epg/pk.xml.gz",
+      "result": "(400) Unsupported content-type: application/gzip"
+    },
+    {
+      "country": "PH",
+      "url": "https://www.free-epg.de/api/epg/ph.xml.gz",
+      "result": "(400) Unsupported content-type: application/gzip"
+    },
+    {
+      "country": "PR",
+      "url": "https://www.free-epg.de/api/epg/pr.xml.gz",
+      "result": "(400) Unsupported content-type: application/gzip"
+    },
+    {
+      "country": "SA",
+      "url": "https://www.free-epg.de/api/epg/sa.xml.gz",
+      "result": "(400) Unsupported content-type: application/gzip"
+    },
+    {
+      "country": "SK",
+      "url": "https://www.free-epg.de/api/epg/sk.xml.gz",
+      "result": "(503) Service Unavailable"
+    },
+    {
+      "country": "SI",
+      "url": "https://www.free-epg.de/api/epg/si.xml.gz",
+      "result": "(400) Unsupported content-type: application/gzip"
+    },
+    {
+      "country": "LK",
+      "url": "https://www.free-epg.de/api/epg/lk.xml.gz",
+      "result": "(400) Unsupported content-type: application/gzip"
+    },
+    {
+      "country": "KR",
+      "url": "https://www.free-epg.de/api/epg/kr.xml.gz",
+      "result": "(400) Unsupported content-type: application/gzip"
+    },
+    {
+      "country": "TT",
+      "url": "https://www.free-epg.de/api/epg/tt.xml.gz",
+      "result": "(400) Unsupported content-type: application/gzip"
+    },
+    {
+      "country": "UA",
+      "url": "https://www.free-epg.de/api/epg/ua.xml.gz",
+      "result": "(400) Unsupported content-type: application/gzip"
+    },
+    {
+      "country": "UZ",
+      "url": "https://www.free-epg.de/api/epg/uz.xml.gz",
+      "result": "(400) Unsupported content-type: application/gzip"
+    },
+    {
+      "country": "AE",
+      "url": "https://www.free-epg.de/api/epg/ae.xml.gz",
+      "result": "(400) Unsupported content-type: application/gzip"
+    },
+    {
+      "country": "VN",
+      "url": "https://www.free-epg.de/api/epg/vn.xml.gz",
+      "result": "(400) Unsupported content-type: application/gzip"
+    },
+    {
+      "country": "CY",
+      "url": "https://www.free-epg.de/api/epg/cy.xml.gz",
+      "result": "(503) Service Unavailable"
+    }
+  ]
+}
