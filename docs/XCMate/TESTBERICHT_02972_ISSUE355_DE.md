@@ -112,8 +112,15 @@ diagnostiziert, nicht als leerer oder erfolgreicher Import behandelt.
   haben exakt dokumentierte Deltas. Alte Scope-Verträge normalisieren nur diese
   bytegenauen freigegebenen Änderungen; keine Testmethode/Skip-Bedingung entfällt.
   Vier bestehende Versionsasserts werden regulär auf .72 angehoben.
-- Gesamte Host-Suite und GitHub-CI: Ergebnisse/Action-Links werden nach dem
-  abschließenden Lauf hier und im PR ergänzt; keine offenen Läufe als PASS.
+- **Gesamte Host-Suite lokal: 2.943 Tests PASS in 460,867 s, 0 Fehler, 0 Skips.**
+  Ausgeführt mit den bestehenden CI-Abhängigkeiten Pillow, impacket 0.13.0 und
+  simpleeval 0.9.13. Keine historischen Tests ausgelassen.
+- [.72-CI 41791895817: SUCCESS](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/41791895817):
+  39 gezielte Tests, unveränderter Pilot-Index, bytegleicher ZIP-Neubau und native Kodi-Prüfung.
+  [Review-Artefakt](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/41791895817/artifacts/13303801914).
+- Die vollständigen zusätzlichen Kodi-/BINGIE-/TS-/HLS-Gates und der komplette
+  CI-Hostlauf sind im [Draft-PR #356](https://github.com/artattakk-creator/kodi-noodleprivate/pull/356)
+  mit ihren abschließenden Action-Links dokumentiert; offene Läufe werden nicht als PASS gezählt.
 - Alle echten Android-Prüfungen und der reale Anbieterbefund: **NOT_TESTED**.
 
 ## Test-ZIP

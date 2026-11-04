@@ -10,7 +10,16 @@
   "focused_status": "PASS",
   "native_kodi": "PASS_21.2_LINUX_SYNTHETIC",
   "android": "NOT_TESTED",
-  "full_host_suite": "RUNNING",
+  "full_host_suite": "PASS_LOCAL",
   "release": false,
-  "merge": false
+  "merge": false,
+  "tests": 2943,
+  "seconds": 460.867,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "tested_source_commit": "804aa79e70633362bb000265f9adff11a59602bc",
+  "focused_ci": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/41791895817",
+  "focused_ci_status": "success",
+  "complete_ci_references": "https://github.com/artattakk-creator/kodi-noodleprivate/pull/356"
 }
