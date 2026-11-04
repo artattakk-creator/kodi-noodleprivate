@@ -28,9 +28,9 @@
   "classification": "LISTED_DIRECT means provider shows country URL, not successful per-URL GET. FREEEPG endpoint templates untested. Pending entries are metadata only.",
   "counts": {
     "listed_direct": 72,
-    "additional_feed_listed": 33,
+    "additional_feed_listed": 32,
     "metadata_pending": 45,
-    "distinct": 150
+    "distinct": 149
   },
   "entries": [
     {
@@ -162,18 +162,6 @@
       "country": "Bahrain",
       "status": "METADATA_PENDING_NO_VERIFIED_FEED",
       "sources": []
-    },
-    {
-      "code": "BD",
-      "country": "Bangladesch",
-      "status": "PROVIDER_ACTIVE_FEED_LISTED",
-      "sources": [
-        {
-          "provider": "free-epg.de",
-          "url": "https://www.free-epg.de/api/epg/bd.xml.gz",
-          "verification": "provider_directory_endpoint_pattern_unchecked"
-        }
-      ]
     },
     {
       "code": "BY",
