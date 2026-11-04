@@ -58,8 +58,9 @@ diagnostiziert, nicht als leerer oder erfolgreicher Import behandelt.
   komplette Header-/Trailerprüfung, numerische Seitenfolge mit Total-Abgleich.
   Unbekanntes Offset-/Pagingformat wird abgelehnt. Wiederholte Seiten/IDs und
   abgeschnittene Antworten veröffentlichen keine Gruppe.
-- HTTP-Timeout 12 s, begrenztes Request-Zeitbudget; keine automatische Retry-
-  Schleife. Ein Rate-Limit oder grundlegender Verbindungsfehler beendet den
+- Socket-Timeout 12 s und bestehender Streaming-Leerlaufschutz; kein pauschales
+  Gesamtlimit für aktiv fortschreitende große Kategorien auf ARM32. Authentifizierung
+  bleibt zeit-/größenbegrenzt. Keine automatische Retry-Schleife. Ein Rate-Limit oder grundlegender Verbindungsfehler beendet den
   Durchlauf. Netzwerkfehler, HTTP-Status, Authentifizierung, deaktivierte
   Kontobereiche, echte Leere, Schema, SQLite, Reserve und Berechtigung haben
   unterschiedliche sichere Diagnosecodes.
@@ -94,7 +95,7 @@ diagnostiziert, nicht als leerer oder erfolgreicher Import behandelt.
 
 ## Testnachweise
 
-- **39 gezielte Hosttests bestanden**: tatsächlicher synthetischer HTTP-Server,
+- **41 gezielte Hosttests bestanden**: tatsächlicher synthetischer HTTP-Server,
   reale Xtream-Parameterkodierung, SQLite-Writer und Reader, Cold-Readback im
   neuen Prozess, Film-only/Serien-only, Fehlerformate/HTTP 401/403/404/429/500,
   Wrapper/Paging, doppelte IDs, Teilantworten, Cancel, SQLite-Sperre, readonly,
@@ -112,11 +113,13 @@ diagnostiziert, nicht als leerer oder erfolgreicher Import behandelt.
   haben exakt dokumentierte Deltas. Alte Scope-Verträge normalisieren nur diese
   bytegenauen freigegebenen Änderungen; keine Testmethode/Skip-Bedingung entfällt.
   Vier bestehende Versionsasserts werden regulär auf .72 angehoben.
-- **Gesamte Host-Suite lokal: 2.943 Tests PASS in 460,867 s, 0 Fehler, 0 Skips.**
+- **Gesamte Host-Suite auf Quellstand 804aa79: 2.943 Tests PASS in 460,867 s,
+  0 Fehler, 0 Skips.** Die abschließende Streaming-/SQLite-Diagnosekorrektur
+  ergänzt zwei Tests; alle 41 gezielten Tests des endgültigen Pakets bestehen.
   Ausgeführt mit den bestehenden CI-Abhängigkeiten Pillow, impacket 0.13.0 und
   simpleeval 0.9.13. Keine historischen Tests ausgelassen.
 - [.72-CI 41791895817: SUCCESS](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/41791895817):
-  39 gezielte Tests, unveränderter Pilot-Index, bytegleicher ZIP-Neubau und native Kodi-Prüfung.
+  41 gezielte Tests, unveränderter Pilot-Index, bytegleicher ZIP-Neubau und native Kodi-Prüfung.
   [Review-Artefakt](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/41791895817/artifacts/13303801914).
 - Die vollständigen zusätzlichen Kodi-/BINGIE-/TS-/HLS-Gates und der komplette
   CI-Hostlauf sind im [Draft-PR #356](https://github.com/artattakk-creator/kodi-noodleprivate/pull/356)
@@ -125,8 +128,8 @@ diagnostiziert, nicht als leerer oder erfolgreicher Import behandelt.
 
 ## Test-ZIP
 
-`test-builds/02972/plugin.video.xtreammate-0.1.29.72.zip`, **689 Dateien**, 3.326.893 Bytes.
-SHA256: `e3ee24329740ae0f45d3759fdac1fd71222dfdcb80c73a6fbf39713641a516a2`.
+`test-builds/02972/plugin.video.xtreammate-0.1.29.72.zip`, **689 Dateien**, 3.326.918 Bytes.
+SHA256: `aebd3b268b67e8f2407f6643d4f6c51eb8a39591908534d40e23910e40abd4c6`.
 Daneben liegt die `.zip.sha256`-Datei. Reproduzierbar mit
 `python tools/package_xcmate71.py /tmp/xcmate72-review` (Builder ist versionsunabhängig).
 ZIP-CRC, bytegleicher Quellinhalt und Ausschluss privater DB-/Log-/Profildaten

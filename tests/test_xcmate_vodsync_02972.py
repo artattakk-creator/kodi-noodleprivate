@@ -364,6 +364,22 @@ upsert(session,'vod',dict(category_id='v',category_name='Synthetic'),lambda:Fals
             with mock.patch.object(sys.modules['utils'], 'http_stream', side_effect=error): r = s.run({'vod': ['v']})
             self.assertEqual(r['errors'][0]['code'], code); self.assertNotIn('CANARY72', json.dumps(r)); s.close(); self.assert_guarded()
 
+    def test_vod04_large_active_stream_has_no_aggregate_timeout_but_socket_and_cancel_remain(self):
+        transport = sys.modules['utils'].http_stream
+        with mock.patch.object(sys.modules['utils'], 'http_stream', wraps=transport) as calls:
+            s, report = self.run_scan(('vod',))
+        self.assertEqual(report['state'], 'DONE', report)
+        self.assertTrue(calls.call_args_list)
+        for call in calls.call_args_list:
+            self.assertIsNone(call.kwargs['max_seconds'])
+            self.assertEqual(call.kwargs['timeout'], 12)
+            self.assertTrue(callable(call.kwargs['cancel']))
+
+    def test_vod06_actual_sqlite_full_and_readonly_codes_are_storage_diagnostics(self):
+        for number, code in ((sqlite3.SQLITE_FULL, 'SPACE'), (sqlite3.SQLITE_READONLY, 'READONLY'), (sqlite3.SQLITE_BUSY, 'SQLITE')):
+            error = sqlite3.OperationalError('CANARY72 should never be displayed'); error.sqlite_errorcode = number
+            self.assertEqual(self.api.failure(error).code, code)
+
     def test_vod05_own_obsolete_generations_do_not_accumulate(self):
         s, r = self.run_scan(('vod',))
         for _ in range(4): s.run({'vod': ['v']})

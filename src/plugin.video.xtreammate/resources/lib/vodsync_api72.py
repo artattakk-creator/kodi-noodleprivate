@@ -37,7 +37,8 @@ def failure(exc):
         return SyncError('SCHEMA')
     import sqlite3
     if isinstance(exc, sqlite3.Error):
-        return SyncError('SQLITE', number=getattr(exc, 'sqlite_errorcode', 0))
+        primary = getattr(exc, 'sqlite_errorcode', 0) & 255
+        return SyncError({8: 'READONLY', 13: 'SPACE'}.get(primary, 'SQLITE'), number=primary)
     if isinstance(exc, OSError):
         import errno
         number = getattr(exc, 'errno', 0) or 0
@@ -126,9 +127,9 @@ class ArrayResponse:
         self.metadata = {}
 
     def byte(self):
-        if self.cancel():
-            raise InterruptedError()
         if self.pos >= len(self.buffer):
+            if self.cancel():
+                raise InterruptedError()
             self.buffer = self.stream.read(32768); self.pos = 0
             if not self.buffer:
                 return None
@@ -195,7 +196,7 @@ def iterate(client, kind, categories=False, cid=None, cancel=lambda: False):
             if page > 1:
                 params['page'] = page
             with http_stream(client._api_url(), params=params, timeout=12,
-                             max_seconds=120, cancel=cancel) as stream:
+                             max_seconds=None, cancel=cancel) as stream:
                 reader = ArrayResponse(stream, cancel); count = 0
                 for row in iter_array(reader, cancel):
                     count += 1; received += 1
