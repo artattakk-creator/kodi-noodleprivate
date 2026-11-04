@@ -1,3 +1,9 @@
+0.1.29.72 (Test-Build, Issue #355)
+- Katalog aktualisieren: Filme und Serien im bestehenden Provider sicher nachscannen.
+- Echte Remote-Abfrage mit klarer Diagnose für leere, fehlerhafte und unvollständige Anbieterantworten.
+- Inkrementeller Titelabgleich, private Sicherung, geprüfter Readback und Abbruch ohne Teilgruppen.
+- Live-TV, EPG, Favoriten, Serienfortschritt und gespeicherte Zugangsdaten bleiben erhalten.
+
 0.1.29.71 (Test-Build, Issue #352)
 - Einrichtung: Android-App-Speicher gezielt prüfen; lokale Checkpoint-Fehler nicht als Netzwerkfehler melden.
 - Sendergruppen und ausdrücklich gewählte Startgruppe mit Sicherung und frischem Readback speichern.

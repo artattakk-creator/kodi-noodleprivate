@@ -68,6 +68,9 @@ class Adapter:
             self.playlist=self.playlist or path(self.pid)
             return [dict(category_id=r['gid'],category_name=r['name']) for r in categories(self.playlist,kind)] if os.path.isfile(self.playlist) else []
         if not remote: return []
+        if self.portal['type']=='xtream' and kind in ('vod','series'):
+            strict=getattr(self.provider,'remote_categories72',None)
+            if callable(strict):return strict(kind)
         method=getattr(self.provider,{'live':'get_live_categories','vod':'get_vod_categories','series':'get_series_categories'}[kind])
         rows=method() or []
         return [dict(category_id=str(r.get('category_id',r.get('id',''))),category_name=str(r.get('category_name') or r.get('title') or r.get('name') or r.get('id')))
