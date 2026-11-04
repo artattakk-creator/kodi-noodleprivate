@@ -119,8 +119,10 @@ diagnostiziert, nicht als leerer oder erfolgreicher Import behandelt.
   Ausgeführt mit den bestehenden CI-Abhängigkeiten Pillow, impacket 0.13.0 und
   simpleeval 0.9.13. Keine historischen Tests ausgelassen.
 - [.72-CI 41791895817: SUCCESS](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/41791895817):
-  41 gezielte Tests, unveränderter Pilot-Index, bytegleicher ZIP-Neubau und native Kodi-Prüfung.
-  [Review-Artefakt](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/41791895817/artifacts/13303801914).
+  Voriger Paketstand: 39 gezielte Tests, unveränderter Pilot-Index, ZIP-Neubau und native Kodi-Prüfung.
+  Das endgültige Paket wurde danach wegen des ARM32-Streaming-Limits erneuert;
+  maßgeblich sind die abschließenden CI-Nachweise in PR #356 und der unten genannte SHA256.
+  [Historisches Review-Artefakt](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/41791895817/artifacts/13303801914).
 - Die vollständigen zusätzlichen Kodi-/BINGIE-/TS-/HLS-Gates und der komplette
   CI-Hostlauf sind im [Draft-PR #356](https://github.com/artattakk-creator/kodi-noodleprivate/pull/356)
   mit ihren abschließenden Action-Links dokumentiert; offene Läufe werden nicht als PASS gezählt.
