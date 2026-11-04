@@ -6,6 +6,10 @@ def ensure_category(portal, kind, cid, reader):
     if not cid or portal.get('type') != 'xtream' or not hasattr(reader, '_query'): return
     heads=reader._query('SELECT generation FROM heads WHERE pid=? AND kind=? AND cid=?', (str(portal['id']),kind,str(cid)))
     if heads: return
+    # Older intact profiles can publish legacy title rows without V2 heads.
+    # Their readable category is not a missing import and must not be rescanned.
+    if reader._query('SELECT 1 AS present FROM titles WHERE pid=? AND kind=? AND cid=? LIMIT 1',
+                     (str(portal['id']),kind,str(cid))):return
     from catalog_jobs73 import jobs
     if any(r['pid']==str(portal['id']) and kind in r['kinds'] and r.get('resume') for r in jobs()): return
     from catalog_delta import request_many

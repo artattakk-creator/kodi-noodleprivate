@@ -101,6 +101,15 @@ class Catalog73(prior72.VODSync72):
         with open(self.row()['backup'],'ab') as f:f.write(b'tamper')
         self.tick();self.assertEqual(self.row()['code'],'BACKUP_VERIFY')
         self.assertEqual(sum(a=='get_vod_streams' for a,c,p in self.requests),0)
+    def test_older_legacy_category_without_v2_head_does_not_trigger_import(self):
+        self.index.replace_catalog('p','vod',[dict(stream_id='old',category_id='v',name='Preserved older catalog')],[dict(category_id='v',category_name='V')])
+        self.gs.save('p',['v'],kind='vod');reader=self.index.Reader('p')
+        self.assertFalse(reader._query("SELECT 1 FROM heads WHERE pid='p' AND kind='vod' AND cid='v'"))
+        status=importlib.import_module('catalog_status73')
+        with mock.patch('catalog_delta.request_many') as request:
+            status.ensure_category(self.portal,'vod','v',reader);request.assert_not_called()
+        self.assertEqual(reader.page('vod',category='v',limit=1)[1],1)
+
     def test_missing_selected_category_requests_import_even_when_latest_has_data(self):
         self.index.replace_catalog('p','vod',[dict(stream_id='m',category_id='v',name='Movie')],[dict(category_id='v',category_name='V'),dict(category_id='z',category_name='Z')])
         self.gs.save('p',['v','z'],kind='vod')
