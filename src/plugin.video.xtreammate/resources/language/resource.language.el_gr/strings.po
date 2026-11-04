@@ -1,0 +1,210 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: XCMate\n"
+"Language: el_gr\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+
+msgctxt "#38000"
+msgid "Update entire catalog"
+msgstr "Ενημέρωση ολόκληρου του καταλόγου"
+
+msgctxt "#38002"
+msgid "XCMate · Catalog import"
+msgstr "XCMate · Εισαγωγή καταλόγου"
+
+msgctxt "#38003"
+msgid "Waiting"
+msgstr "Αναμονή"
+
+msgctxt "#38004"
+msgid "Import running"
+msgstr "Η εισαγωγή εκτελείται"
+
+msgctxt "#38005"
+msgid "Completed"
+msgstr "Ολοκληρώθηκε"
+
+msgctxt "#38006"
+msgid "Failed"
+msgstr "Αποτυχία"
+
+msgctxt "#38007"
+msgid "Interrupted"
+msgstr "Διακόπηκε"
+
+msgctxt "#38011"
+msgid "Status and report"
+msgstr "Κατάσταση και αναφορά"
+
+msgctxt "#38012"
+msgid "Resume"
+msgstr "Συνέχεια"
+
+msgctxt "#38013"
+msgid "Cancel"
+msgstr "Ακύρωση"
+
+msgctxt "#38014"
+msgid "New job"
+msgstr "Νέα εργασία"
+
+msgctxt "#38015"
+msgid "An existing job is still active. Resume or cancel it first."
+msgstr "Υπάρχει ενεργή εργασία. Συνεχίστε ή ακυρώστε την πρώτα."
+
+msgctxt "#38016"
+msgid "EPG (optional)"
+msgstr "EPG (προαιρετικό)"
+
+msgctxt "#38017"
+msgid "Update Live TV, movies and series in the background? Existing data and group selections are retained."
+msgstr "Ενημέρωση TV, ταινιών και σειρών στο παρασκήνιο; Τα δεδομένα και οι επιλογές ομάδων διατηρούνται."
+
+msgctxt "#38018"
+msgid "Queued: {0}"
+msgstr "Στην ουρά: {0}"
+
+msgctxt "#38019"
+msgid "Diagnostic code: {0}"
+msgstr "Κωδικός διάγνωσης: {0}"
+
+msgctxt "#38020"
+msgid "{0} · Group {1} of {2}"
+msgstr "{0} · Ομάδα {1} από {2}"
+
+msgctxt "#38021"
+msgid "{0} titles processed"
+msgstr "Έγινε επεξεργασία {0} τίτλων"
+
+msgctxt "#38022"
+msgid "Stored by area: {0}"
+msgstr "Αποθηκευμένα ανά ενότητα: {0}"
+
+msgctxt "#38023"
+msgid "Database readback: {0}"
+msgstr "Επανανάγνωση βάσης: {0}"
+
+msgctxt "#38024"
+msgid "Already linked at position {0}. Status: {1}. Rebuild the existing Home configuration without moving widgets?"
+msgstr "Ήδη συνδεδεμένο στη θέση {0}. Κατάσταση: {1}. Ανακατασκευή της αρχικής χωρίς μετακίνηση γραφικών στοιχείων;"
+
+msgctxt "#38030"
+msgid "International EPG sources"
+msgstr "Διεθνείς πηγές EPG"
+
+msgctxt "#38031"
+msgid "Unverified · disabled"
+msgstr "Μη επαληθευμένη · ανενεργή"
+
+msgctxt "#38032"
+msgid "No confirmed download source"
+msgstr "Δεν υπάρχει επιβεβαιωμένη πηγή λήψης"
+
+msgctxt "#38033"
+msgid "Source verification failed: {0}"
+msgstr "Η επαλήθευση απέτυχε: {0}"
+
+msgctxt "#38034"
+msgid "Verify source: {0}"
+msgstr "Επαλήθευση πηγής: {0}"
+
+msgctxt "#38035"
+msgid "{0} channels and {1} programmes verified"
+msgstr "Επαληθεύτηκαν {0} κανάλια και {1} προγράμματα"
+
+msgctxt "#38036"
+msgid "Enable this source ({0} channels, {1} programmes) for personal use? Automatic updates every 24 hours; existing mappings are retained."
+msgstr "Ενεργοποίηση της πηγής ({0} κανάλια, {1} προγράμματα) για προσωπική χρήση; Ενημέρωση κάθε 24 ώρες· οι αντιστοιχίσεις διατηρούνται."
+
+msgctxt "#38037"
+msgid "Source enabled; import requested."
+msgstr "Η πηγή ενεργοποιήθηκε· ζητήθηκε εισαγωγή."
+
+msgctxt "#38038"
+msgid "Source enabled; import deferred. See EPG manager."
+msgstr "Η πηγή ενεργοποιήθηκε· η εισαγωγή αναβλήθηκε. Δείτε τη διαχείριση EPG."
+
+msgctxt "#38040"
+msgid "Europe"
+msgstr "Ευρώπη"
+
+msgctxt "#38041"
+msgid "Asia"
+msgstr "Ασία"
+
+msgctxt "#38042"
+msgid "Africa"
+msgstr "Αφρική"
+
+msgctxt "#38043"
+msgid "North America"
+msgstr "Βόρεια Αμερική"
+
+msgctxt "#38044"
+msgid "South America"
+msgstr "Νότια Αμερική"
+
+msgctxt "#38045"
+msgid "Oceania"
+msgstr "Ωκεανία"
+
+msgctxt "#32400"
+msgid "Start channel"
+msgstr "Κανάλι εκκίνησης"
+
+msgctxt "#32401"
+msgid "Live TV"
+msgstr "Ζωντανή TV"
+
+msgctxt "#32402"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#32403"
+msgid "Movies"
+msgstr "Ταινίες"
+
+msgctxt "#32404"
+msgid "Series"
+msgstr "Σειρές"
+
+msgctxt "#32405"
+msgid "Settings"
+msgstr "Ρυθμίσεις"
+
+msgctxt "#32406"
+msgid "Accounts & portals"
+msgstr "Λογαριασμοί και πύλες"
+
+msgctxt "#32407"
+msgid "Start channel & group"
+msgstr "Κανάλι και ομάδα εκκίνησης"
+
+msgctxt "#32408"
+msgid "Groups & favourites"
+msgstr "Ομάδες και αγαπημένα"
+
+msgctxt "#32443"
+msgid "Widgets"
+msgstr "Γραφικά στοιχεία"
+
+msgctxt "#32461"
+msgid "MOVIES"
+msgstr "ΤΑΙΝΙΕΣ"
+
+msgctxt "#32462"
+msgid "SERIES"
+msgstr "ΣΕΙΡΕΣ"
+
+msgctxt "#32586"
+msgid "Search"
+msgstr "Αναζήτηση"
+
+msgctxt "#32620"
+msgid "Language → XCMate language"
+msgstr "Γλώσσα XCMate"
+
+msgctxt "#32621"
+msgid "Follow Kodi language"
+msgstr "Χρήση γλώσσας Kodi"

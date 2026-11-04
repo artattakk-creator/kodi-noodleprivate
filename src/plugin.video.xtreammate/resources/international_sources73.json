@@ -1,0 +1,5567 @@
+{
+  "schema": 2,
+  "as_of": "2026-11-04",
+  "scope": "Conservative source registry, not exhaustive 155-region importer",
+  "provider_catalogs": [
+    {
+      "name": "iptv-epg.org",
+      "url": "https://iptv-epg.org/guides",
+      "self_reported_countries": 72
+    },
+    {
+      "name": "free-epg.de",
+      "url": "https://www.free-epg.de/countries",
+      "self_reported_regions": 155,
+      "self_reported_active_feeds": 106
+    },
+    {
+      "name": "epg.pw",
+      "url": "https://epg.pw/xmltv.html",
+      "note": "20 listed per-country guides, overlap and extensions to be dynamically discovered"
+    },
+    {
+      "name": "Open-EPG",
+      "url": "https://www.open-epg.com/app/epgguide.php",
+      "note": "Country feeds, daily refresh; existing coverage must be merged on ISO country code"
+    }
+  ],
+  "classification": "LISTED_DIRECT means provider shows country URL, not successful per-URL GET. FREEEPG endpoint templates untested. Pending entries are metadata only.",
+  "counts": {
+    "listed_direct": 72,
+    "additional_feed_listed": 32,
+    "metadata_pending": 45,
+    "distinct": 149
+  },
+  "entries": [
+    {
+      "code": "AF",
+      "country": "Afghanistan",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Asia",
+      "candidate": false,
+      "names": {
+        "en_gb": "Afghanistan",
+        "de_de": "Afghanistan",
+        "fr_fr": "Afghanistan",
+        "es_es": "Afganistán",
+        "it_it": "Afghanistan",
+        "pt_pt": "Afeganistão",
+        "pt_br": "Afeganistão",
+        "nl_nl": "Afghanistan",
+        "pl_pl": "Afganistan",
+        "tr_tr": "Afganistan",
+        "ru_ru": "Афганистан",
+        "uk_ua": "Афганістан",
+        "ar_sa": "أفغانستان",
+        "cs_cz": "Afghánistán",
+        "ro_ro": "Afganistan",
+        "el_gr": "Αφγανιστάν",
+        "sr_rs": "Авганистан"
+      }
+    },
+    {
+      "code": "EG",
+      "country": "Ägypten",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/eg.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Africa",
+      "candidate": true,
+      "names": {
+        "en_gb": "Egypt",
+        "de_de": "Ägypten",
+        "fr_fr": "Égypte",
+        "es_es": "Egipto",
+        "it_it": "Egitto",
+        "pt_pt": "Egito",
+        "pt_br": "Egito",
+        "nl_nl": "Egypte",
+        "pl_pl": "Egipt",
+        "tr_tr": "Mısır",
+        "ru_ru": "Египет",
+        "uk_ua": "Єгипет",
+        "ar_sa": "مصر",
+        "cs_cz": "Egypt",
+        "ro_ro": "Egipt",
+        "el_gr": "Αίγυπτος",
+        "sr_rs": "Египат"
+      }
+    },
+    {
+      "code": "AL",
+      "country": "Albanien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-al.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-al.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Albania",
+        "de_de": "Albanien",
+        "fr_fr": "Albanie",
+        "es_es": "Albania",
+        "it_it": "Albania",
+        "pt_pt": "Albânia",
+        "pt_br": "Albânia",
+        "nl_nl": "Albanië",
+        "pl_pl": "Albania",
+        "tr_tr": "Arnavutluk",
+        "ru_ru": "Албания",
+        "uk_ua": "Албанія",
+        "ar_sa": "ألبانيا",
+        "cs_cz": "Albánie",
+        "ro_ro": "Albania",
+        "el_gr": "Αλβανία",
+        "sr_rs": "Албанија"
+      }
+    },
+    {
+      "code": "DZ",
+      "country": "Algerien",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Africa",
+      "candidate": false,
+      "names": {
+        "en_gb": "Algeria",
+        "de_de": "Algerien",
+        "fr_fr": "Algérie",
+        "es_es": "Argelia",
+        "it_it": "Algeria",
+        "pt_pt": "Argélia",
+        "pt_br": "Argélia",
+        "nl_nl": "Algerije",
+        "pl_pl": "Algieria",
+        "tr_tr": "Cezayir",
+        "ru_ru": "Алжир",
+        "uk_ua": "Алжир",
+        "ar_sa": "الجزائر",
+        "cs_cz": "Alžírsko",
+        "ro_ro": "Algeria",
+        "el_gr": "Αλγερία",
+        "sr_rs": "Алжир"
+      }
+    },
+    {
+      "code": "AR",
+      "country": "Argentinien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ar.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ar.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "South America",
+      "candidate": true,
+      "names": {
+        "en_gb": "Argentina",
+        "de_de": "Argentinien",
+        "fr_fr": "Argentine",
+        "es_es": "Argentina",
+        "it_it": "Argentina",
+        "pt_pt": "Argentina",
+        "pt_br": "Argentina",
+        "nl_nl": "Argentinië",
+        "pl_pl": "Argentyna",
+        "tr_tr": "Arjantin",
+        "ru_ru": "Аргентина",
+        "uk_ua": "Аргентина",
+        "ar_sa": "الأرجنتين",
+        "cs_cz": "Argentina",
+        "ro_ro": "Argentina",
+        "el_gr": "Αργεντινή",
+        "sr_rs": "Аргентина"
+      }
+    },
+    {
+      "code": "AM",
+      "country": "Armenien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-am.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-am.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Asia",
+      "candidate": true,
+      "names": {
+        "en_gb": "Armenia",
+        "de_de": "Armenien",
+        "fr_fr": "Arménie",
+        "es_es": "Armenia",
+        "it_it": "Armenia",
+        "pt_pt": "Arménia",
+        "pt_br": "Armênia",
+        "nl_nl": "Armenië",
+        "pl_pl": "Armenia",
+        "tr_tr": "Ermenistan",
+        "ru_ru": "Армения",
+        "uk_ua": "Вірменія",
+        "ar_sa": "أرمينيا",
+        "cs_cz": "Arménie",
+        "ro_ro": "Armenia",
+        "el_gr": "Αρμενία",
+        "sr_rs": "Јерменија"
+      }
+    },
+    {
+      "code": "AZ",
+      "country": "Aserbaidschan",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Asia",
+      "candidate": false,
+      "names": {
+        "en_gb": "Azerbaijan",
+        "de_de": "Aserbaidschan",
+        "fr_fr": "Azerbaïdjan",
+        "es_es": "Azerbaiyán",
+        "it_it": "Azerbaigian",
+        "pt_pt": "Azerbaijão",
+        "pt_br": "Azerbaijão",
+        "nl_nl": "Azerbeidzjan",
+        "pl_pl": "Azerbejdżan",
+        "tr_tr": "Azerbaycan",
+        "ru_ru": "Азербайджан",
+        "uk_ua": "Азербайджан",
+        "ar_sa": "أذربيجان",
+        "cs_cz": "Ázerbájdžán",
+        "ro_ro": "Azerbaidjan",
+        "el_gr": "Αζερμπαϊτζάν",
+        "sr_rs": "Азербејџан"
+      }
+    },
+    {
+      "code": "ET",
+      "country": "Äthiopien",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Africa",
+      "candidate": false,
+      "names": {
+        "en_gb": "Ethiopia",
+        "de_de": "Äthiopien",
+        "fr_fr": "Éthiopie",
+        "es_es": "Etiopía",
+        "it_it": "Etiopia",
+        "pt_pt": "Etiópia",
+        "pt_br": "Etiópia",
+        "nl_nl": "Ethiopië",
+        "pl_pl": "Etiopia",
+        "tr_tr": "Etiyopya",
+        "ru_ru": "Эфиопия",
+        "uk_ua": "Ефіопія",
+        "ar_sa": "إثيوبيا",
+        "cs_cz": "Etiopie",
+        "ro_ro": "Etiopia",
+        "el_gr": "Αιθιοπία",
+        "sr_rs": "Етиопија"
+      }
+    },
+    {
+      "code": "AU",
+      "country": "Australien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-au.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-au.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Oceania",
+      "candidate": true,
+      "names": {
+        "en_gb": "Australia",
+        "de_de": "Australien",
+        "fr_fr": "Australie",
+        "es_es": "Australia",
+        "it_it": "Australia",
+        "pt_pt": "Austrália",
+        "pt_br": "Austrália",
+        "nl_nl": "Australië",
+        "pl_pl": "Australia",
+        "tr_tr": "Avustralya",
+        "ru_ru": "Австралия",
+        "uk_ua": "Австралія",
+        "ar_sa": "أستراليا",
+        "cs_cz": "Austrálie",
+        "ro_ro": "Australia",
+        "el_gr": "Αυστραλία",
+        "sr_rs": "Аустралија"
+      }
+    },
+    {
+      "code": "BS",
+      "country": "Bahamas",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/bs.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "North America",
+      "candidate": true,
+      "names": {
+        "en_gb": "Bahamas",
+        "de_de": "Bahamas",
+        "fr_fr": "Bahamas",
+        "es_es": "Bahamas",
+        "it_it": "Bahamas",
+        "pt_pt": "Baamas",
+        "pt_br": "Bahamas",
+        "nl_nl": "Bahama’s",
+        "pl_pl": "Bahamy",
+        "tr_tr": "Bahamalar",
+        "ru_ru": "Багамы",
+        "uk_ua": "Багамські Острови",
+        "ar_sa": "جزر البهاما",
+        "cs_cz": "Bahamy",
+        "ro_ro": "Bahamas",
+        "el_gr": "Μπαχάμες",
+        "sr_rs": "Бахами"
+      }
+    },
+    {
+      "code": "BH",
+      "country": "Bahrain",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Asia",
+      "candidate": false,
+      "names": {
+        "en_gb": "Bahrain",
+        "de_de": "Bahrain",
+        "fr_fr": "Bahreïn",
+        "es_es": "Baréin",
+        "it_it": "Bahrein",
+        "pt_pt": "Barém",
+        "pt_br": "Barein",
+        "nl_nl": "Bahrein",
+        "pl_pl": "Bahrajn",
+        "tr_tr": "Bahreyn",
+        "ru_ru": "Бахрейн",
+        "uk_ua": "Бахрейн",
+        "ar_sa": "البحرين",
+        "cs_cz": "Bahrajn",
+        "ro_ro": "Bahrain",
+        "el_gr": "Μπαχρέιν",
+        "sr_rs": "Бахреин"
+      }
+    },
+    {
+      "code": "BY",
+      "country": "Belarus",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-by.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-by.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Belarus",
+        "de_de": "Belarus",
+        "fr_fr": "Biélorussie",
+        "es_es": "Bielorrusia",
+        "it_it": "Bielorussia",
+        "pt_pt": "Bielorrússia",
+        "pt_br": "Bielorrússia",
+        "nl_nl": "Belarus",
+        "pl_pl": "Białoruś",
+        "tr_tr": "Belarus",
+        "ru_ru": "Беларусь",
+        "uk_ua": "Білорусь",
+        "ar_sa": "بيلاروس",
+        "cs_cz": "Bělorusko",
+        "ro_ro": "Belarus",
+        "el_gr": "Λευκορωσία",
+        "sr_rs": "Белорусија"
+      }
+    },
+    {
+      "code": "BE",
+      "country": "Belgien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-be.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-be.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Belgium",
+        "de_de": "Belgien",
+        "fr_fr": "Belgique",
+        "es_es": "Bélgica",
+        "it_it": "Belgio",
+        "pt_pt": "Bélgica",
+        "pt_br": "Bélgica",
+        "nl_nl": "België",
+        "pl_pl": "Belgia",
+        "tr_tr": "Belçika",
+        "ru_ru": "Бельгия",
+        "uk_ua": "Бельгія",
+        "ar_sa": "بلجيكا",
+        "cs_cz": "Belgie",
+        "ro_ro": "Belgia",
+        "el_gr": "Βέλγιο",
+        "sr_rs": "Белгија"
+      }
+    },
+    {
+      "code": "BJ",
+      "country": "Benin",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Africa",
+      "candidate": false,
+      "names": {
+        "en_gb": "Benin",
+        "de_de": "Benin",
+        "fr_fr": "Bénin",
+        "es_es": "Benín",
+        "it_it": "Benin",
+        "pt_pt": "Benim",
+        "pt_br": "Benin",
+        "nl_nl": "Benin",
+        "pl_pl": "Benin",
+        "tr_tr": "Benin",
+        "ru_ru": "Бенин",
+        "uk_ua": "Бенін",
+        "ar_sa": "بنين",
+        "cs_cz": "Benin",
+        "ro_ro": "Benin",
+        "el_gr": "Μπενίν",
+        "sr_rs": "Бенин"
+      }
+    },
+    {
+      "code": "BT",
+      "country": "Bhutan",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Asia",
+      "candidate": false,
+      "names": {
+        "en_gb": "Bhutan",
+        "de_de": "Bhutan",
+        "fr_fr": "Bhoutan",
+        "es_es": "Bután",
+        "it_it": "Bhutan",
+        "pt_pt": "Butão",
+        "pt_br": "Butão",
+        "nl_nl": "Bhutan",
+        "pl_pl": "Bhutan",
+        "tr_tr": "Butan",
+        "ru_ru": "Бутан",
+        "uk_ua": "Бутан",
+        "ar_sa": "بوتان",
+        "cs_cz": "Bhútán",
+        "ro_ro": "Bhutan",
+        "el_gr": "Μπουτάν",
+        "sr_rs": "Бутан"
+      }
+    },
+    {
+      "code": "BO",
+      "country": "Bolivien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-bo.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-bo.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "South America",
+      "candidate": true,
+      "names": {
+        "en_gb": "Bolivia",
+        "de_de": "Bolivien",
+        "fr_fr": "Bolivie",
+        "es_es": "Bolivia",
+        "it_it": "Bolivia",
+        "pt_pt": "Bolívia",
+        "pt_br": "Bolívia",
+        "nl_nl": "Bolivia",
+        "pl_pl": "Boliwia",
+        "tr_tr": "Bolivya",
+        "ru_ru": "Боливия",
+        "uk_ua": "Болівія",
+        "ar_sa": "بوليفيا",
+        "cs_cz": "Bolívie",
+        "ro_ro": "Bolivia",
+        "el_gr": "Βολιβία",
+        "sr_rs": "Боливија"
+      }
+    },
+    {
+      "code": "BA",
+      "country": "Bosnien und Herzegowina",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ba.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ba.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Bosnia & Herzegovina",
+        "de_de": "Bosnien und Herzegowina",
+        "fr_fr": "Bosnie-Herzégovine",
+        "es_es": "Bosnia y Herzegovina",
+        "it_it": "Bosnia ed Erzegovina",
+        "pt_pt": "Bósnia e Herzegovina",
+        "pt_br": "Bósnia e Herzegovina",
+        "nl_nl": "Bosnië en Herzegovina",
+        "pl_pl": "Bośnia i Hercegowina",
+        "tr_tr": "Bosna-Hersek",
+        "ru_ru": "Босния и Герцеговина",
+        "uk_ua": "Боснія і Герцеговина",
+        "ar_sa": "البوسنة والهرسك",
+        "cs_cz": "Bosna a Hercegovina",
+        "ro_ro": "Bosnia și Herțegovina",
+        "el_gr": "Βοσνία - Ερζεγοβίνη",
+        "sr_rs": "Босна и Херцеговина"
+      }
+    },
+    {
+      "code": "BW",
+      "country": "Botswana",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Africa",
+      "candidate": false,
+      "names": {
+        "en_gb": "Botswana",
+        "de_de": "Botsuana",
+        "fr_fr": "Botswana",
+        "es_es": "Botsuana",
+        "it_it": "Botswana",
+        "pt_pt": "Botsuana",
+        "pt_br": "Botsuana",
+        "nl_nl": "Botswana",
+        "pl_pl": "Botswana",
+        "tr_tr": "Botsvana",
+        "ru_ru": "Ботсвана",
+        "uk_ua": "Ботсвана",
+        "ar_sa": "بوتسوانا",
+        "cs_cz": "Botswana",
+        "ro_ro": "Botswana",
+        "el_gr": "Μποτσουάνα",
+        "sr_rs": "Боцвана"
+      }
+    },
+    {
+      "code": "BR",
+      "country": "Brasilien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-br.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-br.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/br.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "South America",
+      "candidate": true,
+      "names": {
+        "en_gb": "Brazil",
+        "de_de": "Brasilien",
+        "fr_fr": "Brésil",
+        "es_es": "Brasil",
+        "it_it": "Brasile",
+        "pt_pt": "Brasil",
+        "pt_br": "Brasil",
+        "nl_nl": "Brazilië",
+        "pl_pl": "Brazylia",
+        "tr_tr": "Brezilya",
+        "ru_ru": "Бразилия",
+        "uk_ua": "Бразилія",
+        "ar_sa": "البرازيل",
+        "cs_cz": "Brazílie",
+        "ro_ro": "Brazilia",
+        "el_gr": "Βραζιλία",
+        "sr_rs": "Бразил"
+      }
+    },
+    {
+      "code": "BG",
+      "country": "Bulgarien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-bg.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-bg.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Bulgaria",
+        "de_de": "Bulgarien",
+        "fr_fr": "Bulgarie",
+        "es_es": "Bulgaria",
+        "it_it": "Bulgaria",
+        "pt_pt": "Bulgária",
+        "pt_br": "Bulgária",
+        "nl_nl": "Bulgarije",
+        "pl_pl": "Bułgaria",
+        "tr_tr": "Bulgaristan",
+        "ru_ru": "Болгария",
+        "uk_ua": "Болгарія",
+        "ar_sa": "بلغاريا",
+        "cs_cz": "Bulharsko",
+        "ro_ro": "Bulgaria",
+        "el_gr": "Βουλγαρία",
+        "sr_rs": "Бугарска"
+      }
+    },
+    {
+      "code": "BF",
+      "country": "Burkina Faso",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Africa",
+      "candidate": false,
+      "names": {
+        "en_gb": "Burkina Faso",
+        "de_de": "Burkina Faso",
+        "fr_fr": "Burkina Faso",
+        "es_es": "Burkina Faso",
+        "it_it": "Burkina Faso",
+        "pt_pt": "Burquina Faso",
+        "pt_br": "Burquina Faso",
+        "nl_nl": "Burkina Faso",
+        "pl_pl": "Burkina Faso",
+        "tr_tr": "Burkina Faso",
+        "ru_ru": "Буркина-Фасо",
+        "uk_ua": "Буркіна-Фасо",
+        "ar_sa": "بوركينا فاسو",
+        "cs_cz": "Burkina Faso",
+        "ro_ro": "Burkina Faso",
+        "el_gr": "Μπουρκίνα Φάσο",
+        "sr_rs": "Буркина Фасо"
+      }
+    },
+    {
+      "code": "BI",
+      "country": "Burundi",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Africa",
+      "candidate": false,
+      "names": {
+        "en_gb": "Burundi",
+        "de_de": "Burundi",
+        "fr_fr": "Burundi",
+        "es_es": "Burundi",
+        "it_it": "Burundi",
+        "pt_pt": "Burundi",
+        "pt_br": "Burundi",
+        "nl_nl": "Burundi",
+        "pl_pl": "Burundi",
+        "tr_tr": "Burundi",
+        "ru_ru": "Бурунди",
+        "uk_ua": "Бурунді",
+        "ar_sa": "بوروندي",
+        "cs_cz": "Burundi",
+        "ro_ro": "Burundi",
+        "el_gr": "Μπουρούντι",
+        "sr_rs": "Бурунди"
+      }
+    },
+    {
+      "code": "CL",
+      "country": "Chile",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-cl.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-cl.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "South America",
+      "candidate": true,
+      "names": {
+        "en_gb": "Chile",
+        "de_de": "Chile",
+        "fr_fr": "Chili",
+        "es_es": "Chile",
+        "it_it": "Cile",
+        "pt_pt": "Chile",
+        "pt_br": "Chile",
+        "nl_nl": "Chili",
+        "pl_pl": "Chile",
+        "tr_tr": "Şili",
+        "ru_ru": "Чили",
+        "uk_ua": "Чилі",
+        "ar_sa": "تشيلي",
+        "cs_cz": "Chile",
+        "ro_ro": "Chile",
+        "el_gr": "Χιλή",
+        "sr_rs": "Чиле"
+      }
+    },
+    {
+      "code": "CR",
+      "country": "Costa Rica",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-cr.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-cr.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "North America",
+      "candidate": true,
+      "names": {
+        "en_gb": "Costa Rica",
+        "de_de": "Costa Rica",
+        "fr_fr": "Costa Rica",
+        "es_es": "Costa Rica",
+        "it_it": "Costa Rica",
+        "pt_pt": "Costa Rica",
+        "pt_br": "Costa Rica",
+        "nl_nl": "Costa Rica",
+        "pl_pl": "Kostaryka",
+        "tr_tr": "Kosta Rika",
+        "ru_ru": "Коста-Рика",
+        "uk_ua": "Коста-Рика",
+        "ar_sa": "كوستاريكا",
+        "cs_cz": "Kostarika",
+        "ro_ro": "Costa Rica",
+        "el_gr": "Κόστα Ρίκα",
+        "sr_rs": "Костарика"
+      }
+    },
+    {
+      "code": "CW",
+      "country": "Curaçao",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-cw.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-cw.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "North America",
+      "candidate": true,
+      "names": {
+        "en_gb": "Curaçao",
+        "de_de": "Curaçao",
+        "fr_fr": "Curaçao",
+        "es_es": "Curazao",
+        "it_it": "Curaçao",
+        "pt_pt": "Curaçau",
+        "pt_br": "Curaçao",
+        "nl_nl": "Curaçao",
+        "pl_pl": "Curaçao",
+        "tr_tr": "Curaçao",
+        "ru_ru": "Кюрасао",
+        "uk_ua": "Кюрасао",
+        "ar_sa": "كوراساو",
+        "cs_cz": "Curaçao",
+        "ro_ro": "Curaçao",
+        "el_gr": "Κουρασάο",
+        "sr_rs": "Курасао"
+      }
+    },
+    {
+      "code": "DK",
+      "country": "Dänemark",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-dk.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-dk.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Denmark",
+        "de_de": "Dänemark",
+        "fr_fr": "Danemark",
+        "es_es": "Dinamarca",
+        "it_it": "Danimarca",
+        "pt_pt": "Dinamarca",
+        "pt_br": "Dinamarca",
+        "nl_nl": "Denemarken",
+        "pl_pl": "Dania",
+        "tr_tr": "Danimarka",
+        "ru_ru": "Дания",
+        "uk_ua": "Данія",
+        "ar_sa": "الدانمرك",
+        "cs_cz": "Dánsko",
+        "ro_ro": "Danemarca",
+        "el_gr": "Δανία",
+        "sr_rs": "Данска"
+      }
+    },
+    {
+      "code": "DE",
+      "country": "Deutschland",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-de.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-de.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Germany",
+        "de_de": "Deutschland",
+        "fr_fr": "Allemagne",
+        "es_es": "Alemania",
+        "it_it": "Germania",
+        "pt_pt": "Alemanha",
+        "pt_br": "Alemanha",
+        "nl_nl": "Duitsland",
+        "pl_pl": "Niemcy",
+        "tr_tr": "Almanya",
+        "ru_ru": "Германия",
+        "uk_ua": "Німеччина",
+        "ar_sa": "ألمانيا",
+        "cs_cz": "Německo",
+        "ro_ro": "Germania",
+        "el_gr": "Γερμανία",
+        "sr_rs": "Немачка"
+      }
+    },
+    {
+      "code": "DM",
+      "country": "Dominica",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "North America",
+      "candidate": false,
+      "names": {
+        "en_gb": "Dominica",
+        "de_de": "Dominica",
+        "fr_fr": "Dominique",
+        "es_es": "Dominica",
+        "it_it": "Dominica",
+        "pt_pt": "Domínica",
+        "pt_br": "Dominica",
+        "nl_nl": "Dominica",
+        "pl_pl": "Dominika",
+        "tr_tr": "Dominika",
+        "ru_ru": "Доминика",
+        "uk_ua": "Домініка",
+        "ar_sa": "دومينيكا",
+        "cs_cz": "Dominika",
+        "ro_ro": "Dominica",
+        "el_gr": "Ντομίνικα",
+        "sr_rs": "Доминика"
+      }
+    },
+    {
+      "code": "DO",
+      "country": "Dominikanische Republik",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-do.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-do.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "North America",
+      "candidate": true,
+      "names": {
+        "en_gb": "Dominican Republic",
+        "de_de": "Dominikanische Republik",
+        "fr_fr": "République dominicaine",
+        "es_es": "República Dominicana",
+        "it_it": "Repubblica Dominicana",
+        "pt_pt": "República Dominicana",
+        "pt_br": "República Dominicana",
+        "nl_nl": "Dominicaanse Republiek",
+        "pl_pl": "Dominikana",
+        "tr_tr": "Dominik Cumhuriyeti",
+        "ru_ru": "Доминиканская Республика",
+        "uk_ua": "Домініканська Республіка",
+        "ar_sa": "جمهورية الدومينيكان",
+        "cs_cz": "Dominikánská republika",
+        "ro_ro": "Republica Dominicană",
+        "el_gr": "Δομινικανή Δημοκρατία",
+        "sr_rs": "Доминиканска Република"
+      }
+    },
+    {
+      "code": "EC",
+      "country": "Ecuador",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/ec.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "South America",
+      "candidate": true,
+      "names": {
+        "en_gb": "Ecuador",
+        "de_de": "Ecuador",
+        "fr_fr": "Équateur",
+        "es_es": "Ecuador",
+        "it_it": "Ecuador",
+        "pt_pt": "Equador",
+        "pt_br": "Equador",
+        "nl_nl": "Ecuador",
+        "pl_pl": "Ekwador",
+        "tr_tr": "Ekvador",
+        "ru_ru": "Эквадор",
+        "uk_ua": "Еквадор",
+        "ar_sa": "الإكوادور",
+        "cs_cz": "Ekvádor",
+        "ro_ro": "Ecuador",
+        "el_gr": "Ισημερινός",
+        "sr_rs": "Еквадор"
+      }
+    },
+    {
+      "code": "SV",
+      "country": "El Salvador",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-sv.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-sv.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/sv.xml.gz",
+          "verification": "provider_directory_endpoint_pattern_unchecked",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "North America",
+      "candidate": true,
+      "names": {
+        "en_gb": "El Salvador",
+        "de_de": "El Salvador",
+        "fr_fr": "Salvador",
+        "es_es": "El Salvador",
+        "it_it": "El Salvador",
+        "pt_pt": "Salvador",
+        "pt_br": "El Salvador",
+        "nl_nl": "El Salvador",
+        "pl_pl": "Salwador",
+        "tr_tr": "El Salvador",
+        "ru_ru": "Сальвадор",
+        "uk_ua": "Сальвадор",
+        "ar_sa": "السلفادور",
+        "cs_cz": "Salvador",
+        "ro_ro": "El Salvador",
+        "el_gr": "Ελ Σαλβαδόρ",
+        "sr_rs": "Салвадор"
+      }
+    },
+    {
+      "code": "CI",
+      "country": "Elfenbeinküste",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/ci.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Africa",
+      "candidate": true,
+      "names": {
+        "en_gb": "Côte d’Ivoire",
+        "de_de": "Côte d’Ivoire",
+        "fr_fr": "Côte d’Ivoire",
+        "es_es": "Côte d’Ivoire",
+        "it_it": "Costa d’Avorio",
+        "pt_pt": "Côte d’Ivoire (Costa do Marfim)",
+        "pt_br": "Costa do Marfim",
+        "nl_nl": "Ivoorkust",
+        "pl_pl": "Côte d’Ivoire",
+        "tr_tr": "Côte d’Ivoire",
+        "ru_ru": "Кот-д’Ивуар",
+        "uk_ua": "Кот-дʼІвуар",
+        "ar_sa": "ساحل العاج",
+        "cs_cz": "Pobřeží slonoviny",
+        "ro_ro": "Côte d’Ivoire",
+        "el_gr": "Ακτή Ελεφαντοστού",
+        "sr_rs": "Обала Слоноваче (Кот д’Ивоар)"
+      }
+    },
+    {
+      "code": "EE",
+      "country": "Estland",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/ee.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Estonia",
+        "de_de": "Estland",
+        "fr_fr": "Estonie",
+        "es_es": "Estonia",
+        "it_it": "Estonia",
+        "pt_pt": "Estónia",
+        "pt_br": "Estônia",
+        "nl_nl": "Estland",
+        "pl_pl": "Estonia",
+        "tr_tr": "Estonya",
+        "ru_ru": "Эстония",
+        "uk_ua": "Естонія",
+        "ar_sa": "إستونيا",
+        "cs_cz": "Estonsko",
+        "ro_ro": "Estonia",
+        "el_gr": "Εσθονία",
+        "sr_rs": "Естонија"
+      }
+    },
+    {
+      "code": "FJ",
+      "country": "Fidschi",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Oceania",
+      "candidate": false,
+      "names": {
+        "en_gb": "Fiji",
+        "de_de": "Fidschi",
+        "fr_fr": "Fidji",
+        "es_es": "Fiyi",
+        "it_it": "Figi",
+        "pt_pt": "Fiji",
+        "pt_br": "Fiji",
+        "nl_nl": "Fiji",
+        "pl_pl": "Fidżi",
+        "tr_tr": "Fiji",
+        "ru_ru": "Фиджи",
+        "uk_ua": "Фіджі",
+        "ar_sa": "فيجي",
+        "cs_cz": "Fidži",
+        "ro_ro": "Fiji",
+        "el_gr": "Φίτζι",
+        "sr_rs": "Фиџи"
+      }
+    },
+    {
+      "code": "FI",
+      "country": "Finnland",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-fi.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-fi.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Finland",
+        "de_de": "Finnland",
+        "fr_fr": "Finlande",
+        "es_es": "Finlandia",
+        "it_it": "Finlandia",
+        "pt_pt": "Finlândia",
+        "pt_br": "Finlândia",
+        "nl_nl": "Finland",
+        "pl_pl": "Finlandia",
+        "tr_tr": "Finlandiya",
+        "ru_ru": "Финляндия",
+        "uk_ua": "Фінляндія",
+        "ar_sa": "فنلندا",
+        "cs_cz": "Finsko",
+        "ro_ro": "Finlanda",
+        "el_gr": "Φινλανδία",
+        "sr_rs": "Финска"
+      }
+    },
+    {
+      "code": "FR",
+      "country": "Frankreich",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-fr.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-fr.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "France",
+        "de_de": "Frankreich",
+        "fr_fr": "France",
+        "es_es": "Francia",
+        "it_it": "Francia",
+        "pt_pt": "França",
+        "pt_br": "França",
+        "nl_nl": "Frankrijk",
+        "pl_pl": "Francja",
+        "tr_tr": "Fransa",
+        "ru_ru": "Франция",
+        "uk_ua": "Франція",
+        "ar_sa": "فرنسا",
+        "cs_cz": "Francie",
+        "ro_ro": "Franța",
+        "el_gr": "Γαλλία",
+        "sr_rs": "Француска"
+      }
+    },
+    {
+      "code": "GE",
+      "country": "Georgien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ge.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ge.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Asia",
+      "candidate": true,
+      "names": {
+        "en_gb": "Georgia",
+        "de_de": "Georgien",
+        "fr_fr": "Géorgie",
+        "es_es": "Georgia",
+        "it_it": "Georgia",
+        "pt_pt": "Geórgia",
+        "pt_br": "Geórgia",
+        "nl_nl": "Georgië",
+        "pl_pl": "Gruzja",
+        "tr_tr": "Gürcistan",
+        "ru_ru": "Грузия",
+        "uk_ua": "Грузія",
+        "ar_sa": "جورجيا",
+        "cs_cz": "Gruzie",
+        "ro_ro": "Georgia",
+        "el_gr": "Γεωργία",
+        "sr_rs": "Грузија"
+      }
+    },
+    {
+      "code": "GH",
+      "country": "Ghana",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-gh.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-gh.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Africa",
+      "candidate": true,
+      "names": {
+        "en_gb": "Ghana",
+        "de_de": "Ghana",
+        "fr_fr": "Ghana",
+        "es_es": "Ghana",
+        "it_it": "Ghana",
+        "pt_pt": "Gana",
+        "pt_br": "Gana",
+        "nl_nl": "Ghana",
+        "pl_pl": "Ghana",
+        "tr_tr": "Gana",
+        "ru_ru": "Гана",
+        "uk_ua": "Гана",
+        "ar_sa": "غانا",
+        "cs_cz": "Ghana",
+        "ro_ro": "Ghana",
+        "el_gr": "Γκάνα",
+        "sr_rs": "Гана"
+      }
+    },
+    {
+      "code": "GR",
+      "country": "Griechenland",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-gr.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-gr.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Greece",
+        "de_de": "Griechenland",
+        "fr_fr": "Grèce",
+        "es_es": "Grecia",
+        "it_it": "Grecia",
+        "pt_pt": "Grécia",
+        "pt_br": "Grécia",
+        "nl_nl": "Griekenland",
+        "pl_pl": "Grecja",
+        "tr_tr": "Yunanistan",
+        "ru_ru": "Греция",
+        "uk_ua": "Греція",
+        "ar_sa": "اليونان",
+        "cs_cz": "Řecko",
+        "ro_ro": "Grecia",
+        "el_gr": "Ελλάδα",
+        "sr_rs": "Грчка"
+      }
+    },
+    {
+      "code": "GT",
+      "country": "Guatemala",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-gt.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-gt.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "North America",
+      "candidate": true,
+      "names": {
+        "en_gb": "Guatemala",
+        "de_de": "Guatemala",
+        "fr_fr": "Guatemala",
+        "es_es": "Guatemala",
+        "it_it": "Guatemala",
+        "pt_pt": "Guatemala",
+        "pt_br": "Guatemala",
+        "nl_nl": "Guatemala",
+        "pl_pl": "Gwatemala",
+        "tr_tr": "Guatemala",
+        "ru_ru": "Гватемала",
+        "uk_ua": "Гватемала",
+        "ar_sa": "غواتيمالا",
+        "cs_cz": "Guatemala",
+        "ro_ro": "Guatemala",
+        "el_gr": "Γουατεμάλα",
+        "sr_rs": "Гватемала"
+      }
+    },
+    {
+      "code": "GW",
+      "country": "Guinea-Bissau",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Africa",
+      "candidate": false,
+      "names": {
+        "en_gb": "Guinea-Bissau",
+        "de_de": "Guinea-Bissau",
+        "fr_fr": "Guinée-Bissau",
+        "es_es": "Guinea-Bisáu",
+        "it_it": "Guinea-Bissau",
+        "pt_pt": "Guiné-Bissau",
+        "pt_br": "Guiné-Bissau",
+        "nl_nl": "Guinee-Bissau",
+        "pl_pl": "Gwinea Bissau",
+        "tr_tr": "Gine-Bissau",
+        "ru_ru": "Гвинея-Бисау",
+        "uk_ua": "Гвінея-Бісау",
+        "ar_sa": "غينيا بيساو",
+        "cs_cz": "Guinea-Bissau",
+        "ro_ro": "Guineea-Bissau",
+        "el_gr": "Γουινέα Μπισάου",
+        "sr_rs": "Гвинеја-Бисао"
+      }
+    },
+    {
+      "code": "HN",
+      "country": "Honduras",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-hn.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-hn.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "North America",
+      "candidate": true,
+      "names": {
+        "en_gb": "Honduras",
+        "de_de": "Honduras",
+        "fr_fr": "Honduras",
+        "es_es": "Honduras",
+        "it_it": "Honduras",
+        "pt_pt": "Honduras",
+        "pt_br": "Honduras",
+        "nl_nl": "Honduras",
+        "pl_pl": "Honduras",
+        "tr_tr": "Honduras",
+        "ru_ru": "Гондурас",
+        "uk_ua": "Гондурас",
+        "ar_sa": "هندوراس",
+        "cs_cz": "Honduras",
+        "ro_ro": "Honduras",
+        "el_gr": "Ονδούρα",
+        "sr_rs": "Хондурас"
+      }
+    },
+    {
+      "code": "HK",
+      "country": "Hongkong",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-hk.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-hk.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Asia",
+      "candidate": true,
+      "names": {
+        "en_gb": "Hong Kong SAR China",
+        "de_de": "Sonderverwaltungsregion Hongkong",
+        "fr_fr": "R.A.S. chinoise de Hong Kong",
+        "es_es": "RAE de Hong Kong (China)",
+        "it_it": "RAS di Hong Kong",
+        "pt_pt": "Hong Kong, RAE da China",
+        "pt_br": "Hong Kong, RAE da China",
+        "nl_nl": "Hongkong SAR van China",
+        "pl_pl": "SRA Hongkong (Chiny)",
+        "tr_tr": "Çin Hong Kong ÖİB",
+        "ru_ru": "Гонконг (САР)",
+        "uk_ua": "Гонконг, ОАР Китаю",
+        "ar_sa": "هونغ كونغ الصينية (منطقة إدارية خاصة)",
+        "cs_cz": "Hongkong – ZAO Číny",
+        "ro_ro": "R.A.S. Hong Kong, China",
+        "el_gr": "Χονγκ Κονγκ ΕΔΠ Κίνας",
+        "sr_rs": "САР Хонгконг (Кина)"
+      }
+    },
+    {
+      "code": "IN",
+      "country": "Indien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-in.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-in.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Asia",
+      "candidate": true,
+      "names": {
+        "en_gb": "India",
+        "de_de": "Indien",
+        "fr_fr": "Inde",
+        "es_es": "India",
+        "it_it": "India",
+        "pt_pt": "Índia",
+        "pt_br": "Índia",
+        "nl_nl": "India",
+        "pl_pl": "Indie",
+        "tr_tr": "Hindistan",
+        "ru_ru": "Индия",
+        "uk_ua": "Індія",
+        "ar_sa": "الهند",
+        "cs_cz": "Indie",
+        "ro_ro": "India",
+        "el_gr": "Ινδία",
+        "sr_rs": "Индија"
+      }
+    },
+    {
+      "code": "ID",
+      "country": "Indonesien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-id.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-id.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Asia",
+      "candidate": true,
+      "names": {
+        "en_gb": "Indonesia",
+        "de_de": "Indonesien",
+        "fr_fr": "Indonésie",
+        "es_es": "Indonesia",
+        "it_it": "Indonesia",
+        "pt_pt": "Indonésia",
+        "pt_br": "Indonésia",
+        "nl_nl": "Indonesië",
+        "pl_pl": "Indonezja",
+        "tr_tr": "Endonezya",
+        "ru_ru": "Индонезия",
+        "uk_ua": "Індонезія",
+        "ar_sa": "إندونيسيا",
+        "cs_cz": "Indonésie",
+        "ro_ro": "Indonezia",
+        "el_gr": "Ινδονησία",
+        "sr_rs": "Индонезија"
+      }
+    },
+    {
+      "code": "IQ",
+      "country": "Irak",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Asia",
+      "candidate": false,
+      "names": {
+        "en_gb": "Iraq",
+        "de_de": "Irak",
+        "fr_fr": "Irak",
+        "es_es": "Irak",
+        "it_it": "Iraq",
+        "pt_pt": "Iraque",
+        "pt_br": "Iraque",
+        "nl_nl": "Irak",
+        "pl_pl": "Irak",
+        "tr_tr": "Irak",
+        "ru_ru": "Ирак",
+        "uk_ua": "Ірак",
+        "ar_sa": "العراق",
+        "cs_cz": "Irák",
+        "ro_ro": "Irak",
+        "el_gr": "Ιράκ",
+        "sr_rs": "Ирак"
+      }
+    },
+    {
+      "code": "IR",
+      "country": "Iran",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Asia",
+      "candidate": false,
+      "names": {
+        "en_gb": "Iran",
+        "de_de": "Iran",
+        "fr_fr": "Iran",
+        "es_es": "Irán",
+        "it_it": "Iran",
+        "pt_pt": "Irão",
+        "pt_br": "Irã",
+        "nl_nl": "Iran",
+        "pl_pl": "Iran",
+        "tr_tr": "İran",
+        "ru_ru": "Иран",
+        "uk_ua": "Іран",
+        "ar_sa": "إيران",
+        "cs_cz": "Írán",
+        "ro_ro": "Iran",
+        "el_gr": "Ιράν",
+        "sr_rs": "Иран"
+      }
+    },
+    {
+      "code": "IE",
+      "country": "Irland",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/ie.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Ireland",
+        "de_de": "Irland",
+        "fr_fr": "Irlande",
+        "es_es": "Irlanda",
+        "it_it": "Irlanda",
+        "pt_pt": "Irlanda",
+        "pt_br": "Irlanda",
+        "nl_nl": "Ierland",
+        "pl_pl": "Irlandia",
+        "tr_tr": "İrlanda",
+        "ru_ru": "Ирландия",
+        "uk_ua": "Ірландія",
+        "ar_sa": "أيرلندا",
+        "cs_cz": "Irsko",
+        "ro_ro": "Irlanda",
+        "el_gr": "Ιρλανδία",
+        "sr_rs": "Ирска"
+      }
+    },
+    {
+      "code": "IS",
+      "country": "Island",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-is.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-is.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Iceland",
+        "de_de": "Island",
+        "fr_fr": "Islande",
+        "es_es": "Islandia",
+        "it_it": "Islanda",
+        "pt_pt": "Islândia",
+        "pt_br": "Islândia",
+        "nl_nl": "IJsland",
+        "pl_pl": "Islandia",
+        "tr_tr": "İzlanda",
+        "ru_ru": "Исландия",
+        "uk_ua": "Ісландія",
+        "ar_sa": "آيسلندا",
+        "cs_cz": "Island",
+        "ro_ro": "Islanda",
+        "el_gr": "Ισλανδία",
+        "sr_rs": "Исланд"
+      }
+    },
+    {
+      "code": "IL",
+      "country": "Israel",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-il.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-il.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Asia",
+      "candidate": true,
+      "names": {
+        "en_gb": "Israel",
+        "de_de": "Israel",
+        "fr_fr": "Israël",
+        "es_es": "Israel",
+        "it_it": "Israele",
+        "pt_pt": "Israel",
+        "pt_br": "Israel",
+        "nl_nl": "Israël",
+        "pl_pl": "Izrael",
+        "tr_tr": "İsrail",
+        "ru_ru": "Израиль",
+        "uk_ua": "Ізраїль",
+        "ar_sa": "إسرائيل",
+        "cs_cz": "Izrael",
+        "ro_ro": "Israel",
+        "el_gr": "Ισραήλ",
+        "sr_rs": "Израел"
+      }
+    },
+    {
+      "code": "IT",
+      "country": "Italien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-it.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-it.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Italy",
+        "de_de": "Italien",
+        "fr_fr": "Italie",
+        "es_es": "Italia",
+        "it_it": "Italia",
+        "pt_pt": "Itália",
+        "pt_br": "Itália",
+        "nl_nl": "Italië",
+        "pl_pl": "Włochy",
+        "tr_tr": "İtalya",
+        "ru_ru": "Италия",
+        "uk_ua": "Італія",
+        "ar_sa": "إيطاليا",
+        "cs_cz": "Itálie",
+        "ro_ro": "Italia",
+        "el_gr": "Ιταλία",
+        "sr_rs": "Италија"
+      }
+    },
+    {
+      "code": "JM",
+      "country": "Jamaika",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-jm.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-jm.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "North America",
+      "candidate": true,
+      "names": {
+        "en_gb": "Jamaica",
+        "de_de": "Jamaika",
+        "fr_fr": "Jamaïque",
+        "es_es": "Jamaica",
+        "it_it": "Giamaica",
+        "pt_pt": "Jamaica",
+        "pt_br": "Jamaica",
+        "nl_nl": "Jamaica",
+        "pl_pl": "Jamajka",
+        "tr_tr": "Jamaika",
+        "ru_ru": "Ямайка",
+        "uk_ua": "Ямайка",
+        "ar_sa": "جامايكا",
+        "cs_cz": "Jamajka",
+        "ro_ro": "Jamaica",
+        "el_gr": "Τζαμάικα",
+        "sr_rs": "Јамајка"
+      }
+    },
+    {
+      "code": "JP",
+      "country": "Japan",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-jp.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-jp.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Asia",
+      "candidate": true,
+      "names": {
+        "en_gb": "Japan",
+        "de_de": "Japan",
+        "fr_fr": "Japon",
+        "es_es": "Japón",
+        "it_it": "Giappone",
+        "pt_pt": "Japão",
+        "pt_br": "Japão",
+        "nl_nl": "Japan",
+        "pl_pl": "Japonia",
+        "tr_tr": "Japonya",
+        "ru_ru": "Япония",
+        "uk_ua": "Японія",
+        "ar_sa": "اليابان",
+        "cs_cz": "Japonsko",
+        "ro_ro": "Japonia",
+        "el_gr": "Ιαπωνία",
+        "sr_rs": "Јапан"
+      }
+    },
+    {
+      "code": "JO",
+      "country": "Jordanien",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Asia",
+      "candidate": false,
+      "names": {
+        "en_gb": "Jordan",
+        "de_de": "Jordanien",
+        "fr_fr": "Jordanie",
+        "es_es": "Jordania",
+        "it_it": "Giordania",
+        "pt_pt": "Jordânia",
+        "pt_br": "Jordânia",
+        "nl_nl": "Jordanië",
+        "pl_pl": "Jordania",
+        "tr_tr": "Ürdün",
+        "ru_ru": "Иордания",
+        "uk_ua": "Йорданія",
+        "ar_sa": "الأردن",
+        "cs_cz": "Jordánsko",
+        "ro_ro": "Iordania",
+        "el_gr": "Ιορδανία",
+        "sr_rs": "Јордан"
+      }
+    },
+    {
+      "code": "KH",
+      "country": "Kambodscha",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Asia",
+      "candidate": false,
+      "names": {
+        "en_gb": "Cambodia",
+        "de_de": "Kambodscha",
+        "fr_fr": "Cambodge",
+        "es_es": "Camboya",
+        "it_it": "Cambogia",
+        "pt_pt": "Camboja",
+        "pt_br": "Camboja",
+        "nl_nl": "Cambodja",
+        "pl_pl": "Kambodża",
+        "tr_tr": "Kamboçya",
+        "ru_ru": "Камбоджа",
+        "uk_ua": "Камбоджа",
+        "ar_sa": "كمبوديا",
+        "cs_cz": "Kambodža",
+        "ro_ro": "Cambodgia",
+        "el_gr": "Καμπότζη",
+        "sr_rs": "Камбоџа"
+      }
+    },
+    {
+      "code": "CM",
+      "country": "Kamerun",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Africa",
+      "candidate": false,
+      "names": {
+        "en_gb": "Cameroon",
+        "de_de": "Kamerun",
+        "fr_fr": "Cameroun",
+        "es_es": "Camerún",
+        "it_it": "Camerun",
+        "pt_pt": "Camarões",
+        "pt_br": "Camarões",
+        "nl_nl": "Kameroen",
+        "pl_pl": "Kamerun",
+        "tr_tr": "Kamerun",
+        "ru_ru": "Камерун",
+        "uk_ua": "Камерун",
+        "ar_sa": "الكاميرون",
+        "cs_cz": "Kamerun",
+        "ro_ro": "Camerun",
+        "el_gr": "Καμερούν",
+        "sr_rs": "Камерун"
+      }
+    },
+    {
+      "code": "CA",
+      "country": "Kanada",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ca.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ca.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "North America",
+      "candidate": true,
+      "names": {
+        "en_gb": "Canada",
+        "de_de": "Kanada",
+        "fr_fr": "Canada",
+        "es_es": "Canadá",
+        "it_it": "Canada",
+        "pt_pt": "Canadá",
+        "pt_br": "Canadá",
+        "nl_nl": "Canada",
+        "pl_pl": "Kanada",
+        "tr_tr": "Kanada",
+        "ru_ru": "Канада",
+        "uk_ua": "Канада",
+        "ar_sa": "كندا",
+        "cs_cz": "Kanada",
+        "ro_ro": "Canada",
+        "el_gr": "Καναδάς",
+        "sr_rs": "Канада"
+      }
+    },
+    {
+      "code": "KZ",
+      "country": "Kasachstan",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Asia",
+      "candidate": false,
+      "names": {
+        "en_gb": "Kazakhstan",
+        "de_de": "Kasachstan",
+        "fr_fr": "Kazakhstan",
+        "es_es": "Kazajistán",
+        "it_it": "Kazakistan",
+        "pt_pt": "Cazaquistão",
+        "pt_br": "Cazaquistão",
+        "nl_nl": "Kazachstan",
+        "pl_pl": "Kazachstan",
+        "tr_tr": "Kazakistan",
+        "ru_ru": "Казахстан",
+        "uk_ua": "Казахстан",
+        "ar_sa": "كازاخستان",
+        "cs_cz": "Kazachstán",
+        "ro_ro": "Kazahstan",
+        "el_gr": "Καζακστάν",
+        "sr_rs": "Казахстан"
+      }
+    },
+    {
+      "code": "QA",
+      "country": "Katar",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/qa.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Asia",
+      "candidate": true,
+      "names": {
+        "en_gb": "Qatar",
+        "de_de": "Katar",
+        "fr_fr": "Qatar",
+        "es_es": "Catar",
+        "it_it": "Qatar",
+        "pt_pt": "Catar",
+        "pt_br": "Catar",
+        "nl_nl": "Qatar",
+        "pl_pl": "Katar",
+        "tr_tr": "Katar",
+        "ru_ru": "Катар",
+        "uk_ua": "Катар",
+        "ar_sa": "قطر",
+        "cs_cz": "Katar",
+        "ro_ro": "Qatar",
+        "el_gr": "Κατάρ",
+        "sr_rs": "Катар"
+      }
+    },
+    {
+      "code": "KE",
+      "country": "Kenia",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/ke.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Africa",
+      "candidate": true,
+      "names": {
+        "en_gb": "Kenya",
+        "de_de": "Kenia",
+        "fr_fr": "Kenya",
+        "es_es": "Kenia",
+        "it_it": "Kenya",
+        "pt_pt": "Quénia",
+        "pt_br": "Quênia",
+        "nl_nl": "Kenia",
+        "pl_pl": "Kenia",
+        "tr_tr": "Kenya",
+        "ru_ru": "Кения",
+        "uk_ua": "Кенія",
+        "ar_sa": "كينيا",
+        "cs_cz": "Keňa",
+        "ro_ro": "Kenya",
+        "el_gr": "Κένυα",
+        "sr_rs": "Кенија"
+      }
+    },
+    {
+      "code": "KG",
+      "country": "Kirgisistan",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Asia",
+      "candidate": false,
+      "names": {
+        "en_gb": "Kyrgyzstan",
+        "de_de": "Kirgisistan",
+        "fr_fr": "Kirghizstan",
+        "es_es": "Kirguistán",
+        "it_it": "Kirghizistan",
+        "pt_pt": "Quirguistão",
+        "pt_br": "Quirguistão",
+        "nl_nl": "Kirgizië",
+        "pl_pl": "Kirgistan",
+        "tr_tr": "Kırgızistan",
+        "ru_ru": "Киргизия",
+        "uk_ua": "Киргизстан",
+        "ar_sa": "قيرغيزستان",
+        "cs_cz": "Kyrgyzstán",
+        "ro_ro": "Kârgâzstan",
+        "el_gr": "Κιργιστάν",
+        "sr_rs": "Киргистан"
+      }
+    },
+    {
+      "code": "CO",
+      "country": "Kolumbien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-co.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-co.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "South America",
+      "candidate": true,
+      "names": {
+        "en_gb": "Colombia",
+        "de_de": "Kolumbien",
+        "fr_fr": "Colombie",
+        "es_es": "Colombia",
+        "it_it": "Colombia",
+        "pt_pt": "Colômbia",
+        "pt_br": "Colômbia",
+        "nl_nl": "Colombia",
+        "pl_pl": "Kolumbia",
+        "tr_tr": "Kolombiya",
+        "ru_ru": "Колумбия",
+        "uk_ua": "Колумбія",
+        "ar_sa": "كولومبيا",
+        "cs_cz": "Kolumbie",
+        "ro_ro": "Columbia",
+        "el_gr": "Κολομβία",
+        "sr_rs": "Колумбија"
+      }
+    },
+    {
+      "code": "HR",
+      "country": "Kroatien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-hr.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-hr.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Croatia",
+        "de_de": "Kroatien",
+        "fr_fr": "Croatie",
+        "es_es": "Croacia",
+        "it_it": "Croazia",
+        "pt_pt": "Croácia",
+        "pt_br": "Croácia",
+        "nl_nl": "Kroatië",
+        "pl_pl": "Chorwacja",
+        "tr_tr": "Hırvatistan",
+        "ru_ru": "Хорватия",
+        "uk_ua": "Хорватія",
+        "ar_sa": "كرواتيا",
+        "cs_cz": "Chorvatsko",
+        "ro_ro": "Croația",
+        "el_gr": "Κροατία",
+        "sr_rs": "Хрватска"
+      }
+    },
+    {
+      "code": "CU",
+      "country": "Kuba",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "North America",
+      "candidate": false,
+      "names": {
+        "en_gb": "Cuba",
+        "de_de": "Kuba",
+        "fr_fr": "Cuba",
+        "es_es": "Cuba",
+        "it_it": "Cuba",
+        "pt_pt": "Cuba",
+        "pt_br": "Cuba",
+        "nl_nl": "Cuba",
+        "pl_pl": "Kuba",
+        "tr_tr": "Küba",
+        "ru_ru": "Куба",
+        "uk_ua": "Куба",
+        "ar_sa": "كوبا",
+        "cs_cz": "Kuba",
+        "ro_ro": "Cuba",
+        "el_gr": "Κούβα",
+        "sr_rs": "Куба"
+      }
+    },
+    {
+      "code": "KW",
+      "country": "Kuwait",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Asia",
+      "candidate": false,
+      "names": {
+        "en_gb": "Kuwait",
+        "de_de": "Kuwait",
+        "fr_fr": "Koweït",
+        "es_es": "Kuwait",
+        "it_it": "Kuwait",
+        "pt_pt": "Koweit",
+        "pt_br": "Kuwait",
+        "nl_nl": "Koeweit",
+        "pl_pl": "Kuwejt",
+        "tr_tr": "Kuveyt",
+        "ru_ru": "Кувейт",
+        "uk_ua": "Кувейт",
+        "ar_sa": "الكويت",
+        "cs_cz": "Kuvajt",
+        "ro_ro": "Kuweit",
+        "el_gr": "Κουβέιτ",
+        "sr_rs": "Кувајт"
+      }
+    },
+    {
+      "code": "LA",
+      "country": "Laos",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Asia",
+      "candidate": false,
+      "names": {
+        "en_gb": "Laos",
+        "de_de": "Laos",
+        "fr_fr": "Laos",
+        "es_es": "Laos",
+        "it_it": "Laos",
+        "pt_pt": "Laos",
+        "pt_br": "Laos",
+        "nl_nl": "Laos",
+        "pl_pl": "Laos",
+        "tr_tr": "Laos",
+        "ru_ru": "Лаос",
+        "uk_ua": "Лаос",
+        "ar_sa": "لاوس",
+        "cs_cz": "Laos",
+        "ro_ro": "Laos",
+        "el_gr": "Λάος",
+        "sr_rs": "Лаос"
+      }
+    },
+    {
+      "code": "LV",
+      "country": "Lettland",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-lv.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-lv.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Latvia",
+        "de_de": "Lettland",
+        "fr_fr": "Lettonie",
+        "es_es": "Letonia",
+        "it_it": "Lettonia",
+        "pt_pt": "Letónia",
+        "pt_br": "Letônia",
+        "nl_nl": "Letland",
+        "pl_pl": "Łotwa",
+        "tr_tr": "Letonya",
+        "ru_ru": "Латвия",
+        "uk_ua": "Латвія",
+        "ar_sa": "لاتفيا",
+        "cs_cz": "Lotyšsko",
+        "ro_ro": "Letonia",
+        "el_gr": "Λετονία",
+        "sr_rs": "Летонија"
+      }
+    },
+    {
+      "code": "LB",
+      "country": "Libanon",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/lb.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Asia",
+      "candidate": true,
+      "names": {
+        "en_gb": "Lebanon",
+        "de_de": "Libanon",
+        "fr_fr": "Liban",
+        "es_es": "Líbano",
+        "it_it": "Libano",
+        "pt_pt": "Líbano",
+        "pt_br": "Líbano",
+        "nl_nl": "Libanon",
+        "pl_pl": "Liban",
+        "tr_tr": "Lübnan",
+        "ru_ru": "Ливан",
+        "uk_ua": "Ліван",
+        "ar_sa": "لبنان",
+        "cs_cz": "Libanon",
+        "ro_ro": "Liban",
+        "el_gr": "Λίβανος",
+        "sr_rs": "Либан"
+      }
+    },
+    {
+      "code": "LT",
+      "country": "Litauen",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-lt.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-lt.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Lithuania",
+        "de_de": "Litauen",
+        "fr_fr": "Lituanie",
+        "es_es": "Lituania",
+        "it_it": "Lituania",
+        "pt_pt": "Lituânia",
+        "pt_br": "Lituânia",
+        "nl_nl": "Litouwen",
+        "pl_pl": "Litwa",
+        "tr_tr": "Litvanya",
+        "ru_ru": "Литва",
+        "uk_ua": "Литва",
+        "ar_sa": "ليتوانيا",
+        "cs_cz": "Litva",
+        "ro_ro": "Lituania",
+        "el_gr": "Λιθουανία",
+        "sr_rs": "Литванија"
+      }
+    },
+    {
+      "code": "LU",
+      "country": "Luxemburg",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-lu.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-lu.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Luxembourg",
+        "de_de": "Luxemburg",
+        "fr_fr": "Luxembourg",
+        "es_es": "Luxemburgo",
+        "it_it": "Lussemburgo",
+        "pt_pt": "Luxemburgo",
+        "pt_br": "Luxemburgo",
+        "nl_nl": "Luxemburg",
+        "pl_pl": "Luksemburg",
+        "tr_tr": "Lüksemburg",
+        "ru_ru": "Люксембург",
+        "uk_ua": "Люксембург",
+        "ar_sa": "لوكسمبورغ",
+        "cs_cz": "Lucembursko",
+        "ro_ro": "Luxemburg",
+        "el_gr": "Λουξεμβούργο",
+        "sr_rs": "Луксембург"
+      }
+    },
+    {
+      "code": "MO",
+      "country": "Macau",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/mo.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Asia",
+      "candidate": true,
+      "names": {
+        "en_gb": "Macao SAR China",
+        "de_de": "Sonderverwaltungsregion Macau",
+        "fr_fr": "R.A.S. chinoise de Macao",
+        "es_es": "RAE de Macao (China)",
+        "it_it": "RAS di Macao",
+        "pt_pt": "Macau, RAE da China",
+        "pt_br": "Macau, RAE da China",
+        "nl_nl": "Macau SAR van China",
+        "pl_pl": "SRA Makau (Chiny)",
+        "tr_tr": "Çin Makao ÖİB",
+        "ru_ru": "Макао (САР)",
+        "uk_ua": "Макао, ОАР Китаю",
+        "ar_sa": "ماكاو الصينية (منطقة إدارية خاصة)",
+        "cs_cz": "Macao – ZAO Číny",
+        "ro_ro": "R.A.S. Macao, China",
+        "el_gr": "Μακάο ΕΔΠ Κίνας",
+        "sr_rs": "САР Макао (Кина)"
+      }
+    },
+    {
+      "code": "MG",
+      "country": "Madagaskar",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/mg.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Africa",
+      "candidate": true,
+      "names": {
+        "en_gb": "Madagascar",
+        "de_de": "Madagaskar",
+        "fr_fr": "Madagascar",
+        "es_es": "Madagascar",
+        "it_it": "Madagascar",
+        "pt_pt": "Madagáscar",
+        "pt_br": "Madagascar",
+        "nl_nl": "Madagaskar",
+        "pl_pl": "Madagaskar",
+        "tr_tr": "Madagaskar",
+        "ru_ru": "Мадагаскар",
+        "uk_ua": "Мадагаскар",
+        "ar_sa": "مدغشقر",
+        "cs_cz": "Madagaskar",
+        "ro_ro": "Madagascar",
+        "el_gr": "Μαδαγασκάρη",
+        "sr_rs": "Мадагаскар"
+      }
+    },
+    {
+      "code": "MW",
+      "country": "Malawi",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/mw.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Africa",
+      "candidate": true,
+      "names": {
+        "en_gb": "Malawi",
+        "de_de": "Malawi",
+        "fr_fr": "Malawi",
+        "es_es": "Malaui",
+        "it_it": "Malawi",
+        "pt_pt": "Maláui",
+        "pt_br": "Malaui",
+        "nl_nl": "Malawi",
+        "pl_pl": "Malawi",
+        "tr_tr": "Malavi",
+        "ru_ru": "Малави",
+        "uk_ua": "Малаві",
+        "ar_sa": "ملاوي",
+        "cs_cz": "Malawi",
+        "ro_ro": "Malawi",
+        "el_gr": "Μαλάουι",
+        "sr_rs": "Малави"
+      }
+    },
+    {
+      "code": "MY",
+      "country": "Malaysia",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-my.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-my.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Asia",
+      "candidate": true,
+      "names": {
+        "en_gb": "Malaysia",
+        "de_de": "Malaysia",
+        "fr_fr": "Malaisie",
+        "es_es": "Malasia",
+        "it_it": "Malaysia",
+        "pt_pt": "Malásia",
+        "pt_br": "Malásia",
+        "nl_nl": "Maleisië",
+        "pl_pl": "Malezja",
+        "tr_tr": "Malezya",
+        "ru_ru": "Малайзия",
+        "uk_ua": "Малайзія",
+        "ar_sa": "ماليزيا",
+        "cs_cz": "Malajsie",
+        "ro_ro": "Malaysia",
+        "el_gr": "Μαλαισία",
+        "sr_rs": "Малезија"
+      }
+    },
+    {
+      "code": "ML",
+      "country": "Mali",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Africa",
+      "candidate": false,
+      "names": {
+        "en_gb": "Mali",
+        "de_de": "Mali",
+        "fr_fr": "Mali",
+        "es_es": "Mali",
+        "it_it": "Mali",
+        "pt_pt": "Mali",
+        "pt_br": "Mali",
+        "nl_nl": "Mali",
+        "pl_pl": "Mali",
+        "tr_tr": "Mali",
+        "ru_ru": "Мали",
+        "uk_ua": "Малі",
+        "ar_sa": "مالي",
+        "cs_cz": "Mali",
+        "ro_ro": "Mali",
+        "el_gr": "Μάλι",
+        "sr_rs": "Мали"
+      }
+    },
+    {
+      "code": "MT",
+      "country": "Malta",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-mt.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-mt.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Malta",
+        "de_de": "Malta",
+        "fr_fr": "Malte",
+        "es_es": "Malta",
+        "it_it": "Malta",
+        "pt_pt": "Malta",
+        "pt_br": "Malta",
+        "nl_nl": "Malta",
+        "pl_pl": "Malta",
+        "tr_tr": "Malta",
+        "ru_ru": "Мальта",
+        "uk_ua": "Мальта",
+        "ar_sa": "مالطا",
+        "cs_cz": "Malta",
+        "ro_ro": "Malta",
+        "el_gr": "Μάλτα",
+        "sr_rs": "Малта"
+      }
+    },
+    {
+      "code": "MA",
+      "country": "Marokko",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/ma.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Africa",
+      "candidate": true,
+      "names": {
+        "en_gb": "Morocco",
+        "de_de": "Marokko",
+        "fr_fr": "Maroc",
+        "es_es": "Marruecos",
+        "it_it": "Marocco",
+        "pt_pt": "Marrocos",
+        "pt_br": "Marrocos",
+        "nl_nl": "Marokko",
+        "pl_pl": "Maroko",
+        "tr_tr": "Fas",
+        "ru_ru": "Марокко",
+        "uk_ua": "Марокко",
+        "ar_sa": "المغرب",
+        "cs_cz": "Maroko",
+        "ro_ro": "Maroc",
+        "el_gr": "Μαρόκο",
+        "sr_rs": "Мароко"
+      }
+    },
+    {
+      "code": "MR",
+      "country": "Mauretanien",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Africa",
+      "candidate": false,
+      "names": {
+        "en_gb": "Mauritania",
+        "de_de": "Mauretanien",
+        "fr_fr": "Mauritanie",
+        "es_es": "Mauritania",
+        "it_it": "Mauritania",
+        "pt_pt": "Mauritânia",
+        "pt_br": "Mauritânia",
+        "nl_nl": "Mauritanië",
+        "pl_pl": "Mauretania",
+        "tr_tr": "Moritanya",
+        "ru_ru": "Мавритания",
+        "uk_ua": "Мавританія",
+        "ar_sa": "موريتانيا",
+        "cs_cz": "Mauritánie",
+        "ro_ro": "Mauritania",
+        "el_gr": "Μαυριτανία",
+        "sr_rs": "Мауританија"
+      }
+    },
+    {
+      "code": "MU",
+      "country": "Mauritius",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/mu.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Africa",
+      "candidate": true,
+      "names": {
+        "en_gb": "Mauritius",
+        "de_de": "Mauritius",
+        "fr_fr": "Maurice",
+        "es_es": "Mauricio",
+        "it_it": "Mauritius",
+        "pt_pt": "Maurícia",
+        "pt_br": "Maurício",
+        "nl_nl": "Mauritius",
+        "pl_pl": "Mauritius",
+        "tr_tr": "Mauritius",
+        "ru_ru": "Маврикий",
+        "uk_ua": "Маврикій",
+        "ar_sa": "موريشيوس",
+        "cs_cz": "Mauricius",
+        "ro_ro": "Mauritius",
+        "el_gr": "Μαυρίκιος",
+        "sr_rs": "Маурицијус"
+      }
+    },
+    {
+      "code": "MX",
+      "country": "Mexiko",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-mx.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-mx.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "North America",
+      "candidate": true,
+      "names": {
+        "en_gb": "Mexico",
+        "de_de": "Mexiko",
+        "fr_fr": "Mexique",
+        "es_es": "México",
+        "it_it": "Messico",
+        "pt_pt": "México",
+        "pt_br": "México",
+        "nl_nl": "Mexico",
+        "pl_pl": "Meksyk",
+        "tr_tr": "Meksika",
+        "ru_ru": "Мексика",
+        "uk_ua": "Мексика",
+        "ar_sa": "المكسيك",
+        "cs_cz": "Mexiko",
+        "ro_ro": "Mexic",
+        "el_gr": "Μεξικό",
+        "sr_rs": "Мексико"
+      }
+    },
+    {
+      "code": "MD",
+      "country": "Moldau",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Europe",
+      "candidate": false,
+      "names": {
+        "en_gb": "Moldova",
+        "de_de": "Republik Moldau",
+        "fr_fr": "Moldavie",
+        "es_es": "Moldavia",
+        "it_it": "Moldavia",
+        "pt_pt": "Moldávia",
+        "pt_br": "Moldávia",
+        "nl_nl": "Moldavië",
+        "pl_pl": "Mołdawia",
+        "tr_tr": "Moldova",
+        "ru_ru": "Молдова",
+        "uk_ua": "Молдова",
+        "ar_sa": "مولدوفا",
+        "cs_cz": "Moldavsko",
+        "ro_ro": "Republica Moldova",
+        "el_gr": "Μολδαβία",
+        "sr_rs": "Молдавија"
+      }
+    },
+    {
+      "code": "MC",
+      "country": "Monaco",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Europe",
+      "candidate": false,
+      "names": {
+        "en_gb": "Monaco",
+        "de_de": "Monaco",
+        "fr_fr": "Monaco",
+        "es_es": "Mónaco",
+        "it_it": "Monaco",
+        "pt_pt": "Mónaco",
+        "pt_br": "Mônaco",
+        "nl_nl": "Monaco",
+        "pl_pl": "Monako",
+        "tr_tr": "Monako",
+        "ru_ru": "Монако",
+        "uk_ua": "Монако",
+        "ar_sa": "موناكو",
+        "cs_cz": "Monako",
+        "ro_ro": "Monaco",
+        "el_gr": "Μονακό",
+        "sr_rs": "Монако"
+      }
+    },
+    {
+      "code": "MN",
+      "country": "Mongolei",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/mn.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Asia",
+      "candidate": true,
+      "names": {
+        "en_gb": "Mongolia",
+        "de_de": "Mongolei",
+        "fr_fr": "Mongolie",
+        "es_es": "Mongolia",
+        "it_it": "Mongolia",
+        "pt_pt": "Mongólia",
+        "pt_br": "Mongólia",
+        "nl_nl": "Mongolië",
+        "pl_pl": "Mongolia",
+        "tr_tr": "Moğolistan",
+        "ru_ru": "Монголия",
+        "uk_ua": "Монголія",
+        "ar_sa": "منغوليا",
+        "cs_cz": "Mongolsko",
+        "ro_ro": "Mongolia",
+        "el_gr": "Μογγολία",
+        "sr_rs": "Монголија"
+      }
+    },
+    {
+      "code": "ME",
+      "country": "Montenegro",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-me.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-me.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Montenegro",
+        "de_de": "Montenegro",
+        "fr_fr": "Monténégro",
+        "es_es": "Montenegro",
+        "it_it": "Montenegro",
+        "pt_pt": "Montenegro",
+        "pt_br": "Montenegro",
+        "nl_nl": "Montenegro",
+        "pl_pl": "Czarnogóra",
+        "tr_tr": "Karadağ",
+        "ru_ru": "Черногория",
+        "uk_ua": "Чорногорія",
+        "ar_sa": "الجبل الأسود",
+        "cs_cz": "Černá Hora",
+        "ro_ro": "Muntenegru",
+        "el_gr": "Μαυροβούνιο",
+        "sr_rs": "Црна Гора"
+      }
+    },
+    {
+      "code": "MZ",
+      "country": "Mosambik",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/mz.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Africa",
+      "candidate": true,
+      "names": {
+        "en_gb": "Mozambique",
+        "de_de": "Mosambik",
+        "fr_fr": "Mozambique",
+        "es_es": "Mozambique",
+        "it_it": "Mozambico",
+        "pt_pt": "Moçambique",
+        "pt_br": "Moçambique",
+        "nl_nl": "Mozambique",
+        "pl_pl": "Mozambik",
+        "tr_tr": "Mozambik",
+        "ru_ru": "Мозамбик",
+        "uk_ua": "Мозамбік",
+        "ar_sa": "موزمبيق",
+        "cs_cz": "Mosambik",
+        "ro_ro": "Mozambic",
+        "el_gr": "Μοζαμβίκη",
+        "sr_rs": "Мозамбик"
+      }
+    },
+    {
+      "code": "MM",
+      "country": "Myanmar",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Asia",
+      "candidate": false,
+      "names": {
+        "en_gb": "Myanmar (Burma)",
+        "de_de": "Myanmar",
+        "fr_fr": "Myanmar (Birmanie)",
+        "es_es": "Myanmar (Birmania)",
+        "it_it": "Myanmar (Birmania)",
+        "pt_pt": "Mianmar (Birmânia)",
+        "pt_br": "Mianmar (Birmânia)",
+        "nl_nl": "Myanmar (Birma)",
+        "pl_pl": "Mjanma (Birma)",
+        "tr_tr": "Myanmar (Burma)",
+        "ru_ru": "Мьянма (Бирма)",
+        "uk_ua": "Мʼянма (Бірма)",
+        "ar_sa": "ميانمار (بورما)",
+        "cs_cz": "Myanmar (Barma)",
+        "ro_ro": "Myanmar (Birmania)",
+        "el_gr": "Μιανμάρ (Βιρμανία)",
+        "sr_rs": "Мијанмар (Бурма)"
+      }
+    },
+    {
+      "code": "NA",
+      "country": "Namibia",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/na.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Africa",
+      "candidate": true,
+      "names": {
+        "en_gb": "Namibia",
+        "de_de": "Namibia",
+        "fr_fr": "Namibie",
+        "es_es": "Namibia",
+        "it_it": "Namibia",
+        "pt_pt": "Namíbia",
+        "pt_br": "Namíbia",
+        "nl_nl": "Namibië",
+        "pl_pl": "Namibia",
+        "tr_tr": "Namibya",
+        "ru_ru": "Намибия",
+        "uk_ua": "Намібія",
+        "ar_sa": "ناميبيا",
+        "cs_cz": "Namibie",
+        "ro_ro": "Namibia",
+        "el_gr": "Ναμίμπια",
+        "sr_rs": "Намибија"
+      }
+    },
+    {
+      "code": "NR",
+      "country": "Nauru",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Oceania",
+      "candidate": false,
+      "names": {
+        "en_gb": "Nauru",
+        "de_de": "Nauru",
+        "fr_fr": "Nauru",
+        "es_es": "Nauru",
+        "it_it": "Nauru",
+        "pt_pt": "Nauru",
+        "pt_br": "Nauru",
+        "nl_nl": "Nauru",
+        "pl_pl": "Nauru",
+        "tr_tr": "Nauru",
+        "ru_ru": "Науру",
+        "uk_ua": "Науру",
+        "ar_sa": "ناورو",
+        "cs_cz": "Nauru",
+        "ro_ro": "Nauru",
+        "el_gr": "Ναουρού",
+        "sr_rs": "Науру"
+      }
+    },
+    {
+      "code": "NP",
+      "country": "Nepal",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Asia",
+      "candidate": false,
+      "names": {
+        "en_gb": "Nepal",
+        "de_de": "Nepal",
+        "fr_fr": "Népal",
+        "es_es": "Nepal",
+        "it_it": "Nepal",
+        "pt_pt": "Nepal",
+        "pt_br": "Nepal",
+        "nl_nl": "Nepal",
+        "pl_pl": "Nepal",
+        "tr_tr": "Nepal",
+        "ru_ru": "Непал",
+        "uk_ua": "Непал",
+        "ar_sa": "نيبال",
+        "cs_cz": "Nepál",
+        "ro_ro": "Nepal",
+        "el_gr": "Νεπάλ",
+        "sr_rs": "Непал"
+      }
+    },
+    {
+      "code": "NZ",
+      "country": "Neuseeland",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-nz.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-nz.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Oceania",
+      "candidate": true,
+      "names": {
+        "en_gb": "New Zealand",
+        "de_de": "Neuseeland",
+        "fr_fr": "Nouvelle-Zélande",
+        "es_es": "Nueva Zelanda",
+        "it_it": "Nuova Zelanda",
+        "pt_pt": "Nova Zelândia",
+        "pt_br": "Nova Zelândia",
+        "nl_nl": "Nieuw-Zeeland",
+        "pl_pl": "Nowa Zelandia",
+        "tr_tr": "Yeni Zelanda",
+        "ru_ru": "Новая Зеландия",
+        "uk_ua": "Нова Зеландія",
+        "ar_sa": "نيوزيلندا",
+        "cs_cz": "Nový Zéland",
+        "ro_ro": "Noua Zeelandă",
+        "el_gr": "Νέα Ζηλανδία",
+        "sr_rs": "Нови Зеланд"
+      }
+    },
+    {
+      "code": "NI",
+      "country": "Nicaragua",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ni.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ni.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "North America",
+      "candidate": true,
+      "names": {
+        "en_gb": "Nicaragua",
+        "de_de": "Nicaragua",
+        "fr_fr": "Nicaragua",
+        "es_es": "Nicaragua",
+        "it_it": "Nicaragua",
+        "pt_pt": "Nicarágua",
+        "pt_br": "Nicarágua",
+        "nl_nl": "Nicaragua",
+        "pl_pl": "Nikaragua",
+        "tr_tr": "Nikaragua",
+        "ru_ru": "Никарагуа",
+        "uk_ua": "Нікарагуа",
+        "ar_sa": "نيكاراغوا",
+        "cs_cz": "Nikaragua",
+        "ro_ro": "Nicaragua",
+        "el_gr": "Νικαράγουα",
+        "sr_rs": "Никарагва"
+      }
+    },
+    {
+      "code": "NL",
+      "country": "Niederlande",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-nl.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-nl.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Netherlands",
+        "de_de": "Niederlande",
+        "fr_fr": "Pays-Bas",
+        "es_es": "Países Bajos",
+        "it_it": "Paesi Bassi",
+        "pt_pt": "Países Baixos",
+        "pt_br": "Países Baixos",
+        "nl_nl": "Nederland",
+        "pl_pl": "Holandia",
+        "tr_tr": "Hollanda",
+        "ru_ru": "Нидерланды",
+        "uk_ua": "Нідерланди",
+        "ar_sa": "هولندا",
+        "cs_cz": "Nizozemsko",
+        "ro_ro": "Țările de Jos",
+        "el_gr": "Κάτω Χώρες",
+        "sr_rs": "Холандија"
+      }
+    },
+    {
+      "code": "NE",
+      "country": "Niger",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Africa",
+      "candidate": false,
+      "names": {
+        "en_gb": "Niger",
+        "de_de": "Niger",
+        "fr_fr": "Niger",
+        "es_es": "Níger",
+        "it_it": "Niger",
+        "pt_pt": "Níger",
+        "pt_br": "Níger",
+        "nl_nl": "Niger",
+        "pl_pl": "Niger",
+        "tr_tr": "Nijer",
+        "ru_ru": "Нигер",
+        "uk_ua": "Нігер",
+        "ar_sa": "النيجر",
+        "cs_cz": "Niger",
+        "ro_ro": "Niger",
+        "el_gr": "Νίγηρας",
+        "sr_rs": "Нигер"
+      }
+    },
+    {
+      "code": "NG",
+      "country": "Nigeria",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ng.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ng.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Africa",
+      "candidate": true,
+      "names": {
+        "en_gb": "Nigeria",
+        "de_de": "Nigeria",
+        "fr_fr": "Nigeria",
+        "es_es": "Nigeria",
+        "it_it": "Nigeria",
+        "pt_pt": "Nigéria",
+        "pt_br": "Nigéria",
+        "nl_nl": "Nigeria",
+        "pl_pl": "Nigeria",
+        "tr_tr": "Nijerya",
+        "ru_ru": "Нигерия",
+        "uk_ua": "Нігерія",
+        "ar_sa": "نيجيريا",
+        "cs_cz": "Nigérie",
+        "ro_ro": "Nigeria",
+        "el_gr": "Νιγηρία",
+        "sr_rs": "Нигерија"
+      }
+    },
+    {
+      "code": "MK",
+      "country": "Nordmazedonien",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/mk.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "North Macedonia",
+        "de_de": "Nordmazedonien",
+        "fr_fr": "Macédoine du Nord",
+        "es_es": "Macedonia del Norte",
+        "it_it": "Macedonia del Nord",
+        "pt_pt": "Macedónia do Norte",
+        "pt_br": "Macedônia do Norte",
+        "nl_nl": "Noord-Macedonië",
+        "pl_pl": "Macedonia Północna",
+        "tr_tr": "Kuzey Makedonya",
+        "ru_ru": "Северная Македония",
+        "uk_ua": "Північна Македонія",
+        "ar_sa": "مقدونيا الشمالية",
+        "cs_cz": "Severní Makedonie",
+        "ro_ro": "Macedonia de Nord",
+        "el_gr": "Βόρεια Μακεδονία",
+        "sr_rs": "Северна Македонија"
+      }
+    },
+    {
+      "code": "NO",
+      "country": "Norwegen",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-no.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-no.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Norway",
+        "de_de": "Norwegen",
+        "fr_fr": "Norvège",
+        "es_es": "Noruega",
+        "it_it": "Norvegia",
+        "pt_pt": "Noruega",
+        "pt_br": "Noruega",
+        "nl_nl": "Noorwegen",
+        "pl_pl": "Norwegia",
+        "tr_tr": "Norveç",
+        "ru_ru": "Норвегия",
+        "uk_ua": "Норвегія",
+        "ar_sa": "النرويج",
+        "cs_cz": "Norsko",
+        "ro_ro": "Norvegia",
+        "el_gr": "Νορβηγία",
+        "sr_rs": "Норвешка"
+      }
+    },
+    {
+      "code": "OM",
+      "country": "Oman",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Asia",
+      "candidate": false,
+      "names": {
+        "en_gb": "Oman",
+        "de_de": "Oman",
+        "fr_fr": "Oman",
+        "es_es": "Omán",
+        "it_it": "Oman",
+        "pt_pt": "Omã",
+        "pt_br": "Omã",
+        "nl_nl": "Oman",
+        "pl_pl": "Oman",
+        "tr_tr": "Umman",
+        "ru_ru": "Оман",
+        "uk_ua": "Оман",
+        "ar_sa": "عُمان",
+        "cs_cz": "Omán",
+        "ro_ro": "Oman",
+        "el_gr": "Ομάν",
+        "sr_rs": "Оман"
+      }
+    },
+    {
+      "code": "AT",
+      "country": "Österreich",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-at.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-at.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Austria",
+        "de_de": "Österreich",
+        "fr_fr": "Autriche",
+        "es_es": "Austria",
+        "it_it": "Austria",
+        "pt_pt": "Áustria",
+        "pt_br": "Áustria",
+        "nl_nl": "Oostenrijk",
+        "pl_pl": "Austria",
+        "tr_tr": "Avusturya",
+        "ru_ru": "Австрия",
+        "uk_ua": "Австрія",
+        "ar_sa": "النمسا",
+        "cs_cz": "Rakousko",
+        "ro_ro": "Austria",
+        "el_gr": "Αυστρία",
+        "sr_rs": "Аустрија"
+      }
+    },
+    {
+      "code": "TL",
+      "country": "Osttimor",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Asia",
+      "candidate": false,
+      "names": {
+        "en_gb": "Timor-Leste",
+        "de_de": "Timor-Leste",
+        "fr_fr": "Timor oriental",
+        "es_es": "Timor-Leste",
+        "it_it": "Timor Est",
+        "pt_pt": "Timor-Leste",
+        "pt_br": "Timor-Leste",
+        "nl_nl": "Oost-Timor",
+        "pl_pl": "Timor Wschodni",
+        "tr_tr": "Timor-Leste",
+        "ru_ru": "Восточный Тимор",
+        "uk_ua": "Тимор-Лешті",
+        "ar_sa": "تيمور - ليشتي",
+        "cs_cz": "Východní Timor",
+        "ro_ro": "Timor-Leste",
+        "el_gr": "Τιμόρ-Λέστε",
+        "sr_rs": "Тимор-Лесте (Источни Тимор)"
+      }
+    },
+    {
+      "code": "PK",
+      "country": "Pakistan",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/pk.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Asia",
+      "candidate": true,
+      "names": {
+        "en_gb": "Pakistan",
+        "de_de": "Pakistan",
+        "fr_fr": "Pakistan",
+        "es_es": "Pakistán",
+        "it_it": "Pakistan",
+        "pt_pt": "Paquistão",
+        "pt_br": "Paquistão",
+        "nl_nl": "Pakistan",
+        "pl_pl": "Pakistan",
+        "tr_tr": "Pakistan",
+        "ru_ru": "Пакистан",
+        "uk_ua": "Пакистан",
+        "ar_sa": "باكستان",
+        "cs_cz": "Pákistán",
+        "ro_ro": "Pakistan",
+        "el_gr": "Πακιστάν",
+        "sr_rs": "Пакистан"
+      }
+    },
+    {
+      "code": "PS",
+      "country": "Palästinensische Gebiete",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Asia",
+      "candidate": false,
+      "names": {
+        "en_gb": "Palestinian Territories",
+        "de_de": "Palästinensische Autonomiegebiete",
+        "fr_fr": "Territoires palestiniens",
+        "es_es": "Territorios Palestinos",
+        "it_it": "Territori Palestinesi",
+        "pt_pt": "Territórios palestinianos",
+        "pt_br": "Territórios palestinos",
+        "nl_nl": "Palestijnse gebieden",
+        "pl_pl": "Terytoria Palestyńskie",
+        "tr_tr": "Filistin Bölgeleri",
+        "ru_ru": "Палестинские территории",
+        "uk_ua": "Палестинські території",
+        "ar_sa": "الأراضي الفلسطينية",
+        "cs_cz": "Palestinská území",
+        "ro_ro": "Teritoriile Palestiniene",
+        "el_gr": "Παλαιστινιακά Εδάφη",
+        "sr_rs": "Палестинске територије"
+      }
+    },
+    {
+      "code": "PA",
+      "country": "Panama",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-pa.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-pa.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "North America",
+      "candidate": true,
+      "names": {
+        "en_gb": "Panama",
+        "de_de": "Panama",
+        "fr_fr": "Panama",
+        "es_es": "Panamá",
+        "it_it": "Panama",
+        "pt_pt": "Panamá",
+        "pt_br": "Panamá",
+        "nl_nl": "Panama",
+        "pl_pl": "Panama",
+        "tr_tr": "Panama",
+        "ru_ru": "Панама",
+        "uk_ua": "Панама",
+        "ar_sa": "بنما",
+        "cs_cz": "Panama",
+        "ro_ro": "Panama",
+        "el_gr": "Παναμάς",
+        "sr_rs": "Панама"
+      }
+    },
+    {
+      "code": "PG",
+      "country": "Papua-Neuguinea",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Oceania",
+      "candidate": false,
+      "names": {
+        "en_gb": "Papua New Guinea",
+        "de_de": "Papua-Neuguinea",
+        "fr_fr": "Papouasie-Nouvelle-Guinée",
+        "es_es": "Papúa Nueva Guinea",
+        "it_it": "Papua Nuova Guinea",
+        "pt_pt": "Papua-Nova Guiné",
+        "pt_br": "Papua-Nova Guiné",
+        "nl_nl": "Papoea-Nieuw-Guinea",
+        "pl_pl": "Papua-Nowa Gwinea",
+        "tr_tr": "Papua Yeni Gine",
+        "ru_ru": "Папуа — Новая Гвинея",
+        "uk_ua": "Папуа-Нова Гвінея",
+        "ar_sa": "بابوا غينيا الجديدة",
+        "cs_cz": "Papua-Nová Guinea",
+        "ro_ro": "Papua-Noua Guinee",
+        "el_gr": "Παπούα Νέα Γουινέα",
+        "sr_rs": "Папуа Нова Гвинеја"
+      }
+    },
+    {
+      "code": "PY",
+      "country": "Paraguay",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-py.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-py.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "South America",
+      "candidate": true,
+      "names": {
+        "en_gb": "Paraguay",
+        "de_de": "Paraguay",
+        "fr_fr": "Paraguay",
+        "es_es": "Paraguay",
+        "it_it": "Paraguay",
+        "pt_pt": "Paraguai",
+        "pt_br": "Paraguai",
+        "nl_nl": "Paraguay",
+        "pl_pl": "Paragwaj",
+        "tr_tr": "Paraguay",
+        "ru_ru": "Парагвай",
+        "uk_ua": "Парагвай",
+        "ar_sa": "باراغواي",
+        "cs_cz": "Paraguay",
+        "ro_ro": "Paraguay",
+        "el_gr": "Παραγουάη",
+        "sr_rs": "Парагвај"
+      }
+    },
+    {
+      "code": "PE",
+      "country": "Peru",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-pe.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-pe.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "South America",
+      "candidate": true,
+      "names": {
+        "en_gb": "Peru",
+        "de_de": "Peru",
+        "fr_fr": "Pérou",
+        "es_es": "Perú",
+        "it_it": "Perù",
+        "pt_pt": "Peru",
+        "pt_br": "Peru",
+        "nl_nl": "Peru",
+        "pl_pl": "Peru",
+        "tr_tr": "Peru",
+        "ru_ru": "Перу",
+        "uk_ua": "Перу",
+        "ar_sa": "بيرو",
+        "cs_cz": "Peru",
+        "ro_ro": "Peru",
+        "el_gr": "Περού",
+        "sr_rs": "Перу"
+      }
+    },
+    {
+      "code": "PH",
+      "country": "Philippinen",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/ph.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Asia",
+      "candidate": true,
+      "names": {
+        "en_gb": "Philippines",
+        "de_de": "Philippinen",
+        "fr_fr": "Philippines",
+        "es_es": "Filipinas",
+        "it_it": "Filippine",
+        "pt_pt": "Filipinas",
+        "pt_br": "Filipinas",
+        "nl_nl": "Filipijnen",
+        "pl_pl": "Filipiny",
+        "tr_tr": "Filipinler",
+        "ru_ru": "Филиппины",
+        "uk_ua": "Філіппіни",
+        "ar_sa": "الفلبين",
+        "cs_cz": "Filipíny",
+        "ro_ro": "Filipine",
+        "el_gr": "Φιλιππίνες",
+        "sr_rs": "Филипини"
+      }
+    },
+    {
+      "code": "PL",
+      "country": "Polen",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-pl.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-pl.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Poland",
+        "de_de": "Polen",
+        "fr_fr": "Pologne",
+        "es_es": "Polonia",
+        "it_it": "Polonia",
+        "pt_pt": "Polónia",
+        "pt_br": "Polônia",
+        "nl_nl": "Polen",
+        "pl_pl": "Polska",
+        "tr_tr": "Polonya",
+        "ru_ru": "Польша",
+        "uk_ua": "Польща",
+        "ar_sa": "بولندا",
+        "cs_cz": "Polsko",
+        "ro_ro": "Polonia",
+        "el_gr": "Πολωνία",
+        "sr_rs": "Пољска"
+      }
+    },
+    {
+      "code": "PT",
+      "country": "Portugal",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-pt.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-pt.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Portugal",
+        "de_de": "Portugal",
+        "fr_fr": "Portugal",
+        "es_es": "Portugal",
+        "it_it": "Portogallo",
+        "pt_pt": "Portugal",
+        "pt_br": "Portugal",
+        "nl_nl": "Portugal",
+        "pl_pl": "Portugalia",
+        "tr_tr": "Portekiz",
+        "ru_ru": "Португалия",
+        "uk_ua": "Португалія",
+        "ar_sa": "البرتغال",
+        "cs_cz": "Portugalsko",
+        "ro_ro": "Portugalia",
+        "el_gr": "Πορτογαλία",
+        "sr_rs": "Португалија"
+      }
+    },
+    {
+      "code": "PR",
+      "country": "Puerto Rico",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/pr.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "North America",
+      "candidate": true,
+      "names": {
+        "en_gb": "Puerto Rico",
+        "de_de": "Puerto Rico",
+        "fr_fr": "Porto Rico",
+        "es_es": "Puerto Rico",
+        "it_it": "Portorico",
+        "pt_pt": "Porto Rico",
+        "pt_br": "Porto Rico",
+        "nl_nl": "Puerto Rico",
+        "pl_pl": "Portoryko",
+        "tr_tr": "Porto Riko",
+        "ru_ru": "Пуэрто-Рико",
+        "uk_ua": "Пуерто-Рико",
+        "ar_sa": "بورتوريكو",
+        "cs_cz": "Portoriko",
+        "ro_ro": "Puerto Rico",
+        "el_gr": "Πουέρτο Ρίκο",
+        "sr_rs": "Порторико"
+      }
+    },
+    {
+      "code": "RW",
+      "country": "Ruanda",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Africa",
+      "candidate": false,
+      "names": {
+        "en_gb": "Rwanda",
+        "de_de": "Ruanda",
+        "fr_fr": "Rwanda",
+        "es_es": "Ruanda",
+        "it_it": "Ruanda",
+        "pt_pt": "Ruanda",
+        "pt_br": "Ruanda",
+        "nl_nl": "Rwanda",
+        "pl_pl": "Rwanda",
+        "tr_tr": "Ruanda",
+        "ru_ru": "Руанда",
+        "uk_ua": "Руанда",
+        "ar_sa": "رواندا",
+        "cs_cz": "Rwanda",
+        "ro_ro": "Rwanda",
+        "el_gr": "Ρουάντα",
+        "sr_rs": "Руанда"
+      }
+    },
+    {
+      "code": "RO",
+      "country": "Rumänien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ro.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ro.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Romania",
+        "de_de": "Rumänien",
+        "fr_fr": "Roumanie",
+        "es_es": "Rumanía",
+        "it_it": "Romania",
+        "pt_pt": "Roménia",
+        "pt_br": "Romênia",
+        "nl_nl": "Roemenië",
+        "pl_pl": "Rumunia",
+        "tr_tr": "Romanya",
+        "ru_ru": "Румыния",
+        "uk_ua": "Румунія",
+        "ar_sa": "رومانيا",
+        "cs_cz": "Rumunsko",
+        "ro_ro": "România",
+        "el_gr": "Ρουμανία",
+        "sr_rs": "Румунија"
+      }
+    },
+    {
+      "code": "RU",
+      "country": "Russland",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ru.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ru.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Russia",
+        "de_de": "Russland",
+        "fr_fr": "Russie",
+        "es_es": "Rusia",
+        "it_it": "Russia",
+        "pt_pt": "Rússia",
+        "pt_br": "Rússia",
+        "nl_nl": "Rusland",
+        "pl_pl": "Rosja",
+        "tr_tr": "Rusya",
+        "ru_ru": "Россия",
+        "uk_ua": "Росія",
+        "ar_sa": "روسيا",
+        "cs_cz": "Rusko",
+        "ro_ro": "Rusia",
+        "el_gr": "Ρωσία",
+        "sr_rs": "Русија"
+      }
+    },
+    {
+      "code": "SB",
+      "country": "Salomonen",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Oceania",
+      "candidate": false,
+      "names": {
+        "en_gb": "Solomon Islands",
+        "de_de": "Salomonen",
+        "fr_fr": "Îles Salomon",
+        "es_es": "Islas Salomón",
+        "it_it": "Isole Salomone",
+        "pt_pt": "Ilhas Salomão",
+        "pt_br": "Ilhas Salomão",
+        "nl_nl": "Salomonseilanden",
+        "pl_pl": "Wyspy Salomona",
+        "tr_tr": "Solomon Adaları",
+        "ru_ru": "Соломоновы о-ва",
+        "uk_ua": "Соломонові Острови",
+        "ar_sa": "جزر سليمان",
+        "cs_cz": "Šalamounovy ostrovy",
+        "ro_ro": "Insulele Solomon",
+        "el_gr": "Νήσοι Σολομώντος",
+        "sr_rs": "Соломонска Острва"
+      }
+    },
+    {
+      "code": "SA",
+      "country": "Saudi-Arabien",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/sa.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Asia",
+      "candidate": true,
+      "names": {
+        "en_gb": "Saudi Arabia",
+        "de_de": "Saudi-Arabien",
+        "fr_fr": "Arabie saoudite",
+        "es_es": "Arabia Saudí",
+        "it_it": "Arabia Saudita",
+        "pt_pt": "Arábia Saudita",
+        "pt_br": "Arábia Saudita",
+        "nl_nl": "Saoedi-Arabië",
+        "pl_pl": "Arabia Saudyjska",
+        "tr_tr": "Suudi Arabistan",
+        "ru_ru": "Саудовская Аравия",
+        "uk_ua": "Саудівська Аравія",
+        "ar_sa": "المملكة العربية السعودية",
+        "cs_cz": "Saúdská Arábie",
+        "ro_ro": "Arabia Saudită",
+        "el_gr": "Σαουδική Αραβία",
+        "sr_rs": "Саудијска Арабија"
+      }
+    },
+    {
+      "code": "SE",
+      "country": "Schweden",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-se.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-se.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Sweden",
+        "de_de": "Schweden",
+        "fr_fr": "Suède",
+        "es_es": "Suecia",
+        "it_it": "Svezia",
+        "pt_pt": "Suécia",
+        "pt_br": "Suécia",
+        "nl_nl": "Zweden",
+        "pl_pl": "Szwecja",
+        "tr_tr": "İsveç",
+        "ru_ru": "Швеция",
+        "uk_ua": "Швеція",
+        "ar_sa": "السويد",
+        "cs_cz": "Švédsko",
+        "ro_ro": "Suedia",
+        "el_gr": "Σουηδία",
+        "sr_rs": "Шведска"
+      }
+    },
+    {
+      "code": "CH",
+      "country": "Schweiz",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ch.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ch.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Switzerland",
+        "de_de": "Schweiz",
+        "fr_fr": "Suisse",
+        "es_es": "Suiza",
+        "it_it": "Svizzera",
+        "pt_pt": "Suíça",
+        "pt_br": "Suíça",
+        "nl_nl": "Zwitserland",
+        "pl_pl": "Szwajcaria",
+        "tr_tr": "İsviçre",
+        "ru_ru": "Швейцария",
+        "uk_ua": "Швейцарія",
+        "ar_sa": "سويسرا",
+        "cs_cz": "Švýcarsko",
+        "ro_ro": "Elveția",
+        "el_gr": "Ελβετία",
+        "sr_rs": "Швајцарска"
+      }
+    },
+    {
+      "code": "RS",
+      "country": "Serbien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-rs.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-rs.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Serbia",
+        "de_de": "Serbien",
+        "fr_fr": "Serbie",
+        "es_es": "Serbia",
+        "it_it": "Serbia",
+        "pt_pt": "Sérvia",
+        "pt_br": "Sérvia",
+        "nl_nl": "Servië",
+        "pl_pl": "Serbia",
+        "tr_tr": "Sırbistan",
+        "ru_ru": "Сербия",
+        "uk_ua": "Сербія",
+        "ar_sa": "صربيا",
+        "cs_cz": "Srbsko",
+        "ro_ro": "Serbia",
+        "el_gr": "Σερβία",
+        "sr_rs": "Србија"
+      }
+    },
+    {
+      "code": "SC",
+      "country": "Seychellen",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Africa",
+      "candidate": false,
+      "names": {
+        "en_gb": "Seychelles",
+        "de_de": "Seychellen",
+        "fr_fr": "Seychelles",
+        "es_es": "Seychelles",
+        "it_it": "Seychelles",
+        "pt_pt": "Seicheles",
+        "pt_br": "Seicheles",
+        "nl_nl": "Seychellen",
+        "pl_pl": "Seszele",
+        "tr_tr": "Seyşeller",
+        "ru_ru": "Сейшельские о-ва",
+        "uk_ua": "Сейшельські Острови",
+        "ar_sa": "سيشل",
+        "cs_cz": "Seychely",
+        "ro_ro": "Seychelles",
+        "el_gr": "Σεϋχέλλες",
+        "sr_rs": "Сејшели"
+      }
+    },
+    {
+      "code": "SL",
+      "country": "Sierra Leone",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Africa",
+      "candidate": false,
+      "names": {
+        "en_gb": "Sierra Leone",
+        "de_de": "Sierra Leone",
+        "fr_fr": "Sierra Leone",
+        "es_es": "Sierra Leona",
+        "it_it": "Sierra Leone",
+        "pt_pt": "Serra Leoa",
+        "pt_br": "Serra Leoa",
+        "nl_nl": "Sierra Leone",
+        "pl_pl": "Sierra Leone",
+        "tr_tr": "Sierra Leone",
+        "ru_ru": "Сьерра-Леоне",
+        "uk_ua": "Сьєрра-Леоне",
+        "ar_sa": "سيراليون",
+        "cs_cz": "Sierra Leone",
+        "ro_ro": "Sierra Leone",
+        "el_gr": "Σιέρα Λεόνε",
+        "sr_rs": "Сијера Леоне"
+      }
+    },
+    {
+      "code": "ZW",
+      "country": "Simbabwe",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-zw.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-zw.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Africa",
+      "candidate": true,
+      "names": {
+        "en_gb": "Zimbabwe",
+        "de_de": "Simbabwe",
+        "fr_fr": "Zimbabwe",
+        "es_es": "Zimbabue",
+        "it_it": "Zimbabwe",
+        "pt_pt": "Zimbabué",
+        "pt_br": "Zimbábue",
+        "nl_nl": "Zimbabwe",
+        "pl_pl": "Zimbabwe",
+        "tr_tr": "Zimbabve",
+        "ru_ru": "Зимбабве",
+        "uk_ua": "Зімбабве",
+        "ar_sa": "زيمبابوي",
+        "cs_cz": "Zimbabwe",
+        "ro_ro": "Zimbabwe",
+        "el_gr": "Ζιμπάμπουε",
+        "sr_rs": "Зимбабве"
+      }
+    },
+    {
+      "code": "SG",
+      "country": "Singapur",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-sg.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-sg.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Asia",
+      "candidate": true,
+      "names": {
+        "en_gb": "Singapore",
+        "de_de": "Singapur",
+        "fr_fr": "Singapour",
+        "es_es": "Singapur",
+        "it_it": "Singapore",
+        "pt_pt": "Singapura",
+        "pt_br": "Singapura",
+        "nl_nl": "Singapore",
+        "pl_pl": "Singapur",
+        "tr_tr": "Singapur",
+        "ru_ru": "Сингапур",
+        "uk_ua": "Сінгапур",
+        "ar_sa": "سنغافورة",
+        "cs_cz": "Singapur",
+        "ro_ro": "Singapore",
+        "el_gr": "Σιγκαπούρη",
+        "sr_rs": "Сингапур"
+      }
+    },
+    {
+      "code": "SK",
+      "country": "Slowakei",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/sk.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Slovakia",
+        "de_de": "Slowakei",
+        "fr_fr": "Slovaquie",
+        "es_es": "Eslovaquia",
+        "it_it": "Slovacchia",
+        "pt_pt": "Eslováquia",
+        "pt_br": "Eslováquia",
+        "nl_nl": "Slowakije",
+        "pl_pl": "Słowacja",
+        "tr_tr": "Slovakya",
+        "ru_ru": "Словакия",
+        "uk_ua": "Словаччина",
+        "ar_sa": "سلوفاكيا",
+        "cs_cz": "Slovensko",
+        "ro_ro": "Slovacia",
+        "el_gr": "Σλοβακία",
+        "sr_rs": "Словачка"
+      }
+    },
+    {
+      "code": "SI",
+      "country": "Slowenien",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/si.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Slovenia",
+        "de_de": "Slowenien",
+        "fr_fr": "Slovénie",
+        "es_es": "Eslovenia",
+        "it_it": "Slovenia",
+        "pt_pt": "Eslovénia",
+        "pt_br": "Eslovênia",
+        "nl_nl": "Slovenië",
+        "pl_pl": "Słowenia",
+        "tr_tr": "Slovenya",
+        "ru_ru": "Словения",
+        "uk_ua": "Словенія",
+        "ar_sa": "سلوفينيا",
+        "cs_cz": "Slovinsko",
+        "ro_ro": "Slovenia",
+        "el_gr": "Σλοβενία",
+        "sr_rs": "Словенија"
+      }
+    },
+    {
+      "code": "ES",
+      "country": "Spanien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-es.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-es.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Spain",
+        "de_de": "Spanien",
+        "fr_fr": "Espagne",
+        "es_es": "España",
+        "it_it": "Spagna",
+        "pt_pt": "Espanha",
+        "pt_br": "Espanha",
+        "nl_nl": "Spanje",
+        "pl_pl": "Hiszpania",
+        "tr_tr": "İspanya",
+        "ru_ru": "Испания",
+        "uk_ua": "Іспанія",
+        "ar_sa": "إسبانيا",
+        "cs_cz": "Španělsko",
+        "ro_ro": "Spania",
+        "el_gr": "Ισπανία",
+        "sr_rs": "Шпанија"
+      }
+    },
+    {
+      "code": "LK",
+      "country": "Sri Lanka",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/lk.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Asia",
+      "candidate": true,
+      "names": {
+        "en_gb": "Sri Lanka",
+        "de_de": "Sri Lanka",
+        "fr_fr": "Sri Lanka",
+        "es_es": "Sri Lanka",
+        "it_it": "Sri Lanka",
+        "pt_pt": "Sri Lanca",
+        "pt_br": "Sri Lanka",
+        "nl_nl": "Sri Lanka",
+        "pl_pl": "Sri Lanka",
+        "tr_tr": "Sri Lanka",
+        "ru_ru": "Шри-Ланка",
+        "uk_ua": "Шрі-Ланка",
+        "ar_sa": "سريلانكا",
+        "cs_cz": "Srí Lanka",
+        "ro_ro": "Sri Lanka",
+        "el_gr": "Σρι Λάνκα",
+        "sr_rs": "Шри Ланка"
+      }
+    },
+    {
+      "code": "LC",
+      "country": "St. Lucia",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "North America",
+      "candidate": false,
+      "names": {
+        "en_gb": "St Lucia",
+        "de_de": "St. Lucia",
+        "fr_fr": "Sainte-Lucie",
+        "es_es": "Santa Lucía",
+        "it_it": "Saint Lucia",
+        "pt_pt": "Santa Lúcia",
+        "pt_br": "Santa Lúcia",
+        "nl_nl": "Saint Lucia",
+        "pl_pl": "Saint Lucia",
+        "tr_tr": "Saint Lucia",
+        "ru_ru": "Сент-Люсия",
+        "uk_ua": "Сент-Люсія",
+        "ar_sa": "سانت لوسيا",
+        "cs_cz": "Svatá Lucie",
+        "ro_ro": "Sfânta Lucia",
+        "el_gr": "Αγία Λουκία",
+        "sr_rs": "Света Луција"
+      }
+    },
+    {
+      "code": "ZA",
+      "country": "Südafrika",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-za.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-za.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Africa",
+      "candidate": true,
+      "names": {
+        "en_gb": "South Africa",
+        "de_de": "Südafrika",
+        "fr_fr": "Afrique du Sud",
+        "es_es": "Sudáfrica",
+        "it_it": "Sudafrica",
+        "pt_pt": "África do Sul",
+        "pt_br": "África do Sul",
+        "nl_nl": "Zuid-Afrika",
+        "pl_pl": "Republika Południowej Afryki",
+        "tr_tr": "Güney Afrika",
+        "ru_ru": "Южно-Африканская Республика",
+        "uk_ua": "Південно-Африканська Республіка",
+        "ar_sa": "جنوب أفريقيا",
+        "cs_cz": "Jihoafrická republika",
+        "ro_ro": "Africa de Sud",
+        "el_gr": "Νότια Αφρική",
+        "sr_rs": "Јужноафричка Република"
+      }
+    },
+    {
+      "code": "KR",
+      "country": "Südkorea",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/kr.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Asia",
+      "candidate": true,
+      "names": {
+        "en_gb": "South Korea",
+        "de_de": "Südkorea",
+        "fr_fr": "Corée du Sud",
+        "es_es": "Corea del Sur",
+        "it_it": "Corea del Sud",
+        "pt_pt": "Coreia do Sul",
+        "pt_br": "Coreia do Sul",
+        "nl_nl": "Zuid-Korea",
+        "pl_pl": "Korea Południowa",
+        "tr_tr": "Güney Kore",
+        "ru_ru": "Республика Корея",
+        "uk_ua": "Південна Корея",
+        "ar_sa": "كوريا الجنوبية",
+        "cs_cz": "Jižní Korea",
+        "ro_ro": "Coreea de Sud",
+        "el_gr": "Νότια Κορέα",
+        "sr_rs": "Јужна Кореја"
+      }
+    },
+    {
+      "code": "SY",
+      "country": "Syrien",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Asia",
+      "candidate": false,
+      "names": {
+        "en_gb": "Syria",
+        "de_de": "Syrien",
+        "fr_fr": "Syrie",
+        "es_es": "Siria",
+        "it_it": "Siria",
+        "pt_pt": "Síria",
+        "pt_br": "Síria",
+        "nl_nl": "Syrië",
+        "pl_pl": "Syria",
+        "tr_tr": "Suriye",
+        "ru_ru": "Сирия",
+        "uk_ua": "Сирія",
+        "ar_sa": "سوريا",
+        "cs_cz": "Sýrie",
+        "ro_ro": "Siria",
+        "el_gr": "Συρία",
+        "sr_rs": "Сирија"
+      }
+    },
+    {
+      "code": "TW",
+      "country": "Taiwan",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-tw.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-tw.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Asia",
+      "candidate": true,
+      "names": {
+        "en_gb": "Taiwan",
+        "de_de": "Taiwan",
+        "fr_fr": "Taïwan",
+        "es_es": "Taiwán",
+        "it_it": "Taiwan",
+        "pt_pt": "Taiwan",
+        "pt_br": "Taiwan",
+        "nl_nl": "Taiwan",
+        "pl_pl": "Tajwan",
+        "tr_tr": "Tayvan",
+        "ru_ru": "Тайвань",
+        "uk_ua": "Тайвань",
+        "ar_sa": "تايوان",
+        "cs_cz": "Tchaj-wan",
+        "ro_ro": "Taiwan",
+        "el_gr": "Ταϊβάν",
+        "sr_rs": "Тајван"
+      }
+    },
+    {
+      "code": "TZ",
+      "country": "Tansania",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Africa",
+      "candidate": false,
+      "names": {
+        "en_gb": "Tanzania",
+        "de_de": "Tansania",
+        "fr_fr": "Tanzanie",
+        "es_es": "Tanzania",
+        "it_it": "Tanzania",
+        "pt_pt": "Tanzânia",
+        "pt_br": "Tanzânia",
+        "nl_nl": "Tanzania",
+        "pl_pl": "Tanzania",
+        "tr_tr": "Tanzanya",
+        "ru_ru": "Танзания",
+        "uk_ua": "Танзанія",
+        "ar_sa": "تنزانيا",
+        "cs_cz": "Tanzanie",
+        "ro_ro": "Tanzania",
+        "el_gr": "Τανζανία",
+        "sr_rs": "Танзанија"
+      }
+    },
+    {
+      "code": "TH",
+      "country": "Thailand",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-th.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-th.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Asia",
+      "candidate": true,
+      "names": {
+        "en_gb": "Thailand",
+        "de_de": "Thailand",
+        "fr_fr": "Thaïlande",
+        "es_es": "Tailandia",
+        "it_it": "Thailandia",
+        "pt_pt": "Tailândia",
+        "pt_br": "Tailândia",
+        "nl_nl": "Thailand",
+        "pl_pl": "Tajlandia",
+        "tr_tr": "Tayland",
+        "ru_ru": "Таиланд",
+        "uk_ua": "Таїланд",
+        "ar_sa": "تايلاند",
+        "cs_cz": "Thajsko",
+        "ro_ro": "Thailanda",
+        "el_gr": "Ταϊλάνδη",
+        "sr_rs": "Тајланд"
+      }
+    },
+    {
+      "code": "TO",
+      "country": "Tonga",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Oceania",
+      "candidate": false,
+      "names": {
+        "en_gb": "Tonga",
+        "de_de": "Tonga",
+        "fr_fr": "Tonga",
+        "es_es": "Tonga",
+        "it_it": "Tonga",
+        "pt_pt": "Tonga",
+        "pt_br": "Tonga",
+        "nl_nl": "Tonga",
+        "pl_pl": "Tonga",
+        "tr_tr": "Tonga",
+        "ru_ru": "Тонга",
+        "uk_ua": "Тонга",
+        "ar_sa": "تونغا",
+        "cs_cz": "Tonga",
+        "ro_ro": "Tonga",
+        "el_gr": "Τόνγκα",
+        "sr_rs": "Тонга"
+      }
+    },
+    {
+      "code": "TT",
+      "country": "Trinidad und Tobago",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/tt.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "North America",
+      "candidate": true,
+      "names": {
+        "en_gb": "Trinidad & Tobago",
+        "de_de": "Trinidad und Tobago",
+        "fr_fr": "Trinité-et-Tobago",
+        "es_es": "Trinidad y Tobago",
+        "it_it": "Trinidad e Tobago",
+        "pt_pt": "Trindade e Tobago",
+        "pt_br": "Trinidad e Tobago",
+        "nl_nl": "Trinidad en Tobago",
+        "pl_pl": "Trynidad i Tobago",
+        "tr_tr": "Trinidad ve Tobago",
+        "ru_ru": "Тринидад и Тобаго",
+        "uk_ua": "Тринідад і Тобаго",
+        "ar_sa": "ترينيداد وتوباغو",
+        "cs_cz": "Trinidad a Tobago",
+        "ro_ro": "Trinidad și Tobago",
+        "el_gr": "Τρινιντάντ και Τομπάγκο",
+        "sr_rs": "Тринидад и Тобаго"
+      }
+    },
+    {
+      "code": "CZ",
+      "country": "Tschechien",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-cz.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-cz.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Czechia",
+        "de_de": "Tschechien",
+        "fr_fr": "Tchéquie",
+        "es_es": "Chequia",
+        "it_it": "Cechia",
+        "pt_pt": "Chéquia",
+        "pt_br": "Tchéquia",
+        "nl_nl": "Tsjechië",
+        "pl_pl": "Czechy",
+        "tr_tr": "Çekya",
+        "ru_ru": "Чехия",
+        "uk_ua": "Чехія",
+        "ar_sa": "التشيك",
+        "cs_cz": "Česko",
+        "ro_ro": "Cehia",
+        "el_gr": "Τσεχία",
+        "sr_rs": "Чешка"
+      }
+    },
+    {
+      "code": "TN",
+      "country": "Tunesien",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Africa",
+      "candidate": false,
+      "names": {
+        "en_gb": "Tunisia",
+        "de_de": "Tunesien",
+        "fr_fr": "Tunisie",
+        "es_es": "Túnez",
+        "it_it": "Tunisia",
+        "pt_pt": "Tunísia",
+        "pt_br": "Tunísia",
+        "nl_nl": "Tunesië",
+        "pl_pl": "Tunezja",
+        "tr_tr": "Tunus",
+        "ru_ru": "Тунис",
+        "uk_ua": "Туніс",
+        "ar_sa": "تونس",
+        "cs_cz": "Tunisko",
+        "ro_ro": "Tunisia",
+        "el_gr": "Τυνησία",
+        "sr_rs": "Тунис"
+      }
+    },
+    {
+      "code": "TR",
+      "country": "Türkei",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-tr.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-tr.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Asia",
+      "candidate": true,
+      "names": {
+        "en_gb": "Türkiye",
+        "de_de": "Türkei",
+        "fr_fr": "Turquie",
+        "es_es": "Turquía",
+        "it_it": "Turchia",
+        "pt_pt": "Turquia",
+        "pt_br": "Turquia",
+        "nl_nl": "Turkije",
+        "pl_pl": "Turcja",
+        "tr_tr": "Türkiye",
+        "ru_ru": "Турция",
+        "uk_ua": "Туреччина",
+        "ar_sa": "تركيا",
+        "cs_cz": "Turecko",
+        "ro_ro": "Turcia",
+        "el_gr": "Τουρκία",
+        "sr_rs": "Турска"
+      }
+    },
+    {
+      "code": "UG",
+      "country": "Uganda",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ug.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ug.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Africa",
+      "candidate": true,
+      "names": {
+        "en_gb": "Uganda",
+        "de_de": "Uganda",
+        "fr_fr": "Ouganda",
+        "es_es": "Uganda",
+        "it_it": "Uganda",
+        "pt_pt": "Uganda",
+        "pt_br": "Uganda",
+        "nl_nl": "Oeganda",
+        "pl_pl": "Uganda",
+        "tr_tr": "Uganda",
+        "ru_ru": "Уганда",
+        "uk_ua": "Уганда",
+        "ar_sa": "أوغندا",
+        "cs_cz": "Uganda",
+        "ro_ro": "Uganda",
+        "el_gr": "Ουγκάντα",
+        "sr_rs": "Уганда"
+      }
+    },
+    {
+      "code": "UA",
+      "country": "Ukraine",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/ua.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Ukraine",
+        "de_de": "Ukraine",
+        "fr_fr": "Ukraine",
+        "es_es": "Ucrania",
+        "it_it": "Ucraina",
+        "pt_pt": "Ucrânia",
+        "pt_br": "Ucrânia",
+        "nl_nl": "Oekraïne",
+        "pl_pl": "Ukraina",
+        "tr_tr": "Ukrayna",
+        "ru_ru": "Украина",
+        "uk_ua": "Україна",
+        "ar_sa": "أوكرانيا",
+        "cs_cz": "Ukrajina",
+        "ro_ro": "Ucraina",
+        "el_gr": "Ουκρανία",
+        "sr_rs": "Украјина"
+      }
+    },
+    {
+      "code": "HU",
+      "country": "Ungarn",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-hu.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-hu.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Hungary",
+        "de_de": "Ungarn",
+        "fr_fr": "Hongrie",
+        "es_es": "Hungría",
+        "it_it": "Ungheria",
+        "pt_pt": "Hungria",
+        "pt_br": "Hungria",
+        "nl_nl": "Hongarije",
+        "pl_pl": "Węgry",
+        "tr_tr": "Macaristan",
+        "ru_ru": "Венгрия",
+        "uk_ua": "Угорщина",
+        "ar_sa": "هنغاريا",
+        "cs_cz": "Maďarsko",
+        "ro_ro": "Ungaria",
+        "el_gr": "Ουγγαρία",
+        "sr_rs": "Мађарска"
+      }
+    },
+    {
+      "code": "UY",
+      "country": "Uruguay",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-uy.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-uy.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "South America",
+      "candidate": true,
+      "names": {
+        "en_gb": "Uruguay",
+        "de_de": "Uruguay",
+        "fr_fr": "Uruguay",
+        "es_es": "Uruguay",
+        "it_it": "Uruguay",
+        "pt_pt": "Uruguai",
+        "pt_br": "Uruguai",
+        "nl_nl": "Uruguay",
+        "pl_pl": "Urugwaj",
+        "tr_tr": "Uruguay",
+        "ru_ru": "Уругвай",
+        "uk_ua": "Уругвай",
+        "ar_sa": "أوروغواي",
+        "cs_cz": "Uruguay",
+        "ro_ro": "Uruguay",
+        "el_gr": "Ουρουγουάη",
+        "sr_rs": "Уругвај"
+      }
+    },
+    {
+      "code": "US",
+      "country": "USA",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-us.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-us.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "North America",
+      "candidate": true,
+      "names": {
+        "en_gb": "United States",
+        "de_de": "Vereinigte Staaten",
+        "fr_fr": "États-Unis",
+        "es_es": "Estados Unidos",
+        "it_it": "Stati Uniti",
+        "pt_pt": "Estados Unidos",
+        "pt_br": "Estados Unidos",
+        "nl_nl": "Verenigde Staten",
+        "pl_pl": "Stany Zjednoczone",
+        "tr_tr": "Amerika Birleşik Devletleri",
+        "ru_ru": "Соединенные Штаты",
+        "uk_ua": "Сполучені Штати",
+        "ar_sa": "الولايات المتحدة",
+        "cs_cz": "Spojené státy",
+        "ro_ro": "Statele Unite ale Americii",
+        "el_gr": "Ηνωμένες Πολιτείες",
+        "sr_rs": "Сједињене Државе"
+      }
+    },
+    {
+      "code": "UZ",
+      "country": "Usbekistan",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/uz.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Asia",
+      "candidate": true,
+      "names": {
+        "en_gb": "Uzbekistan",
+        "de_de": "Usbekistan",
+        "fr_fr": "Ouzbékistan",
+        "es_es": "Uzbekistán",
+        "it_it": "Uzbekistan",
+        "pt_pt": "Usbequistão",
+        "pt_br": "Uzbequistão",
+        "nl_nl": "Oezbekistan",
+        "pl_pl": "Uzbekistan",
+        "tr_tr": "Özbekistan",
+        "ru_ru": "Узбекистан",
+        "uk_ua": "Узбекистан",
+        "ar_sa": "أوزبكستان",
+        "cs_cz": "Uzbekistán",
+        "ro_ro": "Uzbekistan",
+        "el_gr": "Ουζμπεκιστάν",
+        "sr_rs": "Узбекистан"
+      }
+    },
+    {
+      "code": "VU",
+      "country": "Vanuatu",
+      "status": "METADATA_PENDING_NO_VERIFIED_FEED",
+      "sources": [],
+      "continent": "Oceania",
+      "candidate": false,
+      "names": {
+        "en_gb": "Vanuatu",
+        "de_de": "Vanuatu",
+        "fr_fr": "Vanuatu",
+        "es_es": "Vanuatu",
+        "it_it": "Vanuatu",
+        "pt_pt": "Vanuatu",
+        "pt_br": "Vanuatu",
+        "nl_nl": "Vanuatu",
+        "pl_pl": "Vanuatu",
+        "tr_tr": "Vanuatu",
+        "ru_ru": "Вануату",
+        "uk_ua": "Вануату",
+        "ar_sa": "فانواتو",
+        "cs_cz": "Vanuatu",
+        "ro_ro": "Vanuatu",
+        "el_gr": "Βανουάτου",
+        "sr_rs": "Вануату"
+      }
+    },
+    {
+      "code": "VE",
+      "country": "Venezuela",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ve.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-ve.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "South America",
+      "candidate": true,
+      "names": {
+        "en_gb": "Venezuela",
+        "de_de": "Venezuela",
+        "fr_fr": "Venezuela",
+        "es_es": "Venezuela",
+        "it_it": "Venezuela",
+        "pt_pt": "Venezuela",
+        "pt_br": "Venezuela",
+        "nl_nl": "Venezuela",
+        "pl_pl": "Wenezuela",
+        "tr_tr": "Venezuela",
+        "ru_ru": "Венесуэла",
+        "uk_ua": "Венесуела",
+        "ar_sa": "فنزويلا",
+        "cs_cz": "Venezuela",
+        "ro_ro": "Venezuela",
+        "el_gr": "Βενεζουέλα",
+        "sr_rs": "Венецуела"
+      }
+    },
+    {
+      "code": "AE",
+      "country": "Vereinigte Arabische Emirate",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/ae.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Asia",
+      "candidate": true,
+      "names": {
+        "en_gb": "United Arab Emirates",
+        "de_de": "Vereinigte Arabische Emirate",
+        "fr_fr": "Émirats arabes unis",
+        "es_es": "Emiratos Árabes Unidos",
+        "it_it": "Emirati Arabi Uniti",
+        "pt_pt": "Emirados Árabes Unidos",
+        "pt_br": "Emirados Árabes Unidos",
+        "nl_nl": "Verenigde Arabische Emiraten",
+        "pl_pl": "Zjednoczone Emiraty Arabskie",
+        "tr_tr": "Birleşik Arap Emirlikleri",
+        "ru_ru": "ОАЭ",
+        "uk_ua": "Обʼєднані Арабські Емірати",
+        "ar_sa": "الإمارات العربية المتحدة",
+        "cs_cz": "Spojené arabské emiráty",
+        "ro_ro": "Emiratele Arabe Unite",
+        "el_gr": "Ηνωμένα Αραβικά Εμιράτα",
+        "sr_rs": "Уједињени Арапски Емирати"
+      }
+    },
+    {
+      "code": "GB",
+      "country": "Vereinigtes Königreich",
+      "status": "LISTED_DIRECT",
+      "sources": [
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-gb.xml",
+          "format": "xml",
+          "verification": "provider_directory",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        },
+        {
+          "provider": "iptv-epg.org",
+          "url": "https://iptv-epg.org/files/epg-gb.xml.gz",
+          "format": "xml.gz",
+          "verification": "provider_button_derived",
+          "directory": "https://iptv-epg.org/guides",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "United Kingdom",
+        "de_de": "Vereinigtes Königreich",
+        "fr_fr": "Royaume-Uni",
+        "es_es": "Reino Unido",
+        "it_it": "Regno Unito",
+        "pt_pt": "Reino Unido",
+        "pt_br": "Reino Unido",
+        "nl_nl": "Verenigd Koninkrijk",
+        "pl_pl": "Wielka Brytania",
+        "tr_tr": "Birleşik Krallık",
+        "ru_ru": "Великобритания",
+        "uk_ua": "Велика Британія",
+        "ar_sa": "المملكة المتحدة",
+        "cs_cz": "Spojené království",
+        "ro_ro": "Regatul Unit",
+        "el_gr": "Ηνωμένο Βασίλειο",
+        "sr_rs": "Уједињено Краљевство"
+      }
+    },
+    {
+      "code": "VN",
+      "country": "Vietnam",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/vn.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Asia",
+      "candidate": true,
+      "names": {
+        "en_gb": "Vietnam",
+        "de_de": "Vietnam",
+        "fr_fr": "Viêt Nam",
+        "es_es": "Vietnam",
+        "it_it": "Vietnam",
+        "pt_pt": "Vietname",
+        "pt_br": "Vietnã",
+        "nl_nl": "Vietnam",
+        "pl_pl": "Wietnam",
+        "tr_tr": "Vietnam",
+        "ru_ru": "Вьетнам",
+        "uk_ua": "Вʼєтнам",
+        "ar_sa": "فيتنام",
+        "cs_cz": "Vietnam",
+        "ro_ro": "Vietnam",
+        "el_gr": "Βιετνάμ",
+        "sr_rs": "Вијетнам"
+      }
+    },
+    {
+      "code": "CY",
+      "country": "Zypern",
+      "status": "PROVIDER_ACTIVE_FEED_LISTED",
+      "sources": [
+        {
+          "provider": "free-epg.de",
+          "url": "https://www.free-epg.de/api/epg/cy.xml.gz",
+          "verification": "official_xmltv_button_observed_body_unverified",
+          "directory": "https://www.free-epg.de/countries",
+          "enabled": false
+        }
+      ],
+      "continent": "Europe",
+      "candidate": true,
+      "names": {
+        "en_gb": "Cyprus",
+        "de_de": "Zypern",
+        "fr_fr": "Chypre",
+        "es_es": "Chipre",
+        "it_it": "Cipro",
+        "pt_pt": "Chipre",
+        "pt_br": "Chipre",
+        "nl_nl": "Cyprus",
+        "pl_pl": "Cypr",
+        "tr_tr": "Kıbrıs",
+        "ru_ru": "Кипр",
+        "uk_ua": "Кіпр",
+        "ar_sa": "قبرص",
+        "cs_cz": "Kypr",
+        "ro_ro": "Cipru",
+        "el_gr": "Κύπρος",
+        "sr_rs": "Кипар"
+      }
+    }
+  ],
+  "verification": "No successful full XMLTV download is asserted. Runtime probe required. FreeEPG terms pending.",
+  "provider_policy": {
+    "iptv-epg.org": {
+      "personal_player_use": true,
+      "reference": "https://iptv-epg.org/guides",
+      "notice": "Provider explicitly offers links for personal IPTV players; no raw feed redistribution."
+    },
+    "free-epg.de": {
+      "personal_player_use": false,
+      "reference": "https://www.free-epg.de/countries",
+      "notice": "Terms review pending; activation blocked."
+    }
+  }
+}

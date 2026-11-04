@@ -90,7 +90,10 @@ def link(router,portal):
             return
         ctx=context(profile,skin);choices=options(ctx,kind,portal['id'])
         already=[v for v in choices if v['state']=='ALREADY_LINKED']
-        if already:xbmcgui.Dialog().ok('XCMate',tr(36406,already[0]['slot']+1));return
+        if already:
+            from widget_repair73 import existing
+            existing(profile,skin,kind,portal['id'],already[0]['slot'])
+            return
         choices=[v for v in choices if v['state']!='ALREADY_LINKED']
         if not choices:xbmcgui.Dialog().ok('XCMate',tr(36407));return
         labels=[tr(36408,v['slot']+1)+(' · '+tr(36409) if v['state']=='UPGRADE_OWN_LIVE' else '') for v in choices]

@@ -56,6 +56,7 @@ def _portal_menu(p: dict):
             'Refresh cache',
             _L(32076),
             'Katalog aktualisieren (Filme / Serien)',
+            __import__('localization').tr(38000),
         ]
         idx = __import__('menu_icons45').select(xbmcgui.Dialog(),f'{_L(32012)}: {name}', options,default='user')
         if idx < 0:
@@ -105,6 +106,9 @@ def _portal_menu(p: dict):
             from vodsync_ui72 import show as update_catalog
             update_catalog(p)
             p = portals.get_by_id(p['id']) or p
+        elif idx == 10:
+            from catalog_ui73 import show
+            show(p)
 def _wizard_add():
     from setup_wizard import setup
     return setup()

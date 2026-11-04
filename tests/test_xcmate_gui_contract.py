@@ -25,6 +25,8 @@ CONSTRUCTORS = {
     'WindowXML': lambda xmlFilename, scriptPath, defaultSkin='Default',
                        defaultRes='720p', isMedia=False: None,
     'Dialog': lambda: None, 'DialogProgress': lambda: None,
+    # Omega Dialog.h; exercised by the real Kodi .73 native contract.
+    'DialogProgressBG': lambda: None,
     'ListItem': lambda label='', label2='', path='', offscreen=False: None,
 }
 DIALOG = {
@@ -110,7 +112,11 @@ class GUIContractTests(unittest.TestCase):
                              'DialogProgress': {'create': lambda heading, message='': None,
                                                 'update': lambda percent, message='': None,
                                                 'close': lambda: None,
-                                                'iscanceled': lambda: None}}.get(kind)
+                                                'iscanceled': lambda: None},
+                             'DialogProgressBG': {'create': lambda heading, message='': None,
+                                                  'update': lambda percent=0, heading='', message='': None,
+                                                  'close': lambda: None,
+                                                  'isFinished': lambda: None}}.get(kind)
                     if isinstance(owner,ast.Call) and isinstance(owner.func,ast.Attribute) and owner.func.attr=='getVideoInfoTag':
                         table=VIDEO_TAG
                     if table is not None:

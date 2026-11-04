@@ -17,9 +17,11 @@ class Scope72(unittest.TestCase):
             self.assertEqual(hashlib.sha256(without_stabilization72((ROOT / path).read_bytes(), path)).hexdigest(), digest, path)
 
     def test_pilot_and_setup_packages_are_not_published_or_modified(self):
-        paths = subprocess.check_output(['git', 'ls-tree', '-r', '--name-only', BASE, 'online-test'], cwd=ROOT).decode().splitlines()
+        # .72 was explicitly published after this archived .71 baseline.
+        channel_base = '3b3a7f57f1f812e670288bbaaab51f7e63bac8ac'
+        paths = subprocess.check_output(['git', 'ls-tree', '-r', '--name-only', channel_base, 'online-test'], cwd=ROOT).decode().splitlines()
         for path in paths:
-            self.assertEqual((ROOT / path).read_bytes(), subprocess.check_output(['git', 'show', BASE + ':' + path], cwd=ROOT), path)
+            self.assertEqual((ROOT / path).read_bytes(), subprocess.check_output(['git', 'show', channel_base + ':' + path], cwd=ROOT), path)
 
     def test_no_live_catalog_or_player_or_installer_repair_path_in_new_modules(self):
         for path in (ROOT / 'src/plugin.video.xtreammate/resources/lib').glob('vodsync*72.py'):

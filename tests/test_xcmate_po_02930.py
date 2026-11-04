@@ -10,9 +10,18 @@ validator=importlib.util.module_from_spec(spec);spec.loader.exec_module(validato
 class Po30Tests(unittest.TestCase):
     def test_all_shipping_catalogs_validate_utf8_and_contexts_match(self):
         catalogs=list((ROOT/'src/plugin.video.xtreammate/resources/language').glob('*/strings.po'))
-        self.assertEqual(len(catalogs),2);contexts=[]
-        for path in catalogs:contexts.append(validator.validate(path.read_bytes().decode('utf-8')))
-        self.assertEqual(contexts[0],contexts[1]);self.assertIn('#34718',contexts[0])
+        # .73 adds 15 deliberately partial catalogs: missing legacy entries
+        # use English, while every new workflow entry must be translated.
+        self.assertEqual(len(catalogs),17)
+        contexts={p.parent.name:validator.validate(p.read_bytes().decode('utf-8')) for p in catalogs}
+        english=contexts['resource.language.en_gb']
+        self.assertEqual(english,contexts['resource.language.de_de'])
+        self.assertIn('#34718',english)
+        workflow={key for key in english if 38000<=int(key[1:])<38100}
+        self.assertEqual(len(workflow),36)
+        for name,keys in contexts.items():
+            self.assertTrue(keys<=english,name)
+            self.assertTrue(workflow<=keys,name)
 
     def test_json_unicode_escape_and_other_unknown_escapes_are_rejected(self):
         for bad in (r'\u2013',r'\U00002013',r'\q'):

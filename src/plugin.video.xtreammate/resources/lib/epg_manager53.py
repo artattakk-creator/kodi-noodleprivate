@@ -14,6 +14,7 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
     @native_init
     def onInit(self):
         self.getControl(101).setLabel('XCMate · EPG-Manager')
+        self.getControl(412).setLabel(__import__('localization').tr(38030))
         for cid,label in [(401,'Quellen hinzufügen'),(402,'Jetzt aktualisieren'),(403,'Aktualisierungsbericht anzeigen'),(404,'Quellenliste'),(405,'Großes EPG / Senderzuordnung'),(406,'Zurück'),(407,'Automatisches Intervall'),(408,'Bericht nach oben'),(409,'Bericht nach unten')]:self.getControl(cid).setLabel(label)
         self._load();self.setFocusId(410 if self.portal.get('type')=='xtream' else 401)
     def _load(self):
@@ -78,7 +79,7 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
         if cid==410:
             self._toggle_provider58()
         elif cid==401:
-            choice=select(xbmcgui.Dialog(),'EPG-Quelle hinzufügen',['Deutschland / Österreich / Schweiz','XMLTV-Adresse','XMLTV-Datei','Zurück'])
+            choice=select(xbmcgui.Dialog(),'EPG-Quelle hinzufügen',['Deutschland / Österreich / Schweiz','XMLTV-Adresse','XMLTV-Datei',__import__('localization').tr(38030),'Zurück'])
             if choice==0:sources._choose_preset(self.portal)
             elif choice in (1,2):
                 uri=xbmcgui.Dialog().input('XMLTV-Adresse (HTTP/HTTPS)') if choice==1 else xbmcgui.Dialog().browse(1,'XMLTV-Datei auswählen','files','.xml|.gz|.xml.gz',False,False,'')
@@ -88,7 +89,11 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
                         from provider_epg58 import add_source
                         add_source(self.portal,name,uri,local=choice==2)
                     except (OSError,ValueError) as exc:xbmcgui.Dialog().ok('XCMate EPG','Diese Adresse ist bereits der Anbieter-EPG. Anbieter-EPG aktivieren und Jetzt aktualisieren wählen.' if str(exc)=='DUPLICATE_PROVIDER_FEED' else 'Quelle nicht hinzugefügt. Adresse, Dateityp und Schreibrechte prüfen.')
+            if choice==3:
+                self.next_action='international73';self.close();return
             self._load()
+        elif cid==412:
+            self.next_action='international73';self.close();return
         elif cid==411 and getattr(self,'_setup_pending54',False):
             self.next_action='resume_epg54';self.close();return
         elif cid==402:
@@ -157,5 +162,8 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
 
 def manage(portal):
     import xbmcaddon
-    w=Manager53('XCMateEPGManager53.xml',xbmcaddon.Addon().getAddonInfo('path'),'Default','720p');w.configure(portal);w.run()
-    return w.next_action
+    while True:
+        w=Manager53('XCMateEPGManager53.xml',xbmcaddon.Addon().getAddonInfo('path'),'Default','720p');w.configure(portal);w.run()
+        if w.next_action!='international73':return w.next_action
+        from international_ui73 import show
+        show(portal)

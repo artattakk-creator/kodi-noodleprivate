@@ -50,20 +50,28 @@ def english():
     return read_catalog(filename)
 
 
-@lru_cache(maxsize=2)
+LANGUAGES = (('de_de','Deutsch'),('en_gb','English'),('kodi',None),
+    ('fr_fr','Français'),('es_es','Español'),('it_it','Italiano'),('pt_pt','Português'),
+    ('pt_br','Português (Brasil)'),('nl_nl','Nederlands'),('pl_pl','Polski'),
+    ('tr_tr','Türkçe'),('ru_ru','Русский'),('uk_ua','Українська'),
+    ('ar_sa','العربية'),('cs_cz','Čeština'),('ro_ro','Română'),
+    ('el_gr','Ελληνικά'),('sr_rs','Српски'))
+
+
+@lru_cache(maxsize=17)
 def bundled(locale):
     if locale=='en_gb': return english()
-    if locale!='de_de': return {}
+    if locale not in dict(LANGUAGES) or locale=='kodi': return {}
     return read_catalog(os.path.join(os.path.dirname(__file__),'..','language',
-                        'resource.language.de_de','strings.po'))
+                        'resource.language.'+locale,'strings.po'))
 
 
 def choose_language():
     import xbmcgui,xbmcaddon
     from utils import setting
-    values=('de_de','en_gb','kodi')
+    values=tuple(k for k,_ in LANGUAGES)
     current=setting('xcmate_ui_language','kodi')
-    choice=__import__('menu_icons45').select(xbmcgui.Dialog(),tr(32620),['Deutsch','English',tr(32621)],
+    choice=__import__('menu_icons45').select(xbmcgui.Dialog(),tr(32620),[label or tr(32621) for _,label in LANGUAGES],
                                 preselect=values.index(current) if current in values else 2,default='globe')
     if 0<=choice<len(values):
         xbmcaddon.Addon().setSetting('xcmate_ui_language',values[choice])

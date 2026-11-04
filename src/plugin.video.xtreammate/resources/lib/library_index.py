@@ -356,6 +356,11 @@ def _sync_note(pid,kind,cid,code,counts=None,exc=None,filename=None):
         with db: db.execute('INSERT OR REPLACE INTO sync_status VALUES(?,?,?,?,?,?,?,?,?)',
             (pid,kind,cid,code,time.time(),counts.get('received',0),counts.get('stored',0),counts.get('discarded',0),
              json.dumps(safe_failure(exc)) if exc else ''))
+        try:
+            name=db.execute('SELECT title FROM groups WHERE pid=? AND kind=? AND cid=?',(pid,kind,cid)).fetchone()
+            from catalog_progress73 import legacy
+            legacy(pid,kind,cid,name[0] if name else cid,code,counts)
+        except Exception:pass
     finally: db.close()
 
 

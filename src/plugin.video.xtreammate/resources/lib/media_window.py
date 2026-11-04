@@ -273,7 +273,9 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         state=reader.state(self.kind)
         revision=(state or {}).get('revision','')
         from catalog_delta import states as delta_states
-        status=delta_states(self.portal['id'],self.kind)+sync_state(self.portal['id'],self.kind)
+        from catalog_status73 import selected_status
+        status=selected_status(self.portal['id'],self.kind,self.category,reader,
+            delta_states(self.portal['id'],self.kind)+sync_state(self.portal['id'],self.kind))
         groups=reader.groups(self.kind) if state else []
         with self._lock:item=dict(self._art_selected) if self._art_selected else None
         if item:
@@ -330,8 +332,8 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
             if status and status[0]['code'] in ('FAILED','CANCELLED'):
                 self.getControl(102).setLabel(tr(32610))
                 if self._catalog_missing: self.getControl(120).setLabel(tr(32611))
-            elif status and status[0]['code'] in ('PENDING','RUNNING'):
-                self.getControl(102).setLabel(tr(32612,status[0]['stored'],status[0]['received']) if status[0].get('received') else tr(35400))
+            elif status and status[0]['code'] in ('PENDING','WAITING','RUNNING'):
+                self.getControl(102).setLabel(tr(32612,status[0]['stored'],status[0]['received']) if status[0].get('received') else tr(38003 if status[0]['code'] in ('PENDING','WAITING') else 38004))
             elif status and status[0]['code']=='EMPTY_SOURCE':
                 self.getControl(102).setLabel(tr(35401))
             elif status and status[0]['code']=='INDEXING':
@@ -444,8 +446,15 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
             if mode=='landing':
                 from utils import setting_int
                 return self.reader.rail(kind,offset=page,limit=PAGE,keep=setting_int('recent_keep',100))
+            from catalog_status73 import ensure_category
+            ensure_category(self.portal,kind,category,reader)
             from media_page43 import read
-            return read(reader,kind,category,page,PAGE,restore=restore)
+            value=read(reader,kind,category,page,PAGE,restore=restore)
+            from catalog_status73 import selected_status
+            from catalog_delta import states
+            from library_index import sync_state
+            value.import_status73=selected_status(self.portal['id'],kind,category,reader,states(self.portal['id'],kind)+sync_state(self.portal['id'],kind))
+            return value
         self._request(load,self._page_ready)
 
     def _page_ready(self,value):
@@ -468,6 +477,13 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
             (tr(32500) if self.mode=='landing' else tr(32501)))
         self._page_status='{}–{} / {}'.format(self.offset+1 if self.rows else 0,self.offset+len(self.rows),self.total)
         if self.mode in ('grid','groups'):self._grid_status()
+        import_status73=getattr(value,'import_status73',[])
+        if import_status73 and not self.rows:
+            code73=import_status73[0]['code']
+            if code73 in ('PENDING','WAITING','RUNNING','INDEXING'):
+                self.getControl(102).setLabel(tr(38004 if code73 in ('RUNNING','INDEXING') else 38003))
+            elif code73 in ('EMPTY_SOURCE','SOURCE_EMPTY'):self.getControl(102).setLabel(tr(35401))
+            elif code73 in ('FAILED','CANCELLED','INTERRUPTED'):self.getControl(102).setLabel(tr(32610))
         if not self.rows and self.mode=='grid':
             self.mode='groups' if self.groups else 'landing';self._show(self.mode)
         target=200 if self.mode=='groups' or self.mode=='grid' and getattr(self,'_category_focus44',False) else cid if self.rows else 120

@@ -1,0 +1,47 @@
+name: XCMate 73 catalog, widgets and optional EPG review
+on:
+  pull_request:
+    paths: ['src/plugin.video.xtreammate/**', 'tests/**', 'tools/*73*', 'tools/kodi_catalog73_host/**', '.github/workflows/catalog73-review.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: catalog73-review-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+jobs:
+  focused-and-native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Native Skinshortcuts reference reader dependency
+        run: python -m pip install 'simpleeval==0.9.13'
+      - name: Catalog HTTP, resume, preservation, widgets, optional feeds and locales
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p "$RUNNER_TEMP/catalog73-review"
+          python -m unittest discover -s tests -p '*02973.py' -v 2>&1 | tee "$RUNNER_TEMP/catalog73-review/tests.txt"
+          python tools/validate_kodi_po.py
+      - name: Deterministic review package, no publication
+        run: |
+          python tools/package_xcmate71.py "$RUNNER_TEMP/catalog73-review" > "$RUNNER_TEMP/catalog73-review/package.json"
+          cmp "$RUNNER_TEMP/catalog73-review/plugin.video.xtreammate-0.1.29.73.zip" docs/XCMate/test-builds/02973/plugin.video.xtreammate-0.1.29.73.zip
+      - name: Native Kodi background progress and input during import
+        run: python tools/run_kodi_catalog73_contract.py --report-dir "$RUNNER_TEMP/catalog73-review/native"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xcmate73-review
+          path: |
+            ${{ runner.temp }}/catalog73-review/*.zip
+            ${{ runner.temp }}/catalog73-review/*.sha256
+            ${{ runner.temp }}/catalog73-review/*.json
+            ${{ runner.temp }}/catalog73-review/*.txt
+            ${{ runner.temp }}/catalog73-review/native/catalog73.json
+          retention-days: 30

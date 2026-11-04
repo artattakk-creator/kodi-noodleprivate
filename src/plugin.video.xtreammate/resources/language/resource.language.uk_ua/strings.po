@@ -1,0 +1,210 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: XCMate\n"
+"Language: uk_ua\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+
+msgctxt "#38000"
+msgid "Update entire catalog"
+msgstr "Оновити весь каталог"
+
+msgctxt "#38002"
+msgid "XCMate · Catalog import"
+msgstr "XCMate · Імпорт каталогу"
+
+msgctxt "#38003"
+msgid "Waiting"
+msgstr "Очікування"
+
+msgctxt "#38004"
+msgid "Import running"
+msgstr "Імпорт триває"
+
+msgctxt "#38005"
+msgid "Completed"
+msgstr "Завершено"
+
+msgctxt "#38006"
+msgid "Failed"
+msgstr "Помилка"
+
+msgctxt "#38007"
+msgid "Interrupted"
+msgstr "Перервано"
+
+msgctxt "#38011"
+msgid "Status and report"
+msgstr "Стан і звіт"
+
+msgctxt "#38012"
+msgid "Resume"
+msgstr "Продовжити"
+
+msgctxt "#38013"
+msgid "Cancel"
+msgstr "Скасувати"
+
+msgctxt "#38014"
+msgid "New job"
+msgstr "Нове завдання"
+
+msgctxt "#38015"
+msgid "An existing job is still active. Resume or cancel it first."
+msgstr "Завдання ще активне. Спочатку продовжте або скасуйте його."
+
+msgctxt "#38016"
+msgid "EPG (optional)"
+msgstr "EPG (необов’язково)"
+
+msgctxt "#38017"
+msgid "Update Live TV, movies and series in the background? Existing data and group selections are retained."
+msgstr "Оновити ТБ, фільми та серіали у фоні? Дані та вибір груп буде збережено."
+
+msgctxt "#38018"
+msgid "Queued: {0}"
+msgstr "У черзі: {0}"
+
+msgctxt "#38019"
+msgid "Diagnostic code: {0}"
+msgstr "Код діагностики: {0}"
+
+msgctxt "#38020"
+msgid "{0} · Group {1} of {2}"
+msgstr "{0} · Група {1} з {2}"
+
+msgctxt "#38021"
+msgid "{0} titles processed"
+msgstr "Оброблено назв: {0}"
+
+msgctxt "#38022"
+msgid "Stored by area: {0}"
+msgstr "Збережено за розділами: {0}"
+
+msgctxt "#38023"
+msgid "Database readback: {0}"
+msgstr "Повторне читання бази: {0}"
+
+msgctxt "#38024"
+msgid "Already linked at position {0}. Status: {1}. Rebuild the existing Home configuration without moving widgets?"
+msgstr "Уже пов’язано з позицією {0}. Стан: {1}. Перебудувати головний екран без переміщення віджетів?"
+
+msgctxt "#38030"
+msgid "International EPG sources"
+msgstr "Міжнародні джерела EPG"
+
+msgctxt "#38031"
+msgid "Unverified · disabled"
+msgstr "Не перевірено · вимкнено"
+
+msgctxt "#38032"
+msgid "No confirmed download source"
+msgstr "Немає підтвердженого джерела завантаження"
+
+msgctxt "#38033"
+msgid "Source verification failed: {0}"
+msgstr "Помилка перевірки джерела: {0}"
+
+msgctxt "#38034"
+msgid "Verify source: {0}"
+msgstr "Перевірити джерело: {0}"
+
+msgctxt "#38035"
+msgid "{0} channels and {1} programmes verified"
+msgstr "Перевірено каналів: {0}, передач: {1}"
+
+msgctxt "#38036"
+msgid "Enable this source ({0} channels, {1} programmes) for personal use? Automatic updates every 24 hours; existing mappings are retained."
+msgstr "Увімкнути джерело ({0} каналів, {1} передач) для особистого використання? Оновлення кожні 24 години; прив’язки буде збережено."
+
+msgctxt "#38037"
+msgid "Source enabled; import requested."
+msgstr "Джерело ввімкнено; імпорт запитано."
+
+msgctxt "#38038"
+msgid "Source enabled; import deferred. See EPG manager."
+msgstr "Джерело ввімкнено; імпорт відкладено. Див. менеджер EPG."
+
+msgctxt "#38040"
+msgid "Europe"
+msgstr "Європа"
+
+msgctxt "#38041"
+msgid "Asia"
+msgstr "Азія"
+
+msgctxt "#38042"
+msgid "Africa"
+msgstr "Африка"
+
+msgctxt "#38043"
+msgid "North America"
+msgstr "Північна Америка"
+
+msgctxt "#38044"
+msgid "South America"
+msgstr "Південна Америка"
+
+msgctxt "#38045"
+msgid "Oceania"
+msgstr "Океанія"
+
+msgctxt "#32400"
+msgid "Start channel"
+msgstr "Початковий канал"
+
+msgctxt "#32401"
+msgid "Live TV"
+msgstr "Прямий ефір"
+
+msgctxt "#32402"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#32403"
+msgid "Movies"
+msgstr "Фільми"
+
+msgctxt "#32404"
+msgid "Series"
+msgstr "Серіали"
+
+msgctxt "#32405"
+msgid "Settings"
+msgstr "Налаштування"
+
+msgctxt "#32406"
+msgid "Accounts & portals"
+msgstr "Облікові записи та портали"
+
+msgctxt "#32407"
+msgid "Start channel & group"
+msgstr "Початковий канал і група"
+
+msgctxt "#32408"
+msgid "Groups & favourites"
+msgstr "Групи та обране"
+
+msgctxt "#32443"
+msgid "Widgets"
+msgstr "Віджети"
+
+msgctxt "#32461"
+msgid "MOVIES"
+msgstr "ФІЛЬМИ"
+
+msgctxt "#32462"
+msgid "SERIES"
+msgstr "СЕРІАЛИ"
+
+msgctxt "#32586"
+msgid "Search"
+msgstr "Пошук"
+
+msgctxt "#32620"
+msgid "Language → XCMate language"
+msgstr "Мова XCMate"
+
+msgctxt "#32621"
+msgid "Follow Kodi language"
+msgstr "Використовувати мову Kodi"
