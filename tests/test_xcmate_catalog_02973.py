@@ -51,6 +51,20 @@ class Catalog73(prior72.VODSync72):
         a=self.jobs.request(self.portal);b=self.jobs.request(self.portal,['vod'])
         self.assertEqual(a,b);self.assertEqual(len(self.jobs.jobs()),1)
         self.tick();self.assertEqual(Path(delta.path()).read_bytes(),before)
+    def test_large_backup_does_not_hold_profile_lock_or_block_status_readers(self):
+        self.jobs.request(self.portal,['live'])
+        backup=self.store.backup;read=[]
+        def observe(*args,**kwargs):
+            import threading
+            def reader():
+                from profile_transaction import reading
+                with reading(timeout=.05):read.append(self.jobs.jobs()[0]['state'])
+            thread=threading.Thread(target=reader);thread.start();thread.join(.5)
+            self.assertFalse(thread.is_alive());self.assertEqual(read,['RUNNING'])
+            return backup(*args,**kwargs)
+        with mock.patch('vodsync_store72.backup',side_effect=observe):self.tick()
+        self.assertEqual(self.row()['state'],'DONE')
+
     def test_existing_writer_reports_waiting_not_running_or_failure(self):
         session=self.engine.Session(self.portal,('vod',))
         try:

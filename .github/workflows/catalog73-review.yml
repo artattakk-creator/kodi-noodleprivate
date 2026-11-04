@@ -16,6 +16,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Native Skinshortcuts reference reader dependency
+        run: python -m pip install 'simpleeval==0.9.13'
       - name: Catalog HTTP, resume, preservation, widgets, optional feeds and locales
         shell: bash
         run: |

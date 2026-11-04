@@ -164,9 +164,14 @@ def run_next(cancel=lambda: False):
             job = _update(job['id'], units=units, phase='BACKUP',groups_found={k:sum(a==k for a,g in units) for k in job['kinds']})
         if not job.get('backup'):
             from group_selection import _read as selections
+            # Snapshot the small profile configuration under its lock. The
+            # potentially large SQLite backup retains the catalog writer lock,
+            # but must not hold the GUI's profile/configuration lock.
             with writing():
-                target=backup(session.pid, session.kinds, session.filename, session.folder,
-                    selections().get('_v2',{}).get(session.pid,{}), stopped, allowed=KINDS)
+                session.ensure_connection()
+                selected_snapshot=selections().get('_v2',{}).get(session.pid,{})
+            target=backup(session.pid, session.kinds, session.filename, session.folder,
+                selected_snapshot, stopped, allowed=KINDS)
             job = _update(job['id'], backup=target)
         verify_once(job['backup'])
         if job['cursor'] < len(job['units']):
