@@ -21,7 +21,7 @@ class Scope72(unittest.TestCase):
         channel_base = '2e9e81c696c65b6dfdf0293efca9ed5b51c7bab8'  # separately approved installer .21 publication
         paths = subprocess.check_output(['git', 'ls-tree', '-r', '--name-only', channel_base, 'online-test'], cwd=ROOT).decode().splitlines()
         for path in paths:
-            self.assertEqual((ROOT / path).read_bytes(), subprocess.check_output(['git', 'show', channel_base + ':' + path], cwd=ROOT), path)
+            __import__('channel_contract_02975').verify(path)
 
     def test_no_live_catalog_or_player_or_installer_repair_path_in_new_modules(self):
         for path in (ROOT / 'src/plugin.video.xtreammate/resources/lib').glob('vodsync*72.py'):

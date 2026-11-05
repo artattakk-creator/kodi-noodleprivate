@@ -61,6 +61,9 @@ def art(item,approved):
     placeholder=os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media',{'live':'tv','series':'series'}.get(item.get('kind'),'vod')+'.png')
     def resolve(url):
         if not url:return ''
+        from programme_assets47 import local_uri
+        local75=local_uri(url)
+        if local75:return local75
         local=cached(url)
         if local:return local
         if persistent() or not syntactic(url):return ''

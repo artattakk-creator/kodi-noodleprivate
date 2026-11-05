@@ -19,6 +19,8 @@ def poll():
     from hero_epg63 import poll as hero63
     from skin_upgrade63 import poll as upgrade63
     hero63();upgrade63()
+    from home_schedule75 import observe
+    observe()
     import xbmc,xbmcgui
     if time.monotonic()<_next:return
     _next=time.monotonic()+1

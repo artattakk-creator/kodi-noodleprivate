@@ -1,3 +1,11 @@
+0.1.29.75 (Pilot-Test, Issues #366 / #367 / #368)
+- Start-EPG: lokaler Now/Next-Checkpoint ohne vorherigen Senderstart; vorhandene Texte und Logos bei kurzen Lesefehlern erhalten.
+- Optionaler BINGIE-Adapter: großes Bild links, feste Informationstabelle rechts und eine aktive Sender-/Cover-Leiste; Vorschau, Sicherung und Zustimmung bleiben erforderlich.
+- Senderfokus und sichtbare fünf Programme vorrangig; neue automatische Film-/Serienarbeit an native Rendernachweise binden.
+- Exakte XMLTV-/Provider-Eventbilder nach sicherer HTTPS-/DNS-/Bildprüfung auch ohne manuelle CDN-Hostliste; bestehende TMDB-/TVmaze-Freigaben unverändert.
+- Live-TV-Stop: zusätzliche 5-/10-Sekunden-ACK-Diagnose ohne zweiten Stop oder falsche Erfolgsmeldung. Nativer RK3528-Hänger weiterhin auf Android zu prüfen.
+- Portale, Passwörter, EPG, TMDB-Zugang, Favoriten, Widgets, Space Blue und bestehende Bilder bleiben erhalten. Kein Reset.
+
 0.1.29.74 (Test-Build, Issue #361)
 - Home: Titelbestand und Bildfreigabe trennen; gültige Cover und Jetzt/Danach bei kurzen Lesefehlern erhalten.
 - Atomare Widgetgenerationen, weniger identische Veröffentlichungen und lokales EPG-Nachladen ohne Fokusblockade.

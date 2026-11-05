@@ -14,7 +14,11 @@ def gui_available():
             and int(xbmcgui.getCurrentWindowDialogId()) in (0,9999)
             and not xbmc.getCondVisibility('System.HasActiveModalDialog')
             and not xbmc.getCondVisibility('Container.IsUpdating')
-            and int(xbmcgui.getCurrentWindowId()) in (10000,10025))
+            # A positively returned Stop may leave Kodi in its now-empty
+            # fullscreen video window. That owned window is a valid return
+            # origin, not a foreign modal. resume() still requires the exact
+            # native FIFO ACK and verifies no media/new session before routing.
+            and int(xbmcgui.getCurrentWindowId()) in (10000,10025,12005))
 
 
 def resume(value,job):

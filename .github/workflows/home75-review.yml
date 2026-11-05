@@ -1,0 +1,46 @@
+name: XCMate 75 native Home and Pilot review
+on:
+  pull_request:
+    branches: [main]
+    paths: ['src/plugin.video.xtreammate/**', 'tests/**', 'tools/**', '.github/workflows/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: home75-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+jobs:
+  native75:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        resolution: [1920x1080,1280x720]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'Pillow>=11,<13' 'simpleeval==0.9.13'
+      - name: Receiver gates, one rail, actual Kodi images and fixed right table
+        run: python tools/run_kodi_home75_contract.py --report-dir "${{ runner.temp }}/native75" --resolution "${{ matrix.resolution }}"
+      - name: .75 code and preservation regressions
+        run: python -m unittest discover -s tests -p '*02975.py' -v
+      - name: Verify review ZIP exactly matches source
+        run: |
+          python tools/package_xcmate71.py "${{ runner.temp }}/package75"
+          cmp "${{ runner.temp }}/package75/plugin.video.xtreammate-0.1.29.75.zip" docs/XCMate/test-builds/02975/plugin.video.xtreammate-0.1.29.75.zip
+          python tools/release_channel75.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: home75-${{ matrix.resolution }}
+          path: |
+            ${{ runner.temp }}/native75/*.json
+            ${{ runner.temp }}/native75/*.png
+            ${{ runner.temp }}/native75/probe.log
+            ${{ runner.temp }}/native75/gui-error.txt
+          retention-days: 30

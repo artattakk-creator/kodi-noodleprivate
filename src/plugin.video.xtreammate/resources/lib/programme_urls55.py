@@ -34,7 +34,10 @@ def safe(url):
     try:
         p=urlsplit(url)
         if (p.scheme!='https' or p.port not in (None,443) or p.username is not None or
-                p.password is not None or p.query or p.fragment or p.hostname not in hosts()):return False
+                p.password is not None or p.query or p.fragment):return False
+        if p.hostname not in hosts():
+            from programme_origin75 import approved
+            if not approved(url):return False
         if p.hostname.endswith(('.local','.localhost','.internal','.invalid')) or p.hostname=='localhost':return False
         try:
             ipaddress.ip_address(p.hostname)
@@ -156,7 +159,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
                resolved_at55=now,until=now+300,tvspielfilm55='BLOCKED_NO_AUTHORIZED_API')
     value.update(hosts55=sorted(hosts()),profile55=profile())
     value['matching_policy56']=1
-    value.update(matching_policy57=1,source_policy57=policy(),sources70=[],lookup70=__import__('programme_outcomes70').settings())
+    value.update(matching_policy57=1,source_policy57=policy(),sources70=[],lookup70=__import__('programme_outcomes70').settings(),origin_policy75=1)
     candidates=[dict(url=event[field],source=source,match='EXACT_EVENT',attribution=credit)
                 for field,source,credit in (('xmltv_image','xmltv_event','XMLTV – konfigurierte Eventquelle'),
                     ('provider_image','provider_event','Anbieter – konfigurierte Eventquelle')) if event.get(field)]
@@ -204,17 +207,25 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         if cancel():return None
         if candidate.get('match') not in ('EXACT_EVENT','EXACT_TITLE_YEAR','EXACT_SEASON_EPISODE','EXACT_UNIQUE_FILM_TITLE')+PROOFS:continue
         url=candidate.get('url','')
-        if not safe(url):value['code']='BLOCKED_IMAGE_HOST_OR_URL';continue
+        from programme_origin75 import candidate as origin75,grant as grant75
+        new_origin75=not safe(url) and candidate.get('match')=='EXACT_EVENT' and origin75(event,url,candidate.get('source'))
+        if not safe(url) and not new_origin75:value['code']='BLOCKED_IMAGE_HOST_OR_URL';continue
         from portals import get_by_id
         portal=get_by_id(str(event.get('pid',''))) or {}
         path=unquote(urlsplit(url).path)
         secrets=[str(portal.get(k) or '') for k in ('xc_user','xc_pass')]
         if any(secret and (secret in path.split('/') or len(secret)>=4 and secret in path) for secret in secrets):
             value['code']='BLOCKED_CREDENTIAL_URL';continue
+        if new_origin75:
+            try:probe(url,cancel=cancel)
+            except SourceError as exc:value['code']=exc.code;continue
+            if cancel():return None
+            grant75(url)
         if local_image63 or not url_mode69 and candidate.get('source') in ('tmdb_movie','tmdb_episode','tmdb_series'):
             from programme_art46 import prepare as materialize60
             return materialize60(event,cancel=cancel,resolved60=dict(candidate,_local_only63=True) if local_image63 else candidate)
-        try:(check or probe)(url,cancel=cancel)
+        try:
+            if not new_origin75:(check or probe)(url,cancel=cancel)
         except SourceError as exc:value['code']=exc.code;continue
         if cancel():return None
         value.update(code='READY',source=candidate['source'],match=candidate['match'],

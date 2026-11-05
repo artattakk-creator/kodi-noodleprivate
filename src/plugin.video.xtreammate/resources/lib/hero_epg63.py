@@ -22,7 +22,7 @@ def poll():
     with _lock:
         changed=_focus!=current;_focus=current;art=dict(_art) if _art else {}
     if changed:_focused_at=time.monotonic();note('HOME_FOCUS',pid,sid)
-    info=get(pid,sid);intent68=None
+    info=get(pid,sid);intent68=None;raw68=None
     if info:
         # The displayed RAM event is sufficient for a small intent. Do not
         # wait for the optional bulk publisher/prepare() to get a timeslice.
@@ -56,6 +56,8 @@ def poll():
     if not labels:return  # Static native ListItem remains usable until the worker warms labels.
     apply(dict(props=props),dict(id=pid),dict(sid=sid),info,labels=labels)
     event_key=info.get('programme_key47','')
+    from live_text63 import facts75
+    facts75(props,dict(raw68,key=event_key) if raw68 else {})
     if art.get('profile63')==scope and art.get('key')==event_key and art.get('code') in ('READY','READY_STALE') and art.get('source')!='placeholder' and __import__('programme_image69').eligible(art,intent68):
         props['XCMate.ProgrammeImage46']=props['XCMate.HeroImage63']=art['image'];props['XCMate.ProgrammeArtSource57']=props['XCMate.HeroArtSource63']=art.get('source','')
         if art.get('image_scope57')=='series_fallback' and props.get('XCMate.FallbackLabel63'):
@@ -66,7 +68,7 @@ def poll():
         Description=props['XCMate.ProgrammeDescription46'],Remaining=props['XCMate.ProgrammeRemaining63'],
         Subtitle=label('XCMate.ProgrammeSubtitle63') if key==event_key else '',
         Percent=props['XCMate.ProgrammePercent46'],Image=props.get('XCMate.HeroImage63',neutral),
-        ArtSource=props.get('XCMate.HeroArtSource63',''),LongTitle='true' if len(props['XCMate.ProgrammeTitle46'])>26 else 'false')
+        ArtSource=props.get('XCMate.HeroArtSource63',''),Facts=props.get('XCMate.ProgrammeFacts75',''),LongTitle='true' if len(props['XCMate.ProgrammeTitle46'])>26 else 'false')
     signature=(current,tuple(values.items()))
     if signature==_last:return
     previous=_last
@@ -78,7 +80,11 @@ def poll():
     # Kodi21 GetInt does not support Window.Property info labels. Send a
     # numeric message to the inactive own progress control before bank commit.
     try:window.getControl(296301 if bank=='A' else 296302).setPercent(float(values['Percent']))
-    except (AttributeError,RuntimeError,ValueError):return  # Layout is not ready; retry next UI tick.
+    except (AttributeError,RuntimeError,ValueError):
+        # A missing optional progress control must not discard an otherwise
+        # coherent text/image bank. The skin may use a property-based fallback.
+        values['ProgressControl']='UNAVAILABLE'
+    else:values['ProgressControl']='READY'
     for name,value in values.items():window.setProperty(prefix+name,str(value))
     window.setProperty(prefix+'Profile',scope)
     window.setProperty(prefix+'Identity',token)

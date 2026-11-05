@@ -184,6 +184,10 @@ def prepare(portal, kind, rows, cancel=lambda:False,provider_only=False):
     """
     if not rows or kind not in ('live','vod','series'):
         return
+    from home_schedule75 import allowed,focused_rows
+    if not allowed(kind,portal):
+        rows=focused_rows(portal,kind,rows)
+        if not rows:return
     from widget_assets69 import prepare as provider_refs69
     provider_refs69(portal,kind,rows,cancel)
     from artwork_config import persistent

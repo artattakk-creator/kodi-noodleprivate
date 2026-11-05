@@ -44,6 +44,9 @@ def read(portal,kind,rows):
  return result
 def prepare(portal,kind,rows,cancel=lambda:False):
  global _thread
+ if not rows:return False
+ from home_schedule75 import allowed,focused_rows
+ if not allowed(kind,portal):rows=focused_rows(portal,kind,rows)
  from artwork_config import persistent
  if persistent() or _stop.is_set() or not rows or kind not in ('vod','series'):return False
  from programme_assets47 import sources

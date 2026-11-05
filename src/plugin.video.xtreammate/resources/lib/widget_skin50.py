@@ -38,7 +38,7 @@ def edit(data,changes):
 
 
 def patch(path,data):
-    from widget_skin74 import candidate
+    from widget_skin75 import candidate
     return candidate(path,data)
 
 
@@ -115,12 +115,20 @@ def guard(skin):
 def prepare(skin):
     from widget_transaction50 import prepare as transaction
     paths=guard(skin);changes=[(p,patch(name,read(p))) for name,p in zip(FILES,paths)]
+    from widget_skin75 import extra
+    changes.extend(extra(skin))
     return transaction('skin',changes,dict(skin=str(Path(skin).resolve()),meta_sha=sha(read(Path(skin)/'addon.xml'))))
 
 
 def apply(token,skin,*,confirmed=False,restore=False):
     from widget_transaction50 import load,folder,apply as transaction
     plan=load(token,'skin');paths=guard(skin)
+    if len(plan['entries'])==5:
+        from widget_skin75 import navigation_candidate
+        target=Path(skin).resolve()/'xml/IncludesBingie.xml'
+        root=folder()/token
+        if navigation_candidate(read(root/'original.4'))!=read(root/'candidate.4'):raise ValueError('CANDIDATE_VERIFY_FAILED')
+        paths.append(target)
     if plan['metadata']!=dict(skin=str(Path(skin).resolve()),meta_sha=sha(read(Path(skin)/'addon.xml'))):raise ValueError('SKIN_CHANGED')
     for i,name in enumerate(FILES):
         root=folder()/token
@@ -132,7 +140,8 @@ def apply(token,skin,*,confirmed=False,restore=False):
             from widget_skin66 import previous_candidate as previous64
             verified64=False
             if restore:
-                for build64 in (legacy_patch60,previous_candidate,previous63,previous64):
+                from widget_skin75 import previous_candidate as previous75
+                for build64 in (legacy_patch60,previous_candidate,previous63,previous64,previous75):
                     try:
                         if build64(name,original60)==candidate60:verified64=True;break
                     except ValueError:continue
@@ -148,8 +157,9 @@ def applied(skin):
             if not p.is_dir() or len(p.name)!=32:continue
             try:
                 plan=load(p.name,'skin')
-                if ([str(t.resolve()) for t in paths]==[v['target'] for v in plan['entries']] and
-                        all(sha(read(t))==v['after'] for t,v in zip(paths,plan['entries'])) and
+                targets75=paths+([Path(skin).resolve()/'xml/IncludesBingie.xml'] if len(plan['entries'])==5 else [])
+                if ([str(t.resolve()) for t in targets75]==[v['target'] for v in plan['entries']] and
+                        all(sha(read(t))==v['after'] for t,v in zip(targets75,plan['entries'])) and
                         all(patch(name,read(p/('original.'+str(i))))==read(t) for i,(name,t) in enumerate(zip(FILES,paths)))):return True
             except (OSError,ValueError,KeyError):pass
     except (OSError,ValueError,ET.ParseError):pass

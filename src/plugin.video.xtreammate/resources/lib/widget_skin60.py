@@ -50,7 +50,8 @@ def preview(plan):
     from widget_skin50 import FILES
     root = folder() / plan['id']
     result = []
-    for i, name in enumerate(FILES):
+    names=list(FILES)+(['xml/IncludesBingie.xml'] if len(plan['entries'])==5 else [])
+    for i, name in enumerate(names):
         before = read(root / ('original.' + str(i))).decode('utf-8').splitlines()
         after = read(root / ('candidate.' + str(i))).decode('utf-8').splitlines()
         result.extend(difflib.unified_diff(before, after, fromfile=name, tofile=name + ' (.60)', lineterm=''))

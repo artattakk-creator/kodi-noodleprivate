@@ -190,11 +190,7 @@ def now_next(pid,channels,mappings,now=None,client=None,display_only65=False):
     # Workers retain the complete bounded future window. The thin four-event
     # RAM DTO is only a transient-read fallback and the GUI handoff, not a
     # replacement for catalogue/programme preparation.
-    warm={}
-    if cache is None:
-        for c63 in channels[:16]:
-            sid63=channel_keys(c63,mappings)[0]
-            warm[sid63]=warm63(pid,sid63,now=ts,mappings=mappings)
+    warm={channel_keys(c,mappings)[0]:warm63(pid,channel_keys(c,mappings)[0],now=ts,mappings=mappings) for c in channels[:16]}
     result={}
     for channel in channels[:16]:
         sid,keys=channel_keys(channel,mappings)
@@ -206,7 +202,8 @@ def now_next(pid,channels,mappings,now=None,client=None,display_only65=False):
         info['canonical46']=cache.canonical.get(info.get('epg_id',''),'') if cache is not None else ''
         from programme_snapshot47 import bind
         result[sid]=bind(pid,channel,info)
-        if not result[sid].get('now') and warm.get(sid) and warm[sid].get('now') and cache is None:
+        if (not result[sid].get('now') and warm.get(sid) and warm[sid].get('now')
+                and (cache is None or warm[sid].get('snapshot_revision')==info.get('snapshot_revision'))):
             result[sid]=warm[sid]
         if getattr(cache,'code','')!='RAM_LASTGOOD67':remember63(pid,channel,result[sid],mappings,expected_revision=revision_before63)
         code63=('READY' if info.get('now') else 'EPG_CACHE_UNAVAILABLE' if cache is None else 'EPG_MAPPING_MISSING' if info.get('reason')=='MANUAL_ID_MISSING' else 'EPG_DATA_MISSING')

@@ -118,6 +118,8 @@ def poll():
             try:observe(value)
             except (AttributeError,RuntimeError,ValueError,TypeError,MemoryError):pass
         if value.get('native_posted') and not value.get('worker_done'):
+            from live_stop75 import observe as observe75
+            observe75(value)
             from native_stop41 import returned,finish
             if returned(value):
                 finish(value);value['worker_done']=True;value['result']='complete'

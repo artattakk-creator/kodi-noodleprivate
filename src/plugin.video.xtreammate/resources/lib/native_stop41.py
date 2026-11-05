@@ -21,6 +21,7 @@ def post(token):
         if not can_post(value,token):return False
         nonce=uuid.uuid4().hex
         value['native_ack']=nonce;value['native_posted']=True
+        value['posted_at75']=__import__('time').monotonic()
         xbmcgui.Window(10000).clearProperty(ACK);exit_jobs.save(value)
     # Fixed commands only; generated hex nonce cannot inject a builtin.
     exit_jobs.trace('PLAYER_STOP_START',token)

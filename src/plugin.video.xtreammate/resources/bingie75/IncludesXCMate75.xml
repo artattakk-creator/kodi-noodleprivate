@@ -1,0 +1,259 @@
+<?xml version='1.0' encoding='utf-8'?>
+<includes>
+  <variable name="XCMate75.Title">
+    <value condition="String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live)">$VAR[XCMate63.Title]</value>
+    <value> $INFO[ListItem.Label]</value>
+  </variable>
+  <variable name="XCMate75.Description">
+    <value condition="String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live)">$VAR[XCMate63.Description]</value>
+    <value>$INFO[ListItem.Plot]</value>
+  </variable>
+  <variable name="XCMate75.Image">
+    <value condition="String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),A) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Profile),ListItem.Property(XCMate.EpgProfile63)) + !String.IsEmpty(Window(Home).Property(XCMate.Hero63.A.Image))">$INFO[Window(Home).Property(XCMate.Hero63.A.Image)]</value>
+    <value condition="String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),A) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Profile),ListItem.Property(XCMate.EpgProfile63))">$INFO[ListItem.Property(XCMate.ProgrammeLogo46)]</value>
+    <value condition="String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),B) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Profile),ListItem.Property(XCMate.EpgProfile63)) + !String.IsEmpty(Window(Home).Property(XCMate.Hero63.B.Image))">$INFO[Window(Home).Property(XCMate.Hero63.B.Image)]</value>
+    <value condition="String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),B) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Profile),ListItem.Property(XCMate.EpgProfile63))">$INFO[ListItem.Property(XCMate.ProgrammeLogo46)]</value>
+    <value condition="String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + !String.IsEmpty(ListItem.Property(XCMate.HeroImage63))">$INFO[ListItem.Property(XCMate.HeroImage63)]</value>
+    <value condition="String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live)">$INFO[ListItem.Property(XCMate.ProgrammeLogo46)]</value>
+    <value condition="!String.IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
+    <value>$INFO[ListItem.Art(poster)]</value>
+  </variable>
+  <variable name="XCMate75.ImageCredit">
+    <value condition="String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),A) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Profile),ListItem.Property(XCMate.EpgProfile63)) + String.StartsWith(Window(Home).Property(XCMate.Hero63.A.ArtSource),tmdb)">Bild: TMDB</value>
+    <value condition="String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),A) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Profile),ListItem.Property(XCMate.EpgProfile63)) + String.StartsWith(Window(Home).Property(XCMate.Hero63.A.ArtSource),tvmaze)">Bild: TVmaze</value>
+    <value condition="String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),A) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Profile),ListItem.Property(XCMate.EpgProfile63)) + String.StartsWith(Window(Home).Property(XCMate.Hero63.A.ArtSource),xmltv)">Bild: XMLTV</value>
+    <value condition="String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),A) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Profile),ListItem.Property(XCMate.EpgProfile63)) + String.StartsWith(Window(Home).Property(XCMate.Hero63.A.ArtSource),provider)">Bild: Provider</value>
+    <value condition="String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),A) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Profile),ListItem.Property(XCMate.EpgProfile63))" />
+    <value condition="String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),B) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Profile),ListItem.Property(XCMate.EpgProfile63)) + String.StartsWith(Window(Home).Property(XCMate.Hero63.B.ArtSource),tmdb)">Bild: TMDB</value>
+    <value condition="String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),B) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Profile),ListItem.Property(XCMate.EpgProfile63)) + String.StartsWith(Window(Home).Property(XCMate.Hero63.B.ArtSource),tvmaze)">Bild: TVmaze</value>
+    <value condition="String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),B) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Profile),ListItem.Property(XCMate.EpgProfile63)) + String.StartsWith(Window(Home).Property(XCMate.Hero63.B.ArtSource),xmltv)">Bild: XMLTV</value>
+    <value condition="String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),B) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Profile),ListItem.Property(XCMate.EpgProfile63)) + String.StartsWith(Window(Home).Property(XCMate.Hero63.B.ArtSource),provider)">Bild: Provider</value>
+    <value condition="String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),B) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Profile),ListItem.Property(XCMate.EpgProfile63))" />
+    <value condition="String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + ![[String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),A) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Profile),ListItem.Property(XCMate.EpgProfile63))] | [String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),B) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Profile),ListItem.Property(XCMate.EpgProfile63))]] + String.StartsWith(ListItem.Property(XCMate.HeroArtSource63),tmdb)">Bild: TMDB</value>
+    <value condition="String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + ![[String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),A) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Profile),ListItem.Property(XCMate.EpgProfile63))] | [String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),B) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Profile),ListItem.Property(XCMate.EpgProfile63))]] + String.StartsWith(ListItem.Property(XCMate.HeroArtSource63),tvmaze)">Bild: TVmaze</value>
+    <value condition="String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + ![[String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),A) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Profile),ListItem.Property(XCMate.EpgProfile63))] | [String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),B) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Profile),ListItem.Property(XCMate.EpgProfile63))]] + String.StartsWith(ListItem.Property(XCMate.HeroArtSource63),xmltv)">Bild: XMLTV</value>
+    <value condition="String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + ![[String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),A) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Profile),ListItem.Property(XCMate.EpgProfile63))] | [String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),B) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Profile),ListItem.Property(XCMate.EpgProfile63))]] + String.StartsWith(ListItem.Property(XCMate.HeroArtSource63),provider)">Bild: Provider</value>
+    <value condition="[String.IsEqual(ListItem.Property(XCMate.WidgetKind41),vod) | String.IsEqual(ListItem.Property(XCMate.WidgetKind41),series)] + [!String.IsEmpty(ListItem.Art(fanart)) | !String.IsEmpty(ListItem.Art(poster))]">Bild: Provider</value>
+    <value />
+  </variable>
+  <variable name="XCMate75.DataCredit">
+    <value condition="String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live)">Daten: lokales EPG</value>
+    <value condition="[String.IsEqual(ListItem.Property(XCMate.WidgetKind41),vod) | String.IsEqual(ListItem.Property(XCMate.WidgetKind41),series)]">Daten: Provider</value>
+    <value />
+  </variable>
+  <include name="XCMate50.Hero">
+    <control type="group">
+      <visible>Window.IsActive(Home) + ControlGroup(77777).HasFocus() + !$EXP[IsMainMenuOpened]</visible>
+      <control type="image">
+        <left>270</left>
+        <top>0</top>
+        <width>1620</width>
+        <height>615</height>
+        <texture>special://home/addons/plugin.video.xtreammate/resources/media/programme46/logo-back.png</texture>
+        <colordiffuse>FF142238</colordiffuse>
+        <aspectratio>stretch</aspectratio>
+      </control>
+      <control type="image" id="296751">
+        <left>270</left>
+        <top>20</top>
+        <width>1080</width>
+        <height>580</height>
+        <texture>$VAR[XCMate75.Image]</texture>
+        <aspectratio>keep</aspectratio>
+        <fadetime>0</fadetime>
+      </control>
+      <control type="group" id="296750">
+        <left>1350</left>
+        <top>20</top>
+        <width>540</width>
+        <height>580</height>
+        <control type="image">
+          <left>0</left>
+          <top>0</top>
+          <width>540</width>
+          <height>580</height>
+          <texture>special://home/addons/plugin.video.xtreammate/resources/media/programme46/logo-back.png</texture>
+          <colordiffuse>B300101F</colordiffuse>
+          <aspectratio>stretch</aspectratio>
+        </control>
+        <control type="label">
+          <left>20</left>
+          <top>8</top>
+          <width>500</width>
+          <height>35</height>
+          <label>$INFO[ListItem.Property(XCMate.ProgrammeChannel46)]</label>
+          <font>Bold22</font>
+          <textcolor>FFFFFFFF</textcolor>
+          <aligny>center</aligny>
+          <visible>String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live)</visible>
+        </control>
+        <control type="textbox">
+          <left>20</left>
+          <top>48</top>
+          <width>500</width>
+          <height>94</height>
+          <label>$VAR[XCMate75.Title]</label>
+          <font>Bold40</font>
+          <textcolor>FFFFFFFF</textcolor>
+          <autoscroll>false</autoscroll>
+        </control>
+        <control type="label" id="296752">
+          <left>20</left>
+          <top>145</top>
+          <width>500</width>
+          <height>32</height>
+          <label>$ADDON[plugin.video.xtreammate 36531]  $VAR[XCMate63.Times]</label>
+          <font>Bold22</font>
+          <textcolor>FFFFFFFF</textcolor>
+          <aligny>center</aligny>
+          <visible>String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live)</visible>
+        </control>
+        <control type="label" id="296753">
+          <left>20</left>
+          <top>145</top>
+          <width>500</width>
+          <height>32</height>
+          <label>$INFO[ListItem.Year]   $INFO[ListItem.Genre]</label>
+          <font>Reg22</font>
+          <textcolor>FFFFFFFF</textcolor>
+          <aligny>center</aligny>
+          <visible>!String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live)</visible>
+        </control>
+        <control type="label" id="296754">
+          <left>20</left>
+          <top>8</top>
+          <width>500</width>
+          <height>35</height>
+          <label>$INFO[ListItem.Label]</label>
+          <font>Bold22</font>
+          <textcolor>FFFFFFFF</textcolor>
+          <aligny>center</aligny>
+          <visible>!String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live)</visible>
+        </control>
+        <control type="label">
+          <left>20</left>
+          <top>186</top>
+          <width>500</width>
+          <height>30</height>
+          <label>$VAR[XCMate63.Remaining]</label>
+          <font>Reg18</font>
+          <textcolor>FFFFFFFF</textcolor>
+          <aligny>center</aligny>
+          <visible>String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live)</visible>
+        </control>
+        <control type="progress" id="296301">
+          <left>20</left>
+          <top>224</top>
+          <width>500</width>
+          <height>10</height>
+          <visible>String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),A)</visible>
+          <texturebg>special://home/addons/plugin.video.xtreammate/resources/media/hero63/track.png</texturebg>
+          <midtexture>special://home/addons/plugin.video.xtreammate/resources/media/hero63/progress.png</midtexture>
+          <lefttexture />
+          <righttexture />
+          <overlaytexture />
+          <info />
+        </control>
+        <control type="progress" id="296302">
+          <left>20</left>
+          <top>224</top>
+          <width>500</width>
+          <height>10</height>
+          <visible>String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),B)</visible>
+          <texturebg>special://home/addons/plugin.video.xtreammate/resources/media/hero63/track.png</texturebg>
+          <midtexture>special://home/addons/plugin.video.xtreammate/resources/media/hero63/progress.png</midtexture>
+          <lefttexture />
+          <righttexture />
+          <overlaytexture />
+          <info />
+        </control>
+        <control type="textbox">
+          <left>20</left>
+          <top>250</top>
+          <width>500</width>
+          <height>62</height>
+          <label>$ADDON[plugin.video.xtreammate 36032]  $VAR[XCMate63.NextTimes]  $VAR[XCMate63.Next]</label>
+          <font>Reg22</font>
+          <textcolor>FFFFFFFF</textcolor>
+          <autoscroll>false</autoscroll>
+          <visible>String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live)</visible>
+        </control>
+        <control type="textbox">
+          <left>20</left>
+          <top>326</top>
+          <width>500</width>
+          <height>154</height>
+          <label>$VAR[XCMate75.Description]</label>
+          <font>Reg22</font>
+          <textcolor>FFFFFFFF</textcolor>
+          <autoscroll>false</autoscroll>
+        </control>
+        <control type="textbox">
+          <left>20</left>
+          <top>188</top>
+          <width>500</width>
+          <height>115</height>
+          <label>$INFO[ListItem.Duration]  $INFO[ListItem.MPAA]  $INFO[ListItem.Rating]
+$INFO[ListItem.Cast]</label>
+          <font>Reg18</font>
+          <textcolor>FFFFFFFF</textcolor>
+          <autoscroll>false</autoscroll>
+          <visible>!String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live)</visible>
+        </control>
+        <control type="label">
+          <left>20</left>
+          <top>490</top>
+          <width>500</width>
+          <height>30</height>
+          <label>$VAR[XCMate75.ImageCredit]</label>
+          <font>Reg18</font>
+          <textcolor>FFFFFFFF</textcolor>
+          <aligny>center</aligny>
+        </control>
+        <control type="label">
+          <left>20</left>
+          <top>524</top>
+          <width>500</width>
+          <height>30</height>
+          <label>$VAR[XCMate75.DataCredit]</label>
+          <font>Reg18</font>
+          <textcolor>FFFFFFFF</textcolor>
+          <aligny>center</aligny>
+        </control>
+        <control type="image">
+          <left>365</left>
+          <top>490</top>
+          <width>140</width>
+          <height>28</height>
+          <texture>special://home/addons/plugin.video.xtreammate/resources/media/tmdb60/tmdb.png</texture>
+          <aspectratio>keep</aspectratio>
+          <visible>[String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),A) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Profile),ListItem.Property(XCMate.EpgProfile63)) + String.StartsWith(Window(Home).Property(XCMate.Hero63.A.ArtSource),tmdb)] | [String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),B) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Profile),ListItem.Property(XCMate.EpgProfile63)) + String.StartsWith(Window(Home).Property(XCMate.Hero63.B.ArtSource),tmdb)] | [String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + ![[String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),A) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Profile),ListItem.Property(XCMate.EpgProfile63))] | [String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),B) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Profile),ListItem.Property(XCMate.EpgProfile63))]] + String.StartsWith(ListItem.Property(XCMate.HeroArtSource63),tmdb)]</visible>
+        </control>
+        <control type="image">
+          <left>420</left>
+          <top>6</top>
+          <width>90</width>
+          <height>35</height>
+          <texture>$INFO[ListItem.Property(XCMate.ProgrammeLogo46)]</texture>
+          <aspectratio>keep</aspectratio>
+          <visible>String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live)</visible>
+        </control>
+        <control type="label">
+          <left>20</left>
+          <top>300</top>
+          <width>500</width>
+          <height>26</height>
+          <label>$VAR[XCMate63.Subtitle]  $VAR[XCMate75.Facts]</label>
+          <font>Reg18</font>
+          <textcolor>FFB8C3D2</textcolor>
+          <visible>String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live)</visible>
+        </control>
+      </control>
+    </control>
+  </include>
+  <variable name="XCMate75.Facts">
+    <value condition="String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),A) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.A.Profile),ListItem.Property(XCMate.EpgProfile63))">$INFO[Window(Home).Property(XCMate.Hero63.A.Facts)]</value>
+    <value condition="String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),B) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.B.Profile),ListItem.Property(XCMate.EpgProfile63))">$INFO[Window(Home).Property(XCMate.Hero63.B.Facts)]</value>
+    <value>$INFO[ListItem.Property(XCMate.ProgrammeFacts75)]</value>
+  </variable>
+</includes>

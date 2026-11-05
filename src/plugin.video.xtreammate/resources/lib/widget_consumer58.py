@@ -57,13 +57,20 @@ def inspect(profile,skin,generated,pid,probe=None):
             if b'<!DOCTYPE' in layout or b'<!ENTITY' in layout:raise ValueError('UNSAFE_LAYOUT')
             tree=ET.fromstring(layout)
             definitions={n.get('name'):n for n in tree.findall('include')}
+            def expanded75(name,seen=()):
+                if name in seen or len(seen)>8 or name not in definitions:return []
+                node=definitions[name];result=[node]
+                for call in node.iter('include'):
+                    target=call.get('content') or call.text
+                    if target in definitions:result+=expanded75(target,seen+(name,))
+                return result
             own_definition60=definitions.get('XCMate50.LiveRow')
-            own_pipeline60=bool(own_definition60 is not None and any(n.get('id')=='$PARAM[widgetid]' and any(c.text=='$PARAM[widgetPath]' and c.get('target')=='videos' for c in n.findall('content')) for n in own_definition60.iter('control')))
+            own_pipeline60=bool(own_definition60 is not None and any(n.get('id')=='$PARAM[widgetid]' and any(c.text=='$PARAM[widgetPath]' and c.get('target')=='videos' for c in n.findall('content')) for definition in expanded75('XCMate50.LiveRow') for n in definition.iter('control')))
             normal=definitions.get('widget_base_normal')
             content=definitions.get('widget_base_content_normal')
             base=definitions.get('widget_base')
             pipeline=bool(base is not None and normal is not None and content is not None
-                and any(n.get('content')=='widget_base_normal' for n in base.iter('include'))
+                and any(n.get('content')=='widget_base_normal' for definition in expanded75('widget_base') for n in definition.iter('include'))
                 and any(n.get('id')=='$PARAM[widgetid]' for n in normal.iter('control'))
                 and any(n.get('content')=='widget_base_content_$PARAM[contentStyle]' for n in normal.iter('include'))
                 and any(n.text=='$PARAM[widgetPath]' for n in content.iter('content')))

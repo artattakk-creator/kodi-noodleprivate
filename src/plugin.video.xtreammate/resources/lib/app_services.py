@@ -73,9 +73,12 @@ def refresh_local(cancel=lambda:False):
                         from programme_prefetch48 import prepare as prefetch_events48
                         prefetch_events48(portal,rows,cancel)
                     try:
-                        prepare(portal['id'],rows)
+                        from home_schedule75 import allowed,focused_rows
+                        admitted75=allowed(kind,portal)
+                        assets75=rows if admitted75 else focused_rows(portal,kind,rows)
+                        if assets75:prepare(portal['id'],assets75)
                         from programme_assets47 import prepare as prepare_assets47
-                        prepare_assets47(portal,kind,rows,cancel,provider_only=kind in ('vod','series'))
+                        if assets75:prepare_assets47(portal,kind,assets75,cancel,provider_only=kind in ('vod','series'))
                     except Exception:
                         from widget_diagnostics47 import note
                         note(portal['id'],kind,'ASSETS','PREPARE_UNAVAILABLE')
@@ -137,7 +140,8 @@ def _run():
         # or no fresh media window requests an enrolment. Data worker only.
         try:
             from media_art import ensure_worker
-            if phases48.network():ensure_worker()
+            from home_schedule75 import rest_allowed
+            if phases48.network() and rest_allowed():ensure_worker()
         except MemoryError:runtime.note_pressure()
         except Exception:pass
         if cancelled():break
@@ -155,13 +159,13 @@ def _run():
             if cancelled():break
             try:
                 from art_store import prefetch_selected
-                if phases48.network() and phases48.due('prefetch',300):prefetch_selected()
+                if phases48.network() and rest_allowed() and phases48.due('prefetch',300):prefetch_selected()
             except MemoryError:runtime.note_pressure()
             except Exception: pass
             if cancelled():break
             try:
                 from startup_preload import prepare
-                if phases48.network():prepare(cancel=cancelled)
+                if phases48.network() and rest_allowed():prepare(cancel=cancelled)
             except MemoryError:runtime.note_pressure()
             except Exception: pass
             if cancelled():break

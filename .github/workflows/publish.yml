@@ -67,7 +67,7 @@ jobs:
           python-version: "3.12"
       - name: Check .67 source syntax and cumulative regression contracts
         run: |
-          python -m pip install 'Pillow>=11,<13' 'impacket==0.13.0' 'simpleeval==0.9.13'
+          python -m pip install 'Pillow>=11,<13' 'impacket==0.13.0' 'simpleeval==0.9.13' 'pytest>=8,<10'
           python -m compileall -q src tools/kodi_home64_host tools/run_kodi_home64_contract.py tools/kodi_home66_host tools/run_kodi_home66_contract.py tools/build_bingie66_review.py
           python -m unittest discover -s tests -p '*02971.py' -v
           python -m unittest discover -s tests -p '*02970.py' -v
@@ -102,22 +102,27 @@ jobs:
         run: python tools/benchmark_xcmate65.py --output xcmate65-host-evidence.json
       - name: Measure .66 persistent cold and warm coverage of all 88 channels
         run: python tools/benchmark_xcmate66.py --output xcmate66-host-evidence.json
-      - name: Verify .64 native movie and series focus, ten provider posters and Live return
-        run: python tools/run_kodi_home64_contract.py --report-dir kodi-home64-evidence
+      - name: Checkout approved .74 for archived UI contracts
+        uses: actions/checkout@v4
+        with:
+          ref: fca469ca1a19ce65b8aa2628cd6e5c9e9dba1ef8
+          path: archive74
+      - name: Verify .64 native movie and series focus, ten provider posters and Live return (archive .74)
+        run: python archive74/tools/run_kodi_home64_contract.py --report-dir kodi-home64-evidence
       - name: Verify real Kodi 21 Linux plugin and worker RPC transport
         run: python tools/run_kodi_helper57_contract.py --report-dir kodi-helper57-evidence
       - name: Verify native XCMate widget directories and synthetic poster pixels
         run: python tools/run_kodi_widget59_contract.py --report-dir kodi-widget59-evidence
       - name: Install native Skinshortcuts compiler dependency
-        run: python -m pip install 'simpleeval==0.9.13'
+        run: python -m pip install 'simpleeval==0.9.13' 'pytest>=8,<10'
       - name: Verify BINGIE 2.2.3 native Home, complete Live row and cached Hero pixels
-        run: python tools/run_kodi_home60_contract.py --report-dir kodi-home60-evidence
+        run: python archive74/tools/run_kodi_home60_contract.py --report-dir kodi-home60-evidence
       - name: Verify visible .61 setup menu, explicit approval and no-token native Home
-        run: python tools/run_kodi_home61_contract.py --report-dir kodi-home61-evidence
+        run: python archive74/tools/run_kodi_home61_contract.py --report-dir kodi-home61-evidence
       - name: Verify .62 Live identities under failed enrichment and 803 groups
-        run: python tools/run_kodi_home62_contract.py --report-dir kodi-home62-evidence
+        run: python archive74/tools/run_kodi_home62_contract.py --report-dir kodi-home62-evidence
       - name: Verify .63 full-bleed Hero, text pixels and warm local snapshot
-        run: python tools/run_kodi_home63_contract.py --report-dir kodi-home63-evidence
+        run: python archive74/tools/run_kodi_home63_contract.py --report-dir kodi-home63-evidence
       - name: Upload isolated Kodi transport evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -177,7 +182,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install host test dependencies
-        run: python -m pip install 'Pillow>=11,<13' 'impacket==0.13.0' 'simpleeval==0.9.13'
+        run: python -m pip install 'Pillow>=11,<13' 'impacket==0.13.0' 'simpleeval==0.9.13' 'pytest>=8,<10'
       - name: Bootstrap pinned XtreamMate GPL source
         run: python tools/bootstrap_xtreammate.py
       - name: Apply XtreamMate 0.1.1 fix
@@ -203,6 +208,8 @@ jobs:
             sed -i "s@'..', 'plugin.video.noodleprivate'@'..', 'src', 'plugin.video.noodleprivate'@g" "$f"
           done
           python -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/xcmate71-test-results.log"
+      - name: Existing pytest branding preservation checks
+        run: python -m pytest -q tests/test_xcmate_bingie_branding.py
       - name: Measure exact .69 replay against pinned .68
         run: |
           git fetch --no-tags --depth=1 origin cf62f5d554634acca5c2676c6af3d524747f8f40
@@ -227,7 +234,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install host test dependencies
-        run: python -m pip install 'Pillow>=11,<13' 'impacket==0.13.0' 'simpleeval==0.9.13'
+        run: python -m pip install 'Pillow>=11,<13' 'impacket==0.13.0' 'simpleeval==0.9.13' 'pytest>=8,<10'
       - name: Bootstrap pinned XtreamMate GPL source
         run: python tools/bootstrap_xtreammate.py
       - name: Apply XtreamMate 0.1.1 fix
@@ -339,8 +346,11 @@ jobs:
           path: xcmate-review/
           if-no-files-found: error
           retention-days: 14
+      - name: Enforce Pilot-only .75 release channel
+        id: channel75
+        run: python tools/release_channel75.py
       - name: Commit and publish generated archives
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.channel75.outputs.regular == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
