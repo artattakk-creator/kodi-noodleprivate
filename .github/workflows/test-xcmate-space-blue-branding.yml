@@ -1,0 +1,48 @@
+name: XCMate BINGIE Space Blue packaging and rollback tests
+on:
+  pull_request:
+    paths:
+      - 'script.gsmedia.xcmate.branding/**'
+      - 'tests/test_xcmate_bingie_branding.py'
+      - '.github/workflows/test-xcmate-space-blue-branding.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'script.gsmedia.xcmate.branding/**'
+      - 'tests/test_xcmate_bingie_branding.py'
+      - '.github/workflows/test-xcmate-space-blue-branding.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install test dependency
+        run: python -m pip install pytest
+      - name: Verify opt-in patch, colors and rollback
+        run: python -m pytest -q tests/test_xcmate_bingie_branding.py
+      - name: Verify released package and original assets
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from hashlib import sha256
+          import json,zipfile,xml.etree.ElementTree as ET
+          root=Path('script.gsmedia.xcmate.branding')
+          p=root/'script.gsmedia.xcmate.branding-0.2.0.zip'
+          checksum=(root/(p.name+'.sha256')).read_text().split()[0]
+          assert sha256(p.read_bytes()).hexdigest()==checksum
+          assert checksum=='afa32cd38df59e12cf9889f05e2e080f1358ee03a169c7ce6cb211cde2d0fdaa'
+          with zipfile.ZipFile(p) as z:
+              assert z.testzip() is None
+              prefix='script.gsmedia.xcmate.branding/'
+              assert ET.fromstring(z.read(prefix+'addon.xml')).attrib['version']=='0.2.0'
+              manifest=json.loads(z.read(prefix+'resources/media/asset_sha256.json'))
+              for name,digest in manifest.items():
+                  assert sha256(z.read(prefix+'resources/media/'+name)).hexdigest()==digest, name
+              assert manifest['XCMate-intro.mp4']=='5ae825fe8b31ea4d5a747fa5c32ba1c056a7785b3b4251ea2938378225e067c0'
+          print('Package and original H.264/AAC video verified')
+          PY
