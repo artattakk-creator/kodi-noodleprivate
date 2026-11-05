@@ -4,6 +4,15 @@ from pathlib import Path
 source=Path('/work/gui66.py').read_text()
 prefix=source.split("select(2510,0,'live')",1)[0]
 exec(compile(prefix,'home75-post-helpers','exec'),globals())
+def wait_home():
+    for _ in range(600):
+        if (xbmcgui.getCurrentWindowId()==10000
+                and xbmcgui.getCurrentWindowDialogId() in (0,-1,9999)
+                and not home.getProperty('StartupMask')
+                and not xbmc.getCondVisibility('Window.IsVisible(11103)')):return
+        xbmc.sleep(100)
+    raise RuntimeError('POST75_HOME_STILL_MASKED')
+wait_home()
 select(2510,0,'live')
 from widget_fast69 import prepare
 prepare();xbmc.sleep(300)
@@ -21,6 +30,7 @@ for _ in range(100):
     if xbmc.getInfoLabel('Container(2510).NumItems')=='88':break
     xbmc.sleep(100)
 else:raise RuntimeError('POST75_RELOAD_NO_ROWS')
+wait_home()
 select(2510,0,'live')
 counts=[int(xbmc.getInfoLabel('Container('+str(cid)+').NumItems')) for cid in (2510,2520,2530)]
 check(counts==[88,24,24],counts)

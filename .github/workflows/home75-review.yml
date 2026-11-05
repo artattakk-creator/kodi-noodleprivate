@@ -42,5 +42,6 @@ jobs:
             ${{ runner.temp }}/native75/*.json
             ${{ runner.temp }}/native75/*.png
             ${{ runner.temp }}/native75/probe.log
+            ${{ runner.temp }}/native75/restart.log
             ${{ runner.temp }}/native75/gui-error.txt
           retention-days: 30

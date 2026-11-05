@@ -9,7 +9,7 @@ Status aller nachfolgenden Geräteprüfungen: **ANDROID_NOT_TESTED**. Host-/Linu
 3. XCMate → Informationen → Versionen: **0.1.29.75 aus GS Media Pilot** auswählen. Bei zuvor regulärer Herkunft kann dieser manuelle Herkunftswechsel erforderlich sein. Kein neues Repository einrichten.
 4. Alternativ das unten im Testbericht verlinkte geprüfte .75-ZIP als Update installieren. Das Erfolgsfenster muss Version und Änderungen nennen.
 5. Der reguläre GS-Media-Katalog bleibt auf .74. Automatische reguläre Veröffentlichung ist bis zur separaten ausdrücklichen Android-Freigabe gesperrt.
-6. Für das neue native Home-Layout den vorhandenen BINGIE-Adapter-Dialog verwenden: Änderungen und SHA-Backup ansehen, dann bewusst zustimmen. Wird ein unbekannter Space-Blue-Skin-Hash gemeldet: **BLOCKED_SKIN_HASH**, nicht mit Dateien aus fremden Installationen übergehen. Vorhandene Einstellungen bleiben erhalten.
+6. Für das neue native Home-Layout den automatischen Vorschauhinweis oder **Einstellungen → Experimentell → Widget-Einrichtung → BINGIE-Home-Layout prüfen/vorbereiten** verwenden: Änderungen und SHA-Backup ansehen, dann bewusst zustimmen. Wird ein unbekannter Space-Blue-Skin-Hash gemeldet: **BLOCKED** im Abnahmeprotokoll vermerken; der bisherige Dialog kann dafür noch `LOCAL_UNAVAILABLE` anzeigen. Nicht mit Dateien aus fremden Installationen übergehen. Vorhandene Einstellungen bleiben erhalten.
 
 ## Zuerst Live-TV-Exit (#368)
 

@@ -1,12 +1,15 @@
 # XCMate 0.1.29.75 – Testbericht
 
-Basis: `ad5c337c0ca9ea6f85e458c17383fb32c19e3fc2` (.74). Auftrag #366/#367/#368. Status dieses ersten PR-Standes: **DRAFT, Gesamtlauf/CI und abschließender 60-Minuten-Lauf noch ausstehend**. Keine Android-Abnahme behauptet. Der Bericht wird mit den abschließenden Ergebnissen aktualisiert.
+Basis: `ad5c337c0ca9ea6f85e458c17383fb32c19e3fc2` (.74). Auftrag #366/#367/#368. Status dieses ersten PR-Standes: **DRAFT, vollständiger lokaler Hostlauf PASS; CI und abschließender 60-Minuten-Lauf noch ausstehend**. Keine Android-Abnahme behauptet. Der Bericht wird mit den abschließenden Ergebnissen aktualisiert.
 
 ## Bereits geprüft
 
 | Prüfung | Ergebnis |
 |---|---|
+| Vollständiger lokaler Hostlauf | **3.090/3.090 PASS**, 582,170 s; zusätzliche drei neue Skin-Schutzfälle separat im 39er Lauf PASS |
 | Neue .75-Funktions- und Bestandsschutztests | **39/39 PASS**, 5,063 s (inklusive fünfter Skin-Datei, Schreibfehler/Rollback/Restore) |
+| Vollständiger GitHub-Hostjob (Code `0da8f3c`) | **3.093/3.093 PASS**, 657,999 s; Gesamtworkflow wegen separatem Cloud-Zeitgate noch nicht freigegeben |
+| Nativer 720p-Neustart und Reload | **PASS**, andere Kodi-PID, sieben Bild-/Fokusfälle, 88/24/24 Einträge, 32 geschützte Dateien bytegleich |
 | Bestehende pytest-Brandingtests | **11/11 PASS**, 0,15 s |
 | Sprachdateien | **17 Kataloge PASS** |
 | Originale Tabler-Icons und Lizenzen | **92 Texturen PASS** |
@@ -17,7 +20,9 @@ Basis: `ad5c337c0ca9ea6f85e458c17383fb32c19e3fc2` (.74). Auftrag #366/#367/#368.
 | Regulärer Katalog | unverändert `.74`, automatische Veröffentlichung `.75` gesperrt |
 | Android Kodi 21.2/21.3 / RK3528 | **ANDROID_NOT_TESTED** |
 
-Der vorherige vollständige 3.090er Hostlauf war **FAIL** (7 Assertions, 1 Error). Eine Assertion betraf zusätzlich geprüfte native Navigationsparameter und ist korrigiert; die Katalog-Sicherungsfehler waren isoliert nicht reproduzierbar und werden im vollständigen Lauf mit Ausnahmeaufzeichnung nachgeprüft. Sie werden nicht übergangen und nicht als behoben ausgegeben. Merge erst bei grünen automatisierten Gates.
+Der vorherige vollständige 3.090er Hostlauf war **FAIL** (7 Assertions, 1 Error). Eine Assertion betraf zusätzlich geprüfte native Navigationsparameter und ist korrigiert; die Katalog-Sicherungsfehler waren isoliert nicht reproduzierbar und werden im vollständigen Lauf mit Ausnahmeaufzeichnung nachgeprüft. Die Katalogfehler sind im anschließenden vollständigen Lauf mit identischem Standard-Discovery und Ausnahmeaufzeichnung nicht erneut aufgetreten; kein Katalogcode wurde dafür verändert. Ein zusätzlicher parallel gestarteter Diagnoselauf wurde vom Arbeitsumgebungs-OOM beendet (exit 137) und zählt nicht als PASS. Danach wurde die lokale Parallelität reduziert. Merge erst bei grünen automatisierten Gates.
+
+Ein separater historischer 2.000-Schritte-Navigationstest überschritt auf einem GitHub-Runner einmal die unveränderte 5-s-Grenze (6,131 s). Im vollständigen lokalen Lauf besteht er; der Test wird nicht gelockert. Das gesamte CI-Gate muss trotzdem noch grün werden. Die erweiterte Neustart-Harness wartet jetzt auf das tatsächliche Ende des alten Kodi-Prozesses und das Ende der regulären BINGIE-Startmaske; HTTP-Ping allein war noch kein Neustartnachweis.
 
 ## Reproduzierbare Befehle
 
@@ -39,7 +44,7 @@ Netzwerk-/Loopbackberechtigung und Docker werden für die betreffenden Hosttests
 
 ## Native Renderbelege und Messgrenzen
 
-[Live, 720p](test-builds/02975/evidence/720-home75-live-0.png), [Film mit Fanart](test-builds/02975/evidence/720-home75-vod-0.png), [Film mit Hochkantposter](test-builds/02975/evidence/720-home75-vod-1.png), [Serie](test-builds/02975/evidence/720-home75-series-0.png), [Seitenmenü](test-builds/02975/evidence/720-home75-menu.png), [native Messdaten](test-builds/02975/evidence/native720.json).
+[Live, 720p](test-builds/02975/evidence/720-home75-live-0.png), [Film mit Fanart](test-builds/02975/evidence/720-home75-vod-0.png), [Film mit Hochkantposter](test-builds/02975/evidence/720-home75-vod-1.png), [Serie](test-builds/02975/evidence/720-home75-series-0.png), [Seitenmenü](test-builds/02975/evidence/720-home75-menu.png), [native Messdaten](test-builds/02975/evidence/native720.json), [tatsächliche Phasen](test-builds/02975/evidence/load-order720.json), [Neustart-/Restore-Messdaten](test-builds/02975/evidence/restart720.json).
 
 Die `settled_render_ms` von 2.718–3.044 ms enthalten ausdrücklich 1.500 ms feste Settle-Wartezeit, Screenshoterzeugung und Python-Pixelprüfung. Das ist **keine** gemessene Android-Kaltstartlatenz und kein Nachweis eines `<2 s`-Ziels. Native Phasen wurden in der Reihenfolge `1 → 2 → 3` empfangen; `PREPARED` ist getrennt von tatsächlich sichtbaren Labels/Geometrie. Die echte private EPG-/Bildlatenz wird gemäß Android-Testplan separat gemessen.
 

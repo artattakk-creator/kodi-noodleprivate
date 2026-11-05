@@ -46,6 +46,10 @@ def main():
         run('cp',name+':/root/home75.json',str(report/'home75.json'))
         files=json.loads(run('exec',name,'python3','-c',"import json;from pathlib import Path;print(json.dumps([str(p) for p in Path('/root').glob('home75-*.png')]))",capture_output=True,text=True).stdout)
         for file in files:run('cp',name+':'+file,str(report/Path(file).name))
+        run('cp',str(root/'tools/kodi_home75_host/post75.py'),name+':/root/post75.py')
+        run('cp',str(root/'tools/kodi_home75_host/restart75.py'),name+':/root/restart75.py')
+        with (report/'restart.log').open('w') as log:run('exec',name,'python3','/root/restart75.py',stdout=log,stderr=subprocess.STDOUT)
+        run('cp',name+':/root/post75.json',str(report/'post75.json'))
         print(json.dumps(json.loads((report/'home75.json').read_text())))
     finally:
         run('cp',name+':/root/.kodi/temp/kodi.log',str(report/'synthetic-kodi.log'))
