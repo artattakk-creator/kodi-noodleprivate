@@ -28,10 +28,12 @@ def read(portal,kind,rows):
  if persistent():return {}
  from programme_assets47 import sources
  from artwork_visible import KODI_OPTIONS
- result={}
+ from widget_refs74 import read as retained74
+ result=retained74(portal,kind,rows)
  for row in rows[:256]:
   for role,source in sources(row,provider_only=True).items():
-   if not safe(portal,source):continue
+   from widget_refs74 import revoked
+   if not safe(portal,source) or revoked(source):continue
    key=identity(portal,kind,row,role,source)
    try:
     raw=_window().getProperty(_slot(key));value=json.loads(raw) if raw and len(raw)<4096 else {}
@@ -64,7 +66,7 @@ def _run():
   try:key,portal,kind,rows=_queue.get(timeout=.5)
   except queue.Empty:continue
   try:
-   initial=profile();end=time.monotonic()+.5
+   initial=profile();end=time.monotonic()+.5;retained74=[]
    for row in rows:
     if _stop.is_set() or profile()!=initial or time.monotonic()>end:break
     for role,source in sources(row,provider_only=True).items():
@@ -80,8 +82,11 @@ def _run():
      try:old=json.loads(prior) if prior else {}
      except ValueError:old={}
      window.setProperty(_slot(tag),json.dumps(value,separators=(',',':')))
+     retained74.append((row['sid'],role,source,remaining))
      if old.get('key')!=tag or old.get('uri')!=value['uri']:
       with _lock:_revision+=1
+   from widget_refs74 import remember_many
+   remember_many(portal,kind,retained74)
   finally:
    with _lock:_pending.discard(key)
    _queue.task_done()

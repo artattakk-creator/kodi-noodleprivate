@@ -16,7 +16,7 @@ def show(router,portal):
         # There is no directory request to complete on handle -1.
         import xbmc
         xbmc.executebuiltin('ActivateWindow(Videos,'+router.url(
-            action='widget_setup',pid=portal['id'])+',return)')
+            action='widget_sources49',pid=portal['id'])+',return)')
         return
     import xbmcgui,xbmcplugin
     from boot_diagnostics import finish_directory

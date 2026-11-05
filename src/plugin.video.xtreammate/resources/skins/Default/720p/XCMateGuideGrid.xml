@@ -24,8 +24,8 @@
     </control>
     <control type="label" id="102">
       <left>44</left>
-      <top>654</top>
-      <width>1192</width>
+      <top>600</top>
+      <width>850</width>
       <height>24</height>
       <font>font12</font>
       <textcolor>FFF0F2F5</textcolor>
@@ -33,9 +33,9 @@
     </control>
     <control type="label" id="103">
       <left>44</left>
-      <top>624</top>
-      <width>1080</width>
-      <height>26</height>
+      <top>524</top>
+      <width>850</width>
+      <height>54</height>
       <font>font13</font>
       <textcolor>FFF0F2F5</textcolor>
       <label />
@@ -43,7 +43,7 @@
     <control type="label" id="501">
       <left>44</left>
       <top>684</top>
-      <width>1192</width>
+      <width>850</width>
       <height>24</height>
       <font>font12</font>
       <textcolor>FFF0F2F5</textcolor>
@@ -215,7 +215,7 @@
       <left>42</left>
       <top>168</top>
       <width>290</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <label />
       <textcolor>FFF4F7F9</textcolor>
@@ -231,14 +231,14 @@
       <left>42</left>
       <top>168</top>
       <width>290</width>
-      <height>54</height>
+      <height>40</height>
       <texture border="4">special://home/addons/plugin.video.xtreammate/resources/media/guide_focus_frame.png</texture>
     </control>
     <control type="button" id="731">
       <left>42</left>
-      <top>224</top>
+      <top>210</top>
       <width>290</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <label />
       <textcolor>FFF4F7F9</textcolor>
@@ -252,16 +252,16 @@
     </control>
     <control type="image" id="751">
       <left>42</left>
-      <top>224</top>
+      <top>210</top>
       <width>290</width>
-      <height>54</height>
+      <height>40</height>
       <texture border="4">special://home/addons/plugin.video.xtreammate/resources/media/guide_focus_frame.png</texture>
     </control>
     <control type="button" id="732">
       <left>42</left>
-      <top>280</top>
+      <top>252</top>
       <width>290</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <label />
       <textcolor>FFF4F7F9</textcolor>
@@ -275,16 +275,16 @@
     </control>
     <control type="image" id="752">
       <left>42</left>
-      <top>280</top>
+      <top>252</top>
       <width>290</width>
-      <height>54</height>
+      <height>40</height>
       <texture border="4">special://home/addons/plugin.video.xtreammate/resources/media/guide_focus_frame.png</texture>
     </control>
     <control type="button" id="733">
       <left>42</left>
-      <top>336</top>
+      <top>294</top>
       <width>290</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <label />
       <textcolor>FFF4F7F9</textcolor>
@@ -298,16 +298,16 @@
     </control>
     <control type="image" id="753">
       <left>42</left>
-      <top>336</top>
+      <top>294</top>
       <width>290</width>
-      <height>54</height>
+      <height>40</height>
       <texture border="4">special://home/addons/plugin.video.xtreammate/resources/media/guide_focus_frame.png</texture>
     </control>
     <control type="button" id="734">
       <left>42</left>
-      <top>392</top>
+      <top>336</top>
       <width>290</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <label />
       <textcolor>FFF4F7F9</textcolor>
@@ -321,16 +321,16 @@
     </control>
     <control type="image" id="754">
       <left>42</left>
-      <top>392</top>
+      <top>336</top>
       <width>290</width>
-      <height>54</height>
+      <height>40</height>
       <texture border="4">special://home/addons/plugin.video.xtreammate/resources/media/guide_focus_frame.png</texture>
     </control>
     <control type="button" id="735">
       <left>42</left>
-      <top>448</top>
+      <top>378</top>
       <width>290</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <label />
       <textcolor>FFF4F7F9</textcolor>
@@ -344,16 +344,16 @@
     </control>
     <control type="image" id="755">
       <left>42</left>
-      <top>448</top>
+      <top>378</top>
       <width>290</width>
-      <height>54</height>
+      <height>40</height>
       <texture border="4">special://home/addons/plugin.video.xtreammate/resources/media/guide_focus_frame.png</texture>
     </control>
     <control type="button" id="736">
       <left>42</left>
-      <top>504</top>
+      <top>420</top>
       <width>290</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <label />
       <textcolor>FFF4F7F9</textcolor>
@@ -367,16 +367,16 @@
     </control>
     <control type="image" id="756">
       <left>42</left>
-      <top>504</top>
+      <top>420</top>
       <width>290</width>
-      <height>54</height>
+      <height>40</height>
       <texture border="4">special://home/addons/plugin.video.xtreammate/resources/media/guide_focus_frame.png</texture>
     </control>
     <control type="button" id="737">
       <left>42</left>
-      <top>560</top>
+      <top>462</top>
       <width>290</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <label />
       <textcolor>FFF4F7F9</textcolor>
@@ -390,24 +390,24 @@
     </control>
     <control type="image" id="757">
       <left>42</left>
-      <top>560</top>
+      <top>462</top>
       <width>290</width>
-      <height>54</height>
+      <height>40</height>
       <texture border="4">special://home/addons/plugin.video.xtreammate/resources/media/guide_focus_frame.png</texture>
     </control>
     <control type="image" id="720">
       <left>44</left>
-      <top>178</top>
+      <top>175</top>
       <width>40</width>
-      <height>36</height>
+      <height>27</height>
       <aspectratio>keep</aspectratio>
       <texture />
     </control>
     <control type="textbox" id="700">
       <left>92</left>
-      <top>170</top>
+      <top>169</top>
       <width>236</width>
-      <height>50</height>
+      <height>37</height>
       <font>font13</font>
       <textcolor>FFF0F2F5</textcolor>
       <label />
@@ -416,7 +416,7 @@
       <left>340</left>
       <top>168</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -435,7 +435,7 @@
       <left>340</left>
       <top>168</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -454,7 +454,7 @@
       <left>340</left>
       <top>168</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -473,7 +473,7 @@
       <left>340</left>
       <top>168</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -492,7 +492,7 @@
       <left>340</left>
       <top>168</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -511,7 +511,7 @@
       <left>340</left>
       <top>168</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -530,7 +530,7 @@
       <left>340</left>
       <top>168</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -549,7 +549,7 @@
       <left>340</left>
       <top>168</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -568,7 +568,7 @@
       <left>340</left>
       <top>168</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -587,7 +587,7 @@
       <left>340</left>
       <top>168</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -606,7 +606,7 @@
       <left>340</left>
       <top>168</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -625,7 +625,7 @@
       <left>340</left>
       <top>168</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -644,7 +644,7 @@
       <left>340</left>
       <top>168</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -663,7 +663,7 @@
       <left>340</left>
       <top>168</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -682,7 +682,7 @@
       <left>340</left>
       <top>168</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -701,7 +701,7 @@
       <left>340</left>
       <top>168</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -720,7 +720,7 @@
       <left>340</left>
       <top>168</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -739,7 +739,7 @@
       <left>340</left>
       <top>168</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -758,7 +758,7 @@
       <left>340</left>
       <top>168</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -777,7 +777,7 @@
       <left>340</left>
       <top>168</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -796,7 +796,7 @@
       <left>340</left>
       <top>168</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -815,7 +815,7 @@
       <left>340</left>
       <top>168</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -834,7 +834,7 @@
       <left>340</left>
       <top>168</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -853,7 +853,7 @@
       <left>340</left>
       <top>168</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -870,26 +870,26 @@
     </control>
     <control type="image" id="721">
       <left>44</left>
-      <top>234</top>
+      <top>217</top>
       <width>40</width>
-      <height>36</height>
+      <height>27</height>
       <aspectratio>keep</aspectratio>
       <texture />
     </control>
     <control type="textbox" id="701">
       <left>92</left>
-      <top>226</top>
+      <top>211</top>
       <width>236</width>
-      <height>50</height>
+      <height>37</height>
       <font>font13</font>
       <textcolor>FFF0F2F5</textcolor>
       <label />
     </control>
     <control type="button" id="1024">
       <left>340</left>
-      <top>224</top>
+      <top>210</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -906,9 +906,9 @@
     </control>
     <control type="button" id="1025">
       <left>340</left>
-      <top>224</top>
+      <top>210</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -925,9 +925,9 @@
     </control>
     <control type="button" id="1026">
       <left>340</left>
-      <top>224</top>
+      <top>210</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -944,9 +944,9 @@
     </control>
     <control type="button" id="1027">
       <left>340</left>
-      <top>224</top>
+      <top>210</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -963,9 +963,9 @@
     </control>
     <control type="button" id="1028">
       <left>340</left>
-      <top>224</top>
+      <top>210</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -982,9 +982,9 @@
     </control>
     <control type="button" id="1029">
       <left>340</left>
-      <top>224</top>
+      <top>210</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1001,9 +1001,9 @@
     </control>
     <control type="button" id="1030">
       <left>340</left>
-      <top>224</top>
+      <top>210</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1020,9 +1020,9 @@
     </control>
     <control type="button" id="1031">
       <left>340</left>
-      <top>224</top>
+      <top>210</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1039,9 +1039,9 @@
     </control>
     <control type="button" id="1032">
       <left>340</left>
-      <top>224</top>
+      <top>210</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1058,9 +1058,9 @@
     </control>
     <control type="button" id="1033">
       <left>340</left>
-      <top>224</top>
+      <top>210</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1077,9 +1077,9 @@
     </control>
     <control type="button" id="1034">
       <left>340</left>
-      <top>224</top>
+      <top>210</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1096,9 +1096,9 @@
     </control>
     <control type="button" id="1035">
       <left>340</left>
-      <top>224</top>
+      <top>210</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1115,9 +1115,9 @@
     </control>
     <control type="button" id="1036">
       <left>340</left>
-      <top>224</top>
+      <top>210</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1134,9 +1134,9 @@
     </control>
     <control type="button" id="1037">
       <left>340</left>
-      <top>224</top>
+      <top>210</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1153,9 +1153,9 @@
     </control>
     <control type="button" id="1038">
       <left>340</left>
-      <top>224</top>
+      <top>210</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1172,9 +1172,9 @@
     </control>
     <control type="button" id="1039">
       <left>340</left>
-      <top>224</top>
+      <top>210</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1191,9 +1191,9 @@
     </control>
     <control type="button" id="1040">
       <left>340</left>
-      <top>224</top>
+      <top>210</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1210,9 +1210,9 @@
     </control>
     <control type="button" id="1041">
       <left>340</left>
-      <top>224</top>
+      <top>210</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1229,9 +1229,9 @@
     </control>
     <control type="button" id="1042">
       <left>340</left>
-      <top>224</top>
+      <top>210</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1248,9 +1248,9 @@
     </control>
     <control type="button" id="1043">
       <left>340</left>
-      <top>224</top>
+      <top>210</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1267,9 +1267,9 @@
     </control>
     <control type="button" id="1044">
       <left>340</left>
-      <top>224</top>
+      <top>210</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1286,9 +1286,9 @@
     </control>
     <control type="button" id="1045">
       <left>340</left>
-      <top>224</top>
+      <top>210</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1305,9 +1305,9 @@
     </control>
     <control type="button" id="1046">
       <left>340</left>
-      <top>224</top>
+      <top>210</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1324,9 +1324,9 @@
     </control>
     <control type="button" id="1047">
       <left>340</left>
-      <top>224</top>
+      <top>210</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1343,26 +1343,26 @@
     </control>
     <control type="image" id="722">
       <left>44</left>
-      <top>290</top>
+      <top>259</top>
       <width>40</width>
-      <height>36</height>
+      <height>27</height>
       <aspectratio>keep</aspectratio>
       <texture />
     </control>
     <control type="textbox" id="702">
       <left>92</left>
-      <top>282</top>
+      <top>253</top>
       <width>236</width>
-      <height>50</height>
+      <height>37</height>
       <font>font13</font>
       <textcolor>FFF0F2F5</textcolor>
       <label />
     </control>
     <control type="button" id="1048">
       <left>340</left>
-      <top>280</top>
+      <top>252</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1379,9 +1379,9 @@
     </control>
     <control type="button" id="1049">
       <left>340</left>
-      <top>280</top>
+      <top>252</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1398,9 +1398,9 @@
     </control>
     <control type="button" id="1050">
       <left>340</left>
-      <top>280</top>
+      <top>252</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1417,9 +1417,9 @@
     </control>
     <control type="button" id="1051">
       <left>340</left>
-      <top>280</top>
+      <top>252</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1436,9 +1436,9 @@
     </control>
     <control type="button" id="1052">
       <left>340</left>
-      <top>280</top>
+      <top>252</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1455,9 +1455,9 @@
     </control>
     <control type="button" id="1053">
       <left>340</left>
-      <top>280</top>
+      <top>252</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1474,9 +1474,9 @@
     </control>
     <control type="button" id="1054">
       <left>340</left>
-      <top>280</top>
+      <top>252</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1493,9 +1493,9 @@
     </control>
     <control type="button" id="1055">
       <left>340</left>
-      <top>280</top>
+      <top>252</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1512,9 +1512,9 @@
     </control>
     <control type="button" id="1056">
       <left>340</left>
-      <top>280</top>
+      <top>252</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1531,9 +1531,9 @@
     </control>
     <control type="button" id="1057">
       <left>340</left>
-      <top>280</top>
+      <top>252</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1550,9 +1550,9 @@
     </control>
     <control type="button" id="1058">
       <left>340</left>
-      <top>280</top>
+      <top>252</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1569,9 +1569,9 @@
     </control>
     <control type="button" id="1059">
       <left>340</left>
-      <top>280</top>
+      <top>252</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1588,9 +1588,9 @@
     </control>
     <control type="button" id="1060">
       <left>340</left>
-      <top>280</top>
+      <top>252</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1607,9 +1607,9 @@
     </control>
     <control type="button" id="1061">
       <left>340</left>
-      <top>280</top>
+      <top>252</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1626,9 +1626,9 @@
     </control>
     <control type="button" id="1062">
       <left>340</left>
-      <top>280</top>
+      <top>252</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1645,9 +1645,9 @@
     </control>
     <control type="button" id="1063">
       <left>340</left>
-      <top>280</top>
+      <top>252</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1664,9 +1664,9 @@
     </control>
     <control type="button" id="1064">
       <left>340</left>
-      <top>280</top>
+      <top>252</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1683,9 +1683,9 @@
     </control>
     <control type="button" id="1065">
       <left>340</left>
-      <top>280</top>
+      <top>252</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1702,9 +1702,9 @@
     </control>
     <control type="button" id="1066">
       <left>340</left>
-      <top>280</top>
+      <top>252</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1721,9 +1721,9 @@
     </control>
     <control type="button" id="1067">
       <left>340</left>
-      <top>280</top>
+      <top>252</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1740,9 +1740,9 @@
     </control>
     <control type="button" id="1068">
       <left>340</left>
-      <top>280</top>
+      <top>252</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1759,9 +1759,9 @@
     </control>
     <control type="button" id="1069">
       <left>340</left>
-      <top>280</top>
+      <top>252</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1778,9 +1778,9 @@
     </control>
     <control type="button" id="1070">
       <left>340</left>
-      <top>280</top>
+      <top>252</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1797,9 +1797,9 @@
     </control>
     <control type="button" id="1071">
       <left>340</left>
-      <top>280</top>
+      <top>252</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1816,26 +1816,26 @@
     </control>
     <control type="image" id="723">
       <left>44</left>
-      <top>346</top>
+      <top>301</top>
       <width>40</width>
-      <height>36</height>
+      <height>27</height>
       <aspectratio>keep</aspectratio>
       <texture />
     </control>
     <control type="textbox" id="703">
       <left>92</left>
-      <top>338</top>
+      <top>295</top>
       <width>236</width>
-      <height>50</height>
+      <height>37</height>
       <font>font13</font>
       <textcolor>FFF0F2F5</textcolor>
       <label />
     </control>
     <control type="button" id="1072">
       <left>340</left>
-      <top>336</top>
+      <top>294</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1852,9 +1852,9 @@
     </control>
     <control type="button" id="1073">
       <left>340</left>
-      <top>336</top>
+      <top>294</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1871,9 +1871,9 @@
     </control>
     <control type="button" id="1074">
       <left>340</left>
-      <top>336</top>
+      <top>294</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1890,9 +1890,9 @@
     </control>
     <control type="button" id="1075">
       <left>340</left>
-      <top>336</top>
+      <top>294</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1909,9 +1909,9 @@
     </control>
     <control type="button" id="1076">
       <left>340</left>
-      <top>336</top>
+      <top>294</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1928,9 +1928,9 @@
     </control>
     <control type="button" id="1077">
       <left>340</left>
-      <top>336</top>
+      <top>294</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1947,9 +1947,9 @@
     </control>
     <control type="button" id="1078">
       <left>340</left>
-      <top>336</top>
+      <top>294</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1966,9 +1966,9 @@
     </control>
     <control type="button" id="1079">
       <left>340</left>
-      <top>336</top>
+      <top>294</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -1985,9 +1985,9 @@
     </control>
     <control type="button" id="1080">
       <left>340</left>
-      <top>336</top>
+      <top>294</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2004,9 +2004,9 @@
     </control>
     <control type="button" id="1081">
       <left>340</left>
-      <top>336</top>
+      <top>294</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2023,9 +2023,9 @@
     </control>
     <control type="button" id="1082">
       <left>340</left>
-      <top>336</top>
+      <top>294</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2042,9 +2042,9 @@
     </control>
     <control type="button" id="1083">
       <left>340</left>
-      <top>336</top>
+      <top>294</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2061,9 +2061,9 @@
     </control>
     <control type="button" id="1084">
       <left>340</left>
-      <top>336</top>
+      <top>294</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2080,9 +2080,9 @@
     </control>
     <control type="button" id="1085">
       <left>340</left>
-      <top>336</top>
+      <top>294</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2099,9 +2099,9 @@
     </control>
     <control type="button" id="1086">
       <left>340</left>
-      <top>336</top>
+      <top>294</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2118,9 +2118,9 @@
     </control>
     <control type="button" id="1087">
       <left>340</left>
-      <top>336</top>
+      <top>294</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2137,9 +2137,9 @@
     </control>
     <control type="button" id="1088">
       <left>340</left>
-      <top>336</top>
+      <top>294</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2156,9 +2156,9 @@
     </control>
     <control type="button" id="1089">
       <left>340</left>
-      <top>336</top>
+      <top>294</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2175,9 +2175,9 @@
     </control>
     <control type="button" id="1090">
       <left>340</left>
-      <top>336</top>
+      <top>294</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2194,9 +2194,9 @@
     </control>
     <control type="button" id="1091">
       <left>340</left>
-      <top>336</top>
+      <top>294</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2213,9 +2213,9 @@
     </control>
     <control type="button" id="1092">
       <left>340</left>
-      <top>336</top>
+      <top>294</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2232,9 +2232,9 @@
     </control>
     <control type="button" id="1093">
       <left>340</left>
-      <top>336</top>
+      <top>294</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2251,9 +2251,9 @@
     </control>
     <control type="button" id="1094">
       <left>340</left>
-      <top>336</top>
+      <top>294</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2270,9 +2270,9 @@
     </control>
     <control type="button" id="1095">
       <left>340</left>
-      <top>336</top>
+      <top>294</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2289,26 +2289,26 @@
     </control>
     <control type="image" id="724">
       <left>44</left>
-      <top>402</top>
+      <top>343</top>
       <width>40</width>
-      <height>36</height>
+      <height>27</height>
       <aspectratio>keep</aspectratio>
       <texture />
     </control>
     <control type="textbox" id="704">
       <left>92</left>
-      <top>394</top>
+      <top>337</top>
       <width>236</width>
-      <height>50</height>
+      <height>37</height>
       <font>font13</font>
       <textcolor>FFF0F2F5</textcolor>
       <label />
     </control>
     <control type="button" id="1096">
       <left>340</left>
-      <top>392</top>
+      <top>336</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2325,9 +2325,9 @@
     </control>
     <control type="button" id="1097">
       <left>340</left>
-      <top>392</top>
+      <top>336</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2344,9 +2344,9 @@
     </control>
     <control type="button" id="1098">
       <left>340</left>
-      <top>392</top>
+      <top>336</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2363,9 +2363,9 @@
     </control>
     <control type="button" id="1099">
       <left>340</left>
-      <top>392</top>
+      <top>336</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2382,9 +2382,9 @@
     </control>
     <control type="button" id="1100">
       <left>340</left>
-      <top>392</top>
+      <top>336</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2401,9 +2401,9 @@
     </control>
     <control type="button" id="1101">
       <left>340</left>
-      <top>392</top>
+      <top>336</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2420,9 +2420,9 @@
     </control>
     <control type="button" id="1102">
       <left>340</left>
-      <top>392</top>
+      <top>336</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2439,9 +2439,9 @@
     </control>
     <control type="button" id="1103">
       <left>340</left>
-      <top>392</top>
+      <top>336</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2458,9 +2458,9 @@
     </control>
     <control type="button" id="1104">
       <left>340</left>
-      <top>392</top>
+      <top>336</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2477,9 +2477,9 @@
     </control>
     <control type="button" id="1105">
       <left>340</left>
-      <top>392</top>
+      <top>336</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2496,9 +2496,9 @@
     </control>
     <control type="button" id="1106">
       <left>340</left>
-      <top>392</top>
+      <top>336</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2515,9 +2515,9 @@
     </control>
     <control type="button" id="1107">
       <left>340</left>
-      <top>392</top>
+      <top>336</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2534,9 +2534,9 @@
     </control>
     <control type="button" id="1108">
       <left>340</left>
-      <top>392</top>
+      <top>336</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2553,9 +2553,9 @@
     </control>
     <control type="button" id="1109">
       <left>340</left>
-      <top>392</top>
+      <top>336</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2572,9 +2572,9 @@
     </control>
     <control type="button" id="1110">
       <left>340</left>
-      <top>392</top>
+      <top>336</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2591,9 +2591,9 @@
     </control>
     <control type="button" id="1111">
       <left>340</left>
-      <top>392</top>
+      <top>336</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2610,9 +2610,9 @@
     </control>
     <control type="button" id="1112">
       <left>340</left>
-      <top>392</top>
+      <top>336</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2629,9 +2629,9 @@
     </control>
     <control type="button" id="1113">
       <left>340</left>
-      <top>392</top>
+      <top>336</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2648,9 +2648,9 @@
     </control>
     <control type="button" id="1114">
       <left>340</left>
-      <top>392</top>
+      <top>336</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2667,9 +2667,9 @@
     </control>
     <control type="button" id="1115">
       <left>340</left>
-      <top>392</top>
+      <top>336</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2686,9 +2686,9 @@
     </control>
     <control type="button" id="1116">
       <left>340</left>
-      <top>392</top>
+      <top>336</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2705,9 +2705,9 @@
     </control>
     <control type="button" id="1117">
       <left>340</left>
-      <top>392</top>
+      <top>336</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2724,9 +2724,9 @@
     </control>
     <control type="button" id="1118">
       <left>340</left>
-      <top>392</top>
+      <top>336</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2743,9 +2743,9 @@
     </control>
     <control type="button" id="1119">
       <left>340</left>
-      <top>392</top>
+      <top>336</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2762,26 +2762,26 @@
     </control>
     <control type="image" id="725">
       <left>44</left>
-      <top>458</top>
+      <top>385</top>
       <width>40</width>
-      <height>36</height>
+      <height>27</height>
       <aspectratio>keep</aspectratio>
       <texture />
     </control>
     <control type="textbox" id="705">
       <left>92</left>
-      <top>450</top>
+      <top>379</top>
       <width>236</width>
-      <height>50</height>
+      <height>37</height>
       <font>font13</font>
       <textcolor>FFF0F2F5</textcolor>
       <label />
     </control>
     <control type="button" id="1120">
       <left>340</left>
-      <top>448</top>
+      <top>378</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2798,9 +2798,9 @@
     </control>
     <control type="button" id="1121">
       <left>340</left>
-      <top>448</top>
+      <top>378</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2817,9 +2817,9 @@
     </control>
     <control type="button" id="1122">
       <left>340</left>
-      <top>448</top>
+      <top>378</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2836,9 +2836,9 @@
     </control>
     <control type="button" id="1123">
       <left>340</left>
-      <top>448</top>
+      <top>378</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2855,9 +2855,9 @@
     </control>
     <control type="button" id="1124">
       <left>340</left>
-      <top>448</top>
+      <top>378</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2874,9 +2874,9 @@
     </control>
     <control type="button" id="1125">
       <left>340</left>
-      <top>448</top>
+      <top>378</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2893,9 +2893,9 @@
     </control>
     <control type="button" id="1126">
       <left>340</left>
-      <top>448</top>
+      <top>378</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2912,9 +2912,9 @@
     </control>
     <control type="button" id="1127">
       <left>340</left>
-      <top>448</top>
+      <top>378</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2931,9 +2931,9 @@
     </control>
     <control type="button" id="1128">
       <left>340</left>
-      <top>448</top>
+      <top>378</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2950,9 +2950,9 @@
     </control>
     <control type="button" id="1129">
       <left>340</left>
-      <top>448</top>
+      <top>378</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2969,9 +2969,9 @@
     </control>
     <control type="button" id="1130">
       <left>340</left>
-      <top>448</top>
+      <top>378</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -2988,9 +2988,9 @@
     </control>
     <control type="button" id="1131">
       <left>340</left>
-      <top>448</top>
+      <top>378</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3007,9 +3007,9 @@
     </control>
     <control type="button" id="1132">
       <left>340</left>
-      <top>448</top>
+      <top>378</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3026,9 +3026,9 @@
     </control>
     <control type="button" id="1133">
       <left>340</left>
-      <top>448</top>
+      <top>378</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3045,9 +3045,9 @@
     </control>
     <control type="button" id="1134">
       <left>340</left>
-      <top>448</top>
+      <top>378</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3064,9 +3064,9 @@
     </control>
     <control type="button" id="1135">
       <left>340</left>
-      <top>448</top>
+      <top>378</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3083,9 +3083,9 @@
     </control>
     <control type="button" id="1136">
       <left>340</left>
-      <top>448</top>
+      <top>378</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3102,9 +3102,9 @@
     </control>
     <control type="button" id="1137">
       <left>340</left>
-      <top>448</top>
+      <top>378</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3121,9 +3121,9 @@
     </control>
     <control type="button" id="1138">
       <left>340</left>
-      <top>448</top>
+      <top>378</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3140,9 +3140,9 @@
     </control>
     <control type="button" id="1139">
       <left>340</left>
-      <top>448</top>
+      <top>378</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3159,9 +3159,9 @@
     </control>
     <control type="button" id="1140">
       <left>340</left>
-      <top>448</top>
+      <top>378</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3178,9 +3178,9 @@
     </control>
     <control type="button" id="1141">
       <left>340</left>
-      <top>448</top>
+      <top>378</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3197,9 +3197,9 @@
     </control>
     <control type="button" id="1142">
       <left>340</left>
-      <top>448</top>
+      <top>378</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3216,9 +3216,9 @@
     </control>
     <control type="button" id="1143">
       <left>340</left>
-      <top>448</top>
+      <top>378</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3235,26 +3235,26 @@
     </control>
     <control type="image" id="726">
       <left>44</left>
-      <top>514</top>
+      <top>427</top>
       <width>40</width>
-      <height>36</height>
+      <height>27</height>
       <aspectratio>keep</aspectratio>
       <texture />
     </control>
     <control type="textbox" id="706">
       <left>92</left>
-      <top>506</top>
+      <top>421</top>
       <width>236</width>
-      <height>50</height>
+      <height>37</height>
       <font>font13</font>
       <textcolor>FFF0F2F5</textcolor>
       <label />
     </control>
     <control type="button" id="1144">
       <left>340</left>
-      <top>504</top>
+      <top>420</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3271,9 +3271,9 @@
     </control>
     <control type="button" id="1145">
       <left>340</left>
-      <top>504</top>
+      <top>420</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3290,9 +3290,9 @@
     </control>
     <control type="button" id="1146">
       <left>340</left>
-      <top>504</top>
+      <top>420</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3309,9 +3309,9 @@
     </control>
     <control type="button" id="1147">
       <left>340</left>
-      <top>504</top>
+      <top>420</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3328,9 +3328,9 @@
     </control>
     <control type="button" id="1148">
       <left>340</left>
-      <top>504</top>
+      <top>420</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3347,9 +3347,9 @@
     </control>
     <control type="button" id="1149">
       <left>340</left>
-      <top>504</top>
+      <top>420</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3366,9 +3366,9 @@
     </control>
     <control type="button" id="1150">
       <left>340</left>
-      <top>504</top>
+      <top>420</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3385,9 +3385,9 @@
     </control>
     <control type="button" id="1151">
       <left>340</left>
-      <top>504</top>
+      <top>420</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3404,9 +3404,9 @@
     </control>
     <control type="button" id="1152">
       <left>340</left>
-      <top>504</top>
+      <top>420</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3423,9 +3423,9 @@
     </control>
     <control type="button" id="1153">
       <left>340</left>
-      <top>504</top>
+      <top>420</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3442,9 +3442,9 @@
     </control>
     <control type="button" id="1154">
       <left>340</left>
-      <top>504</top>
+      <top>420</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3461,9 +3461,9 @@
     </control>
     <control type="button" id="1155">
       <left>340</left>
-      <top>504</top>
+      <top>420</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3480,9 +3480,9 @@
     </control>
     <control type="button" id="1156">
       <left>340</left>
-      <top>504</top>
+      <top>420</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3499,9 +3499,9 @@
     </control>
     <control type="button" id="1157">
       <left>340</left>
-      <top>504</top>
+      <top>420</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3518,9 +3518,9 @@
     </control>
     <control type="button" id="1158">
       <left>340</left>
-      <top>504</top>
+      <top>420</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3537,9 +3537,9 @@
     </control>
     <control type="button" id="1159">
       <left>340</left>
-      <top>504</top>
+      <top>420</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3556,9 +3556,9 @@
     </control>
     <control type="button" id="1160">
       <left>340</left>
-      <top>504</top>
+      <top>420</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3575,9 +3575,9 @@
     </control>
     <control type="button" id="1161">
       <left>340</left>
-      <top>504</top>
+      <top>420</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3594,9 +3594,9 @@
     </control>
     <control type="button" id="1162">
       <left>340</left>
-      <top>504</top>
+      <top>420</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3613,9 +3613,9 @@
     </control>
     <control type="button" id="1163">
       <left>340</left>
-      <top>504</top>
+      <top>420</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3632,9 +3632,9 @@
     </control>
     <control type="button" id="1164">
       <left>340</left>
-      <top>504</top>
+      <top>420</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3651,9 +3651,9 @@
     </control>
     <control type="button" id="1165">
       <left>340</left>
-      <top>504</top>
+      <top>420</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3670,9 +3670,9 @@
     </control>
     <control type="button" id="1166">
       <left>340</left>
-      <top>504</top>
+      <top>420</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3689,9 +3689,9 @@
     </control>
     <control type="button" id="1167">
       <left>340</left>
-      <top>504</top>
+      <top>420</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3708,26 +3708,26 @@
     </control>
     <control type="image" id="727">
       <left>44</left>
-      <top>570</top>
+      <top>469</top>
       <width>40</width>
-      <height>36</height>
+      <height>27</height>
       <aspectratio>keep</aspectratio>
       <texture />
     </control>
     <control type="textbox" id="707">
       <left>92</left>
-      <top>562</top>
+      <top>463</top>
       <width>236</width>
-      <height>50</height>
+      <height>37</height>
       <font>font13</font>
       <textcolor>FFF0F2F5</textcolor>
       <label />
     </control>
     <control type="button" id="1168">
       <left>340</left>
-      <top>560</top>
+      <top>462</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3744,9 +3744,9 @@
     </control>
     <control type="button" id="1169">
       <left>340</left>
-      <top>560</top>
+      <top>462</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3763,9 +3763,9 @@
     </control>
     <control type="button" id="1170">
       <left>340</left>
-      <top>560</top>
+      <top>462</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3782,9 +3782,9 @@
     </control>
     <control type="button" id="1171">
       <left>340</left>
-      <top>560</top>
+      <top>462</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3801,9 +3801,9 @@
     </control>
     <control type="button" id="1172">
       <left>340</left>
-      <top>560</top>
+      <top>462</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3820,9 +3820,9 @@
     </control>
     <control type="button" id="1173">
       <left>340</left>
-      <top>560</top>
+      <top>462</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3839,9 +3839,9 @@
     </control>
     <control type="button" id="1174">
       <left>340</left>
-      <top>560</top>
+      <top>462</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3858,9 +3858,9 @@
     </control>
     <control type="button" id="1175">
       <left>340</left>
-      <top>560</top>
+      <top>462</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3877,9 +3877,9 @@
     </control>
     <control type="button" id="1176">
       <left>340</left>
-      <top>560</top>
+      <top>462</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3896,9 +3896,9 @@
     </control>
     <control type="button" id="1177">
       <left>340</left>
-      <top>560</top>
+      <top>462</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3915,9 +3915,9 @@
     </control>
     <control type="button" id="1178">
       <left>340</left>
-      <top>560</top>
+      <top>462</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3934,9 +3934,9 @@
     </control>
     <control type="button" id="1179">
       <left>340</left>
-      <top>560</top>
+      <top>462</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3953,9 +3953,9 @@
     </control>
     <control type="button" id="1180">
       <left>340</left>
-      <top>560</top>
+      <top>462</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3972,9 +3972,9 @@
     </control>
     <control type="button" id="1181">
       <left>340</left>
-      <top>560</top>
+      <top>462</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -3991,9 +3991,9 @@
     </control>
     <control type="button" id="1182">
       <left>340</left>
-      <top>560</top>
+      <top>462</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -4010,9 +4010,9 @@
     </control>
     <control type="button" id="1183">
       <left>340</left>
-      <top>560</top>
+      <top>462</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -4029,9 +4029,9 @@
     </control>
     <control type="button" id="1184">
       <left>340</left>
-      <top>560</top>
+      <top>462</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -4048,9 +4048,9 @@
     </control>
     <control type="button" id="1185">
       <left>340</left>
-      <top>560</top>
+      <top>462</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -4067,9 +4067,9 @@
     </control>
     <control type="button" id="1186">
       <left>340</left>
-      <top>560</top>
+      <top>462</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -4086,9 +4086,9 @@
     </control>
     <control type="button" id="1187">
       <left>340</left>
-      <top>560</top>
+      <top>462</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -4105,9 +4105,9 @@
     </control>
     <control type="button" id="1188">
       <left>340</left>
-      <top>560</top>
+      <top>462</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -4124,9 +4124,9 @@
     </control>
     <control type="button" id="1189">
       <left>340</left>
-      <top>560</top>
+      <top>462</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -4143,9 +4143,9 @@
     </control>
     <control type="button" id="1190">
       <left>340</left>
-      <top>560</top>
+      <top>462</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -4162,9 +4162,9 @@
     </control>
     <control type="button" id="1191">
       <left>340</left>
-      <top>560</top>
+      <top>462</top>
       <width>1</width>
-      <height>54</height>
+      <height>40</height>
       <font>font13</font>
       <textoffsetx>5</textoffsetx>
       <label />
@@ -4183,7 +4183,7 @@
       <left>340</left>
       <top>166</top>
       <width>3</width>
-      <height>450</height>
+      <height>338</height>
       <texture>special://home/addons/plugin.video.xtreammate/resources/media/guide_now.png</texture>
     </control>
     <control type="list" id="200">

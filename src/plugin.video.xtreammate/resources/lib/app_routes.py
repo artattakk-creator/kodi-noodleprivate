@@ -75,8 +75,13 @@ def dispatch(router):
         from widget_adapter45 import show
         show();return
     if action=='widget_setup':
-        from widget_manager50 import show as widget_manager
-        widget_manager(router,portal);return
+        if router._params.get('technical74')=='1':
+            from widget_manager50 import show as widget_manager
+            widget_manager(router,portal)
+        else:
+            from widget_sources49 import show as widget_sources
+            widget_sources(router,portal)
+        return
     if action=='widget_sources49':
         from widget_sources49 import show as widget_sources
         widget_sources(router,portal);return

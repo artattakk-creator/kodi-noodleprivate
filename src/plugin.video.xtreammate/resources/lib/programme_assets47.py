@@ -151,7 +151,8 @@ def read_many(pid, kind, rows,provider_only=False):
                 uri = value.get('uri','')
                 if value.get('mode')=='dynamic':
                     from artwork_visible import syntactic, KODI_OPTIONS
-                    if not syntactic(source) or uri!=source+KODI_OPTIONS or expires-time.time()>30:
+                    from widget_refs74 import revoked
+                    if revoked(source) or not syntactic(source) or uri!=source+KODI_OPTIONS or expires-time.time()>30:
                         continue
                 elif not local_uri(uri):
                     continue
@@ -165,6 +166,10 @@ def read_many(pid, kind, rows,provider_only=False):
         from widget_assets69 import read as volatile69
         portal69=get_by_id(str(pid))
         if portal69:
+            from widget_refs74 import read as retained74
+            kept74=retained74(portal69,kind,rows)
+            for sid74,roles74 in kept74.items():
+                for role74,uri74 in roles74.items():result.setdefault(sid74,{}).setdefault(role74,uri74)
             for sid69,roles69 in volatile69(portal69,kind,rows).items():
                 for role69,uri69 in roles69.items():result.setdefault(sid69,{}).setdefault(role69,uri69)
         if db is not None:
@@ -189,7 +194,7 @@ def prepare(portal, kind, rows, cancel=lambda:False,provider_only=False):
     cap = min(256 if kind=='live' else 24,len(rows))
     selected = [rows[(cursor+i)%len(rows)] for i in range(cap)]
     existing = read_many(portal['id'],kind,selected,provider_only=provider_only)
-    records = []
+    records = [];retained74=[]
     deadline = time.monotonic()+1
     processed = 0
     for row in selected:
@@ -220,12 +225,16 @@ def prepare(portal, kind, rows, cancel=lambda:False,provider_only=False):
                     code='DYNAMIC_APPROVED' if remaining else 'DNS_UNAVAILABLE',until=time.time()+(remaining or 5))
             else:
                 value['code']='PENDING_LOCAL_DOWNLOAD' if syntactic(source) else 'INVALID_SOURCE'
+            if value.get('mode')=='dynamic' and value.get('code')=='DYNAMIC_APPROVED':
+                retained74.append((row['sid'],role,source,max(0,value['until']-time.time())))
             records.append((row['sid'],role,fingerprint(source),value))
             if len(records)>=64:
                 _store(portal['id'],kind,records)
                 records=[]
     if records:
         _store(portal['id'],kind,records)
+    from widget_refs74 import remember_many
+    remember_many(portal,kind,retained74)
     _cursor[key]=(cursor+processed)%len(rows)
     if len(_cursor)>16:
         _cursor.pop(next(iter(_cursor)))

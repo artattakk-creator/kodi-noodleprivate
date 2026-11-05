@@ -16,7 +16,7 @@ def policy():
 def unsuitable69(event):
     genre=str(event.get('genre','')).casefold()
     title=' '.join(str(event.get('title','')).casefold().split())
-    return any(word in genre for word in ('nachricht','news','sport','wetter','teleshopping')) or title in ('sendepause','programmhinweis','nachrichten','news','wetter')
+    return any(word in genre for word in ('nachricht','news','sport','wetter','teleshopping','talk')) or title in ('sendepause','programmhinweis','nachrichten','news','wetter','tagesschau','heute journal') or any(title.startswith(prefix) for prefix in ('live ','live:','live -','live –','live |','uefa ','bundesliga ','formel 1','sky sport news','sportstudio','tagesschau ','talkshow'))
 
 def attempts(event,cancel=lambda:False):
     if unsuitable69(event):return
@@ -41,7 +41,8 @@ def attempts(event,cancel=lambda:False):
             try:result=lookup(event,cancel)
             except Error as exc:
                 if exc.code in ('HELPER_NOT_AVAILABLE','HELPER_VERSION_UNSUPPORTED','HELPER_TIMEOUT','HELPER_BACKGROUND_UNAVAILABLE'):
-                    _backoff[key]=(time.monotonic()+60,exc.code)
+                    attempts74=min(4,(prior[2]+1) if prior and len(prior)>2 else 1)
+                    _backoff[key]=(time.monotonic()+min(900,60*2**(attempts74-1)),exc.code,attempts74)
                     if len(_backoff)>8:_backoff.pop(next(iter(_backoff)))
                 raise
             _backoff.pop(key,None)

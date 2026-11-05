@@ -103,6 +103,8 @@ def result(event,previous=None):
    from programme_image69 import eligible
    if not eligible(art,event):return dict(code='CACHE_MISMATCH',source='placeholder')
    return dict(art,status68=value['code'])
+  if __import__('programme_image69').eligible(previous,event):
+   return dict(previous,retry_status74=value['code'])
   return dict(previous or {},**{k:art[k] for k in ('failure_reason68','storage68','until','storage69','storage_code69','sources70','lookup70','resolved_at55') if k in art},code=value['code'],status68=value['code'])
  except (ImportError,AttributeError,RuntimeError,ValueError,TypeError,KeyError):return previous or {}
 

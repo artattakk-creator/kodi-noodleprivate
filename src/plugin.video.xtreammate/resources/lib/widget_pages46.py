@@ -1,10 +1,10 @@
 """Atomic full-group publication using bounded pages, never one giant EPG DTO.
 
-Two private metadata slots are reused without deleting images/databases. A
-reader verifies each page's generation/hash; overwritten old pages fail closed.
-The old manifest remains active until every new page is completely written.
+Immutable content-addressed pages keep concurrent old readers consistent.
+Each page verifies generation/hash. The old manifest stays active until every
+new page is written. Only obsolete private publication metadata is reaped.
 """
-import hashlib,json,os,tempfile,time
+import hashlib,json,os,sqlite3,tempfile,time
 from collections.abc import Sequence
 MAX_PAGE=512*1024
 
@@ -41,47 +41,67 @@ class Items(Sequence):
         raise IndexError(index)
 
 
+from home_publication74 import serialized
+
+@serialized
 def publish(portal,rows,approved):
-    import uuid
-    from widget_refresh45 import path,trace,_art_cursor46
-    from widget_items45 import describe
-    from widget_group46 import infos
+    from widget_refresh45 import path,trace,_art_cursor46,MAX_BYTES
     from widget_data41 import policy
     from programme_urls55 import enqueue
-    filename=path(portal['id'],'live');old={}
-    try:
-        with open(filename,encoding='utf-8') as f:old=json.loads(f.read(256*1024))
-    except (OSError,ValueError):pass
-    slot=1-int(old.get('slot46',0));generation=uuid.uuid4().hex
-    frame=dict(pid=str(portal['id']),kind='live',policy=policy(portal,'live'),at=time.time(),generation46=generation,slot46=slot,pages46=[],count46=len(rows))
-    digest=hashlib.sha256();cursor=_art_cursor46.get(str(portal['id']),0)%len(rows)
-    wanted={(cursor+i)%len(rows) for i in range(min(16,len(rows)))}
+    from home_publication74 import old_frame,merge,signature,note,source_refs
+    from epg_status import revision as epg_revision
+    filename=path(portal['id'],'live')
     from import_budget import check_space
     try:
-        check_space(filename,MAX_PAGE*2)
+        old=old_frame(portal,'live');all_items=[];records=[]
+        cursor=_art_cursor46.get(str(portal['id']),0)%max(1,len(rows))
+        wanted={(cursor+i)%len(rows) for i in range(min(16,len(rows)))} if rows else set()
+        from widget_render47 import values as render
         for offset in range(0,len(rows),16):
-            batch=rows[offset:offset+16];items=[];records=[]
-            from programme_assets47 import channels as channels47
-            from widget_render47 import values as render47
-            for index,value in enumerate(render47(portal,'live',batch,approved)):
+            for index,value in enumerate(render(portal,'live',rows[offset:offset+16],approved)):
                 event=value.pop('_programme46',None)
                 if event and offset+index in wanted:enqueue(event)
                 if event:records.append(event)
-                items.append(value)
-            from programme_index46 import publish as publish_records46
-            publish_records46(records,include_art=False)
-            channels47(portal,records)
-            digest.update(json.dumps(items,sort_keys=True).encode())
-            data=json.dumps(dict(generation46=generation,items=items)).encode()
+                all_items.append(value)
+        all_items,revision=merge(portal,'live',all_items,rows,old)
+        digest=signature(all_items,'live')
+        if old and old.get('signature')==digest and old.get('source_revision74')==revision and time.time()-old.get('at',0)<300:
+            trace('UNCHANGED','live',len(all_items));return True
+        if len(json.dumps(all_items).encode())>MAX_BYTES:trace('BAD_FRAME','live');return False
+        check_space(filename,MAX_PAGE*2)
+        frame=dict(pid=str(portal['id']),kind='live',policy=policy(portal,'live'),at=time.time(),
+            generation46=digest,pages46=[],count46=len(all_items),signature=digest,
+            source_revision74=revision,epg_revision74=epg_revision(portal['id']),immutable74=True,source_refs74=source_refs(rows))
+        for offset in range(0,len(all_items),16):
+            items=all_items[offset:offset+16]
+            data=json.dumps(dict(generation46=digest,items=items)).encode()
             if len(data)>MAX_PAGE:trace('BAD_FRAME','live');return False
-            name=os.path.basename(filename)+'.page46-'+str(slot)+'-'+str(offset//16)+'.json'
-            atomic(os.path.join(os.path.dirname(filename),name),data)
-            frame['pages46'].append(dict(name=name,count=len(items),sha256=hashlib.sha256(data).hexdigest()))
-        frame['signature']=digest.hexdigest();data=json.dumps(frame).encode()
+            page_hash=hashlib.sha256(data).hexdigest()
+            name=os.path.basename(filename)+'.page46-74-'+page_hash+'.json'
+            target=os.path.join(os.path.dirname(filename),name)
+            if not os.path.isfile(target):atomic(target,data)
+            frame['pages46'].append(dict(name=name,count=len(items),sha256=page_hash))
+        data=json.dumps(frame).encode()
         if len(data)>256*1024:trace('BAD_FRAME','live');return False
-        atomic(filename,data);_art_cursor46[str(portal['id'])]=(cursor+16)%len(rows)
-        from widget_diagnostics47 import note,save
-        save(portal['id'],'live','ITEMS',note(portal['id'],'live','ITEMS',items=len(rows)))
+        atomic(filename,data);_art_cursor46[str(portal['id'])]=(cursor+16)%max(1,len(rows))
+        # Optional metadata mirrors follow publication; their lock failure must
+        # not turn a valid immutable display frame into a failed publication.
+        try:
+            from programme_index46 import publish as publish_records
+            from programme_assets47 import channels
+            for offset in range(0,len(records),64):
+                publish_records(records[offset:offset+64],include_art=False)
+                channels(portal,records[offset:offset+64])
+        except (OSError,ValueError,RuntimeError,sqlite3.Error):pass
         from widget_notice46 import prepare
-        prepare(portal,'live',frame['signature'],len(rows));trace('PUBLISHED','live',len(rows));return True
+        prepare(portal,'live',digest,len(all_items));note(portal,'live','COMMIT',old,len(all_items),revision,digest)
+        trace('PUBLISHED','live',len(all_items))
+        # Reap only our immutable publication metadata beyond two hours. A
+        # readable manifest expires after ten minutes; current pages are pinned.
+        # Images, old .46 slots, databases and every user file are untouched.
+        keep={p['name'] for p in frame['pages46']}
+        from pathlib import Path
+        for page in Path(filename).parent.glob(Path(filename).name+'.page46-74-*.json'):
+            if page.name not in keep and not page.is_symlink() and time.time()-page.stat().st_mtime>7200:page.unlink()
+        return True
     except (OSError,ValueError,TypeError):trace('READ_ERROR','live');return False

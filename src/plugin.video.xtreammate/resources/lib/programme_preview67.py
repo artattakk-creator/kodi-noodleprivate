@@ -25,7 +25,9 @@ def _work():
     art=dict(art) if eligible(art) else {}
    except Exception:art={}
    with _lock:
-    if token in _done and _done[token][0]==key:_done[token]=(key,art)
+    if token in _done and _done[token][0]==key:
+     previous=_done[token][1]
+     _done[token]=(key,art or (previous if eligible(previous) else {}))
 class Preview:
  def __init__(self,owner,rect):
   import xbmcgui,xbmcaddon,xbmc
@@ -48,9 +50,9 @@ class Preview:
  def render(self,portal,channel,event):
   global _thread
   if not self.available or not portal or not event or not channel:self.hide();return
-  from programme_events46 import key
+  from programme_requests68 import identity as event_identity74
   row=dict(channel.extra,sid=str(channel.extra.get('stream_id','')),name=channel.name) if hasattr(channel,'extra') else dict(channel)
-  identity=key(portal['id'],row.get('sid',row.get('stream_id','')),event)
+  identity=event_identity74(dict(event,pid=str(portal['id']),sid=str(row.get('sid',row.get('stream_id',''))),canonical=event.get('canonical46',event.get('canonical','')),revision=event.get('revision68',event.get('revision'))))
   if self._key!=identity:self.hide();self._key=identity
   now=time.monotonic()
   with _lock:

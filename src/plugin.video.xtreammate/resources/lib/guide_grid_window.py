@@ -150,7 +150,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
                 control.setVisible(event is not None or empty)
                 if event is None and not empty:continue
                 geometry=rectangle(event['start'],event['stop'],self.origin) if event else (0,896)
-                x,width=geometry;control.setPosition(340+x,168+r*56);control.setWidth(max(1,width-2))
+                x,width=geometry;control.setPosition(340+x,168+r*42);control.setWidth(max(1,width-2))
                 control.setLabel(event['title'] if event else tr(33110))
                 self._cells[cid]=(r,event)
                 if r==self.row and (event is selected or (selected is None and (empty or target is None))):target=cid
@@ -178,7 +178,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         for r in range(ROWS):self.getControl(750+r).setVisible(r==self.row and r<len(self.rows) and self.mode=='grid')
         event=self._selected()
         from programme_preview67 import Preview
-        if not hasattr(self,'_preview67'):self._preview67=Preview(self,(1140,620,96,54))
+        if not hasattr(self,'_preview67'):self._preview67=Preview(self,(920,518,320,180))
         self._preview67.render(self.portal,self.rows[self.row]['channel'] if self.rows and self.mode=='grid' else None,event)
         self._preview67.hide_source()
         self.getControl(103).setLabel((self.rows[self.row]['channel']['name']+' · ' if self.rows else '')+(time.strftime('%H:%M',time.localtime(event['start']))+' – '+time.strftime('%H:%M',time.localtime(event['stop']))+' · '+event['title']) if event else tr(33110))

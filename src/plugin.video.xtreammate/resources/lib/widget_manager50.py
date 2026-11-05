@@ -51,7 +51,7 @@ def show(router,portal):
         compatibility(restore=router._params['shortcuts62']=='restore');return
     if router._handle<0:
         import xbmc
-        xbmc.executebuiltin('ActivateWindow(Videos,'+router.url(action='widget_setup',pid=portal['id'])+',return)');return
+        xbmc.executebuiltin('ActivateWindow(Videos,'+router.url(action='widget_setup',pid=portal['id'],**({'technical74':'1'} if router._params.get('technical74')=='1' else {})) +',return)');return
     import xbmcgui,xbmcplugin
     from menu_icons45 import icon
     from boot_diagnostics import finish_directory

@@ -5,7 +5,8 @@ def candidate(event,cancel=lambda:False):
  from utils import setting_bool
  if not setting_bool('programme_tvmaze67',False):return None
  genre=str(event.get('genre','')).casefold()
- if any(v in genre for v in ('news','nachricht','sport','talk')) or not any(v in genre for v in ('serie','series','sitcom','episode')):return None
+ classified=any(v in genre for v in ('serie','series','sitcom','episode')) or type(event.get('season')) is int and type(event.get('episode')) is int
+ if any(v in genre for v in ('news','nachricht','sport','talk')) or not classified:return None
  from media_sources43 import get,SourceError
  from epg_events import title_key
  label=str(event.get('title',''))[:200];year=str(event.get('year') or '')

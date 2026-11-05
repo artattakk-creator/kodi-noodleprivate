@@ -38,7 +38,7 @@ def edit(data,changes):
 
 
 def patch(path,data):
-    from widget_skin66 import candidate
+    from widget_skin74 import candidate
     return candidate(path,data)
 
 
