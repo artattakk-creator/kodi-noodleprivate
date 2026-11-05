@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="script.gsmedia.xcmate.branding" name="XCMate BINGIE Space Blue Manager" version="0.2.0" provider-name="GS Media">
+  <requires><import addon="xbmc.python" version="3.0.0" /></requires>
+  <extension point="xbmc.python.script" library="default.py" />
+  <extension point="xbmc.addon.metadata">
+    <summary lang="de_DE">XCMate Space Blue: komplettes BINGIE-Farbschema, Intro, Splash, Logo und Wiederherstellung</summary>
+    <description lang="de_DE">Optionales Branding-Paket für verifiziertes Titan BINGIE MOD 2.2.3: original mitgeliefertes XCMate-Intro (Ton enthalten), Splash-Fotos, Logos sowie ein tiefblaues Farbschema für Menüs, Panels, Fokussierung, OSD und Fortschrittsbalken. Farb-Einstellungen werden vorab gesichert und bei Rückbau wiederhergestellt. Jeder Eingriff erfolgt erst nach separater Bestätigung, erstellt vorab sichere Backups und kann rückgängig gemacht werden. Widget- und Fokuskonfigurationen werden nicht umgeschrieben.</description>
+    <disclaimer lang="de_DE">Entwicklungskandidat, Android-TV-Gerätetest ausstehend. Vor Änderungen vollständiges Kodi-Profil sichern; Skinupdates können die Änderung überschreiben. Backup nicht durch Löschen der Add-on-Daten entfernen.</disclaimer>
+    <summary lang="en_GB">XCMate BINGIE Space Blue: palette, intro, splash, logo, backup and restore</summary>
+    <description lang="en_GB">An optional opt-in branding patch for checked Titan BINGIE MOD 2.2.3; includes a 7-second H.264/AAC video, splash images, chrome logo, blue skin-color preset, secure backups and rollback. No widget/focus geometry changes.</description>
+    <platform>all</platform><license>MIT (patch code); media: user-provided XCMate branding</license>
+    <assets><icon>resources/media/icon.png</icon><fanart>resources/media/fanart.jpg</fanart></assets>
+  </extension>
+</addon>
