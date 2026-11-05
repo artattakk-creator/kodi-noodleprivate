@@ -33,15 +33,74 @@ Der Nutzer möchte **nicht zwei gleichzeitige Cover-Zeilen** auf der Startansich
 4. Aktiver Fokusrahmen **itemlokal** (an exakt dem Cover-/Sender-Icon), richtige Y-Koordinate, gleiche Höhe wie aktives Item (ggf. gewünschter Fokuslift nur für aktives Poster). Kein doppelter globaler Rahmen oder Rahmen auf benachbarten Reihen. Beim Seitenmenü-Öffnen den aktiven Fokus auf die richtige Ebene setzen und Overlays eindeutig priorisieren.
 5. Nicht nur XCMate-Widgetpfade prüfen, sondern das tatsächlich installierte BINGIE-/Space-Blue-Home-Layout, die jeweilige Skin-Revision, Include-Order und die aktuelle Widget-Definition/Skinkonfiguration.
 
-## 3. Hero-Visuals – flächiges Bild plus lesbare, leichtere Info-Karte
+## 3. VERBINDLICHE KORREKTUR 05.11.2026 – LINKS GROSSES BILD, RECHTS EXKLUSIVE INFO-TABELLE
 
-- Hero **flächig** mit dem zum aktuell fokussierten Film/Serie/Sendung passenden Fanart/Backdrop. Bilder aus Film-/Serien-Provider-Metadaten bevorzugen; TVMaze/TMDB nur bei entsprechend verfügbarer zulässiger Sekundärquelle und bereits erteilter Datenübermittlungsfreigabe. Bei Live-TV: XMLTV/Provider-Ereignisbild zuerst, TMDB/TVMaze oder geeignete andere zugelassene Quellen mit sicherem Event-Matching und Opt-in. Kein irreführendes Bild.
-- Wenn nur ein Hochkant-Poster und kein breites Fanart vorhanden ist: gestalterisch vollflächigen Hero-Hintergrund mit sauberer Skalierung/neutraler Blur- oder Verlaufsebene, **Poster sichtbar und unverzerrt**; niemals vorhandenes Poster durch ein riesiges leeres Platzhaltersymbol ersetzen. Kein unästhetisches Stretching oder übermäßiger Gesichtsbeschnitt.
-- Die rechte/seitliche Informationskarte aus Foto 1 **erhalten**, aber **etwas transparenter** (Kontrast weiterhin lesbar). Darstellung darf als dunkler halbtransparenter Verlauf/Glass-Overlay auf das Hero-Bild gelegt werden, ohne das volle Bild zu verdecken.
-- Live-TV-Karte: kleines Senderlogo, eindeutiger **Sendername** (keine Gruppenkennung), **Jetzt**: Titel, Start–Ende, Fortschritt/Restzeit, Untertitel, kurzer Beschreibungstext; **Danach**: Titel/Startzeit. Sofern vorhanden EPG-Genre, Produktionsjahr, Darsteller, Inhaltsangabe und verwendete Artwork-Quelle. Fehlende Felder weglassen statt falsche/alte Werte zeigen. Auch bei fehlendem Bild **EPG-Text nicht blockieren**.
-- Film-/Serien-Karte: Titel, Jahr, Genre, Laufzeit/Staffel, Inhaltsangabe und verfügbare Cast-/Altersfreigabe-/Bewertungsdaten (nur wenn sicher vorhanden); Provider-Infos nicht durch andere Serien-/Filmdaten ersetzen. Eine klar lesbare kleine Attribution **„Bild: Provider / TMDB / TVMaze / XMLTV“** nur für tatsächlich genutzte Quelle, kein dekoratives falsches Anbieterlogo. Quellenanzeige kann Icon + Text sein, wenn lokale lizenzierte Assets vorliegen.
-- Bildschirm 1920×1080 sowie 1280×720, lange deutsche Titel, Umlaut/Fallback-Fonts, Untertitel und lange Beschreibungen layouten; text wrapping/maxlines/ellipsize statt in Rail ragen.
-- Das gleiche Hero-Konzept bei direktem Start, horizontalem Focus-Scroll, vertikalem Kategorienwechsel, Seitenmenü auf/zu und nach Kodi-Restart/Refresh.
+> **Dieses Kapitel ersetzt alle früheren allgemeinen Angaben über eine frei platzierbare Informationskarte.** Ausdrückliche Nutzerentscheidung: **Ausschließlich die RECHTE Hero-Seite** darf lange Beschreibungen, EPG-/Filmdetails, Fortschrittsanzeige und Quellenlogos enthalten. **LINKS möglichst nur das großflächige Bild**, allenfalls mit einem dezent eingeblendeten Titel. Die bestätigte **eine aktive horizontale Sender-/Cover-Leiste** direkt darunter bleibt bestehen.
+
+### 3.1 Verbindliches Anordnungsmodell
+
+```text
+┌────────────────────────────── HERO, konstante Höhe ──────────────────────────┐
+│   BILD LINKS (ca. 67 %)            │   INFO-TABELLE RECHTS (ca. 33 %)       │
+│                                    │                                         │
+│                                    │  [Senderlogo] Sender / Filmtitel       │
+│   GROSSES, KORREKTES FANART        │  Jetzt       Titel / Zeit / Restzeit  │
+│   ODER FORMATGETREUES POSTER       │  Fortschritt ████████░░░░░            │
+│                                    │  Danach      Titel / Startzeit        │
+│   [optional: dezenter Titel]       │  Inhalt      mehrzeilige Beschreibung │
+│                                    │  Details     Genre / Jahr / Cast etc. │
+│                                    │  ──────────────────────────────────── │
+│                                    │  Bild: [TMDB] [TVMaze] [Provider]     │
+│                                    │  (nur tatsächlich genutzte Quellen)  │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ EINE AKTIVE HORIZONTALE ZEILE: Senderlogos ODER Filmcover ODER Seriencover │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+- Hero-Rechteck **großflächig und in fester Höhe**, auch bei wiederholtem vertikalem Scrollen. Die eine horizontale Rail sitzt unterhalb; keine zweite gleichzeitige Cover-Reihe, keine schwebenden Überschriften oder Cover im Hero.
+- Anfangswerte bei 1920×1080: linke Bildfläche ungefähr **66–70 %**, rechte Tabelle **30–34 %** der verfügbaren Hero-Breite. Für 1280×720 an reale Safe-Areas und Schriftgrößen anpassen; **keine starren Y-Pixelwerte** ohne gemessene Skinkoordinaten. Das Hintergrundbild darf hinter dem rechten Panel weiterlaufen, aber links darf **kein Tabelleninhalt** hineinragen.
+- **Links** nur das thematisch korrekte breite Fanart/Backdrop bzw. ein unverzerrtes Poster mit gestaltetem farblich passendem Hintergrund. Falls gewünscht höchstens ein dezenter Titel am unteren Bildrand. **Ausgeschlossen links:** Beschreibung, Tabellenzeilen, „Jetzt/Danach“, Progress-Balken, Cast-Liste, TMDB-/TVMaze-Logos, große dunkle Infobox.
+- **Rechts** eine optisch **tabellarisch gegliederte** Informationsfläche (Kodi-Skin-XML-Gruppen, zweispaltige Label/Wert-Zeilen und Textboxen; kein HTML erforderlich). Dunkel und **etwas transparenter als bisher**, vorgeschlagener Anfangswert ca. 60–75 % Deckkraft, bei gleichzeitig verlässlich lesbaren Texten. Space-Blue-Farben verwenden. Ein transparenter Verlauf an der linken Panelkante ist zulässig; nicht die linke Motivfläche abdunkeln.
+- Panel muss in der festen Hero-Höhe bleiben: lange Titel und Beschreibungen in der **rechten** Box begrenzen/scrollen, nicht über Poster, Rail oder Quellenleiste malen. Wenn links ein Titel steht, darf die rechte Tabelle ihn im Header gern wiederholen, aber es dürfen nicht zwei unkoordinierte Titel-Layer überlappen.
+- Kategorie- und Fokuswechsel müssen **atomar Bild, Tabelleninhalt, Quellenbeleg und Identity** wechseln. Keine Hero-Daten von altem Film/Sender bei Fokus auf neue Reihe; keine grenzüberschreitenden oder verschwundenen Elemente, auch wenn das Seitenmenü geöffnet wird.
+
+### 3.2 Inhalt der rechten Tabelle je Hauptbereich
+
+**Live-TV:** Tabellenkopf **echter Sendername und Senderlogo**, niemals nur der Gruppenname wie `###### GERMANY HEVC ######`. Gruppe **JETZT** mit Sendungstitel, Sendezeit, Restzeit, Fortschritt und Beschreibung; Gruppe **DANACH** mit nächstem Titel/Startzeit; danach nur belegte weitere Angaben: Untertitel, Genre, Jahr, Mitwirkende, Beschreibung. Die Live-EPG-Daten müssen **ohne vorherigen Senderstart** aus dem lokalen Snapshot geladen und sofort rechts gezeigt werden; der eventuelle Bildabruf darf Text niemals blockieren.
+
+**Filme:** Rechts Titel, Jahr, Genre, Laufzeit, Altersfreigabe, Bewertung, Beschreibung, Cast, soweit Provider tatsächlich solche Fakten liefert. Links passendes breites Provider-Fanart oder qualitätsbewusstes Poster-Fallback. Vorhandene Provider-Bilder nicht durch ein generisches Bildsymbol ersetzen; externes TMDB/TVMaze nur, wenn passend und bereits erlaubt.
+
+**Serien:** Rechts Titel, Jahr, Genre, Staffeln/Episoden, Beschreibung, verfügbare Mitwirkende und Bewertung; nur zum fokussierten Eintrag passende Daten. Links das korrekte Serien-/Episodenbild, nicht alte Film-/Live-TV-Identität.
+
+Bei fehlenden Daten Felder ausblenden oder klar als unverfügbar kennzeichnen; keine erfundenen Inhalte oder fälschlichen Bewertungen. Die Informationstabelle ist **immer ausschließlich rechts**.
+
+### 3.3 Feste Bildquellen-/Metadaten-Attribution im unteren RECHTEN Panel
+
+Der Nutzer wünscht ausdrücklich **TMDB- und TVMaze-Logos**, falls diese Dienste genutzt wurden. Reserviere deshalb im **unteren Bereich der rechten Tabelle** einen kleinen eigenen Quellenstreifen, der auch bei langen Beschreibungen sichtbar bleibt.
+
+- Visuell lesbare Logos **nur bei wirklich verwendeten, nachgewiesenen Quellen**. `Bild: TMDB`, `Bild: TVMaze`, `Bild: Provider`, `Bild: XMLTV`; separat `Daten: TMDB / TVMaze`, wenn darüber **Metadaten** statt Bilddaten stammen. Bietet die jeweilige Quelle keine Bild- oder Datenreferenz, **kein Logo nur als Dekoration** anzeigen.
+- Original-/Branding- und Lizenzanforderungen für TMDB/TVMaze vor Verwendung von Logo-Assets prüfen; lokal gebündelte erlaubte Assets, **keine renderkritischen Logo-Hotlinks**. Falls Asset fehlt oder Nutzung unklar, gut lesbare **Textattribution** statt Fantasielogo. Die Nennung ist keine Partnerschaftsempfehlung.
+- Quellenidentität zusammen mit Event-/Medien-ID, Titel, Art-Key und Cache-Generation **atomar** publizieren. Kein TMDB-Logo am aktuellen Providerbild allein weil ein früherer Sender TMDB benutzte. Bei mehreren tatsächlich genutzten Quellen konkrete Rolle zeigen; ungenutzte Logos ausblenden.
+- Provider-Artwork bei Filmen/Serien priorisieren; Live-TV: XMLTV/Provider-Eventbild, erst danach korrektes TMDB-/TVMaze-Matching **unter bestehendem Opt-in**. Vorhandener TMDB-Token allein ist **keine aktive Einwilligung** zur Drittanbieter-Anfrage.
+- **Keinerlei Logos auf der linken Hero-Bildfläche**. Quellenstreifen niemals über Cover-Leiste oder Live-TV-Fokus legen; Höhe innerhalb der rechten Tabelle reservieren.
+
+### 3.4 Implementierungshinweise und Abnahmetests
+
+Die bisherige Analyse aus #367 bleibt verbindlich: `hero_epg63.py` darf bei fehlendem Control `296301/296302` nicht die gesamte Text/Bild-Property-Publikation abbrechen; `IncludesXCMate64.xml` bindet Senderlogos an `XCMate.ProgrammeLogo46`, Titel an `XCMate.ProgrammeChannel46`; `widget_skin74.py` ist optional und deshalb der aktive Skin-Hash/Adapterzustand **read-only** zu prüfen. `home_publication74.py` muss vorhandene verifizierte Referenzen bei flüchtigen Cache-Fehlern behalten. Tatsächliche BINGIE-MOD-/Space-Blue-Includes und Z-Order prüfen statt ungefragt globalen Skin überschreiben.
+
+| Test-ID | Szenario | Harte PASS-Regel |
+|---|---|---|
+| HERO75-R1 | Live-TV nach Kaltstart **ohne Senderstart** | Links korrektes Bild oder plausibler sicherer Fallback; rechts **alle verfügbaren Jetzt/Danach-Daten** und echte Senderidentität |
+| HERO75-R2 | Film mit Fanart | Links nur Bild (+ optional Titel); **sämtliche ausführlichen Details nur rechts**; genau eine Filmcover-Zeile |
+| HERO75-R3 | Film nur mit Hochkantposter | Links Poster unverzerrt auf ansprechendem Hintergrund, keine riesige Ersatzgrafik; Infos rechts |
+| HERO75-R4 | Serie und mehrfacher Bereichswechsel | Hero/Tabellenidentität zum Fokus, keine alten VOD-/EPG-Daten, **eine Rail** |
+| HERO75-R5 | TMDB- oder TVMaze-Bild-/Datenbeleg | Nur der reale Dienst als kleines Logo/Text im **rechten Panel-Footer**, richtige Rolle; bei reinem Providerbild kein falsches Logo |
+| HERO75-R6 | 20+ horizontale/vertikale Scrolls und Seitenmenü auf/zu | Konstante Hero-Höhe, Fokusrahmen exakt am fokussierten Element, kein Beschriftungs-/Zeilen-Überlapp |
+| HERO75-R7 | 1920×1080 und 1280×720 | Rechte Tabelle bleibt im Panel, Quelle sichtbar, vollständiges Hauptbild links, Beschreibung/Quelle nie links |
+| HERO75-R8 | EPG-Timeout/kein Artwork verfügbar | Bereits vorhandener Eventtext rechts bleibt stabil, kein Leeren/falscher Sender, keine GUI-Blockade |
+
+Als **FAIL** gelten ausdrücklich: ausführliche Texte oder TMDB-/TVMaze-Logos auf der **linken** Bildseite, gemischte Film-/Serien-Poster-Reihen, schrumpfender Hero, nach unten verschobener Rahmen, Symbol-Platzhalter trotz vorhandenem Poster, veraltete Daten/Quellenlabels, fehlende EPG-Texte bis zum ersten Tune. **Synthetische Renderings sind kein Android-PASS.** Auf der echten Kodi-21.3-Box Screenshots/kurzen Ablauf mit Fokus, einer Rail und stabiler rechter Tabelle erfassen. Vor Skinänderungen expliziter Backup-/Revert-Schutz. Keine Profildaten/Provider-/Token-/EPG-Mappings löschen.
+
 
 ## 4. P0 Datenpfad – EPG/Logos sofort nutzbar ohne Live-TV-Tuning
 
