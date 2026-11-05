@@ -78,7 +78,7 @@ F. **Meldungen**: diagnostiziere pro Stufe `ADDON_ID`, benötigte und gefundene 
 - `online-test/index.html`: für Kodi HTTPDirectory **sichtbarer Linktext exakt gleich relativer href-Dateiname** (z. B. `<a href="script.gsmedia.setup-0.5.22.zip">script.gsmedia.setup-0.5.22.zip</a>`). Zunächst Repo-ZIP, dann Setup-ZIP, keine unnötigen Links.
 - NeoDark3: https://artattakk-creator.github.io/kodi-noodleprivate/online-test/ ; der TinyURL-Alias `https://tinyurl.com/neodark3` ist **nicht** als funktionierend verifiziert. GitHub Pages URL und ZIP-Download-Status nach Veröffentlichung prüfen.
 - Alle ZIP-/Hash-/Manifest-/Index-Konsistenzen per CI prüfen. **Nicht** das reguläre `addons.xml`, `addons.xml.md5`, reguläre Installer-ZIP oder `src/plugin.video.xtreammate` für diesen Hotfix ändern. Keine Änderungen am Space-Blue-Branding.
-- Entwicklungs-PR nach `main` erstellen, dort Tests und SHA nachweisen. Nach Freigabe Merge auf `main` und **nur** Pilot-Testdaten veröffentlichen; nie automatisch über das reguläre GS-Media-Repository verteilen.
+- Entwicklungs-PR nach `main` erstellen, dort Tests und SHA nachweisen. Der Nutzer hat die **Veröffentlichung eines Testkandidaten im NeoDark3/Pilot-Verzeichnis** ausdrücklich beauftragt: Nach grüner CI, überprüfter ZIP-/Katalog-Konsistenz und ohne offene P0-Blocker den PR nach `main` mergen und **ausschließlich** die Pilot-Testdaten veröffentlichen; die echte Android-Abnahme bleibt `ANDROID_NOT_TESTED` bis zum Gerätetest. Bei nicht erfülltem Test-/Sicherheitsgate nicht mergen, sondern die Ursache melden. **Niemals** automatisch über das reguläre GS-Media-Repository verteilen.
 
 ## 6. Ergebnisbericht an Auftraggeber
 
