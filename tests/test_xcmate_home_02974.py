@@ -90,3 +90,10 @@ class Home74(Fixture,unittest.TestCase):
   with mock.patch('widget_refs74.read',return_value={}):
    merged,_=self.p.merge(self.portal,'vod',[current],[dict(rows[0],cover='https://public.example.test/different.jpg')],first)
   self.assertFalse(merged[0]['art']['poster'])
+
+ def test_picture_diagnostics_distinguish_reference_states_from_row_count(self):
+  frame=self.frame(self.rows());self.assertEqual(frame['art_status74'],'REFERENCE_PENDING')
+  values=[dict(art={'poster':'/synthetic/approved.jpg'}),dict(art={'poster':''})]
+  self.assertEqual(self.p.art_status(values),'REFERENCE_PARTIAL')
+  self.assertEqual(self.p.art_status(values[:1]),'REFERENCE_READY')
+  self.assertEqual(self.p.art_status([]),'EMPTY')

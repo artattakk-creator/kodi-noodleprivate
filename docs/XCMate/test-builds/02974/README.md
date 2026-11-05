@@ -3,7 +3,7 @@
 Kumulatives Kodi-Update, kein produktives Release. Vorhandene Installation aktualisieren; keine Deinstallation und keine Löschung von Profilen/Caches.
 
 - Paket: `plugin.video.xtreammate-0.1.29.74.zip`
-- SHA256: `08bd9aa62107e6f7261bc5718966512b7778af5deffa1943a0a376efbb617762`
+- SHA256: `8d3f08b1761e5f2ad6ffb061b24e6261c3b68ee35d197eab827e9fbac02f8e67`
 - CRC und Dateien gegen vollständigen Quellbaum geprüft; keine Datenbanken, Rohlogs oder Python-Cachedateien im ZIP.
 - [Android-Abnahme](../../ANDROID_ABNAHME_02974_DE.md)
 - [Ursachenanalyse](../../URSACHENANALYSE_02974_DE.md)

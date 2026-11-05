@@ -48,7 +48,7 @@ def publish(portal,rows,approved):
     from widget_refresh45 import path,trace,_art_cursor46,MAX_BYTES
     from widget_data41 import policy
     from programme_urls55 import enqueue
-    from home_publication74 import old_frame,merge,signature,note,source_refs
+    from home_publication74 import old_frame,merge,signature,note,source_refs,art_status
     from epg_status import revision as epg_revision
     filename=path(portal['id'],'live')
     from import_budget import check_space
@@ -71,7 +71,7 @@ def publish(portal,rows,approved):
         check_space(filename,MAX_PAGE*2)
         frame=dict(pid=str(portal['id']),kind='live',policy=policy(portal,'live'),at=time.time(),
             generation46=digest,pages46=[],count46=len(all_items),signature=digest,
-            source_revision74=revision,epg_revision74=epg_revision(portal['id']),immutable74=True,source_refs74=source_refs(rows))
+            source_revision74=revision,epg_revision74=epg_revision(portal['id']),immutable74=True,source_refs74=source_refs(rows),art_status74=art_status(all_items))
         for offset in range(0,len(all_items),16):
             items=all_items[offset:offset+16]
             data=json.dumps(dict(generation46=digest,items=items)).encode()
@@ -94,7 +94,7 @@ def publish(portal,rows,approved):
                 channels(portal,records[offset:offset+64])
         except (OSError,ValueError,RuntimeError,sqlite3.Error):pass
         from widget_notice46 import prepare
-        prepare(portal,'live',digest,len(all_items));note(portal,'live','COMMIT',old,len(all_items),revision,digest)
+        prepare(portal,'live',digest,len(all_items));note(portal,'live','COMMIT',old,len(all_items),revision,digest,frame['art_status74'])
         trace('PUBLISHED','live',len(all_items))
         # Reap only our immutable publication metadata beyond two hours. A
         # readable manifest expires after ten minutes; current pages are pinned.

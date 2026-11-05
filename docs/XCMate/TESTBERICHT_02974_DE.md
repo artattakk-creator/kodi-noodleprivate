@@ -6,7 +6,7 @@ Dieser Bericht wird vor dem Draft-PR mit den endgültigen Laufresultaten und CI-
 |---|---|
 | Basis | aktuelles main `2e9e81c`, XCMate .73; bestehende .21-Installer-Veröffentlichung erhalten |
 | Neue P0-Hosttests | LKG 24→7, echte Löschung/autorisiert leer, Quelle/Konto/Profil, 30s-Lease/Grace/unsicheres DNS, immutable Seiten/Parallelreader, Publikationssperre, 300s/Sendungsende/Rollover, Opt-outs, optionale Skinprüfung/Backup/Restore |
-| Kumulative Tests | 3.051/3.051 PASS in 540,630 Sekunden auf dem .74-Kern; zusätzlich zwei Journal-/Quellen-Fehlerfälle PASS. Vollständiger Abschlusslauf für das finale Paket folgt. Keine entfernten Testmethoden/Skip-Verträge |
+| Kumulative Tests | 3.051/3.051 PASS in 540,630 Sekunden auf dem .74-Kern; zusätzlich drei Journal-/Quellen-/Diagnosefälle PASS. Vollständiger Abschlusslauf für das finale Paket folgt. Keine entfernten Testmethoden/Skip-Verträge |
 | PO | alle vorhandenen Kodi-PO-Kataloge validiert; neue Diagnosetexte DE/EN, bestehender Englisch-Fallback |
 | Native Kodi/BINGIE | echte Controls/Pixel: 88 Live-Sender, 24 Film-/24 Serienquellen, Fremdwidgets, Fokus, echtes Mini-EPG und Guide, Details/Hero, PNG/JPEG über verifiziertes synthetisches HTTPS |
 | Echter 60-Minuten-Lauf | 15 Minuten PASS (88/24/24 Items, 45 Workerzyklen, keine Workerfehler); 30/60 Minuten noch IN_PROGRESS. Reale monotone Zeit, kein Fast-forward; 15/30/60-Minuten-Screenshots, laufende Produktionsworker und injizierte Lesebudget-/Netzfehler. PR erst nach Abschluss |
@@ -41,4 +41,4 @@ Hostabhängigkeiten wie CI: Python 3.12, Pillow, impacket 0.13.0, simpleeval 0.9
 
 Die ersten Entwicklungsdurchläufe deckten alte Menü-/TTL-Testannahmen, einen unvollständigen synthetischen HEAD-Server und Pixelklassifikationsprobleme durch 720p-Resampling auf. Fehler wurden nicht als PASS gezählt. Finalbericht nennt die anschließend abgeschlossenen Läufe gesondert.
 
-Der reale Dauerlauf verwendet den .74-Kern `68d7b71`. Eine spätere, separat geprüfte Ergänzung fängt ausschließlich `AttributeError` bei beschädigtem optionalen Referenzjournal ab; das ist kein verändertes Cache-/Renderingverfahren. Diese Korruptionspfade werden zusätzlich in Hosttests und das finale Paket erneut in CI geprüft.
+Der reale Dauerlauf verwendet den .74-Kern `68d7b71`. Spätere, separat geprüfte Ergänzungen fangen `AttributeError` bei beschädigtem optionalen Referenzjournal ab und unterscheiden im Diagnoseereignis READY/PARTIAL/PENDING für Bildreferenzen. Das Cache-/Renderingverfahren und seine Signatur bleiben dabei unverändert. Diese Korruptionspfade werden zusätzlich in Hosttests und das finale Paket erneut in CI geprüft.

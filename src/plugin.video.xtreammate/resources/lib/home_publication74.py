@@ -32,7 +32,7 @@ def merge(portal,kind,items,rows,old=None):
     if keep_missing and len(current)<len(by_id):
         # No authoritative source change: keep the complete known row set.
         # A selection/account change already invalidates old_frame's policy.
-        note(portal,kind,'HOLD_PARTIAL',old,len(items),revision)
+        note(portal,kind,'HOLD_PARTIAL',old,len(items),revision,new_art_status=art_status(items))
         return prior,old.get('source_revision74')
     result=[];now=time.time();current_sources=source_refs(rows);rows_by_id={str(r.get('sid')):r for r in rows}
     for item in items:
@@ -65,18 +65,29 @@ def source_refs(rows):
     from programme_assets47 import sources
     return {str(row['sid']):hashlib.sha256(json.dumps(sources(row,provider_only=True),sort_keys=True).encode()).hexdigest() for row in rows}
 
-def note(portal,kind,reason,old,new_count,revision,new_generation=''):
+def art_status(items):
+    # Reference readiness, never a claim that Kodi decoded/displayed the image.
+    from widget_assets69 import renderable
+    total=len(items)
+    if not total:return 'EMPTY'
+    ready=sum(bool(renderable(item.get('art',{}).get('poster'))) for item in items)
+    return 'REFERENCE_READY' if ready==total else 'REFERENCE_PARTIAL' if ready else 'REFERENCE_PENDING'
+
+def note(portal,kind,reason,old,new_count,revision,new_generation='',new_art_status='UNKNOWN'):
     try:
         import xbmc
         pid=hashlib.sha256(str(portal['id']).encode()).hexdigest()[:12]
         oldrev=old.get('source_revision74') if old else None
+        statuses=('EMPTY','REFERENCE_READY','REFERENCE_PARTIAL','REFERENCE_PENDING')
+        old_status=old.get('art_status74','UNKNOWN') if old else 'EMPTY'
+        old_status=old_status if old_status in statuses else 'UNKNOWN'
+        new_status=new_art_status if new_art_status in statuses else 'UNKNOWN'
         digest=lambda v:hashlib.sha256(json.dumps(v,sort_keys=True).encode()).hexdigest()[:12]
         xbmc.log('[XCMate][HOME74] portal='+pid+' kind='+kind+' reason='+reason+
             ' old_generation='+str(old.get('signature','')[:12] if old else '')+
             ' new_generation='+str(new_generation[:12])+' old_count='+str(len(old['items']) if old else 0)+' new_count='+str(new_count)+
             ' source_revision='+digest(revision)+' old_revision='+digest(oldrev)+
-            ' old_art_status='+('PRESENT' if old and any(v.get('art') for v in old['items']) else 'EMPTY')+
-            ' new_art_status='+('ROWS' if new_count else 'EMPTY'),xbmc.LOGINFO)
+            ' old_art_status='+old_status+' new_art_status='+new_status,xbmc.LOGINFO)
     except (ImportError,AttributeError,RuntimeError,ValueError,TypeError):pass
 
 def signature(items,kind):

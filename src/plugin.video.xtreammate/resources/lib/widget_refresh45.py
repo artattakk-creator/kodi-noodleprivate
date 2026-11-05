@@ -94,16 +94,16 @@ def publish(portal,kind,rows,code='READY'):
         publish_records46(records46,include_art=False)
         from programme_assets47 import channels as channels47
         channels47(portal,records46)
-    from home_publication74 import old_frame,merge,signature,note,source_refs
+    from home_publication74 import old_frame,merge,signature,note,source_refs,art_status
     old=old_frame(portal,kind)
     items,source_revision74=merge(portal,kind,items,rows,old)
     from epg_status import revision as epg_revision74
     frame=dict(pid=str(portal['id']),kind=kind,policy=policy(portal,kind),at=time.time(),items=items,
                source_revision74=source_revision74,epg_revision74=epg_revision74(portal['id']),empty_authoritative74=not items and source_revision74 is not None,source_refs74=source_refs(rows))
-    frame['signature']=signature(items,kind)
+    frame['signature']=signature(items,kind);frame['art_status74']=art_status(items)
     if old and old.get('signature')==frame['signature'] and old.get('source_revision74')==source_revision74 and time.time()-old.get('at',0)<300:
         trace('UNCHANGED',kind,len(items));return True
-    note(portal,kind,'COMMIT',old,len(items),source_revision74,frame['signature'])
+    note(portal,kind,'COMMIT',old,len(items),source_revision74,frame['signature'],frame['art_status74'])
     data=json.dumps(frame).encode()
     if len(data)>MAX_BYTES:trace('BAD_FRAME',kind);return False
     fd,temp=tempfile.mkstemp(prefix='.widget45-',dir=os.path.dirname(path(portal['id'],kind)))
