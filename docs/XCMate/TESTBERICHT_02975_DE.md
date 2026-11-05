@@ -6,7 +6,7 @@ Basis: `ad5c337c0ca9ea6f85e458c17383fb32c19e3fc2` (.74). Auftrag #366/#367/#368.
 
 | Prüfung | Ergebnis |
 |---|---|
-| Neue .75-Funktions- und Bestandsschutztests | **36/36 PASS**, 4,975 s |
+| Neue .75-Funktions- und Bestandsschutztests | **39/39 PASS**, 5,063 s (inklusive fünfter Skin-Datei, Schreibfehler/Rollback/Restore) |
 | Bestehende pytest-Brandingtests | **11/11 PASS**, 0,15 s |
 | Sprachdateien | **17 Kataloge PASS** |
 | Originale Tabler-Icons und Lizenzen | **92 Texturen PASS** |
@@ -47,7 +47,7 @@ Die `settled_render_ms` von 2.718–3.044 ms enthalten ausdrücklich 1.500 ms fe
 
 | Auftrag | Implementierung | Nachweis / noch offen |
 |---|---|---|
-| #367 Home-Hero/Einzelrail/Navigationsicons | feste 66,7/33,3-Aufteilung, native Nachbarziele, vorhandene Routen erhalten | 720p Host-Rendering PASS; 1080p/Langzeit/Android ausstehend |
+| #367 Home-Hero/Einzelrail/Navigationsicons | feste 66,7/33,3-Aufteilung, native Nachbarziele, vorhandene Routen erhalten | 720p/1080p CI-Rendering PASS; Langzeit/Android ausstehend |
 | #367 Start-EPG/Ladepriorität | profil-/konfigurationsgebundener lokaler Checkpoint, Fokus + sichtbare fünf, vorhandene Worker gegatet | Hosttests PASS; reale Android-Startreihenfolge offen |
 | #366 Bildpfad/296301/296302 | exakter geprüfter Event-Origin, eng begrenzte Alt-Negativ-Neubewertung, Text unabhängig vom Progress-Control | Host PASS; private Provider-/TMDB-/TVmaze-Treffer **ANDROID_NOT_TESTED** |
 | #368 Rückkehr nach verspätetem positivem ACK | exakte Session, leeres eigenes Vollbild freigegeben, Rückkehr genau einmal | 20 Hostzyklen PASS; native ARM32-Stop-Blockade **nicht nachweislich behoben** |

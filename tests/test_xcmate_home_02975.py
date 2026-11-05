@@ -1,5 +1,5 @@
 """Cold local EPG, receiver gates, event origins and .75 native skin contracts."""
-import importlib,json,time,types,unittest
+import hashlib,importlib,json,time,types,unittest
 from pathlib import Path
 from unittest import mock
 import xml.etree.ElementTree as E
@@ -130,6 +130,43 @@ class Schema75(Fixture,unittest.TestCase):
         self.assertEqual(result['code'],'KODI_LIBRARY_NOT_FOUND');self.assertFalse(list(self.folder.glob('MyVideos*')))
 
 class Skin75(Fixture50,unittest.TestCase):
+    def navigation75(self):
+        target=self.skin/'xml/IncludesBingie.xml'
+        raw=(ADDON.parents[1]/'tests/fixtures/bingie223_navigation75.xml').read_bytes()
+        self.assertEqual(hashlib.sha256(raw).hexdigest(),'ab30a92b13a80123cf7ac2a6a24f4b3f2e9669c3a2da769666868cc60649077b')
+        target.write_bytes(raw)
+        return target,raw
+    def test_five_file_navigation_transaction_restores_exact_upstream_bytes(self):
+        target,raw=self.navigation75();before=self.skin_bytes();saved=(self.menu.read_bytes(),self.prop.read_bytes())
+        plan=self.skinmod.prepare(self.skin);self.assertEqual(len(plan['entries']),5)
+        self.assertEqual(target.read_bytes(),raw)
+        self.skinmod.apply(plan['id'],self.skin,confirmed=True)
+        tree=E.parse(target)
+        icon=tree.find("variable[@name='XCMate75.MenuIcon']")
+        self.assertEqual(len({n.text for n in icon.findall('value')[:-1]}),7)
+        self.assertEqual(icon.findall('value')[-1].text,'$INFO[ListItem.Icon]')
+        self.assertTrue(self.skinmod.applied(self.skin))
+        self.skinmod.apply(plan['id'],self.skin,confirmed=True,restore=True)
+        self.assertEqual(target.read_bytes(),raw);self.assertEqual(self.skin_bytes(),before)
+        self.assertEqual((self.menu.read_bytes(),self.prop.read_bytes()),saved)
+    def test_navigation_replace_failure_before_and_after_rolls_back_all_five(self):
+        target,raw=self.navigation75();before=self.skin_bytes()
+        for after in (False,True):
+            with self.subTest(after=after):
+                plan=self.skinmod.prepare(self.skin);original=self.tx.replace;failed=[False]
+                def replace(path,data,expected,mode=0o600):
+                    if Path(path)==target and not failed[0]:
+                        failed[0]=True
+                        if after:original(path,data,expected,mode)
+                        raise OSError('synthetic navigation write fault')
+                    return original(path,data,expected,mode)
+                with mock.patch.object(self.tx,'replace',side_effect=replace),self.assertRaises(OSError):
+                    self.skinmod.apply(plan['id'],self.skin,confirmed=True)
+                self.assertEqual(target.read_bytes(),raw);self.assertEqual(self.skin_bytes(),before)
+    def test_unknown_navigation_xml_blocks_all_five_files_before_write(self):
+        target,raw=self.navigation75();target.write_bytes(raw+b'<!-- custom -->');before=self.skin_bytes()
+        with self.assertRaisesRegex(ValueError,'UNVERIFIED_NAVIGATION_SKIN'):self.skinmod.prepare(self.skin)
+        self.assertEqual(target.read_bytes(),raw+b'<!-- custom -->');self.assertEqual(self.skin_bytes(),before)
     def test_right_panel_and_one_fixed_viewport_do_not_change_saved_bindings(self):
         before=self.skin_bytes();menu=self.menu.read_bytes();props=self.prop.read_bytes();plan=self.skinmod.prepare(self.skin)
         self.skinmod.apply(plan['id'],self.skin,confirmed=True)
