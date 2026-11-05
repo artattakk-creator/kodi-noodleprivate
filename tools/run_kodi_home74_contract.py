@@ -19,6 +19,7 @@ def main():
     parser.add_argument('--report-dir', type=Path, required=True)
     parser.add_argument('--skin-archive', type=Path)
     parser.add_argument('--keep-container', action='store_true')
+    parser.add_argument('--existing-container',help='Revalidate completed evidence in our disposable synthetic container; no setup or clock changes')
     parser.add_argument('--idle-seconds',type=int,default=0)
     parser.add_argument('--resolution',choices=('1920x1080','1280x720'),default='1920x1080')
     args = parser.parse_args()
@@ -43,19 +44,20 @@ def main():
     docker = ['docker', '--host=unix:///var/run/docker.sock']
     def run(*command, **kwargs):
         return subprocess.run(docker + list(command), env=env, check=True, **kwargs)
-    name = 'xcmate-home74-' + uuid.uuid4().hex[:12]
+    name = args.existing_container or 'xcmate-home74-' + uuid.uuid4().hex[:12]
     image = 'xcmate-kodi21-helper57-contract'
-    with (report / 'build.log').open('w') as output:
+    if not args.existing_container:
+      with (report / 'build.log').open('w') as output:
         run('build', '--secret', 'id=system_ca,src=/etc/ssl/certs/ca-certificates.crt', '-t', image, str(root / 'tools/kodi_helper57_host'), stdout=output, stderr=subprocess.STDOUT)
     try:
-        run('run', '-d', '--name', name, '--mount', 'type=bind,src=' + str(root / 'tools/kodi_home74_host') + ',dst=/work,readonly',
+        if not args.existing_container:run('run', '-d', '--name', name, '--mount', 'type=bind,src=' + str(root / 'tools/kodi_home74_host') + ',dst=/work,readonly',
             '--mount', 'type=bind,src=' + str(root / 'src/plugin.video.xtreammate') + ',dst=/xcmate,readonly',
             '--mount', 'type=bind,src=' + str(skin / 'skin.titan.bingie.mod') + ',dst=/skin,readonly',
             '--mount', 'type=bind,src=' + str(candidate) + ',dst=/candidate,readonly', '-e','XCMATE_IDLE74='+str(args.idle_seconds),'-e','XCMATE_RES74='+args.resolution,image, 'sh', '/work/start.sh', stdout=subprocess.DEVNULL)
         print('HOST_CONTAINER', name, flush=True)
         try:
             with (report / 'home.json').open('w') as output:
-                run('exec', name, 'python3', '/work/probe.py', stdout=output)
+                run('exec', name, 'python3', '/work/verify74.py' if args.existing_container else '/work/probe.py', stdout=output)
         except subprocess.CalledProcessError:
             run('exec',name,'python3','-c',"from pathlib import Path; p=Path('/root/tls69-requests.jsonl'); print('SYNTHETIC_TLS69_REQUESTS '+(p.read_text() if p.exists() else 'NONE'))")
             # Preserve synthetic native pixels even when a visual assertion fails.

@@ -42,7 +42,7 @@ def read(portal,kind,rows):
                 if known and known[0]>time.monotonic() and not known[1]:continue
                 result.setdefault(str(row['sid']),{})[role]=source+KODI_OPTIONS
         return result
-    except (OSError,ValueError,TypeError,KeyError):return {}
+    except (OSError,ValueError,TypeError,KeyError,AttributeError):return {}
 
 def revoked(source):
     from artwork_visible import _dns_cache,_lock
@@ -55,7 +55,7 @@ def revoked(source):
 def remember_many(portal,kind,records):
     # Optional reference journal cannot terminate the actual artwork worker.
     try:return _remember_many(portal,kind,records)
-    except (OSError,ValueError,TypeError,RuntimeError,TimeoutError):return
+    except (OSError,ValueError,TypeError,RuntimeError,TimeoutError,AttributeError):return
 
 def _remember_many(portal,kind,records):
     if not records:return

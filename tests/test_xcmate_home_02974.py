@@ -74,3 +74,19 @@ class Home74(Fixture,unittest.TestCase):
   with mock.patch('programme_assets47.read_many',return_value={}):frame=self.frame(rows,kind='live')
   filename=Path(self.w.path('p','live'));(filename.parent/frame['pages46'][0]['name']).write_text('{}')
   self.assertIsNone(self.w.read('p','live'))
+
+ def test_corrupt_optional_reference_journal_cannot_break_widget_directory(self):
+  filename,context=self.refs.path(self.portal,'vod')
+  for value in ([],None,dict(context=context,refs=[]),dict(context=context,refs={'0':[]})):
+   Path(filename).write_text(json.dumps(value));self.refs._cache.clear()
+   self.assertEqual(self.refs.read(self.portal,'vod',self.rows(1)),{})
+   self.assertIsNone(self.refs.remember_many(self.portal,'vod',[('0','poster',self.rows(1)[0]['cover'],30)]))
+ def test_local_last_good_art_cannot_cross_a_changed_provider_source(self):
+  image=self.folder/'known.png';image.write_bytes(b'synthetic verified by prior pipeline')
+  rows=self.rows(1);first=self.frame(rows)
+  item=first['items'][0];item['art']['poster']=str(image)
+  first['source_refs74']=self.p.source_refs(rows)
+  current=dict(item,art={'poster':''},props=dict(item['props']),info=dict(item['info']))
+  with mock.patch('widget_refs74.read',return_value={}):
+   merged,_=self.p.merge(self.portal,'vod',[current],[dict(rows[0],cover='https://public.example.test/different.jpg')],first)
+  self.assertFalse(merged[0]['art']['poster'])
