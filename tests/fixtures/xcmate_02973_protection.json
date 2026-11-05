@@ -692,10 +692,10 @@
     "src/plugin.video.xtreammate/service.py": "0c62a14f043ec8209dcd632bba1142297e49b9c3e4a4e909e1a2ece06bfe8ac4"
   },
   "channel_sha256": {
-    "online-test/addons.xml": "5b065f06633537f9417d6258eb2d564ac1353a7dd0ba8fcd8edaf03cde8ae54f",
-    "online-test/addons.xml.md5": "1759781db0ebe1682ca6916923d93301bbe9a02c99500cf57d1b73122df46ba3",
+    "online-test/addons.xml": "a7fab3b1114396bf3bd413946f47b6211af13443efc834a5c31f5a16bf8667b8",
+    "online-test/addons.xml.md5": "ecf1327bc57a316af70f318fa5b19654925fd3093d247a54555461891374e27a",
     "online-test/index.html": "b0d87b87a0c4d621b6c81b3cf01ab65839b352daa50a8176f055115299139e9a",
-    "online-test/manifest.json": "2993ed5cfb37abcdd9e85a7a8e5507eee205cffd58e9d6aa38a80eeec8a98e56",
+    "online-test/manifest.json": "c3aa507d2a98cf4e72d5ed252661ea9c92e369e849b4250310b6014a2df2f64a",
     "online-test/plugin.audio.m3sr2019/SOURCE.txt": "707c96ea70e7941ce46eee8ef0f1de974e66338adc03a2acef532b48b44b985b",
     "online-test/plugin.audio.m3sr2019/fanart.jpg": "02330bd01305210246aa3a1a7ac3fbc2acc4c721a512473801743f8ba3d8c729",
     "online-test/plugin.audio.m3sr2019/icon.png": "41e939bc57acdcdab74682b422acacc5656d41057ec3b11e14d6cd4a61d4c8c9",

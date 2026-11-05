@@ -227,5 +227,23 @@
     "script.module.resolveurl": "28fb6b2340eccfb1337ba4421b6429aa1c8f2978834853d1229b42b2a947bc59",
     "script.module.resolveurl.xxx": "d8bceeae5d492cfa111843cdf71f8681f0c9050fbc0fdd2952f77afe49ea30d5",
     "script.skinshortcuts": "865ee5ea5bf0accee27b82539caabce1c8a9fbb8f94b2900fe5ace4f82c80b23"
+  },
+  "branding_space_blue": {
+    "id": "script.gsmedia.xcmate.branding",
+    "name": "XCMate BINGIE Space Blue Manager",
+    "version": "0.2.0",
+    "channel": "PILOT_ONLY",
+    "status": "ANDROID_NOT_TESTED",
+    "source_branch": "feature/xcmate-bingie-space-blue-branding-020",
+    "zip": "https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/script.gsmedia.xcmate.branding/script.gsmedia.xcmate.branding-0.2.0.zip",
+    "sha256": "afa32cd38df59e12cf9889f05e2e080f1358ee03a169c7ce6cb211cde2d0fdaa",
+    "includes": [
+      "user-provided-7-second-h264-aac-intro",
+      "xcmate-logo",
+      "video-splash",
+      "space-blue-color-palette",
+      "original-backup-and-restore"
+    ],
+    "android_device_test": "PENDING"
   }
 }
