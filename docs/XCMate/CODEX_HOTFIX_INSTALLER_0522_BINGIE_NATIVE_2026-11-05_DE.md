@@ -1,5 +1,16 @@
 # CODEX – P0-Hotfix XCMate Media Center Installer 0.5.22
 
+## VERBINDLICHER ZUSATZAUFTRAG VOM 05.11.2026: SPACE BLUE DIREKT NACH ERSTINSTALLATION
+
+Der Nutzer hat den Space-Blue-Manager `script.gsmedia.xcmate.branding` Version `0.2.0` auf seiner Box erfolgreich manuell angewendet. Der Installer soll künftig nach der **vollständigen Installation und Aktivierung von BINGIE MOD 2.2.3** und den bisherigen Skinpatch-/Widgetschritten **automatisch denselben Space-Blue-Patch vor dem finalen Kodi-Neustart ausführen**, sofern der Nutzer der Option beim Start ausdrücklich zugestimmt hat. Kodi muss nach dem ersten Neustart **direkt im blauen XCMate-BINGIE-Design mit Intro, Splash und Logo** starten; die separate manuelle Patch-Ausführung entfällt.
+
+**Vollständiger, verbindlicher Codex-Implementierungs- und Testvertrag:** [CODEX_INSTALLER_0522_SPACE_BLUE_AUTOSTART_2026-11-05_DE.md](CODEX_INSTALLER_0522_SPACE_BLUE_AUTOSTART_2026-11-05_DE.md)
+
+**Release-Gate:** Installer 0.5.22 (oder kumulativ nächsthöher) gilt erst als fertig, wenn sowohl der ursprüngliche BINGIE-Origin-/Dependency-Fix als auch dieser neue **Space-Blue-Postboot-Gate** implementiert, getestet und in NeoDark3/Pilot veröffentlicht sind. `branding_patch.status/apply` und vorhandene Backup-/Restore-Sicherheit wiederverwenden. Schon manuell installierten Patch nie doppelt anwenden. Keine Änderung des regulären GS Media Repositorys für diesen Installer-Pilot.
+
+---
+
+
 **Auftrag vom 05.11.2026 | Repository:** https://github.com/artattakk-creator/kodi-noodleprivate  
 **Fehler-/Masterissue:** https://github.com/artattakk-creator/kodi-noodleprivate/issues/364  
 **Status:** Auftrag dokumentiert, Hotfix **noch nicht implementiert/getestet**.  
