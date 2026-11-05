@@ -1,28 +1,48 @@
 {
-  "environment": "Python 3.12 Linux host; full unittest discovery with exception-only diagnostic wrapper",
-  "tests": 3090,
-  "seconds": 582.17,
+  "source_commit": "c34663e47feb5181bf31fca0b52df320367b854a",
+  "tests": 3097,
+  "seconds": 501.719,
   "status": "PASS",
-  "extra_tests": {
-    "count": 39,
-    "seconds": 5.063,
-    "status": "PASS",
-    "includes_three_new_skin_fault_cases": true
-  },
   "pytest_branding": {
     "tests": 11,
-    "seconds": 0.15,
+    "seconds": 0.21,
     "status": "PASS"
   },
+  "targeted_75": {
+    "tests": 43,
+    "seconds": 4.916,
+    "status": "PASS"
+  },
+  "sha256": "83acfaf48b1877dc32fb8879c470bcbc178c90d85a4296dc88c716f560ea1392",
+  "full_host_job": 127529165473,
+  "workflow_run": 42108327326,
   "android": "ANDROID_NOT_TESTED",
-  "source_commit": "935840da743a4e3fc6d52fb4b0438e87a0797c12",
-  "zip_sha256": "0d0cbf290ec489635a3e69faf787643db91a02298eb91bd021878bac4f5e7126",
-  "ci_full_host": {
-    "head": "0da8f3c255a5a313b956013b061c725a6f0e8569",
-    "job": 127509782447,
-    "tests": 3093,
-    "seconds": 657.999,
+  "previous_candidate": {
+    "environment": "Python 3.12 Linux host; full unittest discovery with exception-only diagnostic wrapper",
+    "tests": 3090,
+    "seconds": 582.17,
     "status": "PASS",
-    "workflow_status": "BLOCKED_SEPARATE_TIMING_GATE"
+    "extra_tests": {
+      "count": 39,
+      "seconds": 5.063,
+      "status": "PASS",
+      "includes_three_new_skin_fault_cases": true
+    },
+    "pytest_branding": {
+      "tests": 11,
+      "seconds": 0.15,
+      "status": "PASS"
+    },
+    "android": "ANDROID_NOT_TESTED",
+    "source_commit": "935840da743a4e3fc6d52fb4b0438e87a0797c12",
+    "zip_sha256": "0d0cbf290ec489635a3e69faf787643db91a02298eb91bd021878bac4f5e7126",
+    "ci_full_host": {
+      "head": "0da8f3c255a5a313b956013b061c725a6f0e8569",
+      "job": 127509782447,
+      "tests": 3093,
+      "seconds": 657.999,
+      "status": "PASS",
+      "workflow_status": "BLOCKED_SEPARATE_TIMING_GATE"
+    }
   }
 }
