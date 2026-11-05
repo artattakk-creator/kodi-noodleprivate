@@ -147,3 +147,74 @@ Zielwerte messbar vereinbaren: Warm-Cache-Home EPG-Text möglichst im ersten Hom
 - Issues #366 (Live-/EPG-Art), #367 (allgemein Home/EPG/Hero), #368 (Live-Exit) zusammen in .75 integrieren; Installer 0.5.22 / Pilot-Quelle / Space Blue Installation als eigenständigen Track beibehalten. Keine offenen P0 unbemerkt überspringen.
 
 **Definition of done:** Zwei unmittelbar nacheinander von derselben Android-Testbox aufgenommene Belege: (a) Live-TV-Hero mit sichtbar korrekter EPG-Information und Sendungsbild bei zuvor NICHT getuntem Sender und (b) Filme/Serien mit einzigem aktiven Rail, korrektem Hero, Fokus und Navigation, 20-mal scrollen ohne Überlagerung; vollständig erkennbarer Fokusrahmen und Quelle im Overlay. Android-Nachweis separat vom Host-/CI-Nachweis ausweisen.
+
+
+## 8. P0 PRIORITÄTENPIPELINE – EPG zuerst, Senderlogos sofort, zuerst sichtbare 5 Sendungsbilder, Rest progressiv
+
+**Neue ausdrückliche Nutzeranforderung vom 05.11.2026:** Nicht auf einen Live-TV-Tune warten. Sobald die Kodi-/BINGIE-Startseite öffnet, müssen die bereits lokal gespeicherten **Jetzt/Danach-EPG-Daten** und **Senderlogos** der Startgruppe sofort erscheinen. Erst danach soll ein Hintergrundskript für den ausgewählten Sender und die ersten ungefähr **fünf sichtbaren Sender** die zur jeweils laufenden Sendung passenden **Sendungsbilder aus lokalem Cache oder erlaubten Quellen** vorbereiten. Anschließend **weitere Sender progressiv im Hintergrund**, mit Fokus-Vorrang beim horizontalen Navigieren. Die Bilder sollen beim Fokuswechsel bereits griffbereit sein, soweit die Quelle tatsächlich korrekte Bilder liefert. Keine verlässliche externe Bildabdeckung behaupten, wenn z. B. Nachrichten/Sport/unsichere Matches keine zulässige Bildreferenz haben.
+
+### 8.1 Verifizierte vorhandene Module – unbedingt wiederverwenden
+
+- `src/plugin.video.xtreammate/resources/lib/programme_prefetch48.py`: bereitet bereits alle ca. 5 s wechselnde Batches von **8** Startgruppen-Sendern vor (fokussierter Sender plus rotierende andere), Now und auch zukünftige Sendungen, über die vorhandene bounded queue. **Ändern/optimieren, nicht einen zweiten unabhängigen Endlos-Prefetch-Thread starten.** Die bisherige Rotationsreihenfolge garantiert NICHT, dass die ersten sichtbaren fünf beim Start zuerst fertig sind.
+- `src/plugin.video.xtreammate/resources/lib/live_warm68.py`: initialisiert erste acht Kanäle aus Live-Katalog mit `local_epg.now_next`; Startsignal aus dem bereits vorhandenen Service-Worker.
+- `src/plugin.video.xtreammate/resources/lib/epg_coverage66.py`: `warm(portal,rows)` für ganze Startgruppe aus demselben lokalen Guide, ohne HTTP; diese Aktion muss **vor** schweren Artwork-Requests priorisiert werden, aber UI darf beim Lesen nicht blockieren.
+- `src/plugin.video.xtreammate/resources/lib/epg_handoff63.py` und `epg_refresh74.py`: revision-/profil-/sendergebundene RAM-Handoffs, lokaler bounded NowNext-Refresh. Bei EPG-Kaltstart nur lokale Revision lesen, keinen neuen XMLTV-Download oder Tune erzwingen.
+- `src/plugin.video.xtreammate/resources/lib/live_home62.py`, `live_items62.py`, `widget_home50.py`: startgruppenbasierte Senderreihenfolge und ListItem-Bau; `XCMate.ProgrammeLogo46` muss bereits beim ersten Widget-Aufbau korrekt auf eine existente, renderbare Logo-Referenz zeigen. `XCMate.ProgrammeChannel46` bleibt textlicher Fallback, falls für diesen Sender wirklich kein Logo existiert.
+- `src/plugin.video.xtreammate/resources/lib/programme_requests68.py`: servicegebundene, cross-interpreter sichtbare Event-Intents mit `request(event,priority=True)`, Re-read aus lokalem Eventindex; `drain()` bewahrt Sender-/Profil-/Quellenidentität.
+- `src/plugin.video.xtreammate/resources/lib/programme_urls55.py`: vorhandene **maximal 24 Jobs** umfassende Queue, **`priority68=True`**, Urgent-Burst-Fairness, worker-only DNS/HTTP/TMDB/TVMaze und deduplicated Eventjobs. `programme_art46.py` schützt private Bilddateien; Bildcache-Limit konfigurierbar, vorhandene Meta- und Bildreferenzen beibehalten.
+- `src/plugin.video.xtreammate/resources/lib/hero_epg63.py`: fokussierten Sender aus RAM lesen, Intent mit Priority senden. Fehler `Non-Existent Control 296301/296302` aus #367 darf **nicht** NowNext/Bild-Fakt-Publikation verhindern.
+- `src/plugin.video.xtreammate/resources/lib/programme_settings68.py`: **eigene TMDB-Suche ist standardmäßig deaktiviert**, erfordert `programme_tmdb46=true` **und** `tmdb_research43=true`; TVMaze ebenfalls opt-in über `programme_tvmaze67`. Ein bereits gespeicherter TMDB-Token alleine ist keine gültige Freigabe. Externe Lookups nur unter bestehender expliziter Einwilligung, keine stillschweigende Aktivierung beim Kaltstart.
+
+**Abzugrenzende Ursache:** Ob auf der betroffenen Box EPG-Logos aufgrund fehlender Provider-Bildquelle, Texture-Pfad, fehlender BINGIE-Bindings oder blockierter Hintergrundworker fehlen, muss per sanitizierter Diagnose geklärt werden; die Existenz einer Queue beweist nicht, dass sie am Android-Gerät durchläuft oder dass Kodi die Bildreferenz tatsächlich anzeigt.
+
+### 8.2 Erwartete Startreihenfolge als nicht-blockierende Zustandsmaschine
+
+**PHASE 0 – bereits persistierte Daten sofort ausgeben (keine Netzanforderung auf GUI-Thread):**
+1. Active profile/portal/start_group aus unveränderten User-Settings bestimmen. Bei Startseite bestehendes revisionsgebundenes, zuvor gültiges **lokales EPG-Snapshot** für `JETZT`/`DANACH` lesen, falls vorhanden; in die rechten Hero-Info-Felder veröffentlichen, **bevor** Artwork versucht wird. Bei noch laufendem erstem Lesen nur neutrale Ladeanzeige rechts, keine erfundenen/alten Fremdsenderdaten.
+2. Die gesamte geordnete Startgruppen-Senderliste und korrekte Senderlogos aus vorhandenen lokalen/metadatengebundenen Bildreferenzen rendern. Senderlogoreferenzen unabhängig vom EPG-Artwork behandeln: Bildfehler darf die Senderliste/Logos nicht entfernen.
+3. `PROFILE_ID, PORTAL_ID, GROUP_ID, CHANNEL_ID, EVENT_ID/start/end, GUIDE_REVISION, SOURCE/MAPPING_REVISION` der Anzeige erfassen. Nur Daten mit passender Identität veröffentlichen. Atomares Update, ohne bei transienten Budget-Timeouts ein gültiges Bild/EPG leerzuräumen.
+
+**PHASE 1 – vorrangiger EPG/Logo-Warmup im Hintergrund:**
+4. `epg_coverage66.warm` / `local_epg.now_next` für Startgruppe durchführen; erste 5 sichtbare Stationen sofort aus lokalem DB-Snapshot in RAM-Handoff seeden, danach gesamte Gruppe in begrenzten Batches (bis 16 bei bestehendem Reader); kein gleichzeitiger Vollimport auf GUI-Thread. Die tägliche externe XMLTV-Aktualisierung läuft separat; **erst eine vollständige neue Guide-Revision atomar umschalten**. Kein Warten auf einen neuen EPG-Download, wenn bereits ein gültiger Snapshot existiert.
+5. Logo-Textur-Routen vor Veröffentlichung prüfen (Datei/URL zulässig und renderbar); ungültige Logo-Quelle separat diagnostizieren. EPG-Text und Logo müssen **ohne Tune** erscheinen.
+
+**PHASE 2 – PRIORITY: fokussierter plus erste fünf sichtbare Sender:**
+6. Die aktive Position im horizontalen Live-TV-Rail bestimmen; **PRIO 0 = aktuell fokussierter Sender**, **PRIO 1 = die verbleibenden ersten bis zu fünf tatsächlich sichtbaren Sender** (nicht willkürlich die ersten fünf der gesamten Providerliste, wenn der Nutzer bereits gescrollt hat). Zusätzlich das unmittelbar nächste Programm desselben fokussierten Senders niedrig priorisiert vorladen, damit der Wechsel bei Sendezeitgrenzen korrekt bleibt. Vorhandene EPG-Eventidentität liefert Titel/Jahr/Episode für die Bildsuche.
+7. Für jeden dieser Events die nachweislich korrekte lokale XMLTV-/Provider-Eventbildreferenz oder bereits gecachtes Foto zuerst prüfen. Nur bei fehlendem Material und **aktiver Einwilligung** TMDB bzw. TVMaze mit exakter Event-/Film-/Episodenidentität aufrufen; keine unsicheren Titel-Similarities als Bilder ausgeben. Senderlogobild ist nicht das Sendungsbild.
+8. Vorhandene `programme_requests68.request(..., priority=True)` → `programme_urls55.enqueue(priority68=True)` **weiterverwenden**; die Priorität in der tatsächlichen Worker-Queue und nicht nur in Status-Labels nachweisen. **Kein unbounded Parallelstart**. Bei bereits gefüllter 24er Queue nur bei bestehender sicherer Eviction-Regel niedriger priorisierte noch nicht aktive Jobs verdrängen, niemals laufende Jobs/Meta der falschen Session abbrechen. Vorhandene 2 Worker und Art-Cache-Budget respektieren.
+
+**PHASE 3 – Rest der Startgruppe progressiv & fair:**
+9. Nach initial sichtbarer Gruppe die nächsten nicht vorbereiteten Stationen schrittweise in vorhandener Rotations-Fairness bedienen. Beim Scrollen bekommt der neu fokussierte Event Vorrang, danach nächste sichtbare Sender. Verdrängte Sender bekommen später erneut Gelegenheit (kein Starvation). Nächste Sendungen vor Sendezeitwechsel opportunistisch vorladen, aber **nicht** den Erstaufbau von Logos/EPG und sichtbaren 5 Bildern verzögern.
+10. Eventbild und tatsächlich verwendete Quelle (`XMLTV, Provider, TMDB, TVMaze`) mit `profile/portal/sid/start/stop/guide_revision` und Cache-Lease ablegen. Keine neuerliche Metadaten-/Bildsuche für denselben gültigen Event bei Fokus-Hin-und-her. Beim Eventwechsel alte Event-Referenz verwerfen, Logo/NowNext sofort korrekt weiterschalten, neue Artwork-Job-Priorität setzen. Doppelte Jobs deduplizieren und bei Source-/Profilwechsel korrekt canceln.
+11. Nach fertigem Download/Cache-Commit native Home-Hero-Properties **nur für die noch aktuelle Eventidentität** aktualisieren; rechte Info-Tabelle, linkes Bild und rechte Attributions-/Logoleiste müssen zur gleichen Generation passen. Keine erzwungene Voll-Reload-Schleife, kein Flackern oder fragmentierte Cover. Mit Quellangabe nicht versehentlich alte TMDB-/TVMaze-Logos am neuen Providerbild stehen lassen.
+
+**PHASE 4 – Safe Degradation/Backoff:**
+12. Bei Offline/DNS/Rate-Limit/TMDB-disabled/Missing match: Text+Logos bleiben, die linke Hero-Fläche erhält einen ruhigen lokalen grafischen Fallback (vorhandenes sicheres Artwork, sofern eventidentisch, sonst neutraler Sender-Hintergrund). **Kein falsches Cover** und keine unendliche TMDB-Anfrage-Schleife. Negativ-Cache und Retry pro Fehlerklasse mit begrenztem TTL/Backoff, nach legitimer Opt-in-/Quellenänderung gezielt invalidieren, keine erfolgreiche Foto-Referenz löschen.
+13. Keine Roh-Provider-/TMDB-URLs, Tokens oder private Kanalnamen ins öffentliche GitHub/CI-Log. Für Logdiagnosen nur gehashte Identitäten und Statuscodes; die private Android-Diagnose als separater Nutzerbeleg.
+
+### 8.3 Reihenfolge darf keinen Kodi-Start blockieren
+
+- EPG **nicht erst online beim Öffnen der Startseite downloaden**: lokaler gültiger Snapshot zuerst; die 24-h-Hintergrundaktualisierung bleibt separater Scheduler mit atomarem Publish.
+- Der GUI-/Fokus-Thread darf auf **keine** SQLite-Dauerabfrage, DNS-/TMDB-Netzanforderung, Artwork-Download, Bild-Decode, Queue-Join oder Ganzgruppen-EPG-Import warten. Alles kleine snapshotbasierte Publikationen plus begrenzte Worker. Kein synchrones Verarbeiten von fünf Live-Bildanfragen auf dem Kodi-GUI-Thread.
+- Keine rein zeitbasierte Sleep-Wartekette wie „erst 5 s EPG, dann 10 s Logos“. Besser ereignis-/revisionsbasierte Zustandsmaschine: `LOCAL_EPG_READY → LOGOS_READY → VISIBLE_ARTWARM → BACKGROUND_ROTATE` mit unabhängiger Fehler-/Fallback-Schiene, damit langsames Bild nicht EPG blockiert.
+- Keine separate zweite Artwork-Datenbank: vorhandene Event-/Bildindex-/Cache-Generation und `programme_requests68`/URL-Queue korrekt koordinieren; Datei-/SQLite-Zugriffe sauber begrenzen. Keine Kopie auf anderen Datenträger ohne expliziten separaten Auftrag.
+
+### 8.4 P0-Messwerte, Traces und reproduzierbare Tests
+
+Traces mit relativem Zeitstempel seit Start (ohne sensitive Werte):
+`START_GROUP_KNOWN`, `EPG_SNAPSHOT_READY`, `EPG_5_VISIBLE_READY`, `LOGOS_READY`, `ART_PREWARM_5_QUEUED`, `ART_1_READY`, `ART_5_RESULT`, `BACKGROUND_ROTATE`, `FOCUS_PRIORITIZED`, `EVENT_CHANGE_INVALIDATED`, `ART_RENDERED`, `ART_NO_MATCH`. Für jeden Step zählen: sichtbare Sender, mit gültigem EPG, mit Logo, mit passendem Bild, cache-hit, external-request, elapsed_ms, queue-length, response/code; nur gehashte IDs.
+
+| ID | Szenario | Verbindliche Abnahme |
+|---|---|---|
+| PREFETCH75-1 | Kodi-Kaltstart, Startgruppe mit mindestens fünf EPG-gedeckten Sendern, kein Tune | Senderliste und verfügbare Logos sichtbar, Jetzt/Danach aus lokalem Cache ohne Streamstart; EPG-Textzeit unabhängig von Artwork protokolliert |
+| PREFETCH75-2 | Bereits warmes EPG, Bilder leer, TMDB-Opt-in AN | Sichtbare fünf priorisiert vor Rest, echte passende Bilder wenn jeweilige Quelle eines liefert; keine Suche für EPG-unpassende Sport-/Nachrichtenprogramme erzwingen |
+| PREFETCH75-3 | TMDB-Opt-in AUS und TVMaze AUS | **Null neue externe TMDB-/TVMaze-Anfragen**, dennoch vorhandene lokale/Provider-/XMLTV-Bilder nutzen; Text/Logos bleiben |
+| PREFETCH75-4 | Benutzer scrollt nach rechts, während Background-Queue voll | Aktueller Fokus erhält PRIO 0, übrige sichtbare zuerst, Rest später (keine Starvation / Profil-Mischung) |
+| PREFETCH75-5 | Mehrfach zwischen ersten fünf hin und her | Keine gleichen Netzwerkzugriffe/Downloads für unveränderte gültige Event-Keys, keine veralteten Quellenlogos; Bild/Meta aus Cache |
+| PREFETCH75-6 | Um 20:15 Sendungswechsel / Guide-Revision oder Mapping-Change | Now/Next/Art wechselt zur neuen Event-ID atomar, altes Bild nicht irreführend übernommen, nächste Sendung vorab vorbereitet |
+| PREFETCH75-7 | Offline, DNS-Timeout, Bildserver 429, Disk-Budget/SQLITE_BUSY | EPG-Text/Logos/Focus bleiben bedienbar, keine unendlichen Retries, keine doppelten Cover-/Senderleisten |
+| PREFETCH75-8 | 1920×1080, 1280×720, 60-min Android-RK3528-Test | Eine Rail, links Bild/rechts Daten, stabiles Scrollen, sichtbares Hero-Bild für positiv matchbaren Film-Event, korrekte Quelle rechts, kein Tune erforderlich |
+
+**Zielwerte, keine bisher gemessenen Garantien:** bei bereits warmem lokalem EPG P95 Zeit vom Home-Aufruf bis **Jetzt/Danach** möglichst <2 s; Logo-Texte so früh wie erste Live-Rail; bereits gecachtes Eventbild beim Fokus nahezu sofort; externe erste fünf Artwork-Requests im Hintergrund mit Status und tatsächlichen p50/p95-Latenzen. Netzwerkabhängige Bilddownloads nicht mit fixer Sekunden-Garantie versehen. Die Tests müssen zeigen, dass **EPG-Daten vor externen Bildabfragen** im UI erscheinen, nicht bloß, dass alle Worker am Ende irgendwann „READY“ melden.
+
+**Definition of done ergänzt:** Codex setzt die vorhandenen bounded Worker/Queues mit expliziter sichtbarer 5er-Priorität um, wahrt Opt-in und Bild-Event-Sicherheit, liefert Testbericht+ZIP/SHA für XCMate `0.1.29.75` in Pilot-Testkanal. Regulären Katalog vor Android-Freigabe nicht aktualisieren. Die Layoutvorgabe **LINKS NUR BILD, RECHTS INFO-TABELLE/Quellenlogos, DARUNTER EINE RAIL** aus Kapitel 3 bleibt verbindlich.
