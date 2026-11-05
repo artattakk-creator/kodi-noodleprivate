@@ -10,3 +10,5 @@ Kumulatives Kodi-Update, kein produktives Release. Vorhandene Installation aktua
 - [Testbericht](../../TESTBERICHT_02974_DE.md)
 
 Keine automatischen Änderungen am Skin oder an gespeicherten Widgetbindungen. Fokusadapter nur optional nach Vorschau, verifiziertem Backup und ausdrücklicher Bestätigung. Box A bleibt unverändert. Alle Android-Gates: **ANDROID_NOT_TESTED**.
+
+Host/CI: 3.054 PASS; nativer Home-Dauerlauf 60 Minuten sowie anschließender tatsächlicher Kodi-Neustart/Reload PASS. Private Android- und Echtzugang-Prüfungen bleiben offen. Die Einschränkungen des synthetischen Dauerlaufs sind im Testbericht ausdrücklich dokumentiert.
