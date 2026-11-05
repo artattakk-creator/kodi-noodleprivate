@@ -65,6 +65,20 @@
   </extension>
 
 </addon>
+<addon id="script.gsmedia.setup" name="XCMate Media Center Installer" version="0.5.21" provider-name="XCMate">
+  <requires><import addon="xbmc.python" version="3.0.0"/></requires>
+  <extension point="xbmc.python.script" library="default.py"/>
+  <extension point="xbmc.service" library="service.py" start="startup"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="de_DE">XCMate Vollautomatische Mediencenter-Einrichtung für Kodi 21.3 Omega</summary>
+    <description lang="de_DE">Automatischer Installationskandidat für elf Pflichtprogramme und deren Abhängigkeiten. Nutzt Kodi-Repository-Installationen nach Zustimmung, gesichertes Fortschrittsjournal, BINGIE-2.2.3-Patch mit Original-Hashprüfung, Menüs/Widgets und TMDB-xVAULT-Player. Ungeprüfte Paketquellen und der automatische Abschluss bleiben bis zur echten Android-Abnahme gesperrt.</description>
+    <summary lang="en_GB">XCMate Setup: guided eleven-addon installation candidate</summary>
+    <description lang="en_GB">Guided 11-addon installation with secure Kodi-native dependency upgrade helpers, retry recovery, repository prompts, private progress journal, pinned BINGIE patch and TMDB player configuration. Full auto-completion is blocked until package provenance and Android device testing pass.</description>
+    <disclaimer lang="de_DE">Entwicklungskandidat. Installationen und Skinänderungen erfolgen nur nach expliziter Zustimmung auf einer neuen Kodi-Box. Android-Abnahme fehlt; auf produktiven Boxen nicht ausführen.</disclaimer>
+    <platform>all</platform>
+    <license>MIT (Wizard), GPL-2.0-only (bundled BINGIE source patch)</license>
+  </extension>
+</addon>
 <addon id="repository.gsmedia" name="GS Media Repository" version="1.8.1" provider-name="GS Media">
   <extension point="xbmc.addon.repository">
     <dir>
@@ -79,9 +93,9 @@
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary lang="de_DE">GS Media Repository 1.8.1 – geprüfter Katalog</summary>
-    <description lang="de_DE">GS Media 1.8.1 Lite mit Freigabeliste: ausschliesslich GS Media Repository, XCMate und Noodle Private werden im eigenen Katalog angeboten. Ungepruefte Fremdquellen sind nicht enthalten. Bereits installierte Add-ons und Kodi-Nutzerdaten bleiben unveraendert.</description>
+    <description lang="de_DE">GS Media 1.8.1 Lite mit GS Media Repository, XCMate, Noodle Private sowie dem XCMate Media Center Installer (Entwicklungskandidat mit ausstehender Android-Abnahme). Ungepruefte Fremdquellen sind nicht enthalten. Bereits installierte Add-ons und Kodi-Nutzerdaten bleiben unveraendert.</description>
     <summary lang="en_GB">GS Media Repository 1.8.1 – approved catalog</summary>
-    <description lang="en_GB">GS Media 1.8.1 Lite with allowlisted repository, XCMate and Noodle Private. Unapproved external catalogues are excluded. Installed add-ons and Kodi user data remain untouched.</description>
+    <description lang="en_GB">GS Media 1.8.1 Lite with GS Media Repository, XCMate, Noodle Private and XCMate Media Center Installer (Android acceptance testing pending). Unapproved external catalogues are excluded. Installed add-ons and Kodi user data remain untouched.</description>
     <disclaimer lang="de_DE">Eigenstaendiges GS Media Repository. Externe Projekte sind nicht Teil des Lite-Katalogs und werden gegebenenfalls separat durch ihre Urheber gepflegt. Keine Verbindung mit Team Kodi.</disclaimer>
     <platform>all</platform>
     <license>MIT</license>

@@ -158,8 +158,10 @@
     "fix": "Kodi Android 21.3 0.5.18 failed at 39/48: CAddonInstallJob[script.gsmedia.slyguy.bootstrap]: failed to find dependency slyguy.dependencies. Kodi Omega CAddonRepos::FindDependencyByParentRepo resolves third-party dependencies from the PARENT addon's origin repository. The old xcMate-owned bootstrap cannot resolve the SlyGuy-owned dependency by design. Instead request original script.module.slyguy 0.87.6 directly from repository.slyguy; its original addon.xml requires slyguy.dependencies 0.0.30, and both share the SAME repo origin. Preflight BOTH packages before InstallAddon. Preserve safe 48-step journal and all original 54 catalog package IDs; no unlicensed SlyGuy ZIP redistribution. Device runtime pending.",
     "id": "script.gsmedia.setup",
     "source_gate": "Drive source plus pinned upstream images and original MIT source",
-    "status": "PILOT_INCREMENTAL_354_ANDROID_NOT_TESTED",
-    "version": "0.5.20"
+    "status": "PILOT_AND_MAIN_INSTALLER_LISTED_ANDROID_NOT_TESTED",
+    "version": "0.5.21",
+    "display_name": "XCMate Media Center Installer",
+    "main_installer_url": "https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/script.gsmedia.setup/script.gsmedia.setup-0.5.21.zip"
   },
   "xvault": {
     "android_test": "NOT_TESTED",
