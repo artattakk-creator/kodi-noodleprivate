@@ -1,0 +1,65 @@
+name: Assemble XCMate BINGIE Space Blue package
+on:
+  push:
+    branches:
+      - feature/xcmate-bingie-space-blue-branding-020
+    paths:
+      - '.branding-staging/spaceblue-020/**'
+      - '.github/workflows/assemble-xcmate-spaceblue-020.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  assemble:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Assemble original archive and verify content
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import glob,hashlib,json,os,zipfile,xml.etree.ElementTree as ET
+          parts=sorted(glob.glob('.branding-staging/spaceblue-020/part-*.bin'))
+          assert len(parts)==14, f"Expected 14 binary transfer parts, got {len(parts)}"
+          out='script.gsmedia.xcmate.branding/script.gsmedia.xcmate.branding-0.2.0.zip'
+          with open(out,'wb') as target:
+              for part in parts:
+                  with open(part,'rb') as src:
+                      while True:
+                          block=src.read(1024*1024)
+                          if not block:break
+                          target.write(block)
+          digest=hashlib.sha256(open(out,'rb').read()).hexdigest()
+          expected='afa32cd38df59e12cf9889f05e2e080f1358ee03a169c7ce6cb211cde2d0fdaa'
+          assert digest==expected, f'Package checksum mismatch: {digest}'
+          assert os.path.getsize(out)==20437032
+          with zipfile.ZipFile(out) as z:
+              assert z.testzip() is None
+              prefix='script.gsmedia.xcmate.branding/'
+              addon=ET.fromstring(z.read(prefix+'addon.xml'))
+              assert addon.attrib['version']=='0.2.0'
+              assert addon.attrib['id']=='script.gsmedia.xcmate.branding'
+              assets=json.loads(z.read(prefix+'resources/media/asset_sha256.json'))
+              for name,sha in assets.items():
+                  payload=z.read(prefix+'resources/media/'+name)
+                  assert hashlib.sha256(payload).hexdigest()==sha, f'Asset mismatch: {name}'
+              assert assets['XCMate-intro.mp4']=='5ae825fe8b31ea4d5a747fa5c32ba1c056a7785b3b4251ea2938378225e067c0'
+          with open(out+'.sha256','w') as f:
+              f.write(digest+'  '+os.path.basename(out)+'\n')
+          print('Verified',out,digest)
+          PY
+      - name: Commit complete verified ZIP and remove temporary parts
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f script.gsmedia.xcmate.branding/script.gsmedia.xcmate.branding-0.2.0.zip
+          git add -f script.gsmedia.xcmate.branding/script.gsmedia.xcmate.branding-0.2.0.zip.sha256
+          git rm -r .branding-staging/spaceblue-020
+          git commit -m "Assemble verified XCMate BINGIE Space Blue 0.2.0 archive [skip ci]"
+          git push origin HEAD:feature/xcmate-bingie-space-blue-branding-020
