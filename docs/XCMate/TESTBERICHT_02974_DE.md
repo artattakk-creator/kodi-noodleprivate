@@ -33,6 +33,8 @@ SHA256: `8d3f08b1761e5f2ad6ffb061b24e6261c3b68ee35d197eab827e9fbac02f8e67`.
 
 Der zweite Workflow trägt den historischen Namen „Publish GS Media Kodi updates“, wurde hier ausdrücklich auf dem Entwicklungsbranch im **workflow_dispatch-Prüfmodus** ausgeführt. „Commit and publish generated archives“ war SKIPPED. Kein main-Push und keine produktive Veröffentlichung.
 
+Die zusätzlichen PR-Gates prüfen das .73-Archiv nun am ursprünglichen geprüften PR-#360-Head `8f293d4a` vor Kanalveröffentlichung. Die Lite-Allowlist erkennt ausschließlich den auf main bereits freigegebenen Installer 0.5.21 mit festem SHA256; der getrennte Lite-Quellbaum bleibt auf seine drei bisherigen Add-ons begrenzt. Die zunächst roten Gates waren veraltete Veröffentlichungsannahmen und keine .74-ZIP-/Gerätetestergebnisse. Aktueller Gesamtstand: [PR-Prüfungen](https://github.com/artattakk-creator/kodi-noodleprivate/pull/362/checks).
+
 ## Dauerlauf und Bilder
 
 | Zeitpunkt | Live / Filme / Serien | JETZT am ausgewählten Sender | Prüfsender 86 |
