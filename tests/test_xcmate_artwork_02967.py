@@ -55,7 +55,7 @@ class Artwork67(Fixture,unittest.TestCase):
   preview=self.preview();e=self.event();row=dict(sid='1',name='Synthetic')
   fake_thread=mock.Mock();fake_thread.is_alive.return_value=True;m._thread=fake_thread
   for source,logo in [('tmdb_series',True),('tvmaze_series',False),('xmltv_event',False),('provider_event',False)]:
-   with mock.patch('programme_events46.key',return_value='event'),mock.patch('programme_art46.cached',side_effect=AssertionError('GUI_DISK_IO')),mock.patch('programme_events46.describe',side_effect=AssertionError('GUI_SQL_IO')),mock.patch('media_sources43.get',side_effect=AssertionError('GUI_HTTP')):
+   with mock.patch('programme_requests68.identity',return_value='event'),mock.patch('programme_art46.cached',side_effect=AssertionError('GUI_DISK_IO')),mock.patch('programme_events46.describe',side_effect=AssertionError('GUI_SQL_IO')),mock.patch('media_sources43.get',side_effect=AssertionError('GUI_HTTP')):
     preview._key='event';preview._next=time.monotonic()+60
     m._done[preview.token]=('event',dict(code='READY',source=source,image='/synthetic/cached.png'))
     preview.render(self.portal,row,e)
@@ -69,7 +69,7 @@ class Artwork67(Fixture,unittest.TestCase):
   import programme_preview67 as m
   preview=self.preview();m._thread=mock.Mock();m._thread.is_alive.return_value=True
   preview._key='new';preview._next=time.monotonic()+60;m._done[preview.token]=('old',dict(code='READY',source='tmdb_series',image='/wrong.png'))
-  with mock.patch('programme_events46.key',return_value='new'):preview.render(self.portal,dict(sid='1',name='Synthetic'),self.event())
+  with mock.patch('programme_requests68.identity',return_value='new'):preview.render(self.portal,dict(sid='1',name='Synthetic'),self.event())
   self.assertFalse(preview.image.visible);self.assertFalse(preview.logo.visible)
  def test_official_logo_remains_a_separate_control_at_lower_right(self):
   p=self.preview();self.assertEqual(p.logo.args[:4],(114,66,42,20));self.assertTrue(p.logo.args[4].endswith('resources/media/tmdb60/tmdb.png'))
@@ -104,7 +104,7 @@ class Artwork67(Fixture,unittest.TestCase):
   preview=self.preview();e=self.event();m._thread=mock.Mock();m._thread.is_alive.return_value=True
   preview._key='same';preview._next=time.monotonic()+60
   m._done[preview.token]=('same',dict(code='READY',source='tmdb_series',image='/cached.png'))
-  with mock.patch('programme_events46.key',return_value='same'):
+  with mock.patch('programme_requests68.identity',return_value='same'):
    preview.render(self.portal,dict(sid='1',name='Synthetic'),e)
    with mock.patch.object(preview.image,'setVisible',wraps=preview.image.setVisible) as setter:
     for _ in range(200):preview.render(self.portal,dict(sid='1',name='Synthetic'),e)

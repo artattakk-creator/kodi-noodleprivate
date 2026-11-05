@@ -692,10 +692,10 @@
     "src/plugin.video.xtreammate/service.py": "0c62a14f043ec8209dcd632bba1142297e49b9c3e4a4e909e1a2ece06bfe8ac4"
   },
   "channel_sha256": {
-    "online-test/addons.xml": "5b065f06633537f9417d6258eb2d564ac1353a7dd0ba8fcd8edaf03cde8ae54f",
-    "online-test/addons.xml.md5": "1759781db0ebe1682ca6916923d93301bbe9a02c99500cf57d1b73122df46ba3",
+    "online-test/addons.xml": "cd9d87e7e3f0329696161a628fe8d77abf524f51e289c341bc3d225871d8c582",
+    "online-test/addons.xml.md5": "cded25c5889b2a2c8f20a18a961c4faf8f31f2af4f1c2825ec3efc67fa307639",
     "online-test/index.html": "b0d87b87a0c4d621b6c81b3cf01ab65839b352daa50a8176f055115299139e9a",
-    "online-test/manifest.json": "2993ed5cfb37abcdd9e85a7a8e5507eee205cffd58e9d6aa38a80eeec8a98e56",
+    "online-test/manifest.json": "856f46530df7bc340118d2d2fd6104d18bf1b4f4690e5b8090fab4e95e6296ba",
     "online-test/plugin.audio.m3sr2019/SOURCE.txt": "707c96ea70e7941ce46eee8ef0f1de974e66338adc03a2acef532b48b44b985b",
     "online-test/plugin.audio.m3sr2019/fanart.jpg": "02330bd01305210246aa3a1a7ac3fbc2acc4c721a512473801743f8ba3d8c729",
     "online-test/plugin.audio.m3sr2019/icon.png": "41e939bc57acdcdab74682b422acacc5656d41057ec3b11e14d6cd4a61d4c8c9",
@@ -710,6 +710,7 @@
     "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.71.zip": "ebebf3c9cdb00b8730da436bfb7bd8909a8a5cdfd23ee36b61afa99f775a9a4d",
     "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.71.zip.sha256": "3a4b3ebafe0c229b411161517368b0bfcaa0392c9bc9d726e74c3f992bc109c1",
     "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.72.zip": "aebd3b268b67e8f2407f6643d4f6c51eb8a39591908534d40e23910e40abd4c6",
+    "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.73.zip": "3a0c8b7d5361612ed81e53e110623758ff3979d6e13dafd96d63d5fd2cf82576",
     "online-test/plugin.video.xtreammate/resources/media/lightweight_splash.jpg": "2553464f81de674f3de8726ba1ec81dcf57d7c0232d39aa3322af10ee0435fcc",
     "online-test/repository.gsmedia.pilot-1.8.2.zip": "20ad483cc8cbe2c723a4c82aeb64b1f1f72b948fe4332f5b3bbbb0348cd0125f",
     "online-test/repository.gsmedia.pilot-1.8.3.zip": "e0ac9cd042dcdd8a8b6e07d6b87cefefe5f17e23752bfec80fa6e1c12f863bae",
@@ -812,6 +813,7 @@
     "online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.2.zip": "d83b7e5b7d90c3881e0a9e1e6dcbea7aa7e32e92aea566e1f82447715b4ea9af",
     "online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.20.zip": "568a76b67d80d846ea09176d0ea1b9f6b6fed1fd86c2ace79ca865b4a8ccadbd",
     "online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.20.zip.sha256": "b31eaea065426e3dc80fe5d6ffbb0084a7e71f5d5f302369aeab7d642e9c74da",
+    "online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.21.zip": "3a5650a8882c865c4dcc8f813bea53d1daa61861e3518a392aaa4181c08c746e",
     "online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.3.zip": "32df50bfe730a412400abf3d3ca47d08c8d5e74254b3d3d961327ac93627ff15",
     "online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.4.zip": "7a1adbefac0390aa0cd2b94f489bf443ec00aeede5e81f4e79aa9b133e6b33cd",
     "online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.5.zip": "eceb39314fde06c0277f35c494487cf57197f176c798d01d85ccf0ed35e5a2a0",
@@ -16165,5 +16167,6 @@
     "tests/test_xtreammate_widgets.py|WidgetsTest|test_youtube_whitelist": [],
     "tests/test_xtreammate_widgets.py|WidgetsTest|test_widget_route_and_no_cached_credentials_in_link": [],
     "tests/test_xtreammate_widgets.py|WidgetsTest|test_film_trailer_and_details_routes": []
-  }
+  },
+  "channel_base74": "2e9e81c696c65b6dfdf0293efca9ed5b51c7bab8"
 }

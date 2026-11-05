@@ -29,7 +29,7 @@ class Focus64(Fixture,unittest.TestCase):
   with mock.patch('epg_status.revision',return_value='changed'):self.assertFalse(self.valid())
   self.properties[self.bridge.meta_key('p')]='new-publication';self.assertFalse(self.valid())
  def test_expired_event_stale_row_and_nonfinite_numbers_are_not_reused(self):
-  for field,value in (('XCMate.ProgrammeStop63',str(time.time()-1)),('XCMate.EpgAt64',str(time.time()-301)),('XCMate.ProgrammeStart63','nan')):
+  for field,value in (('XCMate.ProgrammeStop63',str(time.time()-1)),('XCMate.EpgAt64',str(time.time()-21601)),('XCMate.ProgrammeStart63','nan')):
    old=self.props[field];self.props[field]=value;self.assertFalse(self.valid());self.props[field]=old
  def test_preferred_sender_does_not_starve_other_start_group_events(self):
   rows=[dict(sid=str(i),name='Fixture '+str(i),epg_channel_id='x'+str(i)) for i in range(16)]

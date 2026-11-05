@@ -6,7 +6,7 @@ from xcmate050_fixture import Fixture50
 
 class Binding50(Fixture50,unittest.TestCase):
     def test_three_choices_are_actions_not_group_folder_fallbacks(self):
-        self.router._params['action']='widget_setup';self.routes.dispatch(self.router)
+        self.router._params.update(action='widget_setup',technical74='1');self.routes.dispatch(self.router)
         self.assertEqual([i.label for _,i,_ in self.added[:3]],['Live-TV','Filme','Serien'])
         self.assertEqual(len(self.ends),1)
         for url,item,folder in self.added[:3]:

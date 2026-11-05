@@ -1,0 +1,15 @@
+{
+  "version": "0.1.29.74",
+  "scope": "Linux synthetic host, 88 local channels, first lookup cold Python/view state; OS cache uncontrolled. Not Android timings.",
+  "epg16": {
+    "first_ms": 8.281,
+    "n": 30,
+    "p50_ms": 0.985,
+    "p95_ms": 10.369,
+    "warm_sqlite_connections_min": 0,
+    "warm_sqlite_connections_max": 0
+  },
+  "identical_frame_calls": 30,
+  "atomic_metadata_writes": 8,
+  "android": "ANDROID_NOT_TESTED"
+}

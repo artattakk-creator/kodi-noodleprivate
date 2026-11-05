@@ -109,9 +109,10 @@ class WidgetMaster46(Fixture,unittest.TestCase):
   self.large();rows,code=self.w.snapshot(self.portal,'live');refresh=importlib.import_module('widget_refresh45');pages=importlib.import_module('widget_pages46')
   self.assertTrue(refresh.publish(self.portal,'live',rows,code));before=Path(refresh.path('p','live')).read_bytes();original=pages.atomic
   def fail(filename,data):
-   if '.page46-' in filename and filename.endswith('-1.json'):raise OSError('disk interrupted')
+   if '.page46-74-' in filename:raise OSError('disk interrupted')
    return original(filename,data)
-  with mock.patch.object(pages,'atomic',side_effect=fail):self.assertFalse(refresh.publish(self.portal,'live',rows,code))
+  changed=[dict(row,name='Updated '+row['name']) for row in rows]
+  with mock.patch.object(pages,'atomic',side_effect=fail):self.assertFalse(refresh.publish(self.portal,'live',changed,code))
   self.assertEqual(Path(refresh.path('p','live')).read_bytes(),before);self.assertEqual(len(refresh.read('p','live')['items']),137)
  def test_real_widget_manager_reports_missing_overlay_in_addition_to_reload_hook(self):
   ui=importlib.import_module('widget_ui45');self.dialog.select.side_effect=[0,3]

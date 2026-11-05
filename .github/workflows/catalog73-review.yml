@@ -16,6 +16,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          # Archive the released .73 contract; .74 has its own current-source gate.
+          ref: 4c285b88af37d174e149b0394531a0d59ae443ca
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'

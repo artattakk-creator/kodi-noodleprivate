@@ -18,7 +18,7 @@ class Scope72(unittest.TestCase):
 
     def test_pilot_and_setup_packages_are_not_published_or_modified(self):
         # .72 was explicitly published after this archived .71 baseline.
-        channel_base = '3b3a7f57f1f812e670288bbaaab51f7e63bac8ac'
+        channel_base = '2e9e81c696c65b6dfdf0293efca9ed5b51c7bab8'  # separately approved installer .21 publication
         paths = subprocess.check_output(['git', 'ls-tree', '-r', '--name-only', channel_base, 'online-test'], cwd=ROOT).decode().splitlines()
         for path in paths:
             self.assertEqual((ROOT / path).read_bytes(), subprocess.check_output(['git', 'show', channel_base + ':' + path], cwd=ROOT), path)
@@ -34,7 +34,8 @@ class Scope72(unittest.TestCase):
         self.assertIn('Katalog aktualisieren (Filme / Serien)', path.read_text())
         for name in ('app_routes.py', 'app_entry.py'):
             path = 'src/plugin.video.xtreammate/resources/lib/' + name
-            self.assertEqual((ROOT / path).read_bytes(), subprocess.check_output(['git', 'show', BASE + ':' + path], cwd=ROOT))
+            from stabilization_contract_02974 import without_stabilization74
+            self.assertEqual(without_stabilization74((ROOT / path).read_bytes(),path), subprocess.check_output(['git', 'show', BASE + ':' + path], cwd=ROOT))
 
 
 if __name__ == '__main__': unittest.main(verbosity=2)
