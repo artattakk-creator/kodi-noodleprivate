@@ -65,6 +65,10 @@ def select(ident,index,kind):
     elif kind in ('vod','series'):
         expected=(180,100,30) if kind=='vod' and index==0 else tuple((v+index*step)%240 for v,step in zip((40,70,120) if kind=='vod' else (100,50,20),(19,31,13)))
         check(max(abs(a-b) for a,b in zip(rgb.getpixel((800,150)),expected))<=6,'MEDIA_HERO_PIXELS')
+    elif kind.startswith('foreign-'):
+        role=kind.removeprefix('foreign-')
+        expected=(40+(index%6)*30,60+(index//6)*40,{'poster':45,'music':135,'television':225}[role])
+        check(max(abs(a-b) for a,b in zip(rgb.getpixel((800,150)),expected))<=6,'FOREIGN_MEDIA_HERO_PIXELS')
     # The old native caption box leaked here even though the new table was
     # correct. Its absence must be checked on actual pixels, not XML alone.
     check(sum(1 for r,g,b in rgb.crop((120,20,250,500)).getdata() if min(r,g,b)>180)<20,'OLD_LEFT_CAPTION_VISIBLE')
@@ -81,6 +85,8 @@ __import__('widget_fast69')._next=0;prepare();xbmc.sleep(300)
 select(2530,0,'series')
 check(json.loads(home.getProperty(schedule.KEY))['phase']==3,'NO_NATIVE_SERIES_READY')
 for i in range(20):select((2510,2520,2530)[i%3],i%20,('live','vod','series')[i%3])
+for ident,kind in ((2540,'poster'),(2550,'music'),(2560,'television')):
+    for index in (0,23):select(ident,index,'foreign-'+kind)
 actions=[]
 home.setFocusId(2510);home.getControl(2510).selectItem(0);xbmc.sleep(300)
 for i in range(20):

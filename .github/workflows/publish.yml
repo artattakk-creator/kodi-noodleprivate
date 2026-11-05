@@ -87,8 +87,13 @@ jobs:
           result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromNames(["test_xcmate_028_ui","test_xcmate_kodi21_overlay","test_xcmate_continuous_live_037_042","test_xcmate_mini_02941","test_xcmate_mini_flicker_02943","test_xcmate_navigation_02944","test_xcmate_live_return_02947","test_xcmate_p0_playback","test_xcmate_universal_sources_043","test_xcmate_widget_master_02946","test_xcmate_widget_pipeline_02947","test_xcmate_widgets_02941","test_xcmate_viewport_02936","test_xcmate_scope_02958","test_xcmate_scope_02959","test_xtreammate_persistence"]))
           if not result.wasSuccessful():raise SystemExit(1)
           PY
-      - name: Verify native .66 mixed third-party poster music focus and shared TV artwork
-        run: python tools/run_kodi_home66_contract.py --report-dir kodi-home66-evidence
+      - name: Checkout approved .74 for archived UI contracts
+        uses: actions/checkout@v4
+        with:
+          ref: fca469ca1a19ce65b8aa2628cd6e5c9e9dba1ef8
+          path: archive74
+      - name: Verify archived .66 mixed third-party poster music focus and shared TV artwork
+        run: python archive74/tools/run_kodi_home66_contract.py --report-dir kodi-home66-evidence
       - name: Verify historic affected wizard, metadata, remote and frozen-search contracts
         run: |
           python - <<'PY'
@@ -102,11 +107,6 @@ jobs:
         run: python tools/benchmark_xcmate65.py --output xcmate65-host-evidence.json
       - name: Measure .66 persistent cold and warm coverage of all 88 channels
         run: python tools/benchmark_xcmate66.py --output xcmate66-host-evidence.json
-      - name: Checkout approved .74 for archived UI contracts
-        uses: actions/checkout@v4
-        with:
-          ref: fca469ca1a19ce65b8aa2628cd6e5c9e9dba1ef8
-          path: archive74
       - name: Verify .64 native movie and series focus, ten provider posters and Live return (archive .74)
         run: python archive74/tools/run_kodi_home64_contract.py --report-dir kodi-home64-evidence
       - name: Verify real Kodi 21 Linux plugin and worker RPC transport
