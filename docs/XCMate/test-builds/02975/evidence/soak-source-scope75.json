@@ -1,0 +1,34 @@
+{
+  "native_ui_baseline": "935840da743a4e3fc6d52fb4b0438e87a0797c12",
+  "current_queue_fix": "c34663e47feb5181bf31fca0b52df320367b854a",
+  "unchanged_ui_source_sha256": {
+    "src/plugin.video.xtreammate/resources/lib/hero_epg63.py": "6c1d7821d3f3a71fcbc1991c7eeb590dfe020a2e6526b965afe0bf91411f2a3d",
+    "src/plugin.video.xtreammate/resources/lib/epg_snapshot75.py": "7bedbea201e573337713f42dfed128967624bdc9c0092a9cdcd2beb29eeaef1d",
+    "src/plugin.video.xtreammate/resources/lib/home_schedule75.py": "b34442c944be59fade34b924ceb3c1e2a595db04ee346253382a1d4671165c75",
+    "src/plugin.video.xtreammate/resources/lib/widget_skin75.py": "5a9e4a67263d7a0a8bf8bb122868aecae162fef60c921be68a8f7094186e4619",
+    "src/plugin.video.xtreammate/resources/lib/local_epg.py": "54ea2e673db95295c9874436f2ee72774d3f1cec185c9bd6261d0a18c949425c",
+    "src/plugin.video.xtreammate/resources/lib/live_text63.py": "f9136ffd8daf6fb6359674cb659de746730bb3670ee8ebce6365904908cc3f30",
+    "src/plugin.video.xtreammate/resources/lib/widget_assets69.py": "0b3f19b7ea2fdb9e8855c9c0ae3490ec192cc9aa3247404b8028e71cb05ec34f",
+    "src/plugin.video.xtreammate/resources/lib/programme_assets47.py": "89ac5949dfac44c7b3e17e961aa30a16d2f064d4ba6cb8ae6ff61d5ff08e5318",
+    "src/plugin.video.xtreammate/resources/lib/live_items62.py": "c8623b41acc8a2454594667ff8bdff0f3f77e93cefb514a893ccfb4e0abcafe8",
+    "src/plugin.video.xtreammate/resources/bingie75/IncludesXCMate75.xml": "79075c52e026b5c568b29ba30b35b3cd65ba89244250c8ab1704e27478569d93"
+  },
+  "unchanged_reader_functions": {
+    "programme_urls55": [
+      "safe",
+      "display",
+      "resolve",
+      "probe"
+    ],
+    "programme_requests68": [
+      "scope",
+      "identity",
+      "request",
+      "status",
+      "result",
+      "completed"
+    ]
+  },
+  "scope": "UI/EPG snapshot rendering soak; queue promotion tested separately on final candidate; full service disabled in native synthetic fixture",
+  "android": "ANDROID_NOT_TESTED"
+}

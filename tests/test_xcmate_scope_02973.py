@@ -10,7 +10,8 @@ class Scope73(unittest.TestCase):
             self.assertEqual(hashlib.sha256(without_stabilization73((ROOT/path).read_bytes(),path)).hexdigest(),digest,path)
     def test_all_published_pilot_indexes_packages_and_checksums_unchanged(self):
         data=json.loads((ROOT/'tests/fixtures/xcmate_02973_protection.json').read_text())
-        for path,digest in data['channel_sha256'].items():self.assertEqual(hashlib.sha256((ROOT/path).read_bytes()).hexdigest(),digest,path)
+        from channel_contract_02975 import verify
+        for path in data['channel_sha256']:verify(path)
     def test_no_previous_test_method_or_skip_contract_removed(self):
         data=json.loads((ROOT/'tests/fixtures/xcmate_02973_protection.json').read_text())
         for path,cases in data['test_methods'].items():

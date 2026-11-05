@@ -1,0 +1,180 @@
+{
+  "status": "PASS",
+  "actual_restart": true,
+  "cases": [
+    {
+      "kind": "live",
+      "index": 0,
+      "focus": 2510,
+      "frames": [
+        [
+          624,
+          625
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 3069.95,
+      "sha256": "a52bc8339bf05f188321219ba3fbb01264d79ecab750a9f0d253126df037a731"
+    },
+    {
+      "kind": "vod",
+      "index": 0,
+      "focus": 2520,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2766.9,
+      "sha256": "f74442fd4f95bd68a87354ab6223ec543ff20b08ab2ab9affa7f75a85c9c547e"
+    },
+    {
+      "kind": "series",
+      "index": 0,
+      "focus": 2530,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2807.42,
+      "sha256": "b673cbd1978c2b40939c2e282a63d8d0a19a06d64fb1da313bec4d72a204c560"
+    },
+    {
+      "kind": "vod",
+      "index": 0,
+      "focus": 2520,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2942.02,
+      "sha256": "f74442fd4f95bd68a87354ab6223ec543ff20b08ab2ab9affa7f75a85c9c547e"
+    },
+    {
+      "kind": "live",
+      "index": 0,
+      "focus": 2510,
+      "frames": [
+        [
+          624,
+          625
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2984.16,
+      "sha256": "0a0a9611e9f2c76554d277c2e556ce2cdf35ecd7ab1ea975e870cec4128ea103"
+    },
+    {
+      "kind": "live",
+      "index": 0,
+      "focus": 2510,
+      "frames": [
+        [
+          624,
+          625
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 3049.77,
+      "sha256": "0a0a9611e9f2c76554d277c2e556ce2cdf35ecd7ab1ea975e870cec4128ea103"
+    },
+    {
+      "kind": "live",
+      "index": 0,
+      "focus": 2510,
+      "frames": [
+        [
+          624,
+          625
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2703.5,
+      "sha256": "50bd0713509432b00930809ea49fc030e7ea7faf0ba409ad3413a1f53162d169"
+    }
+  ],
+  "counts": [
+    88,
+    24,
+    24
+  ],
+  "android": "ANDROID_NOT_TESTED",
+  "protected_files": 32,
+  "protected_sha256": "PASS",
+  "restart": "native Application.Quit + supervised Kodi restart",
+  "old_pids": [
+    1180
+  ],
+  "new_pids": [
+    1908
+  ]
+}

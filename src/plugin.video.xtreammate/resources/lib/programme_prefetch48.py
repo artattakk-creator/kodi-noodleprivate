@@ -7,6 +7,19 @@ This lane never scans the source archive and uses the existing 24-job queue.
 import time
 _positions={};_next={};_future56={}
 
+def visible75(portal,rows):
+    """Focused first, then its actual horizontal viewport; no IO or new worker."""
+    if not rows:return []
+    from hero_epg63 import focused64
+    sid=focused64(str(portal['id'])) or str(portal.get('start_stream_id') or '')
+    index=next((i for i,row in enumerate(rows) if str(row.get('sid',''))==sid),0)
+    from home_schedule75 import visible_position
+    left=visible_position(str(portal['id']),index)
+    batch=[rows[index]]
+    for row in rows[max(0,left):max(0,left)+5]:
+        if row not in batch:batch.append(row)
+    return batch[:5]
+
 
 def prepare(portal,rows,cancel=lambda:False):
     key=str(portal['id']);now=time.monotonic()
@@ -15,15 +28,17 @@ def prepare(portal,rows,cancel=lambda:False):
     pos=_positions.get(key,0)%len(rows)
     from hero_epg63 import focused64
     sid64=focused64(key);preferred=next((row for row in rows if str(row.get('sid',''))==sid64),None) if sid64 else None
-    batch=[preferred] if preferred is not None else [];seen64={sid64} if batch else set();advance64=0
-    while len(batch)<min(8,len(rows)) and advance64<len(rows):
+    from home_schedule75 import rest_allowed
+    batch=visible75(portal,rows);seen64={str(row.get('sid','')) for row in batch};advance64=0
+    maximum75=8 if rest_allowed() else 5
+    while len(batch)<min(maximum75,len(rows)) and advance64<len(rows):
         row=rows[(pos+advance64)%len(rows)];advance64+=1
         if str(row.get('sid','')) not in seen64:batch.append(row);seen64.add(str(row.get('sid','')))
     _positions[key]=(pos+advance64)%len(rows)
     if len(_positions)>8:
         old=next(iter(_positions));_positions.pop(old);_next.pop(old,None)
     from epg_coverage66 import warm
-    warm(portal,rows)
+    warm(portal,batch)
     from local_epg import now_next
     from epg_sources import configuration
     from programme_events46 import from_info
@@ -42,7 +57,7 @@ def prepare(portal,rows,cancel=lambda:False):
             if cancel():return False
             event=from_info(portal,row,infos.get(str(row['sid']),{}))
             if event.get('title'):
-                records.append(event);enqueue(event,allow_lookup=allow_lookup,local_image63=setting_bool('programme_art_local69',False))
+                records.append(event);enqueue(event,allow_lookup=allow_lookup,local_image63=setting_bool('programme_art_local69',False),priority68=2 if row==batch[0] else row in batch[:5])
             # NEXT is resolved ahead of its transition, with the same local
             # canonical/source identity as NOW; never borrow NOW's picture.
             from programme_events46 import describe
@@ -59,8 +74,12 @@ def prepare(portal,rows,cancel=lambda:False):
                 cursor=(key,str(row['sid']));pos56=_future56.get(cursor,0)%len(later57)
                 selected.append(later57[pos56]);_future56[cursor]=pos56+1
                 if len(_future56)>1024:_future56.pop(next(iter(_future56)))
-            for following in selected:
+            for following in (selected if rest_allowed() else selected[:1] if row==batch[0] else []):
                 future=describe(portal,row,following,event.get('canonical',''),revision)
                 if future.get('title'):records.append(future);enqueue(future,allow_lookup=allow_lookup,local_image63=setting_bool('programme_art_local69',False))
     if records:publish(records,include_art=False)
+    from home_schedule75 import trace
+    trace('VISIBLE5_QUEUED',count=min(5,len(batch)))
+    from epg_snapshot75 import checkpoint
+    checkpoint(portal['id'],batch)
     return bool(records)

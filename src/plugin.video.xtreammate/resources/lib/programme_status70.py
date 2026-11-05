@@ -35,7 +35,7 @@ def waiting(event,previous=None):
 
 def legacy_negative(value):
  # Lazy one-event upgrade of affected .69 negatives, never a global reset.
- return isinstance(value,dict) and value.get('source')=='placeholder' and value.get('code') in ('HELPER_TIMEOUT','HELPER_BACKGROUND_UNAVAILABLE','NOT_SCHEDULED') and 'sources70' not in value
+ return isinstance(value,dict) and value.get('source')=='placeholder' and (value.get('code') in ('HELPER_TIMEOUT','HELPER_BACKGROUND_UNAVAILABLE','NOT_SCHEDULED') and 'sources70' not in value or value.get('code')=='BLOCKED_IMAGE_HOST_OR_URL' and value.get('origin_policy75')!=1)
 
 def since(previous,tag):
  now=time.time()

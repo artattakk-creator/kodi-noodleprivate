@@ -1,0 +1,1073 @@
+{
+  "status": "PASS",
+  "android": "ANDROID_NOT_TESTED",
+  "kodi": "21.2 Debian package version: 2:21.2+dfsg-4",
+  "cases": [
+    {
+      "kind": "live",
+      "index": 0,
+      "focus": 2510,
+      "frames": [
+        [
+          624,
+          625
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2887.72,
+      "sha256": "d7f1dfa0121d9a80b97329d37ae2c1049deb18967e6680ed1034eea7ba10147b"
+    },
+    {
+      "kind": "vod",
+      "index": 0,
+      "focus": 2520,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2796.63,
+      "sha256": "7b7fb50b0393b4b2bd75d9d358d411f8da9d6a29f0eaaf09c13c3cd863de3f78"
+    },
+    {
+      "kind": "series",
+      "index": 0,
+      "focus": 2530,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2773.08,
+      "sha256": "4676c901c19dd0d5314c57bc0b98248606bcd569fc72879f5d8664e3df94acc1"
+    },
+    {
+      "kind": "live",
+      "index": 0,
+      "focus": 2510,
+      "frames": [
+        [
+          624,
+          625
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2885.03,
+      "sha256": "d7f1dfa0121d9a80b97329d37ae2c1049deb18967e6680ed1034eea7ba10147b"
+    },
+    {
+      "kind": "vod",
+      "index": 1,
+      "focus": 2520,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2835.33,
+      "sha256": "c1e679e4d92212344ece03d188e2ce3824a8b85a6c3ad9cfc632891e597eb71c"
+    },
+    {
+      "kind": "series",
+      "index": 2,
+      "focus": 2530,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2822.63,
+      "sha256": "63b39827290573ef4fa5871eef8af99903c5a8c19084c7210f19ea05ee7ebcfa"
+    },
+    {
+      "kind": "live",
+      "index": 3,
+      "focus": 2510,
+      "frames": [
+        [
+          624,
+          625
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2793.38,
+      "sha256": "5c7122dfd3ae6e13301e7204d936b03bcbeed0cfda3ab6b5b5bda824e63d6165"
+    },
+    {
+      "kind": "vod",
+      "index": 4,
+      "focus": 2520,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2836.61,
+      "sha256": "35985e67b8005a82f887e8f2ccb0a3973132f84af46901aa7b21eba246033138"
+    },
+    {
+      "kind": "series",
+      "index": 5,
+      "focus": 2530,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2820.14,
+      "sha256": "eb06437d5ad0df411948e0b6e2add669550f1e184da3d5434688f17290573ea8"
+    },
+    {
+      "kind": "live",
+      "index": 6,
+      "focus": 2510,
+      "frames": [
+        [
+          624,
+          625
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2858.63,
+      "sha256": "2a09b0412bb934290064c6a1362930b03d87620dd6aba6c9aa55a163789b6c78"
+    },
+    {
+      "kind": "vod",
+      "index": 7,
+      "focus": 2520,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2742.54,
+      "sha256": "fc9748a3e0639d8139b3c02611165ba174142c83270a79ccb04747f8eee71794"
+    },
+    {
+      "kind": "series",
+      "index": 8,
+      "focus": 2530,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2734.12,
+      "sha256": "bcc8162aecf57db9937352983239ec12aa5eea913a6feb28a22af4b810117996"
+    },
+    {
+      "kind": "live",
+      "index": 9,
+      "focus": 2510,
+      "frames": [
+        [
+          624,
+          625
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2849.59,
+      "sha256": "df82a8cb3abbc5a98ac25e9e83b03ef84c95761c997dd63699494c7fa64bf16d"
+    },
+    {
+      "kind": "vod",
+      "index": 10,
+      "focus": 2520,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2813.61,
+      "sha256": "207383580b5862f5b480a3480ecec5e9c9773c78565afceb60a2cb330e9d9583"
+    },
+    {
+      "kind": "series",
+      "index": 11,
+      "focus": 2530,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2812.67,
+      "sha256": "96e76b2024cbcec5929098c2476387e76d2bada480bbfdb5d0f6cc280ca44379"
+    },
+    {
+      "kind": "live",
+      "index": 12,
+      "focus": 2510,
+      "frames": [
+        [
+          624,
+          625
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2821.97,
+      "sha256": "5495f39620dbd2b49023d969316e5c5684cc60b9cad719aa08426f18bdb9af31"
+    },
+    {
+      "kind": "vod",
+      "index": 13,
+      "focus": 2520,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2883.97,
+      "sha256": "d4b129305d8e0088236947f7c5ade67dee1b0718d862846f66f8e5b34aa80937"
+    },
+    {
+      "kind": "series",
+      "index": 14,
+      "focus": 2530,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2992.06,
+      "sha256": "30e9ed18a6c921c9a8d5374dd77e68dab1055b170913b876edc8ac775dab61a9"
+    },
+    {
+      "kind": "live",
+      "index": 15,
+      "focus": 2510,
+      "frames": [
+        [
+          624,
+          625
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2802.04,
+      "sha256": "d424ac1e57658ef155430a4baf0323dfe778f27b131d571456391baa707e0bad"
+    },
+    {
+      "kind": "vod",
+      "index": 16,
+      "focus": 2520,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2838.79,
+      "sha256": "35bed81a5aa5611da1381f6cefd5f719a67da4f6cc26c51060411ce119ca90fc"
+    },
+    {
+      "kind": "series",
+      "index": 17,
+      "focus": 2530,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2842.9,
+      "sha256": "769e2588eeb2296734b5cfd21dd2e163829a6a84d524d606e862f9baaf7e5e8f"
+    },
+    {
+      "kind": "live",
+      "index": 18,
+      "focus": 2510,
+      "frames": [
+        [
+          624,
+          625
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2817.72,
+      "sha256": "b2502eb6d68104a253e183352d0677748f4be27b67a4479eca9c1f287756493f"
+    },
+    {
+      "kind": "vod",
+      "index": 19,
+      "focus": 2520,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2749.56,
+      "sha256": "21189cd2b2416830d1f7c3a54e6ecb5d7b86080ae28e72bbe9318e18ca8821ac"
+    },
+    {
+      "kind": "foreign-poster",
+      "index": 0,
+      "focus": 2540,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2032.42,
+      "sha256": "aa7491dcacfce04661d39a72e76f645024a62f8114a84a25233fa5dcfe5734cd"
+    },
+    {
+      "kind": "foreign-poster",
+      "index": 23,
+      "focus": 2540,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 1995.53,
+      "sha256": "f3a0a958d308a5ed67173bf62e8f24f623663664cd72c2c70c92449f244a2110"
+    },
+    {
+      "kind": "foreign-music",
+      "index": 0,
+      "focus": 2550,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 1968.95,
+      "sha256": "94cf4b6a4dc0b59c14da709d7e9452d7cee613ba167c69723b1b74ffaa90bfd4"
+    },
+    {
+      "kind": "foreign-music",
+      "index": 23,
+      "focus": 2550,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2020.73,
+      "sha256": "803bb40a8529a8c896d5033f04f5aa53503e9146599eecf6d7fd1c92bdf32ca7"
+    },
+    {
+      "kind": "foreign-television",
+      "index": 0,
+      "focus": 2560,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 1987.06,
+      "sha256": "3171e0f185e0e814cc2fc4f6ea8d8544ac61f9695cdb2b011996cb44f967b352"
+    },
+    {
+      "kind": "foreign-television",
+      "index": 23,
+      "focus": 2560,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 1985.33,
+      "sha256": "d43fdd3de77b0091df86a7731f2f097fbf3989ea5751072d3fbf2706ea187f1e"
+    }
+  ],
+  "traces": [
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 1,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": []
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 2,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    },
+    {
+      "context": "0cb4b7d1ab43b07d6a8a898e5fc488cd490e788fac576c1fefe0b51eefb62a7b",
+      "phase": 3,
+      "at": 248766.845259475,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ]
+    }
+  ],
+  "native_actions": [
+    {
+      "action": "Down",
+      "focus": 2520
+    },
+    {
+      "action": "Down",
+      "focus": 2530
+    },
+    {
+      "action": "Down",
+      "focus": 2540
+    },
+    {
+      "action": "Down",
+      "focus": 2550
+    },
+    {
+      "action": "Down",
+      "focus": 2560
+    },
+    {
+      "action": "Up",
+      "focus": 2550
+    },
+    {
+      "action": "Up",
+      "focus": 2540
+    },
+    {
+      "action": "Up",
+      "focus": 2530
+    },
+    {
+      "action": "Up",
+      "focus": 2520
+    },
+    {
+      "action": "Up",
+      "focus": 2510
+    },
+    {
+      "action": "Down",
+      "focus": 2520
+    },
+    {
+      "action": "Down",
+      "focus": 2530
+    },
+    {
+      "action": "Down",
+      "focus": 2540
+    },
+    {
+      "action": "Down",
+      "focus": 2550
+    },
+    {
+      "action": "Down",
+      "focus": 2560
+    },
+    {
+      "action": "Up",
+      "focus": 2550
+    },
+    {
+      "action": "Up",
+      "focus": 2540
+    },
+    {
+      "action": "Up",
+      "focus": 2530
+    },
+    {
+      "action": "Up",
+      "focus": 2520
+    },
+    {
+      "action": "Up",
+      "focus": 2510
+    }
+  ],
+  "elapsed_seconds": 0.17814592499053106,
+  "checkpoints": [],
+  "missing_control": "PASS"
+}

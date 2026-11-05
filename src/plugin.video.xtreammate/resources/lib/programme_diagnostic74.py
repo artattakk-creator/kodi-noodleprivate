@@ -15,6 +15,8 @@ def check(cancel=lambda:False):
             result['tvmaze']='TVMAZE_OK' if value.get('id')==1 else 'INVALID_RESPONSE'
         except SourceError as error:result['tvmaze']=error.code
     result['image']=active_image(cancel)
+    from kodi_schema75 import inspect
+    result['kodi_library']=inspect()
     return result
 
 def active_image(cancel=lambda:False):
@@ -54,4 +56,11 @@ def show():
     text='TMDB: '+result['tmdb']+'\nTVMaze: '+result['tvmaze']+'\n'+tr(38106,result.get('image','NOT_TESTED'))+'\n\n'
     text+=tr(38102,tr(38103 if gates.get('own') else 38104),tr(38103 if gates.get('tvmaze') else 38104))
     text+='\n'+tr(38105)
+    library=result.get('kodi_library',{})
+    if library:text+='\n\nKodi library (read-only): '+library.get('code','NOT_TESTED')
+    from programme_settings68 import state
+    gates75=state()
+    text+='\nSOURCE_FACTS → ARTWORK_OPT_IN → TOKEN → MATCH → FETCH → CACHE → WIDGET_RENDER'
+    if gates75.get('lookup')!='TMDB_LOOKUP_ENABLED':text+='\nTMDB: Opt-in prüfen. Ein vorhandener Token aktiviert keine Suche.'
+    if library.get('missing'):text+='\nKodi-Views fehlen: '+', '.join(library['missing'])+'. Keine automatische Reparatur oder Löschung.'
     xbmcgui.Dialog().ok(tr(38100),text)

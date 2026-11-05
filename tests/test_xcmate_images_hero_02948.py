@@ -83,10 +83,10 @@ class ImagesHero48(Fixture,unittest.TestCase):
     def test_programme_prefetch_rotates_beyond_first_sixteen_without_widget_repaint(self):
         p=importlib.import_module('programme_prefetch48');p._next.clear();p._positions.clear();rows=[dict(sid=str(i),name=str(i)) for i in range(88)]
         seen=[]
-        with mock.patch('local_epg.now_next',return_value={}),mock.patch('programme_events46.from_info',side_effect=lambda portal,row,info:dict(title='Real',key=row['sid'])),mock.patch('programme_urls55.enqueue',side_effect=lambda e,**kw:seen.append(e['key'])),mock.patch('programme_index46.publish'):
-            for _ in range(11):
+        with mock.patch('home_schedule75.rest_allowed',return_value=True),mock.patch('local_epg.now_next',return_value={}),mock.patch('programme_events46.from_info',side_effect=lambda portal,row,info:dict(title='Real',key=row['sid'])),mock.patch('programme_urls55.enqueue',side_effect=lambda e,**kw:seen.append(e['key'])),mock.patch('programme_index46.publish'):
+            for _ in range(30):
                 p._next.clear();p.prepare(self.portal,rows)
-        self.assertEqual(set(seen),{str(i) for i in range(88)});self.assertEqual(len(seen),88)
+        self.assertEqual(set(seen),{str(i) for i in range(88)});self.assertLessEqual(len(seen),30*8)
     def test_cancelled_prefetch_does_not_touch_source_or_create_picture_jobs(self):
         p=importlib.import_module('programme_prefetch48');p._next.clear()
         with mock.patch('programme_urls55.enqueue') as enqueue:

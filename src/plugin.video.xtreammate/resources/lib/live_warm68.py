@@ -22,6 +22,8 @@ def prepare(cancel=lambda:False):
  for portal in get_active()[:4]:
   if cancel():return
   if portal.get('type')!='xtream' or not portal.get('include_live',True):continue
+  from epg_snapshot75 import restore
+  restore(portal['id'])
   marker=xbmcgui.Window(10000);key=policy_key(portal);value=policy(portal,'live')
   if marker.getProperty(key)!=value:marker.setProperty(key,value)
   client=XtreamClient(portal['xc_host'],portal['xc_user'],portal['xc_pass'])
@@ -30,8 +32,11 @@ def prepare(cancel=lambda:False):
   # existing local catalogue thread. Guide preparation is separately bounded.
   model=getattr(future,'first_model47',None) or getattr(future,'model47',None)
   if not model:continue
-  channels=model['channels'][:8]
+  from programme_prefetch48 import visible75
+  channels=visible75(portal,model['channels'])
   if channels:
    from local_epg import now_next
    from epg_sources import configuration
    now_next(portal['id'],channels,configuration(portal['id']).get('mappings',{}))
+   from epg_snapshot75 import checkpoint
+   checkpoint(portal['id'],channels)

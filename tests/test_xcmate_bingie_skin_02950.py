@@ -88,7 +88,8 @@ class Skin50(Fixture50,unittest.TestCase):
             native_a=[n for n in a if n.tag=='include' and n.get('content')=='widget_base'];native_b=[n for n in b if n.tag=='include' and n.get('content')=='widget_base'];live=[n for n in b if n.tag=='include' and n.get('content')=='XCMate50.LiveRow']
             self.assertEqual(len(native_a),8);self.assertEqual(len(native_b),8);self.assertEqual(len(live),8)
             for original,kept in zip(native_a,native_b):
-                self.assertEqual([E.tostring(p) for p in original],[E.tostring(p) for p in kept])
+                self.assertEqual([E.tostring(p) for p in original],[E.tostring(p) for p in kept if p.get('name') not in ('up75','down75')])
+                for direction in ('up75','down75'):self.assertTrue(kept.find("param[@name='"+direction+"']").get('value').isdigit())
                 self.assertIn(original.get('condition'),kept.get('condition'))
             chosen=live[live_position-1];self.assertIn('home50=1',chosen.find("param[@name='widgetPath']").get('value'))
             self.assertIn('[true]',chosen.get('condition'));self.assertIn('XCMate50.LiveRow',[n.get('content') for n in b])

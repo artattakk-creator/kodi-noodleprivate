@@ -9,7 +9,7 @@ PREFIX='XCMate.Programme68.'
 SLOTS=64
 MAX_BYTES=8192
 _FIELDS=('pid','sid','start','stop','title','canonical','revision','source_key46','fact_revision46','epg_source46')
-_ART=('key','fingerprint','code','source','match','image','thumbnail','sha256','attribution','image_scope57','until','failure_reason68','storage68','source_url','url_version55','url_verified69','scope69','profile69','persisted69','storage69','storage_code69','policy69','resolved_at55','sources70','lookup70')
+_ART=('key','fingerprint','code','source','match','image','thumbnail','sha256','attribution','image_scope57','until','failure_reason68','storage68','source_url','url_version55','url_verified69','scope69','profile69','persisted69','storage69','storage_code69','policy69','resolved_at55','sources70','lookup70','origin_policy75')
 _lock=threading.Lock()
 _thread=None
 _stop=threading.Event()
@@ -144,7 +144,11 @@ def drain(cancel=lambda:False):
     from programme_policy68 import negative_scope
     from programme_status70 import retry as retry70,valid as valid70
     if valid70(previous69) and artifact69.get('until',0)>time.time() and artifact69.get('policy69')==negative_scope({}) and not retry70(event,artifact69) and not __import__('programme_status70').legacy_negative(artifact69):continue
-    if previous69.get('code') in ('QUEUED','RUNNING') and 0<=time.time()-previous69.get('at',0)<60:continue
+    if previous69.get('code') in ('QUEUED','RUNNING') and 0<=time.time()-previous69.get('at',0)<60:
+     if value.get('priority') and previous69.get('code')=='QUEUED':
+      from programme_urls55 import promote_focus75
+      promote_focus75(value['tag'])
+     continue
    portal=get_by_id(str(event.get('pid','')))
    if not portal or not portal.get('enabled',True) or not portal.get('include_live',True):continue
    # Token refresh/file access is deliberately in this worker, never focus.
@@ -181,7 +185,7 @@ def drain(cancel=lambda:False):
     status(current,'TMDB_LOOKUP_DISABLED')
     mark_seen(tag,policy,now)
     continue
-   accepted=enqueue(current,allow_lookup=allow,local_image63=setting_bool('programme_art_local69',False),priority68=bool(value.get('priority')))
+   accepted=enqueue(current,allow_lookup=allow,local_image63=setting_bool('programme_art_local69',False),priority68=2 if value.get('priority') else False)
    mark_seen(tag,policy,now if accepted else now-8)
    processed+=1
    if processed>=9:_cursor=(slot+1)%SLOTS;break

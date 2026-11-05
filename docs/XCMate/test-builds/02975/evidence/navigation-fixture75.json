@@ -1,0 +1,13 @@
+{
+  "cause": "Missing native xbmcvfs stub in isolated Omega model; real Kodi provides it",
+  "failed_import_searches": 70738,
+  "profiled_import_cumulative_seconds": 9.417,
+  "previous_ci_seconds": [
+    6.130890742,
+    6.15502371
+  ],
+  "unchanged_limit_seconds": 5,
+  "new_full_case_including_setup_seconds": 0.856233785,
+  "production_source_changed": false,
+  "android": "ANDROID_NOT_TESTED"
+}

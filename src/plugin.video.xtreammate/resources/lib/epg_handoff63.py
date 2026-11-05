@@ -20,7 +20,7 @@ _FIELDS=('now','next','description','image','now_time','now_end_time','next_time
     'source_index','reason','snapshot_revision','canonical46','programme_key47')
 _EVENT=('title','description','start','stop','source','_source_index','programme_key47','canonical46',
     'source_key46','fact_revision46','subtitle','year','season','episode','genre',
-    'xmltv_image','provider_image','epg_source46')
+    'xmltv_image','provider_image','epg_source46','cast')
 
 
 def profile_scope():

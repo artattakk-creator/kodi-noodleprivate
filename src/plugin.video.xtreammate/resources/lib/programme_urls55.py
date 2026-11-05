@@ -12,6 +12,7 @@ _lock=threading.Lock();_queue=OrderedDict();_pending=set();_thread=None
 _stop=threading.Event();_wake=threading.Event();_revisions={}
 _observed56={}
 _urgent68=set();_burst68=0
+_focus75=None
 OPTIONS='|redirect-limit=0&connection-timeout=3&failonerror=true'
 
 
@@ -34,7 +35,10 @@ def safe(url):
     try:
         p=urlsplit(url)
         if (p.scheme!='https' or p.port not in (None,443) or p.username is not None or
-                p.password is not None or p.query or p.fragment or p.hostname not in hosts()):return False
+                p.password is not None or p.query or p.fragment):return False
+        if p.hostname not in hosts():
+            from programme_origin75 import approved
+            if not approved(url):return False
         if p.hostname.endswith(('.local','.localhost','.internal','.invalid')) or p.hostname=='localhost':return False
         try:
             ipaddress.ip_address(p.hostname)
@@ -156,7 +160,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
                resolved_at55=now,until=now+300,tvspielfilm55='BLOCKED_NO_AUTHORIZED_API')
     value.update(hosts55=sorted(hosts()),profile55=profile())
     value['matching_policy56']=1
-    value.update(matching_policy57=1,source_policy57=policy(),sources70=[],lookup70=__import__('programme_outcomes70').settings())
+    value.update(matching_policy57=1,source_policy57=policy(),sources70=[],lookup70=__import__('programme_outcomes70').settings(),origin_policy75=1)
     candidates=[dict(url=event[field],source=source,match='EXACT_EVENT',attribution=credit)
                 for field,source,credit in (('xmltv_image','xmltv_event','XMLTV – konfigurierte Eventquelle'),
                     ('provider_image','provider_event','Anbieter – konfigurierte Eventquelle')) if event.get(field)]
@@ -204,17 +208,25 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         if cancel():return None
         if candidate.get('match') not in ('EXACT_EVENT','EXACT_TITLE_YEAR','EXACT_SEASON_EPISODE','EXACT_UNIQUE_FILM_TITLE')+PROOFS:continue
         url=candidate.get('url','')
-        if not safe(url):value['code']='BLOCKED_IMAGE_HOST_OR_URL';continue
+        from programme_origin75 import candidate as origin75,grant as grant75
+        new_origin75=not safe(url) and candidate.get('match')=='EXACT_EVENT' and origin75(event,url,candidate.get('source'))
+        if not safe(url) and not new_origin75:value['code']='BLOCKED_IMAGE_HOST_OR_URL';continue
         from portals import get_by_id
         portal=get_by_id(str(event.get('pid',''))) or {}
         path=unquote(urlsplit(url).path)
         secrets=[str(portal.get(k) or '') for k in ('xc_user','xc_pass')]
         if any(secret and (secret in path.split('/') or len(secret)>=4 and secret in path) for secret in secrets):
             value['code']='BLOCKED_CREDENTIAL_URL';continue
+        if new_origin75:
+            try:probe(url,cancel=cancel)
+            except SourceError as exc:value['code']=exc.code;continue
+            if cancel():return None
+            grant75(url)
         if local_image63 or not url_mode69 and candidate.get('source') in ('tmdb_movie','tmdb_episode','tmdb_series'):
             from programme_art46 import prepare as materialize60
             return materialize60(event,cancel=cancel,resolved60=dict(candidate,_local_only63=True) if local_image63 else candidate)
-        try:(check or probe)(url,cancel=cancel)
+        try:
+            if not new_origin75:(check or probe)(url,cancel=cancel)
         except SourceError as exc:value['code']=exc.code;continue
         if cancel():return None
         value.update(code='READY',source=candidate['source'],match=candidate['match'],
@@ -264,12 +276,28 @@ def refreshed(pid,revision):
     return eligible
 
 
+def promote_focus75(tag):
+    """Worker-only promotion of an exact queued intent; never another lookup."""
+    global _focus75
+    from programme_requests68 import identity,_aliases
+    from epg_handoff63 import profile_scope
+    current=profile_scope()
+    with _lock:
+        for key,job in _queue.items():
+            if len(job)<4 or job[3]!=current:continue
+            bound=identity(job[0])
+            if tag==bound or tag in _aliases.get(bound,()):
+                _focus75=key;_urgent68.add(key);_queue.move_to_end(key,last=False)
+                return True
+    return False
+
 def enqueue(event,allow_lookup=False,local_image63=False,priority68=False):
-    """Called only by existing background producers, never by focus/details."""
-    global _thread
+    """Worker producer: True prioritizes visible items; 2 is current focus."""
+    global _thread,_focus75
     if _stop.is_set() or not event.get('title'):return False
     with _lock:
         key=event['key']
+        if priority68==2:_focus75=key
         from utils import setting_bool
         if not local_image63 and not setting_bool('programme_art_local69',False):
             from programme_session69 import get as session69
@@ -281,14 +309,21 @@ def enqueue(event,allow_lookup=False,local_image63=False,priority68=False):
             if priority68 and key in _queue:
                 old=_queue[key];_queue[key]=(old[0],old[1] or allow_lookup,old[2] or local_image63,old[3])
                 _urgent68.add(key)
+                if priority68==2:_queue.move_to_end(key,last=False)
             return False
         if len(_pending)>=24:
             victim=next((k for k in reversed(_queue) if k not in _urgent68),None) if priority68 else None
+            if victim is None and priority68==2:victim=next(reversed(_queue),None)
             if victim is None:return False
-            _queue.pop(victim);_pending.discard(victim)
+            deferred75=_queue.pop(victim);_pending.discard(victim);_urgent68.discard(victim)
+            try:
+                from programme_requests68 import status
+                status(deferred75[0],'REQUESTED')
+            except (ImportError,AttributeError,RuntimeError):pass
         from epg_handoff63 import profile_scope
         _pending.add(key);_queue[key]=(dict(event),allow_lookup,bool(local_image63),profile_scope())
         if priority68:_urgent68.add(key)
+        if priority68==2:_queue.move_to_end(key,last=False)
         try:
             from programme_requests68 import status
             status(event,'QUEUED')
@@ -303,7 +338,9 @@ def _run():
     while not _stop.is_set():
         with _lock:
             urgent=next((k for k in _queue if k in _urgent68),None)
-            if urgent is not None and (_burst68<3 or all(k in _urgent68 for k in _queue)):
+            if _focus75 in _queue:
+                pair=(_focus75,_queue.pop(_focus75));_burst68+=1
+            elif urgent is not None and (_burst68<3 or all(k in _urgent68 for k in _queue)):
                 pair=(urgent,_queue.pop(urgent));_burst68+=1
             else:
                 background=next((k for k in _queue if k not in _urgent68),None)

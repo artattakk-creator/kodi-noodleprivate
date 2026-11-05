@@ -41,6 +41,13 @@ def describe(portal,kind,row,approved,epg=None,assets47=None):
         for key in ('genre','year','rating','duration'):
             info.pop(key,None)
             if key in normalized:info[key]=normalized[key]
+        cast75=normalized.get('cast')
+        if isinstance(cast75,str):cast75=[v.strip() for v in cast75.split(',') if v.strip()]
+        if isinstance(cast75,list):
+            info['cast']=[(str(v.get('name','')) if isinstance(v,dict) else str(v))[:128] for v in cast75[:24] if isinstance(v,(str,dict))]
+        director75=normalized.get('director')
+        if isinstance(director75,str):info['director']=director75[:256]
+        if isinstance(row.get('mpaa'),str):info['mpaa']=row['mpaa'][:64]
         genre=info.get('genre')
         if genre is not None and not (isinstance(genre,str) or isinstance(genre,list) and all(isinstance(g,str) for g in genre)):
             info.pop('genre',None)

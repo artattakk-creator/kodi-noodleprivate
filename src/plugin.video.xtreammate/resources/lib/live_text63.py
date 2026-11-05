@@ -44,10 +44,21 @@ def apply(item,portal,row,info,event=None,labels=None):
         'XCMate.ProgrammeSubtitle63':subtitle,
         'XCMate.ProgrammeKey46':key,'XCMate.ProgrammeKey47':key,
         'XCMate.ProgrammeStart63':str(info.get('start',0)),'XCMate.ProgrammeStop63':str(info.get('stop',0))})
+    facts75(props,event)
     if now:
         props['XCMate.ProgrammeDetails46']='plugin://plugin.video.xtreammate/?'+urlencode(dict(action='programme_details46',pid=portal['id'],sid=row['sid'],start=info['start'],stop=info['stop'],event=key))
     _hero(props)
     return item
+
+def facts75(props,event):
+    event=event if isinstance(event,dict) and event.get('key')==props.get('XCMate.ProgrammeKey47') else {}
+    values=[str(event.get('genre') or '')[:160]]
+    year=event.get('year')
+    if str(year or '').isdigit() and 1800<=int(year)<=2200:values.append(str(year))
+    cast=event.get('cast') or []
+    if isinstance(cast,str):values.append(cast[:320])
+    elif isinstance(cast,list):values.append(', '.join((str(v.get('name','')) if isinstance(v,dict) else str(v))[:80] for v in cast[:8]))
+    props['XCMate.ProgrammeFacts75']=' · '.join(v for v in values if v)[:512]
 
 
 def _hero(props):

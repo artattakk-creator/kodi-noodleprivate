@@ -126,7 +126,8 @@ def skin_setup():
                 rebuild();xbmcgui.Dialog().notification('XCMate',tr(36415))
             return
         plan=prepare(skin)
-        hashes='\n'.join(name+'\n'+e['before']+' → '+e['after'] for name,e in zip(FILES,plan['entries']))
+        names75=list(FILES)+(['xml/IncludesBingie.xml'] if len(plan['entries'])==5 else [])
+        hashes='\n'.join(name+'\n'+e['before']+' → '+e['after'] for name,e in zip(names75,plan['entries']))
         from widget_skin60 import preview
         xbmcgui.Dialog().textviewer(tr(36401),tr(36417)+'\n\n'+hashes+'\n\n'+preview(plan))
         if not xbmcgui.Dialog().yesno(tr(36413),tr(36418),nolabel=tr(36426),yeslabel=tr(36419),defaultbutton=getattr(xbmcgui,'DLG_YESNO_NO_BTN',10)):return

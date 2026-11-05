@@ -1,0 +1,13 @@
+{
+  "queue_limit": 24,
+  "all_24_urgent_admits_new_focus": "PASS",
+  "existing_intent_exact_promotion": "PASS",
+  "foreign_profile_rejected": "PASS",
+  "latest_focus_precedes_fairness_turn": "PASS",
+  "new_tests_total": 43,
+  "targeted_seconds": 4.916,
+  "prior_pipeline68_tests": 37,
+  "prior_pipeline68_seconds": 2.146,
+  "sha256": "83acfaf48b1877dc32fb8879c470bcbc178c90d85a4296dc88c716f560ea1392",
+  "android": "ANDROID_NOT_TESTED"
+}

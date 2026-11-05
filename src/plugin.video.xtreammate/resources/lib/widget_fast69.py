@@ -12,22 +12,32 @@ def prepare(cancel=lambda:False):
  from widget_live47 import publish
  from epg_handoff63 import profile_scope
  worked=False
- for portal in get_active()[:4]:
+ portals=get_active()[:4]
+ from home_schedule75 import configure,allowed,focused_rows,prepared,trace
+ configure(portals)
+ for portal in portals:
   if cancel():break
   for kind in ('vod','series'):
    if cancel():break
    if not portal.get('include_'+kind,True):continue
    rows,code=snapshot(portal,kind)
    if not rows:continue
-   approve(portal,kind,rows,cancel)
+   admitted=allowed(kind,portal)
+   selected=rows if admitted else focused_rows(portal,kind,rows)
+   if not selected:continue
+   if admitted:trace('MOVIE_WARM_BEGIN' if kind=='vod' else 'SERIES_WARM_BEGIN',count=len(selected))
+   approve(portal,kind,selected,cancel)
    refs=references(portal,kind,rows)
    # A publication changes only after rows/policy/references change, never on
    # IR focus. Existing native widget reload hooks retain their own rate limit.
    key=(profile_scope(),str(portal['id']),kind)
    stamp=hashlib.sha256(json.dumps([policy(portal,kind),[[r.get(k) for k in ('sid','name','cover','stream_icon')] for r in rows],refs],sort_keys=True).encode()).hexdigest()
-   if _published.get(key)==stamp:continue
+   if _published.get(key)==stamp:
+    if admitted:prepared(kind,len(rows))
+    continue
    if publish(portal,kind,rows,'READY'):
     _published[key]=stamp;worked=True
+    if admitted:prepared(kind,len(rows))
    while len(_published)>16:_published.pop(next(iter(_published)))
  return worked
 def _run():
