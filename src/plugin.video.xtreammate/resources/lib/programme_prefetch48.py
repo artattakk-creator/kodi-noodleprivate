@@ -57,7 +57,7 @@ def prepare(portal,rows,cancel=lambda:False):
             if cancel():return False
             event=from_info(portal,row,infos.get(str(row['sid']),{}))
             if event.get('title'):
-                records.append(event);enqueue(event,allow_lookup=allow_lookup,local_image63=setting_bool('programme_art_local69',False),priority68=row in batch[:5])
+                records.append(event);enqueue(event,allow_lookup=allow_lookup,local_image63=setting_bool('programme_art_local69',False),priority68=2 if row==batch[0] else row in batch[:5])
             # NEXT is resolved ahead of its transition, with the same local
             # canonical/source identity as NOW; never borrow NOW's picture.
             from programme_events46 import describe

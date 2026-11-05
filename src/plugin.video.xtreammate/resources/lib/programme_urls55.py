@@ -12,6 +12,7 @@ _lock=threading.Lock();_queue=OrderedDict();_pending=set();_thread=None
 _stop=threading.Event();_wake=threading.Event();_revisions={}
 _observed56={}
 _urgent68=set();_burst68=0
+_focus75=None
 OPTIONS='|redirect-limit=0&connection-timeout=3&failonerror=true'
 
 
@@ -275,12 +276,28 @@ def refreshed(pid,revision):
     return eligible
 
 
+def promote_focus75(tag):
+    """Worker-only promotion of an exact queued intent; never another lookup."""
+    global _focus75
+    from programme_requests68 import identity,_aliases
+    from epg_handoff63 import profile_scope
+    current=profile_scope()
+    with _lock:
+        for key,job in _queue.items():
+            if len(job)<4 or job[3]!=current:continue
+            bound=identity(job[0])
+            if tag==bound or tag in _aliases.get(bound,()):
+                _focus75=key;_urgent68.add(key);_queue.move_to_end(key,last=False)
+                return True
+    return False
+
 def enqueue(event,allow_lookup=False,local_image63=False,priority68=False):
-    """Called only by existing background producers, never by focus/details."""
-    global _thread
+    """Worker producer: True prioritizes visible items; 2 is current focus."""
+    global _thread,_focus75
     if _stop.is_set() or not event.get('title'):return False
     with _lock:
         key=event['key']
+        if priority68==2:_focus75=key
         from utils import setting_bool
         if not local_image63 and not setting_bool('programme_art_local69',False):
             from programme_session69 import get as session69
@@ -292,14 +309,21 @@ def enqueue(event,allow_lookup=False,local_image63=False,priority68=False):
             if priority68 and key in _queue:
                 old=_queue[key];_queue[key]=(old[0],old[1] or allow_lookup,old[2] or local_image63,old[3])
                 _urgent68.add(key)
+                if priority68==2:_queue.move_to_end(key,last=False)
             return False
         if len(_pending)>=24:
             victim=next((k for k in reversed(_queue) if k not in _urgent68),None) if priority68 else None
+            if victim is None and priority68==2:victim=next(reversed(_queue),None)
             if victim is None:return False
-            _queue.pop(victim);_pending.discard(victim)
+            deferred75=_queue.pop(victim);_pending.discard(victim);_urgent68.discard(victim)
+            try:
+                from programme_requests68 import status
+                status(deferred75[0],'REQUESTED')
+            except (ImportError,AttributeError,RuntimeError):pass
         from epg_handoff63 import profile_scope
         _pending.add(key);_queue[key]=(dict(event),allow_lookup,bool(local_image63),profile_scope())
         if priority68:_urgent68.add(key)
+        if priority68==2:_queue.move_to_end(key,last=False)
         try:
             from programme_requests68 import status
             status(event,'QUEUED')
@@ -314,7 +338,9 @@ def _run():
     while not _stop.is_set():
         with _lock:
             urgent=next((k for k in _queue if k in _urgent68),None)
-            if urgent is not None and (_burst68<3 or all(k in _urgent68 for k in _queue)):
+            if _focus75 in _queue:
+                pair=(_focus75,_queue.pop(_focus75));_burst68+=1
+            elif urgent is not None and (_burst68<3 or all(k in _urgent68 for k in _queue)):
                 pair=(urgent,_queue.pop(urgent));_burst68+=1
             else:
                 background=next((k for k in _queue if k not in _urgent68),None)

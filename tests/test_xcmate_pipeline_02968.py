@@ -53,7 +53,7 @@ class Pipeline68(Fixture,unittest.TestCase):
   with mock.patch('library_index.Reader',return_value=reader),mock.patch('programme_events46.load',return_value=current),mock.patch('tmdb_token61.effective_tmdb_read_token',return_value=''),mock.patch('programme_urls55.enqueue',return_value=True) as enqueue:
    self.assertEqual(self.b.drain(),1)
    self.b.drain()
-  enqueue.assert_called_once_with(current,allow_lookup=True,local_image63=True,priority68=True)
+  enqueue.assert_called_once_with(current,allow_lookup=True,local_image63=True,priority68=2)
  def test_stale_event_binding_cannot_enqueue_another_source(self):
   e=self.event();self.b.request(e)
   reader=types.SimpleNamespace(get=lambda *a:dict(sid='1'),close=lambda:None)

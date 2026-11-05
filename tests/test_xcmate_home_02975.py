@@ -85,6 +85,44 @@ class Schedule75(Fixture,unittest.TestCase):
             batch=module.visible75(self.portal,rows)
         self.assertEqual(batch[0]['sid'],'40');self.assertEqual({r['sid'] for r in batch},{'38','39','40','41','42'})
 
+class QueueFocus75(Fixture,unittest.TestCase):
+    def setUp(self):
+        super().setUp()
+        self.options['programme_art_local69']=True
+        import sys
+        sys.modules.pop('programme_urls55',None)
+        self.q=importlib.import_module('programme_urls55')
+        self.q._thread=mock.Mock();self.q._thread.is_alive.return_value=True
+    def event75(self,key):return dict(key=key,title='Synthetic focus',pid='p',sid=key,placeholder='/synthetic/none.png')
+    def test_focus_enters_a_full_all_urgent_queue_without_exceeding_24(self):
+        for i in range(24):self.assertTrue(self.q.enqueue(self.event75(str(i)),priority68=True))
+        self.assertTrue(self.q.enqueue(self.event75('focus'),priority68=2))
+        self.assertEqual((len(self.q._pending),len(self.q._queue),len(self.q._urgent68)),(24,24,24))
+        self.assertEqual(next(iter(self.q._queue)),'focus');self.assertNotIn('23',self.q._urgent68)
+    def test_existing_focus_is_promoted_without_a_second_job_or_worker(self):
+        self.q.enqueue(self.event75('old'),priority68=True);self.q.enqueue(self.event75('focus'))
+        self.assertFalse(self.q.enqueue(self.event75('focus'),allow_lookup=True,priority68=2))
+        self.assertEqual(list(self.q._queue),['focus','old']);self.assertEqual(len(self.q._pending),2)
+        self.assertTrue(self.q._queue['focus'][1])
+    def test_queued_intent_promotes_exact_profile_and_never_reads_files_or_http(self):
+        from programme_requests68 import identity
+        event=self.event75('focus');self.q.enqueue(self.event75('old'),priority68=True);self.q.enqueue(event)
+        tag=identity(event)
+        with mock.patch('builtins.open',side_effect=AssertionError('FOCUS_FILE')),mock.patch('media_sources43.get',side_effect=AssertionError('FOCUS_HTTP')):
+            self.assertTrue(self.q.promote_focus75(tag))
+        self.assertEqual(next(iter(self.q._queue)),'focus')
+        with mock.patch('epg_handoff63.profile_scope',return_value='foreign'):
+            self.assertFalse(self.q.promote_focus75(tag))
+    def test_latest_focus_wins_even_after_the_visible_job_fairness_burst(self):
+        for name in ('visible','old-focus','new-focus'):
+            self.q.enqueue(self.event75(name),priority68=2 if 'focus' in name else True)
+        self.q.enqueue(self.event75('background'));self.q._burst68=3;order=[]
+        def resolved(event,**kw):
+            order.append(event['key']);self.q._stop.set()
+            return dict(code='NO_MATCH',source='placeholder')
+        with mock.patch.object(self.q,'resolve',side_effect=resolved):self.q._run()
+        self.assertEqual(order,['new-focus']);self.assertEqual(len(self.q._pending),3)
+
 class Origin75(Fixture,unittest.TestCase):
     def setUp(self):
         super().setUp();self.origin=importlib.import_module('programme_origin75');self.urls=importlib.import_module('programme_urls55');self.url='https://public.example.org/image.jpg';self.event=dict(key='a'*64,pid='p',sid='1',canonical='xml',xmltv_image=self.url)

@@ -1,14 +1,16 @@
 # XCMate 0.1.29.75 – Testbericht
 
-Basis: `ad5c337c0ca9ea6f85e458c17383fb32c19e3fc2` (.74). Auftrag #366/#367/#368. Status dieses ersten PR-Standes: **DRAFT, vollständiger lokaler Hostlauf PASS; CI und abschließender 60-Minuten-Lauf noch ausstehend**. Keine Android-Abnahme behauptet. Der Bericht wird mit den abschließenden Ergebnissen aktualisiert.
+Basis: `ad5c337c0ca9ea6f85e458c17383fb32c19e3fc2` (.74). Auftrag #366/#367/#368. Status dieses ersten PR-Standes: **DRAFT, voriger vollständiger Hostlauf PASS; neuer Fokus-Queue-Fix gezielt PASS, vollständige CI und abschließender 60-Minuten-Lauf noch ausstehend**. Keine Android-Abnahme behauptet. Der Bericht wird mit den abschließenden Ergebnissen aktualisiert.
+
+Der vorläufige SHA `0d0cbf290ec489635a3e69faf787643db91a02298eb91bd021878bac4f5e7126` ist nach der letzten Fokus-Queue-Korrektur überholt. Aktuelles ZIP: `83acfaf48b1877dc32fb8879c470bcbc178c90d85a4296dc88c716f560ea1392`. Die früheren vollständigen Hostzahlen gelten für den vorigen Kandidaten; der abschließende 3.097er CI-Lauf muss den neuen Stand bestätigen.
 
 ## Bereits geprüft
 
 | Prüfung | Ergebnis |
 |---|---|
-| Vollständiger lokaler Hostlauf | **3.090/3.090 PASS**, 582,170 s; zusätzliche drei neue Skin-Schutzfälle separat im 39er Lauf PASS |
-| Neue .75-Funktions- und Bestandsschutztests | **39/39 PASS**, 5,063 s (inklusive fünfter Skin-Datei, Schreibfehler/Rollback/Restore) |
-| Vollständiger GitHub-Hostjob (Code `0da8f3c`) | **3.093/3.093 PASS**, 657,999 s; Gesamtworkflow wegen separatem Cloud-Zeitgate noch nicht freigegeben |
+| Vollständiger lokaler Hostlauf des vorigen Kandidaten | **3.090/3.090 PASS**, 582,170 s; zusätzliche drei neue Skin-Schutzfälle separat im 39er Lauf PASS |
+| Neue .75-Funktions- und Bestandsschutztests | **43/43 PASS**, 4,916 s (inklusive fünfter Skin-Datei, Schreibfehler/Rollback/Restore) |
+| Vollständiger GitHub-Hostjob des vorigen Kandidaten (Code `0da8f3c`) | **3.093/3.093 PASS**, 657,999 s; Gesamtworkflow wegen separatem Cloud-Zeitgate noch nicht freigegeben |
 | Nativer 720p-Neustart und Reload | **PASS**, andere Kodi-PID, sieben Bild-/Fokusfälle, 88/24/24 Einträge, 32 geschützte Dateien bytegleich |
 | Bestehende pytest-Brandingtests | **11/11 PASS**, 0,15 s |
 | Sprachdateien | **17 Kataloge PASS** |
