@@ -69,12 +69,12 @@ class ProgrammeArt46(Fixture,unittest.TestCase):
  def test_default_tmdb_is_disabled_and_requires_existing_user_opt_in(self):
   with mock.patch('media_sources43.tmdb',side_effect=AssertionError('automatic API without opt-in')):self.assertIsNone(self.m.candidate(self.event))
  def test_movie_matching_requires_exact_title_and_year_and_unique_identity(self):
-  self.options['programme_tmdb46']=True;event=dict(self.event,genre='Spielfilm',year=2024)
+  self.options.update(programme_tmdb46=True,tmdb_research43=True);event=dict(self.event,genre='Spielfilm',year=2024)
   for rows in ([dict(id=1,title=event['title'],release_date='2023-01-01')],[dict(id=i,title=event['title'],release_date='2024-01-01') for i in (1,2)]):
    payload=dict(total_pages=1,total_results=len(rows),results=rows)
    with mock.patch('media_sources43.tmdb_token',return_value='synthetic'),mock.patch('media_sources43.get',return_value=payload):self.assertIsNone(self.m.candidate(event))
  def test_verified_episode_requires_matching_season_episode_and_supplied_subtitle(self):
-  self.options['programme_tmdb46']=True;event=dict(self.event,season=2,episode=3,subtitle='Exact episode')
+  self.options.update(programme_tmdb46=True,tmdb_research43=True);event=dict(self.event,season=2,episode=3,subtitle='Exact episode')
   search=dict(total_pages=1,total_results=1,results=[dict(id=42,name=event['title'],first_air_date='2024-01-01')])
   wrong=dict(id=42004,season_number=2,episode_number=4,name='Exact episode',still_path='/wrong.jpg')
   right=dict(id=42003,season_number=2,episode_number=3,name='Exact episode',still_path='/correct.jpg')

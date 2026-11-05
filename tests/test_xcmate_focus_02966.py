@@ -20,7 +20,7 @@ class Focus66(Fixture50,unittest.TestCase):
     if group.get('type')!='group':continue
     for image in group.findall('control'):
      includes=[n.text for n in image.findall('include')]
-     if image.get('type')!='image' or 'thumbsborder_focused' not in includes or not any('FO_Defs' in value for value in includes):continue
+     if image.get('type')!='image' or image.findtext('description')!='XCMate74.ItemFocus':continue
      self.assertIn('Control.HasFocus($PARAM[widgetid])',image.findtext('visible'))
      self.assertEqual(image.findtext('width'),group.findtext('width'));self.assertEqual(image.findtext('height'),group.findtext('height'));count+=1
   self.assertGreaterEqual(count,2)
@@ -28,14 +28,12 @@ class Focus66(Fixture50,unittest.TestCase):
   self.prepare66();root=E.parse(self.skin/'xml/IncludesHomeBingie.xml').getroot();count=0
   for group in root.iter('control'):
    if any((n.get('content') or n.text or '').startswith('Bingie_Screens_Fixed_Focus_Frame') for n in group.findall('include')):
-    self.assertTrue(any('!ControlGroup(77777).HasFocus()' in (v.text or '') for v in group.findall('visible')));count+=1
+    self.assertTrue(any('!Window.IsActive(Home)' in (v.text or '') for v in group.findall('visible')));count+=1
   self.assertGreaterEqual(count,2)
  def test_widget_position_is_published_before_current_identity_without_dead_condition(self):
   self.prepare66();root=E.parse(self.skin/'xml/IncludesHomeWidgets.xml').getroot()
-  actions=root.find("include[@name='XCMate66.VerticalFocus']").findall('onfocus')
-  self.assertIn('SetProperty(CurrentWidgetPos,',actions[1].text)
-  self.assertIn('SetProperty(CurrentWidgetID,',actions[2].text)
-  self.assertIsNone(actions[1].get('condition'))
+  self.assertIsNone(root.find("include[@name='XCMate66.VerticalFocus']"))
+  self.assertTrue(root.findall(".//include[@content='SetFixedVerticalNavigationProps']"))
  def test_native_plot_has_bounded_height_without_autogrowing_into_next_heading(self):
   self.prepare66();root=E.parse(self.skin/'xml/IncludesHomeBingie.xml').getroot()
   plot=root.find(".//control[@id='90009']")

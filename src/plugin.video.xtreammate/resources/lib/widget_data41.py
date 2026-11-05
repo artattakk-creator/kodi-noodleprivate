@@ -55,6 +55,10 @@ def files(pid,kind):
     return os.path.join(addon_data_dir(),name+'.json'),os.path.join(addon_data_dir(),name+'.lock')
 
 def policy(portal,kind,offset=0):
+    from widget_policy74 import signature
+    return signature(portal,kind,offset)
+
+def legacy_policy73(portal,kind,offset=0):
     from utils import addon_data_dir,setting_int
     try:s=os.stat(os.path.join(addon_data_dir(),'xtreammate_groups.json'));stamp=[s.st_mtime_ns,s.st_size]
     except OSError:stamp=None
@@ -93,7 +97,7 @@ def store(filename,key,rows,revision=None):
 
 def trace(kind,code,rows,started,stale=False,stage=''):
     import xbmc
-    allowed=('READY','CACHE','READ_ONLY','CACHE_UNWRITABLE','CACHE_STORAGE_FULL','LOCKED','BUDGET','SQLITE_BUSY','SQLITE_LOCKED','SQLITE_INTERRUPT','SQLITE_CORRUPT','SQLITE_NOTADB','SQLITE_CANTOPEN','SQLITE_IOERR','INDEX_MISSING','UNAVAILABLE','DISABLED')
+    allowed=('REVISION_CHANGED','READY','CACHE','READ_ONLY','CACHE_UNWRITABLE','CACHE_STORAGE_FULL','LOCKED','BUDGET','SQLITE_BUSY','SQLITE_LOCKED','SQLITE_INTERRUPT','SQLITE_CORRUPT','SQLITE_NOTADB','SQLITE_CANTOPEN','SQLITE_IOERR','INDEX_MISSING','UNAVAILABLE','DISABLED')
     code=code if code in allowed else 'UNAVAILABLE'
     key=(code,rows,bool(stale),stage);now=time.monotonic();prior=_last_trace46.get(kind)
     if prior and prior[0]==key and now-prior[1]<60:return
@@ -130,6 +134,9 @@ def snapshot(portal,kind,background=False):
             from widget_group46 import snapshot as complete_group
             rows=complete_group(portal) if cid else []
         else:rows=reader.small(kind,limit=24)
+        after=reader.state(kind)
+        if not after or [after.get('revision'),after.get('updated')]!=revision:
+            raise IndexReadError('REVISION_CHANGED')
         store(filename,key,rows,revision);trace(kind,'READY',len(rows),started);return rows,'READY'
     except BlockingIOError:code='LOCKED'
     except OSError as exc:

@@ -710,6 +710,7 @@
     "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.71.zip": "ebebf3c9cdb00b8730da436bfb7bd8909a8a5cdfd23ee36b61afa99f775a9a4d",
     "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.71.zip.sha256": "3a4b3ebafe0c229b411161517368b0bfcaa0392c9bc9d726e74c3f992bc109c1",
     "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.72.zip": "aebd3b268b67e8f2407f6643d4f6c51eb8a39591908534d40e23910e40abd4c6",
+    "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.73.zip": "3a0c8b7d5361612ed81e53e110623758ff3979d6e13dafd96d63d5fd2cf82576",
     "online-test/plugin.video.xtreammate/resources/media/lightweight_splash.jpg": "2553464f81de674f3de8726ba1ec81dcf57d7c0232d39aa3322af10ee0435fcc",
     "online-test/repository.gsmedia.pilot-1.8.2.zip": "20ad483cc8cbe2c723a4c82aeb64b1f1f72b948fe4332f5b3bbbb0348cd0125f",
     "online-test/repository.gsmedia.pilot-1.8.3.zip": "e0ac9cd042dcdd8a8b6e07d6b87cefefe5f17e23752bfec80fa6e1c12f863bae",
@@ -812,6 +813,7 @@
     "online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.2.zip": "d83b7e5b7d90c3881e0a9e1e6dcbea7aa7e32e92aea566e1f82447715b4ea9af",
     "online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.20.zip": "568a76b67d80d846ea09176d0ea1b9f6b6fed1fd86c2ace79ca865b4a8ccadbd",
     "online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.20.zip.sha256": "b31eaea065426e3dc80fe5d6ffbb0084a7e71f5d5f302369aeab7d642e9c74da",
+    "online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.21.zip": "3a5650a8882c865c4dcc8f813bea53d1daa61861e3518a392aaa4181c08c746e",
     "online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.3.zip": "32df50bfe730a412400abf3d3ca47d08c8d5e74254b3d3d961327ac93627ff15",
     "online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.4.zip": "7a1adbefac0390aa0cd2b94f489bf443ec00aeede5e81f4e79aa9b133e6b33cd",
     "online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.5.zip": "eceb39314fde06c0277f35c494487cf57197f176c798d01d85ccf0ed35e5a2a0",
@@ -16165,5 +16167,6 @@
     "tests/test_xtreammate_widgets.py|WidgetsTest|test_youtube_whitelist": [],
     "tests/test_xtreammate_widgets.py|WidgetsTest|test_widget_route_and_no_cached_credentials_in_link": [],
     "tests/test_xtreammate_widgets.py|WidgetsTest|test_film_trailer_and_details_routes": []
-  }
+  },
+  "channel_base74": "2e9e81c696c65b6dfdf0293efca9ed5b51c7bab8"
 }

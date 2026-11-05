@@ -32,6 +32,6 @@ python3 /work/skin_fixture66.py
 Xvfb :99 -screen 0 1920x1080x24 -nolisten tcp -ac &
 python3 -c 'import time;time.sleep(1)'
 while true; do
-  env DISPLAY=:99 /usr/lib/x86_64-linux-gnu/kodi/kodi.bin --standalone --windowing=x11
+  env NO_PROXY="${NO_PROXY:-localhost,127.0.0.1,::1},image.tmdb.org" no_proxy="${no_proxy:-localhost,127.0.0.1,::1},image.tmdb.org" DISPLAY=:99 /usr/lib/x86_64-linux-gnu/kodi/kodi.bin --standalone --windowing=x11
   python3 -c 'import time;time.sleep(1)'
 done

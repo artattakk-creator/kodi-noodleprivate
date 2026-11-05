@@ -94,6 +94,10 @@ def remember(pid,channel,info,mappings=None,expected_revision=None):
     extra=channel.extra if hasattr(channel,'extra') else channel
     sid=str(extra.get('sid',extra.get('stream_id','')))
     if not sid or not isinstance(info,dict):return
+    if not info.get('now'):
+        previous74=get(pid,sid,mappings=mappings)
+        if previous74 and previous74.get('now') and previous74.get('snapshot_revision')==info.get('snapshot_revision'):
+            return  # transient empty text cannot erase the same active event
     from epg_status import revision
     if expected_revision is not None and expected_revision!=revision(pid):return
     value={k:copy.deepcopy(info[k]) for k in _FIELDS if k in info}
@@ -130,6 +134,11 @@ def get(pid,sid,now=None,mappings=None,_previous_guide67=False):
     ts=time.time() if now is None else now
     key=identity(pid,sid)
     def result(code,value=None):
+        if code in ('EPG_CACHE_UNAVAILABLE','EPG_CACHE_STALE','EPG_DATA_MISSING'):
+            try:
+                from epg_refresh74 import request
+                request(pid,sid)
+            except (ImportError,AttributeError,RuntimeError,OSError):pass
         with _lock:
             _states[key]=code
             while len(_states)>128:_states.pop(next(iter(_states)))
@@ -152,7 +161,12 @@ def get(pid,sid,now=None,mappings=None,_previous_guide67=False):
         # Record freshness uses the real publication clock. The requested
         # EPG moment may be a fixed batch timestamp or a rollover probe.
         age=time.time()-float(record['at'])
-        if not math.isfinite(age) or not 0<=age<300:return result('EPG_CACHE_STALE')
+        if not math.isfinite(age) or not 0<=age<6*3600:return result('EPG_CACHE_STALE')
+        if age>=300:
+            try:
+                from epg_refresh74 import request
+                request(pid,sid)
+            except (ImportError,AttributeError,RuntimeError,OSError):pass
         info=record['info']
         if not isinstance(info,dict) or not isinstance(info.get('events'),list) or len(info['events'])>4:return result('EPG_CACHE_UNAVAILABLE')
         for e in info['events']:

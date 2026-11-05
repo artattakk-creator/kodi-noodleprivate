@@ -16,7 +16,5 @@ def values(portal,kind,rows,approved):
         assets=read_many(portal['id'],kind,rows,provider_only=kind in ('vod','series'))
         values=[describe(portal,kind,row,approved,epg.get(row['sid']),
                          assets47=assets.get(str(row['sid']))) for row in rows]
-        if kind in ('vod','series') and __import__('widget_assets69').home():
-            from widget_assets69 import renderable
-            values=[value for value in values if renderable(value['art'].get('poster'))]
+        # Artwork admission must never remove a valid catalogue row.
         return values

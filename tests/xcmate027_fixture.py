@@ -254,6 +254,9 @@ class Fixture:
         # must not leave asynchronous URL jobs importing retired Kodi stubs.
         # Producer rotation and the real bounded queue have dedicated tests.
         p=mock.patch.object(importlib.import_module('programme_urls55'),'enqueue');p.start();self.addCleanup(p.stop)
+        # A separate production worker is exercised by .74 native tests.
+        # Unrelated model tests must not import retired mock modules on a daemon.
+        p=mock.patch.object(importlib.import_module('epg_refresh74'),'request');p.start();self.addCleanup(p.stop)
         self.router=types.SimpleNamespace(_params={'pid':'p'},_handle=7,_xc=lambda p:self.client,
             url=lambda **kw:'plugin://plugin.video.xtreammate/?'+urllib.parse.urlencode({k:v for k,v in kw.items() if v is not None}),
             _add_dir=lambda label,url,**kw:self.added.append((url,ListItem(label),True)),

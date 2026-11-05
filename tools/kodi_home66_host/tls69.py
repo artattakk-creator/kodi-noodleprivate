@@ -18,9 +18,12 @@ images={}
 for sid,format_,color in (('5','PNG',(25,145,100)),('6','JPEG',(145,70,120))):
  image=io.BytesIO();Image.new('RGB',(160,90),color).save(image,format_);images['/t/p/w500/url69-'+sid+'.jpg']=(image.getvalue(),'image/png' if format_=='PNG' else 'image/jpeg')
 class Handler(BaseHTTPRequestHandler):
- def do_GET(self):
+ def do_HEAD(self):self.send(False)
+ def do_GET(self):self.send(True)
+ def send(self,body):
   data,kind=images.get(self.path,(b'','text/plain'))
-  with Path('/root/tls69-requests.jsonl').open('a') as out:out.write(json.dumps(dict(path=self.path,authorization=bool(self.headers.get('Authorization')),cookie=bool(self.headers.get('Cookie'))))+'\n')
-  self.send_response(200 if data else 404);self.send_header('Content-Type',kind);self.send_header('Content-Length',str(len(data)));self.end_headers();self.wfile.write(data)
+  with Path('/root/tls69-requests.jsonl').open('a') as out:out.write(json.dumps(dict(method=self.command,path=self.path,authorization=bool(self.headers.get('Authorization')),cookie=bool(self.headers.get('Cookie'))))+'\n')
+  self.send_response(200 if data else 404);self.send_header('Content-Type',kind);self.send_header('Content-Length',str(len(data)));self.end_headers()
+  if body:self.wfile.write(data)
  def log_message(self,*args):pass
 server=ThreadingHTTPServer(('0.0.0.0',443),Handler);context=ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER);context.load_cert_chain(str(cert),str(key));server.socket=context.wrap_socket(server.socket,server_side=True);server.serve_forever()

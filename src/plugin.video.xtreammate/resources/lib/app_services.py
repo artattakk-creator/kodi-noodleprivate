@@ -242,6 +242,8 @@ def shutdown():
     limitation is reported explicitly, rather than claiming a forced stop.
     """
     _stop.set()
+    from epg_refresh74 import shutdown as shutdown_epg74
+    shutdown_epg74()
     from widget_fast69 import shutdown as shutdown_widgets69
     shutdown_widgets69()
     from programme_requests68 import shutdown as shutdown_visible68

@@ -4,7 +4,7 @@ from urllib.parse import urlencode
 
 def candidate(event, cancel=lambda: False):
     from utils import setting_bool
-    if not setting_bool('programme_tmdb46', False):
+    if not setting_bool('programme_tmdb46', False) or not setting_bool('tmdb_research43', False):
         return None
     from media_sources43 import tmdb_token, TMDB, _tmdb_image
     from tmdb_connection60 import request

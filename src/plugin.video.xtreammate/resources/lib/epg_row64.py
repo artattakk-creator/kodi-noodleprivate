@@ -12,7 +12,7 @@ def valid(label,window,pid,sid,scope):
  try:
   if label('XCMate.EpgProfile63')!=scope or len(label('XCMate.ProgrammeKey47'))!=64:return False
   start=float(label('XCMate.ProgrammeStart63'));stop=float(label('XCMate.ProgrammeStop63'));at=float(label('XCMate.EpgAt64'));now=time.time()
-  if not all(map(math.isfinite,(start,stop,at))) or not 0<=now-at<300 or not 0<start<=now<stop:return False
+  if not all(map(math.isfinite,(start,stop,at))) or not 0<=now-at<6*3600 or not 0<start<=now<stop:return False
   if label('XCMate.EpgRevision64')!=json.dumps(revision(pid),separators=(',',':')):return False
   guide=window.getProperty(meta_key(pid))
   return bool(guide and label('XCMate.EpgGuide64')==guide and label('XCMate.ProgrammeTitle46'))

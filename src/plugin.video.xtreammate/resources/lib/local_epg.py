@@ -176,6 +176,10 @@ def now_next(pid,channels,mappings,now=None,client=None,display_only65=False):
     from epg_handoff63 import get as warm63,remember as remember63,note as note63,register as register63
     from epg_status import revision as revision63
     revision_before63=revision63(pid)
+    if display_only65 and channels:
+        prepared74={channel_keys(c,mappings)[0]:warm63(pid,channel_keys(c,mappings)[0],now=ts,mappings=mappings) for c in channels[:16]}
+        if prepared74 and all(v and 0<=time.time()-v.get('_published_at63',0)<15 for v in prepared74.values()) and revision63(pid)==revision_before63:
+            return prepared74
     started63=time.perf_counter()
     cache=window(pid,channels,mappings,ts,ts+2*86400,**({'text_only65':True} if display_only65 else {}))
     if cache is None:

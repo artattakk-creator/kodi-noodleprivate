@@ -16,6 +16,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          # Exact reviewed PR #360 head BEFORE publication changed the channel.
+          # .74 has its own current-source gate.
+          ref: 8f293d4a4527ec4fb2a576ddce645ba83379839a
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'

@@ -43,7 +43,7 @@ def read(pid,kind):
             values=frame['items']=Items(path(pid,kind),frame)
         else:
             values=frame.get('items')
-            if not isinstance(values,list) or not values or kind!='live' and len(values)>24:return None
+            if not isinstance(values,list) or not values and not frame.get('empty_authoritative74') or kind!='live' and len(values)>24:return None
         from urllib.parse import urlsplit,parse_qs
         for value in values:
             if not isinstance(value,dict) or not all(isinstance(value.get(k),dict) for k in ('props','art','info')) or not isinstance(value.get('label'),str):return None
@@ -54,16 +54,18 @@ def read(pid,kind):
             if parsed.scheme!='plugin' or parsed.netloc!='plugin.video.xtreammate':return None
             allowed=('play_live','source_play') if kind=='live' else ('media_detail',)
             if q.get('action',[''])[0] not in allowed or (kind!='live' and q.get('kind')!=[kind]):return None
-        if kind in ('vod','series') and __import__('widget_assets69').home():
-            from widget_assets69 import renderable
-            frame['items']=[v for v in frame['items'] if renderable(v['art'].get('poster'))]
-            if not frame['items']:return None
         return frame
     except (OSError,ValueError,TypeError,KeyError,AttributeError):return None
 
 
+from home_publication74 import serialized
+
+@serialized
 def publish(portal,kind,rows,code='READY'):
-    if code not in ('READY','CACHE') or not rows:return False
+    if code not in ('READY','CACHE'):return False
+    if not rows:
+        from home_publication74 import source
+        if source(portal,kind,rows) is None:return False
     from widget_items45 import describe
     from widget_art44 import read as approved
     from widget_data41 import policy
@@ -75,13 +77,13 @@ def publish(portal,kind,rows,code='READY'):
         from widget_render47 import values as render47
         items=render47(portal,kind,rows if kind=='live' else rows[:24],values)
     else:items=[describe(portal,kind,row,values) for row in rows[:24]]
-    if kind in ('vod','series') and not items:return False
+    if kind in ('vod','series') and not items and rows:return False
     from widget_diagnostics47 import describe as describe47,save as save47
     save47(portal['id'],kind,'ITEMS',describe47(portal['id'],kind,items))
     if kind=='live':
         from programme_urls55 import enqueue
         cursor=_art_cursor46.get(str(portal['id']),0)%max(1,len(items))
-        positions={(cursor+i)%len(items) for i in range(min(16,len(items)))}
+        positions={(cursor+i)%len(items) for i in range(min(16,len(items)))} if items else set()
         _art_cursor46[str(portal['id'])]=(cursor+16)%max(1,len(items))
         records46=[]
         for pos,value in enumerate(items):
@@ -92,14 +94,16 @@ def publish(portal,kind,rows,code='READY'):
         publish_records46(records46,include_art=False)
         from programme_assets47 import channels as channels47
         channels47(portal,records46)
-    frame=dict(pid=str(portal['id']),kind=kind,policy=policy(portal,kind),at=time.time(),items=items)
-    signature_items=[]
-    for value in items:
-        clone=dict(value,props={k:v for k,v in value['props'].items() if k not in ('XtreamMate.Progress','XCMate.EpgPercent41')})
-        signature_items.append(clone)
-    # Progress is a real value; refresh no faster than once per minute.
-    minute=int(time.time()//60) if kind=='live' and any(v['props'].get('XtreamMate.Now') for v in items) else 0
-    frame['signature']=hashlib.sha256(json.dumps([signature_items,minute],sort_keys=True).encode()).hexdigest()
+    from home_publication74 import old_frame,merge,signature,note,source_refs,art_status
+    old=old_frame(portal,kind)
+    items,source_revision74=merge(portal,kind,items,rows,old)
+    from epg_status import revision as epg_revision74
+    frame=dict(pid=str(portal['id']),kind=kind,policy=policy(portal,kind),at=time.time(),items=items,
+               source_revision74=source_revision74,epg_revision74=epg_revision74(portal['id']),empty_authoritative74=not items and source_revision74 is not None,source_refs74=source_refs(rows))
+    frame['signature']=signature(items,kind);frame['art_status74']=art_status(items)
+    if old and old.get('signature')==frame['signature'] and old.get('source_revision74')==source_revision74 and time.time()-old.get('at',0)<300:
+        trace('UNCHANGED',kind,len(items));return True
+    note(portal,kind,'COMMIT',old,len(items),source_revision74,frame['signature'],frame['art_status74'])
     data=json.dumps(frame).encode()
     if len(data)>MAX_BYTES:trace('BAD_FRAME',kind);return False
     fd,temp=tempfile.mkstemp(prefix='.widget45-',dir=os.path.dirname(path(portal['id'],kind)))

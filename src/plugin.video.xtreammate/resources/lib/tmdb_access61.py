@@ -57,10 +57,13 @@ def show():
     dialog=xbmcgui.Dialog();addon=xbmcaddon.Addon()
     while True:
         state=tokens.status()
-        labels=[tr(36621),tr({'FILE_VALID':36622,'FILE_MISSING':36623}.get(state,36624)),tr(36600),tr(36625),tr(36640),tr(36626),tr(36660),tr(36661)]
-        choice=select(dialog,tr(36620),labels,actions=['settings','information','settings','check','back','check','settings','settings'])
+        labels=[tr(36621),tr({'FILE_VALID':36622,'FILE_MISSING':36623}.get(state,36624)),tr(36600),tr(36625),tr(36640),tr(36626),tr(36660),tr(36661),tr(38100)]
+        choice=select(dialog,tr(36620),labels,actions=['settings','information','settings','check','back','check','settings','settings','check'])
         if not isinstance(choice,int) or not 0<=choice<len(labels) or choice==4:return
-        if choice in (0,6,7):
+        if choice==8:
+            from programme_diagnostic74 import show as diagnostic74
+            diagnostic74()
+        elif choice in (0,6,7):
             try:imported(choice,dialog,addon,xbmcgui,tokens)
             except (tokens.TokenError,OSError,UnicodeError) as exc:
                 code=exc.code if isinstance(exc,tokens.TokenError) else 'TOKEN_UNREADABLE'

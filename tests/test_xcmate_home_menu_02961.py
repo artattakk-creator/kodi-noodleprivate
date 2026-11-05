@@ -10,10 +10,12 @@ class Menu61(Fixture50,unittest.TestCase):
   self.assertEqual(len(self.ends),1)
  def test_visible_path_reaches_manager_and_plain_ok_layout_and_restore_actions(self):
   self.follow('settings_home')
-  url=next(u for u,i,f in self.added if i.label=='Aussehen und Darstellung')
-  self.follow(**dict(parse_qsl(urlsplit(url).query)))
-  url=next(u for u,i,f in self.added if i.label=='BINGIE-Startseiten-Widgets einrichten')
-  self.follow(**dict(parse_qsl(urlsplit(url).query)))
+  url=next(u for u,i,f in self.added if i.label=='Experimentell')
+  self.dialog.input.return_value='6666'
+  with mock.patch.object(self.router,'dispatch',side_effect=lambda:self.routes.dispatch(self.router),create=True),mock.patch('menu_icons45.select',side_effect=[0,-1]):self.follow(**dict(parse_qsl(urlsplit(url).query)))
+  # The guarded experimental modal opens the technical directory explicitly.
+  self.assertIn('technical74=1',self.builtins.pop())
+  self.follow('widget_setup',technical74='1')
   self.assertEqual([i.label for u,i,f in self.added[:3]],['Live-TV','Filme','Serien'])
   for label,action in [('BINGIE-Home-Layout prüfen/vorbereiten','widget_skin50'),('Widget-Verknüpfung oder Layout wiederherstellen','widget_restore50')]:
    matches=[(u,f) for u,i,f in self.added if 'action='+action in u]

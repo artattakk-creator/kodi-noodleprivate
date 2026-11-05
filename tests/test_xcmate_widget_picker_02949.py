@@ -71,7 +71,7 @@ class WidgetPicker49(Fixture,unittest.TestCase):
         self.router._handle=-1;self.router._params.update(action='widget_setup')
         self.routes.dispatch(self.router)
         self.assertFalse(self.ends)
-        self.assertEqual(self.builtins,['ActivateWindow(Videos,'+self.router.url(action='widget_setup',pid='p')+',return)'])
+        self.assertEqual(self.builtins,['ActivateWindow(Videos,'+self.router.url(action='widget_sources49',pid='p')+',return)'])
         self.assertFalse(self.options);self.dialog.textviewer.assert_not_called()
 
     def test_disabled_or_missing_explicit_portal_does_not_choose_another_portal(self):

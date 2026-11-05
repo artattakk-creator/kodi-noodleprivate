@@ -102,7 +102,7 @@ class ProgrammeAssets47(Fixture,unittest.TestCase):
         db=self.db.connect(True)
         with db:db.execute('UPDATE asset_refs47 SET expires=?',(time.time()-1,))
         db.close()
-        self.assertEqual(self.assets.read_many('p','live',[row]),{})
+        with mock.patch('time.time',return_value=time.time()+331):self.assertEqual(self.assets.read_many('p','live',[row]),{})
 
     def test_portal_and_changed_provider_image_cannot_reuse_foreign_asset(self):
         row=self.row()

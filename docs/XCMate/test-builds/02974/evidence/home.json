@@ -1,0 +1,888 @@
+{
+  "catalog_groups": 803,
+  "enrichment_failure_injected": false,
+  "kodi": {
+    "major": 21,
+    "minor": 2,
+    "revision": "20250330-nogitfound",
+    "tag": "stable"
+  },
+  "skin": "BINGIE MOD 2.2.3",
+  "native_home": 10000,
+  "synthetic_provider": true,
+  "native_directory": 88,
+  "last_station_reachable": true,
+  "focused_hero": {
+    "0": {
+      "ProgrammeChannel46": "Station 0",
+      "ProgrammeTitle46": "Synthetic film 0",
+      "ProgrammeNext46": "Next 0",
+      "ProgrammeDescription46": "Exact local description 0",
+      "ProgrammeImage46": "/root/.kodi/userdata/addon_data/plugin.video.xtreammate/programme_images46/blob46-ce99300b5c6699c428c046f1d44379b0b4f9a3302ae5720b3eafc5b1cd33f1fc.png",
+      "Home50": "true",
+      "items": "88",
+      "visible": true,
+      "hero_condition": true,
+      "window": 10000,
+      "focus": 2510,
+      "hero_active_bank": "A",
+      "hero_percent": "8",
+      "row_percent": "8",
+      "host_ready_ms": 518,
+      "warm_seed_ms": 63.251,
+      "warm_now": "Synthetic film 0",
+      "warm_next": "Next 0",
+      "warm_key": "52dda3f3fc75dca27e5d19e93b941bd05d0bc9724be848892ac731d493e685ac",
+      "warm_phase": "HOST_RAM_SNAPSHOT_ONLY_NOT_NATIVE_AV"
+    },
+    "1": {
+      "ProgrammeChannel46": "Station 1",
+      "ProgrammeTitle46": "Synthetic long programme title with enough words for the two-line Hero layout",
+      "ProgrammeNext46": "Next 1",
+      "ProgrammeDescription46": "Exact local description 1",
+      "ProgrammeImage46": "/root/.kodi/userdata/addon_data/plugin.video.xtreammate/programme_images46/blob46-ef1804cda3c8a5181dd96664d662f382c4425d21f0d5fb6a3fd8c676e0fd4ab3.png",
+      "Home50": "true",
+      "items": "88",
+      "visible": true,
+      "hero_condition": true,
+      "window": 10000,
+      "focus": 2510,
+      "hero_active_bank": "B",
+      "hero_percent": "8",
+      "row_percent": "8",
+      "host_ready_ms": 890,
+      "warm_seed_ms": 0.846,
+      "warm_now": "Synthetic long programme title with enough words for the two-line Hero layout",
+      "warm_next": "Next 1",
+      "warm_key": "4f71914f8262e56065a6772c541847e19689475b74ca73c9685918bef2e40af1",
+      "warm_phase": "HOST_RAM_SNAPSHOT_ONLY_NOT_NATIVE_AV"
+    },
+    "87": {
+      "ProgrammeChannel46": "Station 87",
+      "ProgrammeTitle46": "No programme information available",
+      "ProgrammeNext46": "",
+      "ProgrammeDescription46": "",
+      "ProgrammeImage46": "/root/.kodi/addons/plugin.video.xtreammate/resources/media/programme46/neutral.png",
+      "Home50": "true",
+      "items": "88",
+      "visible": true,
+      "hero_condition": true,
+      "window": 10000,
+      "focus": 2510,
+      "hero_active_bank": "A",
+      "hero_percent": "0",
+      "row_percent": "0",
+      "host_ready_ms": 838,
+      "warm_seed_ms": 0.966,
+      "warm_now": "",
+      "warm_next": "",
+      "warm_key": "",
+      "warm_phase": "HOST_RAM_SNAPSHOT_ONLY_NOT_NATIVE_AV"
+    }
+  },
+  "decoded_hero_images": 2,
+  "decoded_focused_logos": 2,
+  "missing_logo_text_pixels": true,
+  "full_bleed_pixels": "PASS",
+  "text_overlay_pixels": "PASS",
+  "warm_shared_snapshot": "PASS",
+  "neutral_no_epg_pixels": "PASS",
+  "no_player_start": true,
+  "android": "NOT_TESTED",
+  "menu_path": [
+    {
+      "status": "initial driver gated normal three sources and explicit adapter preview/consent before the GUI run",
+      "verification": "completed native artifacts revalidated separately"
+    }
+  ],
+  "explicit_preview_and_approval": true,
+  "external_helpers": "NO_OP; builder copies pinned native Template output after approval",
+  "epg": true,
+  "token": "SYNTHETIC_FIXTURE_ONLY",
+  "screenshot_sha256": {
+    "0": "cd87a247a01eda608839b9dbcc646849c5a034104b09b0abc196883e89337923",
+    "1": "cc19a2fdf46d322cf1d6bd98776bb9dfc916224d48399ddc41cf44476c3a7a19",
+    "87": "3f782ac8e6cb53a8b25c6c55f7a92ec275491331a2ca1a9fbccbbcaee82244c5"
+  },
+  "media66": {
+    "cases": [
+      {
+        "kind": "vod",
+        "index": 0,
+        "focus": 2520,
+        "bounds": [
+          135,
+          361,
+          366,
+          681
+        ],
+        "poster_pixels": "PASS",
+        "selected": "0"
+      },
+      {
+        "kind": "vod",
+        "index": 5,
+        "focus": 2520,
+        "bounds": [
+          285,
+          361,
+          515,
+          681
+        ],
+        "poster_pixels": "PASS",
+        "selected": "5"
+      },
+      {
+        "kind": "series",
+        "index": 0,
+        "focus": 2530,
+        "bounds": [
+          135,
+          361,
+          366,
+          681
+        ],
+        "poster_pixels": "PASS",
+        "selected": "0"
+      },
+      {
+        "kind": "series",
+        "index": 1,
+        "focus": 2530,
+        "bounds": [
+          210,
+          361,
+          440,
+          681
+        ],
+        "poster_pixels": "PASS",
+        "selected": "1"
+      },
+      {
+        "kind": "series",
+        "index": 2,
+        "focus": 2530,
+        "bounds": [
+          194,
+          361,
+          424,
+          681
+        ],
+        "poster_pixels": "PASS",
+        "selected": "2"
+      },
+      {
+        "kind": "series",
+        "index": 3,
+        "focus": 2530,
+        "bounds": [
+          201,
+          361,
+          431,
+          681
+        ],
+        "poster_pixels": "PASS",
+        "selected": "3"
+      },
+      {
+        "kind": "series",
+        "index": 4,
+        "focus": 2530,
+        "bounds": [
+          186,
+          361,
+          416,
+          681
+        ],
+        "poster_pixels": "PASS",
+        "selected": "4"
+      },
+      {
+        "kind": "series",
+        "index": 5,
+        "focus": 2530,
+        "bounds": [
+          210,
+          361,
+          440,
+          681
+        ],
+        "poster_pixels": "PASS",
+        "selected": "5"
+      },
+      {
+        "kind": "series",
+        "index": 6,
+        "focus": 2530,
+        "bounds": [
+          201,
+          361,
+          431,
+          681
+        ],
+        "poster_pixels": "PASS",
+        "selected": "6"
+      },
+      {
+        "kind": "series",
+        "index": 7,
+        "focus": 2530,
+        "bounds": [
+          201,
+          361,
+          431,
+          681
+        ],
+        "poster_pixels": "PASS",
+        "selected": "7"
+      },
+      {
+        "kind": "series",
+        "index": 8,
+        "focus": 2530,
+        "bounds": [
+          210,
+          361,
+          440,
+          681
+        ],
+        "poster_pixels": "PASS",
+        "selected": "8"
+      },
+      {
+        "kind": "series",
+        "index": 9,
+        "focus": 2530,
+        "bounds": [
+          201,
+          361,
+          431,
+          681
+        ],
+        "poster_pixels": "PASS",
+        "selected": "9"
+      },
+      {
+        "kind": "vod",
+        "index": 1,
+        "focus": 2520,
+        "bounds": [
+          135,
+          361,
+          366,
+          681
+        ],
+        "poster_pixels": "PASS",
+        "selected": "1"
+      }
+    ],
+    "series_posters": 10,
+    "film_series_live_return": true,
+    "global_fixed_frames": true,
+    "android": "NOT_TESTED",
+    "foreign66": [
+      {
+        "kind": "poster",
+        "index": 0,
+        "geometry": {
+          "frame": [
+            135,
+            361,
+            366,
+            681
+          ],
+          "tile": [
+            140,
+            367,
+            360,
+            612
+          ],
+          "plot": [
+            19,
+            227,
+            803,
+            275
+          ],
+          "collision": false,
+          "focus": 2540,
+          "selected": "0"
+        },
+        "contour": "PASS",
+        "plot_collision": "ABSENT"
+      },
+      {
+        "kind": "poster",
+        "index": 1,
+        "geometry": {
+          "frame": [
+            142,
+            361,
+            373,
+            681
+          ],
+          "tile": [
+            147,
+            367,
+            367,
+            612
+          ],
+          "plot": [
+            19,
+            227,
+            803,
+            275
+          ],
+          "collision": false,
+          "focus": 2540,
+          "selected": "1"
+        },
+        "contour": "PASS",
+        "plot_collision": "ABSENT"
+      },
+      {
+        "kind": "poster",
+        "index": 2,
+        "geometry": {
+          "frame": [
+            138,
+            361,
+            369,
+            681
+          ],
+          "tile": [
+            143,
+            367,
+            363,
+            612
+          ],
+          "plot": [
+            19,
+            227,
+            803,
+            275
+          ],
+          "collision": false,
+          "focus": 2540,
+          "selected": "2"
+        },
+        "contour": "PASS",
+        "plot_collision": "ABSENT"
+      },
+      {
+        "kind": "poster",
+        "index": 23,
+        "geometry": {
+          "frame": [
+            145,
+            361,
+            375,
+            681
+          ],
+          "tile": [
+            150,
+            367,
+            370,
+            612
+          ],
+          "plot": [
+            19,
+            227,
+            803,
+            275
+          ],
+          "collision": false,
+          "focus": 2540,
+          "selected": "23"
+        },
+        "contour": "PASS",
+        "plot_collision": "ABSENT"
+      },
+      {
+        "kind": "music",
+        "index": 0,
+        "geometry": {
+          "frame": [
+            135,
+            361,
+            366,
+            681
+          ],
+          "tile": [
+            140,
+            367,
+            360,
+            612
+          ],
+          "plot": null,
+          "collision": false,
+          "focus": 2550,
+          "selected": "0"
+        },
+        "contour": "PASS",
+        "plot_collision": "ABSENT"
+      },
+      {
+        "kind": "music",
+        "index": 1,
+        "geometry": {
+          "frame": [
+            138,
+            361,
+            369,
+            681
+          ],
+          "tile": [
+            143,
+            367,
+            363,
+            612
+          ],
+          "plot": null,
+          "collision": false,
+          "focus": 2550,
+          "selected": "1"
+        },
+        "contour": "PASS",
+        "plot_collision": "ABSENT"
+      },
+      {
+        "kind": "music",
+        "index": 23,
+        "geometry": {
+          "frame": [
+            141,
+            361,
+            372,
+            681
+          ],
+          "tile": [
+            146,
+            367,
+            366,
+            612
+          ],
+          "plot": null,
+          "collision": false,
+          "focus": 2550,
+          "selected": "23"
+        },
+        "contour": "PASS",
+        "plot_collision": "ABSENT"
+      },
+      {
+        "kind": "television",
+        "index": 0,
+        "geometry": {
+          "frame": [
+            135,
+            361,
+            366,
+            681
+          ],
+          "tile": [
+            140,
+            367,
+            360,
+            612
+          ],
+          "plot": [
+            19,
+            227,
+            803,
+            275
+          ],
+          "collision": false,
+          "focus": 2560,
+          "selected": "0"
+        },
+        "contour": "PASS",
+        "plot_collision": "ABSENT"
+      },
+      {
+        "kind": "television",
+        "index": 1,
+        "geometry": {
+          "frame": [
+            138,
+            361,
+            369,
+            681
+          ],
+          "tile": [
+            143,
+            367,
+            363,
+            612
+          ],
+          "plot": [
+            19,
+            227,
+            803,
+            275
+          ],
+          "collision": false,
+          "focus": 2560,
+          "selected": "1"
+        },
+        "contour": "PASS",
+        "plot_collision": "ABSENT"
+      },
+      {
+        "kind": "television",
+        "index": 2,
+        "geometry": {
+          "frame": [
+            138,
+            361,
+            369,
+            681
+          ],
+          "tile": [
+            143,
+            367,
+            363,
+            612
+          ],
+          "plot": [
+            19,
+            227,
+            803,
+            275
+          ],
+          "collision": false,
+          "focus": 2560,
+          "selected": "2"
+        },
+        "contour": "PASS",
+        "plot_collision": "ABSENT"
+      },
+      {
+        "kind": "television",
+        "index": 23,
+        "geometry": {
+          "frame": [
+            145,
+            361,
+            375,
+            681
+          ],
+          "tile": [
+            150,
+            367,
+            370,
+            612
+          ],
+          "plot": [
+            19,
+            227,
+            803,
+            275
+          ],
+          "collision": false,
+          "focus": 2560,
+          "selected": "23"
+        },
+        "contour": "PASS",
+        "plot_collision": "ABSENT"
+      },
+      {
+        "kind": "poster",
+        "index": 2,
+        "geometry": {
+          "frame": [
+            131,
+            361,
+            361,
+            681
+          ],
+          "tile": [
+            136,
+            367,
+            356,
+            612
+          ],
+          "plot": [
+            19,
+            227,
+            803,
+            275
+          ],
+          "collision": false,
+          "focus": 2540,
+          "selected": "2"
+        },
+        "contour": "PASS",
+        "plot_collision": "ABSENT"
+      },
+      {
+        "kind": "own-vod",
+        "index": 0,
+        "geometry": {
+          "frame": [
+            130,
+            361,
+            360,
+            681
+          ],
+          "tile": [
+            135,
+            367,
+            355,
+            612
+          ],
+          "plot": [
+            19,
+            227,
+            303,
+            275
+          ],
+          "collision": false,
+          "focus": 2520,
+          "selected": "0"
+        },
+        "contour": "PASS",
+        "plot_collision": "ABSENT"
+      },
+      {
+        "kind": "own-series",
+        "index": 0,
+        "geometry": {
+          "frame": [
+            135,
+            361,
+            366,
+            681
+          ],
+          "tile": [
+            140,
+            367,
+            360,
+            612
+          ],
+          "plot": [
+            19,
+            227,
+            303,
+            275
+          ],
+          "collision": false,
+          "focus": 2530,
+          "selected": "0"
+        },
+        "contour": "PASS",
+        "plot_collision": "ABSENT"
+      },
+      {
+        "kind": "own-series",
+        "index": 9,
+        "geometry": {
+          "frame": [
+            141,
+            361,
+            372,
+            681
+          ],
+          "tile": [
+            146,
+            367,
+            366,
+            612
+          ],
+          "plot": [
+            19,
+            227,
+            303,
+            275
+          ],
+          "collision": false,
+          "focus": 2530,
+          "selected": "9"
+        },
+        "contour": "PASS",
+        "plot_collision": "ABSENT"
+      }
+    ],
+    "tv_artwork66": {
+      "source": "tmdb_series",
+      "scope": "series_fallback",
+      "same_event": true,
+      "local_file": true,
+      "home_pixels": "PASS",
+      "detail_pixels": "PASS"
+    },
+    "preview67": {
+      "renderer": "production shared Guide/Mini Preview",
+      "same_event": true,
+      "local_pixels": "PASS",
+      "native_tmdb_logo": "VISIBLE",
+      "hide": "PASS",
+      "android": "NOT_TESTED",
+      "scope": "native renderer on Home; Guide/Mini remote navigation remains Android NOT_TESTED"
+    },
+    "credits67": {
+      "native_logo": "VISIBLE",
+      "pixels": "PASS",
+      "android": "NOT_TESTED"
+    },
+    "pipeline68": {
+      "cases": [
+        {
+          "sid": "3",
+          "format": "PNG",
+          "initial": "CACHE_MISS",
+          "transport": [
+            "TOKEN_SEARCH",
+            "TOKEN_DETAILS",
+            "IMAGE_BYTES"
+          ],
+          "status": "LOCAL_IMAGE_READY",
+          "same_event": true,
+          "sha256": "2550586a4befdf826b93c88d5966b9318900a7f3b1a59779c5010f45d3e5a0aa",
+          "preview_pixels": "PASS",
+          "home_pixels": "PASS",
+          "detail_pixels": "PASS",
+          "tmdb_logo": "VISIBLE",
+          "android": "NOT_TESTED"
+        },
+        {
+          "sid": "4",
+          "format": "JPEG",
+          "initial": "CACHE_MISS",
+          "transport": [
+            "TOKEN_SEARCH",
+            "TOKEN_DETAILS",
+            "IMAGE_BYTES"
+          ],
+          "status": "LOCAL_IMAGE_READY",
+          "same_event": true,
+          "sha256": "72a03404660683ec55c60e40edb61aed90839d168c0c81ad00c03d54b20cae44",
+          "preview_pixels": "PASS",
+          "home_pixels": "PASS",
+          "detail_pixels": "PASS",
+          "tmdb_logo": "VISIBLE",
+          "android": "NOT_TESTED"
+        }
+      ],
+      "transport": "synthetic credentialless API responses; real production matching/queue/cache",
+      "gui": "native Kodi 21.2 Linux / BINGIE 2.2.3",
+      "android": "NOT_TESTED"
+    },
+    "pipeline69": {
+      "cases": [
+        {
+          "sid": "5",
+          "format": "PNG",
+          "source": "tmdb_movie",
+          "code": "READY",
+          "storage": "RAM_ONLY",
+          "reason": "SAFE_RESERVE_BLOCKED",
+          "matching_calls": [
+            "SYNTHETIC_OWN_TOKEN_SEARCH",
+            "SYNTHETIC_OWN_TOKEN_DETAILS"
+          ],
+          "repeated_requests": 18,
+          "lookup_repeat": 0,
+          "status_age_seconds": 360,
+          "status_lifetime70": "PASS",
+          "ready_ms": 189,
+          "total_with_captures_ms": 4740,
+          "preview_pixels": "PASS",
+          "home_pixels": "PASS",
+          "detail_pixels": "PASS",
+          "android": "NOT_TESTED"
+        },
+        {
+          "sid": "6",
+          "format": "JPEG",
+          "source": "tmdb_movie",
+          "code": "READY",
+          "storage": "RAM_ONLY",
+          "reason": "SAFE_RESERVE_BLOCKED",
+          "matching_calls": [
+            "SYNTHETIC_OWN_TOKEN_SEARCH",
+            "SYNTHETIC_OWN_TOKEN_DETAILS"
+          ],
+          "repeated_requests": 18,
+          "lookup_repeat": 0,
+          "status_age_seconds": 360,
+          "status_lifetime70": "PASS",
+          "ready_ms": 49,
+          "total_with_captures_ms": 4056,
+          "preview_pixels": "PASS",
+          "home_pixels": "PASS",
+          "detail_pixels": "PASS",
+          "android": "NOT_TESTED"
+        }
+      ],
+      "tls": "real verified TLS/SNI using disposable synthetic CA/origin",
+      "api": "synthetic own-token responses; production matching",
+      "private_live_tmdb_api": "NOT_TESTED",
+      "no_xcmate_image_archive": "PASS",
+      "no_auth_on_image_origin": "PASS",
+      "android": "NOT_TESTED"
+    },
+    "surfaces74": {
+      "mini": "PASS",
+      "guide": "PASS",
+      "image": "actual HTTPS synthetic PNG / verified Kodi pixels",
+      "guide_preview": [
+        920,
+        518,
+        320,
+        180
+      ],
+      "player_start": false,
+      "android": "ANDROID_NOT_TESTED"
+    },
+    "vertical74": [
+      {
+        "action": "Down",
+        "focus": 2520,
+        "frames": [
+          [
+            135,
+            361,
+            366,
+            681
+          ]
+        ]
+      },
+      {
+        "action": "Down",
+        "focus": 2530,
+        "frames": [
+          [
+            135,
+            361,
+            366,
+            681
+          ]
+        ]
+      },
+      {
+        "action": "Up",
+        "focus": 2520,
+        "frames": [
+          [
+            135,
+            361,
+            366,
+            681
+          ]
+        ]
+      },
+      {
+        "action": "Up",
+        "focus": 2510,
+        "frames": [
+          [
+            275,
+            616,
+            407,
+            678
+          ]
+        ]
+      }
+    ]
+  }
+}

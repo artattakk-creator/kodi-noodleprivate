@@ -248,7 +248,8 @@ class Dynamic68(Fixture,unittest.TestCase):
   self.assertNotEqual(a,policy(dict(self.portal,start_group_id='b'),'live'))
   self.assertNotEqual(a,policy(dict(self.portal,xc_host='https://different.invalid'),'live'))
   with mock.patch('widget_data41.path',return_value=self.dbfile):
-   b=policy(self.portal,'live');self.group('p','a',5);self.assertNotEqual(b,policy(self.portal,'live'))
+   b=policy(self.portal,'live');self.group('p','a',5);self.assertEqual(b,policy(self.portal,'live'))  # .74 separates source generation from stable policy
+   self.assertEqual(len(self.read()),5)  # source reader sees committed data without invalidating account policy
 
 class EventChain68(unittest.TestCase):
  def setUp(self):

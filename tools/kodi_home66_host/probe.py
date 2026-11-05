@@ -83,6 +83,16 @@ for target in ('appearance','widget_setup','widget_skin50'):
         time.sleep(.1)
     else:raise RuntimeError('MENU_DIRECTORY_NOT_READY '+repr((path,labels,current)))
     rows=rpc('Files.GetDirectory',dict(directory=path,media='files'))['files']
+    if target=='widget_skin50' and not any(parse_qs(urlsplit(row['file']).query).get('action')==['widget_skin50'] for row in rows):
+        # .74 normal flow now offers exactly three native sources, without a
+        # patch prerequisite. The legacy opt-in adapter is tested separately.
+        assert len(rows)==3 and all(row['filetype']=='directory' for row in rows)
+        actions=[parse_qs(urlsplit(row['file']).query).get('action') for row in rows]
+        assert actions==[['widget_live_start_group'],['widget_recent_vod'],['widget_recent_series']]
+        path='plugin://plugin.video.xtreammate/?action=widget_setup&pid=fixture59&technical74=1'
+        rpc('GUI.ActivateWindow',{'window':'videos','parameters':[path,'return']})
+        time.sleep(.5)
+        rows=rpc('Files.GetDirectory',dict(directory=path,media='files'))['files']
     def matches(row):
         query=parse_qs(urlsplit(row['file']).query)
         return query.get('section')==[target] if target=='appearance' else query.get('action')==[target]

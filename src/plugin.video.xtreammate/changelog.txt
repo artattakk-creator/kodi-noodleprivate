@@ -1,3 +1,10 @@
+0.1.29.74 (Test-Build, Issue #361)
+- Home: Titelbestand und Bildfreigabe trennen; gültige Cover und Jetzt/Danach bei kurzen Lesefehlern erhalten.
+- Atomare Widgetgenerationen, weniger identische Veröffentlichungen und lokales EPG-Nachladen ohne Fokusblockade.
+- Drei Standardwidgets direkt auswählen; bestehende Verknüpfungen, Portale, Passwörter und Einstellungen bleiben erhalten.
+- Sendungsbilder: Quellenfreigaben beachten, optionale Verbindungstests und größere Vorschau im großen EPG.
+- Optionaler BINGIE-Fokusadapter nur nach Vorschau, Sicherung und ausdrücklicher Zustimmung; Android-Abnahme ausstehend.
+
 0.1.29.73 (Test-Build, Issues #357 / #358 / #359)
 - Gesamten Katalog im Hintergrund aktualisieren: Live-TV, Filme, Serien und optional EPG; Abbruch und Fortsetzung.
 - Fehlende Kategorien gezielt nachfordern und gruppenbezogenen Importstatus anzeigen; Sicherung und frischer Datenbank-Readback.

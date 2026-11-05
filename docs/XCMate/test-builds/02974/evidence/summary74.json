@@ -1,0 +1,112 @@
+{
+  "version": "0.1.29.74",
+  "source_commit": "fa7782d4d8a3fdc13d62acc7a228bc655b2bb73a",
+  "package_sha256": "8d3f08b1761e5f2ad6ffb061b24e6261c3b68ee35d197eab827e9fbac02f8e67",
+  "host": {
+    "tests": 3054,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 705.883,
+    "run": 42002535477
+  },
+  "broad_ci": {
+    "run": 42003070873,
+    "status": "success",
+    "publication_step": "skipped"
+  },
+  "native": {
+    "kodi": "21.2 Linux",
+    "skin": "BINGIE MOD 2.2.3",
+    "resolutions": [
+      "1920x1080",
+      "1280x720"
+    ],
+    "surfaces": [
+      "MiniProgramme",
+      "GuideGridWindow",
+      "ProgrammeWindow46",
+      "native BINGIE Home"
+    ],
+    "status": "PASS"
+  },
+  "soak": {
+    "seconds": 3600.628,
+    "worker_cycles": 179,
+    "fault_cycles": 29,
+    "errors": 0,
+    "samples": [
+      {
+        "elapsed_seconds": 0.801,
+        "counts": {
+          "2510": "88",
+          "2520": "24",
+          "2530": "24"
+        },
+        "now": "Synthetic film 0",
+        "focus": 2510,
+        "native_resolution": [
+          1920,
+          1080
+        ],
+        "rollover_title": "Synthetic film 86",
+        "image_sha256": "fb144dd337a7e438c49691a8f5c424381ea27fcd4908baf46325b70cd38e384d"
+      },
+      {
+        "elapsed_seconds": 900.097,
+        "counts": {
+          "2510": "88",
+          "2520": "24",
+          "2530": "24"
+        },
+        "now": "Synthetic film 0",
+        "focus": 2510,
+        "native_resolution": [
+          1920,
+          1080
+        ],
+        "rollover_title": "Synthetic film 86",
+        "image_sha256": "289b72066ef92057daf89b2a1dfb1eb395d3610068391a449d44e3091e42c382"
+      },
+      {
+        "elapsed_seconds": 1800.084,
+        "counts": {
+          "2510": "88",
+          "2520": "24",
+          "2530": "24"
+        },
+        "now": "Synthetic film 0",
+        "focus": 2510,
+        "native_resolution": [
+          1920,
+          1080
+        ],
+        "rollover_title": "Next 86",
+        "image_sha256": "7408846db0f1e38d7e230682668d2cd65561debff905d1f827371fe374b5a924"
+      },
+      {
+        "elapsed_seconds": 3600.056,
+        "counts": {
+          "2510": "88",
+          "2520": "24",
+          "2530": "24"
+        },
+        "now": "Synthetic film 0",
+        "focus": 2510,
+        "native_resolution": [
+          1920,
+          1080
+        ],
+        "rollover_title": "Next 86",
+        "image_sha256": "043457c0989f423274ccd0cd5def6525db8bfff903be5cf90d842321a1e1f75a"
+      }
+    ],
+    "status": "PASS"
+  },
+  "restart": {
+    "status": "PASS",
+    "actual_restart": true,
+    "checks": 7
+  },
+  "android": "ANDROID_NOT_TESTED",
+  "private_live_api": "NOT_TESTED"
+}

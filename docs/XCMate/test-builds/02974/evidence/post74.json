@@ -1,0 +1,163 @@
+{
+  "status": "PASS",
+  "actual_restart": true,
+  "cases": [
+    {
+      "name": "restart-live",
+      "focus": 2510,
+      "frames": [
+        [
+          275,
+          616,
+          407,
+          678
+        ]
+      ],
+      "counts": [
+        "88",
+        "24",
+        "24"
+      ],
+      "native_resolution": [
+        1920,
+        1080
+      ],
+      "sha256": "4b8e1bc170050fd62e14d8584b874bde4294816171e4a6f2b37e51ae29bb6167"
+    },
+    {
+      "name": "vertical-1",
+      "focus": 2520,
+      "frames": [
+        [
+          135,
+          361,
+          366,
+          681
+        ]
+      ],
+      "counts": [
+        "88",
+        "24",
+        "24"
+      ],
+      "native_resolution": [
+        1920,
+        1080
+      ],
+      "sha256": "9a57eee17f82757653992688cc84575736729d104c720905bb76919a4ac7dd57"
+    },
+    {
+      "name": "vertical-2",
+      "focus": 2530,
+      "frames": [
+        [
+          135,
+          361,
+          366,
+          681
+        ]
+      ],
+      "counts": [
+        "88",
+        "24",
+        "24"
+      ],
+      "native_resolution": [
+        1920,
+        1080
+      ],
+      "sha256": "49ecf1193b8578a0dc2b0f50a925b59970f89d11686a5bd734f1982aa5455fe8"
+    },
+    {
+      "name": "vertical-3",
+      "focus": 2520,
+      "frames": [
+        [
+          135,
+          361,
+          366,
+          681
+        ]
+      ],
+      "counts": [
+        "88",
+        "24",
+        "24"
+      ],
+      "native_resolution": [
+        1920,
+        1080
+      ],
+      "sha256": "5bfa92767e5bafcb6fe0d45d66c1ab4f49c34c36f39e6f5258b3ed36bab0b008"
+    },
+    {
+      "name": "vertical-4",
+      "focus": 2510,
+      "frames": [
+        [
+          275,
+          616,
+          407,
+          678
+        ]
+      ],
+      "counts": [
+        "88",
+        "24",
+        "24"
+      ],
+      "native_resolution": [
+        1920,
+        1080
+      ],
+      "sha256": "880b36b376ebdd045da33ad42765397839cf24b7490589dd9034b8eecb7bd3ae"
+    },
+    {
+      "name": "manual-live-reload",
+      "focus": 2510,
+      "frames": [
+        [
+          275,
+          616,
+          407,
+          678
+        ]
+      ],
+      "counts": [
+        "88",
+        "24",
+        "24"
+      ],
+      "native_resolution": [
+        1920,
+        1080
+      ],
+      "sha256": "880b36b376ebdd045da33ad42765397839cf24b7490589dd9034b8eecb7bd3ae"
+    },
+    {
+      "name": "skin-reload",
+      "focus": 2510,
+      "frames": [
+        [
+          275,
+          616,
+          407,
+          678
+        ]
+      ],
+      "counts": [
+        "88",
+        "24",
+        "24"
+      ],
+      "native_resolution": [
+        1920,
+        1080
+      ],
+      "sha256": "8eb8cb8452d5e57625d8153899e1dfb5ac68c00cdc3c6a9f8c63fd87bc5c9063"
+    }
+  ],
+  "android": "ANDROID_NOT_TESTED",
+  "pid_before": "[1178]",
+  "pid_after": "[38747]"
+}

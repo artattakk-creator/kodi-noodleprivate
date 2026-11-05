@@ -4964,3 +4964,31 @@ msgstr "South America"
 msgctxt "#38045"
 msgid "Oceania"
 msgstr "Oceania"
+
+msgctxt "#38100"
+msgid "Picture search and connections"
+msgstr "Picture search and connections"
+
+msgctxt "#38101"
+msgid "Checking connections and current opt-ins …"
+msgstr "Checking connections and current opt-ins …"
+
+msgctxt "#38102"
+msgid "Active picture search: TMDB {0} · TVMaze {1}"
+msgstr "Active picture search: TMDB {0} · TVMaze {1}"
+
+msgctxt "#38103"
+msgid "enabled"
+msgstr "enabled"
+
+msgctxt "#38104"
+msgid "disabled"
+msgstr "disabled"
+
+msgctxt "#38105"
+msgid "The Helper is optional. This test does not change any settings or guarantee a match for every programme."
+msgstr "The Helper is optional. This test does not change any settings or guarantee a match for every programme."
+
+msgctxt "#38106"
+msgid "Active programme image lookup: {0}"
+msgstr "Active programme image lookup: {0}"
