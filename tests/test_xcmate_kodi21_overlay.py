@@ -180,13 +180,19 @@ class OverlayLifecycleTests(unittest.TestCase):
         profiles.load = mock.Mock(side_effect=lambda:dict(self.bindings))
         portals = types.ModuleType('portals')
         portals.get_by_id = lambda *_:self.portal
+        # Kodi always provides its native VFS module. Omitting it here made
+        # each profile-scoped EPG miss repeat a failing filesystem import:
+        # 70,738 import searches for the 2,000-step navigation contract.
+        # Model the real constant-time API; keep the original 5 s gate.
+        vfs = types.ModuleType('xbmcvfs')
+        vfs.translatePath = lambda path: '/isolated-omega-profile/' if path == 'special://profile/' else path
         spec = importlib.util.spec_from_file_location('live_recovery',LIB/'live_recovery.py')
         recovery = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(recovery)
         patch = mock.patch.dict(sys.modules,dict(xbmc=xbmc,xbmcgui=gui,xbmcaddon=addon,utils=utils,
             xtream=xtream,iptv=iptv,group_selection=groups,epg=epg,epg_views=views,
             remote_profiles=profiles,portals=portals,live_recovery=recovery,
-            app_services=types.SimpleNamespace(poll=lambda:None)))
+            app_services=types.SimpleNamespace(poll=lambda:None),xbmcvfs=vfs))
         patch.start()
         self.addCleanup(patch.stop)
         data_spec = importlib.util.spec_from_file_location('tv_data',LIB/'tv_data.py')

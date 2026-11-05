@@ -20,8 +20,8 @@
         1080,
         580
       ],
-      "settled_render_ms": 3047.46,
-      "sha256": "4bad4214221ebe43a61627cbe600fbcf68b9b9f1ce9c21d2e7461cb086a801ac"
+      "settled_render_ms": 3069.95,
+      "sha256": "a52bc8339bf05f188321219ba3fbb01264d79ecab750a9f0d253126df037a731"
     },
     {
       "kind": "vod",
@@ -45,7 +45,7 @@
         1080,
         580
       ],
-      "settled_render_ms": 2820.41,
+      "settled_render_ms": 2766.9,
       "sha256": "f74442fd4f95bd68a87354ab6223ec543ff20b08ab2ab9affa7f75a85c9c547e"
     },
     {
@@ -70,7 +70,7 @@
         1080,
         580
       ],
-      "settled_render_ms": 2822.56,
+      "settled_render_ms": 2807.42,
       "sha256": "b673cbd1978c2b40939c2e282a63d8d0a19a06d64fb1da313bec4d72a204c560"
     },
     {
@@ -95,7 +95,7 @@
         1080,
         580
       ],
-      "settled_render_ms": 2880.44,
+      "settled_render_ms": 2942.02,
       "sha256": "f74442fd4f95bd68a87354ab6223ec543ff20b08ab2ab9affa7f75a85c9c547e"
     },
     {
@@ -116,8 +116,8 @@
         1080,
         580
       ],
-      "settled_render_ms": 2939.23,
-      "sha256": "4bad4214221ebe43a61627cbe600fbcf68b9b9f1ce9c21d2e7461cb086a801ac"
+      "settled_render_ms": 2984.16,
+      "sha256": "0a0a9611e9f2c76554d277c2e556ce2cdf35ecd7ab1ea975e870cec4128ea103"
     },
     {
       "kind": "live",
@@ -137,8 +137,8 @@
         1080,
         580
       ],
-      "settled_render_ms": 2963.91,
-      "sha256": "5d3795a5bc49c6876356fd470ae6edfc25fb25ed307688e4ef1f5603dd082a9a"
+      "settled_render_ms": 3049.77,
+      "sha256": "0a0a9611e9f2c76554d277c2e556ce2cdf35ecd7ab1ea975e870cec4128ea103"
     },
     {
       "kind": "live",
@@ -158,8 +158,8 @@
         1080,
         580
       ],
-      "settled_render_ms": 2701.71,
-      "sha256": "dd93fbe291c9296e8bbc723fe9029cd6ce468970ddaec010b96d917923f76a1d"
+      "settled_render_ms": 2703.5,
+      "sha256": "50bd0713509432b00930809ea49fc030e7ea7faf0ba409ad3413a1f53162d169"
     }
   ],
   "counts": [
@@ -172,9 +172,9 @@
   "protected_sha256": "PASS",
   "restart": "native Application.Quit + supervised Kodi restart",
   "old_pids": [
-    1923
+    1180
   ],
   "new_pids": [
-    2012
+    1908
   ]
 }

@@ -13,7 +13,7 @@ Basis: `ad5c337c0ca9ea6f85e458c17383fb32c19e3fc2` (.74). Auftrag #366/#367/#368.
 | Bestehende pytest-Brandingtests | **11/11 PASS**, 0,15 s |
 | Sprachdateien | **17 Kataloge PASS** |
 | Originale Tabler-Icons und Lizenzen | **92 Texturen PASS** |
-| Kodi 21.2 Linux, BINGIE 2.2.3, 1280×720 | **PASS**, 23 Fokus-/Bildfälle, 20 echte Auf-/Ab-Wechsel, Seitenmenü, fehlende Progress-Controls |
+| Kodi 21.2 Linux, BINGIE 2.2.3, 1280×720 | **PASS**, 29 Fokus-/Bildfälle einschließlich fremder Poster-/Musik-/TV-Quellen, 20 echte Auf-/Ab-Wechsel, Seitenmenü, fehlende Progress-Controls |
 | 20 verspätete Live-Stop-ACK-/Fullscreen-Rückkehrzyklen | **Host PASS**, kein zweiter Stop, Rückkehr genau einmal |
 | ZIP | **CRC, eindeutige/sichere Pfade, 728 Dateien, Source-Bytevergleich PASS** |
 | Pilot-Staging | **lokale Prüfung PASS**, noch nicht öffentlich freigegeben |
@@ -22,7 +22,7 @@ Basis: `ad5c337c0ca9ea6f85e458c17383fb32c19e3fc2` (.74). Auftrag #366/#367/#368.
 
 Der vorherige vollständige 3.090er Hostlauf war **FAIL** (7 Assertions, 1 Error). Eine Assertion betraf zusätzlich geprüfte native Navigationsparameter und ist korrigiert; die Katalog-Sicherungsfehler waren isoliert nicht reproduzierbar und werden im vollständigen Lauf mit Ausnahmeaufzeichnung nachgeprüft. Die Katalogfehler sind im anschließenden vollständigen Lauf mit identischem Standard-Discovery und Ausnahmeaufzeichnung nicht erneut aufgetreten; kein Katalogcode wurde dafür verändert. Ein zusätzlicher parallel gestarteter Diagnoselauf wurde vom Arbeitsumgebungs-OOM beendet (exit 137) und zählt nicht als PASS. Danach wurde die lokale Parallelität reduziert. Merge erst bei grünen automatisierten Gates.
 
-Ein separater historischer 2.000-Schritte-Navigationstest überschritt auf einem GitHub-Runner einmal die unveränderte 5-s-Grenze (6,131 s). Im vollständigen lokalen Lauf besteht er; der Test wird nicht gelockert. Das gesamte CI-Gate muss trotzdem noch grün werden. Die erweiterte Neustart-Harness wartet jetzt auf das tatsächliche Ende des alten Kodi-Prozesses und das Ende der regulären BINGIE-Startmaske; HTTP-Ping allein war noch kein Neustartnachweis.
+Ein separater historischer 2.000-Schritte-Navigationstest überschritt im isolierten GitHub-Paket die unveränderte 5-s-Grenze (6,131 / 6,155 s). Profiling belegt 70.738 erfolglose `xbmcvfs`-Importsuchen, weil die alte Omega-Testfixture dieses tatsächlich in Kodi vorhandene native Modul nicht bereitstellte. Die Fixture modelliert jetzt `translatePath` ohne Dateisystemsuche. Keine Anwendungskorrektur und keine Lockerung des Grenzwerts: kompletter Einzelfall einschließlich Setup lokal 0,856 s; das genaue 197er CI-Paket besteht anschließend. Der gesamte CI-Lauf wird nochmals geprüft. Die erweiterte Neustart-Harness wartet jetzt auf das tatsächliche Ende des alten Kodi-Prozesses und das Ende der regulären BINGIE-Startmaske; HTTP-Ping allein war noch kein Neustartnachweis.
 
 ## Reproduzierbare Befehle
 
