@@ -1,0 +1,164 @@
+name: Build and verify XCMate Media Center Installer 0.5.25 (Regular + Pilot + NeoDark3)
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/gsmedia-0525-all-channels.yml"
+      - "tools/build_gsmedia_setup_0525.py"
+      - "tools/gsmedia_setup0525/**"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/gsmedia-0525-all-channels.yml"
+      - "tools/build_gsmedia_setup_0525.py"
+      - "tools/gsmedia_setup0525/**"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gsmedia-0525-pilot-release
+  cancel-in-progress: false
+
+jobs:
+  installer-0525-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Build from exact pinned Installer 0.5.21 and run staged dependency tests
+        run: |
+          python -m compileall -q tools/build_gsmedia_setup_0525.py tools/gsmedia_setup0525/overlays
+          python tools/build_gsmedia_setup_0525.py --out "$RUNNER_TEMP/gsmedia-0525"
+
+      - name: Verify independent ZIP file contents, CRC and version
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          from zipfile import ZipFile
+          import xml.etree.ElementTree as ET
+          out=Path(__import__('os').environ['RUNNER_TEMP'])/'gsmedia-0525'
+          target=out/'script.gsmedia.setup-0.5.25.zip'
+          digest=hashlib.sha256(target.read_bytes()).hexdigest()
+          assert (out/'script.gsmedia.setup-0.5.25.zip.sha256').read_text().split()==[digest,target.name]
+          with ZipFile(target) as z:
+              assert z.testzip() is None
+              assert len(z.namelist())==32
+              xml=ET.fromstring(z.read('script.gsmedia.setup/addon.xml'))
+              assert xml.get('id')=='script.gsmedia.setup' and xml.get('version')=='0.5.25'
+              assert b'install_id = "script.gsmedia.bingie.bootstrap"' not in z.read(
+                  'script.gsmedia.setup/resources/lib/setup_auto_ui50.py')
+          print('INSTALLER_0525_PACKAGE_VERIFIED',digest)
+          PY
+
+      - name: Verify audited Pilot bridges and 48-step plan in CI
+        run: |
+          python - <<'PY'
+          import importlib.util
+          from pathlib import Path
+          module=Path("tools/build_gsmedia_setup_0525.py")
+          spec=importlib.util.spec_from_file_location("builder0525",module)
+          mod=importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(mod)
+          rows=mod.PILOT_NATIVE_TARGETS
+          assert len(rows)==7
+          import xml.etree.ElementTree as ET
+          addons={x.get("id"):x for x in ET.fromstring(Path("online-test/addons.xml").read_bytes()).findall("addon")}
+          for target in rows:
+              bridge="script.gsmedia.upgrade."+target
+              assert target in addons and bridge in addons
+              ver=addons[target].get("version")
+              assert addons[bridge].get("version")=="0.1.0"
+              assert (Path("online-test")/target/(target+"-"+ver+".zip")).exists()
+              assert (Path("online-test")/bridge/(bridge+"-0.1.0.zip")).exists()
+          print("PILOT_BRIDGE_PACKAGE_CLOSURE_SEVEN_OF_SEVEN_VERIFIED")
+          PY
+
+      - name: Validate pinned original BINGIE resource and both catalogs (PR)
+        if: github.event_name == 'pull_request'
+        run: |
+          python tools/build_gsmedia_setup_0525.py --out "$RUNNER_TEMP/gsmedia-0525" --stage-all
+          python - <<'PY'
+          import hashlib, xml.etree.ElementTree as ET
+          from pathlib import Path
+          import zipfile
+          root=Path("online-test")
+          resource=root/"resource.images.skinicons.wide/resource.images.skinicons.wide-1.0.5.zip"
+          content=resource.read_bytes()
+          git_blob=hashlib.sha1(b"blob "+str(len(content)).encode()+b"\0"+content).hexdigest()
+          assert git_blob=="cf9edf81fe32b2262f6fe296e0db04361697b7c2"
+          with zipfile.ZipFile(resource) as z:
+              assert z.testzip() is None
+              addon=ET.fromstring(z.read("resource.images.skinicons.wide/addon.xml"))
+              assert (addon.get("id"),addon.get("version"))==("resource.images.skinicons.wide","1.0.5")
+          for prefix in (Path("."),root):
+              index=(prefix/"addons.xml").read_bytes()
+              entry={a.get("id"):a for a in ET.fromstring(index).findall("addon")}
+              assert entry["script.gsmedia.setup"].get("version")=="0.5.25"
+              assert hashlib.md5(index).hexdigest()==(prefix/"addons.xml.md5").read_text().strip()
+          entry={a.get("id"):a for a in ET.fromstring((root/"addons.xml").read_bytes()).findall("addon")}
+          assert entry["resource.images.skinicons.wide"].get("version")=="1.0.5"
+          print("0525_PINNED_RESOURCE_AND_CATALOG_VERIFIED",hashlib.sha256(content).hexdigest())
+          PY
+
+      - name: Upload immutable host-tested installer candidate (PR)
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: gsmedia-installer-0525-verified-candidate
+          path: |
+            ${{ runner.temp }}/gsmedia-0525/script.gsmedia.setup-0.5.25.zip
+            ${{ runner.temp }}/gsmedia-0525/script.gsmedia.setup-0.5.25.zip.sha256
+            ${{ runner.temp }}/gsmedia-0525/installer0525-verification.json
+
+      - name: Stage regular, Pilot and NeoDark3, keep older ZIPs
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          python tools/build_gsmedia_setup_0525.py --out "$RUNNER_TEMP/gsmedia-0525" --stage-all
+          python - <<'PY'
+          import hashlib, xml.etree.ElementTree as ET
+          from pathlib import Path
+          for prefix in (Path("."), Path("online-test")):
+              data=(prefix/"addons.xml").read_bytes()
+              catalog=ET.fromstring(data)
+              setup=[a for a in catalog.findall("addon") if a.get("id")=="script.gsmedia.setup"]
+              assert len(setup)==1 and setup[0].get("version")=="0.5.25"
+              assert hashlib.md5(data).hexdigest()==(prefix/"addons.xml.md5").read_text().strip()
+              assert (prefix/"script.gsmedia.setup/script.gsmedia.setup-0.5.25.zip").is_file()
+              assert (prefix/"script.gsmedia.setup/script.gsmedia.setup-0.5.22.zip").is_file()
+          b=Path("online-test/script.gsmedia.setup-0.5.25.zip").read_bytes()
+          assert b==Path("script.gsmedia.setup/script.gsmedia.setup-0.5.25.zip").read_bytes()
+          assert b==Path("online-test/script.gsmedia.setup/script.gsmedia.setup-0.5.25.zip").read_bytes()
+          res=Path("online-test/resource.images.skinicons.wide/resource.images.skinicons.wide-1.0.5.zip")
+          assert res.is_file()
+          contents=res.read_bytes()
+          assert hashlib.sha1(b"blob "+str(len(contents)).encode()+b"\0"+contents).hexdigest()=="cf9edf81fe32b2262f6fe296e0db04361697b7c2"
+          pil=ET.fromstring(Path("online-test/addons.xml").read_bytes())
+          resentry=[x for x in pil.findall("addon") if x.get("id")=="resource.images.skinicons.wide"]
+          assert len(resentry)==1 and resentry[0].get("version")=="1.0.5"
+          print("GS_MEDIA_ALL_THREE_PATHS_AND_ORIGINAL_RESOURCE_VALIDATED")
+          PY
+          git diff --check
+
+      - name: Publish normal and pilot catalogs, verified ZIP and NeoDark3 index
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add online-test/ addons.xml addons.xml.md5 index.html script.gsmedia.setup/script.gsmedia.setup-0.5.25.zip
+          if test -z "$(git diff --cached --name-only)"; then
+            echo "Installer 0.5.25 already published"
+          else
+            git commit -m "Publish Installer 0.5.25 to regular, Pilot and NeoDark3"
+            git push origin HEAD:main
+          fi
+
+      - name: Record verified publication SHA
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          sha256sum online-test/script.gsmedia.setup-0.5.25.zip script.gsmedia.setup/script.gsmedia.setup-0.5.25.zip
+          git log -1 --oneline
