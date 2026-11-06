@@ -21,7 +21,10 @@ def prepare(cancel=lambda:False):
    if cancel():break
    if not portal.get('include_'+kind,True):continue
    rows,code=snapshot(portal,kind)
-   if not rows:continue
+   if not rows:
+    if code in ('READY','CACHE') and allowed(kind,portal) and publish(portal,kind,rows,code):
+     prepared(kind,0,portal=portal,rows=rows)
+    continue
    admitted=allowed(kind,portal)
    selected=rows if admitted else focused_rows(portal,kind,rows)
    if not selected:continue
@@ -33,11 +36,10 @@ def prepare(cancel=lambda:False):
    key=(profile_scope(),str(portal['id']),kind)
    stamp=hashlib.sha256(json.dumps([policy(portal,kind),[[r.get(k) for k in ('sid','name','cover','stream_icon')] for r in rows],refs],sort_keys=True).encode()).hexdigest()
    if _published.get(key)==stamp:
-    if admitted:prepared(kind,len(rows))
-    continue
+    if not admitted or prepared(kind,len(rows),portal=portal,rows=rows):continue
    if publish(portal,kind,rows,'READY'):
     _published[key]=stamp;worked=True
-    if admitted:prepared(kind,len(rows))
+    if admitted:prepared(kind,len(rows),portal=portal,rows=rows)
    while len(_published)>16:_published.pop(next(iter(_published)))
  return worked
 def _run():

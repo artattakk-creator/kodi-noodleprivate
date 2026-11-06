@@ -11,6 +11,9 @@ BASE='ad5c337c0ca9ea6f85e458c17383fb32c19e3fc2'
 def baseline(path):return subprocess.check_output(['git','show',BASE+':'+path],cwd=ROOT)
 def verify(path):
     current=(ROOT/path).read_bytes();old=baseline(path)
+    # Published Pilot .75 remains immutable while the next candidate is reviewed.
+    released=subprocess.check_output(['git','show','b3024e9620e8924e880a70fc92ca70e4b5a5658b:'+path],cwd=ROOT)
+    if current==released:return
     if current==old:return
     if path=='online-test/addons.xml':
         a=E.fromstring(old);b=E.fromstring(current);aa={n.get('id'):n for n in a};bb={n.get('id'):n for n in b}
