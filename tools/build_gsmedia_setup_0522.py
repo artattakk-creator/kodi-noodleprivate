@@ -75,7 +75,7 @@ def load_base():
 def source_layers(files):
     """Verify extracted audit sources before allowing only three targeted replacements."""
     for path in SOURCE.rglob("*"):
-        if not path.is_file():
+        if not path.is_file() or "__pycache__" in path.parts or path.suffix in (".pyc", ".pyo"):
             continue
         rel = path.relative_to(SOURCE).as_posix()
         name = PREFIX + rel
