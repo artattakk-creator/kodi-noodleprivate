@@ -265,7 +265,7 @@
       <fanart>fanart.jpg</fanart>
     </assets>
   </extension>
-</addon><addon id="script.gsmedia.setup" name="XCMate Media Center Installer" version="0.5.23" provider-name="XCMate">
+</addon><addon id="script.gsmedia.setup" name="XCMate Media Center Installer" version="0.5.24" provider-name="XCMate">
   <requires><import addon="xbmc.python" version="3.0.0"/></requires>
   <extension point="xbmc.python.script" library="default.py"/>
   <extension point="xbmc.service" library="service.py" start="startup"/>
@@ -401,5 +401,23 @@
     <platform>all</platform><license>MIT (patch code); media: user-provided XCMate branding</license>
     <assets><icon>resources/media/icon.png</icon><fanart>resources/media/fanart.jpg</fanart></assets>
   </extension>
+</addon>
+<addon id="resource.images.skinicons.wide" name="Skin Icons - Wide" version="1.0.5" provider-name="marcelveldt, cartman.dos">
+	<extension point="kodi.resource.images" compile="false" type="skinicons" />
+	<requires>
+		<import addon="kodi.resource" version="1.0.0" />
+	</requires>
+	<extension point="xbmc.addon.metadata">
+		<summary lang="en">Skin Icons Pack - Wide</summary>
+		<description lang="en">Skin Icons Pack - Wide</description>
+		<platform>all</platform>
+		<license>GPL v3.0</license>
+		<forum>https://forum.kodi.tv/showthread.php?tid=334820</forum>
+		<website />
+		<source>https://github.com/cartmandos/resource.images.skinicons.wide/</source>
+		<assets>
+			<icon>icon.png</icon>
+		</assets>
+	</extension>
 </addon>
 </addons>

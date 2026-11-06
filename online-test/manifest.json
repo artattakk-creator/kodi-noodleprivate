@@ -77,6 +77,16 @@
     "version": "0.5.23",
     "zip_sha256": "b85016c88444f998d5a8f5d4ac05e19ecb941815e1b2497c8d5ffb6e9240ecc0"
   },
+  "installer_0524": {
+    "android": "NOT_TESTED",
+    "auto_pilot_bootstrap": false,
+    "channel": "PILOT_ONLY",
+    "legacy_journal_preserved": true,
+    "note": "If pilot is missing, fail safely and prompt NeoDark3 repository ZIP installation",
+    "regular_catalog_unchanged": false,
+    "version": "0.5.24",
+    "zip_sha256": "48a29757ca295cac3ca98f406b4e53de5c855729b0d2ad812aeee8605cda2267"
+  },
   "jurialmunkey": {
     "id": "script.module.jurialmunkey",
     "license": "GPL-3.0-or-later",
@@ -119,6 +129,16 @@
     "original_source": "AchillesPunks BINGIE MOD Omega",
     "sha256": "865ee5ea5bf0accee27b82539caabce1c8a9fbb8f94b2900fe5ace4f82c80b23",
     "version": "2.1.0"
+  },
+  "skinicons_wide_105": {
+    "channel": "GS_MEDIA_PILOT",
+    "device_test": "NOT_TESTED",
+    "id": "resource.images.skinicons.wide",
+    "sha256": "1b4469973407cc46eb80d227877cdac5f755fcb562c2b0f9129a149e1d73596d",
+    "source": "https://raw.githubusercontent.com/AchillesPunks/repository.titan.bingie.mod/master/omega/resource.images.skinicons.wide/resource.images.skinicons.wide-1.0.5.zip",
+    "unmodified_original_zip": true,
+    "upstream_git_blob": "cf9edf81fe32b2262f6fe296e0db04361697b7c2",
+    "version": "1.0.5"
   },
   "slyguy": {
     "android_test": "NOT_TESTED",
@@ -196,10 +216,10 @@
     "display_name": "XCMate Media Center Installer",
     "fix": "Separate Kodi-native BINGIE repository install before Helper; verified simplejson minimum. No legacy dual-dependency bootstrap.",
     "id": "script.gsmedia.setup",
-    "main_installer_url": "https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/script.gsmedia.setup-0.5.23.zip",
+    "main_installer_url": "https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/script.gsmedia.setup-0.5.24.zip",
     "source_gate": "Drive source plus pinned upstream images and original MIT source",
-    "status": "PILOT_0523_EXISTING_AND_SHORTCUTS_FIX_ANDROID_NOT_TESTED",
-    "version": "0.5.23"
+    "status": "PILOT_0524_SKINICONS_105_ANDROID_NOT_TESTED",
+    "version": "0.5.24"
   },
   "xvault": {
     "android_test": "NOT_TESTED",
@@ -222,7 +242,7 @@
     "script.bingie.helper": "653b7391f5012a0a35867ec53e55045842efa02c4dca698ce8da0f5b39549358",
     "script.ezmaintenanceplus": "08a367b5fd1ee367ead4150b2364063a0760fe9fbf7506c20db845a0126cd2e6",
     "script.gsmedia.bingie.bootstrap": "6fa171c7d2e2071240f12302e5feb92546a206ddce88557462e274431ad14f04",
-    "script.gsmedia.setup": "b85016c88444f998d5a8f5d4ac05e19ecb941815e1b2497c8d5ffb6e9240ecc0",
+    "script.gsmedia.setup": "48a29757ca295cac3ca98f406b4e53de5c855729b0d2ad812aeee8605cda2267",
     "script.gsmedia.skinshortcuts.bridge": "f84da5931a4159bbf82b78ecf6a05c0b2ce8a6e0c08ebf109d1554eb84d4f72c",
     "script.gsmedia.slyguy.bootstrap": "5c643097dad7e15728bc4c723b72cdd1c2fea67273bcf00cfec994db903d86e8",
     "script.gsmedia.upgrade.plugin.audio.m3sr2019": "d026dabe4e120c3b6b581a613db326ed6cc09458b8db536e158af4a0d753a5cb",
