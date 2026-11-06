@@ -1,0 +1,118 @@
+name: XCMate 0.1.29.76 all-channel explicitly authorized release
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - tools/publish_xcmate_02976_all_channels.py
+      - tools/release_channel75.py
+      - docs/XCMate/releases/user-approved-untested-0.1.29.76.json
+      - .github/workflows/xcmate-02976-all-channels-release.yml
+  push:
+    branches: [main]
+    paths:
+      - tools/publish_xcmate_02976_all_channels.py
+      - tools/release_channel75.py
+      - docs/XCMate/releases/user-approved-untested-0.1.29.76.json
+      - .github/workflows/xcmate-02976-all-channels-release.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: xcmate-02976-regular-release
+  cancel-in-progress: false
+
+jobs:
+  verify-and-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Require .76-only user approval (Android remains NOT_TESTED)
+        run: |
+          python tools/release_channel75.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path("docs/XCMate/releases/user-approved-untested-0.1.29.76.json").read_text())
+          assert (data["version"],data["android_status"],data["android_pass_claimed"])==("0.1.29.76","NOT_TESTED",False)
+          assert data["user_approved_regular_release"] is True
+          assert data["user_approved_all_channels"] is True
+          assert data["sha256"]=="c6b3813a6b2e9289251d3e14ea8425e0fe3fb35ee9a01dda457aa81a27e081cc"
+          print("EXPLICIT_USER_APPROVAL_ONLY_FOR_XCMATE_02976_ANDROID_NOT_TESTED")
+          PY
+
+      - name: Verify ZIP from .76 source and stage regular GS Media
+        run: python tools/publish_xcmate_02976_all_channels.py
+
+      - name: Validate original source, both Kodi catalogues, all download copies
+        run: |
+          python tools/verify_xcmate70_package.py
+          python - <<'PY'
+          import hashlib
+          import json
+          import subprocess
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+          root=Path(".")
+          pilot=Path("online-test")
+          ident="plugin.video.xtreammate"
+          filename=ident+"-0.1.29.76.zip"
+          checksum="c6b3813a6b2e9289251d3e14ea8425e0fe3fb35ee9a01dda457aa81a27e081cc"
+          blob="f665607d2784bc29315ee88007530c9b4b34ddb9"
+          def entries(path):
+              data=path.read_bytes()
+              index={a.get("id"):a for a in ET.fromstring(data).findall("addon")}
+              assert len(index)==len(ET.fromstring(data).findall("addon"))
+              assert index[ident].get("version")=="0.1.29.76"
+              assert hashlib.md5(data).hexdigest()==path.with_suffix(".xml.md5").read_text().strip()
+              return index
+          main=entries(root/"addons.xml")
+          p=entries(pilot/"addons.xml")
+          assert ET.tostring(main[ident])==ET.tostring(p[ident])
+          chunks=[]
+          for location in (root/ident/filename,pilot/ident/filename,root/"docs/XCMate/test-builds/02976"/filename):
+              assert location.is_file(),str(location)
+              contents=location.read_bytes()
+              assert len(contents)==3426830
+              assert hashlib.sha256(contents).hexdigest()==checksum
+              assert hashlib.sha1(b"blob "+str(len(contents)).encode()+b"\0"+contents).hexdigest()==blob
+              chunks.append(contents)
+          assert chunks[0]==chunks[1]==chunks[2]
+          assert (root/ident/(ident+"-0.1.29.74.zip")).exists()
+          assert (pilot/ident/(ident+"-0.1.29.75.zip")).exists()
+          assert (pilot/"manifest.json").read_text().find('"android_test": "NOT_TESTED"')!=-1
+          assert filename in (root/"index.html").read_text()
+          assert filename in (pilot/"index.html").read_text()
+          staged=set()
+          for line in subprocess.check_output(["git","status","--porcelain","--untracked-files=all"],text=True).splitlines():
+              staged.add(line[3:])
+          allowed={
+              "addons.xml","addons.xml.md5","index.html",
+              "plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.76.zip",
+              "plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.76.zip.sha256",
+          }
+          assert staged.issubset(allowed),staged-allowed
+          print("XCMATE_02976_ALL_THREE_DOWNLOAD_PATHS_VERIFIED",checksum)
+          PY
+
+      - name: Publish main regular channel after merge (Pilot/NeoDark3 unmodified)
+        if: github.event_name == 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- \
+            addons.xml addons.xml.md5 index.html \
+            plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.76.zip \
+            plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.76.zip.sha256
+          if ! git diff --cached --quiet; then
+            git commit -m "release(XCMate): publish pinned .76 to regular GS Media per user; Android not tested"
+            git -c rebase.autoStash=true pull --rebase origin main
+            git push origin HEAD:main
+          fi
