@@ -265,7 +265,7 @@
       <fanart>fanart.jpg</fanart>
     </assets>
   </extension>
-</addon><addon id="script.gsmedia.setup" name="XCMate Media Center Installer" version="0.5.22" provider-name="XCMate">
+</addon><addon id="script.gsmedia.setup" name="XCMate Media Center Installer" version="0.5.23" provider-name="XCMate">
   <requires><import addon="xbmc.python" version="3.0.0"/></requires>
   <extension point="xbmc.python.script" library="default.py"/>
   <extension point="xbmc.service" library="service.py" start="startup"/>

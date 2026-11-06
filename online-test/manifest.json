@@ -67,6 +67,16 @@
     "version": "0.5.22",
     "zip_sha256": "66d98c8dc8061007f5dfbd82eeea483634730d915750e7677c9b6c0ff2fd8f91"
   },
+  "installer_0523": {
+    "android": "NOT_TESTED",
+    "auto_pilot_bootstrap": false,
+    "channel": "PILOT_ONLY",
+    "legacy_journal_preserved": true,
+    "note": "If pilot is missing, fail safely and prompt NeoDark3 repository ZIP installation",
+    "regular_catalog_unchanged": false,
+    "version": "0.5.23",
+    "zip_sha256": "b85016c88444f998d5a8f5d4ac05e19ecb941815e1b2497c8d5ffb6e9240ecc0"
+  },
   "jurialmunkey": {
     "id": "script.module.jurialmunkey",
     "license": "GPL-3.0-or-later",
@@ -186,10 +196,10 @@
     "display_name": "XCMate Media Center Installer",
     "fix": "Separate Kodi-native BINGIE repository install before Helper; verified simplejson minimum. No legacy dual-dependency bootstrap.",
     "id": "script.gsmedia.setup",
-    "main_installer_url": "https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/script.gsmedia.setup-0.5.22.zip",
+    "main_installer_url": "https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/script.gsmedia.setup-0.5.23.zip",
     "source_gate": "Drive source plus pinned upstream images and original MIT source",
-    "status": "PILOT_0522_STAGED_BINGIE_ANDROID_NOT_TESTED",
-    "version": "0.5.22"
+    "status": "PILOT_0523_EXISTING_AND_SHORTCUTS_FIX_ANDROID_NOT_TESTED",
+    "version": "0.5.23"
   },
   "xvault": {
     "android_test": "NOT_TESTED",
@@ -212,7 +222,7 @@
     "script.bingie.helper": "653b7391f5012a0a35867ec53e55045842efa02c4dca698ce8da0f5b39549358",
     "script.ezmaintenanceplus": "08a367b5fd1ee367ead4150b2364063a0760fe9fbf7506c20db845a0126cd2e6",
     "script.gsmedia.bingie.bootstrap": "6fa171c7d2e2071240f12302e5feb92546a206ddce88557462e274431ad14f04",
-    "script.gsmedia.setup": "66d98c8dc8061007f5dfbd82eeea483634730d915750e7677c9b6c0ff2fd8f91",
+    "script.gsmedia.setup": "b85016c88444f998d5a8f5d4ac05e19ecb941815e1b2497c8d5ffb6e9240ecc0",
     "script.gsmedia.skinshortcuts.bridge": "f84da5931a4159bbf82b78ecf6a05c0b2ce8a6e0c08ebf109d1554eb84d4f72c",
     "script.gsmedia.slyguy.bootstrap": "5c643097dad7e15728bc4c723b72cdd1c2fea67273bcf00cfec994db903d86e8",
     "script.gsmedia.upgrade.plugin.audio.m3sr2019": "d026dabe4e120c3b6b581a613db326ed6cc09458b8db536e158af4a0d753a5cb",
