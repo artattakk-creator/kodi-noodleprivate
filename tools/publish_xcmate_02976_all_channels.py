@@ -111,8 +111,14 @@ def publish():
             raise ValueError("XCMATE_MAIN_UNRELATED_ADDON_CHANGED:" + ident)
     if future_entries[NAME].get("version") != VERSION:
         raise ValueError("XCMATE_MAIN_NEW_VERSION_WRONG")
-    if (ET.tostring(future_entries[NAME]) !=
-            ET.tostring(pentries[NAME])):
+    # XML renderers may emit different insignificant whitespace between
+    # elements (especially different <addon> tails). Kodi's metadata must be
+    # semantically identical, not byte-identical in formatting.
+    root_semantic = ET.canonicalize(
+        ET.tostring(future_entries[NAME], encoding="unicode"), strip_text=True)
+    pilot_semantic = ET.canonicalize(
+        ET.tostring(pentries[NAME], encoding="unicode"), strip_text=True)
+    if root_semantic != pilot_semantic:
         raise ValueError("XCMATE_MAIN_AND_PILOT_METADATA_MISMATCH")
 
     html_before = INDEX.read_text(encoding="utf-8")
