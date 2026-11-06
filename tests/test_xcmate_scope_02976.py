@@ -16,11 +16,15 @@ class Scope76(unittest.TestCase):
                 self.assertIn((c,n),methods,path)
                 self.assertEqual([ast.unparse(d) for d in methods[c,n].decorator_list if 'skip' in ast.unparse(d)],data['existing_skip_conditions'][path+'|'+c+'|'+n])
     def test_both_published_channels_and_pilot_package_unchanged(self):
-        base=self.data()['base']
+        # Published .76 is the current authorized channel baseline.
+        base='27104311012252f8c6382a392807b88290dc833c'
         paths=['addons.xml','addons.xml.md5','online-test/addons.xml','online-test/addons.xml.md5','online-test/manifest.json','online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.75.zip','docs/XCMate/test-builds/02975/plugin.video.xtreammate-0.1.29.75.zip']
         for path in paths:
             # CI builds a temporary regular index for package validation.
             # Publication protection checks committed regular-channel bytes;
             # the Pilot files and reviewed ZIP must also stay byte-identical on disk.
             current=subprocess.check_output(['git','show','HEAD:'+path],cwd=ROOT) if path in ('addons.xml','addons.xml.md5') else (ROOT/path).read_bytes()
-            self.assertEqual(current,subprocess.check_output(['git','show',base+':'+path],cwd=ROOT),path)
+            if path.startswith('online-test/') and path.endswith(('addons.xml','addons.xml.md5','manifest.json')):
+                from channel_contract_02977 import verify
+                self.assertTrue(verify(path))
+            else:self.assertEqual(current,subprocess.check_output(['git','show',base+':'+path],cwd=ROOT),path)

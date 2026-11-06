@@ -14,7 +14,7 @@ def candidate(event,url,source):
     try:
         if not isinstance(url,str) or not 1<len(url)<=2048 or any(ord(c)<33 or ord(c)>126 for c in url):return False
         p=urlsplit(url);decoded=unquote(p.path)
-        if p.scheme!='https' or p.port not in (None,443) or not p.hostname or p.query or p.fragment or p.username is not None or p.password is not None:return False
+        if p.scheme!='https' or p.port not in (None,443) or not p.hostname or not __import__('programme_url77').public_query(p.query) or p.fragment or p.username is not None or p.password is not None:return False
         if not re.fullmatch(r'[a-zA-Z0-9.-]+',p.hostname) or '.' not in p.hostname or p.hostname.endswith(('.local','.localhost','.internal','.invalid','.test')):return False
         try:ipaddress.ip_address(p.hostname);return False
         except ValueError:pass

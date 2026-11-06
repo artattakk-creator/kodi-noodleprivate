@@ -3,12 +3,19 @@ import importlib
 
 
 def drain_stop():
-    jobs=importlib.import_module('exit_jobs');value=jobs.state()
-    if value and value['phase']=='pending':
-        value['not_before']=0;jobs.save(value);jobs.poll()
-    worker=jobs._thread
-    if worker is not None:worker.join(2)
-    process_native_live_stop()
+    jobs=importlib.import_module('exit_jobs')
+    # .77 adds a media checkpoint and native fullscreen-release phase. Drain
+    # producer work separately from the modeled native Stop/ACK, as Kodi does.
+    for _ in range(6):
+        value=jobs.state()
+        if value and value['phase']=='pending':
+            value['not_before']=0;jobs.save(value);jobs.poll()
+        worker=jobs._thread
+        if worker is not None:worker.join(2)
+        value=jobs.state()
+        if value and value.get('native_posted'):
+            process_native_live_stop();return
+        if not value or value['phase'] not in ('pending','running'):return
 
 
 def process_native_live_stop():

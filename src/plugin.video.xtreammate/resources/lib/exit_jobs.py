@@ -47,7 +47,9 @@ def blocked():
     value=state()
     return bool(value and (value['phase'] in ('pending','running') or
                 value.get('stop_started') and not value.get('worker_done') or
-                value.get('prepare_posted42') and not value.get('prepare_done42')))
+                value.get('prepare_posted42') and not value.get('prepare_done42') or
+                value.get('prepare_posted77') and not value.get('prepare_ready77') or
+                value.get('checkpoint_started77') and not value.get('checkpoint_done77')))
 
 
 def trace(stage,token,reason=None):
@@ -55,7 +57,7 @@ def trace(stage,token,reason=None):
     digest=hashlib.sha256(json.dumps([token[0],token[1].get('nonce')]).encode()).hexdigest()[:12]
     reason=reason or (state() or {}).get('reason','USER_STOP')
     reason=reason if reason in REASONS else 'STARTUP_ABORT'
-    try:xbmc.log('[XCMate][PLAYER_EXIT] stage='+stage+' reason='+reason+' kind='+token[0]+' session='+digest+' thread='+str(threading.get_ident())+' ms='+str(int(time.monotonic()*1000))+' window='+str(xbmcgui.getCurrentWindowId())+' dialog='+str(getattr(xbmcgui,'getCurrentWindowDialogId',lambda:9999)()),xbmc.LOGINFO)
+    try:xbmc.log('[XCMate][PLAYER_EXIT] stage='+stage+' reason='+reason+' kind='+token[0]+' medium='+('live' if token[0]=='live' else 'series' if token[1].get('kind') in ('episode','series_item') else 'vod')+' session='+digest+' thread='+str(threading.get_ident())+' ms='+str(int(time.monotonic()*1000))+' window='+str(xbmcgui.getCurrentWindowId())+' dialog='+str(getattr(xbmcgui,'getCurrentWindowDialogId',lambda:9999)()),xbmc.LOGINFO)
     except (AttributeError,RuntimeError):pass
 
 
@@ -64,8 +66,9 @@ def request(player=None,pid=None,expected=None,manual=False,reason='USER_STOP'):
     from playback_exit import identity,_same
     if reason not in REASONS:return False
     prior=state()
+    if prior and prior.get('checkpoint_started77') and not prior.get('checkpoint_done77'):return False
     if prior and (prior.get('stop_started') and not prior.get('worker_done') or
-                  prior.get('prepare_posted42') and not prior.get('prepare_done42')):
+                  prior.get('prepare_posted42') and not prior.get('prepare_done42') or prior.get('prepare_posted77') and not prior.get('prepare_ready77')):
         return bool(prior['phase']=='running' and expected and _same(tuple(prior['token']),expected))
     try:token=identity(player or xbmc.Player())
     except (AttributeError,RuntimeError,ValueError,TypeError):return False
@@ -75,7 +78,7 @@ def request(player=None,pid=None,expected=None,manual=False,reason='USER_STOP'):
         if prior and _same(tuple(prior['token']),token):
             retry=manual and prior['phase']=='failed' and not prior.get('stop_started') and (_thread is None or not _thread.is_alive())
             if not retry:return prior['phase'] in ('pending','running','complete')
-        if prior and (prior['phase'] in ('pending','running') or prior.get('stop_started') and not prior.get('worker_done') or prior.get('prepare_posted42') and not prior.get('prepare_done42')):return False
+        if prior and (prior['phase'] in ('pending','running') or prior.get('stop_started') and not prior.get('worker_done') or prior.get('prepare_posted42') and not prior.get('prepare_done42') or prior.get('prepare_posted77') and not prior.get('prepare_ready77')):return False
         if token[0]=='media' and token[1].get('autoplay_chain'):
             from media_autoplay import request_cancel
             request_cancel(token[1]['autoplay_chain'],token[1]['pid'])
@@ -88,16 +91,19 @@ def request(player=None,pid=None,expected=None,manual=False,reason='USER_STOP'):
 def _run(token):
     from playback_exit import stop_owned,_same
     try:
-        if token[0]=='live':
+        if token[0]=='media' and not (state() or {}).get('checkpoint77'):
+            from media_stop77 import checkpoint
+            checkpoint(token);return
+        if token[0] in ('live','media'):
             from native_stop41 import post
             if post(token):return  # Completion requires the native main-queue barrier.
             ok=False
-        else:ok=stop_owned(expected=token)
+        else:ok=False
     except Exception:ok=False
     with _lock:
         current=state()
         if current and _same(tuple(current['token']),token) and current['phase'] in ('running','timeout'):
-            ambiguous=token[0]=='live' and current.get('native_posted')
+            ambiguous=bool(current.get('native_posted'))
             current['worker_done']=not ambiguous
             current['result']='POST_UNCONFIRMED' if ambiguous else 'complete' if ok else 'failed'
             if ambiguous:current['phase']='timeout'
@@ -117,6 +123,9 @@ def poll():
             from live_stop42 import observe
             try:observe(value)
             except (AttributeError,RuntimeError,ValueError,TypeError,MemoryError):pass
+        if value['token'][0]=='media':
+            from media_stop77 import observe as media_observe
+            media_observe(value)
         if value.get('native_posted') and not value.get('worker_done'):
             from live_stop75 import observe as observe75
             observe75(value)
@@ -130,7 +139,7 @@ def poll():
             value['stop_started']=True  # In-flight legacy job: timeout never proves completion.
         if value['phase'] in ('pending','running') and time.monotonic()>value['deadline']:
             value['phase']='timeout'
-            if not value.get('stop_started'):value['worker_done']=True
+            if not value.get('stop_started') and not (value.get('checkpoint_started77') and not value.get('checkpoint_done77')):value['worker_done']=True
             save(value);trace('STOP_TIMEOUT',tuple(value['token']))
         if value['phase']=='pending' and time.monotonic()>=value['not_before']:
             if _thread is not None and _thread.is_alive():return True
@@ -154,7 +163,15 @@ def poll():
                     value.update(phase='timeout' if value.get('prepare_posted42') else 'failed',
                                  worker_done=True,result='PREP_UNCONFIRMED')
                     save(value);trace('PREP_UNCONFIRMED',tuple(value['token']));return False
-            value['phase']='running';value['stop_started']=True;save(value)
+            if value['token'][0]=='media' and value.get('checkpoint77'):
+                from media_stop77 import prepare as prepare_media
+                try:
+                    if not prepare_media(value):return value['phase']=='pending'
+                except (AttributeError,RuntimeError,ValueError,TypeError,OSError):
+                    value.update(phase='timeout' if value.get('prepare_posted77') else 'failed',worker_done=True,result='MEDIA_PREP_UNCONFIRMED');save(value);return False
+            value['phase']='running';value['stop_started']=value['token'][0]=='live' or bool(value.get('checkpoint77'))
+            if value['token'][0]=='media' and not value.get('checkpoint77'):value['checkpoint_started77']=True
+            save(value)
             _thread=threading.Thread(target=_run,args=(tuple(value['token']),),name='XCMate-stop',daemon=True)
             try:_thread.start()
             except (RuntimeError,MemoryError):value.update(phase='failed',worker_done=True,stop_started=False);save(value)

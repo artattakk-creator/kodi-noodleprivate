@@ -231,6 +231,10 @@ class MediaOSD(xbmcgui.WindowDialog):
 
 def poll(player=None):
     global _window,_standard_recovery
+    from exit_jobs import blocked
+    if blocked():
+        if _window:_window.dispose();_window=None
+        return
     player=player or xbmc.Player()
     token=identity(player)
     from osd_ownership import recover

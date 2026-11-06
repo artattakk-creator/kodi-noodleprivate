@@ -18,7 +18,8 @@ class Exit37(unittest.TestCase):
         value=self.jobs.state();value['not_before']=0;self.jobs.save(value);self.jobs.poll()
 
     def drain(self):
-        self.start();self.jobs._thread.join(2)
+        from exit37_fixture import drain_stop
+        drain_stop()
         self.assertFalse(self.jobs._thread.is_alive())
 
     def test_native_callback_publishes_without_checkpoint_stop_or_thread(self):
@@ -36,16 +37,25 @@ class Exit37(unittest.TestCase):
         self.assertEqual(len(self.m.stops),2)
 
     def test_stuck_native_stop_cannot_block_service_tick_or_spawn_retry(self):
+        # .77 posts a native Stop instead of calling Player.stop in Python.
+        # Model a wedged native queue separately; the service still ticks.
         entered=threading.Event();release=threading.Event();calls=[]
         def stop():calls.append(1);entered.set();release.wait(3)
         self.m.player.stop=stop
+        from exit37_fixture import process_native_live_stop
+        native=None
         try:
-            self.jobs.request(self.m.player);self.start();self.assertTrue(entered.wait(1))
+            self.jobs.request(self.m.player);self.start();self.jobs._thread.join(2)
+            self.start();self.jobs._thread.join(2)
+            native=threading.Thread(target=process_native_live_stop);native.start()
+            self.assertTrue(entered.wait(1))
             for _ in range(20):self.assertTrue(self.jobs.poll())
             value=self.jobs.state();value['deadline']=0;self.jobs.save(value)
             self.assertFalse(self.jobs.poll());self.assertEqual(self.jobs.state()['phase'],'timeout')
             self.assertFalse(self.jobs.request(self.m.player));self.assertEqual(calls,[1])
-        finally:release.set();self.jobs._thread.join(2)
+        finally:
+            release.set()
+            if native:native.join(2)
 
     def test_player_replacement_after_intent_never_stops_foreign_video(self):
         self.jobs.request(self.m.player);self.m.media_id='foreign';self.drain()

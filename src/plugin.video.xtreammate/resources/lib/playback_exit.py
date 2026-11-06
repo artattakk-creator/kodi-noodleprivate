@@ -43,7 +43,7 @@ def _same(a,b):
         (a[0]!='media' or a[1].get('kind')==b[1].get('kind')))
 
 
-def stop_owned(player=None,pid=None,expected=None):
+def stop_owned(player=None,pid=None,expected=None,prepare_only77=False):
     """Explicit UI return/exit. Snapshot current progress BEFORE stopping audio.
 
     A final identity check protects against a foreign item taking over while
@@ -79,6 +79,7 @@ def stop_owned(player=None,pid=None,expected=None):
                     warn('XCMate exit checkpoint: WRITE_FAILED')
                 if checkpoint_ok:trace('PROGRESS_SNAPSHOT_DONE',token)
         if not _same(token,identity(player)): return False
+        if prepare_only77:return dict(checkpoint_ok=checkpoint_ok,sample=sample)
         from exit_jobs import trace
         trace('PLAYER_STOP_START',token)
         player.stop()

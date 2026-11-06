@@ -113,7 +113,10 @@ class Events:
             # A duplicate terminal callback after a successor's AVStart cannot
             # end that now-playing item. Unidentified/dropped events fail closed.
             try:
-                if player.isPlayingVideo():return
+                # Stop callbacks can run before CloseFile releases its mutex.
+                # Explicit owned exit already cancelled the chain: never query
+                # the native player while its Stop/ACK is outstanding.
+                if not __import__('exit_jobs').blocked() and player.isPlayingVideo():return
             except (AttributeError,RuntimeError):return
             if len(self.items)==self.items.maxlen:self.overflow=True
             self.items.append((kind,dict(session)))
@@ -213,6 +216,7 @@ class Coordinator:
         if self.phase not in _ACTIVE:return
         pending=_read(REQUEST)
         if _valid(pending) and pending.get('nonce')!=self.session['nonce']:self.finish();return
+        if __import__('exit_jobs').blocked():return
         from playback_exit import identity
         token=identity(self.player)
         if token:

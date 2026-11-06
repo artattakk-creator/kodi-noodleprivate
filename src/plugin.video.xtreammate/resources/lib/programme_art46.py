@@ -28,8 +28,14 @@ def fingerprint(event):
   values.append([enabled,setting_bool('tmdb_research43',False) if enabled else False,__import__('tmdb_token61').token_fingerprint() if enabled else ''])
  return hashlib.sha256(json.dumps(values,sort_keys=True).encode()).hexdigest()
 
+def negative_valid77(event,value):
+ if not value or value.get('source')!='placeholder':return True
+ from programme_policy68 import negative_scope
+ return value.get('negative_scope77')==negative_scope(event)
+
 def peek(event):
  with _lock:value=_memory.get(event['key'])
+ if not negative_valid77(event,value):value=None
  return {k:v for k,v in value.items() if k not in ('_verified47','_checked47')} if value and value.get('fingerprint')==fingerprint(event) else dict(code='PENDING',image=event['placeholder'],source='placeholder',match='NONE')
 
 def remember(key,value,verified47=False):
@@ -47,17 +53,17 @@ def enqueue(event):
  from utils import setting_bool
  key=event['key'];fp=fingerprint(event)
  with _lock:old=_memory.get(key)
- if old and old.get('fingerprint')==fp and old.get('until',0)>time.time() and (old.get('source')=='placeholder' or old.get('_verified47') and time.monotonic()-old.get('_checked47',0)<300) and not (old.get('code')=='PROGRAMME_CACHE_BUDGET' and old.get('budget46')!=limit()):return False
- if not event.get('xmltv_image') and not event.get('provider_image') and not setting_bool('programme_tmdb46',False):
+ if old and negative_valid77(event,old) and old.get('fingerprint')==fp and old.get('until',0)>time.time() and (old.get('source')=='placeholder' or old.get('_verified47') and time.monotonic()-old.get('_checked47',0)<300) and not (old.get('code')=='PROGRAMME_CACHE_BUDGET' and old.get('budget46')!=limit()):return False
+ if not event.get('xmltv_image') and not event.get('provider_image') and not any(setting_bool(k,d) for k,d in (('programme_tmdb46',False),('programme_tvmaze67',False),('programme_helper57',True),('programme_catalog57',True))):
   from programme_index46 import art as persisted_art46
   prior=persisted_art46(event)
   if prior and prior.get('until',0)>time.time():remember(key,prior);return False
-  value=dict(key=event['key'],fingerprint=fingerprint(event),code='NO_IMAGE',image=event['placeholder'],source='placeholder',match='NONE',until=time.time()+21600)
+  value=dict(key=event['key'],fingerprint=fingerprint(event),code='NO_IMAGE',image=event['placeholder'],source='placeholder',match='NONE',until=time.time()+21600,negative_scope77=__import__('programme_policy68').negative_scope(event))
   remember(event['key'],value)
   return False
  with _lock:
   old=_memory.get(key)
-  if old and old.get('fingerprint')==fp and old.get('until',0)>time.time() and (old.get('source')=='placeholder' or old.get('_verified47') and time.monotonic()-old.get('_checked47',0)<300) and not (old.get('code')=='PROGRAMME_CACHE_BUDGET' and old.get('budget46')!=limit()):return False
+  if old and negative_valid77(event,old) and old.get('fingerprint')==fp and old.get('until',0)>time.time() and (old.get('source')=='placeholder' or old.get('_verified47') and time.monotonic()-old.get('_checked47',0)<300) and not (old.get('code')=='PROGRAMME_CACHE_BUDGET' and old.get('budget46')!=limit()):return False
   if key in _pending or len(_pending)>=24:return False
   _pending.add(key);_queue[key]=dict(event)
  ensure();_wake.set();return True
@@ -143,8 +149,8 @@ def prepare(event,cancel=lambda:False,fetch=None,match=None,resolved60=None):
  # A URL-only approval is not a stale local picture. The explicit .63
  # materialization lane must report its real download failure, not READY_STALE.
  if resolved60 is not None and resolved60.get('_local_only63') and old and old.get('url_version55')==1:old=None
- if resolved60 is None and old and old.get('until',0)>time.time() and not (old.get('code')=='PROGRAMME_CACHE_BUDGET' and old.get('budget46')!=limit()):remember(key,old,verified47=True);return old
- value=dict(key=key,fingerprint=fp,code='NO_IMAGE',image=event['placeholder'],source='placeholder',match='NONE',until=time.time()+6*3600)
+ if resolved60 is None and old and negative_valid77(event,old) and old.get('until',0)>time.time() and not (old.get('code')=='PROGRAMME_CACHE_BUDGET' and old.get('budget46')!=limit()):remember(key,old,verified47=True);return old
+ value=dict(key=key,fingerprint=fp,code='NO_IMAGE',image=event['placeholder'],source='placeholder',match='NONE',until=time.time()+6*3600,negative_scope77=__import__('programme_policy68').negative_scope(event))
  if old and old.get('source')!='placeholder':value=dict(old,code='READY_STALE',until=time.time()+300)
  try:
   candidates=[dict(url=event[k],source=source,match='EXACT_EVENT',attribution='XMLTV' if source=='xmltv_event' else 'Provider') for k,source in (('xmltv_image','xmltv_event'),('provider_image','provider_event')) if event.get(k)]

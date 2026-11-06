@@ -2,7 +2,11 @@
 import hashlib
 from localization import tr
 
-def activate(addon):
+def activate(addon,automatic=False):
+    from utils import setting_bool
+    if automatic and setting_bool('programme_tmdb_optout77',False):return False
+    from programme_consent77 import decision
+    decision('tmdb',True,addon)
     addon.setSetting('programme_tmdb46','true')
     addon.setSetting('tmdb_research43','true')
     from programme_refresh63 import request
@@ -40,6 +44,7 @@ def imported(choice,dialog,addon,gui,tokens):
         if old is None:
             addon.setSetting('tmdb_read_token43',value)
             tokens.effective_tmdb_read_token(force=True)
+            activate(addon,automatic=True)
             dialog.ok(tr(36620),tr(36628));return
         dialog.ok(tr(36620),tr(36662))
     expected=hashlib.sha256(old).hexdigest() if old is not None else None
@@ -47,7 +52,7 @@ def imported(choice,dialog,addon,gui,tokens):
     if choice==6 and not dialog.yesno(tr(36620),tr(36664),defaultbutton=getattr(gui,'DLG_YESNO_NO_BTN',10)):return
     result=tokens.import_bytes(raw,expected,target=target)
     if tokens.location()!=target:raise tokens.TokenError('TOKEN_CHANGED')
-    if choice==6:activate(addon)
+    activate(addon,automatic=True)
     dialog.ok(tr(36620),tr(36628)+'\n'+tr(36665 if choice==6 else 36666)+('\n'+tr(36672) if result=='IMPORTED_SYNC_WARNING' else ''))
 
 def show():
@@ -80,4 +85,5 @@ def show():
             if dialog.yesno(tr(36620),tr(36631),defaultbutton=getattr(xbmcgui,'DLG_YESNO_NO_BTN',10)):activate(addon)
         elif choice==5:
             if not dialog.yesno(tr(36620),tr(36632),defaultbutton=getattr(xbmcgui,'DLG_YESNO_NO_BTN',10)):continue
-            addon.setSetting('programme_tmdb46','false');addon.setSetting('tmdb_research43','false')
+            from programme_consent77 import decision
+            decision('tmdb',False,addon)

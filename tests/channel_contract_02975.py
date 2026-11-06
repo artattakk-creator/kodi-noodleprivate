@@ -10,6 +10,8 @@ ROOT=Path(__file__).resolve().parents[1]
 BASE='ad5c337c0ca9ea6f85e458c17383fb32c19e3fc2'
 def baseline(path):return subprocess.check_output(['git','show',BASE+':'+path],cwd=ROOT)
 def verify(path):
+    from channel_contract_02977 import verify as verify77
+    if verify77(path):return
     current=(ROOT/path).read_bytes();old=baseline(path)
     # Published Pilot .75 remains immutable while the next candidate is reviewed.
     released=subprocess.check_output(['git','show','b3024e9620e8924e880a70fc92ca70e4b5a5658b:'+path],cwd=ROOT)

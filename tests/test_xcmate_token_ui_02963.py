@@ -14,7 +14,7 @@ class TokenUi63(Fixture,unittest.TestCase):
   self.dialog.browseSingle.return_value='smb://fixture/share/another-name.txt';self.dialog.select.side_effect=[0,-1]
   with mock.patch('tmdb_import63.selected',return_value=FIXTURE) as read:self.ui.show()
   read.assert_called_once();self.assertEqual(self.path.read_bytes(),FIXTURE+b'\n');self.assertEqual(self.path.stat().st_mode&0o777,0o600)
-  self.assertNotIn('programme_tmdb46',self.options);self.assertNotIn('tmdb_research43',self.options)
+  self.assertEqual(self.options['programme_tmdb46'],'true');self.assertEqual(self.options['tmdb_research43'],'true')  # .77 removes duplicate consent after valid import
   self.assertNotIn(FIXTURE.decode(),str(self.dialog.ok.call_args_list))
  def test_import_and_activation_requires_explicit_separate_choice_and_confirmation(self):
   self.dialog.select.side_effect=[6,-1];self.dialog.yesno.return_value=False;self.ui.show()

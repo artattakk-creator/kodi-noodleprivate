@@ -31,6 +31,7 @@ jobs:
         run: |
           python -m unittest discover -s tests -p '*02975.py' -v
           python -m unittest discover -s tests -p '*02976.py' -v
+          python -m unittest discover -s tests -p '*02977.py' -v
       - name: Verify review ZIP exactly matches source
         run: |
           python tools/package_xcmate71.py "${{ runner.temp }}/package75"
@@ -48,4 +49,29 @@ jobs:
             ${{ runner.temp }}/native75/probe.log
             ${{ runner.temp }}/native75/restart.log
             ${{ runner.temp }}/native75/gui-error.txt
+          retention-days: 30
+
+  native-media77:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Synthetic media generator
+        run: |
+          if ! command -v ffmpeg >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg
+          fi
+      - name: 20 native Stop ACK cycles per media type
+        run: python tools/run_kodi_media77_contract.py --report-dir "${{ runner.temp }}/native77-media"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native77-media
+          path: |
+            ${{ runner.temp }}/native77-media/live.json
+            ${{ runner.temp }}/native77-media/build.log
           retention-days: 30

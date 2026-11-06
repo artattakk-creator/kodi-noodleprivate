@@ -37,6 +37,9 @@
     <setting id="programme_catalog57" type="bool" label="36541" default="true"/>
     <setting id="tmdb_test60" type="action" label="36600" action="RunPlugin(plugin://plugin.video.xtreammate/?action=native_options45&amp;group=tmdb_test60)" />
     <setting id="tmdb_token_revision61" type="text" label="36620" default="" visible="false"/>
+    <setting id="programme_sources_state77" type="text" default="" visible="false"/>
+    <setting id="programme_tmdb_optout77" type="bool" default="false" visible="false"/>
+    <setting id="programme_tvmaze_optout77" type="bool" default="false" visible="false"/>
     <setting id="programme_tvmaze67" type="bool" label="36721" default="false"/>
     <setting id="programme_tmdb46" type="bool" label="36110" default="false" visible="false"/>
     <setting id="programme_image_hosts55" type="text" label="36530" default=""/>

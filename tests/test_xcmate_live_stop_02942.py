@@ -310,13 +310,17 @@ class LiveStop42(unittest.TestCase):
         self.assertEqual(self.jobs.state()['result'], 'PREP_UNCONFIRMED')
 
     def test_media_job_keeps_original_synchronous_owned_exit_implementation(self):
+        # Historical method name retained. .77 deliberately replaces only the
+        # media Stop operation with a separate checkpoint/release/ACK contract;
+        # it must still never call the .42 Live preparation implementation.
         media = ('media', dict(self.m.session, kind='vod'))
         with mock.patch('playback_exit.identity', return_value=media), \
-             mock.patch('playback_exit.stop_owned', return_value=True) as stop, \
+             mock.patch('playback_exit.stop_owned', return_value=dict(checkpoint_ok=True,sample=None)) as snapshot, \
              mock.patch.object(self.compat, 'prepare', side_effect=AssertionError('Live only')):
             self.request()
-        stop.assert_called_once()
-        self.assertEqual(self.jobs.state()['phase'], 'complete')
+            snapshot.assert_called_once_with(expected=media,prepare_only77=True)
+        self.assertTrue(self.jobs.state()['checkpoint77'])
+        self.assertEqual(self.jobs.state()['phase'],'pending')
         self.assertFalse(self.queue)
 
     def test_diagnostics_never_contain_private_item_ids_or_urls(self):

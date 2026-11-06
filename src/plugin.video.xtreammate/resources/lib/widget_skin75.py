@@ -9,6 +9,8 @@ from pathlib import Path
 import xml.etree.ElementTree as E
 
 def navigation_candidate(data):
+    from widget_skin77 import existing_navigation
+    if existing_navigation(data):return data
     from widget_transaction50 import sha
     from widget_skin50 import spans,edit
     if sha(data)!='ab30a92b13a80123cf7ac2a6a24f4b3f2e9669c3a2da769666868cc60649077b':raise ValueError('UNVERIFIED_NAVIGATION_SKIN')

@@ -1,3 +1,11 @@
+0.1.29.77 (Pilot-Test, #380 / #366 / #367 / #368)
+- Vorhandenen gültigen TMDB-Token read-only übernehmen und Lookup einmalig freischalten; TVMaze-Serienfallback automatisch, bewusste Opt-outs erhalten.
+- Vollständige Bilddekodierung vor Freigabe, geprüfte Redirects und begrenzte Erneuerung abgelaufener Event-URL-Leases; negative Caches nach Quellfreigabe erneut prüfen.
+- Serien-/Film-Exit: Fortschritt vorab sichern, Android-Vollbild kontrolliert freigeben, genau ein nativer Stop mit FIFO-ACK; keine Player-Abfragen während unbestätigtem Stop.
+- Bekannte Space-Blue-Home-Variante exakt unterstützen; Vorschau, Sicherung und Zustimmung erhalten, Hero-Bild flächig bei unveränderter Geometrie. Fehlende Controls separat diagnostizieren.
+- EPG-Lesezugriffe kurz und generationsgebunden zusammenfassen; fehlende Kodi-Bibliotheksviews nur diagnostizieren.
+- Installer 0.5.26, Profile, Passwörter, Token, EPG-Zuordnungen und Originalgrafiken unverändert. Android-P0-Abnahme ausdrücklich noch offen.
+
 0.1.29.76 (unveröffentlichter Testkandidat, Folgeauftrag zu #367)
 - Verifizierte Bild- oder neutrale Fallback-Vorbereitung gibt die nächste Hintergrundphase frei, ohne unsichtbare Leisten als gerendert zu melden.
 - Reihenfolge Live-TV → Filme → Serien bleibt erhalten; keine neue Warteschlange oder Änderung an Widgets, Routing, Player und Nutzerdaten.

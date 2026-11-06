@@ -28,11 +28,15 @@ def attempts(event,cancel=lambda:False):
     from utils import setting_bool
     own67=setting_bool('programme_tmdb46',False) and setting_bool('tmdb_research43',False)
     if own67:yield label(lambda:candidate(event,cancel),'tmdb')
-    if catalog:
-        yield label(lambda:xcmate(event,cancel),'catalog')
-        yield label(lambda:kodi(event,cancel),'kodi')
     from programme_tvmaze67 import candidate as maze67
     yield label(lambda:maze67(event,cancel),'tvmaze')
+    if catalog:
+        yield label(lambda:xcmate(event,cancel),'catalog')
+        def kodi_lookup():
+            from programme_library77 import available
+            if not available():raise Error('KODI_LIBRARY_MISSING_VIEWS')
+            return kodi(event,cancel)
+        yield label(kodi_lookup,'kodi')
     if helper:
         def helper_lookup():
             from programme_urls55 import profile
