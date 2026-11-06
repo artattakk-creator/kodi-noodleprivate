@@ -1,8 +1,8 @@
 # XCMate 0.1.29.77 – GS Media Pilot
 
-Status: **PILOT_STAGED**, öffentliche Verifikation und native Update-Erkennung noch ausstehend.
+Status: **PILOT_RELEASED**, öffentliches ZIP/Katalog/MD5/SHA256 und echte native Kodi-Update-Erkennung am 06.11.2026, ca. 22:49 UTC erfolgreich verifiziert.
 
-Source-PR: [#383](https://github.com/artattakk-creator/kodi-noodleprivate/pull/383), nach zehn erfolgreichen CI-Workflows gemergt. Source-Merge: `2a498044135d27b44b53d6d35d96cba7d59ce98b`. Geprüfter Source-Head: `a2f8c29f9f1f6c2feb14ed302ba8a585709661e4`.
+Source-PR: [#383](https://github.com/artattakk-creator/kodi-noodleprivate/pull/383), nach zehn erfolgreichen CI-Workflows gemergt. Source-Merge: `2a498044135d27b44b53d6d35d96cba7d59ce98b`. Pilot-Release-PR [#384](https://github.com/artattakk-creator/kodi-noodleprivate/pull/384), Release-Merge `d424a17d507ae6a9e182619be288c726988bc75a`. Geprüfter Source-Head: `a2f8c29f9f1f6c2feb14ed302ba8a585709661e4`.
 
 - XCMate: 0.1.29.77, 739 Dateien, 3.441.153 Bytes.
 - SHA256: `8060b83e1b5153cb52cc7449bd4799d8b477517dcea84a6775cd3b63b4840bc8`.
@@ -20,3 +20,10 @@ Source-PR: [#383](https://github.com/artattakk-creator/kodi-noodleprivate/pull/3
 Regulärer GS-Media-Kanal und NeoDark3 bleiben **0.1.29.76**. GS Media Installer **0.5.26**, bisherige .76-ZIPs und sämtliche anderen Komponenten bleiben unverändert.
 
 **Android .77: ANDROID_NOT_TESTED.** Host-/Linux-/Update-Nachweise sind kein visueller Android-PASS. #380/#366/#367/#368 bleiben offen. .76-Sendungsbilder sind laut Nutzer weiterhin FAIL. Keine vollständige P0-Geräteabnahme behauptet.
+
+## Öffentlicher Veröffentlichungsnachweis
+
+- Tatsächliches Pilot-`addons.xml` liefert .77, zugehöriges MD5 stimmt; öffentliche ZIP-CRC, Manifest-Identität, SHA256-Datei und Pilot-Metadaten stimmen mit dem geprüften Source-ZIP überein.
+- Ein echtes isoliertes Kodi 21.2 zeigt nach `UpdateAddonRepos` im nativen `addons://outdated/` die Add-on-ID `plugin.video.xtreammate` und Version **0.1.29.77** an. Installierte Metadaten-Fallversion .76, Installer-Metadaten .5.26 unverändert; kein Installer-/XCMate-Anwendungscode installiert/ausgeführt, keine Geräteprofile eingebunden.
+- Öffentlicher regulärer Index samt MD5, Installer-.5.26-ZIP sowie reguläres und Pilot-.76-ZIP sind byteidentisch zum freigegebenen Ausgangs-main `2710431`. NeoDark3-Direktdatei .76 bleibt dadurch erhalten.
+- Nachweise: `evidence/public-pilot77.json`, `native-pilot-update77.json`, `published-preservation77.json`, `ci-summary77.json`. Alle zehn Source-CI-Workflows PASS; abschließende Pilot-Bestandsschutzfälle 11/11 PASS.

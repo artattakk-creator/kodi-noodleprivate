@@ -1,6 +1,6 @@
 # Testbericht XCMate 0.1.29.77
 
-Status: **Host / gesamte Source-CI / native Linux-Prüfungen PASS**. Source-PR #383 gemergt; Pilot-Katalog wird separat veröffentlicht/verifiziert. Source-Basis `2710431`, Installer 0.5.26 unverändert. Kein Android-PASS.
+Status: **Host / gesamte Source-CI / native Linux-Prüfungen PASS**. Source-PR #383 und Pilot-Release #384 gemergt; **PILOT_RELEASED**, öffentliche/native Update-Erkennung PASS. Source-Basis `2710431`, Installer 0.5.26 unverändert. Kein Android-PASS.
 
 - 105 fokussierte Regressionen: PASS nach Korrektur der alten Stop-/Freigabeerwartungen.
 - 39 .77-Tests einschließlich kumulativer Bestandsschutzprüfung: PASS.

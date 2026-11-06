@@ -1,0 +1,63 @@
+{
+  "kodi": {
+    "major": 21,
+    "minor": 2,
+    "revision": "20250330-nogitfound",
+    "tag": "stable"
+  },
+  "native_update_detection": "PASS",
+  "mechanism": "UpdateAddonRepos + native AddonBrowser addons://outdated/ (IDs and versions)",
+  "repository": "repository.gsmedia.pilot 1.9.12 (unchanged public URLs)",
+  "installed_metadata_only_fixtures": {
+    "plugin.video.xtreammate": "0.1.29.76",
+    "script.gsmedia.setup": "0.5.26"
+  },
+  "outdated_entries": [
+    {
+      "id": "",
+      "version": ""
+    },
+    {
+      "id": "",
+      "version": ""
+    },
+    {
+      "id": "plugin.video.xtreammate",
+      "version": "0.1.29.77"
+    },
+    {
+      "id": "",
+      "version": ""
+    },
+    {
+      "id": "",
+      "version": ""
+    },
+    {
+      "id": "",
+      "version": ""
+    },
+    {
+      "id": "",
+      "version": ""
+    },
+    {
+      "id": "",
+      "version": ""
+    },
+    {
+      "id": "",
+      "version": ""
+    },
+    {
+      "id": "",
+      "version": ""
+    }
+  ],
+  "installer_executed": false,
+  "application_code_executed": false,
+  "production_profiles_mounted": false,
+  "android": "NOT_TESTED",
+  "expected_xcmate": "0.1.29.77",
+  "note75": "Metadata-only installed fixtures; no installer or XCMate application code executed."
+}

@@ -1,0 +1,13 @@
+{
+  "version": "0.1.29.77",
+  "channel": "GS Media Pilot",
+  "sha256": "8060b83e1b5153cb52cc7449bd4799d8b477517dcea84a6775cd3b63b4840bc8",
+  "bytes": 3441153,
+  "crc": "PASS",
+  "index": "PASS",
+  "update_version_comparison": "0.1.29.77 > 0.1.29.76",
+  "regular_version": "0.1.29.76",
+  "installer_executed": false,
+  "android": "ANDROID_NOT_TESTED",
+  "url": "https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.77.zip"
+}
