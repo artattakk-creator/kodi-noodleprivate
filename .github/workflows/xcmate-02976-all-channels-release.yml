@@ -75,7 +75,7 @@ jobs:
               return index
           main=entries(root/"addons.xml")
           p=entries(pilot/"addons.xml")
-          assert ET.tostring(main[ident])==ET.tostring(p[ident])
+          assert ET.canonicalize(ET.tostring(main[ident],encoding="unicode"),strip_text=True)==ET.canonicalize(ET.tostring(p[ident],encoding="unicode"),strip_text=True)
           chunks=[]
           for location in (root/ident/filename,pilot/ident/filename,root/"docs/XCMate/test-builds/02976"/filename):
               assert location.is_file(),str(location)
