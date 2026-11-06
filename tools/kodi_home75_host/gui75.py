@@ -13,7 +13,7 @@ for _ in range(200):
     if xbmc.getInfoLabel('Container(2510).NumItems')=='88':break
     xbmc.sleep(100)
 else:raise RuntimeError('LIVE75_NOT_LOADED')
-watermark=xbmcgui.ControlLabel(20,1048,1850,30,'Synthetic host / Kodi Linux / NOT Android / .75',font='Reg18',textColor='FFFFFFFF')
+watermark=xbmcgui.ControlLabel(20,1048,1850,30,'Synthetic host / Kodi Linux / NOT Android / '+xbmcaddon.Addon().getAddonInfo('version'),font='Reg18',textColor='FFFFFFFF')
 home.addControl(watermark)
 schedule.configure(get_active())
 cases=[];traces=[]
@@ -79,11 +79,14 @@ select(2510,0,'live')
 check(json.loads(home.getProperty(schedule.KEY))['phase']==1,'NO_NATIVE_LIVE_READY')
 from widget_fast69 import prepare
 prepare();xbmc.sleep(300)
+prepared_state=json.loads(home.getProperty(schedule.KEY))
+check(prepared_state['phase']==3,'NO_AUTOMATIC_PREPARATION')
+check(prepared_state['visible']==['live'],'HIDDEN_ROWS_CLAIMED_VISIBLE')
+check(home.getFocusId()==2510,'PREPARATION_MOVED_FOCUS')
 select(2520,0,'vod')
-check(json.loads(home.getProperty(schedule.KEY))['phase']==2,'NO_NATIVE_MOVIES_READY')
-__import__('widget_fast69')._next=0;prepare();xbmc.sleep(300)
+check('vod' in json.loads(home.getProperty(schedule.KEY))['visible'],'NO_NATIVE_MOVIES_READY')
 select(2530,0,'series')
-check(json.loads(home.getProperty(schedule.KEY))['phase']==3,'NO_NATIVE_SERIES_READY')
+check(json.loads(home.getProperty(schedule.KEY))['visible']==['live','vod','series'],'NO_NATIVE_SERIES_READY')
 for i in range(20):select((2510,2520,2530)[i%3],i%20,('live','vod','series')[i%3])
 for ident,kind in ((2540,'poster'),(2550,'music'),(2560,'television')):
     for index in (0,23):select(ident,index,'foreign-'+kind)
@@ -124,5 +127,5 @@ while time.monotonic()-started<duration:
         checkpoints.append(dict(elapsed=elapsed,counts=counts,picture=path.name))
     xbmc.sleep(200)
 path,rgb=capture('home75-final')
-result=dict(status='PASS',android='ANDROID_NOT_TESTED',kodi=xbmc.getInfoLabel('System.BuildVersion'),cases=cases,traces=traces,native_actions=actions,elapsed_seconds=time.monotonic()-started,checkpoints=checkpoints,missing_control='PASS')
+result=dict(status='PASS',android='ANDROID_NOT_TESTED',kodi=xbmc.getInfoLabel('System.BuildVersion'),cases=cases,traces=traces,prepared_state=prepared_state,native_actions=actions,elapsed_seconds=time.monotonic()-started,checkpoints=checkpoints,missing_control='PASS')
 Path('/root/home75.json').write_text(json.dumps(result,indent=2))

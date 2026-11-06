@@ -1,0 +1,8 @@
+test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib (test_xcmate_028_streaming.LargeHTTPTests.test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib) ... 
+LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 309526528, "seconds": 34.565, "peak_rss_kib": 32312}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 621731840, "seconds": 31.981, "peak_rss_kib": 32952}]
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 68.784s
+
+OK

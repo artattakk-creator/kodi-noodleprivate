@@ -1,13 +1,14 @@
 """Shared Home admission gates over existing workers, never another loader.
 
-Only receiver observations advance VISIBLE_READY. Preparing URLs is explicitly
-PREPARED, not proof of decoded pixels. A focused item bypasses automatic gates;
+A verified published image/fallback page may admit the next background phase.
+Only native receiver observations record VISIBLE_READY. A focused item bypasses automatic gates;
 it never resets the Live -> Movies -> Series ordering or starts a bulk scan.
 """
-import hashlib,json,time
+import hashlib,json,time,threading
 KEY='XCMate.Home75.Schedule'
 FOCUS='XCMate.Home75.Focus'
 _seen={}
+_lock=threading.RLock()
 
 def _window():
     import xbmcgui
@@ -23,7 +24,7 @@ def _read(key):
 def trace(stage,**facts):
     allowed={'START_GROUP_KNOWN','LIVE_HOME_READY','MOVIE_WARM_BEGIN','MOVIES_PREPARED',
              'MOVIES_VISIBLE_READY','SERIES_WARM_BEGIN','SERIES_PREPARED','SERIES_VISIBLE_READY',
-             'REST_WARM_BEGIN','FOCUS_OVERRIDE','VISIBLE5_QUEUED','RENDER_PENDING','RENDER_CONTROL_MISSING'}
+             'REST_WARM_BEGIN','MOVIES_DISABLED','SERIES_DISABLED','FOCUS_OVERRIDE','VISIBLE5_QUEUED','RENDER_PENDING','RENDER_CONTROL_MISSING'}
     if stage not in allowed:return
     safe={k:v for k,v in facts.items() if k in ('elapsed_ms','count','phase','queue_depth') and type(v) in (int,float)}
     signature=(stage,tuple(safe.items()));now=time.monotonic()
@@ -38,13 +39,31 @@ def configure(portals):
     from live_warm68 import portal_key
     from epg_handoff63 import profile_scope,meta_key
     from epg_status import revision
-    material=[profile_scope(),[(portal_key(p),revision(p['id']),_window().getProperty(meta_key(p['id']))) for p in portals]]
+    material=[76,profile_scope(),[(portal_key(p),revision(p['id']),_window().getProperty(meta_key(p['id'])),
+              p.get('include_vod',True),p.get('include_series',True)) for p in portals]]
     context=hashlib.sha256(json.dumps(material,sort_keys=True).encode()).hexdigest()
-    current=_read(KEY)
-    if current.get('context')!=context:
-        current=dict(context=context,phase=0,at=time.monotonic(),profile=profile_scope(),prepared=[])
-        _window().setProperty(KEY,json.dumps(current));trace('START_GROUP_KNOWN',phase=0)
-    return current
+    with _lock:
+        current=_read(KEY)
+        if current.get('context')!=context:
+            current=dict(context=context,phase=0,at=time.monotonic(),profile=profile_scope(),prepared=[],visible=[],ready76={},
+                         required76={kind:[str(p['id']) for p in portals if p.get('include_'+kind,True)] for kind in ('vod','series')})
+            _window().setProperty(KEY,json.dumps(current));trace('START_GROUP_KNOWN',phase=0)
+        return current
+
+def _advance(current):
+    for kind,target in (('vod',2),('series',3)):
+        required=current.get('required76',{}).get(kind)
+        if required is None or current.get('phase',0)!=target-1:continue
+        receipts=current.get('ready76',{}).get(kind,{})
+        if any(pid not in receipts for pid in required):continue
+        current['phase']=target
+        if required:
+            if kind not in current['prepared']:
+                current['prepared'].append(kind)
+                trace('MOVIES_PREPARED' if kind=='vod' else 'SERIES_PREPARED',count=sum(receipts[p]['count'] for p in required))
+        else:trace('MOVIES_DISABLED' if kind=='vod' else 'SERIES_DISABLED',count=0)
+        if target==3:trace('REST_WARM_BEGIN',phase=3)
+
 
 def applicable():
     # Automatic warming must also be gated during the splash/startup window,
@@ -77,13 +96,27 @@ def focused_rows(portal,kind,rows):
     if selected:trace('FOCUS_OVERRIDE',count=1)
     return selected[:1]
 
-def prepared(kind,count):
-    """Data-worker acknowledgement; deliberately not a visible render ACK."""
+def prepared(kind,count,portal=None,rows=None):
+    """Admit only a verified published page, including an honest neutral fallback.
+
+    The old count-only call remains insufficient. Image/file validation happens
+    in the existing data worker, outside the short receipt lock.
+    """
+    from epg_handoff63 import profile_scope
     value=_read(KEY)
-    if kind not in ('vod','series') or not value:return
-    if kind not in value.get('prepared',[]):
-        value.setdefault('prepared',[]).append(kind);_window().setProperty(KEY,json.dumps(value))
-        trace('MOVIES_PREPARED' if kind=='vod' else 'SERIES_PREPARED',count=count)
+    if kind not in ('vod','series') or not portal or rows is None or value.get('profile')!=profile_scope():return False
+    from home_prepared76 import proof
+    checked=proof(portal,kind,rows)
+    if checked is None or checked['count']!=count:return False
+    with _lock:
+        current=_read(KEY)
+        if current.get('context')!=value.get('context') or current.get('profile')!=profile_scope():return False
+        pid=str(portal['id'])
+        if pid not in current.get('required76',{}).get(kind,[]):return False
+        current.setdefault('ready76',{}).setdefault(kind,{})[pid]=checked
+        _advance(current);_window().setProperty(KEY,json.dumps(current))
+    return True
+
 
 def observe():
     """UI-safe: read native selected item, geometry and rendered label controls.
@@ -117,16 +150,12 @@ def observe():
         trace('RENDER_CONTROL_MISSING');return
     window.setProperty('XCMate.Home75.RenderProbe',json.dumps(dict(geometry=geometry,rendered=rendered,x=x,y=y,width=width,height=height)))
     if not rendered or not geometry:return
-    current=_read(KEY);phase=current.get('phase',0)
-    if kind=='live' and phase==0:
-        # The panel always includes an honest unavailable-data label and a
-        # sender-bound logo/text fallback. An external image is never a gate.
-        target=1;stage='LIVE_HOME_READY'
-    elif kind=='vod' and phase==1 and 'vod' in current.get('prepared',[]):
-        target=2;stage='MOVIES_VISIBLE_READY'
-    elif kind=='series' and phase==2 and 'series' in current.get('prepared',[]):
-        target=3;stage='SERIES_VISIBLE_READY'
-    else:return
-    current['phase']=target;window.setProperty(KEY,json.dumps(current))
-    trace(stage,phase=target,elapsed_ms=int((time.monotonic()-current.get('at',time.monotonic()))*1000))
-    if target==3:trace('REST_WARM_BEGIN',phase=3)
+    with _lock:
+        current=_read(KEY)
+        if not current or current.get('profile')!=profile_scope():return
+        if kind=='live' and current.get('phase',0)==0:current['phase']=1
+        stage={'live':'LIVE_HOME_READY','vod':'MOVIES_VISIBLE_READY','series':'SERIES_VISIBLE_READY'}[kind]
+        if kind not in current.setdefault('visible',[]):
+            current['visible'].append(kind)
+            trace(stage,phase=current.get('phase',0),elapsed_ms=int((time.monotonic()-current.get('at',time.monotonic()))*1000))
+        _advance(current);window.setProperty(KEY,json.dumps(current))

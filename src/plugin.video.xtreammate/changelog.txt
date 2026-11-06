@@ -1,3 +1,8 @@
+0.1.29.76 (unveröffentlichter Testkandidat, Folgeauftrag zu #367)
+- Verifizierte Bild- oder neutrale Fallback-Vorbereitung gibt die nächste Hintergrundphase frei, ohne unsichtbare Leisten als gerendert zu melden.
+- Reihenfolge Live-TV → Filme → Serien bleibt erhalten; keine neue Warteschlange oder Änderung an Widgets, Routing, Player und Nutzerdaten.
+- Veraltete Veröffentlichungen erneut bereitstellen; leere bestätigte Kataloge und deaktivierte Bereiche blockieren die Folgephase nicht. Android-Abnahme ausstehend.
+
 0.1.29.75 (Pilot-Test, Issues #366 / #367 / #368)
 - Start-EPG: lokaler Now/Next-Checkpoint ohne vorherigen Senderstart; vorhandene Texte und Logos bei kurzen Lesefehlern erhalten.
 - Optionaler BINGIE-Adapter: großes Bild links, feste Informationstabelle rechts und eine aktive Sender-/Cover-Leiste; Vorschau, Sicherung und Zustimmung bleiben erforderlich.
