@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="script.gsmedia.setup" name="XCMate Media Center Installer" version="0.5.23" provider-name="XCMate">
+  <requires><import addon="xbmc.python" version="3.0.0"/></requires>
+  <extension point="xbmc.python.script" library="default.py"/>
+  <extension point="xbmc.service" library="service.py" start="startup"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="de_DE">XCMate Vollautomatische Mediencenter-Einrichtung für Kodi 21.3 Omega</summary>
+    <description lang="de_DE">Automatischer Installationskandidat für elf Pflichtprogramme und deren Abhängigkeiten. Nutzt Kodi-Repository-Installationen nach Zustimmung, gesichertes Fortschrittsjournal, BINGIE-2.2.3-Patch mit Original-Hashprüfung, Menüs/Widgets und TMDB-xVAULT-Player. Ungeprüfte Paketquellen und der automatische Abschluss bleiben bis zur echten Android-Abnahme gesperrt.</description>
+    <summary lang="en_GB">XCMate Setup: guided eleven-addon installation candidate</summary>
+    <description lang="en_GB">Guided 11-addon installation with secure Kodi-native dependency upgrade helpers, retry recovery, repository prompts, private progress journal, pinned BINGIE patch and TMDB player configuration. Full auto-completion is blocked until package provenance and Android device testing pass.</description>
+    <disclaimer lang="de_DE">Entwicklungskandidat. Installationen und Skinänderungen erfolgen nur nach expliziter Zustimmung auf einer neuen Kodi-Box. Android-Abnahme fehlt; auf produktiven Boxen nicht ausführen.</disclaimer>
+    <platform>all</platform>
+    <license>MIT (Wizard), GPL-2.0-only (bundled BINGIE source patch)</license>
+  </extension>
+</addon>
