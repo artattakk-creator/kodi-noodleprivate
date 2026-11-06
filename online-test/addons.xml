@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons><addon id="plugin.video.xtreammate"
        name="XCMate"
-       version="0.1.29.75"
+       version="0.1.29.76"
        provider-name="GS Media">
 
   <requires>
@@ -38,7 +38,7 @@
     <forum>https://forum.kodi.tv</forum>
     <website>https://kodi.tv</website>
     <source>https://github.com/artattakk-creator/kodi-noodleprivate</source>
-    <news>0.1.29.75 Pilot: lokales Start-EPG, feste Hero-Tabelle rechts und eine aktive Leiste; priorisierte Bildvorbereitung; Live-Stop-Diagnose. Zugangsdaten, EPG, Cover und Einstellungen bleiben erhalten. Android-Abnahme ausstehend.</news>
+    <news>0.1.29.76 Test: Filme und Serien nach verifizierter Bild-/Fallback-Vorbereitung automatisch im Hintergrund vorbereiten. Sichtbare Darstellung weiterhin separat nachweisen. Keine Änderung gespeicherter Einstellungen oder Widgets.</news>
     <assets>
       <icon>icon-81da1003a2753ec6.png</icon>
       <fanart>resources/media/lightweight_splash.jpg</fanart>

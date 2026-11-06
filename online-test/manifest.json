@@ -241,6 +241,18 @@
     "status": "PILOT_0526_MANDATORY_SPACE_BLUE_ANDROID_NOT_TESTED",
     "version": "0.5.26"
   },
+  "xcmate_02976": {
+    "addon": "plugin.video.xtreammate",
+    "android_test": "NOT_TESTED",
+    "bytes": 3426830,
+    "channel": "GS_MEDIA_PILOT_ONLY",
+    "files": 729,
+    "regular_channel_untouched": true,
+    "sha256": "c6b3813a6b2e9289251d3e14ea8425e0fe3fb35ee9a01dda457aa81a27e081cc",
+    "source": "docs/XCMate/test-builds/02976/plugin.video.xtreammate-0.1.29.76.zip",
+    "source_merge_pr": 370,
+    "version": "0.1.29.76"
+  },
   "xvault": {
     "android_test": "NOT_TESTED",
     "authoritative_plugin_feed": "https://xvault.repowork.de/addons.xml",
