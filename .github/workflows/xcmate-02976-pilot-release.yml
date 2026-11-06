@@ -1,0 +1,96 @@
+name: XCMate 0.1.29.76 Pilot-only release
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - tools/publish_xcmate_02976_pilot.py
+      - .github/workflows/xcmate-02976-pilot-release.yml
+  push:
+    branches: [main]
+    paths:
+      - tools/publish_xcmate_02976_pilot.py
+      - .github/workflows/xcmate-02976-pilot-release.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: xcmate-02976-pilot-publish
+  cancel-in-progress: false
+
+jobs:
+  verify-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Stage already verified 0.1.29.76 review ZIP into Pilot
+        run: python tools/publish_xcmate_02976_pilot.py
+
+      - name: Verify isolated Pilot update, ZIP, and Kodi index/MD5
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import subprocess
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+          p=Path("online-test")
+          v="0.1.29.76"
+          file=p/"plugin.video.xtreammate"/("plugin.video.xtreammate-"+v+".zip")
+          prior=p/"plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.75.zip"
+          assert file.is_file() and prior.is_file()
+          content=file.read_bytes()
+          sha="c6b3813a6b2e9289251d3e14ea8425e0fe3fb35ee9a01dda457aa81a27e081cc"
+          assert len(content)==3426830 and hashlib.sha256(content).hexdigest()==sha
+          assert (file.with_suffix(".zip.sha256").read_text().split()[0])==sha
+          pilot=(p/"addons.xml").read_bytes()
+          entries={a.get("id"):a for a in ET.fromstring(pilot).findall("addon")}
+          assert entries["plugin.video.xtreammate"].get("version")==v
+          assert (p/"addons.xml.md5").read_text().strip()==hashlib.md5(pilot).hexdigest()
+          root=Path("addons.xml").read_bytes()
+          regular={a.get("id"):a for a in ET.fromstring(root).findall("addon")}
+          assert regular["plugin.video.xtreammate"].get("version")=="0.1.29.74"
+          assert Path("addons.xml.md5").read_text().strip()==hashlib.md5(root).hexdigest()
+          assert json.loads((p/"manifest.json").read_text())["xcmate_02976"]["android_test"]=="NOT_TESTED"
+          assert "plugin.video.xtreammate-0.1.29.76.zip" in (p/"index.html").read_text()
+          permitted={
+            "online-test/addons.xml",
+            "online-test/addons.xml.md5",
+            "online-test/manifest.json",
+            "online-test/index.html",
+            "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.76.zip",
+            "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.76.zip.sha256",
+          }
+          changes=set(subprocess.check_output(
+            ["git","status","--porcelain","--untracked-files=all"],text=True
+          ).splitlines())
+          found={line[3:] for line in changes}
+          if not found.issubset(permitted):
+              raise AssertionError("UNRELATED_FILES_CHANGED: "+repr(found-permitted))
+          print("XCMATE_02976_PILOT_ONLY_VERIFIED",sha)
+          PY
+
+      - name: Commit Pilot-only release after merge to main
+        if: github.event_name == 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- \
+            online-test/addons.xml \
+            online-test/addons.xml.md5 \
+            online-test/manifest.json \
+            online-test/index.html \
+            online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.76.zip \
+            online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.76.zip.sha256
+          if ! git diff --cached --quiet; then
+            git commit -m "release(XCMate): publish 0.1.29.76 to Pilot only; leave regular .74"
+            git push origin HEAD:main
+          fi
