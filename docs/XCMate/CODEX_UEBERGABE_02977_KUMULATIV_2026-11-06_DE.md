@@ -1,5 +1,8 @@
 # Codex-Übergabe – XCMate 0.1.29.77 (kumulatives P0-Update)
 
+> **VERBINDLICHER LETZTER NUTZERSTAND – 06.11.2026, nach Installation von .76:** XCMate **0.1.29.76 läuft bereits auf der Android-Testbox**, die Sendungsbilder fehlen weiterhin. **BILDER = ANDROID_FAIL**, die vorherige Anweisung, mit .77 bis zum Gerätetest der .76 zu warten, ist **AUFGEHOBEN**. XCMate **0.1.29.77 jetzt implementieren**, kumulativ auf .76, Bildpipeline zuerst, Serien-Exit und BINGIE-Hero gleichrangig P0. Neuer maßgeblicher [Codex-Startblock für .77](./CODEX_START_02977_BILDER_FIRST_2026-11-06_DE.md). Alte unten stehende Hinweise zu „.77 ausgesetzt“ sind **historisch überholt**. Installer 0.5.26 und TMDB-Token unverändert; .77 zunächst Pilot, reguläre Freigabe separat.
+
+
 > **AKTUELLE FREIGABE (06.11.2026) – ERSETZT DIE OBEN BZW. UNTEN STEHENDEN PILOT-ONLY-VORGABEN FÜR .76:** Der Nutzer hat XCMate **0.1.29.76 ausdrücklich auf ALLEN Installationszugängen** freigegeben. Veröffentlicht über [PR #382](https://github.com/artattakk-creator/kodi-noodleprivate/pull/382), Release-Commit `b0b43a254cde7c07e2bc20310d587891484191c8`. Reguläres GS Media `addons.xml` = .76; GS Media Pilot `online-test/addons.xml` = .76; NeoDark3-Direkt-ZIP = .76. Alle ZIPs sind identisch (SHA256 `c6b3813a6b2e9289251d3e14ea8425e0fe3fb35ee9a01dda457aa81a27e081cc`). **ANDROID_NOT_TESTED**, keine Behauptung bestandener Geräteabnahme. Zuerst .75→.76 auf der Android-Box testen; 0.1.29.77 **ausgesetzt** bis zur Auswertung. GS Media Installer 0.5.26 und TMDB-Token unverändert lassen.
 
 
