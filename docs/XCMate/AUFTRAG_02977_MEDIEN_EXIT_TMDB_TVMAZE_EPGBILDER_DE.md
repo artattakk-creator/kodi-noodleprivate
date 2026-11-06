@@ -1,4 +1,7 @@
 # XCMate 0.1.29.77 – Verbindlicher Änderungsauftrag
+
+> **NEUE NUTZERENTSCHEIDUNG (06.11.2026) – GILT VOR ALLEN .77-ANWEISUNGEN IN DIESEM DOKUMENT:** Erst XCMate **0.1.29.76 auf Android testen**. Der Quellcode wurde bereits in [PR #370](https://github.com/artattakk-creator/kodi-noodleprivate/pull/370) nach main gemergt; das unveränderte geprüfte ZIP ist nach [Release-PR #381](https://github.com/artattakk-creator/kodi-noodleprivate/pull/381) **jetzt im GS Media Pilot** veröffentlicht ([Download .76](https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.76.zip), SHA256 `c6b3813a6b2e9289251d3e14ea8425e0fe3fb35ee9a01dda457aa81a27e081cc`). **Die zuvor dokumentierte direkte .75→.77-Installation und die unmittelbare .77-Umsetzung sind ausdrücklich AUSGESETZT, nicht mehr zur Ausführung freigegeben.** Zuerst .75→.76 auf der Testbox installieren und die dort verbleibenden Fehler erfassen; danach den Umfang einer möglichen .77 neu festlegen. Regulärer Kanal unverändert .74; Installer 0.5.26 weiterhin eingefroren. Android-.76-Abnahme steht aus.
+
 Datum: 06.11.2026 · Status: **AUFTRAG ERFASST / NOCH NICHT IMPLEMENTIERT**
 
 **Masterticket:** [GitHub #380](https://github.com/artattakk-creator/kodi-noodleprivate/issues/380)
