@@ -194,22 +194,38 @@ def next_step(state, inventory):
         ident, repo, minimum = row["id"], row["repo"], row["minimum"]
         if installed(inventory, ident, minimum):
             continue
-        # Native Kodi one-step original BINGIE install. Even though the
-        # Helper original is mirrored in the xcMate pilot, the approved
-        # BINGIE Repository must first be bootstrapped alongside it. It is
-        # intentionally not a counted component of the 48-item dependency
-        # manifest; preserve the original approved repository check.
-        if ident == "script.bingie.helper" and not installed(
-                inventory, "repository.titan.bingie.mod", "2.0.1"):
+        # .22: The former one-step BINGIE parent requested BOTH the repository
+        # and Helper in a single unrelated pilot-origin dependency tree.
+        # Kodi Omega resolves third-party dependencies via the parent's origin,
+        # which fails in this mixed-repository layout. Install the ORIGINAL
+        # repository itself first, confirm it enabled and >=2.0.1, then verify
+        # the official simplejson module BEFORE requesting the Helper.
+        if ident == "script.bingie.helper":
             if not installed(inventory, TEST_CHANNEL):
                 return {"code": "SOURCE_BLOCKED", "id": ident,
                         "reason": "PILOT_CATALOG_NOT_INSTALLED"}
-            if "repository.titan.bingie.mod" in state["attempted"]:
-                return {"code": "RETRY_REQUIRED",
-                        "id": "repository.titan.bingie.mod"}
-            return {"code": "INSTALL_REPOSITORY",
-                    "id": "repository.titan.bingie.mod",
-                    "source": "GS_MEDIA_APPROVED_TEST_CATALOG"}
+            from setup_install_pilot import _version
+            oldrepo = inventory.get("addons", {}).get(
+                "repository.titan.bingie.mod", {})
+            if isinstance(oldrepo, dict) and oldrepo.get("version"):
+                if _version(oldrepo["version"]) < (2, 0, 1):
+                    return {"code": "SOURCE_BLOCKED", "id": ident,
+                            "reason": "BINGIE_REPOSITORY_TOO_OLD"}
+                if oldrepo.get("enabled") is False:
+                    return {"code": "ENABLE_ADDON",
+                            "id": "repository.titan.bingie.mod",
+                            "minimum": "2.0.1"}
+            if not installed(inventory, "repository.titan.bingie.mod", "2.0.1"):
+                if "repository.titan.bingie.mod" in state["attempted"]:
+                    return {"code": "RETRY_REQUIRED",
+                            "id": "repository.titan.bingie.mod"}
+                return {"code": "INSTALL_REPOSITORY",
+                        "id": "repository.titan.bingie.mod",
+                        "minimum": "2.0.1",
+                        "source": "GS_MEDIA_APPROVED_TEST_CATALOG"}
+            if not installed(inventory, "script.module.simplejson", "3.17.0"):
+                return {"code": "SOURCE_BLOCKED", "id": ident,
+                        "reason": "SIMPLEJSON_3_17_OFFICIAL_NOT_VERIFIED"}
         if repo in ("ZIP_REQUIRES_PROVENANCE", "EXTERNAL_REPOSITORY"):
             return {"code": "SOURCE_BLOCKED", "id": ident,
                     "reason": "ORIGIN_UNVERIFIED", "source": row.get("notes", "")}
