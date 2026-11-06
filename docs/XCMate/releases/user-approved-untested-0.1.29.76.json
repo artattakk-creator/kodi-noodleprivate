@@ -1,0 +1,15 @@
+{
+  "addon_id": "plugin.video.xtreammate",
+  "version": "0.1.29.76",
+  "user_approved_regular_release": true,
+  "user_approved_all_channels": true,
+  "android_status": "NOT_TESTED",
+  "approval_kind": "explicit_user_request_in_chat_2026-11-06",
+  "reason": "User explicitly requested publishing the previously merged and Pilot-tested XCMate 0.1.29.76 to all repositories, including GS Media main, before testing remaining .77 repairs.",
+  "source_pr": 370,
+  "pilot_release_pr": 381,
+  "sha256": "c6b3813a6b2e9289251d3e14ea8425e0fe3fb35ee9a01dda457aa81a27e081cc",
+  "exception_applies_only_to_version": "0.1.29.76",
+  "android_pass_claimed": false,
+  "installer_0_5_26_unchanged": true
+}
