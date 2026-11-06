@@ -175,7 +175,7 @@ def run():
                       "Bestehende Daten bleiben unverändert.")
             return
         if not dialog.yesno(
-            "XCMate – Vollautomatische Einrichtung 0.5.19",
+            "XCMate – Vollautomatische Einrichtung 0.5.22",
             "Gesamte Kodi-Ersteinrichtung jetzt starten? Alle geprüften "
             "Repositories, 48 Komponenten und Abhängigkeiten werden "
             "nacheinander ohne zusätzliche Wizard-Abfragen installiert. "
@@ -216,7 +216,7 @@ def run():
     window.setProperty("GS_MEDIA_050_RUNNING", "1")
     window.clearProperty("GS_MEDIA_050_CANCEL")
     progress = xbmcgui.DialogProgressBG()
-    progress.create("XCMate Media Center Setup – v0.5.15 – Kodi 21.3 Omega", "Systemprüfung")
+    progress.create("XCMate Media Center Setup – v0.5.22 – Kodi 21.3 Omega", "Systemprüfung")
     monitor = xbmc.Monitor()
     reason = ""
     try:
@@ -249,7 +249,7 @@ def run():
                     state = _persist(profile, stop(state, reason))
                     break
                 refreshed = snapshot()
-                minimum = next((row["minimum"] for row in rows()
+                minimum = step.get("minimum") or next((row["minimum"] for row in rows()
                                 if row["id"] == ident), "")
                 from setup_auto50 import installed as verified
                 if not verified(refreshed, ident, minimum):
@@ -307,14 +307,12 @@ def run():
                         # first uses Kodi's original same-repository resolver.
                         # No original SlyGuy binaries are redistributed.
                         install_id = "script.module.slyguy"
-                    # One Kodi-managed parent install resolves BOTH exact,
-                    # original BINGIE packages through its immutable requires:
-                    # repo 2.0.1 + helper 1.1.2. Neither addon is manually
-                    # installed from a separate source or by an Android APK.
-                    if (code == "INSTALL_REPOSITORY" and
-                            ident == "repository.titan.bingie.mod" and
-                            step.get("source") == "GS_MEDIA_APPROVED_TEST_CATALOG"):
-                        install_id = "script.gsmedia.bingie.bootstrap"
+                    # .22: native Kodi install of the ORIGINAL repository as
+                    # its own package. Never request the legacy pilot-origin
+                    # script.gsmedia.bingie.bootstrap (dual dependency tree).
+                    # After Kodi confirms it, the Helper is a SEPARATE step.
+                    if ident == "repository.titan.bingie.mod":
+                        _diag("BINGIE_ORIGINAL_REPOSITORY_STAGED", install_id)
                 # Kodi 21 GetAddons(installed=true) confirms finished installs;
                 # its distinct GetAddons(installed=false) checks the async repo
                 # catalog. UpdateAddonRepos queues a refresh; it does not wait
@@ -346,6 +344,18 @@ def run():
                         break
                     visible = probe_kodi_catalog(xbmc.executeJSONRPC, install_id)
                     missing_catalog_id = install_id
+                    # The global Kodi catalog may expose an older version.
+                    # Fail closed before any request rather than claim PASS.
+                    expected = (step.get("minimum", "") or
+                                ("2.0.1" if ident == "repository.titan.bingie.mod"
+                                 else "1.1.2" if ident == "script.bingie.helper"
+                                 else ""))
+                    if (visible["code"] == "AVAILABLE" and expected and
+                            _version(visible.get("version", "")) < _version(expected)):
+                        reason = "KODI_CATALOG_VERSION_TOO_OLD:" + ident
+                        _diag("CATALOG_VERSION_TOO_OLD", ident,
+                              visible.get("version", ""))
+                        break
                     if visible["code"] == "AVAILABLE" and native_slyguy_origin_parent:
                         dependency = probe_kodi_catalog(
                             xbmc.executeJSONRPC, "slyguy.dependencies")
