@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons><addon id="plugin.video.xtreammate"
        name="XCMate"
-       version="0.1.29.76"
+       version="0.1.29.77"
        provider-name="GS Media">
 
   <requires>
@@ -38,7 +38,7 @@
     <forum>https://forum.kodi.tv</forum>
     <website>https://kodi.tv</website>
     <source>https://github.com/artattakk-creator/kodi-noodleprivate</source>
-    <news>0.1.29.76 Test: Filme und Serien nach verifizierter Bild-/Fallback-Vorbereitung automatisch im Hintergrund vorbereiten. Sichtbare Darstellung weiterhin separat nachweisen. Keine Änderung gespeicherter Einstellungen oder Widgets.</news>
+    <news>0.1.29.77 Pilot: automatische EPG-Bildquellen mit vorhandenem Token, vollständige Bildprüfung und Cache-Erneuerung; Serien-/Film-Exit mit nativer ACK-Barriere; Space-Blue-kompatible Home-Vorschau. Token, Passwörter, EPG und Einstellungen bleiben erhalten. Sichtbare Android-Bild-/Exit-Abnahme noch offen.</news>
     <assets>
       <icon>icon-81da1003a2753ec6.png</icon>
       <fanart>resources/media/lightweight_splash.jpg</fanart>
