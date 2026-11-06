@@ -58,3 +58,30 @@ Der Nutzer meldet am 06.11.2026 erneut einen Freeze beim **Verlassen einer Serie
 - [Hero/Fokus/EPG #367](https://github.com/artattakk-creator/kodi-noodleprivate/issues/367)
 - [Live-TV-Stop/ACK #368](https://github.com/artattakk-creator/kodi-noodleprivate/issues/368)
 - [XCMate .76 PR #370](https://github.com/artattakk-creator/kodi-noodleprivate/pull/370)
+
+
+## Lognachtrag 06.11.2026 – private Android-Abnahme (XCMate 0.1.29.75)
+
+Diese Ergänzung basiert auf zwei **privat übermittelten**, vollständig ausgewerteten Kodi-Dateien mit insgesamt 53.655 Zeilen: erster Start 17:51:53–21:27:45 und zweiter Start 21:28:07–21:30:12. Die Rohdateien enthalten vertrauliche Geräte-/Netzwerk-/Providerinformationen und dürfen **nicht** auf GitHub gespeichert werden. Es werden nur anonymisierte Prozessmeldungen und Aggregatzahlen dokumentiert. Der öffentliche, detailliertere sanitizierte Logbefund steht als Kommentar in Master-Issue #380.
+
+### A. Serien-Exit / Player-Stop konkret belegt
+
+**21:24:34.287** \`[PLAYER_EXIT] EXIT_INTENT reason=USER_BACK kind=media\`. **21:24:34.574** Fortschrittssnapshot \`DONE\`; **21:24:34.576** \`PLAYER_STOP_START\`; **21:24:34.762** \`VideoPlayer: waiting for threads to exit\`. Kodi meldet anschließend das Ende der Audio- und Video-Threads, aber **nicht** \`VideoPlayer: finished waiting\` und XCMate nicht \`PLAYER_STOP_DONE\`. 21:27 Socket-/JSON-RPC-Serverfehler, neuer Kodi-Start ab 21:28. Dies stützt den gemeldeten Freeze beim Medien-/Serien-Exit; **genaue Native-Thread-Ursache bleibt unbewiesen**. Am selben Abend **21:10:25** war ein Live-TV-Stop via \`STOP75 ACK\` in ca. 2.029 ms nachweislich erfolgreich. Codex: Media- und Live-Routen getrennt untersuchen; kein Stop-ACK-PASS allein aufgrund endender Decoderthreads.
+
+### B. EPG und Bildquellen
+
+Im langen Log **18.145** \`EPG63 DB_READ\`-Einträge: **16.935** \`EPG_DATA_MISSING\`, **729** \`READY\`, **444** \`EPG_CACHE_UNAVAILABLE\`, **37** \`EPG_DB_BUDGET\`. Überwiegend Provider-ID-Mapping ohne Daten, einige Stream-Alias-Einträge dagegen \`READY\`. Das sind wiederholte Abfragen, nicht 16.935 individuelle Programme. Klärung von Quellabdeckung, Sender-Matching, DB-Budgets und 24-h-Cachevorgaben ist P0.
+
+\`PROGRAMME68\`: **636** \`BLOCKED_IMAGE_HOST_OR_URL\`, **1.064** \`AWAITING_BACKGROUND_REFRESH\`, **79** \`FETCH_FAILED\` und nur **22** \`IMAGE_URL_READY\`. \`ART70\`: **57** \`NO_CONFIRMED_IMAGE\`, **1** \`FOUND\`. Der beobachtete 24er-Filmwidget-Lauf enthält **24 Platzhalter**, 0 lokale bzw. gematchte Bilder. Bereits im kurzen neuen Log stehen weitere \`EPG_CACHE_UNAVAILABLE\` und blockierte Bild-URLs. Sichere URL-Akzeptanz *gezielt* reparieren, nicht alle Hosts freigeben, und erfolgreiche Referenzen bis zum sichtbaren Kodi-Texture-Control verfolgen.
+
+### C. BINGIE Home / Kodi-Datenbank
+
+\`HOME75 RENDER_CONTROL_MISSING\` **24×**, \`FOCUS_OVERRIDE\` **3×**: Vorhandensein/Aktivierung der spezifischen XCMate-Hero-Skin-Controls samt 1080p-Geometrie und Fokusrahmen prüfen. Ein installiertes Space-Blue-Manager-Add-on ist kein Nachweis für einen aktiven XCMate-Home-Patch.
+
+Kodi \`MyVideos131.db: no such table: movie_view\` **20×** im langen und **8×** im kurzen Log. Datenbankschema/Views als unabhängige Kodi-Fehlerquelle untersuchen; **kein destruktives DB-Löschen** ohne Datensicherung und Ursachenprüfung.
+
+### D. Versions- und Bestandsbeleg
+
+Beide Kodi-Starts melden **\`plugin.video.xtreammate 0.1.29.75\`** sowie **\`skin.titan.bingie.mod 2.2.3\`**. Der Brand-Manager 0.2.0 ist installiert, die Patch-Aktivität selbst dadurch nicht nachgewiesen. Der Installer ist im historischen ersten Start als 0.5.21 und im zweiten als 0.5.22 verzeichnet; diese Logdateien sind **kein Gerätebeleg für .5.26**, ändern aber nicht dessen vereinbarten Freeze. Ein TMDB-Tokenwert/-Pfad ist aus den Logs **nicht zu veröffentlichen oder zu ersetzen**; die bloße Add-on-Liste beweist weder Tokenintegrität noch Lookup-Aktivierung.
+
+**Abnahme bleibt OFFEN**: .77 nicht gebaut/veröffentlicht; Kodi-21.3-Android-RK3528-Test für Media-Exit, Now/Next/EPG, ein echtes korrektes Hero-/Programmbild und stablilen Fokus verpflichtend.
