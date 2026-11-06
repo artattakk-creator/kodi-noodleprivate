@@ -31,6 +31,10 @@ Der erste große HTTP-Katalogtest scheiterte in SQLite mit `database or disk is 
 
 Nachweise: [ursprünglicher Gesamtlauf](test-builds/02976/host-initial.log), [HTTP-Wiederholung](test-builds/02976/http-writable-temp.log), [Legacy-Wiederholung](test-builds/02976/legacy-recheck.log), [neue Tests](test-builds/02976/new.log), [Branding](test-builds/02976/pytest.log). Maßgeblich für den frischen Gesamt-CI-Lauf sind die Checks und der abschließende Testkommentar des Draft-PRs; [Actions des Entwicklungsbranches](https://github.com/artattakk-creator/kodi-noodleprivate/actions?query=branch%3Afix%2Fxcmate-02976-prepared-home-gates).
 
+## Prüfung des CI-Buildablaufs
+
+Der neue Schutztest verwendet für die regulären Katalogdateien die eingecheckten `HEAD`-Bytes, ebenso wie der bestehende .75-Schutztest. Der CI-Paketbuilder erzeugt vorübergehend einen neuen regulären Index zur Paketvalidierung; dieser wird dadurch nicht mit einer Veröffentlichung verwechselt. Pilot-Dateien und veröffentlichte .75-Pakete werden weiterhin zusätzlich auf dem Dateisystem bytegenau geprüft. Alle 19 neuen Tests sowie eine gezielte Wiederholung mit künstlich verändertem temporärem Buildindex bestehen. Produktcode und ZIP bleiben dabei unverändert.
+
 ## Paket und Grenzen
 
 [ZIP](test-builds/02976/plugin.video.xtreammate-0.1.29.76.zip): 3.426.830 Bytes, 729 Dateien, CRC und Dateivergleich mit Quellstand PASS. [SHA256-Datei](test-builds/02976/plugin.video.xtreammate-0.1.29.76.zip.sha256):

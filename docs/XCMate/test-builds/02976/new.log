@@ -19,6 +19,6 @@ test_all_published_source_files_retained_with_exact_reviewed_delta (test_xcmate_
 test_both_published_channels_and_pilot_package_unchanged (test_xcmate_scope_02976.Scope76.test_both_published_channels_and_pilot_package_unchanged) ... ok
 
 ----------------------------------------------------------------------
-Ran 19 tests in 1.580s
+Ran 19 tests in 1.298s
 
 OK
