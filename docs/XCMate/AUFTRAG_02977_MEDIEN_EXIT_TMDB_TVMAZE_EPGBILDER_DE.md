@@ -3,6 +3,9 @@ Datum: 06.11.2026 · Status: **AUFTRAG ERFASST / NOCH NICHT IMPLEMENTIERT**
 
 **Masterticket:** [GitHub #380](https://github.com/artattakk-creator/kodi-noodleprivate/issues/380)
 
+**Neuer verbindlicher Codex-Einstieg:** [CODEX_UEBERGABE_02977_KUMULATIV_2026-11-06_DE.md](./CODEX_UEBERGABE_02977_KUMULATIV_2026-11-06_DE.md). Die reale Android-Box hat laut Log XCMate **0.1.29.75**, während die bereits nach \`main\` gemergte Codebasis **0.1.29.76** ist. **Codex muss alle .76-Änderungen kumulativ in .77 übernehmen; .76 wird NICHT separat auf Kodi installiert.** Neues Pilot-ZIP \`0.1.29.77\` zunächst ausschließlich im Testkanal; regulärer Kanal .74 bis zur ausdrücklichen Freigabe unverändert. Source-Merge nach grünem CI erwünscht. Bestehenden TMDB-Token nicht verändern. Installer 0.5.26 bleibt eingefroren.
+
+
 ## Nutzerentscheidung
 
 Die Installationsroutine **GS Media Installer 0.5.26 ist erfolgreich durchgelaufen und wird eingefroren**. Alle Folgearbeiten betreffen ausschließlich `plugin.video.xtreammate` (XCMate), kumulativ auf Source-Version `0.1.29.76`. Kodi-Profile, vorhandene Sender-/EPG-/Widget-Einstellungen, SkinShortcuts, Space Blue und der bestehende TMDB-Read-Access-Token sind vollständig zu schützen.
