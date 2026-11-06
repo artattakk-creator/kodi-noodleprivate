@@ -140,7 +140,8 @@ def observe():
     if absolute>0:value['left']=max(0,absolute-1-pos)
     window.setProperty(FOCUS,json.dumps(value))
     try:
-        image=window.getControl(296751);title=window.getControl(296752 if kind=='live' else 296754)
+        from home_runtime77 import control
+        image=control(window,296751);title=control(window,296752 if kind=='live' else 296754)
         x,y=image.getPosition();width=image.getWidth();height=image.getHeight()
         title_id=296752 if kind=='live' else 296754
         rendered=bool(xbmc.getInfoLabel('Control.GetLabel('+str(title_id)+')')) and xbmc.getCondVisibility('Control.IsVisible('+str(title_id)+')')

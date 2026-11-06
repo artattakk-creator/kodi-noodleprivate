@@ -9,7 +9,7 @@ PREFIX='XCMate.Programme68.'
 SLOTS=64
 MAX_BYTES=8192
 _FIELDS=('pid','sid','start','stop','title','canonical','revision','source_key46','fact_revision46','epg_source46')
-_ART=('key','fingerprint','code','source','match','image','thumbnail','sha256','attribution','image_scope57','until','failure_reason68','storage68','source_url','url_version55','url_verified69','scope69','profile69','persisted69','storage69','storage_code69','policy69','resolved_at55','sources70','lookup70','origin_policy75')
+_ART=('key','fingerprint','code','source','match','image','thumbnail','sha256','attribution','image_scope57','until','failure_reason68','storage68','source_url','url_version55','url_verified69','scope69','profile69','persisted69','storage69','storage_code69','policy69','resolved_at55','sources70','lookup70','origin_policy75','decoded77','image_width77','image_height77')
 _lock=threading.Lock()
 _thread=None
 _stop=threading.Event()
@@ -116,6 +116,9 @@ def completed(event,value):
   code='LOCAL_IMAGE_READY' if os.path.isabs(value.get('image','')) and not value.get('url_version55') else 'IMAGE_URL_READY_RAM' if value.get('storage69')=='RAM_ONLY' else 'IMAGE_URL_READY'
  elif code=='PROGRAMME_DATA_BUDGET':code='DB_FULL'
  elif code=='DISK_FULL' and value.get('failure_reason68')=='RESERVE_BLOCKED':code='RESERVE_BLOCKED'
+ if code in ('LOCAL_IMAGE_READY','IMAGE_URL_READY_RAM','IMAGE_URL_READY'):
+  from programme_pipeline77 import note
+  note(event,'LOCAL_CACHE','LOCAL_READY' if code=='LOCAL_IMAGE_READY' else 'RAM_ONLY' if code=='IMAGE_URL_READY_RAM' else 'PERSISTED')
  status(event,code,value)
 
 def mark_seen(tag,policy,now):
@@ -143,7 +146,9 @@ def drain(cancel=lambda:False):
     artifact69=previous69.get('art') or {}
     from programme_policy68 import negative_scope
     from programme_status70 import retry as retry70,valid as valid70
-    if valid70(previous69) and artifact69.get('until',0)>time.time() and artifact69.get('policy69')==negative_scope({}) and not retry70(event,artifact69) and not __import__('programme_status70').legacy_negative(artifact69):continue
+    positive77=artifact69.get('source') not in (None,'','placeholder')
+    ready77=not positive77 or __import__('programme_image69').eligible(artifact69,event)
+    if ready77 and valid70(previous69) and artifact69.get('until',0)>time.time() and artifact69.get('policy69')==negative_scope({}) and not retry70(event,artifact69) and not __import__('programme_status70').legacy_negative(artifact69):continue
     if previous69.get('code') in ('QUEUED','RUNNING') and 0<=time.time()-previous69.get('at',0)<60:
      if value.get('priority') and previous69.get('code')=='QUEUED':
       from programme_urls55 import promote_focus75
@@ -205,6 +210,8 @@ def _run():
    if suspended() or runtime.pressure():
     if monitor.waitForAbort(.5):break
     continue
+   from programme_consent77 import ensure
+   ensure()
    from live_warm68 import prepare
    prepare(lambda:_stop.is_set() or monitor.abortRequested())
    drain(lambda:_stop.is_set() or monitor.abortRequested())

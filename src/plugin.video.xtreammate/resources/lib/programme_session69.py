@@ -17,6 +17,9 @@ def get(event):
   item=_values.get(k)
   value=item['value'] if item else _outcomes.get(k,{}).get('value')
   if not value or value.get('until',0)<=time.time():return None
+  if value.get('source') not in (None,'','placeholder'):
+   from programme_image69 import eligible
+   if not eligible(value,event):return None
   if item:_values.move_to_end(k)
   else:
    from epg_handoff63 import profile_scope

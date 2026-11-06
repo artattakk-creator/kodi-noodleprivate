@@ -4992,3 +4992,7 @@ msgstr "Der Helper ist optional. Dieser Test ändert keine Einstellungen und gar
 msgctxt "#38106"
 msgid "Active programme image lookup: {0}"
 msgstr "Aktiver Sendungsbildabruf: {0}"
+
+msgctxt "#38200"
+msgid "Picture sources: provider/XMLTV first; TVMaze series fallback and TMDB with an existing valid token. Disable anytime in EPG picture-source settings."
+msgstr "Bildquellen: Provider/XMLTV zuerst; TVMaze-Serienfallback und TMDB mit vorhandenem gültigem Token. Im EPG-Bildquellenstatus jederzeit deaktivierbar."

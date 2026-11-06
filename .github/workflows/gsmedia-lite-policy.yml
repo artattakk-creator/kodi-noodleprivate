@@ -53,7 +53,7 @@ jobs:
           assert ids == allowed, ids
           index = ET.parse('addons.xml').getroot()
           listed = {x.get('id') for x in index.findall('addon')}
-          # main 2e9e81c explicitly published Installer 0.5.21. Its source
+          # Approved main 2710431 already publishes frozen Installer 0.5.26. Its source
           # remains separate from this Lite source tree; accept only the exact
           # already approved binary, never arbitrary additional add-ons.
           published = allowed | {'script.gsmedia.setup'}
@@ -61,7 +61,7 @@ jobs:
           installer = index.find("addon[@id='script.gsmedia.setup']")
           if installer is not None:
               import hashlib
-              assert installer.get('version') == '0.5.21', installer.attrib
-              package = Path('script.gsmedia.setup/script.gsmedia.setup-0.5.21.zip')
-              assert hashlib.sha256(package.read_bytes()).hexdigest() == '3a5650a8882c865c4dcc8f813bea53d1daa61861e3518a392aaa4181c08c746e'
+              assert installer.get('version') == '0.5.26', installer.attrib
+              package = Path('script.gsmedia.setup/script.gsmedia.setup-0.5.26.zip')
+              assert hashlib.sha256(package.read_bytes()).hexdigest() == '5aa5d101a57adda5dbb1f5d05319da1ec185676dc784817b25dea267322ae0af'
           PY

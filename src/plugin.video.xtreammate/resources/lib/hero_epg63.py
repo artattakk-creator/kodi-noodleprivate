@@ -79,7 +79,7 @@ def poll():
     prefix='XCMate.Hero63.'+bank+'.'
     # Kodi21 GetInt does not support Window.Property info labels. Send a
     # numeric message to the inactive own progress control before bank commit.
-    try:window.getControl(296301 if bank=='A' else 296302).setPercent(float(values['Percent']))
+    try:__import__('home_runtime77').control(window,296301 if bank=='A' else 296302).setPercent(float(values['Percent']))
     except (AttributeError,RuntimeError,ValueError):
         # A missing optional progress control must not discard an otherwise
         # coherent text/image bank. The skin may use a property-based fallback.
@@ -88,6 +88,8 @@ def poll():
     for name,value in values.items():window.setProperty(prefix+name,str(value))
     window.setProperty(prefix+'Profile',scope)
     window.setProperty(prefix+'Identity',token)
+    from home_runtime77 import publish as render77
+    render77(window,dict(intent68,key=event_key) if intent68 else None,values['Image'])
     window.setProperty('XCMate.Hero63.Active',bank)
     _last=signature
     if changed or previous is None or previous[1][0]!=signature[1][0]:

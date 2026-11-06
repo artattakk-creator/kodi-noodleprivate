@@ -180,6 +180,10 @@ def now_next(pid,channels,mappings,now=None,client=None,display_only65=False):
         prepared74={channel_keys(c,mappings)[0]:warm63(pid,channel_keys(c,mappings)[0],now=ts,mappings=mappings) for c in channels[:16]}
         if prepared74 and all(v and 0<=time.time()-v.get('_published_at63',0)<15 for v in prepared74.values()) and revision63(pid)==revision_before63:
             return prepared74
+    from epg_poll77 import key as poll_key77,read as poll_read77,remember as poll_remember77
+    cache_key77=poll_key77(pid,channels,mappings,display_only65)
+    cached77=poll_read77(cache_key77,ts)
+    if cached77 is not None:return cached77
     started63=time.perf_counter()
     cache=window(pid,channels,mappings,ts,ts+2*86400,**({'text_only65':True} if display_only65 else {}))
     if cache is None:
@@ -208,6 +212,8 @@ def now_next(pid,channels,mappings,now=None,client=None,display_only65=False):
         if getattr(cache,'code','')!='RAM_LASTGOOD67':remember63(pid,channel,result[sid],mappings,expected_revision=revision_before63)
         code63=('READY' if info.get('now') else 'EPG_CACHE_UNAVAILABLE' if cache is None else 'EPG_MAPPING_MISSING' if info.get('reason')=='MANUAL_ID_MISSING' else 'EPG_DATA_MISSING')
         note63('DB_READ',pid,sid,code63,db_ms63,facts=info)
+    if revision63(pid)==revision_before63 and poll_key77(pid,channels,mappings,display_only65)==cache_key77:
+        poll_remember77(cache_key77,result,ts)
     return result
 
 

@@ -12,12 +12,15 @@ ACK='XCMate.NativeStopAck41'
 def post(token):
     import xbmc,xbmcgui
     from playback_exit import identity,_same
-    if token[0]!='live' or not _same(identity(xbmc.Player()),token):return False
+    if token[0] not in ('live','media') or not _same(identity(xbmc.Player()),token):return False
     import exit_jobs
     with exit_jobs._lock:
         value=exit_jobs.state()
         if not value or value['phase']!='running' or not _same(tuple(value['token']),token):return False
-        from live_stop42 import can_post
+        if token[0]=='media':
+            from media_stop77 import can_post
+        else:
+            from live_stop42 import can_post
         if not can_post(value,token):return False
         nonce=uuid.uuid4().hex
         value['native_ack']=nonce;value['native_posted']=True
@@ -42,6 +45,9 @@ def finish(value):
     """Main queue returned; clear only the completed own announcement."""
     import xbmcgui
     from playback_exit import _session
+    if value['token'][0]=='media':
+        from media_stop77 import finish as media_finish
+        return media_finish(value)
     marker=xbmcgui.Window(10000);key='XtreamMate.LiveSession'
     current=_session(marker.getProperty(key))
     if current and current['nonce']==value['token'][1]['nonce']:marker.clearProperty(key)

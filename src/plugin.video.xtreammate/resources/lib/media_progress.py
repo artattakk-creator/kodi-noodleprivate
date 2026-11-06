@@ -118,7 +118,7 @@ def poll(player=None,now=None):
     _retry_exit_checkpoint(time.monotonic() if now is None else now)
     from exit_jobs import state as exit_state
     pending=exit_state()
-    if pending and pending['phase'] in ('pending','running'):return
+    if pending and (pending['phase'] in ('pending','running') or __import__('exit_jobs').blocked()):return
     now=time.monotonic() if now is None else now
     player=player or xbmc.Player()
     try:

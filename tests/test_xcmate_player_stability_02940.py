@@ -51,7 +51,8 @@ class PlayerStability40(unittest.TestCase):
         self.assertIsNone(self.jobs._thread);self.assertFalse(self.m.stops)
         with mock.patch.object(gui,'getCurrentWindowDialogId',return_value=9999,create=True):
             self.jobs.poll();self.jobs._thread.join(2)
-        self.assertEqual(len(self.m.stops),1)
+        from exit37_fixture import drain_stop
+        drain_stop();self.assertEqual(len(self.m.stops),1)
 
     def test_foreign_modal_release_timeout_never_stops_or_closes_dialog(self):
         self.jobs.request(self.m.player);v=self.jobs.state();v.update(not_before=0,deadline=0);self.jobs.save(v)
@@ -64,6 +65,8 @@ class PlayerStability40(unittest.TestCase):
         def stop():calls.append(1);entered.set();release.wait(4)
         self.m.player.stop=stop
         self.jobs.request(self.m.player);v=self.jobs.state();v['not_before']=0;self.jobs.save(v);self.jobs.poll()
+        from exit37_fixture import drain_stop
+        native=threading.Thread(target=drain_stop);native.start()
         try:
             self.assertTrue(entered.wait(1));v=self.jobs.state();v['deadline']=0;self.jobs.save(v);self.jobs.poll()
             self.assertTrue(self.jobs.blocked());self.assertEqual(self.jobs.state()['phase'],'timeout')
@@ -75,7 +78,7 @@ class PlayerStability40(unittest.TestCase):
             worker=self.jobs._thread;self.jobs._thread=None
             self.assertFalse(self.jobs.request(self.m.player,manual=True));self.jobs._thread=worker
             self.assertEqual(calls,[1])
-        finally:release.set();self.jobs._thread.join(2)
+        finally:release.set();native.join(2)
         self.assertTrue(self.jobs.state()['worker_done']);self.assertFalse(self.jobs.blocked())
 
     def test_foreign_replacement_before_stop_worker_never_receives_stop(self):

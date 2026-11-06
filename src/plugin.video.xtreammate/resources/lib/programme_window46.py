@@ -108,6 +108,8 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
    if signature!=self._art_signature:
     self._art_signature=signature;self.getControl(110).setImage(art.get('image') if __import__('programme_image69').eligible(art,self.event) else '')
     self.getControl(110).setVisible(__import__('programme_image69').eligible(art,self.event))
+    from programme_pipeline77 import note
+    note(self.event,'RENDER_CONTROL','IMAGE_REQUESTED' if __import__('programme_image69').eligible(art,self.event) else 'SOURCE_MISSING',control=110,visible=__import__('programme_image69').eligible(art,self.event))
     from programme_flow48 import trace
     trace('GUI',self.event,'GUI_IMAGE_REQUESTED' if art.get('source')!='placeholder' else art.get('code','PENDING'))
     from programme_diagnostics59 import message

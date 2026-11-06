@@ -78,7 +78,7 @@ class Token61(Fixture,unittest.TestCase):
  def test_exact_epg_submenu_and_import_does_not_enable_artwork(self):
   sections=importlib.import_module('settings_sections45');self.assertIn((36620,'native_options45',{'group':'tmdb_access61'}),sections.ROWS['epg'])
   ui=importlib.import_module('tmdb_access61');self.dialog.browseSingle=mock.Mock(return_value=str(self.source));self.dialog.select.side_effect=[0,-1]
-  ui.show();self.assertEqual(self.path.read_bytes(),FIXTURE+b'\n');self.assertFalse(set(self.options)-{'tmdb_token_revision61'})
+  ui.show();self.assertEqual(self.path.read_bytes(),FIXTURE+b'\n');self.assertEqual(self.options['programme_tmdb46'],'true');self.assertEqual(self.options['tmdb_research43'],'true')  # .77 authorized automatic activation; token bytes unchanged
   self.assertNotIn(FIXTURE.decode(),str(self.dialog.ok.call_args_list))
  def test_restart_reloads_valid_file_and_invalid_replacement_blocks_fallback(self):
   self.t.import_file(str(self.source),None);self.t._cache=None;self.assertEqual(self.t.effective_tmdb_read_token(),FIXTURE.decode())

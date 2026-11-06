@@ -1,0 +1,15 @@
+{
+  "files": {
+    "xml/IncludesHomeWidgets.xml": "09ba7c67667a001710c76cac3962e9f41015e3500e410d2f3c661e00d1be2b03",
+    "xml/IncludesHomeBingie.xml": "2f20fd1ee47de1acafcf665ccd4c14c018e227e4574204e1a66d7fa0a77acbd3",
+    "shortcuts/overrides.xml": "46cb76481e2a92b5739e6f927da2c15acda1bd88e2d3886fb72ab3fbb06cd412",
+    "shortcuts/template.xml": "bbaef80237356995a0e6fd6673696ad64ac53bfd2875cd6f06e044f9f6f63a30"
+  },
+  "navigation": "8a6fe694f9c47c20f50932599f0b8dbc50e962da5a18032e8193e5ace8f3d394",
+  "current": {
+    "xml/IncludesHomeWidgets.xml": "d3fc88e23a43bcc0cb1ebbd24cd0f78981a5b2746b639733236d0209784c91b4",
+    "xml/IncludesHomeBingie.xml": "2f20fd1ee47de1acafcf665ccd4c14c018e227e4574204e1a66d7fa0a77acbd3",
+    "shortcuts/overrides.xml": "46cb76481e2a92b5739e6f927da2c15acda1bd88e2d3886fb72ab3fbb06cd412",
+    "shortcuts/template.xml": "bbaef80237356995a0e6fd6673696ad64ac53bfd2875cd6f06e044f9f6f63a30"
+  }
+}

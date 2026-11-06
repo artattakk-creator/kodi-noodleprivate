@@ -38,7 +38,7 @@ def edit(data,changes):
 
 
 def patch(path,data):
-    from widget_skin75 import candidate
+    from widget_skin77 import candidate
     return candidate(path,data)
 
 
@@ -140,8 +140,8 @@ def apply(token,skin,*,confirmed=False,restore=False):
             from widget_skin66 import previous_candidate as previous64
             verified64=False
             if restore:
-                from widget_skin75 import previous_candidate as previous75
-                for build64 in (legacy_patch60,previous_candidate,previous63,previous64,previous75):
+                from widget_skin75 import previous_candidate as previous75,candidate as previous76
+                for build64 in (legacy_patch60,previous_candidate,previous63,previous64,previous75,previous76):
                     try:
                         if build64(name,original60)==candidate60:verified64=True;break
                     except ValueError:continue

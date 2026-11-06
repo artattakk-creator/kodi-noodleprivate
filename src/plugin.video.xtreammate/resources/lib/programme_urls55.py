@@ -35,7 +35,7 @@ def safe(url):
     try:
         p=urlsplit(url)
         if (p.scheme!='https' or p.port not in (None,443) or p.username is not None or
-                p.password is not None or p.query or p.fragment):return False
+                p.password is not None or not __import__('programme_url77').public_query(p.query) or p.fragment):return False
         if p.hostname not in hosts():
             from programme_origin75 import approved
             if not approved(url):return False
@@ -87,37 +87,8 @@ def probe(url,cancel=lambda:False):
     Validates response type and header dimensions without archiving image bytes.
     Kodi performs the actual rendering download later; a later 404 is harmless.
     """
-    from media_sources43 import SourceError
-    from download_redirect import addresses,_connect
-    from media_art import dimensions,MAX_PIXELS
-    response=None
-    try:
-        if cancel():raise SourceError('CANCELLED')
-        response=_connect(url,addresses(url),{'User-Agent':'XCMate programme image preflight','Accept':'image/jpeg,image/png','Accept-Encoding':'identity'})
-        code=response.status
-        if code in (404,410):raise SourceError('HTTP_NOT_FOUND')
-        if code!=200:raise SourceError('REDIRECT_BLOCKED' if 300<=code<400 else 'HTTP_CLIENT')
-        if response.headers.get('Content-Type','').partition(';')[0].lower() not in ('image/jpeg','image/png'):raise SourceError('CONTENT_TYPE')
-        if response.headers.get('Content-Encoding','identity').lower() not in ('identity',''):raise SourceError('CONTENT_ENCODING')
-        data=b'';deadline=time.monotonic()+3
-        while len(data)<65536:
-            if cancel():raise SourceError('CANCELLED')
-            if time.monotonic()>deadline:raise SourceError('TIMEOUT')
-            part=response.read(min(4096,65536-len(data)))
-            if not part:break
-            data+=part
-            try:
-                width,height=dimensions(data)
-                if not 0<width<=4096 or not 0<height<=4096 or width*height>MAX_PIXELS:raise SourceError('IMAGE_LIMIT')
-                return
-            except (ValueError,IndexError):pass
-        raise SourceError('INVALID_IMAGE')
-    except SourceError:raise
-    except Exception:
-        # Private host, TLS error text and connection credentials never escape.
-        raise SourceError('IMAGE_PREFLIGHT_FAILED') from None
-    finally:
-        if response is not None:response.close()
+    from programme_transport77 import verified
+    return verified(url,cancel)
 
 
 def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,local_image63=False,url_mode69=False):
@@ -154,6 +125,10 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     if current and not (local_image63 and current.get('source')!='placeholder') and not explicit63 and not (allow_lookup and current.get('source')=='placeholder' and
             (current.get('code')=='AWAITING_BACKGROUND_REFRESH' or not current.get('matching_policy57') or current.get('source_policy57')!=policy())):return current
     if cancel():return None
+    from programme_pipeline77 import note as trace77
+    trace77(event,'EPG_EVENT','IDENTIFIED')
+    trace77(event,'MATCHED_EVENT_FACTS','SOURCE_READY' if event.get('epg_source46') else 'SOURCE_MISSING')
+    trace77(event,'EVENT_REVISION','BOUND')
     now=time.time()
     value=dict(key=event['key'],fingerprint=fingerprint(event),binding55=binding(event),url_version55=1,
                code='NO_IMAGE',source='placeholder',match='NONE',image=event['placeholder'],
@@ -207,26 +182,34 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     for candidate in supplied():
         if cancel():return None
         if candidate.get('match') not in ('EXACT_EVENT','EXACT_TITLE_YEAR','EXACT_SEASON_EPISODE','EXACT_UNIQUE_FILM_TITLE')+PROOFS:continue
+        trace77(event,'IMAGE_SOURCE_SELECTION','SOURCE_SELECTED')
+        trace77(event,'MATCH_CONFIDENCE','EXACT_MATCH')
         url=candidate.get('url','')
         from programme_origin75 import candidate as origin75,grant as grant75
         new_origin75=not safe(url) and candidate.get('match')=='EXACT_EVENT' and origin75(event,url,candidate.get('source'))
-        if not safe(url) and not new_origin75:value['code']='BLOCKED_IMAGE_HOST_OR_URL';continue
+        if not safe(url) and not new_origin75:
+            trace77(event,'URL_SECURITY','BLOCKED');value['code']='BLOCKED_IMAGE_HOST_OR_URL';continue
+        trace77(event,'URL_SECURITY','APPROVED')
         from portals import get_by_id
         portal=get_by_id(str(event.get('pid',''))) or {}
         path=unquote(urlsplit(url).path)
         secrets=[str(portal.get(k) or '') for k in ('xc_user','xc_pass')]
         if any(secret and (secret in path.split('/') or len(secret)>=4 and secret in path) for secret in secrets):
             value['code']='BLOCKED_CREDENTIAL_URL';continue
+        verified77=None
         if new_origin75:
-            try:probe(url,cancel=cancel)
+            try:verified77=probe(url,cancel=cancel)
             except SourceError as exc:value['code']=exc.code;continue
             if cancel():return None
             grant75(url)
+            if isinstance(verified77,dict) and verified77.get('url'):
+                url=verified77['url'];grant75(url)
         if local_image63 or not url_mode69 and candidate.get('source') in ('tmdb_movie','tmdb_episode','tmdb_series'):
             from programme_art46 import prepare as materialize60
             return materialize60(event,cancel=cancel,resolved60=dict(candidate,_local_only63=True) if local_image63 else candidate)
         try:
-            if not new_origin75:(check or probe)(url,cancel=cancel)
+            if not new_origin75:verified77=(check or probe)(url,cancel=cancel)
+            if isinstance(verified77,dict) and verified77.get('url'):url=verified77['url']
         except SourceError as exc:value['code']=exc.code;continue
         if cancel():return None
         value.update(code='READY',source=candidate['source'],match=candidate['match'],
@@ -239,6 +222,11 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         if url_mode69:
             from programme_requests68 import identity,scope
             value.update(url_verified69=True,scope69=identity(event),profile69=scope(),policy69=negative_scope({}))
+        if isinstance(verified77,dict) and verified77.get('decoded77'):
+            value.update(decoded77=True,image_width77=verified77['width'],image_height77=verified77['height'])
+        from programme_pipeline77 import note
+        note(event,'HTTP_RESPONSE','IMAGE_DECODED' if value.get('decoded77') else 'REFERENCE_VERIFIED')
+        trace77(event,'IMAGE_LEASE','BOUND')
         source_trace(event,'IMAGE_URL_VERIFIED')
         break
     if not candidates and not allow_lookup:value['code']='AWAITING_BACKGROUND_REFRESH'

@@ -49,12 +49,16 @@ def show():
     activate(addon)
   elif choice==4:
    if dialog.yesno('XCMate','Eigene TMDB-Sendungsbildsuche deaktivieren?',defaultbutton=getattr(xbmcgui,'DLG_YESNO_NO_BTN',10)):
-    addon.setSetting('programme_tmdb46','false');addon.setSetting('tmdb_research43','false')
+    from programme_consent77 import decision
+    decision('tmdb',False,addon)
   elif choice in (5,6,7):
    key=('programme_helper57','programme_catalog57','programme_tvmaze67')[choice-5]
    enabled=value[('helper','catalog','tvmaze')[choice-5]]
    if dialog.yesno('XCMate',entries[choice]+' – '+('deaktivieren?' if enabled else 'aktivieren? Externe Abfragen bleiben auf diese gewählte Quelle begrenzt.'),defaultbutton=getattr(xbmcgui,'DLG_YESNO_NO_BTN',10)):
-    addon.setSetting(key,'false' if enabled else 'true')
+    if key=='programme_tvmaze67':
+     from programme_consent77 import decision
+     decision('tvmaze',not enabled,addon)
+    else:addon.setSetting(key,'false' if enabled else 'true')
     from programme_refresh63 import request
     request()
   elif choice==8:
