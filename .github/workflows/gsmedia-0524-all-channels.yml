@@ -9,7 +9,7 @@ on:
   push:
     branches: [main]
     paths:
-      - ".github/workflows/gsmedia-0524-pilot.yml"
+      - ".github/workflows/gsmedia-0524-all-channels.yml"
       - "tools/build_gsmedia_setup_0524.py"
       - "tools/gsmedia_setup0524/**"
 
