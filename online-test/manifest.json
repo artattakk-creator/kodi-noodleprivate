@@ -57,6 +57,16 @@
     "source_ci": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/41723976215",
     "source_merge": "f0a1bb40050e89e0220687722273e7cc859b9b5b"
   },
+  "installer_0522": {
+    "android": "NOT_TESTED",
+    "auto_pilot_bootstrap": false,
+    "channel": "PILOT_ONLY",
+    "legacy_journal_preserved": true,
+    "note": "If pilot is missing, fail safely and prompt NeoDark3 repository ZIP installation",
+    "regular_catalog_unchanged": true,
+    "version": "0.5.22",
+    "zip_sha256": "66d98c8dc8061007f5dfbd82eeea483634730d915750e7677c9b6c0ff2fd8f91"
+  },
   "jurialmunkey": {
     "id": "script.module.jurialmunkey",
     "license": "GPL-3.0-or-later",
@@ -174,12 +184,12 @@
   ],
   "wizard": {
     "display_name": "XCMate Media Center Installer",
-    "fix": "Kodi Android 21.3 0.5.18 failed at 39/48: CAddonInstallJob[script.gsmedia.slyguy.bootstrap]: failed to find dependency slyguy.dependencies. Kodi Omega CAddonRepos::FindDependencyByParentRepo resolves third-party dependencies from the PARENT addon's origin repository. The old xcMate-owned bootstrap cannot resolve the SlyGuy-owned dependency by design. Instead request original script.module.slyguy 0.87.6 directly from repository.slyguy; its original addon.xml requires slyguy.dependencies 0.0.30, and both share the SAME repo origin. Preflight BOTH packages before InstallAddon. Preserve safe 48-step journal and all original 54 catalog package IDs; no unlicensed SlyGuy ZIP redistribution. Device runtime pending.",
+    "fix": "Separate Kodi-native BINGIE repository install before Helper; verified simplejson minimum. No legacy dual-dependency bootstrap.",
     "id": "script.gsmedia.setup",
-    "main_installer_url": "https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/script.gsmedia.setup/script.gsmedia.setup-0.5.21.zip",
+    "main_installer_url": "https://raw.githubusercontent.com/artattakk-creator/kodi-noodleprivate/main/online-test/script.gsmedia.setup-0.5.22.zip",
     "source_gate": "Drive source plus pinned upstream images and original MIT source",
-    "status": "PILOT_AND_MAIN_INSTALLER_LISTED_ANDROID_NOT_TESTED",
-    "version": "0.5.21"
+    "status": "PILOT_0522_STAGED_BINGIE_ANDROID_NOT_TESTED",
+    "version": "0.5.22"
   },
   "xvault": {
     "android_test": "NOT_TESTED",
@@ -202,7 +212,7 @@
     "script.bingie.helper": "653b7391f5012a0a35867ec53e55045842efa02c4dca698ce8da0f5b39549358",
     "script.ezmaintenanceplus": "08a367b5fd1ee367ead4150b2364063a0760fe9fbf7506c20db845a0126cd2e6",
     "script.gsmedia.bingie.bootstrap": "6fa171c7d2e2071240f12302e5feb92546a206ddce88557462e274431ad14f04",
-    "script.gsmedia.setup": "568a76b67d80d846ea09176d0ea1b9f6b6fed1fd86c2ace79ca865b4a8ccadbd",
+    "script.gsmedia.setup": "66d98c8dc8061007f5dfbd82eeea483634730d915750e7677c9b6c0ff2fd8f91",
     "script.gsmedia.skinshortcuts.bridge": "f84da5931a4159bbf82b78ecf6a05c0b2ce8a6e0c08ebf109d1554eb84d4f72c",
     "script.gsmedia.slyguy.bootstrap": "5c643097dad7e15728bc4c723b72cdd1c2fea67273bcf00cfec994db903d86e8",
     "script.gsmedia.upgrade.plugin.audio.m3sr2019": "d026dabe4e120c3b6b581a613db326ed6cc09458b8db536e158af4a0d753a5cb",
