@@ -1,0 +1,92 @@
+name: Build and verify XCMate Media Center Installer 0.5.22 (Pilot only)
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/gsmedia-0522-pilot.yml"
+      - "tools/build_gsmedia_setup_0522.py"
+      - "tools/gsmedia_setup0522/**"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/gsmedia-0522-pilot.yml"
+      - "tools/build_gsmedia_setup_0522.py"
+      - "tools/gsmedia_setup0522/**"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gsmedia-0522-pilot-release
+  cancel-in-progress: false
+
+jobs:
+  installer-0522-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Build from exact pinned Installer 0.5.21 and run staged dependency tests
+        run: |
+          python -m compileall -q tools/build_gsmedia_setup_0522.py tools/gsmedia_setup0522/base
+          python tools/build_gsmedia_setup_0522.py --out "$RUNNER_TEMP/gsmedia-0522"
+
+      - name: Verify independent ZIP file contents, CRC and version
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          from zipfile import ZipFile
+          import xml.etree.ElementTree as ET
+          out=Path(__import__('os').environ['RUNNER_TEMP'])/'gsmedia-0522'
+          target=out/'script.gsmedia.setup-0.5.22.zip'
+          digest=hashlib.sha256(target.read_bytes()).hexdigest()
+          assert (out/'script.gsmedia.setup-0.5.22.zip.sha256').read_text().split()==[digest,target.name]
+          with ZipFile(target) as z:
+              assert z.testzip() is None
+              assert len(z.namelist())==32
+              xml=ET.fromstring(z.read('script.gsmedia.setup/addon.xml'))
+              assert xml.get('id')=='script.gsmedia.setup' and xml.get('version')=='0.5.22'
+              assert b'install_id = "script.gsmedia.bingie.bootstrap"' not in z.read(
+                  'script.gsmedia.setup/resources/lib/setup_auto_ui50.py')
+          print('INSTALLER_0522_PACKAGE_VERIFIED',digest)
+          PY
+
+      - name: Upload immutable host-tested installer candidate (PR)
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: gsmedia-installer-0522-verified-candidate
+          path: |
+            ${{ runner.temp }}/gsmedia-0522/script.gsmedia.setup-0.5.22.zip
+            ${{ runner.temp }}/gsmedia-0522/script.gsmedia.setup-0.5.22.zip.sha256
+            ${{ runner.temp }}/gsmedia-0522/installer0522-verification.json
+
+      - name: Stage ONLY pilot directory after approved merge to main
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          python tools/build_gsmedia_setup_0522.py --out "$RUNNER_TEMP/gsmedia-0522" --stage-pilot
+          git diff --exit-code -- addons.xml addons.xml.md5 script.gsmedia.setup
+          test -z "$(git status --porcelain --untracked-files=all | grep -v 'online-test/' | head -1 || true)"
+
+      - name: Publish Pilot-only ZIP, catalog/checksum, manifest and Kodi index
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add online-test/
+          test -n "$(git diff --cached --name-only)"
+          if git diff --cached --name-only | grep -v '^online-test/'; then
+            echo "Refusing to touch regular GS Media release files"; exit 1
+          fi
+          git commit -m "Publish GS Media Pilot Installer 0.5.22 staged native BINGIE dependencies"
+          git push origin HEAD:main
+
+      - name: Record pilot publication SHA and path
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          sha256sum online-test/script.gsmedia.setup-0.5.22.zip
+          git log -1 --oneline
