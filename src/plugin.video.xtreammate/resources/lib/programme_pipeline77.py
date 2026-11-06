@@ -26,10 +26,16 @@ def texture(event,art):
     if not eligible(art,event):return dict(code='TEXTURE_PENDING')
     url=art.get('image','')
     try:
-        request=dict(jsonrpc='2.0',id=77,method='Textures.GetTextures',params=dict(filter=dict(field='url',operator='is',value=url),properties=['url','cachedurl','sizes']))
-        response=json.loads(xbmc.executeJSONRPC(json.dumps(request)))
-        rows=response.get('result',{}).get('textures',[])
-        value=next((size for row in rows if row.get('url')==url and row.get('cachedurl') for size in row.get('sizes',[]) if type(size.get('width')) is int and type(size.get('height')) is int and size['width']>0 and size['height']>0),None)
+        value=None
+        # Kodi can canonicalize transport-only | options before indexing a
+        # texture. Inspect only the exact verified URL and its base form.
+        for exact in dict.fromkeys((url,url.partition('|')[0])):
+            request=dict(jsonrpc='2.0',id=77,method='Textures.GetTextures',params=dict(filter=dict(field='url',operator='is',value=exact),properties=['url','cachedurl','sizes']))
+            response=json.loads(xbmc.executeJSONRPC(json.dumps(request)))
+            if response.get('error'):return dict(code='TEXTURE_UNAVAILABLE')
+            rows=response.get('result',{}).get('textures',[])
+            value=next((size for row in rows if row.get('url')==exact and row.get('cachedurl') for size in row.get('sizes',[]) if type(size.get('width')) is int and type(size.get('height')) is int and size['width']>0 and size['height']>0),None)
+            if value:break
         result=dict(code='TEXTURE_CACHED',width=value['width'],height=value['height']) if value else dict(code='TEXTURE_PENDING')
     except (AttributeError,RuntimeError,ValueError,TypeError):result=dict(code='TEXTURE_UNAVAILABLE')
     note(event,'ACTUAL_TEXTURE',result['code'],**{k:v for k,v in result.items() if k!='code'})

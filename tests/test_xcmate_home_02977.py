@@ -51,6 +51,12 @@ class Runtime77(Fixture,unittest.TestCase):
   result=dict(result=dict(textures=[dict(url=art['image'],cachedurl='abc.png',sizes=[dict(width=320,height=180)])]))
   with mock.patch('xbmc.executeJSONRPC',return_value=json.dumps(result),create=True):
    self.assertEqual(pipeline.texture(event,art)['code'],'TEXTURE_CACHED')
+  # Real Kodi may index the base URL without transport options.
+  art['image']='https://image.tmdb.org/t/p/w500/probe.jpg|redirect-limit=0'
+  base=art['image'].partition('|')[0]
+  response=dict(result=dict(textures=[dict(url=base,cachedurl='base.png',sizes=[dict(width=160,height=90)])]))
+  with mock.patch('programme_image69.eligible',return_value=True),mock.patch('xbmc.executeJSONRPC',side_effect=[json.dumps(dict(result=dict(textures=[]))),json.dumps(response)],create=True) as rpc:
+   self.assertEqual(pipeline.texture(event,art)['code'],'TEXTURE_CACHED');self.assertEqual(rpc.call_count,2)
   self.assertNotIn('PASS',json.dumps(pipeline.texture(event,{})))
  def test_repeated_missing_epg_reads_reuse_generation_bound_worker_lease(self):
   local=importlib.import_module('local_epg');cache=importlib.import_module('epg_poll77');cache._values.clear()
