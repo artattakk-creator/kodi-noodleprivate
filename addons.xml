@@ -20,7 +20,7 @@
 </addon>
 <addon id="plugin.video.xtreammate"
        name="XCMate"
-       version="0.1.29.76"
+       version="0.1.29.78"
        provider-name="GS Media">
 
   <requires>
@@ -57,7 +57,7 @@
     <forum>https://forum.kodi.tv</forum>
     <website>https://kodi.tv</website>
     <source>https://github.com/artattakk-creator/kodi-noodleprivate</source>
-    <news>0.1.29.76 Test: Filme und Serien nach verifizierter Bild-/Fallback-Vorbereitung automatisch im Hintergrund vorbereiten. Sichtbare Darstellung weiterhin separat nachweisen. Keine Änderung gespeicherter Einstellungen oder Widgets.</news>
+    <news>0.1.29.78: BINGIE-Home-Hooks und Skinvariablen vollständig prüfen und laden; alte Widget-Reihen erhalten; Film-/Seriencover und Aktualisierung stabilisieren; Navigation und verspätete Stop-ACKs korrigieren. TMDB-Token, Provider, EPG, Favoriten, Space Blue und Installer 0.5.26 bleiben erhalten. Android-Abnahme offen.</news>
     <assets>
       <icon>icon-81da1003a2753ec6.png</icon>
       <fanart>resources/media/lightweight_splash.jpg</fanart>

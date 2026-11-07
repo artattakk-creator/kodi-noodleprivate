@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons><addon id="plugin.video.xtreammate"
        name="XCMate"
-       version="0.1.29.77"
+       version="0.1.29.78"
        provider-name="GS Media">
 
   <requires>
@@ -38,7 +38,7 @@
     <forum>https://forum.kodi.tv</forum>
     <website>https://kodi.tv</website>
     <source>https://github.com/artattakk-creator/kodi-noodleprivate</source>
-    <news>0.1.29.77 Pilot: automatische EPG-Bildquellen mit vorhandenem Token, vollständige Bildprüfung und Cache-Erneuerung; Serien-/Film-Exit mit nativer ACK-Barriere; Space-Blue-kompatible Home-Vorschau. Token, Passwörter, EPG und Einstellungen bleiben erhalten. Sichtbare Android-Bild-/Exit-Abnahme noch offen.</news>
+    <news>0.1.29.78: BINGIE-Home-Hooks und Skinvariablen vollständig prüfen und laden; alte Widget-Reihen erhalten; Film-/Seriencover und Aktualisierung stabilisieren; Navigation und verspätete Stop-ACKs korrigieren. TMDB-Token, Provider, EPG, Favoriten, Space Blue und Installer 0.5.26 bleiben erhalten. Android-Abnahme offen.</news>
     <assets>
       <icon>icon-81da1003a2753ec6.png</icon>
       <fanart>resources/media/lightweight_splash.jpg</fanart>
