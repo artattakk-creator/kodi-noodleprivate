@@ -32,7 +32,7 @@ Die Home-Prüfung enthält eine bereits vor der Reparatur vorhandene, nichttrivi
 
 [720p Live](test-builds/02978/evidence/720-home75-live-5.png) · [1080p Live](test-builds/02978/evidence/1080-home75-live-5.png) · [Kino-Reihe](test-builds/02978/evidence/1080-home75-foreign-poster-0.png). JSON-Nachweise liegen im selben evidence-Ordner.
 
-Native Media-Exit-Prüfung: `python tools/run_kodi_media77_contract.py --report-dir /tmp/xcmate78-native-media` (20 Stops/ACK je Live, Film und Episode); Ergebnis wird nach abgeschlossenem Lauf ergänzt. Die neue gezielte Late-ACK-Simulation prüft darüber hinaus ACK nach Ablauf der unveränderten Fünf-Sekunden-Beobachtungsgrenze, genau einen Stop und geschützte GUI-Rückkehr.
+Native Media-Exit-Prüfung: `python tools/run_kodi_media77_contract.py --report-dir /tmp/xcmate78-native-media` (20 Stops/ACK je Live, Film und Episode); **HOST_PASS: 60/60 native Stop-/ACK-Zyklen**, je 20 Live/Film/Episode; [JSON](test-builds/02978/evidence/native-media.json). Die neue gezielte Late-ACK-Simulation prüft darüber hinaus ACK nach Ablauf der unveränderten Fünf-Sekunden-Beobachtungsgrenze, genau einen Stop und geschützte GUI-Rückkehr.
 
 ## Fehler während der Entwicklung
 

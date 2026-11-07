@@ -34,6 +34,21 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Read active source version before historical release verification
+        id: active
+        run: |
+          python - <<'PY'
+          import os,xml.etree.ElementTree as E
+          version=E.parse('src/plugin.video.xtreammate/addon.xml').getroot().get('version')
+          with open(os.environ['GITHUB_OUTPUT'],'a') as stream:stream.write('version='+version+'\n')
+          PY
+      - name: Verify historical .76 against its immutable approved source
+        if: steps.active.outputs.version != '0.1.29.76'
+        uses: actions/checkout@v4
+        with:
+          ref: 27104311012252f8c6382a392807b88290dc833c
+          fetch-depth: 0
+
       - name: Require .76-only user approval (Android remains NOT_TESTED)
         run: |
           python tools/release_channel75.py
@@ -103,7 +118,7 @@ jobs:
           PY
 
       - name: Publish main regular channel after merge (Pilot/NeoDark3 unmodified)
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && steps.active.outputs.version == '0.1.29.76'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
