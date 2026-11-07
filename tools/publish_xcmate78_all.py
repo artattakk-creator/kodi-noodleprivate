@@ -53,6 +53,21 @@ def stage():
         target.write_bytes(raw);target.with_suffix('.zip.sha256').write_text(sha(raw)+'  '+NAME+'\n')
     metadata=json.loads((ROOT/'online-test/manifest.json').read_text());metadata['zip_sha256'][ADDON]=sha(raw)
     (ROOT/'online-test/manifest.json').write_text(json.dumps(metadata,indent=2,sort_keys=True)+'\n')
+    # Publishing a Kodi index without a discoverable NeoDark3 flat ZIP is
+    # incomplete. Add only the new release link; preserve all old entries.
+    page=ROOT/'online-test/index.html';html=page.read_text(encoding='utf-8')
+    direct='<tr><td><a href="'+NAME+'">'+NAME+'</a></td><td>NeoDark3 / XCMate '+VERSION+' – Android-Abnahme offen</td></tr>'
+    if direct not in html:
+        marker='<tr><th>Name</th><th>Version</th></tr>'
+        assert html.count(marker)==1,'NEODARK_INDEX_LAYOUT_CHANGED'
+        html=html.replace(marker,marker+'\n'+direct,1)
+        page.write_text(html,encoding='utf-8')
+    root_page=ROOT/'index.html';html=root_page.read_text(encoding='utf-8')
+    regular='<a href="'+REL+'">XCMate '+VERSION+'</a>  GS Media regulär (Android-Abnahme offen)'
+    if regular not in html:
+        assert html.count('<pre>')==1,'ROOT_INDEX_LAYOUT_CHANGED'
+        html=html.replace('<pre>','<pre>\n'+regular,1)
+        root_page.write_text(html,encoding='utf-8')
     return verify(lambda p:(ROOT/p).read_bytes())
 
 def verify(fetch):
