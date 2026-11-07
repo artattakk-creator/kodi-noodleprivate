@@ -40,7 +40,16 @@ def public_dns(url):
     try:
         values=socket.getaddrinfo(key[0],key[1],type=socket.SOCK_STREAM)
         approved=bool(values) and all(ipaddress.ip_address(value[4][0]).is_global for value in values)
-    except (OSError,ValueError):approved=False
+        from dns_verdict78 import record
+        record(key,not values)
+    except OSError:
+        approved=False
+        from dns_verdict78 import record
+        record(key,True)
+    except ValueError:
+        approved=False
+        from dns_verdict78 import record
+        record(key,False)
     with _lock:
         _dns_cache[key]=(time.monotonic()+(30 if approved else 5),approved)
         _dns_cache.move_to_end(key)

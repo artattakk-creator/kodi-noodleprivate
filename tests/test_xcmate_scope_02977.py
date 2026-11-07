@@ -27,4 +27,7 @@ class Scope77(unittest.TestCase):
             if path.startswith('online-test/') and path.endswith(('addons.xml','addons.xml.md5','manifest.json')):
                 from channel_contract_02977 import verify
                 self.assertTrue(verify(path))
+            elif path in ('addons.xml','addons.xml.md5'):
+                from channel_contract_02978 import verify
+                self.assertTrue(verify(path,committed=True))
             else:self.assertEqual(current,subprocess.check_output(['git','show',base+':'+path],cwd=ROOT),path)

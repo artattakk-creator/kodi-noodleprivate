@@ -271,7 +271,7 @@ class LiveStop42(unittest.TestCase):
         self.request(); self.release(); self.timeout()
         self.pump(); self.tick()
         self.assertFalse(self.jobs.blocked())
-        self.assertEqual(self.jobs.state()['phase'], 'timeout')
+        self.assertEqual(self.jobs.state()['phase'], 'complete');self.assertTrue(self.jobs.state()['late_ack78'])
         self.assertTrue(any('LATE_NATIVE_RETURN' in s for s in self.logs))
         self.assertFalse(any('HOME_REQUESTED' in s for s in self.logs))
 
@@ -387,7 +387,7 @@ class LiveStop42(unittest.TestCase):
         self.request(); self.release(); self.pump()
         value = self.jobs.state(); value['deadline'] = 0; self.jobs.save(value)
         self.tick()
-        self.assertEqual(self.jobs.state()['phase'], 'timeout')
+        self.assertEqual(self.jobs.state()['phase'], 'complete');self.assertTrue(self.jobs.state()['late_ack78'])
         self.assertFalse(self.jobs.blocked())
         self.assertFalse(any('PLAYER_STOP_DONE' in s for s in self.logs))
 

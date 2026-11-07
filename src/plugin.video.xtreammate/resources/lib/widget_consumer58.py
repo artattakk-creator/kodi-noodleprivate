@@ -15,7 +15,13 @@ ROUTES={'widget_live_start_group':'live','widget_recent_vod':'vod','widget_recen
 
 def identity(uri,pid):
     try:
+        if isinstance(uri,str) and uri.lower().startswith('activatewindow('):
+            uri=__import__('navigation_builtin78').uri(uri)
         p=urlsplit(uri);q=parse_qs(p.query)
+        if not q.get('pid') and p.scheme=='plugin' and p.netloc=='plugin.video.xtreammate':
+            from portals import get_active
+            active=get_active()
+            if active:q['pid']=[str(active[0]['id'])]
         if p.scheme!='plugin' or p.netloc!='plugin.video.xtreammate' or q.get('pid')!=[str(pid)]:return None
         action=q.get('action',[])
         return ROUTES.get(action[0]) if len(action)==1 else None

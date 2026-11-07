@@ -14,6 +14,10 @@ def sources(text):
  for match in URL.finditer(text):
   raw=match.group();query=parse_qs(urlsplit(html.unescape(raw)).query)
   action=query.get('action',[]);pid=query.get('pid',[])
+  if not pid and len(action)==1 and action[0] in ROUTES:
+   from portals import get_active
+   active=get_active()
+   if active:pid=[str(active[0]['id'])]
   if len(action)!=1 or action[0] not in ROUTES or len(pid)!=1 or not 0<len(pid[0])<=128 or '$' in pid[0]:continue
   hooks=[]
   for key in ('reload','xcmate_reload45','widgetreload'):

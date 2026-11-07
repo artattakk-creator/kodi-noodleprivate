@@ -36,7 +36,7 @@ def main():
     replacement='cp /work/fixture66.py /root/.kodi/addons/plugin.video.xtreammate/fixture74.py\ncp /fixture75.py /root/.kodi/addons/plugin.video.xtreammate/fixture66.py'
     assert original in start75
     (report/'start75.sh').write_text(start75.replace(original,replacement))
-    mounts.extend([(root/'tools/kodi_home75_host/fixture75.py','/fixture75.py'),(report/'start75.sh','/work/start.sh')])
+    mounts.extend([(root/'tools/kodi_home75_host/fixture75.py','/fixture75.py'),(report/'start75.sh','/work/start.sh'),(root/'tools/kodi_home74_host/skin_fixture66.py','/base_skin78.py'),(root/'tools/kodi_home78_host/skin_fixture78.py','/work/skin_fixture66.py')])
     for source,target in mounts:command+=['--mount','type=bind,src='+str(source)+',dst='+target+',readonly']
     command+=['-e','XCMATE_RES74='+args.resolution,'-e','XCMATE_IDLE74='+str(args.idle_seconds),'xcmate-kodi21-helper57-contract','sh','/work/start.sh']
     try:

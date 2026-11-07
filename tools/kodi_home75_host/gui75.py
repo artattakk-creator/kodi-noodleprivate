@@ -9,6 +9,22 @@ xbmcaddon.Addon=lambda *a,**k:native_addon(*a,**k) if a or k else native_addon('
 import hero_epg63,home_schedule75 as schedule
 from portals import get_active
 home=xbmcgui.Window(10000)
+# Exercise the production worker/GUI split and its fallback even if the builder
+# returned without a skin reload. No fixture-injected variable definitions.
+import home_activation78
+activation_error78=[]
+def prepare_activation78():
+    try:home_activation78.prepare()
+    except Exception as exc:activation_error78.append(type(exc).__name__)
+activation_worker78=threading.Thread(target=prepare_activation78);activation_worker78.start()
+for _ in range(200):
+    home_activation78._next=0;home_activation78.poll()
+    if activation_error78:raise RuntimeError('HOME78_ACTIVATION_WORKER_FAILED '+activation_error78[0])
+    if activation_worker78.is_alive():xbmc.sleep(50);continue
+    raw78=home.getProperty(home_activation78.KEY)
+    if not raw78 or json.loads(raw78).get('phase')=='RUNTIME_READY':break
+    xbmc.sleep(50)
+else:raise RuntimeError('HOME78_ACTIVATION_UNCONFIRMED')
 for _ in range(200):
     if xbmc.getInfoLabel('Container(2510).NumItems')=='88':break
     xbmc.sleep(100)
@@ -23,6 +39,15 @@ def cache_worker77():
     while not worker77_stop.wait(.15):
         for portal77_worker in get_active():hero_epg63.prepare(portal77_worker['id'])
 worker77=threading.Thread(target=cache_worker77,name='native-cache77',daemon=True);worker77.start()
+# An existing user configuration, including cinema, must survive unchanged.
+old_layout78_path=Path('/root/old-layout78.json')
+if old_layout78_path.exists():
+    old_layout78=json.loads(old_layout78_path.read_text(encoding='utf-8'))
+    config78=Path('/root/.kodi/userdata/addon_data/script.skinshortcuts')
+    if any(hashlib.sha256((config78/name).read_bytes()).hexdigest()!=digest for name,digest in old_layout78.items()):raise RuntimeError('HOME78_USER_LAYOUT_CHANGED')
+    if 'Neu im Kino' not in (config78/'skin.titan.bingie.mod.properties').read_text(encoding='utf-8'):raise RuntimeError('HOME78_CINEMA_MISSING')
+    if __import__('widget_skin78').runtime()['code']!='RUNTIME_READY':raise RuntimeError('HOME78_RUNTIME_NOT_VERIFIED')
+    if home.getProperty(home_activation78.KEY) and json.loads(home.getProperty(home_activation78.KEY)).get('reloads')!=1:raise RuntimeError('HOME78_CACHE_HIT_RELOAD_NOT_EXERCISED')
 cases=[];traces=[]
 def check(value,detail):
     if not value:raise RuntimeError(str(detail))
@@ -182,5 +207,5 @@ while time.monotonic()-started<duration:
     xbmc.sleep(200)
 path,rgb=capture('home75-final')
 worker77_stop.set();worker77.join(2)
-result=dict(status='PASS',android='ANDROID_NOT_TESTED',kodi=xbmc.getInfoLabel('System.BuildVersion'),cases=cases,traces=traces,prepared_state=prepared_state,images77=images77,native_actions=actions,elapsed_seconds=time.monotonic()-started,checkpoints=checkpoints,missing_control='PASS')
+result=dict(user_layout78='PRESERVED' if old_layout78_path.exists() else 'NOT_SEEDED',activation78=json.loads(home.getProperty(home_activation78.KEY) or '{}'),status='PASS',android='ANDROID_NOT_TESTED',kodi=xbmc.getInfoLabel('System.BuildVersion'),cases=cases,traces=traces,prepared_state=prepared_state,images77=images77,native_actions=actions,elapsed_seconds=time.monotonic()-started,checkpoints=checkpoints,missing_control='PASS')
 Path('/root/home75.json').write_text(json.dumps(result,indent=2))

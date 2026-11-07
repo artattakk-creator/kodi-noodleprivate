@@ -76,6 +76,13 @@ def ownership():
 def _anchor_home(router,portal,dispatch):
     """Compatibility for directory bookmarks/widgets from older installations."""
     path=xbmc.getInfoLabel('Container.FolderPath')
+    # Native BINGIE Home is already a valid return anchor. Opening a second
+    # root directory here races its BusyDialog and loses the user's widget.
+    if router._handle<0 and xbmcgui.getCurrentWindowId()==10000 and xbmcgui.getCurrentWindowDialogId() in (0,-1,9999):
+        trace('HOME_READY',dispatch=dispatch);return True
+    from navigation_builtin78 import uri,activate,update
+    try:path=uri(path)
+    except ValueError:pass
     current=urlsplit(path);query=parse_qs(current.query)
     if (router._handle<0 and current.netloc=='plugin.video.xtreammate' and
         query.get('action',['root'])[0] in ('root','xcmate_home','portal_home')):return True
@@ -84,8 +91,8 @@ def _anchor_home(router,portal,dispatch):
     destination=router.url(action='xcmate_home',pid=portal['id'],nav=dispatch)
     trace('ANCHOR',dispatch=dispatch)
     if router._handle>=0 or current.netloc=='plugin.video.xtreammate':
-        xbmc.executebuiltin('Container.Update('+destination+',replace)')
-    else:xbmc.executebuiltin('ActivateWindow(Videos,'+destination+',return)')
+        xbmc.executebuiltin(update(destination))
+    else:xbmc.executebuiltin(activate(destination))
     monitor=xbmc.Monitor();deadline=time.monotonic()+5
     while time.monotonic()<deadline:
         # FolderPath is used for equality only, never logged or persisted.

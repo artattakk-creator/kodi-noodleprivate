@@ -133,14 +133,16 @@ def poll():
             if returned(value):
                 finish(value);value['worker_done']=True;value['result']='complete'
                 late=value['phase']=='timeout' or time.monotonic()>value['deadline']
-                value['phase']='timeout' if late else 'complete'
+                value['late_ack78']=late;value['phase']='complete'
                 save(value);trace('LATE_NATIVE_RETURN' if late else 'PLAYER_STOP_DONE',tuple(value['token']))
         if value['phase']=='running' and 'stop_started' not in value:
             value['stop_started']=True  # In-flight legacy job: timeout never proves completion.
         if value['phase'] in ('pending','running') and time.monotonic()>value['deadline']:
             value['phase']='timeout'
+            in_flight78=bool(value.get('native_posted') and not value.get('worker_done'))
+            if in_flight78:value['result']='AWAITING_NATIVE_ACK'
             if not value.get('stop_started') and not (value.get('checkpoint_started77') and not value.get('checkpoint_done77')):value['worker_done']=True
-            save(value);trace('STOP_TIMEOUT',tuple(value['token']))
+            save(value);trace('STOP_ACK_PENDING' if in_flight78 else 'STOP_TIMEOUT',tuple(value['token']))
         if value['phase']=='pending' and time.monotonic()>=value['not_before']:
             if _thread is not None and _thread.is_alive():return True
             if getattr(xbmc.Monitor(),'abortRequested',lambda:False)():return True

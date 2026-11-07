@@ -18,15 +18,13 @@ class Scope75(unittest.TestCase):
     def test_regular_catalog_committed_bytes_remain_at_approved_74(self):
         # Historical method name retained; explicit .76 all-channel approval
         # superseded the .74 regular baseline before this .77 cycle.
-        base='27104311012252f8c6382a392807b88290dc833c'
-        for path in ('addons.xml','addons.xml.md5'):
-            current=subprocess.check_output(['git','show','HEAD:'+path],cwd=ROOT)
-            approved=subprocess.check_output(['git','show',base+':'+path],cwd=ROOT)
-            self.assertEqual(current,approved,path)
+        from channel_contract_02978 import verify
+        for path in ('addons.xml','addons.xml.md5'):self.assertTrue(verify(path,committed=True))
     def test_regular_auto_publish_requires_explicit_separate_android_release(self):
         import importlib.util
         spec=importlib.util.spec_from_file_location('release75',ROOT/'tools/release_channel75.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
-        self.assertFalse(module.regular_allowed())
+        version=__import__('xml.etree.ElementTree',fromlist=['parse']).parse(ROOT/'src/plugin.video.xtreammate/addon.xml').getroot().get('version')
+        self.assertEqual(module.regular_allowed(),version=='0.1.29.78' and (ROOT/'docs/XCMate/releases/user-approved-untested-0.1.29.78.json').exists())
         self.assertIn("steps.channel75.outputs.regular == 'true'",(ROOT/'.github/workflows/publish.yml').read_text())
     def test_pilot_changes_are_limited_to_approved_xcmate_package(self):
         from channel_contract_02975 import verify

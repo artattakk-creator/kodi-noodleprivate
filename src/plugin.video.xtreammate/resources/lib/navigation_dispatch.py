@@ -90,7 +90,8 @@ def poll():
         _home().setProperty(ACTIVE,json.dumps(dict(token=pending['token'],away=False,opening_until=time.monotonic()+8)))
     url='plugin://plugin.video.xtreammate/?'+urlencode(dict(action=action,pid=pending['pid'],entry='return'))
     trace('DISPATCHED')
-    xbmc.executebuiltin(('ActivateWindow(Videos,'+url+',return)') if action in DIRECTORIES else 'RunPlugin('+url+')')
+    from navigation_builtin78 import activate
+    xbmc.executebuiltin(activate(url) if action in DIRECTORIES else 'RunPlugin('+url+')')
 
 
 def current_start(portal,session):

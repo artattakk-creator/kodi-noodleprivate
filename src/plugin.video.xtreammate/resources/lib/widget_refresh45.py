@@ -124,7 +124,7 @@ def poll():
     if now<_next:return
     _next=now+2
     try:
-        if xbmcgui.getCurrentWindowId()!=10000 or xbmcgui.getCurrentWindowDialogId() not in (0,-1):return
+        if xbmcgui.getCurrentWindowId()!=10000 or xbmcgui.getCurrentWindowDialogId() not in (0,-1,9999):return
         if xbmc.getCondVisibility('Player.HasMedia') or xbmc.getSkinDir()!='skin.titan.bingie.mod':return
         from widget_hooks45 import read as bindings
         from portals import get_by_id

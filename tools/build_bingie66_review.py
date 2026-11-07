@@ -44,7 +44,7 @@ def build(skin, output):
         props.update(widgetPath1=saved_source('live', 'fixture59'), widgetName1='Live-TV',
                      widgetPath2='plugin://plugin.video.xtreammate/?action=widget_recent_vod&pid=fixture59', widgetName2='Filme',
                      widgetPath3='plugin://plugin.video.xtreammate/?action=widget_recent_series&pid=fixture59', widgetName3='Serien')
-        props.update(widgetPath4='plugin://plugin.video.xtreammate/?fixture66=poster', widgetName4='TMDb Helper – synthetic cinema', widgetStyle4='poster',
+        props.update(widgetPath4='plugin://plugin.video.xtreammate/?fixture66=poster', widgetName4='Neu im Kino – synthetic retained row', widgetStyle4='poster',
                      widgetPath5='plugin://plugin.video.xtreammate/?fixture66=music', widgetName5='Music – synthetic albums', widgetStyle5='poster', widgetTarget5='music',
                      widgetPath6='plugin://plugin.video.xtreammate/?fixture66=television', widgetName6='TMDb Helper – synthetic trends', widgetStyle6='poster')
         # BINGIE 2.2.3 has no widget_layout_square. Albums use its native

@@ -1,3 +1,12 @@
+0.1.29.78 (#385; kumulativ auf .77)
+- Vollständiger Home-/Includes-/Variablenvertrag, gesicherte eigene Skin-Hook-Reparatur und tatsächlich geladene Controls als Gate.
+- Bestehende Reihen/Neu im Kino erhalten, lokales privates Konfigurationsinventar; nur eigene generierte Reload-Consumer reparieren.
+- Providercover: öffentliche Bildparameter erlauben, vorübergehenden DNS-Fehler von unsicherem Ziel unterscheiden; stale Kataloggenerationen abweisen.
+- Exakte EPG-Referenzen vor sicherer HTTPS-Prüfung normalisieren; aktuelle Quelle hinter abgelaufener Aliaszeile nicht verdecken.
+- Native BINGIE-Home als Navigationsanker erhalten; Builtin/Plugin-URL trennen und quoten.
+- Ausstehendes natives ACK ist keine Stop-Fehlentscheidung; verspätetes bestätigtes ACK schließt denselben Job ohne Doppelstop ab.
+- Installer 0.5.26, Token, alle bestehenden Daten und Einstellungen erhalten. Android-P0-Abnahme offen.
+
 0.1.29.77 (Pilot-Test, #380 / #366 / #367 / #368)
 - Vorhandenen gültigen TMDB-Token read-only übernehmen und Lookup einmalig freischalten; TVMaze-Serienfallback automatisch, bewusste Opt-outs erhalten.
 - Vollständige Bilddekodierung vor Freigabe, geprüfte Redirects und begrenzte Erneuerung abgelaufener Event-URL-Leases; negative Caches nach Quellfreigabe erneut prüfen.

@@ -82,9 +82,9 @@ def display(event,value):
 
 
 def probe(url,cancel=lambda:False):
-    """Bounded credentialless preflight, pinned public DNS/TLS, no redirects.
+    """Bounded credentialless preflight, pinned public DNS/TLS, bounded trusted redirects.
 
-    Validates response type and header dimensions without archiving image bytes.
+    Fully decodes bounded PNG/JPEG bytes without forcing an image archive.
     Kodi performs the actual rendering download later; a later 404 is harmless.
     """
     from programme_transport77 import verified
@@ -185,6 +185,9 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         trace77(event,'IMAGE_SOURCE_SELECTION','SOURCE_SELECTED')
         trace77(event,'MATCH_CONFIDENCE','EXACT_MATCH')
         url=candidate.get('url','')
+        if candidate.get('match')=='EXACT_EVENT':
+            from image_reference78 import canonical
+            url=canonical(url) or url
         from programme_origin75 import candidate as origin75,grant as grant75
         new_origin75=not safe(url) and candidate.get('match')=='EXACT_EVENT' and origin75(event,url,candidate.get('source'))
         if not safe(url) and not new_origin75:

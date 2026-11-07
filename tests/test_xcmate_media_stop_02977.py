@@ -38,7 +38,7 @@ class MediaStop77(unittest.TestCase):
   with mock.patch('xbmc.Player',side_effect=AssertionError('PLAYER_MUTEX')):
    self.jobs.poll();self.assertTrue(self.jobs.blocked());self.assertFalse(self.jobs.request(expected=tuple(value['token'])));self.jobs.poll()
   self.assertEqual(self.commands.count('PlayerControl(Stop)'),1);self.assertEqual(self.jobs.state()['phase'],'timeout')
-  self.ack();self.assertTrue(self.jobs.state()['worker_done']);self.assertEqual(self.jobs.state()['result'],'complete');self.assertEqual(self.jobs.state()['phase'],'timeout')
+  self.ack();self.assertTrue(self.jobs.state()['worker_done']);self.assertEqual(self.jobs.state()['result'],'complete');self.assertEqual(self.jobs.state()['phase'],'complete');self.assertTrue(self.jobs.state()['late_ack78'])
  def test_foreign_replacement_after_checkpoint_is_not_stopped(self):
   self.jobs.request(self.m.player);self.tick();self.m.media_id='foreign';self.tick();self.assertNotIn('PlayerControl(Stop)',self.commands);self.assertEqual(self.jobs.state()['phase'],'failed')
  def test_checkpoint_error_still_stops_and_queues_bounded_retry_after_ack(self):

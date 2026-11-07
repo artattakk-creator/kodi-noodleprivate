@@ -4,6 +4,9 @@ _lock=threading.Lock();_plans={};_observed={}
 
 
 def prepare(pid):
+    from home_activation78 import prepare as activation78
+    try:activation78()
+    except (OSError,ValueError,RuntimeError,KeyError,AttributeError):pass
     from hero_epg63 import prepare as hero63
     from skin_upgrade63 import prepare as upgrade63
     import sqlite3

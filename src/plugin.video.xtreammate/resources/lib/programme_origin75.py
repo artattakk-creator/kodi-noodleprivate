@@ -9,7 +9,8 @@ from urllib.parse import urlsplit,unquote
 
 def candidate(event,url,source):
     field={'xmltv_event':'xmltv_image','provider_event':'provider_image'}.get(source)
-    if not field or not event.get('key') or event.get(field)!=url:return False
+    from image_reference78 import canonical
+    if not field or not event.get('key') or canonical(event.get(field))!=url:return False
     if not event.get('canonical') or not event.get('pid') or not event.get('sid'):return False
     try:
         if not isinstance(url,str) or not 1<len(url)<=2048 or any(ord(c)<33 or ord(c)>126 for c in url):return False
