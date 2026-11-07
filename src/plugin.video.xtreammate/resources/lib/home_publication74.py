@@ -23,6 +23,12 @@ def old_frame(portal,kind):
 def merge(portal,kind,items,rows,old=None):
     revision=source(portal,kind,rows)
     if not old:return items,revision
+    if revision is None and old.get('source_revision74') is not None:
+        from widget_data41 import read,files,policy
+        current=read(files(portal['id'],kind)[0],policy(portal,kind))
+        if current is not None and [r.get('sid') for r in current['rows']]!=[r.get('sid') for r in rows]:
+            note(portal,kind,'HOLD_STALE_SOURCE',old,len(items),revision,new_art_status=art_status(items))
+            return list(old['items']),old['source_revision74']
     prior=list(old['items']);by_id={v['props'].get('XCMate.MediaId'):v for v in prior}
     if revision is not None and old.get('source_revision74') is not None and revision!=old['source_revision74']:
         # A new complete catalogue revision permits real removals/replacements.

@@ -15,6 +15,8 @@ def prepare(portal,kind,signature,count):
 
 
 def poll():
+    from home_activation78 import poll as activation78
+    activation78()
     global _next,_focus
     from hero_epg63 import poll as hero63
     from skin_upgrade63 import poll as upgrade63

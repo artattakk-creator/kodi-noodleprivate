@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from localization import tr
 KINDS=((32401,'live'),(32403,'vod'),(32404,'series'))
-ERRORS={'PROFILE_BUDGET','INVALID_SOURCE','SINGLE_WIDGET_HOME','UNVERIFIED_SKIN_VERSION','UNVERIFIED_SHORTCUTS_VERSION','UNSUPPORTED_SKIN','PLAYER_ACTIVE','NATIVE_EDITOR_BUSY','NO_SAVED_BINGIE_PROFILE','UNVERIFIED_MENU_SHARING','HOME_ID_UNVERIFIED','INVALID_PROPERTIES','DUPLICATE_PROPERTIES','OCCUPIED_SLOT','UNSAFE_BACKUP_FOLDER','UNSAFE_TARGET','UNSAFE_PLAN','BACKUP_VERIFY_FAILED','TARGET_CHANGED_NO_OVERWRITE','TARGET_VERIFY_FAILED','CANDIDATE_VERIFY_FAILED','PROFILE_CHANGED','SKIN_CHANGED','UNVERIFIED_SKIN_FILE','UNVERIFIED_TEMPLATE','UNVERIFIED_OVERRIDES','UNVERIFIED_HERO_REGION','UNVERIFIED_FONTS','PLAN_BUSY'}
+ERRORS={'UNVERIFIED_VARIABLES','UNVERIFIED_INCLUDE_GRAPH','UNVERIFIED_HOME_HOOK','PROFILE_BUDGET','INVALID_SOURCE','SINGLE_WIDGET_HOME','UNVERIFIED_SKIN_VERSION','UNVERIFIED_SHORTCUTS_VERSION','UNSUPPORTED_SKIN','PLAYER_ACTIVE','NATIVE_EDITOR_BUSY','NO_SAVED_BINGIE_PROFILE','UNVERIFIED_MENU_SHARING','HOME_ID_UNVERIFIED','INVALID_PROPERTIES','DUPLICATE_PROPERTIES','OCCUPIED_SLOT','UNSAFE_BACKUP_FOLDER','UNSAFE_TARGET','UNSAFE_PLAN','BACKUP_VERIFY_FAILED','TARGET_CHANGED_NO_OVERWRITE','TARGET_VERIFY_FAILED','CANDIDATE_VERIFY_FAILED','PROFILE_CHANGED','SKIN_CHANGED','UNVERIFIED_SKIN_FILE','UNVERIFIED_TEMPLATE','UNVERIFIED_OVERRIDES','UNVERIFIED_HERO_REGION','UNVERIFIED_FONTS','PLAN_BUSY'}
 
 
 def runtime():
@@ -27,7 +27,14 @@ def rebuild():
 
 
 def trace(event,kind='',slot=0):
-    if event not in ('BINDING_SAVED','SKIN_PATCH_VERIFIED','RESTORED'):return
+    if event not in ('BINDING_SAVED','SKIN_PATCH_VERIFIED','SKIN_FILES_VERIFIED','RESTORED'):return
+    if event=='SKIN_PATCH_VERIFIED':
+        from widget_skin78 import runtime as runtime78
+        try:
+            _,skin78=runtime()
+            from widget_skin78 import supported
+            if supported(skin78) and runtime78()['code']!='RUNTIME_READY':event='SKIN_FILES_VERIFIED'
+        except (ValueError,RuntimeError,AttributeError):event='SKIN_FILES_VERIFIED'
     import xbmc
     try:xbmc.log('[XCMate][WIDGET50] event='+event+' kind='+(kind if kind in ('live','vod','series') else 'skin')+' slot='+str(int(slot)),xbmc.LOGINFO)
     except (AttributeError,RuntimeError):pass
@@ -51,7 +58,8 @@ def show(router,portal):
         compatibility(restore=router._params['shortcuts62']=='restore');return
     if router._handle<0:
         import xbmc
-        xbmc.executebuiltin('ActivateWindow(Videos,'+router.url(action='widget_setup',pid=portal['id'],**({'technical74':'1'} if router._params.get('technical74')=='1' else {})) +',return)');return
+        from navigation_builtin78 import activate
+        xbmc.executebuiltin(activate(router.url(action='widget_setup',pid=portal['id'],**({'technical74':'1'} if router._params.get('technical74')=='1' else {}))));return
     import xbmcgui,xbmcplugin
     from menu_icons45 import icon
     from boot_diagnostics import finish_directory
@@ -126,7 +134,7 @@ def skin_setup():
                 rebuild();xbmcgui.Dialog().notification('XCMate',tr(36415))
             return
         plan=prepare(skin)
-        names75=list(FILES)+(['xml/IncludesBingie.xml'] if len(plan['entries'])==5 else [])
+        names75=list(__import__('widget_skin78').FILES) if len(plan['entries'])==8 else list(FILES)+(['xml/IncludesBingie.xml'] if len(plan['entries'])==5 else [])
         hashes='\n'.join(name+'\n'+e['before']+' → '+e['after'] for name,e in zip(names75,plan['entries']))
         from widget_skin60 import preview
         xbmcgui.Dialog().textviewer(tr(36401),tr(36417)+'\n\n'+hashes+'\n\n'+preview(plan))

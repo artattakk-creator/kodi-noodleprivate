@@ -15,7 +15,7 @@ def safe(portal,uri):
  if not syntactic(uri):return False
  try:
   parts=urlsplit(uri)
-  if parts.scheme!='https' or parts.port not in (None,443) or parts.query or parts.fragment:return False
+  if parts.scheme!='https' or parts.port not in (None,443) or not __import__('programme_url77').public_query(parts.query) or parts.fragment:return False
   path=unquote(parts.path)
   return not any(v and (v in path.split('/') or len(v)>=4 and v in path) for v in (str(portal.get('xc_user') or ''),str(portal.get('xc_pass') or '')))
  except (ValueError,TypeError):return False

@@ -2,7 +2,7 @@
 
 This does not repair a native decoder deadlock. A missing FIFO acknowledgement
 stays quarantined; no second stop, player query, window change or fake success.
-The timed-out native job remains a timeout in its historical state.
+A late ACK completes the native job; the independent GUI return remains guarded.
 """
 import time
 
@@ -23,8 +23,8 @@ def gui_available():
 
 def resume(value,job):
     from playback_exit import _same
-    if (value.get('phase')!='failed' or value.get('recovery46') or not job
-            or job.get('phase')!='timeout' or job.get('result')!='complete'
+    if (value.get('phase') not in ('failed','return_pending78') or value.get('recovery46') or not job
+            or not (job.get('phase')=='timeout' or job.get('phase')=='complete' and job.get('late_ack78')) or job.get('result')!='complete'
             or not job.get('native_posted') or not job.get('worker_done')
             or not _same(tuple(job['token']),('live',value['session']))):return False
     from native_stop41 import returned

@@ -39,7 +39,7 @@ def read(portal,kind,rows):
                 if not now<reference.get('until',0)<=now+GRACE+30:continue
                 host=urlsplit(source).hostname
                 with _lock:known=_dns_cache.get((host,443))
-                if known and known[0]>time.monotonic() and not known[1]:continue
+                if known and known[0]>time.monotonic() and not known[1] and not __import__('dns_verdict78').temporary((host,443)):continue
                 result.setdefault(str(row['sid']),{})[role]=source+KODI_OPTIONS
         return result
     except (OSError,ValueError,TypeError,KeyError,AttributeError):return {}
@@ -49,7 +49,7 @@ def revoked(source):
     from urllib.parse import urlsplit
     try:
         with _lock:known=_dns_cache.get((urlsplit(source).hostname,443))
-        return bool(known and known[0]>time.monotonic() and not known[1])
+        return bool(known and known[0]>time.monotonic() and not known[1] and not __import__('dns_verdict78').temporary((urlsplit(source).hostname,443)))
     except (ValueError,TypeError):return True
 
 def remember_many(portal,kind,records):

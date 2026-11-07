@@ -45,7 +45,11 @@ def state(plan,value):
 
 
 def prepare(kind,changes,metadata=None):
-    if kind not in ('binding','skin') or not 1<=len(changes)<=(5 if kind=='skin' else 4):raise ValueError('UNSAFE_PLAN')
+    if kind not in ('binding','skin') or not 1<=len(changes)<=(8 if kind=='skin' else 4):raise ValueError('UNSAFE_PLAN')
+    if len(changes) in (6,7):raise ValueError('UNSAFE_PLAN')
+    if len(changes)==8:
+        from widget_skin78 import FILES
+        if [Path(p).name for p,_ in changes]!=[Path(p).name for p in FILES]:raise ValueError('UNSAFE_PLAN')
     if len(changes)==5 and [Path(p).name for p,_ in changes]!=['IncludesHomeWidgets.xml','IncludesHomeBingie.xml','overrides.xml','template.xml','IncludesBingie.xml']:raise ValueError('UNSAFE_PLAN')
     token=uuid.uuid4().hex;root=folder()/token;root.mkdir(mode=0o700)
     entries=[]

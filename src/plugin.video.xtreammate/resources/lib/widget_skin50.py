@@ -113,6 +113,8 @@ def guard(skin):
 
 
 def prepare(skin):
+    from widget_skin78 import supported,prepare as prepare78
+    if supported(skin):return prepare78(skin)
     from widget_transaction50 import prepare as transaction
     paths=guard(skin);changes=[(p,patch(name,read(p))) for name,p in zip(FILES,paths)]
     from widget_skin75 import extra
@@ -123,6 +125,9 @@ def prepare(skin):
 def apply(token,skin,*,confirmed=False,restore=False):
     from widget_transaction50 import load,folder,apply as transaction
     plan=load(token,'skin');paths=guard(skin)
+    if len(plan['entries'])==8:
+        from widget_skin78 import apply as apply78
+        return apply78(token,skin,confirmed=confirmed,restore=restore)
     if len(plan['entries'])==5:
         from widget_skin75 import navigation_candidate
         target=Path(skin).resolve()/'xml/IncludesBingie.xml'
@@ -150,6 +155,8 @@ def apply(token,skin,*,confirmed=False,restore=False):
 
 
 def applied(skin):
+    from widget_skin78 import supported,installed,runtime
+    if supported(skin):return installed(skin) and runtime()['code']=='RUNTIME_READY'
     from widget_transaction50 import folder,load
     try:
         paths=guard(skin)

@@ -1,5 +1,5 @@
 """Fail closed for regular publication while .75 is a Pilot-only candidate."""
-import json,os
+import json,os,hashlib
 from pathlib import Path
 import xml.etree.ElementTree as E
 ROOT=Path(__file__).resolve().parents[1]
@@ -23,6 +23,24 @@ def regular_allowed():
               and data.get('android_pass_claimed') is False
               and data.get('sha256')==expected)
             if fields_ok:return True
+        except (OSError,ValueError):pass
+    # #385 explicitly authorizes this exact .78 build on all channels before
+    # Android acceptance. No future version inherits this exception.
+    if version=='0.1.29.78':
+        try:
+            path=ROOT/'docs/XCMate/releases/user-approved-untested-0.1.29.78.json'
+            data=json.loads(path.read_text(encoding='utf-8'))
+            package=ROOT/'docs/XCMate/test-builds/02978/plugin.video.xtreammate-0.1.29.78.zip'
+            expected=hashlib.sha256(package.read_bytes()).hexdigest()
+            if (data.get('addon_id')=='plugin.video.xtreammate'
+                and data.get('version')==version
+                and data.get('exception_applies_only_to_version')==version
+                and data.get('user_approved_regular_release') is True
+                and data.get('user_approved_all_channels') is True
+                and data.get('android_status')=='NOT_TESTED'
+                and data.get('android_pass_claimed') is False
+                and data.get('authorization_issue')==385
+                and data.get('sha256')==expected):return True
         except (OSError,ValueError):pass
     # All other releases still require genuine Android PASS and user consent.
     path=ROOT/'docs/XCMate/releases'/('android-approved-'+version+'.json')

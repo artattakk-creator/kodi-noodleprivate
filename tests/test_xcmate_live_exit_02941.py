@@ -32,7 +32,7 @@ class LiveExit41(unittest.TestCase):
         self.assertTrue(self.jobs.blocked());self.assertEqual(self.jobs.state()['phase'],'timeout')
         for _ in range(20):self.jobs.poll();self.assertFalse(self.jobs.request(self.m.player,manual=True))
         self.assertEqual(len(self.m.native_builtins),2)
-        self.ack();self.assertFalse(self.jobs.blocked());self.assertEqual(self.jobs.state()['phase'],'timeout')
+        self.ack();self.assertFalse(self.jobs.blocked());self.assertEqual(self.jobs.state()['phase'],'complete');self.assertTrue(self.jobs.state()['late_ack78'])
 
     def test_foreign_before_dispatch_gets_no_stop_or_navigation(self):
         self.jobs.request(self.m.player);self.m.tag='foreign'
@@ -57,7 +57,7 @@ class LiveExit41(unittest.TestCase):
         self.m.exit.request(self.m.nav);self.m.ready();self.m.exit._poll(self.m.nav)
         v=self.jobs.state();v['not_before']=0;self.jobs.save(v);self.jobs.poll();self.jobs._thread.join(2)
         v=self.jobs.state();v['deadline']=0;self.jobs.save(v);self.jobs.poll();self.m.playing=False;self.ack()
-        self.m.exit._poll(self.m.nav);self.assertEqual(self.m.exit.state()['phase'],'failed');self.assertFalse(self.m.builtins)
+        self.m.exit._poll(self.m.nav);self.assertEqual(self.m.exit.state()['phase'],'return_pending78');self.assertFalse(self.m.builtins)
 
     def test_barrier_does_not_clear_foreign_or_newer_live_announcement(self):
         self.post();new=dict(self.m.session,nonce='new',sid='2');self.m.properties[self.m.exit.SESSION]=json.dumps(new)

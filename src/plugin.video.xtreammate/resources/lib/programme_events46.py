@@ -61,7 +61,7 @@ def load(portal,channel,selected=None,now=None):
     if selected:
      if candidate['start']==int(selected.get('start',0)) and candidate['stop']==int(selected.get('stop',0)) and (not selected.get('title') or candidate['title']==selected['title']):event=candidate;break
     elif candidate['start']<=now<candidate['stop']:event=candidate;break
-   break
+   if event is not None:break  # Expired/future aliases cannot mask a valid current provider row.
  # Locally supplied legacy short-cache text remains usable offline, labelled.
  if event is None and selected and selected.get('title') and int(selected.get('stop',0))>int(selected.get('start',0)):
   event=dict(selected);canonical='';view=None

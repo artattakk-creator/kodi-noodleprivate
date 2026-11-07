@@ -197,9 +197,9 @@ class Fixture:
                 self.native_builtins.append((command,wait));return
             self.builtins.append(command)
             if command.startswith('Container.Update('):
-                self.current_folder=command[len('Container.Update('):-1].removesuffix(',replace')
+                self.current_folder=command[len('Container.Update('):-1].removesuffix(',replace').strip(chr(34))
             elif command.startswith('ActivateWindow(Videos,'):
-                self.current_folder=command[len('ActivateWindow(Videos,'):-1].removesuffix(',return')
+                self.current_folder=command[len('ActivateWindow(Videos,'):-1].removesuffix(',return').strip(chr(34))
         xbmc.executebuiltin=builtin
         xbmc.getInfoLabel=lambda label:self.current_folder if label=='Container.FolderPath' else ''
         xbmc.Monitor=lambda:types.SimpleNamespace(waitForAbort=lambda n:False)

@@ -50,7 +50,7 @@ def preview(plan):
     from widget_skin50 import FILES
     root = folder() / plan['id']
     result = []
-    names=list(FILES)+(['xml/IncludesBingie.xml'] if len(plan['entries'])==5 else [])
+    names=list(__import__('widget_skin78').FILES) if len(plan['entries'])==8 else list(FILES)+(['xml/IncludesBingie.xml'] if len(plan['entries'])==5 else [])
     for i, name in enumerate(names):
         before = read(root / ('original.' + str(i))).decode('utf-8').splitlines()
         after = read(root / ('candidate.' + str(i))).decode('utf-8').splitlines()

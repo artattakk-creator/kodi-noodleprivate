@@ -13,7 +13,7 @@ def state():
     try:
         value=json.loads(_marker().getProperty(KEY))
         from playback_exit import _session
-        if isinstance(value,dict) and _session(json.dumps(value.get('session'))) and value.get('phase') in ('requested','stopping','home','complete','failed') and 0<=time.time()-value['at']<86400:return value
+        if isinstance(value,dict) and _session(json.dumps(value.get('session'))) and value.get('phase') in ('requested','stopping','home','complete','failed','return_pending78') and 0<=time.time()-value['at']<86400:return value
     except (ValueError,TypeError,KeyError):pass
     return None
 
@@ -83,6 +83,15 @@ def _poll(navigator=None):
     job=job_state()
     from live_trace48 import observe as observe_return48
     observe_return48(value,job)
+    late78=bool(job and job.get('late_ack78') and job.get('phase')=='complete' and job['token'][1]['nonce']==session['nonce'] and not value.get('recovery46'))
+    if late78:
+        # The native Stop is complete. Its GUI return is a separate guarded
+        # stage, never a false STOP_TIMEOUT and never another Stop request.
+        if value['phase'] not in ('return_pending78','complete'):
+            value['phase']='return_pending78';_save(value);_trace('STOP_ACK_RETURN_PENDING',session);return True
+        if value['phase']=='return_pending78':
+            from live_recovery46 import resume
+            resume(value,job);return True
     if job and job['phase'] in ('failed','timeout') and job['token'][1]['nonce']==session['nonce']:
         from live_recovery46 import resume
         if resume(value,job):return True
