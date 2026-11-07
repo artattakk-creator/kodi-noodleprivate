@@ -1,0 +1,2158 @@
+{
+  "user_layout78": "PRESERVED",
+  "activation78": {
+    "plan": "62e444bc07624b4ba374d3ce33bc0f1a",
+    "phase": "RUNTIME_READY",
+    "at": 374139.192066852,
+    "reloads": 1,
+    "consumer_prepared78": true,
+    "posted": 374141.306423169,
+    "runtime": {
+      "code": "RUNTIME_READY",
+      "controls": 6,
+      "variables": true
+    }
+  },
+  "status": "PASS",
+  "android": "ANDROID_NOT_TESTED",
+  "kodi": "21.2 Debian package version: 2:21.2+dfsg-4",
+  "cases": [
+    {
+      "kind": "live",
+      "index": 0,
+      "focus": 2510,
+      "frames": [
+        [
+          624,
+          625
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 3293.02,
+      "sha256": "d540ec0d678c7df5e7a734cd7908ca3372d912034d765335cab4f3bfc59818b5"
+    },
+    {
+      "kind": "vod",
+      "index": 0,
+      "focus": 2520,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2824.66,
+      "sha256": "414966b9b852824b8c559da2e9ce19fdae1a208b7aeb147638f192904fe16c28"
+    },
+    {
+      "kind": "series",
+      "index": 0,
+      "focus": 2530,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2803.56,
+      "sha256": "54d06ba78b5464d123ca88ced37af7021ab5c860a75547544b2c40085131bc91"
+    },
+    {
+      "kind": "live",
+      "index": 0,
+      "focus": 2510,
+      "frames": [
+        [
+          624,
+          625
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2954.16,
+      "sha256": "d540ec0d678c7df5e7a734cd7908ca3372d912034d765335cab4f3bfc59818b5"
+    },
+    {
+      "kind": "vod",
+      "index": 1,
+      "focus": 2520,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 3139.17,
+      "sha256": "cbf63eae72eda475fc777da55203890f6dba23ee8c93cc426f66b76369815145"
+    },
+    {
+      "kind": "series",
+      "index": 2,
+      "focus": 2530,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 3155.22,
+      "sha256": "282a51dd73072399013a015ad118ad488434822589596e34a499a812913eafa9"
+    },
+    {
+      "kind": "live",
+      "index": 3,
+      "focus": 2510,
+      "frames": [
+        [
+          624,
+          625
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 3309.14,
+      "sha256": "b5763df3811e2a8dfc4540f7b6597d69d44865d3bd46e5c30522f66a37fbc20e"
+    },
+    {
+      "kind": "vod",
+      "index": 4,
+      "focus": 2520,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 3183.89,
+      "sha256": "e35538c25d8b38c87a7a18356b4d514207145c5c84d43f68cc2e8d93bfd0f80b"
+    },
+    {
+      "kind": "series",
+      "index": 5,
+      "focus": 2530,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 3153.95,
+      "sha256": "4a1b6b3a8cd0c0f7641f8a6ff5c5c86c06e06857250348425734e5bda0cd6c0b"
+    },
+    {
+      "kind": "live",
+      "index": 6,
+      "focus": 2510,
+      "frames": [
+        [
+          624,
+          625
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 3094.31,
+      "sha256": "a58bec99afec24b5e667e5f6ceba3d6cf8fe4d06e8ac8529a43752856d688a88"
+    },
+    {
+      "kind": "vod",
+      "index": 7,
+      "focus": 2520,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 3071.82,
+      "sha256": "3e2c8dfbdb7d0e659d4944f7e43eecabcd1e77e3fe569498d9e6b68cd2f3610e"
+    },
+    {
+      "kind": "series",
+      "index": 8,
+      "focus": 2530,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2871.74,
+      "sha256": "f82bf5bff5bf15a4d3a5491601fd27d1f91a5df8c098d12eaf6ae420b417bf63"
+    },
+    {
+      "kind": "live",
+      "index": 9,
+      "focus": 2510,
+      "frames": [
+        [
+          624,
+          625
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 3151.74,
+      "sha256": "fea436ddbac2b3e284cacc9d14dbcb6efa8f49dcdb1402f88a9c2cef543d543b"
+    },
+    {
+      "kind": "vod",
+      "index": 10,
+      "focus": 2520,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 3020.82,
+      "sha256": "c52b335af2fcaa783afe3d15111f9bfabe63f9a8759af3d3116e35f1911804a6"
+    },
+    {
+      "kind": "series",
+      "index": 11,
+      "focus": 2530,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2987.61,
+      "sha256": "422cb87e659f0dc25a63848b73104f7b3a2ff2004ed5a645fca7e4df105b9f57"
+    },
+    {
+      "kind": "live",
+      "index": 12,
+      "focus": 2510,
+      "frames": [
+        [
+          624,
+          625
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 3093.2,
+      "sha256": "1be619a28e5a734e085b45259a802ff31aeb10de2cdf0847b8a8709155e87e63"
+    },
+    {
+      "kind": "vod",
+      "index": 13,
+      "focus": 2520,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 3280.86,
+      "sha256": "fecfa7d96914e202f85b43b09283bd1827736abda46393cb705fd9fdf295e0a2"
+    },
+    {
+      "kind": "series",
+      "index": 14,
+      "focus": 2530,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2925.35,
+      "sha256": "6e9a00fec4479f4af52ba32a3bb973b39d99dd7d737e86c849e91b4de94c9864"
+    },
+    {
+      "kind": "live",
+      "index": 15,
+      "focus": 2510,
+      "frames": [
+        [
+          624,
+          625
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2989.26,
+      "sha256": "6d6662065d56adef3c2fd4bb23b3e145b7f26a0e34b6a112cefb24417e439ecc"
+    },
+    {
+      "kind": "vod",
+      "index": 16,
+      "focus": 2520,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2999.92,
+      "sha256": "61e9b6aa46de6618bb0e0185cac0c9ddca0c60ed9d28eac19efd1019b8547380"
+    },
+    {
+      "kind": "series",
+      "index": 17,
+      "focus": 2530,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2822.76,
+      "sha256": "8dc89e4f21999eb67271aeab03fb67ee0be43f6ca991fbf988a223eeb5df7354"
+    },
+    {
+      "kind": "live",
+      "index": 18,
+      "focus": 2510,
+      "frames": [
+        [
+          624,
+          625
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2969.63,
+      "sha256": "0829bdb1fb379a5ac37fc1e081a15e126149983c7d9c830c90dcffb3aa3a0272"
+    },
+    {
+      "kind": "vod",
+      "index": 19,
+      "focus": 2520,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2904.14,
+      "sha256": "30e556fefe9608c3d536d55e85211f0d001125e6cd0eddcdf7198fbefb5fd941"
+    },
+    {
+      "kind": "live",
+      "index": 5,
+      "focus": 2510,
+      "frames": [
+        [
+          624,
+          625
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 3129.24,
+      "sha256": "4b7916882a767c87606c8f0588cb69521de74e4c2f8aa22cb4a64bd42c95b554"
+    },
+    {
+      "kind": "live",
+      "index": 6,
+      "focus": 2510,
+      "frames": [
+        [
+          624,
+          625
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 3172.73,
+      "sha256": "b1c118fb74940c348ab2babdf4bd03ffa79d37bc27c995c99ffede82ac4dcaf4"
+    },
+    {
+      "kind": "foreign-poster",
+      "index": 0,
+      "focus": 2540,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2282.88,
+      "sha256": "71b7e404745d641daf0a465953c2b3722bf17b898d46e0f34a17f2aeb1fa8e19"
+    },
+    {
+      "kind": "foreign-poster",
+      "index": 23,
+      "focus": 2540,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2319.74,
+      "sha256": "3334b23e93f78f74d63d410e011b8e3cfa7a597359320993423b4f3e99ad4d36"
+    },
+    {
+      "kind": "foreign-music",
+      "index": 0,
+      "focus": 2550,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2167.77,
+      "sha256": "ceba0a5b30a7b741b68632462b9aac7eddea865e2f1c7d28b0f34843341a19f3"
+    },
+    {
+      "kind": "foreign-music",
+      "index": 23,
+      "focus": 2550,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2090.01,
+      "sha256": "f33ef36717a0e251500a3bf573cf69abd618f167307dd95d61cab0824db3a453"
+    },
+    {
+      "kind": "foreign-television",
+      "index": 0,
+      "focus": 2560,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2114.34,
+      "sha256": "49998c6a9d3e9f1e5280cb1186aaf7c8ed4032d6fa68a3d145d1af7ec73651b4"
+    },
+    {
+      "kind": "foreign-television",
+      "index": 23,
+      "focus": 2560,
+      "frames": [
+        [
+          624,
+          625
+        ],
+        [
+          943,
+          944
+        ]
+      ],
+      "hero": [
+        [
+          270,
+          20
+        ],
+        1080,
+        580
+      ],
+      "settled_render_ms": 2085.32,
+      "sha256": "138a0ad74c87e638242de16811144f8d0f79bc171d6da5d10669865add262fde"
+    }
+  ],
+  "traces": [
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 1,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [],
+      "visible": [
+        "live"
+      ],
+      "ready76": {},
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    },
+    {
+      "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+      "phase": 3,
+      "at": 374143.563009835,
+      "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+      "prepared": [
+        "vod",
+        "series"
+      ],
+      "visible": [
+        "live",
+        "vod",
+        "series"
+      ],
+      "ready76": {
+        "vod": {
+          "fixture59": {
+            "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        },
+        "series": {
+          "fixture59": {
+            "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+            "count": 24,
+            "images": 24,
+            "fallbacks": 0
+          }
+        }
+      },
+      "required76": {
+        "vod": [
+          "fixture59"
+        ],
+        "series": [
+          "fixture59"
+        ]
+      }
+    }
+  ],
+  "prepared_state": {
+    "context": "3de41426291f501eb7355767ca231bc7cbd9471a788943690f04a84affeec090",
+    "phase": 3,
+    "at": 374143.563009835,
+    "profile": "67cf4916c99ed703b1150c4e6999feb0e9539fc53b3cc2f514f474b0298d7a55",
+    "prepared": [
+      "vod",
+      "series"
+    ],
+    "visible": [
+      "live"
+    ],
+    "ready76": {
+      "vod": {
+        "fixture59": {
+          "signature": "4ebb239b614a43cf901742c8b8ee9eb1b7469aeb85ca4f52d0f36bad8aff453f",
+          "count": 24,
+          "images": 24,
+          "fallbacks": 0
+        }
+      },
+      "series": {
+        "fixture59": {
+          "signature": "311bf9aa99235614b150118ae0d82fdeee7b2257c465b11d862ca4214e7c3878",
+          "count": 24,
+          "images": 24,
+          "fallbacks": 0
+        }
+      }
+    },
+    "required76": {
+      "vod": [
+        "fixture59"
+      ],
+      "series": [
+        "fixture59"
+      ]
+    }
+  },
+  "images77": [
+    {
+      "sid": "5",
+      "event_hash": "b801a06878b9",
+      "source": "xmltv_event",
+      "full_decode": true,
+      "hero_pixels": true,
+      "detail_pixels": true,
+      "same_event": true,
+      "texture": {
+        "code": "TEXTURE_PENDING"
+      },
+      "android": "ANDROID_NOT_TESTED"
+    },
+    {
+      "sid": "6",
+      "event_hash": "15fe4090c88b",
+      "source": "xmltv_event",
+      "full_decode": true,
+      "hero_pixels": true,
+      "detail_pixels": true,
+      "same_event": true,
+      "texture": {
+        "code": "TEXTURE_PENDING"
+      },
+      "android": "ANDROID_NOT_TESTED"
+    }
+  ],
+  "native_actions": [
+    {
+      "action": "Down",
+      "focus": 2520
+    },
+    {
+      "action": "Down",
+      "focus": 2530
+    },
+    {
+      "action": "Down",
+      "focus": 2540
+    },
+    {
+      "action": "Down",
+      "focus": 2550
+    },
+    {
+      "action": "Down",
+      "focus": 2560
+    },
+    {
+      "action": "Up",
+      "focus": 2550
+    },
+    {
+      "action": "Up",
+      "focus": 2540
+    },
+    {
+      "action": "Up",
+      "focus": 2530
+    },
+    {
+      "action": "Up",
+      "focus": 2520
+    },
+    {
+      "action": "Up",
+      "focus": 2510
+    },
+    {
+      "action": "Down",
+      "focus": 2520
+    },
+    {
+      "action": "Down",
+      "focus": 2530
+    },
+    {
+      "action": "Down",
+      "focus": 2540
+    },
+    {
+      "action": "Down",
+      "focus": 2550
+    },
+    {
+      "action": "Down",
+      "focus": 2560
+    },
+    {
+      "action": "Up",
+      "focus": 2550
+    },
+    {
+      "action": "Up",
+      "focus": 2540
+    },
+    {
+      "action": "Up",
+      "focus": 2530
+    },
+    {
+      "action": "Up",
+      "focus": 2520
+    },
+    {
+      "action": "Up",
+      "focus": 2510
+    }
+  ],
+  "elapsed_seconds": 0.25821916497079656,
+  "checkpoints": [],
+  "missing_control": "PASS"
+}
