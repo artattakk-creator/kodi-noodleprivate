@@ -28,6 +28,11 @@ veröffentlichten .81-Paketkopien und Installer 0.5.26 bleiben unverändert.
   Watchdog verhindert ein unbegrenzt hängendes Test-Fixture.
 - PO-Validierung: **17 Sprachkataloge PASS**, Deutsch/Englisch je 1.240 Kontexte.
 - Python-Kompilation und Whitespaceprüfung: **PASS**.
+- Betroffene Alt-Fixtures nach Bereinigung der Kodi-/Search-/EPG-Bindungen:
+  **108 PASS**, 23,350 s. Modellfenster-Watcher werden vor dem Austausch der
+  Prozess-Stubs beendet; es werden keine Produktassertions entfernt.
+- Gesonderte pytest-Brandingprüfung: **11 PASS**. Die komplette CI installiert
+  pytest ausdrücklich und führt diese funktionsbasierten Tests zusätzlich aus.
 - Gesamter aktueller Testumfang: **3.298** Methoden, davon 3.275 bestehende und
   23 zusätzliche .82-Methoden. Methoden und vorhandene Skip-Bedingungen werden
   vollständig gegen die freigegebene .81-Basis geprüft.

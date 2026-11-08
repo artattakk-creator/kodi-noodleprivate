@@ -81,6 +81,11 @@ class CacheAndEPGTests(unittest.TestCase):
         patch2 = mock.patch.dict(sys.modules,dict(utils=self.utils))
         patch2.start()
         self.addCleanup(patch2.stop)
+        # Real cache IO needs the real status journal under this same profile,
+        # not a minimal revision-only stub restored by an earlier GUI fixture.
+        status=load('limits_epg_status','epg_status.py')
+        patch3=mock.patch.dict(sys.modules,dict(epg_status=status))
+        patch3.start();self.addCleanup(patch3.stop)
         self.epg = load('limits_epg','epg.py')
         self.sources = load('limits_sources','epg_sources.py')
 
