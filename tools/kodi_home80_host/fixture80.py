@@ -18,4 +18,17 @@ def stream80(self,sid,extension='mp4'):
 XtreamClient.vod_stream_url=stream80
 exec(compile(Path('/base_fixture75.py').read_text(),'/base_fixture75.py','exec'),globals())
 if parse_qs(sys.argv[2].lstrip('?')).get('fixture59')==['seed']:
+ # fixture75 adds its landscape source after fixture74's first snapshot.
+ # A fast runner can legitimately retain that old 15-s snapshot. Finish the
+ # synthetic import through the real background revision path before opening
+ # the ready-profile UI; do not delete caches or replace renderer behavior.
+ from portals import get_active
+ from widget_data41 import snapshot
+ from programme_assets47 import prepare,read_many
+ from widget_refresh45 import publish
+ portal80=get_active()[0];rows80,code80=snapshot(portal80,'vod',background=True)
+ prepare(portal80,'vod',rows80,provider_only=True)
+ references80=read_many(portal80['id'],'vod',rows80,provider_only=True)
+ if not references80.get('0',{}).get('fanart'):raise RuntimeError('FIXTURE80_FANART_SEED_UNCONFIRMED')
+ if not publish(portal80,'vod',rows80,code80):raise RuntimeError('FIXTURE80_FRAME_UNCONFIRMED')
  subprocess.Popen([sys.executable,'/media80.py'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
