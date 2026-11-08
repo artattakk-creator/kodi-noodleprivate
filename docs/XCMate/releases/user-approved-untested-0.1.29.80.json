@@ -1,0 +1,16 @@
+{
+  "addon_id": "plugin.video.xtreammate",
+  "version": "0.1.29.80",
+  "exception_applies_only_to_version": "0.1.29.80",
+  "user_approved_regular_release": true,
+  "user_approved_pilot_release": true,
+  "user_approved_all_channels": true,
+  "authorization_issue": 389,
+  "authorization": "Explicit user request in project chat on 2026-11-08 after merge PR #390: asking for XCMate 0.1.29.80 to be distributed to all repositories so Kodi devices currently on .79 can update. Release on regular, installed Pilot and NeoDark3 paths, as an untested Android candidate; no Android PASS claimed.",
+  "android_status": "NOT_TESTED",
+  "android_pass_claimed": false,
+  "source_merge_pr": 390,
+  "source_merge_sha": "b52ffc5bfd73028a2735334aebee88f1c65d2103",
+  "sha256": "138b1dd522032d28c23044c68879fbe59c467a4524027b2152dca1887edee7ae",
+  "installer_0_5_26_unchanged": true
+}
