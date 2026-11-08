@@ -106,6 +106,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         prior69=session69(event)
         if prior69 and not upgrade81 and not (allow_lookup and __import__('programme_status70').retry(event,prior69)):return prior69
     old=art(event)
+    if old and old.get('source','').startswith(('tmdb_','tvmaze')) and not __import__('event_art81').allowed(old):old=None
     if not upgrade81 and old and not old.get('url_version55') and (local_image63 or old.get('source') in ('tmdb_movie','tmdb_episode','tmdb_series','tvmaze_series','tvmaze_episode')) and old.get('source')!='placeholder' and old.get('fingerprint')==fingerprint(event) and old.get('until',0)>time.time():
         from programme_art46 import indexed
         local60=indexed(event,verify=True)
@@ -157,6 +158,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         if allow_lookup and not match and not __import__('programme_sources57').unsuitable69(event):
             from programme_match46 import candidate as own_candidate81
             from art_trace81 import own as own_trace81
+            attempted81=True  # cache/backoff/consent skips also own this supplier
             try:
                 def run_own81():
                     nonlocal attempted81

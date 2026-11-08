@@ -75,3 +75,18 @@ class Own81(Fixture,unittest.TestCase):
   self.assertEqual(value['source'],'tmdb_movie');self.assertEqual(Path(value['image']).read_bytes(),body)
   with mock.patch('tmdb_connection60.request',side_effect=AssertionError('duplicate API')),mock.patch('programme_urls55.probe',side_effect=AssertionError('repeat download')):
    self.assertEqual(urls.resolve(event,allow_lookup=True,url_mode69=True)['image'],value['image'])
+ def test_resolver_fallback_cannot_bypass_own_optout_or_negative_backoff(self):
+  from programme_events46 import describe
+  import programme_urls55 as urls
+  from programme_image69 import eligible
+  event=describe(self.portal,dict(sid='1',kind='live',name='Synthetic',epg_channel_id='xml'),dict(title='Synthetic film',start=self.now-60,stop=self.now+600),canonical='xml');event.update(genre='Film',year=2020)
+  self.options.update(programme_tmdb_optout77=True,programme_catalog57=False,programme_tvmaze67=False,programme_helper57=False)
+  with mock.patch('programme_match46.candidate',side_effect=AssertionError('optout bypass')):
+   urls.resolve(event,allow_lookup=True,url_mode69=True)
+  self.assertFalse(eligible(dict(source='tmdb_movie',code='READY',image='/prior-local.png')))
+  self.options['programme_tmdb_optout77']=False
+  self.trace._results.clear()
+  with mock.patch('programme_match46.candidate',return_value=None) as own:
+   urls.resolve(event,allow_lookup=True,url_mode69=True)
+   urls.resolve(event,allow_lookup=True,url_mode69=True)
+  self.assertLessEqual(own.call_count,1)
