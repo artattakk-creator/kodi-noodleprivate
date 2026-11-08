@@ -1,5 +1,7 @@
 # XCMate 0.1.29.79 – Android-Abnahme
 
+> **VERBINDLICHER RELEASE-STATUS 08.11.2026:** Die früher im Testplan stehende Aussage „reguläre Kanäle bleiben .78“ ist **überholt**. Auf ausdrücklichen Nutzerauftrag wurde XCMate **0.1.29.79** aus [PR #388](https://github.com/artattakk-creator/kodi-noodleprivate/pull/388) nach `main` gemergt und ist jetzt **im regulären GS Media und im auf der Testbox installierten GS Media Pilot** verfügbar; NeoDark3 bleibt .78. Beide ZIPs sind identisch (SHA256 `cb68d09c84c7190bf1459d0d46532920d6c5a7dfea15a96a6d5e6cb4f244c20a`). **Android-Abnahme bleibt vollständig NOT_TESTED**. Aktuelle [Release-/Codex-Übergabe](./UEBERGABE_02979_MAIN_PILOT_RELEASE_2026-11-08_DE.md). Installer 0.5.26 und Benutzerdaten unverändert.
+
 Stand 08.11.2026. Alle folgenden Gates: **ANDROID_NOT_TESTED**.
 Auf vorhandener Kodi-21.3-ARM32-Testbox prüfen; ältere Kodi-21.2-Box erst nach eigener Freigabe. Keine Neuinstallation, kein Reset, keine Skin-/Keymap-Änderung. Der Download ist ein manuelles Test-Update; die regulären Kanäle bleiben .78.
 
