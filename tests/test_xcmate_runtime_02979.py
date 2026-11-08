@@ -22,7 +22,7 @@ class Runtime79(Fixture,unittest.TestCase):
  def test_actual_item_generation_ack_is_distinct_from_texture_visibility(self):
   stages=self.stages();self.assertIn('RELOAD_ACK',stages);self.assertIn('ACTIVE_CONTROL',stages);self.assertIn('TEXTURE_REQUESTED',stages);self.assertNotIn('TEXTURE_VISIBLE',stages)
  def test_missing_control_is_not_classified_as_empty_directory(self):
-  self.state['missing']=True;stages=self.stages();self.assertIn('CONTROL_MISSING',stages);self.assertNotIn('CONTROL_EMPTY',stages)
+  self.state['missing']=True;stages=self.stages();self.assertIn('CONTROL_MISSING',stages);self.assertNotIn('CONTROL_EMPTY',stages);self.assertNotIn('SKIN_CONSUMER_READY',stages)
  def test_hidden_row_is_retained_without_empty_retry(self):
   self.state.update(visible=False,count='0');self.assertIn('CONTROL_HIDDEN',self.stages());self.assertEqual(self.m._tries,{})
  def test_empty_consumer_gets_two_targeted_retries_without_rebuild_or_focus(self):

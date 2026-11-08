@@ -8,9 +8,9 @@ Produkt채nderungen bis `e47479846a133a6252b2f9e4e644705bf7df8fc4` plus abschlie�
 
 `docs/XCMate/test-builds/02979/plugin.video.xtreammate-0.1.29.79.zip`
 
-SHA256: `a44d60b226375beb85adffe2d8bea8f793a9f5cbe7724322146f1de11e0dabb1`
+SHA256: `cb68d09c84c7190bf1459d0d46532920d6c5a7dfea15a96a6d5e6cb4f244c20a`
 
-3.460.011 Bytes, 749 Source-Dateien. Deterministische ZIP-Metadaten, CRC und vollst채ndige Source-Parit채t gepr체ft. Kein Profil, Token, Log oder SQLite-Datenbestand im ZIP. Build: `python tools/package_xcmate71.py <Ausgabeordner>`. Build aus finalem Source erneut mit kanonischem Paket vergleichen.
+3.460.002 Bytes, 749 Source-Dateien. Deterministische ZIP-Metadaten, CRC und vollst채ndige Source-Parit채t gepr체ft. Kein Profil, Token, Log oder SQLite-Datenbestand im ZIP. Build: `python tools/package_xcmate71.py <Ausgabeordner>`. Build aus finalem Source erneut mit kanonischem Paket vergleichen.
 
 ## Automatisierte Pr체fung
 

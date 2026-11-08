@@ -85,11 +85,11 @@ def poll():
   except (ValueError,TypeError):continue
   tag=record.get('tag','');expected=record.get('count',0)
   if len(tag)!=64 or type(expected) is not int or expected<=0:continue
-  if plan['ids']:note(portal,kind,'SKIN_CONSUMER_READY',tag,count=len(plan['ids']))
   known=False;empty=False;ack=False
   for cid in plan['ids']:
    try:__import__('home_runtime77').control(window,cid)
    except (RuntimeError,AttributeError):note(portal,kind,'CONTROL_MISSING',tag,control=cid);continue
+   note(portal,kind,'SKIN_CONSUMER_READY',tag,control=cid)
    label=lambda name:xbmc.getInfoLabel('Container('+str(cid)+').'+name)
    raw=label('NumItems')
    if not str(raw).isdigit():continue
