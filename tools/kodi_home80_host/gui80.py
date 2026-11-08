@@ -17,6 +17,21 @@ source80=source80.replace(needle80,"select(2510,0,'live')\ninitial80_path,initia
 source80=source80.replace("duration=int(os.environ.get('XCMATE_IDLE74','0'))", "home.setFocusId(2510);home.getControl(2510).selectItem(0);pump();xbmc.sleep(300)\nduration=int(os.environ.get('XCMATE_IDLE74','0'))")
 source80=source80.replace("elapsed-checkpoints[-1]['elapsed']>=900", "elapsed-checkpoints[-1]['elapsed']>=30")
 source80=source80.replace("check(counts==[88,24,24],counts)", "check(counts==[88,24,24],counts)\n        check(max(abs(a-b) for a,b in zip(rgb.getpixel((500,300)),(20,80,130)))<=8,'IDLE80_HERO_LOST')\n        check(max(abs(a-b) for a,b in zip(rgb.getpixel((330,525)),(20,90,150)))<=8,'IDLE80_LOGO_LOST')")
+# Focus changes schedule Kodi textures asynchronously. Keep exact pixel
+# assertions, but await the selected media texture rather than a fixed delay.
+# The initial unfocused row assertion above remains immediate and unchanged.
+source80=source80.replace("path=Path('/root/'+name+'.png')", "path=Path('/root/'+name+'.png')\n    path.unlink(missing_ok=True)")
+source80=source80.replace("path,rgb=capture('home75-'+kind+'-'+str(index))", "path,rgb=capture_selected80(kind,index)")
+def capture_selected80(kind,index):
+ deadline80=time.monotonic()+5;name80='home75-'+kind+'-'+str(index);attempt80=0
+ expected80=((180,100,30) if kind=='vod' and index==0 else tuple((v+index*step)%240 for v,step in zip((40,70,120) if kind=='vod' else (100,50,20),(19,31,13)))) if kind in ('vod','series') else None
+ while True:
+  path80,rgb80=capture(name80);actual80=rgb80.getpixel((1000,150));attempt80+=1
+  if expected80 is None or max(abs(a-b) for a,b in zip(actual80,expected80))<=6:return path80,rgb80
+  if time.monotonic()>=deadline80:
+   Path('/root/render80-error.json').write_text(json.dumps(dict(kind=kind,index=index,actual=actual80,expected=expected80,attempts=attempt80)))
+   return path80,rgb80 # The original strict pixel assertion reports failure.
+  pump();xbmc.sleep(100)
 exec(compile(source80,'native-home80-base','exec'),globals())
 # Keep every real TLS/cache assertion from .79, including full decode.
 cache80=Path('/base_gui_cache79.py').read_text().split('import widget_cache79 as cache79',1)[1]

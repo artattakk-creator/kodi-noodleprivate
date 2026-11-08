@@ -67,11 +67,16 @@ def main():
             run('cp',name+':/root/post75.json',str(report/'post79-second.json'))
         print(json.dumps(json.loads((report/'home75.json').read_text())))
     finally:
+        # Preserve every actual screenshot on failure as well as success.
+        try:
+            captured80=json.loads(run('exec',name,'python3','-c',"import json;from pathlib import Path;print(json.dumps([str(p) for p in Path('/root').glob('home75-*.png')]))",capture_output=True,text=True).stdout)
+            for file80 in captured80:run('cp',name+':'+file80,str(report/Path(file80).name))
+        except (subprocess.CalledProcessError,ValueError):pass
         subprocess.run(docker+['cp',name+':/root/image77-failure.json',str(report/'image77-failure.json')],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         subprocess.run(docker+['cp',name+':/root/home75-live-5.png',str(report/'home75-live-5.png')],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         subprocess.run(docker+['cp',name+':/root/cache79-error.json',str(report/'cache79-error.json')],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         if version79:
-            for extra79 in ('home75-dynamic79-vod.png','home75-dynamic79-series.png','home75-cold79-vod.png','home75-cold79-series.png','post75-error.txt','home80-initial.png','home80-vod-detail.png','home80-vod-playing.png','home80-vod-return.png','home80-idle.png','vod80.json','guide80.json','home80-guide.png','idle80.json','debug80.json'):
+            for extra79 in ('home75-dynamic79-vod.png','home75-dynamic79-series.png','home75-cold79-vod.png','home75-cold79-series.png','post75-error.txt','home80-initial.png','home80-vod-detail.png','home80-vod-playing.png','home80-vod-return.png','home80-idle.png','vod80.json','guide80.json','home80-guide.png','idle80.json','debug80.json','render80-error.json'):
                 subprocess.run(docker+['cp',name+':/root/'+extra79,str(report/extra79)],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         run('cp',name+':/root/.kodi/temp/kodi.log',str(report/'synthetic-kodi.log'))
         run('cp',name+':/root/gui66-error.txt',str(report/'gui-error.txt'),stderr=subprocess.DEVNULL) if subprocess.run(docker+['exec',name,'test','-f','/root/gui66-error.txt'],env=env).returncode==0 else None
