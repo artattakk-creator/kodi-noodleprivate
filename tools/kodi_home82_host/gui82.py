@@ -30,7 +30,10 @@ def stability82():
    Path('/root/stability82-error.json').write_text(json.dumps(diagnostic82))
   check(frame82 is not None,'CACHED82_FRAME_MISSING')
   originals82[kind82]=frame82['art_status74']
-  check(frame82['art_status74']=='REFERENCE_READY','CACHED82_REFERENCE_NOT_READY')
+  # The historical native fixture deliberately has no provider logo for
+  # sender 87. Keep that negative case; never invent an image to claim READY.
+  missing82=[v['props']['XCMate.MediaId'] for v in frame82['items'] if not renderable(v['art'].get('poster'))]
+  check(not missing82 or kind82=='live' and missing82==['87'],('CACHED82_UNEXPECTED_MISSING',kind82,missing82))
  filename82=db.path();old82=db._failures.get(filename82)
  seconds82=max(2,int(os.environ.get('XCMATE_FAULT_IDLE82','0')))
  db._failures[filename82]=dict(identity=db._identity(filename82),code='BUSY',retry_after=time.time()+seconds82+60)
