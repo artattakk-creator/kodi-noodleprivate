@@ -25,6 +25,8 @@ def load(portal,kind):
    with _lock:
     _cache[filename]=((stamp.st_mtime_ns,stamp.st_size),value)
     while len(_cache)>16:_cache.pop(next(iter(_cache)))
+  if not isinstance(value,dict) or not isinstance(value.get('refs'),dict):return {}
+  if any(not isinstance(roles,dict) or any(not isinstance(record,dict) for record in roles.values()) for roles in value['refs'].values()):return {}
   return value if value.get('context')==context else {}
  except (OSError,ValueError,TypeError):return {}
 

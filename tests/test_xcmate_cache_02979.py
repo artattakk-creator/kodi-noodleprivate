@@ -42,3 +42,8 @@ class Cache79(Fixture,unittest.TestCase):
  def test_uri_admission_prefers_exact_local_cache_over_temporary_public_reference(self):
   self.capture();a=importlib.import_module('widget_assets69')
   with mock.patch('artwork_config.persistent',return_value=False):self.assertEqual(a.read(self.portal,'vod',[self.row])['1']['poster'],str(self.file))
+ def test_corrupt_optional_journal_never_breaks_directory(self):
+  filename,context=self.m.path(self.portal,'vod')
+  for value in ([],None,dict(context=context,refs=[]),dict(context=context,refs={'1':[]})):
+   Path(filename).write_text(json.dumps(value));self.m._cache.clear()
+   self.assertEqual(self.m.read(self.portal,'vod',[self.row]),{})

@@ -43,3 +43,12 @@ class Runtime79(Fixture,unittest.TestCase):
   a.request('consumer79',consumers_changed=True);value=json.loads(self.properties[a.KEY]);value.update(consumer_prepared78=True,at=start-3);self.properties[a.KEY]=json.dumps(value)
   with mock.patch('xbmc.getSkinDir',return_value='skin.titan.bingie.mod',create=True),mock.patch('widget_skin78.runtime',return_value=dict(code='RUNTIME_READY')),mock.patch('xbmc.executebuiltin') as command:
    a._next=0;a.poll();self.assertEqual(json.loads(self.properties[a.KEY])['phase'],'RELOAD_POSTED');command.assert_called_once_with('ReloadSkin()',wait=False)
+ def test_paged_live_frame_reannounces_all_eighty_eight_unchanged_items(self):
+  import test_xcmate_home_02974 as h
+  model=h.Home74(methodName='runTest');model.setUp();self.addCleanup(model.doCleanups)
+  rows=[dict(sid=str(i),name='Live '+str(i),category_id='a') for i in range(88)]
+  with mock.patch('programme_assets47.read_many',return_value={}):
+   model.frame(rows,kind='live');notice=importlib.import_module('widget_notice46');notice._pending.clear()
+   from pathlib import Path
+   before=Path(model.w.path('p','live')).read_bytes();model.w.publish(model.portal,'live',rows)
+  self.assertEqual(notice._pending[('p','live')][1],88);self.assertEqual(Path(model.w.path('p','live')).read_bytes(),before)
