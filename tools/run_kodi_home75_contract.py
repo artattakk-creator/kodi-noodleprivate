@@ -64,7 +64,7 @@ def main():
         subprocess.run(docker+['cp',name+':/root/home75-live-5.png',str(report/'home75-live-5.png')],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         subprocess.run(docker+['cp',name+':/root/cache79-error.json',str(report/'cache79-error.json')],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         if version79:
-            for extra79 in ('home75-dynamic79-vod.png','home75-dynamic79-series.png','home75-cold79-vod.png','home75-cold79-series.png'):
+            for extra79 in ('home75-dynamic79-vod.png','home75-dynamic79-series.png','home75-cold79-vod.png','home75-cold79-series.png','post75-error.txt'):
                 subprocess.run(docker+['cp',name+':/root/'+extra79,str(report/extra79)],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         run('cp',name+':/root/.kodi/temp/kodi.log',str(report/'synthetic-kodi.log'))
         run('cp',name+':/root/gui66-error.txt',str(report/'gui-error.txt'),stderr=subprocess.DEVNULL) if subprocess.run(docker+['exec',name,'test','-f','/root/gui66-error.txt'],env=env).returncode==0 else None
