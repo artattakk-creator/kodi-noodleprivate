@@ -10,7 +10,7 @@ from portals import get_active
 from widget_data41 import snapshot
 home=xbmcgui.Window(10000);portal=get_active()[0]
 for _ in range(300):
- if xbmcgui.getCurrentWindowId()==10000 and xbmcgui.getCurrentWindowDialogId() in (0,-1,9999) and not home.getProperty('StartupMask') and xbmc.getInfoLabel('Container(2510).NumItems')=='88':break
+ if xbmcgui.getCurrentWindowId()==10000 and xbmcgui.getCurrentWindowDialogId() in (0,-1,9999) and not home.getProperty('StartupMask') and not xbmc.getCondVisibility('Window.IsVisible(11103)') and xbmc.getInfoLabel('Container(2510).NumItems')=='88':break
  xbmc.sleep(100)
 else:raise RuntimeError('COLD79_HOME_NOT_READY')
 cases=[]
@@ -23,15 +23,16 @@ for kind,cid,color in (('vod',2520,(25,145,100)),('series',2530,(145,70,120))):
  tag=xbmc.getInfoLabel('Container('+str(cid)+').ListItem.Property(XCMate.Directory79)')
  record=json.loads(home.getProperty(widget_runtime79.slot(portal,kind)) or '{}')
  if not tag or tag!=record.get('tag'):raise RuntimeError('COLD79_DIRECTORY_ACK_MISMATCH')
- picture=Path('/root/home75-cold79-'+kind+'.png');xbmc.executebuiltin('TakeScreenshot('+str(picture)+')',wait=False)
- for _ in range(40):
-  xbmc.sleep(100)
+ picture=Path('/root/home75-cold79-'+kind+'.png')
+ for paint in range(25):
+  # Startup and native texture fades are asynchronous. Observe the final
+  # pixels, without accepting a splash-dimmed frame as a successful image.
+  xbmc.sleep(200);xbmc.executebuiltin('TakeScreenshot('+str(picture)+')',wait=False);xbmc.sleep(100)
   try:
    with Image.open(picture) as im:im.load();rgb=im.convert('RGB').resize((1920,1080))
-   break
   except (OSError,ValueError):continue
- else:raise RuntimeError('COLD79_SCREENSHOT_NOT_READY')
- if max(abs(a-b) for a,b in zip(rgb.getpixel((800,150)),color))>8:raise RuntimeError('COLD79_ACTUAL_HERO_TEXTURE_WRONG')
+  if max(abs(a-b) for a,b in zip(rgb.getpixel((800,150)),color))<=8:break
+ else:raise RuntimeError('COLD79_ACTUAL_HERO_TEXTURE_WRONG')
  rows,_=snapshot(portal,kind);cached=widget_cache79.read(portal,kind,rows).get('0',{}).get('poster')
  if not cached:raise RuntimeError('COLD79_CACHE_LEASE_MISSING')
  cases.append(dict(kind=kind,count=int(xbmc.getInfoLabel('Container('+str(cid)+').NumItems')),directory_ack=True,local_cache=True,sha256=hashlib.sha256(Path(cached).read_bytes()).hexdigest(),actual_pixels='PASS'))
