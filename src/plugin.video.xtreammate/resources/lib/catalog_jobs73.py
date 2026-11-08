@@ -188,9 +188,13 @@ def run_next(cancel=lambda: False):
                 job.setdefault('empty',[])
                 job['empty'].append([kind,group['category_id']])
             totals=dict(job['counts']);totals[kind]+=result['stored']
+            delta81=dict(job.get('delta81',{}));part81=dict(delta81.get(kind,{}))
+            for field81 in ('new','changed','unchanged','read'):part81[field81]=part81.get(field81,0)+int(result.get(field81,0))
+            delta81[kind]=part81
+            api81=dict(job.get('last_api_success81',{}));api81[kind]=time.time()
             job=_update(job['id'], cursor=job['cursor']+1, processed=job['processed']+result['read'],
                         committed=job['committed']+int(result['stored']>0), counts=totals,
-                        empty=job.get('empty',[]), attempts=0)
+                        empty=job.get('empty',[]), attempts=0,delta81=delta81,last_api_success81=api81)
             try:
                 from widget_refresh45 import publish
                 from widget_data41 import snapshot
@@ -204,7 +208,7 @@ def run_next(cancel=lambda: False):
             if job.get('epg'):
                 from epg import request_refresh
                 epgcode='REQUESTED' if request_refresh(session.pid,portal,force=True) else 'DEFERRED'
-            _update(job['id'],state='DONE',resume=False,code='',readback=readback,epg_state=epgcode)
+            _update(job['id'],state='DONE',resume=False,code='',readback=readback,epg_state=epgcode,last_full_sync81={k:time.time() for k in session.kinds if job.get('groups_found',{}).get(k,0)>0 and not any(a==k for a,c in job.get('empty',[]))})
         else: _update(job['id'], state='WAITING', code='')
         return True
     except Exception as exc:
@@ -217,9 +221,12 @@ def run_next(cancel=lambda: False):
                     resume=bool(cancel()))
         else:
             attempts=job.get('attempts',0)+1
+            failed81=list(job.get('failed_groups81',[]))
+            kind81=job.get('kind','');group81=job.get('group','')
+            if not any(r['kind']==kind81 and r['group']==group81 and r['code']==problem.code for r in failed81):failed81.append(dict(kind=kind81,group=group81,code=problem.code))
             retry=problem.code in ('NETWORK','TIMEOUT','SQLITE','HTTP','RATE_LIMIT') and attempts<3
             _update(job['id'],state='WAITING' if retry else 'FAILED',code=problem.code,
-                    attempts=attempts,resume=retry,next_at=time.time()+min(300,15*2**attempts))
+                    attempts=attempts,resume=retry,next_at=time.time()+min(300,15*2**attempts),failed_groups81=failed81[-20000:])
         return True
     finally:
         if session is not None: session.close()

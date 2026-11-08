@@ -14,7 +14,9 @@
     <setting id="new_portal_enabled" type="bool" label="32091" default="true" />
     <setting id="new_portal_add" type="action" label="32282" action="RunPlugin(plugin://plugin.video.xtreammate/?action=add_portal_from_settings)" />
     <setting id="open_portal_manager" type="action" label="32201" action="RunPlugin(plugin://plugin.video.xtreammate/?action=portal_manager)" />
-  </category>
+    <setting id="catalog_status81" type="bool" label="32794" default="false" />
+  <setting id="catalog_summary81" type="bool" label="32795" default="false" />
+</category>
   <category label="36001">
     <setting id="startup_xtream" type="action" label="XCMate: Startsender / Startgruppe" action="RunPlugin(plugin://plugin.video.xtreammate/?action=startup_settings)" />
     <setting id="manage_xtream_groups" type="action" label="XCMate: Live-TV-, Film- und Seriengruppen verwalten" action="RunPlugin(plugin://plugin.video.xtreammate/?action=groups_manager)" />

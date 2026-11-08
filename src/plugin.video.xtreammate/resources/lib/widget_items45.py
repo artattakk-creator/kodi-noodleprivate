@@ -17,6 +17,15 @@ def describe(portal,kind,row,approved,epg=None,assets47=None):
         if fanart:image.update(fanart=fanart,landscape=fanart)
         elif poster:image['landscape']=poster
     provider80=__import__('home_publication80').capture(row,image)
+    if assets47:
+        from render_cache81 import record_for
+        from programme_assets47 import sources,fingerprint
+        for role,source in sources(row,provider_only=True).items():
+            proof81=record_for(portal,kind,row,role,source)
+            if proof81 and proof81.get('file')==image.get(role):
+                provider80[role]=dict(source=proof81.get('source81') or fingerprint(source),uri=proof81['file'])
+    supplement81=__import__('media_hero81').reference(portal,kind,row) if kind in ('vod','series') and not image.get('fanart') else ''
+    if supplement81:image.update(fanart=supplement81,landscape=supplement81)
     placeholder=os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media',{'live':'tv','series':'series'}.get(kind,'vod')+'.png')
     if theme:
         if image['landscape']==placeholder or image['landscape'].startswith(str(theme['folder'])+'/'):
@@ -62,6 +71,7 @@ def describe(portal,kind,row,approved,epg=None,assets47=None):
     if kind!='live':
         label=recent_label(row,setting_int('recent_days',10));props['XCMate.AddedStatus']=label
         info['plot']=label+'\n'+info['plot']
+    props['XCMate.MediaHeroSource81']='TMDB' if supplement81 else 'Provider'
     if kind=='series':
         from series_art64 import inspect,note
         props['XCMate.SeriesArt64']=inspect(row,image);note(props['XCMate.SeriesArt64'])

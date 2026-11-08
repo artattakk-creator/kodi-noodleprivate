@@ -73,6 +73,7 @@ def upgrade(original):
  verify(result);return result
 
 def verify(files):
+ if b'XCMate81.Contract' in files['xml/IncludesVariables.xml']:return __import__('widget_skin81').verify(files)
  from widget_skin78 import parse
  root=parse(files['xml/IncludesHomeWidgets.xml']);main=root.find(".//control[@id='296751']");portrait=root.find(".//control[@id='296783']")
  if main is None or main.findtext('width')!='1620' or main.findtext('height')!='480' or portrait is None or portrait.findtext('aspectratio')!='keep':raise ValueError('UNVERIFIED_80_GEOMETRY')

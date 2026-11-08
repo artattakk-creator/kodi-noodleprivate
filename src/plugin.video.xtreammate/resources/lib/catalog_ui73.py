@@ -30,7 +30,9 @@ def show(portal):
 
 
 def report(job):
+    import time
+    def dates81(values):return ', '.join(str(k)+': '+time.strftime('%d.%m.%Y %H:%M',time.localtime(v)) for k,v in values.items() if isinstance(v,(int,float))) or '—'
     state=tr({'WAITING':38003,'RUNNING':38004,'DONE':38005,'FAILED':38006,'INTERRUPTED':38007}.get(job['state'],38003))
     return '\n'.join([state,'ID: '+job['id'][:8],tr(38020,job.get('group',''),job.get('cursor',0),len(job.get('units') or [])),
         tr(38021,job.get('processed',0)),tr(38022,str(job.get('counts',{}))),
-        tr(38023,str(job.get('readback',{}))),tr(38019,job.get('code','') or 'OK')])
+        tr(38023,str(job.get('readback',{}))),tr(32791,str(job.get('delta81',{}))),tr(32796,len(job.get('failed_groups81',[]))),tr(32792,dates81(job.get('last_api_success81',{}))),tr(32793,dates81(job.get('last_full_sync81',{}))),tr(38019,job.get('code','') or 'OK')])

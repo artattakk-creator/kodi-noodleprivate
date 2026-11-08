@@ -53,6 +53,7 @@ def request(event,priority=False):
   if len(raw.encode())>MAX_BYTES:return False
   marker=_window();key=PREFIX+'request.'+slot
   if marker.getProperty(key)!=raw:marker.setProperty(key,raw)
+  __import__('art_trace81').note(event,'QUEUED')
   return True
  except (ImportError,AttributeError,RuntimeError,ValueError,TypeError,KeyError,OverflowError):return False
 

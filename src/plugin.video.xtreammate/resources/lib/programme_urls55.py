@@ -88,7 +88,7 @@ def probe(url,cancel=lambda:False):
     Kodi performs the actual rendering download later; a later 404 is harmless.
     """
     from programme_transport77 import verified
-    return verified(url,cancel)
+    return verified(url,cancel,keep_data81=True)
 
 
 def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,local_image63=False,url_mode69=False):
@@ -98,12 +98,16 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     from media_sources43 import SourceError
     from programme_sources57 import PROOFS,policy,attempts,trace as source_trace
     from helper_rpc57 import Error as HelperError
+    durable81=__import__('event_art81').prior(event)
+    upgrade81=allow_lookup and __import__('event_art81').upgrade(event,durable81)
+    if durable81 and not upgrade81:return durable81
     if url_mode69:
         from programme_session69 import get as session69
         prior69=session69(event)
-        if prior69 and not (allow_lookup and __import__('programme_status70').retry(event,prior69)):return prior69
+        if prior69 and not upgrade81 and not (allow_lookup and __import__('programme_status70').retry(event,prior69)):return prior69
     old=art(event)
-    if old and not old.get('url_version55') and (local_image63 or old.get('source') in ('tmdb_movie','tmdb_episode','tmdb_series','tvmaze_series','tvmaze_episode')) and old.get('source')!='placeholder' and old.get('fingerprint')==fingerprint(event) and old.get('until',0)>time.time():
+    if old and old.get('source','').startswith(('tmdb_','tvmaze')) and not __import__('event_art81').allowed(old):old=None
+    if not upgrade81 and old and not old.get('url_version55') and (local_image63 or old.get('source') in ('tmdb_movie','tmdb_episode','tmdb_series','tvmaze_series','tvmaze_episode')) and old.get('source')!='placeholder' and old.get('fingerprint')==fingerprint(event) and old.get('until',0)>time.time():
         from programme_art46 import indexed
         local60=indexed(event,verify=True)
         if local60:
@@ -122,7 +126,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     negative68=negative_scope(event)
     if old and old.get('source')=='placeholder' and old.get('negative_scope68')==negative68 and old.get('until',0)>time.time() and not explicit63 and not legacy70:
         return dict(old,image=event['placeholder'])
-    if current and not (local_image63 and current.get('source')!='placeholder') and not explicit63 and not (allow_lookup and current.get('source')=='placeholder' and
+    if current and not upgrade81 and not (local_image63 and current.get('source')!='placeholder') and not explicit63 and not (allow_lookup and current.get('source')=='placeholder' and
             (current.get('code')=='AWAITING_BACKGROUND_REFRESH' or not current.get('matching_policy57') or current.get('source_policy57')!=policy())):return current
     if cancel():return None
     from programme_pipeline77 import note as trace77
@@ -150,6 +154,22 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         else:value['lookup_code56']=reason
         source_trace(event,reason)
     def supplied():
+        own81=[];attempted81=False
+        if allow_lookup and not match and not __import__('programme_sources57').unsuitable69(event):
+            from programme_match46 import candidate as own_candidate81
+            from art_trace81 import own as own_trace81
+            attempted81=True  # cache/backoff/consent skips also own this supplier
+            try:
+                def run_own81():
+                    nonlocal attempted81
+                    attempted81=True
+                    return own_candidate81(event,cancel)
+                found81=own_trace81(event,run_own81)
+                if attempted81:__import__('programme_outcomes70').add(value,'tmdb','FOUND' if found81 else 'NO_CONFIRMED_IMAGE',event)
+                if found81:own81.append(found81)
+            except (SourceError,HelperError) as exc:
+                __import__('programme_outcomes70').add(value,'tmdb',exc.code,event);failed(exc.code)
+        yield from own81
         yield from candidates
         if not allow_lookup:return
         deferred=[]
@@ -159,6 +179,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             started=time.monotonic()
             from programme_outcomes70 import add as outcome70
             source70=getattr(find,'source70','injected')
+            if source70=='tmdb' and attempted81:continue
             try:found=find()
             except (SourceError,HelperError) as exc:
                 outcome70(value,source70,exc.code,event);failed(exc.code);continue
@@ -185,6 +206,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         trace77(event,'IMAGE_SOURCE_SELECTION','SOURCE_SELECTED')
         trace77(event,'MATCH_CONFIDENCE','EXACT_MATCH')
         url=candidate.get('url','')
+        if candidate.get('source','').startswith('tmdb_') and candidate.get('role81')=='backdrop':url=url.replace('https://image.tmdb.org/t/p/w500/','https://image.tmdb.org/t/p/w1280/',1)
         if candidate.get('match')=='EXACT_EVENT':
             from image_reference78 import canonical
             url=canonical(url) or url
@@ -220,7 +242,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             attribution=candidate.get('attribution',''),until=min(now+86400,max(now+300,event['stop']+3600)))
         if candidate.get('matched_year56'):value['matched_year56']=candidate['matched_year56']
         if candidate.get('remote_id') or candidate.get('provider_id'):value['provider_id']=candidate.get('remote_id') or candidate['provider_id']
-        for field in ('image_scope57','helper_version57'):
+        for field in ('image_scope57','helper_version57','role81'):
             if candidate.get(field):value[field]=candidate[field]
         if url_mode69:
             from programme_requests68 import identity,scope
@@ -231,10 +253,13 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         note(event,'HTTP_RESPONSE','IMAGE_DECODED' if value.get('decoded77') else 'REFERENCE_VERIFIED')
         trace77(event,'IMAGE_LEASE','BOUND')
         source_trace(event,'IMAGE_URL_VERIFIED')
+        if isinstance(verified77,dict):value=__import__('event_art81').commit(event,value,verified77.get('_body81'))
         break
     if not candidates and not allow_lookup:value['code']='AWAITING_BACKGROUND_REFRESH'
     if cancel():return None
-    if value.get('source')=='placeholder':value['negative_scope68']=negative68
+    if value.get('source')=='placeholder':
+        if durable81:return durable81
+        value['negative_scope68']=negative68
     if url_mode69:
         from programme_session69 import remember as session_save69,persist as persist69
         value=session_save69(event,value)

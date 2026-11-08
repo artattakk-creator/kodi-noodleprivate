@@ -1,4 +1,4 @@
-name: XCMate 80 native Home and review
+name: XCMate 81 native Home and review
 on:
   pull_request:
     branches: [main]
@@ -32,7 +32,7 @@ jobs:
             sudo apt-get install -y ffmpeg
           fi
       - name: Receiver gates, full bleed Hero, initial rows and actual detail playback
-        run: python tools/run_kodi_home80_contract.py --report-dir "${{ runner.temp }}/native75" --resolution "${{ matrix.resolution }}"
+        run: python tools/run_kodi_home81_contract.py --report-dir "${{ runner.temp }}/native75" --resolution "${{ matrix.resolution }}"
       - name: .75 code and preservation regressions
         run: |
           python -m unittest discover -s tests -p '*02975.py' -v
@@ -41,6 +41,7 @@ jobs:
           python -m unittest discover -s tests -p '*02978.py' -v
           python -m unittest discover -s tests -p '*02979.py' -v
           python -m unittest discover -s tests -p '*02980.py' -v
+          python -m unittest discover -s tests -p '*02981.py' -v
       - name: Verify review ZIP exactly matches source
         run: |
           python tools/package_xcmate71.py "${{ runner.temp }}/package75"

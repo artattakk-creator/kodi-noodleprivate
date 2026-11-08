@@ -36,7 +36,7 @@ def build(original):
     from widget_skin75 import navigation_candidate
     from widget_skin50 import edit
     if CONTRACT.encode() in original['xml/IncludesVariables.xml']:
-        verify(original);return __import__('widget_skin80').upgrade(original)
+        verify(original);return __import__('widget_skin81').upgrade(__import__('widget_skin80').upgrade(original))
     result=dict(original)
     for name in FILES[:4]:result[name]=previous(name,original[name])
     result[FILES[4]]=navigation_candidate(original[FILES[4]])
@@ -67,7 +67,7 @@ def build(original):
     home=result[FILES[7]]
     if b'XCMate78.Runtime' in home:raise ValueError('UNVERIFIED_HOME_HOOK')
     result[FILES[7]]=_append(home,b'</controls>',b'<include>XCMate78.Runtime</include>\n')
-    result=__import__('widget_skin80').upgrade(result)
+    result=__import__('widget_skin81').upgrade(__import__('widget_skin80').upgrade(result))
     verify(result)
     return result
 

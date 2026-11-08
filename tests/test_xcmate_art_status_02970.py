@@ -99,7 +99,7 @@ class ArtStatus70(Fixture,unittest.TestCase):
  def test_real_supplier_chain_keeps_own_api_reason_before_helper_error(self):
   from media_sources43 import SourceError
   from helper_rpc57 import Error
-  self.options.update(programme_tmdb46=True,tmdb_research43=True,programme_helper57=True,programme_catalog57=False)
+  self.options.update(programme_tmdb46=True,tmdb_research43=True,programme_helper57=True,programme_catalog57=False,tmdb_read_token43='SYNTHETIC_TEST_TOKEN')
   # .80 automatic image work excludes Helper; retain explicit Helper compatibility.
   event=dict(self.event(),helper_explicit80=True)
   with mock.patch('programme_match46.candidate',side_effect=SourceError('HTTP_AUTH')),mock.patch('programme_tvmaze67.candidate',return_value=None),mock.patch('programme_helper57.lookup',side_effect=Error('HELPER_TIMEOUT')),mock.patch('programme_index46.publish_result69',return_value=False):

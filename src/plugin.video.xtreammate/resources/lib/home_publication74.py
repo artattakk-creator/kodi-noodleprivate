@@ -103,9 +103,9 @@ def signature(items,kind):
     # remains a real per-minute update for Live, not a two-second publication.
     stripped=[]
     for item in items:
-        copy=dict(item,props={k:v for k,v in item['props'].items() if k not in ('XtreamMate.Progress','XCMate.EpgPercent41','XCMate.EpgAt64')})
+        copy=dict(item,props={k:v for k,v in item['props'].items() if k not in ('XtreamMate.Progress','XCMate.EpgPercent41','XCMate.EpgAt64','XCMate.ArtProof69')})
         stripped.append(copy)
-    minute=int(time.time()//60) if kind=='live' and any(v['props'].get('XtreamMate.Now') for v in items) else 0
+    minute=0  # focused progress is updated by the existing Hero GUI pump
     return hashlib.sha256(json.dumps([stripped,minute],sort_keys=True).encode()).hexdigest()
 
 def serialized(call):

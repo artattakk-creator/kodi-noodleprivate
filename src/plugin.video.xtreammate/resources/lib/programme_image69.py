@@ -9,6 +9,9 @@ def url(art):
  return bool(match69 and art.get('url_version55')==1 and art.get('url_verified69') is True and safe(value) and art.get('image')==value+OPTIONS)
 def eligible(art,event=None):
  if not isinstance(art,dict) or art.get('code') not in ('READY','READY_STALE') or art.get('source') in (None,'','placeholder'):return False
+ from utils import setting_bool
+ source=art.get('source','')
+ if source.startswith('tmdb') and setting_bool('programme_tmdb_optout77',False) or source.startswith('tvmaze') and setting_bool('programme_tvmaze_optout77',False):return False
  image=art.get('image')
  if not isinstance(image,str) or not image:return False
  if event is not None and art.get('scope69'):

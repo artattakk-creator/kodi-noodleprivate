@@ -43,6 +43,8 @@ def read(portal,kind,rows):
     if value.get('key')==key and value.get('profile')==profile() and 0<remaining<=30 and value.get('uri')==source+KODI_OPTIONS:
      result.setdefault(str(row['sid']),{}).setdefault(role,value['uri'])
    except (ValueError,TypeError,AttributeError,RuntimeError):continue
+ from render_cache81 import references
+ for sid81,roles81 in references(portal,kind,rows).items():result.setdefault(sid81,{}).update(roles81)
  return result
 def prepare(portal,kind,rows,cancel=lambda:False):
  global _thread
@@ -50,9 +52,9 @@ def prepare(portal,kind,rows,cancel=lambda:False):
  from home_schedule75 import allowed,focused_rows
  if not allowed(kind,portal):rows=focused_rows(portal,kind,rows)
  from artwork_config import persistent
- if persistent() or _stop.is_set() or not rows or kind not in ('vod','series'):return False
+ if persistent() or _stop.is_set() or not rows or kind not in ('live','vod','series'):return False
  from programme_assets47 import sources
- selected=[dict(row) for row in rows[:24]]
+ selected=[dict(row) for row in rows[:256 if kind=='live' else 24]]
  material=[[str(r['sid']),sources(r,provider_only=True)] for r in selected]
  key=hashlib.sha256(json.dumps([profile(),portal['id'],kind,material],sort_keys=True).encode()).hexdigest()
  with _lock:
@@ -71,6 +73,8 @@ def _run():
   try:key,portal,kind,rows=_queue.get(timeout=.5)
   except queue.Empty:continue
   try:
+   __import__('render_cache81').prepare(portal,kind,rows,_stop.is_set)
+   __import__('media_hero81').prepare(portal,kind,rows,_stop.is_set)
    initial=profile();end=time.monotonic()+.5;retained74=[]
    for row in rows:
     if _stop.is_set() or profile()!=initial or time.monotonic()>end:break

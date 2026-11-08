@@ -40,7 +40,9 @@ def note(event,reason):
 
 def choose(event,value,previous,check_file=False):
  if positive(event,value):
-  if not check_file or file_valid(value):return value
+  if not check_file or file_valid(value):
+   if positive(event,previous) and (not check_file or file_valid(previous)):return __import__('event_art81').select(value,previous)
+   return value
   note(event,'FILE_INVALID');value=dict(code='CACHE_MISMATCH',source='placeholder')
  if positive(event,previous):
   if not check_file or file_valid(previous):

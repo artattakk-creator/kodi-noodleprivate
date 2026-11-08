@@ -46,7 +46,7 @@ def unique_movie56(event,cancel=lambda:False):
  if details.get('id')!=remote or details.get('adult') or title not in (title_key(details.get('title','')),title_key(details.get('original_title',''))):return None
  year=str(details.get('release_date',''))[:4]
  if not year.isdigit() or not 1880<=int(year)<=2100 or str(row.get('release_date',''))[:4]!=year:return None
- url=_tmdb_image(details.get('backdrop_path'))
+ url=_tmdb_image(details.get('backdrop_path') or details.get('poster_path'))
  if not url:raise SourceError('NO_VALID_URL')
- return dict(url=url,source='tmdb_movie',match='EXACT_UNIQUE_FILM_TITLE',matched_year56=int(year),
+ return dict(url=url,source='tmdb_movie',role81='backdrop' if details.get('backdrop_path') else 'poster',match='EXACT_UNIQUE_FILM_TITLE',matched_year56=int(year),
              remote_id=remote,attribution='TMDb · https://www.themoviedb.org/movie/'+str(remote)+' · nicht von TMDb zertifiziert; Bildnutzungsbedingungen beachten')

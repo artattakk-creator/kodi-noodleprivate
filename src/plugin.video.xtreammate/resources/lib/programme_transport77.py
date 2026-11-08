@@ -6,7 +6,7 @@ cross-origin hop requires a separately configured/known image host, never '*'.
 import time
 from urllib.parse import urlsplit
 
-def verified(url,cancel=lambda:False,connect=None,resolver=None):
+def verified(url,cancel=lambda:False,connect=None,resolver=None,keep_data81=False):
     from programme_urls55 import safe,hosts
     from download_redirect import addresses,_connect
     from image_redirect48 import open_image
@@ -50,7 +50,9 @@ def verified(url,cancel=lambda:False,connect=None,resolver=None):
             data.extend(part)
             if len(data)>MAX_IMAGE:raise SourceError('IMAGE_LIMIT')
         width,height=validate_image(bytes(data))
-        return dict(url=final[0],width=width,height=height,bytes=len(data),decoded77=True)
+        result=dict(url=final[0],width=width,height=height,bytes=len(data),decoded77=True)
+        if keep_data81:result['_body81']=bytes(data)
+        return result
     except SourceError:raise
     except Exception:
         raise SourceError('IMAGE_PREFLIGHT_FAILED') from None

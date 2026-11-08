@@ -33,10 +33,16 @@ def load(portal,kind):
 def permitted(filename):
  import xbmcvfs
  try:
-  target=Path(filename);root=Path(xbmcvfs.translatePath('special://thumbnails/')).resolve()
+  target=Path(filename);declared=Path(xbmcvfs.translatePath('special://thumbnails/'));root=declared.resolve()
   if not target.is_absolute() or target.is_symlink() or root not in target.resolve().parents:return False
-  return all(not p.is_symlink() for p in target.parents if p!=root.parent)
+  # Kodi's Android storage root may itself have a legitimate alias/symlink.
+  # Reject links BELOW its trusted resolved boundary, not ancestors above it.
+  for parent in target.parents:
+   if parent==declared or parent==root:return True
+   if parent.is_symlink():return False
+  return False
  except (OSError,ValueError,RuntimeError,AttributeError):return False
+
 
 def valid(value,source):
  try:
