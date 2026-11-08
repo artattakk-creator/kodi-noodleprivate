@@ -5,6 +5,13 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/xcmate80-publish-all.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/xcmate80-publish-all.yml"
+      - "tools/publish_xcmate80_all.py"
+      - "tools/release_channel75.py"
+      - "docs/XCMate/releases/user-approved-untested-0.1.29.80.json"
   workflow_dispatch:
 
 permissions:
@@ -15,7 +22,26 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  publish-verified-78:
+  verify-80-pr:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate pinned source, review archive and version-specific release gate
+        run: |
+          python -m py_compile tools/publish_xcmate80_all.py tools/release_channel75.py
+          python tools/release_channel75.py
+          python tools/publish_xcmate80_all.py --stage
+          python tools/publish_xcmate80_all.py
+          echo "XCMATE_02980_THREE_CHANNEL_PR_PREFLIGHT_PASS"
+  publish-verified-80:
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
