@@ -54,6 +54,12 @@ for kind79,cid79,color79 in (('vod',2520,(25,145,100)),('series',2530,(145,70,12
  proof79.append(dict(kind=kind79,file_sha256=hashlib.sha256(Path(retained79).read_bytes()).hexdigest(),source='synthetic provider HTTPS',decode='PIL_FULL_DECODE',native_pixels='PASS',cache='EXISTING_KODI_TEXTURE',android='ANDROID_NOT_TESTED'))
 # Do not run an image server during the cold acceptance. Existing local cache
 # must render while exact remote endpoints return failure.
+# Match production service teardown in this script-scoped worker fixture.
+# Kodi retains a Python invoker while its own daemon worker keeps running.
+__import__('widget_fast69').shutdown()
+worker79=__import__('widget_assets69')._thread
+if worker79:worker79.join(2)
+if worker79 and worker79.is_alive():raise RuntimeError('NATIVE79_FIXTURE_WORKER_NOT_STOPPED')
 Path('/root/tls79-off').write_text('synthetic image origin unavailable')
 base79=json.loads(Path('/root/home75-base79.json').read_text());base79['cache79']=proof79
 Path('/root/home75.json').write_text(json.dumps(base79,indent=2))
