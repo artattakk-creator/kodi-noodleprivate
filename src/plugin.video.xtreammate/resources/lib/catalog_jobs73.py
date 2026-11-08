@@ -208,7 +208,7 @@ def run_next(cancel=lambda: False):
             if job.get('epg'):
                 from epg import request_refresh
                 epgcode='REQUESTED' if request_refresh(session.pid,portal,force=True) else 'DEFERRED'
-            _update(job['id'],state='DONE',resume=False,code='',readback=readback,epg_state=epgcode,last_full_sync81={k:time.time() for k in session.kinds if not any(a==k for a,c in job.get('empty',[]))})
+            _update(job['id'],state='DONE',resume=False,code='',readback=readback,epg_state=epgcode,last_full_sync81={k:time.time() for k in session.kinds if job.get('groups_found',{}).get(k,0)>0 and not any(a==k for a,c in job.get('empty',[]))})
         else: _update(job['id'], state='WAITING', code='')
         return True
     except Exception as exc:

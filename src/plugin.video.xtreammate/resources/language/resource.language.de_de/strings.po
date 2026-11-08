@@ -5022,5 +5022,5 @@ msgid "Show catalogue completion notification"
 msgstr "Katalog-Abschlussmeldung anzeigen"
 
 msgctxt "#32796"
-msgid "Failed group attempts: {0}"
-msgstr "Fehlgeschlagene Gruppenversuche: {0}"
+msgid "Recorded group failures: {0}"
+msgstr "Erfasste Gruppenfehler: {0}"

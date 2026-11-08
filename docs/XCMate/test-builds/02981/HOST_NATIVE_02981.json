@@ -1,0 +1,394 @@
+{
+  "version": "0.1.29.81",
+  "android": "ANDROID_NOT_TESTED",
+  "scope": "synthetic metadata and real Linux Kodi 21.2; not Android acceptance",
+  "native": {
+    "1280x720": {
+      "status": "PASS",
+      "render_cases": 31,
+      "native_remote_actions": 20,
+      "idle_seconds": 180.20192858800146,
+      "idle_counts": [
+        [
+          88,
+          24,
+          24
+        ],
+        [
+          88,
+          24,
+          24
+        ],
+        [
+          88,
+          24,
+          24
+        ],
+        [
+          88,
+          24,
+          24
+        ],
+        [
+          88,
+          24,
+          24
+        ],
+        [
+          88,
+          24,
+          24
+        ]
+      ],
+      "hero_rectangle": [
+        [
+          270,
+          0
+        ],
+        1620,
+        400
+      ],
+      "frame_test_ms": [
+        2077.12,
+        4413.28
+      ],
+      "note": "Timings include test waits and screenshots; not Android latency.",
+      "initial_movie_and_series_pixels": true,
+      "event_image_hero_and_details": [
+        {
+          "sid": "5",
+          "event_hash": "fa3528dbcd0f",
+          "source": "xmltv_event",
+          "full_decode": true,
+          "hero_pixels": true,
+          "detail_pixels": true,
+          "same_event": true,
+          "texture": {
+            "code": "TEXTURE_PENDING"
+          },
+          "android": "ANDROID_NOT_TESTED"
+        },
+        {
+          "sid": "6",
+          "event_hash": "c4f2e7cd31c9",
+          "source": "xmltv_event",
+          "full_decode": true,
+          "hero_pixels": true,
+          "detail_pixels": true,
+          "same_event": true,
+          "texture": {
+            "code": "TEXTURE_PENDING"
+          },
+          "android": "ANDROID_NOT_TESTED"
+        }
+      ],
+      "movie_playback": {
+        "status": "PASS",
+        "native_button": true,
+        "actual_video": true,
+        "audio_streams": 1,
+        "video_streams": 1,
+        "native_stop_ack": true,
+        "detail_return": true,
+        "elapsed_ms": 4926.68,
+        "android": "ANDROID_NOT_TESTED"
+      },
+      "large_guide": {
+        "status": "PASS",
+        "selected_sid": "5",
+        "start_sid": "1",
+        "local_epg": true,
+        "long_title_bounded": true,
+        "focus_rgb": [
+          58,
+          75,
+          91
+        ],
+        "android": "ANDROID_NOT_TESTED"
+      },
+      "personal_layout": "PRESERVED",
+      "restarts": [
+        {
+          "status": "PASS",
+          "actual_restart": true,
+          "counts": [
+            88,
+            24,
+            24
+          ],
+          "cases": [
+            {
+              "kind": "vod",
+              "count": 24,
+              "directory_ack": true,
+              "local_cache": true,
+              "sha256": "99772ba050f33eb4d16ef18772ca239763fc2702e048623b0b50cd2540694327",
+              "actual_pixels": "PASS"
+            },
+            {
+              "kind": "series",
+              "count": 24,
+              "directory_ack": true,
+              "local_cache": true,
+              "sha256": "014af3519ecdb18f0f680ec7ada7339090e53d660dce907f6dc50648bac79d68",
+              "actual_pixels": "PASS"
+            }
+          ],
+          "origin_offline": true,
+          "personal_widgets": "UNCHANGED",
+          "android": "ANDROID_NOT_TESTED",
+          "protected_files": 34,
+          "protected_sha256": "PASS",
+          "restart": "native Application.Quit + supervised Kodi restart",
+          "old_pids": [
+            1183
+          ],
+          "new_pids": [
+            2005
+          ]
+        },
+        {
+          "status": "PASS",
+          "actual_restart": true,
+          "counts": [
+            88,
+            24,
+            24
+          ],
+          "cases": [
+            {
+              "kind": "vod",
+              "count": 24,
+              "directory_ack": true,
+              "local_cache": true,
+              "sha256": "99772ba050f33eb4d16ef18772ca239763fc2702e048623b0b50cd2540694327",
+              "actual_pixels": "PASS"
+            },
+            {
+              "kind": "series",
+              "count": 24,
+              "directory_ack": true,
+              "local_cache": true,
+              "sha256": "014af3519ecdb18f0f680ec7ada7339090e53d660dce907f6dc50648bac79d68",
+              "actual_pixels": "PASS"
+            }
+          ],
+          "origin_offline": true,
+          "personal_widgets": "UNCHANGED",
+          "android": "ANDROID_NOT_TESTED",
+          "protected_files": 34,
+          "protected_sha256": "PASS",
+          "restart": "native Application.Quit + supervised Kodi restart",
+          "old_pids": [
+            2005
+          ],
+          "new_pids": [
+            2086
+          ]
+        }
+      ]
+    },
+    "1920x1080": {
+      "status": "PASS",
+      "render_cases": 31,
+      "native_remote_actions": 20,
+      "idle_seconds": 180.11335283600056,
+      "idle_counts": [
+        [
+          88,
+          24,
+          24
+        ],
+        [
+          88,
+          24,
+          24
+        ],
+        [
+          88,
+          24,
+          24
+        ],
+        [
+          88,
+          24,
+          24
+        ],
+        [
+          88,
+          24,
+          24
+        ],
+        [
+          88,
+          24,
+          24
+        ]
+      ],
+      "hero_rectangle": [
+        [
+          270,
+          0
+        ],
+        1620,
+        400
+      ],
+      "frame_test_ms": [
+        2187.28,
+        5264.81
+      ],
+      "note": "Timings include test waits and screenshots; not Android latency.",
+      "initial_movie_and_series_pixels": true,
+      "event_image_hero_and_details": [
+        {
+          "sid": "5",
+          "event_hash": "ee0cd49bd0c9",
+          "source": "xmltv_event",
+          "full_decode": true,
+          "hero_pixels": true,
+          "detail_pixels": true,
+          "same_event": true,
+          "texture": {
+            "code": "TEXTURE_PENDING"
+          },
+          "android": "ANDROID_NOT_TESTED"
+        },
+        {
+          "sid": "6",
+          "event_hash": "fcd1f27a1d2a",
+          "source": "xmltv_event",
+          "full_decode": true,
+          "hero_pixels": true,
+          "detail_pixels": true,
+          "same_event": true,
+          "texture": {
+            "code": "TEXTURE_PENDING"
+          },
+          "android": "ANDROID_NOT_TESTED"
+        }
+      ],
+      "movie_playback": {
+        "status": "PASS",
+        "native_button": true,
+        "actual_video": true,
+        "audio_streams": 1,
+        "video_streams": 1,
+        "native_stop_ack": true,
+        "detail_return": true,
+        "elapsed_ms": 3729.32,
+        "android": "ANDROID_NOT_TESTED"
+      },
+      "large_guide": {
+        "status": "PASS",
+        "selected_sid": "5",
+        "start_sid": "1",
+        "local_epg": true,
+        "long_title_bounded": true,
+        "focus_rgb": [
+          58,
+          75,
+          91
+        ],
+        "android": "ANDROID_NOT_TESTED"
+      },
+      "personal_layout": "PRESERVED",
+      "restarts": [
+        {
+          "status": "PASS",
+          "actual_restart": true,
+          "counts": [
+            88,
+            24,
+            24
+          ],
+          "cases": [
+            {
+              "kind": "vod",
+              "count": 24,
+              "directory_ack": true,
+              "local_cache": true,
+              "sha256": "99772ba050f33eb4d16ef18772ca239763fc2702e048623b0b50cd2540694327",
+              "actual_pixels": "PASS"
+            },
+            {
+              "kind": "series",
+              "count": 24,
+              "directory_ack": true,
+              "local_cache": true,
+              "sha256": "014af3519ecdb18f0f680ec7ada7339090e53d660dce907f6dc50648bac79d68",
+              "actual_pixels": "PASS"
+            }
+          ],
+          "origin_offline": true,
+          "personal_widgets": "UNCHANGED",
+          "android": "ANDROID_NOT_TESTED",
+          "protected_files": 34,
+          "protected_sha256": "PASS",
+          "restart": "native Application.Quit + supervised Kodi restart",
+          "old_pids": [
+            1182
+          ],
+          "new_pids": [
+            1995
+          ]
+        },
+        {
+          "status": "PASS",
+          "actual_restart": true,
+          "counts": [
+            88,
+            24,
+            24
+          ],
+          "cases": [
+            {
+              "kind": "vod",
+              "count": 24,
+              "directory_ack": true,
+              "local_cache": true,
+              "sha256": "99772ba050f33eb4d16ef18772ca239763fc2702e048623b0b50cd2540694327",
+              "actual_pixels": "PASS"
+            },
+            {
+              "kind": "series",
+              "count": 24,
+              "directory_ack": true,
+              "local_cache": true,
+              "sha256": "014af3519ecdb18f0f680ec7ada7339090e53d660dce907f6dc50648bac79d68",
+              "actual_pixels": "PASS"
+            }
+          ],
+          "origin_offline": true,
+          "personal_widgets": "UNCHANGED",
+          "android": "ANDROID_NOT_TESTED",
+          "protected_files": 34,
+          "protected_sha256": "PASS",
+          "restart": "native Application.Quit + supervised Kodi restart",
+          "old_pids": [
+            1995
+          ],
+          "new_pids": [
+            2080
+          ]
+        }
+      ]
+    }
+  },
+  "media_exit": {
+    "status": "PASS",
+    "count": 60,
+    "per_kind": {
+      "vod": 20,
+      "episode": 20,
+      "live": 20
+    },
+    "scope": "actual Linux video decode + XCMate owned native Stop/ACK + progress; Android fullscreen/origin return NOT_TESTED"
+  },
+  "package": {
+    "name": "plugin.video.xtreammate-0.1.29.81.zip",
+    "sha256": "030aad191f47c2c10c7cadac6b83d24e2a748c29e4dc83294deab4dc8e3a13a3",
+    "bytes": 3486039,
+    "source_files": 769,
+    "reproducible": true
+  }
+}

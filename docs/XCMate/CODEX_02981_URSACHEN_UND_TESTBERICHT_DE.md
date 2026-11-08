@@ -24,13 +24,19 @@ Die verbindliche Übergabe und die anonymisierte .80-Loganalyse wurden vollstän
 
 Die verbindlichen Gatefälle A1–A9 und die reproduzierbaren Befehle stehen in `ANDROID_ABNAHME_02981_DE.md`. Endgültige Zähler, CI-Links und native Receipts werden vor Fertigmeldung im folgenden Ergebnisblock ergänzt. Frühere Fehlversuche (unter anderem falscher opaker Fokusrahmen, veraltete Remote-only-Testannahme und Fixture-Teardown) gelten nicht als bestandene Abnahme.
 
-### Ergebnisblock
+### Ergebnisblock und unveränderter Abschlussstand
 
-- Vollständige Host-Suite: läuft; endgültiges Ergebnis vor Übergabe ergänzen.
-- Neue gezielte Tests: Render-Cache, echter Publisher, TMDB-Protokoll, Katalog-Readback, UI-Digests und Bestandsschutz.
-- Native Kodi 720p/1080p mit künstlichem Portal, TLS-Bildquelle, EPG und H.264/AAC-Stream: läuft; endgültige Receipts ergänzen.
-- Alle Android-Gates: **ANDROID_NOT_TESTED**.
-- Prüfpaket: `test-builds/02981/plugin.video.xtreammate-0.1.29.81.zip`, zugehörige `.sha256`.
+- Ein früherer vollständiger Entwicklungsstand bestand **3270 Hosttests in 550,049s**. Dieser Wert ist ausdrücklich kein Ersatz für den abschließenden CI-Lauf des endgültigen Quellstands.
+- Eigene API-/Consent-/Resolver- und bestehende Session-/Pipeline-Regressionsgruppe: **77 PASS**. Der historische HTTP-Auth-Test besitzt nun ausdrücklich synthetische Zugangsdaten; er wurde nicht entfernt. Katalogabschluss/Leerquelle/fehlender Bereich: **5 PASS**.
+- Echter Linux-Kodi 21.2: **720p und 1080p jeweils PASS**, je 31 Darstellungsfälle, 20 Fernbedienungsaktionen, 180s Idle und zwei tatsächliche Neustarts bei abgeschalteter synthetischer Bildquelle. Bestände blieben 88/24/24, persönliche Widgetdateien unverändert. Pro Auflösung passende XMLTV-Bilder sowohl im Hero als auch im Programmdetail per tatsächlicher Screenshot-Pixelprüfung bestätigt. Kodi-Diagnose `TEXTURE_PENDING` wird daneben unverändert ausgewiesen; sie ist kein Android-VISIBLE-Beweis.
+- Beide Auflösungen: tatsächlicher Film-Detailbutton → H.264/AAC-Wiedergabe → nativer Stop-ACK → bedienbare Detailrückkehr **PASS**. Zusätzlich **60 native Stop-/ACK-Zyklen PASS** (je 20 Live/Film/Episode).
+- Screenshot-Prüfzeiten einschließlich absichtlicher Fixture-Wartezeit: 720p 2077–4413ms, 1080p 2187–5265ms. Dies sind keine isolierten UI-Latenzen und kein Android-Vorher-/Nachher-Benchmark.
+- 17 PO-Kataloge, 92 originale Navigationstexturen und 11 pytest-Brandingtests geprüft. Python-Syntax geprüft. Paket zweimal unabhängig erzeugt und byteidentisch verglichen: **769 Dateien, 3.486.039 Bytes**, ZIP-CRC und Vergleich aller Quellbytes PASS.
+- SHA256: `030aad191f47c2c10c7cadac6b83d24e2a748c29e4dc83294deab4dc8e3a13a3`.
+- [Maschinenlesbare native Receipts](test-builds/02981/HOST_NATIVE_02981.json), [ZIP](test-builds/02981/plugin.video.xtreammate-0.1.29.81.zip), [Prüfsumme](test-builds/02981/plugin.video.xtreammate-0.1.29.81.zip.sha256).
+- **Maßgeblicher vollständiger Abschlusslauf:** genaue Commit-ID, abschließende Testzahl und direkte CI-/Artefaktlinks werden im [Master #392](https://github.com/artattakk-creator/kodi-noodleprivate/issues/392) und [Draft-PR #393](https://github.com/artattakk-creator/kodi-noodleprivate/pull/393) dokumentiert. Der vollständige CI-Testlog liegt im Artefakt `xcmate71-host-*`; die nativen Receipts in `home75-*` und `native77-media`. [CI auf dem Entwicklungsbranch](https://github.com/artattakk-creator/kodi-noodleprivate/actions?query=branch%3Afix%2Fxcmate-02981-artwork-stability).
+- Zwischenläufe während Änderungen an Sprachdateien und exakten Schutz-Deltas waren ungültig und gelten nicht als Freigabegate. Ein vollständiger erneuter Lauf auf eingefrorenen Quellen ist vor Fertigmeldung erforderlich. Historische Archiv-CI ist getrennt von den Prüfungen des aktuellen .81-Quellstands auszuwerten.
+- Alle Android-Gates: **ANDROID_NOT_TESTED**. Zehnminütiger Croods-/Mali-Texturetest, tatsächlicher privater TMDB-Zugang, reale Netzwerk-/Speicherbedingungen und alte Boxen bleiben Geräteabnahme. Legacy-Gruppenberichte können nur vorhandene received/stored-Zähler liefern; unbekannte Delta-Zahlen werden nicht erfunden. Aufgezeichnete Gruppenfehler sind Diagnoseeinträge, keine erfundene Zahl fehlgeschlagener Titel.
 
 ## Bestandsschutz
 

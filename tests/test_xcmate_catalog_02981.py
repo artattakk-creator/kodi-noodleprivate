@@ -27,3 +27,6 @@ class Catalog81(unittest.TestCase):
   dialog=mock.Mock()
   with mock.patch.object(xbmcgui,'Dialog',return_value=dialog),mock.patch.object(xbmcgui,'DialogProgressBG',create=True) as bg:
    progress.poll();progress.poll();dialog.notification.assert_not_called();bg.assert_not_called()
+ def test_absent_kind_cannot_claim_a_verified_full_sync(self):
+  h=self.h;h.responses['get_series_categories']=[];h.jobs.request(h.portal);h.finish()
+  self.assertEqual(h.row()['groups_found']['series'],0);self.assertNotIn('series',h.row()['last_api_success81']);self.assertNotIn('series',h.row()['last_full_sync81'])
