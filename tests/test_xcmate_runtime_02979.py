@@ -52,3 +52,8 @@ class Runtime79(Fixture,unittest.TestCase):
    from pathlib import Path
    before=Path(model.w.path('p','live')).read_bytes();model.w.publish(model.portal,'live',rows)
   self.assertEqual(notice._pending[('p','live')][1],88);self.assertEqual(Path(model.w.path('p','live')).read_bytes(),before)
+
+ def test_consumer_and_active_control_use_the_actual_directory_generation(self):
+  with mock.patch.object(self.m,'note') as note:self.m.poll()
+  stages={c.args[2]:c.args[3] for c in note.call_args_list}
+  for stage in ('SKIN_CONSUMER_READY','RELOAD_ACK','ACTIVE_CONTROL','TEXTURE_REQUESTED'):self.assertEqual(stages[stage],self.tag)

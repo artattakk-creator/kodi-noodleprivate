@@ -61,7 +61,6 @@ def prepare(portals):
    state=static.get('kinds',{}).get(kind,{})
    hook_names=sorted({h for r in bindings if r.get('pid')==str(portal['id']) and r.get('kind')==kind for h in r.get('hooks',[])})
    plans[(str(portal['id']),kind)]=dict(portal=dict(portal),scope=__import__('epg_handoff63').profile_scope(),slot=slot(portal,kind),ids=state.get('control_ids59',[])[:8],hooks=hook_names,at=time.monotonic())
-   if state.get('control_ids59'):note(portal,kind,'SKIN_CONSUMER_READY',static.get('generated_sha256',''))
  with _lock:_plans.clear();_plans.update(plans)
  # Repair missing generated own hooks even when the .78 skin itself already
  # exists. Saved SkinShortcuts are read-only; this uses its private backup.
@@ -86,6 +85,7 @@ def poll():
   except (ValueError,TypeError):continue
   tag=record.get('tag','');expected=record.get('count',0)
   if len(tag)!=64 or type(expected) is not int or expected<=0:continue
+  if plan['ids']:note(portal,kind,'SKIN_CONSUMER_READY',tag,count=len(plan['ids']))
   known=False;empty=False;ack=False
   for cid in plan['ids']:
    try:__import__('home_runtime77').control(window,cid)
