@@ -7,16 +7,16 @@ Auftrag #395 · Draft-PR [#396](https://github.com/artattakk-creator/kodi-noodle
 
 `docs/XCMate/test-builds/02982/plugin.video.xtreammate-0.1.29.82.zip`
 
-SHA256: `326b4a87a67ec4389dc4cdeed11bcc9d7c0a7c4453818cb09dc41b8bca57f01b`
+SHA256: `7cc578fc6f3fe74a2e474df8b0fbe2804090951f75769d8d7fb0fa217120e263`
 
-3.497.535 Bytes, 774 Dateien; ZIP-CRC und bytegenauer Vergleich mit dem
+3.497.654 Bytes, 774 Dateien; ZIP-CRC und bytegenauer Vergleich mit dem
 Quellbaum bestanden. Zwei unabhängige Builds erzeugen byteidentische Pakete.
 Das Paket enthält keine Profile, Rohlogs oder Zugangsdaten. Die vier bereits
 veröffentlichten .81-Paketkopien und Installer 0.5.26 bleiben unverändert.
 
 ## Hostprüfungen
 
-- 22 neue .82-Testfälle: **PASS**, lokaler Lauf 2,669 s. Enthalten sind echte
+- 23 neue .82-Testfälle: **PASS**, lokaler Lauf 2,245 s. Enthalten sind echte
   PNG-Decodes/SHA256, 88 Logos in sechs gebündelten Kodi-RPCs, 443 deduplizierte
   Polls im selben Worker, Pause/Recovery, fataler MemoryError ohne Respawning,
   direkte PAUSED-/BUSY-Injection an `artwork_db.connect` sowie `art_store.used`,
@@ -28,8 +28,8 @@ veröffentlichten .81-Paketkopien und Installer 0.5.26 bleiben unverändert.
   Watchdog verhindert ein unbegrenzt hängendes Test-Fixture.
 - PO-Validierung: **17 Sprachkataloge PASS**, Deutsch/Englisch je 1.240 Kontexte.
 - Python-Kompilation und Whitespaceprüfung: **PASS**.
-- Gesamter aktueller Testumfang: **3.297** Methoden, davon 3.275 bestehende und
-  22 zusätzliche .82-Methoden. Methoden und vorhandene Skip-Bedingungen werden
+- Gesamter aktueller Testumfang: **3.298** Methoden, davon 3.275 bestehende und
+  23 zusätzliche .82-Methoden. Methoden und vorhandene Skip-Bedingungen werden
   vollständig gegen die freigegebene .81-Basis geprüft.
 
 Der maßgebliche vollständige Ergebnisbeleg ist der aktuelle `full-host`-Lauf
@@ -53,7 +53,9 @@ python tools/package_xcmate71.py /tmp/xcmate82-package
 Ein früher lokaler Vollsuiteversuch ohne Loopback-Netzwerkfreigabe wurde
 abgebrochen. Ein weiterer wurde am veralteten Wartungs-Test-Doppel beendet
 und nach dessen Anpassung vollständig neu gestartet. Diese Versuche werden
-nicht als erfolgreiche Gesamtläufe gezählt.
+nicht als erfolgreiche Gesamtläufe gezählt. Ein dritter lokaler Lauf wurde vor
+der zusätzlichen Absicherung des expliziten Schreibtests beendet; nach der
+letzten Quelländerung wird erneut vollständig geprüft.
 
 ## Echter Kodi auf Linux, nicht Android
 

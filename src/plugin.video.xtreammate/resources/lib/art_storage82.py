@@ -62,8 +62,14 @@ def receipt(location,role='IMAGE',upcoming=0,probe=False):
             value['write_probe82']='OUTSIDE_OWN_CACHE';return value
         try:
             from import_budget import check_space,RESERVE
-            check_space(os.path.join(location,'probe82'),4096)
             value['probe_reserve82']=RESERVE
+            # The explicit diagnostic probe must obey the conservative
+            # same-volume result too, not only a second shutil-only reading.
+            if value.get('capacity82')!='SAME_VOLUME_VERIFIED':
+                value['write_probe82']=value.get('capacity82','CAPACITY_UNKNOWN');return value
+            if not isinstance(value.get('free'),(int,float)) or value['free']<RESERVE+4096:
+                value['write_probe82']='RESERVE_BLOCKED';return value
+            check_space(os.path.join(location,'probe82'),4096)
             if not os.path.isdir(location):value['write_probe82']='TARGET_NOT_CREATED';return value
             import tempfile
             fd,name=tempfile.mkstemp(prefix='.probe82-',dir=location)

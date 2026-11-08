@@ -36,3 +36,9 @@ class Storage82(Fixture,unittest.TestCase):
  def test_probe_on_unknown_user_folder_is_refused_without_creating_files(self):
   result=self.s.receipt(str(self.folder/'unselected'),probe=True)
   self.assertEqual(result['write_probe82'],'OUTSIDE_OWN_CACHE');self.assertFalse((self.folder/'unselected').exists())
+ def test_probe_never_bypasses_same_volume_disagreement_unknown_or_reserve(self):
+  root=self.folder/'programme_images46';root.mkdir()
+  for capacity,free,expected in [('CAPACITY_DISAGREEMENT',2*1024**3,'CAPACITY_DISAGREEMENT'),('CAPACITY_UNKNOWN',None,'CAPACITY_UNKNOWN'),('SAME_VOLUME_VERIFIED',32*1024**2+4095,'RESERVE_BLOCKED')]:
+   with mock.patch('art_storage.capacity',return_value=dict(capacity82=capacity,free=free)),mock.patch('tempfile.mkstemp',side_effect=AssertionError('unadmitted probe write')):
+    self.assertEqual(self.s.receipt(str(root),probe=True)['write_probe82'],expected)
+  self.assertEqual(list(root.iterdir()),[])

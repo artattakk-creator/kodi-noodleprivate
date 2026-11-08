@@ -50,7 +50,8 @@ PROFILE_METADATA, KODI_TEXTURES und gegebenenfalls SELECTED_ARCHIVE mit
 Free/Total, anonymem Volume, Backend, Reservepolicy und Diagnosecode.
 Ein zusätzlich ausdrücklich bestätigter Schreibtest darf ausschließlich eine
 neue 4-KiB-Datei in einem der drei eigenen Cacheordner anlegen, rücklesen und
-diese eigene Datei entfernen. Er respektiert die bestehende 32-MiB-Reserve für
+diese eigene Datei entfernen. Unbekannte oder widersprüchliche Kapazität
+verweigert auch diese optionale Probe. Er respektiert die bestehende 32-MiB-Reserve für
 Import-/Diagnosemetadaten; dies ist keine Freigabe neuer Bildarchive unterhalb
 deren Bildreserve. Kein Benutzerfile wird gelöscht, kein Ziel automatisch
 verschoben und kein größeres, unbewiesenes emuliertes Volume angenommen.
