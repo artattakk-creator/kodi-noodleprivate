@@ -5000,3 +5000,27 @@ msgstr "Bildquellen: Provider/XMLTV zuerst; TVMaze-Serienfallback und TMDB mit v
 msgctxt "#32790"
 msgid "Image check ended after 45 seconds without a confirmed result. Check the connection or retry this item."
 msgstr "Bildprüfung nach 45 Sekunden ohne bestätigtes Ergebnis beendet. Verbindung prüfen oder gezielt erneut versuchen."
+
+msgctxt "#32791"
+msgid "Catalogue changes (new/changed/unchanged): {0}"
+msgstr "Katalogänderungen (neu/geändert/unverändert): {0}"
+
+msgctxt "#32792"
+msgid "Last confirmed provider request: {0}"
+msgstr "Letzte bestätigte Providerabfrage: {0}"
+
+msgctxt "#32793"
+msgid "Last fully verified catalogue synchronization: {0}"
+msgstr "Letzter vollständig verifizierter Katalogabgleich: {0}"
+
+msgctxt "#32794"
+msgid "Show compact catalogue status line"
+msgstr "Kleine Katalog-Statuszeile anzeigen"
+
+msgctxt "#32795"
+msgid "Show catalogue completion notification"
+msgstr "Katalog-Abschlussmeldung anzeigen"
+
+msgctxt "#32796"
+msgid "Failed group attempts: {0}"
+msgstr "Fehlgeschlagene Gruppenversuche: {0}"

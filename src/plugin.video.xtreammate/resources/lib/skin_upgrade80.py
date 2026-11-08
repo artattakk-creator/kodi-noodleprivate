@@ -13,7 +13,7 @@ def prepare():
  from pathlib import Path
  skin=Path(xbmcvfs.translatePath('special://skin/'))
  from widget_skin78 import installed,prepare as plan,apply
- from widget_skin80 import MARKER
+ from widget_skin81 import MARKER
  try:
   if not installed(skin) or MARKER in (skin/'xml/IncludesVariables.xml').read_bytes():return
   candidate=plan(skin);apply(candidate['id'],skin,confirmed=True)

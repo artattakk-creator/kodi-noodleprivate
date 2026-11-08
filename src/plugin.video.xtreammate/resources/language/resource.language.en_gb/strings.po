@@ -5000,3 +5000,27 @@ msgstr "Picture sources: provider/XMLTV first; TVMaze series fallback and TMDB w
 msgctxt "#32790"
 msgid "Image check ended after 45 seconds without a confirmed result. Check the connection or retry this item."
 msgstr "Image check ended after 45 seconds without a confirmed result. Check the connection or retry this item."
+
+msgctxt "#32791"
+msgid "Catalogue changes (new/changed/unchanged): {0}"
+msgstr "Catalogue changes (new/changed/unchanged): {0}"
+
+msgctxt "#32792"
+msgid "Last confirmed provider request: {0}"
+msgstr "Last confirmed provider request: {0}"
+
+msgctxt "#32793"
+msgid "Last fully verified catalogue synchronization: {0}"
+msgstr "Last fully verified catalogue synchronization: {0}"
+
+msgctxt "#32794"
+msgid "Show compact catalogue status line"
+msgstr "Show compact catalogue status line"
+
+msgctxt "#32795"
+msgid "Show catalogue completion notification"
+msgstr "Show catalogue completion notification"
+
+msgctxt "#32796"
+msgid "Failed group attempts: {0}"
+msgstr "Failed group attempts: {0}"

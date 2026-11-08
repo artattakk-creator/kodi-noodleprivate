@@ -50,5 +50,5 @@ def candidate(event, cancel=lambda: False):
     details = request(TMDB + '/movie/' + str(remote) + '?language=de-DE', token=token, cancel=cancel)
     if details.get('id') != remote or details.get('adult') or title not in (title_key(details.get('title', '')),title_key(details.get('original_title',''))) or str(details.get('release_date', ''))[:4] != year:
         return None
-    url = _tmdb_image(details.get('backdrop_path'))
-    return dict(url=url, source='tmdb_movie', match='EXACT_TITLE_YEAR', attribution=credit, remote_id=remote) if url else None
+    url = _tmdb_image(details.get('backdrop_path') or details.get('poster_path'))
+    return dict(url=url, source='tmdb_movie', match='EXACT_TITLE_YEAR',role81='backdrop' if details.get('backdrop_path') else 'poster', attribution=credit, remote_id=remote) if url else None

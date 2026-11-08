@@ -82,6 +82,7 @@ class Progress73(Fixture,unittest.TestCase):
         bg=mock.Mock();dialog=mock.Mock()
         with mock.patch.object(sys.modules['xbmcgui'],'DialogProgressBG',return_value=bg,create=True),mock.patch.object(sys.modules['xbmcgui'],'Dialog',return_value=dialog):
             p.poll();p.poll()
-            self.assertEqual(bg.create.call_count,1);self.assertEqual(bg.update.call_count,1)
-            self.assertIn('Wartet',bg.update.call_args.args[2]);dialog.notification.assert_not_called()
+            bg.create.assert_not_called();bg.update.assert_not_called()
+            self.options['catalog_status81']=True;p.poll()
+            self.assertIn('Wartet',sys.modules['xbmcgui'].Window(10000).getProperty('XCMate.Catalog81.Text'));dialog.notification.assert_not_called()
             self.assertFalse(self.builtins)

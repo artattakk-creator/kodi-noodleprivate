@@ -35,11 +35,14 @@ def get(url,*,api=False,token='',cancel=lambda:False,transport=None,json_list67=
     try:
         # Every DNS answer must be public, then the selected IP is connected
         # directly with original hostname TLS/SNI. Never resolve a second time.
-        if api:response=(transport or _connect)(url,addresses(url),headers)
+        if api:
+            began81=time.monotonic();response=(transport or _connect)(url,addresses(url),headers)
+            if p.hostname=='api.themoviedb.org':__import__('art_trace81').request('HTTP_REQUEST_SENT',ms=round((time.monotonic()-began81)*1000))
         else:
             from image_redirect48 import open_image
             response=open_image(url,headers,transport or _connect,addresses,cancel,deadline)
         status=response.status
+        if api and p.hostname=='api.themoviedb.org':__import__('art_trace81').request('HTTP_STATUS',status=status)
         if 300<=status<400:raise SourceError('REDIRECT_BLOCKED')
         if status in (401,403):raise SourceError('HTTP_AUTH')
         if status in (404,410):raise SourceError('HTTP_NOT_FOUND')

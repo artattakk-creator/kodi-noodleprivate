@@ -69,6 +69,19 @@ def poll():
         Subtitle=label('XCMate.ProgrammeSubtitle63') if key==event_key else '',
         Percent=props['XCMate.ProgrammePercent46'],Image=props.get('XCMate.HeroImage63',neutral),
         ArtSource=props.get('XCMate.HeroArtSource63',''),Facts=props.get('XCMate.ProgrammeFacts75',''),LongTitle='true' if len(props['XCMate.ProgrammeTitle46'])>26 else 'false')
+    # Keep a previously displayed local texture behind an atomic same-event
+    # upgrade. Never carry it across channel, mapping, edition or opt-out.
+    from event_art81 import key as event_identity81,allowed as source_allowed81
+    event81=event_identity81(intent68) if intent68 else ''
+    active81=xbmcgui.Window(10000);bank81=active81.getProperty('XCMate.Hero63.Active')
+    prefix81='XCMate.Hero63.'+bank81+'.'
+    same81=bool(event81 and active81.getProperty('XCMate.Hero81.Event')==event81)
+    prior_image81=active81.getProperty(prefix81+'Image');prior_source81=active81.getProperty(prefix81+'ArtSource')
+    if same81 and prior_image81.startswith('/') and source_allowed81(dict(source=prior_source81)):
+        if not values['Image']:values['Image']=prior_image81;values['ArtSource']=prior_source81
+        elif values['Image']!=prior_image81 and active81.getProperty('XCMate.Hero81.PreviousImage')!=prior_image81:active81.setProperty('XCMate.Hero81.PreviousImage',prior_image81)
+    elif active81.getProperty('XCMate.Hero81.PreviousImage'):active81.setProperty('XCMate.Hero81.PreviousImage','')
+    if active81.getProperty('XCMate.Hero81.Event')!=event81:active81.setProperty('XCMate.Hero81.Event',event81)
     signature=(current,tuple(values.items()))
     if signature==_last:return
     previous=_last
@@ -111,6 +124,8 @@ def prepare(pid):
     from programme_requests68 import request,result
     request(event,priority=True)
     art=result(event,art)
+    durable81=__import__('event_art81').prior(event)
+    if durable81 and (not __import__('programme_lastgood80').positive(event,art) or __import__('event_art81').rank(durable81)<__import__('event_art81').rank(art)):art=durable81
     with _lock:
         if _focus==focus:_art=dict(__import__('programme_lastgood80').choose(event,art,_art,check_file=True) or {},key=event['key'],profile63=focus[3],scope69=__import__('programme_requests68').identity(event))
 

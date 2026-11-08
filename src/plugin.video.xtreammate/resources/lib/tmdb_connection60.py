@@ -21,9 +21,13 @@ def request(url, *, api=True, token='', cancel=lambda: False):
         prior = _cooldowns.get(key)
     if prior and time.monotonic() < prior[0]:
         raise SourceError(prior[1])
+    from art_trace81 import request as trace81
+    began81=time.monotonic()
     try:
-        return get(url, api=True, token=token, cancel=cancel)
+        result81=get(url, api=True, token=token, cancel=cancel)
+        return result81
     except SourceError as error:
+        trace81('SKIPPED_REASON',error.code,ms=round((time.monotonic()-began81)*1000))
         if error.code in ('HTTP_RATE_LIMIT', 'HTTP_AUTH'):
             with _lock:
                 delay = max(300, min(86400, int(getattr(error, 'retry_after60', 300)))) if error.code == 'HTTP_RATE_LIMIT' else 60
