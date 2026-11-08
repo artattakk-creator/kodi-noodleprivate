@@ -42,6 +42,25 @@ def regular_allowed():
                 and data.get('authorization_issue')==385
                 and data.get('sha256')==expected):return True
         except (OSError,ValueError):pass
+    # The user has explicitly requested the .79 release on regular MAIN.
+    # This approval does NOT extend to all-channel release or Android PASS.
+    if version=='0.1.29.79':
+        try:
+            path=ROOT/'docs/XCMate/releases/user-approved-untested-0.1.29.79.json'
+            data=json.loads(path.read_text(encoding='utf-8'))
+            package=ROOT/'docs/XCMate/test-builds/02979/plugin.video.xtreammate-0.1.29.79.zip'
+            expected=hashlib.sha256(package.read_bytes()).hexdigest()
+            if (data.get('addon_id')=='plugin.video.xtreammate'
+                and data.get('version')==version
+                and data.get('exception_applies_only_to_version')==version
+                and data.get('user_approved_regular_release') is True
+                and data.get('user_approved_all_channels') is False
+                and data.get('android_status')=='NOT_TESTED'
+                and data.get('android_pass_claimed') is False
+                and data.get('authorization_issue')==387
+                and data.get('source_merge_pr')==388
+                and data.get('sha256')==expected):return True
+        except (OSError,ValueError):pass
     # All other releases still require genuine Android PASS and user consent.
     path=ROOT/'docs/XCMate/releases'/('android-approved-'+version+'.json')
     try:
