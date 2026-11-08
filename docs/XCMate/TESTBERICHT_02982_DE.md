@@ -33,6 +33,8 @@ veröffentlichten .81-Paketkopien und Installer 0.5.26 bleiben unverändert.
   Prozess-Stubs beendet; es werden keine Produktassertions entfernt.
 - Gesonderte pytest-Brandingprüfung: **11 PASS**. Die komplette CI installiert
   pytest ausdrücklich und führt diese funktionsbasierten Tests zusätzlich aus.
+- Vollständiger lokaler Lauf nach Fixture-Bereinigung: **3.298 PASS**,
+  497,933 s, keine Fehler und keine ausgelassenen Tests.
 - Gesamter aktueller Testumfang: **3.298** Methoden, davon 3.275 bestehende und
   23 zusätzliche .82-Methoden. Methoden und vorhandene Skip-Bedingungen werden
   vollständig gegen die freigegebene .81-Basis geprüft.
@@ -79,6 +81,15 @@ Logo-Pixel dürfen nicht verschwinden. Anschließend muss derselbe Worker nach
 Freigabe den Auftrag abschließen. Aufgerufene Hintergrundworker werden über
 die regulären Shutdown-APIs beendet, bevor Kodi natürlich neu startet.
 Keine künstliche Prozessbeendigung und kein verlängerter Restart-Timeout.
+
+Ein nativer CI-Versuch stoppte vor der Pausenmessung bei noch geöffnetem
+BINGIE-Sideblade; der zweite las beim zweiten Coldstart eine gerade noch
+geschriebene PNG-Datei. Die .82-Fixture stellt vor der Pause die sichtbare
+Live-Ansicht über echte Navigation her und liest Screenshotbytes vollständig
+in einen eigenen Puffer. Jeder Coldstart verwendet einen neuen Dateinamen.
+Unvollständige PNG-Snapshots werden erneut erfasst; alle ursprünglichen
+Farb-, Fokus-, SHA256- und Coldstart-Assertions bleiben erhalten. Erst der
+abschließende native CI-Lauf gilt als erfolgreicher Nachweis.
 
 Wichtiges negatives Fixture: Sender 87 hat absichtlich kein Providerlogo.
 Live startet deshalb als REFERENCE_PARTIAL; genau dieses eine fehlende Logo

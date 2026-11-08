@@ -34,6 +34,25 @@ def stability82():
   # sender 87. Keep that negative case; never invent an image to claim READY.
   missing82=[v['props']['XCMate.MediaId'] for v in frame82['items'] if not renderable(v['art'].get('poster'))]
   check(not missing82 or kind82=='live' and missing82==['87'],('CACHED82_UNEXPECTED_MISSING',kind82,missing82))
+ # The preceding movie-return case deliberately backs through native Home.
+ # Wait for that navigation and the 300ms sideblade animation, then establish
+ # the visible Live test view through its real Right navigation. A dimmed
+ # menu is not a lost logo; no test-view actions are sent during the soak.
+ settled82=None
+ for _ in range(160):
+  if home.getFocusId()==900:
+   xbmc.executebuiltin('Action(Right)',wait=False);settled82=None
+  elif home.getFocusId()!=2510:
+   home.setFocusId(2510);home.getControl(2510).selectItem(0);settled82=None
+  visible82=xbmc.getCondVisibility('Control.IsVisible(296751)')
+  if home.getFocusId()==2510 and visible82:
+   if settled82 is None:settled82=time.monotonic()
+   if time.monotonic()-settled82>=1:break
+  else:settled82=None
+  pump();xbmc.sleep(50)
+ else:raise RuntimeError('VIEW82_PRECONDITION_NOT_READY')
+ _,baseline82=capture('home82-before-pause')
+ check(max(abs(a-b) for a,b in zip(baseline82.getpixel((330,445)),(20,90,150)))<=8,'VIEW82_BASELINE_LOGO_NOT_READY')
  filename82=db.path();old82=db._failures.get(filename82)
  seconds82=max(2,int(os.environ.get('XCMATE_FAULT_IDLE82','0')))
  db._failures[filename82]=dict(identity=db._identity(filename82),code='BUSY',retry_after=time.time()+seconds82+60)
