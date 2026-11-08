@@ -18,9 +18,12 @@ class Worker82(Fixture,unittest.TestCase):
   from artwork_db import ArtworkDBUnavailable
   f=self.folder/'input.png';f.write_bytes(self.png());row=dict(sid='1',cover='https://image.tmdb.org/t/p/w500/synthetic82.png')
   self.options['media_art_budget_mb']=128
-  with mock.patch('media_art.cached',return_value=str(f)),mock.patch('art_store.used',side_effect=ArtworkDBUnavailable('XM-ARTWORK-DB-PAUSED')),mock.patch('artwork_health82.guard'):
-   with self.assertRaises(self.health.Deferred) as caught:render.prepare(self.portal,'vod',[row])
-  self.assertGreater(caught.exception.retry_at82,time.time());self.assertTrue(f.exists())
+  for target,error in (('art_store.used',ArtworkDBUnavailable('XM-ARTWORK-DB-PAUSED')),('artwork_db.connect',ArtworkDBUnavailable('XM-ARTWORK-DB-PAUSED')),('artwork_db.connect',sqlite3.OperationalError('database is locked'))):
+   with self.subTest(target=target,error=type(error).__name__):
+    render._due.clear();self.health._backoff.clear()
+    with mock.patch('media_art.cached',return_value=str(f)),mock.patch(target,side_effect=error),mock.patch('artwork_health82.guard'):
+     with self.assertRaises(self.health.Deferred) as caught:render.prepare(self.portal,'vod',[row])
+    self.assertGreater(caught.exception.retry_at82,time.time());self.assertTrue(f.exists())
  def test_443_polls_during_pause_keep_one_worker_then_recover(self):
   from artwork_db import ArtworkDBUnavailable
   __import__('artwork_config').choose('dynamic');row=dict(sid='1',cover='https://image.tmdb.org/t/p/w500/synthetic82.png')

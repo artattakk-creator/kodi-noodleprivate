@@ -43,7 +43,7 @@ def stability82():
   if args.thread.name=='XCMate-provider-art69':errors82.append(args.exc_type.__name__)
   else:original_hook82(args)
  threading.excepthook=hook82
- checkpoints82=[];started82=time.monotonic();next_poll82=0
+ checkpoints82=[];started82=time.monotonic();next_poll82=0;recovered82=False
  try:
   check(assets.prepare(portal82,'live',[job82]),'WORKER82_NOT_STARTED');worker82=assets._thread
   for _ in range(100):
@@ -68,6 +68,11 @@ def stability82():
     check(max(abs(a-b) for a,b in zip(rgb82.getpixel((330,445)),(20,90,150)))<=8,'LOGO82_PIXELS_LOST')
    xbmc.sleep(100)
   check(not errors82,'WORKER82_UNHANDLED_EXCEPTION')
+  db._failures.pop(filename82,None)
+  for _ in range(150):
+   if not assets._pending:recovered82=True;break
+   xbmc.sleep(20)
+  check(recovered82 and assets._thread is worker82 and worker82.is_alive(),'WORKER82_NOT_RECOVERED')
  finally:
   if old82 is None:db._failures.pop(filename82,None)
   else:db._failures[filename82]=old82
@@ -75,7 +80,16 @@ def stability82():
   if worker82:worker82.join(5)
   threading.excepthook=original_hook82
   check(not worker82 or not worker82.is_alive(),'WORKER82_DID_NOT_STOP')
- return dict(status='PASS',scope='real Linux Kodi + injected artwork DB pause',seconds=round(time.monotonic()-started82,2),duplicate_polls=443,worker_threads=1,unhandled=errors82,checkpoints=checkpoints82,android='ANDROID_NOT_TESTED')
+  # Publication starts the existing programme worker inside this disposable
+  # GUI script too. Match service teardown before native Application.Quit;
+  # no process killing or relaxed restart timeout may hide leaked invokers.
+  for name82 in ('programme_urls55','programme_requests68','programme_art46'):
+   module82=__import__(name82);module82.shutdown()
+   owned82=[getattr(module82,'_thread',None)]+list(getattr(module82,'_workers',[]))
+   for thread82 in owned82:
+    if thread82 and thread82 is not threading.current_thread():thread82.join(5)
+   check(not any(t and t.is_alive() for t in owned82),'PROGRAMME82_FIXTURE_NOT_STOPPED')
+ return dict(status='PASS',scope='real Linux Kodi + injected artwork DB pause',seconds=round(time.monotonic()-started82,2),duplicate_polls=443,worker_threads=1,recovered_same_worker=recovered82,unhandled=errors82,checkpoints=checkpoints82,android='ANDROID_NOT_TESTED')
 
 def write82(self,data,*args,**kwargs):
  global finished82

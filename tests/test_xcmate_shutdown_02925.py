@@ -20,8 +20,15 @@ class ShutdownTests(Fixture,unittest.TestCase):
         aborted=threading.Event()
         sys.modules['xbmc'].Monitor=lambda:types.SimpleNamespace(abortRequested=aborted.is_set,waitForAbort=lambda n:aborted.is_set())
         db=importlib.import_module('artwork_db')
-        with mock.patch.object(db,'maintain',side_effect=lambda **kw:aborted.set()), mock.patch.object(self.service,'refresh_local') as refresh:
-            self.service._run()
+        # .82 automatically inspects read-only, after Home/network admission.
+        # Cancellation at that boundary must still prevent all later stages;
+        # invoking the old mutating maintenance API would be a regression.
+        timer=threading.Timer(2,aborted.set);timer.start()
+        try:
+            with mock.patch.object(db,'maintain',side_effect=AssertionError('automatic repair')), mock.patch.object(db,'inspect_readonly82',side_effect=lambda **kw:aborted.set()) as inspect, mock.patch('startup48.suspended',return_value=False), mock.patch('startup48.Phases.network',return_value=True), mock.patch('home_schedule75.rest_allowed',return_value=True), mock.patch.object(self.service,'refresh_local') as refresh:
+                self.service._run()
+                inspect.assert_called_once()
+        finally:timer.cancel()
         refresh.assert_not_called()
 
     def test_shutdown_has_bounded_join_and_never_restarts_worker(self):
