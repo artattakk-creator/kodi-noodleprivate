@@ -5,7 +5,7 @@ _upgrade={}
 def key(event):
  from epg_handoff63 import profile_scope
  from epg_events import title_key
- values=[profile_scope()]+[event.get(k) for k in ('pid','sid','canonical','source_key46','start','stop','year','season','episode')]+[title_key(event.get('title',''))]
+ values=[profile_scope()]+[event.get(k) for k in ('pid','sid','canonical','source_key46','epg_source46','start','stop','year','season','episode','subtitle')]+[title_key(event.get('title',''))]
  return hashlib.sha256(json.dumps(values,sort_keys=True).encode()).hexdigest()
 
 def rank(value):

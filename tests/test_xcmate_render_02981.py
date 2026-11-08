@@ -77,3 +77,10 @@ class Render81(Fixture,unittest.TestCase):
    with mock.patch.object(self.cache,'store',side_effect=error) as store,mock.patch('media_art.cached',return_value=str(source)),mock.patch('art_trace81.note') as trace:
     self.cache.prepare(self.portal,'vod',[row]);self.cache.prepare(self.portal,'vod',[row])
    self.assertEqual(store.call_count,1);self.assertEqual(trace.call_args.args[2],code);self.assertTrue(source.exists())
+ def test_legacy_event_without_source_key_is_invalidated_by_real_source_or_subtitle_change(self):
+  import event_art81 as event
+  self.options.update(programme_tmdb46=True,tmdb_research43=True)
+  e=dict(pid='p',sid='1',key='legacy',title='Synthetic series',subtitle='Episode A',epg_source46='xml-source-a',start=1,stop=time.time()+600,canonical='cid')
+  value=dict(key='legacy',source='tmdb_series',code='READY',until=time.time()+300)
+  with mock.patch('programme_art46.space'):event.commit(e,value,self.png())
+  self.assertIsNotNone(event.prior(e));self.assertIsNone(event.prior(dict(e,epg_source46='xml-source-b')));self.assertIsNone(event.prior(dict(e,subtitle='Episode B')))
