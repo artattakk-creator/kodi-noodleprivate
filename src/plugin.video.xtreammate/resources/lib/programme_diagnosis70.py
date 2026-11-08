@@ -11,10 +11,10 @@ def explain(art):
           'HELPER_NOT_AVAILABLE':'TMDB Helper ist nicht verfügbar. Kein Sendungsbild bestätigt.',
           'HELPER_VERSION_UNSUPPORTED':'Diese TMDB-Helper-Version wird für die Bildsuche nicht unterstützt.',
           'REQUESTED':'Bildauftrag an den XCMate-Hintergrunddienst übergeben.',
-          'IMAGE_LOOKUP_TIMEOUT':tr(32790),
           'WAITING_SERVICE':'Bildauftrag übergeben; der Hintergrunddienst hat die Bearbeitung noch nicht bestätigt.',
           'NOT_SCHEDULED':'Für diese Sendung wurde noch kein Bildauftrag bestätigt.',
           'PENDING':'Sendungsdaten vorhanden; Bildprüfung noch nicht bestätigt.'}
+ if code=='IMAGE_LOOKUP_TIMEOUT':return tr(32790)
  if code not in reasons and art.get('storage69')!='RAM_ONLY':return ''
  text=reasons.get(code,'Kein bestätigtes Sendungsbild ('+str(code)+').')
  from programme_outcomes70 import clean

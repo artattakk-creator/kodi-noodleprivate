@@ -10,7 +10,7 @@ class Titles80(Fixture,unittest.TestCase):
   calls=[]
   def api(url,**kwargs):
    calls.append(url)
-   if '/search/tv?' in url:return dict(total_pages=1,total_results=int(tv_collision),results=[dict(id=8002,name=title)] if tv_collision else [])
+   if '/search/tv?' in url:return dict(total_pages=int(tv_collision),total_results=int(tv_collision),results=[dict(id=8002,name=title)] if tv_collision else [])
    if '/search/movie?' in url:return dict(total_pages=1,total_results=2 if remake else 1,results=[row,dict(row,id=8003)] if remake else [row])
    return dict(row,backdrop_path='/synthetic80.jpg')
   event=dict(title=title,genre=genre,start=1000,stop=1000+9900)

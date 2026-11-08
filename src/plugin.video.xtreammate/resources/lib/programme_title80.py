@@ -25,7 +25,7 @@ def unclassified(event,cancel):
  if len(title)<12:return None
  result=request(TMDB+'/search/tv?'+urlencode(dict(query=query(event['title']),language='de-DE',include_adult='false')),token=tmdb_token(),cancel=cancel)
  rows=result.get('results')
- if not isinstance(rows,list) or result.get('total_pages')!=1 or type(result.get('total_results')) is not int or result.get('total_results')!=len(rows) or len(rows)>20:return None
+ if not isinstance(rows,list) or type(result.get('total_pages')) is not int or result['total_pages'] not in (0,1) or type(result.get('total_results')) is not int or result.get('total_results')!=len(rows) or len(rows)>20 or (result['total_pages']==0 and rows):return None
  if any(title in (key(r.get('name')),key(r.get('original_name'))) for r in rows if isinstance(r,dict)):return None
  if event.get('year'):
   from tmdb_epg60 import candidate
