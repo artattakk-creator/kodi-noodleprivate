@@ -2,7 +2,7 @@
 
 Stand 08.11.2026. Draft-PR: https://github.com/artattakk-creator/kodi-noodleprivate/pull/388
 Source-Basis main .78: `3b2a52859feda4d9413231bb4d3cf4121b1f1d67`.
-Produktänderungen bis `e47479846a133a6252b2f9e4e644705bf7df8fc4` plus abschließende einheitliche Directory-Korrelation; native Testharness-Ergänzung: `4d9e8733db2caba8eb8b931197c3d81222736bf4`.
+Finaler Code-Commit: `90c2c059abcfd79434cb737b8cad3b93a9736f97`. Der abschließende Dokumentations-Commit ändert kein Byte des Produktcodes oder ZIPs.
 
 ## Paket
 
@@ -14,7 +14,7 @@ SHA256: `cb68d09c84c7190bf1459d0d46532920d6c5a7dfea15a96a6d5e6cb4f244c20a`
 
 ## Automatisierte Prüfung
 
-- Vollständige lokale Suite vor der letzten reinen Korrelationscode-Korrektur: **3.213 Tests, 530,807 Sekunden, OK**; finaler Lauf mit zusätzlichem Korrelationsfall läuft. Vorhandene .78-Testmethoden/Skip-Inventar erhalten; 31 zusätzliche .79-Fälle.
+- Finale vollständige lokale Suite: **3.214 Tests, 477,039 Sekunden, OK**. Vorhandene .78-Testmethoden/Skip-Inventar erhalten; 31 zusätzliche .79-Fälle.
 - Finale .79-Fokusprüfung: 31 Tests, OK (Cache, Runtime, EPG, Schema, kumulativer Bestandsschutz).
 - Bestehende Branding-pytests: 11 PASS. Eine externe pytest/anyio-Deprecation-Warnung, kein Produktfehler.
 - Echte temporäre HTTP-/SMB-/SQLite-Dateisystemtests laufen getrennt von tatsächlichen Android-Gerätetests. Kodi-21.2-/21.3-API-Labels in Unit-Stubs sind keine nativen Android-Binärtests.
@@ -22,11 +22,13 @@ SHA256: `cb68d09c84c7190bf1459d0d46532920d6c5a7dfea15a96a6d5e6cb4f244c20a`
 - Native Kodi 21.2 / BINGIE MOD 2.2.3: **720p und 1080p PASS**, je 31 Layout-/Fokusfälle, 20 native Navigationsaktionen, zwei tatsächliche Prozessneustarts bei abgeschalteter HTTPS-Bildquelle. Danach jeweils 88/24/24 Einträge; Film-/Serienbilder durch reale Screenshot-Pixel und SHA256 geprüft, 34 geschützte Profil-/Skin-Dateien unverändert.
 - Kontrollierte Sendungsbilder: je zwei Ereignisse mit vollständigem Decode und tatsächlichen Hero-/Detailpixeln. Synthetische Bilder, keine Aussage über die passende echte Android-Sendung.
 - Native Linux-Wiedergabe: **60 Stop-/ACK-Zyklen PASS**, 20 je Live-TV/Film/Serie; tatsächlicher Decoder und eigener Stream. Kein Nachweis für Rockchip-MediaCodec oder Android-Vollbild-Rückkehr.
-- 17 Kodi-PO-Kataloge validiert; Python-Kompilierung bestanden.
+- 17 Kodi-PO-Kataloge validiert; 92 Navigationstexturen samt Lizenz/Provenienz und Python-Kompilierung bestanden.
 - Paket aus unverändertem Produkt-Source erneut gebaut: **byteidentisch**, SHA256/ZIP-CRC/749-Dateien-Parität PASS.
-- GitHub-CI: finaler Commit in Prüfung; Run-IDs und Ergebnisse nach Abschluss ergänzen. Ein vorheriger 1080p-CI-Zweitneustart schlug fehl, obwohl beide lokalen Auflösungen bestanden. Die genaue Ursache dieses einzelnen Fehllaufs ist nicht abschließend belegt; zusätzliche Zweitneustart-/Traceback-Artefakte sind ergänzt. Der erste Fehllauf wird ausdrücklich nicht als PASS gezählt.
+- GitHub-CI für finalen Code `90c2c05`: Native Home 720p/1080p plus 60 Stop-/ACK-Zyklen bestanden ([Run 42463685782](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/42463685782)); **alle zehn Workflows erfolgreich**, einschließlich kompletter Hostsuite ([Run 42463685705](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/42463685705)) und archivierter .74-Vergleichsbasis ([Run 42463685695](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/42463685695)). Die Source-PR-CI prüft den temporären Merge-Ref `6d4816fa245a2b22b1266fbd73b72669fe51ee43`; es ist kein Merge nach main. Die Referenzen/Ergebnisse stehen in `evidence/ci/workflows.json`. Ein vorheriger 1080p-CI-Zweitneustart schlug fehl, obwohl beide lokalen Auflösungen bestanden. Die genaue Ursache dieses einzelnen Fehllaufs ist nicht abschließend belegt; zusätzliche Zweitneustart-/Traceback-Artefakte sind ergänzt. Der erste Fehllauf wird ausdrücklich nicht als PASS gezählt.
 
-Reproduktion der Hostsuite: `PYTHONPATH=<Pillow/impacket/simpleeval-Abhängigkeiten> SQLITE_TMPDIR=/tmp python -m unittest discover -s tests -v`. Native Tests: `python tools/run_kodi_home75_contract.py --report-dir <Ordner> --resolution 1280x720` beziehungsweise `1920x1080`; `python tools/run_kodi_media77_contract.py --report-dir <Ordner>`. Die Tests benötigen Docker, einen isolierten X11/Kodi-Prozess und die unveränderte, SHA-geprüfte Skin-Quelle; sie verbinden sich mit keinem Benutzergerät.
+Reproduktion der Hostsuite: `PYTHONPATH=<Pillow/impacket/simpleeval-Abhängigkeiten> SQLITE_TMPDIR=/tmp python -m unittest discover -s tests -v`. Native Tests: `python tools/run_kodi_home75_contract.py --report-dir <Ordner> --resolution 1280x720` beziehungsweise `1920x1080`; `python tools/run_kodi_media77_contract.py --report-dir <Ordner>`. Das CI-Review-Artefakt `13610881937` enthält exakt dasselbe .79-ZIP (byteweise geprüft). Die Host-CI umfasst ebenfalls 3.214 bestandene Tests; kompletter CI-Log liegt in `evidence/ci/host-unittest.log`.
+
+Die Tests benötigen Docker, einen isolierten X11/Kodi-Prozess und die unveränderte, SHA-geprüfte Skin-Quelle; sie verbinden sich mit keinem Benutzergerät.
 
 ## Messwerte und Vergleichsgrenzen
 
@@ -38,7 +40,7 @@ Reproduktion der Hostsuite: `PYTHONPATH=<Pillow/impacket/simpleeval-Abhängigkei
 | Kontrollierter Screenshot 720p | Kein vergleichbarer .78-ARM32-Zeitwert | 31 Fälle: 1.966–3.117 ms, Median 2.799 ms |
 | Kontrollierter Screenshot 1080p | Kein vergleichbarer .78-ARM32-Zeitwert | 31 Fälle: 1.977–3.342 ms, Median 3.148 ms |
 
-Die Screenshotzeiten enthalten absichtliches Warten auf stabile Fades; dies sind **keine Android-Startzeiten** und kein belastbarer .78/.79-Geschwindigkeitsvergleich. Rohbelege: `test-builds/02979/evidence/`, inklusive vollständiger Host-Ausgabe und beider Neustartberichte.
+Die Screenshotzeiten enthalten absichtliches Warten auf stabile Fades; dies sind **keine Android-Startzeiten** und kein belastbarer .78/.79-Geschwindigkeitsvergleich. Rohbelege: `test-builds/02979/evidence/`, inklusive vollständiger finaler Host-Ausgabe und beider lokalen Neustartberichte. `evidence/ci/` enthält zusätzlich die beiden Neustartberichte und 31 Layoutfälle pro Auflösung sowie 60 Medienzyklen aus GitHub-CI am finalen Code-Commit; Artefakt-ZIP-SHA256 ist verifiziert. Die lokalen PNGs wurden vor den letzten reinen Diagnosekorrekturen erstellt; der finale CI-Run enthält erneut eigene Screenshots.
 
 ## Ursachen und Grenzen der Nachweise
 

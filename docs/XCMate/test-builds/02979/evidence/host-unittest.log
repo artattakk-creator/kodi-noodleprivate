@@ -152,10 +152,10 @@ test_restart_offline_previous_index_and_immediate_disabled_filter (test_xcmate_0
 test_same_stream_in_two_groups_counted_once_globally_but_available_in_each (test_xcmate_028_streaming.IndexTests.test_same_stream_in_two_groups_counted_once_globally_but_available_in_each) ... ok
 test_streaming_group_publishes_only_after_complete_json (test_xcmate_028_streaming.IndexTests.test_streaming_group_publishes_only_after_complete_json) ... ok
 test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update (test_xcmate_028_streaming.LargeGuideTests.test_streamed_xml_over_80mib_more_than_150000_programmes_and_later_short_update) ... 
-LARGE_XMLTV {"parsed": 160005, "stored": 160005, "xml_bytes": 95571948, "sqlite_bytes": 303685632, "seconds": 23.53}
+LARGE_XMLTV {"parsed": 160005, "stored": 160005, "xml_bytes": 95571948, "sqlite_bytes": 303685632, "seconds": 19.934}
 ok
 test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib (test_xcmate_028_streaming.LargeHTTPTests.test_real_http_over_80mib_and_200000_titles_into_sqlite_over_64mib) ... 
-LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 309526528, "seconds": 26.057, "peak_rss_kib": 127928}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 621731840, "seconds": 25.807, "peak_rss_kib": 127928}]
+LARGE_CATALOGUE [{"kind": "vod", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 309526528, "seconds": 25.615, "peak_rss_kib": 127748}, {"kind": "series", "rows": 200005, "http_bytes": 109380521, "sqlite_bytes": 621731840, "seconds": 25.535, "peak_rss_kib": 127748}]
 ok
 test_cache_envelope_and_trailing_data_validated (test_xcmate_028_streaming.ParserTests.test_cache_envelope_and_trailing_data_validated) ... ok
 test_chunked_http_gzip_and_truncated_compression (test_xcmate_028_streaming.ParserTests.test_chunked_http_gzip_and_truncated_compression) ... ok
@@ -218,20 +218,7 @@ test_reject_invalid_port_or_protocol (test_xcmate_0293_setup_inputs.WizardServer
 test_art_reference_history_is_bounded_without_deleting_any_images (test_xcmate_art_context_02939.ArtContext39.test_art_reference_history_is_bounded_without_deleting_any_images) ... ok
 test_changed_provider_url_and_new_view_cannot_inherit_expired_seen_art (test_xcmate_art_context_02939.ArtContext39.test_changed_provider_url_and_new_view_cannot_inherit_expired_seen_art) ... ok
 test_definitive_dns_rejection_clears_rebuilt_art_without_weakening_admission (test_xcmate_art_context_02939.ArtContext39.test_definitive_dns_rejection_clears_rebuilt_art_without_weakening_admission) ... ok
-test_twenty_rebuilds_at_30_60_120_seconds_keep_seen_cover_across_rows_and_tabs (test_xcmate_art_context_02939.ArtContext39.test_twenty_rebuilds_at_30_60_120_seconds_keep_seen_cover_across_rows_and_tabs) ... Exception in thread XCMate-art-enrol:
-Traceback (most recent call last):
-  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/threading.py", line 1075, in _bootstrap_inner
-    self.run()
-  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/threading.py", line 1012, in run
-    self._target(*self._args, **self._kwargs)
-  File "/workspace/xcmate-02979/src/plugin.video.xtreammate/resources/lib/service_runtime.py", line 104, in run
-    with scope():return function(*args,**kwargs)
-                        ^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/workspace/xcmate-02979/src/plugin.video.xtreammate/resources/lib/media_art.py", line 245, in _enrol_loop
-    while not _stop.is_set() and not monitor.abortRequested():
-                                     ^^^^^^^^^^^^^^^^^^^^^^
-AttributeError: 'types.SimpleNamespace' object has no attribute 'abortRequested'
-ok
+test_twenty_rebuilds_at_30_60_120_seconds_keep_seen_cover_across_rows_and_tabs (test_xcmate_art_context_02939.ArtContext39.test_twenty_rebuilds_at_30_60_120_seconds_keep_seen_cover_across_rows_and_tabs) ... ok
 test_busy_warns_once_per_minute_across_interpreter_reload_preserving_integrity (test_xcmate_art_status_02911.ArtStatusTests.test_busy_warns_once_per_minute_across_interpreter_reload_preserving_integrity) ... ok
 test_complete_schema_can_open_under_another_reserved_writer (test_xcmate_art_status_02911.ArtStatusTests.test_complete_schema_can_open_under_another_reserved_writer) ... ok
 test_empty_worker_never_requests_immediate_writer_lock (test_xcmate_art_status_02911.ArtStatusTests.test_empty_worker_never_requests_immediate_writer_lock) ... ok
@@ -2217,6 +2204,7 @@ test_registry_cancels_exact_own_detail_only (test_xcmate_return_02969.Return69.t
 test_registry_never_signals_foreign_owner_or_portal (test_xcmate_return_02969.Return69.test_registry_never_signals_foreign_owner_or_portal) ... ok
 test_actual_item_generation_ack_is_distinct_from_texture_visibility (test_xcmate_runtime_02979.Runtime79.test_actual_item_generation_ack_is_distinct_from_texture_visibility) ... ok
 test_changed_consumers_require_reload_even_with_ready_hero_controls (test_xcmate_runtime_02979.Runtime79.test_changed_consumers_require_reload_even_with_ready_hero_controls) ... ok
+test_consumer_and_active_control_use_the_actual_directory_generation (test_xcmate_runtime_02979.Runtime79.test_consumer_and_active_control_use_the_actual_directory_generation) ... ok
 test_count_alone_is_not_reload_or_active_consumer_ack (test_xcmate_runtime_02979.Runtime79.test_count_alone_is_not_reload_or_active_consumer_ack) ... ok
 test_empty_consumer_gets_two_targeted_retries_without_rebuild_or_focus (test_xcmate_runtime_02979.Runtime79.test_empty_consumer_gets_two_targeted_retries_without_rebuild_or_focus) ... ok
 test_gui_poll_never_reads_files_or_sql (test_xcmate_runtime_02979.Runtime79.test_gui_poll_never_reads_files_or_sql) ... ok
@@ -3239,16 +3227,16 @@ test_widget_route_and_no_cached_credentials_in_link (test_xtreammate_widgets.Wid
 test_youtube_whitelist (test_xtreammate_widgets.WidgetsTest.test_youtube_whitelist) ... ok
 
 ----------------------------------------------------------------------
-Ran 3213 tests in 530.807s
+Ran 3214 tests in 477.039s
 
 OK
 
-MODEL_COLD_WINDOW_MS 5.386
-SEARCH39_HOST [{'query_kind': 'cold', 'first_names_ms': 4.866, 'total_ms': 72.77, 'scanned': 2905, 'results': 6}, {'query_kind': 'warm', 'first_names_ms': 4.73, 'total_ms': 15.497, 'scanned': 2905, 'results': 6}]
+MODEL_COLD_WINDOW_MS 5.258
+SEARCH39_HOST [{'query_kind': 'cold', 'first_names_ms': 4.907, 'total_ms': 39.92, 'scanned': 2905, 'results': 6}, {'query_kind': 'warm', 'first_names_ms': 4.199, 'total_ms': 14.465, 'scanned': 2905, 'results': 6}]
 
 SELECTIVE_XMLTV {"bytes": 400, "parsed": 2, "stored": 1}
 
 LARGE_M3U {"parsed": 20005, "active": 5002, "bytes": 1727118}
-WIDGET46_RETAINED_ARCHIVE {"legacy_rows": 40005, "old_opcode_budget": "INTERRUPTED", "new_rows": 24, "new_ms": 3.171}
-WIDGET41_HOST {'rows': 20005, 'returned': 24, 'code': 'READY', 'ms': 2.809}
-WIDGET44_V2_HOST {"records": 20005, "returned": 24, "ms": 3.079, "plan": "(7, 0, 61, 'SEARCH i USING INDEX recent_v2 (pid=? AND kind=?)') (17, 0, 0, 'USING INDEX sqlite_autoindex_selected_categories_1 FOR IN-OPERATOR') (23, 0, 47, 'SEARCH h USING INDEX sqlite_autoindex_heads_1 (pid=? AND kind=? AND cid=?)')"}
+WIDGET46_RETAINED_ARCHIVE {"legacy_rows": 40005, "old_opcode_budget": "INTERRUPTED", "new_rows": 24, "new_ms": 2.623}
+WIDGET41_HOST {'rows': 20005, 'returned': 24, 'code': 'READY', 'ms': 2.976}
+WIDGET44_V2_HOST {"records": 20005, "returned": 24, "ms": 2.899, "plan": "(7, 0, 61, 'SEARCH i USING INDEX recent_v2 (pid=? AND kind=?)') (17, 0, 0, 'USING INDEX sqlite_autoindex_selected_categories_1 FOR IN-OPERATOR') (23, 0, 47, 'SEARCH h USING INDEX sqlite_autoindex_heads_1 (pid=? AND kind=? AND cid=?)')"}
