@@ -1,0 +1,93 @@
+name: Release XCMate 0.1.29.79 to regular main repository
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/xcmate79-publish-main.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: xcmate79-regular-main-release
+  cancel-in-progress: false
+
+jobs:
+  publish-approved-79:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify explicit current user approval, source merge and Android NOT_TESTED
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          import xml.etree.ElementTree as ET
+          source=ET.parse("src/plugin.video.xtreammate/addon.xml").getroot()
+          assert (source.get("id"), source.get("version")) == ("plugin.video.xtreammate","0.1.29.79")
+          approval=json.loads(Path("docs/XCMate/releases/user-approved-untested-0.1.29.79.json").read_text())
+          assert approval["source_merge_pr"]==388 and approval["authorization_issue"]==387
+          assert approval["user_approved_regular_release"] is True
+          assert approval["user_approved_all_channels"] is False
+          assert approval["android_status"]=="NOT_TESTED" and approval["android_pass_claimed"] is False
+          assert approval["sha256"]=="cb68d09c84c7190bf1459d0d46532920d6c5a7dfea15a96a6d5e6cb4f244c20a"
+          PY
+          python tools/release_channel75.py
+
+      - name: Stage reviewed and source-byte-identical XCMate .79 ZIP in regular main
+        run: python tools/publish_xcmate79_main.py --stage
+
+      - name: Verify root Kodi XML/MD5, ZIP SHA256/CRC and protected other channels
+        run: |
+          python tools/publish_xcmate79_main.py
+          python - <<'PY'
+          import subprocess
+          changed={line[3:] for line in subprocess.check_output(
+            ["git","status","--porcelain","--untracked-files=all"],text=True
+          ).splitlines()}
+          allowed={
+            "addons.xml","addons.xml.md5","index.html",
+            "plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.79.zip",
+            "plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.79.zip.sha256",
+          }
+          assert changed.issubset(allowed), "UNEXPECTED_RELEASE_MUTATIONS:"+repr(changed-allowed)
+          assert "addons.xml" in changed, "NO_REGULAR_RELEASE_INDEX_UPDATE"
+          print("XCMATE_02979_REGULAR_MAIN_STAGED", sorted(changed))
+          PY
+
+      - name: Publish regular main ZIP and catalog, leave Pilot/NeoDark3 untouched
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- addons.xml addons.xml.md5 index.html \
+            plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.79.zip \
+            plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.79.zip.sha256
+          if ! git diff --cached --quiet; then
+            git commit -m "release(XCMate): publish reviewed .79 to regular main; Android not tested"
+            git -c rebase.autoStash=true pull --rebase origin main
+            python tools/publish_xcmate79_main.py
+            git push origin HEAD:main
+          fi
+
+      - name: Verify public main Kodi update is downloadable
+        run: |
+          for attempt in 1 2 3 4 5 6; do
+            if python tools/publish_xcmate79_main.py --public; then
+              echo "PUBLIC_XCMATE_02979_REGULAR_MAIN_VERIFIED"
+              exit 0
+            fi
+            sleep 8
+          done
+          echo "PUBLIC_XCMATE_02979_REGULAR_MAIN_NOT_VERIFIED" >&2
+          exit 1
