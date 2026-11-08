@@ -128,7 +128,7 @@ def expected_index(before: bytes, manifest: bytes) -> bytes:
         raise ValueError("XCMATE_MAIN_ENTRY_MISSING")
     if old_catalog[ADDON].get("version") not in (PREVIOUS, VERSION):
         raise ValueError("XCMATE_MAIN_UNEXPECTED_PREVIOUS_VERSION")
-    inner = manifest.decode("utf-8").strip()
+    inner = re.sub(r'^\s*<\?xml[^>]*\?>\s*', "", manifest.decode("utf-8")).strip()
     pattern = rb'<addon\b(?=[^>]*\bid="plugin\.video\.xtreammate")[^>]*>.*?</addon>'
     replacement = inner.encode("utf-8")
     after, n = re.subn(pattern, lambda _: replacement, before, flags=re.S)
