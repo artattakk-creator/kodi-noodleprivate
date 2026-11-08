@@ -1,0 +1,39 @@
+{
+  "status": "PASS",
+  "actual_restart": true,
+  "counts": [
+    88,
+    24,
+    24
+  ],
+  "cases": [
+    {
+      "kind": "vod",
+      "count": 24,
+      "directory_ack": true,
+      "local_cache": true,
+      "sha256": "8351d972323facceec26354f85d3a81e1b7c3e7063f34eb49df7aa0226eda96a",
+      "actual_pixels": "PASS"
+    },
+    {
+      "kind": "series",
+      "count": 24,
+      "directory_ack": true,
+      "local_cache": true,
+      "sha256": "2a05d777463d1739d81d8dcbe8aa335cf905c361bea2c15f291712fd21a5e8ef",
+      "actual_pixels": "PASS"
+    }
+  ],
+  "origin_offline": true,
+  "personal_widgets": "UNCHANGED",
+  "android": "ANDROID_NOT_TESTED",
+  "protected_files": 34,
+  "protected_sha256": "PASS",
+  "restart": "native Application.Quit + supervised Kodi restart",
+  "old_pids": [
+    1943
+  ],
+  "new_pids": [
+    2029
+  ]
+}

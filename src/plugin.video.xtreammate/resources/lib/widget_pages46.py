@@ -66,6 +66,8 @@ def publish(portal,rows,approved):
         all_items,revision=merge(portal,'live',all_items,rows,old)
         digest=signature(all_items,'live')
         if old and old.get('signature')==digest and old.get('source_revision74')==revision and time.time()-old.get('at',0)<300:
+            from widget_notice46 import prepare as reannounce79
+            reannounce79(portal,'live',digest,len(all_items))
             trace('UNCHANGED','live',len(all_items));return True
         if len(json.dumps(all_items).encode())>MAX_BYTES:trace('BAD_FRAME','live');return False
         check_space(filename,MAX_PAGE*2)

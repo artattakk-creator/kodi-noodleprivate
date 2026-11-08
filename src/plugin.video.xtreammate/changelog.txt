@@ -1,3 +1,9 @@
+0.1.29.79
+- Reannounce unchanged widget frames after cold start; confirm actual directory generations in native controls.
+- Recover verified existing Kodi thumbnail files for exact provider/item/profile without changing storage mode or deleting images.
+- Per-channel EPG read backoff and exact tvg/xmltv identifiers; keep manual mappings authoritative.
+- Preserve personal widgets, Space Blue, token and Installer .5.26; Android acceptance pending.
+
 0.1.29.78 (#385; kumulativ auf .77)
 - Vollständiger Home-/Includes-/Variablenvertrag, gesicherte eigene Skin-Hook-Reparatur und tatsächlich geladene Controls als Gate.
 - Bestehende Reihen/Neu im Kino erhalten, lokales privates Konfigurationsinventar; nur eigene generierte Reload-Consumer reparieren.

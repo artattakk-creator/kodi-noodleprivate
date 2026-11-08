@@ -13,6 +13,8 @@ def prepare(cancel=lambda:False):
  from epg_handoff63 import profile_scope
  worked=False
  portals=get_active()[:4]
+ try:__import__('widget_runtime79').prepare(portals)
+ except (OSError,ValueError,RuntimeError,AttributeError,TypeError):pass
  from home_schedule75 import configure,allowed,focused_rows,prepared,trace
  configure(portals)
  for portal in portals:

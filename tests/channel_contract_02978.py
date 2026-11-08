@@ -5,6 +5,8 @@ import xml.etree.ElementTree as E
 ROOT=Path(__file__).resolve().parents[1];BASE='80932cc20502dc267018bfded4f2a8cc0ce77e24';ADDON='plugin.video.xtreammate'
 def approved(path):return subprocess.check_output(['git','show',BASE+':'+path],cwd=ROOT)
 def verify(path,committed=False):
+    from channel_contract_02979 import verify as verify79
+    if verify79(path,committed=committed):return True
     def current(name):return subprocess.check_output(['git','show','HEAD:'+name],cwd=ROOT) if committed else (ROOT/name).read_bytes()
     raw=current(path)
     if raw==approved(path):return True

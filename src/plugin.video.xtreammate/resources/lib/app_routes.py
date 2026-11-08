@@ -392,6 +392,9 @@ def add_index_item(router,portal,kind,item,epg=None,recent=False,widget=False):
             info=dict(epg['_event46']);info['_plot45']=epg.get('plot','')
         value=describe(portal,kind,item,getattr(router,'_widget_art44',{}),info,
             assets47=getattr(router,'_widget_assets47',{}).get(str(item['sid'])))
+        if getattr(router,'_widget_generation79',''):
+            value['props']['XCMate.Directory79']=router._widget_generation79
+            router._widget_values79.append(value)
         from widget_diagnostics47 import counts as widget_counts47
         counters=getattr(router,'_widget_counts47',{})
         for key,count in widget_counts47([value]).items():counters[key]=counters.get(key,0)+count
@@ -457,6 +460,8 @@ def widget(router,portal,action):
     if kind in ('live','vod','series'):
         from programme_assets47 import read_many
         router._widget_assets47=read_many(portal['id'],kind,rows,provider_only=kind in ('vod','series'))
+    from widget_runtime79 import generation,directory
+    router._widget_generation79=generation(portal,kind,rows,getattr(router,'_widget_assets47',{}));router._widget_values79=[]
     if action=='widget_live_start_group':
         from epg_sources import configuration
         from local_epg import now_next
@@ -490,6 +495,7 @@ def widget(router,portal,action):
             xbmcplugin.setPluginCategory(router._handle,tr(36200) if code in ('READY','CACHE') else tr(36201))
         # A poster row contains titles only. Old movies_home/series_home URLs
         # remain valid, but are not disguised as an extra film tile.
+    directory(portal,kind,router._widget_values79,router._widget_generation79)
     widget_note47(portal['id'],kind,'ITEMS',code,**router._widget_counts47)
     _end(router)
     widget_note47(portal['id'],kind,'DIRECTORY',code,items=len(rows),directory_ok=1)

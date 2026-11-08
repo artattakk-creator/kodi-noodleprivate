@@ -33,6 +33,7 @@ jobs:
           python -m unittest discover -s tests -p '*02976.py' -v
           python -m unittest discover -s tests -p '*02977.py' -v
           python -m unittest discover -s tests -p '*02978.py' -v
+          python -m unittest discover -s tests -p '*02979.py' -v
       - name: Verify review ZIP exactly matches source
         run: |
           python tools/package_xcmate71.py "${{ runner.temp }}/package75"
@@ -48,7 +49,8 @@ jobs:
             ${{ runner.temp }}/native75/*.json
             ${{ runner.temp }}/native75/*.png
             ${{ runner.temp }}/native75/probe.log
-            ${{ runner.temp }}/native75/restart.log
+            ${{ runner.temp }}/native75/restart*.log
+            ${{ runner.temp }}/native75/post75-error.txt
             ${{ runner.temp }}/native75/gui-error.txt
           retention-days: 30
 
