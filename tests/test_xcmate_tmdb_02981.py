@@ -59,3 +59,19 @@ class Own81(Fixture,unittest.TestCase):
   with mock.patch('download_redirect.addresses',side_effect=OSError('private host')),mock.patch.object(xbmc,'log',side_effect=lambda text,*a:logs.append(text),create=True):
    with self.assertRaises(media.SourceError):self.trace.own(self.event('Synthetic'),lambda:media.get('https://api.themoviedb.org/3/configuration',api=True))
   self.assertFalse(any('HTTP_REQUEST_SENT' in s or 'HTTP_STATUS' in s for s in logs))
+ def test_confirmed_backdrop_uses_large_transport_then_local_pixels_without_repeat_lookup(self):
+  from PIL import Image
+  from pathlib import Path
+  from programme_events46 import describe
+  import programme_urls55 as urls
+  event=describe(self.portal,dict(sid='1',kind='live',name='Synthetic',epg_channel_id='xml'),dict(title='Synthetic film',start=self.now-60,stop=self.now+600),canonical='xml');event.update(genre='Film',year=2020)
+  row=dict(id=81,title='Synthetic film',release_date='2020-01-01',backdrop_path='/large81.jpg')
+  data=io.BytesIO();Image.new('RGB',(1280,720),(30,70,140)).save(data,'PNG');body=data.getvalue()
+  def image(url,**kwargs):
+   self.assertEqual(url,'https://image.tmdb.org/t/p/w1280/large81.jpg')
+   return dict(url=url,width=1280,height=720,decoded77=True,_body81=body)
+  with mock.patch('tmdb_connection60.request',side_effect=[dict(total_pages=1,total_results=1,results=[row]),row]),mock.patch('programme_art46.space'):
+   value=urls.resolve(event,allow_lookup=True,check=image,url_mode69=True)
+  self.assertEqual(value['source'],'tmdb_movie');self.assertEqual(Path(value['image']).read_bytes(),body)
+  with mock.patch('tmdb_connection60.request',side_effect=AssertionError('duplicate API')),mock.patch('programme_urls55.probe',side_effect=AssertionError('repeat download')):
+   self.assertEqual(urls.resolve(event,allow_lookup=True,url_mode69=True)['image'],value['image'])

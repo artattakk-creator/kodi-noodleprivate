@@ -204,6 +204,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         trace77(event,'IMAGE_SOURCE_SELECTION','SOURCE_SELECTED')
         trace77(event,'MATCH_CONFIDENCE','EXACT_MATCH')
         url=candidate.get('url','')
+        if candidate.get('source','').startswith('tmdb_') and candidate.get('role81')=='backdrop':url=url.replace('https://image.tmdb.org/t/p/w500/','https://image.tmdb.org/t/p/w1280/',1)
         if candidate.get('match')=='EXACT_EVENT':
             from image_reference78 import canonical
             url=canonical(url) or url

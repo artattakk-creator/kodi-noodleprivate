@@ -32,7 +32,8 @@ def prepare(portal,kind,rows,cancel=lambda:False):
  try:
   found=own(event,lambda:candidate(event,cancel))
   if not found or found.get('role81')=='poster' or cancel():return
-  response=verified(found['url'],cancel=cancel,keep_data81=True)
+  url81=found['url'].replace('https://image.tmdb.org/t/p/w500/','https://image.tmdb.org/t/p/w1280/',1)
+  response=verified(url81,cancel=cancel,keep_data81=True)
   if cancel():return
   store(key,response['_body81']);note(event,'SOURCE_COMMITTED','TMDB_BACKDROP')
  except Exception as error:
