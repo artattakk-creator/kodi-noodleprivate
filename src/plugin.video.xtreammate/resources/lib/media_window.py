@@ -692,6 +692,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         self._pending_future=None;self._pending_apply=None
         from media_intent import begin
         self._play_intent=begin(self.portal['id'],kind,item['sid'])
+        __import__('media_trace80').note(self._play_intent,'PLAY_ACTION')
         from media_portal44 import trace as trace_media
         trace_media('INTENT',origin='search' if getattr(self,'_search_detail',False) else 'catalog')
         from media_return import capture as capture_origin
@@ -1173,7 +1174,8 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         try:
             if player.isPlayingVideo():
                 from media_progress import UNIQUE_ID
-                if player.getVideoInfoTag().getUniqueID(UNIQUE_ID)==self._play_intent:self._playback_seen=True
+                if player.getVideoInfoTag().getUniqueID(UNIQUE_ID)==self._play_intent:
+                    self._playback_seen=True;__import__('media_trace80').note(self._play_intent,'PLAYING')
                 # A transient non-fullscreen frame is not a user exit.
                 # Owned Back/Stop handlers publish the explicit stop/return.
                 return
@@ -1182,6 +1184,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
                 failed=failure(self._play_intent,self.portal['id'])
                 expired=time.monotonic()-getattr(self,'_playback_started40',time.monotonic())>=20
                 if not failed and not expired:return
+                __import__('media_trace80').note(self._play_intent,'FAILED' if failed else 'START_TIMEOUT','REJECTED' if failed else 'TIMEOUT')
                 if getattr(player,'isPlaying',player.isPlayingVideo)():return
                 # A failed/never-started own resolver can be cancelled, but a
                 # deadline does NOT authorize Stop on an initializing player.

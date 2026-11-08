@@ -18,7 +18,7 @@ def unsuitable69(event):
     title=' '.join(str(event.get('title','')).casefold().split())
     return any(word in genre for word in ('nachricht','news','sport','wetter','teleshopping','talk')) or title in ('sendepause','programmhinweis','nachrichten','news','wetter','tagesschau','heute journal') or any(title.startswith(prefix) for prefix in ('live ','live:','live -','live –','live |','uefa ','bundesliga ','formel 1','sky sport news','sportstudio','tagesschau ','talkshow'))
 
-def attempts(event,cancel=lambda:False):
+def attempts(event,cancel=lambda:False,critical80=False):
     if unsuitable69(event):return
     from programme_catalog57 import xcmate,kodi
     from programme_helper57 import lookup
@@ -37,7 +37,7 @@ def attempts(event,cancel=lambda:False):
             if not available():raise Error('KODI_LIBRARY_MISSING_VIEWS')
             return kodi(event,cancel)
         yield label(kodi_lookup,'kodi')
-    if helper:
+    if helper and not critical80:
         def helper_lookup():
             from programme_urls55 import profile
             key=profile();prior=_backoff.get(key)

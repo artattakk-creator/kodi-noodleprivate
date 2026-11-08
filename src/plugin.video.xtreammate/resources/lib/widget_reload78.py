@@ -7,11 +7,20 @@ import html,os,re
 from pathlib import Path
 from urllib.parse import urlsplit,parse_qs
 
-def candidate(data):
+def candidate(data,layout80=False):
     from widget_skin50 import spans,edit
     from navigation_builtin78 import uri
     from widget_hooks45 import ROUTES
     changes=[]
+    if layout80:
+        for node80 in spans(data):
+            if node80['tag']!='include' or node80['attrs'].get('content')!='widget_base':continue
+            params80={n['attrs'].get('name'):n['attrs'].get('value','') for n in node80['children'] if n['tag']=='param'}
+            try:parsed80=urlsplit(uri(params80.get('widgetPath','')));kind80=ROUTES.get(parse_qs(parsed80.query).get('action',[''])[0])
+            except ValueError:continue
+            if kind80 not in ('vod','series') or params80.get('contentStyle')!='normal' or params80.get('widgetTarget')!='videos':continue
+            start80,end80=node80['start'],node80['open'];old80=data[start80:end80]
+            changes.append((start80,end80,old80.replace(b'content="widget_base"',b'content="XCMate80.MediaRow"',1)))
     for node in spans(data):
         tag=node['tag'];attrs=node['attrs']
         if tag=='content':raw=node['text']
@@ -39,7 +48,9 @@ def repair(profile,skin):
     from home_inventory78 import snapshot
     target=Path(skin)/'xml/script-skinshortcuts-includes.xml'
     if not target.exists():return False
-    original=read(target);changed=candidate(original)
+    original=read(target)
+    marker80=Path(skin)/'xml/IncludesVariables.xml'
+    changed=candidate(original,layout80=marker80.is_file() and b'XCMate80.Contract' in read(marker80))
     if changed==original:return False
     snapshot(profile,skin)
     replace(target,changed,sha(original),target.stat().st_mode&0o777)

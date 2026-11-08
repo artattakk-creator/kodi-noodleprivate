@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon id="plugin.video.xtreammate"
        name="XCMate"
-       version="0.1.29.79"
+       version="0.1.29.80"
        provider-name="GS Media">
 
   <requires>
@@ -38,7 +38,7 @@
     <forum>https://forum.kodi.tv</forum>
     <website>https://kodi.tv</website>
     <source>https://github.com/artattakk-creator/kodi-noodleprivate</source>
-    <news>0.1.29.79: Kaltstart und Aktualisierung vorhandener BINGIE-Widgets stabilisieren; vorhandene Kodi-Cover aus dem Texturecache wiederverwenden, ohne Artwork-Modus oder Nutzerreihen zu ändern. EPG-Abfragen je Sender drosseln und exakte XMLTV-IDs berücksichtigen. Verzeichnis-/Control-/Reload-Diagnose korrelieren. TMDB-Token, Portale, Favoriten, EPG-Zuordnungen und Installer 0.5.26 bleiben erhalten. Android-Abnahme offen.</news>
+    <news>0.1.29.80: Bildzustände und Senderlogos unabhängig stabilisiert; Film-Detailübergabe, lokale EPG-Abfragen und begrenzte Bildprüfung repariert. Full-bleed-Hero mit proportionalem Poster-Fallback, Filmreihe ohne Fokuszwang und graublauer EPG-Fokus. Token, Portale, EPG-Zuweisungen und persönliche Widgets bleiben erhalten. Android-Abnahme steht aus.</news>
     <assets>
       <icon>icon-81da1003a2753ec6.png</icon>
       <fanart>resources/media/lightweight_splash.jpg</fanart>

@@ -1,4 +1,4 @@
-name: XCMate 75 native Home and Pilot review
+name: XCMate 80 native Home and review
 on:
   pull_request:
     branches: [main]
@@ -25,8 +25,14 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install 'Pillow>=11,<13' 'simpleeval==0.9.13'
-      - name: Receiver gates, one rail, actual Kodi images and fixed right table
-        run: python tools/run_kodi_home75_contract.py --report-dir "${{ runner.temp }}/native75" --resolution "${{ matrix.resolution }}"
+      - name: Synthetic movie stream generator
+        run: |
+          if ! command -v ffmpeg >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg
+          fi
+      - name: Receiver gates, full bleed Hero, initial rows and actual detail playback
+        run: python tools/run_kodi_home80_contract.py --report-dir "${{ runner.temp }}/native75" --resolution "${{ matrix.resolution }}"
       - name: .75 code and preservation regressions
         run: |
           python -m unittest discover -s tests -p '*02975.py' -v
@@ -34,6 +40,7 @@ jobs:
           python -m unittest discover -s tests -p '*02977.py' -v
           python -m unittest discover -s tests -p '*02978.py' -v
           python -m unittest discover -s tests -p '*02979.py' -v
+          python -m unittest discover -s tests -p '*02980.py' -v
       - name: Verify review ZIP exactly matches source
         run: |
           python tools/package_xcmate71.py "${{ runner.temp }}/package75"

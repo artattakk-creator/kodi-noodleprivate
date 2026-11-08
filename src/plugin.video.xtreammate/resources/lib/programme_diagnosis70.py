@@ -1,5 +1,6 @@
 """Human-readable failure/result distinction; pure and credential-free."""
 def explain(art):
+ from localization import tr
  code=art.get('status68',art.get('code','PENDING'))
  ready=art.get('code') in ('READY','READY_STALE') and art.get('source') not in (None,'','placeholder') and bool(art.get('image'))
  if ready:
@@ -10,6 +11,7 @@ def explain(art):
           'HELPER_NOT_AVAILABLE':'TMDB Helper ist nicht verfügbar. Kein Sendungsbild bestätigt.',
           'HELPER_VERSION_UNSUPPORTED':'Diese TMDB-Helper-Version wird für die Bildsuche nicht unterstützt.',
           'REQUESTED':'Bildauftrag an den XCMate-Hintergrunddienst übergeben.',
+          'IMAGE_LOOKUP_TIMEOUT':tr(32790),
           'WAITING_SERVICE':'Bildauftrag übergeben; der Hintergrunddienst hat die Bearbeitung noch nicht bestätigt.',
           'NOT_SCHEDULED':'Für diese Sendung wurde noch kein Bildauftrag bestätigt.',
           'PENDING':'Sendungsdaten vorhanden; Bildprüfung noch nicht bestätigt.'}

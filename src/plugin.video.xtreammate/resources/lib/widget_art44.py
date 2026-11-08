@@ -5,32 +5,46 @@ worker policy, expiry and Kodi redirect limits; only private bounded metadata is
 persisted. Existing locally validated images and explicit choices win.
 """
 import hashlib,json,os,tempfile,time
-MAX_BYTES=65536
+MAX_BYTES=256*1024
+_cursor80={}
 
 
-def path(pid):
+def path(pid,kind=None):
     from utils import addon_data_dir
-    return os.path.join(addon_data_dir(),'widget_art44_'+hashlib.sha256(str(pid).encode()).hexdigest()[:24]+'.json')
+    return os.path.join(addon_data_dir(),'widget_art44_'+hashlib.sha256((str(pid)+('|' + kind if kind in ('live','vod','series') else '')).encode()).hexdigest()[:24]+'.json')
 
 
-def read(pid):
+def _read80(pid,kind=None):
     try:
-        with open(path(pid),encoding='utf-8') as f:raw=f.read(MAX_BYTES+1)
+        with open(path(pid,kind),encoding='utf-8') as f:raw=f.read(MAX_BYTES+1)
         data=json.loads(raw) if len(raw)<=MAX_BYTES else {}
-        return {k:v for k,v in data.items() if isinstance(k,str) and isinstance(v,dict) and isinstance(v.get('uri'),str) and isinstance(v.get('until'),(int,float))} if isinstance(data,dict) and len(data)<=96 else {}
+        return {k:v for k,v in data.items() if isinstance(k,str) and isinstance(v,dict) and isinstance(v.get('uri'),str) and isinstance(v.get('until'),(int,float))} if isinstance(data,dict) and len(data)<=(512 if kind=='live' else 96) else {}
     except (OSError,ValueError):return {}
 
 
-def prepare(pid,rows):
+def read(pid,kind=None):
+    if kind in ('live','vod','series'):
+        value=_read80(pid,kind)
+        return value or _read80(pid)
+    result=_read80(pid)
+    for scope80 in ('live','vod','series'):result.update(_read80(pid,scope80))
+    return result
+
+
+def prepare(pid,rows,kind=None):
+    kind=kind or (rows[0].get('kind') if rows else None)
     from artwork_config import persistent
     from media_art import sources,request
     request(rows,priority=0)
     if persistent():return
     from artwork_visible import public_dns,syntactic,KODI_OPTIONS,_dns_cache,_lock
     from urllib.parse import urlsplit
-    values=read(pid);now=time.time();values={k:v for k,v in values.items() if isinstance(v,dict) and v.get('until',0)>now}
+    values=read(pid,kind);now=time.time();values={k:v for k,v in values.items() if isinstance(v,dict) and v.get('until',0)>now}
     until=time.monotonic()+.4
-    for row in rows[:24]:
+    selected80=rows[:256 if kind=='live' else 24];key80=(str(pid),kind);cursor80=_cursor80.get(key80,0)%max(1,len(selected80));processed80=0
+    for row in selected80[cursor80:]+selected80[:cursor80]:
+        if time.monotonic()>until:break
+        processed80+=1
         for url in sources(row):
             if not syntactic(url):continue
             key=hashlib.sha256(url.encode()).hexdigest();old=values.get(key)
@@ -42,12 +56,14 @@ def prepare(pid,rows):
             if checked and checked[1]:
                 seconds=max(0,min(30,checked[0]-time.monotonic()))
                 if seconds:values[key]=dict(uri=url+KODI_OPTIONS,until=time.time()+seconds)
-    values=dict(list(values.items())[-96:]);data=json.dumps(values).encode()
+    _cursor80[key80]=(cursor80+processed80)%max(1,len(selected80))
+    while len(_cursor80)>32:_cursor80.pop(next(iter(_cursor80)))
+    values=dict(list(values.items())[-(512 if kind=='live' else 96):]);data=json.dumps(values).encode()
     if len(data)>MAX_BYTES:return
-    fd,tmp=tempfile.mkstemp(prefix='.widget-art44-',dir=os.path.dirname(path(pid)))
+    fd,tmp=tempfile.mkstemp(prefix='.widget-art44-',dir=os.path.dirname(path(pid,kind)))
     try:
         with os.fdopen(fd,'wb') as f:f.write(data)
-        os.replace(tmp,path(pid))
+        os.replace(tmp,path(pid,kind))
     finally:
         if os.path.exists(tmp):os.unlink(tmp)
 

@@ -50,6 +50,7 @@ def play(router,portal):
         xbmcplugin.setResolvedUrl(router._handle,False,xbmcgui.ListItem());return
     from media_intent import allowed,complete
     request=str(router._params.get('intent') or '')
+    __import__('media_trace80').note(request,'RESOLVER_BEGIN')
     if request and not allowed(request,portal['id'],kind,sid):
         xbmcplugin.setResolvedUrl(router._handle,False,xbmcgui.ListItem());return
     xc=router._xc(portal)
@@ -107,7 +108,9 @@ def play(router,portal):
         from media_continue import reveal
         try:reveal(portal['id'],sid)
         except (OSError,sqlite3.Error):pass  # Playback remains available on read-only/full storage.
+    __import__('media_trace80').note(request,'ITEM_RESOLVED')
     bind_flow46('media',session)
+    __import__('media_trace80').note(request,'KODI_RESOLVED')
     xbmcplugin.setResolvedUrl(router._handle,True,item)
 
 

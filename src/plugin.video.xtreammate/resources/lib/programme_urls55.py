@@ -153,7 +153,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         yield from candidates
         if not allow_lookup:return
         deferred=[]
-        steps=[lambda:match(event,cancel=cancel)] if match else attempts(event,cancel)
+        steps=[lambda:match(event,cancel=cancel)] if match else attempts(event,cancel,critical80=not bool(event.get('helper_explicit80')))
         for find in steps:
             if cancel():return
             started=time.monotonic()

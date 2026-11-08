@@ -16,6 +16,7 @@ def describe(portal,kind,row,approved,epg=None,assets47=None):
         if poster:image.update(poster=poster,thumb=poster,icon=poster)
         if fanart:image.update(fanart=fanart,landscape=fanart)
         elif poster:image['landscape']=poster
+    provider80=__import__('home_publication80').capture(row,image)
     placeholder=os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media',{'live':'tv','series':'series'}.get(kind,'vod')+'.png')
     if theme:
         if image['landscape']==placeholder or image['landscape'].startswith(str(theme['folder'])+'/'):
@@ -68,7 +69,7 @@ def describe(portal,kind,row,approved,epg=None,assets47=None):
         from widget_assets69 import renderable
         image={k:(v if renderable(v) else '') for k,v in image.items()}
         props['XCMate.ArtPending69']='false' if image.get('poster') else 'true'
-    value=dict(label=str(row['name']),url=url,art=image,info=info,props=props)
+    value=dict(label=str(row['name']),url=url,art=image,info=info,props=props,_provider80=provider80)
     if kind=='live':
         from programme_widgets46 import decorate
         value=decorate(value,portal,row,epg or {})

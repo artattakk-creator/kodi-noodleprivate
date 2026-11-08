@@ -36,6 +36,8 @@ def remember(event,value,persisted=False,update=False):
  value.setdefault('policy69',negative_scope({}))
  if not isinstance(value.get('until'),(float,int)) or not now<value['until']<=now+86400:value['until']=now+300
  k=key(event)
+ with _lock:prior80=(_values.get(k) or _outcomes.get(k) or {}).get('value')
+ if value.get('source')=='placeholder' and __import__('programme_lastgood80').positive(event,prior80) and __import__('programme_lastgood80').file_valid(prior80):return copy.deepcopy(prior80)
  if value.get('source')=='placeholder' and not update:
   with _lock:
    count=min(3,_attempts.get(k,0)+1);_attempts[k]=count

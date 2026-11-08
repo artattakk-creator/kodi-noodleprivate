@@ -160,8 +160,8 @@ class GuideNavigationTests(Fixture,unittest.TestCase):
         root=ET.parse(ADDON/'resources/skins/Default/720p/XCMateGuideGrid.xml').getroot()
         for e in root.findall('.//control[@type="button"]'):
             self.assertEqual(e.findtext('textcolor'),'FFF4F7F9');self.assertEqual(e.findtext('focusedcolor'),'FFFFFFFF')
-            self.assertTrue(e.findtext('texturefocus').endswith('guide_focus_frame.png'))
-        with Image.open(ADDON/'resources/media/guide_focus_frame.png') as frame:
+            self.assertTrue(e.findtext('texturefocus').endswith('guide_focus80.png'))
+        with Image.open(ADDON/'resources/media/guide_focus80.png') as frame:
             self.assertEqual(frame.getpixel((64,27))[3],0);self.assertEqual(frame.getpixel((64,3))[3],255)
 
     def test_sender_frame_is_behind_logo_and_name_without_overlap_into_programmes(self):

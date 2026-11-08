@@ -73,12 +73,14 @@ def connect(write=False,guide=None):
     guard(filename)
     from import_budget import check_space
     check_space(filename,65536)
-    db=sqlite3.connect(filename,timeout=.05)
+    db=__import__('programme_write80').connect(filename,timeout=.05)
     try:
         application=db.execute('PRAGMA application_id').fetchone()[0];version=db.execute('PRAGMA user_version').fetchone()[0]
         empty=db.execute("SELECT 1 FROM sqlite_master WHERE type='table' LIMIT 1").fetchone() is None
         if not (application==APPLICATION_ID and version==1 or application==0 and version==0 and empty):raise ValueError('UNSUPPORTED_PROGRAMME_SCHEMA')
-        db.execute('PRAGMA journal_mode=WAL');db.execute('PRAGMA synchronous=FULL');db.execute('PRAGMA cache_size=-1024')
+
+        if empty:db.execute('PRAGMA journal_mode=WAL')
+        db.execute('PRAGMA synchronous=FULL');db.execute('PRAGMA cache_size=-1024')
         db.execute('PRAGMA max_page_count=32768')
         if application==APPLICATION_ID and version==1:return db
         db.executescript('''BEGIN IMMEDIATE;

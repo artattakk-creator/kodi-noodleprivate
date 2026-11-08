@@ -456,7 +456,7 @@ def widget(router,portal,action):
     widget_note47(portal['id'],kind,'SELECT',code,selected=len(rows))
     router._widget_counts47={}
     from widget_art44 import read as read_widget_art
-    router._widget_art44=read_widget_art(portal['id'])
+    router._widget_art44=read_widget_art(portal['id'],kind)
     if kind in ('live','vod','series'):
         from programme_assets47 import read_many
         router._widget_assets47=read_many(portal['id'],kind,rows,provider_only=kind in ('vod','series'))

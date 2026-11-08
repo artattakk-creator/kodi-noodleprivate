@@ -115,7 +115,8 @@ def request(navigator,destination='guide_grid'):
                 xbmcgui.Window(dialog).getProperty('XtreamMate.NavigatorIdentity')!=navigator._window_nonce):return _reject55('NATIVE_OWNER')
         session={k:owned[1][k] for k in ('pid','sid','nonce','at')}
         value=dict(token=uuid.uuid4().hex,phase='QUEUED',session=session,owner=navigator._window_nonce,
-                   dialog=dialog,created=time.monotonic(),deadline=time.monotonic()+5,destination=destination)
+                   dialog=dialog,created=time.monotonic(),deadline=time.monotonic()+5,destination=destination,
+                   guide_sid80=str(getattr(navigator,'sid','') or session['sid']),guide_group80=str(getattr(navigator,'category_id','') or ''))
         if not _announced(value):return _reject55('SESSION')
         _save(value);navigator._guide_token55=value['token'];navigator._guide_handoff=True;_mark('REQUESTED');return True
     except (AttributeError,RuntimeError,TypeError,KeyError):return _reject55('API')
@@ -232,7 +233,7 @@ def run(token):
                     from xtream import XtreamClient
                     return XtreamClient(p['xc_host'],p['xc_user'],p['xc_pass'])
                 return None
-            router=SimpleNamespace(_handle=-1,_params={'pid':portal['id']},_xc=client,
+            router=SimpleNamespace(_handle=-1,_params={'pid':portal['id'],'guide_sid80':value.get('guide_sid80',value['session']['sid']),'guide_group80':value.get('guide_group80','')},_xc=client,
                 _navigation_dispatch=value['token'],
                 url=lambda **kw:'plugin://plugin.video.xtreammate/?'+urlencode({k:v for k,v in kw.items() if v is not None}))
             destination=value.get('destination','guide_grid')

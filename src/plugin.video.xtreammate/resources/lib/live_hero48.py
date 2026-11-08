@@ -20,7 +20,7 @@ def values(portal):
     rows,code=snapshot(portal,'live')
     result=[]
     for offset in range(0,len(rows),16):
-        for value in render(portal,'live',rows[offset:offset+16],read(portal['id'])):
+        for value in render(portal,'live',rows[offset:offset+16],read(portal['id'],'live')):
             value.pop('_programme46',None);result.append(value)
     return rows,result,code
 

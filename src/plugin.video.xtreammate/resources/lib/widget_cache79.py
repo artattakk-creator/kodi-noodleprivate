@@ -105,7 +105,7 @@ def prepare(portal,kind,rows):
   _due[context]=now+15
   while len(_due)>32:_due.pop(next(iter(_due)))
  value=load(portal,kind);records=value.get('refs',{});changed=False;end=now+.35
- selected=rows[:24];cursor=_cursor.get(context,0)%len(selected)
+ selected=rows[:256 if kind=='live' else 24];cursor=_cursor.get(context,0)%len(selected)
  for offset in range(len(selected)):
   if time.monotonic()>end:break
   row=selected[(cursor+offset)%len(selected)];sid=str(row['sid']);_cursor[context]=(cursor+offset+1)%len(selected)

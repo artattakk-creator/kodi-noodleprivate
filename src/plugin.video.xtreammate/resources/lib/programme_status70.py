@@ -31,6 +31,7 @@ def waiting(event,previous=None):
  value=_read('request.'+str(int(identity(event)[:8],16)%SLOTS))
  if value.get('tag')!=identity(event) or not 0<=time.time()-value.get('at',0)<20:return previous or {}
  code='WAITING_SERVICE' if time.time()-value.get('since70',value['at'])>=15 else 'REQUESTED'
+ code=__import__('programme_deadline80').code(event,code)
  return dict(previous or {},code=code,status68=code)
 
 def legacy_negative(value):

@@ -35,7 +35,7 @@ class GridTests(Fixture,unittest.TestCase):
     def test_native_grid_visible_focus_and_now_marker_do_not_start_playback(self):
         w=self.window();self.assertGreaterEqual(w.getFocusId(),1000)
         self.assertTrue(w.getControl(w.getFocusId()).visible);self.assertTrue(w.getControl(500).visible)
-        self.assertEqual(w.getControl(700).kind,'textbox');self.assertEqual(w.rows[0]['channel']['name'],w.getControl(700).text)
+        self.assertEqual(w.getControl(700).kind,'textbox');self.assertEqual(__import__('presentation80').clipped(w.rows[0]['channel']['name'],236),w.getControl(700).text)
         self.assertFalse(self.builtins);sys.modules['utils'].http_get.assert_not_called()
 
     def test_in_page_directions_do_not_query_database_or_network(self):

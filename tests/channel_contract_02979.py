@@ -9,6 +9,8 @@ import xml.etree.ElementTree as E
 ROOT=Path(__file__).resolve().parents[1];BASE='3b2a52859feda4d9413231bb4d3cf4121b1f1d67'
 def approved(path):return subprocess.check_output(['git','show',BASE+':'+path],cwd=ROOT)
 def verify(path,committed=False):
+ from channel_contract_02980 import verify as verify80
+ if verify80(path,committed=committed):return True
  raw=subprocess.check_output(['git','show','HEAD:'+path],cwd=ROOT) if committed else (ROOT/path).read_bytes()
  if raw==approved(path):return True
  if committed or path not in ('addons.xml','addons.xml.md5'):raise AssertionError('UNAPPROVED_79_CHANNEL_CHANGE '+path)

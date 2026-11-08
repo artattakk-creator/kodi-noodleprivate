@@ -31,7 +31,7 @@ def apply(item,portal,row,info,event=None,labels=None):
     subtitle=str(event.get('subtitle') or '')
     if type(event.get('season')) is int and type(event.get('episode')) is int:
         subtitle=('S%02d E%02d'%(event['season'],event['episode']))+(' – '+subtitle if subtitle else '')
-    description=str(info.get('description') or event.get('description') or '')[:8192]
+    description=__import__('presentation80').text(info.get('description') or event.get('description'))
     if props.get('XCMate.ProgrammeImageScope57')=='series_fallback' and props.get('XCMate.FallbackLabel63'):
         description=props['XCMate.FallbackLabel63']+'\n'+description
     props.update({'XCMate.ProgrammeTitle46':str(info.get('now') or labels[0]),

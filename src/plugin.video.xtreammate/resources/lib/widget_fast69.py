@@ -6,6 +6,8 @@ def prepare(cancel=lambda:False):
  now=time.monotonic()
  if now<_next:return False
  _next=now+1
+ try:__import__('skin_upgrade80').prepare()
+ except (OSError,ValueError,RuntimeError,AttributeError):pass
  from portals import get_active
  from widget_data41 import snapshot,policy
  from widget_assets69 import prepare as approve,read as references

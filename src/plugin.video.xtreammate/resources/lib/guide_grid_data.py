@@ -69,14 +69,15 @@ def page(portal,offset,origin,category=None,client=None,mappings48=None):
     return dict(rows=result,total=total,groups=reader.groups('live'),code=state,origin=origin,offset=offset,revision=getattr(snapshot,'revision',None),history44=history)
 
 
-def initial(portal,origin,client=None):
+def initial(portal,origin,client=None,selected_sid80='',selected_group80=''):
     """Select one enabled start group and reveal the unmodified channel order."""
     from library_index import Reader
     reader=Reader(portal['id']);groups=reader.groups('live')
     allowed={str(g['cid']) for g in groups}
-    start=reader.get('live',str(portal.get('start_stream_id') or ''))
-    saved=str(portal.get('start_group_id') or '')
+    start=reader.get('live',str(selected_sid80 or portal.get('start_stream_id') or ''))
+    saved=str(selected_group80 or portal.get('start_group_id') or '')
     category=saved if saved in allowed else ''
+    if selected_sid80 and start and reader.position('live',start['sid'],category) is None:category=str(start.get('category_id') or '')
     position=reader.position('live',start['sid'],category) if start and category else None
     if start and not category:
         candidate=str(start.get('category_id') or '')

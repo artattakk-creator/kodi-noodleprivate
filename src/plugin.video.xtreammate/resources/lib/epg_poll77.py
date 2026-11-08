@@ -14,7 +14,7 @@ def key(pid,channels,mappings,display):
     def stamp(name):
         try:v=os.stat(name);return [v.st_mtime_ns,v.st_size]
         except OSError:return [0,0]
-    rows=[(channel_keys(c,mappings),str((c.extra if hasattr(c,'extra') else c).get('epg_channel_id',''))) for c in channels[:16]]
+    rows=[channel_keys(c,mappings) for c in channels[:16]]
     return hashlib.sha256(json.dumps([profile_scope(),str(pid),revision(pid),stamp(filename),stamp(filename+'-wal'),rows,mappings,getattr(mappings,'sources48',{}),bool(display)],sort_keys=True,default=str).encode()).hexdigest()
 def read(cache_key,now):
     with _lock:record=_values.get(cache_key)
