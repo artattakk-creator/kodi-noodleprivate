@@ -1,0 +1,96 @@
+name: Release XCMate 0.1.29.79 to installed Pilot repository
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/xcmate79-publish-pilot.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: xcmate79-pilot-release
+  cancel-in-progress: false
+
+jobs:
+  publish-pilot-79:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify version-specific Kodi Pilot release authorization
+        run: |
+          python - <<'PY'
+          import json,xml.etree.ElementTree as ET
+          from pathlib import Path
+          data=json.loads(Path("docs/XCMate/releases/user-approved-untested-0.1.29.79.json").read_text())
+          addon=ET.parse("src/plugin.video.xtreammate/addon.xml").getroot()
+          assert (addon.get("id"),addon.get("version"))==("plugin.video.xtreammate","0.1.29.79")
+          assert data["user_approved_pilot_release"] is True
+          assert data["user_approved_regular_release"] is True
+          assert data["user_approved_all_channels"] is False
+          assert data["android_status"]=="NOT_TESTED"
+          assert data["android_pass_claimed"] is False
+          assert data["source_merge_pr"]==388
+          PY
+
+      - name: Stage original reviewed .79 ZIP in Pilot with XML and checksum
+        run: python tools/publish_xcmate79_pilot.py --stage
+
+      - name: Validate Pilot and Main have identical binaries, no unrelated changes
+        run: |
+          python tools/publish_xcmate79_pilot.py
+          python - <<'PY'
+          import subprocess
+          files={line[3:] for line in subprocess.check_output(
+            ["git","status","--porcelain","--untracked-files=all"],text=True
+          ).splitlines()}
+          allowed={
+            "online-test/addons.xml",
+            "online-test/addons.xml.md5",
+            "online-test/manifest.json",
+            "online-test/index.html",
+            "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.79.zip",
+            "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.79.zip.sha256",
+          }
+          assert files.issubset(allowed),f"UNRELATED_FILES_CHANGED: {files-allowed}"
+          assert "online-test/addons.xml" in files, "NO_PILOT_CATALOG_UPDATE"
+          print("XCMATE_02979_PILOT_STAGE_VERIFIED")
+          PY
+
+      - name: Publish Pilot catalog and ZIP to main branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- \
+            online-test/addons.xml online-test/addons.xml.md5 \
+            online-test/manifest.json online-test/index.html \
+            online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.79.zip \
+            online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.79.zip.sha256
+          if ! git diff --cached --quiet; then
+            git commit -m "release(XCMate): publish reviewed .79 to installed Pilot repo, preserve NeoDark3"
+            git -c rebase.autoStash=true pull --rebase origin main
+            python tools/publish_xcmate79_pilot.py
+            git push origin HEAD:main
+          fi
+
+      - name: Verify publicly reachable regular and Pilot .79 packages
+        run: |
+          for attempt in 1 2 3 4 5 6; do
+            if python tools/publish_xcmate79_pilot.py --public; then
+              echo "PUBLIC_XCMATE_02979_PILOT_AND_MAIN_VERIFIED"
+              exit 0
+            fi
+            sleep 8
+          done
+          echo "PUBLIC_XCMATE_02979_PILOT_UNVERIFIED" >&2
+          exit 1
