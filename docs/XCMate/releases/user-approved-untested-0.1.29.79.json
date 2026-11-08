@@ -5,11 +5,12 @@
   "user_approved_regular_release": true,
   "user_approved_all_channels": false,
   "authorization_issue": 387,
-  "authorization": "User explicitly requested on 2026-11-08 that XCMate 0.1.29.79 be merged into main and made updateable from the regular GS Media repository. No blanket all-channel release authorization is implied.",
+  "authorization": "User explicitly requested XCMate 0.1.29.79 merged into main and actually available to update on their Kodi device on 2026-11-08. The Kodi device logs show repository.gsmedia.pilot is installed, so this authorization includes the regular main channel and the currently installed Pilot update channel, not NeoDark3 or a general all-channel authorization.",
   "android_status": "NOT_TESTED",
   "android_pass_claimed": false,
   "source_merge_pr": 388,
   "source_merge_sha": "34a9fcbe3d65764edd405d6d0fb62d457acd51da",
   "sha256": "cb68d09c84c7190bf1459d0d46532920d6c5a7dfea15a96a6d5e6cb4f244c20a",
-  "installer_0_5_26_unchanged": true
+  "installer_0_5_26_unchanged": true,
+  "user_approved_pilot_release": true
 }
