@@ -53,6 +53,7 @@ def verified(url,cancel=lambda:False,connect=None,resolver=None,keep_data81=Fals
         result=dict(url=final[0],width=width,height=height,bytes=len(data),decoded77=True)
         if keep_data81:result['_body81']=bytes(data)
         return result
+    except MemoryError:raise
     except SourceError:raise
     except Exception:
         raise SourceError('IMAGE_PREFLIGHT_FAILED') from None

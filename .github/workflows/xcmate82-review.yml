@@ -1,0 +1,42 @@
+name: XCMate 82 complete host review (no publication)
+on:
+  pull_request:
+    branches: [main]
+    paths: ['src/**', 'tests/**', 'tools/**', '.github/workflows/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: xcmate82-review-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+jobs:
+  full-host:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'Pillow>=11,<13' 'impacket==0.13.0' 'simpleeval==0.9.13'
+      - name: Complete current-source cumulative suite
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p "$RUNNER_TEMP/xcmate82"
+          python -m compileall -q src/plugin.video.xtreammate
+          python -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/xcmate82/tests.txt"
+          python tools/validate_kodi_po.py
+      - name: Reproduce ZIP, verify every frozen publication channel
+        run: |
+          python tools/package_xcmate71.py "$RUNNER_TEMP/xcmate82" > "$RUNNER_TEMP/xcmate82/package.json"
+          cmp "$RUNNER_TEMP/xcmate82/plugin.video.xtreammate-0.1.29.82.zip" docs/XCMate/test-builds/02982/plugin.video.xtreammate-0.1.29.82.zip
+          python tools/release_channel75.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xcmate82-complete-host
+          path: ${{ runner.temp }}/xcmate82/
+          retention-days: 30

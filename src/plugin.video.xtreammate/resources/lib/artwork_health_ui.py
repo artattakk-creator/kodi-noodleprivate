@@ -66,6 +66,7 @@ def status_text(value):
     allowed=('last_ready_at','last_attempt_at','exhausted','next_at','lease_until')
     lines.append(tr(35114)+' '+str({key:details[key] for key in allowed if key in details}))
     lines.append(tr(35115))
+    lines.extend(['',tr(32797),__import__('json').dumps(value.get('storage82',[]),ensure_ascii=False,indent=2),str(value.get('worker_health82',{}))])
     return '\n'.join(lines)
 
 
@@ -78,3 +79,9 @@ def show_status():
         from art_store import budget
         value=dict(code='UNAVAILABLE',budget=budget())
     xbmcgui.Dialog().textviewer(tr(32661),status_text(value))
+    from menu_icons45 import select
+    if select(xbmcgui.Dialog(),tr(32797),[tr(32798),tr(35904)],default='list')==0 and xbmcgui.Dialog().yesno('XCMate',tr(32799)):
+        from art_storage82 import receipt
+        from programme_art46 import root
+        checked=_work(lambda cancel:receipt(root(),probe=not cancel()))
+        xbmcgui.Dialog().textviewer(tr(32797),__import__('json').dumps(checked,ensure_ascii=False,indent=2))

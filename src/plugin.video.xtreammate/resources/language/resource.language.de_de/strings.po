@@ -5024,3 +5024,15 @@ msgstr "Katalog-Abschlussmeldung anzeigen"
 msgctxt "#32796"
 msgid "Recorded group failures: {0}"
 msgstr "Erfasste Gruppenfehler: {0}"
+
+msgctxt "#32797"
+msgid "Storage diagnostics"
+msgstr "Speicherdiagnose"
+
+msgctxt "#32798"
+msgid "Run a safe write test in the current artwork folder"
+msgstr "Sicheren Schreibtest im aktuellen Bildordner ausführen"
+
+msgctxt "#32799"
+msgid "A new 4 KiB probe file is created, verified and removed within the protected diagnostic budget. Existing pictures, storage targets and reserves remain unchanged. Continue?"
+msgstr "Eine neue 4-KiB-Prüfdatei wird unter dem geschützten Diagnosebudget erstellt, geprüft und wieder entfernt. Vorhandene Bilder, Speicherziele und Reserven bleiben unverändert. Fortfahren?"

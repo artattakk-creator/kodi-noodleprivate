@@ -31,10 +31,12 @@ def prepare(cancel=lambda:False):
     continue
    admitted=allowed(kind,portal)
    selected=rows if admitted else focused_rows(portal,kind,rows)
-   if not selected:continue
+   # Cached publication is independent of admission for NEW network work.
    if admitted:trace('MOVIE_WARM_BEGIN' if kind=='vod' else 'SERIES_WARM_BEGIN',count=len(selected))
-   approve(portal,kind,selected,cancel)
+   if selected:approve(portal,kind,selected,cancel)
    refs=references(portal,kind,rows)
+   from home_metrics82 import note as metric82
+   metric82('CACHED_ITEMS_READY',kind,count=len(rows),local_images=sum(__import__('os').path.isabs(v) for roles in refs.values() for v in roles.values()),approved_refs=sum(len(v) for v in refs.values()))
    # A publication changes only after rows/policy/references change, never on
    # IR focus. Existing native widget reload hooks retain their own rate limit.
    key=(profile_scope(),str(portal['id']),kind)
@@ -43,6 +45,7 @@ def prepare(cancel=lambda:False):
     if not admitted or prepared(kind,len(rows),portal=portal,rows=rows):continue
    if publish(portal,kind,rows,'READY'):
     _published[key]=stamp;worked=True
+    metric82('LISTITEM_PUBLISHED',kind,count=len(rows))
     if admitted:prepared(kind,len(rows),portal=portal,rows=rows)
    while len(_published)>16:_published.pop(next(iter(_published)))
  return worked

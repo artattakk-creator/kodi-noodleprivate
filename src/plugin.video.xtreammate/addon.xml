@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon id="plugin.video.xtreammate"
        name="XCMate"
-       version="0.1.29.81"
+       version="0.1.29.82"
        provider-name="GS Media">
 
   <requires>
@@ -38,7 +38,7 @@
     <forum>https://forum.kodi.tv</forum>
     <website>https://kodi.tv</website>
     <source>https://github.com/artattakk-creator/kodi-noodleprivate</source>
-    <news>0.1.29.81: Bestätigte Logos und Cover lokal wiederverwenden; stabilere Sendungsbild-Auswahl und nachvollziehbare eigene TMDB-Diagnose. Full-bleed-Hero mit proportionalem Poster-Hintergrund, kompakte sofort sichtbare Film-/Serienreihen. Katalogscan standardmäßig still, Abschlussbericht mit echten Abfragezeiten. Token, Profile, EPG und persönliche Widgets bleiben erhalten. Android-Abnahme ausstehend.</news>
+    <news>0.1.29.82: Artwork-Worker behandelt Datenbankpausen kontrolliert und setzt nach Freigabe fort. Bereits vorhandene Kodi-Bilder ohne neue Bildkopie nutzen; Film- und Serienreihen früh aus gespeicherten Daten veröffentlichen. Speicherdiagnose mit Zielvolume, tatsächlichen Kapazitätswerten und geschütztem Schreibtest. Reserven, Token, Profile, EPG, persönliche Widgets und vorhandene Bilddateien bleiben erhalten. Kein automatischer Speicherumzug. Android-Abnahme ausstehend.</news>
     <assets>
       <icon>icon-81da1003a2753ec6.png</icon>
       <fanart>resources/media/lightweight_splash.jpg</fanart>

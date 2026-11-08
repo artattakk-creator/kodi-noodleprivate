@@ -65,7 +65,7 @@ def merge(portal,kind,items,rows,old=None):
                             if key.startswith(('XtreamMate.','XCMate.Programme','XCMate.Epg','XCMate.ArtProof')):props[key]=value
                         item['info']['plot']=previous['info'].get('plot','')
             row80=rows_by_id.get(sid)
-            if row80:__import__('home_publication80').reconcile(portal,kind,item,previous,row80)
+            if row80:__import__('home_publication80').reconcile(portal,kind,item,previous,row80,same_revision82=revision is not None and revision==old.get('source_revision74'))
         result.append(item)
     return result,revision
 
@@ -103,7 +103,7 @@ def signature(items,kind):
     # remains a real per-minute update for Live, not a two-second publication.
     stripped=[]
     for item in items:
-        copy=dict(item,props={k:v for k,v in item['props'].items() if k not in ('XtreamMate.Progress','XCMate.EpgPercent41','XCMate.EpgAt64','XCMate.ArtProof69')})
+        copy=dict({k:v for k,v in item.items() if not k.startswith('_')},props={k:v for k,v in item['props'].items() if k not in ('XtreamMate.Progress','XCMate.EpgPercent41','XCMate.EpgAt64','XCMate.ArtProof69')})
         stripped.append(copy)
     minute=0  # focused progress is updated by the existing Hero GUI pump
     return hashlib.sha256(json.dumps([stripped,minute],sort_keys=True).encode()).hexdigest()

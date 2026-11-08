@@ -198,6 +198,10 @@ def status(cancel=lambda:False):
     except OSError:value['capacity_code']='UNAVAILABLE'
     from art_diagnostics import augment
     value=augment(value,cancel)
+    from art_storage82 import overview
+    value['storage82']=overview()
+    from artwork_health82 import status as health82
+    value['worker_health82']=health82()
     from artwork_config import read
     value['artwork_mode']=read()['mode']
     if value['artwork_mode']=='dynamic':value['storage_result']='DYNAMIC_NO_XCMATE_ARCHIVE'

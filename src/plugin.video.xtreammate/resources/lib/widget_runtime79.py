@@ -24,6 +24,9 @@ def directory(portal,kind,items,tag):
 def note(portal,kind,stage,tag='',**facts):
  allowed={'SOURCE_READY','SOURCE_WAITING','DIRECTORY_ITEMS','SKIN_CONSUMER_READY','CONTROL_MISSING','CONTROL_HIDDEN','CONTROL_EMPTY','RELOAD_REQUESTED','RELOAD_ACK','ACTIVE_CONTROL','TEXTURE_REQUESTED','TEXTURE_CACHED','TEXTURE_PENDING'}
  if stage not in allowed:return
+ if stage in ('ACTIVE_CONTROL','TEXTURE_REQUESTED','TEXTURE_PENDING'):
+  from home_metrics82 import note as metric82
+  metric82({'ACTIVE_CONTROL':'SKIN_CONTROL_ACTIVE','TEXTURE_REQUESTED':'IMAGE_DECODE_REQUESTED','TEXTURE_PENDING':'IMAGE_PENDING'}[stage],kind,**{k:v for k,v in facts.items() if k in ('control','count')})
  from epg_handoff63 import profile_scope
  identity=hashlib.sha256((profile_scope()+'|'+str(portal['id'])+'|'+kind+'|'+tag).encode()).hexdigest()[:12];key=(identity,stage);now=time.monotonic()
  if now-_seen.get(key,-1e9)<30:return

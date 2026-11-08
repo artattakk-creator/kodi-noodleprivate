@@ -62,7 +62,8 @@ class LocalArtworkStorage(ArtworkStorageBackend):
             if parent==target:break
             target=parent
         value=shutil.disk_usage(target)
-        return dict(free=value.free,total=value.total)
+        from art_storage82 import capacity
+        return capacity(self.root,usage=value)
 
     def exists(self, ident):
         return os.path.isfile(self.resolve_target(ident))

@@ -1,5 +1,5 @@
 """Optional exact TMDB Hero supplement; provider rail posters always win."""
-import hashlib,json,time
+import hashlib,json,time,sqlite3
 _due={}
 
 def identity(portal,kind,row):
@@ -36,6 +36,9 @@ def prepare(portal,kind,rows,cancel=lambda:False):
   response=verified(url81,cancel=cancel,keep_data81=True)
   if cancel():return
   store(key,response['_body81']);note(event,'SOURCE_COMMITTED','TMDB_BACKDROP')
- except Exception as error:
+ except (OSError,sqlite3.Error) as error:
+  if isinstance(error,(sqlite3.Error,__import__('artwork_health82').Deferred)):raise __import__('artwork_health82').defer(error) from None
+  note(event,'SKIPPED_REASON',getattr(error,'code','LOOKUP_FAILED'))
+ except __import__('media_sources43').SourceError as error:
   # Optional enrichment may never terminate the existing provider worker.
   note(event,'SKIPPED_REASON',getattr(error,'code','LOOKUP_FAILED'))

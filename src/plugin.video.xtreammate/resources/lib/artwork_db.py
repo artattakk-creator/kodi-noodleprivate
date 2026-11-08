@@ -218,7 +218,7 @@ def connect():
         if db is not None:db.close()
         else:_unlock(fd)
         # execute() already reported schema errors; report opening/lock errors.
-        if filename not in _failures:_failure(exc,'OPEN')
+        if filename not in _failures or _failures[filename].get('retry_after',0)<=time.time():_failure(exc,'OPEN')
         raise
     finally:_gate.release()
 
@@ -534,3 +534,19 @@ def image_snapshot(keys,cancel=lambda:False):
         # This helper is never called by a GUI callback. Only one finite retry.
         threading.Event().wait(.025)
     return {},'DB_BUSY'
+
+
+def inspect_readonly82(cancel=lambda:False):
+    """Automatic observation only; never backup/reindex/rebuild/update schema."""
+    from urllib.parse import quote
+    if not os.path.isfile(path()):return dict(code='NOT_CREATED')
+    db=None
+    try:
+        db=sqlite3.connect('file:'+quote(path(),safe='/')+'?mode=ro',uri=True,timeout=.03)
+        db.execute('PRAGMA query_only=ON');deadline=time.monotonic()+.1
+        db.set_progress_handler(lambda:int(cancel() or time.monotonic()>deadline),1000)
+        tables={r[0] for r in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+        return dict(code='READONLY_CHECKED',schema82={'jobs','worker','scan'}.issubset(tables),health82=diagnostic().get('code','NOT_CHECKED'))
+    except (sqlite3.Error,OSError) as error:return dict(code=classify(error))
+    finally:
+        if db is not None:db.close()
