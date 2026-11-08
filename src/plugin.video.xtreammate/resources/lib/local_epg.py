@@ -14,7 +14,7 @@ from programme_read47 import scoped
 def channel_keys(channel, mappings):
     extra=channel.extra if hasattr(channel,'extra') else channel
     sid=str(extra.get('stream_id',extra.get('sid','')))
-    provider=str(getattr(channel,'tvg_id',extra.get('epg_channel_id','')) or '')
+    provider=str(getattr(channel,'tvg_id','') or extra.get('epg_channel_id') or extra.get('tvg_id') or extra.get('xmltv_id') or '')
     manual=(mappings or {}).get(sid)
     return sid,([str(manual)] if manual else list(dict.fromkeys(k for k in (sid,provider) if k)))
 
@@ -184,6 +184,12 @@ def now_next(pid,channels,mappings,now=None,client=None,display_only65=False):
     cache_key77=poll_key77(pid,channels,mappings,display_only65)
     cached77=poll_read77(cache_key77,ts)
     if cached77 is not None:return cached77
+    from epg_poll79 import select as select79,remember as remember79
+    parked79,todo79=select79(pid,channels,mappings,ts,display_only65)
+    if channels and not todo79:return parked79
+    all_channels79=channels;channels=todo79
+    from epg_poll79 import keys as keys79
+    expected79=keys79(pid,channels,mappings,display_only65)
     started63=time.perf_counter()
     cache=window(pid,channels,mappings,ts,ts+2*86400,**({'text_only65':True} if display_only65 else {}))
     if cache is None:
@@ -199,7 +205,7 @@ def now_next(pid,channels,mappings,now=None,client=None,display_only65=False):
     for channel in channels[:16]:
         sid,keys=channel_keys(channel,mappings)
         extra=channel.extra if hasattr(channel,'extra') else channel
-        provider=str(getattr(channel,'tvg_id',extra.get('epg_channel_id','')) or '')
+        provider=str(getattr(channel,'tvg_id','') or extra.get('epg_channel_id') or extra.get('tvg_id') or extra.get('xmltv_id') or '')
         compatibility47=cache is None or getattr(cache,'code','')=='SHARED_LASTGOOD47'
         info=resolve_guide(cache if cache is not None else {},provider,sid,ts,client if compatibility47 else None,mappings)
         info['snapshot_revision']=cache.revision if cache is not None else None
@@ -212,8 +218,10 @@ def now_next(pid,channels,mappings,now=None,client=None,display_only65=False):
         if getattr(cache,'code','')!='RAM_LASTGOOD67':remember63(pid,channel,result[sid],mappings,expected_revision=revision_before63)
         code63=('READY' if info.get('now') else 'EPG_CACHE_UNAVAILABLE' if cache is None else 'EPG_MAPPING_MISSING' if info.get('reason')=='MANUAL_ID_MISSING' else 'EPG_DATA_MISSING')
         note63('DB_READ',pid,sid,code63,db_ms63,facts=info)
-    if revision63(pid)==revision_before63 and poll_key77(pid,channels,mappings,display_only65)==cache_key77:
-        poll_remember77(cache_key77,result,ts)
+    if revision63(pid)==revision_before63:
+        remember79(pid,channels,mappings,ts,display_only65,result,expected=expected79)
+        result.update(parked79)
+        if poll_key77(pid,all_channels79,mappings,display_only65)==cache_key77:poll_remember77(cache_key77,result,ts)
     return result
 
 

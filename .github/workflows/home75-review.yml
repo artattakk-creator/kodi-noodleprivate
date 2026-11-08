@@ -33,6 +33,7 @@ jobs:
           python -m unittest discover -s tests -p '*02976.py' -v
           python -m unittest discover -s tests -p '*02977.py' -v
           python -m unittest discover -s tests -p '*02978.py' -v
+          python -m unittest discover -s tests -p '*02979.py' -v
       - name: Verify review ZIP exactly matches source
         run: |
           python tools/package_xcmate71.py "${{ runner.temp }}/package75"

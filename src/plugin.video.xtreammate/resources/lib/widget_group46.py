@@ -74,7 +74,7 @@ def infos(portal,rows):
     from epg_status import revision
     from epg_handoff63 import profile_scope
     key=('live-text63',profile_scope(),str(portal['id']),str(revision(portal['id'])),
-         tuple((str(r.get('sid','')),str(r.get('epg_channel_id',''))) for r in rows))
+         tuple((str(r.get('sid','')),str(r.get('epg_channel_id') or r.get('tvg_id') or r.get('xmltv_id') or '')) for r in rows))
     return memo(key,lambda:_infos63(portal,rows))
 
 

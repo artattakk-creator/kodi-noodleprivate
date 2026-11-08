@@ -102,6 +102,8 @@ def publish(portal,kind,rows,code='READY'):
                source_revision74=source_revision74,epg_revision74=epg_revision74(portal['id']),empty_authoritative74=not items and source_revision74 is not None,source_refs74=source_refs(rows))
     frame['signature']=signature(items,kind);frame['art_status74']=art_status(items)
     if old and old.get('signature')==frame['signature'] and old.get('source_revision74')==source_revision74 and time.time()-old.get('at',0)<300:
+        from widget_notice46 import prepare as reannounce79
+        reannounce79(portal,kind,frame['signature'],len(items))
         trace('UNCHANGED',kind,len(items));return True
     note(portal,kind,'COMMIT',old,len(items),source_revision74,frame['signature'],frame['art_status74'])
     data=json.dumps(frame).encode()

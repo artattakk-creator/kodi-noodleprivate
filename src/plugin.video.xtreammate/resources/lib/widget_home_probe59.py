@@ -17,7 +17,7 @@ def prepare(pid):
     from widget_consumer58 import status
     with _lock:prior=_plans.get(str(pid))
     if not prior or time.monotonic()-prior[0]>=60:
-        value=status(pid)
+        value=status(pid,observe=False)
         with _lock:_plans[str(pid)]=(time.monotonic(),{k:dict(v) for k,v in value.get('kinds',{}).items() if k in ('live','vod','series')})
     with _lock:
         observations=[(kind,dict(v)) for (portal,kind),v in _observed.items() if portal==str(pid)]

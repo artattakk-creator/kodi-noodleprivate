@@ -10,7 +10,7 @@ def main():
     parser.add_argument('--skin-archive',type=Path);parser.add_argument('--idle-seconds',type=int,default=0)
     parser.add_argument('--resolution',default='1920x1080',choices=('1920x1080','1280x720'))
     parser.add_argument('--keep-container',action='store_true');args=parser.parse_args()
-    root=Path(__file__).resolve().parents[1];report=args.report_dir.resolve();report.mkdir(parents=True,exist_ok=True)
+    root=Path(__file__).resolve().parents[1];version79=__import__('xml.etree.ElementTree',fromlist=['parse']).parse(root/'src/plugin.video.xtreammate/addon.xml').getroot().get('version')=='0.1.29.79';report=args.report_dir.resolve();report.mkdir(parents=True,exist_ok=True)
     archive=args.skin_archive or report/'skin.zip'
     if not archive.exists():
         import urllib.request
@@ -30,6 +30,9 @@ def main():
     with (report/'build.log').open('w') as log:
         run('build','--secret','id=system_ca,src=/etc/ssl/certs/ca-certificates.crt','-t','xcmate-kodi21-helper57-contract',str(root/'tools/kodi_helper57_host'),stdout=log,stderr=subprocess.STDOUT)
     mounts=[(root/'tools/kodi_home74_host','/work'),(root/'src/plugin.video.xtreammate','/xcmate'),(pristine/'skin.titan.bingie.mod','/skin'),(candidate,'/candidate'),(root/'tools/kodi_home75_host/gui75.py','/work/gui66.py'),(root/'tools/kodi_home75_host/probe75.py','/work/probe.py')]
+    if version79:
+        mounts=[(source,target) for source,target in mounts if target not in ('/work/gui66.py','/work/probe.py')]
+        mounts.extend([(root/'tools/kodi_home79_host/gui79.py','/work/gui66.py'),(root/'tools/kodi_home75_host/gui75.py','/base_gui79.py'),(root/'tools/kodi_home79_host/probe79.py','/work/probe.py'),(root/'tools/kodi_home79_host/tls79.py','/work/tls69.py')])
     command=['run','-d','--name',name]
     start75=(root/'tools/kodi_home74_host/start.sh').read_text()
     original='cp /work/fixture66.py /root/.kodi/addons/plugin.video.xtreammate/'
@@ -46,14 +49,23 @@ def main():
         run('cp',name+':/root/home75.json',str(report/'home75.json'))
         files=json.loads(run('exec',name,'python3','-c',"import json;from pathlib import Path;print(json.dumps([str(p) for p in Path('/root').glob('home75-*.png')]))",capture_output=True,text=True).stdout)
         for file in files:run('cp',name+':'+file,str(report/Path(file).name))
-        run('cp',str(root/'tools/kodi_home75_host/post75.py'),name+':/root/post75.py')
+        run('cp',str(root/('tools/kodi_home79_host/post79.py' if version79 else 'tools/kodi_home75_host/post75.py')),name+':/root/post75.py')
         run('cp',str(root/'tools/kodi_home75_host/restart75.py'),name+':/root/restart75.py')
         with (report/'restart.log').open('w') as log:run('exec',name,'python3','/root/restart75.py',stdout=log,stderr=subprocess.STDOUT)
         run('cp',name+':/root/post75.json',str(report/'post75.json'))
+        if version79:
+            run('cp',name+':/root/post75.json',str(report/'post79-first.json'))
+            run('exec',name,'rm','/root/post75.json')
+            with (report/'restart2.log').open('w') as log:run('exec',name,'python3','/root/restart75.py',stdout=log,stderr=subprocess.STDOUT)
+            run('cp',name+':/root/post75.json',str(report/'post79-second.json'))
         print(json.dumps(json.loads((report/'home75.json').read_text())))
     finally:
         subprocess.run(docker+['cp',name+':/root/image77-failure.json',str(report/'image77-failure.json')],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         subprocess.run(docker+['cp',name+':/root/home75-live-5.png',str(report/'home75-live-5.png')],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+        subprocess.run(docker+['cp',name+':/root/cache79-error.json',str(report/'cache79-error.json')],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+        if version79:
+            for extra79 in ('home75-dynamic79-vod.png','home75-dynamic79-series.png','home75-cold79-vod.png','home75-cold79-series.png'):
+                subprocess.run(docker+['cp',name+':/root/'+extra79,str(report/extra79)],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         run('cp',name+':/root/.kodi/temp/kodi.log',str(report/'synthetic-kodi.log'))
         run('cp',name+':/root/gui66-error.txt',str(report/'gui-error.txt'),stderr=subprocess.DEVNULL) if subprocess.run(docker+['exec',name,'test','-f','/root/gui66-error.txt'],env=env).returncode==0 else None
         if not args.keep_container:subprocess.run(docker+['rm','-f',name],env=env,stdout=subprocess.DEVNULL)

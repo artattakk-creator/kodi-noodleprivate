@@ -108,10 +108,10 @@ def inspect(profile,skin,generated,pid,probe=None):
                 state['home']='SKIN_CONSUMER_HIDDEN' if not any(v['visible'] for v in known) else 'HOME_ITEMS_PRESENT' if any(v['items']>0 and v['visible'] for v in known) else 'HOME_DIRECTORY_EMPTY'
                 state['home_items']=sum(max(0,v['items']) for v in known)
         result[kind]=state
-    return dict(code='READ_ONLY',profile_fingerprint=hashlib.sha256(str(Path(profile).resolve()).encode()).hexdigest()[:12],properties_sha256=hashlib.sha256(raw).hexdigest(),generated_sha256=hashlib.sha256(text).hexdigest(),kinds=result)
+    return dict(code='READ_ONLY',profile_fingerprint=hashlib.sha256(str(Path(profile).resolve()).encode()).hexdigest()[:12],properties_sha256=hashlib.sha256(raw).hexdigest(),generated_sha256=hashlib.sha256(text).hexdigest(),kinds=result,source_types79=source_types79(rows))
 
 
-def status(pid):
+def status(pid,observe=True):
     try:
         import xbmc,xbmcvfs
         if xbmc.getSkinDir()!=SKIN:return dict(code='UNSUPPORTED_SKIN')
@@ -123,10 +123,19 @@ def status(pid):
         # that dialog's context. Runtime visibility remains unknown in that case.
         import xbmcgui
         probe=None
-        if xbmcgui.getCurrentWindowId()==10000 and xbmcgui.getCurrentWindowDialogId() in (0,-1,9999):
+        if observe and xbmcgui.getCurrentWindowId()==10000 and xbmcgui.getCurrentWindowDialogId() in (0,-1,9999):
             def probe(cid):
                 count=xbmc.getInfoLabel('Container('+str(cid)+').NumItems')
                 if not str(count).isdigit():return None
                 return dict(visible=bool(xbmc.getCondVisibility('Control.IsVisible('+str(cid)+')')),items=int(count))
         return inspect(profile,skin,generated,pid,probe)
     except (OSError,ValueError,SyntaxError,RecursionError,ET.ParseError,ImportError,AttributeError,RuntimeError):return dict(code='PROFILE_UNVERIFIED')
+
+def source_types79(rows):
+    """Safe source classification only; no saved labels or raw paths returned."""
+    result=dict(own=0,external_plugin=0,videodb=0,library=0,other=0)
+    for row in rows:
+        if not re.fullmatch(r'widgetPath(?:\.[1-7])?',row[2]):continue
+        p=urlsplit(row[3]);kind='own' if p.scheme=='plugin' and p.netloc=='plugin.video.xtreammate' else 'external_plugin' if p.scheme=='plugin' else p.scheme if p.scheme in ('videodb','library') else 'other'
+        if row[3]:result[kind]+=1
+    return result

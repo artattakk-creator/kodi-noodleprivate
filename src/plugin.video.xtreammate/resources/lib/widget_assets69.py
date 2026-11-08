@@ -30,6 +30,8 @@ def read(portal,kind,rows):
  from artwork_visible import KODI_OPTIONS
  from widget_refs74 import read as retained74
  result=retained74(portal,kind,rows)
+ from widget_cache79 import read as local79
+ for sid79,roles79 in local79(portal,kind,rows).items():result.setdefault(sid79,{}).update(roles79)
  for row in rows[:256]:
   for role,source in sources(row,provider_only=True).items():
    from widget_refs74 import revoked
@@ -39,7 +41,7 @@ def read(portal,kind,rows):
     raw=_window().getProperty(_slot(key));value=json.loads(raw) if raw and len(raw)<4096 else {}
     remaining=value.get('until',0)-time.time()
     if value.get('key')==key and value.get('profile')==profile() and 0<remaining<=30 and value.get('uri')==source+KODI_OPTIONS:
-     result.setdefault(str(row['sid']),{})[role]=value['uri']
+     result.setdefault(str(row['sid']),{}).setdefault(role,value['uri'])
    except (ValueError,TypeError,AttributeError,RuntimeError):continue
  return result
 def prepare(portal,kind,rows,cancel=lambda:False):
@@ -90,6 +92,8 @@ def _run():
       with _lock:_revision+=1
    from widget_refs74 import remember_many
    remember_many(portal,kind,retained74)
+   try:__import__('widget_cache79').prepare(portal,kind,rows)
+   except (OSError,ValueError,TypeError,RuntimeError,AttributeError):pass
   finally:
    with _lock:_pending.discard(key)
    _queue.task_done()

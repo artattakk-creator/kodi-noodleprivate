@@ -25,9 +25,9 @@ class Scope78(unittest.TestCase):
             # the Pilot files and reviewed ZIP must also stay byte-identical on disk.
             current=subprocess.check_output(['git','show','HEAD:'+path],cwd=ROOT) if path in ('addons.xml','addons.xml.md5') else (ROOT/path).read_bytes()
             if path.startswith('online-test/') and path.endswith(('addons.xml','addons.xml.md5','manifest.json')):
-                from channel_contract_02978 import verify
+                from channel_contract_02979 import verify
                 self.assertTrue(verify(path))
             elif path in ('addons.xml','addons.xml.md5'):
-                from channel_contract_02978 import verify
+                from channel_contract_02979 import verify
                 self.assertTrue(verify(path,committed=True))
             else:self.assertEqual(current,subprocess.check_output(['git','show',base+':'+path],cwd=ROOT),path)

@@ -171,7 +171,9 @@ def read_many(pid, kind, rows,provider_only=False):
             for sid74,roles74 in kept74.items():
                 for role74,uri74 in roles74.items():result.setdefault(sid74,{}).setdefault(role74,uri74)
             for sid69,roles69 in volatile69(portal69,kind,rows).items():
-                for role69,uri69 in roles69.items():result.setdefault(sid69,{}).setdefault(role69,uri69)
+                for role69,uri69 in roles69.items():
+                    if local_uri(uri69):result.setdefault(sid69,{})[role69]=uri69
+                    else:result.setdefault(sid69,{}).setdefault(role69,uri69)
         if db is not None:
             db.close()
 
