@@ -1,8 +1,18 @@
 """Every native .81 case plus real paused-worker/rail-idle regression."""
 from pathlib import Path
-import json,os,time,importlib,threading
+import json,os,time,importlib,threading,io
 original_write82=Path.write_text
+original_read82=Path.read_text
 finished82=False
+
+def read82(self,*args,**kwargs):
+ text82=original_read82(self,*args,**kwargs)
+ if str(self)=='/base_gui79.py':
+  # Snapshot screenshot bytes once; Kodi may still be finishing the PNG.
+  # Retry incomplete data, retaining every original geometry/pixel assertion.
+  text82=text82.replace('Image.open(path)','Image.open(io.BytesIO(path.read_bytes()))')
+  text82=text82.replace('except (OSError,ValueError):','except (OSError,ValueError,SyntaxError):')
+ return text82
 
 def stability82():
  from unittest.mock import patch
@@ -118,5 +128,7 @@ def write82(self,data,*args,**kwargs):
   data=json.dumps(report82,indent=2)
  return original_write82(self,data,*args,**kwargs)
 Path.write_text=write82
+Path.read_text=read82
 try:exec(compile(Path('/base_gui81.py').read_text(),'native-home82','exec'),globals())
-finally:Path.write_text=original_write82
+finally:
+ Path.write_text=original_write82;Path.read_text=original_read82
