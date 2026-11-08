@@ -125,7 +125,7 @@ jobs:
             python tools/publish_xcmate81_all.py
           fi
 
-      - name: Verify publicly .downloadable .81 from all three paths
+      - name: Verify publicly downloadable .81 from all three paths
         run: |
           for attempt in 1 2 3 4 5 6; do
             if python tools/publish_xcmate81_all.py --public; then
