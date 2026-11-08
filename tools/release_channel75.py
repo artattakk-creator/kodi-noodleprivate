@@ -83,6 +83,29 @@ def regular_allowed():
                 and data.get('source_merge_sha')=='b52ffc5bfd73028a2735334aebee88f1c65d2103'
                 and data.get('sha256')==expected):return True
         except (OSError,ValueError):pass
+
+    # Exactly this .81 ZIP is user-approved for all Kodi repositories,
+    # without claiming Android acceptance or changing any older release gates.
+    if version=='0.1.29.81':
+        try:
+            path=ROOT/'docs/XCMate/releases/user-approved-untested-0.1.29.81.json'
+            data=json.loads(path.read_text(encoding='utf-8'))
+            package=ROOT/'docs/XCMate/test-builds/02981/plugin.video.xtreammate-0.1.29.81.zip'
+            expected=hashlib.sha256(package.read_bytes()).hexdigest()
+            if (data.get('addon_id')=='plugin.video.xtreammate'
+                and data.get('version')==version
+                and data.get('exception_applies_only_to_version')==version
+                and data.get('user_approved_regular_release') is True
+                and data.get('user_approved_pilot_release') is True
+                and data.get('user_approved_all_channels') is True
+                and data.get('android_status')=='NOT_TESTED'
+                and data.get('android_pass_claimed') is False
+                and data.get('installer_0_5_26_unchanged') is True
+                and data.get('authorization_issue')==392
+                and data.get('source_merge_pr')==393
+                and data.get('source_merge_sha')=='4ea7c54a021b657801a65a8db060096f5cc09d1b'
+                and data.get('sha256')==expected):return True
+        except (OSError,ValueError):pass
     # All other releases still require genuine Android PASS and user consent.
     path=ROOT/'docs/XCMate/releases'/('android-approved-'+version+'.json')
     try:
