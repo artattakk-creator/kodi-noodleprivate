@@ -46,16 +46,22 @@ def stability82():
   check(not missing82 or kind82=='live' and missing82==['87'],('CACHED82_UNEXPECTED_MISSING',kind82,missing82))
  # The preceding movie-return case deliberately backs through native Home.
  # Wait for that navigation and the 300ms sideblade animation, then establish
- # the visible Live test view through its real Right navigation. A dimmed
+ # the visible Live test view through its real Back navigation. A dimmed
  # menu is not a lost logo; no test-view actions are sent during the soak.
  settled82=None
  for _ in range(160):
-  if home.getFocusId()==900:
-   xbmc.executebuiltin('Action(Right)',wait=False);settled82=None
+  if xbmcgui.getCurrentWindowId()!=10000 or xbmcgui.getCurrentWindowDialogId() not in (0,-1,9999):
+   settled82=None;xbmc.sleep(50);continue
+  menu82=home.getProperty('ShowViewSubMenu')=='show' or xbmc.getCondVisibility('ControlGroup(9001).HasFocus()') or home.getFocusId()==900
+  if menu82:
+   # BINGIE's native 900 onback clears ShowViewSubMenu and enters 77777.
+   # setFocusId alone does not clear that independent skin property.
+   home.setFocusId(900);xbmc.executebuiltin('Action(Back)',wait=False);settled82=None
+   xbmc.sleep(100);continue
   elif home.getFocusId()!=2510:
    home.setFocusId(2510);home.getControl(2510).selectItem(0);settled82=None
   visible82=xbmc.getCondVisibility('Control.IsVisible(296751)')
-  if home.getFocusId()==2510 and visible82:
+  if home.getFocusId()==2510 and visible82 and not menu82:
    if settled82 is None:settled82=time.monotonic()
    if time.monotonic()-settled82>=1:break
   else:settled82=None
