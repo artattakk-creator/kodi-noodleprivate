@@ -1,5 +1,6 @@
 """Human-readable failure/result distinction; pure and credential-free."""
 def explain(art):
+ from localization import tr
  code=art.get('status68',art.get('code','PENDING'))
  ready=art.get('code') in ('READY','READY_STALE') and art.get('source') not in (None,'','placeholder') and bool(art.get('image'))
  if ready:
@@ -13,6 +14,7 @@ def explain(art):
           'WAITING_SERVICE':'Bildauftrag übergeben; der Hintergrunddienst hat die Bearbeitung noch nicht bestätigt.',
           'NOT_SCHEDULED':'Für diese Sendung wurde noch kein Bildauftrag bestätigt.',
           'PENDING':'Sendungsdaten vorhanden; Bildprüfung noch nicht bestätigt.'}
+ if code=='IMAGE_LOOKUP_TIMEOUT':return tr(32790)
  if code not in reasons and art.get('storage69')!='RAM_ONLY':return ''
  text=reasons.get(code,'Kein bestätigtes Sendungsbild ('+str(code)+').')
  from programme_outcomes70 import clean

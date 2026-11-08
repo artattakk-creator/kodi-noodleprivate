@@ -55,8 +55,8 @@ def inspect(profile,skin,generated,pid,probe=None):
     # Stock BINGIE 2.2.3 keeps DirectoryProvider in an external parametric
     # include. A literal <content> scan alone misses the real Home consumers.
     declarations={kind:0 for kind in ROUTES.values()}
-    references=[n for n in root.iter('include') if n.get('content') in ('widget_base','XCMate50.LiveRow')]
-    pipeline=False;own_pipeline60=False
+    references=[n for n in root.iter('include') if n.get('content') in ('widget_base','XCMate50.LiveRow','XCMate80.MediaRow')]
+    pipeline=False;own_pipeline60=False;own_pipeline80=False
     if references:
         try:
             layout=bounded(Path(skin)/'xml/IncludesHomeWidgets.xml',2*1024*1024)
@@ -72,6 +72,8 @@ def inspect(profile,skin,generated,pid,probe=None):
                 return result
             own_definition60=definitions.get('XCMate50.LiveRow')
             own_pipeline60=bool(own_definition60 is not None and any(n.get('id')=='$PARAM[widgetid]' and any(c.text=='$PARAM[widgetPath]' and c.get('target')=='videos' for c in n.findall('content')) for definition in expanded75('XCMate50.LiveRow') for n in definition.iter('control')))
+            normal80=definitions.get('XCMate80.MediaNormal')
+            own_pipeline80=bool(normal80 is not None and any(n.get('id')=='$PARAM[widgetid]' for n in normal80.iter('control')) and any(n.get('content')=='XCMate80.MediaNormal' for definition in expanded75('XCMate80.MediaRow') for n in definition.iter('include')) and definitions.get('widget_base_content_normal') is not None)
             normal=definitions.get('widget_base_normal')
             content=definitions.get('widget_base_content_normal')
             base=definitions.get('widget_base')
@@ -88,7 +90,8 @@ def inspect(profile,skin,generated,pid,probe=None):
         declarations[kind]+=1
         cid=params.get('widgetid','')
         own60=own_pipeline60 and node.get('content')=='XCMate50.LiveRow' and kind=='live' and identity(params.get('widgetPath',''),pid)=='live'
-        if (pipeline or own60) and cid.isdigit() and params.get('contentStyle')=='normal' and params.get('widgetTarget')=='videos':consumers[kind].append(int(cid))
+        verified80=own_pipeline80 if node.get('content')=='XCMate80.MediaRow' else (pipeline or own60)
+        if verified80 and cid.isdigit() and params.get('contentStyle')=='normal' and params.get('widgetTarget')=='videos':consumers[kind].append(int(cid))
     result={}
     for kind in ROUTES.values():
         saved=[]

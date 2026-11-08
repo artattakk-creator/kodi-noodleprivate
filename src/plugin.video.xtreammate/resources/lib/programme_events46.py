@@ -84,7 +84,7 @@ def summary(event,now=None):
   if event.get(name):lines.append(str(event[name]))
  if event.get('cast'):lines.append(tr(36104)+': '+', '.join(event['cast']))
  if event.get('description'):lines+=['',event['description']]
- return '\n'.join(lines)
+ return __import__('presentation80').text('\n'.join(lines))
 
 
 def legacy_metadata(pid,sid,canonical,event):

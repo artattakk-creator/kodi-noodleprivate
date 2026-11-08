@@ -112,7 +112,7 @@ def prepare(pid):
     request(event,priority=True)
     art=result(event,art)
     with _lock:
-        if _focus==focus:_art=dict(art,key=event['key'],profile63=focus[3],scope69=__import__('programme_requests68').identity(event))
+        if _focus==focus:_art=dict(__import__('programme_lastgood80').choose(event,art,_art,check_file=True) or {},key=event['key'],profile63=focus[3],scope69=__import__('programme_requests68').identity(event))
 
 
 def focused64(pid):

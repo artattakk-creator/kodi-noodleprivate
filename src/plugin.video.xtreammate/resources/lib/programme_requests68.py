@@ -48,6 +48,7 @@ def request(event,priority=False):
   from programme_status70 import since
   prior70=_read('request.'+slot)
   record=dict(event=value,tag=tag,scope=scope(),at=int(time.time()//5)*5,priority=bool(priority),since70=since(prior70,tag))
+  __import__('programme_deadline80').retry_window(record,prior70)
   raw=json.dumps(record,separators=(',',':'),allow_nan=False)
   if len(raw.encode())>MAX_BYTES:return False
   marker=_window();key=PREFIX+'request.'+slot
@@ -97,13 +98,15 @@ def result(event,previous=None):
   from programme_status70 import valid,waiting
   if value.get('tag')!=tag or value.get('scope')!=scope() or not valid(value):return waiting(event,previous)
   art=value.get('art') or {}
+  terminal80=__import__('programme_deadline80').code(event,value.get('code'))
+  if terminal80=='IMAGE_LOOKUP_TIMEOUT' and not __import__('programme_lastgood80').positive(event,previous):return dict(code=terminal80,source='placeholder')
   if value.get('code') in ('QUEUED','RUNNING') and __import__('programme_image69').eligible(previous,event):return previous
   if art.get('code') in ('READY','READY_STALE') and art.get('source') not in (None,'','placeholder') and art.get('image'):
-   if art.get('until',0)<=time.time():return dict(code='CACHE_MISMATCH',source='placeholder')
+   if art.get('until',0)<=time.time():return __import__('programme_lastgood80').choose(event,dict(code='CACHE_MISMATCH',source='placeholder'),previous)
    from programme_image69 import eligible
-   if not eligible(art,event):return dict(code='CACHE_MISMATCH',source='placeholder')
+   if not eligible(art,event):return __import__('programme_lastgood80').choose(event,dict(code='CACHE_MISMATCH',source='placeholder'),previous)
    return dict(art,status68=value['code'])
-  if __import__('programme_image69').eligible(previous,event):
+  if __import__('programme_lastgood80').positive(event,previous):
    return dict(previous,retry_status74=value['code'])
   return dict(previous or {},**{k:art[k] for k in ('failure_reason68','storage68','until','storage69','storage_code69','sources70','lookup70','resolved_at55') if k in art},code=value['code'],status68=value['code'])
  except (ImportError,AttributeError,RuntimeError,ValueError,TypeError,KeyError):return previous or {}

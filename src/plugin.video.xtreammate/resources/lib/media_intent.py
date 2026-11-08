@@ -83,6 +83,7 @@ def failed(nonce,pid):
     value=_read(REQUEST)
     if not _valid(value) or value['nonce']!=nonce or value['pid']!=str(pid):return False
     import xbmcgui
+    __import__('media_trace80').note(nonce,'FAILED','REJECTED')
     record={k:value[k] for k in ('nonce','pid','sid','at')};record['code']='RESOLVER_FAILED'
     xbmcgui.Window(10000).setProperty(OUTCOME,json.dumps(record))
     _cancel(value);complete(nonce);return True

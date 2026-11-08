@@ -1,3 +1,10 @@
+0.1.29.80
+- Revisionssichere Providercover, unabhängige Senderlogos und Last-good-Eventbilder.
+- Home-Widget-/Film-Detailübergabe ohne rekursiven Verzeichnisanker.
+- Geteilte EPG-Miss-Leases, nicht blockierende DB-Schreiber und endliche eigene Bildsuche.
+- Full-bleed-Hero/Poster-contain, sofortige Filmreihe, korrekter EPG-Senderfokus und graublauer Fokus.
+- Bestehende Daten/Token/Widgets/Installer unverändert; Android NOT_TESTED.
+
 0.1.29.79
 - Reannounce unchanged widget frames after cold start; confirm actual directory generations in native controls.
 - Recover verified existing Kodi thumbnail files for exact provider/item/profile without changing storage mode or deleting images.

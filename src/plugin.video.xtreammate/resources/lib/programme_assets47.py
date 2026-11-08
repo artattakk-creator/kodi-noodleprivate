@@ -192,6 +192,9 @@ def prepare(portal, kind, rows, cancel=lambda:False,provider_only=False):
         if not rows:return
     from widget_assets69 import prepare as provider_refs69
     provider_refs69(portal,kind,rows,cancel)
+    try:
+        if not __import__('artwork_config').persistent():__import__('widget_cache79').prepare(portal,kind,rows)
+    except (OSError,ValueError,TypeError,RuntimeError,AttributeError):pass
     from artwork_config import persistent
     from media_art import cached, dimensions
     from artwork_visible import public_dns, syntactic, KODI_OPTIONS, _dns_cache, _lock

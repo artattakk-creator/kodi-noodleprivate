@@ -100,7 +100,8 @@ class ArtStatus70(Fixture,unittest.TestCase):
   from media_sources43 import SourceError
   from helper_rpc57 import Error
   self.options.update(programme_tmdb46=True,tmdb_research43=True,programme_helper57=True,programme_catalog57=False)
-  event=self.event()
+  # .80 automatic image work excludes Helper; retain explicit Helper compatibility.
+  event=dict(self.event(),helper_explicit80=True)
   with mock.patch('programme_match46.candidate',side_effect=SourceError('HTTP_AUTH')),mock.patch('programme_tvmaze67.candidate',return_value=None),mock.patch('programme_helper57.lookup',side_effect=Error('HELPER_TIMEOUT')),mock.patch('programme_index46.publish_result69',return_value=False):
    value=self.q.resolve(event,allow_lookup=True,url_mode69=True,check=mock.Mock())
   self.assertIn(dict(source='tmdb',code='HTTP_AUTH'),value['sources70'])

@@ -4996,3 +4996,7 @@ msgstr "Aktiver Sendungsbildabruf: {0}"
 msgctxt "#38200"
 msgid "Picture sources: provider/XMLTV first; TVMaze series fallback and TMDB with an existing valid token. Disable anytime in EPG picture-source settings."
 msgstr "Bildquellen: Provider/XMLTV zuerst; TVMaze-Serienfallback und TMDB mit vorhandenem gültigem Token. Im EPG-Bildquellenstatus jederzeit deaktivierbar."
+
+msgctxt "#32790"
+msgid "Image check ended after 45 seconds without a confirmed result. Check the connection or retry this item."
+msgstr "Bildprüfung nach 45 Sekunden ohne bestätigtes Ergebnis beendet. Verbindung prüfen oder gezielt erneut versuchen."

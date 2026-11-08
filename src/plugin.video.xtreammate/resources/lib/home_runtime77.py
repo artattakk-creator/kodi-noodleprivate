@@ -19,6 +19,7 @@ def control(window,ident):
 
 def publish(window,event=None,image='',control_id=296751):
     import xbmc
+    if control_id==296751 and xbmc.getCondVisibility('Control.IsVisible(296783)'):control_id=296783
     result=dict(control=control_id,code='CONTROL_MISSING',image_bound=False,visible=False)
     try:
         obj=control(window,control_id)

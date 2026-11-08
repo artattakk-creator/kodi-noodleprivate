@@ -22,7 +22,7 @@ class Helper57(Fixture,unittest.TestCase):
         self.urls=importlib.import_module('programme_urls55');self.sources=importlib.import_module('programme_sources57');self.sources._backoff.clear()
         self.row=dict(sid='1',name='Test station',kind='live',category_id='a',epg_channel_id='xml')
         self.event=importlib.import_module('programme_events46').describe(self.portal,self.row,dict(title=TITLE,year=2002,genre='Spielfilm',start=self.now-30,stop=self.now+600),canonical='xml')
-        self.event.update(year=2002,genre='Spielfilm');self.calls=[];self.items=[movie()];self.detail=movie()
+        self.event.update(year=2002,genre='Spielfilm',helper_explicit80=True);self.calls=[];self.items=[movie()];self.detail=movie()
         self.addon=dict(addonid=self.helper.ADDON,enabled=True,installed=True,version='6.19.4')
 
     def reply(self,method,params,cancel=lambda:False):
@@ -139,7 +139,7 @@ class Helper57(Fixture,unittest.TestCase):
     def test_helper_movie_url_is_shared_by_real_guide_detail_and_current_widget_readers(self):
         guide=importlib.import_module('guide_store');events=importlib.import_module('programme_events46')
         guide.import_cache('p',{'xml':[dict(channel='xml',name=TITLE,descr='LOCAL EPG TEXT',category='Spielfilm',date='2002',start_timestamp=self.now-30,stop_timestamp=self.now+600)]},'r57',now=self.now,trusted_feed=True)
-        selected=dict(start=self.now-30,stop=self.now+600);self.event=events.load(self.portal,self.row,selected,now=self.now)
+        selected=dict(start=self.now-30,stop=self.now+600);self.event=events.load(self.portal,self.row,selected,now=self.now);self.event['helper_explicit80']=True
         value=self.resolve();self.assertEqual(value['code'],'READY');importlib.import_module('programme_art46')._memory.clear()
         with mock.patch.object(self.rpc,'call',side_effect=AssertionError('GUI lookup')),mock.patch('media_sources43.get',side_effect=AssertionError('GUI metadata')):
             info=importlib.import_module('local_epg').now_next('p',[self.row],{},self.now)['1']

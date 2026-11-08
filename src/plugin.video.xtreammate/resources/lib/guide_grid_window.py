@@ -76,7 +76,8 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
             from guide_grid_data import initial
             try:client=self.router._xc(self.portal)
             except (ValueError,AttributeError):client=None
-            return initial(self.portal,self.origin,client)
+            sid80,group80=__import__('presentation80').guide_entry(self.router,self.portal)
+            return initial(self.portal,self.origin,client,selected_sid80=sid80,selected_group80=group80)
         self._request(load,self._initial_ready)
 
     def _initial_ready(self,value):
@@ -135,7 +136,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
             row=self.rows[r] if r<len(self.rows) else None
             self.getControl(730+r).setVisible(row is not None)
             self.getControl(750+r).setVisible(row is not None and r==self.row)
-            self.getControl(700+r).setText(row['channel']['name'] if row else '')
+            self.getControl(700+r).setText(__import__('presentation80').clipped(row['channel']['name'],236) if row else '')
             from media_art import local_art
             self.getControl(720+r).setImage(local_art(row['channel'],self._theme)['thumb'] if row else '')
             candidates=[e for e in row['events'] if rectangle(e['start'],e['stop'],self.origin)] if row else []
@@ -151,7 +152,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
                 if event is None and not empty:continue
                 geometry=rectangle(event['start'],event['stop'],self.origin) if event else (0,896)
                 x,width=geometry;control.setPosition(340+x,168+r*42);control.setWidth(max(1,width-2))
-                control.setLabel(event['title'] if event else tr(33110))
+                control.setLabel(__import__('presentation80').clipped(event['title'] if event else tr(33110),width-2))
                 self._cells[cid]=(r,event)
                 if r==self.row and (event is selected or (selected is None and (empty or target is None))):target=cid
         for tick in range(6):

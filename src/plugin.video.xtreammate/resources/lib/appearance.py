@@ -85,9 +85,9 @@ def window_source(xml_filename, kind='vod'):
         if node.tag=='font': node.text=FONTS[values['font']]
         elif node.tag=='textcolor' and xml_filename!='XCMateGuideGrid.xml':
             node.text=argb(values['secondary'] if node.text=='FFB6BCC6' else values['text'])
-        elif node.tag=='texture' and node.text and not node.text.endswith(('xcmate_focus_neon.png','guide_focus_frame.png')):
+        elif node.tag=='texture' and node.text and not node.text.endswith(('xcmate_focus_neon.png','guide_focus_frame.png','guide_focus80.png')):
             node.set('colordiffuse',argb('FFFFFF',values['icon_opacity']))
-        elif node.tag=='texturefocus' and not (node.text or '').endswith(('xcmate_focus_neon.png','guide_focus_frame.png')): node.set('colordiffuse',argb('FFFFFF' if theme else values['focus'],values['panel_opacity']))
+        elif node.tag=='texturefocus' and not (node.text or '').endswith(('xcmate_focus_neon.png','guide_focus_frame.png','guide_focus80.png')): node.set('colordiffuse',argb('FFFFFF' if theme else values['focus'],values['panel_opacity']))
         elif node.tag=='texturenofocus': node.set('colordiffuse',argb('FFFFFF' if theme else values['background'],values['panel_opacity']))
     # Background and shade images get their own alpha; focused labels stay
     # readable even if the user makes the backdrop fully transparent.

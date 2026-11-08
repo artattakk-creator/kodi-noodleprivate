@@ -75,6 +75,9 @@ def ownership():
 
 def _anchor_home(router,portal,dispatch):
     """Compatibility for directory bookmarks/widgets from older installations."""
+    home80=__import__('window_anchor80').home(router)
+    if home80 is not None:
+        trace('HOME_READY' if home80 else 'ANCHOR_TIMEOUT',dispatch=dispatch);return home80
     path=xbmc.getInfoLabel('Container.FolderPath')
     # Native BINGIE Home is already a valid return anchor. Opening a second
     # root directory here races its BusyDialog and loses the user's widget.

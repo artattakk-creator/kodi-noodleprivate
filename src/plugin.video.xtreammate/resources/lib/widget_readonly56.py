@@ -10,7 +10,7 @@ def publish(portal,kind,rows):
     from widget_render47 import values
     from widget_art44 import read
     from widget_notice46 import prepare
-    digest=hashlib.sha256();approved=read(portal['id']);count=0
+    digest=hashlib.sha256();approved=read(portal['id'],kind);count=0
     for offset in range(0,len(rows),16):
         for value in values(portal,kind,rows[offset:offset+16],approved):
             value.pop('_programme46',None)

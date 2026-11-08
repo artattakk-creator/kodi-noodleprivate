@@ -69,7 +69,7 @@ def publish(portal,kind,rows,code='READY'):
     from widget_items45 import describe
     from widget_art44 import read as approved
     from widget_data41 import policy
-    values=approved(portal['id']);epg={}
+    values=approved(portal['id'],kind);epg={}
     if kind=='live' and len(rows)>64:
         from widget_pages46 import publish as publish_pages46
         return publish_pages46(portal,rows,values)

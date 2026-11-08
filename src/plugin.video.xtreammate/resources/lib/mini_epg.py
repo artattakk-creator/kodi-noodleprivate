@@ -31,7 +31,7 @@ class MiniProgramme:
         self.rows=[]
         for row in range(5):
             y=122+row*70
-            highlight=xbmcgui.ControlImage(x,y,width,66,owner._media+'/xcmate_focus_neon.png')
+            highlight=xbmcgui.ControlImage(x,y,width,66,owner._media+'/tv_focus.png')
             stamp=xbmcgui.ControlLabel(x+8,y+2,width-16,20,'','font12','0xFFBEC4CD')
             title=xbmcgui.ControlTextBox(x+8,y+22,width-16,40,font='font12',textColor='0xFFF4F6F9')
             owner.addControls([highlight,stamp,title]);self.rows.append((highlight,stamp,title))

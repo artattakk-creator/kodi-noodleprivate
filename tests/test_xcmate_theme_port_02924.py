@@ -49,7 +49,7 @@ class PortTests(Fixture,unittest.TestCase):
             for field in ('left','top','width','height','onleft','onright','onup','ondown','textcolor','focusedcolor','texturefocus'):
                 self.assertEqual(before.findtext(field),after.findtext(field),cid+':'+field)
         text=generated.read_text();self.assertIn('assets/epg/bg-guide.jpg',text);self.assertIn('assets/epg/icon-today.png',text)
-        self.assertIn('guide_focus_frame.png',text)
+        self.assertIn('guide_focus80.png',text)
 
     def test_installed_manager_opens_offline_and_cancel_never_fetches_catalogue(self):
         ui=importlib.import_module('theme_ui');catalog=importlib.import_module('theme_catalog');self.dialog.select.return_value=-1

@@ -29,21 +29,21 @@ def unique_movie56(event,cancel=lambda:False):
  if not setting_bool('tmdb_research43',False):return None
  from media_sources43 import TMDB,tmdb_token,_tmdb_image,SourceError
  from tmdb_connection60 import request as get
- from epg_events import title_key
+ from programme_title80 import key as title_key,query as query80
  from urllib.parse import urlencode
  title=title_key(event.get('title',''))
  if not title or len(title)<8:return None
  token=tmdb_token()
- data=get(TMDB+'/search/movie?'+urlencode(dict(query=event['title'],language='de-DE',include_adult='false')),api=True,token=token,cancel=cancel)
+ data=get(TMDB+'/search/movie?'+urlencode(dict(query=query80(event['title']),language='de-DE',include_adult='false')),api=True,token=token,cancel=cancel)
  rows=data.get('results',[])
  if (not isinstance(rows,list) or data.get('total_pages')!=1 or
      not isinstance(data.get('total_results'),int) or data['total_results']!=len(rows) or len(rows)>20):return None
  matches={r['id']:r for r in rows if isinstance(r,dict) and isinstance(r.get('id'),int) and
-          not r.get('adult') and title_key(r.get('title',''))==title}
+          not r.get('adult') and title in (title_key(r.get('title','')),title_key(r.get('original_title','')))}
  if len(matches)!=1:return None
  remote,row=next(iter(matches.items()))
  details=get(TMDB+'/movie/'+str(remote)+'?language=de-DE',api=True,token=token,cancel=cancel)
- if details.get('id')!=remote or details.get('adult') or title_key(details.get('title',''))!=title:return None
+ if details.get('id')!=remote or details.get('adult') or title not in (title_key(details.get('title','')),title_key(details.get('original_title',''))):return None
  year=str(details.get('release_date',''))[:4]
  if not year.isdigit() or not 1880<=int(year)<=2100 or str(row.get('release_date',''))[:4]!=year:return None
  url=_tmdb_image(details.get('backdrop_path'))

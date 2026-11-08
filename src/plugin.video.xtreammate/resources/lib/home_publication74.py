@@ -64,6 +64,8 @@ def merge(portal,kind,items,rows,old=None):
                         for key,value in oldprops.items():
                             if key.startswith(('XtreamMate.','XCMate.Programme','XCMate.Epg','XCMate.ArtProof')):props[key]=value
                         item['info']['plot']=previous['info'].get('plot','')
+            row80=rows_by_id.get(sid)
+            if row80:__import__('home_publication80').reconcile(portal,kind,item,previous,row80)
         result.append(item)
     return result,revision
 

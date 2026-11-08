@@ -27,7 +27,7 @@ def basic(portal,row,approved):
 def values(portal,rows):
     from live_home62 import trace
     from widget_art44 import read
-    try:approved=read(portal['id'])
+    try:approved=read(portal['id'],'live')
     except (OSError,ValueError,TypeError):approved={}
     result=[]
     for offset in range(0,len(rows),16):
