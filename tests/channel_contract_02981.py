@@ -1,4 +1,4 @@
-""".80 is a review build: published .79 channels and installer are immutable.
+""".81 is a review build: published .80 channels and installer are immutable.
 
 CI may build a temporary three-source regular index without publishing it.
 Committed catalogues and all Pilot paths must retain exact main bytes.

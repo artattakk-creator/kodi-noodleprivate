@@ -111,5 +111,9 @@ def prepare(portal,kind,rows,cancel=lambda:False):
    except (OSError,ValueError,TypeError,RuntimeError,KeyError,SourceError) as error:
     count=min(3,_due.get(key,(0,0))[1]+1);_due[key]=(time.monotonic()+(60,300,21600)[count-1],count)
     from art_trace81 import note
-    note(dict(key=key),'CACHE',getattr(error,'code',None) or classify(error),count=count)
+    from programme_art46 import CacheBudget
+    reason=getattr(error,'reason','')
+    code='PROGRAMME_CACHE_BUDGET' if isinstance(error,CacheBudget) else reason if reason in ('RESERVE_BLOCKED','BLOCKED_REAL_DISK','CAPACITY_UNKNOWN','BUDGET_FULL') else getattr(error,'code',None) or classify(error)
+    capacity=getattr(error,'storage',{}) or {}
+    note(dict(key=key),'CACHE',code,count=count,free=capacity.get('free'),reserve=capacity.get('reserve'),budget=capacity.get('budget'))
    while len(_due)>512:_due.pop(next(iter(_due)))

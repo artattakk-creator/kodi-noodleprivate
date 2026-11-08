@@ -11,7 +11,7 @@ def note(event,stage,code='OK',**facts):
  if now-_seen.get(key,-1e9)<30:return
  _seen[key]=now
  while len(_seen)>512:_seen.pop(next(iter(_seen)))
- clean={k:v for k,v in facts.items() if k in ('ms','status','count','width','height') and type(v) in (int,float,bool)}
+ clean={k:v for k,v in facts.items() if k in ('ms','status','count','width','height','free','reserve','budget') and type(v) in (int,float,bool)}
  import xbmc
  try:xbmc.log('[XCMate][ART81] event='+tag+' stage='+stage+' code='+fixed+' '+json.dumps(clean,separators=(',',':')),xbmc.LOGINFO)
  except (AttributeError,RuntimeError):pass

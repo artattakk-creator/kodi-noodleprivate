@@ -67,3 +67,13 @@ class Render81(Fixture,unittest.TestCase):
    self.assertTrue(cache.permitted(str(alias/'Thumbnails'/'image.jpg')))
    linked=textures/'linked';linked.symlink_to(textures,target_is_directory=True)
    self.assertFalse(cache.permitted(str(linked/'image.jpg')))
+ def test_reserve_budget_and_real_capacity_remain_distinct_and_backed_off(self):
+  from pathlib import Path
+  from art_storage import ArtworkFailure
+  from programme_art46 import CacheBudget
+  source=self.folder/'input81.png';source.write_bytes(self.png());row=dict(sid='1',kind='vod',name='Synthetic',cover='https://image.tmdb.org/t/p/w500/input81.png')
+  for error,code in ((CacheBudget('PROGRAMME_CACHE_BUDGET'),'PROGRAMME_CACHE_BUDGET'),(ArtworkFailure('DISK_FULL','RESERVE_BLOCKED',dict(free=500,reserve=1024)),'RESERVE_BLOCKED'),(ArtworkFailure('DISK_FULL','BLOCKED_REAL_DISK'),'BLOCKED_REAL_DISK')):
+   self.cache._due.clear()
+   with mock.patch.object(self.cache,'store',side_effect=error) as store,mock.patch('media_art.cached',return_value=str(source)),mock.patch('art_trace81.note') as trace:
+    self.cache.prepare(self.portal,'vod',[row]);self.cache.prepare(self.portal,'vod',[row])
+   self.assertEqual(store.call_count,1);self.assertEqual(trace.call_args.args[2],code);self.assertTrue(source.exists())
