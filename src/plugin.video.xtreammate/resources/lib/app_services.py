@@ -128,11 +128,11 @@ def _run():
             focused()
         except Exception:pass
         prepare_now=time.monotonic()>=next_prepare
-        if phases48.network() and phases48.due('maintenance',300):
+        if phases48.network() and __import__('home_schedule75').rest_allowed() and phases48.due('maintenance',300):
             next_prepare=time.monotonic()+5
             try:
-                from artwork_db import maintain
-                maintain(cancel=cancelled)
+                from artwork_db import inspect_readonly82
+                inspect_readonly82(cancel=cancelled)
             except MemoryError:runtime.note_pressure()
             except Exception:pass
         if cancelled():break

@@ -5024,3 +5024,15 @@ msgstr "Show catalogue completion notification"
 msgctxt "#32796"
 msgid "Recorded group failures: {0}"
 msgstr "Recorded group failures: {0}"
+
+msgctxt "#32797"
+msgid "Storage diagnostics"
+msgstr "Storage diagnostics"
+
+msgctxt "#32798"
+msgid "Run a safe write test in the current artwork folder"
+msgstr "Run a safe write test in the current artwork folder"
+
+msgctxt "#32799"
+msgid "A new 4 KiB probe file is created, verified and removed within the protected diagnostic budget. Existing pictures, storage targets and reserves remain unchanged. Continue?"
+msgstr "A new 4 KiB probe file is created, verified and removed within the protected diagnostic budget. Existing pictures, storage targets and reserves remain unchanged. Continue?"

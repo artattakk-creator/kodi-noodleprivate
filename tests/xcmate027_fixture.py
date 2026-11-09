@@ -237,7 +237,7 @@ class Fixture:
             xtream=types.SimpleNamespace(XtreamClient=lambda *args:self.client))
         patch.start();self.addCleanup(patch.stop)
         for name in ('library_index','group_selection','latest_media','home_menu','app_routes','media_art','media_state',
-                     'owner_dispatch','window_lifecycle','window_navigation','media_data','media_progress','media_window','guide_store','guide_window','guide_timers',
+                     'owner_dispatch','window_lifecycle','window_navigation','media_data','media_progress','media_search','detail_menu','media_window','guide_store','guide_window','guide_timers',
                      'widget_data41','widget_movie47','media_catalog43'):
             sys.modules.pop(name,None)
         self.index=importlib.import_module('library_index');self.routes=importlib.import_module('app_routes')
@@ -265,12 +265,23 @@ class Fixture:
     def media_window(self,kind='vod'):
         w=self.media.MediaWindow('XCMateMedia.xml',str(ADDON),'Default','720p')
         w.configure(self.router,self.portal,kind)
-        self.addCleanup(w.close);w.doModal();self.settle(w);return w
+        self.addCleanup(self.close_model_window82,w);w.doModal();self.settle(w);return w
 
     def guide_window(self):
         w=self.guide.GuideWindow('XCMateGuide.xml',str(ADDON),'Default','720p')
         w.configure(self.router,self.portal)
-        self.addCleanup(w.close);w.doModal();self.settle(w);return w
+        self.addCleanup(self.close_model_window82,w);w.doModal();self.settle(w);return w
+
+    def close_model_window82(self,window):
+        # Production close stays nonblocking. A test must finish its owned
+        # watchers before patch.dict restores/replaces process-global Kodi
+        # modules; otherwise the next fixture can import half-retired stubs.
+        window.close()
+        for name in ('_watch_thread','_art_thread'):
+            worker=getattr(window,name,None)
+            if worker is not None:
+                worker.join(2)
+                assert not worker.is_alive(), 'retired model watcher: '+name
 
     def settle(self,window):
         # Complete queued data work, then explicitly deliver on the GUI owner.

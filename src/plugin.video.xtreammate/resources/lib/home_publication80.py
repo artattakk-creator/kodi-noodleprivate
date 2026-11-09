@@ -10,7 +10,7 @@ def capture(row,image):
  from widget_assets69 import renderable
  return {role:dict(source=fingerprint(source),uri=image[role]) for role,source in sources(row,provider_only=True).items() if source and renderable(image.get(role))}
 
-def reconcile(portal,kind,item,previous,row):
+def reconcile(portal,kind,item,previous,row,same_revision82=False):
  from programme_assets47 import sources,fingerprint,local_uri
  from widget_refs74 import read
  from render_cache81 import references as disk81
@@ -18,7 +18,12 @@ def reconcile(portal,kind,item,previous,row):
  references=None
  durable81=disk81(portal,kind,[row]).get(str(row['sid']),{})
  for role,source in sources(row,provider_only=True).items():
-  if not source:continue
+  if not source:
+   if same_revision82:
+    from home_lkg82 import retained,apply
+    proof82=retained(portal,kind,row,role,previous)
+    if proof82:apply(item,role,proof82,kind)
+   continue
   field='icon' if kind=='live' and role=='poster' else role
   if durable81.get(role):
    evidence81=__import__('render_cache81').record_for(portal,kind,row,role,source) or {}

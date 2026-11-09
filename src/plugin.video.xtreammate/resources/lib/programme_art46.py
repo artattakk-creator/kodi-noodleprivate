@@ -114,9 +114,15 @@ def space(upcoming):
   if count>1024:raise CacheBudget('PROGRAMME_CACHE_BUDGET')
   if row.is_file(follow_symlinks=False):total+=row.stat().st_size
  if total+upcoming>limit():raise CacheBudget('PROGRAMME_CACHE_BUDGET')
- from art_storage import check
- from art_store import used
- check(upcoming,used=used()+total,location=folder)
+ from art_storage import check,budget
+ from artwork_health82 import guard
+ guard()
+ # Unlimited additional budget does not require a DB inventory/adoption.
+ if budget():
+  from art_store import used
+  archive_used=used()
+ else:archive_used=0
+ check(upcoming,used=archive_used+total,location=folder)
 
 def display_image(data):
  """Bounded display derivative, never crops or burns station branding."""

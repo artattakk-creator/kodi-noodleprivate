@@ -1,3 +1,12 @@
+0.1.29.82
+- Artwork-Worker respektiert Datenbankpausen, bleibt aktiv und setzt kontrolliert fort.
+- Vorhandene Kodi-Texturen ohne Bildkopie und ohne Artwork-DB wiederverwenden.
+- Speicherdiagnose für tatsächliches Zielvolume, Reserven und geschützte Schreibprobe.
+- Lokale Katalogreihen unabhängig von neuen Hintergrunddownloads früh veröffentlichen.
+- Gleiche Katalogrevision bewahrt bestätigte lokale Bildrollen bei Teilantworten.
+- Keine automatische Speicherumstellung, Datenlöschung oder Kanalveröffentlichung.
+- Android ANDROID_NOT_TESTED.
+
 0.1.29.81
 - Bestätigte Bilder in einem quellen- und kontogebundenen lokalen Rendercache erhalten.
 - Deterministische Eventbild-Auswahl, eigene TMDB-Diagnose und zusätzliche Hero-Backdrops.

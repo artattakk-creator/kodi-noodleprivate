@@ -41,26 +41,32 @@ def capacity(location=None,backend=None):
     separate=external and not value.get('same_as_internal',False)
     protected=max(MIN_RESERVE,min(256*MIB,int(value['total']*.02))) if separate and value.get('total') else MIN_RESERVE if separate else reserve()
     from artwork_config import read
-    if not separate and read().get('reserve_policy')=='adaptive' and value.get('total'):
+    if not separate and read().get('reserve_policy')=='adaptive' and value.get('total') and value.get('capacity82')=='SAME_VOLUME_VERIFIED':
         protected=max(64*MIB,min(reserve(),int(value['total']*.02)))
-    return dict(value,reserve=protected,budget=budget(),external=external,storage_availability='AVAILABLE' if value.get('free') is not None else storage.availability() if external else 'UNKNOWN')
+    return dict(value,reserve=protected,budget=budget(),external=external,reserve_policy82=read().get('reserve_policy','fixed'),storage_availability='AVAILABLE' if value.get('free') is not None else storage.availability() if external else 'UNKNOWN')
 
 
 def check(upcoming,limit=None,used=None,location=None,backend=None):
     value=capacity(backend=backend) if backend is not None else capacity() if location is None else capacity(location)
-    if value.get('storage_availability')=='STORAGE_OFFLINE':raise ArtworkFailure('STORAGE_OFFLINE')
+    from art_storage82 import note
+    value.update(requested82=max(0,upcoming),role82='IMAGE')
+    if value.get('storage_availability')=='STORAGE_OFFLINE':
+        note(value,'STORAGE_OFFLINE');raise ArtworkFailure('STORAGE_OFFLINE')
     if value.get('free') is None:
-        if not value.get('external'):raise ArtworkFailure('CACHE_ERROR','CAPACITY_UNKNOWN',value)
+        if not value.get('external'):
+            note(value,'CAPACITY_UNKNOWN');raise ArtworkFailure('CACHE_ERROR','CAPACITY_UNKNOWN',value)
         # Explicitly probed VFS: bounded verified write, capacity stays UNKNOWN.
     elif value['free']<value['reserve']+max(0,upcoming)+WRITE_HEADROOM:
         reason='BLOCKED_REAL_DISK' if value['free']<max(0,upcoming)+WRITE_HEADROOM else 'RESERVE_BLOCKED'
-        raise ArtworkFailure('DISK_FULL',reason,value)
+        note(value,reason);raise ArtworkFailure('DISK_FULL',reason,value)
     limit=budget() if limit is None else limit
     if limit:
         if used is None:
             from art_store import used as current_bytes
             used=current_bytes()
-        if used+upcoming>limit:raise ArtworkFailure('BUDGET_FULL','BUDGET_FULL',value)
+        if used+upcoming>limit:
+            note(value,'BUDGET_FULL');raise ArtworkFailure('BUDGET_FULL','BUDGET_FULL',value)
+    note(value,'OK')
     return value
 
 

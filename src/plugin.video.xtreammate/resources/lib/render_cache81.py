@@ -3,7 +3,7 @@
 A short DNS lease is transport permission, never the lifetime of decoded local
 pixels. No archive migration, eviction, Kodi DB write or profile reset.
 """
-import hashlib,json,os,time
+import hashlib,json,os,time,sqlite3
 _due={};_records={}
 
 def identity(portal,kind,row,role,source):
@@ -28,7 +28,7 @@ def read(key):
    with open(name,encoding='utf-8') as stream:record=json.loads(stream.read(16385))
    _records[name]=(stamp,record)
    while len(_records)>1024:_records.pop(next(iter(_records)))
-  if record.get('key')!=key or not isinstance(record.get('at'),(int,float)):return None
+  if not isinstance(record,dict) or record.get('key')!=key or not isinstance(record.get('at'),(int,float)):return None
   filename=record['file']
   if not isinstance(filename,str) or os.path.dirname(filename)!=root() or os.path.islink(filename):return None
   stat=os.stat(filename)
@@ -39,6 +39,7 @@ def read(key):
 def store(key,data,enrich=None):
  from media_sources43 import validate_image
  from programme_art46 import atomic,space
+ __import__('artwork_health82').guard()
  os.makedirs(root(),mode=0o700,exist_ok=True)
  if os.path.islink(root()):raise OSError('UNSAFE_RENDER_ROOT')
  width,height=validate_image(data);sha=hashlib.sha256(data).hexdigest()
@@ -90,6 +91,7 @@ def prepare(portal,kind,rows,cancel=lambda:False):
    if read(key) or time.monotonic()<_due.get(key,(0,0))[0]:continue
    acquired+=1
    try:
+    __import__('artwork_health82').guard()
     local=local_uri(source) or local_uri(cached(source))
     if not local:
      from widget_cache79 import probe
@@ -108,7 +110,10 @@ def prepare(portal,kind,rows,cancel=lambda:False):
     record=dict(record,key=alias,source81=hashlib.sha256(source.encode()).hexdigest())
     atomic(metadata(alias),json.dumps(record,separators=(',',':')).encode())
     _due.pop(key,None)
+   except sqlite3.Error as error:
+    raise __import__('artwork_health82').defer(error) from None
    except (OSError,ValueError,TypeError,RuntimeError,KeyError,SourceError) as error:
+    if isinstance(error,__import__('artwork_health82').Deferred):raise
     count=min(3,_due.get(key,(0,0))[1]+1);_due[key]=(time.monotonic()+(60,300,21600)[count-1],count)
     from art_trace81 import note
     from programme_art46 import CacheBudget

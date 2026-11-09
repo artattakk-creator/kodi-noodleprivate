@@ -72,6 +72,7 @@ def get(url,*,api=False,token='',cancel=lambda:False,transport=None,json_list67=
             if not isinstance(value,dict) and not (json_list67 and isinstance(value,list)):raise SourceError('INVALID_JSON')
             return value
         validate_image(data);return data
+    except MemoryError:raise
     except SourceError:raise
     except Exception as error:
         from art_errors import classify
@@ -96,6 +97,7 @@ def validate_image(data):
             image.verify()
         with Image.open(io.BytesIO(data)) as image:image.load()
         return width,height
+    except MemoryError:raise
     except SourceError:raise
     except Exception:raise SourceError('INVALID_IMAGE') from None
 

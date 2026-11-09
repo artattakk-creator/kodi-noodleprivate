@@ -1,8 +1,9 @@
 """Volatile public provider references; no programme DB writes or image archive."""
 from collections import OrderedDict
-import hashlib,json,queue,threading,time
+import hashlib,json,queue,threading,time,sqlite3
 from urllib.parse import urlsplit,unquote
 _lock=threading.RLock();_queue=queue.Queue(maxsize=16);_pending=set();_thread=None;_stop=threading.Event();_revision=0
+_deferred82={};_local_due82={};_lease_keys82={};_fatal82=False
 PREFIX='XCMate.WidgetAsset69.'
 def profile():
  from epg_handoff63 import profile_scope
@@ -22,7 +23,7 @@ def safe(portal,uri):
 def _window():
  import xbmcgui
  return xbmcgui.Window(10000)
-def _slot(key):return PREFIX+str(int(key[:8],16)%512)
+def _slot(key):return PREFIX+key
 def read(portal,kind,rows):
  from artwork_config import persistent
  if persistent():return {}
@@ -43,6 +44,8 @@ def read(portal,kind,rows):
     if value.get('key')==key and value.get('profile')==profile() and 0<remaining<=30 and value.get('uri')==source+KODI_OPTIONS:
      result.setdefault(str(row['sid']),{}).setdefault(role,value['uri'])
    except (ValueError,TypeError,AttributeError,RuntimeError):continue
+ from widget_cache82 import read as local82
+ for sid82,roles82 in local82(portal,kind,rows).items():result.setdefault(sid82,{}).update(roles82)
  from render_cache81 import references
  for sid81,roles81 in references(portal,kind,rows).items():result.setdefault(sid81,{}).update(roles81)
  return result
@@ -52,7 +55,7 @@ def prepare(portal,kind,rows,cancel=lambda:False):
  from home_schedule75 import allowed,focused_rows
  if not allowed(kind,portal):rows=focused_rows(portal,kind,rows)
  from artwork_config import persistent
- if persistent() or _stop.is_set() or not rows or kind not in ('live','vod','series'):return False
+ if _fatal82 or persistent() or _stop.is_set() or not rows or kind not in ('live','vod','series'):return False
  from programme_assets47 import sources
  selected=[dict(row) for row in rows[:256 if kind=='live' else 24]]
  material=[[str(r['sid']),sources(r,provider_only=True)] for r in selected]
@@ -65,42 +68,77 @@ def prepare(portal,kind,rows,cancel=lambda:False):
   if _thread is None or not _thread.is_alive():
    _thread=threading.Thread(target=_run,name='XCMate-provider-art69',daemon=True);_thread.start()
  return True
-def _run():
+def _references82(portal,kind,rows):
  global _revision
  from artwork_visible import public_dns,KODI_OPTIONS
  from programme_assets47 import sources
+ initial=profile();end=time.monotonic()+.5;retained74=[]
+ for row in rows:
+  if _stop.is_set() or profile()!=initial or time.monotonic()>end:break
+  for role,source in sources(row,provider_only=True).items():
+   if not safe(portal,source):continue
+   if not public_dns(source):continue
+   from artwork_visible import _dns_cache,_lock as dns_lock
+   parts=urlsplit(source)
+   with dns_lock:lease=_dns_cache.get((parts.hostname,443))
+   remaining=min(30,max(0,lease[0]-time.monotonic())) if lease and lease[1] else 0
+   if not remaining:continue
+   tag=identity(portal,kind,row,role,source);window=_window();prior=window.getProperty(_slot(tag))
+   value=dict(key=tag,profile=initial,uri=source+KODI_OPTIONS,until=time.time()+remaining)
+   try:old=json.loads(prior) if prior else {}
+   except ValueError:old={}
+   window.setProperty(_slot(tag),json.dumps(value,separators=(',',':')))
+   with _lock:
+    _lease_keys82.pop(tag,None);_lease_keys82[tag]=True
+    while len(_lease_keys82)>4096:
+     oldest=next(iter(_lease_keys82));_lease_keys82.pop(oldest);window.clearProperty(_slot(oldest))
+   retained74.append((row['sid'],role,source,remaining))
+   if old.get('key')!=tag or old.get('uri')!=value['uri']:
+    with _lock:_revision+=1
+ from widget_refs74 import remember_many
+ remember_many(portal,kind,retained74)
+
+def _run():
+ global _fatal82
+ from artwork_health82 import Deferred,defer,note,status,guard
  while not _stop.is_set():
-  try:key,portal,kind,rows=_queue.get(timeout=.5)
-  except queue.Empty:continue
+  job=None;queued=False;local_only=False;now=time.time()
+  for tag,(until,code,candidate) in list(_deferred82.items()):
+   released=code in ('DB_PAUSED','DB_MANUAL_PAUSE') and status()['code']=='READY'
+   if now>=until or released:
+    job=candidate;_deferred82.pop(tag,None);break
+   if now>=_local_due82.get(tag,0):
+    job=candidate;local_only=True;_local_due82[tag]=now+2;break
+  if job is None:
+   try:job=_queue.get(timeout=.5);queued=True
+   except queue.Empty:continue
+  key,portal,kind,rows=job;deferred=local_only
   try:
+   # Recover already decoded Kodi files before any optional image write.
+   __import__('widget_cache82').prepare(portal,kind,rows)
+   _references82(portal,kind,rows)
+   if local_only:continue
+   guard()
    __import__('render_cache81').prepare(portal,kind,rows,_stop.is_set)
    __import__('media_hero81').prepare(portal,kind,rows,_stop.is_set)
-   initial=profile();end=time.monotonic()+.5;retained74=[]
-   for row in rows:
-    if _stop.is_set() or profile()!=initial or time.monotonic()>end:break
-    for role,source in sources(row,provider_only=True).items():
-     if not safe(portal,source):continue
-     if not public_dns(source):continue
-     from artwork_visible import _dns_cache,_lock as dns_lock
-     parts=urlsplit(source)
-     with dns_lock:lease=_dns_cache.get((parts.hostname,443))
-     remaining=min(30,max(0,lease[0]-time.monotonic())) if lease and lease[1] else 0
-     if not remaining:continue
-     tag=identity(portal,kind,row,role,source);window=_window();prior=window.getProperty(_slot(tag))
-     value=dict(key=tag,profile=initial,uri=source+KODI_OPTIONS,until=time.time()+remaining)
-     try:old=json.loads(prior) if prior else {}
-     except ValueError:old={}
-     window.setProperty(_slot(tag),json.dumps(value,separators=(',',':')))
-     retained74.append((row['sid'],role,source,remaining))
-     if old.get('key')!=tag or old.get('uri')!=value['uri']:
-      with _lock:_revision+=1
-   from widget_refs74 import remember_many
-   remember_many(portal,kind,retained74)
-   try:__import__('widget_cache79').prepare(portal,kind,rows)
-   except (OSError,ValueError,TypeError,RuntimeError,AttributeError):pass
+   note('RECOVERED',pending=len(_pending))
+  except (sqlite3.Error,OSError) as error:
+   pause=defer(error)
+   if len(_deferred82)<16 or key in _deferred82:
+    _deferred82[key]=(pause.retry_at82,pause.code82,job);_local_due82[key]=now+2;deferred=True
+   note(pause.code82,reason=pause.reason82,until=pause.retry_at82,pending=len(_pending))
+  except Exception as error:
+   # Unexpected bugs/MemoryError are fatal, never reported as successful work.
+   # Latch prevents a new fatal daemon on every service poll.
+   _fatal82=True;note('FATAL',reason='MEMORY_ERROR' if isinstance(error,MemoryError) else 'PROGRAMMING_ERROR',alive=False,pending=len(_pending));return
   finally:
-   with _lock:_pending.discard(key)
-   _queue.task_done()
+   if queued:_queue.task_done()
+   if not deferred:
+    _local_due82.pop(key,None)
+    with _lock:_pending.discard(key)
+
+ note('STOPPED',alive=False,pending=len(_pending))
+
 def revision():
  with _lock:return _revision
 def renderable(uri):

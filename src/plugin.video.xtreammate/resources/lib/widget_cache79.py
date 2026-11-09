@@ -46,7 +46,7 @@ def permitted(filename):
 
 def valid(value,source):
  try:
-  if value.get('source')!=source or value.get('state')!='POSITIVE_LOCAL' or not 0<=time.time()-value['at']<30*86400:return False
+  if value.get('source')!=source or value.get('state')!='POSITIVE_LOCAL':return False
   filename=value['file']
   if not permitted(filename):return False
   st=os.stat(filename)
@@ -93,7 +93,7 @@ def probe(source):
     with Image.open(filename) as im:
      if im.width*im.height>16_000_000 or im.width<1 or im.height<1:continue
      im.load();width,height=im.size
-   except (Image.DecompressionBombError,OSError,ValueError,MemoryError):continue
+   except (Image.DecompressionBombError,OSError,ValueError):continue
    with open(filename,'rb') as stream:digest=hashlib.sha256(stream.read(3*1024*1024+1)).hexdigest()
    after=os.stat(filename)
    if (st.st_mtime_ns,st.st_size)!=(after.st_mtime_ns,after.st_size):continue
