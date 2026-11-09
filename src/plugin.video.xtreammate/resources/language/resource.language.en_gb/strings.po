@@ -5132,3 +5132,15 @@ msgstr "The internal migration journal cannot safely grow within the metadata re
 msgctxt "#38329"
 msgid "The artwork journal could not be read or written. Check storage and permissions; do not delete or rebuild the database. Originals remain protected."
 msgstr "The artwork journal could not be read or written. Check storage and permissions; do not delete or rebuild the database. Originals remain protected."
+
+msgctxt "#32850"
+msgid "Show unconfirmed series image suggestions"
+msgstr "Show unconfirmed series image suggestions"
+
+msgctxt "#32851"
+msgid "Temporary XCMate image cache (MiB, maximum 64)"
+msgstr "Temporary XCMate image cache (MiB, maximum 64)"
+
+msgctxt "#32852"
+msgid "Temporary image files (maximum 256)"
+msgstr "Temporary image files (maximum 256)"

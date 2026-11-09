@@ -46,7 +46,10 @@ def _diagnostic_message84(event,art):
 
 
 def message(event,art,diagnostic=False):
-    text=_diagnostic_message84(event,art)
+    if art.get('provisional85'):
+        return 'Bildvorschlag – Zuordnung nicht bestätigt. Über das Kontextmenü Serie/Bild zuweisen oder Vorschlag ausblenden.'
+    explanations85={'EVENT_CHANGED':'Die Programmdaten wurden aktualisiert. Das passende Bild wird erneut geprüft.','SOURCE_CHANGED':'Die EPG-Quelle wurde aktualisiert. Das passende Bild wird erneut geprüft.','FILE_INVALID':'Das gespeicherte Bild ist nicht verwendbar. Eine neue Bildprüfung ist eingeplant.','EXPIRED':'Die Bildfreigabe ist abgelaufen. Das Bild wird erneut geprüft.','POLICY_CHANGED':'Die Bildfreigaben haben sich geändert. Die aktuellen Einstellungen werden berücksichtigt.','NO_SOURCE_FACTS':'Lokale Programmdaten sind momentan nicht vollständig verfügbar. Die Ansicht bleibt bedienbar.'}
+    text=explanations85.get(art.get('code')) or _diagnostic_message84(event,art)
     import re
     if diagnostic:
         code=str(art.get('code','PENDING'))

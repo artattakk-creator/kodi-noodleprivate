@@ -9,7 +9,7 @@ PREFIX='XCMate.Programme68.'
 SLOTS=64
 MAX_BYTES=8192
 _FIELDS=('pid','sid','start','stop','title','canonical','revision','source_key46','fact_revision46','epg_source46')
-_ART=('key','fingerprint','code','source','match','image','thumbnail','sha256','attribution','image_scope57','until','failure_reason68','storage68','source_url','url_version55','url_verified69','scope69','profile69','persisted69','storage69','storage_code69','policy69','resolved_at55','sources70','lookup70','origin_policy75','decoded77','image_width77','image_height77','display84','display_key84')
+_ART=('key','fingerprint','code','source','match','image','thumbnail','sha256','attribution','image_scope57','until','failure_reason68','storage68','source_url','url_version55','url_verified69','scope69','profile69','persisted69','storage69','storage_code69','policy69','resolved_at55','sources70','lookup70','origin_policy75','decoded77','image_width77','image_height77','display84','display_key84','provisional85','manual85','temp85','mapping_epoch85')
 _lock=threading.Lock()
 _thread=None
 _stop=threading.Event()
@@ -58,7 +58,7 @@ def request(event,priority=False):
  except (ImportError,AttributeError,RuntimeError,ValueError,TypeError,KeyError,OverflowError):return False
 
 def trace(event,code):
- codes={'QUEUED','RUNNING','LOCAL_IMAGE_READY','IMAGE_READY','NOT_SCHEDULED','NO_MATCH','NO_ARTWORK','CACHE_MISS','CACHE_MISMATCH','DB_FULL','FETCH_FAILED','CANCELLED','HTTP_AUTH','HTTP_RATE_LIMIT','TIMEOUT','PROGRAMME_DB_UNAVAILABLE','CACHE_ERROR','CACHE_IO_ERROR','PROGRAMME_CACHE_BUDGET','TMDB_DISABLED','TMDB_TOKEN_MISSING','BLOCKED_IMAGE_HOST_OR_URL','NO_MATCH_AMBIGUOUS','HELPER_TIMEOUT','HELPER_BACKGROUND_UNAVAILABLE','NO_UNIQUE_MATCH','NO_IMAGE','NO_YEAR','NOT_CLASSIFIED_MOVIE','AWAITING_BACKGROUND_REFRESH','RESERVE_BLOCKED','DISK_FULL','BUDGET_FULL','IMAGE_URL_READY_RAM','IMAGE_URL_READY','SAFE_RESERVE_BLOCKED','REAL_ENOSPC','SQLITE_FULL_POLICY','SQLITE_FULL_STORAGE','SQLITE_FULL_UNKNOWN','SQLITE_BUSY_LOCKED','SQLITE_IO','EPG_READ_TIMEOUT','IMAGE_LOOKUP_TIMEOUT'}
+ codes=set(__import__('programme_revision85').REASONS)|{'QUEUED','RUNNING','LOCAL_IMAGE_READY','IMAGE_READY','NOT_SCHEDULED','NO_MATCH','NO_ARTWORK','CACHE_MISS','CACHE_MISMATCH','DB_FULL','FETCH_FAILED','CANCELLED','HTTP_AUTH','HTTP_RATE_LIMIT','TIMEOUT','PROGRAMME_DB_UNAVAILABLE','CACHE_ERROR','CACHE_IO_ERROR','PROGRAMME_CACHE_BUDGET','TMDB_DISABLED','TMDB_TOKEN_MISSING','BLOCKED_IMAGE_HOST_OR_URL','NO_MATCH_AMBIGUOUS','HELPER_TIMEOUT','HELPER_BACKGROUND_UNAVAILABLE','NO_UNIQUE_MATCH','NO_IMAGE','NO_YEAR','NOT_CLASSIFIED_MOVIE','AWAITING_BACKGROUND_REFRESH','RESERVE_BLOCKED','DISK_FULL','BUDGET_FULL','IMAGE_URL_READY_RAM','IMAGE_URL_READY','SAFE_RESERVE_BLOCKED','REAL_ENOSPC','SQLITE_FULL_POLICY','SQLITE_FULL_STORAGE','SQLITE_FULL_UNKNOWN','SQLITE_BUSY_LOCKED','SQLITE_IO','EPG_READ_TIMEOUT','IMAGE_LOOKUP_TIMEOUT'}
  fixed=code if code in codes else 'FETCH_FAILED'
  key=(identity(event),fixed);now=time.monotonic()
  with _lock:
@@ -103,9 +103,9 @@ def result(event,previous=None):
   if terminal80=='IMAGE_LOOKUP_TIMEOUT' and not __import__('programme_lastgood80').positive(event,previous):return dict(code=terminal80,source='placeholder')
   if value.get('code') in ('QUEUED','RUNNING') and __import__('programme_image69').eligible(previous,event):return previous
   if art.get('code') in ('READY','READY_STALE') and art.get('source') not in (None,'','placeholder') and art.get('image'):
-   if art.get('until',0)<=time.time():return __import__('programme_lastgood80').choose(event,dict(code='CACHE_MISMATCH',source='placeholder'),previous)
+   if art.get('until',0)<=time.time():return __import__('programme_lastgood80').choose(event,__import__('programme_revision85').outcome(event,art),previous)
    from programme_image69 import eligible
-   if not eligible(art,event):return __import__('programme_lastgood80').choose(event,dict(code='CACHE_MISMATCH',source='placeholder'),previous)
+   if not eligible(art,event):return __import__('programme_lastgood80').choose(event,__import__('programme_revision85').outcome(event,art),previous)
    return dict(art,status68=value['code'])
   if __import__('programme_lastgood80').positive(event,previous):
    return dict(previous,retry_status74=value['code'])
@@ -131,6 +131,8 @@ def mark_seen(tag,policy,now):
   while len(_seen)>256:_seen.pop(next(iter(_seen)))
 
 def drain(cancel=lambda:False):
+ try:__import__('series_requests85').drain(cancel)
+ except (OSError,ValueError,RuntimeError,AttributeError):pass
  try:__import__('programme_reference84').tick(cancel)
  except (OSError,ValueError,RuntimeError,AttributeError):pass
  """Worker-only bounded intake, fair cyclic slots and authoritative re-read."""
@@ -152,6 +154,7 @@ def drain(cancel=lambda:False):
     artifact69=previous69.get('art') or {}
     from programme_policy68 import negative_scope
     from programme_status70 import retry as retry70,valid as valid70
+    if artifact69.get('code') in __import__('programme_revision85').REASONS and artifact69.get('until',0)>time.time():continue
     positive77=artifact69.get('source') not in (None,'','placeholder')
     ready77=not positive77 or __import__('programme_image69').eligible(artifact69,event)
     if ready77 and valid70(previous69) and artifact69.get('until',0)>time.time() and artifact69.get('policy69')==negative_scope({}) and not retry70(event,artifact69) and not __import__('programme_status70').legacy_negative(artifact69):continue
@@ -182,8 +185,14 @@ def drain(cancel=lambda:False):
    current=load(portal,channel,event)
    # No cached-short fallback may override an explicit source/guide binding.
    if current.get('code')!='LOCAL_EVENT' or any(event.get(k) and event.get(k)!=current.get(k) for k in ('canonical','source_key46','fact_revision46')) or event.get('revision') is not None and json.dumps(event['revision'])!=json.dumps(current.get('revision')):
-    code69=current.get('read_code69') or 'CACHE_MISMATCH'
-    status(event,code69,dict(source='placeholder',code=code69,until=time.time()+30))
+    code69=current.get('read_code69') or ('NO_SOURCE_FACTS' if current.get('code')!='LOCAL_EVENT' else 'SOURCE_CHANGED' if any(event.get(k)!=current.get(k) for k in ('canonical','source_key46','fact_revision46')) else 'EVENT_CHANGED')
+    if current.get('code')=='LOCAL_EVENT':
+     request(current,priority=True)
+    else:
+     revised85=load(portal,channel,dict(start=event['start'],stop=event['stop']))
+     if revised85.get('code')=='LOCAL_EVENT':
+      request(revised85,priority=True)
+    status(event,code69,dict(source='placeholder',code=code69,until=time.time()+__import__('programme_revision85').delay(event,code69)))
     mark_seen(tag,policy,now)
     continue
    with _lock:

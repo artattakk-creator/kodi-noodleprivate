@@ -98,6 +98,8 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     from media_sources43 import SourceError
     from programme_sources57 import PROOFS,policy,attempts,trace as source_trace
     from helper_rpc57 import Error as HelperError
+    temp85=__import__('artwork_temp85').lookup(event)
+    if temp85:return temp85
     durable81=__import__('event_art81').prior(event)
     upgrade81=allow_lookup and __import__('event_art81').upgrade(event,durable81)
     if durable81 and not upgrade81:return durable81
@@ -161,6 +163,11 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         else:value['lookup_code56']=reason
         source_trace(event,reason)
     def supplied():
+        mapping85=__import__('programme_mapping85').current(event)
+        if mapping85 and mapping85.get('hidden'):return
+        if mapping85 and mapping85.get('id'):
+            manual85=__import__('programme_candidates85').candidate(event,cancel)
+            if manual85:yield manual85
         yield from candidates  # Exact feed events precede production-level art.
         reference84=__import__('programme_reference84').get(event)
         if reference84 and reference84.get('candidate'):yield dict(reference84['candidate'])
@@ -179,6 +186,9 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
                 if found81:own81.append(found81)
             except (SourceError,HelperError) as exc:
                 __import__('programme_outcomes70').add(value,'tmdb',exc.code,event);failed(exc.code)
+        if not own81:
+            provisional85=__import__('programme_candidates85').suggestion(event)
+            if provisional85:own81.append(provisional85)
         yield from own81
         if not allow_lookup:return
         deferred=[]
@@ -213,7 +223,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         if cancel():return None
         if candidate.get('match') not in ('EXACT_EVENT','EXACT_TITLE_YEAR','EXACT_SEASON_EPISODE','EXACT_UNIQUE_FILM_TITLE')+PROOFS:continue
         trace77(event,'IMAGE_SOURCE_SELECTION','SOURCE_SELECTED')
-        trace77(event,'MATCH_CONFIDENCE','EXACT_MATCH')
+        trace77(event,'MATCH_CONFIDENCE','PROVISIONAL_SUGGESTION' if candidate.get('provisional85') else 'MANUAL_CONFIRMED' if candidate.get('manual85') else 'EXACT_MATCH')
         url=candidate.get('url','')
         if candidate.get('source','').startswith('tmdb_') and candidate.get('role81')=='backdrop':url=url.replace('https://image.tmdb.org/t/p/w500/','https://image.tmdb.org/t/p/w1280/',1)
         if candidate.get('match')=='EXACT_EVENT':
@@ -246,12 +256,13 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             if isinstance(verified77,dict) and verified77.get('url'):url=verified77['url']
         except SourceError as exc:value['code']=exc.code;continue
         if cancel():return None
+        value['mapping_epoch85']=__import__('programme_mapping85').epoch(event)
         value.update(code='READY',source=candidate['source'],match=candidate['match'],
             source_url=url,image=url+OPTIONS,thumbnail=url+OPTIONS,
             attribution=candidate.get('attribution',''),until=min(now+86400,max(now+300,event['stop']+3600)))
         if candidate.get('matched_year56'):value['matched_year56']=candidate['matched_year56']
         if candidate.get('remote_id') or candidate.get('provider_id'):value['provider_id']=candidate.get('remote_id') or candidate['provider_id']
-        for field in ('image_scope57','helper_version57','role81'):
+        for field in ('image_scope57','helper_version57','role81','provisional85','manual85'):
             if candidate.get(field):value[field]=candidate[field]
         if url_mode69:
             from programme_requests68 import identity,scope
@@ -262,7 +273,9 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         note(event,'HTTP_RESPONSE','IMAGE_DECODED' if value.get('decoded77') else 'REFERENCE_VERIFIED')
         trace77(event,'IMAGE_LEASE','BOUND')
         source_trace(event,'IMAGE_URL_VERIFIED')
-        if isinstance(verified77,dict):value=__import__('event_art81').commit(event,value,verified77.get('_body81'))
+        if isinstance(verified77,dict):
+            value=__import__('artwork_temp85').promote(event,value,verified77.get('_body81'))
+            value=__import__('event_art81').commit(event,value,verified77.get('_body81'))
         break
     if not candidates and not allow_lookup:value['code']='AWAITING_BACKGROUND_REFRESH'
     if cancel():return None

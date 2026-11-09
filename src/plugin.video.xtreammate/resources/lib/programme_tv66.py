@@ -9,7 +9,7 @@ def complete84(data,empty=False):
  rows=data.get('results');pages=data.get('total_pages')
  return isinstance(rows,list) and type(pages) is int and pages in ((0,1) if empty else (1,)) and type(data.get('total_results')) is int and data['total_results']==len(rows) and len(rows)<=20 and not(pages==0 and rows)
 
-def candidate(event,cancel=lambda:False):
+def candidate84(event,cancel=lambda:False):
  from utils import setting_bool
  from media_sources43 import TMDB,_tmdb_image,tmdb_token,SourceError
  from tmdb_connection60 import request,ATTRIBUTION
@@ -69,3 +69,7 @@ def candidate(event,cancel=lambda:False):
  url=_tmdb_image(details.get('backdrop_path') or details.get('poster_path'))
  if not url:reject84(event,'SERIES_ART_MISSING');raise SourceError('NO_ARTWORK')
  return dict(url=url,source='tmdb_series',role81='backdrop' if details.get('backdrop_path') else 'poster',match='EXACT_TV_TITLE_YEAR66' if year else 'EXACT_UNIQUE_TV_TITLE66',remote_id=remote,matched_year56=int(actual),image_scope57='series_fallback',attribution='TMDB · https://www.themoviedb.org/tv/'+str(remote)+' · Serienbild (kein Episodenbild) · '+ATTRIBUTION)
+
+
+def candidate(event,cancel=lambda:False):
+ return __import__("programme_candidates85").candidate(event,cancel)

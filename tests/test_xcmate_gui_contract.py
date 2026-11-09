@@ -33,6 +33,8 @@ DIALOG = {
     'ok': lambda heading, message: None,
     'yesno': lambda heading, message, nolabel='', yeslabel='', autoclose=0,
                     defaultbutton=11: None,
+    # Kodi Omega Dialog.h contextmenu takes one list of labels.
+    'contextmenu': lambda list: None,
     'select': lambda heading, list, autoclose=0, preselect=-1, useDetails=False: None,
     'multiselect': lambda heading, options, autoclose=0, preselect=(), useDetails=False: None,
     'input': lambda heading, defaultt='', type=0, option=0, autoclose=0: None,

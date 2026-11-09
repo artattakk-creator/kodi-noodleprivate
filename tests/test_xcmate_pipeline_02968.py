@@ -44,7 +44,7 @@ class Pipeline68(Fixture,unittest.TestCase):
   self.assertEqual(self.b.result(self.event())['code'],'NO_MATCH')
  def test_expired_local_image_is_not_reblessed(self):
   self.b.completed(self.event(),dict(code='READY',source='tmdb_series',image='/synthetic/old.png',until=time.time()-1))
-  self.assertEqual(self.b.result(self.event())['code'],'CACHE_MISMATCH')
+  self.assertEqual(self.b.result(self.event())['code'],'EXPIRED')
  def test_worker_reloads_local_event_and_enqueues_outside_home_start_group(self):
   e=self.event(sid='outside-home');self.b.request(e,priority=True)
   current=dict(e,code='LOCAL_EVENT',key='event',placeholder='/synthetic/placeholder.png')
@@ -60,7 +60,9 @@ class Pipeline68(Fixture,unittest.TestCase):
   wrong=dict(e,code='LOCAL_EVENT',canonical='other')
   with mock.patch('library_index.Reader',return_value=reader),mock.patch('programme_events46.load',return_value=wrong),mock.patch('tmdb_token61.effective_tmdb_read_token',return_value=''),mock.patch('programme_urls55.enqueue') as enqueue:
    self.b.drain()
-  enqueue.assert_not_called();self.assertEqual(self.b.result(e)['code'],'CACHE_MISMATCH')
+  enqueue.assert_not_called();self.assertEqual(self.b.result(e)['code'],'SOURCE_CHANGED')
+  # Current facts are queued as a new intent, never under the stale binding.
+  self.assertTrue(any(json.loads(raw).get('event',{}).get('canonical')=='other' for key,raw in self.properties.items() if 'request.' in key))
  def test_worker_cancellation_never_reads_catalogue(self):
   self.b.request(self.event())
   with mock.patch('library_index.Reader',side_effect=AssertionError('CANCELLED_SQL')):self.assertEqual(self.b.drain(lambda:True),0)

@@ -26,6 +26,10 @@ def fingerprint(event):
   enabled=setting_bool('programme_tmdb46',False)
   values.append('tv-artwork66-v1')
   values.append([enabled,setting_bool('tmdb_research43',False) if enabled else False,__import__('tmdb_token61').token_fingerprint() if enabled else ''])
+ context85=__import__('programme_mapping85').source_scope(event)
+ if context85:values.append(['sources85',context85])
+ epoch85=__import__('programme_mapping85').epoch(event)
+ if epoch85:values.append(['manual85',epoch85])
  return hashlib.sha256(json.dumps(values,sort_keys=True).encode()).hexdigest()
 
 def negative_valid77(event,value):
@@ -257,6 +261,8 @@ def cached(event):
 The producer verified digest/decoder before publication. Workers reverify full
 bytes on startup; directory readers never decode 12 full pictures in RAM.
 """
+ temporary85=__import__('artwork_temp85').published(event)
+ if temporary85:return temporary85
  from programme_requests68 import result as shared69
  value=shared69(event)
  if value.get('until',0)>time.time() and value.get('source')!='placeholder' and __import__('programme_image69').eligible(value,event):return value

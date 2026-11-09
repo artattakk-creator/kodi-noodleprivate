@@ -6,6 +6,8 @@ def key(event):
  from epg_handoff63 import profile_scope
  from epg_events import title_key
  values=[profile_scope()]+[event.get(k) for k in ('pid','sid','canonical','source_key46','epg_source46','start','stop','year','season','episode','subtitle')]+[title_key(event.get('title',''))]
+ epoch=__import__('programme_mapping85').epoch(event)
+ if epoch:values+=['manual85',epoch]
  return hashlib.sha256(json.dumps(values,sort_keys=True).encode()).hexdigest()
 
 def rank(value):
@@ -28,6 +30,7 @@ def prior(event):
  try:
   value=record.get('art81',{})
   if not value or not allowed(value):return None
+  if value.get('mapping_epoch85',0)!=__import__('programme_mapping85').epoch(event):return None
   from programme_requests68 import identity,scope
   from programme_art46 import fingerprint
   return dict(value,image=record['file'],thumbnail=record['file'],key=event['key'],fingerprint=fingerprint(event),scope69=identity(event),profile69=scope(),until=min(record['at']+30*86400,max(time.time()+300,event['stop']+3600)))

@@ -1,7 +1,7 @@
 """Optional TVmaze fallback; exact series identity, never guessed episodes."""
 import re
 from urllib.parse import urlencode,urlsplit
-def candidate(event,cancel=lambda:False):
+def candidate84(event,cancel=lambda:False):
  from utils import setting_bool
  if not setting_bool('programme_tvmaze67',False) or setting_bool('programme_tvmaze_optout77',False):return None
  genre=str(event.get('genre','')).casefold()
@@ -31,3 +31,21 @@ def candidate(event,cancel=lambda:False):
  url=image.get('original','') if isinstance(image,dict) else ''
  if not re.fullmatch(r'https://static\.tvmaze\.com/uploads/images/(?:original_untouched|medium_portrait)/[0-9]+/[0-9]+\.(?:jpg|png)',url):raise SourceError('NO_ARTWORK')
  return dict(url=url,source='tvmaze_series' if scope=='series_fallback' else 'tvmaze_episode',match='EXACT_TVMAZE_ID67',image_scope57=scope,remote_id=identity,matched_year56=int(actual),attribution='TVmaze · https://www.tvmaze.com/shows/'+str(identity)+' · Daten CC BY-SA; Bildrechte beim Rechteinhaber'+(' · Serienbild (kein Episodenbild)' if scope=='series_fallback' else ''))
+
+
+def candidate(event,cancel=lambda:False):
+ from programme_candidates85 import enabled,artifact
+ from media_sources43 import SourceError
+ if not enabled('tvmaze'):return None
+ if type(event.get('season')) is int and type(event.get('episode')) is int:
+  return candidate84(event,cancel)
+ genre=str(event.get('genre') or '').casefold()
+ classified=any(x in genre for x in ('serie','series','sitcom','episode')) or __import__('programme_series84').known(event)
+ if not classified:return None
+ rows,complete=__import__('programme_tvmaze85').search(event,cancel,strict=True)
+ country=str(event.get('country') or '').upper()
+ rows=[r for r in rows if not country or country in r['country']]
+ __import__('programme_candidates85').remember(event,rows,complete,tv_only=True)
+ if not rows:return None
+ if not complete or len(rows)!=1:raise SourceError('NO_MATCH_AMBIGUOUS')
+ return artifact(rows[0],'EXACT_TVMAZE_ID67')
