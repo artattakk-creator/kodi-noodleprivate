@@ -363,7 +363,9 @@ def enqueue(event,allow_lookup=False,local_image63=False,priority68=False,refere
 
 def _run():
     global _burst68
-    while not _stop.is_set():
+    import xbmc
+    aborted=getattr(xbmc.Monitor(),'abortRequested',lambda:False)
+    while not _stop.is_set() and not aborted():
         with _lock:
             urgent=next((k for k in _queue if k in _urgent68),None)
             if _focus75 in _queue:
@@ -387,7 +389,7 @@ def _run():
                 from epg_handoff63 import profile_scope
                 from programme_requests68 import status,completed
                 deadline69=time.monotonic()+45
-                stopped69=lambda:_stop.is_set() or len(job)>3 and job[3]!=profile_scope()
+                stopped69=lambda:_stop.is_set() or aborted() or len(job)>3 and job[3]!=profile_scope()
                 cancelled=lambda:stopped69() or time.monotonic()>deadline69
                 if cancelled():continue
                 if len(job)>4 and job[4]:

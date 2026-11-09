@@ -123,7 +123,10 @@ def _references82(portal,kind,rows):
 def _run():
  global _fatal82
  from artwork_health82 import Deferred,defer,note,status,guard
- while not _stop.is_set():
+ import xbmc
+ aborted=getattr(xbmc.Monitor(),'abortRequested',lambda:False)
+ cancelled=lambda:_stop.is_set() or aborted()
+ while not cancelled():
   job=None;queued=False;local_only=False;now=time.time()
   for tag,(until,code,candidate) in list(_deferred82.items()):
    released=code in ('DB_PAUSED','DB_MANUAL_PAUSE') and status()['code']=='READY'
@@ -142,8 +145,8 @@ def _run():
    _references82(portal,kind,rows)
    if local_only:continue
    guard()
-   __import__('render_cache81').prepare(portal,kind,rows,_stop.is_set)
-   __import__('media_hero81').prepare(portal,kind,rows,_stop.is_set)
+   __import__('render_cache81').prepare(portal,kind,rows,cancelled)
+   __import__('media_hero81').prepare(portal,kind,rows,cancelled)
    note('RECOVERED',pending=len(_pending))
   except (sqlite3.Error,OSError) as error:
    pause=defer(error)

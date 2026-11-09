@@ -23,6 +23,11 @@ class Viewport84(Fixture,unittest.TestCase):
   import programme_session69
   with mock.patch('artwork_display84.metadata_allowed',return_value=False),mock.patch('programme_writes69.permit',side_effect=AssertionError('optional persist retried')):
    for _ in range(100):self.assertFalse(programme_session69.flush())
+ def test_kodi_abort_stops_existing_artwork_and_programme_worker_loops(self):
+  import types
+  with mock.patch('xbmc.Monitor',return_value=types.SimpleNamespace(abortRequested=lambda:True)),mock.patch('programme_transport77.verified',side_effect=AssertionError('fetch after abort')):
+   importlib.import_module('widget_assets69')._run()
+   importlib.import_module('programme_urls55')._run()
  def test_readonly_inventory_counts_only_files_without_following_links(self):
   from artwork_inventory84 import measure
   target=self.folder/'media_art_v1';target.mkdir();(target/'one.img').write_bytes(b'12345')
