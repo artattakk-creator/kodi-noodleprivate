@@ -20,7 +20,7 @@
 </addon>
 <addon id="plugin.video.xtreammate"
        name="XCMate"
-       version="0.1.29.82"
+       version="0.1.29.83"
        provider-name="GS Media">
 
   <requires>
@@ -57,7 +57,7 @@
     <forum>https://forum.kodi.tv</forum>
     <website>https://kodi.tv</website>
     <source>https://github.com/artattakk-creator/kodi-noodleprivate</source>
-    <news>0.1.29.82: Artwork-Worker behandelt Datenbankpausen kontrolliert und setzt nach Freigabe fort. Bereits vorhandene Kodi-Bilder ohne neue Bildkopie nutzen; Film- und Serienreihen früh aus gespeicherten Daten veröffentlichen. Speicherdiagnose mit Zielvolume, tatsächlichen Kapazitätswerten und geschütztem Schreibtest. Reserven, Token, Profile, EPG, persönliche Widgets und vorhandene Bilddateien bleiben erhalten. Kein automatischer Speicherumzug. Android-Abnahme ausstehend.</news>
+    <news>0.1.29.83: Eigene Auswahl für internen Android-Speicher. Quelle und Ziel vor jedem Schreibtest vergleichen; gleicher oder unklarer Speicherpool blockiert die Migration. Bestätigter 4-KiB-Test, bestehendes Kopier-/SHA256-/Anzeigejournal und begrenzte SQLite-BUSY-Wiederholungen. Verständliche Rechte-/Reservefehler. Originalbilder, Token, EPG und Kodi-Einstellungen bleiben erhalten. Keine SAF-Rechteumgehung. Android-Abnahme ausstehend.</news>
     <assets>
       <icon>icon-81da1003a2753ec6.png</icon>
       <fanart>resources/media/lightweight_splash.jpg</fanart>
