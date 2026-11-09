@@ -5,6 +5,8 @@ from functools import lru_cache
 @lru_cache(maxsize=1)
 def hooks84():return json.loads((Path(__file__).parent/'fixtures/xcmate_02984_reviewed_hooks.json').read_text())['modules']
 def without_stabilization84(source,module):
+    from stabilization_contract_02985 import without_stabilization85
+    source=without_stabilization85(source,module)
     binary=isinstance(source,bytes);raw=source if binary else source.encode()
     for path,delta in hooks84().items():
         if path==str(module) or path.endswith('/'+str(module).removesuffix('.py')+'.py'):
