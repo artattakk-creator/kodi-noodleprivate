@@ -1,4 +1,4 @@
-name: XCMate 82 native Home and review
+name: XCMate cumulative native Home and review
 on:
   pull_request:
     branches: [main]
@@ -47,6 +47,7 @@ jobs:
           python -m unittest discover -s tests -p '*02980.py' -v
           python -m unittest discover -s tests -p '*02981.py' -v
           python -m unittest discover -s tests -p '*02982.py' -v
+          python -m unittest discover -s tests -p '*02983.py' -v
       - name: Verify review ZIP exactly matches source
         run: |
           python tools/package_xcmate71.py "${{ runner.temp }}/package75"

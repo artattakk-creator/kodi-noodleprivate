@@ -1,3 +1,12 @@
+0.1.29.83
+- Eigener Menüpunkt Interner Android-Speicher mit erreichbaren Ordnern statt /storage-Fallback.
+- Schreibfreie Mount-/Device-/Kapazitätsprüfung; gleicher oder unklarer Pool blockiert.
+- Bestätigter 4-KiB-Test im eigenen Zielnamespace; keine Android-SAF-Rechteumgehung.
+- Kopierjournal, SHA256, bestätigte Bildanzeige und sichere Wiederaufnahme erhalten.
+- SQLite-BUSY begrenzt behandeln; Rechte-, Reserve- und Renderfehler verständlich anzeigen.
+- Originale, Profile, EPG, Token, Widgets und Installer .5.26 unverändert erhalten.
+- ANDROID_NOT_TESTED; kein automatischer Merge und keine Veröffentlichung.
+
 0.1.29.82
 - Artwork-Worker respektiert Datenbankpausen, bleibt aktiv und setzt kontrolliert fort.
 - Vorhandene Kodi-Texturen ohne Bildkopie und ohne Artwork-DB wiederverwenden.

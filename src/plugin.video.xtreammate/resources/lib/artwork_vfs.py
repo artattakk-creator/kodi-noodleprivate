@@ -29,7 +29,7 @@ def target_root(value):
         if parsed.scheme!='smb' or not parsed.hostname or not parsed.path.strip('/'):
             raise StorageFailure('UNSUPPORTED_TARGET')
     elif not os.path.isabs(value):raise StorageFailure('INVALID_TARGET')
-    return value.rstrip('/')
+    return value.rstrip('/') or '/'
 
 
 def image_valid(data):
@@ -143,6 +143,13 @@ class ExternalLocalStorage(LocalArtworkStorage):
     def __init__(self,root,marker):super().__init__(root);self.owner_marker=marker
 
     def availability(self):
+        # Re-check on resume/read, not only while initially preparing a target.
+        # A replaced namespace must not redirect writes into another folder.
+        current=self.root
+        while current and current!='/':
+            if os.path.islink(current):raise StorageFailure('TARGET_SYMLINK')
+            current=os.path.dirname(current)
+        if os.path.islink(self.owner_marker):raise StorageFailure('TARGET_SYMLINK')
         try:
             with open(self.owner_marker,'rb') as stream:return 'AVAILABLE' if stream.read(128)==b'XCMATE_ARTWORK_V1' else 'STORAGE_OFFLINE'
         except OSError:return 'STORAGE_OFFLINE'
@@ -191,6 +198,11 @@ def prepare_target(target,profile):
     else:
         # Never create an absent mount: require the user-selected root to exist.
         if not os.path.isdir(target) or os.path.islink(target):raise StorageFailure('STORAGE_OFFLINE')
+        # A pre-existing profile namespace without our marker is not ours.
+        # Refuse before creating any sibling folder or adopting foreign files.
+        if not os.path.lexists(storage.owner_marker):
+            if any(os.path.lexists(backend_for(target,profile,kind).root) for kind in ('media','logos','fanart')):
+                raise StorageFailure('TARGET_COLLISION')
         for kind in ('media','logos','fanart'):
             path=backend_for(target,profile,kind).root
             current=path
