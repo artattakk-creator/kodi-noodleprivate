@@ -61,7 +61,8 @@ def fixture_pids84():
     for path in Path('/proc').iterdir():
         if not path.name.isdigit():continue
         try:
-            if (path/'cmdline').read_bytes().split(b'\0')[0]==b'/usr/lib/x86_64-linux-gnu/kodi/kodi.bin':found.add(path.name)
+            args84=(path/'cmdline').read_bytes().split(b'\0')
+            if args84[0]==b'/usr/lib/x86_64-linux-gnu/kodi/kodi.bin' and b'--standalone' in args84:found.add(path.name)
         except OSError:continue
     return found
 old_pids84=fixture_pids84()

@@ -101,6 +101,17 @@ for kind,control,hero_color,rail_color in (('live',2510,(20,80,130),(25,100,160)
   pump();xbmc.sleep(100)
  home.setFocusId(control);home.getControl(control).selectItem(0)
  for _ in range(60):pump();xbmc.sleep(50)
+ # Native SkinReload and texture fades are asynchronous; a splash frame
+ # never counts as a missing or successfully rendered programme picture.
+ stable84=None;stable_at84=time.monotonic()
+ for _ in range(600):
+  pump();xbmc.sleep(50)
+  observed84=(xbmcgui.getCurrentWindowId(),xbmcgui.getCurrentWindowDialogId(),home.getFocusId(),xbmc.getInfoLabel('Container('+str(control)+').ListItem.Property(XCMate.MediaId)'),xbmc.getInfoLabel('Container('+str(control)+').ListItem.Art(poster)'))
+  ready84=observed84[0]==10000 and observed84[1] in (0,-1,9999) and observed84[2]==control and observed84[3]=='0' and bool(observed84[4]) and not home.getProperty('StartupMask') and not xbmc.getCondVisibility('Window.IsVisible(11103)')
+  if not ready84:stable84=None;continue
+  if observed84!=stable84:stable84=observed84;stable_at84=time.monotonic();continue
+  if time.monotonic()-stable_at84>=.5:break
+ else:raise RuntimeError('NATIVE84_RECEIVER_NOT_SETTLED '+repr(observed84[:4]))
  path,rgb=capture('visible84-'+('cold-' if cold else 'warm-')+kind)
  # Inner flat-colour fixture regions avoid text, outlines and overlay gradients.
  def pixels(color,box):
