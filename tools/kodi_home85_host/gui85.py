@@ -8,6 +8,23 @@ base=base.replace('Synthetic Linux Kodi .84','Synthetic Linux Kodi .85')
 base=base.replace('len(read(portal,kind,rows))==24','len(read(portal,kind,rows))>=12')
 base=base.replace('refs=24','refs=len(read(portal,kind,rows))')
 base=base.replace("Path('/root/'+('post75.json' if cold else 'visible84.json')).write_text(json.dumps(report,indent=2))",'')
+# A stable ListItem receipt is not yet a completed native texture upload.
+# Require the same actual pixels on a bounded sequence of complete captures.
+start85=base.index(" path,rgb=capture('visible84-'+('cold-' if cold else 'warm-')+kind)")
+end85=base.index(" # Ask Kodi's real receiver",start85)
+base=base[:start85]+""" picture_started85=time.monotonic()
+ def pixels(color,box):
+  return sum(max(abs(a-b) for a,b in zip(pixel,color))<=8 for pixel in rgb.crop(box).getdata())
+ for paint85 in range(24):
+  pump();xbmc.sleep(200)
+  path,rgb=capture('visible84-'+('cold-' if cold else 'warm-')+kind+'-frame-'+str(paint85))
+  hero_pixels=pixels(hero_color,(300,50,1100,520));rail_pixels=pixels(rail_color,(275,540,480,1040))
+  if hero_pixels>3000 and rail_pixels>1500:break
+ else:
+  check(hero_pixels>3000,('HERO84_PIXELS_MISSING',kind,hero_pixels))
+  check(rail_pixels>1500,('RAIL84_PIXELS_MISSING',kind,rail_pixels))
+"""+base[end85:]
+base=base.replace("cases.append(dict(kind=kind,items=", "cases.append(dict(picture_wait_ms=int((time.monotonic()-picture_started85)*1000),kind=kind,items=")
 exec(compile(base,'/base_gui84.py','exec'),globals())
 # Then scroll to the second viewport: all 24 titles remain in the native row,
 # only the newly visible sources are admitted, and the selected tile stays put.
