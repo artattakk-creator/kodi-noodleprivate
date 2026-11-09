@@ -72,6 +72,9 @@ class Cache:
   check(len(body)+65536)  # caller measures the exact target, preserving reserves
   with writing(timeout=.1):
    self.checked(create=True);self.recover();entries=self.index();files=self.files();now=self.clock();digest=hashlib.sha256(body).hexdigest();name=digest+('.png' if body.startswith(b'\x89PNG') else '.jpg')
+   # A matching content hash proves bytes, not ownership. Only our exact
+   # index/journal may grant deletion rights; never adopt an unknown file.
+   if name in files and (not isinstance(entries.get(digest),dict) or entries[digest].get('file')!=name):raise Unavailable('TEMP_UNOWNED_FILE')
    for key,record in list(entries.items()):
     if not isinstance(record,dict) or not isinstance(record.get('pins',{}),dict):raise Unavailable('INVALID_TEMP_INDEX')
     if record.get('file') not in files:
@@ -130,6 +133,7 @@ class Cache:
    stat=candidate.stat()
    if candidate==part and (stat.st_dev!=item.get('dev') or stat.st_ino!=item.get('ino')):raise Unavailable('TEMP_JOURNAL_OWNER_CHANGED')
    if stat.st_size==item.get('size') and 0<stat.st_size<=3*1024*1024 and hashlib.sha256(candidate.read_bytes()).hexdigest()==digest:
+    if stat.st_dev!=item.get('dev') or stat.st_ino!=item.get('ino'):raise Unavailable('TEMP_JOURNAL_OWNER_CHANGED')
     __import__('media_sources43').validate_image(candidate.read_bytes())
     if candidate==part:os.replace(part,destination)
     entries=self.index();entries[digest]=item['record'];raw=json.dumps(dict(format=1,entries=entries),separators=(',',':')).encode()

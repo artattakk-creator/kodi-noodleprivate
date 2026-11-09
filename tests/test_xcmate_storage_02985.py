@@ -48,6 +48,19 @@ class Storage85(Fixture,unittest.TestCase):
   with self.assertRaises(OSError):self.module.Cache(self.cache.root,max_objects=1,clock=lambda:self.now85).put(self.png(2))
   self.assertEqual(foreign.read_bytes(),self.png(9))
 
+ def test_identical_foreign_hash_file_is_not_adopted_then_evicted(self):
+  import hashlib
+  old=self.cache.put(self.png(1));body=self.png(7);digest=hashlib.sha256(body).hexdigest()
+  foreign=self.cache.root/(digest+'.png');foreign.write_bytes(body)
+  with self.assertRaisesRegex(OSError,'TEMP_UNOWNED_FILE'):self.cache.put(body)
+  self.assertEqual(foreign.read_bytes(),body);self.assertEqual(Path(old['file']).read_bytes(),self.png(1))
+  self.assertNotIn(digest,self.cache.index())
+  self.now85+=2*86400
+  with self.assertRaisesRegex(OSError,'TEMP_UNOWNED_FILE'):self.cache.put(body)
+  self.assertNotIn(digest,self.cache.index());self.assertEqual(foreign.read_bytes(),body)
+  with self.assertRaises(OSError):self.module.Cache(self.cache.root,max_objects=1,clock=lambda:self.now85).put(self.png(8))
+  self.assertEqual(foreign.read_bytes(),body)
+
 class State85(Fixture,unittest.TestCase):
  def setUp(self):super().setUp();self.loading=importlib.import_module('home_loading85')
  def test_empty_only_after_successful_catalogue_read_not_offline_or_locked(self):

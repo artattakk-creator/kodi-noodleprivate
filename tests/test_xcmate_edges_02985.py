@@ -24,6 +24,13 @@ class Edge85(Fixture,unittest.TestCase):
   (c.root/'pending85.json').write_text(json.dumps(dict(file=target.name,temp='.body85-original',sha256='a'*64,size=len(self.png()),record={})))
   with self.assertRaisesRegex(OSError,'HASH_CHANGED'):c.recover()
   self.assertEqual(target.read_bytes(),self.png())
+ def test_journal_does_not_adopt_identical_foreign_destination_inode(self):
+  import hashlib
+  c=self.temp.Cache(self.folder/'new85');c.checked(create=True);body=self.png();digest=hashlib.sha256(body).hexdigest()
+  part=c.root/'.body85-original';part.write_bytes(body);owned=part.stat();target=c.root/(digest+'.png');target.write_bytes(body)
+  pending=c.root/'pending85.json';pending.write_text(json.dumps(dict(file=target.name,temp=part.name,dev=owned.st_dev,ino=owned.st_ino,sha256=digest,size=len(body),record=dict(file=target.name,size=len(body),until=self.now+1000,pins={}))))
+  with self.assertRaisesRegex(OSError,'OWNER_CHANGED'):c.recover()
+  self.assertEqual(target.read_bytes(),body);self.assertEqual(part.read_bytes(),body);self.assertTrue(pending.exists());self.assertNotIn(digest,c.index())
  def test_repeated_unowned_metadata_crash_files_fail_closed(self):
   c=self.temp.Cache(self.folder/'new85');c.checked(create=True)
   for i in range(3):(c.root/('.txn-crash'+str(i))).write_bytes(b'ownedness unknown')

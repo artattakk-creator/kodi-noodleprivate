@@ -67,3 +67,8 @@ Der Manager darf bei einem falschen EPG-Jahr andere unabhängig verifizierte Wer
 ### Native Abnahme der Testumgebung
 
 Die neue Bildprüfung besteht bei 1080p/720p samt zwei Offline-Neustarts. Die allgemeine 1080p-Cold-Fixture bildet nun die workergebundene Wiederherstellung vorhandener .85-Journalbelege nach, weil sie den echten Dienst deaktiviert. Alle ursprünglichen Farb-/Pixel-/Widget-/Prüfsummenassertionen bleiben bestehen. Details und ausdrücklich noch offene 720p-/Android-Gates stehen im Testbericht und PR-Abschlussstatus. Keine Änderung am installierbaren Add-on durch diese Fixtureanpassung.
+
+
+### Datenintegrität vor Freigabe
+
+Inhaltsgleichheit allein begründet keine Eigentümerschaft: Ein unbekanntes Hash-Objekt wird auch bei exakt passenden Bildbytes niemals nachträglich indiziert. Journal-Wiederaufnahme verlangt die ursprünglich gespeicherte Dateiidentität auch am bereits umbenannten Ziel. Beide Übernahmepfade wurden vor der Korrektur reproduziert und nachher durch gezielte Tests abgesichert. Unbekannte Dateien, fremde Ersatzdateien und deren Inhalte bleiben erhalten; keine automatische Bereinigung eines solchen Konflikts.

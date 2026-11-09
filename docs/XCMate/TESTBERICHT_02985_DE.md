@@ -2,7 +2,7 @@
 
 Stand: 09.11.2026, Europe/Berlin. **Draft, kein Release.**
 
-PR: [#408](https://github.com/artattakk-creator/kodi-noodleprivate/pull/408). Basis: veröffentlichte .84, aktueller main-Dokumentationsstand `b7ab7be88bee6c202f987062798484b18ba0c860`. Der vollständige letzte lokale Lauf erfolgte auf Produktstand `4f6759649abf671dcba1d40fc3f9cb110fc6e29f`, einschließlich des Skin-Bindingfixes. Nachfolgende Commits ergänzen ausschließlich native Testfixtures und diesen Bericht; Add-on-Quellbytes und ZIP bleiben identisch. Die abschließende CI wird im PR dokumentiert.
+PR: [#408](https://github.com/artattakk-creator/kodi-noodleprivate/pull/408). Basis: veröffentlichte .84, aktueller main-Dokumentationsstand `b7ab7be88bee6c202f987062798484b18ba0c860`. Der vollständige letzte lokale Lauf erfolgte auf Produktstand `4f6759649abf671dcba1d40fc3f9cb110fc6e29f`, einschließlich des Skin-Bindingfixes. Nachfolgende Commits ergänzen native Testfixtures und diesen Bericht. Die abschließende Datenintegritätskontrolle fand anschließend zwei reproduzierte Übernahmepfade unjournalierter Dateien; deren zusätzliche Eigentumsprüfungen ändern das Add-on-ZIP. 78 gezielte Tests bestehen danach. Die vollständige neue CI einschließlich der zwei zusätzlichen Fälle wird im PR dokumentiert; die früheren 3.484er-Läufe und nativen Resultate unten sind vor dieser letzten Schutzergänzung gemessene Nachweise, kein vorweggenommener Gesamt-PASS des neuen Builds.
 
 ## Ergebnis und Grenzen
 
@@ -82,8 +82,8 @@ Bei begrenztem Host-Tempvolume ausschließlich `SQLITE_TMPDIR` auf ausreichend g
 
 ## Reproduzierbarer Build
 
-- Version: `0.1.29.85`, **801 Dateien, 3.561.826 Bytes**.
-- SHA256: `c50c2cf4a9883afd414960c1c3ed7fe8677a9a89187cbd5f79a77d14409e8477`.
+- Version: `0.1.29.85`, **801 Dateien, 3.561.933 Bytes**.
+- SHA256: `9efd5fe6c4078a9fe32af67d582c256a7a22de5033ed491bd5b8662904fe752a`.
 - [ZIP / Prüfsumme / Anleitung](test-builds/02985/README_DE.md).
 - [Implementierung](IMPLEMENTIERUNG_02985_DE.md), [Issue-Matrix](ISSUE_MATRIX_02985_DE.md), [Android-Abnahmeplan](ANDROID_ABNAHME_02985_DE.md).
 - Keine automatische Installation, kein Merge, keine Veröffentlichung. .84 bleibt nutzbare Rückfallbasis ohne Downgrade-Empfehlung.
@@ -112,3 +112,12 @@ Der allgemeine Kaltstart hatte `COLD79_ACTUAL_HERO_TEXTURE_WRONG` gemeldet. In d
 Die optionalen direkten Python-ListItem-Art-Patches waren im getesteten nativen DirectoryProvider nicht verfügbar (`applied=false`). Der vorhandene Reload-Hook-Fallback besteht; Fokus wird über die tatsächliche Medien-ID geprüft. Dies wird nicht als nativer Direktpatch-PASS umgedeutet.
 
 Die archivierte .72-CI scheiterte einmal vor dem Kodi-Start am Docker-Imagebuild, bei zuvor erfolgreichen 41 Funktionstests. Ein gezielter Job-Neustart bestand. Dieser Infrastrukturversuch ist kein verschwiegener Produkt-Test-PASS.
+
+## Letzte Bestandsschutzergänzung – keine Übernahme fremder Dateien
+
+Zwei neue Tests reproduzierten vor der Korrektur tatsächlich fehlende Eigentumsprüfungen:
+
+1. Eine unbekannte, aber inhaltsidentische SHA256-benannte Datei im bereits markierten eigenen Cache konnte durch `put()` nachträglich in den Index übernommen werden. Danach wäre sie regulär löschbar gewesen. .85 weist sie jetzt vor jeglicher Bereinigung als `TEMP_UNOWNED_FILE` zurück. Vorhandene Datei und Index bleiben erhalten.
+2. Bei der Wiederaufnahme eines eigenen Transferjournals konnte ein inhaltsidentisches Ziel mit anderer Geräte-/Inodeidentität übernommen werden. .85 verlangt nun auch nach dem Rename dieselbe verzeichnete Dateiidentität. Bei Abweichung bleibt die Datei samt Journal unangetastet; `TEMP_JOURNAL_OWNER_CHANGED` blockiert kontrolliert. Die positive Wiederaufnahme eines echten eigenen Rename-Abbruchs besteht weiterhin.
+
+Beide Regressionstests wurden zuerst mit FAIL reproduziert und bestehen nach der Korrektur. Zusammen mit den bisherigen A/B-/Grenzfall-/Scope-Tests **78 PASS in 4,524 s**. Die vorherigen ZIP-Hashes `021689b4…` und `c50c2cf4…` sind überholt; aktueller Hash steht oben. Vollständiger aktueller Host-/CI-Abschluss folgt im PR. Keine bestehenden Nutzerdaten wurden für diese Tests verwendet oder verändert.
