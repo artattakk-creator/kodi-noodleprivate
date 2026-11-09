@@ -131,6 +131,8 @@ def mark_seen(tag,policy,now):
   while len(_seen)>256:_seen.pop(next(iter(_seen)))
 
 def drain(cancel=lambda:False):
+ try:__import__('programme_reference84').tick(cancel)
+ except (OSError,ValueError,RuntimeError,AttributeError):pass
  """Worker-only bounded intake, fair cyclic slots and authoritative re-read."""
  global _cursor
  from programme_urls55 import enqueue

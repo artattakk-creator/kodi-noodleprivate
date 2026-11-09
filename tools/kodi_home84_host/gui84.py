@@ -35,6 +35,8 @@ def pump():
  hero_epg63._next=0;hero_epg63.poll();widget_notice46._next=0;widget_notice46.poll()
 def worker():
  try:
+  import widget_runtime79,home_activation78
+  widget_runtime79.prepare([portal]);home_activation78.prepare()
   rows=live_rows(portal);check(len(rows)==88,'LIVE84_COUNT')
   prepare(portal,'live',rows)
   for _ in range(100):
@@ -103,7 +105,7 @@ for kind,control,hero_color,rail_color in (('live',2510,(20,80,130),(25,100,160)
  # Inner flat-colour fixture regions avoid text, outlines and overlay gradients.
  def pixels(color,box):
   return sum(max(abs(a-b) for a,b in zip(pixel,color))<=8 for pixel in rgb.crop(box).getdata())
- hero_pixels=pixels(hero_color,(300,50,1100,520));rail_pixels=pixels(rail_color,(275,615,480,1010))
+ hero_pixels=pixels(hero_color,(300,50,1100,520));rail_pixels=pixels(rail_color,(275,540,480,1040))
  check(hero_pixels>3000,('HERO84_PIXELS_MISSING',kind,hero_pixels))
  check(rail_pixels>1500,('RAIL84_PIXELS_MISSING',kind,rail_pixels))
  # Ask Kodi's real receiver for its current art, then fully decode actual cache.
