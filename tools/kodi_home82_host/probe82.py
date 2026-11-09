@@ -56,7 +56,20 @@ assert rpc('Settings.SetSettingValue', dict(setting='lookandfeel.skin', value='s
 # Kodi's JSON-RPC changes the saved skin setting without executing the GUI
 # skin selector. A real restart applies that saved choice in this disposable
 # profile; no production add-on restart/skin switch is introduced.
+def fixture_pids84():
+    found=set()
+    for path in Path('/proc').iterdir():
+        if not path.name.isdigit():continue
+        try:
+            if (path/'cmdline').read_bytes().split(b'\0')[0]==b'/usr/lib/x86_64-linux-gnu/kodi/kodi.bin':found.add(path.name)
+        except OSError:continue
+    return found
+old_pids84=fixture_pids84()
 rpc('Application.Quit')
+for _ in range(300):
+    if not fixture_pids84().intersection(old_pids84):break
+    time.sleep(.1)
+else:raise RuntimeError('SYNTHETIC84_PREVIOUS_KODI_NOT_EXITED')
 time.sleep(2)
 for _ in range(150):
     try:

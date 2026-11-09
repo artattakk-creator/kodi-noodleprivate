@@ -100,4 +100,8 @@ def logo_reference(props):
     if not portal:return ''
     row=dict(sid=str(sid),cover=source,kind='live')
     if tag!=identity(portal,'live',row,'poster',source):return ''
-    return uri if read(portal,'live',[row]).get(str(sid),{}).get('poster')==uri else ''
+    current=read(portal,'live',[row]).get(str(sid),{}).get('poster','')
+    # A decoded exact-source Kodi file survives the short remote lease and
+    # remains the fast offline logo until the correct event image is ready.
+    if __import__('os').path.isabs(current):return current
+    return uri if current==uri else ''

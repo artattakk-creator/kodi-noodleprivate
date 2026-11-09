@@ -166,6 +166,17 @@ class Recovery84(Fixture,unittest.TestCase):
  def test_texture_decode_failure_is_not_promoted_to_a_local_picture(self):
   from widget_cache82 import decoded
   with mock.patch('widget_cache79.permitted',return_value=False):self.assertIsNone(decoded(dict(cachedurl='/unapproved/foreign.png'),'https://images.example.org/p.png'))
+ def test_expired_remote_logo_uses_verified_exact_kodi_file_without_reload(self):
+  from PIL import Image
+  row=dict(self.rows[0],kind='live');self.approve('live',[row]);uri=self.assets.read(self.portal,'live',[row])['0']['poster']
+  props={'XCMate.PortalId':self.portal['id'],'XCMate.MediaId':'0','XCMate.ProgrammeLogo46':uri,'XCMate.LogoProof84':self.display.logo_proof(self.portal,row,uri)}
+  picture=self.folder/'cached-logo.png';Image.new('RGB',(160,80),(20,100,150)).save(picture)
+  from widget_cache82 import remember
+  st=picture.stat();record=dict(file=str(picture),source=row['cover'],sha256='a'*64,stamp=[st.st_mtime_ns,st.st_size],state='POSITIVE_LOCAL')
+  remember(self.portal,'live',row,'poster',row['cover'],record)
+  with mock.patch('widget_cache79.permitted',return_value=True),mock.patch('time.time',return_value=time.time()+31),mock.patch('socket.getaddrinfo',side_effect=AssertionError('offline GUI DNS')):
+   self.assertEqual(self.display.logo_reference(props),str(picture))
+   props['XCMate.MediaId']='different';self.assertEqual(self.display.logo_reference(props),'')
  def test_cold_event_recovers_only_its_exact_xmltv_texture_without_network_or_db(self):
   import io
   from PIL import Image

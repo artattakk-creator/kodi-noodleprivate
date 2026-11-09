@@ -17,7 +17,20 @@ if current['currentwindow']['id']==10100 and current['currentcontrol']['label']=
 for addon in ('plugin.video.xtreammate','script.skinshortcuts','skin.titan.bingie.mod','script.xcmate.guicontract59'):rpc('Addons.SetAddonEnabled',{'addonid':addon,'enabled':True})
 rpc('Files.GetDirectory',{'directory':'plugin://plugin.video.xtreammate/?fixture59=seed','media':'files'})
 assert rpc('Settings.SetSettingValue',{'setting':'lookandfeel.skin','value':'skin.titan.bingie.mod'})
-rpc('Application.Quit');time.sleep(2)
+def fixture_pids84():
+    found=set()
+    for path in Path('/proc').iterdir():
+        if not path.name.isdigit():continue
+        try:
+            if (path/'cmdline').read_bytes().split(b'\0')[0]==b'/usr/lib/x86_64-linux-gnu/kodi/kodi.bin':found.add(path.name)
+        except OSError:continue
+    return found
+old_pids84=fixture_pids84()
+rpc('Application.Quit')
+for _ in range(300):
+    if not fixture_pids84().intersection(old_pids84):break
+    time.sleep(.1)
+else:raise RuntimeError('SYNTHETIC84_PREVIOUS_KODI_NOT_EXITED');time.sleep(2)
 for _ in range(150):
  try:rpc('JSONRPC.Ping');break
  except Exception:time.sleep(.2)
