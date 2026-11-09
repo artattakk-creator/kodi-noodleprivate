@@ -101,6 +101,13 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     durable81=__import__('event_art81').prior(event)
     upgrade81=allow_lookup and __import__('event_art81').upgrade(event,durable81)
     if durable81 and not upgrade81:return durable81
+    pressure84=__import__('artwork_display84').observe()
+    if url_mode69 and pressure84:
+        renewed84=__import__('programme_display84').recover(event) or __import__('programme_display84').renew(event)
+        if renewed84:
+            from programme_session69 import remember as remember84
+            remember84(event,renewed84,update=True)
+            return renewed84
     if url_mode69:
         from programme_session69 import get as session69
         prior69=session69(event)
@@ -261,6 +268,8 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         if durable81:return durable81
         value['negative_scope68']=negative68
     if url_mode69:
+        if pressure84 and value.get('url_version55') and value.get('source')!='placeholder':
+            value=__import__('programme_display84').remember(event,value)
         from programme_session69 import remember as session_save69,persist as persist69
         value=session_save69(event,value)
         value=persist69(event,value)

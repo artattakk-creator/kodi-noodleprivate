@@ -37,6 +37,7 @@ def prepare(pid,rows,kind=None):
     from media_art import sources,request
     request(rows,priority=0)
     if persistent():return
+    if not __import__('artwork_display84').metadata_allowed():return
     from artwork_visible import public_dns,syntactic,KODI_OPTIONS,_dns_cache,_lock
     from urllib.parse import urlsplit
     values=read(pid,kind);now=time.time();values={k:v for k,v in values.items() if isinstance(v,dict) and v.get('until',0)>now}
@@ -60,6 +61,8 @@ def prepare(pid,rows,kind=None):
     while len(_cursor80)>32:_cursor80.pop(next(iter(_cursor80)))
     values=dict(list(values.items())[-(512 if kind=='live' else 96):]);data=json.dumps(values).encode()
     if len(data)>MAX_BYTES:return
+    from import_budget import check_space
+    check_space(path(pid,kind),len(data)+65536)
     fd,tmp=tempfile.mkstemp(prefix='.widget-art44-',dir=os.path.dirname(path(pid,kind)))
     try:
         with os.fdopen(fd,'wb') as f:f.write(data)

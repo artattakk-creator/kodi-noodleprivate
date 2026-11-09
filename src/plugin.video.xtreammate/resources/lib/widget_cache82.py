@@ -68,6 +68,7 @@ def decoded(texture,source):
     except (OSError,ValueError,SourceError):return None
 
 def save(portal,kind,found):
+    if not __import__('artwork_display84').metadata_allowed():return
     from widget_cache79 import path,load,LIMIT
     from profile_transaction import writing
     from import_budget import check_space

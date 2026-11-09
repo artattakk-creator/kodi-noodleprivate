@@ -23,11 +23,14 @@ def signature(portal,rows):
         except OSError:stamp=None
         digest.update(repr(stamp).encode())
     digest.update(json.dumps([policy(portal,'live'),int(time.time()//60),
-        getattr(programme_art46,'_visual_revision47',0),getattr(programme_assets47,'_visual_revision47',0),programme_art46.fingerprint({})]).encode())
+        getattr(programme_art46,'_visual_revision47',0),getattr(programme_assets47,'_visual_revision47',0),__import__('widget_assets69').revision(),programme_art46.fingerprint({})]).encode())
     return digest.hexdigest()
 
 
 def publish(portal,kind,rows,code='READY'):
+    if code in ('READY','CACHE','READ_ONLY') and rows and __import__('artwork_display84').enabled():
+        from widget_readonly56 import publish as readonly84
+        return readonly84(portal,kind,rows)
     if code=='READ_ONLY' and rows:
         from widget_readonly56 import publish as readonly
         return readonly(portal,kind,rows)

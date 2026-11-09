@@ -42,6 +42,7 @@ def note(pid, kind, stage, code='READY', **counts):
 
 
 def save(pid,kind,stage,value):
+    if not __import__('artwork_display84').metadata_allowed():return
     from programme_assets47 import writer
     from programme_index46 import encoded
     db=None

@@ -1,3 +1,13 @@
+0.1.29.84
+- Sichere Anzeige-Referenzen trotz blockierter optionaler Artwork-Archivierung.
+- Keine automatische Modusänderung und keine Absenkung von Speicherreserven.
+- Startsender und erste fünf Logos vor dem Rest der Startgruppe prüfen.
+- Genaues EPG-Ereignis, Konto, Profil und Quelle binden kurzlebige HTTPS-Anzeigereferenzen.
+- Nach Neustart vorhandene Kodi-Texturen vollständig dekodieren und quellengenau wiederverwenden.
+- Optionale Metadatenwrites bei Reservesperre aussetzen; bestehende Read-only-Widgetwege nutzen.
+- Echte Senderlogos als kenntlich getrenntes Fallback statt falschem Sendungsbild.
+- ANDROID_NOT_TESTED; kein Merge und keine Veröffentlichung ohne neue Freigabe.
+
 0.1.29.83
 - Eigener Menüpunkt Interner Android-Speicher mit erreichbaren Ordnern statt /storage-Fallback.
 - Schreibfreie Mount-/Device-/Kapazitätsprüfung; gleicher oder unklarer Pool blockiert.

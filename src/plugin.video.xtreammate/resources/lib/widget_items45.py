@@ -83,6 +83,8 @@ def describe(portal,kind,row,approved,epg=None,assets47=None):
     if kind=='live':
         from programme_widgets46 import decorate
         value=decorate(value,portal,row,epg or {})
+        from artwork_display84 import logo_proof
+        value['props']['XCMate.LogoProof84']=logo_proof(portal,row,value['props'].get('XCMate.ProgrammeLogo46',''))
     return value
 
 
@@ -90,6 +92,8 @@ def item(value):
     import xbmcgui
     li=xbmcgui.ListItem(value['label'],path=value['url'])
     li.setArt(value['art']);li.setInfo('video',value['info'])
+    __import__('artwork_display84').note(value.get('props',{}).get('XCMate.WidgetKind41',''),'REFERENCE_HANDED',
+        count=sum(__import__('widget_assets69').renderable(v) for v in value['art'].values()))
     for key,text in value['props'].items():li.setProperty(key,str(text))
     if value.get('menus46'):li.addContextMenuItems(value['menus46'])
     return li

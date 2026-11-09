@@ -1,9 +1,10 @@
 """RAM-only GUI notification bridge; all skin/profile/frame IO stays in worker."""
 import hashlib,json,threading,time
 _lock=threading.Lock();_pending={};_hooks={};_seen={};_focus=None;_next=0
+_art_counts84={};_art_seen84={}
 
 
-def prepare(portal,kind,signature,count):
+def prepare(portal,kind,signature,count,art_count84=None):
     from widget_hooks45 import read
     state=read();hooks=[]
     for binding in state.get('bindings',[])[:96]:
@@ -12,6 +13,9 @@ def prepare(portal,kind,signature,count):
     with _lock:
         _hooks[(str(portal['id']),kind)]=hooks
         _pending[(str(portal['id']),kind)]=(signature,count)
+        if type(art_count84) is int:
+            from widget_data41 import policy
+            _art_counts84[(str(portal['id']),kind)]=(policy(portal,kind),max(0,art_count84))
 
 
 def poll():
@@ -46,8 +50,15 @@ def poll():
     now=time.monotonic();window=xbmcgui.Window(10000)
     for hook,values in changes.items():
         signature=hashlib.sha256(json.dumps(sorted(values)).encode()).hexdigest();old=_seen.get(hook)
-        if old and (old[0]==signature or now-old[1]<60):continue
+        newly_visible84=[]
+        if __import__('artwork_display84').enabled():
+            for pid,kind,_,_ in values:
+                scope84,images84=_art_counts84.get((pid,kind),('',0));key84=(hook,pid,kind,scope84)
+                if scope84 and images84>0 and not _art_seen84.get(key84):newly_visible84.append(key84)
+        if old and (old[0]==signature or now-old[1]<60 and not newly_visible84):continue
         window.setProperty(hook,signature);_seen[hook]=(signature,now)
+        for key84 in newly_visible84:_art_seen84[key84]=True
+        while len(_art_seen84)>96:_art_seen84.pop(next(iter(_art_seen84)))
         for _,kind,_,count in values:trace('UPDATED',kind,count)
 
 

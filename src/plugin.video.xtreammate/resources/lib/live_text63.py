@@ -71,7 +71,13 @@ def _hero(props):
     approved69=unpack(props.get('XCMate.ArtProof69',''))
     local=local_image(image) and not '/resources/media/programme46/' in image
     if approved69 and approved69.get('key')==props.get('XCMate.ProgrammeKey47') and approved69.get('image')==image:local=True
-    if not local:image=''
+    logo84=False
+    if not local:
+        logo=props.get('XCMate.ProgrammeLogo46','')
+        logo84=bool(local_image(logo) and '/resources/media/' not in logo)
+        image=logo if logo84 else __import__('artwork_display84').logo_reference(props)
+        logo84=bool(image)
+        local=logo84
     props['XCMate.HeroImage63']=image if local else ''
-    props['XCMate.HeroArtSource63']=props.get('XCMate.ProgrammeArtSource57','') if local else ''
+    props['XCMate.HeroArtSource63']='station_logo' if logo84 else props.get('XCMate.ProgrammeArtSource57','') if local else ''
     props['XCMate.HeroArtCode63']=props.get('XCMate.ProgrammeArtCode46','') if local else 'PENDING_LOCAL_DOWNLOAD' if str(image).startswith(('http://','https://','image://')) else 'NO_IMAGE'

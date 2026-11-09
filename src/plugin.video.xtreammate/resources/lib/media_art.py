@@ -188,6 +188,9 @@ def request(items,priority=0):
     from art_diagnostics import sources as observe_sources
     observe_sources(items,valid_source)
     if not persistent():return
+    # Pause new archive enrolments while the existing worker exposes safe
+    # display-only references. Do not reset jobs, mode, pause choice or files.
+    if __import__('artwork_display84').enabled():return
     with _queue_lock:
         for item in items[:48]:
             rank=-10 if item.get('kind')=='live' and priority<=0 else priority
