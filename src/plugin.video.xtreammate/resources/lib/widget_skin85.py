@@ -16,6 +16,7 @@ def upgrade(files):
  if b'XCMate84.Contract' not in files['xml/IncludesVariables.xml']:return dict(files)
  from widget_skin80 import _node,digest
  from widget_skin50 import edit
+ from widget_skin78 import parse
  known=json.loads((Path(__file__).parents[1]/'bingie85_previous.json').read_text());result=dict(files)
  name='xml/IncludesHomeWidgets.xml';data=result[name];changes=[]
  for title in ('XCMate50.Hero','XCMate80.MediaRow','XCMate81.PosterRow'):
@@ -40,7 +41,7 @@ def upgrade(files):
  result[name]=edit(data,changes)
  name='xml/IncludesVariables.xml';data=result[name];at=data.rfind(b'</includes>')
  # Reuse the existing A/B identity+profile guards, including row fallback.
- proposal=copy.deepcopy(E.fromstring(data).find("variable[@name='XCMate63.ArtSource']"))
+ proposal=copy.deepcopy(parse(data).find("variable[@name='XCMate63.ArtSource']"))
  if proposal is None:raise ValueError('MISSING_85_BANK_TEMPLATE')
  proposal.set('name','XCMate85.Provisional')
  for value in proposal.findall('value'):
@@ -51,7 +52,7 @@ def upgrade(files):
 def verify(files):
  from widget_skin78 import parse
  root=parse(files['xml/IncludesHomeWidgets.xml'])
- if E.fromstring(files['xml/IncludesVariables.xml']).find("variable[@name='XCMate85.Provisional']") is None:raise ValueError('MISSING_85_BANK_LABEL')
+ if parse(files['xml/IncludesVariables.xml']).find("variable[@name='XCMate85.Provisional']") is None:raise ValueError('MISSING_85_BANK_LABEL')
  if root.find(".//control[@id='296885']") is None:raise ValueError('MISSING_85_SUGGESTION_LABEL')
  if b'XCMate.Home85.vod.Text' not in files['xml/IncludesHomeWidgets.xml'] or b'XCMate.Home85.series.Text' not in files['xml/IncludesHomeWidgets.xml']:raise ValueError('MISSING_85_LOADING')
  hero=root.find(".//control[@id='296751']")
