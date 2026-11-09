@@ -1,3 +1,5 @@
+> **Nutzerentscheidung 09.11.2026:** Für Box B ist jetzt die **volle 48-Komponenten-Installation plus Branding** gewünscht; dieses Dokument beschreibt nur den alternativen Minimalaufbau. Die verbindliche [NeoDark3-Vollinstallationsanleitung](HOWTO_GS_MEDIA_KODI_213_VOLLINSTALLATION_48_PLUS_BRANDING_NEODARK3_2026-11-09_DE.md) beginnt mit `https://tinyurl.com/neodark3`, Pilot 1.9.12 und Installer 0.5.26.
+
 # How-to: Kodi 21.3 / Android – XCMate von einer leeren Installation aus neu einrichten
 
 **Stand:** 09.11.2026 · **Status:** veröffentlichte Pakete/Kataloge auf GitHub geprüft; die hier beschriebene **Neuinstallation auf einer zurückgesetzten Android-Testbox wurde noch NICHT praktisch vollständig abgenommen**.  
