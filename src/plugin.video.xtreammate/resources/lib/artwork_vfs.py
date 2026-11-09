@@ -191,6 +191,11 @@ def prepare_target(target,profile):
     else:
         # Never create an absent mount: require the user-selected root to exist.
         if not os.path.isdir(target) or os.path.islink(target):raise StorageFailure('STORAGE_OFFLINE')
+        # A pre-existing profile namespace without our marker is not ours.
+        # Refuse before creating any sibling folder or adopting foreign files.
+        if not os.path.lexists(storage.owner_marker):
+            if any(os.path.lexists(backend_for(target,profile,kind).root) for kind in ('media','logos','fanart')):
+                raise StorageFailure('TARGET_COLLISION')
         for kind in ('media','logos','fanart'):
             path=backend_for(target,profile,kind).root
             current=path

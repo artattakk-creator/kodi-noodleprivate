@@ -5036,3 +5036,99 @@ msgstr "Run a safe write test in the current artwork folder"
 msgctxt "#32799"
 msgid "A new 4 KiB probe file is created, verified and removed within the protected diagnostic budget. Existing pictures, storage targets and reserves remain unchanged. Continue?"
 msgstr "A new 4 KiB probe file is created, verified and removed within the protected diagnostic budget. Existing pictures, storage targets and reserves remain unchanged. Continue?"
+
+msgctxt "#38300"
+msgid "Internal Android storage"
+msgstr "Internal Android storage"
+
+msgctxt "#38301"
+msgid "Source and target storage diagnostics (read only)"
+msgstr "Source and target storage diagnostics (read only)"
+
+msgctxt "#38302"
+msgid "Create an XCMate-owned target folder and a temporary 4 KiB file, read back and verify its SHA256, then remove only that test file? This does not grant Android permissions, activate the target or delete original pictures."
+msgstr "Create an XCMate-owned target folder and a temporary 4 KiB file, read back and verify its SHA256, then remove only that test file? This does not grant Android permissions, activate the target or delete original pictures."
+
+msgctxt "#38303"
+msgid "All sizes are bytes. available is usable by Kodi; free also includes reserved blocks. Equal volume keys mean the same allocation pool. No capacity gain is promised. Programme images, Kodi textures, metadata and databases remain in their existing locations."
+msgstr "All sizes are bytes. available is usable by Kodi; free also includes reserved blocks. Equal volume keys mean the same allocation pool. No capacity gain is promised. Programme images, Kodi textures, metadata and databases remain in their existing locations."
+
+msgctxt "#38310"
+msgid "This folder cannot be listed. Choose an existing, reachable folder; the /storage root is not required."
+msgstr "This folder cannot be listed. Choose an existing, reachable folder; the /storage root is not required."
+
+msgctxt "#38311"
+msgid "The target is read-only or the write failed. Check Kodi access rights and the selected volume. Originals remain unchanged."
+msgstr "The target is read-only or the write failed. Check Kodi access rights and the selected volume. Originals remain unchanged."
+
+msgctxt "#38312"
+msgid "Android denies access, or no reachable shared folder is available. Kodi folder selection does not grant SAF access. This Kodi/Python interface has no verified SAF bridge. Choose a folder already accessible to Kodi; XCMate will not bypass Android permissions."
+msgstr "Android denies access, or no reachable shared folder is available. Kodi folder selection does not grant SAF access. This Kodi/Python interface has no verified SAF bridge. Choose a folder already accessible to Kodi; XCMate will not bypass Android permissions."
+
+msgctxt "#38313"
+msgid "The selected volume is missing or unavailable. Reconnect it and resume the existing transfer; no internal fallback was selected."
+msgstr "The selected volume is missing or unavailable. Reconnect it and resume the existing transfer; no internal fallback was selected."
+
+msgctxt "#38314"
+msgid "Insufficient usable target space after the effective safety reserve. No reserve was disabled and no files were deleted."
+msgstr "Insufficient usable target space after the effective safety reserve. No reserve was disabled and no files were deleted."
+
+msgctxt "#38315"
+msgid "Source and destination share a capacity pool. A different folder provides no extra space; migration was not started."
+msgstr "Source and destination share a capacity pool. A different folder provides no extra space; migration was not started."
+
+msgctxt "#38316"
+msgid "A separate capacity pool could not be verified, or the volume changed. Android FUSE paths and advertised disk sizes alone are insufficient. No migration or capacity gain is claimed."
+msgstr "A separate capacity pool could not be verified, or the volume changed. Android FUSE paths and advertised disk sizes alone are insufficient. No migration or capacity gain is claimed."
+
+msgctxt "#38317"
+msgid "The artwork journal or worker is busy. Limited retries ended; retry the same operation later. Existing transfer records and originals are retained."
+msgstr "The artwork journal or worker is busy. Limited retries ended; retry the same operation later. Existing transfer records and originals are retained."
+
+msgctxt "#38318"
+msgid "Target activation requires full SHA256 verification followed by your confirmation that the copied picture is actually visible in Kodi. Use Verify and display first."
+msgstr "Target activation requires full SHA256 verification followed by your confirmation that the copied picture is actually visible in Kodi. Use Verify and display first."
+
+msgctxt "#38319"
+msgid "Metadata export requires an activated, verified artwork target. This creates descriptive copies only and does not free SQLite or source disk space."
+msgstr "Metadata export requires an activated, verified artwork target. This creates descriptive copies only and does not free SQLite or source disk space."
+
+msgctxt "#38320"
+msgid "The target write test requires explicit confirmation. No target was prepared."
+msgstr "The target write test requires explicit confirmation. No target was prepared."
+
+msgctxt "#38321"
+msgid "The target contains a conflicting file or an unowned profile folder. Select another folder; XCMate will not overwrite these files."
+msgstr "The target contains a conflicting file or an unowned profile folder. Select another folder; XCMate will not overwrite these files."
+
+msgctxt "#38322"
+msgid "Unsafe or linked target path refused. Select a real existing folder without traversal or symbolic links."
+msgstr "Unsafe or linked target path refused. Select a real existing folder without traversal or symbolic links."
+
+msgctxt "#38323"
+msgid "Readback or SHA256 verification failed. The target remains inactive and original pictures are retained. Resume only after checking the target."
+msgstr "Readback or SHA256 verification failed. The target remains inactive and original pictures are retained. Resume only after checking the target."
+
+msgctxt "#38324"
+msgid "The newly created test file could not be removed. No target was activated. Check target permissions before retrying."
+msgstr "The newly created test file could not be removed. No target was activated. Check target permissions before retrying."
+
+msgctxt "#38325"
+msgid "No complete transfer is ready. Select a target, inventory, copy and verify before activation."
+msgstr "No complete transfer is ready. Select a target, inventory, copy and verify before activation."
+
+msgctxt "#38326"
+msgid "Source content changed or failed validation. Originals are retained; resume inventory and verification."
+msgstr "Source content changed or failed validation. Originals are retained; resume inventory and verification."
+
+msgctxt "#38327"
+msgid "Artwork action failed safely. Originals and the chosen storage mode were not deliberately reset. Check the diagnostic code and retry the existing action."
+msgstr "Artwork action failed safely. Originals and the chosen storage mode were not deliberately reset. Check the diagnostic code and retry the existing action."
+
+msgctxt "#38328"
+msgid "The internal migration journal cannot safely grow within the metadata reserve. No database or artwork was moved or deleted. Free space through a separately approved action before resuming."
+msgstr "The internal migration journal cannot safely grow within the metadata reserve. No database or artwork was moved or deleted. Free space through a separately approved action before resuming."
+
+msgctxt "#38329"
+msgid "The artwork journal could not be read or written. Check storage and permissions; do not delete or rebuild the database. Originals remain protected."
+msgstr "The artwork journal could not be read or written. Check storage and permissions; do not delete or rebuild the database. Originals remain protected."

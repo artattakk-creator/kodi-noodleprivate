@@ -55,13 +55,58 @@ def switch(mode,strategy='demand'):
 def _pick():
     import xbmcgui
     from storage_sources import external_sources,kodi_sources
-    dialog=xbmcgui.Dialog();kind=__import__('menu_icons45').select(dialog,tr(35204),[tr(35224),tr(35225)],default='image')
+    dialog=xbmcgui.Dialog();kind=__import__('menu_icons45').select(dialog,tr(35204),[tr(35224),tr(35225),tr(38300)],default='image')
+    if kind==2:
+        target=_pick_android()
+        if target:_prepare(target,shared=True)
+        return None
     if kind not in (0,1):return None
     values=job(lambda cancel,progress:external_sources() if kind==0 else [row for row in kodi_sources() if row['path'].startswith('smb://')]) or []
-    values.append(dict(label=tr(35226),path='/storage/' if kind==0 else 'smb://'))
+    if kind==1:values.append(dict(label=tr(35226),path='smb://'))
+    if not values:
+        from artwork_vfs import StorageFailure
+        raise StorageFailure('TARGET_NOT_BROWSABLE')
     index=__import__('menu_icons45').select(dialog,tr(35204),[v['label'] for v in values],default='image')
     if not 0<=index<len(values):return None
     return dialog.browseSingle(0,tr(35204),'files',defaultt=values[index]['path']) or None
+
+
+def _pick_android():
+    import xbmcgui
+    from android_storage83 import candidates,measure
+    from artwork_vfs import StorageFailure
+    values=job(lambda cancel,progress:candidates()) or []
+    if not values:raise StorageFailure('TARGET_SAF_REQUIRED')
+    dialog=xbmcgui.Dialog()
+    index=__import__('menu_icons45').select(dialog,tr(38300),[row['label'] for row in values],default='image')
+    if not 0<=index<len(values):return None
+    target=dialog.browseSingle(3,tr(38300),'files',defaultt=values[index]['path'])
+    if not target:return None
+    # Listing is no permission grant. A returned URI or vanished mount fails.
+    job(lambda cancel,progress:measure(target,'TARGET',require=True))
+    return target
+
+
+def _prepare(target, shared=False):
+    import xbmcgui
+    import artwork_migration as migration
+    from android_storage83 import preflight
+    dialog=xbmcgui.Dialog()
+    shared=shared or target.startswith(('/storage/emulated/','/sdcard/'))
+    if shared:
+        result=job(lambda cancel,progress:preflight(target))
+        if result is None:return
+        dialog.textviewer(tr(38301),_storage_text(result['rows']))
+        if not dialog.yesno(tr(38300),tr(38302)):return
+    result=job(lambda cancel,progress:migration.begin(target,shared=shared,confirmed=shared))
+    if result is not None:dialog.ok(tr(35200),tr(35216))
+
+
+def _storage_text(rows):
+    import json
+    # Byte-accurate, redacted read-only receipts. No full filesystem paths,
+    # mount sources, tokens, labels, SMB credentials or provider addresses.
+    return tr(38303)+'\n\n'+json.dumps(rows,ensure_ascii=False,indent=2)
 
 
 def _manage():
@@ -72,7 +117,7 @@ def _manage():
     dialog=xbmcgui.Dialog()
     while True:
         value=read()
-        labels=[tr(i) for i in (35201,35202,35203,35204,35205,35206,35207,35208,35209,35210,35211,35212,35213,35232,35700,35701)]
+        labels=[tr(i) for i in (35201,35202,35203,35204,35205,35206,35207,35208,35209,35210,35211,35212,35213,35232,35700,35701,38300,38301)]
         choice=__import__('menu_icons45').select(dialog,tr(35200)+' · '+value['mode'],labels,default='image')
         if choice<0:return
         try:
@@ -88,7 +133,7 @@ def _manage():
                 else:job(lambda cancel,progress:switch(mode))
             elif choice==3:
                 target=_pick()
-                if target:job(lambda cancel,progress:migration.begin(target));dialog.ok(tr(35200),tr(35216))
+                if target:_prepare(target)
             elif choice==4:
                 probe=job(lambda cancel,progress:migration.probe_image())
                 if probe:
@@ -160,14 +205,16 @@ def _manage():
                 if data:
                     import json
                     dialog.textviewer(tr(35701),json.dumps(data,ensure_ascii=False,indent=2))
+            elif choice==16:
+                target=_pick_android()
+                if target:_prepare(target,shared=True)
+            elif choice==17:
+                from android_storage83 import inventory,public
+                rows=job(lambda cancel,progress:public(inventory()))
+                if rows is not None:dialog.textviewer(tr(38301),_storage_text(rows))
         except Exception as error:
-            code=getattr(error,'code','ARTWORK_WRITER_BUSY' if isinstance(error,BlockingIOError) else type(error).__name__)
-            # Fixed code only; no exception strings or private target paths.
-            allowed={'StorageFailure','OSError','OperationalError','PermissionError','WriterBusy','BlockingIOError',
-                     'INVALID_TARGET','TARGET_CREDENTIALS_NOT_ALLOWED','UNSUPPORTED_TARGET','STORAGE_OFFLINE','TARGET_WRITE_FAILED',
-                     'TARGET_COLLISION','IMAGE_VERIFY_FAILED','INVALID_PROFILE_NAMESPACE','TARGET_SYMLINK','NO_TRANSFER','COPY_INCOMPLETE',
-                     'SOURCE_IMAGE_INVALID','SOURCE_CHANGED','CLEANUP_NOT_AUTHORIZED','ARTWORK_ROOT_UNSAFE','ARTWORK_ROOT_CHANGED','ARTWORK_SOURCE_CHANGED','MIGRATION_PENDING','RENDER_NOT_VERIFIED','CLEANUP_NOT_AUTHORIZED','ARTWORK_WRITER_BUSY','METADATA_TARGET_REQUIRED'}
-            dialog.ok(tr(35200),code if code in allowed else 'ARTWORK_OPERATION_FAILED')
+            from artwork_errors83 import show
+            show(error,dialog,choice)
 
 
 def manage():

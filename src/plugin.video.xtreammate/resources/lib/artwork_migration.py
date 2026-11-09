@@ -17,21 +17,50 @@ from artwork_gate import writer,guarded
 KINDS=('media','logos')  # Legacy fanart shares media's URL-hashed directory.
 
 
+class MigrationConnection(sqlite3.Connection):
+    """Retry only a failed SQLite statement/commit, never a whole copy job."""
+    def _bounded(self, method, *args, **kwargs):
+        for attempt in range(3):
+            try:return method(*args, **kwargs)
+            except sqlite3.OperationalError as error:
+                code=getattr(error,'sqlite_errorcode',0) & 255
+                if code not in (5,6) and str(error) not in ('database is locked','database table is locked'):raise
+                if attempt==2:raise StorageFailure('ARTWORK_DB_BUSY') from None
+                time.sleep((.02,.05)[attempt])
+    def execute(self,*args,**kwargs):return self._bounded(super().execute,*args,**kwargs)
+    def commit(self):return self._bounded(super().commit)
+    def __exit__(self,kind,error,traceback):
+        if kind is not None:self.rollback();return False
+        try:self.commit()
+        except Exception:self.rollback();raise
+        return False
+
+
 def path():
     from utils import addon_data_dir
     return os.path.join(addon_data_dir(),'artwork_transfer_v1.sqlite')
 
 
 def _db():
-    from import_budget import check_space
-    check_space(path(),65536)
-    db=sqlite3.connect(path(),timeout=.1);db.row_factory=sqlite3.Row
-    db.executescript('CREATE TABLE IF NOT EXISTS transfers(id TEXT PRIMARY KEY,target TEXT,source TEXT,stage TEXT,rendered INTEGER DEFAULT 0);'
-                    'CREATE TABLE IF NOT EXISTS files(transfer TEXT,kind TEXT,ident TEXT,bytes INTEGER,sha TEXT,status TEXT,PRIMARY KEY(transfer,kind,ident));'
-                    'CREATE TABLE IF NOT EXISTS selected(id TEXT);'
-                    'CREATE TABLE IF NOT EXISTS probes(transfer TEXT,ident TEXT,sha TEXT,PRIMARY KEY(transfer,ident));'
-                    'CREATE TABLE IF NOT EXISTS cleanup(transfer TEXT,kind TEXT,ident TEXT,PRIMARY KEY(transfer,kind,ident));')
-    return db
+    from import_budget import check_space,ReserveBlocked
+    try:check_space(path(),65536)
+    except ReserveBlocked:raise StorageFailure('ARTWORK_JOURNAL_RESERVE_BLOCKED') from None
+    db=sqlite3.connect(path(),timeout=.03,factory=MigrationConnection);db.row_factory=sqlite3.Row
+    try:
+        required={'transfers','files','selected','probes','cleanup'}
+        tables={r[0] for r in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+        # Existing journals are never rebuilt on permission/BUSY errors. Only
+        # the original additive CREATEs are needed for a fresh/legacy journal.
+        if not required.issubset(tables):
+            db.execute('BEGIN IMMEDIATE')
+            for sql in ('transfers(id TEXT PRIMARY KEY,target TEXT,source TEXT,stage TEXT,rendered INTEGER DEFAULT 0)',
+                        'files(transfer TEXT,kind TEXT,ident TEXT,bytes INTEGER,sha TEXT,status TEXT,PRIMARY KEY(transfer,kind,ident))',
+                        'selected(id TEXT)','probes(transfer TEXT,ident TEXT,sha TEXT,PRIMARY KEY(transfer,ident))',
+                        'cleanup(transfer TEXT,kind TEXT,ident TEXT,PRIMARY KEY(transfer,kind,ident))'):
+                db.execute('CREATE TABLE IF NOT EXISTS '+sql)
+            db.commit()
+        return db
+    except Exception:db.close();raise
 
 
 def _selected(db):
@@ -42,7 +71,7 @@ def _selected(db):
 def status():
     if not os.path.isfile(path()):return dict(stage='IDLE',files=0,bytes=0,done=0,done_bytes=0)
     # Read-only status never adopts or repairs source/job databases.
-    db=sqlite3.connect('file:'+__import__('urllib.parse',fromlist=['quote']).quote(path(),safe='/')+'?mode=ro',uri=True,timeout=.05);db.row_factory=sqlite3.Row
+    db=sqlite3.connect('file:'+__import__('urllib.parse',fromlist=['quote']).quote(path(),safe='/')+'?mode=ro',uri=True,timeout=.03,factory=MigrationConnection);db.row_factory=sqlite3.Row
     try:
         item=_selected(db)
         if not item:return dict(stage='IDLE',files=0,bytes=0,done=0,done_bytes=0)
@@ -75,13 +104,33 @@ def _phase(db,item,stage):
     item['stage']=stage
 
 
-def begin(target):
+def _shared_check(item, upcoming=4096):
+    source=json.loads(item['source']);proof=source.get('shared_storage83')
+    if not proof:return
+    from android_storage83 import preflight
+    current=preflight(item['target'],upcoming,source_config=source)
+    if (current['volume'],current['mount_key'])!=(proof['volume'],proof['mount_key']):
+        raise StorageFailure('TARGET_VOLUME_UNVERIFIED')
+
+
+def begin(target, *, shared=False, confirmed=False):
     from artwork_config import initialize,read
     from artwork_vfs import target_root
+    # No marker, journal, settings or directory write before the Android
+    # preflight and explicit probe consent. USB/SMB's established flow stays.
+    proof=None
+    if shared or str(target).startswith(('/storage/emulated/','/sdcard/')):
+        if confirmed is not True:raise StorageFailure('TARGET_PROBE_CONFIRMATION_REQUIRED')
+        from android_storage83 import preflight
+        proof=preflight(target)
     initialize()
     with writer():
         config=read();target='INTERNAL' if target=='INTERNAL' else target_root(target)
-        if target!='INTERNAL':prepare_target(target,config['profile'])
+        if proof:
+            from android_storage83 import probe
+            proof=probe(target,config['profile'],confirmed=confirmed)
+            config=dict(config,shared_storage83=dict(volume=proof['volume'],mount_key=proof['mount_key']))
+        elif target!='INTERNAL':prepare_target(target,config['profile'])
         source=json.dumps(config,sort_keys=True)
         db=_db()
         try:
@@ -99,7 +148,7 @@ def inventory(cancel=lambda:False,progress=lambda **kw:None):
         db=_db();item=_selected(db)
         if not item:db.close();raise StorageFailure('NO_TRANSFER')
         try:
-            _phase(db,item,'INVENTORY');config=json.loads(item['source']);count=0;size=0
+            _shared_check(item);_phase(db,item,'INVENTORY');config=json.loads(item['source']);count=0;size=0
             for kind in KINDS:
                 storage=_source(config,kind)
                 for entry in storage.enumerate_for_migration():
@@ -126,12 +175,15 @@ def copy(cancel=lambda:False,progress=lambda **kw:None):
     with writer():
         db=_db();item=_selected(db)
         try:
+            pending=status()
+            _shared_check(item,max(4096,pending['bytes']-pending['done_bytes']))
             _phase(db,item,'COPYING');config=json.loads(item['source'])
             while True:
                 rows=db.execute("SELECT * FROM files WHERE transfer=? AND status!='VERIFIED' ORDER BY kind,ident LIMIT 16",(item['id'],)).fetchall()
                 if not rows:break
                 for row in rows:
                     if cancel():_phase(db,item,'PAUSED');return status()
+                    _shared_check(item,row['bytes'])
                     data=_source(config,row['kind']).read(row['ident'],MAX_BYTES+1)
                     if len(data)!=row['bytes'] or hashlib.sha256(data).hexdigest()!=row['sha'] or not image_valid(data):raise StorageFailure('SOURCE_CHANGED')
                     destination=_target(item,row['kind'])
@@ -156,7 +208,7 @@ def verify(cancel=lambda:False,progress=lambda **kw:None):
         if not item:db.close();raise StorageFailure('NO_TRANSFER')
         try:
             if item['stage'] not in ('COPIED','VERIFIED','ACTIVE','CLEANUP_PAUSED','CLEANED'):raise StorageFailure('COPY_INCOMPLETE')
-            previous=item['stage'];_phase(db,item,'VERIFYING');config=json.loads(item['source'])
+            previous=item['stage'];_shared_check(item);_phase(db,item,'VERIFYING');config=json.loads(item['source'])
             expected={(r['kind'],r['ident']) for r in db.execute('SELECT kind,ident FROM files WHERE transfer=?',(item['id'],))}
             actual=set()
             for kind in KINDS:
@@ -197,6 +249,7 @@ def activate(cancel=lambda:False,progress=lambda **kw:None):
         try:
             item=_selected(db)
             if not item['rendered']:raise StorageFailure('RENDER_NOT_VERIFIED')
+            _shared_check(item)
             if item['target']=='INTERNAL':choose('internal',strategy='demand')
             else:choose('external',target=item['target'],strategy='demand')
             _phase(db,item,'ACTIVE');return True
