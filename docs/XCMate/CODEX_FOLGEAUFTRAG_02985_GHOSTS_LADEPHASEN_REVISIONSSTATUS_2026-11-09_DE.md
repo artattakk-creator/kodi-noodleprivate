@@ -76,3 +76,61 @@ Aktueller `home_schedule75.py` besitzt intern Phasen `LIVE_HOME_READY`, `MOVIE_W
 **Geheimnisse und Persistenz:** Kein Rohlog/Portal/SMB/Token in public Issues; vorhandene TMDB-Token, EPG/Provider/Favoriten, SkinShortcuts, Kodi-Datenbank und XCMate-Archiv nicht löschen/migrieren. Keine TMDB-Helper-Laufzeitpflicht, kein Google Drive. #401 Speicherjournal und echter Datei-LRU weiter eigenständig OPEN. Alles neu implementierte Artwork-Datenvolumen begrenzen. Box A unverändert lassen.
 
 **Nächster Schritt:** Nutzer kündigt die **aktuellen Kodi-Logs nach .84** an; bei Eintreffen anhand der Event-/Art-/Home-Codes Ursachen pro Ghosts, Cobra 11, Rosenheim-Cops verifizieren und neue Fehlannahmen korrigieren. Dieses Dokument enthält heute **Quellcodebefunde plus öffentliche Werkfakten plus Nutzerbeobachtungen, aber keine tatsächliche Rohlog-Forensik der neuen Fälle**.
+
+## 6. Nachtrag: echte Kodi-Gerätelogs am 09.11.2026 (16:56–17:57, .83 → .84)
+
+**Status: vollständige lokale Analyse der privaten Dateien, nur bereinigte Ergebnisse in GitHub.**  
+Quellen: `kodi.old(20261109-165728).log` (2.969 Zeilen, 16:56:13–17:01:42, beim Start .83) und `kodi(20261109-165729).log` (21.549 Zeilen, 17:02:04–17:57:02, beim Start **.84**). Beide auf **Kodi 21.3, Android ARM32 RK3528, Skin Titan BINGIE MOD 2.2.3, 1920×1080**. **Wichtig:** Fenster von ca. 5,5 versus 55 Minuten; die nackten Ereigniszahlen **sind keine vergleichbaren Erfolgsquoten oder eindeutig verschiedenen Sendungen**. Keine Rohlogs, Geräte-Hostnamen, Netzfreigaben, URLs oder Token publizieren.
+
+### 6.1 Zahlen .84 (55-Minuten-Lauf), nach Ereignistyp
+
+| Pipeline | Beobachtete Einträge |
+|---|---:|
+| `ART81 TOKEN_PRESENT YES` / `ENABLED YES` / `OPT_OUT NO` | je **117** |
+| `ART81 HTTP_REQUEST_SENT OK` und `HTTP_STATUS OK`, alle `status=200` | je **106** |
+| `ART81 MATCH_CONFIRMED EXACT` / `IMAGE_BACKDROP_READY OK` | je **42** |
+| `ART81 MATCH_REJECTED`: `SERIES_MULTIPLE_MATCHES` / `NO_MATCH` | **9 / 50** |
+| `ART81 MATCH_REJECTED SERIES_GENRE_UNKNOWN` / `SERIES_TITLE_SHORT_NEEDS_PROOF` | **82 / 14** – *Hinweis*: die beiden Marker sind in `programme_tv66.py` **nicht unbedingt Abbruch**, der Resolver versucht danach trotzdem weiter |
+| `ART81 MATCH_REJECTED SERIES_ALIAS_UNVERIFIED` / `SERIES_ART_MISSING` / `SERIES_YEAR_CONFLICT` | **3 / 3 / 2** |
+| `IMAGE77 HTTP_RESPONSE IMAGE_DECODED` / `IMAGE_LEASE BOUND` | je **66** |
+| `IMAGE77 BINGIE_SKIN_PROPERTY BOUND` | **47** |
+| `IMAGE77 RENDER_CONTROL IMAGE_REQUESTED` / `SOURCE_MISSING` | **52 / 21** |
+| `IMAGE77 LOCAL_CACHE RAM_ONLY` / `PERSISTED` / `LOCAL_READY` | **116 / 3 / 6** |
+| `DISPLAY84 METADATA_WRITE_DEFERRED` / `METADATA_RESERVE_BLOCKED` | **148 / 87** |
+| `DISPLAY84 SOURCE_BLOCKED` | **62**, davon 60 für `kind=vod`; Ursachen pro Trust-/URL-/Policyfall prüfen, keine Security-Bypasses |
+| `WIDGET47 kind=live/vod/series ASSETS REFERENCES_READY` | **34 / 33 / 33** |
+| `WIDGET79 TEXTURE_REQUESTED`, `SKIN_CONSUMER_READY`, `ACTIVE_CONTROL` | je **116** (über alle drei Widgettypen) |
+| `HOME82 CACHED_ITEMS_READY` | **82 VOD / 82 Serie**; Beispiel 17:02:42 VOD 24 Items, 18 lokale Bildreferenzen und 17:02:54 Serie 24 Items, 31 Rollen-Referenzen |
+| `HOME82 android_render_verified` | **false in allen protokollierten HOME82-Records**. Dieses Flag ist kein positiver Sichtbarkeitsnachweis und auch nicht automatisch Beweis, dass kein Bild auf dem Fernseher sichtbar war. |
+| `EPG63 DB_READ: EPG_DATA_MISSING / EPG_CACHE_UNAVAILABLE / EPG_DB_BUDGET / READY` | **842 / 502 / 208 / 323** |
+| `PROGRAMME_DB46 PROGRAMME_DB_IO / DISK_FULL` | **40 / 6** |
+| `ART80 EVENT_CHANGED / EXPIRED / POLICY_CHANGED / SAME_EVENT_RETRY` | **3 / 4 / 1 / 1** |
+| `PROGRAMME68 CACHE_MISMATCH` | **1** geloggter Eventcode, 17:10:44, bei `PROGRAMME48 LOCAL_EVENT source=UNKNOWN code=UNAVAILABLE` und `NO_SOURCE_FACTS`; dies ist **nicht beweisbar** dem gesprochenen Fall „Rosenheim-Cops“ zuzuordnen |
+
+Alte .83 nur zur historischen Einordnung (5,5 Min): `MATCH_CONFIRMED EXACT` 1, `IMAGE_DECODED` 3, `BINGIE_SKIN_PROPERTY BOUND` 0, `RENDER_CONTROL IMAGE_REQUESTED` 0, `TLS_ERROR` 19; .84 liefert echte erfolgreiche HTTP-200-TMDB-Vorgänge und Kodi-Bildanforderungen. **Keine gleiche Beobachtungsdauer, keine 42-fach höhere Abdeckungsquote ableiten.**
+
+### 6.2 Entscheidend: Tatsächlicher Mount-/Reserve-Druck
+
+`ART_STORAGE82` meldet für die **ausgewählte lokale XCMate-/Kodi-FUSE-Volume** `total=4.034.297.856 B` ≈ 3,76 GiB, **nicht** nachgewiesenen tatsächlichen Bildverbrauch. `free` fällt von **33.976.320 B** (17:03) auf ca. **28.004.352 B** (17:56). `reserve=80.685.957 B` ≈ 77 MiB; `budget=0` (konfiguriertes unlimitiertes Artworkbudget, **kein Null-Speicherverbrauch**). `RESERVE_BLOCKED` bei allen 50 Storage-Samples. **Selbst der erste gemessene Wert unterschreitet bereits die Sicherheitsreserve; der freie Wert verschlechtert sich im Verlauf.** Kein Schluss auf Speicherart/andere Mounts ohne weitere VFS-Messung.
+
+`ART81 CACHE RESERVE_BLOCKED` **217** Ereignisse; `DISPLAY84 METADATA_WRITE_DEFERRED` 148, `METADATA_RESERVE_BLOCKED` 87; `PROGRAMME_DB46` 46 Schreib-/IO-Fehler. **Die Bildfreigabe im RAM funktioniert teilweise, während positive Persistenz / Nachladen / Langzeit-EPG vom Speicherzustand betroffen sein können.** Weder die 28 MB noch die 3,76 GiB mit Androids **anderen** Speicheranzeigen oder belegtem Artwork gleichsetzen. Für #401: Ursachen sicherer freier Space/Volume-Mapping/Journaling prüfen, **ohne** Kodi-DB, Textures13, Backups, alte Kunstwerke oder EPG zu löschen. Nutzer hat private Windows-SMB-Freigabe als separates Testziel, kein automatisch umkonfigurierter Standard und keine Zugangsdaten ins GitHub.
+
+### 6.3 Startup und Re-Load: interne Reihenfolge noch nicht „Logos und Hero immer zuerst“
+
+`home_schedule75.py` protokolliert:
+- 17:02:36 `START_GROUP_KNOWN`; 17:03:01 `VISIBLE5_QUEUED count=5`.
+- 17:04:46 `MOVIES_VISIBLE_READY`; 17:04:49 `SERIES_VISIBLE_READY`; erst 17:06:44 `LIVE_HOME_READY`. Dies sind intern verschieden definierte Render-/Phasen-Signale, **kein visueller Frame-für-Frame-Beweis**. Die geforderte *sichtbare* Hero+Senderlogos-first-Priorität ist nicht zweifelsfrei gewährleistet.
+- Ab 17:06 folgen wiederholt `MOVIE_WARM_BEGIN` **74-mal** und `SERIES_WARM_BEGIN` **76-mal**, mit häufig `WIDGET41 BUDGET` (**145**), `WIDGET47 kind=vod/series DIRECTORY READ_ONLY_RELOAD` (**44/43**), `HOME82 CACHED_ITEMS_READY` (je 82) und erneut Skin-/Texture-Anforderungen. **Prüfen auf unnötige identische Reloads/fehlenden State-Gate**, anstatt den User endlos laden zu lassen; Phasen nicht beim Rücksprung oder Fokuswechsel verlieren.
+- 24 Film-/Serienitems waren bereits in frühen Snapshot-Katalogen vorhanden, z.B. VOD 17:02:42, Serie 17:02:54. Es fehlen sichtbare **LOADING_CATALOG, LOADING_ART, READY_PARTIAL, READY, ERROR**-Platzhalter; die Startansicht darf nicht leer wirken.
+- Das Mini-EPG implementiert bislang nur Text-/Zeit-/Fokuscontrols, keine sendungsspezifischen Thumbnails; eigener Scope.
+
+### 6.4 Genaues Vorgehen für Codex vor .85-Implementierung
+
+1. **Ghosts**: einzelne TMDB-Kandidatenseiten und `SERIES_MULTIPLE_MATCHES` durch *privaten* reproduzierbaren Fixture-Fall verfolgen. **Das Log enthält keine Klartext-Sendungstitel** und beweist daher **nicht**, dass die neun Serien-Mehrdeutigkeiten Ghosts waren. UK-2019-/US-2021-Werkidentität durch EPG-Jahr, Inhalt, ggf. Sender/Staffel/Folge/Provider-ID oder manuelle Zuordnung; nie „ersten TMDB-Treffer“ ungeprüft wählen. Multi-Page-Vollständigkeit explizit von wirklicher Titelambiguität trennen.
+2. **Cobra 11, M*A*S*H, Modern Family, Rosenheim-Cops**: jeweils read-only tatsächliche EPG-Fakten plus anonymisierten Entscheidungspfad protokollieren; vorläufige Titel-/Alias-/Revisionshypothesen nicht als bewiesene konkrete Ursachen ausgeben. `CACHE_MISMATCH` erst anhand internem `FILE_INVALID` / `EVENT_CHANGED` / `SOURCE_CHANGED` / `EXPIRED` / `POLICY_CHANGED` präzisieren; neuer Event-Fingerprint → bounded re-resolve, altes Bild fail-closed.
+3. **EPG**: `EPG_DATA_MISSING`, `EPG_CACHE_UNAVAILABLE`, `EPG_DB_BUDGET` systematisch auf Quelle, Kanal-Mapping, Schedule-Lesezeit, Timeouts, wiederholte Read-Volumen trennen. Sendungsmetadaten müssen aus einer kanonischen Quelle erhalten bleiben. Keine manuelle XML-Neuimport-Pflicht.
+4. **Storage**: #401 als potenziell kritischen **Blocker für Persistenz und wiederholtes Nachladen** mitnehmen; `statvfs` exakt pro gewähltem Backend, SMB nur nach positiver read/write/rename/readback-Prüfung und Nutzerfreigabe, kein unautorisierter Reset, niemals Reserve pauschal ausschalten.
+5. **Homepage**: Anfangszustand **Logo/Hero/NowNext sofort**, Film/Serie darunter mit echter Ladeanzeige (kein Endlosspinner), Karten schrittweise, stable focus; `HOME75`- und `WIDGET79`-Transition-Tests auf echten Box-B-Render; begrenzter, stabiler sichtbarer 5-Event-Cursor.
+6. **Kodierte Diagnose**: erlaubte redigierte Gründe zählen, echte Bilddatei-Bytes, Uri-approval, Kodi native texture/pixel und transparente UI-Abnahmematrix; keine sensiblen URL/Token/SMB-Daten in Github.
+
+**Auftrag bleibt OPEN, .85 noch nicht implementiert, keine .84-Rebuilds, kein Merge ohne separate Nutzerfreigabe.**
