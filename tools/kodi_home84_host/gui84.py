@@ -109,7 +109,7 @@ for kind,control,hero_color,rail_color in (('live',2510,(20,80,130),(25,100,160)
  check(hero_pixels>3000,('HERO84_PIXELS_MISSING',kind,hero_pixels))
  check(rail_pixels>1500,('RAIL84_PIXELS_MISSING',kind,rail_pixels))
  # Ask Kodi's real receiver for its current art, then fully decode actual cache.
- selected=home.getControl(control).getSelectedItem();poster=selected.getArt('poster');check(poster,('NO84_LISTITEM_ART',kind))
+ poster=xbmc.getInfoLabel('Container('+str(control)+').ListItem.Art(poster)');check(poster,('NO84_LISTITEM_ART',kind))
  from widget_cache82 import prepare as recover
  rows=live_rows(portal) if kind=='live' else snapshot(portal,kind)[0]
  for _ in range(8):recover(portal,kind,rows);xbmc.sleep(520)
