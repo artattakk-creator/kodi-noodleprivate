@@ -101,7 +101,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     durable81=__import__('event_art81').prior(event)
     upgrade81=allow_lookup and __import__('event_art81').upgrade(event,durable81)
     if durable81 and not upgrade81:return durable81
-    pressure84=__import__('artwork_display84').observe()
+    pressure84=__import__('artwork_display84').observe() or __import__('home_schedule75').applicable()
     if url_mode69 and pressure84:
         renewed84=__import__('programme_display84').recover(event) or __import__('programme_display84').renew(event)
         if renewed84:

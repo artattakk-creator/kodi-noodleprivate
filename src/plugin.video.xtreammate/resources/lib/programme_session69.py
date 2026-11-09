@@ -62,6 +62,7 @@ def remember(event,value,persisted=False,update=False):
  return value
 
 def persist(event,value):
+ if not __import__('artwork_display84').metadata_allowed():return dict(value,persisted69=False,storage69='RAM_ONLY',storage_code69='SAFE_RESERVE_BLOCKED')
  from programme_index46 import publish_result69,path
  from programme_writes69 import permit,last
  if not permit(path()):return dict(value,persisted69=False,storage69='RAM_ONLY',storage_code69=last(path()))
