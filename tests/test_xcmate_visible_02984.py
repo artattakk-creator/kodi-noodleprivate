@@ -166,6 +166,15 @@ class Recovery84(Fixture,unittest.TestCase):
  def test_texture_decode_failure_is_not_promoted_to_a_local_picture(self):
   from widget_cache82 import decoded
   with mock.patch('widget_cache79.permitted',return_value=False):self.assertIsNone(decoded(dict(cachedurl='/unapproved/foreign.png'),'https://images.example.org/p.png'))
+ def test_rollover_keeps_real_logo_and_updates_text_instead_of_old_event_image(self):
+  from PIL import Image
+  logo=self.folder/'real-logo.png';old=self.folder/'old-event.png'
+  Image.new('RGB',(160,80),(20,100,150)).save(logo);Image.new('RGB',(320,180),(130,20,10)).save(old)
+  props={'XCMate.ProgrammeKey47':'old-event','XCMate.ProgrammeImage46':str(old),'XCMate.ProgrammeLogo46':str(logo),'XCMate.ProgrammeArtSource57':'xmltv_event'}
+  info=dict(programme_key47='new-event',now='New programme',next='Next programme',description='Current plot',progress=.4,remaining=600,start=self.now,stop=self.now+1000,now_time='10:00',now_end_time='11:00',next_time='11:00',next_end_time='12:00')
+  value=importlib.import_module('live_text63').apply(dict(props=props),self.portal,dict(sid='0'),info,labels=('No EPG','{} min'))
+  self.assertEqual(value['props']['XCMate.HeroImage63'],str(logo));self.assertEqual(value['props']['XCMate.HeroArtSource63'],'station_logo')
+  self.assertEqual(value['props']['XCMate.ProgrammeTitle46'],'New programme');self.assertEqual(value['props']['XCMate.ProgrammePercent46'],'40')
  def test_expired_remote_logo_uses_verified_exact_kodi_file_without_reload(self):
   from PIL import Image
   row=dict(self.rows[0],kind='live');self.approve('live',[row]);uri=self.assets.read(self.portal,'live',[row])['0']['poster']
@@ -190,7 +199,11 @@ class Recovery84(Fixture,unittest.TestCase):
   import xbmc,xbmcvfs
   def translate(value):return str(textures) if value.startswith('special://thumbnails') else value
   response=json.dumps(dict(result=dict(textures=[record])))
-  with mock.patch.object(xbmc,'executeJSONRPC',return_value=response,create=True),mock.patch.object(xbmcvfs,'translatePath',side_effect=translate),mock.patch('socket.getaddrinfo',side_effect=AssertionError('cold network')),mock.patch('sqlite3.connect',side_effect=AssertionError('cold SQL writer')):
+  def kodi21(request):
+   data=json.loads(request);self.assertEqual(data['method'],'Textures.GetTextures')
+   self.assertEqual(set(data['params']),{'properties','filter'})
+   return response
+  with mock.patch.object(xbmc,'executeJSONRPC',side_effect=kodi21,create=True),mock.patch.object(xbmcvfs,'translatePath',side_effect=translate),mock.patch('socket.getaddrinfo',side_effect=AssertionError('cold network')),mock.patch('sqlite3.connect',side_effect=AssertionError('cold SQL writer')):
    result=importlib.import_module('programme_display84').recover(event)
    self.assertEqual(result['image'],str(picture));self.assertEqual(result['storage69'],'KODI_TEXTURE_CACHE')
    self.assertIsNone(importlib.import_module('programme_display84').recover(dict(event,xmltv_image=source+'?width=300')))

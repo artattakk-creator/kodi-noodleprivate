@@ -141,7 +141,7 @@ def recover(event):
         for variant in variants(url):wanted[variant]=(url,source)
     if not wanted:return None
     request=dict(jsonrpc='2.0',id=84,method='Textures.GetTextures',params=dict(filter={'or':[
-        dict(field='url',operator='is',value=url) for url in wanted]},properties=['url','cachedurl','sizes'],limits=dict(start=0,end=32)))
+        dict(field='url',operator='is',value=url) for url in wanted]},properties=['url','cachedurl','sizes']))
     try:
         raw=xbmc.executeJSONRPC(json.dumps(request))
         if not isinstance(raw,str) or len(raw)>262144:return None

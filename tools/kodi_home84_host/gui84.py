@@ -115,7 +115,7 @@ for kind,control,hero_color,rail_color in (('live',2510,(20,80,130),(25,100,160)
  for _ in range(8):recover(portal,kind,rows);xbmc.sleep(520)
  refs=read(portal,kind,rows);local=refs.get(str(rows[0]['sid']),{}).get('poster','')
  if not local.startswith('/'):
-  rpc84=json.loads(xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=84,method='Textures.GetTextures',params=dict(properties=['url','cachedurl','sizes'],limits=dict(start=0,end=256))))))
+  rpc84=json.loads(xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=84,method='Textures.GetTextures',params=dict(properties=['url','cachedurl','sizes'])))))
   import xbmcvfs
   thumb84=Path(xbmcvfs.translatePath('special://thumbnails/'))
   Path('/root/texture84-debug.json').write_text(json.dumps(dict(kind=kind,source=rows[0],local=local,textures=rpc84,root=str(thumb84),files=[str(p.relative_to(thumb84)) for p in thumb84.rglob('*') if p.is_file()][:100]),indent=2))
