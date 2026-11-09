@@ -4,8 +4,28 @@ Linux synthetic proof; never Android acceptance or a physical ENOSPC claim.
 from pathlib import Path
 base=Path('/base_gui84.py').read_text()
 base=base.replace('Synthetic Linux Kodi .84','Synthetic Linux Kodi .85')
+# .85 prepares the visible twelve covers first, not an invisible 24-file archive.
+base=base.replace('len(read(portal,kind,rows))==24','len(read(portal,kind,rows))>=12')
+base=base.replace('refs=24','refs=len(read(portal,kind,rows))')
 base=base.replace("Path('/root/'+('post75.json' if cold else 'visible84.json')).write_text(json.dumps(report,indent=2))",'')
 exec(compile(base,'/base_gui84.py','exec'),globals())
+# Then scroll to the second viewport: all 24 titles remain in the native row,
+# only the newly visible sources are admitted, and the selected tile stays put.
+scroll85=[]
+for kind85,control85 in (('vod',2511),('series',2512)):
+ rows85_catalog,_=snapshot(portal,kind85)
+ home.setFocusId(control85);home.getControl(control85).selectItem(23)
+ for _ in range(40):home_schedule75.observe();xbmc.sleep(50)
+ focused85=home_schedule75.focus();check(focused85.get('kind')==kind85 and focused85.get('left',0)>0,('VIEWPORT85_NOT_OBSERVED',focused85))
+ prepare(portal,kind85,rows85_catalog)
+ for _ in range(160):
+  if str(rows85_catalog[23]['sid']) in read(portal,kind85,rows85_catalog):break
+  xbmc.sleep(50)
+ check(str(rows85_catalog[23]['sid']) in read(portal,kind85,rows85_catalog),('VIEWPORT85_LAST_SOURCE_MISSING',kind85))
+ publish(portal,kind85,rows85_catalog)
+ for _ in range(40):pump();xbmc.sleep(50)
+ check(home.getControl(control85).getSelectedPosition()==23,('VIEWPORT85_FOCUS_RESET',kind85))
+ scroll85.append(dict(kind=kind85,items=len(rows85_catalog),last_source='PASS',focus=23))
 from series_manager85 import SeriesWindow85
 # No service lookup or real TMDB token is used for synthetic candidate facts.
 BASE="https://image.tmdb.org/t/p/w500/"
@@ -40,5 +60,5 @@ item85=home.getControl(2510).getListItem(0);item85.setProperty('XCMate.Provision
 xbmc.sleep(700)
 check(xbmc.getCondVisibility('Control.IsVisible(296885)'),'SERIES85_PROPOSAL_LABEL_HIDDEN')
 proposal85,_=capture('visible84-series85-proposal');item85.setProperty('XCMate.Provisional85','')
-report['version']='0.1.29.85';report['series85']=dict(candidate_poster_pixels=poster85,confirm_native='PASS',back_native='PASS',no_implicit_mapping_write='PASS',proposal_visible='PASS',candidate_screenshot=shot85.name,proposal_screenshot=proposal85.name,android='ANDROID_NOT_TESTED')
+report['version']='0.1.29.85';report['scroll85']=scroll85;report['series85']=dict(candidate_poster_pixels=poster85,confirm_native='PASS',back_native='PASS',no_implicit_mapping_write='PASS',proposal_visible='PASS',candidate_screenshot=shot85.name,proposal_screenshot=proposal85.name,android='ANDROID_NOT_TESTED')
 Path('/root/'+('post75.json' if cold else 'visible84.json')).write_text(json.dumps(report,indent=2))

@@ -194,8 +194,10 @@ def prepare(event,cancel=lambda:False,fetch=None,match=None,resolved60=None):
     if not os.path.isfile(filename):space(len(data));atomic(filename,data)
     reused46=bool(prior46 and prior46.get('sha256')==digest)
     value=dict(key=key,fingerprint=fp,code='READY',image=filename,thumbnail=filename,sha256=digest,original_sha256=original_sha,source=c['source'],source_url=c['url'],provider_id=c.get('remote_id',''),match=c['match'],attribution=c.get('attribution',''),checked46=prior46.get('checked46',time.time()-86400) if reused46 else time.time(),until=min(time.time()+86400,prior46['until']) if reused46 else time.time()+86400)
-    for field60 in ('matched_year56','image_scope57'):
+    for field60 in ('matched_year56','image_scope57','provisional85','manual85','role81'):
      if c.get(field60):value[field60]=c[field60]
+    epoch85=__import__('programme_mapping85').epoch(event)
+    if epoch85:value['mapping_epoch85']=epoch85
     if resolved60 is not None:value['tvspielfilm55']='BLOCKED_NO_AUTHORIZED_API'
     break
    except SourceError as error:

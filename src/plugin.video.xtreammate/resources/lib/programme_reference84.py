@@ -53,7 +53,7 @@ def put(event,candidate):
  from widget_assets69 import safe
  from portals import get_by_id
  portal=get_by_id(str(event.get('pid'))) or {}
- if candidate and candidate.get('provisional85'):return None
+ if candidate and (candidate.get('provisional85') or candidate.get('match')=='PROVISIONAL_TV85'):return None
  if candidate and (not portal or not safe(portal,candidate.get('url'))):return None
  allowed=('url','source','match','remote_id','provider_id','attribution','image_scope57','role81','matched_year56')
  value=dict(candidate={k:candidate[k] for k in allowed if k in candidate} if candidate else None,until=time.time()+(86400 if candidate else 3600))

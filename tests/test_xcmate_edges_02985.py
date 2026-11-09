@@ -77,7 +77,7 @@ class Edge85(Fixture,unittest.TestCase):
  def test_known_series_names_do_not_require_genre_or_episode(self):
   self.options.update(programme_tmdb46=True,tmdb_research43=True,tmdb_read_token43='SYNTHETIC85_NOT_SECRET',programme_tvmaze67=False)
   engine=importlib.import_module('programme_candidates85')
-  for title,official in [('Alarm für Cobra 11','Alarm für Cobra 11 – Die Autobahnpolizei'),('Die Rosenheim-Cops','Die Rosenheim-Cops'),('M*A*S*H','M*A*S*H'),('Modern Family','Modern Family'),('The Middle','The Middle'),('King of Queens','The King of Queens')]:
+  for title,official in [('Alarm für Cobra 11','Alarm für Cobra 11 – Die Autobahnpolizei'),('Rosenheim Cops','Die Rosenheim-Cops'),('M*A*S*H','M*A*S*H'),('Modern Family','Modern Family'),('The Middle','The Middle'),('King of Queens','The King of Queens')]:
    def request(url,**kwargs):
     row=dict(id=85,name=official,original_name=official,first_air_date='2000-01-01',origin_country=['US'],poster_path='/synthetic85.jpg')
     if '/search/movie' in url:return dict(page=1,total_pages=0,total_results=0,results=[])
@@ -110,3 +110,18 @@ class Edge85(Fixture,unittest.TestCase):
   module=importlib.import_module('programme_tvmaze67');uk=dict(id=19,name='Ghosts',premiered='2019-01-01',image={'original':'https://static.tvmaze.com/uploads/images/original_untouched/1/19.jpg'},network={'country':{'code':'GB'}});us=dict(uk,id=21,premiered='2021-01-01',network={'country':{'code':'US'}})
   with mock.patch('media_sources43.get',side_effect=[[dict(show=uk),dict(show=us)],uk,us]):
    result=module.candidate(dict(self.event,title='Ghosts',country='GB'));self.assertEqual(result['remote_id'],19);self.assertEqual(result['image_scope57'],'series_fallback')
+ def test_local_materialization_retains_unconfirmed_flag_and_never_creates_episode_facts(self):
+  module=importlib.import_module('programme_art46');event=dict(self.event,placeholder='/fallback.png');body=self.png()
+  candidate=dict(url='https://image.tmdb.org/t/p/w500/synthetic85.png',source='tmdb_series',match='PROVISIONAL_TV85',provisional85=True,image_scope57='series_fallback',role81='poster',attribution='Bildvorschlag – Zuordnung nicht bestätigt')
+  Path(module.root()).mkdir(parents=True,exist_ok=True)
+  with mock.patch.object(module,'space'),mock.patch('programme_index46.art',return_value=None),mock.patch('programme_index46.reused',return_value=None):
+   value=module.prepare(event,fetch=lambda *a,**k:body,resolved60=candidate)
+  self.assertEqual(value['code'],'READY');self.assertTrue(value['provisional85']);self.assertEqual(value['match'],'PROVISIONAL_TV85');self.assertEqual(value['image_scope57'],'series_fallback');self.assertNotIn('episode',value);self.assertNotIn('subtitle',value)
+ def test_mapping_reader_uses_shared_lease_without_creating_missing_lock_file(self):
+  from profile_transaction import reading
+  with mock.patch('profile_transaction.reading',wraps=reading) as acquire:self.assertTrue(self.maps.reload())
+  acquire.assert_called_once_with(timeout=.1)
+ def test_no_manual_records_does_not_load_portals_for_each_gui_fingerprint(self):
+  self.maps.publish({'format':1,'records':{},'epochs':{}})
+  with mock.patch('programme_display84._account',side_effect=AssertionError('unnecessary account lookup')):
+   for _ in range(100):self.assertIsNone(self.maps.current(self.event));self.assertEqual(self.maps.epoch(self.event),0)

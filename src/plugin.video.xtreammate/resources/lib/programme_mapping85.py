@@ -43,7 +43,7 @@ def publish(data):
  safe=json.dumps(data,separators=(',',':'),sort_keys=True)
  window().setProperty(PREFIX+'Records',safe);window().setProperty(PREFIX+'Profile',profile_scope());window().setProperty(PREFIX+'Epoch',hashlib.sha256(safe.encode()).hexdigest())
 _loaded={}
-def reload():
+def _reload85():
  try:
   filename=path();stat=filename.stat() if filename.exists() else None;stamp=(stat.st_ino,stat.st_size,stat.st_mtime_ns) if stat else None
   from epg_handoff63 import profile_scope
@@ -58,7 +58,9 @@ def current(event):
  raw=window().getProperty(PREFIX+'Records')
  try:
   if not raw or len(raw.encode())>MAX_BYTES:return None
-  record=json.loads(raw).get('records',{}).get(namespace(event))
+  records=parsed85(raw).get('records',{})
+  if not records:return None
+  record=records.get(namespace(event))
   return dict(record) if isinstance(record,dict) else None
  except (ValueError,TypeError):return None
 def set_mapping(event,candidate=None,hidden=False,automatic=False):
@@ -100,7 +102,9 @@ def epoch(event):
  raw=window().getProperty(PREFIX+'Records')
  try:
   if not raw or len(raw.encode())>MAX_BYTES:return 0
-  value=json.loads(raw).get('epochs',{}).get(namespace(event),0)
+  epochs=parsed85(raw).get('epochs',{})
+  if not epochs:return 0
+  value=epochs.get(namespace(event),0)
   return value if type(value) is int and value>=0 else 0
  except (TypeError,ValueError):return 0
 
@@ -122,3 +126,21 @@ def source_scope(event):
  if event.get('source_key46') or event.get('epg_source46'):return ''
  from epg_handoff63 import profile_scope
  return window().getProperty(PREFIX+'Sources.'+profile_scope()+str(event.get('pid')))
+
+
+def reload():
+ # Shared read lease serializes publication with the manager's atomic writer.
+ # reading() creates no file in a legacy/space-blocked profile.
+ from profile_transaction import reading
+ try:
+  with reading(timeout=.1):return _reload85()
+ except (OSError,TimeoutError):return False
+
+_parsed85=(None,{})
+def parsed85(raw):
+ global _parsed85
+ if raw==_parsed85[0]:return _parsed85[1]
+ value=json.loads(raw)
+ if not isinstance(value,dict):raise ValueError('MANUAL_SCHEMA')
+ _parsed85=(raw,value)
+ return value

@@ -129,7 +129,8 @@ def candidate(event,cancel=lambda:False):
  if mapping and mapping.get('hidden'):return None
  if mapping and mapping.get('source') in ('tmdb','tvmaze') and enabled(mapping['source']):
   fetch85=details if mapping['source']=='tmdb' else __import__('programme_tvmaze85').details
-  chosen=fetch85(event,mapping['id'],cancel,manual=True)
+  chosen=next((r for r in read(event).get('rows',[]) if r.get('source')==mapping['source'] and r.get('id')==mapping['id'] and r.get('verified85')),None)
+  if chosen is None:chosen=fetch85(event,mapping['id'],cancel,manual=True)
   if chosen and (mapping.get('year') is None or mapping['year']==chosen['year']):return artifact(chosen,'MANUAL_CONFIRMED')
   note(event,'EXTERNAL_ID_CONFLICT');return None
  cached=read(event)
@@ -139,7 +140,9 @@ def candidate(event,cancel=lambda:False):
  if not rows:return None
  country=str(event.get('country') or '').upper()
  matching=[r for r in rows if r.get('work_match85',True) and (not country or country in r['country'])]
- if not matching:raise SourceError('NO_MATCH')
+ if not matching:
+  if any(v in str(event.get('genre') or '').casefold() for v in ('serie','series','sitcom','episode')):raise SourceError('NO_MATCH')
+  return None
  chosen=matching[0] if matching else rows[0]
  genre=str(event.get('genre') or '').casefold()
  if not cached.get('tv_only85') and not any(v in genre for v in ('serie','series','sitcom','episode')):
