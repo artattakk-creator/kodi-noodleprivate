@@ -1,4 +1,5 @@
 0.1.29.85
+- A: Verifizierte Medien-Bildreferenzen im bestehenden Kodi-ListItem aktualisieren, ohne Widget-Neuladung oder Fokusreset.
 - A: Eigener begrenzter temporärer Bildcache mit LRU/TTL, aktiven Pins, SHA256 und Wiederaufnahmejournal.
 - A: Bestehende Archive, Kodi-Texturen und Speicherreserven unverändert; schreibfreie Mount-/Kapazitätsdiagnose.
 - A: Lokale EPG-Snapshots, begrenzter Revisions-Retry und semantische Widget-Aktualisierung.

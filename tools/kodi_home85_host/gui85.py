@@ -11,6 +11,11 @@ base=base.replace("Path('/root/'+('post75.json' if cold else 'visible84.json')).
 exec(compile(base,'/base_gui84.py','exec'),globals())
 # Then scroll to the second viewport: all 24 titles remain in the native row,
 # only the newly visible sources are admitted, and the selected tile stays put.
+def refresh_plans85():
+ import widget_runtime79
+ widget_runtime79._next=0;widget_runtime79.prepare([portal])
+plans85=threading.Thread(target=refresh_plans85);plans85.start();plans85.join(10)
+check(not plans85.is_alive(),'VIEWPORT85_PLAN_REFRESH_TIMEOUT')
 scroll85=[]
 for kind85,control85 in (('vod',2520),('series',2530)):
  rows85_catalog,_=snapshot(portal,kind85)
@@ -24,7 +29,7 @@ for kind85,control85 in (('vod',2520),('series',2530)):
  check(str(rows85_catalog[23]['sid']) in read(portal,kind85,rows85_catalog),('VIEWPORT85_LAST_SOURCE_MISSING',kind85))
  publish(portal,kind85,rows85_catalog)
  for _ in range(40):pump();xbmc.sleep(50)
- check(home.getControl(control85).getSelectedPosition()==23,('VIEWPORT85_FOCUS_RESET',kind85))
+ check(home.getControl(control85).getSelectedPosition()==23,('VIEWPORT85_FOCUS_RESET',kind85,home.getControl(control85).getSelectedPosition()))
  scroll85.append(dict(kind=kind85,items=len(rows85_catalog),last_source='PASS',focus=23))
 from series_manager85 import SeriesWindow85
 # No service lookup or real TMDB token is used for synthetic candidate facts.

@@ -33,6 +33,7 @@ def describe(portal,kind,row,approved,epg=None,assets47=None):
         image['banner']=asset('widget.header',snapshot=theme)
     props={'XCMate.WidgetKind41':kind,'XCMate.PortalId':str(portal['id']),'XCMate.MediaId':str(row['sid']),
            'XCMate.Account':str(portal.get('name','')),'IsPlayable':'true' if kind=='live' else 'false'}
+    props['XCMate.Source85']=__import__('hashlib').sha256(__import__('json').dumps({k:v.get('source') for k,v in provider80.items() if isinstance(v,dict)},sort_keys=True).encode()).hexdigest()
     params=dict(action=('play_live' if portal.get('type')=='xtream' else 'source_play') if kind=='live' else 'media_detail',pid=portal['id'],sid=row['sid'])
     if kind=='live':
         from widget_focus41 import token
