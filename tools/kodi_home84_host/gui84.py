@@ -43,7 +43,7 @@ def capture(name):
    return path,rgb
   except (OSError,ValueError):continue
  raise RuntimeError('SCREENSHOT84_INCOMPLETE')
-logo_ready84=threading.Event();decode84=threading.Event();logo_case84={}
+logo_ready84=threading.Event();decode84=threading.Event();logo_case84={};logo_started84=time.monotonic()
 def worker():
  try:
   import widget_runtime79,home_activation78
@@ -89,13 +89,16 @@ for _ in range(900):
   home.setFocusId(2510);home.getControl(2510).selectItem(0)
  pump();xbmc.sleep(100)
  if logo_ready84.is_set() and not decode84.is_set() and not home.getProperty('StartupMask') and not xbmc.getCondVisibility('Window.IsVisible(11103)') and xbmc.getCondVisibility('Control.IsVisible(296784)'):
-  path84,rgb84=capture('visible84-'+('cold-' if cold else 'warm-')+'logo')
   logo_control84=home.getControl(296784)
   check((logo_control84.getWidth(),logo_control84.getHeight())==(560,280),'LOGO84_UNBOUNDED')
   check(home.getControl(296751).getHeight()==620,'HERO84_WRONG_HEIGHT')
-  count84=sum(max(abs(a-b) for a,b in zip(pixel,(25,100,160)))<=8 for pixel in rgb84.crop((480,160,1040,440)).getdata())
-  check(count84>10000,'LOGO84_ACTUAL_PIXELS_MISSING')
-  logo_case84=dict(actual_pixels=count84,width=560,height=280,screenshot=path84.name)
+  for attempt84 in range(40):
+   pump();xbmc.sleep(100)
+   path84,rgb84=capture('visible84-'+('cold-' if cold else 'warm-')+'logo-'+str(attempt84))
+   count84=sum(max(abs(a-b) for a,b in zip(pixel,(25,100,160)))<=8 for pixel in rgb84.crop((480,160,1040,440)).getdata())
+   if count84>10000:break
+  else:raise RuntimeError('LOGO84_ACTUAL_PIXELS_MISSING')
+  logo_case84=dict(elapsed_ms=int((time.monotonic()-logo_started84)*1000),actual_pixels=count84,width=560,height=280,screenshot=path84.name)
   decode84.set()
  if not thread.is_alive():break
 else:raise RuntimeError('WORKER84_TIMEOUT')

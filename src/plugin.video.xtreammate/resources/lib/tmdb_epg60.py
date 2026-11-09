@@ -52,7 +52,15 @@ def candidate(event, cancel=lambda: False):
         if event.get('subtitle') and title_key(details.get('name', '')) != title_key(event['subtitle']):
             return reject84(event,'EPISODE_TITLE_MISMATCH')
         url = _tmdb_image(details.get('still_path'))
-        return dict(url=url, source='tmdb_episode', match='EXACT_SEASON_EPISODE', attribution=credit, remote_id=remote) if url else reject84(event,'IMAGE_PATH_MISSING')
+        if url:return dict(url=url, source='tmdb_episode', match='EXACT_SEASON_EPISODE', attribution=credit, remote_id=remote)
+        # Episode identity was proved; absence of a still permits only an
+        # independently verified series work illustration, explicitly labelled.
+        work=request(TMDB+'/tv/'+str(remote)+'?language=de-DE',token=token,cancel=cancel)
+        actual=str(work.get('first_air_date',''))[:4]
+        if work.get('id')!=remote or work.get('adult') or title not in (title_key(work.get('name','')),title_key(work.get('original_name',''))) or not actual.isdigit() or actual!=str(row.get('first_air_date',''))[:4]:return reject84(event,'DETAIL_IDENTITY_MISMATCH')
+        fallback=_tmdb_image(work.get('backdrop_path') or work.get('poster_path'))
+        if not fallback:return reject84(event,'IMAGE_PATH_MISSING')
+        return dict(url=fallback,source='tmdb_series',match='EXACT_TV_TITLE_YEAR66' if year else 'EXACT_UNIQUE_TV_TITLE66',remote_id=remote,matched_year56=int(actual),role81='backdrop' if work.get('backdrop_path') else 'poster',image_scope57='series_fallback',attribution=credit+' · Serienbild (kein Episodenbild)')
     details = request(TMDB + '/movie/' + str(remote) + '?language=de-DE', token=token, cancel=cancel)
     if details.get('id') != remote or details.get('adult') or title not in (title_key(details.get('title', '')),title_key(details.get('original_title',''))) or str(details.get('release_date', ''))[:4] != year:
         return reject84(event,'DETAIL_IDENTITY_MISMATCH')

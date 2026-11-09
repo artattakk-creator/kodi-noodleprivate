@@ -82,9 +82,9 @@ def describe(portal,kind,row,approved,epg=None,assets47=None):
     value=dict(label=str(row['name']),url=url,art=image,info=info,props=props,_provider80=provider80)
     if kind=='live':
         from programme_widgets46 import decorate
-        value=decorate(value,portal,row,epg or {})
         from artwork_display84 import logo_proof
-        value['props']['XCMate.LogoProof84']=logo_proof(portal,row,value['props'].get('XCMate.ProgrammeLogo46',''))
+        value['props']['XCMate.LogoProof84']=logo_proof(portal,row,value['art'].get('thumb',''))
+        value=decorate(value,portal,row,epg or {})
     return value
 
 

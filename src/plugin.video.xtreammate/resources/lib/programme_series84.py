@@ -2,4 +2,4 @@
 def known(event):
  from epg_events import title_key
  title=title_key(str(event.get('title') or ''))
- return title==title_key('Star Trek: Deep Space Nine')
+ return title in {title_key(v) for v in ('Star Trek: Deep Space Nine','The Middle','King of Queens','The King of Queens')}

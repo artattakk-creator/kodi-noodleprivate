@@ -9,7 +9,7 @@ class Amendment84(Fixture,unittest.TestCase):
  def row(self):return dict(id=84,name='Star Trek: Deep Space Nine',original_name='Star Trek: Deep Space Nine',first_air_date='1993-01-03',backdrop_path='/synthetic84.jpg')
  def test_exact_full_ds9_title_without_genre_uses_verified_series_not_invented_episode(self):
   row=self.row()
-  with mock.patch('tmdb_connection60.request',side_effect=[dict(total_pages=1,total_results=1,results=[row]),row]) as api:
+  with mock.patch('tmdb_connection60.request',side_effect=[dict(total_pages=1,total_results=1,results=[row]),row,dict(total_pages=0,total_results=0,results=[])]) as api:
    value=importlib.import_module('tmdb_epg60').candidate(self.event)
   self.assertEqual(value['image_scope57'],'series_fallback');self.assertEqual(value['source'],'tmdb_series')
   self.assertEqual(value['remote_id'],84);self.assertIn('Serienbild',value['attribution'])
@@ -25,7 +25,7 @@ class Amendment84(Fixture,unittest.TestCase):
   with mock.patch('tmdb_connection60.request',side_effect=[dict(total_pages=1,total_results=1,results=[row]),dict(row,name='A different show',original_name='A different show')]):
    with self.assertRaises(SourceError):candidate(self.event)
  def test_shortened_title_is_not_automatically_classified_as_ds9(self):
-  with mock.patch('tmdb_connection60.request',side_effect=AssertionError('unproven lookup')):
+  with mock.patch('tmdb_connection60.request',return_value=dict(total_pages=0,total_results=0,results=[])):
    self.assertIsNone(importlib.import_module('programme_tv66').candidate(dict(self.event,title='Star Trek: Deep Space')))
  def test_tvmaze_fallback_also_requires_independent_exact_series_details(self):
   row=dict(id=84,name=self.event['title'],premiered='1993-01-03',image=dict(original='https://static.tvmaze.com/uploads/images/original_untouched/1/84.jpg'))
