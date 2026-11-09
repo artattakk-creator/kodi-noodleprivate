@@ -50,6 +50,9 @@ bleiben Android-Kapazität, Rechte und sichtbare Bilddarstellung ungeprüft.
   und eine exklusive temporäre 4-KiB-Datei erstellt. Rücklesen, SHA256,
   Volume-Neuprüfung und Entfernen nur dieser Probe. Fremde Dateien und
   unmarkierte vorhandene Profilordner werden nicht übernommen/überschrieben.
+  Ein nachträglich durch einen Symlink ersetzter Zielnamespace wird auch beim
+  Wiederaufnehmen abgewehrt. Die Dateisystemwurzel bleibt `/` und wird nie
+  stillschweigend zum aktuellen Arbeitsordner umgedeutet.
 - `artwork_migration.py`: bestehendes Journal und Dateiformat bleiben erhalten;
   Android-Volume-Nachweis wird im bestehenden privaten Transfer-Snapshot
   gespeichert. Vor Kopieren, Dateien und Aktivieren wird erneut geprüft.

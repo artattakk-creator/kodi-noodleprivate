@@ -4,9 +4,9 @@ Referenzen: #398, #395. Basis: `fdbcf96823760777d0a2f153d046389c3d1f1352`.
 
 ## Gezielte Ergebnisse auf dem Host
 
-- **37/37 PASS**: neue Speicher-, Berechtigungs-, Migrations-, Journal- und
+- **39/39 PASS**: neue Speicher-, Berechtigungs-, Migrations-, Journal- und
   Bestandsschutztests (`test_xcmate_shared_storage_02983.py`,
-  `test_xcmate_scope_02983.py`). Laufzeit des gezielten Laufs: 2,328 s.
+  `test_xcmate_scope_02983.py`). Die Laufzeit steht im vollständigen Host-/CI-Protokoll.
 - **11/11 PASS**: separate pytest-Prüfung des BINGIE-Brandings.
 - **17/17 PO-Kataloge PASS**, Deutsch/Englisch jeweils 1.264 Einträge.
 - Python-Kompilierung und `git diff --check` bestanden. Eine vorhandene
@@ -39,11 +39,12 @@ Die vollständige Suite benötigt Loopback-Netzwerkzugriff für die isolierten
 HTTP-/SMB-Testserver und ausreichend temporären Speicher für die großen
 Streaming-/SQLite-Fixtures. Ein erster Lauf ohne Loopback-Rechte wurde
 abgebrochen; dessen Netzwerkfehler gelten nicht als Codefehler oder PASS.
-Ein weiterer lokaler Lauf stieß im großen HTTP-Fixture an die temporäre
-Speichergrenze. Fünf rekonstruierbare entpackte Skin-Kopien älterer Hostläufe
+Ein weiterer lokaler Lauf führte 3.335 Tests durch: 3.334 PASS und ein
+Umgebungsfehler (`database or disk is full`) im großen HTTP-Fixture. Fünf rekonstruierbare entpackte Skin-Kopien älterer Hostläufe
 wurden entfernt; sämtliche Belege, Screenshots, JSONs und das gepinnte
-Originalarchiv blieben erhalten. Endgültige Wiederholungen werden separat
-am PR/#398 ausgewiesen. Keine Kodi-Benutzerdaten wurden bereinigt.
+Originalarchiv blieben erhalten. Der abschließende lokale Lauf verwendet zusätzlich ein eigenes
+`SQLITE_TMPDIR` im Arbeitsbereich; die unveränderte CI hat ausreichend
+Plattenplatz. Endgültige Wiederholungen werden separat am PR/#398 ausgewiesen. Keine Kodi-Benutzerdaten wurden bereinigt.
 
 ## Testumfang
 

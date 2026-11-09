@@ -100,6 +100,18 @@ class SharedStorage83(Fixture, unittest.TestCase):
             with self.assertRaises(self.fail):self.s.measure(path,'TARGET',require=True)
         self.assertEqual(list(self.target.iterdir()),[])
 
+    def test_filesystem_root_never_silently_becomes_working_directory(self):
+        self.assertEqual(importlib.import_module('artwork_vfs').target_root('/'),'/')
+        self.assertEqual(self.s.local_path('/'),'/')
+
+    def test_namespace_replaced_by_symlink_cannot_redirect_resumed_writes(self):
+        vfs=importlib.import_module('artwork_vfs')
+        storage=vfs.prepare_target(str(self.target),self.config.read()['profile'])
+        other=self.folder/'foreign';other.mkdir();keep=other/'keep';keep.write_bytes(b'private')
+        Path(storage.root).rmdir();Path(storage.root).symlink_to(other,target_is_directory=True)
+        with self.assertRaisesRegex(self.fail,'TARGET_SYMLINK'):storage.write_verified('a'*64,b'not image',lambda data:True)
+        self.assertEqual(list(other.iterdir()),[keep]);self.assertEqual(keep.read_bytes(),b'private')
+
     def test_discovery_lists_only_existing_reachable_canonical_roots(self):
         with mock.patch.dict(os.environ,{'EXTERNAL_STORAGE':str(self.target)}),mock.patch('storage_sources.kodi_sources',return_value=[]):
             rows=self.s.candidates()
