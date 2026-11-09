@@ -132,3 +132,39 @@ Gleiche Quelle und EPG-Events 1..8, sichtbar 1..5 ⇒ genau diese fünf Bild-IDs
 - **Abnahme von .84 nur** wenn #403 **und** #404 für sichtbares Live/Filme/Serien + EPG-Hero erfolgreich verifiziert sind; #401 Speicher/Journalarbeit koordiniert ohne neue unnötige Blockade.
 
 **Status:** Dokumentationsauftrag, **kein** implementierter Layoutfix und **keine** Veröffentlichung.
+
+## 8. Neue verifizierte Logauswertung vom 09.11.2026 – TMDB funktioniert partiell, Widget-Render nicht
+
+Zwei **weitere** private Kodi-Logs wurden ausgewertet: `kodi.old(20261109-132710).log` (31.604 Zeilen; Kodi-Protokollzeit 12:48:24–13:42:47) und `kodi(20261109-132711).log` (28.024 Zeilen; 13:43:14–14:26:44). Kodi 21.3, XCMate .83, Titan BINGIE MOD 2.2.3. **Keine Rohlogs/Geheimnisse ins GitHub übernehmen.** Die Zeit-/Zeilenreferenzen beziehen sich ausschließlich auf diese zwei hochgeladenen Originaldateien.
+
+| Prüfung | Altes Log | Neues Log | Schluss |
+|---|---:|---:|---|
+| `ART81 TOKEN_PRESENT=YES` / `ENABLED=YES` | 396 / 396 | 293 / 293 | TMDB-EPG-Recherche ist **aktiv und Token verfügbar** bei diesen Versuchen; nicht mehr pauschal «TMDB deaktiviert» diagnostizieren |
+| `ART81 HTTP_STATUS=OK` mit `status:200` | 103 | 90 | API antwortet. Kein Beweis für GUI-Bilddarstellung |
+| `ART81 MATCH_CONFIRMED=EXACT` / `IMAGE_BACKDROP_READY=OK` | 8 / 8 | 6 / 6 | Mindestens einzelne **exakte** TMDB-Bildreferenzen werden gefunden |
+| `ART81 MATCH_REJECTED=NO_MATCH` | 385 | 282 | Die meisten Versuche scheitern an genauer Zuordnung; welche Match-Regel je Event ist damit **noch nicht eindeutig bewiesen** |
+| `IMAGE77 HTTP_RESPONSE=IMAGE_DECODED` | 104 | 121 | Zumindest einzelne Bilddownloads/-decodes funktionieren, nicht nur URL-Facts |
+| `IMAGE77 LOCAL_CACHE=PERSISTED` | 54 | 152 | Neu im zweiten Lauf viel mehr persistierte Bildereignisse; nicht notwendigerweise TMDB-Bilder |
+| `IMAGE77 LOCAL_CACHE=RAM_ONLY` | 236 | 119 | Viele Bildvorgänge bleiben temporär; nicht automatisch Renderer-tauglich |
+| `IMAGE77 BINGIE_SKIN_PROPERTY=BOUND` / `RENDER_CONTROL=IMAGE_REQUESTED` | 0 / 0 | 29 / 29 | BINGIE-Property und Renderanforderung im zweiten Lauf erstmals sichtbar; **kein bestätigtes Texture-PASS** |
+| `IMAGE77 BINGIE_SKIN_PROPERTY=SOURCE_MISSING` | 3 | 17 | Wechselnder Quellstatus mit sichtbaren Controls |
+| `WIDGET47 live/ASSETS REFERENCES_READY` | 3 / 53 | 31 / 33 | Live-Bildreferenzen **intermittierend**, nach Restart deutlich häufiger |
+| `WIDGET47 live/ASSETS NO_RENDERABLE_REFERENCE` | 49 / 53 | 2 / 33 | Live-Logoquellen können je nach Widget-Lauf wegfallen; schlüssiger Reload-/Life-Cycle-Test erforderlich |
+| `WIDGET47 vod/series ASSETS NO_RENDERABLE_REFERENCE` | 38/38 und 38/38 | 28/28 und 29/29 | **Alle** ausgewerteten VOD- und Serien-Asset-Läufe haben 0 renderbare Bildreferenzen! |
+| `HOME82 CACHED_ITEMS_READY` | 106 VOD +106 Serie | 84 VOD +84 Serie | **Ausnahmslos** `local_images=0, approved_refs=0, android_render_verified=false` in beiden Läufen |
+| `ART_STORAGE82` verfügbar | min 24.506.368 B, max 132.124.672 B | 31.928.320–44.322.816 B | Messwerte variieren, `budget=0` (**unbegrenzt**), Reserve 80.685.957 B und im alten Lauf zeitweise 1.073.741.824 B; neue Freiplatzmessung bleibt unter 80,7 MB |
+| `PROGRAMME_DB46` I/O | 93× PROGRAMME_DB_IO, 6× DISK_FULL | 46× PROGRAMME_DB_IO, 5× DISK_FULL | Lokaler Datenträger-/SQLite-Druck besteht fort |
+| Kodi `MyVideos131.db`: fehlende movie/tvshow/musicvideo views | 12 Fehlzeilen | 12 Fehlzeilen | Weiterhin getrennte native Kodi-Schema-Anomalie, read-only prüfen, keinesfalls DB löschen |
+
+Beispiel einer exakten TMDB-Sequenz im alten Log, Z. 11630–11639, 13:02:29–13:02:30: `TOKEN_PRESENT YES → ENABLED YES → OPT_OUT NO → TITLE_NORMALIZED OK → HTTP_REQUEST_SENT OK → HTTP_STATUS 200 → MATCH_CONFIRMED EXACT → IMAGE_BACKDROP_READY OK`. Im neuen Log erneut um 13:51:44 (Z. 6575–6590). **Verbindung und Trefferauswahl funktionieren im Einzelfall tatsächlich**; reiner Token-Reset und globales Abschalten der strikten Matching-Sicherheit wären falsche Reparaturen.
+
+### Priorisierte neue .84-Testfälle
+
+1. **TMDB Match-Transparenz:** nach `HTTP 200` exakten Ablehnungsgrund als festen Code melden (mehrdeutig, kein Jahr/Staffel/Genre, fehlende Bilddatei, Limit, Title-Mismatch). Kein raw Titel/token/URL in Diagnose. Bei bestätigtem `IMAGE_BACKDROP_READY` dieselbe durch Hash/ID gebundene Sendung bis `IMAGE77`/Widget/Skin verfolgen, auch nach EPG-Revision. Die Codes `MATCH_REJECTED NO_MATCH` und `IMAGE_BACKDROP_READY OK` gelten nicht als Renderbeweis.
+2. **VOD/Serien eigenständiger P0:** In beiden neuen Logs *sämtliche* überprüften Asset-Durchläufe `NO_RENDERABLE_REFERENCE` und Home-Cache `0 refs/0 images`. Provider-Posterquelle → Credential-/URL-Policy → begrenzt geprüfter Art-URI → `ListItem.setArt` → Skin `thumb/poster/fanart` → Kodi Texture miss/hit → Screenshot getrennt diagnostizieren. Keine unzulässige Freigabe von Provider-URLs, keine TMDB-Helper-Abhängigkeit.
+3. **Live BINGIE Focus/Refresh:** Im neuen Log 31/33 Live-ASSETS `REFERENCES_READY` und bis zu 48 lokale Bilder, aber BINGIE zeitweise SOURCE_MISSING und 29 `IMAGE_REQUESTED`. Vorhandene Valid-Referenzen beim Fokus-/Refresh-/Senderwechsel schützen; positive Visibility erst bei nachgewiesener GUI-Textur und Screenshot. Verschiedene Programmtitel/Fokus, Kodi-Widget-Reload und Dateimutation testen.
+4. **Persistierung vs. Sichtbarkeit:** `LOCAL_CACHE=PERSISTED` (152) ist Bildspeicherschritt, kann trotzdem alter Event, EPG-Stelle oder ungenutzte Quelle sein. Gesondert messen, welche Bildquellen/IDs zur **gerade auf BINGIE angezeigten** Sendung gehören. `BINGIE_SKIN_PROPERTY BOUND` ist nicht Pixel-/Texture-PASS.
+5. **Begrenzter dynamischer Cache:** sichtbare fünf Programme, nach rechts +1 genau neuer Fetch, LRU-/Grace-Lifecycle. Da `budget=0` weiterhin XCMate-Archiv unbegrenzt macht, vor Umstellung Sicherung/Inventur; keine unautorisierte Löschung historischer Bilder oder Kodi Textures13.db. Die Speichergröße 3,76 GiB ist FUSE-Pool, **nicht** gemessene Bilddaten.
+6. **XMLTV-Qualität:** Nutzer berichtet gelegentliche, optisch eingeschränkte XMLTV-Programmbilder, aber bislang **kein Bild-Screenshot** in diesen beiden Log-Uploads. Nicht bereits Crop/Aspect/Pixelauflösung als Ursache behaupten. Nach visuellem Beleg gesondert bewerten.
+
+**Kein zweiter .84-Branch**, kein automatischer Release, alle bisher gültigen Nicht-Lösch-/Datenschutzbedingungen gelten weiterhin. Die hochgeladenen Original-Logs gehören **nicht** in Issues oder ZIPs.
