@@ -33,6 +33,17 @@ def check(condition,detail):
  if not condition:raise RuntimeError(str(detail))
 def pump():
  hero_epg63._next=0;hero_epg63.poll();widget_notice46._next=0;widget_notice46.poll()
+def capture(name):
+ path=Path('/root/'+name+'.png');xbmc.executebuiltin('TakeScreenshot('+str(path)+')',wait=False)
+ for _ in range(100):
+  xbmc.sleep(50)
+  try:
+   raw=path.read_bytes()
+   with Image.open(io.BytesIO(raw)) as im:im.load();rgb=im.convert('RGB').resize((1920,1080))
+   return path,rgb
+  except (OSError,ValueError):continue
+ raise RuntimeError('SCREENSHOT84_INCOMPLETE')
+logo_ready84=threading.Event();decode84=threading.Event();logo_case84={}
 def worker():
  try:
   import widget_runtime79,home_activation78
@@ -44,6 +55,8 @@ def worker():
    time.sleep(.1)
   check(len(read(portal,'live',rows))>=5,'LIVE84_NO_REFS')
   phases.append(dict(kind='live',at=time.monotonic(),refs=len(read(portal,'live',rows))))
+  publish(portal,'live',rows);logo_ready84.set()
+  if not decode84.wait(25):raise RuntimeError('LOGO84_FALLBACK_NOT_OBSERVED')
   # All five exact XMLTV events fully decode through the real HTTPS transport.
   for row in rows[:1 if cold else 5]:
    event=load(portal,row)
@@ -75,6 +88,15 @@ for _ in range(900):
  if xbmc.getInfoLabel('Container(2510).NumItems')=='88':
   home.setFocusId(2510);home.getControl(2510).selectItem(0)
  pump();xbmc.sleep(100)
+ if logo_ready84.is_set() and not decode84.is_set() and not home.getProperty('StartupMask') and not xbmc.getCondVisibility('Window.IsVisible(11103)') and xbmc.getCondVisibility('Control.IsVisible(296784)'):
+  path84,rgb84=capture('visible84-'+('cold-' if cold else 'warm-')+'logo')
+  logo_control84=home.getControl(296784)
+  check((logo_control84.getWidth(),logo_control84.getHeight())==(560,280),'LOGO84_UNBOUNDED')
+  check(home.getControl(296751).getHeight()==620,'HERO84_WRONG_HEIGHT')
+  count84=sum(max(abs(a-b) for a,b in zip(pixel,(25,100,160)))<=8 for pixel in rgb84.crop((480,160,1040,440)).getdata())
+  check(count84>10000,'LOGO84_ACTUAL_PIXELS_MISSING')
+  logo_case84=dict(actual_pixels=count84,width=560,height=280,screenshot=path84.name)
+  decode84.set()
  if not thread.is_alive():break
 else:raise RuntimeError('WORKER84_TIMEOUT')
 check(not errors,errors);check([v['kind'] for v in phases]==['live','vod','series'],phases)
@@ -84,16 +106,6 @@ stop=threading.Event()
 def hero_worker():
  while not stop.wait(.15):hero_epg63.prepare(portal['id'])
 threading.Thread(target=hero_worker,daemon=True).start()
-def capture(name):
- path=Path('/root/'+name+'.png');xbmc.executebuiltin('TakeScreenshot('+str(path)+')',wait=False)
- for _ in range(100):
-  xbmc.sleep(50)
-  try:
-   raw=path.read_bytes()
-   with Image.open(io.BytesIO(raw)) as im:im.load();rgb=im.convert('RGB').resize((1920,1080))
-   return path,rgb
-  except (OSError,ValueError):continue
- raise RuntimeError('SCREENSHOT84_INCOMPLETE')
 cases=[]
 for kind,control,hero_color,rail_color in (('live',2510,(20,80,130),(25,100,160)),('vod',2520,(35,120,80),(180,100,30)),('series',2530,(35,120,80),(100,60,180))):
  for _ in range(200):
@@ -133,11 +145,28 @@ for kind,control,hero_color,rail_color in (('live',2510,(20,80,130),(25,100,160)
  check(local.startswith('/'),('NO84_LOCAL_TEXTURE',kind,local))
  with Image.open(local) as decoded:decoded.load();size=decoded.size
  cases.append(dict(kind=kind,items=int(xbmc.getInfoLabel('Container('+str(control)+').NumItems')),focus=home.getFocusId(),poster_local=local.startswith('/'),decoded_size=size,hero_pixels=hero_pixels,rail_pixels=rail_pixels,screenshot=path.name,sha256=hashlib.sha256(path.read_bytes()).hexdigest()))
+if not cold:
+ # White event background stresses the real alpha-composited right panel.
+ bright84=live_rows(portal)[1];bright_event84=load(portal,bright84)
+ def refresh_bright84():
+  from programme_urls55 import resolve
+  completed(bright_event84,resolve(bright_event84,allow_lookup=False,url_mode69=True))
+ bright_worker84=threading.Thread(target=refresh_bright84);bright_worker84.start()
+ home.setFocusId(2510);home.getControl(2510).selectItem(1)
+ for _ in range(100):
+  pump();xbmc.sleep(50)
+  if not bright_worker84.is_alive():break
+ for _ in range(40):pump();xbmc.sleep(50)
+ bright_path84,bright_rgb84=capture('visible84-bright-panel')
+ # No text at the panel's left padding; it overlays a real nearly-white PNG.
+ contrast84=bright_rgb84.getpixel((1355,300))
+ check(max(contrast84)<70,('PANEL84_INSUFFICIENT_DARKNESS',contrast84))
+ check(sum(max(abs(a-b) for a,b in zip(pixel,(245,245,245)))<=8 for pixel in bright_rgb84.crop((300,50,1100,500)).getdata())>3000,'BRIGHT84_IMAGE_NOT_RENDERED')
 stop.set()
 for path,digest in baseline.items():check(hashlib.sha256(Path(path).read_bytes()).hexdigest()==digest,'PROTECTED84_CONFIG_CHANGED')
 from utils import addon_data_dir
 archive=[p for p in Path(addon_data_dir()).rglob('*') if p.is_file() and p.suffix.lower() in ('.png','.jpg','.img','.jpeg')]
 check(not archive,'UNEXPECTED84_ARCHIVE_IMAGES')
 check(xbmcaddon.Addon().getSetting('tmdb_read_token43')=='SYNTHETIC84_UNCHANGED_NOT_A_REAL_TOKEN','TOKEN84_CHANGED')
-report=dict(status='PASS',platform='Linux Kodi synthetic / NOT Android',cold=cold,pressure=pressure,capacity_injection='XCMate Python only, not physical ENOSPC; Kodi C++ texture storage uses real free space',phases=phases,events=events,cases=cases,archive_images=0,config_hashes='PASS',android='ANDROID_NOT_TESTED')
+report=dict(logo=logo_case84,status='PASS',platform='Linux Kodi synthetic / NOT Android',cold=cold,pressure=pressure,capacity_injection='XCMate Python only, not physical ENOSPC; Kodi C++ texture storage uses real free space',phases=phases,events=events,cases=cases,archive_images=0,config_hashes='PASS',android='ANDROID_NOT_TESTED')
 Path('/root/'+('post75.json' if cold else 'visible84.json')).write_text(json.dumps(report,indent=2))

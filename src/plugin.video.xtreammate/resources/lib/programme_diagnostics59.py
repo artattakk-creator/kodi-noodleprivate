@@ -1,5 +1,5 @@
 """Local, stage-specific programme image explanations; no lookups or popups."""
-def message(event,art):
+def _diagnostic_message84(event,art):
     if not event.get('title') or not event.get('start') or not event.get('stop'):
         return 'Keine Programmdaten: Anbieter-EPG laden und Senderzuordnung prüfen. Sender bleibt auswählbar.'
     code=art.get('code','PENDING')
@@ -43,3 +43,15 @@ def message(event,art):
         'TMDB_LOOKUP_DISABLED':'TMDB_LOOKUP_DISABLED: Bildsuche unter EPG / TMDB-Zugang aktivieren.',
         'LOCAL_IMAGE_READY':'LOCAL_IMAGE_READY: Lokale Bilddatei geprüft. Sichtbare Kodi-Texture separat abnehmen.',
     }.get(code,'Kein bestätigtes Sendungsbild ('+str(code)+'). Programmdaten bleiben verfügbar.')
+
+
+def message(event,art,diagnostic=False):
+    text=_diagnostic_message84(event,art)
+    import re
+    if diagnostic:
+        code=str(art.get('code','PENDING'))
+        return (code if re.fullmatch(r'[A-Z0-9_]{1,48}',code) else 'UNCLASSIFIED')+': '+text
+    text=re.sub(r'\b[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+\b(?::\s*)?', '', text)
+    text=re.sub(r'\s*\(\s*\)', '', text)
+    text=re.sub(r'\s+([.;:,])',r'\1',text)
+    return text.strip()

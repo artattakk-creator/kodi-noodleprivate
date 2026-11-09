@@ -14,7 +14,7 @@ for kind79,suffix79 in (('vod','5'),('series','6')):
  rows79,_=snapshot(portal79,kind79)
  for row79 in rows79:
   row79['stream_id']=row79['series_id']=row79['sid']
-  if row79['sid']=='0':row79.update(cover='https://image.tmdb.org/t/p/w500/url69-'+suffix79+'.jpg',stream_icon='https://image.tmdb.org/t/p/w500/url69-'+suffix79+'.jpg',backdrop_path='')
+  if row79['sid']=='0':row79.update(cover='https://image.tmdb.org/t/p/w500/url69-'+suffix79+'.jpg',stream_icon='https://image.tmdb.org/t/p/w500/url69-'+suffix79+'.jpg',backdrop_path='https://image.tmdb.org/t/p/w500/url69-'+suffix79+'.jpg')
  replace_catalog(portal79['id'],kind79,rows79,[dict(category_id='a',category_name='Synthetic group')])
  snapshot(portal79,kind79,background=True)
 original_dns79=artwork_visible.public_dns

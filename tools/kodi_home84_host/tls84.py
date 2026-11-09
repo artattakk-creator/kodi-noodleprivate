@@ -17,7 +17,7 @@ from PIL import Image
 images={}
 for role,count,size,base in (('logo',88,(160,80),(25,100,160)),('vod',24,(160,240),(180,100,30)),('series',24,(160,240),(100,60,180)),('fanart',24,(320,180),(35,120,80)),('event',88,(320,180),(20,80,130))):
  for i in range(count):
-  image=io.BytesIO();Image.new('RGB',size,tuple((c+i*7)%220 for c in base)).save(image,'PNG');images['/t/p/w500/'+role+'84-'+str(i)+'.png']=(image.getvalue(),'image/png')
+  image=io.BytesIO();Image.new('RGB',size,(245,245,245) if role=='event' and i==1 else tuple((c+i*7)%220 for c in base)).save(image,'PNG');images['/t/p/w500/'+role+'84-'+str(i)+'.png']=(image.getvalue(),'image/png')
 class Handler(BaseHTTPRequestHandler):
  def do_HEAD(self):self.send(False)
  def do_GET(self):self.send(True)

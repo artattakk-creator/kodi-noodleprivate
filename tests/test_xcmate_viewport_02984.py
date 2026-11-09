@@ -44,14 +44,14 @@ class Layout84(unittest.TestCase):
   h=Skin78(methodName='runTest');h.setUp();self.addCleanup(h.doCleanups)
   before=h.prop.read_bytes();new=h.m.build(h.original);self.assertEqual(h.m.build(new),new)
   r=h.m.parse(new['xml/IncludesHomeWidgets.xml']);hero=r.find(".//control[@id='296751']")
-  self.assertEqual((hero.findtext('height'),hero.findtext('width'),hero.findtext('aspectratio')),('520','1620','keep'))
+  self.assertEqual((hero.findtext('height'),hero.findtext('width'),hero.findtext('aspectratio')),('620','1620','keep'))
   panel=r.find(".//control[@id='296750']")
   title=panel.find("control[@id='296781']");description=panel.find("control[@id='296782']")
   self.assertLessEqual(int(title.findtext('top'))+int(title.findtext('height')),148)
-  self.assertLessEqual(int(description.findtext('top'))+int(description.findtext('height')),464)
+  self.assertLessEqual(int(description.findtext('top'))+int(description.findtext('height')),552)
   rail=h.m.parse(new['xml/IncludesHomeBingie.xml']).find(".//control[@id='77777']")
-  self.assertEqual((rail.findtext('top'),rail.findtext('height')),('540','520'))
-  self.assertLess(540+80+268,1080);self.assertEqual(h.prop.read_bytes(),before)
+  self.assertEqual((rail.findtext('top'),rail.findtext('height')),('640','420'))
+  self.assertLess(640+80+244,1080);self.assertEqual(h.prop.read_bytes(),before)
  def test_changed_own_hero_rejected_no_silent_skin_overwrite(self):
   from test_xcmate_skin_02978 import Skin78
   h=Skin78(methodName='runTest');h.setUp();self.addCleanup(h.doCleanups)
