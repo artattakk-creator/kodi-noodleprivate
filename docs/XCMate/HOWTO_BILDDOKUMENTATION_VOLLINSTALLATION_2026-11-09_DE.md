@@ -46,9 +46,14 @@ Die Dateinamen sind **geplante Redaktionsnamen**, **noch keine vorhandenen Datei
 | IMG-17 | INST-07 | Kodi-Start nach Abschluss mit aktivem BINGIE Space Blue | „So sieht die neue XCMate-Startseite aus“ | NOT_CAPTURED |
 | IMG-18 | INST-08/09 | Live-Startsender, reale Senderlogos, Hero/EPG und Ladeanzeigen | „Senderleiste, EPG und Medienzeilen überprüfen“ | NOT_CAPTURED |
 
+| IMG-19 | POSTINSTALL-WIDGETS | XCMate → Einstellungen → Aussehen und Darstellung → Widgets | „Die drei XCMate-Widgetverknüpfungen auswählen“ | NOT_CAPTURED |
+| IMG-20 | POSTINSTALL-WIDGETS | BINGIE-Home-Zielauswahl mit Position und „Ja, diese Verknüpfung speichern“ | „Film- und Serienwidgets einer freien Home-Position zuordnen“ | NOT_CAPTURED |
+| IMG-21 | POSTINSTALL-WIDGETS | Falls nötig: BINGIE Skin-Einstellungen → Shortcuts → Menü bearbeiten → Home/Widget | „Nach einem Neuaufbau das native BINGIE-Home-Profil anlegen“ | NOT_CAPTURED |
+| IMG-22 | POSTINSTALL-WIDGETS | Echte Home-Anzeige mit Filmen-/Serienpostern und Fokus | „Eingebundene Film- und Serienreihen überprüfen“ | NOT_CAPTURED |
+
 **Prinzip bei echten Fehlern:** Jede zusätzliche Fehlermeldung erhält eigene Aufnahme `ERR-NNN`, Gerätelauf-ID, betroffene Add-on-ID und GitHub-Issue-Bezug. Das dokumentiert nicht nur den Endzustand, sondern hilft Codex, einen Fehler reproduzierbar **dauerhaft** im Installer zu beseitigen.
 
-**Neu bestätigt am 09.11.2026:** Der Nutzer hat die **TinyURL-Quelle NeoDark3** tatsächlich eingerichtet. Beim Beginn der ZIP-Installation wurde der Ablauf über „Unknown Sources“ mit anschließendem Zurückgehen und erneutem Aufruf beschrieben; die **Kodi-Warnungsbestätigung und die erfolgreiche Repository-Installation sind noch nicht einzeln als abgeschlossen bestätigt**. Deshalb bleiben alle Bild-IDs `NOT_CAPTURED`; die Screenshotanzahl steigt **von 18 auf 22 geplante Aufnahmen**, nicht auf 22 vorhandene Fotos.
+**Neu bestätigt am 09.11.2026:** Der Nutzer hat die **TinyURL-Quelle NeoDark3** tatsächlich eingerichtet. Beim Beginn der ZIP-Installation wurde der Ablauf über „Unknown Sources“ mit anschließendem Zurückgehen und erneutem Aufruf beschrieben; die **Kodi-Warnungsbestätigung und die erfolgreiche Repository-Installation sind noch nicht einzeln als abgeschlossen bestätigt**. Deshalb bleiben alle Bild-IDs `NOT_CAPTURED`; die Screenshotanzahl steigt **von 18 auf 26 geplante Aufnahmen**, nicht auf 22 vorhandene Fotos.
 
 ## C. Maschinenlesbare Quellen für eine spätere PDF-Produktion
 
@@ -73,10 +78,12 @@ Beim PDF-Satz kann das Programm je Schritt Titel, Kodi-Klickpfad, Beschreibung, 
 | Ziel | Kodi 21.3, `NeoDark3` → Pilot 1.9.12 → Setup 0.5.26 → 48/48 + Branding |
 | Startschritt | `INST-01`: **NeoDark3-Quelle durch Nutzer eingerichtet**; `INST-02`: Sicherheitsfreigabe/ZIP-Auswahl folgt |
 | Realer Gerätetest | **IN_PROGRESS – Quelle eingerichtet; ob ZIP-Liste und Freigabe abgeschlossen sind, offen** |
-| Aktuelle Screenshots | **0 von 22 geplanten Bildern aufgenommen/freigegeben** |
+| Aktuelle Screenshots | **0 von 26 geplanten Bildern aufgenommen/freigegeben** |
 | Letzter bestätigter Erfolgsstatus | **NeoDark3 als Kodi-Netzwerkquelle angelegt** (Nutzermeldung vom 09.11.2026); Pilotinstallation noch nicht bestätigt |
 | Offene Probleme | #407 Installationsabnahme, #401 Python/Storage, #406 Bild-/UI-Abdeckung |
 | Nächste Aktualisierung | Tatsächlich sichtbaren Kodi-Bildschirm + PASS/FAIL/Foto nach Nutzerfeedback eintragen |
+
+**Postinstallationsmeldung (09.11., 22:42):** Nutzer meldet 48er-Installer weitgehend erfolgreich, kurzer Hänger beim SlyGuy-Repository, langsames EPG und nach Auswahl nicht sichtbare Filme-/Serienwidgets. Die exakten 48/48-/Branding-Endwerte und neue Kodi-Logs wurden noch nicht bestätigt. Der neue Ablauf für BINGIE-Home-Widgetbindungen ist in Abschnitt 6A des [Voll-How-tos](HOWTO_GS_MEDIA_KODI_213_VOLLINSTALLATION_48_PLUS_BRANDING_NEODARK3_2026-11-09_DE.md) beschrieben; vor GUI-Abnahme keine Bilder als aufgenommen kennzeichnen. Aktuell **26 geplante Motive, 0 Fotoaufnahmen**.
 
 ## F. Zielprodukt später
 

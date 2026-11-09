@@ -19,7 +19,7 @@
     "completed_components": null,
     "branding_status": "NOT_TESTED",
     "android_verified": false,
-    "current_step": "INST-02_UNKNOWN_SOURCES_PENDING_CONFIRMATION",
+    "current_step": "POSTINSTALL_VOD_SERIES_WIDGETS_NOT_VISIBLE",
     "confirmed_steps": [
       "INST-01: TinyURL source NeoDark3 entered and saved in Kodi, user report 2026-11-09"
     ],
@@ -30,7 +30,17 @@
       "Installer 0.5.26 installed"
     ],
     "screenshots_uploaded": 0,
-    "screenshots_planned": 22
+    "screenshots_planned": 26,
+    "postinstall_report_20261109": {
+      "full_installer_status": "USER_REPORT_COMPLETED_WITH_BRIEF_SLYGUY_REPO_HANG",
+      "installer_final_48_of_48_verified": false,
+      "branding_active_verified": false,
+      "epg": "SLOW_USER_REPORTED",
+      "vod_series_widgets": "SELECTED_BUT_NOT_VISIBLE_USER_REPORTED",
+      "live_widget": "NOT_SELECTED_USER_REPORTED",
+      "python_import_status": "NO_POSTINSTALL_LOG_YET",
+      "screenshots_uploaded": 0
+    }
   },
   "images": [
     {
@@ -366,6 +376,66 @@
         "device_test_status": "NOT_TESTED",
         "captured_at": null,
         "issue_url": null,
+        "verified_by_user": false
+      },
+      "privacy_review": "PENDING"
+    },
+    {
+      "image_id": "IMG-19",
+      "step_id": "POSTINSTALL-WIDGETS",
+      "caption_de": "XCMate-Menü Aussehen und Darstellung → Widgets mit Live-TV, Filme und Serien",
+      "expected_view": "xcmate-widget-setup-three-choices",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/407",
+        "verified_by_user": false
+      },
+      "privacy_review": "PENDING"
+    },
+    {
+      "image_id": "IMG-20",
+      "step_id": "POSTINSTALL-WIDGETS",
+      "caption_de": "BINGIE-Home-Ziel für Filme oder Serien auswählen und speichern",
+      "expected_view": "xcmate-widget-home-position-save",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/407",
+        "verified_by_user": false
+      },
+      "privacy_review": "PENDING"
+    },
+    {
+      "image_id": "IMG-21",
+      "step_id": "POSTINSTALL-WIDGETS",
+      "caption_de": "BINGIE Skin-Einstellungen → Shortcuts → Home → Widget-Quelle als Widget verwenden",
+      "expected_view": "bingie-native-home-shortcuts-editor",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/407",
+        "verified_by_user": false
+      },
+      "privacy_review": "PENDING"
+    },
+    {
+      "image_id": "IMG-22",
+      "step_id": "POSTINSTALL-WIDGETS",
+      "caption_de": "Film- und Serienposter als echte BINGIE-Startseitenwidgets sichtbar",
+      "expected_view": "bingie-home-vod-series-real-items",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/407",
         "verified_by_user": false
       },
       "privacy_review": "PENDING"

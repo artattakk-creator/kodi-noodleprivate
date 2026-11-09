@@ -102,6 +102,46 @@ Verifizierte Verteilpfade:
 
 **Bei Neustart-/Python-Ausfall erneut:** Eine frische Kodi-Installation beseitigt nicht zwingend einen Add-on-/Runtime-Bug. **Stop** und Ursache pro Paket reproduzieren, ggf. Kodi Standard-Python ohne Add-ons prüfen; nicht 10 zusätzliche Repos unkontrolliert installieren.
 
+
+## 6A. Postinstallations-Befund vom 09.11.2026: Film-/Serienwidgets auf BINGIE-Home fehlen, EPG lädt langsam
+
+**Tatsächlicher Nutzerbericht (22:42):** Der vollständige Installer wurde nach Neuaufbau wieder ausgeführt und nach Nutzereindruck weitgehend erfolgreich abgeschlossen; beim **SlyGuy-Repository** gab es einen **kurzen Hänger**, keinen eindeutig gemeldeten dauerhaften Fehlercode. Danach Kodi neu gestartet. XCMate **Filme** und **Serien** wurden als Widgets ausgewählt, **Live-TV noch nicht**. Auf der BINGIE-Startseite fehlen die Film-/Serienzeilen; das EPG lädt deutlich zu langsam. Ein exakter Installer-Abschlussstatus `48/48` und `branding_patch.status active` wurde **noch nicht mit Gerätefoto/Log bestätigt**. Ebenso unbekannt, ob die VOD-/Serien-Kataloglisten in XCMate selbst bereits vollständig sind. **Keinen GUI-PASS annehmen.**
+
+### Warum die alte Widget-Auswahl allein nach Clean Install nicht ausreichen kann (Quelle .84)
+
+- `src/plugin.video.xtreammate/resources/lib/settings_sections45.py`: **XCMate → Einstellungen → Aussehen und Darstellung → Widgets** zeigt `action=widget_setup`.
+- `src/plugin.video.xtreammate/resources/lib/widget_manager50.py`: wählbare **„Live-TV“, „Filme“, „Serien“**. Auswahl führt zu `widget_link50` und verknüpft die Quelle mit einer **freien BINGIE-Home-Position** nach expliziter Bestätigung; bestehende Bindung ruft `widget_repair73.existing()` (Diagnose/Refresh-Hook + einmaliger Skinshortcuts-Rebuild).
+- `widget_binding50.py::context()`: verlangt bei BINGIE 2.2.3 + SkinShortcuts 2.1.0 ein **bereits nativ gespeichertes** `skin.titan.bingie.mod-mainmenu.DATA.xml` + `skin.titan.bingie.mod.properties`, **einen aktiven „Home“-Hauptmenüpunkt** und **mindestens einen zuvor gespeicherten Widgetpfad**. Beim komplett frischen Skin fehlen diese Voraussetzungen möglicherweise. Typische sichere Codes: `NO_SAVED_BINGIE_PROFILE` / `HOME_ID_UNVERIFIED`; **kein Nachweis**, dass sie hier tatsächlich aufgetreten sind.
+- `widget_sources49.py`: separater **passiver** Widget-Quellordner mit drei Einträgen. Nur das Öffnen/Auswählen einer Quelle in der XCMate-Dateiansicht **speichert noch keine BINGIE-Startseitenbindung**. Kodi-Skin-Editor muss ausdrücklich „Als Widget verwenden“ + Speichern ausführen.
+
+### Genaue Fernbedienungs-Abhilfe ohne Skinreset
+
+**Weg 1 (zuerst, aktuelle .84):**
+1. In Kodi **XCMate → Einstellungen → Aussehen und Darstellung → Widgets** öffnen.
+2. **„Filme“** auswählen. Falls BINGIE-Zielauswahl angeboten wird: eine **freie Home-Position** auswählen, Vorschau/Backup bestätigen und **„Ja, diese Verknüpfung speichern“** wählen.
+3. **„Serien“** ebenso, mit anderer freier Home-Position; **Live-TV nur falls gewünscht** später separat.
+4. Bei „bereits verknüpft“ durch erneute Auswahl die **Widget-Reparatur-/Neubau-Abfrage** öffnen und nach Prüfung bewusst bestätigen. Keine bestehenden Nutzer-Reihen löschen/überschreiben.
+5. Zurück zur BINGIE-Home-Startseite, die entsprechende Home-Reihe anwählen und zwei sichtbare Posterreihen kontrollieren. Nicht nur „Daten bereit“ oder Kodi-URL-Referenzen als echten Screen-PASS werten.
+
+**Weg 2 (wenn kein gespeichertes BINGIE-Home-Profil, keine Positionen oder Weg 1 nicht möglich):**
+1. **Kodi-Zahnrad → Skin-Einstellungen → Shortcuts/Hauptmenü konfigurieren → Menü-Shortcuts bearbeiten** (engl. `Skin Settings → Configure Shortcuts → Edit menu shortcuts`; Bezeichnungen abhängig vom installierten Skin). Im nativen Editor den vorhandenen **Home/Startseite**-Menüpunkt markieren, nicht blind andere Hauptmenüeinträge ändern.
+2. Im Bereich für Widget(s) auf Home mindestens **einen** nativen Widgetpfad zuweisen und die **BINGIE-Menükonfiguration ausdrücklich speichern/abschließen**, damit die `skinshortcuts`-Profildateien entstehen. Wenn passende Quelle direkt angeboten wird, **Video-Add-ons → XCMate → Widgets/Widget-Quellen → Neueste Filme / Neueste Serien → „Als Widget verwenden“** auswählen und speichern; je nach Kodi-Build wird erst der Ordner, dann „Diesen Ordner verwenden“ angezeigt. Keine Skin-XML manuell überschreiben.
+3. Danach ggf. zurück zu Weg 1, um den **zweiten** Widgetplatz über XCMate zu verknüpfen bzw. bestehende Bindung zu prüfen. Bei `NO_SAVED_BINGIE_PROFILE` bietet die .84 eine gesonderte Frage zum Starten des **nativen BINGIE/SkinShortcuts-Menüeditors** an.
+4. **Ebenfalls prüfen:** Der ausgewählte **Home/Startseite**-Hauptmenüpunkt und sein Widget-Bereich müssen in BINGIE **sichtbar/aktiviert** sein; gespeicherte Widgets anderer Kategorien (Filme/Serien) erscheinen nicht zwingend auf **Home**, wenn deren eigener Menüpunkt nicht fokussiert ist. Keine generelle „Widgets aus“-Skinoption aktiv lassen.
+5. Wenn Widgets im Skin gespeichert sind, aber leer bleiben: XCMate → Einstellungen → Aussehen und Darstellung → Widgets → **Kontextmenü „Status vorhandener Widgets und weitere Funktionen“**; im Statusdiagnose-Dialog unterscheiden `HOME_BUILD_STALE`, `BLOCKED_NO_RELOAD_HOOK`, `DATA_PENDING`, `READY`. **Katalogtest**: XCMate → Filme und XCMate → Serien direkt öffnen; fehlen auch dort Einträge, geht es um Provider/Indexierung, nicht nur BINGIE-Verknüpfung. Nur bei vorhandener Bindung und entsprechender Aufforderung **einmal** nativen Skinshortcuts-Rebuild auslösen. Keine Schleife.
+
+**EPG separat untersuchen, nicht als Widget-Auslöser voraussetzen:** XCMate → Einstellungen → EPG → **EPG-Status** bzw. **EPG-Quellen und Senderzuordnung** kontrollieren. Neuaufbau und XMLTV-Download können dauern, aber ohne gemessene Zeiten/Status keinen konkreten Fehler behaupten. `EPG_DATA_MISSING`, `EPG_CACHE_UNAVAILABLE`, `PROGRAMME_DB_IO`, `DISK_FULL`, Quellenzuordnung, gewählten Datenmount und Speicherreserve in **neuem nach-Clean-Install Kodi-Log** voneinander trennen. Nicht während laufendem Import wiederholt alle Quellen neu herunterladen, keine Datenbanken/Caches leeren.
+
+**SlyGuy-Repository**: kurzer Stopp beim Installer ist ein **Nutzerbefund**, noch kein reproduzierter Fehler. Nachinstallationsinventur `repository.slyguy 0.0.9` und `script.module.slyguy` Status/Version prüfen; erst bei nachweisbarem Startfehler/Python-Importtrace Code-/Quelleproblem aufnehmen. Keinen spontanen erneuten 48er-Gesamtlauf.
+
+### Weitere Fotos für spätere PDF-Anleitung (noch keine Bilder vorhanden)
+
+- `IMG-19`: XCMate → Einstellungen → Aussehen und Darstellung → Widgets, drei Menüpunkte.
+- `IMG-20`: BINGIE-Zielauswahl/Home-Position für „Neueste Filme“/„Neueste Serien“ mit expliziter Speicherbestätigung.
+- `IMG-21`: Skin-Einstellungen → Menü-Shortcuts bearbeiten → Home → Widget-Quelle „Als Widget verwenden“ (falls Native-Editor erforderlich).
+- `IMG-22`: Echte BINGIE-Home-Ansicht nach bestätigter Zuordnung, Film-/Serienreihen mit Postern.
+- `ERR-POSTINSTALL`: Falls Fehlermeldung, nur anonymisierte Foto-Kopie; exakten Text, Zeit und verwendete Menüoption protokollieren. Status **NOT_CAPTURED** bis Nutzerfoto.
+
 ## 7. Dokumentation und Quellnachweise
 
 - `docs/XCMate/INSTALLER_0526_MANDATORY_SPACE_BLUE_START_2026-11-06_DE.md`: 48+Branding Vertrag und veröffentlichte .5.26.
