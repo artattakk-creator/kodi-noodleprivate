@@ -146,7 +146,7 @@ class Recovery84(Fixture,unittest.TestCase):
   self.assertIsNone(importlib.import_module('home_prepared76').proof(self.portal,'vod',[dict(self.rows[0],cover='https://other.example.org/p.png')]+self.rows[1:]))
  def test_first_live_listitem_already_has_hero_logo_before_event_image_ready(self):
   row=dict(self.rows[0],kind='live');self.approve('live',[row]);refs=self.assets.read(self.portal,'live',[row])['0']
-  value=importlib.import_module('widget_items45').describe(self.portal,'live',row,{},assets47=refs)
+  value=importlib.import_module('live_items62').values(self.portal,[row])[0]
   self.assertEqual(value['props']['XCMate.HeroImage63'],refs['poster'])
   self.assertEqual(value['props']['XCMate.HeroArtSource63'],'station_logo')
  def test_visible_five_logos_are_checked_before_the_rest_of_88(self):
