@@ -117,8 +117,15 @@ for _ in range(1600):
  if xbmc.getInfoLabel('Container(2510).ListItem.Property(XCMate.Provisional85)')=='true':break
  xbmc.sleep(50)
 check(xbmc.getInfoLabel('Container(2510).ListItem.Property(XCMate.Provisional85)')=='true','SERIES85_PROPOSAL_SOURCE_MISSING')
-xbmc.sleep(700)
-check(xbmc.getCondVisibility('Control.IsVisible(296885)'),'SERIES85_PROPOSAL_LABEL_HIDDEN')
+# The directory update and Hero bank commit are separate native frames.
+for _ in range(100):
+ pump();xbmc.sleep(50)
+ if xbmc.getCondVisibility('Control.IsVisible(296885)'):break
+else:
+ bank85=home.getProperty('XCMate.Hero63.Active')
+ evidence85=dict(bank=bank85,bank_flag=home.getProperty('XCMate.Hero63.'+bank85+'.Provisional85'),variable=xbmc.getInfoLabel('$VAR[XCMate85.Provisional]'),row=xbmc.getInfoLabel('Container(2510).ListItem.Property(XCMate.Provisional85)'),focus=home.getFocusId(),dialog=xbmcgui.getCurrentWindowDialogId())
+ print('PROPOSAL85_HIDDEN '+json.dumps(evidence85),flush=True)
+ raise RuntimeError(('SERIES85_PROPOSAL_LABEL_HIDDEN',evidence85))
 proposal85,_=capture('visible84-series85-proposal');Path('/root/proposal85-on').unlink(missing_ok=True)
 home.getControl(2510).selectItem(1)
 for _ in range(30):pump();xbmc.sleep(50)

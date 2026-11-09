@@ -2,7 +2,7 @@
 
 Stand: 09.11.2026, Europe/Berlin. **Draft, kein Release.**
 
-PR: [#408](https://github.com/artattakk-creator/kodi-noodleprivate/pull/408). Basis: veröffentlichte .84, aktueller main-Dokumentationsstand `b7ab7be88bee6c202f987062798484b18ba0c860`. Produkt-/Teststand `58c46c40a5a414b2ff3c3ea7a9bae93fe5cde8af`; nachfolgender Commit `3ec679b82c673149c60483b47a05ad85a1a5abfd` korrigiert ausschließlich die native Testfixture, nicht das Add-on oder ZIP.
+PR: [#408](https://github.com/artattakk-creator/kodi-noodleprivate/pull/408). Basis: veröffentlichte .84, aktueller main-Dokumentationsstand `b7ab7be88bee6c202f987062798484b18ba0c860`. Der vollständige lokale Lauf unten erfolgte auf `58c46c40a5a414b2ff3c3ea7a9bae93fe5cde8af`. Danach wurde ausschließlich der Skin-Bindingfehler des Vorschlagshinweises korrigiert und die native Fixture präzisiert. 50 gezielte echte Skin-/XML-/Hero-/Scope-Tests bestehen danach (6,791 s); vollständige abschließende Source-CI wird im PR dokumentiert.
 
 ## Ergebnis und Grenzen
 
@@ -82,8 +82,8 @@ Bei begrenztem Host-Tempvolume ausschließlich `SQLITE_TMPDIR` auf ausreichend g
 
 ## Reproduzierbarer Build
 
-- Version: `0.1.29.85`, **801 Dateien, 3.561.477 Bytes**.
-- SHA256: `021689b4a4c48caa79107fdf04ede774e864fea0823b7df78c6f8eb0625ea1ff`.
+- Version: `0.1.29.85`, **801 Dateien, 3.561.826 Bytes**.
+- SHA256: `c50c2cf4a9883afd414960c1c3ed7fe8677a9a89187cbd5f79a77d14409e8477`.
 - [ZIP / Prüfsumme / Anleitung](test-builds/02985/README_DE.md).
 - [Implementierung](IMPLEMENTIERUNG_02985_DE.md), [Issue-Matrix](ISSUE_MATRIX_02985_DE.md), [Android-Abnahmeplan](ANDROID_ABNAHME_02985_DE.md).
 - Keine automatische Installation, kein Merge, keine Veröffentlichung. .84 bleibt nutzbare Rückfallbasis ohne Downgrade-Empfehlung.
@@ -91,3 +91,7 @@ Bei begrenztem Host-Tempvolume ausschließlich `SQLITE_TMPDIR` auf ausreichend g
 ## Offen und Abnahmegrenzen
 
 #401 bleibt für reale Kapazität/EPG/Bildpersistenz auf Box B offen. #406 benötigt echte passende Bilder, IR-Navigation und dauerhaft bestätigte Zuordnungen nach Neustart. Neues zusätzliches Eventbild direkt in der Mini-EPG-Liste bleibt P1 OPEN; bestehende Details sind erhalten. Kodi-Library-Views wurden nicht destruktiv neu angelegt. Externe/SMB-Tests sind nicht freigegeben und wurden nicht ausgeführt. Alle Box-B-Gates bis zur tatsächlichen Prüfung **ANDROID_NOT_TESTED**.
+
+## Nachtrag: native Vorschlagskennzeichnung
+
+Die native Prüfung erreichte nach erneuertem Bildnachweis die echte Senderzeile mit `Provisional85=true`, aber zunächst nicht den sichtbaren Hinweis. Das Skin-Binding verwendete eine `$VAR`-Expansion in einer booleschen Sichtbarkeitsbedingung; außerdem zeigte dessen Row-Fallback auf `HeroArtSource63`. .85 nutzt nun ausdrücklich die vorhandenen Bank-/Profil-/Tokenprüfungen mit direkter `String.IsEqual`-Auswertung der Vorschlagsfelder, einschließlich korrektem Row-Fallback. Die native Prüfung wartet getrennt auf den asynchronen Verzeichnisframe und Hero-Puffercommit. Der vorherige ZIP-Hash `021689b4…` ist überholt; oben steht der aktuelle Build.

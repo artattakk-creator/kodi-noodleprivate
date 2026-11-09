@@ -8,7 +8,7 @@
 - [Testbericht](../../TESTBERICHT_02985_DE.md)
 - [Implementierung und offene Punkte](../../IMPLEMENTIERUNG_02985_DE.md)
 
-SHA256: `021689b4a4c48caa79107fdf04ede774e864fea0823b7df78c6f8eb0625ea1ff`
+SHA256: `c50c2cf4a9883afd414960c1c3ed7fe8677a9a89187cbd5f79a77d14409e8477`
 
 ## Installation erst nach Freigabe des Testkandidaten
 
