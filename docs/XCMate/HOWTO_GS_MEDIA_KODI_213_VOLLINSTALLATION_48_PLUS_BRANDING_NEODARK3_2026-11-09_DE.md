@@ -25,14 +25,28 @@ Kodi-Oberfläche Schritt für Schritt:
 3. Bei **<Keine>** / **<None>** bestätigen und **genau** `https://tinyurl.com/neodark3` eingeben (kein zusätzliches Slash an das TinyURL-Kürzel hängen).
 4. Unter „Namen für Medienquelle eingeben“ **`NeoDark3`** festlegen → **OK**.
 5. Quelle **NeoDark3** im Dateimanager öffnen: sie soll ein online verfügbares ZIP-Dateiverzeichnis mit `repository.gsmedia.pilot-1.9.12.zip`, `script.gsmedia.setup-0.5.26.zip` anzeigen. Falls Kodi nur Webseite/leer/Fehler zeigt, **nicht weitermachen**: Quelle durch direkten **GitHub-Pages-Verzeichnispfad** ersetzen: `https://artattakk-creator.github.io/kodi-noodleprivate/online-test/` (GitHub-Dateistand bestätigt, Live-HTTP-Directory-Test offen). Wenn auch das nicht browsbar ist, ZIP über eine **geprüfte SMB-Netzwerkfreigabe** bereitstellen, ohne USB. Die TinyURL ist kein ZIP-Einzelfile und gehört **nicht** in das „ZIP-Datei installieren“ Eingabefeld.
-6. Für das erstmalige ZIP-Paket: **Einstellungen → System → Add-ons → Unbekannte Quellen** bei Kodi-Aufforderung bewusst aktivieren, nur kontrollierte GS-Media-Pakete verwenden.
+6. **Wichtig für die spätere bebilderte Anleitung:** Das Hinzufügen der Netzwerkquelle installiert **noch kein Repository**. Nach dem Speichern zur Kodi-Startseite zurückkehren. Nutzerbestätigung vom 09.11.2026: **NeoDark3-TinyURL als Quelle auf Box B eingerichtet.** Die Auflistung der ZIP-Dateien ist damit noch nicht einzeln bestätigt.
+
+### Erster ZIP-Aufruf und Kodi-Sicherheitsfreigabe „Unbekannte Quellen“
+
+Diese Freigabe ist ein **eigener, verbindlicher Installationsschritt**, weil man auf einem frischen Kodi beim ersten Aufruf von „Aus ZIP-Datei installieren“ häufig zunächst auf die Sicherheitseinstellungen verwiesen wird:
+
+1. Kodi-Startseite → **Add-ons** → **Paket-Symbol (Add-on-Browser)** → **Aus ZIP-Datei installieren**.
+2. **Falls Kodi die Meldung zeigt, dass unbekannte Quellen deaktiviert sind:** noch keine ZIP auswählen. Im Dialog **Einstellungen** aufrufen, sofern angeboten. Wenn Kodi nicht direkt dorthin führt: zurück zum Zahnrad → **System** → **Add-ons**.
+3. In **System → Add-ons** den Schalter **„Unbekannte Quellen“ / „Unknown sources“** auf **Ein** setzen.
+4. Die nun erscheinende **Kodi-Sicherheitswarnung lesen und bewusst mit „Ja“ bestätigen**. Nur bewusst vertrauenswürdige GS-Media-Pakete über NeoDark3 zulassen; Drittanbieter-Add-ons können ausführbaren Code enthalten.
+5. Mit **Zurück** zum Add-on-Browser navigieren. **Erneut** **„Aus ZIP-Datei installieren“** auswählen – der erste Versuch war noch **keine Installation**.
+6. Jetzt **NeoDark3** öffnen und die Datei **`repository.gsmedia.pilot-1.9.12.zip`** auswählen. Danach auf die Kodi-Erfolgsmeldung warten.
+7. Für eine spätere PDF-Anleitung müssen Screenshots den **ersten gesperrten ZIP-Aufruf, den Schalter, die Bestätigungswarnung und den zweiten ZIP-Aufruf** separat zeigen (Bild-IDs `IMG-06A` bis `IMG-06D`). Der User hat diese Abfolge am Gerät beschrieben; **keine Fotos sind bislang geliefert**. Wenn der Warnhinweis auf dem Gerät anders lautet, dessen echten Wortlaut dokumentieren.
+
+**Status vom tatsächlichen Installationsgespräch:** `SOURCE_REGISTERED` (NeoDark3 durch Nutzer bestätigt); `ZIP_LISTING`, `UNKNOWN_SOURCES_ACCEPTED`, `PILOT_INSTALLED` aktuell **NOT_CONFIRMED**. Bitte kein PASS für diese Folgeschritte behaupten.
 
 **Stopp-Gate SOURCE-01:** Quelle öffnet in Kodi ZIP-Verzeichnis und beide exakten Dateien sind sichtbar. Name und Version fotografieren; anderenfalls nicht mit falscher Datei weitermachen.
 
 ## 2. Repository zuerst: GS Media Pilot 1.9.12
 
-1. Kodi-Start → **Add-ons** → oben **Paket-/offenes-Box-Symbol** → **Aus ZIP-Datei installieren**.
-2. Quelle **NeoDark3** → **`repository.gsmedia.pilot-1.9.12.zip`** → bestätigen.
+1. **Nach bestätigter Unbekannte-Quellen-Freigabe** (voriger Abschnitt) erneut Kodi-Start → **Add-ons → Paket-Symbol → Aus ZIP-Datei installieren** öffnen.
+2. Quelle **NeoDark3** → **`repository.gsmedia.pilot-1.9.12.zip`** → bestätigen. **Nicht** versehentlich `repository.gsmedia-1.8.1.zip` oder bereits den Installer auswählen.
 3. Auf Kodi-Installationserfolg warten; bei Add-ons → **Aus Repository installieren** muss **`xcMate Repository – Test v1.9.12 – Kodi 21.3 Omega`** bzw. **GS Media Pilot** stehen.
 4. Repo-Einstellungen → **„Nach Aktualisierungen suchen“**, falls Index noch keine Add-ons zeigt. Der Pilot ist `repository.gsmedia.pilot`, der normale **GS Media 1.8.1 Lite** ist eine andere ID (`repository.gsmedia`) und für dieses Vollinstallations-Ziel **nicht als erster Pflichtschritt erforderlich**.
 5. **SOURCES-02-PASS:** Pilot v1.9.12 aktiv und Katalog enthält Installer `script.gsmedia.setup 0.5.26` und erforderliche Vorlagen/Quellen.
@@ -76,8 +90,8 @@ Verifizierte Verteilpfade:
 
 | Prüfpunkt | Erwartung | Initial |
 |---|---|---|
-| INST-01 | `NeoDark3` Kodi-Netzwerkquelle zeigt ZIPs | NOT_TESTED |
-| INST-02 | `repository.gsmedia.pilot 1.9.12` aktiv, Index aktualisiert | NOT_TESTED |
+| INST-01 | NeoDark3-Netzwerkquelle eingebunden; ZIP-Auflistung gesondert bestätigen | **QUELLE VOM NUTZER BESTÄTIGT, ZIP-LISTING NOT_TESTED** |
+| INST-02 | Kodi-Unbekannte-Quellen-Freigabe bestätigt und Pilot-Repository 1.9.12 aktiv | **UNBEKANNTE-QUELLEN-ABLAUF GEMELDET; ERFOLG NOCH NICHT BESTÄTIGT** |
 | INST-03 | `script.gsmedia.setup 0.5.26` auf frischem Kodi installiert | NOT_TESTED |
 | INST-04 | Fortschritt 1/48 bis 48/48; bei Fehler klarer Stop + `Fortsetzen` | NOT_TESTED |
 | INST-05 | Original-BINGIE MOD 2.2.3 / alle Mindestabhängigkeiten | NOT_TESTED |
