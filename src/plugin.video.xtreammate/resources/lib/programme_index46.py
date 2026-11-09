@@ -10,7 +10,7 @@ from programme_read47 import scoped
 MAX_BYTES=128*1024*1024
 APPLICATION_ID=0x58434D46
 _scans={};_reports={};_pauses={}
-FIELDS=('pid','sid','canonical','key','start','stop','title','description','source','revision','code','subtitle','genre','episode_label','year','season','episode','cast','director','xmltv_image','provider_image','epg_source46','epg_text46','placeholder','source_key46','fact_revision46','field_sources52','updated52')
+FIELDS=('_work_ids_verified85','country','original_title','external_ids','work_id','pid','sid','canonical','key','start','stop','title','description','source','revision','code','subtitle','genre','episode_label','year','season','episode','cast','director','xmltv_image','provider_image','epg_source46','epg_text46','placeholder','source_key46','fact_revision46','field_sources52','updated52')
 
 
 def path(guide=None):
@@ -298,6 +298,7 @@ def reused(candidate):
 
 def publish(records,include_art=True):
     """One transaction for a bounded worker page, including negative art TTL."""
+    if not __import__('artwork_display84').metadata_allowed():return False
     db=None
     try:
         from programme_art46 import peek,fingerprint

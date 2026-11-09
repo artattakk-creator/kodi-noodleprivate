@@ -12,8 +12,8 @@ def credit_node(data):
 
 def upgrade(original):
  if b'XCMate84.Contract' in original['xml/IncludesVariables.xml']:
-  __import__('widget_skin84').verify(original);return dict(original)
- if MARKER in original['xml/IncludesVariables.xml']:verify(original);return __import__('widget_skin84').upgrade(original)
+  __import__('widget_skin84').verify(original);return __import__('widget_skin85').upgrade(original)
+ if MARKER in original['xml/IncludesVariables.xml']:verify(original);return __import__('widget_skin85').upgrade(__import__('widget_skin84').upgrade(original))
  if b'XCMate80.Contract' not in original['xml/IncludesVariables.xml']:return dict(original)
  from widget_skin80 import _node,digest,PORTRAIT
  from widget_skin50 import edit
@@ -72,9 +72,10 @@ def upgrade(original):
  data=data[:span81['start']]+E.tostring(credit81,encoding='utf-8')+data[end81:];at=data.rfind(b'</includes>')
  extra=E.Element('variable',name='XCMate81.BackgroundTint');E.SubElement(extra,'value',condition=PORTRAIT).text='55FFFFFF';E.SubElement(extra,'value').text='FFFFFFFF'
  result[name]=data[:at]+E.tostring(extra,encoding='utf-8')+b'<variable name="XCMate81.Contract"><value>READY</value></variable>'+data[at:]
- verify(result);return __import__('widget_skin84').upgrade(result)
+ verify(result);return __import__('widget_skin85').upgrade(__import__('widget_skin84').upgrade(result))
 
 def verify(files):
+ if b'XCMate85.Contract' in files['xml/IncludesVariables.xml']:return __import__('widget_skin85').verify(files)
  if b'XCMate84.Contract' in files['xml/IncludesVariables.xml']:return __import__('widget_skin84').verify(files)
  from widget_skin78 import parse
  root=parse(files['xml/IncludesHomeWidgets.xml'])

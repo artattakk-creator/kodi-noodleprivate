@@ -107,7 +107,7 @@ def trace(kind,code,rows,started,stale=False,stage=''):
     try:xbmc.log('[XCMate][WIDGET41] kind='+kind+' code='+code+' rows='+str(rows)+' stale='+str(int(stale))+' ms='+str(int((time.monotonic()-started)*1000))+(' stage='+stage if stage else ''),xbmc.LOGINFO)
     except (AttributeError,RuntimeError):pass
 
-def snapshot(portal,kind,background=False):
+def _snapshot84(portal,kind,background=False):
     started=time.monotonic();filename,lock=files(portal['id'],kind);key=policy(portal,kind)
     if not portal.get('include_'+kind,True):trace(kind,'DISABLED',0,started);return [],'DISABLED'
     old=read(filename,key)
@@ -153,3 +153,8 @@ def snapshot(portal,kind,background=False):
         rows,code=read_catalogue(portal,kind)
         trace(kind,code,len(rows),started);return rows,code
     rows=old['rows'] if old else [];trace(kind,code,len(rows),started,bool(old),stage46);return rows,code
+
+
+def snapshot(portal,kind,background=False):
+    from widget_snapshot85 import snapshot as memo85
+    return memo85(_snapshot84,portal,kind,background)

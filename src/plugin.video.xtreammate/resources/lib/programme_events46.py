@@ -62,6 +62,15 @@ def load(portal,channel,selected=None,now=None):
      if candidate['start']==int(selected.get('start',0)) and candidate['stop']==int(selected.get('stop',0)) and (not selected.get('title') or candidate['title']==selected['title']):event=candidate;break
     elif candidate['start']<=now<candidate['stop']:event=candidate;break
    if event is not None:break  # Expired/future aliases cannot mask a valid current provider row.
+ # An existing source/mapping/revision-checked Now/Next snapshot is local
+ # authority during a short SQLite outage, not a guessed short-cache event.
+ if event is None:
+  from epg_handoff63 import get as handoff85
+  info85=handoff85(portal['id'],sid,now=now,mappings=mappings)
+  if info85:
+   saved85=next((v for v in info85.get('events',[]) if (int(v['start'])==int(selected.get('start',0)) and int(v['stop'])==int(selected.get('stop',0)) if selected else v['start']<=now<v['stop']) and (not selected or not selected.get('title') or v['title']==selected['title'])),None)
+   if saved85:
+    return describe(portal,channel,dict(saved85,_metadata_verified48=True),info85.get('canonical46',''),info85.get('snapshot_revision'))
  # Locally supplied legacy short-cache text remains usable offline, labelled.
  if event is None and selected and selected.get('title') and int(selected.get('stop',0))>int(selected.get('start',0)):
   event=dict(selected);canonical='';view=None

@@ -44,4 +44,6 @@ def report(portal,cancel=lambda:False):
  from artwork_inventory84 import measure
  rows=inspect(portal,cancel)
  inventory=measure()
- return '\n'.join(k+': '+v for k,v in rows)+'\n\nREAD_ONLY_CACHE_BYTES\n'+'\n'.join(k+': '+str(v['bytes'])+' B / '+str(v['files'])+' / '+v['code'] for k,v in inventory.items())+'\n\nAndroid-Bildanzeige: NOT_TESTED. Cache-Inventur nur lesend; kein Datenreset.'
+ import json
+ storage85=json.dumps(__import__('storage_report85').report(),separators=(',',':'))
+ return '\n'.join(k+': '+v for k,v in rows)+'\n\nREAD_ONLY_CACHE_BYTES\n'+'\n'.join(k+': '+str(v['bytes'])+' B / '+str(v['files'])+' / '+v['code'] for k,v in inventory.items())+'\n\nLOCAL_CAPACITY85\n'+storage85+'\n\nAndroid-Bildanzeige: NOT_TESTED. Cache-Inventur nur lesend; kein Datenreset.'

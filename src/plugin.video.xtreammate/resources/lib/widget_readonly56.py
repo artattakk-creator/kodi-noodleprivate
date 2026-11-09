@@ -32,7 +32,7 @@ def publish(portal,kind,rows):
         for value in values(portal,kind,rows[offset:offset+16],approved):
             value.pop('_programme46',None)
             images84+=int(__import__('widget_assets69').renderable(value.get('art',{}).get('poster')))
-            digest.update(json.dumps(value,sort_keys=True).encode());count+=1
+            digest.update(json.dumps(__import__('widget_snapshot85').semantic(value),sort_keys=True).encode());count+=1
     if kind in ('vod','series'):
         import xbmcgui
         from home_publication74 import source_refs
