@@ -47,7 +47,7 @@ def values(portal,rows):
                 if len(enriched)!=len(base):raise ValueError()
                 for item,value in zip(base,enriched):
                     if value['props'].get('XCMate.MediaId')!=item['props']['XCMate.MediaId']:raise ValueError()
-                    item['props'].update({k:v for k,v in value['props'].items() if k.startswith(('XCMate.Programme','XtreamMate.')) and (k!='XCMate.ProgrammeLogo46' or v or not item['props'].get(k))})
+                    item['props'].update({k:v for k,v in value['props'].items() if (k.startswith(('XCMate.Programme','XtreamMate.')) or k in ('XCMate.Provisional85','XCMate.ArtProof69')) and (k!='XCMate.ProgrammeLogo46' or v or not item['props'].get(k))})
                     if isinstance(value.get('info',{}).get('plot'),str):item['info']['plot']=value['info']['plot'][:8192]
                     if value.get('menus46'):item['menus46']=value['menus46']
                     events63[item['props']['XCMate.MediaId']]=value.get('_programme46')

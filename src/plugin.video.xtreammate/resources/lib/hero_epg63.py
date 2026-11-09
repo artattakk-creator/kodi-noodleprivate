@@ -47,7 +47,7 @@ def poll():
     info=info or guide_for_channel({})
     neutral=''
     key=label('XCMate.ProgrammeKey47')
-    props={'XCMate.ProgrammeKey47':key,'XCMate.ProgrammeImage46':label('XCMate.ProgrammeImage46') or neutral,
+    props={'XCMate.Provisional85':label('XCMate.Provisional85'),'XCMate.ProgrammeKey47':key,'XCMate.ProgrammeImage46':label('XCMate.ProgrammeImage46') or neutral,
            'XCMate.ProgrammeArtSource57':label('XCMate.ProgrammeArtSource57'),
            'XCMate.ProgrammeImageScope57':label('XCMate.ProgrammeImageScope57'),
            'XCMate.FallbackLabel63':label('XCMate.FallbackLabel63'),'XCMate.ArtProof69':label('XCMate.ArtProof69')}
@@ -61,6 +61,8 @@ def poll():
     from live_text63 import facts75
     facts75(props,dict(raw68,key=event_key) if raw68 else {})
     if art.get('profile63')==scope and art.get('key')==event_key and art.get('code') in ('READY','READY_STALE') and art.get('source')!='placeholder' and __import__('programme_image69').eligible(art,intent68):
+        props['XCMate.Provisional85']='true' if art.get('provisional85') or art.get('match')=='PROVISIONAL_TV85' else ''
+        if props['XCMate.Provisional85']=='true' and not props['XCMate.ProgrammeDescription46'].startswith('Bildvorschlag – Zuordnung nicht bestätigt'):props['XCMate.ProgrammeDescription46']='Bildvorschlag – Zuordnung nicht bestätigt.\n'+props['XCMate.ProgrammeDescription46']
         props['XCMate.ProgrammeImage46']=props['XCMate.HeroImage63']=art['image'];props['XCMate.ProgrammeArtSource57']=props['XCMate.HeroArtSource63']=art.get('source','')
         if art.get('image_scope57')=='series_fallback' and props.get('XCMate.FallbackLabel63'):
             note63=props['XCMate.FallbackLabel63']
@@ -71,6 +73,7 @@ def poll():
         Subtitle=label('XCMate.ProgrammeSubtitle63') if key==event_key else '',
         Percent=props['XCMate.ProgrammePercent46'],Image=props.get('XCMate.HeroImage63',neutral),
         ArtSource=props.get('XCMate.HeroArtSource63',''),Facts=props.get('XCMate.ProgrammeFacts75',''),LongTitle='true' if len(props['XCMate.ProgrammeTitle46'])>26 else 'false')
+    values['Provisional85']=props.get('XCMate.Provisional85','')
     # Keep a previously displayed local texture behind an atomic same-event
     # upgrade. Never carry it across channel, mapping, edition or opt-out.
     from event_art81 import key as event_identity81,allowed as source_allowed81
@@ -80,7 +83,7 @@ def poll():
     same81=bool(event81 and active81.getProperty('XCMate.Hero81.Event')==event81)
     prior_image81=active81.getProperty(prefix81+'Image');prior_source81=active81.getProperty(prefix81+'ArtSource')
     if same81 and prior_image81.startswith('/') and source_allowed81(dict(source=prior_source81)):
-        if not values['Image']:values['Image']=prior_image81;values['ArtSource']=prior_source81
+        if not values['Image']:values['Image']=prior_image81;values['ArtSource']=prior_source81;values['Provisional85']=active81.getProperty(prefix81+'Provisional85')
         elif values['Image']!=prior_image81 and active81.getProperty('XCMate.Hero81.PreviousImage')!=prior_image81:active81.setProperty('XCMate.Hero81.PreviousImage',prior_image81)
     elif active81.getProperty('XCMate.Hero81.PreviousImage'):active81.setProperty('XCMate.Hero81.PreviousImage','')
     if active81.getProperty('XCMate.Hero81.Event')!=event81:active81.setProperty('XCMate.Hero81.Event',event81)

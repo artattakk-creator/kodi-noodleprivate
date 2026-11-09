@@ -16,5 +16,14 @@ def install():
    result85['props']['XCMate.ProgrammeDescription46']='Bildvorschlag – Zuordnung nicht bestätigt. Synthetic native UI fixture.'
   return result85
  decorate85.fixture85=True;programme_widgets46.decorate=decorate85
+ import programme_requests68
+ original_result85=programme_requests68.result
+ if not getattr(original_result85,'fixture85',False):
+  def result85(event,*args,**kwargs):
+   value85=original_result85(event,*args,**kwargs)
+   if Path('/root/proposal85-on').exists() and str(event.get('sid'))=='0' and value85.get('code') in ('READY','READY_STALE') and value85.get('source')!='placeholder':value85=dict(value85,provisional85=True)
+   return value85
+  result85.fixture85=True;programme_requests68.result=result85
+
 
 if __name__=='__main__':run()
