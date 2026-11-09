@@ -29,7 +29,11 @@ Die Dateinamen sind **geplante Redaktionsnamen**, **noch keine vorhandenen Datei
 | IMG-04 | INST-01 | **Quelle hinzufügen**, Eingabe `https://tinyurl.com/neodark3` | „Die NeoDark3-Adresse exakt eintragen“ | NOT_CAPTURED |
 | IMG-05 | INST-01 | Quellenname **NeoDark3** / verfügbare Quelle im Dateimanager | „Die Quelle als NeoDark3 speichern“ | NOT_CAPTURED |
 | IMG-06 | INST-01 | Online-Verzeichnis mit Pilot-ZIP und Installer-ZIP | „Die beiden benötigten Installationsdateien sind sichtbar“ | NOT_CAPTURED |
-| IMG-07 | INST-02 | **Add-ons → Aus ZIP-Datei installieren**, NeoDark3 gewählt | „Das Pilot-Repository als ZIP installieren“ | NOT_CAPTURED |
+| IMG-06A | INST-02 | Erster Kodi-Aufruf **Add-ons → Paket-Symbol → Aus ZIP-Datei installieren**, darauf Sperrhinweis | „Beim ersten ZIP-Aufruf weist Kodi auf deaktivierte unbekannte Quellen hin“ | NOT_CAPTURED |
+| IMG-06B | INST-02 | **Zahnrad → System → Add-ons → Unbekannte Quellen**, Schalter einschalten | „Unbekannte Quellen für die Installation bewusst aktivieren“ | NOT_CAPTURED |
+| IMG-06C | INST-02 | Kodi-Sicherheitswarnung, Auswahl „Ja“ – ohne private Inhalte | „Die Sicherheitswarnung lesen und mit Ja bestätigen“ | NOT_CAPTURED |
+| IMG-06D | INST-02 | Zurück zu **Add-ons → Paket-Symbol → Aus ZIP-Datei installieren** | „Nach der Freigabe erneut Aus ZIP-Datei installieren öffnen“ | NOT_CAPTURED |
+| IMG-07 | INST-02 | **NeoDark3** im nun offenen ZIP-Dateibrowser | „Nun die NeoDark3-Quelle auswählen“ | NOT_CAPTURED |
 | IMG-08 | INST-02 | Auswahl `repository.gsmedia.pilot-1.9.12.zip` | „GS Media Pilot Repository 1.9.12 auswählen“ | NOT_CAPTURED |
 | IMG-09 | INST-02 | Repo erfolgreich installiert/aktiv, sichtbarer Name/Version | „Das Pilot-Repository ist einsatzbereit“ | NOT_CAPTURED |
 | IMG-10 | INST-03 | **Aus Repository installieren → Pilot → Programm-Add-ons** | „Zum XCMate Media Center Installer wechseln“ | NOT_CAPTURED |
@@ -43,6 +47,8 @@ Die Dateinamen sind **geplante Redaktionsnamen**, **noch keine vorhandenen Datei
 | IMG-18 | INST-08/09 | Live-Startsender, reale Senderlogos, Hero/EPG und Ladeanzeigen | „Senderleiste, EPG und Medienzeilen überprüfen“ | NOT_CAPTURED |
 
 **Prinzip bei echten Fehlern:** Jede zusätzliche Fehlermeldung erhält eigene Aufnahme `ERR-NNN`, Gerätelauf-ID, betroffene Add-on-ID und GitHub-Issue-Bezug. Das dokumentiert nicht nur den Endzustand, sondern hilft Codex, einen Fehler reproduzierbar **dauerhaft** im Installer zu beseitigen.
+
+**Neu bestätigt am 09.11.2026:** Der Nutzer hat die **TinyURL-Quelle NeoDark3** tatsächlich eingerichtet. Beim Beginn der ZIP-Installation wurde der Ablauf über „Unknown Sources“ mit anschließendem Zurückgehen und erneutem Aufruf beschrieben; die **Kodi-Warnungsbestätigung und die erfolgreiche Repository-Installation sind noch nicht einzeln als abgeschlossen bestätigt**. Deshalb bleiben alle Bild-IDs `NOT_CAPTURED`; die Screenshotanzahl steigt **von 18 auf 22 geplante Aufnahmen**, nicht auf 22 vorhandene Fotos.
 
 ## C. Maschinenlesbare Quellen für eine spätere PDF-Produktion
 
@@ -65,10 +71,10 @@ Beim PDF-Satz kann das Programm je Schritt Titel, Kodi-Klickpfad, Beschreibung, 
 | Testlauf-ID | `BOXB-CLEAN-20261109-01` (geplanter Bezeichner, noch keine Ausführung) |
 | Gerät | Box B – nicht Box A |
 | Ziel | Kodi 21.3, `NeoDark3` → Pilot 1.9.12 → Setup 0.5.26 → 48/48 + Branding |
-| Startschritt | `INST-01`: Netzwerkquelle in Kodi eintragen |
-| Realer Gerätetest | **NOT_STARTED / nicht gemeldet** |
-| Aktuelle Screenshots | **0 aufgenommene/freigegebene** |
-| Letzter bestätigter Erfolgsstatus | **keiner für einen vollständig zurückgesetzten Neubau** |
+| Startschritt | `INST-01`: **NeoDark3-Quelle durch Nutzer eingerichtet**; `INST-02`: Sicherheitsfreigabe/ZIP-Auswahl folgt |
+| Realer Gerätetest | **IN_PROGRESS – Quelle eingerichtet; ob ZIP-Liste und Freigabe abgeschlossen sind, offen** |
+| Aktuelle Screenshots | **0 von 22 geplanten Bildern aufgenommen/freigegeben** |
+| Letzter bestätigter Erfolgsstatus | **NeoDark3 als Kodi-Netzwerkquelle angelegt** (Nutzermeldung vom 09.11.2026); Pilotinstallation noch nicht bestätigt |
 | Offene Probleme | #407 Installationsabnahme, #401 Python/Storage, #406 Bild-/UI-Abdeckung |
 | Nächste Aktualisierung | Tatsächlich sichtbaren Kodi-Bildschirm + PASS/FAIL/Foto nach Nutzerfeedback eintragen |
 
