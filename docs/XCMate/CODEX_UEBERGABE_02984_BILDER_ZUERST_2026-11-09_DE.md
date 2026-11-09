@@ -103,3 +103,32 @@ Kodi-Systeminfo zugleich /storage/emulated/0 angeblich 256 GB total/144 GB frei;
 Gleiche Quelle und EPG-Events 1..8, sichtbar 1..5 ⇒ genau diese fünf Bild-IDs als initiale anstehende Requests (dedupliziert). Einmal rechts ⇒ nur neuer Auftrag für 6; zurück links ⇒ Bild 1 aus Cache/Last-Good, kein doppelter Download. Drei parallele Hintergrund-Updates (EPG-Revision, Focus, fehlende Quelle) dürfen kein altes Eventbild in neues Widget einbauen. Beim Sendungswechsel `t=end` und `t=end+grace` wird alter *unreferenzierter* Download entfernt, Pin verhindert vorzeitige Entfernung. Cache misst tatsächliche Bytes, niemals über Hardlimit; keine APK/Kodi-DB/EPG- oder bereits bestehenden Dateien löschen. Echte Bilder auf Box B nachweisen, `IMAGE_DECODED` reicht nicht.
 
 **Wichtige Codekorrelation:** In `programme_art46.py` werden zwar source/URL im Ergebnis gespeichert, doch der aktuelle lokale Persistenzweg ruft `space(3 MiB)` **vor dem Download** und schreibt danach Bildbytes; somit nicht die gewünschte Reference-first-Architektur. `programme_sources57.py` bietet bereits TMDB/TVMaze-Resolver, `tmdb_epg60.py` Staffel-/Episoden-Matching, `programme_art46.py` verarbeitet vorhandene XMLTV-/Provider-Event-Icons. Die ref-first-Phase vom Bilddownload und vom lokal gespeicherten Dateibeleg sauber trennen.
+
+## 8. Aktuelles reales TV-Foto zeigt zusätzlich eine BINGIE-Home-Layoutregression (09.11.2026)
+
+**P0-Unterticket [#404](https://github.com/artattakk-creator/kodi-noodleprivate/issues/404)** ist **Abnahme-Blocker** für Hauptfix #403 und muss auf dem **selben** .84-Branch behandelt werden. Privates Benutzerfoto liegt im Chat vor, nicht ungefragt in ein öffentliches GitHub-Issue kopieren.
+
+### Sichtbar beobachtet
+
+- Hero ist nur ein schmaler oberer Streifen; großflächige schwarze leere Bildschirmmitte.
+- XMLTV-Hero zeigt nur zentralen/unteren Teil eines Gesichts, Motiv wirkt unpassend beschnitten. Der Text rechts sagt explizit **„Bild: XMLTV“**, das ist **keine** Bestätigung, dass TMDB funktioniert.
+- Rechte EPG-Anzeige `DE| DELUXE MUSIC HEVC / TOP 25`, Jetzt 14–16, Danach 16–17, Beschreibung/Plot drängen sich übereinander; Lesbarkeit und Safe-Area schlecht.
+- Horizontale Senderleiste enthält **einige echte Logos**, u. a. Welt, Nitro, Discovery; Fokusmarker vorhanden. Daraus gerade **nicht** „alle Logos generell defekt“ ableiten.
+- **Filmwidget fehlt** sichtbar vollständig; große Lücke zwischen Senderreihe und unterer Reihe.
+- **Serienwidget erscheint am unteren Bildrand abgeschnitten**, nur Teile generischer runder Platzhalter zu sehen. Item- und Bildquelle separat prüfen.
+
+### Konkrete Quellcode-Korrelation
+
+- `widget_skin80.py` setzt `XCMate50.Hero` control 296751 auf Höhe `480`, `aspectratio=scale`, Home-Container `77777` `top=500,height=560`.
+- `widget_skin81.py` setzt denselben Hero auf **`400`**, Gesamt-Herogruppe auf `420`, Text-/Bildpanel auf `400`, `XCMate50.LiveRow` auf `80`, Medienreihe `XCMate80.MediaRow` auf `268`, Poster-layout `140×208`, Scroll-Container `77777` `top=420,height=640`. Das ist ein **konkreter Regression-Verdacht**, nicht endgültig bewiesene Laufzeitursache ohne Prüfung der installierten XML-Dateien und `XCMate81.Contract`.
+- `home_activation78.py`, `widget_skin78.py:runtime` und SkinShortcuts-Generator/Native-Home-Bindings prüfen, ob der Build tatsächlich aktiv ist; keine globale, ungesicherte Repatch-/Reset-Aktion.
+
+### Verbindlicher Fix/Abnahme
+
+- Hero auf dem realen 1920×1080-Gerät deutlich größer und breit, ungefähr 500–560 Kodi-Koordinaten als **Startentwurf**; mit vollständig sichtbaren, lesbaren Sendungsinformationen rechts. Original-Image-Aspekt/Szenenmotiv prüfen und Portrait/gering aufgelöste XMLTV-Vorlagen ohne verzerrte Gesichter oder aggressive Crops sinnvoll letterboxen/contain; nicht Qualitätsgewinn vortäuschen. Quelle und Titel korrekt attribuieren.
+- **Senderlogos → Neueste Filme → Neueste Serien** ohne Hunderte Pixel Leerstelle. Sowohl real vorhandene Katalogdaten als auch tatsächlich gerenderte Poster und bedienbare horizontale Fokusnavigation. Die Reihen dürfen nicht aus dem Scrollcontainer verschwinden oder am Screen-Ende unerreichbar abgeschnitten sein. Evtl. notwendige vertikale Navigation ausdrücklich testen und sinnvoll auf den verfügbaren Platz abstimmen.
+- Overlay-Bounds, Content-Padding, Long-Title, Now/Next, Progress, Quellencredit und Zeichensatz sauber prüfen. Keine Texte überlagern.
+- Spaltenbreiten/Row- und Viewport-Koordinaten/Content-Quelle differenzieren; Daten da (24 VOD + 24 Series aus Logs) ≠ Reihe sichtbar ≠ Bild gerendert. Auf Box B Beleg durch Start-, Fokus-, Film- und Serien-Screenshot bei 1080p; wenn möglich 720p/4K Layout-Regressionschecks. Keine globalen Skin-/Kodi-DB-Resets. Box A bleibt unverändert.
+- **Abnahme von .84 nur** wenn #403 **und** #404 für sichtbares Live/Filme/Serien + EPG-Hero erfolgreich verifiziert sind; #401 Speicher/Journalarbeit koordiniert ohne neue unnötige Blockade.
+
+**Status:** Dokumentationsauftrag, **kein** implementierter Layoutfix und **keine** Veröffentlichung.
