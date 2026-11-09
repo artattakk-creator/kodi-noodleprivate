@@ -58,7 +58,9 @@ bleiben Android-Kapazität, Rechte und sichtbare Bilddarstellung ungeprüft.
   gespeichert. Vor Kopieren, Dateien und Aktivieren wird erneut geprüft.
   Vor dem Kopieren muss der noch ausstehende Gesamtbestand plus Reserve passen.
   Copy → SHA256-Readback → explizit bestätigte Kodi-Bildanzeige → Aktivieren.
-  Keine automatische Aktivierung oder Bereinigung.
+  Keine automatische Aktivierung oder Bereinigung. Eine abgelehnte erneute
+  Bildanzeige widerruft eine frühere Renderbestätigung; ein abgebrochener
+  Ordnerjob wird nicht als fehlende Android-Berechtigung ausgegeben.
 - SQLite BUSY/LOCKED: maximal drei fehlgeschlagene Statement-/Commitversuche,
   je 30 ms SQLite-Wartezeit, Backoff 20/50 ms. Keine Wiederholung ganzer
   Kopierjobs, keine neue Workerschleife. Bereits vorhandene Journal-Tabellen

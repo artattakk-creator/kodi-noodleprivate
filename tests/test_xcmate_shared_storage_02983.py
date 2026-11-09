@@ -167,6 +167,12 @@ class SharedStorage83(Fixture, unittest.TestCase):
         with mock.patch.object(ui,'job',return_value=[]),self.assertRaisesRegex(self.fail,'TARGET_SAF_REQUIRED'):ui._pick_android()
         self.assertEqual(self.config.read(),before)
 
+    def test_picker_job_cancel_is_not_misreported_as_missing_android_permission(self):
+        ui=importlib.import_module('artwork_ui');dialog=mock.Mock();dialog.browseSingle.return_value=str(self.target)
+        for sequence in ([None],[[dict(path=str(self.target),label='Movies')],None]):
+            with mock.patch('xbmcgui.Dialog',return_value=dialog),mock.patch.object(ui,'job',side_effect=sequence),mock.patch('menu_icons45.select',return_value=0):
+                self.assertIsNone(ui._pick_android())
+
     def test_cancel_probe_confirmation_does_not_prepare_or_start_journal(self):
         ui=importlib.import_module('artwork_ui');dialog=mock.Mock();dialog.yesno.return_value=False
         with mock.patch('xbmcgui.Dialog',return_value=dialog),mock.patch.object(ui,'job',side_effect=lambda f:f(lambda:False,lambda **kw:None)),mock.patch.object(self.s,'preflight',return_value={'rows':[]}),mock.patch('artwork_migration.begin') as begin:
@@ -214,6 +220,14 @@ class Migration83(unittest.TestCase):
             self.m.copy(cancel=lambda:True);self.assertEqual(self.m.status()['stage'],'PAUSED')
             importlib.reload(self.m).copy();self.assertTrue(self.m.verify())
         self.assertEqual(self.m.status()['done'],23)
+
+    def test_rejected_new_render_revokes_earlier_confirmation(self):
+        self.fixture.seed(1)
+        self.m.begin(self.target);self.m.copy();self.m.verify();self.m.approve_render(True)
+        self.m.approve_render(False)
+        self.assertFalse(self.m.status()['rendered'])
+        with self.assertRaisesRegex(self.fail,'RENDER_NOT_VERIFIED'):self.m.activate()
+        self.assertEqual(self.fixture.config.read()['mode'],'internal')
 
     def test_changed_mount_after_copy_refuses_activation_without_deleting_source(self):
         self.fixture.seed(1)

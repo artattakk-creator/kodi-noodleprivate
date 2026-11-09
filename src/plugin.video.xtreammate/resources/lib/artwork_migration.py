@@ -236,8 +236,8 @@ def approve_render(approved):
     db=_db()
     try:
         item=_selected(db)
-        if not item or item['stage'] not in ('VERIFIED','ACTIVE') or approved is not True:raise StorageFailure('RENDER_NOT_VERIFIED')
-        with db:db.execute('UPDATE transfers SET rendered=1 WHERE id=?',(item['id'],))
+        if not item or item['stage'] not in ('VERIFIED','ACTIVE') or (approved is not True and approved is not False):raise StorageFailure('RENDER_NOT_VERIFIED')
+        with db:db.execute('UPDATE transfers SET rendered=? WHERE id=?',(int(approved),item['id']))
     finally:db.close()
 
 

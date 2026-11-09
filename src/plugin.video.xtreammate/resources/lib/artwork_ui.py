@@ -61,7 +61,8 @@ def _pick():
         if target:_prepare(target,shared=True)
         return None
     if kind not in (0,1):return None
-    values=job(lambda cancel,progress:external_sources() if kind==0 else [row for row in kodi_sources() if row['path'].startswith('smb://')]) or []
+    values=job(lambda cancel,progress:external_sources() if kind==0 else [row for row in kodi_sources() if row['path'].startswith('smb://')])
+    if values is None:return None
     if kind==1:values.append(dict(label=tr(35226),path='smb://'))
     if not values:
         from artwork_vfs import StorageFailure
@@ -75,7 +76,8 @@ def _pick_android():
     import xbmcgui
     from android_storage83 import candidates,measure
     from artwork_vfs import StorageFailure
-    values=job(lambda cancel,progress:candidates()) or []
+    values=job(lambda cancel,progress:candidates())
+    if values is None:return None
     if not values:raise StorageFailure('TARGET_SAF_REQUIRED')
     dialog=xbmcgui.Dialog()
     index=__import__('menu_icons45').select(dialog,tr(38300),[row['label'] for row in values],default='image')
@@ -83,7 +85,7 @@ def _pick_android():
     target=dialog.browseSingle(3,tr(38300),'files',defaultt=values[index]['path'])
     if not target:return None
     # Listing is no permission grant. A returned URI or vanished mount fails.
-    job(lambda cancel,progress:measure(target,'TARGET',require=True))
+    if job(lambda cancel,progress:measure(target,'TARGET',require=True)) is None:return None
     return target
 
 
@@ -151,7 +153,7 @@ def _manage():
                         probe=job(lambda cancel,progress:migration.probe_image());uri=probe['uri'] if probe else ''
                     approved=_render(uri)
                     if probe:job(lambda cancel,progress:migration.remove_probe(probe))
-                    if approved:job(lambda cancel,progress:migration.approve_render(True))
+                    job(lambda cancel,progress:migration.approve_render(approved))
             elif choice==8:
                 if dialog.yesno(tr(35200),tr(35217)):job(migration.activate)
             elif choice==9:

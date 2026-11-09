@@ -4,7 +4,7 @@ Referenzen: #398, #395. Basis: `fdbcf96823760777d0a2f153d046389c3d1f1352`.
 
 ## Gezielte Ergebnisse auf dem Host
 
-- **39/39 PASS**: neue Speicher-, Berechtigungs-, Migrations-, Journal- und
+- **41/41 PASS**: neue Speicher-, Berechtigungs-, Migrations-, Journal- und
   Bestandsschutztests (`test_xcmate_shared_storage_02983.py`,
   `test_xcmate_scope_02983.py`). Die Laufzeit steht im vollständigen Host-/CI-Protokoll.
 - **11/11 PASS**: separate pytest-Prüfung des BINGIE-Brandings.
