@@ -9,7 +9,7 @@ class UI81(unittest.TestCase):
   with mock.patch.object(adapter,'upgrade',side_effect=lambda x:dict(x)):old=self.h.m.build(self.h.original)
   new=adapter.upgrade(old);self.assertEqual(adapter.upgrade(new),new)
   root=self.h.m.parse(new['xml/IncludesHomeWidgets.xml'])
-  self.assertEqual(root.find(".//control[@id='296751']/height").text,'400')
+  self.assertEqual(root.find(".//control[@id='296751']/height").text,'520')
   self.assertEqual(root.find(".//control[@id='296783']/aspectratio").text,'keep')
   self.assertEqual(root.find("include[@name='XCMate80.MediaRow']/control/height").text,'268')
   self.assertEqual(root.find("include[@name='XCMate81.PosterRow']/focusedlayout/control[last()]/visible").text,'Control.HasFocus($PARAM[widgetid])')

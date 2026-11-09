@@ -72,6 +72,7 @@ def persist(event,value):
 
 def flush(cancel=lambda:False):
  global _next_flush
+ if not __import__('artwork_display84').metadata_allowed():return False
  now=time.time()
  if now<_next_flush or cancel():return False
  _next_flush=now+5

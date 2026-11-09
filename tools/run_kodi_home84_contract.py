@@ -16,7 +16,7 @@ def main():
  pristine=report/'pristine'
  with zipfile.ZipFile(archive) as z:
   assert all(not Path(n).is_absolute() and '..' not in Path(n).parts for n in z.namelist());z.extractall(pristine)
- candidate=report/'candidate';subprocess.run([sys.executable,str(root/'tools/build_bingie66_review.py'),'--skin',str(pristine/'skin.titan.bingie.mod'),'--output',str(candidate)],check=True)
+ candidate=report/'candidate';subprocess.run([sys.executable,str(root/'tools/build_bingie84_review.py'),'--skin',str(pristine/'skin.titan.bingie.mod'),'--output',str(candidate)],check=True)
  env=dict(os.environ,BUILDX_CONFIG=str(report/'buildx'))
  for key in ('DOCKER_HOST','DOCKER_CONTEXT','DOCKER_TLS','DOCKER_TLS_VERIFY','DOCKER_CERT_PATH'):env.pop(key,None)
  docker=['docker','--host=unix:///var/run/docker.sock'];name='xcmate-visible84-'+uuid.uuid4().hex[:10]
