@@ -85,6 +85,11 @@ def main():
         except (subprocess.CalledProcessError,ValueError):pass
         run('cp',name+':/root/.kodi/temp/kodi.log',str(report/'synthetic-kodi.log'))
         run('cp',name+':/root/gui66-error.txt',str(report/'gui-error.txt'),stderr=subprocess.DEVNULL) if subprocess.run(docker+['exec',name,'test','-f','/root/gui66-error.txt'],env=env).returncode==0 else None
+        # Synthetic fixture evidence must be inspectable without downloading
+        # an artifact; keep private production logs out of this disposable gate.
+        for evidence85 in ('gui-error.txt','post75-error.txt','restart.log','restart2.log','probe.log'):
+            path85=report/evidence85
+            if path85.is_file():print(evidence85+'\n'+path85.read_text(errors='replace')[-12000:],flush=True)
         if not args.keep_container:subprocess.run(docker+['rm','-f',name],env=env,stdout=subprocess.DEVNULL)
 
 if __name__=='__main__':main()
