@@ -77,3 +77,15 @@ class Mapping85(Fixture,unittest.TestCase):
  def test_mash_punctuation_is_exact_canonical_acronym_not_substring_guessing(self):
   from programme_mapping85 import name
   self.assertEqual(name('M*A*S*H'),name('M.A.S.H.'));self.assertNotEqual(name('M*A*S*H'),name('Mashup'))
+ def test_explicit_picker_allows_correction_of_wrong_epg_year_without_polluting_automatic_cache(self):
+  event=dict(self.event,year=2026)
+  with mock.patch('tmdb_connection60.request',side_effect=self.reply()):rows,done=self.engine.search(dict(event,_manager85=True))
+  self.assertTrue(done);self.assertEqual({r['year'] for r in rows},{2019,2021});self.assertFalse(self.engine.read(event));self.assertIsNone(self.engine.suggestion(event))
+  with mock.patch('tmdb_connection60.request',side_effect=self.reply()):
+   with self.assertRaisesRegex(Exception,'NO_MATCH'):self.engine.candidate(event)
+ def test_user_confirmed_work_overrides_conflicting_automatic_work_id_without_changing_epg_facts(self):
+  event=dict(self.event,external_ids={'imdb_id':'wrong_epg_fixture_id'},_work_ids_verified85=True);before=dict(event)
+  with mock.patch('tmdb_connection60.request',side_effect=self.reply()):rows,_=self.engine.search(dict(event,_manager85=True))
+  self.maps.set_mapping(event,rows[0])
+  with mock.patch('tmdb_connection60.request',side_effect=self.reply()):value=self.engine.candidate(event)
+  self.assertEqual(value['match'],'MANUAL_CONFIRMED');self.assertEqual(value['remote_id'],19);self.assertEqual(event,before);self.assertNotIn('episode',value)

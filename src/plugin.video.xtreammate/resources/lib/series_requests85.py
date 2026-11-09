@@ -58,8 +58,8 @@ def drain(cancelled_service=lambda:False):
   thumb=data.get('thumbnail')
   if thumb:
    from programme_candidates85 import read
-   cached=read(actual);rows=[r for r in cached.get('rows',[]) if [r.get('source'),r.get('id')]==thumb];complete=cached.get('complete',False)
-  else:rows,complete=search(actual,stop,include_tvmaze=True)
+   cached=read(dict(actual,_manager85=True));rows=[r for r in cached.get('rows',[]) if [r.get('source'),r.get('id')]==thumb];complete=cached.get('complete',False)
+  else:rows,complete=search(dict(actual,_manager85=True),stop,include_tvmaze=True)
   from programme_urls55 import probe,OPTIONS,safe
   from artwork_visible import public_dns
   started=time.monotonic()

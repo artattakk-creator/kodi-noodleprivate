@@ -13,7 +13,7 @@ def enabled(source='tmdb'):
 def key(event):
  from programme_mapping85 import namespace
  from programme_policy68 import negative_scope
- return hashlib.sha256((namespace(event)+negative_scope({})).encode()).hexdigest()
+ return hashlib.sha256((namespace(event)+negative_scope({})+('manager85' if event.get('_manager85') else '')).encode()).hexdigest()
 def window():
  import xbmcgui
  return xbmcgui.Window(10000)
@@ -68,8 +68,8 @@ def details(event,ident,cancel=lambda:False,manual=False,row=None):
   else:alias=True;work_match85=True
  external=event.get('external_ids') or {}
  actual=data.get('external_ids') or {}
- if isinstance(external,dict) and external and any(k not in actual for k in external):actual=request(TMDB+'/tv/'+str(ident)+'/external_ids',token=tmdb_token(),cancel=cancel)
- if isinstance(external,dict) and any(v and (k not in actual or str(v)!=str(actual[k])) for k,v in external.items()):note(event,'EXTERNAL_ID_CONFLICT');return None
+ if not manual and isinstance(external,dict) and external and any(k not in actual for k in external):actual=request(TMDB+'/tv/'+str(ident)+'/external_ids',token=tmdb_token(),cancel=cancel)
+ if not manual and isinstance(external,dict) and any(v and (k not in actual or str(v)!=str(actual[k])) for k,v in external.items()):note(event,'EXTERNAL_ID_CONFLICT');return None
  backdrop=_tmdb_image(data.get('backdrop_path'));poster=_tmdb_image(data.get('poster_path'))
  if not backdrop and not poster:
   note(event,'TV_IMAGE_MISSING');raise __import__('media_sources43').SourceError('NO_ARTWORK')
@@ -81,7 +81,7 @@ def search_tmdb85(event,cancel=lambda:False):
  from programme_mapping85 import name
  if not enabled():remember(event,[]);return [],True
  genre=str(event.get('genre') or '').casefold()
- if any(v in genre for v in ('film','movie','nachricht','news','sport','talk')):remember(event,[]);return [],True
+ if not event.get('_manager85') and any(v in genre for v in ('film','movie','nachricht','news','sport','talk')):remember(event,[]);return [],True
  label=str(event.get('title') or '')[:200];year=str(event.get('year') or '')
  suffix=re.fullmatch(r'(.+?)\s+\(((?:19|20)[0-9]{2})\)',label)
  if suffix:
@@ -91,7 +91,7 @@ def search_tmdb85(event,cancel=lambda:False):
  query={'yuna stitch':'Stitch!'}.get(name(label),label)
  rows,complete=pages(event,'tv',query,cancel)
  exact=[r for r in rows if name(label) in (name(r.get('name')),name(r.get('original_name')))]
- if year:
+ if year and not event.get('_manager85'):
   if not year.isdigit() or not 1880<=int(year)<=2100:raise SourceError('NO_MATCH')
   matches=[r for r in exact if str(r.get('first_air_date',''))[:4]==year]
   if exact and not matches:note(event,'SERIES_YEAR_CONFLICT');raise SourceError('NO_MATCH')
@@ -101,13 +101,13 @@ def search_tmdb85(event,cancel=lambda:False):
  for row in considered[:MAX_DETAILS]:
   if cancel() or time.monotonic()-started>15:complete=False;break
   if row.get('adult'):continue
-  try:candidate=details(event,row['id'],cancel,row=row)
+  try:candidate=details(event,row['id'],cancel,manual=bool(event.get('_manager85')),row=row)
   except SourceError:
    if len(considered)==1:raise
    continue
   if not candidate:continue
   if str(row.get('first_air_date',''))[:4]!=str(candidate['year']):continue
-  if year and str(candidate['year'])!=year:continue
+  if not event.get('_manager85') and year and str(candidate['year'])!=year:continue
   verified.append(candidate)
  if len(considered)>MAX_DETAILS:complete=False
  country=str(event.get('country') or '').upper()

@@ -12,7 +12,7 @@ exec(compile(base,'/base_gui84.py','exec'),globals())
 # Then scroll to the second viewport: all 24 titles remain in the native row,
 # only the newly visible sources are admitted, and the selected tile stays put.
 scroll85=[]
-for kind85,control85 in (('vod',2511),('series',2512)):
+for kind85,control85 in (('vod',2520),('series',2530)):
  rows85_catalog,_=snapshot(portal,kind85)
  home.setFocusId(control85);home.getControl(control85).selectItem(23)
  for _ in range(40):home_schedule75.observe();xbmc.sleep(50)
