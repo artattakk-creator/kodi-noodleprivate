@@ -1,0 +1,295 @@
+{
+  "schema_version": 1,
+  "title": "GS Media 48-Paket-Vollinstallation und Space Blue Branding – Bildmanifest",
+  "created_at": "2026-11-09",
+  "last_updated_at": "2026-11-09",
+  "target_device": "Box B (Testbox)",
+  "target_versions": {
+    "kodi": "21.3 Omega ARM32",
+    "pilot": "repository.gsmedia.pilot 1.9.12",
+    "installer": "script.gsmedia.setup 0.5.26",
+    "xcmate": "plugin.video.xtreammate 0.1.29.84",
+    "bingie_mod": "2.2.3",
+    "branding": "script.gsmedia.xcmate.branding 0.2.0"
+  },
+  "capture_policy": "Never publish screenshots with secrets; no image in repository until sanitized, verified and approved",
+  "test_run": {
+    "id": "BOXB-CLEAN-20261109-01",
+    "status": "NOT_STARTED",
+    "completed_components": null,
+    "branding_status": "NOT_TESTED",
+    "android_verified": false
+  },
+  "images": [
+    {
+      "image_id": "IMG-01",
+      "step_id": "BACKUP-01",
+      "caption_de": "Sicherung vor dem Löschen prüfen",
+      "expected_view": "backup-confirmed",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": null,
+        "verified_by_user": false
+      },
+      "privacy_review": "PENDING"
+    },
+    {
+      "image_id": "IMG-02",
+      "step_id": "BASE-01",
+      "caption_de": "Kodi 21.3 mit Estuary frisch gestartet",
+      "expected_view": "kodi-estuary-home",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": null,
+        "verified_by_user": false
+      },
+      "privacy_review": "PENDING"
+    },
+    {
+      "image_id": "IMG-03",
+      "step_id": "INST-01",
+      "caption_de": "Kodi-Einstellungen und Dateimanager öffnen",
+      "expected_view": "kodi-file-manager",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": null,
+        "verified_by_user": false
+      },
+      "privacy_review": "PENDING"
+    },
+    {
+      "image_id": "IMG-04",
+      "step_id": "INST-01",
+      "caption_de": "TinyURL in Quelle hinzufügen eingeben",
+      "expected_view": "source-add-tinyurl",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": null,
+        "verified_by_user": false
+      },
+      "privacy_review": "PENDING"
+    },
+    {
+      "image_id": "IMG-05",
+      "step_id": "INST-01",
+      "caption_de": "Netzwerkquelle NeoDark3 benennen",
+      "expected_view": "source-named-neodark3",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": null,
+        "verified_by_user": false
+      },
+      "privacy_review": "PENDING"
+    },
+    {
+      "image_id": "IMG-06",
+      "step_id": "INST-01",
+      "caption_de": "Pilot-Repository und Installer-ZIP in der Quelle sehen",
+      "expected_view": "source-list-zip",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": null,
+        "verified_by_user": false
+      },
+      "privacy_review": "PENDING"
+    },
+    {
+      "image_id": "IMG-07",
+      "step_id": "INST-02",
+      "caption_de": "Add-ons, aus ZIP-Datei installieren",
+      "expected_view": "addon-install-from-zip",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": null,
+        "verified_by_user": false
+      },
+      "privacy_review": "PENDING"
+    },
+    {
+      "image_id": "IMG-08",
+      "step_id": "INST-02",
+      "caption_de": "GS Media Pilot Repository 1.9.12 auswählen",
+      "expected_view": "pilot-repo-zip",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": null,
+        "verified_by_user": false
+      },
+      "privacy_review": "PENDING"
+    },
+    {
+      "image_id": "IMG-09",
+      "step_id": "INST-02",
+      "caption_de": "GS Media Pilot ist installiert und aktiv",
+      "expected_view": "pilot-active",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": null,
+        "verified_by_user": false
+      },
+      "privacy_review": "PENDING"
+    },
+    {
+      "image_id": "IMG-10",
+      "step_id": "INST-03",
+      "caption_de": "Pilot-Repositorium Programm-Add-ons öffnen",
+      "expected_view": "pilot-program-addons",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": null,
+        "verified_by_user": false
+      },
+      "privacy_review": "PENDING"
+    },
+    {
+      "image_id": "IMG-11",
+      "step_id": "INST-03",
+      "caption_de": "Installer 0.5.26 in Add-on-Informationen verifizieren",
+      "expected_view": "installer-0526-detail",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": null,
+        "verified_by_user": false
+      },
+      "privacy_review": "PENDING"
+    },
+    {
+      "image_id": "IMG-12",
+      "step_id": "INST-04",
+      "caption_de": "Installer-Start/Neulauf- oder Fortsetzen-Bildschirm",
+      "expected_view": "installer-launch",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": null,
+        "verified_by_user": false
+      },
+      "privacy_review": "PENDING"
+    },
+    {
+      "image_id": "IMG-13",
+      "step_id": "INST-04",
+      "caption_de": "Realen Fortschritt Paket N von 48 dokumentieren",
+      "expected_view": "installer-progress",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": null,
+        "verified_by_user": false
+      },
+      "privacy_review": "PENDING"
+    },
+    {
+      "image_id": "IMG-14",
+      "step_id": "INST-04",
+      "caption_de": "Fehlerdialog mit Paket-ID und Fehlercode dokumentieren",
+      "expected_view": "installer-error-resume",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": null,
+        "verified_by_user": false
+      },
+      "privacy_review": "PENDING"
+    },
+    {
+      "image_id": "IMG-15",
+      "step_id": "INST-06",
+      "caption_de": "Space Blue Manager 0.2.0 Status nach Abschluss",
+      "expected_view": "branding-active",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": null,
+        "verified_by_user": false
+      },
+      "privacy_review": "PENDING"
+    },
+    {
+      "image_id": "IMG-16",
+      "step_id": "INST-07",
+      "caption_de": "48/48 und separaten Branding-/Restart-Abschluss prüfen",
+      "expected_view": "installer-final-restart",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": null,
+        "verified_by_user": false
+      },
+      "privacy_review": "PENDING"
+    },
+    {
+      "image_id": "IMG-17",
+      "step_id": "INST-07",
+      "caption_de": "Kodi nach manuellem Neustart mit BINGIE Space Blue",
+      "expected_view": "post-restart-bingie",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": null,
+        "verified_by_user": false
+      },
+      "privacy_review": "PENDING"
+    },
+    {
+      "image_id": "IMG-18",
+      "step_id": "INST-09",
+      "caption_de": "Live-EPG/Startseite/Senderlogos kontrollieren",
+      "expected_view": "epg-home-validation",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": null,
+        "verified_by_user": false
+      },
+      "privacy_review": "PENDING"
+    }
+  ]
+}
