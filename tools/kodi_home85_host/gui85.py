@@ -82,12 +82,37 @@ home.setFocusId(2510);home.getControl(2510).selectItem(0)
 Path('/root/proposal85-on').touch()
 from fixture66 import install as install_proposal85
 install_proposal85()
+# The earlier picture leases are deliberately short-lived. Refresh this exact
+# synthetic event on the worker before testing a new proposal publication;
+# an expired remote reference must not be labelled as a visible proposal.
+proposal_errors85=[]
+def prepare_proposal85():
+ try:
+  row85=live_rows(portal)[0];event85=load(portal,row85)
+  from programme_urls55 import resolve
+  value85=resolve(event85,allow_lookup=False,url_mode69=True)
+  check(value85 and value85.get('code')=='READY',('SERIES85_PROPOSAL_IMAGE_NOT_READY',value85.get('code') if value85 else None))
+  completed(event85,dict(value85,provisional85=True,match='PROVISIONAL_TV85'))
+  from live_items62 import values
+  dto85=values(portal,[row85])[0]
+  print('PROPOSAL85_SOURCE '+json.dumps({k:dto85['props'].get(k) for k in ('XCMate.MediaId','XCMate.Provisional85','XCMate.ProgrammeDisplay47','XCMate.HeroArtSource63','XCMate.ProgrammeArtCode46')}),flush=True)
+  check(dto85['props'].get('XCMate.Provisional85')=='true','SERIES85_PROPOSAL_DTO_MISSING')
+  publish(portal,'live',live_rows(portal))
+ except Exception:
+  import traceback;proposal_errors85.append(traceback.format_exc())
+proposal_worker85=threading.Thread(target=prepare_proposal85);proposal_worker85.start()
+for _ in range(400):
+ pump();xbmc.sleep(50)
+ if not proposal_worker85.is_alive():break
+check(not proposal_worker85.is_alive(),'SERIES85_PROPOSAL_PREPARE_TIMEOUT')
+check(not proposal_errors85,proposal_errors85)
 from widget_runtime79 import _plans
 hooks85=_plans.get((str(portal['id']),'live'),{}).get('hooks',[])
 check(hooks85,'SERIES85_NO_NATIVE_LIVE_HOOK')
 for hook85 in hooks85:
  if hook85.startswith('XCMate.Widget45.Reload.') or hook85 in ('widgetreload','widgetreload2','widgetreloadmovies','widgetreloadtvshows'):home.setProperty(hook85,'synthetic85-proposal-source')
-for _ in range(200):
+# The existing production reload throttle is 60 s; do not bypass it.
+for _ in range(1600):
  pump()
  if xbmc.getInfoLabel('Container(2510).ListItem.Property(XCMate.Provisional85)')=='true':break
  xbmc.sleep(50)
