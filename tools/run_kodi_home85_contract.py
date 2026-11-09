@@ -48,5 +48,9 @@ def main():
   for file in ('gui66-error.txt','post75-error.txt','tls69-requests.jsonl','visible84.json','texture84-debug.json'):
    subprocess.run(docker+['cp',name+':/root/'+file,str(report/file)],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
   subprocess.run(docker+['cp',name+':/root/.kodi/temp/kodi.log',str(report/'synthetic-kodi.log')],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+  # Emit synthetic fixture failures in Actions logs as well as the artifact.
+  for evidence85 in ('gui66-error.txt','probe.log','post75-error.txt'):
+   target85=report/evidence85
+   if target85.is_file():print(evidence85+'\n'+target85.read_text(errors='replace')[-12000:],flush=True)
   subprocess.run(docker+['rm','-f',name],env=env,stdout=subprocess.DEVNULL)
 if __name__=='__main__':main()
