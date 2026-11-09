@@ -38,3 +38,27 @@ Eine redaktionelle oder semantische Plot-Deutung ist kein automatischer Identit�
 - Historische freie Speicherprobleme, Kodi-Library-Views und vollständiger Importcursor unter echtem ENOSPC sind nicht durch einen Hosttest physisch repariert. Keine Datenbank-Recreation.
 - Zusätzliches neues Eventbild direkt in der Mini-EPG-Liste (P1): offen; funktionierende Mini-EPG-Details bleiben geschützt.
 - .85 bleibt Draft/Testkandidat; .84-Pakete, Indizes und alle drei Veröffentlichungswege bleiben byteidentisch.
+
+## Ergänzende verifizierte Übergabepfade .85
+
+### Vorschlagskennung bis zur sichtbaren Oberfläche
+
+Der reale Live-Verzeichnispfad führt über `widget_home50` → `live_items62` → `widget_render47`/`programme_widgets46` → `live_text63` und den dynamischen `hero_epg63`-Puffer. Die alte Präfixauswahl in `live_items62` ließ `XCMate.Provisional85` und den Bildproof nicht passieren. Eine Kennzeichnung ausschließlich im ursprünglichen Renderer genügte deshalb nicht.
+
+.85 erweitert diese konkrete Whitelist um die beiden benötigten Felder. Der Hero exportiert die Kennzeichnung im selben atomaren A/B-Puffer wie Bild und Text; das Skin-Variable-Binding übernimmt die vorhandenen Profil-/Widget-Identitätsprüfungen. Sender-/Ereigniswechsel, bestätigte neue Bilder und Logo-Fallbacks entfernen die unpassende Kennzeichnung. Beim gültigen gleichen Bild bleibt sie erhalten. Drei eigene Tests prüfen den wirklichen Live-DTO-Pfad, Rollover und dynamischen Puffer ohne GUI-Datei-/SQL-Zugriff.
+
+Die Variablenerweiterung verwendet den bestehenden abgesicherten BINGIE-Parser: Das originale 2.2.3-Register enthält unescaped Ampersands, die Kodi akzeptiert. Ein generischer XML-Aufruf reicht hier nicht; es gibt keine pauschale Neuformatierung fremder Skin-Dateien.
+
+### Bildaktualisierung und native Kodi-Listen
+
+Der neue begrenzte `widget_patch85` akzeptiert nur vorher vom Worker identifizierte eigene Mediencontrols und prüft vor der ersten Änderung alle Medien-IDs, Provider, Ziel-URLs und Titel. Er verändert weder Auswahl noch Fokus oder Listeninhalt. Nicht zugängliche native DirectoryProvider-Items werden nicht manipuliert; die vorhandenen nativen Reload-Hooks bleiben der Fallback.
+
+Der Python-Wrapper kann bei nativen DirectoryProvider-Listen `-1` beziehungsweise Indexfehler melden, obwohl Kodi echte Einträge anzeigt. Daraus darf kein Fokusverlust abgeleitet werden. Die native Abnahme verwendet deshalb die vom Kodi-Container gemeldete ausgewählte Medien-ID und prüft beim Scrollen tatsächlich Titel 24.
+
+Interne `Source85`-Buchhaltung wird aus den semantischen Reload-Digests ausgeschlossen. Echte Bild-/Inhaltsänderungen bleiben wirksam; Quell-/Revisions-/Policyprüfungen bleiben erhalten. Die bestehenden 45-Refresh-Last-good-Tests sowie fehlende Provider-Metadaten derselben Revision sind zwingende Regressionen.
+
+### Eigener Serien-Dialog und explizite Auswahl
+
+Der neue Auswahldialog verwendet den bestehenden kooperativen Owner-/Player-Exit-Lifecycle. Seine eigene Registrierung kann geschlossen werden, ohne fremde Dialoge zu schließen. Neue Remote-Arbeit für manuelle Zuordnungen umgeht nicht die bestehende sichtbare Ereignispriorität. Eine absichtlich gewählte, deaktivierte oder vorläufig nicht verfügbare Quelle wird nicht still durch eine andere automatische Serienzuordnung ersetzt. Vorhandene gültige Bildproofs können weiterhin aus dem Cache angezeigt werden.
+
+Der Manager darf bei einem falschen EPG-Jahr andere unabhängig verifizierte Werke zur ausdrücklichen Korrektur anbieten. Diese Kandidaten bleiben in einem separaten Managercache; die automatische Suche erhält dadurch weder eine künstlich eindeutige Trefferliste noch überschreibbare Episodenfakten.

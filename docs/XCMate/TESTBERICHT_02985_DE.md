@@ -1,21 +1,67 @@
-# XCMate 0.1.29.85 – Testbericht
+# XCMate 0.1.29.85 – vollständiger Host-Testbericht
 
-**Entwicklungsstand, kein Release.** Dieser Bericht wird nach den laufenden vollständigen Prüfungen mit den endgültigen Ergebnissen, CI-Links und dem reproduzierten ZIP-Hash ergänzt. Android Box B: durchgehend `ANDROID_NOT_TESTED`.
+Stand: 09.11.2026, Europe/Berlin. **Draft, kein Release.**
 
-## Getrennte Prüfumfänge
+PR: [#408](https://github.com/artattakk-creator/kodi-noodleprivate/pull/408). Basis: veröffentlichte .84, aktueller main-Dokumentationsstand `b7ab7be88bee6c202f987062798484b18ba0c860`. Produkt-/Teststand `58c46c40a5a414b2ff3c3ea7a9bae93fe5cde8af`; nachfolgender Commit `3ec679b82c673149c60483b47a05ad85a1a5abfd` korrigiert ausschließlich die native Testfixture, nicht das Add-on oder ZIP.
 
-A: Neuer eigener begrenzter Tempcache, Objekt-/Byte-Limits, LRU/TTL, aktive Pins, Integrität, Journal-Wiederaufnahme, Symlinks, fremde Dateien, Reservesperre ohne Allokation, semantische Widgetgeneration, Ladezustände und begrenzte Revisionsbehandlung.
+## Ergebnis und Grenzen
 
-B: Ghosts UK/USA, Werkjahr/Land, drei Suchseiten, unvollständige Trefferlisten, offizielle Alternativtitel, M*A*S*H-Kanonisierung, Filmabgrenzung, korrigierbare dauerhafte Nutzerzuordnung, Profil-/Portal-/Quellenisolation, Persistenzfehler, Kontextmenü, Abbrechen/Bestätigen, nachträgliche Kandidatenposter.
+| Prüfung | Tatsächliches Ergebnis |
+|---|---|
+| Vollständige kumulative unittest-Suite | **3.484 PASS, 0 Fehler, 0 Fehlschläge, 0 Skips**, 524,470 s |
+| Historische .84-Testmethoden und Skip-Bedingungen | Alle 3.408 erhalten; Scope-Test PASS |
+| Zusätzliche Branding-Pytests | **11 PASS**, 0,13 s; eine externe pytest-Plugin-Deprecation-Warnung |
+| Kodi-PO-Kataloge | **17 PASS**; Deutsch/Englisch je 1.267 Kontexte; bestehender Fallback bleibt erhalten |
+| Python-Kompilierung / echter BINGIE-XML-Graph | PASS; 63 gezielte Skin-/Hero-/Scope-Tests PASS in 8,041 s |
+| Paket CRC / exakte Quellbytes / zweiter Build | **PASS**, byteidentisch |
+| Regulär / Pilot / NeoDark3 / Installer | Veröffentlichte .84-Kanäle und Installer 0.5.26 unverändert; Scope-/Kanal-Schutztests PASS |
+| Aktuelle GitHub-CI | Separate vollständige Host-, native Bild- und 30-Minuten-Regressionsläufe; verbindlicher Abschlussstatus und Links im PR-Prüfbereich und Abschlusskommentar |
+| Echte Android-Box B | **ANDROID_NOT_TESTED** für sämtliche neuen Gates |
 
-## Bisherige ausgeführte Prüfungen
+Die vollständige lokale Ausgabe wurde unter `/tmp/xcmate85-full8.txt` erzeugt; GitHub Actions lädt die vollständigen Hostberichte und nativen Artefakte hoch. Keine privaten Kodi-Rohlogs oder realen Provider-/TMDB-Zugangsdaten werden veröffentlicht.
 
-- Neue gezielte A/B-/Grenzfalltests und Schutzprüfungen: 59 PASS im Lauf vor der vollständigen Regression. Weitere endgültige Laufzahlen folgen unten.
-- Zusätzliche bestehende Branding-Pytests: 11 PASS.
-- PO-Validierung: alle 17 Kodi-Sprachkataloge PASS; neue Cache-/Vorschlagseinstellungen Deutsch/Englisch, bestehender Fallback unverändert.
-- Python-Kompilierung: PASS.
-- Vollständiger erster Hostlauf: Fehler gefunden, kein Gesamt-PASS. TVMaze-Sicherheits-/Legacy-Verhalten, präzisierte Revisionszustände, fehlender Readonly-Frame und Native-Dialog-Vertrag werden nachgeprüft. Der große 200.005-Titel-HTTP-Test stößt lokal auf `sqlite3.OperationalError: database or disk is full`; der betroffene Katalog-Lesecode ist gegenüber .84 unverändert. Ursache/CI-Ergebnis getrennt dokumentieren, keinen Test stillschweigend auslassen.
-- Native Linux-Kodi-Prüfungen: vorbereitet für 1080p/720p, echte Textur-/Pixelprüfung mit synthetischem HTTPS-Ursprung, frischem Profil und zwei Offline-Neustarts. Zusätzlich .85-Kandidatendialog, Bestätigen/Back und sichtbare Vorschlagskennzeichnung. Ergebnisse erst nach echtem Lauf eintragen. Keine Aussage über Android-Pixel.
+## Arbeitspaket A – Stabilität und dynamisches Laden
+
+Geprüft: neuer eigener Cache-Namensraum mit Byte-/Objektlimits, LRU/TTL und aktiven Pins; SHA256/Decode; atomare Manifestveröffentlichung; Journal nach Abbruch; keine Übernahme/Löschung fremder Dateien; Symlinkschutz; Reserveblockade vor Allokation; begrenzter Backoff; semantische Widgetgeneration ohne vollständiges Reload bei reiner Leaseverlängerung; unabhängige Logo-/Event-/Coverreferenzen; sichtbares Fünferfenster; verständliche Ladezustände; EPG-Rollover sowie Event-, Quellen-, Policy-, Datei- und Ablaufgründe.
+
+Der optionale Art-Patch prüft Profil, Portal, Art, Medien-ID, URL, Titel und Quellidentität vor jedem Eingriff. Er setzt weder Liste noch Auswahl zurück. Wenn Kodis DirectoryProvider keine einzelnen Python-ListItems zugänglich macht, wird der vorhandene sichere Reload-Hook verwendet. Ein Python-Index `-1` ist **kein Beleg für einen echten Fokusverlust**; native Tests prüfen die tatsächliche fokussierte Medien-ID.
+
+Die rote Speicherlage der echten Box ist nicht durch Hosttests aufgehoben: zuletzt 26.935.296 Bytes frei bei 80.685.957 Bytes effektiver Reserve im dokumentierten FUSE-Pool von ca. 3,76 GiB. Der neue Cache umgeht diese Reserve nicht. Kein physischer Schreib-/Persistenz-PASS wird behauptet.
+
+## Arbeitspaket B – Serienidentität und manueller Manager
+
+Geprüft: Ghosts UK/USA, Jahr/Land/Werk-IDs, drei Suchseiten und maximal 60 Einträge, unabhängige Root-Details und offizielle Aliase, unvollständige Seiten, M*A*S*H-Kanonisierung, Movie-Konfliktprüfung, bewusste Quellen-Deaktivierung und vorhandene Filmabfrage. Testfälle umfassen Cobra 11, Die Rosenheim-Cops, Modern Family, The Middle und King of Queens.
+
+Manuelle Auswahl: Kontext/Links, sechs bis acht nachladende Kandidaten, ausdrückliches Bestätigen, Abbrechen/Zurück, Korrektur falscher EPG-Jahre nur im expliziten Manager, Quelle/Portal/Profil-Isolation, atomare Speicherung und Cold-Readback, Fehler ohne falschen Erfolgshinweis, Ändern/Automatik/Ausblenden und Epochenschutz gegen alte Bilder.
+
+Unbestätigte Serienposter erhalten keine bestätigte Identität und keine geratenen Episodenfakten. Drei zusätzliche Integrationstests prüfen die tatsächlich verwendete Live-DTO-Whitelist, den A/B-Hero-Puffer und das Löschen des Hinweises beim Eventwechsel. Die bisherige Live-Whitelist hatte die Vorschlagskennung sowie den benötigten Bildnachweis verworfen; beide Felder werden jetzt ausdrücklich und begrenzt weitergegeben.
+
+## Native Linux-Kodi-Prüfung
+
+Verwendet echtes Kodi, gepinntes BINGIE 2.2.3, SkinShortcuts, HTTPS, echte Texturdateien und Screenshot-Pixel; Auflösungen 1920×1080 und 1280×720. Ausschließlich synthetische Programme/Bilder und entbehrliche Linux-Profile. Die 27-MiB-Kapazitätsinjektion betrifft XCMate-Python; Kodi C++ hat tatsächlich freien Hostspeicher. **Kein physischer ENOSPC-/Android-Test.**
+
+Geprüfte Schritte: 88 Sender; begrenztes sichtbares Senderlogo vor Eventbild; Live → Filme → Serien in dieser Reihenfolge; zunächst zwölf sichtbare Cover statt verpflichtendem Archiv aller 24; Nachladen bis Titel 24 mit Medien-ID 23 im Fokus; echte Kandidatenposter, native Bestätigen-/Back-Aktionen ohne implizites Mapping; unbestätigter Hinweis im tatsächlichen Hero; zwei Offline-Kaltstarts. Allgemeine Regression zusätzlich mit 1.800 s Ruhephase sowie Player-/Stop-ACK-Fällen.
+
+Die Vorschlagsfixture erneuert vor dem späten Hinweis-Test auf dem Worker den Bildnachweis desselben synthetischen Events. Abgelaufene URL-Leases dürfen nicht als sichtbare Vorschläge gelten. Der vorhandene 60-s-Reloadschutz wird im Test abgewartet, nicht im Produkt umgangen. Endgültige CI-Ergebnisse werden im PR-Abschlussbericht getrennt von Android dokumentiert.
+
+## Große Host-Fixtures und Messwerte
+
+| Datenpfad | Umfang | Vollständiger letzter Hostlauf |
+|---|---|---|
+| XMLTV → SQLite | 160.005 Programme, 95.571.948 XML-Bytes | 21,422 s; 303.685.632 DB-Bytes |
+| HTTP-Filmimport | 200.005 Titel, 109.380.521 HTTP-Bytes | 26,480 s |
+| HTTP-Serienimport | 200.005 Titel, 109.380.521 HTTP-Bytes | 26,156 s |
+| Beide Kataloge persistent | 400.010 Titel | 621.731.840 DB-Bytes; Prozess-Peak-RSS 141.968 KiB |
+| Bestehender 40.005-Titel-Archivpfad | 24 lokale Ergebnisse | Alter Opcode-Budgetpfad INTERRUPTED, neuer Lesepfad 2,758 ms |
+| V2-Katalogindex, 20.005 Titel | 24 Ergebnisse | 3,178 ms, vorhandener Indexplan |
+
+Das sind Linux-Hostmesswerte, keine Android-Beschleunigungsbehauptung. Ein früher Lauf scheiterte am real zu kleinen lokalen SQL-Tempvolume; nur das SQLite-Testtempziel wurde auf ein ausreichend großes Laufwerk gelegt. Der Katalogcode und seine Reserven wurden dafür nicht verändert.
+
+## Gefundene und korrigierte Zwischenfehler
+
+Frühere Läufe sind keine endgültigen PASS: TVMaze-Legacy-/Sicherheitsverhalten, Readonly-Frame-Nachweis, präzise Revisionszustände, semantische `Source85`-Metadaten und die echte Live-/Hero-Vorschlagsweitergabe wurden nach Regressionen korrigiert. Die echte BINGIE-Variablendatei enthält historische rohe Ampersands; der neue Patch verwendet den vorhandenen begrenzten Parser statt einer unpassenden generischen XML-Annahme. Die vollständige Suite besteht danach.
+
+Native Testannahmen zu 24 vorab archivierten Covern, falschen Control-IDs und unzugänglichen Python-DirectoryProvider-Indizes wurden ebenfalls korrigiert. Diese Fixturefehler werden nicht als nachgewiesene Produkt-Fokusfehler ausgegeben. Unterbrochene, durch spätere Quelländerungen überholte Läufe zählen nicht als Abnahme.
 
 ## Reproduzieren
 
@@ -25,20 +71,23 @@ python -m unittest discover -s tests -v
 python -m pytest -q tests/test_xcmate_bingie_branding.py
 python tools/validate_kodi_po.py
 python tools/package_xcmate71.py /tmp/xcmate85-build
-python tools/release_channel75.py
-```
-
-Native Disposable-Linux-Gates:
-
-```sh
+cmp /tmp/xcmate85-build/plugin.video.xtreammate-0.1.29.85.zip docs/XCMate/test-builds/02985/plugin.video.xtreammate-0.1.29.85.zip
 python tools/run_kodi_home85_contract.py --report-dir /tmp/native85 --resolution 1920x1080
 python tools/run_kodi_home85_contract.py --report-dir /tmp/native85-720 --resolution 1280x720
 python tools/run_kodi_home82_contract.py --report-dir /tmp/reg85-720 --resolution 1280x720 --fault-idle-seconds 1800
 python tools/run_kodi_media77_contract.py --report-dir /tmp/media85
 ```
 
-Keine dieser Anweisungen installiert etwas auf Box A oder Box B. Native Tests nutzen ausschließlich entbehrliche Linux-Container/Fixtures. Private Endpunkte, Providerzugänge und der reale TMDB-Token werden nicht benötigt.
+Bei begrenztem Host-Tempvolume ausschließlich `SQLITE_TMPDIR` auf ausreichend großes Testlaufwerk setzen; `TMPDIR` unverändert lassen, damit Speicherpool-Tests vergleichbar bleiben. Native Befehle verwenden nur entbehrliche Linux-Container und installieren nichts auf Android.
 
-## Offene Hardware-Gates
+## Reproduzierbarer Build
 
-Siehe `ANDROID_ABNAHME_02985_DE.md`. Die echten 27-MiB-/FUSE-/Reservebedingungen, richtige Bilder konkreter echter Sendungen, reale Fernbedienung, Neustartpersistenz und Geschwindigkeit müssen auf Box B geprüft werden. Ein erfolgreicher Hosttest genügt dafür nicht.
+- Version: `0.1.29.85`, **801 Dateien, 3.561.477 Bytes**.
+- SHA256: `021689b4a4c48caa79107fdf04ede774e864fea0823b7df78c6f8eb0625ea1ff`.
+- [ZIP / Prüfsumme / Anleitung](test-builds/02985/README_DE.md).
+- [Implementierung](IMPLEMENTIERUNG_02985_DE.md), [Issue-Matrix](ISSUE_MATRIX_02985_DE.md), [Android-Abnahmeplan](ANDROID_ABNAHME_02985_DE.md).
+- Keine automatische Installation, kein Merge, keine Veröffentlichung. .84 bleibt nutzbare Rückfallbasis ohne Downgrade-Empfehlung.
+
+## Offen und Abnahmegrenzen
+
+#401 bleibt für reale Kapazität/EPG/Bildpersistenz auf Box B offen. #406 benötigt echte passende Bilder, IR-Navigation und dauerhaft bestätigte Zuordnungen nach Neustart. Neues zusätzliches Eventbild direkt in der Mini-EPG-Liste bleibt P1 OPEN; bestehende Details sind erhalten. Kodi-Library-Views wurden nicht destruktiv neu angelegt. Externe/SMB-Tests sind nicht freigegeben und wurden nicht ausgeführt. Alle Box-B-Gates bis zur tatsächlichen Prüfung **ANDROID_NOT_TESTED**.
