@@ -62,3 +62,8 @@ Interne `Source85`-Buchhaltung wird aus den semantischen Reload-Digests ausgesch
 Der neue Auswahldialog verwendet den bestehenden kooperativen Owner-/Player-Exit-Lifecycle. Seine eigene Registrierung kann geschlossen werden, ohne fremde Dialoge zu schließen. Neue Remote-Arbeit für manuelle Zuordnungen umgeht nicht die bestehende sichtbare Ereignispriorität. Eine absichtlich gewählte, deaktivierte oder vorläufig nicht verfügbare Quelle wird nicht still durch eine andere automatische Serienzuordnung ersetzt. Vorhandene gültige Bildproofs können weiterhin aus dem Cache angezeigt werden.
 
 Der Manager darf bei einem falschen EPG-Jahr andere unabhängig verifizierte Werke zur ausdrücklichen Korrektur anbieten. Diese Kandidaten bleiben in einem separaten Managercache; die automatische Suche erhält dadurch weder eine künstlich eindeutige Trefferliste noch überschreibbare Episodenfakten.
+
+
+### Native Abnahme der Testumgebung
+
+Die neue Bildprüfung besteht bei 1080p/720p samt zwei Offline-Neustarts. Die allgemeine 1080p-Cold-Fixture bildet nun die workergebundene Wiederherstellung vorhandener .85-Journalbelege nach, weil sie den echten Dienst deaktiviert. Alle ursprünglichen Farb-/Pixel-/Widget-/Prüfsummenassertionen bleiben bestehen. Details und ausdrücklich noch offene 720p-/Android-Gates stehen im Testbericht und PR-Abschlussstatus. Keine Änderung am installierbaren Add-on durch diese Fixtureanpassung.

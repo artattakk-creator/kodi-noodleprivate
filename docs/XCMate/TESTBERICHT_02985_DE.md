@@ -2,13 +2,13 @@
 
 Stand: 09.11.2026, Europe/Berlin. **Draft, kein Release.**
 
-PR: [#408](https://github.com/artattakk-creator/kodi-noodleprivate/pull/408). Basis: veröffentlichte .84, aktueller main-Dokumentationsstand `b7ab7be88bee6c202f987062798484b18ba0c860`. Der vollständige lokale Lauf unten erfolgte auf `58c46c40a5a414b2ff3c3ea7a9bae93fe5cde8af`. Danach wurde ausschließlich der Skin-Bindingfehler des Vorschlagshinweises korrigiert und die native Fixture präzisiert. 50 gezielte echte Skin-/XML-/Hero-/Scope-Tests bestehen danach (6,791 s); vollständige abschließende Source-CI wird im PR dokumentiert.
+PR: [#408](https://github.com/artattakk-creator/kodi-noodleprivate/pull/408). Basis: veröffentlichte .84, aktueller main-Dokumentationsstand `b7ab7be88bee6c202f987062798484b18ba0c860`. Der vollständige letzte lokale Lauf erfolgte auf Produktstand `4f6759649abf671dcba1d40fc3f9cb110fc6e29f`, einschließlich des Skin-Bindingfixes. Nachfolgende Commits ergänzen ausschließlich native Testfixtures und diesen Bericht; Add-on-Quellbytes und ZIP bleiben identisch. Die abschließende CI wird im PR dokumentiert.
 
 ## Ergebnis und Grenzen
 
 | Prüfung | Tatsächliches Ergebnis |
 |---|---|
-| Vollständige kumulative unittest-Suite | **3.484 PASS, 0 Fehler, 0 Fehlschläge, 0 Skips**, 524,470 s |
+| Vollständige kumulative unittest-Suite | **3.484 PASS, 0 Fehler, 0 Fehlschläge, 0 Skips**, 529,733 s |
 | Historische .84-Testmethoden und Skip-Bedingungen | Alle 3.408 erhalten; Scope-Test PASS |
 | Zusätzliche Branding-Pytests | **11 PASS**, 0,13 s; eine externe pytest-Plugin-Deprecation-Warnung |
 | Kodi-PO-Kataloge | **17 PASS**; Deutsch/Englisch je 1.267 Kontexte; bestehender Fallback bleibt erhalten |
@@ -18,7 +18,7 @@ PR: [#408](https://github.com/artattakk-creator/kodi-noodleprivate/pull/408). Ba
 | Aktuelle GitHub-CI | Separate vollständige Host-, native Bild- und 30-Minuten-Regressionsläufe; verbindlicher Abschlussstatus und Links im PR-Prüfbereich und Abschlusskommentar |
 | Echte Android-Box B | **ANDROID_NOT_TESTED** für sämtliche neuen Gates |
 
-Die vollständige lokale Ausgabe wurde unter `/tmp/xcmate85-full8.txt` erzeugt; GitHub Actions lädt die vollständigen Hostberichte und nativen Artefakte hoch. Keine privaten Kodi-Rohlogs oder realen Provider-/TMDB-Zugangsdaten werden veröffentlicht.
+Die vollständige lokale Ausgabe wurde unter `/tmp/xcmate85-full9.txt` erzeugt; GitHub Actions lädt die vollständigen Hostberichte und nativen Artefakte hoch. Keine privaten Kodi-Rohlogs oder realen Provider-/TMDB-Zugangsdaten werden veröffentlicht.
 
 ## Arbeitspaket A – Stabilität und dynamisches Laden
 
@@ -48,11 +48,11 @@ Die Vorschlagsfixture erneuert vor dem späten Hinweis-Test auf dem Worker den B
 
 | Datenpfad | Umfang | Vollständiger letzter Hostlauf |
 |---|---|---|
-| XMLTV → SQLite | 160.005 Programme, 95.571.948 XML-Bytes | 21,422 s; 303.685.632 DB-Bytes |
-| HTTP-Filmimport | 200.005 Titel, 109.380.521 HTTP-Bytes | 26,480 s |
-| HTTP-Serienimport | 200.005 Titel, 109.380.521 HTTP-Bytes | 26,156 s |
-| Beide Kataloge persistent | 400.010 Titel | 621.731.840 DB-Bytes; Prozess-Peak-RSS 141.968 KiB |
-| Bestehender 40.005-Titel-Archivpfad | 24 lokale Ergebnisse | Alter Opcode-Budgetpfad INTERRUPTED, neuer Lesepfad 2,758 ms |
+| XMLTV → SQLite | 160.005 Programme, 95.571.948 XML-Bytes | 21,991 s; 303.685.632 DB-Bytes |
+| HTTP-Filmimport | 200.005 Titel, 109.380.521 HTTP-Bytes | 27,699 s |
+| HTTP-Serienimport | 200.005 Titel, 109.380.521 HTTP-Bytes | 28,269 s |
+| Beide Kataloge persistent | 400.010 Titel | 621.731.840 DB-Bytes; Prozess-Peak-RSS 144.188 KiB |
+| Bestehender 40.005-Titel-Archivpfad | 24 lokale Ergebnisse | Alter Opcode-Budgetpfad INTERRUPTED, neuer Lesepfad 2,511 ms |
 | V2-Katalogindex, 20.005 Titel | 24 Ergebnisse | 3,178 ms, vorhandener Indexplan |
 
 Das sind Linux-Hostmesswerte, keine Android-Beschleunigungsbehauptung. Ein früher Lauf scheiterte am real zu kleinen lokalen SQL-Tempvolume; nur das SQLite-Testtempziel wurde auf ein ausreichend großes Laufwerk gelegt. Der Katalogcode und seine Reserven wurden dafür nicht verändert.
@@ -95,3 +95,20 @@ Bei begrenztem Host-Tempvolume ausschließlich `SQLITE_TMPDIR` auf ausreichend g
 ## Nachtrag: native Vorschlagskennzeichnung
 
 Die native Prüfung erreichte nach erneuertem Bildnachweis die echte Senderzeile mit `Provisional85=true`, aber zunächst nicht den sichtbaren Hinweis. Das Skin-Binding verwendete eine `$VAR`-Expansion in einer booleschen Sichtbarkeitsbedingung; außerdem zeigte dessen Row-Fallback auf `HeroArtSource63`. .85 nutzt nun ausdrücklich die vorhandenen Bank-/Profil-/Tokenprüfungen mit direkter `String.IsEqual`-Auswertung der Vorschlagsfelder, einschließlich korrektem Row-Fallback. Die native Prüfung wartet getrennt auf den asynchronen Verzeichnisframe und Hero-Puffercommit. Der vorherige ZIP-Hash `021689b4…` ist überholt; oben steht der aktuelle Build.
+
+## Verifizierte native Ergebnisse und abschließende CI
+
+- **.85-Bildprüfung 1920×1080 und 1280×720: PASS**, jeweils einschließlich zweier echter Offline-Kodi-Neustarts. [Lauf auf unverändertem Produktcode](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/42705710863). 88 Sender, je 24 Medien, Nachladen bis Medien-ID 23 mit erhaltenem tatsächlichem Fokus, Kandidatenposter und native Bestätigen-/Zurück-Aktionen, sichtbarer unbestätigter Vorschlag, kein implizites Mapping. Früherer gemessener vollständiger Durchlauf auf demselben Produktcode: Senderlogo nach 5.935 ms (1080p) bzw. 6.048 ms (720p); je 376.000 geprüfte Hero-Pixel und 72.600 Kandidatenposter-Pixel. Synthetischer Linux-Test, keine Android-Ladezeit.
+- **Allgemeine native 1080p-Regression: PASS**, einschließlich ursprünglicher Pixel-/Geometrie-/Navigationstests, echter Filmwiedergabe mit Stop-ACK/Detailrückkehr, 180-s-Beobachtung und zweier Offline-Kaltstarts. [Erfolgreicher Job](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/42705710559/jobs/129461971408). 34 geschützte Dateien inklusive persönlicher Widgets bleiben SHA256-identisch; Kaltstart zeigt jeweils 88/24/24 Einträge und korrekte lokale Cover-/Hero-Pixel.
+- **Native Medien-Stop-ACK-Regression: PASS** im selben Prüfstand (20 Zyklen je Medientyp). [Job](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/42705710559/jobs/129461970966).
+- Der allgemeine 720p-Lauf mit 1.800-s-Datenbankpause sowie die vollständige finale CI sind bis zu ihrem Abschluss im PR ausdrücklich noch nicht als Gesamt-PASS abzunehmen. Der dortige Abschlusskommentar nennt die endgültigen Läufe, Status und Artefakte. Keine Android-Abnahme wird daraus abgeleitet.
+
+### Ehrliche Behandlung der nativen Zwischenfehler
+
+Ein Wiederholungslauf zeigte einen fertigen ListItem-Nachweis vor dem tatsächlichen Texturframe. Die neue .85-Fixture wartet deshalb auf vollständige Screenshot-Bytes und höchstens 24 weitere Bildbeobachtungen; **beide ursprünglichen Pixel-/Farbschwellen bleiben unverändert**. Die ausgewiesene Bildwartezeit endet beim erfolgreichen Pixelnachweis, vor der anschließenden separaten Cacheprüfung.
+
+Der allgemeine Kaltstart hatte `COLD79_ACTUAL_HERO_TEXTURE_WRONG` gemeldet. In dieser Fixture ist der reale XCMate-Dienst absichtlich deaktiviert. Die alte Cold-Fixture erwartete einen direkt lesbaren .81-Archivbeleg; .85 veröffentlicht die vollständig gehashten Cold-Nachweise des neuen Journals bewusst erst durch den Hintergrundworker. Die Fixture führt nun ausschließlich die lokale Wiederherstellung vorhandener Dateien auf einem begrenzten Worker durch und verwendet danach dieselben bestehenden nativen Reload-Bindings. Kein neuer Download, keine Übernahme einer falschen Quelle und keine Abschwächung der alten Pixel-/Widget-/Neustartprüfungen. Der nachfolgende allgemeine 1080p-Kaltstart besteht samt SHA256-/Verzeichnis-/Pixelprüfung. Ein behaupteter realer Android-Kaltstartfix wird daraus nicht konstruiert.
+
+Die optionalen direkten Python-ListItem-Art-Patches waren im getesteten nativen DirectoryProvider nicht verfügbar (`applied=false`). Der vorhandene Reload-Hook-Fallback besteht; Fokus wird über die tatsächliche Medien-ID geprüft. Dies wird nicht als nativer Direktpatch-PASS umgedeutet.
+
+Die archivierte .72-CI scheiterte einmal vor dem Kodi-Start am Docker-Imagebuild, bei zuvor erfolgreichen 41 Funktionstests. Ein gezielter Job-Neustart bestand. Dieser Infrastrukturversuch ist kein verschwiegener Produkt-Test-PASS.

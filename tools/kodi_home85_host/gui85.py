@@ -23,8 +23,9 @@ base=base[:start85]+""" picture_started85=time.monotonic()
  else:
   check(hero_pixels>3000,('HERO84_PIXELS_MISSING',kind,hero_pixels))
   check(rail_pixels>1500,('RAIL84_PIXELS_MISSING',kind,rail_pixels))
+ picture_wait85=int((time.monotonic()-picture_started85)*1000)
 """+base[end85:]
-base=base.replace("cases.append(dict(kind=kind,items=", "cases.append(dict(picture_wait_ms=int((time.monotonic()-picture_started85)*1000),kind=kind,items=")
+base=base.replace("cases.append(dict(kind=kind,items=", "cases.append(dict(picture_wait_ms=picture_wait85,kind=kind,items=")
 exec(compile(base,'/base_gui84.py','exec'),globals())
 # Then scroll to the second viewport: all 24 titles remain in the native row,
 # only the newly visible sources are admitted, and the selected tile stays put.
