@@ -53,6 +53,10 @@ def candidate(event, cancel=lambda: False):
             return reject84(event,'EPISODE_TITLE_MISMATCH')
         url = _tmdb_image(details.get('still_path'))
         if url:return dict(url=url, source='tmdb_episode', match='EXACT_SEASON_EPISODE', attribution=credit, remote_id=remote)
+        if details.get('still_path'):
+            # A malformed supplied path is not an absent episode still.
+            # Preserve the safety rejection without additional lookup work.
+            return reject84(event,'IMAGE_PATH_INVALID')
         # Episode identity was proved; absence of a still permits only an
         # independently verified series work illustration, explicitly labelled.
         work=request(TMDB+'/tv/'+str(remote)+'?language=de-DE',token=token,cancel=cancel)

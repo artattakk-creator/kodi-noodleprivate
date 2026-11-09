@@ -75,3 +75,52 @@ class Series84(Fixture,unittest.TestCase):
   self.options['programme_tmdb_optout77']=True;before=dict(self.options)
   with mock.patch('tmdb_connection60.request',side_effect=AssertionError('disabled lookup')):self.assertIsNone(self.tv.candidate(self.event))
   self.assertEqual(self.options,before)
+ def test_verified_series_reaches_decoded_lease_detail_control_and_live_listitem(self):
+  import io,types
+  from PIL import Image
+  from xcmate027_fixture import ADDON
+  channel=dict(sid='1',name='Synthetic station',kind='live')
+  body=io.BytesIO();Image.new('RGB',(320,180),(30,100,150)).save(body,'PNG');data=body.getvalue()
+  def dns(url):
+   from urllib.parse import urlsplit
+   import artwork_visible
+   artwork_visible._dns_cache[(urlsplit(url).hostname,443)]=(time.monotonic()+30,True);return True
+  def check(url,cancel=lambda:False):
+   stream=io.BytesIO(data);response=types.SimpleNamespace(status=200,headers={'Content-Type':'image/png'},read=stream.read,close=stream.close)
+   return importlib.import_module('programme_transport77').verified(url,cancel=cancel,connect=lambda *a:response,resolver=lambda u:['93.184.216.34'],keep_data81=True)
+  usage=types.SimpleNamespace(free=27*1024**2,total=4*1024**3,used=4*1024**3-27*1024**2)
+  for title,official,year,aliases in [('The Middle','The Middle',2009,()),('King of Queens','The King of Queens',1998,('King of Queens',))]:
+   with self.subTest(title=title):
+    raw=dict(title=title,start=self.now-30,stop=self.now+1800,_metadata_verified48=True)
+    event=importlib.import_module('programme_events46').describe(self.portal,channel,raw,'xml',None)
+    with mock.patch('tmdb_connection60.request',side_effect=self.api(official,year,aliases)),mock.patch('shutil.disk_usage',return_value=usage),mock.patch('artwork_visible.public_dns',side_effect=dns):
+     result=importlib.import_module('programme_urls55').resolve(event,allow_lookup=True,url_mode69=True,check=check)
+    self.assertTrue(result['decoded77']);self.assertTrue(result['display84']);self.assertEqual(result['source'],'tmdb_series')
+    self.assertEqual(result['image_scope57'],'series_fallback');self.assertEqual(result['storage69'],'RAM_ONLY')
+    importlib.import_module('programme_requests68').completed(event,result)
+    window=importlib.import_module('programme_window46').ProgrammeWindow46('XCMateProgramme46.xml',str(ADDON),'Default','720p')
+    window.configure(self.portal,channel,raw);window._ready=True;window.event=event
+    info=dict(now=title,start=raw['start'],stop=raw['stop'],events=[raw],canonical46='xml',snapshot_revision=None,progress=.25)
+    value=dict(art={},props={},info=dict(plot='Synthetic local EPG'))
+    with mock.patch('tmdb_connection60.request',side_effect=AssertionError('GUI metadata lookup')),mock.patch('programme_urls55.enqueue',side_effect=AssertionError('GUI enqueue')):
+     window.pump();importlib.import_module('programme_widgets46').decorate(value,self.portal,channel,info)
+    self.assertEqual(window.getControl(110).image,result['image']);self.assertTrue(window.getControl(110).visible)
+    self.assertEqual(value['props']['XCMate.ProgrammeImage46'],result['image']);self.assertEqual(value['props']['XCMate.ProgrammeImageScope57'],'series_fallback')
+    self.assertEqual(value['art']['landscape'],result['image']);self.assertIn('Serienbild',window.getControl(105).text)
+ def test_explicit_probe_uses_its_verified_candidate_without_a_second_metadata_search(self):
+  import programme_probe84
+  channel=dict(sid='1',name='Synthetic station')
+  found=dict(url='https://image.tmdb.org/t/p/w500/series84.jpg',source='tmdb_series',match='EXACT_UNIQUE_TV_TITLE66')
+  reader=mock.Mock();reader.get.return_value=channel
+  result=dict(decoded77=True,image='https://image.tmdb.org/t/p/w500/series84.jpg',source='tmdb_series',code='READY')
+  def resolve(event,**kwargs):
+   self.assertTrue(kwargs.get('allow_lookup'));self.assertEqual(kwargs['match'](event),found);return result
+  with mock.patch('tmdb_connection60.test_connection',return_value='TMDB_OK'),mock.patch('library_index.Reader',return_value=reader),mock.patch('programme_events46.load',return_value=self.event),mock.patch('programme_match46.candidate',return_value=found) as match,mock.patch('programme_urls55.resolve',side_effect=resolve),mock.patch('programme_requests68.completed') as completed,mock.patch('programme_image69.eligible',return_value=True):
+   rows=dict(programme_probe84.inspect(self.portal))
+  self.assertEqual(rows['MATCH'],'EXACT_REFERENCE');self.assertEqual(rows['IMAGE_DECODE'],'YES');self.assertEqual(rows['DISPLAY_LEASE'],'READY')
+  self.assertEqual(rows['GUI_TEXTURE'],'NOT_VERIFIED_OPEN_SAME_EVENT');match.assert_called_once();completed.assert_called_once();reader.close.assert_called_once()
+ def test_explicit_probe_respects_source_optout_before_sending_token(self):
+  self.options['programme_tmdb_optout77']=True;before=dict(self.options)
+  with mock.patch('tmdb_connection60.test_connection',side_effect=AssertionError('optout configuration request')),mock.patch('programme_match46.candidate',side_effect=AssertionError('optout match')):
+   rows=dict(importlib.import_module('programme_probe84').inspect(self.portal))
+  self.assertEqual(rows['MATCH'],'DISABLED_OR_NO_TOKEN');self.assertEqual(self.options,before)

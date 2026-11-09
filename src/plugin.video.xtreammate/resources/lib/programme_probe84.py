@@ -14,8 +14,8 @@ def inspect(portal,cancel=lambda:False):
  except TokenError:present=False
  rows.append(('TOKEN_READABLE','YES' if present else 'NO'))
  if cancel():return rows+[('PROBE','CANCELLED')]
- rows.append(('API_CONFIGURATION',test_connection(cancel)))
  if not enabled or not present or setting_bool('programme_tmdb_optout77',False):return rows+[('MATCH','DISABLED_OR_NO_TOKEN')]
+ rows.append(('API_CONFIGURATION',test_connection(cancel)))
  reader=Reader(portal['id'])
  try:channel=reader.get('live',str(portal.get('start_stream_id') or ''))
  finally:reader.close()
@@ -31,7 +31,7 @@ def inspect(portal,cancel=lambda:False):
   rows.append(('MATCH','EXACT_REFERENCE'))
   # Use the existing secure resolver and full decode; not a new URL client.
   from programme_urls55 import resolve
-  result=resolve(event,allow_lookup=False,match=lambda *a,**k:found,url_mode69=True,cancel=cancel)
+  result=resolve(event,allow_lookup=True,match=lambda *a,**k:found,url_mode69=True,cancel=cancel)
   rows.extend([('IMAGE_DECODE','YES' if result.get('decoded77') else 'NO'),('DISPLAY_LEASE','READY' if __import__('programme_image69').eligible(result,event) else 'BLOCKED')])
   from programme_requests68 import completed
   completed(event,result)
@@ -44,4 +44,4 @@ def report(portal,cancel=lambda:False):
  from artwork_inventory84 import measure
  rows=inspect(portal,cancel)
  inventory=measure()
- return '\n'.join(k+': '+v for k,v in rows)+'\n\nREAD_ONLY_CACHE_BYTES\n'+'\n'.join(k+': '+str(v['bytes'])+' B / '+str(v['files'])+' / '+v['code'] for k,v in inventory.items())+'\n\nAndroid-Bildanzeige: NOT_TESTED. Keine Dateien verändert.'
+ return '\n'.join(k+': '+v for k,v in rows)+'\n\nREAD_ONLY_CACHE_BYTES\n'+'\n'.join(k+': '+str(v['bytes'])+' B / '+str(v['files'])+' / '+v['code'] for k,v in inventory.items())+'\n\nAndroid-Bildanzeige: NOT_TESTED. Cache-Inventur nur lesend; kein Datenreset.'
