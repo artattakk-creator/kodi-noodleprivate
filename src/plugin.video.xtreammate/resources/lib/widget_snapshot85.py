@@ -48,7 +48,7 @@ def snapshot(original,portal,kind,background=False):
 def semantic(value):
  """Lease renewal is not a catalogue/image edition or a full-row reload."""
  result=dict(value);props=dict(result.get('props',{}));result['props']=props
- for k in ('XCMate.ProgrammePercent46',):props.pop(k,None)
+ for k in ('XCMate.ProgrammePercent46','XCMate.Source85'):props.pop(k,None)
  for k,v in list(props.items()):
   if k.endswith('Proof69') and isinstance(v,str):
    try:

@@ -43,7 +43,7 @@ def open(parent):
 
 class SeriesWindow85(xbmcgui.WindowXMLDialog):
  def configure(self,rows,state=None,event=None):
-  self.rows=rows[:8];self.chosen=None;self.position=-1;self.state=state or {};self.event=event;self._closed=False;self._ready=False;self._nonce85=None;self._requested85=set()
+  self.rows=rows[:8];self.chosen=None;self.position=-1;self.state=state or {};self.event=event;self.portal={'id':str((event or {}).get('pid',''))};self._closed=False;self._ready=False;self._nonce85=None;self._requested85=set()
  def run(self):
   monitor=xbmc.Monitor();self.show();deadline=time.monotonic()+5
   try:
@@ -55,9 +55,11 @@ class SeriesWindow85(xbmcgui.WindowXMLDialog):
  def close(self):
   if self._closed:return
   self._closed=True
+  __import__('programme_lifecycle69').unregister(self)
   if self._nonce85:__import__('series_requests85').cancel(self._nonce85)
   super().close()
  def pump(self):
+  if __import__('programme_lifecycle69').pulse(self):return
   from series_requests85 import request,result,cancel
   position=self.getControl(200).getSelectedPosition()
   if 0<=position<len(self.rows):
@@ -74,6 +76,7 @@ class SeriesWindow85(xbmcgui.WindowXMLDialog):
      if row['source']==candidate.get('source') and row['id']==candidate.get('id') and candidate.get('thumb85'):
       row['thumb85']=candidate['thumb85'];self.getControl(200).getListItem(i).setArt({'thumb':candidate['thumb85'],'icon':candidate['thumb85']})
  def onInit(self):
+  __import__('programme_lifecycle69').register(self,'DETAIL')
   self.getControl(101).setLabel('Serie/Bild zuweisen · Auswahl ausdrücklich bestätigen')
   items=[]
   for row in self.rows:

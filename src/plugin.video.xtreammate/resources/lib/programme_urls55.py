@@ -166,8 +166,12 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         mapping85=__import__('programme_mapping85').current(event)
         if mapping85 and mapping85.get('hidden'):return
         if mapping85 and mapping85.get('id'):
+            # Existing proofs were checked above. New remote work must obey
+            # the same visible-event admission as automatic lookups.
+            if not allow_lookup:return
             manual85=__import__('programme_candidates85').candidate(event,cancel)
             if manual85:yield manual85
+            return  # A deliberate user mapping is never silently replaced.
         yield from candidates  # Exact feed events precede production-level art.
         reference84=__import__('programme_reference84').get(event)
         if reference84 and reference84.get('candidate'):yield dict(reference84['candidate'])

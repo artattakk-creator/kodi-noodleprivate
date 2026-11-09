@@ -25,7 +25,7 @@ def main():
  start=(root/'tools/kodi_home74_host/start.sh').read_text().replace('cp /work/fixture66.py /root/.kodi/addons/plugin.video.xtreammate/','cp /fixture84.py /root/.kodi/addons/plugin.video.xtreammate/fixture66.py')
  (report/'start.sh').write_text(start)
  base=root/'tools/kodi_home84_host'
- mounts=[(root/'tools/kodi_home74_host','/work'),(root/'src/plugin.video.xtreammate','/xcmate'),(pristine/'skin.titan.bingie.mod','/skin'),(candidate,'/candidate'),(base/'fixture84.py','/fixture84.py'),(root/'tools/kodi_home85_host/gui85.py','/work/gui66.py'),(base/'gui84.py','/base_gui84.py'),(base/'probe84.py','/work/probe.py'),(base/'tls84.py','/work/tls69.py'),(base/'skin84.py','/work/skin_fixture66.py'),(root/'tools/kodi_home74_host/skin_fixture66.py','/base_skin78.py'),(root/'tools/kodi_home78_host/skin_fixture78.py','/skin78.py'),(report/'start.sh','/work/start.sh')]
+ mounts=[(root/'tools/kodi_home74_host','/work'),(root/'src/plugin.video.xtreammate','/xcmate'),(pristine/'skin.titan.bingie.mod','/skin'),(candidate,'/candidate'),(root/'tools/kodi_home85_host/fixture85.py','/fixture84.py'),(base/'fixture84.py','/base_fixture84.py'),(root/'tools/kodi_home85_host/gui85.py','/work/gui66.py'),(base/'gui84.py','/base_gui84.py'),(base/'probe84.py','/work/probe.py'),(base/'tls84.py','/work/tls69.py'),(base/'skin84.py','/work/skin_fixture66.py'),(root/'tools/kodi_home74_host/skin_fixture66.py','/base_skin78.py'),(root/'tools/kodi_home78_host/skin_fixture78.py','/skin78.py'),(report/'start.sh','/work/start.sh')]
  cmd=['run','-d','--name',name]
  for source,target in mounts:cmd+=['--mount','type=bind,src='+str(source)+',dst='+target+',readonly']
  cmd+=['-e','XCMATE_RES74='+a.resolution,'xcmate-kodi21-helper57-contract','sh','/work/start.sh']

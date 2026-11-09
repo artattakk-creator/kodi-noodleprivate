@@ -38,3 +38,10 @@ class Patch85(Fixture,unittest.TestCase):
  def test_no_verified_binding_creates_no_patch_property(self):
   self.runtime._plans.clear();self.properties.clear()
   self.assertFalse(self.module.prepare(self.portal,'vod',self.values,'a'*64));self.assertFalse(self.properties)
+ def test_source_bookkeeping_alone_never_reloads_but_real_picture_change_does(self):
+  import copy
+  from home_publication74 import signature
+  from widget_snapshot85 import semantic
+  values=copy.deepcopy(self.values);prior=signature(values,'vod');plain=semantic(values[0]);values[0]['props']['XCMate.Source85']='renewed-proof-bookkeeping'
+  self.assertEqual(signature(values,'vod'),prior);self.assertEqual(semantic(values[0]),plain)
+  values[0]['art']['poster']='/verified-new-edition.png';self.assertNotEqual(signature(values,'vod'),prior)

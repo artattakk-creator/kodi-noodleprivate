@@ -79,9 +79,18 @@ from programme_mapping85 import path
 check(not path().exists(),'SERIES85_SELECTION_WITHOUT_MANAGER_WROTE_MAPPING')
 # Real data-binding visibility of the unconfirmed proposal label.
 home.setFocusId(2510);home.getControl(2510).selectItem(0)
-item85=home.getControl(2510).getListItem(0);item85.setProperty('XCMate.Provisional85','true')
+Path('/root/proposal85-on').touch()
+from widget_runtime79 import _plans
+hooks85=_plans.get((str(portal['id']),'live'),{}).get('hooks',[])
+check(hooks85,'SERIES85_NO_NATIVE_LIVE_HOOK')
+for hook85 in hooks85:
+ if hook85.startswith('XCMate.Widget45.Reload.') or hook85 in ('widgetreload','widgetreload2','widgetreloadmovies','widgetreloadtvshows'):home.setProperty(hook85,'synthetic85-proposal-source')
+for _ in range(200):
+ if xbmc.getInfoLabel('Container(2510).ListItem.Property(XCMate.Provisional85)')=='true':break
+ xbmc.sleep(50)
+check(xbmc.getInfoLabel('Container(2510).ListItem.Property(XCMate.Provisional85)')=='true','SERIES85_PROPOSAL_SOURCE_MISSING')
 xbmc.sleep(700)
 check(xbmc.getCondVisibility('Control.IsVisible(296885)'),'SERIES85_PROPOSAL_LABEL_HIDDEN')
-proposal85,_=capture('visible84-series85-proposal');item85.setProperty('XCMate.Provisional85','')
+proposal85,_=capture('visible84-series85-proposal');Path('/root/proposal85-on').unlink(missing_ok=True)
 report['version']='0.1.29.85';report['patch85']=patch85_evidence;report['scroll85']=scroll85;report['series85']=dict(candidate_poster_pixels=poster85,confirm_native='PASS',back_native='PASS',no_implicit_mapping_write='PASS',proposal_visible='PASS',candidate_screenshot=shot85.name,proposal_screenshot=proposal85.name,android='ANDROID_NOT_TESTED')
 Path('/root/'+('post75.json' if cold else 'visible84.json')).write_text(json.dumps(report,indent=2))

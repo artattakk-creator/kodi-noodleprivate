@@ -125,3 +125,19 @@ class Edge85(Fixture,unittest.TestCase):
   self.maps.publish({'format':1,'records':{},'epochs':{}})
   with mock.patch('programme_display84._account',side_effect=AssertionError('unnecessary account lookup')):
    for _ in range(100):self.assertIsNone(self.maps.current(self.event));self.assertEqual(self.maps.epoch(self.event),0)
+ def test_series_picker_registers_own_portal_for_cooperative_player_exit(self):
+  d=self.candidate_dialog85();self.assertEqual(d.portal['id'],str(self.event['pid']));self.assertTrue(d._owner69)
+  with mock.patch('programme_lifecycle69.pulse',side_effect=lambda view:view.close() or True),mock.patch('series_requests85.request',side_effect=AssertionError('job after cooperative close')):d.pump()
+  self.assertTrue(d._closed);self.assertFalse(self.maps.path().exists())
+ def test_manual_mapping_does_not_bypass_visible_event_lookup_admission(self):
+  import programme_urls55 as urls
+  event=dict(self.event,placeholder='/fallback.png');self.maps.set_mapping(event,dict(id=85,source='tmdb',verified85=True))
+  with mock.patch('programme_candidates85.candidate',side_effect=AssertionError('unadmitted remote work')),mock.patch('programme_index46.art',return_value=None),mock.patch('event_art81.prior',return_value=None):
+   result=urls.resolve(event,allow_lookup=False,url_mode69=True)
+  self.assertNotEqual((result or {}).get('source'),'tmdb_series')
+ def test_manual_disabled_source_is_not_silently_replaced_by_xmltv_supplier(self):
+  import programme_urls55 as urls
+  event=dict(self.event,placeholder='/fallback.png',xmltv_image='https://image.tmdb.org/t/p/w500/synthetic85.png');self.maps.set_mapping(event,dict(id=85,source='tmdb',verified85=True));self.options.update(programme_tmdb46=False,tmdb_research43=False)
+  with mock.patch('programme_urls55.probe',side_effect=AssertionError('silent fallback after deliberate mapping')),mock.patch('programme_index46.art',return_value=None),mock.patch('event_art81.prior',return_value=None):
+   result=urls.resolve(event,allow_lookup=True,url_mode69=True)
+  self.assertNotEqual((result or {}).get('source'),'xmltv_event')
