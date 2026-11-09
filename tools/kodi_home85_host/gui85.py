@@ -16,6 +16,23 @@ def refresh_plans85():
  widget_runtime79._next=0;widget_runtime79.prepare([portal])
 plans85=threading.Thread(target=refresh_plans85);plans85.start();plans85.join(10)
 check(not plans85.is_alive(),'VIEWPORT85_PLAN_REFRESH_TIMEOUT')
+import widget_patch85
+patch85_original=widget_patch85.apply
+patch85_evidence=[]
+def patch85_probe(pid85,kind85,signature85):
+ result85=patch85_original(pid85,kind85,signature85)
+ from widget_runtime79 import _plans
+ plan85=_plans.get((str(pid85),kind85),{})
+ facts85=dict(kind=kind85,applied=result85,ids=plan85.get('ids'),plan_age=time.monotonic()-plan85.get('at',0))
+ for cid85 in plan85.get('ids',[])[:1]:
+  facts85['count']=xbmc.getInfoLabel('Container('+str(cid85)+').NumItems')
+  try:
+   item85=home.getControl(cid85).getListItem(0);facts85['native_item_id']=item85.getProperty('XCMate.MediaId');facts85['native_source85']=bool(item85.getProperty('XCMate.Source85'))
+  except Exception as error85:facts85['native_item_error']=type(error85).__name__
+ patch85_evidence.append(facts85)
+ print('PATCH85_NATIVE '+json.dumps(facts85),flush=True)
+ return result85
+widget_patch85.apply=patch85_probe
 scroll85=[]
 for kind85,control85 in (('vod',2520),('series',2530)):
  rows85_catalog,_=snapshot(portal,kind85)
@@ -29,7 +46,8 @@ for kind85,control85 in (('vod',2520),('series',2530)):
  check(str(rows85_catalog[23]['sid']) in read(portal,kind85,rows85_catalog),('VIEWPORT85_LAST_SOURCE_MISSING',kind85))
  publish(portal,kind85,rows85_catalog)
  for _ in range(40):pump();xbmc.sleep(50)
- check(home.getControl(control85).getSelectedPosition()==23,('VIEWPORT85_FOCUS_RESET',kind85,home.getControl(control85).getSelectedPosition()))
+ selected85=xbmc.getInfoLabel('Container('+str(control85)+').ListItem.Property(XCMate.MediaId)')
+ check(selected85==str(rows85_catalog[23]['sid']),('VIEWPORT85_FOCUS_RESET',kind85,selected85,xbmc.getInfoLabel('Container('+str(control85)+').CurrentItem'),patch85_evidence))
  scroll85.append(dict(kind=kind85,items=len(rows85_catalog),last_source='PASS',focus=23))
 from series_manager85 import SeriesWindow85
 # No service lookup or real TMDB token is used for synthetic candidate facts.
@@ -65,5 +83,5 @@ item85=home.getControl(2510).getListItem(0);item85.setProperty('XCMate.Provision
 xbmc.sleep(700)
 check(xbmc.getCondVisibility('Control.IsVisible(296885)'),'SERIES85_PROPOSAL_LABEL_HIDDEN')
 proposal85,_=capture('visible84-series85-proposal');item85.setProperty('XCMate.Provisional85','')
-report['version']='0.1.29.85';report['scroll85']=scroll85;report['series85']=dict(candidate_poster_pixels=poster85,confirm_native='PASS',back_native='PASS',no_implicit_mapping_write='PASS',proposal_visible='PASS',candidate_screenshot=shot85.name,proposal_screenshot=proposal85.name,android='ANDROID_NOT_TESTED')
+report['version']='0.1.29.85';report['patch85']=patch85_evidence;report['scroll85']=scroll85;report['series85']=dict(candidate_poster_pixels=poster85,confirm_native='PASS',back_native='PASS',no_implicit_mapping_write='PASS',proposal_visible='PASS',candidate_screenshot=shot85.name,proposal_screenshot=proposal85.name,android='ANDROID_NOT_TESTED')
 Path('/root/'+('post75.json' if cold else 'visible84.json')).write_text(json.dumps(report,indent=2))
