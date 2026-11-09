@@ -1,6 +1,6 @@
 """Pure display admission for verified public URL references and local images."""
 import json,math,os,time
-FIELDS=('key','fingerprint','code','source','match','image','thumbnail','source_url','url_version55','url_verified69','scope69','profile69','until','image_scope57','persisted69','storage69','storage_code69','policy69')
+FIELDS=('key','fingerprint','code','source','match','image','thumbnail','source_url','url_version55','url_verified69','scope69','profile69','until','image_scope57','persisted69','storage69','storage_code69','policy69','display84','display_key84')
 def url(art):
  from programme_urls55 import safe,OPTIONS
  value=art.get('source_url','') if isinstance(art,dict) else ''
@@ -17,6 +17,7 @@ def eligible(art,event=None):
  if event is not None and art.get('scope69'):
   from programme_requests68 import identity
   if art['scope69']!=identity(event):return False
+ if art.get('display84') and not __import__('programme_display84').verify(art,event):return False
  if os.path.isabs(image) and not art.get('url_version55'):return True
  if not url(art):return False
  from programme_policy68 import negative_scope

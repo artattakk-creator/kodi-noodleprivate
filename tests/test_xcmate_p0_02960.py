@@ -135,8 +135,9 @@ class TMDB60(Fixture, unittest.TestCase):
         with mock.patch('media_sources43.get', side_effect=[search, episode]):
             self.assertEqual(match.candidate(event)['match'], 'EXACT_SEASON_EPISODE')
         for changed in (dict(episode, episode_number=4), dict(episode, name='Wrong episode'), dict(episode, still_path='/../wrong.jpg')):
-            with mock.patch('media_sources43.get', side_effect=[search, changed]):
+            with mock.patch('media_sources43.get', side_effect=[search, changed]) as get:
                 self.assertIsNone(match.candidate(event))
+            self.assertEqual(get.call_count, 2)  # mismatch/unsafe path never starts a work fallback
 
     def test_unclassified_news_empty_title_or_disabled_feature_never_searches(self):
         match = importlib.import_module('programme_match46')

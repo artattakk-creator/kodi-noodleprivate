@@ -96,6 +96,9 @@ class Stage:
    self.rows.clear()
  def finish(self,publish=False):
   self.flush();finish(self.pid,self.generation,publish and not self.failed,self.guide,index_ok46=not self.facts46.failed,index_publish46=publish)
+  if publish and not self.failed and not self.facts46.failed:
+   try:__import__('programme_reference84').signal(self.pid,self.generation)
+   except (ImportError,AttributeError,RuntimeError):pass
 
 def finish(pid,generation,publish,guide=None,*,index_ok46=True,index_publish46=None):
  from epg_binding48 import finish_channels

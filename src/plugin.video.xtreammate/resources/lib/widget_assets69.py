@@ -4,6 +4,7 @@ import hashlib,json,queue,threading,time,sqlite3
 from urllib.parse import urlsplit,unquote
 _lock=threading.RLock();_queue=queue.Queue(maxsize=16);_pending=set();_thread=None;_stop=threading.Event();_revision=0
 _deferred82={};_local_due82={};_lease_keys82={};_fatal82=False
+_cursor84={}
 PREFIX='XCMate.WidgetAsset69.'
 def profile():
  from epg_handoff63 import profile_scope
@@ -26,17 +27,19 @@ def _window():
 def _slot(key):return PREFIX+key
 def read(portal,kind,rows):
  from artwork_config import persistent
- if persistent():return {}
+ persistent84=persistent()
+ from artwork_display84 import enabled
+ remote84=not persistent84 or enabled()
  from programme_assets47 import sources
  from artwork_visible import KODI_OPTIONS
  from widget_refs74 import read as retained74
- result=retained74(portal,kind,rows)
+ result=retained74(portal,kind,rows) if not persistent84 else {}
  from widget_cache79 import read as local79
  for sid79,roles79 in local79(portal,kind,rows).items():result.setdefault(sid79,{}).update(roles79)
  for row in rows[:256]:
   for role,source in sources(row,provider_only=True).items():
    from widget_refs74 import revoked
-   if not safe(portal,source) or revoked(source):continue
+   if not remote84 or not safe(portal,source) or revoked(source):continue
    key=identity(portal,kind,row,role,source)
    try:
     raw=_window().getProperty(_slot(key));value=json.loads(raw) if raw and len(raw)<4096 else {}
@@ -55,7 +58,7 @@ def prepare(portal,kind,rows,cancel=lambda:False):
  from home_schedule75 import allowed,focused_rows
  if not allowed(kind,portal):rows=focused_rows(portal,kind,rows)
  from artwork_config import persistent
- if _fatal82 or persistent() or _stop.is_set() or not rows or kind not in ('live','vod','series'):return False
+ if _fatal82 or _stop.is_set() or not rows or kind not in ('live','vod','series'):return False
  from programme_assets47 import sources
  selected=[dict(row) for row in rows[:256 if kind=='live' else 24]]
  material=[[str(r['sid']),sources(r,provider_only=True)] for r in selected]
@@ -70,14 +73,27 @@ def prepare(portal,kind,rows,cancel=lambda:False):
  return True
 def _references82(portal,kind,rows):
  global _revision
+ from artwork_config import persistent
+ from artwork_display84 import enabled,note
+ if persistent() and not enabled():return
  from artwork_visible import public_dns,KODI_OPTIONS
  from programme_assets47 import sources
  initial=profile();end=time.monotonic()+.5;retained74=[]
- for row in rows:
+ if kind=='live':
+  from programme_prefetch48 import visible75
+  visible84=visible75(portal,rows);visible_ids84={str(r['sid']) for r in visible84}
+  ordered84=visible84+[r for r in rows if str(r['sid']) not in visible_ids84]
+ else:ordered84=list(rows)
+ context84=hashlib.sha256(json.dumps([initial,portal.get('id'),portal.get('xc_user'),portal.get('xc_pass'),kind,[[r['sid'],sources(r,provider_only=True)] for r in ordered84]],sort_keys=True).encode()).hexdigest()
+ start84=_cursor84.get(context84,0)%max(1,len(ordered84));stop84=min(5,len(ordered84)) if kind=='live' and start84<5 else len(ordered84)
+ processed84=0;missing84=blocked84=dns84=0
+ for row in ordered84[start84:stop84]:
   if _stop.is_set() or profile()!=initial or time.monotonic()>end:break
+  processed84+=1
   for role,source in sources(row,provider_only=True).items():
-   if not safe(portal,source):continue
-   if not public_dns(source):continue
+   if not source:missing84+=1;continue
+   if not safe(portal,source):blocked84+=1;continue
+   if not public_dns(source):dns84+=1;continue
    from artwork_visible import _dns_cache,_lock as dns_lock
    parts=urlsplit(source)
    with dns_lock:lease=_dns_cache.get((parts.hostname,443))
@@ -97,11 +113,20 @@ def _references82(portal,kind,rows):
     with _lock:_revision+=1
  from widget_refs74 import remember_many
  remember_many(portal,kind,retained74)
+ _cursor84[context84]=(start84+processed84)%max(1,len(ordered84))
+ while len(_cursor84)>32:_cursor84.pop(next(iter(_cursor84)))
+ if retained74:note(kind,'URL_APPROVED',count=len(retained74))
+ if missing84:note(kind,'SOURCE_MISSING',count=missing84)
+ if blocked84:note(kind,'SOURCE_BLOCKED',count=blocked84)
+ if dns84:note(kind,'DNS_UNAVAILABLE',count=dns84)
 
 def _run():
  global _fatal82
  from artwork_health82 import Deferred,defer,note,status,guard
- while not _stop.is_set():
+ import xbmc
+ aborted=getattr(xbmc.Monitor(),'abortRequested',lambda:False)
+ cancelled=lambda:_stop.is_set() or aborted()
+ while not cancelled():
   job=None;queued=False;local_only=False;now=time.time()
   for tag,(until,code,candidate) in list(_deferred82.items()):
    released=code in ('DB_PAUSED','DB_MANUAL_PAUSE') and status()['code']=='READY'
@@ -115,12 +140,13 @@ def _run():
   key,portal,kind,rows=job;deferred=local_only
   try:
    # Recover already decoded Kodi files before any optional image write.
+   __import__('artwork_display84').observe()
    __import__('widget_cache82').prepare(portal,kind,rows)
    _references82(portal,kind,rows)
    if local_only:continue
    guard()
-   __import__('render_cache81').prepare(portal,kind,rows,_stop.is_set)
-   __import__('media_hero81').prepare(portal,kind,rows,_stop.is_set)
+   __import__('render_cache81').prepare(portal,kind,rows,cancelled)
+   __import__('media_hero81').prepare(portal,kind,rows,cancelled)
    note('RECOVERED',pending=len(_pending))
   except (sqlite3.Error,OSError) as error:
    pause=defer(error)

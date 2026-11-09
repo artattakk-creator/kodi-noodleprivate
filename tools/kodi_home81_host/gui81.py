@@ -1,12 +1,12 @@
 """Every .80 native case plus both rails visible and the compact .81 layout."""
 from pathlib import Path
 source81=Path('/base_gui80.py').read_text()
-for old,new in (("'((270,0),1620,480)'","'((270,0),1620,400)'"),('getpixel((330,525))','getpixel((330,445))'),('getpixel((350,800))','getpixel((350,650))'),('range(480,1040)','range(420,1040)')):
+for old,new in (("'((270,0),1620,480)'","'((270,0),1620,620)'"),('getpixel((330,525))','getpixel((330,665))'),('getpixel((350,800))','getpixel((350,770))'),('range(480,1040)','range(640,1040)')):
  source81=source81.replace(old,new)
 # The first-frame test must see the series row before any Down/focus too.
 needle81="check(max(abs(a-b) for a,b in zip(initial80_rgb.getpixel((300,150)),(20,80,130)))<=8,'HERO80_NOT_FULL_BLEED')"
 assert needle81 in source81
-source81=source81.replace(needle81,needle81+"\\ncheck(max(abs(a-b) for a,b in zip(initial80_rgb.getpixel((350,900)),(100,50,20)))<=8,'SERIES81_NOT_VISIBLE_BEFORE_FOCUS')")
+source81=source81.replace(needle81,needle81+"\\ncheck(max(abs(a-b) for a,b in zip(initial80_rgb.getpixel((350,1020)),(100,50,20)))<=8,'SERIES81_NOT_VISIBLE_BEFORE_FOCUS')")
 # Same exact HTTPS/pixel/cache acceptance, now including the explicit .81
 # durable-cache producer rather than requiring a remote-only intermediate URI.
 def cache_contract81(text):

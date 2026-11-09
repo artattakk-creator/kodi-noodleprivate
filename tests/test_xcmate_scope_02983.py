@@ -28,7 +28,7 @@ class Scope83(unittest.TestCase):
         from channel_contract_02983 import verify
         for path in ('addons.xml','addons.xml.md5','online-test/addons.xml','online-test/addons.xml.md5','online-test/manifest.json'):self.assertTrue(verify(path,committed=True))
         paths=('script.gsmedia.setup/script.gsmedia.setup-0.5.26.zip','plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.82.zip','online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.82.zip','online-test/plugin.video.xtreammate-0.1.29.82.zip','index.html','online-test/index.html')
-        for path in paths:self.assertEqual((ROOT/path).read_bytes(),subprocess.check_output(['git','show',BASE+':'+path],cwd=ROOT),path)
+        for path in paths:self.assertEqual((ROOT/path).read_bytes(),subprocess.check_output(['git','show',('ee42712655cb9adcdcb11b09d591a1737d899844' if path in ('index.html','online-test/index.html') else BASE)+':'+path],cwd=ROOT),path)
     def test_regular_release_not_authorized_for_83(self):
         import sys
         sys.path.insert(0,str(ROOT/'tools'))

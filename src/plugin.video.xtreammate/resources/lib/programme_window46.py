@@ -83,7 +83,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   if self.parent is not None and self.parent._closed:self.close();return
   if self._future is not None and not self._future.done() and time.monotonic()>self._read_deadline69:
    self._cancel.set();self._future.cancel();self._future=None
-   self.getControl(103).setText('EPG_READ_TIMEOUT: Daten momentan nicht verfügbar. Zurück bleibt bedienbar.')
+   self.getControl(103).setText('Programmdaten momentan nicht verfügbar. Zurück bleibt bedienbar.')
    __import__('programme_lifecycle69').mark(self,'READ_TIMEOUT')
   if self._future is not None and self._future.done():
    future=self._future;self._future=None

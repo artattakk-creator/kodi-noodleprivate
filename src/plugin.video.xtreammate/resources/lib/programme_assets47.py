@@ -97,6 +97,7 @@ def fingerprint(source):
 
 def _store(pid, kind, records):
     global _visual_revision47
+    if not __import__('artwork_display84').metadata_allowed():return False
     from programme_index46 import encoded, report
     db = None
     try:
@@ -260,6 +261,7 @@ def prepare(portal, kind, rows, cancel=lambda:False,provider_only=False):
 
 def channels(portal, records):
     """Store actual canonical IDs/labels, never a new parallel guide truth."""
+    if not __import__('artwork_display84').metadata_allowed():return
     from programme_index46 import encoded, report
     db = None
     try:

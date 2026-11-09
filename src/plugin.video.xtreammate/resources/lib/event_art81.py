@@ -36,6 +36,9 @@ def prior(event):
 def commit(event,value,body=None):
  from render_cache81 import store
  from profile_transaction import writing
+ if not __import__('artwork_display84').metadata_allowed() or __import__('home_schedule75').applicable():
+  old=prior(event)
+  return old if old and rank(old)<=rank(value) else value
  try:
   with writing(timeout=.1):
    old=prior(event)

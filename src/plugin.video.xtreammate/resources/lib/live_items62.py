@@ -22,6 +22,7 @@ def basic(portal,row,approved):
     params=dict(action='play_live' if portal.get('type')=='xtream' else 'source_play',pid=portal['id'],sid=row['sid'],name=row['name'])
     url='plugin://plugin.video.xtreammate/?'+urlencode(params)
     props={'XCMate.WidgetKind41':'live','XCMate.PortalId':str(portal['id']),'XCMate.MediaId':row['sid'],'XCMate.Account':str(portal.get('name','')),'IsPlayable':'true','XCMate.Home50':'true','XCMate.WidgetToken41':token(portal,row),'XCMate.ClickTarget44':url,'XCMate.LogoScale41':'0.5','XCMate.ProgrammeChannel46':row['name'],'XCMate.ProgrammeLogo46':real,'XCMate.ProgrammeImage46':os.path.join(root,'resources','media','programme46','neutral.png'),'XCMate.ProgrammeTitle46':tr(36102),'XCMate.ProgrammePercent46':'0','XCMate.ProgrammeNext46':'','XCMate.ProgrammeTimes46':'','XCMate.ProgrammeDescription46':'','channellogo':real}
+    props['XCMate.LogoProof84']=__import__('artwork_display84').logo_proof(portal,row,real)
     return dict(label=row['name'],url=url,props=props,art=dict(icon=logo,thumb=logo,poster=logo,landscape=logo,fanart=props['XCMate.ProgrammeImage46']),info=dict(title=row['name'],plot='',mediatype='video'))
 
 def values(portal,rows):

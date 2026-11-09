@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon id="plugin.video.xtreammate"
        name="XCMate"
-       version="0.1.29.83"
+       version="0.1.29.84"
        provider-name="GS Media">
 
   <requires>
@@ -38,7 +38,7 @@
     <forum>https://forum.kodi.tv</forum>
     <website>https://kodi.tv</website>
     <source>https://github.com/artattakk-creator/kodi-noodleprivate</source>
-    <news>0.1.29.83: Eigene Auswahl für internen Android-Speicher. Quelle und Ziel vor jedem Schreibtest vergleichen; gleicher oder unklarer Speicherpool blockiert die Migration. Bestätigter 4-KiB-Test, bestehendes Kopier-/SHA256-/Anzeigejournal und begrenzte SQLite-BUSY-Wiederholungen. Verständliche Rechte-/Reservefehler. Originalbilder, Token, EPG und Kodi-Einstellungen bleiben erhalten. Keine SAF-Rechteumgehung. Android-Abnahme ausstehend.</news>
+    <news>0.1.29.84 Testversion: Größerer Hero mit besser lesbarer Infotafel. Das schnelle Senderlogo bleibt beim Laden sichtbar und wird nicht übergroß dargestellt. Geprüfte Providercover und vorhandene Kodi-Bilder werden auch bei blockierter Archivspeicherung verwendet. Serienbilder mit genauer Titelprüfung und bestätigten Alternativtiteln; keine geratenen Episodenbilder. Technische Statuscodes aus normalen Detailansichten entfernt. Zugangsdaten, EPG, Favoriten und Widgets bleiben erhalten. Android-Abnahme steht aus.</news>
     <assets>
       <icon>icon-81da1003a2753ec6.png</icon>
       <fanart>resources/media/lightweight_splash.jpg</fanart>

@@ -59,6 +59,8 @@ def remember_many(portal,kind,records):
 
 def _remember_many(portal,kind,records):
     if not records:return
+    from artwork_display84 import metadata_allowed,note
+    if not metadata_allowed():note(kind,'METADATA_WRITE_DEFERRED');return
     from widget_assets69 import safe
     from profile_transaction import writing
     with writing(timeout=.1):
@@ -79,6 +81,8 @@ def _remember_many(portal,kind,records):
         if not changed or len(refs)>512:return
         value['refs']=refs;raw=json.dumps(value,separators=(',',':')).encode()
         if len(raw)>262144:return
+        from import_budget import check_space
+        check_space(filename,len(raw)+65536)
         fd,temp=tempfile.mkstemp(prefix='.widget-refs74-',dir=os.path.dirname(filename))
         try:
             with os.fdopen(fd,'wb') as stream:stream.write(raw);stream.flush();os.fsync(stream.fileno())

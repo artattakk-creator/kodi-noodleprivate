@@ -28,6 +28,13 @@ def report(category,error=None,guide=None):
     filename=path(guide)+'.status.json';key=(filename,category);old=_reports.get(key);now=time.time()
     if old and old[0]==code and now-old[1]<60:return
     _reports[key]=(code,now);temp=None
+    if not __import__('artwork_display84').metadata_allowed():
+        if error is not None:
+            try:
+                import xbmc
+                xbmc.log('[XCMate][PROGRAMME_DB46] stage='+category+' code='+code,xbmc.LOGINFO)
+            except (ImportError,AttributeError,RuntimeError):pass
+        return
     try:
         states={}
         try:

@@ -84,6 +84,7 @@ def read(filename,key):
     return None
 
 def store(filename,key,rows,revision=None):
+    if not __import__('artwork_display84').metadata_allowed():return
     temp=None
     try:
         data=json.dumps(dict(policy=key,at=time.time(),rows=rows,revision44=revision))

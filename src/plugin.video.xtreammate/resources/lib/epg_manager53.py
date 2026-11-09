@@ -140,6 +140,15 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
             self.getControl(300).setText('\n'.join(lines));self.getControl(300).scroll(0);self.getControl(102).setLabel('Lokale Prüfung der ersten bis zu 512 aktivierten Sender · Zurück: Quellenliste');self.setFocusId(409)
         self._request(lambda:report(self.portal,list(islice(active_streams(self.portal),512))),ready)
 
+    def _probe84(self):
+        from programme_probe84 import report
+        def ready(text):
+            self.mode='report';self.scroll=0;self.getControl(200).setVisible(False);self.getControl(103).setText('')
+            self.getControl(300).setVisible(True);self.getControl(300).setText(text)
+            self.getControl(102).setLabel('Explizite TMDB-Probe · keine Token/URLs im Bericht · GUI-Nachweis getrennt')
+            self.setFocusId(409)
+        self._request(lambda:report(self.portal,lambda:self._closed),ready)
+
     def _toggle_provider58(self):
         from provider_epg58 import toggle
         def ready(portal):
@@ -150,7 +159,10 @@ class Manager53(OwnerDispatch,xbmcgui.WindowXMLDialog):
         self._request(lambda:toggle(self.portal),ready)
     def onAction(self,action):
         if action.getId() in (9,10,92):self.onClick(406)
-        elif action.getId()==117 and self.mode=='sources' and not self._pending_future:self._coverage66()
+        elif action.getId()==117 and self.mode=='sources' and not self._pending_future:
+            choice=select(xbmcgui.Dialog(),'EPG-Diagnose',['Lokale Senderabdeckung','TMDB-Bildkette und Cache-Inventur'])
+            if choice==0:self._coverage66()
+            elif choice==1:self._probe84()
         elif action.getId() in (3,4) and self.mode=='sources':self._detail()
     def close(self):
         self._gui()

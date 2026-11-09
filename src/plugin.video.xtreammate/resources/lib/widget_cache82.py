@@ -68,6 +68,7 @@ def decoded(texture,source):
     except (OSError,ValueError,SourceError):return None
 
 def save(portal,kind,found):
+    if not __import__('artwork_display84').metadata_allowed():return
     from widget_cache79 import path,load,LIMIT
     from profile_transaction import writing
     from import_budget import check_space
@@ -112,7 +113,7 @@ def prepare(portal,kind,rows):
                 remember(portal,kind,row,role,source,previous);continue
             for url in variants(source):wanted.setdefault(url,[]).append((row,role,source))
     if not wanted:return
-    request=dict(jsonrpc='2.0',id=82,method='Textures.GetTextures',params=dict(filter={'or':[dict(field='url',operator='is',value=u) for u in wanted]},properties=['url','cachedurl','sizes'],limits=dict(start=0,end=256)))
+    request=dict(jsonrpc='2.0',id=82,method='Textures.GetTextures',params=dict(filter={'or':[dict(field='url',operator='is',value=u) for u in wanted]},properties=['url','cachedurl','sizes']))
     raw=xbmc.executeJSONRPC(json.dumps(request))
     if not isinstance(raw,str) or len(raw)>1024*1024:return
     try:response=json.loads(raw)

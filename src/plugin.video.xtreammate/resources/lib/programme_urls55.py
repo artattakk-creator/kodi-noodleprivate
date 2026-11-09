@@ -101,6 +101,13 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     durable81=__import__('event_art81').prior(event)
     upgrade81=allow_lookup and __import__('event_art81').upgrade(event,durable81)
     if durable81 and not upgrade81:return durable81
+    pressure84=__import__('artwork_display84').observe() or __import__('home_schedule75').applicable()
+    if url_mode69 and pressure84:
+        renewed84=__import__('programme_display84').recover(event) or __import__('programme_display84').renew(event)
+        if renewed84:
+            from programme_session69 import remember as remember84
+            remember84(event,renewed84,update=True)
+            return renewed84
     if url_mode69:
         from programme_session69 import get as session69
         prior69=session69(event)
@@ -154,6 +161,9 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         else:value['lookup_code56']=reason
         source_trace(event,reason)
     def supplied():
+        yield from candidates  # Exact feed events precede production-level art.
+        reference84=__import__('programme_reference84').get(event)
+        if reference84 and reference84.get('candidate'):yield dict(reference84['candidate'])
         own81=[];attempted81=False
         if allow_lookup and not match and not __import__('programme_sources57').unsuitable69(event):
             from programme_match46 import candidate as own_candidate81
@@ -170,7 +180,6 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             except (SourceError,HelperError) as exc:
                 __import__('programme_outcomes70').add(value,'tmdb',exc.code,event);failed(exc.code)
         yield from own81
-        yield from candidates
         if not allow_lookup:return
         deferred=[]
         steps=[lambda:match(event,cancel=cancel)] if match else attempts(event,cancel,critical80=not bool(event.get('helper_explicit80')))
@@ -261,6 +270,8 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         if durable81:return durable81
         value['negative_scope68']=negative68
     if url_mode69:
+        if pressure84 and value.get('url_version55') and value.get('source')!='placeholder':
+            value=__import__('programme_display84').remember(event,value)
         from programme_session69 import remember as session_save69,persist as persist69
         value=session_save69(event,value)
         value=persist69(event,value)
@@ -307,15 +318,16 @@ def promote_focus75(tag):
                 return True
     return False
 
-def enqueue(event,allow_lookup=False,local_image63=False,priority68=False):
+def enqueue(event,allow_lookup=False,local_image63=False,priority68=False,reference_only84=False):
     """Worker producer: True prioritizes visible items; 2 is current focus."""
     global _thread,_focus75
     if _stop.is_set() or not event.get('title'):return False
     with _lock:
-        key=event['key']
+        key=('reference84:' if reference_only84 else '')+event['key']
+        if not reference_only84 and __import__('home_schedule75').applicable():local_image63=False
         if priority68==2:_focus75=key
         from utils import setting_bool
-        if not local_image63 and not setting_bool('programme_art_local69',False):
+        if not reference_only84 and not local_image63 and not setting_bool('programme_art_local69',False):
             from programme_session69 import get as session69
             available69=session69(event)
             if available69 and not (allow_lookup and __import__('programme_status70').retry(event,available69)):
@@ -323,7 +335,7 @@ def enqueue(event,allow_lookup=False,local_image63=False,priority68=False):
                 completed(event,available69);return False
         if key in _pending:
             if priority68 and key in _queue:
-                old=_queue[key];_queue[key]=(old[0],old[1] or allow_lookup,old[2] or local_image63,old[3])
+                old=_queue[key];_queue[key]=(old[0],old[1] or allow_lookup,old[2] or local_image63,old[3],bool(reference_only84))
                 _urgent68.add(key)
                 if priority68==2:_queue.move_to_end(key,last=False)
             return False
@@ -337,12 +349,12 @@ def enqueue(event,allow_lookup=False,local_image63=False,priority68=False):
                 status(deferred75[0],'REQUESTED')
             except (ImportError,AttributeError,RuntimeError):pass
         from epg_handoff63 import profile_scope
-        _pending.add(key);_queue[key]=(dict(event),allow_lookup,bool(local_image63),profile_scope())
+        _pending.add(key);_queue[key]=(dict(event),allow_lookup,bool(local_image63),profile_scope(),bool(reference_only84))
         if priority68:_urgent68.add(key)
         if priority68==2:_queue.move_to_end(key,last=False)
         try:
             from programme_requests68 import status
-            status(event,'QUEUED')
+            if not reference_only84:status(event,'QUEUED')
         except (ImportError,AttributeError,RuntimeError):pass
         if _thread is None or not _thread.is_alive():
             _thread=threading.Thread(target=_run,name='XCMate-programme-URL55',daemon=True);_thread.start()
@@ -351,7 +363,9 @@ def enqueue(event,allow_lookup=False,local_image63=False,priority68=False):
 
 def _run():
     global _burst68
-    while not _stop.is_set():
+    import xbmc
+    aborted=getattr(xbmc.Monitor(),'abortRequested',lambda:False)
+    while not _stop.is_set() and not aborted():
         with _lock:
             urgent=next((k for k in _queue if k in _urgent68),None)
             if _focus75 in _queue:
@@ -375,9 +389,12 @@ def _run():
                 from epg_handoff63 import profile_scope
                 from programme_requests68 import status,completed
                 deadline69=time.monotonic()+45
-                stopped69=lambda:_stop.is_set() or len(job)>3 and job[3]!=profile_scope()
+                stopped69=lambda:_stop.is_set() or aborted() or len(job)>3 and job[3]!=profile_scope()
                 cancelled=lambda:stopped69() or time.monotonic()>deadline69
                 if cancelled():continue
+                if len(job)>4 and job[4]:
+                    __import__('programme_reference84').resolve(event,cancelled)
+                    continue
                 status(event,'RUNNING')
                 if local63:value=resolve(event,cancel=cancelled,allow_lookup=allow,local_image63=True)
                 else:value=resolve(event,cancel=cancelled,allow_lookup=allow,url_mode69=True)

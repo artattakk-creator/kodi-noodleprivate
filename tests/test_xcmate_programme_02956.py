@@ -59,9 +59,14 @@ class Programme56(Fixture,unittest.TestCase):
 
     def test_unclassified_event_does_not_become_a_movie_by_title_guess(self):
         self.event.pop('genre')
-        with mock.patch('media_sources43.get',side_effect=AssertionError('unclassified API')):
+        # .84 may prove a TV work without genre. An empty TV search must
+        # still not classify this short programme as a movie by title alone.
+        with mock.patch('media_sources43.get',return_value=dict(total_pages=0,total_results=0,results=[])) as get:
             value=self.urls.resolve(self.event,allow_lookup=True,check=mock.Mock())
         self.assertEqual(value['code'],'NOT_CLASSIFIED_MOVIE')
+        self.assertTrue(get.call_args_list)
+        self.assertTrue(all('/search/tv?' in call.args[0] for call in get.call_args_list))
+        self.assertEqual(value['source'],'placeholder')
 
     def test_missing_backdrop_is_no_valid_url_not_image_success(self):
         value=self.resolve(details=dict(self.details,backdrop_path=''))

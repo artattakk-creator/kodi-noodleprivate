@@ -30,6 +30,8 @@ class XtreamMateV011Tests(unittest.TestCase):
                 'xbmcvfs': types.SimpleNamespace(exists=os.path.exists)})
         self.patch_utils.start()
         self.addCleanup(self.patch_utils.stop)
+        patch_path=mock.patch.object(sys,'path',[str(LIB)]+sys.path)
+        patch_path.start();self.addCleanup(patch_path.stop)
         self.portals = import_file('xm_test_portals', LIB/'portals.py')
         self.groups = import_file('xm_test_groups', LIB/'group_selection.py')
         self.portals._DB_FILE = None
@@ -83,9 +85,14 @@ class XtreamMateV011Tests(unittest.TestCase):
         gui.Dialog=lambda:dialog
         from menu45_fixture import install
         install(gui)
-        with mock.patch.dict(sys.modules,{'xbmcgui':gui,'xtream':xtream}):
+        # Bind this fixture's real portal store explicitly; never depend on
+        # a portals stub or daemon left by an earlier test in discovery order.
+        self.portals.save_all([dict(id='p',type='xtream',xc_host='h',xc_user='u',xc_pass='pw')])
+        with mock.patch.dict(sys.modules,{'xbmcgui':gui,'xtream':xtream,'portals':self.portals}),mock.patch('catalog_delta.request',return_value=True):
             result=self.groups.choose_groups({'id':'p','type':'xtream', 'xc_host':'h', 'xc_user':'u','xc_pass':'pw'})
         self.assertTrue(result)
+        self.assertTrue(self.portals.get_by_id('p')['include_live'])
+        self.assertEqual(self.portals.get_by_id('p')['xc_pass'],'pw')
         # 2 -> all disabled, checkbox dialog checks the second category and saves.
         self.assertEqual(self.groups.load('p','live'),{'11'})
         self.assertTrue(any('Alle deaktivieren' in row.getLabel() for row in dialog.messages[0]))
@@ -118,7 +125,10 @@ class XtreamMateV011Tests(unittest.TestCase):
             def get_live_categories(self,force_refresh=False):
                 return [{'category_id':'1','category_name':'A'}, {'category_id':'2','category_name':'B'}]
         xtream.XtreamClient=XC
-        with mock.patch.dict(sys.modules,{'xbmcgui':gui,'xtream':xtream}):
+        # Bind this fixture's real portal store explicitly; never depend on
+        # a portals stub or daemon left by an earlier test in discovery order.
+        self.portals.save_all([dict(id='p',type='xtream',xc_host='h',xc_user='u',xc_pass='pw')])
+        with mock.patch.dict(sys.modules,{'xbmcgui':gui,'xtream':xtream,'portals':self.portals}),mock.patch('catalog_delta.request',return_value=True):
             self.assertFalse(self.groups.choose_groups({'id':'p','type':'xtream','xc_host':'h','xc_user':'u','xc_pass':'pw'}))
         self.assertEqual(self.groups.load('p'), {'1'})
 

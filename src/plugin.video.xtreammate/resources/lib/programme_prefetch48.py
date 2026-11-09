@@ -30,7 +30,8 @@ def prepare(portal,rows,cancel=lambda:False):
     sid64=focused64(key);preferred=next((row for row in rows if str(row.get('sid',''))==sid64),None) if sid64 else None
     from home_schedule75 import rest_allowed
     batch=visible75(portal,rows);seen64={str(row.get('sid','')) for row in batch};advance64=0
-    maximum75=8 if rest_allowed() else 5
+    viewport84=__import__('home_schedule75').applicable()
+    maximum75=5 if viewport84 else 8 if rest_allowed() else 5
     while len(batch)<min(maximum75,len(rows)) and advance64<len(rows):
         row=rows[(pos+advance64)%len(rows)];advance64+=1
         if str(row.get('sid','')) not in seen64:batch.append(row);seen64.add(str(row.get('sid','')))
@@ -74,7 +75,7 @@ def prepare(portal,rows,cancel=lambda:False):
                 cursor=(key,str(row['sid']));pos56=_future56.get(cursor,0)%len(later57)
                 selected.append(later57[pos56]);_future56[cursor]=pos56+1
                 if len(_future56)>1024:_future56.pop(next(iter(_future56)))
-            for following in (selected if rest_allowed() else selected[:1] if row==batch[0] else []):
+            for following in ([] if viewport84 else selected if rest_allowed() else selected[:1] if row==batch[0] else []):
                 future=describe(portal,row,following,event.get('canonical',''),revision)
                 if future.get('title'):records.append(future);enqueue(future,allow_lookup=allow_lookup,local_image63=setting_bool('programme_art_local69',False))
     if records:publish(records,include_art=False)

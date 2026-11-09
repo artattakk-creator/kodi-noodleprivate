@@ -141,11 +141,11 @@ def observe():
     window.setProperty(FOCUS,json.dumps(value))
     try:
         from home_runtime77 import control
-        image=control(window,296751 if xbmc.getCondVisibility('Control.IsVisible(296751)') else 296783);title=control(window,296752 if kind=='live' else 296754)
+        image=control(window,296751);title=control(window,296752 if kind=='live' else 296754)
         x,y=image.getPosition();width=image.getWidth();height=image.getHeight()
         title_id=296752 if kind=='live' else 296754
         rendered=bool(xbmc.getInfoLabel('Control.GetLabel('+str(title_id)+')')) and xbmc.getCondVisibility('Control.IsVisible('+str(title_id)+')')
-        geometry=100<=x<=300 and 0<=y<=100 and 1000<=width<=1650 and 350<=height<=610
+        geometry=100<=x<=300 and 0<=y<=100 and 1000<=width<=1650 and 350<=height<=660
     except (AttributeError,RuntimeError,ValueError):
         window.setProperty('XCMate.Home75.RenderProbe','CONTROL_UNAVAILABLE')
         trace('RENDER_CONTROL_MISSING');return

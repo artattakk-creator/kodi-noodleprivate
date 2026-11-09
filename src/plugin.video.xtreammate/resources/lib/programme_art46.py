@@ -259,7 +259,10 @@ bytes on startup; directory readers never decode 12 full pictures in RAM.
 """
  from programme_requests68 import result as shared69
  value=shared69(event)
- if value.get('until',0)>time.time() and (value.get('source')=='placeholder' or __import__('programme_image69').eligible(value,event)):return value
+ if value.get('until',0)>time.time() and value.get('source')!='placeholder' and __import__('programme_image69').eligible(value,event):return value
+ display84=__import__('programme_display84').read(event)
+ if display84:return display84
+ if value.get('until',0)>time.time() and value.get('source')=='placeholder':return value
  value=indexed(event)
  if value:
   value=__import__('programme_image69').adopt(event,value)
