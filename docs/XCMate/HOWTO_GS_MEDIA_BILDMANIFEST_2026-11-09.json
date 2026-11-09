@@ -15,10 +15,22 @@
   "capture_policy": "Never publish screenshots with secrets; no image in repository until sanitized, verified and approved",
   "test_run": {
     "id": "BOXB-CLEAN-20261109-01",
-    "status": "NOT_STARTED",
+    "status": "IN_PROGRESS",
     "completed_components": null,
     "branding_status": "NOT_TESTED",
-    "android_verified": false
+    "android_verified": false,
+    "current_step": "INST-02_UNKNOWN_SOURCES_PENDING_CONFIRMATION",
+    "confirmed_steps": [
+      "INST-01: TinyURL source NeoDark3 entered and saved in Kodi, user report 2026-11-09"
+    ],
+    "not_yet_confirmed": [
+      "NeoDark3 ZIP listing accessible",
+      "Unknown Sources warning accepted",
+      "Pilot 1.9.12 installed",
+      "Installer 0.5.26 installed"
+    ],
+    "screenshots_uploaded": 0,
+    "screenshots_planned": 22
   },
   "images": [
     {
@@ -59,10 +71,11 @@
       "status": "NOT_CAPTURED",
       "asset_path": null,
       "evidence": {
-        "device_test_status": "NOT_TESTED",
+        "device_test_status": "SOURCE_REGISTERED_USER_REPORTED",
         "captured_at": null,
         "issue_url": null,
-        "verified_by_user": false
+        "verified_by_user": true,
+        "note": "NeoDark3-TinyURL source entered; no screenshot supplied, individual pictured UI not independently verified."
       },
       "privacy_review": "PENDING"
     },
@@ -74,10 +87,11 @@
       "status": "NOT_CAPTURED",
       "asset_path": null,
       "evidence": {
-        "device_test_status": "NOT_TESTED",
+        "device_test_status": "SOURCE_REGISTERED_USER_REPORTED",
         "captured_at": null,
         "issue_url": null,
-        "verified_by_user": false
+        "verified_by_user": true,
+        "note": "NeoDark3-TinyURL source entered; no screenshot supplied, individual pictured UI not independently verified."
       },
       "privacy_review": "PENDING"
     },
@@ -89,10 +103,11 @@
       "status": "NOT_CAPTURED",
       "asset_path": null,
       "evidence": {
-        "device_test_status": "NOT_TESTED",
+        "device_test_status": "SOURCE_REGISTERED_USER_REPORTED",
         "captured_at": null,
         "issue_url": null,
-        "verified_by_user": false
+        "verified_by_user": true,
+        "note": "NeoDark3-TinyURL source entered; no screenshot supplied, individual pictured UI not independently verified."
       },
       "privacy_review": "PENDING"
     },
@@ -108,6 +123,70 @@
         "captured_at": null,
         "issue_url": null,
         "verified_by_user": false
+      },
+      "privacy_review": "PENDING"
+    },
+    {
+      "image_id": "IMG-06A",
+      "step_id": "INST-02",
+      "caption_de": "Der erste Versuch über Aus ZIP-Datei installieren meldet deaktivierte unbekannte Quellen",
+      "expected_view": "first-zip-unknown-sources-block",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/407",
+        "verified_by_user": false,
+        "note": "User describes required first-run security and ZIP retry sequence; actual completion and screenshot pending."
+      },
+      "privacy_review": "PENDING"
+    },
+    {
+      "image_id": "IMG-06B",
+      "step_id": "INST-02",
+      "caption_de": "In System → Add-ons die Option Unbekannte Quellen aktivieren",
+      "expected_view": "settings-addons-unknown-sources-toggle",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/407",
+        "verified_by_user": false,
+        "note": "User describes required first-run security and ZIP retry sequence; actual completion and screenshot pending."
+      },
+      "privacy_review": "PENDING"
+    },
+    {
+      "image_id": "IMG-06C",
+      "step_id": "INST-02",
+      "caption_de": "Kodi-Sicherheitswarnung lesen und mit Ja bestätigen",
+      "expected_view": "unknown-sources-security-confirmation",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/407",
+        "verified_by_user": false,
+        "note": "User describes required first-run security and ZIP retry sequence; actual completion and screenshot pending."
+      },
+      "privacy_review": "PENDING"
+    },
+    {
+      "image_id": "IMG-06D",
+      "step_id": "INST-02",
+      "caption_de": "Nach der Freigabe erneut Aus ZIP-Datei installieren öffnen",
+      "expected_view": "zip-install-reenter-after-approval",
+      "status": "NOT_CAPTURED",
+      "asset_path": null,
+      "evidence": {
+        "device_test_status": "NOT_TESTED",
+        "captured_at": null,
+        "issue_url": "https://github.com/artattakk-creator/kodi-noodleprivate/issues/407",
+        "verified_by_user": false,
+        "note": "User describes required first-run security and ZIP retry sequence; actual completion and screenshot pending."
       },
       "privacy_review": "PENDING"
     },
