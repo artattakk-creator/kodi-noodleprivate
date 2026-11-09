@@ -1,5 +1,7 @@
 # GS Media / XCMate – Vollinstallation auf leerem Kodi über NeoDark3 (48 Pflichtkomponenten + Branding)
 
+> **Bild- und PDF-Dokumentation:** Jeder reale Kodi-Schritt wird parallel im [Screenshot-/Redaktionsprotokoll](HOWTO_BILDDOKUMENTATION_VOLLINSTALLATION_2026-11-09_DE.md) mit `IMG-01` bis `IMG-18`, echter Schrittbestätigung, Bildunterschrift, Fehlerfällen und Datenschutzprüfung erfasst. Das [maschinenlesbare Bildmanifest](HOWTO_GS_MEDIA_BILDMANIFEST_2026-11-09.json) reserviert die späteren Bilddateien; aktuell sind **0 Original-Screenshots aufgenommen und 0 öffentlich freigegeben**. Bitte bei jedem Installationsstand ein gut lesbares Foto des relevanten Kodi-Bildschirms bereitstellen (sensible Daten vorher abdecken). Das PDF folgt erst nach tatsächlicher Gerätedokumentation.
+
 **Stand:** 09.11.2026 · **Gültig für:** Android-Testbox **B**, Kodi **21.3 Omega ARM32**, GS Media **Pilot 1.9.12**, Media Center Installer **0.5.26**, Ziel-XCMate **0.1.29.84**, BINGIE MOD **2.2.3**, Space Blue **0.2.0**. **Box A nicht ändern.**  
 **Status:** auf GitHub tatsächlich vorhandene ZIPs, Repository-XML und Installer-Logik geprüft; **48/48 Android-Neuinstallation auf sauberer Box noch nicht vollständig abgenommen**. Die TinyURL wurde in früheren tatsächlichen Kodi-Tests verwendet, deren heutige Redirect-/Browsing-Verfügbarkeit konnte hier **nicht unabhängig bestätigt werden**. Installationen erfolgen über Kodi/Netzwerk, **ohne USB**.
 
