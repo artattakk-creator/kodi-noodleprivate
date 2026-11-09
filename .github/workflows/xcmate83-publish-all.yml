@@ -1,0 +1,138 @@
+name: Release XCMate 0.1.29.83 to all user-approved repositories
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/xcmate83-publish-all.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/xcmate83-publish-all.yml"
+      - "tools/publish_xcmate83_all.py"
+      - "tools/release_channel83.py"
+      - "docs/XCMate/releases/user-approved-untested-0.1.29.83.json"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: xcmate83-all-channel-publication
+  cancel-in-progress: false
+
+jobs:
+  verify-83-pr:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate pinned source, review archive and version-specific release gate
+        run: |
+          python -m py_compile tools/publish_xcmate83_all.py tools/release_channel83.py
+          python tools/release_channel83.py
+          python tools/publish_xcmate83_all.py --stage
+          python tools/publish_xcmate83_all.py
+          echo "XCMATE_02983_THREE_CHANNEL_PR_PREFLIGHT_PASS"
+  publish-verified-83:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Enforce merged .83 source, review ZIP and user-approved release gate
+        run: |
+          python - <<'PY'
+          import json,xml.etree.ElementTree as ET
+          from pathlib import Path
+          src=ET.parse('src/plugin.video.xtreammate/addon.xml').getroot()
+          assert (src.get('id'),src.get('version'))==('plugin.video.xtreammate','0.1.29.83')
+          approval=json.loads(Path('docs/XCMate/releases/user-approved-untested-0.1.29.83.json').read_text())
+          assert approval['authorization_issue']==398
+          assert approval['source_merge_pr']==399
+          assert approval['sha256']=='bdb10ae7d60c13cac38d58b7f73f89075c5b8f384e825dbc34461c4c2a82b738'
+          assert approval['user_approved_all_channels'] is True
+          assert approval['user_approved_pilot_release'] is True
+          assert approval['android_status']=='NOT_TESTED'
+          assert approval['android_pass_claimed'] is False
+          PY
+          python tools/release_channel83.py
+
+      - name: Stage pinned original .83 ZIP in regular, Pilot and NeoDark3
+        run: python tools/publish_xcmate83_all.py --stage
+
+      - name: Verify source parity, ZIP CRC, XML + MD5 and protected installer
+        run: |
+          python tools/publish_xcmate83_all.py
+          python - <<'PY'
+          import subprocess
+          import pathlib
+          valid={
+            'addons.xml','addons.xml.md5','index.html',
+            'online-test/addons.xml','online-test/addons.xml.md5',
+            'online-test/manifest.json','online-test/index.html',
+            'plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.83.zip',
+            'plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.83.zip.sha256',
+            'online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.83.zip',
+            'online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.83.zip.sha256',
+            'online-test/plugin.video.xtreammate-0.1.29.83.zip',
+            'online-test/plugin.video.xtreammate-0.1.29.83.zip.sha256',
+          }
+          changed={line[3:] for line in subprocess.check_output(
+              ['git','status','--porcelain','--untracked-files=all'],text=True).splitlines()}
+          assert changed.issubset(valid),f'OUT_OF_SCOPE_RELEASE_MUTATION: {changed-valid}'
+          assert pathlib.Path('online-test/index.html').read_text().count(
+              'href="plugin.video.xtreammate-0.1.29.83.zip"')==1
+          assert pathlib.Path('index.html').read_text().count(
+              'href="plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.83.zip"')==1
+          print('XCMATE_02983_RELEASE_STAGED', sorted(changed))
+          PY
+
+      - name: Commit and publish verified all-channel update on main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- \
+            addons.xml addons.xml.md5 index.html \
+            online-test/addons.xml online-test/addons.xml.md5 \
+            online-test/manifest.json online-test/index.html \
+            plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.83.zip \
+            plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.83.zip.sha256 \
+            online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.83.zip \
+            online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.83.zip.sha256 \
+            online-test/plugin.video.xtreammate-0.1.29.83.zip \
+            online-test/plugin.video.xtreammate-0.1.29.83.zip.sha256
+          if ! git diff --cached --quiet; then
+            git commit -m "release(XCMate): publish pinned .83 across regular Pilot NeoDark3; Android not tested"
+            git -c rebase.autoStash=true pull --rebase origin main
+            python tools/publish_xcmate83_all.py
+            git push origin HEAD:main
+          else
+            python tools/publish_xcmate83_all.py
+          fi
+
+      - name: Verify publicly downloadable .83 from all three paths
+        run: |
+          for attempt in 1 2 3 4 5 6; do
+            if python tools/publish_xcmate83_all.py --public; then
+              echo "PUBLIC_XCMATE_02983_ALL_CHANNELS_VERIFIED"
+              exit 0
+            fi
+            sleep 8
+          done
+          echo "PUBLIC_XCMATE_02983_NOT_YET_VERIFIED" >&2
+          exit 1
