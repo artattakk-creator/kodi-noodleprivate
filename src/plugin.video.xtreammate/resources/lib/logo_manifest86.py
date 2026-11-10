@@ -30,12 +30,12 @@ def load(portal,all_records=False):
   records=data.get('records',{});scope=context(portal)
   return {k:v for k,v in records.items() if isinstance(v,dict) and (all_records or v.get('context')==scope)} if isinstance(records,dict) and len(records)<=512 else {}
  except (OSError,ValueError,TypeError,AttributeError):return {}
-def read(portal,rows):
+def read(portal,rows,with_fallback=True):
  records=load(portal);result={};scope=context(portal)
  # Existing Kodi-local decoded logos remain valid without adopting/deleting files.
  from widget_cache79 import load as cached,valid
  from media_art import poster_candidates
- refs=cached(portal,'live').get('refs',{})
+ refs=cached(portal,'live').get('refs',{}) if with_fallback else {}
  for row in rows:
   value=refs.get(str(row['sid']),{}).get('poster',{})
   if value.get('source') in poster_candidates(row) and valid(value,value.get('source')):result[str(row['sid'])]=value['file']
@@ -78,7 +78,7 @@ def prepare(portal,rows,cancel=lambda:False):
  from media_sources43 import SourceError,validate_image
  try:backend,path=location()
  except OSError:return 'EXTERNAL_UNAVAILABLE'
- records=load(portal,all_records=True);hit=read(portal,rows);changed=False;attempts=0;started=time.monotonic()
+ records=load(portal,all_records=True);hit=read(portal,rows,with_fallback=False);fallback=read(portal,rows);changed=False;attempts=0;started=time.monotonic()
  for row in rows[:256]:
   if cancel() or time.monotonic()-started>2:break
   tag=key(portal,row);uri=source(row)
@@ -89,7 +89,12 @@ def prepare(portal,rows,cancel=lambda:False):
    # Check before networking; actual reserve failure is never disguised as success.
    check(3*1024*1024+65536,limit=0,backend=backend)
    if not safe(portal,uri):continue
-   checked=verified(uri,cancel=cancel,keep_data81=True);body=checked['_body81']
+   existing=fallback.get(str(row['sid']),'')
+   if existing.startswith('/'):
+    with open(existing,'rb') as stream:body=stream.read(3*1024*1024+1)
+    width,height=validate_image(body);checked=dict(width=width,height=height)
+   else:
+    checked=verified(uri,cancel=cancel,keep_data81=True);body=checked['_body81']
    digest=hashlib.sha256(body).hexdigest()
    backend.write_verified(digest,body,lambda raw:bool(validate_image(raw)))
    stat=os.stat(backend.resolve_target(digest))

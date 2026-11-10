@@ -53,3 +53,20 @@ class Search86(Fixture,unittest.TestCase):
   with mock.patch('work_requests86.authoritative',return_value=event),mock.patch('work_search86.details',return_value=dict(candidate,poster='https://image.tmdb.org/t/p/w500/safe.png')),mock.patch('programme_urls55.probe',return_value=decoded) as probe,mock.patch('media_overrides43.save',return_value=True):
    self.assertTrue(m.save(event,dict(candidate=candidate),m.binding(event)))
   self.assertEqual(probe.call_args.args[0],'https://image.tmdb.org/t/p/w500/safe.png')
+
+ def test_identical_numeric_tv_movie_ids_cannot_reuse_tv_candidate_for_movie_mapping(self):
+  e=dict(pid='p',sid='1',canonical='xml',title='Monk',start=self.now,stop=self.now+1800,key='collision')
+  maps=importlib.import_module('programme_mapping85');engine=importlib.import_module('programme_candidates85')
+  maps.set_mapping(e,dict(source='tmdb',id=200,year=2023,media_type86='movie',verified85=True))
+  wrong=dict(id=200,source='tmdb',title='A TV work',year=2023,role='backdrop',url='https://image.tmdb.org/t/p/w500/tv.png',verified85=True)
+  engine.remember(e,[wrong])
+  movie=dict(id=200,source='tmdb',title='Monk: The Movie',year=2023,media_type86='movie',role='poster',url='https://image.tmdb.org/t/p/w500/movie.png',verified85=True)
+  with mock.patch('work_search86.details',return_value=movie) as checked:value=engine.candidate(e)
+  checked.assert_called_once();self.assertEqual(value['source'],'tmdb_movie');self.assertIn('movie.png',value['url'])
+ def test_save_details_respects_a_source_disabled_after_search(self):
+  self.options['programme_tmdb_optout77']=True
+  with mock.patch('tmdb_connection60.request',side_effect=AssertionError('network despite optout')):
+   with self.assertRaisesRegex(Exception,'SOURCE_DISABLED'):self.m.details(200,'movie')
+ def test_invalid_work_year_is_not_independently_verified(self):
+  with mock.patch('tmdb_connection60.request',return_value=dict(self.movie,release_date='9999-01-01')):
+   with self.assertRaisesRegex(Exception,'CANDIDATES_REJECTED'):self.m.details(200,'movie')

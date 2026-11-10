@@ -6,7 +6,10 @@ def rows(portal):
 
 def values(portal):
     from live_items62 import values as decorate
+    import time
+    started86=time.monotonic()
     selected,code=rows(portal)
+    __import__('home_status86').note('GROUP_READ_MS',ms=int((time.monotonic()-started86)*1000),count=len(selected))
     return (__import__('live_rail86').values(portal,selected) if __import__('home_schedule75').applicable() else decorate(portal,selected)),code
 
 

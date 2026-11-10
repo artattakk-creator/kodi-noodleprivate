@@ -99,8 +99,26 @@ check(not path().exists(),'SERIES85_SELECTION_WITHOUT_MANAGER_WROTE_MAPPING')
 
 # New .86 policy: preserve a correct rendered TMDB frame on a null/thumbnail update.
 home.setFocusId(2510);home.getControl(2510).selectItem(0)
-for _ in range(80):pump();xbmc.sleep(50)
+renew_errors86=[]
+def renew86():
+ try:
+  row86=live_rows(portal)[0]
+  __import__('widget_group46').infos(portal,[row86])  # Real local EPG worker publication, service is disabled in this fixture.
+  event86=load(portal,row86)
+  value86=__import__('programme_urls55').resolve(event86,allow_lookup=True,url_mode69=True)
+  check(value86 and value86.get('code')=='READY',('HERO86_RENEW',value86))
+  completed(event86,value86)
+ except Exception:
+  import traceback;renew_errors86.append(traceback.format_exc())
+renew_thread86=threading.Thread(target=renew86);renew_thread86.start()
+for _ in range(200):
+ pump();xbmc.sleep(50)
+ bank_wait86=home.getProperty('XCMate.Hero63.Active')
+ if not renew_thread86.is_alive() and home.getProperty('XCMate.Hero63.'+bank_wait86+'.Kind86')=='hero_backdrop':break
+check(not renew_errors86,renew_errors86)
+
 bank86=home.getProperty('XCMate.Hero63.Active');prefix86='XCMate.Hero63.'+bank86+'.'
+print('HERO86_RECEIVER '+json.dumps(dict(kind=home.getProperty(prefix86+'Kind86'),source=home.getProperty(prefix86+'ArtSource'),ready=home.getProperty('XCMate.Hero86.Ready'),pending=bool(home.getProperty('XCMate.Hero86.Pending')),row_key=xbmc.getInfoLabel('ListItem.Property(XCMate.ProgrammeKey47)'))),flush=True)
 check(home.getProperty(prefix86+'Kind86')=='hero_backdrop',('HERO86_KIND',home.getProperty(prefix86+'Kind86')))
 check(home.getControl(296886).getWidth()==1620,'HERO86_PRELOAD_CONTROL_MISSING')
 check(xbmc.getCondVisibility('Control.IsVisible(296887)'),'STATUS86_NOT_VISIBLE')

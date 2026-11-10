@@ -4,8 +4,8 @@ from unittest import mock
 from xcmate027_fixture import Fixture
 class Hero86(Fixture,unittest.TestCase):
  def setUp(self):
-  super().setUp();self.h=importlib.import_module('hero_art86');self.e=dict(pid='p',sid='1',title='CSI: Vegas',key='e',start=self.now,stop=self.now+1800)
-  self.value=dict(source='tmdb_series',role81='backdrop',image='/verified/tmdb.png',image_width77=1280,image_height77=720,source_url='https://image.tmdb.org/t/p/w1280/csi.png')
+  super().setUp();self.options.update(programme_tmdb46=True,tmdb_research43=True);self.h=importlib.import_module('hero_art86');self.e=dict(pid='p',sid='1',title='CSI: Vegas',key='e',start=self.now,stop=self.now+1800)
+  self.value=dict(code='READY',source='tmdb_series',role81='backdrop',image='/verified/tmdb.png',image_width77=1280,image_height77=720,source_url='https://image.tmdb.org/t/p/w1280/csi.png')
  def test_verified_tmdb_wide_beats_feed_scene_then_official_poster(self):
   tmdb=dict(self.value,url=self.value['source_url'],official_poster86='https://image.tmdb.org/t/p/w500/poster.png');feed=dict(source='xmltv_event',url='https://example.org/scene.png')
   ordered=self.h.ordered([tmdb],[feed]);self.assertEqual([v['source'] for v in ordered],['tmdb_series','xmltv_event','tmdb_series']);self.assertEqual(ordered[-1]['role81'],'poster')
@@ -42,5 +42,5 @@ class Hero86(Fixture,unittest.TestCase):
  def test_texture_url_alone_never_acknowledges_renderer(self):
   m=importlib.import_module('hero_render86')
   with mock.patch('xbmc.executeJSONRPC',create=True,return_value=json.dumps(dict(result=dict(textures=[])))):
-   m.prepare(self.e,self.value)
-  self.assertEqual(m.window().getProperty(m.PREFIX+'Pending'),self.value['image']);self.assertEqual(m.window().getProperty(m.PREFIX+'Ready'),'')
+   m.prepare(self.e,dict(self.value,image=self.value['source_url']))
+  self.assertEqual(m.window().getProperty(m.PREFIX+'Pending'),self.value['source_url']);self.assertEqual(m.window().getProperty(m.PREFIX+'Ready'),'')

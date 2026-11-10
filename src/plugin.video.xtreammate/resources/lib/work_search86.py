@@ -10,6 +10,8 @@ def aliases(query):
   variants+=['Charmed','Charmed – Zauberhafte Hexen','Zauberhafte Hexen']
  return list(dict.fromkeys(variants))
 def details(ident,kind,source='tmdb',cancel=lambda:False):
+ from programme_candidates85 import enabled
+ if source not in ('tmdb','tvmaze') or not enabled(source):raise SourceError('SOURCE_DISABLED')
  if type(ident) is not int or ident<=0 or kind not in ('tv','movie'):raise SourceError('CANDIDATES_REJECTED')
  if source=='tvmaze':
   if kind!='tv':raise SourceError('CANDIDATES_REJECTED')
@@ -20,7 +22,7 @@ def details(ident,kind,source='tmdb',cancel=lambda:False):
   data=request(TMDB+'/'+kind+'/'+str(ident)+'?language=de-DE',token=tmdb_token(),cancel=cancel)
   title=str(data.get('name' if kind=='tv' else 'title') or '')
   year=str(data.get('first_air_date' if kind=='tv' else 'release_date') or '')[:4]
-  if data.get('id')!=ident or data.get('adult') or not title or not year.isdigit():raise SourceError('CANDIDATES_REJECTED')
+  if data.get('id')!=ident or data.get('adult') or not title or not year.isdigit() or not 1880<=int(year)<=2100:raise SourceError('CANDIDATES_REJECTED')
   poster=_tmdb_image(data.get('poster_path'));backdrop=_tmdb_image(data.get('backdrop_path'))
   if not poster and not backdrop:raise SourceError('NO_ARTWORK')
   row=dict(id=ident,source='tmdb',title=title[:200],original=str(data.get('original_name' if kind=='tv' else 'original_title') or '')[:200],year=int(year),country=[str(c)[:3] for c in (data.get('origin_country') or [])[:4]],overview=str(data.get('overview') or '')[:1000],poster=poster,url=backdrop or poster,role='backdrop' if backdrop else 'poster',verified85=True)

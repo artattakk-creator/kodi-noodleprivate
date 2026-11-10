@@ -23,3 +23,14 @@
 | Veröffentlichung / Merge | nicht freigegeben | bestehende .85-Kanäle bytegleich geprüft | nicht erfolgt | nicht erfolgt |
 
 Build-Dateien und SHA256 unter `test-builds/02986/`. Nach Abschluss der Läufe werden tatsächliche Ergebnisse und CI-Links ergänzt.
+
+## Synthetische Hostmessung (keine Android-Zeit)
+
+Gleiche 88 Sender, lokaler SQLite-Katalog und vorhandener lokaler EPG-RAM-Snapshot, zwölf Aufbauten je Darstellungsweg, keine Netzwerkabfrage:
+
+| DTO-Pfad | P50 | P95 |
+|---|---:|---:|
+| bisheriger `live_items62.values`-Pfad | 137,390 ms | 246,961 ms |
+| neuer Identitätsweg `live_rail86.values` | 14,704 ms | 16,871 ms |
+
+Die Zeit endet mit der Datenerzeugung. Sie ist kein First-Frame-Nachweis und kein Beleg für die Android-SLO von 2/5 Sekunden.

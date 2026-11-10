@@ -13,6 +13,16 @@ def tag(event,value):
 def prepare(event,value):
  from hero_art86 import classify
  import xbmc
+ if str(value.get('image','')).startswith('/') and not classify(value):
+  try:
+   from media_sources43 import validate_image,MAX_IMAGE
+   with open(value['image'],'rb') as stream:body86=stream.read(MAX_IMAGE+1)
+   if value.get('sha256') and hashlib.sha256(body86).hexdigest()!=value['sha256']:
+    window().setProperty(PREFIX+'Invalid',tag(event,value));return
+   width86,height86=validate_image(body86)
+   value=dict(value,image_width77=width86,image_height77=height86)
+  except (OSError,ValueError,__import__('media_sources43').SourceError):
+   window().setProperty(PREFIX+'Invalid',tag(event,value));return
  kind=classify(value)
  if not kind:return
  key=tag(event,value);win=window()
@@ -36,7 +46,7 @@ def prepare(event,value):
    if value.get('sha256') and hashlib.sha256(body).hexdigest()!=value['sha256']:return
    if (before.st_ino,before.st_mtime_ns,before.st_size)!=(after.st_ino,after.st_mtime_ns,after.st_size):return
    if not classify(dict(value,image_width77=width,image_height77=height)):return
-   win.setProperty(PREFIX+'Ready',json.dumps(dict(key=key,at=time.monotonic(),kind=kind[0],rank=kind[1],evidence='LOCAL_DECODE_REQUESTED_NOT_PIXEL_PROOF')))
+   win.setProperty(PREFIX+'Ready',json.dumps(dict(key=key,at=time.monotonic(),kind=kind[0],rank=kind[1],width=width,height=height,role=value.get('role81',''),evidence='LOCAL_DECODE_REQUESTED_NOT_PIXEL_PROOF')))
   except (OSError,ValueError,__import__('media_sources43').SourceError):pass
   return
  wanted=variants(image.split('|',1)[0]) if image.startswith('https://') else [image]
@@ -51,7 +61,7 @@ def prepare(event,value):
    if not record:continue
    proof=dict(value,image_width77=record['width'],image_height77=record['height'])
    if not classify(proof):continue
-   win.setProperty(PREFIX+'Ready',json.dumps(dict(key=key,at=time.monotonic(),kind=kind[0],rank=kind[1])))
+   win.setProperty(PREFIX+'Ready',json.dumps(dict(key=key,at=time.monotonic(),kind=kind[0],rank=kind[1],width=record['width'],height=record['height'],role=value.get('role81',''))))
    __import__('art_trace81').note(event,'RENDER_READY','KODI_TEXTURE_DECODED',width=record['width'],height=record['height'])
    return
  except (ValueError,TypeError,AttributeError,RuntimeError,OSError):return
@@ -65,15 +75,18 @@ def choose(event,value,values,win):
  same=bool(event_key and win.getProperty(PREFIX+'Event')==event_key)
  try:old_rank=int(win.getProperty(prefix+'Rank86') or '9')
  except ValueError:old_rank=9
- old_allowed=value.get('code') not in ('FILE_INVALID','POLICY_CHANGED','SOURCE_CHANGED') and same and old_image and (old_source=='station_logo' or allowed(dict(source=old_source)))
+ invalid=bool(event and win.getProperty(PREFIX+'Invalid')==tag(event,value) and old_image==value.get('image'))
+ old_allowed=not invalid and value.get('code') not in ('FILE_INVALID','POLICY_CHANGED','SOURCE_CHANGED') and same and old_image and (old_source=='station_logo' or allowed(dict(source=old_source)))
  # Opt-out, mapping changes and source revocation are never sticky.
  if old_allowed and old_source!='station_logo':
   source_url=win.getProperty(prefix+'SourceUrl86')
   if source_url and __import__('widget_refs74').revoked(source_url):old_allowed=False
- accepted=classify(value)
  try:ready=json.loads(win.getProperty(PREFIX+'Ready') or '{}')
  except ValueError:ready={}
- can_switch=bool(event and accepted and ready.get('key')==tag(event,value) and 0<=time.monotonic()-ready.get('at',0)<30)
+ if event and ready.get('key')==tag(event,value):
+  value=dict(value,image_width77=ready.get('width',value.get('image_width77',0)),image_height77=ready.get('height',value.get('image_height77',0)))
+ accepted=classify(value)
+ can_switch=bool(event and accepted and __import__('programme_image69').eligible(value,event) and allowed(value) and ready.get('key')==tag(event,value) and 0<=time.monotonic()-ready.get('at',0)<30)
  if not old_allowed:
   win.setProperty('XCMate.Hero81.PreviousImage','')
   win.setProperty(PREFIX+'PreviousEvent','')
