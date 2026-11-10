@@ -37,8 +37,9 @@ def collect(profile,skin):
  from widget_skin78 import FILES
  from widget_transaction50 import read,sha
  skin=Path(skin);rows=widgets(profile)
- return dict(format=1,widgets=rows,sha256=fingerprint(rows),skin={name:sha(read(skin/name)) for name in ('addon.xml',)+FILES})
+ return dict(format=1,profile=str(Path(profile).resolve()),widgets=rows,sha256=fingerprint(rows),skin={name:sha(read(skin/name)) for name in ('addon.xml',)+FILES})
 def compare(profile,receipt):
+ if receipt.get('profile')!=str(Path(profile).resolve()):raise ValueError('SKIN_MIGRATION_BLOCKED')
  current=widgets(profile)
  if fingerprint(current)!=receipt.get('sha256') or current!=receipt.get('widgets'):raise ValueError('SKIN_MIGRATION_BLOCKED')
  return True

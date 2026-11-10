@@ -25,7 +25,15 @@ def upgrade(files):
  proposal=hero.find(".//control[@id='296885']").findtext('visible')
  status.find('visible').text='!String.IsEmpty(Window(Home).Property(XCMate.Home86.Text)) + !['+proposal+']'
  # Share the small status slot only when no unconfirmed proposal is shown.
- result=dict(files);result[name]=edit(data,[(span['start'],end,E.tostring(hero,encoding='utf-8'))])
+ header_span,header_end,header=_node(data,'include','name','widget_header_multi')
+ if digest(header)!=known['widget_header_multi']:raise ValueError('SKIN_MIGRATION_BLOCKED')
+ own=' | '.join('String.IsEqual(Container($PARAM[widgetid]).ListItem.Property(XCMate.WidgetKind41),'+kind+')' for kind in ('live','vod','series'))
+ # The old global Home hide also hid third-party headings. Scope it to our
+ # own rows, which already contain their own compact caption.
+ visibility=header.find('control/visible')
+ if visibility.text!='!Window.IsActive(Home)':raise ValueError('SKIN_MIGRATION_BLOCKED')
+ visibility.text='!Window.IsActive(Home) | !['+own+']'
+ result=dict(files);result[name]=edit(data,[(span['start'],end,E.tostring(hero,encoding='utf-8')),(header_span['start'],header_end,E.tostring(header,encoding='utf-8'))])
  name='xml/IncludesVariables.xml';data=result[name];at=data.rfind(b'</includes>')
  result[name]=data[:at]+b'<variable name="XCMate87.Contract"><value>READY</value></variable>'+data[at:]
  verify(result);return result
@@ -39,4 +47,6 @@ def verify(files):
  for control in panel.findall('control'):
   if int(control.findtext('left','0'))+int(control.findtext('width','0'))>540 or int(control.findtext('top','0'))+int(control.findtext('height','0'))>620:raise ValueError('SKIN_MIGRATION_BLOCKED')
  if hero.find(".//control[@id='296887']/left").text!='1370':raise ValueError('SKIN_MIGRATION_BLOCKED')
+ header=root.find("include[@name='widget_header_multi']/control/visible")
+ if header is None or 'XCMate.WidgetKind41' not in header.text or not header.text.startswith('!Window.IsActive(Home) | !['):raise ValueError('SKIN_MIGRATION_BLOCKED')
  return True

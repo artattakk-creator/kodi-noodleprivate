@@ -61,7 +61,7 @@ def build(skin, output):
         widgets = ET.SubElement(generated, 'include', name='skinshortcuts-template-Widgets')
         for child in controls:
             widgets.append(copy.deepcopy(child))
-        # A second existing Home menu exercises the native eight-slot layout
+        # An additional existing eight-row Home section exercises the native layout
         # without imposing a new global limit or suppressing any saved row.
         controls87=ET.parse(output / 'shortcuts/template.xml').getroot().find('other/controls')
         props87=dict(props,id='3')
@@ -75,9 +75,6 @@ def build(skin, output):
         ET.SubElement(item, 'onclick').text = 'ActivateWindow(Home)'
         for name, value in dict(submenuVisibility='10000', mainmenuid='2', labelID='10000').items():
             ET.SubElement(item, 'property', name=name).text = value
-        item87=ET.SubElement(menu,'item',id='3');ET.SubElement(item87,'label').text='Weitere Nutzerwidgets'
-        ET.SubElement(item87,'onclick').text='ActivateWindow(Home)'
-        for name,value in dict(submenuVisibility='10001',mainmenuid='3',labelID='10001').items():ET.SubElement(item87,'property',name=name).text=value
         for name in ('skinshortcuts-submenu', 'skinshortcuts-powermenu'):
             ET.SubElement(generated, 'include', name=name)
         ET.ElementTree(generated).write(output / 'xml/script-skinshortcuts-includes.xml', encoding='utf-8', xml_declaration=True)

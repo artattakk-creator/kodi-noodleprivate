@@ -4,7 +4,7 @@ from pathlib import Path
 import xml.etree.ElementTree as E
 MARKER=b'XCMate86.Contract'
 def upgrade(files):
- if MARKER in files['xml/IncludesVariables.xml']:verify(files);return __import__('widget_skin87').upgrade(files)
+ if MARKER in files['xml/IncludesVariables.xml']:verify(files);return dict(files)
  if b'XCMate85.Contract' not in files['xml/IncludesVariables.xml']:return dict(files)
  from widget_skin80 import _node,digest,PORTRAIT
  from widget_skin50 import edit
@@ -45,7 +45,7 @@ def upgrade(files):
  result[name]=edit(data,[(span['start'],end,E.tostring(hero,encoding='utf-8'))])
  name='xml/IncludesVariables.xml';data=result[name];at=data.rfind(b'</includes>')
  result[name]=data[:at]+E.tostring(template,encoding='utf-8')+b'<variable name="XCMate86.Contract"><value>READY</value></variable>'+data[at:]
- verify(result);return __import__('widget_skin87').upgrade(result)
+ verify(result);return result
 
 def verify(files):
  from widget_skin78 import parse

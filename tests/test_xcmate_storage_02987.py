@@ -47,7 +47,7 @@ class Storage87(Fixture,unittest.TestCase):
   raw=io.BytesIO();Image.new('RGB',(96,64),(40,80,120)).save(raw,format='PNG');body=raw.getvalue();ident='blob46-'+hashlib.sha256(body).hexdigest()+'.png'
   source=self.folder/'programme_images46';source.mkdir();(source/ident).write_bytes(body);(source/'keep.sqlite').write_bytes(b'unchanged')
   proof=dict(target=str(self.target),volume='2',mount_key='8:2',code='SEPARATE_POOL_VERIFIED',rows=[])
-  with mock.patch('android_artwork87.preflight',return_value=proof),mock.patch('android_artwork87.probe',return_value=proof):
+  with mock.patch('android_artwork87.preflight',return_value=proof):
    migration.begin(str(self.target),shared=True,confirmed=True,strict87=True);migration.inventory();self.assertEqual(migration.status()['files'],1)
    migration.copy(cancel=lambda:True);self.assertNotEqual(self.config.read()['mode'],'external')
    migration.copy();self.assertTrue(migration.verify())
@@ -59,3 +59,18 @@ class Storage87(Fixture,unittest.TestCase):
    with self.assertRaisesRegex(OSError,'CLEANUP_NOT_AUTHORIZED'):migration.remove_originals(migration.status()['transfer'])
  def test_public_diagnostics_have_mount_budget_and_no_private_paths(self):
   result=self.s.public_status();self.assertIn('active_mount',result);self.assertGreaterEqual(result['reserve'],1024**3);self.assertNotIn(str(self.folder),json.dumps(result))
+ def test_active_migration_target_replaced_or_gone_is_blocked_before_new_directory_write(self):
+  config=self.config.read();config.update(mode='external',archive_mode='external',target=str(self.target),programme_target87=str(self.target),programme_volume87=dict(volume='different',mount_key='different'))
+  self.config._write(config);before=set(self.target.rglob('*'))
+  with self.assertRaisesRegex(OSError,'TARGET_VOLUME_UNVERIFIED'):__import__('programme_art46').space(1024)
+  self.assertEqual(set(self.target.rglob('*')),before)
+ def test_migrated_logo_manifest_points_to_verified_new_bytes_after_cold_reload(self):
+  migration=__import__('artwork_migration');manifest=__import__('logo_manifest86');backend=__import__('artwork_backend').active_backend('logos')
+  raw=io.BytesIO();Image.new('RGB',(120,60),(30,90,160)).save(raw,format='PNG');body=raw.getvalue();digest=hashlib.sha256(body).hexdigest();backend.write_verified(digest,body,lambda value:True)
+  row=dict(sid='1',stream_icon='https://example.org/logo.png');stat=os.stat(backend.resolve_target(digest));record=dict(context=manifest.context(self.portal),sha256=digest,stamp=[stat.st_mtime_ns,stat.st_size],width=120,height=60)
+  with open(os.path.join(backend.root,'manifest86.json'),'w') as stream:json.dump(dict(format=1,records={manifest.key(self.portal,row):record}),stream)
+  proof=dict(target=str(self.target),volume='2',mount_key='8:2',code='SEPARATE_POOL_VERIFIED',rows=[])
+  with mock.patch('android_artwork87.preflight',return_value=proof):
+   migration.begin(str(self.target),shared=True,confirmed=True,strict87=True);migration.copy();migration.verify();migration.approve_render(True);migration.activate()
+  loaded=manifest.read(self.portal,[row]);self.assertTrue(loaded['1'].startswith(str(self.target)));self.assertEqual(__import__('pathlib').Path(loaded['1']).read_bytes(),body)
+  self.assertEqual(backend.read(digest,100000),body)

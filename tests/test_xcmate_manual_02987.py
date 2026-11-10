@@ -83,3 +83,22 @@ class Manual87(Fixture,unittest.TestCase):
  def test_inflight_scope_change_cannot_publish_to_new_nonce(self):
   first=self.q.request(self.event,query='Monk');second=self.q.request(self.event,query='Charmed')
   self.assertTrue(self.q.cancelled(first));self.assertFalse(self.q.cancelled(second));self.assertTrue(self.q.pending())
+ def test_real_five_and_thirty_second_worker_block_do_not_falsely_report_user_cancel_or_late_save(self):
+  import threading,time
+  # Actual elapsed waits test the production 30-second GUI deadline and the
+  # one existing worker's cooperative intent ordering, not fake clock ticks.
+  for delay,expected in ((5,'SAVED'),(30.5,'WORKER_BUSY')):
+   module=__import__('programme_requests68');entered=threading.Event();release=threading.Event();shutdown=threading.Event();failed=[]
+   monitor=types.SimpleNamespace(abortRequested=shutdown.is_set,waitForAbort=lambda n:shutdown.wait(n))
+   progress=types.SimpleNamespace(create=mock.Mock(),close=mock.Mock(),iscanceled=lambda:False)
+   def warm(cancel):entered.set();release.wait(33)
+   def regular(cancel):pass
+   with mock.patch('xbmc.Monitor',return_value=monitor),mock.patch('xbmcgui.DialogProgress',create=True,return_value=progress),mock.patch('startup48.suspended',return_value=False),mock.patch('service_runtime.pressure',return_value=False),mock.patch('programme_consent77.ensure'),mock.patch('live_warm68.prepare',side_effect=warm),mock.patch.object(module,'drain',side_effect=regular),mock.patch.object(self.q,'authoritative',return_value=self.event),mock.patch('work_search86.details',return_value=self.candidate):
+    worker=threading.Thread(target=module._run);worker.start()
+    try:
+     self.assertTrue(entered.wait(2));timer=threading.Timer(delay,release.set);timer.start();began=time.monotonic()
+     value=__import__('work_manager86').wait(self.event,'save',candidate=self.candidate)
+     elapsed=time.monotonic()-began;self.assertEqual(value['code'],expected);self.assertGreaterEqual(elapsed,4.8 if delay==5 else 29.8);self.assertLess(elapsed,32)
+     if expected=='WORKER_BUSY':self.assertFalse(self.q.pending())
+    finally:shutdown.set();release.set();worker.join(2);timer.cancel()
+    self.assertFalse(worker.is_alive())

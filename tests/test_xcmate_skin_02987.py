@@ -16,7 +16,7 @@ class Skin87(Skin86):
   graph=self.graph.build(self.original);self.assertTrue(__import__('widget_skin87').verify(graph))
   self.assertEqual((self.prop.read_bytes(),self.menu.read_bytes()),raw);self.assertTrue(m.compare(self.profile,before));self.assertEqual(len(before['widgets']),9);self.assertTrue(all(v['external'] for v in before['widgets']))
   from widget_skin80 import _node
-  
+
   with mock.patch('widget_skin87.upgrade',side_effect=lambda files:dict(files)):baseline87=self.graph.build(self.original)
   a,b,_=_node(baseline87['xml/IncludesHomeWidgets.xml'],'include','name','widget_layout_poster');c,d,_=_node(graph['xml/IncludesHomeWidgets.xml'],'include','name','widget_layout_poster')
   self.assertEqual(baseline87['xml/IncludesHomeWidgets.xml'][a['start']:b],graph['xml/IncludesHomeWidgets.xml'][c['start']:d])
@@ -39,3 +39,12 @@ class Skin87(Skin86):
    for item in panel.findall('control'):
     self.assertLessEqual((int(item.findtext('top','0'))+int(item.findtext('height','0')))*scale,620*scale)
   status=node.find(".//control[@id='296887']");self.assertGreaterEqual(int(status.findtext('left')),1350);self.assertEqual(node.find(".//control[@id='296785']/visible").text,'false')
+ def test_foreign_headers_keep_their_native_labels_and_are_not_globally_hidden_on_home(self):
+  graph=self.graph.build(self.original);node=self.graph.parse(graph['xml/IncludesHomeWidgets.xml']).find("include[@name='widget_header_multi']")
+  self.assertIn('XCMate.WidgetKind41',node.find('control/visible').text)
+  self.assertTrue(node.find('control/visible').text.startswith('!Window.IsActive(Home) | !['))
+  self.assertTrue(any(c.text=='$PARAM[widgetName]' for c in node.iter('label')))
+ def test_profile_switch_is_detected_even_with_identical_foreign_widget_definitions(self):
+  self.foreign();m=__import__('widget_inventory87');receipt=m.collect(self.profile,self.skin)
+  receipt['profile']=str(self.folder/'other-profile')
+  with self.assertRaisesRegex(ValueError,'SKIN_MIGRATION_BLOCKED'):m.compare(self.profile,receipt)

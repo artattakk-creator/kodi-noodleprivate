@@ -62,5 +62,12 @@ def main():
   for evidence85 in ('gui66-error.txt','probe.log','post75-error.txt'):
    target85=report/evidence85
    if target85.is_file():print(evidence85+'\n'+target85.read_text(errors='replace')[-12000:],flush=True)
+  # Synthetic screenshots only: make two actual native PNGs recoverable for
+  # human review even when signed Actions artifact downloads are unavailable.
+  import base64
+  for picture87 in ('visible84-hero86-final.png','visible84-foreign87-warm-1-7.png'):
+   path87=report/picture87
+   if path87.is_file() and path87.stat().st_size<=512*1024:
+    raw87=path87.read_bytes();print('PNG87 '+picture87+' '+hashlib.sha256(raw87).hexdigest()+' '+base64.b64encode(raw87).decode(),flush=True)
   subprocess.run(docker+['rm','-f',name],env=env,stdout=subprocess.DEVNULL)
 if __name__=='__main__':main()

@@ -12,6 +12,9 @@ def note(event,stage,code=''):
   elapsed=max(0,round((now-value['started'])*1000));value['stages'][stage]=elapsed
   samples=_samples.setdefault(stage,[]);samples.append(elapsed);del samples[:-128]
   while len(_events)>128:_events.pop(next(iter(_events)))
+  # Preserve the existing atomic GUI commit boundary: after Active flips,
+  # this stage records RAM only. The next worker stage exports the receipt.
+  if stage=='BANK_SWITCHED':return
   import xbmcgui
   xbmcgui.Window(10000).setProperty('XCMate.Hero87.Trace',json.dumps(dict(event=ident,stages=value['stages'],evidence='REFERENCE_AND_DECODE_NOT_VISIBLE_PIXELS'),separators=(',',':')))
 def summary():

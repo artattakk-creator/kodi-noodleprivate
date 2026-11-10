@@ -55,14 +55,14 @@ def programme_root(config=None):
   return os.path.join(os.path.dirname(os.path.dirname(backend_for(target,config['profile'],'logos').root)),'programme_images87',config['profile'])
  return os.path.join(root(),'programme_images46')
 
-def activate_programmes(target):
+def activate_programmes(target,proof):
  # Only the existing migrator calls this after full source/target SHA and
  # explicit render verification. No settings/token/SQLite moves.
  from artwork_config import locked,read,_write
  with locked():
   config=read()
   if config['mode']!='external' or config.get('target')!=target:raise StorageFailure('TARGET_VOLUME_UNVERIFIED')
-  config['programme_target87']=target;_write(config)
+  config['programme_target87']=target;config['programme_volume87']={key:proof[key] for key in ('volume','mount_key')};_write(config)
 
 def public_status():
  from artwork_backend import active_backend
@@ -74,3 +74,19 @@ def public_status():
  try:probe=json.loads(xbmcgui.Window(10000).getProperty('XCMate.Storage87.LastProbe') or '{}')
  except ValueError:probe={}
  return dict(active_mount=row['mount_key'],filesystem=row['fs'],total=row['total'],available=row['available'],reserve=reserve,budget=max(0,row['available']-reserve-256*1024),last_write_readback=probe,programme_external=bool(read().get('programme_target87')))
+
+
+def check_active(upcoming=0):
+ """No writes into a vanished/replaced mount or unowned namespace."""
+ from artwork_config import read
+ config=read()
+ if config['mode']!='external' or not config.get('programme_target87'):return
+ from android_storage83 import measure
+ from artwork_vfs import backend_for
+ target=config['programme_target87'];row=measure(target,'ACTIVE_TARGET',require=True)
+ proof=config.get('programme_volume87') or {}
+ if config.get('target')!=target or (row['volume'],row['mount_key'])!=(proof.get('volume'),proof.get('mount_key')):raise StorageFailure('TARGET_VOLUME_UNVERIFIED')
+ backend=backend_for(target,config['profile'],'logos')
+ if backend.availability()!='AVAILABLE':raise StorageFailure('STORAGE_OFFLINE')
+ from art_storage import WRITE_HEADROOM
+ if row['available']<max(RESERVE,row['reserve'])+max(0,upcoming)+WRITE_HEADROOM:raise StorageFailure('TARGET_RESERVE_BLOCKED')

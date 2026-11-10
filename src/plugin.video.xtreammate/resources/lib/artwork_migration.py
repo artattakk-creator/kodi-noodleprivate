@@ -261,7 +261,7 @@ def activate(cancel=lambda:False,progress=lambda **kw:None):
             else:
                 if json.loads(item['source']).get('strict_storage87'):__import__('logo_migration87').prepare(item)
                 choose('external',target=item['target'],strategy='demand')
-                if json.loads(item['source']).get('strict_storage87'):__import__('android_artwork87').activate_programmes(item['target'])
+                if json.loads(item['source']).get('strict_storage87'):__import__('android_artwork87').activate_programmes(item['target'],json.loads(item['source'])['shared_storage83'])
             _phase(db,item,'ACTIVE');return True
         finally:db.close()
 

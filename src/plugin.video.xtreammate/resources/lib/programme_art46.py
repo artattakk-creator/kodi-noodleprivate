@@ -113,6 +113,7 @@ def persisted(event,verify=True):
  except Exception:return None
 
 def space(upcoming):
+ __import__('android_artwork87').check_active(upcoming)
  folder=image_root87();os.makedirs(folder,mode=0o700,exist_ok=True)
  if os.path.islink(folder):raise OSError('CACHE_UNSAFE')
  total=0;count=0

@@ -5,7 +5,7 @@ already decoded image. No image database, new thread or URL-policy bypass.
 """
 import hashlib,json,os,time
 PREFIX='XCMate.Logos87.'
-_seen={}
+_seen={};_cursor={};_keys=[]
 def source(row):
  # Xtream/M3U logo fields precede every generic artwork field. Some legacy
  # live DTOs contain only cover; reject that fallback when movie fields exist.
@@ -52,7 +52,10 @@ def recover(portal,rows,cancel=lambda:False):
  from widget_cache82 import variants,decoded
  from logo_manifest86 import key
  import xbmc
- selected=[r for r in rows[:5] if source(r) and safe(portal,source(r))]
+ scope=__import__('logo_manifest86').context(portal);offset=_cursor.get(scope,5)
+ ordered=rows[:5]+rows[offset:offset+5];_cursor[scope]=offset+5 if offset+5<len(rows) else 5
+ while len(_cursor)>16:_cursor.pop(next(iter(_cursor)))
+ selected=[r for r in ordered if source(r) and safe(portal,source(r))]
  if not selected or cancel():return
  wanted=list(dict.fromkeys(v for row in selected for v in variants(source(row))))
  try:
@@ -69,6 +72,8 @@ def recover(portal,rows,cancel=lambda:False):
     if not value:continue
     stat=os.stat(value['file'])
     value=dict(file=value['file'],stamp=[stat.st_mtime_ns,stat.st_size],source_hash=hashlib.sha256(uri.encode()).hexdigest())
-    window().setProperty(PREFIX+key(portal,row),json.dumps(value,separators=(',',':')))
+    slot=PREFIX+key(portal,row);window().setProperty(slot,json.dumps(value,separators=(',',':')))
+    if slot not in _keys:_keys.append(slot)
+    while len(_keys)>512:window().clearProperty(_keys.pop(0))
     note(portal,row,'TEXTURE_CACHED');break
  except (ValueError,TypeError,AttributeError,RuntimeError,OSError):return

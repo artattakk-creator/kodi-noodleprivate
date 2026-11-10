@@ -6,11 +6,12 @@ import sys
 sys.path.insert(0,'/')
 from spec87 import FOREIGN,uri
 root=Path('/root/.kodi');folder=root/'userdata/addon_data/script.skinshortcuts';folder.mkdir(parents=True,exist_ok=True)
-rows=[]
-for menu,values in [('10000',[("Live-TV",'plugin://plugin.video.xtreammate/?action=widget_live_start_group&pid=fixture59&home50=1','videos'),('Filme','plugin://plugin.video.xtreammate/?action=widget_recent_vod&pid=fixture59','videos'),('Serien','plugin://plugin.video.xtreammate/?action=widget_recent_series&pid=fixture59','videos')]+[(v[0],uri(i),v[3]) for i,v in enumerate(FOREIGN[:5])]),('10001',[(v[0],uri(i),v[3]) for i,v in enumerate(FOREIGN)])]:
+rows=[];offset87=0
+for menu,values in [('10000',[("Live-TV",'plugin://plugin.video.xtreammate/?action=widget_live_start_group&pid=fixture59&home50=1','videos'),('Filme','plugin://plugin.video.xtreammate/?action=widget_recent_vod&pid=fixture59','videos'),('Serien','plugin://plugin.video.xtreammate/?action=widget_recent_series&pid=fixture59','videos')]+[(v[0],uri(i),v[3]) for i,v in enumerate(FOREIGN[:5])]),('10000',[(v[0],uri(i),v[3]) for i,v in enumerate(FOREIGN)])]:
  for i,(name,path,target) in enumerate(values):
-  suffix='.'+str(i) if i else ''
+  slot87=offset87+i;suffix='.'+str(slot87) if slot87 else ''
   for key,value in dict(widget='Addon',widgetName=name,widgetPath=path,widgetTarget=target,widgetStyle='poster').items():rows.append(['mainmenu',menu,key+suffix,value])
+ offset87+=len(values)
 (folder/'skin.titan.bingie.mod.properties').write_text(repr(rows))
 # The native compiler output has already been installed from /candidate.
 protected={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in folder.iterdir() if p.is_file()}

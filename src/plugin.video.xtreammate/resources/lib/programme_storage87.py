@@ -4,11 +4,18 @@ from artwork_backend import LocalArtworkStorage
 from artwork_vfs import StorageFailure
 PATTERN=re.compile(r'(?:blob46-|user86-)[a-f0-9]{64}\.(?:jpg|png)')
 class ProgrammeStorage(LocalArtworkStorage):
+ def __init__(self,root,marker=None):super().__init__(root);self.marker=marker
  def _safe(self):
   current=self.root
   while current and current!='/':
    if os.path.islink(current):raise StorageFailure('TARGET_SYMLINK')
    current=os.path.dirname(current)
+  if self.marker:
+   if os.path.islink(self.marker):raise StorageFailure('TARGET_SYMLINK')
+   try:
+    with open(self.marker,'rb') as stream:owned=stream.read(128)==b'XCMATE_ARTWORK_V1'
+   except OSError:owned=False
+   if not owned:raise StorageFailure('STORAGE_OFFLINE')
  def read(self,ident,limit):
   self._safe();return super().read(ident,limit)
  def write_verified(self,ident,data,validate):
@@ -30,8 +37,12 @@ class ProgrammeStorage(LocalArtworkStorage):
     if PATTERN.fullmatch(row.name) and row.is_file(follow_symlinks=False):yield dict(ident=row.name,bytes=row.stat(follow_symlinks=False).st_size)
 def source(config):
  from android_artwork87 import programme_root
+ if config.get('programme_target87') and config['mode']=='external':
+  from artwork_vfs import backend_for
+  backend=backend_for(config['programme_target87'],config['profile'],'logos');return ProgrammeStorage(programme_root(config),backend.owner_marker)
  return ProgrammeStorage(programme_root(config))
 def target(path,profile):
  from artwork_vfs import backend_for
  if '://' in path:raise StorageFailure('UNSUPPORTED_TARGET')
- return ProgrammeStorage(os.path.join(os.path.dirname(os.path.dirname(backend_for(path,profile,'logos').root)),'programme_images87',profile))
+ backend=backend_for(path,profile,'logos')
+ return ProgrammeStorage(os.path.join(os.path.dirname(os.path.dirname(backend.root)),'programme_images87',profile),backend.owner_marker)

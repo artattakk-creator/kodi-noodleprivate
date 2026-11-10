@@ -48,6 +48,7 @@ def capacity(location=None,backend=None):
 
 
 def check(upcoming,limit=None,used=None,location=None,backend=None):
+    __import__('android_artwork87').check_active(upcoming)
     value=capacity(backend=backend) if backend is not None else capacity() if location is None else capacity(location)
     from art_storage82 import note
     value.update(requested82=max(0,upcoming),role82='IMAGE')
