@@ -107,6 +107,9 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             if best86 is None or __import__('hero_art86').classify(v)[1]<__import__('hero_art86').classify(best86)[1]:best86=dict(v)
     def upgrade86(v):
         return home86 and allow_lookup and __import__('event_art81').upgrade(event,v)
+    mapping86=__import__('programme_mapping85').current(event)
+    if mapping86 and mapping86.get('hidden'):
+        return dict(key=event['key'],fingerprint=fingerprint(event),code='NO_IMAGE',source='placeholder',match='NONE',image=event['placeholder'],until=time.time()+3600,negative_scope68=__import__('programme_policy68').negative_scope(event),negative_scope77=__import__('programme_policy68').negative_scope(event),mapping_epoch85=__import__('programme_mapping85').epoch(event))
     local86=__import__('work_requests86').local_result(event)
     if local86:return local86
     temp85=__import__('artwork_temp85').lookup(event)

@@ -340,6 +340,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
                 self.getControl(102).setLabel(tr(32612,status[0]['stored'],status[0]['received']))
 
     def _display_art39(self,row):
+        if row.get('_no_art86'):return {k:'' for k in ('poster','thumb','icon','fanart','landscape')}
         from collections import OrderedDict
         from media_art import local_art,sources
         from artwork_visible import retain_displayed

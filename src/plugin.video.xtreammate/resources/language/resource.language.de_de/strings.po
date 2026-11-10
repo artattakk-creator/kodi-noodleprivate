@@ -5166,8 +5166,8 @@ msgid "Use automatic assignment"
 msgstr "Automatische Zuordnung verwenden"
 
 msgctxt "#37085"
-msgid "Hide image suggestion"
-msgstr "Bildvorschlag ausblenden"
+msgid "Use no image"
+msgstr "Kein Bild verwenden"
 
 msgctxt "#37086"
 msgid "Preparing search. You can cancel."

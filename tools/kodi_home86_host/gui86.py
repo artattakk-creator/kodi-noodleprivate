@@ -6,6 +6,9 @@ base=Path('/base_gui84.py').read_text()
 base=base.replace('allow_lookup=False,url_mode69=True','allow_lookup=True,url_mode69=True')
 base=base.replace("completed(event,value);events.append","check(cold or value.get('source')=='tmdb_movie',('HERO86_TMDB_PRIORITY',value.get('source')));completed(event,value);events.append")
 base=base.replace('Synthetic Linux Kodi .84','Synthetic Linux Kodi .85')
+# Fixed synthetic state only: no provider/account/token output on a failed frame.
+base=base.replace("if not condition:raise RuntimeError(str(detail))", "if not condition:\n  bank86=home.getProperty('XCMate.Hero63.Active');prefix86='XCMate.Hero63.'+bank86+'.'\n  print('HERO86_FAILED_FRAME '+json.dumps(dict(detail=str(detail),kind=home.getProperty(prefix86+'Kind86'),source=home.getProperty(prefix86+'ArtSource'),image_present=bool(home.getProperty(prefix86+'Image')),ready=home.getProperty('XCMate.Hero86.Ready'),pending=bool(home.getProperty('XCMate.Hero86.Pending')))),flush=True)\n  raise RuntimeError(str(detail))")
+
 # .85 prepares the visible twelve covers first, not an invisible 24-file archive.
 base=base.replace('len(read(portal,kind,rows))==24','len(read(portal,kind,rows))>=12')
 base=base.replace('refs=24','refs=len(read(portal,kind,rows))')

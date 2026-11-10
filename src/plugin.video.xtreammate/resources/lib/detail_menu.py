@@ -59,6 +59,8 @@ class DetailMenuMixin:
         if getattr(self,'_detail_menu_open',False):
             if key in (1,2,9,10,92):self._detail_menu_close()
             return True
+        if key==117 and self.mode in ('detail','seasons'):
+            return self._detail_menu_show()
         if key==1 and self.mode in ('detail','seasons','episodes'):
             mark('DETAIL_LEFT_RECEIVED')
             return self._detail_menu_show()

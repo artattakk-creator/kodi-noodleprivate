@@ -62,3 +62,22 @@ class Hero86(Fixture,unittest.TestCase):
   with mock.patch('home_schedule75.applicable',return_value=True),mock.patch('programme_display84.recover',return_value=cached),mock.patch('programme_display84.renew',return_value=None),mock.patch('artwork_display84.observe',return_value=True),mock.patch('event_art81.upgrade',return_value=True),mock.patch('art_trace81.own',return_value=candidate),mock.patch('programme_urls55.probe',side_effect=__import__('media_sources43').SourceError('HTTP_NOT_FOUND')),mock.patch('programme_requests68.completed') as publish:
    value=__import__('programme_urls55').resolve(event,allow_lookup=True,url_mode69=True)
   self.assertEqual(value['image'],cached['image']);self.assertEqual(value['source'],'xmltv_event');self.assertEqual(value['code'],'READY_STALE');publish.assert_called_once()
+
+ def test_typed_role_survives_the_cross_interpreter_status_handoff(self):
+  value=dict(self.value,key='e',until=self.now+1800)
+  q=__import__('programme_requests68');q.completed(self.e,value)
+  self.assertEqual(q.result(self.e)['role81'],'backdrop')
+ def test_original_quality_and_kodi_downsample_are_separate_proofs(self):
+  m=__import__('hero_render86');value=dict(self.value,image=self.value['source_url'])
+  record=dict(width=320,height=180)
+  with mock.patch('xbmc.executeJSONRPC',create=True,return_value=json.dumps(dict(result=dict(textures=[dict(url=value['image'])])))),mock.patch('widget_cache82.decoded',return_value=record):m.prepare(self.e,value)
+  receipt=json.loads(m.window().getProperty(m.PREFIX+'Ready'))
+  self.assertEqual((receipt['width'],receipt['decoded_width']),(1280,320))
+  with mock.patch('event_art81.allowed',return_value=True),mock.patch('programme_image69.eligible',return_value=True):self.assertEqual(m.choose(self.e,value,{},m.window())['ArtSource'],'tmdb_series')
+  m.window().clearProperty(m.PREFIX+'Ready')
+  with mock.patch('xbmc.executeJSONRPC',create=True,side_effect=AssertionError('small source is not preloadable')):m.prepare(self.e,dict(value,image_width77=160,image_height77=90))
+  self.assertFalse(m.window().getProperty(m.PREFIX+'Ready'))
+ def test_wrong_decoded_aspect_cannot_acknowledge_a_different_picture(self):
+  m=__import__('hero_render86');value=dict(self.value,image=self.value['source_url'])
+  with mock.patch('xbmc.executeJSONRPC',create=True,return_value=json.dumps(dict(result=dict(textures=[dict(url=value['image'])])))),mock.patch('widget_cache82.decoded',return_value=dict(width=180,height=320)):m.prepare(self.e,value)
+  self.assertFalse(m.window().getProperty(m.PREFIX+'Ready'))

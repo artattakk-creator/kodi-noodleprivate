@@ -10,7 +10,7 @@ def describe(portal,kind,row,approved,epg=None,assets47=None):
     from media_data import recent_label
     from utils import setting_int
     import xbmcaddon
-    image=art(dict(row,kind=kind),approved);theme=snapshot()
+    image=({k:'' for k in ('poster','thumb','icon','fanart','landscape')} if row.get('_no_art86') else art(dict(row,kind=kind),approved));theme=snapshot()
     if kind in ('live','vod','series') and assets47:
         poster=assets47.get('poster');fanart=assets47.get('fanart')
         if poster:image.update(poster=poster,thumb=poster,icon=poster)
@@ -24,7 +24,7 @@ def describe(portal,kind,row,approved,epg=None,assets47=None):
             proof81=record_for(portal,kind,row,role,source)
             if proof81 and proof81.get('file')==image.get(role):
                 provider80[role]=dict(source=proof81.get('source81') or fingerprint(source),uri=proof81['file'])
-    supplement81=__import__('media_hero81').reference(portal,kind,row) if kind in ('vod','series') and not image.get('fanart') else ''
+    supplement81=__import__('media_hero81').reference(portal,kind,row) if kind in ('vod','series') and not image.get('fanart') and not row.get('_no_art86') else ''
     if supplement81:image.update(fanart=supplement81,landscape=supplement81)
     placeholder=os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media',{'live':'tv','series':'series'}.get(kind,'vod')+'.png')
     if theme:
@@ -80,6 +80,11 @@ def describe(portal,kind,row,approved,epg=None,assets47=None):
         from widget_assets69 import renderable
         image={k:(v if renderable(v) else '') for k,v in image.items()}
         props['XCMate.ArtPending69']='false' if image.get('poster') else 'true'
+    if row.get('_no_art86'):
+        image={k:'' for k in ('poster','thumb','icon','fanart','landscape')}
+        props['XCMate.NoImage86']='true'
+        props['XCMate.Source85']=__import__('hashlib').sha256(('NO_IMAGE86'+props.get('XCMate.Source85','')).encode()).hexdigest()
+        props['XCMate.ArtPending69']='false';provider80={}
     value=dict(label=str(row['name']),url=url,art=image,info=info,props=props,_provider80=provider80)
     if kind=='live':
         from programme_widgets46 import decorate

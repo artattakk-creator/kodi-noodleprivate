@@ -6,7 +6,7 @@ from xcmate027_fixture import Fixture
 
 class Visible84(Fixture,unittest.TestCase):
  def setUp(self):
-  super().setUp();self.a=importlib.import_module('widget_assets69');self.display=importlib.import_module('artwork_display84')
+  super().setUp();self.a=importlib.reload(importlib.import_module('widget_assets69'));self.display=importlib.import_module('artwork_display84')
   self.config=importlib.import_module('artwork_config');self.config.initialize();self.config.choose('internal')
   self.rows=[dict(sid=str(i),name='Synthetic '+str(i),cover='https://images.example.org/poster-'+str(i)+'.jpg',kind='vod') for i in range(24)]
  def low(self):
@@ -127,7 +127,7 @@ class EventDisplay84(Fixture,unittest.TestCase):
 
 class Recovery84(Fixture,unittest.TestCase):
  def setUp(self):
-  super().setUp();self.assets=importlib.import_module('widget_assets69');self.display=importlib.import_module('artwork_display84')
+  super().setUp();self.assets=importlib.reload(importlib.import_module('widget_assets69'));self.display=importlib.import_module('artwork_display84')
   self.config=importlib.import_module('artwork_config');self.config.initialize();self.config.choose('internal')
   cap=dict(free=27*1024**2,total=4*1024**3,reserve=1024**3,storage_availability='AVAILABLE')
   with mock.patch('art_storage.capacity',return_value=cap):self.display.observe(force=True)

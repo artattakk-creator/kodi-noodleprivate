@@ -83,7 +83,7 @@ def _snapshot(root,pid,value):
         same=old.get('image_refs')==images
         result[key]=dict(art=old.get('art',{}) if same else {},image_refs=images,
                          resolved=old.get('resolved',False) if same else False,
-                         metadata={k:v for k,v in meta.items() if k in FIELDS},source=entry.get('source',''))
+                         hidden86=entry.get('hidden86') is True,metadata={k:v for k,v in meta.items() if k in FIELDS},source=entry.get('source',''))
     with _lock:
         _cache[cachekey]=result;_cache.move_to_end(cachekey)
         while len(_cache)>8:
@@ -132,7 +132,10 @@ def apply_many(pid,rows):
                 except OSError:continue
             with _lock:entry.update(art=images,resolved=True)
         item.update(entry.get('metadata',{}));item['_metadata_override43']=bool(entry.get('metadata'))
-        item['_manual_art43']=dict(entry.get('art',{}));result.append(item)
+        item['_manual_art43']=dict(entry.get('art',{}))
+        if entry.get('hidden86'):item['_no_art86']=True
+        else:item.pop('_no_art86',None)
+        result.append(item)
     return result
 
 
@@ -178,6 +181,7 @@ def save(pid,kind,sid,*,image=None,role='poster',metadata=None,source='',attribu
         fcntl.flock(lock,fcntl.LOCK_EX)
         value=_read(filename);entry=dict(value.get(key,{}))
         if image is not None:
+            entry.pop('hidden86',None)
             from media_sources43 import validate_image
             validate_image(image)
             folder=root/'images';folder.mkdir(mode=0o700,exist_ok=True)
@@ -231,5 +235,33 @@ def reset(pid,kind,sid,metadata=False):
     with open(str(filename)+'.lock','a') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX);value=_read(filename);key=ident(kind,sid)
         entry=dict(value.get(key,{}));entry.pop('metadata' if metadata else 'images',None)
+        if not metadata:entry.pop('hidden86',None)
         value[key]=entry;_atomic(filename,json.dumps(value,ensure_ascii=False).encode());_snapshot(root,pid,value)
+    return True
+
+
+def hide86(pid,kind,sid):
+    """Explicit per-work opt-out. One bounded atomic existing choice manifest.
+
+    Original image bytes and metadata are retained for reversible recovery.
+    """
+    root,filename=paths(pid);key=ident(kind,sid)
+    from import_budget import check_space
+    from profile_transaction import writing
+    if root.is_symlink():raise ValueError('UNSAFE_CHOICE_PATH')
+    check_space(str(filename if root.exists() else root),MAX_JSON+65536)
+    root.mkdir(mode=0o700,parents=True,exist_ok=True)
+    if root.is_symlink() or filename.is_symlink() or Path(str(filename)+'.lock').is_symlink():raise ValueError('UNSAFE_CHOICE_PATH')
+    import fcntl
+    with writing(timeout=.2),open(str(filename)+'.lock','a') as lock:
+        fcntl.flock(lock,fcntl.LOCK_EX);value=_read(filename);entry=dict(value.get(key,{}));entry['hidden86']=True;value[key]=entry
+        raw=json.dumps(value,ensure_ascii=False).encode()
+        if len(value)>1024 or len(raw)>MAX_JSON:raise ValueError('CHOICES_LIMIT')
+        check_space(str(filename),len(raw)+65536)
+        _atomic(filename,raw)
+        if _read(filename)!=value:raise OSError('CHOICE_READBACK')
+        directory=os.open(root,os.O_RDONLY)
+        try:os.fsync(directory)
+        finally:os.close(directory)
+        _snapshot(root,pid,value)
     return True

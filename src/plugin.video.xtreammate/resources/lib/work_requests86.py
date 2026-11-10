@@ -53,6 +53,7 @@ def save(event,options,expected,cancel=lambda:False):
  if cancel():raise SourceError('CANCELLED')
  if action in ('automatic','hide'):
   if kind!='live':
+   if action=='hide':return __import__('media_overrides43').hide86(event['pid'],kind,str(event['sid']))
    return __import__('media_overrides43').reset(event['pid'],kind,str(event['sid']))
   return __import__('programme_mapping85').set_mapping(current,automatic=action=='automatic',hidden=action=='hide')
  selected=options.get('candidate') or {}
@@ -81,7 +82,10 @@ def drain(cancelled_service=lambda:False):
   elif data.get('operation')=='local':value=dict(code='SAVED' if local_save(event,options.get('path',''),data['binding'],stop) else 'UNCHANGED',rows=[])
   elif data.get('operation')=='save':value=dict(code='SAVED' if save(event,options,data['binding'],stop) else 'UNCHANGED',rows=[])
   else:raise SourceError('CANDIDATES_REJECTED')
-  if not stop():win.setProperty(RESULT,json.dumps(dict(value,nonce=nonce,binding=data['binding']),separators=(',',':')))
+  if not stop():
+   if value.get('code')=='SAVED' and event.get('media_kind86') in ('vod','series'):
+    win.setProperty(manual_slot(event['pid'],event['media_kind86']),nonce)
+   win.setProperty(RESULT,json.dumps(dict(value,nonce=nonce,binding=data['binding']),separators=(',',':')))
  except (SourceError,OSError,TimeoutError,ValueError,TypeError) as error:
   __import__('art_trace81').note(event or {},'MATCH_REJECTED',getattr(error,'code','SAVE_BLOCKED'))
   code=getattr(error,'code','SAVE_BLOCKED' if isinstance(error,OSError) else 'CANDIDATES_REJECTED')
@@ -142,3 +146,8 @@ def local_result(event):
   from programme_requests68 import identity,scope
   return dict(key=event['key'],code='READY',source='user_local86',match='MANUAL_CONFIRMED',image=path,thumbnail=path,sha256=record['sha256'],role81='poster' if height>width else 'backdrop',image_width77=width,image_height77=height,fingerprint=fingerprint(event),scope69=identity(event),profile69=scope(),until=time.time()+86400,mapping_epoch85=__import__('programme_mapping85').epoch(event),attribution='Eigenes Bild · ausdrückliche Benutzerzuordnung')
  except (OSError,ValueError,SourceError):return None
+
+
+def manual_slot(pid,kind):
+ from epg_handoff63 import profile_scope
+ return 'XCMate.ManualArtwork86.'+hashlib.sha256((profile_scope()+'|'+str(pid)+'|'+kind).encode()).hexdigest()

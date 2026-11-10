@@ -1,7 +1,7 @@
 """RAM-only GUI notification bridge; all skin/profile/frame IO stays in worker."""
 import hashlib,json,threading,time
 _lock=threading.Lock();_pending={};_hooks={};_seen={};_focus=None;_next=0
-_art_counts84={};_art_seen84={}
+_art_counts84={};_art_seen84={};_manual_seen86={}
 
 
 def prepare(portal,kind,signature,count,art_count84=None):
@@ -56,12 +56,18 @@ def poll():
                 scope84,images84=_art_counts84.get((pid,kind),('',0));key84=(hook,pid,kind,scope84)
                 if scope84 and images84>0 and not _art_seen84.get(key84):newly_visible84.append(key84)
         if old and old[0]==signature:continue
+        from work_requests86 import manual_slot
+        manual86=[(str(pid),kind,window.getProperty(manual_slot(pid,kind))) for pid,kind,_,_ in values if kind in ('vod','series')]
+        changed_manual86=any(token and _manual_seen86.get((hook,pid,kind))!=token for pid,kind,token in manual86)
         if __import__('widget_patch85').publication(hook,values):
             _seen[hook]=(signature,old[1] if old else now)
+            for pid,kind,token in manual86:_manual_seen86[(hook,pid,kind)]=token
             for _,kind,_,count in values:trace('UPDATED',kind,count)
             continue
-        if old and now-old[1]<60 and not newly_visible84:continue
+        if old and now-old[1]<60 and not newly_visible84 and not changed_manual86:continue
         window.setProperty(hook,signature);_seen[hook]=(signature,now)
+        for pid,kind,token in manual86:_manual_seen86[(hook,pid,kind)]=token
+        while len(_manual_seen86)>128:_manual_seen86.pop(next(iter(_manual_seen86)))
         __import__('widget_patch85').sent(hook,values)
         for key84 in newly_visible84:_art_seen84[key84]=True
         while len(_art_seen84)>96:_art_seen84.pop(next(iter(_art_seen84)))

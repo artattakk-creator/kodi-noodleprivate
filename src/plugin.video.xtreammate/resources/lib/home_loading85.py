@@ -8,9 +8,9 @@ def update(portal,kind,rows,code,images=0,pending=False):
  from epg_handoff63 import identity
  import xbmcgui
  now=time.monotonic();key=identity(portal['id'],kind);prior=_records.get(key,{})
- material=hashlib.sha256(json.dumps([[r.get('sid'),r.get('cover'),r.get('name')] for r in rows[:24]],sort_keys=True).encode()).hexdigest()
+ material=hashlib.sha256(json.dumps([[r.get('sid'),r.get('cover'),r.get('name'),r.get('_no_art86',False)] for r in rows[:24]],sort_keys=True).encode()).hexdigest()
  since=prior.get('since',now) if prior.get('generation')==material else now
- count=len(rows);wanted=min(12,count);busy=bool(pending and now-since<60)
+ count=len(rows);wanted=sum(not r.get('_no_art86') for r in visible(portal,kind,rows));busy=bool(pending and now-since<60)
  if not count:state='EMPTY' if code in ('READY','CACHE','READ_ONLY') else 'LOADING_CATALOG' if busy else 'ERROR_RETRYABLE'
  elif images>=wanted:state='READY'
  elif images:state='READY_PARTIAL'

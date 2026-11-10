@@ -54,6 +54,7 @@ def read(portal,kind,rows):
  return result
 def prepare(portal,kind,rows,cancel=lambda:False):
  global _thread
+ if kind in ('vod','series'):rows=[row for row in rows if not row.get('_no_art86')]
  if not rows:return False
  from home_schedule75 import allowed,focused_rows
  if not allowed(kind,portal):rows=focused_rows(portal,kind,rows)

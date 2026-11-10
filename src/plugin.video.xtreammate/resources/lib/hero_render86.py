@@ -59,9 +59,12 @@ def prepare(event,value):
    if row.get('url') not in wanted:continue
    record=decoded(row,image)
    if not record:continue
-   proof=dict(value,image_width77=record['width'],image_height77=record['height'])
-   if not classify(proof):continue
-   win.setProperty(PREFIX+'Ready',json.dumps(dict(key=key,at=time.monotonic(),kind=kind[0],rank=kind[1],width=record['width'],height=record['height'],role=value.get('role81',''))))
+   # Quality was proved against the original image above. Kodi may store a
+   # downsampled texture: verify its aspect, never upgrade a small source.
+   width=value.get('image_width77',value.get('width',0));height=value.get('image_height77',value.get('height',0))
+   if not width or not height or record['width']<64 or record['height']<64:continue
+   if abs((record['width']/record['height'])/(width/height)-1)>.08:continue
+   win.setProperty(PREFIX+'Ready',json.dumps(dict(key=key,at=time.monotonic(),kind=kind[0],rank=kind[1],width=width,height=height,decoded_width=record['width'],decoded_height=record['height'],role=value.get('role81',''))))
    __import__('art_trace81').note(event,'RENDER_READY','KODI_TEXTURE_DECODED',width=record['width'],height=record['height'])
    return
  except (ValueError,TypeError,AttributeError,RuntimeError,OSError):return

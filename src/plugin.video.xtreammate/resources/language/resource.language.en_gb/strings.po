@@ -5166,8 +5166,8 @@ msgid "Use automatic assignment"
 msgstr "Use automatic assignment"
 
 msgctxt "#37085"
-msgid "Hide image suggestion"
-msgstr "Hide image suggestion"
+msgid "Use no image"
+msgstr "Use no image"
 
 msgctxt "#37086"
 msgid "Preparing search. You can cancel."
