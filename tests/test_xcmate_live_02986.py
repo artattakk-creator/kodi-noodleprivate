@@ -37,3 +37,12 @@ class Live86(Fixture,unittest.TestCase):
   m=importlib.import_module('home_schedule75');m._window().setProperty('XCMate.Home86.IdentityReady','true');m._window().setProperty('XCMate.Home86.Profile',__import__('epg_handoff63').profile_scope())
   with mock.patch('home_schedule75.applicable',return_value=True),mock.patch('home_schedule75._read',return_value={'phase':0}):
    self.assertTrue(m.allowed('vod',self.portal));self.assertTrue(m.allowed('series',self.portal))
+
+ def test_existing_legacy_provider_logos_bootstrap_without_sql_or_new_decode(self):
+  from artwork_backend import active_backend
+  import hashlib
+  m=importlib.import_module('logo_manifest86');backend=active_backend('media');path=Path(backend.resolve_target(hashlib.sha256(m.source(self.rows[0]).encode()).hexdigest()))
+  path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(b'previously cached source-addressed image bytes')
+  with mock.patch('sqlite3.connect',side_effect=AssertionError('SQL')),mock.patch('media_sources43.validate_image',side_effect=AssertionError('decode on directory')):
+   self.assertEqual(m.read(self.portal,self.rows[:1])['0'],str(path))
+  self.assertEqual(m.read(self.portal,self.rows[:1],with_fallback=False),{})

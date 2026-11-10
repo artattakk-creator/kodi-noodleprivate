@@ -7,6 +7,7 @@ import hashlib,json,os,time
 from urllib.parse import urlencode
 
 def values(portal,rows):
+ if not rows:return []
  import xbmcaddon
  from epg_handoff63 import profile_scope
  from logo_manifest86 import read,remote

@@ -23,3 +23,19 @@ def ordered(primary,feeds):
  scenes=[v for v in primary if v not in wide and v.get('role81')!='poster']+feeds
  posters=[v for v in primary if v.get('role81')=='poster']+[p for v in wide if (p:=poster(v))]
  return wide+scenes+posters
+
+
+def expand(primary,event,cancel=lambda:False):
+ """A proved episode ID does not make its small still the preferred work Hero."""
+ result=[]
+ for value in primary:
+  if value.get('source')=='tmdb_episode' and type(value.get('remote_id')) is int:
+   try:
+    row=__import__('programme_candidates85').details(event,value['remote_id'],cancel,manual=False)
+    if row and row.get('work_match85'):
+     work=__import__('programme_candidates85').artifact(row,'EXACT_TV_TITLE_YEAR66' if event.get('year') else 'EXACT_UNIQUE_TV_TITLE66')
+     work['image_scope57']='series_fallback'
+     result.append(work)
+   except __import__('media_sources43').SourceError:pass
+  result.append(value)
+ return result

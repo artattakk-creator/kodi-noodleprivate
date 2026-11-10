@@ -100,22 +100,29 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     from helper_rpc57 import Error as HelperError
     home86=__import__('home_schedule75').applicable()
     usable86=lambda v:not home86 or bool(__import__('hero_art86').classify(v))
-    upgrade81=False
+    upgrade81=False;best86=None
+    def retain86(v):
+        nonlocal best86
+        if home86 and v and usable86(v) and __import__('programme_image69').eligible(v,event) and __import__('event_art81').allowed(v):
+            if best86 is None or __import__('hero_art86').classify(v)[1]<__import__('hero_art86').classify(best86)[1]:best86=dict(v)
     def upgrade86(v):
         return home86 and allow_lookup and __import__('event_art81').upgrade(event,v)
     local86=__import__('work_requests86').local_result(event)
     if local86:return local86
     temp85=__import__('artwork_temp85').lookup(event)
+    retain86(temp85)
     if temp85 and usable86(temp85):
         upgrade81=upgrade86(temp85)
         if not upgrade81:return temp85
     durable81=__import__('event_art81').prior(event)
+    retain86(durable81)
     if durable81 and not usable86(durable81):durable81=None
     upgrade81=upgrade81 or allow_lookup and __import__('event_art81').upgrade(event,durable81)
     if durable81 and not upgrade81:return durable81
     pressure84=__import__('artwork_display84').observe() or __import__('home_schedule75').applicable()
     if url_mode69 and pressure84:
         renewed84=__import__('programme_display84').recover(event) or __import__('programme_display84').renew(event)
+        retain86(renewed84)
         if renewed84 and usable86(renewed84) and not upgrade81:
             upgrade81=upgrade86(renewed84)
         if renewed84 and usable86(renewed84) and not upgrade81:
@@ -125,6 +132,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     if url_mode69:
         from programme_session69 import get as session69
         prior69=session69(event)
+        retain86(prior69)
         if prior69 and usable86(prior69) and not upgrade81 and not (allow_lookup and __import__('programme_status70').retry(event,prior69)):return prior69
     old=art(event)
     if old and old.get('source','').startswith(('tmdb_','tvmaze')) and not __import__('event_art81').allowed(old):old=None
@@ -151,6 +159,10 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     if current and not upgrade81 and not (local_image63 and current.get('source')!='placeholder') and not explicit63 and not (allow_lookup and current.get('source')=='placeholder' and
             (current.get('code')=='AWAITING_BACKGROUND_REFRESH' or not current.get('matching_policy57') or current.get('source_policy57')!=policy())):return current
     if cancel():return None
+    if best86:
+        # Publish a verified current local fallback before optional network work.
+        # This does not launch another job or pretend a renderer/Android ACK.
+        __import__('programme_requests68').completed(event,best86)
     from programme_pipeline77 import note as trace77
     trace77(event,'EPG_EVENT','IDENTIFIED')
     trace77(event,'MATCHED_EVENT_FACTS','SOURCE_READY' if event.get('epg_source46') else 'SOURCE_MISSING')
@@ -209,7 +221,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         if not own81:
             provisional85=__import__('programme_candidates85').suggestion(event)
             if provisional85:own81.append(provisional85)
-        yield from (__import__('hero_art86').ordered(own81,candidates) if home86 else own81)
+        yield from (__import__('hero_art86').ordered(__import__('hero_art86').expand(own81,event,cancel),candidates) if home86 else own81)
         if not allow_lookup:return
         deferred=[]
         steps=[lambda:match(event,cancel=cancel)] if match else attempts(event,cancel,critical80=not bool(event.get('helper_explicit80')))
@@ -245,6 +257,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         trace77(event,'IMAGE_SOURCE_SELECTION','SOURCE_SELECTED')
         trace77(event,'MATCH_CONFIDENCE','PROVISIONAL_SUGGESTION' if candidate.get('provisional85') else 'MANUAL_CONFIRMED' if candidate.get('manual85') else 'EXACT_MATCH')
         url=candidate.get('url','')
+        if candidate.get('source')=='tmdb_episode':url=url.replace('https://image.tmdb.org/t/p/w500/','https://image.tmdb.org/t/p/original/',1)
         if candidate.get('source','').startswith('tmdb_') and candidate.get('role81')=='backdrop':url=url.replace('https://image.tmdb.org/t/p/w500/','https://image.tmdb.org/t/p/w1280/',1)
         if candidate.get('match')=='EXACT_EVENT':
             from image_reference78 import canonical
@@ -304,6 +317,8 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         break
     if not candidates and not allow_lookup:value['code']='AWAITING_BACKGROUND_REFRESH'
     if cancel():return None
+    if best86 and (value.get('source')=='placeholder' or not usable86(value) or __import__('hero_art86').classify(best86)[1]<__import__('hero_art86').classify(value)[1]):
+        return dict(best86,code='READY_STALE' if value.get('source')=='placeholder' else best86.get('code','READY'))
     if value.get('source')=='placeholder':
         if durable81:return durable81
         value['negative_scope68']=negative68

@@ -18,6 +18,8 @@ images={}
 for role,count,size,base in (('logo',88,(160,80),(25,100,160)),('vod',24,(160,240),(180,100,30)),('series',24,(160,240),(100,60,180)),('fanart',24,(1280,720),(35,120,80)),('event',88,(1280,720),(20,80,130))):
  for i in range(count):
   image=io.BytesIO();Image.new('RGB',size,(245,245,245) if role=='event' and i==1 else tuple((c+i*7)%220 for c in base)).save(image,'PNG');images['/t/p/w500/'+role+'84-'+str(i)+'.png']=(image.getvalue(),'image/png')
+for i in range(5):
+ image=io.BytesIO();Image.new('RGB',(800,1200),(80,120,200)).save(image,'PNG');images['/t/p/w500/official86-'+str(i)+'.png']=(image.getvalue(),'image/png')
 for path,value in list(images.items()):
  images[path.replace('/w500/','/w1280/')]=value
 class Handler(BaseHTTPRequestHandler):

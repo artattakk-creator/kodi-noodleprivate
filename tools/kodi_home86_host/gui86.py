@@ -4,6 +4,7 @@ Linux synthetic proof; never Android acceptance or a physical ENOSPC claim.
 from pathlib import Path
 base=Path('/base_gui84.py').read_text()
 base=base.replace('allow_lookup=False,url_mode69=True','allow_lookup=True,url_mode69=True')
+base=base.replace("completed(event,value);events.append","check(cold or value.get('source')=='tmdb_movie',('HERO86_TMDB_PRIORITY',value.get('source')));completed(event,value);events.append")
 base=base.replace('Synthetic Linux Kodi .84','Synthetic Linux Kodi .85')
 # .85 prepares the visible twelve covers first, not an invisible 24-file archive.
 base=base.replace('len(read(portal,kind,rows))==24','len(read(portal,kind,rows))>=12')
@@ -129,6 +130,24 @@ for control86 in (2540,2550,2560):
  check(str(count86).isdigit() and int(count86)>0,('CUSTOM86_MISSING',control86,count86))
  custom86[str(control86)]=int(count86)
 shot86,rgb86=capture('visible84-hero86-final')
-report['version']='0.1.29.86';report['hero86']=dict(kind=home.getProperty(prefix86+'Kind86'),source=home.getProperty(prefix86+'ArtSource'),image_pixels='PASS',preload_control='PASS',custom_rows=custom86,screenshot=shot86.name,android='ANDROID_NOT_TESTED')
+poster_case86=dict(status='NOT_TESTED_OFFLINE_RESTART')
+hero_case86=dict(kind=home.getProperty(prefix86+'Kind86'),source=home.getProperty(prefix86+'ArtSource'),image_pixels='PASS',preload_control='PASS',custom_rows=custom86,screenshot=shot86.name,android='ANDROID_NOT_TESTED')
+if not cold:
+ home.getControl(2510).selectItem(3)
+ def poster_work86():
+  row=live_rows(portal)[3];__import__('widget_group46').infos(portal,[row]);event=load(portal,row)
+  value=__import__('programme_urls55').resolve(event,allow_lookup=True,url_mode69=True)
+  completed(event,value)
+ poster_thread86=threading.Thread(target=poster_work86);poster_thread86.start()
+ for paint86 in range(120):
+  pump();xbmc.sleep(100)
+  active86=home.getProperty('XCMate.Hero63.Active')
+  if home.getProperty('XCMate.Hero63.'+active86+'.Kind86')=='official_poster' and xbmc.getCondVisibility('Control.IsVisible(296783)'):
+   path86,rgb86=capture('visible84-official-poster86')
+   count86=sum(max(abs(a-b) for a,b in zip(pixel,(80,120,200)))<=8 for pixel in rgb86.crop((300,30,1100,620)).getdata())
+   if count86>10000:break
+ else:raise RuntimeError('OFFICIAL86_POSTER_PIXELS_MISSING')
+ poster_case86=dict(status='PASS',actual_pixels=count86,screenshot=path86.name,source=home.getProperty('XCMate.Hero63.'+active86+'.ArtSource'),android='ANDROID_NOT_TESTED')
+report['version']='0.1.29.86';report['hero86']=hero_case86;report['poster86']=poster_case86
 report['series85']=dict(confirm_native='PASS',back_native='PASS',no_implicit_mapping_write='PASS')
 Path('/root/'+('post75.json' if cold else 'visible84.json')).write_text(json.dumps(report,indent=2))

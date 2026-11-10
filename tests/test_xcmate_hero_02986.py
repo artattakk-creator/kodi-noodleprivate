@@ -44,3 +44,21 @@ class Hero86(Fixture,unittest.TestCase):
   with mock.patch('xbmc.executeJSONRPC',create=True,return_value=json.dumps(dict(result=dict(textures=[])))):
    m.prepare(self.e,dict(self.value,image=self.value['source_url']))
   self.assertEqual(m.window().getProperty(m.PREFIX+'Pending'),self.value['source_url']);self.assertEqual(m.window().getProperty(m.PREFIX+'Ready'),'')
+
+ def test_proved_episode_still_expands_to_verified_work_backdrop_first(self):
+  still=dict(source='tmdb_episode',url='https://image.tmdb.org/t/p/w500/still.png',remote_id=100,match='EXACT_SEASON_EPISODE')
+  work=dict(source='tmdb',id=100,title='CSI: Vegas',year=2021,role='backdrop',poster='https://image.tmdb.org/t/p/w500/poster.png',url='https://image.tmdb.org/t/p/w500/series.png',work_match85=True)
+  with mock.patch('programme_candidates85.details',return_value=work):ordered=self.h.ordered(self.h.expand([still],self.e),[])
+  self.assertEqual(ordered[0]['source'],'tmdb_series');self.assertEqual(ordered[1]['source'],'tmdb_episode');self.assertEqual(ordered[2]['role81'],'poster')
+  self.assertEqual(ordered[0]['image_scope57'],'series_fallback');self.assertNotIn('episode',ordered[0])
+
+ def test_failed_optional_upgrade_keeps_current_decoded_cold_cache(self):
+  self.options.update(programme_helper57=False,programme_catalog57=False)
+  event=dict(self.e,xmltv_image='https://image.tmdb.org/t/p/w500/scene.png',placeholder='/neutral.png',genre='Spielfilm',year=2021)
+  from programme_art46 import fingerprint
+  from programme_requests68 import identity,scope
+  cached=dict(self.value,key=event['key'],source='xmltv_event',match='EXACT_EVENT',fingerprint=fingerprint(event),scope69=identity(event),profile69=scope(),until=self.now+3600)
+  candidate=dict(url='https://image.tmdb.org/t/p/w500/upgrade.png',source='tmdb_movie',role81='backdrop',match='EXACT_TITLE_YEAR')
+  with mock.patch('home_schedule75.applicable',return_value=True),mock.patch('programme_display84.recover',return_value=cached),mock.patch('programme_display84.renew',return_value=None),mock.patch('artwork_display84.observe',return_value=True),mock.patch('event_art81.upgrade',return_value=True),mock.patch('art_trace81.own',return_value=candidate),mock.patch('programme_urls55.probe',side_effect=__import__('media_sources43').SourceError('HTTP_NOT_FOUND')),mock.patch('programme_requests68.completed') as publish:
+   value=__import__('programme_urls55').resolve(event,allow_lookup=True,url_mode69=True)
+  self.assertEqual(value['image'],cached['image']);self.assertEqual(value['source'],'xmltv_event');self.assertEqual(value['code'],'READY_STALE');publish.assert_called_once()
