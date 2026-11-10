@@ -119,7 +119,13 @@ class EventDisplay84(Fixture,unittest.TestCase):
   self.assertTrue(result['decoded77']);self.assertTrue(result['decoded88']);self.addCleanup(__import__('decoded_assets88').shutdown);self.assertEqual(result['storage69'],'RAM_ONLY')
   importlib.import_module('programme_requests68').completed(self.event,result)
   self.assertEqual(self.art.cached(self.event)['image'],result['image'])
-  self.assertEqual({p:p.read_bytes() for p in self.folder.rglob('*') if p.is_file()},before)
+  after={p:p.read_bytes() for p in self.folder.rglob('*') if p.is_file()}
+  # .88 uses the existing cross-interpreter config lock to serialize its
+  # byte owner. Only a newly created, empty coordination lock is allowed;
+  # no image/archive/database metadata or prior file may change.
+  coordinator=self.folder/'.xcmate-config.lock'
+  if coordinator not in before and coordinator in after:self.assertEqual(after.pop(coordinator),b'')
+  self.assertEqual(after,before)
  def test_ram_only_data_without_image_decode_is_not_promoted_to_display_proof(self):
   value=self.approved();value.pop('decoded77')
   with mock.patch('artwork_visible.public_dns',side_effect=AssertionError('unverified body')):
