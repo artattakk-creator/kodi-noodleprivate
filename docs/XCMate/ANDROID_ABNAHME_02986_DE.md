@@ -23,6 +23,7 @@ Vorher Version, Startgruppe, Startsender, Anzahl 88, drei persönliche Widget-Re
 | D86-02 | Monk ohne automatischen Treffer: Kandidaten, Freitext, erneute Suche, Quellenwechsel, weitere Treffer. Abbrechen verändert nichts. | ANDROID_NOT_TESTED |
 | D86-03 | Echter Filmfall: TMDB-Movie öffnen, Werk-ID/Jahr bestätigen, Bild speichern; Filmstart/Resume/Zurück bleiben funktionsfähig. | ANDROID_NOT_TESTED |
 | D86-04 | Manuelle Zuordnung nach Neustart/nächster Ausstrahlung erhalten; erneut öffnen, ändern, automatisch zuordnen und Vorschlag ausblenden. Bestehende .85-Zuordnung weiterhin gültig. | ANDROID_NOT_TESTED |
+| D86-08 | In Film-/Seriendetails Kontexttaste und Links testen; „Kein Bild verwenden“ wählen, Home öffnen und Kodi neu starten. Kein Provider-/Last-good-Poster darf zurückkehren. „Automatisch“ beziehungsweise neue ausdrückliche Bildwahl stellt die normale Auswahl wieder her; Originaldateien bleiben erhalten. | ANDROID_NOT_TESTED |
 | D86-05 | Fehlende EPG-Fakten/Revision während geöffnetem Manager: Recherche weiter möglich, Speichern mit veraltetem Kontext abgelehnt. Kein falsches „gespeichert“. | ANDROID_NOT_TESTED |
 | D86-06 | Deaktivierte Quelle, fehlender Token ohne Token-Löschung, Netzwerkfehler und Reserveblockade: verständlicher Status, erneute Suche und Back bleiben möglich. | ANDROID_NOT_TESTED |
 | D86-07 | Eigenes ausdrücklich ausgewähltes lokales Bild: Vorschau/Bestätigung, SHA-geprüfte Kopie, Original unverändert. Netzdatei nur bei separater bewusster Auswahl/Bestätigung. Bei Schreibblockade kein Erfolg. | ANDROID_NOT_TESTED |
