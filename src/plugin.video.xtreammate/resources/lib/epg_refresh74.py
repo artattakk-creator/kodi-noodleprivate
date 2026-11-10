@@ -59,7 +59,8 @@ def _run():
                 # publish an empty frame or log private exception text here.
                 pass
             finally:
-                if reader is not None:reader.close()
+                # Reader is a stateless facade: every _query closes its own
+                # connection in finally. There is no facade.close() lifecycle.
                 if revision86==__import__('epg_status').revision(pid):
                     with _lock:
                         for sid86 in sids:
@@ -69,8 +70,8 @@ def _run():
                                 old86=_failures86.get(key86);count86=min(4,(old86[1] if old86 and old86[0]==revision86 else 0)+1)
                                 _failures86[key86]=(revision86,count86);_due[key86]=time.monotonic()+(30,60,180,300)[count86-1]
                         while len(_failures86)>256:_failures86.pop(next(iter(_failures86)))
-        with _lock:
-            if not _wanted:return
+        # Stay single-flight until shutdown; a request can arrive immediately
+        # after the queue is drained. Do not lose that wake in a dying thread.
 
 def shutdown():
     _stop.set();_wake.set()

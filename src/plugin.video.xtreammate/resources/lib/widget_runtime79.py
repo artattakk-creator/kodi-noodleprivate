@@ -29,6 +29,7 @@ def note(portal,kind,stage,tag='',**facts):
   metric82({'ACTIVE_CONTROL':'SKIN_CONTROL_ACTIVE','TEXTURE_REQUESTED':'IMAGE_DECODE_REQUESTED','TEXTURE_PENDING':'IMAGE_PENDING'}[stage],kind,**{k:v for k,v in facts.items() if k in ('control','count')})
  from epg_handoff63 import profile_scope
  identity=hashlib.sha256((profile_scope()+'|'+str(portal['id'])+'|'+kind+'|'+tag).encode()).hexdigest()[:12];key=(identity,stage);now=time.monotonic()
+ if key in _seen and stage in ('RELOAD_ACK','ACTIVE_CONTROL','TEXTURE_REQUESTED','TEXTURE_CACHED'):return
  if now-_seen.get(key,-1e9)<30:return
  _seen[key]=now
  while len(_seen)>256:_seen.pop(next(iter(_seen)))

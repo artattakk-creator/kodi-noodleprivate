@@ -1,0 +1,6 @@
+{
+  "source": "script.gsmedia.xcmate.branding/script.gsmedia.xcmate.branding-0.2.0.zip",
+  "member": "script.gsmedia.xcmate.branding/resources/media/xcmate_logo.png",
+  "sha256": "0c9254ad51a340a960de543c5f0b56776e9f9b8dd1715eeef74b0b4af0f304c4",
+  "operation": "byte-exact reuse of existing GS Media branding asset"
+}

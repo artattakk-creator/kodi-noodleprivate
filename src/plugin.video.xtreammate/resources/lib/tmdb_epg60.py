@@ -52,7 +52,7 @@ def candidate(event, cancel=lambda: False):
         if event.get('subtitle') and title_key(details.get('name', '')) != title_key(event['subtitle']):
             return reject84(event,'EPISODE_TITLE_MISMATCH')
         url = _tmdb_image(details.get('still_path'))
-        if url:return dict(url=url, source='tmdb_episode', match='EXACT_SEASON_EPISODE', attribution=credit, remote_id=remote)
+        if url:return dict(url=url, source='tmdb_episode',vote_average88=details.get('vote_average'),vote_count88=details.get('vote_count'), match='EXACT_SEASON_EPISODE', attribution=credit, remote_id=remote)
         if details.get('still_path'):
             # A malformed supplied path is not an absent episode still.
             # Preserve the safety rejection without additional lookup work.
@@ -64,9 +64,9 @@ def candidate(event, cancel=lambda: False):
         if work.get('id')!=remote or work.get('adult') or title not in (title_key(work.get('name','')),title_key(work.get('original_name',''))) or not actual.isdigit() or actual!=str(row.get('first_air_date',''))[:4]:return reject84(event,'DETAIL_IDENTITY_MISMATCH')
         fallback=_tmdb_image(work.get('backdrop_path') or work.get('poster_path'))
         if not fallback:return reject84(event,'IMAGE_PATH_MISSING')
-        return dict(url=fallback,source='tmdb_series',match='EXACT_TV_TITLE_YEAR66' if year else 'EXACT_UNIQUE_TV_TITLE66',remote_id=remote,official_poster86=_tmdb_image(work.get('poster_path')),matched_year56=int(actual),role81='backdrop' if work.get('backdrop_path') else 'poster',image_scope57='series_fallback',attribution=credit+' · Serienbild (kein Episodenbild)')
+        return dict(url=fallback,source='tmdb_series',vote_average88=work.get('vote_average'),vote_count88=work.get('vote_count'),match='EXACT_TV_TITLE_YEAR66' if year else 'EXACT_UNIQUE_TV_TITLE66',remote_id=remote,official_poster86=_tmdb_image(work.get('poster_path')),matched_year56=int(actual),role81='backdrop' if work.get('backdrop_path') else 'poster',image_scope57='series_fallback',attribution=credit+' · Serienbild (kein Episodenbild)')
     details = request(TMDB + '/movie/' + str(remote) + '?language=de-DE', token=token, cancel=cancel)
     if details.get('id') != remote or details.get('adult') or title not in (title_key(details.get('title', '')),title_key(details.get('original_title',''))) or str(details.get('release_date', ''))[:4] != year:
         return reject84(event,'DETAIL_IDENTITY_MISMATCH')
     url = _tmdb_image(details.get('backdrop_path') or details.get('poster_path'))
-    return dict(url=url, source='tmdb_movie', match='EXACT_TITLE_YEAR',official_poster86=_tmdb_image(details.get('poster_path')),role81='backdrop' if details.get('backdrop_path') else 'poster', attribution=credit, remote_id=remote) if url else reject84(event,'IMAGE_PATH_MISSING')
+    return dict(url=url, source='tmdb_movie',vote_average88=details.get('vote_average'),vote_count88=details.get('vote_count'), match='EXACT_TITLE_YEAR',official_poster86=_tmdb_image(details.get('poster_path')),role81='backdrop' if details.get('backdrop_path') else 'poster', attribution=credit, remote_id=remote) if url else reject84(event,'IMAGE_PATH_MISSING')

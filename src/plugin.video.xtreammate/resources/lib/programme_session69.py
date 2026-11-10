@@ -62,6 +62,7 @@ def remember(event,value,persisted=False,update=False):
  return value
 
 def persist(event,value):
+ if value.get('decoded88'):return dict(value,persisted69=False,storage69='RAM_ONLY',storage_code69='DECODED_SESSION')
  if not __import__('artwork_display84').metadata_allowed():return dict(value,persisted69=False,storage69='RAM_ONLY',storage_code69='SAFE_RESERVE_BLOCKED')
  from programme_index46 import publish_result69,path
  from programme_writes69 import permit,last

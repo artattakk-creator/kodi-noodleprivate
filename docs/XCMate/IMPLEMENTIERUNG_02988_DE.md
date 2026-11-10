@@ -1,0 +1,23 @@
+# XCMate 0.1.29.88 – Implementierung / Issue #421
+
+Basis `2547848625df8ecd3ba089ecd6c49339c8f3c348`, veröffentlichte .87.
+Branch `fix/xcmate-02988-artwork-epg-cinematic`. Draft, keine Merge-/Releasefreigabe.
+
+## Technische Ursachen und Änderungen
+
+- `epg_refresh74`: `library_index.Reader` ist eine zustandsarme Fassade. `_query` schließt jede eigene Verbindung im `finally`; ein zusätzliches `Reader.close()` existiert nicht. Ungültigen Aufruf entfernt. Der vorhandene einzelne Refresh-Worker bleibt bis zum Shutdown erhalten, statt am Queue-/Thread-Ende neue Anfragen zu verlieren. Backoff und Revisionserkennung bleiben erhalten.
+- `station_logos88`, `logo_manifest86`: Die bisherige Provider-Lease erlaubt ausschließlich öffentliches HTTPS:443. Neuer **getrennter Logo-Adapter** unterstützt öffentliches HTTP/HTTPS sowie den exakten konfigurierten Provider-Port; keine globale Hostfreigabe. Öffentliche DNS-Adressen werden vom bestehenden gepinnten Transport verlangt. Maximal drei Redirects auf denselben Host, kein HTTPS-Downgrade, keine Auth-/Cookie-/Referer-Weitergabe, keine Credential-URLs. Kodi `image://` wird einmal entpackt; VFS ausschließlich für geprüfte eigene Bildbereiche/Kodi-Thumbnails. Grenzen: JPEG/PNG, 3 MiB, kleine Logos maximal 2048×2048.
+- `decoded_assets88`: Vollständig dekodierte Bytes werden bei Bedarf über einen einzigen zufälligen lokalen Capability-Endpunkt an Kodi geliefert. Bindung ausschließlich `127.0.0.1`, zufälliger Port/256-Bit-Pfad, kein Fetch-Proxy, keine Dateiauslieferung. Maximal 16 MiB/128 Objekte, aktive Pins, eigener Shutdown. Das ist **RAM_ONLY**, kein permanentes Archiv und kein Sichtbarkeitsbeweis.
+- `sticky_art88`, `programme_urls55`, `programme_requests68`, `programme_image69`: Eigene Session-Referenz auf vollständig geprüfte Bytes, gebunden an Profil, Providerkonto, Kanal, Ereignis, Mapping, Quelle und Freigabe. Ablauf einer Remote-DNS-Lease/negative 45-Sekunden-Nachprüfung ersetzt diese Referenz nicht durch Schwarz. Remote-Leases selbst werden nicht verlängert. Ereigniswechsel, Widerruf/Opt-out und Mappingwechsel invalidieren. Session-Referenzen werden nicht als persistente Datenbankbilder gespeichert.
+- Speicherreserve bleibt unverändert. Vorhandene journalisierte Migration aus .83/.87 bleibt erhalten. `storage_report88` zeigt echte Volumewerte und den Vergleich mit Android Shared Storage; unbekannte oder gleiche Pools werden nicht als Speichergewinn gewertet. Nur lesende Bestandsaufnahme, keine automatische Bereinigung.
+- Widget-Pfade bleiben unverändert. Bereits vorhandene semantische Generationsprüfung bleibt bestehen; unveränderte ACK-/Texture-Diagnose wird pro Generation dedupliziert. Pseudo-Gruppenüberschriften werden aus der Home-Senderquelle entfernt. Keine SkinShortcuts-/Widget-Neuanlage.
+- EPG-Details: Logo aus gemeinsamem Manifest, Sendername nur Fallback; Start/Ende/Dauer/Rest; belegte TMDB-Bewertung mit Stimmenanzahl, keine erfundenen Werte. Drei Remote-Buttons: Zurück, Merken/Entmerken, Umschalten. Merkliste nutzt bestehende `guide_bookmarks_v1.json`, atomaren gesicherten Write und Readback. Groß-EPG und Live-Overlay verwenden vorhandenen Owner-/Player-Handoff, eigenständige Details den bestehenden Resolver.
+- `widget_skin88`: ausschließlich hashgeprüfter eigener Hero-Knoten. Breite 1760×620 bei x=130, Motiv rechts, weicher dunkler Alpha-Verlauf/Text links; keine starre rechte blaue Tafel. Proportionaler Poster-/Senderlogo-Fallback. Native Widgetreihen/Shortcuts bleiben bytegleich.
+- Navigation: vorhandene lokale Glyphen größer, Button-/Fokus-/Routing-Verhalten erhalten.
+- `branding88`: separat bestätigter Patch für zwei HeaderLogo-Texturen, mit bestehendem Backup/SHA-/Rollbackverfahren. Originales freigestelltes XCMate-Logo bytegleich aus Branding 0.2.0, Provenienz im Paket. Keine automatische Skinmodifikation.
+
+## Grenzen / offene reale Nachweise
+
+Screenshot 4 (`1000121041.jpg`) liegt laut #421 nur im früheren Chat, nicht als Datei vor. Umsetzung anhand des vollständigen Wireframes; **kein pixelgenauer Referenz-PASS**. Native Linux-Kodi-Prüfungen und tatsächliche Android-RK3528-Abnahme werden getrennt berichtet. Die aktuellen echten Logoquellen und nutzbaren Android-Volumes sind in dieser Umgebung nicht zugänglich. **Kein behauptetes 88/88 und kein behaupteter Speichergewinn**.
+
+Joomla/Gateway #417 und Setup .5.27 bleiben außen vor. Setup .5.26, publizierte .87-Pakete, alle drei Indizes und Tokenreader/-writer unverändert. Keine Provider-/EPG-/Kodi-Datenbankmigration, kein Reset, keine Cache-Löschung.

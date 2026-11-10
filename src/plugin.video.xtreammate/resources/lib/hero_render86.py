@@ -49,7 +49,7 @@ def prepare(event,value):
    win.setProperty(PREFIX+'Ready',json.dumps(dict(key=key,at=time.monotonic(),kind=kind[0],rank=kind[1],width=width,height=height,role=value.get('role81',''),evidence='LOCAL_DECODE_REQUESTED_NOT_PIXEL_PROOF')))
   except (OSError,ValueError,__import__('media_sources43').SourceError):pass
   return
- wanted=variants(image.split('|',1)[0]) if image.startswith('https://') else [image]
+ wanted=variants(image.split('|',1)[0]) if image.startswith(('https://','http://127.0.0.1:')) else [image]
  try:
   raw=xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=86,method='Textures.GetTextures',params=dict(filter={'or':[dict(field='url',operator='is',value=v) for v in wanted]},properties=['url','cachedurl','sizes']))))
   if not isinstance(raw,str) or len(raw)>262144:return

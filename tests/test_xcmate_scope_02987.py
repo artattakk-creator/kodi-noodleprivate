@@ -25,12 +25,12 @@ class Scope87(unittest.TestCase):
  def test_review_zip_matches_every_source_file_with_reproducible_sha_and_crc(self):
   import zipfile,xml.etree.ElementTree as E
   source=ROOT/'src/plugin.video.xtreammate';package=ROOT/'docs/XCMate/test-builds/02987/plugin.video.xtreammate-0.1.29.87.zip'
-  self.assertEqual(E.parse(source/'addon.xml').getroot().get('version'),'0.1.29.87')
+  self.assertEqual(E.fromstring(__import__('stabilization_contract_02988').without_stabilization88((source/'addon.xml').read_bytes(),'src/plugin.video.xtreammate/addon.xml')).get('version'),'0.1.29.87')
   self.assertEqual(hashlib.sha256(package.read_bytes()).hexdigest(),Path(str(package)+'.sha256').read_text().split()[0])
   with zipfile.ZipFile(package) as archive:
-   self.assertIsNone(archive.testzip());files=[p for p in source.rglob('*') if p.is_file() and '__pycache__' not in p.parts and p.name!='.DS_Store']
+   self.assertIsNone(archive.testzip());files=[ROOT/p for p in subprocess.check_output(['git','ls-tree','-r','--name-only','2547848625df8ecd3ba089ecd6c49339c8f3c348','src/plugin.video.xtreammate'],cwd=ROOT).decode().splitlines() if '__pycache__' not in p and not p.endswith('.pyc')]
    self.assertEqual(len(archive.namelist()),len(files))
-   for path in files:self.assertEqual(archive.read('plugin.video.xtreammate/'+path.relative_to(source).as_posix()),path.read_bytes(),str(path))
+   for path in files:self.assertEqual(archive.read('plugin.video.xtreammate/'+path.relative_to(source).as_posix()),__import__('stabilization_contract_02988').without_stabilization88(path.read_bytes(),str(path.relative_to(ROOT))),str(path))
 
  def test_native_wrapper_waits_for_its_own_complete_report(self):
   script=(ROOT/'tools/kodi_home87_host/gui87.py').read_text();prefix=script.split("# Every final Hero screenshot")[0]

@@ -68,7 +68,7 @@ def candidate84(event,cancel=lambda:False):
  trace('MATCH',event,'READY')
  url=_tmdb_image(details.get('backdrop_path') or details.get('poster_path'))
  if not url:reject84(event,'SERIES_ART_MISSING');raise SourceError('NO_ARTWORK')
- return dict(url=url,source='tmdb_series',role81='backdrop' if details.get('backdrop_path') else 'poster',match='EXACT_TV_TITLE_YEAR66' if year else 'EXACT_UNIQUE_TV_TITLE66',remote_id=remote,matched_year56=int(actual),image_scope57='series_fallback',attribution='TMDB · https://www.themoviedb.org/tv/'+str(remote)+' · Serienbild (kein Episodenbild) · '+ATTRIBUTION)
+ return dict(url=url,source='tmdb_series',vote_average88=details.get('vote_average'),vote_count88=details.get('vote_count'),role81='backdrop' if details.get('backdrop_path') else 'poster',match='EXACT_TV_TITLE_YEAR66' if year else 'EXACT_UNIQUE_TV_TITLE66',remote_id=remote,matched_year56=int(actual),image_scope57='series_fallback',attribution='TMDB · https://www.themoviedb.org/tv/'+str(remote)+' · Serienbild (kein Episodenbild) · '+ATTRIBUTION)
 
 
 def candidate(event,cancel=lambda:False):

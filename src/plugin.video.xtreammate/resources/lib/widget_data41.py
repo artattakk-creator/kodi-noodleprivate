@@ -157,4 +157,6 @@ def _snapshot84(portal,kind,background=False):
 
 def snapshot(portal,kind,background=False):
     from widget_snapshot85 import snapshot as memo85
-    return memo85(_snapshot84,portal,kind,background)
+    rows88,code88=memo85(_snapshot84,portal,kind,background)
+    if kind=='live':rows88=[r for r in rows88 if not __import__('station_rows88').header(r)]
+    return rows88,code88

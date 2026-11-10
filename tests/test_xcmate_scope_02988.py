@@ -1,0 +1,21 @@
+""".88 source/ZIP/channel isolation: every published .87 file remains reviewable."""
+import hashlib,json,subprocess,unittest,zipfile
+from pathlib import Path
+from stabilization_contract_02988 import without_stabilization88
+ROOT=Path(__file__).resolve().parents[1]
+class Scope88(unittest.TestCase):
+ def test_all_published_source_files_have_only_exact_reviewed_changes(self):
+  protection=json.loads((ROOT/'tests/fixtures/xcmate_02988_protection.json').read_bytes())
+  for name,digest in protection['source_sha256'].items():self.assertEqual(hashlib.sha256(without_stabilization88((ROOT/name).read_bytes(),name)).hexdigest(),digest,name)
+ def test_current_review_archive_is_complete_reproducible_and_crc_checked(self):
+  source=ROOT/'src/plugin.video.xtreammate';archive=ROOT/'docs/XCMate/test-builds/02988/plugin.video.xtreammate-0.1.29.88.zip'
+  self.assertEqual(hashlib.sha256(archive.read_bytes()).hexdigest(),Path(str(archive)+'.sha256').read_text().split()[0])
+  with zipfile.ZipFile(archive) as z:
+   self.assertIsNone(z.testzip());files=[p for p in source.rglob('*') if p.is_file() and '__pycache__' not in p.parts and not p.name.endswith('.pyc') and p.name!='.DS_Store']
+   self.assertEqual(len(files),len(z.namelist()))
+   for p in files:self.assertEqual(z.read('plugin.video.xtreammate/'+p.relative_to(source).as_posix()),p.read_bytes(),str(p))
+ def test_three_released_packages_indexes_installer_and_token_code_are_frozen(self):
+  base='2547848625df8ecd3ba089ecd6c49339c8f3c348'
+  paths=['addons.xml','addons.xml.md5','online-test/addons.xml','online-test/addons.xml.md5','online-test/manifest.json','index.html','online-test/index.html','script.gsmedia.setup/script.gsmedia.setup-0.5.26.zip','src/plugin.video.xtreammate/resources/lib/tmdb_token61.py','src/plugin.video.xtreammate/resources/lib/token_write64.py']
+  paths+=['plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.87.zip','online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.87.zip','online-test/plugin.video.xtreammate-0.1.29.87.zip']
+  for name in paths:self.assertEqual((ROOT/name).read_bytes(),subprocess.check_output(['git','show',base+':'+name],cwd=ROOT),name)

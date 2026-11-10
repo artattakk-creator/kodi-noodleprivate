@@ -1,4 +1,4 @@
-name: XCMate .87 native pictures under reserve pressure
+name: XCMate .88 native pictures under reserve pressure
 on:
   pull_request:
     branches: [main]
@@ -7,12 +7,12 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: visible87-${{ github.head_ref || github.ref }}
+  group: visible88-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 jobs:
   pictures:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -25,11 +25,11 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install 'Pillow>=11,<13' 'simpleeval==0.9.13'
-      - run: python tools/run_kodi_home87_contract.py --report-dir "${{ runner.temp }}/visible84" --resolution "${{ matrix.resolution }}"
+      - run: python tools/run_kodi_home88_contract.py --report-dir "${{ runner.temp }}/visible84" --resolution "${{ matrix.resolution }}"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: visible87-${{ matrix.resolution }}
+          name: visible88-${{ matrix.resolution }}
           path: |
             ${{ runner.temp }}/visible84/*.json
             ${{ runner.temp }}/visible84/*.png

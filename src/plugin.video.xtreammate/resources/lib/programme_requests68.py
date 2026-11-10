@@ -9,7 +9,7 @@ PREFIX='XCMate.Programme68.'
 SLOTS=64
 MAX_BYTES=8192
 _FIELDS=('pid','sid','start','stop','title','canonical','revision','source_key46','fact_revision46','epg_source46')
-_ART=('key','fingerprint','code','source','match','image','thumbnail','sha256','attribution','image_scope57','until','failure_reason68','storage68','source_url','url_version55','url_verified69','scope69','profile69','persisted69','storage69','storage_code69','policy69','resolved_at55','sources70','lookup70','origin_policy75','decoded77','image_width77','image_height77','display84','display_key84','provisional85','manual85','temp85','mapping_epoch85','role81')
+_ART=('key','fingerprint','code','source','match','image','thumbnail','sha256','attribution','image_scope57','until','failure_reason68','storage68','source_url','url_version55','url_verified69','scope69','profile69','persisted69','storage69','storage_code69','policy69','resolved_at55','sources70','lookup70','origin_policy75','decoded77','image_width77','image_height77','display84','display_key84','provisional85','manual85','temp85','mapping_epoch85','role81','decoded88','asset88','vote_average88','vote_count88')
 _lock=threading.Lock()
 _thread=None
 _stop=threading.Event()
@@ -78,7 +78,7 @@ def status(event,code,art=None):
   payload={k:art[k] for k in _ART if art and k in art}
   if 'sources70' in payload:payload['sources70']=__import__('programme_outcomes70').clean(payload['sources70'])
   if 'lookup70' in payload:payload['lookup70']={k:bool(v) for k,v in payload['lookup70'].items() if k in ('own','helper','catalog','tvmaze')} if isinstance(payload['lookup70'],dict) else {}
-  if payload.get('source_url') or str(payload.get('image','')).startswith(('http://','https://','smb://')):
+  if not (payload.get('decoded88') and __import__('sticky_art88').valid(payload,event)) and (payload.get('source_url') or str(payload.get('image','')).startswith(('http://','https://','smb://'))):
    from programme_image69 import url as public_url69
    if not public_url69(payload):
     import os
@@ -95,6 +95,8 @@ def status(event,code,art=None):
 def result(event,previous=None):
  """UI-safe status/art, bound to exact profile, event and source revision."""
  try:
+  pinned88=__import__('sticky_art88').read(event)
+  if pinned88:return pinned88
   tag=identity(event);value=_read('status.'+str(int(tag[:8],16)%SLOTS))
   from programme_status70 import valid,waiting
   if value.get('tag')!=tag or value.get('scope')!=scope() or not valid(value):return waiting(event,previous)

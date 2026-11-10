@@ -74,6 +74,7 @@ def poll():
         Percent=props['XCMate.ProgrammePercent46'],Image=props.get('XCMate.HeroImage63',neutral),
         ArtSource=props.get('XCMate.HeroArtSource63',''),Facts=props.get('XCMate.ProgrammeFacts75',''),LongTitle='true' if len(props['XCMate.ProgrammeTitle46'])>26 else 'false')
     values['Provisional85']=props.get('XCMate.Provisional85','')
+    values['Rating88']=__import__('programme_actions88').rating(art)
     # .86 typed/hysteretic commit; pending textures never blank a current bank.
     if xbmcgui.Window(10000).getProperty('XCMate.Home86.IdentityReady')=='true':
         values=__import__('hero_render86').choose(intent68,art,values,xbmcgui.Window(10000))

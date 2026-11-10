@@ -1,3 +1,12 @@
+0.1.29.88 – Android-P0-Testkandidat, nicht veröffentlicht
+- Öffentliche Providerlogos sicher und unabhängig von der Archivreserve laden.
+- Vollständig geprüfte Bilddaten begrenzt im RAM halten; keine Bildlöschung durch 45-Sekunden-Nachprüfung.
+- EPG-Reader-Lifecycle und Worker-Wake-up repariert.
+- Details mit Senderlogo, Zeitfortschritt, belegter TMDB-Bewertung, Merken und Umschalten.
+- Filmischer Home-Hero: breite Grafik, dunkler Verlauf und Informationen links; fremde Widgets erhalten.
+- Separater, gesicherter XCMate-Logo-Patch; keine automatische Skin- oder Datenbereinigung.
+- Android-Abnahme offen. Kein Merge und keine Veröffentlichung ohne ausdrückliche Freigabe.
+
 0.1.29.87 – Android-P0-Testkandidat, nicht veröffentlicht
 - Sichere Logo-Quellen, Speicherprüfung und dynamische Anzeige unter Reserveblockade.
 - Priorisierte manuelle Werkzuordnung mit eindeutigen Timeout-/Abbruchzuständen und verifiziertem Readback.

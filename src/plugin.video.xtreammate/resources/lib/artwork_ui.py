@@ -120,10 +120,14 @@ def _manage():
     while True:
         value=read()
         labels=[tr(i) for i in (35201,35202,35203,35204,35205,35206,35207,35208,35209,35210,35211,35212,35213,35232,35700,35701,38300,38301)]
+        labels.append('Speicher und Artwork-Bestand (nur lesen)')
         choice=__import__('menu_icons45').select(dialog,tr(35200)+' · '+value['mode'],labels,default='image')
         if choice<0:return
         try:
-            if choice==0:
+            if choice==18:
+                data88=job(lambda cancel,progress:__import__('storage_report88').collect())
+                if data88 is not None:dialog.textviewer('Artwork-Speicher',__import__('json').dumps(data88,ensure_ascii=False,indent=2))
+            elif choice==0:
                 from artwork_status import collect,text
                 data=job(collect)
                 if data is not None:dialog.textviewer(tr(35200),text(data))
