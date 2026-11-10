@@ -169,3 +169,13 @@ Die vorhandenen optionalen Zusatzpunkte wie **EPG/Programmführer** (Kalender), 
 
 **Release-Gate:** Falls .86 trotz vorhandener unterschiedlicher Iconnamen physisch wieder generische/fehlende Icons zeigt, gilt **P0-G NOT_PASSED**. Im [PR #410](https://github.com/artattakk-creator/kodi-noodleprivate/pull/410) mit sauberem Testnachweis aufnehmen; kein automatischer Merge vor den im Masterauftrag erforderlichen Gates.
 
+
+## 10. P0-D2 – Manueller Treffer gefunden, Speicherung aber abgebrochen (realer .86-Android-Test)
+
+**Nachtrag zur bereits veröffentlichten .86 vom 10.11.2026; neuer **Folgefix**, keine stillschweigende Modifikation des ausgelieferten .86-Pakets.** [Gesondertes GitHub-Issue #413](https://github.com/artattakk-creator/kodi-noodleprivate/issues/413).
+
+Nutzer zeigt im Mini-EPG bei fehlendem Bild via Links eine eigene TV-/Bildsuche an; Treffer von **TMDB-TV und TVMaze-TV werden gefunden**, nach Auswählen, OK und beabsichtigter Zuordnung folgt jedoch wieder „Suche wird vorbereitet“ und später **„Abgebrochen“**. Reale Fehlursache ohne zeitnahes `.86`-Kodi-Log noch nicht nachgewiesen.
+
+**Nachprüfbarer aktueller Codepfad:** `work_manager86.wait()` hat 30s Deadline und benutzt für `search`, `save`, `local` denselben Status `tr(37086)`; bei Timeout wird wie bei echtem Nutzer-Cancel `CANCELLED` zurückgegeben. `work_requests86.save()` muss Kandidat erneut laden, Event-/Profil-/Portal-Scope exakt revalidieren und darf bei EPG-Revision nicht blind unter falschem Event abspeichern. Der `programme_requests68._run()`-Worker arbeitet zunächst `live_warm68.prepare()` ab und erst danach `series_requests85.drain()` → `work_requests86.drain()`, sodass die Priorität der manuellen Anfrage geprüft werden muss.
+
+**Abnahmekriterien:** echte Nutzerstornierung getrennt von `REQUEST_TIMEOUT`/`WORKER_BUSY`/`EPG_REVISION_CHANGED`/`NETWORK_ERROR`/`SAVE_BLOCKED`; operationsechte Fortschrittsmeldung „Bildzuordnung wird gespeichert“; manuelle Anforderung priorisieren, begrenzte Wiederholungen; **TMDB TV + TVMaze TV + TMDB Movie** Treffer → ausdrückliches OK → atomare dauerhafte Speicherung → Readback → Bild in der EPG-Detailansicht → Neustart mit gleicher Zuordnung. Keine Änderung an fremden Bildern, Senderzuweisungen, Kodi-DB, Zugangsdaten oder Box A. P0-D2 ist bis realem Android-Readback **OPEN**. Für vollständigen Debug-/Fixauftrag siehe #413.
