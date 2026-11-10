@@ -27,7 +27,7 @@ def capture_selected80(kind,index):
  deadline80=time.monotonic()+5;name80='home75-'+kind+'-'+str(index);attempt80=0
  expected80=((180,100,30) if kind=='vod' and index==0 else tuple((v+index*step)%240 for v,step in zip((40,70,120) if kind=='vod' else (100,50,20),(19,31,13)))) if kind in ('vod','series') else None
  while True:
-  path80,rgb80=capture(name80);actual80=rgb80.getpixel((1000,150));attempt80+=1
+  path80,rgb80=capture(name80);actual80=rgb80.getpixel((1500,150) if xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version')=='0.1.29.88' else (1000,150));attempt80+=1
   if expected80 is None or max(abs(a-b) for a,b in zip(actual80,expected80))<=6:return path80,rgb80
   if time.monotonic()>=deadline80:
    Path('/root/render80-error.json').write_text(json.dumps(dict(kind=kind,index=index,actual=actual80,expected=expected80,attempts=attempt80)))
@@ -46,12 +46,14 @@ def settle_idle86():
    prefix='XCMate.Hero63.'+home.getProperty('XCMate.Hero63.Active')+'.'
    raise RuntimeError(str(dict(code='IDLE86_PRECONDITION_NOT_RENDERED',hero=hero,logo=logo,kind=home.getProperty(prefix+'Kind86'),source=home.getProperty(prefix+'ArtSource'))))
 if xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version')=='0.1.29.88':
+ source80=source80.replace('crop((120,20,250,500))','crop((110,20,145,500))')
  source80=source80.replace('((270,0),1620,480)','((130,0),1760,620)').replace('getpixel((300,150))','getpixel((1500,150))').replace('getpixel((500,300))','getpixel((1500,300))').replace('getpixel((1000,150))','getpixel((1500,150))')
 exec(compile(source80,'native-home80-base','exec'),globals())
 # Keep every real TLS/cache assertion from .79, including full decode.
 cache80=Path('/base_gui_cache79.py').read_text().split('import widget_cache79 as cache79',1)[1]
 cache80='import widget_cache79 as cache79'+cache80
 cache80=cache80.replace("Path('/root/home75-base79.json')","Path('/root/home75-base80.json')").replace("Path('/root/home75.json')","Path('/root/home75-cache80.json')")
+if xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version')=='0.1.29.88':cache80=cache80.replace('getpixel((800,150))','getpixel((1500,150))')
 exec(compile(cache80,'native-home80-cache','exec'),globals())
 # Native large-guide entry, long text and exact gray-blue focus pixels.
 from guide_grid_window import GuideGridWindow
