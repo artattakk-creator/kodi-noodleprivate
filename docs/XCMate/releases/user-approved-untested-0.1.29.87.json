@@ -1,0 +1,16 @@
+{
+  "addon_id": "plugin.video.xtreammate",
+  "version": "0.1.29.87",
+  "exception_applies_only_to_version": "0.1.29.87",
+  "user_approved_regular_release": true,
+  "user_approved_pilot_release": true,
+  "user_approved_all_channels": true,
+  "authorization_issue": 419,
+  "authorization": "Explicit user approval on 2026-11-10: 'So wie es aussieht, ist das nächste Paket fertig. Kannst du die bitte in Main mergen? In allen Repositories bitte.' Source XCMate .87 PR #416 merged as 3a8c374fa752d99b97a101178868b86d80435fad. Publish only the verified source ZIP, byte-identical in regular/Pilot/NeoDark3; no physical Android PASS claim. Do not bundle actual TMDB token. Setup .5.26 and the deferred gateway remain unchanged.",
+  "android_status": "NOT_TESTED",
+  "android_pass_claimed": false,
+  "source_merge_pr": 416,
+  "source_merge_sha": "3a8c374fa752d99b97a101178868b86d80435fad",
+  "sha256": "e78f28fdb1f1537d42acbef55f5539d6670f4b306d07b92e9e7795cc51dff843",
+  "installer_0_5_26_unchanged": true
+}
