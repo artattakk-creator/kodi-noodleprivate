@@ -92,6 +92,10 @@ def _snapshot(root,pid,value):
 
 
 def apply_many(pid,rows):
+    return _apply_choices43(pid,rows)
+
+
+def _apply_choices43(pid,rows,images_only=False):
     if not rows:return []
     root,filename=paths(pid)
     # Missing manifest is a normal existing profile, no new files/directories.
@@ -118,6 +122,8 @@ def apply_many(pid,rows):
             item.update({k:v for k,v in fallback.items() if k in ('cover','plot')})
             item['_fallback43']=fallback;item['_metadata_source43']='TMDb'
         entry=snapshot.get(ident(row['kind'],str(row['sid'])),{})
+        if images_only and not entry.get('image_refs') and not entry.get('hidden86'):
+            result.append(row);continue
         if entry and not entry['resolved']:
             # Verify only the requested page, never scan/hash every manually
             # chosen image on every catalogue read. No IO in cached_art().
@@ -131,7 +137,8 @@ def apply_many(pid,rows):
                         images[role]=shared_choice47(pid,row['kind'],str(row['sid']),role,digest) or str(path)
                 except OSError:continue
             with _lock:entry.update(art=images,resolved=True)
-        item.update(entry.get('metadata',{}));item['_metadata_override43']=bool(entry.get('metadata'))
+        if not images_only:item.update(entry.get('metadata',{}))
+        item['_metadata_override43']=bool(entry.get('metadata')) if not images_only else False
         item['_manual_art43']=dict(entry.get('art',{}))
         if entry.get('hidden86'):item['_no_art86']=True
         else:item.pop('_no_art86',None)
@@ -270,5 +277,5 @@ def hide86(pid,kind,sid):
 def widget_rows86(pid,kind,rows):
     """Worker-side manual overlay, without changing untouched catalogue DTOs."""
     if kind not in ('vod','series') or not rows:return rows
-    changed=apply_many(pid,[dict(row,kind=kind) for row in rows])
-    return [choice if choice.get('_no_art86') or choice.get('_manual_art43') or choice.get('_metadata_override43') else original for original,choice in zip(rows,changed)]
+    changed=_apply_choices43(pid,[dict(row,kind=kind) for row in rows],images_only=True)
+    return [choice if choice.get('_no_art86') or choice.get('_manual_art43') else original for original,choice in zip(rows,changed)]

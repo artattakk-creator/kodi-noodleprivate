@@ -62,3 +62,11 @@ class Hide86(Fixture,unittest.TestCase):
  def test_untouched_widget_rows_have_identical_dto_and_no_manual_bookkeeping(self):
   raw=[dict(self.row)];after=self.m.widget_rows86('p','vod',raw)
   self.assertEqual(after,raw);self.assertIs(after[0],raw[0])
+
+ def test_manual_widget_picture_cannot_override_provider_plot_or_year(self):
+  from PIL import Image
+  image=io.BytesIO();Image.new('RGB',(120,180),'blue').save(image,'PNG')
+  self.m.save('p','vod','1',image=image.getvalue(),metadata=dict(plot='Wrong non-provider plot',year=1999),source='manual')
+  row=dict(self.row,plot='Provider plot',year=2023)
+  with mock.patch('media_overrides43.apply_many',side_effect=AssertionError('widgets must not apply general metadata overrides')):after=self.m.widget_rows86('p','vod',[row])[0]
+  self.assertEqual((after['plot'],after['year']),('Provider plot',2023));self.assertTrue(after['_manual_art43'])
