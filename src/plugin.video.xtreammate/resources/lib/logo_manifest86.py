@@ -39,6 +39,23 @@ def read(portal,rows,with_fallback=True):
  for row in rows:
   value=refs.get(str(row['sid']),{}).get('poster',{})
   if value.get('source') in poster_candidates(row) and valid(value,value.get('source')):result[str(row['sid'])]=value['file']
+ # Bootstrap pre-.86 source-addressed local archives without per-item SQL,
+ # decoding or network. These are references; Kodi pixel proof stays separate.
+ if with_fallback:
+  from artwork_backend import active_backend,LocalArtworkStorage
+  try:
+   archive=active_backend('media')
+   if isinstance(archive,LocalArtworkStorage):
+    for row in rows:
+     sid=str(row['sid'])
+     if sid in result:continue
+     for uri in poster_candidates(row):
+      file=archive.resolve_target(hashlib.sha256(uri.encode()).hexdigest())
+      try:
+       if not os.path.islink(file) and 0<os.stat(file).st_size<=3*1024*1024:
+        result[sid]=file;break
+      except OSError:continue
+  except (OSError,ValueError):pass
  try:backend,_=location()
  except OSError:return result
  for row in rows:
