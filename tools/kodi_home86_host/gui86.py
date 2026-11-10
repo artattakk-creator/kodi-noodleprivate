@@ -140,7 +140,14 @@ if not cold:
  def poster_work86():
   row=live_rows(portal)[3];__import__('widget_group46').infos(portal,[row]);event=load(portal,row)
   value=__import__('programme_urls55').resolve(event,allow_lookup=True,url_mode69=True)
+  Path('/root/poster86-value.json').write_text(json.dumps({k:value.get(k) for k in ('code','source','role81','image_width77','image_height77','decoded77')}))
   completed(event,value)
+ poster_original86=poster_work86
+ poster_errors86=[]
+ def poster_work86():
+  try:poster_original86()
+  except Exception as error:
+   poster_errors86.append(type(error).__name__)
  poster_thread86=threading.Thread(target=poster_work86);poster_thread86.start()
  for paint86 in range(120):
   pump();xbmc.sleep(100)
@@ -149,7 +156,10 @@ if not cold:
    path86,rgb86=capture('visible84-official-poster86')
    count86=sum(max(abs(a-b) for a,b in zip(pixel,(80,120,200)))<=8 for pixel in rgb86.crop((300,30,1100,620)).getdata())
    if count86>10000:break
- else:raise RuntimeError('OFFICIAL86_POSTER_PIXELS_MISSING')
+ else:
+  prefix='XCMate.Hero63.'+home.getProperty('XCMate.Hero63.Active')+'.'
+  Path('/root/poster86-state.json').write_text(json.dumps(dict(errors=poster_errors86,kind=home.getProperty(prefix+'Kind86'),source=home.getProperty(prefix+'ArtSource'),poster_visible=xbmc.getCondVisibility('Control.IsVisible(296783)'),ready=home.getProperty('XCMate.Hero86.Ready'),focus_id=home.getFocusId(),sid=xbmc.getInfoLabel('ListItem.Property(XCMate.MediaId)'),identity_ok=home.getProperty(prefix+'Identity')==xbmc.getInfoLabel('ListItem.Property(XCMate.WidgetToken41)'),profile_ok=home.getProperty(prefix+'Profile')==xbmc.getInfoLabel('ListItem.Property(XCMate.EpgProfile63)'))))
+  raise RuntimeError('OFFICIAL86_POSTER_PIXELS_MISSING')
  poster_case86=dict(status='PASS',actual_pixels=count86,screenshot=path86.name,source=home.getProperty('XCMate.Hero63.'+active86+'.ArtSource'),android='ANDROID_NOT_TESTED')
 report['version']='0.1.29.86';report['hero86']=hero_case86;report['poster86']=poster_case86
 report['series85']=dict(confirm_native='PASS',back_native='PASS',no_implicit_mapping_write='PASS')

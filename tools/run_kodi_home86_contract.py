@@ -45,9 +45,16 @@ def main():
    files=json.loads(run('exec',name,'python3','-c',"import json;from pathlib import Path;print(json.dumps([str(p) for p in Path('/root').glob('visible84-*.png')]))",capture_output=True,text=True).stdout)
    for file in files:copy(file,Path(file).name)
   except (ValueError,subprocess.CalledProcessError):pass
-  for file in ('gui66-error.txt','post75-error.txt','tls69-requests.jsonl','visible84.json','texture84-debug.json'):
+  for file in ('gui66-error.txt','post75-error.txt','tls69-requests.jsonl','visible84.json','texture84-debug.json','poster86-value.json','poster86-state.json'):
    subprocess.run(docker+['cp',name+':/root/'+file,str(report/file)],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
   subprocess.run(docker+['cp',name+':/root/.kodi/temp/kodi.log',str(report/'synthetic-kodi.log')],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+  for evidence86 in ('poster86-value.json','poster86-state.json'):
+   target86=report/evidence86
+   if target86.is_file():print(evidence86+' '+target86.read_text()[:6000],flush=True)
+  synthetic86=report/'synthetic-kodi.log'
+  if synthetic86.is_file():
+   for line86 in synthetic86.read_text(errors='replace').splitlines():
+    if 'HERO86_RECEIVER ' in line86 or 'HERO86_FAILED_FRAME ' in line86:print(line86[:4000],flush=True)
   # Emit synthetic fixture failures in Actions logs as well as the artifact.
   for evidence85 in ('gui66-error.txt','probe.log','post75-error.txt'):
    target85=report/evidence85
