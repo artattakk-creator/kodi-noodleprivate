@@ -55,3 +55,16 @@ class Live86(Fixture,unittest.TestCase):
   ordered=m.ordered(SimpleNamespace(_params={}),portal,items)
   self.assertEqual(ordered[0]['props']['XCMate.MediaId'],'37');self.assertEqual(len(ordered),88);self.assertEqual(len({v['props']['XCMate.MediaId'] for v in ordered}),88)
   self.assertEqual(m.ordered(SimpleNamespace(_params={'home50':'1'}),portal,items),items)
+
+ def test_live_status_reports_pending_then_hides_only_after_verified_readiness(self):
+  m=__import__('home_status86');w=m.window();scope=__import__('epg_handoff63').profile_scope()
+  w.setProperty('XCMate.Home86.Rail',json.dumps(dict(profile=scope,pid='p',total=88,local=88,first_at=time.monotonic())))
+  with mock.patch('xbmc.getSkinDir',create=True,return_value='skin.titan.bingie.mod'),mock.patch('xbmcgui.getCurrentWindowId',return_value=10000):
+   m.observe();self.assertEqual(w.getProperty('XCMate.Home86.State'),'READY_PARTIAL');self.assertTrue(w.getProperty('XCMate.Home86.Text'))
+   w.setProperty('XCMate.Hero63.Active','A');w.setProperty('XCMate.Hero63.A.Title','Verified local EPG');w.setProperty('XCMate.Hero63.A.Kind86','hero_backdrop')
+   m.observe();self.assertEqual(w.getProperty('XCMate.Home86.State'),'READY');self.assertEqual(w.getProperty('XCMate.Home86.Text'),'')
+ def test_missing_artwork_ends_in_static_diagnostic_not_endless_loading(self):
+  m=__import__('home_status86');w=m.window();scope=__import__('epg_handoff63').profile_scope()
+  w.setProperty('XCMate.Home86.Rail',json.dumps(dict(profile=scope,pid='p',total=88,local=0,first_at=time.monotonic()-61)))
+  with mock.patch('xbmc.getSkinDir',create=True,return_value='skin.titan.bingie.mod'),mock.patch('xbmcgui.getCurrentWindowId',return_value=10000):m.observe()
+  self.assertEqual(w.getProperty('XCMate.Home86.State'),'ERROR');self.assertIn('88',w.getProperty('XCMate.Home86.Text'))

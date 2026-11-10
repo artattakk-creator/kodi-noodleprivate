@@ -24,7 +24,9 @@ def rail(portal,count,local):
  first=prior.get('first_at',time.monotonic()) if prior.get('context')==context else time.monotonic()
  note('LOGOS_LOCAL_READY',count=local,total=count)
  window().setProperty('XCMate.Home86.Rail',json.dumps(dict(context=context,first_at=first,profile=profile_scope(),pid=pid,total=count,local=local,at=time.monotonic())))
- window().setProperty('XCMate.Home86.Text','Sender '+str(count)+' · Logos '+str(local)+'/'+str(count)+' · EPG/Hero werden ergänzt')
+ from localization import tr
+ window().setProperty('XCMate.Home86.Text',tr(37103))
+ window().setProperty('XCMate.Home86.State','LOADING')
  window().setProperty('XCMate.Home86.IdentityReady','true' if count else '')
  window().setProperty('XCMate.Home86.Profile',profile_scope())
 def observe():
@@ -43,8 +45,15 @@ def observe():
   raw=xbmc.getInfoLabel('Container('+str(cid)+').NumItems')
   if str(raw)==str(data.get('total')) and xbmc.getCondVisibility('Control.IsVisible('+str(cid)+')'):
    note('RAIL_CONTROL_READY_MS',ms=int((time.monotonic()-data.get('first_at',time.monotonic()))*1000),count=data['total']);break
- if time.monotonic()-data.get('first_at',data.get('at',0))>60:
-  win.setProperty('XCMate.Home86.Text','Sender '+str(data['total'])+' · Logos '+str(data['local'])+'/'+str(data['total'])+' · fehlende Bilder: Diagnose verfügbar')
- else:
-  ready=bool(xbmc.getInfoLabel('Control.GetLabel(296752)'))
-  win.setProperty('XCMate.Home86.Text','Sender '+str(data['total'])+' · Logos '+str(data['local'])+'/'+str(data['total'])+' · EPG '+('bereit' if ready else 'ausstehend'))
+ from localization import tr
+ bank=win.getProperty('XCMate.Hero63.Active');prefix='XCMate.Hero63.'+bank+'.'
+ epg=bool(win.getProperty(prefix+'Title'))
+ kind=win.getProperty(prefix+'Kind86');image=kind in ('hero_backdrop','official_poster')
+ complete=bool(data.get('total') and data.get('local',0)>=data['total'] and epg and image)
+ if complete:
+  win.setProperty('XCMate.Home86.State','READY');win.setProperty('XCMate.Home86.Text','');return
+ expired=time.monotonic()-data.get('first_at',data.get('at',0))>60
+ win.setProperty('XCMate.Home86.State','ERROR' if expired else 'READY_PARTIAL')
+ # These are reference/control states; only screenshot tests prove pixels.
+ text=tr(37104).format(data['total'],data['local']) if expired else tr(37099).format(data['total'],data['local'],tr(37100) if epg else tr(37101),tr(37100) if image else tr(37101))
+ win.setProperty('XCMate.Home86.Text',text)

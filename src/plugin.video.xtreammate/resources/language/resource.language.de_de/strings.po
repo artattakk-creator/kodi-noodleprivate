@@ -5220,3 +5220,23 @@ msgstr "Quelle momentan nicht erreichbar. Erneut suchen oder Quelle wechseln."
 msgctxt "#37098"
 msgid "Select your own image"
 msgstr "Eigenes Bild auswählen"
+
+msgctxt "#37099"
+msgid "Stations {0} · Logos {1}/{0} · EPG {2} · Picture {3}"
+msgstr "Sender {0} · Logos {1}/{0} · EPG {2} · Bild {3}"
+
+msgctxt "#37100"
+msgid "ready"
+msgstr "bereit"
+
+msgctxt "#37101"
+msgid "pending"
+msgstr "ausstehend"
+
+msgctxt "#37103"
+msgid "Loading channel group"
+msgstr "Sendergruppe wird geladen"
+
+msgctxt "#37104"
+msgid "Stations {0} · Logos {1}/{0} · Missing pictures: diagnostics available"
+msgstr "Sender {0} · Logos {1}/{0} · Fehlende Bilder: Diagnose verfügbar"

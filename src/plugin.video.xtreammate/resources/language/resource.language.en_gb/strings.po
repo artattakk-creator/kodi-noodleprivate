@@ -5220,3 +5220,23 @@ msgstr "Source currently unavailable. Search again or choose another source."
 msgctxt "#37098"
 msgid "Select your own image"
 msgstr "Select your own image"
+
+msgctxt "#37099"
+msgid "Stations {0} · Logos {1}/{0} · EPG {2} · Picture {3}"
+msgstr "Stations {0} · Logos {1}/{0} · EPG {2} · Picture {3}"
+
+msgctxt "#37100"
+msgid "ready"
+msgstr "ready"
+
+msgctxt "#37101"
+msgid "pending"
+msgstr "pending"
+
+msgctxt "#37103"
+msgid "Loading channel group"
+msgstr "Loading channel group"
+
+msgctxt "#37104"
+msgid "Stations {0} · Logos {1}/{0} · Missing pictures: diagnostics available"
+msgstr "Stations {0} · Logos {1}/{0} · Missing pictures: diagnostics available"
