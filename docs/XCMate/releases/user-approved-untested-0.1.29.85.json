@@ -1,0 +1,16 @@
+{
+  "addon_id": "plugin.video.xtreammate",
+  "version": "0.1.29.85",
+  "exception_applies_only_to_version": "0.1.29.85",
+  "user_approved_regular_release": true,
+  "user_approved_pilot_release": true,
+  "user_approved_all_channels": true,
+  "authorization_issue": 406,
+  "authorization": "Explicit user request 2026-11-10: 'So, die nächste Version ist fertig. merge du mir bitte einmal Richtung Main auf allen Repositories?' PR #408: 12/12 CI workflows successful, 3,486 host tests passed; source merged to main at 21e26dd1fe2d2075eac5f87ed5da6f08a835c9c1. Release identical pinned .85 ZIP to regular, Pilot and NeoDark3; Android not tested.",
+  "android_status": "NOT_TESTED",
+  "android_pass_claimed": false,
+  "source_merge_pr": 408,
+  "source_merge_sha": "21e26dd1fe2d2075eac5f87ed5da6f08a835c9c1",
+  "sha256": "9efd5fe6c4078a9fe32af67d582c256a7a22de5033ed491bd5b8662904fe752a",
+  "installer_0_5_26_unchanged": true
+}
