@@ -8,7 +8,7 @@ class Patch85(Fixture,unittest.TestCase):
   for i in range(24):
    props={'XCMate.PortalId':str(self.portal['id']),'XCMate.WidgetKind41':'vod','XCMate.MediaId':str(i),'XCMate.Source85':'source-'+str(i)};value=dict(label='Title '+str(i),url='plugin://plugin.video.xtreammate/?action=media_detail&kind=vod&pid='+str(self.portal['id'])+'&sid='+str(i),art={'poster':'/verified-new/'+str(i)+'.png'},props=props)
    item=ListItem(value['label'],path=value['url']);item.getPath=lambda item=item:item.path;item.props=dict(props);item.art={'poster':'/verified-old/'+str(i)+'.png'};self.items.append(item);self.values.append(value)
-  self.control=mock.Mock(getListItem=lambda i:self.items[i]);self.control.getSelectedPosition.return_value=23
+  self.control=mock.Mock(getListItem=lambda i:self.items[i]);self.control.getSelectedPosition.return_value=23;self.control.size.return_value=len(self.items)
   self.runtime._plans[(str(self.portal['id']),'vod')]=dict(scope=self.profile,slot=self.runtime.slot(self.portal,'vod'),ids=[2520],at=time.monotonic())
   self.module.prepare(self.portal,'vod',self.values,'a'*64)
  def apply(self):

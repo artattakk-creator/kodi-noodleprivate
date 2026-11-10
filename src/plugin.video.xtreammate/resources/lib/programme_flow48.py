@@ -20,6 +20,7 @@ def trace(stage,event=None,code='READY',rows=0,duration_ms=0):
     if stage not in stages:return
     code=code if code in codes else 'UNAVAILABLE'
     event=event or {}
+    if code in ('NO_SOURCE_FACTS','NO_EPG','NO_MATCH','SOURCE_UNAVAILABLE') and not __import__('diagnostic_rate86').admit(stage,event,code):return
     digest=hashlib.sha256(str(event.get('key','')).encode()).hexdigest()[:12]
     signature=(stage,digest,code)
     now=time.monotonic()

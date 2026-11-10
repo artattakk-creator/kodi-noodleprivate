@@ -67,6 +67,7 @@ def note(stage,pid='',sid='',code='READY',duration_ms=0,facts=None):
            'EPG_SNAPSHOT_SCHEDULE_DELAY','EPG_DB_BUDGET','EPG_UI_UPDATE_DELAY')
     if code not in codes:code='EPG_CACHE_UNAVAILABLE'
     try:
+        if code!='READY' and not __import__('diagnostic_rate86').admit('EPG_'+stage,dict(key=identity(pid,sid),revision=revision_tag(__import__('epg_status').revision(pid))),code,120):return
         key=(stage,identity(pid,sid),code);now=time.monotonic()
         with _lock:
             if now-_seen.get(key,-100)<2:return

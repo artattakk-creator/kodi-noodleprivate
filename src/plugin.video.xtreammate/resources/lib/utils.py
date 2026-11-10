@@ -146,6 +146,8 @@ def http_get(url, params=None, headers=None, timeout=None, stream=False,
     if wizard48 is not None:
         to,max_seconds,retries=wizard48.policy(to,max_seconds,retries)
         max_bytes=wizard48.byte_limit(max_bytes)
+    owner86=sys.modules.get('ui_jobs86')
+    if owner86 is not None:to,max_seconds,retries=owner86.policy(to,max_seconds,retries)
     verify  = setting_bool('ssl_verify', True)
     hdrs    = {**_default_headers(), **(headers or {})}
 
@@ -201,6 +203,7 @@ def http_get(url, params=None, headers=None, timeout=None, stream=False,
                 runtime=sys.modules.get('service_runtime')
                 if runtime:
                     if runtime.wait(delay):raise InterruptedError('SERVICE_STOP')
+                elif owner86 is not None and owner86.active():owner86.wait(delay)
                 else:time.sleep(delay)
     raise last_exc
 

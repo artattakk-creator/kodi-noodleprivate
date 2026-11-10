@@ -114,7 +114,8 @@ class OwnerDispatch:
         self._generation+=1
         if self._pending_future is not None: self._pending_future.cancel()
         self._pending_apply=apply;self._pending_generation=self._generation
-        self._pending_future=self._pool.submit(job)
+        generation=self._pending_generation
+        self._pending_future=self._pool.submit(lambda:__import__('ui_jobs86').run(self,generation,job))
 
     def pump(self):
         self._gui()
@@ -126,7 +127,8 @@ class OwnerDispatch:
             if generation==self._generation and not future.cancelled():
                 try: value=future.result()
                 except Exception as exc: self._query_failed(exc)
-                else: apply(value)
+                else:
+                    if not self._closed and generation==self._generation:apply(value)
         tick=getattr(self,'_owner_tick',None)
         if not self._closed and tick: tick()
 

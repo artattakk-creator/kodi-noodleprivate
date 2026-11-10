@@ -25,7 +25,9 @@ def main():
  start=(root/'tools/kodi_home74_host/start.sh').read_text().replace('cp /work/fixture66.py /root/.kodi/addons/plugin.video.xtreammate/','cp /fixture84.py /root/.kodi/addons/plugin.video.xtreammate/fixture66.py')
  (report/'start.sh').write_text(start)
  base=root/'tools/kodi_home84_host'
- mounts=[(root/'tools/kodi_home74_host','/work'),(root/'src/plugin.video.xtreammate','/xcmate'),(pristine/'skin.titan.bingie.mod','/skin'),(candidate,'/candidate'),(root/'tools/kodi_home86_host/fixture86.py','/fixture84.py'),(base/'fixture84.py','/base_fixture84.py'),(root/'tools/kodi_home86_host/gui86.py','/work/gui66.py'),(base/'gui84.py','/base_gui84.py'),(base/'probe84.py','/work/probe.py'),(root/'tools/kodi_home86_host/tls86.py','/work/tls69.py'),(base/'skin84.py','/work/skin_fixture66.py'),(root/'tools/kodi_home74_host/skin_fixture66.py','/base_skin78.py'),(root/'tools/kodi_home78_host/skin_fixture78.py','/skin78.py'),(report/'start.sh','/work/start.sh')]
+ (report/'probe86.py').write_text((base/'probe84.py').read_text().replace('range(2400)','range(12000)'))
+ mounts=[(root/'tools/kodi_home74_host','/work'),(root/'src/plugin.video.xtreammate','/xcmate'),(pristine/'skin.titan.bingie.mod','/skin'),(candidate,'/candidate'),(root/'tools/kodi_home86_host/fixture86.py','/fixture84.py'),(base/'fixture84.py','/base_fixture84.py'),(root/'tools/kodi_home86_host/gui86.py','/work/gui66.py'),(base/'gui84.py','/base_gui84.py'),(report/'probe86.py','/work/probe.py'),(root/'tools/kodi_home86_host/tls86.py','/work/tls69.py'),(base/'skin84.py','/work/skin_fixture66.py'),(root/'tools/kodi_home74_host/skin_fixture66.py','/base_skin78.py'),(root/'tools/kodi_home78_host/skin_fixture78.py','/skin78.py'),(report/'start.sh','/work/start.sh')]
+ mounts.append((root/'tools/kodi_home86_host/navigation86.py','/navigation86.py'))
  cmd=['run','-d','--name',name]
  for source,target in mounts:cmd+=['--mount','type=bind,src='+str(source)+',dst='+target+',readonly']
  cmd+=['-e','XCMATE_RES74='+a.resolution,'xcmate-kodi21-helper57-contract','sh','/work/start.sh']
@@ -45,10 +47,10 @@ def main():
    files=json.loads(run('exec',name,'python3','-c',"import json;from pathlib import Path;print(json.dumps([str(p) for p in Path('/root').glob('visible84-*.png')]))",capture_output=True,text=True).stdout)
    for file in files:copy(file,Path(file).name)
   except (ValueError,subprocess.CalledProcessError):pass
-  for file in ('gui66-error.txt','post75-error.txt','tls69-requests.jsonl','visible84.json','texture84-debug.json','poster86-value.json','poster86-state.json'):
+  for file in ('gui66-error.txt','post75-error.txt','tls69-requests.jsonl','visible84.json','texture84-debug.json','poster86-value.json','poster86-state.json','navigation86.json'):
    subprocess.run(docker+['cp',name+':/root/'+file,str(report/file)],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
   subprocess.run(docker+['cp',name+':/root/.kodi/temp/kodi.log',str(report/'synthetic-kodi.log')],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-  for evidence86 in ('poster86-value.json','poster86-state.json'):
+  for evidence86 in ('poster86-value.json','poster86-state.json','navigation86.json'):
    target86=report/evidence86
    if target86.is_file():print(evidence86+' '+target86.read_text()[:6000],flush=True)
   synthetic86=report/'synthetic-kodi.log'

@@ -4,7 +4,7 @@ _started={};_seen={}
 def note(code,**facts):
  if code not in ('GROUP_READ_MS','LOGOS_LOCAL_READY','LOGOS_FALLBACK','RAIL_CONTROL_READY_MS','EPG_TEXT_READY_MS','HERO_REFERENCE_READY_MS','DIRECTORY_REINVOCATION_REASON'):return
  safe={k:v for k,v in facts.items() if k in ('ms','count','total') and type(v) in (int,float)}
- tag=(code,tuple(safe.items()));now=time.monotonic()
+ tag=(code,tuple((k,v) for k,v in safe.items() if k!='ms'));now=time.monotonic()
  if now-_seen.get(tag,-1e9)<30:return
  _seen[tag]=now
  while len(_seen)>64:_seen.pop(next(iter(_seen)))

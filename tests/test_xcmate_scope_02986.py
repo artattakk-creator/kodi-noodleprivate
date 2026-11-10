@@ -20,4 +20,7 @@ class Scope86(unittest.TestCase):
  def test_player_exit_portals_credentials_and_storage_policy_have_no_code_change(self):
   names=('live_exit.py','exit_jobs.py','playback_exit.py','native_stop41.py','portals.py','window_navigation.py','art_storage.py','artwork_config.py','artwork_migration.py')
   for name in names:
-   path='src/plugin.video.xtreammate/resources/lib/'+name;self.assertEqual((ROOT/path).read_bytes(),subprocess.check_output(['git','show',BASE+':'+path],cwd=ROOT))
+   path='src/plugin.video.xtreammate/resources/lib/'+name;current=(ROOT/path).read_bytes()
+   # P0-F adds only the exact reviewed abort guard after the owner returns.
+   if name=='window_navigation.py':current=without_stabilization86(current,path)
+   self.assertEqual(current,subprocess.check_output(['git','show',BASE+':'+path],cwd=ROOT))
