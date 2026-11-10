@@ -51,7 +51,7 @@ class MenuIcons45(Fixture,unittest.TestCase):
  def test_media_detail_submenu_and_actions_expose_icons_without_new_focus_ids(self):
   w=self.media_window();w._details(w.rows[0]);self.settle(w)
   self.assertTrue(all(v.art.get('icon') for v in w.getControl(300).items));w._detail_menu_show()
-  self.assertEqual(len(w.getControl(810).items),7);self.assertTrue(all(v.art.get('icon') for v in w.getControl(810).items));self.assertEqual(w.getFocusId(),810)
+  self.assertEqual(len(w.getControl(810).items),8);self.assertTrue(all(v.art.get('icon') for v in w.getControl(810).items));self.assertEqual(w.getFocusId(),810)
  def test_all_owned_native_select_calls_are_decorated_or_already_icon_listitems(self):
   exceptions={'menu_icons45.py','stream_details.py'}
   # #255 explicitly requires the three wizard pickers to stay plain text.

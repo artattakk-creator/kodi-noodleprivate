@@ -2,6 +2,7 @@
 import time
 import xbmc,xbmcgui
 from localization import tr
+from menu_icons45 import select as icon_select
 
 def wait(event,operation,**options):
  from work_requests86 import request,result,cancel
@@ -29,7 +30,7 @@ def open(parent):
  event=event_for(parent);query=str(event.get('title') or '')[:200];kind='movie' if event.get('media_kind86')=='vod' else 'tv';source='tmdb';page=1;changed=False
  dialog=xbmcgui.Dialog()
  while not getattr(parent,'_closed',False) and not xbmc.Monitor().abortRequested():
-  action=dialog.select(tr(37080),[tr(37081)+' · '+query,tr(37082)+' · '+source+' '+kind,tr(37083),tr(37084),tr(37085),tr(37098)])
+  action=icon_select(dialog,tr(37080),[tr(37081)+' · '+query,tr(37082)+' · '+source+' '+kind,tr(37083),tr(37084),tr(37085),tr(37098)])
   if action<0:return changed
   if action==5:
    image=dialog.browse(1,tr(37098),'files','.jpg|.jpeg|.png',False,False,'')
@@ -44,7 +45,7 @@ def open(parent):
    if answer.get('code')=='SAVED':changed=True;return changed
    dialog.ok('XCMate',status(answer.get('code')));continue
   if action==1:
-   selected=dialog.select(tr(37082),['TMDB · TV','TMDB · Movie','TVMaze · TV'])
+   selected=icon_select(dialog,tr(37082),['TMDB · TV','TMDB · Movie','TVMaze · TV'])
    if selected<0:continue
    source,kind=(('tmdb','tv'),('tmdb','movie'),('tvmaze','tv'))[selected];page=1;continue
   if action==0 or not query:
@@ -63,7 +64,7 @@ def open(parent):
    # Candidate URLs remain references, not evidence of visible Kodi pixels.
   items.append(xbmcgui.ListItem(tr(37081)))
   if answer.get('more'):items.append(xbmcgui.ListItem(tr(37088)))
-  picked=dialog.select(tr(37080),items,useDetails=True)
+  picked=icon_select(dialog,tr(37080),items,useDetails=True)
   if picked<0:continue
   if picked==len(rows):query=dialog.input(tr(37081),defaultt=query) or query;page=1;continue
   if picked>len(rows):page+=1;continue

@@ -14,7 +14,9 @@ def rail(portal,count,local):
  window().setProperty('XCMate.Home86.Profile',profile_scope())
 def observe():
  import xbmc,xbmcgui
- if xbmc.getSkinDir()!='skin.titan.bingie.mod' or xbmcgui.getCurrentWindowId()!=10000:return
+ try:
+  if xbmc.getSkinDir()!='skin.titan.bingie.mod' or xbmcgui.getCurrentWindowId()!=10000:return
+ except (AttributeError,RuntimeError):return
  win=window()
  try:data=json.loads(win.getProperty('XCMate.Home86.Rail') or '{}')
  except ValueError:return
