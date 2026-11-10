@@ -304,7 +304,8 @@ def indexed(event,verify=False):
  if value.get('source')=='placeholder':value['image']=event['placeholder'];return value
  try:
   name=value.get('image','')
-  if not name or os.path.dirname(name)!=root() or os.path.islink(name) or not os.path.isfile(name) or os.path.getsize(name)>3*1024*1024:return None
+  if not name or os.path.dirname(name) not in (root(),image_root87()) or os.path.islink(name) or not os.path.isfile(name) or os.path.getsize(name)>3*1024*1024:return None
+  if os.path.dirname(name)==image_root87() and image_root87()!=root():__import__('android_artwork87').check_active(write=False)
   if verify:
    with open(name,'rb') as f:data=f.read(3*1024*1024+1)
    if hashlib.sha256(data).hexdigest()!=value.get('sha256'):return None

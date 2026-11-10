@@ -51,3 +51,8 @@ class Logos87(Fixture,unittest.TestCase):
    self.assertEqual(self.man.read(self.portal,self.rows[:1])['0'],str(image))
    self.assertEqual(self.man.read(self.portal,self.rows[:1],with_fallback=False),{})
    self.assertEqual(self.man.prepare(self.portal,self.rows[:1]),'EXTERNAL_UNAVAILABLE')
+ def test_auth_scope_is_distinct_from_scheme_host_failure_without_logging_credentials(self):
+  for url in ('https://user:SECRET@example.org/logo.png','https://example.org/SECRET/logo.png','https://example.org/logo.png?token=SECRET'):
+   self.assertEqual(self.m.blocked_reason(self.portal,url),'AUTH_SCOPE')
+  for url in ('http://example.org/logo.png','https://127.0.0.1/logo.png','https://example.org:8080/logo.png'):
+   self.assertEqual(self.m.blocked_reason(self.portal,url),'URL_SCHEME_OR_HOST_BLOCKED')

@@ -74,3 +74,22 @@ class Storage87(Fixture,unittest.TestCase):
    migration.begin(str(self.target),shared=True,confirmed=True,strict87=True);migration.copy();migration.verify();migration.approve_render(True);migration.activate()
   loaded=manifest.read(self.portal,[row]);self.assertTrue(loaded['1'].startswith(str(self.target)));self.assertEqual(__import__('pathlib').Path(loaded['1']).read_bytes(),body)
   self.assertEqual(backend.read(digest,100000),body)
+ def test_new_images_after_verified_activation_cold_read_from_target_while_database_stays_internal(self):
+  # Inject an already verified target receipt to isolate cold image reads;
+  # same-pool selection itself remains blocked by the separate preflight tests.
+  from artwork_vfs import prepare_target
+  from android_storage83 import measure
+  config=self.config.read();prepare_target(str(self.target),config['profile']);row=measure(str(self.target),'SYNTHETIC_ACTIVATED_TARGET',require=True)
+  config.update(mode='external',archive_mode='external',target=str(self.target),programme_target87=str(self.target),programme_volume87={k:row[k] for k in ('volume','mount_key')});self.config._write(config)
+  store=__import__('programme_storage87').target(str(self.target),config['profile']);raw=io.BytesIO();Image.new('RGB',(320,180),(20,80,140)).save(raw,format='PNG');body=raw.getvalue();digest=hashlib.sha256(body).hexdigest();ident='blob46-'+digest+'.png';store.write_verified(ident,body,lambda value:True)
+  module=__import__('programme_art46');event=dict(pid='p',sid='1',key='a'*64,title='Synthetic work',start=self.now,stop=self.now+1800,placeholder='/neutral.png')
+  value=dict(key=event['key'],fingerprint=module.fingerprint(event),code='READY',source='xmltv_event',match='EXACT_EVENT',image=store.resolve_target(ident),sha256=digest,until=self.now+1800)
+  self.assertIsNotNone(__import__('programme_index46').art(event,value));database=__import__('programme_index46').path();self.assertFalse(database.startswith(str(self.target)))
+  module=importlib.reload(module);loaded=module.indexed(event,verify=True);self.assertIsNotNone(loaded);self.assertEqual(loaded['image'],value['image'])
+  # Read protection validates pool/ownership but does not apply a write budget.
+  with mock.patch('android_storage83.measure',return_value=dict(row,available=24*1024**2,free=24*1024**2)):
+   self.assertIsNotNone(module.indexed(event,verify=True))
+   with self.assertRaisesRegex(OSError,'TARGET_RESERVE_BLOCKED'):self.s.check_active(1024)
+  with mock.patch('android_storage83.measure',return_value=dict(row,volume='replaced')):
+   self.assertIsNone(module.indexed(event,verify=True))
+  self.assertEqual(store.read(ident,100000),body)

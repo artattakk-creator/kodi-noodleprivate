@@ -14,6 +14,15 @@ def source(row):
  if not any(row.get(k) for k in ('movie_image','cover_big','poster')):
   return row.get('cover') if isinstance(row.get('cover'),str) else ''
  return ''
+def blocked_reason(portal,uri):
+ from urllib.parse import urlsplit,unquote
+ try:
+  parts=urlsplit(uri);path=unquote(parts.path)
+  if parts.username is not None or parts.password is not None or not __import__('programme_url77').public_query(parts.query):return 'AUTH_SCOPE'
+  if any(value and (value in path.split('/') or len(value)>=4 and value in path) for value in (str(portal.get('xc_user') or ''),str(portal.get('xc_pass') or ''))):return 'AUTH_SCOPE'
+ except (ValueError,TypeError):pass
+ return 'URL_SCHEME_OR_HOST_BLOCKED'
+
 def sources(row,provider_only=True):
  value=source(row)
  return dict(poster=value) if value else {}

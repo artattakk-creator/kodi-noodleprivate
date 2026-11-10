@@ -31,3 +31,16 @@ class Scope87(unittest.TestCase):
    self.assertIsNone(archive.testzip());files=[p for p in source.rglob('*') if p.is_file() and '__pycache__' not in p.parts and p.name!='.DS_Store']
    self.assertEqual(len(archive.namelist()),len(files))
    for path in files:self.assertEqual(archive.read('plugin.video.xtreammate/'+path.relative_to(source).as_posix()),path.read_bytes(),str(path))
+
+ def test_native_wrapper_waits_for_its_own_complete_report(self):
+  script=(ROOT/'tools/kodi_home87_host/gui87.py').read_text();prefix=script.split("# Every final Hero screenshot")[0]
+  legacy=(ROOT/'tools/kodi_home86_host/gui86.py').read_text()
+  class FixturePath:
+   def __init__(self,*args):pass
+   def read_text(self):return legacy
+  namespace={'Path':FixturePath};exec(prefix.replace('from pathlib import Path',''),namespace)
+  tree=ast.parse(namespace['base87'])
+  calls=[node for node in ast.walk(tree) if isinstance(node,ast.Call) and isinstance(node.func,ast.Attribute) and node.func.attr=='write_text']
+  self.assertFalse(any("visible84.json" in ast.unparse(call) and "post75.json" in ast.unparse(call) for call in calls))
+  self.assertIn('.replace(',namespace['base87'])
+  self.assertIn("'post75.json' if cold else 'visible84.json'",namespace['base87'])

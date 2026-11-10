@@ -76,7 +76,7 @@ def public_status():
  return dict(active_mount=row['mount_key'],filesystem=row['fs'],total=row['total'],available=row['available'],reserve=reserve,budget=max(0,row['available']-reserve-256*1024),last_write_readback=probe,programme_external=bool(read().get('programme_target87')))
 
 
-def check_active(upcoming=0):
+def check_active(upcoming=0,*,write=True):
  """No writes into a vanished/replaced mount or unowned namespace."""
  from artwork_config import read
  config=read()
@@ -89,4 +89,4 @@ def check_active(upcoming=0):
  backend=backend_for(target,config['profile'],'logos')
  if backend.availability()!='AVAILABLE':raise StorageFailure('STORAGE_OFFLINE')
  from art_storage import WRITE_HEADROOM
- if row['available']<max(RESERVE,row['reserve'])+max(0,upcoming)+WRITE_HEADROOM:raise StorageFailure('TARGET_RESERVE_BLOCKED')
+ if write and row['available']<max(RESERVE,row['reserve'])+max(0,upcoming)+WRITE_HEADROOM:raise StorageFailure('TARGET_RESERVE_BLOCKED')

@@ -101,7 +101,7 @@ def _references82(portal,kind,rows):
    if not source:missing84+=1;continue
    if not safe(portal,source):
     blocked84+=1
-    if kind=='live':__import__('station_logos87').note(portal,row,'URL_SCHEME_OR_HOST_BLOCKED')
+    if kind=='live':__import__('station_logos87').note(portal,row,__import__('station_logos87').blocked_reason(portal,source))
     continue
    if not public_dns(source):
     dns84+=1

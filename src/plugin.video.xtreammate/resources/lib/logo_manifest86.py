@@ -112,7 +112,7 @@ def prepare(portal,rows,cancel=lambda:False):
   try:
    # Check before networking; actual reserve failure is never disguised as success.
    check(3*1024*1024+65536,limit=0,backend=backend)
-   if not safe(portal,uri):note(portal,row,'URL_SCHEME_OR_HOST_BLOCKED');continue
+   if not safe(portal,uri):note(portal,row,__import__('station_logos87').blocked_reason(portal,uri));continue
    existing=fallback.get(str(row['sid']),'')
    if existing.startswith('/'):
     with open(existing,'rb') as stream:body=stream.read(3*1024*1024+1)

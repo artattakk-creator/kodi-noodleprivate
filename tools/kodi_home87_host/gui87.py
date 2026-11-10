@@ -4,7 +4,10 @@ The independent addons/data are synthetic. This proves Kodi/BINGIE consumers,
 not real MP3/SHOUTcast services or physical Android hardware.
 """
 from pathlib import Path
-base87=Path('/base_gui86.py').read_text().replace("Path('/root/'+('post75.json' if cold else 'visible84.json')).write_text(json.dumps(report,indent=2))",'')
+line87="Path('/root/'+('post75.json' if cold else 'visible84.json')).write_text(json.dumps(report,indent=2))"
+# Remove only the actual final write line, never the same text inside the
+# legacy wrapper's string replacement (that would re-enable early success).
+base87='\n'.join(line for line in Path('/base_gui86.py').read_text().splitlines() if line.strip()!=line87)
 # Every final Hero screenshot must prove actual pixels, not just Kind/READY.
 base87=base87.replace("shot86,rgb86=capture('visible84-hero86-final')", """for frame87 in range(100):
  pump();xbmc.sleep(100)
