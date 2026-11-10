@@ -7,7 +7,7 @@ def rows(portal):
 def values(portal):
     from live_items62 import values as decorate
     selected,code=rows(portal)
-    return decorate(portal,selected),code
+    return (__import__('live_rail86').values(portal,selected) if __import__('home_schedule75').applicable() else decorate(portal,selected)),code
 
 
 def render(router,portal):

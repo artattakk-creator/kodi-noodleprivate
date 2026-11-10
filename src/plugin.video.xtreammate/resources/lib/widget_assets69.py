@@ -142,6 +142,8 @@ def _run():
    except queue.Empty:continue
   key,portal,kind,rows=job;deferred=local_only
   try:
+   # Independent logo manifest remains useful in Dynamic mode and DB pauses.
+   if kind=='live':__import__('logo_manifest86').prepare(portal,rows,cancelled)
    # Recover already decoded Kodi files before any optional image write.
    __import__('artwork_display84').observe()
    __import__('widget_cache82').prepare(portal,kind,rows)
