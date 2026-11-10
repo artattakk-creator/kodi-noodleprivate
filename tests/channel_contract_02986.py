@@ -1,10 +1,10 @@
-""".86 is review-only. All committed .85 channels remain byte-exact main."""
+"""Published .86 channels stay byte-exact; .5.27 is a separate review ZIP."""
 import hashlib
 import subprocess
 from pathlib import Path
 import xml.etree.ElementTree as E
 ROOT=Path(__file__).resolve().parents[1]
-BASE='c6124922d067361e37db4dd325710ea89a96002e'
+BASE='48cbdc2fbdb32d2f0225b8db2398b25b4fcc4d6e'
 def approved(path):return subprocess.check_output(['git','show',BASE+':'+path],cwd=ROOT)
 def verify(path,committed=False):
     raw=subprocess.check_output(['git','show','HEAD:'+path],cwd=ROOT) if committed else (ROOT/path).read_bytes()

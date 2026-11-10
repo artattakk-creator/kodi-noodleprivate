@@ -1,0 +1,17 @@
+{
+  "version": "0.5.27",
+  "base_sha256": "5aa5d101a57adda5dbb1f5d05319da1ec185676dc784817b25dea267322ae0af",
+  "sha256": "c3e7b649d742c80fce7685a9f31051bfac09736ae08153b04ba74377eac343d6",
+  "files": 34,
+  "changed": [
+    "script.gsmedia.setup/addon.xml",
+    "script.gsmedia.setup/default.py",
+    "script.gsmedia.setup/resources/lib/setup_auto_ui50.py",
+    "script.gsmedia.setup/resources/settings.xml",
+    "script.gsmedia.setup/resources/lib/setup_tmdb87.py"
+  ],
+  "untouched_0526": "PASS",
+  "android": "ANDROID_NOT_TESTED",
+  "gateway_deploy": "BLOCKED_NO_BACKEND_TLS_ADMIN",
+  "production_published": false
+}

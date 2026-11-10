@@ -1,0 +1,25 @@
+name: GS Media .5.27 optional pairing development review
+on:
+  pull_request:
+    branches: [main]
+    paths: ['tools/gsmedia_setup0527/**', 'tools/build_gsmedia_setup_0527.py', 'tests/test_gsmedia_pairing_0527.py', '.github/workflows/gsmedia527-review.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  pairing527:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s tests -p test_gsmedia_pairing_0527.py -v
+      - run: |
+          python tools/build_gsmedia_setup_0527.py --out "$RUNNER_TEMP/installer527"
+          cmp "$RUNNER_TEMP/installer527/script.gsmedia.setup-0.5.27.zip" docs/GS-Media/test-builds/0527/script.gsmedia.setup-0.5.27.zip
+          git diff --exit-code -- addons.xml addons.xml.md5 online-test/manifest.json script.gsmedia.setup/script.gsmedia.setup-0.5.26.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gsmedia527-development-only
+          path: ${{ runner.temp }}/installer527/
