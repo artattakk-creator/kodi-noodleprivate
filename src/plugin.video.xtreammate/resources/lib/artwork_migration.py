@@ -15,6 +15,7 @@ from artwork_backend import LocalArtworkStorage
 from artwork_gate import writer,guarded
 
 KINDS=('media','logos')  # Legacy fanart shares media's URL-hashed directory.
+def _kinds(config):return KINDS+('programme87',) if config.get('strict_storage87') else KINDS
 
 
 class MigrationConnection(sqlite3.Connection):
@@ -86,6 +87,7 @@ def busy():
 
 
 def _source(config,kind):
+    if kind=='programme87':return __import__('programme_storage87').source(config)
     from utils import addon_data_dir
     if config.get('archive_mode',config['mode'])=='external':return backend_for(config['target'],config['profile'],kind)
     return LocalArtworkStorage(os.path.join(addon_data_dir(),'media_art_v1' if kind=='media' else 'tv_logos'))
@@ -93,6 +95,7 @@ def _source(config,kind):
 
 def _target(item,kind):
     source=json.loads(item['source'])
+    if kind=='programme87':return __import__('programme_storage87').target(item['target'],source['profile'])
     if item['target']=='INTERNAL':
         from utils import addon_data_dir
         return LocalArtworkStorage(os.path.join(addon_data_dir(),'media_art_v1' if kind=='media' else 'tv_logos'))
@@ -108,12 +111,13 @@ def _shared_check(item, upcoming=4096):
     source=json.loads(item['source']);proof=source.get('shared_storage83')
     if not proof:return
     from android_storage83 import preflight
+    if source.get('strict_storage87'):from android_artwork87 import preflight
     current=preflight(item['target'],upcoming,source_config=source)
     if (current['volume'],current['mount_key'])!=(proof['volume'],proof['mount_key']):
         raise StorageFailure('TARGET_VOLUME_UNVERIFIED')
 
 
-def begin(target, *, shared=False, confirmed=False):
+def begin(target, *, shared=False, confirmed=False,strict87=False):
     from artwork_config import initialize,read
     from artwork_vfs import target_root
     # No marker, journal, settings or directory write before the Android
@@ -122,14 +126,17 @@ def begin(target, *, shared=False, confirmed=False):
     if shared or str(target).startswith(('/storage/emulated/','/sdcard/')):
         if confirmed is not True:raise StorageFailure('TARGET_PROBE_CONFIRMATION_REQUIRED')
         from android_storage83 import preflight
+        if strict87:from android_artwork87 import preflight
         proof=preflight(target)
     initialize()
     with writer():
         config=read();target='INTERNAL' if target=='INTERNAL' else target_root(target)
         if proof:
             from android_storage83 import probe
+            if strict87:from android_artwork87 import probe
             proof=probe(target,config['profile'],confirmed=confirmed)
             config=dict(config,shared_storage83=dict(volume=proof['volume'],mount_key=proof['mount_key']))
+            if strict87:config['strict_storage87']=True
         elif target!='INTERNAL':prepare_target(target,config['profile'])
         source=json.dumps(config,sort_keys=True)
         db=_db()
@@ -149,7 +156,7 @@ def inventory(cancel=lambda:False,progress=lambda **kw:None):
         if not item:db.close();raise StorageFailure('NO_TRANSFER')
         try:
             _shared_check(item);_phase(db,item,'INVENTORY');config=json.loads(item['source']);count=0;size=0
-            for kind in KINDS:
+            for kind in _kinds(config):
                 storage=_source(config,kind)
                 for entry in storage.enumerate_for_migration():
                     if cancel():_phase(db,item,'PAUSED');return status()
@@ -211,7 +218,7 @@ def verify(cancel=lambda:False,progress=lambda **kw:None):
             previous=item['stage'];_shared_check(item);_phase(db,item,'VERIFYING');config=json.loads(item['source'])
             expected={(r['kind'],r['ident']) for r in db.execute('SELECT kind,ident FROM files WHERE transfer=?',(item['id'],))}
             actual=set()
-            for kind in KINDS:
+            for kind in _kinds(config):
                 for entry in _source(config,kind).enumerate_for_migration():actual.add((kind,entry['ident']))
             cleanup={(r['kind'],r['ident']) for r in db.execute('SELECT kind,ident FROM cleanup WHERE transfer=?',(item['id'],))}
             if actual!=expected-(cleanup-actual):raise StorageFailure('SOURCE_CHANGED')
@@ -251,7 +258,10 @@ def activate(cancel=lambda:False,progress=lambda **kw:None):
             if not item['rendered']:raise StorageFailure('RENDER_NOT_VERIFIED')
             _shared_check(item)
             if item['target']=='INTERNAL':choose('internal',strategy='demand')
-            else:choose('external',target=item['target'],strategy='demand')
+            else:
+                if json.loads(item['source']).get('strict_storage87'):__import__('logo_migration87').prepare(item)
+                choose('external',target=item['target'],strategy='demand')
+                if json.loads(item['source']).get('strict_storage87'):__import__('android_artwork87').activate_programmes(item['target'],json.loads(item['source'])['shared_storage83'])
             _phase(db,item,'ACTIVE');return True
         finally:db.close()
 
@@ -274,6 +284,7 @@ def remove_originals(challenge='',cancel=lambda:False,progress=lambda **kw:None)
         try:
             if not item or not challenge or challenge!=item['id'] or item['stage'] not in ('ACTIVE','CLEANUP_PAUSED'):raise StorageFailure('CLEANUP_NOT_AUTHORIZED')
             config=read();source=json.loads(item['source'])
+            if source.get('strict_storage87'):raise StorageFailure('CLEANUP_NOT_AUTHORIZED')
             if source.get('archive_mode',source['mode'])!='internal' or config['mode']!='external' or config['target']!=item['target']:raise StorageFailure('CLEANUP_NOT_AUTHORIZED')
             if not verify(cancel,progress):return 0
             _phase(db,item,'CLEANUP_PAUSED')

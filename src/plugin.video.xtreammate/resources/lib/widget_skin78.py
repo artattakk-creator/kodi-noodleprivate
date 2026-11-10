@@ -36,7 +36,7 @@ def build(original):
     from widget_skin75 import navigation_candidate
     from widget_skin50 import edit
     if CONTRACT.encode() in original['xml/IncludesVariables.xml']:
-        verify(original);return __import__('widget_skin81').upgrade(__import__('widget_skin80').upgrade(original))
+        verify(original);return __import__('widget_skin87').upgrade(__import__('widget_skin81').upgrade(__import__('widget_skin80').upgrade(original)))
     result=dict(original)
     for name in FILES[:4]:result[name]=previous(name,original[name])
     result[FILES[4]]=navigation_candidate(original[FILES[4]])
@@ -69,7 +69,7 @@ def build(original):
     result[FILES[7]]=_append(home,b'</controls>',b'<include>XCMate78.Runtime</include>\n')
     result=__import__('widget_skin81').upgrade(__import__('widget_skin80').upgrade(result))
     verify(result)
-    return result
+    return __import__('widget_skin87').upgrade(result)
 
 def verify(files):
     roots={name:parse(files[name]) for name in FILES}
@@ -137,6 +137,14 @@ def apply(token,skin,confirmed=False,restore=False):
     original={name:read(backup/('original.'+str(i))) for i,name in enumerate(FILES)};expected=build(original)
     for i,name in enumerate(FILES):
         if expected[name]!=read(backup/('candidate.'+str(i))):raise ValueError('CANDIDATE_VERIFY_FAILED')
+    # Revalidate the complete saved widget inventory before activating own
+    # XML, not only the three XCMate paths. The snapshot is private/local.
+    inventory87=plan['metadata'].get('inventory78')
+    if inventory87:
+        from utils import addon_data_dir
+        import json,xbmcvfs
+        receipt87=json.loads(read(Path(addon_data_dir())/'home78_inventory'/inventory87/'inventory.json')).get('widgets87')
+        if receipt87:__import__('widget_inventory87').compare(Path(xbmcvfs.translatePath('special://profile/')),receipt87)
     result=transaction(token,'skin',[root/name for name in FILES],confirmed=confirmed,restore=restore)
     import xbmcaddon,xbmcgui
     xbmcaddon.Addon().setSetting('home78_repair_optout','true' if restore else 'false')

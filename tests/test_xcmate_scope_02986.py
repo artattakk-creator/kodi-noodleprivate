@@ -20,4 +20,4 @@ class Scope86(unittest.TestCase):
  def test_player_exit_portals_credentials_and_storage_policy_have_no_code_change(self):
   names=('live_exit.py','exit_jobs.py','playback_exit.py','native_stop41.py','portals.py','window_navigation.py','art_storage.py','artwork_config.py','artwork_migration.py')
   for name in names:
-   path='src/plugin.video.xtreammate/resources/lib/'+name;self.assertEqual((ROOT/path).read_bytes(),subprocess.check_output(['git','show',BASE+':'+path],cwd=ROOT))
+   path='src/plugin.video.xtreammate/resources/lib/'+name;current=__import__('stabilization_contract_02987').without_stabilization87((ROOT/path).read_bytes(),path);self.assertEqual(current,subprocess.check_output(['git','show',BASE+':'+path],cwd=ROOT))

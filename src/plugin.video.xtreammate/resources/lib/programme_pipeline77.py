@@ -5,8 +5,8 @@ STAGES={'EPG_EVENT','MATCHED_EVENT_FACTS','IMAGE_SOURCE_SELECTION','MATCH_CONFID
 CODES={'IDENTIFIED','SOURCE_READY','SOURCE_MISSING','EXACT_MATCH','SOURCE_SELECTED','APPROVED','BLOCKED','IMAGE_DECODED','REFERENCE_VERIFIED','PERSISTED','RAM_ONLY','LOCAL_READY','BOUND','CONTROL_MISSING','IMAGE_REQUESTED','TEXTURE_CACHED','TEXTURE_PENDING','TEXTURE_UNAVAILABLE'}
 def note(event,stage,code,**facts):
     if stage not in STAGES or code not in CODES:return
-    from programme_requests68 import identity
-    tag=identity(event)[:12];now=time.monotonic();key=(tag,stage,code)
+    __import__('hero_timing87').pipeline(event,stage,code)
+    tag=__import__('hero_timing87').correlation(event)[:12];now=time.monotonic();key=(tag,stage,code)
     if now-_seen.get(key,-1e9)<30:return
     _seen[key]=now
     while len(_seen)>256:_seen.pop(next(iter(_seen)))

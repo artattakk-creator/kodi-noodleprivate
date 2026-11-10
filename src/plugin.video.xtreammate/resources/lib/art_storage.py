@@ -43,10 +43,12 @@ def capacity(location=None,backend=None):
     from artwork_config import read
     if not separate and read().get('reserve_policy')=='adaptive' and value.get('total') and value.get('capacity82')=='SAME_VOLUME_VERIFIED':
         protected=max(64*MIB,min(reserve(),int(value['total']*.02)))
+    if read().get('programme_target87'):protected=max(1024*MIB,protected)
     return dict(value,reserve=protected,budget=budget(),external=external,reserve_policy82=read().get('reserve_policy','fixed'),storage_availability='AVAILABLE' if value.get('free') is not None else storage.availability() if external else 'UNKNOWN')
 
 
 def check(upcoming,limit=None,used=None,location=None,backend=None):
+    __import__('android_artwork87').check_active(upcoming)
     value=capacity(backend=backend) if backend is not None else capacity() if location is None else capacity(location)
     from art_storage82 import note
     value.update(requested82=max(0,upcoming),role82='IMAGE')

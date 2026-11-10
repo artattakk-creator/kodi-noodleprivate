@@ -132,6 +132,9 @@ def open_route(router,portal,opener,after_close=None,anchor=None):
             xbmcgui.Dialog().notification('XCMate',tr(32910))
         finally:trace('RETURN',dispatch=dispatch)
 
+    if getattr(xbmc.Monitor(),'abortRequested',lambda:False)():
+        __import__('gui_guard86').note('ROUTE_CANCELLED',route=router._params.get('action',''))
+        return
     if getattr(result,'_nav_destination',None):
         from navigation_dispatch import dispatch
         dispatch(result._nav_destination,portal['id']);return

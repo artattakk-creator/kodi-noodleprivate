@@ -113,5 +113,5 @@ def poll():
    elif attempt<2 and now>=due:
     for hook in plan['hooks']:
      if hook.startswith('XCMate.Widget45.Reload.') or hook in ('widgetreload','widgetreload2','widgetreloadmovies','widgetreloadtvshows'):window.setProperty(hook,tag+'.retry79.'+str(attempt))
-    _tries[key]=(attempt+1,now+15);note(portal,kind,'RELOAD_REQUESTED',tag,count=attempt+1)
+    _tries[key]=(attempt+1,now+2);note(portal,kind,'RELOAD_REQUESTED',tag,count=attempt+1)
    while len(_tries)>64:_tries.pop(next(iter(_tries)))

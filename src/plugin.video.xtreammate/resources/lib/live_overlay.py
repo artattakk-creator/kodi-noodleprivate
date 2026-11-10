@@ -969,11 +969,10 @@ class LiveNavigator(xbmcgui.WindowDialog):
     def _handle_command(self, command):
         """XCMate-local TV commands; never open Kodi's own player OSD."""
         self._intro_deadline = None
-        if self.mode=='nav_expanded' and command in ('right','back'):
-            self._switch('groups');return
         if self.mode in ('nav_icons','nav_expanded'):
+            rail_mode86=self.mode
             if self._nav_rail.command(command):
-                if self._nav_rail.active:self.mode='nav_expanded' if self._nav_rail.expanded else 'nav_icons'
+                if self._nav_rail.active and self.mode==rail_mode86:self.mode='nav_expanded' if self._nav_rail.expanded else 'nav_icons'
                 return
         if self.mode=='channels' and self._mini.command(command):return
         if self.mode=='info': self._info_deadline=time.monotonic()+self._info_timeout
@@ -987,7 +986,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
             elif self.mode == 'channels':
                 self._switch('groups')
             elif self.mode == 'groups':
-                self._switch('nav_expanded')
+                self._switch('nav_icons')
             else:
                 if self.mode in ('hidden','info'):self._focus_playing_channel()
                 self._switch('channels')

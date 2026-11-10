@@ -1,9 +1,19 @@
+0.1.29.87 – Android-P0-Testkandidat, nicht veröffentlicht
+- Sichere Logo-Quellen, Speicherprüfung und dynamische Anzeige unter Reserveblockade.
+- Priorisierte manuelle Werkzuordnung mit eindeutigen Timeout-/Abbruchzuständen und verifiziertem Readback.
+- Native Index-/Fokus-Guards und sieben lokale Navigationsicons aus PR #412 übernommen.
+- Fester Hero mit rechter Informationstafel; bestehende Drittanbieter-Widgets erhalten.
+- Android-Abnahme offen; kein Merge oder Release ohne Freigabe.
+
 0.1.29.86 – Review/Testkandidat, nicht veröffentlicht
 - Senderleiste ohne EPG-/Artwork-Datenbankzugriff pro Sender; bestehende lokale Logos bevorzugen.
 - Unabhängiger Logo-Manifestcache auf dem vorhandenen geprüften lokalen Ziel; kein Umzug, keine Reservenumgehung.
 - Typisierte Hero-Grafiken: bestätigter TMDB-Backdrop, großes Szenenbild, offizielles Poster, Senderlogo.
 - Eigener Kodi-Textur-Preload und gezielte Übernahme statt Bild -> schwarz -> Thumbnail.
 - Manuelle Freitextsuche in TV/Film/TVMaze auch ohne vollständige EPG-Fakten; Speichern nur mit aktueller Werkidentität.
+- Native Listen-/Fokuszugriffe vor ungültigen Indizes und veralteten Generationen schützen.
+- Fensterjobs bei Zurück abbrechen; negative EPG-Abfragen und identische Zustandslogs begrenzen.
+- Linke Navigation mit sieben lokalen Symbolen, getrennten Icon-/Textebenen und stabilen Rückwegen.
 - Bestehende persönliche Widget-Reihen, Player-Routing, Profile und Installer bleiben erhalten.
 - Host/Kodi-Linux-Prüfung ersetzt keine Android-Abnahme; keine Merge-/Releasefreigabe.
 

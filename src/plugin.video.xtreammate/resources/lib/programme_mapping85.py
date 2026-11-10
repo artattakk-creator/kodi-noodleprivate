@@ -64,11 +64,12 @@ def current(event):
   record=records.get(namespace(event))
   return dict(record) if isinstance(record,dict) else None
  except (ValueError,TypeError):return None
-def set_mapping(event,candidate=None,hidden=False,automatic=False):
+def set_mapping(event,candidate=None,hidden=False,automatic=False,cancel=lambda:False):
  from import_budget import check_space
  from profile_transaction import writing
  key=namespace(event);filename=path()
  with writing(timeout=.2):
+  if cancel():raise __import__('media_sources43').SourceError('CANCELLED')
   data=read()
   epochs=data.setdefault('epochs',{})
   epochs[key]=int(epochs.get(key,0))+1
@@ -77,6 +78,9 @@ def set_mapping(event,candidate=None,hidden=False,automatic=False):
   else:
    if not hidden and (not isinstance(candidate,dict) or candidate.get('source') not in ('tmdb','tvmaze','user_local86') or type(candidate.get('id')) is not int or candidate['id']<=0 or not candidate.get('verified85')):raise ValueError('MANUAL_UNVERIFIED')
    data['records'][key]=dict(hidden=bool(hidden),source=candidate.get('source') if candidate else '',id=candidate.get('id') if candidate else None,year=candidate.get('year') if candidate else None,country=candidate.get('country') if candidate else None,local86=candidate.get('local86') if candidate else None,media_type86=candidate.get('media_type86','tv') if candidate else 'tv',at=int(time.time()),provenance='USER_CONFIRMED' if not hidden else 'USER_HIDDEN')
+  if not automatic and candidate and candidate.get('verified85'):
+   from programme_urls55 import safe
+   data['records'][key]['work87']=dict(title=str(candidate.get('title') or '')[:200],role=candidate.get('role') if candidate.get('role') in ('poster','backdrop') else '',**{k:candidate[k] for k in ('url','poster') if candidate.get(k) and safe(candidate[k])})
   if len(data['records'])>MAX_RECORDS:raise OSError('MANUAL_LIMIT')
   raw=json.dumps(data,separators=(',',':'),sort_keys=True).encode()
   if len(raw)>MAX_BYTES:raise OSError('MANUAL_LIMIT')
@@ -86,6 +90,7 @@ def set_mapping(event,candidate=None,hidden=False,automatic=False):
    with os.fdopen(fd,'wb') as f:f.write(raw);f.flush();os.fsync(f.fileno())
    # Verify the candidate bytes before activating; keep last valid file intact.
    if json.loads(Path(tmp).read_bytes())!=data:raise OSError('MANUAL_READBACK')
+   if cancel():raise __import__('media_sources43').SourceError('CANCELLED')
    os.replace(tmp,filename)
    directory=os.open(filename.parent,os.O_RDONLY)
    try:os.fsync(directory)

@@ -92,7 +92,7 @@ def _pick_android():
 def _prepare(target, shared=False):
     import xbmcgui
     import artwork_migration as migration
-    from android_storage83 import preflight
+    from android_artwork87 import preflight
     dialog=xbmcgui.Dialog()
     shared=shared or target.startswith(('/storage/emulated/','/sdcard/'))
     if shared:
@@ -100,7 +100,7 @@ def _prepare(target, shared=False):
         if result is None:return
         dialog.textviewer(tr(38301),_storage_text(result['rows']))
         if not dialog.yesno(tr(38300),tr(38302)):return
-    result=job(lambda cancel,progress:migration.begin(target,shared=shared,confirmed=shared))
+    result=job(lambda cancel,progress:migration.begin(target,shared=shared,confirmed=shared,strict87=shared))
     if result is not None:dialog.ok(tr(35200),tr(35216))
 
 

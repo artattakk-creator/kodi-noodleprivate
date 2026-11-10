@@ -122,7 +122,7 @@ def inventory(target=None, source_config=None):
     from artwork_config import root, read
     import xbmcvfs
     profile = root(); config = source_config if source_config is not None else read()
-    paths = [('PROGRAMME_IMAGES', os.path.join(profile, 'programme_images46')),
+    paths = [('PROGRAMME_IMAGES', __import__('android_artwork87').programme_root(config)),
              ('INTERNAL_MEDIA', os.path.join(profile, 'media_art_v1')),
              ('INTERNAL_LOGOS', os.path.join(profile, 'tv_logos')), ('PROFILE', profile)]
     for role, uri in (('KODI_HOME','special://home/'),('KODI_TEXTURES','special://thumbnails/')):

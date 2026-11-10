@@ -40,6 +40,9 @@
     <setting id="programme_art_budget46" type="enum" label="36120" values="32|64|128|256" default="1"/>
     <setting id="programme_helper57" type="bool" label="36540" default="true"/>
     <setting id="programme_catalog57" type="bool" label="36541" default="true"/>
+    <setting id="tmdb_gateway_revision87" type="text" default="" visible="false"/>
+    <setting id="tmdb_gateway_menu87" type="action" label="37130" action="RunPlugin(plugin://plugin.video.xtreammate/?action=native_options45&amp;group=tmdb_gateway87)" />
+    <setting id="tmdb_gateway_endpoint87" type="text" label="37144" default="" />
     <setting id="tmdb_test60" type="action" label="36600" action="RunPlugin(plugin://plugin.video.xtreammate/?action=native_options45&amp;group=tmdb_test60)" />
     <setting id="tmdb_token_revision61" type="text" label="36620" default="" visible="false"/>
     <setting id="programme_sources_state77" type="text" default="" visible="false"/>

@@ -105,3 +105,15 @@ def tr(string_id,*args,**kwargs):
         try: return text.format(*args,**kwargs)
         except (ValueError,KeyError,IndexError,TypeError): return base.format(*args,**kwargs)
     return text
+
+
+def tr_for_addon(addon,string_id,*args,**kwargs):
+    """Explicit addon owner for the optional installer SDK; same catalogs."""
+    base=english().get(int(string_id),'#'+str(string_id))
+    try:
+        locale=addon.getSetting('xcmate_ui_language') or 'kodi'
+        text=addon.getLocalizedString(int(string_id)) if locale=='kodi' else bundled(locale).get(int(string_id),'')
+        if not isinstance(text,str) or not text.strip() or fields(text)!=fields(base):text=base
+    except (AttributeError,RuntimeError,ValueError,TypeError):text=base
+    try:return text.format(*args,**kwargs) if args or kwargs else text
+    except (ValueError,KeyError,IndexError,TypeError):return base.format(*args,**kwargs)

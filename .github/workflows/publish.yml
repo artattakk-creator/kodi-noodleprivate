@@ -195,6 +195,11 @@ jobs:
         run: python tools/build_repository.py
       - name: Verify canonical XCMate source ZIP and regular Kodi index
         run: python tools/verify_xcmate70_package.py
+      - name: Restore published catalogs after isolated builder verification
+        # The builder intentionally emits a three-addon staging index. Host
+        # preservation tests must compare the real committed channel catalog.
+        # This checkout has no user data; no release output is committed here.
+        run: git restore -- addons.xml addons.xml.md5
       - name: Validate Kodi gettext languages
         run: python tools/validate_kodi_po.py
       - name: Validate pinned navigation icons and license

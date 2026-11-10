@@ -65,7 +65,9 @@ class SearchMixin:
             if pos<control.size():
                 art=self._display_art39(dict(row,kind=self._search_kind));key=(710,pos)
                 if art!=getattr(self,'_shown_art',{}).get(key):
-                    control.getListItem(pos).setArt(art);self._shown_art[key]=art
+                    target86=__import__('gui_guard86').item(control,pos,self,710,self._generation,len(self._search_rows),'search','global_search')
+                    if target86 is None:continue
+                    target86.setArt(art);self._shown_art[key]=art
 
     def _open_search(self,query=None):
         if self._closed or self._leaving or getattr(self,'_search_prompt',False):return
@@ -171,7 +173,9 @@ class SearchMixin:
                 from search_results import secondary
                 for pos,row in enumerate(rows):
                     if previous[2][pos]!=signature[2][pos]:
-                        item=control.getListItem(pos);item.setLabel(row.get('name',''));item.setProperty('XCMate.SearchSecondary',secondary(row))
+                        item=__import__('gui_guard86').item(control,pos,self,710,self._generation,len(rows),'search','global_search')
+                        if item is None:continue
+                        item.setLabel(row.get('name',''));item.setProperty('XCMate.SearchSecondary',secondary(row))
             else:
                 with self._search_profile.span('ROW_RENDER',rows=len(rows)):
                     self._fill(710,rows)

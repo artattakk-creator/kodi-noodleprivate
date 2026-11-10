@@ -73,7 +73,9 @@ class GroupRows:
             deadline=time.monotonic()+SLICE
             while pos<end:
                 group=self.draft.categories[kind][pos]
-                self._item_state(control.getListItem(pos),str(group['category_id']) in selected)
+                item86=__import__('gui_guard86').item(control,pos,self,100+KINDS.index(kind))
+                if item86 is None:break
+                self._item_state(item86,str(group['category_id']) in selected)
                 pos+=1
                 if time.monotonic()>=deadline:break
             if pos<(self._rendered[kind] or 0):self._bulk[kind]=pos

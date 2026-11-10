@@ -62,7 +62,12 @@ class Live86(Fixture,unittest.TestCase):
   with mock.patch('xbmc.getSkinDir',create=True,return_value='skin.titan.bingie.mod'),mock.patch('xbmcgui.getCurrentWindowId',return_value=10000):
    m.observe();self.assertEqual(w.getProperty('XCMate.Home86.State'),'READY_PARTIAL');self.assertTrue(w.getProperty('XCMate.Home86.Text'))
    w.setProperty('XCMate.Hero63.Active','A');w.setProperty('XCMate.Hero63.A.Title','Verified local EPG');w.setProperty('XCMate.Hero63.A.Kind86','hero_backdrop')
-   m.observe();self.assertEqual(w.getProperty('XCMate.Home86.State'),'READY');self.assertEqual(w.getProperty('XCMate.Home86.Text'),'')
+   # .87 requires the exact native directory generation, not count alone.
+   m.observe();self.assertEqual(w.getProperty('XCMate.Home86.State'),'READY_PARTIAL')
+   runtime=__import__('widget_runtime79');runtime._plans[('p','live')]=dict(ids=[2510],slot='fixture87.directory',scope=scope,at=time.monotonic())
+   w.setProperty('fixture87.directory',json.dumps(dict(tag='a'*64,count=88)))
+   with mock.patch('xbmc.getInfoLabel',side_effect=lambda label:'88' if label.endswith('.NumItems') else 'a'*64),mock.patch('xbmc.getCondVisibility',return_value=True):m.observe()
+   self.assertEqual(w.getProperty('XCMate.Home86.State'),'REFERENCE_READY');self.assertEqual(w.getProperty('XCMate.Home86.Text'),'')
  def test_missing_artwork_ends_in_static_diagnostic_not_endless_loading(self):
   m=__import__('home_status86');w=m.window();scope=__import__('epg_handoff63').profile_scope()
   w.setProperty('XCMate.Home86.Rail',json.dumps(dict(profile=scope,pid='p',total=88,local=0,first_at=time.monotonic()-61)))

@@ -275,7 +275,8 @@ class ArtworkPicker(xbmcgui.WindowXMLDialog):
             self.image,path=value
             if path:
                 self.getControl(300).setImage(path,useCache=False)
-                self.getControl(200).getListItem(pos).setArt({'thumb':path})
+                target86=__import__('gui_guard86').item(self.getControl(200),pos,self,200,expected=len(self.rows))
+                if target86 is not None:target86.setArt({'thumb':path})
             from picker_status44 import mark
             mark('PREVIEW_READY48',self._source44,'OK' if path else 'NO_RESULTS')
             self._status(tr(35926,self.role))

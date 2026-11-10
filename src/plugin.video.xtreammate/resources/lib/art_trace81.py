@@ -4,7 +4,8 @@ _local=threading.local();_seen={};_guard=threading.Lock();_inflight=set();_resul
 STAGES={'TOKEN_PRESENT','ENABLED','OPT_OUT','QUEUED','SKIPPED_REASON','HTTP_REQUEST_SENT','HTTP_STATUS','TITLE_NORMALIZED','MATCH_CONFIRMED','MATCH_REJECTED','IMAGE_BACKDROP_READY','IMAGE_POSTER_READY','SOURCE_COMMITTED','SOURCE_RETAINED','CACHE','TEXTURE_REQUESTED','TEXTURE_CACHED','NOT_VISIBLE','SOURCE_DECIDED','DECODED_LOCAL','RENDER_READY','BANK_SWITCHED'}
 def note(event,stage,code='OK',**facts):
  if stage not in STAGES:return
- tag=hashlib.sha256(json.dumps([event.get(k) for k in ('pid','sid','key','start','stop')],sort_keys=True).encode()).hexdigest()[:12]
+ __import__('hero_timing87').note(event,stage,code)
+ tag=__import__('hero_timing87').correlation(event)[:12]
  # Only fixed enums/numbers; exception messages, paths and account data excluded.
  fixed=code if isinstance(code,str) and 1<=len(code)<=40 and all(c in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789' for c in code) else 'UNCLASSIFIED'
  key=(tag,stage,fixed);now=time.monotonic()

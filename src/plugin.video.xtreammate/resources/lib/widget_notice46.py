@@ -1,7 +1,7 @@
 """RAM-only GUI notification bridge; all skin/profile/frame IO stays in worker."""
 import hashlib,json,threading,time
 _lock=threading.Lock();_pending={};_hooks={};_seen={};_focus=None;_next=0
-_art_counts84={};_art_seen84={};_manual_seen86={}
+_art_counts84={};_art_seen84={};_manual_seen86={};_identity87={}
 
 
 def prepare(portal,kind,signature,count,art_count84=None):
@@ -64,8 +64,16 @@ def poll():
             for pid,kind,token in manual86:_manual_seen86[(hook,pid,kind)]=token
             for _,kind,_,count in values:trace('UPDATED',kind,count)
             continue
-        if old and now-old[1]<60 and not newly_visible84 and not changed_manual86:continue
+        # The first nonempty identity rail is not an artwork refresh. It may
+        # replace an initial empty/loading directory immediately, exactly once
+        # per account/group context; later art-only refreshes remain coalesced.
+        try:rail87=json.loads(window.getProperty('XCMate.Home86.Rail') or '{}')
+        except ValueError:rail87={}
+        first_live87=[(hook,str(pid),rail87.get('context')) for pid,kind,_,count in values if kind=='live' and count>0 and rail87.get('pid')==str(pid) and rail87.get('context') and not _identity87.get((hook,str(pid),rail87.get('context')))]
+        if old and now-old[1]<60 and not newly_visible84 and not changed_manual86 and not first_live87:continue
         window.setProperty(hook,signature);_seen[hook]=(signature,now)
+        for key87 in first_live87:_identity87[key87]=True
+        while len(_identity87)>32:_identity87.pop(next(iter(_identity87)))
         for pid,kind,token in manual86:_manual_seen86[(hook,pid,kind)]=token
         while len(_manual_seen86)>128:_manual_seen86.pop(next(iter(_manual_seen86)))
         __import__('widget_patch85').sent(hook,values)

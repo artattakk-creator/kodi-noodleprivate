@@ -179,6 +179,7 @@ class Fixture:
         addon=types.ModuleType('xbmcaddon')
         addon.Addon=lambda *args:types.SimpleNamespace(getAddonInfo=lambda k: {'path':str(ADDON),'id':'plugin.video.xtreammate','version':'0.1.27'}.get(k,''),
             setSetting=lambda k,v:self.options.__setitem__(k,v),
+            getSetting=lambda k:str(self.options.get(k,'')).lower() if type(self.options.get(k)) is bool else str(self.options.get(k,'')),
             getLocalizedString=lambda ident:self.translations.get(self.ui_locale,{}).get(ident,''))
         gui=types.ModuleType('xbmcgui');gui.WindowXML=WindowXML;gui.WindowXMLDialog=WindowXMLDialog;gui.ListItem=ListItem
         def window(n):

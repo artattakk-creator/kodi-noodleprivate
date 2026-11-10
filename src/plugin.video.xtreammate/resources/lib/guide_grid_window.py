@@ -318,7 +318,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         if self._start_pending and groups:
             self.mode='grid';self._grid_visibility(True);self._initial_load();return
         index=self.getControl(200).getSelectedPosition()
-        selected=self.groups[index]['cid'] if self.groups and index<len(self.groups) else self.category
+        selected=self.groups[index]['cid'] if 0<=index<len(self.groups) else self.category
         self.groups=groups;self._fill_groups(selected)
 
     def _choose_group(self):

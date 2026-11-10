@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon id="plugin.video.xtreammate"
        name="XCMate"
-       version="0.1.29.86"
+       version="0.1.29.87"
        provider-name="GS Media">
 
   <requires>
@@ -38,7 +38,7 @@
     <forum>https://forum.kodi.tv</forum>
     <website>https://kodi.tv</website>
     <source>https://github.com/artattakk-creator/kodi-noodleprivate</source>
-    <news>0.1.29.86 Testversion: Senderleiste unabhängig von EPG/Bildsuche. Eigener dauerhafter Senderlogo-Nachweis mit unveränderter Speicherreserve. Hochwertige TMDB-Backdrops vor ausreichend großen Szenenbildern und offiziellen Postern. Vorhandenes Hero-Bild bis zur Kodi-Texturfreigabe erhalten. Erweiterte manuelle TV-/Filmsuche mit Freitext, Quellenwechsel und erneut geprüfter Zuordnung. Kompakter Ladestatus. Provider, Passwort, TMDB-Token, EPG, Favoriten und persönliche Widgets bleiben erhalten. Android-Abnahme noch offen.</news>
+    <news>0.1.29.87 Testversion: Senderlogos vor optionalem Archivschreiben freigeben, vorhandene Kodi-Texturen wiederverwenden. Interner Android-Speicher mit strikter 1-GiB-Reserve, bestätigter Schreibprobe und geprüfter Migration eigener Bilder. Manuelle TMDB-/TVMaze-Zuordnung priorisiert; Zeitüberschreitung, Abbruch und Speicherfehler getrennt. EPG nach Quellenprüfung erneut validieren, Zuordnung atomar speichern und nachlesen. Native Index-/Fokusguards und sieben verschiedene Navigationsicons. Hero 70/30 und sämtliche persönlichen Fremdwidgets schützen. Zugangsdaten, Passwort, TMDB-Token, EPG, Favoriten und Einstellungen bleiben erhalten. Android-Abnahme offen.</news>
     <assets>
       <icon>icon-81da1003a2753ec6.png</icon>
       <fanart>resources/media/lightweight_splash.jpg</fanart>

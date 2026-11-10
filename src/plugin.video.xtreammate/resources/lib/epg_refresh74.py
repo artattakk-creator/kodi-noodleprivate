@@ -4,14 +4,17 @@ Uses the one existing guide/mapping reader. No provider/HTTP/import/migration.
 A fresh metadata/configuration revision still invalidates mismatched snapshots.
 """
 import threading,time
-_lock=threading.Lock();_wanted={};_due={};_thread=None;_wake=threading.Event();_stop=threading.Event()
+_lock=threading.Lock();_wanted={};_due={};_failures86={};_thread=None;_wake=threading.Event();_stop=threading.Event()
 
 def request(pid,sid):
     global _thread
     if _stop.is_set():return
     from epg_handoff63 import profile_scope
     key=(profile_scope(),str(pid),str(sid));now=time.monotonic()
+    revision86=__import__('epg_status').revision(pid)
     with _lock:
+        previous86=_failures86.get(key)
+        if previous86 and previous86[0]!=revision86:_due.pop(key,None);_failures86.pop(key,None)
         if now<_due.get(key,0):return
         _due[key]=now+15;_wanted[key]=now
         while len(_wanted)>64:_wanted.pop(next(iter(_wanted)))
@@ -37,6 +40,8 @@ def _run():
             if scope==profile_scope():groups.setdefault(pid,[]).append(sid)
         for pid,sids in groups.items():
             if _stop.is_set() or monitor.abortRequested():return
+            reader=None;values86={}
+            revision86=__import__('epg_status').revision(pid)
             try:
                 from library_index import Reader
                 from epg_sources import configuration
@@ -48,11 +53,22 @@ def _run():
                 with session():
                     for offset in range(0,len(rows),16):
                         if _stop.is_set() or monitor.abortRequested():return
-                        now_next(pid,rows[offset:offset+16],mappings,display_only65=True)
+                        values86.update(now_next(pid,rows[offset:offset+16],mappings,display_only65=True) or {})
             except Exception:
                 # Existing reader emits bounded SQL error evidence. Do not
                 # publish an empty frame or log private exception text here.
                 pass
+            finally:
+                if reader is not None:reader.close()
+                if revision86==__import__('epg_status').revision(pid):
+                    with _lock:
+                        for sid86 in sids:
+                            key86=(profile_scope(),str(pid),str(sid86));info86=values86.get(str(sid86),{})
+                            if info86.get('now'):_failures86.pop(key86,None)
+                            else:
+                                old86=_failures86.get(key86);count86=min(4,(old86[1] if old86 and old86[0]==revision86 else 0)+1)
+                                _failures86[key86]=(revision86,count86);_due[key86]=time.monotonic()+(30,60,180,300)[count86-1]
+                        while len(_failures86)>256:_failures86.pop(next(iter(_failures86)))
         with _lock:
             if not _wanted:return
 

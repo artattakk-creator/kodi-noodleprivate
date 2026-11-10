@@ -8,6 +8,9 @@ from xcmate027_fixture import ROOT
 class Skin78(Fixture50,unittest.TestCase):
  def setUp(self):
   super().setUp();self.m=importlib.import_module('widget_skin78')
+  import xbmcvfs
+  translate78=xbmcvfs.translatePath
+  patch78=mock.patch('xbmcvfs.translatePath',side_effect=lambda path:str(self.profile) if path=='special://profile/' else translate78(path));patch78.start();self.addCleanup(patch78.stop)
   data=json.loads(lzma.decompress(base64.b64decode((ROOT/'tests/fixtures/bingie223_graph78.json.xz.b64').read_bytes())))
   for name,text in data.items():(self.skin/name).write_text(text)
   self.saved.append(['mainmenu','10000','widgetName.3','Neu im Kino']);self.saved.append(['mainmenu','10000','widgetPath.3','plugin://foreign.cinema/?list=now_playing'])

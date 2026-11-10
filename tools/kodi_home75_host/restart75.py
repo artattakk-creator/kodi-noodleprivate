@@ -1,5 +1,5 @@
 """Disposable native Kodi process restart; never connects to a user's device."""
-import hashlib,json,time,urllib.request
+import hashlib,json,os,time,urllib.request
 from pathlib import Path
 opener=urllib.request.build_opener(urllib.request.ProxyHandler({}))
 def rpc(method,params=None):
@@ -23,11 +23,19 @@ def kodi_pids():
         except OSError:continue
         if command==b'/usr/lib/x86_64-linux-gnu/kodi/kodi.bin':result.add(int(path.name))
     return result
+# The renderer report is written before runpy unwinds its native WindowXML
+# objects. Await the fixture's explicit return/GC receipt before Kodi Quit.
+receipt87=Path('/root/native-fixture-returned87')
+for _ in range(100):
+    if receipt87.exists():break
+    time.sleep(.05)
+else:raise RuntimeError('POST87_INITIAL_SCRIPT_NOT_RETURNED')
+receipt87.unlink()
 old_pids=kodi_pids()
 if not old_pids:raise RuntimeError('POST75_NO_INITIAL_KODI_PROCESS')
 # Only this synthetic test script changes; all add-on/profile/skin files remain.
 main=Path('/root/.kodi/addons/script.xcmate.guicontract59/main.py')
-main.write_text("import runpy,traceback\nfrom pathlib import Path\ntry:runpy.run_path('/root/post75.py')\nexcept Exception:\n Path('/root/post75-error.txt').write_text(traceback.format_exc())\n raise\n")
+main.write_text("import runpy,traceback,gc\nfrom pathlib import Path\ntry:\n runpy.run_path('/root/post75.py')\n gc.collect()\n Path('/root/native-fixture-returned87').write_text('RETURNED')\nexcept Exception:\n Path('/root/post75-error.txt').write_text(traceback.format_exc())\n raise\n")
 rpc('Application.Quit')
 for _ in range(600):
     if not kodi_pids().intersection(old_pids):break
@@ -41,7 +49,11 @@ for _ in range(150):
 else:raise RuntimeError('POST75_RESTART_NO_KODI')
 rpc('GUI.ActivateWindow',{'window':'home'});time.sleep(2)
 rpc('Addons.ExecuteAddon',{'addonid':'script.xcmate.guicontract59'})
-for _ in range(1200):
+# .87 replays three media/hero cases plus thirteen independent rows; the
+# legacy .79 cold probe covered two cached pictures only. This bounded test
+# harness budget never changes any packaged Save/Stop/UI production timeout.
+gui_budget87=max(120,min(240,int(os.environ.get('XCMATE_GUI_RESTART_TIMEOUT87','120'))))
+for _ in range(gui_budget87*10):
     if Path('/root/post75-error.txt').exists():raise RuntimeError(Path('/root/post75-error.txt').read_text())
     if Path('/root/post75.json').exists():break
     time.sleep(.1)
