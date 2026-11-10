@@ -6,7 +6,7 @@ source lines, portal identity or provider URL is ever logged.
 import time
 from contextlib import contextmanager
 
-PHASES = frozenset(('WIDGET_FAST','ARTWORK_PROFILE','HOME_PORTALS','HOME_FAST','HOME_SUBMITTED','APP_WORKER_STOPPED', 'APP_WORKER_STOP_PENDING', 'ENTRY', 'MAIN_IMPORT', 'ROUTER_INIT', 'DISPATCH',
+PHASES = frozenset(('WIDGET_FAST','ARTWORK_PROFILE','HOME_PORTALS','HOME_FAST','HOME_SUBMITTED','APP_WORKER_STOPPED', 'APP_WORKER_STOP_PENDING', 'ENTRY','ROUTE_CANCELLED', 'MAIN_IMPORT', 'ROUTER_INIT', 'DISPATCH',
     'PORTALS_IMPORT', 'PORTALS_LOAD', 'PORTALS_MIGRATION', 'ROOT_MENU',
     'HOME_MENU', 'ART_STATUS_COUNTS', 'ROUTE', 'DIRECTORY_DONE', 'START_FAILED'))
 ROUTES = frozenset(('home_start','play_start','play_start_direct','root', 'portal_home', 'xcmate_home', 'portal_manager',
@@ -15,7 +15,7 @@ ROUTES = frozenset(('home_start','play_start','play_start_direct','root', 'porta
 ROUTES=ROUTES|frozenset(('media_play','epg_sources','guide_backup44','movies_home','series_home','media_detail','media_favourites',
     'guide_browser','guide_grid','art_status','art_retry','art_db_health','recording_capabilities',
     'appearance_settings','global_search','settings_section','settings'))
-ERRORS = frozenset(('RuntimeError', 'OSError', 'PermissionError', 'ValueError',
+ERRORS = frozenset(('IndexError','KeyError','SystemExit','InterruptedError','RuntimeError', 'OSError', 'PermissionError', 'ValueError',
     'TypeError', 'ImportError', 'ModuleNotFoundError', 'TimeoutError',
     'MemoryError', 'IndexReadError', 'PortalReadError', 'ArtworkDBUnavailable',
     'OperationalError', 'DatabaseError', 'IntegrityError'))
@@ -46,6 +46,13 @@ def phase(name):
     try:
         yield
     except BaseException as exc:
+        if isinstance(exc,(InterruptedError,SystemExit)):
+            try:
+                import xbmc
+                if getattr(xbmc.Monitor(),'abortRequested',lambda:False)():
+                    mark('ROUTE_CANCELLED', (time.monotonic()-started)*1000,error=type(exc).__name__);raise
+            except ImportError:pass
+        __import__('gui_guard86').note('CALLBACK_FAILED',error=exc)
         mark(name + '_FAILED', (time.monotonic()-started)*1000,
              error=type(exc).__name__)
         raise

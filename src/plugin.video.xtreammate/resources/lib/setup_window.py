@@ -293,7 +293,8 @@ class SetupWindow(GroupRows,WorkWindow):
                         cid=str(self._entries[pos]['category_id']);selected=self.draft.selected[self.kind]
                         selected.remove(cid) if cid in selected else selected.add(cid)
                         self.draft.scanned=False
-                        self._item_state(self.getControl(self.list_id).getListItem(pos),cid in selected)
+                        item86=__import__('gui_guard86').item(self.getControl(self.list_id),pos,self,self.list_id)
+                        if item86 is not None:self._item_state(item86,cid in selected)
                         self._selection_status()
                         self._mark51('GROUP_TOGGLE',kind=self.kind,total=len(selected))
                 elif controlId in (13,14):

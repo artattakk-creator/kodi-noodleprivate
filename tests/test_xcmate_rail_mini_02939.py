@@ -15,8 +15,10 @@ class RailMini39(unittest.TestCase):
             o.handle_command('left');self.assertEqual(o.mode,'channels');pos=o._highlight['channels']
             o.handle_command('left');self.assertEqual(o.mode,'groups');self.assertTrue(o._nav_rail.active);self.assertFalse(o._nav_rail.expanded)
             self.assertIs(o.focus,o.control)
+            o.handle_command('left');self.assertEqual(o.mode,'nav_icons');self.assertFalse(o._nav_rail.expanded)
             o.handle_command('left');self.assertEqual(o.mode,'nav_expanded');self.assertTrue(o._nav_rail.expanded)
-            o.handle_command('back');self.assertEqual(o.mode,'groups')
+            o.handle_command('back');self.assertEqual(o.mode,'nav_icons')
+            o.handle_command('right');self.assertEqual(o.mode,'groups')
             o.handle_command('right');self.assertEqual(o.mode,'channels');self.assertEqual(o._highlight['channels'],pos)
             o.handle_command('back');self.assertEqual(o.mode,'hidden')
         self.assertEqual(o.sid,'1');self.m.player.stop.assert_not_called()
@@ -27,7 +29,9 @@ class RailMini39(unittest.TestCase):
             rail.show(True);self.assertTrue(any(c.label for c in rail.captions));self.assertTrue(all(not b.label for b in rail.buttons))
             rail.hide()
             self.assertTrue(all(not b.label and not b.visible and not b.enabled for b in rail.buttons))
-            self.assertTrue(all(not im.visible and not im.image for im in rail.icons));self.assertFalse(rail.panel.visible)
+            # .86 retains only packaged local textures while hidden; neither
+            # stale labels nor native focusability may remain visible.
+            self.assertTrue(all(not im.visible for im in rail.icons));self.assertTrue(all('/navigation/' in p for p in rail._icon_paths86));self.assertFalse(rail.panel.visible)
 
     def test_compact_group_rail_does_not_overlap_group_list(self):
         self.o._switch('groups');self.assertGreater(self.o.control.position[0],108)

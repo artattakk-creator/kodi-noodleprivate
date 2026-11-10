@@ -34,7 +34,14 @@ def run():
             router = Router(sys.argv)
         with phase('DISPATCH'):
             router.dispatch()
-    except Exception as exc:
+    except BaseException as exc:
+        import xbmc
+        if isinstance(exc,(InterruptedError,SystemExit)) and getattr(xbmc.Monitor(),'abortRequested',lambda:False)():
+            __import__('gui_guard86').note('ROUTE_CANCELLED',error=exc,route=getattr(router,'_params',{}).get('action',''))
+            if router is not None:finish_directory(router,succeeded=True,cacheToDisc=False)
+            return
+        if not isinstance(exc,Exception):raise
+        __import__('gui_guard86').note('CALLBACK_FAILED',error=exc,route=getattr(router,'_params',{}).get('action',''))
         # Kodi otherwise leaves an endless spinner on unhandled plugin errors.
         import xbmcgui
         mark('START_FAILED', error=type(exc).__name__)

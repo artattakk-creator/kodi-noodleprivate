@@ -42,7 +42,9 @@ def apply(pid,kind,signature):
    except (AttributeError,RuntimeError):continue
    count=xbmc.getInfoLabel('Container('+str(ident)+').NumItems')
    if str(count)!=str(len(values)):continue
-   items=[control.getListItem(i) for i in range(len(values))]
+   from gui_guard86 import item as guarded86
+   items=[guarded86(control,i,ident=ident,expected=len(values),route='widget_recent_vod' if kind=='vod' else 'widget_recent_series') for i in range(len(values))]
+   if any(item is None for item in items):continue
    for item,value in zip(items,values):
     props=value['props']
     if item.getProperty('XCMate.PortalId')!=str(pid) or item.getProperty('XCMate.WidgetKind41')!=kind or item.getProperty('XCMate.MediaId')!=props['XCMate.MediaId'] or item.getPath()!=value['url'] or item.getLabel()!=value['label'] or not props.get('XCMate.Source85'):return False

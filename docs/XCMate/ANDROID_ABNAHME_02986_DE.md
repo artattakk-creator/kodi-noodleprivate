@@ -32,4 +32,19 @@ Vorher Version, Startgruppe, Startsender, Anzahl 88, drei persönliche Widget-Re
 | REG86-02 | Filme/Serien, Staffel-Autoplay, Favoriten, Resume und bestehende Cover nach Neustart. | ANDROID_NOT_TESTED |
 | REG86-03 | Provider, Passwort, Token, EPG-Zuordnungen, Kodi-Datenbanken, SkinShortcuts, Space Blue und Installer unverändert. | ANDROID_NOT_TESTED |
 
+## Zusätzliche Pflichtgates P0-F und P0-G
+
+Der bereinigte Befund betrifft .85, nicht eine bereits geprüfte .86. Vorherige A–E-Host-/Linux-Nachweise sind kein PASS dieser neuen Hardwaregates.
+
+| ID | Handlung und tatsächlicher Nachweis | Status |
+|---|---|---|
+| F86-01 | 100 Zyklen Home → Live → EPG-Detail → Zurück → Filme/Serien → Detail → Zurück, auch direkte Widget-Details und gleichzeitige EPG-/Bildupdates. Kontrollierte Index-/Dispatch-/GetDirectory-/5-s-Invoker-Zähler jeweils 0; Gruppen-/Zeilenfokus erhalten. | ANDROID_NOT_TESTED |
+| F86-02 | Während Metadaten laden sofort Back, erneut öffnen, Kategorie ändern, Update abbrechen und Kodi regulär beenden. Keine verspäteten Fenster-/Routenaufrufe; GUI bedienbar. Feste Diagnosewerte samt tatsächlichem Projekt-Stack prüfen, ohne private Rohlogs zu veröffentlichen. | ANDROID_NOT_TESTED |
+| F86-03 | 88er-Rail muss unabhängig von langsamem Bildworker erscheinen. Kalt/Warm jeweils erste lokale Logos, Jetzt/Danach und tatsächliche Pixel messen; .85-Zeiten 463.372/147.811 ms sind nur historische Vergleichswerte. | ANDROID_NOT_TESTED |
+| F86-04 | Bekannte 14 fehlende EPG-Kanäle beobachten: keine ständig wiederholten identischen Lese-/Logjobs. Nach echter Quellen-/Revisionsänderung neue Daten ohne alten TTL-Block laden. Bestehendes gutes EPG erhalten. | ANDROID_NOT_TESTED |
+| F86-05 | 24 Film-/24 Serienitems wiederholt öffnen und neu starten: echte Veröffentlichungen von Logereignissen unterscheiden, vorhandene lokale Cover und Auswahl erhalten. | ANDROID_NOT_TESTED |
+| G86-01 | Laufender Stream, Links nacheinander Sender → Gruppen → fokussierte schmale Icon-Rail → Labels. Sieben Hauptpunkte mit verschiedenen sichtbaren lokalen Glyphen, Fokus jedes Symbols in Screenshot belegen. | ANDROID_NOT_TESTED |
+| G86-02 | 100-mal D-Pad/Back/Auf-/Einklappen, Fokus und laufender Stream bleiben erhalten. Keine Geistertexte/Indexfehler, keine schwarzen Icon-Zwischenzustände. „Verlassen“ beendet gezielt den eigenen Stream und führt zu XCMate-Home. | ANDROID_NOT_TESTED |
+| G86-03 | 720p/1080p, Kodi-Neustart, vorhandene persönliche BINGIE-Icons/Widgets und Space Blue vergleichen. Keine automatischen Änderungen an SkinShortcuts. Screenshots nur nach gesonderter Freigabe weitergeben. | ANDROID_NOT_TESTED |
+
 Pro Test: installierte Version, Gerät/Kodi-Version, UTC- oder lokale Zeitzone, Start-/Endzeit, tatsächliches Ergebnis PASS/FAIL/NOT_TESTED, Screenshot-Dateiname und anonymisierter Diagnosecode. Keine privaten Rohlogs öffentlich hochladen. Ein einziger P0-FAIL verhindert die Android-Abnahme. Merge und Veröffentlichung bleiben bis zur separaten Freigabe gesperrt.

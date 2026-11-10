@@ -55,7 +55,8 @@ def patch85_probe(pid85,kind85,signature85):
  for cid85 in plan85.get('ids',[])[:1]:
   facts85['count']=xbmc.getInfoLabel('Container('+str(cid85)+').NumItems')
   try:
-   item85=home.getControl(cid85).getListItem(0);facts85['native_item_id']=item85.getProperty('XCMate.MediaId');facts85['native_source85']=bool(item85.getProperty('XCMate.Source85'))
+   item85=__import__('gui_guard86').item(home.getControl(cid85),0,ident=cid85);facts85['python_list_exposed']=item85 is not None
+   if item85 is not None:facts85['native_item_id']=item85.getProperty('XCMate.MediaId');facts85['native_source85']=bool(item85.getProperty('XCMate.Source85'))
   except Exception as error85:facts85['native_item_error']=type(error85).__name__
  patch85_evidence.append(facts85)
  print('PATCH85_NATIVE '+json.dumps(facts85),flush=True)
@@ -168,6 +169,14 @@ if not cold:
  poster_case86=dict(status='PASS',actual_pixels=count86,screenshot=path86.name,source=home.getProperty('XCMate.Hero63.'+active86+'.ArtSource'),android='ANDROID_NOT_TESTED')
 report['version']='0.1.29.86';report['hero86']=hero_case86;report['poster86']=poster_case86
 report['series85']=dict(confirm_native='PASS',back_native='PASS',no_implicit_mapping_write='PASS')
-Path('/root/'+('post75.json' if cold else 'visible84.json')).write_text(json.dumps(report,indent=2))
+if cold:
+ target86=Path('/root/post75.json');temp86=target86.with_suffix('.tmp');temp86.write_text(json.dumps(report,indent=2));temp86.replace(target86)
 
 stop.set();hero_thread86.join(2);check(not hero_thread86.is_alive(),'HERO86_FIXTURE_LANE_NOT_STOPPED')
+if not cold:
+ import runpy
+ runpy.run_path('/icons86.py')['run'](capture)
+ runpy.run_path('/navigation86.py')['run']()
+
+if not cold:
+ target86=Path('/root/visible84.json');temp86=target86.with_suffix('.tmp');temp86.write_text(json.dumps(report,indent=2));temp86.replace(target86)

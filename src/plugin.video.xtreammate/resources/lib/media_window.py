@@ -387,6 +387,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
             if self._closed: return
             controls={110:self.rows} if self.mode=='landing' else {210:self.rows} if self.mode in ('grid','groups') else {}
             if self.mode=='landing': controls.update(self.rails)
+            generation86=self._generation;mode86=self.mode
             for cid,rows in controls.items():
                 from artwork_visible import retain_displayed
                 if not hasattr(self,'_shown_art'):self._shown_art={}
@@ -394,7 +395,9 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
                     key=(cid,pos);prior=self._shown_art.get(key,{})
                     art=self._display_art39(row)
                     if art!=prior:
-                        self.getControl(cid).getListItem(pos).setArt(art)
+                        item86=__import__('gui_guard86').item(self.getControl(cid),pos,self,cid,generation86,len(rows),mode86,'media_detail')
+                        if item86 is None:continue
+                        item86.setArt(art)
                         self._shown_art[key]=art
             if self.selected:
                 from artwork_visible import retain_displayed
@@ -1097,7 +1100,8 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
             from media_art import request
             request(rows,priority=0)
             return rows,total
-        self._append_future=self._pool.submit(load)
+        generation86=self._generation
+        self._append_future=self._pool.submit(lambda:__import__('ui_jobs86').run(self,generation86,load))
         self.getControl(102).setLabel(self._page_status+' · '+tr(33201))
 
     def _poll_append(self):
