@@ -140,3 +140,19 @@ class Transport88(Fixture,unittest.TestCase):
    receipt=json.loads(self.properties['XCMate.Home86.Rail']);self.assertEqual((receipt['local'],receipt['ram']),(0,1))
    bad=dict(item['props'],**{'XCMate.MediaId':'other'});self.assertEqual(__import__('station_logos88').reference(bad),'')
   finally:assets.shutdown()
+ def test_expiring_old_replacement_cannot_clear_the_current_receipt(self):
+  m=__import__('decoded_assets88');now=time.time()
+  try:
+   first=m.put('replace88',png((80,40)),now+2)
+   second=m.put('replace88',png((82,41)),now+600)
+   with mock.patch('time.time',return_value=now+3):
+    m.put('trigger88',png((84,42)),now+600)
+    self.assertEqual(m.read('replace88')['uri'],second['uri']);self.assertFalse(m.valid('replace88',first['uri']))
+  finally:m.shutdown()
+ def test_visible_first_five_precede_unseen_cursor_jobs(self):
+  m=__import__('station_logos88');rows=[dict(sid=str(i),name='Station',stream_icon='http://images.example.org/'+str(i)+'.png') for i in range(20)];m._due.clear();m._cursor[__import__('logo_manifest86').context(self.portal)]=15
+  fetched=[]
+  try:
+   with mock.patch.object(m,'fetch',side_effect=lambda portal,uri,cancel:(fetched.append(uri) or png())),mock.patch('art_storage.check',side_effect=OSError('reserve')):m.prepare(self.portal,rows)
+   self.assertEqual(fetched,[rows[0]['stream_icon'],rows[1]['stream_icon']])
+  finally:__import__('decoded_assets88').shutdown()

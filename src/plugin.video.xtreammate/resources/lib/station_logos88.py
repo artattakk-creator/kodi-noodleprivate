@@ -92,7 +92,7 @@ def prepare(portal,rows,cancel=lambda:False):
  existing=manifest_read(portal,rows);scope=context(portal);offset=_cursor.get(scope,0);attempts=0;changed=False
  try:backend,path=location();records=load(portal,all_records=True)
  except OSError:backend=None;records={}
- for row in rows[offset:]+rows[:offset]:
+ for row in rows[:5]+rows[max(5,offset):]+rows[5:max(5,offset)]:
   if cancel() or attempts>=2:break
   tag=key(portal,row);uri=source(row)
   _cursor[scope]=(rows.index(row)+1)%len(rows)

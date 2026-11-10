@@ -29,21 +29,21 @@ class Handler(BaseHTTPRequestHandler):
   except (OSError,TimeoutError):pass
  def setup(self):
   super().setup();self.connection.settimeout(3)
-def _serve(server):
+def _serve(server,stop):
  import xbmc
  aborted=getattr(xbmc.Monitor(),'abortRequested',lambda:False)
  try:
-  while not _stop.is_set() and not aborted():
+  while not stop.is_set() and not aborted():
    try:server.handle_request()
    except (OSError,ValueError):
-    if not _stop.is_set() and not aborted():raise
+    if not stop.is_set() and not aborted():raise
  finally:server.server_close()
 def put(key,body,until,kind='event'):
  from media_sources43 import validate_image
  width,height=validate_image(body)
  if not 0<len(body)<=3*1024*1024 or until<=time.time():raise ValueError('DECODED_LIMIT')
  if kind=='logo' and (width>2048 or height>2048):raise ValueError('LOGO_DIMENSION_LIMIT')
- global _server,_thread
+ global _server,_thread,_stop
  digest=hashlib.sha256(body).hexdigest();now=time.monotonic()
  with _lock:
   old=read(key)
@@ -57,8 +57,8 @@ def put(key,body,until,kind='event'):
   if _server is None:
    _server=HTTPServer(('127.0.0.1',0),Handler)
    window().setProperty(PREFIX+'Instance',INSTANCE)
-   _server.timeout=.2;_stop.clear()
-   _thread=threading.Thread(target=_serve,args=(_server,),name='XCMate-decoded88',daemon=True);_thread.start()
+   _server.timeout=.2;_stop=threading.Event()
+   _thread=threading.Thread(target=_serve,args=(_server,_stop),name='XCMate-decoded88',daemon=True);_thread.start()
   path='/'+secrets.token_hex(32)+'.'+('png' if body.startswith(b'\x89PNG') else 'jpg')
   uri='http://127.0.0.1:'+str(_server.server_port)+path
   record=dict(instance88=INSTANCE,uri=uri,key=key,sha256=digest,width=width,height=height,until=min(until,time.time()+86400),storage='RAM_ONLY')
@@ -66,7 +66,11 @@ def put(key,body,until,kind='event'):
   window().setProperty(slot(key),json.dumps(record,separators=(',',':')))
   return record
 def _remove(path,item):
- _items.pop(path,None);window().clearProperty(slot(item['key']));window().clearProperty(slot(item['key'])+'.active')
+ _items.pop(path,None)
+ try:current=json.loads(window().getProperty(slot(item['key'])) or '{}')
+ except (ValueError,TypeError):current={}
+ if current.get('uri','').endswith(path):
+  window().clearProperty(slot(item['key']));window().clearProperty(slot(item['key'])+'.active')
 def read(key):
  try:
   raw=window().getProperty(slot(key));value=json.loads(raw) if raw and len(raw)<2048 else {}
@@ -85,9 +89,8 @@ def valid(key,uri,digest=None):
 def shutdown():
  global _server,_thread
  with _lock:
-  server=_server;_server=None
+  server,thread,stop=_server,_thread,_stop;_server=None;_thread=None
   for path,item in list(_items.items()):_remove(path,item)
- _stop.set()
+ stop.set()
  if server:server.server_close()
- if _thread and _thread is not threading.current_thread():_thread.join(timeout=.5)
- _thread=None
+ if thread and thread is not threading.current_thread():thread.join(timeout=.5)
