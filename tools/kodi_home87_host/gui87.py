@@ -74,10 +74,23 @@ for menu87,indices87 in ((0,range(5)),(1,range(8))):
 compare(profile87,inventory87)
 # Ten complete transitions among distinct external sources keep their rows,
 # definitions and focus. No foreign consumer is routed through XCMate.
+# Native audio return opens BINGIE's independent sideblade. Close that
+# actual level with Back before testing row-to-row focus; setFocus alone
+# cannot clear ShowViewSubMenu and the skin's onback animation.
+for settle87 in range(160):
+ menu_open87=home.getProperty('ShowViewSubMenu')=='show' or home.getFocusId()==900
+ if menu_open87:
+  home.setFocusId(900);xbmc.executebuiltin('Action(Back)',wait=False);xbmc.sleep(100);continue
+ if xbmcgui.getCurrentWindowId()==10000 and xbmcgui.getCurrentWindowDialogId() in (0,-1,9999):break
+ xbmc.sleep(50)
+else:raise RuntimeError('FOREIGN87_MENU_RETURN_NOT_READY')
 for cycle87 in range(10):
  for cid87 in (3510,3530,3540,3550,3560,3580):
-  home.setFocusId(cid87);xbmc.sleep(40)
-  check(home.getFocusId()==cid87,('FOREIGN87_CYCLE_FOCUS_LOST',cycle87,cid87))
+  home.setFocusId(cid87)
+  for settle87 in range(80):
+   if home.getFocusId()==cid87:break
+   xbmc.sleep(25)
+  check(home.getFocusId()==cid87,('FOREIGN87_CYCLE_FOCUS_LOST',cycle87,cid87,home.getFocusId(),home.getProperty('ShowViewSubMenu')))
   check(xbmc.getInfoLabel('Container('+str(cid87)+').NumItems')=='8','FOREIGN87_CYCLE_EMPTY')
 compare(profile87,inventory87)
 from hero_timing87 import summary

@@ -92,6 +92,8 @@ def main():
             (report/'container82.json').write_text(json.dumps({k:observed82.get(k) for k in ('Status','OOMKilled','ExitCode','StartedAt','FinishedAt')},indent=2))
         except (subprocess.CalledProcessError,ValueError):pass
         subprocess.run(docker+['cp',name+':/root/.kodi/temp/kodi.log',str(report/'synthetic-kodi.log')],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+        debug87=report/'synthetic-kodi.log'
+        if debug87.is_file():print('SYNTHETIC87_KODI_TAIL\n'+'\n'.join(debug87.read_text(errors='replace').splitlines()[-100:]),flush=True)
         state87=report/'container82.json'
         if state87.is_file():print('CONTAINER87 '+state87.read_text(),flush=True)
         run('cp',name+':/root/gui66-error.txt',str(report/'gui-error.txt'),stderr=subprocess.DEVNULL) if subprocess.run(docker+['exec',name,'test','-f','/root/gui66-error.txt'],env=env).returncode==0 else None

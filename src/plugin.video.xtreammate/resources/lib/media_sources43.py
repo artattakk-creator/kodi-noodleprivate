@@ -17,6 +17,10 @@ class SourceError(Exception):
 
 
 def get(url,*,api=False,token='',cancel=lambda:False,transport=None,json_list67=False):
+    if api and token=='XCMATE_PRIVATE_GATEWAY87':
+        from tmdb_gateway_client87 import query,GatewayError
+        try:return query(url,cancel)
+        except GatewayError as error:raise SourceError(error.code) from None
     from artwork_visible import syntactic
     from download_redirect import addresses,_connect
     if not syntactic(url):raise SourceError('UNSAFE_SOURCE')
@@ -128,7 +132,10 @@ def tmdb_token():
     from tmdb_token61 import effective_tmdb_read_token,TokenError
     try:token=effective_tmdb_read_token()
     except TokenError:raise SourceError('TMDB_TOKEN_FILE_INVALID') from None
-    if not token:raise SourceError('TMDB_TOKEN_MISSING')
+    if not token:
+        from tmdb_gateway_client87 import status,MARKER
+        if status()=='GATEWAY_PAIRED':return MARKER
+        raise SourceError('TMDB_TOKEN_MISSING')
     return token
 
 

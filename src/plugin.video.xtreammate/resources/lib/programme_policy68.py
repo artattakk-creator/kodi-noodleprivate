@@ -9,6 +9,9 @@ def negative_scope(event):
  from programme_urls55 import hosts
  from utils import setting_int
  value=[profile_scope(),[event.get(k) for k in keys],flags,token_fingerprint(),sorted(hosts()),setting_int('programme_art_budget46',1),setting_int('media_art_reserve_mb',1024),setting_int('media_art_budget_mb',0)]
+ from utils import setting
+ gateway87=setting('tmdb_gateway_revision87','')
+ if gateway87:value.append(['gateway87',gateway87])
  epoch85=__import__('programme_mapping85').epoch(event) if event.get('pid') else 0
  if epoch85:value.append(['manual85',epoch85])
  return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(',',':')).encode()).hexdigest()

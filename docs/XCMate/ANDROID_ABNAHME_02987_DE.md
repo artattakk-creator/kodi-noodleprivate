@@ -28,3 +28,14 @@ Vorher privat Version/Profil, Startgruppe/Startsender, TMDB-Zugang, Favoriten, R
 Private ursprüngliche Layout-Screenshotdatei aktuell **REFERENZBILD_NICHT_VERFÜGBAR**. Kein pixelgenauer Vorher/Nachher-Vergleich behauptet. Neue echte Geräte-Screenshots und redigierte Stufencodes pro Gate ergänzen. Ein fehlender separater Speicherpool ist ein reales Hardware-/Rechte-Gate, keine Einladung zum Reserveabschalten.
 
 **Freigabe:** Noch kein Merge und kein Release. Erst tatsächliche Box-B-Abnahme sowie erneute ausdrückliche Nutzerfreigabe.
+
+## Nachträge P0-J/K
+
+| Gate | Ausführung | Status |
+|---|---|---|
+| J1 | Vor/nach .86→.87, Kodi-Neustart und später ausdrücklich freigegebenem Repoupdate: private Token-Datei byteidentisch und Zugriffsrechte erhalten; lokal vergleichen, keine Token-/Hashwerte veröffentlichen. Echte autorisierte TMDB-Abfrage prüfen. | ANDROID_NOT_TESTED |
+| J2 | Ungültige/gesperrte vorhandene Datei, Legacy-Fallback nur bei fehlender Datei, Opt-out und alter Installer: keine stillen Überschreibungen oder Neuimporte. Bewusst gelöschte Kodi-Daten können keinen Bestand erhalten. | ANDROID_NOT_TESTED |
+| K1 | Optionaler Gateway bleibt ohne reale Konfiguration aus. Altbox mit Token bleibt lokal. Neue Box erst nach authentifizierter Adminfreigabe; lokale Gerätezulassung über Update/Neustart erhalten. | ANDROID_NOT_TESTED / Server BLOCKED |
+| K2 | Gerätewiderruf, Replay, falsches Zertifikat, Ausfall, Ablauf, Abbruch und fehlende Rechte: ehrlicher Status, keine offene TMDB-Anfrage und keine geheimen Werte im Installerjournal. | ANDROID_NOT_TESTED / Server BLOCKED |
+
+Gateway-Client ist ein Entwicklungsprototyp. Infrastruktur, produktive Serverimplementierung und Sicherheits-/Nutzungsbedingungenprüfung fehlen; siehe `GATEWAY_02987_ENTWURF_DE.md`. Installer .5.27 wird eigenständig geprüft und nicht mit .5.26 verwechselt.

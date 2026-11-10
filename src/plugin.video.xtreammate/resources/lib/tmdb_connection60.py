@@ -44,7 +44,9 @@ def test_connection(cancel=lambda: False):
     try:token = effective_tmdb_read_token(force=True)
     except TokenError:return 'TOKEN_FILE_INVALID'
     if not token:
-        return 'TOKEN_MISSING'
+        from tmdb_gateway_client87 import status,MARKER
+        if status()!='GATEWAY_PAIRED':return 'TOKEN_MISSING'
+        token=MARKER
     try:
         data = request(TMDB + '/configuration', token=token, cancel=cancel)
         images = data.get('images', {})

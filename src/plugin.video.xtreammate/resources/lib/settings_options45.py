@@ -11,10 +11,13 @@ def definitions(group):
  target=dict((key,str(ident)) for ident,key in SECTIONS).get(group)
  root=ET.parse(os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources/settings.xml')).getroot()
  cat=next((c for c in root if c.get('label')==target),None)
- hidden={'tmdb_token_revision61','experimental_open45','active_portal_id','xcmate_ui_language','autoplay_diagnostics_safe','downloads_folder_enabled','programme_tmdb46','tmdb_research43','programme_art_budget46','programme_helper57','programme_catalog57','programme_tvmaze67','programme_image_hosts55','programme_settings68','programme_art_local69'}
+ hidden={'tmdb_gateway_revision87','tmdb_token_revision61','experimental_open45','active_portal_id','xcmate_ui_language','autoplay_diagnostics_safe','downloads_folder_enabled','programme_tmdb46','tmdb_research43','programme_art_budget46','programme_helper57','programme_catalog57','programme_tvmaze67','programme_image_hosts55','programme_settings68','programme_art_local69'}
  return [dict(n.attrib) for n in cat if n.get('id') and n.get('type')!='lsep' and n.get('id') not in hidden] if cat is not None else []
 
 def show(router,group):
+ if group=='tmdb_gateway87':
+  from tmdb_gateway_ui87 import show as gateway
+  gateway();return
  if group=='live_probe67':
   from live_probe67 import launch
   launch(router);return

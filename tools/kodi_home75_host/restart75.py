@@ -23,11 +23,19 @@ def kodi_pids():
         except OSError:continue
         if command==b'/usr/lib/x86_64-linux-gnu/kodi/kodi.bin':result.add(int(path.name))
     return result
+# The renderer report is written before runpy unwinds its native WindowXML
+# objects. Await the fixture's explicit return/GC receipt before Kodi Quit.
+receipt87=Path('/root/native-fixture-returned87')
+for _ in range(100):
+    if receipt87.exists():break
+    time.sleep(.05)
+else:raise RuntimeError('POST87_INITIAL_SCRIPT_NOT_RETURNED')
+receipt87.unlink()
 old_pids=kodi_pids()
 if not old_pids:raise RuntimeError('POST75_NO_INITIAL_KODI_PROCESS')
 # Only this synthetic test script changes; all add-on/profile/skin files remain.
 main=Path('/root/.kodi/addons/script.xcmate.guicontract59/main.py')
-main.write_text("import runpy,traceback\nfrom pathlib import Path\ntry:runpy.run_path('/root/post75.py')\nexcept Exception:\n Path('/root/post75-error.txt').write_text(traceback.format_exc())\n raise\n")
+main.write_text("import runpy,traceback,gc\nfrom pathlib import Path\ntry:\n runpy.run_path('/root/post75.py')\n gc.collect()\n Path('/root/native-fixture-returned87').write_text('RETURNED')\nexcept Exception:\n Path('/root/post75-error.txt').write_text(traceback.format_exc())\n raise\n")
 rpc('Application.Quit')
 for _ in range(600):
     if not kodi_pids().intersection(old_pids):break
