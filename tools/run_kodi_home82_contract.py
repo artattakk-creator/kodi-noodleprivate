@@ -10,7 +10,7 @@ def main():
     parser.add_argument('--skin-archive',type=Path);parser.add_argument('--idle-seconds',type=int,default=180)
     parser.add_argument('--resolution',default='1920x1080',choices=('1920x1080','1280x720'))
     parser.add_argument('--fault-idle-seconds',type=int,default=0);parser.add_argument('--keep-container',action='store_true');args=parser.parse_args()
-    root=Path(__file__).resolve().parents[1];version79=__import__('xml.etree.ElementTree',fromlist=['parse']).parse(root/'src/plugin.video.xtreammate/addon.xml').getroot().get('version') in ('0.1.29.82','0.1.29.83','0.1.29.84','0.1.29.85');report=args.report_dir.resolve();report.mkdir(parents=True,exist_ok=True)
+    root=Path(__file__).resolve().parents[1];version79=__import__('xml.etree.ElementTree',fromlist=['parse']).parse(root/'src/plugin.video.xtreammate/addon.xml').getroot().get('version') in ('0.1.29.82','0.1.29.83','0.1.29.84','0.1.29.85','0.1.29.86');report=args.report_dir.resolve();report.mkdir(parents=True,exist_ok=True)
     archive=args.skin_archive or report/'skin.zip'
     if not archive.exists():
         import urllib.request

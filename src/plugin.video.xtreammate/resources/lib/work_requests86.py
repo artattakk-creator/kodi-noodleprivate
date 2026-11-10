@@ -53,7 +53,6 @@ def save(event,options,expected,cancel=lambda:False):
  if cancel():raise SourceError('CANCELLED')
  if action in ('automatic','hide'):
   if kind!='live':
-   if action=='hide':raise SourceError('CANDIDATES_REJECTED')
    return __import__('media_overrides43').reset(event['pid'],kind,str(event['sid']))
   return __import__('programme_mapping85').set_mapping(current,automatic=action=='automatic',hidden=action=='hide')
  selected=options.get('candidate') or {}
@@ -95,11 +94,26 @@ def local_save(event,path,expected,cancel=lambda:False):
  from art_storage import check
  from programme_art46 import root,atomic
  current=authoritative(event,expected)
- # Only a file explicitly selected by the user is read. No URI rewrites/SAF bypass.
- file=Path(path)
- if not file.is_absolute() or file.is_symlink() or not file.is_file() or not 0<file.stat().st_size<=MAX_IMAGE:raise SourceError('UNSAFE_SOURCE')
- before=file.stat();body=file.read_bytes();width,height=validate_image(body);after=file.stat()
- if (before.st_ino,before.st_mtime_ns,before.st_size)!=(after.st_ino,after.st_mtime_ns,after.st_size):raise SourceError('CANDIDATES_REJECTED')
+ # Read exactly the explicitly selected image, never enumerate a share.
+ if path.startswith('smb://'):
+  import xbmcvfs
+  before=xbmcvfs.Stat(path);size=before.st_size()
+  if not 0<size<=MAX_IMAGE:raise SourceError('IMAGE_LIMIT')
+  handle=xbmcvfs.File(path,'rb')
+  try:body=bytes(handle.readBytes(MAX_IMAGE+1))
+  finally:handle.close()
+  after=xbmcvfs.Stat(path)
+  if len(body)!=size or size!=after.st_size() or before.st_mtime()!=after.st_mtime():raise SourceError('CANDIDATES_REJECTED')
+ elif path.startswith('https://'):
+  from programme_urls55 import safe,probe
+  if not safe(path):raise SourceError('UNSAFE_SOURCE')
+  body=probe(path,cancel=cancel)['_body81']
+ else:
+  file=Path(path)
+  if not file.is_absolute() or file.is_symlink() or not file.is_file() or not 0<file.stat().st_size<=MAX_IMAGE:raise SourceError('UNSAFE_SOURCE')
+  before=file.stat();body=file.read_bytes();after=file.stat()
+  if (before.st_ino,before.st_mtime_ns,before.st_size)!=(after.st_ino,after.st_mtime_ns,after.st_size):raise SourceError('CANDIDATES_REJECTED')
+ width,height=validate_image(body)
  if cancel():raise SourceError('CANCELLED')
  kind=event.get('media_kind86','live')
  if kind!='live':return __import__('media_overrides43').save(event['pid'],kind,str(event['sid']),image=body,source='user_local')
