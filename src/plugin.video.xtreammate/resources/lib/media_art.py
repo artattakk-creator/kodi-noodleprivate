@@ -153,6 +153,7 @@ def sources(item):
 
 
 def local_art(item,theme=None):
+    if item.get('_no_art86'):return {k:'' for k in ('poster','thumb','icon','fanart','landscape')}
     import xbmcaddon
     placeholder=os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media','tv.png' if item.get('kind')=='live' else 'series.png' if item.get('kind')=='series' else 'vod.png')
     if theme:
@@ -193,6 +194,7 @@ def request(items,priority=0):
     if __import__('artwork_display84').enabled():return
     with _queue_lock:
         for item in items[:48]:
+            if item.get('_no_art86'):continue
             rank=-10 if item.get('kind')=='live' and priority<=0 else priority
             for url in dict.fromkeys(sources(item)):
                 if not url or cached(url):continue

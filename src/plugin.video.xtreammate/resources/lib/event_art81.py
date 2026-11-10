@@ -11,6 +11,9 @@ def key(event):
  return hashlib.sha256(json.dumps(values,sort_keys=True).encode()).hexdigest()
 
 def rank(value):
+ if __import__('home_schedule75').applicable():
+  kind86=__import__('hero_art86').classify(value)
+  if kind86:return kind86[1]
  source=value.get('source','')
  if source.startswith('tmdb_'):return 0 if value.get('role81')!='poster' else 3
  return {'xmltv_event':1,'provider_event':2,'tvmaze_episode':2,'tvmaze_series':3}.get(source,4)
@@ -21,7 +24,7 @@ def allowed(value):
  if source.startswith('tmdb_'):return setting_bool('programme_tmdb46',False) and setting_bool('tmdb_research43',False) and not setting_bool('programme_tmdb_optout77',False)
  if source.startswith('tvmaze'):return setting_bool('programme_tvmaze67',False) and not setting_bool('programme_tvmaze_optout77',False)
  if source in ('xcmate_catalog','kodi_library'):return setting_bool('programme_catalog57',True)
- return source in ('xmltv_event','provider_event')
+ return source in ('xmltv_event','provider_event','user_local86')
 
 def prior(event):
  from render_cache81 import read

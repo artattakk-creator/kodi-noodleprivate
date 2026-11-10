@@ -26,6 +26,7 @@ def cancel(nonce):
 _seen=''
 def drain(cancelled_service=lambda:False):
  global _seen
+ __import__('work_requests86').drain(cancelled_service)
  import xbmcgui
  from programme_requests68 import scope
  from programme_mapping85 import reload,refresh_sources,namespace

@@ -128,8 +128,8 @@ def candidate(event,cancel=lambda:False):
  if mapping and mapping.get('id') and not enabled(mapping.get('source')):return None
  if mapping and mapping.get('hidden'):return None
  if mapping and mapping.get('source') in ('tmdb','tvmaze') and enabled(mapping['source']):
-  fetch85=details if mapping['source']=='tmdb' else __import__('programme_tvmaze85').details
-  chosen=next((r for r in read(event).get('rows',[])+read(dict(event,_manager85=True)).get('rows',[]) if r.get('source')==mapping['source'] and r.get('id')==mapping['id'] and r.get('verified85')),None)
+  fetch85=(lambda e,i,cancel,manual=True:__import__('work_search86').details(i,'movie',mapping['source'],cancel)) if mapping.get('media_type86')=='movie' else details if mapping['source']=='tmdb' else __import__('programme_tvmaze85').details
+  chosen=next((r for r in read(event).get('rows',[])+read(dict(event,_manager85=True)).get('rows',[]) if r.get('source')==mapping['source'] and r.get('id')==mapping['id'] and r.get('media_type86','tv')==mapping.get('media_type86','tv') and r.get('verified85')),None)
   if chosen is None:chosen=fetch85(event,mapping['id'],cancel,manual=True)
   if chosen and (mapping.get('year') is None or mapping['year']==chosen['year']):return artifact(chosen,'MANUAL_CONFIRMED')
   note(event,'EXTERNAL_ID_CONFLICT');return None
@@ -158,7 +158,7 @@ def candidate(event,cancel=lambda:False):
 
 def artifact(row,match):
  from tmdb_connection60 import ATTRIBUTION
- return dict(url=row['url'],source='tmdb_series' if row['source']=='tmdb' else 'tvmaze_series',role81=row['role'],match=match,remote_id=row['id'],matched_year56=row['year'],image_scope57='series_fallback',attribution=('TMDB · https://www.themoviedb.org/tv/'+str(row['id'])+' · '+ATTRIBUTION if row['source']=='tmdb' else 'TVmaze · https://www.tvmaze.com/shows/'+str(row['id'])+' · Daten CC BY-SA, Bildrechte beim Rechteinhaber')+' · Serienbild (kein Episodenbild)',manual85=match=='MANUAL_CONFIRMED')
+ return dict(url=row['url'],source=('tmdb_movie' if row.get('media_type86')=='movie' else 'tmdb_series') if row['source']=='tmdb' else 'tvmaze_series',role81=row['role'],match=match,remote_id=row['id'],matched_year56=row['year'],image_scope57='series_fallback',attribution=('TMDB · https://www.themoviedb.org/'+('movie' if row.get('media_type86')=='movie' else 'tv')+'/'+str(row['id'])+' · '+ATTRIBUTION if row['source']=='tmdb' else 'TVmaze · https://www.tvmaze.com/shows/'+str(row['id'])+' · Daten CC BY-SA, Bildrechte beim Rechteinhaber')+' · Serienbild (kein Episodenbild)',manual85=match=='MANUAL_CONFIRMED',official_poster86=row.get('poster',''))
 
 def suggestion(event):
  from utils import setting_bool

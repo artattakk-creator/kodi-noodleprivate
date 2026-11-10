@@ -54,6 +54,7 @@ def read(portal,kind,rows):
  return result
 def prepare(portal,kind,rows,cancel=lambda:False):
  global _thread
+ if kind in ('vod','series'):rows=[row for row in rows if not row.get('_no_art86')]
  if not rows:return False
  from home_schedule75 import allowed,focused_rows
  if not allowed(kind,portal):rows=focused_rows(portal,kind,rows)
@@ -142,6 +143,8 @@ def _run():
    except queue.Empty:continue
   key,portal,kind,rows=job;deferred=local_only
   try:
+   # Independent logo manifest remains useful in Dynamic mode and DB pauses.
+   if kind=='live':__import__('logo_manifest86').prepare(portal,rows,cancelled)
    # Recover already decoded Kodi files before any optional image write.
    __import__('artwork_display84').observe()
    __import__('widget_cache82').prepare(portal,kind,rows)

@@ -4,6 +4,8 @@ def values(portal,kind,rows,approved):
     from programme_read47 import session
     from programme_assets47 import read_many
     from widget_items45 import describe
+    if kind in ('vod','series'):
+        rows=__import__('media_overrides43').widget_rows86(portal['id'],kind,rows)
     with session():
         if kind=='live':
             from widget_group46 import infos

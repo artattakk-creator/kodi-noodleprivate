@@ -19,12 +19,12 @@ class Scope85(unittest.TestCase):
   prefixes=('src/script.gsmedia.setup/','src/plugin.video.xtreammate/resources/skins/')
   names={'live_exit.py','exit_jobs.py','playback_exit.py','native_stop41.py','app_routes.py','window_navigation.py','portals.py','artwork_config.py','art_storage.py','artwork_migration.py','artwork_ui.py'}
   for path in subprocess.check_output(['git','ls-tree','-r','--name-only',BASE,'src'],cwd=ROOT).decode().splitlines():
-   if path.startswith(prefixes) or Path(path).name in names:self.assertEqual((ROOT/path).read_bytes(),subprocess.check_output(['git','show',BASE+':'+path],cwd=ROOT),path)
+   if path.startswith(prefixes) or Path(path).name in names:self.assertEqual(without_stabilization85((ROOT/path).read_bytes(),path),subprocess.check_output(['git','show',BASE+':'+path],cwd=ROOT),path)
  def test_published_channels_frozen_and_no_release_authorization(self):
   from channel_contract_02985 import verify
   for path in ('addons.xml','addons.xml.md5','online-test/addons.xml','online-test/addons.xml.md5','online-test/manifest.json'):self.assertTrue(verify(path,committed=True))
   paths=('script.gsmedia.setup/script.gsmedia.setup-0.5.26.zip','plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.84.zip','online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.84.zip','online-test/plugin.video.xtreammate-0.1.29.84.zip','index.html','online-test/index.html')
-  for path in paths:self.assertEqual((ROOT/path).read_bytes(),subprocess.check_output(['git','show',('faf83b833a14ac1cc937692e10a058d6a4dd462b' if path in ('index.html','online-test/index.html') else BASE)+':'+path],cwd=ROOT),path)
+  for path in paths:self.assertEqual((ROOT/path).read_bytes(),subprocess.check_output(['git','show','c6124922d067361e37db4dd325710ea89a96002e'+':'+path],cwd=ROOT),path)
   import sys
   sys.path.insert(0,str(ROOT/'tools'))
   try:

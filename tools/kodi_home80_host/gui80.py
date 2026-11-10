@@ -14,7 +14,7 @@ needle80="select(2510,0,'live')\ncheck(json.loads(home.getProperty(schedule.KEY)
 if needle80 not in source80:raise RuntimeError('NATIVE80_INITIAL_ANCHOR_CHANGED')
 source80=source80.replace(needle80,"select(2510,0,'live')\ninitial80_path,initial80_rgb=capture('home80-initial')\nPath('/root/debug80.json').write_text(json.dumps(dict(pixel=initial80_rgb.getpixel((350,800)),quoted=xbmc.getCondVisibility('String.StartsWith(\"plugin://plugin.video.xtreammate/?action=widget_recent_vod&pid=fixture59\",plugin://plugin.video.xtreammate/)'),plain=xbmc.getCondVisibility('String.StartsWith(plugin://plugin.video.xtreammate/?action=widget_recent_vod&pid=fixture59,plugin://plugin.video.xtreammate/)'))))\ncheck(max(abs(a-b) for a,b in zip(initial80_rgb.getpixel((350,800)),(40,70,120)))<=8,'MOVIE80_NOT_VISIBLE_BEFORE_FOCUS')\ncheck(max(abs(a-b) for a,b in zip(initial80_rgb.getpixel((300,150)),(20,80,130)))<=8,'HERO80_NOT_FULL_BLEED')\ncheck(json.loads(home.getProperty(schedule.KEY))['phase']==1")
 # Retain all idle/count checks and strengthen the interval/actual image check.
-source80=source80.replace("duration=int(os.environ.get('XCMATE_IDLE74','0'))", "home.setFocusId(2510);home.getControl(2510).selectItem(0);pump();xbmc.sleep(300)\nduration=int(os.environ.get('XCMATE_IDLE74','0'))")
+source80=source80.replace("duration=int(os.environ.get('XCMATE_IDLE74','0'))", "home.setFocusId(2510);home.getControl(2510).selectItem(0);pump();xbmc.sleep(300)\nsettle_idle86()\nduration=int(os.environ.get('XCMATE_IDLE74','0'))")
 source80=source80.replace("elapsed-checkpoints[-1]['elapsed']>=900", "elapsed-checkpoints[-1]['elapsed']>=30")
 source80=source80.replace("check(counts==[88,24,24],counts)", "check(counts==[88,24,24],counts)\n        check(max(abs(a-b) for a,b in zip(rgb.getpixel((500,300)),(20,80,130)))<=8,'IDLE80_HERO_LOST')\n        check(max(abs(a-b) for a,b in zip(rgb.getpixel((330,525)),(20,90,150)))<=8,'IDLE80_LOGO_LOST')")
 # Focus changes schedule Kodi textures asynchronously. Keep exact pixel
@@ -32,6 +32,18 @@ def capture_selected80(kind,index):
    Path('/root/render80-error.json').write_text(json.dumps(dict(kind=kind,index=index,actual=actual80,expected=expected80,attempts=attempt80)))
    return path80,rgb80 # The original strict pixel assertion reports failure.
   pump();xbmc.sleep(100)
+def settle_idle86():
+ if xbmcaddon.Addon().getAddonInfo('version')!='0.1.29.86':return
+ # .86 correctly shows a station logo until the selected event's renderer
+ # receipt exists. Start the unchanged soak only on its actual settled pixels.
+ deadline=time.monotonic()+5
+ while True:
+  pump();xbmc.sleep(100);_,frame=capture('home86-before-idle')
+  hero=frame.getpixel((500,300));logo=frame.getpixel((330,525))
+  if max(abs(a-b) for a,b in zip(hero,(20,80,130)))<=8 and max(abs(a-b) for a,b in zip(logo,(20,90,150)))<=8:return
+  if time.monotonic()>=deadline:
+   prefix='XCMate.Hero63.'+home.getProperty('XCMate.Hero63.Active')+'.'
+   raise RuntimeError(str(dict(code='IDLE86_PRECONDITION_NOT_RENDERED',hero=hero,logo=logo,kind=home.getProperty(prefix+'Kind86'),source=home.getProperty(prefix+'ArtSource'))))
 exec(compile(source80,'native-home80-base','exec'),globals())
 # Keep every real TLS/cache assertion from .79, including full decode.
 cache80=Path('/base_gui_cache79.py').read_text().split('import widget_cache79 as cache79',1)[1]

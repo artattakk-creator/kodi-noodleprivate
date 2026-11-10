@@ -12,7 +12,7 @@ class PickerAccess44(Fixture,unittest.TestCase):
         with mock.patch.object(p,'_source'):p.show()
         return p
     def test_separate_metadata_menu_is_visible_and_request_is_owner_deferred(self):
-        self.parent.native(1);control=self.parent.getControl(810);self.assertEqual(control.size(),7);self.assertIn('Metadaten',control.items[6].label)
+        self.parent.native(1);control=self.parent.getControl(810);self.assertEqual(control.size(),8);self.assertIn('Metadaten',control.items[6].label)
         control.selectItem(6)
         with mock.patch.object(self.mod,'ArtworkPicker') as window:self.parent.onClick(810);window.assert_not_called()
         self.assertTrue(self.parent._picker_mode44);self.assertEqual(self.parent._picker_requested43,('p','vod',self.parent.selected['sid']))

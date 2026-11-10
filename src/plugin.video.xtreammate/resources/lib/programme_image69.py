@@ -1,6 +1,6 @@
 """Pure display admission for verified public URL references and local images."""
 import json,math,os,time
-FIELDS=('key','fingerprint','code','source','match','image','thumbnail','source_url','url_version55','url_verified69','scope69','profile69','until','image_scope57','persisted69','storage69','storage_code69','policy69','display84','display_key84','temp85','sha256','provisional85','manual85','mapping_epoch85')
+FIELDS=('key','fingerprint','code','source','match','image','thumbnail','source_url','url_version55','url_verified69','scope69','profile69','until','image_scope57','persisted69','storage69','storage_code69','policy69','display84','display_key84','temp85','sha256','provisional85','manual85','mapping_epoch85','role81','image_width77','image_height77','decoded77')
 def url(art):
  from programme_urls55 import safe,OPTIONS
  value=art.get('source_url','') if isinstance(art,dict) else ''

@@ -18,6 +18,7 @@ def namespace(event):
  from programme_display84 import _account
  # Broadcast timestamp/revision/subtitle are deliberately not work identity.
  facts=[source_scope(event),profile_scope(),_account(event.get('pid')),str(event.get('pid')),str(event.get('sid')),event.get('canonical'),event.get('source_key46'),event.get('epg_source46'),name(event.get('title')),event.get('year'),event.get('country'),event.get('work_id'),event.get('external_ids'),any(v in str(event.get('genre','')).casefold() for v in ('film','movie'))]
+ if event.get('media_kind86'):facts+=['media86',event['media_kind86']]
  return hashlib.sha256(json.dumps(facts,sort_keys=True).encode()).hexdigest()
 def path():
  from utils import addon_data_dir
@@ -35,7 +36,7 @@ def read():
  if data.get('format')!=1 or not isinstance(data.get('records'),dict) or len(data['records'])>MAX_RECORDS or not isinstance(data.get('epochs',{}),dict) or len(data.get('epochs',{}))>MAX_RECORDS:raise ValueError('MANUAL_SCHEMA')
  for key,record in data['records'].items():
   if not __import__('re').fullmatch('[a-f0-9]{64}',str(key)) or not isinstance(record,dict) or type(record.get('hidden')) is not bool:raise ValueError('MANUAL_SCHEMA')
-  if not record['hidden'] and (record.get('source') not in ('tmdb','tvmaze') or type(record.get('id')) is not int or record['id']<=0):raise ValueError('MANUAL_SCHEMA')
+  if not record['hidden'] and (record.get('source') not in ('tmdb','tvmaze','user_local86') or type(record.get('id')) is not int or record['id']<=0):raise ValueError('MANUAL_SCHEMA')
  if any(not __import__('re').fullmatch('[a-f0-9]{64}',str(k)) or type(v) is not int or not 0<=v<=10**9 for k,v in data.get('epochs',{}).items()):raise ValueError('MANUAL_SCHEMA')
  return data
 def publish(data):
@@ -74,8 +75,8 @@ def set_mapping(event,candidate=None,hidden=False,automatic=False):
   if len(epochs)>MAX_RECORDS:raise OSError('MANUAL_LIMIT')
   if automatic:data['records'].pop(key,None)
   else:
-   if not hidden and (not isinstance(candidate,dict) or candidate.get('source') not in ('tmdb','tvmaze') or type(candidate.get('id')) is not int or candidate['id']<=0 or not candidate.get('verified85')):raise ValueError('MANUAL_UNVERIFIED')
-   data['records'][key]=dict(hidden=bool(hidden),source=candidate.get('source') if candidate else '',id=candidate.get('id') if candidate else None,year=candidate.get('year') if candidate else None,country=candidate.get('country') if candidate else None,at=int(time.time()),provenance='USER_CONFIRMED' if not hidden else 'USER_HIDDEN')
+   if not hidden and (not isinstance(candidate,dict) or candidate.get('source') not in ('tmdb','tvmaze','user_local86') or type(candidate.get('id')) is not int or candidate['id']<=0 or not candidate.get('verified85')):raise ValueError('MANUAL_UNVERIFIED')
+   data['records'][key]=dict(hidden=bool(hidden),source=candidate.get('source') if candidate else '',id=candidate.get('id') if candidate else None,year=candidate.get('year') if candidate else None,country=candidate.get('country') if candidate else None,local86=candidate.get('local86') if candidate else None,media_type86=candidate.get('media_type86','tv') if candidate else 'tv',at=int(time.time()),provenance='USER_CONFIRMED' if not hidden else 'USER_HIDDEN')
   if len(data['records'])>MAX_RECORDS:raise OSError('MANUAL_LIMIT')
   raw=json.dumps(data,separators=(',',':'),sort_keys=True).encode()
   if len(raw)>MAX_BYTES:raise OSError('MANUAL_LIMIT')

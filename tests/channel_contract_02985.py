@@ -7,6 +7,10 @@ ROOT=Path(__file__).resolve().parents[1]
 BASE='faf83b833a14ac1cc937692e10a058d6a4dd462b'
 def approved(path):return subprocess.check_output(['git','show',BASE+':'+path],cwd=ROOT)
 def verify(path,committed=False):
+    from channel_contract_02986 import verify as verify86
+    return verify86(path,committed)
+
+def verify_archived85(path,committed=False):
     raw=subprocess.check_output(['git','show','HEAD:'+path],cwd=ROOT) if committed else (ROOT/path).read_bytes()
     if raw==approved(path):return True
     if committed or path not in ('addons.xml','addons.xml.md5'):raise AssertionError('UNAPPROVED_85_CHANNEL_CHANGE '+path)

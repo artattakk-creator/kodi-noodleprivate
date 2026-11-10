@@ -43,6 +43,11 @@ def merge(portal,kind,items,rows,old=None):
     result=[];now=time.time();current_sources=source_refs(rows);rows_by_id={str(r.get('sid')):r for r in rows}
     for item in items:
         sid=item['props'].get('XCMate.MediaId');previous=by_id.get(sid)
+        if kind in ('vod','series') and item['props'].get('XCMate.NoImage86')=='true':
+            item['art']={k:'' for k in ('poster','thumb','icon','fanart','landscape')};item['_provider80']={}
+            result.append(item);continue
+        if kind in ('vod','series') and item['props'].get('XCMate.ManualArt86')=='true':
+            result.append(item);continue
         if previous:
             from widget_assets69 import renderable
             for role,uri in previous.get('art',{}).items():

@@ -448,6 +448,9 @@ def add_index_item(router,portal,kind,item,epg=None,recent=False,widget=False):
 
 
 def widget(router,portal,action):
+    # Same public route and source folder; only the first Live DTO is cheaper.
+    if action=='widget_live_start_group' and portal.get('start_group_id') and __import__('home_schedule75').applicable():
+        return __import__('widget_home50').render(router,portal)
     import xbmcplugin
     from widget_data41 import snapshot
     kind='live' if action=='widget_live_start_group' else 'vod' if action=='widget_recent_vod' else 'series'

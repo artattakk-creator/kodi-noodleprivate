@@ -172,7 +172,7 @@ def promote(event,value,body):
   check_space(str(c.root),size)
  try:
   context85=hashlib.sha256((identity(event)+fingerprint(event)).encode()).hexdigest()
-  minimal85={k:value[k] for k in ('key','fingerprint','scope69','profile69','policy69','code','source','match','attribution','image_scope57','mapping_epoch85','provisional85','manual85','decoded77') if k in value}
+  minimal85={k:value[k] for k in ('key','fingerprint','scope69','profile69','policy69','code','source','match','attribution','image_scope57','mapping_epoch85','provisional85','manual85','decoded77','role81','image_width77','image_height77') if k in value}
   minimal85.update(key=event['key'],fingerprint=fingerprint(event),scope69=identity(event),profile69=scope(),policy69=negative_scope({}))
   record=c.put(body,context=context85,reference=minimal85,pin=identity(event),pin_until=time.time()+60,expires=event.get('stop',time.time())+600,check=capacity)
   result=dict(value,image=record['file'],thumbnail=record['file'],sha256=record['sha256'],until=min(record['until'],time.time()+30),fingerprint=fingerprint(event),scope69=identity(event),profile69=scope(),policy69=negative_scope({}),temp85=True)

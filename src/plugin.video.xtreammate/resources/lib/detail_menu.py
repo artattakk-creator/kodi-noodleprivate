@@ -46,7 +46,7 @@ class DetailMenuMixin:
         self._detail_menu_context=str(self.selected['sid'])
         self._detail_menu_open=True;self.setProperty('XCMate.DetailMenu','true')
         self.getControl(802).setLabel('XCMate')
-        self._fill(810,[dict(name=tr(label),menu45=role) for label,role in ((34200 if self.kind=='vod' else 34201,'download'),(34202,'downloads'),(34203,'poster_retry'),(33703,'info'),(34204,'back'),(35918,'image_search'),(35982,'metadata'))])
+        self._fill(810,[dict(name=tr(label),menu45=role) for label,role in ((34200 if self.kind=='vod' else 34201,'download'),(34202,'downloads'),(34203,'poster_retry'),(33703,'info'),(34204,'back'),(35918,'image_search'),(35982,'metadata'),(37080,'work_image86'))])
         # Explicit parent visibility, independent of an info-label used as an
         # XML boolean condition. Both entry methods use this same native panel.
         self.getControl(800).setVisible(True);self.getControl(810).setVisible(True)
@@ -59,6 +59,8 @@ class DetailMenuMixin:
         if getattr(self,'_detail_menu_open',False):
             if key in (1,2,9,10,92):self._detail_menu_close()
             return True
+        if key==117 and self.mode in ('detail','seasons'):
+            return self._detail_menu_show()
         if key==1 and self.mode in ('detail','seasons','episodes'):
             mark('DETAIL_LEFT_RECEIVED')
             return self._detail_menu_show()
@@ -96,6 +98,7 @@ class DetailMenuMixin:
                 xbmcgui.Dialog().notification('XCMate',text)
             self._request(retry,ready)
         elif choice==3:self._poster_status()
+        elif choice==7:self._manual_work86()
         elif choice in (5,6):
             from media_picker43 import request
             request(self,metadata=choice==6)

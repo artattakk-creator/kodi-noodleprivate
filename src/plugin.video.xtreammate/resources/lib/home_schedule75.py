@@ -88,7 +88,7 @@ def visible_position(pid,default=0):
 def allowed(kind,portal=None):
     if kind=='live' or not applicable():return True
     value=_read(KEY)
-    return value.get('phase',0)>=(1 if kind=='vod' else 2)
+    return value.get('phase',0)>=(1 if kind=='vod' else 2) or (_window().getProperty('XCMate.Home86.IdentityReady')=='true' and _window().getProperty('XCMate.Home86.Profile')==__import__('epg_handoff63').profile_scope() and kind in ('vod','series'))
 
 def rest_allowed():return not applicable() or _read(KEY).get('phase',0)>=3
 
@@ -131,6 +131,7 @@ def observe():
     from epg_handoff63 import profile_scope
     if not applicable() or xbmcgui.getCurrentWindowId()!=10000 or xbmcgui.getCurrentWindowDialogId() not in (0,-1,9999):return
     __import__('render_temp85').pin_visible()
+    __import__('home_status86').observe()
     window=_window();kind=xbmc.getInfoLabel('ListItem.Property(XCMate.WidgetKind41)')
     if kind not in ('live','vod','series'):return
     pid=xbmc.getInfoLabel('ListItem.Property(XCMate.PortalId)');sid=xbmc.getInfoLabel('ListItem.Property(XCMate.MediaId)')

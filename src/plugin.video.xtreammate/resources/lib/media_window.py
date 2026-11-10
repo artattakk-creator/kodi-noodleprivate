@@ -340,6 +340,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
                 self.getControl(102).setLabel(tr(32612,status[0]['stored'],status[0]['received']))
 
     def _display_art39(self,row):
+        if row.get('_no_art86'):return {k:'' for k in ('poster','thumb','icon','fanart','landscape')}
         from collections import OrderedDict
         from media_art import local_art,sources
         from artwork_visible import retain_displayed
@@ -665,7 +666,9 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
         self.trailer=trailer_id(item)
         if self.trailer and xbmc.getCondVisibility('System.HasAddon(plugin.video.youtube)'):
             self.actions.append((tr(32521),'trailer'))
-        if not item.get('_unavailable'):self.actions.append((tr(33703),'poster_status'))
+        if not item.get('_unavailable'):
+            self.actions.append((tr(33703),'poster_status'))
+            self.actions.append((tr(37080),'work_image86'))
         self._fill(300,[dict(name=label,sid=action) for label,action in self.actions])
         self.getControl(300).selectItem(next((i for i,a in enumerate(self.actions) if a[1]==old_action),0))
         self.setFocusId(old_focus if old_focus in (300,400) else 300)
@@ -758,6 +761,7 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
                     if action=='next_episode':self._play_next()
                     else:self._play(self.continue_episode,'episode',True)
                 elif action=='poster_status':self._poster_status()
+                elif action=='work_image86':self._manual_work86()
                 elif action=='seasons':
                     self.mode='seasons';self._show('seasons')
                     self.seasons=sorted({e['season'] for e in self.episodes})
@@ -776,6 +780,12 @@ class MediaView(DetailMenuMixin,SearchMixin,OwnerDispatch):
                     saved=progress(self.portal['id'],'episode',e['sid'],e['series_id'],e['season'])
                     resume=bool(resume_position(saved)) and xbmcgui.Dialog().yesno('XCMate',tr(32524))
                     self._play(e,'episode',resume)
+
+    def _manual_work86(self):
+        if __import__('work_manager86').open(self):
+            item=dict(self.selected)
+            def load86():return __import__('media_overrides43').apply_many(self.portal['id'],[item])[0]
+            self._request(load86,lambda changed:self._detail_ready((changed,{'episodes':self._episode_raw()})))
 
     def _poster_status(self):
         item=dict(self.selected)

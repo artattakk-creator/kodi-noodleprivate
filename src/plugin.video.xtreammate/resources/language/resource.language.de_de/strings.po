@@ -5144,3 +5144,99 @@ msgstr "Temporärer XCMate-Bildcache (MiB, höchstens 64)"
 msgctxt "#32852"
 msgid "Temporary image files (maximum 256)"
 msgstr "Temporäre Bilddateien (höchstens 256)"
+
+msgctxt "#37080"
+msgid "Assign work/image"
+msgstr "Werk/Bild zuweisen"
+
+msgctxt "#37081"
+msgid "Edit search text"
+msgstr "Suchtext ändern"
+
+msgctxt "#37082"
+msgid "Choose source"
+msgstr "Quelle wählen"
+
+msgctxt "#37083"
+msgid "Search again"
+msgstr "Erneut suchen"
+
+msgctxt "#37084"
+msgid "Use automatic assignment"
+msgstr "Automatische Zuordnung verwenden"
+
+msgctxt "#37085"
+msgid "Use no image"
+msgstr "Kein Bild verwenden"
+
+msgctxt "#37086"
+msgid "Preparing search. You can cancel."
+msgstr "Suche wird vorbereitet. Abbrechen bleibt möglich."
+
+msgctxt "#37087"
+msgid "Explicitly change this assignment?"
+msgstr "Zuordnung ausdrücklich ändern?"
+
+msgctxt "#37088"
+msgid "More results"
+msgstr "Weitere Treffer"
+
+msgctxt "#37089"
+msgid "Verify work identity: explicitly assign this image? No episode information will be copied."
+msgstr "Werkidentität prüfen: Dieses Bild ausdrücklich zuordnen? Es werden keine Episodeninformationen übernommen."
+
+msgctxt "#37090"
+msgid "This source is disabled. Check permissions or select another source."
+msgstr "Diese Bildquelle ist deaktiviert. Bitte Freigaben prüfen oder eine andere Quelle wählen."
+
+msgctxt "#37091"
+msgid "TMDB access is missing. Existing tokens remain unchanged."
+msgstr "TMDB-Zugang fehlt. Vorhandene Token werden nicht verändert."
+
+msgctxt "#37092"
+msgid "No results. Edit the query or select another source."
+msgstr "Keine Treffer. Suchtext ändern oder andere Quelle wählen."
+
+msgctxt "#37093"
+msgid "Programme data changed or are unavailable. Search remains available; retry saving after refresh."
+msgstr "Programmdaten haben sich geändert oder fehlen. Suche bleibt möglich; Speichern nach Aktualisierung erneut versuchen."
+
+msgctxt "#37094"
+msgid "Candidates could not be verified. Search again."
+msgstr "Kandidaten konnten nicht eindeutig geprüft werden. Erneut suchen."
+
+msgctxt "#37095"
+msgid "Cancelled. Existing assignment preserved."
+msgstr "Abgebrochen. Bestehende Zuordnung erhalten."
+
+msgctxt "#37096"
+msgid "Saving blocked by storage or permission checks. Existing assignment preserved."
+msgstr "Speichern durch Speicher- oder Zugriffsprüfung blockiert. Bestehende Zuordnung erhalten."
+
+msgctxt "#37097"
+msgid "Source currently unavailable. Search again or choose another source."
+msgstr "Quelle momentan nicht erreichbar. Erneut suchen oder Quelle wechseln."
+
+msgctxt "#37098"
+msgid "Select your own image"
+msgstr "Eigenes Bild auswählen"
+
+msgctxt "#37099"
+msgid "Stations {0} · Logos {1}/{0} · EPG {2} · Picture {3}"
+msgstr "Sender {0} · Logos {1}/{0} · EPG {2} · Bild {3}"
+
+msgctxt "#37100"
+msgid "ready"
+msgstr "bereit"
+
+msgctxt "#37101"
+msgid "pending"
+msgstr "ausstehend"
+
+msgctxt "#37103"
+msgid "Loading channel group"
+msgstr "Sendergruppe wird geladen"
+
+msgctxt "#37104"
+msgid "Stations {0} · Logos {1}/{0} · Missing pictures: diagnostics available"
+msgstr "Sender {0} · Logos {1}/{0} · Fehlende Bilder: Diagnose verfügbar"

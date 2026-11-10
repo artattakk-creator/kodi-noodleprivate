@@ -52,7 +52,7 @@ def poll():
            'XCMate.ProgrammeImageScope57':label('XCMate.ProgrammeImageScope57'),
            'XCMate.FallbackLabel63':label('XCMate.FallbackLabel63'),'XCMate.ArtProof69':label('XCMate.ArtProof69')}
     props.update({'XCMate.PortalId':pid,'XCMate.MediaId':sid,'XCMate.ProgrammeLogo46':label('XCMate.ProgrammeLogo46'),
-                  'XCMate.LogoProof84':label('XCMate.LogoProof84')})
+                  'XCMate.LogoProof84':label('XCMate.LogoProof84'),'XCMate.LogoProof86':label('XCMate.LogoProof86')})
     labels=(label('XCMate.NoEpg63'),label('XCMate.RemainingFormat63'))
     if not all(labels):labels=_labels
     if not labels:return  # Static native ListItem remains usable until the worker warms labels.
@@ -74,19 +74,24 @@ def poll():
         Percent=props['XCMate.ProgrammePercent46'],Image=props.get('XCMate.HeroImage63',neutral),
         ArtSource=props.get('XCMate.HeroArtSource63',''),Facts=props.get('XCMate.ProgrammeFacts75',''),LongTitle='true' if len(props['XCMate.ProgrammeTitle46'])>26 else 'false')
     values['Provisional85']=props.get('XCMate.Provisional85','')
-    # Keep a previously displayed local texture behind an atomic same-event
-    # upgrade. Never carry it across channel, mapping, edition or opt-out.
-    from event_art81 import key as event_identity81,allowed as source_allowed81
-    event81=event_identity81(intent68) if intent68 else ''
-    active81=xbmcgui.Window(10000);bank81=active81.getProperty('XCMate.Hero63.Active')
-    prefix81='XCMate.Hero63.'+bank81+'.'
-    same81=bool(event81 and active81.getProperty('XCMate.Hero81.Event')==event81)
-    prior_image81=active81.getProperty(prefix81+'Image');prior_source81=active81.getProperty(prefix81+'ArtSource')
-    if same81 and prior_image81.startswith('/') and source_allowed81(dict(source=prior_source81)):
-        if not values['Image']:values['Image']=prior_image81;values['ArtSource']=prior_source81;values['Provisional85']=active81.getProperty(prefix81+'Provisional85')
-        elif values['Image']!=prior_image81 and active81.getProperty('XCMate.Hero81.PreviousImage')!=prior_image81:active81.setProperty('XCMate.Hero81.PreviousImage',prior_image81)
-    elif active81.getProperty('XCMate.Hero81.PreviousImage'):active81.setProperty('XCMate.Hero81.PreviousImage','')
-    if active81.getProperty('XCMate.Hero81.Event')!=event81:active81.setProperty('XCMate.Hero81.Event',event81)
+    # .86 typed/hysteretic commit; pending textures never blank a current bank.
+    if xbmcgui.Window(10000).getProperty('XCMate.Home86.IdentityReady')=='true':
+        values=__import__('hero_render86').choose(intent68,art,values,xbmcgui.Window(10000))
+    else:
+        # Keep a previously displayed local texture behind an atomic same-event
+        # upgrade. Never carry it across channel, mapping, edition or opt-out.
+        from event_art81 import key as event_identity81,allowed as source_allowed81
+        event81=event_identity81(intent68) if intent68 else ''
+        active81=xbmcgui.Window(10000);bank81=active81.getProperty('XCMate.Hero63.Active')
+        prefix81='XCMate.Hero63.'+bank81+'.'
+        same81=bool(event81 and active81.getProperty('XCMate.Hero81.Event')==event81)
+        prior_image81=active81.getProperty(prefix81+'Image');prior_source81=active81.getProperty(prefix81+'ArtSource')
+        if same81 and prior_image81.startswith('/') and source_allowed81(dict(source=prior_source81)):
+            if not values['Image']:values['Image']=prior_image81;values['ArtSource']=prior_source81;values['Provisional85']=active81.getProperty(prefix81+'Provisional85')
+            elif values['Image']!=prior_image81 and active81.getProperty('XCMate.Hero81.PreviousImage')!=prior_image81:active81.setProperty('XCMate.Hero81.PreviousImage',prior_image81)
+        elif active81.getProperty('XCMate.Hero81.PreviousImage'):active81.setProperty('XCMate.Hero81.PreviousImage','')
+        if active81.getProperty('XCMate.Hero81.Event')!=event81:active81.setProperty('XCMate.Hero81.Event',event81)
+
     signature=(current,tuple(values.items()))
     if signature==_last:return
     previous=_last
@@ -109,6 +114,7 @@ def poll():
     from home_runtime77 import publish as render77
     render77(window,dict(intent68,key=event_key) if intent68 else None,values['Image'])
     window.setProperty('XCMate.Hero63.Active',bank)
+    if intent68:__import__('art_trace81').note(intent68,'BANK_SWITCHED','TEXT_AND_IMAGE_COMMITTED')
     _last=signature
     if changed or previous is None or previous[1][0]!=signature[1][0]:
         note('HOME_NOW_NEXT_READY',pid,sid,'READY' if info.get('now') else state(pid,sid),(time.monotonic()-_focused_at)*1000,facts=info)
@@ -131,6 +137,7 @@ def prepare(pid):
     art=result(event,art)
     durable81=__import__('event_art81').prior(event)
     if durable81 and (not __import__('programme_lastgood80').positive(event,art) or __import__('event_art81').rank(durable81)<__import__('event_art81').rank(art)):art=durable81
+    __import__('hero_render86').prepare(event,art or {})
     with _lock:
         if _focus==focus:_art=dict(__import__('programme_lastgood80').choose(event,art,_art,check_file=True) or {},key=event['key'],profile63=focus[3],scope69=__import__('programme_requests68').identity(event))
 

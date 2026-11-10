@@ -1,3 +1,12 @@
+0.1.29.86 – Review/Testkandidat, nicht veröffentlicht
+- Senderleiste ohne EPG-/Artwork-Datenbankzugriff pro Sender; bestehende lokale Logos bevorzugen.
+- Unabhängiger Logo-Manifestcache auf dem vorhandenen geprüften lokalen Ziel; kein Umzug, keine Reservenumgehung.
+- Typisierte Hero-Grafiken: bestätigter TMDB-Backdrop, großes Szenenbild, offizielles Poster, Senderlogo.
+- Eigener Kodi-Textur-Preload und gezielte Übernahme statt Bild -> schwarz -> Thumbnail.
+- Manuelle Freitextsuche in TV/Film/TVMaze auch ohne vollständige EPG-Fakten; Speichern nur mit aktueller Werkidentität.
+- Bestehende persönliche Widget-Reihen, Player-Routing, Profile und Installer bleiben erhalten.
+- Host/Kodi-Linux-Prüfung ersetzt keine Android-Abnahme; keine Merge-/Releasefreigabe.
+
 0.1.29.85
 - A: Verifizierte Medien-Bildreferenzen im bestehenden Kodi-ListItem aktualisieren, ohne Widget-Neuladung oder Fokusreset.
 - A: Eigener begrenzter temporärer Bildcache mit LRU/TTL, aktiven Pins, SHA256 und Wiederaufnahmejournal.
