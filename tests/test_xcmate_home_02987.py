@@ -61,3 +61,12 @@ class Home87(Fixture,unittest.TestCase):
   for k,v in dict(Image='https://example.org/old.png',ArtSource='station_logo',Kind86='station_logo',Rank86='9').items():w.setProperty('XCMate.Hero63.A.'+k,v)
   value=m.choose(event,{},dict(Image='/verified-kodi-logo.png',ArtSource='station_logo'),w)
   self.assertEqual(value['Image'],'/verified-kodi-logo.png');self.assertEqual(value['Kind86'],'station_logo')
+
+ def test_complete_live_logos_renew_before_media_without_reloading_unchanged_rows(self):
+  m=__import__('widget_fast69');m._published.clear();portal=dict(self.portal,start_group_id='a');rows=[dict(sid=str(i),name='Station '+str(i),stream_icon='https://example.org/'+str(i)+'.png') for i in range(88)]
+  calls=[]
+  def snap(p,kind,*args,**kwargs):return (rows,'READY') if kind=='live' else ([], 'READY')
+  with mock.patch('portals.get_active',return_value=[portal]),mock.patch('widget_data41.snapshot',side_effect=snap),mock.patch('widget_assets69.prepare',side_effect=lambda p,k,r,*a:calls.append((k,len(r)))),mock.patch('widget_assets69.read',return_value={'0':{'poster':'/verified-logo.png'}}),mock.patch('widget_live47.publish',return_value=True) as published,mock.patch('widget_runtime79.prepare'),mock.patch('home_schedule75.applicable',return_value=True),mock.patch('home_loading85.update'),mock.patch('home_schedule75.prepared'),mock.patch('home_schedule75.allowed',return_value=False):
+   m._next=0;m.prepare();first=sum(v.args[1]=='live' for v in published.call_args_list)
+   m._next=0;m.prepare();self.assertEqual(sum(v.args[1]=='live' for v in published.call_args_list),first)
+  self.assertEqual(calls[0],('live',88));self.assertEqual(first,1)

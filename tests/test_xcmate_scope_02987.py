@@ -19,8 +19,8 @@ class Scope87(unittest.TestCase):
   from channel_contract_02987 import verify
   paths=('addons.xml','addons.xml.md5','online-test/addons.xml','online-test/addons.xml.md5','online-test/manifest.json','index.html','online-test/index.html','plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.86.zip','online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.86.zip','online-test/plugin.video.xtreammate-0.1.29.86.zip','script.gsmedia.setup/script.gsmedia.setup-0.5.26.zip')
   for path in paths:self.assertTrue(verify(path,committed=True),path);self.assertTrue(verify(path),path)
- def test_player_exit_provider_and_token_implementations_have_no_changes(self):
-  for name in ('live_exit.py','exit_jobs.py','playback_exit.py','native_stop41.py','portals.py','tmdb_token61.py'):
+ def test_player_exit_provider_unchanged_and_token_owner_delta_is_exactly_reviewed(self):
+  for name in ('live_exit.py','exit_jobs.py','playback_exit.py','native_stop41.py','portals.py'):
    path='src/plugin.video.xtreammate/resources/lib/'+name;self.assertEqual((ROOT/path).read_bytes(),subprocess.check_output(['git','show',self.protection()['base']+':'+path],cwd=ROOT))
  def test_review_zip_matches_every_source_file_with_reproducible_sha_and_crc(self):
   import zipfile,xml.etree.ElementTree as E
@@ -44,3 +44,9 @@ class Scope87(unittest.TestCase):
   self.assertFalse(any("visible84.json" in ast.unparse(call) and "post75.json" in ast.unparse(call) for call in calls))
   self.assertIn('.replace(',namespace['base87'])
   self.assertIn("'post75.json' if cold else 'visible84.json'",namespace['base87'])
+
+ def test_private_token_reader_and_writer_stay_compatible_with_explicit_owner_revision(self):
+  path='src/plugin.video.xtreammate/resources/lib/tmdb_token61.py'
+  self.assertEqual(without_stabilization87((ROOT/path).read_bytes(),path),subprocess.check_output(['git','show',self.protection()['base']+':'+path],cwd=ROOT))
+  path='src/plugin.video.xtreammate/resources/lib/token_write64.py'
+  self.assertEqual((ROOT/path).read_bytes(),subprocess.check_output(['git','show',self.protection()['base']+':'+path],cwd=ROOT))

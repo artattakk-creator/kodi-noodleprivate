@@ -8,13 +8,18 @@ line87="Path('/root/'+('post75.json' if cold else 'visible84.json')).write_text(
 # Remove only the actual final write line, never the same text inside the
 # legacy wrapper's string replacement (that would re-enable early success).
 base87='\n'.join(line for line in Path('/base_gui86.py').read_text().splitlines() if line.strip()!=line87)
+# The fixture disables the actual service: model its existing one-second
+# preparation tick on the already owned data lane, including lease renewal
+# and read-only cache recovery. Never claim unattended rendering without it.
+base87=base87.replace("hero_epg63.prepare(portal['id'])", "hero_epg63.prepare(portal['id']);__import__('widget_fast69').prepare()")
 # Every final Hero screenshot must prove actual pixels, not just Kind/READY.
 base87=base87.replace("shot86,rgb86=capture('visible84-hero86-final')", """for frame87 in range(100):
  pump();xbmc.sleep(100)
  shot86,rgb86=capture('visible84-hero86-final')
  final_pixels87=sum(max(abs(a-b) for a,b in zip(pixel,(20,80,130)))<=8 for pixel in rgb86.crop((300,50,1100,520)).getdata())
- if final_pixels87>3000:break
-else:raise RuntimeError('HERO87_FINAL_PIXELS_MISSING')""")
+ logo_pixels87=sum(max(abs(a-b) for a,b in zip(pixel,(25,100,160)))<=8 for pixel in rgb86.crop((270,640,470,715)).getdata())
+ if final_pixels87>3000 and logo_pixels87>1500:break
+else:raise RuntimeError(('HERO87_FINAL_PIXELS_MISSING',final_pixels87,logo_pixels87))""")
 exec(compile(base87,'/base_gui86.py','exec'),globals())
 import sys
 sys.path.insert(0,'/')

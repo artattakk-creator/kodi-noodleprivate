@@ -6,6 +6,7 @@ protection, per-device revoke/rate limits. No deploy is implied by this client.
 """
 import hashlib,hmac,http.client,json,os,re,secrets,socket,ssl,threading,time
 from urllib.parse import urlsplit,parse_qsl
+PROPOSED_SERVER='https://gs-media.eu' # Metadata only; no live pairing route is claimed.
 NAME='tmdb_gateway87.json';MARKER='XCMATE_PRIVATE_GATEWAY87';_lock=threading.RLock()
 class GatewayError(ValueError):
  def __init__(self,code):self.code=code;super().__init__(code)
@@ -22,12 +23,12 @@ def endpoint(value):
   return 'https://'+host
  except (TypeError,ValueError,UnicodeError):raise GatewayError('GATEWAY_ENDPOINT_INVALID') from None
 def configured():
- from utils import setting
- value=setting('tmdb_gateway_endpoint87','').strip()
+ import xbmcaddon
+ value=xbmcaddon.Addon('plugin.video.xtreammate').getSetting('tmdb_gateway_endpoint87').strip()
  return endpoint(value) if value else ''
 def allowed():
- from utils import setting_bool
- return not setting_bool('programme_tmdb_optout77',False)
+ import xbmcaddon
+ return xbmcaddon.Addon('plugin.video.xtreammate').getSetting('programme_tmdb_optout77').lower()!='true'
 def _path():
  from tmdb_token61 import location
  return os.path.join(os.path.dirname(location()),NAME)
@@ -62,7 +63,7 @@ def _write(data,*,scope=None,expected=None,cancel=lambda:False):
    if path!=_path() or tokens.read(path)!=raw:raise GatewayError('GATEWAY_READBACK_FAILED')
    if data.get('credential') or expected and expected.get('credential'):
     import xbmcaddon
-    xbmcaddon.Addon().setSetting('tmdb_gateway_revision87',secrets.token_hex(16))
+    xbmcaddon.Addon('plugin.video.xtreammate').setSetting('tmdb_gateway_revision87',secrets.token_hex(16))
   except (OSError,tokens.TokenError):raise GatewayError('GATEWAY_PERSISTENCE_BLOCKED') from None
   finally:
    if fd is not None:
@@ -73,10 +74,13 @@ def _write(data,*,scope=None,expected=None,cancel=lambda:False):
 def status():
  try:
   if not allowed():return 'OPTED_OUT'
-  from tmdb_token61 import effective_tmdb_read_token,TokenError
+  import tmdb_token61 as tokens
+  import xbmcaddon
   try:
-   if effective_tmdb_read_token():return 'LOCAL_TOKEN_VALID'
-  except TokenError:return 'LOCAL_TOKEN_INVALID'
+   raw=tokens.read(tokens.location(),missing=True)
+   if raw is not None:tokens.validate(raw);return 'LOCAL_TOKEN_VALID'
+   if xbmcaddon.Addon('plugin.video.xtreammate').getSetting('tmdb_read_token43').strip():return 'LOCAL_TOKEN_VALID'
+  except tokens.TokenError:return 'LOCAL_TOKEN_INVALID'
   base=configured()
   if not base:return 'NOT_CONFIGURED'
   data=_read()
@@ -110,7 +114,7 @@ def _transport(base,operation,body,headers,cancel):
   elif raw:raw.close()
   raise
 _transport_hook=None # Only tests inject a transport; never configurable from settings.
-def _call(base,operation,payload,device=None,cancel=lambda:False):
+def _call(base,operation,payload,device=None,cancel=lambda:False,*,secret_response=False):
  if operation not in ('pair/start','pair/poll','status','revoke','tmdb'):raise GatewayError('GATEWAY_OPERATION_BLOCKED')
  if not allowed():raise GatewayError('OPTED_OUT')
  base=endpoint(base);body=json.dumps(payload,separators=(',',':'),sort_keys=True).encode()
@@ -137,7 +141,7 @@ def _call(base,operation,payload,device=None,cancel=lambda:False):
    if size>1024*1024:raise GatewayError('GATEWAY_RESPONSE_LIMIT')
    chunks.append(chunk)
   value=json.loads(b''.join(chunks))
-  if not isinstance(value,dict) or any(k in value for k in ('tmdb_token','access_token','refresh_token','api_key')):raise GatewayError('GATEWAY_RESPONSE_INVALID')
+  if not isinstance(value,dict) or any(k in value for k in (('access_token','refresh_token','api_key') if secret_response and operation=='pair/poll' else ('tmdb_token','access_token','refresh_token','api_key'))):raise GatewayError('GATEWAY_RESPONSE_INVALID')
   return value
  except GatewayError:raise
  except (ValueError,RecursionError):raise GatewayError('GATEWAY_RESPONSE_INVALID') from None
@@ -146,15 +150,16 @@ def _call(base,operation,payload,device=None,cancel=lambda:False):
  except OSError:raise GatewayError('SERVER_UNAVAILABLE') from None
  finally:
   if response:response.close()
-def begin(cancel=lambda:False):
+def begin(cancel=lambda:False,*,mode='gateway'):
+ if mode not in ('gateway','token_once'):raise GatewayError('GATEWAY_OPERATION_BLOCKED')
  state=status()
  if state in ('OPTED_OUT','LOCAL_TOKEN_VALID','LOCAL_TOKEN_INVALID','GATEWAY_PAIRED','NOT_CONFIGURED'):return state
  if state=='PENDING':return state
  if state not in ('NOT_PAIRED',):raise GatewayError(state)
  scope=_path();before=_read();base=configured();verifier=secrets.token_urlsafe(48)
- data=_call(base,'pair/start',dict(challenge=hashlib.sha256(verifier.encode()).hexdigest(),method='S256'),cancel=cancel)
+ data=_call(base,'pair/start',dict(challenge=hashlib.sha256(verifier.encode()).hexdigest(),method='S256',mode=mode),cancel=cancel)
  if set(data)!={'device_code','user_code','expires_in','interval'} or not re.fullmatch(r'[A-Za-z0-9_-]{32,256}',data.get('device_code','')) or not re.fullmatch(r'[A-Z0-9-]{4,24}',data.get('user_code','')) or type(data.get('expires_in')) is not int or not 30<=data['expires_in']<=600 or type(data.get('interval')) is not int or not 5<=data['interval']<=60:raise GatewayError('GATEWAY_RESPONSE_INVALID')
- _write(dict(schema=1,endpoint=base,verifier=verifier,device_code=data['device_code'],user_code=data['user_code'],expires=time.time()+data['expires_in'],interval=data['interval'],next_poll=time.time()+data['interval']),scope=scope,expected=before,cancel=cancel)
+ _write(dict(schema=1,endpoint=base,mode=mode,verifier=verifier,device_code=data['device_code'],user_code=data['user_code'],expires=time.time()+data['expires_in'],interval=data['interval'],next_poll=time.time()+data['interval']),scope=scope,expected=before,cancel=cancel)
  return 'PENDING'
 def public_pairing():
  data=_read()
@@ -163,10 +168,33 @@ def poll(cancel=lambda:False):
  if status()!='PENDING':return status()
  scope=_path();data=_read()
  if time.time()<data.get('next_poll',0):return 'PENDING'
- result=_call(data['endpoint'],'pair/poll',dict(device_code=data['device_code'],verifier=data['verifier']),cancel=cancel)
+ result=_call(data['endpoint'],'pair/poll',dict(device_code=data['device_code'],verifier=data['verifier']),cancel=cancel,secret_response=data.get('mode')=='token_once')
  code=result.get('status')
  if code=='PENDING':
   updated=dict(data,next_poll=time.time()+data['interval']);_write(updated,scope=scope,expected=data,cancel=cancel);return code
+ if data.get('mode')=='token_once' and code=='TOKEN_ONCE':
+  if set(result)!={'status','tmdb_token'}:raise GatewayError('GATEWAY_RESPONSE_INVALID')
+  import tmdb_token61 as tokens
+  try:token=tokens.validate(result['tmdb_token'].encode('utf-8'))
+  except (tokens.TokenError,AttributeError,UnicodeError):raise GatewayError('GATEWAY_RESPONSE_INVALID') from None
+  # Verify authorization in RAM before creating the private file. The existing
+  # writer enforces absent destination and exact profile, fsync/replace/readback.
+  target=tokens.location()
+  if os.path.dirname(target)!=os.path.dirname(scope):raise GatewayError('GATEWAY_PROFILE_CHANGED')
+  from tmdb_connection60 import request
+  from media_sources43 import TMDB,SourceError
+  try:configuration=request(TMDB+'/configuration',token=token,cancel=cancel)
+  except SourceError:raise GatewayError('TOKEN_AUTH_TEST_FAILED') from None
+  images=configuration.get('images') or {}
+  if images.get('secure_base_url')!='https://image.tmdb.org/t/p/' or not images.get('backdrop_sizes'):raise GatewayError('TOKEN_AUTH_TEST_FAILED')
+  if cancel() or not allowed() or _path()!=scope or _read()!=data:raise GatewayError('USER_CANCELLED')
+  try:tokens.import_bytes(token.encode(),None,target=target)
+  except tokens.TokenError:raise GatewayError('GATEWAY_PERSISTENCE_BLOCKED') from None
+  # Pending contains no central token. Clear it after the verified import;
+  # if cleanup fails the local token still has precedence on the next start.
+  try:_write(dict(schema=1,endpoint=data['endpoint']),scope=scope,expected=data)
+  except GatewayError:pass
+  return 'LOCAL_TOKEN_IMPORTED'
  if code!='PAIRED':raise GatewayError('AUTH_FAILED' if code=='DENIED' else 'PAIRING_EXPIRED')
  if set(result)!={'status','credential','device_id'} or any(not re.fullmatch(r'[A-Za-z0-9_-]{32,256}',result.get(k,'')) for k in ('credential','device_id')):raise GatewayError('GATEWAY_RESPONSE_INVALID')
  device=dict(schema=1,endpoint=data['endpoint'],credential=result['credential'],device_id=result['device_id'])

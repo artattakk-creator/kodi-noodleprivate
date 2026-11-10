@@ -27,6 +27,18 @@ def prepare(cancel=lambda:False):
  configure(portals)
  for portal in portals:
   if cancel():break
+  # Live logo references need renewal/cache adoption independently of the
+  # slower app-services EPG/catalogue warmup. Reuse its complete local memo
+  # and the existing provider queue; unchanged refs never trigger a reload.
+  if portal.get('include_live',True) and portal.get('start_group_id') and __import__('home_schedule75').applicable():
+   live87,code87=snapshot(portal,'live')
+   if live87 and code87 in ('READY','CACHE','READ_ONLY'):
+    approve(portal,'live',live87,cancel)
+    refs87=references(portal,'live',live87)
+    key87=(profile_scope(),str(portal['id']),'live')
+    stamp87=hashlib.sha256(json.dumps([policy(portal,'live'),[[r.get('sid'),__import__('station_logos87').source(r)] for r in live87],refs87],sort_keys=True).encode()).hexdigest()
+    if _published.get(key87)!=stamp87 and publish(portal,'live',live87,code87):
+     _published[key87]=stamp87;worked=True
   for kind in ('vod','series'):
    if cancel():break
    if not portal.get('include_'+kind,True):continue

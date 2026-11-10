@@ -60,9 +60,10 @@ def main():
    for line86 in synthetic86.read_text(errors='replace').splitlines():
     if 'HERO86_RECEIVER ' in line86 or 'HERO86_FAILED_FRAME ' in line86:print(line86[:4000],flush=True)
   # Emit synthetic fixture failures in Actions logs as well as the artifact.
-  for evidence85 in ('gui66-error.txt','probe.log','post75-error.txt'):
+  for evidence85 in ('gui66-error.txt','probe.log','post75-error.txt','restart1.log','restart2.log','foreign-restart1.log','foreign-restart2.log'):
    target85=report/evidence85
    if target85.is_file():print(evidence85+'\n'+target85.read_text(errors='replace')[-12000:],flush=True)
+  if synthetic86.is_file():print('SYNTHETIC87_KODI_TAIL\n'+'\n'.join(synthetic86.read_text(errors='replace').splitlines()[-80:]),flush=True)
   # Synthetic screenshots only: make two actual native PNGs recoverable for
   # human review even when signed Actions artifact downloads are unavailable.
   import base64

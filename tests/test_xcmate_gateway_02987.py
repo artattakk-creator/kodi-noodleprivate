@@ -88,3 +88,36 @@ class Gateway87(Fixture,unittest.TestCase):
    self.assertFalse(any('addon_data/' in n or n.endswith('tmdb_read_access_token.txt') or n.endswith('tmdb_gateway87.json') for n in z.namelist()))
    z.extractall(self.folder/'updated-addon')
   token=importlib.reload(token);self.assertEqual(token.status(),'FILE_VALID');self.assertEqual((path.read_bytes(),path.stat().st_mode),before);self.assertTrue(self.options['programme_tmdb_optout77'])
+ def test_explicit_one_time_import_requires_bound_approval_and_preserves_token_on_restart(self):
+  self.assertEqual(self.g.begin(mode='token_once'),'PENDING')
+  original=self.server
+  def delivery(base,operation,body,headers,cancel):
+   if operation=='pair/poll':
+    data=json.loads(body)
+    if data['device_code']!=self.code or hashlib.sha256(data['verifier'].encode()).hexdigest()!=self.challenge:return self.reply({},403)
+    if not self.approved:return self.reply(dict(status='PENDING'))
+    return self.reply(dict(status='TOKEN_ONCE',tmdb_token=FIXTURE.decode()))
+   return original(base,operation,body,headers,cancel)
+  self.g._transport_hook=delivery
+  self.approved=True;tokens=importlib.import_module('tmdb_token61');path=Path(tokens.location())
+  configuration=dict(images=dict(secure_base_url='https://image.tmdb.org/t/p/',backdrop_sizes=['w1280']))
+  with mock.patch.object(self.g.time,'time',return_value=time.time()+6),mock.patch('tmdb_connection60.request',return_value=configuration):self.assertEqual(self.g.poll(),'LOCAL_TOKEN_IMPORTED')
+  self.assertEqual(path.read_bytes(),FIXTURE+b'\n');self.assertEqual(path.stat().st_mode&0o777,0o600);self.assertEqual(self.g.status(),'LOCAL_TOKEN_VALID')
+  before=path.read_bytes();self.g.begin(mode='token_once');self.assertEqual(path.read_bytes(),before)
+  self.assertNotIn(FIXTURE.decode(),json.dumps(self.g._read()))
+ def test_one_time_delivery_is_rejected_in_gateway_mode_and_bad_auth_writes_nothing(self):
+  self.g.begin()
+  with mock.patch.object(self.g.time,'time',return_value=time.time()+6),mock.patch.object(self.g,'_transport_hook',return_value=self.reply(dict(status='TOKEN_ONCE',tmdb_token=FIXTURE.decode()))):
+   with self.assertRaisesRegex(self.g.GatewayError,'RESPONSE_INVALID'):self.g.poll()
+  self.assertFalse(Path(importlib.import_module('tmdb_token61').location()).exists())
+  data=self.g._read();data['mode']='token_once';self.g._write(data)
+  with mock.patch.object(self.g.time,'time',return_value=time.time()+6),mock.patch.object(self.g,'_transport_hook',return_value=self.reply(dict(status='TOKEN_ONCE',tmdb_token=FIXTURE.decode()))),mock.patch('tmdb_connection60.request',return_value={}):
+   with self.assertRaisesRegex(self.g.GatewayError,'TOKEN_AUTH_TEST_FAILED'):self.g.poll()
+  self.assertFalse(Path(importlib.import_module('tmdb_token61').location()).exists())
+ def test_installer_interpreter_uses_xcmate_owned_settings_and_token_revision(self):
+  import sys,types
+  addon_factory=sys.modules['xbmcaddon'].Addon;setup_values={};setup=types.SimpleNamespace(getSetting=lambda key:setup_values.get(key,''),setSetting=lambda key,value:setup_values.__setitem__(key,value))
+  with mock.patch('xbmcaddon.Addon',side_effect=lambda *args,**kwargs:addon_factory(*args,**kwargs) if args else setup),mock.patch.object(importlib.import_module('utils'),'ADDON',setup,create=True):
+   self.assertEqual(self.g.configured(),'https://gateway.example.org');self.assertTrue(self.g.allowed())
+   tokens=importlib.import_module('tmdb_token61');self.assertEqual(tokens.import_bytes(FIXTURE,None),'IMPORTED');self.assertEqual(self.g.status(),'LOCAL_TOKEN_VALID')
+   self.assertNotIn('tmdb_token_revision61',setup_values);self.assertTrue(self.options['tmdb_token_revision61'].startswith('FILE_VALID:'))

@@ -1,6 +1,9 @@
 """Explicit status/pair/revoke UI; one bounded job, no blocking key callback."""
 import threading,time
-from localization import tr
+from localization import tr_for_addon
+def tr(*args,**kwargs):
+ import xbmcaddon
+ return tr_for_addon(xbmcaddon.Addon('plugin.video.xtreammate'),*args,**kwargs)
 import tmdb_gateway_client87 as client
 _busy=threading.Lock()
 def task(function):
@@ -25,8 +28,9 @@ def show():
  import xbmcgui,xbmcaddon
  dialog=xbmcgui.Dialog()
  while True:
-  state=client.status();choice=dialog.select(tr(37130)+' · '+state,[tr(37132),tr(37133),tr(37134),tr(37135),tr(37136)])
-  if choice not in range(4):return
+  from menu_icons45 import select
+  state=client.status();choice=select(dialog,tr(37130)+' · '+state,[tr(37132),tr(37145),tr(37134),tr(37135),tr(37133),tr(37136)])
+  if choice not in range(5):return
   if choice==0:
    if state=='GATEWAY_PAIRED':dialog.ok(tr(37130),task(lambda cancel:client.check(cancel)))
    elif client.configured():dialog.ok(tr(37130),tr(37137))
@@ -35,14 +39,14 @@ def show():
   if choice==3:
    if not dialog.yesno(tr(37130),tr(37139),defaultbutton=getattr(xbmcgui,'DLG_YESNO_NO_BTN',10)):continue
    code=task(lambda cancel:client.revoke(cancel))
-  elif choice==1:
+  elif choice in (1,4):
    if state=='LOCAL_TOKEN_VALID':dialog.ok(tr(37130),tr(37140));continue
-   if not dialog.yesno(tr(37130),tr(37141),defaultbutton=getattr(xbmcgui,'DLG_YESNO_NO_BTN',10)):continue
-   code=task(lambda cancel:client.begin(cancel))
+   if not dialog.yesno(tr(37130),tr(37146 if choice==1 else 37141),defaultbutton=getattr(xbmcgui,'DLG_YESNO_NO_BTN',10)):continue
+   code=task(lambda cancel:client.begin(cancel,mode='token_once' if choice==1 else 'gateway'))
    if code=='PENDING':
     public=client.public_pairing();dialog.ok(tr(37130),tr(37142,public['user_code']));continue
   else:code=task(lambda cancel:client.poll(cancel))
-  if code=='GATEWAY_PAIRED':
+  if code in ('GATEWAY_PAIRED','LOCAL_TOKEN_IMPORTED') and client.allowed():
    from tmdb_access61 import activate
-   activate(xbmcaddon.Addon(),automatic=True)
+   activate(xbmcaddon.Addon('plugin.video.xtreammate'),automatic=True)
   dialog.ok(tr(37130),tr(37143)+' '+code)

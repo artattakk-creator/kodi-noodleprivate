@@ -5337,3 +5337,11 @@ msgstr "Connection status:"
 msgctxt "#37144"
 msgid "Optional private gateway: HTTPS server address (empty = disabled)"
 msgstr "Optional private gateway: HTTPS server address (empty = disabled)"
+
+msgctxt "#37145"
+msgid "Secure one-time token setup (phase 1)"
+msgstr "Secure one-time token setup (phase 1)"
+
+msgctxt "#37146"
+msgid "One-time token import after administrator approval? This box receives the central TMDB token. A compromised device can extract it; revoking the device does not invalidate a token copy already received. The gateway remains the stronger alternative."
+msgstr "One-time token import after administrator approval? This box receives the central TMDB token. A compromised device can extract it; revoking the device does not invalidate a token copy already received. The gateway remains the stronger alternative."

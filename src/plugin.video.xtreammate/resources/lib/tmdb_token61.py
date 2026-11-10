@@ -112,8 +112,9 @@ def publish_revision(code,token=''):
     from utils import setting
     import xbmcaddon
     value='' if code=='FILE_MISSING' else code+':'+hashlib.sha256(token.encode()).hexdigest()
-    if setting('tmdb_token_revision61','')!=value:
-        xbmcaddon.Addon().setSetting('tmdb_token_revision61',value)
+    addon87=xbmcaddon.Addon('plugin.video.xtreammate')
+    if addon87.getSetting('tmdb_token_revision61')!=value:
+        addon87.setSetting('tmdb_token_revision61',value)
 
 def effective_tmdb_read_token(force=False):
     """File wins; invalid/unreadable file blocks legacy fallback. No HTTP."""
