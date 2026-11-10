@@ -5240,3 +5240,8 @@ msgstr "Loading channel group"
 msgctxt "#37104"
 msgid "Stations {0} · Logos {1}/{0} · Missing pictures: diagnostics available"
 msgstr "Stations {0} · Logos {1}/{0} · Missing pictures: diagnostics available"
+# .86 distinct local navigation rail; leave returns to XCMate Home.
+msgctxt "#37105"
+msgid "Leave"
+msgstr "Leave"
+

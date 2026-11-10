@@ -12,7 +12,7 @@ base=base.replace("if not condition:raise RuntimeError(str(detail))", "if not co
 # .85 prepares the visible twelve covers first, not an invisible 24-file archive.
 base=base.replace('len(read(portal,kind,rows))==24','len(read(portal,kind,rows))>=12')
 base=base.replace('refs=24','refs=len(read(portal,kind,rows))')
-base=base.replace("if cold:Path('/root/post75.json').write_text(json.dumps(report,indent=2))",'')
+base=base.replace("Path('/root/'+('post75.json' if cold else 'visible84.json')).write_text(json.dumps(report,indent=2))",'')
 # A stable ListItem receipt is not yet a completed native texture upload.
 # Require the same actual pixels on a bounded sequence of complete captures.
 start85=base.index(" path,rgb=capture('visible84-'+('cold-' if cold else 'warm-')+kind)")
@@ -174,6 +174,7 @@ if cold:Path('/root/post75.json').write_text(json.dumps(report,indent=2))
 stop.set();hero_thread86.join(2);check(not hero_thread86.is_alive(),'HERO86_FIXTURE_LANE_NOT_STOPPED')
 if not cold:
  import runpy
+ runpy.run_path('/icons86.py')['run'](capture)
  runpy.run_path('/navigation86.py')['run']()
 
 if not cold:Path('/root/visible84.json').write_text(json.dumps(report,indent=2))

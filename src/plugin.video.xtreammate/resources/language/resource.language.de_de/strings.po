@@ -5240,3 +5240,8 @@ msgstr "Sendergruppe wird geladen"
 msgctxt "#37104"
 msgid "Stations {0} · Logos {1}/{0} · Missing pictures: diagnostics available"
 msgstr "Sender {0} · Logos {1}/{0} · Fehlende Bilder: Diagnose verfügbar"
+# .86 distinct local navigation rail; leave returns to XCMate Home.
+msgctxt "#37105"
+msgid "Leave"
+msgstr "Verlassen"
+
