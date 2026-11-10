@@ -49,10 +49,28 @@ def upgrade(files):
    setv(child,'width',700)
  title=hero.find(".//control[@id='296781']");setv(title,'font','Bold40');setv(title,'top',62);setv(title,'height',104)
  description=hero.find(".//control[@id='296782']");setv(description,'top',342);setv(description,'height',152)
+ # Keep the taller title, Now/Next and metadata in separate vertical slots.
+ for child in panel.findall('control'):
+  label=child.findtext('label','')
+  if 'ProgrammeChannel46' in label:setv(child,'width',300)
+  elif '$VAR[XCMate63.Times]' in label:setv(child,'top',174)
+  elif '$VAR[XCMate63.Remaining]' in label:setv(child,'top',206)
+  elif child.get('type')=='progress':setv(child,'top',240)
+  elif '$VAR[XCMate63.NextTimes]' in label:setv(child,'top',262)
+  elif '$VAR[XCMate63.Subtitle]' in label:setv(child,'top',322)
+  elif '$VAR[XCMate75.ImageCredit]' in label or '$VAR[XCMate75.DataCredit]' in label:setv(child,'width',500)
+ setv(description,'top',354);setv(description,'height',142)
+ rating=E.SubElement(panel,'control',type='label',id='296889')
+ for tag,val in (('left',330),('top',10),('width',230),('height',30),('font','Bold22'),('textcolor','FFFFFFFF'),('label','$VAR[XCMate88.Rating]')):setv(rating,tag,val)
  status=hero.find(".//control[@id='296887']")
  for tag,val in (('left',170),('top',514),('width',700)):setv(status,tag,val)
  result=dict(files);result[name]=edit(data,[(span['start'],end,E.tostring(hero,encoding='utf-8'))])
- name='xml/IncludesVariables.xml';data=result[name];at=data.rfind(b'</includes>');result[name]=data[:at]+b'<variable name="XCMate88.Contract"><value>READY</value></variable>'+data[at:]
+ name='xml/IncludesVariables.xml';data=result[name];at=data.rfind(b'</includes>');rating_var=E.Element('variable',name='XCMate88.Rating')
+ for bank in ('A','B'):
+  condition='String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),'+bank+') + String.IsEqual(Window(Home).Property(XCMate.Hero63.'+bank+'.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.'+bank+'.Profile),ListItem.Property(XCMate.EpgProfile63))'
+  E.SubElement(rating_var,'value',condition=condition).text='$INFO[Window(Home).Property(XCMate.Hero63.'+bank+'.Rating88)]'
+ E.SubElement(rating_var,'value').text=''
+ result[name]=data[:at]+E.tostring(rating_var,encoding='utf-8')+b'<variable name="XCMate88.Contract"><value>READY</value></variable>'+data[at:]
  verify(result);return result
 def verify(files):
  from widget_skin78 import parse
