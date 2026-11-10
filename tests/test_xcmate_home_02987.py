@@ -32,3 +32,32 @@ class Home87(Fixture,unittest.TestCase):
   with mock.patch.object(m,'time',types.SimpleNamespace(monotonic=lambda:next(clock))):
    m.note(event,'QUEUED');m.note(event,'RENDER_READY');m.note(event,'BANK_SWITCHED')
   value=m.summary();self.assertEqual(value['RENDER_READY']['p95_ms'],200);self.assertNotIn('Private programme',self.properties['XCMate.Hero87.Trace']);self.assertIn('NOT_VISIBLE_PIXELS',self.properties['XCMate.Hero87.Trace'])
+ def test_same_verified_hero_can_switch_to_new_decoded_cache_uri_without_black_gap(self):
+  m=__import__('hero_render86');w=m.window();event=dict(pid='p',sid='1',key='e',title='American Dad',start=self.now,stop=self.now+1800)
+  value=dict(code='READY',source='tmdb_series',role81='backdrop',image='/new-cache.png',sha256='a'*64,image_width77=1280,image_height77=720,source_url='https://image.tmdb.org/t/p/w1280/current.png')
+  w.setProperty('XCMate.Hero63.Active','A');w.setProperty(m.PREFIX+'Event',__import__('event_art81').key(event))
+  for k,v in dict(Image='/expired-temp.png',ArtSource='tmdb_series',Kind86='hero_backdrop',Rank86='0',SourceUrl86=value['source_url'],Digest87='a'*64).items():w.setProperty('XCMate.Hero63.A.'+k,v)
+  with mock.patch('programme_image69.eligible',return_value=True),mock.patch('event_art81.allowed',return_value=True),mock.patch('builtins.open',side_effect=AssertionError('no GUI file IO')):
+   # Correct existing picture remains until the successor receipt actually exists.
+   self.assertEqual(m.choose(event,value,{},w)['Image'],'/expired-temp.png')
+   w.setProperty(m.PREFIX+'Ready',json.dumps(dict(key=m.tag(event,value),at=time.monotonic())))
+   result=m.choose(event,value,{},w);self.assertEqual(result['Image'],'/new-cache.png');self.assertEqual(result['Digest87'],'a'*64)
+   other=dict(value,image='/different-same-rank.png',source_url='https://image.tmdb.org/t/p/w1280/different.png',sha256='b'*64)
+   w.setProperty(m.PREFIX+'Ready',json.dumps(dict(key=m.tag(event,other),at=time.monotonic())))
+   self.assertEqual(m.choose(event,other,{},w)['Image'],'/expired-temp.png')
+ def test_api_url_decode_and_bank_timing_use_one_redacted_event_correlation(self):
+  event=dict(pid='p',sid='1',key='event',title='Private title',start=self.now,stop=self.now+1800)
+  calls=[]
+  with mock.patch('xbmc.log',create=True,side_effect=lambda line,*args:calls.append(line)),mock.patch('xbmc.LOGINFO',create=True,new=1):
+   __import__('art_trace81').note(event,'HTTP_REQUEST_SENT')
+   __import__('programme_pipeline77').note(event,'HTTP_RESPONSE','IMAGE_DECODED')
+  correlation=__import__('hero_timing87').correlation(event)
+  self.assertTrue(all('event='+correlation[:12] in line for line in calls));self.assertEqual(len(calls),2)
+  self.assertEqual(json.loads(self.properties['XCMate.Hero87.Trace'])['event'],correlation)
+  self.assertIn('IMAGE_RESPONSE',__import__('hero_timing87').summary());self.assertNotIn('Private title',''.join(calls))
+ def test_fresh_local_station_logo_replaces_old_remote_fallback_while_programme_lookup_is_pending(self):
+  m=__import__('hero_render86');w=m.window();event=dict(pid='p',sid='1',key='e',title='American Dad',start=self.now,stop=self.now+1800)
+  w.setProperty('XCMate.Hero63.Active','A');w.setProperty(m.PREFIX+'Event',__import__('event_art81').key(event))
+  for k,v in dict(Image='https://example.org/old.png',ArtSource='station_logo',Kind86='station_logo',Rank86='9').items():w.setProperty('XCMate.Hero63.A.'+k,v)
+  value=m.choose(event,{},dict(Image='/verified-kodi-logo.png',ArtSource='station_logo'),w)
+  self.assertEqual(value['Image'],'/verified-kodi-logo.png');self.assertEqual(value['Kind86'],'station_logo')

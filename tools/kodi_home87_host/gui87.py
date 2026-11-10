@@ -5,6 +5,13 @@ not real MP3/SHOUTcast services or physical Android hardware.
 """
 from pathlib import Path
 base87=Path('/base_gui86.py').read_text().replace("Path('/root/'+('post75.json' if cold else 'visible84.json')).write_text(json.dumps(report,indent=2))",'')
+# Every final Hero screenshot must prove actual pixels, not just Kind/READY.
+base87=base87.replace("shot86,rgb86=capture('visible84-hero86-final')", """for frame87 in range(100):
+ pump();xbmc.sleep(100)
+ shot86,rgb86=capture('visible84-hero86-final')
+ final_pixels87=sum(max(abs(a-b) for a,b in zip(pixel,(20,80,130)))<=8 for pixel in rgb86.crop((300,50,1100,520)).getdata())
+ if final_pixels87>3000:break
+else:raise RuntimeError('HERO87_FINAL_PIXELS_MISSING')""")
 exec(compile(base87,'/base_gui86.py','exec'),globals())
 import sys
 sys.path.insert(0,'/')
@@ -20,10 +27,12 @@ for menu87,indices87 in ((0,range(5)),(1,range(8))):
  for _ in range(20):pump();xbmc.sleep(50)
  for index87 in indices87:
   control87=2540+index87*10 if menu87==0 else 3510+index87*10
-  for _ in range(80):
+  home.setFocusId(control87)
+  for pending87 in range(200):
+   if pending87%10==0:home.setFocusId(control87)
    if xbmc.getInfoLabel('Container('+str(control87)+').NumItems')=='8':break
    pump();xbmc.sleep(50)
-  check(xbmc.getInfoLabel('Container('+str(control87)+').NumItems')=='8',('FOREIGN87_DIRECTORY_EMPTY',menu87,index87,control87))
+  check(xbmc.getInfoLabel('Container('+str(control87)+').NumItems')=='8',('FOREIGN87_DIRECTORY_EMPTY',menu87,index87,control87,xbmcgui.getCurrentWindowId(),xbmcgui.getCurrentWindowDialogId(),home.getFocusId(),xbmc.getInfoLabel('Container('+str(control87)+').NumItems'),xbmc.getCondVisibility('Control.IsVisible('+str(control87)+')')))
   home.setFocusId(control87);home.getControl(control87).selectItem(0)
   for _ in range(30):pump();xbmc.sleep(50)
   name87,addon87,content87,target87,color87=FOREIGN[index87]
@@ -46,7 +55,12 @@ for menu87,indices87 in ((0,range(5)),(1,range(8))):
     if not xbmc.Player().isPlaying():break
     xbmc.sleep(50)
    check(not xbmc.Player().isPlaying(),'FOREIGN87_NATIVE_STOP_TIMEOUT')
-   xbmc.executebuiltin('ActivateWindow(Home)',wait=False);xbmc.sleep(300)
+   xbmc.executebuiltin('ActivateWindow(Home)',wait=False)
+   for settle87 in range(100):
+    if xbmcgui.getCurrentWindowId()==10000 and xbmcgui.getCurrentWindowDialogId() in (0,-1,9999) and not xbmc.getCondVisibility('System.HasActiveModalDialog'):break
+    xbmc.sleep(50)
+   check(xbmcgui.getCurrentWindowId()==10000,'FOREIGN87_RETURN_NOT_HOME')
+   xbmc.sleep(500)
    home.setFocusId(900);home.getControl(900).selectItem(0);xbmc.sleep(200)
 compare(profile87,inventory87)
 # Ten complete transitions among distinct external sources keep their rows,

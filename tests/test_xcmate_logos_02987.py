@@ -45,3 +45,9 @@ class Logos87(Fixture,unittest.TestCase):
   with mock.patch('logo_manifest86.read',return_value={}),mock.patch('logo_manifest86.remote',return_value={}),mock.patch('epg_handoff63.get',return_value=None),mock.patch('sqlite3.connect',side_effect=AssertionError('no SQL')):
    rows=__import__('live_rail86').values(self.portal,self.rows)
   self.assertEqual(len(rows),88);self.assertEqual([row['label'] for row in rows],[row['name'] for row in self.rows]);self.assertTrue(all(row['url'] for row in rows))
+ def test_kodi_texture_readability_does_not_claim_own_archive_persistence(self):
+  image=self.folder/'kodi.png';Image.new('RGB',(120,60),(20,80,140)).save(image)
+  with mock.patch('station_logos87.read',return_value={'0':str(image)}),mock.patch('art_storage.check',side_effect=__import__('art_storage').ArtworkFailure('DISK_FULL','RESERVE_BLOCKED')):
+   self.assertEqual(self.man.read(self.portal,self.rows[:1])['0'],str(image))
+   self.assertEqual(self.man.read(self.portal,self.rows[:1],with_fallback=False),{})
+   self.assertEqual(self.man.prepare(self.portal,self.rows[:1]),'EXTERNAL_UNAVAILABLE')

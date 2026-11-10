@@ -102,3 +102,7 @@ class Manual87(Fixture,unittest.TestCase):
      if expected=='WORKER_BUSY':self.assertFalse(self.q.pending())
     finally:shutdown.set();release.set();worker.join(2);timer.cancel()
     self.assertFalse(worker.is_alive())
+ def test_busy_existing_network_lane_is_reported_as_worker_busy_not_generic_cancel(self):
+  nonce=self.q.request(self.event,'search',query='Monk')
+  with mock.patch('work_search86.search',side_effect=__import__('media_sources43').SourceError('RESEARCH_BUSY')):self.q.drain()
+  self.assertEqual(self.q.result(nonce)['code'],'WORKER_BUSY')

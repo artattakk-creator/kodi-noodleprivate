@@ -31,7 +31,7 @@ def load(portal,all_records=False):
   return {k:v for k,v in records.items() if isinstance(v,dict) and (all_records or v.get('context')==scope)} if isinstance(records,dict) and len(records)<=512 else {}
  except (OSError,ValueError,TypeError,AttributeError):return {}
 def read(portal,rows,with_fallback=True):
- records=load(portal);result=__import__('station_logos87').read(portal,rows);scope=context(portal)
+ records=load(portal);result=__import__('station_logos87').read(portal,rows) if with_fallback else {};scope=context(portal)
  # Existing Kodi-local decoded logos remain valid without adopting/deleting files.
  from widget_cache79 import load as cached,valid
  from media_art import poster_candidates

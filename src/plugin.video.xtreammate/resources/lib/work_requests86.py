@@ -114,6 +114,7 @@ def drain(cancelled_service=lambda:False):
   code=getattr(error,'code','PERSISTENCE_BLOCKED' if isinstance(error,OSError) else 'CANDIDATES_REJECTED')
   if isinstance(error,TimeoutError) or code in ('TIMEOUT','HTTP_TIMEOUT') or code=='CANCELLED' and time.monotonic()>=locals().get('deadline',float('inf')):code='NETWORK_TIMEOUT'
   if code in ('DISK_FULL','SPACE_FULL','DB_BUSY','XM-ARTWORK-DB-PAUSED'):code='PERSISTENCE_BLOCKED'
+  if code in ('RESEARCH_BUSY','WORKER_QUEUE_FULL'):code='WORKER_BUSY'
   if nonce and not cancelled(nonce):win.setProperty(RESULT,json.dumps(dict(nonce=nonce,code=code,rows=[])))
 
 

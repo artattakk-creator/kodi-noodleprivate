@@ -93,18 +93,27 @@ def choose(event,value,values,win):
  if not old_allowed:
   win.setProperty('XCMate.Hero81.PreviousImage','')
   win.setProperty(PREFIX+'PreviousEvent','')
- if can_switch and (not old_allowed or accepted[1]<old_rank or old_image==value.get('image')):
+ # A RAM/local cache URI can rotate while the verified work image stays the
+ # same. Do not pin an expired tempfile forever merely because ranks tie.
+ same_image87=bool(value.get('source_url') and value['source_url']==win.getProperty(prefix+'SourceUrl86') or value.get('sha256') and value['sha256']==win.getProperty(prefix+'Digest87'))
+ if can_switch and (not old_allowed or accepted[1]<old_rank or old_image==value.get('image') or accepted[1]==old_rank and same_image87):
   if old_allowed and old_image!=value['image']:
    win.setProperty('XCMate.Hero81.PreviousImage',old_image)
    win.setProperty(PREFIX+'PreviousEvent',event_key)
-  values.update(Image=value['image'],ArtSource=value['source'],Kind86=accepted[0],Rank86=str(accepted[1]),SourceUrl86=value.get('source_url',''))
+  values.update(Image=value['image'],ArtSource=value['source'],Kind86=accepted[0],Rank86=str(accepted[1]),SourceUrl86=value.get('source_url',''),Digest87=value.get('sha256',''))
  elif old_allowed:
-  values.update(Image=old_image,ArtSource=old_source,Kind86=win.getProperty(prefix+'Kind86'),Rank86=str(old_rank),SourceUrl86=win.getProperty(prefix+'SourceUrl86'))
+  # A fresh admitted local station logo may replace its old remote fallback;
+  # it cannot replace a programme backdrop or another event's artwork.
+  if old_source=='station_logo' and values.get('ArtSource')=='station_logo' and values.get('Image'):
+   if values['Image']!=old_image:
+    win.setProperty('XCMate.Hero81.PreviousImage',old_image);win.setProperty(PREFIX+'PreviousEvent',event_key)
+   values.update(Kind86='station_logo',Rank86='9',SourceUrl86='',Digest87='')
+  else:values.update(Image=old_image,ArtSource=old_source,Kind86=win.getProperty(prefix+'Kind86'),Rank86=str(old_rank),SourceUrl86=win.getProperty(prefix+'SourceUrl86'),Digest87=win.getProperty(prefix+'Digest87'))
  else:
   # Always the focused station's logo; no small feed cover/foreign event.
   import xbmc
   logo=xbmc.getInfoLabel('ListItem.Property(XCMate.ProgrammeLogo46)')
-  values.update(Image=logo,ArtSource='station_logo' if logo else '',Kind86='station_logo',Rank86='9',SourceUrl86='')
+  values.update(Image=logo,ArtSource='station_logo' if logo else '',Kind86='station_logo',Rank86='9',SourceUrl86='',Digest87='')
  win.setProperty(PREFIX+'Event',event_key)
  return values
 

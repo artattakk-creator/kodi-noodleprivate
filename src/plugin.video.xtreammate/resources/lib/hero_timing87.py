@@ -2,10 +2,15 @@
 import hashlib,json,math,threading,time
 _lock=threading.RLock();_events={};_samples={}
 STAGES={'QUEUED','TITLE_NORMALIZED','MATCH_CONFIRMED','HTTP_REQUEST_SENT','HTTP_STATUS','IMAGE_BACKDROP_READY','IMAGE_POSTER_READY','SOURCE_DECIDED','DECODED_LOCAL','TEXTURE_CACHED','RENDER_READY','BANK_SWITCHED'}
+def correlation(event):return hashlib.sha256(__import__('event_art81').key(event).encode()).hexdigest()
+
+def pipeline(event,stage,code):
+ mapping={'EPG_EVENT':'LOCAL_EPG_IDENTIFIED','URL_SECURITY':'URL_POLICY','HTTP_RESPONSE':'IMAGE_RESPONSE','LOCAL_CACHE':'CACHE_REFERENCE','RENDER_CONTROL':'CONTROL_REQUESTED','ACTUAL_TEXTURE':'TEXTURE_RECEIPT'}
+ if stage in mapping:note(event,mapping[stage],code)
+
 def note(event,stage,code=''):
- if stage not in STAGES:return
- from event_art81 import key
- ident=hashlib.sha256(key(event).encode()).hexdigest();now=time.monotonic()
+ if stage not in STAGES and stage not in ('LOCAL_EPG_IDENTIFIED','URL_POLICY','IMAGE_RESPONSE','CACHE_REFERENCE','CONTROL_REQUESTED','TEXTURE_RECEIPT'):return
+ ident=correlation(event);now=time.monotonic()
  with _lock:
   value=_events.setdefault(ident,dict(started=now,stages={}))
   if stage in value['stages']:return
