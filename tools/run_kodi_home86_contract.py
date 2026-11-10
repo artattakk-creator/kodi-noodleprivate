@@ -57,7 +57,7 @@ def main():
   synthetic86=report/'synthetic-kodi.log'
   if synthetic86.is_file():
    for line86 in synthetic86.read_text(errors='replace').splitlines():
-    if 'HERO86_RECEIVER ' in line86 or 'HERO86_FAILED_FRAME ' in line86:print(line86[:4000],flush=True)
+    if 'HERO86_RECEIVER ' in line86 or 'HERO86_FAILED_FRAME ' in line86 or '[GUI86]' in line86 or '[BOOT]' in line86 and 'FAILED' in line86:print(line86[:4000],flush=True)
   # Emit synthetic fixture failures in Actions logs as well as the artifact.
   for evidence85 in ('gui66-error.txt','probe.log','post75-error.txt'):
    target85=report/evidence85

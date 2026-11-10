@@ -4,6 +4,9 @@
 - Typisierte Hero-Grafiken: bestätigter TMDB-Backdrop, großes Szenenbild, offizielles Poster, Senderlogo.
 - Eigener Kodi-Textur-Preload und gezielte Übernahme statt Bild -> schwarz -> Thumbnail.
 - Manuelle Freitextsuche in TV/Film/TVMaze auch ohne vollständige EPG-Fakten; Speichern nur mit aktueller Werkidentität.
+- Native Listen-/Fokuszugriffe vor ungültigen Indizes und veralteten Generationen schützen.
+- Fensterjobs bei Zurück abbrechen; negative EPG-Abfragen und identische Zustandslogs begrenzen.
+- Linke Navigation mit sieben lokalen Symbolen, getrennten Icon-/Textebenen und stabilen Rückwegen.
 - Bestehende persönliche Widget-Reihen, Player-Routing, Profile und Installer bleiben erhalten.
 - Host/Kodi-Linux-Prüfung ersetzt keine Android-Abnahme; keine Merge-/Releasefreigabe.
 

@@ -43,7 +43,7 @@ def run():
  original_pump=MediaView.pump
  def pump86(view):
   result=original_pump(view)
-  xbmcgui.Window(10000).setProperty('XCMate.Nav86.State',json.dumps(dict(sequence=sequence,mode=view.mode,kind=view.kind,closed=view._closed,generation=view._generation,actions=len(getattr(view,'actions',[])))))
+  xbmcgui.Window(10000).setProperty('XCMate.Nav86.State',json.dumps(dict(sequence=sequence,mode=view.mode,kind=view.kind,closed=view._closed,generation=view._generation,actions=len(getattr(view,'actions',[])),rows=len(view.rows),focus=view.getFocusId())))
   return result
  MediaView.pump=pump86
  started=time.monotonic()
