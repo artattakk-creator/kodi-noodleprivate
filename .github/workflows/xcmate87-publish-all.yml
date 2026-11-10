@@ -136,3 +136,5 @@ jobs:
           done
           echo "PUBLIC_XCMATE_02987_NOT_YET_VERIFIED" >&2
           exit 1
+
+# Trigger final main-branch release after first-time workflow registration; approved under #419.
