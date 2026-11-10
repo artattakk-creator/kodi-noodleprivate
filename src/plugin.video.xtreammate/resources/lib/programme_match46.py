@@ -49,4 +49,4 @@ def unique_movie56(event,cancel=lambda:False):
  url=_tmdb_image(details.get('backdrop_path') or details.get('poster_path'))
  if not url:raise SourceError('NO_VALID_URL')
  return dict(url=url,source='tmdb_movie',role81='backdrop' if details.get('backdrop_path') else 'poster',match='EXACT_UNIQUE_FILM_TITLE',matched_year56=int(year),
-             remote_id=remote,attribution='TMDb · https://www.themoviedb.org/movie/'+str(remote)+' · nicht von TMDb zertifiziert; Bildnutzungsbedingungen beachten')
+             official_poster86=_tmdb_image(details.get('poster_path')),remote_id=remote,attribution='TMDb · https://www.themoviedb.org/movie/'+str(remote)+' · nicht von TMDb zertifiziert; Bildnutzungsbedingungen beachten')

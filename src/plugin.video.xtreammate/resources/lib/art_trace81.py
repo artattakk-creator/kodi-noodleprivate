@@ -1,7 +1,7 @@
 """Bounded token/URL/title-free evidence, never guesses visible Android pixels."""
 import hashlib,json,threading,time
 _local=threading.local();_seen={};_guard=threading.Lock();_inflight=set();_results={}
-STAGES={'TOKEN_PRESENT','ENABLED','OPT_OUT','QUEUED','SKIPPED_REASON','HTTP_REQUEST_SENT','HTTP_STATUS','TITLE_NORMALIZED','MATCH_CONFIRMED','MATCH_REJECTED','IMAGE_BACKDROP_READY','IMAGE_POSTER_READY','SOURCE_COMMITTED','SOURCE_RETAINED','CACHE','TEXTURE_REQUESTED','TEXTURE_CACHED','NOT_VISIBLE'}
+STAGES={'TOKEN_PRESENT','ENABLED','OPT_OUT','QUEUED','SKIPPED_REASON','HTTP_REQUEST_SENT','HTTP_STATUS','TITLE_NORMALIZED','MATCH_CONFIRMED','MATCH_REJECTED','IMAGE_BACKDROP_READY','IMAGE_POSTER_READY','SOURCE_COMMITTED','SOURCE_RETAINED','CACHE','TEXTURE_REQUESTED','TEXTURE_CACHED','NOT_VISIBLE','SOURCE_DECIDED','DECODED_LOCAL','RENDER_READY','BANK_SWITCHED'}
 def note(event,stage,code='OK',**facts):
  if stage not in STAGES:return
  tag=hashlib.sha256(json.dumps([event.get(k) for k in ('pid','sid','key','start','stop')],sort_keys=True).encode()).hexdigest()[:12]

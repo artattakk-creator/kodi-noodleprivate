@@ -21,7 +21,7 @@ def allowed(value):
  if source.startswith('tmdb_'):return setting_bool('programme_tmdb46',False) and setting_bool('tmdb_research43',False) and not setting_bool('programme_tmdb_optout77',False)
  if source.startswith('tvmaze'):return setting_bool('programme_tvmaze67',False) and not setting_bool('programme_tvmaze_optout77',False)
  if source in ('xcmate_catalog','kodi_library'):return setting_bool('programme_catalog57',True)
- return source in ('xmltv_event','provider_event')
+ return source in ('xmltv_event','provider_event','user_local86')
 
 def prior(event):
  from render_cache81 import read
