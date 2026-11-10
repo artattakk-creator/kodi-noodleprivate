@@ -9,7 +9,7 @@ source82=source82.replace("if max(abs(a-b) for a,b in zip(rgb.getpixel((800,150)
 # .85 owns a bounded journal whose cold proofs are deliberately verified on
 # a worker. The disposable fixture disables the real service; model only its
 # local recovery step before keeping every original cold pixel assertion.
-recovery85="""if xbmcaddon.Addon().getAddonInfo('version') in ('0.1.29.85','0.1.29.86'):
+recovery85="""if xbmcaddon.Addon().getAddonInfo('version') in ('0.1.29.85','0.1.29.86','0.1.29.87'):
  import threading
  errors85=[];recovered85=[]
  def cold_worker85():

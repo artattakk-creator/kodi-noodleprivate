@@ -21,6 +21,12 @@ import xbmcvfs
 profile87=Path(xbmcvfs.translatePath('special://profile/'));skin87=Path(xbmcvfs.translatePath('special://skin/'))
 inventory87=collect(profile87,skin87)
 check(sum(v['external'] for v in inventory87['widgets'])==13,'FOREIGN87_SAVED_DEFINITIONS_LOST')
+if not cold:
+ import runpy
+ runpy.run_path('/icons86.py')['run'](capture)
+ runpy.run_path('/navigation86.py')['run']()
+ report['native_icons87']=json.loads(Path('/root/icons86.json').read_text())
+ report['native_navigation87']=json.loads(Path('/root/navigation86.json').read_text())
 foreign_cases87=[]
 for menu87,indices87 in ((0,range(5)),(1,range(8))):
  home.setFocusId(900);home.getControl(900).selectItem(0)

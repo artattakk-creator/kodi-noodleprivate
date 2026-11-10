@@ -55,7 +55,8 @@ def patch85_probe(pid85,kind85,signature85):
  for cid85 in plan85.get('ids',[])[:1]:
   facts85['count']=xbmc.getInfoLabel('Container('+str(cid85)+').NumItems')
   try:
-   item85=home.getControl(cid85).getListItem(0);facts85['native_item_id']=item85.getProperty('XCMate.MediaId');facts85['native_source85']=bool(item85.getProperty('XCMate.Source85'))
+   item85=__import__('gui_guard86').item(home.getControl(cid85),0,ident=cid85);facts85['python_list_exposed']=item85 is not None
+   if item85 is not None:facts85['native_item_id']=item85.getProperty('XCMate.MediaId');facts85['native_source85']=bool(item85.getProperty('XCMate.Source85'))
   except Exception as error85:facts85['native_item_error']=type(error85).__name__
  patch85_evidence.append(facts85)
  print('PATCH85_NATIVE '+json.dumps(facts85),flush=True)

@@ -27,6 +27,7 @@ def main():
  (report/'start.sh').write_text(start)
  base=root/'tools/kodi_home84_host'
  mounts=[(root/'tools/kodi_home74_host','/work'),(root/'src/plugin.video.xtreammate','/xcmate'),(pristine/'skin.titan.bingie.mod','/skin'),(candidate,'/candidate'),(root/'tools/kodi_home86_host/fixture86.py','/fixture84.py'),(base/'fixture84.py','/base_fixture84.py'),(root/'tools/kodi_home87_host/gui87.py','/work/gui66.py'),(root/'tools/kodi_home86_host/gui86.py','/base_gui86.py'),(root/'tools/kodi_home87_host/spec87.py','/spec87.py'),(root/'tools/kodi_home87_host/setup87.py','/setup87.py'),(root/'tools/kodi_home87_host/foreign87.py','/foreign87.py'),(base/'gui84.py','/base_gui84.py'),(root/'tools/kodi_home87_host/probe87.py','/work/probe.py'),(base/'probe84.py','/base_probe84.py'),(root/'tools/kodi_home86_host/tls86.py','/work/tls69.py'),(base/'skin84.py','/work/skin_fixture66.py'),(root/'tools/kodi_home74_host/skin_fixture66.py','/base_skin78.py'),(root/'tools/kodi_home78_host/skin_fixture78.py','/skin78.py'),(report/'start.sh','/work/start.sh')]
+ mounts.extend([(root/'tools/kodi_home86_host/icons86.py','/icons86.py'),(root/'tools/kodi_home86_host/navigation86.py','/navigation86.py')])
  cmd=['run','-d','--name',name]
  for source,target in mounts:cmd+=['--mount','type=bind,src='+str(source)+',dst='+target+',readonly']
  cmd+=['-e','XCMATE_RES74='+a.resolution,'xcmate-kodi21-helper57-contract','sh','/work/start.sh']
@@ -48,10 +49,10 @@ def main():
    files=json.loads(run('exec',name,'python3','-c',"import json;from pathlib import Path;print(json.dumps([str(p) for p in Path('/root').glob('visible84-*.png')]))",capture_output=True,text=True).stdout)
    for file in files:copy(file,Path(file).name)
   except (ValueError,subprocess.CalledProcessError):pass
-  for file in ('gui66-error.txt','post75-error.txt','tls69-requests.jsonl','visible84.json','texture84-debug.json','poster86-value.json','poster86-state.json'):
+  for file in ('gui66-error.txt','post75-error.txt','tls69-requests.jsonl','visible84.json','texture84-debug.json','poster86-value.json','poster86-state.json','navigation86.json','icons86.json'):
    subprocess.run(docker+['cp',name+':/root/'+file,str(report/file)],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
   subprocess.run(docker+['cp',name+':/root/.kodi/temp/kodi.log',str(report/'synthetic-kodi.log')],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-  for evidence86 in ('poster86-value.json','poster86-state.json'):
+  for evidence86 in ('poster86-value.json','poster86-state.json','navigation86.json','icons86.json'):
    target86=report/evidence86
    if target86.is_file():print(evidence86+' '+target86.read_text()[:6000],flush=True)
   synthetic86=report/'synthetic-kodi.log'

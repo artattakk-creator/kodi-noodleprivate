@@ -21,4 +21,35 @@ def install():
  programme_match46.candidate=candidate86
  addon=xbmcaddon.Addon();addon.setSetting('programme_tmdb46','true');addon.setSetting('tmdb_research43','true')
 
+# P0-F instrumentation is restricted to the disposable navigation fixture.
+# Production default.py, Router, WindowXML, owner pump and Back remain real.
+run86=run
+def run():
+ from urllib.parse import parse_qs
+ import sys,time,json
+ sequence=parse_qs(sys.argv[2].lstrip('?')).get('nav86',[''])[0]
+ if not sequence:return run86()
+ assert sequence.isdigit() and 0<=int(sequence)<100
+ install()
+ from utils import cache_set
+ from xtream import XtreamClient
+ from portals import get_active
+ portal=get_active()[0];client=XtreamClient(portal['xc_host'],portal['xc_user'],portal['xc_pass'])
+ for action,extra,value in (
+  ('get_vod_info',{'vod_id':'0'},{'info':{'plot':'Synthetic cached detail','duration_secs':2700}}),
+  ('get_series_info',{'series_id':'0'},{'info':{'plot':'Synthetic cached series'},'episodes':{'1':[{'id':'101','episode_num':1,'title':'Synthetic episode'}]}})):
+  cache_set(client._cache_key(action,extra),value)
+ from media_window import MediaView
+ original_pump=MediaView.pump
+ def pump86(view):
+  result=original_pump(view)
+  xbmcgui.Window(10000).setProperty('XCMate.Nav86.State',json.dumps(dict(sequence=sequence,mode=view.mode,kind=view.kind,closed=view._closed,generation=view._generation,actions=len(getattr(view,'actions',[])),rows=len(view.rows),focus=view.getFocusId())))
+  return result
+ MediaView.pump=pump86
+ started=time.monotonic()
+ try:return run86()
+ finally:
+  target=Path('/root/nav86-route-'+sequence+'.json');temp=target.with_suffix('.tmp')
+  temp.write_text(json.dumps(dict(sequence=sequence,returned=True,elapsed_ms=int((time.monotonic()-started)*1000))));temp.replace(target)
+
 if __name__=='__main__':run()
