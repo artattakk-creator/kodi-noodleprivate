@@ -88,7 +88,9 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   if self.parent is not None and self.parent._closed:self.close();return
   if getattr(self,'_series_menu85',False):
    self._series_menu85=False
-   __import__('work_manager86').open(self)
+   if __import__('work_manager86').open(self):
+    self._art68={};self._art_signature=None;self._next=0
+    if self.event:__import__('programme_requests68').request(self.event,priority=True)
    return
   if self._future is not None and not self._future.done() and time.monotonic()>self._read_deadline69:
    self._cancel.set();self._future.cancel();self._future=None

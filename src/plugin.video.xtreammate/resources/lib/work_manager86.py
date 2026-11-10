@@ -26,7 +26,7 @@ def event_for(parent):
  return dict(selected,pid=str(parent.portal['id']),sid=str(channel.get('sid','')),title=str(selected.get('title') or ''))
 
 def open(parent):
- if getattr(parent,'_closed',False):return False
+ if getattr(parent,'_closed',False) or not __import__('programme_window46').permitted(parent):return False
  event=event_for(parent);query=str(event.get('title') or '')[:200];kind='movie' if event.get('media_kind86')=='vod' else 'tv';source='tmdb';page=1;changed=False
  dialog=xbmcgui.Dialog()
  while not getattr(parent,'_closed',False) and not xbmc.Monitor().abortRequested():

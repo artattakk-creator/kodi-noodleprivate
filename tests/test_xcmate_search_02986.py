@@ -70,3 +70,14 @@ class Search86(Fixture,unittest.TestCase):
  def test_invalid_work_year_is_not_independently_verified(self):
   with mock.patch('tmdb_connection60.request',return_value=dict(self.movie,release_date='9999-01-01')):
    with self.assertRaisesRegex(Exception,'CANDIDATES_REJECTED'):self.m.details(200,'movie')
+
+ def test_foreign_modal_is_not_ignored_by_new_manager(self):
+  from types import SimpleNamespace
+  with mock.patch('programme_window46.permitted',return_value=False),mock.patch('work_manager86.event_for',side_effect=AssertionError('foreign modal')):
+   self.assertFalse(__import__('work_manager86').open(SimpleNamespace(_closed=False)))
+ def test_confirmed_epg_mapping_requests_a_fresh_image_without_reopening_details(self):
+  from xcmate027_fixture import ADDON
+  m=__import__('programme_window46');view=m.ProgrammeWindow46('XCMateProgramme46.xml',str(ADDON),'Default','720p');view.configure(self.portal,dict(sid='1',name='Station'))
+  view.event=dict(pid='p',sid='1',title='Monk');view._series_menu85=True;view._art_signature='old';view._art68={'source':'old'}
+  with mock.patch('programme_lifecycle69.pulse',return_value=False),mock.patch('work_manager86.open',return_value=True),mock.patch('programme_requests68.request') as queued:view.pump()
+  self.assertIsNone(view._art_signature);self.assertEqual(view._art68,{});queued.assert_called_once_with(view.event,priority=True)
