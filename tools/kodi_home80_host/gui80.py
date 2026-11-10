@@ -34,18 +34,18 @@ def capture_selected80(kind,index):
    return path80,rgb80 # The original strict pixel assertion reports failure.
   pump();xbmc.sleep(100)
 def settle_idle86():
- if xbmcaddon.Addon().getAddonInfo('version') not in ('0.1.29.86','0.1.29.87','0.1.29.88'):return
+ if xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version') not in ('0.1.29.86','0.1.29.87','0.1.29.88'):return
  # .86 correctly shows a station logo until the selected event's renderer
  # receipt exists. Start the unchanged soak only on its actual settled pixels.
  deadline=time.monotonic()+5
  while True:
   pump();xbmc.sleep(100);_,frame=capture('home86-before-idle')
-  hero=frame.getpixel((1500,300) if xbmcaddon.Addon().getAddonInfo('version')=='0.1.29.88' else (500,300));logo=frame.getpixel((330,525))
+  hero=frame.getpixel((1500,300) if xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version')=='0.1.29.88' else (500,300));logo=frame.getpixel((330,525))
   if max(abs(a-b) for a,b in zip(hero,(20,80,130)))<=8 and max(abs(a-b) for a,b in zip(logo,(20,90,150)))<=8:return
   if time.monotonic()>=deadline:
    prefix='XCMate.Hero63.'+home.getProperty('XCMate.Hero63.Active')+'.'
    raise RuntimeError(str(dict(code='IDLE86_PRECONDITION_NOT_RENDERED',hero=hero,logo=logo,kind=home.getProperty(prefix+'Kind86'),source=home.getProperty(prefix+'ArtSource'))))
-if xbmcaddon.Addon().getAddonInfo('version')=='0.1.29.88':
+if xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version')=='0.1.29.88':
  source80=source80.replace('((270,0),1620,480)','((130,0),1760,620)').replace('getpixel((300,150))','getpixel((1500,150))').replace('getpixel((500,300))','getpixel((1500,300))').replace('getpixel((1000,150))','getpixel((1500,150))')
 exec(compile(source80,'native-home80-base','exec'),globals())
 # Keep every real TLS/cache assertion from .79, including full decode.
