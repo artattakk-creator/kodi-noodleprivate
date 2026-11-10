@@ -1,85 +1,62 @@
-# Testbericht XCMate 0.1.29.86
+# Testbericht XCMate 0.1.29.86 – kumulativ A bis G
 
-**Review-Stand: Add-on-Quellstand `ae288f6ef4e8e0a67783ecba67d30a42df9eabd0`; vollständiger lokaler Hostlauf bestanden. Abschließende CI-/Langzeitläufe werden auf demselben Add-on-Inhalt ausgeführt. Der endgültige Run-/Commitstatus wird ohne erneute Add-on-Änderung in Draft-PR #410 und Issue #409 dokumentiert. Kein Merge-/Release freigegeben.**
+## Versions- und Reviewstand
 
-- Neue gezielte A/B/D-Tests bestanden (weitere Fälle gegenüber dem ersten 24er-Lauf ergänzt): vollständige 88er-Identitätsleiste ohne EPG-SQL/Netz, getrennte Quelldimensionen, CSI-Null-/Thumbnail-Hysterese, Renderer-Receipt, Ereigniswechsel/Opt-out, unabhängige freie Werkrecherche, Film-/TV-Unterscheidung, fehlende EPG-Fakten, Abbruch, erneute Werkprüfung vor Save.
-- 4 neue Tests am tatsächlichen BINGIE-XML-Graph bestanden: vollständiger Graph, eigener proportionaler Postermodus/Preload/Status, Byteerhalt persönlicher/native Widget-Definitionen, unbekannte Änderungen blockiert, Idempotenz.
-- Bestandsschutz prüft die 3.451 direkt deklarierten alten Testmethoden plus ihre unveränderten Skip-Bedingungen. Die bisherige Gesamtsuite umfasst zusätzlich geerbte Testfälle; direkte Methodenzahl und ausgeführte Fallzahl sind verschieden.
-- PO-Dateien: 17 Sprachkataloge syntaktisch validiert. Neue Texte DE/EN, bestehender englischer Fallback für weitere Sprachen.
-- Erster Gesamtlauf wurde nach nachgewiesenen lokalen Reservenproblemen abgebrochen; kein vollständiges PASS. Nach Freigabe ausschließlich entbehrlicher Entwicklungskopien bestanden die zuvor betroffenen Einzeltests wieder. Kein Kodi-Benutzerprofil angefasst.
-- Native lokale Docker-Versuche vor Containerstart durch Platzmangel blockiert: kein Screenshot-/Pixel-PASS daraus. Native Prüfungen wurden über GitHub Actions ausgeführt; abgeschlossene Nachweise und die abschließenden Läufe stehen unten.
-- Physische Android-Prüfungen: **ANDROID_NOT_TESTED** in allen A86/B86/C86/D86/E86/REG86-Gates.
+Master #409, einschließlich der Nachträge P0-F und P0-G. Entwicklung im bestehenden Branch `fix/xcmate-02986-android-live-hero-mapping`. PR #410 (A–E) wurde am 10.11.2026 um 14:03:35 UTC durch den Repository-Inhaber gemergt: `36b903c06daa7b7fb5903f9de568237c18b9e2a1`. Dieser Agent hat keinen Merge ausgeführt. Die anschließenden F/G-Korrekturen liegen in [Folge-Draft #412](https://github.com/artattakk-creator/kodi-noodleprivate/pull/412). Keine Veröffentlichung und keine Geräteänderung.
+
+Die [bereinigte .85-Loganalyse](ANDROID_LOGANALYSE_02985_BOXB_2026-11-10_134323_DE.md) bleibt der Android-Istbefund. 165 native Indexmeldungen sind kein Beweis einer bestimmten Python-Ursache. 1.485 fehlende EPG-Datenmeldungen betrafen 14 Kanal-Hashes; 6.693 NO_SOURCE_FACTS-Meldungen 342 Event-Hashes. 688 Cache-Ready-Logereignisse sind nicht automatisch 688 vollständige Builds.
+
+## Automatisierte Ergebnisse
+
+- **Aktueller vollständiger lokaler Hostlauf: 3.566 Tests PASS, 0 Fehler, 543,162 s**, Add-on-Quellstand `3bea87d2ffe9fadb03e18b95d91a9f01f3bffce7`. Alle kumulativen Bestandsfälle plus 21 neue F/G-Fälle. Zusätzlich **11 Branding-Pytests PASS** (eine externe Plugin-Deprecation-Warnung), **17 PO-Kataloge PASS**. Keine Addition überlappender Einzeltestläufe.
+- Neue F-Fälle: **17 gezielte Tests**, einschließlich 100 Modell-Navigationszyklen, ungültiger nativer Kontrollgröße/-position, verspäteter Generation, geschlossener Owner, bereinigter Exceptiondaten, Kodi-Abbruch, Thread-isolierung, realem langsamen Loopback-HTTP und negativem EPG-Backoff. Die Socketprüfung besteht mit erlaubtem eigenen Loopback; ein zuvor ohne Socketberechtigung gestarteter Lauf gilt nicht als funktionaler PASS.
+- Neue G-Fälle: **4 gezielte Tests**; zusammen mit älteren Navigations- und Scope-Verträgen bestand eine Auswahl von **44 Tests**. Sieben unterschiedliche Alpha-Glyphen in allen vier Zuständen, keine geleerte lokale Textur bei 100 Hide/Show-Wechseln, 100 D-Pad-Zyklen ohne Stop/Retune und vorhandene USER_HOME-Aktion.
+- Sprach-/Scope-Nachprüfung: **15 Tests PASS**. Eine neue PO-Zeile benötigte einen Datensatztrenner; dies wurde korrigiert. Es wurde kein Sprachtest entfernt.
+- **92 lokale Tabler-PNGs** mit Original-SVG-Hashes, Manifest, MIT-Lizenz, RGBA/96×96 und voller Bildprüfung: PASS.
+- Alle alten **3.451 direkt deklarierten Testmethoden und Skip-Bedingungen** bleiben erhalten. Die vollständige Suite enthält zusätzlich geerbte Fälle. Zwei vorhandene Navigationsfälle wurden um die ausdrücklich neu geforderte Icon-Zwischenebene erweitert; ursprüngliche Stream-/Fokus-/Rückkehrassertionen bleiben erhalten. Der ControlImage-Stub bewahrt nun wie Kodi die Konstruktor-Textur; ein Widget-Control-Stub meldet seine tatsächliche Listengröße.
+
+Historischer A–E-Checkpoint b09307a: **3.545 Hostfälle**, lokal 547,052 s, CI 793,397 s, 0 Fehler; 11 zusätzliche Branding-Pytests und 17 PO-Kataloge bestanden. Sämtliche zwölf zugehörigen Workflows grün: [vollständiger Hostlauf](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/42823246999), [native .86-Bilder](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/42823246270), [kumulative native Prüfung](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/42823245920). Diese Ergebnisse sind kein Ersatz für die neue F/G-Prüfung.
+
+## Native Kodi-/Skin-Prüfung
+
+Echte Linux-Kodi-21-/BINGIE-2.2.3-Fenster, TLS-Transport, vollständig decodierte Texturen und Screenshot-Pixel werden geprüft. Metadaten, Portal und Token in der Fixture sind ausschließlich synthetisch. Kein Test greift auf eine Android-Box oder einen echten privaten Provider zu.
+
+Die erweiterte .86-Pipeline verlangt: 88 Stationen; erster Logo-/EPG-Aufbau; großer TMDB-Backdrop vor kleinen Feedbildern; 800×1200-Poster im proportionalen offiziellen Postermodus; fremde persönliche Reihen; Fokus 23; Kandidatenbestätigung/Back; sieben tatsächlich unterschiedliche Rail-Icons samt nativem D-Pad; 100 reale Plugin-Invoker-/Detail-/Back-Zyklen unter Hintergrundupdates; anschließend zwei echte Offline-Neustarts mit sichtbaren Pixeln. Abschlussdateien werden erst nach allen zugehörigen Prüfungen geschrieben.
+
+Ein Zwischenlauf f12d02c bestätigte die sieben tatsächlich gerenderten 1080p-Glyphen (Maskenüberdeckung 0,744–1,000). Seine 100-Zyklen-Prüfung scheiterte bei 1/100; er gilt insgesamt als FAIL. Der Prüfaufbau wartet jetzt zusätzlich auf gefüllte native Zeilen und gültigen Fokus, statt bereits auf den Modusnamen OK zu senden. Ein nachfolgender Lauf erreichte 54/100 bei null Index-/Dispatch-/Directory-/Invokerfehlern, scheiterte dann aber an einem nicht atomar geschriebenen Test-Receipt. Receipts und Abschlussdateien werden nun vollständig per temporärer Datei/Replace veröffentlicht. Auch dieser Teillauf ist kein PASS. Ein früherer Fixture-Lauf schrieb seinen Abschluss zu früh und wurde ebenfalls nicht als PASS übernommen. Fehler-/Pixelassertionen und die 100 verlangten Zyklen bleiben erhalten.
+
+Die bestehende kumulative CI prüft zudem 20 Stop-ACK-/Rückkehrzyklen je Live/Film/Serie (60 insgesamt) und eine 1.800-s-Datenbankpause mit 443 wiederholten Polls, begrenzter Workerzahl und Recovery. Das versionsgebundene abschließende CI-Protokoll mit Endergebnis und Run-/Joblinks wird in [PR #412](https://github.com/artattakk-creator/kodi-noodleprivate/pull/412) und [Master #409](https://github.com/artattakk-creator/kodi-noodleprivate/issues/409) gepflegt. Dieses Dokument hält den lokal bereits vollständig geprüften Add-on-Stand fest; spätere CI-Resultate werden dort ohne weitere Add-on-/Paketänderung ergänzt. Kein Ergebnis wird vor Abschluss als PASS ausgegeben.
+
+## Messwerte und ihre Grenzen
+
+Synthetischer Host, 100 Aufbauten der vollständigen 88er-Identitätsleiste bei blockierter Bildpipeline: P50 **2,021 ms**, P95 **3,275 ms**, Maximum **18,409 ms**. Keine EPG-/Artwork-SQL-, DNS- oder Bilddateiarbeit pro Station; lokale Logo-Belege gebündelt. Diese Messung ist weder eine Android-Startzeit noch ein Pixel-SLO. Historische .85-Android-Zeiten 463.372/147.811 ms sowie Worker-Median 14,7/13,2 s bleiben getrennte Referenzdaten.
+
+Der reale langsame Loopback-HTTP-Test weist den Abbruch des bestehenden Owner-Workers innerhalb der Assertion **<1,6 s nach Fensterende** nach. Andere Threads behalten unveränderte HTTP-Retry-/Timeoutwerte. OS-DNS ist nicht hart präemptiv abbrechbar; keine garantierte Android-Invoker-Latenz behaupten.
 
 ## Abnahmematrix
 
-| Bereich | Implementierung | Host | echter Kodi/Linux | Box B |
-|---|---|---|---|---|
-| A – vollständige Senderleiste / lokaler Logo-Nachweis | vorhanden | PASS (vollständiger Hostlauf) | ausstehend | ANDROID_NOT_TESTED |
-| B – typed Hero / Qualität / CSI-Hysterese | vorhanden | PASS (vollständiger Hostlauf) | .86 native Bild-/Neustartprüfung PASS; kein echter CSI-/Android-Beweis | ANDROID_NOT_TESTED |
-| C – persönliche/native Widget-Reihen | Byteerhalt, unveränderte Pfade | XML-Graph/Host PASS | synthetische Custom-Reihen PASS; reale persönliche Reihen offen | ANDROID_NOT_TESTED |
-| D – freie TV-/Filmsuche und sichere Zuordnung | vorhanden | PASS (vollständiger Hostlauf) | ausstehend | ANDROID_NOT_TESTED |
-| E – sichtbarer begrenzter Ladestatus | Controls vorhanden | XML-Graph/Host PASS | ausstehend | ANDROID_NOT_TESTED |
-| Anderer Android-Speicherpool | keine unbelegte automatische Aktivierung | negative Pfade geprüft | kein Hardwarebeweis | EXTERNAL_UNAVAILABLE / ANDROID_NOT_TESTED |
-| Veröffentlichung / Merge | nicht freigegeben | bestehende .85-Kanäle bytegleich geprüft | nicht erfolgt | nicht erfolgt |
+| Bereich | Code/Host | Linux Kodi | Physische Box B |
+|---|---|---|---|
+| A: vollständige Startgruppenleiste, unabhängige Logo-Belege | implementiert, vollständiger Hostlauf PASS | vorheriger A–E-Nachweis PASS, abschließender Runstatus siehe PR #412 | ANDROID_NOT_TESTED |
+| B: Qualitätsklassen, TMDB-Priorität, CSI-Hysterese, Poster | implementiert, vollständiger Hostlauf PASS | frühere Bild-/Neustartbelege PASS, abschließender Runstatus siehe PR #412 | ANDROID_NOT_TESTED |
+| C: persönliche Film-/Serien-/Custom-Reihen | exakter Byte-/Pfaderhalt im vollständigen Hostlauf PASS | synthetische persönliche Reihen geprüft | ANDROID_NOT_TESTED |
+| D: TV-/Film-Freitext, Kandidaten, eigene Bilder, reversible Wahl | implementiert, vollständiger Hostlauf PASS | tatsächlicher Charmed-/Monk-Match nicht geprüft | ANDROID_NOT_TESTED |
+| E: echte Zähler, begrenzte Statusanzeige | implementiert, vollständiger Hostlauf PASS | Controls/Pixels im nativen Test | ANDROID_NOT_TESTED |
+| F: Index/Generation/Abbruch/Retry/100 Zyklen | vollständiger Hostlauf mit 17 neuen Fällen PASS | verbindlicher 100-Zyklen-Abschluss siehe PR #412 | ANDROID_NOT_TESTED |
+| G: sieben eindeutige Icons/Links-Ebenen | vollständiger Hostlauf mit 4 neuen Fällen PASS | sieben 1080p-Glyphen nachgewiesen; finaler Runstatus siehe PR #412 | ANDROID_NOT_TESTED |
+| Anderer Android-Speicherpool / dauerhaftes lokales Archiv | Reserve-/Negativpfade geprüft; kein automatischer Umzug | keine Hardware-Mountverifikation | EXTERNAL_UNAVAILABLE / ANDROID_NOT_TESTED |
+| Channels / Installer 0.5.26 / Nutzerdaten | vollständiger Schutzvertrag | keine Geräteinstallation | unverändert lassen |
 
-## Reproduzierbarer Build
+## Paket und Reproduktion
 
-- Version: **0.1.29.86**.
-- 811 Add-on-Dateien, ZIP **3.586.611 Bytes**.
-- SHA256: `07c7f10b0f5da873c1add538c44bf2ee4c9aa5027ad98c262ec98bd5d709c7c4`.
-- ZIP-CRC, Bytevergleich mit allen Paketquellen und separat heruntergeladenem GitHub-Git-Blob: **PASS**.
-- Draft-PR: [#410](https://github.com/artattakk-creator/kodi-noodleprivate/pull/410).
-- [Komplette Host-CI](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/42821190964), [native .86-Bildprüfungen](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/42821190965), [kumulative native Home-/Playerprüfung](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/42821190880). Der abschließende Run-/Commitstatus steht in der PR-Beschreibung und im letzten Abschlusskommentar zu #409; die obigen abgeschlossenen Quellstand-Nachweise bleiben historisch verlinkt.
+- Version **0.1.29.86**, **814 Dateien**, **3.591.570 Bytes**.
+- SHA256: `44d3437f6838301e441642c8853d8925542d6f23709964c89067ea2e32355e20`.
+- [ZIP](test-builds/02986/plugin.video.xtreammate-0.1.29.86.zip), [Prüfsumme](test-builds/02986/plugin.video.xtreammate-0.1.29.86.zip.sha256), [Android-Testplan](ANDROID_ABNAHME_02986_DE.md), [Codeanalyse](IMPLEMENTIERUNG_02986_DE.md).
+- Paketbauer: `python tools/package_xcmate71.py <Ausgabeordner>`. ZIP-CRC und bytegenaue Paket-/Quellübereinstimmung PASS. Unabhängiger Reproduktionsvergleich und GitHub-Git-Blob-Readback **PASS**: Blob `f4a158870e9635edd33f3e000baac8519a3569c7`, 814 Dateien, alle Bytes und CRC identisch.
+- Python 3.12; Pillow 12.3.0, impacket 0.13.0, simpleeval 0.9.13, pytest 9.2.0. Lokal große SQLite-Sortiertemporärdateien ausschließlich mit `SQLITE_TMPDIR`; kein Benutzerprofil umgeleitet. Komplette Unittests, Branding-Pytests und PO-Validierung sind getrennte Prüfungen.
 
-53 gezielte Handoff-/Hero-/Opt-out-/Bestandsschutz-/ältere Low-Space-Tests bestanden, anschließend 33 aktuelle Live-/Hero-/Opt-out-/Scope-Fälle einschließlich zwei neuer Live-Statusfälle bestanden. Diese überlappenden Auswahlmengen werden **nicht** zu einer angeblichen Gesamtfallzahl addiert. Zusätzlich 11 Branding-Pytests bestanden; eine externe pytest-Plugin-Deprecation-Warnung. Alle 17 PO-Kataloge validiert.
+## Offene Hardwaregates und Freigabe
 
-## Fehlersuche und Grenzen früherer Läufe
+Alle A86/B86/C86/D86/E86/F86/G86/REG86-Gerätetests im Android-Protokoll bleiben **ANDROID_NOT_TESTED**. Insbesondere reale Charmed-/Monk-Kandidaten, 20 Minuten CSI: Vegas, Warm-/Kaltstart-P50/P95, tatsächlicher anderer Mount/Schreib-/Lesetest, persönliche Widgets und 100 Android-Navigationszyklen sind offen. Private Rohlogs werden nicht veröffentlicht. Die eigenen Linux-Screenshots sind synthetisch und keine Android-Belege.
 
-- Frühere CI-Läufe fanden echte Typverlust-/Kaltstart-/Texturprobleme; ihre roten Ergebnisse bleiben historisch sichtbar und gelten nicht als PASS. Insbesondere gingen `role81` und die Unterscheidung Originalauflösung/Kodi-Cacheauflösung verloren; beide Pfade haben gezielte Regressionstests.
-- Die nativen Positivfixtures liefern nun real decodierte 1280×720-Szenen beziehungsweise 800×1200-Poster. Kleine negative Bildfälle bleiben abgelehnt. Es wurde weder eine Pixelprüfung entfernt noch die Quellen-/Mindestqualitätsprüfung gelockert.
-- Modelltests mit globalen Kodi-Stubs müssen ihren Worker-/Modulzustand trennen; die alten Low-Space-Referenztests starten mit einem frischen eigenen Asset-Modul. Alle ursprünglichen Testmethoden und Skip-Bedingungen bleiben vorhanden.
-- Keine privaten Rohlogs in PR, Paket oder CI-Artefakten. Alle für native Tests verwendeten Providerprofile, Bilder, Zertifikate und Filme sind synthetische Wegwerf-Fixtures. Kein künstlicher Python-Speicherwert wird als echter Android-ENOSPC-Nachweis ausgegeben.
-
-Build-Dateien unter `test-builds/02986/`.
-
-## Synthetische Hostmessung (keine Android-Zeit)
-
-Gleiche 88 Sender, lokaler SQLite-Katalog und vorhandener lokaler EPG-RAM-Snapshot, zwölf Aufbauten je Darstellungsweg, keine Netzwerkabfrage:
-
-| DTO-Pfad | P50 | P95 |
-|---|---:|---:|
-| bisheriger `live_items62.values`-Pfad | 137,390 ms | 246,961 ms |
-| neuer Identitätsweg `live_rail86.values` | 14,704 ms | 16,871 ms |
-
-Die Zeit endet mit der Datenerzeugung. Sie ist kein First-Frame-Nachweis und kein Beleg für die Android-SLO von 2/5 Sekunden.
-
-## Zusätzliche aktuelle Regressionen
-
-- 71 gezielte Fälle zu Provider-Metadatenvorrang, manuellen Bildern/Opt-out, exakter Offline-Cachewiederverwendung, Hero-Typen und Bestandsschutz: **PASS**.
-- Der zuvor eingefrorene Gesamtlauf führte 3.544 Fälle aus, mit genau einem bestätigten Fehler im neuen Widget-Metadatenübergang. Korrektur: Bilder und Metadaten trennen. Der unveränderte alte `.58`-Provider-Metadatentest und ein zusätzlicher kombinierter Bild-/Metadatentest bestehen. Dieser frühere Gesamtlauf ist **kein vollständiges PASS**; maßgeblich ist der anschließende neue Lauf.
-- Native .86-Bildprüfung auf dem vorangehenden Quellstand `af140cd5110ddc0cb4352dc864990f440109fc5d`: [beide Auflösungen bestanden](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/42819586260), einschließlich proportionalem offiziellen Poster und zwei Offline-Neustarts. Die aktuelle .86-Prüfung wird erneut ausgeführt. Android bleibt ungetestet.
-- Die native alte Idle-Prüfung beginnt jetzt erst nach einem begrenzten Nachweis des korrekt gerenderten Ausgangsframes. Die unveränderten Pixel-, Reihenanzahl- und Langzeitprüfungen bleiben erhalten. Fehlende Ausgangsbilder sind weiterhin ein Fehler, kein stillschweigender Skip.
-
-## Vollständiger eingefrorener Hostlauf
-
-Quellstand `ae288f6ef4e8e0a67783ecba67d30a42df9eabd0`, anschließend ausschließlich Korrektur des nativen Kaltstart-Prüfaufbaus, keine weiteren Add-on-Änderungen:
-
-```text
-python -m unittest discover -s tests -v
-Ran 3545 tests in 547.052s
-OK
-```
-
-**3.545 PASS, 0 FAIL, 0 ERROR.** Darin 3.486 beibehaltene ausführbare Basisfälle und 59 neue .86-Fälle. Direkte Testmethoden/ausgeführte geerbte Fälle bleiben getrennte Zählweisen. Die SHA-/Skip-/Kanalprüfungen laufen als Teil dieser Suite unverändert mit. Weitere 11 Branding-Pytests und 17 validierte PO-Dateien sind getrennte Prüfungen, keine zusätzlichen Unittest-Fälle.
-
-Auf demselben Add-on-Quellstand: native .86-Bildprüfung in 1080p/720p sowie je zwei Offline-Neustarts **PASS**, [CI 42821190965](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/42821190965). Native Playerprüfung mit 20 Stop-ACK-/Rückkehrzyklen je Medientyp, insgesamt 60: **PASS**, [Job 129846989976](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/42821190880/job/129846989976). Alle diese Nachweise gelten für synthetisches Linux Kodi, ausdrücklich nicht für Android.
-
-Der alte native Kaltstart-Prüfaufbau hatte seinen erforderlichen lokalen Journal-Recovery-Worker ausschließlich bei Versionsstring `.85` eingeschaltet. Er wird jetzt auch bei `.86` ausgeführt, weil diese Version denselben geschützten Journal-Worker erbt. Es bleiben zwei tatsächliche Offline-Neustarts, exakter Cache-/Verzeichnisabgleich und reale Pixelprüfungen erhalten. Die abschließenden nativen Gesamt-/Langzeitläufe werden nach Abschluss zusätzlich verlinkt.
-
-## Reproduktion / Datenintegrität
-
-Lokaler Testprozess: Python 3.12, Pillow 12.3.0, impacket 0.13.0, simpleeval 0.9.13, pytest 9.2.0. CI benutzt Python 3.12 und dieselben deklarierten Abhängigkeiten. Große synthetische SQLite-Sortierdaten nutzen lokal ausschließlich `SQLITE_TMPDIR`; Kodi-/Benutzerdateien werden nicht umgeleitet.
-
-Das ZIP wurde erneut unabhängig gebaut und bytegenau verglichen. Der separat über die GitHub Git-Blobs-API gelesene Paketinhalt ist ebenfalls identisch. SHA256/CRC und sämtliche 811 Paketquellen stimmen überein. Alle bestehenden Veröffentlichungsindizes und .85-Pakete sowie Installer 0.5.26 werden durch die vollständige Suite unverändert geprüft.
-
-Die abschließenden Workflow-Nachweise sind über [PR #410](https://github.com/artattakk-creator/kodi-noodleprivate/pull/410), [Master #409](https://github.com/artattakk-creator/kodi-noodleprivate/issues/409) und [Actions für den Entwicklungsbranch](https://github.com/artattakk-creator/kodi-noodleprivate/actions?query=branch%3Afix%2Fxcmate-02986-android-live-hero-mapping) abrufbar. PR-/Issue-Abschlussberichte unterscheiden vollständigen Hostlauf, native Pixel-/Langzeitnachweise und physische Android-Abnahme.
+Kein Merge des Folge-Drafts und keine Veröffentlichung in regulär, Pilot oder NeoDark3 ohne gesonderte Nutzerfreigabe. Die bisherigen veröffentlichten .85-Pakete/Indizes und Installer 0.5.26 werden byteidentisch geschützt. Der neue Quellstand auf main aus dem externen #410-Merge bedeutet keinen von diesem Agent ausgeführten Repository-Release.

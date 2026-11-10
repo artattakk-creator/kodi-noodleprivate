@@ -169,7 +169,8 @@ if not cold:
  poster_case86=dict(status='PASS',actual_pixels=count86,screenshot=path86.name,source=home.getProperty('XCMate.Hero63.'+active86+'.ArtSource'),android='ANDROID_NOT_TESTED')
 report['version']='0.1.29.86';report['hero86']=hero_case86;report['poster86']=poster_case86
 report['series85']=dict(confirm_native='PASS',back_native='PASS',no_implicit_mapping_write='PASS')
-if cold:Path('/root/post75.json').write_text(json.dumps(report,indent=2))
+if cold:
+ target86=Path('/root/post75.json');temp86=target86.with_suffix('.tmp');temp86.write_text(json.dumps(report,indent=2));temp86.replace(target86)
 
 stop.set();hero_thread86.join(2);check(not hero_thread86.is_alive(),'HERO86_FIXTURE_LANE_NOT_STOPPED')
 if not cold:
@@ -177,4 +178,5 @@ if not cold:
  runpy.run_path('/icons86.py')['run'](capture)
  runpy.run_path('/navigation86.py')['run']()
 
-if not cold:Path('/root/visible84.json').write_text(json.dumps(report,indent=2))
+if not cold:
+ target86=Path('/root/visible84.json');temp86=target86.with_suffix('.tmp');temp86.write_text(json.dumps(report,indent=2));temp86.replace(target86)

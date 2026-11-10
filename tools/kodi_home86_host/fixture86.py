@@ -48,6 +48,8 @@ def run():
  MediaView.pump=pump86
  started=time.monotonic()
  try:return run86()
- finally:Path('/root/nav86-route-'+sequence+'.json').write_text(json.dumps(dict(sequence=sequence,returned=True,elapsed_ms=int((time.monotonic()-started)*1000))))
+ finally:
+  target=Path('/root/nav86-route-'+sequence+'.json');temp=target.with_suffix('.tmp')
+  temp.write_text(json.dumps(dict(sequence=sequence,returned=True,elapsed_ms=int((time.monotonic()-started)*1000))));temp.replace(target)
 
 if __name__=='__main__':run()
