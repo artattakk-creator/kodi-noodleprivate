@@ -5144,3 +5144,79 @@ msgstr "Temporary XCMate image cache (MiB, maximum 64)"
 msgctxt "#32852"
 msgid "Temporary image files (maximum 256)"
 msgstr "Temporary image files (maximum 256)"
+
+msgctxt "#37080"
+msgid "Assign work/image"
+msgstr "Assign work/image"
+
+msgctxt "#37081"
+msgid "Edit search text"
+msgstr "Edit search text"
+
+msgctxt "#37082"
+msgid "Choose source"
+msgstr "Choose source"
+
+msgctxt "#37083"
+msgid "Search again"
+msgstr "Search again"
+
+msgctxt "#37084"
+msgid "Use automatic assignment"
+msgstr "Use automatic assignment"
+
+msgctxt "#37085"
+msgid "Hide image suggestion"
+msgstr "Hide image suggestion"
+
+msgctxt "#37086"
+msgid "Preparing search. You can cancel."
+msgstr "Preparing search. You can cancel."
+
+msgctxt "#37087"
+msgid "Explicitly change this assignment?"
+msgstr "Explicitly change this assignment?"
+
+msgctxt "#37088"
+msgid "More results"
+msgstr "More results"
+
+msgctxt "#37089"
+msgid "Verify work identity: explicitly assign this image? No episode information will be copied."
+msgstr "Verify work identity: explicitly assign this image? No episode information will be copied."
+
+msgctxt "#37090"
+msgid "This source is disabled. Check permissions or select another source."
+msgstr "This source is disabled. Check permissions or select another source."
+
+msgctxt "#37091"
+msgid "TMDB access is missing. Existing tokens remain unchanged."
+msgstr "TMDB access is missing. Existing tokens remain unchanged."
+
+msgctxt "#37092"
+msgid "No results. Edit the query or select another source."
+msgstr "No results. Edit the query or select another source."
+
+msgctxt "#37093"
+msgid "Programme data changed or are unavailable. Search remains available; retry saving after refresh."
+msgstr "Programme data changed or are unavailable. Search remains available; retry saving after refresh."
+
+msgctxt "#37094"
+msgid "Candidates could not be verified. Search again."
+msgstr "Candidates could not be verified. Search again."
+
+msgctxt "#37095"
+msgid "Cancelled. Existing assignment preserved."
+msgstr "Cancelled. Existing assignment preserved."
+
+msgctxt "#37096"
+msgid "Saving blocked by storage or permission checks. Existing assignment preserved."
+msgstr "Saving blocked by storage or permission checks. Existing assignment preserved."
+
+msgctxt "#37097"
+msgid "Source currently unavailable. Search again or choose another source."
+msgstr "Source currently unavailable. Search again or choose another source."
+
+msgctxt "#37098"
+msgid "Select your own image"
+msgstr "Select your own image"
