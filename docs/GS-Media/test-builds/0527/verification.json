@@ -1,7 +1,7 @@
 {
   "version": "0.5.27",
   "base_sha256": "5aa5d101a57adda5dbb1f5d05319da1ec185676dc784817b25dea267322ae0af",
-  "sha256": "56729fe34168d6e3102f4f91574a24abf88faad667b84bc129c0683305829efd",
+  "sha256": "c3e7b649d742c80fce7685a9f31051bfac09736ae08153b04ba74377eac343d6",
   "files": 34,
   "changed": [
     "script.gsmedia.setup/addon.xml",

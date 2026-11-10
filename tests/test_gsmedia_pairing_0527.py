@@ -31,3 +31,10 @@ class Pairing527(unittest.TestCase):
   records=[];addon=types.SimpleNamespace(getAddonInfo=lambda key:'0.1.29.86',setSetting=lambda *v:records.append(v))
   with mock.patch.dict(sys.modules,{'xbmcaddon':types.SimpleNamespace(Addon=lambda *a:addon),'xbmcgui':types.SimpleNamespace()}):self.assertEqual(self.ui.offer('ignored'),'SKIPPED')
   self.assertEqual(records,[('tmdb_pairing_state87','SKIPPED')])
+
+ def test_successful_optional_import_records_pairing_without_credential_values(self):
+  records=[];addon=types.SimpleNamespace(getAddonInfo=lambda key:'0.1.29.87' if key=='version' else '/synthetic-xcmate',setSetting=lambda *v:records.append(v))
+  states=iter(['NOT_PAIRED','LOCAL_TOKEN_VALID']);client=types.SimpleNamespace(status=lambda:next(states))
+  modules={'xbmcaddon':types.SimpleNamespace(Addon=lambda *args:addon),'xbmcgui':types.SimpleNamespace(Dialog=lambda:types.SimpleNamespace()),'tmdb_gateway_client87':client,'tmdb_gateway_ui87':types.SimpleNamespace(show=lambda:None)}
+  with mock.patch.dict(sys.modules,modules):self.assertEqual(self.ui.offer('ignored',manual=True),'PAIRED')
+  self.assertEqual(records,[('tmdb_pairing_state87','PAIRED')])

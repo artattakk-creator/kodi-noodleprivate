@@ -23,9 +23,10 @@ def _offer(profile,manual=False):
   client=importlib.import_module('tmdb_gateway_client87');state=client.status()
   if state in ('NOT_CONFIGURED','OPTED_OUT','LOCAL_TOKEN_VALID','LOCAL_TOKEN_INVALID','GATEWAY_PAIRED'):return classify(state)
   dialog=xbmcgui.Dialog()
-  if not manual and not dialog.yesno('TMDB sicher verbinden','Optional: Diese neue Box mit dem privaten Gateway verbinden? Die Freigabe erfolgt durch den Administrator. Später ist ebenfalls möglich.',defaultbutton=getattr(xbmcgui,'DLG_YESNO_NO_BTN',10)):return 'SKIPPED'
+  if not manual and not dialog.yesno('TMDB sicher verbinden','Optional: TMDB-Zugang per Adminfreigabe sicher einrichten? Einmaliger privater Import oder Gateway werden im nächsten Schritt erklärt. Später ist ebenfalls möglich.',defaultbutton=getattr(xbmcgui,'DLG_YESNO_NO_BTN',10)):return 'SKIPPED'
   importlib.import_module('tmdb_gateway_ui87').show()
-  return classify(client.status())
+  after=client.status()
+  return 'PAIRED' if after=='LOCAL_TOKEN_VALID' else classify(after)
  except (ImportError,OSError,ValueError,RuntimeError,AttributeError):return 'SERVER_UNAVAILABLE'
 
 def offer(profile,manual=False):
