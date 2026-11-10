@@ -157,3 +157,5 @@ if not cold:
 
 Path('/root/foreign87.json').write_text(json.dumps(report['foreign87'],indent=2))
 Path('/root/'+('post75.json' if cold else 'visible84.json')).write_text(json.dumps(report,indent=2))
+
+__import__('decoded_assets88').shutdown()

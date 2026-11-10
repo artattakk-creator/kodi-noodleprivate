@@ -4,6 +4,7 @@ Reuse every historical native case; only explicit .80 layout expectations
 change. The controlled provider/AV stream is synthetic, never Android PASS.
 """
 from pathlib import Path
+import xbmcaddon
 source80=Path('/base_gui79.py').read_text()
 for old80,new80 in (("Path('/root/home75.json')","Path('/root/home75-base80.json')"),('range(600,1040)','range(480,1040)'),('((270,20),1080,580)','((270,0),1620,480)'),('getpixel((330,645))','getpixel((330,525))'),('getpixel((800,150))','getpixel((1000,150))')):
  if old80 not in source80:raise RuntimeError('NATIVE80_BASE_CONTRACT_CHANGED')

@@ -7,7 +7,7 @@ This is RAM_ONLY, not a filesystem archive or proof of visible pixels.
 import hashlib,json,secrets,threading,time
 from collections import OrderedDict
 from http.server import BaseHTTPRequestHandler,HTTPServer
-_lock=threading.RLock();_server=None;_thread=None;_items=OrderedDict()
+_lock=threading.RLock();_server=None;_thread=None;_stop=threading.Event();_items=OrderedDict()
 MAX_BYTES=16*1024*1024;MAX_OBJECTS=128;PREFIX='XCMate.Decoded88.'
 INSTANCE=__import__('secrets').token_hex(16)
 def slot(key):
@@ -29,6 +29,12 @@ class Handler(BaseHTTPRequestHandler):
   except (OSError,TimeoutError):pass
  def setup(self):
   super().setup();self.connection.settimeout(3)
+def _serve(server):
+ import xbmc
+ aborted=getattr(xbmc.Monitor(),'abortRequested',lambda:False)
+ try:
+  while not _stop.is_set() and not aborted():server.handle_request()
+ finally:server.server_close()
 def put(key,body,until,kind='event'):
  from media_sources43 import validate_image
  width,height=validate_image(body)
@@ -48,7 +54,8 @@ def put(key,body,until,kind='event'):
   if _server is None:
    _server=HTTPServer(('127.0.0.1',0),Handler)
    window().setProperty(PREFIX+'Instance',INSTANCE)
-   _thread=threading.Thread(target=_server.serve_forever,kwargs={'poll_interval':.2},name='XCMate-decoded88',daemon=True);_thread.start()
+   _server.timeout=.2;_stop.clear()
+   _thread=threading.Thread(target=_serve,args=(_server,),name='XCMate-decoded88',daemon=True);_thread.start()
   path='/'+secrets.token_hex(32)+'.'+('png' if body.startswith(b'\x89PNG') else 'jpg')
   uri='http://127.0.0.1:'+str(_server.server_port)+path
   record=dict(instance88=INSTANCE,uri=uri,key=key,sha256=digest,width=width,height=height,until=min(until,time.time()+86400),storage='RAM_ONLY')
@@ -77,6 +84,7 @@ def shutdown():
  with _lock:
   server=_server;_server=None
   for path,item in list(_items.items()):_remove(path,item)
- if server:server.shutdown();server.server_close()
+ _stop.set()
+ if server:server.server_close()
  if _thread and _thread is not threading.current_thread():_thread.join(timeout=.5)
  _thread=None

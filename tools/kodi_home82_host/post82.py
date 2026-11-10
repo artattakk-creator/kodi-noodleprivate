@@ -1,5 +1,6 @@
 """Keep every .81 cold assertion; read complete, unique screenshot receipts."""
 from pathlib import Path
+import xbmcaddon
 import io,uuid
 source82=Path('/root/base-post81.py').read_text()
 source82=source82.replace("picture=Path('/root/home75-cold79-'+kind+'.png')", "canonical82=Path('/root/home75-cold79-'+kind+'.png')\n picture=Path('/root/home75-cold79-'+kind+'-'+uuid.uuid4().hex+'.png')")

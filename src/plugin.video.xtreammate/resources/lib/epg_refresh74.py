@@ -29,6 +29,7 @@ def request(pid,sid):
         _wake.set()
 
 def _run():
+    global _thread
     import xbmc
     from epg_handoff63 import profile_scope
     monitor=xbmc.Monitor()
@@ -70,8 +71,13 @@ def _run():
                                 old86=_failures86.get(key86);count86=min(4,(old86[1] if old86 and old86[0]==revision86 else 0)+1)
                                 _failures86[key86]=(revision86,count86);_due[key86]=time.monotonic()+(30,60,180,300)[count86-1]
                         while len(_failures86)>256:_failures86.pop(next(iter(_failures86)))
-        # Stay single-flight until shutdown; a request can arrive immediately
-        # after the queue is drained. Do not lose that wake in a dying thread.
+        # Retire under the same producer lock. A request arriving while this
+        # thread unwinds must see None, not an alive-but-exiting consumer.
+        # Kodi plugin interpreters must not keep an idle daemon after return.
+        with _lock:
+            if not _wanted:
+                if _thread is threading.current_thread():_thread=None
+                return
 
 def shutdown():
     _stop.set();_wake.set()

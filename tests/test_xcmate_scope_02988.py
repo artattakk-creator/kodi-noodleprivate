@@ -19,3 +19,12 @@ class Scope88(unittest.TestCase):
   paths=['addons.xml','addons.xml.md5','online-test/addons.xml','online-test/addons.xml.md5','online-test/manifest.json','index.html','online-test/index.html','script.gsmedia.setup/script.gsmedia.setup-0.5.26.zip','src/plugin.video.xtreammate/resources/lib/tmdb_token61.py','src/plugin.video.xtreammate/resources/lib/token_write64.py']
   paths+=['plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.87.zip','online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.87.zip','online-test/plugin.video.xtreammate-0.1.29.87.zip']
   for name in paths:self.assertEqual((ROOT/name).read_bytes(),subprocess.check_output(['git','show',base+':'+name],cwd=ROOT),name)
+ def test_native_wrapper_compiles_actual_nested_geometry_and_caption(self):
+  script=(ROOT/'tools/kodi_home88_host/gui88.py').read_text().split("exec(compile(base87,'/base_gui86.py','exec'),globals())")[0]
+  class P:
+   def __init__(self,name):self.name=name
+   def read_text(self):return (ROOT/('tools/kodi_home86_host/gui86.py' if self.name=='/base_gui86.py' else 'tools/kodi_home84_host/gui84.py')).read_text()
+  ns={'Path':P};exec(script.replace('from pathlib import Path',''),ns)
+  compile(ns['base87'],'nested86','exec')
+  prefix=ns['base87'].split("exec(compile(base,")[0];ns2={'Path':P};exec(prefix.replace('from pathlib import Path',''),ns2)
+  compile(ns2['base'],'nested84','exec');self.assertIn('(680,560)',ns2['base']);self.assertIn('(155,300)',ns2['base']);self.assertIn('Synthetic Linux Kodi .88',ns2['base']);self.assertIn('(1000,50,1800,520)',ns2['base'])
