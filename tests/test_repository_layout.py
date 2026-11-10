@@ -13,7 +13,7 @@ class RepositoryLayoutTests(unittest.TestCase):
     def test_gs_media_only_update_origin(self):
         manifest = ET.parse(SRC / "repository.gsmedia" / "addon.xml").getroot()
         self.assertEqual(manifest.get("id"), "repository.gsmedia")
-        self.assertEqual(manifest.get("version"), "1.8.1")
+        self.assertEqual(manifest.get("version"), "1.8.2")
         dirs = manifest.findall("./extension[@point='xbmc.addon.repository']/dir")
         # Lite repository must not aggregate unaudited third-party catalogues.
         self.assertEqual(len(dirs), 1)
