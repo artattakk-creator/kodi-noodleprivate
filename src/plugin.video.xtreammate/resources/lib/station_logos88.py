@@ -51,6 +51,8 @@ def fetch(portal,uri,cancel=lambda:False,connect=None,resolver=None):
   validate_image(body);return body
  if not network_safe(portal,uri):raise SourceError('UNSAFE_SOURCE')
  from download_redirect import addresses,_connect
+ from download_sources import DownloadFailure
+ import http.client
  from image_redirect48 import open_image
  origin=urlsplit(uri);response=None;end=time.monotonic()+12
  def guarded(target,ips,headers):
@@ -73,6 +75,11 @@ def fetch(portal,uri,cancel=lambda:False,connect=None,resolver=None):
    data.extend(part)
    if len(data)>MAX_IMAGE:raise SourceError('IMAGE_LIMIT')
   body=bytes(data);validate_image(body);return body
+ except SourceError:raise
+ except (DownloadFailure,OSError,http.client.HTTPException,ValueError) as error:
+  raw_code=str(getattr(error,'code',''))
+  code='UNSAFE_SOURCE' if raw_code.startswith('REDIRECT_') else 'DNS_ERROR' if raw_code=='DNS_ERROR' else __import__('art_errors').classify(error)
+  raise SourceError(code) from None
  finally:
   if response is not None:response.close()
 def read(portal,rows):

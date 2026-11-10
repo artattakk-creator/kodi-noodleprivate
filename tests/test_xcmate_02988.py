@@ -119,7 +119,8 @@ class Transport88(Fixture,unittest.TestCase):
  def test_actual_dns_rebinding_to_private_or_mixed_addresses_is_rejected(self):
   m=__import__('station_logos88');connect=mock.Mock(side_effect=AssertionError('SSRF request'))
   with mock.patch('socket.getaddrinfo',return_value=[(2,1,6,'',('127.0.0.1',80))]):
-   with self.assertRaises(Exception):m.fetch(self.portal,'http://images.example.org/a.png',connect=connect)
+   with self.assertRaises(__import__('media_sources43').SourceError) as error:m.fetch(self.portal,'http://images.example.org/a.png',connect=connect)
+  self.assertEqual(error.exception.code,'UNSAFE_SOURCE')
   connect.assert_not_called()
  def test_low_space_bridge_is_not_written_as_persistent_metadata(self):
   m=__import__('programme_session69');value=dict(decoded88=True,image='http://127.0.0.1:1/capability')
@@ -179,3 +180,27 @@ class Transport88(Fixture,unittest.TestCase):
   self.assertEqual(__import__('logo_manifest86').read(self.portal,[row],with_fallback=False),{})
   self.assertFalse(m.cached_capability(uri,__import__('logo_manifest86').key(self.portal,dict(row,sid='other'))))
   self.assertFalse(m.cached_capability(uri.replace('127.0.0.1','attacker.example.org'),tag))
+ def test_rejected_dns_answer_is_a_source_failure_not_a_worker_crash(self):
+  m=__import__('station_logos88');assets=__import__('decoded_assets88');m._due.clear();m._cursor.clear()
+  bad=dict(sid='bad',name='Bad source',stream_icon='http://bad.example.org/logo.png');good=dict(sid='good',name='Good source',stream_icon='http://good.example.org/logo.png')
+  original=m.fetch
+  def dns(host,port,**kw):return [(2,1,6,'',('127.0.0.1' if host=='bad.example.org' else '93.184.216.34',port))]
+  def response(*args):
+   body=io.BytesIO(png());return __import__('types').SimpleNamespace(status=200,headers={'Content-Type':'image/png'},read=body.read,close=body.close)
+  try:
+   with mock.patch('socket.getaddrinfo',side_effect=dns),mock.patch.object(m,'fetch',side_effect=lambda p,u,c:original(p,u,c,connect=response)),mock.patch('art_storage.check',side_effect=OSError('reserve')):
+    self.assertEqual(m.prepare(self.portal,[bad,good]),'PARTIAL')
+   self.assertNotIn('bad',m.read(self.portal,[bad]));self.assertIn('good',m.read(self.portal,[good]))
+  finally:assets.shutdown()
+ def test_two_interpreters_share_one_byte_owner_without_invalidating_visible_images(self):
+  import importlib.util,sys
+  first=__import__('decoded_assets88');first.shutdown()
+  spec=importlib.util.spec_from_file_location('decoded_assets88_second',first.__file__);second=importlib.util.module_from_spec(spec);spec.loader.exec_module(second)
+  try:
+   a=first.put('interpreter-A',png(),time.time()+600)
+   b=second.put('interpreter-B',png((162,82)),time.time()+600)
+   self.assertIsNone(second._server);self.assertTrue(first.valid('interpreter-A',a['uri']));self.assertTrue(first.valid('interpreter-B',b['uri']))
+   second.shutdown();self.assertTrue(first.valid('interpreter-A',a['uri']))
+   import urllib.request
+   with urllib.request.urlopen(b['uri'],timeout=3) as response:self.assertEqual(response.read(),png((162,82)))
+  finally:second.shutdown();first.shutdown()
