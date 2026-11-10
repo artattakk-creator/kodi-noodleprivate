@@ -46,6 +46,8 @@ def merge(portal,kind,items,rows,old=None):
         if kind in ('vod','series') and item['props'].get('XCMate.NoImage86')=='true':
             item['art']={k:'' for k in ('poster','thumb','icon','fanart','landscape')};item['_provider80']={}
             result.append(item);continue
+        if kind in ('vod','series') and item['props'].get('XCMate.ManualArt86')=='true':
+            result.append(item);continue
         if previous:
             from widget_assets69 import renderable
             for role,uri in previous.get('art',{}).items():

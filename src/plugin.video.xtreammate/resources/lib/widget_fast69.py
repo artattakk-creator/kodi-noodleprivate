@@ -37,14 +37,14 @@ def prepare(cancel=lambda:False):
    if selected:approve(portal,kind,selected,cancel)
    refs=references(portal,kind,rows)
    visible85=__import__('home_loading85').visible(portal,kind,rows)
-   images85=sum(__import__('os').path.isabs(refs.get(str(r['sid']),{}).get('poster') or refs.get(str(r['sid']),{}).get('thumb') or '') for r in visible85)
+   images85=sum(__import__('os').path.isabs(r.get('_manual_art43',{}).get('poster') or refs.get(str(r['sid']),{}).get('poster') or refs.get(str(r['sid']),{}).get('thumb') or '') for r in visible85)
    __import__('home_loading85').update(portal,kind,rows,code,images=images85,pending=bool(__import__('widget_assets69')._pending))
    from home_metrics82 import note as metric82
    metric82('CACHED_ITEMS_READY',kind,count=len(rows),local_images=sum(__import__('os').path.isabs(v) for roles in refs.values() for v in roles.values()),approved_refs=sum(len(v) for v in refs.values()))
    # A publication changes only after rows/policy/references change, never on
    # IR focus. Existing native widget reload hooks retain their own rate limit.
    key=(profile_scope(),str(portal['id']),kind)
-   stamp=hashlib.sha256(json.dumps([policy(portal,kind),[[r.get(k) for k in ('sid','name','cover','stream_icon')] for r in rows],refs],sort_keys=True).encode()).hexdigest()
+   stamp=hashlib.sha256(json.dumps([policy(portal,kind),[[r.get(k) for k in ('sid','name','cover','stream_icon','_no_art86','_manual_art43')] for r in rows],refs],sort_keys=True).encode()).hexdigest()
    if _published.get(key)==stamp:
     exists85=__import__('os').path.isfile(__import__('widget_refresh45').path(portal['id'],kind))
     if (exists85 or __import__('widget_readonly56').proof84(portal,kind,rows)) and (kind in __import__('home_schedule75')._read(__import__('home_schedule75').KEY).get('prepared',[]) or not admitted or prepared(kind,len(rows),portal=portal,rows=rows)):continue

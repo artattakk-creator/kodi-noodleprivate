@@ -276,6 +276,11 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         secrets=[str(portal.get(k) or '') for k in ('xc_user','xc_pass')]
         if any(secret and (secret in path.split('/') or len(secret)>=4 and secret in path) for secret in secrets):
             value['code']='BLOCKED_CREDENTIAL_URL';continue
+        if home86 and not new_origin75:
+            local86=__import__('hero_render86').recovered_candidate(event,candidate,url)
+            if local86:
+                retain86(local86)
+                return best86 or local86
         verified77=None
         if new_origin75:
             try:verified77=probe(url,cancel=cancel)

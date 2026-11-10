@@ -40,3 +40,25 @@ class Hide86(Fixture,unittest.TestCase):
   rows=[dict(self.row,_no_art86=True)]
   record=__import__('home_loading85').update(self.portal,'vod',rows,'READY',images=0,pending=True)
   self.assertEqual(record['state'],'READY');self.assertFalse(record['busy'])
+
+ def test_unchanged_widget_catalogue_receives_hide_and_reset_without_reimport(self):
+  m=__import__('widget_snapshot85');rows=[dict(self.row)];original=mock.Mock(side_effect=AssertionError('no catalogue reload'))
+  with mock.patch('home_schedule75.applicable',return_value=True),mock.patch.object(m,'cached',return_value=(rows,'READY')):
+   self.m.hide86('p','vod','1');hidden,code=m.snapshot(original,self.portal,'vod')
+   self.assertTrue(hidden[0]['_no_art86'])
+   value=__import__('widget_items45').describe(self.portal,'vod',hidden[0],{},assets47={'poster':'/old/provider.png'})
+   self.assertEqual(value['props']['XCMate.NoImage86'],'true');self.assertFalse(any(value['art'].values()))
+   self.m.reset('p','vod','1');restored,_=m.snapshot(original,self.portal,'vod');self.assertNotIn('_no_art86',restored[0])
+ def test_manual_poster_beats_widget_provider_art_and_is_not_reconciled_away(self):
+  from PIL import Image
+  out=io.BytesIO();Image.new('RGB',(120,180),'blue').save(out,'PNG');self.m.save('p','vod','1',image=out.getvalue(),source='user_local')
+  row=self.m.apply_many('p',[self.row])[0];manual=row['_manual_art43']['poster']
+  value=__import__('widget_render47').values(self.portal,'vod',[self.row],{})[0]
+  self.assertEqual(value['art']['poster'],manual);self.assertEqual(value['props']['XCMate.ManualArt86'],'true')
+  with mock.patch('home_publication74.source',return_value=1),mock.patch('home_publication74.source_refs',return_value={'1':'same'}),mock.patch('home_publication80.reconcile',side_effect=AssertionError('explicit choice is authoritative')):
+   kept,_=__import__('home_publication74').merge(self.portal,'vod',[value],[row],dict(source_revision74=1,items=[dict(value,art={'poster':'/other.png'})]))
+  self.assertEqual(kept[0]['art']['poster'],manual)
+
+ def test_untouched_widget_rows_have_identical_dto_and_no_manual_bookkeeping(self):
+  raw=[dict(self.row)];after=self.m.widget_rows86('p','vod',raw)
+  self.assertEqual(after,raw);self.assertIs(after[0],raw[0])

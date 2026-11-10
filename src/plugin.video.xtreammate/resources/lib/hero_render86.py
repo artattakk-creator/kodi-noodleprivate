@@ -107,3 +107,34 @@ def choose(event,value,values,win):
   values.update(Image=logo,ArtSource='station_logo' if logo else '',Kind86='station_logo',Rank86='9',SourceUrl86='')
  win.setProperty(PREFIX+'Event',event_key)
  return values
+
+def recovered_candidate(event,candidate,url):
+ """Worker-only reuse after independent work matching, not guessed cache art.
+
+ The exact current candidate URL, consent and full owned-file decode are
+ mandatory. Actual cached dimensions must meet the source quality threshold.
+ """
+ from event_art81 import allowed
+ from programme_urls55 import safe
+ from programme_sources57 import PROOFS
+ if candidate.get('match') not in ('EXACT_EVENT','EXACT_TITLE_YEAR','EXACT_SEASON_EPISODE','EXACT_UNIQUE_FILM_TITLE')+PROOFS:return None
+ if not allowed(candidate) or not safe(url) or candidate.get('provisional85'):return None
+ from widget_cache82 import variants,decoded
+ import xbmc
+ wanted=variants(url)
+ try:
+  raw=xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=86,method='Textures.GetTextures',params=dict(filter={'or':[dict(field='url',operator='is',value=v) for v in wanted]},properties=['url','cachedurl','sizes']))))
+  if not isinstance(raw,str) or len(raw)>262144:return None
+  records=json.loads(raw).get('result',{}).get('textures',[])
+  if not isinstance(records,list):return None
+  for texture in records[:32]:
+   if not isinstance(texture,dict) or texture.get('url') not in wanted:continue
+   record=decoded(texture,url)
+   if not record:continue
+   typed=dict(candidate,image_width77=record['width'],image_height77=record['height'])
+   if not __import__('hero_art86').classify(typed):continue
+   from programme_requests68 import identity,scope
+   from programme_art46 import fingerprint
+   return dict(typed,code='READY',key=event['key'],fingerprint=fingerprint(event),image=record['file'],thumbnail=record['file'],sha256=record['sha256'],scope69=identity(event),profile69=scope(),policy69=__import__('programme_policy68').negative_scope({}),until=min(time.time()+86400,float(event.get('stop',0))),persisted69=False,storage69='KODI_TEXTURE_CACHE',decoded77=True,mapping_epoch85=__import__('programme_mapping85').epoch(event))
+ except (OSError,ValueError,TypeError,AttributeError,RuntimeError):return None
+ return None

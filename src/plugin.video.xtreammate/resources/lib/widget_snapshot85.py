@@ -40,10 +40,16 @@ def snapshot(original,portal,kind,background=False):
  enabled=kind in ('vod','series') and __import__('home_schedule75').applicable() and callable(getattr(xbmcgui.Window(10000),'getProperty',None))
  if enabled:
   hit=cached(portal,kind)
-  if hit is not None:return hit
+  if hit is not None:return choices86(portal,kind,hit)
  result=original(portal,kind,background=background)
  if enabled and isinstance(result,tuple) and len(result)==2:remember(portal,kind,*result)
- return result
+ return choices86(portal,kind,result)
+
+def choices86(portal,kind,result):
+ if kind not in ('vod','series') or not isinstance(result,tuple) or len(result)!=2:return result
+ from media_overrides43 import widget_rows86
+ rows,code=result
+ return widget_rows86(portal['id'],kind,rows),code
 
 def semantic(value):
  """Lease renewal is not a catalogue/image edition or a full-row reload."""

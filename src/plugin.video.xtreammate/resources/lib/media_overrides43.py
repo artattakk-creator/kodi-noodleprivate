@@ -265,3 +265,10 @@ def hide86(pid,kind,sid):
         finally:os.close(directory)
         _snapshot(root,pid,value)
     return True
+
+
+def widget_rows86(pid,kind,rows):
+    """Worker-side manual overlay, without changing untouched catalogue DTOs."""
+    if kind not in ('vod','series') or not rows:return rows
+    changed=apply_many(pid,[dict(row,kind=kind) for row in rows])
+    return [choice if choice.get('_no_art86') or choice.get('_manual_art43') or choice.get('_metadata_override43') else original for original,choice in zip(rows,changed)]

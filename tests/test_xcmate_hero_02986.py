@@ -81,3 +81,27 @@ class Hero86(Fixture,unittest.TestCase):
   m=__import__('hero_render86');value=dict(self.value,image=self.value['source_url'])
   with mock.patch('xbmc.executeJSONRPC',create=True,return_value=json.dumps(dict(result=dict(textures=[dict(url=value['image'])])))),mock.patch('widget_cache82.decoded',return_value=dict(width=180,height=320)):m.prepare(self.e,value)
   self.assertFalse(m.window().getProperty(m.PREFIX+'Ready'))
+
+ def test_exact_verified_work_candidate_can_reuse_large_kodi_texture_offline(self):
+  m=__import__('hero_render86');url=self.value['source_url'];candidate=dict(source='tmdb_series',role81='backdrop',match='EXACT_UNIQUE_TV_TITLE66',url=url,remote_id=123)
+  texture=dict(url=url);record=dict(file='/verified/kodi.png',sha256='a'*64,width=1280,height=720)
+  with mock.patch('xbmc.executeJSONRPC',create=True,return_value=json.dumps(dict(result=dict(textures=[texture])))),mock.patch('widget_cache82.decoded',return_value=record),mock.patch('socket.getaddrinfo',side_effect=AssertionError('offline cache must not use DNS')):
+   value=m.recovered_candidate(self.e,candidate,url)
+  self.assertEqual(value['source'],'tmdb_series');self.assertEqual(value['role81'],'backdrop');self.assertEqual(value['image'],'/verified/kodi.png')
+  self.assertEqual(value['fingerprint'],__import__('programme_art46').fingerprint(self.e))
+  with mock.patch('xbmc.executeJSONRPC',create=True,return_value=json.dumps(dict(result=dict(textures=[texture])))),mock.patch('widget_cache82.decoded',return_value=dict(record,width=160,height=90)):
+   self.assertIsNone(m.recovered_candidate(self.e,candidate,url))
+ def test_disabled_source_or_other_texture_url_cannot_be_recovered(self):
+  m=__import__('hero_render86');url=self.value['source_url'];candidate=dict(source='tmdb_series',role81='backdrop',match='EXACT_UNIQUE_TV_TITLE66')
+  with mock.patch('event_art81.allowed',return_value=False),mock.patch('xbmc.executeJSONRPC',create=True,side_effect=AssertionError('source is disabled')):self.assertIsNone(m.recovered_candidate(self.e,candidate,url))
+  with mock.patch('xbmc.executeJSONRPC',create=True,return_value=json.dumps(dict(result=dict(textures=[dict(url='https://image.tmdb.org/t/p/w1280/foreign.png')])))),mock.patch('widget_cache82.decoded',side_effect=AssertionError('foreign texture')):self.assertIsNone(m.recovered_candidate(self.e,candidate,url))
+
+ def test_resolver_reuses_the_current_matched_candidate_before_image_network(self):
+  from programme_art46 import fingerprint
+  from programme_requests68 import identity,scope
+  event=dict(self.e,placeholder='/neutral.png',genre='Spielfilm',year=2021)
+  candidate=dict(source='tmdb_movie',role81='backdrop',match='EXACT_TITLE_YEAR',url='https://image.tmdb.org/t/p/w500/current.png',remote_id=123)
+  cached=dict(self.value,source='tmdb_movie',key=event['key'],image='/verified/cold.png',fingerprint=fingerprint(event),scope69=identity(event),profile69=scope(),until=self.now+3600)
+  with mock.patch('home_schedule75.applicable',return_value=True),mock.patch('artwork_temp85.lookup',return_value=None),mock.patch('event_art81.prior',return_value=None),mock.patch('programme_display84.recover',return_value=None),mock.patch('programme_display84.renew',return_value=None),mock.patch('artwork_display84.observe',return_value=True),mock.patch('art_trace81.own',return_value=candidate),mock.patch('hero_render86.recovered_candidate',return_value=cached) as recovery,mock.patch('programme_urls55.probe',side_effect=AssertionError('cached candidate must not be downloaded again')):
+   value=__import__('programme_urls55').resolve(event,allow_lookup=True,url_mode69=True)
+  recovery.assert_called_once();self.assertEqual(value['image'],cached['image']);self.assertEqual(value['source'],'tmdb_movie')

@@ -80,6 +80,15 @@ def describe(portal,kind,row,approved,epg=None,assets47=None):
         from widget_assets69 import renderable
         image={k:(v if renderable(v) else '') for k,v in image.items()}
         props['XCMate.ArtPending69']='false' if image.get('poster') else 'true'
+    manual86=row.get('_manual_art43') if kind in ('vod','series') else None
+    if manual86 and not row.get('_no_art86'):
+        poster86=manual86.get('poster');fanart86=manual86.get('fanart')
+        if poster86:image.update(poster=poster86,thumb=poster86,icon=poster86,fanart=fanart86 or '',landscape=fanart86 or poster86)
+        elif fanart86:image.update(fanart=fanart86,landscape=fanart86)
+        props['XCMate.ManualArt86']='true';props['XCMate.MediaHeroSource81']='Manuell'
+        if image.get('poster'):props['XCMate.ArtPending69']='false'
+        props['XCMate.Source85']=__import__('hashlib').sha256(__import__('json').dumps(['MANUAL86',manual86],sort_keys=True).encode()).hexdigest()
+        provider80={}
     if row.get('_no_art86'):
         image={k:'' for k in ('poster','thumb','icon','fanart','landscape')}
         props['XCMate.NoImage86']='true'
