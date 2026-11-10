@@ -1,0 +1,41 @@
+name: GS Media Core 1.8.2 package-readiness audit
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "docs/GS_MEDIA_CORE_182_RELEASE_MATRIX.json"
+      - "docs/GS_MEDIA_CORE_182_BACKUP_RESTORE_MASTERPLAN_DE.md"
+      - "tools/gsmedia_core_release_gate.py"
+      - "tests/test_gsmedia_core_182.py"
+      - ".github/workflows/gsmedia-core-readiness.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate-source-and-dependency-gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify all four priority IDs, verified-origin plan and fail-closed release gate
+        run: python -m unittest discover -s tests -p 'test_gsmedia_core_182.py' -v
+      - name: Verify audit correctly refuses missing/unverified package sources
+        run: |
+          set +e
+          python tools/gsmedia_core_release_gate.py > gsmedia-core-audit.txt
+          rc=$?
+          cat gsmedia-core-audit.txt
+          # Exit 2 means a clear, expected BLOCKED status. Do not report the
+          # actual 1.8.2 release as READY or pretend missing downloads pass.
+          test "$rc" -eq 2
+      - name: Upload inspectable readiness report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gsmedia-core-182-blocker-report
+          path: gsmedia-core-audit.txt
+          if-no-files-found: warn
+          retention-days: 14
