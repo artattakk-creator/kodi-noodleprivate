@@ -124,3 +124,18 @@ Nach erfolgreicher .85-Installation und Neustart auf **Box B** (Kodi 21.3, Andro
 **Aktueller Android-Status:** `.85` ist tatsächlich installiert, aber P0-Android-Abnahme **FAIL/OPEN** für Live-Performance, Logo-Renderer, Hysterese und manuelle Kandidaten. VOD-Cover-Warmstart als **USER_REPORTED_IMPROVED**, nicht als gesamter Widget-PASS.
 
 **Hinweis für Releasekommunikation:** Erfolgreiche .85-CI-Host-Tests lösen die oben gemessenen Android-Regressionen nicht automatisch. Die .86 wird deshalb vor Veröffentlichung auf **genau diesem Gerät** getestet. Keine Android-/Pixel-PASS-Aussage ohne Beleg.
+
+## 8. NEUER VERBINDLICHER LOGNACHTRAG – zwei Box-B-Dateien vom 10.11.2026
+
+**Vollständige, datenschutzbereinigte Ist-Analyse:** [ANDROID_LOGANALYSE_02985_BOXB_2026-11-10_134323_DE.md](ANDROID_LOGANALYSE_02985_BOXB_2026-11-10_134323_DE.md). Dieser **neuere** Datensatz hat Vorrang vor Schätzungen/älteren .84-Läufen. Er beweist nicht, dass die `.86` bereits auf Android getestet wurde; die untersuchten Sitzungen liefen mit `.85`.
+
+**P0-F jetzt zusätzlich verpflichtend** (separat test- und abnahmefähig, nicht in A–E verstecken):
+- Das ältere .85-Log meldet **18× `EXCEPTION: Index out of range`**, das neuere **165×** zwischen 14:23 und 14:41 Uhr. Das neue Log zeigt ab etwa 14:23 einen **`CPythonInvoker`-5-Sekunden-Abbruch**, `DISPATCH_FAILED` im XCMate-`media_detail`-/Home-Navigationspfad und **7 `GetDirectory`-Fehler**. Hier muss Codex echten Stack/GUI-Kontroll-Index, asynchrone Refresh-Generation und Python-Routen-Terminierung messen. Der genaue Verursacher ist **noch nicht bewiesen**. Regression: 100× Menü/Detail/Zurück/Fokuswechsel unter Background-Update ohne `Index`-, Directory- oder Invoker-Timeout.
+- Der Log zeigt einen **ernsten Zeitbudget-Konflikt**: früh bekannte 88 Sender, trotzdem `LIVE_HOME_READY` erst nach **463.372 ms** (alter Neustart) bzw. **147.811 ms** (neuer Neustart); `WIDGET_FAST_DONE` braucht im Median **14,7 s / 13,2 s**, Maximum **98,52 s / 97,05 s**. Die schnell sichtbare Logo-Rail darf nicht auf diese Pipeline warten; native Pixel-Abnahme erforderlich.
+- `EPG_CACHE_UNAVAILABLE` **366/537**, `EPG_DATA_MISSING` **301/1.485** (nur **10/14 betroffene pseudonymisierte Kanal-IDs**), `EPG_DB_BUDGET` **187/263**, `NO_SOURCE_FACTS` **2.778/6.693** (nur 150/342 verschiedene Event-Hashes). Negativ-Caches/Retry-TTL + Vermeidung mehrfacher identischer Log-/Worker-Wiederholungen prüfen; keine Falschbehauptung über 9.471 verschiedene Sendungen.
+- `RESERVE_BLOCKED` **45/349**, `RAM_ONLY` **240/577**, `PROGRAMME_CACHE_BUDGET` **61/192**: Persistenz noch nicht gesichert. Die zwei neuen Logs enthalten **keine neue eindeutige `statvfs`-/separate Mount-ID-Verifikation**; Speicherumzug erst nach echtem Schreib- und Lesetest, niemals Reserve senken.
+- **Gegenbeweis:** 24 Film-/24 Serienitems mit teilweise 24/21 lokalen Bildreferenzen sind verfügbar, einzelne echte Image-Decodes funktionieren. `CACHED_ITEMS_READY` wird 101/688-mal wiederholt protokolliert (nicht zwangsläufig 101/688 echte vollständige Builds), genau **diese** semantische Aktualisierungs-/Skin-Route differenzieren. Bereits vorhandene Cover-Warmstarts nicht regressieren.
+- SlyGuy-Repository/Modul ist registriert und Shared-Service-Start im alten Log nachweisbar; kurzer Installer-Hänger damit **nicht** als heutiger P0-Absturz bewiesen. Skin-Timers-/xVAULT-Provider-Warnungen derzeit nachrangig.
+
+**Codex: Hänge den neuen datenschutzbereinigten Befund explizit an [PR #410](https://github.com/artattakk-creator/kodi-noodleprivate/pull/410), ergänze eigene Tests/Report um die P0-F-Gates, und aktualisiere die `.86`-Abnahmematrix.** Kein Review-, Android- oder Merge-PASS ohne Tests. Roh-Logs nicht in öffentliches GitHub committen.
+
