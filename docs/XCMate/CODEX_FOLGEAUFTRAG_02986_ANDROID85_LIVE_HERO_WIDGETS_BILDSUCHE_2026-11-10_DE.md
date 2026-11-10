@@ -139,3 +139,33 @@ Nach erfolgreicher .85-Installation und Neustart auf **Box B** (Kodi 21.3, Andro
 
 **Codex: Hänge den neuen datenschutzbereinigten Befund explizit an [PR #410](https://github.com/artattakk-creator/kodi-noodleprivate/pull/410), ergänze eigene Tests/Report um die P0-F-Gates, und aktualisiere die `.86`-Abnahmematrix.** Kein Review-, Android- oder Merge-PASS ohne Tests. Roh-Logs nicht in öffentliches GitHub committen.
 
+
+## 9. P0-G – Eindeutige Icons für die linke vertikale Navigation (Nutzerauftrag 10.11.2026)
+
+**Verbindlicher Nutzerwunsch:** Die **linke Icon-Navigationsleiste** muss wieder für **jeden Menüeintrag ein eigenes, thematisch unverwechselbares Piktogramm** zeigen. Es darf nicht bei allen Einträgen dasselbe generische Bild, ein leeres Symbol oder ein falsch überdecktes Senderlogo erscheinen. Die Funktion gilt sowohl für die **dritte Links-Ebene im laufenden Live-TV** als auch – sofern der BINGIE-Home-Skin dieselbe linke Rail rendert – für dort dargestellte XCMate-Hauptnavigation. Dieser Punkt war bereits [am 22.10. spezifiziert](LIVE_TV_NAV_ICON_RAIL_SENDERVORSCHAU_2026-10-22_DE.md); jetzt ausdrücklich in die .86-Abnahme übernehmen.
+
+**Pflichtmapping mit sieben eigenen Bilddateien / eindeutigen Icons:**
+
+| Reihenfolge | Menüpunkt | Eindeutiges Symbol | Aktion |
+| --- | --- | --- | --- |
+| 1 | **Suche** | Lupe | globale Suche |
+| 2 | **Favoriten** | Herz/Stern (Favoriten) | XCMate-Favoriten |
+| 3 | **Live-TV** | Fernsehgerät/Antennensymbol | aktuelle Live-Senderliste |
+| 4 | **Filme** | Filmklappe oder Filmstreifen | Filmbrowser |
+| 5 | **Serien** | gestapelte Episoden/Serienkarte (nicht identisch mit Live-TV-Fernseher) | Serienbrowser |
+| 6 | **Einstellungen** | Zahnrad | Einstellungen |
+| 7 | **Verlassen** | Tür-/Zurück-zum-Start-Symbol (nicht einfach „Zurück“) | XCMate-Hauptübersicht, nicht unkontrollierter Kodi-Homescreen |
+
+Die vorhandenen optionalen Zusatzpunkte wie **EPG/Programmführer** (Kalender), **Sendergruppen** (Liste) und **Startsender** (Pin) behalten ebenfalls **eigene** Icons, ohne die sieben Hauptpunkte zu duplizieren. Die vorgegebene Menü-Reihenfolge und bestehende Links-/Rechts-/OK-/Zurück-Semantik beachten; die Live-Overlay-Spezifikation sieht **Live → Links: Sender → Links: Gruppen → Links: Icon-Rail → Links: ausgeklappt** sowie geregelte Rückkehr vor.
+
+**Ist-Code als Einstieg, nicht als Beweis funktionierender Darstellung:** `src/plugin.video.xtreammate/resources/lib/nav_rail.py` enthält bereits `ENTRIES` mit unterschiedlichen Tabler-Symbolnamen sowie `RailView` mit PNG-Dateien aus `resources/media/navigation`; `tools/build_xcmate_nav_icons.py` erzeugt/hashprüft 96×96-PNGs. Der Code alleine beweist nicht, dass der **von Nutzer gemeinte linke BINGIE-/Live-TV-Bereich** diese tatsächlich zeigt. Codex muss die real gerenderte Skin-Rail, Asset-Pfade, `ControlImage`-/`setImage()`-Logik, fokussierte vs. unfokussierte Zustände und Ressourcenverteilung im Installations-ZIP untersuchen. Ein übergreifender Skinpatch darf **nicht** persönliche Hauptmenü-Icons/Layouts des Nutzers still überschreiben.
+
+**Umsetzung / Tests:**
+1. Prüfe ZIP, `resources/media/navigation/manifest.json`, Piktogramm-Lizenzen und tatsächliche `normal/focused/selected/disabled`-Texturen. Für alle 7 Hauptpunkte müssen gültige **unterschiedliche** PNG-Dateien referenziert werden; keine globale `tv.png`-/generische Bildquelle.
+2. **Schmale geschlossene Icon-Rail:** jedes Symbol ist ohne Text eindeutig. Aufklappen zeigt korrekt lokalisierte Beschriftung; blaues XCMate-Fokus-/Auswahlschema, kontrastreich und blind bedienbar. Normalzustand dezent, Fokus deutlich, 720p und 1080p sauber. Logos dürfen nicht durch stale Render-/Focus-Cache verschwinden.
+3. D-Pad Hoch/Runter, Links/Rechts, OK und Back mit Startsender/TV-Player sowie XCMate-Navigation testen; Fokusposition beim Aus-/Einklappen behalten, **kein** `Index out of range`, kein doppelter Tastendruck, keine Wiedergabeunterbrechung. „Verlassen“ öffnet gezielt XCMate-Home, nur vollständiges Einklappen lässt Stream weiterlaufen.
+4. Testfall/Beweis auf Box B: Screenshot **eingeklappte Icon-Leiste mit sieben verschiedenen sichtbaren Symbolen**, ausgeklappte mit sieben korrekten Labels, Fokus auf jedem Element, Wechsel Live-TV→Filme→Serien→Zurück und Restart mit identischen Assets. Kodi-Skin-Pixelabnahme, nicht lediglich Tests der `ENTRIES`-Liste.
+5. **Keine Laufzeit-Downloads für Navigationsicons**: alle Assets sind vorgepackt und lokal zugreifbar. Visuelle Ausgabe darf keine EPG-/TMDB-/Artwork-Netzwerkarbeit benötigen. Screenshotmaterial nur nach Nutzerfreigabe veröffentlichen.
+
+**Release-Gate:** Falls .86 trotz vorhandener unterschiedlicher Iconnamen physisch wieder generische/fehlende Icons zeigt, gilt **P0-G NOT_PASSED**. Im [PR #410](https://github.com/artattakk-creator/kodi-noodleprivate/pull/410) mit sauberem Testnachweis aufnehmen; kein automatischer Merge vor den im Masterauftrag erforderlichen Gates.
+
