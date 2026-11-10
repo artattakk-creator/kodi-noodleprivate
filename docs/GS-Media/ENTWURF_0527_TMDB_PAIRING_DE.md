@@ -17,3 +17,5 @@ Android-Abnahme nach Infrastrukturfreigabe: bestehende lokale Datei/Opt-out sch�
 Kein Merge und kein Release; .5.26 und alle .86-Kanäle unverändert.
 
 Nachtrag K1: Die .87-UI erklärt die Unterschiede zwischen einmaligem privatem Tokenimport (Phase 1) und stärkerem Gateway. Gewünschtes Ziel ist gs-media.eu; produktive API/Hostingrechte fehlen weiterhin. Ein erfolgreicher neuer Import wird anschließend als PAIRED im öffentlichen Installerstatus geführt; bereits vorher vorhandene lokale Zugänge werden SKIPPED. Erster eigener CI-Lauf PASS: https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/42882010440 – die neue Fassung wird separat erneut geprüft.
+
+Die drei älteren HTML-Freeze-Tests .83/.84/.85 referenzierten nach der bereits veröffentlichten .86 noch den .85-Index. Sie vergleichen jetzt exakt den genehmigten .86-Stand `48cbdc2` (keine Aufweichung und keine Katalogänderung). Dieselbe Testkorrektur ist in #416 enthalten. Keine historischen Testmethoden entfernt.

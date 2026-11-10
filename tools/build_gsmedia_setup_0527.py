@@ -44,7 +44,7 @@ def build(out):
    z.writestr(info,data,compress_type=zipfile.ZIP_DEFLATED,compresslevel=8)
  with zipfile.ZipFile(target) as z:assert z.testzip() is None
  digest=hashlib.sha256(target.read_bytes()).hexdigest();Path(str(target)+'.sha256').write_text(digest+'  '+target.name+'\n')
- report=dict(version='0.5.27',base_sha256=BASE,sha256=digest,files=len(files),changed=changed,untouched_0526='PASS',android='ANDROID_NOT_TESTED',gateway_deploy='BLOCKED_NO_DOMAIN_TLS_ADMIN',production_published=False)
+ report=dict(version='0.5.27',base_sha256=BASE,sha256=digest,files=len(files),changed=changed,untouched_0526='PASS',android='ANDROID_NOT_TESTED',gateway_deploy='BLOCKED_NO_BACKEND_TLS_ADMIN',production_published=False)
  (out/'verification.json').write_text(json.dumps(report,indent=2)+'\n');return report
 if __name__=='__main__':
  import argparse

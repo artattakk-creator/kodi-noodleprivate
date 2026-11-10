@@ -12,6 +12,6 @@
   ],
   "untouched_0526": "PASS",
   "android": "ANDROID_NOT_TESTED",
-  "gateway_deploy": "BLOCKED_NO_DOMAIN_TLS_ADMIN",
+  "gateway_deploy": "BLOCKED_NO_BACKEND_TLS_ADMIN",
   "production_published": false
 }
