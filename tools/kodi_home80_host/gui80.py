@@ -33,7 +33,7 @@ def capture_selected80(kind,index):
    return path80,rgb80 # The original strict pixel assertion reports failure.
   pump();xbmc.sleep(100)
 def settle_idle86():
- if xbmcaddon.Addon().getAddonInfo('version')!='0.1.29.86':return
+ if xbmcaddon.Addon().getAddonInfo('version') not in ('0.1.29.86','0.1.29.87'):return
  # .86 correctly shows a station logo until the selected event's renderer
  # receipt exists. Start the unchanged soak only on its actual settled pixels.
  deadline=time.monotonic()+5
