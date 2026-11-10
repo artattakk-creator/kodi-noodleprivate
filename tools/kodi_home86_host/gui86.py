@@ -31,7 +31,12 @@ base=base[:start85]+""" picture_started85=time.monotonic()
  picture_wait85=int((time.monotonic()-picture_started85)*1000)
 """+base[end85:]
 base=base.replace("cases.append(dict(kind=kind,items=", "cases.append(dict(picture_wait_ms=picture_wait85,kind=kind,items=")
+# The legacy fixture explicitly stops its service lane at its own end. The
+# new poster case must exercise an active lane, rather than reusing SID0 ACKs.
+base=base.replace('threading.Thread(target=hero_worker,daemon=True).start()', 'hero_thread86=threading.Thread(target=hero_worker,daemon=True);hero_thread86.start()')
 exec(compile(base,'/base_gui84.py','exec'),globals())
+hero_thread86.join(2);check(not hero_thread86.is_alive(),'HERO86_OLD_FIXTURE_LANE_NOT_STOPPED')
+stop=threading.Event();hero_thread86=threading.Thread(target=hero_worker,daemon=True);hero_thread86.start()
 # Then scroll to the second viewport: all 24 titles remain in the native row,
 # only the newly visible sources are admitted, and the selected tile stays put.
 def refresh_plans85():
@@ -164,3 +169,5 @@ if not cold:
 report['version']='0.1.29.86';report['hero86']=hero_case86;report['poster86']=poster_case86
 report['series85']=dict(confirm_native='PASS',back_native='PASS',no_implicit_mapping_write='PASS')
 Path('/root/'+('post75.json' if cold else 'visible84.json')).write_text(json.dumps(report,indent=2))
+
+stop.set();hero_thread86.join(2);check(not hero_thread86.is_alive(),'HERO86_FIXTURE_LANE_NOT_STOPPED')
