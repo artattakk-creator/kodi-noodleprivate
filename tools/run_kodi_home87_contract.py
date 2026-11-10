@@ -41,7 +41,7 @@ def main():
   for i in (1,2):
    run('exec',name,'rm','-f','/root/foreign87.json')
    if i==2:run('exec',name,'rm','/root/post75.json')
-   with (report/('restart'+str(i)+'.log')).open('w') as log:run('exec',name,'python3','/root/restart75.py',stdout=log,stderr=subprocess.STDOUT)
+   with (report/('restart'+str(i)+'.log')).open('w') as log:run('exec','-e','XCMATE_GUI_RESTART_TIMEOUT87=240',name,'python3','/root/restart75.py',stdout=log,stderr=subprocess.STDOUT)
    with (report/('foreign-restart'+str(i)+'.log')).open('w') as log:run('exec',name,'python3','-c',"import json,time;from pathlib import Path;end=time.monotonic()+160\nwhile time.monotonic()<end:\n if Path('/root/post75-error.txt').exists():raise RuntimeError(Path('/root/post75-error.txt').read_text())\n if Path('/root/foreign87.json').exists():assert json.loads(Path('/root/foreign87.json').read_text())['status']=='PASS';break\n time.sleep(.1)\nelse:raise RuntimeError('FOREIGN87_RESTART_TIMEOUT')",stdout=log,stderr=subprocess.STDOUT)
    copy('/root/post75.json','restart'+str(i)+'.json');copy('/root/foreign87.json','foreign-restart'+str(i)+'.json')
  finally:

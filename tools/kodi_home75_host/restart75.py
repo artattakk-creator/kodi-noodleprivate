@@ -1,5 +1,5 @@
 """Disposable native Kodi process restart; never connects to a user's device."""
-import hashlib,json,time,urllib.request
+import hashlib,json,os,time,urllib.request
 from pathlib import Path
 opener=urllib.request.build_opener(urllib.request.ProxyHandler({}))
 def rpc(method,params=None):
@@ -49,7 +49,11 @@ for _ in range(150):
 else:raise RuntimeError('POST75_RESTART_NO_KODI')
 rpc('GUI.ActivateWindow',{'window':'home'});time.sleep(2)
 rpc('Addons.ExecuteAddon',{'addonid':'script.xcmate.guicontract59'})
-for _ in range(1200):
+# .87 replays three media/hero cases plus thirteen independent rows; the
+# legacy .79 cold probe covered two cached pictures only. This bounded test
+# harness budget never changes any packaged Save/Stop/UI production timeout.
+gui_budget87=max(120,min(240,int(os.environ.get('XCMATE_GUI_RESTART_TIMEOUT87','120'))))
+for _ in range(gui_budget87*10):
     if Path('/root/post75-error.txt').exists():raise RuntimeError(Path('/root/post75-error.txt').read_text())
     if Path('/root/post75.json').exists():break
     time.sleep(.1)
