@@ -48,3 +48,10 @@ class Live86(Fixture,unittest.TestCase):
   with mock.patch('sqlite3.connect',side_effect=AssertionError('SQL')),mock.patch('media_sources43.validate_image',side_effect=AssertionError('decode on directory')):
    self.assertEqual(m.read(self.portal,self.rows[:1])['0'],str(path))
   self.assertEqual(m.read(self.portal,self.rows[:1],with_fallback=False),{})
+
+ def test_legacy_source_retains_its_start_station_pin_without_changing_home50_order(self):
+  from types import SimpleNamespace
+  m=importlib.import_module('widget_home50');items=[dict(props={'XCMate.MediaId':str(i)}) for i in range(88)];portal=dict(self.portal,start_stream_id='37')
+  ordered=m.ordered(SimpleNamespace(_params={}),portal,items)
+  self.assertEqual(ordered[0]['props']['XCMate.MediaId'],'37');self.assertEqual(len(ordered),88);self.assertEqual(len({v['props']['XCMate.MediaId'] for v in ordered}),88)
+  self.assertEqual(m.ordered(SimpleNamespace(_params={'home50':'1'}),portal,items),items)

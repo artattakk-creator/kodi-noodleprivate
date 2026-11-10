@@ -13,6 +13,14 @@ def values(portal):
     return (__import__('live_rail86').values(portal,selected) if __import__('home_schedule75').applicable() else decorate(portal,selected)),code
 
 
+def ordered(router,portal,items):
+    # Legacy saved sources pin the configured start station once; Home50 keeps
+    # its existing provider ordering. Neither source URL is rewritten.
+    if router._params.get('home50')=='1':return items
+    sid=str(portal.get('start_stream_id') or '')
+    selected=[v for v in items if v['props'].get('XCMate.MediaId')==sid]
+    return selected+[v for v in items if v['props'].get('XCMate.MediaId')!=sid] if selected else items
+
 def render(router,portal):
     import xbmc,xbmcplugin
     from boot_diagnostics import finish_directory
@@ -21,6 +29,7 @@ def render(router,portal):
     from widget_diagnostics47 import note
     note(portal['id'],'live','DIRECTORY','DIRECTORY_INVOKED')
     items,code=values(portal)
+    items=ordered(router,portal,items)
     from widget_runtime79 import generation,directory
     tag79=generation(portal,'live',[dict(sid=v['props']['XCMate.MediaId']) for v in items],{v['props']['XCMate.MediaId']:v['art'] for v in items})
     for v79 in items:v79['props']['XCMate.Directory79']=tag79
