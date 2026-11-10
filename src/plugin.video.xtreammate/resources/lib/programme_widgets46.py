@@ -21,6 +21,8 @@ def decorate(value,portal,channel,info):
  props=value['props'];props['XCMate.ArtProof69']=proof(art) if actual else '';props.update({'XCMate.ProgrammeKey46':event['key'],'XCMate.ProgrammeImage46':image,'XCMate.ProgrammeLogo46':logo if real else '', 'XCMate.ProgrammeChannel46':event['channel'], 'XCMate.ProgrammeTitle46':event['title'] or tr(36102), 'XCMate.ProgrammeTimes46':((info.get('now_time','')+' – '+info.get('now_end_time','')) if event['title'] else ''),'XCMate.ProgrammeNext46':info.get('next',''),'XCMate.ProgrammeDescription46':event.get('description',''),'XCMate.ProgrammePercent46':str(round(info['progress']*100)) if event['title'] and isinstance(info.get('progress'),(int,float)) else '0', 'XCMate.ProgrammeDetails46':event['details_url'], 'XCMate.ProgrammeArtCode46':art.get('code','PENDING')})
  if event['title']:value['info']['title']=event['title']
  props['XCMate.ProgrammeNextTimes48']=info.get('next_time','')+' – '+info.get('next_end_time','') if info.get('next') else ''
+ props['XCMate.Provisional85']='true' if (art.get('provisional85') or art.get('match')=='PROVISIONAL_TV85') else ''
+ if (art.get('provisional85') or art.get('match')=='PROVISIONAL_TV85'):props['XCMate.ProgrammeDescription46']='Bildvorschlag – Zuordnung nicht bestätigt.\n'+props['XCMate.ProgrammeDescription46']
  props['XCMate.ProgrammeKey47']=event['key']
  props['XCMate.ProgrammeNextStart47']=str(info.get('next_start',0))
  props['XCMate.ProgrammeDisplay47']='PROGRAMME_IMAGE' if actual else 'STATION_LOGO' if real else 'NEUTRAL_NO_LOGO'

@@ -55,8 +55,14 @@ def poll():
             for pid,kind,_,_ in values:
                 scope84,images84=_art_counts84.get((pid,kind),('',0));key84=(hook,pid,kind,scope84)
                 if scope84 and images84>0 and not _art_seen84.get(key84):newly_visible84.append(key84)
-        if old and (old[0]==signature or now-old[1]<60 and not newly_visible84):continue
+        if old and old[0]==signature:continue
+        if __import__('widget_patch85').publication(hook,values):
+            _seen[hook]=(signature,old[1] if old else now)
+            for _,kind,_,count in values:trace('UPDATED',kind,count)
+            continue
+        if old and now-old[1]<60 and not newly_visible84:continue
         window.setProperty(hook,signature);_seen[hook]=(signature,now)
+        __import__('widget_patch85').sent(hook,values)
         for key84 in newly_visible84:_art_seen84[key84]=True
         while len(_art_seen84)>96:_art_seen84.pop(next(iter(_art_seen84)))
         for _,kind,_,count in values:trace('UPDATED',kind,count)

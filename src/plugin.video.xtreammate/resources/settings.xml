@@ -34,6 +34,9 @@
   <category label="36002">
     <setting id="programme_art_local69" type="bool" label="Sendungsbilder zusätzlich lokal speichern (optional)" default="false"/>
     <setting id="programme_settings68" type="action" label="EPG / Sendungsbilder: Einstellungen und Status" action="RunPlugin(plugin://plugin.video.xtreammate/?action=native_options45&amp;group=tmdb_access61)"/>
+    <setting id="programme_suggestions85" type="bool" label="32850" default="true" />
+    <setting id="programme_temp85_mb" type="number" label="32851" default="16" />
+    <setting id="programme_temp85_objects" type="number" label="32852" default="64" />
     <setting id="programme_art_budget46" type="enum" label="36120" values="32|64|128|256" default="1"/>
     <setting id="programme_helper57" type="bool" label="36540" default="true"/>
     <setting id="programme_catalog57" type="bool" label="36541" default="true"/>

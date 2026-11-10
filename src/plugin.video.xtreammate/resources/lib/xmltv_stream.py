@@ -80,7 +80,7 @@ def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None,pr
         nonlocal record,text,text_length
         if record is not None:
             value=''.join(text).strip()[:4096]
-            if tag in ('display-name','title','sub-title','date','desc','category','value') and tag not in record: record[tag]=value
+            if tag in ('display-name','title','sub-title','date','desc','category','country','value') and tag not in record: record[tag]=value
             if tag=='director' and value and len(record.setdefault('director',[]))<8:record['director'].append(value[:120])
             if tag=='actor' and value and len(record.setdefault('cast',[]))<24:record['cast'].append(value[:120])
             if tag=='episode-num':
@@ -105,7 +105,7 @@ def parse(stream,on_channel,on_programme,cancel=lambda:False,max_seconds=None,pr
                             name=str(record.get('title',''))[:512],descr=record.get('desc',''),category=record.get('category',''),
                             screenshot_uri=record.get('icon',''),episode=record.get('episode',''),rating=record.get('value',''),
                             sub_title=record.get('sub-title',''),date=record.get('date',''),cast=record.get('cast',[]),director=record.get('director',[]),
-                            season=record.get('season'),episode_number=record.get('episode_number')))
+                            season=record.get('season'),episode_number=record.get('episode_number'),**({'country':record['country']} if record.get('country') else {})))
                 record=None
         stack.pop();text=[];text_length=0
     parser.StartElementHandler=start;parser.CharacterDataHandler=characters;parser.EndElementHandler=end

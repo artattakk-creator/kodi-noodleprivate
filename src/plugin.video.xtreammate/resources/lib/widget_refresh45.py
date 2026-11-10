@@ -103,6 +103,7 @@ def publish(portal,kind,rows,code='READY'):
     frame['signature']=signature(items,kind);frame['art_status74']=art_status(items)
     if old and old.get('signature')==frame['signature'] and old.get('source_revision74')==source_revision74 and time.time()-old.get('at',0)<300:
         from widget_notice46 import prepare as reannounce79
+        __import__('widget_patch85').prepare(portal,kind,items,frame['signature'])
         reannounce79(portal,kind,frame['signature'],len(items))
         trace('UNCHANGED',kind,len(items));return True
     note(portal,kind,'COMMIT',old,len(items),source_revision74,frame['signature'],frame['art_status74'])
@@ -115,6 +116,7 @@ def publish(portal,kind,rows,code='READY'):
     finally:
         if os.path.exists(temp):os.unlink(temp)
     from widget_notice46 import prepare as prepare_notice46
+    __import__('widget_patch85').prepare(portal,kind,items,frame['signature'])
     prepare_notice46(portal,kind,frame['signature'],len(items))
     trace('PUBLISHED',kind,len(items));return True
 

@@ -7,6 +7,7 @@ An invalid/full/unwritable checkpoint cannot break the authoritative reader.
 import hashlib,json,os,tempfile,time
 MAX_BYTES=2*1024*1024
 _saved={}
+_due85={}
 
 def _configuration(pid):
     from epg_sources import configuration
@@ -25,6 +26,9 @@ def checkpoint(pid,rows):
     from epg_handoff63 import PREFIX,identity,meta_key,profile_scope,MAX_BYTES as ROW_BYTES
     from epg_status import revision
     import xbmcgui
+    if time.monotonic()<_due85.get(str(pid),0):return False
+    _due85[str(pid)]=time.monotonic()+60
+    while len(_due85)>8:_due85.pop(next(iter(_due85)))
     marker=xbmcgui.Window(10000);records=[]
     try:
         for row in rows[:512]:
@@ -41,6 +45,8 @@ def checkpoint(pid,rows):
         raw=json.dumps(value,separators=(',',':'),allow_nan=False).encode()
         digest=hashlib.sha256(raw).hexdigest();path=_path(pid)
         if len(raw)>MAX_BYTES or _saved.get(path)==digest:return False
+        from import_budget import check_space
+        check_space(path,len(raw)+65536)
         fd,tmp=tempfile.mkstemp(prefix='.home-epg75-',dir=os.path.dirname(path))
         try:
             with os.fdopen(fd,'wb') as stream:stream.write(raw);stream.flush()

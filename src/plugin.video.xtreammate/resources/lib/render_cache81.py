@@ -17,6 +17,8 @@ def root():
 def metadata(key):return os.path.join(root(),'render81-'+key+'.json')
 
 def read(key):
+ hit85=__import__('render_temp85').read(key)
+ if hit85:return hit85
  try:
   name=metadata(key)
   if os.path.islink(name):return None
@@ -37,6 +39,7 @@ def read(key):
  except (OSError,ValueError,TypeError,KeyError):return None
 
 def store(key,data,enrich=None):
+ if __import__('home_schedule75').applicable():return __import__('render_temp85').store(key,data,enrich)
  from media_sources43 import validate_image
  from programme_art46 import atomic,space
  __import__('artwork_health82').guard()
@@ -108,7 +111,8 @@ def prepare(portal,kind,rows,cancel=lambda:False):
     from programme_art46 import atomic
     alias=edition(portal,kind,row,role)
     record=dict(record,key=alias,source81=hashlib.sha256(source.encode()).hexdigest())
-    atomic(metadata(alias),json.dumps(record,separators=(',',':')).encode())
+    if record.get('temporary85'):__import__('render_temp85').alias(alias,record)
+    else:atomic(metadata(alias),json.dumps(record,separators=(',',':')).encode())
     _due.pop(key,None)
    except sqlite3.Error as error:
     raise __import__('artwork_health82').defer(error) from None

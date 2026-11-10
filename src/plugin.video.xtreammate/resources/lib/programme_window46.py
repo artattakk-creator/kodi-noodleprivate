@@ -22,6 +22,8 @@ def permitted(parent=None):
  except (AttributeError,RuntimeError,ValueError,TypeError):return False
  if dialog in (0,-1,9999):return True
  if parent is not None:
+  owner=getattr(parent,'_owner69','')
+  if owner and xbmcgui.Window(dialog).getProperty('XCMate.NativeOwner')==owner:return True
   if dialog==getattr(parent,'_native_dialog_id',None):return True
   nonce=getattr(parent,'_window_nonce',None)
   if nonce and xbmcgui.Window(dialog).getProperty('XtreamMate.NavigatorIdentity')==nonce:return True
@@ -44,6 +46,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
  def configure(self,portal,channel,event=None,parent=None):
   self.portal,self.channel,self.selected,self.parent=portal,dict(channel),event,parent
   self._owner=threading.get_ident();self._closed=False;self._ready=False;self._shown=False;self._init_error69=False;self._read_deadline69=0
+  self._retries85=0;self._retry_after85=0
   self._cancel=threading.Event();self._future=None;self.event=None;self._art_signature=None;self._next=0;self._scroll46=0;self._art68={}
  def _gui(self):
   if threading.get_ident()!=self._owner:raise RuntimeError('PROGRAMME_OWNER_THREAD')
@@ -56,6 +59,8 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   from menu_icons45 import icon
   self.getControl(881).setImage(icon('back',full=True));self.setFocusId(501)
   self.getControl(103).setText(tr(36106));self.getControl(106).setLabel(tr(36119))
+  self._start_read85()
+ def _start_read85(self):
   if not _slots.acquire(blocking=False):self.getControl(103).setText(tr(36107));return
   future=Future();self._future=future;self._read_deadline69=time.monotonic()+5
   def work():
@@ -81,6 +86,10 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   if self._closed:return
   if __import__('programme_lifecycle69').pulse(self):return
   if self.parent is not None and self.parent._closed:self.close();return
+  if getattr(self,'_series_menu85',False):
+   self._series_menu85=False
+   __import__('series_manager85').open(self)
+   return
   if self._future is not None and not self._future.done() and time.monotonic()>self._read_deadline69:
    self._cancel.set();self._future.cancel();self._future=None
    self.getControl(103).setText('Programmdaten momentan nicht verfügbar. Zurück bleibt bedienbar.')
@@ -101,6 +110,11 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
    self._next=time.monotonic()+.5
    from programme_requests68 import result
    art=result(self.event,self._art68)
+   if art.get('code') in ('EVENT_CHANGED','SOURCE_CHANGED','NO_SOURCE_FACTS') and self._future is None and self._retries85<3 and time.monotonic()>=self._retry_after85:
+    self._retries85+=1;self._retry_after85=time.monotonic()+(1,5,30)[self._retries85-1]
+    self.selected={k:self.event[k] for k in ('start','stop') if k in self.event}
+    self._start_read85()
+   elif art.get('code') in ('READY','READY_STALE'):self._retries85=0
    if art.get('source') in (None,'','placeholder'):
     from programme_requests68 import request
     request(self.event,priority=True)
@@ -133,7 +147,8 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
  def onAction(self,action):
   self._gui()
   key=action.getId()
-  if key in (9,10,92):self.close()
+  if key==117 or key==1 and self.getFocusId()==501:self._series_menu85=True
+  elif key in (9,10,92):self.close()
   elif key in (3,4,5,6):
    self._scroll46=max(0,min(512,self._scroll46+(-1 if key==3 else 1 if key==4 else -10 if key==5 else 10)))
    self.getControl(103).scroll(self._scroll46)

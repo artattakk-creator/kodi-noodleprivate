@@ -43,7 +43,7 @@ def choose(event,value,previous,check_file=False):
   if not check_file or file_valid(value):
    if positive(event,previous) and (not check_file or file_valid(previous)):return __import__('event_art81').select(value,previous)
    return value
-  note(event,'FILE_INVALID');value=dict(code='CACHE_MISMATCH',source='placeholder')
+  note(event,'FILE_INVALID');value=__import__('programme_revision85').outcome(event,value,'FILE_INVALID')
  if positive(event,previous):
   if not check_file or file_valid(previous):
    note(event,'SAME_EVENT_RETRY');return dict(previous,retry80=str((value or {}).get('code','MISSING')))

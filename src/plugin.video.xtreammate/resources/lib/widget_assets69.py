@@ -29,7 +29,7 @@ def read(portal,kind,rows):
  from artwork_config import persistent
  persistent84=persistent()
  from artwork_display84 import enabled
- remote84=not persistent84 or enabled()
+ remote84=not persistent84 or enabled() or __import__('home_schedule75').applicable()
  from programme_assets47 import sources
  from artwork_visible import KODI_OPTIONS
  from widget_refs74 import read as retained74
@@ -60,6 +60,9 @@ def prepare(portal,kind,rows,cancel=lambda:False):
  from artwork_config import persistent
  if _fatal82 or _stop.is_set() or not rows or kind not in ('live','vod','series'):return False
  from programme_assets47 import sources
+ if kind=='live':
+  head85=__import__('programme_prefetch48').visible75(portal,rows);ids85={str(r['sid']) for r in head85};rows=head85+[r for r in rows if str(r['sid']) not in ids85]
+ if kind in ('vod','series') and __import__('home_schedule75').applicable():rows=__import__('home_loading85').visible(portal,kind,rows)
  selected=[dict(row) for row in rows[:256 if kind=='live' else 24]]
  material=[[str(r['sid']),sources(r,provider_only=True)] for r in selected]
  key=hashlib.sha256(json.dumps([profile(),portal['id'],kind,material],sort_keys=True).encode()).hexdigest()
@@ -75,7 +78,7 @@ def _references82(portal,kind,rows):
  global _revision
  from artwork_config import persistent
  from artwork_display84 import enabled,note
- if persistent() and not enabled():return
+ if persistent() and not enabled() and not __import__('home_schedule75').applicable():return
  from artwork_visible import public_dns,KODI_OPTIONS
  from programme_assets47 import sources
  initial=profile();end=time.monotonic()+.5;retained74=[]
@@ -143,6 +146,7 @@ def _run():
    __import__('artwork_display84').observe()
    __import__('widget_cache82').prepare(portal,kind,rows)
    _references82(portal,kind,rows)
+   if __import__('home_schedule75').applicable():__import__('render_temp85').prepare(portal,kind,rows,cancelled)
    if local_only:continue
    guard()
    __import__('render_cache81').prepare(portal,kind,rows,cancelled)

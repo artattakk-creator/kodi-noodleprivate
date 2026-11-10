@@ -26,6 +26,10 @@ def fingerprint(event):
   enabled=setting_bool('programme_tmdb46',False)
   values.append('tv-artwork66-v1')
   values.append([enabled,setting_bool('tmdb_research43',False) if enabled else False,__import__('tmdb_token61').token_fingerprint() if enabled else ''])
+ context85=__import__('programme_mapping85').source_scope(event)
+ if context85:values.append(['sources85',context85])
+ epoch85=__import__('programme_mapping85').epoch(event)
+ if epoch85:values.append(['manual85',epoch85])
  return hashlib.sha256(json.dumps(values,sort_keys=True).encode()).hexdigest()
 
 def negative_valid77(event,value):
@@ -190,8 +194,10 @@ def prepare(event,cancel=lambda:False,fetch=None,match=None,resolved60=None):
     if not os.path.isfile(filename):space(len(data));atomic(filename,data)
     reused46=bool(prior46 and prior46.get('sha256')==digest)
     value=dict(key=key,fingerprint=fp,code='READY',image=filename,thumbnail=filename,sha256=digest,original_sha256=original_sha,source=c['source'],source_url=c['url'],provider_id=c.get('remote_id',''),match=c['match'],attribution=c.get('attribution',''),checked46=prior46.get('checked46',time.time()-86400) if reused46 else time.time(),until=min(time.time()+86400,prior46['until']) if reused46 else time.time()+86400)
-    for field60 in ('matched_year56','image_scope57'):
+    for field60 in ('matched_year56','image_scope57','provisional85','manual85','role81'):
      if c.get(field60):value[field60]=c[field60]
+    epoch85=__import__('programme_mapping85').epoch(event)
+    if epoch85:value['mapping_epoch85']=epoch85
     if resolved60 is not None:value['tvspielfilm55']='BLOCKED_NO_AUTHORIZED_API'
     break
    except SourceError as error:
@@ -257,6 +263,8 @@ def cached(event):
 The producer verified digest/decoder before publication. Workers reverify full
 bytes on startup; directory readers never decode 12 full pictures in RAM.
 """
+ temporary85=__import__('artwork_temp85').published(event)
+ if temporary85:return temporary85
  from programme_requests68 import result as shared69
  value=shared69(event)
  if value.get('until',0)>time.time() and value.get('source')!='placeholder' and __import__('programme_image69').eligible(value,event):return value

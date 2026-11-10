@@ -27,18 +27,20 @@ def publish(portal,kind,rows):
     from widget_render47 import values
     from widget_art44 import read
     from widget_notice46 import prepare
-    digest=hashlib.sha256();approved=read(portal['id'],kind);count=0;images84=0
+    digest=hashlib.sha256();approved=read(portal['id'],kind);count=0;images84=0;patch85=[]
     for offset in range(0,len(rows),16):
         for value in values(portal,kind,rows[offset:offset+16],approved):
             value.pop('_programme46',None)
             images84+=int(__import__('widget_assets69').renderable(value.get('art',{}).get('poster')))
-            digest.update(json.dumps(value,sort_keys=True).encode());count+=1
+            digest.update(json.dumps(__import__('widget_snapshot85').semantic(value),sort_keys=True).encode());count+=1
+            if kind in ('vod','series') and len(patch85)<24:patch85.append(value)
     if kind in ('vod','series'):
         import xbmcgui
         from home_publication74 import source_refs
         record=dict(at=time.time(),ids=[str(r['sid']) for r in rows[:24]],sources=source_refs(rows[:24]),signature=digest.hexdigest(),count=count,images=images84,fallbacks=count-images84)
         raw=json.dumps(record,separators=(',',':'))
         if len(raw)<65536:xbmcgui.Window(10000).setProperty(_slot84(portal,kind),raw)
+    if patch85:__import__('widget_patch85').prepare(portal,kind,patch85,digest.hexdigest())
     prepare(portal,kind,digest.hexdigest(),count,art_count84=images84)
     from widget_diagnostics47 import note
     note(portal['id'],kind,'DIRECTORY','READ_ONLY_RELOAD',items=count)

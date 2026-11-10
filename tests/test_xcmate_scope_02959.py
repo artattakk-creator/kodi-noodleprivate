@@ -33,7 +33,7 @@ class Scope59(unittest.TestCase):
  def test_tvmaze_experiment_is_not_included_in_candidate(self):
   self.assertFalse((ROOT/LIB/'programme_tvmaze59.py').exists())
   # #307 explicitly authorizes the new opt-in .67 supplier; PR .59 experiment stays excluded.
-  names=sorted(p.name for p in (ROOT/LIB).glob('*tvmaze*'));self.assertEqual(names,['programme_tvmaze67.py'])
+  names=sorted(p.name for p in (ROOT/LIB).glob('*tvmaze*'));self.assertEqual(names,['programme_tvmaze67.py','programme_tvmaze85.py'])
  def test_new_helper_modules_never_delete_profiles_or_write_skin_settings(self):
   for name in ('live_return59.py','programme_diagnostics59.py','widget_home_probe59.py'):
    for n in ast.walk(ast.parse((ROOT/LIB/name).read_text())):

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon id="plugin.video.xtreammate"
        name="XCMate"
-       version="0.1.29.84"
+       version="0.1.29.85"
        provider-name="GS Media">
 
   <requires>
@@ -38,7 +38,7 @@
     <forum>https://forum.kodi.tv</forum>
     <website>https://kodi.tv</website>
     <source>https://github.com/artattakk-creator/kodi-noodleprivate</source>
-    <news>0.1.29.84 Testversion: Größerer Hero mit besser lesbarer Infotafel. Das schnelle Senderlogo bleibt beim Laden sichtbar und wird nicht übergroß dargestellt. Geprüfte Providercover und vorhandene Kodi-Bilder werden auch bei blockierter Archivspeicherung verwendet. Serienbilder mit genauer Titelprüfung und bestätigten Alternativtiteln; keine geratenen Episodenbilder. Technische Statuscodes aus normalen Detailansichten entfernt. Zugangsdaten, EPG, Favoriten und Widgets bleiben erhalten. Android-Abnahme steht aus.</news>
+    <news>0.1.29.85 Testversion: Stabileres lokales EPG und begrenzter temporärer Bildcache mit geschützten aktiven Bildern. Sichtbare Ladephasen für Filme und Serien. Weniger unveränderte Widget-Neuladungen. Serienbilder mit geprüften Alternativtiteln und klar markierten unbestätigten Vorschlägen. Neue manuelle Serien-/Bildzuordnung in den EPG-Details: ändern, speichern, automatisch zuordnen oder ausblenden. Provider, Token, EPG, Favoriten und Widgets bleiben erhalten. Android-Abnahme steht aus.</news>
     <assets>
       <icon>icon-81da1003a2753ec6.png</icon>
       <fanart>resources/media/lightweight_splash.jpg</fanart>

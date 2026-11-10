@@ -1,3 +1,15 @@
+0.1.29.85
+- A: Verifizierte Medien-Bildreferenzen im bestehenden Kodi-ListItem aktualisieren, ohne Widget-Neuladung oder Fokusreset.
+- A: Eigener begrenzter temporärer Bildcache mit LRU/TTL, aktiven Pins, SHA256 und Wiederaufnahmejournal.
+- A: Bestehende Archive, Kodi-Texturen und Speicherreserven unverändert; schreibfreie Mount-/Kapazitätsdiagnose.
+- A: Lokale EPG-Snapshots, begrenzter Revisions-Retry und semantische Widget-Aktualisierung.
+- A: Filme/Serien mit ehrlichen Lade-, Teil-, Leer- und Fehlerzuständen bei festen Positionen.
+- B: Höchstens drei Suchseiten/60 TV-Kandidaten, unabhängig geprüfte Identitäten und offizielle Alternativtitel.
+- B: Mehrdeutige Serienbilder ausdrücklich unbestätigt; keine geratenen Episodenbilder oder -daten.
+- B: Fernbedienungs-Kontextmenü in den EPG-Details mit Auswahl, Bestätigung, Änderung, Automatik und Ausblenden.
+- B: Dauerhafte profil-/provider-/quellenspezifische Werkzuordnung, atomar mit verifiziertem Readback.
+- ANDROID_NOT_TESTED; kein Merge und keine Veröffentlichung ohne gesonderte Freigabe.
+
 0.1.29.84
 - Sichere Anzeige-Referenzen trotz blockierter optionaler Artwork-Archivierung.
 - Keine automatische Modusänderung und keine Absenkung von Speicherreserven.

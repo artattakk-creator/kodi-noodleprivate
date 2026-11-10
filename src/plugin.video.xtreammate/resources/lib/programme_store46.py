@@ -20,6 +20,17 @@ def title_hash(title):
 def metadata(event):
  """Bounded source facts, no title/description replacement or network calls."""
  result={}
+ country=event.get('country')
+ if isinstance(country,str):country={'UK':'GB','United Kingdom':'GB','Großbritannien':'GB','United States':'US','USA':'US','Deutschland':'DE'}.get(country.strip(),country)
+ if isinstance(country,str) and __import__('re').fullmatch('[A-Za-z]{2}',country.strip()):result['country']=country.strip().upper()
+ original=event.get('original_title')
+ if isinstance(original,str) and original.strip():result['original_title']=original.strip()[:256]
+ work=event.get('work_id')
+ if isinstance(work,str) and __import__('re').fullmatch('[A-Za-z0-9:_-]{1,128}',work):result['work_id']=work
+ external=event.get('series_external_ids') if event.get('series_external_ids') is not None else event.get('external_ids') if event.get('_work_ids_verified85') else None
+ if isinstance(external,dict):
+  valid={k:str(v) for k,v in external.items() if k in ('imdb_id','tvdb_id','tvrage_id') and isinstance(v,(str,int)) and __import__('re').fullmatch(r'(?:tt)?[0-9]{1,12}',str(v))}
+  if valid:result['external_ids']=valid;result['_work_ids_verified85']=True
  for target,keys,limit in [('subtitle',('sub_title','sub-title','subtitle'),512),('genre',('category','genre'),256),('episode_label',('episode',),128),('xmltv_image',('screenshot_uri','icon'),2048),('provider_image',('programme_image','event_image'),2048)]:
   value=next((event[k] for k in keys if isinstance(event.get(k),str) and event[k].strip()),'')
   if value:result[target]=value.strip()[:limit]

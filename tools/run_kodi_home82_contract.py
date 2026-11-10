@@ -10,7 +10,7 @@ def main():
     parser.add_argument('--skin-archive',type=Path);parser.add_argument('--idle-seconds',type=int,default=180)
     parser.add_argument('--resolution',default='1920x1080',choices=('1920x1080','1280x720'))
     parser.add_argument('--fault-idle-seconds',type=int,default=0);parser.add_argument('--keep-container',action='store_true');args=parser.parse_args()
-    root=Path(__file__).resolve().parents[1];version79=__import__('xml.etree.ElementTree',fromlist=['parse']).parse(root/'src/plugin.video.xtreammate/addon.xml').getroot().get('version') in ('0.1.29.82','0.1.29.83','0.1.29.84');report=args.report_dir.resolve();report.mkdir(parents=True,exist_ok=True)
+    root=Path(__file__).resolve().parents[1];version79=__import__('xml.etree.ElementTree',fromlist=['parse']).parse(root/'src/plugin.video.xtreammate/addon.xml').getroot().get('version') in ('0.1.29.82','0.1.29.83','0.1.29.84','0.1.29.85');report=args.report_dir.resolve();report.mkdir(parents=True,exist_ok=True)
     archive=args.skin_archive or report/'skin.zip'
     if not archive.exists():
         import urllib.request
@@ -85,6 +85,11 @@ def main():
         except (subprocess.CalledProcessError,ValueError):pass
         run('cp',name+':/root/.kodi/temp/kodi.log',str(report/'synthetic-kodi.log'))
         run('cp',name+':/root/gui66-error.txt',str(report/'gui-error.txt'),stderr=subprocess.DEVNULL) if subprocess.run(docker+['exec',name,'test','-f','/root/gui66-error.txt'],env=env).returncode==0 else None
+        # Synthetic fixture evidence must be inspectable without downloading
+        # an artifact; keep private production logs out of this disposable gate.
+        for evidence85 in ('gui-error.txt','post75-error.txt','restart.log','restart2.log','probe.log'):
+            path85=report/evidence85
+            if path85.is_file():print(evidence85+'\n'+path85.read_text(errors='replace')[-12000:],flush=True)
         if not args.keep_container:subprocess.run(docker+['rm','-f',name],env=env,stdout=subprocess.DEVNULL)
 
 if __name__=='__main__':main()

@@ -46,8 +46,11 @@ def configure(portals):
         current=_read(KEY)
         if current.get('context')!=context:
             current=dict(context=context,phase=0,at=time.monotonic(),profile=profile_scope(),prepared=[],visible=[],ready76={},
-                         required76={kind:[str(p['id']) for p in portals if p.get('include_'+kind,True)] for kind in ('vod','series')})
+                         portals85=[str(p['id']) for p in portals[:4]],required76={kind:[str(p['id']) for p in portals if p.get('include_'+kind,True)] for kind in ('vod','series')})
             _window().setProperty(KEY,json.dumps(current));trace('START_GROUP_KNOWN',phase=0)
+            for kind85,label85 in (('vod','Filme werden geladen …'),('series','Serien werden geladen …')):
+                _window().setProperty('XCMate.Home85.'+kind85+'.Text',label85)
+                _window().setProperty('XCMate.Home85.'+kind85+'.State','LOADING_CATALOG')
         return current
 
 def _advance(current):
@@ -127,6 +130,7 @@ def observe():
     import xbmc,xbmcgui
     from epg_handoff63 import profile_scope
     if not applicable() or xbmcgui.getCurrentWindowId()!=10000 or xbmcgui.getCurrentWindowDialogId() not in (0,-1,9999):return
+    __import__('render_temp85').pin_visible()
     window=_window();kind=xbmc.getInfoLabel('ListItem.Property(XCMate.WidgetKind41)')
     if kind not in ('live','vod','series'):return
     pid=xbmc.getInfoLabel('ListItem.Property(XCMate.PortalId)');sid=xbmc.getInfoLabel('ListItem.Property(XCMate.MediaId)')
@@ -139,6 +143,7 @@ def observe():
     value=dict(profile=profile_scope(),pid=pid,sid=sid,kind=kind,at=time.monotonic())
     if absolute>0:value['left']=max(0,absolute-1-pos)
     window.setProperty(FOCUS,json.dumps(value))
+    window.setProperty(FOCUS+'.viewport85.'+kind,json.dumps(value))
     try:
         from home_runtime77 import control
         image=control(window,296751);title=control(window,296752 if kind=='live' else 296754)

@@ -26,7 +26,7 @@ def apply(item,portal,row,info,event=None,labels=None):
     # the old text with a different programme's picture.
     if props.get('XCMate.ProgrammeKey47','')!=key:
         props['XCMate.ProgrammeImage46']=os.path.join(xbmcaddon.Addon().getAddonInfo('path'),'resources','media','programme46','neutral.png')
-        for field in ('XCMate.ProgrammeArtSource57','XCMate.ProgrammeArtCredit57','XCMate.ProgrammeImageScope57','XCMate.ArtProof69'):props[field]=''
+        for field in ('XCMate.ProgrammeArtSource57','XCMate.ProgrammeArtCredit57','XCMate.ProgrammeImageScope57','XCMate.ArtProof69','XCMate.Provisional85'):props[field]=''
     now=bool(info.get('now'));event=event if isinstance(event,dict) and event.get('key')==key else {}
     subtitle=str(event.get('subtitle') or '')
     if type(event.get('season')) is int and type(event.get('episode')) is int:
@@ -34,6 +34,7 @@ def apply(item,portal,row,info,event=None,labels=None):
     description=__import__('presentation80').text(info.get('description') or event.get('description'))
     if props.get('XCMate.ProgrammeImageScope57')=='series_fallback' and props.get('XCMate.FallbackLabel63'):
         description=props['XCMate.FallbackLabel63']+'\n'+description
+    if props.get('XCMate.Provisional85')=='true':description='Bildvorschlag – Zuordnung nicht bestätigt.\n'+description
     props.update({'XCMate.ProgrammeTitle46':str(info.get('now') or labels[0]),
         'XCMate.ProgrammeTimes46':(info.get('now_time','')+' – '+info.get('now_end_time','')) if now else '',
         'XCMate.ProgrammeNext46':str(info.get('next') or ''),
@@ -78,6 +79,7 @@ def _hero(props):
         image=logo if logo84 else __import__('artwork_display84').logo_reference(props)
         logo84=bool(image)
         local=logo84
+    if logo84 or not local:props['XCMate.Provisional85']=''
     props['XCMate.HeroImage63']=image if local else ''
     props['XCMate.HeroArtSource63']='station_logo' if logo84 else props.get('XCMate.ProgrammeArtSource57','') if local else ''
     props['XCMate.HeroArtCode63']=props.get('XCMate.ProgrammeArtCode46','') if local else 'PENDING_LOCAL_DOWNLOAD' if str(image).startswith(('http://','https://','image://')) else 'NO_IMAGE'
