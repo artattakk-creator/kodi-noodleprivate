@@ -1,0 +1,39 @@
+{
+  "id": "26a682754a7e4d0b9496010ab8810718",
+  "status": "complete",
+  "code": "",
+  "bytes": 9061600,
+  "seconds": 120.32,
+  "file": "26a682754a7e4d0b9496010ab8810718.ts",
+  "host_elapsed_seconds": 120.338,
+  "kodi_offline_playback": "NOT_TESTED",
+  "sha256": "2935e61da48f631723b811d42b810d3b9050161e5591f4e1f0c82b32e760cb4c",
+  "source_commit": "c59096088d4a3ed46c99152d24bbbafeebf77eae",
+  "unit_tests": 11,
+  "unit_result": "PASS",
+  "unit_seconds": 0.574,
+  "transport_packets": "PASS",
+  "host_capture": "PASS",
+  "codec_validation": {
+    "fixture": {
+      "exit_code": 0,
+      "stderr_present": false,
+      "status": "PASS"
+    },
+    "full_capture": {
+      "exit_code": 183,
+      "stderr_present": true,
+      "status": "FAIL"
+    },
+    "capture_first_119_seconds": {
+      "exit_code": 0,
+      "stderr_present": false,
+      "status": "PASS"
+    }
+  },
+  "format_duration_seconds": 120.910022,
+  "production_integration": false,
+  "release_gate": "FAIL_CODEC_TAIL_AND_KODI_NOT_TESTED",
+  "android_arm32": "NOT_TESTED",
+  "usb_fat32_smb": "NOT_TESTED"
+}
