@@ -19,6 +19,8 @@ def root():
  from utils import addon_data_dir
  return os.path.join(addon_data_dir(),'programme_images46')
 
+def image_root87():return __import__('android_artwork87').programme_root()
+
 def fingerprint(event):
  values=[event.get(k) for k in ('xmltv_image','provider_image','title','subtitle','year','season','episode','epg_source46')]
  if not event.get('xmltv_image') and not event.get('provider_image'):
@@ -79,7 +81,7 @@ def ensure():
    t=threading.Thread(target=run,name='XCMate-programme46',daemon=True);_workers.append(t);t.start()
 
 def atomic(filename,data):
- fd,temp=tempfile.mkstemp(prefix='.programme46-',dir=root())
+ fd,temp=tempfile.mkstemp(prefix='.programme46-',dir=os.path.dirname(filename))
  try:
   with os.fdopen(fd,'wb') as f:f.write(data);f.flush();os.fsync(f.fileno())
   os.replace(temp,filename)
@@ -97,7 +99,8 @@ def persisted(event,verify=True):
   if v.get('image'):
    name=v['image']
    if os.path.basename(name)!=name:return None
-   file=os.path.join(root(),name)
+   file=os.path.join(image_root87(),name)
+   if not os.path.isfile(file):file=os.path.join(root(),name)
    if os.path.islink(file) or not os.path.isfile(file) or os.path.getsize(file)>3*1024*1024:return None
    if verify:
     with open(file,'rb') as f:data=f.read(3*1024*1024+1)
@@ -110,7 +113,7 @@ def persisted(event,verify=True):
  except Exception:return None
 
 def space(upcoming):
- folder=root();os.makedirs(folder,mode=0o700,exist_ok=True)
+ folder=image_root87();os.makedirs(folder,mode=0o700,exist_ok=True)
  if os.path.islink(folder):raise OSError('CACHE_UNSAFE')
  total=0;count=0
  for row in os.scandir(folder):
@@ -177,7 +180,7 @@ def prepare(event,cancel=lambda:False,fetch=None,match=None,resolved60=None):
     prior46=reused(c);data=None
     if prior46:
      filename=prior46.get('image','')
-     if os.path.dirname(filename)==root() and not os.path.islink(filename):
+     if os.path.dirname(filename) in (root(),image_root87()) and not os.path.islink(filename):
       try:
        with open(filename,'rb') as stream:data=stream.read(3*1024*1024+1)
        if hashlib.sha256(data).hexdigest()!=prior46.get('sha256'):data=None
@@ -190,7 +193,7 @@ def prepare(event,cancel=lambda:False,fetch=None,match=None,resolved60=None):
      evidence66('FETCH',event,'READY')
     else:original_sha=prior46.get('original_sha256',prior46['sha256'])
     if cancel():return dict(value,code='CANCELLED')
-    digest=hashlib.sha256(data).hexdigest();name='blob46-'+digest+('.png' if data.startswith(b'\x89PNG') else '.jpg');filename=os.path.join(root(),name)
+    digest=hashlib.sha256(data).hexdigest();name='blob46-'+digest+('.png' if data.startswith(b'\x89PNG') else '.jpg');filename=os.path.join(image_root87(),name)
     if not os.path.isfile(filename):space(len(data));atomic(filename,data)
     reused46=bool(prior46 and prior46.get('sha256')==digest)
     value=dict(key=key,fingerprint=fp,code='READY',image=filename,thumbnail=filename,sha256=digest,original_sha256=original_sha,source=c['source'],source_url=c['url'],provider_id=c.get('remote_id',''),match=c['match'],attribution=c.get('attribution',''),checked46=prior46.get('checked46',time.time()-86400) if reused46 else time.time(),until=min(time.time()+86400,prior46['until']) if reused46 else time.time()+86400)

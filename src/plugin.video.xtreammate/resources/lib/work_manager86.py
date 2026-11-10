@@ -6,14 +6,21 @@ from menu_icons45 import select as icon_select
 
 def wait(event,operation,**options):
  from work_requests86 import request,result,cancel
- nonce=request(event,operation,**options);progress=xbmcgui.DialogProgress();progress.create('XCMate',tr(37086));monitor=xbmc.Monitor();deadline=time.monotonic()+30
+ from work_trace87 import mark,picked,worker
+ nonce=request(event,operation,**options);progress=xbmcgui.DialogProgress();progress.create('XCMate',tr(37110) if operation in ('save','local') else tr(37086));monitor=xbmc.Monitor();deadline=time.monotonic()+30
  try:
-  while not progress.iscanceled() and not monitor.abortRequested() and time.monotonic()<deadline:
+  while True:
+   # A committed readback wins over a simultaneous Cancel, never claim it was undone.
    value=result(nonce)
-   if value:return value
-   if monitor.waitForAbort(.05):break
+   if value:
+    mark(nonce,'UI_CONSUMED');return value
+   if monitor.abortRequested():return dict(code='KODI_STOPPED',rows=[])
+   if progress.iscanceled():return dict(code='USER_CANCELLED',rows=[])
+   if time.monotonic()>=deadline:
+    code='REQUEST_TIMEOUT' if picked(nonce) else 'WORKER_BUSY' if worker()!='WORKER_STOPPED' else 'WORKER_STOPPED'
+    return dict(code=code,rows=[])
+   monitor.waitForAbort(.05)
  finally:progress.close();cancel(nonce)
- return dict(code='CANCELLED',rows=[])
 
 def event_for(parent):
  if getattr(parent,'event',None):return dict(parent.event)
@@ -77,5 +84,5 @@ def open(parent):
  return changed
 
 def status(code):
- codes={'SOURCE_DISABLED':37090,'TMDB_TOKEN_MISSING':37091,'ZERO_RESULTS':37092,'EPG_REVISION_CHANGED':37093,'CANDIDATES_REJECTED':37094,'CANCELLED':37095,'SAVE_BLOCKED':37096,'UNCHANGED':37095}
+ codes={'SOURCE_DISABLED':37090,'TMDB_TOKEN_MISSING':37091,'ZERO_RESULTS':37092,'EPG_REVISION_CHANGED':37093,'CANDIDATES_REJECTED':37094,'CANCELLED':37111,'USER_CANCELLED':37111,'REQUEST_TIMEOUT':37112,'WORKER_BUSY':37113,'WORKER_STOPPED':37114,'KODI_STOPPED':37115,'NETWORK_TIMEOUT':37116,'PERSISTENCE_BLOCKED':37117,'SAVE_BLOCKED':37096,'UNCHANGED':37095}
  return tr(codes.get(code,37097))

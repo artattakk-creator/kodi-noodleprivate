@@ -31,6 +31,7 @@ def read(portal,kind,rows):
  from artwork_display84 import enabled
  remote84=not persistent84 or enabled() or __import__('home_schedule75').applicable()
  from programme_assets47 import sources
+ if kind=='live':from station_logos87 import sources
  from artwork_visible import KODI_OPTIONS
  from widget_refs74 import read as retained74
  result=retained74(portal,kind,rows) if not persistent84 else {}
@@ -61,6 +62,7 @@ def prepare(portal,kind,rows,cancel=lambda:False):
  from artwork_config import persistent
  if _fatal82 or _stop.is_set() or not rows or kind not in ('live','vod','series'):return False
  from programme_assets47 import sources
+ if kind=='live':from station_logos87 import sources
  if kind=='live':
   head85=__import__('programme_prefetch48').visible75(portal,rows);ids85={str(r['sid']) for r in head85};rows=head85+[r for r in rows if str(r['sid']) not in ids85]
  if kind in ('vod','series') and __import__('home_schedule75').applicable():rows=__import__('home_loading85').visible(portal,kind,rows)
@@ -82,6 +84,7 @@ def _references82(portal,kind,rows):
  if persistent() and not enabled() and not __import__('home_schedule75').applicable():return
  from artwork_visible import public_dns,KODI_OPTIONS
  from programme_assets47 import sources
+ if kind=='live':from station_logos87 import sources
  initial=profile();end=time.monotonic()+.5;retained74=[]
  if kind=='live':
   from programme_prefetch48 import visible75
@@ -96,8 +99,14 @@ def _references82(portal,kind,rows):
   processed84+=1
   for role,source in sources(row,provider_only=True).items():
    if not source:missing84+=1;continue
-   if not safe(portal,source):blocked84+=1;continue
-   if not public_dns(source):dns84+=1;continue
+   if not safe(portal,source):
+    blocked84+=1
+    if kind=='live':__import__('station_logos87').note(portal,row,'URL_SCHEME_OR_HOST_BLOCKED')
+    continue
+   if not public_dns(source):
+    dns84+=1
+    if kind=='live':__import__('station_logos87').note(portal,row,'LEASE_PENDING')
+    continue
    from artwork_visible import _dns_cache,_lock as dns_lock
    parts=urlsplit(source)
    with dns_lock:lease=_dns_cache.get((parts.hostname,443))
@@ -144,11 +153,16 @@ def _run():
   key,portal,kind,rows=job;deferred=local_only
   try:
    # Independent logo manifest remains useful in Dynamic mode and DB pauses.
-   if kind=='live':__import__('logo_manifest86').prepare(portal,rows,cancelled)
+   if kind=='live':
+    # Approve safe public references and recover decoded Kodi files before
+    # optional persistent archive writes, which may be reserve-blocked.
+    _references82(portal,kind,rows)
+    __import__('station_logos87').recover(portal,rows,cancelled)
+    __import__('logo_manifest86').prepare(portal,rows,cancelled)
    # Recover already decoded Kodi files before any optional image write.
    __import__('artwork_display84').observe()
    __import__('widget_cache82').prepare(portal,kind,rows)
-   _references82(portal,kind,rows)
+   if kind!='live':_references82(portal,kind,rows)
    if __import__('home_schedule75').applicable():__import__('render_temp85').prepare(portal,kind,rows,cancelled)
    if local_only:continue
    guard()

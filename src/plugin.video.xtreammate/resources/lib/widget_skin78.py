@@ -137,6 +137,14 @@ def apply(token,skin,confirmed=False,restore=False):
     original={name:read(backup/('original.'+str(i))) for i,name in enumerate(FILES)};expected=build(original)
     for i,name in enumerate(FILES):
         if expected[name]!=read(backup/('candidate.'+str(i))):raise ValueError('CANDIDATE_VERIFY_FAILED')
+    # Revalidate the complete saved widget inventory before activating own
+    # XML, not only the three XCMate paths. The snapshot is private/local.
+    inventory87=plan['metadata'].get('inventory78')
+    if inventory87:
+        from utils import addon_data_dir
+        import json,xbmcvfs
+        receipt87=json.loads(read(Path(addon_data_dir())/'home78_inventory'/inventory87/'inventory.json')).get('widgets87')
+        if receipt87:__import__('widget_inventory87').compare(Path(xbmcvfs.translatePath('special://profile/')),receipt87)
     result=transaction(token,'skin',[root/name for name in FILES],confirmed=confirmed,restore=restore)
     import xbmcaddon,xbmcgui
     xbmcaddon.Addon().setSetting('home78_repair_optout','true' if restore else 'false')

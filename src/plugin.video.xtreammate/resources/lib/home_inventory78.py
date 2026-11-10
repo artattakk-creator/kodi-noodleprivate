@@ -10,6 +10,7 @@ def snapshot(profile,skin):
     from utils import addon_data_dir
     from widget_transaction50 import private,read
     profile=Path(profile).resolve();skin=Path(skin).resolve()
+    receipt87=__import__('widget_inventory87').collect(profile,skin)
     paths=[profile/'addon_data/skin.titan.bingie.mod/settings.xml',skin/'xml/script-skinshortcuts-includes.xml']
     shortcuts=profile/'addon_data/script.skinshortcuts'
     if shortcuts.is_symlink():raise ValueError('UNSAFE_TARGET')
@@ -31,5 +32,5 @@ def snapshot(profile,skin):
         name=str(i)+'.original';private(folder/name,data)
         if read(folder/name)!=data:raise ValueError('BACKUP_VERIFY_FAILED')
         records.append(dict(target=str(path),file=name,sha256=hashlib.sha256(data).hexdigest(),bytes=len(data)))
-    private(folder/'inventory.json',json.dumps(dict(version=1,at=time.time(),files=records)).encode())
+    private(folder/'inventory.json',json.dumps(dict(version=1,at=time.time(),files=records,widgets87=receipt87)).encode())
     return folder.name

@@ -130,6 +130,11 @@ def candidate(event,cancel=lambda:False):
  if mapping and mapping.get('source') in ('tmdb','tvmaze') and enabled(mapping['source']):
   fetch85=(lambda e,i,cancel,manual=True:__import__('work_search86').details(i,'movie',mapping['source'],cancel)) if mapping.get('media_type86')=='movie' else details if mapping['source']=='tmdb' else __import__('programme_tvmaze85').details
   chosen=next((r for r in read(event).get('rows',[])+read(dict(event,_manager85=True)).get('rows',[]) if r.get('source')==mapping['source'] and r.get('id')==mapping['id'] and r.get('media_type86','tv')==mapping.get('media_type86','tv') and r.get('verified85')),None)
+  if chosen is None and mapping.get('work87'):
+   receipt87=mapping['work87']
+   from programme_urls55 import safe
+   if receipt87.get('role') in ('poster','backdrop') and safe(receipt87.get('url','')):
+    chosen=dict(receipt87,id=mapping['id'],source=mapping['source'],year=mapping.get('year'),country=mapping.get('country') or [],media_type86=mapping.get('media_type86','tv'),verified85=True,work_match85=True)
   if chosen is None:chosen=fetch85(event,mapping['id'],cancel,manual=True)
   if chosen and (mapping.get('year') is None or mapping['year']==chosen['year']):return artifact(chosen,'MANUAL_CONFIRMED')
   note(event,'EXTERNAL_ID_CONFLICT');return None

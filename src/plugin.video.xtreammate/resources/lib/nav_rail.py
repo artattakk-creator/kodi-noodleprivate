@@ -4,7 +4,7 @@ from localization import tr
 ENTRIES=(('search','search',35600,'global_search'),('favourites','heart',35601,'favourites'),
          ('live','device-tv',35602,'home_live'),('movies','movie',35603,'movies_home'),
          ('series','playlist',35604,'series_home'),('guide','calendar',35605,'guide_grid'),
-         ('settings','settings',35606,'settings_home'),('home','home-2',35607,'xcmate_home'))
+         ('settings','settings',35606,'settings_home'),('home','home-2',37105,'xcmate_home'))
 
 
 def entries(context='home'):
@@ -24,7 +24,7 @@ class RailView:
         import xbmcgui
         self.owner=owner;self.context=context;self.activate=activate;self.restore=restore
         self.items=entries(context);self.active=False;self.expanded=False;self.position=next((i for i,e in enumerate(self.items) if e[0]==context),0)
-        self.height=max(640,owner.getHeight());self.buttons=[];self.icons=[];self.captions=[]
+        self.height=max(640,owner.getHeight());self.buttons=[];self.icons=[];self.captions=[];self._icon_paths86=[]
         root=os.path.dirname(os.path.dirname(icon('search')))
         self.panel=xbmcgui.ControlImage(24,24,84,self.height-48,os.path.join(root,'tv_panel.png'));owner.addControl(self.panel)
         step=(self.height-64)/len(self.items)
@@ -32,6 +32,7 @@ class RailView:
             y=int(32+i*step);h=int(step)-4
             b=xbmcgui.ControlButton(30,y,72,h,'',focusTexture=os.path.join(root,'tv_focus.png'),noFocusTexture=os.path.join(root,'remote_clear.png'),font='font13',textOffsetX=62,textColor='0xFFBEC4CD',focusedColor='0xFFFFFFFF')
             image=xbmcgui.ControlImage(48,y+(h-32)//2,32,32,icon(entry[1]))
+            self._icon_paths86.append(icon(entry[1]))
             caption=xbmcgui.ControlLabel(112,y+(h-28)//2,230,28,'','font13','0xFFBEC4CD')
             self.captions.append(caption)
             owner.addControls([b,image,caption]);b.setNavigation(b,b,b,b);self.buttons.append(b);self.icons.append(image)
@@ -44,7 +45,9 @@ class RailView:
         for i,(b,image,entry) in enumerate(zip(self.buttons,self.icons,self.items)):
             b.setWidth(320 if expanded else 72);b.setLabel('')
             self.captions[i].setLabel(tr(entry[2]) if expanded else '');self.captions[i].setVisible(bool(expanded))
-            b.setVisible(True);b.setEnabled(True);image.setVisible(True);image.setImage(icon(entry[1],'focused' if i==self.position else 'selected' if entry[0]==self.context else 'normal'))
+            b.setVisible(True);b.setEnabled(True);image.setVisible(True)
+            path86=icon(entry[1],'focused' if i==self.position else 'selected' if entry[0]==self.context else 'normal')
+            if self._icon_paths86[i]!=path86:image.setImage(path86);self._icon_paths86[i]=path86
         if focus:self.owner.setFocus(self.buttons[self.position])
 
     def hide(self):
@@ -58,7 +61,8 @@ class RailView:
         # Clear content and focusability as well as visibility on every exit.
         for button in self.buttons:button.setLabel('');button.setWidth(72);button.setEnabled(False)
         for caption in self.captions:caption.setVisible(False);caption.setLabel('')
-        for image in self.icons:image.setImage('')
+        # Keep the prepackaged local texture; visibility alone hides this rail.
+        # Clearing it caused needless blank/re-upload frames on rapid toggles.
         for c in [self.panel,*self.buttons,*self.icons]:c.setVisible(False)
 
     def command(self,command):

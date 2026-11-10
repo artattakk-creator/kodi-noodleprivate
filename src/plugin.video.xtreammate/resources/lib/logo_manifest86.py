@@ -11,9 +11,9 @@ def context(portal):
  from epg_handoff63 import profile_scope
  return hashlib.sha256(json.dumps([profile_scope(),policy(portal,'live'),[portal.get(k) for k in ('id','type','xc_host','xc_user','xc_pass')]],sort_keys=True).encode()).hexdigest()
 def source(row):
- from media_art import poster_candidates
- values=poster_candidates(row)
- return values[0] if values else ''
+ from station_logos87 import source as station_source
+ return station_source(row)
+
 def key(portal,row,scope=None):
  return hashlib.sha256(((scope or context(portal))+'|'+str(row['sid'])+'|'+source(row)).encode()).hexdigest()
 def location():
@@ -31,14 +31,14 @@ def load(portal,all_records=False):
   return {k:v for k,v in records.items() if isinstance(v,dict) and (all_records or v.get('context')==scope)} if isinstance(records,dict) and len(records)<=512 else {}
  except (OSError,ValueError,TypeError,AttributeError):return {}
 def read(portal,rows,with_fallback=True):
- records=load(portal);result={};scope=context(portal)
+ records=load(portal);result=__import__('station_logos87').read(portal,rows);scope=context(portal)
  # Existing Kodi-local decoded logos remain valid without adopting/deleting files.
  from widget_cache79 import load as cached,valid
  from media_art import poster_candidates
  refs=cached(portal,'live').get('refs',{}) if with_fallback else {}
  for row in rows:
   value=refs.get(str(row['sid']),{}).get('poster',{})
-  if value.get('source') in poster_candidates(row) and valid(value,value.get('source')):result[str(row['sid'])]=value['file']
+  if value.get('source')==source(row) and valid(value,value.get('source')):result[str(row['sid'])]=value['file']
  # Bootstrap pre-.86 source-addressed local archives without per-item SQL,
  # decoding or network. These are references; Kodi pixel proof stays separate.
  if with_fallback:
@@ -49,7 +49,7 @@ def read(portal,rows,with_fallback=True):
     for row in rows:
      sid=str(row['sid'])
      if sid in result:continue
-     for uri in poster_candidates(row):
+     for uri in [source(row)] if source(row) else []:
       file=archive.resolve_target(hashlib.sha256(uri.encode()).hexdigest())
       try:
        if not os.path.islink(file) and 0<os.stat(file).st_size<=3*1024*1024:
@@ -103,13 +103,16 @@ def prepare(portal,rows,cancel=lambda:False):
  for row in rows[:256]:
   if cancel() or time.monotonic()-started>2:break
   tag=key(portal,row);uri=source(row)
-  if str(row['sid']) in hit or not uri or time.monotonic()<_due.get(tag,0):continue
+  note=__import__('station_logos87').note
+  if not uri:note(portal,row,'SOURCE_MISSING');continue
+  if str(row['sid']) in hit:note(portal,row,'LOCAL_READY');continue
+  if time.monotonic()<_due.get(tag,0):continue
   if attempts>=2:break
   attempts+=1;_due[tag]=time.monotonic()+60
   try:
    # Check before networking; actual reserve failure is never disguised as success.
    check(3*1024*1024+65536,limit=0,backend=backend)
-   if not safe(portal,uri):continue
+   if not safe(portal,uri):note(portal,row,'URL_SCHEME_OR_HOST_BLOCKED');continue
    existing=fallback.get(str(row['sid']),'')
    if existing.startswith('/'):
     with open(existing,'rb') as stream:body=stream.read(3*1024*1024+1)
@@ -121,7 +124,10 @@ def prepare(portal,rows,cancel=lambda:False):
    stat=os.stat(backend.resolve_target(digest))
    records[tag]=dict(context=context(portal),sha256=digest,stamp=[stat.st_mtime_ns,stat.st_size],width=checked['width'],height=checked['height'])
    changed=True
-  except (OSError,ValueError,TypeError,SourceError):continue
+  except (OSError,ValueError,TypeError,SourceError) as error:
+   reason=getattr(error,'reason','');code=getattr(error,'code','')
+   stage='STORAGE_RESERVE_BLOCKED' if reason in ('RESERVE_BLOCKED','BLOCKED_REAL_DISK') or code in ('DISK_FULL','SPACE_FULL') else 'AUTH_SCOPE' if code=='HTTP_AUTH' else 'IMAGE_INVALID' if code in ('INVALID_IMAGE','IMAGE_LIMIT','CONTENT_TYPE') else 'DOWNLOAD_FAILED'
+   note(portal,row,stage,**{k:v for k,v in getattr(error,'storage',{}).items() if k in ('reserve','budget','free')});continue
  while len(_due)>512:_due.pop(next(iter(_due)))
  if changed:
   try:_save(backend,path,records)

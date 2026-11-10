@@ -61,7 +61,8 @@ class SeriesWindow85(xbmcgui.WindowXMLDialog):
  def pump(self):
   if __import__('programme_lifecycle69').pulse(self):return
   from series_requests85 import request,result,cancel
-  position=self.getControl(200).getSelectedPosition()
+  position=__import__('gui_guard86').position(self.getControl(200),self.rows,self,200)
+  if position is None:return
   if 0<=position<len(self.rows):
    row=self.rows[position]
    if self.event and not row.get('thumb85') and position not in self._requested85:
@@ -74,7 +75,9 @@ class SeriesWindow85(xbmcgui.WindowXMLDialog):
    for candidate in answer.get('rows',[]):
     for i,row in enumerate(self.rows):
      if row['source']==candidate.get('source') and row['id']==candidate.get('id') and candidate.get('thumb85'):
-      row['thumb85']=candidate['thumb85'];self.getControl(200).getListItem(i).setArt({'thumb':candidate['thumb85'],'icon':candidate['thumb85']})
+      target86=__import__('gui_guard86').item(self.getControl(200),i,self,200,expected=len(self.rows),route='programme_details46')
+      if target86 is None:continue
+      row['thumb85']=candidate['thumb85'];target86.setArt({'thumb':candidate['thumb85'],'icon':candidate['thumb85']})
  def onInit(self):
   __import__('programme_lifecycle69').register(self,'DETAIL')
   self.getControl(101).setLabel('Serie/Bild zuweisen · Auswahl ausdrücklich bestätigen')
@@ -88,7 +91,8 @@ class SeriesWindow85(xbmcgui.WindowXMLDialog):
    items.append(item)
   self.getControl(200).addItems(items);self.setFocusId(200);self._ready=True;self.paint()
  def paint(self):
-  position=self.getControl(200).getSelectedPosition()
+  position=__import__('gui_guard86').position(self.getControl(200),self.rows,self,200)
+  if position is None:return
   if position==self.position or not 0<=position<len(self.rows):return
   self.position=position;row=self.rows[position]
  def onAction(self,action):
@@ -97,7 +101,7 @@ class SeriesWindow85(xbmcgui.WindowXMLDialog):
  def onClick(self,ident):
   if ident==501:self.close()
   elif ident==201:
-   pos=self.getControl(200).getSelectedPosition()
-   if 0<=pos<len(self.rows):self.chosen=dict(self.rows[pos]);self.close()
+   pos=__import__('gui_guard86').position(self.getControl(200),self.rows,self,200)
+   if pos is not None:self.chosen=dict(self.rows[pos]);self.close()
   else:self.paint()
  def onFocus(self,ident):self.paint()

@@ -222,16 +222,27 @@ def _run():
   try:
    from startup48 import suspended
    import service_runtime as runtime
+   from work_trace87 import pulse
    if suspended() or runtime.pressure():
+    pulse('WORKER_BUSY')
     if monitor.waitForAbort(.5):break
+    continue
+   pulse()
+   stop=lambda:_stop.is_set() or monitor.abortRequested()
+   from work_requests86 import pending,drain as manual_drain
+   if pending():
+    with runtime.scope(stop):manual_drain(stop)
     continue
    from programme_consent77 import ensure
    ensure()
    from live_warm68 import prepare
-   prepare(lambda:_stop.is_set() or monitor.abortRequested())
-   drain(lambda:_stop.is_set() or monitor.abortRequested())
+   pulse('WORKER_BUSY')
+   prepare(lambda:stop() or pending())
+   pulse()
+   if not pending():drain(stop)
   except Exception:pass
   if monitor.waitForAbort(.2):break
+ __import__('work_trace87').pulse('WORKER_STOPPED')
 
 def poll():
  """Only called by the already leased service; never by a plugin GUI."""

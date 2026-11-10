@@ -35,7 +35,8 @@ class Thumbnails:
             if path:self.paths[ident]=path
             for pos,row in enumerate(p.rows):
                 if key(row)==ident:
-                    li=p.getControl(200).getListItem(pos)
+                    li=__import__('gui_guard86').item(p.getControl(200),pos,p,200,expected=len(p.rows))
+                    if li is None:continue
                     if path:li.setArt({'thumb':path})
                     li.setProperty('XCMate.Preview46',code)
                     from localization import tr

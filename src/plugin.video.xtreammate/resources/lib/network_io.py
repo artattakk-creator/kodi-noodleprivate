@@ -6,6 +6,8 @@ import sys
 
 
 def service_cancelled():
+    owner86=sys.modules.get('ui_jobs86')
+    if owner86 is not None and owner86.cancelled():return True
     wizard48=sys.modules.get('wizard_deadline48')
     if wizard48 is not None:wizard48.check()
     runtime=sys.modules.get('service_runtime')
@@ -13,6 +15,9 @@ def service_cancelled():
 
 
 def service_timeout(value):
+    owner86=sys.modules.get('ui_jobs86')
+    if owner86 is not None and owner86.active():
+        owner86.check();value=min(value,1.)
     runtime=sys.modules.get('service_runtime')
     return runtime.timeout(value) if runtime else value
 

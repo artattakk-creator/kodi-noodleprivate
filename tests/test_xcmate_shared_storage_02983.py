@@ -175,7 +175,7 @@ class SharedStorage83(Fixture, unittest.TestCase):
 
     def test_cancel_probe_confirmation_does_not_prepare_or_start_journal(self):
         ui=importlib.import_module('artwork_ui');dialog=mock.Mock();dialog.yesno.return_value=False
-        with mock.patch('xbmcgui.Dialog',return_value=dialog),mock.patch.object(ui,'job',side_effect=lambda f:f(lambda:False,lambda **kw:None)),mock.patch.object(self.s,'preflight',return_value={'rows':[]}),mock.patch('artwork_migration.begin') as begin:
+        with mock.patch('xbmcgui.Dialog',return_value=dialog),mock.patch.object(ui,'job',side_effect=lambda f:f(lambda:False,lambda **kw:None)),mock.patch('android_artwork87.preflight',return_value={'rows':[]}),mock.patch('artwork_migration.begin') as begin:
             ui._prepare(str(self.target),shared=True)
         begin.assert_not_called();self.assertFalse((self.folder/'artwork_transfer_v1.sqlite').exists())
 

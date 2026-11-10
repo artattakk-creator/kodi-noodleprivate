@@ -5240,3 +5240,40 @@ msgstr "Sendergruppe wird geladen"
 msgctxt "#37104"
 msgid "Stations {0} · Logos {1}/{0} · Missing pictures: diagnostics available"
 msgstr "Sender {0} · Logos {1}/{0} · Fehlende Bilder: Diagnose verfügbar"
+
+# .86 distinct local navigation rail; leave returns to XCMate Home.
+msgctxt "#37105"
+msgid "Leave"
+msgstr "Verlassen"
+
+msgctxt "#37110"
+msgid "Saving the selected work…"
+msgstr "Ausgewähltes Werk wird gespeichert…"
+
+msgctxt "#37111"
+msgid "Cancelled by the user."
+msgstr "Vom Benutzer abgebrochen."
+
+msgctxt "#37112"
+msgid "The request exceeded its time budget. No unconfirmed assignment was saved."
+msgstr "Die Zeit für den Auftrag ist abgelaufen. Keine unbestätigte Zuordnung wurde gespeichert."
+
+msgctxt "#37113"
+msgid "The background worker is busy. Please try again shortly."
+msgstr "Der Hintergrunddienst ist beschäftigt. Bitte gleich erneut versuchen."
+
+msgctxt "#37114"
+msgid "The background worker is unavailable."
+msgstr "Der Hintergrunddienst ist nicht verfügbar."
+
+msgctxt "#37115"
+msgid "Kodi is shutting down."
+msgstr "Kodi wird beendet."
+
+msgctxt "#37116"
+msgid "The source did not respond in time."
+msgstr "Die Quelle hat nicht rechtzeitig geantwortet."
+
+msgctxt "#37117"
+msgid "The assignment could not be saved. Check storage and permissions."
+msgstr "Die Zuordnung konnte nicht gespeichert werden. Speicher und Berechtigungen prüfen."

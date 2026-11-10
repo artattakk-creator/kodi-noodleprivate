@@ -74,6 +74,7 @@ class ControlTextBox(Control):
 class ControlImage(Control):
     def __init__(self, x, y, width, height, filename, aspectRatio=0, colorDiffuse=None):
         super().__init__(locals().copy())
+        self.image=filename
 
 
 class OmegaDialog:
