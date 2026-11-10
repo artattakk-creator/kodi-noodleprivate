@@ -158,6 +158,7 @@ def _run():
     # optional persistent archive writes, which may be reserve-blocked.
     _references82(portal,kind,rows)
     __import__('station_logos87').recover(portal,rows,cancelled)
+    __import__('station_logos88').recover(portal,rows,cancelled)
     __import__('logo_manifest86').prepare(portal,rows,cancelled)
     __import__('station_logos88').recover(portal,rows,cancelled)
    # Recover already decoded Kodi files before any optional image write.

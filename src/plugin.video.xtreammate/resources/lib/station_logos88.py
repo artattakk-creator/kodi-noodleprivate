@@ -6,7 +6,7 @@ filesystem traversal. Download runs on the existing provider worker, never GUI.
 import hashlib,os,time
 from pathlib import Path
 from urllib.parse import urlsplit,unquote
-_due={};_cursor={}
+_due={};_cursor={};_cache_cursor={}
 def source(row):return __import__('station_logos87').source(row)
 def normalize(uri):
  if not isinstance(uri,str) or len(uri)>2048 or any(ord(c)<32 for c in uri) or any(c in uri for c in ('\\','|')):raise ValueError('UNSAFE_SOURCE')
@@ -132,28 +132,54 @@ def reference(props):
  if not portal or not sid or not original or key(portal,dict(sid=sid,stream_icon=original))!=tag:return ''
  return uri if __import__('decoded_assets88').valid(tag,uri) else ''
 
+def cached_capability(uri,key):
+ """Recognize our exact account/source-addressed prior Kodi cache reference.
+
+ The random capability remains unguessable. Its suffix is only a SHA256 of
+ the already scoped source key, never a raw provider URL/account/token.
+ """
+ import re
+ try:
+  if uri.startswith('image://'):uri=unquote(uri[8:].removesuffix('/'))
+  from artwork_visible import KODI_OPTIONS
+  if uri.endswith(KODI_OPTIONS):uri=uri[:-len(KODI_OPTIONS)]
+  parsed=urlsplit(uri);suffix=hashlib.sha256(key.encode()).hexdigest()
+  return bool(parsed.scheme=='http' and parsed.hostname=='127.0.0.1' and parsed.username is None and parsed.password is None and parsed.port and 1<=parsed.port<=65535 and not parsed.query and not parsed.fragment and re.fullmatch(r'/xcmate88/[a-f0-9]{64}/'+suffix+r'\.(png|jpg)',parsed.path))
+ except (ValueError,TypeError,AttributeError):return False
+
 def recover(portal,rows,cancel=lambda:False):
- """Reuse Kodi's real cached copy of our exact decoded RAM capability."""
+ """Read-only cold/warm reuse of Kodi's real decoded scoped logo files.
+
+ No HTTP, DNS, copied files, own JSON/SQLite writes or archive reserve bypass.
+ A cached reference is not proof that the current Android control rendered it.
+ """
  import json
  import xbmc
  from logo_manifest86 import key
- from widget_cache82 import variants,decoded,remember
- refs=read(portal,rows);wanted={}
- for row in rows[:16]:
-  uri=refs.get(str(row['sid']))
-  if uri:
-   for variant in variants(uri):wanted[variant]=(row,uri)
- if not wanted or cancel():return
+ from widget_cache82 import decoded,remember
+ scope=__import__('logo_manifest86').context(portal);offset=_cache_cursor.get(scope,5)
+ selected=rows[:5]+rows[offset:offset+11]
+ _cache_cursor[scope]=offset+11 if offset+11<len(rows) else 5
+ while len(_cache_cursor)>16:_cache_cursor.pop(next(iter(_cache_cursor)))
+ ready=__import__('station_logos87').read(portal,selected)
+ selected=[row for row in selected if str(row['sid']) not in ready]
+ tags={hashlib.sha256(key(portal,row).encode()).hexdigest():row for row in selected}
+ if not tags or cancel():return
  try:
-  raw=xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=88,method='Textures.GetTextures',params=dict(filter={'or':[dict(field='url',operator='is',value=v) for v in wanted]},properties=['url','cachedurl','sizes']))))
+  # The suffix survives Kodi restarts even though the loopback port/random
+  # capability does not. Filtering is by hash only; full URI grammar, account,
+  # source identity, local root and complete image decode are checked below.
+  raw=xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=88,method='Textures.GetTextures',params=dict(filter={'or':[dict(field='url',operator='contains',value=tag) for tag in tags]},properties=['url','cachedurl','sizes']))))
   if not isinstance(raw,str) or len(raw)>262144:return
   textures=json.loads(raw).get('result',{}).get('textures',[])
   if not isinstance(textures,list):return
-  for texture in textures[:32]:
+  for texture in textures[:64]:
    if cancel():return
-   if not isinstance(texture,dict) or texture.get('url') not in wanted:continue
-   row,uri=wanted[texture['url']];record=decoded(texture,uri)
-   if not record:continue
+   if not isinstance(texture,dict):continue
+   uri=texture.get('url','');row=next((r for tag,r in tags.items() if tag in uri and cached_capability(uri,key(portal,r))),None)
+   if row is None:continue
+   record=decoded(texture,uri)
+   if not record or record['width']>2048 or record['height']>2048:continue
    record['source']=source(row);remember(portal,'live',row,'poster',source(row),record)
    stat=os.stat(record['file']);tag=key(portal,row)
    value=dict(file=record['file'],stamp=[stat.st_mtime_ns,stat.st_size],source_hash=hashlib.sha256(source(row).encode()).hexdigest())

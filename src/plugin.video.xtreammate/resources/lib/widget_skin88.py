@@ -84,3 +84,16 @@ def verify(files):
   if child.findtext('visible')=='false':continue
   if int(child.findtext('left','0'))+int(child.findtext('width','0'))>760 or int(child.findtext('top','0'))+int(child.findtext('height','0'))>620:raise ValueError('SKIN_MIGRATION_BLOCKED')
  return True
+
+def previous_owned(skin):
+ """Recognize the released .87 own Hero; do not authorize a silent write."""
+ from widget_skin78 import FILES,verify as graph_verify
+ from widget_transaction50 import read
+ from widget_skin80 import _node,digest
+ try:
+  files={name:read(Path(skin)/name) for name in FILES}
+  if MARKER in files['xml/IncludesVariables.xml'] or b'XCMate87.Contract' not in files['xml/IncludesVariables.xml']:return False
+  graph_verify(files);__import__('widget_skin87').verify(files)
+  _,_,hero=_node(files['xml/IncludesHomeWidgets.xml'],'include','name','XCMate50.Hero')
+  return digest(hero)==json.loads((Path(__file__).parents[1]/'bingie88_previous.json').read_text())['XCMate50.Hero']
+ except (OSError,ValueError,KeyError,E.ParseError):return False

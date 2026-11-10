@@ -12,9 +12,9 @@ Alle Tests **ANDROID_NOT_TESTED**. Host-/Linux-Tests sind keine Geräteabnahme. 
 | A88-06 | Gleicher Sender/Zeitpunkt in Mini-EPG, Groß-EPG, Home und Details: Titel/Start/Ende/Jetzt/Danach/Fortschritt vergleichen. Keine neuen Reader.close-Exceptions. | ANDROID_NOT_TESTED |
 | A88-07 | Merken → erneut drücken (Entmerken), Kodi neu starten, anderen Eintrag erhalten; keine doppelten Einträge. Bestehende Merkliste im Groß-EPG aufrufen. | ANDROID_NOT_TESTED |
 | A88-08 | Jetzt umschalten aus großem EPG, Mini-/Live-Overlay und eigenständigen Details: genau ein Start, richtige Quelle, vorhandener Back-/Exit-Ablauf unverändert. | ANDROID_NOT_TESTED |
-| A88-09 | Home-Hero auf 1080p und 720p gegen Originalfoto 4 vergleichen: Motiv rechts, weicher Verlauf/Texte links, kompakte Rail, alle eigenen/fremden Reihen sichtbar. Originalfoto für endgültigen Vergleich erforderlich. | ANDROID_NOT_TESTED |
+| A88-09 | Beim bekannten .87-Adapter die neue .88-Layoutvorschau prüfen und ausdrücklich bestätigen. Dann Home-Hero auf 1080p und 720p gegen Originalfoto 4 vergleichen: Motiv rechts, weicher Verlauf/Texte links, kompakte Rail, alle eigenen/fremden Reihen sichtbar. Originalfoto für endgültigen Vergleich erforderlich. | ANDROID_NOT_TESTED |
 | A88-10 | Alle vorhandenen Reihen inkl. MP3 Streams, SHOUTcast, Im/Neu im Kino, Serien/Trends: Name, Reihenfolge, Pfad, Navigation und Neustart prüfen. | ANDROID_NOT_TESTED |
-| A88-11 | Widgets → XCMate-Logo in BINGIE: Vorschau/Bestätigung, richtige transparente Grafik, Rücknahme aus Backup prüfen. Keine anderen Skin-Einstellungen verändern. | ANDROID_NOT_TESTED |
+| A88-11 | Technische Widgetverwaltung (bestehender Bereich „Experimentell“) → XCMate-Logo in BINGIE: Vorschau/Bestätigung, richtige transparente Grafik, Rücknahme aus Backup prüfen. Keine anderen Skin-Einstellungen verändern. | ANDROID_NOT_TESTED |
 | A88-12 | Fernbedienung alle Ebenen, Details horizontal drei Buttons, Beschreibung scrollen, Back; Filme/Serien/Live starten und verlassen, Autoplay/Resume unverändert. | ANDROID_NOT_TESTED |
 
 Fehler mit Test-ID, Zeit, Ansicht und anonymisierten Diagnosecodes melden. Keine Provider-URLs, Token, SMB-Zugänge oder Rohlogs auf GitHub hochladen. Kein Merge/Release vor ausdrücklicher Freigabe.

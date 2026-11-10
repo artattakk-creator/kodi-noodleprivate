@@ -24,7 +24,7 @@ def prepare():
     _next=time.monotonic()+60
     try:
         from utils import setting
-        if setting('bingie_hero63_notice','')=='0.1.29.78':return
+        if setting('bingie_hero63_notice','')=='0.1.29.88':return
         from widget_manager50 import runtime
         from widget_skin50 import applied,prepare as make
         from widget_skin75 import previously_applied
@@ -38,11 +38,12 @@ def prepare():
             from home_activation78 import KEY,request
             if not marker.getProperty(KEY):request('installed78')
             return
-        automatic78=supported(skin) and previous_owned(skin) and not __import__('utils').setting_bool('home78_repair_optout',False)
-        if not automatic78 and not previously_applied(skin) and inspect77().get('code')!='ADAPTER_APPROVAL_REQUIRED':return
+        upgrade88=supported(skin) and __import__('widget_skin88').previous_owned(skin)
+        automatic78=not upgrade88 and supported(skin) and previous_owned(skin) and not __import__('utils').setting_bool('home78_repair_optout',False)
+        if not automatic78 and not upgrade88 and not previously_applied(skin) and inspect77().get('code')!='ADAPTER_APPROVAL_REQUIRED':return
         plan=make(skin)
         from widget_skin60 import preview
-        text=preview(plan).replace('(.60)','(.78)')
+        text=preview(plan).replace('(.60)','(.88)')
         from epg_handoff63 import profile_scope
         with _lock:_pending=dict(profile=profile,skin=skin,plan=plan,text=text,scope=profile_scope(),automatic78=automatic78)
     except (OSError,ValueError,KeyError,TypeError,RuntimeError):pass
@@ -68,7 +69,7 @@ def poll():
     dialog.textviewer(tr(36669),tr(36670)+'\n\n'+pending['text'])
     confirmed=dialog.yesno(tr(36669),tr(36671),defaultbutton=getattr(xbmcgui,'DLG_YESNO_NO_BTN',10))
     if pending.get('scope')!=profile_scope():return
-    xbmcaddon.Addon().setSetting('bingie_hero63_notice','0.1.29.78')
+    xbmcaddon.Addon().setSetting('bingie_hero63_notice','0.1.29.88')
     if not confirmed:return
     from widget_manager50 import runtime,rebuild,trace,error
     try:

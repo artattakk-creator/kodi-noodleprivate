@@ -30,6 +30,17 @@ else:
 
 # .88 has the approved opposite composition: text left, photo right.
 base87=base87.replace("getWidth()==1620", "getWidth()==1760")
+
+# Complete logo/EPG/Hero reference readiness hides the compact loading line.
+# Preserve the visible-status assertion while incomplete, and verify all
+# prerequisites before accepting the deliberately hidden completed status.
+status88="""status88=json.loads(home.getProperty('XCMate.Home86.Rail') or '{}')
+if home.getProperty('XCMate.Home86.State')=='REFERENCE_READY':
+ check(status88.get('total')==88 and status88.get('local',0)+status88.get('ram',0)>=88,'STATUS88_FALSE_COMPLETE')
+ check(not xbmc.getCondVisibility('Control.IsVisible(296887)'),'STATUS88_COMPLETED_LINE_NOT_HIDDEN')
+else:check(xbmc.getCondVisibility('Control.IsVisible(296887)'),'STATUS86_NOT_VISIBLE')"""
+base87=base87.replace("check(xbmc.getCondVisibility('Control.IsVisible(296887)'),'STATUS86_NOT_VISIBLE')",status88)
+
 base87=base87.replace("rgb86.crop((300,30,1100,620))", "rgb86.crop((1000,30,1800,620))")
 base87=base87.replace("rgb86.crop((300,50,1100,520))", "rgb86.crop((1000,50,1800,520))")
 anchor88="base=Path('/base_gui84.py').read_text()"

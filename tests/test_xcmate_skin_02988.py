@@ -34,3 +34,23 @@ class Skin88(Skin86):
   with self.assertRaises(PermissionError):m.apply(plan['id'],self.skin)
   m.apply(plan['id'],self.skin,True);self.assertEqual((self.skin/'xml/IncludesHeader.xml').read_bytes(),patched)
   m.apply(plan['id'],self.skin,True,True);self.assertEqual((self.skin/'xml/IncludesHeader.xml').read_bytes(),raw)
+ def test_gradient_keeps_text_legible_and_right_subject_untinted(self):
+  from PIL import Image
+  from xcmate027_fixture import ADDON
+  with Image.open(ADDON/'resources/media/hero88/left-gradient.png') as im:
+   self.assertGreaterEqual(im.getpixel((20,1))[3],240)
+   self.assertEqual(im.getpixel((760,1))[3],0)
+   self.assertGreater(im.getpixel((420,1))[3],im.getpixel((600,1))[3])
+ def test_released_87_adapter_is_offered_for_88_without_silent_skin_write(self):
+  with mock.patch('widget_skin88.upgrade',side_effect=lambda value:dict(value)):old=self.graph.build(self.original)
+  for name,raw in old.items():(self.skin/name).write_bytes(raw)
+  self.assertTrue(__import__('widget_skin88').previous_owned(self.skin));self.assertFalse(self.graph.installed(self.skin))
+  before={name:(self.skin/name).read_bytes() for name in self.graph.FILES};user=self.prop.read_bytes()
+  m=__import__('skin_upgrade63');m._done=False;m._pending=None;m._next=0
+  self.options['bingie_hero63_notice']='0.1.29.78'
+  with mock.patch('widget_manager50.runtime',return_value=(self.profile,self.skin)),mock.patch('widget_skin50.applied',return_value=False):m.prepare()
+  self.assertIsNotNone(m._pending);self.assertFalse(m._pending['automatic78'])
+  self.assertEqual({name:(self.skin/name).read_bytes() for name in self.graph.FILES},before);self.assertEqual(self.prop.read_bytes(),user)
+  plan=m._pending['plan'];self.graph.apply(plan['id'],self.skin,confirmed=True)
+  self.assertTrue(self.graph.installed(self.skin));self.assertEqual(self.prop.read_bytes(),user)
+  m._pending=None;m._done=False

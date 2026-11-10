@@ -96,7 +96,10 @@ def verify(files):
     return True
 
 def installed(skin):
-    try:verify({name:read(Path(skin)/name) for name in FILES});return True
+    try:
+        files88={name:read(Path(skin)/name) for name in FILES};verify(files88)
+        if __import__('widget_skin88').previous_owned(skin):return False
+        return True
     except (OSError,ValueError,E.ParseError,KeyError):return False
 
 def previous_owned(skin):

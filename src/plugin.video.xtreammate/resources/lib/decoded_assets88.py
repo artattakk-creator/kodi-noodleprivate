@@ -59,18 +59,18 @@ def put(key,body,until,kind='event'):
    window().setProperty(PREFIX+'Instance',INSTANCE)
    _server.timeout=.2;_stop=threading.Event()
    _thread=threading.Thread(target=_serve,args=(_server,_stop),name='XCMate-decoded88',daemon=True);_thread.start()
-  path='/'+secrets.token_hex(32)+'.'+('png' if body.startswith(b'\x89PNG') else 'jpg')
+  path='/xcmate88/'+secrets.token_hex(32)+'/'+hashlib.sha256(key.encode()).hexdigest()+'.'+('png' if body.startswith(b'\x89PNG') else 'jpg')
   uri='http://127.0.0.1:'+str(_server.server_port)+path
   record=dict(instance88=INSTANCE,uri=uri,key=key,sha256=digest,width=width,height=height,until=min(until,time.time()+86400),storage='RAM_ONLY')
-  _items[path]=dict(body=body,mime='image/png' if body.startswith(b'\x89PNG') else 'image/jpeg',until=record['until'],active=now+60,key=key)
+  _items[path]=dict(body=body,mime='image/png' if body.startswith(b'\x89PNG') else 'image/jpeg',until=record['until'],active=now+60,key=key,slot88=slot(key))
   window().setProperty(slot(key),json.dumps(record,separators=(',',':')))
   return record
 def _remove(path,item):
- _items.pop(path,None)
- try:current=json.loads(window().getProperty(slot(item['key'])) or '{}')
+ _items.pop(path,None);receipt_slot=item.get('slot88',slot(item['key']))
+ try:current=json.loads(window().getProperty(receipt_slot) or '{}')
  except (ValueError,TypeError):current={}
  if current.get('uri','').endswith(path):
-  window().clearProperty(slot(item['key']));window().clearProperty(slot(item['key'])+'.active')
+  window().clearProperty(receipt_slot);window().clearProperty(receipt_slot+'.active')
 def read(key):
  try:
   raw=window().getProperty(slot(key));value=json.loads(raw) if raw and len(raw)<2048 else {}

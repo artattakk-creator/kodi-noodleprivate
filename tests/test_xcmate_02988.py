@@ -156,3 +156,26 @@ class Transport88(Fixture,unittest.TestCase):
    with mock.patch.object(m,'fetch',side_effect=lambda portal,uri,cancel:(fetched.append(uri) or png())),mock.patch('art_storage.check',side_effect=OSError('reserve')):m.prepare(self.portal,rows)
    self.assertEqual(fetched,[rows[0]['stream_icon'],rows[1]['stream_icon']])
   finally:__import__('decoded_assets88').shutdown()
+ def test_profile_switch_eviction_clears_only_the_original_receipt(self):
+  m=__import__('decoded_assets88')
+  try:
+   with mock.patch('epg_handoff63.profile_scope',return_value='profile-A'):
+    old=m.put('same-row',png(),time.time()+600);old_slot=m.slot('same-row')
+   with mock.patch('epg_handoff63.profile_scope',return_value='profile-B'):
+    new=m.put('same-row',png((161,80)),time.time()+600)
+    old_path=__import__('urllib.parse',fromlist=['urlsplit']).urlsplit(old['uri']).path
+    m._remove(old_path,m._items[old_path])
+    self.assertEqual(m.read('same-row')['uri'],new['uri'])
+   self.assertFalse(self.properties.get(old_slot))
+   with mock.patch('epg_handoff63.profile_scope',return_value='profile-A'):self.assertIsNone(m.read('same-row'))
+  finally:m.shutdown()
+ def test_native_texture_recovery_after_session_end_needs_no_network_or_metadata_write(self):
+  m=__import__('station_logos88');assets=__import__('decoded_assets88');row=dict(sid='88',name='Station',stream_icon='http://images.example.org/logo.png');tag=__import__('logo_manifest86').key(self.portal,row)
+  old=assets.put(tag,png(),time.time()+600,kind='logo');uri=old['uri'];assets.shutdown()
+  file=self.folder/'kodi-decoded.png';file.write_bytes(png());record=dict(file=str(file),sha256=hashlib.sha256(png()).hexdigest(),width=160,height=80,stamp=[file.stat().st_mtime_ns,file.stat().st_size])
+  with mock.patch('xbmc.executeJSONRPC',create=True,return_value=json.dumps(dict(result=dict(textures=[dict(url=uri,cachedurl='synthetic')])))),mock.patch('widget_cache82.decoded',return_value=record),mock.patch.object(m,'fetch',side_effect=AssertionError('no network')),mock.patch('art_storage.check',side_effect=AssertionError('no archive write')):
+   m.recover(self.portal,[row])
+  self.assertEqual(__import__('logo_manifest86').read(self.portal,[row])['88'],str(file))
+  self.assertEqual(__import__('logo_manifest86').read(self.portal,[row],with_fallback=False),{})
+  self.assertFalse(m.cached_capability(uri,__import__('logo_manifest86').key(self.portal,dict(row,sid='other'))))
+  self.assertFalse(m.cached_capability(uri.replace('127.0.0.1','attacker.example.org'),tag))
