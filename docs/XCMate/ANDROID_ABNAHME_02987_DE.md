@@ -2,6 +2,15 @@
 
 **Alle folgenden Gates: ANDROID_NOT_TESTED.** Linux-Kodi und Hosttests sind separate Evidenz. Box A, Original/Pilot/NeoDark3 .86 und Installer 0.5.26 unverändert lassen. Test-ZIP nur nach bewusster Benutzerinstallation als kumulatives Update verwenden; keine Deinstallation, kein Reset, keine Profilkopien veröffentlichen.
 
+## Testkandidat installieren
+
+1. Nur Box B verwenden. Das separate ZIP aus Draft #416 herunterladen; Begleit-SHA256 auf dem heruntergeladenen Paket prüfen. Kein Repository hinzufügen oder umstellen.
+2. Kodi → Add-ons → Paket-Symbol → Aus ZIP-Datei installieren → `plugin.video.xtreammate-0.1.29.87.zip`. Als kumulatives Update über .86 installieren; weder deinstallieren noch Kodi-Daten löschen. Version .87 und den bestehenden Profilbestand kontrollieren.
+3. Zuerst Home/Logos/EPG sowie je einen Live-/Film-/Serien-Start und Zurück testen. Bei Freeze/Indexfehler sofort FAIL dokumentieren; keine 100 fehlerhaften Zyklen erzwingen. Nach bestandenem Smoke folgen alle Gates einschließlich F1.
+4. Keine automatische Artwork-Migration. Erst S1 dokumentieren; bei identischem Kapazitätspool S2 als BLOCKED führen. Neue Pfadnamen schaffen keinen freien Speicher.
+5. Bestehenden TMDB-Token unverändert lassen. Der optionale Einrichtungs-/Gatewayprototyp benötigt eine später geprüfte API und wird für diese Bilder-/GUI-Abnahme nicht vorausgesetzt. Keine Zugangsdaten oder Rohlogs öffentlich posten.
+6. Ergebnisse getrennt nach Auflösung/Kalt-/Warmstart mit PASS/FAIL/ANDROID_NOT_TESTED, realen Zeiten und privaten Screenshots erfassen. Die normalen Updatekanäle liefern weiterhin .86; dieses Paket wird ausschließlich manuell zur Abnahme angeboten.
+
 Vorher privat Version/Profil, Startgruppe/Startsender, TMDB-Zugang, Favoriten, Resume, manuelle EPG-Zuordnungen, Widgetnamen/-reihenfolge/-pfade und SkinShortcuts sichern bzw. inventarisieren. Keine Tokens oder URLs in öffentliche Protokolle.
 
 | Gate | Ausführung und PASS-Kriterium | Status |
