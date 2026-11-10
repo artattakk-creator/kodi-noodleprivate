@@ -53,8 +53,12 @@ def read(portal,rows,with_fallback=True):
       file=archive.resolve_target(hashlib.sha256(uri.encode()).hexdigest())
       try:
        if not os.path.islink(file) and 0<os.stat(file).st_size<=3*1024*1024:
+        # Match the legacy bounded header guard; never run Pillow/SQL here.
+        from media_art import dimensions,MAX_PIXELS
+        with open(file,'rb') as stream:width,height=dimensions(stream.read(65536))
+        if not 0<width<=4096 or not 0<height<=4096 or width*height>MAX_PIXELS:continue
         result[sid]=file;break
-      except OSError:continue
+      except (OSError,ValueError,TypeError,__import__('struct').error):continue
   except (OSError,ValueError):pass
  try:backend,_=location()
  except OSError:return result
