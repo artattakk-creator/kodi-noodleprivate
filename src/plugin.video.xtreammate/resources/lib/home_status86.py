@@ -5,11 +5,13 @@ def window():
  import xbmcgui
  return xbmcgui.Window(10000)
 def rail(portal,count,local):
+ from epg_handoff63 import profile_scope
  pid=str(portal['id']);_started.setdefault(pid,time.monotonic())
  while len(_started)>8:_started.pop(next(iter(_started)))
- window().setProperty('XCMate.Home86.Rail',json.dumps(dict(pid=pid,total=count,local=local,at=time.monotonic())))
+ window().setProperty('XCMate.Home86.Rail',json.dumps(dict(profile=profile_scope(),pid=pid,total=count,local=local,at=time.monotonic())))
  window().setProperty('XCMate.Home86.Text','Sender '+str(count)+' · Logos '+str(local)+'/'+str(count)+' · EPG/Hero werden ergänzt')
  window().setProperty('XCMate.Home86.IdentityReady','true' if count else '')
+ window().setProperty('XCMate.Home86.Profile',profile_scope())
 def observe():
  import xbmc,xbmcgui
  if xbmc.getSkinDir()!='skin.titan.bingie.mod' or xbmcgui.getCurrentWindowId()!=10000:return

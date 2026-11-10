@@ -88,7 +88,7 @@ def visible_position(pid,default=0):
 def allowed(kind,portal=None):
     if kind=='live' or not applicable():return True
     value=_read(KEY)
-    return value.get('phase',0)>=(1 if kind=='vod' else 2) or (_window().getProperty('XCMate.Home86.IdentityReady')=='true' and kind in ('vod','series'))
+    return value.get('phase',0)>=(1 if kind=='vod' else 2) or (_window().getProperty('XCMate.Home86.IdentityReady')=='true' and _window().getProperty('XCMate.Home86.Profile')==__import__('epg_handoff63').profile_scope() and kind in ('vod','series'))
 
 def rest_allowed():return not applicable() or _read(KEY).get('phase',0)>=3
 

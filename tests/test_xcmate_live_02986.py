@@ -34,6 +34,6 @@ class Live86(Fixture,unittest.TestCase):
   with mock.patch('art_storage.check',side_effect=OSError('RESERVE_BLOCKED')),mock.patch('programme_transport77.verified',side_effect=AssertionError('network')):
    self.assertEqual(module.prepare(self.portal,self.rows[:2]),'EXTERNAL_UNAVAILABLE')
  def test_media_admission_after_identity_does_not_need_hero_image(self):
-  m=importlib.import_module('home_schedule75');m._window().setProperty('XCMate.Home86.IdentityReady','true')
+  m=importlib.import_module('home_schedule75');m._window().setProperty('XCMate.Home86.IdentityReady','true');m._window().setProperty('XCMate.Home86.Profile',__import__('epg_handoff63').profile_scope())
   with mock.patch('home_schedule75.applicable',return_value=True),mock.patch('home_schedule75._read',return_value={'phase':0}):
    self.assertTrue(m.allowed('vod',self.portal));self.assertTrue(m.allowed('series',self.portal))

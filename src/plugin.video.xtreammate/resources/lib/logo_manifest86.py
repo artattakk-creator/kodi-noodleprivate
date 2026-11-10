@@ -11,8 +11,9 @@ def context(portal):
  from epg_handoff63 import profile_scope
  return hashlib.sha256(json.dumps([profile_scope(),policy(portal,'live'),[portal.get(k) for k in ('id','type','xc_host','xc_user','xc_pass')]],sort_keys=True).encode()).hexdigest()
 def source(row):
- from programme_assets47 import sources
- return sources(row,provider_only=True).get('poster') or ''
+ from media_art import poster_candidates
+ values=poster_candidates(row)
+ return values[0] if values else ''
 def key(portal,row,scope=None):
  return hashlib.sha256(((scope or context(portal))+'|'+str(row['sid'])+'|'+source(row)).encode()).hexdigest()
 def location():
@@ -31,6 +32,13 @@ def load(portal,all_records=False):
  except (OSError,ValueError,TypeError,AttributeError):return {}
 def read(portal,rows):
  records=load(portal);result={};scope=context(portal)
+ # Existing Kodi-local decoded logos remain valid without adopting/deleting files.
+ from widget_cache79 import load as cached,valid
+ from media_art import poster_candidates
+ refs=cached(portal,'live').get('refs',{})
+ for row in rows:
+  value=refs.get(str(row['sid']),{}).get('poster',{})
+  if value.get('source') in poster_candidates(row) and valid(value,value.get('source')):result[str(row['sid'])]=value['file']
  try:backend,_=location()
  except OSError:return result
  for row in rows:
@@ -46,7 +54,7 @@ def _save(backend,path,records):
  from art_storage import check
  from profile_transaction import writing
  raw=json.dumps(dict(format=1,records=records),sort_keys=True,separators=(',',':')).encode()
- if len(raw)>LIMIT:raise OSError('LOGO_MANIFEST_LIMIT')
+ if len(records)>512 or len(raw)>LIMIT:raise OSError('LOGO_MANIFEST_LIMIT')
  with writing(timeout=.1):
   check(len(raw)+65536,limit=0,backend=backend)
   if os.path.islink(path):raise OSError('LOGO_MANIFEST_UNSAFE')
@@ -90,6 +98,34 @@ def prepare(portal,rows,cancel=lambda:False):
   except (OSError,ValueError,TypeError,SourceError):continue
  while len(_due)>512:_due.pop(next(iter(_due)))
  if changed:
-  try:_save(backend,path,dict(list(records.items())[-512:]))
+  try:_save(backend,path,records)
   except (OSError,TimeoutError):return 'EXTERNAL_UNAVAILABLE'
  return 'READY' if len(hit)==len(rows) else 'PARTIAL' if hit or changed else 'EXTERNAL_UNAVAILABLE'
+
+
+def remote(portal,rows):
+ """Public provider leases already approved by the existing worker; RAM only."""
+ from widget_assets69 import identity,profile,PREFIX,safe
+ from artwork_visible import KODI_OPTIONS
+ from widget_refs74 import revoked
+ import xbmcgui
+ win=xbmcgui.Window(10000);result={}
+ for row in rows:
+  uri=source(row)
+  if not uri or not safe(portal,uri) or revoked(uri):continue
+  tag=identity(portal,'live',row,'poster',uri)
+  try:
+   raw=win.getProperty(PREFIX+tag);value=json.loads(raw) if raw and len(raw)<4096 else {}
+   if value.get('key')==tag and value.get('profile')==profile() and 0<value.get('until',0)-time.time()<=30 and value.get('uri')==uri+KODI_OPTIONS:result[str(row['sid'])]=(value['uri'],tag)
+  except (ValueError,TypeError):continue
+ return result
+
+def reference(props):
+ from portals import get_by_id
+ from artwork_visible import KODI_OPTIONS
+ uri=props.get('XCMate.ProgrammeLogo46','');tag=props.get('XCMate.LogoProof86','')
+ if not uri.endswith(KODI_OPTIONS) or not tag:return ''
+ portal=get_by_id(str(props.get('XCMate.PortalId')))
+ if not portal:return ''
+ row=dict(sid=str(props.get('XCMate.MediaId')),cover=uri[:-len(KODI_OPTIONS)],kind='live')
+ return uri if remote(portal,[row]).get(row['sid'])==(uri,tag) else ''

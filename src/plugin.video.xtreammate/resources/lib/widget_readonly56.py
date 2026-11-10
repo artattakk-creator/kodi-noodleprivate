@@ -28,11 +28,13 @@ def publish(portal,kind,rows):
     from widget_art44 import read
     from widget_notice46 import prepare
     digest=hashlib.sha256();approved=read(portal['id'],kind);count=0;images84=0;patch85=[]
-    for offset in range(0,len(rows),16):
-        for value in values(portal,kind,rows[offset:offset+16],approved):
+    batch86=len(rows) if kind=='live' and rows and __import__('home_schedule75').applicable() else 16
+    for offset in range(0,len(rows),batch86):
+        for value in (__import__('live_rail86').values(portal,rows[offset:offset+batch86]) if kind=='live' and __import__('home_schedule75').applicable() else values(portal,kind,rows[offset:offset+batch86],approved)):
             value.pop('_programme46',None)
             images84+=int(__import__('widget_assets69').renderable(value.get('art',{}).get('poster')))
-            digest.update(json.dumps(__import__('widget_snapshot85').semantic(value),sort_keys=True).encode());count+=1
+            stable86=({k:value[k] for k in ('label','url','art')} if kind=='live' and __import__('home_schedule75').applicable() else __import__('widget_snapshot85').semantic(value))
+            digest.update(json.dumps(stable86,sort_keys=True).encode());count+=1
             if kind in ('vod','series') and len(patch85)<24:patch85.append(value)
     if kind in ('vod','series'):
         import xbmcgui

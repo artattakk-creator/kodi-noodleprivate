@@ -90,6 +90,7 @@ def logo_proof(portal,row,uri):
 
 def logo_reference(props):
     """GUI-safe existing property lookup; current cached portal binds account."""
+    if props.get('XCMate.LogoProof86'):return __import__('logo_manifest86').reference(props)
     from widget_assets69 import identity,read
     from artwork_visible import KODI_OPTIONS
     from portals import get_by_id

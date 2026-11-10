@@ -12,7 +12,7 @@ def element(parent,kind,values,ident=None):
  for tag,text in values:E.SubElement(c,tag).text=text
  return c
 def upgrade(files):
- if MARKER in files['xml/IncludesVariables.xml']:verify(files);return dict(files)
+ if MARKER in files['xml/IncludesVariables.xml']:verify(files);return __import__('widget_skin86').upgrade(files)
  if b'XCMate84.Contract' not in files['xml/IncludesVariables.xml']:return dict(files)
  from widget_skin80 import _node,digest
  from widget_skin50 import edit
@@ -62,7 +62,7 @@ def upgrade(files):
  result['xml/IncludesHomeWidgets.xml']=edit(result['xml/IncludesHomeWidgets.xml'],[(start85['start'],end85,E.tostring(node85,encoding='utf-8'))])
  data=data[:at]+E.tostring(proposal,encoding='utf-8')+data[at:];at=data.rfind(b'</includes>')
  result[name]=data[:at]+b'<variable name="XCMate85.Contract"><value>READY</value></variable>'+data[at:]
- verify(result);return result
+ verify(result);return __import__('widget_skin86').upgrade(result)
 def verify(files):
  from widget_skin78 import parse
  root=parse(files['xml/IncludesHomeWidgets.xml'])
