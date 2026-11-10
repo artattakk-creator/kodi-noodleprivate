@@ -1,6 +1,6 @@
 """Cinematic full-width Hero: photo right, gradient/text left, native rows intact.
 
-Only the hash-verified released own Hero changes. SkinShortcuts, foreign rows,
+Only hash-verified released own Hero and menu glyph definitions change. SkinShortcuts, foreign rows,
 paths, slots, global row visibility and user settings are not patch targets.
 """
 import json
@@ -11,6 +11,11 @@ def setv(node,tag,value):
  child=node.find(tag)
  if child is None:child=E.SubElement(node,tag)
  child.text=str(value)
+def variable_node(data,name):
+ import re
+ hits=list(re.finditer(rb'<variable name="'+re.escape(name.encode())+rb'">.*?</variable>',data,re.S))
+ if len(hits)!=1:raise ValueError('SKIN_MIGRATION_BLOCKED')
+ hit=hits[0];return dict(start=hit.start()),hit.end(),E.fromstring(hit[0])
 def upgrade(files):
  if MARKER in files['xml/IncludesVariables.xml']:verify(files);return dict(files)
  if b'XCMate87.Contract' not in files['xml/IncludesVariables.xml']:return dict(files)
@@ -65,6 +70,22 @@ def upgrade(files):
  status=hero.find(".//control[@id='296887']")
  for tag,val in (('left',170),('top',514),('width',700)):setv(status,tag,val)
  result=dict(files);result[name]=edit(data,[(span['start'],end,E.tostring(hero,encoding='utf-8'))])
+ # Only the released own menu glyph definition/variable may change;
+ # native/foreign menu actions and user fallback icons remain untouched.
+ name='xml/IncludesBingie.xml';data=result[name];a,b,icons=_node(data,'include','name','Bingie_Menu_Icon_Defs')
+ if digest(icons)!=known['Bingie_Menu_Icon_Defs']:raise ValueError('SKIN_MIGRATION_BLOCKED')
+ setv(icons,'width',48);setv(icons,'height',48)
+ result[name]=edit(data,[(a['start'],b,E.tostring(icons,encoding='utf-8'))])
+ name='xml/IncludesVariables.xml';data=result[name];a,b,menu=variable_node(data,'XCMate75.MenuIcon')
+ if digest(menu)!=known['XCMate75.MenuIcon']:raise ValueError('SKIN_MIGRATION_BLOCKED')
+ labels={'device-tv':('Live TV',),'movie':('Movies',),'playlist':('TV Shows',),'search':('Search',),'settings':('Settings',),'heart':('Favorites','Favourites')}
+ for value in menu.findall('value'):
+  for asset,names in labels.items():
+   if (value.text or '').endswith('/'+asset+'-normal.png'):
+    value.set('condition',value.get('condition','')+' | '+' | '.join('String.IsEqual(ListItem.Label,'+label+')' for label in names))
+ result[name]=data[:a['start']]+E.tostring(menu,encoding='utf-8')+data[b:]
+ from widget_skin78 import parse
+ parse(result[name])
  name='xml/IncludesVariables.xml';data=result[name];at=data.rfind(b'</includes>');rating_var=E.Element('variable',name='XCMate88.Rating')
  for bank in ('A','B'):
   condition='String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + String.IsEqual(Window(Home).Property(XCMate.Hero63.Active),'+bank+') + String.IsEqual(Window(Home).Property(XCMate.Hero63.'+bank+'.Identity),ListItem.Property(XCMate.WidgetToken41)) + String.IsEqual(Window(Home).Property(XCMate.Hero63.'+bank+'.Profile),ListItem.Property(XCMate.EpgProfile63))'
@@ -83,6 +104,8 @@ def verify(files):
  for child in panel.findall('control'):
   if child.findtext('visible')=='false':continue
   if int(child.findtext('left','0'))+int(child.findtext('width','0'))>760 or int(child.findtext('top','0'))+int(child.findtext('height','0'))>620:raise ValueError('SKIN_MIGRATION_BLOCKED')
+ icons=parse(files['xml/IncludesBingie.xml']).find("include[@name='Bingie_Menu_Icon_Defs']")
+ if icons is None or (icons.findtext('width'),icons.findtext('height'))!=('48','48'):raise ValueError('SKIN_MIGRATION_BLOCKED')
  return True
 
 def previous_owned(skin):

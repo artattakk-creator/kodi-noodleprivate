@@ -16,7 +16,7 @@ class Skin88(Skin86):
   with mock.patch('widget_skin88.upgrade',side_effect=lambda value:dict(value)):old=self.graph.build(self.original)
   new=__import__('widget_skin88').upgrade(old)
   for name in self.graph.FILES:
-   if name not in ('xml/IncludesHomeWidgets.xml','xml/IncludesVariables.xml'):self.assertEqual(new[name],old[name])
+   if name not in ('xml/IncludesHomeWidgets.xml','xml/IncludesVariables.xml','xml/IncludesBingie.xml'):self.assertEqual(new[name],old[name])
   from widget_skin80 import _node
   name='xml/IncludesHomeWidgets.xml';a,b,_=_node(old[name],'include','name','XCMate50.Hero');c,d,_=_node(new[name],'include','name','XCMate50.Hero')
   self.assertEqual(old[name][:a['start']]+old[name][b:],new[name][:c['start']]+new[name][d:])
@@ -54,3 +54,14 @@ class Skin88(Skin86):
   plan=m._pending['plan'];self.graph.apply(plan['id'],self.skin,confirmed=True)
   self.assertTrue(self.graph.installed(self.skin));self.assertEqual(self.prop.read_bytes(),user)
   m._pending=None;m._done=False
+
+ def test_bingie_navigation_has_larger_own_glyphs_and_english_aliases_without_foreign_changes(self):
+  with mock.patch('widget_skin88.upgrade',side_effect=lambda v:dict(v)):old=self.graph.build(self.original)
+  new=__import__('widget_skin88').upgrade(old)
+  from widget_skin80 import _node
+  name='xml/IncludesBingie.xml';a,b,_=_node(old[name],'include','name','Bingie_Menu_Icon_Defs');c,d,icons=_node(new[name],'include','name','Bingie_Menu_Icon_Defs')
+  self.assertEqual((icons.findtext('width'),icons.findtext('height')),('48','48'))
+  self.assertEqual(old[name][:a['start']]+old[name][b:],new[name][:c['start']]+new[name][d:])
+  menu=self.graph.parse(new['xml/IncludesVariables.xml']).find("variable[@name='XCMate75.MenuIcon']")
+  self.assertTrue(any('Live TV' in n.get('condition','') and 'device-tv-normal.png' in n.text for n in menu.findall('value')))
+  self.assertEqual(menu.findall('value')[-1].text,'$INFO[ListItem.Icon]')
