@@ -1,0 +1,16 @@
+{
+  "addon_id": "plugin.video.xtreammate",
+  "version": "0.1.29.86",
+  "exception_applies_only_to_version": "0.1.29.86",
+  "user_approved_regular_release": true,
+  "user_approved_pilot_release": true,
+  "user_approved_all_channels": true,
+  "authorization_issue": 409,
+  "authorization": "Explicit user approval 2026-11-10: 'Ja, dann pack die bitte auf alle Verzeichnisse und alle Repositories. Also auf NeoDuck 3 leg das da ab und ja in die anderen Repositories bitte auch rein.' Already merged source PR #410 commit 36b903c06daa7b7fb5903f9de568237c18b9e2a1. Stage pinned tested .86 review archive to regular, Pilot and NeoDark3. Separate draft #412 excluded. No physical Android PASS claim.",
+  "android_status": "NOT_TESTED",
+  "android_pass_claimed": false,
+  "source_merge_pr": 410,
+  "source_merge_sha": "36b903c06daa7b7fb5903f9de568237c18b9e2a1",
+  "sha256": "07c7f10b0f5da873c1add538c44bf2ee4c9aa5027ad98c262ec98bd5d709c7c4",
+  "installer_0_5_26_unchanged": true
+}
