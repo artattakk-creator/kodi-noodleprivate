@@ -7,7 +7,13 @@ install84=install
 def install():
  install84()
  # Metadata identity is synthetic; image transport, Kodi decode and pixels are real.
- import programme_match46
+ import programme_match46,download_redirect
+ def addresses86(url):
+  from urllib.parse import urlsplit
+  parts=urlsplit(url)
+  if parts.scheme=='https' and parts.hostname=='image.tmdb.org' and parts.port in (None,443) and parts.path.startswith(('/t/p/w500/','/t/p/w1280/','/t/p/original/')):return ['127.0.0.1']
+  raise AssertionError('UNEXPECTED_SYNTHETIC86_ORIGIN')
+ download_redirect.addresses=addresses86
  def candidate86(event,cancel=lambda:False):
   ident=str(event.get('sid',''))
   if not ident.isdigit():return None

@@ -37,7 +37,7 @@ def upgrade(files):
  liveposter='String.IsEqual(ListItem.Property(XCMate.WidgetKind41),live) + ['+' | '.join(branches)+']'
  for v in list(portrait.findall('visible')):portrait.remove(v)
  E.SubElement(portrait,'visible').text='['+PORTRAIT+'] | ['+liveposter+']'
- for tag,text in (('left','180'),('top','12'),('width','900'),('height','596')):portrait.find(tag).text=text
+ for tag,text in (('left','270'),('top','12'),('width','1080'),('height','596')):portrait.find(tag).text=text
  portrait.find('aspectratio').text='keep';portrait.find('aspectratio').set('align','center')
  E.SubElement(main,'visible').text='!['+liveposter+']'
  status=E.SubElement(group,'control',type='label',id='296887')

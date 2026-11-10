@@ -21,7 +21,7 @@ class Skin86(Fixture50,unittest.TestCase):
  def test_real_include_graph_compiles_with_separate_poster_and_preload_status_controls(self):
   after=self.m.upgrade(self.previous);self.assertTrue(self.graph.verify(after));self.assertTrue(self.m.verify(after))
   root=self.graph.parse(after['xml/IncludesHomeWidgets.xml'])
-  poster=root.find(".//control[@id='296783']");self.assertEqual(poster.findtext('aspectratio'),'keep');self.assertGreater(int(poster.findtext('height')),500)
+  poster=root.find(".//control[@id='296783']");self.assertEqual(poster.findtext('aspectratio'),'keep');self.assertGreater(int(poster.findtext('height')),500);self.assertEqual(poster.findtext('left'),'270');self.assertEqual(poster.findtext('width'),'1080')
   self.assertIn('official_poster',poster.findtext('visible'));self.assertEqual(root.find(".//control[@id='296751']/height").text,'620')
   status=root.find(".//control[@id='296887']");self.assertLessEqual(int(status.findtext('top'))+int(status.findtext('height')),640)
  def test_unknown_owned_hero_change_is_rejected_without_touching_profile(self):
