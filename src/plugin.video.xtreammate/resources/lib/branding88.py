@@ -28,7 +28,7 @@ def menu():
  import xbmcgui
  from widget_manager50 import runtime,rebuild
  from widget_transaction50 import folder,load
- _,skin=runtime();dialog=xbmcgui.Dialog();choice=dialog.select('XCMate-Logo in BINGIE', ['Vorschau und anwenden','Letzte Logo-Änderung zurücknehmen'])
+ _,skin=runtime();dialog=xbmcgui.Dialog();choice=__import__('menu_icons45').select(dialog,'XCMate-Logo in BINGIE', ['Vorschau und anwenden','Letzte Logo-Änderung zurücknehmen'],default='image')
  if choice==0:
   plan=prepare(skin)
   if dialog.yesno('XCMate-Logo','Nur die zwei Header-Logotexturen werden ersetzt. Original, SHA256 und Rückrollplan sind gesichert. Jetzt anwenden?'):

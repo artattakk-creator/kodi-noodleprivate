@@ -131,3 +131,12 @@ class Transport88(Fixture,unittest.TestCase):
    result=m.collect()
   self.assertEqual(result['logos']['pool_comparison'],'TARGET_VOLUME_UNVERIFIED')
   self.assertNotIn('path',json.dumps(result));self.assertTrue(all(v['orphan_status']=='NOT_PROVEN' for v in result['inventory']))
+ def test_ram_logo_reaches_hero_with_scoped_proof_and_separate_persisted_count(self):
+  assets=__import__('decoded_assets88');row=dict(sid='1',name='Station',stream_icon='http://images.example.org/a.png');key=__import__('logo_manifest86').key(self.portal,row)
+  assets.put(key,png(),time.time()+600,kind='logo')
+  try:
+   item=__import__('live_rail86').values(self.portal,[row])[0]
+   self.assertEqual(item['props']['XCMate.HeroArtSource63'],'station_logo');self.assertEqual(item['props']['XCMate.HeroImage63'],item['art']['poster'])
+   receipt=json.loads(self.properties['XCMate.Home86.Rail']);self.assertEqual((receipt['local'],receipt['ram']),(0,1))
+   bad=dict(item['props'],**{'XCMate.MediaId':'other'});self.assertEqual(__import__('station_logos88').reference(bad),'')
+  finally:assets.shutdown()

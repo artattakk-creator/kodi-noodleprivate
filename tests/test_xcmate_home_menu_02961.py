@@ -18,7 +18,7 @@ class Menu61(Fixture50,unittest.TestCase):
   self.follow('widget_setup',technical74='1')
   self.assertEqual([i.label for u,i,f in self.added[:3]],['Live-TV','Filme','Serien'])
   for label,action in [('BINGIE-Home-Layout prüfen/vorbereiten','widget_skin50'),('Widget-Verknüpfung oder Layout wiederherstellen','widget_restore50')]:
-   matches=[(u,f) for u,i,f in self.added if 'action='+action in u]
+   matches=[(u,f) for u,i,f in self.added if 'action='+action in u and 'branding88=' not in u]
    self.assertEqual(len(matches),1);self.assertFalse(matches[0][1])
   self.assertFalse(self.builtins)
  def test_existing_adapter_never_rebuilds_without_explicit_confirmation(self):

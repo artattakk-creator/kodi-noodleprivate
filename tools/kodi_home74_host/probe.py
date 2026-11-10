@@ -96,7 +96,7 @@ for target in ('appearance','widget_setup','widget_skin50'):
         rows=rpc('Files.GetDirectory',dict(directory=path,media='files'))['files']
     def matches(row):
         query=parse_qs(urlsplit(row['file']).query)
-        return query.get('section')==[target] if target=='appearance' else query.get('action')==[target]
+        return query.get('section')==[target] if target=='appearance' else query.get('action')==[target] and not query.get('branding88')
     found=[row for row in rows if matches(row)]
     assert len(found)==1,(target,rows)
     visited.append(dict(label=found[0]['label'],url=found[0]['file']))

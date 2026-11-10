@@ -33,7 +33,10 @@ def _serve(server):
  import xbmc
  aborted=getattr(xbmc.Monitor(),'abortRequested',lambda:False)
  try:
-  while not _stop.is_set() and not aborted():server.handle_request()
+  while not _stop.is_set() and not aborted():
+   try:server.handle_request()
+   except (OSError,ValueError):
+    if not _stop.is_set() and not aborted():raise
  finally:server.server_close()
 def put(key,body,until,kind='event'):
  from media_sources43 import validate_image

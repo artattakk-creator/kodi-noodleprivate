@@ -19,6 +19,7 @@ def valid(art,event=None):
   if art.get('asset88')!=key(event) or art.get('scope69')!=identity(event) or art.get('fingerprint')!=__import__('programme_art46').fingerprint(event):return False
  return __import__('decoded_assets88').valid(art.get('asset88',''),art.get('image',''),art.get('sha256'))
 def remember(event,value,body):
+ if __import__('os').path.isabs(str(value.get('image',''))) and not value.get('temp85'):return value
  if not body or not value.get('decoded77') or not __import__('programme_image69').eligible(value,event):return value
  if value.get('provisional85'):return value
  from programme_requests68 import identity,scope
@@ -26,7 +27,7 @@ def remember(event,value,body):
  try:
   # Selected future/past details get a bounded view session too; current event
   # expires on event end. Never extend a stale live event into its successor.
-  now=time.time();until=min(now+3600,float(event['stop'])) if event.get('start',0)<=now<event.get('stop',0) else now+600
+  now=time.time();until=min(now+86400,float(event['stop'])) if event.get('start',0)<=now<event.get('stop',0) else now+600
   asset=__import__('decoded_assets88').put(key(event),body,until)
   result=dict(value,image=asset['uri'],thumbnail=asset['uri'],sha256=asset['sha256'],until=asset['until'],asset88=key(event),decoded88=True,scope69=identity(event),profile69=scope(),policy69=negative_scope({}),storage69='RAM_ONLY',persisted69=False)
   for field in ('display84','display_key84','url_version55','url_verified69','temp85'):result.pop(field,None)

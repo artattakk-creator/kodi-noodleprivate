@@ -116,7 +116,7 @@ class EventDisplay84(Fixture,unittest.TestCase):
   before={p:p.read_bytes() for p in self.folder.rglob('*') if p.is_file()}
   with mock.patch('shutil.disk_usage',return_value=usage),mock.patch('artwork_visible.public_dns',side_effect=self.dns):
    result=importlib.import_module('programme_urls55').resolve(self.event,url_mode69=True,check=check)
-  self.assertTrue(result['decoded77']);self.assertTrue(result['display84']);self.assertEqual(result['storage69'],'RAM_ONLY')
+  self.assertTrue(result['decoded77']);self.assertTrue(result['decoded88']);self.addCleanup(__import__('decoded_assets88').shutdown);self.assertEqual(result['storage69'],'RAM_ONLY')
   importlib.import_module('programme_requests68').completed(self.event,result)
   self.assertEqual(self.art.cached(self.event)['image'],result['image'])
   self.assertEqual({p:p.read_bytes() for p in self.folder.rglob('*') if p.is_file()},before)

@@ -159,6 +159,7 @@ def _run():
     _references82(portal,kind,rows)
     __import__('station_logos87').recover(portal,rows,cancelled)
     __import__('logo_manifest86').prepare(portal,rows,cancelled)
+    __import__('station_logos88').recover(portal,rows,cancelled)
    # Recover already decoded Kodi files before any optional image write.
    __import__('artwork_display84').observe()
    __import__('widget_cache82').prepare(portal,kind,rows)

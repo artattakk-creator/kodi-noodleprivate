@@ -105,7 +105,7 @@ def prepare(portal,rows,cancel=lambda:False):
    # Decode first and publish bounded session bytes regardless of archive
    # reserve. Never call the RAM receipt PERSISTED/LOCAL_READY.
    record=__import__('decoded_assets88').put(tag,body,time.time()+86400,kind='logo')
-   note(portal,row,'TEXTURE_CACHED')
+   note(portal,row,'DECODED_RAM_READY')
    if backend is None:continue
    check(len(body)+65536,limit=0,backend=backend)
    digest=record['sha256'];backend.write_verified(digest,body,lambda raw:bool(validate_image(raw)))
@@ -122,3 +122,43 @@ def prepare(portal,rows,cancel=lambda:False):
  while len(_cursor)>16:_cursor.pop(next(iter(_cursor)))
  hits=manifest_read(portal,rows)
  return 'READY' if len(hits)==len(rows) else 'PARTIAL' if hits else 'EXTERNAL_UNAVAILABLE'
+
+def reference(props):
+ """UI-only exact station/account receipt, never a general localhost grant."""
+ from portals import get_by_id
+ from logo_manifest86 import key
+ pid=str(props.get('XCMate.PortalId',''));sid=str(props.get('XCMate.MediaId',''));portal=get_by_id(pid)
+ uri=props.get('XCMate.ProgrammeLogo46','');tag=props.get('XCMate.LogoProof88','');original=props.get('XCMate.LogoSource88','')
+ if not portal or not sid or not original or key(portal,dict(sid=sid,stream_icon=original))!=tag:return ''
+ return uri if __import__('decoded_assets88').valid(tag,uri) else ''
+
+def recover(portal,rows,cancel=lambda:False):
+ """Reuse Kodi's real cached copy of our exact decoded RAM capability."""
+ import json
+ import xbmc
+ from logo_manifest86 import key
+ from widget_cache82 import variants,decoded,remember
+ refs=read(portal,rows);wanted={}
+ for row in rows[:16]:
+  uri=refs.get(str(row['sid']))
+  if uri:
+   for variant in variants(uri):wanted[variant]=(row,uri)
+ if not wanted or cancel():return
+ try:
+  raw=xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=88,method='Textures.GetTextures',params=dict(filter={'or':[dict(field='url',operator='is',value=v) for v in wanted]},properties=['url','cachedurl','sizes']))))
+  if not isinstance(raw,str) or len(raw)>262144:return
+  textures=json.loads(raw).get('result',{}).get('textures',[])
+  if not isinstance(textures,list):return
+  for texture in textures[:32]:
+   if cancel():return
+   if not isinstance(texture,dict) or texture.get('url') not in wanted:continue
+   row,uri=wanted[texture['url']];record=decoded(texture,uri)
+   if not record:continue
+   record['source']=source(row);remember(portal,'live',row,'poster',source(row),record)
+   stat=os.stat(record['file']);tag=key(portal,row)
+   value=dict(file=record['file'],stamp=[stat.st_mtime_ns,stat.st_size],source_hash=hashlib.sha256(source(row).encode()).hexdigest())
+   old=__import__('station_logos87');slot=old.PREFIX+tag;old.window().setProperty(slot,json.dumps(value,separators=(',',':')))
+   if slot not in old._keys:old._keys.append(slot)
+   while len(old._keys)>512:old.window().clearProperty(old._keys.pop(0))
+   old.note(portal,row,'TEXTURE_CACHED')
+ except (OSError,ValueError,TypeError,AttributeError,RuntimeError):return
