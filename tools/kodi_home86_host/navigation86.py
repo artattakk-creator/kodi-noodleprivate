@@ -50,6 +50,7 @@ def run():
    xbmc.executebuiltin('Action(Back)',wait=False)
    wait(lambda:view._closed,'NAV86_PROGRAMME_BACK')
    kind='vod' if cycle%2==0 else 'series';sequence=str(cycle)
+   xbmcgui.Window(10000).setProperty('XCMate.Nav90.Sequence',sequence)
    home.clearProperty('XCMate.Nav86.State')
    direct=cycle%3==0
    action='media_detail' if direct else 'movies_home' if kind=='vod' else 'series_home'
@@ -73,6 +74,7 @@ def run():
    passes.append(dict(cycle=cycle,kind=kind,route=action,detail_back='PASS',route_return='PASS'))
  finally:
   stop.set();worker.join(2)
+  xbmcgui.Window(10000).clearProperty('XCMate.Nav90.Sequence')
   with log.open('rb') as stream:stream.seek(offset);tail=stream.read().decode(errors='replace')
   counts={name:tail.count(text) for name,text in dict(native_index='EXCEPTION: Index out of range',dispatch_failed='DISPATCH_FAILED',directory_failed='GetDirectory - Error',invoker_kill='script didn\'t stop in 5 seconds').items()}
   last_raw=xbmcgui.Window(10000).getProperty('XCMate.Nav86.State');last_state=json.loads(last_raw) if last_raw else {}

@@ -25,6 +25,15 @@ def action(value):xbmc.executebuiltin('Action('+value+')',wait=False);xbmc.sleep
 def entries():
  count=xbmc.getInfoLabel('Container(6).NumItems')
  return [xbmc.getInfoLabel('Container(6).ListItemAbsolute('+str(i)+').Label') for i in range(int(count or 0))]
+def stable_entries():
+ previous=None;since=time.monotonic();deadline=since+12
+ while time.monotonic()<deadline:
+  values=entries();current=(xbmcgui.getCurrentWindowDialogId(),tuple(values))
+  if values and current==previous:
+   if time.monotonic()-since>=.4:return values
+  else:previous=current;since=time.monotonic()
+  xbmc.sleep(50)
+ raise RuntimeError('PICKER90_LIST_DID_NOT_SETTLE')
 def select(index):
  # Kodi excludes the '..' parent from CurrentItem numbering. Match the
  # actual highlighted label and send native Down/Select, never infer an index
@@ -48,7 +57,7 @@ def choose(dialog,slot,kind=None,noportal=False):
   until(lambda:bool(entries()) or xbmcgui.getCurrentWindowDialogId()==10103,'PICKER90_EMPTY_SELECT')
   if xbmcgui.getCurrentWindowDialogId()==10103:
    xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=90,method='Input.SendText',params=dict(text='XCMate '+str(kind),done=True))));break
-  values=entries();seen.append(values);history.append(dict(step=step,kind=kind,labels=values,window=xbmcgui.getCurrentWindowDialogId(),current=xbmc.getInfoLabel('Container(6).CurrentItem')));Path('/root/picker90-history.json').write_text(json.dumps(history,indent=2));print('PICKER90_NATIVE_LIST '+json.dumps(history[-1]),flush=True)
+  values=stable_entries();seen.append(values);history.append(dict(step=step,kind=kind,labels=values,window=xbmcgui.getCurrentWindowDialogId(),current=xbmc.getInfoLabel('Container(6).CurrentItem')));Path('/root/picker90-history.json').write_text(json.dumps(history,indent=2));print('PICKER90_NATIVE_LIST '+json.dumps(history[-1]),flush=True)
   if noportal and any('Portal' in v or 'einrichten' in v or 'setup' in v.casefold() for v in values):
    check(not any('pid=' in v for v in values),'PICKER90_FAKE_PORTAL');action('Back');return seen
   target=None

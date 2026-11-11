@@ -28,6 +28,16 @@ def seed():
  portal=get_active()[0];rows=snapshot(portal);start=time.monotonic()
  for row in rows[:58]:logo_store89.persist(portal,row,station_logos88.fetch(portal,station_logos87.source(row),lambda:False))
  Path('/root/seed90.json').write_text(json.dumps(dict(own_logos_before_home=58,capacity_injected_bytes=115*1024**2,preparation_ms=int((time.monotonic()-start)*1000),android='ANDROID_NOT_TESTED')))
+def observe_nav90():
+ import xbmcgui,json
+ from media_window import MediaView
+ original=MediaView.pump
+ if getattr(original,'observed90',False):return
+ def observed(view):
+  result=original(view);home=xbmcgui.Window(10000);sequence=home.getProperty('XCMate.Nav90.Sequence')
+  if sequence.isdigit() and len(sequence)<=3:home.setProperty('XCMate.Nav86.State',json.dumps(dict(sequence=sequence,mode=view.mode,kind=view.kind,closed=view._closed,generation=view._generation,actions=len(getattr(view,'actions',[])),rows=len(view.rows),focus=view.getFocusId())))
+  return result
+ observed.observed90=True;MediaView.pump=observed
 original_run90=run
 def run():
  import sys,json
