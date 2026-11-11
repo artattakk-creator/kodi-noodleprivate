@@ -186,3 +186,37 @@ Die aktuellen `RAM_ONLY` (99), `METADATA_WRITE_DEFERRED` (166), `RESERVE_BLOCKED
 Dieser P0-G ergänzt **#425** (XCMate .89) zusammen mit P0-F (Hero-Bild-Lock-on) und **#427** (manuelle EPG-Senderzuordnung *nach* .89). Für die Film-/Serienlisten gilt **kein Wechsel des ästhetisch gelungenen .88-Hero-Layouts**, kein GS-Media-Setup-Release, kein Joomla-Gateway, keine unaufgeforderte Löschung von Album-/Datenbank-/Coverresten.
 
 **Freigabegrenze unverändert:** eigenständiger .89-Branch + Draft-PR, native Tests, ZIP+SHA256; **KEIN Merge und KEINE Veröffentlichung auf main/regulär/Pilot/NeoDark3** ohne explizite Freigabe.
+
+## 14. P0-H: „Sendung merken“ löst interaktive Erinnerung mit exakt zwei Aktionen aus
+
+**Neuer ausdrücklicher Nutzerauftrag am 11.11.2026:** Die bestehende Funktion `Sendung merken` in der EPG-Detailansicht muss zu einer tatsächlich nutzbaren **interaktiven Sendungserinnerung** werden. Gewünschte Auswahl in der Erinnerung **ausschließlich**:
+1. **„Jetzt umschalten“** – nach bewusster Auswahl sofort zum betreffenden Xtream-/Live-TV-Sender wechseln.
+2. **„Verwerfen“** – Meldung schließen und diesen Timer als erledigt/verworfen markieren.
+
+**NICHT IMPLEMENTIEREN:** „Später erinnern“, Snooze, automatische Umschaltung, automatische Aufzeichnung, Kodi-/Box-Wake-up-Versprechen oder ungefragten Playerwechsel. Bei nicht beantworteter Meldung darf **keine Umschaltung** erfolgen.
+
+### Bestehender Stand .88 (verifiziert im Code)
+
+- `programme_window46.py` (EPG-Detaildialog, Control `502`): Klick setzt `_intent88='bookmark'`; `programme_actions88.toggle()` schreibt/entfernt `guide_bookmarks_v1.json`. Der Buttontext wechselt `Sendung merken` ↔ `Nicht mehr merken`. **Er legt bisher keinen Benachrichtigungstimer an und löst kein „Jetzt umschalten“-Popup zum Sendungsbeginn aus.**
+- `guide_window.py`/ `guide_timers.py`: Das große EPG hat bereits **eine separate Erinnerungsaktion** für künftige Sendungen; `guide_timers_v1.sqlite` enthält `pending/notified/cancelled/missed` mit default `minutes=5` vor Sendungsbeginn. `app_services.py` pollt `guide_timers.poll()` in Hintergrundworker und zeigt bisher nur eine achtsekündige Kodi-Notification ohne Aktionsbuttons. Das ist eine zweite Speicher-/Verhaltensschiene, die mit der Detail-Merkliste zusammengeführt werden muss.
+- `reminders.py`/`reminders.json` ist eine weitere Legacy-Erinnerungsschiene mit eigener `ReminderMonitor`; nicht ungeprüft eine zweite parallele Alarm-Engine aktivieren, kein doppelter Pop-up pro Sendung. Die aktive `service.py` startet `ReminderMonitor`, `app_services.py` pollt separat `guide_timers`. Verhindere Doppelmeldungen bei gleichen Portalen/Sendern/Sendungen, auch nach Service-/Kodi-Neustart.
+
+### Sollverhalten
+
+1. Klick **„Sendung merken“** bei einer **zukünftigen** echten EPG-Sendung legt atomar und mit bestätigtem Readback den vorhandenen Bookmark **und genau einen Timer** für `pid/sid/start/stop` an. Standard-Benachrichtigung **5 Minuten vor Sendungsbeginn**, entsprechend bestehendem `guide_timers.add(minutes=5)`. Wenn dieser Zeitpunkt bereits verstrichen ist, aber die Sendung noch nicht begonnen hat, beim nächsten regulären Poll genau einmal anzeigen; bei aktuell bereits laufender Sendung keinen rückwirkenden Erinnerungstimer erfinden (Bookmark als reiner Merklisteneintrag zulassen und das im UI klar angeben). Nur echte Sender, keine Gruppen-Header.
+2. Der rechtzeitig fällige Alarm wird **in den GUI-/Kodi-Main-/Owner-Kontext dispatcht**, nie direkt per Blocking-Dialog aus einem Hintergrundthread. Remote-fokussierbares, lesbares XCMate-Dialogfenster mit **Senderlogo oder Sendername, Titel, Beginn/Uhrzeit und genau zwei Aktionen**: `Jetzt umschalten` / `Verwerfen`. Ein laufender Film oder eine Live-Sendung darf **nicht** ohne Wahl gestoppt werden.
+3. **„Jetzt umschalten“** benutzt die **bestehende** XCMate-Player-/Guide-Request-Pipeline mit exakt validierter Portal- und Senderidentität. Kein zweiter Player, keine rohen Zugangsdaten in GUI/Logs, kein Aufruf auf Gruppenüberschriften oder nicht mehr gültige Sender. Wenn Umschalten misslingt, klare Fehlermeldung; keinen stillen Erfolg behaupten.
+4. **„Verwerfen“** schließt den Alarm und setzt den **Timer** dauerhaft auf `dismissed/cancelled`; kein nochmaliger Alarm für diese Ausstrahlung und **kein** automatischer Playerwechsel. Der manuell gespeicherte **Merklisteneintrag bleibt erhalten**, bis der Nutzer ihn ausdrücklich mit `Nicht mehr merken` entfernt – damit `Verwerfen` nicht stillschweigend persönliche Einträge löscht.
+5. **„Nicht mehr merken“** entfernt Bookmark **und** storniert noch ausstehenden Timer idempotent; aktiven Alarm sicher schließen. Erneutes `Sendung merken` für dieselbe künftige Sendung darf nicht doppelte Timer erzeugen. Merklistenansicht und Timer-Verwaltung sollen denselben Status `vorgemerkt / aktiv / verworfen / ausgestrahlt` verständlich wiedergeben. Bestehende `guide_bookmarks_v1.json`, `guide_timers_v1.sqlite` und eventuell `reminders.json` durch updatefeste Migration/Interop erhalten, **keine pauschalen Deletes oder doppelten Einträge**.
+6. Ablauf/Fehler: Bei Kodi geschlossen oder Box im Standby keine Wake-up-Garantie. Nach Neustart fällige, noch laufende Sendung maximal einmal und nur wenn sinnvoll; längst beendete Sendungen als `missed` markieren, nicht nachträglich umschalten. Wenn das Popup unbeantwortet geschlossen wird (Zurück/Timeout/Skin-Wechsel), kein Auto-Tune und keinen Endlos-Popup-Loop; Zustand konsistent ablegen. Vor Beenden der Abfrage/GUI muss die Wahl sicher persistiert werden.
+7. Relevante Anzeige bei EPG-Revision bleibt anhand kanonischer `pid/sid/start/stop` korrekt und darf nicht auf anderes Programm/anderen Sender umschalten. Kodi-Overlay-/Vollbild-/Remote-Ownership, Fokus und laufender Stream dürfen nicht durch einen Popup-Konflikt beschädigt werden.
+
+### Pflicht-Tests / Abnahme
+
+- Bei einer zukünftigen Sendung `Sendung merken` drücken → persistierter Bookmark + genau ein aktiver Timer → bei Fälligkeit **ein einziges zweistufiges Popup** mit exakt zwei auswählbaren Buttons, kein Snooze.
+- **„Jetzt umschalten“** öffnet genau den ausgewählten Sender über den vorhandenen Playerpfad und nur nach expliziter Bestätigung; bei nicht verfügbarem Sender Fehlermeldung, kein falscher Erfolg.
+- **„Verwerfen“** schließt ohne Umschaltung, verhindert Wiederholung für dieselbe Sendung und löscht nicht ungefragt den ursprünglichen Merklisteneintrag.
+- `Nicht mehr merken` löscht Bookmark+Pending-Timer; nach Kodi-Neustart keine doppelten Hinweise; Legacy-Timer und neuer Detailbutton deduplizieren, bei zwei vorgemerkten Sendungen zeitgleiche Meldungen kontrolliert sequenzieren.
+- Android-Kodi-21.3 mit Fernbedienung und aktivem Liveplayer testen: Fokus, OK, Zurück, voller Bildschirm, keine ungewollte Wiedergabeunterbrechung. Automatisierte Host-Tests und echte Geräteabnahme strikt getrennt. Ohne echten Test `ANDROID_NOT_TESTED`.
+
+**Scope / Freigabe:** P0-H gehört verbindlich zu .89 und Issue #425 (zusätzlich P0-A..G), **kein Merge, Release oder Installer-Update** ohne gesonderte ausdrückliche Freigabe. Dieser Nachtrag erweitert nur Entwicklungsanforderungen.
