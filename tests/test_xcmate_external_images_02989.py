@@ -53,6 +53,9 @@ class External89(Fixture,unittest.TestCase):
   proof=__import__('event_cache88').receipt(value);body=png((960,540));key=__import__('programme_lock89').key(event)
   self.module.store('programme',key,body,dict(proof=proof));self.addCleanup(__import__('decoded_assets88').shutdown)
   result=self.module.recover_programme(event);self.assertTrue(result['decoded88']);self.assertEqual(result['sha256'],hashlib.sha256(body).hexdigest());self.assertTrue(result['image'].startswith('http://127.0.0.1:'))
+  self.assertTrue(__import__('programme_image69').eligible(result,event),'recovered bytes must reach actual display admission')
+  with mock.patch('programme_transport77.verified',side_effect=AssertionError('cold NAS recovery must not query provider/TMDB again')):
+   recovered=__import__('programme_urls55').resolve(dict(event,placeholder=''),allow_lookup=True,url_mode69=True);self.assertTrue(__import__('programme_image69').eligible(recovered,event))
   self.assertIsNone(self.module.recover_programme(dict(event,sid='2')))
   self.options['programme_tmdb_optout77']=True;self.assertIsNone(self.module.recover_programme(event))
   self.assertFalse((self.folder/'programme_images46').exists())
@@ -113,3 +116,15 @@ class External89(Fixture,unittest.TestCase):
    migration.begin('smb://fixture.invalid/other');migration.copy();self.assertTrue(migration.verify());migration.approve_render(True)
    with self.assertRaisesRegex(OSError,'LEGACY_PROGRAMME_MIGRATION_REQUIRED'):migration.activate()
   self.assertEqual(self.config.read(),config)
+ def test_smb_logo_reaches_exact_account_hero_fallback_and_external_status_without_gui_network(self):
+  self.activate(True);uri,_=__import__('logo_store89').persist(self.portal,self.row,png((200,100)))
+  with mock.patch.object(self.vfs,'File',side_effect=AssertionError('no GUI NAS IO')):
+   value=__import__('live_rail86').values(self.portal,[self.row])[0];props=value['props'];self.assertEqual(__import__('station_logos88').reference(props),uri)
+   __import__('live_text63')._hero(props);self.assertEqual(props['XCMate.HeroImage63'],uri)
+   self.assertFalse(__import__('station_logos88').reference(dict(props,**{'XCMate.PortalId':'foreign'})))
+  status=json.loads(self.properties['XCMate.Home86.Rail']);self.assertEqual(status['external'],1);self.assertEqual(status['local'],0)
+ def test_verified_smb_covers_count_as_available_without_claiming_local_files_or_pixels(self):
+  self.activate(True);__import__('poster_store89').store(self.portal,'vod',self.row,'poster',self.row['cover'],png((300,450)))
+  refs=__import__('poster_store89').read(self.portal,'vod',[self.row]);count=self.module.ready_count(self.portal,'vod',[self.row],refs);self.assertEqual(count,1)
+  status=__import__('home_loading85').update(self.portal,'vod',[self.row],'READY',images=count);self.assertEqual(status['state'],'READY')
+  self.assertEqual(self.module.ready_count(self.portal,'vod',[self.row],{'1':dict(poster='smb://foreign.invalid/share/other.png')}),0)

@@ -156,6 +156,8 @@ def reference(props):
  pid=str(props.get('XCMate.PortalId',''));sid=str(props.get('XCMate.MediaId',''));portal=get_by_id(pid)
  uri=props.get('XCMate.ProgrammeLogo46','');tag=props.get('XCMate.LogoProof88','');original=props.get('XCMate.LogoSource88','')
  if not portal or not sid or not original or key(portal,dict(sid=sid,stream_icon=original))!=tag:return ''
+ if uri.startswith('smb://'):
+  return uri if __import__('external_art89').references(portal,'logo',[dict(sid=sid,stream_icon=original)]).get(sid)==uri else ''
  return uri if __import__('decoded_assets88').valid(tag,uri) else ''
 
 def cached_capability(uri,key):

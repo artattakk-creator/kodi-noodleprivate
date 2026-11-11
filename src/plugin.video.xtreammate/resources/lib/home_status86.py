@@ -2,7 +2,7 @@
 import json,time
 _started={};_seen={}
 def note(code,**facts):
- if code not in ('GROUP_READ_MS','LOGOS_LOCAL_READY','LOGOS_RAM_READY','LOGOS_FALLBACK','RAIL_CONTROL_READY_MS','EPG_TEXT_READY_MS','HERO_REFERENCE_READY_MS','DIRECTORY_REINVOCATION_REASON'):return
+ if code not in ('GROUP_READ_MS','LOGOS_LOCAL_READY','LOGOS_RAM_READY','LOGOS_EXTERNAL_READY','LOGOS_FALLBACK','RAIL_CONTROL_READY_MS','EPG_TEXT_READY_MS','HERO_REFERENCE_READY_MS','DIRECTORY_REINVOCATION_REASON'):return
  safe={k:v for k,v in facts.items() if k in ('ms','count','total') and type(v) in (int,float)}
  tag=(code,tuple((k,v) for k,v in safe.items() if k!='ms'));now=time.monotonic()
  if now-_seen.get(tag,-1e9)<30:return
@@ -14,7 +14,7 @@ def note(code,**facts):
 def window():
  import xbmcgui
  return xbmcgui.Window(10000)
-def rail(portal,count,local,ram=0):
+def rail(portal,count,local,ram=0,external=0):
  from epg_handoff63 import profile_scope
  pid=str(portal['id']);_started.setdefault(pid,time.monotonic())
  while len(_started)>8:_started.pop(next(iter(_started)))
@@ -24,7 +24,8 @@ def rail(portal,count,local,ram=0):
  first=prior.get('first_at',time.monotonic()) if prior.get('context')==context else time.monotonic()
  note('LOGOS_LOCAL_READY',count=local,total=count)
  if ram:note('LOGOS_RAM_READY',count=ram,total=count)
- window().setProperty('XCMate.Home86.Rail',json.dumps(dict(context=context,first_at=first,profile=profile_scope(),pid=pid,total=count,local=local,ram=ram,at=time.monotonic())))
+ if external:note('LOGOS_EXTERNAL_READY',count=external,total=count)
+ window().setProperty('XCMate.Home86.Rail',json.dumps(dict(context=context,first_at=first,profile=profile_scope(),pid=pid,total=count,local=local,ram=ram,external=external,at=time.monotonic())))
  from localization import tr
  if prior.get('context')!=context or not window().getProperty('XCMate.Home86.State'):
   window().setProperty('XCMate.Home86.Text',tr(37103))
@@ -59,12 +60,12 @@ def observe():
  bank=win.getProperty('XCMate.Hero63.Active');prefix='XCMate.Hero63.'+bank+'.'
  epg=bool(win.getProperty(prefix+'Title'))
  kind=win.getProperty(prefix+'Kind86');image=kind in ('hero_backdrop','official_poster')
- complete=bool(receipt87 and data.get('total') and data.get('local',0)+data.get('ram',0)>=data['total'] and epg and image)
+ complete=bool(receipt87 and data.get('total') and data.get('local',0)+data.get('ram',0)+data.get('external',0)>=data['total'] and epg and image)
  if complete:
   win.setProperty('XCMate.Home86.State','REFERENCE_READY');win.setProperty('XCMate.Home86.Text','');return
  expired=time.monotonic()-data.get('first_at',data.get('at',0))>60
  win.setProperty('XCMate.Home86.State','ERROR' if expired else 'READY_PARTIAL')
  # These are reference/control states; only screenshot tests prove pixels.
- available88=data['local']+data.get('ram',0)
+ available88=data['local']+data.get('ram',0)+data.get('external',0)
  text=tr(37104).format(data['total'],available88) if expired else tr(37099).format(data['total'],available88,tr(37100) if epg else tr(37101),tr(37100) if image else tr(37101))
  win.setProperty('XCMate.Home86.Text',text)

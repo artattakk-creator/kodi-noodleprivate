@@ -156,6 +156,14 @@ def references(portal,kind,rows,internal=False):
    else:result.setdefault(str(row['sid']),{})[image_role]=uri
  return result
 
+def ready_count(portal,kind,rows,refs):
+ import os
+ confirmed=references(portal,kind,rows,internal=True);count=0
+ for row in rows:
+  sid=str(row['sid']);uri=row.get('_manual_art43',{}).get('poster') or refs.get(sid,{}).get('poster') or refs.get(sid,{}).get('thumb') or ''
+  count+=int(os.path.isabs(uri) or bool(uri and uri==confirmed.get(sid,{}).get('poster')))
+ return count
+
 def archive_programme(event,value,body):
  """Already verified bytes are queued AFTER display admission; no GUI IO."""
  if not enabled() or value.get('provisional85'):return
