@@ -18,6 +18,8 @@ VERSION='0.5.28'
 SOURCE='script.gsmedia.setup-0.5.26.zip'
 TARGET='script.gsmedia.setup-0.5.28.zip'
 NEW='resources/lib/setup_tmdb_cloud528.py'
+MEDIA='resources/lib/setup_epg_art528.py'
+SETTINGS='resources/settings.xml'
 
 def build(out):
     original=(ROOT/'script.gsmedia.setup'/SOURCE).read_bytes()
@@ -46,6 +48,20 @@ def build(out):
                 # The diagnostic is a fixed public code, never source or token.
                 _diag('TMDB_IMPORT528', import_status528)
 """+anchor)
+    # Image-EPG prompt follows the optional token prompt and is independent.
+    image_hook="""                # Optional per-device image EPG mode. Never skip finished
+                # components or delete existing image/EPG caches on failure.
+                try:
+                    from setup_epg_art528 import offer as art_mode528
+                    art_state528 = art_mode528(profile)
+                except Exception:
+                    art_state528 = 'CONFIG_WRITE_FAILED'
+                _diag('EPG_ART_MODE528', art_state528)
+"""
+    if text.count("                from setup_finish_0512 import mark_restart_pending")!=1:
+        raise ValueError('EPG_ART_HOOK_MISSING')
+    text=text.replace("                from setup_finish_0512 import mark_restart_pending",
+                      image_hook+"                from setup_finish_0512 import mark_restart_pending")
     files[ui]=text.encode('utf-8')
 
     entry=PREFIX+'default.py'
@@ -59,13 +75,29 @@ def build(out):
             from setup_tmdb_cloud528 import offer as import_tmdb528
             import_tmdb528(profile, manual=True)
             continue""")
+    image_menu='        selection = dlg.select(TITLE, choices)'
+    if text.count(image_menu)!=1:raise ValueError('EPG_ART_MENU_ANCHOR_MISSING')
+    text=text.replace(image_menu,"""        epg_art_index528 = len(choices)
+        choices.append('Bild-EPG: Ohne / Standard / Erweitert')
+"""+image_menu+"""
+        if selection == epg_art_index528:
+            from setup_epg_art528 import offer as art_mode528
+            art_mode528(profile, manual=True)
+            continue""")
     files[entry]=text.replace('v0.5.19','v0.5.28').encode('utf-8')
 
     files[PREFIX+NEW]=(ROOT/'tools/gsmedia_setup0528/overlays'/NEW).read_bytes()
+    files[PREFIX+MEDIA]=(ROOT/'tools/gsmedia_setup0528/overlays'/MEDIA).read_bytes()
+    files[PREFIX+SETTINGS]=b"""<settings>
+ <category label="XCMate">
+  <setting id="epg_art_mode528" type="text" default="" visible="false"/>
+  <setting id="epg_art_target_mb528" type="text" default="0" visible="false"/>
+ </category>
+</settings>"""
     changed={k for k in files if k not in previous or files[k]!=previous[k]}
-    allowed={PREFIX+k for k in ('addon.xml','default.py','resources/lib/setup_auto_ui50.py',NEW)}
+    allowed={PREFIX+k for k in ('addon.xml','default.py','resources/lib/setup_auto_ui50.py',NEW,MEDIA,SETTINGS)}
     if changed!=allowed:raise ValueError('UNRELATED_INSTALLER_FILE_CHANGED')
-    if len(previous)<25 or len(files)!=len(previous)+1:raise ValueError('FILESET_INVALID')
+    if len(previous)<25 or len(files)!=len(previous)+3:raise ValueError('FILESET_INVALID')
     for path,raw in files.items():
         if path.endswith('.py'):compile(raw,path,'exec')
     out=Path(out);out.mkdir(parents=True,exist_ok=True)
@@ -86,6 +118,12 @@ def build(out):
                 google_drive_oauth_login_integrated=False,
                 current_private_drive_file_access_requires_oauth=True,
                 public_token_url_unsupported=True,
+                epg_media_modes=['text','standard','extended'],
+                epg_media_min_free_mb={'text':0,'standard':2048,'extended':6144},
+                epg_media_target_cache_mb={'text':0,'standard':512,'extended':3072},
+                epg_media_quotas_enforced_by_runtime=False,
+                joomla_source='PREPARED_NOT_CONFIGURED',
+                protected_web_source='PREPARED_NOT_CONFIGURED',
                 installed_versions_unchanged=True,android='ANDROID_NOT_TESTED',
                 release='DRAFT_ONLY')
     (out/'verification.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
