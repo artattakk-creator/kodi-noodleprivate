@@ -62,6 +62,8 @@ jobs:
           path: |
             ${{ runner.temp }}/picker90/*.json
             ${{ runner.temp }}/picker90/*.png
+            ${{ runner.temp }}/picker90/*.xml
+            ${{ runner.temp }}/picker90/*.properties
             ${{ runner.temp }}/picker90/*.txt
             ${{ runner.temp }}/picker90/*.log
           retention-days: 30

@@ -22,7 +22,7 @@ def run(cycle):
  tree=Path('/root/.kodi/addons/skin.titan.bingie.mod/xml/script-skinshortcuts-includes.xml')
  if cycle==0:
   xbmc.executebuiltin('RunScript(script.skinshortcuts,type=buildxml&mainmenuID=900&group=mainmenu|powermenu)',wait=False)
-  until(lambda:tree.is_file() and hashlib.sha256(tree.read_bytes()).hexdigest()!=before['initial_template_sha256'] and all('XCMate '+kind in tree.read_text(encoding='utf-8') for kind in ('live','vod','series')),'PICKER90_ORIGINAL_BUILD_NOT_PUBLISHED')
+  until(lambda:tree.is_file() and hashlib.sha256(tree.read_bytes()).hexdigest()!=before['initial_template_sha256'] and all(route in tree.read_text(encoding='utf-8') for route in ('widget_live_start_group','widget_recent_vod','widget_recent_series')),'PICKER90_ORIGINAL_BUILD_NOT_PUBLISHED')
  document=E.parse(tree).getroot();bindings={}
  for node in document.iter('include'):
   values={p.get('name'):p.get('value','') for p in node.findall('param')}

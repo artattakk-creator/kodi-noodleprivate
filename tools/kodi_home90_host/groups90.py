@@ -19,6 +19,9 @@ def run(portal,pump,capture,check):
    if predicate():return
    xbmc.sleep(30)
   raise RuntimeError((reason,nav.mode,nav.sid,nav._closed))
+ def native_sid90():
+  try:return json.loads(xbmc.Player().getVideoInfoTag().getUniqueID('xcmate_live'))['sid']
+  except (ValueError,RuntimeError,KeyError):return ''
  try:
   def complete90():
    nav.refresh_from_cache()
@@ -43,7 +46,9 @@ def run(portal,pump,capture,check):
     for _ in range(36):xbmc.executebuiltin('Action(Down)',wait=False);xbmc.sleep(30)
     until(lambda:nav._highlight['channels']==136,'GROUP90_LAST_PAGE_WRONG_POSITION')
     expected=str(group*1000+137);xbmc.executebuiltin('Action(Select)',wait=False)
-    until(lambda:nav.sid==expected and nav.mode=='hidden' and nav.owns_playback(),'GROUP90_WRONG_STATION')
+    # Ownership deliberately accepts the previous verified session during a
+    # native tune. Require the new C++ item tag before declaring the zap done.
+    until(lambda:nav.sid==expected and nav.mode=='hidden' and nav.owns_playback() and native_sid90()==expected,'GROUP90_WRONG_STATION')
     tag=json.loads(xbmc.Player().getVideoInfoTag().getUniqueID('xcmate_live'));check(tag['sid']==expected,'GROUP90_PLAYER_TAG_MISMATCH')
     cases.append(dict(group=group,total=137,last_index=136,correct_sid=True,native_video=True))
    screenshot,_=capture('visible84-groups90-native')
