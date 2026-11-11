@@ -23,7 +23,8 @@ def entries():
 def select(index):
  # The original Python-owned DialogSelect list is driven with native IR, not
  # a reconstructed ControlList proxy from a different script interpreter.
- current=int(xbmc.getInfoLabel('Container(6).CurrentItem') or 1)-1
+ until(lambda:int(xbmc.getInfoLabel('Container(6).CurrentItem') or 0)>0,'PICKER90_LIST_FOCUS_NOT_READY')
+ current=int(xbmc.getInfoLabel('Container(6).CurrentItem'))-1
  for _ in range(abs(index-current)):
   xbmc.executebuiltin('Action('+('Down' if index>current else 'Up')+')',wait=False);xbmc.sleep(70)
  xbmc.sleep(150)
@@ -50,7 +51,7 @@ def choose(dialog,slot,kind=None,noportal=False):
   words={'live':('live-tv','start group','startgruppe'),'vod':('movies','filme'),'series':('series','serien')}.get(kind,())
   if kind and any(any(w in v.casefold() for w in words) for v in values):target=next(i for i,v in enumerate(values) if any(w in v.casefold() for w in words))
   if target is None:
-   for candidates in (('video add-ons','video addons','video-addons'),('add-ons','addons','add-on'),('use as widget','als widget','hier verwenden')):
+   for candidates in (('video add-ons','video addons','video-addons','video add-on'),('add-ons','addons','add-on'),('use as widget','als widget','hier verwenden')):
     options=[i for i,v in enumerate(values) if any(w in v.casefold() for w in candidates)]
     if options:target=options[0];break
   check(target is not None,('PICKER90_UNKNOWN_NATIVE_BRANCH',values));selected=values[target];select(target)
