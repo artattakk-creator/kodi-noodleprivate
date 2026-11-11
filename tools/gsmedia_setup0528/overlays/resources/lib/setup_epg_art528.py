@@ -53,9 +53,10 @@ def configure(mode,report,addon=None,installer=None):
     if not can_enable(mode,report):return 'INVALID_MODE'
     if not _busy.acquire(False):return 'BUSY'
     try:
-        import xbmcaddon
-        addon=addon or xbmcaddon.Addon('plugin.video.xtreammate')
-        installer=installer or xbmcaddon.Addon('script.gsmedia.setup')
+        if addon is None or installer is None:
+            import xbmcaddon
+            if addon is None:addon=xbmcaddon.Addon('plugin.video.xtreammate')
+            if installer is None:installer=xbmcaddon.Addon('script.gsmedia.setup')
         changes={'epg_show_thumbnails':'false' if mode=='text' else 'true'}
         if mode=='text':
             changes['programme_art_local69']='false'
