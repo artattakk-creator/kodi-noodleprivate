@@ -157,11 +157,20 @@ def _run():
    if kind=='live':
     # Approve safe public references and recover decoded Kodi files before
     # optional persistent archive writes, which may be reserve-blocked.
-    _references82(portal,kind,rows)
-    __import__('station_logos87').recover(portal,rows,cancelled)
-    __import__('station_logos88').recover(portal,rows,cancelled)
+    own90=__import__('logo_manifest86').read(portal,rows,with_fallback=False)
+    missing90=[r for r in rows if str(r['sid']) not in own90]
+    if missing90:
+     _references82(portal,kind,missing90)
+     __import__('station_logos87').recover(portal,missing90,cancelled)
+     __import__('station_logos88').recover(portal,missing90,cancelled)
     __import__('logo_manifest86').prepare(portal,rows,cancelled)
-    __import__('station_logos88').recover(portal,rows,cancelled)
+    # Continue a partial initial logo fill without waiting for the next Home
+    # refresh or catalogue/EPG job. The existing one worker remains bounded.
+    delay90=__import__('station_logos88').next_delay90(portal,rows)
+    if delay90 is not None:
+     due90=time.time()+delay90
+     _deferred82[key]=(due90,'LOGO_PENDING90',job);_local_due82[key]=due90;deferred=True
+     if delay90<=.5:continue
    # Recover already decoded Kodi files before any optional image write.
    __import__('artwork_display84').observe()
    __import__('widget_cache82').prepare(portal,kind,rows)

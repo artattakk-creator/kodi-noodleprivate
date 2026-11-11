@@ -17,7 +17,7 @@ class Scope88(unittest.TestCase):
    self.assertEqual(len(files),len(z.namelist()))
    for p in files:self.assertEqual(z.read(p.removeprefix('src/')),subprocess.check_output(['git','show',base+':'+p],cwd=ROOT),p)
  def test_three_released_packages_indexes_installer_and_token_code_are_frozen(self):
-  base='c5b7c18ab2f8a9f6be740f3b8cd2f0d1814ec467'
+  base='cb37de7103bd335a344c6738c33c4b5560ba2d4c'
   paths=['addons.xml','addons.xml.md5','online-test/addons.xml','online-test/addons.xml.md5','online-test/manifest.json','index.html','online-test/index.html','script.gsmedia.setup/script.gsmedia.setup-0.5.26.zip','src/plugin.video.xtreammate/resources/lib/tmdb_token61.py','src/plugin.video.xtreammate/resources/lib/token_write64.py']
   paths+=['plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.87.zip','online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.87.zip','online-test/plugin.video.xtreammate-0.1.29.87.zip']
   for name in paths:self.assertEqual((ROOT/name).read_bytes(),subprocess.check_output(['git','show',base+':'+name],cwd=ROOT),name)

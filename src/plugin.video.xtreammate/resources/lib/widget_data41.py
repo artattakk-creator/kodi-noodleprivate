@@ -113,6 +113,11 @@ def _snapshot84(portal,kind,background=False):
     started=time.monotonic();filename,lock=files(portal['id'],kind);key=policy(portal,kind)
     if not portal.get('include_'+kind,True):trace(kind,'DISABLED',0,started);return [],'DISABLED'
     old=read(filename,key)
+    if old is None and kind in ('vod','series'):
+        # Adopt an intact .89 checkpoint only under its exact old current
+        # policy. There is no wildcard/account/group-policy cache fallback.
+        from widget_policy74 import signature
+        old=read(filename,signature(portal,kind,legacy90=True))
     if old and time.time()-old['at']<15 and not background:trace(kind,'CACHE',len(old['rows']),started);return old['rows'],'CACHE'
     stream=None;reader=None;code='UNAVAILABLE';stage46=''
     try:

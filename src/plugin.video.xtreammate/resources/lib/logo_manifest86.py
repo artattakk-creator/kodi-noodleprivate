@@ -3,9 +3,10 @@
 The existing chosen local logo volume and complete reserve are authoritative.
 No probing of private USB/SMB targets, no automatic relocation or deletions.
 """
-import hashlib,json,os,tempfile,time
+import copy,hashlib,json,os,tempfile,time,threading
 LIMIT=512*1024
 _due={}
+_manifest90={};_manifest_lock90=threading.RLock()
 def context(portal):
  from widget_data41 import policy
  from epg_handoff63 import profile_scope
@@ -24,13 +25,47 @@ def location():
 def load(portal,all_records=False):
  try:
   backend,path=location()
-  if os.path.islink(path) or os.path.getsize(path)>LIMIT:return {}
-  with open(path,'rb') as stream:data=json.load(stream)
+  stat90=os.stat(path)
+  stamp90=(stat90.st_dev,stat90.st_ino,stat90.st_size,stat90.st_mtime_ns,stat90.st_ctime_ns)
+  if os.path.islink(path) or stat90.st_size>LIMIT:return {}
+  with _manifest_lock90:
+   hit90=_manifest90.get(path)
+   if hit90 and hit90[0]==stamp90:data=hit90[1]
+   else:
+    started90=time.perf_counter()
+    with open(path,'rb') as stream:data=json.load(stream)
+    after90=os.stat(path)
+    if (after90.st_dev,after90.st_ino,after90.st_size,after90.st_mtime_ns,after90.st_ctime_ns)!=stamp90:return {}
+    _manifest90[path]=(stamp90,data)
+    __import__('startup_diag90').note('MANIFEST_LOAD_MS',ms=int((time.perf_counter()-started90)*1000))
+    while len(_manifest90)>8:_manifest90.pop(next(iter(_manifest90)))
   if data.get('format')!=1:return {}
   records=data.get('records',{});scope=context(portal)
-  return {k:v for k,v in records.items() if isinstance(v,dict) and (all_records or v.get('context')==scope)} if isinstance(records,dict) and len(records)<=512 else {}
+  return {k:copy.deepcopy(v) for k,v in records.items() if isinstance(v,dict) and (all_records or v.get('context')==scope)} if isinstance(records,dict) and len(records)<=512 else {}
  except (OSError,ValueError,TypeError,AttributeError):return {}
 def read(portal,rows,with_fallback=True):
+ # Publish the own verified batch first. Cold legacy Kodi recovery is useful
+ # for misses only; never repeat it for 88 already persisted station icons.
+ records=load(portal,all_records=True);stable={v.get('stable89'):v for v in records.values() if v.get('stable89')}
+ scope=context(portal);result={}
+ try:backend,_=location()
+ except OSError:backend=None
+ if backend is not None:
+  from widget_refs74 import revoked
+  from logo_store89 import identity,valid_file
+  for row in rows:
+   if revoked(source(row)):continue
+   value=records.get(key(portal,row,scope)) or stable.get(identity(portal,row),{})
+   try:
+    file=backend.resolve_target(value['sha256'])
+    if value.get('width',0)>0 and value.get('height',0)>0 and valid_file(file,value):result[str(row['sid'])]=file
+   except (KeyError,OSError,ValueError,TypeError):continue
+ missing=[r for r in rows if str(r['sid']) not in result]
+ if missing:result.update(_legacy_read90(portal,missing,with_fallback))
+ __import__('startup_diag90').note('LOCAL_HIT',count=len(result),total=len(rows))
+ return result
+
+def _legacy_read90(portal,rows,with_fallback=True):
  records=load(portal,all_records=True);stable89={v.get('stable89'):v for v in records.values() if v.get('stable89')};result=__import__('station_logos87').read(portal,rows) if with_fallback else {};scope=context(portal)
  result.update(__import__('external_art89').references(portal,'logo',rows,internal=True))
  if with_fallback:

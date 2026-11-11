@@ -21,6 +21,8 @@ def run():
             except OSError:pass
         from home_entry import HomeRouter,dispatch as home_dispatch
         router=HomeRouter(sys.argv)
+        from picker_entry90 import dispatch as picker_dispatch90
+        if picker_dispatch90(router):return
         from setup_entry48 import dispatch as wizard_dispatch48
         if wizard_dispatch48(router):return
         with phase('HOME_FAST'):

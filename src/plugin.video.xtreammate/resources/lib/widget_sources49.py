@@ -16,7 +16,7 @@ def show(router,portal):
         # There is no directory request to complete on handle -1.
         import xbmc
         xbmc.executebuiltin('ActivateWindow(Videos,'+router.url(
-            action='widget_sources49',pid=portal['id'])+',return)')
+            action='widget_sources49',pid=portal['id'] if portal else None)+',return)')
         return
     import xbmcgui,xbmcplugin
     from boot_diagnostics import finish_directory
@@ -24,6 +24,14 @@ def show(router,portal):
     from widget_binding50 import source
     xbmcplugin.setContent(router._handle,'files')
     xbmcplugin.setPluginCategory(router._handle,tr(32443))
+    if portal is None:
+        # A fresh picker is discoverable without inventing a portal or saving
+        # broken pid URLs. Setup is explicit; opening this folder never runs it.
+        item=xbmcgui.ListItem(tr(32420));item.setInfo('video',{'title':tr(32420),'plot':tr(32466)})
+        item.setProperty('IsPlayable','false');item.setArt({'icon':icon('settings'),'thumb':icon('settings')})
+        xbmcplugin.addDirectoryItem(router._handle,router.url(action='setup_wizard'),item,isFolder=True)
+        __import__('picker_entry90').note('PICKER_PORTAL_REQUIRED')
+        finish_directory(router,succeeded=True,cacheToDisc=False);return
     for kind,(label,action,art) in zip(('live','vod','series'),SOURCES):
         item=xbmcgui.ListItem(tr(label))
         item.setProperty('IsPlayable','false')

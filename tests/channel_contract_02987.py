@@ -1,8 +1,8 @@
-"""Published .86 and installer are immutable; .87 is a distinct review ZIP."""
+"""Published .89 channels and installer are immutable; .90 is review-only."""
 import hashlib,subprocess
 from pathlib import Path
 import xml.etree.ElementTree as E
-ROOT=Path(__file__).resolve().parents[1];BASE='c5b7c18ab2f8a9f6be740f3b8cd2f0d1814ec467'
+ROOT=Path(__file__).resolve().parents[1];BASE='cb37de7103bd335a344c6738c33c4b5560ba2d4c'
 def approved(path):return subprocess.check_output(['git','show',BASE+':'+path],cwd=ROOT)
 def verify(path,committed=False):
  raw=subprocess.check_output(['git','show','HEAD:'+path],cwd=ROOT) if committed else (ROOT/path).read_bytes()

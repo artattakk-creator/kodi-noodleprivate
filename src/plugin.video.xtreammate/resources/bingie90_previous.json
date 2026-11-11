@@ -1,0 +1,17 @@
+{
+  "xml/IncludesHomeWidgets.xml": [
+    {
+      "sha256": "d29d99b82cc119ded310dc1b132dee012c1ad79b17693ff4f327dd6618ec91ea",
+      "condition": "!Window.IsActive(Home) + [String.IsEqual(Skin.String(HomeLayout),bingie)]"
+    },
+    {
+      "sha256": "9f8909d66fecaee3602c669ead242908b926c33467375c6dde511470e21a8b57",
+      "condition": "!Window.IsActive(Home)"
+    },
+    {
+      "sha256": "9f8909d66fecaee3602c669ead242908b926c33467375c6dde511470e21a8b57",
+      "condition": "!Window.IsActive(Home)"
+    }
+  ],
+  "xml/IncludesHomeBingie.xml": []
+}

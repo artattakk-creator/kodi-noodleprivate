@@ -69,6 +69,7 @@ def atomic(path,raw):
   if os.path.exists(tmp):os.unlink(tmp)
 
 def persist(portal,row,body,cancel=lambda:False):
+ started90=time.perf_counter()
  from logo_manifest86 import location,key,context,load
  from profile_transaction import writing
  from media_sources43 import SourceError
@@ -95,6 +96,7 @@ def persist(portal,row,body,cancel=lambda:False):
   if load(portal,all_records=True).get(key(portal,row))!=records[key(portal,row)]:raise OSError('LOGO_MANIFEST_READBACK')
   _verified[str(target)]=(stat.st_mtime_ns,stat.st_size,digest)
   while len(_verified)>512:_verified.pop(next(iter(_verified)))
+ __import__('startup_diag90').note('PERSIST_COMMIT_MS',ms=int((time.perf_counter()-started90)*1000),count=1)
  return str(target),facts
 
 def valid_file(path,record):

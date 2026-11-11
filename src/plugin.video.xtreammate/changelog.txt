@@ -1,3 +1,15 @@
+0.1.29.90 – kumulativer Android-.89-P0-Testkandidat, nicht veröffentlicht
+- Verifizierte Logo-Manifeste einmal pro Dateigeneration laden; vorhandene Logos vor optionaler Texture-/Netzwerksuche verwenden.
+- Fehlende Logos im vorhandenen Worker mit begrenzten Runden priorisieren; Speicherreserve und Quoten erhalten.
+- Echte Senderobjekte im EPG-Vorladen und Neustart-Checkpoint unterstützen; gültige sichtbare EPG-Bereiche gemeinsam behalten.
+- Geprüfte unveränderte Portal-Snapshots bei unabhängigen Schreibjobs lesen; Fehlergründe datensparsam unterscheiden.
+- Film-/Serien-Snapshots nicht durch eine geänderte Live-Startauswahl verlieren; gültige Daten bei SQL-Fehlern erhalten.
+- Manuelle TMDB-/TVMaze-Zuordnung nach Metadatenanreicherung mit exakt geprüften Schlüsseln wiederfinden und kalt nachlesen.
+- Nach fehlgeschlagenem vollständigem Senderkatalog Teilmodell und Wiederaufnahme erhalten; gewählte Gruppe nicht beim Nachladen zurücksetzen.
+- Native Widgetquellen mit und ohne Portal passiv auffindbar machen; kein Autoplay beim SkinShortcuts-Browsen.
+- Zwei nachgewiesene globale Fremdwidget-Fokussperren im bekannten Adapter gezielt korrigierbar machen; Backup und ausdrückliche Bestätigung bleiben Pflicht.
+- Originale .88-Hero-Geometrie, .89-Erinnerungen, Nutzerdaten, Providerpasswort, Token und alle veröffentlichten Kanäle erhalten. Android-Abnahme offen.
+
 0.1.29.89 – Android-.88-Nacharbeit, unveröffentlichter Testkandidat
 - Dauerhafte geprüfte Senderlogos mit eigener kleiner Quota und Mindestfreiraum; keine globale Reserveabschaltung.
 - Schnellere manuelle TMDB-/TVMaze-Suche, ausgewähltes Werk erneut prüfen, gemeinsames Zeitbudget und atomarer Mapping-Readback.

@@ -5,9 +5,12 @@ def note(code,view=None,control=0,index=-1,count=-1,generation=None,error=None,r
  if code not in ('LIST_UNEXPOSED','INDEX_REJECTED','GENERATION_CHANGED','NATIVE_LIST_FAILED','CALLBACK_FAILED','ROUTE_CANCELLED','JOB_CANCELLED','LIST_VALIDATED'):return
  route=route if route in ('media_detail','movies_home','series_home','xcmate_home','guide_grid','global_search','widget_recent_vod','widget_recent_series','programme_details46') else 'OTHER'
  kind=type(error).__name__ if error else ''
- kind=kind if kind in ('IndexError','RuntimeError','AttributeError','ValueError','TypeError','InterruptedError','SystemExit') else 'OTHER' if error else ''
+ kind=kind if kind in ('IndexError','RuntimeError','AttributeError','ValueError','TypeError','InterruptedError','SystemExit','PortalReadError','TimeoutError','OSError','MemoryError') else 'OTHER' if error else ''
  epoch=getattr(view,'_generation',generation or 0)
  facts=dict(code=code,route=route,control=int(control),index=int(index),count=int(count),generation=int(epoch or 0),thread=threading.get_ident(),exception=kind)
+ reason=getattr(error,'reason','')
+ if reason in ('PROFILE_BUSY','READ_IO','INVALID_PROFILE','PROFILE_RACE','PROFILE_BUDGET','MEMORY','MEMORY_PAUSE','UNKNOWN'):facts['portal_reason']=reason
+ if code=='CALLBACK_FAILED':__import__('startup_diag90').note('CALLBACK_FAIL_REASON',reason=reason if reason in ('PROFILE_BUSY','READ_IO','INVALID_PROFILE','PROFILE_RACE','PROFILE_BUDGET','MEMORY','MEMORY_PAUSE') else 'UNKNOWN')
  try:
   import xbmcgui
   facts['window']=int(xbmcgui.getCurrentWindowId())

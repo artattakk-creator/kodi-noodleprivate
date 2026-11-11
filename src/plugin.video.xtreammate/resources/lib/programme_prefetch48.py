@@ -7,12 +7,16 @@ This lane never scans the source archive and uses the existing 24-job queue.
 import time
 _positions={};_next={};_future56={}
 
+def station90(row):
+    value=row.extra if hasattr(row,'extra') else row
+    return str(value.get('sid',value.get('stream_id','')))
+
 def visible75(portal,rows):
     """Focused first, then its actual horizontal viewport; no IO or new worker."""
     if not rows:return []
     from hero_epg63 import focused64
     sid=focused64(str(portal['id'])) or str(portal.get('start_stream_id') or '')
-    index=next((i for i,row in enumerate(rows) if str(row.get('sid',''))==sid),0)
+    index=next((i for i,row in enumerate(rows) if station90(row)==sid),0)
     from home_schedule75 import visible_position
     left=visible_position(str(portal['id']),index)
     batch=[rows[index]]
