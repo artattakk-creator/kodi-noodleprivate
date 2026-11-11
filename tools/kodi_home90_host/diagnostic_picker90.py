@@ -17,10 +17,10 @@ def run(reason,pump):
     factory=root.find("include[@name='XCMate80.BaseBingie']/include[@content='Fixed_Focus_Navigation_Factory']")
     factory.attrib.pop('condition',None)
    if stage in ('bounds','combined'):
-    for field,value in (('width','1920'),('height','214')):
-     n=inner.find(field)
-     if n is None:n=E.SubElement(inner,field)
-     n.text=value
+    # Hypothesis: native empty stock rows keep 440px wrappers; Kodi scrolls
+    # the last focusable Series row to the end of those empty wrappers.
+    empty=root.find("include[@name='widget_base']/control")
+    E.SubElement(empty,'visible').text='Integer.IsGreater(Container($PARAM[widgetid]).NumItems,0) | Container($PARAM[widgetid]).IsUpdating'
    if stage=='flat':
     call=inner.find('include');inner.remove(call);row.remove(inner);row.append(call)
    if stage=='params':
@@ -51,6 +51,7 @@ def run(reason,pump):
     result['all_pixels']=sum(max(abs(a-b) for a,b in zip(pixel,(100,60,180)))<=8 for pixel in rgb.getdata())
    except (OSError,ValueError):result['rail_pixels']=-1
    result['focus']=xbmcgui.Window(10000).getFocusId()
+   result['stock']={str(cid):dict(items=xbmc.getInfoLabel('Container('+str(cid)+').NumItems'),outer=xbmc.getCondVisibility('Control.IsVisible(75'+str(cid)+')')) for cid in range(2540,2590,10)}
    result['parent']={key:xbmc.getInfoLabel(key) for key in ('Container(77777).CurrentItem','Container(77777).NumItems','Window(Home).Property(CurrentWidgetID)','Window(Home).Property(CurrentWidgetPos)','Window(Home).Property(PrevWidgetPos)')}
    results.append(result)
    Path('/root/picker90-experiments.json').write_text(json.dumps(dict(original_gate=str(reason),experiments=results,verdict='FAIL: clean unmodified product run still required',android='ANDROID_NOT_TESTED'),indent=2))
