@@ -31,7 +31,12 @@ class Home74(Fixture,unittest.TestCase):
   before=self.d.policy(self.portal,'live');Path(self.index.path()+'-wal').write_bytes(b'Unrelated write');self.assertEqual(self.d.policy(self.portal,'live'),before)
  def test_credentials_and_portal_selection_invalidate_all_three_kinds(self):
   for kind in ('live','vod','series'):
-   before=self.d.policy(self.portal,kind);self.assertNotEqual(before,self.d.policy(dict(self.portal,xc_pass='changed-canary74'),kind));self.assertNotEqual(before,self.d.policy(dict(self.portal,start_group_id='other'),kind));self.assertNotIn('changed-canary74',before)
+   before=self.d.policy(self.portal,kind)
+   self.assertNotEqual(before,self.d.policy(dict(self.portal,xc_pass='changed-canary74'),kind))
+   changed=self.d.policy(dict(self.portal,start_group_id='other'),kind)
+   if kind=='live':self.assertNotEqual(before,changed)
+   else:self.assertEqual(before,changed)  # unrelated Live choice preserves media LKG
+   self.assertNotIn('changed-canary74',before)
  def test_known_old_frame_not_reused_after_account_change(self):
   self.frame(self.rows());self.assertIsNone(self.p.old_frame(dict(self.portal,xc_user='different'), 'vod'))
  def test_new_frame_is_available_to_separate_reader_interpreter(self):

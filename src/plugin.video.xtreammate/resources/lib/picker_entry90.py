@@ -14,8 +14,14 @@ def note(code):
 def dispatch(router):
  if router._handle<0 or router._params.get('action','root') not in ('root','xcmate_home','portal_home','app_open'):return False
  import xbmc,xbmcgui
- dialog=xbmcgui.getCurrentWindowDialogId()
- if dialog in (0,-1,9999) or xbmc.getCondVisibility('Window.IsActive(Videos)'):return False
+ dialog_id=getattr(xbmcgui,'getCurrentWindowDialogId',None)
+ visible=getattr(xbmc,'getCondVisibility',None)
+ if not callable(dialog_id) or not callable(visible):return False
+ try:
+  dialog=dialog_id()
+  if dialog in (0,-1,9999) or visible('Window.IsActive(Videos)'):return False
+  if not visible('Window.IsVisible(script-skinshortcuts.xml)'):return False
+ except RuntimeError:return False
  # No general modal-window handoff: just answer this valid directory request.
  from app_routes import portal_for
  from widget_sources49 import show

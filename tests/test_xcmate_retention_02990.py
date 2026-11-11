@@ -67,13 +67,19 @@ class Retention90(Fixture,unittest.TestCase):
  def test_native_picker_root_with_real_portal_is_three_folders_and_never_autoplays(self):
   self.portal['autoplay_start']=True
   namespace=runpy.run_path(str(ADDON/'default.py'),run_name='entry90_test')
-  with mock.patch.object(sys,'argv',['plugin://plugin.video.xtreammate/','7','']),mock.patch('xbmcgui.getCurrentWindowDialogId',return_value=10101),mock.patch('xbmc.getCondVisibility',return_value=False):namespace['run']()
+  with mock.patch.object(sys,'argv',['plugin://plugin.video.xtreammate/','7','']),mock.patch('xbmcgui.getCurrentWindowDialogId',return_value=10101),mock.patch('xbmc.getCondVisibility',side_effect=lambda c:c=='Window.IsVisible(script-skinshortcuts.xml)'):namespace['run']()
   from urllib.parse import urlsplit,parse_qs
   self.assertEqual([parse_qs(urlsplit(url).query)['action'][0] for url,_,_ in self.added],['widget_live_start_group','widget_recent_vod','widget_recent_series'])
   self.assertTrue(all(folder for _,_,folder in self.added));self.assertFalse(self.builtins)
 
  def test_native_picker_root_without_portal_is_browsable_and_does_not_launch_wizard(self):
   self.portals=[];namespace=runpy.run_path(str(ADDON/'default.py'),run_name='entry90_test')
-  with mock.patch.object(sys,'argv',['plugin://plugin.video.xtreammate/','7','']),mock.patch('xbmcgui.getCurrentWindowDialogId',return_value=10101),mock.patch('xbmc.getCondVisibility',return_value=False):namespace['run']()
+  with mock.patch.object(sys,'argv',['plugin://plugin.video.xtreammate/','7','']),mock.patch('xbmcgui.getCurrentWindowDialogId',return_value=10101),mock.patch('xbmc.getCondVisibility',side_effect=lambda c:c=='Window.IsVisible(script-skinshortcuts.xml)'):namespace['run']()
   self.assertTrue(self.added);self.assertTrue(any('action=setup_wizard' in url for url,_,_ in self.added));self.assertFalse(self.builtins)
   self.assertFalse(any('pid=' in url for url,_,_ in self.added))
+
+ def test_unrelated_busy_or_foreign_dialog_never_changes_root_navigation_into_widget_picker(self):
+  from home_entry import HomeRouter
+  router=HomeRouter(['plugin://plugin.video.xtreammate/','7',''])
+  with mock.patch('xbmcgui.getCurrentWindowDialogId',return_value=10138),mock.patch('xbmc.getCondVisibility',return_value=False):self.assertFalse(__import__('picker_entry90').dispatch(router))
+  self.assertFalse(self.added);self.assertFalse(self.builtins)
