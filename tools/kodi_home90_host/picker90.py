@@ -69,6 +69,10 @@ def choose(dialog,slot,kind=None,noportal=False):
   # Root source names are localized through XCMate's real English PO.
   words={'live':('live-tv','start group','startgruppe'),'vod':('movies','filme'),'series':('series','serien')}.get(kind,())
   if kind and any(any(w in v.casefold() for w in words) for v in values):target=next(i for i,v in enumerate(values) if any(w in v.casefold() for w in words))
+  # Even when the skin exposes optional default XCMate presets, exercise the
+  # required original Add-On -> Video Add-On -> actual XCMate explorer path.
+  for branch90 in ('Add-On  >','Video Add-On  >'):
+   if branch90 in values:target=values.index(branch90);break
   if target is None:
    for candidates in (('video add-ons','video addons','video-addons','video add-on'),('add-ons','addons','add-on'),('use as widget','als widget','hier verwenden')):
     options=[i for i,v in enumerate(values) if any(w in v.casefold() for w in candidates)]
