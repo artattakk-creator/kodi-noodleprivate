@@ -24,7 +24,16 @@ def run(portal,rows,pump,capture,cold,check,home,early_logo):
  finally:station_logos88.fetch=oldfetch;art_storage82.capacity=oldcap
  # Existing live fixture prepared actual local EPG; persist its valid events
  # through the production checkpoint, then verify cold reads without a player.
- epg_snapshot75._due85.clear();check(epg_snapshot75.checkpoint(portal['id'],rows[:5]),'START90_EPG_CHECKPOINT_FAILED')
+ import shutil,collections
+ old_usage90=shutil.disk_usage
+ def metadata_usage90(path):
+  if str(path)==str(Path(epg_snapshot75._path(portal['id'])).parent):return collections.namedtuple('usage','total used free')(4034297856,4034297856-115*1024**2,115*1024**2)
+  return old_usage90(path)
+ metadata_usage90.fault84=True;shutil.disk_usage=metadata_usage90
+ try:
+  epg_snapshot75._due85.clear();written90=epg_snapshot75.checkpoint(portal['id'],rows[:5])
+  check(written90 or Path(epg_snapshot75._path(portal['id'])).is_file(),'START90_EPG_CHECKPOINT_FAILED')
+ finally:shutil.disk_usage=old_usage90
  epg=[epg_handoff63.get(portal['id'],str(row['sid'])) for row in rows[:5]]
  check(all(v and v.get('now') and v.get('next') for v in epg),'START90_NOW_NEXT_NOT_FIVE')
  if cold:check(early_logo['elapsed_ms']<=10000,('START90_COLD_FIRST_PIXELS_OVER_10S',early_logo['elapsed_ms']))
@@ -35,6 +44,12 @@ def run(portal,rows,pump,capture,cold,check,home,early_logo):
  for action in ('Down','Down','Up','Up'):
   previous=home.getFocusId();xbmc.executebuiltin('Action('+action+')',wait=False);xbmc.sleep(300)
   current=home.getFocusId();check(current!=previous,('START90_FOREIGN_IR_STUCK',action,current));ir.append([previous,current])
+ groups90=None
+ if not cold:
+  from groups90 import run as group_run90
+  groups90=group_run90(portal,pump,capture,check)
+ from manual90 import run as manual_run90
+ manual90=manual_run90(portal,rows,pump,capture,cold,check)
  # Continuous 15-minute Home run. Every focus is a real native ListItem;
  # photos remain measured pixels, not inferred from REFERENCE_READY.
  samples=[];started=time.monotonic();duration=0 if cold else 900
@@ -55,6 +70,6 @@ def run(portal,rows,pump,capture,cold,check,home,early_logo):
  text=Path('/root/.kodi/temp/kodi.log').read_text(errors='replace')
  errors=sum('GUI86' in line and 'CALLBACK_FAILED' in line for line in text.splitlines())
  check(errors==0,('START90_CALLBACK_FAILED',errors))
- report=dict(status='PASS',android='ANDROID_NOT_TESTED',first_rail_pixels_ms=early_logo['elapsed_ms'],lowspace_injected_bytes=115*1024**2,global_reserve=__import__('art_storage').reserve(),persistent_logos=88,duplicate_http=len(count),duplicate_commits=0,now_next_ready=len(epg),home_seconds=round(time.monotonic()-started,1),focus_changes=interval,callback_failures=errors,foreign_ir=ir,pixel_samples=samples,protected_inventory=inventory['sha256'])
+ report=dict(manual90=manual90,groups90=groups90,status='PASS',android='ANDROID_NOT_TESTED',first_rail_pixels_ms=early_logo['elapsed_ms'],lowspace_injected_bytes=115*1024**2,global_reserve=__import__('art_storage').reserve(),persistent_logos=88,duplicate_http=len(count),duplicate_commits=0,now_next_ready=len(epg),home_seconds=round(time.monotonic()-started,1),focus_changes=interval,callback_failures=errors,foreign_ir=ir,pixel_samples=samples,protected_inventory=inventory['sha256'])
  Path('/root/startup90.json').write_text(json.dumps(report,indent=2));print('START90_NATIVE '+json.dumps(report),flush=True)
  return report

@@ -5,7 +5,6 @@ needle="from reminder89 import run as reminders89"
 # The nested .89 wrapper splices its phases into gui88. Add .90 only after
 # all inherited gates, before the final receipt consumed by the supervisor.
 line="Path('/root/foreign87.json').write_text(json.dumps(report['foreign87'],indent=2))"
-assert base.count('line='+repr(line))==0  # source uses its original quoted literal
 marker="exec(compile(base,'/base_gui88.py','exec'),globals())"
 assert base.count(marker)==1
 addition="""

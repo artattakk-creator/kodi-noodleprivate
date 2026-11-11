@@ -34,6 +34,9 @@ def main():
  finally:
   for source,target in [('/root/picker90.json','picker90.json'),('/root/picker90-error.txt','picker90-error.txt'),('/root/.kodi/temp/kodi.log','synthetic-kodi.log')]:subprocess.run(docker+['cp',name+':'+source,str(report/target)],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
   for path in ('probe.log','picker90-error.txt','picker90.json','synthetic-kodi.log'):
-   if (report/path).is_file():print(path+'\n'+(report/path).read_text(errors='replace')[-22000:],flush=True)
+   if (report/path).is_file():
+    text=(report/path).read_text(errors='replace')
+    if path=='synthetic-kodi.log':text='\n'.join(line for line in text.splitlines() if 'CActiveAESink' not in line and 'ActiveAE::' not in line)
+    print(path+'\n'+text[-44000:],flush=True)
   subprocess.run(docker+['rm','-f',name],env=env,stdout=subprocess.DEVNULL)
 if __name__=='__main__':main()

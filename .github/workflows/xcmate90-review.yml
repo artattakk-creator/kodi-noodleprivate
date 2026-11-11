@@ -30,6 +30,11 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install 'Pillow>=11,<13' 'simpleeval==0.9.13'
+      - run: |
+          if ! command -v ffmpeg >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg
+          fi
       - run: python tools/run_kodi_home90_contract.py --report-dir "${{ runner.temp }}/visible84" --resolution "${{ matrix.resolution }}"
       - uses: actions/upload-artifact@v4
         if: always()

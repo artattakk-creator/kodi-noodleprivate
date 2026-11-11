@@ -11,6 +11,9 @@ def until(predicate,reason,seconds=30):
  end=time.monotonic()+seconds
  while time.monotonic()<end:
   if predicate():return
+  # Upstream's first-use shared-menu question: keep the fresh profile local.
+  if reason=='PICKER90_MANAGER_NOT_VISIBLE' and xbmcgui.getCurrentWindowDialogId()==10100 and xbmc.getInfoLabel('System.CurrentControl')=='No':
+   xbmc.executebuiltin('Action(Select)',wait=False)
   xbmc.sleep(100)
  raise RuntimeError((reason,xbmcgui.getCurrentWindowId(),xbmcgui.getCurrentWindowDialogId(),xbmc.getInfoLabel('System.CurrentControl')))
 def action(value):xbmc.executebuiltin('Action('+value+')',wait=False);xbmc.sleep(250)
