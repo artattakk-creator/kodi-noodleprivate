@@ -22,3 +22,10 @@ sha256sum -c plugin.video.xtreammate-0.1.29.90.zip.sha256
 ```
 
 Der endgültige CI-/Native-Status wird im PR und Testbericht festgehalten; ein vorhandenes ZIP allein bedeutet keine vollständige P0-Abnahme.
+
+Aktueller Produktcommit: `1c8cc4eb0d3208a976a67bc984cb06c12d8eb59c`.
+SHA256: `e95b0a0cc46e745a3318a609e6e57a005ee3a88965f6e7de0c4b21c68f30f17f`.
+
+Abschluss des lokalen Hostlaufs: **3.802 PASS, 0 Fehler, 0 Skip, 640,171 s**.
+[Testergebnis JSON](host-final90.json) · [vollständiger synthetischer Hosttest-Log](host-tests90.txt.gz).
+GitHub-CI und native Gesamtabnahme **BLOCKED_CI** (queued ohne Jobs); Android **ANDROID_NOT_TESTED**. Noch nicht merge-/veröffentlichungsbereit. Ältere .90-Prüfsummen sind überholt.

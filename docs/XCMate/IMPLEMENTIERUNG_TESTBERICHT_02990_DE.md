@@ -1,12 +1,37 @@
 # XCMate 0.1.29.90 – Implementierung und Testbericht
 
-**Status: IN PRÜFUNG – keine vollständige P0-Abnahme, kein Merge, kein Release.**
+**Status: HOST_PASS · BLOCKED_CI · ANDROID_NOT_TESTED – keine vollständige P0-Abnahme, kein Merge, kein Release.**
 
-Dokumentationsstand: 11.11.2026, 20:54 Europe/Berlin. Der abschließende Lauf einschließlich der langen nativen Gates wird im [PR-Checkbereich](https://github.com/artattakk-creator/kodi-noodleprivate/pull/431/checks) und im [Master #430](https://github.com/artattakk-creator/kodi-noodleprivate/issues/430) mit Commit und Artefakten festgehalten. Ein vorbereiteter oder laufender nativer Test wird hier ausdrücklich nicht als PASS ausgegeben.
+Dokumentationsstand: 11.11.2026, 21:52 Europe/Berlin. Der abschließende Lauf einschließlich der langen nativen Gates wird im [PR-Checkbereich](https://github.com/artattakk-creator/kodi-noodleprivate/pull/431/checks) und im [Master #430](https://github.com/artattakk-creator/kodi-noodleprivate/issues/430) mit Commit und Artefakten festgehalten. Ein vorbereiteter oder laufender nativer Test wird hier ausdrücklich nicht als PASS ausgegeben.
 
 Master [#430](https://github.com/artattakk-creator/kodi-noodleprivate/issues/430), Draft-PR [#431](https://github.com/artattakk-creator/kodi-noodleprivate/pull/431). Kumulative Basis: aktuelles `main` `a0da8a99088507cc8fd4f82ef9bf3b1ab70ea54f`, veröffentlichte .89; unveränderter Produkt-Ausgangsstand `cb37de7103bd335a344c6738c33c4b5560ba2d4c`. Das aktuelle ZIP enthält zusätzlich den nativen Leerflächen-Fix; Paket und Quellbytes sind identisch und zweimal bytegleich reproduziert. Der endgültige Produktcommit wird im PR festgehalten. Der aktuelle PR-Head ist separat im PR ersichtlich.
 
 Das .89-Android-Protokoll bleibt unverändert: dessen tatsächliche FAILs werden durch Hosttests nicht zu PASS. Sämtliche neuen Gerätefälle bleiben **ANDROID_NOT_TESTED**.
+
+## Maßgeblicher Schlussstand
+
+Produktcommit **`1c8cc4eb0d3208a976a67bc984cb06c12d8eb59c`**, ZIP-SHA256 **`e95b0a0cc46e745a3318a609e6e57a005ee3a88965f6e7de0c4b21c68f30f17f`**. Nachfolgend dokumentierte ältere Läufe sind Ursachen-/Entwicklungshistorie, nicht der aktuelle Gesamtstatus.
+
+- **3.802/3.802 Hosttests PASS, 640,171 s; 0 FAIL, 0 ERROR, 0 SKIP.** Keine Thread-Ausnahmen oder Tracebacks. Reale ausreichend große temporäre Speicherung, unveränderte Reserven; drei Mountidentitätsfälle auf dem echten normalen Dateisystem.
+- **11 Branding-Tests PASS**, **17 PO-Kataloge PASS** (Syntax/Platzhalter).
+- ZIP **4.663.852 Bytes / 855 Dateien**, CRC, sämtliche aktuellen Quellbytes und zwei bytegleiche Builds PASS.
+- [Maschinenlesbarer vollständiger Testbericht](test-builds/02990/host-final90.json) und [vollständiger komprimierter Hosttest-Log](test-builds/02990/host-tests90.txt.gz). Ausschließlich synthetische Hosttests, keine privaten Kodi-Gerätelogs.
+- Aktuelle [Host-CI](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43097240806) und [native .90-CI](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43097240872): bei letzter Prüfung **queued ohne Jobs**. Vorangehender manueller Lauf endete mit `startup_failure` vor Jobstart. Daher **BLOCKED_CI**, kein grüner GitHub- oder aktueller nativer Gesamtnachweis. Auch der lokale Ersatzweg ist nicht verfügbar: kein installiertes Kodi bzw. vorbereitetes Docker-Image; lokale Dateisysteme bieten nur etwa 0,5–0,6 GiB frei. Keine fremden Daten/Images zur Platzbeschaffung gelöscht, keine Reserven umgangen.
+- Der saubere Original-Picker-Nachweis mit drei Kodi-Neustarts auf dem vorherigen Produktstand `cb43815d` bleibt ein konkreter Teilnachweis; er ersetzt nicht den aktuellen nativen Fremdwidget-/Kaltlade-/Langzeitlauf.
+- Sämtliche **T90-01 bis T90-14 ANDROID_NOT_TESTED**. Keine Verbindung/Änderung zu Box A oder B. Kein Merge, keine Veröffentlichung; regulär/Pilot/NeoDark3 und Installer .5.26 unverändert.
+
+| Bereich | Implementierung / Host | Aktueller nativer Gesamtnachweis | Android |
+|---|---|---|---|
+| A Logos / Worker | PASS | BLOCKED_CI | ANDROID_NOT_TESTED |
+| B Lokales EPG / Checkpoint | PASS | BLOCKED_CI | ANDROID_NOT_TESTED |
+| C Portal-/GUI-Snapshot | PASS | BLOCKED_CI | ANDROID_NOT_TESTED |
+| D Film-/Serien-LastGood | PASS | BLOCKED_CI | ANDROID_NOT_TESTED |
+| E Fremdwidgets / kalte Container | PASS | BLOCKED_CI | ANDROID_NOT_TESTED |
+| F Manuelle Mapping-Quittung | PASS | BLOCKED_CI | ANDROID_NOT_TESTED |
+| G Gruppen / >128 Sender | PASS | BLOCKED_CI | ANDROID_NOT_TESTED |
+| H Original-Widgetpicker | PASS; früherer nativer Teilnachweis verlinkt | Neuer Stand BLOCKED_CI | ANDROID_NOT_TESTED |
+
+Merge-Bereitschaft: **NEIN**. Zunächst aktuelle vollständige native/CI-Prüfungen abschließen, anschließend tatsächliche Android-Abnahme und gesonderte Freigabe. Keine .89-Android-FAILs als behoben geschlossen.
 
 ## Fehlernachweise und Reparaturen
 
