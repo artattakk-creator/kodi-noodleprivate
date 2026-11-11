@@ -110,7 +110,7 @@ for target in ('appearance','widget_setup','widget_skin50'):
         rows=rpc('Files.GetDirectory',dict(directory=path,media='files'))['files']
     def matches(row):
         query=parse_qs(urlsplit(row['file']).query)
-        return query.get('section')==[target] if target=='appearance' else query.get('action')==[target]
+        return query.get('section')==[target] if target=='appearance' else query.get('action')==[target] and not query.get('branding88')
     found=[row for row in rows if matches(row)]
     assert len(found)==1,(target,rows)
     visited.append(dict(label=found[0]['label'],url=found[0]['file']))
@@ -144,7 +144,7 @@ time.sleep(.5)
 rpc('GUI.ActivateWindow',{'window':'home'})
 rpc('Addons.ExecuteAddon', {'addonid': 'script.xcmate.guicontract59'})
 for _ in range(4800+(int(os.environ.get('XCMATE_IDLE74','0'))+int(os.environ.get('XCMATE_FAULT_IDLE82','0')))*10):
-    if Path('/root/gui66-error.txt').exists():raise RuntimeError(Path('/root/gui66-error.txt').read_text())
+    if Path('/root/gui66-error.txt').exists():raise RuntimeError(Path('/root/gui66-error.txt').read_text(encoding='utf-8'))
     if Path('/root/home75.json').exists():
         result=json.loads(Path('/root/home75.json').read_text())
         assert result['status']=='PASS',result

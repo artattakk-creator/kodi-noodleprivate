@@ -79,6 +79,8 @@ def show(router,portal):
         item.setInfo('video',dict(title=tr(label),plot=tr(36612)))
         item.setArt(dict(icon=icon('widget_setup')))
         xbmcplugin.addDirectoryItem(router._handle,router.url(action=action,pid=portal['id']),item,isFolder=False)
+    item88=xbmcgui.ListItem('XCMate-Logo in BINGIE (mit Sicherung)');item88.setArt(dict(icon=icon('widget_setup')))
+    xbmcplugin.addDirectoryItem(router._handle,router.url(action='widget_skin50',pid=portal['id'],branding88='1'),item88,isFolder=False)
     for label,mode in ((36641,'check'),(36642,'restore')):
         item=xbmcgui.ListItem(tr(label));item.setProperty('IsPlayable','false')
         xbmcplugin.addDirectoryItem(router._handle,router.url(action='widget_setup',pid=portal['id'],shortcuts62=mode),item,isFolder=False)

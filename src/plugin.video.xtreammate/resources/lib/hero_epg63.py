@@ -52,7 +52,7 @@ def poll():
            'XCMate.ProgrammeImageScope57':label('XCMate.ProgrammeImageScope57'),
            'XCMate.FallbackLabel63':label('XCMate.FallbackLabel63'),'XCMate.ArtProof69':label('XCMate.ArtProof69')}
     props.update({'XCMate.PortalId':pid,'XCMate.MediaId':sid,'XCMate.ProgrammeLogo46':label('XCMate.ProgrammeLogo46'),
-                  'XCMate.LogoProof84':label('XCMate.LogoProof84'),'XCMate.LogoProof86':label('XCMate.LogoProof86')})
+                  'XCMate.LogoProof88':label('XCMate.LogoProof88'),'XCMate.LogoSource88':label('XCMate.LogoSource88'),'XCMate.LogoProof84':label('XCMate.LogoProof84'),'XCMate.LogoProof86':label('XCMate.LogoProof86')})
     labels=(label('XCMate.NoEpg63'),label('XCMate.RemainingFormat63'))
     if not all(labels):labels=_labels
     if not labels:return  # Static native ListItem remains usable until the worker warms labels.
@@ -74,6 +74,7 @@ def poll():
         Percent=props['XCMate.ProgrammePercent46'],Image=props.get('XCMate.HeroImage63',neutral),
         ArtSource=props.get('XCMate.HeroArtSource63',''),Facts=props.get('XCMate.ProgrammeFacts75',''),LongTitle='true' if len(props['XCMate.ProgrammeTitle46'])>26 else 'false')
     values['Provisional85']=props.get('XCMate.Provisional85','')
+    values['Rating88']=__import__('programme_actions88').rating(art)
     # .86 typed/hysteretic commit; pending textures never blank a current bank.
     if xbmcgui.Window(10000).getProperty('XCMate.Home86.IdentityReady')=='true':
         values=__import__('hero_render86').choose(intent68,art,values,xbmcgui.Window(10000))

@@ -48,6 +48,7 @@ def upgrade(files):
  verify(result);return result
 
 def verify(files):
+ if b'XCMate88.Contract' in files['xml/IncludesVariables.xml']:return __import__('widget_skin88').verify(files)
  from widget_skin78 import parse
  root=parse(files['xml/IncludesHomeWidgets.xml'])
  if root.find(".//control[@id='296886']") is None or root.find(".//control[@id='296887']") is None:raise ValueError('MISSING_86_PRELOAD_STATUS')

@@ -35,7 +35,7 @@ old_pids=kodi_pids()
 if not old_pids:raise RuntimeError('POST75_NO_INITIAL_KODI_PROCESS')
 # Only this synthetic test script changes; all add-on/profile/skin files remain.
 main=Path('/root/.kodi/addons/script.xcmate.guicontract59/main.py')
-main.write_text("import runpy,traceback,gc\nfrom pathlib import Path\ntry:\n runpy.run_path('/root/post75.py')\n gc.collect()\n Path('/root/native-fixture-returned87').write_text('RETURNED')\nexcept Exception:\n Path('/root/post75-error.txt').write_text(traceback.format_exc())\n raise\n")
+main.write_text("import runpy,traceback,gc\nfrom pathlib import Path\ntry:\n runpy.run_path('/root/post75.py')\n gc.collect()\n Path('/root/native-fixture-returned87').write_text('RETURNED')\nexcept Exception:\n Path('/root/post75-error.txt').write_text(traceback.format_exc(),encoding='utf-8')\n raise\n")
 rpc('Application.Quit')
 for _ in range(600):
     if not kodi_pids().intersection(old_pids):break
@@ -54,12 +54,16 @@ rpc('Addons.ExecuteAddon',{'addonid':'script.xcmate.guicontract59'})
 # harness budget never changes any packaged Save/Stop/UI production timeout.
 gui_budget87=max(120,min(240,int(os.environ.get('XCMATE_GUI_RESTART_TIMEOUT87','120'))))
 for _ in range(gui_budget87*10):
-    if Path('/root/post75-error.txt').exists():raise RuntimeError(Path('/root/post75-error.txt').read_text())
-    if Path('/root/post75.json').exists():break
+    if Path('/root/post75-error.txt').exists():raise RuntimeError(Path('/root/post75-error.txt').read_text(encoding='utf-8'))
+    try:
+        result=json.loads(Path('/root/post75.json').read_text(encoding='utf-8'))
+    except (OSError,ValueError):result=None
+    if isinstance(result,dict) and result.get('status')=='FAIL':raise RuntimeError('POST75_REPORTED_FAILURE')
+    if isinstance(result,dict) and result.get('status')=='PASS':break
     time.sleep(.1)
 else:raise RuntimeError('POST75_GUI_TIMEOUT')
 if protected()!=before:raise RuntimeError('POST75_PROTECTED_FILES_CHANGED')
-result=json.loads(Path('/root/post75.json').read_text())
+# Consume the complete validated snapshot from the bounded observer loop.
 result.update(protected_files=len(before),protected_sha256='PASS',restart='native Application.Quit + supervised Kodi restart',old_pids=sorted(old_pids),new_pids=sorted(kodi_pids()))
 Path('/root/post75.json').write_text(json.dumps(result,indent=2))
 print(json.dumps(result))

@@ -31,7 +31,8 @@ class Skin87(Skin86):
   self.prop.write_text('unsupported private format')
   with self.assertRaisesRegex(ValueError,'SKIN_MIGRATION_BLOCKED'):__import__('widget_inventory87').collect(self.profile,self.skin)
  def test_fixed_hero_image_table_and_attribution_bounds_at_both_resolutions(self):
-  graph=self.graph.build(self.original);node=self.graph.parse(graph['xml/IncludesHomeWidgets.xml']).find("include[@name='XCMate50.Hero']")
+  with mock.patch('widget_skin88.upgrade',side_effect=lambda files:dict(files)):graph=self.graph.build(self.original)
+  node=self.graph.parse(graph['xml/IncludesHomeWidgets.xml']).find("include[@name='XCMate50.Hero']")
   for scale in (1,2/3):
    panel=node.find(".//control[@id='296750']");self.assertAlmostEqual(540/1620,1/3)
    self.assertLessEqual((int(panel.findtext('left'))+int(panel.findtext('width')))*scale,1920*scale)
@@ -40,7 +41,8 @@ class Skin87(Skin86):
     self.assertLessEqual((int(item.findtext('top','0'))+int(item.findtext('height','0')))*scale,620*scale)
   status=node.find(".//control[@id='296887']");self.assertGreaterEqual(int(status.findtext('left')),1350);self.assertEqual(node.find(".//control[@id='296785']/visible").text,'false')
  def test_foreign_headers_keep_their_native_labels_and_are_not_globally_hidden_on_home(self):
-  graph=self.graph.build(self.original);node=self.graph.parse(graph['xml/IncludesHomeWidgets.xml']).find("include[@name='widget_header_multi']")
+  with mock.patch('widget_skin88.upgrade',side_effect=lambda files:dict(files)):graph=self.graph.build(self.original)
+  node=self.graph.parse(graph['xml/IncludesHomeWidgets.xml']).find("include[@name='widget_header_multi']")
   self.assertIn('XCMate.WidgetKind41',node.find('control/visible').text)
   self.assertTrue(node.find('control/visible').text.startswith('!Window.IsActive(Home) | !['))
   self.assertTrue(any(c.text=='$PARAM[widgetName]' for c in node.iter('label')))

@@ -2,7 +2,7 @@
 import hashlib,subprocess
 from pathlib import Path
 import xml.etree.ElementTree as E
-ROOT=Path(__file__).resolve().parents[1];BASE='48cbdc2fbdb32d2f0225b8db2398b25b4fcc4d6e'
+ROOT=Path(__file__).resolve().parents[1];BASE='2547848625df8ecd3ba089ecd6c49339c8f3c348'
 def approved(path):return subprocess.check_output(['git','show',BASE+':'+path],cwd=ROOT)
 def verify(path,committed=False):
  raw=subprocess.check_output(['git','show','HEAD:'+path],cwd=ROOT) if committed else (ROOT/path).read_bytes()

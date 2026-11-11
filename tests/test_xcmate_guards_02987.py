@@ -126,13 +126,16 @@ class Refresh86(Fixture,unittest.TestCase):
   import sys
   m=importlib.reload(importlib.import_module('epg_refresh74'));m._wanted.clear();m._due.clear();m._failures86.clear()
   import xbmc,epg_status
-  monitor=types.SimpleNamespace(abortRequested=lambda:False,waitForAbort=lambda n:False)
+  stop88={'value':False}
+  monitor=types.SimpleNamespace(abortRequested=lambda:stop88['value'],waitForAbort=lambda n:False)
+  def idle88(*args):
+   if not m._wanted:stop88['value']=True
   key=(__import__('epg_handoff63').profile_scope(),'p','missing')
   fake=mock.Mock();fake.get.return_value=None
-  with mock.patch.object(xbmc,'Monitor',return_value=monitor),mock.patch('library_index.Reader',return_value=fake),mock.patch.object(m._wake,'wait'),mock.patch.object(m.time,'monotonic',return_value=100),mock.patch.object(epg_status,'revision',return_value='r1'):
+  with mock.patch.object(xbmc,'Monitor',return_value=monitor),mock.patch('library_index.Reader',return_value=fake),mock.patch.object(m._wake,'wait',side_effect=idle88),mock.patch.object(m.time,'monotonic',return_value=100),mock.patch.object(epg_status,'revision',return_value='r1'):
    for delay in (30,60,180,300,300):
-    m._wanted[key]=100;m._run();self.assertEqual(m._due[key],100+delay)
-   fake.close.assert_called()
+    stop88['value']=False;m._wanted[key]=100;m._run();self.assertEqual(m._due[key],100+delay)
+   fake.close.assert_not_called()  # Reader closes each query internally
    m._thread=mock.Mock();m._thread.is_alive.return_value=True
    m.request('p','missing');self.assertFalse(m._wanted)
    with mock.patch.object(epg_status,'revision',return_value='r2'):m.request('p','missing')

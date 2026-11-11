@@ -101,7 +101,7 @@ def _references82(portal,kind,rows):
    if not source:missing84+=1;continue
    if not safe(portal,source):
     blocked84+=1
-    if kind=='live':__import__('station_logos87').note(portal,row,__import__('station_logos87').blocked_reason(portal,source))
+    if kind=='live' and not __import__('station_logos88').network_safe(portal,source):__import__('station_logos87').note(portal,row,__import__('station_logos87').blocked_reason(portal,source))
     continue
    if not public_dns(source):
     dns84+=1
@@ -158,7 +158,9 @@ def _run():
     # optional persistent archive writes, which may be reserve-blocked.
     _references82(portal,kind,rows)
     __import__('station_logos87').recover(portal,rows,cancelled)
+    __import__('station_logos88').recover(portal,rows,cancelled)
     __import__('logo_manifest86').prepare(portal,rows,cancelled)
+    __import__('station_logos88').recover(portal,rows,cancelled)
    # Recover already decoded Kodi files before any optional image write.
    __import__('artwork_display84').observe()
    __import__('widget_cache82').prepare(portal,kind,rows)
@@ -191,7 +193,9 @@ def revision():
 def renderable(uri):
  if not isinstance(uri,str) or not uri:return False
  return not any(uri.replace('\\','/').endswith('/resources/media/'+name) for name in ('vod.png','series.png','tv.png')) and '/resources/media/programme46/' not in uri
-def shutdown():_stop.set()
+def shutdown():
+ _stop.set()
+ __import__('decoded_assets88').shutdown()
 
 def home():
  try:

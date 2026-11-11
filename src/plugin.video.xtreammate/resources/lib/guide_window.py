@@ -17,6 +17,7 @@ class GuideWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         self._configure_owner()
         self._theme=__import__('theme_render').snapshot()
         self._return_home=False
+        self._play_request=None;self._entry_player=__import__('guide_playback').player_state()
         self._leaving=False;self._search_prompt=False;self._search_request=None;self._search_return=return_view
         self.router,self.portal=router,portal
         self._pool=ThreadPoolExecutor(max_workers=1)

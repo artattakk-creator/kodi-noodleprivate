@@ -76,7 +76,7 @@ def _hero(props):
     if not local:
         logo=props.get('XCMate.ProgrammeLogo46','')
         logo84=bool(local_image(logo) and '/resources/media/' not in logo)
-        image=logo if logo84 else __import__('artwork_display84').logo_reference(props)
+        image=logo if logo84 else __import__('station_logos88').reference(props) or __import__('artwork_display84').logo_reference(props)
         logo84=bool(image)
         local=logo84
     if logo84 or not local:props['XCMate.Provisional85']=''

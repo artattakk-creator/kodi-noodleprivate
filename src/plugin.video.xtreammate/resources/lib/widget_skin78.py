@@ -32,11 +32,13 @@ def _append(data,closing,addition):
     result=data[:at]+addition+data[at:];parse(result);return result
 
 def build(original):
+    if b'XCMate88.Contract' in original['xml/IncludesVariables.xml']:
+        __import__('widget_skin88').verify(original);return dict(original)
     from widget_skin77 import candidate as previous
     from widget_skin75 import navigation_candidate
     from widget_skin50 import edit
     if CONTRACT.encode() in original['xml/IncludesVariables.xml']:
-        verify(original);return __import__('widget_skin87').upgrade(__import__('widget_skin81').upgrade(__import__('widget_skin80').upgrade(original)))
+        verify(original);return __import__('widget_skin88').upgrade(__import__('widget_skin87').upgrade(__import__('widget_skin81').upgrade(__import__('widget_skin80').upgrade(original))))
     result=dict(original)
     for name in FILES[:4]:result[name]=previous(name,original[name])
     result[FILES[4]]=navigation_candidate(original[FILES[4]])
@@ -69,7 +71,7 @@ def build(original):
     result[FILES[7]]=_append(home,b'</controls>',b'<include>XCMate78.Runtime</include>\n')
     result=__import__('widget_skin81').upgrade(__import__('widget_skin80').upgrade(result))
     verify(result)
-    return __import__('widget_skin87').upgrade(result)
+    return __import__('widget_skin88').upgrade(__import__('widget_skin87').upgrade(result))
 
 def verify(files):
     roots={name:parse(files[name]) for name in FILES}
@@ -94,7 +96,10 @@ def verify(files):
     return True
 
 def installed(skin):
-    try:verify({name:read(Path(skin)/name) for name in FILES});return True
+    try:
+        files88={name:read(Path(skin)/name) for name in FILES};verify(files88)
+        if __import__('widget_skin88').previous_owned(skin):return False
+        return True
     except (OSError,ValueError,E.ParseError,KeyError):return False
 
 def previous_owned(skin):

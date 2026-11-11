@@ -95,7 +95,7 @@ class Series84(Fixture,unittest.TestCase):
     event=importlib.import_module('programme_events46').describe(self.portal,channel,raw,'xml',None)
     with mock.patch('tmdb_connection60.request',side_effect=self.api(official,year,aliases)),mock.patch('shutil.disk_usage',return_value=usage),mock.patch('artwork_visible.public_dns',side_effect=dns):
      result=importlib.import_module('programme_urls55').resolve(event,allow_lookup=True,url_mode69=True,check=check)
-    self.assertTrue(result['decoded77']);self.assertTrue(result['display84']);self.assertEqual(result['source'],'tmdb_series')
+    self.assertTrue(result['decoded77']);self.assertTrue(result['decoded88']);self.addCleanup(__import__('decoded_assets88').shutdown);self.assertEqual(result['source'],'tmdb_series')
     self.assertEqual(result['image_scope57'],'series_fallback');self.assertEqual(result['storage69'],'RAM_ONLY')
     importlib.import_module('programme_requests68').completed(event,result)
     window=importlib.import_module('programme_window46').ProgrammeWindow46('XCMateProgramme46.xml',str(ADDON),'Default','720p')

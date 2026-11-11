@@ -124,7 +124,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     if durable81 and not upgrade81:return durable81
     pressure84=__import__('artwork_display84').observe() or __import__('home_schedule75').applicable()
     if url_mode69 and pressure84:
-        renewed84=__import__('programme_display84').recover(event) or __import__('programme_display84').renew(event)
+        renewed84=__import__('sticky_art88').read(event) or __import__('event_cache88').recover(event) or __import__('programme_display84').recover(event) or __import__('programme_display84').renew(event)
         retain86(renewed84)
         if renewed84 and usable86(renewed84) and not upgrade81:
             upgrade81=upgrade86(renewed84)
@@ -308,7 +308,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
             attribution=candidate.get('attribution',''),until=min(now+86400,max(now+300,event['stop']+3600)))
         if candidate.get('matched_year56'):value['matched_year56']=candidate['matched_year56']
         if candidate.get('remote_id') or candidate.get('provider_id'):value['provider_id']=candidate.get('remote_id') or candidate['provider_id']
-        for field in ('image_scope57','helper_version57','role81','provisional85','manual85'):
+        for field in ('image_scope57','helper_version57','role81','provisional85','manual85','vote_average88','vote_count88'):
             if candidate.get(field):value[field]=candidate[field]
         if url_mode69:
             from programme_requests68 import identity,scope
@@ -322,6 +322,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         if isinstance(verified77,dict):
             value=__import__('artwork_temp85').promote(event,value,verified77.get('_body81'))
             value=__import__('event_art81').commit(event,value,verified77.get('_body81'))
+            value=__import__('sticky_art88').remember(event,value,verified77.get('_body81'))
         break
     if not candidates and not allow_lookup:value['code']='AWAITING_BACKGROUND_REFRESH'
     if cancel():return None

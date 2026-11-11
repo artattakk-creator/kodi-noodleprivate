@@ -40,13 +40,17 @@ def open_pending(parent):
 def show(portal,channel,event=None,parent=None):
  if not permitted(parent):xbmcgui.Dialog().notification('XCMate',tr(36105));return
  dialog=ProgrammeWindow46('XCMateProgramme46.xml',xbmcaddon.Addon().getAddonInfo('path'),'Default','720p')
- dialog.configure(portal,channel,event,parent);dialog.run();return dialog
+ dialog.configure(portal,channel,event,parent);dialog.run()
+ if dialog._tune88 and parent is not None:
+  if not __import__('programme_actions88').tune(parent,portal,channel):xbmcgui.Dialog().notification('XCMate','Sender kann aus dieser Ansicht momentan nicht umgeschaltet werden.')
+ return dialog
 
 class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
  def configure(self,portal,channel,event=None,parent=None):
   self.portal,self.channel,self.selected,self.parent=portal,dict(channel),event,parent
   self._owner=threading.get_ident();self._closed=False;self._ready=False;self._shown=False;self._init_error69=False;self._read_deadline69=0
   self._retries85=0;self._retry_after85=0
+  self._intent88=None;self._action88=None;self._tune88=False;self._timeline88=''
   self._cancel=threading.Event();self._future=None;self.event=None;self._art_signature=None;self._next=0;self._scroll46=0;self._art68={}
  def _gui(self):
   if threading.get_ident()!=self._owner:raise RuntimeError('PROGRAMME_OWNER_THREAD')
@@ -59,6 +63,7 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   from menu_icons45 import icon
   self.getControl(881).setImage(icon('back',full=True));self.setFocusId(501)
   self.getControl(103).setText(tr(36106));self.getControl(106).setLabel(tr(36119))
+  self.getControl(502).setLabel('Sendung merken');self.getControl(503).setLabel('Jetzt umschalten')
   self._start_read85()
  def _start_read85(self):
   if not _slots.acquire(blocking=False):self.getControl(103).setText(tr(36107));return
@@ -71,7 +76,8 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
      from media_art import local_art,request as request_logos
      value=load(self.portal,self.channel,self.selected)
      if self.selected and self.selected.get('_no_art_request68'):value['_no_art_request68']=True
-     value['logo']=local_art(self.channel)['thumb'];request_logos([self.channel])
+     logos88=__import__('logo_manifest86').read(self.portal,[self.channel])
+     value['logo']=logos88.get(str(self.channel.get('sid')),local_art(self.channel)['thumb']);request_logos([self.channel])
      from programme_art46 import cached
      from programme_requests68 import request
      value['_art68']=cached(value)
@@ -86,6 +92,20 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
   if self._closed:return
   if __import__('programme_lifecycle69').pulse(self):return
   if self.parent is not None and self.parent._closed:self.close();return
+  if self._intent88=='bookmark' and self.event and self._action88 is None and _slots.acquire(blocking=False):
+   self._intent88=None;future88=Future();self._action88=future88;event88=dict(self.event)
+   def save88():
+    try:
+     if future88.set_running_or_notify_cancel():
+      try:future88.set_result(__import__('programme_actions88').toggle(event88,self._cancel.is_set))
+      except Exception:future88.set_exception(OSError('BOOKMARK_FAILED'))
+    finally:_slots.release()
+   try:threading.Thread(target=save88,name='XCMate-programme-bookmark88',daemon=True).start()
+   except RuntimeError:_slots.release();self._action88=None
+  if self._action88 is not None and self._action88.done():
+   try:added88=self._action88.result();self.getControl(502).setLabel('Nicht mehr merken' if added88 else 'Sendung merken')
+   except Exception:xbmcgui.Dialog().notification('XCMate','Merkliste konnte nicht gespeichert werden.')
+   self._action88=None
   if getattr(self,'_series_menu85',False):
    self._series_menu85=False
    if __import__('work_manager86').open(self):
@@ -112,6 +132,8 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
    self._next=time.monotonic()+.5
    from programme_requests68 import result
    art=result(self.event,self._art68)
+   art=__import__('programme_lastgood80').choose(self.event,art,self._art68)
+   if __import__('programme_image69').eligible(art,self.event):self._art68=dict(art)
    if art.get('code') in ('EVENT_CHANGED','SOURCE_CHANGED','NO_SOURCE_FACTS') and self._future is None and self._retries85<3 and time.monotonic()>=self._retry_after85:
     self._retries85+=1;self._retry_after85=time.monotonic()+(1,5,30)[self._retries85-1]
     self.selected={k:self.event[k] for k in ('start','stop') if k in self.event}
@@ -129,9 +151,12 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
     from programme_flow48 import trace
     trace('GUI',self.event,'GUI_IMAGE_REQUESTED' if art.get('source')!='placeholder' else art.get('code','PENDING'))
     from programme_diagnostics59 import message
-    self.getControl(104).setLabel(message(self.event,art))
+    self.getControl(104).setLabel('' if __import__('programme_image69').eligible(art,self.event) else message(self.event,art))
     self.getControl(105).setText(str(art.get('attribution',''))[:500])
+    self.getControl(108).setLabel(__import__('programme_actions88').rating(art))
     self.getControl(130).setVisible(__import__('programme_image69').eligible(art,self.event) and str(art.get('source','')).startswith('tmdb'))
+   text88,percent88=__import__('programme_actions88').timeline(self.event)
+   if text88!=self._timeline88:self.getControl(107).setLabel(text88);self._timeline88=text88
    now=time.time();e=self.event;current=e.get('start',0)<=now<e.get('stop',0)
    self.getControl(120).setVisible(current);self.getControl(121).setVisible(current)
    if current:self.getControl(121).setWidth(max(1,int(536*(now-e['start'])/(e['stop']-e['start']))))
@@ -157,13 +182,17 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
  def onClick(self,cid):
   self._gui()
   if cid==501:self.close()
+  elif cid==502 and self.event:self._intent88='bookmark'
+  elif cid==503 and not self._tune88 and not __import__('station_rows88').header(self.channel):self._tune88=True;self.close()
  def close(self):
   self._gui()
   if self._closed:return
   self._closed=True;self._cancel.set()
+  if self._art68.get('asset88'):__import__('decoded_assets88').release(self._art68['asset88'])
   __import__('programme_lifecycle69').mark(self,'CLOSE')
   __import__('programme_lifecycle69').unregister(self)
   if self._future:self._future.cancel()
+  if self._action88:self._action88.cancel()
   if self._shown:super().close()
 
 def launch_standalone(portal,channel,selected=None):
@@ -192,5 +221,9 @@ def route(router,portal):
   channel=Reader(portal['id']).get('live',str(params.get('sid','')))
   if not channel:return
   selected=dict(start=int(params.get('start',0)),stop=int(params.get('stop',0)),key=str(params.get('event','')))
-  return launch_standalone(portal,channel,selected if selected['start'] else None)
+  dialog88=launch_standalone(portal,channel,selected if selected['start'] else None)
+  if dialog88 and dialog88._tune88:
+   from guide_playback import request,handoff,player_state
+   handoff(router,portal,request(portal,channel,player_state()))
+  return dialog88
  except (ValueError,TypeError):xbmcgui.Dialog().notification('XCMate',tr(36107))

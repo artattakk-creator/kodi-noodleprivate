@@ -1,0 +1,615 @@
+{
+  "version": "0.1.29.88",
+  "source_commit": "6c1471891fa0fa2795b91c645781c2e5683d035d",
+  "source_tree": "2ec26545f3c25fca43fc527a34600755c31e8391",
+  "platform": "Linux x86_64 / Kodi 21.2 / synthetic data",
+  "android": "ANDROID_NOT_TESTED",
+  "native_images": {
+    "run": 42929994133,
+    "workflow_result": "PASS",
+    "rig_commit": "30d4dc014a5d969d5d4aad9c865102a1550b8edc",
+    "resolutions": [
+      {
+        "resolution": "1920x1080",
+        "job": 130226021260,
+        "result": "PASS",
+        "sticky": {
+          "status": "PASS",
+          "wall_seconds": 306.18,
+          "checkpoints": [
+            {
+              "seconds": 2.09,
+              "pixels": 253572,
+              "screenshot": "visible84-sticky88-2.png"
+            },
+            {
+              "seconds": 46.06,
+              "pixels": 253572,
+              "screenshot": "visible84-sticky88-46.png"
+            },
+            {
+              "seconds": 121,
+              "pixels": 253572,
+              "screenshot": "visible84-sticky88-121.png"
+            },
+            {
+              "seconds": 305.03,
+              "pixels": 253572,
+              "screenshot": "visible84-sticky88-305.png"
+            }
+          ],
+          "negative_status_after": 45,
+          "android": "ANDROID_NOT_TESTED"
+        },
+        "foreign": {
+          "status": "PASS",
+          "saved_definitions": 13,
+          "independent_sources": 7,
+          "cases": [
+            {
+              "menu": 0,
+              "row": 0,
+              "addon": "plugin.audio.m3sr2019",
+              "items": 8,
+              "native_focus": 2540,
+              "rail_pixels": 360136,
+              "screenshot": "visible84-foreign87-cold-0-0.png"
+            },
+            {
+              "menu": 0,
+              "row": 1,
+              "addon": "plugin.audio.shoutcast",
+              "items": 8,
+              "native_focus": 2550,
+              "rail_pixels": 360136,
+              "screenshot": "visible84-foreign87-cold-0-1.png"
+            },
+            {
+              "menu": 0,
+              "row": 2,
+              "addon": "plugin.video.fixture87.cinema",
+              "items": 8,
+              "native_focus": 2560,
+              "rail_pixels": 360136,
+              "screenshot": "visible84-foreign87-cold-0-2.png"
+            },
+            {
+              "menu": 0,
+              "row": 3,
+              "addon": "plugin.video.fixture87.series",
+              "items": 8,
+              "native_focus": 2570,
+              "rail_pixels": 360136,
+              "screenshot": "visible84-foreign87-cold-0-3.png"
+            },
+            {
+              "menu": 0,
+              "row": 4,
+              "addon": "plugin.video.fixture87.weather",
+              "items": 8,
+              "native_focus": 2580,
+              "rail_pixels": 360136,
+              "screenshot": "visible84-foreign87-cold-0-4.png"
+            },
+            {
+              "menu": 1,
+              "row": 0,
+              "addon": "plugin.audio.m3sr2019",
+              "items": 8,
+              "native_focus": 3510,
+              "rail_pixels": 360136,
+              "screenshot": "visible84-foreign87-cold-1-0.png"
+            },
+            {
+              "menu": 1,
+              "row": 1,
+              "addon": "plugin.audio.shoutcast",
+              "items": 8,
+              "native_focus": 3520,
+              "rail_pixels": 378226,
+              "screenshot": "visible84-foreign87-cold-1-1.png"
+            },
+            {
+              "menu": 1,
+              "row": 2,
+              "addon": "plugin.video.fixture87.cinema",
+              "items": 8,
+              "native_focus": 3530,
+              "rail_pixels": 360136,
+              "screenshot": "visible84-foreign87-cold-1-2.png"
+            },
+            {
+              "menu": 1,
+              "row": 3,
+              "addon": "plugin.video.fixture87.series",
+              "items": 8,
+              "native_focus": 3540,
+              "rail_pixels": 360136,
+              "screenshot": "visible84-foreign87-cold-1-3.png"
+            },
+            {
+              "menu": 1,
+              "row": 4,
+              "addon": "plugin.video.fixture87.weather",
+              "items": 8,
+              "native_focus": 3550,
+              "rail_pixels": 360136,
+              "screenshot": "visible84-foreign87-cold-1-4.png"
+            },
+            {
+              "menu": 1,
+              "row": 5,
+              "addon": "plugin.video.fixture87.news",
+              "items": 8,
+              "native_focus": 3560,
+              "rail_pixels": 360136,
+              "screenshot": "visible84-foreign87-cold-1-5.png"
+            },
+            {
+              "menu": 1,
+              "row": 6,
+              "addon": "plugin.video.fixture87.cinema",
+              "items": 8,
+              "native_focus": 3570,
+              "rail_pixels": 360136,
+              "screenshot": "visible84-foreign87-cold-1-6.png"
+            },
+            {
+              "menu": 1,
+              "row": 7,
+              "addon": "plugin.video.fixture87.trends",
+              "items": 8,
+              "native_focus": 3580,
+              "rail_pixels": 360136,
+              "screenshot": "visible84-foreign87-cold-1-7.png"
+            }
+          ],
+          "cycles": 10,
+          "native_ok_audio": 2,
+          "inventory_sha256": "011ea5b6d627e69e69bbe2030585396fb67c0cc74171ed07063df700094d0bf6",
+          "unchanged": "PASS",
+          "source_kind": "Synthetic independent plugins with actual non-XCMate URLs",
+          "android": "ANDROID_NOT_TESTED"
+        }
+      },
+      {
+        "resolution": "1280x720",
+        "job": 130226021620,
+        "result": "PASS",
+        "sticky": {
+          "status": "PASS",
+          "wall_seconds": 306.09,
+          "checkpoints": [
+            {
+              "seconds": 2.05,
+              "pixels": 253204,
+              "screenshot": "visible84-sticky88-2.png"
+            },
+            {
+              "seconds": 46.09,
+              "pixels": 253204,
+              "screenshot": "visible84-sticky88-46.png"
+            },
+            {
+              "seconds": 121.03,
+              "pixels": 253204,
+              "screenshot": "visible84-sticky88-121.png"
+            },
+            {
+              "seconds": 305.03,
+              "pixels": 253204,
+              "screenshot": "visible84-sticky88-305.png"
+            }
+          ],
+          "negative_status_after": 45,
+          "android": "ANDROID_NOT_TESTED"
+        },
+        "foreign": {
+          "status": "PASS",
+          "saved_definitions": 13,
+          "independent_sources": 7,
+          "cases": [
+            {
+              "menu": 0,
+              "row": 0,
+              "addon": "plugin.audio.m3sr2019",
+              "items": 8,
+              "native_focus": 2540,
+              "rail_pixels": 349624,
+              "screenshot": "visible84-foreign87-cold-0-0.png"
+            },
+            {
+              "menu": 0,
+              "row": 1,
+              "addon": "plugin.audio.shoutcast",
+              "items": 8,
+              "native_focus": 2550,
+              "rail_pixels": 349624,
+              "screenshot": "visible84-foreign87-cold-0-1.png"
+            },
+            {
+              "menu": 0,
+              "row": 2,
+              "addon": "plugin.video.fixture87.cinema",
+              "items": 8,
+              "native_focus": 2560,
+              "rail_pixels": 349624,
+              "screenshot": "visible84-foreign87-cold-0-2.png"
+            },
+            {
+              "menu": 0,
+              "row": 3,
+              "addon": "plugin.video.fixture87.series",
+              "items": 8,
+              "native_focus": 2570,
+              "rail_pixels": 349624,
+              "screenshot": "visible84-foreign87-cold-0-3.png"
+            },
+            {
+              "menu": 0,
+              "row": 4,
+              "addon": "plugin.video.fixture87.weather",
+              "items": 8,
+              "native_focus": 2580,
+              "rail_pixels": 349628,
+              "screenshot": "visible84-foreign87-cold-0-4.png"
+            },
+            {
+              "menu": 1,
+              "row": 0,
+              "addon": "plugin.audio.m3sr2019",
+              "items": 8,
+              "native_focus": 3510,
+              "rail_pixels": 349624,
+              "screenshot": "visible84-foreign87-cold-1-0.png"
+            },
+            {
+              "menu": 1,
+              "row": 1,
+              "addon": "plugin.audio.shoutcast",
+              "items": 8,
+              "native_focus": 3520,
+              "rail_pixels": 367708,
+              "screenshot": "visible84-foreign87-cold-1-1.png"
+            },
+            {
+              "menu": 1,
+              "row": 2,
+              "addon": "plugin.video.fixture87.cinema",
+              "items": 8,
+              "native_focus": 3530,
+              "rail_pixels": 349624,
+              "screenshot": "visible84-foreign87-cold-1-2.png"
+            },
+            {
+              "menu": 1,
+              "row": 3,
+              "addon": "plugin.video.fixture87.series",
+              "items": 8,
+              "native_focus": 3540,
+              "rail_pixels": 349624,
+              "screenshot": "visible84-foreign87-cold-1-3.png"
+            },
+            {
+              "menu": 1,
+              "row": 4,
+              "addon": "plugin.video.fixture87.weather",
+              "items": 8,
+              "native_focus": 3550,
+              "rail_pixels": 349628,
+              "screenshot": "visible84-foreign87-cold-1-4.png"
+            },
+            {
+              "menu": 1,
+              "row": 5,
+              "addon": "plugin.video.fixture87.news",
+              "items": 8,
+              "native_focus": 3560,
+              "rail_pixels": 349624,
+              "screenshot": "visible84-foreign87-cold-1-5.png"
+            },
+            {
+              "menu": 1,
+              "row": 6,
+              "addon": "plugin.video.fixture87.cinema",
+              "items": 8,
+              "native_focus": 3570,
+              "rail_pixels": 349624,
+              "screenshot": "visible84-foreign87-cold-1-6.png"
+            },
+            {
+              "menu": 1,
+              "row": 7,
+              "addon": "plugin.video.fixture87.trends",
+              "items": 8,
+              "native_focus": 3580,
+              "rail_pixels": 349628,
+              "screenshot": "visible84-foreign87-cold-1-7.png"
+            }
+          ],
+          "cycles": 10,
+          "native_ok_audio": 2,
+          "inventory_sha256": "011ea5b6d627e69e69bbe2030585396fb67c0cc74171ed07063df700094d0bf6",
+          "unchanged": "PASS",
+          "source_kind": "Synthetic independent plugins with actual non-XCMate URLs",
+          "android": "ANDROID_NOT_TESTED"
+        }
+      }
+    ]
+  },
+  "native_media": {
+    "run": 42929686346,
+    "job": 130224991853,
+    "result": "PASS",
+    "count": 60,
+    "per_media": 20
+  },
+  "native_720_diagnostic": {
+    "run": 42931066972,
+    "job": 130229650076,
+    "result": "PASS",
+    "fault_seconds": 0
+  },
+  "old_pause_stage": {
+    "run": 42927121771,
+    "job": 130216419391,
+    "source_commit": "767928991328bcd52be969010d3efa9198f80dc3",
+    "stage": {
+      "status": "PASS",
+      "scope": "real Linux Kodi + injected artwork DB pause",
+      "seconds": 1800.84,
+      "duplicate_polls": 443,
+      "worker_threads": 1,
+      "recovered_same_worker": true,
+      "unhandled": [],
+      "checkpoints": [
+        {
+          "elapsed": 0.16,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 60.25,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 120.36,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 180.37,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 240.45,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 300.53,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 360.59,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 420.7,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 480.83,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 540.86,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 600.93,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 660.99,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 721.05,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 781.12,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 841.24,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 901.29,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 961.41,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 1021.53,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 1081.62,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 1141.64,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 1201.73,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 1261.82,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 1321.86,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 1381.94,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 1441.98,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 1502.03,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 1562.06,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 1622.11,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 1682.16,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        },
+        {
+          "elapsed": 1742.24,
+          "art": {
+            "live": "REFERENCE_PARTIAL",
+            "vod": "REFERENCE_READY",
+            "series": "REFERENCE_READY"
+          }
+        }
+      ],
+      "android": "ANDROID_NOT_TESTED"
+    },
+    "overall_workflow": "FAIL",
+    "reason": "Collector read an incomplete restart JSON receipt after successful pause stage; test collector corrected."
+  },
+  "reference_photo4": "NOT_AVAILABLE",
+  "published": false,
+  "merged": false
+}

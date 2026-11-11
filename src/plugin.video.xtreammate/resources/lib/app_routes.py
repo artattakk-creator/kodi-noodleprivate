@@ -89,7 +89,9 @@ def dispatch(router):
         _end(router)
         from widget_manager50 import link,skin_setup,restore
         if action=='widget_link50':link(router,portal)
-        elif action=='widget_skin50':skin_setup()
+        elif action=='widget_skin50':
+            if router._params.get('branding88')=='1':__import__('branding88').menu()
+            else:skin_setup()
         else:restore()
         return
     if action=='widget_help49':

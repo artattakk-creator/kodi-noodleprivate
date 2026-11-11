@@ -32,6 +32,8 @@ def load(portal,all_records=False):
  except (OSError,ValueError,TypeError,AttributeError):return {}
 def read(portal,rows,with_fallback=True):
  records=load(portal);result=__import__('station_logos87').read(portal,rows) if with_fallback else {};scope=context(portal)
+ if with_fallback:
+  for sid88,uri88 in __import__('station_logos88').read(portal,rows).items():result.setdefault(sid88,uri88)
  # Existing Kodi-local decoded logos remain valid without adopting/deleting files.
  from widget_cache79 import load as cached,valid
  from media_art import poster_candidates
@@ -92,6 +94,9 @@ def _save(backend,path,records):
   finally:
    if os.path.exists(tmp):os.unlink(tmp)
 def prepare(portal,rows,cancel=lambda:False):
+ return __import__('station_logos88').prepare(portal,rows,cancel)
+
+def _prepare87(portal,rows,cancel=lambda:False):
  """Existing provider worker calls bounded incremental recovery/downloads."""
  from art_storage import check
  from widget_assets69 import safe

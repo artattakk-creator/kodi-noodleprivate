@@ -31,7 +31,7 @@ class RailView:
         for i,entry in enumerate(self.items):
             y=int(32+i*step);h=int(step)-4
             b=xbmcgui.ControlButton(30,y,72,h,'',focusTexture=os.path.join(root,'tv_focus.png'),noFocusTexture=os.path.join(root,'remote_clear.png'),font='font13',textOffsetX=62,textColor='0xFFBEC4CD',focusedColor='0xFFFFFFFF')
-            image=xbmcgui.ControlImage(48,y+(h-32)//2,32,32,icon(entry[1]))
+            image=xbmcgui.ControlImage(44,y+(h-40)//2,40,40,icon(entry[1]))
             self._icon_paths86.append(icon(entry[1]))
             caption=xbmcgui.ControlLabel(112,y+(h-28)//2,230,28,'','font13','0xFFBEC4CD')
             self.captions.append(caption)

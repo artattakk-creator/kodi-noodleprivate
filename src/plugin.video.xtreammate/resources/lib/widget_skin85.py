@@ -64,6 +64,7 @@ def upgrade(files):
  result[name]=data[:at]+b'<variable name="XCMate85.Contract"><value>READY</value></variable>'+data[at:]
  verify(result);return __import__('widget_skin86').upgrade(result)
 def verify(files):
+ if b'XCMate88.Contract' in files['xml/IncludesVariables.xml']:return __import__('widget_skin88').verify(files)
  from widget_skin78 import parse
  root=parse(files['xml/IncludesHomeWidgets.xml'])
  if parse(files['xml/IncludesVariables.xml']).find("variable[@name='XCMate85.Provisional']") is None:raise ValueError('MISSING_85_BANK_LABEL')

@@ -16,7 +16,7 @@ class Logos87(Fixture,unittest.TestCase):
  def test_safe_dynamic_logo_is_published_under_zero_archive_write_budget(self):
   a=__import__('widget_assets69');dns=__import__('artwork_visible')
   dns._dns_cache[('example.org',443)]=(time.monotonic()+30,True)
-  with mock.patch('home_schedule75.applicable',return_value=True),mock.patch('artwork_visible.public_dns',return_value=True),mock.patch('art_storage.check',side_effect=__import__('art_storage').ArtworkFailure('DISK_FULL','RESERVE_BLOCKED',dict(free=240*1024**2,reserve=1024**3,budget=0))),mock.patch('programme_transport77.verified',side_effect=AssertionError('no new persistence download')):
+  with mock.patch('home_schedule75.applicable',return_value=True),mock.patch('artwork_visible.public_dns',return_value=True),mock.patch('art_storage.check',side_effect=__import__('art_storage').ArtworkFailure('DISK_FULL','RESERVE_BLOCKED',dict(free=240*1024**2,reserve=1024**3,budget=0))),mock.patch('station_logos88.fetch',return_value=__import__('test_xcmate_02988').png()),mock.patch('programme_transport77.verified',side_effect=AssertionError('no new persistence download')):
    a._references82(self.portal,'live',self.rows)
    self.man.prepare(self.portal,self.rows[:2])
    result=self.man.remote(self.portal,self.rows)
@@ -50,7 +50,8 @@ class Logos87(Fixture,unittest.TestCase):
   with mock.patch('station_logos87.read',return_value={'0':str(image)}),mock.patch('art_storage.check',side_effect=__import__('art_storage').ArtworkFailure('DISK_FULL','RESERVE_BLOCKED')):
    self.assertEqual(self.man.read(self.portal,self.rows[:1])['0'],str(image))
    self.assertEqual(self.man.read(self.portal,self.rows[:1],with_fallback=False),{})
-   self.assertEqual(self.man.prepare(self.portal,self.rows[:1]),'EXTERNAL_UNAVAILABLE')
+   self.assertEqual(self.man.prepare(self.portal,self.rows[:1]),'READY')
+   self.assertEqual(self.man.read(self.portal,self.rows[:1],with_fallback=False),{})
  def test_auth_scope_is_distinct_from_scheme_host_failure_without_logging_credentials(self):
   for url in ('https://user:SECRET@example.org/logo.png','https://example.org/SECRET/logo.png','https://example.org/logo.png?token=SECRET'):
    self.assertEqual(self.m.blocked_reason(self.portal,url),'AUTH_SCOPE')

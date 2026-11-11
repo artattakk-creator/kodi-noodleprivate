@@ -48,5 +48,5 @@ def unique_movie56(event,cancel=lambda:False):
  if not year.isdigit() or not 1880<=int(year)<=2100 or str(row.get('release_date',''))[:4]!=year:return None
  url=_tmdb_image(details.get('backdrop_path') or details.get('poster_path'))
  if not url:raise SourceError('NO_VALID_URL')
- return dict(url=url,source='tmdb_movie',role81='backdrop' if details.get('backdrop_path') else 'poster',match='EXACT_UNIQUE_FILM_TITLE',matched_year56=int(year),
+ return dict(url=url,source='tmdb_movie',vote_average88=details.get('vote_average'),vote_count88=details.get('vote_count'),role81='backdrop' if details.get('backdrop_path') else 'poster',match='EXACT_UNIQUE_FILM_TITLE',matched_year56=int(year),
              official_poster86=_tmdb_image(details.get('poster_path')),remote_id=remote,attribution='TMDb · https://www.themoviedb.org/movie/'+str(remote)+' · nicht von TMDb zertifiziert; Bildnutzungsbedingungen beachten')

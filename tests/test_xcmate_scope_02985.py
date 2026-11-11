@@ -24,7 +24,7 @@ class Scope85(unittest.TestCase):
   from channel_contract_02985 import verify
   for path in ('addons.xml','addons.xml.md5','online-test/addons.xml','online-test/addons.xml.md5','online-test/manifest.json'):self.assertTrue(verify(path,committed=True))
   paths=('script.gsmedia.setup/script.gsmedia.setup-0.5.26.zip','plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.84.zip','online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.84.zip','online-test/plugin.video.xtreammate-0.1.29.84.zip','index.html','online-test/index.html')
-  for path in paths:self.assertEqual((ROOT/path).read_bytes(),subprocess.check_output(['git','show','48cbdc2fbdb32d2f0225b8db2398b25b4fcc4d6e'+':'+path],cwd=ROOT),path)
+  for path in paths:self.assertEqual((ROOT/path).read_bytes(),subprocess.check_output(['git','show','2547848625df8ecd3ba089ecd6c49339c8f3c348'+':'+path],cwd=ROOT),path)
   import sys
   sys.path.insert(0,str(ROOT/'tools'))
   try:
