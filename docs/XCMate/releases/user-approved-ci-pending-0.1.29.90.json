@@ -1,0 +1,28 @@
+{
+  "release": "XCMate 0.1.29.90",
+  "date": "2026-11-11",
+  "approval": "Explicit user requested merge to main and publication in test directory and all available repositories",
+  "source_pr": 431,
+  "source_merge_commit": "9bbf75040378dcaead9128880a909fe7978143a4",
+  "package_sha256": "e95b0a0cc46e745a3318a609e6e57a005ee3a88965f6e7de0c4b21c68f30f17f",
+  "package_git_blob": "3b4abb7f91d45a1b0a63cd337f85833552467de2",
+  "package_size": 4663852,
+  "channels": {
+    "regular": "plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.90.zip",
+    "pilot": "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.90.zip",
+    "NeoDark3": "online-test/plugin.video.xtreammate-0.1.29.90.zip"
+  },
+  "checks": {
+    "host_tests": "3802/3802 PASS per Codex",
+    "github_ci": "QUEUED_NO_CHECKS_AT_RELEASE",
+    "native_full": "NOT_CONFIRMED",
+    "physical_android": "NOT_TESTED"
+  },
+  "installer": "script.gsmedia.setup 0.5.26 unchanged",
+  "old_archives_preserved": [
+    "regular/0.1.29.89",
+    "pilot/0.1.29.89"
+  ],
+  "neodark3_root_old_version_removed": true,
+  "user_data": "No user device or provider settings touched"
+}
