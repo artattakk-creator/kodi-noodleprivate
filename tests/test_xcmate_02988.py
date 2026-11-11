@@ -37,7 +37,7 @@ class Fix88(Fixture,unittest.TestCase):
  def test_low_space_uses_decoded_ram_without_persisted_claim(self):
   m=__import__('station_logos88');m._due.clear();m._cursor.clear();row=dict(sid='88',name='Station',stream_icon='http://images.example.org/a.png')
   failure=__import__('art_storage').ArtworkFailure('DISK_FULL','RESERVE_BLOCKED',dict(free=239800320,reserve=1073741824,budget=0))
-  with mock.patch.object(m,'fetch',return_value=png()) as fetch,mock.patch('art_storage.check',side_effect=failure):
+  with mock.patch.object(m,'fetch',return_value=png()) as fetch,mock.patch('art_storage.check',side_effect=failure),mock.patch('art_storage82.capacity',return_value=dict(capacity82='SAME_VOLUME_VERIFIED',free=20*1024**2,total=4034297856)):
    self.assertEqual(m.prepare(self.portal,[row]),'READY');uri=m.read(self.portal,[row])['88'];m.prepare(self.portal,[row]);self.assertEqual(fetch.call_count,1)
   self.assertTrue(uri.startswith('http://127.0.0.1:'));self.assertEqual(json.loads(self.properties['XCMate.Logos87.Last'])['code'],'STORAGE_RESERVE_BLOCKED')
   self.assertFalse(m.read(self.portal,[dict(row,stream_icon='http://other.example.org/a.png')]))
@@ -225,7 +225,7 @@ class Transport88(Fixture,unittest.TestCase):
   try:
    with mock.patch('socket.getaddrinfo',side_effect=dns),mock.patch.object(m,'fetch',side_effect=lambda p,u,c:original(p,u,c,connect=response)),mock.patch('art_storage.check',side_effect=OSError('reserve')):
     self.assertEqual(m.prepare(self.portal,[bad,good]),'PARTIAL')
-   self.assertNotIn('bad',m.read(self.portal,[bad]));self.assertIn('good',m.read(self.portal,[good]))
+   self.assertNotIn('bad',__import__('logo_manifest86').read(self.portal,[bad]));self.assertIn('good',__import__('logo_manifest86').read(self.portal,[good]))
   finally:assets.shutdown()
  def test_two_interpreters_share_one_byte_owner_without_invalidating_visible_images(self):
   import importlib.util,sys

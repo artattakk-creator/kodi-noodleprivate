@@ -37,3 +37,17 @@ class EpgMetadata89(Fixture,unittest.TestCase):
   with mock.patch('art_storage82.capacity',return_value=dict(capacity82='SAME_VOLUME_VERIFIED',free=20*1024**2,total=4034297856)):
    with self.assertRaisesRegex(OSError,'METADATA_SAFETY_FLOOR'):m.check(str(file),1024)
   self.assertEqual(file.read_bytes(),before)
+
+ def test_aliases_are_one_read_only_bound_query_not_one_query_per_channel(self):
+  import sqlite3
+  db=sqlite3.connect(':memory:');db.execute('CREATE TABLE guide_alias(pid TEXT,alias TEXT,cid TEXT)');db.executemany('INSERT INTO guide_alias VALUES(?,?,?)',[('p',str(i),'xml'+str(i)) for i in range(16)]);statements=[];db.set_trace_callback(statements.append)
+  rows=[dict(sid=str(i),epg_channel_id='xml'+str(i)) for i in range(16)]
+  try:result=__import__('epg_single89').aliases(db,'p',rows,{})
+  finally:db.close()
+  self.assertEqual(len(result),16);self.assertEqual(result['15'],('xml15',));self.assertEqual(len(statements),1);self.assertTrue(statements[0].startswith('SELECT alias,cid'))
+ def test_contending_first_read_returns_pending_for_every_requested_sender(self):
+  m=__import__('epg_single89');rows=[dict(sid='1'),dict(sid='2')];ident=__import__('epg_poll77').key('p',rows,{},True);m._active.add(ident)
+  try:
+   with mock.patch('epg_handoff63.get',return_value=None),mock.patch('epg_poll77.read',return_value=None):result=m.run('p',rows,{},self.now,True,lambda:self.fail('duplicate read'))
+  finally:m._active.discard(ident)
+  self.assertEqual(set(result),{'1','2'});self.assertTrue(all(v['reason']=='EPG_REFRESH_PENDING' for v in result.values()))

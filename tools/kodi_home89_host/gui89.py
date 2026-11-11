@@ -1,6 +1,6 @@
 """Keep every strict .88 native gate, add own-logo persistence and cold proof."""
 from pathlib import Path
-base=Path('/base_gui88.py').read_text()
+base=Path('/base_gui88.py').read_text(encoding='utf-8')
 # The previous rig required zero private images at 27MiB. At restart this new
 # test intentionally owns a tiny verified logo archive from its 218MiB phase.
 anchor="base=Path('/base_gui84.py').read_text()"

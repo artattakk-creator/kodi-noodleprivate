@@ -116,4 +116,5 @@ def note(code,**facts):
  if code not in allowed:return
  import xbmc
  safe={k:v for k,v in facts.items() if k in ('free','total','reserve','quota','used') and type(v) is int and v>=0}
- xbmc.log('[XCMate][LOGO89] code='+code+' '+json.dumps(safe,separators=(',',':')),xbmc.LOGINFO)
+ try:xbmc.log('[XCMate][LOGO89] code='+code+' '+json.dumps(safe,separators=(',',':')),xbmc.LOGINFO)
+ except (AttributeError,RuntimeError):pass

@@ -34,7 +34,7 @@ class Scope89(unittest.TestCase):
   source=(ROOT/'tools/kodi_home89_host/gui89.py').read_text().split("exec(compile(base,'/base_gui88.py','exec'),globals())")[0]
   class P:
    def __init__(self,name):self.name=name
-   def read_text(self):return (ROOT/('tools/kodi_home'+{'/base_gui88.py':'88','/base_gui86.py':'86','/base_gui84.py':'84'}[self.name]+'_host/gui'+{'/base_gui88.py':'88','/base_gui86.py':'86','/base_gui84.py':'84'}[self.name]+'.py')).read_text()
+   def read_text(self,*args,**kwargs):return (ROOT/('tools/kodi_home'+{'/base_gui88.py':'88','/base_gui86.py':'86','/base_gui84.py':'84'}[self.name]+'_host/gui'+{'/base_gui88.py':'88','/base_gui86.py':'86','/base_gui84.py':'84'}[self.name]+'.py')).read_text()
   namespace={'Path':P};exec(source.replace('from pathlib import Path',''),namespace);compile(namespace['base'],'native88','exec')
   namespace2={'Path':P};exec(namespace['base'].split("exec(compile(base87,'/base_gui86.py','exec'),globals())")[0].replace('from pathlib import Path',''),namespace2)
   compile(namespace2['base87'],'native86','exec')

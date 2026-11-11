@@ -20,6 +20,10 @@ def run(pid,channels,mappings,now,display,read):
   for channel in channels[:16]:
    sid=channel_keys(channel,mappings)[0];value=get(pid,sid,now=ts,mappings=mappings)
    if value:result[sid]=value
+   else:
+    from epg_views import resolve_guide
+    pending=resolve_guide({},'',sid,ts,None,mappings)
+    result[sid]=dict(pending,reason='EPG_REFRESH_PENDING',snapshot_revision=None,canonical46='')
   return result
  try:return read()
  finally:
