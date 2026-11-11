@@ -2,7 +2,7 @@
 
 Disposable Linux profile only. Never writes WidgetPath or compiler output.
 """
-import ast,hashlib,io,json,time,threading,xml.etree.ElementTree as E
+import ast,hashlib,io,json,time,threading,sys,xml.etree.ElementTree as E
 from pathlib import Path
 import xbmc,xbmcgui
 from PIL import Image
@@ -16,6 +16,7 @@ def service_poll90():
  __import__('hero_epg63').poll();__import__('widget_notice46').poll()
 
 def run(cycle):
+ sys.path.insert(0,'/root/.kodi/addons/plugin.video.xtreammate')
  from fixture66 import install
  install()
  from portals import get_active
