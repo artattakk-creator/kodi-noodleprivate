@@ -55,3 +55,15 @@ Ergebnis je Fall mit PASS/FAIL/ANDROID_NOT_TESTED, Version, Gerät, Kodi-Version
 - EXT89-07: Echten Ziel-Freiraum, Sicherheitsreserve und eigenes Cachelimit unterscheiden. NAS-Freiraum UNKNOWN darf nicht als interner 27-MiB-Wert oder frei erfundene Zahl erscheinen.
 - EXT89-08: Bestehende eigene Poster auf neues Ziel und zurück intern kopieren, Größen/Hash prüfen, erst danach aktivieren; Quellkopien unverändert erhalten.
 - EXT89-09: Laufender Live-/Film-/Serienplayer, Remotefokus und Erinnerungsdialog weiter bedienbar, während im Hintergrund auf das Ziel geschrieben wird. Keine Verschiebung von EPG-/Katalog-/Kodi-/Timerdatenbanken.
+
+## Realgerät-T01/T02: erste .89-Abnahme vom 11.11.2026 (FEHLGESCHLAGEN)
+
+**Neuer tatsächlicher Nutzerbefund nach Installation und Neustart der veröffentlichten .89:**
+
+- **T01 / A89-11 = FAIL:** Startseite baut sich sehr langsam auf, EPG-Home zeigt in fünf protokollierten `HOME_NOW_NEXT_READY`-Versuchen des Neustartlogs 0× READY (4× `EPG_CACHE_UNAVAILABLE`, 1× `EPG_DATA_MISSING`), 7 `EPG_READ_TIMEOUT`- und 7 `EPG_DB_BUDGET`-Events. Das ist **kein Beweis für vollständig verlorene EPG-Daten**.
+- **T02 / A89-02/A89-03 = FAIL (noch nicht vollständig aufgebaut):** Unter dem neuen .89-Logo-Writer existieren tatsächlich 58 `PERSISTED_VERIFIED`-Events vor dem erneuten Neustart. Beim Neustart von 13:16:13 nach .89 beginnt `HOME86 LOGOS_LOCAL_READY` mit 59/88 (13:17:59) und steigt auf 68/88 (13:22:30). Kein vollständiger Verlust, jedoch sehr langsame Ergänzung; keine verifizierte 88/88-Ersthydration und damit noch kein fairer Zero-Download-88/88-Regressionstest. Der Nutzer verlangt eine sofort verfügbare, dauerhaft gespeicherte horizontale Navigation.
+- **Weitere Befunde:** 4 `GUI86 CALLBACK_FAILED` im Portal-Lesepfad des Startseiten-/Widget-Callbacks, generischer nicht-logo-spezifischer Reservepfad weiterhin gesperrt. Durch die kombinierte Startup-/Worker-/DB-Belastung sind lange Startphasen technisch plausibel, aber ein Kodi-Freeze selbst nicht eindeutig nachgewiesen.
+- **Korrekturversion:** [XCMate .90 P0-Hotfix, Issue #430](https://github.com/artattakk-creator/kodi-noodleprivate/issues/430); technische Übergabe [`CODEX_UEBERGABE_02990_ANDROID89_STARTUP_LOGO_EPG_2026-11-11_DE.md`](CODEX_UEBERGABE_02990_ANDROID89_STARTUP_LOGO_EPG_2026-11-11_DE.md).
+- **Protokollintegrität:** 6 hochgeladene Logdateien, 5 unterschiedliche Byteinhalte und 3 überlappende Laufphasen; zwei ältere .88-Logs byteidentisch. Keine Rohlogs oder sensitive Provider-/Netzwerkdaten in GitHub gesichert.
+
+**Alle anderen in den Tabellen aufgeführten Tests bleiben `ANDROID_NOT_TESTED`.** Die früheren Tabelleneinträge in diesem ursprünglichen Abnahmeplan wurden aus Gründen der Nachvollziehbarkeit nicht gelöscht; diese neue tatsächliche Realgerätmessung ersetzt für die genannten Fälle den vorherigen Status `ANDROID_NOT_TESTED`.
