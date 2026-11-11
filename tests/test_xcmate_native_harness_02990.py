@@ -4,6 +4,11 @@ from pathlib import Path
 from unittest import mock
 ROOT=Path(__file__).resolve().parents[1]
 class NativeHarness90(unittest.TestCase):
+ def test_original_saved_utf8_labels_are_read_explicitly_in_native_checker(self):
+  tree=ast.parse((ROOT/'tools/kodi_home90_host/picker_check90.py').read_text())
+  calls=[n for n in ast.walk(tree) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute) and n.func.attr=='read_text']
+  self.assertTrue(calls)
+  for call in calls:self.assertTrue(any(k.arg=='encoding' and isinstance(k.value,ast.Constant) and k.value.value=='utf-8' for k in call.keywords))
  def test_fixture_removes_only_executable_guard_and_preserves_nested_loader_guard(self):
   source=ast.parse((ROOT/'tools/kodi_home90_host/fixture90.py').read_text())
   assignment=next(n for n in source.body if isinstance(n,ast.Assign) and any(isinstance(v,ast.Name) and v.id=='base' for v in n.targets))

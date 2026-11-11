@@ -20,7 +20,10 @@ def run(portal,pump,capture,check):
    xbmc.sleep(30)
   raise RuntimeError((reason,nav.mode,nav.sid,nav._closed))
  try:
-  until(lambda:nav.refresh_from_cache() or nav._catalog_ready and not getattr(nav,'_catalog_partial46',False),'GROUP90_CATALOGUE_NOT_READY')
+  def complete90():
+   nav.refresh_from_cache()
+   return nav._catalog_ready and not getattr(nav,'_catalog_partial46',False)
+  until(complete90,'GROUP90_CATALOGUE_NOT_READY')
   check(len(nav.channels)==2740,('GROUP90_CHANNELS_MISSING',len(nav.channels)))
   nav.show();nav._tune(nav.index.by_sid['1']);until(nav.owns_playback,'GROUP90_NATIVE_VIDEO_NOT_OWNED')
   cases=[]
