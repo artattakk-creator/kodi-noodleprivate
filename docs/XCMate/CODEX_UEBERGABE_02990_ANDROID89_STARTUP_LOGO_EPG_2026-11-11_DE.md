@@ -72,3 +72,39 @@ EPG-LastGood, 15-Minuten-GUI, Memory/Low-Space, native 720p/1080p und Android
 als offen. Erstelle Branch + Draft-PR + reproduzierbares ZIP+SHA256.
 KEIN MERGE, KEIN RELEASE ohne neue Freigabe.
 ```
+
+
+## 6. KRITISCHE NACHMELDUNG: .89 hat weitere P0-Ausfälle (11.11.2026)
+
+**Maßgebliche vollständige Anforderungen, Codeeinstiege und T90-09 bis T90-13:** [GitHub #430](https://github.com/artattakk-creator/kodi-noodleprivate/issues/430), Absatz „Ergänzung 11.11.2026 – weitere P0-Regressionsmeldungen“. Diesen Abschnitt **vor Implementierung** lesen. Die neuen Symptome beruhen auf der direkten Nutzer-Beobachtung auf der Android-Box; für die Einzelaktionen liegen noch keine neuen Debug-Logs vor. Ursachenzuordnung erst nach Instrumentierung.
+
+**P0-D: Filme/Serien nicht sichtbar.** BINGIE-Home-Widgets beider XCMate-Katalogtypen fehlen. `widget_data41.WidgetReader` hat teils nur `timeout=.05` und `query_seconds=.25`; `catalog_commit89.published` / `widget_refresh45`/ `widget_runtime79` / `widget_snapshot85` prüfen. Vorhandene, verifizierte Katalogeinträge müssen bei DB_BUSY/BUDGET über zuletzt gültigen Snapshot verfügbar bleiben. `EMPTY` niemals aus einer vorübergehenden Lesestörung ableiten; kein Katalogreset, keine verlorenen Coverreferenzen.
+
+**P0-E: Fremdwidgets fehlen.** Gespeicherte SkinShortcuts-Definitionen und fremde Add-on-Routen aus `widget_inventory87`, `widget_audit89`, generiertem `script-skinshortcuts-includes.xml`, eigenen/externen Container-Bindings und `skin_upgrade80/88` vergleichen. Bestehende `*.properties`/Widget-Definitionen **nicht löschen oder automatisch überschreiben**. Korrekt unterscheiden: Definition fehlt, Container ungebunden, Sichtbarkeit/Focus fehlerhaft oder Drittanbieter liefert tatsächlich keine Daten.
+
+**P0-F: TMDB/TVMaze-Auswahl speichert nicht.** Suche zeigt Treffer, ausgewähltes Bild löst bei Save regelmäßig Fehlermeldung aus, nach Neustart nicht persistent. In `work_manager86.wait` sind 30s UI-Deadline, `work_requests86._drain89` arbeitet mit 30s Request-Deadline und nochmaliger Remote-Details-Prüfung (`save`); `programme_mapping85.set_mapping` nimmt `profile_transaction.writing(timeout=.2)` und verlangt atomaren Readback. **Diese Werte sind Code-Fakten, noch kein Beweis, welcher Fehler auf dem Gerät auftrat.** Outcome-Code präzise erfassen (`REQUEST_TIMEOUT/WORKER_BUSY/EPG_REVISION_CHANGED/CANDIDATES_REJECTED/PERSISTENCE_BLOCKED/READBACK_FAILED`). Schnelle priorisierte Save-Queue, Event-Revision-ID und deduplizierte sichere Re-Validierung; nur bestätigte `WRITE_COMMITTED + WRITE_READBACK` = SAVE-PASS; im UI sofort zuverlässige Bestätigung. Ausgewählte Sendung bleibt nach Programm-/Kodi-Wechsel gebunden, keine unbeabsichtigten Änderungen anderer Sender.
+
+**P0-G: Sendergruppen-Ebenen fehlen oder leer.** Laufendes Live-TV → links = Mini-EPG/Senderliste → links = Gruppenliste → Gruppe OK = richtige vollständige Senderliste → Sender OK = Umschalten; Player darf nicht verloren gehen. Code: `live_group68.read` auf SQLite RO mit `timeout=.05`, `remaining=1.5`, per Query .5s, `group_selection.enabled_ids` und `live_catalog.prepare/read`, `live_guide_navigation`; alle Gruppen/Seiten einschließlich >128 Sender und korrekt gefilterter Kategorien. Wenn echter Datenbank-`BUDGET`/Busy/noch unvollständiger Index: letzten **valide generation-bound** Katalogschnappschuss erhalten, Ladezustand statt fälschlich `EMPTY_GROUP`; keine Neuaktivierung ausdrücklich deaktivierter Gruppen, kein falscher Sender bei Gruppenwechsel. EPG-, Artwork-, Logos- und TMDB-Laden darf Gruppen-Navigation niemals blockieren.
+
+**NEUE VERBINDLICHE TESTS T90-09…T90-13:** VOD-/Serienreihen mit fünf echten Einträgen und Coverstabilität; zwei unabhängige Fremdwidgets und unveränderte Definitionen; manuelles TMDB/TVMaze-Mapping Search→Save→Readback→Kodi-Neustart ohne Fehler; Gruppenwechsel 20× und Senderwechsel 20× unter SQL-Busy und laufendem EPG; unveränderte Nutzerportale/Token/Gruppenwahl/EPG/Widgets und keine Datenlöschung. Für Details Issue #430 verwenden.
+
+**Release-Sperre bleibt:** Das gesamte P0-Paket gehört in .90. Keine Teilfreigabe als erledigt, nur weil Logos schneller erscheinen. Nach Hotfixbranch / Draft-PR native Tests und echter Android-Test, keine automatisierte Veröffentlichung.
+
+### Aktualisierter Kopierauftrag für Codex
+
+```text
+Setze XCMate 0.1.29.90 als kompletten P0-Hotfix nach GitHub Issue #430 und dieser
+Übergabe um. Nicht nur Logos/EPG: Seit .89 fehlen Film- und Serienwidgets und
+Fremdwidgets. In den Sendungsdetails zeigen TMDB/TVMaze-Suchen Treffer,
+das Speichern der ausgewählten Bildzuordnung scheitert. Aus laufendem TV
+lassen sich die Sendergruppen mit LINKS→LINKS teilweise nicht öffnen,
+Gruppen enthalten nach OK teils keine Sender. Reproduziere diese vier
+Realgerätebefunde, unterscheide Lock/Timeout von leerem Katalog, prüfe
+Widget-SkinShortcuts-Consumers, den atomaren Mapping-Save/Readback, die
+Index-/Gruppen-Generationen und die per-Gruppe-Pagination. Alle Fehler
+P0-D bis P0-G und T90-09 bis T90-13 sind Pflicht. Zusätzlich P0-A bis P0-C
+aus der Hauptübergabe (Logo-Cache/Start-EPG/Portal-CALLBACK_FAILED) beheben.
+Sichere alle Nutzerdaten/Token/Widgets und .89-Layout, keine Cache-Löschung,
+kein DB-Reset. Liefere separaten .90-Branch, Draft-PR, Tests, ZIP+SHA256.
+ANDROID_NOT_TESTED bis zur echten Box-Abnahme. KEIN MERGE, KEIN RELEASE.
+```
