@@ -67,3 +67,19 @@ Ergebnis je Fall mit PASS/FAIL/ANDROID_NOT_TESTED, Version, Gerät, Kodi-Version
 - **Protokollintegrität:** 6 hochgeladene Logdateien, 5 unterschiedliche Byteinhalte und 3 überlappende Laufphasen; zwei ältere .88-Logs byteidentisch. Keine Rohlogs oder sensitive Provider-/Netzwerkdaten in GitHub gesichert.
 
 **Alle anderen in den Tabellen aufgeführten Tests bleiben `ANDROID_NOT_TESTED`.** Die früheren Tabelleneinträge in diesem ursprünglichen Abnahmeplan wurden aus Gründen der Nachvollziehbarkeit nicht gelöscht; diese neue tatsächliche Realgerätmessung ersetzt für die genannten Fälle den vorherigen Status `ANDROID_NOT_TESTED`.
+
+
+## Android-Abnahme .89 – weitere Nutzer-FAILs am 11.11.2026
+
+Diese vier zusätzlichen Prüfungen beruhen auf der unmittelbaren Nutzerbeobachtung unter installierter `0.1.29.89`. **Für die einzelnen Aktionen liegen noch keine neuen Kodi-Logs bzw. konkrete Fehlermeldungstexte vor**; Codes und Ursachen bleiben unbewiesen. Nicht als Native-CI-Befund ausgeben.
+
+| Test | Auf dem Gerät beobachtet | Ist | Erwartung nach Hotfix |
+|---|---|---|---|
+| T04 | Filme- und Serienreihen auf BINGIE-Home verschwunden bzw. leer | **FAIL** | Alle bestehenden Katalog-Widgets sichtbar, fünf Titel + vorhandene Cover pro Reihe; Restart-/DB-Busy-stabil |
+| T05 | Widgets fremder Anbieter fehlen ebenfalls | **FAIL** | Gespeicherte Fremdwidget-Definitionen und -Controls sichtbar und bedienbar, keine SkinShortcuts-Daten löschen |
+| T07 | Suche nach vergleichbaren TMDB/TVMaze-Sendungen liefert Treffer, aber gewählte Bildzuordnung kann nicht gespeichert werden; Fehlermeldung | **FAIL** | Nach Auswahl verifizierter atomarer SAVE und Readback, beim erneuten Öffnen und Kodi-Neustart weiterhin dieselbe Zuordnung |
+| T11 | Live-TV → einmal LINKS Mini-EPG vorhanden → nochmals LINKS Gruppen manchmal fehlend; ausgewählte Gruppe teilweise ohne Sender | **FAIL** | Alle aktivierten Gruppen sichtbar, zugehörige Senderliste vollständig, Player/Fokus/OK-Umschalten stabil |
+
+**P0** für alle vier. Eigene Testfälle **T90-09 bis T90-13** im [Nachfolge-Hotfix #430](https://github.com/artattakk-creator/kodi-noodleprivate/issues/430). Test T01/T02 bleiben FAIL, alle nicht geprüften Android-Funktionen offen. Wichtig: kein vollständiger Cache-Reset/Neuinstallation zum Reproduzieren, keine Nutzer- oder Token-Daten löschen.
+
+Beobachtung zur Fehlerursache: `work_requests86`/ `programme_mapping85` Save/Readback/Deadline sowie `live_group68` kurze SQLite-Budgets sind **Code-Einstiegspunkte**, aber ohne einen passenden neuen Stacktrace keine eindeutig bestätigten Rootcauses.
