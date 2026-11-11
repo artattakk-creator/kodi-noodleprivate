@@ -53,6 +53,8 @@ class NativeHarness90(unittest.TestCase):
   self.assertIn("check(hero_pixels>3000",bottom);self.assertIn("check(rail_pixels>1500",bottom)
   self.assertIn('START90_OWN_LOGO_RENDER_BINDING_MISMATCH',bottom);self.assertIn('epg_case90.update',bottom)
   self.assertIn('home,logo_case84,epg_case90)',outer)
+  self.assertIn("__import__('home_activation78').prepare()",bottom)
+  self.assertIn('NATIVE90_ACTIVATION_NOT_READY',bottom)
 
  def test_original_manager_reacquires_owner_when_busy_dialog_replaces_it(self):
   tree=ast.parse((ROOT/'tools/kodi_home90_host/picker90.py').read_text())

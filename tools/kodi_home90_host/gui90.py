@@ -24,9 +24,6 @@ def _source90(path,*args,**kwargs):
   assert text.count(anchor90)==1
   text=text.replace(anchor90,anchor90+"\n if kind=='live' and not local.startswith('/'):\n  local=__import__('logo_manifest86').read(portal,rows,with_fallback=False).get(str(rows[0]['sid']),'')\n  check(local and poster==local,'START90_OWN_LOGO_RENDER_BINDING_MISMATCH')")
   text=text.replace("logo_ready84=threading.Event()", "epg_case90={}\nlogo_ready84=threading.Event()")
-  # Keep the existing worker activation tick, like widget_home_probe59 in
-  # production, after private own consumer repair has actually occurred.
-  text=text.replace("hero_epg63.prepare(portal['id'])", "hero_epg63.prepare(portal['id']);__import__('home_activation78').prepare()")
   before90=" if logo_ready84.is_set() and not decode84.is_set()"
   epg_observe90=""" if not epg_case90:
   from epg_handoff63 import get as epg_get90
@@ -39,14 +36,7 @@ def _source90(path,*args,**kwargs):
 """
   assert text.count(before90)==1
   text=text.replace(before90,epg_observe90+before90)
-  text=text.replace("cases=[]\nfor kind,control", """for activation90 in range(600):
- pump();xbmc.sleep(100)
- phase90=json.loads(home.getProperty('XCMate.Home78.Activation') or '{}').get('phase')
- if phase90=='RUNTIME_READY':break
-else:raise RuntimeError(('NATIVE90_ACTIVATION_NOT_READY',phase90))
-home=xbmcgui.Window(10000)
-cases=[]
-for kind,control""")
+
 
  return text
 Path.read_text=_source90

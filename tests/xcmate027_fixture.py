@@ -280,8 +280,12 @@ class Fixture:
         for owner in owners:
             close=getattr(owner,'shutdown',None)
             if close:close()
+        # Existing synchronous image transports have a 12-second request
+        # bound. Teardown must await that cancellation boundary before global
+        # Kodi-stub replacement; this changes no production timeout.
+        deadline90=time.monotonic()+15
         for worker in workers:
-            if worker is not threading.current_thread():worker.join(3)
+            if worker is not threading.current_thread():worker.join(max(0,deadline90-time.monotonic()))
             assert not worker.is_alive(),'retired fixture worker: '+worker.name
         decoded=sys.modules.get('decoded_assets88')
         if decoded is not None:
