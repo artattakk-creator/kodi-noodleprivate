@@ -8,6 +8,22 @@ import xbmc,xbmcgui
 from localization import tr
 from reminder_runtime89 import read,put
 _dialog=None;_tune=None;_verify=None
+def surface_ready89():
+ """Permit the existing nonmodal live navigator; never dismiss any layer.
+
+ Kodi reports our transparent IR navigator as the top dialog throughout live
+ fullscreen. Treating every dialog ID as foreign would starve all live alarms.
+ A real modal still blocks, including Audio/Video and Busy dialogs.
+ """
+ if xbmc.getCondVisibility('System.HasActiveModalDialog'):return False
+ ident=xbmcgui.getCurrentWindowDialogId()
+ if ident in (0,-1,9999):return True
+ try:
+  from window_lifecycle import token
+  from live_overlay import session_from_property
+  from reminder_runtime89 import window
+  return bool(token(xbmcgui.Window(ident).getProperty('XtreamMate.NavigatorIdentity')) and session_from_property(window().getProperty('XtreamMate.LiveSession')))
+ except (AttributeError,RuntimeError,ValueError,TypeError):return False
 class ReminderDialog89(xbmcgui.WindowXMLDialog):
  def configure(self,row):self.row=dict(row);self.choice=None;self.sent=False;self.native89=None;self.opened=time.monotonic()
  def onInit(self):
@@ -47,7 +63,7 @@ def poll():
  if _tune:
   if time.monotonic()<_tune['after']:return
   from exit_jobs import blocked
-  if blocked() or xbmcgui.getCurrentWindowDialogId() not in (0,-1,9999) or xbmc.getCondVisibility('System.HasActiveModalDialog'):
+  if blocked() or not surface_ready89():
    if time.monotonic()>_tune['deadline']:xbmcgui.Dialog().notification('XCMate',tr(37156));_tune=None
    return
   # Exact existing resolver route, as used by guide_playback. No stream URL,
@@ -61,7 +77,7 @@ def poll():
  row=read('Ready')
  if not row or not row.get('nonce'):return
  if row.get('stop',0)<=time.time():put('Choice',dict(nonce=row['nonce'],choice='dismiss'));return
- if xbmcgui.getCurrentWindowDialogId() not in (0,-1,9999) or xbmc.getCondVisibility('System.HasActiveModalDialog'):return
+ if not surface_ready89():return
  from exit_jobs import blocked
  if blocked():return
  import xbmcaddon

@@ -68,6 +68,10 @@ def worker(now=None):
   from reminder_bridge89 import recover
   from profile_transaction import writing
   with writing(timeout=.2):
+   # Another service interpreter may have published a claim while this caller
+   # waited for the profile lock. Never retire it using an earlier snapshot.
+   ready=read('Ready');choice=read('Choice')
+   if choice and choice.get('nonce')!=ready.get('nonce'):window().clearProperty(PREFIX+'Choice');choice={}
    conn=db();recover(conn);legacy(conn)
    if choice and ready.get('nonce')==choice.get('nonce'):
     row=conn.execute("SELECT * FROM timers WHERE id=? AND state='notified'",(ready.get('id'),)).fetchone();ack=dict(nonce=choice['nonce'],choice='dismiss',code='DISMISSED')

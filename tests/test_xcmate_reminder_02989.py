@@ -1,5 +1,5 @@
 """P0-H: real JSON/SQLite, crash recovery, exact owner choices and no auto-tune."""
-import importlib,json,time,unittest
+import importlib,json,sys,time,unittest
 from pathlib import Path
 from types import SimpleNamespace
 from unittest import mock
@@ -86,3 +86,17 @@ class ReminderH89(Fixture,unittest.TestCase):
    if kind=='timeout':dialog.opened-=121
    with mock.patch('xbmcgui.getCurrentWindowDialogId',return_value=13002 if kind=='skin' else 13001),mock.patch('xbmc.executebuiltin') as play:
     dialog.pump89();self.assertEqual(self.runtime.read('Choice')['choice'],'dismiss');play.assert_not_called()
+ def test_owned_nonmodal_live_navigator_allows_alarm_but_foreign_modals_do_not(self):
+  ui=__import__('reminder_ui89');self.properties['XtreamMate.NavigatorIdentity']='a'*32
+  with mock.patch('xbmcgui.getCurrentWindowDialogId',return_value=13001),mock.patch('xbmc.getCondVisibility',return_value=False),mock.patch.dict(sys.modules,{'live_overlay':SimpleNamespace(session_from_property=lambda _:dict(pid='p',sid='1'))}):
+   self.assertTrue(ui.surface_ready89())
+   self.properties['XtreamMate.NavigatorIdentity']='';self.assertFalse(ui.surface_ready89())
+   self.properties['XtreamMate.NavigatorIdentity']='a'*32
+   with mock.patch('xbmc.getCondVisibility',return_value=True):self.assertFalse(ui.surface_ready89())
+ def test_claim_published_while_waiting_for_profile_lock_is_not_treated_as_orphan(self):
+  ready=self.due();original=self.runtime.read;reads=[]
+  def stale(name):
+   reads.append(name)
+   return {} if name=='Ready' and reads.count('Ready')==1 else original(name)
+  with mock.patch.object(self.runtime,'read',side_effect=stale):self.runtime.worker(now=self.event['start']-298)
+  self.assertEqual(self.runtime.read('Ready')['nonce'],ready['nonce']);self.assertEqual(self.timers.list_timers('p')[0]['state'],'notified')
