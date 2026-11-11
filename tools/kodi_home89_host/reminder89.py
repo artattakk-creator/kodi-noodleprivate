@@ -8,7 +8,20 @@ def run(portal,rows,pump,capture,cold,check,home):
  failures=[];result={};done=threading.Event()
  def data89(fn):
   def work():
-   try:fn()
+   try:
+    # Separate positive-capacity fixture phase. The inherited 27MiB test and
+    # the real 32MiB timer reserve remain unchanged and already deny writes.
+    # Only this synthetic profile's timer/bookmark worker sees 218MiB here.
+    import shutil
+    from types import SimpleNamespace
+    from utils import addon_data_dir
+    original=shutil.disk_usage
+    def measured(path):
+     value=original(path)
+     return SimpleNamespace(total=4034297856,used=4034297856-228114432,free=228114432) if Path(path)==Path(addon_data_dir()) else value
+    shutil.disk_usage=measured
+    try:fn()
+    finally:shutil.disk_usage=original
    except Exception as exc:failures.append(type(exc).__name__)
    finally:done.set()
   done.clear();lane=threading.Thread(target=work);lane.start();end=time.monotonic()+8
@@ -45,6 +58,6 @@ def run(portal,rows,pump,capture,cold,check,home):
   from guide_bookmarks import entries
   result['bookmark_retained']=any(str(v['sid'])==event['sid'] and v['start']==event['start'] for v in entries(event['pid']))
  data89(verify);check(result['state']=='dismissed' and result['bookmark_retained'],'REMINDER89_DURABLE_DISMISS_MISSING')
- result.update(status='PASS',exactly_two_actions=labels,default_focus=611,native_remote_select=True,screenshot=picture.name,android='ANDROID_NOT_TESTED')
+ result.update(status='PASS',exactly_two_actions=labels,default_focus=611,native_remote_select=True,screenshot=picture.name,selected_free_injection=228114432,timer_reserve=32*1024**2,android='ANDROID_NOT_TESTED')
  Path('/root/reminder89.json').write_text(json.dumps(result));print('REMINDER89_RECEIPT '+json.dumps(result),flush=True)
  return result

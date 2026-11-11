@@ -76,6 +76,7 @@ def poll():
   return
  row=read('Ready')
  if not row or not row.get('nonce'):return
+ if row.get('owner89')!=__import__('reminder_runtime89').INSTANCE89:return
  if row.get('stop',0)<=time.time():put('Choice',dict(nonce=row['nonce'],choice='dismiss'));return
  if not surface_ready89():return
  from exit_jobs import blocked

@@ -112,6 +112,8 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
         return dict(key=event['key'],fingerprint=fingerprint(event),code='NO_IMAGE',source='placeholder',match='NONE',image=event['placeholder'],until=time.time()+3600,negative_scope68=__import__('programme_policy68').negative_scope(event),negative_scope77=__import__('programme_policy68').negative_scope(event),mapping_epoch85=__import__('programme_mapping85').epoch(event))
     held89=__import__('programme_lock89').current(event,worker=True)
     if held89:return held89
+    external89=__import__('external_art89').recover_programme(event)
+    if external89:return external89
     local86=__import__('work_requests86').local_result(event)
     if local86:return local86
     temp85=__import__('artwork_temp85').lookup(event)

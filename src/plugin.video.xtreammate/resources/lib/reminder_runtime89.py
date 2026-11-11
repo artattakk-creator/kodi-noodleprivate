@@ -2,6 +2,7 @@
 import hashlib,json,threading,time,uuid
 from urllib.parse import urlencode
 _guard=threading.Lock();_next=0;_legacy_stamp=None
+INSTANCE89=uuid.uuid4().hex
 PREFIX='XCMate.Reminder89.'
 def window():
  import xbmcgui
@@ -77,6 +78,13 @@ def worker(now=None):
    ready=read('Ready');choice=read('Choice')
    if choice and choice.get('nonce')!=ready.get('nonce'):window().clearProperty(PREFIX+'Choice');choice={}
    conn=db();recover(conn);legacy(conn)
+   if ready and ready.get('owner89')!=INSTANCE89:
+    # Kodi may retain Home properties across a service restart. A previously
+    # claimed popup must not be opened by a new interpreter a second time.
+    with conn:
+     conn.execute("UPDATE timers SET state='dismissed' WHERE id=? AND state='notified'",(ready.get('id'),))
+     conn.execute("UPDATE alarm_dispatch89 SET state='closed' WHERE slot=1")
+    put('Ack',dict(nonce=ready.get('nonce'),choice='dismiss',code='CANCELLED'));window().clearProperty(PREFIX+'Ready');window().clearProperty(PREFIX+'Choice');return
    if choice and ready.get('nonce')==choice.get('nonce'):
     row=conn.execute("SELECT * FROM timers WHERE id=? AND state='notified'",(ready.get('id'),)).fetchone();ack=dict(nonce=choice['nonce'],choice='dismiss',code='DISMISSED')
     if row and choice.get('choice')=='switch' and row['stop']>now:
@@ -114,7 +122,7 @@ def worker(now=None):
     if row:
      nonce=uuid.uuid4().hex;conn.execute("UPDATE timers SET state='notified' WHERE id=? AND state='pending'",(row['id'],))
      conn.execute("INSERT OR REPLACE INTO alarm_dispatch89 VALUES(1,?,?,'published',?)",(row['id'],nonce,now))
-   if row:put('Ready',dict(row,nonce=nonce,at=time.time()))
+   if row:put('Ready',dict(row,nonce=nonce,at=time.time(),owner89=INSTANCE89))
  finally:
   if conn is not None:conn.close()
   _guard.release()

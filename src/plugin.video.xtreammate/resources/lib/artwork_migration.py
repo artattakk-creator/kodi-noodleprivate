@@ -15,7 +15,7 @@ from artwork_backend import LocalArtworkStorage
 from artwork_gate import writer,guarded
 
 KINDS=('media','logos')  # Legacy fanart shares media's URL-hashed directory.
-def _kinds(config):return KINDS+('programme87',) if config.get('strict_storage87') else KINDS
+def _kinds(config):return (KINDS+('programme87',) if config.get('strict_storage87') else KINDS)+('posters89','programme89')
 
 
 class MigrationConnection(sqlite3.Connection):
@@ -87,6 +87,7 @@ def busy():
 
 
 def _source(config,kind):
+    if kind in ('posters89','programme89'):return __import__('external_art89').migration_backend(config,'poster' if kind=='posters89' else 'programme')
     if kind=='programme87':return __import__('programme_storage87').source(config)
     from utils import addon_data_dir
     if config.get('archive_mode',config['mode'])=='external':return backend_for(config['target'],config['profile'],kind)
@@ -95,6 +96,9 @@ def _source(config,kind):
 
 def _target(item,kind):
     source=json.loads(item['source'])
+    if kind in ('posters89','programme89'):
+        config=dict(source,mode='internal' if item['target']=='INTERNAL' else 'external',archive_mode='internal' if item['target']=='INTERNAL' else 'external',target='' if item['target']=='INTERNAL' else item['target'])
+        return __import__('external_art89').migration_backend(config,'poster' if kind=='posters89' else 'programme')
     if kind=='programme87':return __import__('programme_storage87').target(item['target'],source['profile'])
     if item['target']=='INTERNAL':
         from utils import addon_data_dir
@@ -257,6 +261,10 @@ def activate(cancel=lambda:False,progress=lambda **kw:None):
             item=_selected(db)
             if not item['rendered']:raise StorageFailure('RENDER_NOT_VERIFIED')
             _shared_check(item)
+            source89=json.loads(item['source'])
+            target89=dict(source89,mode='internal' if item['target']=='INTERNAL' else 'external',archive_mode='internal' if item['target']=='INTERNAL' else 'external',target='' if item['target']=='INTERNAL' else item['target'])
+            verified89={(row['kind'],row['ident']):dict(row) for row in db.execute("SELECT kind,ident,sha,bytes FROM files WHERE transfer=? AND status='VERIFIED'",(item['id'],))}
+            __import__('external_art89').migrate_receipts(source89,target89,verified89)
             if item['target']=='INTERNAL':choose('internal',strategy='demand')
             else:
                 if json.loads(item['source']).get('strict_storage87'):__import__('logo_migration87').prepare(item)

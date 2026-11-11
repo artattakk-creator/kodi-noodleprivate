@@ -16,6 +16,9 @@ MESSAGES = {
     'TARGET_WRITE_FAILED':38311,
     'ARTWORK_JOURNAL_RESERVE_BLOCKED':38328,
     'ARTWORK_DB_UNAVAILABLE':38329,
+    'EXTERNAL_IMAGE_QUOTA':37163,'EXTERNAL_RECEIPT_QUOTA':37163,
+    'EXTERNAL_TRANSFER_INCOMPLETE':37164,'EXTERNAL_QUOTA_UNVERIFIED':37165,
+    'EXTERNAL_RECEIPT_READBACK':38323,
 }
 
 
@@ -36,4 +39,4 @@ def show(error, dialog, phase):
     if rows:
         from artwork_ui import _storage_text
         dialog.textviewer(tr(38301),_storage_text(rows))
-    dialog.ok(tr(35200),tr(MESSAGES.get(code,38327))+'\n'+code)
+    dialog.ok(tr(35200),tr(MESSAGES.get(code,38327))+('' if code.startswith('EXTERNAL_') else '\n'+code))

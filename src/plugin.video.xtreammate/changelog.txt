@@ -6,6 +6,7 @@
 - Film-/Serienposter dauerhaft begrenzt lokal halten; Katalog-Commit, Readback und Widget-Revision verbinden.
 - Bestätigtes Hero-Bild für dieselbe Sendung sperren; keine TMDB-zu-XMLTV-Wechsel durch kurzlebige Freigaben.
 - Sendung merken mit bestehendem Erinnerungstimer verbinden: fünf Minuten vorher genau Jetzt umschalten / Verwerfen, ohne Auto-Tune oder Snooze.
+- Gewählten USB-/SD-/SMB-Bildspeicher für Logos, Providerposter und Sendungsbilder nutzen; Journal, SHA256 und ausdrückliche Aktivierung, ohne interne Datenbanken zu verschieben.
 - Android-Abnahme offen; .88-Design, Nutzerdaten und alle veröffentlichten Kanäle bleiben unverändert.
 
 0.1.29.88 – Android-P0-Testkandidat, nicht veröffentlicht

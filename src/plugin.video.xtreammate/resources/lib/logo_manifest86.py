@@ -32,6 +32,7 @@ def load(portal,all_records=False):
  except (OSError,ValueError,TypeError,AttributeError):return {}
 def read(portal,rows,with_fallback=True):
  records=load(portal,all_records=True);stable89={v.get('stable89'):v for v in records.values() if v.get('stable89')};result=__import__('station_logos87').read(portal,rows) if with_fallback else {};scope=context(portal)
+ result.update(__import__('external_art89').references(portal,'logo',rows,internal=True))
  if with_fallback:
   for sid88,uri88 in __import__('station_logos88').read(portal,rows).items():result.setdefault(sid88,uri88)
  # Existing Kodi-local decoded logos remain valid without adopting/deleting files.

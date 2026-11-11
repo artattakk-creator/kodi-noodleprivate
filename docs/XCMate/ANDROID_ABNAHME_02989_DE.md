@@ -43,3 +43,15 @@ Ergebnis je Fall mit PASS/FAIL/ANDROID_NOT_TESTED, Version, Gerät, Kodi-Version
 - H89-06: Nicht mehr merken entfernt eigenen Eintrag und storniert ausstehenden/aktiven Timer; erneutes Merken erzeugt genau einen Timer.
 - H89-07: Zwei gleichzeitig fällige Sendungen nacheinander behandeln; alte Guide-/Legacy-Erinnerung und neuer Detailbutton dürfen keine Dubletten erzeugen.
 - H89-08: Laufende Sendung nur merken mit verständlichem Hinweis; beendete Alarme nach Neustart als verpasst behandeln. Kein Wake-up-Versprechen. Fremde Modaldialoge nicht schließen.
+
+## Externe Bildspeicher – ausschließlich ANDROID_NOT_TESTED
+
+- EXT89-01: Artwork-Verwaltung → externes Ziel: verfügbaren USB-/SD-Datenträger oder bestehende Kodi-Samba-Quelle auswählen. Berechtigungen/Anmeldung über Kodi, keine Zugangsdaten in Logs.
+- EXT89-02: Zielprobe und Kopieren → SHA256 → sichtbare Bildprobe → Aktivierung ausdrücklich bestätigen. Vorher bleibt bisheriger Speicher aktiv.
+- EXT89-03: Drei Senderlogos, fünf Filmcover, fünf Seriencover und zwei passende Sendungsbilder auf dem gewählten Ziel nachweisen. Native Darstellung getrennt vom Datei-/Hashbeleg prüfen.
+- EXT89-04: Kodi-Neustart: gleiche Bilder aus bestätigten externen Dateien wiederverwenden; Provider- und EPG-Zuordnung sowie TMDB-Freigabe erhalten.
+- EXT89-05: USB/SD entfernen oder NAS trennen: klare Nichterreichbarkeit, Zielwahl bleibt, keine heimliche interne Archivumschaltung. Nach Wiederverbinden kontrolliert fortsetzen.
+- EXT89-06: Übertragung abbrechen und fortsetzen; unvollständige Kopien nicht als fertig veröffentlichen. Originaldateien und fremde Daten bleiben erhalten.
+- EXT89-07: Echten Ziel-Freiraum, Sicherheitsreserve und eigenes Cachelimit unterscheiden. NAS-Freiraum UNKNOWN darf nicht als interner 27-MiB-Wert oder frei erfundene Zahl erscheinen.
+- EXT89-08: Bestehende eigene Poster auf neues Ziel und zurück intern kopieren, Größen/Hash prüfen, erst danach aktivieren; Quellkopien unverändert erhalten.
+- EXT89-09: Laufender Live-/Film-/Serienplayer, Remotefokus und Erinnerungsdialog weiter bedienbar, während im Hintergrund auf das Ziel geschrieben wird. Keine Verschiebung von EPG-/Katalog-/Kodi-/Timerdatenbanken.

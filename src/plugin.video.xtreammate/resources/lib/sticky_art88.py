@@ -22,6 +22,13 @@ def remember(event,value,body):
  if __import__('os').path.isabs(str(value.get('image',''))) and not value.get('temp85'):return value
  if not body or not value.get('decoded77') or not __import__('programme_image69').eligible(value,event):return value
  if value.get('provisional85'):return value
+ result=publish89(event,value,body)
+ if result.get('decoded88'):
+  try:__import__('external_art89').archive_programme(event,value,body)
+  except (OSError,ValueError,TypeError,RuntimeError):pass
+ return result
+def publish89(event,value,body):
+ """Internal producer: caller already proved source/event and decoded bytes."""
  from programme_requests68 import identity,scope
  from programme_policy68 import negative_scope
  try:

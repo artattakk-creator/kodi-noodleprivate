@@ -56,8 +56,9 @@ def validate(record):
 
 def read(portal,kind,rows):
  if kind not in ('vod','series'):return {}
+ if __import__('external_art89').enabled():return __import__('external_art89').references(portal,kind,rows)
  from widget_refs74 import revoked
- records=manifest();result={}
+ records=manifest();result=__import__('external_art89').references(portal,kind,rows,internal=True)
  for row in rows[:24]:
   if row.get('_no_art86') or row.get('_manual_art43'):continue
   for role in ('poster','fanart'):
@@ -87,7 +88,11 @@ def store(portal,kind,row,role,source,body,cancel=lambda:False):
  from profile_transaction import writing
  from widget_assets69 import safe
  if kind not in ('vod','series') or role not in ('poster','fanart') or row.get('_no_art86') or row.get('_manual_art43') or not safe(portal,source):raise ValueError('POSTER_SCOPE')
- raw,width,height=encode(body,role);root=location();digest=hashlib.sha256(raw).hexdigest();key=identity(portal,kind,row,role)
+ raw,width,height=encode(body,role)
+ if __import__('external_art89').enabled():
+  uri,facts=__import__('external_art89').store('poster',identity(portal,kind,row,role),raw,dict(source=source,role=role),cancel)
+  return dict(uri=uri,storage='EXTERNAL_VERIFIED')
+ root=location();digest=hashlib.sha256(raw).hexdigest();key=identity(portal,kind,row,role)
  with writing(timeout=.2):
   if cancel():raise InterruptedError('POSTER_CANCELLED')
   first=capacity(root,len(raw)+MAX_MANIFEST);file=root/(digest+'.img')
@@ -111,10 +116,12 @@ def prepare(portal,kind,rows,cancel=lambda:False):
  from programme_transport77 import verified
  from artwork_visible import public_dns
  from work_requests86 import pending
- records=manifest();local=kodi(portal,kind,rows)
+ external=__import__('external_art89').enabled();records=__import__('external_art89').records('poster') if external else manifest();local=kodi(portal,kind,rows)
  for sid,roles in __import__('widget_cache82').read(portal,kind,rows).items():local.setdefault(sid,{}).update(roles)
  # A full/offline cache is one capacity gate, not a failed HTTP job per item.
- try:capacity(location(),MAX_ASSET+MAX_MANIFEST)
+ try:
+  if external:__import__('art_storage').check(MAX_ASSET+MAX_MANIFEST,limit=0,backend=__import__('external_art89').backend('poster'))
+  else:capacity(location(),MAX_ASSET+MAX_MANIFEST)
  except OSError:return
  tasks=[]
  for row in rows[:12]:
@@ -125,13 +132,19 @@ def prepare(portal,kind,rows,cancel=lambda:False):
  for _,row,role,source in sorted(tasks,key=lambda v:v[0]):
   if cancel() or pending() or attempts>=2 or time.monotonic()-started>2:return
   key=identity(portal,kind,row,role);old=records.get(key,{})
-  if old.get('source')==source and validate(old):continue
+  if old.get('source')==source:
+   if external:
+    try:
+     if __import__('external_art89').confirm('poster',key,old):continue
+    except OSError:return
+   elif validate(old):continue
   tag=(key,hashlib.sha256(source.encode()).hexdigest())
   if time.monotonic()<_due.get(tag,0) or not safe(portal,source):continue
   attempts+=1
   try:
    # Capacity before networking prevents endless downloads on a full quota.
-   capacity(location(),MAX_ASSET+MAX_MANIFEST)
+   if external:__import__('art_storage').check(MAX_ASSET+MAX_MANIFEST,limit=0,backend=__import__('external_art89').backend('poster'))
+   else:capacity(location(),MAX_ASSET+MAX_MANIFEST)
    file=local.get(str(row['sid']),{}).get(role) or local_uri(source)
    if file:
     with open(file,'rb') as stream:body=stream.read(3*1024*1024+1)

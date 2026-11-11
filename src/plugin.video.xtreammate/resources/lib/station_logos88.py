@@ -97,6 +97,9 @@ def prepare(portal,rows,cancel=lambda:False):
  from art_storage import check
  from station_logos87 import note
  existing=manifest_read(portal,rows,with_fallback=False);scope=context(portal);offset=_cursor.get(scope,0);attempts=0;changed=False
+ if __import__('external_art89').enabled():
+  try:__import__('external_art89').backend('logo')
+  except OSError:return 'EXTERNAL_UNAVAILABLE'
  try:backend,path=location();records=load(portal,all_records=True)
  except OSError:backend=None;records={}
  for row in rows[:5]+rows[max(5,offset):]+rows[5:max(5,offset)]:
@@ -105,6 +108,12 @@ def prepare(portal,rows,cancel=lambda:False):
   _cursor[scope]=(rows.index(row)+1)%len(rows)
   if not uri:note(portal,row,'SOURCE_MISSING');continue
   if str(row['sid']) in existing and any(v.get('stable89')==__import__('logo_store89').identity(portal,row) for v in records.values()):continue
+  if str(row['sid']) in existing and __import__('external_art89').enabled():
+   external89=__import__('external_art89');ident89=external89.key(portal,'logo',row);record89=external89.records('logo').get(ident89)
+   if record89:
+    try:
+     if external89.confirm('logo',ident89,record89):continue
+    except OSError:return 'EXTERNAL_UNAVAILABLE'
   if time.monotonic()<_due.get(tag,0):continue
   attempts+=1;_due[tag]=time.monotonic()+60;body=None
   try:
@@ -118,7 +127,7 @@ def prepare(portal,rows,cancel=lambda:False):
      opener89=urllib.request.build_opener(urllib.request.ProxyHandler({}))
      with opener89.open(ram89['uri'],timeout=2) as reply89:body=reply89.read(3*1024*1024+1)
     else:body=fetch(portal,uri,cancel)
-   if backend is None:raise OSError('LOGO_LOCAL_REQUIRED')
+   if backend is None and not __import__('external_art89').enabled():raise OSError('LOGO_LOCAL_REQUIRED')
    _,facts89=__import__('logo_store89').persist(portal,row,body,cancel)
    __import__('logo_store89').note('PERSISTED_VERIFIED',**facts89)
    note(portal,row,'PERSISTED_VERIFIED',**{k:v for k,v in facts89.items() if k in ('free','reserve')})

@@ -192,7 +192,10 @@ def run_next(cancel=lambda: False):
             for field81 in ('new','changed','unchanged','read','retained','deleted'):part81[field81]=part81.get(field81,0)+int(result.get(field81,0))
             delta81[kind]=part81
             api81=dict(job.get('last_api_success81',{}))
-            if result.get('read',0)>0:api81[kind]=time.time()
+            # A complete, valid empty response is still an API contact.
+            # It is NOT a committed/full catalogue generation: the separate
+            # SOURCE_EMPTY/retained and last_full_sync81 fields carry that.
+            api81[kind]=time.time()
             job=_update(job['id'], cursor=job['cursor']+1, processed=job['processed']+result['read'],
                         committed=job['committed']+int(result['stored']>0), counts=totals,
                         empty=job.get('empty',[]), attempts=0,delta81=delta81,last_api_success81=api81)

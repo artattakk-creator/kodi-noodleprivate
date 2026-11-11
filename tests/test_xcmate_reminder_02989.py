@@ -108,3 +108,8 @@ class ReminderH89(Fixture,unittest.TestCase):
   self.assertFalse(self.runtime.read('Ready'));self.assertEqual(self.timers.list_timers('p')[0]['state'],'notified');self.assertEqual(path.read_bytes(),raw)
   self.assertFalse(self.actions.toggle(self.event));self.assertTrue(self.actions.toggle(self.event));self.runtime.worker(now=self.event['start']-298)
   self.assertTrue(self.runtime.read('Ready'));self.assertEqual(len(self.timers.list_timers('p')),1)
+ def test_service_restart_with_surviving_home_properties_cannot_display_the_claim_again(self):
+  ready=self.due();importlib.reload(self.runtime);ui=__import__('reminder_ui89');ui._dialog=None;ui._tune=None;ui._verify=None
+  with mock.patch.object(ui.ReminderDialog89,'show') as show:ui.poll();show.assert_not_called()
+  self.runtime.worker(now=self.event['start']-298);self.assertFalse(self.runtime.read('Ready'));self.assertEqual(self.timers.list_timers('p')[0]['state'],'dismissed')
+  self.assertEqual(len(__import__('guide_bookmarks').entries('p')),1)

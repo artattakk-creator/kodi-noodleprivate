@@ -220,3 +220,7 @@ Dieser P0-G ergänzt **#425** (XCMate .89) zusammen mit P0-F (Hero-Bild-Lock-on)
 - Android-Kodi-21.3 mit Fernbedienung und aktivem Liveplayer testen: Fokus, OK, Zurück, voller Bildschirm, keine ungewollte Wiedergabeunterbrechung. Automatisierte Host-Tests und echte Geräteabnahme strikt getrennt. Ohne echten Test `ANDROID_NOT_TESTED`.
 
 **Scope / Freigabe:** P0-H gehört verbindlich zu .89 und Issue #425 (zusätzlich P0-A..G), **kein Merge, Release oder Installer-Update** ohne gesonderte ausdrückliche Freigabe. Dieser Nachtrag erweitert nur Entwicklungsanforderungen.
+
+## 15. Ausdrücklicher Nutzernachtrag: externe Bildspeicher
+
+USB, SD-Karte und Samba/SMB/NAS sollen als Speicher für Senderlogos, Sendungsbilder und Film-/Seriencover nutzbar sein. Der Nutzer hat diesen Bilddatenumfang ausdrücklich bestätigt. Keine Auslagerung der Kodi-, EPG-, Portal-, Katalog- oder Timerdatenbanken. Bestehende Auswahl-, Probe-, Transferjournal-, SHA256-, Darstellungs- und Aktivierungsgates wiederverwenden; keine automatische Zielwahl oder Löschung. Ein fehlendes Laufwerk darf keine heimliche interne Ersatzablage auslösen. Interne Originale erhalten. Physische USB-/SD-/NAS- und Android-Tests separat als ANDROID_NOT_TESTED führen. Kein Merge/Release.

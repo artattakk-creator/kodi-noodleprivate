@@ -73,6 +73,8 @@ def persist(portal,row,body,cancel=lambda:False):
  from profile_transaction import writing
  from media_sources43 import SourceError
  body,width,height=thumbnail(body);digest=hashlib.sha256(body).hexdigest()
+ if __import__('external_art89').enabled():
+  return __import__('external_art89').store('logo',identity(portal,row),body,dict(source=__import__('station_logos87').source(row)),cancel)
  backend,manifest=location();target=Path(backend.resolve_target(digest))
  with writing(timeout=.2):
   if cancel():raise SourceError('CANCELLED')

@@ -199,6 +199,7 @@ def _run():
         try:
             from guide_timers import poll as poll_timers
             poll_timers()
+            __import__('external_art89').drain(cancelled)
         except MemoryError:runtime.note_pressure()
         except Exception: pass
         if runtime.wait_abort(monitor,0.1 if worked else .5,_stop):break

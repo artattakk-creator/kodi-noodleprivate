@@ -2,7 +2,7 @@
 from pathlib import Path
 MAX_FILE=512*1024
 QUOTA=4*1024*1024
-PREFIXES=('widget-refs74-','widget-textures79-','xcmate_widget41_')
+PREFIXES=('widget-refs74-','widget-textures79-','xcmate_widget41_','xcmate_external89_')
 
 def check(filename,size):
  from import_budget import check_space

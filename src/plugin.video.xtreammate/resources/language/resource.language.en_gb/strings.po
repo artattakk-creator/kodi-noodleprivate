@@ -5393,3 +5393,15 @@ msgstr "Aired"
 msgctxt "#37162"
 msgid "Watchlist only"
 msgstr "Watchlist only"
+
+msgctxt "#37163"
+msgid "The selected XCMate image cache has reached its size limit. Existing files are retained."
+msgstr "The selected XCMate image cache has reached its size limit. Existing files are retained."
+
+msgctxt "#37164"
+msgid "An image transfer is incomplete. Resume the transfer before writing more images. Existing files are retained."
+msgstr "An image transfer is incomplete. Resume the transfer before writing more images. Existing files are retained."
+
+msgctxt "#37165"
+msgid "File sizes on the selected image target could not be verified. No new image was published."
+msgstr "File sizes on the selected image target could not be verified. No new image was published."
