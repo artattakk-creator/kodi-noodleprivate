@@ -60,6 +60,8 @@ def check90(cycle,errors):
    if predicate():return
    service_poll90()
    xbmc.sleep(100)
+  diagnostics90=dict(reason=str(reason),focus=xbmcgui.Window(10000).getFocusId(),menu=xbmc.getInfoLabel('Container(900).ListItem.Property(submenuVisibility)'),controls={str(cid):dict(rows=xbmc.getInfoLabel('Container('+str(cid)+').NumItems'),visible=xbmc.getCondVisibility('Control.IsVisible('+str(cid)+')')) for cid in (2510,2520,2530)})
+  Path('/root/picker90-diagnostic.json').write_text(json.dumps(diagnostics90,indent=2));xbmc.executebuiltin('TakeScreenshot(/root/picker90-home-'+str(cycle)+'-diagnostic.png)',wait=False);xbmc.sleep(200)
   raise RuntimeError(reason)
  folder=Path('/root/.kodi/userdata/addon_data/script.skinshortcuts')
  props=folder/'skin.titan.bingie.mod.properties';before=json.loads(Path('/root/picker90-baseline.json').read_text(encoding='utf-8'))
