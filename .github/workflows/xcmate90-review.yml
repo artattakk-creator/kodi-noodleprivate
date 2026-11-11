@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       diagnostic_only:
-        description: Run the short 720p native diagnostic with full synthetic logs
+        description: Run only the original native widget picker during development diagnosis
         type: boolean
         default: false
 permissions:
@@ -16,6 +16,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   pictures:
+    if: ${{ github.event_name != 'workflow_dispatch' || !inputs.diagnostic_only }}
     runs-on: ubuntu-latest
     timeout-minutes: 55
     strategy:

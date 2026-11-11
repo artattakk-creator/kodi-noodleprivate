@@ -120,9 +120,15 @@ def check90(cycle,errors):
   # BINGIE's native grouplist virtualizes rows below the viewport. Enter
   # the real control first; waiting for its hidden consumer creates a test
   # deadlock even after Kodi has returned all directory items.
-  home=xbmcgui.Window(10000);home.setFocusId(cid)
+  home=xbmcgui.Window(10000)
+  if kind=='live':home.setFocusId(cid)
   until(lambda:xbmc.getInfoLabel('Container('+str(cid)+').NumItems')==str(total),('PICKER90_NATIVE_ROWS_MISSING',kind,cid))
-  home=xbmcgui.Window(10000);home.setFocusId(cid);home.getControl(cid).selectItem(0)
+  home=xbmcgui.Window(10000)
+  if kind!='live':
+   xbmc.executebuiltin('Action(Down)',wait=False)
+   until(lambda:xbmcgui.Window(10000).getFocusId()==cid,('PICKER90_NATIVE_IR_DID_NOT_ENTER',kind,cid),12)
+  else:home.setFocusId(cid)
+  home.getControl(cid).selectItem(0)
   picture=Path('/root/picker90-home-'+str(cycle)+'-'+kind+'.png');pixels=0
   for attempt in range(30):
    service_poll90();xbmc.sleep(200);xbmc.executebuiltin('TakeScreenshot('+str(picture)+')',wait=False);xbmc.sleep(150)
