@@ -86,7 +86,13 @@ thread=threading.Thread(target=worker,daemon=True);thread.start()
 for _ in range(900):
  if errors:raise RuntimeError(errors[0])
  if xbmc.getInfoLabel('Container(2510).NumItems')=='88':
-  home.setFocusId(2510);home.getControl(2510).selectItem(0)
+  # A queued native ReloadSkin can replace Home after the Count receipt.
+  # Reacquire the real owner and await its controls within this same bounded
+  # startup loop; all focus/pixel/decode gates below remain mandatory.
+  try:
+   home=xbmcgui.Window(10000);home.setFocusId(2510);home.getControl(2510).selectItem(0)
+  except RuntimeError:
+   pump();xbmc.sleep(100);continue
  pump();xbmc.sleep(100)
  if logo_ready84.is_set() and not decode84.is_set() and not home.getProperty('StartupMask') and not xbmc.getCondVisibility('Window.IsVisible(11103)') and xbmc.getCondVisibility('Control.IsVisible(296784)'):
   logo_control84=home.getControl(296784)

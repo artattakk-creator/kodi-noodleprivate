@@ -62,8 +62,12 @@ def run(portal,rows,pump,capture,cold,check,home,early_logo,early_epg):
    cid=(2510,2520,2530)[interval%3];home.setFocusId(cid);home.getControl(cid).selectItem(interval%5);interval+=1
    check(xbmcgui.getCurrentWindowId()==10000 and home.getFocusId()==cid,('START90_HOME_FOCUS_LOST',cid,home.getFocusId()))
   if not samples or elapsed>=(450 if len(samples)==1 else 899):
+   from PIL import Image
+   uri90=xbmc.getInfoLabel('ListItem.Art(poster)')
+   check(uri90.startswith('/') and Path(uri90).is_file(),'START90_NATIVE_LOCAL_ART_MISSING')
+   with Image.open(uri90) as source90:color90=source90.convert('RGB').getpixel((source90.width//2,source90.height//2))
    picture,rgb=capture('visible84-start90-'+('cold' if cold else str(len(samples))))
-   pixels=sum(max(p)-min(p)>25 and max(p)>45 for p in rgb.crop((260,640,1890,1040)).getdata())
+   pixels=sum(max(abs(a-b) for a,b in zip(p,color90))<=12 for p in rgb.crop((260,640,1890,1040)).getdata())
    check(pixels>1500,'START90_RAIL_PIXELS_EMPTY');samples.append(dict(seconds=round(elapsed,1),pixels=pixels,screenshot=picture.name))
   xbmc.sleep(200)
  check(cold or interval==20,'START90_FOCUS_CYCLE_COUNT')

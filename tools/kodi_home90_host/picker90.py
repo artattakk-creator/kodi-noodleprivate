@@ -3,8 +3,13 @@ No select/explorer/save replacement, no fake saved WidgetPaths. Disposable data.
 """
 import ast,json,time,hashlib
 from pathlib import Path
-import xbmc,xbmcgui
+import xbmc,xbmcgui,xbmcaddon
 home=xbmcgui.Window(10000);history=[]
+xbmcaddon.Addon('script.skinshortcuts').setSetting('enable_logging','true')
+for method90 in ('Addons.GetAddons','Addons.Getaddons'):
+ response90=json.loads(xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=90,method=method90,params=dict(content='video',properties=['name','path','thumbnail','enabled'])))))
+ print('PICKER90_REGISTRY '+json.dumps(dict(method=method90,result=response90)),flush=True)
+ Path('/root/picker90-registry.json').write_text(json.dumps(response90,indent=2))
 def check(value,reason):
  if not value:raise RuntimeError(str(reason))
 def until(predicate,reason,seconds=30):

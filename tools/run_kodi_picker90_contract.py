@@ -32,11 +32,17 @@ def main():
   run(*cmd,stdout=subprocess.DEVNULL)
   with (report/'probe.log').open('w') as log:run('exec',name,'python3','/work/probe.py',stdout=log,stderr=subprocess.STDOUT)
  finally:
-  for source,target in [('/root/picker90-history.json','picker90-history.json'),('/root/picker90.json','picker90.json'),('/root/picker90-error.txt','picker90-error.txt'),('/root/.kodi/temp/kodi.log','synthetic-kodi.log')]:subprocess.run(docker+['cp',name+':'+source,str(report/target)],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-  for path in ('probe.log','picker90-error.txt','picker90-history.json','picker90.json','synthetic-kodi.log'):
+  for source,target in [('/root/picker90-registry.json','picker90-registry.json'),('/root/picker90-history.json','picker90-history.json'),('/root/picker90.json','picker90.json'),('/root/picker90-error.txt','picker90-error.txt'),('/root/.kodi/temp/kodi.log','synthetic-kodi.log')]:subprocess.run(docker+['cp',name+':'+source,str(report/target)],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+  for path in ('probe.log','picker90-error.txt','picker90-history.json','picker90-registry.json','picker90.json','synthetic-kodi.log'):
    if (report/path).is_file():
     text=(report/path).read_text(errors='replace')
     if path=='synthetic-kodi.log':text='\n'.join(line for line in text.splitlines() if 'CActiveAESink' not in line and 'ActiveAE::' not in line)
+    
+    if path=='synthetic-kodi.log':
+     lines=text.splitlines();selected=[]
+     for i,line in enumerate(lines):
+      if any(term in line for term in ('PICKER90_','Listing addons','video add-ons found','Failed to load addons','Listing available addons')):selected.extend(lines[max(0,i-2):i+8])
+     print('PICKER90_TRACE\n'+'\n'.join(selected),flush=True)
     print(path+'\n'+text[-44000:],flush=True)
   subprocess.run(docker+['rm','-f',name],env=env,stdout=subprocess.DEVNULL)
 if __name__=='__main__':main()
