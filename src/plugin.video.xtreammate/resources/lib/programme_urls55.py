@@ -124,7 +124,7 @@ def resolve(event,cancel=lambda:False,allow_lookup=False,check=None,match=None,l
     if durable81 and not upgrade81:return durable81
     pressure84=__import__('artwork_display84').observe() or __import__('home_schedule75').applicable()
     if url_mode69 and pressure84:
-        renewed84=__import__('sticky_art88').read(event) or __import__('programme_display84').recover(event) or __import__('programme_display84').renew(event)
+        renewed84=__import__('sticky_art88').read(event) or __import__('event_cache88').recover(event) or __import__('programme_display84').recover(event) or __import__('programme_display84').renew(event)
         retain86(renewed84)
         if renewed84 and usable86(renewed84) and not upgrade81:
             upgrade81=upgrade86(renewed84)

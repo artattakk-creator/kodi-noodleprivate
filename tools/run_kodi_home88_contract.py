@@ -67,7 +67,7 @@ def main():
   # Synthetic screenshots only: make two actual native PNGs recoverable for
   # human review even when signed Actions artifact downloads are unavailable.
   import base64
-  for picture87 in ('visible84-hero86-final.png','visible84-foreign87-warm-1-7.png'):
+  for picture87 in ('visible84-hero86-final.png','visible84-foreign87-warm-1-7.png','visible84-sticky88-305.png'):
    path87=report/picture87
    if path87.is_file() and path87.stat().st_size<=512*1024:
     raw87=path87.read_bytes();print('PNG87 '+picture87+' '+hashlib.sha256(raw87).hexdigest()+' '+base64.b64encode(raw87).decode(),flush=True)

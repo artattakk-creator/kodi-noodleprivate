@@ -87,6 +87,41 @@ class Fix88(Fixture,unittest.TestCase):
   m=__import__('station_rows88')
   self.assertTrue(m.header(dict(name='##### GERMANY HEVC #####')));self.assertFalse(m.header(dict(name='RTL HD',sid='3')))
 
+
+ def test_exact_event_cache_recovers_after_restart_without_http_or_new_metadata(self):
+  m=__import__('event_cache88');m._due.clear();m._ram.clear();sticky=__import__('sticky_art88')
+  art=dict(code='READY',source='tmdb_series',match='EXACT_UNIQUE_TV_TITLE66',role81='backdrop',image_scope57='series_fallback',decoded77=True,image='https://image.tmdb.org/t/p/w1280/a.png'+__import__('programme_urls55').OPTIONS,source_url='https://image.tmdb.org/t/p/w1280/a.png',url_version55=1,url_verified69=True,until=time.time()+20,scope69=__import__('programme_requests68').identity(self.event),profile69=__import__('programme_requests68').scope(),fingerprint=__import__('programme_art46').fingerprint(self.event),policy69=__import__('programme_policy68').negative_scope({}),vote_average88=8.2,vote_count88=200)
+  saved=sticky.remember(self.event,art,png((960,540)));self.assertTrue(saved.get('decoded88'));self.assertIn('event88=',saved['image'])
+  # The capability contains no raw URL, title, account or token.
+  proof=__import__('urllib.parse',fromlist=['parse_qs']).parse_qs(__import__('urllib.parse',fromlist=['urlsplit']).urlsplit(saved['image']).query)['proof88'][0]
+  decoded=__import__('base64').urlsafe_b64decode(proof+'='*(-len(proof)%4)).decode()
+  for secret in ('https://','image.tmdb.org','Scrubs'):self.assertNotIn(secret,decoded)
+  self.assets.shutdown();self.properties.clear()
+  file=self.folder/'kodi-event.png';file.write_bytes(png((960,540)))
+  record=dict(file=str(file),sha256=hashlib.sha256(file.read_bytes()).hexdigest(),width=960,height=540)
+  reply=json.dumps(dict(result=dict(textures=[dict(url=saved['image'],cachedurl='synthetic')])) )
+  with mock.patch('xbmc.executeJSONRPC',create=True,return_value=reply),mock.patch('widget_cache82.decoded',return_value=record),mock.patch('programme_transport77.verified',side_effect=AssertionError('no HTTP')),mock.patch('art_storage.check',side_effect=AssertionError('no archive write')):
+   recovered=m.recover(self.event);self.assertEqual(recovered['image'],str(file));self.assertEqual(recovered['source'],'tmdb_series');self.assertEqual(recovered['vote_average88'],8.2)
+   self.assertFalse(recovered['persisted69']);self.assertEqual(recovered['storage69'],'KODI_TEXTURE_CACHE')
+   self.assertIsNone(m.recover(dict(self.event,sid='foreign')))
+   self.options['programme_tmdb_optout77']=True;self.assertIsNone(m.recover(self.event));self.options['programme_tmdb_optout77']=False
+   m._due.clear()
+   with mock.patch('programme_mapping85.epoch',return_value=2):self.assertIsNone(m.recover(self.event))
+   with mock.patch('epg_handoff63.profile_scope',return_value='different-profile'):self.assertIsNone(m.recover(self.event))
+   with mock.patch('event_cache88.clean',side_effect=ValueError('invalid')):self.assertIsNone(m.recover(self.event))
+  self.assertIsNone(m.recover(dict(self.event,stop=time.time()-1)))
+  for bad in (saved['image'].replace('127.0.0.1','attacker.example.org'),saved['image']+'&event88=duplicate',saved['image'].replace('body88=','body88=f'),saved['image'].split('&proof88=')[0]+'&proof88=invalid'):
+   m._due.clear();m._ram.clear()
+   with mock.patch('xbmc.executeJSONRPC',create=True,return_value=json.dumps(dict(result=dict(textures=[dict(url=bad,cachedurl='synthetic')])))),mock.patch('widget_cache82.decoded',side_effect=AssertionError('reject before filesystem')):self.assertIsNone(m.recover(self.event))
+  # An invalid older texture entry must not hide a valid later candidate.
+  m._due.clear();m._ram.clear()
+  with mock.patch('xbmc.executeJSONRPC',create=True,return_value=json.dumps(dict(result=dict(textures=[dict(url=saved['image'],cachedurl='synthetic'),dict(url=bad,cachedurl='synthetic')])))),mock.patch('widget_cache82.decoded',return_value=record):self.assertIsNotNone(m.recover(self.event))
+
+ def test_event_receipt_never_admits_unconfirmed_or_url_fields(self):
+  m=__import__('event_cache88')
+  with self.assertRaises(ValueError):m.clean(dict(source='tmdb_series',match='PROVISIONAL_TV85'))
+  with self.assertRaises(ValueError):m.clean(dict(source='tmdb_series',match='EXACT_UNIQUE_TV_TITLE66',url='https://example.org/private'))
+
 class Epg88(Fixture,unittest.TestCase):
  def test_reader_queries_close_their_own_connections_no_facade_close(self):
   reader=__import__('library_index').Reader('p');self.assertFalse(hasattr(reader,'close'))

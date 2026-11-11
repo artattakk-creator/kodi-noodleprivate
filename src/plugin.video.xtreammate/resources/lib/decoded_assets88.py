@@ -44,7 +44,9 @@ class Handler(BaseHTTPRequestHandler):
    if not 0<size<=3*1024*1024 or not re.fullmatch(r'[a-zA-Z0-9_.-]{1,256}',key) or not math.isfinite(until) or not time.time()<until<=time.time()+86401 or kind not in ('logo','event'):raise ValueError('UPLOAD_LIMIT')
    body=self.rfile.read(size)
    if len(body)!=size:raise ValueError('UPLOAD_INCOMPLETE')
-   record=put(key,body,until,kind)
+   proof=self.headers.get('X-XCMate-Receipt','')
+   if len(proof)>1024:raise ValueError('UPLOAD_PROOF_LIMIT')
+   record=put(key,body,until,kind,json.loads(proof) if proof else None)
    raw=json.dumps(record,separators=(',',':')).encode()
    self.send_response(200);self.send_header('Content-Type','application/json');self.send_header('Content-Length',str(len(raw)));self.end_headers();self.wfile.write(raw)
   except (OSError,ValueError,__import__('media_sources43').SourceError):self.send_error(400)
@@ -54,14 +56,14 @@ def _heartbeat(server):
  until=time.monotonic()+15;instance=server.instance88
  window().setProperty(PREFIX+'Instance.'+instance,str(until))
  window().setProperty(server.owner_slot88,json.dumps(dict(instance88=instance,until88=until,url='http://127.0.0.1:'+str(server.server_port)+'/xcmate88-upload/'+server.upload88),separators=(',',':')))
-def _proxy(key,body,until,kind,value):
+def _proxy(key,body,until,kind,value,receipt88=None):
  import http.client,re
  from urllib.parse import urlsplit
  parsed=urlsplit(value.get('url',''))
  if parsed.scheme!='http' or parsed.hostname!='127.0.0.1' or not parsed.port or parsed.username is not None or parsed.query or parsed.fragment or not re.fullmatch(r'/xcmate88-upload/[a-f0-9]{64}',parsed.path):raise OSError('DECODED_OWNER_INVALID')
  connection=http.client.HTTPConnection('127.0.0.1',parsed.port,timeout=3)
  try:
-  connection.request('POST',parsed.path,body,{'Content-Type':'application/octet-stream','X-XCMate-Key':key,'X-XCMate-Until':str(until),'X-XCMate-Kind':kind})
+  connection.request('POST',parsed.path,body,{'Content-Type':'application/octet-stream','X-XCMate-Key':key,'X-XCMate-Until':str(until),'X-XCMate-Kind':kind,'X-XCMate-Receipt':json.dumps(receipt88 or {},separators=(',',':'))})
   response=connection.getresponse();raw=response.read(2049)
   if response.status!=200 or len(raw)>2048:raise OSError('DECODED_OWNER_UNAVAILABLE')
   result=json.loads(raw)
@@ -88,7 +90,9 @@ def _serve(server,stop):
  finally:
   _retire(server)
   server.server_close()
-def put(key,body,until,kind='event'):
+def put(key,body,until,kind='event',receipt88=None):
+ proof88=__import__('event_cache88').encode(key,receipt88) if receipt88 else ''
+ if receipt88 and kind!='event':raise ValueError('CACHE88_ROLE')
  from media_sources43 import validate_image
  width,height=validate_image(body)
  if not 0<len(body)<=3*1024*1024 or until<=time.time():raise ValueError('DECODED_LIMIT')
@@ -97,7 +101,7 @@ def put(key,body,until,kind='event'):
  # Reuse the already active owner across Kodi plugin interpreters. Uploads
  # carry only decoded bytes and scoped hashes, never source URLs/secrets.
  owner=descriptor()
- if _server is None and owner:return _proxy(key,body,until,kind,owner)
+ if _server is None and owner:return _proxy(key,body,until,kind,owner,receipt88)
  digest=hashlib.sha256(body).hexdigest();now=time.monotonic()
  with _lock:
   old=read(key)
@@ -114,12 +118,13 @@ def put(key,body,until,kind='event'):
    from profile_transaction import writing
    with writing(timeout=.2):
     owner=descriptor()
-    if owner:return _proxy(key,body,until,kind,owner)
+    if owner:return _proxy(key,body,until,kind,owner,receipt88)
     _server=HTTPServer(('127.0.0.1',0),Handler)
     _server.instance88=secrets.token_hex(16);_server.upload88=secrets.token_hex(32);_server.owner_slot88=owner_slot();_heartbeat(_server)
     _server.timeout=.2;_stop=threading.Event()
     _thread=threading.Thread(target=_serve,args=(_server,_stop),name='XCMate-decoded88',daemon=True);_thread.start()
   path='/xcmate88/'+secrets.token_hex(32)+'/'+hashlib.sha256(key.encode()).hexdigest()+'.'+('png' if body.startswith(b'\x89PNG') else 'jpg')
+  if proof88:path+='?event88='+key.split('.')[0]+'&body88='+digest+'&proof88='+proof88
   uri='http://127.0.0.1:'+str(_server.server_port)+path
   record=dict(instance88=_server.instance88,uri=uri,key=key,sha256=digest,width=width,height=height,until=min(until,time.time()+86400),storage='RAM_ONLY')
   _items[path]=dict(body=body,mime='image/png' if body.startswith(b'\x89PNG') else 'image/jpeg',until=record['until'],active=now+60,key=key,slot88=slot(key))

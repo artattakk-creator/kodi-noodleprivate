@@ -29,7 +29,7 @@ def remember(event,value,body):
   # expires on event end. Never extend a stale live event into its successor.
   now=time.time();until=min(now+86400,float(event['stop'])) if event.get('start',0)<=now<event.get('stop',0) else now+600
   asset_key88=key(event)+'.'+__import__('hashlib').sha256(body).hexdigest()
-  asset=__import__('decoded_assets88').put(asset_key88,body,until)
+  asset=__import__('decoded_assets88').put(asset_key88,body,until,receipt88=__import__('event_cache88').receipt(value))
   result=dict(value,image=asset['uri'],thumbnail=asset['uri'],sha256=asset['sha256'],until=asset['until'],asset88=asset_key88,decoded88=True,scope69=identity(event),profile69=scope(),policy69=negative_scope({}),storage69='RAM_ONLY',persisted69=False)
   for field in ('display84','display_key84','url_version55','url_verified69','temp85'):result.pop(field,None)
   window().setProperty(PREFIX+key(event),json.dumps(result,separators=(',',':')))
