@@ -21,6 +21,11 @@
   },
   "empty_native90": {
     "sha256": "1a740d3be929d5302322d718972ff4853bef17d11ebd5b71794a540ff8d65da1",
-    "condition": "Integer.IsGreater(Container($PARAM[widgetid]).NumItems,0)"
+    "condition": "Integer.IsGreater(Container($PARAM[widgetid]).NumItems,0) | Container($PARAM[widgetid]).IsUpdating"
+  },
+  "native_media90": {
+    "sha256": "97db4dbdde0b1e1049b64542fbc1c46bb3356562a678eb9467ab87a02f2f9356",
+    "visible_index": 4,
+    "condition": "Container($PARAM[widgetid]).IsUpdating + Control.IsVisible($PARAM[widgetid]) | Integer.IsGreater(Container($PARAM[widgetid]).NumItems,0)"
   }
 }

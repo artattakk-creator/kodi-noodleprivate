@@ -10,6 +10,9 @@ if params.get('play87'):
  with Path('/root/foreign87-clicks.jsonl').open('a') as stream:stream.write(json.dumps(dict(row=index,addon=addon,at=time.time()))+'\n')
  item=xbmcgui.ListItem(path='/root/foreign87.wav');xbmcplugin.setResolvedUrl(handle,True,item)
 else:
+ # Deliberate native async bootstrap: a pending directory must be consumed
+ # before an initially empty wrapper can leave the layout. Test data only.
+ if index==0:xbmc.sleep(500)
  for i in range(8):
   item=xbmcgui.ListItem(name+' '+str(i));item.setProperty('IsPlayable','true');item.setProperty('Foreign87',str(index));item.setProperty('SourceStatus87','OFFLINE_CACHED' if Path('/root/foreign87-off').exists() else 'LOCAL_FIXTURE')
   item.setArt(dict(poster='/root/foreign87-'+str(index)+'.png',thumb='/root/foreign87-'+str(index)+'.png',fanart='/root/foreign87-'+str(index)+'.png'))

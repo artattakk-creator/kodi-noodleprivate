@@ -50,9 +50,24 @@ def upgrade(files):
   original=copy.deepcopy(node);gate=E.Element('visible');gate.text=prior['condition'];original.find('control').insert(prior['visible_index'],gate)
   if digest(original)!=prior['sha256']:raise ValueError('NAV90_UNVERIFIED')
  else:raise ValueError('NAV90_UNVERIFIED')
+ # Native sources need the same cold admission as our clone. In Kodi 21,
+ # IsUpdating stays true for a completed directory until the GUI consumes it.
+ # A visibility self-dependency can leave that result permanently unconsumed.
+ prior=json.loads((Path(__file__).parents[1]/'bingie90_previous.json').read_text())['native_media90']
+ n,end,node=_node(result[name],'include','name','widget_base_normal')
+ control=node.find('control');matches=[v for v in control.findall('visible') if v.text==prior['condition']]
+ if len(matches)==1:
+  if digest(node)!=prior['sha256']:raise ValueError('NAV90_UNVERIFIED')
+  control.remove(matches[0]);result[name]=edit(result[name],[(n['start'],end,E.tostring(node,encoding='utf-8'))])
+ elif not matches:
+  original=copy.deepcopy(node);gate=E.Element('visible');gate.text=prior['condition'];original.find('control').insert(prior['visible_index'],gate)
+  if digest(original)!=prior['sha256']:raise ValueError('NAV90_UNVERIFIED')
+ else:raise ValueError('NAV90_UNVERIFIED')
  # Kodi scrolls its last focusable child to the total grouplist extent.
  # Empty legacy wrappers otherwise retain 440px each and push the final
- # populated row entirely outside the viewport. Keep identities/geometry.
+ # populated row entirely outside the viewport. Pending jobs stay active;
+ # after consuming a genuinely empty result, the wrapper leaves the flow.
+ # Keep identities, source paths, refresh hooks and geometry unchanged.
  prior=json.loads((Path(__file__).parents[1]/'bingie90_previous.json').read_text())['empty_native90']
  n,end,node=_node(result[name],'include','name','widget_base')
  control=node.find('control');matches=[v for v in control.findall('visible') if v.text==prior['condition']]

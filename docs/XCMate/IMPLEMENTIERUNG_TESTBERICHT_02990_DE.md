@@ -129,10 +129,10 @@ Keine dieser Zeilen behauptet die vollständige Behebung auf der RK3528-Box. Die
 [ZIP](test-builds/02990/plugin.video.xtreammate-0.1.29.90.zip), [SHA256-Datei](test-builds/02990/plugin.video.xtreammate-0.1.29.90.zip.sha256).
 
 ```text
-1fdb5eec7b23cce3bc334049871277b69dd74835249db79c25da650c48bd0950
+e95b0a0cc46e745a3318a609e6e57a005ee3a88965f6e7de0c4b21c68f30f17f
 ```
 
-4.663.587 Bytes, 855 Dateien. CRC PASS; jeder ZIP-Inhalt gegen den aktuellen Add-on-Source geprüft; zweiter Build byteidentisch. Keine `.log`, `.sqlite`, `.db` oder `.pyc` im Paket.
+4.663.852 Bytes, 855 Dateien. CRC PASS; jeder ZIP-Inhalt gegen den aktuellen Add-on-Source geprüft; zweiter Build byteidentisch. Keine `.log`, `.sqlite`, `.db` oder `.pyc` im Paket.
 
 Scope-Gate prüft alle 851 vorherigen Source-Dateien gegen die .89-Basis oder genau freigegebene Byteänderungen sowie alle 361 vorherigen Testdateien mit ihren vorhandenen Testmethoden und Skipbedingungen. Bestehende Assertions wurden für beauftragte geänderte Semantik angepasst (Version .90; acht priorisierte Versuche; getrennte Live-/Medienpolicy), nicht entfernt.
 
@@ -159,3 +159,9 @@ Zusätzliche Testaufbaukorrektur: den separaten synthetischen 2.740-Sender-Katal
 Der separate umfassende .90-Home-Lauf desselben Commits blieb bei `RAIL84_PIXELS_MISSING series` FAIL. Wie im Picker fehlte im älteren gemeinsamen Testaufbau der kontinuierliche Abschluss der bereits vorhandenen privaten Consumer-Aktivierung nach dem Builder. Der bestehende Daten-Lane ruft nun wie der reale Dienst regelmäßig `widget_runtime79.prepare` und `home_activation78.prepare` auf; die Pixelstrecke wartet auf echtes `RUNTIME_READY`. Änderung im gemeinsamen .84-Testaufbau, damit auch die aktuellen .88/.89-Regressionsläufe denselben vollständigen Dienstlebenszyklus prüfen. Keine produktive Fenster-/Playeränderung und keine entfernte Abnahmebedingung. 17 Wrapper-/Scope-Regressionsfälle PASS, 3,766 s. Sauberer vollständiger nativer Folge-Lauf bleibt Pflicht.
 
 Aktueller lokaler kompletter Lauf auf Produktstand `cb43815d`: **3.802 Tests, 628,143 s, 3.800 PASS / 2 FAIL / 0 SKIP**. Beide FAILs lagen ausschließlich im neu eingeführten Test-Teardown (`retired fixture worker: XCMate-provider-art69`): drei Sekunden waren kürzer als die unveränderte zwölfsekündige synchrone Anfragegrenze. Die Testbereinigung wartet nun innerhalb eines gemeinsamen 15-Sekunden-Budgets auf diese echte Abbruchgrenze. Keine Produktfrist verlängert, keine Workerprüfung entfernt. Gezielt wiederholte 30 Asset-/Puffer-/Harnessfälle **PASS in 11,998 s**. Abschließende vollständige CI auf dem gemeinsamen korrigierten Testaufbau läuft erneut.
+
+## Zusätzliche Kaltladegrenze fremder Quellen
+
+Quellprüfung am unveränderten Kodi-21.2-Code: `CDirectoryProvider::IsUpdating()` bleibt auch für `DONE` wahr, bis die GUI `Update()/Fetch()` ausführt. Ein äußerer bloßer `NumItems>0`-Guard könnte einen verzögerten ersten Fremdwidget-Datensatz verbergen, bevor ihn die GUI übernimmt. Deshalb bleiben Wrapper bei **vorhandenen Einträgen oder laufendem/unverarbeitetem Ergebnis** aktiv. Zugleich wird im exakt gehashten gemeinsamen `widget_base_normal` dieselbe zirkuläre Eigen-Sichtbarkeitsbedingung entfernt wie im eigenen Clone. So wird das Ergebnis konsumiert; erst ein tatsächlich konsumiertes leeres Ergebnis entfernt die leere Fläche. Alle übrigen Menü-/Quellbedingungen, Geometrie, URL-/Reload-Hooks und Benutzerdefinitionen erhalten. Native Kalttests bleiben Pflicht. Die unabhängige synthetische Audioquelle wartet nun absichtlich 500 ms vor ihrer tatsächlichen achtteiligen Kodi-Verzeichnisantwort, damit dieses asynchrone Bootstrap-Fenster reproduzierbar geprüft wird; keine Produktionsverzögerung.
+
+Paket nochmals erneuert: **4.663.852 Bytes / 855 Dateien**, SHA256 **e95b0a0cc46e745a3318a609e6e57a005ee3a88965f6e7de0c4b21c68f30f17f**. Zwei bytegleiche Builds, CRC und jeder Quellbyte PASS. Ältere .90-Pakete sind überholt. Der während dieser Produktänderung laufende lokale Gesamttest wurde kontrolliert abgebrochen und zählt nicht als vollständige Prüfung des neuen Standes.

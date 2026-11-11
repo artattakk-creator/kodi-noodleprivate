@@ -151,7 +151,13 @@ class ForeignNavigation90(Fixture50,unittest.TestCase):
   wrapper=root.find("include[@name='widget_base']")
   rule=json.loads((ROOT/'src/plugin.video.xtreammate/resources/bingie90_previous.json').read_bytes())['empty_native90']
   outer=wrapper.find('control');gates=[v for v in outer.findall('visible') if v.text==rule['condition']]
-  self.assertEqual(len(gates),1);self.assertNotIn('IsUpdating',gates[0].text)
+  self.assertEqual(len(gates),1);self.assertIn('IsUpdating',gates[0].text)
   outer.remove(gates[0]);self.assertEqual(digest(wrapper),rule['sha256'])
+  native=root.find("include[@name='widget_base_normal']");control=native.find('control')
+  rule=json.loads((ROOT/'src/plugin.video.xtreammate/resources/bingie90_previous.json').read_bytes())['native_media90']
+  self.assertEqual(len(control.findall('visible')),2)
+  self.assertFalse(any('IsUpdating' in (v.text or '') or 'NumItems' in (v.text or '') for v in control.findall('visible')))
+  restored=E.Element('visible');restored.text=rule['condition'];control.insert(rule['visible_index'],restored)
+  self.assertEqual(digest(native),rule['sha256'])
   bad=dict(files);bad['xml/IncludesHomeWidgets.xml']=bad['xml/IncludesHomeWidgets.xml'].replace(b'<include name="XCMate80.MediaNormal">',b'<include name="XCMate80.MediaNormal"><param name="unreviewed" default="true" />')
   with self.assertRaisesRegex(ValueError,'NAV90_UNVERIFIED'):__import__('widget_skin90').upgrade(bad)
