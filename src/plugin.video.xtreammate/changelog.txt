@@ -1,4 +1,5 @@
 0.1.29.90 – kumulativer Android-.89-P0-Testkandidat, nicht veröffentlicht
+- Anzeige von Film- und Serienreihen beim Start verbessert.
 - Verifizierte Logo-Manifeste einmal pro Dateigeneration laden; vorhandene Logos vor optionaler Texture-/Netzwerksuche verwenden.
 - Fehlende Logos im vorhandenen Worker mit begrenzten Runden priorisieren; Speicherreserve und Quoten erhalten.
 - Echte Senderobjekte im EPG-Vorladen und Neustart-Checkpoint unterstützen; gültige sichtbare EPG-Bereiche gemeinsam behalten.

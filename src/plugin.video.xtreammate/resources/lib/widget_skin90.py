@@ -1,6 +1,7 @@
 """Restore native foreign-row focus factories in the released own adapter.
 
-Only two hash-reviewed .75 conditions change. Hero geometry, native row
+Two hash-reviewed .75 focus conditions and the owned media cold-load gate
+change. Hero geometry, native row
 definitions, saved properties, widget paths and menu order remain untouched.
 Existing backed-up transaction/explicit confirmation owns any installation.
 """
@@ -34,6 +35,21 @@ def upgrade(files):
  if seen!=len(known):raise ValueError('NAV90_UNVERIFIED')
  result=dict(files)
  if changes:result[name]=edit(data,changes)
+ # Native Kodi repro: the original compiler + normal private consumer repair
+ # delivers 24 items but the owned cold list stays hidden with zero items.
+ # Removing this exact self-dependency alone admits both native media lists.
+ # All outer menu/scope conditions and native/foreign row definitions remain.
+ from widget_skin80 import _node
+ prior=json.loads((Path(__file__).parents[1]/'bingie90_previous.json').read_text())['owned_media90']
+ n,end,node=_node(result[name],'include','name','XCMate80.MediaNormal')
+ control=node.find('control');matches=[v for v in control.findall('visible') if v.text==prior['condition']]
+ if len(matches)==1:
+  if digest(node)!=prior['sha256']:raise ValueError('NAV90_UNVERIFIED')
+  control.remove(matches[0]);result[name]=edit(result[name],[(n['start'],end,E.tostring(node,encoding='utf-8'))])
+ elif not matches:
+  original=copy.deepcopy(node);gate=E.Element('visible');gate.text=prior['condition'];original.find('control').insert(prior['visible_index'],gate)
+  if digest(original)!=prior['sha256']:raise ValueError('NAV90_UNVERIFIED')
+ else:raise ValueError('NAV90_UNVERIFIED')
  return result
 
 def verify(files):

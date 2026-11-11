@@ -140,4 +140,13 @@ class ForeignNavigation90(Fixture50,unittest.TestCase):
   files=graph.build({name:(self.skin/name).read_bytes() for name in graph.FILES})
   root=graph.parse(files['xml/IncludesHomeWidgets.xml']);digest=__import__('widget_skin80').digest
   self.assertEqual(digest(root.find("include[@name='XCMate80.MediaRow']")),'7480de9f92b11e973021acd9e971ccd2582b7c10e9b54ee36dbeb5b241f92679')
-  self.assertEqual(digest(root.find("include[@name='XCMate80.MediaNormal']")),'0e71911d2dbdbbca1f8f6b3757a3b821804655f7349c6da7c9d6767d89bb57e0')
+  normal=root.find("include[@name='XCMate80.MediaNormal']");control=normal.find('control')
+  self.assertEqual(len(control.findall('visible')),2)
+  self.assertFalse(any('IsUpdating' in (v.text or '') or 'NumItems' in (v.text or '') for v in control.findall('visible')))
+  # Restore only the removed self-guard to compare every other byte-semantic
+  # field with the released .88 clone, including all geometry/menu predicates.
+  import xml.etree.ElementTree as E
+  known=json.loads((ROOT/'src/plugin.video.xtreammate/resources/bingie90_previous.json').read_bytes())['owned_media90'];gate=E.Element('visible');gate.text=known['condition'];control.insert(known['visible_index'],gate)
+  self.assertEqual(digest(normal),'0e71911d2dbdbbca1f8f6b3757a3b821804655f7349c6da7c9d6767d89bb57e0')
+  bad=dict(files);bad['xml/IncludesHomeWidgets.xml']=bad['xml/IncludesHomeWidgets.xml'].replace(b'<include name="XCMate80.MediaNormal">',b'<include name="XCMate80.MediaNormal"><param name="unreviewed" default="true" />')
+  with self.assertRaisesRegex(ValueError,'NAV90_UNVERIFIED'):__import__('widget_skin90').upgrade(bad)
