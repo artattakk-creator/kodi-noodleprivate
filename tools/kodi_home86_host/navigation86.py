@@ -50,14 +50,13 @@ def run():
    xbmc.executebuiltin('Action(Back)',wait=False)
    wait(lambda:view._closed,'NAV86_PROGRAMME_BACK')
    kind='vod' if cycle%2==0 else 'series';sequence=str(cycle)
-   xbmcgui.Window(10000).setProperty('XCMate.Nav90.Sequence',sequence)
    home.clearProperty('XCMate.Nav86.State')
    direct=cycle%3==0
    action='media_detail' if direct else 'movies_home' if kind=='vod' else 'series_home'
    query=urlencode(dict(action=action,pid=portal['id'],kind=kind,sid='0' if direct else '',nav86=sequence))
    xbmc.executebuiltin('RunPlugin(plugin://plugin.video.xtreammate/?'+query+')',wait=False)
    def state():
-    raw=xbmcgui.Window(10000).getProperty('XCMate.Nav86.State');value=json.loads(raw) if raw else {}
+    raw=home.getProperty('XCMate.Nav86.State');value=json.loads(raw) if raw else {}
     return value if value.get('sequence')==sequence else {}
    if not direct:
     wait(lambda:state().get('mode')=='landing' and state().get('rows',0)>0 and state().get('focus') in (110,111,112),'NAV86_LANDING_TIMEOUT')
@@ -74,10 +73,9 @@ def run():
    passes.append(dict(cycle=cycle,kind=kind,route=action,detail_back='PASS',route_return='PASS'))
  finally:
   stop.set();worker.join(2)
-  xbmcgui.Window(10000).clearProperty('XCMate.Nav90.Sequence')
   with log.open('rb') as stream:stream.seek(offset);tail=stream.read().decode(errors='replace')
   counts={name:tail.count(text) for name,text in dict(native_index='EXCEPTION: Index out of range',dispatch_failed='DISPATCH_FAILED',directory_failed='GetDirectory - Error',invoker_kill='script didn\'t stop in 5 seconds').items()}
-  last_raw=xbmcgui.Window(10000).getProperty('XCMate.Nav86.State');last_state=json.loads(last_raw) if last_raw else {}
+  last_raw=home.getProperty('XCMate.Nav86.State');last_state=json.loads(last_raw) if last_raw else {}
   report=dict(last_state=last_state,window=xbmcgui.getCurrentWindowId(),dialog=xbmcgui.getCurrentWindowDialogId(),status='PASS' if len(passes)==100 and not any(counts.values()) and not errors and not worker.is_alive() else 'FAIL',cycles=len(passes),counts=counts,elapsed_ms=int((time.monotonic()-started)*1000),background_errors=errors,android='ANDROID_NOT_TESTED',cases=passes)
   Path('/root/navigation86.json').write_text(json.dumps(report,indent=2))
  check(report['status']=='PASS','NAV86_FINAL_COUNTER_FAILED '+json.dumps(counts))

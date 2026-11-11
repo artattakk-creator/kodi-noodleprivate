@@ -5,6 +5,7 @@ import ast,json,time,hashlib
 from pathlib import Path
 import xbmc,xbmcgui,xbmcaddon
 home=xbmcgui.Window(10000);history=[]
+initial_template90=hashlib.sha256(Path('/root/.kodi/addons/skin.titan.bingie.mod/xml/script-skinshortcuts-includes.xml').read_bytes()).hexdigest()
 xbmcaddon.Addon('script.skinshortcuts').setSetting('enable_logging','true')
 for method90 in ('Addons.GetAddons','Addons.Getaddons'):
  response90=json.loads(xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=90,method=method90,params=dict(content='video',properties=['name','path','thumbnail','enabled'])))))
@@ -99,5 +100,11 @@ properties=folder/'skin.titan.bingie.mod.properties';until(lambda:properties.exi
 rows=ast.literal_eval(properties.read_text(encoding='utf-8'));paths=[r[3] for r in rows if r[2].startswith('widgetPath')]
 for expected in ('widget_live_start_group','widget_recent_vod','widget_recent_series'):check(any(expected in p and 'pid=fixture59' in p for p in paths),('PICKER90_PATH_NOT_SAVED',expected))
 before=hashlib.sha256(properties.read_bytes()).hexdigest();dialog=manager();close(dialog);check(hashlib.sha256(properties.read_bytes()).hexdigest()==before,'PICKER90_REOPEN_REWROTE_PROPERTIES')
+foreign90=[r for r in rows if r[2].startswith('widgetPath') and 'plugin://script.skin.helper.widgets/' in r[3]]
+check(len(foreign90)>=2,'PICKER90_FOREIGN_BASELINE_MISSING')
+Path('/root/picker90-baseline.json').write_text(json.dumps(dict(properties_sha256=before,foreign_paths=foreign90,initial_template_sha256=initial_template90),indent=2))
+from picker_check90 import run as check90
+home90=check90(0)
 report=dict(status='PASS',original_skinshortcuts='2.1.0',fresh_noportal=True,saved_widget_paths=paths,original_dialog_branches=history,properties_sha256=before,android='ANDROID_NOT_TESTED')
+report['native_home']=home90
 Path('/root/picker90.json').write_text(json.dumps(report,indent=2));print('PICKER90_RESULT '+json.dumps(report),flush=True)
