@@ -21,8 +21,8 @@ class Live86(Fixture,unittest.TestCase):
  def test_manifest_cold_read_checks_profile_account_source_and_stat(self):
   m=importlib.import_module('logo_manifest86');from artwork_backend import LocalArtworkStorage
   folder=self.folder/'logos86';folder.mkdir();backend=LocalArtworkStorage(str(folder));row=self.rows[0]
-  file=Path(backend.resolve_target('a'*64));file.write_bytes(b'already independently decoded by worker');s=file.stat()
-  record=dict(context=m.context(self.portal),sha256='a'*64,stamp=[s.st_mtime_ns,s.st_size],width=300,height=100)
+  body=__import__('test_xcmate_02988').png((300,100));digest=__import__('hashlib').sha256(body).hexdigest();file=Path(backend.resolve_target(digest));file.write_bytes(body);s=file.stat()
+  record=dict(context=m.context(self.portal),sha256=digest,stamp=[s.st_mtime_ns,s.st_size],width=300,height=100)
   (folder/'manifest86.json').write_text(json.dumps(dict(format=1,records={m.key(self.portal,row):record})))
   with mock.patch('logo_manifest86.location',return_value=(backend,str(folder/'manifest86.json'))):
    self.assertEqual(m.read(self.portal,[row]),{'0':str(file)})

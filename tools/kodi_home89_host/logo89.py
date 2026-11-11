@@ -32,6 +32,19 @@ def run(portal,rows,pump,capture,cold,check,home):
   check(sum(p.stat().st_size for p in root.iterdir() if p.is_file())<=logo_store89.QUOTA+logo_store89.MAX_MANIFEST,'LOGO89_QUOTA_EXCEEDED')
   station_logos88.prepare(portal,rows)
   after=len(calls);station_logos88.prepare(portal,rows);check(len(calls)==after,'LOGO89_WARM_REPEAT_HTTP')
+  # The inherited .88 fixture explicitly stopped its data lane before this
+  # additional phase. Exercise a new bounded publication on a fixture worker
+  # using the production publisher, never disk/SQL on Kodi's input thread.
+  import threading,widget_runtime79,widget_hooks45
+  failures=[]
+  def publish89():
+   try:
+    widget_runtime79._next=0;widget_runtime79.prepare([portal]);widget_hooks45._next=0;widget_hooks45.prepare()
+    __import__('widget_live47').publish(portal,'live',rows)
+   except Exception as error:failures.append(type(error).__name__)
+  lane=threading.Thread(target=publish89);lane.start();joined=time.monotonic()+10
+  while lane.is_alive() and time.monotonic()<joined:pump();xbmc.sleep(50)
+  lane.join(.1);check(not lane.is_alive() and not failures,('LOGO89_PUBLICATION_FAILED',failures))
   # The existing publisher/hook must deliver the own file to the real Kodi
   # DirectoryProvider. Do not replace the control or manually inject items.
   home.setFocusId(900);home.getControl(900).selectItem(0)

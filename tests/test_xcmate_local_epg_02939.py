@@ -60,7 +60,7 @@ class LocalEPG39(model.Fixture,unittest.TestCase):
             db=original(*args,**kw)
             if kw.get('uri'):
                 def trace(sql):
-                    if 'SELECT cid FROM guide_alias' in sql and not fired:
+                    if 'FROM guide_alias' in sql and not fired:
                         fired.append(True)
                         self.store.import_cache('p',{'xml':[dict(name='New',start_timestamp=self.now-100,stop_timestamp=self.now+100)]},revision='published-2',trusted_feed=True)
                 db.set_trace_callback(trace)
