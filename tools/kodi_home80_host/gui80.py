@@ -87,20 +87,25 @@ xbmc.sleep(300)
 home.setFocusId(2520);home.getControl(2520).selectItem(0)
 xbmc.executebuiltin('Action(Select)',wait=False)
 started80=time.monotonic();detail80=None
+from localization import tr as tr80
 for _ in range(300):
  current80=xbmcgui.getCurrentWindowId()
  count80=xbmc.getInfoLabel('Container(300).NumItems')
- if current80>=13000 and count80.isdigit() and int(count80)>0 and xbmc.getInfoLabel('System.CurrentControlId')=='300':
+ if current80>=13000 and count80.isdigit() and int(count80)>0 and xbmc.getInfoLabel('System.CurrentControlId')=='300' and xbmc.getInfoLabel('Container(300).ListItem.Label')==tr80(32512) and xbmcgui.getCurrentWindowDialogId() in (0,-1,9999) and not xbmc.getCondVisibility('System.HasActiveModalDialog'):
   detail80=True;detail_id80=current80;break
  xbmc.sleep(50)
-if detail80 is None:raise RuntimeError('VOD80_DETAIL_NOT_OPEN')
+def failure80(code):
+ facts80=dict(code=code,window=xbmcgui.getCurrentWindowId(),dialog=xbmcgui.getCurrentWindowDialogId(),control=xbmc.getInfoLabel('System.CurrentControlId'),selected_label=xbmc.getInfoLabel('Container(300).ListItem.Label')[:160],items=xbmc.getInfoLabel('Container(300).NumItems'),modal=xbmc.getCondVisibility('System.HasActiveModalDialog'))
+ Path('/root/vod80-failure.json').write_text(json.dumps(facts80));print('VOD80_FAILURE '+json.dumps(facts80),flush=True)
+ raise RuntimeError(code)
+if detail80 is None:failure80('VOD80_DETAIL_NOT_OPEN')
 capture('home80-vod-detail')
 xbmc.executebuiltin('Action(Select)',wait=False)
 player80=xbmc.Player()
 for _ in range(300):
  if player80.isPlayingVideo():break
  xbmc.sleep(50)
-else:raise RuntimeError('VOD80_BUTTON_NO_VIDEO')
+else:failure80('VOD80_BUTTON_NO_VIDEO')
 import json,time
 players80=json.loads(xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=80,method='Player.GetActivePlayers'))))['result']
 native80=json.loads(xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=80,method='Player.GetProperties',params=dict(playerid=players80[0]['playerid'],properties=['videostreams','audiostreams','time'])))))['result']

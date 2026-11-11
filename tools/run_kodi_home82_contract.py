@@ -85,7 +85,7 @@ def main():
         subprocess.run(docker+['cp',name+':/root/home75-live-5.png',str(report/'home75-live-5.png')],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         subprocess.run(docker+['cp',name+':/root/cache79-error.json',str(report/'cache79-error.json')],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         if version79:
-            for extra79 in ('home75-dynamic79-vod.png','home75-dynamic79-series.png','home75-cold79-vod.png','home75-cold79-series.png','post75-error.txt','home80-initial.png','home80-vod-detail.png','home80-vod-playing.png','home80-vod-return.png','home80-idle.png','vod80.json','guide80.json','home80-guide.png','idle80.json','debug80.json','render80-error.json','stability82-error.json'):
+            for extra79 in ('home75-dynamic79-vod.png','home75-dynamic79-series.png','home75-cold79-vod.png','home75-cold79-series.png','post75-error.txt','home80-initial.png','home80-vod-detail.png','home80-vod-playing.png','home80-vod-return.png','home80-idle.png','vod80.json','vod80-failure.json','guide80.json','home80-guide.png','idle80.json','debug80.json','render80-error.json','stability82-error.json'):
                 subprocess.run(docker+['cp',name+':/root/'+extra79,str(report/extra79)],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         try:
             observed82=json.loads(run('inspect',name,'--format','{{json .State}}',capture_output=True,text=True).stdout)
@@ -93,6 +93,8 @@ def main():
         except (subprocess.CalledProcessError,ValueError):pass
         subprocess.run(docker+['cp',name+':/root/.kodi/temp/kodi.log',str(report/'synthetic-kodi.log')],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         debug87=report/'synthetic-kodi.log'
+        failure80=report/'vod80-failure.json'
+        if failure80.is_file():print('VOD80_FAILURE '+failure80.read_text(),flush=True)
         if debug87.is_file():print('SYNTHETIC87_KODI_TAIL\n'+'\n'.join(debug87.read_text(errors='replace').splitlines()[-100:]),flush=True)
         state87=report/'container82.json'
         if state87.is_file():print('CONTAINER87 '+state87.read_text(),flush=True)

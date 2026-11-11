@@ -173,8 +173,9 @@ def archive_programme(event,value,body):
  tag=__import__('programme_lock89').key(event)
  if tag in records('programme') or time.monotonic()<_due.get(tag,0):return
  with _lock:
+  if tag in _pending:return
   if len(_pending)>=5 or sum(len(v[2]) for v in _pending.values())+len(body)>12*1024**2:return
-  _pending[tag]=(dict(event),proof,body,context())
+  _pending[tag]=(dict(event),proof,body,context(),0)
 
 def context():
  from artwork_config import read
@@ -185,10 +186,17 @@ def drain(cancel=lambda:False):
  if not enabled():return
  with _lock:
   if not _pending:return
-  tag=next(iter(_pending));event,proof,body,owner=_pending.pop(tag)
+  tag=next((k for k in _pending if time.monotonic()>=_due.get(k,0)),None)
+  if tag is None:return
+  event,proof,body,owner,attempt=_pending.pop(tag)
  if owner!=context() or tag!=__import__('programme_lock89').key(event):return
- try:store('programme',tag,body,dict(proof=proof),cancel)
- except (OSError,ValueError,TypeError,RuntimeError):_due[tag]=time.monotonic()+300
+ try:
+  store('programme',tag,body,dict(proof=proof),cancel);_due.pop(tag,None)
+ except (OSError,ValueError,TypeError,RuntimeError):
+  _due[tag]=time.monotonic()+min(300,30*2**attempt)
+  if attempt<2 and not cancel() and owner==context():
+   with _lock:
+    if len(_pending)<5 and sum(len(v[2]) for v in _pending.values())+len(body)<=12*1024**2:_pending.setdefault(tag,(event,proof,body,owner,attempt+1))
  while len(_due)>128:_due.pop(next(iter(_due)))
 
 def recover_programme(event):

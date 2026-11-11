@@ -128,3 +128,20 @@ class External89(Fixture,unittest.TestCase):
   refs=__import__('poster_store89').read(self.portal,'vod',[self.row]);count=self.module.ready_count(self.portal,'vod',[self.row],refs);self.assertEqual(count,1)
   status=__import__('home_loading85').update(self.portal,'vod',[self.row],'READY',images=count);self.assertEqual(status['state'],'READY')
   self.assertEqual(self.module.ready_count(self.portal,'vod',[self.row],{'1':dict(poster='smb://foreign.invalid/share/other.png')}),0)
+ def test_programme_archive_retries_are_bounded_and_resume_existing_bytes_after_network_return(self):
+  self.activate(True);self.options.update(programme_tmdb46=True,tmdb_research43=True)
+  event=dict(pid='p',sid='1',canonical='xml',title='Monk',start=int(time.time())-60,stop=int(time.time())+1800)
+  value=dict(source='tmdb_series',match='EXACT_UNIQUE_TV_TITLE66',role81='backdrop',source_url='https://image.tmdb.org/t/p/w1280/a.png')
+  self.module.archive_programme(event,value,png((960,540)));self.vfs.online=False
+  with mock.patch('time.monotonic',return_value=1000):self.module.drain()
+  self.assertEqual(len(self.module._pending),1)
+  with mock.patch('time.monotonic',return_value=1001),mock.patch.object(self.module,'store',side_effect=AssertionError('respect backoff')):self.module.drain()
+  self.vfs.online=True
+  with mock.patch('time.monotonic',return_value=1031):self.module.drain()
+  self.assertFalse(self.module._pending);self.assertTrue(self.module.records('programme'))
+  # A separate real event exhausts at most three attempts, never a retry loop.
+  self.module.archive_programme(dict(event,sid='2'),value,png((960,540)))
+  with mock.patch.object(self.module,'store',side_effect=OSError('offline')) as write:
+   for moment in (2000,2031,2092,2300):
+    with mock.patch('time.monotonic',return_value=moment):self.module.drain()
+   self.assertEqual(write.call_count,3);self.assertFalse(self.module._pending)
