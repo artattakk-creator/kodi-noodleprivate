@@ -47,3 +47,23 @@ Deshalb **nicht** behaupten, die private Drive-Datei werde bereits automatisch o
 ## Produktionsfreigabe
 
 Kein Merge, kein Release/Repo-Update, keine Annahme von Host-PASS als Android-PASS. Die direkte Google-Kontoverbindung bleibt von diesem Review-Entwurf getrennt. Benutzerdaten, BINGIE-Widgets, lokale TMDB-Datei und XCMate 0.1.29.88/0.1.29.89 bleiben unverändert.
+
+## Verbindliche Korrektur: Bild-EPG benötigt KEINE festen 2/6-GB-Freigrenzen
+
+**Benutzerpräzisierung, 11.11.2026:** Die bereits funktionierende Bild-EPG-Darstellung auf der Android-Box wird *dynamisch* geladen, obwohl das ausgewählte Volume nur ca. **218 MiB frei** meldete. Es ist deshalb **falsch**, Standard-Bild-EPG an mindestens 2 GiB und erweitertes Bild-EPG an mindestens 6 GiB freien Speicher zu binden. Solche harten Gates dürfen weder in Setup noch als XCMate-Laufzeit-Vorbedingung auftauchen.
+
+### Installer 0.5.28 – korrigierter Vertrag
+- **EPG ohne Bilder:** keine zusätzlichen Sendungsbilder; vorhandene Dateien werden nicht gelöscht.
+- **Standard-Bild-EPG:** `epg_show_thumbnails=true`, dynamisches/on-demand Laden der aktuell relevanten Bilder und Anbieter-/TVMaze-/TMDB-Quellen; **keine Mindestgröße, keine erzwungene permanente Speicherung**. Die vorhandene Einstellung `programme_art_local69` bleibt bei opt-in für Standard/Erweitert *unverändert*. Start mit ~218 MiB frei wird **nicht blockiert**.
+- **Erweitertes Bild-EPG:** ebenfalls *ohne* starren freien Mindestplatz auswählbar, mit zukünftig umfangreicherer dynamischer Anzeige nach separater XCMate-Implementierung. Aktuell ist dies eine gespeicherte Präferenz, **noch keine garantierte erweiterte Laufzeitfunktion**. Bei Bedarf kann die Runtime gezielt kleine, sichtbare Artworks zwischenspeichern, unter vorhandener Low-Space-Policy. Große On-Disk-Bestände optional, nie implizit.
+- **Platzanzeige:** `statvfs` auf dem XCMate-Profilvolume dient nur der **Information/Warnung**. Unbekannter Speicherplatz ist **kein Installationsabbruch**. Zudem kann das echte Artwork-Ziel auf einem anderen Volume liegen – die Installer-Prüfung allein beweist dessen freien Platz nicht.
+- **Lokale Auslagerung:** Optional empfehlen oder separat konfigurieren, wenn gewünscht und möglich; niemals Voraussetzung für Bild-EPG. Weiterhin keine globale Abschaltung der 1-GiB-Sicherheitsreserve für Schreibvorgänge, keine automatisierte Datenlöschung oder erzwungene DB-/Profile-Migration.
+- **Keine Cache-Quota vortäuschen:** `epg_art_target_mb528=0` bedeutet **keine vorab reservierte oder erzwungene Bildspeichermenge**. Weder 512 MiB noch 3 GiB sind Standard-/Erweitert-Pflicht. Volumenbasierte langlebige Bildablage und passende adaptive Quoten sind gesonderte XCMate-Runtime-Aufträge.
+- **Tokenimporte sind unabhängig:** GitHub/Google-Drive/Joomla/Webquellen-Optionen dürfen weder die EPG-Moduswahl noch den 48-Komponenten-Installer blockieren.
+
+### Abnahmetests
+- Bei gemeldeten **218 MiB frei** Standard-Bild-EPG **und** Erweitert auswählbar, ohne `INSUFFICIENT_SPACE` oder Installer-Abbruch.
+- Bei nicht messbarem Volume ebenfalls auswählbar, unter unverändertem Speicherschutz für optionale Disk-Writes.
+- Standard aktiviert Thumbnails, lässt `programme_art_local69` beim Erstsetup auf `false`; kein automatischer Voll-EPG-Bilderdownload.
+- Vorhandene lokale Cache-Einstellung `true` bleibt beim Wechsel zwischen Standard/Erweitert erhalten; explizite „ohne Bilder“-Wahl darf sie deaktivieren, ohne Dateien zu löschen.
+- Der ausgewählte Modus, die anderen Installer-Einstellungen, Xtream-Konfiguration, TMDB-Token und Fremdwidgets bleiben bei Neustart/Upgrade erhalten. Host und echte Android-Box getrennt berichten, `ANDROID_NOT_TESTED` solange nicht geprüft.
