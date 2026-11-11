@@ -1,5 +1,30 @@
 # XCMate 0.1.29.89 – Android-.88-Nacharbeit / Review
 
+## Maßgeblicher Abschlussstand vom 11.11.2026
+
+Die folgenden Angaben ersetzen die weiter unten dokumentierten Zwischenstände, offenen Zwischenläufe und alten Paketprüfsummen. Getesteter, eingefrorener Quellstand: **`0deaafa17bb5e5b5ad69c55cea3750a453a2a9db`**. Bestehender [Draft-PR #426](https://github.com/artattakk-creator/kodi-noodleprivate/pull/426), Master #425. Kein Merge und keine Veröffentlichung.
+
+**Paket:** [plugin.video.xtreammate-0.1.29.89.zip](test-builds/02989/plugin.video.xtreammate-0.1.29.89.zip), 851 Dateien, 4.654.964 Bytes. SHA256 **`5e2522ccb45e3a3274257c94ae440a1e5caee127cbeb8cf3f6fb814a1e5a874b`**. CRC, vollständiger Quellbytevergleich und byteidentischer Neubau bestanden.
+
+Abschluss 11.11.2026, 11:42 UTC: **22 automatische Check-Jobs SUCCESS** auf dem oben genannten Quellstand. Zwei zusätzliche ausschließlich per manueller Diagnoseoption startbare Jobs waren planmäßig SKIPPED; keine bestehenden Testmethoden oder regulären Pixel-/Neustartgates wurden übersprungen. Der nachfolgende Dokumentationscommit enthält ausschließlich diesen Bericht und die Paket-README; Programm, Tests, Workflows und ZIP bleiben exakt auf dem geprüften Stand. Dafür wird keine erneute identische CI angefordert.
+
+| Prüfung | Tatsächliches Ergebnis / Grenze |
+|---|---|
+| [Vollständige Actions-Hostsuite](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43007864915) | **3.763 Tests PASS**, 772,186 s; zusätzlich elf Brandingtests PASS, 17 PO-Kataloge gültig. |
+| Aktuelle gezielte Funktions-/Paket-/Scope-Prüfung | **52 PASS**, 5,412 s; darunter 19 Reminder- und 16 externe Bildspeicherfälle. |
+| [Native .89, 720p und 1080p](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43007865273) | **Beide PASS.** Linux-Kodi mit synthetischen Daten, keine Android-Abnahme. |
+| [Bestehende strenge .88-Pixelgates](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43007864926) | **720p und 1080p PASS.** Erster 720p-Lauf Prozessstatus 137 beim Neustart; unveränderte Wiederholung auf demselben Quellstand bestanden. Ursache des ersten Prozessabbruchs nicht abschließend bewiesen. |
+| [Kumulative native Home-/Player-Regression](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43007864912) | **Vollständig PASS:** 1080p, 720p einschließlich 30-Minuten-Standzeit sowie dedizierte Medien-/Stop-ACK-Prüfung. |
+| Physische Android-Box, USB/SD, echter Samba-Server | **ANDROID_NOT_TESTED**, siehe [Abnahmeplan](ANDROID_ABNAHME_02989_DE.md). |
+
+Die neue native .89-Prüfung behält die strengen bisherigen Pixel-, Portrait-, 306-s-Sticky-, 100-Navigationszyklen-, Fremdwidget- und Neustartgates. Zusätzlich werden 88 eigene Logodateien und ihre tatsächlichen nativen Listenreferenzen geprüft. Je fünf verschiedene eigene Film-/Serienposter sind warm und nach zwei vollständigen Kodi-Neustarts mit Bildpixeln nachgewiesen. Bei unveränderten Logos nach Neustart keine erneuten Downloads. Der echte native Erinnerungsdialog hat genau zwei Aktionen und Defaultfokus auf Verwerfen; die Fernbedienungsaktion verwirft dauerhaft, behält den Bookmark und erscheint nach beiden Neustarts nicht erneut. Der Test beweist weder einen realen Android-Streamwechsel noch reale NAS-/USB-Verfügbarkeit. Synthetische 218-MiB-Kapazität für die ausgewählten Logo-/Poster- und Timerphasen ist ausdrücklich injiziert; ursprüngliche 27-MiB-Bildgates, globale 1-GiB-Reserve und 32-MiB-Timerreserve bleiben erhalten.
+
+**Lokale Gegenprobe und rote Läufe:** Der vollständige lokale Lauf auf demselben aktuellen Stand war mit 3.763 Fällen, zwei Fehlerassertionen und 26 Fehlern **nicht grün**. Die betroffenen älteren Testmodule teilen veränderte `widget_data41`-/`iptv`-/Kodi-Mocks; einzeln in frischen Interpretern bestanden ihre unveränderten 55 Fälle. Die vollständige frische Actions-Suite oben bestand. Ältere lokale Großkatalogläufe mit SQLITE_FULL und ein falsch über Exec-Grenzen angelegtes RAM-Temp-Ziel gelten ebenfalls nicht als PASS. Der unveränderte Großtest auf aktuellem Quellstand bestand isoliert mit korrekt im selben Prozessumfeld angelegtem Temp-Ziel: je 200.005 Filme/Serien und 109.380.521 HTTP-Bytes, 621.731.840 SQLite-Bytes, 62,880 s. Frühere VOD-Fokusfehler, alte Bild-/Timergate-Fehler und der Prozessabbruch 137 bleiben historische rote Befunde.
+
+**Offene Grenzen:** Ursache aller tatsächlich verschwundenen Android-Fremdwidgets ohne Originalprofil/Generatorausgabe weiter nicht vollständig bewiesen. Die Konvertierung eines alten separat ausgelagerten .87-Sendungsbildarchivs mit physischem Mountnachweis auf ein anderes generisches Ziel ist **BLOCKED** und wird vor Konfigurationsänderung abgewiesen. Neue .89-Bildspeicher und die getestete .89-Poster-Rückmigration sind davon getrennt. Alle normalen Installationskanäle bleiben bei .88; Installer 0.5.26, Playerquellen, Tokenzugriff und freigegebene .88-Home-Geometrie unverändert. Keine Android-Installation vorgenommen.
+
+## Historie der Implementierung und Zwischenprüfungen
+
 Basis `c5b7c18ab2f8a9f6be740f3b8cd2f0d1814ec467`, veröffentlichte .88. Master #425. Neuer Entwicklungsbranch `fix/xcmate-02989-android88-p0-cache-mapping-widgets`. Kein Merge und keine Kanalveröffentlichung autorisiert. Setup 0.5.26, Tokenreader/-writer, .88-Home-Design und Playerquellen bleiben bytegleich; der EPG-Detaildialog erhält ausschließlich den ausdrücklich beauftragten P0-H-Merklistehinweis.
 
 ## Nachgewiesene Ursachen und Reparaturen
