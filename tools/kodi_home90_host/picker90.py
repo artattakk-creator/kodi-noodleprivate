@@ -21,15 +21,16 @@ def entries():
  count=xbmc.getInfoLabel('Container(6).NumItems')
  return [xbmc.getInfoLabel('Container(6).ListItemAbsolute('+str(i)+').Label') for i in range(int(count or 0))]
 def select(index):
- # The original Python-owned DialogSelect list is driven with native IR, not
- # a reconstructed ControlList proxy from a different script interpreter.
- until(lambda:int(xbmc.getInfoLabel('Container(6).CurrentItem') or 0)>0,'PICKER90_LIST_FOCUS_NOT_READY')
- current=int(xbmc.getInfoLabel('Container(6).CurrentItem'))-1
- for _ in range(abs(index-current)):
-  xbmc.executebuiltin('Action('+('Down' if index>current else 'Up')+')',wait=False);xbmc.sleep(70)
- xbmc.sleep(150)
- chosen=xbmc.getInfoLabel('Container(6).ListItem.Label')
- print('PICKER90_NATIVE_SELECTED '+json.dumps(dict(index=index,label=chosen,current=xbmc.getInfoLabel('Container(6).CurrentItem'))),flush=True)
+ # Kodi excludes the '..' parent from CurrentItem numbering. Match the
+ # actual highlighted label and send native Down/Select, never infer an index
+ # from that counter or reconstruct another interpreter's Python-owned list.
+ values=entries();target=values[index]
+ for _ in range(len(values)+1):
+  highlighted=xbmc.getInfoLabel('Container(6).ListItem.Label')
+  if highlighted.strip('[]')==target.strip('[]'):break
+  xbmc.executebuiltin('Action(Down)',wait=False);xbmc.sleep(100)
+ else:raise RuntimeError(('PICKER90_NATIVE_FOCUS_NOT_FOUND',target,highlighted))
+ print('PICKER90_NATIVE_SELECTED '+json.dumps(dict(index=index,label=highlighted,current=xbmc.getInfoLabel('Container(6).CurrentItem'))),flush=True)
  action('Select')
 def manager():
  xbmc.executebuiltin('RunScript(script.skinshortcuts,type=manage&group=mainmenu)',wait=False)

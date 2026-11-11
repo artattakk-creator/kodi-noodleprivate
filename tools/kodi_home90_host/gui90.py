@@ -28,8 +28,9 @@ def _source90(path,*args,**kwargs):
   epg_observe90=""" if not epg_case90:
   from epg_handoff63 import get as epg_get90
   ready90=[epg_get90(portal['id'],str(i)) for i in range(5)]
-  now90=xbmc.getInfoLabel('Container(2510).ListItem.Property(XCMate.ProgrammeTitle46)')
-  next90=xbmc.getInfoLabel('Container(2510).ListItem.Property(XCMate.ProgrammeNext46)')
+  now90=xbmc.getInfoLabel('Control.GetLabel(296781)')
+  bank90=home.getProperty('XCMate.Hero63.Active')
+  next90=home.getProperty('XCMate.Hero63.'+bank90+'.Next') if bank90 else xbmc.getInfoLabel('Container(2510).ListItem.Property(XCMate.ProgrammeNext46)')
   if all(v and v.get('now') and v.get('next') for v in ready90) and now90=='Synthetic event 0' and next90=='Next 0':
    epg_case90.update(ms=int((time.monotonic()-logo_started84)*1000),ready=5,native_text=True,player_started=xbmc.Player().isPlaying())
 """
