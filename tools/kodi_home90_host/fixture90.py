@@ -24,7 +24,14 @@ def install():
 seed86=seed
 
 def seed():
- seed86();install()
+ seed86()
+ # Build synthetic navigation data before the separately declared low-space
+ # injection. Importing 2,740 new rows under 27 MiB must remain forbidden.
+ from library_index import replace_catalog
+ groups90=[dict(category_id=str(i),category_name='Native group '+str(i)) for i in range(20)]
+ streams90=[dict(stream_id=str(i*1000+j+1),category_id=str(i),name='Native station '+str(j)) for i in range(20) for j in range(137)]
+ replace_catalog('navigation90','live',streams90,groups90)
+ install()
  import time,json,logo_store89,station_logos88,station_logos87
  from portals import get_active
  from widget_group46 import snapshot

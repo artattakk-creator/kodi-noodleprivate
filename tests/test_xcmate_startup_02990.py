@@ -148,5 +148,10 @@ class ForeignNavigation90(Fixture50,unittest.TestCase):
   import xml.etree.ElementTree as E
   known=json.loads((ROOT/'src/plugin.video.xtreammate/resources/bingie90_previous.json').read_bytes())['owned_media90'];gate=E.Element('visible');gate.text=known['condition'];control.insert(known['visible_index'],gate)
   self.assertEqual(digest(normal),'0e71911d2dbdbbca1f8f6b3757a3b821804655f7349c6da7c9d6767d89bb57e0')
+  wrapper=root.find("include[@name='widget_base']")
+  rule=json.loads((ROOT/'src/plugin.video.xtreammate/resources/bingie90_previous.json').read_bytes())['empty_native90']
+  outer=wrapper.find('control');gates=[v for v in outer.findall('visible') if v.text==rule['condition']]
+  self.assertEqual(len(gates),1);self.assertNotIn('IsUpdating',gates[0].text)
+  outer.remove(gates[0]);self.assertEqual(digest(wrapper),rule['sha256'])
   bad=dict(files);bad['xml/IncludesHomeWidgets.xml']=bad['xml/IncludesHomeWidgets.xml'].replace(b'<include name="XCMate80.MediaNormal">',b'<include name="XCMate80.MediaNormal"><param name="unreviewed" default="true" />')
   with self.assertRaisesRegex(ValueError,'NAV90_UNVERIFIED'):__import__('widget_skin90').upgrade(bad)

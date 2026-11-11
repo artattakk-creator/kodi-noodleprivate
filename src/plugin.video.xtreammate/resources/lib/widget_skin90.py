@@ -50,6 +50,20 @@ def upgrade(files):
   original=copy.deepcopy(node);gate=E.Element('visible');gate.text=prior['condition'];original.find('control').insert(prior['visible_index'],gate)
   if digest(original)!=prior['sha256']:raise ValueError('NAV90_UNVERIFIED')
  else:raise ValueError('NAV90_UNVERIFIED')
+ # Kodi scrolls its last focusable child to the total grouplist extent.
+ # Empty legacy wrappers otherwise retain 440px each and push the final
+ # populated row entirely outside the viewport. Keep identities/geometry.
+ prior=json.loads((Path(__file__).parents[1]/'bingie90_previous.json').read_text())['empty_native90']
+ n,end,node=_node(result[name],'include','name','widget_base')
+ control=node.find('control');matches=[v for v in control.findall('visible') if v.text==prior['condition']]
+ original=copy.deepcopy(node)
+ if matches:
+  if len(matches)!=1:raise ValueError('NAV90_UNVERIFIED')
+  original.find('control').remove(next(v for v in original.find('control').findall('visible') if v.text==prior['condition']))
+ if digest(original)!=prior['sha256']:raise ValueError('NAV90_UNVERIFIED')
+ if not matches:
+  E.SubElement(control,'visible').text=prior['condition']
+  result[name]=edit(result[name],[(n['start'],end,E.tostring(node,encoding='utf-8'))])
  return result
 
 def verify(files):

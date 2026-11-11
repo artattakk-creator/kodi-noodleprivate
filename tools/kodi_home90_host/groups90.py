@@ -10,7 +10,7 @@ def run(portal,pump,capture,check):
  streams=[dict(stream_id=str(i*1000+j+1),category_id=str(i),name='Native station '+str(j)) for i in range(20) for j in range(137)]
  selected=dict(portal,id='navigation90',start_group_id='0',start_stream_id='1')
  # A separate synthetic portal key leaves every Home catalogue untouched.
- library_index.replace_catalog('navigation90','live',streams,groups)
+ check(bool(library_index.Reader('navigation90').state('live')),'GROUP90_FIXTURE_CATALOGUE_NOT_SEEDED')
  client=SimpleNamespace(live_stream_url=lambda *a:'/root/navigation90.mp4',get_cached_catalog=lambda action:groups if action=='get_live_categories' else streams if action=='get_live_streams' else [],get_short_epg=lambda *a,**kw:[])
  nav=LiveNavigator(selected,'1',client)
  def until(predicate,reason,seconds=12):

@@ -262,6 +262,34 @@ class Fixture:
             url=lambda **kw:'plugin://plugin.video.xtreammate/?'+urllib.parse.urlencode({k:v for k,v in kw.items() if v is not None}),
             _add_dir=lambda label,url,**kw:self.added.append((url,ListItem(label),True)),
             _play_youtube_id=mock.Mock())
+        # End owned asynchronous work while this fixture's Kodi modules still
+        # exist. patch.dict restores sys.modules globally; a surviving daemon
+        # can otherwise import a half-retired xbmc/xbmcgui into the next case.
+        self.addCleanup(self.stop_background90)
+
+    def stop_background90(self):
+        import threading
+        owners=[];workers=[]
+        for name in ('widget_assets69','programme_requests68','programme_urls55',
+                     'programme_art46','epg_refresh74','work_requests86'):
+            owner=sys.modules.get(name)
+            if owner is None:continue
+            threads=[getattr(owner,'_thread',None)]+list(getattr(owner,'_workers',[]))
+            live=[t for t in threads if isinstance(t,threading.Thread) and t.is_alive()]
+            if live:owners.append(owner);workers.extend(live)
+        for owner in owners:
+            close=getattr(owner,'shutdown',None)
+            if close:close()
+        for worker in workers:
+            if worker is not threading.current_thread():worker.join(3)
+            assert not worker.is_alive(),'retired fixture worker: '+worker.name
+        decoded=sys.modules.get('decoded_assets88')
+        if decoded is not None:
+            thread=getattr(decoded,'_thread',None)
+            if thread is not None:
+                decoded.shutdown()
+                if thread is not threading.current_thread():thread.join(3)
+                assert not thread.is_alive(),'retired fixture decoded owner'
 
     def media_window(self,kind='vod'):
         w=self.media.MediaWindow('XCMateMedia.xml',str(ADDON),'Default','720p')

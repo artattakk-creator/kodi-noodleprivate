@@ -53,3 +53,28 @@ class NativeHarness90(unittest.TestCase):
   self.assertIn("check(hero_pixels>3000",bottom);self.assertIn("check(rail_pixels>1500",bottom)
   self.assertIn('START90_OWN_LOGO_RENDER_BINDING_MISMATCH',bottom);self.assertIn('epg_case90.update',bottom)
   self.assertIn('home,logo_case84,epg_case90)',outer)
+
+ def test_original_manager_reacquires_owner_when_busy_dialog_replaces_it(self):
+  tree=ast.parse((ROOT/'tools/kodi_home90_host/picker90.py').read_text())
+  node=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='manager')
+  attempts=[]
+  class NativeOwner:
+   def __init__(self,identity):self.identity=identity
+   def getControl(self,cid):
+    if self.identity==10138:raise RuntimeError('Non-Existent Control 211')
+    self.control=types.SimpleNamespace(selectItem=lambda index:attempts.append(('select',self.identity,cid,index)))
+    return self.control
+   def setFocusId(self,cid):attempts.append(('focus',self.identity,cid))
+  identities=iter((10138,13000))
+  def until(predicate,reason,*args):
+   for _ in range(4):
+    if predicate():return
+   raise RuntimeError(reason)
+  xbmc=types.SimpleNamespace(executebuiltin=lambda *a,**kw:None,getCondVisibility=lambda *a:True,sleep=lambda *a:None,getInfoLabel=lambda key:'1' if key.endswith('NumItems') else 'Home')
+  gui=types.SimpleNamespace(Window=NativeOwner,getCurrentWindowDialogId=lambda:next(identities))
+  module=types.SimpleNamespace(home_position90=lambda labels:labels.index('Home'))
+  ns=dict(xbmc=xbmc,xbmcgui=gui,until=until)
+  exec(compile(ast.Module(body=[node],type_ignores=[]),'original-manager90','exec'),ns)
+  with mock.patch.dict('sys.modules',{'picker_check90':module}):owner=ns['manager']()
+  self.assertEqual(owner.identity,13000)
+  self.assertEqual(attempts,[('focus',13000,211),('select',13000,211,0)])
