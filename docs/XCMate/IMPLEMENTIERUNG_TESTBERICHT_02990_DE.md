@@ -4,7 +4,7 @@
 
 Dokumentationsstand: 11.11.2026, 18:42 Europe/Berlin. Der abschließende Lauf einschließlich der langen nativen Gates wird im [PR-Checkbereich](https://github.com/artattakk-creator/kodi-noodleprivate/pull/431/checks) und im [Master #430](https://github.com/artattakk-creator/kodi-noodleprivate/issues/430) mit Commit und Artefakten festgehalten. Ein vorbereiteter oder laufender nativer Test wird hier ausdrücklich nicht als PASS ausgegeben.
 
-Master [#430](https://github.com/artattakk-creator/kodi-noodleprivate/issues/430), Draft-PR [#431](https://github.com/artattakk-creator/kodi-noodleprivate/pull/431). Kumulative Basis: `cb37de7103bd335a344c6738c33c4b5560ba2d4c`, veröffentlichte .89. Der Produktcode des derzeitigen ZIP wurde zuletzt in `81175f965dc75df928db51d2e4fa7842ec4886fb` geändert; spätere Commits ergänzen bzw. korrigieren den Testaufbau. Der aktuelle PR-Head ist separat im PR ersichtlich.
+Master [#430](https://github.com/artattakk-creator/kodi-noodleprivate/issues/430), Draft-PR [#431](https://github.com/artattakk-creator/kodi-noodleprivate/pull/431). Kumulative Basis: `cb37de7103bd335a344c6738c33c4b5560ba2d4c`, veröffentlichte .89. Der Produktcode des derzeitigen ZIP wurde zuletzt in `53af8b5c8db1e85d409fc97d993c5bd672d46158` geändert; spätere Commits ergänzen bzw. korrigieren den Testaufbau. Der aktuelle PR-Head ist separat im PR ersichtlich.
 
 Das .89-Android-Protokoll bleibt unverändert: dessen tatsächliche FAILs werden durch Hosttests nicht zu PASS. Sämtliche neuen Gerätefälle bleiben **ANDROID_NOT_TESTED**.
 
@@ -32,6 +32,8 @@ Das .89-Android-Protokoll bleibt unverändert: dessen tatsächliche FAILs werden
 - Begrenzte, datensparsame Diagnose: `startup_diag90.py`.
 - Version, Changelog und Installations-/Updatehinweis: `addon.xml`, `changelog.txt`. Bestehender Hinweisablauf zeigt .90 und die vorgenommenen Änderungen.
 
+Zusätzliche native Worker-Regression: Ein separater Logo-Retry konnte im gemeinsamen Deferred-Slot den DB-Pausenstatus überlagern und `_pending` nach DB-Freigabe belegt halten (`WORKER82_NOT_RECOVERED`). Logo-Fortsetzungen haben nun einen separaten begrenzten Due-Zustand im selben Worker. DB-Pausen-/Recovery-Quittungen werden nicht überschrieben; doppelte Admission während der Logo-Wartezeit bleibt gesperrt. 40 gezielte Start-/Worker-/Retention-/Mapping-/Scopefälle PASS. Der neue native Wiederholungslauf bleibt eigenständiges Gate.
+
 Keine neue Datenbankschema-Migration. Keine Deinstallation, Löschung, Neuindexierung oder Datenverschiebung als Reparatur. Player-/Exit-/Autoplaycode, Kodi-Keymaps, TMDB-Schreibcode, .88-Skin-/Hero-Geometrie und Installerquellen bleiben geschützt.
 
 ## Hosttests und Messwerte
@@ -53,7 +55,7 @@ Aktueller vollständiger lokaler Lauf: **3.797 Tests in 600,875 s: 3.796 PASS, 1
 
 Weiterer vollständiger lokaler Lauf: **3.799 Tests in 628,162 s: 3.798 PASS, 1 ERROR, keine Skips**. Der große HTTP-/SQLite-Fall besteht darin mit realem TMPDIR/SQLITE_TMPDIR. Der verbleibende Fehler trat in der Reminder-Testinitialisierung auf (`xbmc.LOGDEBUG` im globalen Teststub nicht vorhanden), vor der Produktassertion. Unveränderter isolierter Wiederholungstest: **1 PASS in 0,055 s**. Das wird ausdrücklich nicht als fehlerfreier Gesamtlauf gewertet.
 
-Die danach ergänzten UTF-8-/Home-Auswahl-Harnessprüfungen wurden separat ausgeführt; die aktuelle Gesamtdiscovery umfasst **3.800 Tests**. Alle fünf Harnessprüfungen: **5 PASS**. Der vollständige unveränderte Standardaufruf auf GitHub Actions ist weiterhin ein eigenständiges Gate; die Kombination von lokalem Lauf und gezieltem Wiederholungstest wird nicht als ein einziger fehlerfreier Standardlauf ausgegeben.
+Die danach ergänzten UTF-8-/Home-Auswahl-Harnessprüfungen wurden separat ausgeführt; die aktuelle Gesamtdiscovery umfasst **3.801 Tests**. Alle fünf Harnessprüfungen: **5 PASS**. Der vollständige unveränderte Standardaufruf auf GitHub Actions ist weiterhin ein eigenständiges Gate; die Kombination von lokalem Lauf und gezieltem Wiederholungstest wird nicht als ein einziger fehlerfreier Standardlauf ausgegeben.
 
 Frühere vollständige Probeläufe bleiben nachvollziehbar: 3.786 Tests/25 fehlgeschlagene Prüfungen vor Korrektur veralteter Versions-, Chargen-, Policy- und Paketannahmen; ein späterer Lauf auf dem kleinen lokalen Tempvolume meldete 21 FAIL/75 ERROR einschließlich fehlender Testabhängigkeiten. Diese Ergebnisse werden nicht als PASS gezählt. Für die Wiederholung wurden die bereits vorhandenen Testabhängigkeiten eingebunden und ausreichend große reale temporäre Speicherbereiche verwendet; die bestehenden Schutzreserven und Testassertions blieben erhalten.
 
@@ -113,10 +115,10 @@ Keine dieser Zeilen behauptet die vollständige Behebung auf der RK3528-Box. Die
 [ZIP](test-builds/02990/plugin.video.xtreammate-0.1.29.90.zip), [SHA256-Datei](test-builds/02990/plugin.video.xtreammate-0.1.29.90.zip.sha256).
 
 ```text
-4a94aa24a85d96881d746268449ac4e44799580d256ba2b3e9e046d2674e0a46
+d3a11def37382e26f771bae43d76067947f4d8284298a8b96014945391fff699
 ```
 
-4.663.138 Bytes, 855 Dateien. CRC PASS; jeder ZIP-Inhalt gegen den aktuellen Add-on-Source geprüft; zweiter Build byteidentisch. Keine `.log`, `.sqlite`, `.db` oder `.pyc` im Paket.
+4.663.243 Bytes, 855 Dateien. CRC PASS; jeder ZIP-Inhalt gegen den aktuellen Add-on-Source geprüft; zweiter Build byteidentisch. Keine `.log`, `.sqlite`, `.db` oder `.pyc` im Paket.
 
 Scope-Gate prüft alle 851 vorherigen Source-Dateien gegen die .89-Basis oder genau freigegebene Byteänderungen sowie alle 361 vorherigen Testdateien mit ihren vorhandenen Testmethoden und Skipbedingungen. Bestehende Assertions wurden für beauftragte geänderte Semantik angepasst (Version .90; acht priorisierte Versuche; getrennte Live-/Medienpolicy), nicht entfernt.
 
