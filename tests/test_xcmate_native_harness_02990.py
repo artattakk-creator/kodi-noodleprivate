@@ -1,9 +1,19 @@
 """Execute native wrapper composition on the host before remote Kodi dispatch."""
-import builtins,unittest
+import ast,builtins,types,unittest
 from pathlib import Path
 from unittest import mock
 ROOT=Path(__file__).resolve().parents[1]
 class NativeHarness90(unittest.TestCase):
+ def test_original_picker_parent_is_not_counted_as_only_addon(self):
+  source=ast.parse((ROOT/'tools/kodi_home90_host/picker90.py').read_text())
+  node=next(n for n in source.body if isinstance(n,ast.FunctionDef) and n.name=='entries')
+  for labels in (['..','XCMate  >'],['None','Add-On  >'],[]):
+   def label(key):
+    if key.endswith('.NumItems'):return str(len(labels)-(1 if labels and labels[0]=='..' else 0))
+    index=int(key.split('ListItemAbsolute(')[1].split(')')[0]);return labels[index] if index<len(labels) else ''
+   ns={'xbmc':types.SimpleNamespace(getInfoLabel=label)}
+   exec(compile(ast.Module(body=[node],type_ignores=[]),'picker90-entries','exec'),ns)
+   self.assertEqual(ns['entries'](),labels)
  def test_native_wrapper_composition_keeps_pixel_gates_and_supplies_early_epg_receipt(self):
   mapping={'/base_gui89.py':'tools/kodi_home89_host/gui89.py','/base_gui88.py':'tools/kodi_home88_host/gui88.py','/base_gui86.py':'tools/kodi_home86_host/gui86.py','/base_gui84.py':'tools/kodi_home84_host/gui84.py'}
   saved_read=Path.read_text;captured={}

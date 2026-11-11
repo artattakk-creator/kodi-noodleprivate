@@ -16,7 +16,7 @@ base=base.replace(line,"mounts.extend([(root/'tools/kodi_home90_host/manual90.py
 prefix90="import xbmcgui as _gui90\nif _gui90.Window(10000).getProperty('XCMate.Nav90.Sequence').isdigit():\n from fixture66 import observe_nav90\n observe_nav90()\n"
 setup90="\n patch90=report/'observe90.py';patch90.write_text(\"from pathlib import Path\\np=Path('/root/.kodi/addons/plugin.video.xtreammate/default.py')\\np.write_bytes(\"+repr(prefix90.encode())+\"+p.read_bytes())\\n\")\n mounts.append((patch90,'/observe90.py'))\n start=start.replace('Xvfb :99','python3 /observe90.py\\nXvfb :99');(report/'start.sh').write_text(start)\n"
 base=base.replace("cmd=['run','-d','--name',name]",setup90+" cmd=['run','-d','--name',name]")
-base=base.replace("if 'HERO86_RECEIVER ' in line86 or 'HERO86_FAILED_FRAME ' in line86:","if 'HERO86_RECEIVER ' in line86 or 'HERO86_FAILED_FRAME ' in line86 or 'FIXTURE90_ROUTE ' in line86:")
+base=base.replace("if 'HERO86_RECEIVER ' in line86 or 'HERO86_FAILED_FRAME ' in line86:","if 'HERO86_RECEIVER ' in line86 or 'HERO86_FAILED_FRAME ' in line86 or 'FIXTURE90_ROUTE ' in line86 or 'NAV90_OBSERVE ' in line86 or '[NAV]' in line86:")
 base=base.replace('for i in (1,2):','for i in (1,2,3):').replace('if i==2:','if i>1:')
 base=base.replace("'reminder89.json')","'reminder89.json','startup90.json','groups90.json','seed90.json','manual90-proof.json')")
 base=base.replace("'foreign-restart2.log')","'foreign-restart2.log','restart3.log','foreign-restart3.log')")

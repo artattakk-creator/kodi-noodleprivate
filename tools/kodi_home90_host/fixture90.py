@@ -38,6 +38,12 @@ def observe_nav90():
   if sequence.isdigit() and len(sequence)<=3:home.setProperty('XCMate.Nav86.State',json.dumps(dict(sequence=sequence,mode=view.mode,kind=view.kind,closed=view._closed,generation=view._generation,actions=len(getattr(view,'actions',[])),rows=len(view.rows),focus=view.getFocusId())))
   return result
  observed.observed90=True;MediaView.pump=observed
+ action90=MediaView.onAction
+ def observe_action90(view,action):
+  before=view.mode;result=action90(view,action)
+  print('NAV90_OBSERVE '+json.dumps(dict(action=action.getId(),before=before,after=view.mode,closed=view._closed,leaving=view._leaving,window=xbmcgui.getCurrentWindowId(),sequence=xbmcgui.Window(10000).getProperty('XCMate.Nav90.Sequence'))),flush=True)
+  return result
+ MediaView.onAction=observe_action90
 original_run90=run
 def run():
  import sys,json

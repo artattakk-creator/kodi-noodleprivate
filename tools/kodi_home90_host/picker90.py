@@ -23,8 +23,11 @@ def until(predicate,reason,seconds=30):
  raise RuntimeError((reason,xbmcgui.getCurrentWindowId(),xbmcgui.getCurrentWindowDialogId(),xbmc.getInfoLabel('System.CurrentControl')))
 def action(value):xbmc.executebuiltin('Action('+value+')',wait=False);xbmc.sleep(250)
 def entries():
- count=xbmc.getInfoLabel('Container(6).NumItems')
- return [xbmc.getInfoLabel('Container(6).ListItemAbsolute('+str(i)+').Label') for i in range(int(count or 0))]
+ count=int(xbmc.getInfoLabel('Container(6).NumItems') or 0)
+ # Kodi's NumItems excludes the parent entry while ListItemAbsolute includes
+ # it. A sole real add-on therefore has NumItems=1 at absolute position 1.
+ if xbmc.getInfoLabel('Container(6).ListItemAbsolute(0).Label')=='..':count+=1
+ return [xbmc.getInfoLabel('Container(6).ListItemAbsolute('+str(i)+').Label') for i in range(count)]
 def stable_entries():
  previous=None;since=time.monotonic();deadline=since+12
  while time.monotonic()<deadline:
