@@ -28,7 +28,12 @@ class Scope89(unittest.TestCase):
   names=['widget_skin88.py','widget_skin87.py','programme_window46.py','live_exit.py','playback_exit.py','exit_jobs.py','native_stop41.py','hero_art86.py']
   for name in names:
    path='src/plugin.video.xtreammate/resources/lib/'+name
-   self.assertEqual((ROOT/path).read_bytes(),subprocess.check_output(['git','show',BASE+':'+path],cwd=ROOT),name)
+   actual=(ROOT/path).read_bytes()
+   # P0-H explicitly adds the current-programme bookmark-only explanation.
+   # Keep every other approved layout/player byte protected; this one delta
+   # must match the separately reviewed exact patch, not an arbitrary rewrite.
+   if name=='programme_window46.py':actual=without_stabilization89(actual,path)
+   self.assertEqual(actual,subprocess.check_output(['git','show',BASE+':'+path],cwd=ROOT),name)
 
  def test_native89_all_generated_wrapper_layers_compile_and_keep_pixel_gates(self):
   source=(ROOT/'tools/kodi_home89_host/gui89.py').read_text().split("exec(compile(base,'/base_gui88.py','exec'),globals())")[0]

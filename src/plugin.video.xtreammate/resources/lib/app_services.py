@@ -212,6 +212,7 @@ def poll():
     poll_widget_lists()
     from catalog_progress73 import poll as poll_catalog73
     poll_catalog73()
+    __import__('reminder_ui89').poll()
     from guide_backup44 import poll as poll_guide_backup
     poll_guide_backup()
     from app_entry import observe

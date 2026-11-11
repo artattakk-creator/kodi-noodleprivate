@@ -28,7 +28,7 @@ def main():
  base=root/'tools/kodi_home84_host'
  mounts=[(root/'tools/kodi_home74_host','/work'),(root/'src/plugin.video.xtreammate','/xcmate'),(pristine/'skin.titan.bingie.mod','/skin'),(candidate,'/candidate'),(root/'tools/kodi_home86_host/fixture86.py','/fixture84.py'),(base/'fixture84.py','/base_fixture84.py'),(root/'tools/kodi_home89_host/gui89.py','/work/gui66.py'),(root/'tools/kodi_home86_host/gui86.py','/base_gui86.py'),(root/'tools/kodi_home87_host/spec87.py','/spec87.py'),(root/'tools/kodi_home87_host/setup87.py','/setup87.py'),(root/'tools/kodi_home87_host/foreign87.py','/foreign87.py'),(base/'gui84.py','/base_gui84.py'),(root/'tools/kodi_home87_host/probe87.py','/work/probe.py'),(base/'probe84.py','/base_probe84.py'),(root/'tools/kodi_home86_host/tls86.py','/work/tls69.py'),(base/'skin84.py','/work/skin_fixture66.py'),(root/'tools/kodi_home74_host/skin_fixture66.py','/base_skin78.py'),(root/'tools/kodi_home78_host/skin_fixture78.py','/skin78.py'),(report/'start.sh','/work/start.sh')]
  mounts.extend([(root/'tools/kodi_home86_host/icons86.py','/icons86.py'),(root/'tools/kodi_home86_host/navigation86.py','/navigation86.py')])
- mounts.extend([(root/'tools/kodi_home88_host/gui88.py','/base_gui88.py'),(root/'tools/kodi_home89_host/logo89.py','/logo89.py')])
+ mounts.extend([(root/'tools/kodi_home88_host/gui88.py','/base_gui88.py'),(root/'tools/kodi_home89_host/logo89.py','/logo89.py'),(root/'tools/kodi_home89_host/reminder89.py','/reminder89.py')])
  cmd=['run','-d','--name',name]
  for source,target in mounts:cmd+=['--mount','type=bind,src='+str(source)+',dst='+target+',readonly']
  cmd+=['-e','XCMATE_RES74='+a.resolution,'xcmate-kodi21-helper57-contract','sh','/work/start.sh']
@@ -50,7 +50,7 @@ def main():
    files=json.loads(run('exec',name,'python3','-c',"import json;from pathlib import Path;print(json.dumps([str(p) for p in Path('/root').glob('visible84-*.png')]))",capture_output=True,text=True).stdout)
    for file in files:copy(file,Path(file).name)
   except (ValueError,subprocess.CalledProcessError):pass
-  for file in ('gui66-error.txt','post75-error.txt','tls69-requests.jsonl','visible84.json','texture84-debug.json','poster86-value.json','poster86-state.json','navigation86.json','icons86.json'):
+  for file in ('gui66-error.txt','post75-error.txt','tls69-requests.jsonl','visible84.json','texture84-debug.json','poster86-value.json','poster86-state.json','navigation86.json','icons86.json','reminder89.json'):
    subprocess.run(docker+['cp',name+':/root/'+file,str(report/file)],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
   subprocess.run(docker+['cp',name+':/root/.kodi/temp/kodi.log',str(report/'synthetic-kodi.log')],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
   for evidence86 in ('poster86-value.json','poster86-state.json','navigation86.json','icons86.json'):
@@ -68,7 +68,7 @@ def main():
   # Synthetic screenshots only: make two actual native PNGs recoverable for
   # human review even when signed Actions artifact downloads are unavailable.
   import base64
-  for picture87 in ('visible84-hero86-final.png','visible84-logo89-warm.png','visible84-logo89-cold.png','visible84-foreign87-warm-1-7.png','visible84-sticky88-305.png'):
+  for picture87 in ('visible84-hero86-final.png','visible84-logo89-warm.png','visible84-logo89-cold.png','visible84-poster89-vod-warm.png','visible84-poster89-series-warm.png','visible84-poster89-vod-cold.png','visible84-poster89-series-cold.png','visible84-foreign87-warm-1-7.png','visible84-sticky88-305.png'):
    path87=report/picture87
    if path87.is_file() and path87.stat().st_size<=512*1024:
     raw87=path87.read_bytes();print('PNG87 '+picture87+' '+hashlib.sha256(raw87).hexdigest()+' '+base64.b64encode(raw87).decode(),flush=True)

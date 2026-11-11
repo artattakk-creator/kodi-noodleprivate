@@ -5345,3 +5345,51 @@ msgstr "Token einmalig sicher einrichten (Phase 1)"
 msgctxt "#37146"
 msgid "One-time token import after administrator approval? This box receives the central TMDB token. A compromised device can extract it; revoking the device does not invalidate a token copy already received. The gateway remains the stronger alternative."
 msgstr "Einmaliger Tokenimport nach Adminfreigabe? Diese Box erhält den zentralen TMDB-Token. Ein kompromittiertes Gerät kann ihn auslesen; sein Gerätewiderruf sperrt keine bereits erhaltene Tokenkopie. Gateway bleibt die stärkere Alternative."
+
+msgctxt "#37150"
+msgid "Automatic catalogue refresh is off. Update the catalogue manually when needed; EPG refresh is configured separately."
+msgstr "Automatische Katalogaktualisierung ist aus. Katalog bei Bedarf manuell aktualisieren; EPG-Aktualisierung ist getrennt eingestellt."
+
+msgctxt "#37151"
+msgid "Automatic catalogue warm-up is on. Successful full synchronisations are listed in the report; EPG refresh is separate."
+msgstr "Automatisches Katalog-Vorladen ist an. Erfolgreiche vollständige Abgleiche stehen im Bericht; EPG-Aktualisierung ist getrennt."
+
+msgctxt "#37152"
+msgid "Switch now"
+msgstr "Jetzt umschalten"
+
+msgctxt "#37153"
+msgid "Dismiss"
+msgstr "Verwerfen"
+
+msgctxt "#37154"
+msgid "Programme reminder"
+msgstr "Sendungserinnerung"
+
+msgctxt "#37155"
+msgid "Programme already started: watchlist entry saved without a new reminder."
+msgstr "Sendung bereits gestartet: auf Merkliste gespeichert, ohne neuen Erinnerungstimer."
+
+msgctxt "#37156"
+msgid "The reminder could not switch to this channel."
+msgstr "Die Erinnerung konnte nicht auf diesen Sender umschalten."
+
+msgctxt "#37157"
+msgid "Saving your choice…"
+msgstr "Auswahl wird gespeichert…"
+
+msgctxt "#37158"
+msgid "Dismissed"
+msgstr "Verworfen"
+
+msgctxt "#37159"
+msgid "Switch requested"
+msgstr "Umschalten angefordert"
+
+msgctxt "#37161"
+msgid "Aired"
+msgstr "Ausgestrahlt"
+
+msgctxt "#37162"
+msgid "Watchlist only"
+msgstr "Nur Merkliste"

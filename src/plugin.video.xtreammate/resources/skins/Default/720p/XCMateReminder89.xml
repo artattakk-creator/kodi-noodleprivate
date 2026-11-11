@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+ <defaultcontrol always="true">611</defaultcontrol>
+ <coordinates><system>1</system></coordinates>
+ <controls>
+  <control type="image"><left>220</left><top>180</top><width>840</width><height>360</height><texture>special://home/addons/plugin.video.xtreammate/resources/media/programme46/panel.png</texture></control>
+  <control type="label" id="601"><left>250</left><top>200</top><width>780</width><height>36</height><font>font16</font><textcolor>FFFFFFFF</textcolor></control>
+  <control type="label" id="602"><left>250</left><top>242</top><width>780</width><height>32</height><font>font13</font><textcolor>FFE0E8EF</textcolor></control>
+  <control type="textbox" id="603"><left>250</left><top>280</top><width>780</width><height>100</height><font>font13</font><textcolor>FFFFFFFF</textcolor></control>
+  <control type="label" id="604"><left>250</left><top>386</top><width>780</width><height>26</height><font>font12</font><textcolor>FFBCC7D2</textcolor></control>
+  <control type="button" id="610"><left>250</left><top>438</top><width>370</width><height>58</height><font>font13</font><textcolor>FFFFFFFF</textcolor><texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/setup_focus.png</texturefocus><texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/programme46/logo-back.png</texturenofocus><onleft>611</onleft><onright>611</onright><onup>611</onup><ondown>611</ondown></control>
+  <control type="button" id="611"><left>650</left><top>438</top><width>370</width><height>58</height><font>font13</font><textcolor>FFFFFFFF</textcolor><texturefocus>special://home/addons/plugin.video.xtreammate/resources/media/setup_focus.png</texturefocus><texturenofocus>special://home/addons/plugin.video.xtreammate/resources/media/programme46/logo-back.png</texturenofocus><onleft>610</onleft><onright>610</onright><onup>610</onup><ondown>610</ondown></control>
+ </controls>
+</window>

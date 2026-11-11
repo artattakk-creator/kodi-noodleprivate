@@ -184,31 +184,35 @@ def run_next(cancel=lambda: False):
                 if exc.code not in ('SOURCE_EMPTY','FILTERED_SOURCE'): raise
                 # Empty API response never erases a previously valid generation.
                 # Record explicit empty evidence; retained rows remain readable.
-                result=dict(read=getattr(exc,'counts72',{}).get('read',0),stored=0)
+                result=dict(read=getattr(exc,'counts72',{}).get('read',0),stored=0,retained=__import__('catalog_commit89').retained(session.pid,kind,group['category_id'],session.filename),deleted=0,code89=exc.code+'_RETAINED')
                 job.setdefault('empty',[])
                 job['empty'].append([kind,group['category_id']])
             totals=dict(job['counts']);totals[kind]+=result['stored']
             delta81=dict(job.get('delta81',{}));part81=dict(delta81.get(kind,{}))
-            for field81 in ('new','changed','unchanged','read'):part81[field81]=part81.get(field81,0)+int(result.get(field81,0))
+            for field81 in ('new','changed','unchanged','read','retained','deleted'):part81[field81]=part81.get(field81,0)+int(result.get(field81,0))
             delta81[kind]=part81
-            api81=dict(job.get('last_api_success81',{}));api81[kind]=time.time()
+            api81=dict(job.get('last_api_success81',{}))
+            if result.get('read',0)>0:api81[kind]=time.time()
             job=_update(job['id'], cursor=job['cursor']+1, processed=job['processed']+result['read'],
                         committed=job['committed']+int(result['stored']>0), counts=totals,
                         empty=job.get('empty',[]), attempts=0,delta81=delta81,last_api_success81=api81)
             try:
-                from widget_refresh45 import publish
-                from widget_data41 import snapshot
-                rows,code=snapshot(portal,kind,background=True)
-                publish(portal,kind,rows,code=code)
-            except (ImportError,AttributeError,OSError,RuntimeError,ValueError,TypeError): pass
+                receipt89=__import__('catalog_commit89').published(portal,kind)
+            except (ImportError,AttributeError,OSError,RuntimeError,ValueError,TypeError):receipt89=dict(code='WIDGET_PENDING')
+            groups89=list(job.get('group_results89',[]));groups89.append(dict(kind=kind,group_id=str(group['category_id']),code=result.get('code89','READBACK_OK'),**{k:int(result.get(k,0)) for k in ('new','changed','unchanged','retained','deleted','read')}))
+            receipts89=dict(job.get('widgets89',{}));receipts89[kind]=receipt89
+            # Preserve a successful index commit even if the skin is not yet
+            # consuming it. Retrying a widget is not another provider scan.
+            job=_update(job['id'],widgets89=receipts89,group_results89=groups89[-512:])
         if stopped(): raise SyncError('CANCELLED')
         if job['cursor'] == len(job['units']):
             readback={k:Reader(session.pid,session.filename).page(k,limit=1)[1] for k in session.kinds}
+            readback89={k:dict(count=readback[k],generation=(Reader(session.pid,session.filename).state(k) or {}).get('revision')) for k in session.kinds}
             epgcode='NOT_REQUESTED'
             if job.get('epg'):
                 from epg import request_refresh
                 epgcode='REQUESTED' if request_refresh(session.pid,portal,force=True) else 'DEFERRED'
-            _update(job['id'],state='DONE',resume=False,code='',readback=readback,epg_state=epgcode,last_full_sync81={k:time.time() for k in session.kinds if job.get('groups_found',{}).get(k,0)>0 and not any(a==k for a,c in job.get('empty',[]))})
+            _update(job['id'],state='DONE',resume=False,code='',readback=readback,readback89=readback89,epg_state=epgcode,last_full_sync81={k:time.time() for k in session.kinds if job.get('groups_found',{}).get(k,0)>0 and not any(a==k for a,c in job.get('empty',[]))})
         else: _update(job['id'], state='WAITING', code='')
         return True
     except Exception as exc:

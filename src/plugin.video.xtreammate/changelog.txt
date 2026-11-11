@@ -3,6 +3,9 @@
 - Schnellere manuelle TMDB-/TVMaze-Suche, ausgewähltes Werk erneut prüfen, gemeinsames Zeitbudget und atomarer Mapping-Readback.
 - Kleine Bildreferenzjournale unter eigener sicherer Metadatenreserve erhalten; EPG-Batches gegen parallele Leser absichern.
 - Gültige Home-Property-Widgetpfade reparieren und eigene Aktualisierungen von fremden Widgetreihen trennen.
+- Film-/Serienposter dauerhaft begrenzt lokal halten; Katalog-Commit, Readback und Widget-Revision verbinden.
+- Bestätigtes Hero-Bild für dieselbe Sendung sperren; keine TMDB-zu-XMLTV-Wechsel durch kurzlebige Freigaben.
+- Sendung merken mit bestehendem Erinnerungstimer verbinden: fünf Minuten vorher genau Jetzt umschalten / Verwerfen, ohne Auto-Tune oder Snooze.
 - Android-Abnahme offen; .88-Design, Nutzerdaten und alle veröffentlichten Kanäle bleiben unverändert.
 
 0.1.29.88 – Android-P0-Testkandidat, nicht veröffentlicht

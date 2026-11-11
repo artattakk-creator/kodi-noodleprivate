@@ -20,3 +20,26 @@ Vorher private Sicherung des Kodi-Profils; Senderzahl/Startgruppe, Provider, TMD
 | A89-12 Bestandsschutz | Live/Film/Serie starten, Back/Stop, Autoplay/Resume testen. .88-Home-Design, Widgets, Provider, EPG-Mappings, TMDB-Token und Installer .5.26 unverändert. | ANDROID_NOT_TESTED |
 
 Ergebnis je Fall mit PASS/FAIL/ANDROID_NOT_TESTED, Version, Gerät, Kodi-Version, Dauer und redigiertem Diagnosecode dokumentieren. Echte Android-Sichtbarkeit darf nicht aus Hosttests abgeleitet werden.
+
+## P0-F / P0-G – zusätzliche Pflichtfälle
+
+| Fall | Ablauf / tatsächliches PASS-Kriterium | Status |
+|---|---|---|
+| A89-F1 | Passendes TMDB-Herobild sichtbar; später XMLTV-/negative Treffer nach 5/30/45/90 s, harmloser EPG-Refresh und Speicherblockade. Gleiche Sendung behält denselben verifizierten Bildinhalt über fünf Minuten. | ANDROID_NOT_TESTED |
+| A89-F2 | Explizit neues Bild zuweisen, echte Programmgrenze, Kanal-/Profilwechsel und Quell-Opt-out: korrekter Austausch/Entsperren. Fehlerhafte Datei nicht stur festhalten. | ANDROID_NOT_TESTED |
+| A89-G1 | Automatik aus: keinerlei heimlicher Vollscan. „Katalog aktualisieren“ manuell; zwei neue Filme/zwei neue Serien, geändertes Providercover. DB-Generation/Delta/Readback und echte Widgetanzeige unabhängig nachweisen. | ANDROID_NOT_TESTED |
+| A89-G2 | Fünf Film- und fünf Seriencover stehen lassen. Nach 5/30/45/90 s sowie Fehlrefresh, SQL-Lock und METADATA_WRITE_DEFERRED dieselben lokalen Cover sichtbar. | ANDROID_NOT_TESTED |
+| A89-G3 | Vollständiger Kodi-Neustart: dieselben fünf Poster je Reihe aus eigenem verifiziertem Cache verwenden. 218-MiB-Fall separat von großzügigem Speichervolume prüfen; RAM-only niemals als persistiert zählen. | ANDROID_NOT_TESTED |
+| A89-G4 | Leere, abgebrochene, falsche oder ausgefallene Providerantwort: vorhandene Titel/Serien und Cover bleiben; Status zeigt Retention statt Erfolg einer leeren Generation. | ANDROID_NOT_TESTED |
+| A89-G5 | Bestätigte neue Posterrevision betrifft nur richtigen Provider-SID/Medientyp; sichtbare Fremdwidgets, .88-Layout, Fokus und Benutzerkonfiguration unverändert. | ANDROID_NOT_TESTED |
+
+## P0-H – Erinnerung (alle ANDROID_NOT_TESTED)
+
+- H89-01: Zukünftige echte Sendung in Mini-/Groß-EPG-Details merken; genau ein Timer fünf Minuten vorher, Merkliste erhalten.
+- H89-02: Mit laufendem Stream und IR-Fernbedienung genau zwei Aktionen lesen/fokussieren: Jetzt umschalten und Verwerfen. Ohne Wahl läuft der Stream weiter.
+- H89-03: Jetzt umschalten startet exakt den gewählten Sender einmal über den bestehenden Resolver. Bei verschwundenem Sender/EPG-Zeitverschiebung klare Fehlermeldung, kein fremder Stream.
+- H89-04: Verwerfen schließt und bleibt nach Kodi-Neustart erledigt; Merklisteneintrag bleibt erhalten.
+- H89-05: Zurück, unbeantworteter Timeout und Skinwechsel bewirken kein Umschalten und keine Popup-Schleife.
+- H89-06: Nicht mehr merken entfernt eigenen Eintrag und storniert ausstehenden/aktiven Timer; erneutes Merken erzeugt genau einen Timer.
+- H89-07: Zwei gleichzeitig fällige Sendungen nacheinander behandeln; alte Guide-/Legacy-Erinnerung und neuer Detailbutton dürfen keine Dubletten erzeugen.
+- H89-08: Laufende Sendung nur merken mit verständlichem Hinweis; beendete Alarme nach Neustart als verpasst behandeln. Kein Wake-up-Versprechen. Fremde Modaldialoge nicht schließen.

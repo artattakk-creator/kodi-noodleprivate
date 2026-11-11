@@ -84,11 +84,13 @@ def read(filename,key):
     return None
 
 def store(filename,key,rows,revision=None):
-    if not __import__('artwork_display84').metadata_allowed():return
+    if not __import__('artwork_display84').metadata_allowed(small89=True):return
     temp=None
     try:
         data=json.dumps(dict(policy=key,at=time.time(),rows=rows,revision44=revision))
         if len(data.encode())>MAX_BYTES:return
+        if len(data.encode())<=512*1024:__import__('metadata_store89').check(filename,len(data.encode())+65536)
+        elif not __import__('artwork_display84').metadata_allowed():return
         fd,temp=tempfile.mkstemp(prefix='.widget41-',dir=os.path.dirname(filename))
         with os.fdopen(fd,'w',encoding='utf-8') as f:f.write(data)
         os.replace(temp,filename)
@@ -135,9 +137,12 @@ def _snapshot84(portal,kind,background=False):
             from widget_group46 import snapshot as complete_group
             rows=complete_group(portal) if cid else []
         else:rows=reader.small(kind,limit=24)
+        if old and old['rows'] and not rows and kind in ('vod','series'):
+            trace(kind,'UNAVAILABLE',len(old['rows']),started,True);return old['rows'],'CACHE'
         after=reader.state(kind)
         if not after or [after.get('revision'),after.get('updated')]!=revision:
             raise IndexReadError('REVISION_CHANGED')
+        __import__('widget_snapshot85').remember_source89(portal,kind,rows,revision)
         store(filename,key,rows,revision);trace(kind,'READY',len(rows),started);return rows,'READY'
     except BlockingIOError:code='LOCKED'
     except OSError as exc:
