@@ -25,8 +25,8 @@ print('PICKER90_INITIAL_WINDOW '+json.dumps(state),flush=True)
 if state['currentwindow']['id']==10100 and state['currentcontrol']['label']=='No':rpc('Input.Select')
 rpc('Addons.ExecuteAddon',dict(addonid='script.xcmate.picker90'))
 for _ in range(4800):
- if Path('/root/picker90-error.txt').exists():raise RuntimeError(Path('/root/picker90-error.txt').read_text())
+ if Path('/root/picker90-error.txt').exists():raise RuntimeError(Path('/root/picker90-error.txt').read_text(encoding='utf-8'))
  if Path('/root/picker90.json').exists():
-  report=json.loads(Path('/root/picker90.json').read_text());assert report['status']=='PASS';print(json.dumps(report));break
+  report=json.loads(Path('/root/picker90.json').read_text(encoding='utf-8'));assert report['status']=='PASS';print(json.dumps(report));break
  time.sleep(.1)
 else:raise RuntimeError('PICKER90_NATIVE_TIMEOUT')

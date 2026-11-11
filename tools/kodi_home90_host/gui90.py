@@ -1,6 +1,6 @@
 """Extend every .89 native pixel gate; no archived acceptance is removed."""
 from pathlib import Path
-base=Path('/base_gui89.py').read_text()
+base=Path('/base_gui89.py').read_text(encoding='utf-8')
 needle="from reminder89 import run as reminders89"
 # The nested .89 wrapper splices its phases into gui88. Add .90 only after
 # all inherited gates, before the final receipt consumed by the supervisor.

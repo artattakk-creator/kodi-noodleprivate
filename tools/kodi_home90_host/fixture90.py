@@ -4,7 +4,7 @@
 Android proof. Real local HTTPS bytes, original safe URL and SHA persist paths.
 """
 from pathlib import Path
-base=Path('/base_fixture86.py').read_text().replace("if __name__=='__main__':run()",'')
+base=Path('/base_fixture86.py').read_text(encoding='utf-8').replace("if __name__=='__main__':run()",'')
 exec(compile(base,'/base_fixture86.py','exec'),globals())
 install86=install
 

@@ -21,7 +21,15 @@ def entries():
  count=xbmc.getInfoLabel('Container(6).NumItems')
  return [xbmc.getInfoLabel('Container(6).ListItemAbsolute('+str(i)+').Label') for i in range(int(count or 0))]
 def select(index):
- ident=xbmcgui.getCurrentWindowDialogId();dialog=xbmcgui.Window(ident);dialog.setFocusId(6);dialog.getControl(6).selectItem(index);xbmc.sleep(150);xbmc.executebuiltin('SendClick('+str(ident)+',6)',wait=False);xbmc.sleep(400)
+ # The original Python-owned DialogSelect list is driven with native IR, not
+ # a reconstructed ControlList proxy from a different script interpreter.
+ current=int(xbmc.getInfoLabel('Container(6).CurrentItem') or 1)-1
+ for _ in range(abs(index-current)):
+  xbmc.executebuiltin('Action('+('Down' if index>current else 'Up')+')',wait=False);xbmc.sleep(70)
+ xbmc.sleep(150)
+ chosen=xbmc.getInfoLabel('Container(6).ListItem.Label')
+ print('PICKER90_NATIVE_SELECTED '+json.dumps(dict(index=index,label=chosen,current=xbmc.getInfoLabel('Container(6).CurrentItem'))),flush=True)
+ action('Select')
 def manager():
  xbmc.executebuiltin('RunScript(script.skinshortcuts,type=manage&group=mainmenu)',wait=False)
  until(lambda:xbmc.getCondVisibility('Window.IsVisible(script-skinshortcuts.xml)') and int(xbmc.getInfoLabel('Container(211).NumItems') or 0)>0,'PICKER90_MANAGER_NOT_VISIBLE',60)
@@ -33,7 +41,7 @@ def choose(dialog,slot,kind=None,noportal=False):
   until(lambda:bool(entries()) or xbmcgui.getCurrentWindowDialogId()==10103,'PICKER90_EMPTY_SELECT')
   if xbmcgui.getCurrentWindowDialogId()==10103:
    xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=90,method='Input.SendText',params=dict(text='XCMate '+str(kind),done=True))));break
-  values=entries();seen.append(values);history.append(dict(step=step,kind=kind,labels=values,window=xbmcgui.getCurrentWindowDialogId()));Path('/root/picker90-history.json').write_text(json.dumps(history,indent=2));print('PICKER90_NATIVE_LIST '+json.dumps(history[-1]),flush=True)
+  values=entries();seen.append(values);history.append(dict(step=step,kind=kind,labels=values,window=xbmcgui.getCurrentWindowDialogId(),current=xbmc.getInfoLabel('Container(6).CurrentItem')));Path('/root/picker90-history.json').write_text(json.dumps(history,indent=2));print('PICKER90_NATIVE_LIST '+json.dumps(history[-1]),flush=True)
   if noportal and any('Portal' in v or 'einrichten' in v or 'setup' in v.casefold() for v in values):
    check(not any('pid=' in v for v in values),'PICKER90_FAKE_PORTAL');action('Back');return seen
   target=None
@@ -69,7 +77,7 @@ dialog=manager()
 for slot,kind in enumerate(('live','vod','series')):choose(dialog,slot,kind)
 close(dialog)
 properties=folder/'skin.titan.bingie.mod.properties';until(lambda:properties.exists(),'PICKER90_NO_SAVED_PROPERTIES')
-rows=ast.literal_eval(properties.read_text());paths=[r[3] for r in rows if r[2].startswith('widgetPath')]
+rows=ast.literal_eval(properties.read_text(encoding='utf-8'));paths=[r[3] for r in rows if r[2].startswith('widgetPath')]
 for expected in ('widget_live_start_group','widget_recent_vod','widget_recent_series'):check(any(expected in p and 'pid=fixture59' in p for p in paths),('PICKER90_PATH_NOT_SAVED',expected))
 before=hashlib.sha256(properties.read_bytes()).hexdigest();dialog=manager();close(dialog);check(hashlib.sha256(properties.read_bytes()).hexdigest()==before,'PICKER90_REOPEN_REWROTE_PROPERTIES')
 report=dict(status='PASS',original_skinshortcuts='2.1.0',fresh_noportal=True,saved_widget_paths=paths,original_dialog_branches=history,properties_sha256=before,android='ANDROID_NOT_TESTED')

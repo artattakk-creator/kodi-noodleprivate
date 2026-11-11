@@ -10,7 +10,7 @@ def run(portal,rows,pump,capture,cold,check):
  from programme_events46 import load
  event=load(portal,rows[4]);key='manual90-'+str(event['sid']);receipt=Path('/root/manual90-proof.json')
  if cold:
-  expected=json.loads(receipt.read_text());check(programme_mapping85.reload(),'MANUAL90_COLD_RELOAD_FAILED');mapping=programme_mapping85.current(event)
+  expected=json.loads(receipt.read_text(encoding='utf-8'));check(programme_mapping85.reload(),'MANUAL90_COLD_RELOAD_FAILED');mapping=programme_mapping85.current(event)
   check(mapping and mapping['id']==expected['selected_id'],'MANUAL90_COLD_MAPPING_CHANGED');return dict(status='PASS',cold_mapping=True,selected_id=mapping['id'],android='ANDROID_NOT_TESTED')
  oldrequest=tmdb_connection60.request;oldusage=shutil.disk_usage;stop=threading.Event();errors=[]
  def api(url,**kw):
