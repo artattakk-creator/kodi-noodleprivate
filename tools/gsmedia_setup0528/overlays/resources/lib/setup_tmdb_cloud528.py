@@ -182,8 +182,17 @@ def offer(profile=None,manual=False):
         return 'SKIPPED'
     choices=['Privates GitHub-Repository (einmaliger Lesezugang)',
              'Google Drive (bereits autorisierter OAuth-Zugriff)',
+             'Joomla-API (vorbereitet – Backend/Freigabe fehlt)',
+             'Geschütztes Webverzeichnis (vorbereitet – Authentifizierung fehlt)',
              'Abbrechen / später importieren']
     selected=dlg.select('TMDB-Token importieren',choices)
+    if selected in (2,3):
+        dlg.ok('TMDB-Token · Quelle vorbereitet',
+               'Diese Quelle wird erst aktiv, sobald eine geschützte HTTPS-API '
+               'und eine individuelle Zugriffsfreigabe eingerichtet und '
+               'getestet sind. Kein öffentlicher TMDB-Token-Link. '
+               'Bitte vorerst GitHub/Drive mit privater Berechtigung nutzen.')
+        return 'SKIPPED'
     if selected not in (0,1):return 'SKIPPED'
     provider='github' if selected==0 else 'drive'
     if provider=='github':
