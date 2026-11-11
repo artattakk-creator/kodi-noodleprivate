@@ -6,7 +6,9 @@
     "unittest": {
       "tests": 3684,
       "seconds": 609.505,
-      "result": "PASS"
+      "result": "PASS",
+      "source_commit": "767928991328bcd52be969010d3efa9198f80dc3",
+      "scope": "Initial complete local run before cold recovery"
     },
     "targeted": {
       "tests": 99,
@@ -32,15 +34,16 @@
   "merge": false,
   "published": false,
   "ci_host": {
-    "run": 42929686389,
-    "job": 130224991869,
-    "tests": 3686,
-    "seconds": 864.736,
+    "run": 42932821507,
+    "job": 130235514155,
+    "tests": 3689,
+    "seconds": 822.949,
     "result": "PASS",
     "branding_tests": 11,
-    "branding_seconds": 0.4,
+    "branding_seconds": 0.32,
     "po_catalogues": 17,
-    "zip_reproduced": "PASS"
+    "zip_reproduced": "PASS",
+    "commit": "41bb85f13a76b1f6aab17fd5570ce1f4e7d1e359"
   },
   "collector_tests": {
     "tests": 3,
@@ -48,6 +51,8 @@
   },
   "complete_rerun": {
     "run": 42932821507,
-    "result": "PENDING"
+    "result": "PASS",
+    "tests": 3689,
+    "seconds": 822.949
   }
 }

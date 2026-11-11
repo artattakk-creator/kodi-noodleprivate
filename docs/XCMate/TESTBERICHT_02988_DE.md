@@ -8,9 +8,9 @@ Spätere Commits passen ausschließlich native Testskripte bzw. diesen Bericht a
 
 | Prüfung | Ergebnis |
 |---|---|
-| Vollständige kumulative unittest-Suite, Python 3.12.14 | **3.686 PASS in CI**, 864,736 s, 0 Fehler/Fehlschläge; ursprünglicher lokaler Gesamtlauf vor Kaltstartergänzung: 3.684 PASS in 609,505 s |
+| Vollständige kumulative unittest-Suite, Python 3.12 (lokal .14 / CI .16) | **3.689 PASS in CI**, 822,949 s, 0 Fehler/Fehlschläge; ursprünglicher lokaler Gesamtlauf vor Kaltstartergänzung: 3.684 PASS in 609,505 s |
 | Gezielte aktuelle Bild-, Sicherheits-, Detail-, Skin- und Bestandsschutzfälle | 99 PASS, 15,995 s |
-| Zusätzliche Branding-pytest-Prüfungen | 11 PASS, 0,40 s in CI (lokal 0,11 s) |
+| Zusätzliche Branding-pytest-Prüfungen | 11 PASS, 0,32 s in CI (lokal 0,11 s) |
 | Kodi-PO-Validierung | 17 Sprachkataloge PASS; DE/EN jeweils 1.317 Kontexte, weitere Kataloge jeweils 51 mit bestehendem Fallback |
 | Reproduzierbares ZIP | Bytegleich, 838 Dateien, 4.621.024 Bytes; CRC und alle Quelldateien geprüft |
 | Diff-/Paketprüfung | Kein Whitespacefehler, keine Datenbanken, Logs, pyc oder echten Zugangsdaten im neuen ZIP |
@@ -22,8 +22,8 @@ Gemessene bestehende Regressionen auf diesem Host: 160.005 Programme aus 95.571.
 
 ## Native Kodi und GitHub CI
 
-- Vollständige Add-on-Host-CI **PASS**: 3.686 Tests in 864,736 s, 11 Branding-Tests in 0,40 s, 17 PO-Kataloge, Compile und bytegleiche ZIP-Reproduktion. [CI 42929686389](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/42929686389).
-- Zusätzliche drei Testhüllen-Regressionen prüfen den tatsächlich verwendeten JSON-Sammler gegen leere/teilweise Testdateien, echte FAIL-Quittungen und unveränderten begrenzten Timeout. Zusammen mit vier Scope-Prüfungen 7 PASS, 0,256 s. Die vollständige aktuelle Wiederholung einschließlich dieser drei Tests läuft unter [42932821507](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/42932821507).
+- Vollständige aktuelle Host-CI **PASS**: **3.689 Tests in 822,949 s**, 11 Branding-Tests in 0,32 s, 17 PO-Kataloge, Compile und bytegleiche ZIP-Reproduktion. [CI 42932821507](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/42932821507), geprüfter Test-/Quellstand `41bb85f13a76b1f6aab17fd5570ce1f4e7d1e359`. Der Add-on-Quellbaum und das ZIP sind identisch mit `6c14718`. Der vorangegangene vollständige Add-on-Lauf mit 3.686 Tests war ebenfalls PASS.
+- Zusätzliche drei Testhüllen-Regressionen prüfen den tatsächlich verwendeten JSON-Sammler gegen leere/teilweise Testdateien, echte FAIL-Quittungen und unveränderten begrenzten Timeout. Zusammen mit vier Scope-Prüfungen 7 PASS, 0,256 s. Diese drei Tests sind zusätzlich im grünen vollständigen Lauf mit 3.689 Tests enthalten.
 - **Strenger nativer Bildlauf 720p und 1080p PASS**: [42929994133](https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/42929994133), Jobs `130226021620` und `130226021260`. Tatsächliche Pixel im ungedimmten rechten Hero-Bereich, proportionale Portrait-/Logo-Fallbacks, Logos in der sichtbaren Rail, Film-/Serienbilder und echte Kodi-Texturen. Keine READY-Meldung allein als Bildbeweis.
 - Reales offenes EPG-Detailbild: **306,09 s bei 720p / 306,18 s bei 1080p**, Checkpoints 2/46/121/305 s. Bei jedem Checkpoint 253.204 bzw. 253.572 passende Bildpixel und unveränderte Bildreferenz; negativer Status ab Sekunde 45 injiziert. Kein Fake-Clock-Ersatz für diese Messung.
 - Zwei tatsächliche Kodi-Neustarts je Bildauflösung mit abgeschaltetem synthetischem Bildursprung: **PASS**, Event-Kaltstart aus dem Kodi-Cache und sichtbare lokale Logo-Fallbacks. 34 geschützte Dateien unverändert. Vollständige lokale Speicherung aller 88 Logos wird damit ausdrücklich **nicht** behauptet: Erst tatsächlich angeforderte Texturen landen im Kodi-Cache; Archiv-Schreibreserve und begrenzte RAM-Referenzen werden separat gezählt.
