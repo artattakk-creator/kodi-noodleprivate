@@ -1,0 +1,46 @@
+{
+  "version": "0.1.29.90",
+  "product_commit": "1c8cc4eb0d3208a976a67bc984cb06c12d8eb59c",
+  "base": "a0da8a99088507cc8fd4f82ef9bf3b1ab70ea54f",
+  "host": {
+    "status": "PASS",
+    "tests": 3802,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 640.171,
+    "python": "3.12.14",
+    "command": "PYTHONPATH=/tmp/xcmate80-host-deps:tests PYTHONDONTWRITEBYTECODE=1 python /tmp/run_xcmate90_host_final.py",
+    "storage": "Real TMPDIR and SQLITE_TMPDIR on tmpfs; three real mount-identity tests on /tmp; no reserve/disk mocks",
+    "thread_exceptions": 0,
+    "log": "host-tests90.txt.gz",
+    "log_sha256": "afecc21493860d13ec85cc558db78cad5416325377a94a894189600d1a99c1c2"
+  },
+  "branding": {
+    "status": "PASS",
+    "tests": 11
+  },
+  "translations": {
+    "status": "PASS",
+    "catalogues": 17,
+    "scope": "PO syntax and placeholders, not translation completeness"
+  },
+  "package": {
+    "bytes": 4663852,
+    "files": 855,
+    "sha256": "e95b0a0cc46e745a3318a609e6e57a005ee3a88965f6e7de0c4b21c68f30f17f",
+    "crc": "PASS",
+    "all_source_bytes": "PASS",
+    "second_identical_build": "PASS"
+  },
+  "github_ci": {
+    "status": "BLOCKED_CI",
+    "observed": "queued, no jobs; previous manual dispatch startup_failure before job allocation",
+    "host_run": 43097240806,
+    "native_run": 43097240872
+  },
+  "current_native": "BLOCKED_CI",
+  "android": "ANDROID_NOT_TESTED",
+  "merged": false,
+  "published": false
+}

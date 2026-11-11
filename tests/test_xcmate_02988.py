@@ -190,7 +190,8 @@ class Transport88(Fixture,unittest.TestCase):
   fetched=[]
   try:
    with mock.patch.object(m,'fetch',side_effect=lambda portal,uri,cancel:(fetched.append(uri) or png())),mock.patch('art_storage.check',side_effect=OSError('reserve')):m.prepare(self.portal,rows)
-   self.assertEqual(fetched,[rows[0]['stream_icon'],rows[1]['stream_icon']])
+   # .90: eight bounded attempts, first visible five precede cursor work.
+   self.assertEqual(fetched,[rows[i]['stream_icon'] for i in (0,1,2,3,4,15,16,17)])
   finally:__import__('decoded_assets88').shutdown()
  def test_profile_switch_eviction_clears_only_the_original_receipt(self):
   m=__import__('decoded_assets88')

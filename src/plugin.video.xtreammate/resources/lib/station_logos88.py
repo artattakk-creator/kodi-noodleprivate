@@ -83,12 +83,12 @@ def fetch(portal,uri,cancel=lambda:False,connect=None,resolver=None):
  finally:
   if response is not None:response.close()
 def read(portal,rows):
- from logo_manifest86 import key
+ from logo_manifest86 import key,context
  from decoded_assets88 import read as cached
  from widget_refs74 import revoked
- result={}
+ result={};scope90=context(portal)
  for row in rows[:256]:
-  record=cached(key(portal,row))
+  record=cached(key(portal,row,scope90))
   if record and not revoked(source(row)):result[str(row['sid'])]=record['uri']
  return result
 def prepare(portal,rows,cancel=lambda:False):
@@ -97,17 +97,21 @@ def prepare(portal,rows,cancel=lambda:False):
  from art_storage import check
  from station_logos87 import note
  existing=manifest_read(portal,rows,with_fallback=False);scope=context(portal);offset=_cursor.get(scope,0);attempts=0;changed=False
+ # One batch fallback, never a fresh 88-entry manifest read for every miss.
+ fallback90=manifest_read(portal,[r for r in rows if str(r['sid']) not in existing])
+ round90=time.monotonic()+2;remote90=0
  if __import__('external_art89').enabled():
   try:__import__('external_art89').backend('logo')
   except OSError:return 'EXTERNAL_UNAVAILABLE'
  try:backend,path=location();records=load(portal,all_records=True)
  except OSError:backend=None;records={}
+ stable90={v.get('stable89') for v in records.values() if v.get('stable89')}
  for row in rows[:5]+rows[max(5,offset):]+rows[5:max(5,offset)]:
-  if cancel() or attempts>=2:break
-  tag=key(portal,row);uri=source(row)
+  if cancel() or attempts>=8 or time.monotonic()>=round90:break
+  tag=key(portal,row,scope);uri=source(row)
   _cursor[scope]=(rows.index(row)+1)%len(rows)
   if not uri:note(portal,row,'SOURCE_MISSING');continue
-  if str(row['sid']) in existing and any(v.get('stable89')==__import__('logo_store89').identity(portal,row) for v in records.values()):continue
+  if str(row['sid']) in existing and __import__('logo_store89').identity(portal,row) in stable90:continue
   if str(row['sid']) in existing and __import__('external_art89').enabled():
    external89=__import__('external_art89');ident89=external89.key(portal,'logo',row);record89=external89.records('logo').get(ident89)
    if record89:
@@ -117,7 +121,7 @@ def prepare(portal,rows,cancel=lambda:False):
   if time.monotonic()<_due.get(tag,0):continue
   attempts+=1;_due[tag]=time.monotonic()+60;body=None
   try:
-   local89=manifest_read(portal,[row]).get(str(row['sid']),'')
+   local89=fallback90.get(str(row['sid']),'')
    if local89.startswith('/'):
     with open(local89,'rb') as stream:body=stream.read(3*1024*1024+1)
    else:
@@ -126,7 +130,8 @@ def prepare(portal,rows,cancel=lambda:False):
      import urllib.request
      opener89=urllib.request.build_opener(urllib.request.ProxyHandler({}))
      with opener89.open(ram89['uri'],timeout=2) as reply89:body=reply89.read(3*1024*1024+1)
-    else:body=fetch(portal,uri,cancel)
+    else:
+     remote90+=1;body=fetch(portal,uri,cancel)
    if backend is None and not __import__('external_art89').enabled():raise OSError('LOGO_LOCAL_REQUIRED')
    _,facts89=__import__('logo_store89').persist(portal,row,body,cancel)
    __import__('logo_store89').note('PERSISTED_VERIFIED',**facts89)
@@ -147,7 +152,15 @@ def prepare(portal,rows,cancel=lambda:False):
  while len(_due)>512:_due.pop(next(iter(_due)))
  while len(_cursor)>16:_cursor.pop(next(iter(_cursor)))
  hits=manifest_read(portal,rows)
+ __import__('startup_diag90').note('REMOTE_FETCH_COUNT',count=remote90,total=len(rows))
  return 'READY' if len(hits)==len(rows) else 'PARTIAL' if hits else 'EXTERNAL_UNAVAILABLE'
+
+def next_delay90(portal,rows):
+ """Continuation in the existing worker; due failures do not spin or respawn."""
+ from logo_manifest86 import read,key,context
+ own=read(portal,rows,with_fallback=False);scope=context(portal);now=time.monotonic()
+ missing=[r for r in rows if source(r) and str(r['sid']) not in own]
+ return min(max(.25,_due.get(key(portal,r,scope),0)-now) for r in missing) if missing else None
 
 def reference(props):
  """UI-only exact station/account receipt, never a general localhost grant."""

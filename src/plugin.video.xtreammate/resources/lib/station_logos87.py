@@ -43,11 +43,12 @@ def note(portal,row,code,**facts):
  except (AttributeError,RuntimeError):pass
  # TEXTURE_CACHED is decode evidence, never a TEXTURE_VISIBLE/pixel claim.
 def read(portal,rows):
- from logo_manifest86 import key
+ from logo_manifest86 import key,context
  result={};win=window()
+ scope90=context(portal)
  for row in rows:
   try:
-   raw=win.getProperty(PREFIX+key(portal,row));data=json.loads(raw) if raw and len(raw)<2048 else {}
+   raw=win.getProperty(PREFIX+key(portal,row,scope90));data=json.loads(raw) if raw and len(raw)<2048 else {}
    file=data.get('file','')
    if not os.path.isabs(file) or os.path.islink(file):continue
    stat=os.stat(file)

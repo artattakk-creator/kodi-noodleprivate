@@ -202,17 +202,25 @@ class LiveNavigator(xbmcgui.WindowDialog):
             else:
                 self._catalog_partial46=False
                 try:categories,streams=future.result()
-                except Exception:categories,streams=None,None
+                except Exception as error90:
+                    categories,streams=None,None
+                    # Keep the valid partial model and continue polling. A
+                    # failed full read must not latch a partial start group as
+                    # a completed catalogue forever.
+                    self._catalog_partial46=bool(self._catalog_ready)
+                    __import__('startup_diag90').note('GROUP_SQL_BUSY',reason=getattr(error90,'code','UNKNOWN'))
                 prepared47=getattr(future,'model47',None)
             if categories is None or streams is None:self._catalog_future39=None
         else:categories,streams = read(self.portal,self.xc)
         loaded=time.perf_counter()
         if categories is None or streams is None:
+            __import__('startup_diag90').note('GROUP_SWITCH_PENDING',count=len(getattr(self,'channels',[])))
             return False
         if prepared47 is not None:
             self.groups,self.channels=prepared47['groups'],prepared47['channels']
             self.enabled,self.index=prepared47['enabled'],prepared47['index']
             self._catalog_ready=True
+            __import__('startup_diag90').note('GROUP_CHANNELS_READY',count=len(self.channels),groups=len(self.groups))
             from flow46 import mark as mark_flow47
             if self.channels:mark_flow47('GROUPS_READY',pid=self.portal['id'],sid=self.sid)
             trace('catalog_performance','MODEL_REUSED47',cache_ms=(loaded-started)*1000,index_ms=0,channels=len(self.channels))
@@ -258,7 +266,7 @@ class LiveNavigator(xbmcgui.WindowDialog):
         self.rows = category_rows(self.groups, self.enabled)
         selected_stream = next((c for c in self.channels
                                 if str(c.extra.get('stream_id')) == self.sid), None)
-        if selected_stream:
+        if selected_stream and self.category_id!='*' and self.category_id not in self.enabled:
             self.category_id = str(selected_stream.extra.get('category_id'))
         if self.mode in ('channels', 'groups'):
             self._render()

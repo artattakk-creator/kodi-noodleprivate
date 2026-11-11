@@ -24,10 +24,14 @@ def prepare(portal,client,force=False):
         if key not in _prepared and sum(not f.done() for f,_ in _prepared.values())>=4:
             future=Future();future.set_result((None,None));return future
         future=Future()
-        if previous and previous[0].done() and not previous[0].exception():
+        if previous and previous[0].done():
             old68=previous[0]
-            if getattr(old68,'model47',None) is not None:
+            if not old68.exception() and getattr(old68,'model47',None) is not None:
                 future.first_model47=old68.model47;future.first46=old68.result()
+            elif getattr(old68,'first_model47',None) is not None and getattr(old68,'first46',None) is not None:
+                # A valid exact-policy partial generation survives a later
+                # SQL failure; it stays explicitly partial while we retry.
+                future.first_model47=old68.first_model47;future.first46=old68.first46
         _prepared[key]=(future,time.monotonic())
         if len(_prepared)>4:
             for other,(task,_) in list(_prepared.items()):

@@ -28,6 +28,18 @@ class Snapshot:
         from profile_transaction import reading
         from service_runtime import portal_call,portal_read,portal_failure,note_pressure
         portal_call()
+        # A detached, already validated generation is safe while an unrelated
+        # image/cache writer owns the profile lock. Recheck the actual file
+        # identity after copying; a replacement/deletion never inherits it.
+        with self.lock:
+            key=self.version(path)
+            if self.value is not None and key==self.key:
+                try:result=copy.deepcopy(select(self.value))
+                except MemoryError:
+                    self.value=None;self.failures=min(5,self.failures+1);self.retry=time.monotonic()+min(30,2**self.failures)
+                    portal_failure('OOM');note_pressure()
+                    raise PortalReadError(reason='MEMORY') from None
+                if self.version(path)==key:return result
         with self.lock,reading():
             key=self.version(path)
             if key!=self.key:self.value=None;self.retry=0;self.failures=0;self.key=key

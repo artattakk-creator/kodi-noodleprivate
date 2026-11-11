@@ -1,0 +1,320 @@
+{
+  "original_gate": "('PICKER90_NATIVE_PIXELS_MISSING', 'series', 2530, 0)",
+  "experiments": [
+    {
+      "stage": "params",
+      "status": "DIAGNOSTIC_ONLY",
+      "rows": {
+        "2510": {
+          "count": "88",
+          "visible": true
+        },
+        "2520": {
+          "count": "24",
+          "visible": true
+        },
+        "2530": {
+          "count": "24",
+          "visible": true
+        }
+      },
+      "labels": {
+        "296910": "TYPE=panel;ID=2520;MENU=num-10000;VIS=[true + String.IsEqual(Skin.String(HomeLayout),bingie)] | [![true + String.IsEqual(Skin.String(HomeLayout),bingie)] + Skin.String(widgetvalue-num-10000,1)]",
+        "296911": "TYPE=panel;ID=2520;MENU=num-10000;VIS=[true + String.IsEqual(Skin.String(HomeLayout),bingie)] | [![true + String.IsEqual(Skin.String(HomeLayout),bingie)] + Skin.String(widgetvalue-num-10000,1)]",
+        "296912": "TYPE=fixedlist;ID=2520;MENU=num-10000;VIS=[true + String.IsEqual(Skin.String(HomeLayout),bingie)] | [![true + String.IsEqual(Skin.String(HomeLayout),bingie)] + Skin.String(widgetvalue-num-10000,1)]"
+      },
+      "screenshot": "picker90-experiment-params.png",
+      "rail_pixels": 0,
+      "all_pixels": 0,
+      "focus": 2530,
+      "stock": {
+        "2540": {
+          "items": "0",
+          "updating": true,
+          "outer": true
+        },
+        "2550": {
+          "items": "0",
+          "updating": true,
+          "outer": true
+        },
+        "2560": {
+          "items": "0",
+          "updating": true,
+          "outer": true
+        },
+        "2570": {
+          "items": "0",
+          "updating": true,
+          "outer": true
+        },
+        "2580": {
+          "items": "0",
+          "updating": true,
+          "outer": true
+        }
+      },
+      "parent": {
+        "Container(77777).CurrentItem": "3",
+        "Container(77777).NumItems": "3",
+        "Window(Home).Property(CurrentWidgetID)": "2530",
+        "Window(Home).Property(CurrentWidgetPos)": "3",
+        "Window(Home).Property(PrevWidgetPos)": "2"
+      }
+    },
+    {
+      "stage": "self",
+      "status": "DIAGNOSTIC_ONLY",
+      "rows": {
+        "2510": {
+          "count": "0",
+          "visible": true
+        },
+        "2520": {
+          "count": "24",
+          "visible": true
+        },
+        "2530": {
+          "count": "24",
+          "visible": true
+        }
+      },
+      "labels": {
+        "296910": "",
+        "296911": "",
+        "296912": ""
+      },
+      "screenshot": "picker90-experiment-self.png",
+      "rail_pixels": 0,
+      "all_pixels": 0,
+      "focus": 2530,
+      "stock": {
+        "2540": {
+          "items": "0",
+          "updating": true,
+          "outer": true
+        },
+        "2550": {
+          "items": "0",
+          "updating": true,
+          "outer": true
+        },
+        "2560": {
+          "items": "0",
+          "updating": true,
+          "outer": true
+        },
+        "2570": {
+          "items": "0",
+          "updating": true,
+          "outer": true
+        },
+        "2580": {
+          "items": "0",
+          "updating": true,
+          "outer": true
+        }
+      },
+      "parent": {
+        "Container(77777).CurrentItem": "3",
+        "Container(77777).NumItems": "3",
+        "Window(Home).Property(CurrentWidgetID)": "2530",
+        "Window(Home).Property(CurrentWidgetPos)": "3",
+        "Window(Home).Property(PrevWidgetPos)": "2"
+      }
+    },
+    {
+      "stage": "bounds",
+      "status": "DIAGNOSTIC_ONLY",
+      "rows": {
+        "2510": {
+          "count": "0",
+          "visible": true
+        },
+        "2520": {
+          "count": "0",
+          "visible": true
+        },
+        "2530": {
+          "count": "24",
+          "visible": true
+        }
+      },
+      "labels": {
+        "296910": "",
+        "296911": "",
+        "296912": ""
+      },
+      "screenshot": "picker90-experiment-bounds.png",
+      "rail_pixels": 40962,
+      "all_pixels": 40962,
+      "focus": 2530,
+      "stock": {
+        "2540": {
+          "items": "0",
+          "updating": true,
+          "outer": false
+        },
+        "2550": {
+          "items": "0",
+          "updating": true,
+          "outer": false
+        },
+        "2560": {
+          "items": "0",
+          "updating": true,
+          "outer": false
+        },
+        "2570": {
+          "items": "0",
+          "updating": true,
+          "outer": false
+        },
+        "2580": {
+          "items": "0",
+          "updating": true,
+          "outer": false
+        }
+      },
+      "parent": {
+        "Container(77777).CurrentItem": "3",
+        "Container(77777).NumItems": "3",
+        "Window(Home).Property(CurrentWidgetID)": "2530",
+        "Window(Home).Property(CurrentWidgetPos)": "3",
+        "Window(Home).Property(PrevWidgetPos)": "2"
+      }
+    },
+    {
+      "stage": "combined",
+      "status": "DIAGNOSTIC_ONLY",
+      "rows": {
+        "2510": {
+          "count": "88",
+          "visible": true
+        },
+        "2520": {
+          "count": "24",
+          "visible": true
+        },
+        "2530": {
+          "count": "24",
+          "visible": true
+        }
+      },
+      "labels": {
+        "296910": "",
+        "296911": "",
+        "296912": ""
+      },
+      "screenshot": "picker90-experiment-combined.png",
+      "rail_pixels": 40962,
+      "all_pixels": 40962,
+      "focus": 2530,
+      "stock": {
+        "2540": {
+          "items": "0",
+          "updating": true,
+          "outer": false
+        },
+        "2550": {
+          "items": "0",
+          "updating": true,
+          "outer": false
+        },
+        "2560": {
+          "items": "0",
+          "updating": true,
+          "outer": false
+        },
+        "2570": {
+          "items": "0",
+          "updating": true,
+          "outer": false
+        },
+        "2580": {
+          "items": "0",
+          "updating": true,
+          "outer": false
+        }
+      },
+      "parent": {
+        "Container(77777).CurrentItem": "3",
+        "Container(77777).NumItems": "3",
+        "Window(Home).Property(CurrentWidgetID)": "2530",
+        "Window(Home).Property(CurrentWidgetPos)": "3",
+        "Window(Home).Property(PrevWidgetPos)": "2"
+      }
+    },
+    {
+      "stage": "flat",
+      "status": "DIAGNOSTIC_ONLY",
+      "rows": {
+        "2510": {
+          "count": "88",
+          "visible": true
+        },
+        "2520": {
+          "count": "24",
+          "visible": true
+        },
+        "2530": {
+          "count": "24",
+          "visible": true
+        }
+      },
+      "labels": {
+        "296910": "",
+        "296911": "",
+        "296912": ""
+      },
+      "screenshot": "picker90-experiment-flat.png",
+      "rail_pixels": 0,
+      "all_pixels": 0,
+      "focus": 2530,
+      "stock": {
+        "2540": {
+          "items": "0",
+          "updating": true,
+          "outer": true
+        },
+        "2550": {
+          "items": "0",
+          "updating": true,
+          "outer": true
+        },
+        "2560": {
+          "items": "0",
+          "updating": true,
+          "outer": true
+        },
+        "2570": {
+          "items": "0",
+          "updating": true,
+          "outer": true
+        },
+        "2580": {
+          "items": "0",
+          "updating": true,
+          "outer": true
+        }
+      },
+      "parent": {
+        "Container(77777).CurrentItem": "3",
+        "Container(77777).NumItems": "3",
+        "Window(Home).Property(CurrentWidgetID)": "2530",
+        "Window(Home).Property(CurrentWidgetPos)": "3",
+        "Window(Home).Property(PrevWidgetPos)": "2"
+      }
+    }
+  ],
+  "verdict": "FAIL: clean unmodified product run still required",
+  "android": "ANDROID_NOT_TESTED",
+  "run": "https://github.com/artattakk-creator/kodi-noodleprivate/actions/runs/43093152937",
+  "stage_meaning90": {
+    "params": "unchanged wrapper + diagnostic labels",
+    "self": "enable own focus factory only",
+    "bounds": "hide empty native wrapper only",
+    "combined": "hide empty wrapper + own focus factory",
+    "flat": "flatten own inner group only"
+  }
+}

@@ -86,7 +86,13 @@ thread=threading.Thread(target=worker,daemon=True);thread.start()
 for _ in range(900):
  if errors:raise RuntimeError(errors[0])
  if xbmc.getInfoLabel('Container(2510).NumItems')=='88':
-  home.setFocusId(2510);home.getControl(2510).selectItem(0)
+  # A queued native ReloadSkin can replace Home after the Count receipt.
+  # Reacquire the real owner and await its controls within this same bounded
+  # startup loop; all focus/pixel/decode gates below remain mandatory.
+  try:
+   home=xbmcgui.Window(10000);home.setFocusId(2510);home.getControl(2510).selectItem(0)
+  except RuntimeError:
+   pump();xbmc.sleep(100);continue
  pump();xbmc.sleep(100)
  if logo_ready84.is_set() and not decode84.is_set() and not home.getProperty('StartupMask') and not xbmc.getCondVisibility('Window.IsVisible(11103)') and xbmc.getCondVisibility('Control.IsVisible(296784)'):
   logo_control84=home.getControl(296784)
@@ -107,8 +113,21 @@ check(not errors,errors);check([v['kind'] for v in phases]==['live','vod','serie
 check(json.loads(home.getProperty(home_schedule75.KEY))['visible']==['live'],'HIDDEN84_CLAIMED_VISIBLE')
 stop=threading.Event()
 def hero_worker():
- while not stop.wait(.15):hero_epg63.prepare(portal['id'])
+ activation_due90=0
+ while not stop.wait(.15):
+  hero_epg63.prepare(portal['id'])
+  if time.monotonic()>=activation_due90:
+   activation_due90=time.monotonic()+1
+   # Actual widget_home_probe59/service preparation continues after the
+   # original builder finishes; one early call cannot activate later repairs.
+   __import__('widget_runtime79').prepare([portal]);__import__('home_activation78').prepare()
 threading.Thread(target=hero_worker,daemon=True).start()
+for activation90 in range(600):
+ pump();xbmc.sleep(100)
+ phase90=json.loads(home.getProperty('XCMate.Home78.Activation') or '{}').get('phase')
+ if phase90=='RUNTIME_READY':break
+else:raise RuntimeError(('NATIVE90_ACTIVATION_NOT_READY',phase90))
+home=xbmcgui.Window(10000)
 cases=[]
 for kind,control,hero_color,rail_color in (('live',2510,(20,80,130),(25,100,160)),('vod',2520,(35,120,80),(180,100,30)),('series',2530,(35,120,80),(100,60,180))):
  for _ in range(200):

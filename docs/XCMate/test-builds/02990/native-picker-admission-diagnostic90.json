@@ -1,0 +1,127 @@
+{
+  "original_gate": "('PICKER90_NATIVE_ROWS_MISSING', 'vod', 2520)",
+  "experiments": [
+    {
+      "stage": "params",
+      "status": "DIAGNOSTIC_ONLY",
+      "rows": {
+        "2510": {
+          "count": "88",
+          "visible": true
+        },
+        "2520": {
+          "count": "0",
+          "visible": false
+        },
+        "2530": {
+          "count": "0",
+          "visible": false
+        }
+      },
+      "labels": {
+        "296910": "TYPE=panel;ID=2520;MENU=num-10000;VIS=[true + String.IsEqual(Skin.String(HomeLayout),bingie)] | [![true + String.IsEqual(Skin.String(HomeLayout),bingie)] + Skin.String(widgetvalue-num-10000,1)]",
+        "296911": "TYPE=panel;ID=2520;MENU=num-10000;VIS=[true + String.IsEqual(Skin.String(HomeLayout),bingie)] | [![true + String.IsEqual(Skin.String(HomeLayout),bingie)] + Skin.String(widgetvalue-num-10000,1)]",
+        "296912": "TYPE=fixedlist;ID=2520;MENU=num-10000;VIS=[true + String.IsEqual(Skin.String(HomeLayout),bingie)] | [![true + String.IsEqual(Skin.String(HomeLayout),bingie)] + Skin.String(widgetvalue-num-10000,1)]"
+      },
+      "screenshot": "picker90-experiment-params.png"
+    },
+    {
+      "stage": "self",
+      "status": "DIAGNOSTIC_ONLY",
+      "rows": {
+        "2510": {
+          "count": "88",
+          "visible": true
+        },
+        "2520": {
+          "count": "24",
+          "visible": true
+        },
+        "2530": {
+          "count": "24",
+          "visible": true
+        }
+      },
+      "labels": {
+        "296910": "",
+        "296911": "",
+        "296912": ""
+      },
+      "screenshot": "picker90-experiment-self.png"
+    },
+    {
+      "stage": "bounds",
+      "status": "DIAGNOSTIC_ONLY",
+      "rows": {
+        "2510": {
+          "count": "88",
+          "visible": true
+        },
+        "2520": {
+          "count": "0",
+          "visible": false
+        },
+        "2530": {
+          "count": "0",
+          "visible": false
+        }
+      },
+      "labels": {
+        "296910": "",
+        "296911": "",
+        "296912": ""
+      },
+      "screenshot": "picker90-experiment-bounds.png"
+    },
+    {
+      "stage": "combined",
+      "status": "DIAGNOSTIC_ONLY",
+      "rows": {
+        "2510": {
+          "count": "88",
+          "visible": true
+        },
+        "2520": {
+          "count": "24",
+          "visible": true
+        },
+        "2530": {
+          "count": "24",
+          "visible": true
+        }
+      },
+      "labels": {
+        "296910": "",
+        "296911": "",
+        "296912": ""
+      },
+      "screenshot": "picker90-experiment-combined.png"
+    },
+    {
+      "stage": "flat",
+      "status": "DIAGNOSTIC_ONLY",
+      "rows": {
+        "2510": {
+          "count": "88",
+          "visible": true
+        },
+        "2520": {
+          "count": "0",
+          "visible": false
+        },
+        "2530": {
+          "count": "0",
+          "visible": false
+        }
+      },
+      "labels": {
+        "296910": "",
+        "296911": "",
+        "296912": ""
+      },
+      "screenshot": "picker90-experiment-flat.png"
+    }
+  ],
+  "verdict": "FAIL: clean unmodified product run still required",
+  "android": "ANDROID_NOT_TESTED"
+}

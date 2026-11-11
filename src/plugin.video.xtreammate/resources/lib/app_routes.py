@@ -56,6 +56,9 @@ def dispatch(router):
         failed(str(router._params.get('intent') or ''),str(router._params.get('pid') or ''))
         import xbmcplugin
         xbmcplugin.setResolvedUrl(router._handle,False,xbmcgui.ListItem());return
+    if action in ('widget_setup','widget_sources49') and not portal and not router._params.get('pid'):
+        from widget_sources49 import show as widget_sources
+        widget_sources(router,None);return
     if action in ('guide_timers','guide_status','widget_setup','widget_manage49','widget_link50','widget_sources49') and not portal:
         _end(router,False)
         xbmcgui.Dialog().notification('XCMate',tr(32466));return

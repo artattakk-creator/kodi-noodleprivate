@@ -37,6 +37,8 @@ def read():
  for key,record in data['records'].items():
   if not __import__('re').fullmatch('[a-f0-9]{64}',str(key)) or not isinstance(record,dict) or type(record.get('hidden')) is not bool:raise ValueError('MANUAL_SCHEMA')
   if not record['hidden'] and (record.get('source') not in ('tmdb','tvmaze','user_local86') or type(record.get('id')) is not int or record['id']<=0):raise ValueError('MANUAL_SCHEMA')
+  aliases90=record.get('aliases90',[])
+  if not isinstance(aliases90,list) or len(aliases90)>2 or any(not isinstance(k,str) or not __import__('re').fullmatch('[a-f0-9]{64}',k) for k in aliases90):raise ValueError('MANUAL_SCHEMA')
  if any(not __import__('re').fullmatch('[a-f0-9]{64}',str(k)) or type(v) is not int or not 0<=v<=10**9 for k,v in data.get('epochs',{}).items()):raise ValueError('MANUAL_SCHEMA')
  return data
 def publish(data):
@@ -61,24 +63,38 @@ def current(event):
   if not raw or len(raw.encode())>MAX_BYTES:return None
   records=parsed85(raw).get('records',{})
   if not records:return None
-  record=records.get(namespace(event))
+  record=records.get(record_key90(records,namespace(event)))
   return dict(record) if isinstance(record,dict) else None
  except (ValueError,TypeError):return None
-def set_mapping(event,candidate=None,hidden=False,automatic=False,cancel=lambda:False,operation89=''):
+def record_key90(records,key):
+ if key in records:return key
+ matches=[k for k,v in records.items() if key in v.get('aliases90',[])]
+ return matches[0] if len(matches)==1 else key
+
+def set_mapping(event,candidate=None,hidden=False,automatic=False,cancel=lambda:False,operation89='',alias90=''):
  from import_budget import check_space
  from profile_transaction import writing
  key=namespace(event);filename=path()
  with writing(timeout=.2):
   if cancel():raise __import__('media_sources43').SourceError('CANCELLED')
   data=read()
+  # Only the worker supplies the request's exact pre-enrichment namespace,
+  # after independent event revalidation. No fuzzy cross-title/source lookup.
+  aliases90=[alias90] if alias90!=key and __import__('re').fullmatch('[a-f0-9]{64}',alias90) else []
+  prior90=record_key90(data['records'],alias90 or key)
+  if prior90 in data['records']:
+   aliases90=list(dict.fromkeys(aliases90+data['records'][prior90].get('aliases90',[])+([prior90] if prior90!=key else [])))[:2]
+   if prior90!=key:data['records'].pop(prior90)
   epochs=data.setdefault('epochs',{})
   epochs[key]=int(epochs.get(key,0))+1
+  for alias in aliases90:epochs[alias]=epochs[key]
   if len(epochs)>MAX_RECORDS:raise OSError('MANUAL_LIMIT')
   if automatic:data['records'].pop(key,None)
   else:
    if not hidden and (not isinstance(candidate,dict) or candidate.get('source') not in ('tmdb','tvmaze','user_local86') or type(candidate.get('id')) is not int or candidate['id']<=0 or not candidate.get('verified85')):raise ValueError('MANUAL_UNVERIFIED')
    data['records'][key]=dict(hidden=bool(hidden),source=candidate.get('source') if candidate else '',id=candidate.get('id') if candidate else None,year=candidate.get('year') if candidate else None,country=candidate.get('country') if candidate else None,local86=candidate.get('local86') if candidate else None,media_type86=candidate.get('media_type86','tv') if candidate else 'tv',at=int(time.time()),provenance='USER_CONFIRMED' if not hidden else 'USER_HIDDEN')
   if not automatic and operation89 and __import__('re').fullmatch('[a-f0-9]{32}',operation89):data['records'][key]['operation89']=operation89
+  if not automatic and aliases90:data['records'][key]['aliases90']=aliases90
   if not automatic and candidate and candidate.get('verified85'):
    from programme_urls55 import safe
    data['records'][key]['work87']=dict(title=str(candidate.get('title') or '')[:200],role=candidate.get('role') if candidate.get('role') in ('poster','backdrop') else '',**{k:candidate[k] for k in ('url','poster') if candidate.get(k) and safe(candidate[k])})

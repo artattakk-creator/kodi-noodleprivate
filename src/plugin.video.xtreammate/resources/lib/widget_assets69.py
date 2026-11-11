@@ -5,6 +5,7 @@ from urllib.parse import urlsplit,unquote
 _lock=threading.RLock();_queue=queue.Queue(maxsize=16);_pending=set();_thread=None;_stop=threading.Event();_revision=0
 _deferred82={};_local_due82={};_lease_keys82={};_fatal82=False
 _cursor84={}
+_logo_due90={}
 PREFIX='XCMate.WidgetAsset69.'
 def profile():
  from epg_handoff63 import profile_scope
@@ -71,7 +72,7 @@ def prepare(portal,kind,rows,cancel=lambda:False):
  material=[[str(r['sid']),sources(r,provider_only=True)] for r in selected]
  key=hashlib.sha256(json.dumps([profile(),portal['id'],kind,material],sort_keys=True).encode()).hexdigest()
  with _lock:
-  if key in _pending:return False
+  if key in _pending or key in _logo_due90:return False
   try:_queue.put_nowait((key,dict(portal),kind,selected))
   except queue.Full:return False
   _pending.add(key)
@@ -149,19 +150,36 @@ def _run():
    if now>=_local_due82.get(tag,0):
     job=candidate;local_only=True;_local_due82[tag]=now+2;break
   if job is None:
-   try:job=_queue.get(timeout=.5);queued=True
-   except queue.Empty:continue
+   try:job=_queue.get_nowait();queued=True
+   except queue.Empty:
+    # Independent logo retries cannot overwrite a DB-pause receipt or keep
+    # recovered database work marked pending. Existing queued work wins.
+    for tag,(until,candidate) in list(_logo_due90.items()):
+     if now>=until:
+      job=candidate;_logo_due90.pop(tag,None);break
+    if job is None:
+     try:job=_queue.get(timeout=.5);queued=True
+     except queue.Empty:continue
   key,portal,kind,rows=job;deferred=local_only
   try:
    # Independent logo manifest remains useful in Dynamic mode and DB pauses.
    if kind=='live':
     # Approve safe public references and recover decoded Kodi files before
     # optional persistent archive writes, which may be reserve-blocked.
-    _references82(portal,kind,rows)
-    __import__('station_logos87').recover(portal,rows,cancelled)
-    __import__('station_logos88').recover(portal,rows,cancelled)
+    own90=__import__('logo_manifest86').read(portal,rows,with_fallback=False)
+    missing90=[r for r in rows if str(r['sid']) not in own90]
+    if missing90:
+     _references82(portal,kind,missing90)
+     __import__('station_logos87').recover(portal,missing90,cancelled)
+     __import__('station_logos88').recover(portal,missing90,cancelled)
     __import__('logo_manifest86').prepare(portal,rows,cancelled)
-    __import__('station_logos88').recover(portal,rows,cancelled)
+    # Continue a partial initial logo fill without waiting for the next Home
+    # refresh or catalogue/EPG job. The existing one worker remains bounded.
+    delay90=__import__('station_logos88').next_delay90(portal,rows)
+    if delay90 is not None:
+     due90=time.time()+delay90
+     if len(_logo_due90)<16 or key in _logo_due90:_logo_due90[key]=(due90,job)
+     if delay90<=.5:continue
    # Recover already decoded Kodi files before any optional image write.
    __import__('artwork_display84').observe()
    __import__('widget_cache82').prepare(portal,kind,rows)

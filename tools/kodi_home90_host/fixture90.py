@@ -1,0 +1,48 @@
+"""Same synthetic .89 provider, plus 58 actually persisted pre-start logos.
+
+115 MiB is an explicit Python capacity injection, never physical ENOSPC or
+Android proof. Real local HTTPS bytes, original safe URL and SHA persist paths.
+"""
+from pathlib import Path
+# Remove the executable guard only. The same text inside base86's own
+# .replace(...) literal must survive, or base84 runs before instrumentation
+# and the eventual entry runs a second time after Back.
+base='\n'.join(line for line in Path('/base_fixture86.py').read_text(encoding='utf-8').splitlines() if line.strip()!="if __name__=='__main__':run()")
+exec(compile(base,'/base_fixture86.py','exec'),globals())
+install86=install
+
+def install():
+ install86()
+ import art_storage82
+ previous=art_storage82.capacity
+ if getattr(previous,'native90',False):return
+ def capacity90(path,*args,**kw):
+  facts=previous(path,*args,**kw)
+  if str(path).endswith('/tv_logos'):facts.update(free=115*1024**2,total=4034297856,capacity82='SAME_VOLUME_VERIFIED',volume82='native90-synthetic',mount82='fuse')
+  return facts
+ capacity90.native90=True;art_storage82.capacity=capacity90
+seed86=seed
+
+def seed():
+ seed86()
+ # Build synthetic navigation data before the separately declared low-space
+ # injection. Importing 2,740 new rows under 27 MiB must remain forbidden.
+ from library_index import replace_catalog
+ groups90=[dict(category_id=str(i),category_name='Native group '+str(i)) for i in range(20)]
+ streams90=[dict(stream_id=str(i*1000+j+1),category_id=str(i),name='Native station '+str(j)) for i in range(20) for j in range(137)]
+ replace_catalog('navigation90','live',streams90,groups90)
+ install()
+ import time,json,logo_store89,station_logos88,station_logos87
+ from portals import get_active
+ from widget_group46 import snapshot
+ portal=get_active()[0];rows=snapshot(portal);start=time.monotonic()
+ for row in rows[:58]:logo_store89.persist(portal,row,station_logos88.fetch(portal,station_logos87.source(row),lambda:False))
+ Path('/root/seed90.json').write_text(json.dumps(dict(own_logos_before_home=58,capacity_injected_bytes=115*1024**2,preparation_ms=int((time.monotonic()-start)*1000),android='ANDROID_NOT_TESTED')))
+original_run90=run
+def run():
+ import sys,json
+ from urllib.parse import parse_qs
+ args90=parse_qs(sys.argv[2].lstrip('?'))
+ print('FIXTURE90_ROUTE '+json.dumps(dict(action=args90.get('action',[''])[0],sequence=args90.get('nav86',[''])[0])),flush=True)
+ return original_run90()
+if __name__=='__main__':run()

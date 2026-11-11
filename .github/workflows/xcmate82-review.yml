@@ -7,7 +7,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: xcmate89-review-${{ github.head_ref || github.ref }}
+  group: xcmate90-review-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 jobs:
   full-host:
@@ -25,19 +25,19 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          mkdir -p "$RUNNER_TEMP/xcmate89"
+          mkdir -p "$RUNNER_TEMP/xcmate90"
           python -m compileall -q src/plugin.video.xtreammate
-          python -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/xcmate89/tests.txt"
-          python -m pytest -q tests/test_xcmate_bingie_branding.py 2>&1 | tee "$RUNNER_TEMP/xcmate89/branding.txt"
+          python -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/xcmate90/tests.txt"
+          python -m pytest -q tests/test_xcmate_bingie_branding.py 2>&1 | tee "$RUNNER_TEMP/xcmate90/branding.txt"
           python tools/validate_kodi_po.py
       - name: Reproduce ZIP, verify every frozen publication channel
         run: |
-          python tools/package_xcmate71.py "$RUNNER_TEMP/xcmate89" > "$RUNNER_TEMP/xcmate89/package.json"
-          cmp "$RUNNER_TEMP/xcmate89/plugin.video.xtreammate-0.1.29.89.zip" docs/XCMate/test-builds/02989/plugin.video.xtreammate-0.1.29.89.zip
+          python tools/package_xcmate71.py "$RUNNER_TEMP/xcmate90" > "$RUNNER_TEMP/xcmate90/package.json"
+          cmp "$RUNNER_TEMP/xcmate90/plugin.video.xtreammate-0.1.29.90.zip" docs/XCMate/test-builds/02990/plugin.video.xtreammate-0.1.29.90.zip
           python tools/release_channel75.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: xcmate89-complete-host
-          path: ${{ runner.temp }}/xcmate89/
+          name: xcmate90-complete-host
+          path: ${{ runner.temp }}/xcmate90/
           retention-days: 30

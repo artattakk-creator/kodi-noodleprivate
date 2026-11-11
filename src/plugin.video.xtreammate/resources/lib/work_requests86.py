@@ -58,6 +58,12 @@ def authoritative(event,expected):
  if row.get('name')!=event.get('title'):raise SourceError('EPG_REVISION_CHANGED')
  return event
 
+def mapping_commit90(*args,**options):
+ # A local profile-write lease is not a network timeout. Keep the same .2s
+ # writer budget and the prior durable record on failure.
+ try:return __import__('programme_mapping85').set_mapping(*args,**options)
+ except TimeoutError:raise SourceError('PERSISTENCE_BLOCKED') from None
+
 def save(event,options,expected,cancel=lambda:False):
  current=authoritative(event,expected)
  kind=event.get('media_kind86','live');action=options.get('action','save')
@@ -67,7 +73,8 @@ def save(event,options,expected,cancel=lambda:False):
    if action=='hide':return __import__('media_overrides43').hide86(event['pid'],kind,str(event['sid']))
    return __import__('media_overrides43').reset(event['pid'],kind,str(event['sid']))
   phase('EPG_SCOPE_REVALIDATED')
-  return __import__('programme_mapping85').set_mapping(current,automatic=action=='automatic',hidden=action=='hide',cancel=cancel)
+  mapping90=__import__('programme_mapping85')
+  return mapping_commit90(current,automatic=action=='automatic',hidden=action=='hide',cancel=cancel,alias90=mapping90.namespace(event))
  selected=options.get('candidate') or {};phase('CANDIDATE_SELECTED')
  verified=__import__('work_search86').details(selected.get('id'),selected.get('media_type86'),selected.get('source','tmdb'),cancel)
  # Independently fetch again before Save; caller-supplied URLs are never trusted.
@@ -76,7 +83,9 @@ def save(event,options,expected,cancel=lambda:False):
  if cancel():raise SourceError('CANCELLED')
  # Re-read after network, not just the unchanged caller dictionary.
  current=authoritative(event,expected);phase('EPG_SCOPE_REVALIDATED')
- if kind=='live':return __import__('programme_mapping85').set_mapping(current,verified,cancel=cancel,operation89=_seen)
+ if kind=='live':
+  mapping90=__import__('programme_mapping85')
+  return mapping_commit90(current,verified,cancel=cancel,operation89=_seen,alias90=mapping90.namespace(event))
  from programme_urls55 import probe,safe
  url=verified.get('poster') or verified['url']
  if not safe(url):raise SourceError('UNSAFE_SOURCE')
@@ -164,7 +173,8 @@ def local_save(event,path,expected,cancel=lambda:False):
  with open(target,'rb') as stream:
   if hashlib.sha256(stream.read(MAX_IMAGE+1)).hexdigest()!=digest:raise SourceError('CANDIDATES_REJECTED')
  authoritative(event,expected)
- return __import__('programme_mapping85').set_mapping(current,dict(source='user_local86',id=1,verified85=True,local86=dict(image=target,sha256=digest,width=width,height=height),media_type86='image'),cancel=cancel)
+ mapping90=__import__('programme_mapping85')
+ return mapping_commit90(current,dict(source='user_local86',id=1,verified85=True,local86=dict(image=target,sha256=digest,width=width,height=height),media_type86='image'),cancel=cancel,alias90=mapping90.namespace(event))
 
 def local_result(event):
  mapping=__import__('programme_mapping85').current(event)
