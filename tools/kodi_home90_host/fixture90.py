@@ -28,4 +28,11 @@ def seed():
  portal=get_active()[0];rows=snapshot(portal);start=time.monotonic()
  for row in rows[:58]:logo_store89.persist(portal,row,station_logos88.fetch(portal,station_logos87.source(row),lambda:False))
  Path('/root/seed90.json').write_text(json.dumps(dict(own_logos_before_home=58,capacity_injected_bytes=115*1024**2,preparation_ms=int((time.monotonic()-start)*1000),android='ANDROID_NOT_TESTED')))
+original_run90=run
+def run():
+ import sys,json
+ from urllib.parse import parse_qs
+ args90=parse_qs(sys.argv[2].lstrip('?'))
+ print('FIXTURE90_ROUTE '+json.dumps(dict(action=args90.get('action',[''])[0],sequence=args90.get('nav86',[''])[0])),flush=True)
+ return original_run90()
 if __name__=='__main__':run()

@@ -23,6 +23,7 @@ rpc('GUI.ActivateWindow',dict(window='home'));time.sleep(2)
 state=rpc('GUI.GetProperties',dict(properties=['currentwindow','currentcontrol']))
 print('PICKER90_INITIAL_WINDOW '+json.dumps(state),flush=True)
 if state['currentwindow']['id']==10100 and state['currentcontrol']['label']=='No':rpc('Input.Select')
+rpc('Settings.SetSettingValue',dict(setting='debug.showloginfo',value=True))
 rpc('Addons.ExecuteAddon',dict(addonid='script.xcmate.picker90'))
 for _ in range(4800):
  if Path('/root/picker90-error.txt').exists():raise RuntimeError(Path('/root/picker90-error.txt').read_text(encoding='utf-8'))

@@ -39,6 +39,8 @@ def main():
     if path=='synthetic-kodi.log':text='\n'.join(line for line in text.splitlines() if 'CActiveAESink' not in line and 'ActiveAE::' not in line)
     
     if path=='synthetic-kodi.log':
+     import gzip,base64
+     print('SYNTHETIC90_LOG_GZIP '+base64.b64encode(gzip.compress(text.encode())).decode(),flush=True)
      lines=text.splitlines();selected=[]
      for i,line in enumerate(lines):
       if any(term in line for term in ('PICKER90_','Listing addons','video add-ons found','Failed to load addons','Listing available addons')):selected.extend(lines[max(0,i-2):i+8])

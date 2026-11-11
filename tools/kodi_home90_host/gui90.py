@@ -9,7 +9,7 @@ marker="exec(compile(base,'/base_gui88.py','exec'),globals())"
 assert base.count(marker)==1
 addition="""
 line90=\"Path('/root/foreign87.json').write_text(json.dumps(report['foreign87'],indent=2))\"
-phase90=\"from phase90 import run as run90\\nreport['startup90']=run90(portal,live_rows(portal),pump,capture,cold,check,home,logo_case84)\\n\"
+phase90=\"from phase90 import run as run90\\nreport['startup90']=run90(portal,live_rows(portal),pump,capture,cold,check,home,logo_case84,epg_case90)\\n\"
 base=base.replace(line90,phase90+line90)
 """
 base=base.replace(marker,addition+'\n'+marker)
