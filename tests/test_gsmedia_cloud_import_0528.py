@@ -27,7 +27,7 @@ class CloudToken528(unittest.TestCase):
 
     def test_fixed_origins_and_no_traversal(self):
         cases=[
-          ('drive','1EMzM8pU7JDpk1OkoRFNSCTiuS3MMZ-9w','www.googleapis.com'),
+          ('drive','SYNTHETIC_DRIVE_FILE_ID_0123456789ABC','www.googleapis.com'),
           ('github','artattakk-creator/kodi-noodleprivate/private/tmdb.txt','api.github.com'),
         ]
         for provider,name,host in cases:
@@ -56,7 +56,7 @@ class CloudToken528(unittest.TestCase):
             return github if host=='api.github.com' else sample
         with mock.patch.object(self.mod,'_https',side_effect=network):
             self.assertEqual(self.mod.download('github','owner/repo/token.txt','secret12345678'),sample)
-            self.assertEqual(self.mod.download('drive','1EMzM8pU7JDpk1OkoRFNSCTiuS3MMZ-9w','secret12345678'),sample)
+            self.assertEqual(self.mod.download('drive','SYNTHETIC_DRIVE_FILE_ID_0123456789ABC','secret12345678'),sample)
         self.assertEqual(calls[0][0],'api.github.com')
         self.assertEqual(calls[1][0],'www.googleapis.com')
         with mock.patch.object(self.mod,'_https',return_value=b'not-json'):
@@ -82,7 +82,7 @@ class CloudToken528(unittest.TestCase):
         }
         with mock.patch.dict(sys.modules,modules):
             with mock.patch.object(self.mod,'download',return_value=good.encode()):
-                self.assertEqual(self.mod.perform('drive','1EMzM8pU7JDpk1OkoRFNSCTiuS3MMZ-9w','bearer123456789'),'PAIRED')
+                self.assertEqual(self.mod.perform('drive','SYNTHETIC_DRIVE_FILE_ID_0123456789ABC','bearer123456789'),'PAIRED')
                 self.assertEqual(len(saved),1)
                 self.assertIsNone(saved[0][1])
                 self.assertEqual(saved[0][2],tokenlib.location())
