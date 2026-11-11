@@ -1,0 +1,30 @@
+{
+  "addon_id": "plugin.video.xtreammate",
+  "version": "0.1.29.89",
+  "release_date": "2026-11-11",
+  "approval": "User explicitly requested merge 0.1.29.89 to main and all available repository channels",
+  "source_pr": 426,
+  "source_merge_sha": "e0b8c4d547e6129777fefe1b3662cb4ea4a8ae62",
+  "source_verified_sha": "0deaafa17bb5e5b5ad69c55cea3750a453a2a9db",
+  "source_docs_only_head_sha": "331efd86a2758c1d60bc7a7b965483ef1ccfa9ba",
+  "android_status": "ANDROID_NOT_TESTED",
+  "user_acknowledged_recent_android_88_issues": true,
+  "host_ci": "22 CI jobs success; 2 manual diagnostic jobs skipped",
+  "zip_sha256": "5e2522ccb45e3a3274257c94ae440a1e5caee127cbeb8cf3f6fb814a1e5a874b",
+  "zip_git_blob_sha": "c58705ddc3de80912eb62b0e5122a339a8f76e8e",
+  "zip_bytes": 4654964,
+  "channels": [
+    "regular",
+    "pilot",
+    "NeoDark3"
+  ],
+  "paths": [
+    "plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.89.zip",
+    "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.89.zip",
+    "online-test/plugin.video.xtreammate-0.1.29.89.zip"
+  ],
+  "xcmate_profile_and_provider_preserved": true,
+  "gsmedia_setup_installer_0_5_26_unchanged": true,
+  "gsmedia_setup_0_5_28_draft_excluded": true,
+  "independent_physical_android_acceptance_open": true
+}
