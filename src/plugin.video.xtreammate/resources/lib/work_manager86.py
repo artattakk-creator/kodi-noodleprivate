@@ -13,7 +13,9 @@ def wait(event,operation,**options):
    # A committed readback wins over a simultaneous Cancel, never claim it was undone.
    value=result(nonce)
    if value:
-    mark(nonce,'UI_CONSUMED');return value
+    mark(nonce,'UI_CONSUMED');mark(nonce,'UI_ACK');return value
+   if operation=='save' and __import__('programme_mapping85').committed89(event,nonce):
+    mark(nonce,'UI_ACK');return dict(code='SAVED',rows=[])
    if monitor.abortRequested():return dict(code='KODI_STOPPED',rows=[])
    if progress.iscanceled():return dict(code='USER_CANCELLED',rows=[])
    if time.monotonic()>=deadline:
@@ -84,5 +86,5 @@ def open(parent):
  return changed
 
 def status(code):
- codes={'SOURCE_DISABLED':37090,'TMDB_TOKEN_MISSING':37091,'ZERO_RESULTS':37092,'EPG_REVISION_CHANGED':37093,'CANDIDATES_REJECTED':37094,'CANCELLED':37111,'USER_CANCELLED':37111,'REQUEST_TIMEOUT':37112,'WORKER_BUSY':37113,'WORKER_STOPPED':37114,'KODI_STOPPED':37115,'NETWORK_TIMEOUT':37116,'PERSISTENCE_BLOCKED':37117,'SAVE_BLOCKED':37096,'UNCHANGED':37095}
+ codes={'SOURCE_DISABLED':37090,'TMDB_TOKEN_MISSING':37091,'ZERO_RESULTS':37092,'EPG_REVISION_CHANGED':37093,'CANDIDATES_REJECTED':37094,'CANCELLED':37111,'USER_CANCELLED':37111,'REQUEST_TIMEOUT':37112,'WORKER_BUSY':37113,'WORKER_STOPPED':37114,'KODI_STOPPED':37115,'NETWORK_TIMEOUT':37116,'PERSISTENCE_BLOCKED':37117,'READBACK_FAILED':37117,'SAVE_BLOCKED':37096,'UNCHANGED':37095}
  return tr(codes.get(code,37097))

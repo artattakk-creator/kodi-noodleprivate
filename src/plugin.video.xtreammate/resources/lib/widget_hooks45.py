@@ -75,3 +75,9 @@ def read():
  except (OSError,ValueError,TypeError):pass
  value=_memory56.get(path(),{})
  return value if 0<=time.time()-value.get('at',0)<180 else {}
+
+
+def isolated89(names):
+ """Use an installed row-specific hook; retain legacy support until repair."""
+ own=[h for h in names if h.startswith('XCMate.Widget45.Reload.')]
+ return own or list(names)

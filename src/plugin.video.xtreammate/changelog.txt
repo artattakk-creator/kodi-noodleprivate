@@ -1,3 +1,10 @@
+0.1.29.89 – Android-.88-Nacharbeit, unveröffentlichter Testkandidat
+- Dauerhafte geprüfte Senderlogos mit eigener kleiner Quota und Mindestfreiraum; keine globale Reserveabschaltung.
+- Schnellere manuelle TMDB-/TVMaze-Suche, ausgewähltes Werk erneut prüfen, gemeinsames Zeitbudget und atomarer Mapping-Readback.
+- Kleine Bildreferenzjournale unter eigener sicherer Metadatenreserve erhalten; EPG-Batches gegen parallele Leser absichern.
+- Gültige Home-Property-Widgetpfade reparieren und eigene Aktualisierungen von fremden Widgetreihen trennen.
+- Android-Abnahme offen; .88-Design, Nutzerdaten und alle veröffentlichten Kanäle bleiben unverändert.
+
 0.1.29.88 – Android-P0-Testkandidat, nicht veröffentlicht
 - Öffentliche Providerlogos sicher und unabhängig von der Archivreserve laden.
 - Vollständig geprüfte Bilddaten begrenzt im RAM halten; keine Bildlöschung durch 45-Sekunden-Nachprüfung.

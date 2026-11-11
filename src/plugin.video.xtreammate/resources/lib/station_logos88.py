@@ -96,7 +96,7 @@ def prepare(portal,rows,cancel=lambda:False):
  from media_sources43 import SourceError,validate_image
  from art_storage import check
  from station_logos87 import note
- existing=manifest_read(portal,rows);scope=context(portal);offset=_cursor.get(scope,0);attempts=0;changed=False
+ existing=manifest_read(portal,rows,with_fallback=False);scope=context(portal);offset=_cursor.get(scope,0);attempts=0;changed=False
  try:backend,path=location();records=load(portal,all_records=True)
  except OSError:backend=None;records={}
  for row in rows[:5]+rows[max(5,offset):]+rows[5:max(5,offset)]:
@@ -104,23 +104,33 @@ def prepare(portal,rows,cancel=lambda:False):
   tag=key(portal,row);uri=source(row)
   _cursor[scope]=(rows.index(row)+1)%len(rows)
   if not uri:note(portal,row,'SOURCE_MISSING');continue
-  if str(row['sid']) in existing:continue
+  if str(row['sid']) in existing and any(v.get('stable89')==__import__('logo_store89').identity(portal,row) for v in records.values()):continue
   if time.monotonic()<_due.get(tag,0):continue
-  attempts+=1;_due[tag]=time.monotonic()+60
+  attempts+=1;_due[tag]=time.monotonic()+60;body=None
   try:
-   body=fetch(portal,uri,cancel)
-   # Decode first and publish bounded session bytes regardless of archive
-   # reserve. Never call the RAM receipt PERSISTED/LOCAL_READY.
-   record=__import__('decoded_assets88').put(tag,body,time.time()+86400,kind='logo')
-   note(portal,row,'DECODED_RAM_READY')
-   if backend is None:continue
-   check(len(body)+65536,limit=0,backend=backend)
-   digest=record['sha256'];backend.write_verified(digest,body,lambda raw:bool(validate_image(raw)))
-   stat=os.stat(backend.resolve_target(digest))
-   records[tag]=dict(context=scope,sha256=digest,stamp=[stat.st_mtime_ns,stat.st_size],width=record['width'],height=record['height']);changed=True
+   local89=manifest_read(portal,[row]).get(str(row['sid']),'')
+   if local89.startswith('/'):
+    with open(local89,'rb') as stream:body=stream.read(3*1024*1024+1)
+   else:
+    ram89=__import__('decoded_assets88').read(tag)
+    if ram89:
+     import urllib.request
+     opener89=urllib.request.build_opener(urllib.request.ProxyHandler({}))
+     with opener89.open(ram89['uri'],timeout=2) as reply89:body=reply89.read(3*1024*1024+1)
+    else:body=fetch(portal,uri,cancel)
+   if backend is None:raise OSError('LOGO_LOCAL_REQUIRED')
+   _,facts89=__import__('logo_store89').persist(portal,row,body,cancel)
+   __import__('logo_store89').note('PERSISTED_VERIFIED',**facts89)
+   note(portal,row,'PERSISTED_VERIFIED',**{k:v for k,v in facts89.items() if k in ('free','reserve')})
   except (OSError,ValueError,TypeError,SourceError) as error:
+   if body:
+    try:
+     __import__('decoded_assets88').put(tag,body,time.time()+86400,kind='logo')
+     note(portal,row,'DECODED_RAM_READY')
+    except (OSError,ValueError,TypeError,SourceError):pass
+   __import__('logo_store89').note(str(error))
    reason=getattr(error,'reason','');code=getattr(error,'code','')
-   stage='STORAGE_RESERVE_BLOCKED' if reason in ('RESERVE_BLOCKED','BLOCKED_REAL_DISK') or code in ('DISK_FULL','SPACE_FULL') else 'AUTH_SCOPE' if code=='HTTP_AUTH' else 'IMAGE_INVALID' if code in ('INVALID_IMAGE','IMAGE_LIMIT','CONTENT_TYPE') else 'DOWNLOAD_FAILED'
+   stage='STORAGE_RESERVE_BLOCKED' if str(error).startswith(('LOGO_SAFETY_FLOOR','LOGO_CACHE_QUOTA','LOGO_VOLUME_UNVERIFIED')) else 'STORAGE_RESERVE_BLOCKED' if reason in ('RESERVE_BLOCKED','BLOCKED_REAL_DISK') or code in ('DISK_FULL','SPACE_FULL') else 'AUTH_SCOPE' if code=='HTTP_AUTH' else 'IMAGE_INVALID' if code in ('INVALID_IMAGE','IMAGE_LIMIT','CONTENT_TYPE') else 'DOWNLOAD_FAILED'
    note(portal,row,stage,**{k:v for k,v in getattr(error,'storage',{}).items() if k in ('reserve','budget','free')})
  if changed:
   try:_save(backend,path,records)

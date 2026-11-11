@@ -35,39 +35,6 @@ def search(query,kind='tv',source='tmdb',page=1,cancel=lambda:False):
  if kind not in ('tv','movie') or source not in ('tmdb','tvmaze') or type(page) is not int or not 1<=page<=9:raise SourceError('CANDIDATES_REJECTED')
  query=str(query or '').strip()[:200]
  if not query:raise SourceError('QUERY_EMPTY')
- if source=='tvmaze':
-  if kind!='tv':raise SourceError('CANDIDATES_REJECTED')
-  rows,complete=__import__('programme_tvmaze85').search(dict(title=query,_manager85=True),cancel)
-  for row in rows:row['media_type86']='tv'
-  return dict(rows=rows,more=False,code='READY' if rows else 'ZERO_RESULTS')
- from tmdb_connection60 import request
- from media_sources43 import TMDB,tmdb_token
- rows=[];more=False;rejected=0;started=time.monotonic()
- original_cancel=cancel;cancel=lambda:original_cancel() or time.monotonic()-started>22
- api_page=(page-1)//3+1;start=((page-1)%3)*8
- for variant in aliases(query):
-  if cancel() or time.monotonic()-started>20:break
-  data=request(TMDB+'/search/'+kind+'?'+urlencode(dict(query=variant,language='de-DE',include_adult='false',page=api_page)),token=tmdb_token(),cancel=cancel)
-  part=data.get('results');total=data.get('total_pages')
-  if not isinstance(part,list) or len(part)>20 or type(total) is not int or total<0 or data.get('page',api_page)!=api_page:raise SourceError('CANDIDATES_REJECTED')
-  more=more or start+8<len(part) or api_page<min(3,total)
-  for row in part[start:start+8]:
-   if cancel() or len(rows)>=8 or time.monotonic()-started>20:break
-   if not isinstance(row,dict) or type(row.get('id')) is not int or row.get('adult'):rejected+=1;continue
-   if any(v['id']==row['id'] for v in rows):continue
-   try:verified=details(row['id'],kind,cancel=cancel)
-   except SourceError as error:
-    if error.code in ('CANDIDATES_REJECTED','NO_ARTWORK','NO_MATCH'):rejected+=1;continue
-    raise
-   rows.append(verified)
-  if rows:break
- # Preflight at most five candidate posters; unverified paths never reach GUI.
- for row in rows[:5]:
-  if cancel():break
-  url=row.get('poster','')
-  try:
-   if not url or not __import__('programme_urls55').safe(url):continue
-   checked=__import__('programme_urls55').probe(url,cancel=cancel)
-   row.update(thumb86=url+__import__('programme_urls55').OPTIONS,width86=checked['width'],height86=checked['height'])
-  except (SourceError,OSError,ValueError):continue
- return dict(rows=rows,more=more,code='READY' if rows else 'CANDIDATES_REJECTED' if rejected else 'ZERO_RESULTS')
+ # A candidate page is a preview, not a verified assignment. Fetch only the
+ # search response; the selected work alone is independently checked on Save.
+ return __import__('work_candidates89').search(query,kind,source,page,cancel)

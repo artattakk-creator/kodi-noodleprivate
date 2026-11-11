@@ -5,17 +5,21 @@ for at most 30 seconds; positive intervals expire at the real event boundary.
 """
 import copy,hashlib,json,os,threading,time
 _lock=threading.RLock();_values={}
-def key(pid,channels,mappings,display):
+def context89(pid,mappings,display):
     from guide_store import path
     from epg_status import revision
     from epg_handoff63 import profile_scope
-    from local_epg import channel_keys
     filename=path()
     def stamp(name):
         try:v=os.stat(name);return [v.st_mtime_ns,v.st_size]
         except OSError:return [0,0]
-    rows=[channel_keys(c,mappings) for c in channels[:16]]
-    return hashlib.sha256(json.dumps([profile_scope(),str(pid),revision(pid),stamp(filename),stamp(filename+'-wal'),rows,mappings,getattr(mappings,'sources48',{}),bool(display)],sort_keys=True,default=str).encode()).hexdigest()
+    return [profile_scope(),str(pid),revision(pid),stamp(filename),stamp(filename+'-wal'),None,mappings,getattr(mappings,'sources48',{}),bool(display)]
+def from_context89(context,channels,mappings):
+    from local_epg import channel_keys
+    facts=list(context);facts[5]=[channel_keys(c,mappings) for c in channels[:16]]
+    return hashlib.sha256(json.dumps(facts,sort_keys=True,default=str).encode()).hexdigest()
+def key(pid,channels,mappings,display):
+    return from_context89(context89(pid,mappings,display),channels,mappings)
 def read(cache_key,now):
     with _lock:record=_values.get(cache_key)
     if not record or time.monotonic()>record['until'] or abs(now-record['now'])>30:return None

@@ -64,7 +64,7 @@ def current(event):
   record=records.get(namespace(event))
   return dict(record) if isinstance(record,dict) else None
  except (ValueError,TypeError):return None
-def set_mapping(event,candidate=None,hidden=False,automatic=False,cancel=lambda:False):
+def set_mapping(event,candidate=None,hidden=False,automatic=False,cancel=lambda:False,operation89=''):
  from import_budget import check_space
  from profile_transaction import writing
  key=namespace(event);filename=path()
@@ -78,6 +78,7 @@ def set_mapping(event,candidate=None,hidden=False,automatic=False,cancel=lambda:
   else:
    if not hidden and (not isinstance(candidate,dict) or candidate.get('source') not in ('tmdb','tvmaze','user_local86') or type(candidate.get('id')) is not int or candidate['id']<=0 or not candidate.get('verified85')):raise ValueError('MANUAL_UNVERIFIED')
    data['records'][key]=dict(hidden=bool(hidden),source=candidate.get('source') if candidate else '',id=candidate.get('id') if candidate else None,year=candidate.get('year') if candidate else None,country=candidate.get('country') if candidate else None,local86=candidate.get('local86') if candidate else None,media_type86=candidate.get('media_type86','tv') if candidate else 'tv',at=int(time.time()),provenance='USER_CONFIRMED' if not hidden else 'USER_HIDDEN')
+  if not automatic and operation89 and __import__('re').fullmatch('[a-f0-9]{32}',operation89):data['records'][key]['operation89']=operation89
   if not automatic and candidate and candidate.get('verified85'):
    from programme_urls55 import safe
    data['records'][key]['work87']=dict(title=str(candidate.get('title') or '')[:200],role=candidate.get('role') if candidate.get('role') in ('poster','backdrop') else '',**{k:candidate[k] for k in ('url','poster') if candidate.get(k) and safe(candidate[k])})
@@ -92,11 +93,13 @@ def set_mapping(event,candidate=None,hidden=False,automatic=False,cancel=lambda:
    if json.loads(Path(tmp).read_bytes())!=data:raise OSError('MANUAL_READBACK')
    if cancel():raise __import__('media_sources43').SourceError('CANCELLED')
    os.replace(tmp,filename)
+   if operation89:__import__('work_trace87').mark(operation89,'WRITE_COMMITTED')
    directory=os.open(filename.parent,os.O_RDONLY)
    try:os.fsync(directory)
    finally:os.close(directory)
    if read()!=data:raise OSError('MANUAL_READBACK')
    publish(data)
+   if operation89:__import__('work_trace87').mark(operation89,'WRITE_READBACK')
   finally:
    if os.path.exists(tmp):os.unlink(tmp)
  return True
@@ -150,3 +153,9 @@ def parsed85(raw):
  if not isinstance(value,dict):raise ValueError('MANUAL_SCHEMA')
  _parsed85=(raw,value)
  return value
+
+
+def committed89(event,nonce):
+ """A worker-published verified file readback, never a candidate GUI URI."""
+ value=current(event)
+ return bool(value and value.get('operation89')==nonce and value.get('provenance')=='USER_CONFIRMED')

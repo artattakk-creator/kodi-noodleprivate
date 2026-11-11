@@ -1,7 +1,7 @@
 """One bounded, redacted manual-operation receipt; no titles, paths or URLs."""
 import hashlib,json,time
 PREFIX='XCMate.Work87.'
-STAGES=('ENQUEUED','PICKED','SOURCE_REVERIFIED','EPG_SCOPE_REVALIDATED','WRITE_READBACK','DELIVERED','UI_CONSUMED')
+STAGES=('ENQUEUED','PICKED','SEARCH_READY','CANDIDATE_SELECTED','SOURCE_REVERIFIED','EPG_SCOPE_REVALIDATED','WRITE_COMMITTED','WRITE_READBACK','DELIVERED','UI_CONSUMED','UI_ACK')
 def window():
  import xbmcgui
  return xbmcgui.Window(10000)

@@ -68,10 +68,10 @@ def decoded(texture,source):
     except (OSError,ValueError,SourceError):return None
 
 def save(portal,kind,found):
-    if not __import__('artwork_display84').metadata_allowed():return
+    if not __import__('artwork_display84').metadata_allowed(small89=True):return
     from widget_cache79 import path,load,LIMIT
     from profile_transaction import writing
-    from import_budget import check_space
+    from metadata_store89 import check as check_space
     filename,context=path(portal,kind)
     with writing(timeout=.1):
         if os.path.islink(filename):return

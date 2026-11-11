@@ -5,11 +5,11 @@ _art_counts84={};_art_seen84={};_manual_seen86={};_identity87={}
 
 
 def prepare(portal,kind,signature,count,art_count84=None):
-    from widget_hooks45 import read
+    from widget_hooks45 import read,isolated89
     state=read();hooks=[]
     for binding in state.get('bindings',[])[:96]:
         if binding.get('pid')==str(portal['id']) and binding.get('kind')==kind:
-            hooks.extend(h for h in binding.get('hooks',[]) if h.startswith('XCMate.Widget45.Reload.') or h in ('widgetreload','widgetreload2','widgetreloadmovies','widgetreloadtvshows'))
+            hooks.extend(h for h in isolated89(binding.get('hooks',[])) if h.startswith('XCMate.Widget45.Reload.') or h in ('widgetreload','widgetreload2','widgetreloadmovies','widgetreloadtvshows'))
     with _lock:
         _hooks[(str(portal['id']),kind)]=hooks
         _pending[(str(portal['id']),kind)]=(signature,count)

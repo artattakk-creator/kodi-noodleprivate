@@ -31,7 +31,7 @@ def load(portal,all_records=False):
   return {k:v for k,v in records.items() if isinstance(v,dict) and (all_records or v.get('context')==scope)} if isinstance(records,dict) and len(records)<=512 else {}
  except (OSError,ValueError,TypeError,AttributeError):return {}
 def read(portal,rows,with_fallback=True):
- records=load(portal);result=__import__('station_logos87').read(portal,rows) if with_fallback else {};scope=context(portal)
+ records=load(portal,all_records=True);stable89={v.get('stable89'):v for v in records.values() if v.get('stable89')};result=__import__('station_logos87').read(portal,rows) if with_fallback else {};scope=context(portal)
  if with_fallback:
   for sid88,uri88 in __import__('station_logos88').read(portal,rows).items():result.setdefault(sid88,uri88)
  # Existing Kodi-local decoded logos remain valid without adopting/deleting files.
@@ -65,12 +65,12 @@ def read(portal,rows,with_fallback=True):
  try:backend,_=location()
  except OSError:return result
  for row in rows:
-  record=records.get(key(portal,row,scope),{})
+  record=records.get(key(portal,row,scope)) or stable89.get(__import__('logo_store89').identity(portal,row),{})
   try:
    file=backend.resolve_target(record['sha256'])
    if os.path.islink(file):continue
    stat=os.stat(file)
-   if record.get('stamp')==[stat.st_mtime_ns,stat.st_size] and record.get('width',0)>0 and record.get('height',0)>0:result[str(row['sid'])]=file
+   if record.get('width',0)>0 and record.get('height',0)>0 and __import__('logo_store89').valid_file(file,record):result[str(row['sid'])]=file
   except (KeyError,OSError,ValueError,TypeError):continue
  return result
 def _save(backend,path,records):
