@@ -1,0 +1,38 @@
+[
+  {
+    "file": "native1080-visible84-foreign87-warm-1-7.png",
+    "sha256": "dcab742d0cded4cfe6db522d3aa31683cc2e88833bf9ddbe889b936782c2ff84",
+    "bytes": 59786,
+    "origin": "Native Linux Kodi synthetic fixture; not physical Android"
+  },
+  {
+    "file": "native1080-visible84-hero86-final.png",
+    "sha256": "35c41fe8d89e0a6bd661a4c2fe4c1117ed9da90b4eded245670c90f4bc2e3d1f",
+    "bytes": 73118,
+    "origin": "Native Linux Kodi synthetic fixture; not physical Android"
+  },
+  {
+    "file": "native1080-visible84-sticky88-305.png",
+    "sha256": "25e784ad1acd0f9c2f1355954d1b6c897eca97703a5a37edfaa49599c1e5d351",
+    "bytes": 98707,
+    "origin": "Native Linux Kodi synthetic fixture; not physical Android"
+  },
+  {
+    "file": "native720-visible84-foreign87-warm-1-7.png",
+    "sha256": "882604a2f59fe306a03f1d0daa76a74b2c5465e05984996689aaf546814e3dbb",
+    "bytes": 34124,
+    "origin": "Native Linux Kodi synthetic fixture; not physical Android"
+  },
+  {
+    "file": "native720-visible84-hero86-final.png",
+    "sha256": "a9a235b1e30c2ee78f59217b53a64537f0b3a2de836affe63352c6d07c0771d6",
+    "bytes": 42839,
+    "origin": "Native Linux Kodi synthetic fixture; not physical Android"
+  },
+  {
+    "file": "native720-visible84-sticky88-305.png",
+    "sha256": "97d9941d72ce38b48f31ac219c6e5a93919a6e1a75d832d93cb547eff684fdad",
+    "bytes": 57948,
+    "origin": "Native Linux Kodi synthetic fixture; not physical Android"
+  }
+]

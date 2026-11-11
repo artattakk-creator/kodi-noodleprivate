@@ -1,0 +1,53 @@
+{
+  "version": "0.1.29.88",
+  "source_commit": "6c1471891fa0fa2795b91c645781c2e5683d035d",
+  "source_tree": "2ec26545f3c25fca43fc527a34600755c31e8391",
+  "host": {
+    "unittest": {
+      "tests": 3684,
+      "seconds": 609.505,
+      "result": "PASS"
+    },
+    "targeted": {
+      "tests": 99,
+      "seconds": 15.995,
+      "result": "PASS"
+    },
+    "branding_pytest": {
+      "tests": 11,
+      "seconds": 0.11,
+      "result": "PASS"
+    },
+    "po_catalogues": 17
+  },
+  "zip": {
+    "files": 838,
+    "bytes": 4621024,
+    "sha256": "eccbf1651c5755681b2dec091acab5e85684f7db8d938cfef2a2f7a0f6d843fd",
+    "crc": "PASS",
+    "reproduction": "PASS"
+  },
+  "native": "PASS_720_1080_STRICT_SEE_NATIVE_REPORT",
+  "android": "ANDROID_NOT_TESTED",
+  "merge": false,
+  "published": false,
+  "ci_host": {
+    "run": 42929686389,
+    "job": 130224991869,
+    "tests": 3686,
+    "seconds": 864.736,
+    "result": "PASS",
+    "branding_tests": 11,
+    "branding_seconds": 0.4,
+    "po_catalogues": 17,
+    "zip_reproduced": "PASS"
+  },
+  "collector_tests": {
+    "tests": 3,
+    "result": "PASS"
+  },
+  "complete_rerun": {
+    "run": 42932821507,
+    "result": "PENDING"
+  }
+}
