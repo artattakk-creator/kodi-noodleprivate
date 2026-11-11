@@ -21,7 +21,7 @@ def entries():
  count=xbmc.getInfoLabel('Container(6).NumItems')
  return [xbmc.getInfoLabel('Container(6).ListItemAbsolute('+str(i)+').Label') for i in range(int(count or 0))]
 def select(index):
- dialog=xbmcgui.Window(xbmcgui.getCurrentWindowDialogId());dialog.setFocusId(6);dialog.getControl(6).selectItem(index);action('Select')
+ ident=xbmcgui.getCurrentWindowDialogId();dialog=xbmcgui.Window(ident);dialog.setFocusId(6);dialog.getControl(6).selectItem(index);xbmc.sleep(150);xbmc.executebuiltin('SendClick('+str(ident)+',6)',wait=False);xbmc.sleep(400)
 def manager():
  xbmc.executebuiltin('RunScript(script.skinshortcuts,type=manage&group=mainmenu)',wait=False)
  until(lambda:xbmc.getCondVisibility('Window.IsVisible(script-skinshortcuts.xml)') and int(xbmc.getInfoLabel('Container(211).NumItems') or 0)>0,'PICKER90_MANAGER_NOT_VISIBLE',60)
@@ -33,7 +33,7 @@ def choose(dialog,slot,kind=None,noportal=False):
   until(lambda:bool(entries()) or xbmcgui.getCurrentWindowDialogId()==10103,'PICKER90_EMPTY_SELECT')
   if xbmcgui.getCurrentWindowDialogId()==10103:
    xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=90,method='Input.SendText',params=dict(text='XCMate '+str(kind),done=True))));break
-  values=entries();seen.append(values);history.append(dict(step=step,kind=kind,labels=values));print('PICKER90_NATIVE_LIST '+json.dumps(history[-1]),flush=True)
+  values=entries();seen.append(values);history.append(dict(step=step,kind=kind,labels=values,window=xbmcgui.getCurrentWindowDialogId()));Path('/root/picker90-history.json').write_text(json.dumps(history,indent=2));print('PICKER90_NATIVE_LIST '+json.dumps(history[-1]),flush=True)
   if noportal and any('Portal' in v or 'einrichten' in v or 'setup' in v.casefold() for v in values):
    check(not any('pid=' in v for v in values),'PICKER90_FAKE_PORTAL');action('Back');return seen
   target=None

@@ -6,7 +6,7 @@ base=base.replace("root/'tools/kodi_home89_host/gui89.py'","root/'tools/kodi_hom
 base=base.replace("root/'tools/kodi_home86_host/fixture86.py'","root/'tools/kodi_home90_host/fixture90.py'")
 
 media_anchor="candidate=report/'candidate';"
-base=base.replace(media_anchor,"media90=report/'navigation90.mp4';subprocess.run(['ffmpeg','-v','error','-y','-f','lavfi','-i','color=c=blue:size=320x180:rate=25','-t','120','-c:v','libx264','-preset','ultrafast','-pix_fmt','yuv420p','-threads','1',str(media90)],check=True)\n "+media_anchor)
+base=base.replace(media_anchor,"media90=root/'tools/kodi_home90_host/navigation90.mp4';assert hashlib.sha256(media90.read_bytes()).hexdigest()=="+repr(hashlib.sha256((Path(__file__).parent/'kodi_home90_host/navigation90.mp4').read_bytes()).hexdigest())+"\n "+media_anchor)
 
 line="mounts.extend([(root/'tools/kodi_home88_host/gui88.py'"
 assert base.count(line)==1
