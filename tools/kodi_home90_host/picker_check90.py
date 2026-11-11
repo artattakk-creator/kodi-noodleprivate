@@ -63,10 +63,12 @@ def check90(cycle,errors):
   diagnostics90=dict(reason=str(reason),focus=xbmcgui.Window(10000).getFocusId(),menu=xbmc.getInfoLabel('Container(900).ListItem.Property(submenuVisibility)'),controls={str(cid):dict(rows=xbmc.getInfoLabel('Container('+str(cid)+').NumItems'),visible=xbmc.getCondVisibility('Control.IsVisible('+str(cid)+')')) for cid in (2510,2520,2530)})
   diagnostics90['skin']={key:xbmc.getInfoLabel('Skin.String('+key+')') for key in ('HomeLayout','WidgetsGlobalLimit','widgetstyle')}
   diagnostics90['conditions']={expr:xbmc.getCondVisibility(expr) for expr in ('String.IsEqual(Skin.String(HomeLayout),bingie)','Skin.HasSetting(New_Circular)','Skin.HasSetting(ShowAllWidgets)','String.IsEqual(Container(900).ListItem.Property(submenuVisibility),num-10000)')}
-  for cid90 in (2510,2520,2530,752510,752520,752530):
+  diagnostic_path90=Path('/root/picker90-diagnostic.json');diagnostic_path90.write_text(json.dumps(diagnostics90,indent=2))
+  for cid90 in (2510,2520,2530):
    try:
     c90=xbmcgui.Window(10000).getControl(cid90);diagnostics90.setdefault('geometry',{})[str(cid90)]=dict(type=type(c90).__name__,position=c90.getPosition(),width=c90.getWidth(),height=c90.getHeight(),visible=c90.isVisible())
    except (RuntimeError,AttributeError) as e90:diagnostics90.setdefault('geometry',{})[str(cid90)]=type(e90).__name__
+   diagnostic_path90.write_text(json.dumps(diagnostics90,indent=2))
   Path('/root/picker90-diagnostic.json').write_text(json.dumps(diagnostics90,indent=2));xbmc.executebuiltin('TakeScreenshot(/root/picker90-home-'+str(cycle)+'-diagnostic.png)',wait=False);xbmc.sleep(200)
   raise RuntimeError(reason)
  folder=Path('/root/.kodi/userdata/addon_data/script.skinshortcuts')
@@ -75,7 +77,15 @@ def check90(cycle,errors):
  tree=Path('/root/.kodi/addons/skin.titan.bingie.mod/xml/script-skinshortcuts-includes.xml')
  if cycle==0:
   xbmc.executebuiltin('RunScript(script.skinshortcuts,type=buildxml&mainmenuID=900&group=mainmenu|powermenu)',wait=False)
-  until(lambda:tree.is_file() and hashlib.sha256(tree.read_bytes()).hexdigest()!=before['initial_template_sha256'] and all(route in tree.read_text(encoding='utf-8') for route in ('widget_live_start_group','widget_recent_vod','widget_recent_series')),'PICKER90_ORIGINAL_BUILD_NOT_PUBLISHED')
+  def compiled_ready90():
+   if xbmcgui.Window(10000).getProperty('skinshortcuts-isrunning'):return False
+   try:
+    raw90=tree.read_bytes()
+    if hashlib.sha256(raw90).hexdigest()==before['initial_template_sha256']:return False
+    E.fromstring(raw90)
+    return all(route.encode() in raw90 for route in ('widget_live_start_group','widget_recent_vod','widget_recent_series'))
+   except (OSError,E.ParseError):return False
+  until(compiled_ready90,'PICKER90_ORIGINAL_BUILD_NOT_PUBLISHED')
  document=E.parse(tree).getroot();bindings={}
  __import__('widget_hooks45').prepare()
  for node in document.iter('include'):

@@ -104,17 +104,18 @@ class ForeignNavigation90(Fixture50,unittest.TestCase):
   own=root.find("include[@name='XCMate80.BaseBingie']/include[@content='Fixed_Focus_Navigation_Factory']")
   self.assertEqual(own.get('condition'),'!Window.IsActive(Home)')
 
- def test_d_original_compiler_owned_media_has_no_self_visibility_deadlock(self):
+ def test_d_original_compiler_owned_media_has_explicit_inner_bounds(self):
   import base64,lzma
   from xcmate027_fixture import ROOT
   graph=__import__('widget_skin78')
   extra=json.loads(lzma.decompress(base64.b64decode((ROOT/'tests/fixtures/bingie223_graph78.json.xz.b64').read_bytes())))
   for name,text in extra.items():(self.skin/name).write_text(text)
   files=graph.build({name:(self.skin/name).read_bytes() for name in graph.FILES})
-  root=graph.parse(files['xml/IncludesHomeWidgets.xml']);own=root.find("include[@name='XCMate80.MediaNormal']/control")
-  # Cold Kodi lists start with zero items and are not yet visible. Neither
-  # condition may be a prerequisite for consuming their first directory.
-  self.assertEqual([v.text for v in own.findall('visible')],['$PARAM[visibility]','String.IsEqual(Container(900).ListItem.Property(submenuVisibility),$PARAM[submenuid]) | Skin.HasSetting(ShowAllWidgets)'])
+  root=graph.parse(files['xml/IncludesHomeWidgets.xml']);row=root.find("include[@name='XCMate80.MediaRow']/control")
+  inner=row.find("control[@type='group']")
+  self.assertEqual(inner.findtext('width'),row.findtext('width'))
+  self.assertEqual(int(inner.findtext('top'))+int(inner.findtext('height')),int(row.findtext('height')))
+  self.assertEqual(root.findtext("include[@name='XCMate80.MediaNormal']/control/width"),'100%')
   self.assertTrue(__import__('widget_skin90').verify(files))
-  bad=dict(files);bad['xml/IncludesHomeWidgets.xml']=bad['xml/IncludesHomeWidgets.xml'].replace(b'<include name="XCMate80.MediaNormal">',b'<include name="XCMate80.MediaNormal"><param name="unknown-custom" default="true" />')
+  bad=dict(files);bad['xml/IncludesHomeWidgets.xml']=bad['xml/IncludesHomeWidgets.xml'].replace(b'<include name="XCMate80.MediaRow">',b'<include name="XCMate80.MediaRow"><param name="unknown-custom" default="true" />')
   with self.assertRaisesRegex(ValueError,'NAV90_UNVERIFIED'):__import__('widget_skin90').upgrade(bad)
