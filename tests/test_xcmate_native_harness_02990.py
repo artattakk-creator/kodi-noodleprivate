@@ -4,6 +4,14 @@ from pathlib import Path
 from unittest import mock
 ROOT=Path(__file__).resolve().parents[1]
 class NativeHarness90(unittest.TestCase):
+ def test_original_manager_selects_home_even_when_search_is_first(self):
+  source=ast.parse((ROOT/'tools/kodi_home90_host/picker_check90.py').read_text())
+  node=next(n for n in source.body if isinstance(n,ast.FunctionDef) and n.name=='home_position90')
+  ns={};exec(compile(ast.Module(body=[node],type_ignores=[]),'picker90-home','exec'),ns)
+  self.assertEqual(ns['home_position90'](['Search','Home','Movies']),1)
+  self.assertEqual(ns['home_position90'](['Startseite','Suche']),0)
+  for labels in (['Search','Movies'],['Home','Home']):
+   with self.assertRaises(RuntimeError):ns['home_position90'](labels)
  def test_original_saved_utf8_labels_are_read_explicitly_in_native_checker(self):
   tree=ast.parse((ROOT/'tools/kodi_home90_host/picker_check90.py').read_text())
   calls=[n for n in ast.walk(tree) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute) and n.func.attr=='read_text']

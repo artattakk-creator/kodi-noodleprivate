@@ -2,18 +2,62 @@
 
 Disposable Linux profile only. Never writes WidgetPath or compiler output.
 """
-import ast,hashlib,io,json,time,xml.etree.ElementTree as E
+import ast,hashlib,io,json,time,threading,xml.etree.ElementTree as E
 from pathlib import Path
 import xbmc,xbmcgui
 from PIL import Image
 
+def home_position90(labels):
+ positions=[i for i,label in enumerate(labels) if label.strip().casefold() in ('home','startseite')]
+ if len(positions)!=1:raise RuntimeError('PICKER90_HOME_MENU_NOT_UNIQUE')
+ return positions[0]
+
+def service_poll90():
+ __import__('hero_epg63').poll();__import__('widget_notice46').poll()
+
 def run(cycle):
+ from fixture66 import install
+ install()
+ from portals import get_active
+ import widget_runtime79,hero_epg63,home_schedule75
+ portal=get_active()[0];home_schedule75.configure([portal]);stop=threading.Event();errors=[]
+ def lane90():
+  try:
+   from widget_group46 import snapshot as live_rows
+   from widget_data41 import snapshot
+   from widget_assets69 import prepare,read
+   from widget_live47 import publish
+   widget_runtime79.prepare([portal]);__import__('home_activation78').prepare()
+   rows=live_rows(portal);prepare(portal,'live',rows)
+   while len(read(portal,'live',rows))<5:
+    if stop.wait(.1):return
+   publish(portal,'live',rows)
+   # Same existing service policy as the retained native Home test: do not
+   # start media preparation before the real Live receiver acknowledges it.
+   while json.loads(xbmcgui.Window(10000).getProperty(home_schedule75.KEY) or '{}').get('phase',0)<1:
+    if stop.wait(.1):return
+   for kind in ('vod','series'):
+    rows,_=snapshot(portal,kind);prepare(portal,kind,rows)
+    while len(read(portal,kind,rows))<5:
+     if stop.wait(.1):return
+    publish(portal,kind,rows);home_schedule75.prepared(kind,len(read(portal,kind,rows)),portal=portal,rows=rows)
+   while not stop.is_set():
+    widget_runtime79.prepare([portal]);hero_epg63.prepare(portal['id']);stop.wait(.25)
+  except Exception as error:errors.append(type(error).__name__)
+ lane=threading.Thread(target=lane90,name='Native-picker-existing-service-lane');lane.start()
+ try:return check90(cycle,errors)
+ finally:
+  stop.set();lane.join(2);__import__('widget_assets69').shutdown();__import__('decoded_assets88').shutdown()
+
+def check90(cycle,errors):
  def check(value,reason):
   if not value:raise RuntimeError(str(reason))
  def until(predicate,reason,seconds=60):
   end=time.monotonic()+seconds
   while time.monotonic()<end:
+   check(not errors,('PICKER90_SERVICE_LANE_FAILED',errors))
    if predicate():return
+   service_poll90()
    xbmc.sleep(100)
   raise RuntimeError(reason)
  folder=Path('/root/.kodi/userdata/addon_data/script.skinshortcuts')
@@ -24,13 +68,17 @@ def run(cycle):
   xbmc.executebuiltin('RunScript(script.skinshortcuts,type=buildxml&mainmenuID=900&group=mainmenu|powermenu)',wait=False)
   until(lambda:tree.is_file() and hashlib.sha256(tree.read_bytes()).hexdigest()!=before['initial_template_sha256'] and all(route in tree.read_text(encoding='utf-8') for route in ('widget_live_start_group','widget_recent_vod','widget_recent_series')),'PICKER90_ORIGINAL_BUILD_NOT_PUBLISHED')
  document=E.parse(tree).getroot();bindings={}
+ __import__('widget_hooks45').prepare()
  for node in document.iter('include'):
   values={p.get('name'):p.get('value','') for p in node.findall('param')}
   for kind,route in (('live','widget_live_start_group'),('vod','widget_recent_vod'),('series','widget_recent_series')):
    if route in values.get('widgetPath','') and values.get('widgetid','').isdigit():bindings[kind]=int(values['widgetid'])
  check(set(bindings)=={'live','vod','series'},('PICKER90_COMPILED_BINDING_MISSING',bindings))
  until(lambda:xbmcgui.getCurrentWindowId()==10000 and xbmcgui.getCurrentWindowDialogId() in (0,-1,9999),'PICKER90_NATIVE_HOME_NOT_READY')
- home=xbmcgui.Window(10000);home.setFocusId(900);home.getControl(900).selectItem(0);xbmc.sleep(500)
+ home=xbmcgui.Window(10000);home.setFocusId(900)
+ names90=[xbmc.getInfoLabel('Container(900).ListItemAbsolute('+str(i)+').Label') for i in range(int(xbmc.getInfoLabel('Container(900).NumItems') or 0))]
+ home.getControl(900).selectItem(home_position90(names90));xbmc.sleep(300)
+ xbmc.executebuiltin('Action(Right)',wait=False);xbmc.sleep(500)
  cases=[]
  for kind,total,color in (('live',88,(25,100,160)),('vod',24,(180,100,30)),('series',24,(100,60,180))):
   cid=bindings[kind]
@@ -38,7 +86,7 @@ def run(cycle):
   home=xbmcgui.Window(10000);home.setFocusId(cid);home.getControl(cid).selectItem(0)
   picture=Path('/root/picker90-home-'+str(cycle)+'-'+kind+'.png');pixels=0
   for attempt in range(30):
-   xbmc.sleep(200);xbmc.executebuiltin('TakeScreenshot('+str(picture)+')',wait=False);xbmc.sleep(150)
+   service_poll90();xbmc.sleep(200);xbmc.executebuiltin('TakeScreenshot('+str(picture)+')',wait=False);xbmc.sleep(150)
    try:
     with Image.open(io.BytesIO(picture.read_bytes())) as image:rgb=image.convert('RGB').resize((1920,1080))
     pixels=sum(max(abs(a-b) for a,b in zip(p,color))<=8 for p in rgb.crop((260,640,1890,1040)).getdata())
