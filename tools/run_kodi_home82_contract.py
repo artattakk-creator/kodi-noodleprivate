@@ -10,7 +10,7 @@ def main():
     parser.add_argument('--skin-archive',type=Path);parser.add_argument('--idle-seconds',type=int,default=180)
     parser.add_argument('--resolution',default='1920x1080',choices=('1920x1080','1280x720'))
     parser.add_argument('--fault-idle-seconds',type=int,default=0);parser.add_argument('--keep-container',action='store_true');args=parser.parse_args()
-    root=Path(__file__).resolve().parents[1];version79=__import__('xml.etree.ElementTree',fromlist=['parse']).parse(root/'src/plugin.video.xtreammate/addon.xml').getroot().get('version') in ('0.1.29.82','0.1.29.83','0.1.29.84','0.1.29.85','0.1.29.86','0.1.29.87','0.1.29.88');report=args.report_dir.resolve();report.mkdir(parents=True,exist_ok=True)
+    root=Path(__file__).resolve().parents[1];version79=__import__('xml.etree.ElementTree',fromlist=['parse']).parse(root/'src/plugin.video.xtreammate/addon.xml').getroot().get('version') in ('0.1.29.82','0.1.29.83','0.1.29.84','0.1.29.85','0.1.29.86','0.1.29.87','0.1.29.88','0.1.29.89');report=args.report_dir.resolve();report.mkdir(parents=True,exist_ok=True)
     archive=args.skin_archive or report/'skin.zip'
     if not archive.exists():
         import urllib.request
@@ -33,7 +33,7 @@ def main():
     if version79:
         mounts=[(source,target) for source,target in mounts if target not in ('/work/gui66.py','/work/probe.py')]
         mounts.extend([(root/'tools/kodi_home82_host/gui82.py','/work/gui66.py'),(root/'tools/kodi_home81_host/gui81.py','/base_gui81.py'),(root/'tools/kodi_home80_host/gui80.py','/base_gui80.py'),(root/'tools/kodi_home80_host/media80.py','/media80.py'),(root/'tools/kodi_home79_host/gui79.py','/base_gui_cache79.py'),(root/'tools/kodi_home80_host/fixture80.py','/fixture75.py'),(root/'tools/kodi_home75_host/fixture75.py','/base_fixture75.py'),(root/'tools/kodi_home75_host/gui75.py','/base_gui79.py'),(root/'tools/kodi_home82_host/probe82.py','/work/probe.py'),(root/'tools/kodi_home79_host/tls79.py','/work/tls69.py')])
-    version86=__import__('xml.etree.ElementTree',fromlist=['parse']).parse(root/'src/plugin.video.xtreammate/addon.xml').getroot().get('version') in ('0.1.29.86','0.1.29.87','0.1.29.88')
+    version86=__import__('xml.etree.ElementTree',fromlist=['parse']).parse(root/'src/plugin.video.xtreammate/addon.xml').getroot().get('version') in ('0.1.29.86','0.1.29.87','0.1.29.88','0.1.29.89')
     if version86:
         fixture86=report/'fixture74-positive86.py'
         fixture86.write_text((root/'tools/kodi_home74_host/fixture66.py').read_text().replace("Image.new('RGB',(160,90)","Image.new('RGB',(1280,720)"))

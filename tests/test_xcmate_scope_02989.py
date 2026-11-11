@@ -40,4 +40,5 @@ class Scope89(unittest.TestCase):
   compile(namespace2['base87'],'native86','exec')
   namespace3={'Path':P};exec(namespace2['base87'].split("exec(compile(base,")[0].replace('from pathlib import Path',''),namespace3)
   compile(namespace3['base'],'native84','exec')
+  for name in ('tools/run_kodi_home82_contract.py','tools/kodi_home80_host/gui80.py','tools/kodi_home82_host/post82.py'):self.assertIn("'0.1.29.89'",(ROOT/name).read_text())
   self.assertIn('UNEXPECTED89_NON_LOGO_ARCHIVE',namespace3['base']);self.assertIn('(1350,50,1800,520)',namespace3['base']);self.assertIn("logos89(portal,live_rows(portal),pump,capture,cold,check,home)",namespace['base'])
