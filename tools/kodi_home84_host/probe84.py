@@ -38,7 +38,7 @@ for _ in range(150):
 rpc('GUI.ActivateWindow',{'window':'home'});time.sleep(2)
 rpc('Addons.ExecuteAddon',{'addonid':'script.xcmate.guicontract59'})
 for _ in range(2400):
- if Path('/root/gui66-error.txt').exists():raise RuntimeError(Path('/root/gui66-error.txt').read_text())
+ if Path('/root/gui66-error.txt').exists():raise RuntimeError(Path('/root/gui66-error.txt').read_text(encoding='utf-8'))
  if Path('/root/visible84.json').exists():
   result=json.loads(Path('/root/visible84.json').read_text());assert result['status']=='PASS';print(json.dumps(result));break
  time.sleep(.1)
