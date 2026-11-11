@@ -1,0 +1,70 @@
+name: XCMate .89 durable logos and native pictures
+on:
+  pull_request:
+    branches: [main]
+    paths: ['src/plugin.video.xtreammate/**', 'tests/**', 'tools/**', '.github/workflows/**']
+  workflow_dispatch:
+    inputs:
+      diagnostic_only:
+        description: Run the short 720p native diagnostic with full synthetic logs
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: visible89-${{ github.head_ref || github.ref }}-${{ inputs.diagnostic_only || false }}
+  cancel-in-progress: true
+jobs:
+  pictures:
+    if: ${{ !inputs.diagnostic_only }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        resolution: [1920x1080, 1280x720]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'Pillow>=11,<13' 'simpleeval==0.9.13'
+      - run: python tools/run_kodi_home89_contract.py --report-dir "${{ runner.temp }}/visible84" --resolution "${{ matrix.resolution }}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: visible89-${{ matrix.resolution }}
+          path: |
+            ${{ runner.temp }}/visible84/*.json
+            ${{ runner.temp }}/visible84/*.png
+            ${{ runner.temp }}/visible84/*.txt
+            ${{ runner.temp }}/visible84/*.log
+            ${{ runner.temp }}/visible84/*.jsonl
+          retention-days: 30
+
+  native-diagnostic:
+    if: ${{ inputs.diagnostic_only }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'Pillow>=11,<13' 'simpleeval==0.9.13'
+      - run: |
+          if ! command -v ffmpeg >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg
+          fi
+      - run: python tools/run_kodi_home82_contract.py --report-dir "${{ runner.temp }}/diagnostic88" --resolution 1280x720 --fault-idle-seconds 0
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native88-720-diagnostic
+          path: ${{ runner.temp }}/diagnostic88/
+          retention-days: 30

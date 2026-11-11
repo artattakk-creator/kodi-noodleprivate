@@ -55,6 +55,7 @@ def prepare(portals):
   try:v=os.stat(p);return (v.st_mtime_ns,v.st_size)
   except OSError:return None
  layout_stamp=(skin,profile,stamp(Path(skin)/'xml/script-skinshortcuts-includes.xml'),stamp(Path(profile)/'addon_data/script.skinshortcuts/skin.titan.bingie.mod.properties'))
+ __import__('widget_audit89').prepare(profile,skin)
  for portal in portals[:4]:
   static_key=(layout_stamp,str(portal['id']))
   static=_static.get(static_key)
@@ -63,7 +64,7 @@ def prepare(portals):
    while len(_static)>8:_static.pop(next(iter(_static)))
   for kind in ('live','vod','series'):
    state=static.get('kinds',{}).get(kind,{})
-   hook_names=sorted({h for r in bindings if r.get('pid')==str(portal['id']) and r.get('kind')==kind for h in r.get('hooks',[])})
+   hook_names=sorted({h for r in bindings if r.get('pid')==str(portal['id']) and r.get('kind')==kind for h in __import__('widget_hooks45').isolated89(r.get('hooks',[]))})
    plans[(str(portal['id']),kind)]=dict(portal=dict(portal),scope=__import__('epg_handoff63').profile_scope(),slot=slot(portal,kind),ids=state.get('control_ids59',[])[:8],hooks=hook_names,at=time.monotonic())
  with _lock:_plans.clear();_plans.update(plans)
  # Repair missing generated own hooks even when the .78 skin itself already
@@ -80,6 +81,7 @@ def poll():
  import xbmc,xbmcgui
  if xbmcgui.getCurrentWindowId()!=10000 or xbmcgui.getCurrentWindowDialogId() not in (0,-1,9999):return
  if xbmc.getCondVisibility('System.HasActiveModalDialog') or xbmc.getCondVisibility('Player.HasMedia'):return
+ __import__('widget_audit89').poll()
  window=xbmcgui.Window(10000);now=time.monotonic()
  with _lock:plans=list(_plans.items())
  for (_,kind),plan in plans:

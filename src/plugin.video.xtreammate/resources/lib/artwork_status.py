@@ -26,6 +26,11 @@ def collect(cancel=lambda:False,progress=lambda **kw:None):
                     if cancel():external['complete']=False;break
                     external['files']+=1;external['bytes']+=entry['bytes']
                     if external['files']%64==0:progress(stage='INVENTORY',files=external['files'],bytes=external['bytes'])
+            from external_art89 import migration_backend
+            for role in ('poster','programme'):
+                for entry in migration_backend(config,role).enumerate_for_migration():
+                    if cancel():external['complete']=False;break
+                    external['files']+=1;external['bytes']+=entry['bytes']
         except OSError:external=dict(files=None,bytes=None,code='STORAGE_OFFLINE',complete=False)
     return dict(external=external,config=dict(mode=config['mode'],strategy=config.get('strategy','demand')),artwork=status(cancel),physical={k:v for k,v in physical.items() if k not in ('entries','roots','profile')},textures=textures)
 

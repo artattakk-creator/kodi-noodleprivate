@@ -6,11 +6,12 @@ committed data invalidates immediately. No fuzzy matching or persistent guide.
 import copy,threading,time
 _lock=threading.RLock();_values={}
 def select(pid,channels,mappings,now,display):
- from epg_poll77 import key
+ from epg_poll77 import context89,from_context89
+ context=context89(pid,mappings,display)
  from local_epg import channel_keys
  parked={};todo=[]
  for row in channels:
-  cache_key=key(pid,[row],mappings,display)
+  cache_key=from_context89(context,[row],mappings)
   with _lock:record=_values.get(cache_key)
   if not record:
    record=__import__('epg_negative80').read(cache_key)
@@ -24,12 +25,13 @@ def select(pid,channels,mappings,now,display):
  return parked,todo
 
 def remember(pid,channels,mappings,now,display,result,expected=None):
- from epg_poll77 import key
+ from epg_poll77 import context89,from_context89
+ context=context89(pid,mappings,display)
  from local_epg import channel_keys
  for row in channels:
   sid=channel_keys(row,mappings)[0];value=result.get(sid)
   if value is None:continue
-  cache_key=key(pid,[row],mappings,display)
+  cache_key=from_context89(context,[row],mappings)
   if expected is not None and expected.get(sid)!=cache_key:continue
   with _lock:
    prior=_values.get(cache_key,{});misses=0 if value.get('now') else min(3,prior.get('misses',0)+1)
@@ -39,6 +41,7 @@ def remember(pid,channels,mappings,now,display,result,expected=None):
    while len(_values)>256:_values.pop(next(iter(_values)))
 
 def keys(pid,channels,mappings,display):
- from epg_poll77 import key
+ from epg_poll77 import context89,from_context89
+ context=context89(pid,mappings,display)
  from local_epg import channel_keys
- return {channel_keys(row,mappings)[0]:key(pid,[row],mappings,display) for row in channels}
+ return {channel_keys(row,mappings)[0]:from_context89(context,[row],mappings) for row in channels}

@@ -96,7 +96,7 @@ def inspect(profile,skin,generated,pid,probe=None):
     for kind in ROUTES.values():
         saved=[]
         for row in rows:
-            if re.fullmatch(r'widgetPath(?:\.[1-7])?',row[2]) and identity(row[3],pid)==kind:
+            if re.fullmatch(r'widgetPath(?:\.[1-9][0-9]*)?',row[2]) and identity(row[3],pid)==kind:
                 suffix=row[2][len('widgetPath'):]
                 values={r[2]:r[3] for r in rows if r[:2]==row[:2]}
                 required=('widget','widgetName','widgetType','widgetTarget')
@@ -138,7 +138,7 @@ def source_types79(rows):
     """Safe source classification only; no saved labels or raw paths returned."""
     result=dict(own=0,external_plugin=0,videodb=0,library=0,other=0)
     for row in rows:
-        if not re.fullmatch(r'widgetPath(?:\.[1-7])?',row[2]):continue
+        if not re.fullmatch(r'widgetPath(?:\.[1-9][0-9]*)?',row[2]):continue
         p=urlsplit(row[3]);kind='own' if p.scheme=='plugin' and p.netloc=='plugin.video.xtreammate' else 'external_plugin' if p.scheme=='plugin' else p.scheme if p.scheme in ('videodb','library') else 'other'
         if row[3]:result[kind]+=1
     return result

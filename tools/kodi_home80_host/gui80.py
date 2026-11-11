@@ -27,25 +27,25 @@ def capture_selected80(kind,index):
  deadline80=time.monotonic()+5;name80='home75-'+kind+'-'+str(index);attempt80=0
  expected80=((180,100,30) if kind=='vod' and index==0 else tuple((v+index*step)%240 for v,step in zip((40,70,120) if kind=='vod' else (100,50,20),(19,31,13)))) if kind in ('vod','series') else None
  while True:
-  path80,rgb80=capture(name80);actual80=rgb80.getpixel((1500,150) if xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version')=='0.1.29.88' else (1000,150));attempt80+=1
+  path80,rgb80=capture(name80);actual80=rgb80.getpixel((1500,150) if xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version')in ('0.1.29.88','0.1.29.89') else (1000,150));attempt80+=1
   if expected80 is None or max(abs(a-b) for a,b in zip(actual80,expected80))<=6:return path80,rgb80
   if time.monotonic()>=deadline80:
    Path('/root/render80-error.json').write_text(json.dumps(dict(kind=kind,index=index,actual=actual80,expected=expected80,attempts=attempt80)))
    return path80,rgb80 # The original strict pixel assertion reports failure.
   pump();xbmc.sleep(100)
 def settle_idle86():
- if xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version') not in ('0.1.29.86','0.1.29.87','0.1.29.88'):return
+ if xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version') not in ('0.1.29.86','0.1.29.87','0.1.29.88','0.1.29.89'):return
  # .86 correctly shows a station logo until the selected event's renderer
  # receipt exists. Start the unchanged soak only on its actual settled pixels.
  deadline=time.monotonic()+5
  while True:
   pump();xbmc.sleep(100);_,frame=capture('home86-before-idle')
-  hero=frame.getpixel((1500,300) if xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version')=='0.1.29.88' else (500,300));logo=frame.getpixel((330,525))
+  hero=frame.getpixel((1500,300) if xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version')in ('0.1.29.88','0.1.29.89') else (500,300));logo=frame.getpixel((330,525))
   if max(abs(a-b) for a,b in zip(hero,(20,80,130)))<=8 and max(abs(a-b) for a,b in zip(logo,(20,90,150)))<=8:return
   if time.monotonic()>=deadline:
    prefix='XCMate.Hero63.'+home.getProperty('XCMate.Hero63.Active')+'.'
    raise RuntimeError(str(dict(code='IDLE86_PRECONDITION_NOT_RENDERED',hero=hero,logo=logo,kind=home.getProperty(prefix+'Kind86'),source=home.getProperty(prefix+'ArtSource'))))
-if xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version')=='0.1.29.88':
+if xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version')in ('0.1.29.88','0.1.29.89'):
  source80=source80.replace('crop((120,20,250,500))','crop((110,20,145,500))')
  source80=source80.replace('((270,0),1620,480)','((130,0),1760,620)').replace('getpixel((300,150))','getpixel((1500,150))').replace('getpixel((500,300))','getpixel((1500,300))').replace('getpixel((1000,150))','getpixel((1500,150))')
 exec(compile(source80,'native-home80-base','exec'),globals())
@@ -53,7 +53,7 @@ exec(compile(source80,'native-home80-base','exec'),globals())
 cache80=Path('/base_gui_cache79.py').read_text().split('import widget_cache79 as cache79',1)[1]
 cache80='import widget_cache79 as cache79'+cache80
 cache80=cache80.replace("Path('/root/home75-base79.json')","Path('/root/home75-base80.json')").replace("Path('/root/home75.json')","Path('/root/home75-cache80.json')")
-if xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version')=='0.1.29.88':cache80=cache80.replace('getpixel((800,150))','getpixel((1500,150))')
+if xbmcaddon.Addon('plugin.video.xtreammate').getAddonInfo('version')in ('0.1.29.88','0.1.29.89'):cache80=cache80.replace('getpixel((800,150))','getpixel((1500,150))')
 exec(compile(cache80,'native-home80-cache','exec'),globals())
 # Native large-guide entry, long text and exact gray-blue focus pixels.
 from guide_grid_window import GuideGridWindow
@@ -87,20 +87,25 @@ xbmc.sleep(300)
 home.setFocusId(2520);home.getControl(2520).selectItem(0)
 xbmc.executebuiltin('Action(Select)',wait=False)
 started80=time.monotonic();detail80=None
+from localization import tr as tr80
 for _ in range(300):
  current80=xbmcgui.getCurrentWindowId()
  count80=xbmc.getInfoLabel('Container(300).NumItems')
- if current80>=13000 and count80.isdigit() and int(count80)>0 and xbmc.getInfoLabel('System.CurrentControlId')=='300':
+ if current80>=13000 and count80.isdigit() and int(count80)>0 and xbmc.getInfoLabel('System.CurrentControlId')=='300' and xbmc.getInfoLabel('Container(300).ListItem.Label')==tr80(32512) and xbmcgui.getCurrentWindowDialogId() in (0,-1,9999) and not xbmc.getCondVisibility('System.HasActiveModalDialog'):
   detail80=True;detail_id80=current80;break
  xbmc.sleep(50)
-if detail80 is None:raise RuntimeError('VOD80_DETAIL_NOT_OPEN')
+def failure80(code):
+ facts80=dict(code=code,window=xbmcgui.getCurrentWindowId(),dialog=xbmcgui.getCurrentWindowDialogId(),control=xbmc.getInfoLabel('System.CurrentControlId'),selected_label=xbmc.getInfoLabel('Container(300).ListItem.Label')[:160],items=xbmc.getInfoLabel('Container(300).NumItems'),modal=xbmc.getCondVisibility('System.HasActiveModalDialog'))
+ Path('/root/vod80-failure.json').write_text(json.dumps(facts80));print('VOD80_FAILURE '+json.dumps(facts80),flush=True)
+ raise RuntimeError(code)
+if detail80 is None:failure80('VOD80_DETAIL_NOT_OPEN')
 capture('home80-vod-detail')
 xbmc.executebuiltin('Action(Select)',wait=False)
 player80=xbmc.Player()
 for _ in range(300):
  if player80.isPlayingVideo():break
  xbmc.sleep(50)
-else:raise RuntimeError('VOD80_BUTTON_NO_VIDEO')
+else:failure80('VOD80_BUTTON_NO_VIDEO')
 import json,time
 players80=json.loads(xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=80,method='Player.GetActivePlayers'))))['result']
 native80=json.loads(xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=80,method='Player.GetProperties',params=dict(playerid=players80[0]['playerid'],properties=['videostreams','audiostreams','time'])))))['result']

@@ -48,7 +48,7 @@ class Manual87(Fixture,unittest.TestCase):
   with mock.patch.object(self.q,'authoritative',return_value=self.event),mock.patch('work_search86.details',return_value=self.candidate):
    nonce=self.q.request(self.event,'save',candidate=self.candidate);self.q.drain()
   trace=json.loads(self.properties['XCMate.Work87.Trace'])
-  self.assertEqual(list(trace['stages']),['ENQUEUED','PICKED','SOURCE_REVERIFIED','EPG_SCOPE_REVALIDATED','WRITE_READBACK','DELIVERED'])
+  self.assertEqual(list(trace['stages']),['ENQUEUED','PICKED','CANDIDATE_SELECTED','SOURCE_REVERIFIED','EPG_SCOPE_REVALIDATED','WRITE_COMMITTED','WRITE_READBACK','DELIVERED'])
   self.assertNotIn('Charmed',json.dumps(trace));self.assertNotIn('https',json.dumps(trace));self.assertNotIn(nonce,json.dumps(trace))
  def wait(self,cancel=False,abort=False,picked=False,worker='WORKER_BUSY',answer=None):
   monitor=types.SimpleNamespace(abortRequested=lambda:abort,waitForAbort=lambda n:False)

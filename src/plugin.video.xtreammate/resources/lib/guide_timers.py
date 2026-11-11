@@ -39,11 +39,12 @@ def list_timers(pid):
 def cancel(ident):
     conn=db()
     try:
-        with conn: conn.execute("UPDATE timers SET state='cancelled' WHERE id=? AND state='pending'",(ident,))
+        with conn: conn.execute("UPDATE timers SET state='cancelled' WHERE id=? AND state IN ('pending','notified')",(ident,))
     finally: conn.close()
 
 
 def poll(now=None,notify=None):
+    if notify is None:return __import__('reminder_runtime89').worker(now)
     import xbmcgui
     now=int(time.time() if now is None else now)
     conn=db()
@@ -52,7 +53,6 @@ def poll(now=None,notify=None):
         conn.execute("UPDATE timers SET state='missed' WHERE state='pending' AND stop<=?",(now,))
         due=[dict(r) for r in conn.execute("SELECT * FROM timers WHERE state='pending' AND notify_at<=? AND stop>? LIMIT 20",(now,now))]
         conn.executemany("UPDATE timers SET state='notified' WHERE id=?",[(r['id'],) for r in due])
-        conn.execute('DELETE FROM timers WHERE stop<?',(now-30*86400,))
         conn.commit()
     finally: conn.close()
     # Persist the claim BEFORE notifying: at most once across service restarts.
@@ -65,7 +65,7 @@ def poll(now=None,notify=None):
 def manage(pid):
     import xbmcgui
     rows=list_timers(pid)
-    labels={'pending':32600,'notified':32601,'cancelled':32602,'missed':32603}
+    labels={'pending':32600,'notified':32601,'cancelled':32602,'missed':32603,'dismissed':37158,'selected':37159}
     selected=__import__('menu_icons45').select(xbmcgui.Dialog(),tr(32570),[
         '{} · {} · {}'.format(tr(labels[r['state']]) if r['state'] in labels else r['state'],
                               time.strftime(tr(32584),time.localtime(r['start'])),r['title']) for r in rows],default='clock')

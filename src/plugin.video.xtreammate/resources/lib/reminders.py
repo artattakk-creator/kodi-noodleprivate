@@ -13,10 +13,7 @@ _lock = threading.Lock()
 
 
 def _path():
-    global _REMINDERS_FILE
-    if not _REMINDERS_FILE:
-        _REMINDERS_FILE = os.path.join(addon_data_dir(), 'reminders.json')
-    return _REMINDERS_FILE
+    return os.path.join(addon_data_dir(),'reminders.json')
 
 
 def load_reminders():
@@ -32,9 +29,11 @@ def load_reminders():
 
 
 def save_reminders(reminders):
-    import xbmcvfs
-    with xbmcvfs.File(_path(), 'w') as f:
-        f.write(json.dumps(reminders, indent=2))
+    from profile_transaction import writing
+    from logo_store89 import atomic
+    raw=json.dumps(reminders,ensure_ascii=False).encode()
+    if len(raw)>1024*1024:raise ValueError('REMINDER_LIMIT')
+    with writing(timeout=.2):atomic(_path(),raw)
 
 
 def add_reminder(channel_name: str, programme_title: str,
@@ -74,7 +73,10 @@ def add_reminder(channel_name: str, programme_title: str,
 
 def remove_reminder(reminder_id: str):
     with _lock:
-        reminders = [r for r in load_reminders() if r.get('id') != reminder_id]
+        original = load_reminders()
+        for row in original:
+            if row.get('id')==reminder_id:__import__('reminder_runtime89').cancel_legacy(row)
+        reminders = [r for r in original if r.get('id') != reminder_id]
         save_reminders(reminders)
     xbmcgui.Dialog().notification('Reminder removed', '', xbmcgui.NOTIFICATION_INFO, 2000)
 
@@ -88,19 +90,8 @@ def get_upcoming(limit=20):
 
 
 def check_due():
-    """Call this periodically from a background thread."""
-    now = time.time()
-    with _lock:
-        reminders = load_reminders()
-        changed   = False
-        for r in reminders:
-            if not r.get('notified') and r['notify_at'] <= now < r['stop']:
-                _fire_reminder(r)
-                r['notified'] = True
-                changed = True
-        reminders = [r for r in reminders if r['stop'] > now - 86400]
-        if changed:
-            save_reminders(reminders)
+    """The legacy monitor now drives the same ID-based engine, never a second alarm."""
+    __import__('guide_timers').poll()
 
 
 def _fire_reminder(r):
@@ -132,4 +123,4 @@ class ReminderMonitor(xbmc.Monitor):
                 check_due()
             except Exception as e:
                 error(f'ReminderMonitor: {e}')
-            self.waitForAbort(60)
+            self.waitForAbort(1)

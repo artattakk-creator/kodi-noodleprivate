@@ -55,7 +55,7 @@ def prepare(cancel=lambda:False):
    if selected:approve(portal,kind,selected,cancel)
    refs=references(portal,kind,rows)
    visible85=__import__('home_loading85').visible(portal,kind,rows)
-   images85=sum(__import__('os').path.isabs(r.get('_manual_art43',{}).get('poster') or refs.get(str(r['sid']),{}).get('poster') or refs.get(str(r['sid']),{}).get('thumb') or '') for r in visible85)
+   images85=__import__('external_art89').ready_count(portal,kind,visible85,refs)
    __import__('home_loading85').update(portal,kind,rows,code,images=images85,pending=bool(__import__('widget_assets69')._pending))
    from home_metrics82 import note as metric82
    # A publication changes only after rows/policy/references change, never on

@@ -9,6 +9,8 @@ _local=threading.local()
 
 def source(portal,kind,rows):
     from widget_data41 import files,policy,read
+    source89=__import__('widget_snapshot85').source89(portal,kind,rows)
+    if source89 is not None:return source89
     value=read(files(portal['id'],kind)[0],policy(portal,kind))
     if not value:return None
     if [r.get('sid') for r in value['rows']]!=[r.get('sid') for r in rows]:return None

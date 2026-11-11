@@ -245,7 +245,7 @@ class GuideGridWindow(OwnerDispatch,xbmcgui.WindowXMLDialog):
         elif 0<=choice<len(choices) and choices[choice]==tr(33118):
             from guide_bookmarks import entries
             entries=entries(self.portal['id'])
-            text='\n'.join(time.strftime('%d.%m. %H:%M',time.localtime(e['start']))+' · '+e['title'] for e in entries)
+            text='\n'.join(time.strftime('%d.%m. %H:%M',time.localtime(e['start']))+' · '+e['title']+' · '+__import__('guide_bookmarks').status89(e) for e in entries)
             xbmcgui.Dialog().textviewer(tr(33118),text or tr(33119))
         elif 0<=choice<len(choices) and choices[choice]==tr(32551):
             from guide_timers import request_add45 as add

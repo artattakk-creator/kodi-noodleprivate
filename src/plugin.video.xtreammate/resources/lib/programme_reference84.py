@@ -92,8 +92,8 @@ def flush():
  if time.monotonic()<_flush:return
  _flush=time.monotonic()+60
  from artwork_display84 import metadata_allowed
- if not metadata_allowed():return
- from import_budget import check_space
+ if not metadata_allowed(small89=True):return
+ from metadata_store89 import check as check_space
  from profile_transaction import writing
  import tempfile
  filename=path()

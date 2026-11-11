@@ -42,6 +42,11 @@ def apply(pid,kind,signature):
    except (AttributeError,RuntimeError):continue
    count=xbmc.getInfoLabel('Container('+str(ident)+').NumItems')
    if str(count)!=str(len(values)):continue
+   # DirectoryProvider's C++ items may be visible while Python size()==0.
+   # That is not an empty directory and cannot be patched through getListItem.
+   if control.size()==0:
+    __import__('gui_guard86').note('LIST_UNEXPOSED',control=ident,count=0,route='widget_recent_vod' if kind=='vod' else 'widget_recent_series')
+    continue
    from gui_guard86 import item as guarded86
    items=[guarded86(control,i,ident=ident,expected=len(values),route='widget_recent_vod' if kind=='vod' else 'widget_recent_series') for i in range(len(values))]
    if any(item is None for item in items):continue

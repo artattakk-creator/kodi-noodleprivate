@@ -1,5 +1,6 @@
 """Manual intents drained by the existing programme worker, no new daemon."""
-import hashlib,json,time,uuid,os
+import hashlib,json,time,uuid,os,threading
+_drain_lock89=threading.Lock()
 from media_sources43 import SourceError
 KEY='XCMate.Work86.Request';RESULT='XCMate.Work86.Result';_seen=''
 def window():
@@ -13,7 +14,7 @@ def request(event,operation='search',**options):
  from programme_requests68 import scope
  from programme_requests68 import _FIELDS
  clean={k:event[k] for k in _FIELDS+('genre','year','country','external_ids','description','work_id','original_title','media_kind86') if k in event}
- nonce=uuid.uuid4().hex;value=dict(nonce=nonce,event=clean,binding=binding(clean),scope=scope(),at=time.time(),operation=operation,options=options)
+ nonce=uuid.uuid4().hex;value=dict(nonce=nonce,event=clean,binding=binding(clean),scope=scope(),at=time.time(),deadline89=time.monotonic()+30,operation=operation,options=options)
  raw=json.dumps(value,separators=(',',':'))
  if len(raw.encode())>20000:raise ValueError('REQUEST_LIMIT')
  window().setProperty(KEY,raw);__import__('work_trace87').mark(nonce,'ENQUEUED',operation,options.get('source',''));return nonce
@@ -33,7 +34,7 @@ def pending():
  try:
   raw=window().getProperty(KEY);data=json.loads(raw) if raw and len(raw.encode())<=20000 else {}
   from programme_requests68 import scope
-  return bool(isinstance(data.get('nonce'),str) and len(data['nonce'])==32 and data['nonce']!=_seen and isinstance(data.get('event'),dict) and data.get('binding')==binding(data['event']) and data.get('operation') in ('search','save','local') and data.get('scope')==scope() and 0<=time.time()-data.get('at',0)<35)
+  return bool(isinstance(data.get('nonce'),str) and len(data['nonce'])==32 and data['nonce']!=_seen and isinstance(data.get('event'),dict) and data.get('binding')==binding(data['event']) and data.get('operation') in ('search','save','local') and data.get('scope')==scope() and 0<=time.time()-data.get('at',0)<30)
  except (ValueError,TypeError):return False
 
 def phase(stage):
@@ -46,8 +47,7 @@ def authoritative(event,expected):
  portal=get_by_id(str(event.get('pid')))
  if not portal or binding(event)!=expected:raise SourceError('EPG_REVISION_CHANGED')
  kind=event.get('media_kind86','live');reader=Reader(portal['id'])
- try:row=reader.get(kind,str(event.get('sid')))
- finally:reader.close()
+ row=reader.get(kind,str(event.get('sid')))  # Reader closes each owned query connection.
  if not row:raise SourceError('EPG_REVISION_CHANGED')
  if kind=='live':
   actual=__import__('programme_events46').load(portal,row,event)
@@ -68,7 +68,7 @@ def save(event,options,expected,cancel=lambda:False):
    return __import__('media_overrides43').reset(event['pid'],kind,str(event['sid']))
   phase('EPG_SCOPE_REVALIDATED')
   return __import__('programme_mapping85').set_mapping(current,automatic=action=='automatic',hidden=action=='hide',cancel=cancel)
- selected=options.get('candidate') or {}
+ selected=options.get('candidate') or {};phase('CANDIDATE_SELECTED')
  verified=__import__('work_search86').details(selected.get('id'),selected.get('media_type86'),selected.get('source','tmdb'),cancel)
  # Independently fetch again before Save; caller-supplied URLs are never trusted.
  phase('SOURCE_REVERIFIED')
@@ -76,7 +76,7 @@ def save(event,options,expected,cancel=lambda:False):
  if cancel():raise SourceError('CANCELLED')
  # Re-read after network, not just the unchanged caller dictionary.
  current=authoritative(event,expected);phase('EPG_SCOPE_REVALIDATED')
- if kind=='live':return __import__('programme_mapping85').set_mapping(current,verified,cancel=cancel)
+ if kind=='live':return __import__('programme_mapping85').set_mapping(current,verified,cancel=cancel,operation89=_seen)
  from programme_urls55 import probe,safe
  url=verified.get('poster') or verified['url']
  if not safe(url):raise SourceError('UNSAFE_SOURCE')
@@ -86,17 +86,24 @@ def save(event,options,expected,cancel=lambda:False):
  return __import__('media_overrides43').save(event['pid'],kind,str(event['sid']),image=decoded['_body81'],source=verified['source'],attribution=verified['source'],provenance=dict(media_type=verified['media_type86'],remote_id=verified['id']))
 
 def drain(cancelled_service=lambda:False):
+ # One lease in this profile's existing service interpreter; no parallel saves.
+ if not _drain_lock89.acquire(False):return
+ try:return _drain89(cancelled_service)
+ finally:_drain_lock89.release()
+
+def _drain89(cancelled_service=lambda:False):
  global _seen
  from programme_requests68 import scope
  win=window();nonce=None;event={};expired=False
  try:
   raw=win.getProperty(KEY);data=json.loads(raw) if raw and len(raw.encode())<=20000 else {}
   nonce=data.get('nonce');event=data.get('event');options=data.get('options') or {}
-  if not isinstance(nonce,str) or len(nonce)!=32 or nonce==_seen or not isinstance(event,dict) or data.get('scope')!=scope() or binding(event)!=data.get('binding') or not 0<=time.time()-data.get('at',0)<35:return
-  _seen=nonce;deadline=time.monotonic()+24
+  if not isinstance(nonce,str) or len(nonce)!=32 or nonce==_seen or not isinstance(event,dict) or data.get('scope')!=scope() or binding(event)!=data.get('binding') or not 0<=time.time()-data.get('at',0)<30:return
+  _seen=nonce;deadline=min(time.monotonic()+max(0,30-(time.time()-data['at'])),data.get('deadline89',time.monotonic()+30))
   def stop():return cancelled_service() or cancelled(nonce) or time.monotonic()>=deadline
   __import__('work_trace87').mark(nonce,'PICKED',data.get('operation',''),options.get('source',''))
-  if data.get('operation')=='search':value=__import__('work_search86').search(options.get('query'),options.get('kind','tv'),options.get('source','tmdb'),options.get('page',1),stop)
+  if data.get('operation')=='search':
+   value=__import__('work_search86').search(options.get('query'),options.get('kind','tv'),options.get('source','tmdb'),options.get('page',1),stop);phase('SEARCH_READY')
   elif data.get('operation')=='local':value=dict(code='SAVED' if local_save(event,options.get('path',''),data['binding'],stop) else 'UNCHANGED',rows=[])
   elif data.get('operation')=='save':value=dict(code='SAVED' if save(event,options,data['binding'],stop) else 'UNCHANGED',rows=[])
   else:raise SourceError('CANDIDATES_REJECTED')
@@ -109,9 +116,10 @@ def drain(cancelled_service=lambda:False):
     win.setProperty(manual_slot(event['pid'],event['media_kind86']),nonce)
    win.setProperty(RESULT,json.dumps(dict(value,nonce=nonce,binding=data['binding']),separators=(',',':')))
    __import__('work_trace87').mark(nonce,'DELIVERED')
- except (SourceError,OSError,TimeoutError,ValueError,TypeError) as error:
+ except (SourceError,OSError,TimeoutError,ValueError,TypeError,AttributeError) as error:
   __import__('art_trace81').note(event or {},'MATCH_REJECTED',getattr(error,'code','SAVE_BLOCKED'))
   code=getattr(error,'code','PERSISTENCE_BLOCKED' if isinstance(error,OSError) else 'CANDIDATES_REJECTED')
+  if isinstance(error,OSError) and str(error)=='MANUAL_READBACK':code='READBACK_FAILED'
   if isinstance(error,TimeoutError) or code in ('TIMEOUT','HTTP_TIMEOUT') or code=='CANCELLED' and time.monotonic()>=locals().get('deadline',float('inf')):code='NETWORK_TIMEOUT'
   if code in ('DISK_FULL','SPACE_FULL','DB_BUSY','XM-ARTWORK-DB-PAUSED'):code='PERSISTENCE_BLOCKED'
   if code in ('RESEARCH_BUSY','WORKER_QUEUE_FULL'):code='WORKER_BUSY'

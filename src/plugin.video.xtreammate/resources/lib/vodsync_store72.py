@@ -218,7 +218,7 @@ def upsert(session, kind, group, cancel, status):
                        AND NOT EXISTS(SELECT 1 FROM heads h WHERE h.pid=i.pid AND h.kind=i.kind AND h.cid=i.cid AND h.generation=i.generation) LIMIT 256)''',
                        (pid, kind, cid, old_head))
                 if cursor.rowcount < 256: break
-        return dict(counts, stored=rows)
+        return dict(counts,stored=rows,retained=max(0,rows-counts['new']-counts['changed']-counts['unchanged']),deleted=0,generation89=generation)
     except Exception as exc:
         from vodsync_api72 import failure
         problem = failure(exc); problem.counts72 = dict(counts, errors=1)

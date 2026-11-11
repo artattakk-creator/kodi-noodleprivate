@@ -18,6 +18,7 @@ class VFS:
     def listdir(self,uri):
         entries=list(self.path(uri).iterdir());return [p.name for p in entries if p.is_dir()],[p.name for p in entries if p.is_file()]
     def delete(self,uri):self.path(uri).unlink();return True
+    def Stat(self,uri):return types.SimpleNamespace(st_size=lambda:self.path(uri).stat().st_size)
     def copy(self,a,b):
         source=self.path(a);target=self.path(b)
         if self.short_copy:target.write_bytes(source.read_bytes()[:10])

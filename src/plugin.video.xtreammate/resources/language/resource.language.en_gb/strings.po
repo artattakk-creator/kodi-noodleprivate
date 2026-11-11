@@ -5345,3 +5345,67 @@ msgstr "Secure one-time token setup (phase 1)"
 msgctxt "#37146"
 msgid "One-time token import after administrator approval? This box receives the central TMDB token. A compromised device can extract it; revoking the device does not invalidate a token copy already received. The gateway remains the stronger alternative."
 msgstr "One-time token import after administrator approval? This box receives the central TMDB token. A compromised device can extract it; revoking the device does not invalidate a token copy already received. The gateway remains the stronger alternative."
+
+msgctxt "#37150"
+msgid "Automatic catalogue refresh is off. Update the catalogue manually when needed; EPG refresh is configured separately."
+msgstr "Automatic catalogue refresh is off. Update the catalogue manually when needed; EPG refresh is configured separately."
+
+msgctxt "#37151"
+msgid "Automatic catalogue warm-up is on. Successful full synchronisations are listed in the report; EPG refresh is separate."
+msgstr "Automatic catalogue warm-up is on. Successful full synchronisations are listed in the report; EPG refresh is separate."
+
+msgctxt "#37152"
+msgid "Switch now"
+msgstr "Switch now"
+
+msgctxt "#37153"
+msgid "Dismiss"
+msgstr "Dismiss"
+
+msgctxt "#37154"
+msgid "Programme reminder"
+msgstr "Programme reminder"
+
+msgctxt "#37155"
+msgid "Programme already started: watchlist entry saved without a new reminder."
+msgstr "Programme already started: watchlist entry saved without a new reminder."
+
+msgctxt "#37156"
+msgid "The reminder could not switch to this channel."
+msgstr "The reminder could not switch to this channel."
+
+msgctxt "#37157"
+msgid "Saving your choice…"
+msgstr "Saving your choice…"
+
+msgctxt "#37158"
+msgid "Dismissed"
+msgstr "Dismissed"
+
+msgctxt "#37159"
+msgid "Switch requested"
+msgstr "Switch requested"
+
+msgctxt "#37161"
+msgid "Aired"
+msgstr "Aired"
+
+msgctxt "#37162"
+msgid "Watchlist only"
+msgstr "Watchlist only"
+
+msgctxt "#37163"
+msgid "The selected XCMate image cache has reached its size limit. Existing files are retained."
+msgstr "The selected XCMate image cache has reached its size limit. Existing files are retained."
+
+msgctxt "#37164"
+msgid "An image transfer is incomplete. Resume the transfer before writing more images. Existing files are retained."
+msgstr "An image transfer is incomplete. Resume the transfer before writing more images. Existing files are retained."
+
+msgctxt "#37165"
+msgid "File sizes on the selected image target could not be verified. No new image was published."
+msgstr "File sizes on the selected image target could not be verified. No new image was published."
+
+msgctxt "#37166"
+msgid "An older separate programme-image archive needs its verified migration before changing this target. Your previous storage choice is retained."
+msgstr "An older separate programme-image archive needs its verified migration before changing this target. Your previous storage choice is retained."

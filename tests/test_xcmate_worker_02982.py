@@ -6,6 +6,9 @@ from xcmate027_fixture import Fixture
 class Worker82(Fixture,unittest.TestCase):
  def setUp(self):
   super().setUp();self.assets=importlib.reload(importlib.import_module('widget_assets69'));self.health=importlib.import_module('artwork_health82');self.health._backoff.clear()
+  # These fault-injection cases target the archive/render lane. The additive
+  # provider-poster network lane has independent real HTTP tests in .89.
+  poster89=mock.patch('poster_store89.prepare');poster89.start();self.addCleanup(poster89.stop)
   self.addCleanup(self.stop)
  def stop(self):
   self.assets.shutdown()

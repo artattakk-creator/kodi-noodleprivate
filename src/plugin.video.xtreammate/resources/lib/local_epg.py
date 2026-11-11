@@ -51,6 +51,7 @@ def _full_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
             return fallback_window(pid,channels,mappings,start,stop,limit)
         view=View();view.code='OK';record=dict(meta)
         view.revision=(record.get('revision'),record.get('updated'))
+        alias_rows89=__import__('epg_single89').aliases(db,pid,channels,mappings)
         tasks67=[]
         for channel in channels[:16]:
             sid,keys=channel_keys(channel,mappings)
@@ -64,7 +65,7 @@ def _full_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
                     view[ident]=values48
                     tasks67.append((ident,cid,sid,selected48['source'],start,stop,limit))
                     continue
-                alias=db.execute('SELECT cid FROM guide_alias WHERE pid=? AND alias=?',(pid,ident)).fetchone()
+                alias=alias_rows89.get(ident)
                 cid=alias[0] if alias else ident;view.canonical[ident]=cid
                 left=start  # Current/future before SQL LIMIT; no unsolicited history.
                 right=start+21*86400 if history and sid==focus_sid else stop
@@ -117,6 +118,7 @@ def _text_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
             from programme_snapshot47 import fallback_window
             return fallback_window(pid,channels,mappings,start,stop,limit)
         view=View();view.code='OK';record=dict(meta);view.revision=(record.get('revision'),record.get('updated'))
+        alias_rows89=__import__('epg_single89').aliases(db,pid,channels,mappings)
         prepared={};tasks=[]
         # Core text first; an expensive sidecar cannot erase another sender.
         for channel in channels[:16]:
@@ -125,7 +127,7 @@ def _text_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
                 if ident in view:continue
                 from epg_binding48 import binding,read as read_source48
                 selected48=binding(mappings,sid)
-                alias=None if selected48 else db.execute('SELECT cid FROM guide_alias WHERE pid=? AND alias=?',(pid,ident)).fetchone()
+                alias=None if selected48 else alias_rows89.get(ident)
                 cid=selected48['channel'] if selected48 else alias[0] if alias else ident
                 view.canonical[ident]=cid;source48=selected48['source'] if selected48 else None
                 left=start;right=start+21*86400 if history and sid==focus_sid else stop
@@ -170,6 +172,11 @@ def _text_window65(pid,channels,mappings,start,stop,limit=48,focus_sid='',histor
 
 @scoped
 def now_next(pid,channels,mappings,now=None,client=None,display_only65=False):
+    from epg_single89 import run
+    return run(pid,channels,mappings,now,display_only65,lambda:_now_next89(pid,channels,mappings,now,client,display_only65))
+
+
+def _now_next89(pid,channels,mappings,now=None,client=None,display_only65=False):
     """Bounded local batch, including strictly cache-only short-EPG fallback."""
     from epg_views import resolve_guide
     ts=time.time() if now is None else now

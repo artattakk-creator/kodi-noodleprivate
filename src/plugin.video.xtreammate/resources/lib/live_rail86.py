@@ -23,7 +23,7 @@ def values(portal,rows):
   sid=str(row['sid']);name=str(row.get('name') or '');logo=logos.get(sid,'') or leases.get(sid,('',''))[0]
   props={'XCMate.WidgetKind41':'live','XCMate.PortalId':str(portal['id']),'XCMate.MediaId':sid,'XCMate.Account':identity,'IsPlayable':'true','XCMate.Home50':'true','XCMate.EpgProfile63':scope,'XCMate.ProgrammeChannel46':name,'XCMate.ProgrammeLogo46':logo,'XCMate.ProgrammeImage46':'','XCMate.ProgrammeKey47':'','XCMate.Home86.IdentityReady':'true'}
   props['XCMate.LogoProof86']=leases.get(sid,('',''))[1] if sid not in logos else ''
-  if logo.startswith('http://127.0.0.1:'):
+  if logo.startswith(('http://127.0.0.1:','smb://')):
    props['XCMate.LogoProof88']=__import__('logo_manifest86').key(portal,row)
    props['XCMate.LogoSource88']=__import__('station_logos87').source(row)
   props['XCMate.WidgetToken41']=token(portal,row)
@@ -35,6 +35,8 @@ def values(portal,rows):
   apply(item,portal,row,get(str(portal['id']),sid),labels=labels)
   result.append(item)
  ram88=sum(value.startswith('http://127.0.0.1:') for value in logos.values())
- if ram88:__import__('home_status86').rail(portal,len(rows),len(logos)-ram88,ram=ram88)
+ external89=sum(value.startswith('smb://') for value in logos.values())
+ if external89:__import__('home_status86').rail(portal,len(rows),len(logos)-ram88-external89,ram=ram88,external=external89)
+ elif ram88:__import__('home_status86').rail(portal,len(rows),len(logos)-ram88,ram=ram88)
  else:__import__('home_status86').rail(portal,len(rows),len(logos))
  return result

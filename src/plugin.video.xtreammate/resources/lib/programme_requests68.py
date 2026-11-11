@@ -95,6 +95,8 @@ def status(event,code,art=None):
 def result(event,previous=None):
  """UI-safe status/art, bound to exact profile, event and source revision."""
  try:
+  locked89=__import__('programme_lock89').current(event)
+  if locked89:return locked89
   pinned88=__import__('sticky_art88').read(event)
   if pinned88:return pinned88
   tag=identity(event);value=_read('status.'+str(int(tag[:8],16)%SLOTS))

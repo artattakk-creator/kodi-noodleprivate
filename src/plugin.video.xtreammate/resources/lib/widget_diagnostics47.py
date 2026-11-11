@@ -138,5 +138,5 @@ def status(pid):
             db.close()
     from programme_snapshot47 import status as programme_status
     from widget_consumer58 import status as consumer58
-    return dict(stages=values,programme=programme_status(pid),consumer58=consumer58(pid),skin_render='ANDROID_NOT_TESTED',
+    return dict(widget_audit89=__import__('widget_audit89').status(),stages=values,programme=programme_status(pid),consumer58=consumer58(pid),skin_render='ANDROID_NOT_TESTED',
         texture_decode='NOT_OBSERVABLE_VIA_LISTITEM',unknown_count=-1)

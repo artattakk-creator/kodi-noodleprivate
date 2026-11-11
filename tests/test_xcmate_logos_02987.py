@@ -16,12 +16,12 @@ class Logos87(Fixture,unittest.TestCase):
  def test_safe_dynamic_logo_is_published_under_zero_archive_write_budget(self):
   a=__import__('widget_assets69');dns=__import__('artwork_visible')
   dns._dns_cache[('example.org',443)]=(time.monotonic()+30,True)
-  with mock.patch('home_schedule75.applicable',return_value=True),mock.patch('artwork_visible.public_dns',return_value=True),mock.patch('art_storage.check',side_effect=__import__('art_storage').ArtworkFailure('DISK_FULL','RESERVE_BLOCKED',dict(free=240*1024**2,reserve=1024**3,budget=0))),mock.patch('station_logos88.fetch',return_value=__import__('test_xcmate_02988').png()),mock.patch('programme_transport77.verified',side_effect=AssertionError('no new persistence download')):
+  with mock.patch('home_schedule75.applicable',return_value=True),mock.patch('artwork_visible.public_dns',return_value=True),mock.patch('art_storage82.capacity',return_value=dict(capacity82='SAME_VOLUME_VERIFIED',free=20*1024**2,total=4034297856)),mock.patch('art_storage.check',side_effect=__import__('art_storage').ArtworkFailure('DISK_FULL','RESERVE_BLOCKED',dict(free=240*1024**2,reserve=1024**3,budget=0))),mock.patch('station_logos88.fetch',return_value=__import__('test_xcmate_02988').png()),mock.patch('programme_transport77.verified',side_effect=AssertionError('no new persistence download')):
    a._references82(self.portal,'live',self.rows)
    self.man.prepare(self.portal,self.rows[:2])
    result=self.man.remote(self.portal,self.rows)
   self.assertEqual(len(result),5);self.assertTrue(all(value[0].startswith(self.rows[int(sid)]['stream_icon']) for sid,value in result.items()))
-  diag=json.loads(self.properties['XCMate.Logos87.Last']);self.assertEqual(diag['code'],'STORAGE_RESERVE_BLOCKED');self.assertEqual(diag['reserve'],1024**3)
+  diag=json.loads(self.properties['XCMate.Logos87.Last']);self.assertEqual(diag['code'],'STORAGE_RESERVE_BLOCKED');self.assertEqual(__import__('art_storage').reserve(),1024**3)
   self.assertNotIn('example.org',json.dumps(diag));self.assertNotIn('SECRET',json.dumps(diag))
  def test_http_private_host_credentials_and_port_are_not_freed_by_storage_failure(self):
   a=__import__('widget_assets69');bad=['http://example.org/l.png','https://127.0.0.1/l.png','https://example.org:8080/l.png','https://example.org/SECRET/l.png','https://example.org/l.png?token=SECRET']
@@ -47,7 +47,7 @@ class Logos87(Fixture,unittest.TestCase):
   self.assertEqual(len(rows),88);self.assertEqual([row['label'] for row in rows],[row['name'] for row in self.rows]);self.assertTrue(all(row['url'] for row in rows))
  def test_kodi_texture_readability_does_not_claim_own_archive_persistence(self):
   image=self.folder/'kodi.png';Image.new('RGB',(120,60),(20,80,140)).save(image)
-  with mock.patch('station_logos87.read',return_value={'0':str(image)}),mock.patch('art_storage.check',side_effect=__import__('art_storage').ArtworkFailure('DISK_FULL','RESERVE_BLOCKED')):
+  with mock.patch('station_logos87.read',return_value={'0':str(image)}),mock.patch('art_storage82.capacity',return_value=dict(capacity82='SAME_VOLUME_VERIFIED',free=20*1024**2,total=4034297856)),mock.patch('art_storage.check',side_effect=__import__('art_storage').ArtworkFailure('DISK_FULL','RESERVE_BLOCKED')):
    self.assertEqual(self.man.read(self.portal,self.rows[:1])['0'],str(image))
    self.assertEqual(self.man.read(self.portal,self.rows[:1],with_fallback=False),{})
    self.assertEqual(self.man.prepare(self.portal,self.rows[:1]),'READY')

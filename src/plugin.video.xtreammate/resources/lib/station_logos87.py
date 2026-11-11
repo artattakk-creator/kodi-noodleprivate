@@ -30,7 +30,7 @@ def window():
  import xbmcgui
  return xbmcgui.Window(10000)
 def note(portal,row,code,**facts):
- if code not in ('SOURCE_MISSING','URL_SCHEME_OR_HOST_BLOCKED','AUTH_SCOPE','LEASE_PENDING','DOWNLOAD_FAILED','IMAGE_INVALID','STORAGE_RESERVE_BLOCKED','LOCAL_READY','TEXTURE_CACHED','DECODED_RAM_READY'):return
+ if code not in ('SOURCE_MISSING','URL_SCHEME_OR_HOST_BLOCKED','AUTH_SCOPE','LEASE_PENDING','DOWNLOAD_FAILED','IMAGE_INVALID','STORAGE_RESERVE_BLOCKED','LOCAL_READY','TEXTURE_CACHED','DECODED_RAM_READY','PERSISTED_VERIFIED'):return
  from logo_manifest86 import key
  tag=key(portal,row);now=time.monotonic();slot=(tag,code)
  if now-_seen.get(slot,-1e9)<60:return

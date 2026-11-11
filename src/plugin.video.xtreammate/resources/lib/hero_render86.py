@@ -11,6 +11,7 @@ def window():
 def tag(event,value):
  return hashlib.sha256(json.dumps([__import__('event_art81').key(event),value.get('image'),value.get('source'),value.get('sha256'),value.get('mapping_epoch85')],sort_keys=True).encode()).hexdigest()
 def prepare(event,value):
+ if __import__('programme_lock89').current(event,worker=True):return
  from hero_art86 import classify
  import xbmc
  if str(value.get('image','')).startswith('/') and not classify(value):
@@ -47,6 +48,7 @@ def prepare(event,value):
    if (before.st_ino,before.st_mtime_ns,before.st_size)!=(after.st_ino,after.st_mtime_ns,after.st_size):return
    if not classify(dict(value,image_width77=width,image_height77=height)):return
    win.setProperty(PREFIX+'Ready',json.dumps(dict(key=key,at=time.monotonic(),kind=kind[0],rank=kind[1],width=width,height=height,role=value.get('role81',''),evidence='LOCAL_DECODE_REQUESTED_NOT_PIXEL_PROOF')))
+   __import__('programme_lock89').propose(event,value,dict(file=image,sha256=hashlib.sha256(body).hexdigest()))
   except (OSError,ValueError,__import__('media_sources43').SourceError):pass
   return
  wanted=variants(image.split('|',1)[0]) if image.startswith(('https://','http://127.0.0.1:')) else [image]
@@ -65,6 +67,7 @@ def prepare(event,value):
    if not width or not height or record['width']<64 or record['height']<64:continue
    if abs((record['width']/record['height'])/(width/height)-1)>.08:continue
    win.setProperty(PREFIX+'Ready',json.dumps(dict(key=key,at=time.monotonic(),kind=kind[0],rank=kind[1],width=width,height=height,decoded_width=record['width'],decoded_height=record['height'],role=value.get('role81',''))))
+   __import__('programme_lock89').propose(event,value,record)
    __import__('art_trace81').note(event,'RENDER_READY','KODI_TEXTURE_DECODED',width=record['width'],height=record['height'])
    return
  except (ValueError,TypeError,AttributeError,RuntimeError,OSError):return
@@ -73,6 +76,12 @@ def choose(event,value,values,win):
  from hero_art86 import classify
  from event_art81 import allowed,key
  event_key=key(event) if event else ''
+ held89=__import__('programme_lock89').acknowledge(event,win) if event else None
+ if held89:
+  kind89=classify(held89)
+  if kind89:
+   values.update(Image=held89['image'],ArtSource=held89['source'],Kind86=kind89[0],Rank86=str(kind89[1]),SourceUrl86=held89.get('source_url',''),Digest87=held89['sha256'])
+   win.setProperty(PREFIX+'Event',event_key);return values
  bank=win.getProperty('XCMate.Hero63.Active');prefix='XCMate.Hero63.'+bank+'.'
  old_image=win.getProperty(prefix+'Image');old_source=win.getProperty(prefix+'ArtSource')
  same=bool(event_key and win.getProperty(PREFIX+'Event')==event_key)

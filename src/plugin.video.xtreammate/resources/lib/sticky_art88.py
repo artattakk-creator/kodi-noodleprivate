@@ -22,6 +22,13 @@ def remember(event,value,body):
  if __import__('os').path.isabs(str(value.get('image',''))) and not value.get('temp85'):return value
  if not body or not value.get('decoded77') or not __import__('programme_image69').eligible(value,event):return value
  if value.get('provisional85'):return value
+ result=publish89(event,value,body)
+ if result.get('decoded88'):
+  try:__import__('external_art89').archive_programme(event,value,body)
+  except (OSError,ValueError,TypeError,RuntimeError):pass
+ return result
+def publish89(event,value,body):
+ """Internal producer: caller already proved source/event and decoded bytes."""
  from programme_requests68 import identity,scope
  from programme_policy68 import negative_scope
  try:
@@ -30,7 +37,7 @@ def remember(event,value,body):
   now=time.time();until=min(now+86400,float(event['stop'])) if event.get('start',0)<=now<event.get('stop',0) else now+600
   asset_key88=key(event)+'.'+__import__('hashlib').sha256(body).hexdigest()
   asset=__import__('decoded_assets88').put(asset_key88,body,until,receipt88=__import__('event_cache88').receipt(value))
-  result=dict(value,image=asset['uri'],thumbnail=asset['uri'],sha256=asset['sha256'],until=asset['until'],asset88=asset_key88,decoded88=True,scope69=identity(event),profile69=scope(),policy69=negative_scope({}),storage69='RAM_ONLY',persisted69=False)
+  result=dict(value,key=event.get('key') or __import__('programme_events46').key(event['pid'],event['sid'],event),fingerprint=__import__('programme_art46').fingerprint(event),image=asset['uri'],thumbnail=asset['uri'],sha256=asset['sha256'],until=asset['until'],asset88=asset_key88,decoded88=True,scope69=identity(event),profile69=scope(),policy69=negative_scope({}),storage69='RAM_ONLY',persisted69=False)
   for field in ('display84','display_key84','url_version55','url_verified69','temp85'):result.pop(field,None)
   window().setProperty(PREFIX+key(event),json.dumps(result,separators=(',',':')))
   return result

@@ -10,6 +10,7 @@ from urllib.parse import urlsplit,parse_qs
 def candidate(data,layout80=False):
     from widget_skin50 import spans,edit
     from navigation_builtin78 import uri
+    uri=directory_uri89
     from widget_hooks45 import ROUTES
     changes=[]
     if layout80:
@@ -31,8 +32,9 @@ def candidate(data,layout80=False):
         query=parse_qs(urlsplit(url).query);actions=query.get('action',[])
         if len(actions)!=1 or actions[0] not in ROUTES:continue
         kind=ROUTES[actions[0]]
-        # Existing declared hooks are respected, never doubled/replaced.
-        if not any('$INFO[' in v or '$VAR[' in v for k in ('reload','xcmate_reload45','widgetreload') for v in query.get(k,[])):
+        # Preserve legacy/global parameters, but add a private own-row hook.
+        # XCMate must not pulse the shared BINGIE hook used by foreign rows.
+        if not any('XCMate.Widget45.Reload.' in v for k in ('reload','xcmate_reload45','widgetreload') for v in query.get(k,[])):
             url+='&xcmate_reload45=$INFO[Window(Home).Property(XCMate.Widget45.Reload.'+kind+')]'
         if url==raw:continue
         if tag=='content':changes.append((node['open'],node['end'],html.escape(url).encode()))
@@ -55,3 +57,18 @@ def repair(profile,skin):
     snapshot(profile,skin)
     replace(target,changed,sha(original),target.stat().st_mode&0o777)
     return True
+
+
+def directory_uri89(value):
+    """Allow only declared Home-property tokens in a directory XML value.
+
+    Never relax the executable ActivateWindow/builtin boundary. These URLs
+    are written as escaped XML, not executed as Python or Kodi commands.
+    """
+    from navigation_builtin78 import uri
+    from widget_hooks45 import HOOK
+    if isinstance(value,str) and value.startswith('plugin://plugin.video.xtreammate/'):
+        checked=HOOK.sub('runtime89',value)
+        uri(checked)
+        return value
+    return uri(value)

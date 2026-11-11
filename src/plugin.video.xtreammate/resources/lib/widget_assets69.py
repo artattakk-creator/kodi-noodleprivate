@@ -52,6 +52,7 @@ def read(portal,kind,rows):
  for sid82,roles82 in local82(portal,kind,rows).items():result.setdefault(sid82,{}).update(roles82)
  from render_cache81 import references
  for sid81,roles81 in references(portal,kind,rows).items():result.setdefault(sid81,{}).update(roles81)
+ for sid89,roles89 in __import__('poster_store89').read(portal,kind,rows).items():result.setdefault(sid89,{}).update(roles89)
  return result
 def prepare(portal,kind,rows,cancel=lambda:False):
  global _thread
@@ -164,6 +165,7 @@ def _run():
    # Recover already decoded Kodi files before any optional image write.
    __import__('artwork_display84').observe()
    __import__('widget_cache82').prepare(portal,kind,rows)
+   __import__('poster_store89').prepare(portal,kind,rows,cancelled)
    if kind!='live':_references82(portal,kind,rows)
    if __import__('home_schedule75').applicable():__import__('render_temp85').prepare(portal,kind,rows,cancelled)
    if local_only:continue

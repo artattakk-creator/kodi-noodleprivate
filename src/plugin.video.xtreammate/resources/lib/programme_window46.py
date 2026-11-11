@@ -103,7 +103,9 @@ class ProgrammeWindow46(xbmcgui.WindowXMLDialog):
    try:threading.Thread(target=save88,name='XCMate-programme-bookmark88',daemon=True).start()
    except RuntimeError:_slots.release();self._action88=None
   if self._action88 is not None and self._action88.done():
-   try:added88=self._action88.result();self.getControl(502).setLabel('Nicht mehr merken' if added88 else 'Sendung merken')
+   try:
+    added88=self._action88.result();self.getControl(502).setLabel('Nicht mehr merken' if added88 else 'Sendung merken')
+    if added88 and self.event.get('start',0)<=time.time():xbmcgui.Dialog().notification('XCMate',__import__('localization').tr(37155))
    except Exception:xbmcgui.Dialog().notification('XCMate','Merkliste konnte nicht gespeichert werden.')
    self._action88=None
   if getattr(self,'_series_menu85',False):
