@@ -21,6 +21,33 @@ class Startup90(Fixture,unittest.TestCase):
   self.assertEqual(fetch.call_count,8)
   self.assertEqual(len(__import__('logo_manifest86').read(self.portal,rows,with_fallback=False)),8)
 
+ def test_a_logo_retry_does_not_keep_recovered_database_work_pending(self):
+  import threading,time,importlib
+  assets=importlib.reload(__import__('widget_assets69'));health=__import__('artwork_health82')
+  row=dict(sid='1',name='Station',stream_icon='https://images.example.org/one.png')
+  paused={'code':'DB_PAUSED','reason':'BUSY','until':time.time()+1800};entered=threading.Event();recovered=threading.Event()
+  def guard():
+   entered.set()
+   if paused['code']!='READY':raise health.Deferred('DB_PAUSED',paused['until'],'BUSY')
+   recovered.set()
+  try:
+   with mock.patch.object(assets,'_references82'),mock.patch('logo_manifest86.read',return_value={}),mock.patch('station_logos87.recover'),mock.patch('station_logos88.recover'),mock.patch('logo_manifest86.prepare'),mock.patch('station_logos88.next_delay90',return_value=60),mock.patch('artwork_display84.observe'),mock.patch('widget_cache82.prepare'),mock.patch('poster_store89.prepare'),mock.patch('render_temp85.prepare'),mock.patch.object(health,'status',side_effect=lambda:dict(paused)),mock.patch.object(health,'guard',side_effect=guard),mock.patch('render_cache81.prepare'),mock.patch('media_hero81.prepare'):
+    self.assertTrue(assets.prepare(self.portal,'live',[row]));self.assertTrue(entered.wait(2));worker=assets._thread
+    for _ in range(100):
+     if assets._deferred82:break
+     time.sleep(.01)
+    self.assertTrue(assets._deferred82);self.assertTrue(assets._logo_due90)
+    paused['code']='READY';self.assertTrue(recovered.wait(2))
+    for _ in range(100):
+     if not assets._pending:break
+     time.sleep(.01)
+    self.assertFalse(assets._pending);self.assertFalse(assets._deferred82);self.assertTrue(assets._logo_due90)
+    self.assertIs(assets._thread,worker);self.assertTrue(worker.is_alive())
+    self.assertFalse(assets.prepare(self.portal,'live',[row]))
+  finally:
+   assets.shutdown()
+   if assets._thread:assets._thread.join(2)
+
  def test_b_real_channel_model_can_prepare_visible_epg_without_dictionary_attribute_error(self):
   from iptv import Channel
   channel=Channel(name='Station',url='https://fixture.invalid/live',logo='',tvg_id='xml',extra=dict(stream_id='1',category_id='a'))
