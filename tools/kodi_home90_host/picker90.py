@@ -42,7 +42,7 @@ def choose(dialog,slot,kind=None,noportal=False):
   words={'live':('live-tv','start group','startgruppe'),'vod':('movies','filme'),'series':('series','serien')}.get(kind,())
   if kind and any(any(w in v.casefold() for w in words) for v in values):target=next(i for i,v in enumerate(values) if any(w in v.casefold() for w in words))
   if target is None:
-   for candidates in (('video add-ons','video addons','video-addons'),('add-ons','addons'),('use as widget','als widget','hier verwenden')):
+   for candidates in (('video add-ons','video addons','video-addons'),('add-ons','addons','add-on'),('use as widget','als widget','hier verwenden')):
     options=[i for i,v in enumerate(values) if any(w in v.casefold() for w in candidates)]
     if options:target=options[0];break
   check(target is not None,('PICKER90_UNKNOWN_NATIVE_BRANCH',values));selected=values[target];select(target)
