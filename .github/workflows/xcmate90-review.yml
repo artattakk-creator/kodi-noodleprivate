@@ -42,3 +42,25 @@ jobs:
             ${{ runner.temp }}/visible84/*.log
             ${{ runner.temp }}/visible84/*.jsonl
           retention-days: 30
+
+  original-picker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'Pillow>=11,<13' 'simpleeval==0.9.13'
+      - run: python tools/run_kodi_picker90_contract.py --report-dir "${{ runner.temp }}/picker90" --resolution 1280x720
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native90-original-picker
+          path: |
+            ${{ runner.temp }}/picker90/*.json
+            ${{ runner.temp }}/picker90/*.txt
+            ${{ runner.temp }}/picker90/*.log
+          retention-days: 30
