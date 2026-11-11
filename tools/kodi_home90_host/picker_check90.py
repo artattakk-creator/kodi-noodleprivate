@@ -41,7 +41,7 @@ def run(cycle):
     rows,_=snapshot(portal,kind);prepare(portal,kind,rows)
     while len(read(portal,kind,rows))<5:
      if stop.wait(.1):return
-    publish(portal,kind,rows);home_schedule75.prepared(kind,len(read(portal,kind,rows)),portal=portal,rows=rows)
+    publish(portal,kind,rows);home_schedule75.prepared(kind,len(rows),portal=portal,rows=rows)
    while not stop.is_set():
     widget_runtime79.prepare([portal]);hero_epg63.prepare(portal['id']);stop.wait(.25)
   except Exception as error:errors.append(type(error).__name__)
@@ -89,8 +89,12 @@ def check90(cycle,errors):
  cases=[]
  for kind,total,color in (('live',88,(25,100,160)),('vod',24,(180,100,30)),('series',24,(100,60,180))):
   cid=bindings[kind]
+  # BINGIE's native grouplist virtualizes rows below the viewport. Enter
+  # the real control first; waiting for its hidden consumer creates a test
+  # deadlock even after Kodi has returned all directory items.
+  home=xbmcgui.Window(10000);home.setFocusId(cid)
   until(lambda:xbmc.getInfoLabel('Container('+str(cid)+').NumItems')==str(total),('PICKER90_NATIVE_ROWS_MISSING',kind,cid))
-  home=xbmcgui.Window(10000);home.setFocusId(cid);home.getControl(cid).selectItem(0)
+  home.getControl(cid).selectItem(0)
   picture=Path('/root/picker90-home-'+str(cycle)+'-'+kind+'.png');pixels=0
   for attempt in range(30):
    service_poll90();xbmc.sleep(200);xbmc.executebuiltin('TakeScreenshot('+str(picture)+')',wait=False);xbmc.sleep(150)
