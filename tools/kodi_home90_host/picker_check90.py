@@ -64,6 +64,7 @@ def check90(cycle,errors):
   diagnostics90['skin']={key:xbmc.getInfoLabel('Skin.String('+key+')') for key in ('HomeLayout','WidgetsGlobalLimit','widgetstyle')}
   diagnostics90['conditions']={expr:xbmc.getCondVisibility(expr) for expr in ('String.IsEqual(Skin.String(HomeLayout),bingie)','Skin.HasSetting(New_Circular)','Skin.HasSetting(ShowAllWidgets)','String.IsEqual(Container(900).ListItem.Property(submenuVisibility),num-10000)')}
   diagnostic_path90=Path('/root/picker90-diagnostic.json');diagnostic_path90.write_text(json.dumps(diagnostics90,indent=2))
+  diagnostics90['resolved_parameters']={str(cid):xbmc.getInfoLabel('Control.GetLabel('+str(cid)+')') for cid in (912520,922520,932520,912530,922530,932530)}
   diagnostics90['outer_visible']={str(cid):xbmc.getCondVisibility('Control.IsVisible('+str(cid)+')') for cid in (752510,752520,752530)}
   Path('/root/picker90-diagnostic.json').write_text(json.dumps(diagnostics90,indent=2));xbmc.executebuiltin('TakeScreenshot(/root/picker90-home-'+str(cycle)+'-diagnostic.png)',wait=False);xbmc.sleep(200)
   raise RuntimeError(reason)
