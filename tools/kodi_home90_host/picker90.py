@@ -52,11 +52,17 @@ def select(index):
  action('Select')
 def manager():
  xbmc.executebuiltin('RunScript(script.skinshortcuts,type=manage&group=mainmenu)',wait=False)
- until(lambda:xbmc.getCondVisibility('Window.IsVisible(script-skinshortcuts.xml)') and int(xbmc.getInfoLabel('Container(211).NumItems') or 0)>0,'PICKER90_MANAGER_NOT_VISIBLE',60)
+ until(lambda:xbmc.getCondVisibility('Window.IsActive(script-skinshortcuts.xml)') and int(xbmc.getInfoLabel('Container(211).NumItems') or 0)>0,'PICKER90_MANAGER_NOT_VISIBLE',60)
  dialog=xbmcgui.Window(xbmcgui.getCurrentWindowDialogId());dialog.setFocusId(211)
  from picker_check90 import home_position90
- names90=[xbmc.getInfoLabel('Container(211).ListItemAbsolute('+str(i)+').Label') for i in range(int(xbmc.getInfoLabel('Container(211).NumItems') or 0))]
- dialog.getControl(211).selectItem(home_position90(names90));xbmc.sleep(200);return dialog
+ selection90=[]
+ def home_ready90():
+  names90=[xbmc.getInfoLabel('Container(211).ListItemAbsolute('+str(i)+').Label') for i in range(int(xbmc.getInfoLabel('Container(211).NumItems') or 0))]
+  try:position90=home_position90(names90)
+  except RuntimeError:return False
+  selection90[:]=[position90];return True
+ until(home_ready90,'PICKER90_MANAGER_HOME_NOT_READY')
+ dialog.getControl(211).selectItem(selection90[0]);xbmc.sleep(200);return dialog
 def choose(dialog,slot,kind=None,noportal=False):
  dialog.setFocusId(1312);action('Select');dialog.setFocusId(90011+slot*10);action('Select')
  seen=[]

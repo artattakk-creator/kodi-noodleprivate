@@ -9,7 +9,7 @@ from PIL import Image
 
 def home_position90(labels):
  positions=[i for i,label in enumerate(labels) if label.strip().casefold() in ('home','startseite')]
- if len(positions)!=1:raise RuntimeError('PICKER90_HOME_MENU_NOT_UNIQUE')
+ if len(positions)!=1:raise RuntimeError(('PICKER90_HOME_MENU_NOT_UNIQUE',labels))
  return positions[0]
 
 def service_poll90():
@@ -76,8 +76,14 @@ def check90(cycle,errors):
  check(set(bindings)=={'live','vod','series'},('PICKER90_COMPILED_BINDING_MISSING',bindings))
  until(lambda:xbmcgui.getCurrentWindowId()==10000 and xbmcgui.getCurrentWindowDialogId() in (0,-1,9999),'PICKER90_NATIVE_HOME_NOT_READY')
  home=xbmcgui.Window(10000);home.setFocusId(900)
- names90=[xbmc.getInfoLabel('Container(900).ListItemAbsolute('+str(i)+').Label') for i in range(int(xbmc.getInfoLabel('Container(900).NumItems') or 0))]
- home.getControl(900).selectItem(home_position90(names90));xbmc.sleep(300)
+ selection90=[]
+ def home_ready90():
+  names90=[xbmc.getInfoLabel('Container(900).ListItemAbsolute('+str(i)+').Label') for i in range(int(xbmc.getInfoLabel('Container(900).NumItems') or 0))]
+  try:position90=home_position90(names90)
+  except RuntimeError:return False
+  selection90[:]=[position90];return True
+ until(home_ready90,'PICKER90_HOME_MENU_NOT_READY')
+ home.getControl(900).selectItem(selection90[0]);xbmc.sleep(300)
  xbmc.executebuiltin('Action(Right)',wait=False);xbmc.sleep(500)
  cases=[]
  for kind,total,color in (('live',88,(25,100,160)),('vod',24,(180,100,30)),('series',24,(100,60,180))):
