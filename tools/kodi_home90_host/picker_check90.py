@@ -31,24 +31,33 @@ def run(cycle):
    widget_runtime79.prepare([portal]);__import__('home_activation78').prepare()
    rows=live_rows(portal);prepare(portal,'live',rows)
    while len(read(portal,'live',rows))<5:
+    widget_runtime79.prepare([portal]);__import__('home_activation78').prepare()
     if stop.wait(.1):return
    publish(portal,'live',rows)
    # Same existing service policy as the retained native Home test: do not
    # start media preparation before the real Live receiver acknowledges it.
    while json.loads(xbmcgui.Window(10000).getProperty(home_schedule75.KEY) or '{}').get('phase',0)<1:
+    widget_runtime79.prepare([portal]);__import__('home_activation78').prepare()
     if stop.wait(.1):return
    for kind in ('vod','series'):
     rows,_=snapshot(portal,kind);prepare(portal,kind,rows)
     while len(read(portal,kind,rows))<5:
+     widget_runtime79.prepare([portal]);__import__('home_activation78').prepare()
      if stop.wait(.1):return
     publish(portal,kind,rows);home_schedule75.prepared(kind,len(rows),portal=portal,rows=rows)
    while not stop.is_set():
-    widget_runtime79.prepare([portal]);hero_epg63.prepare(portal['id']);stop.wait(.25)
+    widget_runtime79.prepare([portal]);__import__('home_activation78').prepare();hero_epg63.prepare(portal['id']);stop.wait(.25)
   except Exception as error:errors.append(type(error).__name__)
  lane=threading.Thread(target=lane90,name='Native-picker-existing-service-lane');lane.start()
  try:return check90(cycle,errors)
  finally:
-  stop.set();lane.join(2);__import__('widget_assets69').shutdown();__import__('decoded_assets88').shutdown()
+  stop.set();lane.join(2)
+  for module90 in ('widget_assets69','programme_requests68','programme_urls55','programme_art46','decoded_assets88'):
+   owner90=__import__(module90);owner90.shutdown()
+   threads90=[getattr(owner90,'_thread',None)]+list(getattr(owner90,'_workers',[]))
+   for thread90 in threads90:
+    if thread90 and thread90 is not threading.current_thread():thread90.join(5)
+   if any(t and t.is_alive() for t in threads90):raise RuntimeError('PICKER90_WORKER_DID_NOT_STOP '+module90)
 
 def check90(cycle,errors):
  def check(value,reason):
@@ -64,7 +73,6 @@ def check90(cycle,errors):
   diagnostics90['skin']={key:xbmc.getInfoLabel('Skin.String('+key+')') for key in ('HomeLayout','WidgetsGlobalLimit','widgetstyle')}
   diagnostics90['conditions']={expr:xbmc.getCondVisibility(expr) for expr in ('String.IsEqual(Skin.String(HomeLayout),bingie)','Skin.HasSetting(New_Circular)','Skin.HasSetting(ShowAllWidgets)','String.IsEqual(Container(900).ListItem.Property(submenuVisibility),num-10000)')}
   diagnostic_path90=Path('/root/picker90-diagnostic.json');diagnostic_path90.write_text(json.dumps(diagnostics90,indent=2))
-  diagnostics90['resolved_parameters']={str(cid):xbmc.getInfoLabel('Control.GetLabel('+str(cid)+')') for cid in (912520,922520,932520,912530,922530,932530)}
   diagnostics90['outer_visible']={str(cid):xbmc.getCondVisibility('Control.IsVisible('+str(cid)+')') for cid in (752510,752520,752530)}
   Path('/root/picker90-diagnostic.json').write_text(json.dumps(diagnostics90,indent=2));xbmc.executebuiltin('TakeScreenshot(/root/picker90-home-'+str(cycle)+'-diagnostic.png)',wait=False);xbmc.sleep(200)
   raise RuntimeError(reason)
@@ -83,6 +91,8 @@ def check90(cycle,errors):
     return all(route.encode() in raw90 for route in ('widget_live_start_group','widget_recent_vod','widget_recent_series'))
    except (OSError,E.ParseError):return False
   until(compiled_ready90,'PICKER90_ORIGINAL_BUILD_NOT_PUBLISHED')
+ if cycle==0:
+  until(lambda:json.loads(xbmcgui.Window(10000).getProperty('XCMate.Home78.Activation') or '{}').get('phase')=='RUNTIME_READY','PICKER90_NATIVE_CONSUMER_ACTIVATION_PENDING')
  document=E.parse(tree).getroot();bindings={}
  __import__('widget_hooks45').prepare()
  for node in document.iter('include'):
@@ -109,7 +119,7 @@ def check90(cycle,errors):
   # deadlock even after Kodi has returned all directory items.
   home=xbmcgui.Window(10000);home.setFocusId(cid)
   until(lambda:xbmc.getInfoLabel('Container('+str(cid)+').NumItems')==str(total),('PICKER90_NATIVE_ROWS_MISSING',kind,cid))
-  home.getControl(cid).selectItem(0)
+  home=xbmcgui.Window(10000);home.setFocusId(cid);home.getControl(cid).selectItem(0)
   picture=Path('/root/picker90-home-'+str(cycle)+'-'+kind+'.png');pixels=0
   for attempt in range(30):
    service_poll90();xbmc.sleep(200);xbmc.executebuiltin('TakeScreenshot('+str(picture)+')',wait=False);xbmc.sleep(150)

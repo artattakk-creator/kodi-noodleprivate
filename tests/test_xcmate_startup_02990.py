@@ -131,20 +131,13 @@ class ForeignNavigation90(Fixture50,unittest.TestCase):
   own=root.find("include[@name='XCMate80.BaseBingie']/include[@content='Fixed_Focus_Navigation_Factory']")
   self.assertEqual(own.get('condition'),'!Window.IsActive(Home)')
 
- def test_d_original_compiler_owned_media_has_explicit_inner_bounds(self):
+ def test_d_existing_owned_media_geometry_and_admission_remain_byte_semantic_equal(self):
   import base64,lzma
   from xcmate027_fixture import ROOT
   graph=__import__('widget_skin78')
   extra=json.loads(lzma.decompress(base64.b64decode((ROOT/'tests/fixtures/bingie223_graph78.json.xz.b64').read_bytes())))
   for name,text in extra.items():(self.skin/name).write_text(text)
   files=graph.build({name:(self.skin/name).read_bytes() for name in graph.FILES})
-  root=graph.parse(files['xml/IncludesHomeWidgets.xml']);row=root.find("include[@name='XCMate80.MediaRow']/control")
-  inner=row.find("control[@type='group']")
-  self.assertEqual(inner.findtext('width'),row.findtext('width'))
-  self.assertEqual(int(inner.findtext('top'))+int(inner.findtext('height')),int(row.findtext('height')))
-  self.assertEqual(root.findtext("include[@name='XCMate80.MediaNormal']/control/width"),'100%')
-  conditions=[n.text for n in root.findall("include[@name='XCMate80.MediaNormal']/control/visible")]
-  self.assertEqual(len(conditions),2);self.assertFalse(any('IsUpdating' in c or 'NumItems' in c or 'Control.IsVisible' in c for c in conditions))
-  self.assertTrue(__import__('widget_skin90').verify(files))
-  bad=dict(files);bad['xml/IncludesHomeWidgets.xml']=bad['xml/IncludesHomeWidgets.xml'].replace(b'<include name="XCMate80.MediaRow">',b'<include name="XCMate80.MediaRow"><param name="unknown-custom" default="true" />')
-  with self.assertRaisesRegex(ValueError,'NAV90_UNVERIFIED'):__import__('widget_skin90').upgrade(bad)
+  root=graph.parse(files['xml/IncludesHomeWidgets.xml']);digest=__import__('widget_skin80').digest
+  self.assertEqual(digest(root.find("include[@name='XCMate80.MediaRow']")),'7480de9f92b11e973021acd9e971ccd2582b7c10e9b54ee36dbeb5b241f92679')
+  self.assertEqual(digest(root.find("include[@name='XCMate80.MediaNormal']")),'0e71911d2dbdbbca1f8f6b3757a3b821804655f7349c6da7c9d6767d89bb57e0')

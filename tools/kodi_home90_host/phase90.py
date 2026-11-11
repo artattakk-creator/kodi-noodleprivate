@@ -40,11 +40,20 @@ def run(portal,rows,pump,capture,cold,check,home,early_logo,early_epg):
  if cold:check(early_logo['elapsed_ms']<=10000,('START90_COLD_FIRST_PIXELS_OVER_10S',early_logo['elapsed_ms']))
  # Native IR follows the restored foreign factory: no manual re-focus after
  # the starting row. This independently covers E rather than producer JSON.
+ home.setFocusId(900);home.getControl(900).selectItem(1);xbmc.sleep(300)
+ xbmc.executebuiltin('Action(Right)',wait=False);xbmc.sleep(300)
+ foreign_due90=time.monotonic()+12
+ while xbmc.getInfoLabel('Container(3540).NumItems')!='24' and time.monotonic()<foreign_due90:
+  pump();xbmc.sleep(100)
+ check(xbmc.getInfoLabel('Container(3540).NumItems')=='24','START90_FOREIGN_SOURCE_NOT_READY')
  home.setFocusId(3540);xbmc.sleep(400)
+ check(home.getFocusId()==3540,'START90_FOREIGN_SECTION_NOT_ENTERED')
  ir=[]
  for action in ('Down','Down','Up','Up'):
   previous=home.getFocusId();xbmc.executebuiltin('Action('+action+')',wait=False);xbmc.sleep(300)
-  current=home.getFocusId();check(current!=previous,('START90_FOREIGN_IR_STUCK',action,current));ir.append([previous,current])
+  current=home.getFocusId();check(current!=previous and 3510<=current<=3580,('START90_FOREIGN_IR_STUCK',action,current));ir.append([previous,current])
+ home.setFocusId(900);home.getControl(900).selectItem(0);xbmc.sleep(300)
+ xbmc.executebuiltin('Action(Right)',wait=False);xbmc.sleep(300)
  groups90=None
  if not cold:
   from groups90 import run as group_run90

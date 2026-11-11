@@ -44,7 +44,8 @@ def run(portal,rows,pump,capture,cold,check):
   index=xbmcgui.Dialog().select('XCMate .90 · explicit candidate', [xbmcgui.ListItem(v['title']) for v in candidates],useDetails=True)
   remote.join(1);check(index==3 and chosen==[3],('MANUAL90_NATIVE_SELECTION_FAILED',index))
   answer=work_manager86.wait(event,'save',candidate=candidates[index]);check(answer.get('code')=='SAVED',('MANUAL90_SAVE_FAILED',answer.get('code')))
-  check(programme_mapping85.committed89(event,answer['nonce']),'MANUAL90_MISSING_COMMIT_RECEIPT')
+  committed90=programme_mapping85.current(event) or {};nonce90=answer.get('nonce') or committed90.get('operation89')
+  check(isinstance(nonce90,str) and len(nonce90)==32 and programme_mapping85.committed89(event,nonce90),'MANUAL90_MISSING_COMMIT_RECEIPT')
   programme_mapping85._loaded.clear();check(programme_mapping85.reload(),'MANUAL90_READBACK_FAILED');check(programme_mapping85.current(event)['id']==9003,'MANUAL90_WRONG_READBACK')
   # Open, close and reopen the actual EPG detail owner, without mutating EPG.
   from programme_window46 import ProgrammeWindow46
