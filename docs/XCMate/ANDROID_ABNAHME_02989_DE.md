@@ -83,3 +83,9 @@ Diese vier zusätzlichen Prüfungen beruhen auf der unmittelbaren Nutzerbeobacht
 **P0** für alle vier. Eigene Testfälle **T90-09 bis T90-13** im [Nachfolge-Hotfix #430](https://github.com/artattakk-creator/kodi-noodleprivate/issues/430). Test T01/T02 bleiben FAIL, alle nicht geprüften Android-Funktionen offen. Wichtig: kein vollständiger Cache-Reset/Neuinstallation zum Reproduzieren, keine Nutzer- oder Token-Daten löschen.
 
 Beobachtung zur Fehlerursache: `work_requests86`/ `programme_mapping85` Save/Readback/Deadline sowie `live_group68` kurze SQLite-Budgets sind **Code-Einstiegspunkte**, aber ohne einen passenden neuen Stacktrace keine eindeutig bestätigten Rootcauses.
+
+## T12 – Picker-Pfad nach Neuinstallation nicht mehr auffindbar (P0; FAIL am 11.11.2026)
+
+**Nutzerbeobachtung .89:** Unter BINGIE MOD → Shortcuts → Widget auswählen sind nach Neuinstallation die zuvor direkt angebotenen XCMate-Widgetquellen nicht mehr am bekannten Ort vorhanden. Das ist **nicht identisch** mit fehlenden bereits konfigurierten Widgets auf Home (T04/T05); der native Auswahlbrowser ist separat defekt oder unauffindbar. Es gibt noch keinen neuen Picker-Screenshot bzw. action-spezifischen Log und deshalb keine bewiesene Rootcause.
+
+**Status T12: FAIL (Nutzerbericht).** Erforderliche Nachprüfung **T90-14**: SkinShortcuts Picker unter komplett frischer Installation, einmal ohne Portal und einmal mit Portal; die drei XCMate-Quellen Live-TV, neueste Filme, neueste Serien im bisherigen Picker-Dialog wählen, speichern, nach Kodi-Neustart unverändert wiederfinden und tatsächlich auf Home rendern. Zwei Fremdwidget-Verknüpfungen beim Upgrade bewahren. Kein Profil-Reset oder Löschen fremder Shortcuts. Vollständiger Entwicklungsauftrag [Hotfix-Issue #430](https://github.com/artattakk-creator/kodi-noodleprivate/issues/430).
