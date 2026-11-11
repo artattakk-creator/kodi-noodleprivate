@@ -23,6 +23,19 @@ def _source90(path,*args,**kwargs):
   anchor90="local=refs.get(str(rows[0]['sid']),{}).get('poster','')"
   assert text.count(anchor90)==1
   text=text.replace(anchor90,anchor90+"\n if kind=='live' and not local.startswith('/'):\n  local=__import__('logo_manifest86').read(portal,rows,with_fallback=False).get(str(rows[0]['sid']),'')\n  check(local and poster==local,'START90_OWN_LOGO_RENDER_BINDING_MISMATCH')")
+  text=text.replace("logo_ready84=threading.Event()", "epg_case90={}\nlogo_ready84=threading.Event()")
+  before90=" if logo_ready84.is_set() and not decode84.is_set()"
+  epg_observe90=""" if not epg_case90:
+  from epg_handoff63 import get as epg_get90
+  ready90=[epg_get90(portal['id'],str(i)) for i in range(5)]
+  now90=xbmc.getInfoLabel('Container(2510).ListItem.Property(XCMate.ProgrammeTitle46)')
+  next90=xbmc.getInfoLabel('Container(2510).ListItem.Property(XCMate.ProgrammeNext46)')
+  if all(v and v.get('now') and v.get('next') for v in ready90) and now90=='Synthetic event 0' and next90=='Next 0':
+   epg_case90.update(ms=int((time.monotonic()-logo_started84)*1000),ready=5,native_text=True,player_started=xbmc.Player().isPlaying())
+"""
+  assert text.count(before90)==1
+  text=text.replace(before90,epg_observe90+before90)
+
  return text
 Path.read_text=_source90
 try:exec(compile(base,'/base_gui89.py','exec'),globals())

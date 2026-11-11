@@ -2,7 +2,7 @@
 import json,time,hashlib,threading
 from pathlib import Path
 
-def run(portal,rows,pump,capture,cold,check,home,early_logo):
+def run(portal,rows,pump,capture,cold,check,home,early_logo,early_epg):
  import xbmc,xbmcgui,epg_handoff63,epg_snapshot75,logo_manifest86,logo_store89,station_logos88,art_storage82
  from widget_inventory87 import collect,compare
  import xbmcvfs
@@ -36,6 +36,7 @@ def run(portal,rows,pump,capture,cold,check,home,early_logo):
  finally:shutil.disk_usage=old_usage90
  epg=[epg_handoff63.get(portal['id'],str(row['sid'])) for row in rows[:5]]
  check(all(v and v.get('now') and v.get('next') for v in epg),'START90_NOW_NEXT_NOT_FIVE')
+ check(early_epg.get('ready')==5 and early_epg.get('native_text') and not early_epg.get('player_started') and early_epg.get('ms',999999)<=30000,('START90_COLD_NOW_NEXT_OVER_30S',early_epg))
  if cold:check(early_logo['elapsed_ms']<=10000,('START90_COLD_FIRST_PIXELS_OVER_10S',early_logo['elapsed_ms']))
  # Native IR follows the restored foreign factory: no manual re-focus after
  # the starting row. This independently covers E rather than producer JSON.
@@ -70,6 +71,6 @@ def run(portal,rows,pump,capture,cold,check,home,early_logo):
  text=Path('/root/.kodi/temp/kodi.log').read_text(errors='replace')
  errors=sum('GUI86' in line and 'CALLBACK_FAILED' in line for line in text.splitlines())
  check(errors==0,('START90_CALLBACK_FAILED',errors))
- report=dict(manual90=manual90,groups90=groups90,status='PASS',android='ANDROID_NOT_TESTED',first_rail_pixels_ms=early_logo['elapsed_ms'],lowspace_injected_bytes=115*1024**2,global_reserve=__import__('art_storage').reserve(),persistent_logos=88,duplicate_http=len(count),duplicate_commits=0,now_next_ready=len(epg),home_seconds=round(time.monotonic()-started,1),focus_changes=interval,callback_failures=errors,foreign_ir=ir,pixel_samples=samples,protected_inventory=inventory['sha256'])
+ report=dict(first_epg90=early_epg,manual90=manual90,groups90=groups90,status='PASS',android='ANDROID_NOT_TESTED',first_rail_pixels_ms=early_logo['elapsed_ms'],lowspace_injected_bytes=115*1024**2,global_reserve=__import__('art_storage').reserve(),persistent_logos=88,duplicate_http=len(count),duplicate_commits=0,now_next_ready=len(epg),home_seconds=round(time.monotonic()-started,1),focus_changes=interval,callback_failures=errors,foreign_ir=ir,pixel_samples=samples,protected_inventory=inventory['sha256'])
  Path('/root/startup90.json').write_text(json.dumps(report,indent=2));print('START90_NATIVE '+json.dumps(report),flush=True)
  return report
