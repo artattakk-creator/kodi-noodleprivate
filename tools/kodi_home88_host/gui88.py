@@ -26,7 +26,8 @@ else:
  from logo_manifest86 import read as logos87
  rows87=live_rows(portal);a87=__import__('widget_assets69');first87=rows87[0]
  print('LOGO87_NATIVE_DIAGNOSTIC '+json.dumps(dict(assets=len(refs87(portal,'live',rows87)),logos=len(logos87(portal,rows87)),source_present=bool(__import__('station_logos87').source(first87)),worker_alive=bool(a87._thread and a87._thread.is_alive()),worker_stopped=a87._stop.is_set(),fatal=a87._fatal82,pending=len(a87._pending),deferred=[v[1] for v in a87._deferred82.values()],directory_poster_present=bool(xbmc.getInfoLabel('Container(2510).ListItem.Art(poster)')))),flush=True)
- raise RuntimeError(('HERO87_FINAL_PIXELS_MISSING',final_pixels87,logo_pixels87))""")
+ facts88=dict(main=xbmc.getCondVisibility('Control.IsVisible(296751)'),logo=xbmc.getCondVisibility('Control.IsVisible(296784)'),poster=xbmc.getCondVisibility('Control.IsVisible(296783)'),previous=xbmc.getCondVisibility('Control.IsVisible(296786)'),active=home.getProperty('XCMate.Hero63.Active'),focus=home.getFocusId(),widget=xbmc.getInfoLabel('ListItem.Property(XCMate.WidgetKind41)'))
+ raise RuntimeError(('HERO87_FINAL_PIXELS_MISSING',final_pixels87,logo_pixels87,facts88))""")
 
 # .88 has the approved opposite composition: text left, photo right.
 base87=base87.replace("getWidth()==1620", "getWidth()==1760")
@@ -42,13 +43,13 @@ else:check(xbmc.getCondVisibility('Control.IsVisible(296887)'),'STATUS86_NOT_VIS
 base87=base87.replace("check(xbmc.getCondVisibility('Control.IsVisible(296887)'),'STATUS86_NOT_VISIBLE')",status88)
 
 base87=base87.replace("rgb86.crop((300,30,1100,620))", "rgb86.crop((1000,30,1800,620))")
-base87=base87.replace("rgb86.crop((300,50,1100,520))", "rgb86.crop((1000,50,1800,520))")
+base87=base87.replace("rgb86.crop((300,50,1100,520))", "rgb86.crop((1350,50,1800,520))")
 anchor88="base=Path('/base_gui84.py').read_text()"
-adapt88="\nbase=base.replace('(560,280)','(680,560)').replace('(480,160,1040,440)','(1050,30,1730,590)').replace('(300,50,1100,520)','(1000,50,1800,520)').replace('(1355,300)','(155,300)').replace('(300,50,1100,500)','(1000,50,1800,500)').replace('Synthetic Linux Kodi .84','Synthetic Linux Kodi .88')"
+adapt88="\nbase=base.replace('(560,280)','(680,560)').replace('(480,160,1040,440)','(1050,30,1730,590)').replace('(300,50,1100,520)','(1350,50,1800,520)').replace('(1355,300)','(155,300)').replace('(300,50,1100,500)','(1000,50,1800,500)').replace('Synthetic Linux Kodi .84','Synthetic Linux Kodi .88')"
 base87=base87.replace(anchor88,anchor88+adapt88)
 # gui86 constructs a separate settled-pixel loop from a literal; cover its
 # generated assertion as well as the inner gui84 original.
-base87=base87.replace('(300,50,1100,520)','(1000,50,1800,520)')
+base87=base87.replace('(300,50,1100,520)','(1350,50,1800,520)')
 
 exec(compile(base87,'/base_gui86.py','exec'),globals())
 import sys
