@@ -105,3 +105,11 @@ class External89(Fixture,unittest.TestCase):
   self.activate(True);storage=self.module.backend('logo');partial=self.vfs.path(storage.root+'/owned.img.part.test89');partial.write_bytes(b'partial')
   with self.assertRaisesRegex(OSError,'INCOMPLETE'):__import__('logo_store89').persist(self.portal,self.row,png((200,100)))
   self.assertEqual(partial.read_bytes(),b'partial');self.assertFalse(self.module.records('logo'))
+ def test_old_separate_programme_volume_is_not_silently_rebound_by_generic_target_activation(self):
+  self.activate();config=self.config.read();config.update(programme_target87=str(self.root),programme_volume87=dict(volume='old',mount_key='old'));self.config._write(config)
+  patch=mock.patch.dict(sys.modules,{'xbmcvfs':self.vfs});patch.start();self.addCleanup(patch.stop)
+  migration=__import__('artwork_migration')
+  with mock.patch('android_artwork87.check_active'):
+   migration.begin('smb://fixture.invalid/other');migration.copy();self.assertTrue(migration.verify());migration.approve_render(True)
+   with self.assertRaisesRegex(OSError,'LEGACY_PROGRAMME_MIGRATION_REQUIRED'):migration.activate()
+  self.assertEqual(self.config.read(),config)

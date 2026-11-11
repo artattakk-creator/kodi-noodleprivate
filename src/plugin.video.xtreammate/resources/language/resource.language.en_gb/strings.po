@@ -5405,3 +5405,7 @@ msgstr "An image transfer is incomplete. Resume the transfer before writing more
 msgctxt "#37165"
 msgid "File sizes on the selected image target could not be verified. No new image was published."
 msgstr "File sizes on the selected image target could not be verified. No new image was published."
+
+msgctxt "#37166"
+msgid "An older separate programme-image archive needs its verified migration before changing this target. Your previous storage choice is retained."
+msgstr "An older separate programme-image archive needs its verified migration before changing this target. Your previous storage choice is retained."

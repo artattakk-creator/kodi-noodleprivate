@@ -262,6 +262,11 @@ def activate(cancel=lambda:False,progress=lambda **kw:None):
             if not item['rendered']:raise StorageFailure('RENDER_NOT_VERIFIED')
             _shared_check(item)
             source89=json.loads(item['source'])
+            # Old separate .87 programme archives carry a physical mount
+            # proof. A generic USB/SMB activation must not leave that proof
+            # pointing at another target and break every subsequent write.
+            if source89.get('programme_target87') and source89['programme_target87']!=item['target'] and not source89.get('strict_storage87'):
+                raise StorageFailure('LEGACY_PROGRAMME_MIGRATION_REQUIRED')
             target89=dict(source89,mode='internal' if item['target']=='INTERNAL' else 'external',archive_mode='internal' if item['target']=='INTERNAL' else 'external',target='' if item['target']=='INTERNAL' else item['target'])
             verified89={(row['kind'],row['ident']):dict(row) for row in db.execute("SELECT kind,ident,sha,bytes FROM files WHERE transfer=? AND status='VERIFIED'",(item['id'],))}
             __import__('external_art89').migrate_receipts(source89,target89,verified89)

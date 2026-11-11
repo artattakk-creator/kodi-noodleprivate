@@ -5405,3 +5405,7 @@ msgstr "Eine Bildübertragung ist unvollständig. Setze die Übertragung fort, b
 msgctxt "#37165"
 msgid "File sizes on the selected image target could not be verified. No new image was published."
 msgstr "Die Dateigrößen auf dem gewählten Bildspeicher konnten nicht geprüft werden. Es wurde kein neues Bild freigegeben."
+
+msgctxt "#37166"
+msgid "An older separate programme-image archive needs its verified migration before changing this target. Your previous storage choice is retained."
+msgstr "Ein älterer separater Sendungsbildbestand muss vor diesem Zielwechsel vollständig geprüft übertragen werden. Der bisherige Speicherort bleibt erhalten."
