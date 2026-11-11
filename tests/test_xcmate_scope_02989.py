@@ -29,3 +29,15 @@ class Scope89(unittest.TestCase):
   for name in names:
    path='src/plugin.video.xtreammate/resources/lib/'+name
    self.assertEqual((ROOT/path).read_bytes(),subprocess.check_output(['git','show',BASE+':'+path],cwd=ROOT),name)
+
+ def test_native89_all_generated_wrapper_layers_compile_and_keep_pixel_gates(self):
+  source=(ROOT/'tools/kodi_home89_host/gui89.py').read_text().split("exec(compile(base,'/base_gui88.py','exec'),globals())")[0]
+  class P:
+   def __init__(self,name):self.name=name
+   def read_text(self):return (ROOT/('tools/kodi_home'+{'/base_gui88.py':'88','/base_gui86.py':'86','/base_gui84.py':'84'}[self.name]+'_host/gui'+{'/base_gui88.py':'88','/base_gui86.py':'86','/base_gui84.py':'84'}[self.name]+'.py')).read_text()
+  namespace={'Path':P};exec(source.replace('from pathlib import Path',''),namespace);compile(namespace['base'],'native88','exec')
+  namespace2={'Path':P};exec(namespace['base'].split("exec(compile(base87,'/base_gui86.py','exec'),globals())")[0].replace('from pathlib import Path',''),namespace2)
+  compile(namespace2['base87'],'native86','exec')
+  namespace3={'Path':P};exec(namespace2['base87'].split("exec(compile(base,")[0].replace('from pathlib import Path',''),namespace3)
+  compile(namespace3['base'],'native84','exec')
+  self.assertIn('UNEXPECTED89_NON_LOGO_ARCHIVE',namespace3['base']);self.assertIn('(1350,50,1800,520)',namespace3['base']);self.assertIn("logos89(portal,live_rows(portal),pump,capture,cold,check,home)",namespace['base'])
