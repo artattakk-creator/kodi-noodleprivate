@@ -116,58 +116,82 @@ class CloudToken528(unittest.TestCase):
                 self.assertIn(b'EPG_ART_MODE528',new.read(builder.PREFIX+'resources/lib/setup_auto_ui50.py'))
                 self.assertIn(b'epg_art_mode528',new.read(builder.PREFIX+builder.SETTINGS))
                 self.assertIn(b'Joomla-API',new.read(builder.PREFIX+builder.NEW))
-            self.assertEqual(a['epg_media_min_free_mb']['standard'],2048)
-            self.assertEqual(a['epg_media_min_free_mb']['extended'],6144)
+            self.assertEqual(a['epg_media_min_free_mb']['standard'],0)
+            self.assertEqual(a['epg_media_min_free_mb']['extended'],0)
+            self.assertTrue(a['epg_media_no_min_free_space_gate'])
+            self.assertTrue(a['epg_media_dynamic_on_demand'])
+            self.assertTrue(a['epg_media_storage_migration_optional'])
             self.assertFalse(a['epg_media_quotas_enforced_by_runtime'])
+
 
 
 class ImageEPG528(unittest.TestCase):
     def setUp(self):
         self.mod=module('media528',ROOT/'tools/gsmedia_setup0528/overlays/resources/lib/setup_epg_art528.py')
 
-    def test_space_gates_measure_real_report(self):
+    def test_image_epg_works_with_218_mb_free_or_unknown_volume(self):
         x=self.mod
-        low=dict(code='READY',free_bytes=218*1024*1024,total_bytes=4*x.GIB)
-        self.assertFalse(x.can_enable('standard',low))
-        self.assertFalse(x.can_enable('extended',low))
-        self.assertTrue(x.can_enable('text',low))
-        self.assertFalse(x.can_enable('standard',{'code':'STORAGE_UNKNOWN'}))
-        high=dict(code='READY',free_bytes=6*x.GIB,total_bytes=200*x.GIB)
-        self.assertTrue(x.can_enable('standard',high))
-        self.assertTrue(x.can_enable('extended',high))
-        self.assertFalse(x.can_enable('extended',dict(code='READY',free_bytes=5*x.GIB)))
-        self.assertNotIn('media_art_budget_mb',x.KNOWN_IDS)
+        low=dict(code='READY',free_bytes=218*x.MIB,total_bytes=4*1024*x.MIB)
+        for mode in ('text','standard','extended'):
+            self.assertTrue(x.can_enable(mode,low))
+            self.assertTrue(x.can_enable(mode,{'code':'STORAGE_UNKNOWN'}))
+        self.assertFalse(x.can_enable('invalid',low))
+        self.assertNotIn('media_art_budget_mb',str(x.MODES))
+        self.assertNotIn('min_free',str(x.MODES))
+        self.assertEqual(len(x.MODES),3)
 
-    def test_measure_reports_real_filesystem_capacity(self):
+    def test_measure_reports_capacity_advisory_only(self):
         with tempfile.TemporaryDirectory() as root:
             status=self.mod.measure(root)
             self.assertEqual(status['code'],'READY')
-            self.assertGreater(status['total_bytes'],status['free_bytes'])
+            self.assertGreaterEqual(status['total_bytes'],status['free_bytes'])
             self.assertIsInstance(status['device'],int)
         self.assertEqual(self.mod.measure('/definitely-missing-dir-epg-528')['code'],'STORAGE_UNKNOWN')
 
-    def test_explicit_opt_in_preserves_previous_state_on_failure(self):
+    def test_modes_do_not_force_disk_cache_even_at_low_space(self):
         m=self.mod
         class Addon:
             def __init__(self,vals,fail=False):
                 self.values=dict(vals);self.fail=fail
             def getSetting(self,key):return self.values.get(key,'')
             def setSetting(self,key,value):
-                if self.fail and key=='programme_art_local69' and value=='true':
+                if self.fail and key=='epg_show_thumbnails' and value=='true':
                     raise RuntimeError('simulated failure')
                 self.values[key]=value
-        previous={'epg_show_thumbnails':'false','programme_art_local69':'false'}
-        setup={'epg_art_mode528':'text','epg_art_target_mb528':'0'}
-        report={'code':'READY','free_bytes':7*m.GIB,'total_bytes':12*m.GIB}
-        addon=Addon(previous);installer=Addon(setup)
-        self.assertEqual(m.configure('extended',report,addon,installer),'CONFIGURED')
-        self.assertEqual(addon.getSetting('programme_art_local69'),'true')
-        self.assertEqual(installer.getSetting('epg_art_target_mb528'),'3072')
-        failed=Addon(previous,fail=True);installation=Addon(setup)
-        self.assertEqual(m.configure('extended',report,failed,installation),'CONFIG_WRITE_FAILED')
-        self.assertEqual(failed.values,previous)
-        self.assertEqual(installation.values,setup)
-        self.assertEqual(m.configure('extended',dict(code='READY',free_bytes=1*m.GIB),addon,installer),'INSUFFICIENT_SPACE')
+        report={'code':'READY','free_bytes':218*m.MIB,'total_bytes':4*1024*m.MIB}
+        existing={'epg_show_thumbnails':'false','programme_art_local69':'false'}
+        state={'epg_art_mode528':'text','epg_art_target_mb528':'0'}
+        addon=Addon(existing);installer=Addon(state)
+        self.assertEqual(m.configure('standard',report,addon,installer),'CONFIGURED')
+        self.assertEqual(addon.getSetting('epg_show_thumbnails'),'true')
+        self.assertEqual(addon.getSetting('programme_art_local69'),'false')
+        self.assertEqual(installer.getSetting('epg_art_target_mb528'),'0')
+        self.assertEqual(installer.getSetting('epg_art_mode528'),'standard')
+        self.assertEqual(m.configure('extended',{'code':'STORAGE_UNKNOWN'},addon,installer),'CONFIGURED')
         self.assertEqual(installer.getSetting('epg_art_mode528'),'extended')
+        self.assertEqual(installer.getSetting('epg_art_target_mb528'),'0')
+        self.assertEqual(addon.getSetting('programme_art_local69'),'false')
+        self.assertEqual(m.configure('text',report,addon,installer),'CONFIGURED')
+        self.assertEqual(addon.getSetting('epg_show_thumbnails'),'false')
+
+    def test_existing_local_cache_preference_preserved_and_rollback(self):
+        m=self.mod
+        class Addon:
+            def __init__(self,vals,fail=False):
+                self.values=dict(vals);self.fail=fail
+            def getSetting(self,key):return self.values.get(key,'')
+            def setSetting(self,key,value):
+                if self.fail and key=='epg_show_thumbnails' and value=='true':
+                    raise RuntimeError('simulated failure')
+                self.values[key]=value
+        addon=Addon({'epg_show_thumbnails':'false','programme_art_local69':'true'})
+        installer=Addon({'epg_art_mode528':'text','epg_art_target_mb528':'0'})
+        self.assertEqual(m.configure('standard',{'code':'STORAGE_UNKNOWN'},addon,installer),'CONFIGURED')
+        self.assertEqual(addon.getSetting('programme_art_local69'),'true')
+        broken=Addon({'epg_show_thumbnails':'false','programme_art_local69':'false'},fail=True)
+        state=Addon({'epg_art_mode528':'text','epg_art_target_mb528':'0'})
+        self.assertEqual(m.configure('extended',{'code':'STORAGE_UNKNOWN'},broken,state),'CONFIG_WRITE_FAILED')
+        self.assertEqual(broken.values,{'epg_show_thumbnails':'false','programme_art_local69':'false'})
+        self.assertEqual(state.values,{'epg_art_mode528':'text','epg_art_target_mb528':'0'})
 
 if __name__=='__main__':unittest.main()
