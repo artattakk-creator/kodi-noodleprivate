@@ -27,4 +27,4 @@ class Scope88(unittest.TestCase):
   ns={'Path':P};exec(script.replace('from pathlib import Path',''),ns)
   compile(ns['base87'],'nested86','exec')
   prefix=ns['base87'].split("exec(compile(base,")[0];ns2={'Path':P};exec(prefix.replace('from pathlib import Path',''),ns2)
-  compile(ns2['base'],'nested84','exec');self.assertIn('(680,560)',ns2['base']);self.assertIn('(155,300)',ns2['base']);self.assertIn('Synthetic Linux Kodi .88',ns2['base']);self.assertIn('(1000,50,1800,520)',ns2['base'])
+  compile(ns2['base'],'nested84','exec');self.assertIn('(680,560)',ns2['base']);self.assertIn('(155,300)',ns2['base']);self.assertIn('Synthetic Linux Kodi .88',ns2['base']);self.assertIn('(1350,50,1800,520)',ns2['base']);self.assertNotIn('pixels(hero_color,(1000,50,1800,520))',ns2['base'])
