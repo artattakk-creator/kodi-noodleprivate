@@ -137,6 +137,9 @@ def check90(cycle,errors):
     pixels=sum(max(abs(a-b) for a,b in zip(p,color))<=8 for p in rgb.crop((260,640,1890,1040)).getdata())
     if pixels>1500:break
    except (OSError,ValueError):continue
+  if pixels<=1500 and cycle==0:
+   try:__import__('diagnostic_picker90').run(('PICKER90_NATIVE_PIXELS_MISSING',kind,cid,pixels),service_poll90)
+   except Exception as error90:Path('/root/picker90-experiment-error.txt').write_text(type(error90).__name__+': '+str(error90))
   check(pixels>1500,('PICKER90_NATIVE_PIXELS_MISSING',kind,cid,pixels))
   check(home.getFocusId()==cid,('PICKER90_NATIVE_FOCUS_LOST',kind))
   cases.append(dict(kind=kind,control=cid,rows=total,pixels=pixels,screenshot=picture.name))

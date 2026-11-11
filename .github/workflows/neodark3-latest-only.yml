@@ -1,0 +1,28 @@
+name: NeoDark3 latest-XCMate-only index guard
+on:
+  pull_request:
+    paths:
+      - 'online-test/index.html'
+      - 'online-test/addons.xml'
+      - 'online-test/plugin.video.xtreammate-*.zip'
+      - 'online-test/plugin.video.xtreammate-*.zip.sha256'
+      - 'tools/verify_neodark3_latest_only.py'
+      - '.github/workflows/neodark3-latest-only.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'online-test/index.html'
+      - 'online-test/addons.xml'
+      - 'online-test/plugin.video.xtreammate-*.zip'
+      - 'online-test/plugin.video.xtreammate-*.zip.sha256'
+      - 'tools/verify_neodark3_latest_only.py'
+      - '.github/workflows/neodark3-latest-only.yml'
+permissions:
+  contents: read
+jobs:
+  check-neodark3-root:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify one published XCMate version, repositories and installer
+        run: python3 tools/verify_neodark3_latest_only.py

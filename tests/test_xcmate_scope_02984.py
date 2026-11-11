@@ -24,7 +24,8 @@ class Scope84(unittest.TestCase):
   from channel_contract_02984 import verify
   for path in ('addons.xml','addons.xml.md5','online-test/addons.xml','online-test/addons.xml.md5','online-test/manifest.json'):self.assertTrue(verify(path,committed=True))
   paths=('script.gsmedia.setup/script.gsmedia.setup-0.5.26.zip','plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.83.zip','online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.83.zip','online-test/plugin.video.xtreammate-0.1.29.83.zip','index.html','online-test/index.html')
-  for path in paths:self.assertEqual((ROOT/path).read_bytes(),subprocess.check_output(['git','show',('cb37de7103bd335a344c6738c33c4b5560ba2d4c' if path in ('index.html','online-test/index.html') else BASE)+':'+path],cwd=ROOT),path)
+  from published_channels90 import retained,approved
+  for path in paths:self.assertEqual(retained(path),approved(path,BASE),path)
   import sys
   sys.path.insert(0,str(ROOT/'tools'))
   try:

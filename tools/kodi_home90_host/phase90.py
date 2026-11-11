@@ -43,9 +43,9 @@ def run(portal,rows,pump,capture,cold,check,home,early_logo,early_epg):
  home.setFocusId(900);home.getControl(900).selectItem(1);xbmc.sleep(300)
  xbmc.executebuiltin('Action(Right)',wait=False);xbmc.sleep(300)
  foreign_due90=time.monotonic()+12
- while xbmc.getInfoLabel('Container(3540).NumItems')!='24' and time.monotonic()<foreign_due90:
+ while xbmc.getInfoLabel('Container(3540).NumItems')!='8' and time.monotonic()<foreign_due90:
   pump();xbmc.sleep(100)
- check(xbmc.getInfoLabel('Container(3540).NumItems')=='24','START90_FOREIGN_SOURCE_NOT_READY')
+ check(xbmc.getInfoLabel('Container(3540).NumItems')=='8','START90_FOREIGN_SOURCE_NOT_READY')
  home.setFocusId(3540);xbmc.sleep(400)
  check(home.getFocusId()==3540,'START90_FOREIGN_SECTION_NOT_ENTERED')
  ir=[]

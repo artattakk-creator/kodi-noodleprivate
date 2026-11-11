@@ -20,7 +20,8 @@ class Scope88(unittest.TestCase):
   base='cb37de7103bd335a344c6738c33c4b5560ba2d4c'
   paths=['addons.xml','addons.xml.md5','online-test/addons.xml','online-test/addons.xml.md5','online-test/manifest.json','index.html','online-test/index.html','script.gsmedia.setup/script.gsmedia.setup-0.5.26.zip','src/plugin.video.xtreammate/resources/lib/tmdb_token61.py','src/plugin.video.xtreammate/resources/lib/token_write64.py']
   paths+=['plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.87.zip','online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.87.zip','online-test/plugin.video.xtreammate-0.1.29.87.zip']
-  for name in paths:self.assertEqual((ROOT/name).read_bytes(),subprocess.check_output(['git','show',base+':'+name],cwd=ROOT),name)
+  from published_channels90 import retained,approved
+  for name in paths:self.assertEqual(retained(name),approved(name),name)
  def test_native_wrapper_compiles_actual_nested_geometry_and_caption(self):
   script=(ROOT/'tools/kodi_home88_host/gui88.py').read_text().split("exec(compile(base87,'/base_gui86.py','exec'),globals())")[0]
   class P:

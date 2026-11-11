@@ -26,7 +26,8 @@ class Scope90(unittest.TestCase):
    for p in files:self.assertEqual(z.read('plugin.video.xtreammate/'+p.relative_to(source).as_posix()),p.read_bytes())
  def test_published_channels_installer_and_all_89_packages_remain_exact_main(self):
   names=['addons.xml','addons.xml.md5','online-test/addons.xml','online-test/addons.xml.md5','online-test/manifest.json','index.html','online-test/index.html','script.gsmedia.setup/script.gsmedia.setup-0.5.26.zip','plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.89.zip','online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.89.zip','online-test/plugin.video.xtreammate-0.1.29.89.zip']
-  for name in names:self.assertEqual((ROOT/name).read_bytes(),original(name),name)
+  from published_channels90 import retained,approved
+  for name in names:self.assertEqual(retained(name),approved(name),name)
  def test_player_token_ui_geometry_and_installer_sources_are_not_rewritten(self):
   paths=subprocess.check_output(['git','ls-tree','-r','--name-only',BASE,'src'],cwd=ROOT).decode().splitlines()
   protected={'live_exit.py','playback_exit.py','exit_jobs.py','native_stop41.py','hero_art86.py','widget_skin87.py','widget_skin88.py','tmdb_token61.py','token_write64.py','art_storage.py','artwork_config.py','artwork_migration.py'}

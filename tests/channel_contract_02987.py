@@ -3,9 +3,9 @@ import hashlib,subprocess
 from pathlib import Path
 import xml.etree.ElementTree as E
 ROOT=Path(__file__).resolve().parents[1];BASE='cb37de7103bd335a344c6738c33c4b5560ba2d4c'
-def approved(path):return subprocess.check_output(['git','show',BASE+':'+path],cwd=ROOT)
+from published_channels90 import retained,approved,committed as committed_bytes
 def verify(path,committed=False):
- raw=subprocess.check_output(['git','show','HEAD:'+path],cwd=ROOT) if committed else (ROOT/path).read_bytes()
+ raw=committed_bytes(path) if committed else retained(path)
  if raw==approved(path):return True
  if committed or path not in ('addons.xml','addons.xml.md5'):raise AssertionError('UNAPPROVED_87_CHANNEL_CHANGE '+path)
  # Only historical repository-builder tests may stage an uncommitted index.

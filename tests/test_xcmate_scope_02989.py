@@ -25,7 +25,8 @@ class Scope89(unittest.TestCase):
    for name in names:self.assertEqual(z.read(name.removeprefix('src/')),subprocess.check_output(['git','show',archive_base+':'+name],cwd=ROOT),name)
  def test_all_three_release_channels_installer_and_token_code_remain_published_88(self):
   names=['addons.xml','addons.xml.md5','online-test/addons.xml','online-test/addons.xml.md5','online-test/manifest.json','index.html','online-test/index.html','script.gsmedia.setup/script.gsmedia.setup-0.5.26.zip','src/plugin.video.xtreammate/resources/lib/tmdb_token61.py','src/plugin.video.xtreammate/resources/lib/token_write64.py','plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.88.zip','online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.88.zip','online-test/plugin.video.xtreammate-0.1.29.88.zip']
-  for name in names:self.assertEqual((ROOT/name).read_bytes(),subprocess.check_output(['git','show','cb37de7103bd335a344c6738c33c4b5560ba2d4c'+':'+name],cwd=ROOT),name)
+  from published_channels90 import retained,approved
+  for name in names:self.assertEqual(retained(name),approved(name),name)
  def test_approved_home_design_and_player_sources_are_byte_unchanged(self):
   names=['widget_skin88.py','widget_skin87.py','programme_window46.py','live_exit.py','playback_exit.py','exit_jobs.py','native_stop41.py','hero_art86.py']
   for name in names:
