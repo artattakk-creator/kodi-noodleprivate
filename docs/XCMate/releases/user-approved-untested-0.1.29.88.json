@@ -1,0 +1,27 @@
+{
+  "addon_id": "plugin.video.xtreammate",
+  "version": "0.1.29.88",
+  "authorization_issue": 423,
+  "source_pr": 422,
+  "source_merge_sha": "fd38753b447a9a937e5d0832fcd9f9fb49325aae",
+  "user_approved_all_channels": true,
+  "authorized_channels": [
+    "regular",
+    "pilot",
+    "NeoDark3"
+  ],
+  "android_status": "ANDROID_NOT_TESTED",
+  "android_pass_claimed": false,
+  "package_sha256": "eccbf1651c5755681b2dec091acab5e85684f7db8d938cfef2a2f7a0f6d843fd",
+  "package_git_blob_sha": "2b76d25ff9c72f3fb140a9ed9da86d08e9e6f70a",
+  "package_size_bytes": 4621024,
+  "channels_zip_paths": [
+    "plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.88.zip",
+    "online-test/plugin.video.xtreammate/plugin.video.xtreammate-0.1.29.88.zip",
+    "online-test/plugin.video.xtreammate-0.1.29.88.zip"
+  ],
+  "user_authorization": "2026-11-11: Die neue Version 88 ist fertig. Merge die mal nach Main auf allen Repositories.",
+  "installer_0_5_26_unchanged": true,
+  "installer_0_5_27_not_merged": true,
+  "joomla_gateway_deferred": true
+}
