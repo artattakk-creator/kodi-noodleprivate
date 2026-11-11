@@ -75,6 +75,9 @@ def check90(cycle,errors):
   diagnostic_path90=Path('/root/picker90-diagnostic.json');diagnostic_path90.write_text(json.dumps(diagnostics90,indent=2))
   diagnostics90['outer_visible']={str(cid):xbmc.getCondVisibility('Control.IsVisible('+str(cid)+')') for cid in (752510,752520,752530)}
   Path('/root/picker90-diagnostic.json').write_text(json.dumps(diagnostics90,indent=2));xbmc.executebuiltin('TakeScreenshot(/root/picker90-home-'+str(cycle)+'-diagnostic.png)',wait=False);xbmc.sleep(200)
+  if cycle==0 and isinstance(reason,tuple) and reason[0]=='PICKER90_NATIVE_ROWS_MISSING':
+   try:__import__('diagnostic_picker90').run(reason,service_poll90)
+   except Exception as error90:Path('/root/picker90-experiment-error.txt').write_text(type(error90).__name__+': '+str(error90))
   raise RuntimeError(reason)
  folder=Path('/root/.kodi/userdata/addon_data/script.skinshortcuts')
  props=folder/'skin.titan.bingie.mod.properties';before=json.loads(Path('/root/picker90-baseline.json').read_text(encoding='utf-8'))

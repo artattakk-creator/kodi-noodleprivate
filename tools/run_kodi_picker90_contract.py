@@ -25,7 +25,7 @@ def main():
  (report/'start.sh').write_text(start)
  base=root/'tools/kodi_home84_host';helper=root/'tools/kodi_home90_host'
  mounts=[(root/'tools/kodi_home74_host','/work'),(root/'src/plugin.video.xtreammate','/xcmate'),(pristine/'skin.titan.bingie.mod','/skin'),(candidate,'/candidate'),(base/'fixture84.py','/fixture84.py'),(root/'tools/kodi_home86_host/tls86.py','/work/tls69.py'),(helper/'skin_picker90.py','/work/skin_fixture66.py'),(root/'tools/kodi_home74_host/skin_fixture66.py','/base_skin78.py'),(helper/'setup_picker90.py','/setup_picker90.py'),(helper/'picker90.py','/picker90.py'),(helper/'probe_picker90.py','/work/probe.py'),(root/'online-test/script.skinshortcuts/script.skinshortcuts-2.1.0.zip','/skinshortcuts90.zip'),(report/'start.sh','/work/start.sh')]
- mounts.extend([(helper/'picker_check90.py','/picker_check90.py'),(base/'fixture84.py','/base_fixture84.py')])
+ mounts.extend([(helper/'diagnostic_picker90.py','/diagnostic_picker90.py'),(helper/'picker_check90.py','/picker_check90.py'),(base/'fixture84.py','/base_fixture84.py')])
  mounts=[(helper/'fixture_picker90.py',target) if target=='/fixture84.py' else (source,target) for source,target in mounts]
  cmd=['run','-d','--name',name]
  for source,target in mounts:cmd+=['--mount','type=bind,src='+str(source)+',dst='+target+',readonly']
@@ -35,6 +35,8 @@ def main():
   with (report/'probe.log').open('w') as log:run('exec',name,'python3','/work/probe.py',stdout=log,stderr=subprocess.STDOUT)
  finally:
   files90=[('/root/picker90-diagnostic.json','picker90-diagnostic.json'),('/root/picker90-registry.json','picker90-registry.json'),('/root/picker90-history.json','picker90-history.json'),('/root/picker90.json','picker90.json'),('/root/picker90-error.txt','picker90-error.txt'),('/root/.kodi/temp/kodi.log','synthetic-kodi.log')]
+  files90.extend([('/root/picker90-experiments.json','picker90-experiments.json'),('/root/picker90-experiment-error.txt','picker90-experiment-error.txt')])
+  for stage90 in ('params','self','bounds','combined','flat'):files90.append(('/root/picker90-experiment-'+stage90+'.png','picker90-experiment-'+stage90+'.png'))
   files90.extend([('/root/.kodi/addons/skin.titan.bingie.mod/xml/IncludesHomeWidgets.xml','installed-widgets90.xml'),('/root/.kodi/addons/skin.titan.bingie.mod/xml/IncludesHomeBingie.xml','installed-home90.xml'),('/root/.kodi/addons/skin.titan.bingie.mod/xml/script-skinshortcuts-includes.xml','original-generated90.xml'),('/root/.kodi/userdata/addon_data/script.skinshortcuts/skin.titan.bingie.mod.properties','original-saved90.properties')])
   for cycle90 in range(4):
    files90.append(('/root/picker90-cold-'+str(cycle90)+'.json','picker90-cold-'+str(cycle90)+'.json'))
