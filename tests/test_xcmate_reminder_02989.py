@@ -100,3 +100,11 @@ class ReminderH89(Fixture,unittest.TestCase):
    return {} if name=='Ready' and reads.count('Ready')==1 else original(name)
   with mock.patch.object(self.runtime,'read',side_effect=stale):self.runtime.worker(now=self.event['start']-298)
   self.assertEqual(self.runtime.read('Ready')['nonce'],ready['nonce']);self.assertEqual(self.timers.list_timers('p')[0]['state'],'notified')
+ def test_already_notified_legacy_receipt_suppresses_pending_duplicate_until_explicit_rearm(self):
+  self.actions.toggle(self.event)
+  old=dict(self.event,channel=self.index.Reader('p').get('live','1')['name'],notified=True)
+  path=self.folder/'reminders.json';raw=json.dumps([old]).encode();path.write_bytes(raw);self.runtime._legacy_stamp=None
+  self.runtime.worker(now=self.event['start']-299)
+  self.assertFalse(self.runtime.read('Ready'));self.assertEqual(self.timers.list_timers('p')[0]['state'],'notified');self.assertEqual(path.read_bytes(),raw)
+  self.assertFalse(self.actions.toggle(self.event));self.assertTrue(self.actions.toggle(self.event));self.runtime.worker(now=self.event['start']-298)
+  self.assertTrue(self.runtime.read('Ready'));self.assertEqual(len(self.timers.list_timers('p')),1)

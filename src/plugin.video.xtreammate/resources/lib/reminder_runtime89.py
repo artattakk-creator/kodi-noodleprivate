@@ -51,6 +51,10 @@ def legacy(conn):
    event=dict(pid=pid,sid=sid,start=start,stop=stop,title=str(old['title'])[:512]);ident=bookmark_id(event)
    with conn:
     conn.execute('INSERT OR IGNORE INTO timers VALUES(?,?,?,?,?,?,?,?,?)',(ident,pid,sid,str(old['channel'])[:160],event['title'],start,stop,int(old.get('notify_at',start-300)),'notified' if old.get('notified') else 'pending'))
+    # The old JSON engine may already have displayed this very event while
+    # an independent guide timer remains pending. Its receipt must win once;
+    # after migration a later explicit unmark/re-arm still works normally.
+    if old.get('notified'):conn.execute("UPDATE timers SET state='notified' WHERE id=? AND state='pending'",(ident,))
     conn.execute('INSERT OR IGNORE INTO legacy_reminders89 VALUES(?,?)',(tag,'IMPORTED:'+ident))
   _legacy_stamp=stamp
  except (OSError,ValueError,TypeError,KeyError):return
