@@ -18,5 +18,10 @@
     "sha256": "7480de9f92b11e973021acd9e971ccd2582b7c10e9b54ee36dbeb5b241f92679",
     "width": "1920",
     "height": "214"
+  },
+  "owned_media90": {
+    "sha256": "0e71911d2dbdbbca1f8f6b3757a3b821804655f7349c6da7c9d6767d89bb57e0",
+    "visible_index": 4,
+    "condition": "Container($PARAM[widgetid]).IsUpdating + Control.IsVisible($PARAM[widgetid]) | Integer.IsGreater(Container($PARAM[widgetid]).NumItems,0)"
   }
 }

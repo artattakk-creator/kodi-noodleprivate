@@ -143,6 +143,8 @@ class ForeignNavigation90(Fixture50,unittest.TestCase):
   self.assertEqual(inner.findtext('width'),row.findtext('width'))
   self.assertEqual(int(inner.findtext('top'))+int(inner.findtext('height')),int(row.findtext('height')))
   self.assertEqual(root.findtext("include[@name='XCMate80.MediaNormal']/control/width"),'100%')
+  conditions=[n.text for n in root.findall("include[@name='XCMate80.MediaNormal']/control/visible")]
+  self.assertEqual(len(conditions),2);self.assertFalse(any('IsUpdating' in c or 'NumItems' in c or 'Control.IsVisible' in c for c in conditions))
   self.assertTrue(__import__('widget_skin90').verify(files))
   bad=dict(files);bad['xml/IncludesHomeWidgets.xml']=bad['xml/IncludesHomeWidgets.xml'].replace(b'<include name="XCMate80.MediaRow">',b'<include name="XCMate80.MediaRow"><param name="unknown-custom" default="true" />')
   with self.assertRaisesRegex(ValueError,'NAV90_UNVERIFIED'):__import__('widget_skin90').upgrade(bad)

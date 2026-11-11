@@ -64,11 +64,7 @@ def check90(cycle,errors):
   diagnostics90['skin']={key:xbmc.getInfoLabel('Skin.String('+key+')') for key in ('HomeLayout','WidgetsGlobalLimit','widgetstyle')}
   diagnostics90['conditions']={expr:xbmc.getCondVisibility(expr) for expr in ('String.IsEqual(Skin.String(HomeLayout),bingie)','Skin.HasSetting(New_Circular)','Skin.HasSetting(ShowAllWidgets)','String.IsEqual(Container(900).ListItem.Property(submenuVisibility),num-10000)')}
   diagnostic_path90=Path('/root/picker90-diagnostic.json');diagnostic_path90.write_text(json.dumps(diagnostics90,indent=2))
-  for cid90 in (2510,2520,2530):
-   try:
-    c90=xbmcgui.Window(10000).getControl(cid90);diagnostics90.setdefault('geometry',{})[str(cid90)]=dict(type=type(c90).__name__,position=c90.getPosition(),width=c90.getWidth(),height=c90.getHeight(),visible=c90.isVisible())
-   except (RuntimeError,AttributeError) as e90:diagnostics90.setdefault('geometry',{})[str(cid90)]=type(e90).__name__
-   diagnostic_path90.write_text(json.dumps(diagnostics90,indent=2))
+  diagnostics90['outer_visible']={str(cid):xbmc.getCondVisibility('Control.IsVisible('+str(cid)+')') for cid in (752510,752520,752530)}
   Path('/root/picker90-diagnostic.json').write_text(json.dumps(diagnostics90,indent=2));xbmc.executebuiltin('TakeScreenshot(/root/picker90-home-'+str(cycle)+'-diagnostic.png)',wait=False);xbmc.sleep(200)
   raise RuntimeError(reason)
  folder=Path('/root/.kodi/userdata/addon_data/script.skinshortcuts')
