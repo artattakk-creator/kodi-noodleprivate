@@ -107,11 +107,67 @@ class CloudToken528(unittest.TestCase):
             self.assertFalse(a['google_drive_oauth_login_integrated'])
             with zipfile.ZipFile(ROOT/'script.gsmedia.setup'/builder.SOURCE) as original, zipfile.ZipFile(io.BytesIO(one)) as new:
                 self.assertIsNone(new.testzip())
-                self.assertEqual(len(new.namelist()),len(original.namelist())+1)
+                self.assertEqual(len(new.namelist()),len(original.namelist())+3)
                 for path in original.namelist():
                     if path not in a['changed']:
                         self.assertEqual(original.read(path),new.read(path),path)
                 self.assertIn(b'Importiere TMDB-Token',new.read(builder.PREFIX+builder.NEW))
                 self.assertIn(b'TMDB_IMPORT528',new.read(builder.PREFIX+'resources/lib/setup_auto_ui50.py'))
+                self.assertIn(b'EPG_ART_MODE528',new.read(builder.PREFIX+'resources/lib/setup_auto_ui50.py'))
+                self.assertIn(b'epg_art_mode528',new.read(builder.PREFIX+builder.SETTINGS))
+                self.assertIn(b'Joomla-API',new.read(builder.PREFIX+builder.NEW))
+            self.assertEqual(a['epg_media_min_free_mb']['standard'],2048)
+            self.assertEqual(a['epg_media_min_free_mb']['extended'],6144)
+            self.assertFalse(a['epg_media_quotas_enforced_by_runtime'])
+
+
+class ImageEPG528(unittest.TestCase):
+    def setUp(self):
+        self.mod=module('media528',ROOT/'tools/gsmedia_setup0528/overlays/resources/lib/setup_epg_art528.py')
+
+    def test_space_gates_measure_real_report(self):
+        x=self.mod
+        low=dict(code='READY',free_bytes=218*1024*1024,total_bytes=4*x.GIB)
+        self.assertFalse(x.can_enable('standard',low))
+        self.assertFalse(x.can_enable('extended',low))
+        self.assertTrue(x.can_enable('text',low))
+        self.assertFalse(x.can_enable('standard',{'code':'STORAGE_UNKNOWN'}))
+        high=dict(code='READY',free_bytes=6*x.GIB,total_bytes=200*x.GIB)
+        self.assertTrue(x.can_enable('standard',high))
+        self.assertTrue(x.can_enable('extended',high))
+        self.assertFalse(x.can_enable('extended',dict(code='READY',free_bytes=5*x.GIB)))
+        self.assertNotIn('media_art_budget_mb',x.KNOWN_IDS)
+
+    def test_measure_reports_real_filesystem_capacity(self):
+        with tempfile.TemporaryDirectory() as root:
+            status=self.mod.measure(root)
+            self.assertEqual(status['code'],'READY')
+            self.assertGreater(status['total_bytes'],status['free_bytes'])
+            self.assertIsInstance(status['device'],int)
+        self.assertEqual(self.mod.measure('/definitely-missing-dir-epg-528')['code'],'STORAGE_UNKNOWN')
+
+    def test_explicit_opt_in_preserves_previous_state_on_failure(self):
+        m=self.mod
+        class Addon:
+            def __init__(self,vals,fail=False):
+                self.values=dict(vals);self.fail=fail
+            def getSetting(self,key):return self.values.get(key,'')
+            def setSetting(self,key,value):
+                if self.fail and key=='programme_art_local69' and value=='true':
+                    raise RuntimeError('simulated failure')
+                self.values[key]=value
+        previous={'epg_show_thumbnails':'false','programme_art_local69':'false'}
+        setup={'epg_art_mode528':'text','epg_art_target_mb528':'0'}
+        report={'code':'READY','free_bytes':7*m.GIB,'total_bytes':12*m.GIB}
+        addon=Addon(previous);installer=Addon(setup)
+        self.assertEqual(m.configure('extended',report,addon,installer),'CONFIGURED')
+        self.assertEqual(addon.getSetting('programme_art_local69'),'true')
+        self.assertEqual(installer.getSetting('epg_art_target_mb528'),'3072')
+        failed=Addon(previous,fail=True);installation=Addon(setup)
+        self.assertEqual(m.configure('extended',report,failed,installation),'CONFIG_WRITE_FAILED')
+        self.assertEqual(failed.values,previous)
+        self.assertEqual(installation.values,setup)
+        self.assertEqual(m.configure('extended',dict(code='READY',free_bytes=1*m.GIB),addon,installer),'INSUFFICIENT_SPACE')
+        self.assertEqual(installer.getSetting('epg_art_mode528'),'extended')
 
 if __name__=='__main__':unittest.main()
