@@ -108,3 +108,13 @@ Sichere alle Nutzerdaten/Token/Widgets und .89-Layout, keine Cache-Löschung,
 kein DB-Reset. Liefere separaten .90-Branch, Draft-PR, Tests, ZIP+SHA256.
 ANDROID_NOT_TESTED bis zur echten Box-Abnahme. KEIN MERGE, KEIN RELEASE.
 ```
+
+## 7. P0-H: Widget-Auswahl im nativen SkinShortcuts-Picker nach Neuinstallation nicht mehr auffindbar
+
+**Verbindlicher zusätzlicher Nutzerbericht (11.11.2026):** Unter der bekannten BINGIE-MOD-Navigation **Shortcuts → Widget auswählen** öffnete sich früher ein nativer Browser mit direkt auswählbaren **XCMate-Widgetquellen**. Nach kompletter Neuinstallation sind diese dort nicht mehr vorhanden. Getrennt von P0-D/P0-E (fehlende Home-Reihen) behandeln.
+
+**Verifizierte Quellstellen:** `resources/lib/widget_sources49.py` definiert drei auswählbare Folder-URLs für `widget_live_start_group`, `widget_recent_vod`, `widget_recent_series`; `widget_binding50.source()` erzeugt portalgebundene `plugin://plugin.video.xtreammate/?action=...`-URLs. `app_routes.py` delegiert `widget_setup` und `widget_sources49` an diese Quellen, aber Z. 59–61 weist beide bei fehlendem `portal` ab. `widget_manager50.py` versteckt den Quellenbrowser zudem in einer Kontextaktion. Das erklärt **mögliche** Ursachen, die noch mit dem echten nativen Picker-/SkinShortcuts-Request und Portalstatus verifiziert werden müssen.
+
+**T90-14 ist Pflicht:** Frische Installation **mit und ohne eingerichtetes Portal** → nativer BINGIE SkinShortcuts-Dialog → Widget auswählen → XCMate → Live-TV-Startgruppe, neueste Filme, neueste Serien; 3 `isFolder=True`-Navigationsquellen, 3 korrekt persistierte WidgetPath-URLs, nach Menu-/Kodi-Neustart gleiche Zuordnung, echte Home-Controls sichtbar. Kein Fake-Portal-Pfad, sondern sichtbare Einrichtungsmöglichkeit, solange Portal fehlt. Separater Upgrade-Test mit mindestens zwei bereits vorhandenen fremden Widgetdefinitionen: Widget-Auswahl funktioniert weiterhin, bestehende Fremdwidgets/Shortcuts und Benutzer-Menüreihenfolge unverändert.
+
+Diagnostik: `PICKER_ENTRY_MISSING`, `PICKER_PORTAL_REQUIRED`, `PICKER_SOURCE_LIST_EMPTY`, `PICKER_ROUTE_INVALID`, `WIDGET_BINDING_UNEXPOSED` – ohne sensible Daten. Nie einfach das SkinShortcuts-Profil neu anlegen oder bestehende Widgetdefinitionen löschen. Der volle P0-H-Umfang und T90-14 stehen in [Issue #430](https://github.com/artattakk-creator/kodi-noodleprivate/issues/430). **Kein Merge/Release ohne ausdrückliche Freigabe.**
