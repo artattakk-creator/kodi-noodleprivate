@@ -55,11 +55,15 @@ rpc('Addons.ExecuteAddon',{'addonid':'script.xcmate.guicontract59'})
 gui_budget87=max(120,min(240,int(os.environ.get('XCMATE_GUI_RESTART_TIMEOUT87','120'))))
 for _ in range(gui_budget87*10):
     if Path('/root/post75-error.txt').exists():raise RuntimeError(Path('/root/post75-error.txt').read_text(encoding='utf-8'))
-    if Path('/root/post75.json').exists():break
+    try:
+        result=json.loads(Path('/root/post75.json').read_text(encoding='utf-8'))
+    except (OSError,ValueError):result=None
+    if isinstance(result,dict) and result.get('status')=='FAIL':raise RuntimeError('POST75_REPORTED_FAILURE')
+    if isinstance(result,dict) and result.get('status')=='PASS':break
     time.sleep(.1)
 else:raise RuntimeError('POST75_GUI_TIMEOUT')
 if protected()!=before:raise RuntimeError('POST75_PROTECTED_FILES_CHANGED')
-result=json.loads(Path('/root/post75.json').read_text())
+# Consume the complete validated snapshot from the bounded observer loop.
 result.update(protected_files=len(before),protected_sha256='PASS',restart='native Application.Quit + supervised Kodi restart',old_pids=sorted(old_pids),new_pids=sorted(kodi_pids()))
 Path('/root/post75.json').write_text(json.dumps(result,indent=2))
 print(json.dumps(result))
