@@ -29,3 +29,9 @@ class LockF89(Fixture,unittest.TestCase):
   with mock.patch('programme_mapping85.epoch',return_value=1):self.assertIsNone(self.m.current(self.event))
   self.options['programme_tmdb_optout77']=True;self.assertIsNone(self.m.current(self.event));self.options['programme_tmdb_optout77']=False
   self.file.write_bytes(b'corrupt');self.m._checked.clear();self.assertIsNone(self.m.current(self.event,worker=True))
+ def test_native_home_request_without_derived_key_uses_same_locked_asset(self):
+  win=self.lock();event={k:v for k,v in self.event.items() if k!='key'}
+  held=self.m.current(event);self.assertEqual(held['sha256'],self.digest)
+  self.assertEqual(held['key'],__import__('programme_events46').key('p','1',event))
+  shown=__import__('hero_render86').choose(event,dict(code='SOURCE_MISSING'),{},win)
+  self.assertEqual(shown['Image'],str(self.file))

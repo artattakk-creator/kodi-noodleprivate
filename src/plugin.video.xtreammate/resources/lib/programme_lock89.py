@@ -53,7 +53,10 @@ def current(event,worker=False):
   while len(_checked)>64:_checked.pop(next(iter(_checked)))
  from programme_requests68 import identity,scope
  from programme_art46 import fingerprint
- return dict(art,key=event['key'],fingerprint=fingerprint(event),scope69=identity(event),profile69=scope(),until=record['until'],lock89=True)
+ # Home's bounded request DTO intentionally omits the derived event key;
+ # detail DTOs already contain it. Both must resolve the same event asset.
+ event_key=event.get('key') or __import__('programme_events46').key(event['pid'],event['sid'],event)
+ return dict(art,key=event_key,fingerprint=fingerprint(event),scope69=identity(event),profile69=scope(),until=record['until'],lock89=True)
 def acknowledge(event,win):
  import xbmc,xbmcgui
  if window().getProperty(PREFIX+'Active')!='true':return None

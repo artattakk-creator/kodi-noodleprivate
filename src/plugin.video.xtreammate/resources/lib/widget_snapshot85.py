@@ -79,9 +79,11 @@ def remember_source89(portal,kind,rows,revision):
  from epg_handoff63 import identity
  from widget_data41 import policy
  import xbmcgui
+ window=xbmcgui.Window(10000)
+ if not callable(getattr(window,'getProperty',None)):return
  digest=hashlib.sha256(json.dumps(rows,sort_keys=True,default=str).encode()).hexdigest()
  record=dict(policy=policy(portal,kind),rows=digest,revision=revision,at=time.time())
- xbmcgui.Window(10000).setProperty('XCMate.CatalogueSource89.'+identity(portal['id'],kind),json.dumps(record,separators=(',',':')))
+ window.setProperty('XCMate.CatalogueSource89.'+identity(portal['id'],kind),json.dumps(record,separators=(',',':')))
 def source89(portal,kind,rows):
  if kind not in ('vod','series'):return None
  from epg_handoff63 import identity
@@ -90,5 +92,5 @@ def source89(portal,kind,rows):
  try:
   raw=xbmcgui.Window(10000).getProperty('XCMate.CatalogueSource89.'+identity(portal['id'],kind));record=json.loads(raw) if raw and len(raw)<2048 else {}
   if record.get('policy')==policy(portal,kind) and 0<=time.time()-record.get('at',0)<120 and record.get('rows')==hashlib.sha256(json.dumps(rows,sort_keys=True,default=str).encode()).hexdigest():return record.get('revision')
- except (ValueError,TypeError):pass
+ except (AttributeError,RuntimeError,ValueError,TypeError):pass
  return None
