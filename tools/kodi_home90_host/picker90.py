@@ -4,7 +4,7 @@ No select/explorer/save replacement, no fake saved WidgetPaths. Disposable data.
 import ast,json,time,hashlib,os
 from pathlib import Path
 import xbmc,xbmcgui,xbmcaddon
-home=xbmcgui.Window(10000);history=[]
+home=xbmcgui.Window(10000);history=[];manager_ids437={}
 clock437=os.environ.get('XCMATE_CLOCK437')=='true'
 initial_template90=hashlib.sha256(Path('/root/.kodi/addons/skin.titan.bingie.mod/xml/script-skinshortcuts-includes.xml').read_bytes()).hexdigest()
 xbmcaddon.Addon('script.skinshortcuts').setSetting('enable_logging','true')
@@ -65,12 +65,14 @@ def manager():
    control90=dialog90.getControl(211)
    dialog90.setFocusId(211);control90.selectItem(position90)
   except RuntimeError:return False
-  owner90[:]=[dialog90];return True
+   manager_ids437[id(dialog90)]=xbmcgui.getCurrentWindowDialogId()
+   owner90[:]=[dialog90];return True
  until(home_ready90,'PICKER90_MANAGER_HOME_NOT_READY')
  xbmc.sleep(200);return owner90[0]
 
 def choose(dialog,slot,kind=None,noportal=False):
- manager_id437=xbmcgui.getCurrentWindowDialogId()
+ manager_id437=manager_ids437[id(dialog)]
+ until(lambda:xbmcgui.getCurrentWindowDialogId()==manager_id437,'PICKER90_MANAGER_NOT_TOPMOST')
  check(xbmc.getCondVisibility('Window.IsActive(script-skinshortcuts.xml)'),'PICKER90_NOT_IN_MANAGER')
  dialog.setFocusId(1312);action('Select')
  button437=90011+slot*10
@@ -107,7 +109,7 @@ def choose(dialog,slot,kind=None,noportal=False):
     if options:target=options[0];break
   check(target is not None,('PICKER90_UNKNOWN_NATIVE_BRANCH',values));selected=values[target];select(target)
   if presets437 or 'use as widget' in selected.casefold() or 'als widget' in selected.casefold():
-   until(lambda:xbmcgui.getCurrentWindowDialogId() in (10103,manager_id437),'PICKER90_SELECT_DID_NOT_RETURN')
+   until(lambda:xbmcgui.getCurrentWindowDialogId() in (10103,manager_id437),('PICKER90_SELECT_DID_NOT_RETURN',manager_id437))
    if xbmcgui.getCurrentWindowDialogId()==10103:xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=90,method='Input.SendText',params=dict(text='XCMate '+kind,done=True))))
    break
  else:raise RuntimeError('PICKER90_RECURSION_LIMIT')
