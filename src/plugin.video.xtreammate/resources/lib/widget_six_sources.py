@@ -9,8 +9,8 @@ from pathlib import Path
 from urllib.parse import urlsplit, parse_qs, parse_qsl, urlencode, urlunsplit
 
 SPECS=(('vod','Filme',None,'videos'),('series','Serien',None,'videos'),
-       ('cinema','Im Kino',297610,'videos'),('disney','Disney',297620,'videos'),
-       ('trend','Diese Woche im Trend',297630,'videos'),('mp3','MP3s',297640,'music'))
+       ('cinema','Im Kino',29761,'videos'),('disney','Disney',29762,'videos'),
+       ('trend','Diese Woche im Trend',29763,'videos'),('mp3','MP3s',29764,'music'))
 EXTRAS=SPECS[2:]
 CORE={'widget_live_start_group':'live','widget_recent_vod':'vod','widget_recent_series':'series'}
 HELPER='plugin.video.themoviedb.helper'

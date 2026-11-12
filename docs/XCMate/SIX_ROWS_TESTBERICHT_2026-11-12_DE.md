@@ -10,10 +10,10 @@ Die private Sicherung wurde ausschließlich lesend untersucht; Rohkonfiguration 
 | --- | --- | --- | --- |
 | Filme | `widget_recent_vod` | vorhandener Container, im Referenzprofil 1520 | Videos |
 | Serien | `widget_recent_series` | vorhanden, im Referenzprofil 1530 | Videos |
-| Im Kino | optionaler TMDB-Helper, `now_playing/movie` | 297610 | Videos |
-| Disney | gespeicherter Helper-Discover, Anbieter 337, Region DE, movie | 297620 | Videos |
-| Diese Woche im Trend | gespeicherter Helper, `trending_week/tv` | 297630 | Videos |
-| MP3s | vorhandener Audio-Browse-Pfad von `plugin.audio.m3sr2019` | 297640 | Music |
+| Im Kino | optionaler TMDB-Helper, `now_playing/movie` | 29761 | Videos |
+| Disney | gespeicherter Helper-Discover, Anbieter 337, Region DE, movie | 29762 | Videos |
+| Diese Woche im Trend | gespeicherter Helper, `trending_week/tv` | 29763 | Videos |
+| MP3s | vorhandener Audio-Browse-Pfad von `plugin.audio.m3sr2019` | 29764 | Music |
 
 Disney bezeichnet die vorhandene Metadaten-/Verfügbarkeitsauswahl; daraus folgt keine Streamingberechtigung. Es gibt kein Bewertungsranking. Die Audioquelle wird nicht als VOD behandelt; automatisch ausführbare Play-/Shuffle-/Lösch-/Favoritenänderungsrouten sind als Widget-Datenquelle gesperrt. Ohne gespeicherten Audio-Widget-Pfad wird der tatsächlich vorhandene Music-Menüpfad übernommen. Seine Ordner öffnen im Musikfenster; echte Provider-Wiedergabe ist gesondert auf dem Gerät zu prüfen.
 
@@ -33,7 +33,7 @@ Definitionen werden ausschließlich über den vorhandenen gesicherten Skin-Trans
 
 ## Prüfstand dieses Commits
 
-- PASS: 18 neue Sechs-Reihen-Tests: reale Quellsemantik, Strict-Allowlist, kein fremder Token, falsche Quelle/Mehrdeutigkeit, Audio-Browse-Schutz, exakte Reihenfolge, private generierte IDs, idempotente Ergänzung, Kollisions-/Manipulationsschutz, sequenzielle Arbeit, Timeout ohne Parallelstart, Leer-/Fehlerzustände, unveränderte Last-good-Inhalte und sechs gemeinsame Header.
+- PASS: 19 neue Sechs-Reihen-Tests: reale Quellsemantik, Strict-Allowlist, kein fremder Token, falsche Quelle/Mehrdeutigkeit, Audio-Browse-Schutz, exakte Reihenfolge, private generierte IDs, idempotente Ergänzung, Kollisions-/Manipulationsschutz, sequenzielle Arbeit, Timeout ohne Parallelstart, Leer-/Fehlerzustände, unveränderte Last-good-Inhalte und sechs gemeinsame Header.
 - PASS: 12 Spinner-/Geometrie-/Pending-/Originaldatei-/ZIP-Tests.
 - PASS: 196 kombinierte Quellen-, clock50-, historische Scope- und Veröffentlichungs-Schutztests, 95,835 Sekunden. Bestehende Testmethoden/Skipbedingungen bleiben erhalten. Historische ZIPs werden gegen ihren exakten historischen Quellbaum geprüft, der neue ZIP gegen sämtliche aktuellen Quellen.
 - Neuer vollständiger CI- und nativer Kodi-Lauf wird für diesen Stand gestartet; Ergebnis nachtragen. Frühere vollständige Host-CI ist grün, ersetzt den neuen Lauf nicht.
@@ -59,7 +59,7 @@ EPG-Vergleich Home/Mini/Groß/Details, Galileo-Bildverlust und manuelle `SAVE_BL
 
 ## Aktuelles Review-Paket
 
-`test-builds/media-spinner/plugin.video.xtreammate-0.1.29.90.zip` – 4.676.831 Bytes, 859 Dateien, CRC und alle Quellbytes geprüft. SHA256: `91f39a626b3742d76d2f02234e123a71bfbdfeb46926be661db0b6c3e2f87c47`.
+`test-builds/media-spinner/plugin.video.xtreammate-0.1.29.90.zip` – 4.676.828 Bytes, 859 Dateien, CRC und alle Quellbytes geprüft. SHA256: `2b482b20f41bef2c80abb3486994fbbdeae0847b0894d071dcbddeb0aa6dd85c`.
 
 ## Nachprüfung mit echten gespeicherten Pfaden und nativen Pixeln
 
@@ -72,3 +72,9 @@ Nativer Lauf 43249630477 fand in beiden Auflösungen eine reale Layoutregression
 Nach der kompakten Header-Korrektur waren die eigentlichen Live-/Film-/Serien-Pixel in beiden Auflösungen wieder vorhanden. Lauf 43251229556 fand zwei Folgeprobleme: Bei 1080p waren alle vier synthetischen Zusatzquellen bereits gefüllt, aber die Fernbedienung blieb vor der Kinoreihe stehen. Dynamische Navigation wird deshalb nun als regulärer Kodi-Builtin `SetFocus($INFO[…])` übergeben; ein bloßes dynamisches Label ist kein gültiges numerisches Navigationsziel. Die ursprünglichen Fremdreihen-Verbindungen bleiben erhalten. Bei 720p wurde eine reale rotierende Textur im vergrößerten Screenshot als 26×27 statt 24×24 gemessen. Die Prüfung misst jetzt direkt die unvergrößerten nativen Pixel mit der tatsächlichen Auflösung (24 logische Pixel und höchstens ein Raster-Randpixel); die produktive Textur bleibt 24×24. Der Fehlerguard für fehlende Animation/Fokus bleibt bestehen.
 
 Ein lokaler vollständiger Zwischenlauf führte 3.843 Tests aus (894,264 s), davon sieben Fehler durch einen überlebenden Test-Dummy `epg_status` ohne `update/changed`. Die zwei neu manuell angelegten verschachtelten Fixture-Instanzen hatten ihre `addCleanup`-Rücknahmen nicht ausgeführt. Sie führen jetzt auch `doCleanups()` aus. Es wurde keine produktive EPG-Funktion verändert oder ein Test übersprungen; vollständigen Wiederholungslauf abwarten. 11 Brandingtests sowie alle 17 PO-Kataloge sind PASS.
+
+## Native Info-ID-Grenze
+
+Lauf 43252762231 bestätigt die korrigierten Original-Spinner und den IR-Eintritt in die Kinoreihe; der nächste Guard meldete deren Header als unsichtbar. Kodi21.3 speichert die Daten von Control-Info-Abfragen jedoch nur in 24 Bit: `CGUIInfo::GetData1()` maskiert mit `(1 << 24) - 1` ([Kodi-Quellcode](https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/guilib/guiinfo/GUIInfo.cpp)). Die zunächst gewählten sechsstelligen privaten Container-IDs erzeugten durch Header-/Spinner-Präfixe größere IDs. Jetzt werden ausschließlich private IDs 29761–29764 verwendet; alle zusammengesetzten IDs einschließlich der kompakten Header liegen unter 2^24, geschützt durch einen eigenen Regressionstest. Gespeicherte native Benutzercontainer bleiben unverändert. Der folgende native Pixel-/Header-/Fokuslauf muss diesen Stand bestätigen.
+
+Die dynamische Navigation ist zusätzlich anhand von Kodis `CGUIAction::GetNavigation()` und `CApplication::ExecuteXBMCAction()` verifiziert: Nur literale numerische Aktionen sind Navigations-IDs; `SetFocus` wird dagegen nach InfoLabel-Auflösung als Builtin ausgeführt. Kein Player-/Window-Routing-Rewrite.

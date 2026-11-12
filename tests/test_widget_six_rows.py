@@ -79,7 +79,7 @@ class SixRows(Fixture50,unittest.TestCase):
   self.assertNotIn(b'XCMate.SixRows.Row',candidate(self.generated(),True))
  def test_existing_control_collision_and_unreviewed_extra_edit_block_atomically(self):
   from widget_reload78 import candidate
-  data=self.generated().replace(b'</includes>',b'<include><param name="widgetid" value="297610" /></include></includes>')
+  data=self.generated().replace(b'</includes>',b'<include><param name="widgetid" value="29761" /></include></includes>')
   with self.assertRaisesRegex(ValueError,'COLLISION'):candidate(data,True,True)
   changed=candidate(self.generated(),True,True)
   with self.assertRaises(ValueError):candidate(changed.replace(b'value="Im Kino"',b'value="Injected"'),True,True)
@@ -177,3 +177,9 @@ class SixRows(Fixture50,unittest.TestCase):
    self.assertNotIn('NumItems',body.findtext('visible'))
   finally:
    instance.tearDown();instance.doCleanups()
+
+ def test_all_generated_control_info_ids_fit_kodis_24_bit_data_field(self):
+  from widget_six_sources import EXTRAS
+  for _,_,cid,_ in EXTRAS:
+   for prefix in ('75','76','84','85','86','87','88','89','90','94','95','96','97','98','99','100'):
+    self.assertLess(int(prefix+str(cid)),1<<24)

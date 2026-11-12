@@ -30,7 +30,7 @@ Die alten Source-/Geometrie-Guards behalten ihre Sollwerte. Nur die vollständig
 
 `docs/XCMate/test-builds/media-spinner/plugin.video.xtreammate-0.1.29.90.zip`
 
-SHA256: `91f39a626b3742d76d2f02234e123a71bfbdfeb46926be661db0b6c3e2f87c47`.
+SHA256: `2b482b20f41bef2c80abb3486994fbbdeae0847b0894d071dcbddeb0aa6dd85c`.
 
 Die veröffentlichten Kanäle und Installer .5.26 bleiben bytegleich.
 
