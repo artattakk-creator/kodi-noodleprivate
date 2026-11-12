@@ -2,7 +2,7 @@
 
 Disposable Linux profile only. Never writes WidgetPath or compiler output.
 """
-import ast,hashlib,io,json,time,threading,sys,os,xml.etree.ElementTree as E
+import ast,hashlib,io,json,time,threading,sys,os,math,xml.etree.ElementTree as E
 from pathlib import Path
 import xbmc,xbmcgui
 from PIL import Image
@@ -41,10 +41,15 @@ def spinner_receipts438(home,bindings,kinds=None):
    path=Path('/root/'+name+'.png');xbmc.executebuiltin('TakeScreenshot('+str(path)+')',wait=False)
    for _ in range(30):
     try:
-     with Image.open(io.BytesIO(path.read_bytes())) as image:return path,image.convert('RGB').resize((1920,1080))
+     with Image.open(io.BytesIO(path.read_bytes())) as image:return path,image.convert('RGB')
     except (OSError,ValueError,SyntaxError):xbmc.sleep(50)
    raise RuntimeError('SPINNER438_SCREENSHOT_NOT_READY')
   _,baseline438=frame438('picker90-spinner438-'+kind+'-baseline')
+  sx438,sy438=baseline438.width/1920,baseline438.height/1080
+  roi438=tuple(round(value*scale) for value,scale in zip((250,640,1890,1040),(sx438,sy438,sx438,sy438)))
+  # Measure native pixels, not a resized screenshot. A 24 logical-pixel
+  # texture at 720p spans 16 pixels plus at most one raster edge pixel.
+  max438=(math.ceil(24*sx438)+1,math.ceil(24*sy438)+1)
   try:
    home.setProperty(keys[0],'true');home.setProperty(keys[1],'LOADING_ART' if kind in ('vod','series') else 'LOADING');home.setProperty(keys[2],'Wird geladen …')
    frames=[];files=[]
@@ -59,12 +64,12 @@ def spinner_receipts438(home,bindings,kinds=None):
    for index in range(4):
     xbmc.sleep(170)
     path,frame=frame438('picker90-spinner438-'+kind+'-'+str(index))
-    frames.append(frame.crop((250,640,1890,1040)));files.append(path.name)
+    frames.append(frame.crop(roi438));files.append(path.name)
    changes=[ImageChops.difference(frames[0],frame).getbbox() for frame in frames[1:]]
-   animated=any(box and 1<=box[2]-box[0]<=24 and 1<=box[3]-box[1]<=24 for box in changes)
+   animated=any(box and 1<=box[2]-box[0]<=max438[0] and 1<=box[3]-box[1]<=max438[1] for box in changes)
    if not animated:raise RuntimeError(('SPINNER438_ANIMATION_PIXELS_MISSING',kind,changes))
-   rect=next(box for box in changes if box and 1<=box[2]-box[0]<=24 and 1<=box[3]-box[1]<=24)
-   rect=(rect[0]+250,rect[1]+640,rect[2]+250,rect[3]+640)
+   rect=next(box for box in changes if box and 1<=box[2]-box[0]<=max438[0] and 1<=box[3]-box[1]<=max438[1])
+   rect=(rect[0]+roi438[0],rect[1]+roi438[1],rect[2]+roi438[0],rect[3]+roi438[1])
    terminal=[]
    for state in ('READY','EMPTY','ERROR_RETRYABLE'):
     home.setProperty(keys[0],'');home.setProperty(keys[1],state);xbmc.sleep(250)
@@ -72,7 +77,7 @@ def spinner_receipts438(home,bindings,kinds=None):
     if terminal438.crop(rect).tobytes()!=baseline438.crop(rect).tobytes():raise RuntimeError(('SPINNER438_STUCK_PIXELS',kind,state,rect))
     if xbmc.getInfoLabel('Container('+str(cid)+').NumItems')!=before:raise RuntimeError(('SPINNER438_LISTITEMS_RESET',kind,state))
     terminal.append(state)
-   receipts.append(dict(kind=kind,control=spinner,animation_pixels=True,frames=files,changes=changes,terminal_hidden=terminal,listitems_preserved=int(before),injection='UI_STATE_ONLY_NOT_PROVIDER_JOB',android='ANDROID_NOT_TESTED'))
+   receipts.append(dict(kind=kind,control=spinner,animation_pixels=True,logical_texture=[24,24],native_scale=[sx438,sy438],native_limit=list(max438),frames=files,changes=changes,terminal_hidden=terminal,listitems_preserved=int(before),injection='UI_STATE_ONLY_NOT_PROVIDER_JOB',android='ANDROID_NOT_TESTED'))
   finally:
    for key,value in saved.items():home.setProperty(key,value)
  return receipts

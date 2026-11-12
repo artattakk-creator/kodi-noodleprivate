@@ -59,10 +59,16 @@ EPG-Vergleich Home/Mini/Groß/Details, Galileo-Bildverlust und manuelle `SAVE_BL
 
 ## Aktuelles Review-Paket
 
-`test-builds/media-spinner/plugin.video.xtreammate-0.1.29.90.zip` – 4.676.822 Bytes, 859 Dateien, CRC und alle Quellbytes geprüft. SHA256: `e4e9dfa6899aed4338a0e20184eb2f2f94c442bf3b43f7bff81b06d9e5c322db`.
+`test-builds/media-spinner/plugin.video.xtreammate-0.1.29.90.zip` – 4.676.831 Bytes, 859 Dateien, CRC und alle Quellbytes geprüft. SHA256: `91f39a626b3742d76d2f02234e123a71bfbdfeb46926be661db0b6c3e2f87c47`.
 
 ## Nachprüfung mit echten gespeicherten Pfaden und nativen Pixeln
 
 Der Produktions-Discovery wurde zusätzlich mit einer privaten, nur temporär angelegten Arbeitskopie der tatsächlichen beiden Konfigurationsdateien ausgeführt. Zunächst FAIL für die drei Helper-Quellen: deren reale Reload-Variable heißt `TMDbHelper.Widgets.Reload`. Der Validator akzeptiert nun ausschließlich diese zusätzliche exakte, deklarierte Home-Eigenschaft. Alle vier Zusatzquellen werden danach eindeutig erkannt: PASS für Discovery, ausdrücklich keine Behauptung eines erfolgreichen API-/Audiostream-Aufrufs. Vorhandene Reload-Signale werden read-only übernommen; XCMate pulst den gemeinsamen Hook nicht und verändert keine gespeicherte URL. Eine zusätzliche Regression schützt die echte Macro-Variante.
 
 Nativer Lauf 43249630477 fand in beiden Auflösungen eine reale Layoutregression: Serien hatte 24 Einträge, aber 0 passende Coverpixel, weil vier noch ungefüllte Zusatzreihen jeweils 244 Pixel Höhe beanspruchten und die letzte gefüllte Reihe aus dem Viewport schoben. Diese fehlgeschlagenen Prüfungen bleiben dokumentiert. Die Zusatzreihen zeigen jetzt einen kompakten 26-Pixel-Header bei Wartet/Leer/Fehler. Der volle native Coverbereich wird vor Beginn der konkreten Anfrage freigegeben und bei vorhandenen Einträgen beibehalten. Die Freigabe hängt ausdrücklich nicht an `NumItems`, damit kein neuer Cold-Load-Deadlock entsteht. Alle Header/Spinner verwenden weiterhin dieselbe Komponente. Neue native Prüfung erforderlich; kein Pixel-PASS aus einem XML-Test ableiten.
+
+## Weitere native und vollständige Regressionen
+
+Nach der kompakten Header-Korrektur waren die eigentlichen Live-/Film-/Serien-Pixel in beiden Auflösungen wieder vorhanden. Lauf 43251229556 fand zwei Folgeprobleme: Bei 1080p waren alle vier synthetischen Zusatzquellen bereits gefüllt, aber die Fernbedienung blieb vor der Kinoreihe stehen. Dynamische Navigation wird deshalb nun als regulärer Kodi-Builtin `SetFocus($INFO[…])` übergeben; ein bloßes dynamisches Label ist kein gültiges numerisches Navigationsziel. Die ursprünglichen Fremdreihen-Verbindungen bleiben erhalten. Bei 720p wurde eine reale rotierende Textur im vergrößerten Screenshot als 26×27 statt 24×24 gemessen. Die Prüfung misst jetzt direkt die unvergrößerten nativen Pixel mit der tatsächlichen Auflösung (24 logische Pixel und höchstens ein Raster-Randpixel); die produktive Textur bleibt 24×24. Der Fehlerguard für fehlende Animation/Fokus bleibt bestehen.
+
+Ein lokaler vollständiger Zwischenlauf führte 3.843 Tests aus (894,264 s), davon sieben Fehler durch einen überlebenden Test-Dummy `epg_status` ohne `update/changed`. Die zwei neu manuell angelegten verschachtelten Fixture-Instanzen hatten ihre `addCleanup`-Rücknahmen nicht ausgeführt. Sie führen jetzt auch `doCleanups()` aus. Es wurde keine produktive EPG-Funktion verändert oder ein Test übersprungen; vollständigen Wiederholungslauf abwarten. 11 Brandingtests sowie alle 17 PO-Kataloge sind PASS.

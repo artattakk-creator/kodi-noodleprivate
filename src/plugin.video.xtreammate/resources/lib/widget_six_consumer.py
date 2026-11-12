@@ -31,7 +31,7 @@ def block(series,tail):
  for kind,title,cid,target in EXTRAS:
   call=E.Element('include',content='XCMate.SixRows.Row',condition=series[0]['attrs'].get('condition','true'))
   custom=dict(values,widgetid=str(cid),widgetName=title,widgetTarget=target,widgetPath='',widgetLimit='6' if kind=='mp3' else '24',widgetSortBy='',widgetSortOrder='',xcmateKind=kind,
-   up75='$INFO[Window(Home).Property(XCMate.SixRows.'+kind+'.Up)]',down75='$INFO[Window(Home).Property(XCMate.SixRows.'+kind+'.Down)]',xcmateTail=tail)
+   up75='SetFocus($INFO[Window(Home).Property(XCMate.SixRows.'+kind+'.Up)])',down75='SetFocus($INFO[Window(Home).Property(XCMate.SixRows.'+kind+'.Down)])',xcmateTail=tail)
   for name,value in custom.items():E.SubElement(call,'param',name=name,value=value)
   parts.append(E.tostring(call,encoding='utf-8'))
  return BEGIN+b''.join(parts)+END
@@ -41,7 +41,7 @@ def patch(data):
  roots=own_groups(data)
  if len(roots)!=1:return data
  _,group=roots[0];series=group['series'];node,values=series
- directional='$INFO[Window(Home).Property(XCMate.SixRows.series.Down)]'
+ directional='SetFocus($INFO[Window(Home).Property(XCMate.SixRows.series.Down)])'
  existing=data.count(BEGIN)
  if existing:
   if existing!=1 or data.count(END)!=1:raise ValueError('SIX_ROWS_UNVERIFIED')

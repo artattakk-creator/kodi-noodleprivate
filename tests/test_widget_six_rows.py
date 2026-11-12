@@ -132,7 +132,8 @@ class SixRows(Fixture50,unittest.TestCase):
    self.assertEqual(widget_six_skin.upgrade(files),files)
    bad=dict(files);bad['xml/IncludesHomeWidgets.xml']=bad['xml/IncludesHomeWidgets.xml'].replace(b'name="XCMate.SixRows.Cards"><left>130',b'name="XCMate.SixRows.Cards"><left>131')
    with self.assertRaises(ValueError):widget_six_skin.upgrade(bad)
-  finally:instance.tearDown()
+  finally:
+   instance.tearDown();instance.doCleanups()
 
  def test_native_last_good_items_are_not_mistaken_for_a_new_directory_ack(self):
   from widget_six_runtime import step
@@ -174,4 +175,5 @@ class SixRows(Fixture50,unittest.TestCase):
    # The visible body is admitted by explicit state, not by NumItems which
    # would prevent a cold native directory from ever being consumed.
    self.assertNotIn('NumItems',body.findtext('visible'))
-  finally:instance.tearDown()
+  finally:
+   instance.tearDown();instance.doCleanups()
