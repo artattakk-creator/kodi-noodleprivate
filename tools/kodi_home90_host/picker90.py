@@ -61,11 +61,12 @@ def manager():
   names90=[xbmc.getInfoLabel('Container(211).ListItemAbsolute('+str(i)+').Label') for i in range(int(xbmc.getInfoLabel('Container(211).NumItems') or 0))]
   try:
    position90=home_position90(names90)
-   dialog90=xbmcgui.Window(xbmcgui.getCurrentWindowDialogId())
+   manager_window437=xbmcgui.getCurrentWindowDialogId()
+   dialog90=xbmcgui.Window(manager_window437)
    control90=dialog90.getControl(211)
    dialog90.setFocusId(211);control90.selectItem(position90)
   except RuntimeError:return False
-  manager_ids437[id(dialog90)]=xbmcgui.getCurrentWindowDialogId()
+  manager_ids437[id(dialog90)]=manager_window437
   owner90[:]=[dialog90];return True
  until(home_ready90,'PICKER90_MANAGER_HOME_NOT_READY')
  xbmc.sleep(200);return owner90[0]
