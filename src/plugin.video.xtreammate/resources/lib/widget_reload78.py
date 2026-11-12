@@ -7,7 +7,7 @@ import html,os,re
 from pathlib import Path
 from urllib.parse import urlsplit,parse_qs
 
-def candidate(data,layout80=False):
+def candidate(data,layout80=False,six_rows=False):
     from widget_skin50 import spans,edit
     from navigation_builtin78 import uri
     uri=directory_uri89
@@ -48,7 +48,8 @@ def candidate(data,layout80=False):
             new,count=re.subn(rb'\bvalue="[^"]*"',lambda m:('value="'+html.escape(url,quote=True)+'"').encode(),old,count=1)
             if count!=1:raise ValueError('UNVERIFIED_TEMPLATE')
             changes.append((start,end,new))
-    return edit(data,changes) if changes else data
+    result=edit(data,changes) if changes else data
+    return __import__('widget_six_consumer').patch(result) if layout80 and six_rows else result
 
 def repair(profile,skin):
     from widget_transaction50 import read,replace,sha
@@ -57,7 +58,8 @@ def repair(profile,skin):
     if not target.exists():return False
     original=read(target)
     marker80=Path(skin)/'xml/IncludesVariables.xml'
-    changed=candidate(original,layout80=marker80.is_file() and b'XCMate80.Contract' in read(marker80))
+    markers=read(marker80) if marker80.is_file() else b''
+    changed=candidate(original,layout80=b'XCMate80.Contract' in markers,six_rows=b'XCMate.SixRows.Contract' in markers)
     if changed==original:return False
     snapshot(profile,skin)
     replace(target,changed,sha(original),target.stat().st_mode&0o777)

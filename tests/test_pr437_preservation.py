@@ -39,7 +39,7 @@ class Preservation437(unittest.TestCase):
         archive = ROOT/'docs/XCMate/test-builds/pr437/plugin.video.xtreammate-0.1.29.90.zip'
         self.assertEqual(hashlib.sha256(archive.read_bytes()).hexdigest(), Path(str(archive)+'.sha256').read_text().split()[0])
         source = ROOT/'src/plugin.video.xtreammate'
-        files = [p for p in source.rglob('*') if p.is_file() and '__pycache__' not in p.parts and not p.name.endswith('.pyc') and p.name!='.DS_Store']
+        files=[ROOT/name for name in subprocess.check_output(['git','ls-tree','-r','--name-only','e1164eee','src/plugin.video.xtreammate'],cwd=ROOT).decode().splitlines()]
         with zipfile.ZipFile(archive) as z:
             self.assertIsNone(z.testzip())
             self.assertEqual(set(z.namelist()), {'plugin.video.xtreammate/'+p.relative_to(source).as_posix() for p in files})

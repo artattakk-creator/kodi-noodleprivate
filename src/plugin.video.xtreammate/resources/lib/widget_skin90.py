@@ -12,7 +12,7 @@ TARGETS={'widget_header_multi':'String.IsEqual(Skin.String(HomeLayout),bingie)',
 MEDIA_ROW_SHA='7480de9f92b11e973021acd9e971ccd2582b7c10e9b54ee36dbeb5b241f92679'
 SPINNER_SHA='908ef49af8ef38afc70c66286162c67efd8d73fc70dafed5fc6c5b95dc602533'
 
-def media_spinners(header):
+def media_spinners(header,kinds=None):
  """Reuse the verified upstream animation inside our hidden-header rows.
 
  The existing Home85 worker status owns the 60-second deadline. Native
@@ -23,21 +23,23 @@ def media_spinners(header):
  originals=header.findall(".//control[@type='multiimage']")
  if len(originals)!=1 or digest(originals[0])!=SPINNER_SHA:raise ValueError('MEDIA_SPINNER_UNVERIFIED')
  result=[]
- for prefix,kind,action in (('85','vod','widget_recent_vod'),('86','series','widget_recent_series')):
+ from widget_six_sources import SPECS
+ for index,(kind,_,_,_) in enumerate(SPECS if kinds is None else SPECS[:kinds]):
+  prefix=str(85+index)
   node=copy.deepcopy(originals[0]);node.set('id',prefix+'$PARAM[widgetid]')
   for child in list(node):
    if child.tag=='include':node.remove(child)
   for tag,text in (('width','24'),('height','24'),('top','2'),('left','0')):node.find(tag).text=text
-  state='Window(Home).Property(XCMate.Home85.'+kind+'.'
+  state='Window(Home).Property('+('XCMate.Home85.' if kind in ('vod','series') else 'XCMate.SixRows.')+kind+'.'
   # Typed caller metadata avoids embedding a clock-bearing directory URL
   # inside a compiled Kodi visibility expression, and works before items.
   owned='[String.IsEqual("$PARAM[xcmateKind]",'+kind+') | String.IsEqual(Container($PARAM[widgetid]).ListItem.Property(XCMate.WidgetKind41),'+kind+')]'
-  loading=' | '.join('String.IsEqual('+state+'State),'+value+')' for value in ('LOADING_CATALOG','LOADING_ART','READY_PARTIAL'))
+  loading=' | '.join('String.IsEqual('+state+'State),'+value+')' for value in ('LOADING_CATALOG','LOADING_ART','READY_PARTIAL','LOADING'))
   node.find('visible').text=owned+' + String.IsEqual('+state+'Busy),true) + [Container($PARAM[widgetid]).IsUpdating | '+loading+']'
   result.append(node)
  return result
 
-def media_heading(title,header):
+def media_heading(title,header,kinds=None):
  """Let Kodi measure the saved label and place its spinner 12px after it."""
  group=E.Element('control',type='grouplist',id='84$PARAM[widgetid]')
  for tag,text in (('left','130'),('top','0'),('width','756'),('height','26'),
@@ -45,7 +47,7 @@ def media_heading(title,header):
   E.SubElement(group,tag).text=text
  label=copy.deepcopy(title);label.find('left').text='0'
  width=label.find('width');width.text='auto';width.set('min','1');width.set('max','720')
- group.append(label);group.extend(media_spinners(header))
+ group.append(label);group.extend(media_spinners(header,kinds))
  return group
 
 def original_media_row(row,header):
@@ -63,7 +65,12 @@ def original_media_row(row,header):
   if len(titles)!=1:raise ValueError('MEDIA_SPINNER_UNVERIFIED')
   title=copy.deepcopy(titles[0]);title.find('left').text='130'
   title.find('width').text='720';title.find('width').attrib.clear()
-  if digest(heading)!=digest(media_heading(title,header)):raise ValueError('MEDIA_SPINNER_UNVERIFIED')
+  if digest(heading) not in (digest(media_heading(title,header)),digest(media_heading(title,header,2))):
+   # The first reviewed two-row variant had no generic LOADING phase.
+   legacy=media_heading(title,header,2)
+   for spinner in legacy.findall("control[@type='multiimage']"):
+    condition=spinner.find('visible');condition.text=condition.text.replace(' | String.IsEqual(Window(Home).Property(XCMate.Home85.vod.State),LOADING)','').replace(' | String.IsEqual(Window(Home).Property(XCMate.Home85.series.State),LOADING)','')
+   if digest(heading)!=digest(legacy):raise ValueError('MEDIA_SPINNER_UNVERIFIED')
   position=list(group).index(heading);group.remove(heading);group.insert(position,title)
  if digest(original)!=MEDIA_ROW_SHA:raise ValueError('MEDIA_SPINNER_UNVERIFIED')
  return original
@@ -149,13 +156,17 @@ def upgrade(files):
  # the native list. The verified generated caller supplies xcmateKind.
  declared=row.find("param[@name='xcmateKind']")
  if declared is not None:row.remove(declared)
- missing=not group.findall("control[@id='84$PARAM[widgetid]']")
+ headings=group.findall("control[@id='84$PARAM[widgetid]']")
+ missing=not headings or len(headings[0].findall("control[@type='multiimage']"))!=6
  if declared is not None or missing:
   if missing:
-   title=group.find("control[@type='label']");position=list(group).index(title)
-   group.remove(title);group.insert(position,media_heading(title,header))
+   if headings:
+    position=list(group).index(headings[0]);title=original_media_row(row,header).find("control/control[@type='label']");group.remove(headings[0])
+   else:
+    title=group.find("control[@type='label']");position=list(group).index(title);group.remove(title)
+   group.insert(position,media_heading(title,header))
   result[name]=edit(result[name],[(n['start'],end,E.tostring(row,encoding='utf-8'))])
- return result
+ return __import__('widget_six_skin').upgrade(result)
 
 def verify(files):
  return upgrade(files)==files

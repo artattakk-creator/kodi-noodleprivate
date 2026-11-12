@@ -35,3 +35,7 @@ Die Übergabe verlangt ausdrücklich: **„Keine neuen großen Architekturbauste
 ## Nächste echte Abnahme
 
 Box B: Native 1510/1520/1530, Überschriften und reale Cover, Fokus und Klick, je Reihe Laden/leer/Fehler/Timeout, drei Kaltstarts, Skinreload und Player-Rückkehr. Danach separat sechs Reihen mit bestätigten Quellen, Defaultanordnung und geschützten Benutzeranpassungen abnehmen. Alle Gerätefälle sind bis dahin NOT_TESTED. Box A bleibt unangetastet.
+
+## Fortsetzung nach der verbindlichen Sechs-Reihen-Ergänzung
+
+Die vorherige Einschränkung auf zwei implementierte Reihen ist überholt: Draft #438 ergänzt nun den gemeinsamen Header/Spinner und die vier zusätzlichen privaten Consumer für Im Kino, Disney, Diese Woche im Trend und MP3s. Bestehende Quellpfade werden read-only geprüft und bleiben gespeichert unverändert. Aktueller Umsetzungs-/Teststand und die Einzel-Abnahmematrix stehen in `SIX_ROWS_TESTBERICHT_2026-11-12_DE.md`. Externe Dienste und Android sind weiterhin nicht abgenommen; EPG/GC/Exit bleiben als eigenständige Masteraufgaben offen. Kein Merge/Release.

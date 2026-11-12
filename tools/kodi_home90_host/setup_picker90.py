@@ -12,3 +12,9 @@ for addon in ('script.module.unidecode','script.module.simpleeval'):
 script=root/'script.xcmate.picker90';script.mkdir(exist_ok=True)
 (script/'addon.xml').write_text('<addon id="script.xcmate.picker90" name="Native picker observer" version="1.0.0" provider-name="Test"><requires><import addon="xbmc.python" version="3.0.1"/></requires><extension point="xbmc.python.script" library="main.py"/></addon>')
 (script/'main.py').write_text("import runpy,traceback,gc,sys\nfrom pathlib import Path\nsys.path.insert(0,'/')\ntry:\n if Path('/root/picker90-cycle.txt').exists():\n  from picker_check90 import run\n  run(int(Path('/root/picker90-cycle.txt').read_text()))\n else:runpy.run_path('/picker90.py',run_name='__main__')\n gc.collect();Path('/root/picker90-returned').write_text('RETURNED')\nexcept Exception:Path('/root/picker90-error.txt').write_text(traceback.format_exc());raise\n")
+
+# Disposable renderer-only sources; no credentials or real remote requests.
+import sys
+sys.path.insert(0,'/')
+from six_rows438 import install as install_six438
+install_six438()

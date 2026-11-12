@@ -27,11 +27,11 @@ class MediaSpinner(Fixture50, unittest.TestCase):
         native = header.find(".//control[@type='multiimage']")
         row = root.find("include[@name='XCMate80.MediaRow']")
         spinners = row.findall("control/control[@type='grouplist']/control[@type='multiimage']")
-        self.assertEqual(len(spinners), 2)
-        for kind, spinner in zip(('vod','series'), spinners):
+        self.assertEqual(len(spinners), 6)
+        for kind, spinner in zip(('vod','series','cinema','disney','trend','mp3'), spinners):
             for tag in ('imagepath','timeperimage','fadetime','colordiffuse','aspectratio'):
                 self.assertEqual(spinner.findtext(tag), native.findtext(tag))
-            self.assertIn('XCMate.Home85.'+kind+'.Busy),true)', spinner.findtext('visible'))
+            self.assertIn(('XCMate.Home85.' if kind in ('vod','series') else 'XCMate.SixRows.')+kind+'.Busy),true)', spinner.findtext('visible'))
             self.assertIn('Container($PARAM[widgetid]).IsUpdating', spinner.findtext('visible'))
             self.assertFalse(spinner.findall('onclick'))
         self.assertEqual(widget_skin90.upgrade(files), files)
@@ -60,10 +60,21 @@ class MediaSpinner(Fixture50, unittest.TestCase):
         actual_row = root.find("include[@name='XCMate80.MediaRow']")
         root.insert(list(root).index(actual_row), original)
         root.remove(actual_row)
+        import widget_six_skin
+        for node in widget_six_skin.definitions(files):
+            actual=root.find("include[@name='"+node.get('name')+"']")
+            self.assertEqual(widget_skin80.digest(actual),widget_skin80.digest(node))
+            root.remove(actual)
         self.assertEqual(E.tostring(root), E.tostring(widget_skin78.parse(baseline['xml/IncludesHomeWidgets.xml'])))
         for name in files:
             if name!='xml/IncludesHomeWidgets.xml':
-                self.assertEqual(files[name], baseline[name], name)
+                if name=='xml/IncludesVariables.xml':
+                    registry=widget_skin78.parse(files[name])
+                    for node in widget_six_skin.variables():
+                        actual=registry.find("variable[@name='"+node.get('name')+"']")
+                        self.assertEqual(widget_skin80.digest(actual),widget_skin80.digest(node));registry.remove(actual)
+                    self.assertEqual(E.tostring(registry),E.tostring(widget_skin78.parse(baseline[name])))
+                else:self.assertEqual(files[name], baseline[name], name)
         self.assertEqual(self.prop.read_text(), repr(self.saved).replace('],','],\n'))
 
     def test_animation_fits_between_title_and_status_above_the_cover(self):

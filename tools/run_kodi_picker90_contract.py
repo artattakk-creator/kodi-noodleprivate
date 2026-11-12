@@ -25,7 +25,7 @@ def main():
  (report/'start.sh').write_text(start)
  base=root/'tools/kodi_home84_host';helper=root/'tools/kodi_home90_host'
  mounts=[(root/'tools/kodi_home74_host','/work'),(root/'src/plugin.video.xtreammate','/xcmate'),(pristine/'skin.titan.bingie.mod','/skin'),(candidate,'/candidate'),(base/'fixture84.py','/fixture84.py'),(root/'tools/kodi_home86_host/tls86.py','/work/tls69.py'),(helper/'skin_picker90.py','/work/skin_fixture66.py'),(root/'tools/kodi_home74_host/skin_fixture66.py','/base_skin78.py'),(helper/'setup_picker90.py','/setup_picker90.py'),(helper/'picker90.py','/picker90.py'),(helper/'probe_picker90.py','/work/probe.py'),(root/'online-test/script.skinshortcuts/script.skinshortcuts-2.1.0.zip','/skinshortcuts90.zip'),(report/'start.sh','/work/start.sh')]
- mounts.extend([(helper/'diagnostic_picker90.py','/diagnostic_picker90.py'),(helper/'picker_check90.py','/picker_check90.py'),(base/'fixture84.py','/base_fixture84.py')])
+ mounts.extend([(helper/'diagnostic_picker90.py','/diagnostic_picker90.py'),(helper/'picker_check90.py','/picker_check90.py'),(helper/'six_rows438.py','/six_rows438.py'),(base/'fixture84.py','/base_fixture84.py')])
  mounts=[(helper/'fixture_picker90.py',target) if target=='/fixture84.py' else (source,target) for source,target in mounts]
  cmd=['run','-d','--name',name]
  for source,target in mounts:cmd+=['--mount','type=bind,src='+str(source)+',dst='+target+',readonly']
@@ -41,7 +41,9 @@ def main():
   for cycle90 in range(4):
    files90.append(('/root/picker90-cold-'+str(cycle90)+'.json','picker90-cold-'+str(cycle90)+'.json'))
    for kind90 in ('live','vod','series','diagnostic'):files90.append(('/root/picker90-home-'+str(cycle90)+'-'+kind90+'.png','picker90-home-'+str(cycle90)+'-'+kind90+'.png'))
-  for kind438 in ('vod','series'):
+  files90.append(('/root/picker90-six438.json','picker90-six438.json'))
+  for kind438 in ('cinema','disney','trend','mp3'):files90.append(('/root/picker90-six438-'+kind438+'.png','picker90-six438-'+kind438+'.png'))
+  for kind438 in ('vod','series','cinema','disney','trend','mp3'):
    for frame438 in range(4):
     name438='picker90-spinner438-'+kind438+'-'+str(frame438)+'.png';files90.append(('/root/'+name438,name438))
   for source,target in files90:subprocess.run(docker+['cp',name+':'+source,str(report/target)],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)

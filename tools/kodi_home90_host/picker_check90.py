@@ -15,7 +15,7 @@ def home_position90(labels):
 def service_poll90():
  __import__('hero_epg63').poll();__import__('widget_notice46').poll()
 
-def spinner_receipts438(home,bindings):
+def spinner_receipts438(home,bindings,kinds=None):
  """Native animation/visibility under explicit UI-state fault injection.
 
  This tests the real texture and renderer. Actual queue ownership/deadlines
@@ -24,9 +24,11 @@ def spinner_receipts438(home,bindings):
  """
  from PIL import ImageChops
  receipts=[]
- for kind,prefix in (('vod',85),('series',86)):
+ from widget_six_sources import SPECS
+ for kind,prefix in [(r[0],85+i) for i,r in enumerate(SPECS) if r[0] in (kinds or ('vod','series'))]:
   cid=bindings[kind];spinner=int(str(prefix)+str(cid))
-  keys=['XCMate.Home85.'+kind+'.'+field for field in ('Busy','State','Text')]
+  namespace='XCMate.Home85.' if kind in ('vod','series') else 'XCMate.SixRows.'
+  keys=[namespace+kind+'.'+field for field in ('Busy','State','Text')]
   saved={key:home.getProperty(key) for key in keys}
   if home.getFocusId()!=cid:
    xbmc.executebuiltin('Action('+('Up' if kind=='vod' else 'Down')+')',wait=False)
@@ -44,7 +46,7 @@ def spinner_receipts438(home,bindings):
    raise RuntimeError('SPINNER438_SCREENSHOT_NOT_READY')
   _,baseline438=frame438('picker90-spinner438-'+kind+'-baseline')
   try:
-   home.setProperty(keys[0],'true');home.setProperty(keys[1],'LOADING_ART');home.setProperty(keys[2],'Wird geladen …')
+   home.setProperty(keys[0],'true');home.setProperty(keys[1],'LOADING_ART' if kind in ('vod','series') else 'LOADING');home.setProperty(keys[2],'Wird geladen …')
    frames=[];files=[]
    deadline=time.monotonic()+3
    while not xbmc.getCondVisibility('Control.IsVisible('+str(spinner)+')') and time.monotonic()<deadline:xbmc.sleep(50)
@@ -119,6 +121,10 @@ def run(cycle):
     if thread90 and thread90 is not threading.current_thread():thread90.join(5)
    if any(t and t.is_alive() for t in threads90):raise RuntimeError('PICKER90_WORKER_DID_NOT_STOP '+module90)
 
+def home_activation_pending438():
+ value=json.loads(xbmcgui.Window(10000).getProperty('XCMate.Home78.Activation') or '{}')
+ return bool(value and value.get('phase')!='RUNTIME_READY' or xbmcgui.Window(10000).getProperty('skinshortcuts-isrunning'))
+
 def check90(cycle,errors):
  def check(value,reason):
   if not value:raise RuntimeError(str(reason))
@@ -174,6 +180,9 @@ def check90(cycle,errors):
    check(len(media437)==1,('CLOCK437_MEDIA_CONVERSION_MISSING',kind))
    check(all(n is media437[0] or n.get('content')=='XCMate50.LiveRow' and '[false]' in n.get('condition','') for n in consumers),('CLOCK437_UNEXPECTED_DUPLICATE_CONSUMER',kind))
  until(lambda:xbmcgui.getCurrentWindowId()==10000 and xbmcgui.getCurrentWindowDialogId() in (0,-1,9999),'PICKER90_NATIVE_HOME_NOT_READY')
+ # A cold process can still complete its existing guarded consumer reload.
+ # Do not race that legitimate activation with synthetic focus assertions.
+ until(lambda:not home_activation_pending438(), 'PICKER90_COLD_ACTIVATION_PENDING')
  home=xbmcgui.Window(10000);home.setFocusId(900)
  selection90=[]
  def home_ready90():
@@ -211,11 +220,12 @@ def check90(cycle,errors):
    try:__import__('diagnostic_picker90').run(('PICKER90_NATIVE_PIXELS_MISSING',kind,cid,pixels),service_poll90)
    except Exception as error90:Path('/root/picker90-experiment-error.txt').write_text(type(error90).__name__+': '+str(error90))
   check(pixels>1500,('PICKER90_NATIVE_PIXELS_MISSING',kind,cid,pixels))
-  check(home.getFocusId()==cid,('PICKER90_NATIVE_FOCUS_LOST',kind))
+  check(home.getFocusId()==cid,('PICKER90_NATIVE_FOCUS_LOST',kind,home.getFocusId(),home.getProperty('XCMate.Home78.Activation')))
   cases.append(dict(kind=kind,control=cid,rows=total,pixels=pixels,screenshot=picture.name))
  spinners438=spinner_receipts438(home,bindings) if cycle==0 and hasattr(__import__('widget_skin90'),'media_spinners') else []
+ six438=__import__('six_rows438').run(home,bindings,spinner_receipts438,service_poll90) if cycle==0 else None
  rows=ast.literal_eval(props.read_text(encoding='utf-8'));foreign=[r for r in rows if r[2].startswith('widgetPath') and 'plugin://script.skin.helper.widgets/' in r[3]]
  check(len(foreign)>=2 and foreign==before['foreign_paths'],'PICKER90_FOREIGN_DEFINITIONS_CHANGED')
  check(hashlib.sha256(props.read_bytes()).hexdigest()==before['properties_sha256'],'PICKER90_NATIVE_REFRESH_CHANGED_PROPERTIES')
- report=dict(status='PASS',cycle=cycle,native_cases=cases,native_spinner438=spinners438,foreign_definitions=len(foreign),properties_sha256=before['properties_sha256'],original_compiler_sha256=hashlib.sha256(tree.read_bytes()).hexdigest(),android='ANDROID_NOT_TESTED')
+ report=dict(status='PASS',cycle=cycle,native_cases=cases,native_spinner438=spinners438,six_rows438=six438,foreign_definitions=len(foreign),properties_sha256=before['properties_sha256'],original_compiler_sha256=hashlib.sha256(tree.read_bytes()).hexdigest(),android='ANDROID_NOT_TESTED')
  Path('/root/picker90-cold-'+str(cycle)+'.json').write_text(json.dumps(report,indent=2));print('PICKER90_COLD '+json.dumps(report),flush=True);return report
