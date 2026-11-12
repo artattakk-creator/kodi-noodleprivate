@@ -15,7 +15,7 @@ EXTRAS=SPECS[2:]
 CORE={'widget_live_start_group':'live','widget_recent_vod':'vod','widget_recent_series':'series'}
 HELPER='plugin.video.themoviedb.helper'
 AUDIO='plugin.audio.m3sr2019'
-RELOAD=re.compile(r'\$INFO\[Window\((?:Home|10000)\)\.Property\((widgetreload(?:2|movies|tvshows)?)\)\]')
+RELOAD=re.compile(r'\$INFO\[Window\((?:Home|10000)\)\.Property\((widgetreload(?:2|movies|tvshows)?|TMDbHelper\.Widgets\.Reload)\)\]')
 HELPER_KEYS={'info','tmdb_type','reload','widget','with_id','with_watch_providers','watch_region','region',
  'with_watch_monetization_types','with_genres','with_networks','with_companies','sort_by','language','page',
  'limit','include_adult','with_original_language','year','primary_release_year','first_air_date_year'}
@@ -26,6 +26,7 @@ def uri(value,kind):
  checked=RELOAD.sub('reload',value)
  if '$' in checked or any(c in checked for c in ('(',')','[',']')):raise ValueError('SOURCE_URI_REJECTED')
  p=urlsplit(value);q=parse_qs(p.query,keep_blank_values=True)
+ if any('$' in v and (k!='reload' or not RELOAD.fullmatch(v)) for k,values in q.items() for v in values):raise ValueError('SOURCE_URI_REJECTED')
  if any(any(ord(c)<32 for c in v) or any(c in v for c in ('\"',"'",'\\')) for values in q.values() for v in values):raise ValueError('SOURCE_URI_REJECTED')
  if p.scheme!='plugin' or p.fragment or p.netloc not in (HELPER,AUDIO) or any(len(v)!=1 for v in q.values()):raise ValueError('SOURCE_URI_REJECTED')
  if kind=='mp3':
@@ -43,10 +44,13 @@ def uri(value,kind):
   if kind not in ('cinema','trend','disney'):raise ValueError('SOURCE_KIND_REJECTED')
  return value
 
-def runtime_uri(value,kind):
+def runtime_uri(value,kind,reload_value=lambda name:'xcmate-six-static'):
  """Resolve only inert refresh labels; never pulse the shared reload hook."""
  value=uri(value,kind);p=urlsplit(value)
- pairs=[(k,RELOAD.sub('xcmate-six-static',v)) for k,v in parse_qsl(p.query,keep_blank_values=True)]
+ def replace(match):
+  value=reload_value(match.group(1))
+  return value if isinstance(value,str) and len(value)<=128 else ''
+ pairs=[(k,RELOAD.sub(replace,v)) for k,v in parse_qsl(p.query,keep_blank_values=True)]
  return urlunsplit((p.scheme,p.netloc,p.path,urlencode(pairs),''))
 
 def menu_audio(profile):
@@ -64,7 +68,7 @@ def menu_audio(profile):
    except ValueError:continue
  return None
 
-def discover(profile,pid,enabled=lambda addon:False):
+def discover(profile,pid,enabled=lambda addon:False,reload_value=lambda name:'xcmate-six-static'):
  from widget_inventory87 import widgets
  from widget_reload78 import directory_uri89
  rows=widgets(profile);groups={}
@@ -86,8 +90,9 @@ def discover(profile,pid,enabled=lambda addon:False):
    if value:choices.append(value)
   choices=list(dict.fromkeys(choices));addon=AUDIO if kind=='mp3' else HELPER
   code='SOURCE_NOT_CONFIGURED' if not choices else 'SOURCE_AMBIGUOUS' if len(choices)>1 else 'SOURCE_UNAVAILABLE' if not enabled(addon) else 'WAITING'
-  result['sources'][kind]={'kind':kind,'title':title,'cid':cid,'target':target,'code':code,'uri':runtime_uri(choices[0],kind) if len(choices)==1 and code=='WAITING' else '',
-   'source_hash':hashlib.sha256(choices[0].encode()).hexdigest() if len(choices)==1 else '', 'addon':addon}
+  resolved=runtime_uri(choices[0],kind,reload_value) if len(choices)==1 else ''
+  result['sources'][kind]={'kind':kind,'title':title,'cid':cid,'target':target,'code':code,'uri':resolved if code=='WAITING' else '',
+   'source_hash':hashlib.sha256(resolved.encode()).hexdigest() if len(choices)==1 else '', 'addon':addon}
  return result
 
 def public_summary(plan):

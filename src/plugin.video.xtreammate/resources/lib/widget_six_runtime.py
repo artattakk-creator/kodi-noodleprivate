@@ -17,7 +17,7 @@ def prepare(portals):
  now=time.monotonic()
  if now<_next:return
  _next=now+5
- import xbmc,xbmcvfs
+ import xbmc,xbmcvfs,xbmcgui
  if xbmc.getSkinDir()!='skin.titan.bingie.mod':return
  from widget_transaction50 import read
  from widget_six_consumer import runtime_binding
@@ -27,7 +27,8 @@ def prepare(portals):
  def stat(path):
   try:s=path.stat();return (str(path),s.st_mtime_ns,s.st_size)
   except OSError:return (str(path),None,None)
- stamp=(str(profile),stat(target),tuple(stat(p) for p in sorted((profile/'addon_data/script.skinshortcuts').glob('*.properties'))),tuple(stat(p) for p in sorted((profile/'addon_data/script.skinshortcuts').glob('*-mainmenu.DATA.xml'))),int(now//60))
+ reloads=tuple((name,xbmcgui.Window(10000).getProperty(name)) for name in ('widgetreload','widgetreload2','widgetreloadmovies','widgetreloadtvshows','TMDbHelper.Widgets.Reload'))
+ stamp=(str(profile),reloads,stat(target),tuple(stat(p) for p in sorted((profile/'addon_data/script.skinshortcuts').glob('*.properties'))),tuple(stat(p) for p in sorted((profile/'addon_data/script.skinshortcuts').glob('*-mainmenu.DATA.xml'))),int(now//60))
  if stamp==_stamp:return
  if not target.is_file():return
  binding=runtime_binding(read(target))
@@ -46,7 +47,7 @@ def prepare(portals):
     checked[addon]=reply.get('result',{}).get('addon',{}).get('enabled') is True
    except (ValueError,TypeError,RuntimeError):checked[addon]=False
   return checked[addon]
- plan=discover(profile,eligible[0]['id'],enabled)
+ plan=discover(profile,eligible[0]['id'],enabled,dict(reloads).get)
  if plan['code']!='READY':return
  plan.update(binding=binding,scope=(str(profile),str(eligible[0]['id'])),profile_scope=__import__('epg_handoff63').profile_scope())
  with _lock:_plan=plan;_stamp=stamp
@@ -101,7 +102,7 @@ def poll():
  # series have been prepared. No second catalogue/artwork warmup is created.
  _rows=step(_rows,plan['sources'],observed,time.monotonic(),rest_allowed())
  for kind,row in _rows.items():
-  for field,value in (('State',row['state']),('Busy','true' if row['state']=='LOADING' else ''),('Text',TEXT.get(row['state'],'')),('Path',row['path'])):
+  for field,value in (('State',row['state']),('Busy','true' if row['state']=='LOADING' else ''),('Text',TEXT.get(row['state'],'')),('Path',row['path']),('Expanded','true' if row['state']=='LOADING' or observed[kind][0]>0 else '')):
    key=PREFIX+kind+'.'+field
    if home.getProperty(key)!=value:home.setProperty(key,value)
  # Native directional links skip genuinely empty sources; extra headers stay

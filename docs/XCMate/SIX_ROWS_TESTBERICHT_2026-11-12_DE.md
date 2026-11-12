@@ -33,7 +33,7 @@ Definitionen werden ausschließlich über den vorhandenen gesicherten Skin-Trans
 
 ## Prüfstand dieses Commits
 
-- PASS: 16 neue Sechs-Reihen-Tests: reale Quellsemantik, Strict-Allowlist, kein fremder Token, falsche Quelle/Mehrdeutigkeit, Audio-Browse-Schutz, exakte Reihenfolge, private generierte IDs, idempotente Ergänzung, Kollisions-/Manipulationsschutz, sequenzielle Arbeit, Timeout ohne Parallelstart, Leer-/Fehlerzustände, unveränderte Last-good-Inhalte und sechs gemeinsame Header.
+- PASS: 18 neue Sechs-Reihen-Tests: reale Quellsemantik, Strict-Allowlist, kein fremder Token, falsche Quelle/Mehrdeutigkeit, Audio-Browse-Schutz, exakte Reihenfolge, private generierte IDs, idempotente Ergänzung, Kollisions-/Manipulationsschutz, sequenzielle Arbeit, Timeout ohne Parallelstart, Leer-/Fehlerzustände, unveränderte Last-good-Inhalte und sechs gemeinsame Header.
 - PASS: 12 Spinner-/Geometrie-/Pending-/Originaldatei-/ZIP-Tests.
 - PASS: 196 kombinierte Quellen-, clock50-, historische Scope- und Veröffentlichungs-Schutztests, 95,835 Sekunden. Bestehende Testmethoden/Skipbedingungen bleiben erhalten. Historische ZIPs werden gegen ihren exakten historischen Quellbaum geprüft, der neue ZIP gegen sämtliche aktuellen Quellen.
 - Neuer vollständiger CI- und nativer Kodi-Lauf wird für diesen Stand gestartet; Ergebnis nachtragen. Frühere vollständige Host-CI ist grün, ersetzt den neuen Lauf nicht.
@@ -59,4 +59,10 @@ EPG-Vergleich Home/Mini/Groß/Details, Galileo-Bildverlust und manuelle `SAVE_BL
 
 ## Aktuelles Review-Paket
 
-`test-builds/media-spinner/plugin.video.xtreammate-0.1.29.90.zip` – 4.676.278 Bytes, 859 Dateien, CRC und alle Quellbytes geprüft. SHA256: `ec7884a27b498afc943bed8405475993562a1f89c49e8b72a4af7791286cb2f8`.
+`test-builds/media-spinner/plugin.video.xtreammate-0.1.29.90.zip` – 4.676.822 Bytes, 859 Dateien, CRC und alle Quellbytes geprüft. SHA256: `e4e9dfa6899aed4338a0e20184eb2f2f94c442bf3b43f7bff81b06d9e5c322db`.
+
+## Nachprüfung mit echten gespeicherten Pfaden und nativen Pixeln
+
+Der Produktions-Discovery wurde zusätzlich mit einer privaten, nur temporär angelegten Arbeitskopie der tatsächlichen beiden Konfigurationsdateien ausgeführt. Zunächst FAIL für die drei Helper-Quellen: deren reale Reload-Variable heißt `TMDbHelper.Widgets.Reload`. Der Validator akzeptiert nun ausschließlich diese zusätzliche exakte, deklarierte Home-Eigenschaft. Alle vier Zusatzquellen werden danach eindeutig erkannt: PASS für Discovery, ausdrücklich keine Behauptung eines erfolgreichen API-/Audiostream-Aufrufs. Vorhandene Reload-Signale werden read-only übernommen; XCMate pulst den gemeinsamen Hook nicht und verändert keine gespeicherte URL. Eine zusätzliche Regression schützt die echte Macro-Variante.
+
+Nativer Lauf 43249630477 fand in beiden Auflösungen eine reale Layoutregression: Serien hatte 24 Einträge, aber 0 passende Coverpixel, weil vier noch ungefüllte Zusatzreihen jeweils 244 Pixel Höhe beanspruchten und die letzte gefüllte Reihe aus dem Viewport schoben. Diese fehlgeschlagenen Prüfungen bleiben dokumentiert. Die Zusatzreihen zeigen jetzt einen kompakten 26-Pixel-Header bei Wartet/Leer/Fehler. Der volle native Coverbereich wird vor Beginn der konkreten Anfrage freigegeben und bei vorhandenen Einträgen beibehalten. Die Freigabe hängt ausdrücklich nicht an `NumItems`, damit kein neuer Cold-Load-Deadlock entsteht. Alle Header/Spinner verwenden weiterhin dieselbe Komponente. Neue native Prüfung erforderlich; kein Pixel-PASS aus einem XML-Test ableiten.

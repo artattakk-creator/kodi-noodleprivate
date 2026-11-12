@@ -12,7 +12,7 @@ class SixRows(Fixture50,unittest.TestCase):
   rows=[]
   for slot,action,label in (('', 'widget_live_start_group','Live-TV'),('.1','widget_recent_vod','Filme'),('.2','widget_recent_series','Serien')):
    for key,value in [('widgetName',label),('widgetPath','plugin://plugin.video.xtreammate/?action='+action+'&pid=p')]:rows.append(['mainmenu','own-home',key+slot,value])
-  sources=[('movies','', 'Im Kino','plugin://plugin.video.themoviedb.helper/?info=now_playing&tmdb_type=movie&widget=true&reload=$INFO[Window(Home).Property(widgetreloadmovies)]'),('shows','', 'Diese Woche im Trend','plugin://plugin.video.themoviedb.helper/?info=trending_week&tmdb_type=tv'),('shows','.1','Disney Plus','plugin://plugin.video.themoviedb.helper/?info=discover&tmdb_type=movie&with_id=True&with_watch_providers=337&watch_region=DE')]
+  sources=[('movies','', 'Im Kino','plugin://plugin.video.themoviedb.helper/?info=now_playing&tmdb_type=movie&widget=true&reload=$INFO[Window(Home).Property(TMDbHelper.Widgets.Reload)]'),('shows','', 'Diese Woche im Trend','plugin://plugin.video.themoviedb.helper/?info=trending_week&tmdb_type=tv'),('shows','.1','Disney Plus','plugin://plugin.video.themoviedb.helper/?info=discover&tmdb_type=movie&with_id=True&with_watch_providers=337&watch_region=DE')]
   for identity,slot,label,uri in sources:
    rows.extend([['mainmenu',identity,'widgetName'+slot,label],['mainmenu',identity,'widgetPath'+slot,uri]])
   self.prop.write_text(repr(rows))
@@ -151,3 +151,27 @@ class SixRows(Fixture50,unittest.TestCase):
   saved=rows['cinema']['path'];sources['cinema']['code']='SOURCE_UNAVAILABLE';sources['cinema']['uri']=''
   rows=step(rows,sources,observed,102,True)
   self.assertEqual(rows['cinema']['state'],'SOURCE_UNAVAILABLE');self.assertEqual(rows['cinema']['path'],saved)
+
+ def test_real_tmdb_helper_refresh_macro_is_observed_without_pulsing_global_hooks(self):
+  from widget_six_sources import discover
+  self.source_records();before=self.prop.read_bytes()
+  first=discover(self.profile,'p',lambda addon:True,lambda name:'refresh-1')
+  second=discover(self.profile,'p',lambda addon:True,lambda name:'refresh-2')
+  self.assertIn('reload=refresh-1',first['sources']['cinema']['uri'])
+  self.assertNotEqual(first['sources']['cinema']['source_hash'],second['sources']['cinema']['source_hash'])
+  self.assertEqual(before,self.prop.read_bytes())
+
+ def test_waiting_empty_headers_do_not_push_the_last_populated_row_offscreen(self):
+  instance=spinner_fixture.MediaSpinner();instance.setUp()
+  try:
+   root=E.fromstring(instance.graph()['xml/IncludesHomeWidgets.xml'])
+   row=root.find("include[@name='XCMate.SixRows.Row']")
+   body,compact=row.findall('control')
+   self.assertEqual((body.findtext('height'),compact.findtext('height')),('244','26'))
+   self.assertIn('.Expanded),true)',body.findtext('visible'))
+   self.assertIn('!String.IsEqual',compact.findtext('visible'))
+   self.assertIsNotNone(compact.find("control[@type='grouplist']/control[@type='label']"))
+   # The visible body is admitted by explicit state, not by NumItems which
+   # would prevent a cold native directory from ever being consumed.
+   self.assertNotIn('NumItems',body.findtext('visible'))
+  finally:instance.tearDown()

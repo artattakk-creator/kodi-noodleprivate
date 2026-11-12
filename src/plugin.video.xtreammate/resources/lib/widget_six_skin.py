@@ -13,10 +13,24 @@ def definitions(files):
  root=parse(files['xml/IncludesHomeWidgets.xml'])
  row=copy.deepcopy(root.find("include[@name='XCMate80.MediaRow']"));row.set('name',PREFIX+'Row')
  group=row.find('control')
+ base_visibility=group.find('visible').text
+ expanded='String.IsEqual(Window(Home).Property(XCMate.SixRows.$PARAM[xcmateKind].Expanded),true)'
+ group.find('visible').text='['+base_visibility+'] + '+expanded
+ # Empty/waiting rows retain their real heading, but cannot reserve 244px
+ # and make Kodi scroll the final populated row out of the viewport. The
+ # expanded native consumer is admitted BEFORE starting its DirectoryProvider.
+ compact=E.Element('control',type='group',id='76$PARAM[widgetid]')
+ for tag,text in (('height','26'),('width','1920'),('left','140'),('visible','['+base_visibility+'] + !'+expanded)):E.SubElement(compact,tag).text=text
+ heading=copy.deepcopy(group.find("control[@type='grouplist']"))
+ for node in heading.iter('control'):
+  ident=node.get('id')
+  if ident:node.set('id',str(int(ident.split('$')[0])+10)+'$PARAM[widgetid]')
+ compact.append(heading);row.append(compact)
  # Same measured title and original animated spinner for all six kinds.
  for label in list(group.findall("control[@type='label']")):group.remove(label)
  status=E.SubElement(group,'control',type='label')
  for tag,text in (('left','900'),('top','2'),('width','860'),('height','24'),('font','Reg18'),('textcolor','FFBCC7D2'),('label','$INFO[Window(Home).Property(XCMate.SixRows.$PARAM[xcmateKind].Text)]')):E.SubElement(status,tag).text=text
+ compact.append(copy.deepcopy(status))
  call=group.find("control[@type='group']/include");call.set('content',PREFIX+'Base')
  base=copy.deepcopy(root.find("include[@name='XCMate80.NativeMediaBase']"));base.set('name',PREFIX+'Base')
  for inc in base.findall('include'):inc.set('content',PREFIX+'Normal')
