@@ -12,6 +12,14 @@ PREFIX='XCMate.SixRows.'
 TERMINAL={'READY','EMPTY_OR_ERROR','ERROR','TIMEOUT','SOURCE_NOT_CONFIGURED','SOURCE_AMBIGUOUS','SOURCE_UNAVAILABLE'}
 TEXT={'WAITING':'Wartet auf die vorherige Reihe …','LOADING':'Wird geladen …','READY':'','EMPTY_OR_ERROR':'Keine Einträge · Quelle bei Bedarf prüfen','ERROR':'Quelle momentan nicht erreichbar','TIMEOUT':'Quelle antwortet nicht · später erneut öffnen','SOURCE_NOT_CONFIGURED':'Keine passende Quelle eingerichtet','SOURCE_AMBIGUOUS':'Mehrere Quellen eingerichtet · Auswahl prüfen','SOURCE_UNAVAILABLE':'Benötigtes Add-on fehlt oder ist deaktiviert'}
 
+def selected_portal(portals,pid):
+ # Exactly the same preference semantics as the preserved pid-less widget
+ # routes; several enabled providers are not an ambiguous new source choice.
+ if pid:
+  rows=[p for p in portals if str(p['id'])==pid and p.get('enabled',True)]
+  return rows[0] if len(rows)==1 else None
+ return __import__('home_menu').active_portal(portals)
+
 def prepare(portals):
  global _plan,_stamp,_next
  now=time.monotonic()
@@ -28,15 +36,16 @@ def prepare(portals):
   try:s=path.stat();return (str(path),s.st_mtime_ns,s.st_size)
   except OSError:return (str(path),None,None)
  reloads=tuple((name,xbmcgui.Window(10000).getProperty(name)) for name in ('widgetreload','widgetreload2','widgetreloadmovies','widgetreloadtvshows','TMDbHelper.Widgets.Reload'))
- stamp=(str(profile),reloads,stat(target),tuple(stat(p) for p in sorted((profile/'addon_data/script.skinshortcuts').glob('*.properties'))),tuple(stat(p) for p in sorted((profile/'addon_data/script.skinshortcuts').glob('*-mainmenu.DATA.xml'))),int(now//60))
+ portal_stamp=(tuple(str(p['id']) for p in portals),str(__import__('utils').setting('active_portal_id','')))
+ stamp=(str(profile),portal_stamp,reloads,stat(target),tuple(stat(p) for p in sorted((profile/'addon_data/script.skinshortcuts').glob('*.properties'))),tuple(stat(p) for p in sorted((profile/'addon_data/script.skinshortcuts').glob('*-mainmenu.DATA.xml'))),int(now//60))
  if stamp==_stamp:return
  if not target.is_file():return
  binding=runtime_binding(read(target))
  if not binding:
   with _lock:_plan=None
   return
- eligible=[p for p in portals if not binding['pid'] or str(p['id'])==binding['pid']]
- if len(eligible)!=1:
+ selected=selected_portal(portals,binding['pid'])
+ if selected is None:
   with _lock:_plan=None
   return
  checked={}
@@ -47,9 +56,9 @@ def prepare(portals):
     checked[addon]=reply.get('result',{}).get('addon',{}).get('enabled') is True
    except (ValueError,TypeError,RuntimeError):checked[addon]=False
   return checked[addon]
- plan=discover(profile,eligible[0]['id'],enabled,dict(reloads).get)
+ plan=discover(profile,selected['id'],enabled,dict(reloads).get)
  if plan['code']!='READY':return
- plan.update(binding=binding,scope=(str(profile),str(eligible[0]['id'])),profile_scope=__import__('epg_handoff63').profile_scope())
+ plan.update(binding=binding,scope=(str(profile),str(selected['id'])),profile_scope=__import__('epg_handoff63').profile_scope())
  with _lock:_plan=plan;_stamp=stamp
 
 def step(rows,sources,observed,now,admitted):
@@ -102,7 +111,7 @@ def poll():
  # series have been prepared. No second catalogue/artwork warmup is created.
  _rows=step(_rows,plan['sources'],observed,time.monotonic(),rest_allowed())
  for kind,row in _rows.items():
-  for field,value in (('State',row['state']),('Busy','true' if row['state']=='LOADING' else ''),('Text',TEXT.get(row['state'],'')),('Path',row['path']),('Expanded','true' if row['state']=='LOADING' or observed[kind][0]>0 else '')):
+  for field,value in (('Kind',kind),('State',row['state']),('Busy','true' if row['state']=='LOADING' else ''),('Text',TEXT.get(row['state'],'')),('Path',row['path']),('Expanded','true' if row['state']=='LOADING' or observed[kind][0]>0 else '')):
    key=PREFIX+kind+'.'+field
    if home.getProperty(key)!=value:home.setProperty(key,value)
  # Native directional links skip genuinely empty sources; extra headers stay

@@ -109,6 +109,7 @@ class MediaSpinner(Fixture50, unittest.TestCase):
             status = loading.update(self.portal,'vod',[],'WAITING',pending=True)
         self.assertTrue(status['busy'])
         self.assertEqual(status['state'],'LOADING_CATALOG')
+        self.assertEqual(self.properties.get('XCMate.Home85.vod.Kind'),'vod')
         with mock.patch.object(loading,'visible',return_value=[]), mock.patch.object(loading.time,'monotonic',return_value=161):
             expired = loading.update(self.portal,'vod',[],'WAITING',pending=True)
         self.assertFalse(expired['busy'])

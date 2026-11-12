@@ -126,6 +126,7 @@ class SixRows(Fixture50,unittest.TestCase):
     spinners=heading.findall("control[@type='multiimage']");self.assertEqual(len(spinners),6)
     for kind,n in zip(('vod','series','cinema','disney','trend','mp3'),spinners):
      self.assertIn(kind+'.Busy),true)',n.findtext('visible'));self.assertEqual(n.findtext('timeperimage'),'85')
+     self.assertIn('$PARAM[xcmateKind].Kind)',n.findtext('visible'));self.assertNotIn('String.IsEqual("$PARAM',n.findtext('visible'))
      self.assertEqual(n.findtext('width'),'24')
    self.assertIn('XCMate.SixRows.Contract',files['xml/IncludesVariables.xml'].decode())
    import widget_six_skin
@@ -183,3 +184,55 @@ class SixRows(Fixture50,unittest.TestCase):
   for _,_,cid,_ in EXTRAS:
    for prefix in ('75','76','84','85','86','87','88','89','90','94','95','96','97','98','99','100'):
     self.assertLess(int(prefix+str(cid)),1<<24)
+
+ def test_legacy_pidless_sources_use_the_existing_active_portal_preference(self):
+  from widget_six_runtime import selected_portal
+  from home_menu import active_portal
+  portals=[dict(id='first',enabled=True),dict(id='preferred',enabled=True),dict(id='disabled',enabled=False)]
+  self.options['active_portal_id']='preferred'
+  self.assertEqual(selected_portal(portals,''),active_portal(portals))
+  self.assertEqual(selected_portal(portals,'first'),portals[0])
+  self.assertIsNone(selected_portal(portals,'disabled'))
+  self.assertIsNone(selected_portal(portals,'missing'))
+ def test_gui_poll_reads_ram_and_native_labels_without_files_database_network_or_threads(self):
+  import widget_six_runtime as runtime,epg_handoff63,sys
+  sources=self.plan()['sources'];xbmc=sys.modules['xbmc'];gui=sys.modules['xbmcgui']
+  plan=dict(binding=dict(series=1530,tail=1540),scope=('fixture','p'),profile_scope=epg_handoff63.profile_scope(),sources=sources)
+  def label(value):return 'READY' if value=='$VAR[XCMate.SixRows.Contract]' else '0' if value.endswith('.NumItems') else ''
+  with mock.patch.object(runtime,'_plan',plan),mock.patch.object(runtime,'_rows',{}),mock.patch.object(runtime,'_scope',None),mock.patch.object(xbmc,'getInfoLabel',side_effect=label),mock.patch.object(xbmc,'getCondVisibility',return_value=False),mock.patch.object(gui,'getCurrentWindowId',return_value=10000),mock.patch.object(gui,'getCurrentWindowDialogId',return_value=9999),mock.patch('home_schedule75.rest_allowed',return_value=True),mock.patch.object(Path,'stat',side_effect=AssertionError('GUI_DISK_IO')),mock.patch('builtins.open',side_effect=AssertionError('GUI_FILE_IO')),mock.patch('sqlite3.connect',side_effect=AssertionError('GUI_SQLITE_IO')),mock.patch('socket.getaddrinfo',side_effect=AssertionError('GUI_DNS')),mock.patch('threading.Thread',side_effect=AssertionError('GUI_THREAD')):
+   runtime.poll()
+  self.assertEqual(self.properties.get('XCMate.SixRows.cinema.Kind'),'cinema')
+  self.assertEqual(self.properties.get('XCMate.SixRows.cinema.Busy'),'true')
+  self.assertEqual(self.properties.get('XCMate.SixRows.disney.Busy',''),'')
+  self.assertEqual(self.properties.get('XCMate.SixRows.cinema.Expanded'),'true')
+  self.assertEqual(self.properties.get('XCMate.SixRows.disney.Expanded',''),'')
+ def test_retired_profile_plan_cannot_publish_or_start_a_foreign_source(self):
+  import widget_six_runtime as runtime
+  saved=dict(self.properties)
+  with mock.patch.object(runtime,'_plan',dict(profile_scope='another-profile')),mock.patch('epg_handoff63.profile_scope',return_value='current-profile'):
+   runtime.poll()
+  self.assertEqual(self.properties,saved)
+
+ def test_core_spinner_deadline_expires_without_a_running_data_worker(self):
+  import home_loading85 as loading
+  with mock.patch.object(loading,'visible',return_value=[]),mock.patch.object(loading.time,'monotonic',return_value=100):
+   loading.update(self.portal,'vod',[],'WAITING',pending=True)
+  self.assertEqual(self.properties.get('XCMate.Home85.vod.Busy'),'true')
+  with mock.patch.object(loading.time,'monotonic',return_value=161),mock.patch('builtins.open',side_effect=AssertionError('GUI_IO')),mock.patch('sqlite3.connect',side_effect=AssertionError('GUI_DB')):
+   loading.expire()
+  self.assertEqual(self.properties.get('XCMate.Home85.vod.Busy'),'')
+  self.assertEqual(self.properties.get('XCMate.Home85.vod.State'),'ERROR_RETRYABLE')
+ def test_expiry_of_an_old_frame_does_not_cancel_a_new_generation(self):
+  import home_loading85 as loading
+  with mock.patch.object(loading,'visible',return_value=[]),mock.patch.object(loading.time,'monotonic',return_value=100):
+   loading.update(self.portal,'vod',[],'WAITING',pending=True)
+  with mock.patch.object(loading,'visible',side_effect=lambda portal,kind,rows:rows),mock.patch.object(loading.time,'monotonic',return_value=150):
+   loading.update(self.portal,'vod',[dict(sid='new',name='New generation')],'READY',pending=True)
+  with mock.patch.object(loading.time,'monotonic',return_value=161):loading.expire()
+  self.assertEqual(self.properties.get('XCMate.Home85.vod.Busy'),'true')
+ def test_missing_deadline_after_service_restart_cannot_leave_a_forever_spinner(self):
+  import home_loading85 as loading
+  self.properties.update({'XCMate.Home85.series.Busy':'true','XCMate.Home85.series.State':'LOADING_ART'})
+  loading.expire()
+  self.assertEqual(self.properties.get('XCMate.Home85.series.Busy'),'')
+  self.assertEqual(self.properties.get('XCMate.Home85.series.State'),'ERROR_RETRYABLE')

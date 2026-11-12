@@ -28,7 +28,7 @@ def spinner_receipts438(home,bindings,kinds=None):
  for kind,prefix in [(r[0],85+i) for i,r in enumerate(SPECS) if r[0] in (kinds or ('vod','series'))]:
   cid=bindings[kind];spinner=int(str(prefix)+str(cid))
   namespace='XCMate.Home85.' if kind in ('vod','series') else 'XCMate.SixRows.'
-  keys=[namespace+kind+'.'+field for field in ('Busy','State','Text')]
+  keys=[namespace+kind+'.'+field for field in ('Busy','State','Text','Kind','Deadline')]
   saved={key:home.getProperty(key) for key in keys}
   if home.getFocusId()!=cid:
    xbmc.executebuiltin('Action('+('Up' if kind=='vod' else 'Down')+')',wait=False)
@@ -51,7 +51,7 @@ def spinner_receipts438(home,bindings,kinds=None):
   # texture at 720p spans 16 pixels plus at most one raster edge pixel.
   max438=(math.ceil(24*sx438)+1,math.ceil(24*sy438)+1)
   try:
-   home.setProperty(keys[0],'true');home.setProperty(keys[1],'LOADING_ART' if kind in ('vod','series') else 'LOADING');home.setProperty(keys[2],'Wird geladen …')
+   home.setProperty(keys[0],'true');home.setProperty(keys[1],'LOADING_ART' if kind in ('vod','series') else 'LOADING');home.setProperty(keys[2],'Wird geladen …');home.setProperty(keys[3],kind);home.setProperty(keys[4],str(time.monotonic()+60))
    frames=[];files=[]
    deadline=time.monotonic()+3
    while not xbmc.getCondVisibility('Control.IsVisible('+str(spinner)+')') and time.monotonic()<deadline:xbmc.sleep(50)

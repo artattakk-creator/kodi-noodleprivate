@@ -12,7 +12,7 @@ TARGETS={'widget_header_multi':'String.IsEqual(Skin.String(HomeLayout),bingie)',
 MEDIA_ROW_SHA='7480de9f92b11e973021acd9e971ccd2582b7c10e9b54ee36dbeb5b241f92679'
 SPINNER_SHA='908ef49af8ef38afc70c66286162c67efd8d73fc70dafed5fc6c5b95dc602533'
 
-def media_spinners(header,kinds=None):
+def media_spinners(header,kinds=None,legacy=False):
  """Reuse the verified upstream animation inside our hidden-header rows.
 
  The existing Home85 worker status owns the 60-second deadline. Native
@@ -33,13 +33,16 @@ def media_spinners(header,kinds=None):
   state='Window(Home).Property('+('XCMate.Home85.' if kind in ('vod','series') else 'XCMate.SixRows.')+kind+'.'
   # Typed caller metadata avoids embedding a clock-bearing directory URL
   # inside a compiled Kodi visibility expression, and works before items.
-  owned='[String.IsEqual("$PARAM[xcmateKind]",'+kind+') | String.IsEqual(Container($PARAM[widgetid]).ListItem.Property(XCMate.WidgetKind41),'+kind+')]'
+  namespace='XCMate.Home85.' if kind in ('vod','series') else 'XCMate.SixRows.'
+  kind_info='Window(Home).Property('+namespace+'$PARAM[xcmateKind].Kind)'
+  owned='[String.IsEqual('+kind_info+','+kind+') | String.IsEqual(Container($PARAM[widgetid]).ListItem.Property(XCMate.WidgetKind41),'+kind+')]'
+  if legacy:owned='[String.IsEqual("$PARAM[xcmateKind]",'+kind+') | String.IsEqual(Container($PARAM[widgetid]).ListItem.Property(XCMate.WidgetKind41),'+kind+')]'
   loading=' | '.join('String.IsEqual('+state+'State),'+value+')' for value in ('LOADING_CATALOG','LOADING_ART','READY_PARTIAL','LOADING'))
   node.find('visible').text=owned+' + String.IsEqual('+state+'Busy),true) + [Container($PARAM[widgetid]).IsUpdating | '+loading+']'
   result.append(node)
  return result
 
-def media_heading(title,header,kinds=None):
+def media_heading(title,header,kinds=None,legacy=False):
  """Let Kodi measure the saved label and place its spinner 12px after it."""
  group=E.Element('control',type='grouplist',id='84$PARAM[widgetid]')
  for tag,text in (('left','130'),('top','0'),('width','756'),('height','26'),
@@ -47,7 +50,7 @@ def media_heading(title,header,kinds=None):
   E.SubElement(group,tag).text=text
  label=copy.deepcopy(title);label.find('left').text='0'
  width=label.find('width');width.text='auto';width.set('min','1');width.set('max','720')
- group.append(label);group.extend(media_spinners(header,kinds))
+ group.append(label);group.extend(media_spinners(header,kinds,legacy))
  return group
 
 def original_media_row(row,header):
@@ -65,9 +68,9 @@ def original_media_row(row,header):
   if len(titles)!=1:raise ValueError('MEDIA_SPINNER_UNVERIFIED')
   title=copy.deepcopy(titles[0]);title.find('left').text='130'
   title.find('width').text='720';title.find('width').attrib.clear()
-  if digest(heading) not in (digest(media_heading(title,header)),digest(media_heading(title,header,2))):
+  if digest(heading) not in (digest(media_heading(title,header)),digest(media_heading(title,header,None,True)),digest(media_heading(title,header,2,True))):
    # The first reviewed two-row variant had no generic LOADING phase.
-   legacy=media_heading(title,header,2)
+   legacy=media_heading(title,header,2,True)
    for spinner in legacy.findall("control[@type='multiimage']"):
     condition=spinner.find('visible');condition.text=condition.text.replace(' | String.IsEqual(Window(Home).Property(XCMate.Home85.vod.State),LOADING)','').replace(' | String.IsEqual(Window(Home).Property(XCMate.Home85.series.State),LOADING)','')
    if digest(heading)!=digest(legacy):raise ValueError('MEDIA_SPINNER_UNVERIFIED')
@@ -157,7 +160,8 @@ def upgrade(files):
  declared=row.find("param[@name='xcmateKind']")
  if declared is not None:row.remove(declared)
  headings=group.findall("control[@id='84$PARAM[widgetid]']")
- missing=not headings or len(headings[0].findall("control[@type='multiimage']"))!=6
+ expected_title=original_media_row(row,header).find("control/control[@type='label']")
+ missing=not headings or digest(headings[0])!=digest(media_heading(expected_title,header))
  if declared is not None or missing:
   if missing:
    if headings:

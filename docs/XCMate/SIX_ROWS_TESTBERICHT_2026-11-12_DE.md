@@ -33,7 +33,7 @@ Definitionen werden ausschließlich über den vorhandenen gesicherten Skin-Trans
 
 ## Prüfstand dieses Commits
 
-- PASS: 19 neue Sechs-Reihen-Tests: reale Quellsemantik, Strict-Allowlist, kein fremder Token, falsche Quelle/Mehrdeutigkeit, Audio-Browse-Schutz, exakte Reihenfolge, private generierte IDs, idempotente Ergänzung, Kollisions-/Manipulationsschutz, sequenzielle Arbeit, Timeout ohne Parallelstart, Leer-/Fehlerzustände, unveränderte Last-good-Inhalte und sechs gemeinsame Header.
+- PASS: 25 neue Sechs-Reihen-Tests: reale Quellsemantik, Strict-Allowlist, kein fremder Token, falsche Quelle/Mehrdeutigkeit, Audio-Browse-Schutz, exakte Reihenfolge, private generierte IDs, idempotente Ergänzung, Kollisions-/Manipulationsschutz, sequenzielle Arbeit, Timeout ohne Parallelstart, Leer-/Fehlerzustände, unveränderte Last-good-Inhalte und sechs gemeinsame Header.
 - PASS: 12 Spinner-/Geometrie-/Pending-/Originaldatei-/ZIP-Tests.
 - PASS: 196 kombinierte Quellen-, clock50-, historische Scope- und Veröffentlichungs-Schutztests, 95,835 Sekunden. Bestehende Testmethoden/Skipbedingungen bleiben erhalten. Historische ZIPs werden gegen ihren exakten historischen Quellbaum geprüft, der neue ZIP gegen sämtliche aktuellen Quellen.
 - Neuer vollständiger CI- und nativer Kodi-Lauf wird für diesen Stand gestartet; Ergebnis nachtragen. Frühere vollständige Host-CI ist grün, ersetzt den neuen Lauf nicht.
@@ -59,7 +59,7 @@ EPG-Vergleich Home/Mini/Groß/Details, Galileo-Bildverlust und manuelle `SAVE_BL
 
 ## Aktuelles Review-Paket
 
-`test-builds/media-spinner/plugin.video.xtreammate-0.1.29.90.zip` – 4.676.828 Bytes, 859 Dateien, CRC und alle Quellbytes geprüft. SHA256: `2b482b20f41bef2c80abb3486994fbbdeae0847b0894d071dcbddeb0aa6dd85c`.
+`test-builds/media-spinner/plugin.video.xtreammate-0.1.29.90.zip` – 4.677.371 Bytes, 859 Dateien, CRC und alle Quellbytes geprüft. SHA256: `2c4d82137b3663e6775efc8a5e7babda3a6022acd736f57e0516ee039daa8a1b`.
 
 ## Nachprüfung mit echten gespeicherten Pfaden und nativen Pixeln
 
@@ -78,3 +78,15 @@ Ein lokaler vollständiger Zwischenlauf führte 3.843 Tests aus (894,264 s), dav
 Lauf 43252762231 bestätigt die korrigierten Original-Spinner und den IR-Eintritt in die Kinoreihe; der nächste Guard meldete deren Header als unsichtbar. Kodi21.3 speichert die Daten von Control-Info-Abfragen jedoch nur in 24 Bit: `CGUIInfo::GetData1()` maskiert mit `(1 << 24) - 1` ([Kodi-Quellcode](https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/guilib/guiinfo/GUIInfo.cpp)). Die zunächst gewählten sechsstelligen privaten Container-IDs erzeugten durch Header-/Spinner-Präfixe größere IDs. Jetzt werden ausschließlich private IDs 29761–29764 verwendet; alle zusammengesetzten IDs einschließlich der kompakten Header liegen unter 2^24, geschützt durch einen eigenen Regressionstest. Gespeicherte native Benutzercontainer bleiben unverändert. Der folgende native Pixel-/Header-/Fokuslauf muss diesen Stand bestätigen.
 
 Die dynamische Navigation ist zusätzlich anhand von Kodis `CGUIAction::GetNavigation()` und `CApplication::ExecuteXBMCAction()` verifiziert: Nur literale numerische Aktionen sind Navigations-IDs; `SetFocus` wird dagegen nach InfoLabel-Auflösung als Builtin ausgeführt. Kein Player-/Window-Routing-Rewrite.
+
+## Gemeinsamer Loader vor den ersten Items und bei Workerpause
+
+Der native Sechs-Reihen-Pixellauf 43255518698 fand einen echten, zuvor vom Core-ListItem-Fallback verdeckten Fehler: String.IsEqual erwartet als ersten Parameter ein InfoLabel. Ein konstanter Typtext wurde dort als unbekanntes InfoLabel gelesen; ohne XCMate-spezifische ListItem-Typangabe blieb deshalb der Zusatzspinner unsichtbar. Die gemeinsame Komponente benutzt nun die echte native Eigenschaft Home85 bzw. SixRows plus Typ, jeweils vor den ersten Items gesetzt. Das funktioniert unabhängig davon, ob ein fremdes Add-on eigene XCMate-Itemproperties liefert. Die aktuelle Animation muss noch nativ bestätigt werden; keine bloße READY-Meldung als Pixel-PASS.
+
+Außerdem läuft der 60-Sekunden-Ablauf für Film-/Serien-Spinner jetzt im vorhandenen, RAM-basierten GUI-Tick. Ein pausierter oder neu gestarteter Datenworker kann somit keinen alten Busy-Status unbegrenzt sichtbar lassen. Die Veröffentlichung von Deadline/Typ/State/Busy und die Ablaufprüfung sind mit einer kurzen gemeinsamen Sperre synchronisiert; kein Netz, SQLite oder Datei-I/O im GUI-Pfad. Alte Ablaufstände löschen keine neuere Generation. Dies ändert weder Job-Retries noch Daten oder Bilder. Die vier Zusatzreihen besitzen weiterhin ihre eigenen GUI-gesteuerten Providerdeadlines.
+
+Pid-lose Widgetquellen übernehmen dieselbe vorhandene aktive Portalpräferenz wie die bisherigen XCMate-Routen. Mehrere eingerichtete Provider blockieren die Zusatzreihen nicht pauschal; ein explizites falsches/deaktiviertes Portal wird weiterhin verweigert. Auswahländerungen sind Bestandteil des Worker-Memos.
+
+PASS: 25 spezifische Sechs-Reihen-/Quellen-/GUI-/Deadline-/Profiltests und 12 Spinner-/Pakettests. Neuer vollständiger Host-/nativer Lauf folgt. Voriger Codebasisstand: vollständiger lokaler Wiederholungslauf 3.845 PASS in 904,298 s; GitHub-Host-CI 43253935031 ebenfalls vollständig grün (3.846 Fälle). Beide ersetzen keine vollständige Prüfung des jetzt korrigierten Loaderstands.
+
+Die nativen Beweise werden getrennt geführt: vier gefüllte Quellen, sichtbare echte Texturen/Überschriften und IR-Fokus wurden bereits beobachtet, ebenso Audioauflösung einer lokalen WAV. Spinner werden vor Audio-/Verzeichniswechseln gemessen; danach werden echte Videodirectory-Klicks/Zurück und Audio-Stop-ACK plus eine weitere native IR-Aktion geprüft. Keine synthetische Quelle als echter TMDB-/Audioanbieter oder Android-PASS ausgeben.
