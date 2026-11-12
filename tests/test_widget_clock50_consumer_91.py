@@ -14,10 +14,10 @@ RELOAD = "$INFO[Window(Home).Property(XCMate.Widget45.Reload.{kind})]"
 
 def fixture():
     rows = []
-    for kind, action, label in (
-        ("live", "widget_live_start_group", "Live-TV"),
-        ("vod", "widget_recent_vod", "Filme"),
-        ("series", "widget_recent_series", "Serien"),
+    for kind, action, label, container in (
+        ("live", "widget_live_start_group", "Live-TV", 1510),
+        ("vod", "widget_recent_vod", "Filme", 1520),
+        ("series", "widget_recent_series", "Serien", 1530),
     ):
         url = (
             "plugin://plugin.video.xtreammate/?action=" + action
@@ -28,6 +28,7 @@ def fixture():
             '<include content="widget_base" condition="true">'
             '<param name="contentStyle" value="normal"/>'
             '<param name="widgetTarget" value="videos"/>'
+            f'<param name="widgetid" value="{container}"/>'
             f'<param name="widgetName" value="{label}"/>'
             f'<param name="widgetPath" value="{url}"/>'
             '</include>'
@@ -61,6 +62,11 @@ class TestClock50Consumer(unittest.TestCase):
         })
         self.assertIn(CLOCK.encode(), changed)
         self.assertEqual(candidate(changed, layout80=True), changed)
+        self.assertEqual([n.get('value') for n in tree.findall('.//param[@name="widgetid"]')],
+                         ['1510', '1520', '1530'])
+        # Only the two include names change. No label, path, refresh hook,
+        # container or foreign consumer is rewritten.
+        self.assertEqual(changed.replace(b'content="XCMate80.MediaRow"', b'content="widget_base"'), original)
 
     def test_non_xcmate_layout_not_modified(self):
         original = fixture()
@@ -76,6 +82,28 @@ class TestClock50Consumer(unittest.TestCase):
                 "plugin://plugin.video.xtreammate/?action=widget_recent_vod"
                 "&clock50=$INFO[System.Exec(foo)]"
             )
+
+    def test_clock_must_be_a_whole_single_query_parameter(self):
+        base = 'plugin://plugin.video.xtreammate/?action=widget_recent_vod&'
+        for query in ('xclock50=' + CLOCK, 'other=clock50=' + CLOCK,
+                      'clock50=' + CLOCK + 'suffix', 'clock50=' + CLOCK + '&clock50=' + CLOCK,
+                      'clock50=$INFO[System.Time(HH:mm)]', 'clock50=$INFO[System.Time]'):
+            with self.subTest(query=query), self.assertRaises(ValueError):
+                directory_uri89(base + query)
+
+    def test_unknown_token_is_not_masked_by_a_valid_clock(self):
+        with self.assertRaises(ValueError):
+            directory_uri89('plugin://plugin.video.xtreammate/?clock50=' + CLOCK
+                            + '&action=widget_recent_vod&bad=$INFO[System.Exec(foo)]')
+
+    def test_executable_boundary_remains_strict(self):
+        from navigation_builtin78 import uri
+        with self.assertRaises(ValueError):
+            uri('plugin://plugin.video.xtreammate/?action=widget_recent_vod&clock50=' + CLOCK)
+
+    def test_first_query_clock_is_preserved(self):
+        url = 'plugin://plugin.video.xtreammate/?clock50=' + CLOCK + '&action=widget_recent_series'
+        self.assertEqual(directory_uri89(url), url)
 
     def test_foreign_provider_and_unsafe_quote_rejected(self):
         with self.assertRaises(ValueError):

@@ -2,7 +2,7 @@
 
 Disposable Linux profile only. Never writes WidgetPath or compiler output.
 """
-import ast,hashlib,io,json,time,threading,sys,xml.etree.ElementTree as E
+import ast,hashlib,io,json,time,threading,sys,os,xml.etree.ElementTree as E
 from pathlib import Path
 import xbmc,xbmcgui
 from PIL import Image
@@ -103,6 +103,11 @@ def check90(cycle,errors):
   for kind,route in (('live','widget_live_start_group'),('vod','widget_recent_vod'),('series','widget_recent_series')):
    if route in values.get('widgetPath','') and values.get('widgetid','').isdigit():bindings[kind]=int(values['widgetid'])
  check(set(bindings)=={'live','vod','series'},('PICKER90_COMPILED_BINDING_MISSING',bindings))
+ if os.environ.get('XCMATE_CLOCK437')=='true':
+  check(bindings==dict(live=1510,vod=1520,series=1530),('CLOCK437_WRONG_NATIVE_CONTAINERS',bindings))
+  for kind,route in (('vod','widget_recent_vod'),('series','widget_recent_series')):
+   consumers=[n for n in document.iter('include') if route in next((p.get('value','') for p in n.findall('param') if p.get('name')=='widgetPath'),'')]
+   check(len(consumers)==1 and consumers[0].get('content')=='XCMate80.MediaRow',('CLOCK437_MEDIA_CONVERSION_MISSING',kind))
  until(lambda:xbmcgui.getCurrentWindowId()==10000 and xbmcgui.getCurrentWindowDialogId() in (0,-1,9999),'PICKER90_NATIVE_HOME_NOT_READY')
  home=xbmcgui.Window(10000);home.setFocusId(900)
  selection90=[]

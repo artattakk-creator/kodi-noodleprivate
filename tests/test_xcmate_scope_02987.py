@@ -30,7 +30,7 @@ class Scope87(unittest.TestCase):
   with zipfile.ZipFile(package) as archive:
    self.assertIsNone(archive.testzip());files=[ROOT/p for p in subprocess.check_output(['git','ls-tree','-r','--name-only','2547848625df8ecd3ba089ecd6c49339c8f3c348','src/plugin.video.xtreammate'],cwd=ROOT).decode().splitlines() if '__pycache__' not in p and not p.endswith('.pyc')]
    self.assertEqual(len(archive.namelist()),len(files))
-   for path in files:self.assertEqual(archive.read('plugin.video.xtreammate/'+path.relative_to(source).as_posix()),__import__('stabilization_contract_02988').without_stabilization88(path.read_bytes(),str(path.relative_to(ROOT))),str(path))
+   for path in files:self.assertEqual(archive.read('plugin.video.xtreammate/'+path.relative_to(source).as_posix()),subprocess.check_output(['git','show','2547848625df8ecd3ba089ecd6c49339c8f3c348:'+path.relative_to(ROOT).as_posix()],cwd=ROOT),str(path))
 
  def test_native_wrapper_waits_for_its_own_complete_report(self):
   script=(ROOT/'tools/kodi_home87_host/gui87.py').read_text();prefix=script.split("# Every final Hero screenshot")[0]

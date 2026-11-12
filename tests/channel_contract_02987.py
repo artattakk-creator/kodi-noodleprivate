@@ -1,4 +1,4 @@
-"""Published .89 channels and installer are immutable; .90 is review-only."""
+"""Published .90 channels and installer are immutable; PR #437 is review-only."""
 import hashlib,subprocess
 from pathlib import Path
 import xml.etree.ElementTree as E

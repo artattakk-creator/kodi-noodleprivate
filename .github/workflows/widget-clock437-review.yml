@@ -1,0 +1,41 @@
+name: Clock437 current native containers and upstream clock presets
+on:
+  pull_request:
+    branches: [main]
+    paths: ['src/plugin.video.xtreammate/**', 'tests/**', 'tools/**', '.github/workflows/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: clock437-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+jobs:
+  native-clock437:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        resolution: [1280x720, 1920x1080]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'Pillow>=11,<13' 'simpleeval==0.9.13'
+      - name: Original SkinShortcuts save, clock50, 1510/1520/1530, pixels and three cold restarts
+        run: python tools/run_kodi_picker90_contract.py --clock-contract437 --report-dir "${{ runner.temp }}/clock437" --resolution "${{ matrix.resolution }}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: clock437-${{ matrix.resolution }}
+          path: |
+            ${{ runner.temp }}/clock437/*.json
+            ${{ runner.temp }}/clock437/*.png
+            ${{ runner.temp }}/clock437/*.xml
+            ${{ runner.temp }}/clock437/*.properties
+            ${{ runner.temp }}/clock437/*.log
+            ${{ runner.temp }}/clock437/*.txt
+          retention-days: 30
