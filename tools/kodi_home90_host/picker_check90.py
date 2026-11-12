@@ -43,7 +43,7 @@ def spinner_receipts438(home,bindings,kinds=None):
     try:
      with Image.open(io.BytesIO(path.read_bytes())) as image:return path,image.convert('RGB')
     except (OSError,ValueError,SyntaxError):xbmc.sleep(50)
-   raise RuntimeError('SPINNER438_SCREENSHOT_NOT_READY')
+   raise RuntimeError(('SPINNER438_SCREENSHOT_NOT_READY',name,path.exists(),path.stat().st_size if path.exists() else None,xbmcgui.getCurrentWindowId()))
   _,baseline438=frame438('picker90-spinner438-'+kind+'-baseline')
   sx438,sy438=baseline438.width/1920,baseline438.height/1080
   roi438=tuple(round(value*scale) for value,scale in zip((250,640,1890,1040),(sx438,sy438,sx438,sy438)))

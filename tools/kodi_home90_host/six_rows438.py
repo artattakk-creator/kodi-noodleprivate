@@ -65,17 +65,38 @@ def run(home,bindings,spinner_observer,service_poll):
     pixels=sum(max(abs(a-b) for a,b in zip(p,color))<10 for p in rgb.crop((260,640,1890,1040)).getdata())
    if pixels<1500:raise RuntimeError(('SIX438_COVER_PIXELS_MISSING',kind,pixels))
    rows.append(dict(kind=kind,title=title,control=cid,target=widget_target,items=6,heading_visible=True,pixels=pixels,screenshot=path.name))
+  # Measure animation while Home is idle, before introducing playback or
+  # video-directory transitions. Audio-stop may legitimately invalidate the
+  # original BINGIE directories; it is a separate responsiveness gate below.
+  home.setFocusId(bindings['series'])
+  extra_bindings={kind:cid for kind,_,cid,_ in EXTRAS}
+  spinner_receipts=spinner_observer(home,extra_bindings,kinds=[r[0] for r in EXTRAS])
+  # Real native directory clicks and Back: no fabricated window switch.
+  for kind,_,cid,target_kind in EXTRAS[:-1]:
+   home.setFocusId(cid);xbmc.sleep(150);xbmc.executebuiltin('Action(Select)',wait=False)
+   deadline=time.monotonic()+10
+   while time.monotonic()<deadline:
+    if xbmcgui.getCurrentWindowId()==10025 and 'plugin.video.themoviedb.helper' in xbmc.getInfoLabel('Container.FolderPath') and xbmc.getInfoLabel('Container.NumItems')=='6':break
+    xbmc.sleep(50)
+   else:raise RuntimeError(('SIX438_VIDEO_CLICK_TARGET',kind,xbmcgui.getCurrentWindowId(),xbmc.getInfoLabel('Container.NumItems')))
+   xbmc.executebuiltin('Action(Back)',wait=False);deadline=time.monotonic()+5
+   while xbmcgui.getCurrentWindowId()!=10000 and time.monotonic()<deadline:xbmc.sleep(50)
+   if xbmcgui.getCurrentWindowId()!=10000:raise RuntimeError(('SIX438_VIDEO_BACK_DID_NOT_RETURN',kind))
   # Real native audio resolve/click, using only a local synthetic six-second WAV.
+  home.setFocusId(extra_bindings['mp3']);xbmc.sleep(150)
   xbmc.executebuiltin('Action(Select)',wait=False);deadline=time.monotonic()+5
   while not xbmc.Player().isPlayingAudio() and time.monotonic()<deadline:xbmc.sleep(50)
   audio=xbmc.Player().isPlayingAudio()
   if not audio:raise RuntimeError('SIX438_AUDIO_CLICK_DID_NOT_PLAY')
-  xbmc.Player().stop();xbmc.sleep(500)
-  # Return through native IR focus, then verify each actual original spinner.
-  home.setFocusId(bindings['series'])
-  extra_bindings={kind:cid for kind,_,cid,_ in EXTRAS}
-  spinner_receipts=spinner_observer(home,extra_bindings,kinds=[r[0] for r in EXTRAS])
-  report=dict(status='PASS',rows=rows,spinner=spinner_receipts,audio_played=True,elapsed_ms=int((time.monotonic()-start)*1000),source='SYNTHETIC_NATIVE_DIRECTORIES_NOT_REMOTE_SERVICES',android='ANDROID_NOT_TESTED')
+  xbmc.Player().stop();deadline=time.monotonic()+5
+  while xbmc.Player().isPlayingAudio() and time.monotonic()<deadline:xbmc.sleep(50)
+  if xbmc.Player().isPlayingAudio():raise RuntimeError('SIX438_AUDIO_STOP_NOT_ACKNOWLEDGED')
+  # A native input after Stop must still reach the preceding row. Do not
+  # replace a failed screenshot with a fabricated GUI-return receipt.
+  xbmc.executebuiltin('Action(Up)',wait=False);deadline=time.monotonic()+5
+  while home.getFocusId()!=extra_bindings['trend'] and time.monotonic()<deadline:xbmc.sleep(50)
+  if home.getFocusId()!=extra_bindings['trend']:raise RuntimeError(('SIX438_AUDIO_RETURN_INPUT_BLOCKED',home.getFocusId()))
+  report=dict(status='PASS',rows=rows,spinner=spinner_receipts,audio_played=True,audio_stop_ack=True,audio_return_ir=True,video_directory_clicks=[r[0] for r in EXTRAS[:-1]],video_directory_back=True,elapsed_ms=int((time.monotonic()-start)*1000),source='SYNTHETIC_NATIVE_DIRECTORIES_NOT_REMOTE_SERVICES',android='ANDROID_NOT_TESTED')
   Path('/root/picker90-six438.json').write_text(json.dumps(report,indent=2));return report
  finally:
   for key,value in originals.items():home.setProperty(key,value)
