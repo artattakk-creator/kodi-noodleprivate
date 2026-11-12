@@ -28,11 +28,24 @@ def spinner_receipts438(home,bindings):
   cid=bindings[kind];spinner=int(str(prefix)+str(cid))
   keys=['XCMate.Home85.'+kind+'.'+field for field in ('Busy','State','Text')]
   saved={key:home.getProperty(key) for key in keys}
-  home.setFocusId(cid);home.getControl(cid).selectItem(0);xbmc.sleep(300)
+  if home.getFocusId()!=cid:
+   xbmc.executebuiltin('Action('+('Up' if kind=='vod' else 'Down')+')',wait=False)
+   deadline=time.monotonic()+3
+   while home.getFocusId()!=cid and time.monotonic()<deadline:xbmc.sleep(50)
+  if home.getFocusId()!=cid:raise RuntimeError(('SPINNER438_ROW_NOT_FOCUSED',kind,home.getFocusId()))
+  home.getControl(cid).selectItem(0);xbmc.sleep(300)
   before=xbmc.getInfoLabel('Container('+str(cid)+').NumItems')
   try:
    home.setProperty(keys[0],'true');home.setProperty(keys[1],'LOADING_ART');home.setProperty(keys[2],'Wird geladen …')
    frames=[];files=[]
+   deadline=time.monotonic()+3
+   while not xbmc.getCondVisibility('Control.IsVisible('+str(spinner)+')') and time.monotonic()<deadline:xbmc.sleep(50)
+   if not xbmc.getCondVisibility('Control.IsVisible('+str(spinner)+')'):
+    source437=xbmc.getInfoLabel('Container('+str(cid)+').ListItem.Property(XCMate.WidgetKind41)')
+    facts=dict(kind=kind,focus=home.getFocusId(),row=xbmc.getCondVisibility('Control.IsVisible(75'+str(cid)+')'),header=xbmc.getCondVisibility('Control.IsVisible(84'+str(cid)+')'),busy=home.getProperty(keys[0]),state=home.getProperty(keys[1]),item_kind=source437)
+    try:facts['native_size']=[home.getControl(spinner).getWidth(),home.getControl(spinner).getHeight()]
+    except RuntimeError:facts['native_size']='CONTROL_MISSING'
+    raise RuntimeError(('SPINNER438_DIAGNOSTIC',facts))
    for index in range(4):
     xbmc.sleep(170)
     if not xbmc.getCondVisibility('Control.IsVisible('+str(spinner)+')'):raise RuntimeError(('SPINNER438_NOT_VISIBLE',kind))
