@@ -1,0 +1,39 @@
+{
+  "version": "0.1.29.91",
+  "user_approved_date": "2026-11-12",
+  "source_pr": 440,
+  "source_merge_sha": "976e0674bb8b2478c2a184edd51517b63db3b4f6",
+  "zip_sha256": "230fde5237e8a9aa2be548ef29ef95301a8b41080d043a03ed0d9fee7b4c198b",
+  "zip_bytes": 4677495,
+  "zip_files": 859,
+  "channels": [
+    "regular",
+    "pilot",
+    "NeoDark3"
+  ],
+  "android": "ANDROID_NOT_TESTED",
+  "host_ci": {
+    "run": 43280048742,
+    "result": "PASS",
+    "tests": 3870
+  },
+  "native_ci": {
+    "run": 43280048946,
+    "result": "PASS",
+    "resolutions": [
+      "1280x720",
+      "1920x1080"
+    ]
+  },
+  "known_test_exception": "Home75 native direction gate fails on both RC and unchanged main, not accepted as fixed; prior CI 43280049321 / 43279599362",
+  "preserve": [
+    "TVMaze/TMDB event artwork",
+    "manual Ghosts mapping",
+    "users' SkinShortcuts",
+    "EPG and favorites",
+    "installer 0.5.26"
+  ],
+  "retention_pr_436": "NOT_MERGED",
+  "stream_buffer_issue_107": "OPEN",
+  "notes": "Released at explicit user request; Kodi Android RK3528 device acceptance remains NOT_TESTED."
+}
