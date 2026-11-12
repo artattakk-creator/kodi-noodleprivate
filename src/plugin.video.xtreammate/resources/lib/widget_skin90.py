@@ -144,11 +144,16 @@ def upgrade(files):
  _,_,header=_node(result[name],'include','name','widget_header_multi')
  original_media_row(row,header)
  group=row.find('control')
- if row.find("param[@name='xcmateKind']") is None:
-  row.insert(0,E.Element('param',name='xcmateKind',default=''))
- if not group.findall("control[@id='84$PARAM[widgetid]']"):
-  title=group.find("control[@type='label']");position=list(group).index(title)
-  group.remove(title);group.insert(position,media_heading(title,header))
+ # Keep this legacy include's plain body. Kodi requires a <definition>
+ # wrapper when default declarations are added; mixing the two forms drops
+ # the native list. The verified generated caller supplies xcmateKind.
+ declared=row.find("param[@name='xcmateKind']")
+ if declared is not None:row.remove(declared)
+ missing=not group.findall("control[@id='84$PARAM[widgetid]']")
+ if declared is not None or missing:
+  if missing:
+   title=group.find("control[@type='label']");position=list(group).index(title)
+   group.remove(title);group.insert(position,media_heading(title,header))
   result[name]=edit(result[name],[(n['start'],end,E.tostring(row,encoding='utf-8'))])
  return result
 
