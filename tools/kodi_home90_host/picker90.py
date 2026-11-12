@@ -65,8 +65,8 @@ def manager():
    control90=dialog90.getControl(211)
    dialog90.setFocusId(211);control90.selectItem(position90)
   except RuntimeError:return False
-   manager_ids437[id(dialog90)]=xbmcgui.getCurrentWindowDialogId()
-   owner90[:]=[dialog90];return True
+  manager_ids437[id(dialog90)]=xbmcgui.getCurrentWindowDialogId()
+  owner90[:]=[dialog90];return True
  until(home_ready90,'PICKER90_MANAGER_HOME_NOT_READY')
  xbmc.sleep(200);return owner90[0]
 
