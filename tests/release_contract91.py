@@ -1,7 +1,6 @@
 """Normalize only the two exact .91 metadata files for historical scope gates."""
 import hashlib
 import json
-import subprocess
 from functools import lru_cache
 from pathlib import Path
 
@@ -13,7 +12,7 @@ def metadata91():
 
 @lru_cache(maxsize=2)
 def original91(path):
-    raw = subprocess.check_output(['git', 'show', metadata91()['base']+':'+path], cwd=ROOT)
+    raw = metadata91()['modules'][path]['old'].encode()
     assert hashlib.sha256(raw).hexdigest() == metadata91()['modules'][path]['old_sha256']
     return raw
 

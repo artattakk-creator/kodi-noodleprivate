@@ -44,6 +44,13 @@ class Release91(unittest.TestCase):
             self.assertEqual(without_release91(raw+b'\nUNREVIEWED\n', name), raw+b'\nUNREVIEWED\n')
             self.assertEqual(without_release91(raw, 'foreign/'+name), raw)
 
+    def test_historical_metadata_contract_does_not_require_history_in_shallow_ci(self):
+        from release_contract91 import original91
+        original91.cache_clear()
+        with mock.patch('subprocess.check_output', side_effect=AssertionError('NO_HISTORY_FOR_NORMALIZER')):
+            for name in metadata91()['modules']:
+                self.assertEqual(without_release91((ROOT/name).read_bytes(), name), self.baseline[name])
+
     def test_rc_zip_is_complete_and_byte_reproducible_with_the_repository_builder(self):
         from package_xcmate71 import build
         package = ROOT/'docs/XCMate/test-builds/02991'/rc.NAME
