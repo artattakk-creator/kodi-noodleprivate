@@ -236,3 +236,31 @@ class SixRows(Fixture50,unittest.TestCase):
   loading.expire()
   self.assertEqual(self.properties.get('XCMate.Home85.series.Busy'),'')
   self.assertEqual(self.properties.get('XCMate.Home85.series.State'),'ERROR_RETRYABLE')
+
+ def test_home_background_playback_does_not_block_metadata_or_stop_the_player(self):
+  import widget_six_runtime as runtime,epg_handoff63,sys
+  sources=self.plan()['sources'];xbmc=sys.modules['xbmc'];gui=sys.modules['xbmcgui']
+  plan=dict(binding=dict(series=1530,tail=1540),scope=('fixture','p'),profile_scope=epg_handoff63.profile_scope(),sources=sources)
+  def label(value):return 'READY' if value=='$VAR[XCMate.SixRows.Contract]' else '0' if value.endswith('.NumItems') else ''
+  with mock.patch.object(runtime,'_plan',plan),mock.patch.object(runtime,'_rows',{}),mock.patch.object(runtime,'_scope',None),mock.patch.object(xbmc,'getInfoLabel',side_effect=label),mock.patch.object(xbmc,'getCondVisibility',side_effect=lambda value:value=='Player.HasMedia'),mock.patch.object(gui,'getCurrentWindowId',return_value=10000),mock.patch.object(gui,'getCurrentWindowDialogId',return_value=9999),mock.patch('home_schedule75.rest_allowed',return_value=True),mock.patch.object(xbmc,'Player',side_effect=AssertionError('FOREIGN_PLAYER_CHANGED')),mock.patch.object(xbmc,'executebuiltin',side_effect=AssertionError('GUI_OR_PLAYER_BUILTIN')):
+   runtime.poll()
+  self.assertEqual(self.properties.get('XCMate.SixRows.cinema.Busy'),'true')
+ def test_known_old_skin_keeps_clock_repair_without_applying_the_new_layout(self):
+  import types,sys,widget_skin90,widget_skin78,widget_runtime79 as runtime
+  delta=json.loads((Path(__file__).parent/'fixtures/media_spinner_reviewed_delta.json').read_text())
+  old=types.ModuleType('widget_skin90');old.__file__=widget_skin90.__file__
+  exec(compile(delta['old'],old.__file__,'exec'),old.__dict__)
+  with mock.patch.dict(sys.modules,{'widget_skin90':old}):baseline=spinner_fixture.MediaSpinner.graph(self)
+  for name,value in baseline.items():(self.skin/name).write_bytes(value)
+  target=self.skin/'xml/script-skinshortcuts-includes.xml';target.write_bytes(self.generated());saved=self.prop.read_bytes()
+  xbmc=sys.modules['xbmc'];vfs=sys.modules['xbmcvfs']
+  def translate(value):return str(self.skin) if value=='special://skin/' else str(self.profile) if value=='special://profile/' else value
+  with mock.patch.object(runtime,'_next',0),mock.patch.object(runtime,'_repair_stamp',None),mock.patch.object(runtime,'_static',{}),mock.patch.object(xbmc,'getSkinDir',create=True,return_value='skin.titan.bingie.mod'),mock.patch.object(vfs,'translatePath',side_effect=translate),mock.patch('widget_consumer58.status',return_value={}),mock.patch('widget_hooks45.read',return_value={'bindings':[]}),mock.patch('widget_audit89.prepare'):
+   self.assertFalse(widget_skin78.installed(self.skin))
+   self.assertTrue(widget_skin90.previous_owned(self.skin))
+   runtime.prepare([self.portal])
+  changed=E.fromstring(target.read_bytes())
+  self.assertEqual(len(changed.findall("include[@content='XCMate80.MediaRow']")),2)
+  self.assertNotIn(b'XCMate.SixRows.Row',target.read_bytes())
+  self.assertEqual(self.prop.read_bytes(),saved)
+  for name,value in baseline.items():self.assertEqual((self.skin/name).read_bytes(),value)

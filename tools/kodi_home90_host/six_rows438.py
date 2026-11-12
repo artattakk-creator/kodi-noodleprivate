@@ -97,6 +97,19 @@ def run(home,bindings,spinner_observer,service_poll,cycle=0):
   while not audio_started438() and time.monotonic()<deadline:xbmc.sleep(50)
   audio=audio_started438()
   if not audio:raise RuntimeError(('SIX438_AUDIO_CLOCK_OR_OPEN_ACK_MISSING',xbmcgui.getCurrentWindowId(),xbmcgui.getCurrentWindowDialogId()))
+  # Home metadata must remain usable while media continues in the background.
+  # This changes only the synthetic source's refresh label, never the player.
+  background_start=time.monotonic();source=sources['cinema']
+  source['uri']+='&reload=background-review'
+  source['source_hash']=hashlib.sha256(source['uri'].encode()).hexdigest()
+  deadline=time.monotonic()+4
+  while time.monotonic()<deadline:
+   runtime.poll()
+   if runtime._rows.get('cinema',{}).get('signature',(None,))[0]==source['source_hash'] and runtime._rows['cinema']['state']=='READY':break
+   xbmc.sleep(50)
+  else:raise RuntimeError('SIX438_BACKGROUND_MEDIA_BLOCKED_METADATA')
+  if not xbmc.Player().isPlayingAudio():raise RuntimeError('SIX438_BACKGROUND_METADATA_INTERRUPTED_AUDIO')
+  background_ms=int((time.monotonic()-background_start)*1000)
   xbmc.Player().stop();deadline=time.monotonic()+5
   while (xbmc.Player().isPlayingAudio() or xbmcgui.getCurrentWindowDialogId() not in (0,-1,9999)) and time.monotonic()<deadline:xbmc.sleep(50)
   if xbmc.Player().isPlayingAudio() or xbmcgui.getCurrentWindowDialogId() not in (0,-1,9999):raise RuntimeError('SIX438_AUDIO_STOP_NOT_ACKNOWLEDGED')
@@ -105,7 +118,7 @@ def run(home,bindings,spinner_observer,service_poll,cycle=0):
   xbmc.executebuiltin('Action(Up)',wait=False);deadline=time.monotonic()+5
   while home.getFocusId()!=extra_bindings['trend'] and time.monotonic()<deadline:xbmc.sleep(50)
   if home.getFocusId()!=extra_bindings['trend']:raise RuntimeError(('SIX438_AUDIO_RETURN_INPUT_BLOCKED',home.getFocusId(),xbmcgui.getCurrentWindowId(),xbmcgui.getCurrentWindowDialogId()))
-  report=dict(status='PASS',cycle=cycle,load_order=load_order,source_timings_ms=timings,rows=rows,spinner=spinner_receipts,audio_played=True,audio_stop_ack=True,audio_return_ir=True,video_directory_clicks=[r[0] for r in EXTRAS[:-1]],video_directory_back=True,elapsed_ms=int((time.monotonic()-start)*1000),source='SYNTHETIC_NATIVE_DIRECTORIES_NOT_REMOTE_SERVICES',android='ANDROID_NOT_TESTED')
+  report=dict(status='PASS',cycle=cycle,load_order=load_order,source_timings_ms=timings,rows=rows,spinner=spinner_receipts,audio_played=True,background_audio_preserved=True,background_refresh_ms=background_ms,audio_stop_ack=True,audio_return_ir=True,video_directory_clicks=[r[0] for r in EXTRAS[:-1]],video_directory_back=True,elapsed_ms=int((time.monotonic()-start)*1000),source='SYNTHETIC_NATIVE_DIRECTORIES_NOT_REMOTE_SERVICES',android='ANDROID_NOT_TESTED')
   Path('/root/picker90-six438-'+str(cycle)+'.json').write_text(json.dumps(report,indent=2));return report
  finally:
   for key,value in originals.items():home.setProperty(key,value)

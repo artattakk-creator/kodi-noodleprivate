@@ -96,7 +96,7 @@ def poll():
  with _lock:plan=_plan
  if plan is None or plan['profile_scope']!=__import__('epg_handoff63').profile_scope():return
  home=xbmcgui.Window(10000)
- if xbmcgui.getCurrentWindowId()!=10000 or xbmcgui.getCurrentWindowDialogId() not in (0,-1,9999) or xbmc.getCondVisibility('System.HasActiveModalDialog') or xbmc.getCondVisibility('Player.HasMedia'):return
+ if xbmcgui.getCurrentWindowId()!=10000 or xbmcgui.getCurrentWindowDialogId() not in (0,-1,9999) or xbmc.getCondVisibility('System.HasActiveModalDialog'):return
  # This marker belongs to the already user-confirmed guarded skin plan.
  if xbmc.getInfoLabel('$VAR[XCMate.SixRows.Contract]')!='READY':return
  if _scope!=plan['scope']:
