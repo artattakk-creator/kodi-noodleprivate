@@ -68,3 +68,31 @@ Das sind Kandidaten für die Nutzerangabe „drei fehlende Widgets“, **nicht e
 - **Observed / verified:** 88 lokale Logo-Referenzen im Backup, Widget-Quellen 88/24/24 aus Android-Log, Kodi-Backup ZIP-CRC-/Dateipfade; Zusatzwidgets und Layout-Fehlzuordnung.
 - **Open:** echte Android-GUI/Native-Container-Abnahme, fehlende Zusatzwidget-Routen, Spinner, EPG-/Artwork-Konsolidierung, Exit/SQLite, Cloud-Restore-/Altbackup-Bereinigung.
 - **Nicht behaupten:** „Alles gemergt“, „veröffentlicht“, „Restore bestanden“, „Widgets komplett repariert“, „Google Drive entpackt und 9.134 Hashes remote geprüft“ ohne jeweiligen Nachweis.
+
+## 7. Verbindliche Ergänzung vom 12.11.2026: Überschriften, Spinner und vollständige Widget-Zeilen
+
+**Explizite Nutzerfreigabe für den Soll-Aufbau – zusätzlich zu den bisherigen Kapiteln:**
+
+**Oberhalb** der Medienreihen bleibt der großflächige Live-TV-Hero mit aktuellem EPG, laufender Sendung, Senderlogo, Beschreibung und NOW/NEXT/Progress sowie die horizontale Senderlogo-Leiste. **Darunter** ist folgende Reihenfolge als **Standard-Home-Layout** verbindlich; weitere BINGIE-Shortcuts müssen weiterhin frei belegbar bleiben:
+
+1. **Filme** – Überschrift exakt „Filme“, darunter horizontale Coverreihe der im XML/SkinShortcuts konfigurierten XCMate-Filmquelle (`widget_recent_vod`).
+2. **Serien** – Überschrift exakt „Serien“, darunter horizontale Coverreihe der konfigurierten XCMate-Serienquelle (`widget_recent_series`).
+3. **Im Kino** – Überschrift „Im Kino“ (bzw. in einer bewusst so lokalisierten Darstellung „Neu im Kino“); Kino-Widget und passende Poster. Quelle und Pfad überprüfen, kein leerer fremder TMDB-Helper-Container als Erfolg.
+4. **Disney** – eigenständige Widget-Reihe, exakter sichtbarer Labelwunsch „Disney“; bestehender Shortcut ist „Disney Plus“ und hat derzeit `tmdb_type=movie` im Serien-Menü, daher wirklichen Inhalt/Provider-Katalog und den gewünschten Bereich prüfen, **keine Titel oder Lizenzen erfinden**.
+5. **Best bewertet diese Woche** – eigene Reihe mit **genau dieser Nutzerbezeichnung**, nicht automatisch gleichsetzen mit dem bisher vorhandenen „Diese Woche im Trend“ (`trending_week` ist keine Bewertungssortierung). Bewusst eine tatsächlich belegbare **Bewertungs-/Wochenliste** implementieren bzw. bei fehlender Datenquelle verständlichen Leerstatus liefern; TMDB/Provider-Quelle mit rechtmäßig verfügbarem Datenzugriff und echten Bewertungen identifizieren.
+6. **MP3s** – eigene **Audio-Widget-Reihe**, Einträge und Klickziele des installierten Audio-Add-ons/Katalogs (z. B. `plugin.audio.m3sr2019` sofern dort vorhanden); **Audio nicht mit VOD/Serien vermischen**, echte Abspielbarkeit/Kodi-Audiofenster prüfen.
+
+### Zwingender UI-Vertrag für *jede* der sechs Reihen
+- **Überschrift ist immer sichtbar**, auch während initialem Laden, bei leerem Ergebnis, Fehler, Offline-Modus oder fehlender Quelle. Kein `widget_header_multi`-Filter und keine `XCMate.WidgetKind41`-Bedingung darf die Zeilenüberschrift stillschweigend ausblenden.
+- **Ein animierter Lade-Spinner unmittelbar RECHTS NEBEN DER ZUGEHÖRIGEN ÜBERSCHRIFT**, nicht unter/über der Reihe und nicht für die gesamte Startseite. Er dreht sich **nur solange genau diese Reihe ihre Daten/Thumbnails aufbaut bzw. eine aktive Anfrage aussteht**; nach `READY`, leerem Ergebnis, Quellfehler oder Timeout muss er zuverlässig verschwinden. Neben der Überschrift ggf. knapper Status `Wird geladen…`, `Keine Einträge` oder `Quelle nicht erreichbar`, **nie Endlosschleife**.
+- Darunter **eine eigene horizontal scrollbare Karten-/Coverliste** mit dem jeweils korrekten Widget-Typ und Fokuspfad. Loader darf sichtbare Last-Good-Inhalte nicht ausblenden oder bei jedem Fokuswechsel neu starten.
+- Die Reihenfolge ist zunächst verbindlicher Default; **SkinShortcuts-Benutzeranpassungen erhalten**. Keine pauschale Ersetzung von fremden Listen oder übernommener `widgetvalue-*` ohne Prüfung/Sicherung. Eigene neue XCMate-Pfade/Adapter sind zulässig, aber eindeutig dokumentieren und Ausfallverhalten testen.
+- Keine parallele massenhafte Artwork-/EPG-Abfrage: **EPG + Logos + Hero zuerst**, dann Filme, Serien, Kino, Disney, Wochenbewertung und MP3s bei verfügbarer Ressourcen-/Netzkapazität. Spinner-/Datenstate je Reihe unabhängig; `CONTROL_EMPTY`/SQLite/Reserve dürfen nicht als `READY` behandelt werden.
+- Bei `Im Kino`, `Disney`, `Best bewertet diese Woche` und `MP3s` darf Code/Tests **nicht** voreilig versprechen, dass sie bereits vollständig über XCMate-Katalogrouten verfügbar sind. Identität, Endpoint, Abhängigkeiten und Datenrechte vor Implementation prüfen. Insbesondere den vorhandenen `trending_week`-Shortcut nicht semantisch als `Best bewertet` umetikettieren.
+
+### Konkrete Abnahmefälle – auf der echten Android-Box
+- Auf der Startseite sind **alle sechs Überschriften** in genau dieser Reihenfolge sichtbar, Live-TV-Hero und Senderlogos darüber; die jeweiligen Covers/Audioelemente erscheinen bei vorhandenen Quelldaten.
+- Für *jede* Reihe getrennt `PENDING → LOADING (Spinner) → READY (Spinner aus)` sowie `EMPTY/ERROR/TIMEOUT (Spinner aus, verständlicher Status)` testen, nach ReloadSkin, Kodi-Kaltstart, Gruppenwechsel, EPG-Aktualisierung und Wiedergabe-Rückkehr.
+- Kino-/Disney-/Wochenbewertungsquelle sowie MP3-Start wirklich abspielen/öffnen; Benutzer-Shortcuts bleiben bearbeitbar und fokussierbar, horizontale Scrollposition stabil.
+- Kleine Überschriften gut lesbar, Spinner optisch unmittelbar rechts davon, kompakter vertikaler Abstand, keine Überlagerungen/abgeschnittenen Reihen auf 1080p/720p.
+- Status in Codex-/GitHub-Report für **jede der sechs Reihen einzeln** als PASS/FAIL/NOT_TESTED einschließlich Datenquelle, Widget-URL/Control-ID, Spinner-/Timeout-Verhalten und Screenshot dokumentieren. PR #437 behebt **nur** die Uhr-Token-Sperre für Film-/Serien-Adapter; **die weiteren Reihen, Spinner und Layout-Abnahme sind gesonderte Folgearbeit**. Kein Main-/Pilot-/NeoDark-Merge ohne entsprechende Freigabe.
