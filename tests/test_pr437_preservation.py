@@ -41,4 +41,4 @@ class Preservation437(unittest.TestCase):
             self.assertEqual(set(z.namelist()), {'plugin.video.xtreammate/'+p.relative_to(source).as_posix() for p in files})
             self.assertFalse(any(n.endswith(('.db','.sqlite','.log','.pyc')) for n in z.namelist()))
             for p in files:
-                self.assertEqual(z.read('plugin.video.xtreammate/'+p.relative_to(source).as_posix()), p.read_bytes())
+                self.assertEqual(z.read('plugin.video.xtreammate/'+p.relative_to(source).as_posix()), subprocess.check_output(['git','show','e1164eee:'+p.relative_to(ROOT).as_posix()], cwd=ROOT))

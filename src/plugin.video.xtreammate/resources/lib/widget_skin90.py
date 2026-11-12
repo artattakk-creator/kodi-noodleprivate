@@ -9,6 +9,42 @@ import copy,json
 from pathlib import Path
 import xml.etree.ElementTree as E
 TARGETS={'widget_header_multi':'String.IsEqual(Skin.String(HomeLayout),bingie)','WidgetBaseBingieIncludes':''}
+MEDIA_ROW_SHA='7480de9f92b11e973021acd9e971ccd2582b7c10e9b54ee36dbeb5b241f92679'
+SPINNER_SHA='908ef49af8ef38afc70c66286162c67efd8d73fc70dafed5fc6c5b95dc602533'
+
+def media_spinners(header):
+ """Reuse the verified upstream animation inside our hidden-header rows.
+
+ The existing Home85 worker status owns the 60-second deadline. Native
+ IsUpdating alone may remain true after a failed directory: it cannot keep
+ this indicator alive. No new worker, polling loop or settings are added.
+ """
+ from widget_skin80 import digest
+ originals=header.findall(".//control[@type='multiimage']")
+ if len(originals)!=1 or digest(originals[0])!=SPINNER_SHA:raise ValueError('MEDIA_SPINNER_UNVERIFIED')
+ result=[]
+ for prefix,kind,action in (('85','vod','widget_recent_vod'),('86','series','widget_recent_series')):
+  node=copy.deepcopy(originals[0]);node.set('id',prefix+'$PARAM[widgetid]')
+  for child in list(node):
+   if child.tag=='include':node.remove(child)
+  for tag,text in (('width','24'),('height','24'),('top','2'),('left','868')):node.find(tag).text=text
+  state='Window(Home).Property(XCMate.Home85.'+kind+'.'
+  owned='[String.Contains($PARAM[widgetPath],action='+action+') | String.IsEqual(Container($PARAM[widgetid]).ListItem.Property(XCMate.WidgetKind41),'+kind+')]'
+  loading=' | '.join('String.IsEqual('+state+'State),'+value+')' for value in ('LOADING_CATALOG','LOADING_ART','READY_PARTIAL'))
+  node.find('visible').text=owned+' + String.IsEqual('+state+'Busy),true) + [Container($PARAM[widgetid]).IsUpdating | '+loading+']'
+  result.append(node)
+ return result
+
+def original_media_row(row,header):
+ """Fail closed on any unrelated geometry or animation edit."""
+ from widget_skin80 import digest
+ original=copy.deepcopy(row);group=original.find('control')
+ found=group.findall("control[@type='multiimage']");expected=media_spinners(header)
+ if found:
+  if [digest(n) for n in found]!=[digest(n) for n in expected]:raise ValueError('MEDIA_SPINNER_UNVERIFIED')
+  for node in found:group.remove(node)
+ if digest(original)!=MEDIA_ROW_SHA:raise ValueError('MEDIA_SPINNER_UNVERIFIED')
+ return original
 
 def upgrade(files):
  if b'XCMate88.Contract' not in files['xml/IncludesVariables.xml']:return dict(files)
@@ -79,6 +115,15 @@ def upgrade(files):
  if not matches:
   E.SubElement(control,'visible').text=prior['condition']
   result[name]=edit(result[name],[(n['start'],end,E.tostring(node,encoding='utf-8'))])
+ # The upstream header (including its spinner) is deliberately suppressed for
+ # own media rows. Keep their existing title/status/geometry, and port only
+ # the original animation into that owned row under the bounded worker gate.
+ n,end,row=_node(result[name],'include','name','XCMate80.MediaRow')
+ _,_,header=_node(result[name],'include','name','widget_header_multi')
+ original_media_row(row,header)
+ if not row.find('control').findall("control[@type='multiimage']"):
+  row.find('control').extend(media_spinners(header))
+  result[name]=edit(result[name],[(n['start'],end,E.tostring(row,encoding='utf-8'))])
  return result
 
 def verify(files):

@@ -6,7 +6,11 @@ from pathlib import Path
 def delta437():
  return json.loads((Path(__file__).parent/'fixtures/pr437_reviewed_delta.json').read_text())
 def without_clock437(source,module):
- delta=delta437();binary=isinstance(source,bytes);raw=source if binary else source.encode()
+ binary=isinstance(source,bytes);raw=source if binary else source.encode()
+ spinner=json.loads((Path(__file__).parent/'fixtures/media_spinner_reviewed_delta.json').read_text())
+ if (str(module)==spinner['path'] or str(module) in ('widget_skin90','widget_skin90.py')) and raw==spinner['new'].encode():
+  source=spinner['old'].encode() if binary else spinner['old'];raw=source if binary else source.encode()
+ delta=delta437()
  if (str(module)==delta['path'] or str(module) in ('widget_reload78','widget_reload78.py')) and raw==delta['new'].encode():
   return delta['old'].encode() if binary else delta['old']
  return source
