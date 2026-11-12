@@ -71,7 +71,7 @@ def prepare(portals):
  # exists. Saved SkinShortcuts are read-only; this uses its private backup.
  try:
   from widget_skin78 import installed
-  if _repair_stamp!=layout_stamp and installed(skin) and not xbmc.getCondVisibility('Player.HasMedia') and not xbmcgui.Window(10000).getProperty('skinshortcuts-isrunning'):
+  if _repair_stamp!=layout_stamp and (installed(skin) or __import__('widget_skin90').previous_owned(skin)) and not xbmc.getCondVisibility('Player.HasMedia') and not xbmcgui.Window(10000).getProperty('skinshortcuts-isrunning'):
    from widget_reload78 import repair
    _repair_stamp=layout_stamp
    if repair(profile,skin):__import__('home_activation78').request('consumer79',consumers_changed=True)

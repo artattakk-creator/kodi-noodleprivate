@@ -9,6 +9,74 @@ import copy,json
 from pathlib import Path
 import xml.etree.ElementTree as E
 TARGETS={'widget_header_multi':'String.IsEqual(Skin.String(HomeLayout),bingie)','WidgetBaseBingieIncludes':''}
+MEDIA_ROW_SHA='7480de9f92b11e973021acd9e971ccd2582b7c10e9b54ee36dbeb5b241f92679'
+SPINNER_SHA='908ef49af8ef38afc70c66286162c67efd8d73fc70dafed5fc6c5b95dc602533'
+
+def media_spinners(header,kinds=None,legacy=False):
+ """Reuse the verified upstream animation inside our hidden-header rows.
+
+ The existing Home85 worker status owns the 60-second deadline. Native
+ IsUpdating alone may remain true after a failed directory: it cannot keep
+ this indicator alive. No new worker, polling loop or settings are added.
+ """
+ from widget_skin80 import digest
+ originals=header.findall(".//control[@type='multiimage']")
+ if len(originals)!=1 or digest(originals[0])!=SPINNER_SHA:raise ValueError('MEDIA_SPINNER_UNVERIFIED')
+ result=[]
+ from widget_six_sources import SPECS
+ for index,(kind,_,_,_) in enumerate(SPECS if kinds is None else SPECS[:kinds]):
+  prefix=str(85+index)
+  node=copy.deepcopy(originals[0]);node.set('id',prefix+'$PARAM[widgetid]')
+  for child in list(node):
+   if child.tag=='include':node.remove(child)
+  for tag,text in (('width','24'),('height','24'),('top','2'),('left','0')):node.find(tag).text=text
+  state='Window(Home).Property('+('XCMate.Home85.' if kind in ('vod','series') else 'XCMate.SixRows.')+kind+'.'
+  # Typed caller metadata avoids embedding a clock-bearing directory URL
+  # inside a compiled Kodi visibility expression, and works before items.
+  namespace='XCMate.Home85.' if kind in ('vod','series') else 'XCMate.SixRows.'
+  kind_info='Window(Home).Property('+namespace+'$PARAM[xcmateKind].Kind)'
+  owned='[String.IsEqual('+kind_info+','+kind+') | String.IsEqual(Container($PARAM[widgetid]).ListItem.Property(XCMate.WidgetKind41),'+kind+')]'
+  if legacy:owned='[String.IsEqual("$PARAM[xcmateKind]",'+kind+') | String.IsEqual(Container($PARAM[widgetid]).ListItem.Property(XCMate.WidgetKind41),'+kind+')]'
+  loading=' | '.join('String.IsEqual('+state+'State),'+value+')' for value in ('LOADING_CATALOG','LOADING_ART','READY_PARTIAL','LOADING'))
+  node.find('visible').text=owned+' + String.IsEqual('+state+'Busy),true) + [Container($PARAM[widgetid]).IsUpdating | '+loading+']'
+  result.append(node)
+ return result
+
+def media_heading(title,header,kinds=None,legacy=False):
+ """Let Kodi measure the saved label and place its spinner 12px after it."""
+ group=E.Element('control',type='grouplist',id='84$PARAM[widgetid]')
+ for tag,text in (('left','130'),('top','0'),('width','756'),('height','26'),
+                  ('orientation','horizontal'),('itemgap','12'),('align','left')):
+  E.SubElement(group,tag).text=text
+ label=copy.deepcopy(title);label.find('left').text='0'
+ width=label.find('width');width.text='auto';width.set('min','1');width.set('max','720')
+ group.append(label);group.extend(media_spinners(header,kinds,legacy))
+ return group
+
+def original_media_row(row,header):
+ """Fail closed on any unrelated geometry or animation edit."""
+ from widget_skin80 import digest
+ original=copy.deepcopy(row);group=original.find('control')
+ params=original.findall("param[@name='xcmateKind']")
+ if params:
+  if len(params)!=1 or params[0].attrib!={'name':'xcmateKind','default':''}:raise ValueError('MEDIA_SPINNER_UNVERIFIED')
+  original.remove(params[0])
+ headings=group.findall("control[@id='84$PARAM[widgetid]']")
+ if headings:
+  if len(headings)!=1:raise ValueError('MEDIA_SPINNER_UNVERIFIED')
+  heading=headings[0];titles=heading.findall("control[@type='label']")
+  if len(titles)!=1:raise ValueError('MEDIA_SPINNER_UNVERIFIED')
+  title=copy.deepcopy(titles[0]);title.find('left').text='130'
+  title.find('width').text='720';title.find('width').attrib.clear()
+  if digest(heading) not in (digest(media_heading(title,header)),digest(media_heading(title,header,None,True)),digest(media_heading(title,header,2,True))):
+   # The first reviewed two-row variant had no generic LOADING phase.
+   legacy=media_heading(title,header,2,True)
+   for spinner in legacy.findall("control[@type='multiimage']"):
+    condition=spinner.find('visible');condition.text=condition.text.replace(' | String.IsEqual(Window(Home).Property(XCMate.Home85.vod.State),LOADING)','').replace(' | String.IsEqual(Window(Home).Property(XCMate.Home85.series.State),LOADING)','')
+   if digest(heading)!=digest(legacy):raise ValueError('MEDIA_SPINNER_UNVERIFIED')
+  position=list(group).index(heading);group.remove(heading);group.insert(position,title)
+ if digest(original)!=MEDIA_ROW_SHA:raise ValueError('MEDIA_SPINNER_UNVERIFIED')
+ return original
 
 def upgrade(files):
  if b'XCMate88.Contract' not in files['xml/IncludesVariables.xml']:return dict(files)
@@ -79,7 +147,30 @@ def upgrade(files):
  if not matches:
   E.SubElement(control,'visible').text=prior['condition']
   result[name]=edit(result[name],[(n['start'],end,E.tostring(node,encoding='utf-8'))])
- return result
+ # The upstream header (including its spinner) is deliberately suppressed for
+ # own media rows. Keep their existing title/status/geometry, and port only
+ # the original animation into that owned row under the bounded worker gate.
+ n,end,row=_node(result[name],'include','name','XCMate80.MediaRow')
+ _,_,header=_node(result[name],'include','name','widget_header_multi')
+ original_media_row(row,header)
+ group=row.find('control')
+ # Keep this legacy include's plain body. Kodi requires a <definition>
+ # wrapper when default declarations are added; mixing the two forms drops
+ # the native list. The verified generated caller supplies xcmateKind.
+ declared=row.find("param[@name='xcmateKind']")
+ if declared is not None:row.remove(declared)
+ headings=group.findall("control[@id='84$PARAM[widgetid]']")
+ expected_title=original_media_row(row,header).find("control/control[@type='label']")
+ missing=not headings or digest(headings[0])!=digest(media_heading(expected_title,header))
+ if declared is not None or missing:
+  if missing:
+   if headings:
+    position=list(group).index(headings[0]);title=original_media_row(row,header).find("control/control[@type='label']");group.remove(headings[0])
+   else:
+    title=group.find("control[@type='label']");position=list(group).index(title);group.remove(title)
+   group.insert(position,media_heading(title,header))
+  result[name]=edit(result[name],[(n['start'],end,E.tostring(row,encoding='utf-8'))])
+ return __import__('widget_six_skin').upgrade(result)
 
 def verify(files):
  return upgrade(files)==files

@@ -1,0 +1,34 @@
+{
+  "source_commit": "9664fca531f0b2dd4df4bf80e3af329e9f7ded1c",
+  "host_ci_run": 43267201346,
+  "unittest": {
+    "status": "PASS",
+    "tests": 3854,
+    "seconds": 931.223
+  },
+  "branding": {
+    "status": "PASS",
+    "tests": 11
+  },
+  "po": {
+    "status": "PASS",
+    "catalogues": 17
+  },
+  "scope_subset": {
+    "status": "PASS",
+    "tests": 248,
+    "seconds": 112.946
+  },
+  "package": {
+    "bytes": 4677376,
+    "crc": "PASS",
+    "files": 859,
+    "sha256": "45cc791788f1990bdaeff051004d6f0b1013e5923be9cda9ba1cb2f73cf9a5d2",
+    "source_bytes": "PASS",
+    "version": "0.1.29.90",
+    "reproduced_in_ci": true
+  },
+  "android": "ANDROID_NOT_TESTED",
+  "merged": false,
+  "published": false
+}

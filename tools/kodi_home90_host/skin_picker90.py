@@ -17,4 +17,15 @@ if __import__('os').environ.get('XCMATE_CLOCK437')=='true':
  assert len(homes437)==1,'CLOCK437_DEFAULT_HOME_NOT_UNIQUE'
  root437.remove(homes437[0]);root437.insert(0,homes437[0]);menu437.write(path437,encoding='utf-8',xml_declaration=True)
 exec(compile(Path('/setup_picker90.py').read_text(encoding='utf-8'),'/setup_picker90.py','exec'),globals())
+# This disposable profile suppresses BINGIE's startup/settings helper. Reuse
+# its exact original spinner default rather than leaving the native diffuse
+# colour empty/transparent. Never apply this fixture to an installed profile.
+import xml.etree.ElementTree as E
+defaults438=E.parse(Path('/root/.kodi/addons/skin.titan.bingie.mod/xml/IncludesDefaultSkinSettings.xml'))
+assert any((n.text or '')=='Skin.SetString(WidgetSpinnerTexture.Color,ffffffff)' for n in defaults438.iter('onload'))
+settings438=Path('/root/.kodi/userdata/addon_data/skin.titan.bingie.mod/settings.xml')
+tree438=E.parse(settings438)
+if tree438.getroot().find("setting[@id='WidgetSpinnerTexture.Color']") is None:
+ E.SubElement(tree438.getroot(),'setting',id='WidgetSpinnerTexture.Color',type='string').text='ffffffff'
+ tree438.write(settings438,encoding='utf-8',xml_declaration=True)
 

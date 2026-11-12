@@ -34,7 +34,9 @@ def poll():
     if xbmcgui.getCurrentWindowDialogId() not in (0,-1,9999):return
     from widget_home_probe59 import poll as observe_home59
     observe_home59()
+    __import__('home_loading85').expire()
     __import__('widget_runtime79').poll()
+    __import__('widget_six_runtime').poll()
     if xbmc.getCondVisibility('Player.HasMedia'):return
     # Kodi's selected ListItem is already a RAM object. Never perform a source,
     # DNS, SQLite or disk query when IR focus changes.

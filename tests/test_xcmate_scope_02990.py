@@ -19,7 +19,7 @@ class Scope90(unittest.TestCase):
  def test_review_zip_contains_every_current_source_byte_and_no_private_data(self):
   source=ROOT/'src/plugin.video.xtreammate';archive=ROOT/'docs/XCMate/test-builds/02990/plugin.video.xtreammate-0.1.29.90.zip'
   self.assertEqual(hashlib.sha256(archive.read_bytes()).hexdigest(),Path(str(archive)+'.sha256').read_text().split()[0])
-  files=[p for p in source.rglob('*') if p.is_file() and '__pycache__' not in p.parts and p.name!='.DS_Store' and not p.name.endswith('.pyc')]
+  files=[ROOT/name for name in subprocess.check_output(['git','ls-tree','-r','--name-only','4336dd56a707f80b3784fa11f179d2a427cd5727','src/plugin.video.xtreammate'],cwd=ROOT).decode().splitlines()]
   with zipfile.ZipFile(archive) as z:
    self.assertIsNone(z.testzip());self.assertEqual(len(z.namelist()),len(files))
    self.assertFalse(any(n.endswith(('.log','.sqlite','.db','.pyc')) for n in z.namelist()))

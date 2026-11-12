@@ -6,6 +6,7 @@ _lock=threading.RLock();_queue=queue.Queue(maxsize=16);_pending=set();_thread=No
 _deferred82={};_local_due82={};_lease_keys82={};_fatal82=False
 _cursor84={}
 _logo_due90={}
+_pending_scopes={}
 PREFIX='XCMate.WidgetAsset69.'
 def profile():
  from epg_handoff63 import profile_scope
@@ -76,6 +77,7 @@ def prepare(portal,kind,rows,cancel=lambda:False):
   try:_queue.put_nowait((key,dict(portal),kind,selected))
   except queue.Full:return False
   _pending.add(key)
+  _pending_scopes[key]=(profile(),str(portal['id']),kind)
   if _thread is None or not _thread.is_alive():
    _thread=threading.Thread(target=_run,name='XCMate-provider-art69',daemon=True);_thread.start()
  return True
@@ -204,9 +206,15 @@ def _run():
    if queued:_queue.task_done()
    if not deferred:
     _local_due82.pop(key,None)
-    with _lock:_pending.discard(key)
+    with _lock:_pending.discard(key);_pending_scopes.pop(key,None)
 
  note('STOPPED',alive=False,pending=len(_pending))
+
+def pending(portal,kind):
+ """Read only this profile/account/row's existing artwork work, no I/O."""
+ if _fatal82 or _stop.is_set():return False
+ wanted=(profile(),str(portal['id']),kind)
+ with _lock:return any(scope==wanted and key in _pending for key,scope in _pending_scopes.items())
 
 def revision():
  with _lock:return _revision

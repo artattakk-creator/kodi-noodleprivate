@@ -33,7 +33,7 @@ jobs:
       - name: Reproduce ZIP, verify every frozen publication channel
         run: |
           python tools/package_xcmate71.py "$RUNNER_TEMP/xcmate90" > "$RUNNER_TEMP/xcmate90/package.json"
-          cmp "$RUNNER_TEMP/xcmate90/plugin.video.xtreammate-0.1.29.90.zip" docs/XCMate/test-builds/pr437/plugin.video.xtreammate-0.1.29.90.zip
+          cmp "$RUNNER_TEMP/xcmate90/plugin.video.xtreammate-0.1.29.90.zip" docs/XCMate/test-builds/media-spinner/plugin.video.xtreammate-0.1.29.90.zip
           python tools/release_channel75.py
       - uses: actions/upload-artifact@v4
         if: always()

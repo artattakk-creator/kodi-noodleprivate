@@ -13,7 +13,8 @@ for _ in range(150):
 else:raise RuntimeError('PICKER90_KODI_NOT_STARTED')
 state=rpc('GUI.GetProperties',dict(properties=['currentwindow','currentcontrol']))
 if state['currentwindow']['id']==10100 and state['currentcontrol']['label']=='No':rpc('Input.Select')
-for addon in ('script.module.unidecode','script.module.simpleeval','plugin.video.xtreammate','script.skinshortcuts','skin.titan.bingie.mod','script.xcmate.picker90'):rpc('Addons.SetAddonEnabled',dict(addonid=addon,enabled=True))
+for addon in ('script.module.unidecode','script.module.simpleeval','plugin.video.xtreammate','script.skinshortcuts','skin.titan.bingie.mod','script.xcmate.picker90','plugin.video.themoviedb.helper','plugin.audio.m3sr2019'):rpc('Addons.SetAddonEnabled',dict(addonid=addon,enabled=True))
+assert rpc('Settings.SetSettingValue',dict(setting='audiooutput.audiodevice',value='PULSE:Default'))
 assert rpc('Settings.SetSettingValue',dict(setting='lookandfeel.skin',value='skin.titan.bingie.mod'))
 rpc('Application.Quit');time.sleep(3)
 for _ in range(200):

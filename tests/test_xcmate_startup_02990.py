@@ -139,7 +139,7 @@ class ForeignNavigation90(Fixture50,unittest.TestCase):
   for name,text in extra.items():(self.skin/name).write_text(text)
   files=graph.build({name:(self.skin/name).read_bytes() for name in graph.FILES})
   root=graph.parse(files['xml/IncludesHomeWidgets.xml']);digest=__import__('widget_skin80').digest
-  self.assertEqual(digest(root.find("include[@name='XCMate80.MediaRow']")),'7480de9f92b11e973021acd9e971ccd2582b7c10e9b54ee36dbeb5b241f92679')
+  self.assertEqual(digest(__import__('widget_skin90').original_media_row(root.find("include[@name='XCMate80.MediaRow']"),root.find("include[@name='widget_header_multi']"))),'7480de9f92b11e973021acd9e971ccd2582b7c10e9b54ee36dbeb5b241f92679')
   normal=root.find("include[@name='XCMate80.MediaNormal']");control=normal.find('control')
   self.assertEqual(len(control.findall('visible')),2)
   self.assertFalse(any('IsUpdating' in (v.text or '') or 'NumItems' in (v.text or '') for v in control.findall('visible')))

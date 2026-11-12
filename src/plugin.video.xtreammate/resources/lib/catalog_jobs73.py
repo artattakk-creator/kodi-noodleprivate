@@ -16,6 +16,7 @@ from vodsync72 import Session
 KINDS = ('live', 'vod', 'series')
 CONTRACTS = dict(ACTIONS, live=('get_live_categories', 'get_live_streams', 'stream_id'))
 _cache = None
+_cache_profile = None
 _verified = {}
 
 
@@ -49,8 +50,9 @@ def _save(value):
     finally:
         if fd is not None:os.close(fd)
         if temp and os.path.exists(temp):os.unlink(temp)
-    global _cache
+    global _cache, _cache_profile
     _cache = value
+    _cache_profile = __import__('epg_handoff63').profile_scope()
 
 
 def jobs():
@@ -118,8 +120,9 @@ def run_next(cancel=lambda: False):
     """Worker-only. Real EOF/commit/cold-readback before advancing cursor."""
     if cancel() or not os.path.isfile(path()): return False
     with reading(): value = _read()
-    global _cache
+    global _cache, _cache_profile
     _cache = value
+    _cache_profile = __import__('epg_handoff63').profile_scope()
     job = next((dict(r) for r in value['jobs'] if r.get('resume') and not r.get('cancel') and
                 r['state'] in ('WAITING', 'RUNNING', 'INTERRUPTED') and r.get('next_at',0) <= time.time()), None)
     if job is None: return False

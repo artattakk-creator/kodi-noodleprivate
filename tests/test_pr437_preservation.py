@@ -1,5 +1,6 @@
 """Review candidate bytes, historical delta and current .90 channel protection."""
 import hashlib
+import json
 import subprocess
 import unittest
 import zipfile
@@ -15,7 +16,10 @@ class Preservation437(unittest.TestCase):
         for version in ('old', 'new'):
             self.assertEqual(hashlib.sha256(d[version].encode()).hexdigest(), d[version+'_sha256'])
         self.assertEqual(d['old'].encode(), subprocess.check_output(['git','show',BASE+':'+d['path']], cwd=ROOT))
-        self.assertEqual((ROOT/d['path']).read_text(), d['new'])
+        current=(ROOT/d['path']).read_text()
+        skin=json.loads((ROOT/'tests/fixtures/media_spinner_reviewed_delta.json').read_text())['modules'][d['path']]
+        self.assertEqual(current,skin['new'])
+        self.assertEqual(skin['old'],d['new'])
         self.assertEqual(without_clock437(d['new'], d['path']), d['old'])
 
     def test_unreviewed_change_is_never_normalized(self):
@@ -35,10 +39,10 @@ class Preservation437(unittest.TestCase):
         archive = ROOT/'docs/XCMate/test-builds/pr437/plugin.video.xtreammate-0.1.29.90.zip'
         self.assertEqual(hashlib.sha256(archive.read_bytes()).hexdigest(), Path(str(archive)+'.sha256').read_text().split()[0])
         source = ROOT/'src/plugin.video.xtreammate'
-        files = [p for p in source.rglob('*') if p.is_file() and '__pycache__' not in p.parts and not p.name.endswith('.pyc') and p.name!='.DS_Store']
+        files=[ROOT/name for name in subprocess.check_output(['git','ls-tree','-r','--name-only','e1164eee','src/plugin.video.xtreammate'],cwd=ROOT).decode().splitlines()]
         with zipfile.ZipFile(archive) as z:
             self.assertIsNone(z.testzip())
             self.assertEqual(set(z.namelist()), {'plugin.video.xtreammate/'+p.relative_to(source).as_posix() for p in files})
             self.assertFalse(any(n.endswith(('.db','.sqlite','.log','.pyc')) for n in z.namelist()))
             for p in files:
-                self.assertEqual(z.read('plugin.video.xtreammate/'+p.relative_to(source).as_posix()), p.read_bytes())
+                self.assertEqual(z.read('plugin.video.xtreammate/'+p.relative_to(source).as_posix()), subprocess.check_output(['git','show','e1164eee:'+p.relative_to(ROOT).as_posix()], cwd=ROOT))

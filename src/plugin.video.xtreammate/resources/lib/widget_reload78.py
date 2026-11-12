@@ -7,7 +7,7 @@ import html,os,re
 from pathlib import Path
 from urllib.parse import urlsplit,parse_qs
 
-def candidate(data,layout80=False):
+def candidate(data,layout80=False,six_rows=False):
     from widget_skin50 import spans,edit
     from navigation_builtin78 import uri
     uri=directory_uri89
@@ -15,13 +15,18 @@ def candidate(data,layout80=False):
     changes=[]
     if layout80:
         for node80 in spans(data):
-            if node80['tag']!='include' or node80['attrs'].get('content')!='widget_base':continue
+            if node80['tag']!='include' or node80['attrs'].get('content') not in ('widget_base','XCMate80.MediaRow'):continue
             params80={n['attrs'].get('name'):n['attrs'].get('value','') for n in node80['children'] if n['tag']=='param'}
             try:parsed80=urlsplit(uri(params80.get('widgetPath','')));kind80=ROUTES.get(parse_qs(parsed80.query).get('action',[''])[0])
             except ValueError:continue
             if kind80 not in ('vod','series') or params80.get('contentStyle')!='normal' or params80.get('widgetTarget')!='videos':continue
-            start80,end80=node80['start'],node80['open'];old80=data[start80:end80]
-            changes.append((start80,end80,old80.replace(b'content="widget_base"',b'content="XCMate80.MediaRow"',1)))
+            if node80['attrs'].get('content')=='widget_base':
+                start80,end80=node80['start'],node80['open'];old80=data[start80:end80]
+                changes.append((start80,end80,old80.replace(b'content="widget_base"',b'content="XCMate80.MediaRow"',1)))
+            declared80=params80.get('xcmateKind')
+            if declared80 is not None and declared80!=kind80:raise ValueError('UNVERIFIED_MEDIA_KIND')
+            if declared80 is None:
+                changes.append((node80['end'],node80['end'],('<param name="xcmateKind" value="'+kind80+'" />').encode()))
     for node in spans(data):
         tag=node['tag'];attrs=node['attrs']
         if tag=='content':raw=node['text']
@@ -43,7 +48,8 @@ def candidate(data,layout80=False):
             new,count=re.subn(rb'\bvalue="[^"]*"',lambda m:('value="'+html.escape(url,quote=True)+'"').encode(),old,count=1)
             if count!=1:raise ValueError('UNVERIFIED_TEMPLATE')
             changes.append((start,end,new))
-    return edit(data,changes) if changes else data
+    result=edit(data,changes) if changes else data
+    return __import__('widget_six_consumer').patch(result) if layout80 and six_rows else result
 
 def repair(profile,skin):
     from widget_transaction50 import read,replace,sha
@@ -52,7 +58,8 @@ def repair(profile,skin):
     if not target.exists():return False
     original=read(target)
     marker80=Path(skin)/'xml/IncludesVariables.xml'
-    changed=candidate(original,layout80=marker80.is_file() and b'XCMate80.Contract' in read(marker80))
+    markers=read(marker80) if marker80.is_file() else b''
+    changed=candidate(original,layout80=b'XCMate80.Contract' in markers,six_rows=b'XCMate.SixRows.Contract' in markers)
     if changed==original:return False
     snapshot(profile,skin)
     replace(target,changed,sha(original),target.stat().st_mode&0o777)
