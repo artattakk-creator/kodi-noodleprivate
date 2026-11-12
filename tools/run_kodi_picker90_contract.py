@@ -19,9 +19,16 @@ def main():
  for key in ('DOCKER_HOST','DOCKER_CONTEXT','DOCKER_TLS','DOCKER_TLS_VERIFY','DOCKER_CERT_PATH'):env.pop(key,None)
  docker=['docker','--host=unix:///var/run/docker.sock'];name='xcmate-picker90-'+uuid.uuid4().hex[:10]
  def run(*args,**kw):return subprocess.run(docker+list(args),env=env,check=True,**kw)
- context=report/'docker';context.mkdir();dockerfile=(root/'tools/kodi_helper57_host/Dockerfile').read_text().replace('python3-pil ca-certificates','python3-pil python3-simpleeval python3-unidecode ca-certificates');(context/'Dockerfile').write_text(dockerfile)
+ context=report/'docker';context.mkdir();dockerfile=(root/'tools/kodi_helper57_host/Dockerfile').read_text().replace('python3-pil ca-certificates','python3-pil python3-simpleeval python3-unidecode pulseaudio pulseaudio-utils ca-certificates');(context/'Dockerfile').write_text(dockerfile)
  with (report/'build.log').open('w') as log:run('build','--secret','id=system_ca,src=/etc/ssl/certs/ca-certificates.crt','-t','xcmate-kodi21-picker90',str(context),stdout=log,stderr=subprocess.STDOUT)
  start=(root/'tools/kodi_home74_host/start.sh').read_text().replace('cp /work/fixture66.py /root/.kodi/addons/plugin.video.xtreammate/','cp /fixture84.py /root/.kodi/addons/plugin.video.xtreammate/fixture66.py')
+ pulse438='''# Disposable real PCM clock/output: no physical audio hardware in CI.
+pulseaudio --system --daemonize=yes --exit-idle-time=-1 --load="module-native-protocol-unix socket=/tmp/xcmate-native-pulse.sock auth-anonymous=1" --load="module-null-sink sink_name=xcmate_native" --log-target=file:/tmp/xcmate-native-pulse.log
+export PULSE_SERVER=unix:/tmp/xcmate-native-pulse.sock
+pactl set-default-sink xcmate_native
+pactl list short sinks > /root/picker90-native-audio-sinks.txt
+'''
+ start=start.replace('while true; do',pulse438+'\nwhile true; do')
  (report/'start.sh').write_text(start)
  base=root/'tools/kodi_home84_host';helper=root/'tools/kodi_home90_host'
  mounts=[(root/'tools/kodi_home74_host','/work'),(root/'src/plugin.video.xtreammate','/xcmate'),(pristine/'skin.titan.bingie.mod','/skin'),(candidate,'/candidate'),(base/'fixture84.py','/fixture84.py'),(root/'tools/kodi_home86_host/tls86.py','/work/tls69.py'),(helper/'skin_picker90.py','/work/skin_fixture66.py'),(root/'tools/kodi_home74_host/skin_fixture66.py','/base_skin78.py'),(helper/'setup_picker90.py','/setup_picker90.py'),(helper/'picker90.py','/picker90.py'),(helper/'probe_picker90.py','/work/probe.py'),(root/'online-test/script.skinshortcuts/script.skinshortcuts-2.1.0.zip','/skinshortcuts90.zip'),(report/'start.sh','/work/start.sh')]
@@ -34,7 +41,7 @@ def main():
   run(*cmd,stdout=subprocess.DEVNULL)
   with (report/'probe.log').open('w') as log:run('exec',name,'python3','/work/probe.py',stdout=log,stderr=subprocess.STDOUT)
  finally:
-  files90=[('/root/picker90-diagnostic.json','picker90-diagnostic.json'),('/root/picker90-registry.json','picker90-registry.json'),('/root/picker90-history.json','picker90-history.json'),('/root/picker90.json','picker90.json'),('/root/picker90-error.txt','picker90-error.txt'),('/root/.kodi/temp/kodi.log','synthetic-kodi.log')]
+  files90=[('/root/picker90-diagnostic.json','picker90-diagnostic.json'),('/root/picker90-registry.json','picker90-registry.json'),('/root/picker90-history.json','picker90-history.json'),('/root/picker90.json','picker90.json'),('/root/picker90-error.txt','picker90-error.txt'),('/root/picker90-native-audio-sinks.txt','picker90-native-audio-sinks.txt'),('/tmp/xcmate-native-pulse.log','native-pulse.log'),('/root/.kodi/temp/kodi.log','synthetic-kodi.log')]
   files90.extend([('/root/picker90-experiments.json','picker90-experiments.json'),('/root/picker90-experiment-error.txt','picker90-experiment-error.txt')])
   for stage90 in ('params','self','bounds','combined','flat'):files90.append(('/root/picker90-experiment-'+stage90+'.png','picker90-experiment-'+stage90+'.png'))
   files90.extend([('/root/.kodi/addons/skin.titan.bingie.mod/xml/IncludesHomeWidgets.xml','installed-widgets90.xml'),('/root/.kodi/addons/skin.titan.bingie.mod/xml/IncludesHomeBingie.xml','installed-home90.xml'),('/root/.kodi/addons/skin.titan.bingie.mod/xml/script-skinshortcuts-includes.xml','original-generated90.xml'),('/root/.kodi/userdata/addon_data/script.skinshortcuts/skin.titan.bingie.mod.properties','original-saved90.properties')])

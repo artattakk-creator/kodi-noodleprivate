@@ -85,17 +85,20 @@ def run(home,bindings,spinner_observer,service_poll):
   # Real native audio resolve/click, using only a local synthetic six-second WAV.
   home.setFocusId(extra_bindings['mp3']);xbmc.sleep(150)
   xbmc.executebuiltin('Action(Select)',wait=False);deadline=time.monotonic()+5
-  while not xbmc.Player().isPlayingAudio() and time.monotonic()<deadline:xbmc.sleep(50)
-  audio=xbmc.Player().isPlayingAudio()
-  if not audio:raise RuntimeError('SIX438_AUDIO_CLICK_DID_NOT_PLAY')
+  def audio_started438():
+   try:return xbmc.Player().isPlayingAudio() and xbmc.Player().getTime()>.25 and xbmcgui.getCurrentWindowDialogId() in (0,-1,9999)
+   except RuntimeError:return False
+  while not audio_started438() and time.monotonic()<deadline:xbmc.sleep(50)
+  audio=audio_started438()
+  if not audio:raise RuntimeError(('SIX438_AUDIO_CLOCK_OR_OPEN_ACK_MISSING',xbmcgui.getCurrentWindowId(),xbmcgui.getCurrentWindowDialogId()))
   xbmc.Player().stop();deadline=time.monotonic()+5
-  while xbmc.Player().isPlayingAudio() and time.monotonic()<deadline:xbmc.sleep(50)
-  if xbmc.Player().isPlayingAudio():raise RuntimeError('SIX438_AUDIO_STOP_NOT_ACKNOWLEDGED')
+  while (xbmc.Player().isPlayingAudio() or xbmcgui.getCurrentWindowDialogId() not in (0,-1,9999)) and time.monotonic()<deadline:xbmc.sleep(50)
+  if xbmc.Player().isPlayingAudio() or xbmcgui.getCurrentWindowDialogId() not in (0,-1,9999):raise RuntimeError('SIX438_AUDIO_STOP_NOT_ACKNOWLEDGED')
   # A native input after Stop must still reach the preceding row. Do not
   # replace a failed screenshot with a fabricated GUI-return receipt.
   xbmc.executebuiltin('Action(Up)',wait=False);deadline=time.monotonic()+5
   while home.getFocusId()!=extra_bindings['trend'] and time.monotonic()<deadline:xbmc.sleep(50)
-  if home.getFocusId()!=extra_bindings['trend']:raise RuntimeError(('SIX438_AUDIO_RETURN_INPUT_BLOCKED',home.getFocusId()))
+  if home.getFocusId()!=extra_bindings['trend']:raise RuntimeError(('SIX438_AUDIO_RETURN_INPUT_BLOCKED',home.getFocusId(),xbmcgui.getCurrentWindowId(),xbmcgui.getCurrentWindowDialogId()))
   report=dict(status='PASS',rows=rows,spinner=spinner_receipts,audio_played=True,audio_stop_ack=True,audio_return_ir=True,video_directory_clicks=[r[0] for r in EXTRAS[:-1]],video_directory_back=True,elapsed_ms=int((time.monotonic()-start)*1000),source='SYNTHETIC_NATIVE_DIRECTORIES_NOT_REMOTE_SERVICES',android='ANDROID_NOT_TESTED')
   Path('/root/picker90-six438.json').write_text(json.dumps(report,indent=2));return report
  finally:
