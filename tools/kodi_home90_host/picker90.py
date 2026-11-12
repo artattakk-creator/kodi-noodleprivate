@@ -70,10 +70,19 @@ def manager():
  xbmc.sleep(200);return owner90[0]
 
 def choose(dialog,slot,kind=None,noportal=False):
- dialog.setFocusId(1312);action('Select');dialog.setFocusId(90011+slot*10);action('Select')
+ manager_id437=xbmcgui.getCurrentWindowDialogId()
+ check(xbmc.getCondVisibility('Window.IsActive(script-skinshortcuts.xml)'),'PICKER90_NOT_IN_MANAGER')
+ dialog.setFocusId(1312);action('Select')
+ button437=90011+slot*10
+ until(lambda:xbmc.getCondVisibility('Control.IsVisible('+str(button437)+')'),'PICKER90_SLOT_NOT_VISIBLE')
+ dialog.setFocusId(button437)
+ until(lambda:xbmc.getInfoLabel('System.CurrentControlId')==str(button437),'PICKER90_SLOT_NOT_FOCUSED')
+ action('Select')
  seen=[]
  for step in range(16):
-  until(lambda:bool(entries()) or xbmcgui.getCurrentWindowDialogId()==10103,'PICKER90_EMPTY_SELECT')
+  # Previous modal list labels can survive during the manager's close/open
+  # animation. Never treat those stale labels as the new native selection.
+  until(lambda:xbmcgui.getCurrentWindowDialogId()!=manager_id437 and (bool(entries()) or xbmcgui.getCurrentWindowDialogId()==10103),'PICKER90_EMPTY_SELECT')
   if xbmcgui.getCurrentWindowDialogId()==10103:
    xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=90,method='Input.SendText',params=dict(text='XCMate '+str(kind),done=True))));break
   values=stable_entries();seen.append(values);history.append(dict(step=step,kind=kind,labels=values,window=xbmcgui.getCurrentWindowDialogId(),current=xbmc.getInfoLabel('Container(6).CurrentItem')));Path('/root/picker90-history.json').write_text(json.dumps(history,indent=2));print('PICKER90_NATIVE_LIST '+json.dumps(history[-1]),flush=True)
@@ -98,11 +107,11 @@ def choose(dialog,slot,kind=None,noportal=False):
     if options:target=options[0];break
   check(target is not None,('PICKER90_UNKNOWN_NATIVE_BRANCH',values));selected=values[target];select(target)
   if presets437 or 'use as widget' in selected.casefold() or 'als widget' in selected.casefold():
-   until(lambda:xbmcgui.getCurrentWindowDialogId()==10103 or xbmc.getCondVisibility('Window.IsActive(script-skinshortcuts.xml)'),'PICKER90_SELECT_DID_NOT_RETURN')
+   until(lambda:xbmcgui.getCurrentWindowDialogId() in (10103,manager_id437),'PICKER90_SELECT_DID_NOT_RETURN')
    if xbmcgui.getCurrentWindowDialogId()==10103:xbmc.executeJSONRPC(json.dumps(dict(jsonrpc='2.0',id=90,method='Input.SendText',params=dict(text='XCMate '+kind,done=True))))
    break
  else:raise RuntimeError('PICKER90_RECURSION_LIMIT')
- until(lambda:xbmc.getCondVisibility('Window.IsActive(script-skinshortcuts.xml)'),'PICKER90_MANAGER_NOT_RETURNED')
+ until(lambda:xbmcgui.getCurrentWindowDialogId()==manager_id437,'PICKER90_MANAGER_NOT_RETURNED')
  return seen
 def close(dialog):
  dialog.setFocusId(211)
