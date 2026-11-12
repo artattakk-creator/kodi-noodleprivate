@@ -35,6 +35,14 @@ def spinner_receipts438(home,bindings):
   if home.getFocusId()!=cid:raise RuntimeError(('SPINNER438_ROW_NOT_FOCUSED',kind,home.getFocusId()))
   home.getControl(cid).selectItem(0);xbmc.sleep(300)
   before=xbmc.getInfoLabel('Container('+str(cid)+').NumItems')
+  def frame438(name):
+   path=Path('/root/'+name+'.png');xbmc.executebuiltin('TakeScreenshot('+str(path)+')',wait=False)
+   for _ in range(30):
+    try:
+     with Image.open(io.BytesIO(path.read_bytes())) as image:return path,image.convert('RGB').resize((1920,1080))
+    except (OSError,ValueError,SyntaxError):xbmc.sleep(50)
+   raise RuntimeError('SPINNER438_SCREENSHOT_NOT_READY')
+  _,baseline438=frame438('picker90-spinner438-'+kind+'-baseline')
   try:
    home.setProperty(keys[0],'true');home.setProperty(keys[1],'LOADING_ART');home.setProperty(keys[2],'Wird geladen …')
    frames=[];files=[]
@@ -45,26 +53,21 @@ def spinner_receipts438(home,bindings):
     facts=dict(kind=kind,focus=home.getFocusId(),row=xbmc.getCondVisibility('Control.IsVisible(75'+str(cid)+')'),header=xbmc.getCondVisibility('Control.IsVisible(84'+str(cid)+')'),busy=home.getProperty(keys[0]),state=home.getProperty(keys[1]),item_kind=source437,busy_condition=xbmc.getCondVisibility('String.IsEqual(Window(Home).Property('+keys[0]+'),true)'),kind_condition=xbmc.getCondVisibility('String.IsEqual(Container('+str(cid)+').ListItem.Property(XCMate.WidgetKind41),'+kind+')'))
     try:facts['native_size']=[home.getControl(spinner).getWidth(),home.getControl(spinner).getHeight()]
     except RuntimeError:facts['native_size']='PYTHON_CONTROL_UNSUPPORTED_OR_MISSING'
-    raise RuntimeError(('SPINNER438_DIAGNOSTIC',facts))
+    print('SPINNER438_DIAGNOSTIC '+json.dumps(facts),flush=True)
    for index in range(4):
     xbmc.sleep(170)
-    if not xbmc.getCondVisibility('Control.IsVisible('+str(spinner)+')'):raise RuntimeError(('SPINNER438_NOT_VISIBLE',kind))
-    path=Path('/root/picker90-spinner438-'+kind+'-'+str(index)+'.png')
-    xbmc.executebuiltin('TakeScreenshot('+str(path)+')',wait=False)
-    for _ in range(30):
-     try:
-      with Image.open(io.BytesIO(path.read_bytes())) as image:frame=image.convert('RGB').resize((1920,1080))
-      break
-     except (OSError,ValueError,SyntaxError):xbmc.sleep(50)
-    else:raise RuntimeError('SPINNER438_SCREENSHOT_NOT_READY')
+    path,frame=frame438('picker90-spinner438-'+kind+'-'+str(index))
     frames.append(frame.crop((250,640,1890,1040)));files.append(path.name)
    changes=[ImageChops.difference(frames[0],frame).getbbox() for frame in frames[1:]]
    animated=any(box and 1<=box[2]-box[0]<=24 and 1<=box[3]-box[1]<=24 for box in changes)
    if not animated:raise RuntimeError(('SPINNER438_ANIMATION_PIXELS_MISSING',kind,changes))
+   rect=next(box for box in changes if box and 1<=box[2]-box[0]<=24 and 1<=box[3]-box[1]<=24)
+   rect=(rect[0]+250,rect[1]+640,rect[2]+250,rect[3]+640)
    terminal=[]
    for state in ('READY','EMPTY','ERROR_RETRYABLE'):
-    home.setProperty(keys[0],'');home.setProperty(keys[1],state);xbmc.sleep(150)
-    if xbmc.getCondVisibility('Control.IsVisible('+str(spinner)+')'):raise RuntimeError(('SPINNER438_STUCK',kind,state))
+    home.setProperty(keys[0],'');home.setProperty(keys[1],state);xbmc.sleep(250)
+    _,terminal438=frame438('picker90-spinner438-'+kind+'-'+state)
+    if terminal438.crop(rect).tobytes()!=baseline438.crop(rect).tobytes():raise RuntimeError(('SPINNER438_STUCK_PIXELS',kind,state,rect))
     if xbmc.getInfoLabel('Container('+str(cid)+').NumItems')!=before:raise RuntimeError(('SPINNER438_LISTITEMS_RESET',kind,state))
     terminal.append(state)
    receipts.append(dict(kind=kind,control=spinner,animation_pixels=True,frames=files,changes=changes,terminal_hidden=terminal,listitems_preserved=int(before),injection='UI_STATE_ONLY_NOT_PROVIDER_JOB',android='ANDROID_NOT_TESTED'))
