@@ -75,9 +75,15 @@ def choose(dialog,slot,kind=None,noportal=False):
  manager_id437=manager_ids437[id(dialog)]
  until(lambda:xbmcgui.getCurrentWindowDialogId()==manager_id437,'PICKER90_MANAGER_NOT_TOPMOST')
  check(xbmc.getCondVisibility('Window.IsActive(script-skinshortcuts.xml)'),'PICKER90_NOT_IN_MANAGER')
- dialog.setFocusId(1312);action('Select')
  button437=90011+slot*10
- until(lambda:xbmc.getCondVisibility('Control.IsVisible('+str(button437)+')'),'PICKER90_SLOT_NOT_VISIBLE')
+ # The original manager keeps its widget panel open between slot picks.
+ # Re-selecting its launcher races the already focused first slot. Observe
+ # the real panel property and focus ACK before sending a single Select.
+ if dialog.getProperty('widgetcontrols')!='1':
+  dialog.setFocusId(1312)
+  until(lambda:xbmc.getInfoLabel('System.CurrentControlId')=='1312','PICKER90_WIDGET_LAUNCHER_NOT_FOCUSED')
+  action('Select')
+ until(lambda:dialog.getProperty('widgetcontrols')=='1' and xbmc.getCondVisibility('Control.IsVisible('+str(button437)+')'),'PICKER90_SLOT_NOT_VISIBLE')
  dialog.setFocusId(button437)
  until(lambda:xbmc.getInfoLabel('System.CurrentControlId')==str(button437),'PICKER90_SLOT_NOT_FOCUSED')
  action('Select')
