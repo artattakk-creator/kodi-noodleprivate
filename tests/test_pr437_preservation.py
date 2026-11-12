@@ -1,5 +1,6 @@
 """Review candidate bytes, historical delta and current .90 channel protection."""
 import hashlib
+import json
 import subprocess
 import unittest
 import zipfile
@@ -15,7 +16,10 @@ class Preservation437(unittest.TestCase):
         for version in ('old', 'new'):
             self.assertEqual(hashlib.sha256(d[version].encode()).hexdigest(), d[version+'_sha256'])
         self.assertEqual(d['old'].encode(), subprocess.check_output(['git','show',BASE+':'+d['path']], cwd=ROOT))
-        self.assertEqual((ROOT/d['path']).read_text(), d['new'])
+        current=(ROOT/d['path']).read_text()
+        skin=json.loads((ROOT/'tests/fixtures/media_spinner_reviewed_delta.json').read_text())['modules'][d['path']]
+        self.assertEqual(current,skin['new'])
+        self.assertEqual(skin['old'],d['new'])
         self.assertEqual(without_clock437(d['new'], d['path']), d['old'])
 
     def test_unreviewed_change_is_never_normalized(self):

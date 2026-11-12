@@ -15,13 +15,18 @@ def candidate(data,layout80=False):
     changes=[]
     if layout80:
         for node80 in spans(data):
-            if node80['tag']!='include' or node80['attrs'].get('content')!='widget_base':continue
+            if node80['tag']!='include' or node80['attrs'].get('content') not in ('widget_base','XCMate80.MediaRow'):continue
             params80={n['attrs'].get('name'):n['attrs'].get('value','') for n in node80['children'] if n['tag']=='param'}
             try:parsed80=urlsplit(uri(params80.get('widgetPath','')));kind80=ROUTES.get(parse_qs(parsed80.query).get('action',[''])[0])
             except ValueError:continue
             if kind80 not in ('vod','series') or params80.get('contentStyle')!='normal' or params80.get('widgetTarget')!='videos':continue
-            start80,end80=node80['start'],node80['open'];old80=data[start80:end80]
-            changes.append((start80,end80,old80.replace(b'content="widget_base"',b'content="XCMate80.MediaRow"',1)))
+            if node80['attrs'].get('content')=='widget_base':
+                start80,end80=node80['start'],node80['open'];old80=data[start80:end80]
+                changes.append((start80,end80,old80.replace(b'content="widget_base"',b'content="XCMate80.MediaRow"',1)))
+            declared80=params80.get('xcmateKind')
+            if declared80 is not None and declared80!=kind80:raise ValueError('UNVERIFIED_MEDIA_KIND')
+            if declared80 is None:
+                changes.append((node80['end'],node80['end'],('<param name="xcmateKind" value="'+kind80+'" />').encode()))
     for node in spans(data):
         tag=node['tag'];attrs=node['attrs']
         if tag=='content':raw=node['text']

@@ -154,6 +154,25 @@ class MediaSpinner(Fixture50, unittest.TestCase):
         from clock50_contract437 import without_clock437
         delta = json.loads((ROOT/'tests/fixtures/media_spinner_reviewed_delta.json').read_text())
         for path, change in delta['modules'].items():
-            self.assertEqual(without_clock437(change['new'],path),change['old'])
+            self.assertEqual(without_clock437(change['new'],path),without_clock437(change['old'],path))
             extra=change['new']+'\nUNREVIEWED = True\n'
             self.assertEqual(without_clock437(extra,path),extra)
+
+    def test_already_converted_rows_receive_typed_kind_without_changing_urls(self):
+        from test_widget_clock50_consumer_91 import fixture
+        from widget_reload78 import candidate
+        import xml.etree.ElementTree as E
+        first=candidate(fixture(),layout80=True)
+        legacy=first.replace(b'<param name="xcmateKind" value="vod" />',b'').replace(b'<param name="xcmateKind" value="series" />',b'')
+        repaired=candidate(legacy,layout80=True)
+        self.assertEqual(repaired,first)
+        self.assertEqual([n.get('value') for n in E.fromstring(repaired).findall('.//param[@name="xcmateKind"]')],['vod','series'])
+
+    def test_mismatched_typed_kind_blocks_repair_without_any_source_edit(self):
+        from test_widget_clock50_consumer_91 import fixture
+        from widget_reload78 import candidate
+        bad=candidate(fixture(),layout80=True).replace(b'name="xcmateKind" value="vod"',b'name="xcmateKind" value="series"')
+        before=bytes(bad)
+        with self.assertRaisesRegex(ValueError,'UNVERIFIED_MEDIA_KIND'):
+            candidate(bad,layout80=True)
+        self.assertEqual(bad,before)

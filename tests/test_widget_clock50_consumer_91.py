@@ -66,7 +66,9 @@ class TestClock50Consumer(unittest.TestCase):
                          ['1510', '1520', '1530'])
         # Only the two include names change. No label, path, refresh hook,
         # container or foreign consumer is rewritten.
-        self.assertEqual(changed.replace(b'content="XCMate80.MediaRow"', b'content="widget_base"'), original)
+        self.assertEqual([n.get('value') for n in tree.findall('.//param[@name="xcmateKind"]')], ['vod','series'])
+        stripped=changed.replace(b'<param name="xcmateKind" value="vod" />',b'').replace(b'<param name="xcmateKind" value="series" />',b'')
+        self.assertEqual(stripped.replace(b'content="XCMate80.MediaRow"', b'content="widget_base"'), original)
 
     def test_non_xcmate_layout_not_modified(self):
         original = fixture()

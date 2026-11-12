@@ -29,7 +29,9 @@ def media_spinners(header):
    if child.tag=='include':node.remove(child)
   for tag,text in (('width','24'),('height','24'),('top','2'),('left','0')):node.find(tag).text=text
   state='Window(Home).Property(XCMate.Home85.'+kind+'.'
-  owned='[String.Contains("$PARAM[widgetPath]",action='+action+') | String.IsEqual(Container($PARAM[widgetid]).ListItem.Property(XCMate.WidgetKind41),'+kind+')]'
+  # Typed caller metadata avoids embedding a clock-bearing directory URL
+  # inside a compiled Kodi visibility expression, and works before items.
+  owned='[String.IsEqual("$PARAM[xcmateKind]",'+kind+') | String.IsEqual(Container($PARAM[widgetid]).ListItem.Property(XCMate.WidgetKind41),'+kind+')]'
   loading=' | '.join('String.IsEqual('+state+'State),'+value+')' for value in ('LOADING_CATALOG','LOADING_ART','READY_PARTIAL'))
   node.find('visible').text=owned+' + String.IsEqual('+state+'Busy),true) + [Container($PARAM[widgetid]).IsUpdating | '+loading+']'
   result.append(node)
@@ -50,6 +52,10 @@ def original_media_row(row,header):
  """Fail closed on any unrelated geometry or animation edit."""
  from widget_skin80 import digest
  original=copy.deepcopy(row);group=original.find('control')
+ params=original.findall("param[@name='xcmateKind']")
+ if params:
+  if len(params)!=1 or params[0].attrib!={'name':'xcmateKind','default':''}:raise ValueError('MEDIA_SPINNER_UNVERIFIED')
+  original.remove(params[0])
  headings=group.findall("control[@id='84$PARAM[widgetid]']")
  if headings:
   if len(headings)!=1:raise ValueError('MEDIA_SPINNER_UNVERIFIED')
@@ -138,6 +144,8 @@ def upgrade(files):
  _,_,header=_node(result[name],'include','name','widget_header_multi')
  original_media_row(row,header)
  group=row.find('control')
+ if row.find("param[@name='xcmateKind']") is None:
+  row.insert(0,E.Element('param',name='xcmateKind',default=''))
  if not group.findall("control[@id='84$PARAM[widgetid]']"):
   title=group.find("control[@type='label']");position=list(group).index(title)
   group.remove(title);group.insert(position,media_heading(title,header))
