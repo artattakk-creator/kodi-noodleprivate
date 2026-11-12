@@ -61,7 +61,7 @@ assert all((installed/p.relative_to(source)).read_bytes()==p.read_bytes() for p 
 print(len(files))
 """
    verified=run('exec',name,'python3','-c',code91,capture_output=True,text=True)
-   proof.update(installed_version='0.1.29.91',unchanged_installed_nonmanifest_files=int(verified.stdout.strip()),fixture_manifest_adapted=True,fixture_service_disabled=True,fixture_plugin_entry=True,android='ANDROID_NOT_TESTED')
+   proof.update(source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip(),installed_version='0.1.29.91',unchanged_installed_nonmanifest_files=int(verified.stdout.strip()),fixture_manifest_adapted=True,fixture_service_disabled=True,fixture_plugin_entry=True,android='ANDROID_NOT_TESTED')
    (report/'package-proof91.json').write_text(json.dumps(proof,indent=2)+'\n')
 
  finally:
