@@ -6,6 +6,16 @@ This is explicitly not a remote-source or physical Android acceptance test.
 from pathlib import Path
 import json,time,hashlib,io,sys
 
+def read_frame(path, pause, timeout=3):
+ from PIL import Image
+ deadline=time.monotonic()+timeout
+ while True:
+  try:
+   with Image.open(io.BytesIO(path.read_bytes())) as image:return image.convert('RGB')
+  except (OSError,ValueError) as exc:
+   if time.monotonic()>=deadline:raise RuntimeError('SIX438_SCREENSHOT_NOT_DECODABLE') from exc
+   pause(50)
+
 def install():
  import wave,math,struct
  from PIL import Image
@@ -64,11 +74,9 @@ def run(home,bindings,spinner_observer,service_poll,cycle=0):
    if count!='6':raise RuntimeError(('SIX438_ITEMS_MISSING',kind,count))
    heading=xbmc.getCondVisibility('Control.IsVisible(84'+str(cid)+')')
    if not heading:raise RuntimeError(('SIX438_HEADER_HIDDEN',kind))
-   path=Path('/root/picker90-six438-'+str(cycle)+'-'+kind+'.png');xbmc.executebuiltin('TakeScreenshot('+str(path)+')',wait=False);xbmc.sleep(400)
-   from PIL import Image
-   with Image.open(io.BytesIO(path.read_bytes())) as image:
-    rgb=image.convert('RGB').resize((1920,1080));color=(30,170,100) if kind=='mp3' else (180,70,120)
-    pixels=sum(max(abs(a-b) for a,b in zip(p,color))<10 for p in rgb.crop((260,640,1890,1040)).getdata())
+   path=Path('/root/picker90-six438-'+str(cycle)+'-'+kind+'.png');xbmc.executebuiltin('TakeScreenshot('+str(path)+')',wait=False)
+   rgb=read_frame(path,xbmc.sleep).resize((1920,1080));color=(30,170,100) if kind=='mp3' else (180,70,120)
+   pixels=sum(max(abs(a-b) for a,b in zip(p,color))<10 for p in rgb.crop((260,640,1890,1040)).getdata())
    if pixels<1500:raise RuntimeError(('SIX438_COVER_PIXELS_MISSING',kind,pixels))
    rows.append(dict(kind=kind,title=title,control=cid,target=widget_target,items=6,heading_visible=True,pixels=pixels,screenshot=path.name))
   # Measure animation while Home is idle, before introducing playback or

@@ -51,6 +51,29 @@ class Release91(unittest.TestCase):
             for name in metadata91()['modules']:
                 self.assertEqual(without_release91((ROOT/name).read_bytes(), name), self.baseline[name])
 
+    def test_native_screenshot_reader_waits_for_real_decodable_pixels(self):
+        sys.path.insert(0, str(ROOT/'tools/kodi_home90_host'))
+        import six_rows438
+        from PIL import Image
+        with tempfile.TemporaryDirectory() as folder:
+            frame = Path(folder)/'native.png'
+            frame.write_bytes(b'')
+            waits = []
+            def complete(ms):
+                waits.append(ms)
+                Image.new('RGB', (20, 30), (15, 25, 35)).save(frame)
+            image = six_rows438.read_frame(frame, complete)
+            self.assertEqual(waits, [50])
+            self.assertEqual(image.size, (20, 30))
+            self.assertEqual(image.getpixel((0, 0)), (15, 25, 35))
+
+    def test_native_screenshot_reader_times_out_instead_of_fabricating_pixels(self):
+        sys.path.insert(0, str(ROOT/'tools/kodi_home90_host'))
+        import six_rows438
+        with tempfile.TemporaryDirectory() as folder, mock.patch.object(six_rows438.time, 'monotonic', side_effect=[0, 4]):
+            with self.assertRaisesRegex(RuntimeError, 'SIX438_SCREENSHOT_NOT_DECODABLE'):
+                six_rows438.read_frame(Path(folder)/'missing.png', lambda ms: self.fail('already expired'))
+
     def test_rc_zip_is_complete_and_byte_reproducible_with_the_repository_builder(self):
         from package_xcmate71 import build
         package = ROOT/'docs/XCMate/test-builds/02991'/rc.NAME
