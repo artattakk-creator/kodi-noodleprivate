@@ -97,6 +97,12 @@ def run(home,bindings,spinner_observer,service_poll,cycle=0):
   while not audio_started438() and time.monotonic()<deadline:xbmc.sleep(50)
   audio=audio_started438()
   if not audio:raise RuntimeError(('SIX438_AUDIO_CLOCK_OR_OPEN_ACK_MISSING',xbmcgui.getCurrentWindowId(),xbmcgui.getCurrentWindowDialogId()))
+  # Kodi's configured MusicVisualisation is a real foreground window.
+  # Return with the native Back action before asserting HOME background work.
+  if xbmcgui.getCurrentWindowId()!=10000:
+   xbmc.executebuiltin('Action(Back)',wait=False);deadline=time.monotonic()+3
+   while xbmcgui.getCurrentWindowId()!=10000 and time.monotonic()<deadline:xbmc.sleep(50)
+  if xbmcgui.getCurrentWindowId()!=10000 or not xbmc.Player().isPlayingAudio():raise RuntimeError('SIX438_AUDIO_DID_NOT_CONTINUE_ON_HOME')
   # Home metadata must remain usable while media continues in the background.
   # This changes only the synthetic source's refresh label, never the player.
   background_start=time.monotonic();source=sources['cinema']
@@ -107,7 +113,7 @@ def run(home,bindings,spinner_observer,service_poll,cycle=0):
    runtime.poll()
    if runtime._rows.get('cinema',{}).get('signature',(None,))[0]==source['source_hash'] and runtime._rows['cinema']['state']=='READY':break
    xbmc.sleep(50)
-  else:raise RuntimeError('SIX438_BACKGROUND_MEDIA_BLOCKED_METADATA')
+  else:raise RuntimeError(('SIX438_BACKGROUND_MEDIA_BLOCKED_METADATA',xbmcgui.getCurrentWindowId(),xbmcgui.getCurrentWindowDialogId(),runtime._rows.get('cinema',{}).get('state')))
   if not xbmc.Player().isPlayingAudio():raise RuntimeError('SIX438_BACKGROUND_METADATA_INTERRUPTED_AUDIO')
   background_ms=int((time.monotonic()-background_start)*1000)
   xbmc.Player().stop();deadline=time.monotonic()+5
