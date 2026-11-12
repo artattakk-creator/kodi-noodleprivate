@@ -1,0 +1,1391 @@
+{
+  "run": 43268495432,
+  "test_host": "Kodi 21.2 Debian 2:21.2+dfsg-4; Linux x86_64; BINGIE MOD 2.2.3",
+  "source_commit": "9664fca531f0b2dd4df4bf80e3af329e9f7ded1c",
+  "native_harness_commit": "c91b0db06ed7ab7314f9ce9229635b34dcd0cc56",
+  "resolution": "1080p",
+  "source": "SYNTHETIC_NATIVE_DIRECTORIES_NOT_REMOTE_SERVICES",
+  "android": "ANDROID_NOT_TESTED",
+  "cold_restarts": 3,
+  "reports": [
+    {
+      "cycle": 0,
+      "status": "PASS",
+      "core": [
+        {
+          "kind": "live",
+          "control": 1510,
+          "rows": 88,
+          "pixels": 5184,
+          "screenshot": "picker90-home-0-live.png"
+        },
+        {
+          "kind": "vod",
+          "control": 1520,
+          "rows": 24,
+          "pixels": 43200,
+          "screenshot": "picker90-home-0-vod.png"
+        },
+        {
+          "kind": "series",
+          "control": 1530,
+          "rows": 24,
+          "pixels": 43200,
+          "screenshot": "picker90-home-0-series.png"
+        }
+      ],
+      "core_spinner": [
+        {
+          "kind": "vod",
+          "control": 851520,
+          "animation_pixels": true,
+          "logical_texture": [
+            24,
+            24
+          ],
+          "native_scale": [
+            1.0,
+            1.0
+          ],
+          "native_limit": [
+            25,
+            25
+          ],
+          "frames": [
+            "picker90-spinner438-vod-0.png",
+            "picker90-spinner438-vod-1.png",
+            "picker90-spinner438-vod-2.png",
+            "picker90-spinner438-vod-3.png"
+          ],
+          "changes": [
+            [
+              90,
+              2,
+              114,
+              26
+            ],
+            [
+              90,
+              4,
+              114,
+              26
+            ],
+            [
+              99,
+              2,
+              114,
+              26
+            ]
+          ],
+          "terminal_hidden": [
+            "READY",
+            "EMPTY",
+            "ERROR_RETRYABLE"
+          ],
+          "listitems_preserved": 24,
+          "injection": "UI_STATE_ONLY_NOT_PROVIDER_JOB",
+          "android": "ANDROID_NOT_TESTED"
+        },
+        {
+          "kind": "series",
+          "control": 861530,
+          "animation_pixels": true,
+          "logical_texture": [
+            24,
+            24
+          ],
+          "native_scale": [
+            1.0,
+            1.0
+          ],
+          "native_limit": [
+            25,
+            25
+          ],
+          "frames": [
+            "picker90-spinner438-series-0.png",
+            "picker90-spinner438-series-1.png",
+            "picker90-spinner438-series-2.png",
+            "picker90-spinner438-series-3.png"
+          ],
+          "changes": [
+            [
+              100,
+              74,
+              124,
+              98
+            ],
+            [
+              100,
+              76,
+              124,
+              98
+            ],
+            [
+              109,
+              74,
+              124,
+              98
+            ]
+          ],
+          "terminal_hidden": [
+            "READY",
+            "EMPTY",
+            "ERROR_RETRYABLE"
+          ],
+          "listitems_preserved": 24,
+          "injection": "UI_STATE_ONLY_NOT_PROVIDER_JOB",
+          "android": "ANDROID_NOT_TESTED"
+        }
+      ],
+      "six_rows": {
+        "status": "PASS",
+        "cycle": 0,
+        "load_order": [
+          "cinema",
+          "disney",
+          "trend",
+          "mp3"
+        ],
+        "source_timings_ms": {
+          "cinema": {
+            "started_ms": 138,
+            "ready_ms": 992
+          },
+          "disney": {
+            "started_ms": 992,
+            "ready_ms": 2005
+          },
+          "trend": {
+            "started_ms": 2005,
+            "ready_ms": 2998
+          },
+          "mp3": {
+            "started_ms": 2998,
+            "ready_ms": 4021
+          }
+        },
+        "rows": [
+          {
+            "kind": "cinema",
+            "title": "Im Kino",
+            "control": 29761,
+            "target": "videos",
+            "items": 6,
+            "heading_visible": true,
+            "pixels": 129600,
+            "screenshot": "picker90-six438-0-cinema.png"
+          },
+          {
+            "kind": "disney",
+            "title": "Disney",
+            "control": 29762,
+            "target": "videos",
+            "items": 6,
+            "heading_visible": true,
+            "pixels": 231840,
+            "screenshot": "picker90-six438-0-disney.png"
+          },
+          {
+            "kind": "trend",
+            "title": "Diese Woche im Trend",
+            "control": 29763,
+            "target": "videos",
+            "items": 6,
+            "heading_visible": true,
+            "pixels": 231840,
+            "screenshot": "picker90-six438-0-trend.png"
+          },
+          {
+            "kind": "mp3",
+            "title": "MP3s",
+            "control": 29764,
+            "target": "music",
+            "items": 6,
+            "heading_visible": true,
+            "pixels": 129600,
+            "screenshot": "picker90-six438-0-mp3.png"
+          }
+        ],
+        "spinner": [
+          {
+            "kind": "cinema",
+            "control": 8729761,
+            "animation_pixels": true,
+            "logical_texture": [
+              24,
+              24
+            ],
+            "native_scale": [
+              1.0,
+              1.0
+            ],
+            "native_limit": [
+              25,
+              25
+            ],
+            "frames": [
+              "picker90-spinner438-cinema-cold0-0.png",
+              "picker90-spinner438-cinema-cold0-1.png",
+              "picker90-spinner438-cinema-cold0-2.png",
+              "picker90-spinner438-cinema-cold0-3.png"
+            ],
+            "changes": [
+              [
+                111,
+                2,
+                133,
+                26
+              ],
+              [
+                109,
+                4,
+                133,
+                26
+              ],
+              [
+                111,
+                4,
+                133,
+                26
+              ]
+            ],
+            "terminal_hidden": [
+              "READY",
+              "EMPTY",
+              "ERROR_RETRYABLE"
+            ],
+            "listitems_preserved": 6,
+            "injection": "UI_STATE_ONLY_NOT_PROVIDER_JOB",
+            "android": "ANDROID_NOT_TESTED"
+          },
+          {
+            "kind": "disney",
+            "control": 8829762,
+            "animation_pixels": true,
+            "logical_texture": [
+              24,
+              24
+            ],
+            "native_scale": [
+              1.0,
+              1.0
+            ],
+            "native_limit": [
+              25,
+              25
+            ],
+            "frames": [
+              "picker90-spinner438-disney-cold0-0.png",
+              "picker90-spinner438-disney-cold0-1.png",
+              "picker90-spinner438-disney-cold0-2.png",
+              "picker90-spinner438-disney-cold0-3.png"
+            ],
+            "changes": [
+              [
+                104,
+                178,
+                128,
+                202
+              ],
+              [
+                104,
+                180,
+                128,
+                202
+              ],
+              [
+                113,
+                178,
+                128,
+                202
+              ]
+            ],
+            "terminal_hidden": [
+              "READY",
+              "EMPTY",
+              "ERROR_RETRYABLE"
+            ],
+            "listitems_preserved": 6,
+            "injection": "UI_STATE_ONLY_NOT_PROVIDER_JOB",
+            "android": "ANDROID_NOT_TESTED"
+          },
+          {
+            "kind": "trend",
+            "control": 8929763,
+            "animation_pixels": true,
+            "logical_texture": [
+              24,
+              24
+            ],
+            "native_scale": [
+              1.0,
+              1.0
+            ],
+            "native_limit": [
+              25,
+              25
+            ],
+            "frames": [
+              "picker90-spinner438-trend-cold0-0.png",
+              "picker90-spinner438-trend-cold0-1.png",
+              "picker90-spinner438-trend-cold0-2.png",
+              "picker90-spinner438-trend-cold0-3.png"
+            ],
+            "changes": [
+              [
+                268,
+                178,
+                292,
+                202
+              ],
+              [
+                270,
+                180,
+                292,
+                202
+              ],
+              [
+                270,
+                178,
+                292,
+                202
+              ]
+            ],
+            "terminal_hidden": [
+              "READY",
+              "EMPTY",
+              "ERROR_RETRYABLE"
+            ],
+            "listitems_preserved": 6,
+            "injection": "UI_STATE_ONLY_NOT_PROVIDER_JOB",
+            "android": "ANDROID_NOT_TESTED"
+          },
+          {
+            "kind": "mp3",
+            "control": 9029764,
+            "animation_pixels": true,
+            "logical_texture": [
+              24,
+              24
+            ],
+            "native_scale": [
+              1.0,
+              1.0
+            ],
+            "native_limit": [
+              25,
+              25
+            ],
+            "frames": [
+              "picker90-spinner438-mp3-cold0-0.png",
+              "picker90-spinner438-mp3-cold0-1.png",
+              "picker90-spinner438-mp3-cold0-2.png",
+              "picker90-spinner438-mp3-cold0-3.png"
+            ],
+            "changes": [
+              [
+                91,
+                178,
+                115,
+                202
+              ],
+              [
+                91,
+                180,
+                115,
+                202
+              ],
+              [
+                100,
+                178,
+                115,
+                202
+              ]
+            ],
+            "terminal_hidden": [
+              "READY",
+              "EMPTY",
+              "ERROR_RETRYABLE"
+            ],
+            "listitems_preserved": 6,
+            "injection": "UI_STATE_ONLY_NOT_PROVIDER_JOB",
+            "android": "ANDROID_NOT_TESTED"
+          }
+        ],
+        "audio_played": true,
+        "background_audio_preserved": true,
+        "background_refresh_ms": 1247,
+        "audio_stop_ack": true,
+        "audio_return_ir": true,
+        "video_directory_clicks": [
+          "cinema",
+          "disney",
+          "trend"
+        ],
+        "video_directory_back": true,
+        "elapsed_ms": 28210,
+        "source": "SYNTHETIC_NATIVE_DIRECTORIES_NOT_REMOTE_SERVICES",
+        "android": "ANDROID_NOT_TESTED"
+      },
+      "properties_sha256": "1786289582b5df7cf3278b29eb94ee3fab0597a84902d981911cc6b96bfb36c1"
+    },
+    {
+      "cycle": 1,
+      "status": "PASS",
+      "core": [
+        {
+          "kind": "live",
+          "control": 1510,
+          "rows": 88,
+          "pixels": 5184,
+          "screenshot": "picker90-home-1-live.png"
+        },
+        {
+          "kind": "vod",
+          "control": 1520,
+          "rows": 24,
+          "pixels": 43200,
+          "screenshot": "picker90-home-1-vod.png"
+        },
+        {
+          "kind": "series",
+          "control": 1530,
+          "rows": 24,
+          "pixels": 43200,
+          "screenshot": "picker90-home-1-series.png"
+        }
+      ],
+      "core_spinner": [],
+      "six_rows": {
+        "status": "PASS",
+        "cycle": 1,
+        "load_order": [
+          "cinema",
+          "disney",
+          "trend",
+          "mp3"
+        ],
+        "source_timings_ms": {
+          "cinema": {
+            "started_ms": 122,
+            "ready_ms": 823
+          },
+          "disney": {
+            "started_ms": 823,
+            "ready_ms": 1660
+          },
+          "trend": {
+            "started_ms": 1660,
+            "ready_ms": 2553
+          },
+          "mp3": {
+            "started_ms": 2553,
+            "ready_ms": 3298
+          }
+        },
+        "rows": [
+          {
+            "kind": "cinema",
+            "title": "Im Kino",
+            "control": 29761,
+            "target": "videos",
+            "items": 6,
+            "heading_visible": true,
+            "pixels": 129600,
+            "screenshot": "picker90-six438-1-cinema.png"
+          },
+          {
+            "kind": "disney",
+            "title": "Disney",
+            "control": 29762,
+            "target": "videos",
+            "items": 6,
+            "heading_visible": true,
+            "pixels": 231840,
+            "screenshot": "picker90-six438-1-disney.png"
+          },
+          {
+            "kind": "trend",
+            "title": "Diese Woche im Trend",
+            "control": 29763,
+            "target": "videos",
+            "items": 6,
+            "heading_visible": true,
+            "pixels": 231840,
+            "screenshot": "picker90-six438-1-trend.png"
+          },
+          {
+            "kind": "mp3",
+            "title": "MP3s",
+            "control": 29764,
+            "target": "music",
+            "items": 6,
+            "heading_visible": true,
+            "pixels": 129600,
+            "screenshot": "picker90-six438-1-mp3.png"
+          }
+        ],
+        "spinner": [
+          {
+            "kind": "cinema",
+            "control": 8729761,
+            "animation_pixels": true,
+            "logical_texture": [
+              24,
+              24
+            ],
+            "native_scale": [
+              1.0,
+              1.0
+            ],
+            "native_limit": [
+              25,
+              25
+            ],
+            "frames": [
+              "picker90-spinner438-cinema-cold1-0.png",
+              "picker90-spinner438-cinema-cold1-1.png",
+              "picker90-spinner438-cinema-cold1-2.png",
+              "picker90-spinner438-cinema-cold1-3.png"
+            ],
+            "changes": [
+              [
+                109,
+                2,
+                133,
+                26
+              ],
+              [
+                111,
+                4,
+                133,
+                26
+              ],
+              [
+                109,
+                2,
+                133,
+                26
+              ]
+            ],
+            "terminal_hidden": [
+              "READY",
+              "EMPTY",
+              "ERROR_RETRYABLE"
+            ],
+            "listitems_preserved": 6,
+            "injection": "UI_STATE_ONLY_NOT_PROVIDER_JOB",
+            "android": "ANDROID_NOT_TESTED"
+          },
+          {
+            "kind": "disney",
+            "control": 8829762,
+            "animation_pixels": true,
+            "logical_texture": [
+              24,
+              24
+            ],
+            "native_scale": [
+              1.0,
+              1.0
+            ],
+            "native_limit": [
+              25,
+              25
+            ],
+            "frames": [
+              "picker90-spinner438-disney-cold1-0.png",
+              "picker90-spinner438-disney-cold1-1.png",
+              "picker90-spinner438-disney-cold1-2.png",
+              "picker90-spinner438-disney-cold1-3.png"
+            ],
+            "changes": [
+              [
+                104,
+                178,
+                128,
+                202
+              ],
+              [
+                104,
+                180,
+                128,
+                202
+              ],
+              [
+                113,
+                178,
+                128,
+                202
+              ]
+            ],
+            "terminal_hidden": [
+              "READY",
+              "EMPTY",
+              "ERROR_RETRYABLE"
+            ],
+            "listitems_preserved": 6,
+            "injection": "UI_STATE_ONLY_NOT_PROVIDER_JOB",
+            "android": "ANDROID_NOT_TESTED"
+          },
+          {
+            "kind": "trend",
+            "control": 8929763,
+            "animation_pixels": true,
+            "logical_texture": [
+              24,
+              24
+            ],
+            "native_scale": [
+              1.0,
+              1.0
+            ],
+            "native_limit": [
+              25,
+              25
+            ],
+            "frames": [
+              "picker90-spinner438-trend-cold1-0.png",
+              "picker90-spinner438-trend-cold1-1.png",
+              "picker90-spinner438-trend-cold1-2.png",
+              "picker90-spinner438-trend-cold1-3.png"
+            ],
+            "changes": [
+              [
+                268,
+                178,
+                292,
+                202
+              ],
+              [
+                268,
+                180,
+                292,
+                202
+              ],
+              [
+                277,
+                178,
+                292,
+                202
+              ]
+            ],
+            "terminal_hidden": [
+              "READY",
+              "EMPTY",
+              "ERROR_RETRYABLE"
+            ],
+            "listitems_preserved": 6,
+            "injection": "UI_STATE_ONLY_NOT_PROVIDER_JOB",
+            "android": "ANDROID_NOT_TESTED"
+          },
+          {
+            "kind": "mp3",
+            "control": 9029764,
+            "animation_pixels": true,
+            "logical_texture": [
+              24,
+              24
+            ],
+            "native_scale": [
+              1.0,
+              1.0
+            ],
+            "native_limit": [
+              25,
+              25
+            ],
+            "frames": [
+              "picker90-spinner438-mp3-cold1-0.png",
+              "picker90-spinner438-mp3-cold1-1.png",
+              "picker90-spinner438-mp3-cold1-2.png",
+              "picker90-spinner438-mp3-cold1-3.png"
+            ],
+            "changes": [
+              [
+                91,
+                178,
+                115,
+                202
+              ],
+              [
+                91,
+                180,
+                115,
+                202
+              ],
+              [
+                100,
+                178,
+                115,
+                202
+              ]
+            ],
+            "terminal_hidden": [
+              "READY",
+              "EMPTY",
+              "ERROR_RETRYABLE"
+            ],
+            "listitems_preserved": 6,
+            "injection": "UI_STATE_ONLY_NOT_PROVIDER_JOB",
+            "android": "ANDROID_NOT_TESTED"
+          }
+        ],
+        "audio_played": true,
+        "background_audio_preserved": true,
+        "background_refresh_ms": 1669,
+        "audio_stop_ack": true,
+        "audio_return_ir": true,
+        "video_directory_clicks": [
+          "cinema",
+          "disney",
+          "trend"
+        ],
+        "video_directory_back": true,
+        "elapsed_ms": 28071,
+        "source": "SYNTHETIC_NATIVE_DIRECTORIES_NOT_REMOTE_SERVICES",
+        "android": "ANDROID_NOT_TESTED"
+      },
+      "properties_sha256": "1786289582b5df7cf3278b29eb94ee3fab0597a84902d981911cc6b96bfb36c1"
+    },
+    {
+      "cycle": 2,
+      "status": "PASS",
+      "core": [
+        {
+          "kind": "live",
+          "control": 1510,
+          "rows": 88,
+          "pixels": 5184,
+          "screenshot": "picker90-home-2-live.png"
+        },
+        {
+          "kind": "vod",
+          "control": 1520,
+          "rows": 24,
+          "pixels": 43200,
+          "screenshot": "picker90-home-2-vod.png"
+        },
+        {
+          "kind": "series",
+          "control": 1530,
+          "rows": 24,
+          "pixels": 43200,
+          "screenshot": "picker90-home-2-series.png"
+        }
+      ],
+      "core_spinner": [],
+      "six_rows": {
+        "status": "PASS",
+        "cycle": 2,
+        "load_order": [
+          "cinema",
+          "disney",
+          "trend",
+          "mp3"
+        ],
+        "source_timings_ms": {
+          "cinema": {
+            "started_ms": 205,
+            "ready_ms": 1048
+          },
+          "disney": {
+            "started_ms": 1048,
+            "ready_ms": 2048
+          },
+          "trend": {
+            "started_ms": 2048,
+            "ready_ms": 2808
+          },
+          "mp3": {
+            "started_ms": 2808,
+            "ready_ms": 3646
+          }
+        },
+        "rows": [
+          {
+            "kind": "cinema",
+            "title": "Im Kino",
+            "control": 29761,
+            "target": "videos",
+            "items": 6,
+            "heading_visible": true,
+            "pixels": 129600,
+            "screenshot": "picker90-six438-2-cinema.png"
+          },
+          {
+            "kind": "disney",
+            "title": "Disney",
+            "control": 29762,
+            "target": "videos",
+            "items": 6,
+            "heading_visible": true,
+            "pixels": 231840,
+            "screenshot": "picker90-six438-2-disney.png"
+          },
+          {
+            "kind": "trend",
+            "title": "Diese Woche im Trend",
+            "control": 29763,
+            "target": "videos",
+            "items": 6,
+            "heading_visible": true,
+            "pixels": 231840,
+            "screenshot": "picker90-six438-2-trend.png"
+          },
+          {
+            "kind": "mp3",
+            "title": "MP3s",
+            "control": 29764,
+            "target": "music",
+            "items": 6,
+            "heading_visible": true,
+            "pixels": 129600,
+            "screenshot": "picker90-six438-2-mp3.png"
+          }
+        ],
+        "spinner": [
+          {
+            "kind": "cinema",
+            "control": 8729761,
+            "animation_pixels": true,
+            "logical_texture": [
+              24,
+              24
+            ],
+            "native_scale": [
+              1.0,
+              1.0
+            ],
+            "native_limit": [
+              25,
+              25
+            ],
+            "frames": [
+              "picker90-spinner438-cinema-cold2-0.png",
+              "picker90-spinner438-cinema-cold2-1.png",
+              "picker90-spinner438-cinema-cold2-2.png",
+              "picker90-spinner438-cinema-cold2-3.png"
+            ],
+            "changes": [
+              [
+                109,
+                2,
+                133,
+                26
+              ],
+              [
+                109,
+                4,
+                133,
+                26
+              ],
+              [
+                118,
+                2,
+                133,
+                26
+              ]
+            ],
+            "terminal_hidden": [
+              "READY",
+              "EMPTY",
+              "ERROR_RETRYABLE"
+            ],
+            "listitems_preserved": 6,
+            "injection": "UI_STATE_ONLY_NOT_PROVIDER_JOB",
+            "android": "ANDROID_NOT_TESTED"
+          },
+          {
+            "kind": "disney",
+            "control": 8829762,
+            "animation_pixels": true,
+            "logical_texture": [
+              24,
+              24
+            ],
+            "native_scale": [
+              1.0,
+              1.0
+            ],
+            "native_limit": [
+              25,
+              25
+            ],
+            "frames": [
+              "picker90-spinner438-disney-cold2-0.png",
+              "picker90-spinner438-disney-cold2-1.png",
+              "picker90-spinner438-disney-cold2-2.png",
+              "picker90-spinner438-disney-cold2-3.png"
+            ],
+            "changes": [
+              [
+                104,
+                178,
+                128,
+                202
+              ],
+              [
+                106,
+                180,
+                128,
+                202
+              ],
+              [
+                106,
+                178,
+                128,
+                202
+              ]
+            ],
+            "terminal_hidden": [
+              "READY",
+              "EMPTY",
+              "ERROR_RETRYABLE"
+            ],
+            "listitems_preserved": 6,
+            "injection": "UI_STATE_ONLY_NOT_PROVIDER_JOB",
+            "android": "ANDROID_NOT_TESTED"
+          },
+          {
+            "kind": "trend",
+            "control": 8929763,
+            "animation_pixels": true,
+            "logical_texture": [
+              24,
+              24
+            ],
+            "native_scale": [
+              1.0,
+              1.0
+            ],
+            "native_limit": [
+              25,
+              25
+            ],
+            "frames": [
+              "picker90-spinner438-trend-cold2-0.png",
+              "picker90-spinner438-trend-cold2-1.png",
+              "picker90-spinner438-trend-cold2-2.png",
+              "picker90-spinner438-trend-cold2-3.png"
+            ],
+            "changes": [
+              [
+                268,
+                178,
+                292,
+                202
+              ],
+              [
+                268,
+                180,
+                292,
+                202
+              ],
+              [
+                277,
+                178,
+                292,
+                202
+              ]
+            ],
+            "terminal_hidden": [
+              "READY",
+              "EMPTY",
+              "ERROR_RETRYABLE"
+            ],
+            "listitems_preserved": 6,
+            "injection": "UI_STATE_ONLY_NOT_PROVIDER_JOB",
+            "android": "ANDROID_NOT_TESTED"
+          },
+          {
+            "kind": "mp3",
+            "control": 9029764,
+            "animation_pixels": true,
+            "logical_texture": [
+              24,
+              24
+            ],
+            "native_scale": [
+              1.0,
+              1.0
+            ],
+            "native_limit": [
+              25,
+              25
+            ],
+            "frames": [
+              "picker90-spinner438-mp3-cold2-0.png",
+              "picker90-spinner438-mp3-cold2-1.png",
+              "picker90-spinner438-mp3-cold2-2.png",
+              "picker90-spinner438-mp3-cold2-3.png"
+            ],
+            "changes": [
+              [
+                91,
+                178,
+                115,
+                202
+              ],
+              [
+                91,
+                180,
+                115,
+                202
+              ],
+              [
+                100,
+                178,
+                115,
+                202
+              ]
+            ],
+            "terminal_hidden": [
+              "READY",
+              "EMPTY",
+              "ERROR_RETRYABLE"
+            ],
+            "listitems_preserved": 6,
+            "injection": "UI_STATE_ONLY_NOT_PROVIDER_JOB",
+            "android": "ANDROID_NOT_TESTED"
+          }
+        ],
+        "audio_played": true,
+        "background_audio_preserved": true,
+        "background_refresh_ms": 929,
+        "audio_stop_ack": true,
+        "audio_return_ir": true,
+        "video_directory_clicks": [
+          "cinema",
+          "disney",
+          "trend"
+        ],
+        "video_directory_back": true,
+        "elapsed_ms": 27461,
+        "source": "SYNTHETIC_NATIVE_DIRECTORIES_NOT_REMOTE_SERVICES",
+        "android": "ANDROID_NOT_TESTED"
+      },
+      "properties_sha256": "1786289582b5df7cf3278b29eb94ee3fab0597a84902d981911cc6b96bfb36c1"
+    },
+    {
+      "cycle": 3,
+      "status": "PASS",
+      "core": [
+        {
+          "kind": "live",
+          "control": 1510,
+          "rows": 88,
+          "pixels": 5184,
+          "screenshot": "picker90-home-3-live.png"
+        },
+        {
+          "kind": "vod",
+          "control": 1520,
+          "rows": 24,
+          "pixels": 43200,
+          "screenshot": "picker90-home-3-vod.png"
+        },
+        {
+          "kind": "series",
+          "control": 1530,
+          "rows": 24,
+          "pixels": 43200,
+          "screenshot": "picker90-home-3-series.png"
+        }
+      ],
+      "core_spinner": [],
+      "six_rows": {
+        "status": "PASS",
+        "cycle": 3,
+        "load_order": [
+          "cinema",
+          "disney",
+          "trend",
+          "mp3"
+        ],
+        "source_timings_ms": {
+          "cinema": {
+            "started_ms": 67,
+            "ready_ms": 1364
+          },
+          "disney": {
+            "started_ms": 1364,
+            "ready_ms": 2135
+          },
+          "trend": {
+            "started_ms": 2135,
+            "ready_ms": 3028
+          },
+          "mp3": {
+            "started_ms": 3028,
+            "ready_ms": 3957
+          }
+        },
+        "rows": [
+          {
+            "kind": "cinema",
+            "title": "Im Kino",
+            "control": 29761,
+            "target": "videos",
+            "items": 6,
+            "heading_visible": true,
+            "pixels": 129600,
+            "screenshot": "picker90-six438-3-cinema.png"
+          },
+          {
+            "kind": "disney",
+            "title": "Disney",
+            "control": 29762,
+            "target": "videos",
+            "items": 6,
+            "heading_visible": true,
+            "pixels": 231840,
+            "screenshot": "picker90-six438-3-disney.png"
+          },
+          {
+            "kind": "trend",
+            "title": "Diese Woche im Trend",
+            "control": 29763,
+            "target": "videos",
+            "items": 6,
+            "heading_visible": true,
+            "pixels": 231840,
+            "screenshot": "picker90-six438-3-trend.png"
+          },
+          {
+            "kind": "mp3",
+            "title": "MP3s",
+            "control": 29764,
+            "target": "music",
+            "items": 6,
+            "heading_visible": true,
+            "pixels": 129600,
+            "screenshot": "picker90-six438-3-mp3.png"
+          }
+        ],
+        "spinner": [
+          {
+            "kind": "cinema",
+            "control": 8729761,
+            "animation_pixels": true,
+            "logical_texture": [
+              24,
+              24
+            ],
+            "native_scale": [
+              1.0,
+              1.0
+            ],
+            "native_limit": [
+              25,
+              25
+            ],
+            "frames": [
+              "picker90-spinner438-cinema-cold3-0.png",
+              "picker90-spinner438-cinema-cold3-1.png",
+              "picker90-spinner438-cinema-cold3-2.png",
+              "picker90-spinner438-cinema-cold3-3.png"
+            ],
+            "changes": [
+              [
+                109,
+                2,
+                133,
+                26
+              ],
+              [
+                109,
+                4,
+                133,
+                26
+              ],
+              [
+                118,
+                2,
+                133,
+                26
+              ]
+            ],
+            "terminal_hidden": [
+              "READY",
+              "EMPTY",
+              "ERROR_RETRYABLE"
+            ],
+            "listitems_preserved": 6,
+            "injection": "UI_STATE_ONLY_NOT_PROVIDER_JOB",
+            "android": "ANDROID_NOT_TESTED"
+          },
+          {
+            "kind": "disney",
+            "control": 8829762,
+            "animation_pixels": true,
+            "logical_texture": [
+              24,
+              24
+            ],
+            "native_scale": [
+              1.0,
+              1.0
+            ],
+            "native_limit": [
+              25,
+              25
+            ],
+            "frames": [
+              "picker90-spinner438-disney-cold3-0.png",
+              "picker90-spinner438-disney-cold3-1.png",
+              "picker90-spinner438-disney-cold3-2.png",
+              "picker90-spinner438-disney-cold3-3.png"
+            ],
+            "changes": [
+              [
+                104,
+                178,
+                128,
+                202
+              ],
+              [
+                104,
+                180,
+                128,
+                202
+              ],
+              [
+                113,
+                178,
+                128,
+                202
+              ]
+            ],
+            "terminal_hidden": [
+              "READY",
+              "EMPTY",
+              "ERROR_RETRYABLE"
+            ],
+            "listitems_preserved": 6,
+            "injection": "UI_STATE_ONLY_NOT_PROVIDER_JOB",
+            "android": "ANDROID_NOT_TESTED"
+          },
+          {
+            "kind": "trend",
+            "control": 8929763,
+            "animation_pixels": true,
+            "logical_texture": [
+              24,
+              24
+            ],
+            "native_scale": [
+              1.0,
+              1.0
+            ],
+            "native_limit": [
+              25,
+              25
+            ],
+            "frames": [
+              "picker90-spinner438-trend-cold3-0.png",
+              "picker90-spinner438-trend-cold3-1.png",
+              "picker90-spinner438-trend-cold3-2.png",
+              "picker90-spinner438-trend-cold3-3.png"
+            ],
+            "changes": [
+              [
+                268,
+                178,
+                292,
+                202
+              ],
+              [
+                268,
+                180,
+                292,
+                202
+              ],
+              [
+                277,
+                178,
+                292,
+                202
+              ]
+            ],
+            "terminal_hidden": [
+              "READY",
+              "EMPTY",
+              "ERROR_RETRYABLE"
+            ],
+            "listitems_preserved": 6,
+            "injection": "UI_STATE_ONLY_NOT_PROVIDER_JOB",
+            "android": "ANDROID_NOT_TESTED"
+          },
+          {
+            "kind": "mp3",
+            "control": 9029764,
+            "animation_pixels": true,
+            "logical_texture": [
+              24,
+              24
+            ],
+            "native_scale": [
+              1.0,
+              1.0
+            ],
+            "native_limit": [
+              25,
+              25
+            ],
+            "frames": [
+              "picker90-spinner438-mp3-cold3-0.png",
+              "picker90-spinner438-mp3-cold3-1.png",
+              "picker90-spinner438-mp3-cold3-2.png",
+              "picker90-spinner438-mp3-cold3-3.png"
+            ],
+            "changes": [
+              [
+                91,
+                178,
+                115,
+                202
+              ],
+              [
+                91,
+                180,
+                115,
+                202
+              ],
+              [
+                100,
+                178,
+                115,
+                202
+              ]
+            ],
+            "terminal_hidden": [
+              "READY",
+              "EMPTY",
+              "ERROR_RETRYABLE"
+            ],
+            "listitems_preserved": 6,
+            "injection": "UI_STATE_ONLY_NOT_PROVIDER_JOB",
+            "android": "ANDROID_NOT_TESTED"
+          }
+        ],
+        "audio_played": true,
+        "background_audio_preserved": true,
+        "background_refresh_ms": 943,
+        "audio_stop_ack": true,
+        "audio_return_ir": true,
+        "video_directory_clicks": [
+          "cinema",
+          "disney",
+          "trend"
+        ],
+        "video_directory_back": true,
+        "elapsed_ms": 27769,
+        "source": "SYNTHETIC_NATIVE_DIRECTORIES_NOT_REMOTE_SERVICES",
+        "android": "ANDROID_NOT_TESTED"
+      },
+      "properties_sha256": "1786289582b5df7cf3278b29eb94ee3fab0597a84902d981911cc6b96bfb36c1"
+    }
+  ]
+}
