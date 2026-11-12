@@ -20,11 +20,15 @@ Die vorherige CI hatte 34 Hostfehler: alte Kanal-Guards erwarteten weiterhin .89
 | Kumulative Scope-/Historien-/Bestandsschutztests | PASS – 169 Tests, 80,277 s |
 | Zusätzlicher Review-/Release-/Negativschutz | PASS – 4 Tests |
 | Aktuelles Review-ZIP: 855 Dateien, CRC und jede Quelldatei | PASS |
-| Vollständige Hosttestsuite | RUNNING – Abschluss folgt im PR |
-| Neue native Kodi-Containerprüfung 720p/1080p | NOT_TESTED – CI wird mit diesem Commit gestartet |
+| Vollständige Hosttestsuite | PASS – 3.815 Tests, 953,154 s, kein Skip/Fehler |
+| Native Kodi-Containerprüfung 720p/1080p | Einzelne Läufe PASS inklusive drei Kaltstarts; letzter gemeinsamer CI-Lauf noch ausstehend |
 | Physische Android-Prüfung | NOT_TESTED |
 
 Die bisherigen nativen Gesamtprüfungen sind **nicht vollständig grün**: `NATIVE_ONE_RAIL` im geerbten .75-Vertrag und `GROUP90_NATIVE_VIDEO_NOT_OWNED` im .90-Gruppen-Playback-Vertrag. Diese Fehler werden nicht als Android-Erfolg oder Clock-Fix-Erfolg umgedeutet. Der separate originale Picker war vor dieser Ergänzung erfolgreich; seine Prüfung bleibt bestehen.
+
+Der erste lokale Gesamtlauf konnte keine Test-Sockets öffnen (`PermissionError`, Sandbox-Netzwerkrechte fehlten; 11 FAIL/111 ERROR). Nach expliziter Freigabe des Netzwerkzugriffs im Testprozess bestand die **unveränderte** vollständige Suite mit 3.815 Tests. Der anfängliche Umgebungsfehler wird nicht als Produktfehler oder übergangener Test gezählt. Zusätzlich bestanden 88 selektive EPG-/Mapping-/Detail-/Retentiontests (Teilmenge der Gesamtsuite).
+
+Die neue native Prüfung fand zunächst einen Testfehler: Upstream erzeugt auch deaktivierte LiveRow-Alternativzweige. Diese werden jetzt separat vom genau einen aktiven MediaRow-Consumer bewertet. Der 1080p-Beleg nach drei Kaltstarts enthält 88/24/24 Items und 5.184/43.200/43.200 gemessene Bildpixel (Job 131225286269). Die zeitweise instabile Manager-/Modalautomation wurde nachgeschärft; ein dabei eingeführter Einrückungsfehler wurde korrigiert und eine vorgelagerte Syntaxprüfung ergänzt. Vollständig grüner aktueller nativer Gesamtlauf und Android-Abnahme werden noch nicht behauptet.
 
 ## Review-Paket
 
@@ -47,3 +51,5 @@ Die drei veröffentlichten .90-Pakete bleiben unverändert: SHA256 `e95b0a0cc46e
 ## Getrennte Folgearbeiten
 
 Gemäß Übergabe: echter BINGIE-Multiimage-Spinner in eigener kleiner Skin-PR; Zusatzwidget-Diagnose/-Routen separat; EPG-/Artwork-Hub und referenzsichere Bereinigung nach Widget-/Android-P0-Abnahme. Kein automatisches Überschreiben gespeicherter Shortcuts, keine Daten-/Cachelöschung und kein Player-Rewrite im Uhr-Hotfix.
+
+Neuester separater Skin-Folgestand: Draft #438; [sechs Reihen und EPG-/Exit-Matrix](https://github.com/artattakk-creator/kodi-noodleprivate/blob/fix/widget-media-spinner-20261112/docs/XCMate/WIDGET_EPG_FOLGESTATUS_2026-11-12_DE.md). Nutzerkorrektur 14:42 Uhr: „Diese Woche im Trend“, kein Bewertungsranking.
